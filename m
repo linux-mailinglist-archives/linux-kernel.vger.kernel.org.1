@@ -2,145 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9792736E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 01:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91EAE2736EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 01:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728971AbgIUXwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 19:52:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33064 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727124AbgIUXwq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 19:52:46 -0400
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4EAE523A6B;
-        Mon, 21 Sep 2020 23:52:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600732365;
-        bh=RPrdQUugC5s6Taj5fTPO3aDNuq6ahfRvm1SH7wdeIMM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1XtX7sF5pJ2g3rkvM61mRC3GHnkXx5uE/aM5SI1d8Y6zXtI6KKFTeO3iDqOTL5sLJ
-         OmURhtHjGOeAxICcn7Ekyx8MChC6/0T/67BaTlyNsNwY2Gm57eR6E/ooZAkC8i/RDj
-         9bqzYczJLjkyjcGRg/QA/nz/CVKbd8DaF8fT5vTQ=
-Date:   Mon, 21 Sep 2020 16:52:43 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>, tytso@mit.edu,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] random: use correct memory barriers for crng_node_pool
-Message-ID: <20200921235243.GA32959@sol.localdomain>
-References: <20200916233042.51634-1-ebiggers@kernel.org>
- <20200917072644.GA5311@gondor.apana.org.au>
- <20200917165802.GC855@sol.localdomain>
- <20200921081939.GA4193@gondor.apana.org.au>
- <20200921152714.GC29330@paulmck-ThinkPad-P72>
- <20200921221104.GA6556@gondor.apana.org.au>
- <20200921232639.GK29330@paulmck-ThinkPad-P72>
+        id S1729015AbgIUXxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 19:53:40 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:7813 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726913AbgIUXxj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 19:53:39 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f693cd50000>; Mon, 21 Sep 2020 16:52:53 -0700
+Received: from [10.2.52.174] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 21 Sep
+ 2020 23:53:39 +0000
+Subject: Re: [PATCH 1/5] mm: Introduce mm_struct.has_pinned
+To:     Peter Xu <peterx@redhat.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Jann Horn" <jannh@google.com>
+References: <20200921211744.24758-1-peterx@redhat.com>
+ <20200921211744.24758-2-peterx@redhat.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <224908c1-5d0f-8e01-baa9-94ec2374971f@nvidia.com>
+Date:   Mon, 21 Sep 2020 16:53:38 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200921232639.GK29330@paulmck-ThinkPad-P72>
+In-Reply-To: <20200921211744.24758-2-peterx@redhat.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600732373; bh=lUqOEjiyc0XMi6vf5IqR6vypRih/36Ro9Eiii1fmuqw=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=RNCsgmxC+mbUNEEUosTrnSCfikLaQTSMSkrd/NKWvLqAJ2DDbV9epgxcWRcD4YJDF
+         wl5TPRKFF8ou1PEu+w1ayGPnvRQg1sAJ73KtW3QnOtDc2qeqIy4X1MGw7sVoGjmlb2
+         UlicRQeoEKStiBSQ1O52vFWlQE2FCFVsaOLEZnYGrVrVp+JM5+5Co1vrePkJwDTNjF
+         GQF/dHoUjM18ozs+CnaLA1rCKctyjr4JbLSr4NG0AO011J43hLwrEO5G/1MHO0vPgt
+         DzolnQtk9w/KbZhyP8sStnhf0p/PZw9NkMUxpzQdZPUNf6aQYqsWzG5iXVJy+4TXGE
+         ugEMF2ZMTMypg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 04:26:39PM -0700, Paul E. McKenney wrote:
-> On Tue, Sep 22, 2020 at 08:11:04AM +1000, Herbert Xu wrote:
-> > On Mon, Sep 21, 2020 at 08:27:14AM -0700, Paul E. McKenney wrote:
-> > > On Mon, Sep 21, 2020 at 06:19:39PM +1000, Herbert Xu wrote:
-> > > > On Thu, Sep 17, 2020 at 09:58:02AM -0700, Eric Biggers wrote:
-> > > > >
-> > > > > smp_load_acquire() is obviously correct, whereas READ_ONCE() is an optimization
-> > > > > that is difficult to tell whether it's correct or not.  For trivial data
-> > > > > structures it's "easy" to tell.  But whenever there is a->b where b is an
-> > > > > internal implementation detail of another kernel subsystem, the use of which
-> > > > > could involve accesses to global or static data (for example, spin_lock()
-> > > > > accessing lockdep stuff), a control dependency can slip in.
-> > > > 
-> > > > If we're going to follow this line of reasoning, surely you should
-> > > > be converting the RCU derference first and foremost, no?
-> > 
-> > ...
-> > 
-> > > And to Eric's point, it is also true that when you have pointers to
-> > > static data, and when the compiler can guess this, you do need something
-> > > like smp_load_acquire().  But this is a problem only when you are (1)
-> > > using feedback-driven compiler optimization or (2) when you compare the
-> > > pointer to the address of the static data.
-> > 
-> > Let me restate what I think Eric is saying.  He is concerned about
-> > the case where a->b and b is some opaque object that may in turn
-> > dereference a global data structure unconnected to a.  The case
-> > in question here is crng_node_pool in drivers/char/random.c which
-> > in turn contains a spin lock.
+On 9/21/20 2:17 PM, Peter Xu wrote:
+> (Commit message collected from Jason Gunthorpe)
 > 
-> As long as the compiler generates code that reaches that global via
-> pointer a, everything will work fine.  Which it will, unless the guy
-> writing the code makes the mistake of introducing a comparison between the
-> pointer to be dereferenced and the address of the global data structure.
+> Reduce the chance of false positive from page_maybe_dma_pinned() by keeping
+
+Not yet, it doesn't. :)  More:
+
+> track if the mm_struct has ever been used with pin_user_pages(). mm_structs
+> that have never been passed to pin_user_pages() cannot have a positive
+> page_maybe_dma_pinned() by definition. This allows cases that might drive up
+> the page ref_count to avoid any penalty from handling dma_pinned pages.
 > 
-> So this is OK:
+> Due to complexities with unpining this trivial version is a permanent sticky
+> bit, future work will be needed to make this a counter.
+
+How about this instead:
+
+Subsequent patches intend to reduce the chance of false positives from
+page_maybe_dma_pinned(), by also considering whether or not a page has
+even been part of an mm struct that has ever had pin_user_pages*()
+applied to any of its pages.
+
+In order to allow that, provide a boolean value (even though it's not
+implemented exactly as a boolean type) within the mm struct, that is
+simply set once and never cleared. This will suffice for an early, rough
+implementation that fixes a few problems.
+
+Future work is planned, to provide a more sophisticated solution, likely
+involving a counter, and *not* involving something that is set and never
+cleared.
+
 > 
-> 	p = rcu_dereference(a);
-> 	do_something(p->b);
+> Suggested-by: Jason Gunthorpe <jgg@ziepe.ca>
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> ---
+>   include/linux/mm_types.h | 10 ++++++++++
+>   kernel/fork.c            |  1 +
+>   mm/gup.c                 |  6 ++++++
+>   3 files changed, 17 insertions(+)
 > 
-> This is not OK:
-> 
-> 	p = rcu_dereference(a);
-> 	if (p == &some_global_variable)
-> 		we_really_should_not_have_done_that_comparison();
-> 	do_something(p->b);
+> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> index 496c3ff97cce..6f291f8b74c6 100644
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -441,6 +441,16 @@ struct mm_struct {
+>   #endif
+>   		int map_count;			/* number of VMAs */
+>   
+> +		/**
+> +		 * @has_pinned: Whether this mm has pinned any pages.  This can
+> +		 * be either replaced in the future by @pinned_vm when it
+> +		 * becomes stable, or grow into a counter on its own. We're
+> +		 * aggresive on this bit now - even if the pinned pages were
+> +		 * unpinned later on, we'll still keep this bit set for the
+> +		 * lifecycle of this mm just for simplicity.
+> +		 */
+> +		int has_pinned;
 
-If you call some function that's an internal implementation detail of some other
-kernel subsystem, how do you know it doesn't do that?
+I think this would be elegant as an atomic_t, and using atomic_set() and
+atomic_read(), which seem even more self-documenting that what you have here.
 
-Also, it's not just the p == &global_variable case.  Consider:
+But it's admittedly a cosmetic point, combined with my perennial fear that
+I'm missing something when I look at a READ_ONCE()/WRITE_ONCE() pair. :)
 
-struct a { struct b *b; };
-struct b { ... };
+It's completely OK to just ignore this comment, but I didn't want to completely
+miss the opportunity to make it a tiny bit cleaner to the reader.
 
-Thread 1:
-
-	/* one-time initialized data shared by all instances of b */
-	static struct c *c;
-
-	void init_b(struct a *a)
-	{
-		if (!c)
-			c = alloc_c();
-
-		smp_store_release(&a->b, kzalloc(sizeof(struct b)));
-	}
-
-Thread 2:
-
-	void use_b_if_present(struct a *a)
-	{
-		struct b *b = READ_ONCE(a->b);
-
-		if (b) {
-			c->... # crashes because c still appears to be NULL
-		}
-	}
-
-
-So when the *first* "b" is allocated, the global data "c" is initialized.  Then
-when using a "b", we expect to be able to access "c".  But there's no
-data dependency from "b" to "c"; it's a control dependency only.
-So smp_load_acquire() is needed, not READ_ONCE().
-
-And it can be an internal implementation detail of "b"'s subsystem whether it
-happens to use global data "c".
-
-This sort of thing is why people objected to the READ_ONCE() optimization during
-the discussion at
-https://lkml.kernel.org/linux-fsdevel/20200717044427.68747-1-ebiggers@kernel.org/T/#u.
-Most kernel developers aren't experts in the LKMM, and they want something
-that's guaranteed to be correct without having to to think really hard about it
-and make assumptions about the internal implementation details of other
-subsystems, how compilers have implemented the C standard, and so on.
-
-- Eric
+thanks,
+-- 
+John Hubbard
+NVIDIA
