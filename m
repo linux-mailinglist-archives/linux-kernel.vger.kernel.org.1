@@ -2,105 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8976527261B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:46:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D53F0272654
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:51:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727518AbgIUNqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:46:44 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13813 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727560AbgIUNqm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:46:42 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 79D1372461913A9B08DF;
-        Mon, 21 Sep 2020 21:46:38 +0800 (CST)
-Received: from [10.174.179.92] (10.174.179.92) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 21 Sep 2020 21:46:32 +0800
-Subject: Re: [PATCH -next] scsi: libsas: simplify the return expression of
- sas_discover_* functions
-To:     Liu Shixin <liushixin2@huawei.com>,
-        John Garry <john.garry@huawei.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <d44beaa3-6338-9188-7cf3-338cc0120305@huawei.com>
- <20200921134558.3478922-1-liushixin2@huawei.com>
-From:   Jason Yan <yanaijie@huawei.com>
-Message-ID: <95502ce3-27aa-0298-21c6-b5ea9d05b478@huawei.com>
-Date:   Mon, 21 Sep 2020 21:46:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.2
+        id S1727102AbgIUNvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:51:17 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:37254 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726456AbgIUNvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:51:16 -0400
+X-Greylist: delayed 13631 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Sep 2020 09:51:16 EDT
+Received: from zn.tnic (p200300ec2f07e300be7bcf3e7fc25083.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:e300:be7b:cf3e:7fc2:5083])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 68D571EC0350;
+        Mon, 21 Sep 2020 15:51:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600696274;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=TXGxYzaYTYZyuhzUi0yldlks/2ZvxroQx1yLqik1Vw4=;
+        b=aPrbgGc5TcixC6fhqyg4myfOG3zNKOi74WHnEnWwB17ooWGZ4vzVrFCADKqOGe7dalPlQq
+        Z1IE1r2JlaeumW5tMGfj27CHaXUlGB6ZDw2zBAqPKn97Bl5bvrkI0FETrbFHs5kzARS4IB
+        a+5IXIlaq4K8d8PsFuDMoQcZb4tK3KI=
+Date:   Mon, 21 Sep 2020 15:51:07 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 12/24] x86/sgx: Add SGX_IOC_ENCLAVE_CREATE
+Message-ID: <20200921135107.GG5901@zn.tnic>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-13-jarkko.sakkinen@linux.intel.com>
+ <20200921100356.GB5901@zn.tnic>
+ <20200921122823.GE6038@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200921134558.3478922-1-liushixin2@huawei.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.92]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200921122823.GE6038@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-ÔÚ 2020/9/21 21:45, Liu Shixin Ð´µÀ:
-> Simplify the return expression.
+On Mon, Sep 21, 2020 at 03:28:23PM +0300, Jarkko Sakkinen wrote:
+> Is this appropriate:
 > 
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> ---
->   drivers/scsi/libsas/sas_ata.c      | 8 +-------
->   drivers/scsi/libsas/sas_discover.c | 8 +-------
->   2 files changed, 2 insertions(+), 14 deletions(-)
+> 	/* The extra page in swap space goes to SECS. */
+> 	encl_size = secs->size + PAGE_SIZE;
 > 
-> diff --git a/drivers/scsi/libsas/sas_ata.c b/drivers/scsi/libsas/sas_ata.c
-> index a4887985aad6..024e5a550759 100644
-> --- a/drivers/scsi/libsas/sas_ata.c
-> +++ b/drivers/scsi/libsas/sas_ata.c
-> @@ -726,19 +726,13 @@ void sas_resume_sata(struct asd_sas_port *port)
->    */
->   int sas_discover_sata(struct domain_device *dev)
->   {
-> -	int res;
-> -
->   	if (dev->dev_type == SAS_SATA_PM)
->   		return -ENODEV;
->   
->   	dev->sata_dev.class = sas_get_ata_command_set(dev);
->   	sas_fill_in_rphy(dev, dev->rphy);
->   
-> -	res = sas_notify_lldd_dev_found(dev);
-> -	if (res)
-> -		return res;
-> -
-> -	return 0;
-> +	return sas_notify_lldd_dev_found(dev);
->   }
->   
->   static void async_sas_ata_eh(void *data, async_cookie_t cookie)
-> diff --git a/drivers/scsi/libsas/sas_discover.c b/drivers/scsi/libsas/sas_discover.c
-> index d0f9e90e3279..161c9b387da7 100644
-> --- a/drivers/scsi/libsas/sas_discover.c
-> +++ b/drivers/scsi/libsas/sas_discover.c
-> @@ -278,13 +278,7 @@ static void sas_resume_devices(struct work_struct *work)
->    */
->   int sas_discover_end_dev(struct domain_device *dev)
->   {
-> -	int res;
-> -
-> -	res = sas_notify_lldd_dev_found(dev);
-> -	if (res)
-> -		return res;
-> -
-> -	return 0;
-> +	return sas_notify_lldd_dev_found(dev);
->   }
->   
->   /* ---------- Device registration and unregistration ---------- */
+> 	backing = shmem_file_setup("SGX backing", encl_size + (encl_size >> 5),
+> 				   VM_NORESERVE);
+> 	if (IS_ERR(backing)) {
+> 		ret = PTR_ERR(backing);
+> 		goto err_out_shrink;
+> 	}
+>
+
+Yap, thanks.
+
+> I agree with this but I also think it would make sense to rephrase
+> "verifying the correctness of the provided SECS" with something more
+> informative.
 > 
+> I would rephrase as:
+> 
+> "... after checking that the provided data for SECS meets the expectations
+> of ENCLS[ECREATE] for an unitialized enclave and size of the address
+> space does not surpass the platform expectations. This validation is
+> executed by sgx_validate_secs()."
 
-Please add a version descriptor and describe the change against the
-first version next time . Otherwise this looks good to me.
+s/executed/done/
 
-Reviewed-by: Jason Yan <yanaijie@huawei.com>
+> Is this sufficient for you, or do you have further suggestions?
 
-Thanks,
-Jason
+Yes, no further suggestions.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
