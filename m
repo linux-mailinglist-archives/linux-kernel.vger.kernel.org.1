@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA5E272D6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A3FB272D01
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:37:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728625AbgIUQkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:40:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41868 "EHLO mail.kernel.org"
+        id S1728349AbgIUQgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:36:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728293AbgIUQjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:39:40 -0400
+        id S1728981AbgIUQg3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:36:29 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E3381206DC;
-        Mon, 21 Sep 2020 16:39:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 42D062396F;
+        Mon, 21 Sep 2020 16:36:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706380;
-        bh=aTHqhn0lUC0NXQGAZZOLZCbL2Oc38gXnDqkF637fn9s=;
+        s=default; t=1600706188;
+        bh=Ss0pB55/au/kXy08DEQd/XTsblmOidKQs1FngtrmUpA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ClWq+IT126WgTuQt1sIcxS2i476UOFU73D+8+h3qDJ86a5Kdj3U0DclN+o/m06OpM
-         XQ2CJmEAO3EXnOCkF9Ez0b6Crj9leB0YvGMFm45P7UdIk6i36h0b0Vl07PvN248+R9
-         9S41lcdLykHpvm7wHTOB4JgPi4N2f3UOjFjDheTw=
+        b=RNYBrfhNto3BfMbFDPdsdamn8EXNzQgx0QJauWYAwTveZmizhfrMmolUKErNsbwew
+         3/CF7N8NG4WXwDVZXDN9PV4PcdxU9lm+X3q4nV7RwJuFIFccrss1pE3xsQeKEmTvG9
+         19GjMAgy2f8UTLoiZ7e0s3w2Cd/zU7dcKwYL6vWk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 76/94] clk: rockchip: Fix initialization of mux_pll_src_4plls_p
+        stable@vger.kernel.org, Penghao <penghao@uniontech.com>
+Subject: [PATCH 4.9 63/70] USB: quirks: Add USB_QUIRK_IGNORE_REMOTE_WAKEUP quirk for BYD zhaoxin notebook
 Date:   Mon, 21 Sep 2020 18:28:03 +0200
-Message-Id: <20200921162039.018426836@linuxfoundation.org>
+Message-Id: <20200921162038.008234554@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
-References: <20200921162035.541285330@linuxfoundation.org>
+In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
+References: <20200921162035.136047591@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,55 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <natechancellor@gmail.com>
+From: Penghao <penghao@uniontech.com>
 
-[ Upstream commit e9c006bc782c488f485ffe50de20b44e1e3daa18 ]
+commit bcea6dafeeef7d1a6a8320a249aabf981d63b881 upstream.
 
-A new warning in Clang points out that the initialization of
-mux_pll_src_4plls_p appears incorrect:
+Add a USB_QUIRK_IGNORE_REMOTE_WAKEUP quirk for the BYD zhaoxin notebook.
+This notebook come with usb touchpad. And we would like to disable
+touchpad wakeup on this notebook by default.
 
-../drivers/clk/rockchip/clk-rk3228.c:140:58: warning: suspicious
-concatenation of string literals in an array initialization; did you
-mean to separate the elements with a comma? [-Wstring-concatenation]
-PNAME(mux_pll_src_4plls_p)      = { "cpll", "gpll", "hdmiphy" "usb480m" };
-                                                              ^
-                                                             ,
-../drivers/clk/rockchip/clk-rk3228.c:140:48: note: place parentheses
-around the string literal to silence warning
-PNAME(mux_pll_src_4plls_p)      = { "cpll", "gpll", "hdmiphy" "usb480m" };
-                                                    ^
-1 warning generated.
+Signed-off-by: Penghao <penghao@uniontech.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200907023026.28189-1-penghao@uniontech.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Given the name of the variable and the same variable name in rv1108, it
-seems that this should have been four distinct elements. Fix it up by
-adding the comma as suggested.
-
-Fixes: 307a2e9ac524 ("clk: rockchip: add clock controller for rk3228")
-Link: https://github.com/ClangBuiltLinux/linux/issues/1123
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-Link: https://lore.kernel.org/r/20200810044020.2063350-1-natechancellor@gmail.com
-Reviewed-by: Heiko Stübner <heiko@sntech.de>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/rockchip/clk-rk3228.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/core/quirks.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/clk/rockchip/clk-rk3228.c b/drivers/clk/rockchip/clk-rk3228.c
-index 04f4f3739e3be..8d11d76e1db7c 100644
---- a/drivers/clk/rockchip/clk-rk3228.c
-+++ b/drivers/clk/rockchip/clk-rk3228.c
-@@ -144,7 +144,7 @@ PNAME(mux_usb480m_p)		= { "usb480m_phy", "xin24m" };
- PNAME(mux_hdmiphy_p)		= { "hdmiphy_phy", "xin24m" };
- PNAME(mux_aclk_cpu_src_p)	= { "cpll_aclk_cpu", "gpll_aclk_cpu", "hdmiphy_aclk_cpu" };
+--- a/drivers/usb/core/quirks.c
++++ b/drivers/usb/core/quirks.c
+@@ -236,6 +236,10 @@ static const struct usb_device_id usb_qu
+ 	/* Generic RTL8153 based ethernet adapters */
+ 	{ USB_DEVICE(0x0bda, 0x8153), .driver_info = USB_QUIRK_NO_LPM },
  
--PNAME(mux_pll_src_4plls_p)	= { "cpll", "gpll", "hdmiphy" "usb480m" };
-+PNAME(mux_pll_src_4plls_p)	= { "cpll", "gpll", "hdmiphy", "usb480m" };
- PNAME(mux_pll_src_3plls_p)	= { "cpll", "gpll", "hdmiphy" };
- PNAME(mux_pll_src_2plls_p)	= { "cpll", "gpll" };
- PNAME(mux_sclk_hdmi_cec_p)	= { "cpll", "gpll", "xin24m" };
--- 
-2.25.1
-
++	/* SONiX USB DEVICE Touchpad */
++	{ USB_DEVICE(0x0c45, 0x7056), .driver_info =
++			USB_QUIRK_IGNORE_REMOTE_WAKEUP },
++
+ 	/* Action Semiconductor flash disk */
+ 	{ USB_DEVICE(0x10d6, 0x2200), .driver_info =
+ 			USB_QUIRK_STRING_FETCH_255 },
 
 
