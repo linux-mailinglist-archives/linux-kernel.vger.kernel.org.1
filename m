@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CF36272D91
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B29272D8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729427AbgIUQlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:41:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44266 "EHLO mail.kernel.org"
+        id S1728932AbgIUQlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:41:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729106AbgIUQlB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:41:01 -0400
+        id S1729405AbgIUQlE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:41:04 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 86913239D3;
-        Mon, 21 Sep 2020 16:41:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0DB67235F9;
+        Mon, 21 Sep 2020 16:41:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706461;
-        bh=UFE/vdMyyqG7K/rD7dhCrx1i5bWyHFKloIfpNYrMXQI=;
+        s=default; t=1600706463;
+        bh=CAMmbCG2+8lt7wmTtJgX9Y/v4gO4n2z2qtNG6PrPVBg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=owWcnWyiIeRT5lGseqDZ6T/8SAVPoHDKHac7MkHyCUpmBe0fnPl5kb7pjGW1k5+1c
-         7cR9UxfifdqIZoKQTInLsK2HzBlo4FDQ1zQqgBtMlscjDj37Nehi0BwbbUAX9/U/IH
-         ZjlpCHDifq4DATKIrOYDrrtIdLSMzwbPueTydahE=
+        b=UMKLuq545ZhGsBWHBBgkVSOejjrCm4QuMJj3S8tnwaHrZJ1wVrMClGXZxIlUWfBDn
+         VKJrlTEOzt2NYjaK+L7ZXVeBFJkXDODGAe6PMd8nCzgovYWc98EwZNm3l/Ellsr0mx
+         aE0KJsoSRspC7yiRMbK09eGtbrCnZpmVPdWsTKcY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Salvatore Bonaccorso <carnil@debian.org>
-Subject: [PATCH 4.19 05/49] gfs2: initialize transaction tr_ailX_lists earlier
-Date:   Mon, 21 Sep 2020 18:27:49 +0200
-Message-Id: <20200921162034.905212080@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Subject: [PATCH 4.19 06/49] RDMA/bnxt_re: Restrict the max_gids to 256
+Date:   Mon, 21 Sep 2020 18:27:50 +0200
+Message-Id: <20200921162034.945079334@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921162034.660953761@linuxfoundation.org>
 References: <20200921162034.660953761@linuxfoundation.org>
@@ -43,59 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Peterson <rpeterso@redhat.com>
+From: Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>
 
-commit cbcc89b630447ec7836aa2b9242d9bb1725f5a61 upstream.
+commit 847b97887ed4569968d5b9a740f2334abca9f99a upstream.
 
-Since transactions may be freed shortly after they're created, before
-a log_flush occurs, we need to initialize their ail1 and ail2 lists
-earlier. Before this patch, the ail1 list was initialized in gfs2_log_flush().
-This moves the initialization to the point when the transaction is first
-created.
+Some adapters report more than 256 gid entries. Restrict it to 256 for
+now.
 
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-Cc: Salvatore Bonaccorso <carnil@debian.org>
+Fixes: 1ac5a4047975("RDMA/bnxt_re: Add bnxt_re RoCE driver")
+Link: https://lore.kernel.org/r/1598292876-26529-6-git-send-email-selvin.xavier@broadcom.com
+Signed-off-by: Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/gfs2/glops.c |    2 ++
- fs/gfs2/log.c   |    2 --
- fs/gfs2/trans.c |    2 ++
- 3 files changed, 4 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/bnxt_re/qplib_sp.c |    2 +-
+ drivers/infiniband/hw/bnxt_re/qplib_sp.h |    1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
---- a/fs/gfs2/glops.c
-+++ b/fs/gfs2/glops.c
-@@ -89,6 +89,8 @@ static void gfs2_ail_empty_gl(struct gfs
- 	memset(&tr, 0, sizeof(tr));
- 	INIT_LIST_HEAD(&tr.tr_buf);
- 	INIT_LIST_HEAD(&tr.tr_databuf);
-+	INIT_LIST_HEAD(&tr.tr_ail1_list);
-+	INIT_LIST_HEAD(&tr.tr_ail2_list);
- 	tr.tr_revokes = atomic_read(&gl->gl_ail_count);
+--- a/drivers/infiniband/hw/bnxt_re/qplib_sp.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
+@@ -141,7 +141,7 @@ int bnxt_qplib_get_dev_attr(struct bnxt_
+ 	attr->max_inline_data = le32_to_cpu(sb->max_inline_data);
+ 	attr->l2_db_size = (sb->l2_db_space_size + 1) *
+ 			    (0x01 << RCFW_DBR_BASE_PAGE_SHIFT);
+-	attr->max_sgid = le32_to_cpu(sb->max_gid);
++	attr->max_sgid = BNXT_QPLIB_NUM_GIDS_SUPPORTED;
  
- 	if (!tr.tr_revokes)
---- a/fs/gfs2/log.c
-+++ b/fs/gfs2/log.c
-@@ -806,8 +806,6 @@ void gfs2_log_flush(struct gfs2_sbd *sdp
- 	tr = sdp->sd_log_tr;
- 	if (tr) {
- 		sdp->sd_log_tr = NULL;
--		INIT_LIST_HEAD(&tr->tr_ail1_list);
--		INIT_LIST_HEAD(&tr->tr_ail2_list);
- 		tr->tr_first = sdp->sd_log_flush_head;
- 		if (unlikely (state == SFS_FROZEN))
- 			gfs2_assert_withdraw(sdp, !tr->tr_num_buf_new && !tr->tr_num_databuf_new);
---- a/fs/gfs2/trans.c
-+++ b/fs/gfs2/trans.c
-@@ -56,6 +56,8 @@ int gfs2_trans_begin(struct gfs2_sbd *sd
- 						   sizeof(u64));
- 	INIT_LIST_HEAD(&tr->tr_databuf);
- 	INIT_LIST_HEAD(&tr->tr_buf);
-+	INIT_LIST_HEAD(&tr->tr_ail1_list);
-+	INIT_LIST_HEAD(&tr->tr_ail2_list);
+ 	bnxt_qplib_query_version(rcfw, attr->fw_ver);
  
- 	sb_start_intwrite(sdp->sd_vfs);
- 
+--- a/drivers/infiniband/hw/bnxt_re/qplib_sp.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
+@@ -47,6 +47,7 @@
+ struct bnxt_qplib_dev_attr {
+ #define FW_VER_ARR_LEN			4
+ 	u8				fw_ver[FW_VER_ARR_LEN];
++#define BNXT_QPLIB_NUM_GIDS_SUPPORTED	256
+ 	u16				max_sgid;
+ 	u16				max_mrw;
+ 	u32				max_qp;
 
 
