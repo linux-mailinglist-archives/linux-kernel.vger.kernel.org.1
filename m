@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D55A272DEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E57B2272F83
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:57:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728639AbgIUQoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:44:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48572 "EHLO mail.kernel.org"
+        id S1730074AbgIUQ5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:57:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729180AbgIUQns (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:43:48 -0400
+        id S1728881AbgIUQnA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:43:00 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1289023976;
-        Mon, 21 Sep 2020 16:43:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E24312076B;
+        Mon, 21 Sep 2020 16:42:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706627;
-        bh=J3gXBR/Gjl3DzX0hS0PTmUv2pIWLYi4Gy2GOp/A5aj8=;
+        s=default; t=1600706579;
+        bh=lej9QhMUZOEJoSIhmR5Ga6B7vctYMZVw0Fpwlb1LJ90=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mVcU5j2kIW1+spWYo4kPJTkcfdRzTJt037Y6Y+wO/XJa2n+oX8a51+tou1ImW0wjL
-         GP3tvqq8U1qx204Yu0pToLFl0d/yAneEJE119jZmF8jJDrE9H7ZUZhQoeIfrTo4f+8
-         lgDhEOJMukHQTaIP2PG6m2A+oPbN+pFRlJ8hcu6U=
+        b=KH2rg/Cmiw+w/kbQcozXOuFn5f45C0bnnucurJNfKrWkGBKwvnQxZZyAYDThy+/ta
+         S5bsPryxcAKCCOcF/Vl61LoPNM2rw3UM9a4xt3F58X2qA8/GgVKp6HTvsDoLDG8dW+
+         pn0Y3hLXmiBkUWT2FZwRTZIkQlFASCR6+hivmtUY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Aloni <dan@kernelim.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        stable@vger.kernel.org, Olga Kornievskaia <kolga@netapp.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 009/118] xprtrdma: Release in-flight MRs on disconnect
-Date:   Mon, 21 Sep 2020 18:27:01 +0200
-Message-Id: <20200921162036.774749872@linuxfoundation.org>
+Subject: [PATCH 5.8 010/118] NFSv4.1 handle ERR_DELAY error reclaiming locking state on delegation recall
+Date:   Mon, 21 Sep 2020 18:27:02 +0200
+Message-Id: <20200921162036.810585110@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
 References: <20200921162036.324813383@linuxfoundation.org>
@@ -44,40 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuck Lever <chuck.lever@oracle.com>
+From: Olga Kornievskaia <kolga@netapp.com>
 
-[ Upstream commit 5de55ce951a1466e31ff68a7bc6b0a7ce3cb5947 ]
+[ Upstream commit 3d7a9520f0c3e6a68b6de8c5812fc8b6d7a52626 ]
 
-Dan Aloni reports that when a server disconnects abruptly, a few
-memory regions are left DMA mapped. Over time this leak could pin
-enough I/O resources to slow or even deadlock an NFS/RDMA client.
+A client should be able to handle getting an ERR_DELAY error
+while doing a LOCK call to reclaim state due to delegation being
+recalled. This is a transient error that can happen due to server
+moving its volumes and invalidating its file location cache and
+upon reference to it during the LOCK call needing to do an
+expensive lookup (leading to an ERR_DELAY error on a PUTFH).
 
-I found that if a transport disconnects before pending Send and
-FastReg WRs can be posted, the to-be-registered MRs are stranded on
-the req's rl_registered list and never released -- since they
-weren't posted, there's no Send completion to DMA unmap them.
-
-Reported-by: Dan Aloni <dan@kernelim.com>
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Signed-off-by: Olga Kornievskaia <kolga@netapp.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sunrpc/xprtrdma/verbs.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/nfs/nfs4proc.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/net/sunrpc/xprtrdma/verbs.c b/net/sunrpc/xprtrdma/verbs.c
-index 75c646743df3e..ca89f24a1590b 100644
---- a/net/sunrpc/xprtrdma/verbs.c
-+++ b/net/sunrpc/xprtrdma/verbs.c
-@@ -933,6 +933,8 @@ static void rpcrdma_req_reset(struct rpcrdma_req *req)
- 
- 	rpcrdma_regbuf_dma_unmap(req->rl_sendbuf);
- 	rpcrdma_regbuf_dma_unmap(req->rl_recvbuf);
-+
-+	frwr_reset(req);
+diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
+index 45e0585e0667c..7f337188a2829 100644
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -7271,7 +7271,12 @@ int nfs4_lock_delegation_recall(struct file_lock *fl, struct nfs4_state *state,
+ 	err = nfs4_set_lock_state(state, fl);
+ 	if (err != 0)
+ 		return err;
+-	err = _nfs4_do_setlk(state, F_SETLK, fl, NFS_LOCK_NEW);
++	do {
++		err = _nfs4_do_setlk(state, F_SETLK, fl, NFS_LOCK_NEW);
++		if (err != -NFS4ERR_DELAY)
++			break;
++		ssleep(1);
++	} while (err == -NFS4ERR_DELAY);
+ 	return nfs4_handle_delegation_recall_error(server, state, stateid, fl, err);
  }
  
- /* ASSUMPTION: the rb_allreqs list is stable for the duration,
 -- 
 2.25.1
 
