@@ -2,169 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C72D271A75
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 07:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC86271A7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 07:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726366AbgIUFiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 01:38:18 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:56098 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726149AbgIUFiR (ORCPT
+        id S1726324AbgIUFod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 01:44:33 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:37775 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726149AbgIUFod (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 01:38:17 -0400
-Received: by mail-io1-f70.google.com with SMTP id t187so9205189iof.22
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 22:38:15 -0700 (PDT)
+        Mon, 21 Sep 2020 01:44:33 -0400
+Received: by mail-wr1-f68.google.com with SMTP id z4so11316234wrr.4
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 22:44:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=mldZOPzd4FXHs/LrrnoJ/fME9Gz63dOekIh0/A0poAI=;
-        b=SK4HjlB2yeKTzzYCnwEQTr4JO0CxDVR7s/idJ3Sa4/OOlanFr7CLChnMvZkxt+xPkr
-         P7bRxZGdwly1B8viWq0aYyfWANqR7Mtj2WVLdKyhbFtd/dbxNZJjWRIx3jn56nlgzvlA
-         8x3Two6u3fz3UUxTalJFqZ5CeVqfkUvGUaB9P8VRB2LmX0T2iwOqPKgbPImOyOROlyax
-         N7MCHwhoaM9dwuQE7aNYiBAFQ+1/ayiTG9mi8SfSnlIBbGtGHavMj0p82lC5NgE4+eFx
-         2/VljCkzng7Q8rE98P4mUCYQFtu9MWxWvYyFusrgFFkhBJeechqEmgW1iuRxw4xV1a4b
-         Jhwg==
-X-Gm-Message-State: AOAM533JmNykExkTT6UsfmsrDB/5MixWzCAeAI9qz4K3BIoySRF4yJAf
-        jidPwET2sSr6MFiGk5Kd2VQml9XVjkPMNcySOifi3jZMxK7W
-X-Google-Smtp-Source: ABdhPJxpDNuIFZPkvsdO/G+D9xuSKBngFXdQuVE1BnvCpERn5xIRGkPfhMcl45ZYWl8KGFH9x9q9nSPthg7VWHfZ/qGo9ErOH+vK
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iJ4P5pR2yGLBwLUxsXpYjCmQsuTGka8kWArHDi0T1OQ=;
+        b=B8BvQBt+mvziuvstHucOfheHwYKKXmcdFBmWHlCPcHyD5tMTrVNP0qgugHc6z6h/Bk
+         aPXJ1a/Hdh/u8Kw696LpsSOqFYfLRFCbEBwLfZjUompuoh0WV8UwDFq19mz7l2LWVHQH
+         jx7O1Aatu1EJCD3fk+Yc6UfHA4Se+tFge/2XebZHuCgcuE2YgPZaFwXv+CwYngHx4knI
+         oQxrZ39nmhjead0PvVO4O0l2r1nXsGuvqZtG6SxHcKVJGg4sV/TKa02T32fHFnwI/8H3
+         b1x2ENb2oEBKHJWiLq1IZbvvAGoVkXihXtSXY5jTwPqV0LUAFt64CKnipG35wJDPuXMb
+         1N9w==
+X-Gm-Message-State: AOAM531/HL4immHmram5P9C0jcjwui1Jp3e4x+iV7zvMDyrgOXbkSfPl
+        2igEPMDvWrmqONgQO79Qot4jkrGC7owdZkCYgNo=
+X-Google-Smtp-Source: ABdhPJxl/+VDlOBl8CrrVCmLERe34t6IWnNgPJDhqLjVjNGZg+ACcznJWhXqvKjU47Hv7HkT54oTMQ72Hd4YjjwwYw4=
+X-Received: by 2002:adf:a418:: with SMTP id d24mr42707050wra.80.1600667071013;
+ Sun, 20 Sep 2020 22:44:31 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a6b:be44:: with SMTP id o65mr26709302iof.53.1600666695489;
- Sun, 20 Sep 2020 22:38:15 -0700 (PDT)
-Date:   Sun, 20 Sep 2020 22:38:15 -0700
-In-Reply-To: <0000000000001fe79005afbf52ea@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c9e14b05afcc41ba@google.com>
-Subject: Re: KASAN: use-after-free Read in btrfs_scan_one_device
-From:   syzbot <syzbot+582e66e5edf36a22c7b0@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+References: <20200916063129.1061487-1-namhyung@kernel.org> <20200916063129.1061487-2-namhyung@kernel.org>
+ <20200918133145.GA2626435@krava>
+In-Reply-To: <20200918133145.GA2626435@krava>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Mon, 21 Sep 2020 14:44:20 +0900
+Message-ID: <CAM9d7cgwDTTy82wg63HY5gTSy-q75BZj+2CF7DQg4czqvLEPBQ@mail.gmail.com>
+Subject: Re: [PATCH 1/4] perf evsel: Add evsel__clone() function
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+Hi Jiri,
 
-HEAD commit:    325d0eab Merge branch 'akpm' (patches from Andrew)
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1512df53900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6a8a2ae52ed737db
-dashboard link: https://syzkaller.appspot.com/bug?extid=582e66e5edf36a22c7b0
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12366f8b900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14e6929b900000
+On Fri, Sep 18, 2020 at 10:31 PM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Wed, Sep 16, 2020 at 03:31:26PM +0900, Namhyung Kim wrote:
+>
+> SNIP
+>
+> > +struct evsel *evsel__clone(struct evsel *orig)
+> > +{
+> > +     struct evsel *evsel;
+> > +     struct evsel_config_term *pos, *tmp;
+> > +
+> > +     BUG_ON(orig->core.fd);
+> > +     BUG_ON(orig->counts);
+> > +     BUG_ON(orig->priv);
+> > +     BUG_ON(orig->per_pkg_mask);
+> > +
+> > +     /* cannot handle BPF objects for now */
+> > +     if (orig->bpf_obj)
+> > +             return NULL;
+> > +
+> > +     evsel = evsel__new(&orig->core.attr);
+> > +     if (evsel == NULL)
+> > +             return NULL;
+> > +
+> > +     evsel->core.cpus = perf_cpu_map__get(orig->core.cpus);
+> > +     evsel->core.own_cpus = perf_cpu_map__get(orig->core.own_cpus);
+> > +     evsel->core.threads = perf_thread_map__get(orig->core.threads);
+> > +     evsel->core.nr_members = orig->core.nr_members;
+> > +     evsel->core.system_wide = orig->core.system_wide;
+> > +
+> > +     if (orig->name)
+> > +             evsel->name = strdup(orig->name);
+> > +     if (orig->group_name)
+> > +             evsel->group_name = strdup(orig->group_name);
+> > +     if (orig->pmu_name)
+> > +             evsel->pmu_name = strdup(orig->pmu_name);
+> > +     if (orig->filter)
+> > +             evsel->filter = strdup(orig->filter);
+>
+> we should check those strdup results
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+582e66e5edf36a22c7b0@syzkaller.appspotmail.com
+ok.
 
-==================================================================
-BUG: KASAN: use-after-free in btrfs_printk+0x3eb/0x435 fs/btrfs/super.c:245
-Read of size 8 at addr ffff8880878e06a8 by task syz-executor225/7068
+>
+> > +     evsel->cgrp = cgroup__get(orig->cgrp);
+> > +     evsel->tp_format = orig->tp_format;
+> > +     evsel->handler = orig->handler;
+> > +     evsel->leader = orig->leader;
+> > +
+> > +     evsel->max_events = orig->max_events;
+> > +     evsel->tool_event = orig->tool_event;
+> > +     evsel->unit = orig->unit;
+> > +     evsel->scale = orig->scale;
+> > +     evsel->snapshot = orig->snapshot;
+> > +     evsel->per_pkg = orig->per_pkg;
+> > +     evsel->percore = orig->percore;
+> > +     evsel->precise_max = orig->precise_max;
+> > +     evsel->use_uncore_alias = orig->use_uncore_alias;
+> > +     evsel->is_libpfm_event = orig->is_libpfm_event;
+> > +
+> > +     evsel->exclude_GH = orig->exclude_GH;
+> > +     evsel->sample_read = orig->sample_read;
+> > +     evsel->auto_merge_stats = orig->auto_merge_stats;
+> > +     evsel->collect_stat = orig->collect_stat;
+> > +     evsel->weak_group = orig->weak_group;
+>
+> so all those evsel's members are possibly defined in parse time right?
+> perhaps we should separate them in the struct? and make some note about
+> evsel__clone function that new members should be considered for copy
+> in evsel__close.. or something like that
 
-CPU: 1 PID: 7068 Comm: syz-executor225 Not tainted 5.9.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1d6/0x29e lib/dump_stack.c:118
- print_address_description+0x66/0x620 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report+0x132/0x1d0 mm/kasan/report.c:530
- btrfs_printk+0x3eb/0x435 fs/btrfs/super.c:245
- device_list_add+0x1a88/0x1d60 fs/btrfs/volumes.c:943
- btrfs_scan_one_device+0x196/0x490 fs/btrfs/volumes.c:1359
- btrfs_mount_root+0x48f/0xb60 fs/btrfs/super.c:1634
- legacy_get_tree+0xea/0x180 fs/fs_context.c:592
- vfs_get_tree+0x88/0x270 fs/super.c:1547
- fc_mount fs/namespace.c:978 [inline]
- vfs_kern_mount+0xc9/0x160 fs/namespace.c:1008
- btrfs_mount+0x33c/0xae0 fs/btrfs/super.c:1732
- legacy_get_tree+0xea/0x180 fs/fs_context.c:592
- vfs_get_tree+0x88/0x270 fs/super.c:1547
- do_new_mount fs/namespace.c:2875 [inline]
- path_mount+0x179d/0x29e0 fs/namespace.c:3192
- do_mount fs/namespace.c:3205 [inline]
- __do_sys_mount fs/namespace.c:3413 [inline]
- __se_sys_mount+0x126/0x180 fs/namespace.c:3390
- do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x44840a
-Code: b8 08 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 cd a2 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 aa a2 fb ff c3 66 0f 1f 84 00 00 00 00 00
-RSP: 002b:00007ffedfffd608 EFLAGS: 00000293 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007ffedfffd670 RCX: 000000000044840a
-RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007ffedfffd630
-RBP: 00007ffedfffd630 R08: 00007ffedfffd670 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000293 R12: 000000000000001a
-R13: 0000000000000004 R14: 0000000000000003 R15: 0000000000000003
+Sounds good.
 
-Allocated by task 6945:
- kasan_save_stack mm/kasan/common.c:48 [inline]
- kasan_set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc+0x100/0x130 mm/kasan/common.c:461
- kmalloc_node include/linux/slab.h:577 [inline]
- kvmalloc_node+0x81/0x110 mm/util.c:574
- kvmalloc include/linux/mm.h:757 [inline]
- kvzalloc include/linux/mm.h:765 [inline]
- btrfs_mount_root+0xd0/0xb60 fs/btrfs/super.c:1613
- legacy_get_tree+0xea/0x180 fs/fs_context.c:592
- vfs_get_tree+0x88/0x270 fs/super.c:1547
- fc_mount fs/namespace.c:978 [inline]
- vfs_kern_mount+0xc9/0x160 fs/namespace.c:1008
- btrfs_mount+0x33c/0xae0 fs/btrfs/super.c:1732
- legacy_get_tree+0xea/0x180 fs/fs_context.c:592
- vfs_get_tree+0x88/0x270 fs/super.c:1547
- do_new_mount fs/namespace.c:2875 [inline]
- path_mount+0x179d/0x29e0 fs/namespace.c:3192
- do_mount fs/namespace.c:3205 [inline]
- __do_sys_mount fs/namespace.c:3413 [inline]
- __se_sys_mount+0x126/0x180 fs/namespace.c:3390
- do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> > +
+> > +     list_for_each_entry(pos, &orig->config_terms, list) {
+> > +             tmp = malloc(sizeof(*tmp));
+> > +             if (tmp == NULL) {
+> > +                     evsel__delete(evsel);
+> > +                     evsel = NULL;
+> > +                     break;
+> > +             }
+> > +
+> > +             *tmp = *pos;
+> > +             if (tmp->free_str) {
+> > +                     tmp->val.str = strdup(pos->val.str);
+> > +                     if (tmp->val.str == NULL) {
+> > +                             evsel__delete(evsel);
+> > +                             evsel = NULL;
+> > +                             free(tmp);
+> > +                             break;
+> > +                     }
+> > +             }
+> > +             list_add_tail(&tmp->list, &evsel->config_terms);
+> > +     }
+>
+> could this go in separate function? copy_terms
 
-Freed by task 6945:
- kasan_save_stack mm/kasan/common.c:48 [inline]
- kasan_set_track+0x3d/0x70 mm/kasan/common.c:56
- kasan_set_free_info+0x17/0x30 mm/kasan/generic.c:355
- __kasan_slab_free+0xdd/0x110 mm/kasan/common.c:422
- __cache_free mm/slab.c:3418 [inline]
- kfree+0x113/0x200 mm/slab.c:3756
- deactivate_locked_super+0xa7/0xf0 fs/super.c:335
- btrfs_mount_root+0x72b/0xb60 fs/btrfs/super.c:1678
- legacy_get_tree+0xea/0x180 fs/fs_context.c:592
- vfs_get_tree+0x88/0x270 fs/super.c:1547
- fc_mount fs/namespace.c:978 [inline]
- vfs_kern_mount+0xc9/0x160 fs/namespace.c:1008
- btrfs_mount+0x33c/0xae0 fs/btrfs/super.c:1732
- legacy_get_tree+0xea/0x180 fs/fs_context.c:592
- vfs_get_tree+0x88/0x270 fs/super.c:1547
- do_new_mount fs/namespace.c:2875 [inline]
- path_mount+0x179d/0x29e0 fs/namespace.c:3192
- do_mount fs/namespace.c:3205 [inline]
- __do_sys_mount fs/namespace.c:3413 [inline]
- __se_sys_mount+0x126/0x180 fs/namespace.c:3390
- do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Will do.
 
-The buggy address belongs to the object at ffff8880878e0000
- which belongs to the cache kmalloc-16k of size 16384
-The buggy address is located 1704 bytes inside of
- 16384-byte region [ffff8880878e0000, ffff8880878e4000)
-The buggy address belongs to the page:
-page:0000000060704f30 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x878e0
-head:0000000060704f30 order:3 compound_mapcount:0 compound_pincount:0
-flags: 0xfffe0000010200(slab|head)
-raw: 00fffe0000010200 ffffea00028e9a08 ffffea00021e3608 ffff8880aa440b00
-raw: 0000000000000000 ffff8880878e0000 0000000100000001 0000000000000000
-page dumped because: kasan: bad access detected
+Thanks
+Namhyung
 
-Memory state around the buggy address:
- ffff8880878e0580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff8880878e0600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff8880878e0680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                  ^
- ffff8880878e0700: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff8880878e0780: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
+>
+> > +
+> > +     return evsel;
+> > +}
+> > +
+> >  /*
+> >   * Returns pointer with encoded error via <linux/err.h> interface.
+> >   */
+> > diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+> > index 35e3f6d66085..507c31d6a389 100644
+> > --- a/tools/perf/util/evsel.h
+> > +++ b/tools/perf/util/evsel.h
+> > @@ -169,6 +169,7 @@ static inline struct evsel *evsel__new(struct perf_event_attr *attr)
+> >       return evsel__new_idx(attr, 0);
+> >  }
+> >
+> > +struct evsel *evsel__clone(struct evsel *orig);
+> >  struct evsel *evsel__newtp_idx(const char *sys, const char *name, int idx);
+> >
+> >  /*
+> > --
+> > 2.28.0.618.gf4bc123cb7-goog
+> >
+>
