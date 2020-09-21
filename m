@@ -2,184 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30BF0272138
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:33:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2278127213B
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726774AbgIUKdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 06:33:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726428AbgIUKdn (ORCPT
+        id S1726789AbgIUKeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:34:17 -0400
+Received: from mail-il1-f207.google.com ([209.85.166.207]:41443 "EHLO
+        mail-il1-f207.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726428AbgIUKeR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 06:33:43 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8FE1C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:33:42 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id e17so11601268wme.0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:33:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=kjxw4km93AnFxrs9BHkSiQ7WIwZ/JBZnTalW8nKwc6M=;
-        b=wB8n8aKCne/xXh8ZcRI25eb7QDQ9dmygXDzNbdHRZRZOxblgUGkC7zIcpk8um1U/6b
-         et6Uo0KgtcECJ9YYbmvCLQsL8P9hyJSBrWqF02RGzwmpf0OQDxYp55VTpqWS6qtzQFoR
-         O76kqrdDfo/XeET1njsxCKaFgf2mDucqtbSHiTKgbSWnbzpgHvr7bc3otsPvYAkOIs1z
-         8a2Hd0cuZxOX9RpT9n2OQDphuWPy/IZGWk/UzKOWURJazGy3wN6twgcHFMPXadPuE7HZ
-         W0wPXawsW6Wiw3GxGN/2JhY59+PWFKI1FOSR//80NLjiqTH7CTyJsGMoXLpez9gV6b/o
-         f68Q==
+        Mon, 21 Sep 2020 06:34:17 -0400
+Received: by mail-il1-f207.google.com with SMTP id a16so10562095ilh.8
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:34:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=kjxw4km93AnFxrs9BHkSiQ7WIwZ/JBZnTalW8nKwc6M=;
-        b=ik3uI3ERulWWSDCDOZv3rvQ/3dn/effYENfY5Cq+Sb0kYl/cIJhOmhsNy9aPVB2ljw
-         HMX2p9DsOkLzybVZ4COWXrvk4zVHNmrfZZmTydHGmu55wD0PzocvOKTMCkuOwhXRRNk7
-         rXuCAQJlLwNP1VMhlY0yJn3j8H9nzdk5eWq/UTiFx/vBAazI8PrZz4J9Zh/6ccKY+A8q
-         5g2DLafHi49VxY8ShjzdbC7aoh3cl5kDxudmStx9BIZXNKlsmV6oAMzye3RdJ1J3ichm
-         pmphbU/f5qVQZERTtKCn/fIphjG0b/efVz8Bb1T6/CUGRENOjR+5mP5qKCjfeY0PdX16
-         SeGA==
-X-Gm-Message-State: AOAM531rQ6fLtJBe7/3duOEt+qYNStFf5gC8qibCNsC66ndz3nMDJQc4
-        ao01c8I6tcAK8ti/p+3uhebe9Q==
-X-Google-Smtp-Source: ABdhPJyBhlImM0gM7xMgkbACh9Rethu8/rF/kbdt83J3OCB6keNBr6euoSva3wSDTqHdNMC0CK+cVA==
-X-Received: by 2002:a1c:5a86:: with SMTP id o128mr28331649wmb.129.1600684421300;
-        Mon, 21 Sep 2020 03:33:41 -0700 (PDT)
-Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id 91sm21494851wrq.9.2020.09.21.03.33.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 03:33:40 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 12:33:39 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Moshe Shemesh <moshe@nvidia.com>
-Cc:     Ido Schimmel <idosch@idosch.org>,
-        Moshe Shemesh <moshe@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next RFC v4 04/15] devlink: Add reload actions stats
- to dev get
-Message-ID: <20200921103339.GC2323@nanopsycho.orion>
-References: <1600063682-17313-1-git-send-email-moshe@mellanox.com>
- <1600063682-17313-5-git-send-email-moshe@mellanox.com>
- <20200914134500.GH2236@nanopsycho.orion>
- <20200915064519.GA5390@shredder>
- <20200915074402.GM2236@nanopsycho.orion>
- <0d6cb0da-761b-b122-f5b1-b82320cfd5c4@nvidia.com>
- <20200915133406.GQ2236@nanopsycho.orion>
- <bcd28773-0027-11f5-1fd9-0a793f0a3c3a@nvidia.com>
- <bd55e716-7659-c3c4-ded5-c0abbb3d37f3@nvidia.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Rqv7ma3g5vT9RFE1FzGJX+9Mme19slmfv9DQVzggPg4=;
+        b=ujiPkApucssnO8Ui+TcG+F6Ca6Tbn//40hKfmLuniW05fJBT7lpIIGd/rR4hn2XsD4
+         bNlcXh99TyxJKsgc+l0vVMjF4BXhTZ+1I0zFUPsA7U2y9MLPiITsdhRFlgkHOW4qwvPC
+         ZH+AtPuF3TaQqFf3uBQtFz+mEha+P1EPQjfrDjaII/sIcwD2C3IXXVpDEkAsDrs18mRi
+         mfoqXK8QdfN2pF5SF8YCi7XMjFo45i/Pe5C4C94va1EeK/NbGNrINzh7aBH0VxWKNfot
+         nf+x2P+B9VnTpNGBBuCMMzTYfssk2LK/6lSYuw72Q6ydyS+MGmMNMWOUFJ+2ozUTIt5t
+         aaKg==
+X-Gm-Message-State: AOAM530I1kr9wmcz7QbBEyqwhhUA9BO2QVFHnNsA5xXF1s0X/g9rvNEw
+        wVFuwRbNRQk6Az2SYoh7BxvO1EmsKGRlWJc6uTGv8hWGzIxd
+X-Google-Smtp-Source: ABdhPJw5UU5SrthT2z/YNmwIf6HruYWobTiMeWHn4NplvYNN1t4WPtQGFEW6nqm05KGGz48JtKN2j2Qjn2pSPVxL34A0PfIg9LDo
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bd55e716-7659-c3c4-ded5-c0abbb3d37f3@nvidia.com>
+X-Received: by 2002:a92:2c5:: with SMTP id 188mr30053816ilc.262.1600684455900;
+ Mon, 21 Sep 2020 03:34:15 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 03:34:15 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000643b2605afd064d7@google.com>
+Subject: BUG: unable to handle kernel NULL pointer dereference in map_vdso
+From:   syzbot <syzbot+9d25c706da4558b9f11a@syzkaller.appspotmail.com>
+To:     bp@alien8.de, hpa@zytor.com, linux-kernel@vger.kernel.org,
+        luto@kernel.org, mingo@redhat.com, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fri, Sep 18, 2020 at 06:13:59PM CEST, moshe@nvidia.com wrote:
->
->On 9/15/2020 11:33 PM, Moshe Shemesh wrote:
->> External email: Use caution opening links or attachments
->> 
->> 
->> On 9/15/2020 4:34 PM, Jiri Pirko wrote:
->> > Tue, Sep 15, 2020 at 02:31:38PM CEST, moshe@nvidia.com wrote:
->> > > On 9/15/2020 10:44 AM, Jiri Pirko wrote:
->> > > > Tue, Sep 15, 2020 at 08:45:19AM CEST, idosch@idosch.org wrote:
->> > > > > On Mon, Sep 14, 2020 at 03:45:00PM +0200, Jiri Pirko wrote:
->> > > > > > Mon, Sep 14, 2020 at 08:07:51AM CEST, moshe@mellanox.com wrote:
->> > > > > > > Expose devlink reload actions stats to the user through devlink dev
->> > > > > > > get command.
->> > > > > > > 
->> > > > > > > Examples:
->> > > > > > > $ devlink dev show
->> > > > > > > pci/0000:82:00.0:
->> > > > > > >    reload_action_stats:
->> > > > > > >      driver_reinit 2
->> > > > > > >      fw_activate 1
->> > > > > > >      driver_reinit_no_reset 0
->> > > > > > >      fw_activate_no_reset 0
->> > > > > > > pci/0000:82:00.1:
->> > > > > > >    reload_action_stats:
->> > > > > > >      driver_reinit 1
->> > > > > > >      fw_activate 1
->> > > > > > >      driver_reinit_no_reset 0
->> > > > > > >      fw_activate_no_reset 0
->> > > > > > I would rather have something like:
->> > > > > >      stats:
->> > > > > >        reload_action:
->> > > > > >          driver_reinit 1
->> > > > > >          fw_activate 1
->> > > > > >          driver_reinit_no_reset 0
->> > > > > >          fw_activate_no_reset 0
->> > > > > > 
->> > > > > > Then we can easily extend and add other stats in the tree.
->> > > 
->> > > Sure, I will add it.
->> > Could you please checkout the metrics patchset and figure out how to
->> > merge that with your usecase?
->> > 
->> 
->> I will check, I will discuss with Ido how it will fit.
->> 
->
->I have discussed it with Ido, it doesn't fit to merge with metrics:
->
->1. These counters are maintained by devlink unlike metrics which are read by
->the driver from HW.
+Hello,
 
-Okay.
+syzbot found the following issue on:
 
->
->2. The metrics counters push string name, while here I use enum.
->
->However, I did add another level as you suggested here for option to future
->stats that may fit.
->
->> > > > > > Also, I wonder if these stats could be somehow merged
->> > > > > > with Ido's metrics
->> > > > > > work:
->> > > > > > https://github.com/idosch/linux/commits/submit/devlink_metric_rfc_v1
->> > > > > > 
->> > > > > > Ido, would it make sense?
->> > > > > I guess. My original idea for devlink-metric was to expose
->> > > > > design-specific metrics to user space where the entity
->> > > > > registering the
->> > > > > metrics is the device driver. In this case the entity
->> > > > > would be devlink
->> > > > > itself and it would be auto-registered for each device.
->> > > > Yeah, the usecase is different, but it is still stats, right.
->> > > > 
->> > > > 
->> > > > > > > $ devlink dev show -jp
->> > > > > > > {
->> > > > > > >      "dev": {
->> > > > > > >          "pci/0000:82:00.0": {
->> > > > > > >              "reload_action_stats": [ {
->> > > > > > >                      "driver_reinit": 2
->> > > > > > >                  },{
->> > > > > > >                      "fw_activate": 1
->> > > > > > >                  },{
->> > > > > > >                      "driver_reinit_no_reset": 0
->> > > > > > >                  },{
->> > > > > > >                      "fw_activate_no_reset": 0
->> > > > > > >                  } ]
->> > > > > > >          },
->> > > > > > >          "pci/0000:82:00.1": {
->> > > > > > >              "reload_action_stats": [ {
->> > > > > > >                      "driver_reinit": 1
->> > > > > > >                  },{
->> > > > > > >                      "fw_activate": 1
->> > > > > > >                  },{
->> > > > > > >                      "driver_reinit_no_reset": 0
->> > > > > > >                  },{
->> > > > > > >                      "fw_activate_no_reset": 0
->> > > > > > >                  } ]
->> > > > > > >          }
->> > > > > > >      }
->> > > > > > > }
->> > > > > > > 
->> > > > > > [..]
+HEAD commit:    92ab97ad Merge tag 'sh-for-5.9-part2' of git://git.libc.or..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=162d70d3900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=cd992d74d6c7e62
+dashboard link: https://syzkaller.appspot.com/bug?extid=9d25c706da4558b9f11a
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9d25c706da4558b9f11a@syzkaller.appspotmail.com
+
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+#PF: supervisor write access in kernel mode
+#PF: error_code(0x0002) - not-present page
+PGD 0 P4D 0 
+Oops: 0002 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 5029 Comm: systemd-rfkill Not tainted 5.9.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:map_vdso+0x1ea/0x270 arch/x86/entry/vdso/vma.c:308
+Code: 24 31 c9 e8 88 7c a7 00 eb 7a 4c 8b 74 24 28 43 80 3c 3e 00 48 8b 5c 24 08 74 08 4c 89 ef e8 4d 00 00 00 00 20 05 00 00 49 03 <6d> 00 48 89 e8 48 c1 e8 03 42 80 3c 38 00 74 08 48 89 ef e8 ae 64
+RSP: 0018:ffffc90016bafb98 EFLAGS: 00010282
+RAX: 00000000ab3c6738 RBX: ffff888056ebc538 RCX: ffff888093622440
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffff888056ebc480 R08: ffffffff81912471 R09: fffffbfff131e57c
+R10: fffffbfff131e57c R11: 0000000000000000 R12: 00007fffda9dc000
+R13: ffff888093622868 R14: 1ffff110126c450d R15: dffffc0000000000
+FS:  0000000000000000(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 000000008fac6000 CR4: 00000000001526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ load_elf_binary+0x2e90/0x48a0 fs/binfmt_elf.c:1221
+ search_binary_handler fs/exec.c:1819 [inline]
+ exec_binprm fs/exec.c:1860 [inline]
+ bprm_execve+0x919/0x1500 fs/exec.c:1931
+ do_execveat_common+0x487/0x5f0 fs/exec.c:2026
+ do_execve fs/exec.c:2094 [inline]
+ __do_sys_execve fs/exec.c:2170 [inline]
+ __se_sys_execve fs/exec.c:2165 [inline]
+ __x64_sys_execve+0x8e/0xa0 fs/exec.c:2165
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f8127340647
+Code: Bad RIP value.
+RSP: 002b:00007ffc7b57dbf8 EFLAGS: 00000246 ORIG_RAX: 000000000000003b
+RAX: ffffffffffffffda RBX: 000055a0c9286d40 RCX: 00007f8127340647
+RDX: 000055a0c9307440 RSI: 000055a0c91cd210 RDI: 000055a0c924e9a0
+RBP: 00007ffc7b57dd60 R08: 000000000000fe00 R09: 0000000000000030
+R10: 000055a0c9239740 R11: 0000000000000246 R12: 000055a0c91e1228
+R13: 0000000000000000 R14: 000055a0c91cd210 R15: 00007ffc7b57de40
+Modules linked in:
+CR2: 0000000000000000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
