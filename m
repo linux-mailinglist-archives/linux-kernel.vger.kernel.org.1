@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 982F4272D49
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2605C272CB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:35:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729201AbgIUQiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:38:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39786 "EHLO mail.kernel.org"
+        id S1728727AbgIUQeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:34:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728614AbgIUQif (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:38:35 -0400
+        id S1728662AbgIUQdr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:33:47 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B64C7238EE;
-        Mon, 21 Sep 2020 16:38:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 41A3A2399C;
+        Mon, 21 Sep 2020 16:33:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706314;
-        bh=UQ9uhk9yESmpsuclrVoey/brZ5TMAsHuztHElWFK4Kc=;
+        s=default; t=1600706026;
+        bh=8QfiQeHJEJz7b327EU8FvscAsj0hUZMuzLBtnfgA1oU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=egm473pQdXx8rPphpec9nEqSgB/ejkkxz93Zm93iBxSc5vwXw7+dwbwO5Q1QeBuD8
-         VFR7H56fTUIvnG9t09Vuyzr8lZZJcvSCYjenmug886OerIglJk9WBMb4rlgifHep+f
-         +OGgY3B3kTadyLA9ZMmA08dDnZD8rfZaTsmBg+/E=
+        b=zbZ6J9RJ10vJvUdUMcg4SHcR9IXwdJU+YB287fRoSECRNPetQs8n/UH62L1MWkD9P
+         FUmAN8Uh82S/hvgDKp6m0IWRZKyn2KdX9aFbbz/W0YYZWL46ACv9UZIUvYvNq76qFm
+         mjaG07TqoxtNp/uqZsN3BepiARpSBQ9ammDg4uSU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Angelo Compagnucci <angelo.compagnucci@gmail.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 4.14 23/94] iio: adc: mcp3422: fix locking scope
-Date:   Mon, 21 Sep 2020 18:27:10 +0200
-Message-Id: <20200921162036.617304797@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 11/70] irqchip/eznps: Fix build error for !ARC700 builds
+Date:   Mon, 21 Sep 2020 18:27:11 +0200
+Message-Id: <20200921162035.641711126@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
-References: <20200921162035.541285330@linuxfoundation.org>
+In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
+References: <20200921162035.136047591@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,67 +44,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Angelo Compagnucci <angelo.compagnucci@gmail.com>
+From: Vineet Gupta <vgupta@synopsys.com>
 
-commit 3f1093d83d7164e4705e4232ccf76da54adfda85 upstream.
+[ Upstream commit 89d29997f103d08264b0685796b420d911658b96 ]
 
-Locking should be held for the entire reading sequence involving setting
-the channel, waiting for the channel switch and reading from the
-channel.
-If not, reading from a channel can result mixing with the reading from
-another channel.
+eznps driver is supposed to be platform independent however it ends up
+including stuff from inside arch/arc headers leading to rand config
+build errors.
 
-Fixes: 07914c84ba30 ("iio: adc: Add driver for Microchip MCP3422/3/4 high resolution ADC")
-Signed-off-by: Angelo Compagnucci <angelo.compagnucci@gmail.com>
-Link: https://lore.kernel.org/r/20200819075525.1395248-1-angelo.compagnucci@gmail.com
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The quick hack to fix this (proper fix is too much chrun for non active
+user-base) is to add following to nps platform agnostic header.
+ - copy AUX_IENABLE from arch/arc header
+ - move CTOP_AUX_IACK from arch/arc/plat-eznps/*/**
 
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Link: https://lkml.kernel.org/r/20200824095831.5lpkmkafelnvlpi2@linutronix.de
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/adc/mcp3422.c |   12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ arch/arc/plat-eznps/include/plat/ctop.h | 1 -
+ include/soc/nps/common.h                | 6 ++++++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
---- a/drivers/iio/adc/mcp3422.c
-+++ b/drivers/iio/adc/mcp3422.c
-@@ -99,16 +99,12 @@ static int mcp3422_update_config(struct
- {
- 	int ret;
+diff --git a/arch/arc/plat-eznps/include/plat/ctop.h b/arch/arc/plat-eznps/include/plat/ctop.h
+index 3c401ce0351ef..fb959828630ce 100644
+--- a/arch/arc/plat-eznps/include/plat/ctop.h
++++ b/arch/arc/plat-eznps/include/plat/ctop.h
+@@ -42,7 +42,6 @@
+ #define CTOP_AUX_HW_COMPLY			(CTOP_AUX_BASE + 0x024)
+ #define CTOP_AUX_LPC				(CTOP_AUX_BASE + 0x030)
+ #define CTOP_AUX_EFLAGS				(CTOP_AUX_BASE + 0x080)
+-#define CTOP_AUX_IACK				(CTOP_AUX_BASE + 0x088)
+ #define CTOP_AUX_GPA1				(CTOP_AUX_BASE + 0x08C)
+ #define CTOP_AUX_UDMC				(CTOP_AUX_BASE + 0x300)
  
--	mutex_lock(&adc->lock);
--
- 	ret = i2c_master_send(adc->i2c, &newconfig, 1);
- 	if (ret > 0) {
- 		adc->config = newconfig;
- 		ret = 0;
- 	}
+diff --git a/include/soc/nps/common.h b/include/soc/nps/common.h
+index 9b1d43d671a3f..8c18dc6d3fde5 100644
+--- a/include/soc/nps/common.h
++++ b/include/soc/nps/common.h
+@@ -45,6 +45,12 @@
+ #define CTOP_INST_MOV2B_FLIP_R3_B1_B2_INST	0x5B60
+ #define CTOP_INST_MOV2B_FLIP_R3_B1_B2_LIMM	0x00010422
  
--	mutex_unlock(&adc->lock);
--
- 	return ret;
- }
- 
-@@ -141,6 +137,8 @@ static int mcp3422_read_channel(struct m
- 	u8 config;
- 	u8 req_channel = channel->channel;
- 
-+	mutex_lock(&adc->lock);
++#ifndef AUX_IENABLE
++#define AUX_IENABLE				0x40c
++#endif
 +
- 	if (req_channel != MCP3422_CHANNEL(adc->config)) {
- 		config = adc->config;
- 		config &= ~MCP3422_CHANNEL_MASK;
-@@ -153,7 +151,11 @@ static int mcp3422_read_channel(struct m
- 		msleep(mcp3422_read_times[MCP3422_SAMPLE_RATE(adc->config)]);
- 	}
- 
--	return mcp3422_read(adc, value, &config);
-+	ret = mcp3422_read(adc, value, &config);
++#define CTOP_AUX_IACK				(0xFFFFF800 + 0x088)
 +
-+	mutex_unlock(&adc->lock);
-+
-+	return ret;
- }
+ #ifndef __ASSEMBLY__
  
- static int mcp3422_read_raw(struct iio_dev *iio,
+ /* In order to increase compilation test coverage */
+-- 
+2.25.1
+
 
 
