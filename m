@@ -2,108 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47DEE2735C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 00:28:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB0F2735C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 00:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728540AbgIUW2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 18:28:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726457AbgIUW2D (ORCPT
+        id S1728573AbgIUWaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 18:30:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36216 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726467AbgIUWaK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 18:28:03 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 622E5C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 15:28:03 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id lo4so19985279ejb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 15:28:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kM6XzhJJTngcIIzefpQFOgDA2+BF/Ae7nqpjlvmm9QY=;
-        b=kRn/Tsc43tCRa7uA/MUO1KALZMdYG7hOnA+kndhviJ5CRXnhvTY7ZHpKRpGZrNNBC1
-         gCrAvfcS1zCCclZyNeidP67cLdDgqT7TU1yLEoOhQcFfsN+fyptJ88HT0bbTAmd7wUMH
-         HyM4c7va/CdxQtHBLeW0+KWWdetakCqR94qTg4+ArKEfAoE/L+BhR0ckCrRvM9JPSH/x
-         W48syV78YHrEIm6efqGPnYlQ49uCD+HhDnZ7dkTZt/j7gSIbXTAYgtRT478Sg5v7Oof3
-         Vfkfy38fjj9Ky4AR590IKenOZm49jukkIYUBVH82TWQxmfxNbydy1gVNh+s6pS+9eCp4
-         rKRg==
+        Mon, 21 Sep 2020 18:30:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600727409;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KSApC7Na2CgdhhBi62TssFqLybrjuoTgagPGcr/kNG4=;
+        b=Le/enJncr4ewaFF11MXFJdqayyrQBL/vpmuxUY8KTuKUEnvIhN+Rys7C4+4bpkVIjk4nxX
+        BKwi33DIMWVQpyGBAVD8RDiaBrX/Mhvz/okMH148/NGT/TAvXp/j5RPEiCVKfGwbIdZSMZ
+        iyvAxUSlpCVshaZp44f1VP+GAylflJ0=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-13-Ylkwg5dbP5W25us6ZSsKtg-1; Mon, 21 Sep 2020 18:30:07 -0400
+X-MC-Unique: Ylkwg5dbP5W25us6ZSsKtg-1
+Received: by mail-qt1-f199.google.com with SMTP id o13so14240965qtl.6
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 15:30:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kM6XzhJJTngcIIzefpQFOgDA2+BF/Ae7nqpjlvmm9QY=;
-        b=IMVprqGHtsbItMf5H9poAXuYzDSXZJ5BEvm/TRCoWReXXFiuWVm8bRdioFgFjohNbA
-         Oh5oGaHFyx/sqaZg4ofbtAOTi+C383OOTyd04CJ+8id0VHqjPD4He027yccBkOXjYrZJ
-         zzESIwYnDHZHxCRhoVRPDn2tY1y5XDwbbwHAOzW743waViEk+zBNGDBXGDWOI2wBtBAU
-         FlnweIejLyWebH9PXnEXJ649uFOVCoGv9EZ79nEk619L15r08xHxZmqifidqGPI5syi3
-         ebhuyvhguO+2LzLbEL/KlxifQomFozZKaXX+WqAHxmDdLW//iwNSBE07nlfEgK4Uo+4a
-         Qcag==
-X-Gm-Message-State: AOAM533TB88tIxjHBCzppVm2mKOXLwiw8y7ZTZMZIdv+3i/5ZTgkB6MY
-        ofBFYCZKUN4aGpLMGjSrvir5976VCrREA3fQVO5cSg==
-X-Google-Smtp-Source: ABdhPJxLDKLQe/ZVz6jB0RLtkFvXY+Fh007M1Kp5WpliEi2wLaAHVpyExx3WKXhfuMXUu9OwcEk+2uyQo9xwg/hxf+c=
-X-Received: by 2002:a17:907:64d:: with SMTP id wq13mr1669531ejb.513.1600727281873;
- Mon, 21 Sep 2020 15:28:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200921211744.24758-1-peterx@redhat.com> <20200921212028.25184-1-peterx@redhat.com>
- <CAG48ez3frkqQNHbE5bEB6rwYdbyoAA3B9FQZo=HKkUzWCM4H0Q@mail.gmail.com> <07bc5f59-74ae-73e8-2616-f11712c27b58@nvidia.com>
-In-Reply-To: <07bc5f59-74ae-73e8-2616-f11712c27b58@nvidia.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Tue, 22 Sep 2020 00:27:35 +0200
-Message-ID: <CAG48ez1Y0==PxR_h6PoRAcxTABM5o0FRR4ow+z7V3W52xNYm_w@mail.gmail.com>
-Subject: Re: [PATCH 4/5] mm: Do early cow for pinned pages during fork() for ptes
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Peter Xu <peterx@redhat.com>, Linux-MM <linux-mm@kvack.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KSApC7Na2CgdhhBi62TssFqLybrjuoTgagPGcr/kNG4=;
+        b=lJp9WaU3WmPB/9dNaaLAComuo+XHBbBEcZnJ/CJ2CR8iZyytn3XGeE4jLVpNtJUI6I
+         jSR2IfkyXwBjxpzx7BxInxJNzQ83e5t+QkP0TnOOkp7aPdW8Xh06lBRyW0CL6gqWHtSt
+         vrkv4u6dbfK1Sd2OksGXBneenpVKoUwR1rkHFBmueeJVaU8XKYF0pt96s5HVl/JxiNZ+
+         7ySORJ8au64fYVQm12WEcQCRT39zJ6d453rmccfB6INP1L8PInfg1nlyym3sXoVmWSs9
+         ICgpdKjuPQeleEMBiWOxmrl57IznyHe3FX+XufJ9iPcM/vBalvA5O63Bogdv3HjqngiO
+         9Nhg==
+X-Gm-Message-State: AOAM531NPg04w/g3h8X4WT4jdKASg0nAlqMHX4sIWBJrdzvkou/RF+gi
+        jXTyIjBwgydQnyxQ3GaUjFrkXbFUv01GzmpijxOM4b+9Xox7DwzY+GqOxDNtYsu2jo1uYR+iqvL
+        QCUnqlAYY6UzUsG0gRWiDVyHq
+X-Received: by 2002:ad4:58e3:: with SMTP id di3mr2546930qvb.54.1600727407405;
+        Mon, 21 Sep 2020 15:30:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy7yDDqzQavxj1WSxnVtoFxmUhMLJhJEAPcYlCLMX1JHtL7k7rPnfP18HWufMRHg6GHUe4vtQ==
+X-Received: by 2002:ad4:58e3:: with SMTP id di3mr2546913qvb.54.1600727407197;
+        Mon, 21 Sep 2020 15:30:07 -0700 (PDT)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
+        by smtp.gmail.com with ESMTPSA id o4sm10218609qkk.75.2020.09.21.15.30.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 15:30:06 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 18:30:04 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Jann Horn <jannh@google.com>
+Cc:     Linux-MM <linux-mm@kvack.org>,
         kernel list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Hugh Dickins <hughd@google.com>,
-        Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
         Jason Gunthorpe <jgg@ziepe.ca>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH 1/5] mm: Introduce mm_struct.has_pinned
+Message-ID: <20200921223004.GB19098@xz-x1>
+References: <20200921211744.24758-1-peterx@redhat.com>
+ <20200921211744.24758-2-peterx@redhat.com>
+ <CAG48ez0o+yBpYdzR_-bU3A0nrpzXyM+c+Yk=ZtOZ92qe5x0izA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAG48ez0o+yBpYdzR_-bU3A0nrpzXyM+c+Yk=ZtOZ92qe5x0izA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 12:18 AM John Hubbard <jhubbard@nvidia.com> wrote:
-> On 9/21/20 2:55 PM, Jann Horn wrote:
-> > On Mon, Sep 21, 2020 at 11:20 PM Peter Xu <peterx@redhat.com> wrote:
-> ...
-> > I dislike the whole pin_user_pages() concept because (as far as I
-> > understand) it fundamentally tries to fix a problem in the subset of
-> > cases that are more likely to occur in practice (long-term pins
-> > overlapping with things like writeback), and ignores the rarer cases
-> > ("short-term" GUP).
+On Mon, Sep 21, 2020 at 11:43:38PM +0200, Jann Horn wrote:
+> On Mon, Sep 21, 2020 at 11:17 PM Peter Xu <peterx@redhat.com> wrote:
 > >
->
-> Well, no, that's not really fair. pin_user_pages() provides a key
-> prerequisite to fixing *all* of the bugs in that area, not just a
-> subset. The 5 cases in Documentation/core-api/pin_user_pages.rst cover
-> this pretty well. Or if they don't, let me know and I'll have another
-> pass at it.
->
-> The case for a "pin count" that is (logically) separate from a
-> page->_refcount is real, and it fixes real problems. An elevated
-> refcount can be caused by a lot of things, but it can normally be waited
-> for and/or retried. The FOLL_PIN pages cannot.
->
-> Of course, a valid remaining criticism of the situation is, "why not
-> just *always* mark any of these pages as "dma-pinned"? In other words,
-> why even have a separate gup/pup API? And in fact, perhaps eventually
-> we'll just get rid of the get_user_pages*() side of it. But the pin
-> count will need to remain, in order to discern between DMA pins and
-> temporary refcount boosts.
+> > (Commit message collected from Jason Gunthorpe)
+> >
+> > Reduce the chance of false positive from page_maybe_dma_pinned() by keeping
+> > track if the mm_struct has ever been used with pin_user_pages(). mm_structs
+> > that have never been passed to pin_user_pages() cannot have a positive
+> > page_maybe_dma_pinned() by definition.
+> 
+> There are some caveats here, right? E.g. this isn't necessarily true
+> for pagecache pages, I think?
 
-Ah... the documentation you linked implies that FOLL_WRITE should more
-or less imply FOLL_PIN? I didn't realize that.
+Sorry I didn't follow here.  Could you help explain with some details?
 
-Whoops, and actually, process_vm_writev() does use FOLL_PIN
-already, and I just grepped the code the wrong way.
+Thanks,
 
-Thanks for the enlightenment; I take back everything I said.
+-- 
+Peter Xu
+
