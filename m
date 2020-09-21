@@ -2,71 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 572772720CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7EA3272069
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:23:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726583AbgIUKZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 06:25:26 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:9237 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726617AbgIUKZZ (ORCPT
+        id S1727051AbgIUKVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:21:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727028AbgIUKVS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 06:25:25 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f687e3b0003>; Mon, 21 Sep 2020 03:19:39 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 21 Sep
- 2020 10:20:25 +0000
-Received: from [192.168.22.23] (10.124.1.5) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Mon, 21 Sep 2020 10:20:22 +0000
-From:   Thierry Reding <treding@nvidia.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-CC:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?utf-8?q?Micha=C5=82_Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        <linux-i2c@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 27/34] i2c: tegra: Check errors for both positive and
- negative values
-In-Reply-To: <20200908224006.25636-28-digetx@gmail.com>
-References: <20200908224006.25636-28-digetx@gmail.com>
-X-NVConfidentiality: public
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Message-ID: <71a199bf16044d93a952fc4f27f28426@HQMAIL111.nvidia.com>
+        Mon, 21 Sep 2020 06:21:18 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE48C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:21:17 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id k15so12117389wrn.10
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:21:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=RIxqrjQzxmUx/C1l9QN0BxpXdxp1TQXVDUqwtk+yQg0=;
+        b=WzyPNmX2N6lGDLueSv/Dd9pbNEM61dj6yDxgkEftcUB5YxQdfw9BUboU1XrvPU/VEB
+         mXN19NlYobOb2LCgz4qd8ogID8bM2Gp+jssDpbM3tlEPXKJGz5vowuIJ9eO4eaNpCIuo
+         Be8vh2fcJchmuhEE5/i47NGAeTVMdz35h01BEFAetiQ4Md4CUJGq9EK2iEpb74p1xe15
+         RnTRTrjCxdbF/X3Hbu7DHW41FE1BfO11hjd+Bz6SyDs1rU3gW2wcDT/ww42Sl4xxhveB
+         WRQzA08eozi665ypWwfQRQK1uRJLmVu2HxCRpjpSFNZ1IiiafkgWsjld1X7gU+jwj2dW
+         MVYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=RIxqrjQzxmUx/C1l9QN0BxpXdxp1TQXVDUqwtk+yQg0=;
+        b=Le+18YQg6zvyEeEiGIOquq8BOnJS+x2o6HIgVt1p4l5RUmIL/GKZvCTBkH4SVhwIJX
+         AhlSzvxIS82bLgPQWaxC1FM27TZ7+zcYZKpUt4szPO3xGxR/RgqHfrFUB/d/miK8xL27
+         MsnG5rRTfBnISlhs4ZXyX4JyozFjnXPXtD1QZ8qT5XPZ2Pw4tqQooxQXUs3ysGi8MxcD
+         P2V89+ePPlabrIsdxJxW8ru14o8fUjDzNtEBWC+LISzLjB295CaiYRn2Tyjb7yMk2Ou/
+         mUgpokpm8ou8R9ZqjfXif5YxIyCWmXlKQOib2Rn0Xzql43fYHSe0sHbdux1UedjtjISY
+         3jig==
+X-Gm-Message-State: AOAM531H00G5wZMsNzfh0SFRQ2RGFYYZPp9/wf7Q+R9cyoD+4MK9TA+D
+        Aj6AmFFamUoItdZz2FwqDwL+jw==
+X-Google-Smtp-Source: ABdhPJyvum4Tk1XTQ5wzxOPoCoiJUJN8cULOoE6NPn8uIjvz4mHVGpfVrzTq26Dandr2et7c0pUeOg==
+X-Received: by 2002:adf:f586:: with SMTP id f6mr51499931wro.299.1600683676695;
+        Mon, 21 Sep 2020 03:21:16 -0700 (PDT)
+Received: from localhost.localdomain ([51.15.160.169])
+        by smtp.googlemail.com with ESMTPSA id l17sm18804629wme.11.2020.09.21.03.21.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 21 Sep 2020 03:21:16 -0700 (PDT)
+From:   Corentin Labbe <clabbe@baylibre.com>
+To:     gregkh@linuxfoundation.org, laurent.pinchart@skynet.be,
+        mchehab@kernel.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH RFT/RFC 47/49] staging: media: zoran: remove deprecated .vidioc_g_jpegcomp
 Date:   Mon, 21 Sep 2020 10:20:22 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600683579; bh=i/TazrAKHvxh+5rLEbVuNQITG8MRoX5xzCTI5hmigPY=;
-        h=From:To:CC:Subject:In-Reply-To:References:X-NVConfidentiality:
-         Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:
-         Date;
-        b=JNSBViVRORvPhtQH4ZS+uZn6uVl6d014Li4B7HkLGggmbkICWL+0gxzQP8ORBd+nt
-         uHApiz3mO1uGzllgP1nF3Wb+gZiALe7Eb+G71nWUmGK97j0Q9weuYd08PCk7hin0hp
-         KarPB+KtN+JbnDjDnyybxxMoYO4hSqjcYbnDRSyWF5X8GuLQLNUaQr8IHrCVROs2qU
-         cAm6JYdT1zs2EgI4cSTYAFF8/QxcBTLW379YVDwh8g1Hp5e1kTShSuzD1kS4opFYtf
-         w8+H5IsJ7igZmn/QKFrmDmupXbynshynu6DzIkcaOGsxCGUY0t4GOWXbBPgdvJV8b7
-         DwyqYyIQfnGYA==
+Message-Id: <1600683624-5863-48-git-send-email-clabbe@baylibre.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1600683624-5863-1-git-send-email-clabbe@baylibre.com>
+References: <1600683624-5863-1-git-send-email-clabbe@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 09 Sep 2020 01:39:59 +0300, Dmitry Osipenko wrote:
-> The driver's code is inconsistent in regards to the error values checking=
-.
-> The correct way should be to check both positive and negative values.
-> This patch cleans up the error-checks in the code. Note that the
-> pm_runtime_get_sync() could return positive value on success, hence only
-> relevant parts of the code are changed by this patch.
->=20
-> Reviewed-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/i2c/busses/i2c-tegra.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+This patchs removed the deprecated .vidioc_g_jpegcomp and replace it
+with corresponding v4l2_ctrl_ops code.
 
-Tested-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+---
+ drivers/staging/media/zoran/zoran_card.c   | 22 ++++++++++
+ drivers/staging/media/zoran/zoran_driver.c | 48 ----------------------
+ 2 files changed, 22 insertions(+), 48 deletions(-)
+
+diff --git a/drivers/staging/media/zoran/zoran_card.c b/drivers/staging/media/zoran/zoran_card.c
+index e4688891d307..ca998f0000c2 100644
+--- a/drivers/staging/media/zoran/zoran_card.c
++++ b/drivers/staging/media/zoran/zoran_card.c
+@@ -1056,6 +1056,25 @@ static void zoran_subdev_notify(struct v4l2_subdev *sd, unsigned int cmd, void *
+ 		GPIO(zr, 7, 1);
+ }
+ 
++static int zoran_video_set_ctrl(struct v4l2_ctrl *ctrl)
++{
++	struct zoran *zr = container_of(ctrl->handler, struct zoran, hdl);
++
++	switch (ctrl->id) {
++	case V4L2_CID_JPEG_COMPRESSION_QUALITY:
++		zr->jpg_settings.jpg_comp.quality = ctrl->val;
++		return zoran_check_jpg_settings(zr, &zr->jpg_settings, 0);
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static const struct v4l2_ctrl_ops zoran_video_ctrl_ops = {
++	.s_ctrl = zoran_video_set_ctrl,
++};
++
+ /*
+  *   Scan for a Buz card (actually for the PCI controller ZR36057),
+  *   request the irq and map the io memory
+@@ -1096,6 +1115,9 @@ static int zoran_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	if (v4l2_ctrl_handler_init(&zr->hdl, 10))
+ 		goto zr_unreg;
+ 	zr->v4l2_dev.ctrl_handler = &zr->hdl;
++	v4l2_ctrl_new_std(&zr->hdl, &zoran_video_ctrl_ops,
++			  V4L2_CID_JPEG_COMPRESSION_QUALITY, 0,
++			  100, 1, 50);
+ 	spin_lock_init(&zr->spinlock);
+ 	mutex_init(&zr->lock);
+ 	if (pci_enable_device(pdev))
+diff --git a/drivers/staging/media/zoran/zoran_driver.c b/drivers/staging/media/zoran/zoran_driver.c
+index 4299578c9bb5..8c23bb4f6b71 100644
+--- a/drivers/staging/media/zoran/zoran_driver.c
++++ b/drivers/staging/media/zoran/zoran_driver.c
+@@ -1833,52 +1833,6 @@ static int zoran_s_selection(struct file *file, void *__fh, struct v4l2_selectio
+ 	return res;
+ }
+ 
+-static int zoran_g_jpegcomp(struct file *file, void *__fh, struct v4l2_jpegcompression *params)
+-{
+-	struct zoran *zr = video_drvdata(file);
+-
+-	memset(params, 0, sizeof(*params));
+-
+-	params->quality = zr->jpg_settings.jpg_comp.quality;
+-	params->APPn = zr->jpg_settings.jpg_comp.APPn;
+-	memcpy(params->APP_data, zr->jpg_settings.jpg_comp.APP_data,
+-	       zr->jpg_settings.jpg_comp.APP_len);
+-	params->APP_len = zr->jpg_settings.jpg_comp.APP_len;
+-	memcpy(params->COM_data, zr->jpg_settings.jpg_comp.COM_data,
+-	       zr->jpg_settings.jpg_comp.COM_len);
+-	params->COM_len = zr->jpg_settings.jpg_comp.COM_len;
+-	params->jpeg_markers = zr->jpg_settings.jpg_comp.jpeg_markers;
+-
+-	return 0;
+-}
+-
+-static int zoran_s_jpegcomp(struct file *file, void *__fh,
+-			    const struct v4l2_jpegcompression *params)
+-{
+-	struct zoran_fh *fh = __fh;
+-	struct zoran *zr = fh->zr;
+-	int res = 0;
+-	struct zoran_jpg_settings settings;
+-
+-	settings = zr->jpg_settings;
+-
+-	settings.jpg_comp = *params;
+-
+-	if (fh->buffers.active != ZORAN_FREE) {
+-		pci_warn(zr->pci_dev, "VIDIOC_S_JPEGCOMP called while in playback/capture mode\n");
+-		res = -EBUSY;
+-		return res;
+-	}
+-
+-	res = zoran_check_jpg_settings(zr, &settings, 0);
+-	if (res)
+-		return res;
+-	if (!fh->buffers.allocated)
+-		zr->buffer_size = zoran_v4l2_calc_bufsize(&zr->jpg_settings);
+-	zr->jpg_settings.jpg_comp = settings.jpg_comp;
+-	return res;
+-}
+-
+ static __poll_t zoran_poll(struct file *file, poll_table  *wait)
+ {
+ 	struct zoran_fh *fh = file->private_data;
+@@ -2159,8 +2113,6 @@ static const struct v4l2_ioctl_ops zoran_ioctl_ops = {
+ 	.vidioc_s_output		    = zoran_s_output,*/
+ 	.vidioc_g_std			    = zoran_g_std,
+ 	.vidioc_s_std			    = zoran_s_std,
+-	.vidioc_g_jpegcomp		    = zoran_g_jpegcomp,
+-	.vidioc_s_jpegcomp		    = zoran_s_jpegcomp,
+ 	.vidioc_reqbufs			    = zoran_reqbufs,
+ 	.vidioc_querybuf		    = zoran_querybuf,
+ 	.vidioc_qbuf			    = zoran_qbuf,
+-- 
+2.26.2
+
