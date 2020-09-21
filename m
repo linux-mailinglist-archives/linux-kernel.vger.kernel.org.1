@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 289DC2735C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 00:27:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47DEE2735C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 00:28:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728075AbgIUW11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 18:27:27 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:47234 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726457AbgIUW11 (ORCPT
+        id S1728540AbgIUW2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 18:28:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726457AbgIUW2D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 18:27:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600727246;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3Y3BFMMga4eqj/OQvqbNbqZ9EEiAzPKsrbE58dm7rTQ=;
-        b=HBeoGyb1oOHWkKB93hztD+SJJ2ViFcuiYBYU305nqPIMI+o3x+slq+H41dWCYXB4jPdFor
-        TNT1JTwFk4X7WaXUbAyUonxdOvYkCcEelbGIBOZTXxsMqt1/xn9ZPCRpPI9WW2y92t/51I
-        8+7KXHGnRiwN4VulxO/RiJMRZjF6rwo=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-326-My2_GGICMMC9pQiPnIylzQ-1; Mon, 21 Sep 2020 18:27:24 -0400
-X-MC-Unique: My2_GGICMMC9pQiPnIylzQ-1
-Received: by mail-qt1-f197.google.com with SMTP id j35so14305476qtk.14
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 15:27:24 -0700 (PDT)
+        Mon, 21 Sep 2020 18:28:03 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 622E5C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 15:28:03 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id lo4so19985279ejb.8
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 15:28:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kM6XzhJJTngcIIzefpQFOgDA2+BF/Ae7nqpjlvmm9QY=;
+        b=kRn/Tsc43tCRa7uA/MUO1KALZMdYG7hOnA+kndhviJ5CRXnhvTY7ZHpKRpGZrNNBC1
+         gCrAvfcS1zCCclZyNeidP67cLdDgqT7TU1yLEoOhQcFfsN+fyptJ88HT0bbTAmd7wUMH
+         HyM4c7va/CdxQtHBLeW0+KWWdetakCqR94qTg4+ArKEfAoE/L+BhR0ckCrRvM9JPSH/x
+         W48syV78YHrEIm6efqGPnYlQ49uCD+HhDnZ7dkTZt/j7gSIbXTAYgtRT478Sg5v7Oof3
+         Vfkfy38fjj9Ky4AR590IKenOZm49jukkIYUBVH82TWQxmfxNbydy1gVNh+s6pS+9eCp4
+         rKRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3Y3BFMMga4eqj/OQvqbNbqZ9EEiAzPKsrbE58dm7rTQ=;
-        b=WIG7kbGXJq7avSoW6LKLzpE71cbF+xziJXy+pYlbfx8F0Y9hWQjGcHUxnv03DCKgqz
-         60Padzk8mV6SO0Ee2dJFod1cnUm/ISCYYZHhVwEfX26sUFpBdAdYETYljlxFwoAbVBtx
-         SuOiigGtfIy8MPXTUGKgAdY8oGnRXzxyhZO1DQOtwYirq+Qwejkw/Ued10YpDyqGOKG6
-         /Z3cq/+051VJlImJWAO4DQvJjzG3BCpidvRNhGdnxI2mkBP63m+LBAZHP5vQN/eQA4Ci
-         hSW4nv6RlOksED+Ixjrc4vyKyzOliDs+TccDT5BjPgRolBzLtu4mdtny1436/K4n77M0
-         dqBw==
-X-Gm-Message-State: AOAM530q1Ght0xsPmpZWSvgbj94H3zsmpgA6c6pwSS3B9Wv+hTfXzeB6
-        iXTMo2RgSK5/YOo1ko/tWJDo+Rtbx3VrU0T+d/wJvQORqlfepDQSondDUYJ2Nhj+3ZWu382xEUI
-        yxzEhVLBQ1nlhMDOnoaGB75N0
-X-Received: by 2002:a37:638d:: with SMTP id x135mr2133309qkb.60.1600727243755;
-        Mon, 21 Sep 2020 15:27:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwXeszQ8v+I0gHuiyOcxO+4Ql50Jhun0n7Wk3k1WQyONvPgUy/yCr+GWhmxVp1Dq/luFIF0Tg==
-X-Received: by 2002:a37:638d:: with SMTP id x135mr2133284qkb.60.1600727243472;
-        Mon, 21 Sep 2020 15:27:23 -0700 (PDT)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
-        by smtp.gmail.com with ESMTPSA id c1sm11539452qta.86.2020.09.21.15.27.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 15:27:22 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 18:27:20 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Jann Horn <jannh@google.com>
-Cc:     Linux-MM <linux-mm@kvack.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kM6XzhJJTngcIIzefpQFOgDA2+BF/Ae7nqpjlvmm9QY=;
+        b=IMVprqGHtsbItMf5H9poAXuYzDSXZJ5BEvm/TRCoWReXXFiuWVm8bRdioFgFjohNbA
+         Oh5oGaHFyx/sqaZg4ofbtAOTi+C383OOTyd04CJ+8id0VHqjPD4He027yccBkOXjYrZJ
+         zzESIwYnDHZHxCRhoVRPDn2tY1y5XDwbbwHAOzW743waViEk+zBNGDBXGDWOI2wBtBAU
+         FlnweIejLyWebH9PXnEXJ649uFOVCoGv9EZ79nEk619L15r08xHxZmqifidqGPI5syi3
+         ebhuyvhguO+2LzLbEL/KlxifQomFozZKaXX+WqAHxmDdLW//iwNSBE07nlfEgK4Uo+4a
+         Qcag==
+X-Gm-Message-State: AOAM533TB88tIxjHBCzppVm2mKOXLwiw8y7ZTZMZIdv+3i/5ZTgkB6MY
+        ofBFYCZKUN4aGpLMGjSrvir5976VCrREA3fQVO5cSg==
+X-Google-Smtp-Source: ABdhPJxLDKLQe/ZVz6jB0RLtkFvXY+Fh007M1Kp5WpliEi2wLaAHVpyExx3WKXhfuMXUu9OwcEk+2uyQo9xwg/hxf+c=
+X-Received: by 2002:a17:907:64d:: with SMTP id wq13mr1669531ejb.513.1600727281873;
+ Mon, 21 Sep 2020 15:28:01 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200921211744.24758-1-peterx@redhat.com> <20200921212028.25184-1-peterx@redhat.com>
+ <CAG48ez3frkqQNHbE5bEB6rwYdbyoAA3B9FQZo=HKkUzWCM4H0Q@mail.gmail.com> <07bc5f59-74ae-73e8-2616-f11712c27b58@nvidia.com>
+In-Reply-To: <07bc5f59-74ae-73e8-2616-f11712c27b58@nvidia.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Tue, 22 Sep 2020 00:27:35 +0200
+Message-ID: <CAG48ez1Y0==PxR_h6PoRAcxTABM5o0FRR4ow+z7V3W52xNYm_w@mail.gmail.com>
+Subject: Re: [PATCH 4/5] mm: Do early cow for pinned pages during fork() for ptes
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Peter Xu <peterx@redhat.com>, Linux-MM <linux-mm@kvack.org>,
         kernel list <linux-kernel@vger.kernel.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Michal Hocko <mhocko@suse.com>,
@@ -62,63 +62,48 @@ Cc:     Linux-MM <linux-mm@kvack.org>,
         Kirill Tkhai <ktkhai@virtuozzo.com>,
         Hugh Dickins <hughd@google.com>,
         Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
-        John Hubbard <jhubbard@nvidia.com>,
         Christoph Hellwig <hch@lst.de>,
         Andrew Morton <akpm@linux-foundation.org>,
         Jason Gunthorpe <jgg@ziepe.ca>,
         Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [PATCH 4/5] mm: Do early cow for pinned pages during fork() for
- ptes
-Message-ID: <20200921222720.GA19098@xz-x1>
-References: <20200921211744.24758-1-peterx@redhat.com>
- <20200921212028.25184-1-peterx@redhat.com>
- <CAG48ez3frkqQNHbE5bEB6rwYdbyoAA3B9FQZo=HKkUzWCM4H0Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAG48ez3frkqQNHbE5bEB6rwYdbyoAA3B9FQZo=HKkUzWCM4H0Q@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Jann,
-
-On Mon, Sep 21, 2020 at 11:55:06PM +0200, Jann Horn wrote:
-> On Mon, Sep 21, 2020 at 11:20 PM Peter Xu <peterx@redhat.com> wrote:
-> > This patch is greatly inspired by the discussions on the list from Linus, Jason
-> > Gunthorpe and others [1].
+On Tue, Sep 22, 2020 at 12:18 AM John Hubbard <jhubbard@nvidia.com> wrote:
+> On 9/21/20 2:55 PM, Jann Horn wrote:
+> > On Mon, Sep 21, 2020 at 11:20 PM Peter Xu <peterx@redhat.com> wrote:
+> ...
+> > I dislike the whole pin_user_pages() concept because (as far as I
+> > understand) it fundamentally tries to fix a problem in the subset of
+> > cases that are more likely to occur in practice (long-term pins
+> > overlapping with things like writeback), and ignores the rarer cases
+> > ("short-term" GUP).
 > >
-> > It allows copy_pte_range() to do early cow if the pages were pinned on the
-> > source mm.  Currently we don't have an accurate way to know whether a page is
-> > pinned or not.  The only thing we have is page_maybe_dma_pinned().  However
-> > that's good enough for now.  Especially, with the newly added mm->has_pinned
-> > flag to make sure we won't affect processes that never pinned any pages.
-> 
-> To clarify: This patch only handles pin_user_pages() callers and
-> doesn't try to address other GUP users, right? E.g. if task A uses
-> process_vm_write() on task B while task B is going through fork(),
-> that can still race in such a way that the written data only shows up
-> in the child and not in B, right?
+>
+> Well, no, that's not really fair. pin_user_pages() provides a key
+> prerequisite to fixing *all* of the bugs in that area, not just a
+> subset. The 5 cases in Documentation/core-api/pin_user_pages.rst cover
+> this pretty well. Or if they don't, let me know and I'll have another
+> pass at it.
+>
+> The case for a "pin count" that is (logically) separate from a
+> page->_refcount is real, and it fixes real problems. An elevated
+> refcount can be caused by a lot of things, but it can normally be waited
+> for and/or retried. The FOLL_PIN pages cannot.
+>
+> Of course, a valid remaining criticism of the situation is, "why not
+> just *always* mark any of these pages as "dma-pinned"? In other words,
+> why even have a separate gup/pup API? And in fact, perhaps eventually
+> we'll just get rid of the get_user_pages*() side of it. But the pin
+> count will need to remain, in order to discern between DMA pins and
+> temporary refcount boosts.
 
-I saw that process_vm_write() is using pin_user_pages_remote(), so I think
-after this patch applied the data will only be written to B but not the child.
-Because when B fork() with these temp pinned pages, it will copy the pages
-rather than write-protect them any more.  IIUC the child could still have
-partial data, but at last (after unpinned) B should always have the complete
-data set.
+Ah... the documentation you linked implies that FOLL_WRITE should more
+or less imply FOLL_PIN? I didn't realize that.
 
-> 
-> I dislike the whole pin_user_pages() concept because (as far as I
-> understand) it fundamentally tries to fix a problem in the subset of
-> cases that are more likely to occur in practice (long-term pins
-> overlapping with things like writeback), and ignores the rarer cases
-> ("short-term" GUP).
+Whoops, and actually, process_vm_writev() does use FOLL_PIN
+already, and I just grepped the code the wrong way.
 
-John/Jason or others may be better on commenting on this one.  From my own
-understanding, I thought it was the right thing to do so that we'll always
-guarantee process B gets the whole data.  From that pov this patch should make
-sense even for short term gups.  But maybe I've missed something.
-
--- 
-Peter Xu
-
+Thanks for the enlightenment; I take back everything I said.
