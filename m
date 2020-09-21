@@ -2,97 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 606BD27315B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 20:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 317AB273166
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 20:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727924AbgIUSAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 14:00:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726436AbgIUSAA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 14:00:00 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04CE5C061755;
-        Mon, 21 Sep 2020 10:59:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EYalxu71FXkhieQDqm3YOx3Lopqwd5EDbAcvH4qgOhs=; b=cn1ZppxwRY81oXiNm0vRnLyCFs
-        Xl5xURoMhBnqr2NAEHsKV+Yt0xLaL5tT+bhVHEInqaezHoHp5ln5P0NE4NbQUyQ/JA7hTmee5MQSv
-        Gx4g48bXYVJSDGVL4YSAf+VQIzMvlFAv+o8q5hLXRp9CBiHnAy1AqXzqyUH3ZR65gj3A2LQVw0lqH
-        Qz1GsKVlFrTrf5GNRFnMVYe2c2MMzmOpjxQ4I5XffgCWR2Hb9GG0Zo+JWhEMO7d11kCVug0WBiHsk
-        uzjFDYrt1qxk0nMox3iIjPWlwC0J4P5ST6FeF54rmXxKGGMdxudBsLGdsbKrQKVjihsLADUoJVGzn
-        QR0vNZKg==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kKQ6J-0007Cd-IL; Mon, 21 Sep 2020 17:59:43 +0000
-Date:   Mon, 21 Sep 2020 18:59:43 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jan Kara <jack@suse.cz>, Dave Chinner <david@fromorbit.com>,
-        Hugh Dickins <hughd@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Theodore Tso <tytso@mit.edu>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Qiuyang Sun <sunqiuyang@huawei.com>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, nborisov@suse.de
-Subject: Re: More filesystem need this fix (xfs: use MMAPLOCK around
- filemap_map_pages())
-Message-ID: <20200921175943.GW32101@casper.infradead.org>
-References: <20200623052059.1893966-1-david@fromorbit.com>
- <CAOQ4uxh0dnVXJ9g+5jb3q72RQYYqTLPW_uBqHPKn6AJZ2DNPOQ@mail.gmail.com>
- <20200916155851.GA1572@quack2.suse.cz>
- <20200917014454.GZ12131@dread.disaster.area>
- <alpine.LSU.2.11.2009161853220.2087@eggly.anvils>
- <20200917064532.GI12131@dread.disaster.area>
- <alpine.LSU.2.11.2009170017590.8077@eggly.anvils>
- <20200921082600.GO12131@dread.disaster.area>
- <20200921091143.GB5862@quack2.suse.cz>
- <CAHk-=wir89LPH6A4H2hkxVXT20+dpcw2qQq0GtQJvy87ARga-g@mail.gmail.com>
+        id S1727459AbgIUSDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 14:03:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53018 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726436AbgIUSDZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 14:03:25 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8F47C2071A;
+        Mon, 21 Sep 2020 18:03:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600711405;
+        bh=LrEW6MwBPVnwjpKZe7mGtzqvzaP1ZUa1jVePP1+OQdk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uRHMu0zhrsiyeQZOyNIqmPq902zgt+k5MtqATJhKLzndp4du2BPOHFCXFzgNLteyU
+         OYMRlRmpyCaQS9tSatSIDebxn195ST23TMPPd2eGgIVuwYDP3oZf0mViy732ZkEGNl
+         WRxUtwGywuoU9bBDigQH2JSCxdhJ79pkPsU+PSpc=
+Date:   Mon, 21 Sep 2020 19:03:19 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        freedreno@lists.freedesktop.org,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCHv4 1/6] iommu/io-pgtable-arm: Add support to use system
+ cache
+Message-ID: <20200921180318.GG3141@willie-the-truck>
+References: <cover.1599832685.git.saiprakash.ranjan@codeaurora.org>
+ <3b1beb6cf6a34a44b0ecff9ec5a2105b5ff91bd4.1599832685.git.saiprakash.ranjan@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wir89LPH6A4H2hkxVXT20+dpcw2qQq0GtQJvy87ARga-g@mail.gmail.com>
+In-Reply-To: <3b1beb6cf6a34a44b0ecff9ec5a2105b5ff91bd4.1599832685.git.saiprakash.ranjan@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 09:20:25AM -0700, Linus Torvalds wrote:
-> On Mon, Sep 21, 2020 at 2:11 AM Jan Kara <jack@suse.cz> wrote:
-> >
-> > Except that on truncate, we have to unmap these
-> > anonymous pages in private file mappings as well...
-> 
-> I'm actually not 100% sure we strictly would need to care.
-> 
-> Once we've faulted in a private file mapping page, that page is
-> "ours". That's kind of what MAP_PRIVATE means.
-> 
-> If we haven't written to it, we do keep things coherent with the file,
-> but that's actually not required by POSIX afaik - it's a QoI issue,
-> and a lot of (bad) Unixes didn't do it at all.
-> So as long as truncate _clears_ the pages it truncates, I think we'd
-> actually be ok.
+On Fri, Sep 11, 2020 at 07:57:18PM +0530, Sai Prakash Ranjan wrote:
+> Add a quirk IO_PGTABLE_QUIRK_SYS_CACHE to override the
+> attributes set in TCR for the page table walker when
+> using system cache.
 
-We don't even need to do that ...
+I wonder if the panfrost folks can reuse this for the issue discussed
+over at:
 
-"If the size of the mapped file changes after the call to mmap()
-as a result of some other operation on the mapped file, the effect of
-references to portions of the mapped region that correspond to added or
-removed portions of the file is unspecified."
+https://lore.kernel.org/r/cover.1600213517.git.robin.murphy@arm.com
 
-https://pubs.opengroup.org/onlinepubs/9699919799/functions/mmap.html
+However, Sai, your email setup went wrong when you posted this so you
+probably need to repost now that you have that fixed.
 
-As you say, there's a QoI here, and POSIX permits some shockingly
-bad and useless implementations.
+Will
