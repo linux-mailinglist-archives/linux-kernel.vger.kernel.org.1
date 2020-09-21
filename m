@@ -2,125 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFD5727270F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF499272711
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727290AbgIUObM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Sep 2020 10:31:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726818AbgIUObL (ORCPT
+        id S1727329AbgIUOcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 10:32:23 -0400
+Received: from mail-il1-f206.google.com ([209.85.166.206]:52128 "EHLO
+        mail-il1-f206.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726341AbgIUOcW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:31:11 -0400
-Received: from mail.nic.cz (mail.nic.cz [IPv6:2001:1488:800:400::400])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A064C061755;
-        Mon, 21 Sep 2020 07:31:10 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
-        by mail.nic.cz (Postfix) with ESMTPSA id C5D4C1409F6;
-        Mon, 21 Sep 2020 16:31:07 +0200 (CEST)
-Date:   Mon, 21 Sep 2020 16:31:07 +0200
-From:   Marek Behun <marek.behun@nic.cz>
-To:     Simon Guinot <simon.guinot@sequanux.org>
-Cc:     linux-leds@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        Dan Murphy <dmurphy@ti.com>,
-        =?UTF-8?B?T25kxZllag==?= Jirman <megous@megous.com>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org, Simon Guinot <sguinot@lacie.com>,
-        Vincent Donnefort <vdonnefort@gmail.com>,
-        Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH leds v1 10/10] leds: ns2: refactor and use struct
- led_init_data
-Message-ID: <20200921163107.205cd219@nic.cz>
-In-Reply-To: <20200921140322.GB4828@kw.sim.vm.gnt>
-References: <20200916231650.11484-1-marek.behun@nic.cz>
-        <20200916231650.11484-11-marek.behun@nic.cz>
-        <20200918130206.GE29951@kw.sim.vm.gnt>
-        <20200918191405.516b51ff@nic.cz>
-        <20200921125343.GA4828@kw.sim.vm.gnt>
-        <20200921150208.6a296bc7@nic.cz>
-        <20200921140322.GB4828@kw.sim.vm.gnt>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 21 Sep 2020 10:32:22 -0400
+Received: by mail-il1-f206.google.com with SMTP id i80so11139447ild.18
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 07:32:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=NWGruP60rl9r3pTkX1fQRkp0VOki59G8bmOunB0fjsU=;
+        b=Hr+i4i8+ZeHc83kUXIUjRPYsAWZBNUzSD9cVLYnwaY0Ol3eHo3hWIAR8+hudGKAo80
+         of636xbL1AIiQ3l4xf+TpSDa/wNSwpgY1YA2XAFyYz2sa9UeEzcRYCWC5c/gYR3JK3sM
+         1OKxZZjPccNFn6aCnadIuKbpwLslur3H7JnZh9PytU8dS2SnU41Bi1BXmze1q4ieEUlz
+         9ydJq2WA5PlqodUc0OVgVUPjc4QviKnIf/ED75u+58VgKilb3nWGGYdOYvmeaoIdjKh6
+         zrxmDP8w9CESO+vCymTmWE+9TZVoeio521KZLGE4MESNghx+W0infuJ3+TVpAGLgIZnO
+         nvNQ==
+X-Gm-Message-State: AOAM531hoB/NBRDfr3fE7HNajqG6J4qL4xOL4Px2PK8ruYYiPYOD9H+V
+        bVAEyoJbBr7/+UFqYp6xAbqhcdIz0rGvN4nTy+p69tx/LIhu
+X-Google-Smtp-Source: ABdhPJwZFezxiQaDkb74Us5Iq7oF3BGB9ZOM810V0t50g7NuA5ZqfnElD4SYYJP88XhP1mvSbRK6f7nBOYQxvOl7xi7ZC34md4vR
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
-        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
-        autolearn=disabled version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-X-Virus-Status: Clean
+X-Received: by 2002:a6b:8dcc:: with SMTP id p195mr36051382iod.39.1600698741367;
+ Mon, 21 Sep 2020 07:32:21 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 07:32:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000df277105afd3b70e@google.com>
+Subject: KASAN: stack-out-of-bounds Write in read_extent_buffer
+From:   syzbot <syzbot+1d393803acac53c985a0@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Sep 2020 16:03:22 +0200
-Simon Guinot <simon.guinot@sequanux.org> wrote:
+Hello,
 
-> On Mon, Sep 21, 2020 at 03:02:08PM +0200, Marek Behun wrote:
-> > On Mon, 21 Sep 2020 14:53:43 +0200
-> > Simon Guinot <simon.guinot@sequanux.org> wrote:
-> >   
-> > > On Fri, Sep 18, 2020 at 07:14:05PM +0200, Marek Behun wrote:  
-> > > > On Fri, 18 Sep 2020 15:02:06 +0200
-> > > > Simon Guinot <simon.guinot@sequanux.org> wrote:
-> > > >     
-> > > > > On Thu, Sep 17, 2020 at 01:16:50AM +0200, Marek Behún wrote:
-> > > > > 
-> > > > > Hi Marek,
-> > > > >     
-> > > > > > By using struct led_init_data when registering we do not need to parse
-> > > > > > `label` DT property nor `linux,default-trigger` property.
-> > > > > > 
-> > > > > > Also, move forward from platform data to device tree only:
-> > > > > > since commit c7896490dd1a ("leds: ns2: Absorb platform data") the
-> > > > > > platform data structure is absorbed into the driver, because nothing
-> > > > > > else in the source tree used it. Since nobody complained and all usage      
-> > > > > 
-> > > > > Well, I probably should have...
-> > > > > 
-> > > > > I am using this driver on the Seagate Superbee NAS devices. This devices
-> > > > > are based on a x86 SoC. Since I have been unable to get from the ODM the
-> > > > > LED information written in the ACPI tables, then platform data are used
-> > > > > to pass the LED description to the driver.
-> > > > > 
-> > > > > The support of this boards is not available mainline yet but it is still
-> > > > > on my todo list. So that's why I am complaining right now :) If it is
-> > > > > not too much trouble I'd like to keep platform data support in this
-> > > > > driver.
-> > > > > 
-> > > > > Thanks in advance.
-> > > > > 
-> > > > > Simon
-> > > > >     
-> > > > 
-> > > > Simon, what if we refactored the driver to use fwnode API instead of OF
-> > > > API? Then if it is impossible for you to write DTS for that device,
-> > > > instead of platform data you could implement your device via swnode
-> > > > fwnodes. :)    
-> > > 
-> > > Yes. That would be perfect.
-> > > 
-> > > Simon  
-> > 
-> > BTW if you have access to device schematics I could try to write DTS,
-> > with schematics and the current board source file it should not be that
-> > hard. But I can't test it, since I don't have the board.  
-> 
-> Don't worry, I'll do the writing and the testing of the fwnode in the
-> x86 board files. This boards are not mainlined yet. So it is my problem.
-> 
-> And actually if you don't have the time I can do the writing of the
-> fwnode support in the driver as well. And you can just let the driver
-> with the OF support. That's fine.
-> 
-> But if you are willing to add fwnode support to the driver yourself,
-> then you are more than welcome to do it. On my side, I can help with
-> the testing. I can check that the ARM boards ant their DTB are still
-> supported by the driver. And I can also check the support of the x86
-> boards with the addition of the fwnode properties.
-> 
-> Simon
+syzbot found the following issue on:
 
-Very well, I shall convert the driver to fwnode API and send the patch.
-Marek
+HEAD commit:    860461e4 Add linux-next specific files for 20200917
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=141fc5d9900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f2392812d6c63d5c
+dashboard link: https://syzkaller.appspot.com/bug?extid=1d393803acac53c985a0
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16778b07900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1216f8ad900000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1d393803acac53c985a0@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: stack-out-of-bounds in memcpy include/linux/string.h:399 [inline]
+BUG: KASAN: stack-out-of-bounds in read_extent_buffer+0x114/0x150 fs/btrfs/extent_io.c:5674
+Write of size 8 at addr ffffc90000dd79f0 by task kworker/u4:1/21
+
+CPU: 1 PID: 21 Comm: kworker/u4:1 Not tainted 5.9.0-rc5-next-20200917-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: btrfs-endio-meta btrfs_work_helper
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fb lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0x5/0x497 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
+ check_memory_region_inline mm/kasan/generic.c:186 [inline]
+ check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
+ memcpy+0x39/0x60 mm/kasan/common.c:106
+ memcpy include/linux/string.h:399 [inline]
+ read_extent_buffer+0x114/0x150 fs/btrfs/extent_io.c:5674
+ btree_readpage_end_io_hook+0x7de/0x950 fs/btrfs/disk-io.c:641
+ end_bio_extent_readpage+0x4de/0x10c0 fs/btrfs/extent_io.c:2854
+ bio_endio+0x3d3/0x7a0 block/bio.c:1449
+ end_workqueue_fn+0x114/0x170 fs/btrfs/disk-io.c:1696
+ btrfs_work_helper+0x20a/0xd20 fs/btrfs/async-thread.c:318
+ process_one_work+0x933/0x15a0 kernel/workqueue.c:2269
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+ kthread+0x3af/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+
+addr ffffc90000dd79f0 is located in stack of task kworker/u4:1/21 at offset 48 in frame:
+ btree_readpage_end_io_hook+0x0/0x950 fs/btrfs/disk-io.c:201
+
+this frame has 4 objects:
+ [48, 52) 'val'
+ [64, 80) 'fsid'
+ [96, 128) 'result'
+ [160, 192) 'found'
+
+Memory state around the buggy address:
+ ffffc90000dd7880: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffffc90000dd7900: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffffc90000dd7980: 00 00 00 00 00 00 00 00 f1 f1 f1 f1 f1 f1 04 f2
+                                                             ^
+ ffffc90000dd7a00: 00 00 f2 f2 00 00 00 00 f2 f2 f2 f2 00 00 00 00
+ ffffc90000dd7a80: f3 f3 f3 f3 00 00 00 00 00 00 00 00 00 00 00 00
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
