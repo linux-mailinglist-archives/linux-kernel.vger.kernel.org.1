@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE343272F3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D057272CFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:37:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729930AbgIUQzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:55:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51840 "EHLO mail.kernel.org"
+        id S1727381AbgIUQgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:36:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728499AbgIUQpq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:45:46 -0400
+        id S1728958AbgIUQgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:36:18 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0E9F12076B;
-        Mon, 21 Sep 2020 16:45:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B7CB62399C;
+        Mon, 21 Sep 2020 16:36:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706745;
-        bh=01FOSVUIKtoPwtawvW+LsvkhTRWitElIkyvsuL3mOto=;
+        s=default; t=1600706178;
+        bh=jFxCiZ44NXmk11inWlUxj2I0OFZ6rhbVv5VMfpK1ONo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wJ/9O5MT2TJToGSHMEf+2GIQjPMH2JztgdXIOBf9tBaZO42efFo51LkbbqU7V4XHu
-         dHWpMiP4lItWT72XzFpE1ZxDi0xfH9YCbSMlp1cW+fd+gtmBh9zdP2TCgewG+At5MC
-         QXotQIggzdXvO35NNV9iWPMmw5LtCVymU2buWJJU=
+        b=0nihuHKzugp4NowCvrDxR3IKcteNs++36YVszZR2SamY4YGfjT8L9UbB5VgxjRb7q
+         8dP2Ekhv7oeJIDYXNwSe7yNm0dEoKvhwEt17kDiSjrDv+of8X3Ha+wutYBS1IVkAmH
+         VyGJxk1GWphI70gFBihkTP+mThv0B1qDEpjv7V4Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 077/118] i2c: mxs: use MXS_DMA_CTRL_WAIT4END instead of DMA_CTRL_ACK
+        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.9 69/70] powerpc/dma: Fix dma_map_ops::get_required_mask
 Date:   Mon, 21 Sep 2020 18:28:09 +0200
-Message-Id: <20200921162039.912352609@linuxfoundation.org>
+Message-Id: <20200921162038.296413482@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
-References: <20200921162036.324813383@linuxfoundation.org>
+In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
+References: <20200921162035.136047591@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,68 +42,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+From: Alexey Kardashevskiy <aik@ozlabs.ru>
 
-[ Upstream commit 6eb158ec0a45dbfd98bc6971c461b7d4d5bf61b3 ]
+commit 437ef802e0adc9f162a95213a3488e8646e5fc03 upstream.
 
-The driver-specific usage of the DMA_CTRL_ACK flag was replaced with a
-custom flag in commit ceeeb99cd821 ("dmaengine: mxs: rename custom flag"),
-but i2c-mxs was not updated to use the new flag, completely breaking I2C
-transactions using DMA.
+There are 2 problems with it:
+  1. "<" vs expected "<<"
+  2. the shift number is an IOMMU page number mask, not an address
+  mask as the IOMMU page shift is missing.
 
-Fixes: ceeeb99cd821 ("dmaengine: mxs: rename custom flag")
-Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This did not hit us before f1565c24b596 ("powerpc: use the generic
+dma_ops_bypass mode") because we had additional code to handle bypass
+mask so this chunk (almost?) never executed.However there were
+reports that aacraid does not work with "iommu=nobypass".
+
+After f1565c24b596, aacraid (and probably others which call
+dma_get_required_mask() before setting the mask) was unable to enable
+64bit DMA and fall back to using IOMMU which was known not to work,
+one of the problems is double free of an IOMMU page.
+
+This fixes DMA for aacraid, both with and without "iommu=nobypass" in
+the kernel command line. Verified with "stress-ng -d 4".
+
+Fixes: 6a5c7be5e484 ("powerpc: Override dma_get_required_mask by platform hook and ops")
+Cc: stable@vger.kernel.org # v3.2+
+Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200908015106.79661-1-aik@ozlabs.ru
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/i2c/busses/i2c-mxs.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ arch/powerpc/kernel/dma-iommu.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/i2c/busses/i2c-mxs.c b/drivers/i2c/busses/i2c-mxs.c
-index 9587347447f0f..c4b08a9244614 100644
---- a/drivers/i2c/busses/i2c-mxs.c
-+++ b/drivers/i2c/busses/i2c-mxs.c
-@@ -25,6 +25,7 @@
- #include <linux/of_device.h>
- #include <linux/dma-mapping.h>
- #include <linux/dmaengine.h>
-+#include <linux/dma/mxs-dma.h>
+--- a/arch/powerpc/kernel/dma-iommu.c
++++ b/arch/powerpc/kernel/dma-iommu.c
+@@ -99,7 +99,8 @@ static u64 dma_iommu_get_required_mask(s
+ 	if (!tbl)
+ 		return 0;
  
- #define DRIVER_NAME "mxs-i2c"
+-	mask = 1ULL < (fls_long(tbl->it_offset + tbl->it_size) - 1);
++	mask = 1ULL << (fls_long(tbl->it_offset + tbl->it_size) +
++			tbl->it_page_shift - 1);
+ 	mask += mask - 1;
  
-@@ -200,7 +201,8 @@ static int mxs_i2c_dma_setup_xfer(struct i2c_adapter *adap,
- 		dma_map_sg(i2c->dev, &i2c->sg_io[0], 1, DMA_TO_DEVICE);
- 		desc = dmaengine_prep_slave_sg(i2c->dmach, &i2c->sg_io[0], 1,
- 					DMA_MEM_TO_DEV,
--					DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
-+					DMA_PREP_INTERRUPT |
-+					MXS_DMA_CTRL_WAIT4END);
- 		if (!desc) {
- 			dev_err(i2c->dev,
- 				"Failed to get DMA data write descriptor.\n");
-@@ -228,7 +230,8 @@ static int mxs_i2c_dma_setup_xfer(struct i2c_adapter *adap,
- 		dma_map_sg(i2c->dev, &i2c->sg_io[1], 1, DMA_FROM_DEVICE);
- 		desc = dmaengine_prep_slave_sg(i2c->dmach, &i2c->sg_io[1], 1,
- 					DMA_DEV_TO_MEM,
--					DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
-+					DMA_PREP_INTERRUPT |
-+					MXS_DMA_CTRL_WAIT4END);
- 		if (!desc) {
- 			dev_err(i2c->dev,
- 				"Failed to get DMA data write descriptor.\n");
-@@ -260,7 +263,8 @@ static int mxs_i2c_dma_setup_xfer(struct i2c_adapter *adap,
- 		dma_map_sg(i2c->dev, i2c->sg_io, 2, DMA_TO_DEVICE);
- 		desc = dmaengine_prep_slave_sg(i2c->dmach, i2c->sg_io, 2,
- 					DMA_MEM_TO_DEV,
--					DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
-+					DMA_PREP_INTERRUPT |
-+					MXS_DMA_CTRL_WAIT4END);
- 		if (!desc) {
- 			dev_err(i2c->dev,
- 				"Failed to get DMA data write descriptor.\n");
--- 
-2.25.1
-
+ 	return mask;
 
 
