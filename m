@@ -2,142 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE7C271946
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 04:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6BF1271948
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 04:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726318AbgIUCZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 22:25:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726104AbgIUCZy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 22:25:54 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D816EC061755
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 19:25:53 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id p15so6539559qvk.5
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 19:25:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=lFSktLUg4vlJvFR6j+da57CRrfVvfFDzsNGXcJskpWg=;
-        b=WijXhVtHinjwUial10pwIzB6tFdj9f7sYNeCvlh7wyq3AT2G2FbkKm5BieT99Q56Wd
-         VYRcXPC1N91NugEuLTa6orlyl6dmthJJa9WtSs5RJDe/31LNgPXVPQRmiu52d+HPXdqV
-         RONcqR38ovOMJ9pqh4hv4s5YjWVlv2Xl3x3hfPuJzkqcxrA+JPR3TeL+FbbzG2Kz7Wog
-         nIC/Iy9R8gaWyINgl8SEn3hy23QYrK8UTz4CmdkY+sXZs/xeEsP8AHXnResdLuW/R69X
-         M2l7U01gK4o2hW57vddMS4qdm4WPOYneDsJvwCmID1/4P00fAqnCRrped7wtIbjkAR8l
-         BEnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=lFSktLUg4vlJvFR6j+da57CRrfVvfFDzsNGXcJskpWg=;
-        b=WU+uy1aRDgz6H2zPbUHLb4T5Bs3BJmN2bzyoh631kL/UK+f8pGinBtOBJAvRWfLL9D
-         pNyawD3g7U6PHnTp9B4B0+rF5WhVat/MaQ1y4kkRIxjVXjdvznTVQcrj8Q1MzMpV8ALk
-         g9QPX+OHVQUatqxOVf5yOLNU+Yc/t8F+RAaY3HRBgZbNyHKjnP4oN8siBy7VLnhMC+yt
-         WHcBaQuMiZKYwdtCZW+uVTUIM/yqSnrjSlhp/2uvH1NR0QI/BIFQ0JQAbzgxi5P0PVQP
-         C8/nEry5X/8TkfWNU4+71Xn20PqQJbe5+6oZ0OWlUQPgQScc5A8SFpiL1lEzclwjSRDa
-         FoLg==
-X-Gm-Message-State: AOAM530t9xzMLXmdidgxYLIPyk0Sce0hSTX4FA6HpZE7eLYcje7XBqb9
-        NTEyNgXxqJG/JvzNAxZAMfA=
-X-Google-Smtp-Source: ABdhPJxB3XAhWC2X9pslRsVbnBITL/SE6RQDK8MbXF4CJ3WmAPUe41uo94GaO/8AlPphAuQKeZySoQ==
-X-Received: by 2002:a0c:e788:: with SMTP id x8mr41799676qvn.27.1600655152779;
-        Sun, 20 Sep 2020 19:25:52 -0700 (PDT)
-Received: from arch-chirva.localdomain (pool-68-133-6-220.bflony.fios.verizon.net. [68.133.6.220])
-        by smtp.gmail.com with ESMTPSA id w44sm9044859qth.9.2020.09.20.19.25.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Sep 2020 19:25:52 -0700 (PDT)
-Date:   Sun, 20 Sep 2020 22:25:50 -0400
-From:   Stuart Little <achirvasub@gmail.com>
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>, linux-nvdimm@lists.01.org
-Cc:     kernel list <linux-kernel@vger.kernel.org>
-Subject: Re: PROBLEM: 5.9.0-rc6 fails =?utf-8?Q?to_?=
- =?utf-8?Q?compile_due_to_'redefinition_of_=E2=80=98dax=5Fsupported?=
- =?utf-8?B?4oCZJw==?=
-Message-ID: <20200921022550.GE3027080@arch-chirva.localdomain>
-References: <20200921010359.GO3027113@arch-chirva.localdomain>
+        id S1726326AbgIUC1l convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 20 Sep 2020 22:27:41 -0400
+Received: from smtp.h3c.com ([60.191.123.56]:45879 "EHLO h3cspam01-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726104AbgIUC1l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Sep 2020 22:27:41 -0400
+Received: from DAG2EX10-IDC.srv.huawei-3com.com ([10.8.0.73])
+        by h3cspam01-ex.h3c.com with ESMTPS id 08L2QjpK039265
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 21 Sep 2020 10:26:45 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
+ DAG2EX10-IDC.srv.huawei-3com.com (10.8.0.73) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 21 Sep 2020 10:26:46 +0800
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
+ by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
+ mapi id 15.01.1713.004; Mon, 21 Sep 2020 10:26:46 +0800
+From:   Tianxianting <tian.xianting@h3c.com>
+To:     Keith Busch <kbusch@kernel.org>
+CC:     "axboe@fb.com" <axboe@fb.com>, "hch@lst.de" <hch@lst.de>,
+        "sagi@grimberg.me" <sagi@grimberg.me>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] [v2] nvme: use correct upper limit for tag in
+ nvme_handle_cqe()
+Thread-Topic: [PATCH] [v2] nvme: use correct upper limit for tag in
+ nvme_handle_cqe()
+Thread-Index: AQHWjamkvjMzTC+ou0aptn5bKR4hY6luQCAAgAEKLTCAAxV5EA==
+Date:   Mon, 21 Sep 2020 02:26:46 +0000
+Message-ID: <1f0a3015fd6f40e792a15486f34491c7@h3c.com>
+References: <20200918104420.30219-1-tian.xianting@h3c.com>
+ <20200918192034.GA4030837@dhcp-10-100-145-180.wdl.wdc.com> 
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.99.141.128]
+x-sender-location: DAG2
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200921010359.GO3027113@arch-chirva.localdomain>
+X-DNSRBL: 
+X-MAIL: h3cspam01-ex.h3c.com 08L2QjpK039265
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-An update on this: I've done a bisect, with the following result.
+Hi Keith,
+I found an extreme case, 
+in function blk_mq_alloc_map_and_requests(), it will adjust tagset depth by 'set->queue_depth >>= 1' if there is no enough memory for rqs. 
+If this happens, the real available number of tags(nr_tags) is much smaller than nvmeq->q_depth.
+So the judgement "if (unlikely(cqe->command_id >= nvmeq->q_depth))" in nvme_handle_cqe() is really
+meaningless.
 
---- cut here ---
+I figured out a new patch, which replaces the meaningless judgement by checking whether the returned
+req is null, if it is null, directly return.
 
-e2ec5128254518cae320d5dc631b71b94160f663 is the first bad commit
-commit e2ec5128254518cae320d5dc631b71b94160f663
-Author: Jan Kara <jack@suse.cz>
-Date:   Sun Sep 20 08:54:42 2020 -0700
+Would you please spare several minutes to review below new patch? thanks
+https://lkml.org/lkml/2020/9/20/400
 
-    dm: Call proper helper to determine dax support
-    
-    DM was calling generic_fsdax_supported() to determine whether a device
-    referenced in the DM table supports DAX. However this is a helper for "leaf" device drivers so that
-    they don't have to duplicate common generic checks. High level code
-    should call dax_supported() helper which that calls into appropriate
-    helper for the particular device. This problem manifested itself as
-    kernel messages:
-    
-    dm-3: error: dax access failed (-95)
-    
-    when lvm2-testsuite run in cases where a DM device was stacked on top of
-    another DM device.
-    
-    Fixes: 7bf7eac8d648 ("dax: Arrange for dax_supported check to span multiple devices")
-    Cc: <stable@vger.kernel.org>
-    Tested-by: Adrian Huang <ahuang12@lenovo.com>
-    Signed-off-by: Jan Kara <jack@suse.cz>
-    Acked-by: Mike Snitzer <snitzer@redhat.com>
-    Reported-by: kernel test robot <lkp@intel.com>
-    Link: https://lore.kernel.org/r/160061715195.13131.5503173247632041975.stgit@dwillia2-desk3.amr.corp.intel.com
-    Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+-----Original Message-----
+From: tianxianting (RD) 
+Sent: Saturday, September 19, 2020 11:15 AM
+To: 'Keith Busch' <kbusch@kernel.org>
+Cc: axboe@fb.com; hch@lst.de; sagi@grimberg.me; linux-nvme@lists.infradead.org; linux-kernel@vger.kernel.org
+Subject: RE: [PATCH] [v2] nvme: use correct upper limit for tag in nvme_handle_cqe()
 
- drivers/dax/super.c   |  4 ++++
- drivers/md/dm-table.c | 10 +++++++---
- include/linux/dax.h   | 22 ++++++++++++++++++++--
- 3 files changed, 31 insertions(+), 5 deletions(-)
+Hi Keith,
+Thanks a lot for your comments,
+I will try to figure out a safe fix for this issue, then for you review:) 
 
---- end ---
+-----Original Message-----
+From: Keith Busch [mailto:kbusch@kernel.org] 
+Sent: Saturday, September 19, 2020 3:21 AM
+To: tianxianting (RD) <tian.xianting@h3c.com>
+Cc: axboe@fb.com; hch@lst.de; sagi@grimberg.me; linux-nvme@lists.infradead.org; linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [v2] nvme: use correct upper limit for tag in nvme_handle_cqe()
 
-On Sun, Sep 20, 2020 at 09:03:59PM -0400, Stuart Little wrote:
-> I am trying to compile for an x86_64 machine (Intel(R) Core(TM) i7-7500U CPU @ 2.70GHz). The config file I am currently using is at
-> 
-> https://termbin.com/xin7
-> 
-> The build for 5.9.0-rc6 fails with the following errors:
-> 
-> --- cut here ---
-> 
-> drivers/dax/super.c:325:6: error: redefinition of ‘dax_supported’
->   325 | bool dax_supported(struct dax_device *dax_dev, struct block_device *bdev,
->       |      ^~~~~~~~~~~~~
-> In file included from drivers/dax/super.c:16:
-> ./include/linux/dax.h:162:20: note: previous definition of ‘dax_supported’ was here
->   162 | static inline bool dax_supported(struct dax_device *dax_dev,
->       |                    ^~~~~~~~~~~~~
->   CC      lib/memregion.o
->   CC [M]  drivers/gpu/drm/drm_gem_vram_helper.o
-> make[2]: *** [scripts/Makefile.build:283: drivers/dax/super.o] Error 1
-> make[1]: *** [scripts/Makefile.build:500: drivers/dax] Error 2
-> make[1]: *** Waiting for unfinished jobs....
-> 
-> --- end ---
-> 
-> That's earlier on, and then later, at the end of the (failed) build:
-> 
-> make: *** [Makefile:1784: drivers] Error 2
-> 
-> The full build log is at
-> 
-> https://termbin.com/ihxj
-> 
-> but I do not see anything else amiss. 5.9.0-rc5 built fine last week.
+On Fri, Sep 18, 2020 at 06:44:20PM +0800, Xianting Tian wrote:
+> @@ -940,7 +940,9 @@ static inline void nvme_handle_cqe(struct nvme_queue *nvmeq, u16 idx)
+>  	struct nvme_completion *cqe = &nvmeq->cqes[idx];
+>  	struct request *req;
+>  
+> -	if (unlikely(cqe->command_id >= nvmeq->q_depth)) {
+> +	if (unlikely(cqe->command_id >=
+> +			nvmeq->qid ? nvmeq->dev->tagset.queue_depth :
+> +			nvmeq->dev->admin_tagset.queue_depth)) {
+
+Both of these values are set before blk_mq_alloc_tag_set(), so you still have a race. The interrupt handler probably just shouldn't be registered with the queue before the tagset is initialized since there can't be any work for the handler to do before that happens anyway.
+
+The controller is definitely broken, though, and will lead to unavoidable corruption if it's really behaving this way.
