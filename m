@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C353272D45
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:39:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE994272C63
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729185AbgIUQin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:38:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39240 "EHLO mail.kernel.org"
+        id S1728343AbgIUQb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:31:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728626AbgIUQiR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:38:17 -0400
+        id S1728246AbgIUQbz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:31:55 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B01AE206B7;
-        Mon, 21 Sep 2020 16:38:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9FE0C2396F;
+        Mon, 21 Sep 2020 16:31:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706296;
-        bh=wOGQmjX4h89ENxZdVhJDy72GEdbI3DlGxhw+F2HHsW0=;
+        s=default; t=1600705915;
+        bh=LsR533p9yB5t7YUneI1L6ClLmqw23x4NqPSlHi85swQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=alVltCbwKQaaOSkibqAwTJl4g/RSI+DHbvg/hs0TQbcrmP97YWOPp2XZtNt3oLlTn
-         tRh8jPfyUDLatxmrC/wx3/z0SqotZgchmwKpgGYPqT/SlyD8goFeqwwnfOoDF4cVMW
-         C3P/8XdMOrNrr34lsGhozyODO7Uyhi1vvxZK/GUE=
+        b=Obv0JawuU+X62l0E7R6BI0sno3cXF17CYExy0Le3vcmf8BsJ9GI55YUV50UZbMzYx
+         zNHS+UPWz+2VrIRUPDUQ5CVzYAAQCUtSfZh1Ni1BeX3o6zwbvoGx8CUUJzu303XVQF
+         9qBzroLZ1KfvTxSVGnmqER+SUEsR1ltLM6ZtVxps=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mike Christie <michael.christie@oralce.com>,
-        Varun Prakash <varun@chelsio.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 4.14 43/94] scsi: target: iscsi: Fix data digest calculation
+        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald <pmeerw@pmeerw.net>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Stable@vger.kernel.org
+Subject: [PATCH 4.4 14/46] iio:accel:mma8452: Fix timestamp alignment and prevent data leak.
 Date:   Mon, 21 Sep 2020 18:27:30 +0200
-Message-Id: <20200921162037.524819462@linuxfoundation.org>
+Message-Id: <20200921162034.006731941@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
-References: <20200921162035.541285330@linuxfoundation.org>
+In-Reply-To: <20200921162033.346434578@linuxfoundation.org>
+References: <20200921162033.346434578@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,57 +45,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Varun Prakash <varun@chelsio.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-commit 5528d03183fe5243416c706f64b1faa518b05130 upstream.
+commit 89226a296d816727405d3fea684ef69e7d388bd8 upstream.
 
-Current code does not consider 'page_off' in data digest calculation. To
-fix this, add a local variable 'first_sg' and set first_sg.offset to
-sg->offset + page_off.
+One of a class of bugs pointed out by Lars in a recent review.
+iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
+to the size of the timestamp (8 bytes).  This is not guaranteed in
+this driver which uses a 16 byte u8 array on the stack.  As Lars also noted
+this anti pattern can involve a leak of data to userspace and that
+indeed can happen here.  We close both issues by moving to
+a suitable structure in the iio_priv() data with alignment
+ensured by use of an explicit c structure.  This data is allocated
+with kzalloc so no data can leak appart from previous readings.
 
-Link: https://lore.kernel.org/r/1598358910-3052-1-git-send-email-varun@chelsio.com
-Fixes: e48354ce078c ("iscsi-target: Add iSCSI fabric support for target v4.1")
-Cc: <stable@vger.kernel.org>
-Reviewed-by: Mike Christie <michael.christie@oralce.com>
-Signed-off-by: Varun Prakash <varun@chelsio.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+The additional forcing of the 8 byte alignment of the timestamp
+is not strictly necessary but makes the code less fragile by
+making this explicit.
+
+Fixes: c7eeea93ac60 ("iio: Add Freescale MMA8452Q 3-axis accelerometer driver")
+Reported-by: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Peter Meerwald <pmeerw@pmeerw.net>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: <Stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/target/iscsi/iscsi_target.c |   17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+ drivers/iio/accel/mma8452.c |   11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
---- a/drivers/target/iscsi/iscsi_target.c
-+++ b/drivers/target/iscsi/iscsi_target.c
-@@ -1382,14 +1382,27 @@ static u32 iscsit_do_crypto_hash_sg(
- 	sg = cmd->first_data_sg;
- 	page_off = cmd->first_data_sg_off;
+--- a/drivers/iio/accel/mma8452.c
++++ b/drivers/iio/accel/mma8452.c
+@@ -96,6 +96,12 @@ struct mma8452_data {
+ 	u8 ctrl_reg1;
+ 	u8 data_cfg;
+ 	const struct mma_chip_info *chip_info;
++
++	/* Ensure correct alignment of time stamp when present */
++	struct {
++		__be16 channels[3];
++		s64 ts __aligned(8);
++	} buffer;
+ };
  
-+	if (data_length && page_off) {
-+		struct scatterlist first_sg;
-+		u32 len = min_t(u32, data_length, sg->length - page_off);
-+
-+		sg_init_table(&first_sg, 1);
-+		sg_set_page(&first_sg, sg_page(sg), len, sg->offset + page_off);
-+
-+		ahash_request_set_crypt(hash, &first_sg, NULL, len);
-+		crypto_ahash_update(hash);
-+
-+		data_length -= len;
-+		sg = sg_next(sg);
-+	}
-+
- 	while (data_length) {
--		u32 cur_len = min_t(u32, data_length, (sg->length - page_off));
-+		u32 cur_len = min_t(u32, data_length, sg->length);
+ /**
+@@ -700,14 +706,13 @@ static irqreturn_t mma8452_trigger_handl
+ 	struct iio_poll_func *pf = p;
+ 	struct iio_dev *indio_dev = pf->indio_dev;
+ 	struct mma8452_data *data = iio_priv(indio_dev);
+-	u8 buffer[16]; /* 3 16-bit channels + padding + ts */
+ 	int ret;
  
- 		ahash_request_set_crypt(hash, sg, NULL, cur_len);
- 		crypto_ahash_update(hash);
+-	ret = mma8452_read(data, (__be16 *)buffer);
++	ret = mma8452_read(data, data->buffer.channels);
+ 	if (ret < 0)
+ 		goto done;
  
- 		data_length -= cur_len;
--		page_off = 0;
- 		/* iscsit_map_iovec has already checked for invalid sg pointers */
- 		sg = sg_next(sg);
- 	}
+-	iio_push_to_buffers_with_timestamp(indio_dev, buffer,
++	iio_push_to_buffers_with_timestamp(indio_dev, &data->buffer,
+ 					   iio_get_time_ns());
+ 
+ done:
 
 
