@@ -2,137 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0729272935
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C91627293A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:57:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727623AbgIUO4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 10:56:21 -0400
-Received: from mail-il1-f205.google.com ([209.85.166.205]:43555 "EHLO
-        mail-il1-f205.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726430AbgIUO4V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:56:21 -0400
-Received: by mail-il1-f205.google.com with SMTP id t11so11292969ilj.10
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 07:56:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=X494KYDH9UJUyj96W5LQtORQMzd+WMrT10MmALrBCuk=;
-        b=lSlPwn/8NUABoc92CW8ND8oJR7tzAlCQqDfyQ72dCk4sX7kVKhkx81QL5usY/7eCHj
-         WxSwA4hU8kYvo7g+O996WcwxsOIHw61B6T94sRE2t3cVny1OeWhr8Ae4K+GrFJQo6ZH8
-         DbAjQfh49unAm2+9ipiuFrIDlbEkS/M4pE3lUhOfLA2awDLUYWbMRKD7wrE8H9XLerke
-         vV6BoVhC3A9ZZ96Xs1wkYqLihR1e9XwOhgzu35a9lOv7o3x5QJ3mHaDi0TJuZ0Fi8lUt
-         C7TW/u+tZcpm03TOgBPuAwySnfDLDIhGz0LJrNVGwIdQsVut1rveBh4KC7v6NhkQRkcE
-         cAgw==
-X-Gm-Message-State: AOAM530Z4EmhPDH6XibfSAGvbczbIIdrGkEOIPDT/WI1K8RzKygqzi8X
-        vpW28Jz6O7HGiywCZ44UnhCjChDG920AtiHQf2Z0cAF+ePTf
-X-Google-Smtp-Source: ABdhPJx0BHqSrjQ0MKpr5g0u4KiHtoaqea2CXDOLFPmsTbEgZiYCW2oia/g9YAKq5Jx6CxAmJd1OR2rHoCwcRPm/iQzTQCAPNttY
+        id S1727405AbgIUO5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 10:57:41 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36916 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726419AbgIUO5k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 10:57:40 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1600700259;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Wi7ymOcpFYjdpuVeX/JVEnmGW5RFuMojzVtSTICsBi0=;
+        b=CFoD/5jItiHHwU12A5tvLagpytLD2blip/iNMDFTNuLEDzD+Ftnx0nOTrSM81fZProO760
+        aVL0aoFQJJUtJe3eq6skTdiXZBR5p6c+75UiaHCK54KAPWK4vfrrx/9/8QIhYk045Gk5Da
+        xnsDChPVkKGnZ26ku4wxqMBVlFOUFZQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0559CABC4;
+        Mon, 21 Sep 2020 14:58:15 +0000 (UTC)
+Date:   Mon, 21 Sep 2020 16:57:38 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Peter Xu <peterx@redhat.com>, Tejun Heo <tj@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Maya B . Gokhale" <gokhale2@llnl.gov>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Marty Mcfadden <mcfadden8@llnl.gov>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
+Message-ID: <20200921145738.GN12990@dhcp22.suse.cz>
+References: <e6c352f8-7ee9-0702-10a4-122d2c4422fc@nvidia.com>
+ <20200916174804.GC8409@ziepe.ca>
+ <20200916184619.GB40154@xz-x1>
+ <20200917112538.GD8409@ziepe.ca>
+ <CAHk-=wjtfjB3TqTFRzVmOrB9Mii6Yzc-=wKq0fu4ruDE6AsJgg@mail.gmail.com>
+ <20200917193824.GL8409@ziepe.ca>
+ <CAHk-=wiY_g+SSjncZi8sO=LrxXmMox0NO7K34-Fs653XVXheGg@mail.gmail.com>
+ <20200918164032.GA5962@xz-x1>
+ <20200921134200.GK12990@dhcp22.suse.cz>
+ <20200921144134.fuvkkv6wgrzpbwnv@wittgenstein>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:7017:: with SMTP id l23mr36545774ioc.120.1600700180053;
- Mon, 21 Sep 2020 07:56:20 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 07:56:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009fc91605afd40d89@google.com>
-Subject: KASAN: stack-out-of-bounds Read in xfrm_selector_match (2)
-From:   syzbot <syzbot+577fbac3145a6eb2e7a5@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, herbert@gondor.apana.org.au, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        steffen.klassert@secunet.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921144134.fuvkkv6wgrzpbwnv@wittgenstein>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon 21-09-20 16:41:34, Christian Brauner wrote:
+> On Mon, Sep 21, 2020 at 03:42:00PM +0200, Michal Hocko wrote:
+> > [Cc Tejun and Christian - this is a part of a larger discussion which is
+> >  not directly related to this particular question so let me trim the
+> >  original email to the bare minimum.]
+> > 
+> > On Fri 18-09-20 12:40:32, Peter Xu wrote:
+> > [...]
+> > > One issue is when we charge for cgroup we probably can't do that onto the new
+> > > mm/task, since copy_namespaces() is called after copy_mm().  I don't know
+> > > enough about cgroup, I thought the child will inherit the parent's, but I'm not
+> > > sure.  Or, can we change that order of copy_namespaces() && copy_mm()?  I don't
+> > > see a problem so far but I'd like to ask first..
+> > 
+> > I suspect you are referring to CLONE_INTO_CGROUP, right? I have only now
+> > learned about this feature so I am not deeply familiar with all the
+> > details and I might be easily wrong. Normally all the cgroup aware
+> > resources are accounted to the parent's cgroup. For memcg that includes
+> > all the page tables, early CoW and other allocations with __GFP_ACCOUNT.
+> > IIUC CLONE_INTO_CGROUP properly then this hasn't changed as the child is
+> > associated to its new cgroup (and memcg) only in cgroup_post_fork. If
+> > that is correct then we might have quite a lot of resources bound to
+> > child's lifetime but accounted to the parent's memcg which can lead to
+> > all sorts of interesting problems (e.g. unreclaimable memory - even by
+> > the oom killer).
+> > 
+> > Christian, Tejun is this the expected semantic or I am just misreading
+> > the code?
+> 
+> Hey Michal,
+> 
+> Thanks for the Cc!
+> 
+> If I understand your question correctly, then you are correct. The logic
+> is split in three simple parts:
+> 1. Child gets created and doesn't live in any cset
+>    - This should mean that resources are still charged against the
+>      parent's memcg which is what you're asking afiu.
+> 1. cgroup_can_fork()
+>    - create new or find existing matching cset for the child
+> 3. cgroup_post_fork()
+>    - move/attach child to the new or found cset
+> 
+> _Purely from a CLONE_INTO_CGROUP perspective_ you should be ok to
+> reverse the order of copy_mm() and copy_namespaces().
 
-syzbot found the following issue on:
-
-HEAD commit:    eb5f95f1 Merge tag 's390-5.9-6' of git://git.kernel.org/pu..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13996ad5900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ffe85b197a57c180
-dashboard link: https://syzkaller.appspot.com/bug?extid=577fbac3145a6eb2e7a5
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+577fbac3145a6eb2e7a5@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: stack-out-of-bounds in xfrm_flowi_dport include/net/xfrm.h:877 [inline]
-BUG: KASAN: stack-out-of-bounds in __xfrm6_selector_match net/xfrm/xfrm_policy.c:216 [inline]
-BUG: KASAN: stack-out-of-bounds in xfrm_selector_match+0xf36/0xf60 net/xfrm/xfrm_policy.c:229
-Read of size 2 at addr ffffc9001914f55c by task syz-executor.4/15633
-
-CPU: 0 PID: 15633 Comm: syz-executor.4 Not tainted 5.9.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0x5/0x497 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- xfrm_flowi_dport include/net/xfrm.h:877 [inline]
- __xfrm6_selector_match net/xfrm/xfrm_policy.c:216 [inline]
- xfrm_selector_match+0xf36/0xf60 net/xfrm/xfrm_policy.c:229
- xfrm_state_look_at.constprop.0+0x144/0x3f0 net/xfrm/xfrm_state.c:1022
- xfrm_state_find+0x1a16/0x4d50 net/xfrm/xfrm_state.c:1092
- xfrm_tmpl_resolve_one net/xfrm/xfrm_policy.c:2384 [inline]
- xfrm_tmpl_resolve+0x2f3/0xd40 net/xfrm/xfrm_policy.c:2429
- xfrm_resolve_and_create_bundle+0x123/0x2590 net/xfrm/xfrm_policy.c:2719
- xfrm_lookup_with_ifid+0x235/0x2130 net/xfrm/xfrm_policy.c:3053
- xfrm_lookup net/xfrm/xfrm_policy.c:3177 [inline]
- xfrm_lookup_route+0x36/0x1e0 net/xfrm/xfrm_policy.c:3188
- ip_route_output_flow+0xa6/0xc0 net/ipv4/route.c:2769
- udp_sendmsg+0x1a16/0x26c0 net/ipv4/udp.c:1201
- udpv6_sendmsg+0x14dd/0x2b90 net/ipv6/udp.c:1344
- inet6_sendmsg+0x99/0xe0 net/ipv6/af_inet6.c:638
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x331/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmmsg+0x195/0x480 net/socket.c:2497
- __do_sys_sendmmsg net/socket.c:2526 [inline]
- __se_sys_sendmmsg net/socket.c:2523 [inline]
- __x64_sys_sendmmsg+0x99/0x100 net/socket.c:2523
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45d5f9
-Code: 5d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 2b b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f8aa009cc78 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
-RAX: ffffffffffffffda RBX: 0000000000027a40 RCX: 000000000045d5f9
-RDX: 00000000000005c3 RSI: 0000000020000240 RDI: 0000000000000004
-RBP: 000000000118cf88 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118cf4c
-R13: 000000000169fb6f R14: 00007f8aa009d9c0 R15: 000000000118cf4c
-
-
-addr ffffc9001914f55c is located in stack of task syz-executor.4/15633 at offset 220 in frame:
- udp_sendmsg+0x0/0x26c0 net/ipv4/udp.c:2708
-
-this frame has 5 objects:
- [32, 40) 'rt'
- [64, 104) 'ipc'
- [144, 200) 'fl4_stack'
- [240, 296) 'cork'
- [336, 408) 'opt_copy'
-
-Memory state around the buggy address:
- ffffc9001914f400: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffffc9001914f480: f1 f1 f1 f1 00 f2 f2 f2 00 00 00 00 00 f2 f2 f2
->ffffc9001914f500: f2 f2 00 00 00 00 00 00 00 f2 f2 f2 f2 f2 00 00
-                                                    ^
- ffffc9001914f580: 00 00 00 00 00 f2 f2 f2 f2 f2 00 00 00 00 00 00
- ffffc9001914f600: 00 00 00 f3 f3 f3 f3 f3 00 00 00 00 00 00 00 00
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Switching the order wouldn't make much of a difference right. At least
+not for memcg where all the accounted allocations will still go to
+current's memcg.
+-- 
+Michal Hocko
+SUSE Labs
