@@ -2,138 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10324272085
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:23:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F08F327200D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727151AbgIUKWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 06:22:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726915AbgIUKVC (ORCPT
+        id S1726719AbgIUKUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:20:14 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:18271 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726326AbgIUKUN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 06:21:02 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A0AEC0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:21:02 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id t10so12133933wrv.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:21:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=1urHh7daH3LoOqNIcatz+V8D8QIxpgJB7hMXIZZ34x8=;
-        b=YjR+2ZxADZaysP7sw04FPhYP3YPw21PgBstXPTe3UwIIsIvxSdaRgWBLUKrGCbw56r
-         KSmiVKdsOVv0Z9mDW82UCgPiG8NptXiVwiymXb+AEp7VChMnFw8+uo2GanEjEhXIZSu9
-         AVdIcAPCng8oQxUttO4d0ogtZ32GGoyueYSG11AHhkpx94Ij4JrMlGEjxHwJu/G0POdK
-         DGHzJ8X8OyWo3mgdsN/donCalFVhbAISMXlqC3dS0+ZNTyRMhi8mR6rJGTkcsFPaEBUo
-         lUpa50VSd70ObhfzKgtAUjCX1Pqcj8jBfKzQQDx34YlFyJwYzKEbN6E6CiVN5yi7NBer
-         9xkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=1urHh7daH3LoOqNIcatz+V8D8QIxpgJB7hMXIZZ34x8=;
-        b=PUBdQhKdTH2SqMEA67ej9GRROJJD5DIv9igCo/ZY2xOuhtE8UV9UKE5CIxi9dcQAze
-         d+ReAAJw0Fo49plzPk5/U4Dv0ZVZqFugXF0MGE+paDWzljWDL8LJjFLLlTRHQ94P5n88
-         JdMYK6gAlwna9xkm2tbK36nc0xVYSE/6bELjAmVKslrn24Bj5FK6mCQtBc4rqFGH95C/
-         IhcG1OBnxORSiIZ0LZjDys0lwxXjFjdkLX8K1tMFn1LNZ3T9aVwd+u3x4g7p8NGW8qkI
-         TH1/qHPcMVSmAyPRxerjCCQG5ValEnJlF6GFUGRsQPcTiEPeSR8Ig6aeEFKcJzLPs3yP
-         Hi3w==
-X-Gm-Message-State: AOAM5323uOadDcW+ayFXvbxOk85n8gnkLlDxPJa057BLAOdO8ACkjz97
-        i6ALEqS5HfYkP+YRM9lzZBtF4Q==
-X-Google-Smtp-Source: ABdhPJw4Md6NhAxXg8ikwFgPuyNgrFboC/5yIDUW7lgrPEHwO6yzae/wCh2FO6LosU8a+MYU2KltVA==
-X-Received: by 2002:adf:f984:: with SMTP id f4mr51635137wrr.102.1600683660854;
-        Mon, 21 Sep 2020 03:21:00 -0700 (PDT)
-Received: from localhost.localdomain ([51.15.160.169])
-        by smtp.googlemail.com with ESMTPSA id l17sm18804629wme.11.2020.09.21.03.21.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 21 Sep 2020 03:21:00 -0700 (PDT)
-From:   Corentin Labbe <clabbe@baylibre.com>
-To:     gregkh@linuxfoundation.org, laurent.pinchart@skynet.be,
-        mchehab@kernel.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH RFT/RFC 30/49] staging: media: zoran: use devm for videocodec_master alloc
-Date:   Mon, 21 Sep 2020 10:20:05 +0000
-Message-Id: <1600683624-5863-31-git-send-email-clabbe@baylibre.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1600683624-5863-1-git-send-email-clabbe@baylibre.com>
-References: <1600683624-5863-1-git-send-email-clabbe@baylibre.com>
+        Mon, 21 Sep 2020 06:20:13 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f687e500001>; Mon, 21 Sep 2020 03:20:00 -0700
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 21 Sep
+ 2020 10:20:12 +0000
+Received: from [192.168.22.23] (10.124.1.5) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Mon, 21 Sep 2020 10:20:06 +0000
+From:   Thierry Reding <treding@nvidia.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+CC:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?utf-8?q?Micha=C5=82_Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        <linux-i2c@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 24/34] i2c: tegra: Factor out packet header setup from
+ tegra_i2c_xfer_msg()
+In-Reply-To: <20200908224006.25636-25-digetx@gmail.com>
+References: <20200908224006.25636-25-digetx@gmail.com>
+X-NVConfidentiality: public
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Message-ID: <6b1242e1dc9e4f3b9236c3f21adad8da@HQMAIL111.nvidia.com>
+Date:   Mon, 21 Sep 2020 10:20:06 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600683600; bh=B8Vh7zhkbIZwjqsB9fLKohr/wmJ9rfYxnN0j217utpA=;
+        h=From:To:CC:Subject:In-Reply-To:References:X-NVConfidentiality:
+         Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:
+         Date;
+        b=iFjM+n7D1ylqHjCzZ8z7LwAU96Mh5VXikso5Ksvz8k91M41E44LBQUFaeZQ/o10KU
+         ncxF+WkLebWWhndiHWBGTTGs4c+bBQ0q+L7uz0i4+ZaPzmnXWJVTp4fP5BFIod49RJ
+         uAzQ526N83v0Vf+gUpdVHk5iBEXi7QQr8bWu2ao63DXnmqkIRAsBRZVhla8dmTZOq3
+         /9qn/qzkmKF7FSnLWaD2VyqV/gFfDkEAvey3wDwchtFXIvQvXLr0W80MQ2A1YVOjC5
+         43x260z4lwgLc5Cgst+CKVrt84DJ3zBVkwTMXUIkdMo/SupB2U3Mzhq6ThZJN+6YQw
+         hpJgxYoIpzxtA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's use devm allocations for videocodec, this simplify code.
+On Wed, 09 Sep 2020 01:39:56 +0300, Dmitry Osipenko wrote:
+> The code related to packet header setting up is a bit messy and makes
+> tegra_i2c_xfer_msg() more difficult to read than it could be. Let's
+> factor the packet header setup from tegra_i2c_xfer_msg() into separate
+> function in order to make code easier to read and follow.
+>=20
+> Reviewed-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> Acked-by: Thierry Reding <treding@nvidia.com>
+> ---
+>  drivers/i2c/busses/i2c-tegra.c | 92 ++++++++++++++++++++--------------
+>  1 file changed, 53 insertions(+), 39 deletions(-)
 
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
----
- drivers/staging/media/zoran/zoran_card.c | 22 +++++-----------------
- 1 file changed, 5 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/staging/media/zoran/zoran_card.c b/drivers/staging/media/zoran/zoran_card.c
-index 62e63804ae14..756b9a339f7e 100644
---- a/drivers/staging/media/zoran/zoran_card.c
-+++ b/drivers/staging/media/zoran/zoran_card.c
-@@ -989,18 +989,10 @@ static void zoran_remove(struct pci_dev *pdev)
- 		goto exit_free;
- 
- 	/* unregister videocodec bus */
--	if (zr->codec) {
--		struct videocodec_master *master = zr->codec->master_data;
--
-+	if (zr->codec)
- 		videocodec_detach(zr->codec);
--		kfree(master);
--	}
--	if (zr->vfe) {
--		struct videocodec_master *master = zr->vfe->master_data;
--
-+	if (zr->vfe)
- 		videocodec_detach(zr->vfe);
--		kfree(master);
--	}
- 
- 	/* unregister i2c bus */
- 	zoran_unregister_i2c(zr);
-@@ -1028,7 +1020,7 @@ static struct videocodec_master *zoran_setup_videocodec(struct zoran *zr, int ty
- {
- 	struct videocodec_master *m = NULL;
- 
--	m = kmalloc(sizeof(*m), GFP_KERNEL);
-+	m = devm_kmalloc(&zr->pci_dev->dev, sizeof(*m), GFP_KERNEL);
- 	if (!m)
- 		return m;
- 
-@@ -1234,7 +1226,7 @@ static int zoran_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		zr->codec = videocodec_attach(master_codec);
- 		if (!zr->codec) {
- 			pci_err(pdev, "%s - no codec found\n", __func__);
--			goto zr_free_codec;
-+			goto zr_unreg_i2c;
- 		}
- 		if (zr->codec->type != zr->card.video_codec) {
- 			pci_err(pdev, "%s - wrong codec\n", __func__);
-@@ -1248,7 +1240,7 @@ static int zoran_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		zr->vfe = videocodec_attach(master_vfe);
- 		if (!zr->vfe) {
- 			pci_err(pdev, "%s - no VFE found\n", __func__);
--			goto zr_free_vfe;
-+			goto zr_detach_codec;
- 		}
- 		if (zr->vfe->type != zr->card.video_vfe) {
- 			pci_err(pdev, "%s = wrong VFE\n", __func__);
-@@ -1269,12 +1261,8 @@ static int zoran_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 
- zr_detach_vfe:
- 	videocodec_detach(zr->vfe);
--zr_free_vfe:
--	kfree(master_vfe);
- zr_detach_codec:
- 	videocodec_detach(zr->codec);
--zr_free_codec:
--	kfree(master_codec);
- zr_unreg_i2c:
- 	zoran_unregister_i2c(zr);
- zr_free_irq:
--- 
-2.26.2
-
+Tested-by: Thierry Reding <treding@nvidia.com>
