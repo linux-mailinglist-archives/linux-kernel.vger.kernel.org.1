@@ -2,115 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC46272AD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F2B4272AD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:56:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727893AbgIUPzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 11:55:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54778 "EHLO
+        id S1727817AbgIUP4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 11:56:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726749AbgIUPza (ORCPT
+        with ESMTP id S1726749AbgIUP4B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 11:55:30 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B775EC0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 08:55:28 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id v23so11566165ljd.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 08:55:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KlAO2f2MCbdMFYmuMR/JVAe3ADfPLwZDOazJ0JPDtY8=;
-        b=X6obxRKeN8mR9RXp9MXChkD/M+vckq63Aq7SzA4AbmwqS/IV5RDlSeQScIvKUx90Yq
-         egE3yRvoKY3/syMLF2edGesVcPB6irZi2K8o1J7gzKQQYLf/KoNbSLvEDwPRQ8Zm/SCT
-         gq5vqLKF0gc7kMWfQqZL8aa0UB2Bz+NsoL8x+711eRc2LRrgrsg/Qn9SIOSuQ9Ca3Re+
-         Gztcy1jkdpujzRW0mt7Jdz3Iu8Kp1XCbeD5DMLzyrhsRRCN2VL1v0le3b5DU/mAV5WTR
-         X02fZxY1HAoBQI19wrg4qUPbFwT29TH7MY4J5mkMhi6z/F/8vW26DM+UxD+2RtSmOaVe
-         uYPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KlAO2f2MCbdMFYmuMR/JVAe3ADfPLwZDOazJ0JPDtY8=;
-        b=LzoB9NPoiuM9xRc3mAe5bLdU+vdN7fQV/2380X6Mul8wg2nLAw6xRnLYy+UKAXEJwH
-         BlyACtXCOHbyx1ITCaLsDGetdhjJNE6et/XXROR74IZ1vlA5RQdmXdSXa3c6WwDHVQrA
-         TyyXjmfHOjWWcFMXwtJfuT5YqhpCQxpmNA8p4q8NrCZyY3qAzqy6NwFApTVhb2h/Zlx5
-         4ssF0pYlf/WmwUAiHu8mIUILrAD+LrZtp9sa193cITwxhjOMzRLAKFAPeaDVSNxVWYxb
-         nLXPVIxT1ll+MwEY8hIgWdkImiEXI0SK2ezkwXFn5KknsTspWhvVWHelCqpnjd82b+a1
-         +zdw==
-X-Gm-Message-State: AOAM530G8U7n9yRlB9wu0d3dKrG5qn0wGSHc6gwUJgPtqsaaihe+DhPa
-        +Y//947zhp7B2sdYpFdPXM7RDRDz4iKENHvQEVJS8g==
-X-Google-Smtp-Source: ABdhPJzAzrg0an3L/O21olXYAkjIkNnbmJ64HN6mgah50aQ3PSN08J/FUDGQvp5j4/fAmKh3qQmu1dRpTCZjQgXqSpU=
-X-Received: by 2002:a2e:7c09:: with SMTP id x9mr116899ljc.192.1600703726805;
- Mon, 21 Sep 2020 08:55:26 -0700 (PDT)
+        Mon, 21 Sep 2020 11:56:01 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B5DC061755;
+        Mon, 21 Sep 2020 08:56:01 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f07e300d04ad4772eb9dd3d.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:e300:d04a:d477:2eb9:dd3d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 64C2B1EC03CE;
+        Mon, 21 Sep 2020 17:55:59 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600703759;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+mYlp3QXOc9MHktEVG8kmImHxYUpQiLAHdcsfxrlWjQ=;
+        b=nI/Xtt6pXswMgkG+QfbeaKEpzOhcW9L7ZuGwtgan3jJ69k6uknNrxKrGYC05iziyFfKroE
+        HM08a1lb+++bf0UNAAaph7wRJXfxLZqaTkt01+LuMu5qwbsO2mwtbVQkxI+lYsusUycwgN
+        J2D1/FPcXfyXuIMX1eso8ZhC23+HlmM=
+Date:   Mon, 21 Sep 2020 17:55:51 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Lenny Szubowicz <lszubowi@redhat.com>
+Cc:     linux-tip-commits@vger.kernel.org,
+        Lenny Szubowicz <lszubowi@redhat.com>,
+        Ard Biesheuvel <ardb@kernel.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [tip: efi/core] efi: Support for MOK variable config table
+Message-ID: <20200921155551.GA1470@zn.tnic>
+References: <20200905013107.10457-2-lszubowi@redhat.com>
+ <160041785494.15536.5659054027150173595.tip-bot2@tip-bot2>
 MIME-Version: 1.0
-References: <20200921080255.15505-1-zangchunxin@bytedance.com>
-In-Reply-To: <20200921080255.15505-1-zangchunxin@bytedance.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 21 Sep 2020 08:55:15 -0700
-Message-ID: <CALvZod5JpEsmNvbaCMEfRMt83GbeLJk2oM0=siCj+aXEnxYh4Q@mail.gmail.com>
-Subject: Re: [PATCH] mm/memcontrol: Add the drop_cache interface for cgroup v2
-To:     zangchunxin@bytedance.com
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kafai@fb.com,
-        Song Liu <songliubraving@fb.com>, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <160041785494.15536.5659054027150173595.tip-bot2@tip-bot2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 1:05 AM <zangchunxin@bytedance.com> wrote:
->
-> From: Chunxin Zang <zangchunxin@bytedance.com>
->
-> In the cgroup v1, we have 'force_mepty' interface. This is very
-> useful for userspace to actively release memory. But the cgroup
-> v2 does not.
->
-> This patch reuse cgroup v1's function, but have a new name for
-> the interface. Because I think 'drop_cache' may be is easier to
-> understand :)
->
-> Signed-off-by: Chunxin Zang <zangchunxin@bytedance.com>
-> ---
->  Documentation/admin-guide/cgroup-v2.rst | 11 +++++++++++
->  mm/memcontrol.c                         |  5 +++++
->  2 files changed, 16 insertions(+)
->
-> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-> index ce3e05e41724..fbff959c8116 100644
-> --- a/Documentation/admin-guide/cgroup-v2.rst
-> +++ b/Documentation/admin-guide/cgroup-v2.rst
-> @@ -1181,6 +1181,17 @@ PAGE_SIZE multiple when read back.
->         high limit is used and monitored properly, this limit's
->         utility is limited to providing the final safety net.
->
-> +  memory.drop_cache
-> +    A write-only single value file which exists on non-root
-> +    cgroups.
+On Fri, Sep 18, 2020 at 08:30:54AM -0000, tip-bot2 for Lenny Szubowicz wrote:
+> +void __init efi_mokvar_table_init(void)
+> +{
+> +	efi_memory_desc_t md;
+> +	u64 end_pa;
+> +	void *va = NULL;
+> +	size_t cur_offset = 0;
+> +	size_t offset_limit;
+> +	size_t map_size = 0;
+> +	size_t map_size_needed = 0;
+> +	size_t size;
+> +	struct efi_mokvar_table_entry *mokvar_entry;
+> +	int err = -EINVAL;
 > +
-> +    Provide a mechanism for users to actively trigger memory
-> +    reclaim. The cgroup will be reclaimed and as many pages
-> +    reclaimed as possible.
+> +	if (!efi_enabled(EFI_MEMMAP))
+> +		return;
 > +
-> +    It will broke low boundary. Because it tries to reclaim the
-> +    memory many times, until the memory drops to a certain level.
-> +
+> +	if (efi.mokvar_table == EFI_INVALID_TABLE_ADDR)
+> +		return;
+> +	/*
+> +	 * The EFI MOK config table must fit within a single EFI memory
+> +	 * descriptor range.
+> +	 */
+> +	err = efi_mem_desc_lookup(efi.mokvar_table, &md);
+> +	if (err) {
+> +		pr_warn("EFI MOKvar config table is not within the EFI memory map\n");
+> +		return;
+> +	}
+> +	end_pa = efi_mem_desc_end(&md);
+> +	if (efi.mokvar_table >= end_pa) {
+> +		pr_err("EFI memory descriptor containing MOKvar config table is invalid\n");
+> +		return;
+> +	}
+> +	offset_limit = end_pa - efi.mokvar_table;
+> +	/*
+> +	 * Validate the MOK config table. Since there is no table header
+> +	 * from which we could get the total size of the MOK config table,
+> +	 * we compute the total size as we validate each variably sized
+> +	 * entry, remapping as necessary.
+> +	 */
+> +	while (cur_offset + sizeof(*mokvar_entry) <= offset_limit) {
+> +		mokvar_entry = va + cur_offset;
+> +		map_size_needed = cur_offset + sizeof(*mokvar_entry);
+> +		if (map_size_needed > map_size) {
+> +			if (va)
+> +				early_memunmap(va, map_size);
+> +			/*
+> +			 * Map a little more than the fixed size entry
+> +			 * header, anticipating some data. It's safe to
+> +			 * do so as long as we stay within current memory
+> +			 * descriptor.
+> +			 */
+> +			map_size = min(map_size_needed + 2*EFI_PAGE_SIZE,
+> +				       offset_limit);
 
-drop_cache is not really force_empty(). What is your use-case? Maybe
-you can use memory.reclaim [1] for your use-case. It is already in
-Andrew's tree.
+i386 allmodconfig build gives here:
 
-[1] https://lkml.kernel.org/r/20200909215752.1725525-1-shakeelb@google.com
+In file included from ./arch/x86/include/asm/percpu.h:27:0,
+                 from ./arch/x86/include/asm/current.h:6,
+                 from ./arch/x86/include/asm/processor.h:17,
+                 from ./arch/x86/include/asm/timex.h:5,
+                 from ./include/linux/timex.h:65,
+                 from ./include/linux/time32.h:13,
+                 from ./include/linux/time.h:73,
+                 from ./include/linux/efi.h:17,
+                 from drivers/firmware/efi/mokvar-table.c:35:
+drivers/firmware/efi/mokvar-table.c: In function ‘efi_mokvar_table_init’:
+./include/linux/kernel.h:850:29: warning: comparison of distinct pointer types lacks a cast
+   (!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
+                             ^
+./include/linux/kernel.h:864:4: note: in expansion of macro ‘__typecheck’
+   (__typecheck(x, y) && __no_side_effects(x, y))
+    ^~~~~~~~~~~
+./include/linux/kernel.h:874:24: note: in expansion of macro ‘__safe_cmp’
+  __builtin_choose_expr(__safe_cmp(x, y), \
+                        ^~~~~~~~~~
+./include/linux/kernel.h:883:19: note: in expansion of macro ‘__careful_cmp’
+ #define min(x, y) __careful_cmp(x, y, <)
+                   ^~~~~~~~~~~~~
+drivers/firmware/efi/mokvar-table.c:149:15: note: in expansion of macro ‘min’
+    map_size = min(map_size_needed + 2*EFI_PAGE_SIZE,
+               ^~~
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
