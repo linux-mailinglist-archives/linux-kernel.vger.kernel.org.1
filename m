@@ -2,135 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C76A2730F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 428092730E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:34:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727527AbgIURkw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Sep 2020 13:40:52 -0400
-Received: from smtp.h3c.com ([60.191.123.56]:58488 "EHLO h3cspam01-ex.h3c.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726419AbgIURkw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 13:40:52 -0400
-Received: from h3cspam01-ex.h3c.com (localhost [127.0.0.2] (may be forged))
-        by h3cspam01-ex.h3c.com with ESMTP id 08LG9wdY032740
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 00:09:58 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from DAG2EX08-IDC.srv.huawei-3com.com ([10.8.0.71])
-        by h3cspam01-ex.h3c.com with ESMTPS id 08LG8qpq032307
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 22 Sep 2020 00:08:52 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
- DAG2EX08-IDC.srv.huawei-3com.com (10.8.0.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 22 Sep 2020 00:08:56 +0800
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
- by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
- mapi id 15.01.1713.004; Tue, 22 Sep 2020 00:08:56 +0800
-From:   Tianxianting <tian.xianting@h3c.com>
-To:     Keith Busch <kbusch@kernel.org>
-CC:     "axboe@fb.com" <axboe@fb.com>, "hch@lst.de" <hch@lst.de>,
-        "sagi@grimberg.me" <sagi@grimberg.me>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] nvme: replace meaningless judgement by checking whether
- req is null
-Thread-Topic: [PATCH] nvme: replace meaningless judgement by checking whether
- req is null
-Thread-Index: AQHWj71pi81Rb9ZmlEuvVhznKWqiEqlyrIIAgACJanD//4TXgIAAiHDQ
-Date:   Mon, 21 Sep 2020 16:08:56 +0000
-Message-ID: <0efc3ee511534cf789073ed5ddfa61a2@h3c.com>
-References: <20200921021052.10462-1-tian.xianting@h3c.com>
- <20200921150824.GA4034182@dhcp-10-100-145-180.wdl.wdc.com>
- <be133ab59334475dacd4a52a2834fe71@h3c.com>
- <20200921155925.GA4034241@dhcp-10-100-145-180.wdl.wdc.com>
-In-Reply-To: <20200921155925.GA4034241@dhcp-10-100-145-180.wdl.wdc.com>
-Accept-Language: en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.99.141.128]
-x-sender-location: DAG2
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1727617AbgIUReE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 13:34:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726419AbgIUReE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 13:34:04 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E984C061755;
+        Mon, 21 Sep 2020 10:34:04 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id y13so16310684iow.4;
+        Mon, 21 Sep 2020 10:34:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bZxTQM+y7VCL30HjHBeKSPnidXAdXQgBZuNpKs1pbS8=;
+        b=eT2I07jM9PMeyjSl/Te6a5BL5oucfVWd7/hkhTLvZwRxrGvJD8bC1xmLDS76suwdSc
+         Y42cscC4DD+H8ZBIf+MP7A2iKQ2rZJAdSSVs25Exz+bTJ0I9punJG3/QpuCyr7hYZrbg
+         go5eyVVhZjAA2BVKgKx9WZGAlmxoKfK4ozXBRdCvYJyNVVbgq5pQxuYNiI8B1scmaqsz
+         R8w8H29Mwt91cgQH6HMMzmPITXATbXbZeayLh7zE6rMyF2Tty/9rhtsKPq6/BXzQa9sh
+         SpahehdegJ1qal2j5+g2hvcHo46ua/hVn8+dDHDeNkMCMweR94ZQV0rU3oaKbGpZ017M
+         5gig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bZxTQM+y7VCL30HjHBeKSPnidXAdXQgBZuNpKs1pbS8=;
+        b=BqCV3qTkSjkeEmO1+97TIBUDSfQajx51RiWw2gCdZdxi7cZQvBC51J37cPYf80WN7W
+         oOIjbYLU9fBpbRawsPznwKemR1CcSR7X8869bndEyjHXJJSH5l3wZIG6ncNmu0WvfetQ
+         ev8M8kqP0chVSrcHIgieQVmDgdxCc3h+9Bl0ih+gBhl16aR7+e5QKfP8EjQU8+LsxohZ
+         OGyKm2/DoTQoQCOFOib8tzvvEJIIu6gawNViGz3rz25+HW8XTCqD+WFRl5cFKlD0oncQ
+         i8T/UraJaUsdZCqPVD7OjTkKRI9gQOvrANDz+HLzuz+35fZmXMfGPRNkWCWhpI6D/JpM
+         IB6Q==
+X-Gm-Message-State: AOAM5303S/Nub8GgFMCQnEK4OMxNM0rp1SnbZkJGLKh8SlpN/Iru9YRX
+        l84g15xTyIvcmvZcKJKeFRQWfaLqJTpvqf91D74=
+X-Google-Smtp-Source: ABdhPJxAszQNtzT+y9jstowJPghZLDKpOPnpGa/9DYxZJluq3OIJp+7ThjmX/nVs++E7gVuyTPHwSPyKBWg0nRzs0Bc=
+X-Received: by 2002:a6b:7a41:: with SMTP id k1mr364011iop.187.1600709643569;
+ Mon, 21 Sep 2020 10:34:03 -0700 (PDT)
 MIME-Version: 1.0
-X-DNSRBL: 
-X-MAIL: h3cspam01-ex.h3c.com 08LG8qpq032307
+References: <20200911194549.12780-1-david.e.box@linux.intel.com>
+ <20200911194549.12780-4-david.e.box@linux.intel.com> <0ec64bdc-66fd-4be1-03cf-561a7c42de68@linux.intel.com>
+ <CAKgT0UdiXLhok1WOq9RoZKKi+f43xUoSBwX2LTYMpUUTU3HRwA@mail.gmail.com> <69a7e595-1b5c-bfb3-f3e6-16cf5fcc9999@linux.intel.com>
+In-Reply-To: <69a7e595-1b5c-bfb3-f3e6-16cf5fcc9999@linux.intel.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Mon, 21 Sep 2020 10:33:52 -0700
+Message-ID: <CAKgT0UfkV-Sofk9BO_KqnB83VEMcAqN_9p3BeQQp5Ew4oOCwRw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] platform/x86: Intel PMT Crashlog capability driver
+To:     Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc:     "David E. Box" <david.e.box@linux.intel.com>,
+        Lee Jones <lee.jones@linaro.org>, dvhart@infradead.org,
+        Andy Shevchenko <andy@infradead.org>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I get it now, thanks Keith:)
+On Mon, Sep 21, 2020 at 9:07 AM Alexey Budankov
+<alexey.budankov@linux.intel.com> wrote:
+>
+>
+> On 21.09.2020 16:36, Alexander Duyck wrote:
+> > On Sat, Sep 19, 2020 at 1:01 AM Alexey Budankov
+> > <alexey.budankov@linux.intel.com> wrote:
+> >>
+> >> Hi,
+> >>
+> >> Thanks for the patches.
+> >>
+> >> On 11.09.2020 22:45, David E. Box wrote:
+> >>> From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> >>>
+> >>> Add support for the Intel Platform Monitoring Technology crashlog
+> >>> interface.  This interface provides a few sysfs values to allow for
+> >>> controlling the crashlog telemetry interface as well as a character driver
+> >>> to allow for mapping the crashlog memory region so that it can be accessed
+> >>> after a crashlog has been recorded.
+> >>>
+> >>> This driver is meant to only support the server version of the crashlog
+> >>> which is identified as crash_type 1 with a version of zero. Currently no
+> >>> other types are supported.
+> >>>
+> >>> Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> >>> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> >>> ---
+> >>>  .../ABI/testing/sysfs-class-pmt_crashlog      |  66 ++
+> >>>  drivers/platform/x86/Kconfig                  |  10 +
+> >>>  drivers/platform/x86/Makefile                 |   1 +
+> >>>  drivers/platform/x86/intel_pmt_crashlog.c     | 588 ++++++++++++++++++
+> >>>  4 files changed, 665 insertions(+)
+> >>>  create mode 100644 Documentation/ABI/testing/sysfs-class-pmt_crashlog
+> >>>  create mode 100644 drivers/platform/x86/intel_pmt_crashlog.c
+> >>
+> >> <SNIP>
+> >>
+> >>> +
+> >>> +/*
+> >>> + * devfs
+> >>> + */
+> >>> +static int pmt_crashlog_open(struct inode *inode, struct file *filp)
+> >>> +{
+> >>> +     struct crashlog_entry *entry;
+> >>> +     struct pci_driver *pci_drv;
+> >>> +     struct pmt_crashlog_priv *priv;
+> >>> +
+> >>> +     if (!capable(CAP_SYS_ADMIN))
+> >>> +             return -EPERM;
+> >>
+> >> Will not this above still block access to /dev/crashlogX for admin_group users
+> >> in case root configured access e.g. similar to this:
+> >>
+> >> ls -alh /dev/
+> >> crw-rw----.  1 root admin_group      1,   9 Sep 15 18:28 crashlogX
+> >>
+> >> If yes then that capable() check is probably superfluous and
+> >> should be avoided in order not to block access to PMT data.
+> >>
+> >> Could you please clarify or comment?
+> >>
+> >> Thanks,
+> >> Alexei
+> >
+> > Actually this should probably be updated to "if (!perfmon_capable())"
+> > instead. The telemetry driver code originally had the CAP_SYS_ADMIN
+> > check and it probably makes more sense to limit this user-wise to the
+> > same users who have access to performon.
+>
+> Indeed, it is currently perfmon_capable() for performance part but it is unclear
+> if it should be the same for crashlog since it's more like a debugging thing.
+> It appears it all depends on usage models implemented in a user space tools e.g. Perf.
+>
+> However there is an important use case that is not covered
+> neither by perfmon_capable() nor by capable(CAP_SYS_ADMIN).
+>
+> It is access and usage of PMT features in cluster or cloud environments by
+> unprivileged users that don't have root credentials. The users however can run
+> software tools (Perf, VTune etc.) once installed and configured by root.
+>
+> Even though Perf tool can be configured to use use CAP_PERFMON [1] the tool binary
+> should still reside on a file system supporting xattr to convey capabilities
+> into processes implementing monitoring.
+>
+> Unfortunately NFSv3 which is quite popular to be used for storing and sharing
+> software tooling in large production systems doesn't support capabilities yet.
+>
+> Thus, capabilities approach still has limitation in HPC clusters and cloud environments
+> and for PMT support this limitation has a chance to be lifted if
+> suitable access control mechanism would be designed from the very beggining.
+>
+> Actually I tried to change group ownership of /dev and /sys directories and files, being root,
+> and it appeared that for dev file it is possible:
+> ls -alh /dev/
+> crw-rw----.  1 root admin_group      1,   9 Sep 15 18:28 telem<X>
+>
+> So if e.g. perf tool having CAP_PERFMON and configured like:
+>
+> -rwxr-x---.  1 root admin_group  24M Mar  5  2020 perf.cap
+>
+> would mmap /dev/telem<X> to provide uncore performance insights
+> to admin_group users only access control based on user/group/others ownership
+> would suffice without capabilities requirement.
+>
+> Still haven't had chance to verify it for memory mapped PMT dev files and
+> that is why I am asking you guys here.
+>
+> Alexei
+>
+> [1] https://www.kernel.org/doc/html/latest/admin-guide/perf-security.html#privileged-perf-users-groups
 
------Original Message-----
-From: Keith Busch [mailto:kbusch@kernel.org] 
-Sent: Monday, September 21, 2020 11:59 PM
-To: tianxianting (RD) <tian.xianting@h3c.com>
-Cc: axboe@fb.com; hch@lst.de; sagi@grimberg.me; linux-nvme@lists.infradead.org; linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] nvme: replace meaningless judgement by checking whether req is null
+We will have to see. There is a high likelihood this code will go away
+if we switch over to binary sysfs attributes for the data. I'm still
+working on the rewrite and hope to have something we can review as an
+RFC in the next few days.
 
-On Mon, Sep 21, 2020 at 03:49:09PM +0000, Tianxianting wrote:
-> HI Keith,
-> Thanks for your comments,
-> I will submit a new patch of version 2 for the further reviewing,  v2 patch will contains:
-> 1, retain existing judgement and dev_warn;
+Thanks.
 
-No no, go ahead and remove the existing check just as you've done. That check becomes redundant with the safer one you're adding, and we don't want redundant checks in the fast path. My only suggestion is to use the same dev_warn() in your new check.
-
-> 2, add the check whether req is null(already did in this patch) 3, 
-> simplify and make the changelog succinct according to you said " This is what I'm thinking:".
-> Is it right?
-> Should I retain the nvme_irq crash log in changelog, mention the difference between nvmeq->q_depth and tagset queue_depth? 
-
-The tagset's queue_depth is a valid point to mention as well. The dirver's current indirect check is not necessarily in sync with the actual tagset.
- 
-> Thanks
-> 
-> -----Original Message-----
-> From: Keith Busch [mailto:kbusch@kernel.org]
-> Sent: Monday, September 21, 2020 11:08 PM
-> To: tianxianting (RD) <tian.xianting@h3c.com>
-> Cc: axboe@fb.com; hch@lst.de; sagi@grimberg.me; 
-> linux-nvme@lists.infradead.org; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH] nvme: replace meaningless judgement by checking 
-> whether req is null
-> 
-> On Mon, Sep 21, 2020 at 10:10:52AM +0800, Xianting Tian wrote:
-> > @@ -940,13 +940,6 @@ static inline void nvme_handle_cqe(struct nvme_queue *nvmeq, u16 idx)
-> >  	struct nvme_completion *cqe = &nvmeq->cqes[idx];
-> >  	struct request *req;
-> >  
-> > -	if (unlikely(cqe->command_id >= nvmeq->q_depth)) {
-> > -		dev_warn(nvmeq->dev->ctrl.device,
-> > -			"invalid id %d completed on queue %d\n",
-> > -			cqe->command_id, le16_to_cpu(cqe->sq_id));
-> > -		return;
-> > -	}
-> > -
-> >  	/*
-> >  	 * AEN requests are special as they don't time out and can
-> >  	 * survive any kind of queue freeze and often don't respond to @@
-> > -960,6 +953,13 @@ static inline void nvme_handle_cqe(struct nvme_queue *nvmeq, u16 idx)
-> >  	}
-> >  
-> >  	req = blk_mq_tag_to_rq(nvme_queue_tagset(nvmeq), cqe->command_id);
-> > +	if (unlikely(!req)) {
-> > +		dev_warn(nvmeq->dev->ctrl.device,
-> > +			"req is null for tag %d completed on queue %d\n",
-> > +			cqe->command_id, le16_to_cpu(cqe->sq_id));
-> > +		return;
-> > +	}
-> 
-> This is making sense now, though I think we should retain the existing
-> dev_warn() since it's still accurate and provides continuity for people who are used to looking for these sorts of messages.
-> 
-> Your changelog is a bit much though. I think we can say it a bit more succinctly. This is what I'm thinking:
-> 
->   The driver registers interrupts for queues before initializing the
->   tagset because it uses the number of successful request_irq() calls
->   to configure the tagset parameters. This allows a race condition with
->   the current tag validity check if the controller happens to produce
->   an interrupt with a corrupted CQE before the tagset is initialized.
-> 
->   Replace the driver's indirect tag check with the one already provided
->   by the block layer.
+- Alex
