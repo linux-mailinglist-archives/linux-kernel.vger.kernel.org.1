@@ -2,380 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AEFF273569
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 00:00:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A06C427356B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 00:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728356AbgIUWAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 18:00:00 -0400
-Received: from mail1.nippynetworks.com ([91.220.24.129]:52998 "EHLO
-        mail1.nippynetworks.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726452AbgIUWAA (ORCPT
+        id S1728344AbgIUWDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 18:03:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726574AbgIUWDa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 18:00:00 -0400
-Received: from twocubed.nippynetworks.com (office.nippynetworks.com [46.17.61.232])
-        by mail1.nippynetworks.com (Postfix) with SMTP id 4BwJJX2F93zTh52;
-        Mon, 21 Sep 2020 22:59:56 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wildgooses.com;
-        s=dkim; t=1600725597;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RNoxaOMSNNU1+oZS6F3VL44bibLuz4c4IakPHAn6hLk=;
-        b=NZZ71q7xgrp3TiSrrAF27jehXyyCwACgDgD7bcyeB/Z8LQ10gI6Qlvvq5WuXpvs/FxhySo
-        zbcNOEBMX1Zw4bsu1Taqw5H8x3+pI82MtWTZudn/Wpqyh/LewtXJB3yvtFG6BAuvxM3TNj
-        8hWr415+PSCoaCZZNwsaWC9CjxfDn4E=
-Received: by twocubed.nippynetworks.com (sSMTP sendmail emulation); Mon, 21 Sep 2020 22:59:56 +0100
-From:   Ed Wildgoose <lists@wildgooses.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     fe@dev.tdt.de, Ed Wildgoose <lists@wildgooses.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        platform-driver-x86@vger.kernel.org
-Subject: [PATCH 2/2] x86: Support APU5 in PCEngines platform driver
-Date:   Mon, 21 Sep 2020 22:59:19 +0100
-Message-Id: <20200921215919.3072-2-lists@wildgooses.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200921215919.3072-1-lists@wildgooses.com>
-References: <20200921215919.3072-1-lists@wildgooses.com>
+        Mon, 21 Sep 2020 18:03:30 -0400
+Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E180C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 15:03:29 -0700 (PDT)
+Received: by mail-oo1-xc41.google.com with SMTP id h8so3644036ooc.12
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 15:03:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=i9wIfsv5rz4rfrgx+xfjmFTxPq64qmLCQPg3J+waEbE=;
+        b=DdepaFHP5SGw8u3Jxxrft7G4MFxCoXyObylHPKbacrL+cHB16NaAJhD5pIbYyNVpQd
+         Klaaxa9m+XOEu8WCDI2BGJEh9xJjFu6wVMkxYCQs/wHlhajC7H1OK0C8z3pKFLSUutfo
+         /O7veoCMTReFJMDGKLzCE0pM1GtuT8DTXG6yGto0omKozwErUb6rkpUMzjHeaV+XrD0t
+         iAJga/vtnJp+LqFmK+3cqp4Jaa+9OIekQDdDnAxNz5daBoxRoUmhzN96QuWg4gkx+svY
+         3JdEGi8JFhwQzUsY/o2RfnpeJ3ffX8rby7q+sqiHf2n3DKWczyN8EYsw8pxVOvxpV03m
+         UyYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=i9wIfsv5rz4rfrgx+xfjmFTxPq64qmLCQPg3J+waEbE=;
+        b=oFsAQ77Bvl3cc2tniHOAnu+BYSnHhuf2sT/p+1D1DLmZprmOwhki2GgBscoOQrtsbK
+         Y9dvpJhPg0MdBjmnupZSeYQFSahfDsaQb3RPu3fRoZ60OxwV7O8LmnOm2KWrs8EtlFGX
+         eu3z9CYF9GAIb2Cm5pzJadQcnarh8+YdHzOdhf7/m50q3x5xJS9Bma7fDdasSPTwJV13
+         jObMDheOI7q+8NPaEUR+100fvMGoKoHsBnK+2R89hCahyO1GpeyLFcGBHb89p4ce/WLj
+         E04OsMBWBrI/K/wYnVUCdEKlx0To/G95qSFy65cN5X9cKk0Z3nNPAqwN0AGANDFeyEOY
+         r9NA==
+X-Gm-Message-State: AOAM531r6P5H/o+tttP0CeDEsYpbkbRZWASdBNAVBd6q0tz7VzsKenFd
+        nzzQHkp/MLez53bEC4FVQ9hiYA==
+X-Google-Smtp-Source: ABdhPJzeWJ4rwPj2Cwauo8tZscTlT1Kyhg81tkk759dQqFBpbkcFmtijVxaaNg1MA8kUUBfkJNG63Q==
+X-Received: by 2002:a4a:bc90:: with SMTP id m16mr1015628oop.12.1600725808483;
+        Mon, 21 Sep 2020 15:03:28 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id b14sm452685oii.52.2020.09.21.15.03.25
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Mon, 21 Sep 2020 15:03:27 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 15:03:24 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, willy@infradead.org,
+        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        shakeelb@google.com, iamjoonsoo.kim@lge.com,
+        richard.weiyang@gmail.com, kirill@shutemov.name,
+        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
+        vdavydov.dev@gmail.com, shy828301@gmail.com
+Subject: Re: [PATCH v18 15/32] mm/lru: move lock into lru_note_cost
+In-Reply-To: <alpine.LSU.2.11.2009211434490.5214@eggly.anvils>
+Message-ID: <alpine.LSU.2.11.2009211440570.5214@eggly.anvils>
+References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com> <1598273705-69124-16-git-send-email-alex.shi@linux.alibaba.com> <alpine.LSU.2.11.2009211434490.5214@eggly.anvils>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PCEngines make a number of SBC. APU5 has 5 mpcie slots + MSATA
-It also has support for 3x LTE modems with 6x SIM slots (pairs with a
-SIM switch device). Each mpcie slot for modems has a reset GPIO
+On Mon, 21 Sep 2020, Hugh Dickins wrote:
+> On Mon, 24 Aug 2020, Alex Shi wrote:
+> 
+> > We have to move lru_lock into lru_note_cost, since it cycle up on memcg
+> > tree, for future per lruvec lru_lock replace. It's a bit ugly and may
+> > cost a bit more locking, but benefit from multiple memcg locking could
+> > cover the lost.
+> > 
+> > Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> 
+> Acked-by: Hugh Dickins <hughd@google.com>
+> 
+> In your lruv19 github tree, you have merged 14/32 into this one: thanks.
 
-To ensure that the naming is sane between APU2/3/4/5 I have renamed the
-reset GPIOs to be modem1-reset, modem2-reset, etc. This is significant
-because the slots that can be reset change between APU2 and APU3/4
+Grr, I've only just started, and already missed some of my notes.
 
-GPIO for simswap is moved to the end of the list as it could be dropped
-for APU2 boards (but causes no harm to leave it in, hardware could be
-added to a future rev of the board).
+I wanted to point out that this patch does introduce an extra unlock+lock
+in shrink_inactive_list(), even in a !CONFIG_MEMCG build.  I think you've
+done the right thing for now, keeping it simple, and maybe nobody will
+notice the extra overhead; but I expect us to replace lru_note_cost()
+by lru_note_cost_unlock_irq() later on, expecting the caller to do the
+initial lock_irq().
 
-Structure of the GPIOs for APU5 is extremely similar to APU2-4, but
-many lines are moved around and there are simply more
-modems/resets/sim-swap lines to breakout.
+lru_note_cost_page() looks redundant to me, but you're right not to
+delete it here, unless Johannes asks you to add that in: that's his
+business, and it may be dependent on the XXX at its callsite.
 
-Signed-off-by: Ed Wildgoose <lists@wildgooses.com>
----
- drivers/platform/x86/pcengines-apuv2.c | 175 +++++++++++++++++++------
- 1 file changed, 136 insertions(+), 39 deletions(-)
-
-diff --git a/drivers/platform/x86/pcengines-apuv2.c b/drivers/platform/x86/pcengines-apuv2.c
-index 41e3005cd..4dfc9ff9f 100644
---- a/drivers/platform/x86/pcengines-apuv2.c
-+++ b/drivers/platform/x86/pcengines-apuv2.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0+
- 
- /*
-- * PC-Engines APUv2/APUv3 board platform driver
-+ * PC-Engines APUv2-5 board platform driver
-  * for GPIO buttons and LEDs
-  *
-  * Copyright (C) 2018 metux IT consult
-@@ -22,38 +22,73 @@
- #include <linux/platform_data/gpio/gpio-amd-fch.h>
- 
- /*
-- * NOTE: this driver only supports APUv2/3 - not APUv1, as this one
-+ * NOTE: this driver only supports APUv2-5 - not APUv1, as this one
-  * has completely different register layouts.
-  */
- 
-+/*
-+ * There are a number of APU2 variants, with differing features
-+ * APU2 has SIM slots 1/2 mapping to mPCIe sockets 1/2
-+ * APU3/4 moved SIM slot 1 to mPCIe socket 3, ie logically reversed
-+ * However, most APU3/4 have a SIM switch which we default on to reverse
-+ * the order and keep physical SIM order matching physical modem order
-+ *
-+ * APU5 has 3x SIM sockets, all with a SIM switch
-+ * several GPIOs are shuffled (see schematic), including MODESW
-+ */
-+
-+/* Match types for dmi */
-+#define DMI_MATCH_APU2	2
-+#define DMI_MATCH_APU5	5
-+
- /* Register mappings */
- #define APU2_GPIO_REG_LED1		AMD_FCH_GPIO_REG_GPIO57
- #define APU2_GPIO_REG_LED2		AMD_FCH_GPIO_REG_GPIO58
- #define APU2_GPIO_REG_LED3		AMD_FCH_GPIO_REG_GPIO59_DEVSLP1
- #define APU2_GPIO_REG_MODESW		AMD_FCH_GPIO_REG_GPIO32_GE1
- #define APU2_GPIO_REG_SIMSWAP		AMD_FCH_GPIO_REG_GPIO33_GE2
--#define APU2_GPIO_REG_MPCIE2		AMD_FCH_GPIO_REG_GPIO55_DEVSLP0
--#define APU2_GPIO_REG_MPCIE3		AMD_FCH_GPIO_REG_GPIO51
-+#define APU2_GPIO_REG_RESETM1		AMD_FCH_GPIO_REG_GPIO51
-+#define APU2_GPIO_REG_RESETM2		AMD_FCH_GPIO_REG_GPIO55_DEVSLP0
-+
-+#define APU5_GPIO_REG_MODESW		AMT_FCH_GPIO_REG_GEVT22
-+#define APU5_GPIO_REG_SIMSWAP1		AMD_FCH_GPIO_REG_GPIO68
-+#define APU5_GPIO_REG_SIMSWAP2		AMD_FCH_GPIO_REG_GPIO32_GE1
-+#define APU5_GPIO_REG_SIMSWAP3		AMD_FCH_GPIO_REG_GPIO33_GE2
-+#define APU5_GPIO_REG_RESETM1		AMD_FCH_GPIO_REG_GPIO51
-+#define APU5_GPIO_REG_RESETM2		AMD_FCH_GPIO_REG_GPIO55_DEVSLP0
-+#define APU5_GPIO_REG_RESETM3		AMD_FCH_GPIO_REG_GPIO64
- 
- /* Order in which the GPIO lines are defined in the register list */
- #define APU2_GPIO_LINE_LED1		0
- #define APU2_GPIO_LINE_LED2		1
- #define APU2_GPIO_LINE_LED3		2
- #define APU2_GPIO_LINE_MODESW		3
--#define APU2_GPIO_LINE_SIMSWAP		4
--#define APU2_GPIO_LINE_MPCIE2		5
--#define APU2_GPIO_LINE_MPCIE3		6
-+#define APU2_GPIO_LINE_RESETM1		4
-+#define APU2_GPIO_LINE_RESETM2		5
-+#define APU2_GPIO_LINE_SIMSWAP		6
- 
--/* GPIO device */
-+#define APU5_GPIO_LINE_LED1		0
-+#define APU5_GPIO_LINE_LED2		1
-+#define APU5_GPIO_LINE_LED3		2
-+#define APU5_GPIO_LINE_MODESW		3
-+#define APU5_GPIO_LINE_RESETM1		4
-+#define APU5_GPIO_LINE_RESETM2		5
-+#define APU5_GPIO_LINE_RESETM3		6
-+#define APU5_GPIO_LINE_SIMSWAP1		7
-+#define APU5_GPIO_LINE_SIMSWAP2		8
-+#define APU5_GPIO_LINE_SIMSWAP3		9
-+
-+
-+/* GPIO device - APU2/3/4 */
- 
- static int apu2_gpio_regs[] = {
- 	[APU2_GPIO_LINE_LED1]		= APU2_GPIO_REG_LED1,
- 	[APU2_GPIO_LINE_LED2]		= APU2_GPIO_REG_LED2,
- 	[APU2_GPIO_LINE_LED3]		= APU2_GPIO_REG_LED3,
- 	[APU2_GPIO_LINE_MODESW]		= APU2_GPIO_REG_MODESW,
-+	[APU2_GPIO_LINE_RESETM1]	= APU2_GPIO_REG_RESETM1,
-+	[APU2_GPIO_LINE_RESETM2]	= APU2_GPIO_REG_RESETM2,
- 	[APU2_GPIO_LINE_SIMSWAP]	= APU2_GPIO_REG_SIMSWAP,
--	[APU2_GPIO_LINE_MPCIE2]		= APU2_GPIO_REG_MPCIE2,
--	[APU2_GPIO_LINE_MPCIE3]		= APU2_GPIO_REG_MPCIE3,
- };
- 
- static const char * const apu2_gpio_names[] = {
-@@ -61,9 +96,9 @@ static const char * const apu2_gpio_names[] = {
- 	[APU2_GPIO_LINE_LED2]		= "front-led2",
- 	[APU2_GPIO_LINE_LED3]		= "front-led3",
- 	[APU2_GPIO_LINE_MODESW]		= "front-button",
-+	[APU2_GPIO_LINE_RESETM1]	= "modem1-reset",
-+	[APU2_GPIO_LINE_RESETM2]	= "modem2-reset",
- 	[APU2_GPIO_LINE_SIMSWAP]	= "simswap",
--	[APU2_GPIO_LINE_MPCIE2]		= "mpcie2_reset",
--	[APU2_GPIO_LINE_MPCIE3]		= "mpcie3_reset",
- };
- 
- static const struct amd_fch_gpio_pdata board_apu2 = {
-@@ -72,8 +107,55 @@ static const struct amd_fch_gpio_pdata board_apu2 = {
- 	.gpio_names	= apu2_gpio_names,
- };
- 
-+/* GPIO device - APU5 */
-+
-+static int apu5_gpio_regs[] = {
-+	[APU5_GPIO_LINE_LED1]		= APU2_GPIO_REG_LED1,
-+	[APU5_GPIO_LINE_LED2]		= APU2_GPIO_REG_LED2,
-+	[APU5_GPIO_LINE_LED3]		= APU2_GPIO_REG_LED3,
-+	[APU5_GPIO_LINE_MODESW]		= APU5_GPIO_REG_MODESW,
-+	[APU5_GPIO_LINE_RESETM1]	= APU5_GPIO_REG_RESETM1,
-+	[APU5_GPIO_LINE_RESETM2]	= APU5_GPIO_REG_RESETM2,
-+	[APU5_GPIO_LINE_RESETM3]	= APU5_GPIO_REG_RESETM3,
-+	[APU5_GPIO_LINE_SIMSWAP1]	= APU5_GPIO_REG_SIMSWAP1,
-+	[APU5_GPIO_LINE_SIMSWAP2]	= APU5_GPIO_REG_SIMSWAP2,
-+	[APU5_GPIO_LINE_SIMSWAP3]	= APU5_GPIO_REG_SIMSWAP3,
-+};
-+
-+static const char * const apu5_gpio_names[] = {
-+	[APU5_GPIO_LINE_LED1]		= "front-led1",
-+	[APU5_GPIO_LINE_LED2]		= "front-led2",
-+	[APU5_GPIO_LINE_LED3]		= "front-led3",
-+	[APU5_GPIO_LINE_MODESW]		= "front-button",
-+	[APU5_GPIO_LINE_RESETM1]	= "modem1-reset",
-+	[APU5_GPIO_LINE_RESETM2]	= "modem2-reset",
-+	[APU5_GPIO_LINE_RESETM3]	= "modem3-reset",
-+	[APU5_GPIO_LINE_SIMSWAP1]	= "simswap1",
-+	[APU5_GPIO_LINE_SIMSWAP2]	= "simswap2",
-+	[APU5_GPIO_LINE_SIMSWAP3]	= "simswap3",
-+};
-+
-+static const struct amd_fch_gpio_pdata board_apu5 = {
-+	.gpio_num	= ARRAY_SIZE(apu5_gpio_regs),
-+	.gpio_reg	= apu5_gpio_regs,
-+	.gpio_names	= apu5_gpio_names,
-+};
-+
-+
- /* Board setup */
- 
-+struct apu_driver_data {
-+	const struct amd_fch_gpio_pdata *board_data;
-+};
-+
-+static struct apu_driver_data apu2_driver_data = {
-+	.board_data = &board_apu2,
-+};
-+
-+static struct apu_driver_data apu5_driver_data = {
-+	.board_data = &board_apu5,
-+};
-+
- /* Note: matching works on string prefix, so "apu2" must come before "apu" */
- static const struct dmi_system_id apu_gpio_dmi_table[] __initconst = {
- 
-@@ -84,25 +166,25 @@ static const struct dmi_system_id apu_gpio_dmi_table[] __initconst = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "PC Engines"),
- 			DMI_MATCH(DMI_BOARD_NAME, "APU2")
- 		},
--		.driver_data	= (void *)&board_apu2,
-+		.driver_data	= (void *)&apu2_driver_data,
- 	},
--	/* APU2 w/ legacy BIOS >= 4.0.8 */
-+	/* APU2 w/ mainline BIOS */
- 	{
- 		.ident		= "apu2",
- 		.matches	= {
- 			DMI_MATCH(DMI_SYS_VENDOR, "PC Engines"),
- 			DMI_MATCH(DMI_BOARD_NAME, "apu2")
- 		},
--		.driver_data	= (void *)&board_apu2,
-+		.driver_data	= (void *)&apu2_driver_data,
- 	},
--	/* APU2 w/ mainline BIOS */
-+	/* APU2 w/ legacy BIOS >= 4.0.8 */
- 	{
- 		.ident		= "apu2",
- 		.matches	= {
- 			DMI_MATCH(DMI_SYS_VENDOR, "PC Engines"),
- 			DMI_MATCH(DMI_BOARD_NAME, "PC Engines apu2")
- 		},
--		.driver_data	= (void *)&board_apu2,
-+		.driver_data	= (void *)&apu2_driver_data,
- 	},
- 
- 	/* APU3 w/ legacy BIOS < 4.0.8 */
-@@ -112,52 +194,61 @@ static const struct dmi_system_id apu_gpio_dmi_table[] __initconst = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "PC Engines"),
- 			DMI_MATCH(DMI_BOARD_NAME, "APU3")
- 		},
--		.driver_data = (void *)&board_apu2,
-+		.driver_data	= (void *)&apu2_driver_data,
- 	},
--	/* APU3 w/ legacy BIOS >= 4.0.8 */
-+	/* APU3 w/ mainline BIOS */
- 	{
--		.ident       = "apu3",
--		.matches     = {
-+		.ident		= "apu3",
-+		.matches	= {
- 			DMI_MATCH(DMI_SYS_VENDOR, "PC Engines"),
- 			DMI_MATCH(DMI_BOARD_NAME, "apu3")
- 		},
--		.driver_data = (void *)&board_apu2,
-+		.driver_data	= (void *)&apu2_driver_data,
- 	},
--	/* APU3 w/ mainline BIOS */
-+	/* APU3 w/ legacy BIOS >= 4.0.8 */
- 	{
--		.ident       = "apu3",
--		.matches     = {
-+		.ident		= "apu3",
-+		.matches	= {
- 			DMI_MATCH(DMI_SYS_VENDOR, "PC Engines"),
- 			DMI_MATCH(DMI_BOARD_NAME, "PC Engines apu3")
- 		},
--		.driver_data = (void *)&board_apu2,
-+		.driver_data	= (void *)&apu2_driver_data,
- 	},
- 	/* APU4 w/ legacy BIOS < 4.0.8 */
- 	{
--		.ident        = "apu4",
--		.matches    = {
-+		.ident		= "apu4",
-+		.matches	= {
- 			DMI_MATCH(DMI_SYS_VENDOR, "PC Engines"),
- 			DMI_MATCH(DMI_BOARD_NAME, "APU4")
- 		},
--		.driver_data = (void *)&board_apu2,
-+		.driver_data	= (void *)&apu2_driver_data,
- 	},
--	/* APU4 w/ legacy BIOS >= 4.0.8 */
-+	/* APU4 w/ mainline BIOS */
- 	{
--		.ident       = "apu4",
--		.matches     = {
-+		.ident		= "apu4",
-+		.matches	= {
- 			DMI_MATCH(DMI_SYS_VENDOR, "PC Engines"),
- 			DMI_MATCH(DMI_BOARD_NAME, "apu4")
- 		},
--		.driver_data = (void *)&board_apu2,
-+		.driver_data	= (void *)&apu2_driver_data,
- 	},
--	/* APU4 w/ mainline BIOS */
-+	/* APU4 w/ legacy BIOS >= 4.0.8 */
- 	{
--		.ident       = "apu4",
--		.matches     = {
-+		.ident		= "apu4",
-+		.matches	= {
- 			DMI_MATCH(DMI_SYS_VENDOR, "PC Engines"),
- 			DMI_MATCH(DMI_BOARD_NAME, "PC Engines apu4")
- 		},
--		.driver_data = (void *)&board_apu2,
-+		.driver_data	= (void *)&apu2_driver_data,
-+	},
-+	/* APU5 w/ mainline BIOS */
-+	{
-+		.ident		= "apu5",
-+		.matches	= {
-+			DMI_MATCH(DMI_SYS_VENDOR, "PC Engines"),
-+			DMI_MATCH(DMI_BOARD_NAME, "apu5")
-+		},
-+		.driver_data	= (void *)&apu5_driver_data,
- 	},
- 	{}
- };
-@@ -188,16 +279,22 @@ static struct platform_device * __init apu_create_pdev(
- static int __init apu_board_init(void)
- {
- 	const struct dmi_system_id *id;
-+	const struct apu_driver_data *driver_data;
- 
- 	id = dmi_first_match(apu_gpio_dmi_table);
- 	if (!id) {
- 		pr_err("No APU board detected via DMI\n");
- 		return -ENODEV;
-+	} else {
-+		pr_debug("Detected APU board: %s\n",
-+				dmi_get_system_info(DMI_BOARD_NAME));
- 	}
- 
-+	driver_data = id->driver_data;
-+
- 	apu_gpio_pdev = apu_create_pdev(
- 		AMD_FCH_GPIO_DRIVER_NAME,
--		id->driver_data,
-+		driver_data->board_data,
- 		sizeof(struct amd_fch_gpio_pdata));
- 
- 	return 0;
-@@ -212,7 +309,7 @@ module_init(apu_board_init);
- module_exit(apu_board_exit);
- 
- MODULE_AUTHOR("Enrico Weigelt, metux IT consult <info@metux.net>");
--MODULE_DESCRIPTION("PC Engines APUv2/APUv3 board GPIO/LEDs/keys driver");
-+MODULE_DESCRIPTION("PC Engines APUv2-5 board GPIO/LEDs/keys driver");
- MODULE_LICENSE("GPL");
- MODULE_DEVICE_TABLE(dmi, apu_gpio_dmi_table);
- MODULE_ALIAS("platform:pcengines-apuv2");
--- 
-2.26.2
-
+> 
+> > Cc: Johannes Weiner <hannes@cmpxchg.org>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: linux-mm@kvack.org
+> > Cc: linux-kernel@vger.kernel.org
+> > ---
+> >  mm/swap.c   | 5 +++--
+> >  mm/vmscan.c | 4 +---
+> >  2 files changed, 4 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/mm/swap.c b/mm/swap.c
+> > index 906255db6006..f80ccd6f3cb4 100644
+> > --- a/mm/swap.c
+> > +++ b/mm/swap.c
+> > @@ -269,7 +269,9 @@ void lru_note_cost(struct lruvec *lruvec, bool file, unsigned int nr_pages)
+> >  {
+> >  	do {
+> >  		unsigned long lrusize;
+> > +		struct pglist_data *pgdat = lruvec_pgdat(lruvec);
+> >  
+> > +		spin_lock_irq(&pgdat->lru_lock);
+> >  		/* Record cost event */
+> >  		if (file)
+> >  			lruvec->file_cost += nr_pages;
+> > @@ -293,15 +295,14 @@ void lru_note_cost(struct lruvec *lruvec, bool file, unsigned int nr_pages)
+> >  			lruvec->file_cost /= 2;
+> >  			lruvec->anon_cost /= 2;
+> >  		}
+> > +		spin_unlock_irq(&pgdat->lru_lock);
+> >  	} while ((lruvec = parent_lruvec(lruvec)));
+> >  }
+> >  
+> >  void lru_note_cost_page(struct page *page)
+> >  {
+> > -	spin_lock_irq(&page_pgdat(page)->lru_lock);
+> >  	lru_note_cost(mem_cgroup_page_lruvec(page, page_pgdat(page)),
+> >  		      page_is_file_lru(page), thp_nr_pages(page));
+> > -	spin_unlock_irq(&page_pgdat(page)->lru_lock);
+> >  }
+> >  
+> >  static void __activate_page(struct page *page, struct lruvec *lruvec)
+> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > index ffccb94defaf..7b7b36bd1448 100644
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -1971,19 +1971,17 @@ static int current_may_throttle(void)
+> >  				&stat, false);
+> >  
+> >  	spin_lock_irq(&pgdat->lru_lock);
+> > -
+> >  	move_pages_to_lru(lruvec, &page_list);
+> >  
+> >  	__mod_node_page_state(pgdat, NR_ISOLATED_ANON + file, -nr_taken);
+> > -	lru_note_cost(lruvec, file, stat.nr_pageout);
+> >  	item = current_is_kswapd() ? PGSTEAL_KSWAPD : PGSTEAL_DIRECT;
+> >  	if (!cgroup_reclaim(sc))
+> >  		__count_vm_events(item, nr_reclaimed);
+> >  	__count_memcg_events(lruvec_memcg(lruvec), item, nr_reclaimed);
+> >  	__count_vm_events(PGSTEAL_ANON + file, nr_reclaimed);
+> > -
+> >  	spin_unlock_irq(&pgdat->lru_lock);
+> >  
+> > +	lru_note_cost(lruvec, file, stat.nr_pageout);
+> >  	mem_cgroup_uncharge_list(&page_list);
+> >  	free_unref_page_list(&page_list);
+> >  
+> > -- 
+> > 1.8.3.1
+> > 
+> > 
+> 
