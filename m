@@ -2,120 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77826271E81
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 11:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E359E271E78
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 11:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726479AbgIUJDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 05:03:30 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41018 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726428AbgIUJDa (ORCPT
+        id S1726355AbgIUJCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 05:02:23 -0400
+Received: from mail-il1-f207.google.com ([209.85.166.207]:45855 "EHLO
+        mail-il1-f207.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726353AbgIUJCW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 05:03:30 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08L9305J146229;
-        Mon, 21 Sep 2020 05:03:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=leuZBYJN+/lc+Fxidrffl08f1oCjwqKg5qzlph2Ogn4=;
- b=WHBBKE1GUfZB1ECOVoQDcwNj9LmC1qqp47gJP8wq2B6HZr1wR96jYTTYMM2buaVgn3YE
- /7HD2WsZzVJZWOQdu5thPBBbJV3d3uLN44L2E3+mSv9qNAeygZzH6PfJqWXFXzTqQM5b
- 7qn2QsISdgnsQh1BUzOGE0PQZKcp58SU2a6N5ubIbK9+BFaTVXiXqdIBSNI5Gzim8Pa9
- dudhf4LUJatvlJesIDd6d1xxanVwUiaD3N2hvVIKbUrEnQTCARZ4N6ateAUKq8AA07JJ
- uezPdaCGhwE/R0R4EYzHWNwlzK3vWm+HWYUtg6JGSg6G3rONZGt1qDC3vWngc8X6p8gf DA== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33ps1f08gr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Sep 2020 05:03:04 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08L92ZQ9016538;
-        Mon, 21 Sep 2020 09:02:35 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 33n9m89u7s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Sep 2020 09:02:34 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08L92VSj27132210
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 21 Sep 2020 09:02:31 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9A1E4A4062;
-        Mon, 21 Sep 2020 09:02:32 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6E7BEA4054;
-        Mon, 21 Sep 2020 09:02:29 +0000 (GMT)
-Received: from satheesh.ibmuc.com (unknown [9.102.17.247])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 21 Sep 2020 09:02:29 +0000 (GMT)
-From:   sathnaga@linux.vnet.ibm.com
-To:     linux-doc@vger.kernel.org
-Cc:     Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
-        linux-kernel@vger.kernel.org, kvm-ppc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH V2] Doc: admin-guide: Add entry for kvm_cma_resv_ratio kernel param
-Date:   Mon, 21 Sep 2020 14:32:20 +0530
-Message-Id: <20200921090220.14981-1-sathnaga@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.26.2
+        Mon, 21 Sep 2020 05:02:22 -0400
+Received: by mail-il1-f207.google.com with SMTP id m80so10424670ilb.12
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 02:02:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=25Y+FvxN/Mb5eh9wDznBxrs0ksxheuHIjZSbxOFijK0=;
+        b=gao8v3BIVYueBxbC4+N/6Oeg5rDce2cwx+8Pz9DCiLSqecr9DIDAs498aCQnS/aIKR
+         LXDqycuPwHFMhCJO0ZSF0O3fjtcgvRyaQ6QUPnqWWOMuEFeJ+YmDyx7fVhFCHnh0BoXV
+         BAEgiJxsdCA+SUVwRSU5bMce8ax+UzudNRBQbNSIIfVlm9wu5xvuaNiPggBb3wgD/bUk
+         +toga73Y+f4URVc8viyeqFW9GoLP/+2+hi/LhYIMdeyAVPSf3rxUgJVjALzpUQ54Qb3h
+         UjH4JKAVJ1E2Q5EI1osHy/7Q/hdGkQ3rw3mJ2D9H9xW73MnUuVcI9wiR2ZRszTCX3ygW
+         LfDg==
+X-Gm-Message-State: AOAM530/9PWbnJyE01j1AF9U9ksXDxAhKWe68J+oKNcXd8fd73EqEF4m
+        eN8Y8Db52/mDfgNF0IkQOutRjnTA2N+9cb8ATJ2/xhs/FrUp
+X-Google-Smtp-Source: ABdhPJyK6A11DIgqEui9yX2KtMi10k/3FxnPcYZ9rmH8F1J2GtGbvc0XeFPToNlRQxoLN6eJtEuGrA2e5NwevoelZmw+hBhSoE5d
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-21_01:2020-09-21,2020-09-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1011
- priorityscore=1501 malwarescore=0 mlxlogscore=979 mlxscore=0 bulkscore=0
- lowpriorityscore=0 phishscore=0 spamscore=0 impostorscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009210067
+X-Received: by 2002:a6b:d908:: with SMTP id r8mr35825863ioc.21.1600678941468;
+ Mon, 21 Sep 2020 02:02:21 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 02:02:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b4ac9e05afcf1b13@google.com>
+Subject: WARNING in cleanup_srcu_struct (2)
+From:   syzbot <syzbot+735579fbeb0c09a90cfa@syzkaller.appspotmail.com>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
+Hello,
 
-Add document entry for kvm_cma_resv_ratio kernel param which
-is used to alter the KVM contiguous memory allocation percentage
-for hash pagetable allocation used by hash mode PowerPC KVM guests.
+syzbot found the following issue on:
 
-Cc: linux-kernel@vger.kernel.org
-Cc: kvm-ppc@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
+HEAD commit:    5925fa68 Merge tag 'perf-tools-fixes-for-v5.9-2020-09-16' ..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14b72f01900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c61f6bd349c981f3
+dashboard link: https://syzkaller.appspot.com/bug?extid=735579fbeb0c09a90cfa
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+735579fbeb0c09a90cfa@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 14586 at kernel/rcu/srcutree.c:389 cleanup_srcu_struct+0x23b/0x2d0 kernel/rcu/srcutree.c:408
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 14586 Comm: syz-executor.5 Not tainted 5.9.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ panic+0x347/0x7c0 kernel/panic.c:231
+ __warn.cold+0x20/0x46 kernel/panic.c:600
+ report_bug+0x1bd/0x210 lib/bug.c:198
+ handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:cleanup_srcu_struct+0x23b/0x2d0 kernel/rcu/srcutree.c:389
+Code: 84 24 98 04 00 00 00 00 00 00 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e 41 5f c3 0f 0b 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e 41 5f c3 <0f> 0b e9 36 ff ff ff 48 8b 3c 24 e8 45 88 53 00 e9 b7 fe ff ff 48
+RSP: 0018:ffffc90018f27a18 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 0000000000000000 RCX: ffffffff839a9211
+RDX: ffff88804f2de100 RSI: ffffffff839a92c3 RDI: 0000000000000006
+RBP: 0000000000000001 R08: 0000000000000040 R09: 0000000000000001
+R10: 0000000000000040 R11: 0000000000000000 R12: ffffc900057b3020
+R13: ffffc900057a9000 R14: ffff88806cfbf000 R15: ffffc900057b2840
+ kvm_destroy_vm+0x777/0xbe0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:882
+ kvm_put_kvm arch/x86/kvm/../../../virt/kvm/kvm_main.c:899 [inline]
+ kvm_vm_release+0xac/0xe0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:922
+ __fput+0x285/0x920 fs/file_table.c:281
+ task_work_run+0xdd/0x190 kernel/task_work.c:141
+ exit_task_work include/linux/task_work.h:25 [inline]
+ do_exit+0xb7d/0x29f0 kernel/exit.c:806
+ do_group_exit+0x125/0x310 kernel/exit.c:903
+ get_signal+0x428/0x1f00 kernel/signal.c:2757
+ arch_do_signal+0x82/0x2520 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:159 [inline]
+ exit_to_user_mode_prepare+0x1ae/0x200 kernel/entry/common.c:190
+ irqentry_exit_to_user_mode+0x5/0x30 kernel/entry/common.c:278
+ asm_common_interrupt+0x1e/0x40 arch/x86/include/asm/idtentry.h:572
+RIP: 0033:0x41221c
+Code: Bad RIP value.
+RSP: 002b:00007ffe0eb2c660 EFLAGS: 00000202
+RAX: 0000000036b92991 RBX: 000000003787d99d RCX: 0000001b2da20000
+RDX: 0000000036b92991 RSI: 0000000000000991 RDI: ffffffff36b92991
+RBP: 0000000000001914 R08: 0000000036b92991 R09: 0000000036b92995
+R10: 00007ffe0eb2c7d0 R11: 0000000000000246 R12: 000000000118cfc8
+R13: 00007fb1a8045008 R14: 00007fb1a8045000 R15: 000000000003ce98
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
 ---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-V2: 
-Addressed review comments from Randy.
-
-V1: https://lkml.org/lkml/2020/9/16/72
----
- Documentation/admin-guide/kernel-parameters.txt | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index a1068742a6df..932ed45740c9 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -2258,6 +2258,14 @@
- 			[KVM,ARM] Allow use of GICv4 for direct injection of
- 			LPIs.
- 
-+	kvm_cma_resv_ratio=n [PPC]
-+			Reserves given percentage from system memory area for
-+			contiguous memory allocation for KVM hash pagetable
-+			allocation.
-+			By default it reserves 5% of total system memory.
-+			Format: <integer>
-+			Default: 5
-+
- 	kvm-intel.ept=	[KVM,Intel] Disable extended page tables
- 			(virtualized MMU) support on capable Intel chips.
- 			Default is 1 (enabled)
--- 
-2.26.2
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
