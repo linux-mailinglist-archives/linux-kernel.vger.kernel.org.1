@@ -2,118 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6419D271A5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 07:23:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2D3F271A64
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 07:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726375AbgIUFXX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Sep 2020 01:23:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41498 "EHLO
+        id S1726395AbgIUFah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 01:30:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726211AbgIUFXW (ORCPT
+        with ESMTP id S1726211AbgIUFah (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 01:23:22 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6756BC061755
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 22:23:22 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kKEIF-0006Fc-OC; Mon, 21 Sep 2020 07:23:15 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kKEID-0007B6-7n; Mon, 21 Sep 2020 07:23:13 +0200
-Date:   Mon, 21 Sep 2020 07:23:13 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     Marco Felsch <m.felsch@pengutronix.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 3/3] ARM: dts: add Plymovent M2M board
-Message-ID: <20200921052313.3f6b2djdrxugjicu@pengutronix.de>
-References: <20200911050941.15013-1-o.rempel@pengutronix.de>
- <20200911050941.15013-4-o.rempel@pengutronix.de>
- <20200911060312.amj2ly7b3aiiwvhv@pengutronix.de>
- <20200913044944.GN25109@dragon>
+        Mon, 21 Sep 2020 01:30:37 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B0EBC061755
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 22:30:37 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id kk9so6532759pjb.2
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 22:30:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Qj9PyCzhSHC6kaHgqz3Zpf6fqZ3au7JN7Je5cZmsugg=;
+        b=LuNkfazDZtt3eVNFmfepYHcgt4usFSxYMzkGnDNxzwPJX88lgbHhRVmBuHVAJLalTZ
+         SflpKQISWqhiFBtEtxv5lMf1Y2ophHv4pdKKuPUhG3efBZgI2/oEkZ931uRwgh5DW9dE
+         44ZHwKnSLeOIB24e+zWDpBNdvtTqiLlTdKlrzdsWMWdL5bwZxoLuBSTQmbyNXDyKEqHs
+         SF0XohbekIhTH06mLP1Qn02oO0xk5KHMXid8IqAqH/gZR10L1WFQJrkzj+YI9Z0fPSAb
+         sVeNgWU56Joih14uKlDcwdOxeBEFeLxP4fh+Z+2eXWNxUsxH91Si88N6KvUz+Zh3+3qF
+         Ncrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Qj9PyCzhSHC6kaHgqz3Zpf6fqZ3au7JN7Je5cZmsugg=;
+        b=eRo8B7l7TcbTu9gQM1KhpN15aZp+WN+B2N+V/oSBva6zw41a7G+L1y6/Z4nYa1Idmv
+         ioM28ZHJKZbE1qoQa6jNzAZc+40cQt7ELH5O0/k/B5/06wKgcVkdo1TN5LSIqNHrS+xc
+         83jtNJvMPVK0a4dCfccvx6e2un0xVj+6U9pNvdgCdNVWwp7UZwAeV5aArI7s2ku3oPkI
+         OHbyZTalPSdPxTIPxUwpfsnIvTSSvg6VNPCNZMXN7mDQEdItlcurjRSNms55gtu3903V
+         l6VHHsVxRfn3slSJF/ZgWMJxXk+L22zBUpAbAbx1e9oR1e7YXvgTrNXR+IjszKSgqXpU
+         i/WA==
+X-Gm-Message-State: AOAM532+sd4SShqhSCgifMZ3jv/r8Gs+gOPXmljbpaf7xU/mQYB4lWzx
+        YYeTt6uFiF7IC4RlkcZukEA=
+X-Google-Smtp-Source: ABdhPJztPjU1aIaxAfOPn2XAotl3oNSzV6uLf5VD4H+XhR728IPGnSHAmcPEEP/KwfFLu9iCMwiPEA==
+X-Received: by 2002:a17:90a:ec05:: with SMTP id l5mr24461707pjy.172.1600666236667;
+        Sun, 20 Sep 2020 22:30:36 -0700 (PDT)
+Received: from james-Aspire-E5-575G.hsd1.wa.comcast.net (c-71-231-36-179.hsd1.wa.comcast.net. [71.231.36.179])
+        by smtp.googlemail.com with ESMTPSA id y6sm9427235pji.1.2020.09.20.22.30.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Sep 2020 22:30:36 -0700 (PDT)
+From:   James Browning <jamesbrowning137@gmail.com>
+Cc:     James Browning <jamesbrowning137@gmail.com>,
+        Ian Abbott <abbotti@mev.co.uk>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drivers:staging:comedi:comedi.h: Fixed typos in comments
+Date:   Sun, 20 Sep 2020 22:30:00 -0700
+Message-Id: <20200921053018.64095-1-jamesbrowning137@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20200913044944.GN25109@dragon>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 07:16:47 up 310 days, 20:35, 303 users,  load average: 0.08, 0.06,
- 0.01
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 13, 2020 at 12:49:45PM +0800, Shawn Guo wrote:
-> On Fri, Sep 11, 2020 at 08:03:12AM +0200, Marco Felsch wrote:
-> > On 20-09-11 07:09, Oleksij Rempel wrote:
-> > > Plymovent M2M is a control interface produced for the Plymovent filter
-> > > systems.
-> > > 
-> > > Signed-off-by: David Jander <david@protonic.nl>
-> > > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> > > ---
-> > >  arch/arm/boot/dts/Makefile          |   1 +
-> > >  arch/arm/boot/dts/imx6dl-plym2m.dts | 394 ++++++++++++++++++++++++++++
-> > >  2 files changed, 395 insertions(+)
-> > >  create mode 100644 arch/arm/boot/dts/imx6dl-plym2m.dts
-> > > 
-> > > diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-> > > index 4572db3fa5ae..3c3811fd8613 100644
-> > > --- a/arch/arm/boot/dts/Makefile
-> > > +++ b/arch/arm/boot/dts/Makefile
-> > > @@ -455,6 +455,7 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
-> > >  	imx6dl-pico-hobbit.dtb \
-> > >  	imx6dl-pico-nymph.dtb \
-> > >  	imx6dl-pico-pi.dtb \
-> > > +	imx6dl-plym2m.dtb \
-> > >  	imx6dl-prtrvt.dtb \
-> > >  	imx6dl-prtvt7.dtb \
-> > >  	imx6dl-rex-basic.dtb \
-> > > diff --git a/arch/arm/boot/dts/imx6dl-plym2m.dts b/arch/arm/boot/dts/imx6dl-plym2m.dts
-> > > new file mode 100644
-> > > index 000000000000..4f96e05aa03f
-> > > --- /dev/null
-> > > +++ b/arch/arm/boot/dts/imx6dl-plym2m.dts
-> > > @@ -0,0 +1,394 @@
-> > > +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-> > > +// SPDX-FileCopyrightText: 2014 Protonic Holland
-> > > +// SPDX-FileCopyrightText: 2020 Oleksij Rempel <kernel@pengutronix.de>, Pengutronix
-> > 		^
-> > @shawn: I saw a few patches adding these tags. Are they used in the near
-> > future?
-> 
-> I'm not sure.  I haven't seen this in Documentation/process/license-rules.rst,
-> nor the discussion around this.
+Removed repeated words "the" and "in"
 
-Hi Shawn,
+Signed-off-by: James Browning <jamesbrowning137@gmail.com>
+---
+ drivers/staging/comedi/comedi.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-is it a  no go? Should I send a patch with old style copyright text?
-
-
-Regards,
-Oleksij
+diff --git a/drivers/staging/comedi/comedi.h b/drivers/staging/comedi/comedi.h
+index 09a940066c0e..b5d00a006dbb 100644
+--- a/drivers/staging/comedi/comedi.h
++++ b/drivers/staging/comedi/comedi.h
+@@ -680,7 +680,7 @@ struct comedi_rangeinfo {
+  * value of 1 volt.
+  *
+  * The only defined flag value is %RF_EXTERNAL (%0x100), indicating that the
+- * the range needs to be multiplied by an external reference.
++ * range needs to be multiplied by an external reference.
+  */
+ struct comedi_krange {
+ 	int min;
+@@ -970,7 +970,7 @@ enum i8254_mode {
+  *   major reasons exist why this caused major confusion for users:
+  *   1) The register values are _NOT_ in user documentation, but rather in
+  *     arcane locations, such as a few register programming manuals that are
+- *     increasingly hard to find and the NI MHDDK (comments in in example code).
++ *     increasingly hard to find and the NI MHDDK (comments in example code).
+  *     There is no one place to find the various valid values of the registers.
+  *   2) The register values are _NOT_ completely consistent.  There is no way to
+  *     gain any sense of intuition of which values, or even enums one should use
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.25.1
+
