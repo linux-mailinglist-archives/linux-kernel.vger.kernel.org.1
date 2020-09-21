@@ -2,70 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91FB327251A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 854C5272509
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727153AbgIUNKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:10:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39210 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727049AbgIUNJy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:09:54 -0400
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        id S1727283AbgIUNKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:10:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727222AbgIUNKJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:10:09 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 813FBC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 06:10:08 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f07e300be7bcf3e7fc25083.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:e300:be7b:cf3e:7fc2:5083])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6E6BA21789;
-        Mon, 21 Sep 2020 13:09:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600693794;
-        bh=X8+eZkPCO0dSMkwRqVfpCHg1hSL3BOtJFo3Gz3AeHag=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oPB+2wuYh52uMUPyI5KZ6Rh461pqaGhZC/UqnAEEugCFp8h7VNjMdFM+pGAqn2LHT
-         RX/kUkndIRbikpr9qvbw81pUY4fNfE0v7u8VpXaTpUb5Gj/56rDLlJBFppOzMPdtC8
-         NifQCRdVbtsMqvB3Eg1CD4rf3Pt8VgZ1Q4njtn1k=
-Date:   Mon, 21 Sep 2020 21:09:46 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>, Li Yang <leoyang.li@nxp.com>,
-        Robert Chiras <robert.chiras@nxp.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, etnaviv@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 03/13] dt-bindings: arm: fsl: Fix matching Purism Librem5
- phones
-Message-ID: <20200921130945.GB25428@dragon>
-References: <20200904145312.10960-1-krzk@kernel.org>
- <20200904145312.10960-4-krzk@kernel.org>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D391A1EC03CE;
+        Mon, 21 Sep 2020 15:10:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600693807;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=9/ujxYY+aQO9o6gv67WT5My/XdaKCAJBq6gZzzqrh60=;
+        b=S+7d7u/sq7HYFYv57bZLJtkf5+lw8JXx+Tr2DS5AXYBgLA1UEzN1klkOBnj1H6AdjyCcGP
+        kNxwsIAYIQ7uFjZid0CFoLqeHpJ63FSZ4p7snqa747CyatgmbPAti5bUoHZ6dAib1qtB5M
+        ANRtao6sCCyHy2SVWy8tyVS1Rifl6lA=
+Date:   Mon, 21 Sep 2020 15:10:05 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Mike Hommey <mh@glandium.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] x86/boot: Handle fpu-related and clearcpuid command
+ line arguments earlier
+Message-ID: <20200921131005.GF5901@zn.tnic>
+References: <20200920083626.GA7473@zn.tnic>
+ <20200920220036.7469-1-mh@glandium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200904145312.10960-4-krzk@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200920220036.7469-1-mh@glandium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 04, 2020 at 04:53:02PM +0200, Krzysztof Kozlowski wrote:
-> All Purism Librem5 phones have three compatibles so they need their own
-> entry to fix dbts_check warnings like:
+On Mon, Sep 21, 2020 at 07:00:36AM +0900, Mike Hommey wrote:
+> FPU initialization handles them currently. However, in the case of
+> clearcpuid, some other early initialization code may check for features
+> before the FPU initialization code is called. Handling the argument
+> earlier allows the command line to influence those early
+> initializations.
 > 
->   arch/arm64/boot/dts/freescale/imx8mq-librem5-r2.dt.yaml: /:
->     compatible: ['purism,librem5r2', 'purism,librem5', 'fsl,imx8mq'] is not valid under any of the given schemas
+> Signed-off-by: Mike Hommey <mh@glandium.org>
+> ---
+>  arch/x86/kernel/cpu/common.c | 41 ++++++++++++++++++++++++++++++++++++
+>  arch/x86/kernel/fpu/init.c   | 41 ------------------------------------
+>  2 files changed, 41 insertions(+), 41 deletions(-)
 > 
->   arch/arm64/boot/dts/freescale/imx8mq-librem5-r2.dt.yaml: /:
->     compatible: ['purism,librem5r2', 'purism,librem5', 'fsl,imx8mq'] is too long
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+> index c5d6f17d9b9d..5e2e4d3621bd 100644
+> --- a/arch/x86/kernel/cpu/common.c
+> +++ b/arch/x86/kernel/cpu/common.c
+> @@ -23,6 +23,7 @@
+>  #include <linux/syscore_ops.h>
+>  #include <linux/pgtable.h>
+>  
+> +#include <asm/cmdline.h>
+>  #include <asm/stackprotector.h>
+>  #include <asm/perf_event.h>
+>  #include <asm/mmu_context.h>
+> @@ -1220,6 +1221,45 @@ static void detect_nopl(void)
+>  #endif
+>  }
+>  
+> +/*
+> + * We parse cpu parameters early because early_identify_cpu() is executed
+> + * before parse_early_param().
+> + */
+> +static void __init cpu__init_parse_early_param(void)
 
-Applied, thanks.
+Yeah, let's call it simply "cpu_parse_early_param".
+
+Also, I forgot to says this, sorry about that, but can you pls do your
+patch ontop of tip/master:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/log/
+
+because there are other changes in that area and your patch as is,
+doesn't apply.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
