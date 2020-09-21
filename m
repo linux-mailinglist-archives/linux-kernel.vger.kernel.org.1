@@ -2,74 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 030ED272432
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01E1E27246C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726683AbgIUMv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 08:51:28 -0400
-Received: from mga01.intel.com ([192.55.52.88]:39063 "EHLO mga01.intel.com"
+        id S1726756AbgIUM5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 08:57:30 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:34455 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726417AbgIUMv1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 08:51:27 -0400
-IronPort-SDR: 6q+7jjxn5fSutTc1m8J30EwZlpEpgB31kPw6fTeCY/jeYXe13UUQgR5FlooquOn8s7Bj8za0dR
- napvzPhhx6EQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9750"; a="178440425"
-X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; 
-   d="scan'208";a="178440425"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 05:51:27 -0700
-IronPort-SDR: RjRM4gJiXRdgoJN3d1WKPnh/tUFEQm31NNI2RI2m5nZEjc05peTpx6LodzU6hhR9iWJ7qlOlIK
- M3W8AppvEMxg==
-X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; 
-   d="scan'208";a="510675980"
-Received: from clairemo-mobl.ger.corp.intel.com (HELO localhost) ([10.252.43.50])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 05:51:20 -0700
-Date:   Mon, 21 Sep 2020 15:51:17 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        asapek@google.com, Borislav Petkov <bp@alien8.de>,
-        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
-        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
-        Christian Ludloff <ludloff@google.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Patrick Uiterwijk <puiterwijk@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
-Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
-Message-ID: <20200921125117.GG6038@linux.intel.com>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-11-jarkko.sakkinen@linux.intel.com>
- <CALCETrX9T1ZUug=M5ba9g4H5B7kV=yL5RzuTaeAEdy3uAieN_A@mail.gmail.com>
- <20200918235337.GA21189@sjchrist-ice>
- <20200921124946.GF6038@linux.intel.com>
+        id S1726445AbgIUM53 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 08:57:29 -0400
+X-Greylist: delayed 309 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Sep 2020 08:57:26 EDT
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600693048; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=eGPAEVHied9ipPQzc+EA5SSxuprSpzOxnsDeoTsKKhs=;
+ b=tsFG10cD2/p9OGB3awJqDxexszIJEaFzLPFgNjfrA8nI/RmpOSFYd+9M2p73vu5wp6cca5C3
+ J2PpI2J6ia+qAtO00zwpfKt5wC9SiGyb8E/FuXSsz/u1lz+MBWp+4immgXxVHxDv2V94s37B
+ qzRrRtxoWIIK5XQsuH6FtEESMUA=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5f68a1fc0049ea5816e0969c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 21 Sep 2020 12:52:12
+ GMT
+Sender: dikshita=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 13117C433CA; Mon, 21 Sep 2020 12:52:12 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: dikshita)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9AC6CC433C8;
+        Mon, 21 Sep 2020 12:52:11 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200921124946.GF6038@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 21 Sep 2020 18:22:11 +0530
+From:   dikshita@codeaurora.org
+To:     Dikshita Agarwal <dikshita@qti.qualcomm.com>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, mchehab@kernel.org,
+        hverkuil-cisco@xs4all.nl, ezequiel@collabora.com,
+        stanimir.varbanov@linaro.org, vgarodia@codeaurora.org,
+        majja@codeaurora.org
+Subject: Re: [PATCH 0/2] Add new controls for QP and layer bitrate
+In-Reply-To: <1600692113-32279-1-git-send-email-dikshita@qti.qualcomm.com>
+References: <1600692113-32279-1-git-send-email-dikshita@qti.qualcomm.com>
+Message-ID: <fc38f7871a52b66f388a5345714e6480@codeaurora.org>
+X-Sender: dikshita@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 03:49:56PM +0300, Jarkko Sakkinen wrote:
-> What really should be documented is to answer why we consider an enclave
-                                      ~~
-				      the (editing mistake)
+Hi All,
 
-/Jarkko
+Kindly ignore this patch series. Will be posting a new one.
+
+Thanks,
+Dikshita
+
+On 2020-09-21 18:11, Dikshita Agarwal wrote:
+> This series adds frame specific min/max qp controls for hevc and
+> layer wise bitrate control for h264.
+> 
+> Dikshita Agarwal (2):
+>   media: v4l2-ctrl: Add frame-specific min/max qp controls for hevc
+>   media: v4l2-ctrl: Add layer wise bitrate controls for h264
+> 
+>  .../userspace-api/media/v4l/ext-ctrls-codec.rst    | 74 
+> +++++++++++++++++++++-
+>  drivers/media/v4l2-core/v4l2-ctrls.c               | 15 +++++
+>  include/uapi/linux/v4l2-controls.h                 | 17 +++++
+>  3 files changed, 104 insertions(+), 2 deletions(-)
