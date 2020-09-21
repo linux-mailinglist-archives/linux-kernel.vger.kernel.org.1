@@ -2,172 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E334271E71
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:57:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B24D271E7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 11:03:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726448AbgIUI5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 04:57:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35525 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726353AbgIUI5j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 04:57:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600678658;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QtDGrtlEykQ6KPjGLzoVNEGTLi0Wn2lMDIF84aVaKUY=;
-        b=dT1dlPvV4LS9q5nw9txN5soYZdMJsJ1kEsZIVkJbWBrPjct8Wp71Lt3PQqtMULbB31YGtp
-        r/AIUztxFfXhcS771k5mlbs2c3Q2lxhj6i5kui1loYqano4rgh5g0GvqllTKtzBAxlWh/0
-        a/T789VEzz5/UYY/REj8t37zNRthdUE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-349-XYppMNu8OM6FHcbYzkTZzg-1; Mon, 21 Sep 2020 04:57:34 -0400
-X-MC-Unique: XYppMNu8OM6FHcbYzkTZzg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 50567802B6B;
-        Mon, 21 Sep 2020 08:57:32 +0000 (UTC)
-Received: from starship (unknown [10.35.206.28])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 68D9B61177;
-        Mon, 21 Sep 2020 08:57:28 +0000 (UTC)
-Message-ID: <2b6a4042a0a75cbc5e00b32752afa9965abd697d.camel@redhat.com>
-Subject: Re: [PATCH v4 2/2] KVM: nSVM: implement ondemand allocation of the
- nested state
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     kvm@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
-Date:   Mon, 21 Sep 2020 11:57:27 +0300
-In-Reply-To: <5a3538861a65973f9ae6e2d0798ac17f52428ded.camel@redhat.com>
-References: <20200917101048.739691-1-mlevitsk@redhat.com>
-         <20200917101048.739691-3-mlevitsk@redhat.com>
-         <20200917162942.GE13522@sjchrist-ice>
-         <d9c0d190-c6ea-2e21-92ca-2a53efb86a1d@redhat.com>
-         <20200920161602.GA17325@linux.intel.com>
-         <c35cbaca-2c34-cd93-b589-d4ab782fc754@redhat.com>
-         <5a3538861a65973f9ae6e2d0798ac17f52428ded.camel@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+        id S1726461AbgIUJDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 05:03:13 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2896 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726435AbgIUJDN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 05:03:13 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id 46539BE2DF49309FE3B4;
+        Mon, 21 Sep 2020 10:03:11 +0100 (IST)
+Received: from localhost (10.52.121.13) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 21 Sep
+ 2020 10:03:10 +0100
+Date:   Mon, 21 Sep 2020 10:01:31 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Atish Patra <atish.patra@wdc.com>
+CC:     <linux-kernel@vger.kernel.org>, Albert Ou <aou@eecs.berkeley.edu>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Anup Patel <anup@brainfault.org>,
+        "Arnd Bergmann" <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "David Hildenbrand" <david@redhat.com>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-arch@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+        "Mike Rapoport" <rppt@kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        "Paul Walmsley" <paul.walmsley@sifive.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Will Deacon <will@kernel.org>, Zong Li <zong.li@sifive.com>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [RFT PATCH v3 2/5] arm64, numa: Change the numa init functions
+ name to be generic
+Message-ID: <20200921100131.00005238@Huawei.com>
+In-Reply-To: <20200918201140.3172284-3-atish.patra@wdc.com>
+References: <20200918201140.3172284-1-atish.patra@wdc.com>
+        <20200918201140.3172284-3-atish.patra@wdc.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Originating-IP: [10.52.121.13]
+X-ClientProxiedBy: lhreml744-chm.china.huawei.com (10.201.108.194) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-09-21 at 10:53 +0300, Maxim Levitsky wrote:
-> On Sun, 2020-09-20 at 18:42 +0200, Paolo Bonzini wrote:
-> > On 20/09/20 18:16, Sean Christopherson wrote:
-> > > > Maxim, your previous version was adding some error handling to
-> > > > kvm_x86_ops.set_efer.  I don't remember what was the issue; did you have
-> > > > any problems propagating all the errors up to KVM_SET_SREGS (easy),
-> > > > kvm_set_msr (harder) etc.?
-> > > I objected to letting .set_efer() return a fault.
-> > 
-> > So did I, and that's why we get KVM_REQ_OUT_OF_MEMORY.  But it was more
-> > of an "it's ugly and it ought not to fail" thing than something I could
-> > pinpoint.
-> > 
-> > It looks like we agree, but still we have to choose the lesser evil?
-> > 
-> > Paolo
-> > 
-> > > A relatively minor issue is
-> > > the code in vmx_set_efer() that handles lack of EFER because technically KVM
-> > > can emulate EFER.SCE+SYSCALL without supporting EFER in hardware.  Returning
-> > > success/'0' would avoid that particular issue.  My primary concern is that I'd
-> > > prefer not to add another case where KVM can potentially ignore a fault
-> > > indicated by a helper, a la vmx_set_cr4().
+On Fri, 18 Sep 2020 13:11:37 -0700
+Atish Patra <atish.patra@wdc.com> wrote:
+
+> As we are using generic numa implementation code, modify the acpi & numa
+> init functions name to indicate that generic implementation.
 > 
-> The thing is that kvm_emulate_wrmsr injects #GP when kvm_set_msr returns any non zero value,
-> and returns 1 which means keep on going if I understand correctly (0 is userspace exit,
-> negative value would be a return to userspace with an error)
+> Signed-off-by: Atish Patra <atish.patra@wdc.com>
+
+Other than the double include of linux/acpi.h below this looks good to me.
+
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+> ---
+>  arch/arm64/kernel/acpi_numa.c | 13 -------------
+>  arch/arm64/mm/init.c          |  4 ++--
+>  drivers/base/arch_numa.c      | 31 +++++++++++++++++++++++++++----
+>  include/asm-generic/numa.h    |  4 ++--
+>  4 files changed, 31 insertions(+), 21 deletions(-)
 > 
-> So the question is if we have other wrmsr handlers which return negative value, and would
-> be affected by changing kvm_emulate_wrmsr to pass through the error value.
-> I am checking the code now.
-> 
-> I do agree now that this is the *correct* solution to this problem.
-> 
-> Best regards,
-> 	Maxim Levitsky
+> diff --git a/arch/arm64/kernel/acpi_numa.c b/arch/arm64/kernel/acpi_numa.c
+> index 7ff800045434..96502ff92af5 100644
+> --- a/arch/arm64/kernel/acpi_numa.c
+> +++ b/arch/arm64/kernel/acpi_numa.c
+> @@ -117,16 +117,3 @@ void __init acpi_numa_gicc_affinity_init(struct acpi_srat_gicc_affinity *pa)
+>  
+>  	node_set(node, numa_nodes_parsed);
+>  }
+> -
+> -int __init arm64_acpi_numa_init(void)
+> -{
+> -	int ret;
+> -
+> -	ret = acpi_numa_init();
+> -	if (ret) {
+> -		pr_info("Failed to initialise from firmware\n");
+> -		return ret;
+> -	}
+> -
+> -	return srat_disabled() ? -EINVAL : 0;
+> -}
+> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> index 481d22c32a2e..93b660229e1d 100644
+> --- a/arch/arm64/mm/init.c
+> +++ b/arch/arm64/mm/init.c
+> @@ -418,10 +418,10 @@ void __init bootmem_init(void)
+>  	max_pfn = max_low_pfn = max;
+>  	min_low_pfn = min;
+>  
+> -	arm64_numa_init();
+> +	arch_numa_init();
+>  
+>  	/*
+> -	 * must be done after arm64_numa_init() which calls numa_init() to
+> +	 * must be done after arch_numa_init() which calls numa_init() to
+>  	 * initialize node_online_map that gets used in hugetlb_cma_reserve()
+>  	 * while allocating required CMA size across online nodes.
+>  	 */
+> diff --git a/drivers/base/arch_numa.c b/drivers/base/arch_numa.c
+> index 73f8b49d485c..1649c90a3bc5 100644
+> --- a/drivers/base/arch_numa.c
+> +++ b/drivers/base/arch_numa.c
+> @@ -13,7 +13,9 @@
+>  #include <linux/module.h>
+>  #include <linux/of.h>
+>  
+> -#include <asm/acpi.h>
+> +#ifdef CONFIG_ACPI_NUMA
+> +#include <linux/acpi.h>
+> +#endif
+
+Why do we need this ifdef stuff here?
+In particular acpi_disabled is defined in that header
+in the !CONFIG_ACPI case so seems like we should include it always.
+
+Also given we've just moved arch/arm64/numa.c to become this file,
+it has an include of that header a few lines off the top of this diff anyway.
+
+So I think you can just drop the additional include here.
 
 
-So those are results of my analysis:
-
-WRMSR called functions that return negative value (I could have missed something,
-but I double checked the wrmsr code in both SVM and VMX, and in the common x86 code):
-
-vmx_set_vmx_msr - this is only called from userspace (msr_info->host_initiated == true),
-so this can be left as is
-
-xen_hvm_config - this code should probably return 1 in some cases, but in one case,
-it legit does memory allocation like I do, and failure should probably kill the guest
-as well (but I can keep it as is if we are afraid that new behavier will not be
-backward compatible)
-
-What do you think about this (only compile tested since I don't have any xen setups):
-
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 36e963dc1da61..66a57c5b14dfd 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -2695,24 +2695,19 @@ static int xen_hvm_config(struct kvm_vcpu *vcpu, u64 data)
-        u32 page_num = data & ~PAGE_MASK;
-        u64 page_addr = data & PAGE_MASK;
-        u8 *page;
--       int r;
- 
--       r = -E2BIG;
-        if (page_num >= blob_size)
--               goto out;
--       r = -ENOMEM;
-+               return 1;
-+
-        page = memdup_user(blob_addr + (page_num * PAGE_SIZE), PAGE_SIZE);
--       if (IS_ERR(page)) {
--               r = PTR_ERR(page);
--               goto out;
-+       if (IS_ERR(page))
-+               return PTR_ERR(page);
-+
-+       if (kvm_vcpu_write_guest(vcpu, page_addr, page, PAGE_SIZE)) {
-+               kfree(page);
-+               return 1;
-        }
--       if (kvm_vcpu_write_guest(vcpu, page_addr, page, PAGE_SIZE))
--               goto out_free;
--       r = 0;
--out_free:
--       kfree(page);
--out:
--       return r;
-+       return 0;
- }
-
-
-The msr write itself can be reached from the guest through two functions,
-from kvm_emulate_wrmsr which is called in wrmsr interception from both VMX and SVM,
-and from em_wrmsr which is called in unlikely case the emulator needs to emulate a wrmsr.
-
-Both should be changed to inject #GP only on positive return value and pass the error
-otherwise.
-
-Sounds reasonable? If you agree I'll post the patches implementing this.
-
-Best regards,
-	Maxim Levitsky
-
+>  #include <asm/sections.h>
+>  
+>  struct pglist_data *node_data[MAX_NUMNODES] __read_mostly;
+> @@ -444,16 +446,37 @@ static int __init dummy_numa_init(void)
+>  	return 0;
+>  }
+>  
+> +#ifdef CONFIG_ACPI_NUMA
+> +static int __init arch_acpi_numa_init(void)
+> +{
+> +	int ret;
+> +
+> +	ret = acpi_numa_init();
+> +	if (ret) {
+> +		pr_info("Failed to initialise from firmware\n");
+> +		return ret;
+> +	}
+> +
+> +	return srat_disabled() ? -EINVAL : 0;
+> +}
+> +#else
+> +static int __init arch_acpi_numa_init(void)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +#endif
+> +
+>  /**
+> - * arm64_numa_init() - Initialize NUMA
+> + * arch_numa_init() - Initialize NUMA
+>   *
+>   * Try each configured NUMA initialization method until one succeeds. The
+>   * last fallback is dummy single node config encomapssing whole memory.
+>   */
+> -void __init arm64_numa_init(void)
+> +void __init arch_numa_init(void)
+>  {
+>  	if (!numa_off) {
+> -		if (!acpi_disabled && !numa_init(arm64_acpi_numa_init))
+> +		if (!acpi_disabled && !numa_init(arch_acpi_numa_init))
+>  			return;
+>  		if (acpi_disabled && !numa_init(of_numa_init))
+>  			return;
+> diff --git a/include/asm-generic/numa.h b/include/asm-generic/numa.h
+> index 2718d5a6ff03..e7962db4ba44 100644
+> --- a/include/asm-generic/numa.h
+> +++ b/include/asm-generic/numa.h
+> @@ -27,7 +27,7 @@ static inline const struct cpumask *cpumask_of_node(int node)
+>  }
+>  #endif
+>  
+> -void __init arm64_numa_init(void);
+> +void __init arch_numa_init(void);
+>  int __init numa_add_memblk(int nodeid, u64 start, u64 end);
+>  void __init numa_set_distance(int from, int to, int distance);
+>  void __init numa_free_distance(void);
+> @@ -41,7 +41,7 @@ void numa_remove_cpu(unsigned int cpu);
+>  static inline void numa_store_cpu_info(unsigned int cpu) { }
+>  static inline void numa_add_cpu(unsigned int cpu) { }
+>  static inline void numa_remove_cpu(unsigned int cpu) { }
+> -static inline void arm64_numa_init(void) { }
+> +static inline void arch_numa_init(void) { }
+>  static inline void early_map_cpu_to_node(unsigned int cpu, int nid) { }
+>  
+>  #endif	/* CONFIG_NUMA */
 
 
