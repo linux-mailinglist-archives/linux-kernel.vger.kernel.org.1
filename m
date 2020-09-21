@@ -2,114 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B2D272E15
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 935A8272DD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727560AbgIUQpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:45:55 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:37287 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728806AbgIUQpU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:45:20 -0400
-X-Greylist: delayed 346 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Sep 2020 12:45:20 EDT
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 8E7DD580469;
-        Mon, 21 Sep 2020 12:39:21 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 21 Sep 2020 12:39:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=FAKxtc4axvdMTVdc4bHyXqp9LAt
-        vMDocxRFYXXZfBzg=; b=JdtF40ifOvS2VufC+D4Y/DgzsfP5T/+lwIbYsgExRNF
-        uFZygQ712+2ZJOKGfZY9sOf7vGXOEiaMNuVScexUD0xE40TMAXMbhyrI15xSaIU9
-        3uaYTOXwJTdUlG2E14/ixYUwdx/6hIpxvB3NkysGMM0sBFeJgmTMjh+BAi1v8Sqf
-        24+7SHEJGaDQjntE1s5t3FJCUX3ZWgkcAUu8pqh6RlAxYFJEUR0aS7k+PLmQlcms
-        KIKA/wEgA1hvgj1zJ+vPOHs9fEB/LWzmFtYOMjvdmSskCLdtARn/rqGTNF/eOj/t
-        8Z8hF6RoXKEeQgmOB4ZX3H+fMzdALRBkInUTkGSJgOg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=FAKxtc
-        4axvdMTVdc4bHyXqp9LAtvMDocxRFYXXZfBzg=; b=tbW6ec3zQjwQulgCq04Nbf
-        ODrBjrjXS5VYBZKvtCZBwUYNWCnyz7wHa6Qf+X/SaEIKXF1it/gQp3XVEHjbO8DB
-        CJFLnJVxcy9qbpKTgVHnpJKuLi+0ll8AZZ4N4PsVUxo6Tf7Mqo83D/+3ZU09pgFz
-        vV+xNPW5g4qpOos3aZ3aAGX6RPxDN1aB3fO3LhZ1AFxOs82rBlSthYrd/heyhpTc
-        5ho4ZS9v9HyMyu/OlAjyLcqhbKpeBvNMEEUB9zAev7flgyZmtIP11g1uExippFxa
-        2br3iqth9LbwWMelJpi0m1sbT4gZy9wa750I/HArpGlLFxf93RHmCnRi450tFqmw
-        ==
-X-ME-Sender: <xms:ONdoX_JsuNaWZ-HcFgI6irtOtMH7gFRBCeU6hq0DEwJg_tGEx67FZQ>
-    <xme:ONdoXzLrdbEG1m-JBpplH72_4KvcjbZmbAyQCtOqU2sY-O7PIGOuHXhBeeaRptV0R
-    -YTyU2ll9iSxagRiI8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddvgddutdehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvhigthhho
-    ucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtffrrg
-    htthgvrhhnpeegkeefjeegkedtjefgfeduleekueetjeeghffhuefgffefleehgeeifedv
-    gfethfenucfkphepudekgedrudeijedrvddtrdduvdejnecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomhepthihtghhohesthihtghhohdrphhiiiii
-    rg
-X-ME-Proxy: <xmx:ONdoX3to_KWRqqEpc-ZzpoHbdspcoQabxqO7Wt1QzCcfoDDztDDB_A>
-    <xmx:ONdoX4ZqnrIAlm4MlRZoMU60ouhY41zDStNVOcJOR3mRb4ZZTGLG_g>
-    <xmx:ONdoX2aD8wSBec4xA9KKgITKAMpVWUwr5uV7NRVnKowq7BI08_4dHQ>
-    <xmx:OddoX2KlqNhBuhFhdi3uBfLjQ_jvhsND10mqcK-u2yDzqTkWpJAPshiGxwuWEei_>
-Received: from cisco (184-167-020-127.res.spectrum.com [184.167.20.127])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 594E43280067;
-        Mon, 21 Sep 2020 12:39:18 -0400 (EDT)
-Date:   Mon, 21 Sep 2020 10:39:16 -0600
-From:   Tycho Andersen <tycho@tycho.pizza>
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     Linux Containers <containers@lists.linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>, bpf@vger.kernel.org,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Jann Horn <jannh@google.com>,
-        Aleksa Sarai <cyphar@cyphar.com>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH seccomp 0/2] seccomp: Add bitmap cache of
- arg-independent filter results that allow syscalls
-Message-ID: <20200921163916.GE3794348@cisco>
-References: <cover.1600661418.git.yifeifz2@illinois.edu>
- <20200921135115.GC3794348@cisco>
- <CABqSeASEw=Qr2CroKEpTyWMRXQkamKVUzXiEe2UsoQTCcv_99A@mail.gmail.com>
+        id S1729629AbgIUQnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:43:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48228 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727419AbgIUQne (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:43:34 -0400
+Received: from gaia (unknown [31.124.44.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 91756238E6;
+        Mon, 21 Sep 2020 16:43:32 +0000 (UTC)
+Date:   Mon, 21 Sep 2020 17:43:30 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Amit Daniel Kachhap <amit.kachhap@arm.com>
+Cc:     Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        Gabor Kertesz <gabor.kertesz@arm.com>,
+        linux-kselftest@vger.kernel.org,
+        Vincenzo Frascino <Vincenzo.Frascino@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/6] kselftest/arm64: Add utilities and a test to
+ validate mte memory
+Message-ID: <20200921164329.GD13882@gaia>
+References: <20200901092719.9918-1-amit.kachhap@arm.com>
+ <20200901092719.9918-2-amit.kachhap@arm.com>
+ <20200921141817.GC13882@gaia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CABqSeASEw=Qr2CroKEpTyWMRXQkamKVUzXiEe2UsoQTCcv_99A@mail.gmail.com>
+In-Reply-To: <20200921141817.GC13882@gaia>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 10:27:56AM -0500, YiFei Zhu wrote:
-> On Mon, Sep 21, 2020 at 8:51 AM Tycho Andersen <tycho@tycho.pizza> wrote:
-> > One problem with a kernel config setting is that it's for all tasks.
-> > While docker and systemd may make decsisions based on syscall number,
-> > other applications may have more nuanced filters, and this cache would
-> > yield incorrect results.
-> >
-> > You could work around this by making this a filter flag instead;
-> > filter authors would generally know whether their filter results can
-> > be cached and probably be motivated to opt in if their users are
-> > complaining about slow syscall execution.
-> >
-> > Tycho
+On Mon, Sep 21, 2020 at 03:18:19PM +0100, Catalin Marinas wrote:
+> On Tue, Sep 01, 2020 at 02:57:14PM +0530, Amit Daniel Kachhap wrote:
+> > diff --git a/tools/testing/selftests/arm64/mte/mte_helper.S b/tools/testing/selftests/arm64/mte/mte_helper.S
+> > new file mode 100644
+> > index 000000000000..91af6d1293f8
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/arm64/mte/mte_helper.S
+> > @@ -0,0 +1,116 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/* Copyright (C) 2020 ARM Limited */
+> > +
+> > +#include "mte_def.h"
+> > +
+> > +#define ENTRY(name) \
+> > +	.globl name ;\
+> > +	.p2align 2;\
+> > +	.type name, @function ;\
+> > +name:
+> > +
+> > +#define ENDPROC(name) \
+> > +	.size name, .-name ;
+> > +
+> > +	.text
+> > +/*
+> > + * mte_insert_random_tag: Insert random tag and different from
+> > + *			 the orginal tag if source pointer has it.
+> > + * Input:
+> > + *		x0 - source pointer with a tag/no-tag
+> > + * Return:
+> > + *		x0 - pointer with random tag
+> > + */
+> > +ENTRY(mte_insert_random_tag)
+> > +	mov	x1, #0x0
+> > +	gmi	x1, x0, x1
+> > +	irg	x0, x0, x1
+> > +	ret
+> > +ENDPROC(mte_insert_random_tag)
 > 
-> Yielding incorrect results should not be possible. The purpose of the
-> "emulator" (for the lack of a better term) is to determine whether the
-> filter reads any syscall arguments. A read from a syscall argument
-> must go through the BPF_LD | BPF_ABS instruction, where the 32 bit
-> multiuse field "k" is an offset to struct seccomp_data.
+> What was the reason for gmi here? The test fails when you have an
+> include mask of 0x8000 (exclude mask 0x7fff) and x0 has tag 0xf. In this
+> case we exclude the only allowed tag here, so the CPU falls back to the
+> default tag 0.
+> 
+> You can (a) stop the check_multiple_included_tags() earlier to have two
+> allowed tags here, (b) clear the pointer old tag so that you don't end
+> up in this scenario or (c) simply remove the gmi. My preference is the
+> latter, we don't test the hardware here, we only want to check whether
+> the kernel sets the GCR_EL1 correctly.
+> 
+> BTW, you also remove mov x1, #0, just:
+> 
+> 	irg	x0, x0, xzr
 
-I see, I missed this somehow. So is there a reason to hide this behind
-a config option? Isn't it just always better?
+Ah, removing gmi breaks the check_user_mem test as it occasionally gets
+the same tag when it expects to be different. I'll leave this to you to
+fix, maybe use two different functions, one with gmi and another
+without.
 
-Tycho
+In addition, could you please add the PR_MTE_* definitions and PROT_MTE
+to a header file in the MTE kselftests (mte-def.h maybe)? They should be
+bracketed with #ifndef ... #endif. The reason is that we'd like to queue
+these patches on their own branch on top of vanilla 5.9-rc3 rather than
+on top of for-next/mte.
+
+Thanks.
+
+-- 
+Catalin
