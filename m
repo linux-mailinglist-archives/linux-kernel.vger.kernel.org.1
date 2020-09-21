@@ -2,56 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A034271A4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 07:09:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FA2B271A51
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 07:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726384AbgIUFJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 01:09:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35388 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726186AbgIUFJv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 01:09:51 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9949920739;
-        Mon, 21 Sep 2020 05:09:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600664991;
-        bh=3mouzdzDe+zIdAUI84appaTKfzTrfev8XyD553QgtYI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U6T38ru6jDtUOT64Ei2bWqc+OG9tY4u0edA8H98XSkwdfR3Si8ghY1kGCpuVbS8Aj
-         MwvpOfYSKcS8jBkUbQZO7xzbMxZZ+d1Uqk6JdctgtvJHAr8BG/8nSDgaFX8Wvsa14S
-         wLnNhuwAF1Xibei7mqXYlvgx6CRA4N4N0hhnhfg4=
-Date:   Mon, 21 Sep 2020 07:09:46 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     James Browning <jamesbrowning137@gmail.com>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Ian Abbott <abbotti@mev.co.uk>
-Subject: Re: [PATCH 2/2] drivers:staging:comedi:comedi.h Fixed typo in comment
-Message-ID: <20200921050946.GB537189@kroah.com>
-References: <20200921041452.7293-1-jamesbrowning137@gmail.com>
+        id S1726415AbgIUFLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 01:11:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726186AbgIUFLY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 01:11:24 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918E7C061755;
+        Sun, 20 Sep 2020 22:11:23 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id z4so11262868wrr.4;
+        Sun, 20 Sep 2020 22:11:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=05ns352SOrrVFAHyev2BbDOaiF0T0xpSQqopABvWeIE=;
+        b=CHT9cqwY/wwWgjjUAftQ2LXqv+tIdJiNSL743W4XVqiEJFV4keFyZhWpLTr86Nx9Q6
+         50pjuaTxW+P5gCNXH24RrOC9/H4+sbVWhe8cuisYoLGxERe7sIJAgr6U+n66msYElY/+
+         KhrY3eyWREMfTqYh5zdam7+l0p1KDB8Je+ENB+u+L6O6fQVb/eUAzfkTkJgntoOFvmrb
+         PaL0IncS3ALswc7+IT48x3YbKIHYIVqY3ghHbaR/DX0yyUXTtxnYreLzepGLwb8hkaAb
+         y5GCDWhWOzn0qmB2d0LVtUBpFLuIvnUjOooQtm8nUJ9HrVV7qpOwMGerlc/PtiNsSgCO
+         hOoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=05ns352SOrrVFAHyev2BbDOaiF0T0xpSQqopABvWeIE=;
+        b=nsRoo/l8mH3KUvg0UShywlD0P8IjKpTnthrVFaPu8BF87N8bj1EYPQYZ+GO2tZvzkW
+         FUnHU7CN582kxzRTY/bzx64V8EVcMeAUUz2tfPFAzmW+mHsHwlxCDncgHdr7BL7PKM+R
+         Q0DzyodXecWyMNMJYJhNlQDuRsRoJ1xGLGtVj4hI/jUGoGhOrVSNTlzEzuExq1s660Rp
+         /kdGBx4fPRjPchRs7PhdK4VEBZ74ZC8lJpF81e3Hw3+63ficXlrHtjy7fIKVDJXvOU07
+         dTdYPNki+/YuTaIdnTIRkPjwS63U4BJGcz2IZZUPq2qeM5SQq/mGR1rwS68iXkECoV/K
+         1hPw==
+X-Gm-Message-State: AOAM531lMQ1GqqUfj1x1ziZwPLxr4TtvRzvgzaQG8FnHg5NhbJZUXyXv
+        vw1fIAZPX63wkeEjrq+xQdjXrtqJR5Q5McFmwME=
+X-Google-Smtp-Source: ABdhPJyqXrT5bV8lr4wUwNbGvZ+Vxmm2v8GZ3UpXEsjExaqhw0ahbIg+bwDl0ZnGv/Pm9EzzrImHlIbM79DRxdefmYI=
+X-Received: by 2002:a5d:43cf:: with SMTP id v15mr51505782wrr.269.1600665081222;
+ Sun, 20 Sep 2020 22:11:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200921041452.7293-1-jamesbrowning137@gmail.com>
+References: <20200917194341.16272-1-ben.levinsky@xilinx.com>
+ <20200917194341.16272-6-ben.levinsky@xilinx.com> <20200917221120.GA15530@xaphan>
+ <BYAPR02MB44073E7A3BEA401FF4684E95B53E0@BYAPR02MB4407.namprd02.prod.outlook.com>
+ <BYAPR02MB4407A552ECBA907DFC3CEC91B53E0@BYAPR02MB4407.namprd02.prod.outlook.com>
+ <20200918160721.GD15530@xaphan> <BYAPR02MB44073FBEF86F4AA2379D8A11B53F0@BYAPR02MB4407.namprd02.prod.outlook.com>
+ <20200918190643.GA172254@xaphan> <CAA07jV9WfTTLRwh3kmy1985p4C1m37wQJQAHzLdK2cn4f8HENw@mail.gmail.com>
+ <BYAPR02MB4407AA5D63EBAC7BEC93CB62B53D0@BYAPR02MB4407.namprd02.prod.outlook.com>
+In-Reply-To: <BYAPR02MB4407AA5D63EBAC7BEC93CB62B53D0@BYAPR02MB4407.namprd02.prod.outlook.com>
+From:   Wendy Liang <sunnyliangjy@gmail.com>
+Date:   Sun, 20 Sep 2020 22:11:10 -0700
+Message-ID: <CAA07jV-CUvOqDne8Y9HRWaGCpAjKePt_yYedZVAxNGXeUogy-Q@mail.gmail.com>
+Subject: Re: RE: RE: [PATCH v14 5/5] remoteproc: Add initial zynqmp R5
+ remoteproc driver
+To:     Ben Levinsky <BLEVINSK@xilinx.com>
+Cc:     Michael Auchter <michael.auchter@ni.com>,
+        "punit1.agrawal@toshiba.co.jp" <punit1.agrawal@toshiba.co.jp>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 20, 2020 at 09:14:49PM -0700, James Browning wrote:
-> Removed repeated word "in"
-> 
-> Signed-off-by: James Browning <jamesbrowning137@gmail.com>
-> ---
->  drivers/staging/comedi/comedi.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Hi Ben
 
-You sent two different patches that did different things, yet had the
-same exact subject line, which isn't ok.
+On Sun, Sep 20, 2020 at 4:16 PM Ben Levinsky <BLEVINSK@xilinx.com> wrote:
+>
+> Hi All,
+>
+> > -----Original Message-----
+> > From: Wendy Liang <sunnyliangjy@gmail.com>
+> > Sent: Friday, September 18, 2020 6:53 PM
+> > To: Michael Auchter <michael.auchter@ni.com>
+> > Cc: Ben Levinsky <BLEVINSK@xilinx.com>; punit1.agrawal@toshiba.co.jp;
+> > devicetree@vger.kernel.org; linux-remoteproc@vger.kernel.org; linux-
+> > kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org
+> > Subject: Re: RE: RE: [PATCH v14 5/5] remoteproc: Add initial zynqmp R5
+> > remoteproc driver
+> >
+> > HI Michael, Ben, Punit,
+> >
+> > On Fri, Sep 18, 2020 at 12:08 PM Michael Auchter <michael.auchter@ni.co=
+m>
+> > wrote:
+> > >
+> > > Hey Ben,
+> > >
+> > > On Fri, Sep 18, 2020 at 06:01:19PM +0000, Ben Levinsky wrote:
+> > > > Hi Michael, Punit,
+> > > >
+> > > > > -----Original Message-----
+> > > > > From: Michael Auchter <michael.auchter@ni.com>
+> > > > > Sent: Friday, September 18, 2020 9:07 AM
+> > > > > To: Ben Levinsky <BLEVINSK@xilinx.com>
+> > > > > Cc: devicetree@vger.kernel.org; linux-remoteproc@vger.kernel.org;
+> > linux-
+> > > > > kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org
+> > > > > Subject: Re: RE: [PATCH v14 5/5] remoteproc: Add initial zynqmp R=
+5
+> > > > > remoteproc driver
+> > > > >
+> > > > > On Thu, Sep 17, 2020 at 10:50:42PM +0000, Ben Levinsky wrote:
+> > > > > > In addition to device tree, is there particular linker script y=
+ou use
+> > > > > > for your R5 application? For example with OCM? As presently thi=
+s
+> > > > > > driver only has DDR and TCM as supported regions to load into
+> > > > >
+> > > > > The firmware is being loaded to TCM.
+> > > > >
+> > > > > I'm able to use this driver to load and run my firmware on both R=
+5
+> > > > > cores, but only after I change the incorrect:
+> > > > >
+> > > > >     rpu_mode =3D lockstep_mode
+> > > > >
+> > > > > assignment to:
+> > > > >
+> > > > >     rpu_mode =3D lockstep_mode ? PM_RPU_MODE_LOCKSTEP
+> > > > >                              : PM_RPU_MODE_SPLIT;
+> > > > There was a point raised by Punit that as "it is possible to set R5=
+ to
+> > > > operatore in split or lock-step mode dynamically" which is true and
+> > > > can be done via sysfs and the Xilinx firmware kernel code.
+> > >
+> > > I'm not familiar with this, and don't see an obvious way to do this
+> > > (from looking at drivers/firmware/xilinx/). Can you point me to this
+> > > code?
+> > >
+> [Ben Levinsky] A way to do this, though it seems later comments show it i=
+s not an implementation to pursue, is use the RPU configuration API and pre=
+sent it via sysfs interface a la https://xilinx-wiki.atlassian.net/wiki/spa=
+ces/A/pages/18842232/Zynq+UltraScale+MPSoC+Power+Management+-+Linux+Kernel#=
+ZynqUltraScale%EF%BC%8BMPSoCPowerManagement-LinuxKernel-EnableClock
+> > > > A suggestion that might clean up the driver so that the whole
+> > > > rpu_mode, tcm_mode configuration can be simplified and pulled out o=
+f
+> > > > the driver:
+> > > > - as Punit suggested, remove the lockstep-mode property
+> > > > - the zynqmp_remoteproc_r5 driver ONLY loads firmware and does
+> > start/stop.
+> > > > - the zynqmp_remoteproc_r5 driver does not configure and memory
+> > regions or the RPU. Let the Xilinx firmware sysfs interface handle this=
+.
+> > >
+> > > I don't think this is a good approach.
+> [Ben Levinsky] ok, noted. Can keep the configuration but still as wendy s=
+aid just have lockstep property to denote lockstep mode in RPU and otherwis=
+e be split, for simplicity?
+> > [Wendy] The TCMs are presented differently in the system depending on
+> > if RPU is in
+> > lockstep or split mode.
+> >
+> > Not sure if it is allowed to list TCMs registers properties for both
+> > split mode and lockstep
+> > mode in the same device node.
+> >
+> > Even though, driver can have this information in the code, but I feel
+> > the device tree is a
+> > better place for this information.
+> > And also for predefined shared memories, you will need to know the RPU
+> > op mode ahead,
+> > so that you can specify which shared memories belong to which RPU.
+> >
+> > To dynamic setup the RPU mode, besides sysfs, setup, if remoteproc can
+> > support
+> > device tree overlay, the RPUs can be described with dtbo and loaded at
+> > runtime.
+> >
+> > Just want to understand the case which needs to set  RPU mode at runtim=
+e?
+> > I think testing can be one case.
+> >
+> [Ben Levinsky] for testing, so far it has been r50/1 split and r5 lockste=
+p
+[Wendy] I tried to understand the need to change the RPU mode at runtime.
+What I can think of is for testing purposes.
 
-Why not just merge them into the same patch?
+Thanks,
+Wendy
 
-thanks,
-
-greg k-h
+> > Best Regards,
+> > Wendy
+> >
+> > > - How will someone know to configure the RPU mode and TCM mode via
+> > sysfs?
+> > > - What happens when someone changes the RPU mode after remoteproc
+> > has
+> > >   already booted some firmware on it?
+> > > - What if the kernel is the one booting the R5, not the user?
+> > >
+> > > Split vs. lockstep, IMO, needs to be specified as part of the device
+> > > tree, and this driver needs to handle configuring the RPU mode and TC=
+M
+> > > modes appropriately.
+> > >
+> [Ben Levinsky] Ok, as Wendy suggested would instead the presence of a "lo=
+ckstep=3Dmode" property indicate lockstep mode and otherwise imply split mo=
+de?
+> > > Split vs. lockstep already necessitates different entries in the devi=
+ce
+> > > tree:
+> > > - In the binding, each core references its TCMs via the
+> > >   meta-memory-regions phandles, and the referenced nodes necessarily
+> > >   encode this size. In split mode, each core has access to 64K of
+> > >   TCMA/TCMB, while in lockstep R5 0 has access to 128K of TCMA/TCMB. =
+So,
+> > >   the "xlnx,tcm" nodes' reg entries need to differ between lockstep a=
+nd
+> > >   split.
+> > > - In lockstep mode, it does not make sense to have both r5@0 and r5@1
+> > >   child nodes: only r5@0 makes sense. Though, I just realized that I
+> > >   think this driver will currently permit that, and register two
+> > >   remoteprocs even in lockstep mode... What happens if someone tries =
+to
+> > >   load firmware on to r5_1 when they're in lockstep mode? This should
+> > >   probably be prevented.
+> > >
+> [Ben Levinsky] Good Point. the loading of R5 1 while in lockstep is an un=
+covered corner case.. for this, before loading/starting or requesting memor=
+y the state of global rpu mode can be checked and this can act as a guard f=
+or probing a remoteproc instance for r5-1 if either is in lockstep and simi=
+lar safeguard for firmware loading for R5-1 if in lockstep mode
+>
+> That is, add the lockstep property only if in lockstep mode and use the p=
+resence of it or lack thereof for subsequent, single R5-specific driver rem=
+oteproc R5 probes or firmware loading
+>
+> In addition to the above property and its behavior, would correcting the =
+inconsistencies of the Documentation vs the split/lockstep code in the remo=
+teproc r5 device tree binding, its corresponding remoteproc r5 driver addre=
+ss the above concerns as well as the memory handling as you noted earlier?
+>
+> Also in the next series I can point to a sample R5 application and device=
+ trees for the split mode and lockstep cases I used for testing in the cove=
+r letter.
+>
+> > > Thanks,
+> > >  Michael
