@@ -2,244 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39B5A2736AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 01:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 282702736C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 01:44:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728844AbgIUXcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 19:32:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726457AbgIUXcC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 19:32:02 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05FA2C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 16:32:01 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id ay8so14435202edb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 16:32:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C+StbR8l+iINKxdKhhC9txI9lzzieJVqBdRCPZv/6Ho=;
-        b=DepQq7shpg7ekeVfm9HNfqa6yN6Jm3pPgP763w0uduaMsldIKXbnVK14rvVfcKKZRD
-         D+VcCmxqHftJcqzasAMsJwEqimKfm1Gj2S4o5ULBsxUScK1tvRsPn0P0QWTBYM6S3+m+
-         lzCGSLHuHBLOhmXHY0+tEcDEoCavDR/ZOHpMhuVxIk55syGVG5UWs7hODFCl22FbIumW
-         B/+TNvbCY27XBKFa12jD8EIZOU0Aen+dUVJNgKloJyZuK0QFa9W3dqlw30t3ugQeH+f2
-         ugsAAg7bqiBCaXrfH7EghxTWfhddvkjfDDEqdLCQYfVwryK9Ah0UgL40JXaSJbfa43Qv
-         ACNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C+StbR8l+iINKxdKhhC9txI9lzzieJVqBdRCPZv/6Ho=;
-        b=TR+u1b8reNpyJe5kbYm6wElDNa8uQzVWPZU5Tawxzyu+i25qNkhN7MbL5iLOYKcZWN
-         fmcsi8grz4NBxJyPUMEWV9iBrr/VYtDftWeBGN4QRUIyIZpPGIGUA8ordPhO4zNBDvp1
-         3rdtNbFAp4b0Xbkt3wQZvDqvuVC5Y6O+RdWFdOxhECVpIqmEAr0Xk01IdsDgkajFIP9L
-         VetQ6u7u1fML7RHA9l+GPfMlRAa0nslprnXW44Ydm47FHImBVC0wO6Apq5uCt14vYC4I
-         1qpmalvZqWowx0+0DL99g9LJ3IIdyaTVht/YEjzn0cgBq1iN8wVCE7P7wTuO7LOyXCaE
-         whjw==
-X-Gm-Message-State: AOAM5318gyn1tAcAZMRPPTcm/G2k05LdrP3B5tZa+JrYIMxWGGzDWhlP
-        j3rp8NcqtZTeD0LXWH6UZr6av/AFlo/sS508Z9RG
-X-Google-Smtp-Source: ABdhPJz/GswSld2uh/zJGMdxdAOo8yrU4fDUXpk2a3TP2x+vmMQJTppKsxJPPBsYwlKJSV0XmbSFDcWI7lcaypeaT5Y=
-X-Received: by 2002:a50:fc0b:: with SMTP id i11mr1283170edr.164.1600731120381;
- Mon, 21 Sep 2020 16:32:00 -0700 (PDT)
+        id S1728878AbgIUXnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 19:43:55 -0400
+Received: from correo.us.es ([193.147.175.20]:57384 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728432AbgIUXnz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 19:43:55 -0400
+X-Greylist: delayed 474 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Sep 2020 19:43:55 EDT
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 2C2D6117740
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 01:36:01 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 1D856DA730
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 01:36:01 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 00358DA78B; Tue, 22 Sep 2020 01:36:00 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
+        version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 7A7D8DA73D;
+        Tue, 22 Sep 2020 01:35:58 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Tue, 22 Sep 2020 01:35:58 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 43BF642EF4E1;
+        Tue, 22 Sep 2020 01:35:58 +0200 (CEST)
+Date:   Tue, 22 Sep 2020 01:35:58 +0200
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Simon Horman <horms@verge.net.au>
+Cc:     YueHaibing <yuehaibing@huawei.com>, wensong@linux-vs.org,
+        ja@ssi.bg, kadlec@netfilter.org, fw@strlen.de, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] ipvs: Remove unused macros
+Message-ID: <20200921233557.GA6523@salvia>
+References: <20200918131656.46260-1-yuehaibing@huawei.com>
+ <20200921072436.GA8437@vergenet.net>
 MIME-Version: 1.0
-References: <35f2b8c69b4b9abbc076dd55a6f0f52cf20abad7.1599687447.git.rgb@redhat.com>
- <CAHC9VhRN33KcW2dL1KJZZJC_Sg4JEdBJdnecRz6SB+PQ0BSg9A@mail.gmail.com> <20200921195655.GH822320@madcap2.tricolour.ca>
-In-Reply-To: <20200921195655.GH822320@madcap2.tricolour.ca>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 21 Sep 2020 19:31:49 -0400
-Message-ID: <CAHC9VhR2Xqp1wVe6UmLgGryyp_5bGwSHzgpVEdixKP6Y4srewA@mail.gmail.com>
-Subject: Re: [[PATCH V4]] audit: trigger accompanying records when no rules present
-To:     Richard Guy Briggs <rgb@redhat.com>
-Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        Eric Paris <eparis@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200921072436.GA8437@vergenet.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 3:57 PM Richard Guy Briggs <rgb@redhat.com> wrote:
-> On 2020-09-15 12:18, Paul Moore wrote:
-> > On Thu, Sep 10, 2020 at 11:03 AM Richard Guy Briggs <rgb@redhat.com> wrote:
-> > >
-> > > When there are no audit rules registered, mandatory records (config,
-> > > etc.) are missing their accompanying records (syscall, proctitle, etc.).
-> > >
-> > > This is due to audit context dummy set on syscall entry based on absence
-> > > of rules that signals that no other records are to be printed.
-> > >
-> > > Clear the dummy bit if any record is generated.
-> > >
-> > > The proctitle context and dummy checks are pointless since the
-> > > proctitle record will not be printed if no syscall records are printed.
-> > >
-> > > The fds array is reset to -1 after the first syscall to indicate it
-> > > isn't valid any more, but was never set to -1 when the context was
-> > > allocated to indicate it wasn't yet valid.
-> > >
-> > > The audit_inode* functions can be called without going through
-> > > getname_flags() or getname_kernel() that sets audit_names and cwd, so
-> > > set the cwd if it has not already been done so due to audit_names being
-> > > valid.
-> > >
-> > > The LSM dump_common_audit_data() LSM_AUDIT_DATA_NET:AF_UNIX case was
-> > > missed with the ghak96 patch, so add that case here.
-> > >
-> > > Thanks to bauen1 <j2468h@googlemail.com> for reporting LSM situations in
-> > > which context->cwd is not valid, inadvertantly fixed by the ghak96 patch.
-> > >
-> > > Please see upstream github issue
-> > > https://github.com/linux-audit/audit-kernel/issues/120
-> > > This is also related to upstream github issue
-> > > https://github.com/linux-audit/audit-kernel/issues/96
-> > >
-> > > Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
-> > > ---
-> > > Passes audit-testsuite.
-> > >
-> > > Chagelog:
-> > > v4:
-> > > - rebase on audit/next v5.9-rc1
-> > > - squash v2+v3fix
-> > > - add pwd NULL check in audit_log_name()
-> > > - resubmit after revert
-> > >
-> > > v3:
-> > > - initialize fds[0] to -1
-> > > - init cwd for ghak96 LSM_AUDIT_DATA_NET:AF_UNIX case
-> > > - init cwd for audit_inode{,_child}
-> > >
-> > > v2:
-> > > - unconditionally clear dummy
-> > > - create audit_clear_dummy accessor function
-> > > - remove proctitle context and dummy checks
-> > >
-> > >  kernel/audit.c       |  1 +
-> > >  kernel/audit.h       |  8 ++++++++
-> > >  kernel/auditsc.c     | 11 +++++++----
-> > >  security/lsm_audit.c |  1 +
-> > >  4 files changed, 17 insertions(+), 4 deletions(-)
-> >
-> > Comments below, but can you elaborate on if any testing was done
-> > beyond the audit-testsuite?
->
-> Yes, it was tested with audit-testsuite and bauen1's reproducer
->
-> > > diff --git a/kernel/audit.h b/kernel/audit.h
-> > > index 3b9c0945225a..abcfef58435b 100644
-> > > --- a/kernel/audit.h
-> > > +++ b/kernel/audit.h
-> > > @@ -290,6 +290,13 @@ extern int audit_signal_info_syscall(struct task_struct *t);
-> > >  extern void audit_filter_inodes(struct task_struct *tsk,
-> > >                                 struct audit_context *ctx);
-> > >  extern struct list_head *audit_killed_trees(void);
-> > > +
-> > > +static inline void audit_clear_dummy(struct audit_context *ctx)
-> > > +{
-> > > +       if (ctx)
-> > > +               ctx->dummy = 0;
-> > > +}
-> >
-> > With the only caller being audit_log_start(), should this be moved to
-> > kernel/audit.c?  I'm just not sure this is something we would ever
-> > need (or want) to call from elsewhere, thoughts?
->
-> Yes, move it, or better yet just open code it.
+On Mon, Sep 21, 2020 at 09:24:40AM +0200, Simon Horman wrote:
+> On Fri, Sep 18, 2020 at 09:16:56PM +0800, YueHaibing wrote:
+> > They are not used since commit e4ff67513096 ("ipvs: add
+> > sync_maxlen parameter for the sync daemon")
+> > 
+> > Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> 
+> Thanks, this look good to me.
+> 
+> Acked-by: Simon Horman <horms@verge.net.au>
+> 
+> Pablo, please consider this for nf-next.
 
-Sure.  It might also help to put a one-liner comment in there about why.
-
-> > > diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-> > > index 8dba8f0983b5..9d2de93f40b3 100644
-> > > --- a/kernel/auditsc.c
-> > > +++ b/kernel/auditsc.c
-> > > @@ -1367,7 +1368,10 @@ static void audit_log_name(struct audit_context *context, struct audit_names *n,
-> > >                         /* name was specified as a relative path and the
-> > >                          * directory component is the cwd
-> > >                          */
-> > > -                       audit_log_d_path(ab, " name=", &context->pwd);
-> > > +                       if (&context->pwd)
-> >
-> > Hmm, I don't think this is going to work the way you are intending; I
-> > believe this will always evaluate to true regardless of the state of
-> > context->pwd.  If you look elsewhere in kernel/auditsc.c you will see
-> > some examples of checking to see if context->pwd is valid (e.g.
-> > _audit_getcwd() and audit_log_exit()).
->
-> Sorry for the ctx->pwd.dentry/mnt brainfart, the compiler *did*
-> complain.
-
-That begs the question: why did you submit the patch?  I don't want to
-dwell too much on this, but compilers are pretty smart these days,
-it's best not to ignore their warnings unless you are *really* sure
-you are right.
-
-> > > +                               audit_log_d_path(ab, " name=", &context->pwd);
-> > > +                       else
-> > > +                               audit_log_format(ab, " name=(null)");
-> > >                         break;
-> > >                 default:
-> > >                         /* log the name's directory component */...
-> >
-> > > @@ -2079,6 +2080,7 @@ void __audit_inode(struct filename *name, const struct dentry *dentry,
-> > >         }
-> > >         handle_path(dentry);
-> > >         audit_copy_inode(n, dentry, inode, flags & AUDIT_INODE_NOEVAL);
-> > > +       _audit_getcwd(context);
-> > >  }
-> > >
-> > >  void __audit_file(const struct file *file)
-> > > @@ -2197,6 +2199,7 @@ void __audit_inode_child(struct inode *parent,
-> > >                 audit_copy_inode(found_child, dentry, inode, 0);
-> > >         else
-> > >                 found_child->ino = AUDIT_INO_UNSET;
-> > > +       _audit_getcwd(context);
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(__audit_inode_child);
-> > >
-> > > diff --git a/security/lsm_audit.c b/security/lsm_audit.c
-> > > index 53d0d183db8f..e93077612246 100644
-> > > --- a/security/lsm_audit.c
-> > > +++ b/security/lsm_audit.c
-> > > @@ -369,6 +369,7 @@ static void dump_common_audit_data(struct audit_buffer *ab,
-> > >                                         audit_log_untrustedstring(ab, p);
-> > >                                 else
-> > >                                         audit_log_n_hex(ab, p, len);
-> > > +                               audit_getcwd();
-> > >                                 break;
-> > >                         }
-> > >                 }
-> >
-> > I'm starting to wonder if audit is doing this wrong (it is audit after
-> > all) ... why not just fetch the cwd in audit_log_exit() if there are
-> > entries in the context->names_list?  The only time we care about
-> > logging the working dir is when we actually have PATH records, right?
-> > My initial thinking is that we can simplify a lot of code if we just
-> > add a audit_getcwd() call in audit_log_exit() if the
-> > context->names_list is not empty.  We should even be safe in the task
-> > exit case as the fs info appears to get cleaned up *after*
-> > audit_log_exit() is called.
->
-> > Assuming we go this route, we can probably get rid of all the
-> > audit_getcwd() calls outside of the audit code (e.g. the lsm_audit.c
-> > code).  I guess we would need to make sure things still behave the
-> > same for chdir(2), getcwd(2), etc. but even if we have to insert one
-> > or two audit_getcwd() calls in that case we should still come out on
-> > top (although I suspect the necessary calls are already being made).
->
-> Or just open code audit_getcwd() in audit_alloc_name() and kill all
-> audit_getcwd() calls since it is audit_names that is populated as the
-> result of a call to audit_alloc_name().
->
-> How does this look?: 4 files changed, 9 insertions(+), 33 deletions(-)
-
-It looks like a diffstat ... ?  I'm guessing you meant to copy-n-paste
-a diff here?
-
--- 
-paul moore
-www.paul-moore.com
+Applied, thanks.
