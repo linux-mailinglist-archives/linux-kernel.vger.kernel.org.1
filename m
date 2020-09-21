@@ -2,264 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA7FC2729BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B2A62729B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:15:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727713AbgIUPPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 11:15:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48530 "EHLO
+        id S1727781AbgIUPPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 11:15:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726413AbgIUPPG (ORCPT
+        with ESMTP id S1726413AbgIUPPD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 11:15:06 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C4CC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 08:15:06 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id b19so11406863lji.11
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 08:15:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=G3v6vDokmCsNR+5FaLIolM8MhEoCZHvz5yh3v5YWV3o=;
-        b=lFrZjSJ0HKYlqWr3iB23SMTTrk51+7TJvxgPeF3Z2qFxKc4OKTTRUGlhZIMHMSyoHl
-         m4b6Erx+V7c2EfyO9zGmnYz7g7GjzENInuxM2Atom/A3ATLHAb9XDQgz5nLX7jLG2YX3
-         PGeppqtlcQ1wuwwPcYh6Cct3kpOKPcxDgzC7WSG0yV5RyTWFBSMEFFJivUass6UPovxv
-         CJAlRydC3E/QjrPO+pZwZeDViXajB36uv2B8PzqgzbUHdCGzz5n/94b3+4FoQvmi4Kgj
-         jsuYVl4rXi305I5WMMFvXbgvsHgPS6oEO2oLCKLxzzmN1cE8hRIMdEslgoKzOFee0oVm
-         Selg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=G3v6vDokmCsNR+5FaLIolM8MhEoCZHvz5yh3v5YWV3o=;
-        b=R4J09EjwnInwkYpQ9WJ3kRgIum1bgkb85/UU22Wtpw4DA293W/7a0lpOQ399P6s/AP
-         7nEdWK+cLuA05oYCtYMaq9W3ww7zq14Kl6Gk0kwNiMiFhpML6Ch0JC9oh2s05N+YnYak
-         aD2tUZbISYHBmuB6ey3CB30aCEQ9XTipafVE+ql/M/i4gtOJZihJZkn+PICpvoRb4TqW
-         yo/eNngDcykOBNyI0GxyTynwr/nFYV6rog0vv12uu09n5n+fFE1N6NEDAQoOvq/na+MD
-         BrRUSe0k6FmYnSB0P2mkx4v+M2Se5JNEnM+zAD2HwdqkeHT+Jzu97pSciS2yqV5pQC8M
-         j9zw==
-X-Gm-Message-State: AOAM532qOIyvGlOzkTmR24bCi1aFbPCn9EHQtu3M3FX7L3J1MjnDIJkt
-        BUOwSOOjgsJrJUJxnrPmUluuYyPNZhv4947XqMrzbg==
-X-Google-Smtp-Source: ABdhPJxo4JqGYbQFNvHolCZwFV2a6IOZV4WManSD+L9bQoEcCLj0rmBBg+ij/27DheqGcU1D/xc48rFzM9OyyMtrC+s=
-X-Received: by 2002:a05:651c:505:: with SMTP id o5mr65908ljp.177.1600701304401;
- Mon, 21 Sep 2020 08:15:04 -0700 (PDT)
+        Mon, 21 Sep 2020 11:15:03 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B431C061755;
+        Mon, 21 Sep 2020 08:15:03 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kKNWq-003C4C-8W; Mon, 21 Sep 2020 15:14:56 +0000
+Date:   Mon, 21 Sep 2020 16:14:56 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
+        David Laight <David.Laight@aculab.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-aio@kvack.org, io-uring@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        netdev@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH 05/11] iov_iter: merge the compat case into
+ rw_copy_check_uvector
+Message-ID: <20200921151456.GV3421308@ZenIV.linux.org.uk>
+References: <20200921143434.707844-1-hch@lst.de>
+ <20200921143434.707844-6-hch@lst.de>
 MIME-Version: 1.0
-References: <20200916043103.606132-1-aubrey.li@linux.intel.com>
- <20200916110039.GG3117@suse.de> <78d608f2-b974-e940-da32-b37777bc405a@linux.intel.com>
-In-Reply-To: <78d608f2-b974-e940-da32-b37777bc405a@linux.intel.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 21 Sep 2020 17:14:53 +0200
-Message-ID: <CAKfTPtAVkg081VEGp3Hx3i7D+jxRJcyBi2=NJypvHH6HVJ8Nwg@mail.gmail.com>
-Subject: Re: [RFC PATCH v2] sched/fair: select idle cpu from idle cpumask in
- sched domain
-To:     "Li, Aubrey" <aubrey.li@linux.intel.com>
-Cc:     Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Jiang Biao <benbjiang@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921143434.707844-6-hch@lst.de>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Sep 2020 at 11:21, Li, Aubrey <aubrey.li@linux.intel.com> wrote:
->
-> On 2020/9/16 19:00, Mel Gorman wrote:
-> > On Wed, Sep 16, 2020 at 12:31:03PM +0800, Aubrey Li wrote:
-> >> Added idle cpumask to track idle cpus in sched domain. When a CPU
-> >> enters idle, its corresponding bit in the idle cpumask will be set,
-> >> and when the CPU exits idle, its bit will be cleared.
-> >>
-> >> When a task wakes up to select an idle cpu, scanning idle cpumask
-> >> has low cost than scanning all the cpus in last level cache domain,
-> >> especially when the system is heavily loaded.
-> >>
-> >> The following benchmarks were tested on a x86 4 socket system with
-> >> 24 cores per socket and 2 hyperthreads per core, total 192 CPUs:
-> >>
-> >
-> > This still appears to be tied to turning the tick off. An idle CPU
-> > available for computation does not necessarily have the tick turned off
-> > if it's for short periods of time. When nohz is disabled or a machine is
-> > active enough that CPUs are not disabling the tick, select_idle_cpu may
-> > fail to select an idle CPU and instead stack tasks on the old CPU.
-> >
-> > The other subtlety is that select_idle_sibling() currently allows a
-> > SCHED_IDLE cpu to be used as a wakeup target. The CPU is not really
-> > idle as such, it's simply running a low priority task that is suitable
-> > for preemption. I suspect this patch breaks that.
-> >
-> Thanks!
->
-> I shall post a v3 with performance data, I made a quick uperf testing and
-> found the benefit is still there. So I posted the patch here and looking
-> forward to your comments before I start the benchmarks.
->
-> Thanks,
-> -Aubrey
->
-> -----------------------------------------------------------------------
-> diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
-> index fb11091129b3..43a641d26154 100644
-> --- a/include/linux/sched/topology.h
-> +++ b/include/linux/sched/topology.h
-> @@ -65,8 +65,21 @@ struct sched_domain_shared {
->         atomic_t        ref;
->         atomic_t        nr_busy_cpus;
->         int             has_idle_cores;
-> +       /*
-> +        * Span of all idle CPUs in this domain.
-> +        *
-> +        * NOTE: this field is variable length. (Allocated dynamically
-> +        * by attaching extra space to the end of the structure,
-> +        * depending on how many CPUs the kernel has booted up with)
-> +        */
-> +       unsigned long   idle_cpus_span[];
->  };
->
-> +static inline struct cpumask *sds_idle_cpus(struct sched_domain_shared *sds)
+On Mon, Sep 21, 2020 at 04:34:28PM +0200, Christoph Hellwig wrote:
+> +static int compat_copy_iovecs_from_user(struct iovec *iov,
+> +		const struct iovec __user *uvector, unsigned long nr_segs)
 > +{
-> +       return to_cpumask(sds->idle_cpus_span);
-> +}
-> +
->  struct sched_domain {
->         /* These fields must be setup */
->         struct sched_domain __rcu *parent;      /* top domain must be null terminated */
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 6b3b59cc51d6..9a3c82645472 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6023,6 +6023,26 @@ void __update_idle_core(struct rq *rq)
->         rcu_read_unlock();
->  }
->
-> +/*
-> + * Update cpu idle state and record this information
-> + * in sd_llc_shared->idle_cpus_span.
-> + */
-> +void update_idle_cpumask(struct rq *rq)
-> +{
-> +       struct sched_domain *sd;
-> +       int cpu = cpu_of(rq);
-> +
-> +       rcu_read_lock();
-> +       sd = rcu_dereference(per_cpu(sd_llc, cpu));
-> +       if (!sd || !sd->shared)
-> +               goto unlock;
-> +       if (!available_idle_cpu(cpu) || !sched_idle_cpu(cpu))
-> +               goto unlock;
-> +       cpumask_set_cpu(cpu, sds_idle_cpus(sd->shared));
-> +unlock:
-> +       rcu_read_unlock();
-> +}
-> +
->  /*
->   * Scan the entire LLC domain for idle cores; this dynamically switches off if
->   * there are no idle cores left in the system; tracked through
-> @@ -6136,7 +6156,12 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
->
->         time = cpu_clock(this);
->
-> -       cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-> +       /*
-> +        * sched_domain_shared is set only at shared cache level,
-> +        * this works only because select_idle_cpu is called with
-> +        * sd_llc.
-> +        */
-> +       cpumask_and(cpus, sds_idle_cpus(sd->shared), p->cpus_ptr);
->
->         for_each_cpu_wrap(cpu, cpus, target) {
->                 if (!--nr)
-> @@ -6712,6 +6737,10 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu, int sd_flag, int wake_f
->
->                 if (want_affine)
->                         current->recent_used_cpu = cpu;
-> +
-> +               sd = rcu_dereference(per_cpu(sd_llc, new_cpu));
-> +               if (sd && sd->shared)
-> +                       cpumask_clear_cpu(new_cpu, sds_idle_cpus(sd->shared));
-
-Why are you clearing the bit only for the fast path ? the slow path
-can also select an idle CPU
-
-Then, I'm afraid that updating a cpumask at each and every task wakeup
-will be far too expensive. That's why we are ot updating
-nohz.idle_cpus_mask at each and every enter/exit idle but only once
-per tick.
-
-And a quick test with hackbench on my octo cores arm64 gives for 12
-iterations of: hackbench -l 2560 -g 1
-tip/sched/core :  1.324(+/- 1.26%)
-with this patch :  2.419(+/- 12.31%) -82% regression
-
->         }
->         rcu_read_unlock();
->
-> @@ -10871,6 +10900,9 @@ static void set_next_task_fair(struct rq *rq, struct task_struct *p, bool first)
->                 /* ensure bandwidth has been allocated on our new cfs_rq */
->                 account_cfs_rq_runtime(cfs_rq, 0);
->         }
-> +       /* Update idle cpumask if task has idle policy */
-> +       if (unlikely(task_has_idle_policy(p)))
-> +               update_idle_cpumask(rq);
-
-it's wrong because a sched_idle task will run for time to time even
-when some cfs tasks are runnable
-
->  }
->
->  void init_cfs_rq(struct cfs_rq *cfs_rq)
-> diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-> index 1ae95b9150d3..876dfdfe35bb 100644
-> --- a/kernel/sched/idle.c
-> +++ b/kernel/sched/idle.c
-> @@ -405,6 +405,7 @@ static void put_prev_task_idle(struct rq *rq, struct task_struct *prev)
->  static void set_next_task_idle(struct rq *rq, struct task_struct *next, bool first)
->  {
->         update_idle_core(rq);
-> +       update_idle_cpumask(rq);
->         schedstat_inc(rq->sched_goidle);
->  }
->
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index c82857e2e288..7a3355f61bcf 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -1069,6 +1069,7 @@ static inline void update_idle_core(struct rq *rq)
->  #else
->  static inline void update_idle_core(struct rq *rq) { }
->  #endif
-> +void update_idle_cpumask(struct rq *rq);
->
->  DECLARE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
->
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index 9079d865a935..f14a6ef4de57 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
-> @@ -1407,6 +1407,7 @@ sd_init(struct sched_domain_topology_level *tl,
->                 sd->shared = *per_cpu_ptr(sdd->sds, sd_id);
->                 atomic_inc(&sd->shared->ref);
->                 atomic_set(&sd->shared->nr_busy_cpus, sd_weight);
-> +               cpumask_copy(sds_idle_cpus(sd->shared), sched_domain_span(sd));
->         }
->
->         sd->private = sdd;
-> @@ -1769,7 +1770,7 @@ static int __sdt_alloc(const struct cpumask *cpu_map)
->
->                         *per_cpu_ptr(sdd->sd, j) = sd;
->
-> -                       sds = kzalloc_node(sizeof(struct sched_domain_shared),
-> +                       sds = kzalloc_node(sizeof(struct sched_domain_shared) + cpumask_size(),
->                                         GFP_KERNEL, cpu_to_node(j));
->                         if (!sds)
->                                 return -ENOMEM;
->
+> +	const struct compat_iovec __user *uiov =
+> +		(const struct compat_iovec __user *)uvector;
+> +	unsigned long i;
+	         ^^^^
+Huh?
