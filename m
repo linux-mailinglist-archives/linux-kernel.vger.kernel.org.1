@@ -2,203 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D67B227335F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:58:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF6027337C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 22:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728471AbgIUT62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 15:58:28 -0400
-Received: from mga09.intel.com ([134.134.136.24]:6567 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727197AbgIUT61 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 15:58:27 -0400
-IronPort-SDR: rGkQ8Ecn3RdphPtP6caXGYgD+FcvA6RwBTyeWuzrNdI2h8XRvK+IUIeCT3Si0BglJpbU5to+io
- ADKkpkVtFatQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="161391856"
-X-IronPort-AV: E=Sophos;i="5.77,287,1596524400"; 
-   d="scan'208";a="161391856"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 12:58:26 -0700
-IronPort-SDR: uOMQ77kzm8Nf+yWek1kTuScXulU6TmYu78CjdACPceLW7H1QaWd6t0P9Uf87NBJvd3fOhvq6oe
- f2Bh5k5J2ZCg==
-X-IronPort-AV: E=Sophos;i="5.77,287,1596524400"; 
-   d="scan'208";a="485647918"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 12:58:25 -0700
-Date:   Mon, 21 Sep 2020 12:58:25 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        "open list:SYNOPSYS ARC ARCHITECTURE" 
-        <linux-snps-arc@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
-        linux-csky@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-sparc <sparclinux@vger.kernel.org>
-Subject: Re: [patch RFC 00/15] mm/highmem: Provide a preemptible variant of
- kmap_atomic & friends
-Message-ID: <20200921195824.GM2540965@iweiny-DESK2.sc.intel.com>
-References: <20200919091751.011116649@linutronix.de>
- <CAHk-=wiYGyrFRbA1cc71D2-nc5U9LM9jUJesXGqpPnB7E4X1YQ@mail.gmail.com>
- <20200919173906.GQ32101@casper.infradead.org>
+        id S1726723AbgIUUGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 16:06:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726336AbgIUUGq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 16:06:46 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C41FCC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 13:06:46 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id a9so347656pjg.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 13:06:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=fk5l1rYUzO0ybCk4A3F2BkR5LYYdanHtPPjxTG5/0d8=;
+        b=WIzdwvasP8t0HrRCu8yc5TdvxQsreyyCYZRlnBUf0JdNhMQd66S71nrJul5hUFJsBG
+         wAscXjDFJvFvh1SVZH1YIMbQ27q4js2I1XSKfwijeCUnDA9wVfrMMQowe1roe7p0rD2S
+         Zj3jaj6qHJumXJG5OXLZ1hHBCJUnUUeQC/wg8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=fk5l1rYUzO0ybCk4A3F2BkR5LYYdanHtPPjxTG5/0d8=;
+        b=StioXyAanps5MlMptuRICRyy6ec19YQqF8442MrBGWPhxKRUrnc3PpHmB/rVkZGzW5
+         FvQsHd2L75VPyUKCebBYhbYGhuvZJtdO0PZ7+Ke+ouUsnOUByy7BqgXYXzlp88j27CMi
+         YkYFI20GA1+r0CEKn1z90xsZbeN7v7OZGGnPWNhGA4D7FaMCrFJs2nL6zdSbnXiS+NbL
+         clGNMQS2asLcBh2L2Cb2OuZ45kvdLBuXwoOMehehTy+uXWYhx8fpc6rmsIA8b+L2nF/5
+         pUxZ2uNPzoJsog1pq0czk3YxOYoBd2QDXwhpD1Df9J7GbZ/i9M4zzo+l2hRUx511hdJ2
+         4bfA==
+X-Gm-Message-State: AOAM533g8CpEUaYPgU7MvNkMymF6kDsy7Eg+x4uCbrlkS0c+9DOwX3Sq
+        ivN2yxwOb5am/mZiQE6SiIbOaAgt+nuodQ==
+X-Google-Smtp-Source: ABdhPJx0cY5Ezo0eFWBoMpO9bhA7K4lcgpnb2b1Kia26kNO3yYGxayjvac+a5aGTNLXOCrBxMpH2mg==
+X-Received: by 2002:a17:90b:4a04:: with SMTP id kk4mr864857pjb.84.1600718806123;
+        Mon, 21 Sep 2020 13:06:46 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id x62sm3794171pfx.20.2020.09.21.13.06.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 13:06:45 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200919173906.GQ32101@casper.infradead.org>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200918174511.v2.1.I997a428f58ef9d48b37a27a028360f34e66c00ec@changeid>
+References: <20200918174511.v2.1.I997a428f58ef9d48b37a27a028360f34e66c00ec@changeid>
+Subject: Re: [PATCH v2 1/2] arm64: dts: qcom: sc7180: Provide pinconf for SPI to use GPIO for CS
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-arm-msm@vger.kernel.org, akashast@codeaurora.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>
+Date:   Mon, 21 Sep 2020 13:06:43 -0700
+Message-ID: <160071880378.4188128.9400472825927726259@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 19, 2020 at 06:39:06PM +0100, Matthew Wilcox wrote:
-> On Sat, Sep 19, 2020 at 10:18:54AM -0700, Linus Torvalds wrote:
-> > On Sat, Sep 19, 2020 at 2:50 AM Thomas Gleixner <tglx@linutronix.de> wrote:
-> > >
-> > > this provides a preemptible variant of kmap_atomic & related
-> > > interfaces. This is achieved by:
-> > 
-> > Ack. This looks really nice, even apart from the new capability.
-> > 
-> > The only thing I really reacted to is that the name doesn't make sense
-> > to me: "kmap_temporary()" seems a bit odd.
-> > 
-> > Particularly for an interface that really is basically meant as a
-> > better replacement of "kmap_atomic()" (but is perhaps also a better
-> > replacement for "kmap()").
-> > 
-> > I think I understand how the name came about: I think the "temporary"
-> > is there as a distinction from the "longterm" regular kmap(). So I
-> > think it makes some sense from an internal implementation angle, but I
-> > don't think it makes a lot of sense from an interface name.
-> > 
-> > I don't know what might be a better name, but if we want to emphasize
-> > that it's thread-private and a one-off, maybe "local" would be a
-> > better naming, and make it distinct from the "global" nature of the
-> > old kmap() interface?
-> > 
-> > However, another solution might be to just use this new preemptible
-> > "local" kmap(), and remove the old global one entirely. Yes, the old
-> > global one caches the page table mapping and that sounds really
-> > efficient and nice. But it's actually horribly horribly bad, because
-> > it means that we need to use locking for them. Your new "temporary"
-> > implementation seems to be fundamentally better locking-wise, and only
-> > need preemption disabling as locking (and is equally fast for the
-> > non-highmem case).
-> > 
-> > So I wonder if the single-page TLB flush isn't a better model, and
-> > whether it wouldn't be a lot simpler to just get rid of the old
-> > complex kmap() entirely, and replace it with this?
-> > 
-> > I agree we can't replace the kmap_atomic() version, because maybe
-> > people depend on the preemption disabling it also implied. But what
-> > about replacing the non-atomic kmap()?
-> 
-> My concern with that is people might use kmap() and then pass the address
-> to a different task.  So we need to audit the current users of kmap()
-> and convert any that do that into using vmap() instead.
-> 
+Quoting Douglas Anderson (2020-09-18 17:45:27)
+> When the chip select line is controlled by the QUP, changing CS is a
+> time consuming operation.  We have to send a command over to the geni
+> and wait for it to Ack us every time we want to change (both making it
+> high and low).  To send this command we have to make a choice in
+> software when we want to control the chip select, we have to either:
+> A) Wait for the Ack via interrupt which slows down all SPI transfers
+>    (and incurrs extra processing associated with interrupts).
+> B) Sit in a loop and poll, waiting for the Ack.
+>=20
+> Neither A) nor B) is a great option.
+>=20
+> We can avoid all of this by realizing that, at least on some boards,
+> there is no advantage of considering this line to be a geni line.
+> While it's true that geni _can_ control the line, it's also true that
+> the line can be a GPIO and there is no downside of viewing it that
+> way.  Setting a GPIO is a simple MMIO operation.
+>=20
+> This patch provides definitions so a board can easily select the GPIO
+> mode.
+>=20
+> NOTE: apparently, it's possible to run the geni in "GSI" mode.  In GSI
+> the SPI port is allowed to be controlled by more than one user (like
+> firmware and Linux) and also the port can operate sequences of
+> operations in one go.  In GSI mode it _would_ be invalid to look at
+> the chip select as a GPIO because that would prevent other users from
+> using it.  In theory GSI mode would also avoid some overhead by
+> allowing us to sequence the chip select better.  However, I'll argue
+> GSI is not relevant for all boards (and certainly not any boards
+> supported by mainline today).  Why?
+> - Apparently to run a SPI chip in GSI mode you need to initialize it
+>   (in the bootloader) with a different firmware and then it will
+>   always run in GSI mode.  Since there is no support for GSI mode in
+>   the current Linux driver, it must be that existing boards don't have
+>   firmware that's doing that.  Note that the kernel device tree
+>   describes hardware but also firmware, so it is legitimate to make
+>   the assumption that we don't have GSI firmware in a given dts file.
+> - Some boards with sc7180 have SPI connected to the Chrome OS EC or
+>   security chip (Cr50).  The protocols for talking to cros_ec and cr50
+>   are extremely complex.  Both drivers in Linux fully lock the bus
+>   across several distinct SPI transfers.  While I am not an expert on
+>   GSI mode it feels highly unlikely to me that we'd ever be able to
+>   enable GSI mode for these devices.
+>=20
+> From a testing perspective, running "flashrom -p ec -r /tmp/foo.bin"
+> in a loop after this patch shows almost no reduction in time, but the
+> number of interrupts per command goes from 32357 down to 30611 (about
+> a 5% reduction).
+>=20
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
 
-I've done some of this work.[3]  PKS and pmem stray write protection[2] depend
-on kmap to enable the correct PKS settings.  After working through the
-exception handling we realized that some users of kmap() seem to be doing just
-this; passing the address to a different task.
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 
-From what I have found ~90% of kmap() callers are 'kmap_thread()' and the other
-~10% are kmap().[3]  But of those 10% I'm not familiar with the code enough to
-know if they really require a 'global' map.  What I do know is they save an
-address which appears to be used in other threads.  But I could be wrong.
+>=20
+> Changes in v2:
+> - Now just add the pinctrl; let a board use it.
+>=20
+>  arch/arm64/boot/dts/qcom/sc7180.dtsi | 96 ++++++++++++++++++++++++++++
+>  1 file changed, 96 insertions(+)
+>=20
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/q=
+com/sc7180.dtsi
+> index 6678f1e8e395..0534122b9a3c 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> @@ -1595,6 +1595,18 @@ pinmux {
+>                                 };
+>                         };
+> =20
+> +                       qup_spi0_cs_gpio: qup-spi0-cs-gpio {
+> +                               pinmux {
+> +                                       pins =3D "gpio34", "gpio35",
+> +                                              "gpio36";
+> +                                       function =3D "qup00";
+> +                               };
+> +                               pinmux-cs {
 
-For PKS I added a 'global' implementation which could then be called by kmap()
-and added a new kmap_thread() call which used the original 'local' version of
-the PKS interface.  The PKS work is still being reviewed internally for the TIP
-core code.  But I've pushed it all to git hub for purposes of this
-discussion.[1]
+Style nit: Add a newline between nodes?
 
-> I like kmap_local().  Or kmap_thread().
-
-I chose kmap_thread() so that makes sense to me.  I also thought about using
-kmap_global() as an alternative interface which would change just ~10% of the
-callers and make the series much smaller.  But internal discussions lead me to
-chose kmap_thread() as the new interface so that we don't change the semantics
-of kmap().
-
-Ira
-
-
-[1] https://github.com/weiny2/linux-kernel/tree/lm-pks-pmem-for-5.10-v3
-
-[2] https://lore.kernel.org/lkml/20200717072056.73134-1-ira.weiny@intel.com/
-
-[3]
-12:42:06 > git grep ' kmap(' *.c | grep -v '* ' | wc -l
-22
-
-12:43:32 > git grep ' kmap_thread(' *.c | grep -v '* ' | wc -l
-204
-
-Here are the callers which hand an address to another thread.
-
-12:45:25 > git grep ' kmap(' *.c | grep -v '* '
-arch/x86/mm/dump_pagetables.c:  [PKMAP_BASE_NR]         = { 0UL, "Persistent kmap() Area" },
-drivers/firewire/net.c:         ptr = kmap(dev->broadcast_rcv_buffer.pages[u]);
-drivers/gpu/drm/i915/gem/i915_gem_pages.c:              return kmap(sg_page(sgt->sgl));
-drivers/gpu/drm/i915/selftests/i915_perf.c:     scratch = kmap(ce->vm->scratch[0].base.page);
-drivers/gpu/drm/ttm/ttm_bo_util.c:              map->virtual = kmap(map->page);
-drivers/infiniband/hw/qib/qib_user_sdma.c:      mpage = kmap(page);
-drivers/misc/vmw_vmci/vmci_host.c:      context->notify = kmap(context->notify_page) + (uva & (PAGE_SIZE - 1));
-drivers/misc/xilinx_sdfec.c:            addr = kmap(pages[i]);
-drivers/mmc/host/usdhi6rol0.c:  host->pg.mapped         = kmap(host->pg.page);
-drivers/mmc/host/usdhi6rol0.c:  host->pg.mapped = kmap(host->pg.page);
-drivers/mmc/host/usdhi6rol0.c:  host->pg.mapped = kmap(host->pg.page);
-drivers/nvme/target/tcp.c:              iov->iov_base = kmap(sg_page(sg)) + sg->offset + sg_offset;
-drivers/scsi/libiscsi_tcp.c:            segment->sg_mapped = kmap(sg_page(sg));
-drivers/target/iscsi/iscsi_target.c:            iov[i].iov_base = kmap(sg_page(sg)) + sg->offset + page_off;
-drivers/target/target_core_transport.c:         return kmap(sg_page(sg)) + sg->offset;
-fs/btrfs/check-integrity.c:             block_ctx->datav[i] = kmap(block_ctx->pagev[i]);
-fs/ceph/dir.c:          cache_ctl->dentries = kmap(cache_ctl->page);
-fs/ceph/inode.c:                ctl->dentries = kmap(ctl->page);
-lib/scatterlist.c:              miter->addr = kmap(miter->page) + miter->__offset;
-net/ceph/pagelist.c:    pl->mapped_tail = kmap(page);
-net/ceph/pagelist.c:            pl->mapped_tail = kmap(page);
-virt/kvm/kvm_main.c:                    hva = kmap(page);
-
+> +                                       pins =3D "gpio37";
+> +                                       function =3D "gpio";
+> +                               };
+> +                       };
+> +
+>                         qup_spi1_default: qup-spi1-default {
+>                                 pinmux {
+>                                         pins =3D "gpio0", "gpio1",
