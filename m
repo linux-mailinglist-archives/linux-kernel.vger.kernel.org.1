@@ -2,97 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 183D6271B39
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 09:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0FA4271B3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 09:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726405AbgIUHEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 03:04:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726011AbgIUHEj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 03:04:39 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64827C061755;
-        Mon, 21 Sep 2020 00:04:39 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id b124so8445430pfg.13;
-        Mon, 21 Sep 2020 00:04:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=I2ZbtwVmDvOFK+zycxCjfdKVKY6xF0Wy1/dJQK2JDm0=;
-        b=o8tGxzau2gDvTjcFKlTm8o00rEEjLcbqbxiuYoS9gm8j+Jc38UaqRX1mskLjzw8qtW
-         KXx5O8nFLjrw0c8kXUUVvsCqvFVnE8zy3LyQQi1zI3DY9GHMkr5BSGHN/njPZGhz9hVS
-         5KFnwsV5X4q3AP0AMiyXsMGsngC1oNvgQAHJcGiPu/WEM37tmV9iOQkD3VIqaKSObb/o
-         h5CZ726agWwKFjZUvIMMcvKs8I+JBDTtaVbC9J2yC1PCsKO3/DZ5ZXXXV12uNue/l8sd
-         I9zlXUT9bk7I2MH+zzV5YtVqSn8CJYS/qQCNbYp8HxCJcb/RhEPZTW3DoJTHkwrZvQSi
-         yP5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=I2ZbtwVmDvOFK+zycxCjfdKVKY6xF0Wy1/dJQK2JDm0=;
-        b=tUnAWWniS3YK8KI+KHFLNaIEblrRDso5uyl4d5urtNOFsnsKSYw9WV1RYnfhm+Jycf
-         g+5pK75I9LJbWy4wfwVTXf0XsHWC+X0/9utZsEYF0W/GoULn+UXRFXv8DhuEkI5ts9eW
-         7qQ8CKBqkuKagI1U4kKCV4ne5BIBGTKlAhelgIHm8Iz04sErcJLxq1fCKlqwcsD5M1/L
-         7J00B9TZ+S8zpRPKwBNC17IV/USti7/+soOt5sGWDfQNC10Qe/W7L/N36kOfbIqFNeO+
-         j5mUko7jZBfwTcTPWIX5UppMantWPvo+efhv3lA02vCThAOysUqybOP5RCvDJfmw8uR2
-         Jxew==
-X-Gm-Message-State: AOAM5323TUOTQqFlbxL4Ri6RYoMVwcKxL5uyoyGfnvMPCflRZtx9Dvdz
-        174h24llQoL4ak3rw+aqrnaddoGgXRuul0+r
-X-Google-Smtp-Source: ABdhPJxauJfV3iIfYHv2fZVgLIL3gwOGcPNQSd5OnGX3Cd0KzCdRiPOt0FDIMC5ssPVIgCkewP04Ng==
-X-Received: by 2002:aa7:904a:0:b029:142:2501:35d8 with SMTP id n10-20020aa7904a0000b0290142250135d8mr25862705pfo.56.1600671878867;
-        Mon, 21 Sep 2020 00:04:38 -0700 (PDT)
-Received: from localhost.localdomain ([47.242.4.81])
-        by smtp.gmail.com with ESMTPSA id m13sm10095919pjl.45.2020.09.21.00.04.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 00:04:38 -0700 (PDT)
-From:   Herrington <hankinsea@gmail.com>
-To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shipujin.t@gmail.com, hankinsea@gmail.com,
-        Pujin Shi <shipj@lemote.com>
-Subject: [PATCH v2] powercap: include header to fix -Wmissing-prototypes
-Date:   Mon, 21 Sep 2020 15:04:17 +0800
-Message-Id: <20200921070417.1121-1-hankinsea@gmail.com>
-X-Mailer: git-send-email 2.18.4
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S1726406AbgIUHJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 03:09:41 -0400
+Received: from smtp21.cstnet.cn ([159.226.251.21]:33100 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726011AbgIUHJk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 03:09:40 -0400
+Received: from localhost (unknown [159.226.5.99])
+        by APP-01 (Coremail) with SMTP id qwCowABnffCoUWhf9ZquAA--.61621S2;
+        Mon, 21 Sep 2020 15:09:28 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
+        iommu@lists.linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, Xu Wang <vulab@iscas.ac.cn>
+Subject: [PATCH] dma: debug: convert comma to semicolon
+Date:   Mon, 21 Sep 2020 07:09:26 +0000
+Message-Id: <20200921070926.28791-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: qwCowABnffCoUWhf9ZquAA--.61621S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Jw4UZF15Zr47JFWUXw4xJFb_yoWDZrgEyw
+        4UZr1rGanxGryUKF47Ca93JFZag3yfWF48Wr1SqF9Fqa98Jw4DZw1DXrsaqrW5Cr97GFyr
+        C3srXr90kr17WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb4xFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+        6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26F4j6r4UJwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8
+        CwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
+        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
+        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
+        0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4U
+        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUHv3bUUU
+        UU=
+X-Originating-IP: [159.226.5.99]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCwUGA1z4jc0rwwAAsH
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Include the linux/idle_inject.h header to fix W=1 build warning:
+Replace a comma between expression statements by a semicolon.
 
-    drivers/powercap/idle_inject.c:152:6: warning: no previous prototype for ‘idle_inject_set_duration’ [-Wmissing-prototypes]
-    drivers/powercap/idle_inject.c:167:6: warning: no previous prototype for ‘idle_inject_get_duration’ [-Wmissing-prototypes]
-    drivers/powercap/idle_inject.c:179:6: warning: no previous prototype for ‘idle_inject_set_latency’ [-Wmissing-prototypes]
-    drivers/powercap/idle_inject.c:195:5: warning: no previous prototype for ‘idle_inject_start’ [-Wmissing-prototypes]
-    drivers/powercap/idle_inject.c:227:6: warning: no previous prototype for ‘idle_inject_stop’ [-Wmissing-prototypes]
-    drivers/powercap/idle_inject.c:299:28: warning: no previous prototype for ‘idle_inject_register’ [-Wmissing-prototypes]
-    drivers/powercap/idle_inject.c:345:6: warning: no previous prototype for ‘idle_inject_unregister’ [-Wmissing-prototypes]
-
-Signed-off-by: Herrington <hankinsea@gmail.com>
-Signed-off-by: Pujin Shi <shipujin.t@gmail.com>
-Signed-off-by: Pujin Shi <shipj@lemote.com>
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
 ---
- drivers/powercap/idle_inject.c | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/dma/debug.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/powercap/idle_inject.c b/drivers/powercap/idle_inject.c
-index 4310901a074e..6e1a0043c411 100644
---- a/drivers/powercap/idle_inject.c
-+++ b/drivers/powercap/idle_inject.c
-@@ -43,6 +43,7 @@
- #include <linux/sched.h>
- #include <linux/slab.h>
- #include <linux/smpboot.h>
-+#include <linux/idle_inject.h>
- 
- #include <uapi/linux/sched/types.h>
- 
+diff --git a/kernel/dma/debug.c b/kernel/dma/debug.c
+index 8e9f7b301c6d..126ada40ef09 100644
+--- a/kernel/dma/debug.c
++++ b/kernel/dma/debug.c
+@@ -1219,7 +1219,7 @@ void debug_dma_map_page(struct device *dev, struct page *page, size_t offset,
+ 	entry->dev       = dev;
+ 	entry->type      = dma_debug_single;
+ 	entry->pfn	 = page_to_pfn(page);
+-	entry->offset	 = offset,
++	entry->offset	 = offset;
+ 	entry->dev_addr  = dma_addr;
+ 	entry->size      = size;
+ 	entry->direction = direction;
+@@ -1310,7 +1310,7 @@ void debug_dma_map_sg(struct device *dev, struct scatterlist *sg,
+ 		entry->type           = dma_debug_sg;
+ 		entry->dev            = dev;
+ 		entry->pfn	      = page_to_pfn(sg_page(s));
+-		entry->offset	      = s->offset,
++		entry->offset	      = s->offset;
+ 		entry->size           = sg_dma_len(s);
+ 		entry->dev_addr       = sg_dma_address(s);
+ 		entry->direction      = direction;
 -- 
-2.25.4
+2.17.1
 
