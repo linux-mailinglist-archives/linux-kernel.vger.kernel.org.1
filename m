@@ -2,112 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E34C272A8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:44:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A54ED272A9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727923AbgIUPos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 11:44:48 -0400
-Received: from foss.arm.com ([217.140.110.172]:45688 "EHLO foss.arm.com"
+        id S1727984AbgIUPqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 11:46:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726810AbgIUPor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 11:44:47 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A864E147A;
-        Mon, 21 Sep 2020 08:44:46 -0700 (PDT)
-Received: from [192.168.0.110] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B01013F718;
-        Mon, 21 Sep 2020 08:44:44 -0700 (PDT)
-Subject: Re: [PATCH v6 5/7] KVM: arm64: pmu: Make overflow handler NMI safe
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, maz@kernel.org, catalin.marinas@arm.com,
-        swboyd@chromium.org, sumit.garg@linaro.org,
-        Julien Thierry <julien.thierry@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Pouloze <suzuki.poulose@arm.com>,
-        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu
-References: <20200819133419.526889-1-alexandru.elisei@arm.com>
- <20200819133419.526889-6-alexandru.elisei@arm.com>
- <20200921134301.GJ2139@willie-the-truck>
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-Message-ID: <a8763d49-d105-3920-8acf-c14d3a723b18@arm.com>
-Date:   Mon, 21 Sep 2020 16:45:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727770AbgIUPp7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 11:45:59 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DC48920B1F;
+        Mon, 21 Sep 2020 15:45:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600703158;
+        bh=HsDeVquuSyJnnOmiKWblMIIS/Vmw/qNnCOAfM6Vvy7M=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=HUS24PP8unqxMWlYWto9xTl5J4tCiludA9Hh9bLtJ2XBvEqYTLOisVcBQ4MA1g5jR
+         O0PqIensUHnmk4Q/KOipDVYwkFkgu8PMWA7pve4YudWsJkjjruDYDPmqDe6THgwJ3Z
+         bG0HVCMveCT92pofr103S9xCbsq+LSP2ZIz9/GSM=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 8BE7D352303A; Mon, 21 Sep 2020 08:45:58 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 08:45:58 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
+Message-ID: <20200921154558.GD29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200918194817.48921-1-urezki@gmail.com>
+ <20200918194817.48921-3-urezki@gmail.com>
+ <20200921074716.GC12990@dhcp22.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <20200921134301.GJ2139@willie-the-truck>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921074716.GC12990@dhcp22.suse.cz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will,
+On Mon, Sep 21, 2020 at 09:47:16AM +0200, Michal Hocko wrote:
+> On Fri 18-09-20 21:48:15, Uladzislau Rezki (Sony) wrote:
+> [...]
+> > Proposal
+> > ========
+> > Introduce a lock-free function that obtain a page from the per-cpu-lists
+> > on current CPU. It returns NULL rather than acquiring any non-raw spinlock.
+> 
+> I was not happy about this solution when we have discussed this
+> last time and I have to say I am still not happy. This is exposing
+> an internal allocator optimization and allows a hard to estimate
+> consumption of pcp free pages. IIUC this run on pcp cache can be
+> controled directly from userspace (close(open) loop IIRC) which makes it
+> even bigger no-no.
 
-On 9/21/20 2:43 PM, Will Deacon wrote:
-> On Wed, Aug 19, 2020 at 02:34:17PM +0100, Alexandru Elisei wrote:
->> From: Julien Thierry <julien.thierry@arm.com>
->>
->> kvm_vcpu_kick() is not NMI safe. When the overflow handler is called from
->> NMI context, defer waking the vcpu to an irq_work queue.
->>
->> Cc: Julien Thierry <julien.thierry.kdev@gmail.com>
->> Cc: Marc Zyngier <marc.zyngier@arm.com>
->> Cc: Will Deacon <will.deacon@arm.com>
->> Cc: Mark Rutland <mark.rutland@arm.com>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: James Morse <james.morse@arm.com>
->> Cc: Suzuki K Pouloze <suzuki.poulose@arm.com>
->> Cc: kvm@vger.kernel.org
->> Cc: kvmarm@lists.cs.columbia.edu
->> Signed-off-by: Julien Thierry <julien.thierry@arm.com>
->> Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
->> ---
->>  arch/arm64/kvm/pmu-emul.c | 25 ++++++++++++++++++++++++-
->>  include/kvm/arm_pmu.h     |  1 +
->>  2 files changed, 25 insertions(+), 1 deletion(-)
-> I'd like an Ack from the KVM side on this one, but some minor comments
-> inline.
->
->> diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
->> index f0d0312c0a55..30268397ed06 100644
->> --- a/arch/arm64/kvm/pmu-emul.c
->> +++ b/arch/arm64/kvm/pmu-emul.c
->> @@ -433,6 +433,22 @@ void kvm_pmu_sync_hwstate(struct kvm_vcpu *vcpu)
->>  	kvm_pmu_update_state(vcpu);
->>  }
->>  
->> +/**
->> + * When perf interrupt is an NMI, we cannot safely notify the vcpu corresponding
->> + * to the event.
->> + * This is why we need a callback to do it once outside of the NMI context.
->> + */
->> +static void kvm_pmu_perf_overflow_notify_vcpu(struct irq_work *work)
->> +{
->> +	struct kvm_vcpu *vcpu;
->> +	struct kvm_pmu *pmu;
->> +
->> +	pmu = container_of(work, struct kvm_pmu, overflow_work);
->> +	vcpu = kvm_pmc_to_vcpu(&pmu->pmc[0]);
-> Can you spell this kvm_pmc_to_vcpu(pmu->pmc); ?
+Yes, I do well remember that you are unhappy with this approach.
+Unfortunately, thus far, there is no solution that makes all developers
+happy.  You might be glad to hear that we are also looking into other
+solutions, each of which makes some other developers unhappy.  So we
+are at least not picking on you alone.  :-/
 
-Of course, that is much better.
+> I strongly agree with Thomas http://lkml.kernel.org/r/87tux4kefm.fsf@nanos.tec.linutronix.de
+> that this optimization is not aiming at reasonable workloads. Really, go
+> with pre-allocated buffer and fallback to whatever slow path you have
+> already. Exposing more internals of the allocator is not going to do any
+> good for long term maintainability.
 
->
->> +
->> +	kvm_vcpu_kick(vcpu);
-> How do we guarantee that the vCPU is still around by the time this runs?
-> Sorry to ask such a horrible question, but I don't see anything associating
-> the workqueue with the lifetime of the vCPU.
+I suggest that you carefully re-read the thread following that email.
 
-That's a very nice catch, indeed the code doesn't guarantee that the VM is still
-around when the work is executed. I will add an irq_work_sync() call to
-kvm_pmu_vcpu_destroy() (which is called by kvm_vcpu_destroy() ->
-kvm_arch_vcpu_destroy()), and to kvm_pmu_vcpu_reset(), similar to how x86 handles it.
+Given a choice between making users unhappy and making developers
+unhappy, I will side with the users each and every time.
 
-Thanks,
-Alex
+							Thanx, Paul
