@@ -2,74 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B384271EC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 11:18:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CC26271EC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 11:19:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726510AbgIUJSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 05:18:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726333AbgIUJSU (ORCPT
+        id S1726478AbgIUJTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 05:19:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42601 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726395AbgIUJTF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 05:18:20 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA19EC061755;
-        Mon, 21 Sep 2020 02:18:19 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id e11so11061397wme.0;
-        Mon, 21 Sep 2020 02:18:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=loMmKVEcoIhprgY7qLwzPQGHqghUl/YZgw3ux8z4Mko=;
-        b=lDvOlp0cAV3taZym9zLoB3Q+xfvKlaZNMx0QG+4jFmwMT/9hNyZnsraUg05RDEBL7S
-         zA9BVan+cLcO7ayO4Hc9oxg4Y9zuqM+Qgxefh7v1Brrp475CPlOwKdpn6M/nFCVEJhGU
-         Hv6mB0UUNBJfkOnaZRkrNHzlFnWmW771RdmadXz767064onsglENFZWpjGwXd9OFD8CU
-         cUxFBiFfp4Ij4upPUgsHBZQ+Sak1c1Oi+DZ8Mp90Dge68n7I93cb+lRbc8FRb21USHWz
-         P1kt0OXs2Ct2+BRt9/GhHY76YtLINTvD/KUPgYQf4IXaskmMnq8wHQGChXdjz3m04u2L
-         3Y/A==
+        Mon, 21 Sep 2020 05:19:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600679943;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3qp4k5f2KI+AeGRhJ9jLHzhWwAc1X/UvENG6IrkroPY=;
+        b=EGtblSUYCgqiK3rE/cveA0RKMKC0ttWCnGhWRMlUuwLy9NkBbD6dioHIlCiL51REVU6CqC
+        fHNBCqGkRqEDPqAx4Y2mIjwIlItxqedeMOifPfhesDRL1zuwSEfbdPDcJ5qYwvx/MLAyyO
+        frgQ49Q6ZJyw2OWymn43ji0E6fV2OIU=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-417-Z3Ezu-wYN62Td37Ar0guNA-1; Mon, 21 Sep 2020 05:19:01 -0400
+X-MC-Unique: Z3Ezu-wYN62Td37Ar0guNA-1
+Received: by mail-ej1-f69.google.com with SMTP id f17so4632664ejq.5
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 02:19:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=loMmKVEcoIhprgY7qLwzPQGHqghUl/YZgw3ux8z4Mko=;
-        b=AGihLEorZaj2HYzQoPOKjOyKfo6Euswb7okFziEZiwsUttXN80NeAHMpfssvBqDicr
-         XkS1z7ULwfgLmECfmeQ0FurtVqEEjc7mNKF8KcREZlzwa6sTCzJhiachxHmcgo8Qgx2B
-         DIU9qBK4EUsgPwPd7wxC+WgcXN2AD9DS5FgagvDW+zXbg4m7WUo1d4RmaBeTFQFwtZni
-         D5lpmjhHa5sD+2/ye3UYl5mb33bjJo93sShWG085xlGHAngjsUXJHF3YNeh3nIrfJI3B
-         CMRZ8bfOCJQv6D8pjJz5t+0YvQvQujxlSZ/hNTyTCYkcBb0Dzen2ypl/Mf6xUrygGJy9
-         xCEw==
-X-Gm-Message-State: AOAM532GB7m0i2PZzNSl9ofONuJ5kYpziti0EodJh48ujSM8kvBGSJiE
-        Xw/iiZfy7Fnqnhgo9/EzWPNLQ6jWcHLhSg==
-X-Google-Smtp-Source: ABdhPJyhGOeXP8q7acUChNscuLpU7v+TBxSFdMvmK9P4GAeb3TwEZrT8LTB1IJWr0wMoP+ENt+1mtQ==
-X-Received: by 2002:a1c:e108:: with SMTP id y8mr29122842wmg.179.1600679898312;
-        Mon, 21 Sep 2020 02:18:18 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.113.201])
-        by smtp.gmail.com with ESMTPSA id d124sm19572508wmd.47.2020.09.21.02.18.17
+        bh=3qp4k5f2KI+AeGRhJ9jLHzhWwAc1X/UvENG6IrkroPY=;
+        b=OD3qyjFTVLKVwx93v2fbD8whSL5t5bNQ9R+oYqi3YkEljXZYrnHeVjZME4LFk21R6I
+         l0JCqWEMdjXOskZLwoBhYl/OQVdoImkAg5qnA1e8l2pZxx/N8AUxl5LjmC5ZbgA8+M0U
+         EPXwJIioT+ToXVUY3hi0H0DEZogyj7Guu6JQh3SWDncA6NLzfd8E7vAyBuwZDQO03eSI
+         uAV+N9RSIxL2g2B3iG9D9lufGKjcA4kP8IX9hUilF8qsu+X6OCpbXbHe2OHyBS75mLzn
+         PdTfGERiExwkHkp9Bfs8miGn4Drp4Zr4ECE3p4eY2QUlEmQ6BXXTgyjlaCTJBhar8bdN
+         eFkQ==
+X-Gm-Message-State: AOAM5325bF07HC4G6TejHqBJfCoqLLpqJzf6z1YIEyfTgco1XOByqiM/
+        MzP9A+17wUcU+FAWXSX7lWnv7C2xjhtsMHSS4LsPk76gk4U+2YeXOTBC31y6rYb9QIQxP9Ml+7L
+        NU4j9fc0J0s1poJ6WsMZjEWLh
+X-Received: by 2002:a50:a418:: with SMTP id u24mr51947452edb.103.1600679940030;
+        Mon, 21 Sep 2020 02:19:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzDKoKGiKQIQpBJlsb/iqwSh7JcFxvu99TdsAlFbT44ZItCwR+Vi3SamuNRx7W9du4vOje0Cg==
+X-Received: by 2002:a50:a418:: with SMTP id u24mr51947429edb.103.1600679939783;
+        Mon, 21 Sep 2020 02:18:59 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id j15sm8478438ejs.5.2020.09.21.02.18.59
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Sep 2020 02:18:17 -0700 (PDT)
-Subject: Re: [PATCH v2] remoteproc/mediatek: Add support for mt8192 SCP
-To:     Pi-Hsun Shih <pihsun@chromium.org>
-Cc:     Tzung-Bi Shih <tzungbi@chromium.org>,
-        Tzung-Bi Shih <tzungbi@google.com>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
-        <linux-remoteproc@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200918064432.3117955-1-pihsun@chromium.org>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <d3da1c47-02ae-7873-2601-86a782a5bc74@gmail.com>
-Date:   Mon, 21 Sep 2020 11:18:16 +0200
+        Mon, 21 Sep 2020 02:18:59 -0700 (PDT)
+Subject: Re: [PATCH v2] Introduce support for Systems Management Driver over
+ WMI for Dell Systems
+To:     "Bharathi, Divya" <Divya.Bharathi@Dell.com>,
+        "Limonciello, Mario" <Mario.Limonciello@dell.com>,
+        Divya Bharathi <divya27392@gmail.com>,
+        "dvhart@infradead.org" <dvhart@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "Ksr, Prasanth" <Prasanth.Ksr@dell.com>
+References: <20200904142846.5356-1-divya_bharathi@dell.com>
+ <aaf3b072-a109-4f69-67dd-bea3dc5fb023@redhat.com>
+ <DM6PR19MB2636829402BC67EC1048E15FFA230@DM6PR19MB2636.namprd19.prod.outlook.com>
+ <CY4PR19MB12544CE6AFD16E89E688ACCD85200@CY4PR19MB1254.namprd19.prod.outlook.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <0c575811-a578-1b11-7741-f795f0c7265e@redhat.com>
+Date:   Mon, 21 Sep 2020 11:18:58 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200918064432.3117955-1-pihsun@chromium.org>
+In-Reply-To: <CY4PR19MB12544CE6AFD16E89E688ACCD85200@CY4PR19MB1254.namprd19.prod.outlook.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -77,149 +81,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+On 9/15/20 6:28 PM, Bharathi, Divya wrote:
 
-On 18/09/2020 08:44, Pi-Hsun Shih wrote:
-> Add support for mt8192 SCP.
+<snip>
+
+>>>> +/* kept variable names same as in sysfs file name for sysfs_show
+>>>> +macro
+>>> definition */
+>>>> +struct enumeration_data {
+>>>> +	char display_name_language_code[MAX_BUFF];
+>>>> +	char attribute_name[MAX_BUFF];
+>>>> +	char display_name[MAX_BUFF];
+>>>> +	char default_value[MAX_BUFF];
+>>>> +	char current_value[MAX_BUFF];
+>>>> +	char modifier[MAX_BUFF];
+>>>> +	int value_modifier_count;
+>>>> +	char value_modifier[MAX_BUFF];
+>>>> +	int possible_value_count;
+>>>> +	char possible_value[MAX_BUFF];
+>>>> +	char type[MAX_BUFF];
+>>>> +};
+>>>> +
+>>>> +static struct enumeration_data *enumeration_data; static int
+>>>> +enumeration_instances_count;
+>>>
+>>> Please store these 2 in the global wmi_priv data.
+>>>
+>>> Also there is a lot of overlap between structs like struct
+>>> enumeration_data, struct integer_data, etc.
+>>>
+>>> I think it would be good to make a single struct attr_data, which
+>>> contains fields for all the supported types.
+>>>
+>>> I also see a lot of overlapping code between:
+>>>
+>>> drivers/platform/x86/dell-wmi-enum-attributes.c
+>>> drivers/platform/x86/dell-wmi-int-attributes.c
+>>> drivers/platform/x86/dell-wmi-string-attributes.c
+>>>
+>>> I think that folding the data structures together will help with also
+>>> unifying that code into a single dell-wmi-std-attributes.c file.
+>>>
 > 
-> Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
-> Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
-> ---
+> Yes, it does seem like lot of code is overlapping but they differ by
+> properties that are little unnoticeable.
 > 
-> Change since v1:
-> * Remove unused register definitions.
+> If we make single file adding switch cases we may end up in many
+> switch cases and if conditions. Because, here only attribute_name,
+> display_lang_code, display_lang and modifier are same. Apart from
+> these other properties are different either by name or data type.
 > 
-> ---
->   drivers/remoteproc/mtk_common.h  |  32 +++++
->   drivers/remoteproc/mtk_scp.c     | 207 ++++++++++++++++++++++++++-----
->   drivers/remoteproc/mtk_scp_ipi.c |   5 +-
->   3 files changed, 211 insertions(+), 33 deletions(-)
+> Also, one advantage here is if any new type is added in future it will
+> be easier to create new sysfs_attr_group according to new type's
+> properties
 > 
-> diff --git a/drivers/remoteproc/mtk_common.h b/drivers/remoteproc/mtk_common.h
-> index 0066c83636d0..47b4561443a9 100644
-> --- a/drivers/remoteproc/mtk_common.h
-> +++ b/drivers/remoteproc/mtk_common.h
-> @@ -32,6 +32,23 @@
->   #define MT8183_SCP_CACHESIZE_8KB	BIT(8)
->   #define MT8183_SCP_CACHE_CON_WAYEN	BIT(10)
->   
-> +#define MT8192_L2TCM_SRAM_PD_0		0x210C0
-> +#define MT8192_L2TCM_SRAM_PD_1		0x210C4
-> +#define MT8192_L2TCM_SRAM_PD_2		0x210C8
-> +#define MT8192_L1TCM_SRAM_PDN		0x2102C
-> +#define MT8192_CPU0_SRAM_PD		0x21080
-> +
-> +#define MT8192_SCP2APMCU_IPC_SET	0x24080
-> +#define MT8192_SCP2APMCU_IPC_CLR	0x24084
-> +#define MT8192_SCP_IPC_INT_BIT		BIT(0)
-> +#define MT8192_SCP2SPM_IPC_CLR		0x24094
-> +#define MT8192_GIPC_IN_SET		0x24098
-> +#define MT8192_HOST_IPC_INT_BIT		BIT(0)
-> +
-> +#define MT8192_CORE0_SW_RSTN_CLR	0x30000
-> +#define MT8192_CORE0_SW_RSTN_SET	0x30004
-> +#define MT8192_CORE0_WDT_CFG		0x30034
-> +
->   #define SCP_FW_VER_LEN			32
->   #define SCP_SHARE_BUFFER_SIZE		288
->   
-> @@ -50,6 +67,19 @@ struct scp_ipi_desc {
->   	void *priv;
->   };
->   
-> +struct mtk_scp;
-> +
-> +struct mtk_scp_of_data {
-> +	int (*scp_before_load)(struct mtk_scp *scp);
-> +	void (*scp_irq_handler)(struct mtk_scp *scp);
-> +	void (*scp_reset_assert)(struct mtk_scp *scp);
-> +	void (*scp_reset_deassert)(struct mtk_scp *scp);
-> +	void (*scp_stop)(struct mtk_scp *scp);
-> +
-> +	u32 host_to_scp_reg;
-> +	u32 host_to_scp_int_bit;
-> +};
-> +
->   struct mtk_scp {
->   	struct device *dev;
->   	struct rproc *rproc;
-> @@ -58,6 +88,8 @@ struct mtk_scp {
->   	void __iomem *sram_base;
->   	size_t sram_size;
->   
-> +	const struct mtk_scp_of_data *data;
-> +
->   	struct mtk_share_obj __iomem *recv_buf;
->   	struct mtk_share_obj __iomem *send_buf;
->   	struct scp_run run;
-> diff --git a/drivers/remoteproc/mtk_scp.c b/drivers/remoteproc/mtk_scp.c
-> index ac13e7b046a6..f5f226a7b34c 100644
-> --- a/drivers/remoteproc/mtk_scp.c
-> +++ b/drivers/remoteproc/mtk_scp.c
-> @@ -124,9 +124,6 @@ static int scp_ipi_init(struct mtk_scp *scp)
->   	size_t send_offset = SCP_FW_END - sizeof(struct mtk_share_obj);
->   	size_t recv_offset = send_offset - sizeof(struct mtk_share_obj);
->   
-> -	/* Disable SCP to host interrupt */
-> -	writel(MT8183_SCP_IPC_INT_BIT, scp->reg_base + MT8183_SCP_TO_HOST);
-> -
->   	/* shared buffer initialization */
->   	scp->recv_buf =
->   		(struct mtk_share_obj __iomem *)(scp->sram_base + recv_offset);
-> @@ -138,7 +135,7 @@ static int scp_ipi_init(struct mtk_scp *scp)
->   	return 0;
->   }
->   
-> -static void scp_reset_assert(const struct mtk_scp *scp)
-> +static void mt8183_scp_reset_assert(struct mtk_scp *scp)
->   {
->   	u32 val;
->   
-> @@ -147,7 +144,7 @@ static void scp_reset_assert(const struct mtk_scp *scp)
->   	writel(val, scp->reg_base + MT8183_SW_RSTN);
->   }
->   
-> -static void scp_reset_deassert(const struct mtk_scp *scp)
-> +static void mt8183_scp_reset_deassert(struct mtk_scp *scp)
->   {
->   	u32 val;
->   
-> @@ -156,17 +153,29 @@ static void scp_reset_deassert(const struct mtk_scp *scp)
->   	writel(val, scp->reg_base + MT8183_SW_RSTN);
->   }
->   
-> -static irqreturn_t scp_irq_handler(int irq, void *priv)
-> +static void mt8192_scp_reset_assert(struct mtk_scp *scp)
->   {
-> -	struct mtk_scp *scp = priv;
-> -	u32 scp_to_host;
-> -	int ret;
-> +	writel(1, scp->reg_base + MT8192_CORE0_SW_RSTN_SET);
-> +}
->   
-> -	ret = clk_prepare_enable(scp->clk);
-> -	if (ret) {
-> -		dev_err(scp->dev, "failed to enable clocks\n");
-> -		return IRQ_NONE;
-> -	}
-> +static void mt8192_scp_reset_deassert(struct mtk_scp *scp)
-> +{
-> +	writel(1, scp->reg_base + MT8192_CORE0_SW_RSTN_CLR);
-> +}
-> +
-> +static void scp_reset_assert(struct mtk_scp *scp)
-> +{
-> +	scp->data->scp_reset_assert(scp);
+> We will certainly try and minimize some identical looking code
+> wherever possible and add inline comments/document the
+> differences more clearly in v3 which is incoming shortly.
+> 
+>>>> +get_instance_id(enumeration);
+>>>> +
+>>>> +static ssize_t current_value_show(struct kobject *kobj, struct
+>>> kobj_attribute *attr, char *buf)
+>>>> +{
+>>>> +	int instance_id;
+>>>> +
+>>>> +	if (!capable(CAP_SYS_ADMIN))
+>>>> +		return -EPERM;
+>>>> +	instance_id = get_enumeration_instance_id(kobj);
+>>>
+>>> If you unify the integer, string and enum code then this just becomes:
+>>> get_std_instance_id(kobj)
+>>>
+> 
+> For each type of attribute GUIDs are different and for each type
+> instance IDs start from zero. So if we populate them in single data
+> structure then instance IDs may overlap.
 
-I think we can call scp->data->scp_reset_assert(scp) directly.
+Ah, I missed that, because of the switch-case in init_bios_attributes()
+I assumed it was only called once and all attributes were enumerated
+in a single loop.
 
-> +}
-> +
-> +static void scp_reset_deassert(struct mtk_scp *scp)
-> +{
-> +	scp->data->scp_reset_deassert(scp);
+I see that init_bios_attributes() gets called once for each of
+ENUM, INT, STR and PO now. My mistake, sorry.
 
-Same here.
+So you are right. Since the instance-ids overlap then my idea will not
+work and we need to keep separate foo_data arrays per type.
+
+It might still be worth it to unify enum_data, string_data and
+integer_data into a single shared struct so that some of the
+sysfs getter functions can be shared. I will leave that up to you.
 
 Regards,
-Matthias
+
+Hans
+
