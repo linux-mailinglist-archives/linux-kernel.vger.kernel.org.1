@@ -2,75 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E71B272491
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A84272486
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726782AbgIUNG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:06:29 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2904 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726341AbgIUNG1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:06:27 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.107])
-        by Forcepoint Email with ESMTP id 14C2077031D4F8552A14;
-        Mon, 21 Sep 2020 14:06:25 +0100 (IST)
-Received: from [127.0.0.1] (10.210.166.25) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Mon, 21 Sep
- 2020 14:06:24 +0100
-Subject: Re: [PATCH -next] scsi: libsas: simplify the return expression of
- sas_discover_end_dev
-To:     Liu Shixin <liushixin2@huawei.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200921082453.2592137-1-liushixin2@huawei.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <d44beaa3-6338-9188-7cf3-338cc0120305@huawei.com>
-Date:   Mon, 21 Sep 2020 14:03:34 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
-MIME-Version: 1.0
-In-Reply-To: <20200921082453.2592137-1-liushixin2@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.166.25]
-X-ClientProxiedBy: lhreml701-chm.china.huawei.com (10.201.108.50) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+        id S1727033AbgIUNE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:04:26 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:56138 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726341AbgIUNEZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:04:25 -0400
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 21 Sep 2020 06:04:24 -0700
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 21 Sep 2020 06:04:22 -0700
+Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 21 Sep 2020 18:34:20 +0530
+Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
+        id 1D0184DEF; Mon, 21 Sep 2020 18:34:19 +0530 (IST)
+From:   Dikshita Agarwal <dikshita@codeaurora.org>
+To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
+        ezequiel@collabora.com, stanimir.varbanov@linaro.org,
+        vgarodia@codeaurora.org, majja@codeaurora.org,
+        Dikshita Agarwal <dikshita@codeaurora.org>
+Subject: [PATCH v2 0/2] Add new controls for QP and layer bitrate
+Date:   Mon, 21 Sep 2020 18:33:58 +0530
+Message-Id: <1600693440-3015-1-git-send-email-dikshita@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2020 09:24, Liu Shixin wrote:
-> Simplify the return expression.
-> 
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> ---
->   drivers/scsi/libsas/sas_discover.c | 8 +-------
->   1 file changed, 1 insertion(+), 7 deletions(-)
-> 
-> diff --git a/drivers/scsi/libsas/sas_discover.c b/drivers/scsi/libsas/sas_discover.c
-> index d0f9e90e3279..161c9b387da7 100644
-> --- a/drivers/scsi/libsas/sas_discover.c
-> +++ b/drivers/scsi/libsas/sas_discover.c
-> @@ -278,13 +278,7 @@ static void sas_resume_devices(struct work_struct *work)
->    */
->   int sas_discover_end_dev(struct domain_device *dev)
->   {
-> -	int res;
-> -
-> -	res = sas_notify_lldd_dev_found(dev);
-> -	if (res)
-> -		return res;
-> -
-> -	return 0;
-> +	return sas_notify_lldd_dev_found(dev);
->   }
->   
->   /* ---------- Device registration and unregistration ---------- */
-> 
+This series adds frame specific min/max qp controls for hevc and layer
+wise bitrate control for h264.
 
-You can make a similar change at the end of sas_discover_data() [and 
-include in the same patch]
+Chnage since v1:
+ corrected email.
+
+Dikshita Agarwal (2):
+  media: v4l2-ctrl: Add frame-specific min/max qp controls for hevc
+  media: v4l2-ctrl: Add layer wise bitrate controls for h264
+
+ .../userspace-api/media/v4l/ext-ctrls-codec.rst    | 74 +++++++++++++++++++++-
+ drivers/media/v4l2-core/v4l2-ctrls.c               | 15 +++++
+ include/uapi/linux/v4l2-controls.h                 | 17 +++++
+ 3 files changed, 104 insertions(+), 2 deletions(-)
+
+-- 
+1.9.1
+
