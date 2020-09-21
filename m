@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCA68271F8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48F71271F8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726544AbgIUKCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 06:02:25 -0400
-Received: from mail-il1-f208.google.com ([209.85.166.208]:57318 "EHLO
-        mail-il1-f208.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726489AbgIUKCX (ORCPT
+        id S1726554AbgIUKCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:02:32 -0400
+Received: from mail-il1-f207.google.com ([209.85.166.207]:38988 "EHLO
+        mail-il1-f207.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726343AbgIUKCX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 21 Sep 2020 06:02:23 -0400
-Received: by mail-il1-f208.google.com with SMTP id d16so10487757ila.23
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:02:22 -0700 (PDT)
+Received: by mail-il1-f207.google.com with SMTP id r10so9360222ilq.6
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:02:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=HNQqNrhUW+qeQAXFC1bvUFTX7xLT95EGtWYHouxpbXI=;
-        b=WYaF38fkhZG7LoXL0QgeF3sBlldFw59XGeSfQIOKmlKYUzj2LzbsfXIqTB1cHf/CAW
-         AsdfPRz0JDCBDI/LaE/Kl/THo8rug+EccF/omAw9t8cSai1EA/KTnaYjg7ecOMkSlo27
-         mEm0OVUxeML0s8GYMJ6YxePeYEyK3ji1gzB9VyTabuVcxGzzItIF35Pqj98wttutRmT7
-         JhdNGhD4tDMY7Rj/O1oQH2lze76M9PZCOYfZDSTvV/B28Y0v48Mr094dRkW3g5ZUxcny
-         ehX/hYyJ1CxZeU1cS+I794fZyW75o5UM5kx2v71ijraWgl8UCKST1HpedC7LyBtifYTU
-         vAxw==
-X-Gm-Message-State: AOAM530VHoIQOcWCApJioSMYzC+/X5S3SEMgiZ29e6zSVrNKWfeq/zet
-        hmk5+hiZvHZ0ebazRXG8AVU1yj4xvvdUyzRDP6U0rZbbed6E
-X-Google-Smtp-Source: ABdhPJxoGfOjWQdT5RI3svlp6jYuLQE23iFZwumRV/7IgDacjPY6S+8eQjB2tdXnJveWDDD8Gunnvta5ktynxb0W2kllXfuOYZ4E
+        bh=/l/NOq+7TKn1G7pMBPtjRXGm7OYqGvdY0rRGoArh5Q0=;
+        b=s2ahKFu7CcPTrngF9tCms7WbJlY0EsYqZ8lblVTLbwWWGE5Gpo1W6p/2dlGJ640iCw
+         l0MOO/Lw8Lm857v5aZ0MHbcwkpdh0D28CvKrgx+ORbeNWXd73wT3PxDBd/T9SSaGgOO1
+         xM6V6ADwnByNJDTfX16yqlxv3CnBcGq0zCO/arGEaUfY/vRaKwYCZMBQA4w+JPXF1D07
+         1SkN6ouF/GS6AZ5scoGf4B1+vWq4q/GwNFgy+coCeXSJ8WAdV5+imN+GrZ7UvhNzTRMl
+         1d8f5BSb5aTKPkuZr8tbThG8rEj/dWOC1S77/Q/EDCPgVBssArgQhmaKC7nAnVFOBua8
+         GZnw==
+X-Gm-Message-State: AOAM533yN52AFHeMBVEI1eebRN4aJqXCqOJAZd5KY+qmewRqREi30qtX
+        U0xuHmqkpdODHQUbMRuvms76UTBFX9z3erkS324OZmpWPeYA
+X-Google-Smtp-Source: ABdhPJxnfnd5KF7MPBX4xt42GdnjVrdVomMVDd/Vxi/1JQH/nA1VuJNguTtjkLn6mPPo/Q3iorAkryXHcD+XOKXE/WARzaKWYtb9
 MIME-Version: 1.0
-X-Received: by 2002:a6b:8f8e:: with SMTP id r136mr36510961iod.63.1600682542394;
+X-Received: by 2002:a02:4b07:: with SMTP id q7mr40969729jaa.84.1600682542595;
  Mon, 21 Sep 2020 03:02:22 -0700 (PDT)
 Date:   Mon, 21 Sep 2020 03:02:22 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000056737105afcff247@google.com>
-Subject: KMSAN: uninit-value in search_by_key
-From:   syzbot <syzbot+d94d02749498bb7bab4b@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, alex.shi@linux.alibaba.com,
-        glider@google.com, jack@suse.cz, linux-kernel@vger.kernel.org,
-        reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        yeyunfeng@huawei.com, zhengbin13@huawei.com
+Message-ID: <00000000000059837b05afcff275@google.com>
+Subject: WARNING in btrfs_alloc_chunk
+From:   syzbot <syzbot+f54bbed7adc7c7729120@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -49,63 +48,77 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    c5a13b33 kmsan: clang-format core
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=173525ab900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=20f149ad694ba4be
-dashboard link: https://syzkaller.appspot.com/bug?extid=d94d02749498bb7bab4b
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-userspace arch: i386
+HEAD commit:    325d0eab Merge branch 'akpm' (patches from Andrew)
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=142c89ab900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8d39f8ae68f9dcd5
+dashboard link: https://syzkaller.appspot.com/bug?extid=f54bbed7adc7c7729120
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d94d02749498bb7bab4b@syzkaller.appspotmail.com
+Reported-by: syzbot+f54bbed7adc7c7729120@syzkaller.appspotmail.com
 
-=====================================================
-BUG: KMSAN: uninit-value in comp_keys fs/reiserfs/stree.c:83 [inline]
-BUG: KMSAN: uninit-value in bin_search fs/reiserfs/stree.c:173 [inline]
-BUG: KMSAN: uninit-value in search_by_key+0x2c57/0x60e0 fs/reiserfs/stree.c:743
-CPU: 1 PID: 28395 Comm: syz-executor.4 Not tainted 5.9.0-rc4-syzkaller #0
+------------[ cut here ]------------
+gather_device_info: found more than 0 devices
+WARNING: CPU: 1 PID: 26278 at fs/btrfs/volumes.c:4967 gather_device_info fs/btrfs/volumes.c:4967 [inline]
+WARNING: CPU: 1 PID: 26278 at fs/btrfs/volumes.c:4967 btrfs_alloc_chunk+0x1a43/0x2000 fs/btrfs/volumes.c:5194
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 26278 Comm: syz-executor.2 Not tainted 5.9.0-rc5-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
  __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x21c/0x280 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:122
- __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:219
- comp_keys fs/reiserfs/stree.c:83 [inline]
- bin_search fs/reiserfs/stree.c:173 [inline]
- search_by_key+0x2c57/0x60e0 fs/reiserfs/stree.c:743
- reiserfs_read_locked_inode+0x1fc/0x3260 fs/reiserfs/inode.c:1561
- reiserfs_fill_super+0x2c00/0x6170 fs/reiserfs/super.c:2081
- mount_bdev+0x622/0x910 fs/super.c:1417
- get_super_block+0xc9/0xe0 fs/reiserfs/super.c:2606
- legacy_get_tree+0x163/0x2e0 fs/fs_context.c:592
- vfs_get_tree+0xd8/0x5d0 fs/super.c:1547
- do_new_mount fs/namespace.c:2875 [inline]
- path_mount+0x3d1a/0x5d40 fs/namespace.c:3192
- do_mount+0x1c6/0x220 fs/namespace.c:3205
- __do_compat_sys_mount fs/compat.c:122 [inline]
- __se_compat_sys_mount+0x7b5/0xaa0 fs/compat.c:89
- __ia32_compat_sys_mount+0x62/0x80 fs/compat.c:89
- do_syscall_32_irqs_on arch/x86/entry/common.c:80 [inline]
- __do_fast_syscall_32+0x129/0x180 arch/x86/entry/common.c:139
- do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:162
- do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:205
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-RIP: 0023:0xf7fea549
-Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
-RSP: 002b:00000000f55e3f20 EFLAGS: 00000292 ORIG_RAX: 0000000000000015
-RAX: ffffffffffffffda RBX: 00000000f55e3f7c RCX: 0000000020000100
-RDX: 0000000020000000 RSI: 0000000000000000 RDI: 00000000f55e3fbc
-RBP: 00000000f55e3f7c R08: 0000000000000000 R09: 0000000000000000
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ panic+0x382/0x7fb kernel/panic.c:231
+ __warn.cold+0x20/0x4b kernel/panic.c:600
+ report_bug+0x1bd/0x210 lib/bug.c:198
+ handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:gather_device_info fs/btrfs/volumes.c:4967 [inline]
+RIP: 0010:btrfs_alloc_chunk+0x1a43/0x2000 fs/btrfs/volumes.c:5194
+Code: ff ff 44 8b 7c 24 78 4c 89 0c 24 e8 17 06 67 fe 4c 8b 0c 24 48 c7 c6 c0 79 a6 88 48 c7 c7 40 67 a6 88 4c 89 ca e8 ff 41 37 fe <0f> 0b 4c 8b 0c 24 e9 f8 f0 ff ff 44 8b 7c 24 78 e8 e8 05 67 fe 31
+RSP: 0018:ffffc900049072a8 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: ffff88809cbee000 RCX: 0000000000000000
+RDX: ffff8880645462c0 RSI: ffffffff815f5a85 RDI: fffff52000920e47
+RBP: dffffc0000000000 R08: 0000000000000001 R09: ffff8880ae7318e7
 R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-
-Local variable ----key@reiserfs_read_locked_inode created at:
- reiserfs_read_locked_inode+0xb4/0x3260 fs/reiserfs/inode.c:1544
- reiserfs_read_locked_inode+0xb4/0x3260 fs/reiserfs/inode.c:1544
-=====================================================
+R13: 0000000002800000 R14: 0000000000010000 R15: 0000000000000001
+ btrfs_chunk_alloc+0x3fe/0xaa0 fs/btrfs/block-group.c:3136
+ find_free_extent_update_loop fs/btrfs/extent-tree.c:3796 [inline]
+ find_free_extent+0x2090/0x2e60 fs/btrfs/extent-tree.c:4127
+ btrfs_reserve_extent+0x166/0x460 fs/btrfs/extent-tree.c:4206
+ btrfs_alloc_tree_block+0x203/0xee0 fs/btrfs/extent-tree.c:4603
+ alloc_tree_block_no_bg_flush+0x1b6/0x250 fs/btrfs/ctree.c:987
+ __btrfs_cow_block+0x3e0/0x10c0 fs/btrfs/ctree.c:1042
+ btrfs_cow_block+0x2c1/0x8a0 fs/btrfs/ctree.c:1487
+ commit_cowonly_roots+0x129/0xc70 fs/btrfs/transaction.c:1184
+ btrfs_commit_transaction+0xde0/0x2830 fs/btrfs/transaction.c:2272
+ btrfs_commit_super+0xc1/0x100 fs/btrfs/disk-io.c:4021
+ close_ctree+0x2cd/0x6cb fs/btrfs/disk-io.c:4084
+ generic_shutdown_super+0x144/0x370 fs/super.c:464
+ kill_anon_super+0x36/0x60 fs/super.c:1108
+ btrfs_kill_super+0x38/0x50 fs/btrfs/super.c:2265
+ deactivate_locked_super+0x94/0x160 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3a3/0x530 fs/namespace.c:1118
+ task_work_run+0xdd/0x190 kernel/task_work.c:141
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:163 [inline]
+ exit_to_user_mode_prepare+0x1e1/0x200 kernel/entry/common.c:190
+ syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:265
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x460027
+Code: 64 89 04 25 d0 02 00 00 58 5f ff d0 48 89 c7 e8 2f be ff ff 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 fd 89 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffd0b14c408 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000460027
+RDX: 0000000000403188 RSI: 0000000000000002 RDI: 00007ffd0b14c4b0
+RBP: 00000000000000ce R08: 0000000000000000 R09: 000000000000000a
+R10: 0000000000000005 R11: 0000000000000246 R12: 00007ffd0b14d540
+R13: 0000000002358a60 R14: 0000000000000000 R15: 00007ffd0b14d540
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
 
 ---
