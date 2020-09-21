@@ -2,100 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E916271D16
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C806271D0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726515AbgIUIFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 04:05:09 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:19715 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726347AbgIUIFH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 04:05:07 -0400
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200921080503epoutp01ac4296d5ef59eebd2558193f297f95d0~2vePcgVTt2728227282epoutp01B
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 08:05:03 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200921080503epoutp01ac4296d5ef59eebd2558193f297f95d0~2vePcgVTt2728227282epoutp01B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1600675503;
-        bh=jPMF6ttwhjh6Gz0Gb/xu2AZVqN/bOzkzOlaHhccbTdI=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=Qlmr38hTllM1bsiMyG8uIlWCXyfOvq3YWIKCfLcSrE2JTF/IYMjiAaTa5u/f4dsz8
-         gGx6AbQuhzFfTd7fsvBDu+4uM7EbFGvpg9oJ97ZjrfOJg4/+SL98hH6qCe0ZTeTSCt
-         DQBrBQXIaOyKXq7d7kZXVM+9BR5Cw1u1zNWBOyH4=
-Received: from epcpadp1 (unknown [182.195.40.11]) by epcas1p1.samsung.com
-        (KnoxPortal) with ESMTP id
-        20200921080503epcas1p15266b69b4a59405cdcc7685635c6cc43~2veO9sQck2448624486epcas1p1p;
-        Mon, 21 Sep 2020 08:05:03 +0000 (GMT)
-Mime-Version: 1.0
-Subject: RE: [PATCH v11 0/4] scsi: ufs: Add Host Performance Booster Support
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Bart Van Assche <bvanassche@acm.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Daejun Park <daejun7.park@samsung.com>
-CC:     "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <2aecb02b-f845-b860-facd-e31bd964ac64@acm.org>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <1087081975.11600675503396.JavaMail.epsvc@epcpadp1>
-Date:   Mon, 21 Sep 2020 17:03:36 +0900
-X-CMS-MailID: 20200921080336epcms2p109f08924c333c8d7d87ef6f3f64d9b18
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20200902031713epcms2p664cebf386ba19d3d05895fec89aaf4fe
-References: <2aecb02b-f845-b860-facd-e31bd964ac64@acm.org>
-        <231786897.01599016802080.JavaMail.epsvc@epcpadp1>
-        <231786897.01600211401846.JavaMail.epsvc@epcpadp1>
-        <20200916052208.GB12923@infradead.org>
-        <CGME20200902031713epcms2p664cebf386ba19d3d05895fec89aaf4fe@epcms2p1>
+        id S1727093AbgIUIEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 04:04:06 -0400
+Received: from ozlabs.org ([203.11.71.1]:49579 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726475AbgIUID7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 04:03:59 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bvxlw2NPFz9sVM;
+        Mon, 21 Sep 2020 18:03:56 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1600675436;
+        bh=q0F6idTpwc+Dm6dwxWE7RZeQQGaT5vBD1szhy4qsIDM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=vKNGwmy+i7PN7EClC1cPrAfznDuBBdBZyoZmq6graDUQxFhGOP1NlQoGlPIzj9rPZ
+         BI8nNJUq7WXr370EeUw0R8K0EFloy6kjgTcSsxw1uX6/3bulixdIdqtNGGEuH+JKuE
+         bi9bKtI9taYveWcLudProgk4Lx0IEb0uM+yNSOlppMfgAbhebbHxSd7Mb3cydIheNf
+         j0nEatlus9OQUgnwwj1ZtCEMPJY+v6qojXZGSLER77btSUt5pYbRRM6T8a0yq+9Mfx
+         OKAUIj0ShoTr8725FEwCyOv7CcsQvAkcXqPX8Sfg26ShMGhi6q3zygQ8c7IrNA+n9f
+         xyXqEzpfoepeg==
+Date:   Mon, 21 Sep 2020 18:03:53 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Mike Rapoport <rppt@linux.ibm.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: manual merge of the akpm-current tree with the arm64
+ tree
+Message-ID: <20200921180353.421484e8@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/FB/FyPYpIBh1H2M2TEO3gze";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> On Wed, Sep 16, 2020 at 08:05:17AM +0900, Daejun Park wrote:
->>> Hi All,
->>>
->>> I want to know how to improve this patch.
->> 
->> Drop it and fix the actual UFS feature to not be so horrible?
-> 
-> A new UFS specification could be defined and could be implemented for future UFS
-> devices. I think this patch series is intended to support the millions of UFS
-> devices that are already in use, e.g. in Android smartphones.
+--Sig_/FB/FyPYpIBh1H2M2TEO3gze
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-It is important point. 
+Hi all,
 
-I am not suggesting a strange feature, but want to make mainline the HPB
-feature that is already widely used in Android smartphones.
 
-Thanks,
+Today's linux-next merge of the akpm-current tree got a conflict in:
 
-Daejun.
+  arch/arm64/mm/mmu.c
+
+between commit:
+
+  0178dc761368 ("arm64: mte: Use Normal Tagged attributes for the linear ma=
+p")
+
+from the arm64 tree and commit:
+
+  8e19cbb9528f ("arch, drivers: replace for_each_membock() with for_each_me=
+m_range()")
+
+from the akpm-current tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/arm64/mm/mmu.c
+index 087a844b4d26,64211436629d..000000000000
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@@ -493,21 -483,10 +494,15 @@@ static void __init map_mem(pgd_t *pgdp
+  #endif
+ =20
+  	/* map all the memory banks */
+- 	for_each_memblock(memory, reg) {
+- 		phys_addr_t start =3D reg->base;
+- 		phys_addr_t end =3D start + reg->size;
+-=20
++ 	for_each_mem_range(i, &start, &end) {
+  		if (start >=3D end)
+  			break;
+- 		if (memblock_is_nomap(reg))
+- 			continue;
+-=20
+ -		__map_memblock(pgdp, start, end, PAGE_KERNEL, flags);
+ +		/*
+ +		 * The linear map must allow allocation tags reading/writing
+ +		 * if MTE is present. Otherwise, it has the same attributes as
+ +		 * PAGE_KERNEL.
+ +		 */
+ +		__map_memblock(pgdp, start, end, PAGE_KERNEL_TAGGED, flags);
+  	}
+ =20
+  	/*
+
+--Sig_/FB/FyPYpIBh1H2M2TEO3gze
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9oXmkACgkQAVBC80lX
+0Gz7Zwf+NRQXl32XFQTnt0Tki9LEvDg9BAUrZi5+tlVgeSCZCk/o1gnohNfHYMjd
+mwPl3ISaPpE8bn2K35SS7xRIJ1Yom2vOq5Etxpz8684EKJ3C+MCA/5NYlpdgr32q
+qSc+E810vXQhCy5wNC0ufvsi1IWhTUTIGGshu0GkJDnko0TkEsAxPG2L0tA1Tagn
+zMQEg4GuuPsZXL96X8n6NplUXW6GJ3eQkCy9ciwnNZeP7O0RUx+UrjKoOgG4k+mK
+WnK7XU22/DBwwjlehBAeoaA9F9zsXQFpznNzNQxIGPJHtImLjWLnVFAoqQW9N/YY
+FeEU7Tp+bVsTrIeMhslLHNsXpPR5cw==
+=kwfM
+-----END PGP SIGNATURE-----
+
+--Sig_/FB/FyPYpIBh1H2M2TEO3gze--
