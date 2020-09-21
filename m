@@ -2,121 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 806F3272AAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6970B272AB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727826AbgIUPtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 11:49:46 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:43097 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726810AbgIUPtq (ORCPT
+        id S1727917AbgIUPub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 11:50:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727171AbgIUPub (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 11:49:46 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id F3A135C0232;
-        Mon, 21 Sep 2020 11:49:44 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Mon, 21 Sep 2020 11:49:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=g/6aPpa9+HFyn43lywpwZ+M9VIS
-        vOyQKwhfMzJ/Fcsg=; b=VeYvcbIl9FSggoyfvyCU/siOJLDc10yw0Dn832LHvZP
-        NErBKLBq+h2lxTeqVZuMJBG3875PKwaUWaDXCv1+MQ782KCzYoUXN85o5uZow9Kt
-        bY0sw0rPRWtYvOi2yKkBBCBDW/H1rUi5tg6ycovKbfMdU1V7o/+bIad4OhZxDd4C
-        utj9Y7gu5uDqBOBmby/fFcGPo/0SEQNawbG5otu5Wmex1fdb82p5GsgJPtxLPQ2Z
-        XPaT2dVd3R/w111d7iDt6UxSrv1vkd07YwEByZrFDNjEeNriiJQOdxzB/ghcHE2F
-        rganRq3J5FVZ9Cx6Vb2LFvSmwDLlRW2BvYDR5Ojf2sQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=g/6aPp
-        a9+HFyn43lywpwZ+M9VISvOyQKwhfMzJ/Fcsg=; b=EmATRWIFcn5LOsd74g7Qan
-        XSFoMach9t6/M7JwZ+p+OHowSAwhJHNbg74fRNE2G6WCRt1VKpllcktdrmAhjSse
-        RXF0YDjT4/qSU88tnB01h3ltb1gOdtMEHwy6w+bkSP0WOr+IMCkFw8w4i4lKzUpK
-        StT+zRBMBf3khsD+nBZm9ee9xGXyEtdTab6G+owAhSXqbF11wA5WQ1rX6oAEVr+/
-        c9YdTYjNoJ+hCXM+4iH1wOtP5gqU7h+uhX9JkhRfjUfddMabIKv6KS4UwO/EDGsB
-        Rg/L4971Z/y9TkKktjYdOJZzrOvsJjpYmMisn3+j0lc84gu9oDJVo1UnsuJcaD2A
-        ==
-X-ME-Sender: <xms:mMtoXyoU7gMuI306PmwtKQXtwgnohkKr5vdz6Dp0XtbMqDnHZYDDaA>
-    <xme:mMtoXwpuKt3x-mlh1Xu7CZcZnFKZtzR9heMjBhYYVXYl5ML6U27fRIWoK-aTTjxst
-    OosdDvFsr9d3A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddvgdelhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
-    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeekfedr
-    keeirdejgedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:mMtoX3Muhl68_1Fx6G_hGi6smGvcONxw7Hg5XFxIE0HwpoHTfsOZJQ>
-    <xmx:mMtoXx6FxJ3BlcLvFDzcLsZsn3JVpwQEmyxyujiBrvJP_cL5g5rIyQ>
-    <xmx:mMtoXx5mMbTMgKy-0-gmCJ30xfUJZDmi0V0AUmIdOc_vFcrZSRpoVg>
-    <xmx:mMtoX03DlkbkqWfsukHUW2AuYQcUkO6oSeXfQ-Kr1UsPzyApdcafhQ>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id BD6E83280059;
-        Mon, 21 Sep 2020 11:49:43 -0400 (EDT)
-Date:   Mon, 21 Sep 2020 17:50:06 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Jim Quinlan <jquinlan@broadcom.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the usb tree with the pci tree
-Message-ID: <20200921155006.GB1023551@kroah.com>
-References: <20200921151807.637905c0@canb.auug.org.au>
+        Mon, 21 Sep 2020 11:50:31 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B459C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 08:50:30 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id a22so11475204ljp.13
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 08:50:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=2P/kdYRMnIJ8JXRZI/g27WFIVgCRdQkw7dhOpLGAZjU=;
+        b=Uq2K6dYz9p4Py5RGxdGOJ1tM4idNwtptH7xazinqaLKiXRfEVc9UeEcE+tlgWsR+UZ
+         J/gPsRqEveipYK+0JLfQ61/ltbzaEugjVV+afpvaqMEQmdh2yJ0sgPQKHe50tODIaQ3/
+         l+N67n3LfyU8haxV2JJPVj/aSVw8wq5V98oxc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2P/kdYRMnIJ8JXRZI/g27WFIVgCRdQkw7dhOpLGAZjU=;
+        b=XaA2Xq/NmAz0/kOL4nRXkL0DMZHvpJKWLpQqfAeIpEXN8/PPCucOW5AY/FPCHOcQ2U
+         By2nZ2oHYV8PqSCDe6lDidB5y/4RMiSrb3XEoIQno5eehb7f62SyzZfRgTcgBt8VmVFP
+         YkxioDm3f+LFXiroYPT/CmZFSU79VcjXmQrGwjon8cltJ2iRHnvpUJX2lEN8pWsBxkAo
+         zvmJcwR+sVb3IoOAbWVeGYfVGuLAclC1gDRkLGP3ip/+vpgJ3n8sayIeMzokyoMudY7x
+         1gfpTaFh6SXh2nh1PczZyUxAlYusFmbtvjD6rCIpCPI+yr+67zdX9V8FPU9LDwwHpbl4
+         uORQ==
+X-Gm-Message-State: AOAM531uc2Lc2grtqf0yigWD+0fwCiyeo5O8GCxO3gbYcbRwoPgua7sl
+        4c6nE3SpA5HZr/4ZBu+NuMK0sbBMyffALQ==
+X-Google-Smtp-Source: ABdhPJy0PMCBqhv1uprk3+J6DscVlClqGzuguaL9D4iLrAOEQmsspxdlpiG60lkXiITB7rRt76J/aw==
+X-Received: by 2002:a2e:5054:: with SMTP id v20mr111900ljd.345.1600703428583;
+        Mon, 21 Sep 2020 08:50:28 -0700 (PDT)
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
+        by smtp.gmail.com with ESMTPSA id d24sm2650917lfn.140.2020.09.21.08.50.27
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Sep 2020 08:50:27 -0700 (PDT)
+Received: by mail-lf1-f45.google.com with SMTP id d15so14555206lfq.11
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 08:50:27 -0700 (PDT)
+X-Received: by 2002:ac2:4a6a:: with SMTP id q10mr171644lfp.534.1600703426975;
+ Mon, 21 Sep 2020 08:50:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200921151807.637905c0@canb.auug.org.au>
+References: <CAHk-=wjSWKpiNbcMpzQ9fBUA5s11sU-STLztzQkHhCHtYvLP5A@mail.gmail.com>
+ <bb41f8a8-3388-ddec-cb53-e801e5efb8d0@gmail.com>
+In-Reply-To: <bb41f8a8-3388-ddec-cb53-e801e5efb8d0@gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 21 Sep 2020 08:50:10 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj22EmbYU3RnEBTcQMqiSCLLO_4zcRJxbNzGkKak5UYfQ@mail.gmail.com>
+Message-ID: <CAHk-=wj22EmbYU3RnEBTcQMqiSCLLO_4zcRJxbNzGkKak5UYfQ@mail.gmail.com>
+Subject: Re: Linux 5.9-rc6
+To:     Robert Gadsdon <rhgadsdon@gmail.com>,
+        Stuart Little <achirvasub@gmail.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 03:18:07PM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Today's linux-next merge of the usb tree got a conflict in:
-> 
->   drivers/pci/controller/pcie-brcmstb.c
-> 
-> between commit:
-> 
->   1cf1b0a6dd95 ("PCI: brcmstb: Add bcm7278 register info")
-> 
-> from the pci tree and commit:
-> 
->   f48cc509c935 ("Revert "PCI: brcmstb: Wait for Raspberry Pi's firmware when present"")
-> 
-> from the usb tree.
-> 
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
-> 
-> diff --cc drivers/pci/controller/pcie-brcmstb.c
-> index 6e7aa82a54a3,bac63d04297f..000000000000
-> --- a/drivers/pci/controller/pcie-brcmstb.c
-> +++ b/drivers/pci/controller/pcie-brcmstb.c
-> @@@ -1213,8 -929,6 +1211,7 @@@ static int brcm_pcie_probe(struct platf
->   {
->   	struct device_node *np = pdev->dev.of_node, *msi_np;
->   	struct pci_host_bridge *bridge;
-> - 	struct device_node *fw_np;
->  +	const struct pcie_cfg_data *data;
->   	struct brcm_pcie *pcie;
->   	int ret;
->   
+On Sun, Sep 20, 2020 at 6:06 PM Robert Gadsdon <rhgadsdon@gmail.com> wrote:
+>
+> drivers/dax/super.c:325:6: error: redefinition of =E2=80=98dax_supported=
+=E2=80=99
 
-Looks good to me, thanks!
+Gaah. Ok, this should hopefully be fixed in my tree now.
 
-greg k-h
+             Linus
