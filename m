@@ -2,47 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C252734A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 23:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0B7D27348D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 23:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726796AbgIUVOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 17:14:15 -0400
-Received: from mail.aranzadi.es ([195.76.174.39]:33849 "EHLO mail.aranzadi.es"
+        id S1727630AbgIUVDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 17:03:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726488AbgIUVOP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 17:14:15 -0400
-X-Greylist: delayed 69423 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Sep 2020 17:14:14 EDT
-Received: from User (unknown [80.82.67.39])
-        by mail.aranzadi.es (Postfix) with ESMTP id 935091402A8;
-        Mon, 21 Sep 2020 22:59:23 +0200 (CEST)
-Reply-To: <angelacamp2017@gmail.com>
-From:   "Angela Campbell" <angelacap2017@gmail.com>
-Subject: request!!
-Date:   Mon, 21 Sep 2020 13:59:25 -0700
-MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-Id: <20200921205923.935091402A8@mail.aranzadi.es>
-To:     undisclosed-recipients:;
+        id S1726417AbgIUVDU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 17:03:20 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.191])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F338207BC;
+        Mon, 21 Sep 2020 21:03:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600722199;
+        bh=xm6BOi+qEheXe1YWEd8aHlpj9m2SDkr/vyMvGdDslHk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=LgygfxHBVchiOwrQK8w0cUMPVp+yyt6rMyxlD+ULWtHkhzUEzd1Tz/fDuPEM+hFVB
+         MNU/zinxQ6dLAwNdfX4aWUFyKfmCFgsQzUaU9Lv641ydNm2y+iPF4xNwRlCQBsrgQy
+         iS9SfrVpVX7FN6E9B98RbCSX+wUK3NjW5rZVBRI0=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Jonathan Cameron <jic23@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>, Lee Jones <lee.jones@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org, linux-pm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH] MAINTAINERS: move Milo Kim to credits
+Date:   Mon, 21 Sep 2020 23:02:33 +0200
+Message-Id: <20200921210233.21449-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I am sorry for interrupting your day, with due respect trust and humility, I write to you this proposal, which I believe would be of great interest to you. I am looking for a reliable and capable partner that will assist my family and I to transfer funds to his personal or company account for investment purposes because of my health..
-I am Mrs. Angela Campbell, the wife of Late Mr. Mike Campbell, who was a Commercial Farmer and cocoa merchant in Bindura and Harare, the economic city of Zimbabwe.
-My husband was among the people that were murdered in cold blood by the President Robert Mugabe Administration during the land dispute that just happened in Zimbabwe wholly affected the white farmers and this resulted to the killing and mob action by Zimbabwean war veterans and some lunatics in the society. In fact, a lot of people were killed because of this land reformed Act.
+Milo Kim's email in TI bounces with permanent error (550: Invalid
+recipient).  Last email from him on LKML was in 2017.  Move Milo Kim to
+credits and remove the separate driver entries for:
 
-Please for further details, kindly email me with your direct contact informations to my private email address: angelacamp2017@gmail.com
+ - TI LP855x backlight driver,
+ - TI LP8727 charger driver,
+ - TI LP8788 MFD (ADC, LEDs, charger and regulator) drivers.
 
-Full Name:|Home Address|Telephone Number|Mobile Number|Date of Birth| Occupation:.
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ CREDITS     |  3 +++
+ MAINTAINERS | 23 -----------------------
+ 2 files changed, 3 insertions(+), 23 deletions(-)
 
-Please do notify me immediately you receive this proposal.
+diff --git a/CREDITS b/CREDITS
+index 1df63cdf71df..46384b11f258 100644
+--- a/CREDITS
++++ b/CREDITS
+@@ -1910,6 +1910,9 @@ S: 660 Harvard Ave. #7
+ S: Santa Clara, CA 95051
+ S: USA
+ 
++N: Milo Kim
++D: TI LP855x, LP8727 and LP8788 drivers
++
+ N: Russell King
+ E: rmk@arm.linux.org.uk
+ D: Linux/arm integrator, maintainer & hacker
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 5b9621ca2b31..031adeff29cc 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -17471,29 +17471,6 @@ S:	Maintained
+ F:	sound/soc/codecs/isabelle*
+ F:	sound/soc/codecs/lm49453*
+ 
+-TI LP855x BACKLIGHT DRIVER
+-M:	Milo Kim <milo.kim@ti.com>
+-S:	Maintained
+-F:	Documentation/driver-api/backlight/lp855x-driver.rst
+-F:	drivers/video/backlight/lp855x_bl.c
+-F:	include/linux/platform_data/lp855x.h
+-
+-TI LP8727 CHARGER DRIVER
+-M:	Milo Kim <milo.kim@ti.com>
+-S:	Maintained
+-F:	drivers/power/supply/lp8727_charger.c
+-F:	include/linux/platform_data/lp8727.h
+-
+-TI LP8788 MFD DRIVER
+-M:	Milo Kim <milo.kim@ti.com>
+-S:	Maintained
+-F:	drivers/iio/adc/lp8788_adc.c
+-F:	drivers/leds/leds-lp8788.c
+-F:	drivers/mfd/lp8788*.c
+-F:	drivers/power/supply/lp8788-charger.c
+-F:	drivers/regulator/lp8788-*.c
+-F:	include/linux/mfd/lp8788*.h
+-
+ TI NETCP ETHERNET DRIVER
+ M:	Wingman Kwok <w-kwok2@ti.com>
+ M:	Murali Karicheri <m-karicheri2@ti.com>
+-- 
+2.17.1
 
-Thanks and God bless you
-
-Mrs. Angela Campbell and (Family).
