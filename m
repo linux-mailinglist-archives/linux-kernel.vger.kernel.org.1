@@ -2,194 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A6D272266
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:27:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A028F272264
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:26:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726798AbgIUL1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 07:27:16 -0400
-Received: from mail-ej1-f68.google.com ([209.85.218.68]:38558 "EHLO
-        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726430AbgIUL1P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 07:27:15 -0400
-Received: by mail-ej1-f68.google.com with SMTP id gx22so8127047ejb.5;
-        Mon, 21 Sep 2020 04:27:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=TklpADd3IHxb6z2of1IfW1yIIhmPXuPXH+f9NSI1fhs=;
-        b=WCTopBcK+Sd0dUJtuJWj5cH8F7KWpWtyznsLb5KWH+RdgVsCnky3ioj5/5A9sENcHL
-         +3TUNlOJe8XR91YE0d2VdpbITPCSof7rcxVcCNjqERZQs/VoyBbiD2C3UJads7//95ht
-         Su1EfXPI5cbhnA02rO3wuz2Y+DuKWt36tbBt58s0P3gjH8M7aHeuGmzVkGrd2wpwpHJk
-         Z1r4KqXVLgJs404pwlbng9kVyo2zx+D8Imd0J0l8GSyb1knWFug7BId/06NV5kevqCuW
-         LMU2CP9il1sABb1B3llnJ6J/qfW5mbdboL0rJkj5N4UnDLqNYgDs/KNq7m4jS86h5nJQ
-         zoGw==
-X-Gm-Message-State: AOAM533yfe40M5nFYr3rOzAEWTFWoM3Rt2Ao9FJFJFOSAY8T8yjE7qoF
-        INr2Szq/ZxeivK2WZv3IbqM=
-X-Google-Smtp-Source: ABdhPJwD2dkaD3vci3J10BEc2dBbE2JojebgK4ZMrXwRGuPek2cZCWlF8pueaGRM3ASW48A72otQnQ==
-X-Received: by 2002:a17:906:f9d8:: with SMTP id lj24mr50631653ejb.379.1600687633079;
-        Mon, 21 Sep 2020 04:27:13 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.191])
-        by smtp.googlemail.com with ESMTPSA id cf7sm8470136edb.78.2020.09.21.04.26.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 21 Sep 2020 04:27:12 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 13:26:35 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] dt-bindings: media: imx258: Add bindings for
- IMX258 sensor
-Message-ID: <20200921112635.GA1233@kozik-lap>
-References: <1599031090-21608-1-git-send-email-krzk@kernel.org>
- <20200914201310.GA154873@bogus>
+        id S1726770AbgIUL0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 07:26:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54988 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726596AbgIUL0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 07:26:45 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A21E207BC;
+        Mon, 21 Sep 2020 11:26:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600687604;
+        bh=6qkUWBivB6d2mCVhMcxtD1M5XumohNNJi5WsqPmJtpY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vTQSeX82Ws5VIKwm/ih/WO0oRWpb2WIFKDP4RZRBG1BPT5keDxHQ7dDIZrwB5jXM/
+         5Ezay2KVB4c2C8Iv2DcFmGqOcYalfzvB18sB24VnXjqusps8syKY7l3ZCLLcrYk6CY
+         0KM7Ttgt75vR+tpliMhpcOxmYQOM3EEwxSlmMHK4=
+Date:   Mon, 21 Sep 2020 12:26:38 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, nathanl@linux.ibm.com,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        open list <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v8 2/8] powerpc/vdso: Remove __kernel_datapage_offset and
+ simplify __get_datapage()
+Message-ID: <20200921112638.GC2139@willie-the-truck>
+References: <cover.1588079622.git.christophe.leroy@c-s.fr>
+ <0d2201efe3c7727f2acc718aefd7c5bb22c66c57.1588079622.git.christophe.leroy@c-s.fr>
+ <87wo34tbas.fsf@mpe.ellerman.id.au>
+ <2f9b7d02-9e2f-4724-2608-c5573f6507a2@csgroup.eu>
+ <6862421a-5a14-2e38-b825-e39e6ad3d51d@csgroup.eu>
+ <87imd5h5kb.fsf@mpe.ellerman.id.au>
+ <CAJwJo6ZANqYkSHbQ+3b+Fi_VT80MtrzEV5yreQAWx-L8j8x2zA@mail.gmail.com>
+ <87a6yf34aj.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200914201310.GA154873@bogus>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <87a6yf34aj.fsf@mpe.ellerman.id.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 02:13:10PM -0600, Rob Herring wrote:
-> On Wed, Sep 02, 2020 at 09:18:08AM +0200, Krzysztof Kozlowski wrote:
-> > Add bindings for the IMX258 camera sensor.  The bindings, just like the
-> > driver, are quite limited, e.g. do not support regulator supplies.
+On Fri, Aug 28, 2020 at 12:14:28PM +1000, Michael Ellerman wrote:
+> Dmitry Safonov <0x7f454c46@gmail.com> writes:
+> > On Wed, 26 Aug 2020 at 15:39, Michael Ellerman <mpe@ellerman.id.au> wrote:
+> >> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> >> We added a test for vdso unmap recently because it happened to trigger a
+> >> KAUP failure, and someone actually hit it & reported it.
+> >
+> > You right, CRIU cares much more about moving vDSO.
+> > It's done for each restoree and as on most setups vDSO is premapped and
+> > used by the application - it's actively tested.
+> > Speaking about vDSO unmap - that's concerning only for heterogeneous C/R,
+> > i.e when an application is migrated from a system that uses vDSO to the one
+> > which doesn't - it's much rare scenario.
+> > (for arm it's !CONFIG_VDSO, for x86 it's `vdso=0` boot parameter)
 > 
-> Bindings should be complete, not what a driver happens to currently 
-> support.
-
-I'll add then more complete picture.
-
+> Ah OK that explains it.
 > 
-> > 
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > 
-> > ---
-> > 
-> > Changes since v1:
-> > 1. None
-> > ---
-> >  .../devicetree/bindings/media/i2c/imx258.yaml      | 92 ++++++++++++++++++++++
-> >  MAINTAINERS                                        |  1 +
-> >  2 files changed, 93 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/media/i2c/imx258.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/media/i2c/imx258.yaml b/Documentation/devicetree/bindings/media/i2c/imx258.yaml
-> > new file mode 100644
-> > index 000000000000..ef789ad31143
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/media/i2c/imx258.yaml
-> > @@ -0,0 +1,92 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/media/i2c/imx258.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Sony IMX258 13 Mpixel CMOS Digital Image Sensor
-> > +
-> > +maintainers:
-> > +  - Krzysztof Kozlowski <krzk@kernel.org>
-> > +
-> > +description: |-
-> > +  IMX258 is a diagonal 5.867mm (Type 1/3.06) 13 Mega-pixel CMOS active pixel
-> > +  type stacked image sensor with a square pixel array of size 4208 x 3120. It
-> > +  is programmable through I2C interface.  Image data is sent through MIPI
-> > +  CSI-2.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: sony,imx258
-> > +
-> > +  clocks:
-> > +    maxItems: 1
-> > +
-> > +  clock-frequency:
-> > +    description: Frequency of input clock if clock is not provided
-> > +    deprecated: true
+> The case we hit of VDSO unmapping was some strange "library OS" thing
+> which had explicitly unmapped the VDSO, so also very rare.
 > 
-> Why are we adding something deprecated on a new binding?
-
-My intention was also to document it but indeed easier to skip it.
-
+> > Looking at the code, it seems quite easy to provide/maintain .close() for
+> > vm_special_mapping. A bit harder to add a test from CRIU side
+> > (as glibc won't know on restore that it can't use vdso anymore),
+> > but totally not impossible.
+> >
+> >> Running that test on arm64 segfaults:
+> >>
+> >>   # ./sigreturn_vdso
+> >>   VDSO is at 0xffff8191f000-0xffff8191ffff (4096 bytes)
+> >>   Signal delivered OK with VDSO mapped
+> >>   VDSO moved to 0xffff8191a000-0xffff8191afff (4096 bytes)
+> >>   Signal delivered OK with VDSO moved
+> >>   Unmapped VDSO
+> >>   Remapped the stack executable
+> >>   [   48.556191] potentially unexpected fatal signal 11.
+> >>   [   48.556752] CPU: 0 PID: 140 Comm: sigreturn_vdso Not tainted 5.9.0-rc2-00057-g2ac69819ba9e #190
+> >>   [   48.556990] Hardware name: linux,dummy-virt (DT)
+> >>   [   48.557336] pstate: 60001000 (nZCv daif -PAN -UAO BTYPE=--)
+> >>   [   48.557475] pc : 0000ffff8191a7bc
+> >>   [   48.557603] lr : 0000ffff8191a7bc
+> >>   [   48.557697] sp : 0000ffffc13c9e90
+> >>   [   48.557873] x29: 0000ffffc13cb0e0 x28: 0000000000000000
+> >>   [   48.558201] x27: 0000000000000000 x26: 0000000000000000
+> >>   [   48.558337] x25: 0000000000000000 x24: 0000000000000000
+> >>   [   48.558754] x23: 0000000000000000 x22: 0000000000000000
+> >>   [   48.558893] x21: 00000000004009b0 x20: 0000000000000000
+> >>   [   48.559046] x19: 0000000000400ff0 x18: 0000000000000000
+> >>   [   48.559180] x17: 0000ffff817da300 x16: 0000000000412010
+> >>   [   48.559312] x15: 0000000000000000 x14: 000000000000001c
+> >>   [   48.559443] x13: 656c626174756365 x12: 7865206b63617473
+> >>   [   48.559625] x11: 0000000000000003 x10: 0101010101010101
+> >>   [   48.559828] x9 : 0000ffff818afda8 x8 : 0000000000000081
+> >>   [   48.559973] x7 : 6174732065687420 x6 : 64657070616d6552
+> >>   [   48.560115] x5 : 000000000e0388bd x4 : 000000000040135d
+> >>   [   48.560270] x3 : 0000000000000000 x2 : 0000000000000001
+> >>   [   48.560412] x1 : 0000000000000003 x0 : 00000000004120b8
+> >>   Segmentation fault
+> >>   #
+> >>
+> >> So I think we need to keep the unmap hook. Maybe it should be handled by
+> >> the special_mapping stuff generically.
+> >
+> > I'll cook a patch for vm_special_mapping if you don't mind :-)
 > 
-> > +    const: 19200000
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  # See ../video-interfaces.txt for more details
-> > +  port:
-> > +    type: object
-> > +    properties:
-> > +      endpoint:
-> > +        type: object
-> > +        properties:
-> > +          data-lanes:
-> > +            items:
-> > +              - const: 1
-> > +              - const: 2
-> > +              - const: 3
-> > +              - const: 4
-> 
-> If this is the only config, why does it need to be in DT?
+> That would be great, thanks!
 
-The sensor is capable of two settings: two lanes (1 and 2) and four
-lanes described above.  However Linux driver requires the latter (four
-lanes, 1+2+3+4).
+I lost track of this one. Is there a patch kicking around to resolve this,
+or is the segfault expected behaviour?
 
-If I were to describe the bindings for HW, someone would really be
-confused and try to use two lanes setup, which won't work. Driver won't
-allow it.
-
-I understand that bindings document the HW and describe its interface
-but do we really want to put "theoretical" bindings which cannot be used
-in practice with Linux kernel?
-
-If yes, how to nicely document this that only one setting is currently
-working?
-
-> 
-> > +
-> > +          link-frequencies:
-> > +            allOf:
-> > +              - $ref: /schemas/types.yaml#/definitions/uint64-array
-> > +            description:
-> > +              Allowed data bus frequencies.
-> > +
-> > +        required:
-> > +          - data-lanes
-> > +          - link-frequencies
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - port
-> > +
-> > +
-> > +if:
-> > +  not:
-> > +    required:
-> > +      - clocks
-> > +then:
-> > +  required:
-> > +    - clock-frequency
-> > +
-> > +unevaluatedProperties: false
-> 
-> additionalProperties
-
-Right.
-
-Best regards,
-Krzysztof
+Will
