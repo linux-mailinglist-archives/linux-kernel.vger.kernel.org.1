@@ -2,99 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B43A52724F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48285272529
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727000AbgIUNMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:12:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727685AbgIUNMk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:12:40 -0400
-Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B53BC061755;
-        Mon, 21 Sep 2020 06:12:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
-         s=20161220; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=vqonmA7dPy+5LJkip5U9O8/KVJ5XsAg9XSTuRLG/KXs=; b=JD6xVeVxsOz4IkiHbEEq8fJLKg
-        1lp+tGyn9dMv2L+Zsn9fX9+3bS01+iLnNGvXjZV0dzAFFDg+jSOmL3vB1xpnIPgTCLfsnQXx0yU3E
-        QYAnZF01X36VYRCpHR3jmSPxIcAW5pcD3qjUN5dT3Kzc4tFQKzGBB8C7lJKYIOCxwhZtkEzBitet7
-        CRkz2G43h9ZQ0/PsRhDOPcGX0JsBm9kECOoMhuSRuWNL+4aNllEQOVaEshlqPI3DdtJliHBs0CUYa
-        beBO76OHhmZYeaUQ3TGPVRmnkmRr84tb9rjcMwmbpGOXSX1XHWIyMxfhR0kzfZMV2VPH1ZB9TDxSn
-        KiE/pwMA==;
-Received: from dsl-hkibng22-54f986-236.dhcp.inet.fi ([84.249.134.236] helo=[192.168.1.10])
-        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <cyndis@kapsi.fi>)
-        id 1kKLcR-00068D-5n; Mon, 21 Sep 2020 16:12:35 +0300
-Subject: Re: [PATCH -next] gpu: host1x: simplify the return expression of
- host1x_cdma_init()
-To:     Qinglang Miao <miaoqinglang@huawei.com>,
-        Thierry Reding <thierry.reding@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200921131032.91972-1-miaoqinglang@huawei.com>
-From:   Mikko Perttunen <cyndis@kapsi.fi>
-Message-ID: <4378d69a-2338-779f-ab4d-3c64fbf7dfd3@kapsi.fi>
-Date:   Mon, 21 Sep 2020 16:12:20 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1727426AbgIUNOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:14:54 -0400
+Received: from mga18.intel.com ([134.134.136.126]:47378 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727089AbgIUNOy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:14:54 -0400
+IronPort-SDR: 7cMvF3iCWzT9akZcCaF6X3TZJtMFPF3H91sg997TOjxH2WomdEepnG2noYD4wCQ8mHHZNjqhqG
+ 4QrluXMBSTdw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9750"; a="148123616"
+X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; 
+   d="scan'208";a="148123616"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 06:14:52 -0700
+IronPort-SDR: yTB72ZLr9G/DRITzyy0cQGQbSwlMIDLmP4xpwO0go8Ttu2h+/xM+IfQqM7WM9vRiftbgDbLO1z
+ M/dbLPHldI/A==
+X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; 
+   d="scan'208";a="485452734"
+Received: from clairemo-mobl.ger.corp.intel.com (HELO localhost) ([10.252.43.50])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 06:14:45 -0700
+Date:   Mon, 21 Sep 2020 16:14:43 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
+        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        asapek@google.com, Borislav Petkov <bp@alien8.de>,
+        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
+        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Huang, Haitao" <haitao.huang@intel.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
+        Christian Ludloff <ludloff@google.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Patrick Uiterwijk <puiterwijk@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
+Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
+Message-ID: <20200921131443.GH6038@linux.intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-11-jarkko.sakkinen@linux.intel.com>
+ <CALCETrX9T1ZUug=M5ba9g4H5B7kV=yL5RzuTaeAEdy3uAieN_A@mail.gmail.com>
+ <20200918235337.GA21189@sjchrist-ice>
+ <20200921124946.GF6038@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200921131032.91972-1-miaoqinglang@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 84.249.134.236
-X-SA-Exim-Mail-From: cyndis@kapsi.fi
-X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921124946.GF6038@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/21/20 4:10 PM, Qinglang Miao wrote:
-> Simplify the return expression.
-> 
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-> ---
->   drivers/gpu/host1x/cdma.c | 8 +-------
->   1 file changed, 1 insertion(+), 7 deletions(-)
-> 
-> diff --git a/drivers/gpu/host1x/cdma.c b/drivers/gpu/host1x/cdma.c
-> index e8d3fda91..08a0f9e10 100644
-> --- a/drivers/gpu/host1x/cdma.c
-> +++ b/drivers/gpu/host1x/cdma.c
-> @@ -448,8 +448,6 @@ void host1x_cdma_update_sync_queue(struct host1x_cdma *cdma,
->    */
->   int host1x_cdma_init(struct host1x_cdma *cdma)
->   {
-> -	int err;
-> -
->   	mutex_init(&cdma->lock);
->   	init_completion(&cdma->complete);
->   
-> @@ -459,11 +457,7 @@ int host1x_cdma_init(struct host1x_cdma *cdma)
->   	cdma->running = false;
->   	cdma->torndown = false;
->   
-> -	err = host1x_pushbuffer_init(&cdma->push_buffer);
-> -	if (err)
-> -		return err;
-> -
-> -	return 0;
-> +	return host1x_pushbuffer_init(&cdma->push_buffer);
+On Mon, Sep 21, 2020 at 03:49:56PM +0300, Jarkko Sakkinen wrote:
+> The 2nd part of the answer is the answer to the question: why we want to
+> feed LSM hooks enclaves exactly in this state.
 
-IMHO, this makes it less readable since now it kind of looks like 
-host1x_pushbuffer_init is returning some meaningful value, instead of 
-the code just handling error values in a sequence.
+The question can be further refined as why: why this is the best
+possible set of substates to filter in?
 
-Mikko
+"no holes" part is obvious as the consequence of not surpassing
+permissions of any of the pages in range, as you could otherwise
+break the state with ioctl(SGX_ENCLAVE_ADD_PAGES) with permssions
+that are below the mmap permissions.
 
->   }
->   
->   /*
-> 
+/Jarkko
