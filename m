@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 490AA271F93
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:02:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82D3C271F88
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726471AbgIUKCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726501AbgIUKCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 21 Sep 2020 06:02:22 -0400
-Received: from mail-il1-f206.google.com ([209.85.166.206]:39978 "EHLO
+Received: from mail-il1-f206.google.com ([209.85.166.206]:37569 "EHLO
         mail-il1-f206.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726341AbgIUKCW (ORCPT
+        with ESMTP id S1726343AbgIUKCW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 21 Sep 2020 06:02:22 -0400
-Received: by mail-il1-f206.google.com with SMTP id g188so10564038ilh.7
+Received: by mail-il1-f206.google.com with SMTP id c66so10574374ilf.4
         for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:02:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=878X+MokR+ZbeqJGJQNq7QDLXnpG5EMYsQ8wF9gEG6g=;
-        b=G78l8lxt+5XtsDb6U1u2FOJEMPjacC0zjB4RA1aOPJPPI0q4h6z0C1hcqn5AfwHTQk
-         QuYT+gZ4SgYfNIw0UwWftO+sxLX7AOpRH645E5xBQF4mwVa2h4NT1i0DmjFLmWtKltuC
-         3gf/IrAI8gPUPIpJqSGxn72gLqk6f22Yq9a4AV9z1zY6WTFtaBuBENXS/FrX5Vb7PRpX
-         FR5CV5sjkExzUQ/77ej7URk6nhSohOYamnYhwYXH0S/rd1xBbOy9HpFVMJE6DOMajCSD
-         bs22O/mNjRaFsGojhA/iRB2XrnD1+Fvtm7f5Cnva0qbj1GYRSkC/mPSdmJmywZRNQZI6
-         kD/Q==
-X-Gm-Message-State: AOAM532Fihmf3/idrhcyvRSJsxYRMiOMrGBfWwoIYmkR+fcE3YQxf5a+
-        ZDnHhK9K2Y5bg2vF0F9L6PZOo2Oay7m5mBwCPJg15tn9/zf9
-X-Google-Smtp-Source: ABdhPJy77SpanDAhaUD564y+kfir5vkWynL2iO3uzcCnBbobRoCMtMVM2wLANCqpTZo8HnFv9DEsyoW2UKTNcmOMcsiqIT+5iXiI
+        bh=j4KEEp1f2qaASWW5tBFBCzsHqw1ayvpgt5EnfAFvzn8=;
+        b=KMiw363WgZua4nBzSxU8upRJM+xa74HHuWX85pg1ktuygJCZzwUaTUq642gD0kd4w7
+         7LZlKzDJbx+n1Lw9nAiYjD9jUwh4esUbNUhMTK8NsFbUdqJyiMActhMY3yXGYcCy0SKF
+         yUow/FDNoZdS8DsPXeQfBKhEGCY6FD+Oajk84odzSXDOXaLMA4kJ8pK0Hj3Xi1DBroYP
+         PIJ2Ka4P2zoWZ5qas4FSThuDIuvB9sO6TnoneVeY+l6FQMlvk9BTglh7JZBnvbwkT4Td
+         LOV1ya/qlgIW0R+ktDX681DjTuHawLfAtKBn8Gj+Vu3IfT+mCR7OQFg2ctmHGd1Hj/9H
+         1qkg==
+X-Gm-Message-State: AOAM532PVRYYraEqvSyAX72PIfErkPbocO1wnRDAaQE5pssnr+HkVa2Q
+        aIVAcD54HLO0XuH01OftK+Znyo76RFAjARgmOOzZEjBQ6fA1
+X-Google-Smtp-Source: ABdhPJwLt7DzlZJWJctl/F34SRCVAjsAFiUtbybYIrf96SyQHJD+TOXM9uCb5u/+pscovRM+npE4XYXfgTPA+HeBZ1bYlNz4WZV4
 MIME-Version: 1.0
-X-Received: by 2002:a6b:3e84:: with SMTP id l126mr35372373ioa.118.1600682541024;
+X-Received: by 2002:a92:6b04:: with SMTP id g4mr39343145ilc.203.1600682541201;
  Mon, 21 Sep 2020 03:02:21 -0700 (PDT)
 Date:   Mon, 21 Sep 2020 03:02:21 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000418c7705afcff2e1@google.com>
-Subject: general protection fault in jffs2_parse_param
-From:   syzbot <syzbot+9765367bb86a19d38732@syzkaller.appspotmail.com>
-To:     dhowells@redhat.com, dwmw2@infradead.org,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        richard@nod.at, sandeen@sandeen.net,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Message-ID: <000000000000443d8a05afcff2b5@google.com>
+Subject: memory leak in kobject_set_name_vargs (3)
+From:   syzbot <syzbot+9f864abad79fae7c17e1@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -49,71 +48,72 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    325d0eab Merge branch 'akpm' (patches from Andrew)
+HEAD commit:    bdcf11de Merge tag 'riscv-for-linus-5.9-rc6' of git://git...
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12acb307900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b12e84189082991c
-dashboard link: https://syzkaller.appspot.com/bug?extid=9765367bb86a19d38732
+console output: https://syzkaller.appspot.com/x/log.txt?x=179e18d3900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a1f3c5052e8097e9
+dashboard link: https://syzkaller.appspot.com/bug?extid=9f864abad79fae7c17e1
 compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=175909d9900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=179b3cc3900000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14c33cad900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=154bc6c3900000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9765367bb86a19d38732@syzkaller.appspotmail.com
+Reported-by: syzbot+9f864abad79fae7c17e1@syzkaller.appspotmail.com
 
-general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
-CPU: 1 PID: 6866 Comm: syz-executor202 Not tainted 5.9.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:jffs2_parse_param+0x141/0x330 fs/jffs2/super.c:206
-Code: 48 c1 ea 03 4d 63 fc 80 3c 02 00 0f 85 de 01 00 00 48 b8 00 00 00 00 00 fc ff df 4d 8b 75 00 49 8d 7e 08 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 c8 01 00 00 4d 8b 76 08 4c 89 ff 4c 89 f6 e8 d6
-RSP: 0018:ffffc90001087b78 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: ffff8880932c9c00 RCX: ffffffff82882084
-RDX: 0000000000000001 RSI: ffffffff82882096 RDI: 0000000000000008
-RBP: 1ffff92000210f6f R08: 0000000000000001 R09: 0000000000000003
-R10: 00000000003fffff R11: 0000000000000000 R12: 0000000000000000
-R13: ffff88808de2a000 R14: 0000000000000000 R15: 0000000000000000
-FS:  0000000002198880(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000043e830 CR3: 00000000a11a3000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- vfs_parse_fs_param fs/fs_context.c:117 [inline]
- vfs_parse_fs_param+0x203/0x550 fs/fs_context.c:98
- vfs_parse_fs_string+0xe6/0x150 fs/fs_context.c:161
- generic_parse_monolithic+0x16f/0x1f0 fs/fs_context.c:201
- do_new_mount fs/namespace.c:2871 [inline]
- path_mount+0x133f/0x20a0 fs/namespace.c:3192
- do_mount fs/namespace.c:3205 [inline]
- __do_sys_mount fs/namespace.c:3413 [inline]
- __se_sys_mount fs/namespace.c:3390 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3390
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x44699a
-Code: b8 08 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 7d ae fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 5a ae fb ff c3 66 0f 1f 84 00 00 00 00 00
-RSP: 002b:00007ffc381bf788 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007ffc381bf7d0 RCX: 000000000044699a
-RDX: 0000000020001300 RSI: 0000000020001340 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 00007ffc381bf7d0 R09: 0000000000000014
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401c80
-R13: 0000000000401d10 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
----[ end trace 9cf0f624124bffcb ]---
-RIP: 0010:jffs2_parse_param+0x141/0x330 fs/jffs2/super.c:206
-Code: 48 c1 ea 03 4d 63 fc 80 3c 02 00 0f 85 de 01 00 00 48 b8 00 00 00 00 00 fc ff df 4d 8b 75 00 49 8d 7e 08 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 c8 01 00 00 4d 8b 76 08 4c 89 ff 4c 89 f6 e8 d6
-RSP: 0018:ffffc90001087b78 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: ffff8880932c9c00 RCX: ffffffff82882084
-RDX: 0000000000000001 RSI: ffffffff82882096 RDI: 0000000000000008
-RBP: 1ffff92000210f6f R08: 0000000000000001 R09: 0000000000000003
-R10: 00000000003fffff R11: 0000000000000000 R12: 0000000000000000
-R13: ffff88808de2a000 R14: 0000000000000000 R15: 0000000000000000
-FS:  0000000002198880(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000043e830 CR3: 00000000a11a3000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+BUG: memory leak
+unreferenced object 0xffff88811a0d75c0 (size 32):
+  comm "syz-executor307", pid 6444, jiffies 4294941412 (age 12.730s)
+  hex dump (first 32 bytes):
+    6c 6f 6f 70 30 00 00 00 00 00 00 00 00 00 00 00  loop0...........
+    01 00 00 00 03 00 00 00 2b 00 00 00 00 00 00 00  ........+.......
+  backtrace:
+    [<00000000f89b0bef>] kstrdup+0x36/0x70 mm/util.c:60
+    [<000000004b68a0da>] kstrdup_const+0x35/0x60 mm/util.c:82
+    [<000000008eb65a51>] kvasprintf_const+0x72/0xe0 lib/kasprintf.c:48
+    [<00000000691729e7>] kobject_set_name_vargs+0x3b/0xe0 lib/kobject.c:289
+    [<00000000dfb16dfe>] kobject_add_varg lib/kobject.c:384 [inline]
+    [<00000000dfb16dfe>] kobject_init_and_add+0x6d/0xc0 lib/kobject.c:473
+    [<000000005849f02f>] ext4_register_sysfs+0x6b/0x160 fs/ext4/sysfs.c:508
+    [<0000000027523718>] ext4_fill_super+0x2d04/0x46c0 fs/ext4/super.c:4799
+    [<0000000095f0e4f3>] mount_bdev+0x1d3/0x210 fs/super.c:1417
+    [<00000000415e8d00>] legacy_get_tree+0x26/0x70 fs/fs_context.c:592
+    [<00000000bf686d81>] vfs_get_tree+0x28/0xe0 fs/super.c:1547
+    [<00000000fd6d6aba>] do_new_mount fs/namespace.c:2875 [inline]
+    [<00000000fd6d6aba>] path_mount+0x90e/0xda0 fs/namespace.c:3192
+    [<000000008d02c1d0>] do_mount fs/namespace.c:3205 [inline]
+    [<000000008d02c1d0>] __do_sys_mount fs/namespace.c:3413 [inline]
+    [<000000008d02c1d0>] __se_sys_mount fs/namespace.c:3390 [inline]
+    [<000000008d02c1d0>] __x64_sys_mount+0x140/0x190 fs/namespace.c:3390
+    [<000000001c682859>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<0000000095c447b2>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff88811a0d74e0 (size 32):
+  comm "syz-executor307", pid 6451, jiffies 4294941943 (age 7.420s)
+  hex dump (first 32 bytes):
+    6c 6f 6f 70 30 00 00 00 00 00 00 00 00 00 00 00  loop0...........
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000f89b0bef>] kstrdup+0x36/0x70 mm/util.c:60
+    [<000000004b68a0da>] kstrdup_const+0x35/0x60 mm/util.c:82
+    [<000000008eb65a51>] kvasprintf_const+0x72/0xe0 lib/kasprintf.c:48
+    [<00000000691729e7>] kobject_set_name_vargs+0x3b/0xe0 lib/kobject.c:289
+    [<00000000dfb16dfe>] kobject_add_varg lib/kobject.c:384 [inline]
+    [<00000000dfb16dfe>] kobject_init_and_add+0x6d/0xc0 lib/kobject.c:473
+    [<000000005849f02f>] ext4_register_sysfs+0x6b/0x160 fs/ext4/sysfs.c:508
+    [<0000000027523718>] ext4_fill_super+0x2d04/0x46c0 fs/ext4/super.c:4799
+    [<0000000095f0e4f3>] mount_bdev+0x1d3/0x210 fs/super.c:1417
+    [<00000000415e8d00>] legacy_get_tree+0x26/0x70 fs/fs_context.c:592
+    [<00000000bf686d81>] vfs_get_tree+0x28/0xe0 fs/super.c:1547
+    [<00000000fd6d6aba>] do_new_mount fs/namespace.c:2875 [inline]
+    [<00000000fd6d6aba>] path_mount+0x90e/0xda0 fs/namespace.c:3192
+    [<000000008d02c1d0>] do_mount fs/namespace.c:3205 [inline]
+    [<000000008d02c1d0>] __do_sys_mount fs/namespace.c:3413 [inline]
+    [<000000008d02c1d0>] __se_sys_mount fs/namespace.c:3390 [inline]
+    [<000000008d02c1d0>] __x64_sys_mount+0x140/0x190 fs/namespace.c:3390
+    [<000000001c682859>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<0000000095c447b2>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
 
 
 ---
