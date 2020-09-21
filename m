@@ -2,101 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8ED9271C66
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 09:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1BC3271C6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 09:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726445AbgIUH4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 03:56:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726211AbgIUH4H (ORCPT
+        id S1726395AbgIUH6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 03:58:19 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:46694 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726211AbgIUH6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 03:56:07 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF246C061755;
-        Mon, 21 Sep 2020 00:56:07 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id t7so7016196pjd.3;
-        Mon, 21 Sep 2020 00:56:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=T7+i07av2Kp0AYojRvT3bM7gQAzDtecfEwK/S1JJ4xw=;
-        b=Qh1UuoMiJnVW2fV9zmTR0PpnA3fM0ZE64dzx/H7jhi7uTmSwnoXvM/gSvp+Kt2gO0A
-         KXF/bGpNc94/tmMnFm/WVajwguTIvZLfY0g6PBLXoK1emfc9mhCgB05iYrKJQB1zqJLf
-         WHN/dcuQ+gp7a9tuwnGu+KdWgS0APZsy8P1WDzKlr4dN26/6ZIjW3taz1vJzy0tpy6dQ
-         lRaddMjS+DWofD1seys+6/RYWIoNMqDiqMdE/ZXAGunObo7qPfZ7F6EcaFaDaa82YRAw
-         DtMBktkHg7oR09X0CaIMIpSiopgEpxefrXNwRW+ukkIrWdM8TkBBSyiL6as3o09zxtlM
-         7jOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=T7+i07av2Kp0AYojRvT3bM7gQAzDtecfEwK/S1JJ4xw=;
-        b=m9hpZ62BpBibqnLRhUyKWbI8/tZDecWE+b4yx037wMllQTlhgLVXTAbr6v+mVtWJ8/
-         ybbgCIbSOl64k6TDk24ZjZwDvQwjH+IjQMByF0vt3AlaXVax71X2ajbz1LZ/JXtKvGa1
-         IDuAoj3uG8t4+4NAeEyNtjSldbhKPbrE1Z/BvytaGIBfNqLmN7J4VBbs8r1hkA/eNR9m
-         6up5OltOAw+lw5EzgXAotFin7aKLcbjaTFV+jx0vqr1BoMrqkbAzBsKYjNVokROUiNH2
-         mrWnqGDD8Q+4A80TbcK4nD8H2BfJPf5avlrK+0ApGx7zLq/LRqaMYfRjRJ/fEOBaMJi8
-         AyoA==
-X-Gm-Message-State: AOAM533CsI+8Dwd25MtLcpwONcjrpC/660g84cMrhca4HSMjyUUQHQ6g
-        9/bdmln6NgZdh+0obpAkNOE03wMRMXuBeqKuz54=
-X-Google-Smtp-Source: ABdhPJx8XUpLVAaARP529JXm5TQso6onWukSFagB2XwrBqGkIHg5wLS2iOsQE/xZ9Fs/NQwe4veuN1flF9Jg+jo2vWY=
-X-Received: by 2002:a17:90b:fc4:: with SMTP id gd4mr24244021pjb.129.1600674967135;
- Mon, 21 Sep 2020 00:56:07 -0700 (PDT)
+        Mon, 21 Sep 2020 03:58:19 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08L7sbbZ096363;
+        Mon, 21 Sep 2020 07:57:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=YfXzG6w25mEucWzb4natHpFNhban2PK9sDz621j6ZmA=;
+ b=eTpmLXrFpNX7bShNafBK3KezQjC9S7oKLR1X9gcZc35faAgxYUUxMMwYBjhOU0Ms9GUq
+ Ugj4XXVZIJvq38hAuxWkawKwS7jx+foiCQgMnPqVaB43aYoiowRffa+bjY+lsXLou15C
+ woSvJKhX4YQGu4DqX2j4lz55+hfMlIg01YphWG+27VX5Bh/QbljmDnVDoxfXsy5nsKC+
+ D5xirZhU3KcTmcgiefSSrkJZ7QBWSWGNPM4BHgcwUdEzmQDp8mOvYeCnE6XSpMvXq/yf
+ O3JoqAipRnEgSBnkHfu0G4iVkZG/0n0fjZK/SkAaGRWxXqs36HWocmCUXKnLQM8BF8mA vA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 33ndnu3sjw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 21 Sep 2020 07:57:48 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08L7tnrT159229;
+        Mon, 21 Sep 2020 07:57:48 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 33nuw03sws-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 21 Sep 2020 07:57:47 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08L7viTt017210;
+        Mon, 21 Sep 2020 07:57:44 GMT
+Received: from [192.168.1.102] (/39.109.231.106)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 21 Sep 2020 00:57:44 -0700
+Subject: Re: WARNING in close_fs_devices (2)
+To:     syzbot <syzbot+4cfe71a4da060be47502@syzkaller.appspotmail.com>,
+        clm@fb.com, dsterba@suse.com, dsterba@suse.cz,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <0000000000005a890b05afc67285@google.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <c46c0d04-0ab7-dc81-978a-357c117eadbc@oracle.com>
+Date:   Mon, 21 Sep 2020 15:57:38 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-References: <20200920203207.25696-1-lists@wildgooses.com>
-In-Reply-To: <20200920203207.25696-1-lists@wildgooses.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 21 Sep 2020 10:55:49 +0300
-Message-ID: <CAHp75Vd2uz-QrEFshUr=e719VBX2zYzvOhVC07BpHfvi0WDgOA@mail.gmail.com>
-Subject: Re: [PATCH] gpio: gpio-amd-fch: Fix typo on define of AMD_FCH_GPIO_REG_GPIO55_DEVSLP0
-To:     Ed Wildgoose <lists@wildgooses.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Florian Eckert <fe@dev.tdt.de>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <0000000000005a890b05afc67285@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9750 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
+ mlxscore=0 suspectscore=0 adultscore=0 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009210057
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9750 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ lowpriorityscore=0 phishscore=0 adultscore=0 suspectscore=0 bulkscore=0
+ clxscore=1011 impostorscore=0 mlxlogscore=999 mlxscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009210057
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 20, 2020 at 11:33 PM Ed Wildgoose <lists@wildgooses.com> wrote:
->
-> Schematics show that the GPIO number is 55 (not 59). Trivial typo.
+On 21/9/20 6:42 am, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
+> 
+> HEAD commit:    b652d2a5 Add linux-next specific files for 20200918
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=17e84b07900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3cf0782933432b43
+> dashboard link: https://syzkaller.appspot.com/bug?extid=4cfe71a4da060be47502
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=112425d9900000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1486929b900000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+4cfe71a4da060be47502@syzkaller.appspotmail.com
+> 
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 6972 at fs/btrfs/volumes.c:1172 close_fs_devices+0x715/0x930 fs/btrfs/volumes.c:1172
+> Modules linked in:
+> CPU: 1 PID: 6972 Comm: syz-executor044 Not tainted 5.9.0-rc5-next-20200918-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:close_fs_devices+0x715/0x930 fs/btrfs/volumes.c:1172
+> Code: e8 00 b8 4c fe 85 db 0f 85 65 f9 ff ff e8 93 bb 4c fe 0f 0b e9 59 f9 ff ff e8 87 bb 4c fe 0f 0b e9 c0 fe ff ff e8 7b bb 4c fe <0f> 0b e9 f9 fe ff ff 48 c7 c7 fc a1 8f 8b e8 e8 0b 8e fe e9 19 f9
+> RSP: 0018:ffffc900061b7758 EFLAGS: 00010293
+> RAX: 0000000000000000 RBX: ffffffffffffffff RCX: ffffffff83285c2c
+> RDX: ffff8880a6bbe4c0 RSI: ffffffff83285d35 RDI: 0000000000000007
+> RBP: dffffc0000000000 R08: 0000000000000000 R09: ffff8880a2be1133
+> R10: 0000000000000000 R11: 0000000000000000 R12: ffff8880a2be1130
+> R13: ffff8880a2be11ec R14: ffff888093ab0508 R15: ffff8880a2be1050
+> FS:  000000000208a880(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00000000004babec CR3: 00000000a7bc7000 CR4: 00000000001506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>   btrfs_close_devices+0x8e/0x4b0 fs/btrfs/volumes.c:1184
+>   open_ctree+0x492a/0x49cf fs/btrfs/disk-io.c:3381
+>   btrfs_fill_super fs/btrfs/super.c:1316 [inline]
+>   btrfs_mount_root.cold+0x14/0x165 fs/btrfs/super.c:1672
+>   legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+>   vfs_get_tree+0x89/0x2f0 fs/super.c:1547
+>   fc_mount fs/namespace.c:983 [inline]
+>   vfs_kern_mount.part.0+0xd3/0x170 fs/namespace.c:1013
+>   vfs_kern_mount+0x3c/0x60 fs/namespace.c:1000
+>   btrfs_mount+0x234/0xaa0 fs/btrfs/super.c:1732
+>   legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+>   vfs_get_tree+0x89/0x2f0 fs/super.c:1547
+>   do_new_mount fs/namespace.c:2896 [inline]
+>   path_mount+0x12ae/0x1e70 fs/namespace.c:3216
+>   do_mount fs/namespace.c:3229 [inline]
+>   __do_sys_mount fs/namespace.c:3437 [inline]
+>   __se_sys_mount fs/namespace.c:3414 [inline]
+>   __x64_sys_mount+0x27f/0x300 fs/namespace.c:3414
+>   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x44851a
+> Code: b8 08 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 cd a2 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 aa a2 fb ff c3 66 0f 1f 84 00 00 00 00 00
+> RSP: 002b:00007ffcb26bce08 EFLAGS: 00000293 ORIG_RAX: 00000000000000a5
+> RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 000000000044851a
+> RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007ffcb26bce50
+> RBP: 00007ffcb26bce90 R08: 00007ffcb26bce90 R09: 0000000020000000
+> R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000003
+> R13: 00007ffcb26bce50 R14: 0000000000000003 R15: 0000000000000001
+> 
 
-Does it still DEVSLP0? Perhaps you need to drop that part as well.
 
-...
+I am able to reproduce. And its quite strange at the moment. A devid 0 
+is being scanned. Looks like crafted image.
 
->  #define APU2_GPIO_REG_LED3             AMD_FCH_GPIO_REG_GPIO59_DEVSLP1
->  #define APU2_GPIO_REG_MODESW           AMD_FCH_GPIO_REG_GPIO32_GE1
->  #define APU2_GPIO_REG_SIMSWAP          AMD_FCH_GPIO_REG_GPIO33_GE2
-> -#define APU2_GPIO_REG_MPCIE2           AMD_FCH_GPIO_REG_GPIO59_DEVSLP0
-> +#define APU2_GPIO_REG_MPCIE2           AMD_FCH_GPIO_REG_GPIO55_DEVSLP0
->  #define APU2_GPIO_REG_MPCIE3           AMD_FCH_GPIO_REG_GPIO51
->
->  /* Order in which the GPIO lines are defined in the register list */
-> diff --git a/include/linux/platform_data/gpio/gpio-amd-fch.h b/include/linux/platform_data/gpio/gpio-amd-fch.h
-> index 9e46678ed..255d51c9d 100644
-> --- a/include/linux/platform_data/gpio/gpio-amd-fch.h
-> +++ b/include/linux/platform_data/gpio/gpio-amd-fch.h
-> @@ -19,7 +19,7 @@
->  #define AMD_FCH_GPIO_REG_GPIO49                0x40
->  #define AMD_FCH_GPIO_REG_GPIO50                0x41
->  #define AMD_FCH_GPIO_REG_GPIO51                0x42
-> -#define AMD_FCH_GPIO_REG_GPIO59_DEVSLP0        0x43
-> +#define AMD_FCH_GPIO_REG_GPIO55_DEVSLP0        0x43
->  #define AMD_FCH_GPIO_REG_GPIO57                0x44
->  #define AMD_FCH_GPIO_REG_GPIO58                0x45
->  #define AMD_FCH_GPIO_REG_GPIO59_DEVSLP1        0x46
+[19592.946397] BTRFS: device fsid f90cac8b-044b-4fa8-8bee-4b8d3da88dc2 
+devid 0 transid 0 /dev/loop0 scanned by t (70902)
 
 
--- 
-With Best Regards,
-Andy Shevchenko
