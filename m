@@ -2,108 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73A49273610
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 00:57:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDEC0273605
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 00:51:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728736AbgIUW5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 18:57:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35208 "EHLO
+        id S1728695AbgIUWvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 18:51:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728692AbgIUW5N (ORCPT
+        with ESMTP id S1727693AbgIUWvH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 18:57:13 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3351C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 15:57:12 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id nw23so20050058ejb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 15:57:12 -0700 (PDT)
+        Mon, 21 Sep 2020 18:51:07 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A65BC061755;
+        Mon, 21 Sep 2020 15:51:07 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id u3so513310pjr.3;
+        Mon, 21 Sep 2020 15:51:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9jSUUFraOan7yfkNBxJ0PXo4gn5Fu1DsGDMc9ndN1tQ=;
-        b=cHEUC3C9K11LQLTPxZnfAmjIogqYmFr8vJH60PhAVwa4FQGTM3NkA2zDBi4+nNnh+V
-         wW4EDqRSW0BTCg85zhKjVc1ZaSXVLJZeQ7elYRILPEzEsgg9tIJVqi+OcU3GKPFkblAv
-         4Z7eEP0jbOhhbVo2KeozKp7OVo5cqz/K/2/udw5PaQStDEOKziVyLbYcGC35fo4+Yreg
-         GQjwaGp11FnVmhyn6674qIt5PVo5iXl4fz+MZV8sDcCiMCkQEDmE6DNoFhUBd4qZgG+V
-         vUjx0zynTSJ+SmJkkojfu1gOqjtzRcZUZ3Fz/3kNtAkjFc1O7vqC+JwIN+3RUYr0k2hH
-         NMuA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vGTBAGvWDFjbodpOJVDhuski4CeBWH0Uvr/+Kwfo5Oo=;
+        b=QUzlApk96W2T2IaCs5WGQXm3ZTGAUMjBN/NJE6GKiP7ihH3Ebqvf1sHDE9qe4eUNlB
+         tcBhVT3a9ZWJQvvKj20pUNmbF66KiPV+zPIn9Dd4lQLRM2xnQDH+SAkD5dugk079Dxdd
+         DAsPEvRmAKxUcH/DWv5tqex3OSuRmnqd8/JaS18pmiTNeigKozmXI8D0cTk144lI/9QZ
+         WCQCyMawJHanLv7XM+51axli469ZW0hFiWgZHdyfJGksgGrmtJ5rAUkCNGnWCbBzxxQN
+         yH4Dm7doaWUhWhrbFqrbPgSS4pe2eiq/nbqCWensqlbCjVNAuzGC3mD6iot+s4WjMKVT
+         sY4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9jSUUFraOan7yfkNBxJ0PXo4gn5Fu1DsGDMc9ndN1tQ=;
-        b=YCS6O3cWZpkztn/V9TZlX5Qhl9MpyaKOerWNN/e6p7dzHrBdhd1SZ3fDm1Vnsw9/Ea
-         y8dzaiR7LZWwsjke8tHcRpaRy4Usse6slmYahC7R/Lu86pTy0T3OHmySqRWIWq9LetEE
-         ecvygZhgNbYUlE42zOQoFGxK+x8dnZzCM38E5O38IGAQS7PjCTPhlTgPsAue18Jq7+Hn
-         Dus+4n3LSWtD8npjl3zotKJzT2xFHRzgRA/Wwn+/VEXA8xD+wOjw1kfVHa+72UwfN7wX
-         T2FK0DjYDCXawjf2Bjt1KmEFwWGFa6KExSMNqDc+oYTg0rUXAbfS/nDd3zPG/YrKqpSQ
-         /HfQ==
-X-Gm-Message-State: AOAM533bHBd9s7CdOVLdBWgMabjrGOX3mDD+Xu0fHM1tIgUyD/Nm7E/C
-        t4lhtS3n+3ClbxMsFnXYe9xN7w==
-X-Google-Smtp-Source: ABdhPJzP2r2Zay0wb4c78o7KqOUFyqGJ05rId6WnI920VXQBmoylUgFeYGIw9gYCqi7ifH7VMnYtpg==
-X-Received: by 2002:a17:906:6a54:: with SMTP id n20mr1840834ejs.401.1600729031313;
-        Mon, 21 Sep 2020 15:57:11 -0700 (PDT)
-Received: from localhost.localdomain ([2001:16b8:5c50:7f01:652a:68b1:4040:26de])
-        by smtp.gmail.com with ESMTPSA id e15sm9401321eds.5.2020.09.21.15.57.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 15:57:10 -0700 (PDT)
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Tony Lindgren <tony@atomide.com>, Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@gmail.com>,
-        Trent Piepho <tpiepho@gmail.com>,
-        Christina Quast <cquast@hanoverdisplays.com>,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org
-Cc:     Drew Fustini <drew@beagleboard.org>
-Subject: [PATCH] ARM: dts: am33xx: modify AM33XX_IOPAD for #pinctrl-cells = 2
-Date:   Tue, 22 Sep 2020 00:50:55 +0200
-Message-Id: <20200921225053.4126745-1-drew@beagleboard.org>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vGTBAGvWDFjbodpOJVDhuski4CeBWH0Uvr/+Kwfo5Oo=;
+        b=iCwjd8G/XOXR6fZu6e+R8mJBb1DpfFf5G5tBT1CcBK2r5ZWK834E4z8Cry1/h07Xp1
+         T/lbaJF4pw0x66L2TfIqe5NQp6cNNNcVxQLMFuTRhJGbBxC/auHGdpakSYmjaegZSBo1
+         LfkLdYwvTTKsc7IRZBfVT1izty9WuX3t6OB2z+8Dy+Cf4QozUKXe5HXbbhjkpc/PsFBB
+         49us/ljN5Jyzh1wkCAzUcxKR446u2JQNkjApXfpIe+JaJaRngc2PZd9cDBAuCUpWYaxJ
+         +FafbHVBtZNchO83oeZGe///yq56yUDulX7C7lG0LwsJmvNvGXtyNJq/rxRs1rgysVhk
+         edow==
+X-Gm-Message-State: AOAM531Jc/Y4lXcmOVL3PpxLnOZ4IVtqW5/F4Yjfd5eEq9e72B8Q/MrG
+        pxiQd2wn8ZLWr6aIVszyxEJlZ0SE24G4IbVOe75oxzGwsTDLGA==
+X-Google-Smtp-Source: ABdhPJwIh4TG2lZRhS3+puFxuT098Mmba2FlJSMwTw8F7EzbCgRWoakQWoggppEyR++U27sLmfWb4dSxPkRHVJRWJEg=
+X-Received: by 2002:a17:90b:4b82:: with SMTP id lr2mr1303431pjb.184.1600728666628;
+ Mon, 21 Sep 2020 15:51:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1600661418.git.yifeifz2@illinois.edu> <b792335294ee5598d0fb42702a49becbce2f925f.1600661419.git.yifeifz2@illinois.edu>
+ <CAG48ez3k0_7Vev_O=uV_WVuUGK6BPA0RyrYXMYSDV4DTMMe26g@mail.gmail.com>
+In-Reply-To: <CAG48ez3k0_7Vev_O=uV_WVuUGK6BPA0RyrYXMYSDV4DTMMe26g@mail.gmail.com>
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+Date:   Mon, 21 Sep 2020 17:50:55 -0500
+Message-ID: <CABqSeAROcwq0ZGzWaxyPm+LDHu6T_8CD7_1c-hdhaMikr_ECCA@mail.gmail.com>
+Subject: Re: [RFC PATCH seccomp 2/2] seccomp/cache: Cache filter results that
+ allow syscalls
+To:     Jann Horn <jannh@google.com>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        kernel list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Modify the AM33XX_IOPAD macro so that it works now that #pinctrl-cells =
-<2>. The third parameter is just a zero and the pinctrl-single driver
-will just OR this with the second parameter so it has no actual effect.
+On Mon, Sep 21, 2020 at 1:09 PM Jann Horn <jannh@google.com> wrote:
+>
+> On Mon, Sep 21, 2020 at 7:35 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> [...]
+> > We do this by creating a per-task bitmap of permitted syscalls.
+> > If seccomp filter is invoked we check if it is cached and if so
+> > directly return allow. Else we call into the cBPF filter, and if
+> > the result is an allow then we cache the results.
+>
+> What? Why? We already have code to statically evaluate the filter for
+> all syscall numbers. We should be using the results of that instead of
+> re-running the filter and separately caching the results.
+>
+> > The cache is per-task
+>
+> Please don't. The static results are per-filter, so the bitmask(s)
+> should also be per-filter and immutable.
 
-There are no longer any dts files using this macro (following my patch
-to am335x-guardian.dts), but this will keep dts files not in mainline
-from breaking.
+I do agree that an immutable bitmask is faster and easier to reason
+about its correctness. However, I did not find the "code to statically
+evaluate the filter for all syscall numbers" while reading seccomp.c.
+Would you give me a pointer to that and I will see how to best make
+use of it?
 
-Fixes: 27c90e5e48d0 ("ARM: dts: am33xx-l4: change #pinctrl-cells from 1 to 2")
-Suggested-by: Tony Lindgren <tony@atomide.com>
-Reported-by: Trent Piepho <tpiepho@gmail.com>
-Link: https://lore.kernel.org/linux-devicetree/20200921064707.GN7101@atomide.com/
-Signed-off-by: Drew Fustini <drew@beagleboard.org>
----
-NOTE:
-checkpatch complains "Macros with complex values should be enclosed in 
-parentheses" but all the other marcos in that section have the same
-format so it seems appropriate to ignore checkpatch and maintain the
-style.
-
- include/dt-bindings/pinctrl/omap.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/dt-bindings/pinctrl/omap.h b/include/dt-bindings/pinctrl/omap.h
-index 2d2a8c737822..f48245ff87e5 100644
---- a/include/dt-bindings/pinctrl/omap.h
-+++ b/include/dt-bindings/pinctrl/omap.h
-@@ -64,7 +64,7 @@
- #define OMAP3_WKUP_IOPAD(pa, val)	OMAP_IOPAD_OFFSET((pa), 0x2a00) (val)
- #define DM814X_IOPAD(pa, val)		OMAP_IOPAD_OFFSET((pa), 0x0800) (val)
- #define DM816X_IOPAD(pa, val)		OMAP_IOPAD_OFFSET((pa), 0x0800) (val)
--#define AM33XX_IOPAD(pa, val)		OMAP_IOPAD_OFFSET((pa), 0x0800) (val)
-+#define AM33XX_IOPAD(pa, val)		OMAP_IOPAD_OFFSET((pa), 0x0800) (val) (0)
- #define AM33XX_PADCONF(pa, conf, mux)	OMAP_IOPAD_OFFSET((pa), 0x0800) (conf) (mux)
- 
- /*
--- 
-2.25.1
-
+YiFei Zhu
