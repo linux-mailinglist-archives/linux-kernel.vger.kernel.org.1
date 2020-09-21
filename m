@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1534272417
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D33272415
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:44:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727022AbgIUMoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 08:44:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54506 "EHLO mail.kernel.org"
+        id S1727042AbgIUMoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 08:44:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726977AbgIUMoN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 08:44:13 -0400
+        id S1727001AbgIUMoO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 08:44:14 -0400
 Received: from lenoir.home (lfbn-ncy-1-588-162.w81-51.abo.wanadoo.fr [81.51.203.162])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 33AB721D7A;
-        Mon, 21 Sep 2020 12:44:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A1CC222BB;
+        Mon, 21 Sep 2020 12:44:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600692252;
-        bh=BJASM83p5rllb7D64kMT2Am+PexRDPr+B9D/Dil3gOY=;
+        s=default; t=1600692254;
+        bh=iSQLytuvoTVSkVFQJBym4elXGfzuYLVgReaXc9VqAPw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UGvwdAMv2XpxPr4swWWjkUWAjPpvYHOqEEYjqIVjP8isDwOVRsaVD+riqB8Ztn7p4
-         yaIRkBq7705y8PK44AXSS4jF3W+u0GPKWxt+JD+C66XFj3WY2QVAA2sg+nRSRte9Kl
-         5j1/xRFQf/9vSJw2GtQBWrAxebYLqOa2mmT8CNQs=
+        b=GX+m1v5R4v7md0gi81mfNEKZZ4idp+KVP5+LZuddvagaWs2lCERWOHhng8wxeqo3s
+         fTwLykGfTsjHvuwbzvRIv34PKfTCv2VSBaJbCq2fCBX70ntyoXLQmXE78iGW9ZW+wa
+         d3HqKZih0xoq5P0kY6jqNyKIFbuoHoCk1ovFpSuY=
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     "Paul E . McKenney" <paulmck@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -32,9 +32,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>
-Subject: [RFC PATCH 07/12] rcu: Shutdown nocb timer on de-offloading
-Date:   Mon, 21 Sep 2020 14:43:46 +0200
-Message-Id: <20200921124351.24035-8-frederic@kernel.org>
+Subject: [RFC PATCH 08/12] rcu: Flush bypass before setting SEGCBLIST_SOFTIRQ_ONLY
+Date:   Mon, 21 Sep 2020 14:43:47 +0200
+Message-Id: <20200921124351.24035-9-frederic@kernel.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921124351.24035-1-frederic@kernel.org>
 References: <20200921124351.24035-1-frederic@kernel.org>
@@ -44,9 +44,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make sure the nocb timer can't fire anymore before we reach the final
-de-offload state. Spuriously waking up the GP kthread is no big deal but
-we must prevent from executing the timer callback without nocb locking.
+Make sure to handle the pending bypass queue before we switch to the
+final de-offload state. We'll have to be careful and later set
+SEGCBLIST_SOFTIRQ_ONLY before re-enabling again IRQs, or new bypass
+callbacks could be queued in the meantine.
 
 Inspired-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
@@ -57,66 +58,33 @@ Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc: Lai Jiangshan <jiangshanlai@gmail.com>
 Cc: Joel Fernandes <joel@joelfernandes.org>
 ---
- kernel/rcu/tree.h        |  1 +
- kernel/rcu/tree_plugin.h | 12 +++++++++++-
- 2 files changed, 12 insertions(+), 1 deletion(-)
+ kernel/rcu/tree_plugin.h | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 5b37f7103b0d..ca69238e2227 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -254,6 +254,7 @@ struct rcu_data {
- };
- 
- /* Values for nocb_defer_wakeup field in struct rcu_data. */
-+#define RCU_NOCB_WAKE_OFF	-1
- #define RCU_NOCB_WAKE_NOT	0
- #define RCU_NOCB_WAKE		1
- #define RCU_NOCB_WAKE_FORCE	2
 diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index eceef6dade9a..3361bd351f3b 100644
+index 3361bd351f3b..cee15841c178 100644
 --- a/kernel/rcu/tree_plugin.h
 +++ b/kernel/rcu/tree_plugin.h
-@@ -1637,6 +1637,8 @@ static void wake_nocb_gp(struct rcu_data *rdp, bool force,
- static void wake_nocb_gp_defer(struct rcu_data *rdp, int waketype,
- 			       const char *reason)
- {
-+	if (rdp->nocb_defer_wakeup == RCU_NOCB_WAKE_OFF)
-+		return;
- 	if (rdp->nocb_defer_wakeup == RCU_NOCB_WAKE_NOT)
- 		mod_timer(&rdp->nocb_timer, jiffies + 1);
- 	if (rdp->nocb_defer_wakeup < waketype)
-@@ -2214,7 +2216,7 @@ static int rcu_nocb_cb_kthread(void *arg)
- /* Is a deferred wakeup of rcu_nocb_kthread() required? */
- static int rcu_nocb_need_deferred_wakeup(struct rcu_data *rdp)
- {
--	return READ_ONCE(rdp->nocb_defer_wakeup);
-+	return READ_ONCE(rdp->nocb_defer_wakeup) > RCU_NOCB_WAKE_NOT;
- }
- 
- /* Do a deferred wakeup of rcu_nocb_kthread(). */
-@@ -2299,6 +2301,12 @@ static void __rcu_nocb_rdp_deoffload(struct rcu_data *rdp)
- 	swait_event_exclusive(rdp->nocb_state_wq,
+@@ -2302,11 +2302,17 @@ static void __rcu_nocb_rdp_deoffload(struct rcu_data *rdp)
  			      !rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB |
  							SEGCBLIST_KTHREAD_GP));
-+
-+	/* Make sure nocb timer won't stay around */
+ 
 +	rcu_nocb_lock_irqsave(rdp, flags);
-+	WRITE_ONCE(rdp->nocb_defer_wakeup, RCU_NOCB_WAKE_OFF);
+ 	/* Make sure nocb timer won't stay around */
+-	rcu_nocb_lock_irqsave(rdp, flags);
+ 	WRITE_ONCE(rdp->nocb_defer_wakeup, RCU_NOCB_WAKE_OFF);
+-	rcu_nocb_unlock_irqrestore(rdp, flags);
+ 	del_timer_sync(&rdp->nocb_timer);
++	/*
++	 * Flush bypass. While IRQs are disabled and once we set
++	 * SEGCBLIST_SOFTIRQ_ONLY, no callback is supposed to be
++	 * enqueued on bypass.
++	 */
++	rcu_nocb_flush_bypass(rdp, NULL, jiffies);
 +	rcu_nocb_unlock_irqrestore(rdp, flags);
-+	del_timer_sync(&rdp->nocb_timer);
  }
  
  static long rcu_nocb_rdp_deoffload(void *arg)
-@@ -2344,6 +2352,8 @@ static void __rcu_nocb_rdp_offload(struct rcu_data *rdp)
- 	 * SEGCBLIST_SOFTIRQ_ONLY mode.
- 	 */
- 	raw_spin_lock_irqsave(&rdp->nocb_lock, flags);
-+	/* Re-enable nocb timer */
-+	WRITE_ONCE(rdp->nocb_defer_wakeup, RCU_NOCB_WAKE_NOT);
- 	/*
- 	 * We didn't take the nocb lock while working on the
- 	 * rdp->cblist in SEGCBLIST_SOFTIRQ_ONLY mode.
 -- 
 2.28.0
 
