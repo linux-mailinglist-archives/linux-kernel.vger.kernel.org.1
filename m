@@ -2,349 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FD6D271A70
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 07:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C72D271A75
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 07:38:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726415AbgIUFgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 01:36:01 -0400
-Received: from mga18.intel.com ([134.134.136.126]:9101 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726104AbgIUFgA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 01:36:00 -0400
-IronPort-SDR: gbyYo6daRhzVjsz8V0vV2L9qXuZEwmw4IUJJ/3So40Meb5qq/cu2SbpJ88/IJb9QOaqUWFroCm
- jKDD/YuJpRqg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9750"; a="148064998"
-X-IronPort-AV: E=Sophos;i="5.77,285,1596524400"; 
-   d="scan'208";a="148064998"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2020 22:35:59 -0700
-IronPort-SDR: LcUWuf5r39ZomwHn+/GSlbkk/FCTJOnx3d2DCgZ36A1M9o4mSqAyIa5y4pJ9U//Hw2i+c13BsV
- yoQyxSSQPuTA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,285,1596524400"; 
-   d="scan'208";a="334240019"
-Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
-  by fmsmga004.fm.intel.com with ESMTP; 20 Sep 2020 22:35:57 -0700
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     krzk@kernel.org, mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, yilun.xu@intel.com, lgoncalv@redhat.com,
-        Russ Weight <russell.h.weight@intel.com>
-Subject: [PATCH v3] memory: dfl-emif: add the DFL EMIF private feature driver
-Date:   Mon, 21 Sep 2020 13:31:20 +0800
-Message-Id: <1600666280-25651-2-git-send-email-yilun.xu@intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1600666280-25651-1-git-send-email-yilun.xu@intel.com>
-References: <1600666280-25651-1-git-send-email-yilun.xu@intel.com>
+        id S1726366AbgIUFiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 01:38:18 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:56098 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726149AbgIUFiR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 01:38:17 -0400
+Received: by mail-io1-f70.google.com with SMTP id t187so9205189iof.22
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 22:38:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=mldZOPzd4FXHs/LrrnoJ/fME9Gz63dOekIh0/A0poAI=;
+        b=SK4HjlB2yeKTzzYCnwEQTr4JO0CxDVR7s/idJ3Sa4/OOlanFr7CLChnMvZkxt+xPkr
+         P7bRxZGdwly1B8viWq0aYyfWANqR7Mtj2WVLdKyhbFtd/dbxNZJjWRIx3jn56nlgzvlA
+         8x3Two6u3fz3UUxTalJFqZ5CeVqfkUvGUaB9P8VRB2LmX0T2iwOqPKgbPImOyOROlyax
+         N7MCHwhoaM9dwuQE7aNYiBAFQ+1/ayiTG9mi8SfSnlIBbGtGHavMj0p82lC5NgE4+eFx
+         2/VljCkzng7Q8rE98P4mUCYQFtu9MWxWvYyFusrgFFkhBJeechqEmgW1iuRxw4xV1a4b
+         Jhwg==
+X-Gm-Message-State: AOAM533JmNykExkTT6UsfmsrDB/5MixWzCAeAI9qz4K3BIoySRF4yJAf
+        jidPwET2sSr6MFiGk5Kd2VQml9XVjkPMNcySOifi3jZMxK7W
+X-Google-Smtp-Source: ABdhPJxpDNuIFZPkvsdO/G+D9xuSKBngFXdQuVE1BnvCpERn5xIRGkPfhMcl45ZYWl8KGFH9x9q9nSPthg7VWHfZ/qGo9ErOH+vK
+MIME-Version: 1.0
+X-Received: by 2002:a6b:be44:: with SMTP id o65mr26709302iof.53.1600666695489;
+ Sun, 20 Sep 2020 22:38:15 -0700 (PDT)
+Date:   Sun, 20 Sep 2020 22:38:15 -0700
+In-Reply-To: <0000000000001fe79005afbf52ea@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c9e14b05afcc41ba@google.com>
+Subject: Re: KASAN: use-after-free Read in btrfs_scan_one_device
+From:   syzbot <syzbot+582e66e5edf36a22c7b0@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver is for the EMIF private feature implemented under FPGA
-Device Feature List (DFL) framework. It is used to expose memory
-interface status information as well as memory clearing control.
+syzbot has found a reproducer for the following issue on:
 
-The purpose of memory clearing block is to zero out all private memory
-when FPGA is to be reprogrammed. This gives users a reliable method to
-prevent potential data leakage.
+HEAD commit:    325d0eab Merge branch 'akpm' (patches from Andrew)
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1512df53900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6a8a2ae52ed737db
+dashboard link: https://syzkaller.appspot.com/bug?extid=582e66e5edf36a22c7b0
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12366f8b900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14e6929b900000
 
-Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-Signed-off-by: Russ Weight <russell.h.weight@intel.com>
----
-v2: Adjust the position of this driver in Kconfig.
-    Improves the name of the Kconfig option.
-    Change the include dfl-bus.h to dfl.h, cause the previous patchset
-     renames the file.
-    Some minor fixes and comment improvement.
-v3: Adjust the position of the driver in Makefile.
----
- .../ABI/testing/sysfs-bus-dfl-devices-emif         |  25 +++
- drivers/memory/Kconfig                             |   9 +
- drivers/memory/Makefile                            |   2 +
- drivers/memory/dfl-emif.c                          | 207 +++++++++++++++++++++
- 4 files changed, 243 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
- create mode 100644 drivers/memory/dfl-emif.c
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+582e66e5edf36a22c7b0@syzkaller.appspotmail.com
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-dfl-devices-emif b/Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
-new file mode 100644
-index 0000000..56f97dc
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
-@@ -0,0 +1,25 @@
-+What:		/sys/bus/dfl/devices/dfl_dev.X/infX_cal_fail
-+Date:		Sep 2020
-+KernelVersion:	5.10
-+Contact:	Xu Yilun <yilun.xu@intel.com>
-+Description:	Read-only. It indicates if the calibration failed on this
-+		memory interface. "1" for calibration failure, "0" for OK.
-+		Format: %u
-+
-+What:		/sys/bus/dfl/devices/dfl_dev.X/infX_init_done
-+Date:		Sep 2020
-+KernelVersion:	5.10
-+Contact:	Xu Yilun <yilun.xu@intel.com>
-+Description:	Read-only. It indicates if the initialization completed on
-+		this memory interface. "1" for initialization complete, "0"
-+		for not yet.
-+		Format: %u
-+
-+What:		/sys/bus/dfl/devices/dfl_dev.X/infX_clear
-+Date:		Sep 2020
-+KernelVersion:	5.10
-+Contact:	Xu Yilun <yilun.xu@intel.com>
-+Description:	Write-only. Writing "1" to this file will zero out all memory
-+		data in this memory interface. Writing of other values is
-+		invalid.
-+		Format: %u
-diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
-index 00e013b..2495bc4 100644
---- a/drivers/memory/Kconfig
-+++ b/drivers/memory/Kconfig
-@@ -137,6 +137,15 @@ config TI_EMIF_SRAM
- 	  sequence so this driver provides several relocatable PM functions
- 	  for the SoC PM code to use.
- 
-+config FPGA_DFL_EMIF
-+	tristate "FPGA DFL EMIF Driver"
-+	depends on FPGA_DFL && HAS_IOMEM
-+	help
-+	  This driver is for the EMIF private feature implemented under
-+	  FPGA Device Feature List (DFL) framework. It is used to expose
-+	  memory interface status information as well as memory clearing
-+	  control.
-+
- config MVEBU_DEVBUS
- 	bool "Marvell EBU Device Bus Controller"
- 	default y if PLAT_ORION
-diff --git a/drivers/memory/Makefile b/drivers/memory/Makefile
-index e71cf7b..bc7663e 100644
---- a/drivers/memory/Makefile
-+++ b/drivers/memory/Makefile
-@@ -28,6 +28,8 @@ obj-$(CONFIG_STM32_FMC2_EBI)	+= stm32-fmc2-ebi.o
- obj-$(CONFIG_SAMSUNG_MC)	+= samsung/
- obj-$(CONFIG_TEGRA_MC)		+= tegra/
- obj-$(CONFIG_TI_EMIF_SRAM)	+= ti-emif-sram.o
-+obj-$(CONFIG_FPGA_DFL_EMIF)	+= dfl-emif.o
-+
- ti-emif-sram-objs		:= ti-emif-pm.o ti-emif-sram-pm.o
- 
- AFLAGS_ti-emif-sram-pm.o	:=-Wa,-march=armv7-a
-diff --git a/drivers/memory/dfl-emif.c b/drivers/memory/dfl-emif.c
-new file mode 100644
-index 0000000..0799d53
---- /dev/null
-+++ b/drivers/memory/dfl-emif.c
-@@ -0,0 +1,207 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * DFL device driver for EMIF private feature
-+ *
-+ * Copyright (C) 2020 Intel Corporation, Inc.
-+ *
-+ */
-+#include <linux/bitfield.h>
-+#include <linux/errno.h>
-+#include <linux/fpga/dfl.h>
-+#include <linux/io.h>
-+#include <linux/iopoll.h>
-+#include <linux/io-64-nonatomic-lo-hi.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/spinlock.h>
-+#include <linux/types.h>
-+
-+#define FME_FEATURE_ID_EMIF		0x9
-+
-+#define EMIF_STAT			0x8
-+#define EMIF_STAT_INIT_DONE_SFT		0
-+#define EMIF_STAT_CALC_FAIL_SFT		8
-+#define EMIF_STAT_CLEAR_BUSY_SFT	16
-+#define EMIF_CTRL			0x10
-+#define EMIF_CTRL_CLEAR_EN_SFT		0
-+#define EMIF_CTRL_CLEAR_EN_MSK		GENMASK_ULL(3, 0)
-+
-+#define EMIF_POLL_INVL			10000 /* us */
-+#define EMIF_POLL_TIMEOUT		5000000 /* us */
-+
-+struct dfl_emif {
-+	struct device *dev;
-+	void __iomem *base;
-+	spinlock_t lock;	/* Serialises access to EMIF_CTRL reg */
-+};
-+
-+struct emif_attr {
-+	struct device_attribute attr;
-+	u32 shift;
-+	u32 index;
-+};
-+
-+#define to_emif_attr(dev_attr) \
-+	container_of(dev_attr, struct emif_attr, attr)
-+
-+static ssize_t emif_state_show(struct device *dev,
-+			       struct device_attribute *attr, char *buf)
-+{
-+	struct emif_attr *eattr = to_emif_attr(attr);
-+	struct dfl_emif *de = dev_get_drvdata(dev);
-+	u64 val;
-+
-+	val = readq(de->base + EMIF_STAT);
-+
-+	return sprintf(buf, "%u\n",
-+		       !!(val & BIT_ULL(eattr->shift + eattr->index)));
-+}
-+
-+static ssize_t emif_clear_store(struct device *dev,
-+				struct device_attribute *attr,
-+				const char *buf, size_t count)
-+{
-+	struct emif_attr *eattr = to_emif_attr(attr);
-+	struct dfl_emif *de = dev_get_drvdata(dev);
-+	u64 clear_busy_msk, clear_en_msk, val;
-+	void __iomem *base = de->base;
-+
-+	if (!sysfs_streq(buf, "1"))
-+		return -EINVAL;
-+
-+	clear_busy_msk = BIT_ULL(EMIF_STAT_CLEAR_BUSY_SFT + eattr->index);
-+	clear_en_msk = BIT_ULL(EMIF_CTRL_CLEAR_EN_SFT + eattr->index);
-+
-+	spin_lock(&de->lock);
-+	/* The CLEAR_EN field is WO, but other fields are RW */
-+	val = readq(base + EMIF_CTRL);
-+	val &= ~EMIF_CTRL_CLEAR_EN_MSK;
-+	val |= clear_en_msk;
-+	writeq(val, base + EMIF_CTRL);
-+	spin_unlock(&de->lock);
-+
-+	if (readq_poll_timeout(base + EMIF_STAT, val,
-+			       !(val & clear_busy_msk),
-+			       EMIF_POLL_INVL, EMIF_POLL_TIMEOUT)) {
-+		dev_err(de->dev, "timeout, fail to clear\n");
-+		return -ETIMEDOUT;
-+	}
-+
-+	return count;
-+}
-+
-+#define emif_state_attr(_name, _shift, _index)				\
-+	struct emif_attr emif_attr_##inf##_index##_##_name =		\
-+		{ .attr = __ATTR(inf##_index##_##_name, 0444,		\
-+				 emif_state_show, NULL),		\
-+		  .shift = (_shift), .index = (_index) }
-+
-+#define emif_clear_attr(_index)						\
-+	struct emif_attr emif_attr_##inf##_index##_clear =		\
-+		{ .attr = __ATTR(inf##_index##_clear, 0200,		\
-+				 NULL, emif_clear_store),		\
-+		  .index = (_index) }
-+
-+emif_state_attr(init_done, EMIF_STAT_INIT_DONE_SFT, 0);
-+emif_state_attr(init_done, EMIF_STAT_INIT_DONE_SFT, 1);
-+emif_state_attr(init_done, EMIF_STAT_INIT_DONE_SFT, 2);
-+emif_state_attr(init_done, EMIF_STAT_INIT_DONE_SFT, 3);
-+
-+emif_state_attr(cal_fail, EMIF_STAT_CALC_FAIL_SFT, 0);
-+emif_state_attr(cal_fail, EMIF_STAT_CALC_FAIL_SFT, 1);
-+emif_state_attr(cal_fail, EMIF_STAT_CALC_FAIL_SFT, 2);
-+emif_state_attr(cal_fail, EMIF_STAT_CALC_FAIL_SFT, 3);
-+
-+emif_clear_attr(0);
-+emif_clear_attr(1);
-+emif_clear_attr(2);
-+emif_clear_attr(3);
-+
-+static struct attribute *dfl_emif_attrs[] = {
-+	&emif_attr_inf0_init_done.attr.attr,
-+	&emif_attr_inf0_cal_fail.attr.attr,
-+	&emif_attr_inf0_clear.attr.attr,
-+
-+	&emif_attr_inf1_init_done.attr.attr,
-+	&emif_attr_inf1_cal_fail.attr.attr,
-+	&emif_attr_inf1_clear.attr.attr,
-+
-+	&emif_attr_inf2_init_done.attr.attr,
-+	&emif_attr_inf2_cal_fail.attr.attr,
-+	&emif_attr_inf2_clear.attr.attr,
-+
-+	&emif_attr_inf3_init_done.attr.attr,
-+	&emif_attr_inf3_cal_fail.attr.attr,
-+	&emif_attr_inf3_clear.attr.attr,
-+
-+	NULL,
-+};
-+
-+static umode_t dfl_emif_visible(struct kobject *kobj,
-+				struct attribute *attr, int n)
-+{
-+	struct dfl_emif *de = dev_get_drvdata(kobj_to_dev(kobj));
-+	struct emif_attr *eattr = container_of(attr, struct emif_attr,
-+					       attr.attr);
-+	u64 val;
-+
-+	/*
-+	 * This device supports upto 4 memory interfaces, but not all
-+	 * interfaces are used on different platforms. The read out value of
-+	 * CLEAN_EN field (which is a bitmap) could tell how many interfaces
-+	 * are available.
-+	 */
-+	val = FIELD_GET(EMIF_CTRL_CLEAR_EN_MSK, readq(de->base + EMIF_CTRL));
-+
-+	return (val & BIT_ULL(eattr->index)) ? attr->mode : 0;
-+}
-+
-+static const struct attribute_group dfl_emif_group = {
-+	.is_visible = dfl_emif_visible,
-+	.attrs = dfl_emif_attrs,
-+};
-+
-+static const struct attribute_group *dfl_emif_groups[] = {
-+	&dfl_emif_group,
-+	NULL,
-+};
-+
-+static int dfl_emif_probe(struct dfl_device *dfl_dev)
-+{
-+	struct device *dev = &dfl_dev->dev;
-+	struct dfl_emif *de;
-+
-+	de = devm_kzalloc(dev, sizeof(*de), GFP_KERNEL);
-+	if (!de)
-+		return -ENOMEM;
-+
-+	de->base = devm_ioremap_resource(dev, &dfl_dev->mmio_res);
-+	if (IS_ERR(de->base))
-+		return PTR_ERR(de->base);
-+
-+	de->dev = dev;
-+	spin_lock_init(&de->lock);
-+	dev_set_drvdata(dev, de);
-+
-+	return 0;
-+}
-+
-+static const struct dfl_device_id dfl_emif_ids[] = {
-+	{ FME_ID, FME_FEATURE_ID_EMIF },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(dfl, dfl_emif_ids);
-+
-+static struct dfl_driver dfl_emif_driver = {
-+	.drv	= {
-+		.name       = "dfl-emif",
-+		.dev_groups = dfl_emif_groups,
-+	},
-+	.id_table = dfl_emif_ids,
-+	.probe   = dfl_emif_probe,
-+};
-+module_dfl_driver(dfl_emif_driver);
-+
-+MODULE_DESCRIPTION("DFL EMIF driver");
-+MODULE_AUTHOR("Intel Corporation");
-+MODULE_LICENSE("GPL v2");
--- 
-2.7.4
+==================================================================
+BUG: KASAN: use-after-free in btrfs_printk+0x3eb/0x435 fs/btrfs/super.c:245
+Read of size 8 at addr ffff8880878e06a8 by task syz-executor225/7068
+
+CPU: 1 PID: 7068 Comm: syz-executor225 Not tainted 5.9.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1d6/0x29e lib/dump_stack.c:118
+ print_address_description+0x66/0x620 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report+0x132/0x1d0 mm/kasan/report.c:530
+ btrfs_printk+0x3eb/0x435 fs/btrfs/super.c:245
+ device_list_add+0x1a88/0x1d60 fs/btrfs/volumes.c:943
+ btrfs_scan_one_device+0x196/0x490 fs/btrfs/volumes.c:1359
+ btrfs_mount_root+0x48f/0xb60 fs/btrfs/super.c:1634
+ legacy_get_tree+0xea/0x180 fs/fs_context.c:592
+ vfs_get_tree+0x88/0x270 fs/super.c:1547
+ fc_mount fs/namespace.c:978 [inline]
+ vfs_kern_mount+0xc9/0x160 fs/namespace.c:1008
+ btrfs_mount+0x33c/0xae0 fs/btrfs/super.c:1732
+ legacy_get_tree+0xea/0x180 fs/fs_context.c:592
+ vfs_get_tree+0x88/0x270 fs/super.c:1547
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x179d/0x29e0 fs/namespace.c:3192
+ do_mount fs/namespace.c:3205 [inline]
+ __do_sys_mount fs/namespace.c:3413 [inline]
+ __se_sys_mount+0x126/0x180 fs/namespace.c:3390
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x44840a
+Code: b8 08 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 cd a2 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 aa a2 fb ff c3 66 0f 1f 84 00 00 00 00 00
+RSP: 002b:00007ffedfffd608 EFLAGS: 00000293 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffedfffd670 RCX: 000000000044840a
+RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007ffedfffd630
+RBP: 00007ffedfffd630 R08: 00007ffedfffd670 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000293 R12: 000000000000001a
+R13: 0000000000000004 R14: 0000000000000003 R15: 0000000000000003
+
+Allocated by task 6945:
+ kasan_save_stack mm/kasan/common.c:48 [inline]
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc+0x100/0x130 mm/kasan/common.c:461
+ kmalloc_node include/linux/slab.h:577 [inline]
+ kvmalloc_node+0x81/0x110 mm/util.c:574
+ kvmalloc include/linux/mm.h:757 [inline]
+ kvzalloc include/linux/mm.h:765 [inline]
+ btrfs_mount_root+0xd0/0xb60 fs/btrfs/super.c:1613
+ legacy_get_tree+0xea/0x180 fs/fs_context.c:592
+ vfs_get_tree+0x88/0x270 fs/super.c:1547
+ fc_mount fs/namespace.c:978 [inline]
+ vfs_kern_mount+0xc9/0x160 fs/namespace.c:1008
+ btrfs_mount+0x33c/0xae0 fs/btrfs/super.c:1732
+ legacy_get_tree+0xea/0x180 fs/fs_context.c:592
+ vfs_get_tree+0x88/0x270 fs/super.c:1547
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x179d/0x29e0 fs/namespace.c:3192
+ do_mount fs/namespace.c:3205 [inline]
+ __do_sys_mount fs/namespace.c:3413 [inline]
+ __se_sys_mount+0x126/0x180 fs/namespace.c:3390
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 6945:
+ kasan_save_stack mm/kasan/common.c:48 [inline]
+ kasan_set_track+0x3d/0x70 mm/kasan/common.c:56
+ kasan_set_free_info+0x17/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0xdd/0x110 mm/kasan/common.c:422
+ __cache_free mm/slab.c:3418 [inline]
+ kfree+0x113/0x200 mm/slab.c:3756
+ deactivate_locked_super+0xa7/0xf0 fs/super.c:335
+ btrfs_mount_root+0x72b/0xb60 fs/btrfs/super.c:1678
+ legacy_get_tree+0xea/0x180 fs/fs_context.c:592
+ vfs_get_tree+0x88/0x270 fs/super.c:1547
+ fc_mount fs/namespace.c:978 [inline]
+ vfs_kern_mount+0xc9/0x160 fs/namespace.c:1008
+ btrfs_mount+0x33c/0xae0 fs/btrfs/super.c:1732
+ legacy_get_tree+0xea/0x180 fs/fs_context.c:592
+ vfs_get_tree+0x88/0x270 fs/super.c:1547
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x179d/0x29e0 fs/namespace.c:3192
+ do_mount fs/namespace.c:3205 [inline]
+ __do_sys_mount fs/namespace.c:3413 [inline]
+ __se_sys_mount+0x126/0x180 fs/namespace.c:3390
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff8880878e0000
+ which belongs to the cache kmalloc-16k of size 16384
+The buggy address is located 1704 bytes inside of
+ 16384-byte region [ffff8880878e0000, ffff8880878e4000)
+The buggy address belongs to the page:
+page:0000000060704f30 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x878e0
+head:0000000060704f30 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0xfffe0000010200(slab|head)
+raw: 00fffe0000010200 ffffea00028e9a08 ffffea00021e3608 ffff8880aa440b00
+raw: 0000000000000000 ffff8880878e0000 0000000100000001 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff8880878e0580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff8880878e0600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff8880878e0680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                  ^
+ ffff8880878e0700: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff8880878e0780: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
 
