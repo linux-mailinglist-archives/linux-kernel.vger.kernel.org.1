@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93879272C67
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE39C272F60
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728377AbgIUQcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:32:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57210 "EHLO mail.kernel.org"
+        id S1730170AbgIUQ4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:56:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49872 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728246AbgIUQcB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:32:01 -0400
+        id S1729682AbgIUQoc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:44:32 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF6AA23976;
-        Mon, 21 Sep 2020 16:31:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 01F6B239D0;
+        Mon, 21 Sep 2020 16:44:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600705920;
-        bh=/pFa11MjTsZavogEdZhrecQ9NrgyqMt7d68uHjKxW38=;
+        s=default; t=1600706653;
+        bh=A+/EOSHJaXLjM6V0dnwVJ52JZI+Vj+l6h0uzHaaqO2M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DoDZrUaJSsu221vVu4LdfgydA0MAA/vNcTetTc53A6kVzpBTYFp2J4Ki0/KQqTNtJ
-         uzTHGIaDW9gHaxF4DTPqPP9oclfCK/05XEC3gc4m52o24IRlUB7rRLuS3ZMHaIAFq4
-         /mi67AD2M6RtsNCdz4XPyg5YO0Ji5RYjpow5vmLk=
+        b=BsyPIk1/SFFvbu5QHPWn0mssuZuLGVfPQMbbFb21wSfDO1Q2V/SnSgjYe0Hhx+pqA
+         djWnOEWaZrfp9yHZnoUkeATiwJcc45vtlTLCHFFrfuIuWg5J1ZE28ZDlAniGosdKGO
+         8xY2lP29ZcMbIulR7/lCi4WmAlTJ9FUEG7+RWOXo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rustam Kovhaev <rkovhaev@gmail.com>,
-        syzbot+22794221ab96b0bab53a@syzkaller.appspotmail.com
-Subject: [PATCH 4.4 16/46] staging: wlan-ng: fix out of bounds read in prism2sta_probe_usb()
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Vinod Koul <vkoul@kernel.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 040/118] ASoC: rt1308-sdw: Fix return check for devm_regmap_init_sdw()
 Date:   Mon, 21 Sep 2020 18:27:32 +0200
-Message-Id: <20200921162034.092477773@linuxfoundation.org>
+Message-Id: <20200921162038.166669705@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162033.346434578@linuxfoundation.org>
-References: <20200921162033.346434578@linuxfoundation.org>
+In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
+References: <20200921162036.324813383@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,84 +45,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rustam Kovhaev <rkovhaev@gmail.com>
+From: Vinod Koul <vkoul@kernel.org>
 
-commit fea22e159d51c766ba70473f473a0ec914cc7e92 upstream.
+[ Upstream commit 344850d93c098e1b17e6f89d5e436893e9762ef3 ]
 
-let's use usb_find_common_endpoints() to discover endpoints, it does all
-necessary checks for type and xfer direction
+devm_regmap_init_sdw() returns a valid pointer on success or ERR_PTR on
+failure which should be checked with IS_ERR. Also use PTR_ERR for
+returning error codes.
 
-remove memset() in hfa384x_create(), because we now assign endpoints in
-prism2sta_probe_usb() and because create_wlan() uses kzalloc() to
-allocate hfa384x struct before calling hfa384x_create()
-
-Fixes: faaff9765664 ("staging: wlan-ng: properly check endpoint types")
-Reported-and-tested-by: syzbot+22794221ab96b0bab53a@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?extid=22794221ab96b0bab53a
-Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200804145614.104320-1-rkovhaev@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reported-by: Takashi Iwai <tiwai@suse.de>
+Fixes: a87a6653a28c ("ASoC: rt1308-sdw: add rt1308 SdW amplifier driver")
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200826163340.3249608-3-vkoul@kernel.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/wlan-ng/hfa384x_usb.c |    5 -----
- drivers/staging/wlan-ng/prism2usb.c   |   19 ++++++-------------
- 2 files changed, 6 insertions(+), 18 deletions(-)
+ sound/soc/codecs/rt1308-sdw.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/staging/wlan-ng/hfa384x_usb.c
-+++ b/drivers/staging/wlan-ng/hfa384x_usb.c
-@@ -530,13 +530,8 @@ static void hfa384x_usb_defer(struct wor
- ----------------------------------------------------------------*/
- void hfa384x_create(hfa384x_t *hw, struct usb_device *usb)
- {
--	memset(hw, 0, sizeof(hfa384x_t));
- 	hw->usb = usb;
+diff --git a/sound/soc/codecs/rt1308-sdw.c b/sound/soc/codecs/rt1308-sdw.c
+index b0ba0d2acbdd6..56e952a904a39 100644
+--- a/sound/soc/codecs/rt1308-sdw.c
++++ b/sound/soc/codecs/rt1308-sdw.c
+@@ -684,8 +684,8 @@ static int rt1308_sdw_probe(struct sdw_slave *slave,
  
--	/* set up the endpoints */
--	hw->endp_in = usb_rcvbulkpipe(usb, 1);
--	hw->endp_out = usb_sndbulkpipe(usb, 2);
--
- 	/* Set up the waitq */
- 	init_waitqueue_head(&hw->cmdq);
+ 	/* Regmap Initialization */
+ 	regmap = devm_regmap_init_sdw(slave, &rt1308_sdw_regmap);
+-	if (!regmap)
+-		return -EINVAL;
++	if (IS_ERR(regmap))
++		return PTR_ERR(regmap);
  
---- a/drivers/staging/wlan-ng/prism2usb.c
-+++ b/drivers/staging/wlan-ng/prism2usb.c
-@@ -60,23 +60,14 @@ static int prism2sta_probe_usb(struct us
- 			       const struct usb_device_id *id)
- {
- 	struct usb_device *dev;
--	const struct usb_endpoint_descriptor *epd;
--	const struct usb_host_interface *iface_desc = interface->cur_altsetting;
-+	struct usb_endpoint_descriptor *bulk_in, *bulk_out;
-+	struct usb_host_interface *iface_desc = interface->cur_altsetting;
- 	wlandevice_t *wlandev = NULL;
- 	hfa384x_t *hw = NULL;
- 	int result = 0;
+ 	rt1308_sdw_init(&slave->dev, regmap, slave);
  
--	if (iface_desc->desc.bNumEndpoints != 2) {
--		result = -ENODEV;
--		goto failed;
--	}
--
--	result = -EINVAL;
--	epd = &iface_desc->endpoint[1].desc;
--	if (!usb_endpoint_is_bulk_in(epd))
--		goto failed;
--	epd = &iface_desc->endpoint[2].desc;
--	if (!usb_endpoint_is_bulk_out(epd))
-+	result = usb_find_common_endpoints(iface_desc, &bulk_in, &bulk_out, NULL, NULL);
-+	if (result)
- 		goto failed;
- 
- 	dev = interface_to_usbdev(interface);
-@@ -95,6 +86,8 @@ static int prism2sta_probe_usb(struct us
- 	}
- 
- 	/* Initialize the hw data */
-+	hw->endp_in = usb_rcvbulkpipe(dev, bulk_in->bEndpointAddress);
-+	hw->endp_out = usb_sndbulkpipe(dev, bulk_out->bEndpointAddress);
- 	hfa384x_create(hw, dev);
- 	hw->wlandev = wlandev;
- 
+-- 
+2.25.1
+
 
 
