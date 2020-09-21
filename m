@@ -2,96 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8F8272C08
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B671A272BCC
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728447AbgIUQ0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:26:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53234 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726795AbgIUQ0l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:26:41 -0400
-Received: from localhost.localdomain (unknown [194.230.155.191])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A2ABA238D6;
-        Mon, 21 Sep 2020 16:26:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600705601;
-        bh=gC+DNSToyQJ3fKm3T67rR1nazhYlUpk4FDv6x9LB+zU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RkNeHKUyPU6Me0yH8Oukc9vEK2k+aoehoZnss5N3C0NVQNlR3XfJnVQGHo1q8VMVu
-         mw02kmaiBrD7pAPiihB55J8KsVNooG7DHtz8BuHqZHX2ZkP4IaUQZdB3MyksyeWDcA
-         y4Zbq2RVVomQghvjooZVH/dW+GGcFj+oJqUcYF+4=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Pavel Machek <pavel@ucw.cz>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Shawn Tu <shawnx.tu@intel.com>,
-        Ricardo Ribalda <ribalda@kernel.org>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Rui Miguel Silva <rmfrfs@gmail.com>,
-        Shunqian Zheng <zhengsq@rock-chips.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
-        Hyungwoo Yang <hyungwoo.yang@intel.com>,
-        Wenyou Yang <wenyou.yang@microchip.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 20/25] media: i2c: ov5675: simplify getting state container
-Date:   Mon, 21 Sep 2020 18:23:37 +0200
-Message-Id: <20200921162342.7348-20-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200921162342.7348-1-krzk@kernel.org>
-References: <20200921162342.7348-1-krzk@kernel.org>
+        id S1728091AbgIUQXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:23:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726950AbgIUQXv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:23:51 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A325EC061755;
+        Mon, 21 Sep 2020 09:23:50 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id k15so13436213wrn.10;
+        Mon, 21 Sep 2020 09:23:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GV+zIN6sJJxPejVZB8htxxkYICDKzmVCyZUaXHnp5g4=;
+        b=dasbI4zhocNjyUPwfomYAW9onoLwPccSgrQi8tap4RhvutB8a1/agZkei9+nL2NUA7
+         STEf4fljwFsbovWCl6LRA/cr9/t5SpRlnVpxpE3N3a94+IAsWoPpuTuLGt4lp1RtLqJV
+         r1S32zwpb+B/7I0UIrTI2NJcQM4d42gKi7MVFMaMG6x3U2FAhPW9pJm23pHQW+vPnYT7
+         SxvtnDiy4p5uE65mQdF1ORa2Q3p7mhomtEIoM2B/JiOnCS7QgBZsS8QU9TFD6yYAS89C
+         psUZdIOQJIbRGJ+f/hDN6cjqEfSWajzsulp2hYsM+E8+X1KncdISmqvqk8IBfIrX77uv
+         UAKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GV+zIN6sJJxPejVZB8htxxkYICDKzmVCyZUaXHnp5g4=;
+        b=YC7Zz4f98mc99kbgSb4RBjExXxA9jOPnFlngrE2lCG5W7fhiMzvkonsXe9vW0s4+64
+         6RuJugKjDdru+WHnpeu6BY1aTH+bM7K2u3FptQclAO7QqGUgOFTEot0bmAlxAIaEp8vG
+         4LLjyGvI5l2PckJBvAhvl97JPF603DTf1zZglZhl/MGf7DBp2WwnMwdO6IpfmpPcU+GZ
+         Bp/Qn8WWJVAdy3qOY9XRkcV5td16HXZJL5id6rhvMzFnhPcdKHtZ3jKdWBTKd5ZfmeXu
+         1Szlw3Eq5s0XE0iw8+fLhjdY2J29SdLppYyiTzRKzUU13V8WAOK67LI1R+vNaj1fad48
+         p4Kg==
+X-Gm-Message-State: AOAM533vmwGiQ1tsIkxXd8jFhYqPYafw04Z5k9CGzfKAdnFRRlO6k2B/
+        0FP0m7ELuV3hElN4P9BxpkQyI0L3LqvvX9sWP2HmoNFc
+X-Google-Smtp-Source: ABdhPJx911Aw5XJoH0FHLZ+BtstzWpG2MMi4tjv4LMT5e184l4ts5ETwRI5ps/eE+scP3HaiwEz2lW2tgtla49J0v80=
+X-Received: by 2002:adf:e6c7:: with SMTP id y7mr521596wrm.147.1600705429283;
+ Mon, 21 Sep 2020 09:23:49 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200919193727.2093945-1-robdclark@gmail.com> <20200921161020.pjd6v6ul3beljwot@e107158-lin.cambridge.arm.com>
+In-Reply-To: <20200921161020.pjd6v6ul3beljwot@e107158-lin.cambridge.arm.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Mon, 21 Sep 2020 09:23:37 -0700
+Message-ID: <CAF6AEGvyFTDaftbjny=FvC7kfDZQFFBiCPv+tJ8v9KDUmV8tJg@mail.gmail.com>
+Subject: Re: [PATCH 0/3] drm: commit_work scheduling
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tejun Heo <tj@kernel.org>, Tim Murray <timmurray@google.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pointer to 'struct v4l2_subdev' is stored in drvdata via
-v4l2_i2c_subdev_init() so there is no point of a dance like:
+On Mon, Sep 21, 2020 at 9:10 AM Qais Yousef <qais.yousef@arm.com> wrote:
+>
+> On 09/19/20 12:37, Rob Clark wrote:
+> > From: Rob Clark <robdclark@chromium.org>
+> >
+> > The android userspace treats the display pipeline as a realtime problem.
+> > And arguably, if your goal is to not miss frame deadlines (ie. vblank),
+> > it is.  (See https://lwn.net/Articles/809545/ for the best explaination
+> > that I found.)
+> >
+> > But this presents a problem with using workqueues for non-blocking
+> > atomic commit_work(), because the SCHED_FIFO userspace thread(s) can
+> > preempt the worker.  Which is not really the outcome you want.. once
+> > the required fences are scheduled, you want to push the atomic commit
+> > down to hw ASAP.
+> >
+> > But the decision of whether commit_work should be RT or not really
+> > depends on what userspace is doing.  For a pure CFS userspace display
+> > pipeline, commit_work() should remain SCHED_NORMAL.
+>
+> Just a side note; this RT vs CFS inter-operatability is an issue that
+> creeps up every now and again.
+>
+> https://lore.kernel.org/lkml/1567048502-6064-1-git-send-email-jing-ting.wu@mediatek.com/
+>
+> Does the UI thread in Android ever run as RT by the way? I always suspected it
+> is one susceptible to such potential delays since it is part of the application
+> thread and thought it can't be trusted to become RT.
 
-    struct i2c_client *client = to_i2c_client(struct device *dev)
-    struct v4l2_subdev *sd = i2c_get_clientdata(client);
+The application itself is not RT, since there is no good way to know
+what other things the app may be doing.  Although that is mentioned in
+the lwn article (ie. the hypothetical SCHED_DEADLINE + token passing
+part)
 
-This allows to remove local variable 'client' and few pointer
-dereferences.
+But at least once the app / ui thread is done, then it is all (or at
+least in theory "all" if atomic-helper doesn't gum up the works ;-))
+SCHED_FIFO from there to the display.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- drivers/media/i2c/ov5675.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+> Those 120MHz displays will stress the pipeline :-)
 
-diff --git a/drivers/media/i2c/ov5675.c b/drivers/media/i2c/ov5675.c
-index 9540ce8918f0..5e35808037ad 100644
---- a/drivers/media/i2c/ov5675.c
-+++ b/drivers/media/i2c/ov5675.c
-@@ -889,8 +889,7 @@ static int ov5675_set_stream(struct v4l2_subdev *sd, int enable)
- 
- static int __maybe_unused ov5675_suspend(struct device *dev)
- {
--	struct i2c_client *client = to_i2c_client(dev);
--	struct v4l2_subdev *sd = i2c_get_clientdata(client);
-+	struct v4l2_subdev *sd = dev_get_drvdata(dev);
- 	struct ov5675 *ov5675 = to_ov5675(sd);
- 
- 	mutex_lock(&ov5675->mutex);
-@@ -904,8 +903,7 @@ static int __maybe_unused ov5675_suspend(struct device *dev)
- 
- static int __maybe_unused ov5675_resume(struct device *dev)
- {
--	struct i2c_client *client = to_i2c_client(dev);
--	struct v4l2_subdev *sd = i2c_get_clientdata(client);
-+	struct v4l2_subdev *sd = dev_get_drvdata(dev);
- 	struct ov5675 *ov5675 = to_ov5675(sd);
- 	int ret;
- 
--- 
-2.17.1
+indeed
 
+BR,
+-R
+
+> >
+> > To handle this, convert non-blocking commit_work() to use per-CRTC
+> > kthread workers, instead of system_unbound_wq.  Per-CRTC workers are
+> > used to avoid serializing commits when userspace is using a per-CRTC
+> > update loop.
+> >
+> > A client-cap is introduced so that userspace can opt-in to SCHED_FIFO
+> > priority commit work.
+> >
+> > A potential issue is that since 616d91b68cd ("sched: Remove
+> > sched_setscheduler*() EXPORTs") we have limited RT priority levels,
+> > meaning that commit_work() ends up running at the same priority level
+> > as vblank-work.  This shouldn't be a big problem *yet*, due to limited
+> > use of vblank-work at this point.  And if it could be arranged that
+> > vblank-work is scheduled before signaling out-fences and/or sending
+> > pageflip events, it could probably work ok to use a single priority
+> > level for both commit-work and vblank-work.
+>
+> This is a function of num_cpus too. As long as nr_cpus > nr_running_rt_tasks
+> you should be fine.
+>
+> Cheers
+>
+> --
+> Qais Yousef
