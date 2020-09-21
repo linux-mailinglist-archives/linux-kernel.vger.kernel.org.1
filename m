@@ -2,76 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 282702736C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 01:44:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 192F32736B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 01:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728878AbgIUXnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 19:43:55 -0400
-Received: from correo.us.es ([193.147.175.20]:57384 "EHLO mail.us.es"
+        id S1728865AbgIUXks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 19:40:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728432AbgIUXnz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 19:43:55 -0400
-X-Greylist: delayed 474 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Sep 2020 19:43:55 EDT
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 2C2D6117740
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 01:36:01 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 1D856DA730
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 01:36:01 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 00358DA78B; Tue, 22 Sep 2020 01:36:00 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
-        version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 7A7D8DA73D;
-        Tue, 22 Sep 2020 01:35:58 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Tue, 22 Sep 2020 01:35:58 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
+        id S1728704AbgIUXks (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 19:40:48 -0400
+Received: from localhost (lfbn-ncy-1-588-162.w81-51.abo.wanadoo.fr [81.51.203.162])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 43BF642EF4E1;
-        Tue, 22 Sep 2020 01:35:58 +0200 (CEST)
-Date:   Tue, 22 Sep 2020 01:35:58 +0200
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Simon Horman <horms@verge.net.au>
-Cc:     YueHaibing <yuehaibing@huawei.com>, wensong@linux-vs.org,
-        ja@ssi.bg, kadlec@netfilter.org, fw@strlen.de, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] ipvs: Remove unused macros
-Message-ID: <20200921233557.GA6523@salvia>
-References: <20200918131656.46260-1-yuehaibing@huawei.com>
- <20200921072436.GA8437@vergenet.net>
+        by mail.kernel.org (Postfix) with ESMTPSA id 5BF4622574;
+        Mon, 21 Sep 2020 23:40:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600731647;
+        bh=hhXBMZeIvO1UMKlXhXoAyN9wTX+oKmSJfODYTDEXzFw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=T1y5Wa1aDfJxCvE3Y05b7WTzoZP9YqQ2V5sRHe+m2BTyoiFl3TDR/vOKJuG1NTJ+I
+         UHjmrCMGcO7vy12OlpkAefdM/4v0iFFq3qRNRDPXvFG+O05CWl6Rme+GMLC8XW2LUS
+         H95gXLDY8MeP4Q9XXHSFQ1UiQp1oM2ZK5PnuVPws=
+Date:   Tue, 22 Sep 2020 01:40:45 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Nitesh Narayan Lal <nitesh@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-pci@vger.kernel.org, mtosatti@redhat.com,
+        sassmann@redhat.com, jeffrey.t.kirsher@intel.com,
+        jacob.e.keller@intel.com, jlelli@redhat.com, hch@infradead.org,
+        bhelgaas@google.com, mike.marciniszyn@intel.com,
+        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
+        jerinj@marvell.com, mathias.nyman@intel.com, jiri@nvidia.com
+Subject: Re: [RFC][Patch v1 1/3] sched/isolation: API to get num of
+ hosekeeping CPUs
+Message-ID: <20200921234044.GA31047@lenoir>
+References: <20200909150818.313699-1-nitesh@redhat.com>
+ <20200909150818.313699-2-nitesh@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200921072436.GA8437@vergenet.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Virus-Scanned: ClamAV using ClamSMTP
+In-Reply-To: <20200909150818.313699-2-nitesh@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 09:24:40AM +0200, Simon Horman wrote:
-> On Fri, Sep 18, 2020 at 09:16:56PM +0800, YueHaibing wrote:
-> > They are not used since commit e4ff67513096 ("ipvs: add
-> > sync_maxlen parameter for the sync daemon")
-> > 
-> > Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> 
-> Thanks, this look good to me.
-> 
-> Acked-by: Simon Horman <horms@verge.net.au>
-> 
-> Pablo, please consider this for nf-next.
+On Wed, Sep 09, 2020 at 11:08:16AM -0400, Nitesh Narayan Lal wrote:
+> +/*
+> + * num_housekeeping_cpus() - Read the number of housekeeping CPUs.
+> + *
+> + * This function returns the number of available housekeeping CPUs
+> + * based on __num_housekeeping_cpus which is of type atomic_t
+> + * and is initialized at the time of the housekeeping setup.
+> + */
+> +unsigned int num_housekeeping_cpus(void)
+> +{
+> +	unsigned int cpus;
+> +
+> +	if (static_branch_unlikely(&housekeeping_overridden)) {
+> +		cpus = atomic_read(&__num_housekeeping_cpus);
+> +		/* We should always have at least one housekeeping CPU */
+> +		BUG_ON(!cpus);
+> +		return cpus;
+> +	}
+> +	return num_online_cpus();
+> +}
+> +EXPORT_SYMBOL_GPL(num_housekeeping_cpus);
+> +
+>  int housekeeping_any_cpu(enum hk_flags flags)
+>  {
+>  	int cpu;
+> @@ -131,6 +153,7 @@ static int __init housekeeping_setup(char *str, enum hk_flags flags)
+>  
+>  	housekeeping_flags |= flags;
+>  
+> +	atomic_set(&__num_housekeeping_cpus, cpumask_weight(housekeeping_mask));
 
-Applied, thanks.
+So the problem here is that it takes the whole cpumask weight but you're only
+interested in the housekeepers who take the managed irq duties I guess
+(HK_FLAG_MANAGED_IRQ ?).
+
+>  	free_bootmem_cpumask_var(non_housekeeping_mask);
+>  
+>  	return 1;
+> -- 
+> 2.27.0
+> 
