@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81907271F32
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 11:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7374271F31
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 11:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726603AbgIUJqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 05:46:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53768 "EHLO
+        id S1726593AbgIUJqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 05:46:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726318AbgIUJqb (ORCPT
+        with ESMTP id S1726445AbgIUJqf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 05:46:31 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0200C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 02:46:31 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id a9so7170852pjg.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 02:46:31 -0700 (PDT)
+        Mon, 21 Sep 2020 05:46:35 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8916DC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 02:46:35 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id l191so8545131pgd.5
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 02:46:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=mq7vnVZtxuY6qci6Ve/X673X9t7/IhaBhlMmXhqOZWA=;
-        b=eiASWKMzSMdlJyyFOXUrGJXdQP/rx+5HLao4/yUS22TQOTg+6SfnDwVHGg5+ccckSi
-         mWzmcAP8x5ovtBl2bM1iCUPSOenudJRxuKOumdppTDxvWagL4csd9WrjImvuvNqchkxU
-         M34L3mrC3XH3D+X+MEzRI8ZfdRXG1L105nGuWwQlMyhwpVV0yHm6fVFOes6t0FXJtHuZ
-         NSjuRUesyE8pQoyaFN+voudH0VVQMLfEfzVP8fP+L4J5TjIfSDrgdND97M9pODnPVCnB
-         Di5nbiHUeTEPk91VFWodgK0U/RBeo9Nc9AUWvIJIQlZdIQdsqumWoQe5y1rAHPeEjTnO
-         6jSw==
+        bh=0J1GZssblsauExJHfvbe1syeV45yN+2xWBnYdzuIJ3E=;
+        b=hBUxVwkOU1oNr/9J0iMdqc/fvGAVfjtFX4pmL+nYiCaruFK+1U08FOyqqFzrGURMmP
+         ddENOdb9Td67m6lJI+ulnjU2Lf+LFne4YOAXUL53KFaRYbZ4M8k2emYfmcbeRuPIx8hV
+         zxegLhuR3AwX8cwtcKpel0USvDwslhPgyACl9/6tufaXKGtaM2MdnoARliS1+Puc/6jW
+         o4Z8JQGTwSLccXmkHuT4CZuMjRG6Bb0dv74CP8zr75HkNqtkmue7XOGUdsjfru3Rpcm7
+         DtjhwNqrpH6CCkpaxdCbc//ImTuLFNb79QHLaAX7UlVl5nsqj6hs8ZJkSvw/dX8cBuId
+         Uaqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=mq7vnVZtxuY6qci6Ve/X673X9t7/IhaBhlMmXhqOZWA=;
-        b=jeuU9Ns5OXdf5EhR9VYI2cUp5/IQHbImXqs6I3Oo/IL9Zs9MYdikcbRhyHcCHMj3zF
-         zpcIWRMKm5GGuLqPE2Criit5S8c9vj1k+YHiodPPLgJpDSiO384hIsHZSYImJpfKbnMF
-         ZAecJs56snJJQqLZLLIHoOdSeOPPi1o3/xxk9k3G5pZrMpRizKwJpDtL5RERDK1pz9/t
-         UU+jfK0LhkrYviqWR/WxH0agU2mL5FoddhelTK5qw0E55R2cacHnp5k1iFdtO+qpy4Bn
-         qCqMRJtHOLRKmqx8CaCY5jjdXJqO1HgitRTUk9bax2ZbacBbOHBhhVfjR4UoNDKEBss5
-         ESKw==
-X-Gm-Message-State: AOAM530H2GNGEyx+87qp7xaK49FxZqFgJo2Ey3goHlq1Qzsc1kLL85vo
-        xppiHHSK2SEWoy+jvXk0Dk6THE65oLE=
-X-Google-Smtp-Source: ABdhPJwEeVRDrHTUJg3He4HIFQeh8q5Z+HMxINUq3C5gskCIbWabF+dkAsQ+ghJbZHBPw/uXw/LoZA==
-X-Received: by 2002:a17:90b:c90:: with SMTP id o16mr24769788pjz.86.1600681591216;
-        Mon, 21 Sep 2020 02:46:31 -0700 (PDT)
+        bh=0J1GZssblsauExJHfvbe1syeV45yN+2xWBnYdzuIJ3E=;
+        b=F+MjUR4mJBIpnxZwdYDKTPxKFMnR/iC9tmpd8eOa4pzNZrwE3J/q/l947GS0j2xG+a
+         LO8pDIeg656fcirr1sRgmP8ePALuLroN7i4IdKht+BQ1s1fV/JmX5XsTuE1wOkdk+IZc
+         CIkxPBLoZnU4P1dCd7CZn+1ZUYm1NkKDKDUWysEkskt5M9V77cUUx1vyVGz1is3wJjdk
+         DGf/IDb5BcNt/1YXe6/z2Hr7ipDjG64QKhU/AMIKPG83Qbo5biQ3Bqf+r5/cQ52arGuf
+         MzumweCdz8x7ttdwVZEi9b0OX6eh7qZQiNQcnU0i4hhB2o9pHjAo2VDhVALMP7HYb7a+
+         Dv0Q==
+X-Gm-Message-State: AOAM53380lwRWvPLL5WJAnnGXXwT675qPGAo5u83GWlhgr6AQ/zzuedj
+        nuVOvRcrFk1YG5fYoCQmlh0=
+X-Google-Smtp-Source: ABdhPJyCx3xQu85pGOZL7W0w7pbJq1KnVcON5N+KRskfuGhhXGSnyKfPkFGJMOJoO+0UWQEJdbNzdQ==
+X-Received: by 2002:a63:5102:: with SMTP id f2mr32084721pgb.15.1600681595029;
+        Mon, 21 Sep 2020 02:46:35 -0700 (PDT)
 Received: from balhae.roam.corp.google.com ([101.235.31.111])
-        by smtp.gmail.com with ESMTPSA id x192sm11199984pfc.142.2020.09.21.02.46.27
+        by smtp.gmail.com with ESMTPSA id x192sm11199984pfc.142.2020.09.21.02.46.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 02:46:30 -0700 (PDT)
+        Mon, 21 Sep 2020 02:46:34 -0700 (PDT)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -59,10 +59,11 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Stephane Eranian <eranian@google.com>,
         Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>
-Subject: [PATCH 4/5] perf tools: Allow creation of cgroup without open
-Date:   Mon, 21 Sep 2020 18:46:09 +0900
-Message-Id: <20200921094610.83736-5-namhyung@kernel.org>
+        Ian Rogers <irogers@google.com>,
+        John Garry <john.garry@huawei.com>
+Subject: [PATCH 5/5] perf test: Add expand cgroup event test
+Date:   Mon, 21 Sep 2020 18:46:10 +0900
+Message-Id: <20200921094610.83736-6-namhyung@kernel.org>
 X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
 In-Reply-To: <20200921094610.83736-1-namhyung@kernel.org>
 References: <20200921094610.83736-1-namhyung@kernel.org>
@@ -72,101 +73,320 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a preparation for a test case of expanding events for multiple
-cgroups.  Instead of using real system cgroup, the test will use fake
-cgroups so it needs a way to have them without a open file descriptor.
+It'll expand given events for cgroups A, B and C.
 
+  $ ./perf test -v expansion
+  69: Event expansion for cgroups                      :
+  --- start ---
+  test child forked, pid 983140
+  metric expr 1 / IPC for CPI
+  metric expr instructions / cycles for IPC
+  found event instructions
+  found event cycles
+  adding {instructions,cycles}:W
+  copying metric event for cgroup 'A': instructions (idx=0)
+  copying metric event for cgroup 'B': instructions (idx=0)
+  copying metric event for cgroup 'C': instructions (idx=0)
+  test child finished with 0
+  ---- end ----
+  Event expansion for cgroups: Ok
+
+Cc: John Garry <john.garry@huawei.com>
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/builtin-stat.c |  2 +-
- tools/perf/util/cgroup.c  | 19 ++++++++++++-------
- tools/perf/util/cgroup.h  |  2 +-
- 3 files changed, 14 insertions(+), 9 deletions(-)
+ tools/perf/tests/Build           |   1 +
+ tools/perf/tests/builtin-test.c  |   4 +
+ tools/perf/tests/expand-cgroup.c | 241 +++++++++++++++++++++++++++++++
+ tools/perf/tests/tests.h         |   1 +
+ 4 files changed, 247 insertions(+)
+ create mode 100644 tools/perf/tests/expand-cgroup.c
 
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 8b81d62ab18b..f00600d9903e 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -2249,7 +2249,7 @@ int cmd_stat(int argc, const char **argv)
+diff --git a/tools/perf/tests/Build b/tools/perf/tests/Build
+index 69bea7996f18..4d15bf6041fb 100644
+--- a/tools/perf/tests/Build
++++ b/tools/perf/tests/Build
+@@ -61,6 +61,7 @@ perf-y += demangle-java-test.o
+ perf-y += pfm.o
+ perf-y += parse-metric.o
+ perf-y += pe-file-parsing.o
++perf-y += expand-cgroup.o
  
- 	if (stat_config.cgroup_list) {
- 		if (evlist__expand_cgroup(evsel_list, stat_config.cgroup_list,
--					  &stat_config.metric_events) < 0)
-+					  &stat_config.metric_events, true) < 0)
- 			goto out;
- 	}
- 
-diff --git a/tools/perf/util/cgroup.c b/tools/perf/util/cgroup.c
-index adf60597520b..ee0b50f59977 100644
---- a/tools/perf/util/cgroup.c
-+++ b/tools/perf/util/cgroup.c
-@@ -52,7 +52,7 @@ static struct cgroup *evlist__find_cgroup(struct evlist *evlist, const char *str
- 	return NULL;
- }
- 
--static struct cgroup *cgroup__new(const char *name)
-+static struct cgroup *cgroup__new(const char *name, bool do_open)
- {
- 	struct cgroup *cgroup = zalloc(sizeof(*cgroup));
- 
-@@ -62,9 +62,14 @@ static struct cgroup *cgroup__new(const char *name)
- 		cgroup->name = strdup(name);
- 		if (!cgroup->name)
- 			goto out_err;
--		cgroup->fd = open_cgroup(name);
--		if (cgroup->fd == -1)
--			goto out_free_name;
+ $(OUTPUT)tests/llvm-src-base.c: tests/bpf-script-example.c tests/Build
+ 	$(call rule_mkdir)
+diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
+index 651b8ea3354a..132bdb3e6c31 100644
+--- a/tools/perf/tests/builtin-test.c
++++ b/tools/perf/tests/builtin-test.c
+@@ -345,6 +345,10 @@ static struct test generic_tests[] = {
+ 		.desc = "PE file support",
+ 		.func = test__pe_file_parsing,
+ 	},
++	{
++		.desc = "Event expansion for cgroups",
++		.func = test__expand_cgroup_events,
++	},
+ 	{
+ 		.func = NULL,
+ 	},
+diff --git a/tools/perf/tests/expand-cgroup.c b/tools/perf/tests/expand-cgroup.c
+new file mode 100644
+index 000000000000..d5771e4d094f
+--- /dev/null
++++ b/tools/perf/tests/expand-cgroup.c
+@@ -0,0 +1,241 @@
++// SPDX-License-Identifier: GPL-2.0
++#include "tests.h"
++#include "debug.h"
++#include "evlist.h"
++#include "cgroup.h"
++#include "rblist.h"
++#include "metricgroup.h"
++#include "parse-events.h"
++#include "pmu-events/pmu-events.h"
++#include "pfm.h"
++#include <subcmd/parse-options.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
 +
-+		if (do_open) {
-+			cgroup->fd = open_cgroup(name);
-+			if (cgroup->fd == -1)
-+				goto out_free_name;
-+		} else {
-+			cgroup->fd = -1;
++static int test_expand_events(struct evlist *evlist,
++			      struct rblist *metric_events)
++{
++	int i, ret = TEST_FAIL;
++	int nr_events;
++	bool was_group_event;
++	int nr_members;  /* for the first evsel only */
++	const char cgrp_str[] = "A,B,C";
++	const char *cgrp_name[] = { "A", "B", "C" };
++	int nr_cgrps = ARRAY_SIZE(cgrp_name);
++	char **ev_name;
++	struct evsel *evsel;
++
++	TEST_ASSERT_VAL("evlist is empty", !perf_evlist__empty(evlist));
++
++	nr_events = evlist->core.nr_entries;
++	ev_name = calloc(nr_events, sizeof(*ev_name));
++	if (ev_name == NULL) {
++		pr_debug("memory allocation failure\n");
++		return TEST_FAIL;
++	}
++	i = 0;
++	evlist__for_each_entry(evlist, evsel) {
++		ev_name[i] = strdup(evsel->name);
++		if (ev_name[i] == NULL) {
++			pr_debug("memory allocation failure\n");
++			goto out;
 +		}
- 	}
++		i++;
++	}
++	/* remember grouping info */
++	was_group_event = evsel__is_group_event(evlist__first(evlist));
++	nr_members = evlist__first(evlist)->core.nr_members;
++
++	ret = evlist__expand_cgroup(evlist, cgrp_str, metric_events, false);
++	if (ret < 0) {
++		pr_debug("failed to expand events for cgroups\n");
++		goto out;
++	}
++
++	ret = TEST_FAIL;
++	if (evlist->core.nr_entries != nr_events * nr_cgrps) {
++		pr_debug("event count doesn't match\n");
++		goto out;
++	}
++
++	i = 0;
++	evlist__for_each_entry(evlist, evsel) {
++		if (strcmp(evsel->name, ev_name[i % nr_events])) {
++			pr_debug("event name doesn't match:\n");
++			pr_debug("  evsel[%d]: %s\n  expected: %s\n",
++				 i, evsel->name, ev_name[i % nr_events]);
++			goto out;
++		}
++		if (strcmp(evsel->cgrp->name, cgrp_name[i / nr_events])) {
++			pr_debug("cgroup name doesn't match:\n");
++			pr_debug("  evsel[%d]: %s\n  expected: %s\n",
++				 i, evsel->cgrp->name, cgrp_name[i / nr_events]);
++			goto out;
++		}
++
++		if ((i % nr_events) == 0) {
++			if (evsel__is_group_event(evsel) != was_group_event) {
++				pr_debug("event group doesn't match: got %s, expect %s\n",
++					 evsel__is_group_event(evsel) ? "true" : "false",
++					 was_group_event ? "true" : "false");
++				goto out;
++			}
++			if (evsel->core.nr_members != nr_members) {
++				pr_debug("event group member doesn't match: %d vs %d\n",
++					 evsel->core.nr_members, nr_members);
++				goto out;
++			}
++		}
++		i++;
++	}
++	ret = TEST_OK;
++
++out:	for (i = 0; i < nr_events; i++)
++		free(ev_name[i]);
++	free(ev_name);
++	return ret;
++}
++
++static int expand_default_events(void)
++{
++	int ret;
++	struct evlist *evlist;
++	struct rblist metric_events;
++
++	evlist = perf_evlist__new_default();
++	TEST_ASSERT_VAL("failed to get evlist", evlist);
++
++	rblist__init(&metric_events);
++	ret = test_expand_events(evlist, &metric_events);
++	evlist__delete(evlist);
++	return ret;
++}
++
++static int expand_group_events(void)
++{
++	int ret;
++	struct evlist *evlist;
++	struct rblist metric_events;
++	struct parse_events_error err;
++	const char event_str[] = "{cycles,instructions}";
++
++	symbol_conf.event_group = true;
++
++	evlist = evlist__new();
++	TEST_ASSERT_VAL("failed to get evlist", evlist);
++
++	ret = parse_events(evlist, event_str, &err);
++	if (ret < 0) {
++		pr_debug("failed to parse event '%s', err %d, str '%s'\n",
++			 event_str, ret, err.str);
++		parse_events_print_error(&err, event_str);
++		goto out;
++	}
++
++	rblist__init(&metric_events);
++	ret = test_expand_events(evlist, &metric_events);
++out:
++	evlist__delete(evlist);
++	return ret;
++}
++
++static int expand_libpfm_events(void)
++{
++	int ret;
++	struct evlist *evlist;
++	struct rblist metric_events;
++	const char event_str[] = "UNHALTED_CORE_CYCLES";
++	struct option opt = {
++		.value = &evlist,
++	};
++
++	symbol_conf.event_group = true;
++
++	evlist = evlist__new();
++	TEST_ASSERT_VAL("failed to get evlist", evlist);
++
++	ret = parse_libpfm_events_option(&opt, event_str, 0);
++	if (ret < 0) {
++		pr_debug("failed to parse libpfm event '%s', err %d\n",
++			 event_str, ret);
++		goto out;
++	}
++	if (perf_evlist__empty(evlist)) {
++		pr_debug("libpfm was not enabled\n");
++		goto out;
++	}
++
++	rblist__init(&metric_events);
++	ret = test_expand_events(evlist, &metric_events);
++out:
++	evlist__delete(evlist);
++	return ret;
++}
++
++static int expand_metric_events(void)
++{
++	int ret;
++	struct evlist *evlist;
++	struct rblist metric_events;
++	const char metric_str[] = "CPI";
++
++	struct pmu_event pme_test[] = {
++		{
++			.metric_expr	= "instructions / cycles",
++			.metric_name	= "IPC",
++		},
++		{
++			.metric_expr	= "1 / IPC",
++			.metric_name	= "CPI",
++		},
++		{
++			.metric_expr	= NULL,
++			.metric_name	= NULL,
++		},
++	};
++	struct pmu_events_map ev_map = {
++		.cpuid		= "test",
++		.version	= "1",
++		.type		= "core",
++		.table		= pme_test,
++	};
++
++	evlist = evlist__new();
++	TEST_ASSERT_VAL("failed to get evlist", evlist);
++
++	rblist__init(&metric_events);
++	ret = metricgroup__parse_groups_test(evlist, &ev_map, metric_str,
++					     false, false, &metric_events);
++	if (ret < 0) {
++		pr_debug("failed to parse '%s' metric\n", metric_str);
++		goto out;
++	}
++
++	ret = test_expand_events(evlist, &metric_events);
++
++out:
++	metricgroup__rblist_exit(&metric_events);
++	evlist__delete(evlist);
++	return ret;
++}
++
++int test__expand_cgroup_events(struct test *test __maybe_unused,
++			       int subtest __maybe_unused)
++{
++	int ret;
++
++	ret = expand_default_events();
++	TEST_ASSERT_EQUAL("failed to expand default events", ret, 0);
++
++	ret = expand_group_events();
++	TEST_ASSERT_EQUAL("failed to expand event group", ret, 0);
++
++	ret = expand_libpfm_events();
++	TEST_ASSERT_EQUAL("failed to expand event group", ret, 0);
++
++	ret = expand_metric_events();
++	TEST_ASSERT_EQUAL("failed to expand metric events", ret, 0);
++
++	return ret;
++}
+diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
+index ef0f33c6ba23..c85a2c08e407 100644
+--- a/tools/perf/tests/tests.h
++++ b/tools/perf/tests/tests.h
+@@ -123,6 +123,7 @@ const char *test__pfm_subtest_get_desc(int subtest);
+ int test__pfm_subtest_get_nr(void);
+ int test__parse_metric(struct test *test, int subtest);
+ int test__pe_file_parsing(struct test *test, int subtest);
++int test__expand_cgroup_events(struct test *test, int subtest);
  
- 	return cgroup;
-@@ -80,7 +85,7 @@ struct cgroup *evlist__findnew_cgroup(struct evlist *evlist, const char *name)
- {
- 	struct cgroup *cgroup = evlist__find_cgroup(evlist, name);
- 
--	return cgroup ?: cgroup__new(name);
-+	return cgroup ?: cgroup__new(name, true);
- }
- 
- static int add_cgroup(struct evlist *evlist, const char *str)
-@@ -202,7 +207,7 @@ int parse_cgroups(const struct option *opt, const char *str,
- }
- 
- int evlist__expand_cgroup(struct evlist *evlist, const char *str,
--			  struct rblist *metric_events)
-+			  struct rblist *metric_events, bool open_cgroup)
- {
- 	struct evlist *orig_list, *tmp_list;
- 	struct evsel *pos, *evsel, *leader;
-@@ -240,7 +245,7 @@ int evlist__expand_cgroup(struct evlist *evlist, const char *str,
- 			if (!name)
- 				goto out_err;
- 
--			cgrp = cgroup__new(name);
-+			cgrp = cgroup__new(name, open_cgroup);
- 			free(name);
- 			if (cgrp == NULL)
- 				goto out_err;
-diff --git a/tools/perf/util/cgroup.h b/tools/perf/util/cgroup.h
-index eea6df8ee373..162906f3412a 100644
---- a/tools/perf/util/cgroup.h
-+++ b/tools/perf/util/cgroup.h
-@@ -26,7 +26,7 @@ struct rblist;
- 
- struct cgroup *evlist__findnew_cgroup(struct evlist *evlist, const char *name);
- int evlist__expand_cgroup(struct evlist *evlist, const char *cgroups,
--			  struct rblist *metric_events);
-+			  struct rblist *metric_events, bool open_cgroup);
- 
- void evlist__set_default_cgroup(struct evlist *evlist, struct cgroup *cgroup);
- 
+ bool test__bp_signal_is_supported(void);
+ bool test__bp_account_is_supported(void);
 -- 
 2.28.0.681.g6f77f65b4e-goog
 
