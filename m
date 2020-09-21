@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0BEF271CF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:03:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DADA271CF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727037AbgIUIDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 04:03:22 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:48064 "EHLO huawei.com"
+        id S1727030AbgIUIDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 04:03:21 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:35492 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726893AbgIUIC3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 04:02:29 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id C81C425D22564A5CA31A;
-        Mon, 21 Sep 2020 16:02:26 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Mon, 21 Sep 2020
- 16:02:16 +0800
+        id S1726632AbgIUICa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 04:02:30 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 7BA9BF056ABF7664D857;
+        Mon, 21 Sep 2020 16:02:28 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Mon, 21 Sep 2020
+ 16:02:17 +0800
 From:   Liu Shixin <liushixin2@huawei.com>
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "Mauro Carvalho Chehab" <mchehab@kernel.org>
-CC:     <linux-media@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH -next] media: venus: simplify the return expression of venus_sys_set_* function
-Date:   Mon, 21 Sep 2020 16:24:40 +0800
-Message-ID: <20200921082440.2591617-1-liushixin2@huawei.com>
+To:     Kyungmin Park <kyungmin.park@samsung.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        "Vignesh Raghavendra" <vigneshr@ti.com>
+CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        "Liu Shixin" <liushixin2@huawei.com>
+Subject: [PATCH -next] mtd: onenand_base: simplify the return expression of onenand_transfer_auto_oob
+Date:   Mon, 21 Sep 2020 16:24:41 +0800
+Message-ID: <20200921082441.2591669-1-liushixin2@huawei.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -41,90 +41,32 @@ Simplify the return expression.
 
 Signed-off-by: Liu Shixin <liushixin2@huawei.com>
 ---
- drivers/media/platform/qcom/venus/hfi_venus.c | 28 +++----------------
- 1 file changed, 4 insertions(+), 24 deletions(-)
+ drivers/mtd/nand/onenand/onenand_base.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/media/platform/qcom/venus/hfi_venus.c b/drivers/media/platform/qcom/venus/hfi_venus.c
-index 4be4a75ddcb6..05ddb68023b8 100644
---- a/drivers/media/platform/qcom/venus/hfi_venus.c
-+++ b/drivers/media/platform/qcom/venus/hfi_venus.c
-@@ -772,34 +772,24 @@ static int venus_sys_set_debug(struct venus_hfi_device *hdev, u32 debug)
+diff --git a/drivers/mtd/nand/onenand/onenand_base.c b/drivers/mtd/nand/onenand/onenand_base.c
+index ec18ade33262..188b8061e1f7 100644
+--- a/drivers/mtd/nand/onenand/onenand_base.c
++++ b/drivers/mtd/nand/onenand/onenand_base.c
+@@ -1052,16 +1052,11 @@ static int onenand_transfer_auto_oob(struct mtd_info *mtd, uint8_t *buf, int col
+ 				int thislen)
  {
- 	struct hfi_sys_set_property_pkt *pkt;
- 	u8 packet[IFACEQ_VAR_SMALL_PKT_SIZE];
+ 	struct onenand_chip *this = mtd->priv;
 -	int ret;
  
- 	pkt = (struct hfi_sys_set_property_pkt *)packet;
- 
- 	pkt_sys_debug_config(pkt, HFI_DEBUG_MODE_QUEUE, debug);
- 
--	ret = venus_iface_cmdq_write(hdev, pkt);
+ 	this->read_bufferram(mtd, ONENAND_SPARERAM, this->oob_buf, 0,
+ 			     mtd->oobsize);
+-	ret = mtd_ooblayout_get_databytes(mtd, buf, this->oob_buf,
+-					  column, thislen);
 -	if (ret)
 -		return ret;
 -
 -	return 0;
-+	return venus_iface_cmdq_write(hdev, pkt);
++	return mtd_ooblayout_get_databytes(mtd, buf, this->oob_buf,
++					   column, thislen);
  }
  
- static int venus_sys_set_coverage(struct venus_hfi_device *hdev, u32 mode)
- {
- 	struct hfi_sys_set_property_pkt *pkt;
- 	u8 packet[IFACEQ_VAR_SMALL_PKT_SIZE];
--	int ret;
- 
- 	pkt = (struct hfi_sys_set_property_pkt *)packet;
- 
- 	pkt_sys_coverage_config(pkt, mode);
- 
--	ret = venus_iface_cmdq_write(hdev, pkt);
--	if (ret)
--		return ret;
--
--	return 0;
-+	return venus_iface_cmdq_write(hdev, pkt);
- }
- 
- static int venus_sys_set_idle_message(struct venus_hfi_device *hdev,
-@@ -807,7 +797,6 @@ static int venus_sys_set_idle_message(struct venus_hfi_device *hdev,
- {
- 	struct hfi_sys_set_property_pkt *pkt;
- 	u8 packet[IFACEQ_VAR_SMALL_PKT_SIZE];
--	int ret;
- 
- 	if (!enable)
- 		return 0;
-@@ -816,11 +805,7 @@ static int venus_sys_set_idle_message(struct venus_hfi_device *hdev,
- 
- 	pkt_sys_idle_indicator(pkt, enable);
- 
--	ret = venus_iface_cmdq_write(hdev, pkt);
--	if (ret)
--		return ret;
--
--	return 0;
-+	return venus_iface_cmdq_write(hdev, pkt);
- }
- 
- static int venus_sys_set_power_control(struct venus_hfi_device *hdev,
-@@ -828,17 +813,12 @@ static int venus_sys_set_power_control(struct venus_hfi_device *hdev,
- {
- 	struct hfi_sys_set_property_pkt *pkt;
- 	u8 packet[IFACEQ_VAR_SMALL_PKT_SIZE];
--	int ret;
- 
- 	pkt = (struct hfi_sys_set_property_pkt *)packet;
- 
- 	pkt_sys_power_control(pkt, enable);
- 
--	ret = venus_iface_cmdq_write(hdev, pkt);
--	if (ret)
--		return ret;
--
--	return 0;
-+	return venus_iface_cmdq_write(hdev, pkt);
- }
- 
- static int venus_get_queue_size(struct venus_hfi_device *hdev,
+ /**
 -- 
 2.25.1
 
