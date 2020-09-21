@@ -2,132 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8830271FBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D482271FBD
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726477AbgIUKKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 06:10:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57406 "EHLO
+        id S1726510AbgIUKKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:10:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726326AbgIUKKS (ORCPT
+        with ESMTP id S1726326AbgIUKKt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 06:10:18 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5495AC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:10:18 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id k15so12080803wrn.10
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:10:18 -0700 (PDT)
+        Mon, 21 Sep 2020 06:10:49 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4814C061755;
+        Mon, 21 Sep 2020 03:10:48 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id d4so11532546wmd.5;
+        Mon, 21 Sep 2020 03:10:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OznM7Zj90HA/meLwT6xmjh0/MDazBDua2xOxd2EKGjo=;
-        b=vTyr7riRcE4Q+14HV6OlpcQ9zIhSsTMK2CdculoW85cBJBcvuQuazBuX0wbPRk5dNl
-         EbrXFTKVZhjK0x2ofqf9oZQmBkw8HJU/Le+h+ptrKNq9IZ3lJ6IazCFUVaQPKgGnFN5T
-         xvj6u0ab7S7ytSvZ8GIr8mal7/Q19klax2H9pwHyUdDP4GFJpUaMap5iMuC+OOuOn6sq
-         02BBzkVPIKhFuQwVwRqwCnE3tMhusB3ftp0Y2w4G1gh/nlAsvn7p+fYG+S9xYTUBqmpy
-         uNGysy5gu9sT7W3Giw31j+eWTJ0gquPQ2jmi7fvcX1smkkaQT1L5oQH2in2rxynUYQ16
-         pe4A==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hF5Xe4zuKeuDnftfLSzTw6Ue5+aphrBIG5w4rc4SzI0=;
+        b=KUDrcCnEC87hUXdHNGKHpmSN4RGpG4lGfUYnkcSIU+/DMB5UNxDLHnLgPXAfsdn1H5
+         6ltC8XD5HE3eMaTQyPwLEVwHXFeWldTFjtofSfWrvr4Wht6pOyAoOcYj6KVtyv5oG+bZ
+         ebKkDc5tiva0tFYGiDFVNK5Hbr7KZvacHLithwz7jB8hgg/qLUBx56eS5VQZI8CAAG2b
+         GrvN7R3zK0BhGTG1Dyy7e1b6dET+ZXKs+rb3B348qkowBv2KlJR7u5yhfHcLNLtc+49/
+         rpfCdwOJHKF8oLy5+FuQwQxL5NzVH3z5c6zD4X3ftvmQrzS4HeEsUXBqutxFkW+Du2Qr
+         iecQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OznM7Zj90HA/meLwT6xmjh0/MDazBDua2xOxd2EKGjo=;
-        b=i/rmgtzZxi6SJEhx2pVgqE6QO0WvuEBdLDu/snZjzjTIqlfwPogD7xoubahxkeVGNg
-         ZhRtZskfJPoZd9nAqFJiO/z/KKByKRAjWxYkPyUC7AUgu4FEU1atW5wgtmhV2yFrhEU6
-         PmKm5HaoSlSvr6dkgXT1N+i10fNH4hv1/Pj7xUqESEi0Q/k6Be5zVrYmUqMOc0ahSpig
-         YaQj4wW+T7lKBmmSRKwI4bKnKGOCbZTMJxlCc0M6qgGPh3FfqzAyatiNBKbU5zfMAKJk
-         cBNIM42DWDUzaWnNd8Vkq1gAF2oY61GxC4hRAHk8Pq/RDhXtAJ+BuZy2a/+T3hC0KmIO
-         pmMg==
-X-Gm-Message-State: AOAM531bAGh1FYfou5fD7W4ZI3RYjbp6mxJDkM1y6YcYkARAdO2dXwQb
-        sxhqUObDLonbnNSguasDpDKskrKzyYVCE0FFxudh/w==
-X-Google-Smtp-Source: ABdhPJzUrIJANLo8judLuW+VN+2BAHRIzmARBNaK83S4Ex8J42Bc2MydsNkOqCWF40In3VxFA/iPONssAHeQ++q1Q8M=
-X-Received: by 2002:adf:e312:: with SMTP id b18mr30175280wrj.372.1600683016740;
- Mon, 21 Sep 2020 03:10:16 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hF5Xe4zuKeuDnftfLSzTw6Ue5+aphrBIG5w4rc4SzI0=;
+        b=pANrfQOlb5r+6kH4Jza7fSSGcNOd+EoP4WNxTKh1yZqTdQ2Nfl0sf3Wg19TRkFnPZn
+         KDAsUDuAkRqcI0Qxi9VauClPsuX+TKpzkVQLfo2HAnLije1/szQ6F/rBeQ7jNVpdaSlZ
+         hAGSZKp6NjSVZ48vwd8SQtNggKVGO8q3mvtV+/c5sweRspC5wfk/9nxl7h8cTc7a/xcu
+         poUeHrDhH78fIjg+PcQQ47SJCzBkvQs++gOz/aHf6p+lP62/BQ21t0N83SXG0X5C0vwx
+         iX8mUbb5MujBqTzAiFzcj4tsEwG5hmgT2Y+6YXw9btpofCftqyYIT7Ed+dm1LKho/1Ln
+         Us8w==
+X-Gm-Message-State: AOAM53194NzQwc4KrORWUQC4fLBdVrn3RDkYlHQ6nB10UdDTXunfJ1Qp
+        vDTN+uVb57/gjjymeryTvMe211lLbAurrA==
+X-Google-Smtp-Source: ABdhPJy7EAdglywRorZS0QXaRmHGvnMqSYV56C3XdsnhvA/r8oTtCwgePUVMY+s1rH1ltxcbV1Oecg==
+X-Received: by 2002:a1c:e108:: with SMTP id y8mr29357116wmg.179.1600683047430;
+        Mon, 21 Sep 2020 03:10:47 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.113.201])
+        by smtp.gmail.com with ESMTPSA id y5sm19753599wrh.6.2020.09.21.03.10.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Sep 2020 03:10:46 -0700 (PDT)
+Subject: Re: [PATCH net-next v5 0/6] net-next: dsa: mt7530: add support for
+ MT7531
+To:     David Miller <davem@davemloft.net>, landen.chao@mediatek.com
+Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        kuba@kernel.org, robh+dt@kernel.org, sean.wang@mediatek.com,
+        p.zabel@pengutronix.de, linux@armlinux.org.uk,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        frank-w@public-files.de, opensource@vdorst.com, dqfext@gmail.com
+References: <cover.1599829696.git.landen.chao@mediatek.com>
+ <20200914.163228.1898649357949030454.davem@davemloft.net>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <c485e60e-21af-ffd3-856c-dbfd497cf6f0@gmail.com>
+Date:   Mon, 21 Sep 2020 12:10:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <00000000000056737105afcff247@google.com>
-In-Reply-To: <00000000000056737105afcff247@google.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Mon, 21 Sep 2020 12:10:05 +0200
-Message-ID: <CAG_fn=VnujTeKg9r+b8VoTGCs4OdwR0eHj0+HHtn5UzePy3EmA@mail.gmail.com>
-Subject: Re: KMSAN: uninit-value in search_by_key
-To:     syzbot <syzbot+d94d02749498bb7bab4b@syzkaller.appspotmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        alex.shi@linux.alibaba.com, jack@suse.cz,
-        LKML <linux-kernel@vger.kernel.org>,
-        reiserfs-devel@vger.kernel.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        yeyunfeng@huawei.com, zhengbin13@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200914.163228.1898649357949030454.davem@davemloft.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 12:02 PM syzbot
-<syzbot+d94d02749498bb7bab4b@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    c5a13b33 kmsan: clang-format core
-> git tree:       https://github.com/google/kmsan.git master
-> console output: https://syzkaller.appspot.com/x/log.txt?x=173525ab900000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=20f149ad694ba4be
-> dashboard link: https://syzkaller.appspot.com/bug?extid=d94d02749498bb7bab4b
-> compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-> userspace arch: i386
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+d94d02749498bb7bab4b@syzkaller.appspotmail.com
->
-> =====================================================
-> BUG: KMSAN: uninit-value in comp_keys fs/reiserfs/stree.c:83 [inline]
-> BUG: KMSAN: uninit-value in bin_search fs/reiserfs/stree.c:173 [inline]
-> BUG: KMSAN: uninit-value in search_by_key+0x2c57/0x60e0 fs/reiserfs/stree.c:743
-> CPU: 1 PID: 28395 Comm: syz-executor.4 Not tainted 5.9.0-rc4-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:77 [inline]
->  dump_stack+0x21c/0x280 lib/dump_stack.c:118
->  kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:122
->  __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:219
->  comp_keys fs/reiserfs/stree.c:83 [inline]
->  bin_search fs/reiserfs/stree.c:173 [inline]
->  search_by_key+0x2c57/0x60e0 fs/reiserfs/stree.c:743
->  reiserfs_read_locked_inode+0x1fc/0x3260 fs/reiserfs/inode.c:1561
->  reiserfs_fill_super+0x2c00/0x6170 fs/reiserfs/super.c:2081
->  mount_bdev+0x622/0x910 fs/super.c:1417
->  get_super_block+0xc9/0xe0 fs/reiserfs/super.c:2606
->  legacy_get_tree+0x163/0x2e0 fs/fs_context.c:592
->  vfs_get_tree+0xd8/0x5d0 fs/super.c:1547
->  do_new_mount fs/namespace.c:2875 [inline]
->  path_mount+0x3d1a/0x5d40 fs/namespace.c:3192
->  do_mount+0x1c6/0x220 fs/namespace.c:3205
->  __do_compat_sys_mount fs/compat.c:122 [inline]
->  __se_compat_sys_mount+0x7b5/0xaa0 fs/compat.c:89
->  __ia32_compat_sys_mount+0x62/0x80 fs/compat.c:89
->  do_syscall_32_irqs_on arch/x86/entry/common.c:80 [inline]
->  __do_fast_syscall_32+0x129/0x180 arch/x86/entry/common.c:139
->  do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:162
->  do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:205
->  entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-> RIP: 0023:0xf7fea549
-> Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
-> RSP: 002b:00000000f55e3f20 EFLAGS: 00000292 ORIG_RAX: 0000000000000015
-> RAX: ffffffffffffffda RBX: 00000000f55e3f7c RCX: 0000000020000100
-> RDX: 0000000020000000 RSI: 0000000000000000 RDI: 00000000f55e3fbc
-> RBP: 00000000f55e3f7c R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
->
-> Local variable ----key@reiserfs_read_locked_inode created at:
->  reiserfs_read_locked_inode+0xb4/0x3260 fs/reiserfs/inode.c:1544
->  reiserfs_read_locked_inode+0xb4/0x3260 fs/reiserfs/inode.c:1544
-> =====================================================
->
 
-Looks like reiserfs_read_locked_inode() fails to initialize cpu_key->key_length.
-Could someone please take a look?
+
+On 15/09/2020 01:32, David Miller wrote:
+> From: Landen Chao <landen.chao@mediatek.com>
+> Date: Fri, 11 Sep 2020 21:48:50 +0800
+> 
+>> This patch series adds support for MT7531.
+>>
+>> MT7531 is the next generation of MT7530 which could be found on Mediatek
+>> router platforms such as MT7622 or MT7629.
+>>
+>> It is also a 7-ports switch with 5 giga embedded phys, 2 cpu ports, and
+>> the same MAC logic of MT7530. Cpu port 6 only supports SGMII interface.
+>> Cpu port 5 supports either RGMII or SGMII in different HW SKU, but cannot
+>> be muxed to PHY of port 0/4 like mt7530. Due to support for SGMII
+>> interface, pll, and pad setting are different from MT7530.
+>>
+>> MT7531 SGMII interface can be configured in following mode:
+>> - 'SGMII AN mode' with in-band negotiation capability
+>>      which is compatible with PHY_INTERFACE_MODE_SGMII.
+>> - 'SGMII force mode' without in-band negotiation
+>>      which is compatible with 10B/8B encoding of
+>>      PHY_INTERFACE_MODE_1000BASEX with fixed full-duplex and fixed pause.
+>> - 2.5 times faster clocked 'SGMII force mode' without in-band negotiation
+>>      which is compatible with 10B/8B encoding of
+>>      PHY_INTERFACE_MODE_2500BASEX with fixed full-duplex and fixed pause.
+>   ...
+> 
+> Series applied, thank you.
+> 
+
+Regarding the DTS patches: Please coordinate with me the next time. I want to 
+prevent merge conflicts if both mine and your tree add patches to the files.
+
+Thanks,
+Matthias
