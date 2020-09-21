@@ -2,40 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86F66272DD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:43:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DB67272CA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:35:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728859AbgIUQnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:43:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48050 "EHLO mail.kernel.org"
+        id S1728684AbgIUQdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:33:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728515AbgIUQn2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:43:28 -0400
+        id S1728674AbgIUQdw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:33:52 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3908D235F9;
-        Mon, 21 Sep 2020 16:43:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 15A442396F;
+        Mon, 21 Sep 2020 16:33:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706607;
-        bh=L1FWJ3Phjt/pxDhSTC7ZNmaKjoDptfD5Cefa6BmLavA=;
+        s=default; t=1600706031;
+        bh=TVnKCrca6QmsDHJbAgCNBC+xjTCV29vzRJqeIcvo8bg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oylHFbJdFIX0Q8pMqzbzhqfV3ue6sqJWZOrh5HvgG/KNb2Fc5p4qH4dAtukIF37Ti
-         k8JEZDcKSzdXR/APWQLHUwTQi/6icjxGBFe22Uwg5o52AjECm3jwXokrsjHf0ISlEV
-         U2OILEzhZoG8UC23hmY6Ic2WNky2s2EivTwlWF/w=
+        b=O+U1wD9dHf10HazJWHbH9hHQr4KTQQRKP6m/0QiQ30iSAUH7J9q7YVZkx66IdPBXq
+         BXCjJttiD+wHXHWTOIrlDH4CCmnc427PcziYHGdyhrNFgq8bsdhKZQSvWhunyTXHM6
+         NPq9d1qBPvhOpJfDzcEQlQkbnXC08Rik0evNiSdI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matthias Kaehlcke <mka@chromium.org>,
-        Evan Green <evgreen@chromium.org>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 020/118] interconnect: Show bandwidth for disabled paths as zero in debugfs
-Date:   Mon, 21 Sep 2020 18:27:12 +0200
-Message-Id: <20200921162037.258229222@linuxfoundation.org>
+        stable@vger.kernel.org, Rander Wang <rander.wang@intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 13/70] ALSA: hda: fix a runtime pm issue in SOF when integrated GPU is disabled
+Date:   Mon, 21 Sep 2020 18:27:13 +0200
+Message-Id: <20200921162035.728950435@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
-References: <20200921162036.324813383@linuxfoundation.org>
+In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
+References: <20200921162035.136047591@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,49 +47,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthias Kaehlcke <mka@chromium.org>
+From: Rander Wang <rander.wang@intel.com>
 
-[ Upstream commit b1910c6b9983817160e04d4e87b2dc1413c5361a ]
+[ Upstream commit 13774d81f38538c5fa2924bdcdfa509155480fa6 ]
 
-For disabled paths the 'interconnect_summary' in debugfs currently shows
-the orginally requested bandwidths. This is confusing, since the bandwidth
-requests aren't active. Instead show the bandwidths for disabled
-paths/requests as zero.
+In snd_hdac_device_init pm_runtime_set_active is called to
+increase child_count in parent device. But when it is failed
+to build connection with GPU for one case that integrated
+graphic gpu is disabled, snd_hdac_ext_bus_device_exit will be
+invoked to clean up a HD-audio extended codec base device. At
+this time the child_count of parent is not decreased, which
+makes parent device can't get suspended.
 
-Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-Reviewed-by: Evan Green <evgreen@chromium.org>
-Link: https://lore.kernel.org/r/20200729104933.1.If8e80e4c0c7ddf99056f6e726e59505ed4e127f3@changeid
-Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
+This patch calls pm_runtime_set_suspended to decrease child_count
+in parent device in snd_hdac_device_exit to match with
+snd_hdac_device_init. pm_runtime_set_suspended can make sure that
+it will not decrease child_count if the device is already suspended.
+
+Signed-off-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Link: https://lore.kernel.org/r/20200902154218.1440441-1-kai.vehmanen@linux.intel.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/interconnect/core.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ sound/hda/hdac_device.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/interconnect/core.c b/drivers/interconnect/core.c
-index 9e1ab701785c7..0162a9af93237 100644
---- a/drivers/interconnect/core.c
-+++ b/drivers/interconnect/core.c
-@@ -55,12 +55,18 @@ static int icc_summary_show(struct seq_file *s, void *data)
- 
- 			icc_summary_show_one(s, n);
- 			hlist_for_each_entry(r, &n->req_list, req_node) {
-+				u32 avg_bw = 0, peak_bw = 0;
-+
- 				if (!r->dev)
- 					continue;
- 
-+				if (r->enabled) {
-+					avg_bw = r->avg_bw;
-+					peak_bw = r->peak_bw;
-+				}
-+
- 				seq_printf(s, "  %-27s %12u %12u %12u\n",
--					   dev_name(r->dev), r->tag, r->avg_bw,
--					   r->peak_bw);
-+					   dev_name(r->dev), r->tag, avg_bw, peak_bw);
- 			}
- 		}
- 	}
+diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
+index 03c9872c31cfe..73264d5f58f81 100644
+--- a/sound/hda/hdac_device.c
++++ b/sound/hda/hdac_device.c
+@@ -123,6 +123,8 @@ EXPORT_SYMBOL_GPL(snd_hdac_device_init);
+ void snd_hdac_device_exit(struct hdac_device *codec)
+ {
+ 	pm_runtime_put_noidle(&codec->dev);
++	/* keep balance of runtime PM child_count in parent device */
++	pm_runtime_set_suspended(&codec->dev);
+ 	snd_hdac_bus_remove_device(codec->bus, codec);
+ 	kfree(codec->vendor_name);
+ 	kfree(codec->chip_name);
 -- 
 2.25.1
 
