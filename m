@@ -2,106 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48DD627235D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6AD27235F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726700AbgIUMJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 08:09:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726341AbgIUMJQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 08:09:16 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D80F8C061755;
-        Mon, 21 Sep 2020 05:09:15 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id l71so8857846pge.4;
-        Mon, 21 Sep 2020 05:09:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/xieKg8Y2xMyQEnMsmrFnXy6LszAmP4QRelP80Odzns=;
-        b=B7aob37QmIHyKeeZZthEoBuWNFedZ8o5FKslhgqiI4N+2+m95rrIpGrtIXxpgQp3bc
-         AQGObxkkUiVvxvWwbvHtiv7C8pMQk34sqRI6BcfJ3CNb7wnW8390NGZpHVEtw4DER9pg
-         GVoqHdlvJKlS0wFtLejAHx93HFnKB+/vozpAKmkuQ5H00JcIMyRLvguceuVyKYHs5515
-         I1WMi7RbWuupRxRr5AQ4c6XJhGHF88p6lbqFQ+LVjmJ3ZaTnn3Wm4TwGc+XMtx9/+vkJ
-         AabCaVuCMCvStlldZnSvX++qEXpYeK3by4lvE81/4sDrqW2P8s/6a/Jd2xkfNn20ZCT+
-         MWFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/xieKg8Y2xMyQEnMsmrFnXy6LszAmP4QRelP80Odzns=;
-        b=rmt85foy3ziQMYRH0AVO0sh6Anzc7MkUo9SX9WEQuug9gssKL0V3VfyciLVgap+nWT
-         BCbM2GKRwuO+yjZSzxnZfX9ez6u2HLA6FpZi6hlf7tlw8ZE+R5KYEPMyPe7f1ko+k0hg
-         olyKqHvNRm8iyN2Z/ngEI0ode3UlvCO1RJHUX5irXG6UXAe/lCcmtMFKV0EJhRdnHFhg
-         LmyQSZB3xdbcRcfyvtlgaQMo8JfdDVDlqLR6PupgmgWg4ApHeC+fw8kUpxNKdJgaT1Ym
-         ZAhGnrmfJ8NfEzysbfElP19OlOgoqEtAaCGdpadZ2gn5YroPMKF82vmafLApBgJsoaQb
-         qniA==
-X-Gm-Message-State: AOAM533LxMmHFriVI7GeWNlZCySFy4mZ9iz5RBrtjnbGFsNXh80VzO09
-        lYz7ZaiDeXy+2dPwwK6om1+KumBqbGG02qC8s24=
-X-Google-Smtp-Source: ABdhPJzYdyrgIdgsYWKYhRzI4aQK5A53bTCaYG9qjZcgPXj9v4WP7VIG/ZjCAlIB1L2bLosFe6D7VIWKd0rzd0fhq/U=
-X-Received: by 2002:a62:7b55:0:b029:13e:7367:2b2e with SMTP id
- w82-20020a627b550000b029013e73672b2emr42009700pfc.7.1600690155446; Mon, 21
- Sep 2020 05:09:15 -0700 (PDT)
+        id S1726710AbgIUMJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 08:09:53 -0400
+Received: from mga03.intel.com ([134.134.136.65]:16720 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726326AbgIUMJx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 08:09:53 -0400
+IronPort-SDR: ehrw21HfK/ra5JmkDJApEhhJN/E1J4A5m0mROpKnNYYBcz7FF/5KXztQUQN/rf72W5CI75+WTM
+ 0e9Y9gNWZ47g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9750"; a="160418853"
+X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; 
+   d="scan'208";a="160418853"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 05:09:50 -0700
+IronPort-SDR: i4aQg6HRak9Wwf1lg8floO6KC3eH7WhhL8EtMWe0QOURWl3xKjzy8eEMNKgcVkz6R++XTai8CI
+ bxzbLgbhY7Ew==
+X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; 
+   d="scan'208";a="485417121"
+Received: from clairemo-mobl.ger.corp.intel.com (HELO localhost) ([10.252.43.50])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 05:09:42 -0700
+Date:   Mon, 21 Sep 2020 15:09:39 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 11/24] x86/sgx: Add SGX enclave driver
+Message-ID: <20200921120939.GD6038@linux.intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-12-jarkko.sakkinen@linux.intel.com>
+ <20200921093006.GA5901@zn.tnic>
 MIME-Version: 1.0
-References: <20200917065550.127400-1-divya_bharathi@dell.com>
- <001ba7fe-fb88-cbe3-c413-1c6973b9e786@redhat.com> <CAHp75VcgVgSH6CLr78wfoK8fQVGk2g1x7CK+pAqmMcUDXHoa8w@mail.gmail.com>
-In-Reply-To: <CAHp75VcgVgSH6CLr78wfoK8fQVGk2g1x7CK+pAqmMcUDXHoa8w@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 21 Sep 2020 15:08:57 +0300
-Message-ID: <CAHp75VdOYk0xRKPzTygAMiEiSAmJZBrawZKSjPHiwzd8AbXfiQ@mail.gmail.com>
-Subject: Re: [PATCH v3] Introduce support for Systems Management Driver over
- WMI for Dell Systems
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Divya Bharathi <divya27392@gmail.com>,
-        Darren Hart <dvhart@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Divya Bharathi <divya_bharathi@dell.com>,
-        mark gross <mgross@linux.intel.com>,
-        Mario Limonciello <mario.limonciello@dell.com>,
-        Prasanth KSR <prasanth.ksr@dell.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921093006.GA5901@zn.tnic>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 3:08 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Mon, Sep 21, 2020 at 2:38 PM Hans de Goede <hdegoede@redhat.com> wrote:
-> > On 9/17/20 8:55 AM, Divya Bharathi wrote:
->
-> ...
->
-> > Now I see that you try to correctly deal with strncpy-s nastiness
-> > everywhere, but please just don't use it all.
-> > Not using strncpy at all is much better.
-> >
-> > A lot of the strncpy usage is hidden in:
-> >
-> > strncpy_attr(char *dest, char *src)
-> > {
-> >          size_t len = strlen(src) + 1;
-> >
-> >          if (len > 1 && len < MAX_BUFF)
-> >                  strncpy(dest, src, len);
-> > }
-> >
-> > Why is there no warning printed when the source string
-> > is too long ? Now we just quietly throw away the
-> > data, which seems undesirable.
-> >
-> > Also wouldn't truncating the data to fit in MAX_BUFF be better?
-> > (honest question, I do not know which option is better)
->
-> And don't forget new compiler warning if it can prove that string will
-> be NUL-terminated.
+On Mon, Sep 21, 2020 at 11:30:06AM +0200, Borislav Petkov wrote:
+> On Tue, Sep 15, 2020 at 02:28:29PM +0300, Jarkko Sakkinen wrote:
+> > Intel Software Guard eXtensions (SGX) is a set of CPU instructions that can
+> > be used by applications to set aside private regions of code and data. The
+> > code outside the SGX hosted software entity is prevented from accessing the
+> > memory inside the enclave by the CPU. We call these entities as enclaves.
+> 
+> It was correct before:
+> 
+> -memory inside the enclave by the CPU. We call these entities enclaves.
+> +memory inside the enclave by the CPU. We call these entities as enclaves.
+> 
+> "as " is not needed.
 
-can -> can't
+I reworded it. Thank you.
 
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
 
--- 
-With Best Regards,
-Andy Shevchenko
+/Jarkko
