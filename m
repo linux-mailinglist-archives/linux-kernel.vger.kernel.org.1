@@ -2,169 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8212B272B9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3246272B9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728096AbgIUQTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:19:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58614 "EHLO
+        id S1728076AbgIUQTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:19:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728029AbgIUQTo (ORCPT
+        with ESMTP id S1727070AbgIUQTl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:19:44 -0400
+        Mon, 21 Sep 2020 12:19:41 -0400
 Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57284C061755;
-        Mon, 21 Sep 2020 09:19:44 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id l9so91595wme.3;
-        Mon, 21 Sep 2020 09:19:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5416C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 09:19:40 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id l15so315941wmh.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 09:19:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=frI/81YNEfF9ORgJP4cNFL/lMzPALXCIhz8JBfMDSJ4=;
-        b=KfkhuXyn0MBCPpYJk6pycw90nfN0ATte7JpEFc6pVifh+hcn4Lg3PZXaAfQYwQ3Zvj
-         HRQr5zsxuJdE7l8FtwiTVxv+5QYxYtL3CRSH4NDcjxxOOWvyTKGLxQ94a2p6dR73k8Wi
-         pozDiRM93qhoDZZXUaMSfE/7G+QF+J5c2DAGXAy4u5s1LHU0PfHkjfzonr9+WAiiuL1a
-         Y13C6RNgR7S4DmelSt27yuDLXpJnfmN8dhk9HygCYduPxVechRe2FmjBAFkh6N61dXJm
-         EVqkk65zAl8qVCS4z6ZnaBRcjPXmHvsC5tEKe2bb619/GidC/WsXcmZXhZZiWp1GEfut
-         FDPQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2Um6c81r/1MBT+fI9iGjg9/o4XDqZdY7rKMNqEREgyE=;
+        b=ryoM2PMyrWMXEMclmgyN0lykLS3VG6GXyKh4BC5ZVuURKw5hMiI7c0HZAetAVJ9uHu
+         WHPCmKob3GZAwHB0bI+A+2bGumaPKa/LcayBImqxBLqSTWGPWgRIMaJNnzvsltdIClFm
+         RkamjI+3JgSIgX4e1nBRWo7MQ7hnY7fBVUTSj05a22ySRbVJdIZNenzaMknU984WS4Ff
+         oJXiT3JErczZ+ll+Fj95go1Z4vbo6Ay394q5fOCK4bcUb0WH0Lj7f+j3SmVyZSGTA862
+         vTxr3cmVPwuCj3G6rHPq98xrSw5GP3ZVb+Ds8kVgwUWtg000Tnlu5BKL9ISmU0qFih12
+         YEIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=frI/81YNEfF9ORgJP4cNFL/lMzPALXCIhz8JBfMDSJ4=;
-        b=m7947b2i8Puj+MCIqE3VX2i5AtmxFnt/yugcVBm6o7yA5KaM1GEyBhCbEgTHXqR8aF
-         XpLO8M5+pkNYeTXGYMcwhpqGzrJTT+wF7HQnlkpiEY3Lu+HC8tMOLU97qKSb/8T3ebrE
-         k0WxQZStEk62w7ocNAkQjN18RT0LFGySzPEKbPJDK2m5vi20hMV52XzUHjNfiCfVfnwP
-         idiQoEC+qbD4JNms+lQuYw3bBnD/GBHoEuADlGSjjkhD+pXr6qzuZeJihCTNcYLLHoqt
-         Uek7ahD1Jiqs3QfuTHQPLBMbZHSNQCNOpSGuJ5Rd/SAiXg3ioKu5s9+jVBKlPmtMe3FC
-         Wu1Q==
-X-Gm-Message-State: AOAM533hBhOPAb9Go+XVYm4p19NNouN4bpwNql5Fxjx1M3zAe3DDGS+V
-        nl0gQKlGWEJ/Y3KVZ+05CoMzmHr7sHe1kzbaZuQ=
-X-Google-Smtp-Source: ABdhPJxf9lfDqxY8F+FK4AKpLfdsEvfGPLfQpr97E0XD7LNO/i9dSvLCc8SRa733kjhb9MUhJfsUonQQyw8yiTGu5j0=
-X-Received: by 2002:a05:600c:2183:: with SMTP id e3mr156635wme.49.1600705182905;
- Mon, 21 Sep 2020 09:19:42 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2Um6c81r/1MBT+fI9iGjg9/o4XDqZdY7rKMNqEREgyE=;
+        b=D9w94R4p3I1Wz1GetRcn7FHfBUZJ16sTrvXJhcdTLVIHPDC7Ts/vhTANpSOxmlQbkP
+         S0wvuNff+2kCyZUOB3r6ns2S+gOfZdvxvt3gmSbEB0dcDnfWR53pf1Z/nc4UDmKthIF8
+         xClrdhuVxKKRXz0h128N7nr29UaqLIJR9c7Mol+FUd4xNPXfW2GdWSJ4oJmHaa7bYhnZ
+         wdGMqPeGxeG/T+2Fohv7EaCt88UnvpKwy4BX3EcK54O1ggqCuULDHYEb7USIJUe1ZL2p
+         lz4tZ/HinTexG8Tdql0XjtEmCXiNLp1+3vbcNplVPufbv7mhi/pnzxheSQPwjteuCYZd
+         8MXQ==
+X-Gm-Message-State: AOAM530w5CO7zwxkzIqoUGTjtSKmrGGRJQCLrsj3elTbPjAH0xCY1OW8
+        nQW6N1YIxVTXWSWGVKnF35M=
+X-Google-Smtp-Source: ABdhPJxs7Ibc11EIGRwgCKphObeQv/hmih2hCL7dWsWP43DVc7B0GpSzQHeXgsihEEbfpQhdROSDTQ==
+X-Received: by 2002:a1c:2cc2:: with SMTP id s185mr145783wms.77.1600705179633;
+        Mon, 21 Sep 2020 09:19:39 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.113.201])
+        by smtp.gmail.com with ESMTPSA id a83sm67121wmh.48.2020.09.21.09.19.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Sep 2020 09:19:39 -0700 (PDT)
+Subject: Re: [PATCH v3 8/9] soc: mediatek: cmdq: add clear option in
+ cmdq_pkt_wfe api
+To:     Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, CK Hu <ck.hu@mediatek.com>,
+        Bibby Hsieh <bibby.hsieh@mediatek.com>,
+        Houlong Wei <houlong.wei@mediatek.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        wsd_upstream@mediatek.com, HS Liao <hs.liao@mediatek.com>
+References: <1594136714-11650-1-git-send-email-dennis-yc.hsieh@mediatek.com>
+ <1594136714-11650-9-git-send-email-dennis-yc.hsieh@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <728ace99-e5e6-f8bf-1687-e9b51dfae8d7@gmail.com>
+Date:   Mon, 21 Sep 2020 18:19:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200919193727.2093945-1-robdclark@gmail.com> <20200921092154.GJ438822@phenom.ffwll.local>
- <CAF6AEGuDRk9D_aqyb6R8N5VHx2rvbZDf4uTqF3gQTrmzno+qtw@mail.gmail.com>
-In-Reply-To: <CAF6AEGuDRk9D_aqyb6R8N5VHx2rvbZDf4uTqF3gQTrmzno+qtw@mail.gmail.com>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Mon, 21 Sep 2020 09:19:31 -0700
-Message-ID: <CAF6AEGv=j3Xr9=gw17T3TnEwoDZQrfmCyX-KhCRJwRsh6zasSA@mail.gmail.com>
-Subject: Re: [PATCH 0/3] drm: commit_work scheduling
-To:     Rob Clark <robdclark@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Tim Murray <timmurray@google.com>, Tejun Heo <tj@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1594136714-11650-9-git-send-email-dennis-yc.hsieh@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 8:16 AM Rob Clark <robdclark@gmail.com> wrote:
->
-> On Mon, Sep 21, 2020 at 2:21 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> > On Sat, Sep 19, 2020 at 12:37:23PM -0700, Rob Clark wrote:
-> > > From: Rob Clark <robdclark@chromium.org>
-> > >
-> > > The android userspace treats the display pipeline as a realtime problem.
-> > > And arguably, if your goal is to not miss frame deadlines (ie. vblank),
-> > > it is.  (See https://lwn.net/Articles/809545/ for the best explaination
-> > > that I found.)
-> > >
-> > > But this presents a problem with using workqueues for non-blocking
-> > > atomic commit_work(), because the SCHED_FIFO userspace thread(s) can
-> > > preempt the worker.  Which is not really the outcome you want.. once
-> > > the required fences are scheduled, you want to push the atomic commit
-> > > down to hw ASAP.
-> > >
-> > > But the decision of whether commit_work should be RT or not really
-> > > depends on what userspace is doing.  For a pure CFS userspace display
-> > > pipeline, commit_work() should remain SCHED_NORMAL.
-> > >
-> > > To handle this, convert non-blocking commit_work() to use per-CRTC
-> > > kthread workers, instead of system_unbound_wq.  Per-CRTC workers are
-> > > used to avoid serializing commits when userspace is using a per-CRTC
-> > > update loop.
-> > >
-> > > A client-cap is introduced so that userspace can opt-in to SCHED_FIFO
-> > > priority commit work.
-> > >
-> > > A potential issue is that since 616d91b68cd ("sched: Remove
-> > > sched_setscheduler*() EXPORTs") we have limited RT priority levels,
-> > > meaning that commit_work() ends up running at the same priority level
-> > > as vblank-work.  This shouldn't be a big problem *yet*, due to limited
-> > > use of vblank-work at this point.  And if it could be arranged that
-> > > vblank-work is scheduled before signaling out-fences and/or sending
-> > > pageflip events, it could probably work ok to use a single priority
-> > > level for both commit-work and vblank-work.
-> >
-> > The part I don't like about this is that it all feels rather hacked
-> > together, and if we add more stuff (or there's some different thing in the
-> > system that also needs rt scheduling) then it doesn't compose.
->
-> The ideal thing would be that userspace is in control of the
-> priorities.. the setclientcap approach seemed like a reasonable way to
-> give the drm-master a way to opt in.
->
-> I suppose instead userspace could use sched_setscheduler().. but that
-> would require userspace to be root, and would require some way to find
-> the tid.
->
-> Is there some way we could arrange for the per-crtc kthread's to be
-> owned by the drm master?  That would solve the "must be root" issue.
-> And since the target audience is an atomic userspace, I suppose we
-> could expose the tid as a read-only property on the crtc?
 
-Looks like kthread goes out of it's way to *not* be owned by users (to
-avoid fork, and such complications?)
 
-But maybe we could modify the kthread_worker's task->real_cred?  I
-didn't see any examples of anything else doing something similar, so
-I'm not sure what sorts of dragons there lie..
+On 07/07/2020 17:45, Dennis YC Hsieh wrote:
+> Add clear parameter to let client decide if
+> event should be clear to 0 after GCE receive it.
+> 
+> Change since v2:
+> - Keep behavior in drm crtc driver and
+>    separate bug fix code into another patch.
 
-> BR,
-> -R
->
-> > So question to rt/worker folks: What's the best way to let userspace set
-> > the scheduling mode and priorities of things the kernel does on its
-> > behalf? Surely we're not the first ones where if userspace runs with some
-> > rt priority it'll starve out the kernel workers that it needs. Hardcoding
-> > something behind a subsystem ioctl (which just means every time userspace
-> > changes what it does, we need a new such flag or mode) can't be the right
-> > thing.
-> >
-> > Peter, Tejun?
-> >
-> > Thanks, Daniel
-> >
-> > >
-> > > Rob Clark (3):
-> > >   drm/crtc: Introduce per-crtc kworker
-> > >   drm/atomic: Use kthread worker for nonblocking commits
-> > >   drm: Add a client-cap to set scheduling mode
-> > >
-> > >  drivers/gpu/drm/drm_atomic_helper.c | 13 ++++++----
-> > >  drivers/gpu/drm/drm_auth.c          |  4 ++++
-> > >  drivers/gpu/drm/drm_crtc.c          | 37 +++++++++++++++++++++++++++++
-> > >  drivers/gpu/drm/drm_ioctl.c         | 13 ++++++++++
-> > >  include/drm/drm_atomic.h            | 31 ++++++++++++++++++++++++
-> > >  include/drm/drm_crtc.h              | 10 ++++++++
-> > >  include/uapi/drm/drm.h              | 13 ++++++++++
-> > >  7 files changed, 117 insertions(+), 4 deletions(-)
-> > >
-> > > --
-> > > 2.26.2
-> > >
-> > > _______________________________________________
-> > > dri-devel mailing list
-> > > dri-devel@lists.freedesktop.org
-> > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> >
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
+This, should go...
+
+> 
+> Signed-off-by: Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>
+> ---
+
+...here :)
+
+I fixed to commit message and pushed the patch to v5.9-next/soc
+
+Thanks!
+
+>   drivers/gpu/drm/mediatek/mtk_drm_crtc.c  |    2 +-
+>   drivers/soc/mediatek/mtk-cmdq-helper.c   |    5 +++--
+>   include/linux/mailbox/mtk-cmdq-mailbox.h |    3 +--
+>   include/linux/soc/mediatek/mtk-cmdq.h    |    5 +++--
+>   4 files changed, 8 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> index ec6c9ffbf35e..c84e7a14d4a8 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> @@ -490,7 +490,7 @@ static void mtk_drm_crtc_hw_config(struct mtk_drm_crtc *mtk_crtc)
+>   		mbox_flush(mtk_crtc->cmdq_client->chan, 2000);
+>   		cmdq_handle = cmdq_pkt_create(mtk_crtc->cmdq_client, PAGE_SIZE);
+>   		cmdq_pkt_clear_event(cmdq_handle, mtk_crtc->cmdq_event);
+> -		cmdq_pkt_wfe(cmdq_handle, mtk_crtc->cmdq_event);
+> +		cmdq_pkt_wfe(cmdq_handle, mtk_crtc->cmdq_event, true);
+>   		mtk_crtc_ddp_config(crtc, cmdq_handle);
+>   		cmdq_pkt_finalize(cmdq_handle);
+>   		cmdq_pkt_flush_async(cmdq_handle, ddp_cmdq_cb, cmdq_handle);
+> diff --git a/drivers/soc/mediatek/mtk-cmdq-helper.c b/drivers/soc/mediatek/mtk-cmdq-helper.c
+> index d55dc3296105..505651b0d715 100644
+> --- a/drivers/soc/mediatek/mtk-cmdq-helper.c
+> +++ b/drivers/soc/mediatek/mtk-cmdq-helper.c
+> @@ -316,15 +316,16 @@ int cmdq_pkt_write_s_mask_value(struct cmdq_pkt *pkt, u8 high_addr_reg_idx,
+>   }
+>   EXPORT_SYMBOL(cmdq_pkt_write_s_mask_value);
+>   
+> -int cmdq_pkt_wfe(struct cmdq_pkt *pkt, u16 event)
+> +int cmdq_pkt_wfe(struct cmdq_pkt *pkt, u16 event, bool clear)
+>   {
+>   	struct cmdq_instruction inst = { {0} };
+> +	u32 clear_option = clear ? CMDQ_WFE_UPDATE : 0;
+>   
+>   	if (event >= CMDQ_MAX_EVENT)
+>   		return -EINVAL;
+>   
+>   	inst.op = CMDQ_CODE_WFE;
+> -	inst.value = CMDQ_WFE_OPTION;
+> +	inst.value = CMDQ_WFE_OPTION | clear_option;
+>   	inst.event = event;
+>   
+>   	return cmdq_pkt_append_command(pkt, inst);
+> diff --git a/include/linux/mailbox/mtk-cmdq-mailbox.h b/include/linux/mailbox/mtk-cmdq-mailbox.h
+> index efbd8a9eb2d1..d5a983d65f05 100644
+> --- a/include/linux/mailbox/mtk-cmdq-mailbox.h
+> +++ b/include/linux/mailbox/mtk-cmdq-mailbox.h
+> @@ -28,8 +28,7 @@
+>    * bit 16-27: update value
+>    * bit 31: 1 - update, 0 - no update
+>    */
+> -#define CMDQ_WFE_OPTION			(CMDQ_WFE_UPDATE | CMDQ_WFE_WAIT | \
+> -					CMDQ_WFE_WAIT_VALUE)
+> +#define CMDQ_WFE_OPTION			(CMDQ_WFE_WAIT | CMDQ_WFE_WAIT_VALUE)
+>   
+>   /** cmdq event maximum */
+>   #define CMDQ_MAX_EVENT			0x3ff
+> diff --git a/include/linux/soc/mediatek/mtk-cmdq.h b/include/linux/soc/mediatek/mtk-cmdq.h
+> index 34354e952f60..960704d75994 100644
+> --- a/include/linux/soc/mediatek/mtk-cmdq.h
+> +++ b/include/linux/soc/mediatek/mtk-cmdq.h
+> @@ -182,11 +182,12 @@ int cmdq_pkt_write_s_mask_value(struct cmdq_pkt *pkt, u8 high_addr_reg_idx,
+>   /**
+>    * cmdq_pkt_wfe() - append wait for event command to the CMDQ packet
+>    * @pkt:	the CMDQ packet
+> - * @event:	the desired event type to "wait and CLEAR"
+> + * @event:	the desired event type to wait
+> + * @clear:	clear event or not after event arrive
+>    *
+>    * Return: 0 for success; else the error code is returned
+>    */
+> -int cmdq_pkt_wfe(struct cmdq_pkt *pkt, u16 event);
+> +int cmdq_pkt_wfe(struct cmdq_pkt *pkt, u16 event, bool clear);
+>   
+>   /**
+>    * cmdq_pkt_clear_event() - append clear event command to the CMDQ packet
+> 
