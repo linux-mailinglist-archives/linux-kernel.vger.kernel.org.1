@@ -2,72 +2,831 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19C17272222
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:19:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA0442721F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726608AbgIULT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 07:19:27 -0400
-Received: from m176150.mail.qiye.163.com ([59.111.176.150]:24891 "EHLO
-        m176150.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726347AbgIULT0 (ORCPT
+        id S1726551AbgIULMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 07:12:17 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:51186 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726353AbgIULMR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 07:19:26 -0400
-X-Greylist: delayed 411 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Sep 2020 07:19:23 EDT
-Received: from vivo.com (wm-10.qy.internal [127.0.0.1])
-        by m176150.mail.qiye.163.com (Hmail) with ESMTP id BF0911A37F3;
-        Mon, 21 Sep 2020 19:11:57 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <AN*ApwBwDVasgemZb6*hx4qM.1.1600686717774.Hmail.bernard@vivo.com>
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com, Bernard Zhao <bernard@vivo.com>
-Subject: =?UTF-8?B?W1JlLXNlbmRdW1BBVENIXSBncHUvaXB1LXYzOnJlZHVjZSBwcm90ZWN0ZWQgY29kZSBhcmVhIGluIGlwdSBpZG1hYyBnZXQvcHV0?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 157.0.31.124
+        Mon, 21 Sep 2020 07:12:17 -0400
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600686732;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=X6Akcu6riF1OTsgWk2VRuuOOkgoQ8aLowJ3U8kkThHM=;
+        b=NL7y8FNSSoU+L9ajsW5YtEJrPU5XVA44kvkTOycN9EBwGg5CFrASD4UeVrhvStu9q826Tc
+        tfaBWPWNdwsdHhSL0hpUB3ycDSYYECTS11GyKuaemPCDdvrBro3r6EsDMlF2LA+Wgm0/5m
+        gAG14gQk1OUgCX4Xno03Ie98q3zhKwp9zEqIbDDaoKf5aRTbwpCGynRgEc+TDwZdTPDfd3
+        0knem5x4NK38cM/x92FdM9IWnIjEX24lc//74kdBSovYq9Vpd2Cr8fDhizRoIEozi8dN1c
+        QfI6je2wOgTFHToUJrX7YZpjZg9g+c3mrFEG5dcXVPJSOTM99adKTaYY6ubu5w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600686732;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=X6Akcu6riF1OTsgWk2VRuuOOkgoQ8aLowJ3U8kkThHM=;
+        b=1+1pe7w4guvcq5Fmp1wOYYURPdDR0ZJ+trse3okq8hincIhRA+txK2hgLKfXpYPFf6pgUA
+        THTOYy+TBTvW9bAw==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH printk v3 2/3] printk: move dictionary keys to dev_printk_info
+In-Reply-To: <20200921095557.GH14605@alley>
+References: <20200918223421.21621-1-john.ogness@linutronix.de> <20200918223421.21621-3-john.ogness@linutronix.de> <20200921095557.GH14605@alley>
+Date:   Mon, 21 Sep 2020 13:18:11 +0206
+Message-ID: <87r1qvl6yc.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Received: from bernard@vivo.com( [157.0.31.124) ] by ajax-webmail ( [127.0.0.1] ) ; Mon, 21 Sep 2020 19:11:57 +0800 (GMT+08:00)
-From:   Bernard <bernard@vivo.com>
-Date:   Mon, 21 Sep 2020 19:11:57 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZSk0eHUtMHRhDTk8eVkpNS0tNQ01MSkxDTE5VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVKS0tZBg++
-X-HM-Sender-Digest: e1kMHhlZQQ8JDh5XWRIfHhUPWUFZRzo1UToLDDkMPy0aCBweFiEZTVET
-        A08KNlVKVUpNS0tNQ01MSkNITUNVMxYaEhdVGR4JFRoJHzsNEg0UVRgUFkVZV1kSC1lBWUpOTFVL
-        VUhKVUpJT1lXWQgBWUFITE9NNwY+
-X-HM-Tid: 0a74b05cfb5d93b4kuwsbf0911a37f3
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhpcyBjaGFuZ2Ugd2lsbCBzcGVlZC11cCBhIGJpdCB0aGVzZSBpcHVfaWRtYWNfZ2V0ICYKaXB1
-X2lkbWFjX3B1dCBwcm9jZXNzaW5nIGFuZCB0aGVyZSBpcyBubyBuZWVkIHRvIHByb3RlY3QKa3ph
-bGxvYyAmIGtmcmVlLgoKU2lnbmVkLW9mZi1ieTogQmVybmFyZCBaaGFvIDxiZXJuYXJkQHZpdm8u
-Y29tPgotLS0KIGRyaXZlcnMvZ3B1L2lwdS12My9pcHUtY29tbW9uLmMgfCAyNCArKysrKysrKysr
-KysrLS0tLS0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAxMyBpbnNlcnRpb25zKCspLCAxMSBkZWxl
-dGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9pcHUtdjMvaXB1LWNvbW1vbi5jIGIv
-ZHJpdmVycy9ncHUvaXB1LXYzL2lwdS1jb21tb24uYwppbmRleCBiM2RhZTllYzFhMzguLjhiM2E1
-Nzg2NGMyZSAxMDA2NDQKLS0tIGEvZHJpdmVycy9ncHUvaXB1LXYzL2lwdS1jb21tb24uYworKysg
-Yi9kcml2ZXJzL2dwdS9pcHUtdjMvaXB1LWNvbW1vbi5jCkBAIC0yNjcsMjkgKzI2NywzMCBAQCBF
-WFBPUlRfU1lNQk9MX0dQTChpcHVfcm90X21vZGVfdG9fZGVncmVlcyk7CiBzdHJ1Y3QgaXB1djNf
-Y2hhbm5lbCAqaXB1X2lkbWFjX2dldChzdHJ1Y3QgaXB1X3NvYyAqaXB1LCB1bnNpZ25lZCBudW0p
-CiB7CiAJc3RydWN0IGlwdXYzX2NoYW5uZWwgKmNoYW5uZWw7CisJc3RydWN0IGlwdXYzX2NoYW5u
-ZWwgKmVudHJ5OwogCiAJZGV2X2RiZyhpcHUtPmRldiwgIiVzICVkXG4iLCBfX2Z1bmNfXywgbnVt
-KTsKIAogCWlmIChudW0gPiA2MykKIAkJcmV0dXJuIEVSUl9QVFIoLUVOT0RFVik7CiAKKwljaGFu
-bmVsID0ga3phbGxvYyhzaXplb2YoKmNoYW5uZWwpLCBHRlBfS0VSTkVMKTsKKwlpZiAoIWNoYW5u
-ZWwpCisJCXJldHVybiBFUlJfUFRSKC1FTk9NRU0pOworCisJY2hhbm5lbC0+bnVtID0gbnVtOwor
-CWNoYW5uZWwtPmlwdSA9IGlwdTsKKwogCW11dGV4X2xvY2soJmlwdS0+Y2hhbm5lbF9sb2NrKTsK
-IAotCWxpc3RfZm9yX2VhY2hfZW50cnkoY2hhbm5lbCwgJmlwdS0+Y2hhbm5lbHMsIGxpc3QpIHsK
-LQkJaWYgKGNoYW5uZWwtPm51bSA9PSBudW0pIHsKKwlsaXN0X2Zvcl9lYWNoX2VudHJ5KGVudHJ5
-LCAmaXB1LT5jaGFubmVscywgbGlzdCkgeworCQlpZiAoZW50cnktPm51bSA9PSBudW0pIHsKKwkJ
-CWtmcmVlKGNoYW5uZWwpOwogCQkJY2hhbm5lbCA9IEVSUl9QVFIoLUVCVVNZKTsKIAkJCWdvdG8g
-b3V0OwogCQl9CiAJfQogCi0JY2hhbm5lbCA9IGt6YWxsb2Moc2l6ZW9mKCpjaGFubmVsKSwgR0ZQ
-X0tFUk5FTCk7Ci0JaWYgKCFjaGFubmVsKSB7Ci0JCWNoYW5uZWwgPSBFUlJfUFRSKC1FTk9NRU0p
-OwotCQlnb3RvIG91dDsKLQl9Ci0KLQljaGFubmVsLT5udW0gPSBudW07Ci0JY2hhbm5lbC0+aXB1
-ID0gaXB1OwogCWxpc3RfYWRkKCZjaGFubmVsLT5saXN0LCAmaXB1LT5jaGFubmVscyk7CiAKIG91
-dDoKQEAgLTMwOCw5ICszMDksMTAgQEAgdm9pZCBpcHVfaWRtYWNfcHV0KHN0cnVjdCBpcHV2M19j
-aGFubmVsICpjaGFubmVsKQogCW11dGV4X2xvY2soJmlwdS0+Y2hhbm5lbF9sb2NrKTsKIAogCWxp
-c3RfZGVsKCZjaGFubmVsLT5saXN0KTsKLQlrZnJlZShjaGFubmVsKTsKIAogCW11dGV4X3VubG9j
-aygmaXB1LT5jaGFubmVsX2xvY2spOworCisJa2ZyZWUoY2hhbm5lbCk7CiB9CiBFWFBPUlRfU1lN
-Qk9MX0dQTChpcHVfaWRtYWNfcHV0KTsKIAotLSAKMi4yOC4wCgoNCg0K
+Dictionaries are only used for SUBSYSTEM and DEVICE properties. The
+current implementation stores the property names each time they are
+used. This requires more space than otherwise necessary. Also,
+because the dictionary entries are currently considered optional,
+it cannot be relied upon that they are always available, even if the
+writer wanted to store them. These issues will increase should new
+dictionary properties be introduced.
+
+Rather than storing the subsystem and device properties in the
+dict ring, introduce a struct dev_printk_info with separate fields
+to store only the property values. Embed this struct within the
+struct printk_info to provide guaranteed availability.
+
+Signed-off-by: John Ogness <john.ogness@linutronix.de>
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+---
+ Added Petr's fixup for msg_add_dict_text() to include the prefix
+ whitespace for dictionary properties. Thanks!
+
+ Documentation/admin-guide/kdump/gdbmacros.txt |  73 ++++----
+ drivers/base/core.c                           |  46 ++---
+ include/linux/dev_printk.h                    |   8 +
+ include/linux/printk.h                        |   6 +-
+ kernel/printk/internal.h                      |   4 +-
+ kernel/printk/printk.c                        | 166 +++++++++---------
+ kernel/printk/printk_ringbuffer.h             |   3 +
+ kernel/printk/printk_safe.c                   |   2 +-
+ scripts/gdb/linux/dmesg.py                    |  16 +-
+ 9 files changed, 164 insertions(+), 160 deletions(-)
+
+diff --git a/Documentation/admin-guide/kdump/gdbmacros.txt b/Documentation/admin-guide/kdump/gdbmacros.txt
+index 94fabb165abf..82aecdcae8a6 100644
+--- a/Documentation/admin-guide/kdump/gdbmacros.txt
++++ b/Documentation/admin-guide/kdump/gdbmacros.txt
+@@ -172,13 +172,13 @@ end
+ 
+ define dump_record
+ 	set var $desc = $arg0
+-	if ($argc > 1)
+-		set var $prev_flags = $arg1
++	set var $info = $arg1
++	if ($argc > 2)
++		set var $prev_flags = $arg2
+ 	else
+ 		set var $prev_flags = 0
+ 	end
+ 
+-	set var $info = &$desc->info
+ 	set var $prefix = 1
+ 	set var $newline = 1
+ 
+@@ -237,44 +237,36 @@ define dump_record
+ 
+ 	# handle dictionary data
+ 
+-	set var $begin = $desc->dict_blk_lpos.begin % (1U << prb->dict_data_ring.size_bits)
+-	set var $next = $desc->dict_blk_lpos.next % (1U << prb->dict_data_ring.size_bits)
+-
+-	# handle data-less record
+-	if ($begin & 1)
+-		set var $dict_len = 0
+-		set var $dict = ""
+-	else
+-		# handle wrapping data block
+-		if ($begin > $next)
+-			set var $begin = 0
+-		end
+-
+-		# skip over descriptor id
+-		set var $begin = $begin + sizeof(long)
+-
+-		# handle truncated message
+-		if ($next - $begin < $info->dict_len)
+-			set var $dict_len = $next - $begin
+-		else
+-			set var $dict_len = $info->dict_len
++	set var $dict = &$info->dev_info.subsystem[0]
++	set var $dict_len = sizeof($info->dev_info.subsystem)
++	if ($dict[0] != '\0')
++		printf " SUBSYSTEM="
++		set var $idx = 0
++		while ($idx < $dict_len)
++			set var $c = $dict[$idx]
++			if ($c == '\0')
++				loop_break
++			else
++				if ($c < ' ' || $c >= 127 || $c == '\\')
++					printf "\\x%02x", $c
++				else
++					printf "%c", $c
++				end
++			end
++			set var $idx = $idx + 1
+ 		end
+-
+-		set var $dict = &prb->dict_data_ring.data[$begin]
++		printf "\n"
+ 	end
+ 
+-	if ($dict_len > 0)
++	set var $dict = &$info->dev_info.device[0]
++	set var $dict_len = sizeof($info->dev_info.device)
++	if ($dict[0] != '\0')
++		printf " DEVICE="
+ 		set var $idx = 0
+-		set var $line = 1
+ 		while ($idx < $dict_len)
+-			if ($line)
+-				printf " "
+-				set var $line = 0
+-			end
+ 			set var $c = $dict[$idx]
+ 			if ($c == '\0')
+-				printf "\n"
+-				set var $line = 1
++				loop_break
+ 			else
+ 				if ($c < ' ' || $c >= 127 || $c == '\\')
+ 					printf "\\x%02x", $c
+@@ -288,10 +280,10 @@ define dump_record
+ 	end
+ end
+ document dump_record
+-	Dump a single record. The first parameter is the descriptor
+-	sequence number, the second is optional and specifies the
+-	previous record's flags, used for properly formatting
+-	continued lines.
++	Dump a single record. The first parameter is the descriptor,
++	the second parameter is the info, the third parameter is
++	optional and specifies the previous record's flags, used for
++	properly formatting continued lines.
+ end
+ 
+ define dmesg
+@@ -311,12 +303,13 @@ define dmesg
+ 
+ 	while (1)
+ 		set var $desc = &prb->desc_ring.descs[$id % $desc_count]
++		set var $info = &prb->desc_ring.infos[$id % $desc_count]
+ 
+ 		# skip non-committed record
+ 		set var $state = 3 & ($desc->state_var.counter >> $desc_flags_shift)
+ 		if ($state == $desc_committed || $state == $desc_finalized)
+-			dump_record $desc $prev_flags
+-			set var $prev_flags = $desc->info.flags
++			dump_record $desc $info $prev_flags
++			set var $prev_flags = $info->flags
+ 		end
+ 
+ 		set var $id = ($id + 1) & $id_mask
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 67d39a90b45c..22d83aedb64e 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -3815,22 +3815,21 @@ void device_shutdown(void)
+  */
+ 
+ #ifdef CONFIG_PRINTK
+-static int
+-create_syslog_header(const struct device *dev, char *hdr, size_t hdrlen)
++static void
++set_dev_info(const struct device *dev, struct dev_printk_info *dev_info)
+ {
+ 	const char *subsys;
+-	size_t pos = 0;
++
++	memset(dev_info, 0, sizeof(*dev_info));
+ 
+ 	if (dev->class)
+ 		subsys = dev->class->name;
+ 	else if (dev->bus)
+ 		subsys = dev->bus->name;
+ 	else
+-		return 0;
++		return;
+ 
+-	pos += snprintf(hdr + pos, hdrlen - pos, "SUBSYSTEM=%s", subsys);
+-	if (pos >= hdrlen)
+-		goto overflow;
++	strscpy(dev_info->subsystem, subsys, sizeof(dev_info->subsystem));
+ 
+ 	/*
+ 	 * Add device identifier DEVICE=:
+@@ -3846,41 +3845,28 @@ create_syslog_header(const struct device *dev, char *hdr, size_t hdrlen)
+ 			c = 'b';
+ 		else
+ 			c = 'c';
+-		pos++;
+-		pos += snprintf(hdr + pos, hdrlen - pos,
+-				"DEVICE=%c%u:%u",
+-				c, MAJOR(dev->devt), MINOR(dev->devt));
++
++		snprintf(dev_info->device, sizeof(dev_info->device),
++			 "%c%u:%u", c, MAJOR(dev->devt), MINOR(dev->devt));
+ 	} else if (strcmp(subsys, "net") == 0) {
+ 		struct net_device *net = to_net_dev(dev);
+ 
+-		pos++;
+-		pos += snprintf(hdr + pos, hdrlen - pos,
+-				"DEVICE=n%u", net->ifindex);
++		snprintf(dev_info->device, sizeof(dev_info->device),
++			 "n%u", net->ifindex);
+ 	} else {
+-		pos++;
+-		pos += snprintf(hdr + pos, hdrlen - pos,
+-				"DEVICE=+%s:%s", subsys, dev_name(dev));
++		snprintf(dev_info->device, sizeof(dev_info->device),
++			 "+%s:%s", subsys, dev_name(dev));
+ 	}
+-
+-	if (pos >= hdrlen)
+-		goto overflow;
+-
+-	return pos;
+-
+-overflow:
+-	dev_WARN(dev, "device/subsystem name too long");
+-	return 0;
+ }
+ 
+ int dev_vprintk_emit(int level, const struct device *dev,
+ 		     const char *fmt, va_list args)
+ {
+-	char hdr[128];
+-	size_t hdrlen;
++	struct dev_printk_info dev_info;
+ 
+-	hdrlen = create_syslog_header(dev, hdr, sizeof(hdr));
++	set_dev_info(dev, &dev_info);
+ 
+-	return vprintk_emit(0, level, hdrlen ? hdr : NULL, hdrlen, fmt, args);
++	return vprintk_emit(0, level, &dev_info, fmt, args);
+ }
+ EXPORT_SYMBOL(dev_vprintk_emit);
+ 
+diff --git a/include/linux/dev_printk.h b/include/linux/dev_printk.h
+index 3028b644b4fb..6f009559ee54 100644
+--- a/include/linux/dev_printk.h
++++ b/include/linux/dev_printk.h
+@@ -21,6 +21,14 @@
+ 
+ struct device;
+ 
++#define PRINTK_INFO_SUBSYSTEM_LEN	16
++#define PRINTK_INFO_DEVICE_LEN		48
++
++struct dev_printk_info {
++	char subsystem[PRINTK_INFO_SUBSYSTEM_LEN];
++	char device[PRINTK_INFO_DEVICE_LEN];
++};
++
+ #ifdef CONFIG_PRINTK
+ 
+ __printf(3, 0) __cold
+diff --git a/include/linux/printk.h b/include/linux/printk.h
+index fc8f03c54543..071500ee7281 100644
+--- a/include/linux/printk.h
++++ b/include/linux/printk.h
+@@ -158,10 +158,12 @@ static inline void printk_nmi_direct_enter(void) { }
+ static inline void printk_nmi_direct_exit(void) { }
+ #endif /* PRINTK_NMI */
+ 
++struct dev_printk_info;
++
+ #ifdef CONFIG_PRINTK
+-asmlinkage __printf(5, 0)
++asmlinkage __printf(4, 0)
+ int vprintk_emit(int facility, int level,
+-		 const char *dict, size_t dictlen,
++		 const struct dev_printk_info *dev_info,
+ 		 const char *fmt, va_list args);
+ 
+ asmlinkage __printf(1, 0)
+diff --git a/kernel/printk/internal.h b/kernel/printk/internal.h
+index 660f9a6bf73a..3a8fd491758c 100644
+--- a/kernel/printk/internal.h
++++ b/kernel/printk/internal.h
+@@ -14,9 +14,9 @@
+ 
+ extern raw_spinlock_t logbuf_lock;
+ 
+-__printf(5, 0)
++__printf(4, 0)
+ int vprintk_store(int facility, int level,
+-		  const char *dict, size_t dictlen,
++		  const struct dev_printk_info *dev_info,
+ 		  const char *fmt, va_list args);
+ 
+ __printf(1, 0) int vprintk_default(const char *fmt, va_list args);
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 25cfe4fe48af..7c613ae5c95a 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -296,8 +296,8 @@ static int console_msg_format = MSG_FORMAT_DEFAULT;
+ 
+ /*
+  * The printk log buffer consists of a sequenced collection of records, each
+- * containing variable length message and dictionary text. Every record
+- * also contains its own meta-data (@info).
++ * containing variable length message text. Every record also contains its
++ * own meta-data (@info).
+  *
+  * Every record meta-data carries the timestamp in microseconds, as well as
+  * the standard userspace syslog level and syslog facility. The usual kernel
+@@ -310,9 +310,7 @@ static int console_msg_format = MSG_FORMAT_DEFAULT;
+  * terminated.
+  *
+  * Optionally, a record can carry a dictionary of properties (key/value
+- * pairs), to provide userspace with a machine-readable message context. The
+- * length of the dictionary is available in @dict_len. The dictionary is not
+- * terminated.
++ * pairs), to provide userspace with a machine-readable message context.
+  *
+  * Examples for well-defined, commonly used property names are:
+  *   DEVICE=b12:8               device identifier
+@@ -322,21 +320,20 @@ static int console_msg_format = MSG_FORMAT_DEFAULT;
+  *                                +sound:card0  subsystem:devname
+  *   SUBSYSTEM=pci              driver-core subsystem name
+  *
+- * Valid characters in property names are [a-zA-Z0-9.-_]. The plain text value
+- * follows directly after a '=' character. Every property is terminated by
+- * a '\0' character. The last property is not terminated.
++ * Valid characters in property names are [a-zA-Z0-9.-_]. Property names
++ * and values are terminated by a '\0' character.
+  *
+  * Example of record values:
+- *   record.text_buf       = "it's a line" (unterminated)
+- *   record.dict_buf       = "DEVICE=b8:2\0DRIVER=bug" (unterminated)
+- *   record.info.seq       = 56
+- *   record.info.ts_nsec   = 36863
+- *   record.info.text_len  = 11
+- *   record.info.dict_len  = 22
+- *   record.info.facility  = 0 (LOG_KERN)
+- *   record.info.flags     = 0
+- *   record.info.level     = 3 (LOG_ERR)
+- *   record.info.caller_id = 299 (task 299)
++ *   record.text_buf                = "it's a line" (unterminated)
++ *   record.info.seq                = 56
++ *   record.info.ts_nsec            = 36863
++ *   record.info.text_len           = 11
++ *   record.info.facility           = 0 (LOG_KERN)
++ *   record.info.flags              = 0
++ *   record.info.level              = 3 (LOG_ERR)
++ *   record.info.caller_id          = 299 (task 299)
++ *   record.info.dev_info.subsystem = "pci" (terminated)
++ *   record.info.dev_info.device    = "+pci:0000:00:01.0" (terminated)
+  *
+  * The 'struct printk_info' buffer must never be directly exported to
+  * userspace, it is a kernel-private implementation detail that might
+@@ -498,19 +495,19 @@ static void truncate_msg(u16 *text_len, u16 *trunc_msg_len)
+ /* insert record into the buffer, discard old ones, update heads */
+ static int log_store(u32 caller_id, int facility, int level,
+ 		     enum log_flags flags, u64 ts_nsec,
+-		     const char *dict, u16 dict_len,
++		     const struct dev_printk_info *dev_info,
+ 		     const char *text, u16 text_len)
+ {
+ 	struct prb_reserved_entry e;
+ 	struct printk_record r;
+ 	u16 trunc_msg_len = 0;
+ 
+-	prb_rec_init_wr(&r, text_len, dict_len);
++	prb_rec_init_wr(&r, text_len, 0);
+ 
+ 	if (!prb_reserve(&e, prb, &r)) {
+ 		/* truncate the message if it is too long for empty buffer */
+ 		truncate_msg(&text_len, &trunc_msg_len);
+-		prb_rec_init_wr(&r, text_len + trunc_msg_len, dict_len);
++		prb_rec_init_wr(&r, text_len + trunc_msg_len, 0);
+ 		/* survive when the log buffer is too small for trunc_msg */
+ 		if (!prb_reserve(&e, prb, &r))
+ 			return 0;
+@@ -521,10 +518,6 @@ static int log_store(u32 caller_id, int facility, int level,
+ 	if (trunc_msg_len)
+ 		memcpy(&r.text_buf[text_len], trunc_msg, trunc_msg_len);
+ 	r.info->text_len = text_len + trunc_msg_len;
+-	if (r.dict_buf) {
+-		memcpy(&r.dict_buf[0], dict, dict_len);
+-		r.info->dict_len = dict_len;
+-	}
+ 	r.info->facility = facility;
+ 	r.info->level = level & 7;
+ 	r.info->flags = flags & 0x1f;
+@@ -533,6 +526,8 @@ static int log_store(u32 caller_id, int facility, int level,
+ 	else
+ 		r.info->ts_nsec = local_clock();
+ 	r.info->caller_id = caller_id;
++	if (dev_info)
++		memcpy(&r.info->dev_info, dev_info, sizeof(r.info->dev_info));
+ 
+ 	/* insert message */
+ 	if ((flags & LOG_CONT) || !(flags & LOG_NEWLINE))
+@@ -613,9 +608,9 @@ static ssize_t info_print_ext_header(char *buf, size_t size,
+ 			 ts_usec, info->flags & LOG_CONT ? 'c' : '-', caller);
+ }
+ 
+-static ssize_t msg_print_ext_body(char *buf, size_t size,
+-				  char *dict, size_t dict_len,
+-				  char *text, size_t text_len)
++static ssize_t msg_add_ext_text(char *buf, size_t size,
++				const char *text, size_t text_len,
++				unsigned char endc)
+ {
+ 	char *p = buf, *e = buf + size;
+ 	size_t i;
+@@ -629,36 +624,44 @@ static ssize_t msg_print_ext_body(char *buf, size_t size,
+ 		else
+ 			append_char(&p, e, c);
+ 	}
+-	append_char(&p, e, '\n');
++	append_char(&p, e, endc);
+ 
+-	if (dict_len) {
+-		bool line = true;
++	return p - buf;
++}
+ 
+-		for (i = 0; i < dict_len; i++) {
+-			unsigned char c = dict[i];
++static ssize_t msg_add_dict_text(char *buf, size_t size,
++				 const char *key, const char *val)
++{
++	size_t val_len = strlen(val);
++	ssize_t len;
+ 
+-			if (line) {
+-				append_char(&p, e, ' ');
+-				line = false;
+-			}
++	if (!val_len)
++		return 0;
+ 
+-			if (c == '\0') {
+-				append_char(&p, e, '\n');
+-				line = true;
+-				continue;
+-			}
++	len = msg_add_ext_text(buf, size, "", 0, ' ');	/* dict prefix */
++	len += msg_add_ext_text(buf + len, size, key, strlen(key), '=');
++	len += msg_add_ext_text(buf + len, size - len, val, val_len, '\n');
+ 
+-			if (c < ' ' || c >= 127 || c == '\\') {
+-				p += scnprintf(p, e - p, "\\x%02x", c);
+-				continue;
+-			}
++	return len;
++}
+ 
+-			append_char(&p, e, c);
+-		}
+-		append_char(&p, e, '\n');
+-	}
++static ssize_t msg_print_ext_body(char *buf, size_t size,
++				  char *text, size_t text_len,
++				  struct dev_printk_info *dev_info)
++{
++	ssize_t len;
+ 
+-	return p - buf;
++	len = msg_add_ext_text(buf, size, text, text_len, '\n');
++
++	if (!dev_info)
++		goto out;
++
++	len += msg_add_dict_text(buf + len, size - len, "SUBSYSTEM",
++				 dev_info->subsystem);
++	len += msg_add_dict_text(buf + len, size - len, "DEVICE",
++				 dev_info->device);
++out:
++	return len;
+ }
+ 
+ /* /dev/kmsg - userspace message inject/listen interface */
+@@ -670,7 +673,6 @@ struct devkmsg_user {
+ 
+ 	struct printk_info info;
+ 	char text_buf[CONSOLE_EXT_LOG_MAX];
+-	char dict_buf[CONSOLE_EXT_LOG_MAX];
+ 	struct printk_record record;
+ };
+ 
+@@ -681,7 +683,7 @@ int devkmsg_emit(int facility, int level, const char *fmt, ...)
+ 	int r;
+ 
+ 	va_start(args, fmt);
+-	r = vprintk_emit(facility, level, NULL, 0, fmt, args);
++	r = vprintk_emit(facility, level, NULL, fmt, args);
+ 	va_end(args);
+ 
+ 	return r;
+@@ -791,8 +793,8 @@ static ssize_t devkmsg_read(struct file *file, char __user *buf,
+ 
+ 	len = info_print_ext_header(user->buf, sizeof(user->buf), r->info);
+ 	len += msg_print_ext_body(user->buf + len, sizeof(user->buf) - len,
+-				  &r->dict_buf[0], r->info->dict_len,
+-				  &r->text_buf[0], r->info->text_len);
++				  &r->text_buf[0], r->info->text_len,
++				  &r->info->dev_info);
+ 
+ 	user->seq = r->info->seq + 1;
+ 	logbuf_unlock_irq();
+@@ -897,7 +899,7 @@ static int devkmsg_open(struct inode *inode, struct file *file)
+ 
+ 	prb_rec_init_rd(&user->record, &user->info,
+ 			&user->text_buf[0], sizeof(user->text_buf),
+-			&user->dict_buf[0], sizeof(user->dict_buf));
++			NULL, 0);
+ 
+ 	logbuf_lock_irq();
+ 	user->seq = prb_first_valid_seq(prb);
+@@ -941,6 +943,8 @@ const struct file_operations kmsg_fops = {
+  */
+ void log_buf_vmcoreinfo_setup(void)
+ {
++	struct dev_printk_info *dev_info = NULL;
++
+ 	VMCOREINFO_SYMBOL(prb);
+ 	VMCOREINFO_SYMBOL(printk_rb_static);
+ 	VMCOREINFO_SYMBOL(clear_seq);
+@@ -978,6 +982,13 @@ void log_buf_vmcoreinfo_setup(void)
+ 	VMCOREINFO_OFFSET(printk_info, text_len);
+ 	VMCOREINFO_OFFSET(printk_info, dict_len);
+ 	VMCOREINFO_OFFSET(printk_info, caller_id);
++	VMCOREINFO_OFFSET(printk_info, dev_info);
++
++	VMCOREINFO_STRUCT_SIZE(dev_printk_info);
++	VMCOREINFO_OFFSET(dev_printk_info, subsystem);
++	VMCOREINFO_LENGTH(printk_info_subsystem, sizeof(dev_info->subsystem));
++	VMCOREINFO_OFFSET(dev_printk_info, device);
++	VMCOREINFO_LENGTH(printk_info_device, sizeof(dev_info->device));
+ 
+ 	VMCOREINFO_STRUCT_SIZE(prb_data_ring);
+ 	VMCOREINFO_OFFSET(prb_data_ring, size_bits);
+@@ -1070,22 +1081,19 @@ static unsigned int __init add_to_rb(struct printk_ringbuffer *rb,
+ 	struct prb_reserved_entry e;
+ 	struct printk_record dest_r;
+ 
+-	prb_rec_init_wr(&dest_r, r->info->text_len, r->info->dict_len);
++	prb_rec_init_wr(&dest_r, r->info->text_len, 0);
+ 
+ 	if (!prb_reserve(&e, rb, &dest_r))
+ 		return 0;
+ 
+ 	memcpy(&dest_r.text_buf[0], &r->text_buf[0], r->info->text_len);
+ 	dest_r.info->text_len = r->info->text_len;
+-	if (dest_r.dict_buf) {
+-		memcpy(&dest_r.dict_buf[0], &r->dict_buf[0], r->info->dict_len);
+-		dest_r.info->dict_len = r->info->dict_len;
+-	}
+ 	dest_r.info->facility = r->info->facility;
+ 	dest_r.info->level = r->info->level;
+ 	dest_r.info->flags = r->info->flags;
+ 	dest_r.info->ts_nsec = r->info->ts_nsec;
+ 	dest_r.info->caller_id = r->info->caller_id;
++	memcpy(&dest_r.info->dev_info, &r->info->dev_info, sizeof(dest_r.info->dev_info));
+ 
+ 	prb_final_commit(&e);
+ 
+@@ -1093,7 +1101,6 @@ static unsigned int __init add_to_rb(struct printk_ringbuffer *rb,
+ }
+ 
+ static char setup_text_buf[CONSOLE_EXT_LOG_MAX] __initdata;
+-static char setup_dict_buf[CONSOLE_EXT_LOG_MAX] __initdata;
+ 
+ void __init setup_log_buf(int early)
+ {
+@@ -1165,7 +1172,7 @@ void __init setup_log_buf(int early)
+ 
+ 	prb_rec_init_rd(&r, &info,
+ 			&setup_text_buf[0], sizeof(setup_text_buf),
+-			&setup_dict_buf[0], sizeof(setup_dict_buf));
++			NULL, 0);
+ 
+ 	prb_init(&printk_rb_dynamic,
+ 		 new_log_buf, ilog2(new_log_buf_len),
+@@ -1903,7 +1910,9 @@ static inline u32 printk_caller_id(void)
+ 		0x80000000 + raw_smp_processor_id();
+ }
+ 
+-static size_t log_output(int facility, int level, enum log_flags lflags, const char *dict, size_t dictlen, char *text, size_t text_len)
++static size_t log_output(int facility, int level, enum log_flags lflags,
++			 const struct dev_printk_info *dev_info,
++			 char *text, size_t text_len)
+ {
+ 	const u32 caller_id = printk_caller_id();
+ 
+@@ -1927,12 +1936,12 @@ static size_t log_output(int facility, int level, enum log_flags lflags, const c
+ 
+ 	/* Store it in the record log */
+ 	return log_store(caller_id, facility, level, lflags, 0,
+-			 dict, dictlen, text, text_len);
++			 dev_info, text, text_len);
+ }
+ 
+ /* Must be called under logbuf_lock. */
+ int vprintk_store(int facility, int level,
+-		  const char *dict, size_t dictlen,
++		  const struct dev_printk_info *dev_info,
+ 		  const char *fmt, va_list args)
+ {
+ 	static char textbuf[LOG_LINE_MAX];
+@@ -1974,15 +1983,14 @@ int vprintk_store(int facility, int level,
+ 	if (level == LOGLEVEL_DEFAULT)
+ 		level = default_message_loglevel;
+ 
+-	if (dict)
++	if (dev_info)
+ 		lflags |= LOG_NEWLINE;
+ 
+-	return log_output(facility, level, lflags,
+-			  dict, dictlen, text, text_len);
++	return log_output(facility, level, lflags, dev_info, text, text_len);
+ }
+ 
+ asmlinkage int vprintk_emit(int facility, int level,
+-			    const char *dict, size_t dictlen,
++			    const struct dev_printk_info *dev_info,
+ 			    const char *fmt, va_list args)
+ {
+ 	int printed_len;
+@@ -2003,7 +2011,7 @@ asmlinkage int vprintk_emit(int facility, int level,
+ 
+ 	/* This stops the holder of console_sem just where we want him */
+ 	logbuf_lock_irqsave(flags);
+-	printed_len = vprintk_store(facility, level, dict, dictlen, fmt, args);
++	printed_len = vprintk_store(facility, level, dev_info, fmt, args);
+ 	logbuf_unlock_irqrestore(flags);
+ 
+ 	/* If called from the scheduler, we can not call up(). */
+@@ -2037,7 +2045,7 @@ EXPORT_SYMBOL(vprintk);
+ 
+ int vprintk_default(const char *fmt, va_list args)
+ {
+-	return vprintk_emit(0, LOGLEVEL_DEFAULT, NULL, 0, fmt, args);
++	return vprintk_emit(0, LOGLEVEL_DEFAULT, NULL, fmt, args);
+ }
+ EXPORT_SYMBOL_GPL(vprintk_default);
+ 
+@@ -2100,8 +2108,8 @@ static ssize_t info_print_ext_header(char *buf, size_t size,
+ 	return 0;
+ }
+ static ssize_t msg_print_ext_body(char *buf, size_t size,
+-				  char *dict, size_t dict_len,
+-				  char *text, size_t text_len) { return 0; }
++				  char *text, size_t text_len,
++				  struct dev_printk_info *dev_info) { return 0; }
+ static void console_lock_spinning_enable(void) { }
+ static int console_lock_spinning_disable_and_check(void) { return 0; }
+ static void call_console_drivers(const char *ext_text, size_t ext_len,
+@@ -2390,7 +2398,6 @@ void console_unlock(void)
+ {
+ 	static char ext_text[CONSOLE_EXT_LOG_MAX];
+ 	static char text[LOG_LINE_MAX + PREFIX_MAX];
+-	static char dict[LOG_LINE_MAX];
+ 	unsigned long flags;
+ 	bool do_cond_resched, retry;
+ 	struct printk_info info;
+@@ -2401,7 +2408,7 @@ void console_unlock(void)
+ 		return;
+ 	}
+ 
+-	prb_rec_init_rd(&r, &info, text, sizeof(text), dict, sizeof(dict));
++	prb_rec_init_rd(&r, &info, text, sizeof(text), NULL, 0);
+ 
+ 	/*
+ 	 * Console drivers are called with interrupts disabled, so
+@@ -2473,10 +2480,9 @@ void console_unlock(void)
+ 						r.info);
+ 			ext_len += msg_print_ext_body(ext_text + ext_len,
+ 						sizeof(ext_text) - ext_len,
+-						&r.dict_buf[0],
+-						r.info->dict_len,
+ 						&r.text_buf[0],
+-						r.info->text_len);
++						r.info->text_len,
++						&r.info->dev_info);
+ 		}
+ 		len = record_print_text(&r,
+ 				console_msg_format & MSG_FORMAT_SYSLOG,
+@@ -3055,7 +3061,7 @@ int vprintk_deferred(const char *fmt, va_list args)
+ {
+ 	int r;
+ 
+-	r = vprintk_emit(0, LOGLEVEL_SCHED, NULL, 0, fmt, args);
++	r = vprintk_emit(0, LOGLEVEL_SCHED, NULL, fmt, args);
+ 	defer_console_output();
+ 
+ 	return r;
+diff --git a/kernel/printk/printk_ringbuffer.h b/kernel/printk/printk_ringbuffer.h
+index 97c8561e74e0..480499ce3c6b 100644
+--- a/kernel/printk/printk_ringbuffer.h
++++ b/kernel/printk/printk_ringbuffer.h
+@@ -4,6 +4,7 @@
+ #define _KERNEL_PRINTK_RINGBUFFER_H
+ 
+ #include <linux/atomic.h>
++#include <linux/dev_printk.h>
+ 
+ /*
+  * Meta information about each stored message.
+@@ -21,6 +22,8 @@ struct printk_info {
+ 	u8	flags:5;	/* internal record flags */
+ 	u8	level:3;	/* syslog level */
+ 	u32	caller_id;	/* thread id or processor id */
++
++	struct dev_printk_info	dev_info;
+ };
+ 
+ /*
+diff --git a/kernel/printk/printk_safe.c b/kernel/printk/printk_safe.c
+index 50aeae770434..5dbc40160990 100644
+--- a/kernel/printk/printk_safe.c
++++ b/kernel/printk/printk_safe.c
+@@ -375,7 +375,7 @@ __printf(1, 0) int vprintk_func(const char *fmt, va_list args)
+ 	    raw_spin_trylock(&logbuf_lock)) {
+ 		int len;
+ 
+-		len = vprintk_store(0, LOGLEVEL_DEFAULT, NULL, 0, fmt, args);
++		len = vprintk_store(0, LOGLEVEL_DEFAULT, NULL, fmt, args);
+ 		raw_spin_unlock(&logbuf_lock);
+ 		defer_console_output();
+ 		return len;
+diff --git a/scripts/gdb/linux/dmesg.py b/scripts/gdb/linux/dmesg.py
+index bce14de5f610..a92c55bd8de5 100644
+--- a/scripts/gdb/linux/dmesg.py
++++ b/scripts/gdb/linux/dmesg.py
+@@ -52,6 +52,12 @@ class LxDmesg(gdb.Command):
+         addr = utils.read_ulong(desc_ring, off)
+         descs = utils.read_memoryview(inf, addr, desc_sz * desc_ring_count).tobytes()
+ 
++        # read in info array
++        info_sz = printk_info_type.get_type().sizeof
++        off = prb_desc_ring_type.get_type()['infos'].bitpos // 8
++        addr = utils.read_ulong(desc_ring, off)
++        infos = utils.read_memoryview(inf, addr, info_sz * desc_ring_count).tobytes()
++
+         # read in text data ring structure
+         off = printk_ringbuffer_type.get_type()['text_data_ring'].bitpos // 8
+         addr = prb_addr + off
+@@ -73,9 +79,8 @@ class LxDmesg(gdb.Command):
+         begin_off = off + (prb_data_blk_lpos_type.get_type()['begin'].bitpos // 8)
+         next_off = off + (prb_data_blk_lpos_type.get_type()['next'].bitpos // 8)
+ 
+-        off = prb_desc_type.get_type()['info'].bitpos // 8
+-        ts_off = off + printk_info_type.get_type()['ts_nsec'].bitpos // 8
+-        len_off = off + printk_info_type.get_type()['text_len'].bitpos // 8
++        ts_off = printk_info_type.get_type()['ts_nsec'].bitpos // 8
++        len_off = printk_info_type.get_type()['text_len'].bitpos // 8
+ 
+         # definitions from kernel/printk/printk_ringbuffer.h
+         desc_committed = 1
+@@ -95,6 +100,7 @@ class LxDmesg(gdb.Command):
+         while True:
+             ind = did % desc_ring_count
+             desc_off = desc_sz * ind
++            info_off = info_sz * ind
+ 
+             # skip non-committed record
+             state = 3 & (utils.read_u64(descs, desc_off + sv_off +
+@@ -119,7 +125,7 @@ class LxDmesg(gdb.Command):
+                 # skip over descriptor id
+                 text_start = begin + utils.get_long_type().sizeof
+ 
+-                text_len = utils.read_u16(descs, desc_off + len_off)
++                text_len = utils.read_u16(infos, info_off + len_off)
+ 
+                 # handle truncated message
+                 if end - text_start < text_len:
+@@ -128,7 +134,7 @@ class LxDmesg(gdb.Command):
+                 text = text_data[text_start:text_start + text_len].decode(
+                     encoding='utf8', errors='replace')
+ 
+-            time_stamp = utils.read_u64(descs, desc_off + ts_off)
++            time_stamp = utils.read_u64(infos, info_off + ts_off)
+ 
+             for line in text.splitlines():
+                 msg = u"[{time:12.6f}] {line}\n".format(
+-- 
+2.20.1
