@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8717F2724D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D67BE2724BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727571AbgIUNLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:11:39 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14202 "EHLO huawei.com"
+        id S1727479AbgIUNLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:11:01 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:43372 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727455AbgIUNKz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:10:55 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 0894D7546E7C1BE89E59;
-        Mon, 21 Sep 2020 21:10:54 +0800 (CST)
+        id S1727447AbgIUNKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:10:53 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 9D90D2A83FCA30DE087F;
+        Mon, 21 Sep 2020 21:10:52 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 21 Sep 2020 21:10:44 +0800
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 21 Sep 2020 21:10:45 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        "Maxime Coquelin" <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>
-CC:     <linux-pm@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
+To:     Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "Arnd Bergmann" <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH -next] thermal: stm32: simplify the return expression of stm_thermal_prepare()
-Date:   Mon, 21 Sep 2020 21:11:07 +0800
-Message-ID: <20200921131107.93273-1-miaoqinglang@huawei.com>
+Subject: [PATCH -next] tpm/st33zp24: simplify the return expression of st33zp24_spi_probe()
+Date:   Mon, 21 Sep 2020 21:11:09 +0800
+Message-ID: <20200921131109.93319-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -45,29 +42,28 @@ Simplify the return expression.
 
 Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- drivers/thermal/st/stm_thermal.c | 7 +------
+ drivers/char/tpm/st33zp24/spi.c | 7 +------
  1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/thermal/st/stm_thermal.c b/drivers/thermal/st/stm_thermal.c
-index 331e2b768..5fd3fb891 100644
---- a/drivers/thermal/st/stm_thermal.c
-+++ b/drivers/thermal/st/stm_thermal.c
-@@ -446,14 +446,9 @@ static int stm_thermal_prepare(struct stm_thermal_sensor *sensor)
- #ifdef CONFIG_PM_SLEEP
- static int stm_thermal_suspend(struct device *dev)
+diff --git a/drivers/char/tpm/st33zp24/spi.c b/drivers/char/tpm/st33zp24/spi.c
+index a75dafd39..4580bddbe 100644
+--- a/drivers/char/tpm/st33zp24/spi.c
++++ b/drivers/char/tpm/st33zp24/spi.c
+@@ -384,13 +384,8 @@ static int st33zp24_spi_probe(struct spi_device *dev)
+ static int st33zp24_spi_remove(struct spi_device *dev)
  {
+ 	struct tpm_chip *chip = spi_get_drvdata(dev);
 -	int ret;
- 	struct stm_thermal_sensor *sensor = dev_get_drvdata(dev);
  
--	ret = stm_thermal_sensor_off(sensor);
+-	ret = st33zp24_remove(chip);
 -	if (ret)
 -		return ret;
 -
 -	return 0;
-+	return stm_thermal_sensor_off(sensor);
++	return st33zp24_remove(chip);
  }
  
- static int stm_thermal_resume(struct device *dev)
+ static const struct spi_device_id st33zp24_spi_id[] = {
 -- 
 2.23.0
 
