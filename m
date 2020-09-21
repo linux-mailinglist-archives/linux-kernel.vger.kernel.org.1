@@ -2,100 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 130DF273040
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EBDF2730C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729777AbgIURDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 13:03:54 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:42100 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730492AbgIURDv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 13:03:51 -0400
-Received: by mail-lf1-f66.google.com with SMTP id b12so14837345lfp.9;
-        Mon, 21 Sep 2020 10:03:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0CrJyG3ddy1yqE5EHK/s9PAflZP2qnO9iNUuDmPM0w0=;
-        b=YT2SKmOC+yeJYQ3mPZQyCYNV32dSvUpe9vG7L2gLqBGV37o4whDorIp92e3hJXBkOD
-         JXU1tp2SLXjkW+qDqu0E1+G7sBf1rHv4mR4+VqeqmNg/UqNAoxMw4gcqha+0rdw/gFx4
-         y+eRhuD+Xx/wUx24NOCtoBMoJ60BganonQl3mN16KkmzY4BXEYH41khSkkTT6bjwM480
-         vR/LjixgOTvb7rm1cdxgYpKdQNqB+RJBRgzViyMw1bB7AFkoaFqxgW7C0y3tXv1zemtl
-         JsvQYMrQsKF8oxM4LoZmbJC+HGbelG+/vJmnWHkY4cT49O/sT8qMM09OtOSr2AWABVlZ
-         zVow==
-X-Gm-Message-State: AOAM531s1s/EURFTm/6yAOOwnBkJ0ieBw8Nt7CWYG/BMfNlxXEflpyWm
-        H5mgC5RXSKnB4CJap9vVZfA=
-X-Google-Smtp-Source: ABdhPJzdz2V3SyrsoMH/S6hyA0iHuIAZywlJV57P81G63zh0Zscugbwew5VnSJhP09HLn2VJQ9jb0g==
-X-Received: by 2002:ac2:53a3:: with SMTP id j3mr333399lfh.86.1600707828703;
-        Mon, 21 Sep 2020 10:03:48 -0700 (PDT)
-Received: from green.intra.ispras.ru (winnie.ispras.ru. [83.149.199.91])
-        by smtp.googlemail.com with ESMTPSA id c22sm2689992lff.202.2020.09.21.10.03.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 10:03:48 -0700 (PDT)
-From:   Denis Efremov <efremov@linux.com>
-To:     David Sterba <dsterba@suse.com>
-Cc:     Denis Efremov <efremov@linux.com>,
-        Josef Bacik <josef@toxicpanda.com>, Chris Mason <clm@fb.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>
-Subject: [PATCH 2/2] btrfs: check allocation size in btrfs_ioctl_send()
-Date:   Mon, 21 Sep 2020 20:03:36 +0300
-Message-Id: <20200921170336.82643-2-efremov@linux.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200921170336.82643-1-efremov@linux.com>
-References: <20200921170336.82643-1-efremov@linux.com>
+        id S1727768AbgIURSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 13:18:15 -0400
+Received: from interkad.alt.ru ([80.247.111.66]:12770 "EHLO interkad.alt.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726419AbgIURSO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 13:18:14 -0400
+X-Greylist: delayed 724 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Sep 2020 13:17:49 EDT
+Received: from User ([41.215.171.206] RDNS failed) by interkad.alt.ru with Microsoft SMTPSVC(6.0.3790.3959);
+         Tue, 22 Sep 2020 00:05:35 +0700
+Reply-To: <smithosdouga@gmail.com>
+From:   "Douglas" <smithdougaa@gmail.com>
+Subject: Re: Abandoned Consignments/Boxes
+Date:   Mon, 21 Sep 2020 10:05:48 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+        charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-ID: <INTER-FW9YDXXhbbqZn0000802e@interkad.alt.ru>
+X-OriginalArrivalTime: 21 Sep 2020 17:05:36.0354 (UTC) FILETIME=[6C997420:01D69039]
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace kvzalloc() call with kvcalloc() that checks
-the size internally. Use array_size() helper to compute
-the memory size for clone_sources_tmp.
+Hello a Request For Partnership.
+I am particularly happy dealing with a person of your caliber who knows what international business is all about. This business is purely base on trust and it's 100% risk free business and I understand your willingness to assist me in actualizing this deal. As I told you in my first email, all I need from you is a confirmation that you can handle this deal in question, and then all the details will be given to you as we progress. My name is Mr.Douglas Smith, a Vault Manager with a Private Security Firm in Ghana. Having worked with this security company for the past 18 Years with dedication and having nothing to write home about. Hence I have to package this deal for our betterment.
 
-Cc: Kees Cook <keescook@chromium.org>
-Signed-off-by: Denis Efremov <efremov@linux.com>
----
- fs/btrfs/send.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+There is this UNCLAIMED Consignments/Boxes Deposited in our Company's Vault for the past 15 years ago, and nobody has ever shown up for the claims and collection till date. Having made inquiry and investigation why these Consignments/Boxes has not been claimed by their depositors/Owners,only discovered they are late/dead for the past 10 year ago, no forwarding contact Addresses of these late depositors/Owners and every effort to locate any of their surviving relatives or close family members proof abortive.
 
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index c874ddda6252..9e02aba30651 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -7087,7 +7087,7 @@ long btrfs_ioctl_send(struct file *mnt_file, struct btrfs_ioctl_send_args *arg)
- 	u32 i;
- 	u64 *clone_sources_tmp = NULL;
- 	int clone_sources_to_rollback = 0;
--	unsigned alloc_size;
-+	size_t alloc_size;
- 	int sort_clone_roots = 0;
- 
- 	if (!capable(CAP_SYS_ADMIN))
-@@ -7179,15 +7179,16 @@ long btrfs_ioctl_send(struct file *mnt_file, struct btrfs_ioctl_send_args *arg)
- 	sctx->waiting_dir_moves = RB_ROOT;
- 	sctx->orphan_dirs = RB_ROOT;
- 
--	alloc_size = sizeof(struct clone_root) * (arg->clone_sources_count + 1);
--
--	sctx->clone_roots = kvzalloc(alloc_size, GFP_KERNEL);
-+	sctx->clone_roots = kvcalloc(sizeof(*sctx->clone_roots),
-+				     arg->clone_sources_count + 1,
-+				     GFP_KERNEL);
- 	if (!sctx->clone_roots) {
- 		ret = -ENOMEM;
- 		goto out;
- 	}
- 
--	alloc_size = arg->clone_sources_count * sizeof(*arg->clone_sources);
-+	alloc_size = array_size(sizeof(*arg->clone_sources),
-+				arg->clone_sources_count);
- 
- 	if (arg->clone_sources_count) {
- 		clone_sources_tmp = kvmalloc(alloc_size, GFP_KERNEL);
--- 
-2.26.2
+Just few Months ago, the Management and board of directors of our company met and resolved to dispose All Unclaimed Consignments/Boxes that has exceeded the period of 9-10 years without their depositors coming for claims and collection be dislodged from the Vault and disposed, So as to create space to accommodate incoming Deposit. Actually, Many Consignments where dislodged from the Vault for disposal but being the Vault Manager, I decided to checkmate and to know the true contents of these boxes/consignments. After scanning these few Consignments electronically, I discovered their contents to be fiscal cash running into Millions of United States of American Dollars in $100 dollars bills/notes.
 
+It may interest you to note that none of the staff or management of our company know anything relating to this development till date, I contacted you believing that you could be of a great assistance and help me to legally secure and claim these Trunk Boxes from our company for collection and further delivery to your country. While I shall join you in your country immediately after the collection and delivery is madeto your country where I shall meet you for the Disbursement/Sharing of the proceeds of the Consignments/ Boxes  50% / 50% with you.
+
+Should you need to see the copies of the deposit Documents covering these Boxes issued to the late depositor by the management of our company, I will not hesitate to present them to your perusal and study. Kindly forward your full contact Address, direct Telephone, cell phone and fax numbers known to me. I can guarantee you that if only you give me a chance and corporate with me within the next fourteen (14) working days from today the consignment will be released and delivered to your doorstep in your country. I know how to handle this and immediately after the completion of this transaction I will personally destroy and delete every information leading to the completion of this transaction this is to assure you that I will not leave any traces.
+Best Regards.
+Douglas Smith.
+Vaul Manager.
