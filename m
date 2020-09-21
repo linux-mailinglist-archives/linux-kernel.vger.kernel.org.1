@@ -2,91 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4272272492
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71317272481
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727008AbgIUNGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:06:31 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:16953 "EHLO z5.mailgun.us"
+        id S1726986AbgIUNDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:03:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726436AbgIUNG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:06:29 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600693589; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=jPYut+8RHNZBwsOgqTf/k1AnklrA0DOtviGDY6GteVw=;
- b=v9mpp/yX8ByLoDtvOohSpGqsJ8Oi2X/LulW4Og1ZSbMKfgvJI6V/IoenQIRGj1UEs3XU0Hij
- Sqp1fK5c16ifzw4iNTxPPyvyXjHMGoMzLM8jG6wfM6nSQ7h6Vi185z4SJ4MgPPsUWHuTurs9
- MKTzxlFyBizuQhypRYwaKMO5znE=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5f68a49e6ace44caccfba942 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 21 Sep 2020 13:03:26
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 86C53C433FF; Mon, 21 Sep 2020 13:03:25 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        id S1726395AbgIUNDe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:03:34 -0400
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8C6E0C433CA;
-        Mon, 21 Sep 2020 13:03:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8C6E0C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        by mail.kernel.org (Postfix) with ESMTPSA id 7DFC421BE5;
+        Mon, 21 Sep 2020 13:03:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600693412;
+        bh=/OXxvRuG9UKcQRKGwiYUXauAuIovgqSdUTuP2bCvGxc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BK91AnXD8umfR9eGG22AlARI0YYWuVA+LtPMvJ7jmlfx9fcC/mM7YICUl8Vrir2Ml
+         DIZxeACidTCoL5lFzdwGm3c6r7G6e9uUZ99QlbzkJeAc7o/JvizkwnnvPVPuIcYXRk
+         K3nWZjjjuk0ZGKIvXAU2wXzqWa3fayM6DRDwsqYE=
+Date:   Mon, 21 Sep 2020 21:03:27 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>
+Cc:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        Varun Sethi <V.Sethi@nxp.com>, Leo Li <leoyang.li@nxp.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Kuldeep Singh <kuldeep.singh@nxp.com>
+Subject: Re: [PATCH 2/2] arm64: dts: lx2160a: add device tree for lx2162aqds
+ board
+Message-ID: <20200921130325.GA25428@dragon>
+References: <1599059610-7570-1-git-send-email-meenakshi.aggarwal@nxp.com>
+ <1599059610-7570-2-git-send-email-meenakshi.aggarwal@nxp.com>
+ <20200905075419.GN9261@dragon>
+ <AM7PR04MB688571606382A8992C71E8E38E260@AM7PR04MB6885.eurprd04.prod.outlook.com>
+ <20200912094913.GB25109@dragon>
+ <AM7PR04MB6885EF94F69D741496AD9C838E3A0@AM7PR04MB6885.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH -next 1/9] rtlwifi: rtl8192ee: fix comparison to bool
- warning
- in hw.c
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200918102505.16036-2-zhengbin13@huawei.com>
-References: <20200918102505.16036-2-zhengbin13@huawei.com>
-To:     Zheng Bin <zhengbin13@huawei.com>
-Cc:     <pkshih@realtek.com>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
-        <zhengbin13@huawei.com>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20200921130325.86C53C433FF@smtp.codeaurora.org>
-Date:   Mon, 21 Sep 2020 13:03:25 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AM7PR04MB6885EF94F69D741496AD9C838E3A0@AM7PR04MB6885.eurprd04.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Zheng Bin <zhengbin13@huawei.com> wrote:
-
-> Fixes coccicheck warning:
+On Mon, Sep 21, 2020 at 06:00:53AM +0000, Meenakshi Aggarwal wrote:
 > 
-> drivers/net/wireless/realtek/rtlwifi/rtl8192ee/hw.c:797:6-33: WARNING: Comparison to bool
 > 
-> Signed-off-by: Zheng Bin <zhengbin13@huawei.com>
+> > -----Original Message-----
+> > From: Shawn Guo <shawnguo@kernel.org>
+> > Sent: Saturday, September 12, 2020 3:19 PM
+> > To: Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>
+> > Cc: robh+dt@kernel.org; Varun Sethi <V.Sethi@nxp.com>; Leo Li
+> > <leoyang.li@nxp.com>; linux-arm-kernel@lists.infradead.org;
+> > devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; Ioana Ciornei
+> > <ioana.ciornei@nxp.com>; Kuldeep Singh <kuldeep.singh@nxp.com>
+> > Subject: Re: [PATCH 2/2] arm64: dts: lx2160a: add device tree for lx2162aqds
+> > board
+> > 
+> > On Wed, Sep 09, 2020 at 07:10:12AM +0000, Meenakshi Aggarwal wrote:
+> > > > > +	sb_3v3: regulator-sb3v3 {
+> > > > > +		compatible = "regulator-fixed";
+> > > > > +		regulator-name = "MC34717-3.3VSB";
+> > > > > +		regulator-min-microvolt = <3300000>;
+> > > > > +		regulator-max-microvolt = <3300000>;
+> > > > > +		regulator-boot-on;
+> > > > > +		regulator-always-on;
+> > > >
+> > > > I do not see any point to have regulator-boot-on or
+> > > > regulator-always-on for a regulator that doesn't have on/off control.
+> > > [Meenakshi Aggarwal] Properties are added to specify that platform
+> > > firmware's out of reset configuration enabled the regulator and regulator
+> > should never be disabled or change its operative status.
+> > 
+> > What I was wondering if how this regulator is enabled by firmware, by some
+> > GPIO control?  In that case, 'gpio' property should be there to describe the GPIO
+> > control.
+> > 
+> [Meenakshi Aggarwal] Its not controlled by GPIO. Its gets power on with board.
+> > >
+> > > Can you help in understanding why these optional properties cannot be
+> > > used together
+> > 
+> > It's totally fine to use these properties together.  But if the regulator doesn't
+> > have on/off control, neither of them makes sense.
+> [Meenakshi Aggarwal] As per documentation, we should keep " regulator-always-on " as per description, we
+> Can remove " regulator-boot-on" property from dts.
+> 
+> regulator-always-on:
+>     description: boolean, regulator should never be disabled                                  
 
-9 patches applied to wireless-drivers-next.git, thanks.
+Again, the property is only meaningful for a regulator that can possibly
+be disabled.
 
-027a4c9c305f rtlwifi: rtl8192ee: fix comparison to bool warning in hw.c
-4cff897cb2f8 rtlwifi: rtl8192c: fix comparison to bool warning in phy_common.c
-03ce81593951 rtlwifi: rtl8192cu: fix comparison to bool warning in mac.c
-d87a8d4d5eef rtlwifi: rtl8821ae: fix comparison to bool warning in hw.c
-07cc5f0345ae rtlwifi: rtl8821ae: fix comparison to bool warning in phy.c
-77205bc3db80 rtlwifi: rtl8192cu: fix comparison to bool warning in hw.c
-d544707ae078 rtlwifi: rtl8192ce: fix comparison to bool warning in hw.c
-9dbde387e283 rtlwifi: rtl8192de: fix comparison to bool warning in hw.c
-02686841d58f rtlwifi: rtl8723be: fix comparison to bool warning in hw.c
-
--- 
-https://patchwork.kernel.org/patch/11784543/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Shawn
