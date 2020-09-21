@@ -2,85 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F36D2732AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:19:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6592E2732B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728068AbgIUTTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 15:19:46 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:52460 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726969AbgIUTTq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 15:19:46 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08LJJauw014971;
-        Mon, 21 Sep 2020 14:19:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600715976;
-        bh=uR02JwKo0qvxv+nT1lRsSAEq7fVnd6Fv2/1txQvzfl0=;
-        h=Subject:From:To:CC:References:Date:In-Reply-To;
-        b=jchyOjN+uz1OKUIZqBNt6b08imte/+khyvE71NE3rEfZaAo6pUMvuR1p8PsOiTc/s
-         OFnlzWS2PSTx8xC4QtsuIuinuiwWE+VLW7OnxiiWNuh5veLV7yW7f2JARM+bLEX8ni
-         4bgqn9mELKmHg/z+Vh3ZQIXqJ39oDmDnTHydX9zQ=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08LJJapJ122091
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 21 Sep 2020 14:19:36 -0500
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 21
- Sep 2020 14:19:36 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 21 Sep 2020 14:19:36 -0500
-Received: from [10.250.35.164] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08LJJaN7051871;
-        Mon, 21 Sep 2020 14:19:36 -0500
-Subject: Re: [PATCH 6/9] ASoC: tas2770: Convert bit mask to GENMASK in header
-From:   Dan Murphy <dmurphy@ti.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     <lgirdwood@gmail.com>, <tiwai@suse.com>, <robh+dt@kernel.org>,
-        <devicetree@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200918190548.12598-1-dmurphy@ti.com>
- <20200918190548.12598-6-dmurphy@ti.com> <20200921190437.GJ4792@sirena.org.uk>
- <bea218c8-c71d-2ce8-da92-14af73ac4da5@ti.com>
-Message-ID: <2ca0647d-1ebf-1290-0f75-61bb97324165@ti.com>
-Date:   Mon, 21 Sep 2020 14:19:36 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728035AbgIUTWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 15:22:31 -0400
+Received: from mga17.intel.com ([192.55.52.151]:35794 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726537AbgIUTWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 15:22:31 -0400
+IronPort-SDR: giGhE/KQl2w2rZycbGWUp/zscbbJskczNWyzkQfcQSLSnM1mua69Ieja7cKJSfbvbZP3HbXo9v
+ Ykof7L/HrHbg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="140465197"
+X-IronPort-AV: E=Sophos;i="5.77,287,1596524400"; 
+   d="scan'208";a="140465197"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 12:22:30 -0700
+IronPort-SDR: BUKjSoNgefI449QJY3EW3BUJ/htJui4FVq98QuAEvvMfVxQ3ruEl4+7FY+AXCmtgIuLb0CSa4V
+ GjzvMCfGkWjg==
+X-IronPort-AV: E=Sophos;i="5.77,287,1596524400"; 
+   d="scan'208";a="454191063"
+Received: from tsenx-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.44.83])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 12:22:22 -0700
+Date:   Mon, 21 Sep 2020 22:22:20 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 14/24] x86/sgx: Add SGX_IOC_ENCLAVE_INIT
+Message-ID: <20200921192220.GC53597@linux.intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-15-jarkko.sakkinen@linux.intel.com>
+ <20200921173514.GI5901@zn.tnic>
+ <20200921181021.GA24481@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <bea218c8-c71d-2ce8-da92-14af73ac4da5@ti.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921181021.GA24481@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mark
+On Mon, Sep 21, 2020 at 11:10:21AM -0700, Sean Christopherson wrote:
+> On Mon, Sep 21, 2020 at 07:35:14PM +0200, Borislav Petkov wrote:
+> > On Tue, Sep 15, 2020 at 02:28:32PM +0300, Jarkko Sakkinen wrote:
+> > > +static int sgx_einit(struct sgx_sigstruct *sigstruct, void *token,
+> > > +		     struct sgx_epc_page *secs, u64 *lepubkeyhash)
+> > > +{
+> > > +	int ret;
+> > > +
+> > > +	preempt_disable();
+> > > +	sgx_update_lepubkeyhash_msrs(lepubkeyhash, false);
+> > 
+> > So this will update the cached copies *and* the MSRs itself if what's
+> > cached is stale...
+> > 
+> > > +	ret = __einit(sigstruct, token, sgx_get_epc_addr(secs));
+> > > +	if (ret == SGX_INVALID_EINITTOKEN) {
+> > 
+> > ... so why would it return this error here?
+> > 
+> > Definition of this error says:
+> > 
+> >  * %SGX_INVALID_EINITTOKEN:     EINITTOKEN is invalid and enclave signer's
+> >  *                              public key does not match IA32_SGXLEPUBKEYHASH.
+> > 
+> > when you just updated them?!
+> > 
+> > > +		sgx_update_lepubkeyhash_msrs(lepubkeyhash, true);
+> > 
+> > So why force a second time?
+> 
+> The LE pubkey hash MSRs are special snowflakes.  They get reset to Intel's
+> default key on any loss of EPC, e.g. if the system does a suspend/resume
+> cycle.  The approach we took (obviously) is to assume the kernel's cache can
+> be stale at any given time.  The alternative would be to try and track loss
+> of EPC conditions and emulate the reset, but that's a bit dicey on bare
+> metal as any missed case would hose SGX, and in a VM it's theoretically
+> impossible to handle as a particularly unhelpful VMM could emulate loss of
+> EPC at will.
+> 
+> Yes, this need a big fat comment.
 
-On 9/21/20 2:18 PM, Dan Murphy wrote:
-> Mark
->
-> On 9/21/20 2:04 PM, Mark Brown wrote:
->> On Fri, Sep 18, 2020 at 02:05:45PM -0500, Dan Murphy wrote:
->>> Update the hardcoded masks with the GENMASK macro. Also update some of
->>> the hardcoded bits with the BIT macro
->> Cleanups like this should come after any fixes in the series, that way
->> fixes can be sent as fixes if needed which isn't appropriate for random
->> cleanups.
->
-> OK I can re-order so the clean up comes at the end.  During the clean 
-> up I found patch 7-9.
->
-Forgot to ask are you going to take 1-5? If so I can rebase on top of 
-for-5.10 and re-submit.
+Thanks, please provide one :-)
 
-Dan
-
-
-> Dan
->
+/Jarkko
