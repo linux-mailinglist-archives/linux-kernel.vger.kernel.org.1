@@ -2,190 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE05D273217
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 20:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66D1A273218
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 20:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727621AbgIUSmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 14:42:24 -0400
-Received: from mail-io1-f77.google.com ([209.85.166.77]:37937 "EHLO
-        mail-io1-f77.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726973AbgIUSmY (ORCPT
+        id S1727876AbgIUSmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 14:42:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727470AbgIUSmc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 14:42:24 -0400
-Received: by mail-io1-f77.google.com with SMTP id e21so10700882iod.5
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 11:42:23 -0700 (PDT)
+        Mon, 21 Sep 2020 14:42:32 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8593C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 11:42:32 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id g29so9822050pgl.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 11:42:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GC8sasDcUUtfwQI8cKe8C4MyvaXt20t2jZSBkvmxcKE=;
+        b=PJIO62ljOyN+1oeIjex1hvkPe/kAXRdHMt2EuQnA7LXWMDOfzFJMe9X1NF6dCxKuIh
+         EhFxtVsOp5Dj9ZEIJWRwPrIwHfaaa+nrRPykZYIAImOwzeCkt2RIpZu/a8MFyx/1HUYu
+         JPeseNB397GZY/NIsuxhnZcN+rfWQhgzOB3CbDYGMxzldcRBPGGrvGQLvcSbfPtCzSnN
+         8IpqjPYrO7za6eiQMYDcaiwTFY5V0R0Up+iputxQPdeN3wyYPyeJeDCwnYfUzTuu39gr
+         zSX+fTMi1+vbhHa3PM7rwXb3APyjh8XPjYeiQH8eQIRJUs0AbvMttuiUz20Vdld2OX3J
+         Dteg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=N56mUcRn5Ly1Kz/Mb+69DHzRjDQQQwe7tYygw2RlZUQ=;
-        b=V/BCbnixn+inwHENh1Ni8/yQtlmqC6ht9ibupFyAK8fXKnkyuYfBRkNYTWfgXNu6tA
-         K3V6aH3zvb0Kop30FqBrY2bgmLTq5eztZMQf2UKh5OByPVQI6VYgc9L6u5l+zEaIUR+B
-         XCV5MpAjWD6JYEPYlya3RfA7nFblog9CiVa9pGROGIamngmvJ9cdKUuFhm6yUC4TvN8T
-         E88KGzCPw42BTkBqda0DSZIOQSD7RwW4xOtaP2oxbjXE2bqThKGvCatMb9WB20Z5yNi7
-         s+7fJDfSUw13dpy8bbjIqvHXfPJ0Y4oPAGVVK99yYP2sNSk0+ZBHAKVhXSle3HLUsQZy
-         CzZQ==
-X-Gm-Message-State: AOAM531x1w8PSVcMmQFVDIvYdymr6rsCRIPo3Za+HD2DQ3YEVo/1l4kw
-        FdyinFc69jYr2HwIQ4Xyau0BTn74UVqkTT1ZuDbVR9OKlDbi
-X-Google-Smtp-Source: ABdhPJw1XJnyUnfXS5QeZtWT2fywvX7nl2tebdBarqAjrEjVz7/tDu3Cps/zdDtyppE8LEGbDh0RCtIlZF88isejGewdtgyIJOtS
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=GC8sasDcUUtfwQI8cKe8C4MyvaXt20t2jZSBkvmxcKE=;
+        b=XqL9aru3P+a/rpPgNwqbEtpvk4EpFIWpoQIqnhsvt2fapV7MlUKdjXYpJgnJjpn2hL
+         cV4iLFDLlLYkgTX9/SodIHBxDMsRS+W8iLVt1EPDHgfTk3n4Y8+AsN/JSUY/QTO8dtUx
+         fcGsZ4faWfT01rB1NybyqaLnOMiufHzP9wItiWnGXYARQtfUId5jbTP8oGdxVxvpTHhR
+         NyavUmO7Ym+w+OkrSYOEM0LPp6c2umH0P3GCwx7ESKxitXzeeEh9JmmiCWswh+0edORO
+         Op+cEDVWt+Q6C+NMP+4GcCvMqsXzokinRENtG6Bbyc38YTM+O8X5teUInV+Vl00QrWvj
+         PSAQ==
+X-Gm-Message-State: AOAM531VjG6Ixuw4YEGDwilTyr7X2wBcDf7ramrkAOtJQoJ6rfB46dI7
+        upag64LMuYqevIU0gQksUV4=
+X-Google-Smtp-Source: ABdhPJyIYDaB5wxRnaHeVNF92ISZZsgvCaNReLLtTysYEz7UGmPMJ8HW/tA7CIa5ivCFQs4Qv4vx5Q==
+X-Received: by 2002:aa7:8a46:0:b029:142:2501:398a with SMTP id n6-20020aa78a460000b02901422501398amr993477pfa.79.1600713752207;
+        Mon, 21 Sep 2020 11:42:32 -0700 (PDT)
+Received: from google.com ([2620:15c:211:1:7220:84ff:fe09:5e58])
+        by smtp.gmail.com with ESMTPSA id i25sm13004358pgi.9.2020.09.21.11.42.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 11:42:31 -0700 (PDT)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Mon, 21 Sep 2020 11:42:29 -0700
+From:   Minchan Kim <minchan@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Nitin Gupta <ngupta@vflare.org>, x86@kernel.org,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 1/6] zsmalloc: switch from alloc_vm_area to get_vm_area
+Message-ID: <20200921184229.GA422329@google.com>
+References: <20200918163724.2511-1-hch@lst.de>
+ <20200918163724.2511-2-hch@lst.de>
+ <20200921174256.GA387368@google.com>
+ <20200921181708.GA2067@lst.de>
 MIME-Version: 1.0
-X-Received: by 2002:a02:b199:: with SMTP id t25mr1130432jah.124.1600713742724;
- Mon, 21 Sep 2020 11:42:22 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 11:42:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000005b42305afd736ee@google.com>
-Subject: KASAN: invalid-free in ___pte_free_tlb
-From:   syzbot <syzbot+298e0d280663dcbc8092@syzkaller.appspotmail.com>
-To:     bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, luto@kernel.org, mingo@redhat.com,
-        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921181708.GA2067@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Sep 21, 2020 at 08:17:08PM +0200, Christoph Hellwig wrote:
+> On Mon, Sep 21, 2020 at 10:42:56AM -0700, Minchan Kim wrote:
+> > IIRC, the problem was runtime pte popluating needs GFP_KERNEL but
+> > zs_map_object API runs under non-preemtible section.
+> 
+> Make sense.
+> 
+> > > -	area->vm = alloc_vm_area(PAGE_SIZE * 2, NULL);
+> > > +	area->vm = get_vm_area(PAGE_SIZE * 2, 0);
+> > >  	if (!area->vm)
+> > >  		return -ENOMEM;
+> > >  	return 0;
+> > 
+> > I think it shoud work.
+> > 
+> > diff --git a/mm/memory.c b/mm/memory.c
+> > index 05789aa4af12..6a1e4d854593 100644
+> > --- a/mm/memory.c
+> > +++ b/mm/memory.c
+> > @@ -2232,7 +2232,7 @@ static int apply_to_pte_range(struct mm_struct *mm, pmd_t *pmd,
+> >  	arch_enter_lazy_mmu_mode();
+> >  
+> >  	do {
+> > -		if (create || !pte_none(*pte)) {
+> > +		if ((create || !pte_none(*pte)) && fn) {
+> >  			err = fn(pte++, addr, data);
+> >  			if (err)
+> >  				break;
+> > diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
+> > index 3e4fe3259612..9ef7daf3d279 100644
+> > --- a/mm/zsmalloc.c
+> > +++ b/mm/zsmalloc.c
+> > @@ -1116,6 +1116,8 @@ static struct zspage *find_get_zspage(struct size_class *class)
+> >  #ifdef CONFIG_ZSMALLOC_PGTABLE_MAPPING
+> >  static inline int __zs_cpu_up(struct mapping_area *area)
+> >  {
+> > +	int ret;
+> > +
+> >  	/*
+> >  	 * Make sure we don't leak memory if a cpu UP notification
+> >  	 * and zs_init() race and both call zs_cpu_up() on the same cpu
+> > @@ -1125,7 +1127,13 @@ static inline int __zs_cpu_up(struct mapping_area *area)
+> >  	area->vm = get_vm_area(PAGE_SIZE * 2, 0);
+> >  	if (!area->vm)
+> >  		return -ENOMEM;
+> > -	return 0;
+> > +
+> > +	/*
+> > +	 * Populate ptes in advance to avoid pte allocation with GFP_KERNEL
+> > +	 * in non-preemtible context of zs_map_object.
+> > +	 */
+> > +	ret = apply_to_page_range(&init_mm, NULL, PAGE_SIZE * 2, NULL, NULL);
+> > +	return ret;
+> 
+> I think this needs the addr from the vm area somewhere..
 
-syzbot found the following issue on:
+Yeah, let's assign the addres we got get_vm_area.
 
-HEAD commit:    5925fa68 Merge tag 'perf-tools-fixes-for-v5.9-2020-09-16' ..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10a3bd65900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cd992d74d6c7e62
-dashboard link: https://syzkaller.appspot.com/bug?extid=298e0d280663dcbc8092
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+> 
+> We probaby want to add a trivial helper to prefault an area instead of
+> the open coded variant.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+It seems zsmalloc is only customer the function so let's have the helper
+when we see another customer.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+298e0d280663dcbc8092@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: double-free or invalid-free in pgtable_pte_page_dtor include/linux/mm.h:2202 [inline]
-BUG: KASAN: double-free or invalid-free in ___pte_free_tlb+0x29/0x180 arch/x86/mm/pgtable.c:55
-
-CPU: 1 PID: 26083 Comm: syz-executor.1 Not tainted 5.9.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1d6/0x29e lib/dump_stack.c:118
- print_address_description+0x66/0x620 mm/kasan/report.c:383
- kasan_report_invalid_free+0x54/0xd0 mm/kasan/report.c:477
- __kasan_slab_free+0x9a/0x110 mm/kasan/common.c:410
- __cache_free mm/slab.c:3418 [inline]
- kmem_cache_free+0x82/0xf0 mm/slab.c:3693
- pgtable_pte_page_dtor include/linux/mm.h:2202 [inline]
- ___pte_free_tlb+0x29/0x180 arch/x86/mm/pgtable.c:55
- __pte_free_tlb arch/x86/include/asm/pgalloc.h:61 [inline]
- free_pte_range mm/memory.c:221 [inline]
- free_pmd_range mm/memory.c:239 [inline]
- free_pud_range mm/memory.c:273 [inline]
- free_p4d_range mm/memory.c:307 [inline]
- free_pgd_range+0x7d2/0xec0 mm/memory.c:387
- free_pgtables+0x29a/0x2d0 mm/memory.c:419
- exit_mmap+0x285/0x550 mm/mmap.c:3184
- __mmput+0x113/0x370 kernel/fork.c:1076
- exit_mm+0x4cd/0x550 kernel/exit.c:483
- do_exit+0x576/0x1f20 kernel/exit.c:793
- do_group_exit+0x161/0x2d0 kernel/exit.c:903
- get_signal+0x13bb/0x1d50 kernel/signal.c:2757
- arch_do_signal+0x33/0x610 arch/x86/kernel/signal.c:811
- exit_to_user_mode_loop kernel/entry/common.c:159 [inline]
- exit_to_user_mode_prepare+0x8d/0x1e0 kernel/entry/common.c:190
- syscall_exit_to_user_mode+0x82/0x1d0 kernel/entry/common.c:265
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45d5f9
-Code: Bad RIP value.
-RSP: 002b:00007f64a4d3acf8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: fffffffffffffe00 RBX: 000000000118cf48 RCX: 000000000045d5f9
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000118cf48
-RBP: 000000000118cf40 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118cf4c
-R13: 00007ffd2a4f628f R14: 00007f64a4d3b9c0 R15: 000000000118cf4c
-
-Allocated by task 6856:
- kasan_save_stack mm/kasan/common.c:48 [inline]
- kasan_set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc+0x100/0x130 mm/kasan/common.c:461
- slab_post_alloc_hook+0x3e/0x290 mm/slab.h:518
- slab_alloc mm/slab.c:3312 [inline]
- kmem_cache_alloc+0x1c1/0x2d0 mm/slab.c:3482
- ptlock_alloc+0x1c/0x70 mm/memory.c:5065
- ptlock_init include/linux/mm.h:2166 [inline]
- pgtable_pte_page_ctor include/linux/mm.h:2193 [inline]
- __pte_alloc_one include/asm-generic/pgalloc.h:66 [inline]
- pte_alloc_one+0x6a/0x180 arch/x86/mm/pgtable.c:33
- __pte_alloc+0x1d/0x2a0 mm/memory.c:429
- copy_pte_range mm/memory.c:829 [inline]
- copy_pmd_range mm/memory.c:905 [inline]
- copy_pud_range mm/memory.c:939 [inline]
- copy_p4d_range mm/memory.c:961 [inline]
- copy_page_range+0x2458/0x2950 mm/memory.c:1023
- dup_mmap+0x982/0xd60 kernel/fork.c:592
- dup_mm+0x98/0x320 kernel/fork.c:1354
- copy_mm kernel/fork.c:1410 [inline]
- copy_process+0x1fdc/0x5200 kernel/fork.c:2069
- _do_fork+0x1ab/0x6d0 kernel/fork.c:2428
- __do_sys_clone kernel/fork.c:2545 [inline]
- __se_sys_clone kernel/fork.c:2529 [inline]
- __x64_sys_clone+0x1e9/0x230 kernel/fork.c:2529
- do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Freed by task 26083:
- kasan_save_stack mm/kasan/common.c:48 [inline]
- kasan_set_track+0x3d/0x70 mm/kasan/common.c:56
- kasan_set_free_info+0x17/0x30 mm/kasan/generic.c:355
- __kasan_slab_free+0xdd/0x110 mm/kasan/common.c:422
- __cache_free mm/slab.c:3418 [inline]
- kmem_cache_free+0x82/0xf0 mm/slab.c:3693
- pgtable_pte_page_dtor include/linux/mm.h:2202 [inline]
- ___pte_free_tlb+0x29/0x180 arch/x86/mm/pgtable.c:55
- __pte_free_tlb arch/x86/include/asm/pgalloc.h:61 [inline]
- free_pte_range mm/memory.c:221 [inline]
- free_pmd_range mm/memory.c:239 [inline]
- free_pud_range mm/memory.c:273 [inline]
- free_p4d_range mm/memory.c:307 [inline]
- free_pgd_range+0x7d2/0xec0 mm/memory.c:387
- free_pgtables+0x29a/0x2d0 mm/memory.c:419
- exit_mmap+0x285/0x550 mm/mmap.c:3184
- __mmput+0x113/0x370 kernel/fork.c:1076
- exit_mm+0x4cd/0x550 kernel/exit.c:483
- do_exit+0x576/0x1f20 kernel/exit.c:793
- do_group_exit+0x161/0x2d0 kernel/exit.c:903
- get_signal+0x13bb/0x1d50 kernel/signal.c:2757
- arch_do_signal+0x33/0x610 arch/x86/kernel/signal.c:811
- exit_to_user_mode_loop kernel/entry/common.c:159 [inline]
- exit_to_user_mode_prepare+0x8d/0x1e0 kernel/entry/common.c:190
- syscall_exit_to_user_mode+0x82/0x1d0 kernel/entry/common.c:265
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-The buggy address belongs to the object at ffff888000117000
- which belongs to the cache page->ptl of size 64
-The buggy address is located 0 bytes inside of
- 64-byte region [ffff888000117000, ffff888000117040)
-The buggy address belongs to the page:
-page:00000000d8cb99e1 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x117
-flags: 0x7ffe0000000200(slab)
-raw: 007ffe0000000200 ffffea00029c9808 ffffea0002784948 ffff8880aa44fc00
-raw: 0000000000000000 ffff888000117000 000000010000002a 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888000116f00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888000116f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff888000117000: fa fb fb fb fb fb fb fb fc fc fc fc 00 00 00 00
-                   ^
- ffff888000117080: 00 00 00 00 fc fc fc fc fb fb fb fb fb fb fb fb
- ffff888000117100: fc fc fc fc 00 00 00 00 00 00 00 00 fc fc fc fc
-==================================================================
-
+If we don't have objection, I'd like to ask to Andrew fold this up.
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ mm/memory.c   | 2 +-
+ mm/zsmalloc.c | 8 +++++++-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/mm/memory.c b/mm/memory.c
+index 05789aa4af12..6a1e4d854593 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -2232,7 +2232,7 @@ static int apply_to_pte_range(struct mm_struct *mm, pmd_t *pmd,
+ 	arch_enter_lazy_mmu_mode();
+ 
+ 	do {
+-		if (create || !pte_none(*pte)) {
++		if ((create || !pte_none(*pte)) && fn) {
+ 			err = fn(pte++, addr, data);
+ 			if (err)
+ 				break;
+diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
+index 3e4fe3259612..918c7b019b3d 100644
+--- a/mm/zsmalloc.c
++++ b/mm/zsmalloc.c
+@@ -1125,7 +1125,13 @@ static inline int __zs_cpu_up(struct mapping_area *area)
+ 	area->vm = get_vm_area(PAGE_SIZE * 2, 0);
+ 	if (!area->vm)
+ 		return -ENOMEM;
+-	return 0;
++
++	/*
++	 * Populate ptes in advance to avoid pte allocation with GFP_KERNEL
++	 * in non-preemtible context of zs_map_object.
++	 */
++	return apply_to_page_range(&init_mm, (unsigned long)area->vm->addr,
++			PAGE_SIZE * 2, NULL, NULL);
+ }
+ 
+ static inline void __zs_cpu_down(struct mapping_area *area)
+-- 
+2.28.0.681.g6f77f65b4e-goog
+
