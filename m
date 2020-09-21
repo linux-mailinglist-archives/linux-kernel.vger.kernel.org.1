@@ -2,74 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7420273510
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 23:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 849D3273519
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 23:44:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727868AbgIUVls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 17:41:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58388 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726452AbgIUVls (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 17:41:48 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 148B623A60;
-        Mon, 21 Sep 2020 21:41:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600724507;
-        bh=jju9SLxwn4Bjq7abtdJqJjPWwHxsd8XkpO610vWUqIg=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=VrMOy/knCTZV2eYk60oKEabmEKHp4PGyd8KckGWL0lpoTWSRD+GAhrvZyIHDGuBNt
-         5gVbxn2XXb6u/5QSkwQJ9h/M8fCrJNJU/5Rj5X8/JofHGeiUI1MN6USGGpEy7iT4y/
-         Lb2YE0gDCGfQOp7fauD5eS6TrJ42YzlIBDQ3JmZU=
-Date:   Mon, 21 Sep 2020 22:40:55 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     hkallweit1@gmail.com, npiggin@gmail.com,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        linux-spi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-In-Reply-To: <20200904002812.7300-1-chris.packham@alliedtelesis.co.nz>
-References: <20200904002812.7300-1-chris.packham@alliedtelesis.co.nz>
-Subject: Re: [PATCH] spi: fsl-espi: Only process interrupts for expected events
-Message-Id: <160072445517.57049.9668130965130008187.b4-ty@kernel.org>
+        id S1727863AbgIUVoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 17:44:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726452AbgIUVoG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 17:44:06 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D0DC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 14:44:06 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id b12so14213430edz.11
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 14:44:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FBnY2mGkBlFH+IxSO6esO9hEh+IRERtFDhquE+Lbxw8=;
+        b=vPSZJ0ccTDOAJwum3dIpeLxmBLFcJRM0RqCZ00ufRLomhDw+Vtg9oI0Xoar2bgt3Ux
+         bANb5fhL5Ie/XU28/thsoHsuqRgJzsca1V5wUgJIwv87vBCY+Y54xz9RTWlbmuFJ7oRg
+         J69OMrOGkrQQug7qucKP5bn8CKJIL9w9FbxAlIgGLo2Q6LvAe2uOw4X8yhP4PDCxKX0S
+         vfyiV1RXGowiCESCRKjLOMuFoV9++v06DhBuFyCew4/NUvtlViOtdlv+mTiA6wlTOsrF
+         NQSJ6PnOTMSemSyKzTMal+DDffP+Y9pXfwEmBUsjDbM/1S1LLFFmFkvFZTm02uED9u5A
+         M5kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FBnY2mGkBlFH+IxSO6esO9hEh+IRERtFDhquE+Lbxw8=;
+        b=BSbBfs36pORLLjjrU/sYyTWn+T8GemYi3JAMfc7rn+j9yaV0TZ7sxIeXak5wxUV59y
+         o+khJxK1CPeE0zDLtej4a+uuoEFEPXY7R6O6TsjQdeB4TtmlMcOb7vT0GNVHt+FNUcXk
+         Hfs6ns9CVzObUiUKLIbx0tnmshIFp8RdKHV6fnIHvN4U8YR+upcY0e5IH/2Zdpco8Xp7
+         H1hlyn1xN+VyRlIfP5KEeu+dBBcHlsvtjxvlQ7Bt5YO88w3+Wseeuq90MEB2zm4AO5D+
+         FogglnIwFxunwZ9gmwo7hMkBfzhg0pYg/CW+/8a8Q2XOIXCJUlO33liSaV8ru4DlQhZa
+         yHVw==
+X-Gm-Message-State: AOAM531pZdrW3kyHqPCHtIN6CY5v7PdKOqzrL97N7oA8BX+Euv/ZMkFy
+        LC3pEt7oICKB0kLLg8fX/FYQpYWvPENBpI3Ms+fTk/HtBTM=
+X-Google-Smtp-Source: ABdhPJzZeAPnQ0VNHSGt5inmkr7a8ZlWm+RFTliuCEinVL/xEeaqFKNj/Dmw0vv2DKD/A429oHfQZTqL7i/jMwQfnZs=
+X-Received: by 2002:a05:6402:176c:: with SMTP id da12mr978510edb.386.1600724644777;
+ Mon, 21 Sep 2020 14:44:04 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200921211744.24758-1-peterx@redhat.com> <20200921211744.24758-2-peterx@redhat.com>
+In-Reply-To: <20200921211744.24758-2-peterx@redhat.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Mon, 21 Sep 2020 23:43:38 +0200
+Message-ID: <CAG48ez0o+yBpYdzR_-bU3A0nrpzXyM+c+Yk=ZtOZ92qe5x0izA@mail.gmail.com>
+Subject: Re: [PATCH 1/5] mm: Introduce mm_struct.has_pinned
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Sep 2020 12:28:12 +1200, Chris Packham wrote:
-> The SPIE register contains counts for the TX FIFO so any time the irq
-> handler was invoked we would attempt to process the RX/TX fifos. Use the
-> SPIM value to mask the events so that we only process interrupts that
-> were expected.
-> 
-> This was a latent issue exposed by commit 3282a3da25bd ("powerpc/64:
-> Implement soft interrupt replay in C").
+On Mon, Sep 21, 2020 at 11:17 PM Peter Xu <peterx@redhat.com> wrote:
+>
+> (Commit message collected from Jason Gunthorpe)
+>
+> Reduce the chance of false positive from page_maybe_dma_pinned() by keeping
+> track if the mm_struct has ever been used with pin_user_pages(). mm_structs
+> that have never been passed to pin_user_pages() cannot have a positive
+> page_maybe_dma_pinned() by definition.
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
-
-Thanks!
-
-[1/1] spi: fsl-espi: Only process interrupts for expected events
-      commit: b867eef4cf548cd9541225aadcdcee644669b9e1
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+There are some caveats here, right? E.g. this isn't necessarily true
+for pagecache pages, I think?
