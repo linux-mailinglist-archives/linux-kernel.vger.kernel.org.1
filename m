@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6687A2724BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:11:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8717F2724D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727471AbgIUNK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:10:56 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13808 "EHLO huawei.com"
+        id S1727571AbgIUNLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:11:39 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14202 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727428AbgIUNKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:10:53 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id EAFC137D5C4A578F6FB8;
-        Mon, 21 Sep 2020 21:10:51 +0800 (CST)
+        id S1727455AbgIUNKz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:10:55 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 0894D7546E7C1BE89E59;
+        Mon, 21 Sep 2020 21:10:54 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 21 Sep 2020 21:10:42 +0800
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 21 Sep 2020 21:10:44 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        "Mark Brown" <broonie@kernel.org>
-CC:     <openbmc@lists.ozlabs.org>, <linux-spi@vger.kernel.org>,
+To:     Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        "Maxime Coquelin" <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>
+CC:     <linux-pm@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>,
         Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH -next] spi: npcm-fiu: simplify the return expression of npcm_fiu_probe()
-Date:   Mon, 21 Sep 2020 21:11:06 +0800
-Message-ID: <20200921131106.93228-1-miaoqinglang@huawei.com>
+Subject: [PATCH -next] thermal: stm32: simplify the return expression of stm_thermal_prepare()
+Date:   Mon, 21 Sep 2020 21:11:07 +0800
+Message-ID: <20200921131107.93273-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -45,34 +45,29 @@ Simplify the return expression.
 
 Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- drivers/spi/spi-npcm-fiu.c | 7 +------
+ drivers/thermal/st/stm_thermal.c | 7 +------
  1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/spi/spi-npcm-fiu.c b/drivers/spi/spi-npcm-fiu.c
-index 9468e71f0..341f7cffe 100644
---- a/drivers/spi/spi-npcm-fiu.c
-+++ b/drivers/spi/spi-npcm-fiu.c
-@@ -677,7 +677,6 @@ static int npcm_fiu_probe(struct platform_device *pdev)
- 	struct npcm_fiu_spi *fiu;
- 	void __iomem *regbase;
- 	struct resource *res;
+diff --git a/drivers/thermal/st/stm_thermal.c b/drivers/thermal/st/stm_thermal.c
+index 331e2b768..5fd3fb891 100644
+--- a/drivers/thermal/st/stm_thermal.c
++++ b/drivers/thermal/st/stm_thermal.c
+@@ -446,14 +446,9 @@ static int stm_thermal_prepare(struct stm_thermal_sensor *sensor)
+ #ifdef CONFIG_PM_SLEEP
+ static int stm_thermal_suspend(struct device *dev)
+ {
 -	int ret;
- 	int id;
+ 	struct stm_thermal_sensor *sensor = dev_get_drvdata(dev);
  
- 	ctrl = spi_alloc_master(dev, sizeof(*fiu));
-@@ -736,11 +735,7 @@ static int npcm_fiu_probe(struct platform_device *pdev)
- 	ctrl->num_chipselect = fiu->info->max_cs;
- 	ctrl->dev.of_node = dev->of_node;
- 
--	ret = devm_spi_register_master(dev, ctrl);
+-	ret = stm_thermal_sensor_off(sensor);
 -	if (ret)
 -		return ret;
 -
 -	return 0;
-+	return devm_spi_register_master(dev, ctrl);
++	return stm_thermal_sensor_off(sensor);
  }
  
- static int npcm_fiu_remove(struct platform_device *pdev)
+ static int stm_thermal_resume(struct device *dev)
 -- 
 2.23.0
 
