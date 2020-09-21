@@ -2,107 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05CE9272581
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:27:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE2D827257F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727398AbgIUN1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:27:36 -0400
-Received: from mout.kundenserver.de ([212.227.17.13]:34603 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727216AbgIUN1d (ORCPT
+        id S1727385AbgIUN1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:27:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727216AbgIUN12 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:27:33 -0400
-Received: from mail-qk1-f177.google.com ([209.85.222.177]) by
- mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1M6ltQ-1kODD23TeI-008IHo; Mon, 21 Sep 2020 15:27:31 +0200
-Received: by mail-qk1-f177.google.com with SMTP id q5so14959798qkc.2;
-        Mon, 21 Sep 2020 06:27:30 -0700 (PDT)
-X-Gm-Message-State: AOAM530tYn12Q7iH40nvMZ40ErDKAtgebOUiI4ITpyJ0EvECdwqUdAfV
-        TwfwMUhTrZOyQUSNoUGPtgpPmtO1PrCFhL0LCvE=
-X-Google-Smtp-Source: ABdhPJw3W/Ieljc7e0oA/u77MIRuqr3TE/XBiDVGGgq19pLPt2WILDmtKHBHjbkWI+jPLTjuDrJcAihYlG1zN/lSkUA=
-X-Received: by 2002:a37:5d8:: with SMTP id 207mr46387678qkf.352.1600694849499;
- Mon, 21 Sep 2020 06:27:29 -0700 (PDT)
+        Mon, 21 Sep 2020 09:27:28 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77A54C061755;
+        Mon, 21 Sep 2020 06:27:28 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id m6so12787494wrn.0;
+        Mon, 21 Sep 2020 06:27:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=HKuU7JpLVU1PBj0jVIiCYxaLdFW/3Q4BrrvDHD/vFoM=;
+        b=OjQfWOUGvS8vKD9rbIR3dJ08HDqYyREm1W/mAagKqnDl5qbkExQCWwYZwcwFzhW65d
+         g+Krd0TSRSxmSrLmG6cwCGyArGhLNgVenAI6YgNEnXNPtw23BOsaJO0VC7UU2Y5zSUdU
+         rHAXp2SzBL1sypBzEQA4T1xshK4AyA/D+UrLvtXtSaA+uzbKNY73Su/HeflR8CA84G90
+         VfCB6s0zz4KPl0Cwl9UwkuWJqvZyf9D7xEVBidkz+JvQp/0NyCZYzCiB9lUdCN6iuhkn
+         g+xG6BlS2ZsJgg1brj/iE8PJSnzt0f4pXsxdNx1aw7OLlUkVYqNxlSjmj4PgaX39GVhd
+         SOPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=HKuU7JpLVU1PBj0jVIiCYxaLdFW/3Q4BrrvDHD/vFoM=;
+        b=WM6ZkhfXkphrGL26Wy1325y2cuZf5bMisM53JjCPOBpkbpie2U+p8eVhKMaO9VUm7j
+         1mbrh7pZ35kR5/h8vmEkPhSFD2r38Zu0+hZlYcns6tjnagnsUE948bQ7xIYDwaH//B4+
+         HhNykLP9aKy8fpQWl7+jwCrJogwXOZwO1iNG2t+PMDN6Hx2TmShjcw+hB5TKdDSdiiaL
+         +9z11oLGpNXxDfbl5ylLJ29DhpmqjdQfV33pYPNjX/MiGTh8Yc7u7vWMX5hc7mEvEPh/
+         9bmVwYL9MM6KQOSM5ZFSELWmNgUO4idb4u5QJZ+i2eAua8n9j/68qvQR6WPAsMGB51hp
+         D7KA==
+X-Gm-Message-State: AOAM5332KvjTlVLIXx/yrWr0nqKp9zZOnWDiml3Bin5Peov3ZTvu3n8v
+        ro04Z01rj+RyZ9ePyFhk+ucL0jPOOAg=
+X-Google-Smtp-Source: ABdhPJwJAX4uVUX9aZ28FDXcSgA2gQ7vMBWi02ddoeec32uIkuLkE6NsU4P9DPevFlyqPCzJ83M1gw==
+X-Received: by 2002:adf:e690:: with SMTP id r16mr52023767wrm.15.1600694847222;
+        Mon, 21 Sep 2020 06:27:27 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id g14sm21591201wrv.25.2020.09.21.06.27.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 06:27:25 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 15:27:24 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Mikko Perttunen <cyndis@kapsi.fi>
+Cc:     Qinglang Miao <miaoqinglang@huawei.com>,
+        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] gpu: host1x: simplify the return expression of
+ host1x_cdma_init()
+Message-ID: <20200921132724.GC3955907@ulmo>
+References: <20200921131032.91972-1-miaoqinglang@huawei.com>
+ <4378d69a-2338-779f-ab4d-3c64fbf7dfd3@kapsi.fi>
 MIME-Version: 1.0
-References: <20200918124624.1469673-4-arnd@arndb.de> <20200921125454.150CA21789@mail.kernel.org>
-In-Reply-To: <20200921125454.150CA21789@mail.kernel.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 21 Sep 2020 15:27:13 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1pzsyYCq8pa7uVYAg9a_-tg3biWReesnxAmxhySzfeew@mail.gmail.com>
-Message-ID: <CAK8P3a1pzsyYCq8pa7uVYAg9a_-tg3biWReesnxAmxhySzfeew@mail.gmail.com>
-Subject: Re: [PATCH v2 3/9] ARM: oabi-compat: add epoll_pwait handler
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "# 3.4.x" <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:pL5Kky/O6zrDI92K3Z6BMx6/xt7C3jmUfQvQ23QYwmvIoxoL0fR
- y8256E/HOnTe1NaKlQK4bA8cqOYtTODpRQ3qXONNJOQpt/rJkaZfrgEJZo6CYwC+x9NgdMH
- WPTbDvjTHPsEJTkwp4tr2gjmUkFen9PMV0GaQZUOXgaxe4vy/Q5jYJP5kgZuO3EzhPVVq6v
- qk69IeShlTWXWNRt6ulgA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:7RezZ1yr56c=:pyLD8PAO3etmg8bf7xIvkS
- SipeRU34rCidsm86/WUpDA3AM9d5X4AFgMo8vzP9micit7ylRv9GgtgbbxP/c1nIb5+xRY8zZ
- eggPG8U9Ps0NbH14EzWSKNYQ+8B6fvOzFQoCfoBNHac5Jh0PW6ItTa5kO2iYpN+gxNhfvVh4v
- R0F5r8WEXWRVEaLk9H+Olvg2ybEA/2QFjrtPrdhxvS84uZTlMvvOvMaz0RlizHc8y6yrcpvx8
- c9OyjLMwRMOa/x1UjpJRsZs68tiPTtcmrdBQAlogS6ceoXSYz0sj2gIGw0Mrm8LUc2yAXoSvT
- l96PATZ9YO+tHKsz9kmThdkzn0s08FBwDcBKd6JNWvzD/xiK+iCcA7fGIyDvZethqU+/rEpSi
- axSXR3hNoPhsXI9XvmB9DaHU5dGla3H4JA/KK+/KzQRqX5zUwlptplhOOpoqj7NQt2FKyIkMl
- yGDrthRizAB4SJ5fc8wBZ9Q0QMZcsAgHLRXcACMRPLB2veqnhZx8ljKCVLV4Q0Zm0N3Qfnz/j
- Ho51WYYWvPW7NZWIJDUzUGT8w6+LTADKGy2/R4Vt7XYjCASM/BEmZmfpzLwzLk7iOz/g6xJ44
- RRLmtj9HbQkXZyKwOIyKWjGXICt6TpChPqKIZAW2q9RqRWb+Qsdx8mTKhHJ0fcE6JqGRq+YfK
- ZP996lI3OKJA78IBIJajH7iMkTcPqJ0uPQr1K5vt2J2+MEr51drzxQ4Xt8g+S/8iSNb0BbPT2
- OmvaA5vBld8m23eeqSp6gNbhmJaHI614+y2XJG8McYK99bGZr/FEHVfPSTdeR/tJ2J1l4l2c7
- bTgzfRQdmg3cKgmz2/7KpmQISvcenmHFI5JPvwsnDyPiOeYTYgf6G/ZNonHg7Ftt4JzD4Mp
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="5QAgd0e35j3NYeGe"
+Content-Disposition: inline
+In-Reply-To: <4378d69a-2338-779f-ab4d-3c64fbf7dfd3@kapsi.fi>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 2:54 PM Sasha Levin <sashal@kernel.org> wrote:
->
-> Hi
->
-> [This is an automated email]
->
-> This commit has been processed because it contains a "Fixes:" tag
-> fixing commit: 369842658a36 ("ARM: 5677/1: ARM support for TIF_RESTORE_SIGMASK/pselect6/ppoll/epoll_pwait").
->
-> The bot has tested the following trees: v5.8.10, v5.4.66, v4.19.146, v4.14.198, v4.9.236, v4.4.236.
->
-> v5.8.10: Build OK!
-> v5.4.66: Build OK!
-> v4.19.146: Build OK!
-> v4.14.198: Build OK!
-> v4.9.236: Failed to apply! Possible dependencies:
->     00bf25d693e7 ("y2038: use time32 syscall names on 32-bit")
->     17435e5f8cf3 ("time: Introduce CONFIG_COMPAT_32BIT_TIME")
->     338035edc9b9 ("arm: Wire up restartable sequences system call")
->     4e2648db9c5f ("ARM: remove indirection of asm/mach-types.h")
->     73aeb2cbcdc9 ("ARM: 8787/1: wire up io_pgetevents syscall")
->     78594b95998f ("ARM: add migrate_pages() system call")
->     96a8fae0fe09 ("ARM: convert to generated system call tables")
->     a1016e94cce9 ("ARM: wire up statx syscall")
->     c281634c8652 ("ARM: compat: remove KERNEL_DS usage in sys_oabi_epoll_ctl()")
->     d4703ddafd1e ("time: Introduce CONFIG_64BIT_TIME in architectures")
->
-> v4.4.236: Failed to apply! Possible dependencies:
->     00bf25d693e7 ("y2038: use time32 syscall names on 32-bit")
->     03590cb56d5d ("ARM: wire up copy_file_range() syscall")
->     0d4a619b64ba ("dma-mapping: make the generic coherent dma mmap implementation optional")
->     17435e5f8cf3 ("time: Introduce CONFIG_COMPAT_32BIT_TIME")
->     4e2648db9c5f ("ARM: remove indirection of asm/mach-types.h")
->     96a8fae0fe09 ("ARM: convert to generated system call tables")
->     c281634c8652 ("ARM: compat: remove KERNEL_DS usage in sys_oabi_epoll_ctl()")
->     d4703ddafd1e ("time: Introduce CONFIG_64BIT_TIME in architectures")
->     f2335a2a0a59 ("ARM: wire up preadv2 and pwritev2 syscalls")
->
->
-> NOTE: The patch will not be queued to stable trees until it is upstream.
->
-> How should we proceed with this patch?
 
-I wouldn't worry too much about the failed backport in this case, as I
-don't think there are any actual users of this code on older stable
-kernels, and even if there are they are unlikely to start using
-epoll_pwait.
+--5QAgd0e35j3NYeGe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-      Arnd
+On Mon, Sep 21, 2020 at 04:12:20PM +0300, Mikko Perttunen wrote:
+> On 9/21/20 4:10 PM, Qinglang Miao wrote:
+> > Simplify the return expression.
+> >=20
+> > Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> > ---
+> >   drivers/gpu/host1x/cdma.c | 8 +-------
+> >   1 file changed, 1 insertion(+), 7 deletions(-)
+> >=20
+> > diff --git a/drivers/gpu/host1x/cdma.c b/drivers/gpu/host1x/cdma.c
+> > index e8d3fda91..08a0f9e10 100644
+> > --- a/drivers/gpu/host1x/cdma.c
+> > +++ b/drivers/gpu/host1x/cdma.c
+> > @@ -448,8 +448,6 @@ void host1x_cdma_update_sync_queue(struct host1x_cd=
+ma *cdma,
+> >    */
+> >   int host1x_cdma_init(struct host1x_cdma *cdma)
+> >   {
+> > -	int err;
+> > -
+> >   	mutex_init(&cdma->lock);
+> >   	init_completion(&cdma->complete);
+> > @@ -459,11 +457,7 @@ int host1x_cdma_init(struct host1x_cdma *cdma)
+> >   	cdma->running =3D false;
+> >   	cdma->torndown =3D false;
+> > -	err =3D host1x_pushbuffer_init(&cdma->push_buffer);
+> > -	if (err)
+> > -		return err;
+> > -
+> > -	return 0;
+> > +	return host1x_pushbuffer_init(&cdma->push_buffer);
+>=20
+> IMHO, this makes it less readable since now it kind of looks like
+> host1x_pushbuffer_init is returning some meaningful value, instead of the
+> code just handling error values in a sequence.
+
+Agreed. Collapsing the error handling like this also makes adding code
+to the bottom of this function more complicated than necessary.
+
+Thierry
+
+--5QAgd0e35j3NYeGe
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9oqjoACgkQ3SOs138+
+s6G9VBAAwKVijJXmqtUarO6foeE0wYjzdiAw+S3cuykrlg/Ji+72FwUlyjGRympc
+NEzmcqnFQkYFQjNoNQNToHEni79t2WL2XmhUzElTmrkYxR5xAgwC149EOuLQXLnl
+c+FLhNe6udpnt4DHTtqcL1AZRWRA+JZ02lPpObT5MzQj/t5XN8/cjgtamZbH1FHN
+moaFT24SQ1V1D1wlCBan1aze4ruCppchbklRpuChNSS11loqp/Ywb3pnKlz5y+2J
+xL0pVwAezOefXyJjk0TfRjYD1KvO+htYOhDJ8R71z04VpgT0vv9dlfWvzA4GUsBB
+Su6w0ndEaFqw4dStkIuVFyF5jBS+idCw5r8B4GUSgBgpMxa41xmHRfVwVaD6Zab1
+mX3dAswkmq9g6Z5lsXswI23BCb7v6vdh4zsvpU3dlG6CgE237cnZSZgfo2oPtsNZ
++DhjSxo4ZbnWFjU8U9MTxWi0kEXC7yZMmkw2RLCx+LDFMSAKOqNFXESfHSQoutQD
+rpOedKlY1YIamxTeUD8jT0qvKR4mufH/O4XNUZTU2TPdI0ONMiIA+23McNr6RmrF
+zOHwgWQUn8lYFhlgw7WtN6RXzR2Cr6Za/ekMPeAJRLwIGV9w0H6ZgmJYcA+ii4FX
+fNZQHGdlivmzHPOcXFATqQgFEaAR8pUBSdnGu5CrWhXq4BpcpSk=
+=SQV7
+-----END PGP SIGNATURE-----
+
+--5QAgd0e35j3NYeGe--
