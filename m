@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAA53272F4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83425272D5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:39:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730053AbgIUQ4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:56:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51032 "EHLO mail.kernel.org"
+        id S1729286AbgIUQji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:39:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41356 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729512AbgIUQpO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:45:14 -0400
+        id S1728857AbgIUQjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:39:25 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 292C5235F9;
-        Mon, 21 Sep 2020 16:45:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A0891238EE;
+        Mon, 21 Sep 2020 16:39:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706713;
-        bh=zjqmn0qMJtChbblkPVMBQbxmFuRNa/WbsVt4ChA/Wt8=;
+        s=default; t=1600706365;
+        bh=Gq+FUXLYeR0sXqEbuud5W6hNeqLYZJKW3NtM+LU8lh0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fr+6BV09CyfuiavktgGEFnx+VCpratXVO12CtByCjGrubyLy6roPmj+rTIA2V32yO
-         z4gdq3xfGMo+h1b87YL3OZbkDhKFDgfFNlW7fRvHekEiF5oUlNYN4lEq8MORLAR+QL
-         wO5XLVwYSc82SQP06fhzm6sR4VqFImG2uwUHp8rs=
+        b=QACRubxrwHqK1uvO5LPA7KWtttgn+aT4YZYhL7SV7KqG5/Pay244xO3uPufjF4NzQ
+         Tky3KAoeP2JGBkBzOrbpZ8RR4d3ofI5uNhqV+K4o9u9TVEJP+mEzFLCWOEeqJOrxx1
+         8obv3Xb1bexuUj13tjbLow7sm0LT5We43gjMS9UY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot <syzbot+b38b1ef6edf0c74a8d97@syzkaller.appspotmail.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        George Kennedy <george.kennedy@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 065/118] fbcon: Fix user font detection test at fbcon_resize().
-Date:   Mon, 21 Sep 2020 18:27:57 +0200
-Message-Id: <20200921162039.375315206@linuxfoundation.org>
+        stable@vger.kernel.org, David Milburn <dmilburn@redhat.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 71/94] nvme-fc: cancel async events before freeing event struct
+Date:   Mon, 21 Sep 2020 18:27:58 +0200
+Message-Id: <20200921162038.786478956@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
-References: <20200921162036.324813383@linuxfoundation.org>
+In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
+References: <20200921162035.541285330@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,50 +44,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+From: David Milburn <dmilburn@redhat.com>
 
-[ Upstream commit ec0972adecb391a8d8650832263a4790f3bfb4df ]
+[ Upstream commit e126e8210e950bb83414c4f57b3120ddb8450742 ]
 
-syzbot is reporting OOB read at fbcon_resize() [1], for
-commit 39b3cffb8cf31117 ("fbcon: prevent user font height or width change
- from causing potential out-of-bounds access") is by error using
-registered_fb[con2fb_map[vc->vc_num]]->fbcon_par->p->userfont (which was
-set to non-zero) instead of fb_display[vc->vc_num].userfont (which remains
-zero for that display).
+Cancel async event work in case async event has been queued up, and
+nvme_fc_submit_async_event() runs after event has been freed.
 
-We could remove tricky userfont flag [2], for we can determine it by
-comparing address of the font data and addresses of built-in font data.
-But since that commit is failing to fix the original OOB read [3], this
-patch keeps the change minimal in case we decide to revert altogether.
-
-[1] https://syzkaller.appspot.com/bug?id=ebcbbb6576958a496500fee9cf7aa83ea00b5920
-[2] https://syzkaller.appspot.com/text?tag=Patch&x=14030853900000
-[3] https://syzkaller.appspot.com/bug?id=6fba8c186d97cf1011ab17660e633b1cc4e080c9
-
-Reported-by: syzbot <syzbot+b38b1ef6edf0c74a8d97@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Fixes: 39b3cffb8cf31117 ("fbcon: prevent user font height or width change from causing potential out-of-bounds access")
-Cc: George Kennedy <george.kennedy@oracle.com>
-Link: https://lore.kernel.org/r/f6e3e611-8704-1263-d163-f52c906a4f06@I-love.SAKURA.ne.jp
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: David Milburn <dmilburn@redhat.com>
+Reviewed-by: Keith Busch <kbusch@kernel.org>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/core/fbcon.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nvme/host/fc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-index b36bfe10c712c..09cb46e94f405 100644
---- a/drivers/video/fbdev/core/fbcon.c
-+++ b/drivers/video/fbdev/core/fbcon.c
-@@ -2018,7 +2018,7 @@ static int fbcon_resize(struct vc_data *vc, unsigned int width,
- 	struct fb_var_screeninfo var = info->var;
- 	int x_diff, y_diff, virt_w, virt_h, virt_fw, virt_fh;
+diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
+index 13c89cc9d10cf..e95d2f75713e1 100644
+--- a/drivers/nvme/host/fc.c
++++ b/drivers/nvme/host/fc.c
+@@ -1566,6 +1566,7 @@ nvme_fc_term_aen_ops(struct nvme_fc_ctrl *ctrl)
+ 	struct nvme_fc_fcp_op *aen_op;
+ 	int i;
  
--	if (ops->p && ops->p->userfont && FNTSIZE(vc->vc_font.data)) {
-+	if (p->userfont && FNTSIZE(vc->vc_font.data)) {
- 		int size;
- 		int pitch = PITCH(vc->vc_font.width);
- 
++	cancel_work_sync(&ctrl->ctrl.async_event_work);
+ 	aen_op = ctrl->aen_ops;
+ 	for (i = 0; i < NVME_FC_NR_AEN_COMMANDS; i++, aen_op++) {
+ 		if (!aen_op->fcp_req.private)
 -- 
 2.25.1
 
