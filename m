@@ -2,229 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 519EC27204A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:23:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC0832720C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726828AbgIUKUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 06:20:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726812AbgIUKUr (ORCPT
+        id S1727013AbgIUKY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:24:57 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:9152 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726748AbgIUKYu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 06:20:47 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B5C0C0613D4
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:20:42 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id d4so11561444wmd.5
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:20:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=hrN3Tazs/CNvILE5Bj2raDzS8EMF0Eei2YZ/frmZsTs=;
-        b=j1b3of5hWSLdhH7uMP0cnSDMUCCK9GHQoWeW933WF24UvLG10n9eZJyyCCiFjvy23L
-         DzYGssX3rxCzRNxlfbtomUWVhwL+RAduaO7DUU8d6beNjROvb3NmwHPQGGhVJidWKXbL
-         ws07Klo5s51H6WpjISDCqtyhyZQW/ndgKy41fTPqY9hf9CGGuXRx9eMn2VvvMmSEly2C
-         SsJCwy6cFIByEOtcr1EwgTa3fU89ekIAWKHaOuLIoHhc1ECHBeGO4J2E8Lu9nqSLftDu
-         slV24OpAv92KbjWTz3iR63DnaUDh3O7IaOG9vdXCZfNXNoneZWqAjBbWFfCAH1i638K2
-         7rgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=hrN3Tazs/CNvILE5Bj2raDzS8EMF0Eei2YZ/frmZsTs=;
-        b=LlW1xYsAmDQaigRwbDuc7kPGyL4B41kzDcA4OviE0uQz6/DqJjGmN905Ay2bVNqr/X
-         Fv3qWr+SVqlVqToMT12aju42vSqASzHHBwtuFo6gXG0FoMzgnrCq8BxkhaOHIpe8shdI
-         K14jS0+4VRpqwU0y+jUt+HXPCrzunku6ahDVBDHLy3JWQromBONyvLrnx4n2K6+SPbel
-         VC61+2MjzEOqkn/dll0ZPnQ/JgYCbYLzve9YSJFnk5B1aCE31XzvuE3pOIYqDf8dM47r
-         I8lSDSg9xfcXz8WoWla1CGm/279CKGdZUdLUjdNKxyJ03wFF1pwlqEAzpWfupLj0eSDs
-         fisg==
-X-Gm-Message-State: AOAM533iKNdvxkRFRamWYcddV1c1eaeiSJjm8w6EUvsfXhF4ULlPF4sG
-        kfmkXIO37JOiYLjQlTo3hLdCLA==
-X-Google-Smtp-Source: ABdhPJwJvmN7W2B1ePJdoM966nluFYhO59lhl4DS5OGBPJwWsiseNY+NXKBLe6Knq9Y3M8Q4YoDP3g==
-X-Received: by 2002:a1c:bdc4:: with SMTP id n187mr29264694wmf.109.1600683641133;
-        Mon, 21 Sep 2020 03:20:41 -0700 (PDT)
-Received: from localhost.localdomain ([51.15.160.169])
-        by smtp.googlemail.com with ESMTPSA id l17sm18804629wme.11.2020.09.21.03.20.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 21 Sep 2020 03:20:40 -0700 (PDT)
-From:   Corentin Labbe <clabbe@baylibre.com>
-To:     gregkh@linuxfoundation.org, laurent.pinchart@skynet.be,
-        mchehab@kernel.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH RFT/RFC 09/49] staging: media: zoran: convert dprintk warn
-Date:   Mon, 21 Sep 2020 10:19:44 +0000
-Message-Id: <1600683624-5863-10-git-send-email-clabbe@baylibre.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1600683624-5863-1-git-send-email-clabbe@baylibre.com>
-References: <1600683624-5863-1-git-send-email-clabbe@baylibre.com>
+        Mon, 21 Sep 2020 06:24:50 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f687e170000>; Mon, 21 Sep 2020 03:19:03 -0700
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 21 Sep
+ 2020 10:19:47 +0000
+Received: from [192.168.22.23] (10.124.1.5) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Mon, 21 Sep 2020 10:19:45 +0000
+From:   Thierry Reding <treding@nvidia.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+CC:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?utf-8?q?Micha=C5=82_Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        <linux-i2c@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 19/34] i2c: tegra: Remove redundant check in
+ tegra_i2c_issue_bus_clear()
+In-Reply-To: <20200908224006.25636-20-digetx@gmail.com>
+References: <20200908224006.25636-20-digetx@gmail.com>
+X-NVConfidentiality: public
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Message-ID: <63f5c911fd24425fbe8bab250fa922d0@HQMAIL111.nvidia.com>
+Date:   Mon, 21 Sep 2020 10:19:45 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600683543; bh=2Cx9emq6T9X3oRhp18fLwghcsvBkqu6hxKg8UDlIHc8=;
+        h=From:To:CC:Subject:In-Reply-To:References:X-NVConfidentiality:
+         Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:
+         Date;
+        b=T+T0tKEhsKsOgZeIwhUtc0zmwxecYXCojZEayJJ8uU/5lz4JDL8llKGQc3PsaBdqQ
+         MU91PuaCO77W1gA/+3AjwOY2ruV825Md//hFb0i5iPP/5C29Gqg4WVXR8zT9nOiDW3
+         D1SmTNDZthJ493VYuczQLyxu1/nr2GWrrYbhMePPkmONPAlJNSShwwLUswNjh4F0BC
+         M8jshjWpFdk7S37ckGPERDOURBjtRIQxLAapDT+iOdq4cl6xygw9zc5vnoSCUz+lcC
+         DJf5mp/+XCqL4DBHkhLv9dUZBWpqrX5gPbpac5Va0fS0scmzZZOI2dQX69PYYMfG6h
+         a0ECyQGBxDo0g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch convert dprintk(warn) to pci_warn.
+On Wed, 09 Sep 2020 01:39:51 +0300, Dmitry Osipenko wrote:
+> The tegra_i2c_wait_for_config_load() checks for 'has_config_load_reg' by
+> itself, hence there is no need to duplicate the check.
+> 
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> Acked-by: Thierry Reding <treding@nvidia.com>
+> ---
+>  drivers/i2c/busses/i2c-tegra.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
 
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
----
- drivers/staging/media/zoran/zoran_card.c   | 18 ++++----------
- drivers/staging/media/zoran/zoran_device.c | 13 +++-------
- drivers/staging/media/zoran/zoran_driver.c | 29 +++++-----------------
- 3 files changed, 14 insertions(+), 46 deletions(-)
-
-diff --git a/drivers/staging/media/zoran/zoran_card.c b/drivers/staging/media/zoran/zoran_card.c
-index 006f209c40ea..26f58e687333 100644
---- a/drivers/staging/media/zoran/zoran_card.c
-+++ b/drivers/staging/media/zoran/zoran_card.c
-@@ -933,19 +933,14 @@ static int zr36057_init(struct zoran *zr)
- 		zr->timing = zr->card.tvn[2];
- 	}
- 	if (!zr->timing) {
--		dprintk(1,
--			KERN_WARNING
--			"%s: %s - default TV standard not supported by hardware. PAL will be used.\n",
--			ZR_DEVNAME(zr), __func__);
-+		pci_warn(zr->pci_dev, "%s - default TV standard not supported by hardware. PAL will be used.\n", __func__);
- 		zr->norm = V4L2_STD_PAL;
- 		zr->timing = zr->card.tvn[0];
- 	}
- 
- 	if (default_input > zr->card.inputs - 1) {
--		dprintk(1,
--			KERN_WARNING
--			"%s: default_input value %d out of range (0-%d)\n",
--			ZR_DEVNAME(zr), default_input, zr->card.inputs - 1);
-+		pci_warn(zr->pci_dev, "default_input value %d out of range (0-%d)\n",
-+			 default_input, zr->card.inputs - 1);
- 		default_input = 0;
- 	}
- 	zr->input = default_input;
-@@ -1369,11 +1364,8 @@ static int __init zoran_init(void)
- 	}
- 
- 	/* some mainboards might not do PCI-PCI data transfer well */
--	if (pci_pci_problems & (PCIPCI_FAIL | PCIAGP_FAIL | PCIPCI_ALIMAGIK)) {
--		dprintk(1,
--			KERN_WARNING
--			"%s: chipset does not support reliable PCI-PCI DMA\n", ZORAN_NAME);
--	}
-+	if (pci_pci_problems & (PCIPCI_FAIL | PCIAGP_FAIL | PCIPCI_ALIMAGIK))
-+		pr_warn("%s: chipset does not support reliable PCI-PCI DMA\n", ZORAN_NAME);
- 
- 	res = pci_register_driver(&zoran_driver);
- 	if (res) {
-diff --git a/drivers/staging/media/zoran/zoran_device.c b/drivers/staging/media/zoran/zoran_device.c
-index d7c85787e9c0..a04fbae30745 100644
---- a/drivers/staging/media/zoran/zoran_device.c
-+++ b/drivers/staging/media/zoran/zoran_device.c
-@@ -547,10 +547,7 @@ void zr36057_set_memgrab(struct zoran *zr, int mode)
- 		 * will be stuck at 1 until capturing is turned back on.
- 		 */
- 		if (btread(ZR36057_VSSFGR) & ZR36057_VSSFGR_SnapShot)
--			dprintk(1,
--				KERN_WARNING
--				"%s: zr36057_set_memgrab(1) with SnapShot on!?\n",
--				ZR_DEVNAME(zr));
-+			pci_warn(zr->pci_dev, "zr36057_set_memgrab(1) with SnapShot on!?\n");
- 
- 		/* switch on VSync interrupts */
- 		btwrite(IRQ_MASK, ZR36057_ISR);	// Clear Interrupts
-@@ -1284,10 +1281,7 @@ irqreturn_t zoran_irq(int irq, void *dev_id)
- 			if (zr->v4l_memgrab_active) {
- 				/* A lot more checks should be here ... */
- 				if ((btread(ZR36057_VSSFGR) & ZR36057_VSSFGR_SnapShot) == 0)
--					dprintk(1,
--						KERN_WARNING
--						"%s: BuzIRQ with SnapShot off ???\n",
--						ZR_DEVNAME(zr));
-+					pci_warn(zr->pci_dev, "BuzIRQ with SnapShot off ???\n");
- 
- 				if (zr->v4l_grab_frame != NO_GRAB_ACTIVE) {
- 					/* There is a grab on a frame going on, check if it has finished */
-@@ -1406,8 +1400,7 @@ irqreturn_t zoran_irq(int irq, void *dev_id)
- 
- 		count++;
- 		if (count > 10) {
--			dprintk(2, KERN_WARNING "%s: irq loop %d\n",
--				ZR_DEVNAME(zr), count);
-+			pci_warn(zr->pci_dev, "irq loop %d\n", count);
- 			if (count > 20) {
- 				btand(~ZR36057_ICR_IntPinEn, ZR36057_ICR);
- 				pci_err(zr->pci_dev, "IRQ lockup, cleared int mask\n");
-diff --git a/drivers/staging/media/zoran/zoran_driver.c b/drivers/staging/media/zoran/zoran_driver.c
-index 4082d5e53a24..3b061c3e4a82 100644
---- a/drivers/staging/media/zoran/zoran_driver.c
-+++ b/drivers/staging/media/zoran/zoran_driver.c
-@@ -210,10 +210,7 @@ static int v4l_fbuffer_alloc(struct zoran_fh *fh)
- 
- 	for (i = 0; i < fh->buffers.num_buffers; i++) {
- 		if (fh->buffers.buffer[i].v4l.fbuffer)
--			dprintk(2,
--				KERN_WARNING
--				"%s: %s - buffer %d already allocated!?\n",
--				ZR_DEVNAME(zr), __func__, i);
-+			pci_warn(zr->pci_dev, "%s - buffer %d already allocated!?\n", __func__, i);
- 
- 		//udelay(20);
- 		mem = kmalloc(fh->buffers.buffer_size, GFP_KERNEL | __GFP_NOWARN);
-@@ -300,10 +297,7 @@ static int jpg_fbuffer_alloc(struct zoran_fh *fh)
- 
- 	for (i = 0; i < fh->buffers.num_buffers; i++) {
- 		if (fh->buffers.buffer[i].jpg.frag_tab)
--			dprintk(2,
--				KERN_WARNING
--				"%s: %s - buffer %d already allocated!?\n",
--				ZR_DEVNAME(zr), __func__, i);
-+			pci_warn(zr->pci_dev, "%s - buffer %d already allocated!?\n", __func__, i);
- 
- 		/* Allocate fragment table for this buffer */
- 
-@@ -490,10 +484,7 @@ static int zoran_v4l_queue_frame(struct zoran_fh *fh, int num)
- 			res = -EBUSY;	/* what are you doing? */
- 			break;
- 		case BUZ_STATE_DONE:
--			dprintk(2,
--				KERN_WARNING
--				"%s: %s - queueing buffer %d in state DONE!?\n",
--				ZR_DEVNAME(zr), __func__, num);
-+			pci_warn(zr->pci_dev, "%s - queueing buffer %d in state DONE!?\n", __func__, num);
- 			/* fallthrough */
- 		case BUZ_STATE_USER:
- 			/* since there is at least one unused buffer there's room for at least
-@@ -627,10 +618,7 @@ static int zoran_jpg_queue_frame(struct zoran_fh *fh, int num,
- 	if (!res) {
- 		switch (zr->jpg_buffers.buffer[num].state) {
- 		case BUZ_STATE_DONE:
--			dprintk(2,
--				KERN_WARNING
--				"%s: %s - queuing frame in BUZ_STATE_DONE state!?\n",
--				ZR_DEVNAME(zr), __func__);
-+			pci_warn(zr->pci_dev, "%s - queuing frame in BUZ_STATE_DONE state!?\n", __func__);
- 			/* fallthrough */
- 		case BUZ_STATE_USER:
- 			/* since there is at least one unused buffer there's room for at
-@@ -1330,10 +1318,7 @@ static int zoran_set_input(struct zoran *zr, int input)
- 
- 	if (zr->v4l_buffers.active != ZORAN_FREE ||
- 	    zr->jpg_buffers.active != ZORAN_FREE) {
--		dprintk(1,
--			KERN_WARNING
--			"%s: %s called while in playback/capture mode\n",
--			ZR_DEVNAME(zr), __func__);
-+		pci_warn(zr->pci_dev, "%s called while in playback/capture mode\n", __func__);
- 		return -EBUSY;
- 	}
- 
-@@ -2285,9 +2270,7 @@ static int zoran_s_jpegcomp(struct file *file, void *__fh,
- 	settings.jpg_comp = *params;
- 
- 	if (fh->buffers.active != ZORAN_FREE) {
--		dprintk(1, KERN_WARNING
--			"%s: VIDIOC_S_JPEGCOMP called while in playback/capture mode\n",
--			ZR_DEVNAME(zr));
-+		pci_warn(zr->pci_dev, "VIDIOC_S_JPEGCOMP called while in playback/capture mode\n");
- 		res = -EBUSY;
- 		return res;
- 	}
--- 
-2.26.2
-
+Tested-by: Thierry Reding <treding@nvidia.com>
