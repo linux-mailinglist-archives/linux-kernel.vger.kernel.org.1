@@ -2,112 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 199512735F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 00:47:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF8A32735FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 00:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728669AbgIUWrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 18:47:53 -0400
-Received: from mga09.intel.com ([134.134.136.24]:20176 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726457AbgIUWrx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 18:47:53 -0400
-IronPort-SDR: 6+t3HFiFJTADTQPyi2oYCkBlRmLSAFxM4x2/geF+KrTBdmzyXMeD5fiBfFW/MSDBHrbvKGVrSl
- q7pAP2ubeNnw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="161413478"
-X-IronPort-AV: E=Sophos;i="5.77,288,1596524400"; 
-   d="scan'208";a="161413478"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 15:47:52 -0700
-IronPort-SDR: gycAem7Xa6ebdzaySf5YhbAulUIpxadRgZqjyY2BtOc6mPeDk0qKrkJkSx9M/el7HVu4AykyIt
- /przTO84r3ag==
-X-IronPort-AV: E=Sophos;i="5.77,288,1596524400"; 
-   d="scan'208";a="346716477"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.102.78]) ([10.212.102.78])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 15:47:51 -0700
-Subject: Re: [PATCH v12 1/8] x86/cet/ibt: Add Kconfig option for user-mode
- Indirect Branch Tracking
-To:     Dave Hansen <dave.hansen@intel.com>, Pavel Machek <pavel@ucw.cz>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>
-References: <20200918192312.25978-1-yu-cheng.yu@intel.com>
- <20200918192312.25978-2-yu-cheng.yu@intel.com>
- <ce2524cc-081b-aec9-177a-11c7431cb20d@infradead.org>
- <20200918205933.GB4304@duo.ucw.cz>
- <019b5e45-b116-7f3d-f1f2-3680afbd676c@intel.com>
- <20200918214020.GF4304@duo.ucw.cz>
- <c2b5d697-634d-a5cb-2728-cead44a221c9@intel.com>
- <c91021a9-adb0-8733-2423-f78dbea5c88a@intel.com>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <3a0b0baf-a0f5-fd15-3af1-0059a807100b@intel.com>
-Date:   Mon, 21 Sep 2020 15:47:50 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728626AbgIUWuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 18:50:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727693AbgIUWuC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 18:50:02 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FEF0C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 15:50:02 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id kk9so514213pjb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 15:50:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=qbaiVgf+FPhg9ry/RsD0C9yh5wWMVw6jOEGioOdbWqE=;
+        b=Ijp/hNd6/7sAv+e8i4QuvZ1TZcYHmXVOVanj8liTef148wiep/O7NRPU96yjKyZSLB
+         s+OMyGdR8Y0DvpnZKJXF7XSNr+IeUWur2TVrV1KVobeLZykqzXQyd4xFMcE4oox3WzP+
+         4uK16IDlwG74r0KVWyCgxL2UY6sAs3e9iJao0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=qbaiVgf+FPhg9ry/RsD0C9yh5wWMVw6jOEGioOdbWqE=;
+        b=E8Efz1lX1V+xyPoOEMF9ji511AIe8M5W0XYCpMWrfywy740Sph2WMN+prYITBtc8NR
+         VigWNMplqmA5PYX9HR0c0MvlAAPrwAzcUs7R+iDJ0GlHGNfbUjdN72fukk97IOi+4KU3
+         hxfGJ5LT3iQBFdMIG0sSggjXAElELmz7644ozsAxS9/ClALkQ/jh6JONZYWEKQfdaKYl
+         kaaKo0gD9cycnnCfmrSddi7noIQMCWKptk3U3ryLqNyotTvfuDFuDcBTGr2Wxn9TJ+iW
+         Egzv8skLxaKpLA32wz5aceAq00CCSHQo4laDWfISZrlQvZU3ewF6Dyaj9E09dGy2hrcm
+         LgjA==
+X-Gm-Message-State: AOAM531PbV4VQNQBHBt6fUnZAu9yzaQbt78y+ttxfj1fKSJC/Gv8hYXf
+        Ms+0MBaUOvjQvhZDsXQtPa1/bw==
+X-Google-Smtp-Source: ABdhPJxqm1yudoETtLwrlF5fTbHh4kr12BmpLuxsZlycuWMBlYrGke/hZarm7COyP8rkKyl6gfhF5A==
+X-Received: by 2002:a17:90a:69e3:: with SMTP id s90mr1268771pjj.130.1600728601559;
+        Mon, 21 Sep 2020 15:50:01 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:9657:a5ff:feef:7b57])
+        by smtp.gmail.com with ESMTPSA id c12sm1581569pfj.164.2020.09.21.15.50.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Sep 2020 15:50:00 -0700 (PDT)
+From:   Sean O'Brien <seobrien@chromium.org>
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Sean O'Brien <seobrien@chromium.org>
+Subject: Re: ping: [PATCH v3] HID: add vivaldi HID driver
+Date:   Mon, 21 Sep 2020 15:49:55 -0700
+Message-Id: <20200921224955.2701032-1-seobrien@chromium.org>
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
+In-Reply-To: <20200909150254.1.I170489c0c2ac1538b3890abb5a92b95ad4f04d01@changeid>
+References: <20200909150254.1.I170489c0c2ac1538b3890abb5a92b95ad4f04d01@changeid>
 MIME-Version: 1.0
-In-Reply-To: <c91021a9-adb0-8733-2423-f78dbea5c88a@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/21/2020 3:41 PM, Dave Hansen wrote:
-> On 9/21/20 3:30 PM, Yu, Yu-cheng wrote:
->> +config X86_INTEL_BRANCH_TRACKING_USER
->> +    prompt "Intel Indirect Branch Tracking for user-mode"
-> 
-> Take the "Intel " and "INTEL_" out, please.  It will only cause us all
-> pain later if some of our x86 compatriots decide to implement this.
-> 
->> If the kernel is to be used only on older systems that do not support
->> IBT, and the size of the binary is important, you can save 900 KB by
->> disabling this feature.
->>
->> Otherwise, if unsure, say Y.
-> 
-> 900k seems like a *lot*.  Where the heck does that come from?
-> 
-> Also, comments like that don't age very well.  Consider:
-> 
-> 	Support for this feature is only known to be present on Intel
-> 	processors released in 2020 or later.  This feature is also
-> 	known to increase kernel text size substantially.
-> 
-> 	If unsure, say N.
-> 
-
-Thanks!
-
-> The 900KB is probably wrong today in a lot of configurations, and will;
-> only get *more* wrong over time.
-> 
-
-I was talking about the vmlinux file, and probably should have said 
-bzImage size, which has 14 KB increase when CET is enabled.
-
-Yu-cheng
+Friendly ping.
