@@ -2,210 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F71272668
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E3727266B
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:59:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727347AbgIUN6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:58:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726643AbgIUN6k (ORCPT
+        id S1727351AbgIUN7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:59:30 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:34279 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726496AbgIUN7a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:58:40 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49338C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 06:58:40 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id md22so37355pjb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 06:58:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=9hSV7fSUtzdZKmvu2s5Ab7d0Ct/uxMH78YXRXFCN6qw=;
-        b=ca/xuhXFSfKKMmGzf7dK3R6B2A/KV6Qryv0ZOqBorcAICHIQnyg1bN5NJp3NbUkoxH
-         P6PkelBN0n9ZZzKxnt+VJ3rYjAceKgEogA00BGmFB0xmg+lBVkgYbA8wZi+tM3E9x9Dd
-         za85lf2Dm3DtmQJKT1lPiI8DwQwUZDvQN8lQ4YrkM/MmhI4AsSsfvKMtc7rpktGzbXch
-         wtLIu86rBFkh0StJoNbheg92t/xaR/8ZyJ2SdYOoGaEyHmI/R9ls/n4LtOOKo3+Yd9Xf
-         QTakkzfrPVswO+VS6lrVywLjd/brhdUPOjcUzXjaYDOtEHXGMDSyHo9YFc/r3Of8ETHM
-         ZTNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=9hSV7fSUtzdZKmvu2s5Ab7d0Ct/uxMH78YXRXFCN6qw=;
-        b=T8u95tgv1Pqk0h0czX+sWP0WS1au/Zf2RlPiaw4Q6DC+oKNGmj0nokhnIN5He2wVlP
-         ojxdNNTOlKjsQuZAbokJqFdhxfUg5+0xKkt2CTD05vk1bmMKSCNueU81gVOQgGCT/zpa
-         Q/iD3MBuJU165YXCdjK5GWiKhDtVYvMu8EII+JTikd4NYpmyg64NpR1FsX9CFAe0YncC
-         kZFNf1UNfG0Hwjh48u+0aUN7QTjqtw4gd2CY5A+mpCCWOWQks7dUX3PjP5b4w7n0FqIj
-         cmqRYgO0cBzrRW9U+fWTKZP2ikHZCT3vxJgbER/HDUNYHxXWQCX/bQ+DZcLEcxmzztBj
-         yiwQ==
-X-Gm-Message-State: AOAM533dwfyuxojzrukg3zx5L1zBhQlUQ6U9MlxCB3NzWCKIVKn9t6da
-        LcdLMSmgN0faodpiK+ZEQZwt
-X-Google-Smtp-Source: ABdhPJyI5KAWB7AqZ+yK56GJpopjzhYgHkWKNeodFVltKLu2c3ADqXqA/qqH0CDo0Er+yrk3Isl3fw==
-X-Received: by 2002:a17:90a:9317:: with SMTP id p23mr13235pjo.160.1600696719779;
-        Mon, 21 Sep 2020 06:58:39 -0700 (PDT)
-Received: from Mani-XPS-13-9360 ([2409:4072:6d03:bd12:1004:2ccf:6900:b97])
-        by smtp.gmail.com with ESMTPSA id m20sm12351965pfa.115.2020.09.21.06.58.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 21 Sep 2020 06:58:38 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 19:28:32 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] bus: mhi: core: Introduce sysfs entries for MHI
-Message-ID: <20200921135832.GC3262@Mani-XPS-13-9360>
-References: <1600457992-18448-1-git-send-email-bbhatt@codeaurora.org>
- <1600457992-18448-4-git-send-email-bbhatt@codeaurora.org>
+        Mon, 21 Sep 2020 09:59:30 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 9E2AF4E4;
+        Mon, 21 Sep 2020 09:59:28 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Mon, 21 Sep 2020 09:59:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=c
+        3fNgNGFdjr4v/UDr2lGz3PU9DDItsmFEZI0JCY2YTc=; b=qXXYhwH/GTxVEum3l
+        nWjqfA/4M8vVjuJp9aWR0peh/PDyt2l5umtY96hRwVfGZk9V7s0lwMkNSOIFr2RI
+        p23MNnUkbm7mxf/7f3MAtUxNuTFI/wBcoVrLzffjDID0JIOkPXZVgKrWs3YGucoN
+        tydo40DiUehnf4+Pm3pTCp7ONK1dF6xQDJPOasdrUB/K77BhlihDCcdDqbC5M+u7
+        H/yMqEhAzXbgz3++S7mv85WYJ8p4E8tG8XWm+5JkZYRsYvxIlRVZ7r4TgPcvKgnj
+        lbl9wOPktju6jc6Z/dSbYmgYb7Y11xcH4x/GbmKNJ1vAuK4C9VIlqq62cZiaIuJ/
+        //bCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=c3fNgNGFdjr4v/UDr2lGz3PU9DDItsmFEZI0JCY2Y
+        Tc=; b=ti2L2NgXfjI3JLZ38emVWOBmAT9vIL7KEr9CEyixc0TVFJgVdxPzLXO1T
+        hSftB5jxVMhxUFD/gtY1sV/O4AvEVd9hBH3/GNpP4DLmn9ZyZZcRNHokdyi4rxUo
+        YZeLFPO+GwoND+F4Z6fHAQ6o8AORMdnGp1hNG4AldGpUDMEVwI3zvKyiVRc/jkT5
+        RRvSsRX6YxQNvz7q3SMhfcN84gHmLWvFq8GRqVeKoUCR2dhlDeMMT7wrJ7md6zkd
+        v0pSvm0i3b4FO/onne6AlfcY2o+eIBU0ArjnuidYrsa1tU6PM5G3N+xDTfsUjPkO
+        k5EJgH/yuTZtgDDVs738BNABIiAAA==
+X-ME-Sender: <xms:v7FoX5z4tMayKshtbNMi1-Arz-vd1fkDXzb6gVzFMWHjmGRE7q7q_A>
+    <xme:v7FoX5QeMPKoUZraeztdGE6z9OaobTLvR0G86JDrUCJMUvoX2ZAlcIWLVHZXafjo9
+    u1PNih81xbeGHw4VYg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddvgdejfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggugfgjsehtqhertddttddunecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepheelvdfhkeelgfevleekleduvefftefhudekvdffhffhgeefuefgheegfeej
+    vedtnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:v7FoXzVVxtlL5-uki4uBoTXR8Oa9kZ_9eqpAf0rpeyuXWPE7Z-EDrQ>
+    <xmx:v7FoX7hRv7E1OLH8fJvBcCrAh48kpC0DJbtvrjA9qmyF0Q6nw0dKKA>
+    <xmx:v7FoX7DfxLODG9mfzJvboddmCrCzwT6E2GY9OBY08bY6jQnVXaR-iw>
+    <xmx:wLFoX4Ih48dtHtsGWI2BV0cS8vnMURQnbnblNjz0sezZ_eDvCXBwOpHgxM0>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id CA1903064684;
+        Mon, 21 Sep 2020 09:59:26 -0400 (EDT)
+Date:   Mon, 21 Sep 2020 15:59:25 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Cc:     Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Marcus Cooper <codekipper@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com
+Subject: Re: [PATCH v4 09/22] arm64: dts: allwinner: h6: Add HDMI audio node
+Message-ID: <20200921135925.q7mde2cnt5jtzkb5@gilmour.lan>
+References: <20200921102731.747736-1-peron.clem@gmail.com>
+ <20200921102731.747736-10-peron.clem@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <1600457992-18448-4-git-send-email-bbhatt@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200921102731.747736-10-peron.clem@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 12:39:52PM -0700, Bhaumik Bhatt wrote:
-> Introduce sysfs entries to enable userspace clients the ability to read
-> the serial number and the OEM PK Hash values obtained from BHI. OEMs
-> need to read these device-specific hardware information values through
-> userspace for factory testing purposes and cannot be exposed via degbufs
-> as it may remain disabled for performance reasons. Also, update the
-> documentation for ABI to include these entries.
-> 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-
-Thanks,
-Mani
-
+On Mon, Sep 21, 2020 at 12:27:18PM +0200, Cl=E9ment P=E9ron wrote:
+> From: Jernej Skrabec <jernej.skrabec@siol.net>
+>=20
+> Add a simple-soundcard to link audio between HDMI and I2S.
+>=20
+> Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+> Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+> Signed-off-by: Cl=E9ment P=E9ron <peron.clem@gmail.com>
 > ---
->  Documentation/ABI/stable/sysfs-bus-mhi | 21 ++++++++++++++
->  MAINTAINERS                            |  1 +
->  drivers/bus/mhi/core/init.c            | 53 ++++++++++++++++++++++++++++++++++
->  3 files changed, 75 insertions(+)
->  create mode 100644 Documentation/ABI/stable/sysfs-bus-mhi
-> 
-> diff --git a/Documentation/ABI/stable/sysfs-bus-mhi b/Documentation/ABI/stable/sysfs-bus-mhi
-> new file mode 100644
-> index 0000000..ecfe766
-> --- /dev/null
-> +++ b/Documentation/ABI/stable/sysfs-bus-mhi
-> @@ -0,0 +1,21 @@
-> +What:		/sys/bus/mhi/devices/.../serialnumber
-> +Date:		Sept 2020
-> +KernelVersion:	5.10
-> +Contact:	Bhaumik Bhatt <bbhatt@codeaurora.org>
-> +Description:	The file holds the serial number of the client device obtained
-> +		using a BHI (Boot Host Interface) register read after at least
-> +		one attempt to power up the device has been done. If read
-> +		without having the device power on at least once, the file will
-> +		read all 0's.
-> +Users:		Any userspace application or clients interested in device info.
+>  arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi | 33 ++++++++++++++++++++
+>  1 file changed, 33 insertions(+)
+>=20
+> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi b/arch/arm64/bo=
+ot/dts/allwinner/sun50i-h6.dtsi
+> index 28c77d6872f6..a8853ee7885a 100644
+> --- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+> @@ -67,6 +67,25 @@ de: display-engine {
+>  		status =3D "disabled";
+>  	};
+> =20
+> +	hdmi_sound: hdmi-sound {
+> +		compatible =3D "simple-audio-card";
+> +		simple-audio-card,format =3D "i2s";
+> +		simple-audio-card,name =3D "sun50i-h6-hdmi";
+> +		simple-audio-card,mclk-fs =3D <128>;
+> +		simple-audio-card,frame-inversion;
+> +		status =3D "disabled";
 > +
-> +What:		/sys/bus/mhi/devices/.../oem_pk_hash
-> +Date:		Sept 2020
-> +KernelVersion:	5.10
-> +Contact:	Bhaumik Bhatt <bbhatt@codeaurora.org>
-> +Description:	The file holds the OEM PK Hash value of the endpoint device
-> +		obtained using a BHI (Boot Host Interface) register read after
-> +		at least one attempt to power up the device has been done. If
-> +		read without having the device power on at least once, the file
-> +		will read all 0's.
-> +Users:		Any userspace application or clients interested in device info.
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index deaafb6..11e7be9 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -11323,6 +11323,7 @@ M:	Hemant Kumar <hemantk@codeaurora.org>
->  L:	linux-arm-msm@vger.kernel.org
->  S:	Maintained
->  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mani/mhi.git
-> +F:	Documentation/ABI/stable/sysfs-bus-mhi
->  F:	Documentation/mhi/
->  F:	drivers/bus/mhi/
->  F:	include/linux/mhi.h
-> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-> index 61e5885..1b4161e 100644
-> --- a/drivers/bus/mhi/core/init.c
-> +++ b/drivers/bus/mhi/core/init.c
-> @@ -76,6 +76,56 @@ const char *to_mhi_pm_state_str(enum mhi_pm_state state)
->  	return mhi_pm_state_str[index];
->  }
->  
-> +static ssize_t serial_number_show(struct device *dev,
-> +				  struct device_attribute *attr,
-> +				  char *buf)
-> +{
-> +	struct mhi_device *mhi_dev = to_mhi_device(dev);
-> +	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
+> +		simple-audio-card,codec {
+> +			sound-dai =3D <&hdmi>;
+> +		};
 > +
-> +	return snprintf(buf, PAGE_SIZE, "Serial Number: %u\n",
-> +			mhi_cntrl->serial_number);
-> +}
-> +static DEVICE_ATTR_RO(serial_number);
-> +
-> +static ssize_t oem_pk_hash_show(struct device *dev,
-> +				struct device_attribute *attr,
-> +				char *buf)
-> +{
-> +	struct mhi_device *mhi_dev = to_mhi_device(dev);
-> +	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
-> +	int i, cnt = 0;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(mhi_cntrl->oem_pk_hash); i++)
-> +		cnt += snprintf(buf + cnt, PAGE_SIZE - cnt,
-> +				"OEMPKHASH[%d]: 0x%x\n", i,
-> +				mhi_cntrl->oem_pk_hash[i]);
-> +
-> +	return cnt;
-> +}
-> +static DEVICE_ATTR_RO(oem_pk_hash);
-> +
-> +static struct attribute *mhi_sysfs_attrs[] = {
-> +	&dev_attr_serial_number.attr,
-> +	&dev_attr_oem_pk_hash.attr,
-> +	NULL,
-> +};
-> +
-> +static const struct attribute_group mhi_sysfs_group = {
-> +	.attrs = mhi_sysfs_attrs,
-> +};
-> +
-> +static int mhi_create_sysfs(struct mhi_controller *mhi_cntrl)
-> +{
-> +	return sysfs_create_group(&mhi_cntrl->mhi_dev->dev.kobj,
-> +				  &mhi_sysfs_group);
-> +}
-> +
-> +static void mhi_destroy_sysfs(struct mhi_controller *mhi_cntrl)
-> +{
-> +	sysfs_remove_group(&mhi_cntrl->mhi_dev->dev.kobj, &mhi_sysfs_group);
-> +}
-> +
->  /* MHI protocol requires the transfer ring to be aligned with ring length */
->  static int mhi_alloc_aligned_ring(struct mhi_controller *mhi_cntrl,
->  				  struct mhi_ring *ring,
-> @@ -917,6 +967,8 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
->  	mhi_cntrl->mhi_dev = mhi_dev;
->  
->  	mhi_create_debugfs(mhi_cntrl);
-> +	if (mhi_create_sysfs(mhi_cntrl))
-> +		dev_err(mhi_cntrl->cntrl_dev, "Failed to create sysfs entries\n");
->  
->  	return 0;
->  
-> @@ -940,6 +992,7 @@ void mhi_unregister_controller(struct mhi_controller *mhi_cntrl)
->  	struct mhi_chan *mhi_chan = mhi_cntrl->mhi_chan;
->  	unsigned int i;
->  
-> +	mhi_destroy_sysfs(mhi_cntrl);
->  	mhi_destroy_debugfs(mhi_cntrl);
->  
->  	kfree(mhi_cntrl->mhi_cmd);
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+> +		simple-audio-card,cpu {
+> +			sound-dai =3D <&i2s1>;
+> +			dai-tdm-slot-num =3D <2>;
+> +			dai-tdm-slot-width =3D <32>;
+
+It looks weird to have both some TDM setup here, and yet the format in
+i2s?
+
+Maxime
