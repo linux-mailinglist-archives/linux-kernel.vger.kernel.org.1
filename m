@@ -2,261 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E279271AAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 08:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F34C271AC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 08:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726357AbgIUGKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 02:10:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726336AbgIUGKb (ORCPT
+        id S1726435AbgIUGRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 02:17:19 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:31781 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726395AbgIUGRN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 02:10:31 -0400
-Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 656AFC0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 23:10:31 -0700 (PDT)
-Received: by mail-vk1-xa41.google.com with SMTP id d2so3057018vkd.13
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 23:10:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hi2rPF/VTt+7YBV2OIek85mNirM/1FNuwC783UZ79gY=;
-        b=QaZvdjqmE01vsDCJpv/L3PIhQD9pFvCOGUpf8KQBf3AdasjOy8neTN7t/wRbvEYv1E
-         O1FVTx4IAh2rEkqCtye+7TzvIRzyjesUj2gTs4+Ewbb5W8ANnrCwLRpt5GYWxlXO4ElQ
-         JwwGdQdUvIdzbc2Tp2ibQkb6BgEX3QMwJUSt0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hi2rPF/VTt+7YBV2OIek85mNirM/1FNuwC783UZ79gY=;
-        b=YWZycN3S0WkgRz9vihZEvZ4oysoAEGQW9V1TGkL7OWA7rZeajkftYGxgKAmPXb8geW
-         bwTf75sluIvcpWp0cFhfBjRWdK8FP03rC+W9FCVEt49KkWL+QHt6EOGzxOT9wAXhZJko
-         lLK5ax5gydHrd3fs2cgiri2h6DhbfGEVFMsCLL8Seg3+hZlYNpOYUp4MBeHhKIH9t+rb
-         jnSdZE5NOy1xC16LbWOTHCJR8mMqgbrXJS963og1ht+U+A3zJTAR84bhqO1a1ZB1CxdQ
-         B5TiPjThO9jq7ELln5g4xP9itXtwSuW0gsdoxjV0DYedDJx+ECQzrl1eaYJh4rwMwAS4
-         JtBg==
-X-Gm-Message-State: AOAM5337dARn4/9LG7uvJS5MWIwgM+NFK6UdlG7M3JshgC/+9D8ulEEO
-        qYhzTmn44xmAr6uKe1Ml4U57CjZXUoO4C5LNATjx0g==
-X-Google-Smtp-Source: ABdhPJwS1vT6jl1+U7TJLvBVogQi38c1rNUQm4Kcmwy0nzE27iFQkCgHBkdfG6By1N4TLFUCpb7VEZDUgpxahYlWQZM=
-X-Received: by 2002:a1f:1c17:: with SMTP id c23mr17961911vkc.0.1600668630316;
- Sun, 20 Sep 2020 23:10:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200918083124.3921207-1-ikjn@chromium.org> <20200918162834.v2.2.I3de2918f09b817cc2ae6d324f1ece62779ecc7cf@changeid>
- <CAJsYDV+Um3aEsgW-829BsZSaiVCp3O2LkrTmgCthhFv4fuEnLg@mail.gmail.com>
-In-Reply-To: <CAJsYDV+Um3aEsgW-829BsZSaiVCp3O2LkrTmgCthhFv4fuEnLg@mail.gmail.com>
-From:   Ikjoon Jang <ikjn@chromium.org>
-Date:   Mon, 21 Sep 2020 14:10:19 +0800
-Message-ID: <CAATdQgB5UAFbxW6J2no7=Jyn2ddaHXceAxedGaaAxa++gGNDkg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] spi: spi-mtk-nor: fix mishandled logics in
- checking SPI memory operation
-To:     Chuanhong Guo <gch981213@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-spi@vger.kernel.org,
-        linux-mtd@lists.infradead.org,
+        Mon, 21 Sep 2020 02:17:13 -0400
+X-UUID: 1af28c60b7d143c0887bfb09408e1f3d-20200921
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=6ZOWN7ki1sN531xAD52X8GiFWf24OghgpbzynrNkwy8=;
+        b=DO28peqW8B399qNluQEyUPGAjNa5QATl1rkGpuuGLhRKMsXwT1ihgN8MfXdXk/f4orOX+V6K1VjgFYBvJOVW8vkwAKZfAiIUIU4xNe/WHdeX321xyDFZMKmzZSqohYuuRsi3EyExdZ5zGqmVy8ve2vJeRlQb3w3JrytM+CrKj6Q=;
+X-UUID: 1af28c60b7d143c0887bfb09408e1f3d-20200921
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 300474815; Mon, 21 Sep 2020 14:16:57 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ MTKMBS31N1.mediatek.inc (172.27.4.69) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 21 Sep 2020 14:16:56 +0800
+Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 21 Sep 2020 14:16:54 +0800
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>
+CC:     Mathias Nyman <mathias.nyman@intel.com>,
         Matthias Brugger <matthias.bgg@gmail.com>,
-        "moderated list:ARM/Mediatek SoC support" 
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>, Jann Horn <jannh@google.com>,
+        Jason Yan <yanaijie@huawei.com>, Arnd Bergmann <arnd@arndb.de>,
+        Chuhong Yuan <hslester96@gmail.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        "Ben Dooks (Codethink)" <ben.dooks@codethink.co.uk>,
+        Saurav Girepunje <saurav.girepunje@gmail.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        <linux-mediatek@lists.infradead.org>,
+        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: [PATCH v4 01/11] usb: early: convert to readl_poll_timeout_atomic()
+Date:   Mon, 21 Sep 2020 14:13:25 +0800
+Message-ID: <1600668815-12135-1-git-send-email-chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
+MIME-Version: 1.0
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 2F03555C4872A9C51584CA060F9A514A5CB38BC9E5EB911970C0BACFA9D73A672000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 9:09 PM Chuanhong Guo <gch981213@gmail.com> wrote:
->
-> Hi!
->
-> On Fri, Sep 18, 2020 at 4:34 PM Ikjoon Jang <ikjn@chromium.org> wrote:
-> >
-> > Fix a simple bug which can limits its transfer size,
-> > and add a simple helper function for code cleanups.
-> >
-> > Fixes: a59b2c7c56bf ("spi: spi-mtk-nor: support standard spi properties")
-> > Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
-> >
-> > ---
-> >
-> > (no changes since v1)
-> >
-> >  drivers/spi/spi-mtk-nor.c | 62 ++++++++++++++++++++++++---------------
-> >  1 file changed, 38 insertions(+), 24 deletions(-)
-> >
-> > diff --git a/drivers/spi/spi-mtk-nor.c b/drivers/spi/spi-mtk-nor.c
-> > index 6e6ca2b8e6c8..54b2c0fde95b 100644
-> > --- a/drivers/spi/spi-mtk-nor.c
-> > +++ b/drivers/spi/spi-mtk-nor.c
-> > @@ -167,52 +167,63 @@ static bool mtk_nor_match_read(const struct spi_mem_op *op)
-> >         return false;
-> >  }
-> >
-> > -static int mtk_nor_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
-> > +static bool need_bounce(void *cpu_addr, unsigned long len)
-> >  {
-> > -       size_t len;
-> > +       return !!(((uintptr_t)cpu_addr) & MTK_NOR_DMA_ALIGN_MASK);
-> > +}
->
-> parameter 'len' isn't used in this function.
+VXNlIHJlYWRsX3BvbGxfdGltZW91dF9hdG9taWMoKSB0byBzaW1wbGlmeSBjb2RlDQoNCkNjOiBM
+dSBCYW9sdSA8YmFvbHUubHVAbGludXguaW50ZWwuY29tPg0KQ2M6IE1hdGhpYXMgTnltYW4gPG1h
+dGhpYXMubnltYW5AbGludXguaW50ZWwuY29tPg0KU2lnbmVkLW9mZi1ieTogQ2h1bmZlbmcgWXVu
+IDxjaHVuZmVuZy55dW5AbWVkaWF0ZWsuY29tPg0KUmV2aWV3ZWQtYnk6IEphbm4gSG9ybiA8amFu
+bmhAZ29vZ2xlLmNvbT4NCi0tLQ0KdjQ6IGFkZCByZXZpZXdlZC1ieSBKYW5uDQoNCnYyfnYzOiBu
+byBjaGFuZ2VzDQotLS0NCiBkcml2ZXJzL3VzYi9lYXJseS94aGNpLWRiYy5jIHwgMTQgKysrKy0t
+LS0tLS0tLS0NCiAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCAxMCBkZWxldGlvbnMo
+LSkNCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvdXNiL2Vhcmx5L3hoY2ktZGJjLmMgYi9kcml2ZXJz
+L3VzYi9lYXJseS94aGNpLWRiYy5jDQppbmRleCBjMDUwNzc2Li5iZTRlY2JhIDEwMDY0NA0KLS0t
+IGEvZHJpdmVycy91c2IvZWFybHkveGhjaS1kYmMuYw0KKysrIGIvZHJpdmVycy91c2IvZWFybHkv
+eGhjaS1kYmMuYw0KQEAgLTE0LDYgKzE0LDcgQEANCiAjaW5jbHVkZSA8bGludXgvcGNpX2lkcy5o
+Pg0KICNpbmNsdWRlIDxsaW51eC9tZW1ibG9jay5oPg0KICNpbmNsdWRlIDxsaW51eC9pby5oPg0K
+KyNpbmNsdWRlIDxsaW51eC9pb3BvbGwuaD4NCiAjaW5jbHVkZSA8YXNtL3BjaS1kaXJlY3QuaD4N
+CiAjaW5jbHVkZSA8YXNtL2ZpeG1hcC5oPg0KICNpbmNsdWRlIDxsaW51eC9iY2QuaD4NCkBAIC0x
+MzUsMTYgKzEzNiw5IEBAIHN0YXRpYyBpbnQgaGFuZHNoYWtlKHZvaWQgX19pb21lbSAqcHRyLCB1
+MzIgbWFzaywgdTMyIGRvbmUsIGludCB3YWl0LCBpbnQgZGVsYXkpDQogew0KIAl1MzIgcmVzdWx0
+Ow0KIA0KLQlkbyB7DQotCQlyZXN1bHQgPSByZWFkbChwdHIpOw0KLQkJcmVzdWx0ICY9IG1hc2s7
+DQotCQlpZiAocmVzdWx0ID09IGRvbmUpDQotCQkJcmV0dXJuIDA7DQotCQl1ZGVsYXkoZGVsYXkp
+Ow0KLQkJd2FpdCAtPSBkZWxheTsNCi0JfSB3aGlsZSAod2FpdCA+IDApOw0KLQ0KLQlyZXR1cm4g
+LUVUSU1FRE9VVDsNCisJcmV0dXJuIHJlYWRsX3BvbGxfdGltZW91dF9hdG9taWMocHRyLCByZXN1
+bHQsDQorCQkJCQkgKChyZXN1bHQgJiBtYXNrKSA9PSBkb25lKSwNCisJCQkJCSBkZWxheSwgd2Fp
+dCk7DQogfQ0KIA0KIHN0YXRpYyB2b2lkIF9faW5pdCB4ZGJjX2Jpb3NfaGFuZG9mZih2b2lkKQ0K
+LS0gDQoxLjkuMQ0K
 
-ACK.
-
->
-> >
-> > +static int mtk_nor_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
-> > +{
-> >         if (!op->data.nbytes)
-> >                 return 0;
-> >
-> >         if ((op->addr.nbytes == 3) || (op->addr.nbytes == 4)) {
-> > -               if ((op->data.dir == SPI_MEM_DATA_IN) &&
-> > -                   mtk_nor_match_read(op)) {
->
-> I think replacing a if/else if with a two-case switch is more
-> of a personal code preference rather than code cleanup.
-> I'd prefer only adding need_bounce to replace alignment
-> check using a separated commit and leave other stuff
-> untouched because:
-> 1. This "cleanup" made unintended logic changes (see below)
-> 2. The "cleanup" itself actually becomes the major part of
->     this patch, while the actual fix mentioned in commit
->     message is the minor part.
-> 3. A fix commit should contain the fix itself. It shouldn't
->     mix with these code changes.
-
-Got it, v3 will only include the fix itself.
-
->
-> > +               switch (op->data.dir) {
-> > +               case SPI_MEM_DATA_IN:
-> > +                       if (!mtk_nor_match_read(op))
-> > +                               return -EINVAL;
->
-> You are changing the code logic here.
-> mtk_nor_match_read checks if the operation can be executed
-> using controller PIO/DMA reading. Even if it's not supported,
-> we can still use PRG mode to execute the operation.
-> One example of such an operation is SPI NOR SFDP reading.
-> Your change breaks that which then breaks 1_2_2 and 1_4_4
-> reading capability because spi-nor driver parses these op formats
-> from SFDP table.
-
-As you already noticed it, this is a bug from the last patch I made
-and v2 isn't fixing this problem. This should be restored & fixed in v3.
-And will not include other changes in a same patch.
-
->
-> > +                       /* check if it's DMAable */
-> >                         if ((op->addr.val & MTK_NOR_DMA_ALIGN_MASK) ||
-> > -                           (op->data.nbytes < MTK_NOR_DMA_ALIGN))
-> > +                           (op->data.nbytes < MTK_NOR_DMA_ALIGN)) {
-> >                                 op->data.nbytes = 1;
-> > -                       else if (!((ulong)(op->data.buf.in) &
-> > -                                  MTK_NOR_DMA_ALIGN_MASK))
-> > +                       } else {
-> > +                               if (need_bounce(op->data.buf.in, op->data.nbytes) &&
-> > +                                   (op->data.nbytes > MTK_NOR_BOUNCE_BUF_SIZE))
-> > +                                       op->data.nbytes = MTK_NOR_BOUNCE_BUF_SIZE;
-> >                                 op->data.nbytes &= ~MTK_NOR_DMA_ALIGN_MASK;
-> > -                       else if (op->data.nbytes > MTK_NOR_BOUNCE_BUF_SIZE)
-> > -                               op->data.nbytes = MTK_NOR_BOUNCE_BUF_SIZE;
->
-> data length alignment is intentionally done only for DMA reading
-> without the bounce buffer.
-> My intention here:
-> If we use the bounce buffer, we can read more data than needed to.
-> Say we want 25 bytes of data, reading 32 bytes using DMA and
-> bounce buffer should be faster than reading 16 bytes with DMA
-> and another 9 bytes with PIO, because for every single byte of PIO
-> reading, adjust_op_size and exec_op is called once, we
-> program controller with new cmd/address, and controller need
-> to send extra cmd/address to flash.
-> I noticed that you removed this part of logic from DMA reading
-> execution in 3/5 as well. Please revert the logic change here
-> add in DMA reading function (see later comment in 3/5).
-
-In v2, I wasn't sure whether this behavior is sane (read more than requested)
-Now I think this is okay, I've missed the fact that flash address is
-also aligned together.
-I'll just keep the previous logics with padding in v3.
-
-Thanks!
-
->
-> > -                       return 0;
-> > -               } else if (op->data.dir == SPI_MEM_DATA_OUT) {
-> > +                       }
-> > +                       break;
-> > +               case SPI_MEM_DATA_OUT:
-> >                         if (op->data.nbytes >= MTK_NOR_PP_SIZE)
-> >                                 op->data.nbytes = MTK_NOR_PP_SIZE;
-> >                         else
-> >                                 op->data.nbytes = 1;
-> > -                       return 0;
-> > +                       break;
-> > +               default:
-> > +                       break;
-> >                 }
-> > +       } else {
-> > +               u8 len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
-> > +
-> > +               if (len > MTK_NOR_PRG_MAX_SIZE)
-> > +                       return -EINVAL;
-> > +               if (op->data.nbytes && !(MTK_NOR_PRG_MAX_SIZE - len))
-> > +                       return -EINVAL;
-> > +               if (op->data.nbytes > (MTK_NOR_PRG_MAX_SIZE - len))
-> > +                       op->data.nbytes = MTK_NOR_PRG_MAX_SIZE - len;
-> >         }
-> >
-> > -       len = MTK_NOR_PRG_MAX_SIZE - op->cmd.nbytes - op->addr.nbytes -
-> > -             op->dummy.nbytes;
-> > -       if (op->data.nbytes > len)
-> > -               op->data.nbytes = len;
-> > -
-> >         return 0;
-> >  }
-> >
-> >  static bool mtk_nor_supports_op(struct spi_mem *mem,
-> >                                 const struct spi_mem_op *op)
-> >  {
-> > -       size_t len;
-> > -
-> >         if (op->cmd.buswidth != 1)
-> >                 return false;
-> >
-> >         if ((op->addr.nbytes == 3) || (op->addr.nbytes == 4)) {
-> > -               switch(op->data.dir) {
-> > +               switch (op->data.dir) {
-> >                 case SPI_MEM_DATA_IN:
-> >                         if (!mtk_nor_match_read(op))
-> >                                 return false;
-> > @@ -226,11 +237,14 @@ static bool mtk_nor_supports_op(struct spi_mem *mem,
-> >                 default:
-> >                         break;
-> >                 }
-> > +       } else {
-> > +               u8 len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
-> > +
-> > +               if (len > MTK_NOR_PRG_MAX_SIZE)
-> > +                       return false;
-> > +               if (op->data.nbytes && !(MTK_NOR_PRG_MAX_SIZE - len))
-> > +                       return false;
-> >         }
-> > -       len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
-> > -       if ((len > MTK_NOR_PRG_MAX_SIZE) ||
-> > -           ((op->data.nbytes) && (len == MTK_NOR_PRG_MAX_SIZE)))
-> > -               return false;
-> >
-> >         return spi_mem_default_supports_op(mem, op);
-> >  }
-> > --
-> > 2.28.0.681.g6f77f65b4e-goog
-> >
->
->
-> --
-> Regards,
-> Chuanhong Guo
