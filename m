@@ -2,128 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 109F127214B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:37:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80144272152
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726609AbgIUKhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 06:37:50 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:35324 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726436AbgIUKht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 06:37:49 -0400
-Received: from zn.tnic (p200300ec2f07e300a1766583a478f392.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:e300:a176:6583:a478:f392])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D80851EC03C9;
-        Mon, 21 Sep 2020 12:37:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600684667;
+        id S1726629AbgIUKiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:38:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33008 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726367AbgIUKiS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 06:38:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600684697;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=in/bybOnAIhAdt8FQ8tWtig4T4/V4JAt7w3WooCITpM=;
-        b=T9CXOlxoQCHIOVk3J5RboDd29f68vxB/C2aSm2tOFNyC5MonwkiSZ0E4BWcGMgIUTpaop7
-        QnG30Ps/uMuZ/e+7qsWAbMS0UD3lNJQgAoEU9YNjR2Wlk5JdKJ9PFH9ihrj0lhM0Wr6QUi
-        OHqh4RDlxnPsDC1FYlUrAD7doxbHcjc=
-Date:   Mon, 21 Sep 2020 12:37:41 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Sven Joachim <svenjoac@gmx.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>, rjw@rjwysocki.net,
-        x86@kernel.org, tony.luck@intel.com, lenb@kernel.org,
-        daniel.lezcano@linaro.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
-        ulf.hansson@linaro.org, paulmck@kernel.org, tglx@linutronix.de,
-        naresh.kamboju@linaro.org, Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: [PATCH] rcu/tree: Export rcu_idle_{enter,exit} to module
-Message-ID: <20200921103741.GC5901@zn.tnic>
-References: <20200915103157.345404192@infradead.org>
- <20200915103806.479637218@infradead.org>
- <87wo0npk72.fsf@turtle.gmx.de>
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=k37fRmP6IslqoM8RNLxcb8OzcjtWZpkq3yLymvakBU4=;
+        b=AueoSnjJkfxW7RSb0Z5Hyb1MxvQTgtSHZt5IAWWE7T4OJHOeWVa5CjQTaRFTOhg6DNYqXz
+        gI/N6uzv0ZRG7C/brcvbJBNvm5ZnfHWIPWE0NR48mqCvhMROgiRvNMTXmmg8koV/lSR5I1
+        rA5JCKVdjyJ+/TE7YOGistZ19H8pJkE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-395-YFqMEzMEPRqvidZyzhPt7g-1; Mon, 21 Sep 2020 06:38:15 -0400
+X-MC-Unique: YFqMEzMEPRqvidZyzhPt7g-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 40029801AC3;
+        Mon, 21 Sep 2020 10:38:13 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.35.206.238])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7513E68D64;
+        Mon, 21 Sep 2020 10:38:06 +0000 (UTC)
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        Joerg Roedel <joro@8bytes.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: [PATCH v2 0/1] KVM: correctly restore the TSC value on nested migration
+Date:   Mon, 21 Sep 2020 13:38:04 +0300
+Message-Id: <20200921103805.9102-1-mlevitsk@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87wo0npk72.fsf@turtle.gmx.de>
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lemme add whatever get_maintainer spits, to Cc.
+This patch is a result of a long investigation I made to understand=0D
+why the nested migration more often than not makes the nested guest hang.=0D
+Sometimes the nested guest recovers and sometimes it hangs forever.=0D
+=0D
+The root cause of this is that reading MSR_IA32_TSC while nested guest is=0D
+running returns its TSC value, that is (assuming no tsc scaling)=0D
+host tsc + L1 tsc offset + L2 tsc offset.=0D
+=0D
+This is correct but it is a result of a nice curiosity of X86 VMX=0D
+(and apparently SVM too, according to my tests) implementation:=0D
+=0D
+As a rule MSR reads done by the guest should either trap to host, or just=0D
+return host value, and therefore kvm_get_msr and friends, should basically=
+=0D
+always return the L1 value of any msr.=0D
+=0D
+Well, MSR_IA32_TSC is an exception. Intel's PRM states that when you disabl=
+e=0D
+its interception, then in guest mode the host adds the TSC offset to=0D
+the read value.=0D
+=0D
+I haven't found anything like that in AMD's PRM but according to the few=0D
+tests I made, it behaves the same.=0D
+=0D
+However, there is no such exception when writing MSR_IA32_TSC, and this=0D
+poses a problem for nested migration.=0D
+=0D
+When MSR_IA32_TSC is read, we read L2 value (smaller since L2 is started=0D
+after L1), and when we restore it after migration, the value is interpreted=
+=0D
+as L1 value, thus resulting in huge TSC jump backward which the guest usual=
+ly=0D
+really doesn't like, especially on AMD with APIC deadline timer, which=0D
+usually just doesn't fire afterward sending the guest into endless wait for=
+ it.=0D
+=0D
+The proposed patch fixes this by making read of MSR_IA32_TSC depend on=0D
+'msr_info->host_initiated'=0D
+=0D
+If guest reads the MSR, we add the TSC offset, but when host's qemu reads=0D
+the msr we skip that silly emulation of TSC offset, and return the real val=
+ue=0D
+for the L1 guest which is host tsc + L1 offset.=0D
+=0D
+This patch was tested on both SVM and VMX, and on both it fixes hangs.=0D
+On VMX since it uses VMX preemption timer for APIC deadline, the guest seem=
+s=0D
+to recover after a while without that patch.=0D
+=0D
+To make sure that the nested migration happens I usually used=0D
+-overcommit cpu_pm=3Don but I reproduced this with just running an endless =
+loop=0D
+in L2.=0D
+=0D
+This is tested both with and without -invtsc,tsc-frequency=3D...=0D
+=0D
+The migration was done by saving the migration stream to a file, and then=0D
+loading the qemu with '-incoming'=0D
+=0D
+V2: incorporated feedback from Sean Christopherson (thanks!)=0D
+=0D
+Maxim Levitsky (1):=0D
+  KVM: x86: fix MSR_IA32_TSC read for nested migration=0D
+=0D
+ arch/x86/kvm/x86.c | 16 ++++++++++++++--=0D
+ 1 file changed, 14 insertions(+), 2 deletions(-)=0D
+=0D
+-- =0D
+2.26.2=0D
+=0D
 
-On Mon, Sep 21, 2020 at 11:12:33AM +0200, Sven Joachim wrote:
-> On 2020-09-15 12:32 +0200, Peter Zijlstra wrote:
-> 
-> > The C3 BusMaster idle code takes lock in a number of places, some deep
-> > inside the ACPI code. Instead of wrapping it all in RCU_NONIDLE, have
-> > the driver take over RCU-idle duty and avoid flipping RCU state back
-> > and forth a lot.
-> >
-> > ( by marking 'C3 && bm_check' as RCU_IDLE, we _must_ call enter_bm() for
-> >   that combination, otherwise we'll loose RCU-idle, this requires
-> >   shuffling some code around )
-> >
-> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> 
-> I got modpost errors in 5.9-rc6 after this patch:
-> 
-> ERROR: modpost: "rcu_idle_enter" [drivers/acpi/processor.ko] undefined!
-> ERROR: modpost: "rcu_idle_exit" [drivers/acpi/processor.ko] undefined!
-> 
-> Reverting commit 1fecfdbb7acc made them go away.  Notably my
-> configuration had CONFIG_ACPI_PROCESSOR=m,  changing that
-> to CONFIG_ACPI_PROCESSOR=y let the build succeed as well.
-
-I guess this. Running randconfigs on it for a while, to see what else
-breaks.
-
----
-From: Borislav Petkov <bp@suse.de>
-Date: Mon, 21 Sep 2020 12:31:36 +0200
-
-Fix this link error:
-
-  ERROR: modpost: "rcu_idle_enter" [drivers/acpi/processor.ko] undefined!
-  ERROR: modpost: "rcu_idle_exit" [drivers/acpi/processor.ko] undefined!
-
-when CONFIG_ACPI_PROCESSOR is built as module. PeterZ says that in light
-of ARM needing those soon too, they should simply be exported.
-
-Fixes: 1fecfdbb7acc ("ACPI: processor: Take over RCU-idle for C3-BM idle")
-Reported-by: Sven Joachim <svenjoac@gmx.de>
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
----
- kernel/rcu/tree.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 8ce77d9ac716..f78ee759af9c 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -673,6 +673,7 @@ void rcu_idle_enter(void)
- 	lockdep_assert_irqs_disabled();
- 	rcu_eqs_enter(false);
- }
-+EXPORT_SYMBOL_GPL(rcu_idle_enter);
- 
- #ifdef CONFIG_NO_HZ_FULL
- /**
-@@ -886,6 +887,7 @@ void rcu_idle_exit(void)
- 	rcu_eqs_exit(false);
- 	local_irq_restore(flags);
- }
-+EXPORT_SYMBOL_GPL(rcu_idle_exit);
- 
- #ifdef CONFIG_NO_HZ_FULL
- /**
--- 
-2.21.0
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
