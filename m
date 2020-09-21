@@ -2,172 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0DAF272AF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:04:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 408DE272AEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:03:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727767AbgIUQEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:04:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726810AbgIUQEO (ORCPT
+        id S1727303AbgIUQDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:03:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51101 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726690AbgIUQDJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:04:14 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1602C061755;
-        Mon, 21 Sep 2020 09:04:13 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id y15so59080wmi.0;
-        Mon, 21 Sep 2020 09:04:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sdIgHQT1sjFsE6Sp3c24zrA/x7Tss24f6B4/9TuIjO0=;
-        b=E9qxaKspPy4ac31AQqZlhWvJ8ossufkaQnqOtY9G9VklJERhT1VY6YqBH20NcXFukY
-         if22BZjssjObVyVnYmfWRGY2OwI2/WHnV2/eY4zZpR1oNKa2aQbEg+quxu2Ak+ZxfYM0
-         RlV5gjjtBl2RLc6vsXJMKCkvtE6m4cNNtLIM8fkINRkhRaQH0a58K8fQFgNMeKoIFXPT
-         nkQ94emyzpfZEUx4DdOvelpy1wIbhDmJN+TPy1Z7Qf8pNtFdOCRPdUaEHDbanFqcRMES
-         EQmArypqyfhOuAnhZ7hCsjJ4KGhnHkeiX/9Xf9z+SnbFmazWLFO7kJ+ppZEbEBlvqt2h
-         Bs+Q==
+        Mon, 21 Sep 2020 12:03:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600704187;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rg9OAj+LT6LTHPfMLItwEubTqlNJqPHt6f6Qt4lAwgg=;
+        b=c9J7C69dFVdvDmJ7453Dy3F/QRfZnZjY6Dx2p70h1csxhE3SbLsyW6dpF2LWMSwPGH33Yh
+        q2v093PgGS99LDX/ctXULTTrrdQvV/zeeKNwbRoXqjyZU0+Svc6BYXQ/u0ZPp/05r888EK
+        b9S9QDZGJ5/+4sKc9Aek/nYxayKVD+E=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-550-XA09dhX0OhKh_IUZ14IMzw-1; Mon, 21 Sep 2020 12:02:55 -0400
+X-MC-Unique: XA09dhX0OhKh_IUZ14IMzw-1
+Received: by mail-ej1-f69.google.com with SMTP id w10so5023015ejq.11
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 09:02:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=sdIgHQT1sjFsE6Sp3c24zrA/x7Tss24f6B4/9TuIjO0=;
-        b=AcbLMsUy1KU4uQ31lnThcy55HarLRmv6xw+PKXgm0ZjYr5afH7ShZ964/EOKCfO/TQ
-         jDv0jXNJtWtS3RC1aDG7YQQOUgOwS9f5GHadL3XUmipUBmzOvjf25zhBTObWuoK8Aowi
-         oT4nfkH+zCsjFBBCd7XZwmVeOLZwWWgOAgFZHG/A4F76kjaVtX+fDcRYliBVKf1WObsc
-         88qBrCop3QCxkd1DGAR+gyWUHqP/PHTBltNGW1Gc2KwqUtnNYveOh/t8pb9qFsbI4QQw
-         UNMPGeNDbX/Jpm5IUzNwmQ8aYMjVmeQOFpV7a00DO9kJGdlFWPBJ7fyNyukvH0Z7SM33
-         wc4g==
-X-Gm-Message-State: AOAM530GoPqamQPzaHByNeXaYwn/Ro4zV15jjlnKg/DGqGWl8G1rN9Kb
-        N51pBwJfuO+PoolTRJoOENf7vMPf2OI=
-X-Google-Smtp-Source: ABdhPJwN7HPXY4B4rctAl0JJS0LiMM+FiEhFd89w3+RV1QQUijGyD9FuLnpl0u8obloB9/oPvlHIIQ==
-X-Received: by 2002:a1c:23c8:: with SMTP id j191mr121403wmj.64.1600704252097;
-        Mon, 21 Sep 2020 09:04:12 -0700 (PDT)
-Received: from [192.168.43.240] ([5.100.192.97])
-        by smtp.gmail.com with ESMTPSA id d83sm56754wmf.23.2020.09.21.09.04.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Sep 2020 09:04:11 -0700 (PDT)
-Subject: Re: [PATCH 4/9 next] fs/io_uring Don't use the return value from
- import_iovec().
-To:     David Laight <David.Laight@ACULAB.COM>,
-        'Christoph Hellwig' <hch@infradead.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <0dc67994b6b2478caa3d96a9e24d2bfb@AcuMS.aculab.com>
- <20200921141456.GD24515@infradead.org>
- <4b204a3e4db74cb2bd8c81e31f6b359b@AcuMS.aculab.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
- 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 bA==
-Message-ID: <47e7d21b-28ae-80d7-8e1a-403f180b0e70@gmail.com>
-Date:   Mon, 21 Sep 2020 19:01:40 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rg9OAj+LT6LTHPfMLItwEubTqlNJqPHt6f6Qt4lAwgg=;
+        b=UbQ1Slgc7xH/zxQKjnkZh842NsrjdOB3RI4ZRMNTaDPf6Ixw9LmGRvFgl9YVpVrcdW
+         CPxzjUa6IXC9+oS5IVhEqQ8gTy32DKRCqiVT4X/AuwMZI5o9k6KCY1ijDlryaZFWzdNM
+         Vz2axKvlMuBeQg9Fr5E269m4xe6VrRi4Q9U29M6ENpcNbYglbkMP6m/Qf164Q46Cn2Pl
+         NGInByP/kaFgLXPfdukDx4dZF707P1naelo1xRCULHvc2ap8At+Ymci60WBUhCxlcfDM
+         cSby75/MSulFPqO81aOYH3SVkHGs37JEMjNjEkVfp+TZGNqQ+2+pvpJDa9jOibvqkeqz
+         xcgQ==
+X-Gm-Message-State: AOAM531ufjvPNXj0s0YHHB0zWQ61qi5+kW83UMioKMu72gyJdbXIOET5
+        2Qa551Ygkae2ZyzChcjptrlkOTVi5i7L21ua9Gwt9x9HcustpXQZ1MGMDKxjqeZg2+7vA3/vBh1
+        Bd+roCuv4yrNMkstM2RV12IQ8RyicOeoCzmd+fD+T
+X-Received: by 2002:a50:d802:: with SMTP id o2mr379416edj.152.1600704172712;
+        Mon, 21 Sep 2020 09:02:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJydC86H5YThLXK+XJj91kBV5vaoopDfaEgJXfuU1L6+uXEOLimjM8A+/dIc08PgEQ6Rq8FnLONav4ccUfPiJpI=
+X-Received: by 2002:a50:d802:: with SMTP id o2mr379366edj.152.1600704172301;
+ Mon, 21 Sep 2020 09:02:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4b204a3e4db74cb2bd8c81e31f6b359b@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200907072708.8664-1-song.bao.hua@hisilicon.com>
+ <20200907092717.GD3117@suse.de> <9c8e148805bc4da1a2bfdd72f1c76f06@hisilicon.com>
+ <20200907123106.GA28232@linux.vnet.ibm.com> <20200908010717.12436-1-hdanton@sina.com>
+ <CAE4VaGDVmAmSY1pkiDPGUm=F_0aTtaqjC7D11_ExCpSJ_Mhhmg@mail.gmail.com> <20200921110222.GG3179@techsingularity.net>
+In-Reply-To: <20200921110222.GG3179@techsingularity.net>
+From:   Jirka Hladky <jhladky@redhat.com>
+Date:   Mon, 21 Sep 2020 18:02:41 +0200
+Message-ID: <CAE4VaGCUrZ9_=S2q3=3wfVgJ5L9ijKM-kE73k2=KZeYethxLsA@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: use dst group while checking imbalance for
+ NUMA balancer
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Hillf Danton <hdanton@sina.com>, Mel Gorman <mgorman@suse.de>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Phil Auld <pauld@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        "kkolakow@redhat.com" <kkolakow@redhat.com>,
+        Jiri Vozar <jvozar@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2020 17:38, David Laight wrote:
-> From: Christoph Hellwig
->> Sent: 21 September 2020 15:15
->>
->> On Tue, Sep 15, 2020 at 02:55:20PM +0000, David Laight wrote:
->>>
->>> This is the only code that relies on import_iovec() returning
->>> iter.count on success.
->>> This allows a better interface to import_iovec().
+Resending - previously, I forgot to send the message in the plain text
+mode. I'm sorry.
 
-Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
+Hi Mel,
 
->>
->> This looks generall sane, but a comment below:
->>
->>> @@ -3123,7 +3123,7 @@ static int io_read(struct io_kiocb *req, bool force_nonblock,
->>>  	if (ret < 0)
->>>  		return ret;
->>>  	iov_count = iov_iter_count(iter);
->>> -	io_size = ret;
->>> +	io_size = iov_count;
->>>  	req->result = io_size;
->>>  	ret = 0;
->>>
->>> @@ -3246,7 +3246,7 @@ static int io_write(struct io_kiocb *req, bool force_nonblock,
->>>  	if (ret < 0)
->>>  		return ret;
->>>  	iov_count = iov_iter_count(iter);
->>> -	io_size = ret;
->>> +	io_size = iov_count;
->>>  	req->result = io_size;
->>
->> I tink the local iov_count variable can go away in both functions,
->> as io_size only changes after the last use of iov_count (io_read) or
->> not at all (io_write).
+Thanks a lot for looking into this!
 
-Yes, iov_count should be killed, now or later.
+Our results are mostly in line with what you see. We observe big gains
+(20-50%) when the system is loaded to 1/3 of the maximum capacity and
+mixed results at the full load - some workloads benefit from the patch
+at the full load, others not, but performance changes at the full load
+are mostly within the noise of results (+/-5%). Overall, we think this
+patch is helpful.
 
-> 
-> Yes, the compiler will probably make that optimisation.
-> I did a minimal change because my head hurts whenever I look at io_uring.c.
-> 
-> 	David
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
-> 
+Jirka
+
+
+On Mon, Sep 21, 2020 at 1:02 PM Mel Gorman <mgorman@techsingularity.net> wrote:
+>
+> On Thu, Sep 10, 2020 at 11:50:04PM +0200, Jirka Hladky wrote:
+> > 1) Threads stability has improved a lot. We see much fewer threads
+> > migrations. Check for example this heatmap based on the mpstat results
+> > collected while running sp.C test from the NAS benchmark. sp.C was run
+> > with 16 threads on a dual-socket AMD 7351 server with 8 NUMA nodes:
+> > 5.9 vanilla https://drive.google.com/file/d/10rojhTSQUSu-1aGQi-srr99SmVQ3Llgo/view?usp=sharing
+> > 5.9 with the patch
+> > https://drive.google.com/file/d/1eZdTBWvWMNvdvXqitwAlcKZ7gb-ySQUl/view?usp=sharing
+> >
+> > The heatmaps are generated from the mpstat output (there are 5
+> > different runs at one picture). We collect CPU utilization every 5
+> > seconds. Lighter color corresponds to lower CPU utilization. Light
+> > color means that the thread may have run on different CPUs during that
+> > 5 seconds. Solid straight lines, on the other hand, mean that thread
+> > was running on the same CPU all the time. The difference is striking.
+> >
+> > We see significantly fewer threads migrations across many different
+> > tests - NAS, SPECjbb2005, SPECjvm2008
+> >
+>
+> For all three, I see the point where it's better or worse depends on
+> overall activity. I looked at heatmaps for a variety of workloads and
+> visually the bigger differences tend to be with utilisation is relatively
+> low (e.g. one third of CPUs active).
+>
+> > 2) We see also performance improvement in terms of runtime, especially
+> > at low load scenarios (number of threads being roughly equal to the 2*
+> > number of NUMA nodes). It fixes the performance drop which we see
+> > since 5.7 kernel, discussed for example here:
+> > https://lore.kernel.org/lkml/CAE4VaGB7+sR1nf3Ux8W=hgN46gNXRYr0uBWJU0oYnk7h00Y_dw@mail.gmail.com/
+> >
+>
+> This would make some sense given the original intent about allowing
+> imbalances that was later revised significantly. It depends on when
+> memory throughput is more important so the impact varies with the level
+> of untilisation.  For example, on a 2-socket machine running specjvm 2005
+> I see
+>
+> specjbb
+>                                5.9.0-rc4              5.9.0-rc4
+>                                  vanilla        dstbalance-v1r1
+> Hmean     tput-1     46425.00 (   0.00%)    43394.00 *  -6.53%*
+> Hmean     tput-2     98416.00 (   0.00%)    96031.00 *  -2.42%*
+> Hmean     tput-3    150184.00 (   0.00%)   148783.00 *  -0.93%*
+> Hmean     tput-4    200683.00 (   0.00%)   197906.00 *  -1.38%*
+> Hmean     tput-5    236305.00 (   0.00%)   245549.00 *   3.91%*
+> Hmean     tput-6    281559.00 (   0.00%)   285692.00 *   1.47%*
+> Hmean     tput-7    338558.00 (   0.00%)   334467.00 *  -1.21%*
+> Hmean     tput-8    340745.00 (   0.00%)   372501.00 *   9.32%*
+> Hmean     tput-9    424343.00 (   0.00%)   413006.00 *  -2.67%*
+> Hmean     tput-10   421854.00 (   0.00%)   434261.00 *   2.94%*
+> Hmean     tput-11   493256.00 (   0.00%)   485330.00 *  -1.61%*
+> Hmean     tput-12   549573.00 (   0.00%)   529959.00 *  -3.57%*
+> Hmean     tput-13   593183.00 (   0.00%)   555010.00 *  -6.44%*
+> Hmean     tput-14   588252.00 (   0.00%)   599166.00 *   1.86%*
+> Hmean     tput-15   623065.00 (   0.00%)   642713.00 *   3.15%*
+> Hmean     tput-16   703924.00 (   0.00%)   660758.00 *  -6.13%*
+> Hmean     tput-17   666023.00 (   0.00%)   697675.00 *   4.75%*
+> Hmean     tput-18   761502.00 (   0.00%)   758360.00 *  -0.41%*
+> Hmean     tput-19   796088.00 (   0.00%)   798368.00 *   0.29%*
+> Hmean     tput-20   733564.00 (   0.00%)   823086.00 *  12.20%*
+> Hmean     tput-21   840980.00 (   0.00%)   856711.00 *   1.87%*
+> Hmean     tput-22   804285.00 (   0.00%)   872238.00 *   8.45%*
+> Hmean     tput-23   795208.00 (   0.00%)   889374.00 *  11.84%*
+> Hmean     tput-24   848619.00 (   0.00%)   966783.00 *  13.92%*
+> Hmean     tput-25   750848.00 (   0.00%)   903790.00 *  20.37%*
+> Hmean     tput-26   780523.00 (   0.00%)   962254.00 *  23.28%*
+> Hmean     tput-27  1042245.00 (   0.00%)   991544.00 *  -4.86%*
+> Hmean     tput-28  1090580.00 (   0.00%)  1035926.00 *  -5.01%*
+> Hmean     tput-29   999483.00 (   0.00%)  1082948.00 *   8.35%*
+> Hmean     tput-30  1098663.00 (   0.00%)  1113427.00 *   1.34%*
+> Hmean     tput-31  1125671.00 (   0.00%)  1134175.00 *   0.76%*
+> Hmean     tput-32   968167.00 (   0.00%)  1250286.00 *  29.14%*
+> Hmean     tput-33  1077676.00 (   0.00%)  1060893.00 *  -1.56%*
+> Hmean     tput-34  1090538.00 (   0.00%)  1090933.00 *   0.04%*
+> Hmean     tput-35   967058.00 (   0.00%)  1107421.00 *  14.51%*
+> Hmean     tput-36  1051745.00 (   0.00%)  1210663.00 *  15.11%*
+> Hmean     tput-37  1019465.00 (   0.00%)  1351446.00 *  32.56%*
+> Hmean     tput-38  1083102.00 (   0.00%)  1064541.00 *  -1.71%*
+> Hmean     tput-39  1232990.00 (   0.00%)  1303623.00 *   5.73%*
+> Hmean     tput-40  1175542.00 (   0.00%)  1340943.00 *  14.07%*
+> Hmean     tput-41  1127826.00 (   0.00%)  1339492.00 *  18.77%*
+> Hmean     tput-42  1198313.00 (   0.00%)  1411023.00 *  17.75%*
+> Hmean     tput-43  1163733.00 (   0.00%)  1228253.00 *   5.54%*
+> Hmean     tput-44  1305562.00 (   0.00%)  1357886.00 *   4.01%*
+> Hmean     tput-45  1326752.00 (   0.00%)  1406061.00 *   5.98%*
+> Hmean     tput-46  1339424.00 (   0.00%)  1418451.00 *   5.90%*
+> Hmean     tput-47  1415057.00 (   0.00%)  1381570.00 *  -2.37%*
+> Hmean     tput-48  1392003.00 (   0.00%)  1421167.00 *   2.10%*
+> Hmean     tput-49  1408374.00 (   0.00%)  1418659.00 *   0.73%*
+> Hmean     tput-50  1359822.00 (   0.00%)  1391070.00 *   2.30%*
+> Hmean     tput-51  1414246.00 (   0.00%)  1392679.00 *  -1.52%*
+> Hmean     tput-52  1432352.00 (   0.00%)  1354020.00 *  -5.47%*
+> Hmean     tput-53  1387563.00 (   0.00%)  1409563.00 *   1.59%*
+> Hmean     tput-54  1406420.00 (   0.00%)  1388711.00 *  -1.26%*
+> Hmean     tput-55  1438804.00 (   0.00%)  1387472.00 *  -3.57%*
+> Hmean     tput-56  1399465.00 (   0.00%)  1400296.00 *   0.06%*
+> Hmean     tput-57  1428132.00 (   0.00%)  1396399.00 *  -2.22%*
+> Hmean     tput-58  1432385.00 (   0.00%)  1386253.00 *  -3.22%*
+> Hmean     tput-59  1421612.00 (   0.00%)  1371416.00 *  -3.53%*
+> Hmean     tput-60  1429423.00 (   0.00%)  1389412.00 *  -2.80%*
+> Hmean     tput-61  1396230.00 (   0.00%)  1351122.00 *  -3.23%*
+> Hmean     tput-62  1418396.00 (   0.00%)  1383098.00 *  -2.49%*
+> Hmean     tput-63  1409918.00 (   0.00%)  1374662.00 *  -2.50%*
+> Hmean     tput-64  1410236.00 (   0.00%)  1376216.00 *  -2.41%*
+> Hmean     tput-65  1396405.00 (   0.00%)  1364418.00 *  -2.29%*
+> Hmean     tput-66  1395975.00 (   0.00%)  1357326.00 *  -2.77%*
+> Hmean     tput-67  1392986.00 (   0.00%)  1349642.00 *  -3.11%*
+> Hmean     tput-68  1386541.00 (   0.00%)  1343261.00 *  -3.12%*
+> Hmean     tput-69  1374407.00 (   0.00%)  1342588.00 *  -2.32%*
+> Hmean     tput-70  1377513.00 (   0.00%)  1334654.00 *  -3.11%*
+> Hmean     tput-71  1369319.00 (   0.00%)  1334952.00 *  -2.51%*
+> Hmean     tput-72  1354635.00 (   0.00%)  1329005.00 *  -1.89%*
+> Hmean     tput-73  1350933.00 (   0.00%)  1318942.00 *  -2.37%*
+> Hmean     tput-74  1351714.00 (   0.00%)  1316347.00 *  -2.62%*
+> Hmean     tput-75  1352198.00 (   0.00%)  1309974.00 *  -3.12%*
+> Hmean     tput-76  1349490.00 (   0.00%)  1286064.00 *  -4.70%*
+> Hmean     tput-77  1336131.00 (   0.00%)  1303684.00 *  -2.43%*
+> Hmean     tput-78  1308896.00 (   0.00%)  1271024.00 *  -2.89%*
+> Hmean     tput-79  1326703.00 (   0.00%)  1290862.00 *  -2.70%*
+> Hmean     tput-80  1336199.00 (   0.00%)  1291629.00 *  -3.34%*
+>
+> Note as the utilisation reaches roughly half the CPUs that performance
+> is much better but then degrades for higher thread counts. Part of this
+> is that NUMA balancing activity is higher with the patch once roughly a
+> quarter of the CPUs are in use.
+>
+> NAS is all over the map depending on the compute kernel and degree of
+> parallelisation. Sometimes it is much faster depending on the machine
+> and the degree of parallelisation, other times slower. Generally the
+> level of NUMA balancing activity is variable -- sometimes better,
+> sometimes worse and locality is generally lower (which is not a solid
+> conclusion as it's usually correlated with differences in hinting
+> faults).
+>
+> There are counter-examples. On EPYC 2 running hackbench, locality and
+> scan activity is much worse with the patch. On hackbench using processes
+> and sockets, it is about 8% slower for small numbers of groups and 28%
+> slower for larger numbers of groups. On the same workload, NUMA activity
+> is much higher, locality goes from 50% to 1.5%. Bizarrely, with pipes
+> the patch is much better except in the opposite direction.
+>
+> For something like dbench, it depends on the machine. All but one
+> machine showed an improvement. On EPYC 2, it's much worse.
+>
+> > The biggest improvements are for the NAS and the SPECjvm2008
+> > benchmarks (typically between 20-50%). SPECjbb2005 shows also
+> > improvements, around 10%. This is again on NUMA servers at the low
+> > utilization. You can find snapshots of some results here:
+> > https://drive.google.com/drive/folders/1k3Gb-vlI7UjPZZcLkoL2W2VB_zqxIJ3_?usp=sharing
+> >
+> > @Mel - could you please test the proposed patch? I know you have good
+> > coverage for the inter-process communication benchmarks which may show
+> > different behavior than benchmarks which we use. I hope that fewer
+> > threads migrations might show positive effects also for these tests.
+> > Please give it a try.
+> >
+>
+> Basically I see mixed bag depending on the workload, machine and overall
+> levels of utilisation. Sometimes it's better (sometimes much better),
+> other times it is worse (sometimes much worse). Given that there isn't a
+> universally good decision in this section and more people seem to prefer
+> the patch then it may be best to keep the LB decisions consistent and
+> revisit imbalance handling when the load balancer code changes settle
+> down so
+>
+> Acked-by: Mel Gorman <mgorman@techsingularity.net>
+>
+> --
+> Mel Gorman
+> SUSE Labs
+>
+
 
 -- 
-Pavel Begunkov
+-Jirka
+
