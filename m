@@ -2,122 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DCAE272218
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4974C27221B
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726684AbgIULQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 07:16:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55866 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726353AbgIULQw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 07:16:52 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600687010;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XTczP/zLHBRx8LMrv/lg4UZ5y7Ccak5p+2XPXjz+ei4=;
-        b=FRXjcj2dlbs+GhpPvSSoGBVWXvzIC1b9rlv+jCncvGTtBLvTv3T5jSHPx2q5Os1BhdzptT
-        5eLVfdY5B+2480xmbVUvYe/zoz6qSJR+pUU/wk4ZG0u1yY1V2yVANeBb0oSVKxhTo9zlli
-        D1mju4Ky9UwEuAJUveyXXxGqRqpNr8o=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3EE87B182;
-        Mon, 21 Sep 2020 11:17:26 +0000 (UTC)
-Date:   Mon, 21 Sep 2020 13:16:48 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Huang Ying <ying.huang@intel.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Konstantin Khlebnikov <koct9i@gmail.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Jaewon Kim <jaewon31.kim@samsung.com>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/13] mm: use page_off_lru()
-Message-ID: <20200921111648.GI12990@dhcp22.suse.cz>
-References: <20200918030051.650890-1-yuzhao@google.com>
- <20200918030051.650890-3-yuzhao@google.com>
- <20200918073700.GE28827@dhcp22.suse.cz>
- <20200918102713.GB1004594@google.com>
- <20200918110914.GK28827@dhcp22.suse.cz>
- <20200918185358.GA1095986@google.com>
+        id S1726697AbgIULRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 07:17:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726353AbgIULRW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 07:17:22 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 126F1C061755;
+        Mon, 21 Sep 2020 04:17:22 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id s12so12290321wrw.11;
+        Mon, 21 Sep 2020 04:17:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=5r12szV9dZx0qXbkrbu9a7oCNIggqfSIuaTZ+HCpPBw=;
+        b=qEx4SeSypuSulfF0ZqcMdvX4IFLpTDAyAwk8WDGr03rGSYt7q5Qxmo/0A6h7JMgRMw
+         KxawOZN742aHbgGPPo/mc9Sp/eo6eGYEZHxrkKMQS17qtqhNTfWu2Pv6cDclORDau+Hn
+         swUPN/iCuioP6IPx0NztsJ2MIcT/wfwDTDy4qF0LertV5PssDBXgqLp8yE74e5WRwZmf
+         Jpop3NgHWA2OQ9XIJYOguHdX6VbQUiAfWNldVfWwq0+hc7xLfKP/cVxn/6DOgxsRXCy2
+         q0XtLLEHPWc2+LrRKVYJ5LREEPRzURUVIgoLCchgWLpTY3igyGrM4xUqpiiviXzMXXHD
+         ha7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=5r12szV9dZx0qXbkrbu9a7oCNIggqfSIuaTZ+HCpPBw=;
+        b=E3kdmyWZJ/WmTRZ08Mtld0KaTWKU4LOVN2ALFql+/u4HtzTZ1vtQckZ8eqIhengpXU
+         +1+FydPAeXJoHOhbG5rWwwTEMhEsyDqcVrXd4XC+7eaij07KV7KlGATQodmMjWokm8bb
+         Nelsys48V7VIVHy5GGBj0Vz+3akjQcZeVrn5mJg4cATZNspA02bJT8JI5iAWTVh8uC8E
+         WYOnQ1SmFHb1iMhczXOHxochh66iO9nFx+fwUKT9b9iSQZ5nSkIFm77HRM/RHP3FKuIs
+         +br002k8Bx1+3b2pPdJ9AvneU65+swIheP9Tz/ImlFy96R2dLmGYPwBlbafVgQKZGOEj
+         Wu4Q==
+X-Gm-Message-State: AOAM5336F1/2h4pagcz5wMoxdFxTQl/HpqAr8sif7r/Kq1DdhcnTUbKT
+        LenlE1LPqacSTAB6Oqi7T7I=
+X-Google-Smtp-Source: ABdhPJxslPywD7kxgK9moy2VLhYoljYd70soyLXyVa65oBk3FizZVb5IUOoQn6hyGIWG1g1vYaOucw==
+X-Received: by 2002:a05:6000:1282:: with SMTP id f2mr55416573wrx.251.1600687040631;
+        Mon, 21 Sep 2020 04:17:20 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id 92sm21095515wra.19.2020.09.21.04.17.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 04:17:19 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 13:17:17 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 14/34] i2c: tegra: Clean up probe function
+Message-ID: <20200921111717.GH3950626@ulmo>
+References: <20200908224006.25636-1-digetx@gmail.com>
+ <20200908224006.25636-15-digetx@gmail.com>
+ <20200917123755.GO3515672@ulmo>
+ <7d2803c3-b25e-da62-5e55-fca8e550fcda@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="LZFKeWUZP29EKQNE"
 Content-Disposition: inline
-In-Reply-To: <20200918185358.GA1095986@google.com>
+In-Reply-To: <7d2803c3-b25e-da62-5e55-fca8e550fcda@gmail.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 18-09-20 12:53:58, Yu Zhao wrote:
-> On Fri, Sep 18, 2020 at 01:09:14PM +0200, Michal Hocko wrote:
-> > On Fri 18-09-20 04:27:13, Yu Zhao wrote:
-> > > On Fri, Sep 18, 2020 at 09:37:00AM +0200, Michal Hocko wrote:
-> > > > On Thu 17-09-20 21:00:40, Yu Zhao wrote:
-> > > > > This patch replaces the only open-coded __ClearPageActive() with
-> > > > > page_off_lru(). There is no open-coded __ClearPageUnevictable()s.
-> > > > > 
-> > > > > Before this patch, we have:
-> > > > > 	__ClearPageActive()
-> > > > > 	add_page_to_lru_list()
-> > > > > 
-> > > > > After this patch, we have:
-> > > > > 	page_off_lru()
-> > > > > 		if PageUnevictable()
-> > > > > 			__ClearPageUnevictable()
-> > > > > 		else if PageActive()
-> > > > > 			__ClearPageActive()
-> > > > > 	add_page_to_lru_list()
-> > > > > 
-> > > > > Checking PageUnevictable() shouldn't be a problem because these two
-> > > > > flags are mutually exclusive. Leaking either will trigger bad_page().
-> > > > 
-> > > > I am sorry but the changelog is really hard to grasp. What are you
-> > > > trying to achieve, why and why it is safe. This should be a general
-> > > > outline for any patch. I have already commented on the previous patch
-> > > > and asked you for the explanation why removing __ClearPageActive from
-> > > > this path is desirable and safe. I have specifically asked to clarify
-> > > > the compound page situation as that is using its oen destructor in the
-> > > > freeing path and that might result in page_off_lru to be not called.
-> > > 
-> > > Haven't I explained we are NOT removing __ClearPageActive()? Is my
-> > > notion of the code structure above confusing you? Or 'open-coded'
-> > > could mean different things?
-> > 
-> > Please read through my reply carefuly. I am not saying what you are
-> > doing is wrong. I am expressing a lack of justification which is the
-> > case throughout this patch series. You do not explain why we need it and
-> > why reviewers should spend time on this. Because the review is not as
-> > trivial as looking at the diff.
-> 
-> I appreciate your time. But if you are looking for some grand
-> justification, I'm afraid I won't be able to give one, because, as it's
-> titled, this is just a series of cleanup patches.
 
-You likely had some reason to do that clean up, right? What was that? An
-inconcistency in handling some of the page flags when it is moved around
-LRU lists? Was the code too hard to reason about? Was it error prone?
+--LZFKeWUZP29EKQNE
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Please do not take me wrong, I am not trying to discourage you from
-clean up work. There is a lot of code that would benefit from clean ups.
-But it certainly helps to outline your motivation and the goal you would
-like to achieve. Without that it would boil down to guessing what you
-might have thought or simly moving things around without a very good
-long term reason.
+On Thu, Sep 17, 2020 at 06:02:26PM +0300, Dmitry Osipenko wrote:
+> 17.09.2020 15:37, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> ...
+> >> +	/* interrupt will be enabled during of transfer time */
+> >> +	irq_set_status_flags(i2c_dev->irq, IRQ_NOAUTOEN);
+>                                            ^^^^^^^^^^^^
+>=20
+> >> +	ret =3D devm_request_irq(&pdev->dev, i2c_dev->irq, tegra_i2c_isr,
+> >> +			       IRQF_NO_SUSPEND, dev_name(&pdev->dev),
+> >> +			       i2c_dev);
+> >> +	if (ret)
+> >> +		return ret;
+> >=20
+> > Is it safe to install the interrupt handler at this point? What if,
+> > perhaps because some bootloader didn't properly quiesce the I2C
+> > controller, an interrupt triggers immediately after this?
+>=20
+> This is why we're using the IRQ_NOAUTOEN flag above :)
 
-Thanks!
--- 
-Michal Hocko
-SUSE Labs
+Ah, I missed that. Seems fine then:
+
+Reviewed-by: Thierry Reding <treding@nvidia.com>
+
+--LZFKeWUZP29EKQNE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9oi70ACgkQ3SOs138+
+s6F94A//Y8wN36lT+FIE1Gyzo6Go2+uOHQd1Ofag8Zcypmgp3TCI3frXZGJ8TNxL
+ucXf2duY9hFNPXheFjrATPxww/Uiz2e/q7jHpoN9RNJEwRqvu9sJywNuDsENFPeX
+BP9pctj09MujoWQ/+SJfgRpSO+Y5ZDr7oNba2VOnKNDE+Oqdz2S6Z6wuqbKGOpzY
+WSOKhw3ywMutVWfpCtUlxmeKr2l/Hixrrk/L2AUMpBXMfDtKakTRWPZoahxZHNVg
+LxlEVdcJip2jUon3UpoHmsPPVZTDStLegK2e2hjT5QRZEamNa/11s5dop6GFtea9
+A4x3FjTLUePuE34PAnl2Y3sVCLeenO3LgrQoFlM2S889yd4cDPI97Rp4mgn2fmkK
+rM6pwZBMUHtHpIochCvIcvD5N8QWJuxGUzf9x43l64Dj4KekmcL697eltkDx046t
+7kbnzerXGH1tJO5dXLPaI5VIMWtWKdtGz9WPUcLuoCj+2peEQLIgmlz4WfM8IvoP
+3MgRFLUq4Asac9JUGJg9GrcgTGSAcOWmqtTCXY2oTRhgO6G5kluOLUSUISHU/Gil
+znMXbkjds7eEF7p68cg8R3HROAhIVQ3EMlVfg5eGbwc768TjHxivAAvs7TM8r2Vr
+7apqVz2axOCKy1ieG9WMdclLDtOcnzjOjyuclse3fmRHx6JCNb0=
+=KB40
+-----END PGP SIGNATURE-----
+
+--LZFKeWUZP29EKQNE--
