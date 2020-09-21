@@ -2,133 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 683FB2725B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 997BA2725B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727177AbgIUNhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:37:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726496AbgIUNhJ (ORCPT
+        id S1726954AbgIUNii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:38:38 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:36662 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726384AbgIUNih (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:37:09 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70AE7C061755;
-        Mon, 21 Sep 2020 06:37:09 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id l16so255552ilt.13;
-        Mon, 21 Sep 2020 06:37:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ylyiVkvR8OuH1206l+Q6sBqGX7CwiOknrjYvkcbWau8=;
-        b=rwdfHu+5p8aQ5tEWJINr4zesW7VuXtdI27MeocOZAN53oHo+syQAprO1siIDDLe/Ot
-         H6V7uOuLqTUBuwW6fMajtIWnKiczllFdIfVahO0Kh+Wkw/a6wrjq4cjchNxUpfEqmx4r
-         RP2O2zFVXOCMrVgidJIXobvCtuyk9l6JbV4Qtak7NXkWs/8cusGQvKeCLXPibminO80w
-         GrtseWweWwTuGtpx4GCOg3HusGx+waZZym4rUkSuRt6xYpJM8KAXtNXnJFGqcNR3Oevd
-         SD3y7ytiTP8Dl5SGb9txdy9Fo53WzSgo5u5I/XmUErLMxVW8OWfd0OFyHW6WgeD1WqPV
-         ijuA==
+        Mon, 21 Sep 2020 09:38:37 -0400
+Received: by mail-oi1-f196.google.com with SMTP id v20so16970658oiv.3;
+        Mon, 21 Sep 2020 06:38:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ylyiVkvR8OuH1206l+Q6sBqGX7CwiOknrjYvkcbWau8=;
-        b=LIdRLGcCXsQWY2S/jkbkbOosAxlBy8zKdb44vXoAxjYxZdTdnidkNPoCLrRralPPkZ
-         NuyzOYbqyT5RQ+K5OENHSIv7U/zCbUB71sibOKrSuWPasMpNkvAU+zVHfzzU72jmodz3
-         QJ8+eaaYflZ/s7ztwWnf9oNpNdHJV66D/KtFftWwZZCx5UVkwd9xanz8VFrnHVxiW3NP
-         rMPcwHrhjbMODvQqSYu6lMDbsxAhGXecO1D+5XYYeyQ2BoyKxc7emXEPNx+13W034CEE
-         t64yA4RAB3GapftyCIRa11wRuR5eDcXg8dCDUscfw1Tfr483Owr9DxpXd0qqg9cNuGw3
-         iB7g==
-X-Gm-Message-State: AOAM530a8S3oFVUL9cAC0D3KWPV3x3JLTnl2WqkWvKu2rF3MlUgqsU7N
-        IgV5r8jluevSypE4+NIeGMcM6ACwHvdgNcCUOBAT5SzMAZw=
-X-Google-Smtp-Source: ABdhPJw3v6iRMbUog/lTAGLjtxv2SIUb3saKZADmwv4BlgeOEYuo7nf5M0yud3TqLC4CPDNGcyjQsauphmnTI7qIaxE=
-X-Received: by 2002:a92:1591:: with SMTP id 17mr6117312ilv.237.1600695428521;
- Mon, 21 Sep 2020 06:37:08 -0700 (PDT)
+        bh=SSWQnEKiuYpWFuL0GlqNB3rWT28drzm44fyf6QaZ998=;
+        b=UDWUQi+v9J2mqEJHdkQSANpE88miRRG+LICnUd4HW2VedBcyOroECR0ktPujcOpTkR
+         LxidJaaLvVeTx/eJRBJcF7Bf5n1v91dEw96dT1mQz9iiqo007iOZY1scAPFzS4m2JV6p
+         We4Y1w5Okg1XWlbedrgJyEhLA2vN1ALxFVnq75Pu/ykX+s5DQucgOkD9pNIMba/GjyZs
+         z0qfC/AnUC27lWuCkVJ8x+8b3EwRAmSNm+9K6fnCpthCkN8IhBfQb3UZMHZ/bV/lAES9
+         UWtGIGF7UvzepTCxkHhqb+IwUZPCvl51GVq4o8895PTEHqENnGgvciLVSe7XR5wo0dRl
+         X2lg==
+X-Gm-Message-State: AOAM531IyY7Crj+MEnWUTEMxZGP3NmLWR+rGZnf33U4XedR6Zp669ESx
+        BpMygxMM5UZB6MoBmeeec1BwtN7QsdJnQ556gC8=
+X-Google-Smtp-Source: ABdhPJzs5UDYgSMy4tnWujzK/549Voo/vAlxwsHSm01113gE4DORwVsmLSBZGA8MZib8+DoFXni+j5LqTsOGwV++BXM=
+X-Received: by 2002:a05:6808:491:: with SMTP id z17mr18361312oid.110.1600695516463;
+ Mon, 21 Sep 2020 06:38:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200911194549.12780-1-david.e.box@linux.intel.com>
- <20200911194549.12780-4-david.e.box@linux.intel.com> <0ec64bdc-66fd-4be1-03cf-561a7c42de68@linux.intel.com>
-In-Reply-To: <0ec64bdc-66fd-4be1-03cf-561a7c42de68@linux.intel.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Mon, 21 Sep 2020 06:36:57 -0700
-Message-ID: <CAKgT0UdiXLhok1WOq9RoZKKi+f43xUoSBwX2LTYMpUUTU3HRwA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] platform/x86: Intel PMT Crashlog capability driver
-To:     Alexey Budankov <alexey.budankov@linux.intel.com>
-Cc:     "David E. Box" <david.e.box@linux.intel.com>,
-        Lee Jones <lee.jones@linaro.org>, dvhart@infradead.org,
-        andy@infradead.org,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org
+References: <20200915103157.345404192@infradead.org> <20200915103806.479637218@infradead.org>
+ <87wo0npk72.fsf@turtle.gmx.de> <20200921103741.GC5901@zn.tnic> <20200921133241.GB29330@paulmck-ThinkPad-P72>
+In-Reply-To: <20200921133241.GB29330@paulmck-ThinkPad-P72>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 21 Sep 2020 15:38:21 +0200
+Message-ID: <CAJZ5v0jVerU92WxL4qCoU6NC0KCyszmRNhpL3tu5LYtMqALd9A@mail.gmail.com>
+Subject: Re: [PATCH] rcu/tree: Export rcu_idle_{enter,exit} to module
+To:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     Sven Joachim <svenjoac@gmx.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Tony Luck <tony.luck@intel.com>, Len Brown <lenb@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 19, 2020 at 1:01 AM Alexey Budankov
-<alexey.budankov@linux.intel.com> wrote:
+On Mon, Sep 21, 2020 at 3:32 PM Paul E. McKenney <paulmck@kernel.org> wrote:
 >
-> Hi,
->
-> Thanks for the patches.
->
-> On 11.09.2020 22:45, David E. Box wrote:
-> > From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> On Mon, Sep 21, 2020 at 12:37:41PM +0200, Borislav Petkov wrote:
+> > Lemme add whatever get_maintainer spits, to Cc.
 > >
-> > Add support for the Intel Platform Monitoring Technology crashlog
-> > interface.  This interface provides a few sysfs values to allow for
-> > controlling the crashlog telemetry interface as well as a character driver
-> > to allow for mapping the crashlog memory region so that it can be accessed
-> > after a crashlog has been recorded.
+> > On Mon, Sep 21, 2020 at 11:12:33AM +0200, Sven Joachim wrote:
+> > > On 2020-09-15 12:32 +0200, Peter Zijlstra wrote:
+> > >
+> > > > The C3 BusMaster idle code takes lock in a number of places, some deep
+> > > > inside the ACPI code. Instead of wrapping it all in RCU_NONIDLE, have
+> > > > the driver take over RCU-idle duty and avoid flipping RCU state back
+> > > > and forth a lot.
+> > > >
+> > > > ( by marking 'C3 && bm_check' as RCU_IDLE, we _must_ call enter_bm() for
+> > > >   that combination, otherwise we'll loose RCU-idle, this requires
+> > > >   shuffling some code around )
+> > > >
+> > > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > >
+> > > I got modpost errors in 5.9-rc6 after this patch:
+> > >
+> > > ERROR: modpost: "rcu_idle_enter" [drivers/acpi/processor.ko] undefined!
+> > > ERROR: modpost: "rcu_idle_exit" [drivers/acpi/processor.ko] undefined!
+> > >
+> > > Reverting commit 1fecfdbb7acc made them go away.  Notably my
+> > > configuration had CONFIG_ACPI_PROCESSOR=m,  changing that
+> > > to CONFIG_ACPI_PROCESSOR=y let the build succeed as well.
 > >
-> > This driver is meant to only support the server version of the crashlog
-> > which is identified as crash_type 1 with a version of zero. Currently no
-> > other types are supported.
+> > I guess this. Running randconfigs on it for a while, to see what else
+> > breaks.
 > >
-> > Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
 > > ---
-> >  .../ABI/testing/sysfs-class-pmt_crashlog      |  66 ++
-> >  drivers/platform/x86/Kconfig                  |  10 +
-> >  drivers/platform/x86/Makefile                 |   1 +
-> >  drivers/platform/x86/intel_pmt_crashlog.c     | 588 ++++++++++++++++++
-> >  4 files changed, 665 insertions(+)
-> >  create mode 100644 Documentation/ABI/testing/sysfs-class-pmt_crashlog
-> >  create mode 100644 drivers/platform/x86/intel_pmt_crashlog.c
+> > From: Borislav Petkov <bp@suse.de>
+> > Date: Mon, 21 Sep 2020 12:31:36 +0200
+> >
+> > Fix this link error:
+> >
+> >   ERROR: modpost: "rcu_idle_enter" [drivers/acpi/processor.ko] undefined!
+> >   ERROR: modpost: "rcu_idle_exit" [drivers/acpi/processor.ko] undefined!
+> >
+> > when CONFIG_ACPI_PROCESSOR is built as module. PeterZ says that in light
+> > of ARM needing those soon too, they should simply be exported.
+> >
+> > Fixes: 1fecfdbb7acc ("ACPI: processor: Take over RCU-idle for C3-BM idle")
+> > Reported-by: Sven Joachim <svenjoac@gmx.de>
+> > Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> > Signed-off-by: Borislav Petkov <bp@suse.de>
 >
-> <SNIP>
->
-> > +
-> > +/*
-> > + * devfs
-> > + */
-> > +static int pmt_crashlog_open(struct inode *inode, struct file *filp)
-> > +{
-> > +     struct crashlog_entry *entry;
-> > +     struct pci_driver *pci_drv;
-> > +     struct pmt_crashlog_priv *priv;
-> > +
-> > +     if (!capable(CAP_SYS_ADMIN))
-> > +             return -EPERM;
->
-> Will not this above still block access to /dev/crashlogX for admin_group users
-> in case root configured access e.g. similar to this:
->
-> ls -alh /dev/
-> crw-rw----.  1 root admin_group      1,   9 Sep 15 18:28 crashlogX
->
-> If yes then that capable() check is probably superfluous and
-> should be avoided in order not to block access to PMT data.
->
-> Could you please clarify or comment?
->
-> Thanks,
-> Alexei
+> Reviewed-by: Paul E. McKenney <paulmckrcu@kernel.org>
 
-Actually this should probably be updated to "if (!perfmon_capable())"
-instead. The telemetry driver code originally had the CAP_SYS_ADMIN
-check and it probably makes more sense to limit this user-wise to the
-same users who have access to performon.
+OK
 
-Thanks.
+Applied as 5.9-rc7 material, thanks!
 
-- Alex
+> > ---
+> >  kernel/rcu/tree.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 8ce77d9ac716..f78ee759af9c 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -673,6 +673,7 @@ void rcu_idle_enter(void)
+> >       lockdep_assert_irqs_disabled();
+> >       rcu_eqs_enter(false);
+> >  }
+> > +EXPORT_SYMBOL_GPL(rcu_idle_enter);
+> >
+> >  #ifdef CONFIG_NO_HZ_FULL
+> >  /**
+> > @@ -886,6 +887,7 @@ void rcu_idle_exit(void)
+> >       rcu_eqs_exit(false);
+> >       local_irq_restore(flags);
+> >  }
+> > +EXPORT_SYMBOL_GPL(rcu_idle_exit);
+> >
+> >  #ifdef CONFIG_NO_HZ_FULL
+> >  /**
+> > --
+> > 2.21.0
+> >
+> > --
+> > Regards/Gruss,
+> >     Boris.
+> >
+> > https://people.kernel.org/tglx/notes-about-netiquette
