@@ -2,97 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3C4E273152
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:57:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 606BD27315B
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 20:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728138AbgIUR5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 13:57:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45412 "EHLO
+        id S1727924AbgIUSAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 14:00:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726436AbgIUR5M (ORCPT
+        with ESMTP id S1726436AbgIUSAA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 13:57:12 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65BCEC061755;
-        Mon, 21 Sep 2020 10:57:12 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id k18so2157733ybh.1;
-        Mon, 21 Sep 2020 10:57:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sfv2GkP+8uG546pQRvIkIIzlFhcpsb5WNAyb9sZP3VM=;
-        b=TfKGQgC76iG5Fwj3HGDdztONc6XcwsCPCJIqzNCmwwrgeqnRr4MMq2tOk+TjEgLP6z
-         HuBRL0uucAX+ELBQJCZ+wh4SXLTiEgHPxEdlu3o92QHW36o+E3gqsvWxMXsePu59FAuG
-         11ahLkFDhWtU6PQL+6mu0isOO1yT5YBLVQJsJqEM3HEmPS4Uyhpv+LKsvbXRZFHDfKgv
-         4e3FCUd7Zm2J0rHGveRP5MxQ1iiny8tEfkS0CRLAdCQN/vO0kghVY14rbjIqHN1CpAxM
-         Z6/BwST7aZk5gAIjt6vi9h/i7ZnOlNbOG0OH//KFI4wJQ170nogmmWA4hNX7PSaQVwHr
-         uvgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sfv2GkP+8uG546pQRvIkIIzlFhcpsb5WNAyb9sZP3VM=;
-        b=aPOS58EmRGzijxvygrv9bQ2IKw6JwbI0zrmK0mspAQY9ixfWfv1SFve1P1Nyfc7exr
-         fJsCk0qhfSDVohog+qqhSX9oCnJeb3E+GO8n1zXqxZ4j0q623QhpuZu2iYw70w3PJkSX
-         a4WS9fbf+1iY6/VboblBnJYyRXFATDo4+gwgxRhYqDLKqylb+ejFg57slmrJXmwQCUvK
-         qQqtJqecIgT37xHYMXONyfAi71pDb8kdbvCDCT7GaHnhEuDPrDlcoUCdltIq7UfDoQwh
-         d62m4E94GQWXKxMAc/DgOMw88SxtFtrZxTguvnDDUgN3iMAjiRSIImk1DsjVmO7HBMe6
-         1Wxg==
-X-Gm-Message-State: AOAM532VvF2xvKk6JFBcYgPgUcAydW/qLIfXHe5iaraOVjSgtEvYeniC
-        ZEJ5IIhID0S/yKlwSrJflHZzO9FvXap7jSHmImw=
-X-Google-Smtp-Source: ABdhPJxS8Q5mIofEfi8HpR2Q+otGNIK3oXK54P/XbCPZoNXSGRzYAgIg5Wb/gxzVpr1D+UCWqCCWEOeF3SveoltgHMU=
-X-Received: by 2002:a25:9d06:: with SMTP id i6mr1482122ybp.510.1600711031713;
- Mon, 21 Sep 2020 10:57:11 -0700 (PDT)
+        Mon, 21 Sep 2020 14:00:00 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04CE5C061755;
+        Mon, 21 Sep 2020 10:59:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=EYalxu71FXkhieQDqm3YOx3Lopqwd5EDbAcvH4qgOhs=; b=cn1ZppxwRY81oXiNm0vRnLyCFs
+        Xl5xURoMhBnqr2NAEHsKV+Yt0xLaL5tT+bhVHEInqaezHoHp5ln5P0NE4NbQUyQ/JA7hTmee5MQSv
+        Gx4g48bXYVJSDGVL4YSAf+VQIzMvlFAv+o8q5hLXRp9CBiHnAy1AqXzqyUH3ZR65gj3A2LQVw0lqH
+        Qz1GsKVlFrTrf5GNRFnMVYe2c2MMzmOpjxQ4I5XffgCWR2Hb9GG0Zo+JWhEMO7d11kCVug0WBiHsk
+        uzjFDYrt1qxk0nMox3iIjPWlwC0J4P5ST6FeF54rmXxKGGMdxudBsLGdsbKrQKVjihsLADUoJVGzn
+        QR0vNZKg==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kKQ6J-0007Cd-IL; Mon, 21 Sep 2020 17:59:43 +0000
+Date:   Mon, 21 Sep 2020 18:59:43 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jan Kara <jack@suse.cz>, Dave Chinner <david@fromorbit.com>,
+        Hugh Dickins <hughd@google.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Theodore Tso <tytso@mit.edu>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Qiuyang Sun <sunqiuyang@huawei.com>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, nborisov@suse.de
+Subject: Re: More filesystem need this fix (xfs: use MMAPLOCK around
+ filemap_map_pages())
+Message-ID: <20200921175943.GW32101@casper.infradead.org>
+References: <20200623052059.1893966-1-david@fromorbit.com>
+ <CAOQ4uxh0dnVXJ9g+5jb3q72RQYYqTLPW_uBqHPKn6AJZ2DNPOQ@mail.gmail.com>
+ <20200916155851.GA1572@quack2.suse.cz>
+ <20200917014454.GZ12131@dread.disaster.area>
+ <alpine.LSU.2.11.2009161853220.2087@eggly.anvils>
+ <20200917064532.GI12131@dread.disaster.area>
+ <alpine.LSU.2.11.2009170017590.8077@eggly.anvils>
+ <20200921082600.GO12131@dread.disaster.area>
+ <20200921091143.GB5862@quack2.suse.cz>
+ <CAHk-=wir89LPH6A4H2hkxVXT20+dpcw2qQq0GtQJvy87ARga-g@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200916223512.2885524-1-haoluo@google.com> <20200916223512.2885524-4-haoluo@google.com>
-In-Reply-To: <20200916223512.2885524-4-haoluo@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 21 Sep 2020 10:57:00 -0700
-Message-ID: <CAEf4Bzbxd1Bp8py=gd9mXpcN9HB7a8qR5PtYVLbN_3e7qOP8pA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/6] selftests/bpf: ksyms_btf to test typed ksyms
-To:     Hao Luo <haoluo@google.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wir89LPH6A4H2hkxVXT20+dpcw2qQq0GtQJvy87ARga-g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 3:39 PM Hao Luo <haoluo@google.com> wrote:
->
-> Selftests for typed ksyms. Tests two types of ksyms: one is a struct,
-> the other is a plain int. This tests two paths in the kernel. Struct
-> ksyms will be converted into PTR_TO_BTF_ID by the verifier while int
-> typed ksyms will be converted into PTR_TO_MEM.
->
-> Signed-off-by: Hao Luo <haoluo@google.com>
-> ---
+On Mon, Sep 21, 2020 at 09:20:25AM -0700, Linus Torvalds wrote:
+> On Mon, Sep 21, 2020 at 2:11 AM Jan Kara <jack@suse.cz> wrote:
+> >
+> > Except that on truncate, we have to unmap these
+> > anonymous pages in private file mappings as well...
+> 
+> I'm actually not 100% sure we strictly would need to care.
+> 
+> Once we've faulted in a private file mapping page, that page is
+> "ours". That's kind of what MAP_PRIVATE means.
+> 
+> If we haven't written to it, we do keep things coherent with the file,
+> but that's actually not required by POSIX afaik - it's a QoI issue,
+> and a lot of (bad) Unixes didn't do it at all.
+> So as long as truncate _clears_ the pages it truncates, I think we'd
+> actually be ok.
 
-LGTM.
+We don't even need to do that ...
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+"If the size of the mapped file changes after the call to mmap()
+as a result of some other operation on the mapped file, the effect of
+references to portions of the mapped region that correspond to added or
+removed portions of the file is unspecified."
 
->  .../testing/selftests/bpf/prog_tests/ksyms.c  | 38 ++++------
->  .../selftests/bpf/prog_tests/ksyms_btf.c      | 70 +++++++++++++++++++
->  .../selftests/bpf/progs/test_ksyms_btf.c      | 23 ++++++
->  tools/testing/selftests/bpf/trace_helpers.c   | 27 +++++++
->  tools/testing/selftests/bpf/trace_helpers.h   |  4 ++
->  5 files changed, 137 insertions(+), 25 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_btf.c
->
+https://pubs.opengroup.org/onlinepubs/9699919799/functions/mmap.html
 
-[...]
+As you say, there's a QoI here, and POSIX permits some shockingly
+bad and useless implementations.
