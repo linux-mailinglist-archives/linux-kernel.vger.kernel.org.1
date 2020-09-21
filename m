@@ -2,156 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9AE2729CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30ABD2729CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727293AbgIUPTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 11:19:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726644AbgIUPTE (ORCPT
+        id S1727566AbgIUPT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 11:19:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42671 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727171AbgIUPT1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 11:19:04 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B759C061755;
-        Mon, 21 Sep 2020 08:19:04 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id y17so14459454lfa.8;
-        Mon, 21 Sep 2020 08:19:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=susC4Ve+alKHrkGi8N88sYATdLhSjkz6XsHyhT+wd38=;
-        b=Ez19NSvUO90V46rnPFGnXo0K6ml1o3e/+DtiUccoHdWruWLj2PVC5A+HGaPj31T6BX
-         HIibmwZlEFFI2BaO1n1e43OYcEGmy6hE5O+uQb69Ki8RerQ9Jk3P1bYQOT1GzJKhV0PL
-         7BQwHljUEf0QbaPLkZI2DGi091NSFYcgtHlh5G0l0VRIltXA0QJs+67UHgdavSNYmd8v
-         IxSVt/ejtVy0Fih+/A1tRdolvdUzn1HY3FYYW81ZyQyWC8AUWagk8SSuyipzGltLFgip
-         SHdSRuCoHntXGZYNTSESHRLsW+xNwc0u0U23hog5wu5vlsWw/zlDC+WcbOtTrBhpluf4
-         Lcvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=susC4Ve+alKHrkGi8N88sYATdLhSjkz6XsHyhT+wd38=;
-        b=djP/iyKkMSNpvKWaxJrObRLVnOZWdNGvuW9QKjVLSLElC5WfjZwF7xO2BjyWsuBVDJ
-         v682ihbmw0BxRxZuWxDoDXLg7c77B+OZn37Pz5ZkeKIvXSzlW9t2sR9OYJDaibYOEDxq
-         JQ+/EQQ5jwWuSvoX09NtO8h2seGbruuqY3hmzgZEibQX/JKeUhLp32KRnEpiPLvCGeQr
-         kUJbaBn7jcoXh1eLqDvZVpjM0aW3lfqE6s1o6mOZA5t4x6ckSM7TVwGLU5/Z4K1A2imP
-         tiaVvBgjykMezKcUBVujcEEOpok39CNZzJBsTxlVuzHkpYQiwfO9pj/rmOyCSgFga/Tk
-         XQbw==
-X-Gm-Message-State: AOAM532MONFUbSjA2SNb3WAsVLmEMjssHHXQm7qml2ymii1PTA3P64Y2
-        daRhrD3gdpCLfGVKhPlZ8MDqO+/NB/U=
-X-Google-Smtp-Source: ABdhPJy87cPNHNtLE7BYVxip7BjTUbpBVwu+emKaWpGaE7oXn4wheEi4Bj9pOVBwjQa/zqkVFkHoRA==
-X-Received: by 2002:ac2:54ab:: with SMTP id w11mr146282lfk.180.1600701540758;
-        Mon, 21 Sep 2020 08:19:00 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id c20sm2654437lff.291.2020.09.21.08.18.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Sep 2020 08:19:00 -0700 (PDT)
-Subject: Re: [PATCH v7 30/34] i2c: tegra: Clean up variable names
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200908224006.25636-1-digetx@gmail.com>
- <20200908224006.25636-31-digetx@gmail.com> <20200917122105.GI3515672@ulmo>
- <49498b9c-3b75-ad97-1859-5d6442b27b0c@gmail.com>
- <20200921114059.GM3950626@ulmo>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <633d8e6e-d50c-a7cb-5cdf-f0547b94a86d@gmail.com>
-Date:   Mon, 21 Sep 2020 18:18:59 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 21 Sep 2020 11:19:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600701566;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=78VYwFftorgadheBNYzJKmL144uRfgx6TOEZIwj+BGo=;
+        b=IOBjkXZUjYSh8HDHu/5BsAS16smU/N9pOZaioK7T3L0PlzKSf1aC4OEAqHEc9Y2Ikj3kaX
+        O091zFNLigHTj009mk9OzF38hjcbjv9AkvcS0wH4Ha9jFgJIHomO4uL5Yh4V73IKWjmzZ+
+        2Px45NgrlOiQ5M0Qgar2eWzWhVpCymc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-535-gNN5vVhCM7KoxqTm9vt0JQ-1; Mon, 21 Sep 2020 11:19:18 -0400
+X-MC-Unique: gNN5vVhCM7KoxqTm9vt0JQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 567BE801AE2;
+        Mon, 21 Sep 2020 15:19:16 +0000 (UTC)
+Received: from treble (ovpn-119-131.rdu2.redhat.com [10.10.119.131])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id ECE9655778;
+        Mon, 21 Sep 2020 15:19:14 +0000 (UTC)
+Date:   Mon, 21 Sep 2020 10:19:13 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Ilie Halip <ilie.halip@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Rong Chen <rong.a.chen@intel.com>,
+        Marco Elver <elver@google.com>,
+        Philip Li <philip.li@intel.com>,
+        Borislav Petkov <bp@alien8.de>, kasan-dev@googlegroups.com,
+        x86@kernel.org, clang-built-linux@googlegroups.com,
+        kbuild test robot <lkp@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: Re: [PATCH v2] objtool: ignore unreachable trap after call to
+ noreturn functions
+Message-ID: <20200921151913.rrfbqfnrhfmb26w4@treble>
+References: <20200918154840.h3xbspb5jq7zw755@treble>
+ <20200919064118.1899325-1-ilie.halip@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200921114059.GM3950626@ulmo>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+In-Reply-To: <20200919064118.1899325-1-ilie.halip@gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-21.09.2020 14:40, Thierry Reding пишет:
-> On Thu, Sep 17, 2020 at 06:43:28PM +0300, Dmitry Osipenko wrote:
->> 17.09.2020 15:21, Thierry Reding пишет:
->>> On Wed, Sep 09, 2020 at 01:40:02AM +0300, Dmitry Osipenko wrote:
->>>> Rename "ret" variables to "err" in order to make code a bit more
->>>> expressive, emphasizing that the returned value is an error code.
->>>> Same vice versa, where appropriate.
->>>>
->>>> Rename variable "reg" to "val" in order to better reflect the actual
->>>> usage of the variable in the code and to make naming consistent with
->>>> the rest of the code.
->>>>
->>>> Use briefer names for a few members of the tegra_i2c_dev structure in
->>>> order to improve readability of the code.
->>>>
->>>> All dev/&pdev->dev are replaced with i2c_dev->dev in order to have uniform
->>>> code style across the driver.
->>>>
->>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->>>> ---
->>>>  drivers/i2c/busses/i2c-tegra.c | 173 ++++++++++++++++-----------------
->>>>  1 file changed, 86 insertions(+), 87 deletions(-)
->>>
->>> That's indeed a nice improvement. One thing did spring out at me,
->>> though.
->>>
->>>> diff --git a/drivers/i2c/busses/i2c-tegra.c b/drivers/i2c/busses/i2c-tegra.c
->>> [...]
->>>> @@ -1831,20 +1830,20 @@ static int __maybe_unused tegra_i2c_runtime_suspend(struct device *dev)
->>>>  
->>>>  	clk_bulk_disable(i2c_dev->nclocks, i2c_dev->clocks);
->>>>  
->>>> -	return pinctrl_pm_select_idle_state(i2c_dev->dev);
->>>> +	return pinctrl_pm_select_idle_state(dev);
->>>>  }
->>>>  
->>>>  static int __maybe_unused tegra_i2c_suspend(struct device *dev)
->>>>  {
->>>>  	struct tegra_i2c_dev *i2c_dev = dev_get_drvdata(dev);
->>>> -	int err = 0;
->>>> +	int ret = 0;
->>>>  
->>>>  	i2c_mark_adapter_suspended(&i2c_dev->adapter);
->>>>  
->>>>  	if (!pm_runtime_status_suspended(dev))
->>>> -		err = tegra_i2c_runtime_suspend(dev);
->>>> +		ret = tegra_i2c_runtime_suspend(dev);
->>>>  
->>>> -	return err;
->>>> +	return ret;
->>>>  }
->>>
->>> Isn't this exactly the opposite of what the commit message says (and the
->>> rest of the patch does)?
->>
->> This change makes it to be consistent with the rest of the code. You may
->> notice that "Factor out hardware initialization into separate function"
->> made a similar change.
->>
->> The reason I'm doing this is that the "err" suggests that code returns a
->> error failure code, while it could be a success too and you don't know
->> for sure by looking only at the part of code. Hence it's cleaner to use
->> "err" when error code is returned.
+On Sat, Sep 19, 2020 at 09:41:18AM +0300, Ilie Halip wrote:
+> With CONFIG_UBSAN_TRAP enabled, the compiler may insert a trap instruction
+> after a call to a noreturn function. In this case, objtool warns that the
+> ud2 instruction is unreachable.
 > 
-> I don't follow that reasoning. Every error code obviously also has a
-> value for success. Otherwise, what's the point of even having a function
-> if all it can do is fail. Success has to be an option for code to be any
-> useful at all, right?
+> This is a behavior seen with clang, from the oldest version capable of
+> building the mainline x64_64 kernel (9.0), to the latest experimental
+> version (12.0).
 > 
-> The "err" variable here transports the error code and if that error code
-> happens to be 0 (meaning success), why does that no longer qualify as an
-> error code?
+> objtool silences similar warnings (trap after dead end instructions), so
+> so expand that check to include dead end functions.
+> 
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: Rong Chen <rong.a.chen@intel.com>
+> Cc: Marco Elver <elver@google.com>
+> Cc: Philip Li <philip.li@intel.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: kasan-dev@googlegroups.com
+> Cc: x86@kernel.org
+> Cc: clang-built-linux@googlegroups.com
+> BugLink: https://github.com/ClangBuiltLinux/linux/issues/1148
+> Link: https://lore.kernel.org/lkml/CAKwvOdmptEpi8fiOyWUo=AiZJiX+Z+VHJOM2buLPrWsMTwLnyw@mail.gmail.com
+> Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+> Reported-by: kbuild test robot <lkp@intel.com>
+> Signed-off-by: Ilie Halip <ilie.halip@gmail.com>
+> ---
+> 
+> Changed in v2:
+>  - added a mention that this is a clang issue across all versions
+>  - added Nick's Reviewed-by, Tested-by
+>  - added Reported-by
 
-If you're naming variable as "err", then this implies to me that it will
-contain a error code if error variable is returned directly. Error
-shouldn't relate to a success. In practice nobody pays much attention to
-variable naming, so usually there is a need to check what code actually
-does anyways. I don't care much about this and just wanting to make a
-minor improvement while at it.
+Thanks.  Queued.
+
+-- 
+Josh
+
