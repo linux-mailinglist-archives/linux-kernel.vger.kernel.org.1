@@ -2,32 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B08271CE3
+	by mail.lfdr.de (Postfix) with ESMTP id 1F7F4271CE2
 	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726982AbgIUIC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 04:02:56 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:48252 "EHLO huawei.com"
+        id S1726970AbgIUICz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 04:02:55 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13789 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726918AbgIUICc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 04:02:32 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 5FC9A767C41818FDA2E5;
-        Mon, 21 Sep 2020 16:02:29 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Mon, 21 Sep 2020
- 16:02:22 +0800
+        id S1726925AbgIUICd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 04:02:33 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 963CE9013D99E4B42B04;
+        Mon, 21 Sep 2020 16:02:31 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Mon, 21 Sep 2020
+ 16:02:24 +0800
 From:   Liu Shixin <liushixin2@huawei.com>
-To:     Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        "Rob Herring" <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+To:     Viresh Kumar <vireshk@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH -next] PCI: mobiveil: simplify the return expression of mobiveil_pcie_init_irq_domain
-Date:   Mon, 21 Sep 2020 16:24:47 +0800
-Message-ID: <20200921082447.2591877-1-liushixin2@huawei.com>
+Subject: [PATCH -next] pinctrl: spear: simplify the return expression of spear310_pinctrl_probe
+Date:   Mon, 21 Sep 2020 16:24:48 +0800
+Message-ID: <20200921082448.2591929-1-liushixin2@huawei.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -42,34 +40,35 @@ Simplify the return expression.
 
 Signed-off-by: Liu Shixin <liushixin2@huawei.com>
 ---
- drivers/pci/controller/mobiveil/pcie-mobiveil-host.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/pinctrl/spear/pinctrl-spear310.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/drivers/pci/controller/mobiveil/pcie-mobiveil-host.c b/drivers/pci/controller/mobiveil/pcie-mobiveil-host.c
-index 3adec419a45b..a2632d02ce8f 100644
---- a/drivers/pci/controller/mobiveil/pcie-mobiveil-host.c
-+++ b/drivers/pci/controller/mobiveil/pcie-mobiveil-host.c
-@@ -480,7 +480,6 @@ static int mobiveil_pcie_init_irq_domain(struct mobiveil_pcie *pcie)
- 	struct device *dev = &pcie->pdev->dev;
- 	struct device_node *node = dev->of_node;
- 	struct mobiveil_root_port *rp = &pcie->rp;
+diff --git a/drivers/pinctrl/spear/pinctrl-spear310.c b/drivers/pinctrl/spear/pinctrl-spear310.c
+index 393b2b97d527..9d9facc4a6e4 100644
+--- a/drivers/pinctrl/spear/pinctrl-spear310.c
++++ b/drivers/pinctrl/spear/pinctrl-spear310.c
+@@ -379,8 +379,6 @@ static const struct of_device_id spear310_pinctrl_of_match[] = {
+ 
+ static int spear310_pinctrl_probe(struct platform_device *pdev)
+ {
 -	int ret;
+-
+ 	spear3xx_machdata.groups = spear310_pingroups;
+ 	spear3xx_machdata.ngroups = ARRAY_SIZE(spear310_pingroups);
+ 	spear3xx_machdata.functions = spear310_functions;
+@@ -392,11 +390,7 @@ static int spear310_pinctrl_probe(struct platform_device *pdev)
  
- 	/* setup INTx */
- 	rp->intx_domain = irq_domain_add_linear(node, PCI_NUM_INTX,
-@@ -494,11 +493,7 @@ static int mobiveil_pcie_init_irq_domain(struct mobiveil_pcie *pcie)
- 	raw_spin_lock_init(&rp->intx_mask_lock);
+ 	spear3xx_machdata.modes_supported = false;
  
- 	/* setup MSI */
--	ret = mobiveil_allocate_msi_domains(pcie);
+-	ret = spear_pinctrl_probe(pdev, &spear3xx_machdata);
 -	if (ret)
 -		return ret;
 -
 -	return 0;
-+	return mobiveil_allocate_msi_domains(pcie);
++	return spear_pinctrl_probe(pdev, &spear3xx_machdata);
  }
  
- static int mobiveil_pcie_integrated_interrupt_init(struct mobiveil_pcie *pcie)
+ static struct platform_driver spear310_pinctrl_driver = {
 -- 
 2.25.1
 
