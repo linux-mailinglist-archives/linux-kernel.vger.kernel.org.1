@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65524272F5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B505272F5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:56:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730155AbgIUQ4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:56:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49938 "EHLO mail.kernel.org"
+        id S1730141AbgIUQ4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:56:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729263AbgIUQod (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:44:33 -0400
+        id S1729264AbgIUQof (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:44:35 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F20902076B;
-        Mon, 21 Sep 2020 16:44:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3DB5A23998;
+        Mon, 21 Sep 2020 16:44:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706672;
-        bh=upFX4R3QFfGh8ArnIGUTH8WK49rVoWf2GnXvBBhJ4RA=;
+        s=default; t=1600706674;
+        bh=A0X2pH/ayu0HHkp5Wg5d+5w4M1Qx4uUu3mKZE6m9nsA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rxSvtc8nco/aKlA1iZNDXtmkfN/uSU0OpTPW7iuPdQtpLRLxaYG83uXhb38FVs2e/
-         Yvr3KaDskbPS5tdC3tRfG5nkO2z6JQtGDi2ijxW7s+13dQSK9uUNJ17zVcszJlYiNM
-         O0XJXkOY4ixggFZgDzu8v/Yu2ZsVfIL+/qrdrDug=
+        b=cbKDjIdAbeP59vJn1g9UdG9NDWIqDFYqmlUoN8BVIU0oR4ekdVhwCH2Jgl+FM5EYH
+         c4XEElCATNf8/ZeBAWlU2uwIfvOjMwTO4pl1K70esVuWKrqHDsRT5TwLO/j1pwbqtw
+         eEXPQ0gbBzL0OP3OLVCPHnWbrMbNsgVUn5f6n6jQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        stable@vger.kernel.org, Nicolas Belin <nbelin@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 047/118] ASoC: soc-core: add snd_soc_find_dai_with_mutex()
-Date:   Mon, 21 Sep 2020 18:27:39 +0200
-Message-Id: <20200921162038.496773463@linuxfoundation.org>
+Subject: [PATCH 5.8 048/118] ASoC: meson: axg-toddr: fix channel order on g12 platforms
+Date:   Mon, 21 Sep 2020 18:27:40 +0200
+Message-Id: <20200921162038.548320048@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
 References: <20200921162036.324813383@linuxfoundation.org>
@@ -44,135 +44,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+From: Jerome Brunet <jbrunet@baylibre.com>
 
-[ Upstream commit 20d9fdee72dfaa1fa7588c7a846283bd740e7157 ]
+[ Upstream commit 9c4b205a20f483d8a5d1208cfec33e339347d4bd ]
 
-commit 25612477d20b52 ("ASoC: soc-dai: set dai_link dpcm_ flags with a helper")
-added snd_soc_dai_link_set_capabilities().
-But it is using snd_soc_find_dai() (A) which is required client_mutex (B).
-And client_mutex is soc-core.c local.
+On g12 and following platforms, The first channel of record with more than
+2 channels ends being placed randomly on an even channel of the output.
 
-	struct snd_soc_dai *snd_soc_find_dai(xxx)
-	{
-		...
-(B)		lockdep_assert_held(&client_mutex);
-		...
-	}
+On these SoCs, a bit was added to force the first channel to be placed at
+the beginning of the output. Apparently the behavior if the bit is not set
+is not easily predictable. According to the documentation, this bit is not
+present on the axg series.
 
-	void snd_soc_dai_link_set_capabilities(xxx)
-	{
-		...
-		for_each_pcm_streams(direction) {
-			...
-			for_each_link_cpus(dai_link, i, cpu) {
-(A)				dai = snd_soc_find_dai(cpu);
-				...
-			}
-			...
-			for_each_link_codecs(dai_link, i, codec) {
-(A)				dai = snd_soc_find_dai(codec);
-				...
-			}
-		}
-		...
-	}
+Set the bit on g12 and fix the problem.
 
-Because of these background, we will get WARNING if .config has CONFIG_LOCKDEP.
-
-	WARNING: CPU: 2 PID: 53 at sound/soc/soc-core.c:814 snd_soc_find_dai+0xf8/0x100
-	CPU: 2 PID: 53 Comm: kworker/2:1 Not tainted 5.7.0-rc1+ #328
-	Hardware name: Renesas H3ULCB Kingfisher board based on r8a77951 (DT)
-	Workqueue: events deferred_probe_work_func
-	pstate: 60000005 (nZCv daif -PAN -UAO)
-	pc : snd_soc_find_dai+0xf8/0x100
-	lr : snd_soc_find_dai+0xf4/0x100
-	...
-	Call trace:
-	 snd_soc_find_dai+0xf8/0x100
-	 snd_soc_dai_link_set_capabilities+0xa0/0x16c
-	 graph_dai_link_of_dpcm+0x390/0x3c0
-	 graph_for_each_link+0x134/0x200
-	 graph_probe+0x144/0x230
-	 platform_drv_probe+0x5c/0xb0
-	 really_probe+0xe4/0x430
-	 driver_probe_device+0x60/0xf4
-
-snd_soc_find_dai() will be used from (X) CPU/Codec/Platform driver with
-mutex lock, and (Y) Card driver without mutex lock.
-This snd_soc_dai_link_set_capabilities() is for Card driver,
-this means called without mutex.
-This patch adds snd_soc_find_dai_with_mutex() to solve it.
-
-Fixes: 25612477d20b52 ("ASoC: soc-dai: set dai_link dpcm_ flags with a helper")
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87blixvuab.wl-kuninori.morimoto.gx@renesas.com
+Fixes: a3c23a8ad4dc ("ASoC: meson: axg-toddr: add g12a support")
+Reported-by: Nicolas Belin <nbelin@baylibre.com>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Link: https://lore.kernel.org/r/20200828151438.350974-1-jbrunet@baylibre.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/sound/soc.h  |  2 ++
- sound/soc/soc-core.c | 13 +++++++++++++
- sound/soc/soc-dai.c  |  4 ++--
- 3 files changed, 17 insertions(+), 2 deletions(-)
+ sound/soc/meson/axg-toddr.c | 24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 3ce7f0f5aa929..bc6ecb10c7649 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1373,6 +1373,8 @@ void snd_soc_unregister_dai(struct snd_soc_dai *dai);
+diff --git a/sound/soc/meson/axg-toddr.c b/sound/soc/meson/axg-toddr.c
+index e711abcf8c124..d6adf7edea41f 100644
+--- a/sound/soc/meson/axg-toddr.c
++++ b/sound/soc/meson/axg-toddr.c
+@@ -18,6 +18,7 @@
+ #define CTRL0_TODDR_SEL_RESAMPLE	BIT(30)
+ #define CTRL0_TODDR_EXT_SIGNED		BIT(29)
+ #define CTRL0_TODDR_PP_MODE		BIT(28)
++#define CTRL0_TODDR_SYNC_CH		BIT(27)
+ #define CTRL0_TODDR_TYPE_MASK		GENMASK(15, 13)
+ #define CTRL0_TODDR_TYPE(x)		((x) << 13)
+ #define CTRL0_TODDR_MSB_POS_MASK	GENMASK(12, 8)
+@@ -189,10 +190,31 @@ static const struct axg_fifo_match_data axg_toddr_match_data = {
+ 	.dai_drv		= &axg_toddr_dai_drv
+ };
  
- struct snd_soc_dai *snd_soc_find_dai(
- 	const struct snd_soc_dai_link_component *dlc);
-+struct snd_soc_dai *snd_soc_find_dai_with_mutex(
-+	const struct snd_soc_dai_link_component *dlc);
- 
- #include <sound/soc-dai.h>
- 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index f1d641cd48da9..20ca1d38b4b87 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -834,6 +834,19 @@ struct snd_soc_dai *snd_soc_find_dai(
- }
- EXPORT_SYMBOL_GPL(snd_soc_find_dai);
- 
-+struct snd_soc_dai *snd_soc_find_dai_with_mutex(
-+	const struct snd_soc_dai_link_component *dlc)
++static int g12a_toddr_dai_startup(struct snd_pcm_substream *substream,
++				 struct snd_soc_dai *dai)
 +{
-+	struct snd_soc_dai *dai;
++	struct axg_fifo *fifo = snd_soc_dai_get_drvdata(dai);
++	int ret;
 +
-+	mutex_lock(&client_mutex);
-+	dai = snd_soc_find_dai(dlc);
-+	mutex_unlock(&client_mutex);
++	ret = axg_toddr_dai_startup(substream, dai);
++	if (ret)
++		return ret;
 +
-+	return dai;
++	/*
++	 * Make sure the first channel ends up in the at beginning of the output
++	 * As weird as it looks, without this the first channel may be misplaced
++	 * in memory, with a random shift of 2 channels.
++	 */
++	regmap_update_bits(fifo->map, FIFO_CTRL0, CTRL0_TODDR_SYNC_CH,
++			   CTRL0_TODDR_SYNC_CH);
++
++	return 0;
 +}
-+EXPORT_SYMBOL_GPL(snd_soc_find_dai_with_mutex);
 +
- static int soc_dai_link_sanity_check(struct snd_soc_card *card,
- 				     struct snd_soc_dai_link *link)
- {
-diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
-index cecbbed2de9d5..0e04ad7689cd9 100644
---- a/sound/soc/soc-dai.c
-+++ b/sound/soc/soc-dai.c
-@@ -410,14 +410,14 @@ void snd_soc_dai_link_set_capabilities(struct snd_soc_dai_link *dai_link)
- 		supported_codec = false;
+ static const struct snd_soc_dai_ops g12a_toddr_ops = {
+ 	.prepare	= g12a_toddr_dai_prepare,
+ 	.hw_params	= axg_toddr_dai_hw_params,
+-	.startup	= axg_toddr_dai_startup,
++	.startup	= g12a_toddr_dai_startup,
+ 	.shutdown	= axg_toddr_dai_shutdown,
+ };
  
- 		for_each_link_cpus(dai_link, i, cpu) {
--			dai = snd_soc_find_dai(cpu);
-+			dai = snd_soc_find_dai_with_mutex(cpu);
- 			if (dai && snd_soc_dai_stream_valid(dai, direction)) {
- 				supported_cpu = true;
- 				break;
- 			}
- 		}
- 		for_each_link_codecs(dai_link, i, codec) {
--			dai = snd_soc_find_dai(codec);
-+			dai = snd_soc_find_dai_with_mutex(codec);
- 			if (dai && snd_soc_dai_stream_valid(dai, direction)) {
- 				supported_codec = true;
- 				break;
 -- 
 2.25.1
 
