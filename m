@@ -2,95 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E642A273667
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 01:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 870F5273638
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 01:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728882AbgIUXMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 19:12:24 -0400
-Received: from mail.rusoil.net ([188.128.114.25]:58282 "EHLO mail.rusoil.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728741AbgIUXMV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 19:12:21 -0400
-X-Greylist: delayed 421 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Sep 2020 19:12:11 EDT
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.rusoil.net (Postfix) with ESMTP id 9EF1840C07;
-        Tue, 22 Sep 2020 04:08:14 +0500 (YEKT)
-Received: from mail.rusoil.net ([127.0.0.1])
-        by localhost (mail.rusoil.net [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id SVpSP78GR2pZ; Tue, 22 Sep 2020 04:08:14 +0500 (YEKT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.rusoil.net (Postfix) with ESMTP id 3D89E40D78;
-        Tue, 22 Sep 2020 04:08:13 +0500 (YEKT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.rusoil.net 3D89E40D78
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rusoil.net;
-        s=maildkim; t=1600729693;
-        bh=6R3BgBYiA7fkqGiiNDuwPskBnpH9JXyNAW/l3ZEA+wY=;
-        h=Date:From:Message-ID:MIME-Version;
-        b=Vnjy6nBVnSTcINEW6kER3ugTxQ4KBYKS36YiGFr6YA3B4INc+KiGVhbak8MS9Qjs4
-         d1hbAool1vpcT5tqzIahdEndE3qiAPgBOX6jsmCcvHSMZhz19GFDJ1aQySn107enqY
-         lwxWqbZRY2a+BQ8VxoJh3Rpje7MgA+/fhr9SupmU=
-X-Virus-Scanned: amavisd-new at mail.rusoil.net
-Received: from mail.rusoil.net ([127.0.0.1])
-        by localhost (mail.rusoil.net [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id KLkCjnFIcNrK; Tue, 22 Sep 2020 04:08:12 +0500 (YEKT)
-Received: from mail.rusoil.net (mail.rusoil.net [172.16.7.34])
-        by mail.rusoil.net (Postfix) with ESMTP id 6147940C07;
-        Tue, 22 Sep 2020 04:08:10 +0500 (YEKT)
-Date:   Tue, 22 Sep 2020 04:08:09 +0500 (YEKT)
-From:   Blue Oak Mortgage and Loans <em@rusoil.net>
-Reply-To: Blue Oak Mortgage and Loans <info@bluelmtg.net>
-Message-ID: <2020026523.907101.1600729689731.JavaMail.zimbra@rusoil.net>
-Subject: Wir finanzieren Projekte und Unternehmen
+        id S1728798AbgIUXJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 19:09:27 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:39138 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726457AbgIUXJ1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 19:09:27 -0400
+X-UUID: 26c3d40a638743dc9777bb44bb154c1a-20200922
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=ehfb91CZzudcGd//YT5PVZW9V0LBguKR5pLVDx0OdJs=;
+        b=J6gt3PJox3P+JZ90sw6ZLwMiFYvPtU/3RDit4DItghK/7ej9mjVJGDx5FbT+eByNOHvX8pwwqDbR5HfqcELEdLmvvUZ6eddidEe838lv+PWPE/Z8RuaDRZWC3w7jpXgAtJIRXuat5HkoZz45omCv0Xqrxd6rlUsLCxMAJIvRLkI=;
+X-UUID: 26c3d40a638743dc9777bb44bb154c1a-20200922
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <sean.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1814755100; Tue, 22 Sep 2020 07:09:25 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 22 Sep 2020 07:09:24 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 22 Sep 2020 07:09:23 +0800
+From:   <sean.wang@mediatek.com>
+To:     <davem@davemloft.net>, <andrew@lunn.ch>, <f.fainelli@gmail.com>,
+        <vivien.didelot@gmail.com>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, Sean Wang <objelf@gmail.com>,
+        Steven Liu <steven.liu@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>
+Subject: [PATCH net-next] net: Update MAINTAINERS for MediaTek switch driver
+Date:   Tue, 22 Sep 2020 07:09:23 +0800
+Message-ID: <5d601ae7347d49268822356121d5388739311459.1600729601.git.objelf@gmail.com>
+X-Mailer: git-send-email 1.7.9.5
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [192.210.183.69]
-X-Mailer: Zimbra 8.8.12_GA_3803 (ZimbraWebClient - FF79 (Win)/8.8.12_GA_3794)
-Thread-Index: IhGK+mMcCqn+S/Et9t28g8ApaUDaLg==
-Thread-Topic: Wir finanzieren Projekte und Unternehmen
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+RnJvbTogU2VhbiBXYW5nIDxvYmplbGZAZ21haWwuY29tPg0KDQpVcGRhdGUgbWFpbnRhaW5lcnMg
+Zm9yIE1lZGlhVGVrIHN3aXRjaCBkcml2ZXIgd2l0aCBMYW5kZW4gQ2hhbyB3aG8gaXMNCmZhbWls
+aWFyIHdpdGggTWVkaWFUZWsgTVQ3NTN4IHN3aXRjaCBkZXZpY2VzIGFuZCB3aWxsIGhlbHAgbWFp
+bnRlbmFuY2UNCmZyb20gdGhlIHZlbmRvciBzaWRlLg0KDQpDYzogU3RldmVuIExpdSA8c3RldmVu
+LmxpdUBtZWRpYXRlay5jb20+DQpTaWduZWQtb2ZmLWJ5OiBTZWFuIFdhbmcgPHNlYW4ud2FuZ0Bt
+ZWRpYXRlay5jb20+DQpTaWduZWQtb2ZmLWJ5OiBMYW5kZW4gQ2hhbyA8TGFuZGVuLkNoYW9AbWVk
+aWF0ZWsuY29tPg0KLS0tDQogTUFJTlRBSU5FUlMgfCAxICsNCiAxIGZpbGUgY2hhbmdlZCwgMSBp
+bnNlcnRpb24oKykNCg0KZGlmZiAtLWdpdCBhL01BSU5UQUlORVJTIGIvTUFJTlRBSU5FUlMNCmlu
+ZGV4IGUzYzFjNzAwNTdlNC4uMGVlMDhmMTMxYTQyIDEwMDY0NA0KLS0tIGEvTUFJTlRBSU5FUlMN
+CisrKyBiL01BSU5UQUlORVJTDQpAQCAtMTEwNjIsNiArMTEwNjIsNyBAQCBGOglkcml2ZXJzL2No
+YXIvaHdfcmFuZG9tL210ay1ybmcuYw0KIA0KIE1FRElBVEVLIFNXSVRDSCBEUklWRVINCiBNOglT
+ZWFuIFdhbmcgPHNlYW4ud2FuZ0BtZWRpYXRlay5jb20+DQorTToJTGFuZGVuIENoYW8gPExhbmRl
+bi5DaGFvQG1lZGlhdGVrLmNvbT4NCiBMOgluZXRkZXZAdmdlci5rZXJuZWwub3JnDQogUzoJTWFp
+bnRhaW5lZA0KIEY6CWRyaXZlcnMvbmV0L2RzYS9tdDc1MzAuKg0KLS0gDQoyLjI1LjENCg==
 
-
-Dies ist ein Newsletter von Blue Oak Mortgage and Loans. Bitte melden Sie s=
-ich ab, wenn Sie keine E-Mail mehr von uns erhalten m=C3=B6chten.
-
-
-Eine kurze Einf=C3=BChrung.
-
-Wir sind ein f=C3=BChrendes Finanzierungsunternehmen in Europa. Wir finanzi=
-eren Startups / etablierte Unternehmen, finanzieren Gro=C3=9Fprojekte (Bau,=
- Landwirtschaft, Immobilien und dergleichen) zu einem niedrigen Zinssatz vo=
-n 2% pro Jahr.
-
-
-Darlehensverfahren
-
-1. Sie m=C3=BCssen das Online-Bewerbungsformular ausf=C3=BCllen und eine or=
-dnungsgem=C3=A4=C3=9F unterschriebene Kopie an uns zur=C3=BCcksenden.
-
-2. M=C3=B6glicherweise m=C3=BCssen Sie Finanzdokumente als unterst=C3=BCtze=
-nden Nachweis f=C3=BCr die F=C3=A4higkeit zur R=C3=BCckzahlung von Krediten=
- vorlegen.
-
-3. Wenn Ihr Darlehen genehmigt wurde, m=C3=BCssen Sie eine Versicherungsgar=
-antie f=C3=BCr die Darlehenssicherheit vorlegen. Wir empfehlen eine Versich=
-erungsgesellschaft. Sie sind allein verantwortlich f=C3=BCr die Zahlung und=
- den Erwerb der Anleihe, die als Sicherheit dienen. Die H=C3=B6he der Anlei=
-he h=C3=A4ngt von Ihrem Darlehensbetrag ab. Die Versicherungsgesellschaft w=
-ird Sie durch den Prozess f=C3=BChren. (F=C3=BCr Gro=C3=9Fprojekte)
-
-4. Ihr =C3=9Cberweisungsprozess wird eingeleitet, sobald die Versicherungsa=
-nleihe =C3=BCberpr=C3=BCft wurde. Ihr Darlehensr=C3=BCckzahlungsplan wird i=
-m NC-Darlehensvertragsformular aufgef=C3=BChrt.
-
-Wenn die Bedingungen Sie beruhigen, k=C3=B6nnen Sie uns =C3=BCber die Whats=
-App-Nummer / E-Mail kontaktieren und auch unsere Website besuchen, um weite=
-re Informationen zu erhalten. Wir freuen uns darauf, von Ihnen zu h=C3=B6re=
-n.
-
-WhatsApp: + 90-552-365-3483
-E-Mail: info@bluelmtg.net
