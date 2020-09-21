@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11644272CB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:35:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F73272D2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728737AbgIUQeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:34:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60948 "EHLO mail.kernel.org"
+        id S1728661AbgIUQiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:38:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728729AbgIUQeS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:34:18 -0400
+        id S1728766AbgIUQh5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:37:57 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 297202396F;
-        Mon, 21 Sep 2020 16:34:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5E47C206DC;
+        Mon, 21 Sep 2020 16:37:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706056;
-        bh=Jc1usuQYePYwelIwFEz7MACswEmum+bY+dZXAThvxyU=;
+        s=default; t=1600706277;
+        bh=QtLLmG3kh0dT55OUon/4hi34yStQhL40NliPqaR7GU4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dW1qotIVlz6GL/CIoiIgV2cfinti/p6+v9HkubWHYODh6iTggBvkwzm8Oae3Dxb4P
-         T7yIi5TlEzfR+UrrAU8XDoco0EkSDsNJibhWwi9bgBjMqyFpPeL9bdFPrriR+ISYco
-         T0z2CPO5X3zTfrPsA9jSP0hOa/wvVcZO2y2/o9YQ=
+        b=XGUGHUEJJ30CxlhH/c4Ha6RFJ7cowCSFcVLdV5VV82j98KGaxwRC0bmRTfLhElu7x
+         8crn6r9FxvkPtIJY2HrK7Guiy2RVj3wOFeydLJ7aPzYk9o+VdpkqLZ6Rn2Xnka7e8b
+         bZC3lwLjh24umsh0G8EnqpGXpByID4m1wuf2M0a8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sandhya Bankar <bankarsandhya512@gmail.com>,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: [PATCH 4.9 22/70] drivers: iio: magnetometer: Fix sparse endianness warnings cast to restricted __be16
-Date:   Mon, 21 Sep 2020 18:27:22 +0200
-Message-Id: <20200921162036.137321132@linuxfoundation.org>
+        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Stable@vger.kernel.org, Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH 4.14 36/94] iio:accel:mma7455: Fix timestamp alignment and prevent data leak.
+Date:   Mon, 21 Sep 2020 18:27:23 +0200
+Message-Id: <20200921162037.207424110@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
-References: <20200921162035.136047591@linuxfoundation.org>
+In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
+References: <20200921162035.541285330@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,83 +43,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sandhya Bankar <bankarsandhya512@gmail.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-commit 69c72ec9c80bbd206c6fac73874d73e69cc623b4 upstream.
+commit 7e5ac1f2206eda414f90c698fe1820dee873394d upstream.
 
-Fix the following sparse endianness warnings:
+One of a class of bugs pointed out by Lars in a recent review.
+iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
+to the size of the timestamp (8 bytes).  This is not guaranteed in
+this driver which uses a 16 byte u8 array on the stack   As Lars also noted
+this anti pattern can involve a leak of data to userspace and that
+indeed can happen here.  We close both issues by moving to
+a suitable structure in the iio_priv() data with alignment
+ensured by use of an explicit c structure.  This data is allocated
+with kzalloc so no data can leak appart from previous readings.
 
-drivers/iio/magnetometer/ak8975.c:716:16: warning: cast to restricted __le16
-drivers/iio/magnetometer/ak8975.c:837:19: warning: cast to restricted __le16
-drivers/iio/magnetometer/ak8975.c:838:19: warning: cast to restricted __le16
-drivers/iio/magnetometer/ak8975.c:839:19: warning: cast to restricted __le16
+The force alignment of ts is not strictly necessary in this particularly
+case but does make the code less fragile.
 
-Signed-off-by: Sandhya Bankar <bankarsandhya512@gmail.com>
-Signed-off-by: Jonathan Cameron <jic23@kernel.org>
+Fixes: a84ef0d181d9 ("iio: accel: add Freescale MMA7455L/MMA7456L 3-axis accelerometer driver")
+Reported-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: <Stable@vger.kernel.org>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/magnetometer/ak8975.c |   16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ drivers/iio/accel/mma7455_core.c |   16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
---- a/drivers/iio/magnetometer/ak8975.c
-+++ b/drivers/iio/magnetometer/ak8975.c
-@@ -690,6 +690,7 @@ static int ak8975_read_axis(struct iio_d
- 	struct ak8975_data *data = iio_priv(indio_dev);
- 	const struct i2c_client *client = data->client;
- 	const struct ak_def *def = data->def;
-+	__le16 rval;
- 	u16 buff;
+--- a/drivers/iio/accel/mma7455_core.c
++++ b/drivers/iio/accel/mma7455_core.c
+@@ -55,6 +55,14 @@
+ 
+ struct mma7455_data {
+ 	struct regmap *regmap;
++	/*
++	 * Used to reorganize data.  Will ensure correct alignment of
++	 * the timestamp if present
++	 */
++	struct {
++		__le16 channels[3];
++		s64 ts __aligned(8);
++	} scan;
+ };
+ 
+ static int mma7455_drdy(struct mma7455_data *mma7455)
+@@ -85,19 +93,19 @@ static irqreturn_t mma7455_trigger_handl
+ 	struct iio_poll_func *pf = p;
+ 	struct iio_dev *indio_dev = pf->indio_dev;
+ 	struct mma7455_data *mma7455 = iio_priv(indio_dev);
+-	u8 buf[16]; /* 3 x 16-bit channels + padding + ts */
  	int ret;
  
-@@ -703,7 +704,7 @@ static int ak8975_read_axis(struct iio_d
+ 	ret = mma7455_drdy(mma7455);
+ 	if (ret)
+ 		goto done;
  
- 	ret = i2c_smbus_read_i2c_block_data_or_emulated(
- 			client, def->data_regs[index],
--			sizeof(buff), (u8*)&buff);
-+			sizeof(rval), (u8*)&rval);
- 	if (ret < 0)
- 		goto exit;
+-	ret = regmap_bulk_read(mma7455->regmap, MMA7455_REG_XOUTL, buf,
+-			       sizeof(__le16) * 3);
++	ret = regmap_bulk_read(mma7455->regmap, MMA7455_REG_XOUTL,
++			       mma7455->scan.channels,
++			       sizeof(mma7455->scan.channels));
+ 	if (ret)
+ 		goto done;
  
-@@ -713,7 +714,7 @@ static int ak8975_read_axis(struct iio_d
- 	pm_runtime_put_autosuspend(&data->client->dev);
- 
- 	/* Swap bytes and convert to valid range. */
--	buff = le16_to_cpu(buff);
-+	buff = le16_to_cpu(rval);
- 	*val = clamp_t(s16, buff, -def->range, def->range);
- 	return IIO_VAL_INT;
- 
-@@ -813,6 +814,7 @@ static void ak8975_fill_buffer(struct ii
- 	const struct ak_def *def = data->def;
- 	int ret;
- 	s16 buff[8]; /* 3 x 16 bits axis values + 1 aligned 64 bits timestamp */
-+	__le16 fval[3];
- 
- 	mutex_lock(&data->lock);
- 
-@@ -826,17 +828,17 @@ static void ak8975_fill_buffer(struct ii
- 	 */
- 	ret = i2c_smbus_read_i2c_block_data_or_emulated(client,
- 							def->data_regs[0],
--							3 * sizeof(buff[0]),
--							(u8 *)buff);
-+							3 * sizeof(fval[0]),
-+							(u8 *)fval);
- 	if (ret < 0)
- 		goto unlock;
- 
- 	mutex_unlock(&data->lock);
- 
- 	/* Clamp to valid range. */
--	buff[0] = clamp_t(s16, le16_to_cpu(buff[0]), -def->range, def->range);
--	buff[1] = clamp_t(s16, le16_to_cpu(buff[1]), -def->range, def->range);
--	buff[2] = clamp_t(s16, le16_to_cpu(buff[2]), -def->range, def->range);
-+	buff[0] = clamp_t(s16, le16_to_cpu(fval[0]), -def->range, def->range);
-+	buff[1] = clamp_t(s16, le16_to_cpu(fval[1]), -def->range, def->range);
-+	buff[2] = clamp_t(s16, le16_to_cpu(fval[2]), -def->range, def->range);
- 
- 	iio_push_to_buffers_with_timestamp(indio_dev, buff,
+-	iio_push_to_buffers_with_timestamp(indio_dev, buf,
++	iio_push_to_buffers_with_timestamp(indio_dev, &mma7455->scan,
  					   iio_get_time_ns(indio_dev));
+ 
+ done:
 
 
