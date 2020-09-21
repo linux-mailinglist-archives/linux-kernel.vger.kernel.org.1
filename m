@@ -2,149 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C749272AFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:06:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C79F2272B05
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727940AbgIUQGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:06:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33304 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727671AbgIUQGq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:06:46 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600704404;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SABUEUknBHJI8XlIA/l+ZHp7zAzU1dU+58RVw/KjEuw=;
-        b=SWJS4DLzBr1XYJsbzXBHxVnp3x0jngu5ZA9hjkytnwNEadMKiwGVK+863dDFiMMpweVD0j
-        A30wgvwy9Ezspe+Jhctgg1TetRY+U//5LLP8Hk3YmRR5XfqHxXgxUlAMy1jlMu+FdbuCfF
-        4MHltGl/TtTmsBsRFH0q8WyeECFzuOw=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 036E5B2A7;
-        Mon, 21 Sep 2020 16:07:21 +0000 (UTC)
-Date:   Mon, 21 Sep 2020 18:06:43 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Tejun Heo <tj@kernel.org>, Peter Xu <peterx@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Maya B . Gokhale" <gokhale2@llnl.gov>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Marty Mcfadden <mcfadden8@llnl.gov>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
-Message-ID: <20200921160643.GP12990@dhcp22.suse.cz>
-References: <20200917193824.GL8409@ziepe.ca>
- <CAHk-=wiY_g+SSjncZi8sO=LrxXmMox0NO7K34-Fs653XVXheGg@mail.gmail.com>
- <20200918164032.GA5962@xz-x1>
- <20200921134200.GK12990@dhcp22.suse.cz>
- <20200921141830.GE5962@xz-x1>
- <20200921142834.GL12990@dhcp22.suse.cz>
- <20200921143847.GB4268@mtj.duckdns.org>
- <20200921144355.mrzc66lina3dkfjq@wittgenstein>
- <20200921145537.GM12990@dhcp22.suse.cz>
- <20200921150450.3mjjb3p3jwgatn4v@wittgenstein>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200921150450.3mjjb3p3jwgatn4v@wittgenstein>
+        id S1727881AbgIUQI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:08:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727392AbgIUQI3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:08:29 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44E2DC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 09:08:29 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d6so9652629pfn.9
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 09:08:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=Hfx4RTpZhFAY4Z2pUhJV8nNIOCBdY90YIEZPHB5rL1s=;
+        b=P1kXJJSdlE+mZb3JoUzmJ4E529qwlmWdoyRTRe/D5BTl0hDaPNOof2IEfqXCa3ZQ8A
+         2sUR16R2bPcCKvDvfHnxr00hPAS51U59Zkk945RSwcMfFaJgjPfjLV5Fs667Hp9mHXcD
+         ob5dYDHo0PPTjYmPSLFPzf/MEsx9Ck9YaNvallspu6bhElXtMpYn4xmEy90wOZZrc2JC
+         fbGtTIiadZ9sTt0hl0RIFRiXJ0RnBs462tt8yp8IhJBS02Bvu/qgkfiV69OvhZ/5E/cs
+         eEhnr50k+xYabbSsfuxAwGISEjjN+u53Y2Z/6YkzXTuMwqVDkkq5c0ZlBYILQ+MVyaGb
+         580Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Hfx4RTpZhFAY4Z2pUhJV8nNIOCBdY90YIEZPHB5rL1s=;
+        b=Ri0mOqXqFqMcEGP7JIPJx1I1+oHsap2QKOLxB1cJKzw16e4GkQ7qwX7HfvJR2ECZea
+         P1kbuotG1r3fEIP6d1pfS62D/HDzKpaFHduB5mwQ+WAXMbdEOBV2S+tmK80E7nYpGODr
+         q3Vw/jwi9LSnFPDsx2zRtcHur1ZhO+bnHj5X14OvY+CjDofiGCY46uQwJON8VUzsvk18
+         Fb62q99zyrlMih71KKhG6HQFF5KREf/eLDECiUOue0fu3NCH/jyPhP6Y3Q3TGolzGZug
+         atUkS79/UXjwWkDMAGtVUB3xh2DX2KdRMR0VbCfwIefbWUwzLj5o4ruHDi6ntyKCBZuw
+         mV9w==
+X-Gm-Message-State: AOAM531+ktrCTUMdOCJ7j8dLvzcPap27/cmpvOvga0UnjA2kulg/dqtD
+        3BXOZsvYhJGJdzRHWbiQWYkP
+X-Google-Smtp-Source: ABdhPJy49Zt+/HsF0E4gG2X763eYsUgLBjZgKiymr27NsU3OgSXg9tsma0xM97yQiYo1dLcE5SKybw==
+X-Received: by 2002:a63:d251:: with SMTP id t17mr293420pgi.280.1600704508436;
+        Mon, 21 Sep 2020 09:08:28 -0700 (PDT)
+Received: from Mani-XPS-13-9360.localdomain ([2409:4072:6d03:bd12:1004:2ccf:6900:b97])
+        by smtp.gmail.com with ESMTPSA id f4sm9204577pgr.68.2020.09.21.09.08.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 09:08:27 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     hemantk@codeaurora.org, jhugo@codeaurora.org,
+        bbhatt@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 00/18] MHI changes for v5.10
+Date:   Mon, 21 Sep 2020 21:37:56 +0530
+Message-Id: <20200921160815.28071-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 21-09-20 17:04:50, Christian Brauner wrote:
-> On Mon, Sep 21, 2020 at 04:55:37PM +0200, Michal Hocko wrote:
-> > On Mon 21-09-20 16:43:55, Christian Brauner wrote:
-> > > On Mon, Sep 21, 2020 at 10:38:47AM -0400, Tejun Heo wrote:
-> > > > Hello,
-> > > > 
-> > > > On Mon, Sep 21, 2020 at 04:28:34PM +0200, Michal Hocko wrote:
-> > > > > Fundamentaly CLONE_INTO_CGROUP is similar to regular fork + move to the
-> > > > > target cgroup after the child gets executed. So in principle there
-> > > > > shouldn't be any big difference. Except that the move has to be explicit
-> > > > > and the the child has to have enough privileges to move itself. I am not
-> > > > 
-> > > > Yeap, they're supposed to be the same operations. We've never clearly
-> > > > defined how the accounting gets split across moves because 1. it's
-> > > > inherently blurry and difficult 2. doesn't make any practical difference for
-> > > > the recommended and vast majority usage pattern which uses migration to seed
-> > > > the new cgroup. CLONE_INTO_CGROUP doesn't change any of that.
-> > > > 
-> > > > > completely sure about CLONE_INTO_CGROUP model though. According to man
-> > > > > clone(2) it seems that O_RDONLY for the target cgroup directory is
-> > > > > sufficient. That seems much more relaxed IIUC and it would allow to fork
-> > > > > into a different cgroup while keeping a lot of resources in the parent's
-> > > > > proper.
-> > > > 
-> > > > If the man page is documenting that, it's wrong. cgroup_css_set_fork() has
-> > > > an explicit cgroup_may_write() test on the destination cgroup.
-> > > > CLONE_INTO_CGROUP should follow exactly the same rules as regular
-> > > > migrations.
-> > > 
-> > > Indeed!
-> > > The O_RDONLY mention on the manpage doesn't make sense but it is
-> > > explained that the semantics are exactly the same for moving via the
-> > > filesystem:
-> > 
-> > OK, if the semantic is the same as for the task migration then I do not
-> > see any (new) problems. Care to point me where the actual check is
-> > enforced? For the migration you need a write access to cgroup.procs but
-> > if the API expects directory fd then I am not sure how that would expose
-> > the same behavior.
-> 
-> kernel/cgroup/cgroup.c:cgroup_csset_fork()
-> 
-> So there's which is the first check for inode_permission() essentially:
-> 
-> 	/*
-> 	 * Verify that we the target cgroup is writable for us. This is
-> 	 * usually done by the vfs layer but since we're not going through
-> 	 * the vfs layer here we need to do it "manually".
-> 	 */
-> 	ret = cgroup_may_write(dst_cgrp, sb);
-> 	if (ret)
-> 		goto err;
-> 
-> and what you're referring to is checked right after in:
-> 
-> 	ret = cgroup_attach_permissions(cset->dfl_cgrp, dst_cgrp, sb,
-> 					!(kargs->flags & CLONE_THREAD));
-> 	if (ret)
-> 		goto err;
-> 
-> which calls:
-> 
-> 	ret = cgroup_procs_write_permission(src_cgrp, dst_cgrp, sb);
-> 	if (ret)
-> 		return ret;
-> 
-> That should be what you're looking for. I've also added selftests as
-> always that verify this behavior under:
-> 
-> tools/testing/selftests/cgroup/
-> 
-> as soon as CLONE_INTO_CGROUP is detected on the kernel than all the
-> usual tests are exercised using CLONE_INTO_CGROUP so we should've seen
-> any regression hopefully.
+Hi Greg,
 
-Thanks a lot for this clarification! So I believe the only existing bug
-is in documentation which should be explicit that the cgroup fd read
-access is not sufficient because it also requires to have a write access
-for cgroup.procs in the same directory at the time of fork. I will send
-a patch if I find some time for that.
+Here is the MHI series for v5.10 cycle. Most of the patches are cleanups
+in the MHI stack. Notable changes are below:
 
-Thanks!
+* Saving the client device hardware information obtained through the BHI
+  protocol. This information will be exposed through sysfs to make use in
+  the userland applications.
+* Introduce sysfs entries to read the serial number and OEM PK hash values
+  of the client device obtained from BHI protocol. Relevant API documentation
+  is also added.
+* Introduce debugfs entries to show MHI states, events, channels, register
+  state etc... to aid debug.
+* Fix the warning reported by Kbuild bot by using append (+=) Kbuild rule
+  to the mhi/core Makefile.
+* Removed the requirement to have a dedicated IRQ for each event ring.
+  The MHI controllers can now use a single IRQ for all event rings.
+
+Please consider merging!
+
+Thanks,
+Mani
+
+Bhaumik Bhatt (12):
+  bus: mhi: core: Remove double occurrence for mhi_ctrl_ev_task()
+    declaration
+  bus: mhi: core: Abort suspends due to outgoing pending packets
+  bus: mhi: core: Use helper API to trigger a non-blocking host resume
+  bus: mhi: core: Trigger host resume if suspended during
+    mhi_device_get()
+  bus: mhi: core: Use generic name field for an MHI device
+  bus: mhi: core: Introduce helper function to check device state
+  bus: mhi: core: Introduce counters to track MHI device state
+    transitions
+  bus: mhi: core: Read and save device hardware information from BHI
+  bus: mhi: core: Introduce APIs to allocate and free the MHI controller
+  bus: mhi: Fix entries based on Kconfig coding style
+  bus: mhi: core: Introduce debugfs entries for MHI
+  bus: mhi: core: Introduce sysfs entries for MHI
+
+Clark Williams (1):
+  bus: mhi: Remove include of rwlock_types.h
+
+Hemant Kumar (1):
+  bus: mhi: core: Add const qualifier to MHI config information
+
+Loic Poulain (2):
+  bus: mhi: core: Allow shared IRQ for event rings
+  bus: mhi: Remove unused nr_irqs_req variable
+
+Manivannan Sadhasivam (1):
+  bus: mhi: core: Fix the building of MHI module
+
+Randy Dunlap (1):
+  bus: mhi: fix doubled words and struct image_info kernel-doc
+
+ Documentation/ABI/stable/sysfs-bus-mhi |  21 ++
+ MAINTAINERS                            |   1 +
+ drivers/bus/mhi/Kconfig                |  20 +-
+ drivers/bus/mhi/core/Makefile          |   3 +-
+ drivers/bus/mhi/core/boot.c            |  17 +-
+ drivers/bus/mhi/core/debugfs.c         | 410 +++++++++++++++++++++++++
+ drivers/bus/mhi/core/init.c            | 103 ++++++-
+ drivers/bus/mhi/core/internal.h        |  37 ++-
+ drivers/bus/mhi/core/main.c            |  27 +-
+ drivers/bus/mhi/core/pm.c              |  28 +-
+ include/linux/mhi.h                    |  51 ++-
+ 11 files changed, 654 insertions(+), 64 deletions(-)
+ create mode 100644 Documentation/ABI/stable/sysfs-bus-mhi
+ create mode 100644 drivers/bus/mhi/core/debugfs.c
+
 -- 
-Michal Hocko
-SUSE Labs
+2.17.1
+
