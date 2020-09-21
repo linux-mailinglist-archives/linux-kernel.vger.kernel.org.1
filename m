@@ -2,406 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F21962722BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED3A2722C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:41:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726878AbgIULit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 07:38:49 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:34912 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726341AbgIULit (ORCPT
+        id S1726553AbgIULlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 07:41:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726341AbgIULlE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 07:38:49 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08LBcd4Q069285;
-        Mon, 21 Sep 2020 06:38:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600688319;
-        bh=DFNTCTXuI0TJZf7h9fV3deLCLHv6aqHJd81bW3ac1AA=;
-        h=From:To:CC:Subject:Date;
-        b=OYrvzbmPSRlY/AnDbPN1Fua2LbpVG0hnAL7IgTcbYEK2hYonriSlO6rZ90nrcEagV
-         WKN/H+lSv6tCPaOYhEY6fYZKHGmICRi5JUWMcGNQUa3630fydh7LTFIrsDuWJqaW4m
-         T85J7Sq2WD4ab0r5PrNuHLjbGyuL+5JW/FzsZDIQ=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08LBcdCr074390
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 21 Sep 2020 06:38:39 -0500
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 21
- Sep 2020 06:38:39 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 21 Sep 2020 06:38:39 -0500
-Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08LBcbWD115448;
-        Mon, 21 Sep 2020 06:38:37 -0500
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-To:     <herbert@gondor.apana.org.au>, <t-kristo@ti.com>,
-        <davem@davemloft.net>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <j-keerthy@ti.com>
-Subject: [PATCH] crypto: sa2ul: Fix DMA mapping API usage
-Date:   Mon, 21 Sep 2020 14:38:46 +0300
-Message-ID: <20200921113846.6973-1-peter.ujfalusi@ti.com>
-X-Mailer: git-send-email 2.28.0
+        Mon, 21 Sep 2020 07:41:04 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E575BC061755;
+        Mon, 21 Sep 2020 04:41:03 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id s13so11787938wmh.4;
+        Mon, 21 Sep 2020 04:41:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=xIc63N2vBXLRvgf8EopXgjghKJ+UG6gCroB4GgmxgNE=;
+        b=MOuFR+IQbBZA4dtVp9EIk16lUdBFMGiUt8GFPGCGHbKxjmle3h34AMbEmfPIjqTdpk
+         SuQaVeVm2jmL1d7FdEj/n4xc8ypfEJ1Z35zjFI1mS0YTstGA5LAmj8Qc+rGFWogno5Ky
+         iovaA2nsOdWLhgw/xvpYqyj5DkVYvapBc7N7FN+SEsWiY9r3q8Sq8dlbyJ9XskXOVxg4
+         cr0S1ETuSIQZy4opzCLy+JegVvs9A4ANn+P0M/M5WueKa28zZX2szP5QG/tHOXz3ga3S
+         w18tlitfrgqDRYBs+WJKlasXZ3QrvJhooj0bmWr+Wa3NNStO1LgZAWGuTSAwLGt6WYgi
+         t72g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xIc63N2vBXLRvgf8EopXgjghKJ+UG6gCroB4GgmxgNE=;
+        b=CaO9kM5vCGkweRq1RW0mqdjoX/Cgq0IuVTM4Zjt2otjgk0oyz6YGnMzlMlJ7Zxxgb+
+         Ujpz/BNLe1NmkuHty4zuLi3ahhXMXi+RhjWmBbgPYbGNFjP3V+r73spu/dXfN2/y137J
+         C7fULDy0Vs9EaEjB2vBPFLhCI8ZY0VWjB4tTEP1HJmm0hjTfDC64ut8PVP8oJidQDXHG
+         zHOyXKMaClaFPcC5bKe/jXyIecIkDBPNHnqsy3lKaqJ5Xr5XGmSdz/86Ki23U21GAFgZ
+         7R0FbY/mWJBs+eVPIXgBHGOFdRfpEVs2D77FomLrDH24zcoO8rJF+MA5b8fdWfwP9ywJ
+         zj9w==
+X-Gm-Message-State: AOAM530zSPaHexVSHCUf9zOEQHHuHi04UL+O3ADxzyTUNVmQQwf+1N5z
+        gOovDbOpV2pjiL4LzYuy7rw=
+X-Google-Smtp-Source: ABdhPJyhwW61iosPZm1tOLN+J8qbND1CyFWDXnFrK2KyF5zNV9OIHDe5p2wMtyDt1KyYyfnCG0CjIA==
+X-Received: by 2002:a1c:398a:: with SMTP id g132mr28082422wma.41.1600688462468;
+        Mon, 21 Sep 2020 04:41:02 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id c14sm21095112wrm.64.2020.09.21.04.41.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 04:41:01 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 13:40:59 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 30/34] i2c: tegra: Clean up variable names
+Message-ID: <20200921114059.GM3950626@ulmo>
+References: <20200908224006.25636-1-digetx@gmail.com>
+ <20200908224006.25636-31-digetx@gmail.com>
+ <20200917122105.GI3515672@ulmo>
+ <49498b9c-3b75-ad97-1859-5d6442b27b0c@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="bPrm2PuLP7ysUh6c"
+Content-Disposition: inline
+In-Reply-To: <49498b9c-3b75-ad97-1859-5d6442b27b0c@gmail.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make sure that we call the dma_unmap_sg on the correct scatterlist on
-completion with the correct sg_nents.
 
-We also should be calling dma_sync_sg_for_device() on the tx buffer before
-giving it to the DMA and the dma_sync_sg_for_cpu() should be called on the
-scatterlist we received the data back.
+--bPrm2PuLP7ysUh6c
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- drivers/crypto/sa2ul.c | 157 ++++++++++++++++++++++-------------------
- 1 file changed, 83 insertions(+), 74 deletions(-)
+On Thu, Sep 17, 2020 at 06:43:28PM +0300, Dmitry Osipenko wrote:
+> 17.09.2020 15:21, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > On Wed, Sep 09, 2020 at 01:40:02AM +0300, Dmitry Osipenko wrote:
+> >> Rename "ret" variables to "err" in order to make code a bit more
+> >> expressive, emphasizing that the returned value is an error code.
+> >> Same vice versa, where appropriate.
+> >>
+> >> Rename variable "reg" to "val" in order to better reflect the actual
+> >> usage of the variable in the code and to make naming consistent with
+> >> the rest of the code.
+> >>
+> >> Use briefer names for a few members of the tegra_i2c_dev structure in
+> >> order to improve readability of the code.
+> >>
+> >> All dev/&pdev->dev are replaced with i2c_dev->dev in order to have uni=
+form
+> >> code style across the driver.
+> >>
+> >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> >> ---
+> >>  drivers/i2c/busses/i2c-tegra.c | 173 ++++++++++++++++-----------------
+> >>  1 file changed, 86 insertions(+), 87 deletions(-)
+> >=20
+> > That's indeed a nice improvement. One thing did spring out at me,
+> > though.
+> >=20
+> >> diff --git a/drivers/i2c/busses/i2c-tegra.c b/drivers/i2c/busses/i2c-t=
+egra.c
+> > [...]
+> >> @@ -1831,20 +1830,20 @@ static int __maybe_unused tegra_i2c_runtime_su=
+spend(struct device *dev)
+> >> =20
+> >>  	clk_bulk_disable(i2c_dev->nclocks, i2c_dev->clocks);
+> >> =20
+> >> -	return pinctrl_pm_select_idle_state(i2c_dev->dev);
+> >> +	return pinctrl_pm_select_idle_state(dev);
+> >>  }
+> >> =20
+> >>  static int __maybe_unused tegra_i2c_suspend(struct device *dev)
+> >>  {
+> >>  	struct tegra_i2c_dev *i2c_dev =3D dev_get_drvdata(dev);
+> >> -	int err =3D 0;
+> >> +	int ret =3D 0;
+> >> =20
+> >>  	i2c_mark_adapter_suspended(&i2c_dev->adapter);
+> >> =20
+> >>  	if (!pm_runtime_status_suspended(dev))
+> >> -		err =3D tegra_i2c_runtime_suspend(dev);
+> >> +		ret =3D tegra_i2c_runtime_suspend(dev);
+> >> =20
+> >> -	return err;
+> >> +	return ret;
+> >>  }
+> >=20
+> > Isn't this exactly the opposite of what the commit message says (and the
+> > rest of the patch does)?
+>=20
+> This change makes it to be consistent with the rest of the code. You may
+> notice that "Factor out hardware initialization into separate function"
+> made a similar change.
+>=20
+> The reason I'm doing this is that the "err" suggests that code returns a
+> error failure code, while it could be a success too and you don't know
+> for sure by looking only at the part of code. Hence it's cleaner to use
+> "err" when error code is returned.
 
-diff --git a/drivers/crypto/sa2ul.c b/drivers/crypto/sa2ul.c
-index a0b398ac6723..85eb14775847 100644
---- a/drivers/crypto/sa2ul.c
-+++ b/drivers/crypto/sa2ul.c
-@@ -142,34 +142,40 @@ struct sa_alg_tmpl {
- 	bool registered;
- };
- 
-+/**
-+ * struct sa_mapped_sg: scatterlist information for tx and rx
-+ * @dir: mapping direction of @sgl
-+ * @split_sg: Set if the sg is split and needs to be freed up
-+ * @static_sg: Static scatterlist entry for overriding data
-+ * @sgl: scatterlist which is used for dma_map_sg/dma_unmap_sg
-+ * @sg_nents: sg_nents which is used for dma_map_sg/dma_unmap_sg
-+ */
-+struct sa_mapped_sg {
-+	enum dma_data_direction dir;
-+	struct scatterlist static_sg;
-+	struct scatterlist *split_sg;
-+	struct scatterlist *sgl;
-+	int mapped_sg_nents;
-+	int sg_nents;
-+};
- /**
-  * struct sa_rx_data: RX Packet miscellaneous data place holder
-  * @req: crypto request data pointer
-  * @ddev: pointer to the DMA device
-  * @tx_in: dma_async_tx_descriptor pointer for rx channel
-- * @split_src_sg: Set if the src sg is split and needs to be freed up
-- * @split_dst_sg: Set if the dst sg is split and needs to be freed up
-+ * @mapped_sg: Information on tx (0) and rx (1) scatterlist DMA mapping
-  * @enc: Flag indicating either encryption or decryption
-  * @enc_iv_size: Initialisation vector size
-  * @iv_idx: Initialisation vector index
-- * @rx_sg: Static scatterlist entry for overriding RX data
-- * @tx_sg: Static scatterlist entry for overriding TX data
-- * @src: Source data pointer
-- * @dst: Destination data pointer
-  */
- struct sa_rx_data {
- 	void *req;
- 	struct device *ddev;
- 	struct dma_async_tx_descriptor *tx_in;
--	struct scatterlist *split_src_sg;
--	struct scatterlist *split_dst_sg;
-+	struct sa_mapped_sg mapped_sg[2];
- 	u8 enc;
- 	u8 enc_iv_size;
- 	u8 iv_idx;
--	struct scatterlist rx_sg;
--	struct scatterlist tx_sg;
--	struct scatterlist *src;
--	struct scatterlist *dst;
- };
- 
- /**
-@@ -976,23 +982,47 @@ static int sa_3des_ecb_setkey(struct crypto_skcipher *tfm, const u8 *key,
- 	return sa_cipher_setkey(tfm, key, keylen, &ad);
- }
- 
-+static void sa_sync_from_device(struct sa_rx_data *rxd)
-+{
-+	struct sa_mapped_sg *mapped_sg;
-+
-+	if (rxd->mapped_sg[0].dir == DMA_BIDIRECTIONAL)
-+		mapped_sg = &rxd->mapped_sg[0];
-+	else
-+		mapped_sg = &rxd->mapped_sg[1];
-+
-+	dma_sync_sg_for_cpu(rxd->ddev, mapped_sg->sgl, mapped_sg->sg_nents,
-+			    DMA_FROM_DEVICE);
-+}
-+
-+static void sa_free_sa_rx_data(struct sa_rx_data *rxd)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(rxd->mapped_sg); i++) {
-+		struct sa_mapped_sg *mapped_sg = &rxd->mapped_sg[i];
-+
-+		if (mapped_sg->sg_nents) {
-+			dma_unmap_sg(rxd->ddev, mapped_sg->sgl,
-+				     mapped_sg->sg_nents, mapped_sg->dir);
-+			kfree(mapped_sg->split_sg);
-+		}
-+	}
-+
-+	kfree(rxd);
-+}
-+
- static void sa_aes_dma_in_callback(void *data)
- {
- 	struct sa_rx_data *rxd = (struct sa_rx_data *)data;
- 	struct skcipher_request *req;
--	int sglen;
- 	u32 *result;
- 	__be32 *mdptr;
- 	size_t ml, pl;
- 	int i;
--	enum dma_data_direction dir_src;
--	bool diff_dst;
- 
-+	sa_sync_from_device(rxd);
- 	req = container_of(rxd->req, struct skcipher_request, base);
--	sglen = sg_nents_for_len(req->src, req->cryptlen);
--
--	diff_dst = (req->src != req->dst) ? true : false;
--	dir_src = diff_dst ? DMA_TO_DEVICE : DMA_BIDIRECTIONAL;
- 
- 	if (req->iv) {
- 		mdptr = (__be32 *)dmaengine_desc_get_metadata_ptr(rxd->tx_in, &pl,
-@@ -1003,18 +1033,7 @@ static void sa_aes_dma_in_callback(void *data)
- 			result[i] = be32_to_cpu(mdptr[i + rxd->iv_idx]);
- 	}
- 
--	dma_unmap_sg(rxd->ddev, req->src, sglen, dir_src);
--	kfree(rxd->split_src_sg);
--
--	if (diff_dst) {
--		sglen = sg_nents_for_len(req->dst, req->cryptlen);
--
--		dma_unmap_sg(rxd->ddev, req->dst, sglen,
--			     DMA_FROM_DEVICE);
--		kfree(rxd->split_dst_sg);
--	}
--
--	kfree(rxd);
-+	sa_free_sa_rx_data(rxd);
- 
- 	skcipher_request_complete(req, 0);
- }
-@@ -1052,6 +1071,7 @@ static int sa_run(struct sa_req *req)
- 	u32 *mdptr;
- 	bool diff_dst;
- 	enum dma_data_direction dir_src;
-+	struct sa_mapped_sg *mapped_sg;
- 
- 	gfp_flags = req->base->flags & CRYPTO_TFM_REQ_MAY_SLEEP ?
- 		GFP_KERNEL : GFP_ATOMIC;
-@@ -1082,6 +1102,7 @@ static int sa_run(struct sa_req *req)
- 		dma_rx = pdata->dma_rx1;
- 
- 	ddev = dma_rx->device->dev;
-+	rxd->ddev = ddev;
- 
- 	memcpy(cmdl, sa_ctx->cmdl, sa_ctx->cmdl_size);
- 
-@@ -1109,49 +1130,68 @@ static int sa_run(struct sa_req *req)
- 
- 	split_size = req->size;
- 
-+	mapped_sg = &rxd->mapped_sg[0];
- 	if (sg_nents == 1 && split_size <= req->src->length) {
--		src = &rxd->rx_sg;
-+		src = &mapped_sg->static_sg;
- 		sg_init_table(src, 1);
- 		sg_set_page(src, sg_page(req->src), split_size,
- 			    req->src->offset);
- 		src_nents = 1;
- 		dma_map_sg(ddev, src, sg_nents, dir_src);
-+		mapped_sg->sgl = src;
-+		mapped_sg->sg_nents = sg_nents;
-+		mapped_sg->dir = dir_src;
- 	} else {
- 		mapped_src_nents = dma_map_sg(ddev, req->src, sg_nents,
- 					      dir_src);
-+		mapped_sg->sgl = req->src;
-+		mapped_sg->sg_nents = sg_nents;
-+		mapped_sg->dir = dir_src;
-+
- 		ret = sg_split(req->src, mapped_src_nents, 0, 1, &split_size,
- 			       &src, &src_nents, gfp_flags);
- 		if (ret) {
- 			src_nents = sg_nents;
- 			src = req->src;
- 		} else {
--			rxd->split_src_sg = src;
-+			mapped_sg->split_sg = src;
- 		}
- 	}
- 
-+	dma_sync_sg_for_device(ddev, mapped_sg->sgl, mapped_sg->sg_nents,
-+			       DMA_TO_DEVICE);
-+
- 	if (!diff_dst) {
- 		dst_nents = src_nents;
- 		dst = src;
- 	} else {
- 		dst_nents = sg_nents_for_len(req->dst, req->size);
-+		mapped_sg = &rxd->mapped_sg[1];
- 
- 		if (dst_nents == 1 && split_size <= req->dst->length) {
--			dst = &rxd->tx_sg;
-+			dst = &mapped_sg->static_sg;
- 			sg_init_table(dst, 1);
- 			sg_set_page(dst, sg_page(req->dst), split_size,
- 				    req->dst->offset);
- 			dst_nents = 1;
- 			dma_map_sg(ddev, dst, dst_nents, DMA_FROM_DEVICE);
-+			mapped_sg->sgl = dst;
-+			mapped_sg->sg_nents = dst_nents;
-+			mapped_sg->dir = DMA_FROM_DEVICE;
- 		} else {
- 			mapped_dst_nents = dma_map_sg(ddev, req->dst, dst_nents,
- 						      DMA_FROM_DEVICE);
-+			mapped_sg->sgl = req->dst;
-+			mapped_sg->sg_nents = dst_nents;
-+			mapped_sg->dir = DMA_FROM_DEVICE;
-+
- 			ret = sg_split(req->dst, mapped_dst_nents, 0, 1,
- 				       &split_size, &dst, &dst_nents,
- 				       gfp_flags);
- 			if (ret)
- 				dst = req->dst;
- 			else
--				rxd->split_dst_sg = dst;
-+				mapped_sg->split_sg = dst;
- 		}
- 	}
- 
-@@ -1172,9 +1212,6 @@ static int sa_run(struct sa_req *req)
- 
- 	rxd->req = (void *)req->base;
- 	rxd->enc = req->enc;
--	rxd->ddev = ddev;
--	rxd->src = src;
--	rxd->dst = dst;
- 	rxd->iv_idx = req->ctx->iv_idx;
- 	rxd->enc_iv_size = sa_ctx->cmdl_upd_info.enc_iv.size;
- 	rxd->tx_in->callback = req->callback;
-@@ -1212,16 +1249,7 @@ static int sa_run(struct sa_req *req)
- 	return -EINPROGRESS;
- 
- err_cleanup:
--	dma_unmap_sg(ddev, req->src, sg_nents, DMA_TO_DEVICE);
--	kfree(rxd->split_src_sg);
--
--	if (req->src != req->dst) {
--		dst_nents = sg_nents_for_len(req->dst, req->size);
--		dma_unmap_sg(ddev, req->dst, dst_nents, DMA_FROM_DEVICE);
--		kfree(rxd->split_dst_sg);
--	}
--
--	kfree(rxd);
-+	sa_free_sa_rx_data(rxd);
- 
- 	return ret;
- }
-@@ -1291,11 +1319,12 @@ static void sa_sha_dma_in_callback(void *data)
- 	struct ahash_request *req;
- 	struct crypto_ahash *tfm;
- 	unsigned int authsize;
--	int i, sg_nents;
-+	int i;
- 	size_t ml, pl;
- 	u32 *result;
- 	__be32 *mdptr;
- 
-+	sa_sync_from_device(rxd);
- 	req = container_of(rxd->req, struct ahash_request, base);
- 	tfm = crypto_ahash_reqtfm(req);
- 	authsize = crypto_ahash_digestsize(tfm);
-@@ -1306,12 +1335,7 @@ static void sa_sha_dma_in_callback(void *data)
- 	for (i = 0; i < (authsize / 4); i++)
- 		result[i] = be32_to_cpu(mdptr[i + 4]);
- 
--	sg_nents = sg_nents_for_len(req->src, req->nbytes);
--	dma_unmap_sg(rxd->ddev, req->src, sg_nents, DMA_FROM_DEVICE);
--
--	kfree(rxd->split_src_sg);
--
--	kfree(rxd);
-+	sa_free_sa_rx_data(rxd);
- 
- 	ahash_request_complete(req, 0);
- }
-@@ -1635,43 +1659,28 @@ static void sa_aead_dma_in_callback(void *data)
- 	unsigned int authsize;
- 	u8 auth_tag[SA_MAX_AUTH_TAG_SZ];
- 	size_t pl, ml;
--	int i, sglen;
-+	int i;
- 	int err = 0;
- 	u16 auth_len;
- 	u32 *mdptr;
--	bool diff_dst;
--	enum dma_data_direction dir_src;
- 
-+	sa_sync_from_device(rxd);
- 	req = container_of(rxd->req, struct aead_request, base);
- 	tfm = crypto_aead_reqtfm(req);
- 	start = req->assoclen + req->cryptlen;
- 	authsize = crypto_aead_authsize(tfm);
- 
--	diff_dst = (req->src != req->dst) ? true : false;
--	dir_src = diff_dst ? DMA_TO_DEVICE : DMA_BIDIRECTIONAL;
--
- 	mdptr = (u32 *)dmaengine_desc_get_metadata_ptr(rxd->tx_in, &pl, &ml);
- 	for (i = 0; i < (authsize / 4); i++)
- 		mdptr[i + 4] = swab32(mdptr[i + 4]);
- 
- 	auth_len = req->assoclen + req->cryptlen;
--	if (!rxd->enc)
--		auth_len -= authsize;
--
--	sglen =  sg_nents_for_len(rxd->src, auth_len);
--	dma_unmap_sg(rxd->ddev, rxd->src, sglen, dir_src);
--	kfree(rxd->split_src_sg);
--
--	if (diff_dst) {
--		sglen = sg_nents_for_len(rxd->dst, auth_len);
--		dma_unmap_sg(rxd->ddev, rxd->dst, sglen, DMA_FROM_DEVICE);
--		kfree(rxd->split_dst_sg);
--	}
- 
- 	if (rxd->enc) {
- 		scatterwalk_map_and_copy(&mdptr[4], req->dst, start, authsize,
- 					 1);
- 	} else {
-+		auth_len -= authsize;
- 		start -= authsize;
- 		scatterwalk_map_and_copy(auth_tag, req->src, start, authsize,
- 					 0);
-@@ -1679,7 +1688,7 @@ static void sa_aead_dma_in_callback(void *data)
- 		err = memcmp(&mdptr[4], auth_tag, authsize) ? -EBADMSG : 0;
- 	}
- 
--	kfree(rxd);
-+	sa_free_sa_rx_data(rxd);
- 
- 	aead_request_complete(req, err);
- }
--- 
-Peter
+I don't follow that reasoning. Every error code obviously also has a
+value for success. Otherwise, what's the point of even having a function
+if all it can do is fail. Success has to be an option for code to be any
+useful at all, right?
 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+The "err" variable here transports the error code and if that error code
+happens to be 0 (meaning success), why does that no longer qualify as an
+error code?
 
+Thierry
+
+--bPrm2PuLP7ysUh6c
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9okUkACgkQ3SOs138+
+s6E6Fg/+IRNaYSygkE1VNTF0PempWZTdU3ZFrdIlkRTIh6JS3staq1FrhXFtSJ32
+ElYWEVT24z/pXjtdk97S4FgcjR/eKR/LX09ryfJT2+npnM7PZvKKOi2703H8CA32
+E4M/EcRiq2CBM1d/yuNM9rF7gKbG6qAL47Hlkg3KrmCX90MqP7mIi+O/AlhjUArA
+ixn/OqN4NQUsJaW0VLg58ha3xioZ1oZ2Z65Ox1d5OWizlD6/D5YiC82ErqfYGUbG
+U3z+ZazBCqmBniNEIypMDcSe5irlMDKu12fAzmzGb3AXN2LBwWR9SrtKlHsFY26Y
+Zl6t4quPJiq+MVQT7mbV4siUgwwFxQywvSM77a/cYalT0H4ebjdDPT237Hs9ludQ
+tKciRDly5NKbQRftGJaPzvtyz8RnNe++61ERaOXg9Z3VbZnhO8E7MCADiH9nDmiI
+Z28+JYm30dt347551W4EPmhdRl+EjJMSiIT3z2Getr0w7SflkTxcfNxvNocFmK9a
+a8niadwNbIgsTJxMDlZAFq3Gbq5Ket6o4mCjv2+SnmyGYz3jgDfmPU3b1FdNlkWV
+WitovATWX0xiCZ63n6fWcK/4CTIaW2oxeqqOAr+F7Xy/NSn5BiUac094tV17f0V4
+RNyGyw/dd0io4SVdIRdKYeEzwS/Yw9uuNnDiN72VHZYrfTspOd8=
+=QE6A
+-----END PGP SIGNATURE-----
+
+--bPrm2PuLP7ysUh6c--
