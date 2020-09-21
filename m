@@ -2,427 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB872732E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:32:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E57A2732E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728148AbgIUTcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 15:32:25 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:48508 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727824AbgIUTcZ (ORCPT
+        id S1728182AbgIUTdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 15:33:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727197AbgIUTdF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 15:32:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600716742;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gzHjmKkRB5xXtyj0IK0vJChPTnNHlTEIiHsaOyaJtbM=;
-        b=AE+87oWmt4dNWY9bUvl1rb+hjDvhU9986XAktJSIitAML3lTMbx3HoZ0BoD97eLtLDpbDw
-        ay9bungTBQPMwY+nQEbLQa71Ezky3ajKhEM9feliZ2s8+z1KFjzLFGQj5JI6fXAhGtdz+E
-        ttj31f2fJ1VCyKM1qog+CA5T+LbmjrE=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-173-JlLe3IiTM0q3B6sQi5HYuQ-1; Mon, 21 Sep 2020 15:32:19 -0400
-X-MC-Unique: JlLe3IiTM0q3B6sQi5HYuQ-1
-Received: by mail-qk1-f198.google.com with SMTP id 125so11834942qkh.4
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 12:32:19 -0700 (PDT)
+        Mon, 21 Sep 2020 15:33:05 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D261FC061755;
+        Mon, 21 Sep 2020 12:33:04 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id d1so957992qtr.6;
+        Mon, 21 Sep 2020 12:33:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version;
+        bh=5zbgEP4qz3pAr7cmiqVB/297RflQwQ/jCBIChTJLB40=;
+        b=FjzoxmTYrzR8Uy+e+7G2SNu64OXtTgLwtyWN8rgSWJEfWo5mfJZtQgdQMIivh75s3+
+         3urIxbOq6AA9vDdDftUfNckYhEnY8dWr5Ma/R/FmZBBGSpYgxbft2iZmj3f2OfWRZ+sE
+         czQeTmH2YBKHdno65kfAX0OGwDX5Fq5KT6//hsYMNltM/vKFJmNFHnU3TNDdUENetmYw
+         0Ru0VgdL2NI6dyH6fEkgxSPrGQpnlrJZW/djHfDhjCHx0bo4sRTDfRlJkuYMrcRADb7n
+         iZlcMKAal27q75krfZj8KiHtbpY3LNGwzeCScBfD7dMVnBagKhZsBcktBPmqwg62wIhz
+         0JYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=gzHjmKkRB5xXtyj0IK0vJChPTnNHlTEIiHsaOyaJtbM=;
-        b=f1F9Al3MXkQPD0cV/XslGMgfghfZTIIkqBSt3aOYFsKcJvG8ENCWMXvpxufLsTf9UE
-         D8EkP/2/w8ycYw2Rk3R1qXYk2FnV6o+5U3ODDNzxV4/Noylj2IaxqTiZhj8nvZh+ZNaM
-         BFw4HwgOgIuD39OSEEI4T29LN17FxRgRB0kCKoHXWgs+X7p0oT7hR6Cvf4EywiV+yjMX
-         ynLrBhTy0CZPuxg0ZmSzvBI3bjeM2sPZOie55ZmgwlZqnKqUfr4Vkn0kvFEYoi8SmOhX
-         18QfJ8Uwt2yxKhbI0Ph4hc8Z9jDpoOrBWRPR3R+GkECfaV8+HRpvhGn9cysD1l6C9/hj
-         ikyw==
-X-Gm-Message-State: AOAM532sABSqu8I+EfUx9HVUO8syUCaxtMz9lwDQkBhMoGFeX8UZeSDz
-        9HA1bvEWYzR1WAwW2xLblYiUSZ5jewKLUyKPC72DVoJz/Vn8P5lJVHQVnWUp93jPzFlXp6qc2xS
-        rzaNsdh67SmOPheajrALUtuuc
-X-Received: by 2002:a37:990:: with SMTP id 138mr1341807qkj.53.1600716739195;
-        Mon, 21 Sep 2020 12:32:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxmkuQb0Jtfl6DfMMaCmsX2tRrqyBSB/2MNPhebuWHGhW6gXBubPUOThBfh5/EGS1sEK6FknA==
-X-Received: by 2002:a37:990:: with SMTP id 138mr1341784qkj.53.1600716738832;
-        Mon, 21 Sep 2020 12:32:18 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id k5sm9409665qkc.45.2020.09.21.12.32.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Sep 2020 12:32:18 -0700 (PDT)
-Subject: Re: [RFC] fpga: dfl: a prototype uio driver
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     alex.williamson@redhat.com, hao.wu@intel.com, mdf@kernel.org,
-        linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org
-References: <20200919165113.5219-1-trix@redhat.com>
- <20200921085553.GA8796@yilunxu-OptiPlex-7050>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <a95906c3-1960-e753-e306-74a90045269e@redhat.com>
-Date:   Mon, 21 Sep 2020 12:32:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version;
+        bh=5zbgEP4qz3pAr7cmiqVB/297RflQwQ/jCBIChTJLB40=;
+        b=LvqqVmEl71M4vWhb6gCGR8dLJfHpl6R8rutgwrrL60RRL4Nr1vi5cbDGH9H/gXg4oz
+         J/DyuLODzKrqy1tLLp/lF1YtnZcJU3iEHysOnZI65H65GC7Y2lI2WzlRYvpytYIC1lLl
+         SUGrV0JNTPhdiB6hzetBPWoCw/S9kusQvZWVfIbl8NA8O5qM7HSQQCuJ4RV6hPWrDapo
+         X9dP8qTXy4vmzCtsQ/KNush9WhM6Nkn/HL/jRsXa7y8EryFUzzS/wB25BiE+PjLfJjIc
+         b3GAzvw/1UYJtufzUec/lcIoHJxgD1NMoIBnvGIewlO6ahNf3z4kjBPVX8EcBVLc+qiu
+         9zbQ==
+X-Gm-Message-State: AOAM533qhmf1UXbuNuzlI6UEXE+L+atCjjeYXhPRq/Pn6j6rfWj4Cws0
+        qoqY7C/+LAMXhBGa3Mq/KGqDzbo7wNM=
+X-Google-Smtp-Source: ABdhPJwV+2QeIZiAWuQnwH9SY1JWi+UBQZEOKKk9Ty3rcn920toAaXEPT0BzLpz9iFyrOAGPH/4TLQ==
+X-Received: by 2002:ac8:47d3:: with SMTP id d19mr1142207qtr.263.1600716783894;
+        Mon, 21 Sep 2020 12:33:03 -0700 (PDT)
+Received: from fionn (bras-base-rdwyon0600w-grc-06-184-147-140-180.dsl.bell.ca. [184.147.140.180])
+        by smtp.gmail.com with ESMTPSA id 76sm9894818qkl.127.2020.09.21.12.33.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 12:33:03 -0700 (PDT)
+Sender: John Kacur <jkacur@gmail.com>
+Date:   Mon, 21 Sep 2020 15:32:55 -0400 (EDT)
+From:   John Kacur <jkacur@redhat.com>
+X-X-Sender: jkacur@fionn
+To:     linux-rt-users <linux-rt-users@vger.kernel.org>
+cc:     Clark Williams <williams@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [ANNOUNCE] rt-tests-1.9
+Message-ID: <alpine.LFD.2.23.451.2009211516250.7550@fionn>
 MIME-Version: 1.0
-In-Reply-To: <20200921085553.GA8796@yilunxu-OptiPlex-7050>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello rt-folks! We're pleased to announce a new release of rt-tests - v1.9
 
-On 9/21/20 1:55 AM, Xu Yilun wrote:
-> On Sat, Sep 19, 2020 at 09:51:13AM -0700, trix@redhat.com wrote:
->> From: Tom Rix <trix@redhat.com>
->>
->> I following up on Moritz asking for early RFC's by showing how this
->> could be done with the concrete example of around
->>
->> [PATCH 0/3] add VFIO mdev support for DFL devices
->>
->> I hacked this together, it barely works. Do not expect that this
->> patch to apply anywhere.  It has enough to show where I want
->> to go and people can comment without me having invested a lot of
->> effort.  I am not expecting to carry this forward, it only
->> addresses the issues I had with the origin patch.
->>
->> This change adds a uio driver for any unclaimed dfl feature
->>
->> During the normal matching of feature id's to drivers, some
->> of the features are not claimed because there neither a
->> builtin driver nor a module driver that matches the feature
->> id.  For these unclaimed features, provide a uio driver to a
->> possible user space driver.
-> I think we don't have to setup UIO interfaces for all unclaimed 
-> features. It could be the decision of the user whether the UIO
-> device is needed for a feature. My opinion is that, the
-> driver_override sysfs is still generic enough for user's to switch
-> between kernel device drivers and dfl uio driver.
+- There is a new test called oslat from Peter Xu
+- Daniel Wagner started to move some shared functionality into common 
+headers
+- Clark Williams provided a fix to pi_stress, to put a limit on the number 
+of inversion groups.
+- And there are various micellaneous fixes from Yunfeng Ye, and from 
+myself too.
 
-Instead of a string, could there just be a 'use_uio' flag ?
+To download rt-tests:
+using git, clone one of the following
+git://git.kernel.org/pub/scm/utils/rt-tests/rt-tests.git
+https://git.kernel.org/pub/scm/utils/rt-tests/rt-tests.git
+https://kernel.googlesource.com/pub/scm/utils/rt-tests/rt-tests.git
 
-How does the 'driver_override' work when there is no starting driver ?
+The latest tag is v1.9
 
->
-> There may be cases the dfl device driver modules are not inserted
-> during dfl-fme/port initialization, but they are to be inserted
-> manually. If the features are all registered to uio, then there will
-> be problems when dfl device drivers module are inserted.
+Tarballs are also available here:
+https://kernel.org/pub/linux/utils/rt-tests
 
-How does this manual loading work ? The driver list for the features
+Older version tarballs are available here:
+https://kernel.org/pub/linux/utils/rt-tests/older
 
-seems to only be used during the card probe time.
+Your fixes, development or just bug reports are always welcome!
 
-To change the order the dfl-pci needs to be unloaded and that will
+Enjoy!
 
-destroy all the uio devices as well as usual feature drivers attached to
+John Kacur
 
-the pci driver.
+Clark Williams (1):
+  pi_stress: limit the number of inversion groups to the number of
+    online cores
 
+Daniel Wagner (4):
+  rt-utils: Move timestamp calc helper to common header
+  rt-utils: Move time defininitions to common header
+  rt-utils: Move ARRAY_SIZE to common header
+  signaltest: Only print from the first thread stats when quiet
 
->
->
->> I have doubts that a uio for an afu feature is approptiate as these
->> can be any device.
-> I think generally afu could also be as uio device if we don't concern
-> about dma isolation.
+John Kacur (11):
+  cyclictest: Fix setaffinity error on large NUMA machines
+  rt-tests: queuelat: Fix storing unsigned long long in int
+  rt-tests: improvements to the python style in get_cyclictest_snapshot
+  rt-tests: pi_stress.8: Remove unused -t n from the manpage
+  rt-tests: ptsematest.8: Update the ptsematest man page
+  rt-tests: Add a man page for get_cyclictest_snapshot
+  rt-tests: Tweak the cyclictest man page
+  rt-tests: Add some files like get_cyclictest_snapshot to .gitignore
+  rt-tests: get_cyclictest_snapshot: Warn if no cyclictest instance
+    found
+  rt-tests: Install new man page get_cyclictest_snapshot.8
+  rt-tests: Makefile - update version to v1.9
 
-I am thinking about afu with its own pci id.
+Peter Xu (3):
+  rt-tests: cyclictest: Move ftrace helpers into rt-utils.[ch]
+  rt-tests: oslat: Init commit
+  rt-tests: oslat: Proper reformat of code
 
-So there could be a conflict with some other driver that responds to the pci id.
+Yunfeng Ye (3):
+  rt-tests: cyclictest: Fix -a option fail when max_cpus is more
+  rt-tests: hachbench: Update the usage and man page for -F|--fifo
+    option
+  rt-tests: cyclictest: remove the debug log "pid = xxx" in
+    rstat_shm_open()
 
->
-> But now seems not possible to match afu to uio driver, cause now in DFL
-> framework AFU is managed by dfl-afu.ko
->
->> Another possible problem is if the number of interrupts for the
->> feature is greater than 1.  Uio seems to only support 1. My guess
->> is this would need some hackery in the open() to add to the
->> interrupt handler.
-> I think it may not possible for UIO to support multiple interrupts if
-> user cannot access the interrupt enable/pending registers. The uio
-> device have just one /dev/uioX node for interrupt. So I tend to
-> accept the limitation. And for now we don't have board specific
-> features that needs multiple interrupts. For PAC N3000, no interrupt is
-> needed.
-Maybe uio needs to change to support multiple interrupts ?
->
->> It is for this type of reason I think a dfl-uio driver is needed
->> rather than reusing an existing generic uio driver.
-> So if we don't try to change interrupt, the implementation of dfl-uio is
-> just a subset of generic uio platform driver, so why not we just use it?
-
-Its a toss up.
-
-Maybe there some dfl only constraints like write/read is a multiple 4 bytes
-
-Or just why have another layer in the setup.
-
-Tom
-
->
-> Thanks,
-> Yilun
->
->> Signed-off-by: Tom Rix <trix@redhat.com>
->> ---
->>  drivers/fpga/dfl-fme-main.c |   9 ++-
->>  drivers/fpga/dfl-uio.c      | 107 ++++++++++++++++++++++++++++++++++++
->>  drivers/fpga/dfl.c          |  47 +++++++++++++++-
->>  drivers/fpga/dfl.h          |   8 +++
->>  4 files changed, 169 insertions(+), 2 deletions(-)
->>  create mode 100644 drivers/fpga/dfl-uio.c
->>
->> diff --git a/drivers/fpga/dfl-fme-main.c b/drivers/fpga/dfl-fme-main.c
->> index 037dc4f..3323e90 100644
->> --- a/drivers/fpga/dfl-fme-main.c
->> +++ b/drivers/fpga/dfl-fme-main.c
->> @@ -709,12 +709,18 @@ static int fme_probe(struct platform_device *pdev)
->>  	if (ret)
->>  		goto dev_destroy;
->>  
->> -	ret = dfl_fpga_dev_ops_register(pdev, &fme_fops, THIS_MODULE);
->> +	ret = dfl_fpga_dev_feature_init_uio(pdev, DFH_TYPE_FIU);
->>  	if (ret)
->>  		goto feature_uinit;
->>  
->> +	ret = dfl_fpga_dev_ops_register(pdev, &fme_fops, THIS_MODULE);
->> +	if (ret)
->> +		goto feature_uinit_uio;
->> +
->>  	return 0;
->>  
->> +feature_uinit_uio:
->> +	dfl_fpga_dev_feature_uinit_uio(pdev, DFH_TYPE_FIU);
->>  feature_uinit:
->>  	dfl_fpga_dev_feature_uinit(pdev);
->>  dev_destroy:
->> @@ -726,6 +732,7 @@ exit:
->>  static int fme_remove(struct platform_device *pdev)
->>  {
->>  	dfl_fpga_dev_ops_unregister(pdev);
->> +	dfl_fpga_dev_feature_uinit_uio(pdev, DFH_TYPE_FIU);
->>  	dfl_fpga_dev_feature_uinit(pdev);
->>  	fme_dev_destroy(pdev);
->>  
->> diff --git a/drivers/fpga/dfl-uio.c b/drivers/fpga/dfl-uio.c
->> new file mode 100644
->> index 0000000..185fbab
->> --- /dev/null
->> +++ b/drivers/fpga/dfl-uio.c
->> @@ -0,0 +1,107 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * prototype dfl uio driver
->> + *
->> + * Copyright Tom Rix 2020
->> + */
->> +#include <linux/module.h>
->> +#include "dfl.h"
->> +
->> +static irqreturn_t dfl_uio_handler(int irq, struct uio_info *dev_info)
->> +{
->> +	return IRQ_HANDLED;
->> +}
->> +
->> +static int dfl_uio_mmap(struct uio_info *info, struct vm_area_struct *vma)
->> +{
->> +	return 0;
->> +}
->> +
->> +static int dfl_uio_open(struct uio_info *info, struct inode *inode)
->> +{
->> +	return 0;
->> +}
->> +
->> +static int dfl_uio_release(struct uio_info *info, struct inode *inode)
->> +{
->> +	return 0;
->> +}
->> +
->> +static int dfl_uio_irqcontrol(struct uio_info *info, s32 irq_on)
->> +{
->> +	return 0;
->> +}
->> +
->> +int dfl_uio_add(struct dfl_feature *feature)
->> +{
->> +	struct uio_info *uio;
->> +	struct resource *res =
->> +		&feature->dev->resource[feature->resource_index];
->> +	int ret = 0;
->> +
->> +	uio = kzalloc(sizeof(struct uio_info), GFP_KERNEL);
->> +	if (!uio) {
->> +		ret = -ENOMEM;
->> +		goto exit;
->> +	}
->> +
->> +	uio->name = kasprintf(GFP_KERNEL, "dfl-uio-%llx", feature->id);
->> +	if (!uio->name) {
->> +		ret = -ENOMEM;
->> +		goto err_name;
->> +	}
->> +
->> +	uio->version = "0.1";
->> +	uio->mem[0].memtype = UIO_MEM_PHYS;
->> +	uio->mem[0].addr = res->start & PAGE_MASK;
->> +	uio->mem[0].offs = res->start & ~PAGE_MASK;
->> +	uio->mem[0].size = (uio->mem[0].offs + resource_size(res)
->> +			    + PAGE_SIZE - 1) & PAGE_MASK;
->> +	/* How are nr_irqs > 1 handled ??? */
->> +	if (feature->nr_irqs == 1)
->> +		uio->irq = feature->irq_ctx[0].irq;
->> +	uio->handler = dfl_uio_handler;
->> +	uio->mmap = dfl_uio_mmap;
->> +	uio->open = dfl_uio_open;
->> +	uio->release = dfl_uio_release;
->> +	uio->irqcontrol = dfl_uio_irqcontrol;
->> +
->> +	ret = uio_register_device(&feature->dev->dev, uio);
->> +	if (ret)
->> +		goto err_register;
->> +
->> +	feature->uio = uio;
->> +exit:
->> +	return ret;
->> +err_register:
->> +	kfree(uio->name);
->> +err_name:
->> +	kfree(uio);
->> +	goto exit;
->> +}
->> +EXPORT_SYMBOL_GPL(dfl_uio_add);
->> +
->> +int dfl_uio_remove(struct dfl_feature *feature)
->> +{
->> +	uio_unregister_device(feature->uio);
->> +	kfree(feature->uio->name);
->> +	kfree(feature->uio);
->> +	return 0;
->> +}
->> +EXPORT_SYMBOL_GPL(dfl_uio_remove);
->> +
->> +static int __init dfl_uio_init(void)
->> +{
->> +	return 0;
->> +}
->> +
->> +static void __exit dfl_uio_exit(void)
->> +{
->> +}
->> +
->> +module_init(dfl_uio_init);
->> +module_exit(dfl_uio_exit);
->> +
->> +MODULE_DESCRIPTION("DFL UIO prototype driver");
->> +MODULE_AUTHOR("Tom");
->> +MODULE_LICENSE("GPL v2");
->> diff --git a/drivers/fpga/dfl.c b/drivers/fpga/dfl.c
->> index 1305be4..26de8e1 100644
->> --- a/drivers/fpga/dfl.c
->> +++ b/drivers/fpga/dfl.c
->> @@ -663,10 +664,57 @@ exit:
->>  }
->>  EXPORT_SYMBOL_GPL(dfl_fpga_dev_feature_init);
->>  
->> +int dfl_fpga_dev_feature_init_uio(struct platform_device *pdev, int dfh_type)
->> +{
->> +	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
->> +	struct dfl_feature *feature;
->> +	int ret;
->> +
->> +	dfl_fpga_dev_for_each_feature(pdata, feature) {
->> +		if (dfh_type == DFH_TYPE_FIU) {
->> +			if (feature->id == FEATURE_ID_FIU_HEADER ||
->> +			    feature->id == FEATURE_ID_AFU)
->> +			continue;
->> +
->> +			/* give the unclamined feature to uio */
->> +			if (!feature->ioaddr) {
->> +				ret = dfl_uio_add(feature);
->> +				if (ret)
->> +					goto exit;
->> +			}
->> +		}
->> +	}
->> +
->> +	return 0;
->> +exit:
->> +	dfl_fpga_dev_feature_uinit_uio(pdev, dfh_type);
->> +	return ret;
->> +}
->> +EXPORT_SYMBOL_GPL(dfl_fpga_dev_feature_init_uio);
->> +
->> +int dfl_fpga_dev_feature_uinit_uio(struct platform_device *pdev, int dfh_type)
->> +{
->> +	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
->> +	struct dfl_feature *feature;
->> +	int ret = 0;
->> +
->> +	dfl_fpga_dev_for_each_feature(pdata, feature) {
->> +		if (dfh_type == DFH_TYPE_FIU) {
->> +			if (feature->id == FEATURE_ID_FIU_HEADER ||
->> +			    feature->id == FEATURE_ID_AFU)
->> +				continue;
->> +
->> +			if (feature->uio)
->> +				ret |= dfl_uio_remove(feature);
->> +		}
->> +	}
->> +	return ret;
->> +}
->> +EXPORT_SYMBOL_GPL(dfl_fpga_dev_feature_uinit_uio);
->> +
->>  static void dfl_chardev_uinit(void)
->>  {
->>  	int i;
->> -
->>  	for (i = 0; i < DFL_FPGA_DEVT_MAX; i++)
->>  		if (MAJOR(dfl_chrdevs[i].devt)) {
->>  			unregister_chrdev_region(dfl_chrdevs[i].devt,
->> diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
->> index a85d1cd..6e37aef 100644
->> --- a/drivers/fpga/dfl.h
->> +++ b/drivers/fpga/dfl.h
->> @@ -26,6 +26,7 @@
->>  #include <linux/platform_device.h>
->>  #include <linux/slab.h>
->>  #include <linux/uuid.h>
->> +#include <linux/uio_driver.h>
->>  #include <linux/fpga/fpga-region.h>
->>  
->>  /* maximum supported number of ports */
->> @@ -232,6 +233,7 @@ struct dfl_feature_irq_ctx {
->>   * struct dfl_feature - sub feature of the feature devices
->>   *
->>   * @dev: ptr to pdev of the feature device which has the sub feature.
->> + * @uio: for fallback uio driver.
->>   * @id: sub feature id.
->>   * @index: unique identifier for an sub feature within the feature device.
->>   *	   It is possible that multiply sub features with same feature id are
->> @@ -248,6 +250,7 @@ struct dfl_feature_irq_ctx {
->>   */
->>  struct dfl_feature {
->>  	struct platform_device *dev;
->> +	struct uio_info *uio;
->>  	u64 id;
->>  	int index;
->>  	int resource_index;
->> @@ -360,6 +363,11 @@ void dfl_fpga_dev_feature_uinit(struct platform_device *pdev);
->>  int dfl_fpga_dev_feature_init(struct platform_device *pdev,
->>  			      struct dfl_feature_driver *feature_drvs);
->>  
->> +int dfl_fpga_dev_feature_init_uio(struct platform_device *pdev, int dfh_type);
->> +int dfl_fpga_dev_feature_uinit_uio(struct platform_device *pdev, int dfh_type);
->> +int dfl_uio_add(struct dfl_feature *feature);
->> +int dfl_uio_remove(struct dfl_feature *feature);
->> +
->>  int dfl_fpga_dev_ops_register(struct platform_device *pdev,
->>  			      const struct file_operations *fops,
->>  			      struct module *owner);
->> -- 
->> 2.18.1
+ .gitignore                                |   7 +
+ Makefile                                  |  13 +-
+ src/backfire/sendme.c                     |   3 -
+ src/cyclictest/cyclictest.8               |   2 +-
+ src/cyclictest/cyclictest.c               | 159 +---
+ src/cyclictest/get_cyclictest_snapshot.8  |  44 ++
+ src/cyclictest/get_cyclictest_snapshot.py |  59 +-
+ src/hackbench/hackbench.8                 |   6 +-
+ src/hackbench/hackbench.c                 |   2 +-
+ src/include/rt-utils.h                    |  51 ++
+ src/lib/rt-utils.c                        |  82 ++
+ src/oslat/oslat.8                         |  66 ++
+ src/oslat/oslat.c                         | 871 ++++++++++++++++++++++
+ src/pi_tests/pi_stress.8                  |   6 -
+ src/pi_tests/pi_stress.c                  |  23 +-
+ src/pmqtest/pmqtest.c                     |   4 -
+ src/ptsematest/ptsematest.8               |   6 +-
+ src/ptsematest/ptsematest.c               |   2 -
+ src/queuelat/queuelat.c                   |  13 +-
+ src/signaltest/signaltest.c               |  22 +-
+ src/sigwaittest/sigwaittest.c             |   2 -
+ src/svsematest/svsematest.c               |   2 -
+ 22 files changed, 1216 insertions(+), 229 deletions(-)
+ create mode 100644 src/cyclictest/get_cyclictest_snapshot.8
+ create mode 100644 src/oslat/oslat.8
+ create mode 100644 src/oslat/oslat.c
 
