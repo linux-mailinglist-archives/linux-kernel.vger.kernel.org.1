@@ -2,79 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 582092726BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72EE22726C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727212AbgIUOO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 10:14:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726419AbgIUOO6 (ORCPT
+        id S1727334AbgIUOPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 10:15:17 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:34973 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727030AbgIUOPQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:14:58 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15997C061755;
-        Mon, 21 Sep 2020 07:14:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=RzCz3Hermh11g+4+9HQSN0gxkYmQOxNMb82UklyV/D8=; b=X89tFZkHHutrGPYkvoSk4Kz0qQ
-        JG3bqlwLSyVOUUOFD6UwejdupLufHuJ/xtx/A40S0C4pNjTOLNS5jXvC4mrkf1kPkI7EzrRsnubVI
-        fcUzwGJLcwQeWGkv22/a9BnaNabrfu/scT8kDCKo5YelvVeXuRl69Z/AiyVPmUm/pilBqL/zAckf1
-        l2w498wY3BO+wodQnnjK4f5/HAOs03CBtty2vmAUsO9vl0DTK7gXxyHJfZabZlik0IZuXL2v7D7nf
-        Wd9k2lEO+AZYlfiz4AEfiphuf5irVMEl+kaHH2bxnli4ylDdATpeksPU/K1UFUn4c0FFUIfUrYuoe
-        mgxxYk3g==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kKMam-0006jJ-IF; Mon, 21 Sep 2020 14:14:56 +0000
-Date:   Mon, 21 Sep 2020 15:14:56 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH 4/9 next] fs/io_uring Don't use the return value from
- import_iovec().
-Message-ID: <20200921141456.GD24515@infradead.org>
-References: <0dc67994b6b2478caa3d96a9e24d2bfb@AcuMS.aculab.com>
+        Mon, 21 Sep 2020 10:15:16 -0400
+Received: by mail-ot1-f65.google.com with SMTP id o6so12468582ota.2;
+        Mon, 21 Sep 2020 07:15:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jSuNx5iI/OJ6Z/gYoNUI3kSkgsNrBIRpVHSXiUBoJ5w=;
+        b=Zz6C9h7hwzCz1AmxTZ1iHFeSBowiybOPcYhmIbfPmKVNbN+9jTzrkqPx7DU1TVkdk2
+         R8lT54g/+rHVsN4dRTfNsNIVD1/L6IEEIU0L1kGjTfH9w6yVUhM8VD8LPG+iIf7iQFLP
+         omhG4Wj/B7zoAd0MH3OnadCvPwfEJ2Q1sbOAG48w2ZmUWHkZrlJDKUOK8qwxC4NXB0VU
+         m6VbWrDsbReSLaJGhWVl6YxYlHWOPLJLY/4JtofKYKxTTh31ml7FOmRwve5eY4R4BEbI
+         5k7tzxo7QfX46ltBX4gpukRFU68DmXf81TipX8TfoR+FT8MduImm9KAiq8v3a8bCPkQx
+         Hl/g==
+X-Gm-Message-State: AOAM532Dh/oSsXhag1+KnjkEZhJul6o2IfHanzwSOgp/iNeYSwgZ/Gcq
+        w0UC8ZcYbN2Y7fI19SS1BpW6h3mvuRXX/6CtuNU=
+X-Google-Smtp-Source: ABdhPJzkjPnsDI6GKmMx9reL3cE4Wwu3RkVhPxyLkDkECtfV3Ub2yNwh7ZDLrlXM6iT3pC+evVidlRkxKGGiXrUokjw=
+X-Received: by 2002:a9d:6010:: with SMTP id h16mr31722498otj.262.1600697715799;
+ Mon, 21 Sep 2020 07:15:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0dc67994b6b2478caa3d96a9e24d2bfb@AcuMS.aculab.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20200918165518.23246-1-grygorii.strashko@ti.com> <CAKfTPtApNLAYq-=UcD6bM8nhT3pp3DSp2bCxFsTF3AZKs6Qz3g@mail.gmail.com>
+In-Reply-To: <CAKfTPtApNLAYq-=UcD6bM8nhT3pp3DSp2bCxFsTF3AZKs6Qz3g@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 21 Sep 2020 16:15:00 +0200
+Message-ID: <CAJZ5v0jcTkQe68zgrxgpZvghFMAbnfui5wc=t3mh87fr0gu6Hw@mail.gmail.com>
+Subject: Re: [PATCH] pm: runtime: fix timer_expires on 32bits arch
+To:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 02:55:20PM +0000, David Laight wrote:
-> 
-> This is the only code that relies on import_iovec() returning
-> iter.count on success.
-> This allows a better interface to import_iovec().
+On Mon, Sep 21, 2020 at 8:51 AM Vincent Guittot
+<vincent.guittot@linaro.org> wrote:
+>
+> On Fri, 18 Sep 2020 at 18:55, Grygorii Strashko
+> <grygorii.strashko@ti.com> wrote:
+> >
+> > The commit 8234f6734c5d ("PM-runtime: Switch autosuspend over to using
+> > hrtimers") switched PM runtime autosuspend to use hrtimers and all related
+> > time accounting in ns, but missed update the struct
+> > dev_pm_info->timer_expires to u64. This causes timer_expires value to be
+> > truncated on 32bits architectures when assignment is done from u64 values:
+> >
+> > rpm_suspend()
+> > |- dev->power.timer_expires = expires;
+> >
+> > Hence, fix it by changing timer_expires type to u64.
+> >
+> > Cc: Vincent Guittot <vincent.guittot@linaro.org>
+> > Fixes: 8234f6734c5d ("PM-runtime: Switch autosuspend over to using hrtimers")
+> > Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+>
+> Acked-by: Vincent Guittot <vincent.guittot@linaro.org>
 
-This looks generall sane, but a comment below:
+Applied as 5.9-rc7 material with some edits in the subject and
+changelog, thanks!
 
-> @@ -3123,7 +3123,7 @@ static int io_read(struct io_kiocb *req, bool force_nonblock,
->  	if (ret < 0)
->  		return ret;
->  	iov_count = iov_iter_count(iter);
-> -	io_size = ret;
-> +	io_size = iov_count;
->  	req->result = io_size;
->  	ret = 0;
->  
-> @@ -3246,7 +3246,7 @@ static int io_write(struct io_kiocb *req, bool force_nonblock,
->  	if (ret < 0)
->  		return ret;
->  	iov_count = iov_iter_count(iter);
-> -	io_size = ret;
-> +	io_size = iov_count;
->  	req->result = io_size;
-
-I tink the local iov_count variable can go away in both functions,
-as io_size only changes after the last use of iov_count (io_read) or
-not at all (io_write).
+> > ---
+> >  include/linux/pm.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/include/linux/pm.h b/include/linux/pm.h
+> > index a30a4b54df52..47aca6bac1d6 100644
+> > --- a/include/linux/pm.h
+> > +++ b/include/linux/pm.h
+> > @@ -590,7 +590,7 @@ struct dev_pm_info {
+> >  #endif
+> >  #ifdef CONFIG_PM
+> >         struct hrtimer          suspend_timer;
+> > -       unsigned long           timer_expires;
+> > +       u64                     timer_expires;
+> >         struct work_struct      work;
+> >         wait_queue_head_t       wait_queue;
+> >         struct wake_irq         *wakeirq;
+> > --
+> > 2.17.1
+> >
