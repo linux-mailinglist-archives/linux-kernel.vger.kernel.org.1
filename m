@@ -2,100 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B631272071
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61DF32720CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:26:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727074AbgIUKVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 06:21:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727006AbgIUKVO (ORCPT
+        id S1726634AbgIUKZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:25:22 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:9234 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726343AbgIUKZV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 06:21:14 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22ED3C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:21:14 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id l9so12025126wme.3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:21:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Go04h4cBZb8oManNnBUCEv0xT9mbFOVFD/8tb3hzAWA=;
-        b=B0KJNIujqWSJKiTDeZnTlqwipUX6r3YfWEvq0cg/FTY1nbvCf44+V12zE/P+TK8yc4
-         IYJMTjR653cKibE9xcUEnJXi/bcA6biRg626F6nkeixexu3kBXmM+EaMFJ7ex+L6QatM
-         IMdqzflT53PYZViuhqE9bVztQ959JmLH6cbkK6lnMv5ayh0JId6a+5gowWauFiivSiPq
-         LQsMn/hJtPZ8+hjrO8OVN6MYO+bZNdCWBU43/2biQSM9VxjIutjMrg2pwXkyWM8nP2e0
-         lm0zNJTdizABDmwyy6uVAeNjkv6/+HHrAYJi1/rQMyEkxI713J6IcqvUykAl/OR2KR8c
-         /BVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=Go04h4cBZb8oManNnBUCEv0xT9mbFOVFD/8tb3hzAWA=;
-        b=rIl7yFLZ1OwwsyUNhGyeh32ZSRKGmfIgWEo/ICzMhzfGTO0os2r2r449PYkoKJ29Hr
-         VR75BWv63gWsZeGkGmMFBlx/NDnExevATTH8q81e44kMkErrqF/aHqeuJ4hAw6ojQF9r
-         8V+zt6sgcQMbNcePUJQdHZpT8jyrET5zvCs/yM2ut2KM0jY4qfsEaJhwJ5uSRmgelvy6
-         MoDiTXaPhdv7Y1Unxa38KIZ6BlQXT3feuEcmVXA4GWZ9UWocWVpUVHfGHwjBvxnB62nk
-         HPkBz6A2O/bGRBJJZcTPixzF0DSYHaqu+OmEbYXaK/yH7xkbWP+Lzy+My0HxUVVS07te
-         vLjQ==
-X-Gm-Message-State: AOAM531XFioF+TxGAIrh/T1pJZSdKdmI+7UXtxUMYplkvmCR2uRBpzAt
-        VP+qSbS5YTo+QZCZSTDUTbPwqA==
-X-Google-Smtp-Source: ABdhPJznbbQ885WNgPecxK2K2Os4ZRphFdWauz9bE1BZIsLl7gLHwuQXxk1MFKHFhYL5ZQZwL9U6/w==
-X-Received: by 2002:a7b:c0ca:: with SMTP id s10mr29337577wmh.103.1600683672894;
-        Mon, 21 Sep 2020 03:21:12 -0700 (PDT)
-Received: from localhost.localdomain ([51.15.160.169])
-        by smtp.googlemail.com with ESMTPSA id l17sm18804629wme.11.2020.09.21.03.21.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 21 Sep 2020 03:21:12 -0700 (PDT)
-From:   Corentin Labbe <clabbe@baylibre.com>
-To:     gregkh@linuxfoundation.org, laurent.pinchart@skynet.be,
-        mchehab@kernel.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH RFT/RFC 43/49] staging: media: zoran: add vidioc_g_parm
+        Mon, 21 Sep 2020 06:25:21 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f687e370001>; Mon, 21 Sep 2020 03:19:35 -0700
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 21 Sep
+ 2020 10:20:21 +0000
+Received: from [192.168.22.23] (10.124.1.5) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Mon, 21 Sep 2020 10:20:18 +0000
+From:   Thierry Reding <treding@nvidia.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+CC:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?utf-8?q?Micha=C5=82_Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        <linux-i2c@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 26/34] i2c: tegra: Factor out hardware initialization
+ into separate function
+In-Reply-To: <20200908224006.25636-27-digetx@gmail.com>
+References: <20200908224006.25636-27-digetx@gmail.com>
+X-NVConfidentiality: public
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Message-ID: <c43429ecf87e46479fd9845eb1e92a38@HQMAIL111.nvidia.com>
 Date:   Mon, 21 Sep 2020 10:20:18 +0000
-Message-Id: <1600683624-5863-44-git-send-email-clabbe@baylibre.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1600683624-5863-1-git-send-email-clabbe@baylibre.com>
-References: <1600683624-5863-1-git-send-email-clabbe@baylibre.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600683575; bh=z5UvWyt1/Ey1+Ib6ltESDj67xyNJ+4zyx4L9BW4flVI=;
+        h=From:To:CC:Subject:In-Reply-To:References:X-NVConfidentiality:
+         Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:
+         Date;
+        b=VSAdqYKJzMD8K6Gbr+k4hh5uVKn67Jd/CpUVWT1rHx0hFrY+OnEDRSmA61Vrpmka2
+         4wA1nP0cLobkkK38VpJr7/lApdz8EZeF2SYmeo8LMLzU6aEEe+pst2+xUBifya8Ome
+         +mI8V9Jig0I81ChSOJXZib6y9wV1ilarXjdwxuWNe3WPDsHhHTnNO3eC48acXIgvn2
+         OZP2XOlU0bj7eE0rAS+AK0nRWR7SRUOdHbHSj12TGCOhvaXCg+kFCfLZULldhKzzHq
+         XvIbDmPAWywD6nwsQtrS87AXSwF3TwIIzviiO/wSq9Ee+I+1+yw8Q0Bl6yCRKBEyc4
+         FqK+xbwtyMXkw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding vidioc_g_parm made v4l compliance happy.
+On Wed, 09 Sep 2020 01:39:58 +0300, Dmitry Osipenko wrote:
+> Factor out hardware initialization into a separate function from the probe
+> function. The only place where runtime PM needs to be resumed during probe
+> is the place of hardware initialization, hence it makes sense to factor
+> out it in order to have a bit cleaner error handling in tegra_i2c_probe().
+> 
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> Acked-by: Thierry Reding <treding@nvidia.com>
+> ---
+>  drivers/i2c/busses/i2c-tegra.c | 32 +++++++++++++++++++-------------
+>  1 file changed, 19 insertions(+), 13 deletions(-)
 
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
----
- drivers/staging/media/zoran/zoran_driver.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/drivers/staging/media/zoran/zoran_driver.c b/drivers/staging/media/zoran/zoran_driver.c
-index 0b4bfc184b57..46bf8b32d57a 100644
---- a/drivers/staging/media/zoran/zoran_driver.c
-+++ b/drivers/staging/media/zoran/zoran_driver.c
-@@ -2120,6 +2120,14 @@ static int zoran_mmap(struct file *file, struct vm_area_struct *vma)
- 	return res;
- }
- 
-+static int zoran_g_parm(struct file *file, void *priv, struct v4l2_streamparm *parm)
-+{
-+	if (parm->type != V4L2_BUF_TYPE_VIDEO_CAPTURE)
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
- /*
-  * Output is disabled temporarily
-  * Zoran is picky about jpeg data it accepts. At least it seems to unsupport COM and APPn.
-@@ -2127,6 +2135,7 @@ static int zoran_mmap(struct file *file, struct vm_area_struct *vma)
-  */
- static const struct v4l2_ioctl_ops zoran_ioctl_ops = {
- 	.vidioc_querycap		    = zoran_querycap,
-+	.vidioc_g_parm			    = zoran_g_parm,
- 	.vidioc_s_selection		    = zoran_s_selection,
- 	.vidioc_g_selection		    = zoran_g_selection,
- 	.vidioc_enum_input		    = zoran_enum_input,
--- 
-2.26.2
-
+Tested-by: Thierry Reding <treding@nvidia.com>
