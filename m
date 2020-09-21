@@ -2,69 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06AC9272683
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5459E272681
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:01:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727422AbgIUOBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 10:01:04 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2906 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726688AbgIUOBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:01:02 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id C85C03125A0D1D39BC16;
-        Mon, 21 Sep 2020 15:01:00 +0100 (IST)
-Received: from [127.0.0.1] (10.210.166.25) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Mon, 21 Sep
- 2020 15:01:00 +0100
-Subject: Re: [PATCH v2 0/2] iommu/arm-smmu-v3: Improve cmdq lock efficiency
-To:     Will Deacon <will@kernel.org>
-CC:     <robin.murphy@arm.com>, <joro@8bytes.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <maz@kernel.org>,
-        <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>
-References: <1598018062-175608-1-git-send-email-john.garry@huawei.com>
- <20200921134324.GK2139@willie-the-truck>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <b13d0858-e164-4670-a5c6-ab84e81724b7@huawei.com>
-Date:   Mon, 21 Sep 2020 14:58:10 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1727240AbgIUOBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 10:01:00 -0400
+Received: from esa1.mentor.iphmx.com ([68.232.129.153]:55479 "EHLO
+        esa1.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726688AbgIUOBA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 10:01:00 -0400
+IronPort-SDR: YqBQv/eA7RessGcWYZtqZJDPC77SPefAQ61LM53Cb+1haU4HZkTDsQHuSUb7tjnZJaX6TGXIvL
+ w2vJCDyVOnYu6UPBCNCyz0sSin12R6X0ZwCDu9jHjVQDegh3pus3KurkxsFXlcHsjLAfEs8Kji
+ GnqcR16p26x+1T8o+99IjqNyCCskz43sA0HGi6w1N4sKyK2H/xTKWar7DV1eCGtSER2CEFbsPL
+ u5KGibz4hHNm2gm7IfkA/MIPoL1WvTkY+Urqam1nw5IhQiJiv5msWpwr/klRV5dANLdXJsxj9Z
+ U34=
+X-IronPort-AV: E=Sophos;i="5.77,286,1596528000"; 
+   d="scan'208";a="55324397"
+Received: from orw-gwy-01-in.mentorg.com ([192.94.38.165])
+  by esa1.mentor.iphmx.com with ESMTP; 21 Sep 2020 06:00:59 -0800
+IronPort-SDR: H2DawD3NCdyoPkZsVFF2GiE++ULvq+D92chuTH4mdaA/mlQjVuDKIbkZWywmDebP2Pzwgn/vQL
+ 5ZarG8uq1Bo/adXyyw9MTGmQmvUreHxXm5Tb/zsYZPbMkJuX1CXpjeQYNAqqitteYc8QaIi5gi
+ GTC3/6z3EkgU2Dvyp6Ub4fnVDD8d2Q+ympOm0Xi2TnZo+XYqvzKVN+tc7Y5YZw3u75tBPo7Foy
+ ZtXU7hB2qIxSA4oj84eyoz9QUdeXbDq8B0Ih0tea3b0B/ANcJlFY2kv47VP/HzH8MOWVMU+Jdo
+ s1E=
+From:   Jiada Wang <jiada_wang@mentor.com>
+To:     <dmitry.torokhov@gmail.com>, <robh+dt@kernel.org>,
+        <thierry.reding@gmail.com>, <digetx@gmail.com>,
+        <jonathanh@nvidia.com>
+CC:     <nick@shmanahar.org>, <linux-input@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <erosca@de.adit-jv.com>, <Andrew_Gabbasov@mentor.com>,
+        <jiada_wang@mentor.com>
+Subject: [PATCH v1 1/3] dt-bindings: input: atmel: add compatible for mXT1386
+Date:   Mon, 21 Sep 2020 23:00:52 +0900
+Message-ID: <20200921140054.2389-1-jiada_wang@mentor.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20200921134324.GK2139@willie-the-truck>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.166.25]
-X-ClientProxiedBy: lhreml701-chm.china.huawei.com (10.201.108.50) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2020 14:43, Will Deacon wrote:
-> On Fri, Aug 21, 2020 at 09:54:20PM +0800, John Garry wrote:
->> As mentioned in [0], the CPU may consume many cycles processing
->> arm_smmu_cmdq_issue_cmdlist(). One issue we find is the cmpxchg() loop to
->> get space on the queue takes a lot of time once we start getting many
->> CPUs contending - from experiment, for 64 CPUs contending the cmdq,
->> success rate is ~ 1 in 12, which is poor, but not totally awful.
->>
->> This series removes that cmpxchg() and replaces with an atomic_add,
->> same as how the actual cmdq deals with maintaining the prod pointer.
->  > I'm still not a fan of this.
+Document the mXT1386 compatible string.
 
-:(
+Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+---
+ Documentation/devicetree/bindings/input/atmel,maxtouch.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-> Could you try to adapt the hacks I sent before,
-> please? I know they weren't quite right (I have no hardware to test on), but
-> the basic idea is to fall back to a spinlock if the cmpxchg() fails. The
-> queueing in the spinlock implementation should avoid the contention.
-
-OK, so if you're asking me to try this again, then I can do that, and 
-see what it gives us.
-
-John
+diff --git a/Documentation/devicetree/bindings/input/atmel,maxtouch.txt b/Documentation/devicetree/bindings/input/atmel,maxtouch.txt
+index c88919480d37..c13fc0f3f00b 100644
+--- a/Documentation/devicetree/bindings/input/atmel,maxtouch.txt
++++ b/Documentation/devicetree/bindings/input/atmel,maxtouch.txt
+@@ -3,6 +3,7 @@ Atmel maXTouch touchscreen/touchpad
+ Required properties:
+ - compatible:
+     atmel,maxtouch
++    atmel,mXT1386
+ 
+     The following compatibles have been used in various products but are
+     deprecated:
+-- 
+2.17.1
 
