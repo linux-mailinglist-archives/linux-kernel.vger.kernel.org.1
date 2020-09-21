@@ -2,86 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A39F22732D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 750D72732CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728141AbgIUT3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 15:29:36 -0400
-Received: from mga04.intel.com ([192.55.52.120]:10070 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726471AbgIUT3g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 15:29:36 -0400
-IronPort-SDR: BEZwJmFduDk0yTEzVNW/9gb5J7Gg/YlD1pdNJlSFMigtjeVEbM9v2N5CtvYEm43ZQAQqxqwCjV
- 5o6SAMCNaGbw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="157843847"
-X-IronPort-AV: E=Sophos;i="5.77,287,1596524400"; 
-   d="scan'208";a="157843847"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 12:29:35 -0700
-IronPort-SDR: 7y831G1zbVjvqvPRG5IWVSAwK+oqf1UXB9rMLmETfdImE6zyt7ilgP5oTB1qxPINRMpYhEAtNl
- 0zIRaRt3BnTA==
-X-IronPort-AV: E=Sophos;i="5.77,287,1596524400"; 
-   d="scan'208";a="485634638"
-Received: from tsenx-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.44.83])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 12:29:28 -0700
-Date:   Mon, 21 Sep 2020 22:29:26 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jethro Beekman <jethro@fortanix.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Seth Moore <sethmo@google.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Suresh Siddha <suresh.b.siddha@intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v38 12/24] x86/sgx: Add SGX_IOC_ENCLAVE_CREATE
-Message-ID: <20200921192926.GE53597@linux.intel.com>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-13-jarkko.sakkinen@linux.intel.com>
- <20200921100356.GB5901@zn.tnic>
- <20200921122823.GE6038@linux.intel.com>
- <20200921135107.GG5901@zn.tnic>
+        id S1727727AbgIUT3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 15:29:33 -0400
+Received: from smtprelay0205.hostedemail.com ([216.40.44.205]:45316 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726471AbgIUT3c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 15:29:32 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id A321118029124;
+        Mon, 21 Sep 2020 19:29:31 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 30,2,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3834:3865:3866:3867:3868:3871:4321:5007:9390:10010:10400:10848:11232:11658:11914:12048:12296:12297:12740:12760:12895:13069:13095:13311:13357:13439:14659:14721:21080:21433:21627:21939:21990:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:1:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: linen39_0e1404b27147
+X-Filterd-Recvd-Size: 1634
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf07.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 21 Sep 2020 19:29:30 +0000 (UTC)
+Message-ID: <88110ffe6b08a2b403f30f4ea7463d5dad50b80b.camel@perches.com>
+Subject: Re: [PATCH 1/2] dyndbg: dont panic over bad input
+From:   Joe Perches <joe@perches.com>
+To:     Jim Cromie <jim.cromie@gmail.com>, jbaron@akamai.com,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+Cc:     Petr Mladek <pmladek@suse.com>
+Date:   Mon, 21 Sep 2020 12:29:29 -0700
+In-Reply-To: <20200921190433.1149521-2-jim.cromie@gmail.com>
+References: <20200921190433.1149521-1-jim.cromie@gmail.com>
+         <20200921190433.1149521-2-jim.cromie@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200921135107.GG5901@zn.tnic>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 03:51:07PM +0200, Borislav Petkov wrote:
-> > "... after checking that the provided data for SECS meets the expectations
-> > of ENCLS[ECREATE] for an unitialized enclave and size of the address
+On Mon, 2020-09-21 at 13:04 -0600, Jim Cromie wrote:
+> This BUG_ON, from 2009, caught the impossible case of a word-char both
+> starting and ending a string (loosely speaking).  A bad (reverted)
+> patch finally hit this case, but even "impossibly bad input" is no
+> reason to panic the kernel.  Instead pr_err and return -EINVAL.
+[]
+> diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+[]
+> @@ -259,7 +259,10 @@ static int ddebug_tokenize(char *buf, char *words[], int maxwords)
+>  		} else {
+>  			for (end = buf; *end && !isspace(*end); end++)
+>  				;
+> -			BUG_ON(end == buf);
+> +			if (end == buf) {
+> +				pr_err("expected non-empty bareword");
 
-There is a typo (should be uninitialized).
+missing newline
 
-> > Is this sufficient for you, or do you have further suggestions?
-> 
-> Yes, no further suggestions.
-> 
-> Thx.
+This message is also unintelligible.
+What is a non-empty bareword?
 
 
-Great, thank you.
-
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
-
-/Jarkko
