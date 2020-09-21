@@ -2,121 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2AB272256
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:24:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB2B8272285
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726863AbgIULYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 07:24:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726367AbgIULY3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 07:24:29 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F732C061755;
-        Mon, 21 Sep 2020 04:24:29 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id t10so12338052wrv.1;
-        Mon, 21 Sep 2020 04:24:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=+u5hQWiNVKvkjQGatfiPY92Ma7aljeWObRsv13HrFek=;
-        b=LqjQ2Krptm6rzvHADrpeAB4WlFjCdeHvfPjq6j9/r6Zh9GZ0ZGBA3YVL6VviuLmsYL
-         paxBse03Yk8qUuaPvF/psPIIDTz7Q/OF7yaAOwIlk/Z661ZtBhIcn1FWmq9AGhPqPCIB
-         dwRbsBYmLMJRoxh2OaDw/pcYkHRnfEjBfayH43ZyJ/8Anjetix7LGyMMGqCkPytXRW66
-         e68lJmAgw9XpgMYKoqBaqVbYu9w5Y9egmHtiqwuIfkADJHBJTKymzbx6FTgdwcGrDzQ+
-         cg+Wtzax2sprYBcNMyiRc80NPUj7qVWPTA71xx4sOujBuHvQFKs9ze40PiLMkRH8TpOp
-         cQYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=+u5hQWiNVKvkjQGatfiPY92Ma7aljeWObRsv13HrFek=;
-        b=Pdh3hGdDhq/++iTl8ER2/kQwXaa07IsqchFsXaOUxlsnpY8TJpP2xwCx3hf+vV3Mf5
-         AeJKrStclkxS++aDf6efzhsAJKe9Bz66gNYnzMalJZBdTq4b97yoglaXRI6GurUcw13f
-         43pAQl3Vr875KwbgM7CpakEixbBfDbS78FQeZpOiDwYawv8SJ1crV2qXH2elMq2nP0OR
-         FaJdfREnlZQi+fVxC41/3kQAbZcZ4xBwqGLP5VrmkLrHQdOsqxerfg+XB5dbaGZLFfHI
-         WxGXOl1cp2bJeetRXjDz96wqnBckJuY/+Pd/ZqGTBa72LuYW8fnQPg71fOLId2ugYyq0
-         Xo+A==
-X-Gm-Message-State: AOAM530zNEawz338KhGx2wOUqlCtg43XgnIQbtr2/8GFYRrA+QNFKUNZ
-        2n8jOd3vFkt/dBAoQ/bWm/g=
-X-Google-Smtp-Source: ABdhPJxfp92rRPIN91rV3fck9fVzgPSfCAUeNDu0IHaiVk/QPMQoqEXswdU9jhzIsj0704jSl+jubw==
-X-Received: by 2002:a5d:43cf:: with SMTP id v15mr56413648wrr.149.1600687467814;
-        Mon, 21 Sep 2020 04:24:27 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id b84sm20898905wmd.0.2020.09.21.04.24.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 04:24:26 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 13:24:25 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        linux-tegra@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 27/34] i2c: tegra: Check errors for both positive and
- negative values
-Message-ID: <20200921112425.GK3950626@ulmo>
-References: <20200908224006.25636-1-digetx@gmail.com>
- <20200908224006.25636-28-digetx@gmail.com>
- <20200917120955.GF3515672@ulmo>
- <CAHp75VdEoLAMvQWb1_p8ydROmY9p7KCqFGarRsgM8p8nDhyY7g@mail.gmail.com>
+        id S1726850AbgIUL3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 07:29:32 -0400
+Received: from mta-02.yadro.com ([89.207.88.252]:53642 "EHLO mta-01.yadro.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726367AbgIUL3b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 07:29:31 -0400
+X-Greylist: delayed 490 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Sep 2020 07:29:30 EDT
+Received: from localhost (unknown [127.0.0.1])
+        by mta-01.yadro.com (Postfix) with ESMTP id C2AF6542C0;
+        Mon, 21 Sep 2020 11:21:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
+        content-type:content-type:content-transfer-encoding:mime-version
+        :x-mailer:message-id:date:date:subject:subject:from:from
+        :received:received:received; s=mta-01; t=1600687278; x=
+        1602501679; bh=YIKwPp9PgxP7cgWzG+qGdK2an79Qi369mnKtqyTcmY8=; b=h
+        Siis93r8cc5T2iQWDlCED/Nn06xCAjr3mtTgrONPMOjkxu2m4X0ir413DbEEHtZv
+        ehlnC801nDQOlHwHD2fB9FD1NnJou2nuuvctX3VEUcA0ZoU4jxqPd6CmPkyqzA4a
+        kowSwERB+yKWf5I3K0JL+8l5GIDd/gQqxM3eRfxq64=
+X-Virus-Scanned: amavisd-new at yadro.com
+Received: from mta-01.yadro.com ([127.0.0.1])
+        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id RVjcfKRWjR3K; Mon, 21 Sep 2020 14:21:18 +0300 (MSK)
+Received: from T-EXCH-02.corp.yadro.com (t-exch-02.corp.yadro.com [172.17.10.102])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mta-01.yadro.com (Postfix) with ESMTPS id 8310E52ACE;
+        Mon, 21 Sep 2020 14:21:18 +0300 (MSK)
+Received: from localhost.dev.yadro.com (10.199.3.38) by
+ T-EXCH-02.corp.yadro.com (172.17.10.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
+ 15.1.669.32; Mon, 21 Sep 2020 14:21:18 +0300
+From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
+To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+CC:     Ivan Mikhaylov <i.mikhaylov@yadro.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [RESEND PATCH 0/2] enable lock interface for macronix chips
+Date:   Mon, 21 Sep 2020 14:24:48 +0300
+Message-ID: <20200921112450.4824-1-i.mikhaylov@yadro.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Ah40dssYA/cDqAW1"
-Content-Disposition: inline
-In-Reply-To: <CAHp75VdEoLAMvQWb1_p8ydROmY9p7KCqFGarRsgM8p8nDhyY7g@mail.gmail.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.199.3.38]
+X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
+ T-EXCH-02.corp.yadro.com (172.17.10.102)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+TB(Top/Bottom protection bit) is not present in the status register for
+macronix chips, do not touch TB bit in status register in this case.
+Enable lock interface for most of macronix chips which are suitable for it.
 
---Ah40dssYA/cDqAW1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Tested only mx25l51245g (BP0-3).
 
-On Thu, Sep 17, 2020 at 04:50:06PM +0300, Andy Shevchenko wrote:
-> On Thu, Sep 17, 2020 at 3:09 PM Thierry Reding <thierry.reding@gmail.com>=
- wrote:
-> > On Wed, Sep 09, 2020 at 01:39:59AM +0300, Dmitry Osipenko wrote:
->=20
-> > Why? All of these functions "return 0 on success or a negative error
-> > code on failure", don't they?
->=20
-> And what is the point of having ' < 0' in all those cases?
+Ivan Mikhaylov (2):
+  mtd: spi-nor: do not touch TB bit without SPI_NOR_HAS_TB
+  mtd: spi-nor: enable lock interface for macronix chips
 
-It's explicitly checking for the documented error cases. And you'll
-occasionally have a function that can return non-zero on success.
-Testing for < 0 is the safest way to check for failure in the majority
-of cases.
+ drivers/mtd/spi-nor/core.c     | 22 +++++++---
+ drivers/mtd/spi-nor/macronix.c | 75 ++++++++++++++++++++++------------
+ 2 files changed, 66 insertions(+), 31 deletions(-)
 
-Thierry
+-- 
+2.21.1
 
---Ah40dssYA/cDqAW1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9ojWgACgkQ3SOs138+
-s6EbSA/+LyGCZemHCgGDckD896YW3heC7aDccGSwYaD25YP90HHv5ybGNWZDj68z
-QzulPldIEps5uus0hDe/dOxWw5U7K8dOXUQvP/EUi88JkZGJRl/F9ulN9Rfr+26L
-OwlFFwjI/1dy5L4356F6xK2qYezxs+9FbOyP3vqvOYSjxpG2QSS+B80Cuunm/yye
-3oRIUqWvzgYnF/+8nFImVL9kru+7k3FcxaqUEHRYc1lzkUXw+BV3NEWeJl/GVQSH
-z/z2fVpCiHlRMZAac0kVYa7OHxv6+/v1c97ZrVh7fR+mKNdHufZ7rVZkOI8F31G/
-47vO8WN1F19oQlSLkhmzzxi+upMdytswWn7ycWLDjW6wfrXcA+JiD36ANNaAha3m
-krO9I6KzbX1OE92K3RH+VpQRnrE3wfI/6TMGtbZRc/v6dZv9UmVmMhRSDyyvQUeP
-F8B1zc0VA+DBo+HBQg4MnEkZRqe4VjLaKvAUj1pToVHhr3OZN/T8q8fan+J0W00O
-at5IPlWPMSwLmVKlmbSjWMf5hK9aL8sBJcAWgsxiDR8SSTyrzEz1TCUzp5XC6P99
-In666KnrG76MBGA0qa3Q7u+mHLOkDaoyjYrgEGfypy6nOwM/ry9KQsEdXe+6KTTq
-Jgl7+TU+zIzS4/UagCCoUJaHsWX1eVAv+3IPH0Yetbk2hl0oGVY=
-=6Lv1
------END PGP SIGNATURE-----
-
---Ah40dssYA/cDqAW1--
