@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2352272CFE
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA415272C90
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728983AbgIUQg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:36:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36144 "EHLO mail.kernel.org"
+        id S1728595AbgIUQdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:33:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728950AbgIUQgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:36:24 -0400
+        id S1726898AbgIUQdO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:33:14 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E141C2396F;
-        Mon, 21 Sep 2020 16:36:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BFBEE239D1;
+        Mon, 21 Sep 2020 16:33:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706183;
-        bh=d3XFlJeZ5FcVRMjyET295KfplhHWKUPA6e5DSv4GAcE=;
+        s=default; t=1600705993;
+        bh=jFxCiZ44NXmk11inWlUxj2I0OFZ6rhbVv5VMfpK1ONo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZODU70kakwOW1R54VkYSPKENQtjUGVTN6wrTGQoYOEIDhw3aGHD3jCbBl8/HgRHhB
-         XtMnz3XNxyKtu2JhzPyqmgLEn0h5w58PHrLIu10POiu/xLuL+lptgGS2iEd8Gt812l
-         t3F3dDebUJHKAO9PAghF7Ldp7+fqB5qIdIEEwwuA=
+        b=d7ELhOYrEAwAV44xgLwivB1yYWbm5kh8lADd6kpQjwgYG5L+a7KpDASIvKFvKX+7l
+         ysAHTI2uinRRbSscaf59lE5YExMrBhQ2IMVECQj3nXjfbF387COgJKLekEnboKRr2c
+         A7wvIXqIL19JtYFG5i/2q6xypAgp8SkrYLJsN+Zw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 61/70] MIPS: SNI: Fix spurious interrupts
+        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.4 45/46] powerpc/dma: Fix dma_map_ops::get_required_mask
 Date:   Mon, 21 Sep 2020 18:28:01 +0200
-Message-Id: <20200921162037.922800381@linuxfoundation.org>
+Message-Id: <20200921162035.345306742@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
-References: <20200921162035.136047591@linuxfoundation.org>
+In-Reply-To: <20200921162033.346434578@linuxfoundation.org>
+References: <20200921162033.346434578@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,58 +42,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+From: Alexey Kardashevskiy <aik@ozlabs.ru>
 
-[ Upstream commit b959b97860d0fee8c8f6a3e641d3c2ad76eab6be ]
+commit 437ef802e0adc9f162a95213a3488e8646e5fc03 upstream.
 
-On A20R machines the interrupt pending bits in cause register need to be
-updated by requesting the chipset to do it. This needs to be done to
-find the interrupt cause and after interrupt service. In
-commit 0b888c7f3a03 ("MIPS: SNI: Convert to new irq_chip functions") the
-function to do after service update got lost, which caused spurious
-interrupts.
+There are 2 problems with it:
+  1. "<" vs expected "<<"
+  2. the shift number is an IOMMU page number mask, not an address
+  mask as the IOMMU page shift is missing.
 
-Fixes: 0b888c7f3a03 ("MIPS: SNI: Convert to new irq_chip functions")
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This did not hit us before f1565c24b596 ("powerpc: use the generic
+dma_ops_bypass mode") because we had additional code to handle bypass
+mask so this chunk (almost?) never executed.However there were
+reports that aacraid does not work with "iommu=nobypass".
+
+After f1565c24b596, aacraid (and probably others which call
+dma_get_required_mask() before setting the mask) was unable to enable
+64bit DMA and fall back to using IOMMU which was known not to work,
+one of the problems is double free of an IOMMU page.
+
+This fixes DMA for aacraid, both with and without "iommu=nobypass" in
+the kernel command line. Verified with "stress-ng -d 4".
+
+Fixes: 6a5c7be5e484 ("powerpc: Override dma_get_required_mask by platform hook and ops")
+Cc: stable@vger.kernel.org # v3.2+
+Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200908015106.79661-1-aik@ozlabs.ru
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/mips/sni/a20r.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ arch/powerpc/kernel/dma-iommu.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/sni/a20r.c b/arch/mips/sni/a20r.c
-index f9407e1704762..c6af7047eb0d2 100644
---- a/arch/mips/sni/a20r.c
-+++ b/arch/mips/sni/a20r.c
-@@ -143,7 +143,10 @@ static struct platform_device sc26xx_pdev = {
- 	},
- };
+--- a/arch/powerpc/kernel/dma-iommu.c
++++ b/arch/powerpc/kernel/dma-iommu.c
+@@ -99,7 +99,8 @@ static u64 dma_iommu_get_required_mask(s
+ 	if (!tbl)
+ 		return 0;
  
--static u32 a20r_ack_hwint(void)
-+/*
-+ * Trigger chipset to update CPU's CAUSE IP field
-+ */
-+static u32 a20r_update_cause_ip(void)
- {
- 	u32 status = read_c0_status();
+-	mask = 1ULL < (fls_long(tbl->it_offset + tbl->it_size) - 1);
++	mask = 1ULL << (fls_long(tbl->it_offset + tbl->it_size) +
++			tbl->it_page_shift - 1);
+ 	mask += mask - 1;
  
-@@ -205,12 +208,14 @@ static void a20r_hwint(void)
- 	int irq;
- 
- 	clear_c0_status(IE_IRQ0);
--	status = a20r_ack_hwint();
-+	status = a20r_update_cause_ip();
- 	cause = read_c0_cause();
- 
- 	irq = ffs(((cause & status) >> 8) & 0xf8);
- 	if (likely(irq > 0))
- 		do_IRQ(SNI_A20R_IRQ_BASE + irq - 1);
-+
-+	a20r_update_cause_ip();
- 	set_c0_status(IE_IRQ0);
- }
- 
--- 
-2.25.1
-
+ 	return mask;
 
 
