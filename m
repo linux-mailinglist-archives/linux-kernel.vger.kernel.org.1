@@ -2,111 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF7D2732BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8632732C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:27:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727786AbgIUTZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 15:25:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726395AbgIUTZ3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 15:25:29 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315FDC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 12:25:29 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id z1so14022842wrt.3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 12:25:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dLMkI8ryKHY4AVg+9eBO/sbeSRFdzsZAIvzUi2Ima0c=;
-        b=a3oWnFxre3X3EVrZqmHZncc2RbsmD3HNqLY6FtIBHhlhC3U8K5EEvFrmduxbZ/Z41s
-         c/pQQrYsJ0o9ENHX7JIv9W4y9xay/bu318Uv+ipTX/7m3VJbYzsUWZYGPyQ3v/omDhzk
-         8ts/EFNS0wHmlCMbApVOHYms9P3LEmKqAjlkgVj7s5YbToruI88PNYDX0RsXvq8WQYzy
-         iJsbHJIHKENAKjKAKj/dCZNOmlMV46Gu/77E57vJZ2U2aKq0kgbG+B7HKfFvjL5touo9
-         yuidF0Su6CbUevMGuxwXr8IhnNDs/43X1JawX5TlRvZQCjjrWc14vANuOByHDSpkt10g
-         OUjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dLMkI8ryKHY4AVg+9eBO/sbeSRFdzsZAIvzUi2Ima0c=;
-        b=SxdiDCp/c2TP4B/dPR6WJ9+KX2JQSWo+wFT0o2UpSV9lPpWDmX/A6PstM344vKekO2
-         BFCPxhRIKQ9TVOa+ZLkTs8mK7nCf3JvRxFanIAPXbLFWuDQ+WUIlbYwElYAQUt1HqH4+
-         UKCNCykcUX+0nD42FafX6Fd8o2PwLrjJfJM3PZZl2KZuFmUxvclStiRBbSZBb/U0eafa
-         YS/HGafmlmZuproWEjtdmITSmWixbStCNLrghLg07P/1BOTWvEWujQNUaeK+qnVgQLWX
-         aaxEamsaQkJqR0cvgdbV+RwIjaY/NvlbBI2soIlSfVqRWijj9d8OuEt1+F2JQFMggG/1
-         yw4w==
-X-Gm-Message-State: AOAM533zUpPK6Bv1SWbthUdyfgiDkG0tFy7r3C46QtSnnFnp7+v9BJSs
-        0kjqY5Ll0Yl9nwdCjRLhJcbwCai0ip7mX85ehW8=
-X-Google-Smtp-Source: ABdhPJw0SPwIJWrXygk92hq9BwqUmYd3YQsJNKHUGhEESLuDkxc0IXIJLsN3bgK8SQ811bAsX0tGJLEoqwySs35R478=
-X-Received: by 2002:a5d:6886:: with SMTP id h6mr1369776wru.374.1600716327871;
- Mon, 21 Sep 2020 12:25:27 -0700 (PDT)
+        id S1727957AbgIUT1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 15:27:18 -0400
+Received: from mga18.intel.com ([134.134.136.126]:17363 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726395AbgIUT1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 15:27:17 -0400
+IronPort-SDR: CwUALfPyt1QqYCLPG3gx3+k6kQ2nJF+rAESGeG5C9excg3hY6VGFamGCZE3E3Wdupz6AjLK3B3
+ E4cgmlDejXgA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="148219672"
+X-IronPort-AV: E=Sophos;i="5.77,287,1596524400"; 
+   d="scan'208";a="148219672"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 12:27:15 -0700
+IronPort-SDR: cbyPBXm0cb5xQM9sQE62eDXqaA8R2a6gfDqOoDkAwymNNFzUkh45aE+8ekQNj6Q/n7bURhzaAA
+ YZf7xt9VgpFA==
+X-IronPort-AV: E=Sophos;i="5.77,287,1596524400"; 
+   d="scan'208";a="485633868"
+Received: from tsenx-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.44.83])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 12:27:08 -0700
+Date:   Mon, 21 Sep 2020 22:27:06 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Andy Lutomirski <luto@kernel.org>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, nhorman@redhat.com,
+        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        sean.j.christopherson@intel.com, tglx@linutronix.de,
+        yaozhangx@google.com
+Subject: Re: [PATCH v38 15/24] x86/sgx: Enable provisioning for remote
+ attestation
+Message-ID: <20200921192706.GD53597@linux.intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-16-jarkko.sakkinen@linux.intel.com>
+ <20200921180728.GJ5901@zn.tnic>
 MIME-Version: 1.0
-References: <20200921131011.91281-1-miaoqinglang@huawei.com>
-In-Reply-To: <20200921131011.91281-1-miaoqinglang@huawei.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 21 Sep 2020 15:25:16 -0400
-Message-ID: <CADnq5_PkRAsFEUtVCP5f5Z9BKfLD9404MrprGv34gSaKMMxO6w@mail.gmail.com>
-Subject: Re: [PATCH -next] drm/amdgpu/mes: simplify the return expression of mes_v10_1_ring_init
-To:     Qinglang Miao <miaoqinglang@huawei.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921180728.GJ5901@zn.tnic>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+On Mon, Sep 21, 2020 at 08:07:28PM +0200, Borislav Petkov wrote:
+> On Tue, Sep 15, 2020 at 02:28:33PM +0300, Jarkko Sakkinen wrote:
+> > @@ -181,5 +192,12 @@ int __init sgx_drv_init(void)
+> >  		return ret;
+> >  	}
+> >  
+> > +	ret = misc_register(&sgx_dev_provision);
+> > +	if (ret) {
+> > +		pr_err("Creating /dev/sgx/provision failed with %d.\n", ret);
+> > +		misc_deregister(&sgx_dev_enclave);
+> 
+> The comment over misc_deregister() says:
+> 
+>  *      Unregister a miscellaneous device that was previously
+>  *      successfully registered with misc_register().
+> 
+> but this is not a successful registration here, in the if (ret) case...
 
-Alex
+'sgx_dev_enclave' is successfully register whenever that happens. Am I
+missing something here?
 
-On Mon, Sep 21, 2020 at 9:14 AM Qinglang Miao <miaoqinglang@huawei.com> wrote:
->
-> Simplify the return expression.
->
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-> ---
->  drivers/gpu/drm/amd/amdgpu/mes_v10_1.c | 7 +------
->  1 file changed, 1 insertion(+), 6 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/mes_v10_1.c b/drivers/gpu/drm/amd/amdgpu/mes_v10_1.c
-> index 4b746584a..1c22d8393 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/mes_v10_1.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/mes_v10_1.c
-> @@ -832,7 +832,6 @@ static int mes_v10_1_queue_init(struct amdgpu_device *adev)
->  static int mes_v10_1_ring_init(struct amdgpu_device *adev)
->  {
->         struct amdgpu_ring *ring;
-> -       int r;
->
->         ring = &adev->mes.ring;
->
-> @@ -849,11 +848,7 @@ static int mes_v10_1_ring_init(struct amdgpu_device *adev)
->         ring->no_scheduler = true;
->         sprintf(ring->name, "mes_%d.%d.%d", ring->me, ring->pipe, ring->queue);
->
-> -       r = amdgpu_ring_init(adev, ring, 1024, NULL, 0, AMDGPU_RING_PRIO_DEFAULT);
-> -       if (r)
-> -               return r;
-> -
-> -       return 0;
-> +       return amdgpu_ring_init(adev, ring, 1024, NULL, 0, AMDGPU_RING_PRIO_DEFAULT);
->  }
->
->  static int mes_v10_1_mqd_sw_init(struct amdgpu_device *adev)
-> --
-> 2.23.0
->
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+> > + * sgx_ioc_enclave_set_attribute - handler for %SGX_IOC_ENCLAVE_PROVISION
+> > + * @filep:	open file to /dev/sgx
+>        ^^^^^^
+> 
+> Can you guess what my comment to that would be...?
+
+There is also another incosistency that I fixed: the first line should
+have 'sgx_ioc_enclave_provision'.
+
+> > +static long sgx_ioc_enclave_provision(struct sgx_encl *encl,
+> > +					  void __user *arg)
+> 
+> No need for the line break: both function args can fit on the same line.
+
+Fixed this one too, thanks.
+
+> 
+> ...
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
+
+/Jarkko
