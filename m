@@ -2,112 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6851D273389
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 22:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0897127338D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 22:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbgIUUQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 16:16:56 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:50978 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726435AbgIUUQz (ORCPT
+        id S1726494AbgIUUTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 16:19:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726395AbgIUUTq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 16:16:55 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08LKEfia194172;
-        Mon, 21 Sep 2020 20:16:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=Mt+aUTyxqBIgxXWtK4cmF7Dnc9mlrKM0yEoLKj0+Spk=;
- b=ipUuetluqGLj4x4D4uofwZGPTB6fLoOS954lafOzhq3CR8/MgH6+UPa9UqxoRPvh/WgS
- 2g8Nvzpph+w6QoqQfVBCMaB33k4i1j6j0rrXV4mbSp8Eud2aTyeUiVA6iEm97UWF8lcK
- vo3KMzc42bBwIFUo60p4D+oXS6VQSIdT4af2qDil01vmdclFxlHFNh1+Eau5Nx8NCM8v
- 7e295FyA/vQ/by6m9alI1IX5CJGnBAPHO6PYsIPBwAONfEYST2mwFPUlbeHAzfPif/yh
- B/UZ7br8ka7IsZfE2cYBD6fqx6RWq+gqMBONsMxmAHSvGLtk+j/0D++pAxVdp2A9M5iG Ow== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 33ndnu8nk7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 21 Sep 2020 20:16:47 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08LKFmOR190268;
-        Mon, 21 Sep 2020 20:16:46 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 33nuw1ssb5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 21 Sep 2020 20:16:46 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08LKGhMU001821;
-        Mon, 21 Sep 2020 20:16:44 GMT
-Received: from char.us.oracle.com (/10.152.32.25)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 21 Sep 2020 13:16:43 -0700
-Received: by char.us.oracle.com (Postfix, from userid 1000)
-        id 34DB86A012C; Mon, 21 Sep 2020 16:18:12 -0400 (EDT)
-Date:   Mon, 21 Sep 2020 16:18:12 -0400
-From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Dave Young <dyoung@redhat.com>, bhe@redhat.com,
-        Eric Biederman <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
-        Eric DeVolder <eric.devolder@oracle.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Subject: Re: [PATCH] Only allow to set crash_kexec_post_notifiers on boot time
-Message-ID: <20200921201811.GB3437@char.us.oracle.com>
-References: <20200918032546.GA4180@dhcp-128-65.nay.redhat.com>
- <20200918174743.0994c59f058451948837dcb6@linux-foundation.org>
+        Mon, 21 Sep 2020 16:19:46 -0400
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [IPv6:2001:67c:2050::465:102])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DDA2C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 13:19:46 -0700 (PDT)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:105:465:1:2:0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4BwG4s4cTWzKm58;
+        Mon, 21 Sep 2020 22:19:41 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp2.mailbox.org ([80.241.60.241])
+        by hefe.heinlein-support.de (hefe.heinlein-support.de [91.198.250.172]) (amavisd-new, port 10030)
+        with ESMTP id AGXsDqjfAYbH; Mon, 21 Sep 2020 22:19:38 +0200 (CEST)
+From:   Hagen Paul Pfeifer <hagen@jauu.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     Hagen Paul Pfeifer <hagen@jauu.net>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 1/2] perf script: autopep8 futex-contention
+Date:   Mon, 21 Sep 2020 22:19:27 +0200
+Message-Id: <20200921201928.799498-1-hagen@jauu.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918174743.0994c59f058451948837dcb6@linux-foundation.org>
-User-Agent: Mutt/1.9.1 (2017-09-22)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9751 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
- mlxscore=0 suspectscore=0 adultscore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009210148
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9751 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- lowpriorityscore=0 phishscore=0 adultscore=0 suspectscore=0 bulkscore=0
- clxscore=1011 impostorscore=0 mlxlogscore=999 mlxscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009210148
+Content-Transfer-Encoding: 8bit
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -2.14 / 15.00 / 15.00
+X-Rspamd-Queue-Id: BBC771696
+X-Rspamd-UID: 699e87
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 05:47:43PM -0700, Andrew Morton wrote:
-> On Fri, 18 Sep 2020 11:25:46 +0800 Dave Young <dyoung@redhat.com> wrote:
-> 
-> > crash_kexec_post_notifiers enables running various panic notifier
-> > before kdump kernel booting. This increases risks of kdump failure.
-> > It is well documented in kernel-parameters.txt. We do not suggest
-> > people to enable it together with kdump unless he/she is really sure.
-> > This is also not suggested to be enabled by default when users are
-> > not aware in distributions.
-> > 
-> > But unfortunately it is enabled by default in systemd, see below
-> > discussions in a systemd report, we can not convince systemd to change
-> > it:
-> > https://github.com/systemd/systemd/issues/16661
-> > 
-> > Actually we have got reports about kdump kernel hangs in both s390x
-> > and powerpcle cases caused by the systemd change,  also some x86 cases
-> > could also be caused by the same (although that is in Hyper-V code
-> > instead of systemd, that need to be addressed separately).
+10 years leaves its mark! Python has evolved and so has its style guide.
+Even with vim it is getting hard to follow the no longer valid
+guidelines (spaces vs. tabs).
 
-Perhaps it may be better to fix the issus on s390x and PowerPC as well?
+Autopep8 this code to modernize it!
 
-> > 
-> > Thus to avoid the auto enablement here just disable the param writable
-> > permission in sysfs.
-> > 
-> 
-> Well.  I don't think this is at all a desirable way of resolving a
-> disagreement with the systemd developers
-> 
-> At the above github address I'm seeing "ryncsn added a commit to
-> ryncsn/systemd that referenced this issue 9 days ago", "pstore: don't
-> enable crash_kexec_post_notifiers by default".  So didn't that address
-> the issue?
+Signed-off-by: Hagen Paul Pfeifer <hagen@jauu.net>
+Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/perf/scripts/python/futex-contention.py | 51 ++++++++++---------
+ 1 file changed, 28 insertions(+), 23 deletions(-)
 
-It does in systemd, but there is a strong interest in making this on by default.
+diff --git a/tools/perf/scripts/python/futex-contention.py b/tools/perf/scripts/python/futex-contention.py
+index 0c4841acf75d..c440f02627dd 100644
+--- a/tools/perf/scripts/python/futex-contention.py
++++ b/tools/perf/scripts/python/futex-contention.py
+@@ -12,41 +12,46 @@
+ 
+ from __future__ import print_function
+ 
+-import os, sys
+-sys.path.append(os.environ['PERF_EXEC_PATH'] + '/scripts/python/Perf-Trace-Util/lib/Perf/Trace')
++import os
++import sys
++sys.path.append(os.environ['PERF_EXEC_PATH'] +
++                '/scripts/python/Perf-Trace-Util/lib/Perf/Trace')
+ from Util import *
+ 
+ process_names = {}
+ thread_thislock = {}
+ thread_blocktime = {}
+ 
+-lock_waits = {} # long-lived stats on (tid,lock) blockage elapsed time
+-process_names = {} # long-lived pid-to-execname mapping
++lock_waits = {}  # long-lived stats on (tid,lock) blockage elapsed time
++process_names = {}  # long-lived pid-to-execname mapping
++
+ 
+ def syscalls__sys_enter_futex(event, ctxt, cpu, s, ns, tid, comm, callchain,
+-			      nr, uaddr, op, val, utime, uaddr2, val3):
+-	cmd = op & FUTEX_CMD_MASK
+-	if cmd != FUTEX_WAIT:
+-		return # we don't care about originators of WAKE events
++                              nr, uaddr, op, val, utime, uaddr2, val3):
++    cmd = op & FUTEX_CMD_MASK
++    if cmd != FUTEX_WAIT:
++        return  # we don't care about originators of WAKE events
++
++    process_names[tid] = comm
++    thread_thislock[tid] = uaddr
++    thread_blocktime[tid] = nsecs(s, ns)
+ 
+-	process_names[tid] = comm
+-	thread_thislock[tid] = uaddr
+-	thread_blocktime[tid] = nsecs(s, ns)
+ 
+ def syscalls__sys_exit_futex(event, ctxt, cpu, s, ns, tid, comm, callchain,
+-			     nr, ret):
+-	if tid in thread_blocktime:
+-		elapsed = nsecs(s, ns) - thread_blocktime[tid]
+-		add_stats(lock_waits, (tid, thread_thislock[tid]), elapsed)
+-		del thread_blocktime[tid]
+-		del thread_thislock[tid]
++                             nr, ret):
++    if tid in thread_blocktime:
++        elapsed = nsecs(s, ns) - thread_blocktime[tid]
++        add_stats(lock_waits, (tid, thread_thislock[tid]), elapsed)
++        del thread_blocktime[tid]
++        del thread_thislock[tid]
++
+ 
+ def trace_begin():
+-	print("Press control+C to stop and show the summary")
++    print("Press control+C to stop and show the summary")
+ 
+-def trace_end():
+-	for (tid, lock) in lock_waits:
+-		min, max, avg, count = lock_waits[tid, lock]
+-		print("%s[%d] lock %x contended %d times, %d avg ns" %
+-			(process_names[tid], tid, lock, count, avg))
+ 
++def trace_end():
++    for (tid, lock) in lock_waits:
++        min, max, avg, count = lock_waits[tid, lock]
++        print("%s[%d] lock %x contended %d times, %d avg ns" %
++              (process_names[tid], tid, lock, count, avg))
+-- 
+2.28.0
+
