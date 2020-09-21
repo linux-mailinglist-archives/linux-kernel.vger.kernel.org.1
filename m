@@ -2,98 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2D3F271A64
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 07:33:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B127271A65
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 07:33:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726395AbgIUFah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 01:30:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726211AbgIUFah (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 01:30:37 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B0EBC061755
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 22:30:37 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id kk9so6532759pjb.2
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 22:30:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Qj9PyCzhSHC6kaHgqz3Zpf6fqZ3au7JN7Je5cZmsugg=;
-        b=LuNkfazDZtt3eVNFmfepYHcgt4usFSxYMzkGnDNxzwPJX88lgbHhRVmBuHVAJLalTZ
-         SflpKQISWqhiFBtEtxv5lMf1Y2ophHv4pdKKuPUhG3efBZgI2/oEkZ931uRwgh5DW9dE
-         44ZHwKnSLeOIB24e+zWDpBNdvtTqiLlTdKlrzdsWMWdL5bwZxoLuBSTQmbyNXDyKEqHs
-         SF0XohbekIhTH06mLP1Qn02oO0xk5KHMXid8IqAqH/gZR10L1WFQJrkzj+YI9Z0fPSAb
-         sVeNgWU56Joih14uKlDcwdOxeBEFeLxP4fh+Z+2eXWNxUsxH91Si88N6KvUz+Zh3+3qF
-         Ncrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Qj9PyCzhSHC6kaHgqz3Zpf6fqZ3au7JN7Je5cZmsugg=;
-        b=eRo8B7l7TcbTu9gQM1KhpN15aZp+WN+B2N+V/oSBva6zw41a7G+L1y6/Z4nYa1Idmv
-         ioM28ZHJKZbE1qoQa6jNzAZc+40cQt7ELH5O0/k/B5/06wKgcVkdo1TN5LSIqNHrS+xc
-         83jtNJvMPVK0a4dCfccvx6e2un0xVj+6U9pNvdgCdNVWwp7UZwAeV5aArI7s2ku3oPkI
-         OHbyZTalPSdPxTIPxUwpfsnIvTSSvg6VNPCNZMXN7mDQEdItlcurjRSNms55gtu3903V
-         l6VHHsVxRfn3slSJF/ZgWMJxXk+L22zBUpAbAbx1e9oR1e7YXvgTrNXR+IjszKSgqXpU
-         i/WA==
-X-Gm-Message-State: AOAM532+sd4SShqhSCgifMZ3jv/r8Gs+gOPXmljbpaf7xU/mQYB4lWzx
-        YYeTt6uFiF7IC4RlkcZukEA=
-X-Google-Smtp-Source: ABdhPJztPjU1aIaxAfOPn2XAotl3oNSzV6uLf5VD4H+XhR728IPGnSHAmcPEEP/KwfFLu9iCMwiPEA==
-X-Received: by 2002:a17:90a:ec05:: with SMTP id l5mr24461707pjy.172.1600666236667;
-        Sun, 20 Sep 2020 22:30:36 -0700 (PDT)
-Received: from james-Aspire-E5-575G.hsd1.wa.comcast.net (c-71-231-36-179.hsd1.wa.comcast.net. [71.231.36.179])
-        by smtp.googlemail.com with ESMTPSA id y6sm9427235pji.1.2020.09.20.22.30.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Sep 2020 22:30:36 -0700 (PDT)
-From:   James Browning <jamesbrowning137@gmail.com>
-Cc:     James Browning <jamesbrowning137@gmail.com>,
-        Ian Abbott <abbotti@mev.co.uk>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drivers:staging:comedi:comedi.h: Fixed typos in comments
-Date:   Sun, 20 Sep 2020 22:30:00 -0700
-Message-Id: <20200921053018.64095-1-jamesbrowning137@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+        id S1726239AbgIUFbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 01:31:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38344 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726104AbgIUFbJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 01:31:09 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 287932075E;
+        Mon, 21 Sep 2020 05:31:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600666268;
+        bh=4iKPFsAEFvL8184M1uQ2hq7reNmA00dZc5hxwfKmN2A=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TUrfhhxtsl7CnJSbwtd4BKb6SqK55htmY4jK97AslVVA8seNWxD+1R5qL+56F7Ptz
+         6t+Fa6zOdhWDWLoAz5mZcsiDFPpyrbexv/d7asFZhpQPw7NKUFRl7Rtkr+ec4AGH55
+         J6E36LCZaZTnK6BF2f72ERyYMgcctFzUNeWr52go=
+Date:   Mon, 21 Sep 2020 14:31:04 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>
+Subject: Re: [PATCH v2 0/6] tools/bootconfig: Add boot-time tracing script
+Message-Id: <20200921143104.d8a4716c69e507f19edba2e3@kernel.org>
+In-Reply-To: <159750006069.202708.12439674123720173666.stgit@devnote2>
+References: <159750006069.202708.12439674123720173666.stgit@devnote2>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Removed repeated words "the" and "in"
+Hi Steve,
 
-Signed-off-by: James Browning <jamesbrowning137@gmail.com>
----
- drivers/staging/comedi/comedi.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Can you also merge this series to tracing tree?
 
-diff --git a/drivers/staging/comedi/comedi.h b/drivers/staging/comedi/comedi.h
-index 09a940066c0e..b5d00a006dbb 100644
---- a/drivers/staging/comedi/comedi.h
-+++ b/drivers/staging/comedi/comedi.h
-@@ -680,7 +680,7 @@ struct comedi_rangeinfo {
-  * value of 1 volt.
-  *
-  * The only defined flag value is %RF_EXTERNAL (%0x100), indicating that the
-- * the range needs to be multiplied by an external reference.
-+ * range needs to be multiplied by an external reference.
-  */
- struct comedi_krange {
- 	int min;
-@@ -970,7 +970,7 @@ enum i8254_mode {
-  *   major reasons exist why this caused major confusion for users:
-  *   1) The register values are _NOT_ in user documentation, but rather in
-  *     arcane locations, such as a few register programming manuals that are
-- *     increasingly hard to find and the NI MHDDK (comments in in example code).
-+ *     increasingly hard to find and the NI MHDDK (comments in example code).
-  *     There is no one place to find the various valid values of the registers.
-  *   2) The register values are _NOT_ completely consistent.  There is no way to
-  *     gain any sense of intuition of which values, or even enums one should use
+Thank you,
+
+On Sat, 15 Aug 2020 23:01:00 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
+
+> Hi,
+> 
+> This is the 2nd version of the series to introduce scripts for the
+> boot-time tracing. In this version, I just updated 4/6 according to
+> Steve's comment.
+> 
+> Previous series is here:
+>  https://lkml.kernel.org/r/159704847064.175360.3292152056631660862.stgit@devnote2
+> 
+> 
+> Thank you,
+> 
+> ---
+> 
+> Masami Hiramatsu (6):
+>       tools/bootconfig: Show bootconfig compact tree from bootconfig file
+>       tools/bootconfig: Add list option
+>       tools/bootconfig: Make all functions static
+>       tools/bootconfig: Add a script to generate ftrace shell-command from bootconfig
+>       tools/bootconfig: Add a script to generates bootconfig from ftrace
+>       tools/bootconfig: Add --init option for bconf2ftrace.sh
+> 
+> 
+>  MAINTAINERS                              |    1 
+>  tools/bootconfig/main.c                  |  147 +++++++++++++-----
+>  tools/bootconfig/scripts/bconf2ftrace.sh |  199 ++++++++++++++++++++++++
+>  tools/bootconfig/scripts/ftrace.sh       |  109 +++++++++++++
+>  tools/bootconfig/scripts/ftrace2bconf.sh |  244 ++++++++++++++++++++++++++++++
+>  tools/bootconfig/scripts/xbc.sh          |   57 +++++++
+>  6 files changed, 715 insertions(+), 42 deletions(-)
+>  create mode 100755 tools/bootconfig/scripts/bconf2ftrace.sh
+>  create mode 100644 tools/bootconfig/scripts/ftrace.sh
+>  create mode 100755 tools/bootconfig/scripts/ftrace2bconf.sh
+>  create mode 100644 tools/bootconfig/scripts/xbc.sh
+> 
+> --
+> Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
+
+
 -- 
-2.25.1
-
+Masami Hiramatsu <mhiramat@kernel.org>
