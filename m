@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CE1F272059
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:23:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D3B9272086
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:23:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726924AbgIUKVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 06:21:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59132 "EHLO
+        id S1727159AbgIUKWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:22:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726897AbgIUKVA (ORCPT
+        with ESMTP id S1726904AbgIUKVB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 06:21:00 -0400
+        Mon, 21 Sep 2020 06:21:01 -0400
 Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D861C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:21:00 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id x14so12096983wrl.12
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:21:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41BFBC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:21:01 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z4so12125605wrr.4
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:21:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=9ZBjuGtlIQ8oulJMUmpkUNjlWYvzKi6Grt0GpSmmusw=;
-        b=rxZwjV6HY9LG0dpHkUso3xgcTJu7kAviAeubkz4/JVYFg/pNiT7Mv0ja6GhsRuMgYB
-         j5RydFDHDpcj6AtcVzbq+tBHf9E7bBVCehrc22Be6rCJ31ARmygdsxWk0KKPLR0isLzF
-         GZtcCPBa0cphp7RHnHGfOaYKgli39BOriDPuBFnO2HQO36mlrtoowEm7ZGzf7Y+pZyV1
-         c5x80CK8sJiPuomKofPU/1tkVzdpjtpuCmWUpkFJ53ZMwsWwuevTyvmwGe3ezPDykPjg
-         PKVRYplwuhfbBoF6bsfRI+4BbOEA/7K7BRVlQa8NOLvjAY42SPCmJa6qmBHkkI9BW5rR
-         lONQ==
+        bh=Phn676ck9fxFNj85BpKV8apw8QC3TViwDCE0eTe2lKw=;
+        b=SPcgfzwxG+7TAk0IVdcJAFHhW8FgtzKodBdFxADUrLFsEGadjF7vCav7EEu+lU0+GP
+         NoSmoxIDJ3mjicDERBPfRbNj0tsMIMvrPFRtjvcX38BcDEyPZ+/MtRLdkL1pEoHeC0J+
+         gXrEKMhnbxYg66roPjpaq84u95xIeiKLqFwr6gZRgbMVE1Ejz55JtyaTrEwjb4KbTcfG
+         PpIGABEtexnVZHJNYqRPwi+RilJspBYCpSHEv7rBDHbghA1z5RyiTEM2DE/c619SP3FJ
+         TbuHDmkJTLnNPptMWYqQEXm86UexWo+n/qwGjWsOL0TI/mnhmAyDZPYrSSrudAVE9pX/
+         XHFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=9ZBjuGtlIQ8oulJMUmpkUNjlWYvzKi6Grt0GpSmmusw=;
-        b=jW1O14oQi5erxtpWZwZWAJHeoysklR56LOfdFeD3zkmAuGnybltVeeFwtkt6MUH+Z1
-         xhDF+kvjt4lqY4EGJM0ThzVbj15vkERkTXmrJ0SV0gSPt7nzphMVNapdktA9KQKPXgqe
-         NOZ3FEleBLWyJIl2qMkbsQlejRauKGNLoYfQvKubmMel2OrWtpjNU+NxedxJwQDNXjEx
-         JeOVctMQ75mfnUNS3JNr7mbDSX4A0FfAUwUkY54S6TcSDt+E157yqdiubUc/dqzxD66o
-         Kp+KOxUjtUctBIRhxG4PdhNBgH/aad/6Ue2Jrzr26/lXEvakL/Gb6wFG6c652YsRFIlX
-         zvKw==
-X-Gm-Message-State: AOAM533AyMq0M7fOu8s6Pz8DUZi+RpB3cLgqhnrGoOHH4L12umseIUic
-        d4yjd3wzE9WdT9TxB9ZYlymVuWHUnXnnng==
-X-Google-Smtp-Source: ABdhPJyzfzbEKklN94+4S73Qh+VMGuoEabkAmSVR1mVdTjh3TG+GaY08+ACfViEVCb5X17IIx6vMRg==
-X-Received: by 2002:adf:9405:: with SMTP id 5mr28243151wrq.51.1600683659111;
-        Mon, 21 Sep 2020 03:20:59 -0700 (PDT)
+        bh=Phn676ck9fxFNj85BpKV8apw8QC3TViwDCE0eTe2lKw=;
+        b=pplBLaGn/xaQC4dv9dzGQ8iFl5tby/wY8Kru9Q1kLNAFVCa7oSUS3jNJtbYKn4oVDV
+         Fudd1bj+K1HjNHaxdUW5kdsq/WE1zWDVMLtfM7Fgmck7Glixd7gloXwObFyg1daBKaYC
+         iBYf1IK6ljTQYx01MF+WEsgHFr1wWIyPKvrClGb8xThVmELkL+QMSoP/pm+OyVQRtqJT
+         GWRb8mHO/lDP65h3BT47YBzf39V47pitUYdQZFcX355SYTUz0LOo2A6crRniXN7jPM6T
+         rN4HOW1NzIECabN/spNijmaIC+X2Jx29TVlnhrRAhJxQoL9Q4AZ8iZZGJkS7XCz5H8gF
+         zfEw==
+X-Gm-Message-State: AOAM5329EJr3aS93ORpnNgjJl4uRzo1OWXRwxv0vXfmCt0pI1IPe64vv
+        QrSfNFUFyWVVg490XCgkBlRkZg==
+X-Google-Smtp-Source: ABdhPJzidbt0pzET/EtSowQUwY6EY9mSfVSCXN4I8uUlbcM+UuJ2gQy4RnxaDKlVsybR+D7AZPvq9A==
+X-Received: by 2002:a5d:668b:: with SMTP id l11mr50274670wru.89.1600683660027;
+        Mon, 21 Sep 2020 03:21:00 -0700 (PDT)
 Received: from localhost.localdomain ([51.15.160.169])
-        by smtp.googlemail.com with ESMTPSA id l17sm18804629wme.11.2020.09.21.03.20.58
+        by smtp.googlemail.com with ESMTPSA id l17sm18804629wme.11.2020.09.21.03.20.59
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 21 Sep 2020 03:20:58 -0700 (PDT)
+        Mon, 21 Sep 2020 03:20:59 -0700 (PDT)
 From:   Corentin Labbe <clabbe@baylibre.com>
 To:     gregkh@linuxfoundation.org, laurent.pinchart@skynet.be,
         mchehab@kernel.org
 Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
         linux-media@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH RFT/RFC 28/49] staging: media: zoran: convert zoran alloc to devm
-Date:   Mon, 21 Sep 2020 10:20:03 +0000
-Message-Id: <1600683624-5863-29-git-send-email-clabbe@baylibre.com>
+Subject: [PATCH RFT/RFC 29/49] staging: media: zoran: convert mdelay to udelay
+Date:   Mon, 21 Sep 2020 10:20:04 +0000
+Message-Id: <1600683624-5863-30-git-send-email-clabbe@baylibre.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1600683624-5863-1-git-send-email-clabbe@baylibre.com>
 References: <1600683624-5863-1-git-send-email-clabbe@baylibre.com>
@@ -62,43 +62,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allocate the zoran structure with devm_ functions permit to simplify
-code.
+As asked by checkpath, let's use udelay.
 
 Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 ---
- drivers/staging/media/zoran/zoran_card.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/staging/media/zoran/zoran_device.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/media/zoran/zoran_card.c b/drivers/staging/media/zoran/zoran_card.c
-index fe4d34e388b4..62e63804ae14 100644
---- a/drivers/staging/media/zoran/zoran_card.c
-+++ b/drivers/staging/media/zoran/zoran_card.c
-@@ -1017,7 +1017,6 @@ static void zoran_remove(struct pci_dev *pdev)
- exit_free:
- 	v4l2_ctrl_handler_free(&zr->hdl);
- 	v4l2_device_unregister(&zr->v4l2_dev);
--	kfree(zr);
- }
+diff --git a/drivers/staging/media/zoran/zoran_device.c b/drivers/staging/media/zoran/zoran_device.c
+index 3a353130afb9..82d522c1a528 100644
+--- a/drivers/staging/media/zoran/zoran_device.c
++++ b/drivers/staging/media/zoran/zoran_device.c
+@@ -1315,9 +1315,9 @@ void zoran_init_hardware(struct zoran *zr)
+ void zr36057_restart(struct zoran *zr)
+ {
+ 	btwrite(0, ZR36057_SPGPPCR);
+-	mdelay(1);
++	udelay(1000);
+ 	btor(ZR36057_SPGPPCR_SoftReset, ZR36057_SPGPPCR);
+-	mdelay(1);
++	udelay(1000);
  
- void zoran_vdev_release(struct video_device *vdev)
-@@ -1101,7 +1100,7 @@ static int zoran_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		return -ENOENT;
- 	}
- 
--	zr = kzalloc(sizeof(*zr), GFP_KERNEL);
-+	zr = devm_kzalloc(&pdev->dev, sizeof(*zr), GFP_KERNEL);
- 	if (!zr)
- 		return -ENOMEM;
- 
-@@ -1287,7 +1286,6 @@ static int zoran_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	v4l2_ctrl_handler_free(&zr->hdl);
- 	v4l2_device_unregister(&zr->v4l2_dev);
- zr_free_mem:
--	kfree(zr);
- 
- 	return -ENODEV;
- }
+ 	/* assert P_Reset */
+ 	btwrite(0, ZR36057_JPC);
 -- 
 2.26.2
 
