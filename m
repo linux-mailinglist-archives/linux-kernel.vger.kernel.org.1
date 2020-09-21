@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F5627257C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E897272570
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727376AbgIUN1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:27:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59768 "EHLO
+        id S1727326AbgIUN1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:27:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727264AbgIUN0w (ORCPT
+        with ESMTP id S1727289AbgIUN0z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:26:52 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC67C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 06:26:52 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id 7so12784820qtp.18
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 06:26:52 -0700 (PDT)
+        Mon, 21 Sep 2020 09:26:55 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0755EC0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 06:26:55 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id g1so12770139qtc.22
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 06:26:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=k1T9dYB7DJoZ+u+nVe3kaxMkFtqFlEoHZfLN0p/pvEE=;
-        b=h0DABlibHB7v95H3LhOc4lIx2a+JuJCaG5dCjxY69vhbTwo2OewB2jqrcfxfSAWImf
-         0rilrwD74EdgNZkNctrYhdK0BKQa1IFxA96Sn77Ss9MbjCIxt55LT+Db94EGESOvWC61
-         FNhFsNV1l+s2LYwjRiVeyI/gY07VtoOl0G4eY13mJqePxG7L0c4mXQ3OowvJ26BmA67c
-         26EMpkQ2n7OL6XdtoU4I2iAZTKdgLhn27yeHPdjeTgGW4u+Pr5ofUSUfQP/ixCP+f2or
-         3yp/zGKOxnf1szBrwX417xIk13JJ29F0GqtqSoNssPh6hTcAf0X+yRRllGTo8pXmlpeV
-         KA4Q==
+        bh=Xu8t61b4dNKr+fiQ7+DCPl49hEzGiBe/cMhyep8752Q=;
+        b=t/PhPbvgVmVZNO9No4Qsi0HZRKHniwTfNY8al1/FxEWkHh40tZwZm8AG2oTdT6OtOE
+         0U1EmeVMJvqIU3FT608D0nMfNpWZdrS74pAWAyQtXEcglvXWT3hoZM3gk9OIvEZlM92Y
+         njI4DKdBxtMEsniD1uoqdp7LR2Kx0bmYr03XdW/yAxE9foJVT6JQDImhnmsDt0m+l50I
+         qBJ7XAVxF44YbVX+PQeCKvfjZ+JK9mDAS6pkbvbegvxujp51QBihra7o3Hi9nduA2yG3
+         PeiSIZbpwxu8jilOBEUmyAhKDo3ggadkcLt4SwKR3jtuywvAeXsITeIKnUnfOR+kZORB
+         MdbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=k1T9dYB7DJoZ+u+nVe3kaxMkFtqFlEoHZfLN0p/pvEE=;
-        b=GxRsBcanqEqny64HFxXzeMlydFs/IPTRI4YpKAhSRzKO+bz2E//zEq/vItNhTyl7o1
-         eEdMwNrkOB/on9B/8aZACSiXvHpdiLYxhTvatUJHZLXdSqGt7l72eEUS7eM+S6dYvbuO
-         FlZ3vm2g+ySl7VbRhZUW4HrcGveaU5wOA/afvxGelEJgyphlZVBXD/KluTB3FURiU6XL
-         IzMpZOWnaklhoyF8KEz8JUlVeyxBhRe+AbysU1uLO7m2bhxXPZNbpHSm5z1sZzn71lS8
-         lp4RzKbUV1rybzbNo0XTQm+4AuI9SM4mkNZhyxGgKI8EPsaSniVbpacTqyRx9QpseVO1
-         tUBw==
-X-Gm-Message-State: AOAM530WSDgGXT4B2f+Xg9k4In0aqqF5C21tLbtHoLf4kV7MbHOXZCin
-        PPz6tvcTV1aAP/3iJaiM+q9ftnDOQQ==
-X-Google-Smtp-Source: ABdhPJxI5BBppzUwl+FURSlYJ/XsuSII2/6RzrI0Ei9BEoIUMUq9N7cECIXnXgK6ZUjbLhwm9DwnPw5xLg==
+        bh=Xu8t61b4dNKr+fiQ7+DCPl49hEzGiBe/cMhyep8752Q=;
+        b=M6hZh2ARe/zdVj85sywAQ3G+SL9U0LGWQXP3F+sfDKXyY2gNXaroi0htslia0NmSCs
+         W8BUH537w+tjvhHoqkb1bubPhnQS3H0+1xMCjB5d1ifka3qLI0eN6tBBL0cBX6pFXaj5
+         SqWj0mCS/A02jAbc2nTAWpSc9GQS/VKje3VMV9wB2AyBcfuYff0XeV8vya3wM00TLDMC
+         xl1oG54MtDFG9JyKjT5mDfUy2WQy4tiPqWN5JMhPkFmRjarfJN6CPzdaa0/W4ThSpT8f
+         dfIuXCozlHzMpAaBnmKj0pSWxxu36aG1QwGw6FZlsh2dz52IblCQvw3OYpC8jZ90unkM
+         U9lw==
+X-Gm-Message-State: AOAM533g1nj4KSFlzG1XVtoVgaK7XvnV+JXqDUizghnIJ1IdSBkW7p6D
+        yuCjn+wKvBbtCrrS2HSxmEpchQs6KA==
+X-Google-Smtp-Source: ABdhPJwlomHZW5LFrUvnOYp1W3ILbDMFcZXnyVZmSCcK70XUPvRiAPt5y/KlgaYdqO/4DLRWjmwMvNsM3A==
 Sender: "elver via sendgmr" <elver@elver.muc.corp.google.com>
 X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
- (user=elver job=sendgmr) by 2002:ad4:4af4:: with SMTP id cp20mr30110353qvb.40.1600694811561;
- Mon, 21 Sep 2020 06:26:51 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 15:26:07 +0200
+ (user=elver job=sendgmr) by 2002:a0c:e311:: with SMTP id s17mr28925297qvl.45.1600694813892;
+ Mon, 21 Sep 2020 06:26:53 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 15:26:08 +0200
 In-Reply-To: <20200921132611.1700350-1-elver@google.com>
-Message-Id: <20200921132611.1700350-7-elver@google.com>
+Message-Id: <20200921132611.1700350-8-elver@google.com>
 Mime-Version: 1.0
 References: <20200921132611.1700350-1-elver@google.com>
 X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
-Subject: [PATCH v3 06/10] kfence, kasan: make KFENCE compatible with KASAN
+Subject: [PATCH v3 07/10] kfence, kmemleak: make KFENCE compatible with KMEMLEAK
 From:   Marco Elver <elver@google.com>
 To:     elver@google.com, akpm@linux-foundation.org, glider@google.com
 Cc:     hpa@zytor.com, paulmck@kernel.org, andreyknvl@google.com,
@@ -74,69 +74,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alexander Potapenko <glider@google.com>
 
-We make KFENCE compatible with KASAN for testing KFENCE itself. In
-particular, KASAN helps to catch any potential corruptions to KFENCE
-state, or other corruptions that may be a result of freepointer
-corruptions in the main allocators.
-
-To indicate that the combination of the two is generally discouraged,
-CONFIG_EXPERT=y should be set. It also gives us the nice property that
-KFENCE will be build-tested by allyesconfig builds.
+Add compatibility with KMEMLEAK, by making KMEMLEAK aware of the KFENCE
+memory pool. This allows building debug kernels with both enabled, which
+also helped in debugging KFENCE.
 
 Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
 Co-developed-by: Marco Elver <elver@google.com>
 Signed-off-by: Marco Elver <elver@google.com>
 Signed-off-by: Alexander Potapenko <glider@google.com>
 ---
- lib/Kconfig.kfence | 2 +-
- mm/kasan/common.c  | 7 +++++++
- 2 files changed, 8 insertions(+), 1 deletion(-)
+v2:
+* Rework using delete_object_part() [suggested by Catalin Marinas].
+---
+ mm/kmemleak.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/lib/Kconfig.kfence b/lib/Kconfig.kfence
-index 4c2ea1c722de..6825c1c07a10 100644
---- a/lib/Kconfig.kfence
-+++ b/lib/Kconfig.kfence
-@@ -10,7 +10,7 @@ config HAVE_ARCH_KFENCE_STATIC_POOL
+diff --git a/mm/kmemleak.c b/mm/kmemleak.c
+index 5e252d91eb14..feff16068e8e 100644
+--- a/mm/kmemleak.c
++++ b/mm/kmemleak.c
+@@ -97,6 +97,7 @@
+ #include <linux/atomic.h>
  
- menuconfig KFENCE
- 	bool "KFENCE: low-overhead sampling-based memory safety error detector"
--	depends on HAVE_ARCH_KFENCE && !KASAN && (SLAB || SLUB)
-+	depends on HAVE_ARCH_KFENCE && (!KASAN || EXPERT) && (SLAB || SLUB)
- 	depends on JUMP_LABEL # To ensure performance, require jump labels
- 	select STACKTRACE
- 	help
-diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-index 950fd372a07e..f5c49f0fdeff 100644
---- a/mm/kasan/common.c
-+++ b/mm/kasan/common.c
-@@ -18,6 +18,7 @@
- #include <linux/init.h>
  #include <linux/kasan.h>
- #include <linux/kernel.h>
 +#include <linux/kfence.h>
  #include <linux/kmemleak.h>
- #include <linux/linkage.h>
- #include <linux/memblock.h>
-@@ -396,6 +397,9 @@ static bool __kasan_slab_free(struct kmem_cache *cache, void *object,
- 	tagged_object = object;
- 	object = reset_tag(object);
+ #include <linux/memory_hotplug.h>
  
-+	if (is_kfence_address(object))
-+		return false;
+@@ -1948,6 +1949,11 @@ void __init kmemleak_init(void)
+ 		      KMEMLEAK_GREY, GFP_ATOMIC);
+ 	create_object((unsigned long)__bss_start, __bss_stop - __bss_start,
+ 		      KMEMLEAK_GREY, GFP_ATOMIC);
++#if defined(CONFIG_KFENCE) && defined(CONFIG_HAVE_ARCH_KFENCE_STATIC_POOL)
++	/* KFENCE objects are located in .bss, which may confuse kmemleak. Skip them. */
++	delete_object_part((unsigned long)__kfence_pool, KFENCE_POOL_SIZE);
++#endif
 +
- 	if (unlikely(nearest_obj(cache, virt_to_head_page(object), object) !=
- 	    object)) {
- 		kasan_report_invalid_free(tagged_object, ip);
-@@ -444,6 +448,9 @@ static void *__kasan_kmalloc(struct kmem_cache *cache, const void *object,
- 	if (unlikely(object == NULL))
- 		return NULL;
- 
-+	if (is_kfence_address(object))
-+		return (void *)object;
-+
- 	redzone_start = round_up((unsigned long)(object + size),
- 				KASAN_SHADOW_SCALE_SIZE);
- 	redzone_end = round_up((unsigned long)object + cache->object_size,
+ 	/* only register .data..ro_after_init if not within .data */
+ 	if (&__start_ro_after_init < &_sdata || &__end_ro_after_init > &_edata)
+ 		create_object((unsigned long)__start_ro_after_init,
 -- 
 2.28.0.681.g6f77f65b4e-goog
 
