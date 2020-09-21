@@ -2,87 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F20BB27295A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:03:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF02927294C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727550AbgIUPDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 11:03:44 -0400
-Received: from ivanoab7.miniserver.com ([37.128.132.42]:53376 "EHLO
-        www.kot-begemot.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726419AbgIUPDn (ORCPT
+        id S1727028AbgIUPCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 11:02:15 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:57180 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726430AbgIUPCO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 11:03:43 -0400
-X-Greylist: delayed 1617 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Sep 2020 11:03:43 EDT
-Received: from tun252.jain.kot-begemot.co.uk ([192.168.18.6] helo=jain.kot-begemot.co.uk)
-        by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <anton.ivanov@cambridgegreys.com>)
-        id 1kKMvp-0001Ev-QO; Mon, 21 Sep 2020 14:36:43 +0000
-Received: from jain.kot-begemot.co.uk ([192.168.3.3])
-        by jain.kot-begemot.co.uk with esmtp (Exim 4.92)
-        (envelope-from <anton.ivanov@cambridgegreys.com>)
-        id 1kKMvm-00006j-J2; Mon, 21 Sep 2020 15:36:41 +0100
-Subject: Re: [PATCH] um: vector: Use GFP_ATOMIC under spin lock
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>
-Cc:     linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-References: <1592544007-2751-1-git-send-email-yangtiezhu@loongson.cn>
-From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Message-ID: <04be37fc-c8cb-f506-20a5-97467b638069@cambridgegreys.com>
-Date:   Mon, 21 Sep 2020 15:36:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 21 Sep 2020 11:02:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600700533;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BTI2XQ4dBVSG0l81vNVUYguXCd5+anJLPOj3aZTSSK0=;
+        b=N1Q0f0h4VjUoaF0OZsm7M3IlQPzCad3gLFiAUs5Vhbyfym7kTqqIl4o3Yofrm3xPUh43LQ
+        xdfed7DT5wDEtkJfkeiztS4S1AUh5XXe247t5xO90dUtfo5d3zUaettkkaWW/ENo42WrOv
+        zqdJLUZrphebT5TUM+uCNWYMl0QIf7Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-306-frAxTQ8nPNeSLWbXq7riFg-1; Mon, 21 Sep 2020 11:02:09 -0400
+X-MC-Unique: frAxTQ8nPNeSLWbXq7riFg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 97A2B807352;
+        Mon, 21 Sep 2020 15:02:07 +0000 (UTC)
+Received: from gondolin (ovpn-115-117.ams2.redhat.com [10.36.115.117])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AD3CD5D9CD;
+        Mon, 21 Sep 2020 15:02:01 +0000 (UTC)
+Date:   Mon, 21 Sep 2020 17:01:58 +0200
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Matthew Rosato <mjrosato@linux.ibm.com>
+Cc:     alex.williamson@redhat.com, schnelle@linux.ibm.com,
+        pmorel@linux.ibm.com, borntraeger@de.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, gerald.schaefer@linux.ibm.com,
+        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] s390/pci: stash version in the zpci_dev
+Message-ID: <20200921170158.1080d872.cohuck@redhat.com>
+In-Reply-To: <1600529318-8996-2-git-send-email-mjrosato@linux.ibm.com>
+References: <1600529318-8996-1-git-send-email-mjrosato@linux.ibm.com>
+        <1600529318-8996-2-git-send-email-mjrosato@linux.ibm.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-In-Reply-To: <1592544007-2751-1-git-send-email-yangtiezhu@loongson.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Score: -1.0
-X-Spam-Score: -1.0
-X-Clacks-Overhead: GNU Terry Pratchett
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, 19 Sep 2020 11:28:35 -0400
+Matthew Rosato <mjrosato@linux.ibm.com> wrote:
 
+> In preparation for passing the info on to vfio-pci devices, stash the
+> supported PCI version for the target device in the zpci_dev.
 
-On 19/06/2020 06:20, Tiezhu Yang wrote:
-> Use GFP_ATOMIC instead of GFP_KERNEL under spin lock to fix possible
-> sleep-in-atomic-context bugs.
+Hm, what kind of version is that? The version of the zPCI interface?
+
+Inquiring minds want to know :)
+
 > 
-> Fixes: 9807019a62dc ("um: Loadable BPF "Firmware" for vector drivers")
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> Signed-off-by: Matthew Rosato <mjrosato@linux.ibm.com>
 > ---
->   arch/um/drivers/vector_kern.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-> index 8735c46..555203e 100644
-> --- a/arch/um/drivers/vector_kern.c
-> +++ b/arch/um/drivers/vector_kern.c
-> @@ -1403,7 +1403,7 @@ static int vector_net_load_bpf_flash(struct net_device *dev,
->   		kfree(vp->bpf->filter);
->   		vp->bpf->filter = NULL;
->   	} else {
-> -		vp->bpf = kmalloc(sizeof(struct sock_fprog), GFP_KERNEL);
-> +		vp->bpf = kmalloc(sizeof(struct sock_fprog), GFP_ATOMIC);
->   		if (vp->bpf == NULL) {
->   			netdev_err(dev, "failed to allocate memory for firmware\n");
->   			goto flash_fail;
-> @@ -1415,7 +1415,7 @@ static int vector_net_load_bpf_flash(struct net_device *dev,
->   	if (request_firmware(&fw, efl->data, &vdevice->pdev.dev))
->   		goto flash_fail;
->   
-> -	vp->bpf->filter = kmemdup(fw->data, fw->size, GFP_KERNEL);
-> +	vp->bpf->filter = kmemdup(fw->data, fw->size, GFP_ATOMIC);
->   	if (!vp->bpf->filter)
->   		goto free_buffer;
->   
-> 
-Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
--- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
-https://www.cambridgegreys.com/
+>  arch/s390/include/asm/pci.h | 1 +
+>  arch/s390/pci/pci_clp.c     | 1 +
+>  2 files changed, 2 insertions(+)
+
