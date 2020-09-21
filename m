@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFF3D272DB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:42:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30F41272F49
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729507AbgIUQmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:42:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46576 "EHLO mail.kernel.org"
+        id S1730033AbgIUQz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:55:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729500AbgIUQm2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:42:28 -0400
+        id S1727939AbgIUQp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:45:27 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 73711235F9;
-        Mon, 21 Sep 2020 16:42:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B834C2076B;
+        Mon, 21 Sep 2020 16:45:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706548;
-        bh=zolZwzTxEfBeTWyu+h7YHfETfQ/DiytX4nDIsqj6itw=;
+        s=default; t=1600706726;
+        bh=sw/fWsgM3s2NVqfVCcC9QdPZrbGrFpV00b5iqhj5Kug=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=adcv8bmLMTqXCHHL9YoWEdhvYVpzrEpp+CVbCt05ejWMp46WTec6y41UJnpX3wjWh
-         ZxtBIc6DR/3wWEMH0keYreEP2cCgKpB/Hfo0YsrySQJzNhC51IK0xNYytbjZsBXGCD
-         4u+GhHGDcBovDjnXKjHiVamTkrgim0LAFaPRt0c0=
+        b=wAlIV26MpY4Cu0dRi5i799rqZ4JCwt9QjzOqpUbt9/lhgr1aRAfN50lL6dLwY67xm
+         I9Pgv96rlTgnbQjxDKkuCa3UHnx9f2hbV1PPrq4CMdYh3GQr+VcJGpg7jzpQO8OPtc
+         LnWLuB0LF6PwVVv+bq2/ZeZWN+7MJpFBfgRE0ot4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
+        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 17/49] rapidio: Replace select DMAENGINES with depends on
-Date:   Mon, 21 Sep 2020 18:28:01 +0200
-Message-Id: <20200921162035.422715993@linuxfoundation.org>
+Subject: [PATCH 5.8 070/118] drm/mediatek: Add missing put_device() call in mtk_drm_kms_init()
+Date:   Mon, 21 Sep 2020 18:28:02 +0200
+Message-Id: <20200921162039.589715174@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162034.660953761@linuxfoundation.org>
-References: <20200921162034.660953761@linuxfoundation.org>
+In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
+References: <20200921162036.324813383@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,35 +43,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+From: Yu Kuai <yukuai3@huawei.com>
 
-[ Upstream commit d2b86100245080cfdf1e95e9e07477474c1be2bd ]
+[ Upstream commit 2132940f2192824acf160d115192755f7c58a847 ]
 
-Enabling a whole subsystem from a single driver 'select' is frowned
-upon and won't be accepted in new drivers, that need to use 'depends on'
-instead. Existing selection of DMAENGINES will then cause circular
-dependencies. Replace them with a dependency.
+if of_find_device_by_node() succeed, mtk_drm_kms_init() doesn't have
+a corresponding put_device(). Thus add jump target to fix the exception
+handling for this function implementation.
 
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Fixes: 119f5173628a ("drm/mediatek: Add DRM Driver for Mediatek SoC MT8173.")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/rapidio/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/mediatek/mtk_drm_drv.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/rapidio/Kconfig b/drivers/rapidio/Kconfig
-index d6d2f20c45977..21df2816def76 100644
---- a/drivers/rapidio/Kconfig
-+++ b/drivers/rapidio/Kconfig
-@@ -25,7 +25,7 @@ config RAPIDIO_ENABLE_RX_TX_PORTS
- config RAPIDIO_DMA_ENGINE
- 	bool "DMA Engine support for RapidIO"
- 	depends on RAPIDIO
--	select DMADEVICES
-+	depends on DMADEVICES
- 	select DMA_ENGINE
- 	help
- 	  Say Y here if you want to use DMA Engine frameork for RapidIO data
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+index 7ad0433539f45..b77dc36be4224 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+@@ -165,7 +165,7 @@ static int mtk_drm_kms_init(struct drm_device *drm)
+ 
+ 	ret = drmm_mode_config_init(drm);
+ 	if (ret)
+-		return ret;
++		goto put_mutex_dev;
+ 
+ 	drm->mode_config.min_width = 64;
+ 	drm->mode_config.min_height = 64;
+@@ -182,7 +182,7 @@ static int mtk_drm_kms_init(struct drm_device *drm)
+ 
+ 	ret = component_bind_all(drm->dev, drm);
+ 	if (ret)
+-		return ret;
++		goto put_mutex_dev;
+ 
+ 	/*
+ 	 * We currently support two fixed data streams, each optional,
+@@ -229,7 +229,7 @@ static int mtk_drm_kms_init(struct drm_device *drm)
+ 	}
+ 	if (!dma_dev->dma_parms) {
+ 		ret = -ENOMEM;
+-		goto err_component_unbind;
++		goto put_dma_dev;
+ 	}
+ 
+ 	ret = dma_set_max_seg_size(dma_dev, (unsigned int)DMA_BIT_MASK(32));
+@@ -256,9 +256,12 @@ static int mtk_drm_kms_init(struct drm_device *drm)
+ err_unset_dma_parms:
+ 	if (private->dma_parms_allocated)
+ 		dma_dev->dma_parms = NULL;
++put_dma_dev:
++	put_device(private->dma_dev);
+ err_component_unbind:
+ 	component_unbind_all(drm->dev, drm);
+-
++put_mutex_dev:
++	put_device(private->mutex_dev);
+ 	return ret;
+ }
+ 
 -- 
 2.25.1
 
