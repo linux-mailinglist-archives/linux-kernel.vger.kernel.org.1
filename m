@@ -2,112 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34694271A58
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 07:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6419D271A5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 07:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726357AbgIUFSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 01:18:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40720 "EHLO
+        id S1726375AbgIUFXX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Sep 2020 01:23:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726211AbgIUFSO (ORCPT
+        with ESMTP id S1726211AbgIUFXW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 01:18:14 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14098C061755;
-        Sun, 20 Sep 2020 22:18:14 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bvt4d3x0Xz9sR4;
-        Mon, 21 Sep 2020 15:18:09 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1600665491;
-        bh=Hh4xj2jPivYdeHaxLSo7KgWAKFpLMU7I7ybHbjiP3p0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=W77gqC4LHd29lI3tnJ6105GoATQK6fROLOYQC1pBSY5zQHrJsmSW6B6Wh6EWJ66ej
-         sZMOMH+8BCW+fyVA3KoQffXna/yTazZJ1aESp/cfyFrFtJAvcvuFogn6xZNYCXW1/z
-         7sj7TEwA3Gl33YG8fywVpYEUaCWUaXO4ELmkTVTzgLpcUvN2q/DBYtgC7hCdGYbcEc
-         oWuErpFKFjvj6wk39adf+EdOATpX5Uls9ZPREfyCxLtNbQyVLI0Dh0f11gQd4+AZ98
-         bVD8srESt4Ppi9z/Wz21pzacfeVINe0wPc4MAnSskI3CSDu3ezmQBtUGjAZwUwBVJQ
-         ZnelMZxzoHW6Q==
-Date:   Mon, 21 Sep 2020 15:18:07 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>, Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Jim Quinlan <jquinlan@broadcom.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: manual merge of the usb tree with the pci tree
-Message-ID: <20200921151807.637905c0@canb.auug.org.au>
+        Mon, 21 Sep 2020 01:23:22 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6756BC061755
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 22:23:22 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kKEIF-0006Fc-OC; Mon, 21 Sep 2020 07:23:15 +0200
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kKEID-0007B6-7n; Mon, 21 Sep 2020 07:23:13 +0200
+Date:   Mon, 21 Sep 2020 07:23:13 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Shawn Guo <shawnguo@kernel.org>
+Cc:     Marco Felsch <m.felsch@pengutronix.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 3/3] ARM: dts: add Plymovent M2M board
+Message-ID: <20200921052313.3f6b2djdrxugjicu@pengutronix.de>
+References: <20200911050941.15013-1-o.rempel@pengutronix.de>
+ <20200911050941.15013-4-o.rempel@pengutronix.de>
+ <20200911060312.amj2ly7b3aiiwvhv@pengutronix.de>
+ <20200913044944.GN25109@dragon>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/nqdGVLMfBAT8Rvf3qCHfRxy";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200913044944.GN25109@dragon>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 07:16:47 up 310 days, 20:35, 303 users,  load average: 0.08, 0.06,
+ 0.01
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/nqdGVLMfBAT8Rvf3qCHfRxy
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sun, Sep 13, 2020 at 12:49:45PM +0800, Shawn Guo wrote:
+> On Fri, Sep 11, 2020 at 08:03:12AM +0200, Marco Felsch wrote:
+> > On 20-09-11 07:09, Oleksij Rempel wrote:
+> > > Plymovent M2M is a control interface produced for the Plymovent filter
+> > > systems.
+> > > 
+> > > Signed-off-by: David Jander <david@protonic.nl>
+> > > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> > > ---
+> > >  arch/arm/boot/dts/Makefile          |   1 +
+> > >  arch/arm/boot/dts/imx6dl-plym2m.dts | 394 ++++++++++++++++++++++++++++
+> > >  2 files changed, 395 insertions(+)
+> > >  create mode 100644 arch/arm/boot/dts/imx6dl-plym2m.dts
+> > > 
+> > > diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+> > > index 4572db3fa5ae..3c3811fd8613 100644
+> > > --- a/arch/arm/boot/dts/Makefile
+> > > +++ b/arch/arm/boot/dts/Makefile
+> > > @@ -455,6 +455,7 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
+> > >  	imx6dl-pico-hobbit.dtb \
+> > >  	imx6dl-pico-nymph.dtb \
+> > >  	imx6dl-pico-pi.dtb \
+> > > +	imx6dl-plym2m.dtb \
+> > >  	imx6dl-prtrvt.dtb \
+> > >  	imx6dl-prtvt7.dtb \
+> > >  	imx6dl-rex-basic.dtb \
+> > > diff --git a/arch/arm/boot/dts/imx6dl-plym2m.dts b/arch/arm/boot/dts/imx6dl-plym2m.dts
+> > > new file mode 100644
+> > > index 000000000000..4f96e05aa03f
+> > > --- /dev/null
+> > > +++ b/arch/arm/boot/dts/imx6dl-plym2m.dts
+> > > @@ -0,0 +1,394 @@
+> > > +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+> > > +// SPDX-FileCopyrightText: 2014 Protonic Holland
+> > > +// SPDX-FileCopyrightText: 2020 Oleksij Rempel <kernel@pengutronix.de>, Pengutronix
+> > 		^
+> > @shawn: I saw a few patches adding these tags. Are they used in the near
+> > future?
+> 
+> I'm not sure.  I haven't seen this in Documentation/process/license-rules.rst,
+> nor the discussion around this.
 
-Hi all,
+Hi Shawn,
 
-Today's linux-next merge of the usb tree got a conflict in:
+is it a  no go? Should I send a patch with old style copyright text?
 
-  drivers/pci/controller/pcie-brcmstb.c
 
-between commit:
-
-  1cf1b0a6dd95 ("PCI: brcmstb: Add bcm7278 register info")
-
-from the pci tree and commit:
-
-  f48cc509c935 ("Revert "PCI: brcmstb: Wait for Raspberry Pi's firmware whe=
-n present"")
-
-from the usb tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/pci/controller/pcie-brcmstb.c
-index 6e7aa82a54a3,bac63d04297f..000000000000
---- a/drivers/pci/controller/pcie-brcmstb.c
-+++ b/drivers/pci/controller/pcie-brcmstb.c
-@@@ -1213,8 -929,6 +1211,7 @@@ static int brcm_pcie_probe(struct platf
-  {
-  	struct device_node *np =3D pdev->dev.of_node, *msi_np;
-  	struct pci_host_bridge *bridge;
-- 	struct device_node *fw_np;
- +	const struct pcie_cfg_data *data;
-  	struct brcm_pcie *pcie;
-  	int ret;
- =20
-
---Sig_/nqdGVLMfBAT8Rvf3qCHfRxy
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9oN48ACgkQAVBC80lX
-0GwlNAf+PGQHE3ysNK68/6po12G/AkWK40hqnzJNMPAsCX+3aBobVrVHHOQDn7dK
-7Y5rUxgbxcFBnM7o0mSPOZUyA7lbS6jX3ZxLi6gT76FCD77BogZy28ZxA/cA3Q6S
-QlAUKDK6Df5xp1wMfNbbCBLrDkHJ2zzaDa0leb+tpW4yAur2+zy56mic58NNPPkq
-JYBx+9F9XVN7tgqDMNVqSGQPwksV0GcwPbYZQW1YLsw75nsKGBWJ+JjfT2Obhvds
-k60T4Aeuh2BBrqQaSAzXIJd0icgdfKrphBsnGFNIA9bdphjYYrPxVv+gfKFPDJHf
-wBselLMg04zOk0HZ6CE2AIqQVX0BiA==
-=kk6c
------END PGP SIGNATURE-----
-
---Sig_/nqdGVLMfBAT8Rvf3qCHfRxy--
+Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
