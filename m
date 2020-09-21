@@ -2,102 +2,338 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF27627253B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:18:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D71ED27253D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727088AbgIUNSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:18:20 -0400
-Received: from mail-am6eur05on2085.outbound.protection.outlook.com ([40.107.22.85]:56877
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726353AbgIUNSU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:18:20 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Yqz78Fb0mRU5C9LUHaCUjPQmgoL8qasbjcR49bpDeXLz2/hlGfS+eGs29UrXy3vh1omJHDGA1LWOsmZnVLW7DcwOpDqfLk8VoY/rj8X6pGapazw88jraCy/jphYB2pboar3O68LUnC2dB7F6w7M2/D1Z0eVrd39pYIKM98/pjTKfOg+z1DE57RfMjw7qY6TBXG4OBqhnZevLh7uhuQUBFG5OrMfQP8n+DF8s16Uwk9PtRgWG5Al5pqWFb5lvT/8wa+cW+7uSv5GNxz+5qLBqIKEuLi277leI/QMe2+tEB0dKlzoUVyP93cS4P5p+sDCwOxkasZzSRdqk0qYMHsByxA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m5HG+7Mr4MzNtrlZqXPf/3vR9C/pVVIzA+h0ERhp5/E=;
- b=CpgkiGqqXuFAucyVq/Z+eucJu7h/HBMTsG+FDdeCzp0KT86PYAFUABu9fq+hewnm+9U1e9pa0MOImRxiFtwCLdSChxfI/2jvqhreroVFxSJvo/Re1wp6hoCpJTg/5dGo5Td/l+LMv6075LmsBT0tmoiQeL+P9+uQPm3lDfSuFp3WfxBHigaxDZfAAWwua0NDvhTUZZCL1zcwcp7a11CsqtGik+2jZ9yOA4Zj5BdNejPwRREZs3LG3Fg9r3syUv6Vzfg12zHnXCrX1H7kxYZBXqOUCW8ssdU3/elfFd1fPM1qRgmPsZOMbJKfP8UoxKsmKs8nLGWr2S05mx5L+pI1Aw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m5HG+7Mr4MzNtrlZqXPf/3vR9C/pVVIzA+h0ERhp5/E=;
- b=J153ajyQk0ke9TRpPBHLefJK9Lr6bxMmKbDW2aj+6V5mi1GGDbvTxDrJCiXu1DvYd0KCxjcJvVnAtdzTVqGKs1yyWN84oTP807tS5+TUBXpL1V5uNOqVdIyU6iaP7Q+DtUNrOw+84zIWvT1RFYCqS769xqPDvFiwWJny7lFXnmI=
-Received: from AM0PR04MB6754.eurprd04.prod.outlook.com (2603:10a6:208:170::28)
- by AM0PR04MB4116.eurprd04.prod.outlook.com (2603:10a6:208:5e::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Mon, 21 Sep
- 2020 13:18:16 +0000
-Received: from AM0PR04MB6754.eurprd04.prod.outlook.com
- ([fe80::c80:f72:a951:3420]) by AM0PR04MB6754.eurprd04.prod.outlook.com
- ([fe80::c80:f72:a951:3420%5]) with mapi id 15.20.3391.024; Mon, 21 Sep 2020
- 13:18:16 +0000
-From:   Claudiu Manoil <claudiu.manoil@nxp.com>
-To:     Qinglang Miao <miaoqinglang@huawei.com>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH -next] enetc: simplify the return expression of
- enetc_vf_set_mac_addr()
-Thread-Topic: [PATCH -next] enetc: simplify the return expression of
- enetc_vf_set_mac_addr()
-Thread-Index: AQHWkBiMF02kkeGX10+maMzxyVQzFKlzErJw
-Date:   Mon, 21 Sep 2020 13:18:16 +0000
-Message-ID: <AM0PR04MB6754E556C79F067897456106963A0@AM0PR04MB6754.eurprd04.prod.outlook.com>
-References: <20200921131026.91790-1-miaoqinglang@huawei.com>
-In-Reply-To: <20200921131026.91790-1-miaoqinglang@huawei.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [5.12.124.231]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 32d1db3d-d261-4667-60f5-08d85e30cd46
-x-ms-traffictypediagnostic: AM0PR04MB4116:
-x-microsoft-antispam-prvs: <AM0PR04MB41161C9D19755CA029C7619D963A0@AM0PR04MB4116.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1060;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: VB4sXLExAF2ntyHuExTnSjWXGU7P7m9Vn/P9ftGFGGGeKXWNSCq7bTlOvaweVCrcpGJuWBHvUjAIACGDaIW1kNX/gL49uNfsO5ooQ3TJlXj7QcS0A+a/KygfLh+umQQzwu2ZB0dHWt0zUm9/7z4Cw4HPihUBv/zH6Z57KRhGW1iZKRgHjgfavnXz7hSrr+Q72IkscGIpFIA3Pu33JZhJ+PHiUv3/oaQvBYk133C9M1ehl52xRssje+Mp2ZbYuUAsU6dcofZ+tIvPR3KIT84qwTUPykmtz4gpPKaDydDkj4eGDnBcrGWg/iOv37Z4JQl9D+U+nPoXCQzIhycDZ+qSgzVyfkazrz+ijWP/HzXMnC/5wz0QNBBjP/U8bkhlmu8f
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6754.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(366004)(376002)(39860400002)(136003)(66476007)(76116006)(26005)(66446008)(478600001)(66556008)(4326008)(33656002)(54906003)(316002)(64756008)(6916009)(8936002)(44832011)(186003)(7696005)(71200400001)(2906002)(83380400001)(52536014)(9686003)(55016002)(6506007)(8676002)(86362001)(4744005)(5660300002)(66946007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: CegEjd0aCCNXqImGurzgnHMFE+l+EJLtZHG4h1JIAoKXP0M0sW4hc8s+P4dqIRJDlx1Wf2yzcEixKpv7OyiopVpnlT/8JoEFxdaD0Q5pSgWLPX05Gv1t+1i0HsfqUKp5+uJ6dhN4rGLryxOjAFB0f6Kzw5VWf1aDokxwSa8K7bjVEbpx2z0Bh+9Te0FIe6uwQdoYpzDGsEFclCVFN2vVpX6hJcBmcwc9Atpz4mkw5MQjdN+Kr11IY5CoWka9sNr3UI1MsL8W5n82m0NAEVPXXpRDUl0Nf3tsk9s0HQxvF4LT4U6rq0aAV85DE7oIrbLUYIitf3YPDUJNpi4uTY2EnsWcXAnlZvX37mT0qzb9FtjfMU++3EUlGNeEoosl7vxUnDo4IhLpVsuME+UAadMLYpznHEVuZF4s6ru3Floyg4YR0KXQmEAOHw04NtEvXDSlTFV7qK+LDQi194tOxKkuVE1hO9BChUHLggMUzL97BJXO3EX0uJ4RtoCwuhs1kK6s0UD5WwQE2bSjI8X5OysA3/wxRRzPkVgDCuj8f0QuPJzrO5gE6uFcU/ZJJhERDG0YvFNfKbG01upB7dioC+UYmt+UyHgUgwAN3pDFEQZzJtwgiX2mJoKCzHm4dxjTa3ILxtlh5DLb1G9eHlc0ncljEQ==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1727172AbgIUNSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:18:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27579 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726689AbgIUNSm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:18:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600694319;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=35I3qr6WLeCCn4WPkLuTptC2Ivu0yAxB872vFqkh5Dw=;
+        b=QoiX8t/W1icbxMG/nLKR3SF1wXnsdg9+BghSusm/mGAODIO5zADplok0RSUim55VBVazKD
+        1civHMdlfYGN/l+2Riigp1VVzQw90ubwFi5ZvMjdH1TDmtAzi40SoDvl3bHBSM71/G8DiE
+        d8GoahgM0rqcfqrmqdYhDVFkApbgccU=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-139-WDrGnG0RNsSKwjIvT8f-Hg-1; Mon, 21 Sep 2020 09:18:37 -0400
+X-MC-Unique: WDrGnG0RNsSKwjIvT8f-Hg-1
+Received: by mail-ed1-f69.google.com with SMTP id c3so4583254edm.7
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 06:18:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=35I3qr6WLeCCn4WPkLuTptC2Ivu0yAxB872vFqkh5Dw=;
+        b=WE4TrtYJfeXQMSOGGIfJdEUv65NuYswfMn2S5iYg8xkYOoKqF+BNljeqy9H1WV1at0
+         gmX8bMuiU+CLvTEsilMAq7oYD/EmWgcwjctqNogjDrUk6ymICnILYy5UKAKk8CfS86th
+         ysFfOQ8eALw9Xie5Ph1jiT2C2Cx0zoFldBm2EhGgdluRTKqqE2LjTmCLVEPZ5x8YdWw8
+         EifHnjEpjrQSqiuiaGvbAQ9SuefWvTFR7h8AHSM6Wlp/C6ZrHilvHNCZDgVyey2nVXwe
+         PIz3vwjiS7s3KCDgAVJZhjzkvgIrIVZhFRBe+yPz5j3AijgByCewyOiEhj57AhrxSb+j
+         XZ2Q==
+X-Gm-Message-State: AOAM533i9Lpi52CFwFUk9Q/kXopGl5XapLG/e/mIMAyCsZ16oHAxBpLV
+        hTZ8wPKrFNX3Cw7EC3Hy1yBDpMcnoZNCpPFU90CQpnpO7iy5jyDsskhbQB5Lpx7jUxSf5gYWv1X
+        7+gfXliZ/sAuWDm9uaS4PfjKt
+X-Received: by 2002:a17:907:40c1:: with SMTP id nv1mr51759785ejb.318.1600694316226;
+        Mon, 21 Sep 2020 06:18:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwRtkGueuz4hL5qdUjnxB0y/mdXCSRegEnE/f5KzfWGN4E5QxVyuFeU8/KWdTtTwyjchJs/Kg==
+X-Received: by 2002:a17:907:40c1:: with SMTP id nv1mr51759748ejb.318.1600694315776;
+        Mon, 21 Sep 2020 06:18:35 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id be2sm8589193edb.0.2020.09.21.06.18.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Sep 2020 06:18:35 -0700 (PDT)
+From:   Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH 3/3] platform/x86: Intel PMT Crashlog capability driver
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     "David E. Box" <david.e.box@linux.intel.com>,
+        Lee Jones <lee.jones@linaro.org>, dvhart@infradead.org,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        Andy Shevchenko <andy@infradead.org>
+References: <20200911194549.12780-1-david.e.box@linux.intel.com>
+ <20200911194549.12780-4-david.e.box@linux.intel.com>
+ <6e3738db-bfff-7fd2-65e6-bd0d126f9eaa@redhat.com>
+ <CAKgT0UcxSwRseMBdMd0_HDUS=JGZDAZnAy-tkLkB-hMXLYtucw@mail.gmail.com>
+ <CAKgT0UfM0534GZcKzgTeEa3nq2+FWHk4PfA593smGOLun4d97A@mail.gmail.com>
+ <67f5816a-1307-da81-ff71-cea1f907b58b@redhat.com>
+ <CAKgT0UdvuLuDRnE5nzOr6fWkC9TJVQNRa+kf1Pcb9mUxGMBXPw@mail.gmail.com>
+Message-ID: <e7abdcfe-174c-d8e2-c867-107801041742@redhat.com>
+Date:   Mon, 21 Sep 2020 15:18:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6754.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 32d1db3d-d261-4667-60f5-08d85e30cd46
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Sep 2020 13:18:16.7808
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hQYUgkMApfNTX3m6an/4dHY6TktsrKNg3nWEQB3yTCIhY6IA3wz7P2Ny/fNb31BA6Qm15rQ4AJHmirYKIfyT/w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB4116
+In-Reply-To: <CAKgT0UdvuLuDRnE5nzOr6fWkC9TJVQNRa+kf1Pcb9mUxGMBXPw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->-----Original Message-----
->From: Qinglang Miao <miaoqinglang@huawei.com>
->Sent: Monday, September 21, 2020 4:10 PM
->To: Claudiu Manoil <claudiu.manoil@nxp.com>
->Cc: David S. Miller <davem@davemloft.net>; Jakub Kicinski
-><kuba@kernel.org>; netdev@vger.kernel.org; linux-kernel@vger.kernel.org;
->Qinglang Miao <miaoqinglang@huawei.com>
->Subject: [PATCH -next] enetc: simplify the return expression of
->enetc_vf_set_mac_addr()
->
->Simplify the return expression.
->
->Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-Reviewed-by: Claudiu Manoil <claudiu.manoil@nxp.com>
+Hi,
+
+On 9/17/20 11:35 PM, Alexander Duyck wrote:
+> On Thu, Sep 17, 2020 at 5:12 AM Hans de Goede <hdegoede@redhat.com> wrote:
+>>
+>> Hi,
+>>
+>> On 9/15/20 12:35 AM, Alexander Duyck wrote:
+>>> On Mon, Sep 14, 2020 at 11:07 AM Alexander Duyck
+>>> <alexander.duyck@gmail.com> wrote:
+>>>>
+>>>> On Mon, Sep 14, 2020 at 6:42 AM Hans de Goede <hdegoede@redhat.com> wrote:
+>>>>>
+>>>>> Hi,
+>>>>>
+>>>>> On 9/11/20 9:45 PM, David E. Box wrote:
+>>>>>> From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+>>>>>>
+>>>>>> Add support for the Intel Platform Monitoring Technology crashlog
+>>>>>> interface.  This interface provides a few sysfs values to allow for
+>>>>>> controlling the crashlog telemetry interface as well as a character driver
+>>>>>> to allow for mapping the crashlog memory region so that it can be accessed
+>>>>>> after a crashlog has been recorded.
+>>>>>>
+>>>>>> This driver is meant to only support the server version of the crashlog
+>>>>>> which is identified as crash_type 1 with a version of zero. Currently no
+>>>>>> other types are supported.
+>>>>>>
+>>>>>> Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+>>>>>> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+>>>>>> ---
+>>>>>>     .../ABI/testing/sysfs-class-pmt_crashlog      |  66 ++
+>>>>>>     drivers/platform/x86/Kconfig                  |  10 +
+>>>>>>     drivers/platform/x86/Makefile                 |   1 +
+>>>>>>     drivers/platform/x86/intel_pmt_crashlog.c     | 588 ++++++++++++++++++
+>>>>>>     4 files changed, 665 insertions(+)
+>>>>>>     create mode 100644 Documentation/ABI/testing/sysfs-class-pmt_crashlog
+>>>>>>     create mode 100644 drivers/platform/x86/intel_pmt_crashlog.c
+>>>>>>
+>>>>>> diff --git a/Documentation/ABI/testing/sysfs-class-pmt_crashlog b/Documentation/ABI/testing/sysfs-class-pmt_crashlog
+>>>>>> new file mode 100644
+>>>>>> index 000000000000..40fb4ff437a6
+>>>>>> --- /dev/null
+>>>>>> +++ b/Documentation/ABI/testing/sysfs-class-pmt_crashlog
+>>>>>> @@ -0,0 +1,66 @@
+>>>>>> +What:                /sys/class/pmt_crashlog/
+>>>>>> +Date:                September 2020
+>>>>>> +KernelVersion:       5.10
+>>>>>> +Contact:     Alexander Duyck <alexander.h.duyck@linux.intel.com>
+>>>>>> +Description:
+>>>>>> +             The pmt_crashlog/ class directory contains information
+>>>>>> +             for devices that expose crashlog capabilities using the Intel
+>>>>>> +             Platform Monitoring Technology (PTM).
+>>>>>> +
+>>>>>> +What:                /sys/class/pmt_crashlog/crashlogX
+>>>>>> +Date:                September 2020
+>>>>>> +KernelVersion:       5.10
+>>>>>> +Contact:     Alexander Duyck <alexander.h.duyck@linux.intel.com>
+>>>>>> +Description:
+>>>>>> +             The crashlogX directory contains files for configuring an
+>>>>>> +             instance of a PMT crashlog device that can perform crash data
+>>>>>> +             recoring. Each crashlogX device has an associated
+>>>>>> +             /dev/crashlogX device node. This node can be opened and mapped
+>>>>>> +             to access the resulting crashlog data. The register layout for
+>>>>>> +             the log can be determined from an XML file of specified guid
+>>>>>> +             for the parent device.
+>>>>>> +
+>>>>>> +What:                /sys/class/pmt_crashlog/crashlogX/guid
+>>>>>> +Date:                September 2020
+>>>>>> +KernelVersion:       5.10
+>>>>>> +Contact:     Alexander Duyck <alexander.h.duyck@linux.intel.com>
+>>>>>> +Description:
+>>>>>> +             (RO) The guid for this crashlog device. The guid identifies the
+>>>>>> +             version of the XML file for the parent device that should be
+>>>>>> +             used to determine the register layout.
+>>>>>> +
+>>>>>> +What:                /sys/class/pmt_crashlog/crashlogX/size
+>>>>>> +Date:                September 2020
+>>>>>> +KernelVersion:       5.10
+>>>>>> +Contact:     Alexander Duyck <alexander.h.duyck@linux.intel.com>
+>>>>>> +Description:
+>>>>>> +             (RO) The length of the result buffer in bytes that corresponds
+>>>>>> +             to the mapping size for the /dev/crashlogX device node.
+>>>>>> +
+>>>>>> +What:                /sys/class/pmt_crashlog/crashlogX/offset
+>>>>>> +Date:                September 2020
+>>>>>> +KernelVersion:       5.10
+>>>>>> +Contact:     Alexander Duyck <alexander.h.duyck@linux.intel.com>
+>>>>>> +Description:
+>>>>>> +             (RO) The offset of the buffer in bytes that corresponds
+>>>>>> +             to the mapping for the /dev/crashlogX device node.
+>>>>>> +
+>>>>>> +What:                /sys/class/pmt_crashlog/crashlogX/enable
+>>>>>> +Date:                September 2020
+>>>>>> +KernelVersion:       5.10
+>>>>>> +Contact:     Alexander Duyck <alexander.h.duyck@linux.intel.com>
+>>>>>> +Description:
+>>>>>> +             (RW) Boolean value controlling if the crashlog functionality
+>>>>>> +             is enabled for the /dev/crashlogX device node.
+>>>>>> +
+>>>>>> +What:                /sys/class/pmt_crashlog/crashlogX/trigger
+>>>>>> +Date:                September 2020
+>>>>>> +KernelVersion:       5.10
+>>>>>> +Contact:     Alexander Duyck <alexander.h.duyck@linux.intel.com>
+>>>>>> +Description:
+>>>>>> +             (RW) Boolean value controlling  the triggering of the
+>>>>>> +             /dev/crashlogX device node. When read it provides data on if
+>>>>>> +             the crashlog has been triggered. When written to it can be
+>>>>>> +             used to either clear the current trigger by writing false, or
+>>>>>> +             to trigger a new event if the trigger is not currently set.
+>>>>>> +
+>>>>>
+>>>>> Both the pmt_crashlog and the attributes suggest that this is highly
+>>>>> Intel PMT specific. /sys/class/foo interfaces are generally speaking
+>>>>> meant to be generic interfaces.
+>>>>>
+>>>>> If this was defining a generic, vendor and implementation agnostic interface for
+>>>>> configuring / accessing crashlogs, then using a class would be fine, but that
+>>>>> is not the case, so I believe that this should not implement / register a class.
+>>>>>
+>>>>> Since the devices are instantiated through MFD there already is a
+>>>>> static sysfs-path which can be used to find the device in sysfs:
+>>>>> /sys/bus/platform/device/pmt_crashlog
+>>>>>
+>>>>> So you can register the sysfs attributes directly under the platform_device
+>>>>> and then userspace can easily find them, so there really is no need to
+>>>>> use a class here.
+>>>>
+>>>> I see. So we change the root directory from "/sys/class/pmt_crashlog/"
+>>>> to "/sys/bus/platform/device/pmt_crashlog" while retaining the same
+>>>> functionality. That should be workable.
+>>>
+>>> So one issue as I see it is that if we were to change this then we
+>>> probably need to to change the telemetry functionality that was
+>>> recently accepted
+>>> (https://lore.kernel.org/lkml/20200819180255.11770-1-david.e.box@linux.intel.com/)
+
+You say that this has been accepted, by I don't see any intel_pmt.c
+file here yet: ?
+
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/drivers/mfd/
+
+>>> as well. The general idea with using the /sys/class/pmt_crashlog/
+>>> approach was to keep things consistent with how the pmt_telemetry was
+>>> being accessed. So if we change this then we end up with very
+>>> different interfaces for the two very similar pieces of functionality.
+>>> So ideally we would want to change both telemetry and crashlog to
+>>> function the same way.
+>>
+>> I agree that the telemetry interface should be changed in a similar way.
+>>
+>> Luckily it seems that this is not in Linus' tree yet and I'm also not
+>> seeing it in next yet, e.g. :
+>> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/drivers/platform/x86/intel_pmt_telemetry.c
+>> does not exist.
+>>
+>> So we seem to still have time to also get the telemetry driver userspace API
+>> fixed too.
+>>
+>> I see that Andy gave his Reviewed-by for the intel_pmt_telemetry.c code.
+>>
+>> Andy, I have some concerns about the userspace API choices made here,
+>> see my earlier review of this patch. Do you agree with my suggestions,
+>> or do you think it would be ok to move forward with the telemetry and
+>> now also the crashlog API each registering their own private class
+>> under /sys/class ?
+>>
+>> AFAIK classes are supposed to be generic and not driver-private, so
+>> that seems wrong to me.  Also PMC is Intel specific and vendor specific
+>> stuff really does not belong under /sys/class AFAIK ?
+>>
+>>> Do you have any good examples of anything that has done something
+>>> similar? From what I can tell it looks like we need to clean up the
+>>> naming to drop the ".%d.auto" for the bus directory names
+>>
+>> Assuming there will only be one of each platform-device, then you
+>> can just replace the PLATFORM_DEVID_AUTO param to devm_mfd_add_devices()
+>> with PLATFORM_DEVID_NONE and the .%d.auto will go away.
+> 
+> We will have multiples of each platform device. So for example we can
+> have multiple OOBMSM in each system and each OOBMSM may have multiple
+> telemetry regions and maybe one crashlog.
+
+What is a OOBMSM ? Please don't make the person reviewing your patches
+do detective work. Only use acronyms if they are something of which
+you could reasonably expect any mailinglist reader to know what
+they are.
+
+So looking at:
+https://lore.kernel.org/lkml/20200819180255.11770-3-david.e.box@linux.intel.com/
+
+What you are saying (I guess) is that both the pmt_pci_probe()
+function may run multiple times; and that for a single pmt_pci_probe()
+call, pmt_add_dev() may hit the DVSEC_INTEL_ID_TELEMETRY case more then
+once?
+
+If I understand either one correct, then indeed we need PLATFORM_DEVID_AUTO.
+
+Which I guess makes using a class for enumeration somewhat sensible.
+
+But I really do not think we need 2 separate classes, one for
+pmt_telemetry and one for pmt_crashlog. Also since this is rather
+Intel specific lets at least make that clear in the name.
+
+So how about intel_pmt as class and then register both the telemetry
+and the crashlog devs there? (the type can easily be deferred from
+the name part before the .%d.auto suffix) ?
+
+
+>>> and then
+>>> look at adding a folder to handle all of the instances of either
+>>> telemetry or crashlog, assuming we follow the reg-dummy or serial8250
+>>> model.
+>>
+>> So there can be multiple instances, you mean like the multiple chardevs
+>> you add now, or can there be multiple platform-devices of the same
+>> time instantiated through the MFD code ?
+>>
+>> If you mean like the multiple chardevs, then yes you could add a folder
+>> for the binary sysfs attributes replacing those, or register them
+>> with a dynamic name with a number appended to the name.
+> 
+> In addition to just the binary sysfs we need to expose several other
+> fields including the GUID, the size, and controls for enabling,
+> disabling, and either triggering or checking to see if the crashlog
+> has already been triggered. As such we would end up with a folder per
+> device and the binary sysfs would probably be living in the folder.
+
+Erm, in the Documentation/ABI/testing/sysfs-class-pmt_crashlog
+file from above you already put all that in sysfs ?
+
+So just add the binary sysfs file replacing the char-device next
+to (in the same dir as) the existing sysfs attributes for these.
+
+>>> Similarly the crashlog and telemetry both rely on similar mechanisms
+>>> to display the MMIO region containing the data. I still need to spend
+>>> some more time looking into what is involved in switching from a char
+>>> device to a binary sysfs, but I think with the example I found earlier
+>>> of the resourceN bit from the PCI sysfs I can probably make that work
+>>> for both cases.
+>>
+>> I'm not sure that the PCI sysfs io resources are the best example,
+>> as mentioned those mmap to actual memory-mapped io, which is somewhat
+>> special.
+> 
+> The reason why I bring them up is because there are cases for
+> telemetry where the applications will likely want to be able to just
+> memory map the region and poll on certain statistics. So if nothing
+> else we may end up supporting both a mmap and a read option.
+
+Ok.
+
+Regards,
+
+Hans
+
