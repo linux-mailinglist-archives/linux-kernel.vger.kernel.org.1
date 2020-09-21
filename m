@@ -2,133 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5F59271F5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 11:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EBE3271F60
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 11:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726496AbgIUJzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 05:55:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:32820 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726375AbgIUJzJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 05:55:09 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2A091AF0B;
-        Mon, 21 Sep 2020 09:55:43 +0000 (UTC)
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Song Liu <song@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Richard Weinberger <richard@nod.at>,
-        Minchan Kim <minchan@kernel.org>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Justin Sanders <justin@coraid.com>,
-        linux-mtd@lists.infradead.org, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
-        linux-kernel@vger.kernel.org, drbd-dev@lists.linbit.com,
-        linux-raid@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, cgroups@vger.kernel.org
-References: <20200921080734.452759-1-hch@lst.de>
- <20200921080734.452759-4-hch@lst.de>
-From:   Coly Li <colyli@suse.de>
-Autocrypt: addr=colyli@suse.de; keydata=
- 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
-Subject: Re: [PATCH 03/13] bcache: inherit the optimal I/O size
-Message-ID: <b547a1b6-ab03-0520-012d-86d112c83d92@suse.de>
-Date:   Mon, 21 Sep 2020 17:54:59 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        id S1726508AbgIUJzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 05:55:40 -0400
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:39676 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726358AbgIUJzk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 05:55:40 -0400
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 08L9pWWt008800;
+        Mon, 21 Sep 2020 04:55:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=WW55bEkB7c/YZlSmO/EfsOHzstbkfstuef6OZNz+13c=;
+ b=RAPzGpwEZK3EtSkcJz7IYXubWw2d6vb6Z6COv6mOaxlza+Ftd/N2PHUA2t3OLLhg9MRd
+ dxTDwjvSV/TID0foNaLZz3+H9VO8ks5/8xrChPwooO9+ksEz/70TxbI5uYBWyRrU36sq
+ Ze9KCk7CYEZkWRqrzvTMiTRivlzUuGb1JvFVsYtmpwUKuG7SzkKExtro+H7XbmuipSmU
+ k8r1CiI8Zlx7e8Tsj9mAdmuSctFUgls3OecRoKIuIwYX5KuT41ylOE4qZuquJ4PIdGs4
+ yHgXUdbVhSQT27Y9wzfFVRDnPRPEFVTRMBnMxBB4w0623C05G4+qIMNcp5ckp8uAITlz zA== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 33nfd221ju-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 21 Sep 2020 04:55:21 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 21 Sep
+ 2020 10:55:19 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Mon, 21 Sep 2020 10:55:19 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E4D5A2C3;
+        Mon, 21 Sep 2020 09:55:18 +0000 (UTC)
+Date:   Mon, 21 Sep 2020 09:55:18 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+CC:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Hoan Tran <hoan@os.amperecomputing.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Sungbo Eo <mans0n@gorani.run>, Stefan Agner <stefan@agner.ch>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Yash Shah <yash.shah@sifive.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        - <patches@opensource.cirrus.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Amelie Delaunay <amelie.delaunay@st.com>,
+        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Andy Teng <andy.teng@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Sricharan R <sricharan@codeaurora.org>,
+        Chris Brandt <chris.brandt@renesas.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, <linux-gpio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-unisoc@lists.infradead.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+        <linux-media@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-renesas-soc@vger.kernel.org>
+Subject: Re: [PATCH v2 09/13] dt-bindings: pinctrl: include common schema in
+ GPIO controllers
+Message-ID: <20200921095518.GQ10899@ediswmail.ad.cirrus.com>
+References: <20200917165301.23100-1-krzk@kernel.org>
+ <20200917165301.23100-10-krzk@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200921080734.452759-4-hch@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200917165301.23100-10-krzk@kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0
+ priorityscore=1501 impostorscore=0 phishscore=0 suspectscore=0
+ mlxlogscore=807 adultscore=0 clxscore=1015 malwarescore=0 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009210071
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/9/21 16:07, Christoph Hellwig wrote:
-> Inherit the optimal I/O size setting just like the readahead window,
-> as any reason to do larger I/O does not apply to just readahead.
+On Thu, Sep 17, 2020 at 06:52:57PM +0200, Krzysztof Kozlowski wrote:
+> Include the common GPIO schema in GPIO controllers to be sure all common
+> properties are properly validated.
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> 
 > ---
->  drivers/md/bcache/super.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-> index 1bbdc410ee3c51..48113005ed86ad 100644
-> --- a/drivers/md/bcache/super.c
-> +++ b/drivers/md/bcache/super.c
-> @@ -1430,6 +1430,8 @@ static int cached_dev_init(struct cached_dev *dc, unsigned int block_size)
->  	dc->disk.disk->queue->backing_dev_info->ra_pages =
->  		max(dc->disk.disk->queue->backing_dev_info->ra_pages,
->  		    q->backing_dev_info->ra_pages);
-> +	blk_queue_io_opt(dc->disk.disk->queue,
-> +		max(queue_io_opt(dc->disk.disk->queue), queue_io_opt(q)));
->  
 
-Hi Christoph,
+For the Cirrus bits:
 
-I am not sure whether virtual bcache device's optimal request size can
-be simply set like this.
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-Most of time inherit backing device's optimal request size is fine, but
-there are two exceptions,
-- Read request hits on cache device
-- User sets sequential_cuttoff as 0, all writing may go into cache
-device firstly.
-For the above two conditions, all I/Os goes into cache device, using
-optimal request size of backing device might be improper.
-
-Just a guess, is it OK to set the optimal request size of the virtual
-bcache device as the least common multiple of cache device's and backing
-device's optimal request sizes ?
-
-
-[snipped]
-
-Thanks.
-
-Coly Li
-
+Thanks,
+Charles
