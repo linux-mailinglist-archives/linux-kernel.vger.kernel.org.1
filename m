@@ -2,30 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D453C272274
+	by mail.lfdr.de (Postfix) with ESMTP id 63E46272273
 	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:28:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726828AbgIUL2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 07:28:51 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13746 "EHLO huawei.com"
+        id S1726806AbgIUL2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 07:28:49 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13747 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726578AbgIUL2u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 07:28:50 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 907C930B26541FB099A8;
-        Mon, 21 Sep 2020 19:28:46 +0800 (CST)
-Received: from huawei.com (10.175.112.208) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Mon, 21 Sep 2020
- 19:28:36 +0800
+        id S1726648AbgIUL2t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 07:28:49 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 61D5732AC86CC64EB1AB;
+        Mon, 21 Sep 2020 19:28:47 +0800 (CST)
+Received: from huawei.com (10.175.112.208) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Mon, 21 Sep 2020
+ 19:28:40 +0800
 From:   Wang Wensheng <wangwensheng4@huawei.com>
 To:     <mpe@ellerman.id.au>, <benh@kernel.crashing.org>,
-        <paulus@samba.org>, <atrajeev@linux.vnet.ibm.com>,
-        <wangwensheng4@huawei.com>, <maddy@linux.ibm.com>,
-        <kjain@linux.ibm.com>, <anju@linux.vnet.ibm.com>,
-        <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] powerpc/perf: Fix symbol undeclared warning
-Date:   Mon, 21 Sep 2020 11:25:57 +0000
-Message-ID: <20200921112557.85471-1-wangwensheng4@huawei.com>
+        <paulus@samba.org>, <sourabhjain@linux.ibm.com>,
+        <wangwensheng4@huawei.com>, <linuxppc-dev@lists.ozlabs.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] powerpc/opalcore: Fix symbol undeclared warning
+Date:   Mon, 21 Sep 2020 11:26:01 +0000
+Message-ID: <20200921112601.85543-1-wangwensheng4@huawei.com>
 X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -37,54 +36,27 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Build kernel with `C=2`:
-arch/powerpc/perf/isa207-common.c:24:18: warning: symbol
-'isa207_pmu_format_attr' was not declared. Should it be static?
-arch/powerpc/perf/power9-pmu.c:101:5: warning: symbol 'p9_dd21_bl_ev'
-was not declared. Should it be static?
-arch/powerpc/perf/power9-pmu.c:115:5: warning: symbol 'p9_dd22_bl_ev'
-was not declared. Should it be static?
+arch/powerpc/platforms/powernv/opal-core.c:74:16: warning: symbol
+'mpipl_kobj' was not declared. Should it be static?
 
 Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
 ---
- arch/powerpc/perf/isa207-common.c | 2 +-
- arch/powerpc/perf/power9-pmu.c    | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ arch/powerpc/platforms/powernv/opal-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/perf/isa207-common.c b/arch/powerpc/perf/isa207-common.c
-index 964437adec18..85dc860b265b 100644
---- a/arch/powerpc/perf/isa207-common.c
-+++ b/arch/powerpc/perf/isa207-common.c
-@@ -21,7 +21,7 @@ PMU_FORMAT_ATTR(thresh_stop,	"config:32-35");
- PMU_FORMAT_ATTR(thresh_start,	"config:36-39");
- PMU_FORMAT_ATTR(thresh_cmp,	"config:40-49");
+diff --git a/arch/powerpc/platforms/powernv/opal-core.c b/arch/powerpc/platforms/powernv/opal-core.c
+index 6dba3b62269f..c25f9f254f05 100644
+--- a/arch/powerpc/platforms/powernv/opal-core.c
++++ b/arch/powerpc/platforms/powernv/opal-core.c
+@@ -71,7 +71,7 @@ static LIST_HEAD(opalcore_list);
+ static struct opalcore_config *oc_conf;
+ static const struct opal_mpipl_fadump *opalc_metadata;
+ static const struct opal_mpipl_fadump *opalc_cpu_metadata;
+-struct kobject *mpipl_kobj;
++static struct kobject *mpipl_kobj;
  
--struct attribute *isa207_pmu_format_attr[] = {
-+static struct attribute *isa207_pmu_format_attr[] = {
- 	&format_attr_event.attr,
- 	&format_attr_pmcxsel.attr,
- 	&format_attr_mark.attr,
-diff --git a/arch/powerpc/perf/power9-pmu.c b/arch/powerpc/perf/power9-pmu.c
-index 2a57e93a79dc..4a315fad1f99 100644
---- a/arch/powerpc/perf/power9-pmu.c
-+++ b/arch/powerpc/perf/power9-pmu.c
-@@ -98,7 +98,7 @@ extern u64 PERF_REG_EXTENDED_MASK;
- /* PowerISA v2.07 format attribute structure*/
- extern struct attribute_group isa207_pmu_format_group;
- 
--int p9_dd21_bl_ev[] = {
-+static int p9_dd21_bl_ev[] = {
- 	PM_MRK_ST_DONE_L2,
- 	PM_RADIX_PWC_L1_HIT,
- 	PM_FLOP_CMPL,
-@@ -112,7 +112,7 @@ int p9_dd21_bl_ev[] = {
- 	PM_DISP_HELD_SYNC_HOLD,
- };
- 
--int p9_dd22_bl_ev[] = {
-+static int p9_dd22_bl_ev[] = {
- 	PM_DTLB_MISS_16G,
- 	PM_DERAT_MISS_2M,
- 	PM_DTLB_MISS_2M,
+ /*
+  * Set crashing CPU's signal to SIGUSR1. if the kernel is triggered
 -- 
 2.25.0
 
