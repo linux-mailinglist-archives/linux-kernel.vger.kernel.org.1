@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19BD1272102
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 505DF2720FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727086AbgIUK2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 06:28:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60320 "EHLO
+        id S1727037AbgIUK2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:28:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726775AbgIUK2B (ORCPT
+        with ESMTP id S1726934AbgIUK2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 06:28:01 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FA47C0613D2;
-        Mon, 21 Sep 2020 03:28:00 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id z9so12040762wmk.1;
-        Mon, 21 Sep 2020 03:28:00 -0700 (PDT)
+        Mon, 21 Sep 2020 06:28:05 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 666B5C0613D3;
+        Mon, 21 Sep 2020 03:28:01 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id d4so11581782wmd.5;
+        Mon, 21 Sep 2020 03:28:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=rtKn0+o2ojoOITB0B8/ryvpv4K4vTdQg90PI/damrA4=;
-        b=ErItnf5+hg6S78MglnlJMCuvZHkmSchH5BDlqULqJN/7w+EuU0T+Fn59c4vmjj3t0p
-         pGjN3xd8iQYOztbVjpI7mWuQppPuasNW76I9wwndH7vJ1sYYCKJ8aNSL564OnOHuU3Qi
-         +7Oq7g7h6WQbFhJBsU6LNNe8IOXchAzMDAMzbyMX2aFfx+7jAmMHTvUKcHHMYas7saqp
-         HJkxLLRC5sSZFPoeRLkkRQbl2s2OlQn5wZALFCRAkmxEYKG9SI0jrNSX7f/QEfSqndy7
-         8otsIVNsGbWamN2IBsML28PZvEQLJa8ZJRzAKt0coXrMmzPVmE5Wbls5y+Xeo0NMXoSS
-         Pzuw==
+        bh=JRfXBGFiqY7c/El7z89zWfrRGF9fF+u62x7PKZnaUzI=;
+        b=h6xYtTsM8vUSYrUZdzsJfHb3nX/o/s/ZsfIgvfy4W64xlB8Y8//XzMw6rs+DL3QRDd
+         Y7fQKVv1O8f0qYcpfQhmsXiTH0IjZdTHWpNhNeBNucv+qo4uDFd+NoNOCxlGiwzJFwbH
+         lvjl1I0WT7ojz9WlHuBhp2aGEo/oYLW5d0d6vE2elnKxWcZMI/lSXsJxjj6Xd3kucZvb
+         rkJfHRFTmD8LjoEgawcqQ0+smQ4kCObAGAmqy/LWxlJJ4SXsMmCShvcqO//Tm4fjC3eM
+         rIhe4JaH78ISzJUWmbSjq6WD31xhUP3DDiJixxChh1BMOmc1enQZEnT58EBsoxNkYiQl
+         fKAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=rtKn0+o2ojoOITB0B8/ryvpv4K4vTdQg90PI/damrA4=;
-        b=BOFQGo1t//xM+WkwpVXZ+hxPLk9c/vOWQMOt2VbqKH2T3uUPsImP2dHa7vgpZIdCzl
-         y7l5EisYAHfm5EbDiimlrE2QSgXcCiuciWoCOfpxZbtixfTeAqfG32+CDGigJ0JLbtek
-         AykGY6E9y6cIAeHO4/ocxDn9Kaq/mWDTXr8c7BKr/nSDcGbm9i0838B/XU5a2tCQqh7Q
-         moZ9c+5yqOEXzGUTRQlrMa2kgDbyjsNpyKI2dEsa3ioJsXl7CogBHdrx9Uy/BJLm08Rz
-         pDG3xHHFbSH1KzB8wMhnTzJv4Owt3WLKOHdNPKzXNaJ2yJaVyFCBQikrsWiRVlaSLLY1
-         jwJw==
-X-Gm-Message-State: AOAM530gYy25MmdIbuZyTqJJHRqDFiDGCL4U+p/fJIjWUbanuIcVGhwX
-        +ddIlJwjGa985SMH9nU0jxcJL3oUUHbH0KBx
-X-Google-Smtp-Source: ABdhPJxo9vVt1sr0+/0vHFfnTaHHlUc7W3oJFyDaZFZDbaKWKZlWwja3LVFhtmilANhiT1a8V2TSiw==
-X-Received: by 2002:a05:600c:2257:: with SMTP id a23mr30635623wmm.102.1600684078758;
-        Mon, 21 Sep 2020 03:27:58 -0700 (PDT)
+        bh=JRfXBGFiqY7c/El7z89zWfrRGF9fF+u62x7PKZnaUzI=;
+        b=QFb9o83GL7k6b89WTkjCnPoHYDoapYivAUIq3bGw9GUpbeXg19OGLm8vGvvj451koq
+         PPugPIWMPvmtgvv9F3lwVKGx6/z8AoS0WCXkbJ3G3LRWDEltPUh6bWKR585Hls5JlE6F
+         u/G0hD3ikRkj2cEp2bm6TF1k0gRJBgbbOrCPxK1cKwhdT8VS18WTesnHQs5163JJLf2s
+         b8LAvpUjJeeyoPdkRJnXBC2HeFFYT+LcfopsvPVe1KMW3/uwt/NxCOU8y3hNsSjMjqff
+         QLVkpQwE9PlftZUE3GNej7+sB54TiCZg0kLqGu7bY3ReCE5gvPwEzaOnmdrbvOKO1X+w
+         uygw==
+X-Gm-Message-State: AOAM530FWlnrsfWY5rvYadNonn1dgo6s42E1ZVV8tTj5lj9WAvyGyHH6
+        K4YlsuSPY+h/G90AT5rh5Oc=
+X-Google-Smtp-Source: ABdhPJyAeyQp9GMNSy+S2cHGsEUh2xBRCZQgRuvb1YXpdy5goNbZMxbQXjnbAtL/QLWaBrI9K3UR7A==
+X-Received: by 2002:a1c:6607:: with SMTP id a7mr29150191wmc.142.1600684079969;
+        Mon, 21 Sep 2020 03:27:59 -0700 (PDT)
 Received: from localhost.localdomain (lputeaux-656-1-11-33.w82-127.abo.wanadoo.fr. [82.127.142.33])
-        by smtp.gmail.com with ESMTPSA id h2sm20713774wrp.69.2020.09.21.03.27.57
+        by smtp.gmail.com with ESMTPSA id h2sm20713774wrp.69.2020.09.21.03.27.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 03:27:57 -0700 (PDT)
+        Mon, 21 Sep 2020 03:27:59 -0700 (PDT)
 From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -60,9 +60,9 @@ Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-sunxi@googlegroups.com, Ondrej Jirman <megous@megous.com>,
         =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH v4 19/22] ARM: dts: sun8i-h3: Enable HDMI audio on Orange Pi PC/One
-Date:   Mon, 21 Sep 2020 12:27:28 +0200
-Message-Id: <20200921102731.747736-20-peron.clem@gmail.com>
+Subject: [PATCH v4 20/22] arm64: dts: sun50i-h6-orangepi-3: Enable HDMI audio
+Date:   Mon, 21 Sep 2020 12:27:29 +0200
+Message-Id: <20200921102731.747736-21-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200921102731.747736-1-peron.clem@gmail.com>
 References: <20200921102731.747736-1-peron.clem@gmail.com>
@@ -80,15 +80,14 @@ The board has HDMI output, enable audio on it.
 Signed-off-by: Ondrej Jirman <megous@megous.com>
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
 ---
- arch/arm/boot/dts/sun8i-h3-orangepi-one.dts | 8 ++++++++
- arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts  | 8 ++++++++
- 2 files changed, 16 insertions(+)
+ arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-one.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-one.dts
-index 4759ba3f2986..a5b45655fcf6 100644
---- a/arch/arm/boot/dts/sun8i-h3-orangepi-one.dts
-+++ b/arch/arm/boot/dts/sun8i-h3-orangepi-one.dts
-@@ -146,6 +146,14 @@ hdmi_out_con: endpoint {
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts
+index 15c9dd8c4479..193587e78031 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts
+@@ -128,6 +128,14 @@ hdmi_out_con: endpoint {
  	};
  };
  
@@ -96,32 +95,13 @@ index 4759ba3f2986..a5b45655fcf6 100644
 +	status = "okay";
 +};
 +
-+&i2s2 {
++&i2s1 {
 +	status = "okay";
 +};
 +
  &mmc0 {
- 	vmmc-supply = <&reg_vcc3v3>;
- 	bus-width = <4>;
-diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts
-index 5aff8ecc66cb..ebb12a6f3a9f 100644
---- a/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts
-+++ b/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts
-@@ -146,6 +146,14 @@ hdmi_out_con: endpoint {
- 	};
- };
- 
-+&hdmi_sound {
-+	status = "okay";
-+};
-+
-+&i2s2 {
-+	status = "okay";
-+};
-+
- &ir {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&r_ir_rx_pin>;
+ 	vmmc-supply = <&reg_cldo1>;
+ 	cd-gpios = <&pio 5 6 GPIO_ACTIVE_LOW>; /* PF6 */
 -- 
 2.25.1
 
