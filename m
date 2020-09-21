@@ -2,29 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE51F2724AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 368AF2724AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:10:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727312AbgIUNKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:10:20 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:42586 "EHLO huawei.com"
+        id S1727320AbgIUNKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:10:25 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:42694 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727269AbgIUNKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:10:16 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 42ADF4B2004922BB7428;
-        Mon, 21 Sep 2020 21:10:15 +0800 (CST)
+        id S1727295AbgIUNKU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:10:20 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id E839D3FFEA6E6DE235F6;
+        Mon, 21 Sep 2020 21:10:17 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 21 Sep 2020 21:10:07 +0800
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 21 Sep 2020 21:10:09 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Thierry Reding <thierry.reding@gmail.com>
-CC:     <dri-devel@lists.freedesktop.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH -next] gpu: host1x: simplify the return expression of host1x_cdma_init()
-Date:   Mon, 21 Sep 2020 21:10:32 +0800
-Message-ID: <20200921131032.91972-1-miaoqinglang@huawei.com>
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+CC:     <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Qinglang Miao" <miaoqinglang@huawei.com>
+Subject: [PATCH -next] HID: intel-ish-hid: simplify the return expression of ishtp_bus_remove_device()
+Date:   Mon, 21 Sep 2020 21:10:33 +0800
+Message-ID: <20200921131033.92017-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -39,35 +40,35 @@ Simplify the return expression.
 
 Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- drivers/gpu/host1x/cdma.c | 8 +-------
+ drivers/hid/intel-ish-hid/ishtp/bus.c | 8 +-------
  1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/drivers/gpu/host1x/cdma.c b/drivers/gpu/host1x/cdma.c
-index e8d3fda91..08a0f9e10 100644
---- a/drivers/gpu/host1x/cdma.c
-+++ b/drivers/gpu/host1x/cdma.c
-@@ -448,8 +448,6 @@ void host1x_cdma_update_sync_queue(struct host1x_cdma *cdma,
-  */
- int host1x_cdma_init(struct host1x_cdma *cdma)
+diff --git a/drivers/hid/intel-ish-hid/ishtp/bus.c b/drivers/hid/intel-ish-hid/ishtp/bus.c
+index c47c3328a..bba29cd36 100644
+--- a/drivers/hid/intel-ish-hid/ishtp/bus.c
++++ b/drivers/hid/intel-ish-hid/ishtp/bus.c
+@@ -502,8 +502,6 @@ static void ishtp_bus_remove_device(struct ishtp_cl_device *device)
+ int ishtp_cl_driver_register(struct ishtp_cl_driver *driver,
+ 			     struct module *owner)
  {
 -	int err;
 -
- 	mutex_init(&cdma->lock);
- 	init_completion(&cdma->complete);
+ 	if (!ishtp_device_ready)
+ 		return -ENODEV;
  
-@@ -459,11 +457,7 @@ int host1x_cdma_init(struct host1x_cdma *cdma)
- 	cdma->running = false;
- 	cdma->torndown = false;
+@@ -511,11 +509,7 @@ int ishtp_cl_driver_register(struct ishtp_cl_driver *driver,
+ 	driver->driver.owner = owner;
+ 	driver->driver.bus = &ishtp_cl_bus_type;
  
--	err = host1x_pushbuffer_init(&cdma->push_buffer);
+-	err = driver_register(&driver->driver);
 -	if (err)
 -		return err;
 -
 -	return 0;
-+	return host1x_pushbuffer_init(&cdma->push_buffer);
++	return driver_register(&driver->driver);
  }
+ EXPORT_SYMBOL(ishtp_cl_driver_register);
  
- /*
 -- 
 2.23.0
 
