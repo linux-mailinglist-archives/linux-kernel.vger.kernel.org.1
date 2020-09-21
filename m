@@ -2,142 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9374B271C35
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 09:44:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 359E9271C3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 09:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726365AbgIUHoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 03:44:00 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:49268 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726236AbgIUHoA (ORCPT
+        id S1726338AbgIUHqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 03:46:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726343AbgIUHqn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 03:44:00 -0400
-Received: from ip5f5af089.dynamic.kabel-deutschland.de ([95.90.240.137] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1kKGUN-0001LG-Cy; Mon, 21 Sep 2020 07:43:55 +0000
-Date:   Mon, 21 Sep 2020 09:43:54 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christian Brauner <christian@brauner.io>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        linux-kselftest@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org,
-        linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v2 1/4] selftests/seccomp: Record syscall during ptrace
- entry
-Message-ID: <20200921074354.6shkt2e5yhzhj3sn@wittgenstein>
-References: <20200919080637.259478-1-keescook@chromium.org>
- <20200919080637.259478-2-keescook@chromium.org>
+        Mon, 21 Sep 2020 03:46:43 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA69FC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 00:46:43 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id k14so8294322pgi.9
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 00:46:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=benyossef-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=KEQZ+0+MjbwK1ElZms1Qgb4W3im9WPY9mb97cPZoGK0=;
+        b=uQbRytZokTI9uAROSbK3E3kPhHy0k8+bTpZNDdwFsDvSZV9ClRnTaGzPeJl+3iL46B
+         B/W1PYvR4awrXTO9WDeUI88a4/UFNeFxMrmqMDYXOB+ZSF/dCv2jPWqMZnfgtYmwsgVA
+         tiYAfKvnau0HbFLtG4zTFIPFGIDhMDYYxIVkDn9TFoYUJAlUrA+ThMqO47z/LPDN8XwY
+         l/iueAjhsKKKTrKAnXkxA1Yd+11IsSnnNywcrSMMUQzhvsXpBteBJVvuSax7CrXyep0j
+         enckp5UJM3mwjWfsZyMJo1NBUXfDvdBDoGt4/OwUT0OGM6UtAQcnMTDN5habb2LtNXdZ
+         LbgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=KEQZ+0+MjbwK1ElZms1Qgb4W3im9WPY9mb97cPZoGK0=;
+        b=cWz/RJVxJ/TUHyCO5slhkNPIUSEdvbAnV8a9sLJ8eXg02/Z8H2m67vSMZXDsbX9EwO
+         bPKTGvAf2eocxRJCDQEbSKch3OweJodiEv3lE92pnI7XEkqPcQ+RCyjg7XTPonf57c8C
+         o27ni7YLzOG7t1FX/Zz4NHcntwDzBTR38arxR0IcTUzxNh9sUGjnTcLlJgmE57+TdLDl
+         3n5F8aknEVeVfdVss1JZnHqonSGDWb18E6/EiZW0M/Uz7EkF3h3aulZ9z++DHbqIpk6Y
+         wSGnv4AigW0DYphTpcC+KVTpOmfQ7KBNwxidOZ0gVuAM8MNTzbXiqlzPt+bAXK2vz32f
+         xPvA==
+X-Gm-Message-State: AOAM533hcipfdT5Xr6CYlOSTsTxBWS2VQ++A+NChXejevsRZ4+p4PmwQ
+        F68rjgI4QIb4aAR/FmTOu+t7PT7SPqK1RIQHqk8W3g==
+X-Google-Smtp-Source: ABdhPJyQpA8ZjwSRlnLg26q0TprnPeXcNQVwncIaeBqK+eZsI4FvBtCOdSwD5EFWTY+UqkN7XkuLHtDjs+xndIYZS4M=
+X-Received: by 2002:a17:902:758b:b029:d2:29fc:c841 with SMTP id
+ j11-20020a170902758bb02900d229fcc841mr2054484pll.39.1600674403207; Mon, 21
+ Sep 2020 00:46:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200919080637.259478-2-keescook@chromium.org>
+References: <20200916071950.1493-3-gilad@benyossef.com> <202009162154.fxQ0Z6wT%lkp@intel.com>
+ <CAOtvUMdv9QNVdaU7N6wJVq27Asyrckuu9bf15fO=+oZUh5iKOg@mail.gmail.com> <CAKwvOdmW+n_g4C_pXnF+8wh2q0gZZyXAfaYR9cVNm3p1QeJ-xA@mail.gmail.com>
+In-Reply-To: <CAKwvOdmW+n_g4C_pXnF+8wh2q0gZZyXAfaYR9cVNm3p1QeJ-xA@mail.gmail.com>
+From:   Gilad Ben-Yossef <gilad@benyossef.com>
+Date:   Mon, 21 Sep 2020 10:46:32 +0300
+Message-ID: <CAOtvUMe1zj+sGhZfvjYD=PciWDby9uKvH70i01FrfVVR6cC_Tg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] crypto: ccree - add custom cache params from DT file
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>, kbuild-all@lists.01.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Network Development <netdev@vger.kernel.org>,
+        Ofir Drang <ofir.drang@arm.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Alex Elder <elder@linaro.org>, Jakub Kicinski <kuba@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 19, 2020 at 01:06:34AM -0700, Kees Cook wrote:
-> In preparation for performing actions during ptrace syscall exit, save
-> the syscall number during ptrace syscall entry. Some architectures do
-> no have the syscall number available during ptrace syscall exit.
-> 
-> Suggested-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-> Link: https://lore.kernel.org/linux-kselftest/20200911181012.171027-1-cascardo@canonical.com/
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  tools/testing/selftests/seccomp/seccomp_bpf.c | 40 +++++++++++++------
->  1 file changed, 27 insertions(+), 13 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-> index bc0fb463c709..c0311b4c736b 100644
-> --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-> +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-> @@ -1949,12 +1949,19 @@ void tracer_seccomp(struct __test_metadata *_metadata, pid_t tracee,
->  
->  }
->  
-> +FIXTURE(TRACE_syscall) {
-> +	struct sock_fprog prog;
-> +	pid_t tracer, mytid, mypid, parent;
-> +	long syscall_nr;
-> +};
-> +
->  void tracer_ptrace(struct __test_metadata *_metadata, pid_t tracee,
->  		   int status, void *args)
->  {
-> -	int ret, nr;
-> +	int ret;
->  	unsigned long msg;
->  	static bool entry;
-> +	FIXTURE_DATA(TRACE_syscall) *self = args;
->  
->  	/*
->  	 * The traditional way to tell PTRACE_SYSCALL entry/exit
-> @@ -1968,24 +1975,31 @@ void tracer_ptrace(struct __test_metadata *_metadata, pid_t tracee,
->  	EXPECT_EQ(entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY
->  			: PTRACE_EVENTMSG_SYSCALL_EXIT, msg);
->  
-> -	if (!entry)
-> +	/*
-> +	 * Some architectures only support setting return values during
-> +	 * syscall exit under ptrace, and on exit the syscall number may
-> +	 * no longer be available. Therefore, save the initial sycall
+Hi,
 
-s/sycall/syscall/
+On Fri, Sep 18, 2020 at 10:39 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Thu, Sep 17, 2020 at 12:20 AM Gilad Ben-Yossef <gilad@benyossef.com> w=
+rote:
+> >
+...
+> >
+> > I am unable to understand this warning. It looks like it is
+> > complaining about a FIELD_GET sanity check that is always false, which
+> > makes sense since we're using a constant.
+> >
+> > Anyone can enlighten me if I've missed something?
+>
+> Looked at some of this code recently.  I think it may have an issue
+> for masks where sizeof(mask) < sizeof(unsigned long long).
+>
+> In your code, via 0day bot:
+>
+>    107          u32 cache_params, ace_const, val, mask;
+> ...
+> > 120          cache_params |=3D FIELD_PREP(mask, val);
+>
+> then in include/linux/bitfield.h, we have:
+>
+>  92 #define FIELD_PREP(_mask, _val)           \
+>  93   ({                \
+>  94     __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: ");  \
+>
+>  44 #define __BF_FIELD_CHECK(_mask, _reg, _val, _pfx)     \
+> ...
+>  52     BUILD_BUG_ON_MSG((_mask) > (typeof(_reg))~0ull,   \
+>  53          _pfx "type of reg too small for mask"); \
+>
+> so the 0ULL in FIELD_PREP is important.  In __BF_FIELD_CHECK, the
+> typeof(_reg) is unsigned long long (because 0ULL was passed).  So we
+> have a comparison between a u32 and a u64; indeed any u32 can never be
+> greater than a u64 that we know has the value of ULLONG_MAX.
+>
+> I did send a series splitting these up, I wonder if they'd help here:
+> https://lore.kernel.org/lkml/20200708230402.1644819-3-ndesaulniers@google=
+.com/
+> --
 
-Otherwise looks good. Thanks!
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Thanks!
 
-> +	 * number here, so it can be examined during both entry and exit
-> +	 * phases.
-> +	 */
-> +	if (entry)
-> +		self->syscall_nr = get_syscall(_metadata, tracee);
-> +	else
->  		return;
->  
-> -	nr = get_syscall(_metadata, tracee);
-> -
-> -	if (nr == __NR_getpid)
-> +	switch (self->syscall_nr) {
-> +	case __NR_getpid:
->  		change_syscall(_metadata, tracee, __NR_getppid, 0);
-> -	if (nr == __NR_gettid)
-> +		break;
-> +	case __NR_gettid:
->  		change_syscall(_metadata, tracee, -1, 45000);
-> -	if (nr == __NR_openat)
-> +		break;
-> +	case __NR_openat:
->  		change_syscall(_metadata, tracee, -1, -ESRCH);
-> +		break;
-> +	}
->  }
->  
-> -FIXTURE(TRACE_syscall) {
-> -	struct sock_fprog prog;
-> -	pid_t tracer, mytid, mypid, parent;
-> -};
-> -
->  FIXTURE_VARIANT(TRACE_syscall) {
->  	/*
->  	 * All of the SECCOMP_RET_TRACE behaviors can be tested with either
-> @@ -2044,7 +2058,7 @@ FIXTURE_SETUP(TRACE_syscall)
->  	self->tracer = setup_trace_fixture(_metadata,
->  					   variant->use_ptrace ? tracer_ptrace
->  							       : tracer_seccomp,
-> -					   NULL, variant->use_ptrace);
-> +					   self, variant->use_ptrace);
->  
->  	ret = prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
->  	ASSERT_EQ(0, ret);
-> -- 
-> 2.25.1
-> 
+This indeed explains this. It seems there is nothing for me to do
+about it in the driver code though, as it seems the issue is in the
+macro and you have already posted a fix for it.
+
+Thanks again,
+Gilad
+
+--=20
+Gilad Ben-Yossef
+Chief Coffee Drinker
+
+values of =CE=B2 will give rise to dom!
