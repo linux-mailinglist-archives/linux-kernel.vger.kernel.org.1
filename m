@@ -2,133 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F359272B01
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3F0B272B2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:11:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727219AbgIUQIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:08:14 -0400
-Received: from mga03.intel.com ([134.134.136.65]:40028 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726419AbgIUQIO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:08:14 -0400
-IronPort-SDR: RRItxq4VBejbUEyL0MDkp5sSFcvExM/WLkAlY4XnW/s3cDPPsNSCQIMyyKFASzhP2RHZhAdFx6
- 5TSO6tcef5kw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="160479295"
-X-IronPort-AV: E=Sophos;i="5.77,287,1596524400"; 
-   d="scan'208";a="160479295"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 09:08:14 -0700
-IronPort-SDR: 051PsSzC0eVf6k01q0l2RoBVBkMCGYIYlRA1kzvgHSuXW/D33IkWd+4DfuYqdksIOLT/kfEzY5
- S7G7G1sAVBpA==
-X-IronPort-AV: E=Sophos;i="5.77,287,1596524400"; 
-   d="scan'208";a="334538715"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 09:08:13 -0700
-Date:   Mon, 21 Sep 2020 09:08:12 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Jim Mattson <jmattson@google.com>,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v5 2/4] KVM: x86: report negative values from wrmsr to
- userspace
-Message-ID: <20200921160812.GA23989@linux.intel.com>
-References: <20200921131923.120833-1-mlevitsk@redhat.com>
- <20200921131923.120833-3-mlevitsk@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200921131923.120833-3-mlevitsk@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+        id S1728142AbgIUQLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:11:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727392AbgIUQLS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:11:18 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D49C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 09:11:18 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id o25so4506035pgm.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 09:11:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=t7YL/sHl4cdMau2Whx59EhUvH+vo5PeoHAXBaAy8cvg=;
+        b=c9k5iknwn/GrvfZhHp/Cpu6YCcJXdHDwzCtsvNIeMggPw6QM4qtDbFjTX/idNoeTgs
+         Qz36wKL7cbPFWNJC5qZqsJOuw9p+5AWvf9nWfJShJ2Bk+JnAd0synd9rRGFdER9xlC1K
+         VUc+QVBcVbUnYm0hLzRLKRtEwFsou3y3vSTYSJuSNvaK9N0MSDfmGjhf3sMDdetKnw5n
+         A/Q2u2AqUvE+dMmy2Ax6P9G0kGxkamoiPMPMRlFjDM/3Jv05a6XYUbFVgAD9alc+eaCz
+         /VQnK5VrArNu5CPu1pkyXDShtglF2/5HIpX5ki3Yl9fXvTAkznABjJDGBzFSbmtPj7NA
+         f8fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=t7YL/sHl4cdMau2Whx59EhUvH+vo5PeoHAXBaAy8cvg=;
+        b=f5zqGOBpkkDyB+dkFnAnGKYYeorC0ocLmq6Oqh2PZjybj2pfGMjyC8daT/zTBQp6Mx
+         NgMpQZqc1xt1s5nzkWO6nRbpgJcEGpBsAuFJglBFwWfXUt63VFyX7q42XqI00Box+Vyy
+         shfGqR+IqzlBIs9MVIaG4qGF+gToBu4LutQ7hUhSuf1apftTtkChdxdesJKTIUZOHtNt
+         Miy5yBAb7TDPvmKSyW7Nt/lrYNBvxsT6YwbRd89/LNkPMTt1H5meLal0h94giub7YEd9
+         lrTjnr70EjKmFeISCpQKcyjtwfaHqCyqrpjuDamNH6IGZKvKiff3LTxjbTBBRTfy9xLl
+         IWeA==
+X-Gm-Message-State: AOAM533J8AUePetEOrJlfVVoopGImI05c8dtzXpIYytfyL+KckkeloLO
+        gIPX1TmUwT7nttvK7NZP83ur
+X-Google-Smtp-Source: ABdhPJyadhhD+8e8EsAvuZXkGKlrm/WuwbkaudLPezjS5yYHOpdoX2rYBFyJ2Ze5WfIzhIHi+OLN9Q==
+X-Received: by 2002:a63:d242:: with SMTP id t2mr295254pgi.47.1600704676971;
+        Mon, 21 Sep 2020 09:11:16 -0700 (PDT)
+Received: from Mani-XPS-13-9360.localdomain ([2409:4072:6d03:bd12:1004:2ccf:6900:b97])
+        by smtp.gmail.com with ESMTPSA id f4sm9204577pgr.68.2020.09.21.09.11.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 09:11:16 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     hemantk@codeaurora.org, jhugo@codeaurora.org,
+        bbhatt@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 15/18] bus: mhi: core: Introduce sysfs entries for MHI
+Date:   Mon, 21 Sep 2020 21:38:12 +0530
+Message-Id: <20200921160815.28071-17-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200921160815.28071-1-manivannan.sadhasivam@linaro.org>
+References: <20200921160815.28071-1-manivannan.sadhasivam@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 04:19:21PM +0300, Maxim Levitsky wrote:
-> This will allow us to make some MSR writes fatal to the guest
-> (e.g when out of memory condition occurs)
-> 
-> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> ---
->  arch/x86/kvm/emulate.c | 7 +++++--
->  arch/x86/kvm/x86.c     | 5 +++--
->  2 files changed, 8 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
-> index 1d450d7710d63..d855304f5a509 100644
-> --- a/arch/x86/kvm/emulate.c
-> +++ b/arch/x86/kvm/emulate.c
-> @@ -3702,13 +3702,16 @@ static int em_dr_write(struct x86_emulate_ctxt *ctxt)
->  static int em_wrmsr(struct x86_emulate_ctxt *ctxt)
->  {
->  	u64 msr_data;
-> +	int ret;
->  
->  	msr_data = (u32)reg_read(ctxt, VCPU_REGS_RAX)
->  		| ((u64)reg_read(ctxt, VCPU_REGS_RDX) << 32);
-> -	if (ctxt->ops->set_msr(ctxt, reg_read(ctxt, VCPU_REGS_RCX), msr_data))
-> +
-> +	ret = ctxt->ops->set_msr(ctxt, reg_read(ctxt, VCPU_REGS_RCX), msr_data);
-> +	if (ret > 0)
->  		return emulate_gp(ctxt, 0);
->  
-> -	return X86EMUL_CONTINUE;
-> +	return ret < 0 ? X86EMUL_UNHANDLEABLE : X86EMUL_CONTINUE;
->  }
->  
->  static int em_rdmsr(struct x86_emulate_ctxt *ctxt)
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 063d70e736f7f..b6c67ab7c4f34 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -1612,15 +1612,16 @@ int kvm_emulate_wrmsr(struct kvm_vcpu *vcpu)
->  {
->  	u32 ecx = kvm_rcx_read(vcpu);
->  	u64 data = kvm_read_edx_eax(vcpu);
-> +	int ret = kvm_set_msr(vcpu, ecx, data);
->  
-> -	if (kvm_set_msr(vcpu, ecx, data)) {
-> +	if (ret > 0) {
->  		trace_kvm_msr_write_ex(ecx, data);
->  		kvm_inject_gp(vcpu, 0);
->  		return 1;
->  	}
->  
->  	trace_kvm_msr_write(ecx, data);
+From: Bhaumik Bhatt <bbhatt@codeaurora.org>
 
-Tracing the access as non-faulting feels wrong.  The WRMSR has not completed,
-e.g. if userspace cleanly handles -ENOMEM and restarts the guest, KVM would
-trace the WRMSR twice.
+Introduce sysfs entries to enable userspace clients the ability to read
+the serial number and the OEM PK Hash values obtained from BHI. OEMs
+need to read these device-specific hardware information values through
+userspace for factory testing purposes and cannot be exposed via degbufs
+as it may remain disabled for performance reasons. Also, update the
+documentation for ABI to include these entries.
 
-What about:
+Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+ Documentation/ABI/stable/sysfs-bus-mhi | 21 ++++++++++
+ MAINTAINERS                            |  1 +
+ drivers/bus/mhi/core/init.c            | 53 ++++++++++++++++++++++++++
+ 3 files changed, 75 insertions(+)
+ create mode 100644 Documentation/ABI/stable/sysfs-bus-mhi
 
-	int ret = kvm_set_msr(vcpu, ecx, data);
+diff --git a/Documentation/ABI/stable/sysfs-bus-mhi b/Documentation/ABI/stable/sysfs-bus-mhi
+new file mode 100644
+index 000000000000..ecfe7662f8d0
+--- /dev/null
++++ b/Documentation/ABI/stable/sysfs-bus-mhi
+@@ -0,0 +1,21 @@
++What:		/sys/bus/mhi/devices/.../serialnumber
++Date:		Sept 2020
++KernelVersion:	5.10
++Contact:	Bhaumik Bhatt <bbhatt@codeaurora.org>
++Description:	The file holds the serial number of the client device obtained
++		using a BHI (Boot Host Interface) register read after at least
++		one attempt to power up the device has been done. If read
++		without having the device power on at least once, the file will
++		read all 0's.
++Users:		Any userspace application or clients interested in device info.
++
++What:		/sys/bus/mhi/devices/.../oem_pk_hash
++Date:		Sept 2020
++KernelVersion:	5.10
++Contact:	Bhaumik Bhatt <bbhatt@codeaurora.org>
++Description:	The file holds the OEM PK Hash value of the endpoint device
++		obtained using a BHI (Boot Host Interface) register read after
++		at least one attempt to power up the device has been done. If
++		read without having the device power on at least once, the file
++		will read all 0's.
++Users:		Any userspace application or clients interested in device info.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index deaafb617361..11e7be9b9163 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11323,6 +11323,7 @@ M:	Hemant Kumar <hemantk@codeaurora.org>
+ L:	linux-arm-msm@vger.kernel.org
+ S:	Maintained
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mani/mhi.git
++F:	Documentation/ABI/stable/sysfs-bus-mhi
+ F:	Documentation/mhi/
+ F:	drivers/bus/mhi/
+ F:	include/linux/mhi.h
+diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+index 61e5885a331a..1b4161eaf0d8 100644
+--- a/drivers/bus/mhi/core/init.c
++++ b/drivers/bus/mhi/core/init.c
+@@ -76,6 +76,56 @@ const char *to_mhi_pm_state_str(enum mhi_pm_state state)
+ 	return mhi_pm_state_str[index];
+ }
+ 
++static ssize_t serial_number_show(struct device *dev,
++				  struct device_attribute *attr,
++				  char *buf)
++{
++	struct mhi_device *mhi_dev = to_mhi_device(dev);
++	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
++
++	return snprintf(buf, PAGE_SIZE, "Serial Number: %u\n",
++			mhi_cntrl->serial_number);
++}
++static DEVICE_ATTR_RO(serial_number);
++
++static ssize_t oem_pk_hash_show(struct device *dev,
++				struct device_attribute *attr,
++				char *buf)
++{
++	struct mhi_device *mhi_dev = to_mhi_device(dev);
++	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
++	int i, cnt = 0;
++
++	for (i = 0; i < ARRAY_SIZE(mhi_cntrl->oem_pk_hash); i++)
++		cnt += snprintf(buf + cnt, PAGE_SIZE - cnt,
++				"OEMPKHASH[%d]: 0x%x\n", i,
++				mhi_cntrl->oem_pk_hash[i]);
++
++	return cnt;
++}
++static DEVICE_ATTR_RO(oem_pk_hash);
++
++static struct attribute *mhi_sysfs_attrs[] = {
++	&dev_attr_serial_number.attr,
++	&dev_attr_oem_pk_hash.attr,
++	NULL,
++};
++
++static const struct attribute_group mhi_sysfs_group = {
++	.attrs = mhi_sysfs_attrs,
++};
++
++static int mhi_create_sysfs(struct mhi_controller *mhi_cntrl)
++{
++	return sysfs_create_group(&mhi_cntrl->mhi_dev->dev.kobj,
++				  &mhi_sysfs_group);
++}
++
++static void mhi_destroy_sysfs(struct mhi_controller *mhi_cntrl)
++{
++	sysfs_remove_group(&mhi_cntrl->mhi_dev->dev.kobj, &mhi_sysfs_group);
++}
++
+ /* MHI protocol requires the transfer ring to be aligned with ring length */
+ static int mhi_alloc_aligned_ring(struct mhi_controller *mhi_cntrl,
+ 				  struct mhi_ring *ring,
+@@ -917,6 +967,8 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
+ 	mhi_cntrl->mhi_dev = mhi_dev;
+ 
+ 	mhi_create_debugfs(mhi_cntrl);
++	if (mhi_create_sysfs(mhi_cntrl))
++		dev_err(mhi_cntrl->cntrl_dev, "Failed to create sysfs entries\n");
+ 
+ 	return 0;
+ 
+@@ -940,6 +992,7 @@ void mhi_unregister_controller(struct mhi_controller *mhi_cntrl)
+ 	struct mhi_chan *mhi_chan = mhi_cntrl->mhi_chan;
+ 	unsigned int i;
+ 
++	mhi_destroy_sysfs(mhi_cntrl);
+ 	mhi_destroy_debugfs(mhi_cntrl);
+ 
+ 	kfree(mhi_cntrl->mhi_cmd);
+-- 
+2.17.1
 
-	if (ret < 0)
-		return ret;
-
-	if (ret) {
-		trace_kvm_msr_write_ex(ecx, data);
-		kvm_inject_gp(vcpu, 0);
-		return 1;
-	}
-
-	trace_kvm_msr_write(ecx, data);
-	return kvm_skip_emulated_instruction(vcpu);
-
-> -	return kvm_skip_emulated_instruction(vcpu);
-> +	return ret < 0 ? ret : kvm_skip_emulated_instruction(vcpu);
->  }
->  EXPORT_SYMBOL_GPL(kvm_emulate_wrmsr);
->  
-> -- 
-> 2.26.2
-> 
