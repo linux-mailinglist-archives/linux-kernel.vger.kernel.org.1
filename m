@@ -2,148 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F25B271D28
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93749271D7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:09:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726466AbgIUIIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 04:08:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726333AbgIUIH6 (ORCPT
+        id S1726478AbgIUIJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 04:09:29 -0400
+Received: from mail-io1-f78.google.com ([209.85.166.78]:48108 "EHLO
+        mail-io1-f78.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726668AbgIUIIU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 04:07:58 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11D7EC0613D2;
-        Mon, 21 Sep 2020 01:07:58 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BvxrN6CR4z9sRf;
-        Mon, 21 Sep 2020 18:07:48 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1600675674;
-        bh=iaBdLJOvxyJXfcUEqmY+3Nksf5Jf9xHCFLBtVdF2GM8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=K5wKwexmDJAci9TTwYRSQ0w9PM5CiPqAwagC2tcao/hBigyuoMxG1C8D0UmTRvwbU
-         EhPScTRFe/siLj3BjXiyv9uIFmQY0S4UmOdPSVysuZGSDahrfPB83W3uawREPQpzd0
-         kHld44CU++GsPbN3dC1XVd4QoBpM6Lgj+V1kNNdSetTvjN8TgT8QvRc6F00jrjsQD6
-         lDVtnrJaxh5Jw5LEvG/jpEkcuTha5XPYFINClW5XVtzMcKkHT38c4BYivb3A3RLDRr
-         JaS6Iuw/LnkzJSYvM742RWyWBJTrmzSqPEqXAqPcsYg8niNwEgDNwWig1CMgfOS4OB
-         vkx4v/7kdkZQQ==
-Date:   Mon, 21 Sep 2020 18:07:48 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Qian Cai <cai@redhat.com>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-riscv@lists.infradead.org, x86@kernel.org,
-        linux-next@vger.kernel.org
-Subject: Re: [PATCH v5 0/5] mm: introduce memfd_secret system call to create
- "secret" memory areas
-Message-ID: <20200921180748.4f88028d@canb.auug.org.au>
-In-Reply-To: <fdd0240c187f974fccc553acea895f638d5e822a.camel@redhat.com>
-References: <20200916073539.3552-1-rppt@kernel.org>
-        <5d97da4d86db258fdc9b20be3c12588089e17da2.camel@redhat.com>
-        <fdd0240c187f974fccc553acea895f638d5e822a.camel@redhat.com>
+        Mon, 21 Sep 2020 04:08:20 -0400
+Received: by mail-io1-f78.google.com with SMTP id a15so9358723ioc.14
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 01:08:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=h9pfpRslp+3AfQsET9z3oDwqPiab+eVh57GDZWwZu0c=;
+        b=AqORdfYIuX1Cj/ZW8luaM38V+4uNR3W8MTlq0IrZBJUulq/8KdZ0MYM4d/rVyEfGtL
+         ewUd7aARiFjTegdbVCINIDfNBReGrDpxPNJnYVYXGxpGogGXZVV7KqBbNzPlCny3TV7F
+         OpHyjtowBiiJEtlBH1Vozue4Zyj6ohrV2xijwCodFjmUhqqnZSvxz8KkHJdNSDUnsvpI
+         LTDk0g9jj7TVjmKwf8eiUGuB7pZp4UYeh2+VlMBfyyL5ANX93pxw6CcGrrT2GXngDEyT
+         blaQQA6NFv5oWt3v52410fJGphOrTclOJ911UjWhLhH9nP+kwFQ893fXscC8iLSoaaf8
+         1mQw==
+X-Gm-Message-State: AOAM530HjN7L4askUcft8HvofE4btfWTQf7By7WVO32GtkVRTKDw9Xld
+        mfAbOwkQve9aDp8uykGyKrNfHZBl06MaZLI1qQ3wfWA1l0jW
+X-Google-Smtp-Source: ABdhPJwlJt+9H47JyQD4TBNFrT86bTrvPVUWsM2zy9BDqnesUHSdvzM3SHjZlX6RjxUmTod3KHetQZTEizKPwfUdx9pZwFQIGJAY
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/qIGimAfxVKTvCJ+PllFC0A/";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Received: by 2002:a05:6638:3b5:: with SMTP id z21mr39136123jap.33.1600675699073;
+ Mon, 21 Sep 2020 01:08:19 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 01:08:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000071a5f305afce5a2f@google.com>
+Subject: general protection fault in debug_check_no_obj_freed (3)
+From:   syzbot <syzbot+06df86d7d68707715eec@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, jmaloy@redhat.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        tipc-discussion@lists.sourceforge.net, ying.xue@windriver.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/qIGimAfxVKTvCJ+PllFC0A/
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-Hi all,
+syzbot found the following issue on:
 
-On Fri, 18 Sep 2020 14:25:15 -0400 Qian Cai <cai@redhat.com> wrote:
->
-> On Thu, 2020-09-17 at 09:27 -0400, Qian Cai wrote:
-> > On Wed, 2020-09-16 at 10:35 +0300, Mike Rapoport wrote: =20
-> > > From: Mike Rapoport <rppt@linux.ibm.com>
-> > >=20
-> > > This is an implementation of "secret" mappings backed by a file descr=
-iptor.=20
-> > > I've dropped the boot time reservation patch for now as it is not str=
-ictly
-> > > required for the basic usage and can be easily added later either wit=
-h or
-> > > without CMA. =20
-> >=20
-> > On powerpc: https://gitlab.com/cailca/linux-mm/-/blob/master/powerpc.co=
-nfig
-> >=20
-> > There is a compiling warning from the today's linux-next:
-> >=20
-> > <stdin>:1532:2: warning: #warning syscall memfd_secret not implemented =
-[-Wcpp] =20
->=20
-> This should silence the warning:
->=20
-> diff --git a/scripts/checksyscalls.sh b/scripts/checksyscalls.sh
-> index a18b47695f55..b7609958ee36 100755
-> --- a/scripts/checksyscalls.sh
-> +++ b/scripts/checksyscalls.sh
-> @@ -40,6 +40,10 @@ cat << EOF
->  #define __IGNORE_setrlimit	/* setrlimit */
->  #endif
-> =20
-> +#ifndef __ARCH_WANT_MEMFD_SECRET
-> +#define __IGNORE_memfd_secret
-> +#endif
-> +
->  /* Missing flags argument */
->  #define __IGNORE_renameat	/* renameat2 */
->=20
+HEAD commit:    ba4f184e Linux 5.9-rc6
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16200765900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5f4c828c9e3cef97
+dashboard link: https://syzkaller.appspot.com/bug?extid=06df86d7d68707715eec
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-Added to linux-next today.
+Unfortunately, I don't have any reproducer for this issue yet.
 
---=20
-Cheers,
-Stephen Rothwell
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+06df86d7d68707715eec@syzkaller.appspotmail.com
 
---Sig_/qIGimAfxVKTvCJ+PllFC0A/
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+general protection fault, probably for non-canonical address 0xdffffc0000ee000e: 0000 [#1] PREEMPT SMP KASAN
+KASAN: probably user-memory-access in range [0x0000000007700070-0x0000000007700077]
+CPU: 1 PID: 6892 Comm: syz-executor.3 Not tainted 5.9.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__debug_check_no_obj_freed lib/debugobjects.c:956 [inline]
+RIP: 0010:debug_check_no_obj_freed+0x1d3/0x41c lib/debugobjects.c:998
+Code: 39 00 0f 85 0f 02 00 00 48 89 45 08 4d 89 30 4c 89 c7 4d 89 68 08 e8 bc c9 ff ff 48 85 ed 74 2c 49 89 e8 4c 89 c0 48 c1 e8 03 <42> 80 3c 38 00 0f 84 2e ff ff ff 4c 89 c7 4c 89 44 24 38 e8 c5 31
+RSP: 0018:ffffc90000da8bc0 EFLAGS: 00010003
+RAX: 0000000000ee000e RBX: ffff888048f37000 RCX: ffffffff815cf7b0
+RDX: 1ffffffff1adc084 RSI: 0000000000000004 RDI: ffff88800014f280
+RBP: 0000000007700077 R08: 0000000007700077 R09: ffffe8ffffb63c70
+R10: fffff520001b5166 R11: 0000000000000000 R12: 0000000000000003
+R13: dead000000000122 R14: dead000000000100 R15: dffffc0000000000
+FS:  00007f6a8cc2a700(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000401e70 CR3: 000000020c219000 CR4: 00000000001526e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <IRQ>
+ kfree+0xfb/0x2b0 mm/slab.c:3755
+ skb_free_head net/core/skbuff.c:590 [inline]
+ skb_release_data+0x6d9/0x910 net/core/skbuff.c:610
+ skb_release_all net/core/skbuff.c:664 [inline]
+ __kfree_skb net/core/skbuff.c:678 [inline]
+ consume_skb net/core/skbuff.c:838 [inline]
+ consume_skb+0xc2/0x160 net/core/skbuff.c:832
+ tipc_loopback_rcv_pkt+0x11/0x20 net/tipc/bearer.c:745
+ __netif_receive_skb_one_core+0x114/0x180 net/core/dev.c:5286
+ __netif_receive_skb+0x27/0x1c0 net/core/dev.c:5400
+ process_backlog+0x2e1/0x8e0 net/core/dev.c:6242
+ napi_poll net/core/dev.c:6688 [inline]
+ net_rx_action+0x50d/0xfc0 net/core/dev.c:6758
+ __do_softirq+0x1f8/0xb23 kernel/softirq.c:298
+ asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:706
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
+ do_softirq_own_stack+0x9d/0xd0 arch/x86/kernel/irq_64.c:77
+ do_softirq kernel/softirq.c:343 [inline]
+ do_softirq+0x154/0x1b0 kernel/softirq.c:330
+ netif_rx_ni+0x3c5/0x650 net/core/dev.c:4835
+ tipc_clone_to_loopback+0x330/0x480 net/tipc/bearer.c:738
+ tipc_loopback_trace net/tipc/bearer.h:249 [inline]
+ tipc_node_xmit+0xb44/0xd00 net/tipc/node.c:1653
+ tipc_node_xmit_skb net/tipc/node.c:1715 [inline]
+ tipc_node_distr_xmit+0x15c/0x3a0 net/tipc/node.c:1730
+ tipc_sk_backlog_rcv+0x155/0x1c0 net/tipc/socket.c:2381
+ sk_backlog_rcv include/net/sock.h:1011 [inline]
+ __release_sock+0x134/0x3a0 net/core/sock.c:2542
+ release_sock+0x54/0x1b0 net/core/sock.c:3065
+ tipc_release+0xbb1/0x1a70 net/tipc/socket.c:638
+ __sock_release+0xcd/0x280 net/socket.c:596
+ sock_close+0x18/0x20 net/socket.c:1277
+ __fput+0x285/0x920 fs/file_table.c:281
+ task_work_run+0xdd/0x190 kernel/task_work.c:141
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:165 [inline]
+ exit_to_user_mode_prepare+0x1e1/0x200 kernel/entry/common.c:192
+ syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:267
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45d5f9
+Code: 5d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 2b b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f6a8cc29c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000021
+RAX: 0000000000000004 RBX: 0000000000002a40 RCX: 000000000045d5f9
+RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000006
+RBP: 000000000118d018 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118cfec
+R13: 000000000169fb6f R14: 00007f6a8cc2a9c0 R15: 000000000118cfec
+Modules linked in:
+---[ end trace f5472acb007e885e ]---
+RIP: 0010:__debug_check_no_obj_freed lib/debugobjects.c:956 [inline]
+RIP: 0010:debug_check_no_obj_freed+0x1d3/0x41c lib/debugobjects.c:998
+Code: 39 00 0f 85 0f 02 00 00 48 89 45 08 4d 89 30 4c 89 c7 4d 89 68 08 e8 bc c9 ff ff 48 85 ed 74 2c 49 89 e8 4c 89 c0 48 c1 e8 03 <42> 80 3c 38 00 0f 84 2e ff ff ff 4c 89 c7 4c 89 44 24 38 e8 c5 31
+RSP: 0018:ffffc90000da8bc0 EFLAGS: 00010003
+RAX: 0000000000ee000e RBX: ffff888048f37000 RCX: ffffffff815cf7b0
+RDX: 1ffffffff1adc084 RSI: 0000000000000004 RDI: ffff88800014f280
+RBP: 0000000007700077 R08: 0000000007700077 R09: ffffe8ffffb63c70
+R10: fffff520001b5166 R11: 0000000000000000 R12: 0000000000000003
+R13: dead000000000122 R14: dead000000000100 R15: dffffc0000000000
+FS:  00007f6a8cc2a700(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000401e70 CR3: 000000020c219000 CR4: 00000000001526e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9oX1QACgkQAVBC80lX
-0GwVfQgAho6bGSHnGAjI0IiMmFRLcHM+KMH0XiVgh9bvUjVASl1mVgeIe7v//Oef
-uyH9zCWyUFof0EnaT4f5uZctC2pe/qvb7BsEdaSlLUSz4X8J1xLWfdYbdJHMvtYR
-WnrFHwGCmEtpImNTTZtXcdDZeliVgq41XGd/h1Z59o6givzPYTtIK59LlOOcZj3y
-KIY0ELXUPauFOINBbfRzs0xlB6upYfVrHUdh9/glsrY4wVcEfPhjgFVAk+Ua/4/E
-/ksLJ+WeUZxJ/2SOPL5Vm23vZvmSE0fD4krBBiANbBiKShRgJRU21uc/ulEdHh5E
-qZjQA6jjcKFGbIbi78Sb6LxIzI/mKQ==
-=OfZk
------END PGP SIGNATURE-----
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
---Sig_/qIGimAfxVKTvCJ+PllFC0A/--
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
