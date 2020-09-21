@@ -2,133 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2718C272961
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:05:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CC1B272965
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727570AbgIUPFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 11:05:02 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:36539 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726471AbgIUPFB (ORCPT
+        id S1727648AbgIUPFi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Sep 2020 11:05:38 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:24728 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726471AbgIUPFh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 11:05:01 -0400
-Received: from ip5f5af089.dynamic.kabel-deutschland.de ([95.90.240.137] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1kKNN5-0007iO-G6; Mon, 21 Sep 2020 15:04:51 +0000
-Date:   Mon, 21 Sep 2020 17:04:50 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Tejun Heo <tj@kernel.org>, Peter Xu <peterx@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Maya B . Gokhale" <gokhale2@llnl.gov>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Marty Mcfadden <mcfadden8@llnl.gov>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
-Message-ID: <20200921150450.3mjjb3p3jwgatn4v@wittgenstein>
-References: <CAHk-=wjtfjB3TqTFRzVmOrB9Mii6Yzc-=wKq0fu4ruDE6AsJgg@mail.gmail.com>
- <20200917193824.GL8409@ziepe.ca>
- <CAHk-=wiY_g+SSjncZi8sO=LrxXmMox0NO7K34-Fs653XVXheGg@mail.gmail.com>
- <20200918164032.GA5962@xz-x1>
- <20200921134200.GK12990@dhcp22.suse.cz>
- <20200921141830.GE5962@xz-x1>
- <20200921142834.GL12990@dhcp22.suse.cz>
- <20200921143847.GB4268@mtj.duckdns.org>
- <20200921144355.mrzc66lina3dkfjq@wittgenstein>
- <20200921145537.GM12990@dhcp22.suse.cz>
+        Mon, 21 Sep 2020 11:05:37 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-267-pfN4bYDxOjGQU1qcEZSq4g-1; Mon, 21 Sep 2020 16:05:33 +0100
+X-MC-Unique: pfN4bYDxOjGQU1qcEZSq4g-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Mon, 21 Sep 2020 16:05:32 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Mon, 21 Sep 2020 16:05:32 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Christoph Hellwig' <hch@lst.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-aio@kvack.org" <linux-aio@kvack.org>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+Subject: RE: [PATCH 04/11] iov_iter: explicitly check for CHECK_IOVEC_ONLY in
+ rw_copy_check_uvector
+Thread-Topic: [PATCH 04/11] iov_iter: explicitly check for CHECK_IOVEC_ONLY in
+ rw_copy_check_uvector
+Thread-Index: AQHWkCRT6PkpgoAV6EexsDeYdekosqlzL1uQ
+Date:   Mon, 21 Sep 2020 15:05:32 +0000
+Message-ID: <7336624280b8444fb4cb00407317741b@AcuMS.aculab.com>
+References: <20200921143434.707844-1-hch@lst.de>
+ <20200921143434.707844-5-hch@lst.de>
+In-Reply-To: <20200921143434.707844-5-hch@lst.de>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200921145537.GM12990@dhcp22.suse.cz>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 04:55:37PM +0200, Michal Hocko wrote:
-> On Mon 21-09-20 16:43:55, Christian Brauner wrote:
-> > On Mon, Sep 21, 2020 at 10:38:47AM -0400, Tejun Heo wrote:
-> > > Hello,
-> > > 
-> > > On Mon, Sep 21, 2020 at 04:28:34PM +0200, Michal Hocko wrote:
-> > > > Fundamentaly CLONE_INTO_CGROUP is similar to regular fork + move to the
-> > > > target cgroup after the child gets executed. So in principle there
-> > > > shouldn't be any big difference. Except that the move has to be explicit
-> > > > and the the child has to have enough privileges to move itself. I am not
-> > > 
-> > > Yeap, they're supposed to be the same operations. We've never clearly
-> > > defined how the accounting gets split across moves because 1. it's
-> > > inherently blurry and difficult 2. doesn't make any practical difference for
-> > > the recommended and vast majority usage pattern which uses migration to seed
-> > > the new cgroup. CLONE_INTO_CGROUP doesn't change any of that.
-> > > 
-> > > > completely sure about CLONE_INTO_CGROUP model though. According to man
-> > > > clone(2) it seems that O_RDONLY for the target cgroup directory is
-> > > > sufficient. That seems much more relaxed IIUC and it would allow to fork
-> > > > into a different cgroup while keeping a lot of resources in the parent's
-> > > > proper.
-> > > 
-> > > If the man page is documenting that, it's wrong. cgroup_css_set_fork() has
-> > > an explicit cgroup_may_write() test on the destination cgroup.
-> > > CLONE_INTO_CGROUP should follow exactly the same rules as regular
-> > > migrations.
-> > 
-> > Indeed!
-> > The O_RDONLY mention on the manpage doesn't make sense but it is
-> > explained that the semantics are exactly the same for moving via the
-> > filesystem:
+From: Christoph Hellwig
+> Sent: 21 September 2020 15:34
 > 
-> OK, if the semantic is the same as for the task migration then I do not
-> see any (new) problems. Care to point me where the actual check is
-> enforced? For the migration you need a write access to cgroup.procs but
-> if the API expects directory fd then I am not sure how that would expose
-> the same behavior.
+> Explicitly check for the magic value insted of implicitly relying on
+> its numeric representation.   Also drop the rather pointless unlikely
+> annotation.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  lib/iov_iter.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/lib/iov_iter.c b/lib/iov_iter.c
+> index d7e72343c360eb..a64867501a7483 100644
+> --- a/lib/iov_iter.c
+> +++ b/lib/iov_iter.c
+> @@ -1709,8 +1709,7 @@ static ssize_t rw_copy_check_uvector(int type,
+>  			ret = -EINVAL;
+>  			goto out;
+>  		}
+> -		if (type >= 0
+> -		    && unlikely(!access_ok(buf, len))) {
+> +		if (type != CHECK_IOVEC_ONLY && !access_ok(buf, len)) {
+>  			ret = -EFAULT;
+>  			goto out;
+>  		}
+> @@ -1824,7 +1823,7 @@ static ssize_t compat_rw_copy_check_uvector(int type,
+>  		}
+>  		if (len < 0)	/* size_t not fitting in compat_ssize_t .. */
+>  			goto out;
+> -		if (type >= 0 &&
+> +		if (type != CHECK_IOVEC_ONLY &&
+>  		    !access_ok(compat_ptr(buf), len)) {
+>  			ret = -EFAULT;
+>  			goto out;
+> --
+> 2.28.0
 
-kernel/cgroup/cgroup.c:cgroup_csset_fork()
+I've actually no idea:
+1) Why there is an access_ok() check here.
+   It will be repeated by the user copy functions.
+2) Why it isn't done when called from mm/process_vm_access.c.
+   Ok, the addresses refer to a different process, but they
+   must still be valid user addresses.
 
-So there's which is the first check for inode_permission() essentially:
+Is 2 a legacy from when access_ok() actually checked that the
+addresses were mapped into the process's address space?
 
-	/*
-	 * Verify that we the target cgroup is writable for us. This is
-	 * usually done by the vfs layer but since we're not going through
-	 * the vfs layer here we need to do it "manually".
-	 */
-	ret = cgroup_may_write(dst_cgrp, sb);
-	if (ret)
-		goto err;
+	David
 
-and what you're referring to is checked right after in:
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-	ret = cgroup_attach_permissions(cset->dfl_cgrp, dst_cgrp, sb,
-					!(kargs->flags & CLONE_THREAD));
-	if (ret)
-		goto err;
-
-which calls:
-
-	ret = cgroup_procs_write_permission(src_cgrp, dst_cgrp, sb);
-	if (ret)
-		return ret;
-
-That should be what you're looking for. I've also added selftests as
-always that verify this behavior under:
-
-tools/testing/selftests/cgroup/
-
-as soon as CLONE_INTO_CGROUP is detected on the kernel than all the
-usual tests are exercised using CLONE_INTO_CGROUP so we should've seen
-any regression hopefully.
-
-Thanks!
-Christian
