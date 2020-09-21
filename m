@@ -2,45 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12AFC2735FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 00:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73A49273610
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 00:57:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728685AbgIUWui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 18:50:38 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:48644 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727693AbgIUWui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 18:50:38 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kKUdi-00FfLS-1O; Tue, 22 Sep 2020 00:50:30 +0200
-Date:   Tue, 22 Sep 2020 00:50:30 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     netdev@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "open list:BROADCOM ETHERNET PHY DRIVERS" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next] net: phy: bcm7xxx: Add an entry for BCM72113
-Message-ID: <20200921225030.GE3702050@lunn.ch>
-References: <20200921221053.2506156-1-f.fainelli@gmail.com>
+        id S1728736AbgIUW5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 18:57:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728692AbgIUW5N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 18:57:13 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3351C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 15:57:12 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id nw23so20050058ejb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 15:57:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9jSUUFraOan7yfkNBxJ0PXo4gn5Fu1DsGDMc9ndN1tQ=;
+        b=cHEUC3C9K11LQLTPxZnfAmjIogqYmFr8vJH60PhAVwa4FQGTM3NkA2zDBi4+nNnh+V
+         wW4EDqRSW0BTCg85zhKjVc1ZaSXVLJZeQ7elYRILPEzEsgg9tIJVqi+OcU3GKPFkblAv
+         4Z7eEP0jbOhhbVo2KeozKp7OVo5cqz/K/2/udw5PaQStDEOKziVyLbYcGC35fo4+Yreg
+         GQjwaGp11FnVmhyn6674qIt5PVo5iXl4fz+MZV8sDcCiMCkQEDmE6DNoFhUBd4qZgG+V
+         vUjx0zynTSJ+SmJkkojfu1gOqjtzRcZUZ3Fz/3kNtAkjFc1O7vqC+JwIN+3RUYr0k2hH
+         NMuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9jSUUFraOan7yfkNBxJ0PXo4gn5Fu1DsGDMc9ndN1tQ=;
+        b=YCS6O3cWZpkztn/V9TZlX5Qhl9MpyaKOerWNN/e6p7dzHrBdhd1SZ3fDm1Vnsw9/Ea
+         y8dzaiR7LZWwsjke8tHcRpaRy4Usse6slmYahC7R/Lu86pTy0T3OHmySqRWIWq9LetEE
+         ecvygZhgNbYUlE42zOQoFGxK+x8dnZzCM38E5O38IGAQS7PjCTPhlTgPsAue18Jq7+Hn
+         Dus+4n3LSWtD8npjl3zotKJzT2xFHRzgRA/Wwn+/VEXA8xD+wOjw1kfVHa+72UwfN7wX
+         T2FK0DjYDCXawjf2Bjt1KmEFwWGFa6KExSMNqDc+oYTg0rUXAbfS/nDd3zPG/YrKqpSQ
+         /HfQ==
+X-Gm-Message-State: AOAM533bHBd9s7CdOVLdBWgMabjrGOX3mDD+Xu0fHM1tIgUyD/Nm7E/C
+        t4lhtS3n+3ClbxMsFnXYe9xN7w==
+X-Google-Smtp-Source: ABdhPJzP2r2Zay0wb4c78o7KqOUFyqGJ05rId6WnI920VXQBmoylUgFeYGIw9gYCqi7ifH7VMnYtpg==
+X-Received: by 2002:a17:906:6a54:: with SMTP id n20mr1840834ejs.401.1600729031313;
+        Mon, 21 Sep 2020 15:57:11 -0700 (PDT)
+Received: from localhost.localdomain ([2001:16b8:5c50:7f01:652a:68b1:4040:26de])
+        by smtp.gmail.com with ESMTPSA id e15sm9401321eds.5.2020.09.21.15.57.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 15:57:10 -0700 (PDT)
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Tony Lindgren <tony@atomide.com>, Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@gmail.com>,
+        Trent Piepho <tpiepho@gmail.com>,
+        Christina Quast <cquast@hanoverdisplays.com>,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org
+Cc:     Drew Fustini <drew@beagleboard.org>
+Subject: [PATCH] ARM: dts: am33xx: modify AM33XX_IOPAD for #pinctrl-cells = 2
+Date:   Tue, 22 Sep 2020 00:50:55 +0200
+Message-Id: <20200921225053.4126745-1-drew@beagleboard.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200921221053.2506156-1-f.fainelli@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 03:10:53PM -0700, Florian Fainelli wrote:
-> BCM72113 features a 28nm integrated EPHY, add an entry to the driver for
-> it.
-> 
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Modify the AM33XX_IOPAD macro so that it works now that #pinctrl-cells =
+<2>. The third parameter is just a zero and the pinctrl-single driver
+will just OR this with the second parameter so it has no actual effect.
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+There are no longer any dts files using this macro (following my patch
+to am335x-guardian.dts), but this will keep dts files not in mainline
+from breaking.
 
-    Andrew
+Fixes: 27c90e5e48d0 ("ARM: dts: am33xx-l4: change #pinctrl-cells from 1 to 2")
+Suggested-by: Tony Lindgren <tony@atomide.com>
+Reported-by: Trent Piepho <tpiepho@gmail.com>
+Link: https://lore.kernel.org/linux-devicetree/20200921064707.GN7101@atomide.com/
+Signed-off-by: Drew Fustini <drew@beagleboard.org>
+---
+NOTE:
+checkpatch complains "Macros with complex values should be enclosed in 
+parentheses" but all the other marcos in that section have the same
+format so it seems appropriate to ignore checkpatch and maintain the
+style.
+
+ include/dt-bindings/pinctrl/omap.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/dt-bindings/pinctrl/omap.h b/include/dt-bindings/pinctrl/omap.h
+index 2d2a8c737822..f48245ff87e5 100644
+--- a/include/dt-bindings/pinctrl/omap.h
++++ b/include/dt-bindings/pinctrl/omap.h
+@@ -64,7 +64,7 @@
+ #define OMAP3_WKUP_IOPAD(pa, val)	OMAP_IOPAD_OFFSET((pa), 0x2a00) (val)
+ #define DM814X_IOPAD(pa, val)		OMAP_IOPAD_OFFSET((pa), 0x0800) (val)
+ #define DM816X_IOPAD(pa, val)		OMAP_IOPAD_OFFSET((pa), 0x0800) (val)
+-#define AM33XX_IOPAD(pa, val)		OMAP_IOPAD_OFFSET((pa), 0x0800) (val)
++#define AM33XX_IOPAD(pa, val)		OMAP_IOPAD_OFFSET((pa), 0x0800) (val) (0)
+ #define AM33XX_PADCONF(pa, conf, mux)	OMAP_IOPAD_OFFSET((pa), 0x0800) (conf) (mux)
+ 
+ /*
+-- 
+2.25.1
+
