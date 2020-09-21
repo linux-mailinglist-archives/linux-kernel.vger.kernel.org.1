@@ -2,101 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 838212723E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B28042723E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:31:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726541AbgIUM3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 08:29:24 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:56759 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726375AbgIUM3X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 08:29:23 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 46BABB57;
-        Mon, 21 Sep 2020 08:29:21 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 21 Sep 2020 08:29:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=R
-        HKQR7CbzI0F6ZRKVieWVWj1G/b0kU9KL/lrLU/cXIE=; b=BmH4loHf/twmMvruG
-        h+1fAO/CvxSkfl44OnYhWxEx9nAlNqB9xc0MBQipOjf3YpW9p4Y2UxFv5u1jwwEk
-        7itf8mgtLdyHUTNFAlgVz11YQvxeLAMdIXXbcBdiSvpXLoJ4iL8W4GXRL2AX9l4C
-        w4d/8tRbIVhEJUimi7VoZszz/9dNSk/KQ/rw/7NHU0LJq6ICr2MalqxmZHNtvdCO
-        GoS/5WX4ZxAXn3mj+IOgBmejzXi9Iydb/8cyfzXDvqVbHQeTJmGoEOEXwWPEAOmp
-        MTQ3yIHAKIweDxETUuvLopmQ+JEaX7JiLaADyZS4QitYgrwa7a+/18eOkmQ8RUDM
-        +Dfpw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=RHKQR7CbzI0F6ZRKVieWVWj1G/b0kU9KL/lrLU/cX
-        IE=; b=uCP6FvdbREPriWo7tBN7COrxikiM1temZ9SQ7f1vnlWJXXvpTgR8/9WKF
-        kGwplJwffLMMZMU3LkW4bYkyd6g7UFI9QfVFjeAJjXI/SRHxXt3Cet9h5D8+gfnF
-        OukGuVCqfRLO46NtvgMf/Rt2q6Vl4DxvzUFlQLq5CfjVCkYbMLCPv961KFo4RiMh
-        ARu2F1aqKZfZaXxMvQx8XhOmZKqk7TSCFEzY102TvWsSUKDor6w+NO2M5GZABkbO
-        XXF1vINgJBGIMsRMFOd4simfgjl+K3nqKrJoyEfVUe4Ozfw/CbYRhN/yJyHBan4s
-        PFJzTtoMmqieBbOhGHyPo+R6I9ysg==
-X-ME-Sender: <xms:n5xoX2Urj45I8RuFot4ZW1GTKO1jGOAaFRwEfOPzw3-hYRLhznqFMQ>
-    <xme:n5xoXylUBDPDNvKOWfMGfVZeTqjyqmZDH_cMYtsDFq1fOKmJc7UloqI4F4-VuT8lU
-    l0xdfK5E8_JQdgkrU8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddvgdehgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggugfgjsehtqhertddttddunecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepheelvdfhkeelgfevleekleduvefftefhudekvdffhffhgeefuefgheegfeej
-    vedtnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:n5xoX6YDobf3ogp7c8SHV-Yk_rRA2uc1uDT86C0UPE5mNFI5wgY1cA>
-    <xmx:n5xoX9UdwW79t8SEbNgS2451IJpJPK2zkH1UejK3VnnXZ18zE4yFDg>
-    <xmx:n5xoXwnWphsACygt4earwWgNmDEcjJ9UZiDhs4nrWeCxNQGLQO3IGQ>
-    <xmx:oJxoX786_gnFaDjZ6XBX4Ymq0ztTe-t6QLlEfLX6vTz5qNRVAAO84E4SLM4>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 7F091328005A;
-        Mon, 21 Sep 2020 08:29:19 -0400 (EDT)
-Date:   Mon, 21 Sep 2020 14:29:18 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Cc:     Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Marcus Cooper <codekipper@gmail.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com, Samuel Holland <samuel@sholland.org>
-Subject: Re: [PATCH v4 02/22] ASoC: sun4i-i2s: Change set_chan_cfg() params
-Message-ID: <20200921122918.kzzu623wui277nwr@gilmour.lan>
-References: <20200921102731.747736-1-peron.clem@gmail.com>
- <20200921102731.747736-3-peron.clem@gmail.com>
+        id S1726674AbgIUMa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 08:30:58 -0400
+Received: from mga12.intel.com ([192.55.52.136]:41366 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726456AbgIUMa6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 08:30:58 -0400
+IronPort-SDR: /+MrVm/4+jCAslV3p6f8KtAdT731YblHCCeHM3eXVUz4zgaBXlABgsjuiW7TBXcGP0CCOdaYv4
+ XTfuRsHR3e6g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9750"; a="139861733"
+X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; 
+   d="scan'208";a="139861733"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 05:28:33 -0700
+IronPort-SDR: uuvW00qyo7NJoJvm1ajmNpK1USV0vARV+F/Rif7giE1iBFv73ds22JNjbzJYKfh86utnfC6OIG
+ ucwlxwAaqJxQ==
+X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; 
+   d="scan'208";a="454024277"
+Received: from clairemo-mobl.ger.corp.intel.com (HELO localhost) ([10.252.43.50])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 05:28:25 -0700
+Date:   Mon, 21 Sep 2020 15:28:23 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 12/24] x86/sgx: Add SGX_IOC_ENCLAVE_CREATE
+Message-ID: <20200921122823.GE6038@linux.intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-13-jarkko.sakkinen@linux.intel.com>
+ <20200921100356.GB5901@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200921102731.747736-3-peron.clem@gmail.com>
+In-Reply-To: <20200921100356.GB5901@zn.tnic>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 12:27:11PM +0200, Cl=E9ment P=E9ron wrote:
-> As slots and slot_width can be overwritter in case set_tdm() is
-> called. Avoid to have this logic in set_chan_cfg().
->=20
-> Instead pass the required values as params to set_chan_cfg().
+On Mon, Sep 21, 2020 at 12:03:56PM +0200, Borislav Petkov wrote:
+> On Tue, Sep 15, 2020 at 02:28:30PM +0300, Jarkko Sakkinen wrote:
+> > +static int sgx_validate_secs(const struct sgx_secs *secs)
+> > +{
+> > +	u64 max_size = (secs->attributes & SGX_ATTR_MODE64BIT) ?
+> > +		       sgx_encl_size_max_64 : sgx_encl_size_max_32;
+> > +
+> > +	if (secs->size < (2 * PAGE_SIZE) || !is_power_of_2(secs->size))
+> > +		return -EINVAL;
+> > +
+> > +	if (secs->base & (secs->size - 1))
+> > +		return -EINVAL;
+> > +
+> > +	if (secs->miscselect & sgx_misc_reserved_mask ||
+> > +	    secs->attributes & sgx_attributes_reserved_mask ||
+> > +	    secs->xfrm & sgx_xfrm_reserved_mask)
+> > +		return -EINVAL;
+> > +
+> > +	if (secs->size > max_size)
+> > +		return -EINVAL;
+> > +
+> > +	if (!(secs->xfrm & XFEATURE_MASK_FP) ||
+> > +	    !(secs->xfrm & XFEATURE_MASK_SSE) ||
+> > +	    (((secs->xfrm >> XFEATURE_BNDREGS) & 1) !=
+> > +	     ((secs->xfrm >> XFEATURE_BNDCSR) & 1)))
+> 
+> Let that last line stick out so that you have each statement on a single line.
+> 
+> > +		return -EINVAL;
+> > +
+> > +	if (!secs->ssa_frame_size)
+> > +		return -EINVAL;
+> > +
+> > +	if (sgx_calc_ssa_frame_size(secs->miscselect, secs->xfrm) >
+> > +	    secs->ssa_frame_size)
+> 
+> Let that stick out.
+> 
+> > +		return -EINVAL;
+> > +
+> > +	if (memchr_inv(secs->reserved1, 0, sizeof(secs->reserved1)) ||
+> > +	    memchr_inv(secs->reserved2, 0, sizeof(secs->reserved2)) ||
+> > +	    memchr_inv(secs->reserved3, 0, sizeof(secs->reserved3)) ||
+> > +	    memchr_inv(secs->reserved4, 0, sizeof(secs->reserved4)))
+> > +		return -EINVAL;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
+> > +{
+> > +	unsigned long encl_size = secs->size + PAGE_SIZE;
+> 
+> You're still using secs->size before validation. I know, we will return
+> early if sgx_validate_secs() fails but pls move that addition after the
+> validation call.
 
-It's not really clear here what the issue is, and how passing the slots
-and slot_width as arguments addresses it
+Is this appropriate:
 
-> This also fix a bug when i2s->slot_width is set for TDM but not
-> properly used in set_chan_cfg().
+	/* The extra page in swap space goes to SECS. */
+	encl_size = secs->size + PAGE_SIZE;
 
-Which bug?
+	backing = shmem_file_setup("SGX backing", encl_size + (encl_size >> 5),
+				   VM_NORESERVE);
+	if (IS_ERR(backing)) {
+		ret = PTR_ERR(backing);
+		goto err_out_shrink;
+	}
 
-Also, Fixes tag?
+> ...
+> 
+> > +/**
+> > + * sgx_ioc_enclave_create - handler for %SGX_IOC_ENCLAVE_CREATE
+> > + * @filep:	open file to /dev/sgx
+> 
+> Dammit, how many times do I have to type this comment here?!
+> 
+> "That's
+> 
+> @encl: enclave pointer
+> 
+> or so."
+> 
+> There's no filep - there is an encl!
 
-Thanks!
-Maxime
+I'm not actually sure what has happened. As you can easily grep, the
+rename is done in five other sites. I also see a similar problem in
+EINIT, which I will fix.
+
+git grep "enclave pointer" arch/x86/kernel/cpu/sgx/ | wc -l
+5
+
+> > + * @arg:	userspace pointer to a struct sgx_enclave_create instance
+> > + *
+> > + * Allocate kernel data structures for a new enclave and execute ECREATE after
+> > + * verifying the correctness of the provided SECS.
+> 
+> ... which is done in sgx_validate_secs()."
+> 
+> Yes, spell it out, otherwise one has to wonder where that validation is
+> happening in the function *below* because the comment is over it - not
+> over sgx_validate_secs().
+> 
+> And yes, you need to spell stuff like that out because this SGX crap is
+> complex and it better be properly documented!
+
+I agree with this but I also think it would make sense to rephrase
+"verifying the correctness of the provided SECS" with something more
+informative.
+
+I would rephrase as:
+
+"... after checking that the provided data for SECS meets the expectations
+of ENCLS[ECREATE] for an unitialized enclave and size of the address
+space does not surpass the platform expectations. This validation is
+executed by sgx_validate_secs()."
+
+Is this sufficient for you, or do you have further suggestions?
+
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
+
+/Jarkko
