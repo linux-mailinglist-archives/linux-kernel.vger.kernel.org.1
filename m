@@ -2,31 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA7992724ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD7A2724B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:10:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727663AbgIUNMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:12:25 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:59666 "EHLO huawei.com"
+        id S1727401AbgIUNKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:10:40 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:43038 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727369AbgIUNKe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:10:34 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 2B434B8E9FC984643587;
+        id S1727352AbgIUNKg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:10:36 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 8E4E9DE22BA672D9B9FA;
         Mon, 21 Sep 2020 21:10:33 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 21 Sep 2020 21:10:23 +0800
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 21 Sep 2020 21:10:24 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Frederic Barrat <fbarrat@linux.ibm.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+To:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+CC:     <linux-omap@vger.kernel.org>, <linux-fbdev@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
         "Qinglang Miao" <miaoqinglang@huawei.com>
-Subject: [PATCH -next] ocxl: simplify the return expression of free_function_dev()
-Date:   Mon, 21 Sep 2020 21:10:47 +0800
-Message-ID: <20200921131047.92526-1-miaoqinglang@huawei.com>
+Subject: [PATCH -next] omapdrm: panel: td028ttec1: simplify the return expression of td028ttec1_panel_connect()
+Date:   Mon, 21 Sep 2020 21:10:48 +0800
+Message-ID: <20200921131048.92571-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -41,29 +39,31 @@ Simplify the return expression.
 
 Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- drivers/misc/ocxl/core.c | 7 +------
+ .../fbdev/omap2/omapfb/displays/panel-tpo-td028ttec1.c     | 7 +------
  1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/misc/ocxl/core.c b/drivers/misc/ocxl/core.c
-index b7a09b21a..aebfc53a2 100644
---- a/drivers/misc/ocxl/core.c
-+++ b/drivers/misc/ocxl/core.c
-@@ -327,14 +327,9 @@ static void free_function_dev(struct device *dev)
- 
- static int set_function_device(struct ocxl_fn *fn, struct pci_dev *dev)
+diff --git a/drivers/video/fbdev/omap2/omapfb/displays/panel-tpo-td028ttec1.c b/drivers/video/fbdev/omap2/omapfb/displays/panel-tpo-td028ttec1.c
+index 595ebd8bd..3939fe8d5 100644
+--- a/drivers/video/fbdev/omap2/omapfb/displays/panel-tpo-td028ttec1.c
++++ b/drivers/video/fbdev/omap2/omapfb/displays/panel-tpo-td028ttec1.c
+@@ -159,16 +159,11 @@ static int td028ttec1_panel_connect(struct omap_dss_device *dssdev)
  {
--	int rc;
+ 	struct panel_drv_data *ddata = to_panel_data(dssdev);
+ 	struct omap_dss_device *in = ddata->in;
+-	int r;
+ 
+ 	if (omapdss_device_is_connected(dssdev))
+ 		return 0;
+ 
+-	r = in->ops.dpi->connect(in, dssdev);
+-	if (r)
+-		return r;
 -
- 	fn->dev.parent = &dev->dev;
- 	fn->dev.release = free_function_dev;
--	rc = dev_set_name(&fn->dev, "ocxlfn.%s", dev_name(&dev->dev));
--	if (rc)
--		return rc;
 -	return 0;
-+	return dev_set_name(&fn->dev, "ocxlfn.%s", dev_name(&dev->dev));
++	return in->ops.dpi->connect(in, dssdev);
  }
  
- static int assign_function_actag(struct ocxl_fn *fn)
+ static void td028ttec1_panel_disconnect(struct omap_dss_device *dssdev)
 -- 
 2.23.0
 
