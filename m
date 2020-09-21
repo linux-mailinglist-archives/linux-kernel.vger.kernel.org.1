@@ -2,114 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7400C27324F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 20:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8CF7273255
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727622AbgIUS6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 14:58:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727014AbgIUS6c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 14:58:32 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE264C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 11:58:31 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id gr14so19337649ejb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 11:58:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rrEufNVuY5dCBzinzTyZLnRAK6NDit4k748EnZ9ZGyU=;
-        b=VwM6SxPchzpHYvDq5MuGqptnfOCO+2u8UOZQsUHmvXP+yQTF+Z7wlraeVtjd/s9jlB
-         wV193ZvJeoHSX0mG5NaEp1P+oe7FoNjVRmUSb2Z+JinKsMwFIqn+MpalsijQarctvj4U
-         FH4y6mRhga1p9JKtJgLYS2O01gvN0JoRMzpIJ8sTPjHm+K3XvxLJoxyawOroxTt3ewXo
-         2erVwwtPxW6qCdmd6A02Wa5wSMbzwpQ/xA7DOELk4+u1Yv0Dw6Gb0gPjk1AInJx+Npb8
-         9g541oYiyMOVYQWN0p1s+dSK+qehJVoUb8ZcAzai39YkrQsAMRZIWHvBa3cE/5jkadoT
-         Dtig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rrEufNVuY5dCBzinzTyZLnRAK6NDit4k748EnZ9ZGyU=;
-        b=RyPcSTftBOqJ2iW+JmwbHnk9zRhgTKg4iINXf4SW3A9ZrTBjI/tm2XI3f7x2OEvSBQ
-         e8Yi/zJD/bPqFoS5PLIQqbCl7vlH/9Kg+45Mu/KuuKHgkVQKC0TqnLv1k43ldu2xR4Iv
-         GWm6B7aCZ7WjxWtSRFUllIMthBuzCccxMgIpJU8x1yo1jQvZl/O+sn/wPvkIbtPVUdsy
-         iAYH6hw5lO6lX7u6qoJASM5j2t0TKIlNJTyALR/Htzko+eVge8lpPyhIVlkVgANgYCno
-         QI2Bod42JSQlz6q+Km657pJGbeslCAaZNFEfD0r+eOrS+8yw4flcq/E7xlK8LaYB+b81
-         1ZXw==
-X-Gm-Message-State: AOAM531xFf5qNQZtl0ifiW7Rd9veq9jEwL1KdBguUBdvBP4rfewTBud0
-        W2PJGmkHaggdTbLfCpE3y8at8bgJ7K7rvoxWlsIwuw==
-X-Google-Smtp-Source: ABdhPJwAs9ksH6re9qMXbI2fsKP5Ghj4mOoCzkBFQS+BQszgLy1pqKFO8fFSdMFWe7XQ/UpW1tcdUlWla4BBqoqymc8=
-X-Received: by 2002:a17:906:ecf1:: with SMTP id qt17mr960026ejb.158.1600714709946;
- Mon, 21 Sep 2020 11:58:29 -0700 (PDT)
+        id S1727614AbgIUTBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 15:01:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42846 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727001AbgIUTBS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 15:01:18 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 002172086A;
+        Mon, 21 Sep 2020 19:01:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600714878;
+        bh=deQYkPS0iXLFmKUTBwE68qM37Y3TxhR4uGafiXwSPOA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DYBKqeCEQ+PT7FGjYNQk4XsV9/a0MPchAdZS8ZsF/KfFYeTMGCgXZ0URASLNfQDP1
+         D8luC82UtbTAOpbyluLVp7PNrc9MEGOkFZKX9sXu/M+HLIczQ03Ul2075I1nv2lNqu
+         KvW7O8M5ps+xDB0h4vLONyt/+3XtypNplQd6AVEo=
+Date:   Mon, 21 Sep 2020 20:00:25 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Aswath Govindraju <a-govindraju@ti.com>
+Cc:     Sekhar Nori <nsekhar@ti.com>, Vignesh R <vigneshr@ti.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Revert "spi: omap2-mcspi: Switch to readl_poll_timeout()"
+Message-ID: <20200921190025.GI4792@sirena.org.uk>
+References: <20200910122624.8769-1-a-govindraju@ti.com>
+ <20200921185638.GH4792@sirena.org.uk>
 MIME-Version: 1.0
-References: <20200918201436.2932360-1-samitolvanen@google.com>
- <20200918201436.2932360-14-samitolvanen@google.com> <202009181427.86DE61B@keescook>
-In-Reply-To: <202009181427.86DE61B@keescook>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Mon, 21 Sep 2020 11:58:19 -0700
-Message-ID: <CABCJKuf5pKqEDaAKix5CaUmv92M5HOAB-psdNg=awF7BDZ+yvA@mail.gmail.com>
-Subject: Re: [PATCH v3 13/30] kbuild: lto: postpone objtool
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org,
-        X86 ML <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="VaKJWhUROU/xPxjb"
+Content-Disposition: inline
+In-Reply-To: <20200921185638.GH4792@sirena.org.uk>
+X-Cookie: Love thy neighbor, tune thy piano.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nick and 0-day bot both let me know that there's a typo in this patch,
-which I'll fix in v4:
 
-diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-index f7daa59ff14f..00d7baaf7949 100644
---- a/scripts/Makefile.lib
-+++ b/scripts/Makefile.lib
-@@ -223,7 +223,7 @@ dtc_cpp_flags  = -Wp,-MMD,$(depfile).pre.tmp
--nostdinc                    \
- objtool_args =                                                         \
-        $(if $(CONFIG_UNWINDER_ORC),orc generate,check)                 \
-        $(if $(part-of-module), --module,)                              \
--       $(if $(CONFIG_FRAME_POINTER), --no-fp,)                         \
-+       $(if $(CONFIG_FRAME_POINTER),, --no-fp)                         \
-        $(if $(CONFIG_GCOV_KERNEL), --no-unreachable,)                  \
-        $(if $(CONFIG_RETPOLINE), --retpoline,)                         \
-        $(if $(CONFIG_X86_SMAP), --uaccess,)                            \
+--VaKJWhUROU/xPxjb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Sami
+On Mon, Sep 21, 2020 at 07:56:38PM +0100, Mark Brown wrote:
+> On Thu, Sep 10, 2020 at 05:56:24PM +0530, Aswath Govindraju wrote:
+> > This reverts commit 13d515c796adc49a49b0cd2212ccd7f43a37fc5a.
+> >=20
+> > The amount of time spent polling for the MCSPI_CHSTAT bits to be set on
+> > AM335x-icev2 platform is less than 1us (about 0.6us) in most cases, with
+>=20
+> Please submit patches using subject lines reflecting the style for the
+> subsystem, this makes it easier for people to identify relevant patches.
+> Look at what existing commits in the area you're changing are doing and
+> make sure your subject lines visually resemble what they're doing.
+> There's no need to resubmit to fix this alone.
 
-On Fri, Sep 18, 2020 at 2:27 PM Kees Cook <keescook@chromium.org> wrote:
->
-> On Fri, Sep 18, 2020 at 01:14:19PM -0700, Sami Tolvanen wrote:
-> > With LTO, LLVM bitcode won't be compiled into native code until
-> > modpost_link, or modfinal for modules. This change postpones calls
-> > to objtool until after these steps, and moves objtool_args to
-> > Makefile.lib, so the arguments can be reused in Makefile.modfinal.
-> >
-> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
->
-> Thanks for reorganizing this!
->
-> Reviewed-by: Kees Cook <keescook@chromium.org>
->
-> --
-> Kees Cook
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/202009181427.86DE61B%40keescook.
+Oh, and also:
+
+Please include human readable descriptions of things like commits and
+issues being discussed in e-mail in your mails, this makes them much
+easier for humans to read especially when they have no internet access.
+I do frequently catch up on my mail on flights or while otherwise
+travelling so this is even more pressing for me than just being about
+making things a bit easier to read.
+
+--VaKJWhUROU/xPxjb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9o+EkACgkQJNaLcl1U
+h9BkJAf+M/tafx3tPXNVe/XWRpgw5xppnPA35pudyXqx0Ho9DMriH7DY9aPKrV8r
+qpCqPziXf600FNK/tSG/EaVQOY+aiBEjASkhA19Im6zhDlbgAjejsc+BrUcu495+
+K2wxRJkLnChZc7a6k67k6afWHLA2ybcMBfJWTHgaOsfyANZgbDEZ4f/5iNP6Q4a5
+e/7bREh9uBJKgzzE+wXwDKUXTNWUCknnQLAEhX7lFi4vYL5qzNV6eaLy3RIN+vLj
+XPXPxKoiwa+jUuv7yRpNQjVzptsXVCzmKn0cU7xL8MtC5opdrSxWtL19Lh5fd8c3
+0k8WCrswnedyeYNBVcMqapbxFr6mbQ==
+=0spJ
+-----END PGP SIGNATURE-----
+
+--VaKJWhUROU/xPxjb--
