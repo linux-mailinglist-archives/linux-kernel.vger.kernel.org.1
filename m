@@ -2,56 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 886D2271B12
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 08:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 264C7271B0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 08:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726471AbgIUGsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 02:48:05 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:35440 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726149AbgIUGsF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 02:48:05 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 97BB61E9AEA92E074D6D
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 14:48:01 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 21 Sep 2020 14:47:51 +0800
-From:   Tian Tao <tiantao6@hisilicon.com>
-To:     <jassisinghbrar@gmail.com>, <linux-kernel@vger.kernel.org>
-CC:     <linuxarm@huawei.com>
-Subject: [PATCH] mailbox: pcc: remove the .owner when using the platform_create_bundle
-Date:   Mon, 21 Sep 2020 14:45:26 +0800
-Message-ID: <1600670726-24741-1-git-send-email-tiantao6@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
+        id S1726011AbgIUGqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 02:46:15 -0400
+Received: from muru.com ([72.249.23.125]:44932 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726267AbgIUGqO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 02:46:14 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 9924580BA;
+        Mon, 21 Sep 2020 06:46:14 +0000 (UTC)
+Date:   Mon, 21 Sep 2020 09:47:07 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@gmail.com>,
+        Trent Piepho <tpiepho@gmail.com>,
+        Christina Quast <cquast@hanoverdisplays.com>,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org
+Subject: Re: [PATCH] ARM: dts: am335x: guardian: switch to AM33XX_PADCONF
+Message-ID: <20200921064707.GN7101@atomide.com>
+References: <20200919195159.3126193-1-drew@beagleboard.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200919195159.3126193-1-drew@beagleboard.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-the platform_create_bundle is a macro that implements
-__platform_create_bundle has set he parameters module to THIS_MODULE.
+* Drew Fustini <drew@beagleboard.org> [200919 19:53]:
+> Change the pin defintions from AM33XX_IOPAD to AM33XX_PADCONF macro so
+> that it correctly handles changes to #pinctrl-cells.
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
----
- drivers/mailbox/pcc.c | 1 -
- 1 file changed, 1 deletion(-)
+Thanks for fixing this. I wonder if we should now also change the define
+for the old AM33XX_IOPAD macro?
 
-diff --git a/drivers/mailbox/pcc.c b/drivers/mailbox/pcc.c
-index ef9ecd1..4b1a2d2 100644
---- a/drivers/mailbox/pcc.c
-+++ b/drivers/mailbox/pcc.c
-@@ -577,7 +577,6 @@ static struct platform_driver pcc_mbox_driver = {
- 	.probe = pcc_mbox_probe,
- 	.driver = {
- 		.name = "PCCT",
--		.owner = THIS_MODULE,
- 	},
- };
- 
--- 
-2.7.4
+Or just remove it completely and mention that we've changed nr-pinctrl-cells
+to use 3 now?
 
+Otherwise the unknown number of out-of-tree boards will be hitting this
+too.
+
+Regards,
+
+Tony
