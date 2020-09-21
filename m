@@ -2,125 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD87227248C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D785727249C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:08:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727103AbgIUNEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:04:36 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:56138 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726341AbgIUNEe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:04:34 -0400
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 21 Sep 2020 06:04:32 -0700
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 21 Sep 2020 06:04:30 -0700
-Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 21 Sep 2020 18:34:30 +0530
-Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
-        id 295604DEF; Mon, 21 Sep 2020 18:34:29 +0530 (IST)
-From:   Dikshita Agarwal <dikshita@codeaurora.org>
-To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        ezequiel@collabora.com, stanimir.varbanov@linaro.org,
-        vgarodia@codeaurora.org, majja@codeaurora.org,
-        Dikshita Agarwal <dikshita@codeaurora.org>
-Subject: [PATCH v2 2/2] media: v4l2-ctrl: Add layer wise bitrate controls for h264
-Date:   Mon, 21 Sep 2020 18:34:00 +0530
-Message-Id: <1600693440-3015-3-git-send-email-dikshita@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1600693440-3015-1-git-send-email-dikshita@codeaurora.org>
-References: <1600693440-3015-1-git-send-email-dikshita@codeaurora.org>
+        id S1727017AbgIUNIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:08:31 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:21419 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726460AbgIUNIa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:08:30 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600693710; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=db41zdzYe9Oi5weBkQXr2AXdoiKQCyrCWhDRhZQxaxs=;
+ b=QPA2PHXv283GSHRO/msvtOxkhSuqwbO7O+GZyYNfKRAo8L87fF8j09NjF674KaYCTDw4erti
+ smIcoxUwzHGQNy3WBQy5J1c8RzZX6W67S+3hpnD7gWKjF1ITbSmUINlmMuqbv5N6pBATfj4H
+ qSPM3VT2MbeiJEQLh2YG9Cl5uW8=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5f68a537ae7ca421d2cb1338 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 21 Sep 2020 13:05:59
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F092DC43385; Mon, 21 Sep 2020 13:05:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EBC15C433CA;
+        Mon, 21 Sep 2020 13:05:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EBC15C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] wireless: ath9k: hif_usb: fix race condition between
+ usb_get_urb() and usb_kill_anchored_urbs()
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200911071427.32354-1-brookebasile@gmail.com>
+References: <20200911071427.32354-1-brookebasile@gmail.com>
+To:     Brooke Basile <brookebasile@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, gregkh@linuxfoundation.org,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ath9k-devel@qca.qualcomm.com, syzkaller-bugs@googlegroups.com,
+        Brooke Basile <brookebasile@gmail.com>,
+        syzbot+89bd486af9427a9fc605@syzkaller.appspotmail.com
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200921130558.F092DC43385@smtp.codeaurora.org>
+Date:   Mon, 21 Sep 2020 13:05:58 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds bitrate control for all coding layers for h264
-same as hevc.
+Brooke Basile <brookebasile@gmail.com> wrote:
 
-Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
----
- .../userspace-api/media/v4l/ext-ctrls-codec.rst      | 20 ++++++++++++++++++++
- drivers/media/v4l2-core/v4l2-ctrls.c                 |  7 +++++++
- include/uapi/linux/v4l2-controls.h                   |  8 ++++++++
- 3 files changed, 35 insertions(+)
+> Calls to usb_kill_anchored_urbs() after usb_kill_urb() on multiprocessor
+> systems create a race condition in which usb_kill_anchored_urbs() deallocates
+> the URB before the completer callback is called in usb_kill_urb(), resulting
+> in a use-after-free.
+> To fix this, add proper lock protection to usb_kill_urb() calls that can
+> possibly run concurrently with usb_kill_anchored_urbs().
+> 
+> Reported-by: syzbot+89bd486af9427a9fc605@syzkaller.appspotmail.com
+> Link: https://syzkaller.appspot.com/bug?id=cabffad18eb74197f84871802fd2c5117b61febf
+> Signed-off-by: Brooke Basile <brookebasile@gmail.com>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-index 26f8220..690b066 100644
---- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-+++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-@@ -1513,6 +1513,26 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type -
-     * - Bit 16:32
-       - Layer number
- 
-+``V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L0_BR (integer)``
-+    Indicates bit rate for hierarchical coding layer 0 for H264 encoder.
-+
-+``V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L1_BR (integer)``
-+    Indicates bit rate for hierarchical coding layer 1 for H264 encoder.
-+
-+``V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L2_BR (integer)``
-+    Indicates bit rate for hierarchical coding layer 2 for H264 encoder.
-+
-+``V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L3_BR (integer)``
-+    Indicates bit rate for hierarchical coding layer 3 for H264 encoder.
-+
-+``V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L4_BR (integer)``
-+    Indicates bit rate for hierarchical coding layer 4 for H264 encoder.
-+
-+``V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L5_BR (integer)``
-+    Indicates bit rate for hierarchical coding layer 5 for H264 encoder.
-+
-+``V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L6_BR (integer)``
-+    Indicates bit rate for hierarchical coding layer 6 for H264 encoder.
- 
- .. _v4l2-mpeg-h264:
- 
-diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
-index abef73e..9296294 100644
---- a/drivers/media/v4l2-core/v4l2-ctrls.c
-+++ b/drivers/media/v4l2-core/v4l2-ctrls.c
-@@ -922,6 +922,13 @@ const char *v4l2_ctrl_get_name(u32 id)
- 	case V4L2_CID_MPEG_VIDEO_H264_P_FRAME_MAX_QP:		return "H264 P-Frame Maximum QP Value";
- 	case V4L2_CID_MPEG_VIDEO_H264_B_FRAME_MIN_QP:		return "H264 B-Frame Minimum QP Value";
- 	case V4L2_CID_MPEG_VIDEO_H264_B_FRAME_MAX_QP:		return "H264 B-Frame Maximum QP Value";
-+	case V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L0_BR:	return "H264 Hierarchical Lay 0 BitRate";
-+	case V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L1_BR:	return "H264 Hierarchical Lay 1 BitRate";
-+	case V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L2_BR:	return "H264 Hierarchical Lay 2 BitRate";
-+	case V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L3_BR:	return "H264 Hierarchical Lay 3 BitRate";
-+	case V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L4_BR:	return "H264 Hierarchical Lay 4 BitRate";
-+	case V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L5_BR:	return "H264 Hierarchical Lay 5 BitRate";
-+	case V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L6_BR:	return "H264 Hierarchical Lay 6 BitRate";
- 	case V4L2_CID_MPEG_VIDEO_H264_SPS:			return "H264 Sequence Parameter Set";
- 	case V4L2_CID_MPEG_VIDEO_H264_PPS:			return "H264 Picture Parameter Set";
- 	case V4L2_CID_MPEG_VIDEO_H264_SCALING_MATRIX:		return "H264 Scaling Matrix";
-diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
-index 7ba05fe..b869b54 100644
---- a/include/uapi/linux/v4l2-controls.h
-+++ b/include/uapi/linux/v4l2-controls.h
-@@ -580,12 +580,20 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type {
- #define V4L2_CID_MPEG_VIDEO_H264_P_FRAME_MAX_QP	(V4L2_CID_MPEG_BASE+388)
- #define V4L2_CID_MPEG_VIDEO_H264_B_FRAME_MIN_QP	(V4L2_CID_MPEG_BASE+389)
- #define V4L2_CID_MPEG_VIDEO_H264_B_FRAME_MAX_QP	(V4L2_CID_MPEG_BASE+390)
-+#define V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L0_BR	(V4L2_CID_MPEG_BASE + 391)
-+#define V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L1_BR	(V4L2_CID_MPEG_BASE + 392)
-+#define V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L2_BR	(V4L2_CID_MPEG_BASE + 393)
-+#define V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L3_BR	(V4L2_CID_MPEG_BASE + 394)
-+#define V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L4_BR	(V4L2_CID_MPEG_BASE + 395)
-+#define V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L5_BR	(V4L2_CID_MPEG_BASE + 396)
-+#define V4L2_CID_MPEG_VIDEO_H264_HIER_CODING_L6_BR	(V4L2_CID_MPEG_BASE + 397)
- #define V4L2_CID_MPEG_VIDEO_MPEG4_I_FRAME_QP	(V4L2_CID_MPEG_BASE+400)
- #define V4L2_CID_MPEG_VIDEO_MPEG4_P_FRAME_QP	(V4L2_CID_MPEG_BASE+401)
- #define V4L2_CID_MPEG_VIDEO_MPEG4_B_FRAME_QP	(V4L2_CID_MPEG_BASE+402)
- #define V4L2_CID_MPEG_VIDEO_MPEG4_MIN_QP	(V4L2_CID_MPEG_BASE+403)
- #define V4L2_CID_MPEG_VIDEO_MPEG4_MAX_QP	(V4L2_CID_MPEG_BASE+404)
- #define V4L2_CID_MPEG_VIDEO_MPEG4_LEVEL		(V4L2_CID_MPEG_BASE+405)
-+
- enum v4l2_mpeg_video_mpeg4_level {
- 	V4L2_MPEG_VIDEO_MPEG4_LEVEL_0	= 0,
- 	V4L2_MPEG_VIDEO_MPEG4_LEVEL_0B	= 1,
+Patch applied to ath-next branch of ath.git, thanks.
+
+03fb92a432ea ath9k: hif_usb: fix race condition between usb_get_urb() and usb_kill_anchored_urbs()
+
 -- 
-1.9.1
+https://patchwork.kernel.org/patch/11769845/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
