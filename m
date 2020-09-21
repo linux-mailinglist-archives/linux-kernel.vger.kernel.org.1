@@ -2,103 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC7E5272847
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:43:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52DB7272844
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728131AbgIUOl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 10:41:59 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:35548 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727793AbgIUOlr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:41:47 -0400
-Received: from ip5f5af089.dynamic.kabel-deutschland.de ([95.90.240.137] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1kKN0Z-00037W-8i; Mon, 21 Sep 2020 14:41:35 +0000
-Date:   Mon, 21 Sep 2020 16:41:34 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Peter Xu <peterx@redhat.com>, Tejun Heo <tj@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Maya B . Gokhale" <gokhale2@llnl.gov>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Marty Mcfadden <mcfadden8@llnl.gov>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
-Message-ID: <20200921144134.fuvkkv6wgrzpbwnv@wittgenstein>
-References: <20200915232238.GO1221970@ziepe.ca>
- <e6c352f8-7ee9-0702-10a4-122d2c4422fc@nvidia.com>
- <20200916174804.GC8409@ziepe.ca>
- <20200916184619.GB40154@xz-x1>
- <20200917112538.GD8409@ziepe.ca>
- <CAHk-=wjtfjB3TqTFRzVmOrB9Mii6Yzc-=wKq0fu4ruDE6AsJgg@mail.gmail.com>
- <20200917193824.GL8409@ziepe.ca>
- <CAHk-=wiY_g+SSjncZi8sO=LrxXmMox0NO7K34-Fs653XVXheGg@mail.gmail.com>
- <20200918164032.GA5962@xz-x1>
- <20200921134200.GK12990@dhcp22.suse.cz>
+        id S1728112AbgIUOlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 10:41:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51118 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728092AbgIUOlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 10:41:39 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1647523447;
+        Mon, 21 Sep 2020 14:41:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600699298;
+        bh=1PR2f9q4ciLZz1AQCn23XYiF4qTzYugQqKbHT2FMAac=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BC2F4mCIIjbPOpLEV3dQPxEfed8gpIm/wag9vINcPpZorgNUrTfWdvTeS9uuZxQ2u
+         OHj0WOhbVRohTbNb1nIcLrAJQ70JBLuA0qPysaj9bf4K3j7Q6f3rUOcWqa4GKS4BrM
+         Ri+bvrcg3SsH9OVjuH7rCtwrqtnOJVMPUV8J9sEM=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Ilya Leoshkevich <iii@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>, linux-s390@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.4] s390/init: add missing __init annotations
+Date:   Mon, 21 Sep 2020 10:41:36 -0400
+Message-Id: <20200921144136.2136046-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200921134200.GK12990@dhcp22.suse.cz>
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 03:42:00PM +0200, Michal Hocko wrote:
-> [Cc Tejun and Christian - this is a part of a larger discussion which is
->  not directly related to this particular question so let me trim the
->  original email to the bare minimum.]
-> 
-> On Fri 18-09-20 12:40:32, Peter Xu wrote:
-> [...]
-> > One issue is when we charge for cgroup we probably can't do that onto the new
-> > mm/task, since copy_namespaces() is called after copy_mm().  I don't know
-> > enough about cgroup, I thought the child will inherit the parent's, but I'm not
-> > sure.  Or, can we change that order of copy_namespaces() && copy_mm()?  I don't
-> > see a problem so far but I'd like to ask first..
-> 
-> I suspect you are referring to CLONE_INTO_CGROUP, right? I have only now
-> learned about this feature so I am not deeply familiar with all the
-> details and I might be easily wrong. Normally all the cgroup aware
-> resources are accounted to the parent's cgroup. For memcg that includes
-> all the page tables, early CoW and other allocations with __GFP_ACCOUNT.
-> IIUC CLONE_INTO_CGROUP properly then this hasn't changed as the child is
-> associated to its new cgroup (and memcg) only in cgroup_post_fork. If
-> that is correct then we might have quite a lot of resources bound to
-> child's lifetime but accounted to the parent's memcg which can lead to
-> all sorts of interesting problems (e.g. unreclaimable memory - even by
-> the oom killer).
-> 
-> Christian, Tejun is this the expected semantic or I am just misreading
-> the code?
+From: Ilya Leoshkevich <iii@linux.ibm.com>
 
-Hey Michal,
+[ Upstream commit fcb2b70cdb194157678fb1a75f9ff499aeba3d2a ]
 
-Thanks for the Cc!
+Add __init to reserve_memory_end, reserve_oldmem and remove_oldmem.
+Sometimes these functions are not inlined, and then the build
+complains about section mismatch.
 
-If I understand your question correctly, then you are correct. The logic
-is split in three simple parts:
-1. Child gets created and doesn't live in any cset
-   - This should mean that resources are still charged against the
-     parent's memcg which is what you're asking afiu.
-1. cgroup_can_fork()
-   - create new or find existing matching cset for the child
-3. cgroup_post_fork()
-   - move/attach child to the new or found cset
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/s390/kernel/setup.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-_Purely from a CLONE_INTO_CGROUP perspective_ you should be ok to
-reverse the order of copy_mm() and copy_namespaces().
+diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
+index 47692c78d09c5..fdc5e76e1f6b0 100644
+--- a/arch/s390/kernel/setup.c
++++ b/arch/s390/kernel/setup.c
+@@ -513,7 +513,7 @@ static struct notifier_block kdump_mem_nb = {
+ /*
+  * Make sure that the area behind memory_end is protected
+  */
+-static void reserve_memory_end(void)
++static void __init reserve_memory_end(void)
+ {
+ #ifdef CONFIG_CRASH_DUMP
+ 	if (ipl_info.type == IPL_TYPE_FCP_DUMP &&
+@@ -531,7 +531,7 @@ static void reserve_memory_end(void)
+ /*
+  * Make sure that oldmem, where the dump is stored, is protected
+  */
+-static void reserve_oldmem(void)
++static void __init reserve_oldmem(void)
+ {
+ #ifdef CONFIG_CRASH_DUMP
+ 	if (OLDMEM_BASE)
+@@ -543,7 +543,7 @@ static void reserve_oldmem(void)
+ /*
+  * Make sure that oldmem, where the dump is stored, is protected
+  */
+-static void remove_oldmem(void)
++static void __init remove_oldmem(void)
+ {
+ #ifdef CONFIG_CRASH_DUMP
+ 	if (OLDMEM_BASE)
+-- 
+2.25.1
 
-Christian
