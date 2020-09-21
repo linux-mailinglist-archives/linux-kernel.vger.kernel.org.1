@@ -2,68 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A8B27200A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EADE5272087
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:23:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726706AbgIUKUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 06:20:08 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:18536 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726326AbgIUKUF (ORCPT
+        id S1727167AbgIUKWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:22:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726886AbgIUKU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 06:20:05 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f687df80002>; Mon, 21 Sep 2020 03:18:32 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 21 Sep
- 2020 10:20:04 +0000
-Received: from [192.168.22.23] (10.124.1.5) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Mon, 21 Sep 2020 10:20:02 +0000
-From:   Thierry Reding <treding@nvidia.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-CC:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?utf-8?q?Micha=C5=82_Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        <linux-i2c@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 23/34] i2c: tegra: Factor out error recovery from
- tegra_i2c_xfer_msg()
-In-Reply-To: <20200908224006.25636-24-digetx@gmail.com>
-References: <20200908224006.25636-24-digetx@gmail.com>
-X-NVConfidentiality: public
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Message-ID: <518eefbffc5c435ca46f848ad91f79a1@HQMAIL111.nvidia.com>
+        Mon, 21 Sep 2020 06:20:59 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D18DC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:20:59 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id l15so11152960wmh.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:20:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=14WJj/RqQjb5y9fKAYpp9xKxfwW/Mh3U1gqbae/yMEI=;
+        b=OLmZzc/r2Nu25RC4agP9sFqGyGE70U4vF6jpgeTe/Ld9FCKI9UNwkO38fJLJpnZ1aT
+         FCuiWAZQldH0H9H4eu33pQfeCK9MCtMtlQWhCWnWnB8wVDF+c3MNEupsagEPgbtYXDGt
+         AOCBnJ7YKYP+Ed+Put7CP4VxKa0/l9MZaoJu94G23aW6gCRaY/wfw2obNAKsxpVXqAkY
+         yq161oDjhmqwoRa0Frx1xjgajGOtn/IoFgdh4OVkXJ8DE9Vuc8TfMMwKIW06d6KwjPNL
+         XFV2lOzn/RhtqaZ/CYpyLbt42ZFLL4f17M0TrKTSlEHOnmNe+2ZA4PkmVDmyVcJ0IwzU
+         NW3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=14WJj/RqQjb5y9fKAYpp9xKxfwW/Mh3U1gqbae/yMEI=;
+        b=ltkI1a5R2QBoP8EJinZnf/GHM/Co7FG/yL/xrQl15k9F3YIWhAb1EC4kZrstq1aHMW
+         VlH01m8GNyw21JoUZNVdgNgwV+aenCnfquC07c8bRrd/z4MJHgXouc/wn1KmWpOkqBpL
+         CJwDeJTAIgiNjJxLRwdeUUnDKY/w8YY6/BWHh1Nn7hjSnEdUOkEGppC5MPwNZuYJpmhH
+         RgXJXRkuY5NdTbLgMWBgZjVjy1x3lGuWoef2ZaEkMi68W1SGVJuAMplTANppa9g1L/bm
+         dQscauEvKcmffrn0Ieh97LS+aCMC/PcqUhNnuZob6hryI7dJQdWeaWmnhvwoCktlvwM6
+         puuw==
+X-Gm-Message-State: AOAM533GneeY7seG5uXcdUl6VV0YtrT+hmH8BidSalQT76ATQJM9EUqu
+        pIWsv1xKNtG+hoZWtawZ5edy+HvrJhU9kQ==
+X-Google-Smtp-Source: ABdhPJx1Ryc9pfX4wBErhIyfQ0T8KkhSO1BIqse9FMAU5+1kMZdMdiuOXHzz3wNhtql/XUvTWjWShw==
+X-Received: by 2002:a1c:7508:: with SMTP id o8mr28218460wmc.127.1600683658224;
+        Mon, 21 Sep 2020 03:20:58 -0700 (PDT)
+Received: from localhost.localdomain ([51.15.160.169])
+        by smtp.googlemail.com with ESMTPSA id l17sm18804629wme.11.2020.09.21.03.20.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 21 Sep 2020 03:20:57 -0700 (PDT)
+From:   Corentin Labbe <clabbe@baylibre.com>
+To:     gregkh@linuxfoundation.org, laurent.pinchart@skynet.be,
+        mchehab@kernel.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH RFT/RFC 27/49] staging: media: zoran: convert irq to pci irq
 Date:   Mon, 21 Sep 2020 10:20:02 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600683512; bh=JRtGlRzMLbjSdLy2bE6vbzTj6xlNlZirvf8wSZQrHtI=;
-        h=From:To:CC:Subject:In-Reply-To:References:X-NVConfidentiality:
-         Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:
-         Date;
-        b=jxzqM1bJWjSKXt8Lnwd1BnxEcZemAc/llKkCA3D2yKQFlIVGjBT/V9KjJzvunBObL
-         +vZSVRAJr2vUwmJzs/FxrlwcQTT1lFnd8K81JvCH7FrBCupxBnMHPhsydoohzM7sNL
-         USTQihFEVPQVVsviHtN1C2VmNvCPHFwpH8XGfEVT31Tl4MvrKAu8Huhtt14EgWc/ro
-         BxCaQOVvPAqa6rsmUjtvfSgDykp/wI38qm4QmckGUJBrqlTKrFl092sRlO26jZ6ibC
-         0njblRYD2zDR+16wLBL8P07ZrgHdRhwIKl6cxvSMDAUulCPVF7B0gCrQ6fZiVopynQ
-         IU/302UKnDfkQ==
+Message-Id: <1600683624-5863-28-git-send-email-clabbe@baylibre.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1600683624-5863-1-git-send-email-clabbe@baylibre.com>
+References: <1600683624-5863-1-git-send-email-clabbe@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 09 Sep 2020 01:39:55 +0300, Dmitry Osipenko wrote:
-> Factor out error recovery code from tegra_i2c_xfer_msg() in order to
-> make this function easier to read and follow.
->=20
-> Reviewed-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> Acked-by: Thierry Reding <treding@nvidia.com>
-> ---
->  drivers/i2c/busses/i2c-tegra.c | 46 ++++++++++++++++++++++------------
->  1 file changed, 30 insertions(+), 16 deletions(-)
+This patch convert zoran to pci_irq functions.
 
-Tested-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+---
+ drivers/staging/media/zoran/zoran_card.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/staging/media/zoran/zoran_card.c b/drivers/staging/media/zoran/zoran_card.c
+index 1c587ce0d8c0..fe4d34e388b4 100644
+--- a/drivers/staging/media/zoran/zoran_card.c
++++ b/drivers/staging/media/zoran/zoran_card.c
+@@ -1008,7 +1008,7 @@ static void zoran_remove(struct pci_dev *pdev)
+ 	zoran_set_pci_master(zr, 0);
+ 	/* put chip into reset */
+ 	btwrite(0, ZR36057_SPGPPCR);
+-	free_irq(zr->pci_dev->irq, zr);
++	pci_free_irq(zr->pci_dev, 0, zr);
+ 	/* unmap and free memory */
+ 	dma_free_coherent(&zr->pci_dev->dev, BUZ_NUM_STAT_COM * sizeof(u32), zr->stat_com, zr->p_sc);
+ 	iounmap(zr->zr36057_mem);
+@@ -1166,8 +1166,7 @@ static int zoran_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		goto zr_unreg;
+ 	}
+ 
+-	result = request_irq(zr->pci_dev->irq, zoran_irq,
+-			     IRQF_SHARED, ZR_DEVNAME(zr), zr);
++	result = pci_request_irq(pdev, 0, zoran_irq, NULL, zr, ZR_DEVNAME(zr));
+ 	if (result < 0) {
+ 		if (result == -EINVAL) {
+ 			pci_err(pdev, "%s - bad IRQ number or handler\n", __func__);
+@@ -1281,7 +1280,7 @@ static int zoran_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	zoran_unregister_i2c(zr);
+ zr_free_irq:
+ 	btwrite(0, ZR36057_SPGPPCR);
+-	free_irq(zr->pci_dev->irq, zr);
++	pci_free_irq(zr->pci_dev, 0, zr);
+ zr_unmap:
+ 	iounmap(zr->zr36057_mem);
+ zr_unreg:
+-- 
+2.26.2
+
