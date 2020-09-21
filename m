@@ -2,182 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70707271E61
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:53:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5724E271E66
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 10:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726515AbgIUIxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 04:53:19 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:44810 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726498AbgIUIxS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 04:53:18 -0400
-Received: by mail-il1-f199.google.com with SMTP id i3so3662131ilr.11
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 01:53:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to:cc;
-        bh=sIEFp5k+H22EAJPxvqeqBRHZBQUr7fvq4bhjMTd5BdU=;
-        b=k5jmFCM/v2c58RD1wTHeqCSC9dbK09CPXu9ipLUgebCbc6Z9xQFPtnxfQ75LsoKR3d
-         /lbI+aZKA/nNvEsZFe8qeLfsEfJfQQj8BM+/Py/MuI/hfa3ipncUJ2JF8n4yPsVP/ghM
-         04cq9rC5aQ9bKtGXTzDaS41YIlL3UTA6gsspNHzpziGJBrkSMxG3F9ryVpNbN9nlmz00
-         FKH2NbHQGTdtHLj1rbcLwsuvEvMExrzsFRNCDzfK29ZUxcjWzXMNSwsKlcusIaj+6e6D
-         DyA9T3s9UpYFlQmKh1jgw+qVAPFbajz3KMFO/s0hS2TijHa8jk5JHYjiyryKRrFeonjG
-         l45g==
-X-Gm-Message-State: AOAM533QOdBUd0QzwJwjA5jKt59Ab6XmHUNkZoh4HJdAf7S9yBvKSvjC
-        5zPo3pqeHUrOcZDKzjMYwbmA2qqP1ijznVmRn40I7r5Zd+A7
-X-Google-Smtp-Source: ABdhPJzwwnw62vEBh4K7ZyFq5xY1AaSH17Iu8LMOX1Ah2zQZlnLE6qnYDwK4bk8HZH62YNxHecheWZQ3f/L9/Sy6z64ru7mz5Uog
+        id S1726544AbgIUIyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 04:54:14 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13792 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726324AbgIUIyO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 04:54:14 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 8F5F7318E0E54A3062F4;
+        Mon, 21 Sep 2020 16:54:10 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.253) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Mon, 21 Sep 2020
+ 16:54:01 +0800
+Subject: Re: [PATCH v2 2/2] ARM: support PHYS_OFFSET minimum aligned at 64KiB
+ boundary
+To:     Ard Biesheuvel <ardb@kernel.org>
+CC:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Jianguo Chen <chenjianguo3@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        "Catalin Marinas" <catalin.marinas@arm.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Libin <huawei.libin@huawei.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        patches-armlinux <patches@armlinux.org.uk>
+References: <20200915131615.3138-1-thunder.leizhen@huawei.com>
+ <20200915131615.3138-3-thunder.leizhen@huawei.com>
+ <20200915190143.GP1551@shell.armlinux.org.uk>
+ <CAMj1kXHdX5cCZKvbBO+hCkkt46aOgf4NjK2jba2Gb2tziZm2DQ@mail.gmail.com>
+ <a196451d-fbef-bab6-e042-00a817db611c@huawei.com>
+ <CAMj1kXGdFj8KxqJB8WMOdKYWPChkHbM7+nLaAWBZ29o=q7N0Aw@mail.gmail.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <5180c217-a9d3-18d1-c4ad-9cad33247e96@huawei.com>
+Date:   Mon, 21 Sep 2020 16:53:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-X-Received: by 2002:a5e:a613:: with SMTP id q19mr36319793ioi.36.1600678396518;
- Mon, 21 Sep 2020 01:53:16 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 01:53:16 -0700
-In-Reply-To: <SN4PR0401MB3598EE548546274CFDD618AA9B3A0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003969bf05afcefb36@google.com>
-Subject: Re: Re: KASAN: use-after-free Read in btrfs_scan_one_device
-From:   syzbot <syzbot+582e66e5edf36a22c7b0@syzkaller.appspotmail.com>
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc:     Johannes.Thumshirn@wdc.com, clm@fb.com, dsterba@suse.com,
-        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAMj1kXGdFj8KxqJB8WMOdKYWPChkHbM7+nLaAWBZ29o=q7N0Aw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.253]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On 21/09/2020 07:38, syzbot wrote:
->> syzbot has found a reproducer for the following issue on:
->> 
->> HEAD commit:    325d0eab Merge branch 'akpm' (patches from Andrew)
->> git tree:       upstream
->> console output: https://syzkaller.appspot.com/x/log.txt?x=1512df53900000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=6a8a2ae52ed737db
->> dashboard link: https://syzkaller.appspot.com/bug?extid=582e66e5edf36a22c7b0
->> compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
->> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12366f8b900000
->> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14e6929b900000
->> 
->> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> Reported-by: syzbot+582e66e5edf36a22c7b0@syzkaller.appspotmail.com
->> 
->> ==================================================================
->> BUG: KASAN: use-after-free in btrfs_printk+0x3eb/0x435 fs/btrfs/super.c:245
->> Read of size 8 at addr ffff8880878e06a8 by task syz-executor225/7068
->> 
->> CPU: 1 PID: 7068 Comm: syz-executor225 Not tainted 5.9.0-rc5-syzkaller #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->> Call Trace:
->>  __dump_stack lib/dump_stack.c:77 [inline]
->>  dump_stack+0x1d6/0x29e lib/dump_stack.c:118
->>  print_address_description+0x66/0x620 mm/kasan/report.c:383
->>  __kasan_report mm/kasan/report.c:513 [inline]
->>  kasan_report+0x132/0x1d0 mm/kasan/report.c:530
->>  btrfs_printk+0x3eb/0x435 fs/btrfs/super.c:245
->>  device_list_add+0x1a88/0x1d60 fs/btrfs/volumes.c:943
->>  btrfs_scan_one_device+0x196/0x490 fs/btrfs/volumes.c:1359
->>  btrfs_mount_root+0x48f/0xb60 fs/btrfs/super.c:1634
->>  legacy_get_tree+0xea/0x180 fs/fs_context.c:592
->>  vfs_get_tree+0x88/0x270 fs/super.c:1547
->>  fc_mount fs/namespace.c:978 [inline]
->>  vfs_kern_mount+0xc9/0x160 fs/namespace.c:1008
->>  btrfs_mount+0x33c/0xae0 fs/btrfs/super.c:1732
->>  legacy_get_tree+0xea/0x180 fs/fs_context.c:592
->>  vfs_get_tree+0x88/0x270 fs/super.c:1547
->>  do_new_mount fs/namespace.c:2875 [inline]
->>  path_mount+0x179d/0x29e0 fs/namespace.c:3192
->>  do_mount fs/namespace.c:3205 [inline]
->>  __do_sys_mount fs/namespace.c:3413 [inline]
->>  __se_sys_mount+0x126/0x180 fs/namespace.c:3390
->>  do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
->>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
->> RIP: 0033:0x44840a
->> Code: b8 08 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 cd a2 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 aa a2 fb ff c3 66 0f 1f 84 00 00 00 00 00
->> RSP: 002b:00007ffedfffd608 EFLAGS: 00000293 ORIG_RAX: 00000000000000a5
->> RAX: ffffffffffffffda RBX: 00007ffedfffd670 RCX: 000000000044840a
->> RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007ffedfffd630
->> RBP: 00007ffedfffd630 R08: 00007ffedfffd670 R09: 0000000000000000
->> R10: 0000000000000000 R11: 0000000000000293 R12: 000000000000001a
->> R13: 0000000000000004 R14: 0000000000000003 R15: 0000000000000003
->> 
->> Allocated by task 6945:
->>  kasan_save_stack mm/kasan/common.c:48 [inline]
->>  kasan_set_track mm/kasan/common.c:56 [inline]
->>  __kasan_kmalloc+0x100/0x130 mm/kasan/common.c:461
->>  kmalloc_node include/linux/slab.h:577 [inline]
->>  kvmalloc_node+0x81/0x110 mm/util.c:574
->>  kvmalloc include/linux/mm.h:757 [inline]
->>  kvzalloc include/linux/mm.h:765 [inline]
->>  btrfs_mount_root+0xd0/0xb60 fs/btrfs/super.c:1613
->>  legacy_get_tree+0xea/0x180 fs/fs_context.c:592
->>  vfs_get_tree+0x88/0x270 fs/super.c:1547
->>  fc_mount fs/namespace.c:978 [inline]
->>  vfs_kern_mount+0xc9/0x160 fs/namespace.c:1008
->>  btrfs_mount+0x33c/0xae0 fs/btrfs/super.c:1732
->>  legacy_get_tree+0xea/0x180 fs/fs_context.c:592
->>  vfs_get_tree+0x88/0x270 fs/super.c:1547
->>  do_new_mount fs/namespace.c:2875 [inline]
->>  path_mount+0x179d/0x29e0 fs/namespace.c:3192
->>  do_mount fs/namespace.c:3205 [inline]
->>  __do_sys_mount fs/namespace.c:3413 [inline]
->>  __se_sys_mount+0x126/0x180 fs/namespace.c:3390
->>  do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
->>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
->> 
->> Freed by task 6945:
->>  kasan_save_stack mm/kasan/common.c:48 [inline]
->>  kasan_set_track+0x3d/0x70 mm/kasan/common.c:56
->>  kasan_set_free_info+0x17/0x30 mm/kasan/generic.c:355
->>  __kasan_slab_free+0xdd/0x110 mm/kasan/common.c:422
->>  __cache_free mm/slab.c:3418 [inline]
->>  kfree+0x113/0x200 mm/slab.c:3756
->>  deactivate_locked_super+0xa7/0xf0 fs/super.c:335
->>  btrfs_mount_root+0x72b/0xb60 fs/btrfs/super.c:1678
->>  legacy_get_tree+0xea/0x180 fs/fs_context.c:592
->>  vfs_get_tree+0x88/0x270 fs/super.c:1547
->>  fc_mount fs/namespace.c:978 [inline]
->>  vfs_kern_mount+0xc9/0x160 fs/namespace.c:1008
->>  btrfs_mount+0x33c/0xae0 fs/btrfs/super.c:1732
->>  legacy_get_tree+0xea/0x180 fs/fs_context.c:592
->>  vfs_get_tree+0x88/0x270 fs/super.c:1547
->>  do_new_mount fs/namespace.c:2875 [inline]
->>  path_mount+0x179d/0x29e0 fs/namespace.c:3192
->>  do_mount fs/namespace.c:3205 [inline]
->>  __do_sys_mount fs/namespace.c:3413 [inline]
->>  __se_sys_mount+0x126/0x180 fs/namespace.c:3390
->>  do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
->>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
->> 
->> The buggy address belongs to the object at ffff8880878e0000
->>  which belongs to the cache kmalloc-16k of size 16384
->> The buggy address is located 1704 bytes inside of
->>  16384-byte region [ffff8880878e0000, ffff8880878e4000)
->> The buggy address belongs to the page:
->> page:0000000060704f30 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x878e0
->> head:0000000060704f30 order:3 compound_mapcount:0 compound_pincount:0
->> flags: 0xfffe0000010200(slab|head)
->> raw: 00fffe0000010200 ffffea00028e9a08 ffffea00021e3608 ffff8880aa440b00
->> raw: 0000000000000000 ffff8880878e0000 0000000100000001 0000000000000000
->> page dumped because: kasan: bad access detected
->> 
->> Memory state around the buggy address:
->>  ffff8880878e0580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->>  ffff8880878e0600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->>> ffff8880878e0680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->>                                   ^
->>  ffff8880878e0700: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->>  ffff8880878e0780: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->> ==================================================================
->> 
->> 
->
-> #syz test: btrfs: Fix missing close devices
 
-want 2 args (repo, branch), got 5
 
->
-> -- 
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/SN4PR0401MB3598EE548546274CFDD618AA9B3A0%40SN4PR0401MB3598.namprd04.prod.outlook.com.
+On 2020/9/21 14:47, Ard Biesheuvel wrote:
+> On Mon, 21 Sep 2020 at 05:35, Leizhen (ThunderTown)
+> <thunder.leizhen@huawei.com> wrote:
+>>
+>>
+>>
+>> On 2020/9/17 22:00, Ard Biesheuvel wrote:
+>>> On Tue, 15 Sep 2020 at 22:06, Russell King - ARM Linux admin
+>>> <linux@armlinux.org.uk> wrote:
+>>>>
+>>>> On Tue, Sep 15, 2020 at 09:16:15PM +0800, Zhen Lei wrote:
+>>>>> Currently, only support the kernels where the base of physical memory is
+>>>>> at a 16MiB boundary. Because the add/sub instructions only contains 8bits
+>>>>> unrotated value. But we can use one more "add/sub" instructions to handle
+>>>>> bits 23-16. The performance will be slightly affected.
+>>>>>
+>>>>> Since most boards meet 16 MiB alignment, so add a new configuration
+>>>>> option ARM_PATCH_PHYS_VIRT_RADICAL (default n) to control it. Say Y if
+>>>>> anyone really needs it.
+>>>>>
+>>>>> All r0-r7 (r1 = machine no, r2 = atags or dtb, in the start-up phase) are
+>>>>> used in __fixup_a_pv_table() now, but the callee saved r11 is not used in
+>>>>> the whole head.S file. So choose it.
+>>>>>
+>>>>> Because the calculation of "y = x + __pv_offset[63:24]" have been done,
+>>>>> so we only need to calculate "y = y + __pv_offset[23:16]", that's why
+>>>>> the parameters "to" and "from" of __pv_stub() and __pv_add_carry_stub()
+>>>>> in the scope of CONFIG_ARM_PATCH_PHYS_VIRT_RADICAL are all passed "t"
+>>>>> (above y).
+>>>>>
+>>>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>>>>> ---
+>>>>>  arch/arm/Kconfig              | 18 +++++++++++++++++-
+>>>>>  arch/arm/include/asm/memory.h | 16 +++++++++++++---
+>>>>>  arch/arm/kernel/head.S        | 25 +++++++++++++++++++------
+>>>>>  3 files changed, 49 insertions(+), 10 deletions(-)
+>>>>>
+>>>>> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+>>>>> index e00d94b16658765..19fc2c746e2ce29 100644
+>>>>> --- a/arch/arm/Kconfig
+>>>>> +++ b/arch/arm/Kconfig
+>>>>> @@ -240,12 +240,28 @@ config ARM_PATCH_PHYS_VIRT
+>>>>>         kernel in system memory.
+>>>>>
+>>>>>         This can only be used with non-XIP MMU kernels where the base
+>>>>> -       of physical memory is at a 16MB boundary.
+>>>>> +       of physical memory is at a 16MiB boundary.
+>>>>>
+>>>>>         Only disable this option if you know that you do not require
+>>>>>         this feature (eg, building a kernel for a single machine) and
+>>>>>         you need to shrink the kernel to the minimal size.
+>>>>>
+>>>>> +config ARM_PATCH_PHYS_VIRT_RADICAL
+>>>>> +     bool "Support PHYS_OFFSET minimum aligned at 64KiB boundary"
+>>>>> +     default n
+>>>>
+>>>> Please drop the "default n" - this is the default anyway.
+>>>>
+>>>>> @@ -236,6 +243,9 @@ static inline unsigned long __phys_to_virt(phys_addr_t x)
+>>>>>        * in place where 'r' 32 bit operand is expected.
+>>>>>        */
+>>>>>       __pv_stub((unsigned long) x, t, "sub", __PV_BITS_31_24);
+>>>>> +#ifdef CONFIG_ARM_PATCH_PHYS_VIRT_RADICAL
+>>>>> +     __pv_stub((unsigned long) t, t, "sub", __PV_BITS_23_16);
+>>>>
+>>>> t is already unsigned long, so this cast is not necessary.
+>>>>
+>>>> I've been debating whether it would be better to use "movw" for this
+>>>> for ARMv7.  In other words:
+>>>>
+>>>>         movw    tmp, #16-bit
+>>>>         adds    %Q0, %1, tmp, lsl #16
+>>>>         adc     %R0, %R0, #0
+>>>>
+>>>> It would certainly be less instructions, but at the cost of an
+>>>> additional register - and we'd have to change the fixup code to
+>>>> know about movw.
+>>>>
+>>>> Thoughts?
+>>>>
+>>>
+>>> Since LPAE implies v7, we can use movw unconditionally, which is nice.
+>>>
+>>> There is no need to use an additional temp register, as we can use the
+>>> register holding the high word. (There is no need for the mov_hi macro
+>>> to be separate)
+>>>
+>>> 0:     movw    %R0, #low offset >> 16
+>>>        adds    %Q0, %1, %R0, lsl #16
+>>> 1:     mov     %R0, #high offset
+>>>        adc     %R0, %R0, #0
+>>>        .pushsection .pv_table,"a"
+>>>        .long 0b, 1b
+>>>        .popsection
+>>>
+>>> The only problem is distinguishing the two mov instructions from each
+>>
+>> The #high offset can also consider use movw, it just save two bytes in
+>> the thumb2 scenario. We can store different imm16 value for high_offset
+>> and low_offset, so that we can distinguish them in __fixup_a_pv_table().
+>>
+>> This will make the final implementation of the code look more clear and
+>> consistent, especially THUMB2.
+>>
+>> Let me try it.
+>>
+> 
+> Hello Zhen Lei,
+> 
+> I am looking into this as well:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/log/?h=arm-p2v-v2
+> 
+> Could you please test this version on your hardware?
+
+OK, I will test it on my boards.
+
+> 
+> .
+> 
+
