@@ -2,140 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C495272081
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECC432720E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727128AbgIUKWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 06:22:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59426 "EHLO
+        id S1726539AbgIUK1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:27:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726644AbgIUKWW (ORCPT
+        with ESMTP id S1726353AbgIUK1g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 06:22:22 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 802B5C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:22:22 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id g4so12121830wrs.5
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:22:22 -0700 (PDT)
+        Mon, 21 Sep 2020 06:27:36 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80BCFC061755;
+        Mon, 21 Sep 2020 03:27:36 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id a9so12064112wmm.2;
+        Mon, 21 Sep 2020 03:27:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6/5e5GIbNLVs+7zeQ40pItj2YrLdEE3aDEThbURa9vE=;
-        b=H/y3aciGu3m5pALUe0sDyC/OoKORo7Ja9jeXnhjBkh94ImVQcn3BFlOn1zoRpcoy3a
-         7souYeF49jJMEr0yp3KMkAAfgjP3scmYfi0NY4rztBMd55Z/lpPq1QXEY29DDxvFB1BZ
-         wmZWhIprq/USYFEGGCgxgq9C+M1SfP9G4dqpc=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x2WLEdeeGcltAWo8WKHO00MVpZ/wRFMHljgIRKBGWy4=;
+        b=Iz+Z733TJ1+3EQ02j3WYFm6pns0QaBjrQebc820NfBFhOCixG28nAEyxfY87Z2y+VY
+         VHkmUoAEt3oGiaGtiPPKwRVEjQJuWRg/S3TcfRXAFkR7yFeZbSNzPHhS5g65WFK7dDXs
+         bQPtHUg1KJo3xt3jkyWiIDMEcBO5RyHNQA3EOEpEwviaUDqJ3cqDHcOHzbESinW4JV2b
+         BZUYom/D+V4v1i7yBtCWIOhcEURWhgcVkOwtDIVOzIuPSd9yPhIplpYPxBMTkgdVDsuB
+         2wzvcQ34rm2vtfsfaZytDRTgyBjJ3QhmlVXtmi5CCL5/xOv7Wo49+qfQupsJavqEDGG2
+         RENA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=6/5e5GIbNLVs+7zeQ40pItj2YrLdEE3aDEThbURa9vE=;
-        b=rwJcKDYBR2KbIBgb7Ap/BFOEPCUR9fVsPa8vLvHuLguZ1rdN5wlNg4chKy0APbquSx
-         V6GfuaBoTaWpyFJu3iMjqe1SsPhL0JUci7E6oIc2uUyF7U0Gltg8i4CU0LaB1zI0t2Rn
-         PgvvP92M689hhwNJtV9zFW6uJggvqk7k1Q3BWBvcW8GjiOdzzUX/UKSXcOPgiuX8kkXE
-         BPwa749MGI5m3dy+9Wa3bApvuqP9Vd0GP4S7C63Iyg/7AOsjLtpPaGnCI/2dCaP4l8bx
-         wciZ8cJju81JiQL3fdSLxOSQndVp0p9dry4HZDJkMLuYvArp3Kq/5w0E0u1nMcucraxv
-         Dy3A==
-X-Gm-Message-State: AOAM533jxBktJIg5azkHmqBrho0FjZCLRAjT/t+pjlOtkCCrqLFuqiXa
-        jN4dUPyh3r8OI8CQ/pqChcirzw==
-X-Google-Smtp-Source: ABdhPJw2kIDdiZ1vVe4s8pKie703yiMJqDye9z0s9PFSWT2r28gsdLV4zqB5ScXcujJbclrnXL+5qw==
-X-Received: by 2002:adf:df87:: with SMTP id z7mr53117028wrl.239.1600683741137;
-        Mon, 21 Sep 2020 03:22:21 -0700 (PDT)
-Received: from [172.16.11.132] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id 189sm19013751wmb.3.2020.09.21.03.22.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Sep 2020 03:22:20 -0700 (PDT)
-Subject: Re: WARNING in ex_handler_uaccess
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     syzbot <syzbot+ea3a78a71705faf41d77@syzkaller.appspotmail.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        syzkaller-bugs@googlegroups.com,
-        Thomas Gleixner <tglx@linutronix.de>, X86 ML <x86@kernel.org>
-References: <000000000000762dee05af9ccd01@google.com>
- <CALCETrVL=VGNXbWK1BB1LnsxaKOGRbEfCGUEx4jaCW9cF-54Ag@mail.gmail.com>
- <20200918235528.GB3421308@ZenIV.linux.org.uk>
- <CALCETrVi=quLyPXzt-0ou-FF_OYMa7pE5N8_NchRaWtwLg3kNg@mail.gmail.com>
- <20200919001714.GC3421308@ZenIV.linux.org.uk>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <bc5d889c-17f0-dcb8-d174-f21b321cf85b@rasmusvillemoes.dk>
-Date:   Mon, 21 Sep 2020 12:22:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=x2WLEdeeGcltAWo8WKHO00MVpZ/wRFMHljgIRKBGWy4=;
+        b=mFwklvAKmHsS7mDkPLi1tOlLzNY2EWtVMw/ArSLbVo39OyyRP5L8qfQHxQzI6gS4jn
+         Ato0NhwnlGcl/oRnN4hZHk2mobDx5NCCoC0V9fugraJi+BPFoZmxz1N0ghmF7QAzfUrZ
+         j/JhcUSlz9H9LbN01HvCa9dx7PrOdOOO8Qo/nEzYoQu/tMfs76wr4e5mawrBNBU9L+cp
+         Qrst832REb0yUj6jlZKZScSQwZOFIzlCwBQNIO+OgpjNtNH/Z7dUeLGP86ivkuiQlk1O
+         1Um3MOBwmQwy0TpTg1YjB5vFoOwOtXa/jjX+dP7wNWthfKL+9ZUu38bbH/vgHzwCJzR9
+         fBaw==
+X-Gm-Message-State: AOAM531z3BihJzMz3sQUqvNyvxZT+vwsE4+XMqwMkuBg4Q+hbhn8ANug
+        xglIJzqvE8dHChtsRRdcr3f1UxkpOrfSpTKc
+X-Google-Smtp-Source: ABdhPJw0iTYMGy5cZtIp9s0Ds4et/1goix1pDoK1k9qkOojOrT/4rfrt/9Uh470FTX8QZVSXHHZH8A==
+X-Received: by 2002:a7b:c0ca:: with SMTP id s10mr29366124wmh.103.1600684054964;
+        Mon, 21 Sep 2020 03:27:34 -0700 (PDT)
+Received: from localhost.localdomain (lputeaux-656-1-11-33.w82-127.abo.wanadoo.fr. [82.127.142.33])
+        by smtp.gmail.com with ESMTPSA id h2sm20713774wrp.69.2020.09.21.03.27.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 03:27:34 -0700 (PDT)
+From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Marcus Cooper <codekipper@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com,
+        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+Subject: [PATCH v4 00/22] Add Allwinner H3/H5/H6/A64 HDMI audio
+Date:   Mon, 21 Sep 2020 12:27:09 +0200
+Message-Id: <20200921102731.747736-1-peron.clem@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200919001714.GC3421308@ZenIV.linux.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/09/2020 02.17, Al Viro wrote:
-> On Fri, Sep 18, 2020 at 05:07:43PM -0700, Andy Lutomirski wrote:
->> On Fri, Sep 18, 2020 at 4:55 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
->>>
->>> On Fri, Sep 18, 2020 at 04:31:33PM -0700, Andy Lutomirski wrote:
->>>
->>>> check_zeroed_user() looks buggy.  It does:
->>>>
->>>>        if (!user_access_begin(from, size))
->>>>                return -EFAULT;
->>>>
->>>>        unsafe_get_user(val, (unsigned long __user *) from, err_fault);
->>>>
->>>> This is wrong if size < sizeof(unsigned long) -- you read outside the
->>>> area you verified using user_access_begin().
->>>
->>> Read the code immediately prior to that.  from will be word-aligned,
->>> and size will be extended accordingly.  If the area acceptable for
->>> user_access_begin() ends *NOT* on a word boundary, you have a problem
->>> and I would strongly recommend to seek professional help.
->>>
->>> All reads in that thing are word-aligned and word-sized.  So I very
->>> much doubt that your analysis is correct.
->>
->> Maybe -ETOOTIRED, but I seriously question the math in here.  Suppose
->> from == (unsigned long *)1 and size == 1.  Then align is 1, and we do:
->>
->> from -= align;
->> size += align;
->>
->> So now from = 0 and size = 2.  Now we do user_access_begin(0, 2) and
->> then immediately read 4 or 8 bytes.  No good.
-> 
-> Could you explain what kind of insane hardware manages to do #PF-related
-> checks (including SMAP, whatever) with *sub*WORD* granularity?
-> 
-> If it's OK with 16bit read from word-aligned address, but barfs on 64bit
-> one...  I want to know what the hell had its authors been smoking.
-> 
+Hi,
 
-So, not sure how the above got triggered, but I notice there might be an
-edge case in check_zeroed_user():
+New test done by Maxime using TDM show that's LRCK is indeed inverted
+so I drop the patch reverted in v2.
 
-	from -= align;
-	size += align;
+And HDMI requires an inverted LRCK so let's readd the frame-inversion
+in the device-tree.
 
-	if (!user_read_access_begin(from, size))
-		return -EFAULT;
+I have also added a patch to change set_chan_cfg.
 
-	unsafe_get_user(val, (unsigned long __user *) from, err_fault);
+Please note that I can't test TDM and only have a Allwinner H6.
+So test and comment on other Allwinner chips are welcome!
 
+Regards,
+Clement
 
-Suppose size is (size_t)-3 and align is 3. What's the convention for
-access_ok(whatever, 0)? Is that equivalent to access_ok(whatever, 1), or
-is it always true (or $ARCH-dependent)?
+Change since v3:
+- add Samuel Holland patch to reconfigure FIFO_TX_REG when suspend is enabled
+- readd inversion to H6 LRCK sun50i_h6_i2s_set_soc_fmt()
+- Fix get_wss() for sun4i
+- Add a commit to fix checkpatch warning
 
-But, AFAICT, no current caller of check_zeroed_user can end up passing
-in a size that can overflow to 0. E.g. for the case at hand, size cannot
-be more than SIZE_MAX-24.
+Change since v2:
+- rebase on next-20200918
+- drop revert LRCK polarity patch
+- readd simple-audio-card,frame-inversion in dts
+- Add patch for changing set_chan_cfg params
 
-Rasmus
+Change since v1:
+- rebase on next-20200828
+- add revert LRCK polarity
+- remove all simple-audio-card,frame-inversion in dts
+- add Ondrej patches for Orange Pi board
+- Add arm64 defconfig patch
+
+Clément Péron (6):
+  ASoC: sun4i-i2s: Change set_chan_cfg() params
+  ASoC: sun4i-i2s: Change get_sr() and get_wss() to be more explicit
+  ASoC: sun4i-i2s: Fix sun8i volatile regs
+  arm64: dts: allwinner: h6: Enable HDMI sound for Beelink GS1
+  arm64: defconfig: Enable Allwinner i2s driver
+  ASoC: sun4i-i2s: fix coding-style for callback definition
+
+Jernej Skrabec (3):
+  ASoC: sun4i-i2s: Add support for H6 I2S
+  dt-bindings: ASoC: sun4i-i2s: Add H6 compatible
+  arm64: dts: allwinner: h6: Add HDMI audio node
+
+Marcus Cooper (9):
+  ASoC: sun4i-i2s: Set sign extend sample
+  ASoc: sun4i-i2s: Add 20 and 24 bit support
+  arm: dts: sunxi: h3/h5: Add DAI node for HDMI
+  arm: dts: sunxi: h3/h5: Add HDMI audio
+  arm64: dts: allwinner: a64: Add DAI node for HDMI
+  arm64: dts: allwinner: a64: Add HDMI audio
+  arm: sun8i: h3: Add HDMI audio to Orange Pi 2
+  arm: sun8i: h3: Add HDMI audio to Beelink X2
+  arm64: dts: allwinner: a64: Add HDMI audio to Pine64
+
+Ondrej Jirman (3):
+  arm64: dts: allwinner: Enable HDMI audio on Orange Pi PC 2
+  ARM: dts: sun8i-h3: Enable HDMI audio on Orange Pi PC/One
+  arm64: dts: sun50i-h6-orangepi-3: Enable HDMI audio
+
+Samuel Holland (1):
+  ASoC: sun4i-i2s: Fix setting of FIFO modes
+
+ .../sound/allwinner,sun4i-a10-i2s.yaml        |   2 +
+ arch/arm/boot/dts/sun8i-h3-beelink-x2.dts     |   8 +
+ arch/arm/boot/dts/sun8i-h3-orangepi-2.dts     |   8 +
+ arch/arm/boot/dts/sun8i-h3-orangepi-one.dts   |   8 +
+ arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts    |   8 +
+ arch/arm/boot/dts/sunxi-h3-h5.dtsi            |  33 ++
+ .../boot/dts/allwinner/sun50i-a64-pine64.dts  |   8 +
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi |  34 ++
+ .../dts/allwinner/sun50i-h5-orangepi-pc2.dts  |   8 +
+ .../dts/allwinner/sun50i-h6-beelink-gs1.dts   |   8 +
+ .../dts/allwinner/sun50i-h6-orangepi-3.dts    |   8 +
+ arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  |  33 ++
+ arch/arm64/configs/defconfig                  |   1 +
+ sound/soc/sunxi/sun4i-i2s.c                   | 374 +++++++++++++++---
+ 14 files changed, 487 insertions(+), 54 deletions(-)
+
+-- 
+2.25.1
+
