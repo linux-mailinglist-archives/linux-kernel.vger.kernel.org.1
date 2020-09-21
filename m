@@ -2,93 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE50B2721CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D23D02721D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:08:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726607AbgIULFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 07:05:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48524 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726333AbgIULFI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 07:05:08 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600686306;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JbHgBz0aomN5pIFfxuOnm8ox/XRaHVRuL/a8R/t+W4A=;
-        b=eL+FH/xVmyP8IdigcZ5a4u7kHJf6RwmLhlfQwsnfcss6tnGPYKb5I4tNsxdX5ShApxJwD4
-        PoNov/l7i+HWrjj4fhL8wEUmOToZ/ce5LA7BF7H9V+YAwudUts6p0uOo6Hor6UobHAXM0I
-        BZqmvLSBzfoozCfUeXbV/WJmM/GA+7M=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 71CDBAC23;
-        Mon, 21 Sep 2020 11:05:42 +0000 (UTC)
-Date:   Mon, 21 Sep 2020 13:05:05 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     zangchunxin@bytedance.com, Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, lizefan@huawei.com,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kafai@fb.com,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        andriin@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
-        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
-Subject: Re: [PATCH] mm/memcontrol: Add the drop_cache interface for cgroup v2
-Message-ID: <20200921110505.GH12990@dhcp22.suse.cz>
-References: <20200921080255.15505-1-zangchunxin@bytedance.com>
- <20200921081200.GE12990@dhcp22.suse.cz>
- <CALOAHbDKvT58UFjxy770VDxO0VWABRYb7GVwgw+NiJp62mB06w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALOAHbDKvT58UFjxy770VDxO0VWABRYb7GVwgw+NiJp62mB06w@mail.gmail.com>
+        id S1726454AbgIULIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 07:08:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726333AbgIULIj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 07:08:39 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3066BC061755;
+        Mon, 21 Sep 2020 04:08:39 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id o25so3774915pgm.0;
+        Mon, 21 Sep 2020 04:08:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=tTJbfvIDALmyR7sTPva/nF1F/vNWEEleaGcrx9Y7chE=;
+        b=pGbo9CrZk3dpPVufFvRvlvmtnSPBWwcHxeohMWGvXgBiKOsgF4lY+QXgWypEQwVmDR
+         6i+JkUPN8rJs4wdJgaCX1Fl6yZOVAsofAVFv2F6SS4PmpJuplcYfJZBexy4omH1IIgsf
+         GA8v12vzRmNw1BUYk02H9JFcoY7Dn+AGRNCZqWrh0VncHj6gdklC7fPR2rkZZA2ph6Go
+         YqcQjjnB4K04YRCjbkvr2C9nYSMSz22f99RpL4LJ5m8OgUjFZrts4UR4PNIBoR6nB7E/
+         n2B4KogYtim1RmMlOll3lqopa6BUo0xQs/LrBk64p/FV+hjGeM5PJt4/KkGlegWbgQCV
+         QOug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=tTJbfvIDALmyR7sTPva/nF1F/vNWEEleaGcrx9Y7chE=;
+        b=YgPKZsiCjwbLeWBD1v30UpHZUVhLz8+v8Vae775EEoQLntt8XThajkIIhimJhidT68
+         fi1cTY8d4FWy2BW7zA2OXV0PZyn6BDRDxp0yqz5nrIA9HIYOs0IlEf7biWDgG+FRPfx7
+         0Bd2yLf+SNLNCzKcz1qMJgH3dgyIWHCRZNFPIQUn0QqmnQb6JqUji1wHfOBPr5vTvWTn
+         5n+T6ECLJLzQz2mED6XS+FuFuxkoP7rjJ2iZEBpKG8SPc3aRtY5KlSluEBJ5Ufl8Id6k
+         ZKN3QLlfuTUy/8tqaS9ASChrpVXzW5SShRox/u338eoKRmnhrq8LjBWLyfWwvukAyFCi
+         bF8g==
+X-Gm-Message-State: AOAM530r8nra6qITWnUaOVsIixRCujQSn35RpENFfEpr+8/8XQfvN7ps
+        D7Ex3BRChfZUaun6FmX1L2mUzrNLNE1ggI1/
+X-Google-Smtp-Source: ABdhPJzBKH5ggzLFKOwKWfQkvmXrCfIZAt5gaURBcKKuSEy9slOMJZiElyqFBxyZiCNL4gbGcVCYCw==
+X-Received: by 2002:a17:902:b086:b029:d1:e5e7:bddb with SMTP id p6-20020a170902b086b02900d1e5e7bddbmr25889899plr.59.1600686518800;
+        Mon, 21 Sep 2020 04:08:38 -0700 (PDT)
+Received: from localhost.localdomain ([47.242.131.39])
+        by smtp.gmail.com with ESMTPSA id 6sm147026pgu.16.2020.09.21.04.08.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 04:08:38 -0700 (PDT)
+From:   Herrington <hankinsea@gmail.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Huacai Chen <chenhc@lemote.com>,
+        Liangliang Huang <huanglllzu@gmail.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Herrington <hankinsea@gmail.com>,
+        Pujin Shi <shipujin.t@gmail.com>, Pujin Shi <shipj@lemote.com>
+Subject: [PATCH] MIPS: kernel: include probes-common.h header in branch.c
+Date:   Mon, 21 Sep 2020 19:07:54 +0800
+Message-Id: <20200921110754.1131-1-hankinsea@gmail.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 21-09-20 18:55:40, Yafang Shao wrote:
-> On Mon, Sep 21, 2020 at 4:12 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Mon 21-09-20 16:02:55, zangchunxin@bytedance.com wrote:
-> > > From: Chunxin Zang <zangchunxin@bytedance.com>
-> > >
-> > > In the cgroup v1, we have 'force_mepty' interface. This is very
-> > > useful for userspace to actively release memory. But the cgroup
-> > > v2 does not.
-> > >
-> > > This patch reuse cgroup v1's function, but have a new name for
-> > > the interface. Because I think 'drop_cache' may be is easier to
-> > > understand :)
-> >
-> > This should really explain a usecase. Global drop_caches is a terrible
-> > interface and it has caused many problems in the past. People have
-> > learned to use it as a remedy to any problem they might see and cause
-> > other problems without realizing that. This is the reason why we even
-> > log each attempt to drop caches.
-> >
-> > I would rather not repeat the same mistake on the memcg level unless
-> > there is a very strong reason for it.
-> >
-> 
-> I think we'd better add these comments above the function
-> mem_cgroup_force_empty() to explain why we don't want to expose this
-> interface in cgroup2, otherwise people will continue to send this
-> proposal without any strong reason.
+arch/mips/kernel/branch.c:876:5: error: no previous prototype for '__insn_is_compact_branch' [-Werror=missing-prototypes]
 
-I do not mind people sending this proposal.  "V1 used to have an
-interface, we need it in v2 as well" is not really viable without
-providing more reasoning on the specific usecase.
+Signed-off-by: Herrington <hankinsea@gmail.com>
+Signed-off-by: Pujin Shi <shipujin.t@gmail.com>
+Signed-off-by: Pujin Shi <shipj@lemote.com>
+---
+ arch/mips/kernel/branch.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-_Any_ patch should have a proper justification. This is nothing really
-new to the process and I am wondering why this is coming as a surprise.
-
+diff --git a/arch/mips/kernel/branch.c b/arch/mips/kernel/branch.c
+index fb3e203698ea..0216ff24c392 100644
+--- a/arch/mips/kernel/branch.c
++++ b/arch/mips/kernel/branch.c
+@@ -20,6 +20,8 @@
+ #include <asm/ptrace.h>
+ #include <linux/uaccess.h>
+ 
++#include "probes-common.h"
++
+ /*
+  * Calculate and return exception PC in case of branch delay slot
+  * for microMIPS and MIPS16e. It does not clear the ISA mode bit.
 -- 
-Michal Hocko
-SUSE Labs
+2.18.1
+
