@@ -2,235 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0569F271AEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 08:35:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D121F271AF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 08:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726366AbgIUGe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 02:34:57 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:39983 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726336AbgIUGe4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 02:34:56 -0400
-Received: by mail-wr1-f65.google.com with SMTP id j2so11432182wrx.7
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 23:34:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5Tvr9efTQIoHqgeaBZSiK3D68PqY1DgJ9JT/UbbWNyE=;
-        b=jfZMd+UnEvOumQkmt9IPdnnlKMK/b8B0jS/M1kcLFvp6JCTFutzUjKRSPzyPISbWI5
-         xGBrvnJJ+YqXGqnX1YRK7BWkmSU2cv0ylYvL0I8uF1xPum3XcoUw0CK4cvotKsenoxu8
-         2GkJCusbLdKF5KLiLhZRZ8FxRb5MYR0/RExGUHG/gZ1WCuSuUR3I27RJPkXztNjsS2dG
-         +fE71FnrVzxN91HT3CA3qZjaaBKGMSD4taYsVXY263edCHffLWF0aFz8VbNOuT6DYrV5
-         dNI5sUzIk7nkFQENsOog6YvjCVLd/Q8rJIlSsa6wiXU+M4Ar1xFrxLb4WhRrkJOCPnMN
-         QY3g==
-X-Gm-Message-State: AOAM532pKYnXxjaCL+IHWwEVxpeT/IccEyNEwebe893Op7c7rfhfCcIM
-        t0iuOZYpGZthmawOw3fGEc+GGlpWmuD4NMi/LeKofED+
-X-Google-Smtp-Source: ABdhPJxOXYl2SemyS3dAeJT7fIH9M4pl+bRvz9PmDU4TD7GRUONCM+FTTjKunmTOZa7fpY1GeggGnA0bUi02R0ZFlzI=
-X-Received: by 2002:adf:8b48:: with SMTP id v8mr50807495wra.21.1600670093732;
- Sun, 20 Sep 2020 23:34:53 -0700 (PDT)
+        id S1726448AbgIUGgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 02:36:36 -0400
+Received: from verein.lst.de ([213.95.11.211]:38634 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726011AbgIUGge (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 02:36:34 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id B25CE68AFE; Mon, 21 Sep 2020 08:36:28 +0200 (CEST)
+Date:   Mon, 21 Sep 2020 08:36:28 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        iommu@lists.linux-foundation.org
+Cc:     alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-doc@vger.kernel.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, Stefan Richter <stefanr@s5r6.in-berlin.de>,
+        netdev@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Subject: Re: a saner API for allocating DMA addressable pages v3
+Message-ID: <20200921063628.GB18349@lst.de>
+References: <20200915155122.1768241-1-hch@lst.de>
 MIME-Version: 1.0
-References: <20200909055849.469612-1-namhyung@kernel.org> <20200909055849.469612-3-namhyung@kernel.org>
-In-Reply-To: <20200909055849.469612-3-namhyung@kernel.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Mon, 21 Sep 2020 15:34:42 +0900
-Message-ID: <CAM9d7cgh_O0bB8G8261AqLR7PO5vr-ethwc4LFvFU_1FCEa73Q@mail.gmail.com>
-Subject: Re: [PATCH 3/3] perf list: Add 'pfm' to list libpfm4 events
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915155122.1768241-1-hch@lst.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Any comments?
 
-Can you please take a look at this?
+Thomas: this should be identical to the git tree I gave you for mips
+testing, and you add your tested-by (and reviewd-by tags where
+applicable)?
 
-Thanks
-Namhyung
+Helge: for parisc this should effectively be the same as the first
+version, but I've dropped the tested-by tags due to the reshuffle,
+and chance you could retest it?
 
-
-On Wed, Sep 9, 2020 at 2:59 PM Namhyung Kim <namhyung@kernel.org> wrote:
->
-> Print libpfm4 events with 'perf list pfm' command like others.
-> When libpfm4 support is not enabled, it'd print nothing.
-> Also it support glob pattern matching for event name.
->
->   $ perf list pfm
->
->   List of pre-defined events (to be used in --pfm-events):
->
->   ix86arch:
->     UNHALTED_CORE_CYCLES
->       [count core clock cycles whenever the clock signal ...
->     INSTRUCTION_RETIRED
->       [count the number of instructions at retirement. ...
->     ...
->
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
->
-> diff --git a/tools/perf/builtin-list.c b/tools/perf/builtin-list.c
-> index 10ab5e40a34f..167868053fe0 100644
-> --- a/tools/perf/builtin-list.c
-> +++ b/tools/perf/builtin-list.c
-> @@ -14,6 +14,7 @@
->  #include "util/pmu.h"
->  #include "util/debug.h"
->  #include "util/metricgroup.h"
-> +#include "util/pfm.h"
->  #include <subcmd/pager.h>
->  #include <subcmd/parse-options.h>
->  #include <stdio.h>
-> @@ -42,7 +43,7 @@ int cmd_list(int argc, const char **argv)
->                 OPT_END()
->         };
->         const char * const list_usage[] = {
-> -               "perf list [<options>] [hw|sw|cache|tracepoint|pmu|sdt|metric|metricgroup|event_glob]",
-> +               "perf list [<options>] [hw|sw|cache|tracepoint|pmu|sdt|metric|metricgroup|pfm|event_glob]",
->                 NULL
->         };
->
-> @@ -53,7 +54,7 @@ int cmd_list(int argc, const char **argv)
->
->         setup_pager();
->
-> -       if (!raw_dump && pager_in_use())
-> +       if (!raw_dump && pager_in_use() && (argc != 1 || strcmp(argv[0], "pfm")))
->                 printf("\nList of pre-defined events (to be used in -e):\n\n");
->
->         if (argc == 0) {
-> @@ -89,6 +90,8 @@ int cmd_list(int argc, const char **argv)
->                         metricgroup__print(true, false, NULL, raw_dump, details_flag);
->                 else if (strcmp(argv[i], "metricgroup") == 0 || strcmp(argv[i], "metricgroups") == 0)
->                         metricgroup__print(false, true, NULL, raw_dump, details_flag);
-> +               else if (strcmp(argv[i], "pfm") == 0)
-> +                       print_libpfm_events(NULL, raw_dump, long_desc_flag);
->                 else if ((sep = strchr(argv[i], ':')) != NULL) {
->                         int sep_idx;
->
-> @@ -120,6 +123,7 @@ int cmd_list(int argc, const char **argv)
->                         print_tracepoint_events(NULL, s, raw_dump);
->                         print_sdt_events(NULL, s, raw_dump);
->                         metricgroup__print(true, true, s, raw_dump, details_flag);
-> +                       print_libpfm_events(s, raw_dump, long_desc_flag);
->                         free(s);
->                 }
->         }
-> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> index 772f1057647f..ae8ab930a792 100644
-> --- a/tools/perf/builtin-record.c
-> +++ b/tools/perf/builtin-record.c
-> @@ -2593,7 +2593,7 @@ static struct option __record_options[] = {
->                      "number of threads to run for event synthesis"),
->  #ifdef HAVE_LIBPFM
->         OPT_CALLBACK(0, "pfm-events", &record.evlist, "event",
-> -               "libpfm4 event selector. use 'perf list' to list available events",
-> +               "libpfm4 event selector. use 'perf list pfm' to list available events",
->                 parse_libpfm_events_option),
->  #endif
->         OPT_CALLBACK(0, "control", &record.opts, "fd:ctl-fd[,ack-fd]",
-> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-> index 483a28ef4ec4..a672d2b68e8a 100644
-> --- a/tools/perf/builtin-stat.c
-> +++ b/tools/perf/builtin-stat.c
-> @@ -1166,7 +1166,7 @@ static struct option stat_options[] = {
->                     "threads of same physical core"),
->  #ifdef HAVE_LIBPFM
->         OPT_CALLBACK(0, "pfm-events", &evsel_list, "event",
-> -               "libpfm4 event selector. use 'perf list' to list available events",
-> +               "libpfm4 event selector. use 'perf list pfm' to list available events",
->                 parse_libpfm_events_option),
->  #endif
->         OPT_CALLBACK(0, "control", &stat_config, "fd:ctl-fd[,ack-fd]",
-> diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
-> index 7c64134472c7..d6adc7d34210 100644
-> --- a/tools/perf/builtin-top.c
-> +++ b/tools/perf/builtin-top.c
-> @@ -1578,7 +1578,7 @@ int cmd_top(int argc, const char **argv)
->                     "Enable LBR callgraph stitching approach"),
->  #ifdef HAVE_LIBPFM
->         OPT_CALLBACK(0, "pfm-events", &top.evlist, "event",
-> -               "libpfm4 event selector. use 'perf list' to list available events",
-> +               "libpfm4 event selector. use 'perf list pfm' to list available events",
->                 parse_libpfm_events_option),
->  #endif
->         OPTS_EVSWITCH(&top.evswitch),
-> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-> index c4d2394e2b2d..2d426a4f3bc7 100644
-> --- a/tools/perf/util/parse-events.c
-> +++ b/tools/perf/util/parse-events.c
-> @@ -2899,7 +2899,7 @@ void print_events(const char *event_glob, bool name_only, bool quiet_flag,
->
->         metricgroup__print(true, true, NULL, name_only, details_flag);
->
-> -       print_libpfm_events(name_only, long_desc);
-> +       print_libpfm_events(NULL, name_only, long_desc);
->  }
->
->  int parse_events__is_hardcoded_term(struct parse_events_term *term)
-> diff --git a/tools/perf/util/pfm.c b/tools/perf/util/pfm.c
-> index d735acb6c29c..26ae2c8c0932 100644
-> --- a/tools/perf/util/pfm.c
-> +++ b/tools/perf/util/pfm.c
-> @@ -12,6 +12,7 @@
->  #include "util/parse-events.h"
->  #include "util/pmu.h"
->  #include "util/pfm.h"
-> +#include "util/string2.h"
->
->  #include <string.h>
->  #include <linux/kernel.h>
-> @@ -227,7 +228,7 @@ print_libpfm_events_raw(pfm_pmu_info_t *pinfo, pfm_event_info_t *info)
->                 printf("%s::%s\n", pinfo->name, info->name);
->  }
->
-> -void print_libpfm_events(bool name_only, bool long_desc)
-> +void print_libpfm_events(const char *event_glob, bool name_only, bool long_desc)
->  {
->         pfm_event_info_t info;
->         pfm_pmu_info_t pinfo;
-> @@ -265,6 +266,9 @@ void print_libpfm_events(bool name_only, bool long_desc)
->                         if (ret != PFM_SUCCESS)
->                                 continue;
->
-> +                       if (event_glob && !strglobmatch_nocase(info.name, event_glob))
-> +                               continue;
-> +
->                         if (!name_only && !printed_pmu) {
->                                 printf("%s:\n", pinfo.name);
->                                 printed_pmu = true;
-> diff --git a/tools/perf/util/pfm.h b/tools/perf/util/pfm.h
-> index 7d70dda87012..036e2d97b260 100644
-> --- a/tools/perf/util/pfm.h
-> +++ b/tools/perf/util/pfm.h
-> @@ -13,7 +13,7 @@
->  int parse_libpfm_events_option(const struct option *opt, const char *str,
->                         int unset);
->
-> -void print_libpfm_events(bool name_only, bool long_desc);
-> +void print_libpfm_events(const char *event_glob, bool name_only, bool long_desc);
->
->  #else
->  #include <linux/compiler.h>
-> @@ -26,7 +26,8 @@ static inline int parse_libpfm_events_option(
->         return 0;
->  }
->
-> -static inline void print_libpfm_events(bool name_only __maybe_unused,
-> +static inline void print_libpfm_events(const char *event_glob __maybe_unused,
-> +                                      bool name_only __maybe_unused,
->                                        bool long_desc __maybe_unused)
->  {
->  }
-> --
-> 2.28.0.526.ge36021eeef-goog
->
+On Tue, Sep 15, 2020 at 05:51:04PM +0200, Christoph Hellwig wrote:
+> Hi all,
+> 
+> this series replaced the DMA_ATTR_NON_CONSISTENT flag to dma_alloc_attrs
+> with a separate new dma_alloc_pages API, which is available on all
+> platforms.  In addition to cleaning up the convoluted code path, this
+> ensures that other drivers that have asked for better support for
+> non-coherent DMA to pages with incurring bounce buffering over can finally
+> be properly supported.
+> 
+> As a follow up I plan to move the implementation of the
+> DMA_ATTR_NO_KERNEL_MAPPING flag over to this framework as well, given
+> that is also is a fundamentally non coherent allocation.  The replacement
+> for that flag would then return a struct page, as it is allowed to
+> actually return pages without a kernel mapping as the name suggested
+> (although most of the time they will actually have a kernel mapping..)
+> 
+> In addition to the conversions of the existing non-coherent DMA users,
+> I've also added a patch to convert the firewire ohci driver to use
+> the new dma_alloc_pages API.
+> 
+> The first patch is queued up for 5.9 in the media tree, but included here
+> for completeness.
+> 
+> 
+> A git tree is available here:
+> 
+>     git://git.infradead.org/users/hch/misc.git dma_alloc_pages
+> 
+> Gitweb:
+> 
+>     http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/dma_alloc_pages
+> 
+> 
+> Changes since v2:
+>  - fix up the patch reshuffle which wasn't quite correct
+>  - fix up a few commit messages
+> 
+> Changes since v1:
+>  - rebased on the latests dma-mapping tree, which merged many of the
+>    cleanups
+>  - fix an argument passing typo in 53c700, caught by sparse
+>  - rename a few macro arguments in 53c700
+>  - pass the right device to the DMA API in the lib82596 drivers
+>  - fix memory ownershiptransfers in sgiseeq
+>  - better document what a page in the direct kernel mapping means
+>  - split into dma_alloc_pages that returns a struct page and is in the
+>    direct mapping vs dma_alloc_noncoherent that can be vmapped
+>  - conver the firewire ohci driver to dma_alloc_pages
+> 
+> Diffstat:
+> _______________________________________________
+> iommu mailing list
+> iommu@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/iommu
+---end quoted text---
