@@ -2,160 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB5D272F1D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4D9272E31
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730075AbgIUQx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:53:57 -0400
-Received: from mga02.intel.com ([134.134.136.20]:39232 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729588AbgIUQqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:46:51 -0400
-IronPort-SDR: aIj0Qjj0Yn3rKhcoyXRxrhgIqDyefr9U56hnUub8e6mxZexPtRS/PteSWzm/FjWRMt7nxdjAK/
- oY/CwQHXiMSA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="148086189"
-X-IronPort-AV: E=Sophos;i="5.77,287,1596524400"; 
-   d="scan'208";a="148086189"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 09:46:50 -0700
-IronPort-SDR: 9GtvB/4scFuhsj0BSxHP7xgAfyRraeNQPQxyYlLLKY/kwPG4xZvo5SDm36REipyR1Wfwixadhw
- epj3k54ETpqw==
-X-IronPort-AV: E=Sophos;i="5.77,287,1596524400"; 
-   d="scan'208";a="321829644"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 09:46:49 -0700
-Date:   Mon, 21 Sep 2020 09:46:48 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     Haitao Huang <haitao.huang@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jethro Beekman <jethro@fortanix.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Seth Moore <sethmo@google.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Suresh Siddha <suresh.b.siddha@intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v38 13/24] x86/sgx: Add SGX_IOC_ENCLAVE_ADD_PAGES
-Message-ID: <20200921164647.GC23989@linux.intel.com>
-References: <20200915110522.893152-1-jarkko.sakkinen@linux.intel.com>
- <20200915110522.893152-14-jarkko.sakkinen@linux.intel.com>
- <op.0q2prldowjvjmi@mqcpg7oapc828.gar.corp.intel.com>
- <20200917160206.GF8530@linux.intel.com>
- <op.0q3pw0stwjvjmi@mqcpg7oapc828.gar.corp.intel.com>
- <20200918020940.GA14678@sjchrist-ice>
- <20200918122029.GA27028@linux.intel.com>
- <20200918123932.GB27028@linux.intel.com>
- <20200919000918.GB21189@sjchrist-ice>
- <20200921114104.GB6038@linux.intel.com>
+        id S1729481AbgIUQrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:47:00 -0400
+Received: from mail-eopbgr60048.outbound.protection.outlook.com ([40.107.6.48]:39893
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729753AbgIUQqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:46:55 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=manWlXs8WX3U9Bws5IhZpMbYH5WSWHrLXLN3sm4hzeQBsj/8QUOihLZgDN2scj5q89sVdboxhaCwlgBbfDCkoQLy25jbvJgOGPg1trNdj00hB90k6J2KIP6no5H5Q6Xuw0mUNGbfqMYTvfcKCWSGDTo4Qrwq7e6FGBCPrwITdTSZw3YdYWsxdedzTmToRapWiZBZhzqo2SJoHfhaJ1nYfKJm5eB4QGybOCaetRZNGETLfn2UPQBBSGPXxrm/zQyRIK7sCWK66soDZAmawd6myPKPwkInQnqnbmhNyGCUlg/RDkvHxKQ6l4hC09Q+WNlKuxnOFzGkf4/LuEpMbjrQig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oqkgC9i1xJeqEt3NBneZEd2oaJwOIXsUpk6dKUuYqQU=;
+ b=Fy6z66bHLaEzijwFlHMO+DzIiw/pmXZoGaSUapBW5WVHTRqCjsL7+MvvLnWckQ/JrVYJtqeS0HTLV+Y589GeCfGq2TyT4yh2oD5CEt1QJyrGi5ZzXkHMfMcA3RTLIEzIQzmMSpbPhi0FlvD//KAg6OV+ZxsBYcQ43NYm2XQOoc91CeyGGFLS0LGF7WX0iH+xsUr4LLh37cuJH2lNH48WyiZISylIZ9B9TG/Ly/xUmYtdgpVkpeM63feBCQO5R56SbCBBoF1jYzPcB0LAHmxg29HOgL0opd6qLfC9Jy08A/yTpUI03rvqS/GWzNS+mvzRkmCK8GX1MLf7xRblrN/19g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oqkgC9i1xJeqEt3NBneZEd2oaJwOIXsUpk6dKUuYqQU=;
+ b=bA1A2icwn+0MT2z89SDGoEu9iV/UMeHqLPC8m6oNQPO9WaRh5aecJTRAmZxa+ty6a2dtUK3TzSQjY4EtBLBu5OkqSAjrFEe+u424n29bu/DyM9hMC2b3ltWZdsA8u/ejxTahVwXQnGpfH8UxBdEzFHyIrXf4X8TK6wU0ICxzNYc=
+Received: from HE1PR0402MB3371.eurprd04.prod.outlook.com (2603:10a6:7:85::27)
+ by HE1PR0401MB2553.eurprd04.prod.outlook.com (2603:10a6:3:83::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.15; Mon, 21 Sep
+ 2020 16:46:50 +0000
+Received: from HE1PR0402MB3371.eurprd04.prod.outlook.com
+ ([fe80::c872:d354:7cf7:deb9]) by HE1PR0402MB3371.eurprd04.prod.outlook.com
+ ([fe80::c872:d354:7cf7:deb9%3]) with mapi id 15.20.3391.026; Mon, 21 Sep 2020
+ 16:46:50 +0000
+From:   "Z.q. Hou" <zhiqiang.hou@nxp.com>
+To:     Shawn Guo <shawnguo@kernel.org>
+CC:     "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        Leo Li <leoyang.li@nxp.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "gustavo.pimentel@synopsys.com" <gustavo.pimentel@synopsys.com>,
+        "M.h. Lian" <minghuan.lian@nxp.com>,
+        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>
+Subject: RE: [PATCH 6/7] dts: arm64: ls1043a: Add SCFG phandle for PCIe nodes
+Thread-Topic: [PATCH 6/7] dts: arm64: ls1043a: Add SCFG phandle for PCIe nodes
+Thread-Index: AQHWhNowN+e9xxoQB0q+grgB9hqReqlzKTaAgAA6GRA=
+Date:   Mon, 21 Sep 2020 16:46:50 +0000
+Message-ID: <HE1PR0402MB3371932AF9B98759D096B65B843A0@HE1PR0402MB3371.eurprd04.prod.outlook.com>
+References: <20200907053801.22149-1-Zhiqiang.Hou@nxp.com>
+ <20200907053801.22149-7-Zhiqiang.Hou@nxp.com> <20200921131646.GC25428@dragon>
+In-Reply-To: <20200921131646.GC25428@dragon>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.73]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 98964309-6d66-450c-7737-08d85e4df02c
+x-ms-traffictypediagnostic: HE1PR0401MB2553:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <HE1PR0401MB25532C6540CD9965478A06DE843A0@HE1PR0401MB2553.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3631;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xlXgsQg/g97ftNNNgI5aXG1nqOWh/IoHFsc6lobuwDkClUSrffP9NjegL5asCxYEnuyK0I4AFYySepPxX1sylLow/GvZ6FXe0PKnkUDyOm1Asmyf2Cn1cwBXXdBvZIs6H9HDnmPLBAOEIkDzqss81jZc/99tOAbkX9VDPvVe3bhQD5Gs+xToLS1MKsz6jV3y0ziWkTSXo4f6Uf+1eDRyx2kiWl7uRwVEAUtSAXffsWXGx6wRrqumj5d4RAqVCYiwm5yp57vzA69upMh6CoPXrcWq3yLRJ+vcaH1+xvwV4MoX9jtBc2I1I24tMvf8gJwBIhhXkIbZ4UAKKh1gKccwdg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0402MB3371.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(396003)(376002)(346002)(39860400002)(53546011)(2906002)(6506007)(54906003)(55016002)(83380400001)(7696005)(4744005)(9686003)(26005)(52536014)(316002)(76116006)(66446008)(66476007)(186003)(66946007)(8936002)(5660300002)(86362001)(478600001)(71200400001)(66556008)(8676002)(64756008)(6916009)(4326008)(33656002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: GWVm2uoGhR+yjUUhVa37z3U13zt7swZ+jsWS49XSqTzaLyosaXDy90iQnxE5egac9io0giPWC3dmZPf0TQQMARv1TueuO+OG0r/w87TqdYPdbRDz7UiHGaj/H1hTZpNaPflvjKb6VKVszT5gFIE8JlhfQOkmyTrts1q6ozh/hseqLoaWEQeY8QDcA/Ug7NfyEUUXcoxVQdfktNJhbswfVWSPnqZg9/+iO7A7Gp8zSZvslIPKZ+k1juu3mmqxieLe5jrUrPrCL9xUV/jIFjNABkyvR56UEZXYxeISCGM2gjvsw8vfAYuz0W8mTB2GLJsVwUmqIZZWG131tGH95H3R03lJfMkfb7ZjWGAGoih0LJPYR0/AQrI5EJDgJ87IdUULGcyW8x8Do7TpCQVek0UqFCghWhJR4UshASotAF3EZMhfADa6+IlheWnPbh7uf0YFCg2kgG3g72W9aAwS3fXW2K1yLuFt6PMNuz4fGulKkaQqm1QTNVQhA65JixTW7oQg80Swz2p4EwUekGV5+6tq+9/At1+JeaiTbLZ3Pty+stQLCf2/X8iev7Rl3REiylwjgtWzQsoBq8t2lPKEe9a4QqZ5r+GEB78fuy/qH8R01H8iBSAtlUPvy24SSJDhSot5db4LTmFAfrdc49H7AFWZdw==
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200921114104.GB6038@linux.intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HE1PR0402MB3371.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 98964309-6d66-450c-7737-08d85e4df02c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Sep 2020 16:46:50.5765
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +PqD49uIYCfxPyNQpGEXmP+bT8X7+8xGBbgX00Zn/zI2USWf6rgnuGtAYYEa1UtC07rEmOsyjeUxWpst+t23AQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0401MB2553
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 02:41:04PM +0300, Jarkko Sakkinen wrote:
-> On Fri, Sep 18, 2020 at 05:09:19PM -0700, Sean Christopherson wrote:
-> > On Fri, Sep 18, 2020 at 03:39:32PM +0300, Jarkko Sakkinen wrote:
-> > > On Fri, Sep 18, 2020 at 03:20:39PM +0300, Jarkko Sakkinen wrote:
-> > > > On Thu, Sep 17, 2020 at 07:09:40PM -0700, Sean Christopherson wrote:
-> > > > > On Thu, Sep 17, 2020 at 01:35:10PM -0500, Haitao Huang wrote:
-> > > > > > On Thu, 17 Sep 2020 11:02:06 -0500, Jarkko Sakkinen
-> > > > > > <jarkko.sakkinen@linux.intel.com> wrote:
-> > > > > > > 
-> > > > > > > Right, I do get the OOM case but wouldn't in that case the reasonable
-> > > > > > > thing to do destroy the enclave that is not even running? I mean that
-> > > > > > > means that we are globally out of EPC.
-> > > > > > > 
-> > > > > > 
-> > > > > > I would say it could be a policy, but not the only one. If it does not make
-> > > > > > much difference to kernel, IMHO we should  not set it in stone now.
-> > > > > > Debugging is also huge benefit to me.
-> > > > > 
-> > > > > Agreed, an EPC cgroup is the proper way to define/enforce what happens when
-> > > > > there is EPC pressure.  E.g. if process A is consuming 99% of the EPC, then
-> > > > > it doesn't make sense to unconditionally kill enclaves from process B.  If
-> > > > > the admin wants to give process A priority, so be it, but such a decision
-> > > > > shouldn't be baked into the kernel.
-> > > > > 
-> > > > > This series obviously doesn't provide an EPC cgroup, but that doesn't mean
-> > > > > we can't make decisions that will play nice with a cgroup in the future.
-> > > > 
-> > > > Here's the core issue why the API "as is used to be" does not work:
-> > > > 
-> > > > 	if (ret == -EIO) {
-> > > > 		mutex_lock(&encl->lock);
-> > > > 		sgx_encl_destroy(encl);
-> > > > 		mutex_unlock(&encl->lock);
-> > > > 	}
-> > > > 
-> > > > It would be better to instead whitelist *when* the enclave is preserved.
-> > > > 
-> > > > 	if (ret != -ENOMEM) {
-> > > > 		mutex_lock(&encl->lock);
-> > > > 		sgx_encl_destroy(encl);
-> > > > 		mutex_unlock(&encl->lock);
-> > > > 	}
-> > > > 
-> > > > That is the information we *deterministically* want to know. Otherwise,
-> > > > we will live in ultimate chaos.
-> > > > 
-> > > > Only this way can caller know when there are means to continue, and when
-> > > > to quit. I.e. the code is whitelisting wrong way around currently.
-> > > 
-> > > Actually since the state cannot corrupt unless EADD or EEXTEND fails it
-> > > is fine to have the enclave alive on any other error condition. I think
-> > 
-> > EADD and EEXTEND failure don't corrupt state.  Killing the enclave if EEXTEND
-> > fails makes sense because failure at that point is either due to a kernel bug
-> > or loss of EPC, both of which are fatal to the enclave.
-> 
-> This is also true. I meant by corrupt state e.g. a kernel bug, which
-> causes uninitalizes pages go the free queue.
-> 
-> I'd rephrase this in kdoc as: "The function deinitializes enclave and
-> returns -EIO when EPC is lost, while entering to a new power cycle".
-
-The kdocs shouldn't speculate on why EEXTEND might fail.  E.g. in some (and
-possibility most) environments, the most common scenario of EEXTEND failure
-will be EPC invalidation due to virtual machine migration.
-
-This is why I'd prefer that the kernel kill the enclave if and only if the
-error is guaranteed to be fatal, e.g. the docs can have a blanket statement
-along the lines of:
-
-  An enclave will be killed and its EPC resources will be freed if an error that
-  is guaranteed to be fatal is encountered at any time, e.g. if EEXTEND fails as
-  EEXTEND can only fail due to loss of EPC, a kernel bug, or silicon bug, all of
-  which are unrecoverable.
- 
-> Documentation describes only legit behaviour, let's ignore the corrupt
-> part.
-> 
-> > EADD is a little different, e.g. it could fault due to a bad source address,
-> > in which case the failure is not technically fatal.  But, Jarkko wanted to
-> > have consistent behavior for EADD and EEXTEND failures, and practically
-> > speaking the enclave is probably hosed anyways if EADD fails, i.e. killing the
-> > enclave on EADD failure isn't a sticking point (for me).
-> 
-> We need to figure out own return value for EADD, but I agree with this.
-> 
-> I would go with -EFAULT as we do when source VMA is no available. Does
-> this make sense to you?
-
-If only EEXTEND will be treated as fatal, then I see no need to worry about
-the return code for EADD.  In that case, simply kill the enclave on EEXTEND
-failure instead of on a specific return code.
+SGkgU2hhd24sDQoNClRoYW5rcyBhIGxvdCBmb3IgeW91ciBjb21tZW50cyENCg0KPiAtLS0tLU9y
+aWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBTaGF3biBHdW8gPHNoYXduZ3VvQGtlcm5lbC5v
+cmc+DQo+IFNlbnQ6IDIwMjDE6jnUwjIxyNUgMjE6MTcNCj4gVG86IFoucS4gSG91IDx6aGlxaWFu
+Zy5ob3VAbnhwLmNvbT4NCj4gQ2M6IGxpbnV4LXBjaUB2Z2VyLmtlcm5lbC5vcmc7IGRldmljZXRy
+ZWVAdmdlci5rZXJuZWwub3JnOw0KPiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBiaGVs
+Z2Fhc0Bnb29nbGUuY29tOyByb2JoK2R0QGtlcm5lbC5vcmc7DQo+IExlbyBMaSA8bGVveWFuZy5s
+aUBueHAuY29tPjsgbG9yZW56by5waWVyYWxpc2lAYXJtLmNvbTsNCj4gZ3VzdGF2by5waW1lbnRl
+bEBzeW5vcHN5cy5jb207IE0uaC4gTGlhbiA8bWluZ2h1YW4ubGlhbkBueHAuY29tPjsNCj4gTWlu
+Z2thaSBIdSA8bWluZ2thaS5odUBueHAuY29tPjsgUm95IFphbmcgPHJveS56YW5nQG54cC5jb20+
+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggNi83XSBkdHM6IGFybTY0OiBsczEwNDNhOiBBZGQgU0NG
+RyBwaGFuZGxlIGZvciBQQ0llDQo+IG5vZGVzDQo+IA0KPiBPbiBNb24sIFNlcCAwNywgMjAyMCBh
+dCAwMTozODowMFBNICswODAwLCBaaGlxaWFuZyBIb3Ugd3JvdGU6DQo+ID4gRnJvbTogSG91IFpo
+aXFpYW5nIDxaaGlxaWFuZy5Ib3VAbnhwLmNvbT4NCj4gPg0KPiA+IFRoZSBMUzEwNDNBIFBDSWUg
+Y29udHJvbGxlciBoYXMgc29tZSBjb250cm9sIHJlZ2lzdGVycyBpbiBTQ0ZHIGJsb2NrLA0KPiA+
+IHNvIGFkZCB0aGUgU0NGRyBwaGFuZGxlIGZvciBlYWNoIFBDSWUgY29udHJvbGxlciBEVCBub2Rl
+Lg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogSG91IFpoaXFpYW5nIDxaaGlxaWFuZy5Ib3VAbnhw
+LmNvbT4NCj4gDQo+ICdhcm02NDogZHRzOiAuLi4nIGZvciBzdWJqZWN0IHByZWZpeC4NCg0KV2ls
+bCBjb3JyZWN0IGl0IGluIG5leHQgdmVyc2lvbi4NCg0KUmVnYXJkcywNClpoaXFpYW5nDQoNCj4g
+DQo+IFNoYXduDQo=
