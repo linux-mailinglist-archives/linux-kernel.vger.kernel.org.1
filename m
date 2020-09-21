@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8103D272DF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A27C272C64
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729693AbgIUQoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:44:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49248 "EHLO mail.kernel.org"
+        id S1728359AbgIUQcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:32:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729670AbgIUQoJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:44:09 -0400
+        id S1728316AbgIUQb6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:31:58 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 18BDF23998;
-        Mon, 21 Sep 2020 16:44:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3436A23976;
+        Mon, 21 Sep 2020 16:31:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706648;
-        bh=4v8q9J/9fwWug1dfX+6rl1pBaG1KGfGEq1QFjK0EsXA=;
+        s=default; t=1600705917;
+        bh=EAxwTI9OR1poFBhApJn0bZQ00ICg0ML6ODkvzdevUTg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HHNRx92Pj+wwo2+ajxcKL5s83ihAEyoImXqpQzgHfItUXcfRuVA74OeyerwiXJMI0
-         nTmB2ZVp7BCwuacD6TPE9onitYvtHRemTPtypO3M7aZ2dsk/eKeIso2KWGxWp9cZf8
-         1GNBGzx36jgJ++VJJRa54ivMHYlnOYDZ2ZTKSWvE=
+        b=OC75ec8QY5L3nYSssxSTaAhKGM9lDf13n75SDHGtukvJ4PE2PZGto/5v+0rfjSACt
+         urCneLYjg4M4O6q3tnEkfcSt3uqQHCXqR8yU2yuUmZmz9hgiKDlP3LzZBqktPXWRFB
+         AV+NohT2EQzBybBXdjifQ+Coca5hTQZLQThTfv5Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mateusz Gorski <mateusz.gorski@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 038/118] ASoC: Intel: skl_hda_dsp_generic: Fix NULLptr dereference in autosuspend delay
-Date:   Mon, 21 Sep 2020 18:27:30 +0200
-Message-Id: <20200921162038.067119767@linuxfoundation.org>
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.4 15/46] USB: core: add helpers to retrieve endpoints
+Date:   Mon, 21 Sep 2020 18:27:31 +0200
+Message-Id: <20200921162034.044166692@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
-References: <20200921162036.324813383@linuxfoundation.org>
+In-Reply-To: <20200921162033.346434578@linuxfoundation.org>
+References: <20200921162033.346434578@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,45 +41,166 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mateusz Gorski <mateusz.gorski@linux.intel.com>
+From: Johan Hovold <johan@kernel.org>
 
-[ Upstream commit 5610921a4435ef45c33702073e64f835f3dca7f1 ]
+commit 66a359390e7e34f9a4c489467234b107b3d76169 upstream.
 
-Different modules for HDMI codec are used depending on the
-"hda_codec_use_common_hdmi" option being enabled or not. Driver private
-context for both of them is different.
-This leads to null-pointer dereference error when driver tries to set
-autosuspend delay for HDMI codec while the option is off (hdac_hdmi
-module is used for HDMI).
+Many USB drivers iterate over the available endpoints to find required
+endpoints of a specific type and direction. Typically the endpoints are
+required for proper function and a missing endpoint should abort probe.
 
-Change the string in conditional statement to "ehdaudio0D0" to ensure
-that only the HDAudio codec is handled by this function.
+To facilitate code reuse, add a helper to retrieve common endpoints
+(bulk or interrupt, in or out) and four wrappers to find a single
+endpoint.
 
-Fixes: 5bf73b1b1dec ("ASoC: intel/skl/hda - fix oops on systems without i915 audio codec")
-Signed-off-by: Mateusz Gorski <mateusz.gorski@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Link: https://lore.kernel.org/r/20200722173524.30161-1-mateusz.gorski@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Note that the helpers are marked as __must_check to serve as a reminder
+to always verify that all expected endpoints are indeed present. This
+also means that any optional endpoints, typically need to be looked up
+through separate calls.
+
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- sound/soc/intel/boards/skl_hda_dsp_generic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/core/usb.c |   83 +++++++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/usb.h    |   35 ++++++++++++++++++++
+ 2 files changed, 118 insertions(+)
 
-diff --git a/sound/soc/intel/boards/skl_hda_dsp_generic.c b/sound/soc/intel/boards/skl_hda_dsp_generic.c
-index ca4900036ead9..bc50eda297ab7 100644
---- a/sound/soc/intel/boards/skl_hda_dsp_generic.c
-+++ b/sound/soc/intel/boards/skl_hda_dsp_generic.c
-@@ -181,7 +181,7 @@ static void skl_set_hda_codec_autosuspend_delay(struct snd_soc_card *card)
- 	struct snd_soc_dai *dai;
+--- a/drivers/usb/core/usb.c
++++ b/drivers/usb/core/usb.c
+@@ -77,6 +77,89 @@ MODULE_PARM_DESC(autosuspend, "default a
  
- 	for_each_card_rtds(card, rtd) {
--		if (!strstr(rtd->dai_link->codecs->name, "ehdaudio"))
-+		if (!strstr(rtd->dai_link->codecs->name, "ehdaudio0D0"))
- 			continue;
- 		dai = asoc_rtd_to_codec(rtd, 0);
- 		hda_pvt = snd_soc_component_get_drvdata(dai->component);
--- 
-2.25.1
-
+ 
+ /**
++ * usb_find_common_endpoints() -- look up common endpoint descriptors
++ * @alt:	alternate setting to search
++ * @bulk_in:	pointer to descriptor pointer, or NULL
++ * @bulk_out:	pointer to descriptor pointer, or NULL
++ * @int_in:	pointer to descriptor pointer, or NULL
++ * @int_out:	pointer to descriptor pointer, or NULL
++ *
++ * Search the alternate setting's endpoint descriptors for the first bulk-in,
++ * bulk-out, interrupt-in and interrupt-out endpoints and return them in the
++ * provided pointers (unless they are NULL).
++ *
++ * If a requested endpoint is not found, the corresponding pointer is set to
++ * NULL.
++ *
++ * Return: Zero if all requested descriptors were found, or -ENXIO otherwise.
++ */
++int usb_find_common_endpoints(struct usb_host_interface *alt,
++		struct usb_endpoint_descriptor **bulk_in,
++		struct usb_endpoint_descriptor **bulk_out,
++		struct usb_endpoint_descriptor **int_in,
++		struct usb_endpoint_descriptor **int_out)
++{
++	struct usb_endpoint_descriptor *epd;
++	int i;
++
++	if (bulk_in)
++		*bulk_in = NULL;
++	if (bulk_out)
++		*bulk_out = NULL;
++	if (int_in)
++		*int_in = NULL;
++	if (int_out)
++		*int_out = NULL;
++
++	for (i = 0; i < alt->desc.bNumEndpoints; ++i) {
++		epd = &alt->endpoint[i].desc;
++
++		switch (usb_endpoint_type(epd)) {
++		case USB_ENDPOINT_XFER_BULK:
++			if (usb_endpoint_dir_in(epd)) {
++				if (bulk_in && !*bulk_in) {
++					*bulk_in = epd;
++					break;
++				}
++			} else {
++				if (bulk_out && !*bulk_out) {
++					*bulk_out = epd;
++					break;
++				}
++			}
++
++			continue;
++		case USB_ENDPOINT_XFER_INT:
++			if (usb_endpoint_dir_in(epd)) {
++				if (int_in && !*int_in) {
++					*int_in = epd;
++					break;
++				}
++			} else {
++				if (int_out && !*int_out) {
++					*int_out = epd;
++					break;
++				}
++			}
++
++			continue;
++		default:
++			continue;
++		}
++
++		if ((!bulk_in || *bulk_in) &&
++				(!bulk_out || *bulk_out) &&
++				(!int_in || *int_in) &&
++				(!int_out || *int_out)) {
++			return 0;
++		}
++	}
++
++	return -ENXIO;
++}
++EXPORT_SYMBOL_GPL(usb_find_common_endpoints);
++
++/**
+  * usb_find_alt_setting() - Given a configuration, find the alternate setting
+  * for the given interface.
+  * @config: the configuration to search (not necessarily the current config).
+--- a/include/linux/usb.h
++++ b/include/linux/usb.h
+@@ -97,6 +97,41 @@ enum usb_interface_condition {
+ 	USB_INTERFACE_UNBINDING,
+ };
+ 
++int __must_check
++usb_find_common_endpoints(struct usb_host_interface *alt,
++		struct usb_endpoint_descriptor **bulk_in,
++		struct usb_endpoint_descriptor **bulk_out,
++		struct usb_endpoint_descriptor **int_in,
++		struct usb_endpoint_descriptor **int_out);
++
++static inline int __must_check
++usb_find_bulk_in_endpoint(struct usb_host_interface *alt,
++		struct usb_endpoint_descriptor **bulk_in)
++{
++	return usb_find_common_endpoints(alt, bulk_in, NULL, NULL, NULL);
++}
++
++static inline int __must_check
++usb_find_bulk_out_endpoint(struct usb_host_interface *alt,
++		struct usb_endpoint_descriptor **bulk_out)
++{
++	return usb_find_common_endpoints(alt, NULL, bulk_out, NULL, NULL);
++}
++
++static inline int __must_check
++usb_find_int_in_endpoint(struct usb_host_interface *alt,
++		struct usb_endpoint_descriptor **int_in)
++{
++	return usb_find_common_endpoints(alt, NULL, NULL, int_in, NULL);
++}
++
++static inline int __must_check
++usb_find_int_out_endpoint(struct usb_host_interface *alt,
++		struct usb_endpoint_descriptor **int_out)
++{
++	return usb_find_common_endpoints(alt, NULL, NULL, NULL, int_out);
++}
++
+ /**
+  * struct usb_interface - what usb device drivers talk to
+  * @altsetting: array of interface structures, one for each alternate
 
 
