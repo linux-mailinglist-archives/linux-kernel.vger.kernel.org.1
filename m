@@ -2,167 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87A0327332E
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB8E8273334
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 21:56:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727495AbgIUTzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 15:55:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35352 "EHLO
+        id S1728103AbgIUT4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 15:56:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726417AbgIUTzN (ORCPT
+        with ESMTP id S1727244AbgIUT4B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 15:55:13 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC654C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 12:55:12 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id x23so671174wmi.3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 12:55:12 -0700 (PDT)
+        Mon, 21 Sep 2020 15:56:01 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82F20C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 12:56:01 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id q2so14039548ybo.5
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 12:56:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=YnHM6Hb2y75zAmIL8oMRMNOuTr0UGFyFVBu7fGiSews=;
-        b=p6FPH/bXd02fVePtnRBJz3I1Vs4o+uGl8AUxVqGp329LcXDKk3VCkOUKY3G/kkIwtm
-         YUgnsCOjAv+E1XErdswu98/iRlqOni8BJyXmyFKLOSCAZuWbBvDo+nlrhcrdSju/el56
-         KdNQPfu3WsQ7Iv6ki9szDXn51b1CU2ZJhA//wUd+jeaBb5URBSMRk3k/F3WEbX4c3cYA
-         RYdXPuj87JW6/RPe0xxa+3sfNf+iHaGdPgqQUt86/QnRXzVFMX9DltQFNLgdM+byistd
-         huKGd258rIEXAmf3fIuhrCtS34bcMMGf30hnGmAgqiYZo7/yyug5WUMH2r3EXvmi5Vhu
-         +fcw==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=UYdZsbRRn0ngJ7bp1PZbaVObPNEy0F/LDH2oLgnJ+1Y=;
+        b=FfGltcomG8zE8J9z8QDGQdn1bE5ren29TUCOaytLkD/duuDzhuy+St8rIBXWrrfUkI
+         jqnW3Litk/BDspNQE9AUIyxNApoOUtLYnhcYcpYrm2pGw8tuwuyy+/RX0QZYEuGGtxVm
+         b+7HrlQl4Jb36vcefnKHPpNWkRn4RItmKyb2TKtNYyRF+SMR263h/+h5R0Rbi3zgsLH+
+         qhoiwzD26yZbHi4UROICtnG3FKoiNaUzo8lCpZeUFNAoGtG5Rv5/jqEHz1ZYgNDm5hGd
+         paqjlBCf5blo1tu2bUaMMcB/qjInBRZ67AacUc642ZNE89uDi6IscpBbYDcd0ilZVWy9
+         81qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=YnHM6Hb2y75zAmIL8oMRMNOuTr0UGFyFVBu7fGiSews=;
-        b=sFZTaV0X9wIam0RnjPXn/wJPtObkX24hBLN4B3L3pPd8os/UCe3QI4PAg/FtlzcdkS
-         UTTJ45C/E/ncG1ixXJb4Ya/vrXyaVPwp+zRAuT5dlBn7cGZBJSkERC10b9gcQELFSQM1
-         NyP7+Ht4i6IKkkfwbagfyUY72VcGkICmcCJyVGnGj8/2jz4I3iyhBlx6Lb33rmMx+VQm
-         eatixQRKm9YYE/P9eqUOziIgHjKU2DIPQUtkzTTEn75AN65WztR7U4SqIk1n4UrHjqb2
-         F1PWx1wYqPqzaLynpV1NE9CAGABbky5IW/46epjNl68Ylq+/b98mKbb8qkkMGJD2RDz3
-         dyqA==
-X-Gm-Message-State: AOAM531cEu/IFb0nnxhiRNBqIZ8tRCUp/Eal2ysHg2AS/7+waTv/Opr5
-        1X0ssHuk90wn7O1HR/8U6Lih9FaYAeTr8hg5lEg=
-X-Google-Smtp-Source: ABdhPJwZgwV6vkAAjowteBj5ihZxbhwD17IBcHMtzvMBYdjNxn4Ob2SIcxa+cIei8JjO78UQaTrO9VPBs6T/VC7upMk=
-X-Received: by 2002:a1c:7d4d:: with SMTP id y74mr912983wmc.73.1600718111467;
- Mon, 21 Sep 2020 12:55:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200915071820.76620-1-sudheesh.mavila@amd.com> <888285ed-62e9-53d7-7fde-e40ac64bc5a4@amd.com>
-In-Reply-To: <888285ed-62e9-53d7-7fde-e40ac64bc5a4@amd.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 21 Sep 2020 15:55:00 -0400
-Message-ID: <CADnq5_NWnMraD_WPoms0G-bqmNxf7tN86h34Dm1Z+6ZTeqqzNg@mail.gmail.com>
-Subject: Re: [PATCH v1 ] drm/amd/pm: Removed fixed clock in auto mode DPM
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Sudheesh Mavila <sudheesh.mavila@amd.com>,
-        "Quan, Evan" <evan.quan@amd.com>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Kazlauskas, Nicholas" <nicholas.kazlauskas@amd.com>,
-        zhengbin <zhengbin13@huawei.com>,
-        Jason Yan <yanaijie@huawei.com>,
-        Tom St Denis <tom.stdenis@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=UYdZsbRRn0ngJ7bp1PZbaVObPNEy0F/LDH2oLgnJ+1Y=;
+        b=grQBrqxA6oXQORa1g7VkDhSi8oHbS0sAiGwGHceWYmzM6aKG66P2kguERE0ILf1WDS
+         501ncB47+btHe3lWrPgvUaW6rIdScWsjDl3zx6wlO0cogFpZM0oPD2VWrWvwof1Eg72C
+         jkIbjW1hlFd5pAVaYh6fyo9Hu6ihQXt5FJhBQxsdPEGZ58aW/ujHv06cgP+OK6WH4C5m
+         hI25hBmdG88YtxG5sLm6nR83pOSHRE6hKVziJRUmVT03zYfzIyHMLPSEpkNZ31qqmmud
+         TJuMV0z3dlAqOUwqa4yUuWGaRTCQQqwUEx23bIF9OtwQ3lzyzmB92Itv0auwmgCsFH6F
+         8KSg==
+X-Gm-Message-State: AOAM533PngKTsA4xJLksx5glrWUybSgiuI65w6uPOr0WPc1rOkRnRemf
+        vFxnjVf29zecbO7zCovvajTNuwuIvPI=
+X-Google-Smtp-Source: ABdhPJxwzYsjMlODwBB0tpJIPRdXie9IZw+XcAwSixFh2guUyZ+jFmUmn/Y4WKWTbZgx9L4MheMdZm2K5eY=
+Sender: "badhri via sendgmr" <badhri@badhri.mtv.corp.google.com>
+X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:1:f292:1cff:fee0:66cf])
+ (user=badhri job=sendgmr) by 2002:a25:244a:: with SMTP id k71mr2218204ybk.504.1600718160665;
+ Mon, 21 Sep 2020 12:56:00 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 12:55:45 -0700
+Message-Id: <20200921195555.1050731-1-badhri@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
+Subject: [PATCH v8 01/11] usb: typec: tcpci: Add a getter method to retrieve
+ tcpm_port reference
+From:   Badhri Jagan Sridharan <badhri@google.com>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Prashant Malani <pmalani@chromium.org>,
+        Badhri Jagan Sridharan <badhri@google.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied with fixed up whitespace.
+Allow chip level drivers to retrieve reference to tcpm_port.
 
-Thanks,
+Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+---
+Change since v1:
+- Changing patch version to v6 to fix version number confusion.
 
-Alex
+Change since v6:
+- Rebase on usb-next
+- Added Reviewed-by from Heikki.
 
-On Tue, Sep 15, 2020 at 3:45 AM Christian K=C3=B6nig
-<christian.koenig@amd.com> wrote:
->
-> Am 15.09.20 um 09:18 schrieb Sudheesh Mavila:
-> >      SMU10_UMD_PSTATE_PEAK_FCLK value should not be used to set the DPM=
-.
-> >
-> >      Change  suggested by Evan.Quan@amd.com
->
-> Can't say much about the change itself, but the Commit message is
-> indented and the indentation in the code doesn't look consistent either.
->
-> Christian.
->
-> >
-> > Signed-off-by: Sudheesh Mavila <sudheesh.mavila@amd.com>
-> > ---
-> >   drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c | 10 ++++++----
-> >   1 file changed, 6 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c b/driver=
-s/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c
-> > index c9cfe90a2947..081cb9b1b7c8 100644
-> > --- a/drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c
-> > +++ b/drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c
-> > @@ -566,6 +566,8 @@ static int smu10_dpm_force_dpm_level(struct pp_hwmg=
-r *hwmgr,
-> >       struct smu10_hwmgr *data =3D hwmgr->backend;
-> >       uint32_t min_sclk =3D hwmgr->display_config->min_core_set_clock;
-> >       uint32_t min_mclk =3D hwmgr->display_config->min_mem_set_clock/10=
-0;
-> > +     uint32_t index_fclk =3D data->clock_vol_info.vdd_dep_on_fclk->cou=
-nt - 1;
-> > +     uint32_t index_socclk =3D data->clock_vol_info.vdd_dep_on_socclk-=
->count - 1;
-> >
-> >       if (hwmgr->smu_version < 0x1E3700) {
-> >               pr_info("smu firmware version too old, can not set dpm le=
-vel\n");
-> > @@ -679,13 +681,13 @@ static int smu10_dpm_force_dpm_level(struct pp_hw=
-mgr *hwmgr,
-> >               smum_send_msg_to_smc_with_parameter(hwmgr,
-> >                                               PPSMC_MSG_SetHardMinFclkB=
-yFreq,
-> >                                               hwmgr->display_config->nu=
-m_display > 3 ?
-> > -                                             SMU10_UMD_PSTATE_PEAK_FCL=
-K :
-> > +                                     data->clock_vol_info.vdd_dep_on_f=
-clk->entries[0].clk :
-> >                                               min_mclk,
-> >                                               NULL);
-> >
-> >               smum_send_msg_to_smc_with_parameter(hwmgr,
-> >                                               PPSMC_MSG_SetHardMinSoccl=
-kByFreq,
-> > -                                             SMU10_UMD_PSTATE_MIN_SOCC=
-LK,
-> > +                                     data->clock_vol_info.vdd_dep_on_s=
-occlk->entries[0].clk,
-> >                                               NULL);
-> >               smum_send_msg_to_smc_with_parameter(hwmgr,
-> >                                               PPSMC_MSG_SetHardMinVcn,
-> > @@ -698,11 +700,11 @@ static int smu10_dpm_force_dpm_level(struct pp_hw=
-mgr *hwmgr,
-> >                                               NULL);
-> >               smum_send_msg_to_smc_with_parameter(hwmgr,
-> >                                               PPSMC_MSG_SetSoftMaxFclkB=
-yFreq,
-> > -                                             SMU10_UMD_PSTATE_PEAK_FCL=
-K,
-> > +                             data->clock_vol_info.vdd_dep_on_fclk->ent=
-ries[index_fclk].clk,
-> >                                               NULL);
-> >               smum_send_msg_to_smc_with_parameter(hwmgr,
-> >                                               PPSMC_MSG_SetSoftMaxSoccl=
-kByFreq,
-> > -                                             SMU10_UMD_PSTATE_PEAK_SOC=
-CLK,
-> > +                             data->clock_vol_info.vdd_dep_on_socclk->e=
-ntries[index_socclk].clk,
-> >                                               NULL);
-> >               smum_send_msg_to_smc_with_parameter(hwmgr,
-> >                                               PPSMC_MSG_SetSoftMaxVcn,
->
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+Change since v7:
+- Rebase on usb-next
+---
+ drivers/usb/typec/tcpm/tcpci.c | 6 ++++++
+ drivers/usb/typec/tcpm/tcpci.h | 2 ++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
+index 7d9491ba62fb..b960fe5a0f28 100644
+--- a/drivers/usb/typec/tcpm/tcpci.c
++++ b/drivers/usb/typec/tcpm/tcpci.c
+@@ -38,6 +38,12 @@ struct tcpci_chip {
+ 	struct tcpci_data data;
+ };
+ 
++struct tcpm_port *tcpci_get_tcpm_port(struct tcpci *tcpci)
++{
++	return tcpci->port;
++}
++EXPORT_SYMBOL_GPL(tcpci_get_tcpm_port);
++
+ static inline struct tcpci *tcpc_to_tcpci(struct tcpc_dev *tcpc)
+ {
+ 	return container_of(tcpc, struct tcpci, tcpc);
+diff --git a/drivers/usb/typec/tcpm/tcpci.h b/drivers/usb/typec/tcpm/tcpci.h
+index cf9d8b63adcb..04c49a0b0368 100644
+--- a/drivers/usb/typec/tcpm/tcpci.h
++++ b/drivers/usb/typec/tcpm/tcpci.h
+@@ -150,4 +150,6 @@ struct tcpci *tcpci_register_port(struct device *dev, struct tcpci_data *data);
+ void tcpci_unregister_port(struct tcpci *tcpci);
+ irqreturn_t tcpci_irq(struct tcpci *tcpci);
+ 
++struct tcpm_port;
++struct tcpm_port *tcpci_get_tcpm_port(struct tcpci *tcpci);
+ #endif /* __LINUX_USB_TCPCI_H */
+-- 
+2.28.0.681.g6f77f65b4e-goog
+
