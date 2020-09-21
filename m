@@ -2,81 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DFE8272235
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C593A272258
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:25:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726526AbgIULWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 07:22:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:41396 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726367AbgIULWR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 07:22:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9875DD6E;
-        Mon, 21 Sep 2020 04:22:16 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9889B3F73B;
-        Mon, 21 Sep 2020 04:22:15 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 12:22:09 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Bean Huo <huobean@gmail.com>
-Cc:     songxiaowei@hisilicon.com, wangbinghui@hisilicon.com,
-        bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, beanhuo@micron.com
-Subject: Re: [PATCH] PCI: kirin: Return -EPROBE_DEFER in case the gpio isn't
- ready
-Message-ID: <20200921112209.GA2220@e121166-lin.cambridge.arm.com>
-References: <20200918123800.19983-1-huobean@gmail.com>
+        id S1726721AbgIULY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 07:24:58 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:44764 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726367AbgIULY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 07:24:57 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 26FF28EAE5C88EE86BD1;
+        Mon, 21 Sep 2020 19:24:56 +0800 (CST)
+Received: from huawei.com (10.175.112.208) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Mon, 21 Sep 2020
+ 19:24:50 +0800
+From:   Wang Wensheng <wangwensheng4@huawei.com>
+To:     <paulus@ozlabs.org>, <mpe@ellerman.id.au>,
+        <benh@kernel.crashing.org>, <kvm-ppc@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] powerpc/kvm/books: Fix symbol undeclared warnings
+Date:   Mon, 21 Sep 2020 11:22:11 +0000
+Message-ID: <20200921112211.82830-1-wangwensheng4@huawei.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918123800.19983-1-huobean@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.112.208]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 02:38:00PM +0200, Bean Huo wrote:
-> From: Bean Huo <beanhuo@micron.com>
-> 
-> PCI driver might be probed before the gpiochip, so, of_get_named_gpio()
-> can return -EPROBE_DEFER. And let kirin_pcie_probe() directly return
-> -ENODEV, which will result in the PCIe probe failure and the PCIe
-> will not be probed again after the gpiochip driver is loaded.
-> 
-> Fix the above issue by letting kirin_pcie_probe() return -EPROBE_DEFER in
-> such a case.
-> 
-> Fixes: 6e0832fa432e ("PCI: Collect all native drivers under drivers/pci/controller")
+Build the kernel with `C=2`:
+arch/powerpc/kvm/book3s_hv_nested.c:572:25: warning: symbol
+'kvmhv_alloc_nested' was not declared. Should it be static?
+arch/powerpc/kvm/book3s_64_mmu_radix.c:350:6: warning: symbol
+'kvmppc_radix_set_pte_at' was not declared. Should it be static?
+arch/powerpc/kvm/book3s_hv.c:3568:5: warning: symbol
+'kvmhv_p9_guest_entry' was not declared. Should it be static?
+arch/powerpc/kvm/book3s_hv_rm_xics.c:767:15: warning: symbol 'eoi_rc'
+was not declared. Should it be static?
+arch/powerpc/kvm/book3s_64_vio_hv.c:240:13: warning: symbol
+'iommu_tce_kill_rm' was not declared. Should it be static?
+arch/powerpc/kvm/book3s_64_vio.c:492:6: warning: symbol
+'kvmppc_tce_iommu_do_map' was not declared. Should it be static?
+arch/powerpc/kvm/book3s_pr.c:572:6: warning: symbol 'kvmppc_set_pvr_pr'
+was not declared. Should it be static?
 
-This is certainly not the commit that triggered the issue so I would
-remove it. Kirin maintainers are CC'ed, waiting for their ACK.
+Those symbols are used only in the files that define them so make them
+static to fix the warnings.
 
-Lorenzo
+Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
+---
+ arch/powerpc/kvm/book3s_64_mmu_radix.c | 2 +-
+ arch/powerpc/kvm/book3s_64_vio.c       | 2 +-
+ arch/powerpc/kvm/book3s_64_vio_hv.c    | 2 +-
+ arch/powerpc/kvm/book3s_hv.c           | 2 +-
+ arch/powerpc/kvm/book3s_hv_nested.c    | 2 +-
+ arch/powerpc/kvm/book3s_hv_rm_xics.c   | 2 +-
+ arch/powerpc/kvm/book3s_pr.c           | 2 +-
+ 7 files changed, 7 insertions(+), 7 deletions(-)
 
-> Signed-off-by: Bean Huo <beanhuo@micron.com>
-> ---
->  drivers/pci/controller/dwc/pcie-kirin.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
-> index e496f51e0152..74b88d158072 100644
-> --- a/drivers/pci/controller/dwc/pcie-kirin.c
-> +++ b/drivers/pci/controller/dwc/pcie-kirin.c
-> @@ -507,8 +507,12 @@ static int kirin_pcie_probe(struct platform_device *pdev)
->  
->  	kirin_pcie->gpio_id_reset = of_get_named_gpio(dev->of_node,
->  						      "reset-gpios", 0);
-> -	if (kirin_pcie->gpio_id_reset < 0)
-> +	if (kirin_pcie->gpio_id_reset == -EPROBE_DEFER) {
-> +		return -EPROBE_DEFER;
-> +	} else if (!gpio_is_valid(kirin_pcie->gpio_id_reset)) {
-> +		dev_err(dev, "unable to get a valid gpio pin\n");
->  		return -ENODEV;
-> +	}
->  
->  	ret = kirin_pcie_power_on(kirin_pcie);
->  	if (ret)
-> -- 
-> 2.17.1
-> 
+diff --git a/arch/powerpc/kvm/book3s_64_mmu_radix.c b/arch/powerpc/kvm/book3s_64_mmu_radix.c
+index 22a677b18695..bb35490400e9 100644
+--- a/arch/powerpc/kvm/book3s_64_mmu_radix.c
++++ b/arch/powerpc/kvm/book3s_64_mmu_radix.c
+@@ -347,7 +347,7 @@ static unsigned long kvmppc_radix_update_pte(struct kvm *kvm, pte_t *ptep,
+ 	return __radix_pte_update(ptep, clr, set);
+ }
+ 
+-void kvmppc_radix_set_pte_at(struct kvm *kvm, unsigned long addr,
++static void kvmppc_radix_set_pte_at(struct kvm *kvm, unsigned long addr,
+ 			     pte_t *ptep, pte_t pte)
+ {
+ 	radix__set_pte_at(kvm->mm, addr, ptep, pte, 0);
+diff --git a/arch/powerpc/kvm/book3s_64_vio.c b/arch/powerpc/kvm/book3s_64_vio.c
+index 1a529df0ab44..c2fbeb04bba2 100644
+--- a/arch/powerpc/kvm/book3s_64_vio.c
++++ b/arch/powerpc/kvm/book3s_64_vio.c
+@@ -489,7 +489,7 @@ static long kvmppc_tce_iommu_unmap(struct kvm *kvm,
+ 	return ret;
+ }
+ 
+-long kvmppc_tce_iommu_do_map(struct kvm *kvm, struct iommu_table *tbl,
++static long kvmppc_tce_iommu_do_map(struct kvm *kvm, struct iommu_table *tbl,
+ 		unsigned long entry, unsigned long ua,
+ 		enum dma_data_direction dir)
+ {
+diff --git a/arch/powerpc/kvm/book3s_64_vio_hv.c b/arch/powerpc/kvm/book3s_64_vio_hv.c
+index ac6ac192b8bb..470e7c518a10 100644
+--- a/arch/powerpc/kvm/book3s_64_vio_hv.c
++++ b/arch/powerpc/kvm/book3s_64_vio_hv.c
+@@ -237,7 +237,7 @@ static long iommu_tce_xchg_no_kill_rm(struct mm_struct *mm,
+ 	return ret;
+ }
+ 
+-extern void iommu_tce_kill_rm(struct iommu_table *tbl,
++static void iommu_tce_kill_rm(struct iommu_table *tbl,
+ 		unsigned long entry, unsigned long pages)
+ {
+ 	if (tbl->it_ops->tce_kill)
+diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+index cb1d16a3730c..31407be44e57 100644
+--- a/arch/powerpc/kvm/book3s_hv.c
++++ b/arch/powerpc/kvm/book3s_hv.c
+@@ -3575,7 +3575,7 @@ static int kvmhv_load_hv_regs_and_go(struct kvm_vcpu *vcpu, u64 time_limit,
+  * Virtual-mode guest entry for POWER9 and later when the host and
+  * guest are both using the radix MMU.  The LPIDR has already been set.
+  */
+-int kvmhv_p9_guest_entry(struct kvm_vcpu *vcpu, u64 time_limit,
++static int kvmhv_p9_guest_entry(struct kvm_vcpu *vcpu, u64 time_limit,
+ 			 unsigned long lpcr)
+ {
+ 	struct kvmppc_vcore *vc = vcpu->arch.vcore;
+diff --git a/arch/powerpc/kvm/book3s_hv_nested.c b/arch/powerpc/kvm/book3s_hv_nested.c
+index 6822d23a2da4..33b58549a9aa 100644
+--- a/arch/powerpc/kvm/book3s_hv_nested.c
++++ b/arch/powerpc/kvm/book3s_hv_nested.c
+@@ -569,7 +569,7 @@ static void kvmhv_update_ptbl_cache(struct kvm_nested_guest *gp)
+ 	kvmhv_set_nested_ptbl(gp);
+ }
+ 
+-struct kvm_nested_guest *kvmhv_alloc_nested(struct kvm *kvm, unsigned int lpid)
++static struct kvm_nested_guest *kvmhv_alloc_nested(struct kvm *kvm, unsigned int lpid)
+ {
+ 	struct kvm_nested_guest *gp;
+ 	long shadow_lpid;
+diff --git a/arch/powerpc/kvm/book3s_hv_rm_xics.c b/arch/powerpc/kvm/book3s_hv_rm_xics.c
+index 4d7e5610731a..c2c9c733f359 100644
+--- a/arch/powerpc/kvm/book3s_hv_rm_xics.c
++++ b/arch/powerpc/kvm/book3s_hv_rm_xics.c
+@@ -764,7 +764,7 @@ int xics_rm_h_eoi(struct kvm_vcpu *vcpu, unsigned long xirr)
+ 	return ics_rm_eoi(vcpu, irq);
+ }
+ 
+-unsigned long eoi_rc;
++static unsigned long eoi_rc;
+ 
+ static void icp_eoi(struct irq_chip *c, u32 hwirq, __be32 xirr, bool *again)
+ {
+diff --git a/arch/powerpc/kvm/book3s_pr.c b/arch/powerpc/kvm/book3s_pr.c
+index 88fac22fbf09..b1fefa63e125 100644
+--- a/arch/powerpc/kvm/book3s_pr.c
++++ b/arch/powerpc/kvm/book3s_pr.c
+@@ -569,7 +569,7 @@ static void kvmppc_set_msr_pr(struct kvm_vcpu *vcpu, u64 msr)
+ #endif
+ }
+ 
+-void kvmppc_set_pvr_pr(struct kvm_vcpu *vcpu, u32 pvr)
++static void kvmppc_set_pvr_pr(struct kvm_vcpu *vcpu, u32 pvr)
+ {
+ 	u32 host_pvr;
+ 
+-- 
+2.25.0
+
