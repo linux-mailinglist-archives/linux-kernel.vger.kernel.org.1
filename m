@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B7E272CF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C0F6272CA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728967AbgIUQgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:36:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35952 "EHLO mail.kernel.org"
+        id S1728665AbgIUQds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:33:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728950AbgIUQgQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:36:16 -0400
+        id S1728113AbgIUQdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:33:37 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 401582396F;
-        Mon, 21 Sep 2020 16:36:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 635E823976;
+        Mon, 21 Sep 2020 16:33:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706175;
-        bh=+OOrdhldkbOwXGbhXZnFEBxmS8ERh3cGw8dgn8ouTXs=;
+        s=default; t=1600706016;
+        bh=t5qeN+stjGPNG6sn8aIddhIRBpgtz8iDOmvyk88XO1U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AQLQ8LLGN/fjPHsWRCagCm2d8p/kevHmz2JH39Hs00lnT52vU6QzzjD1VSYrt+/C+
-         ZeFKG74ErWG0P40AwwHgzji6tPUTjhYWUg3IQy0qYrAgQkVwCcIAIVPyB4nV363smL
-         /XzVvw5aH44bR9ziq5g8YTTFk2yEzaB3rqvxyVZ8=
+        b=kXz//4wJLcrE68vEhFkCzJxF9P6MBJhDpk0GJlNJ545z1q0Sp6pKEGAh0A4ps1inM
+         276gbhPYBTTYoKlVOjtBE1UoS5Ik3TdKuNNjjCT4R+doOKVM6u9LXuqec5Xtw4ouL4
+         9umQRTfPaUj29051HWvk05y5von/ldtst7L3IjKw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot <syzbot+b38b1ef6edf0c74a8d97@syzkaller.appspotmail.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        George Kennedy <george.kennedy@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 60/70] fbcon: Fix user font detection test at fbcon_resize().
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Quentin Perret <qperret@google.com>
+Subject: [PATCH 4.4 44/46] ehci-hcd: Move include to keep CRC stable
 Date:   Mon, 21 Sep 2020 18:28:00 +0200
-Message-Id: <20200921162037.878641922@linuxfoundation.org>
+Message-Id: <20200921162035.296458681@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
-References: <20200921162035.136047591@linuxfoundation.org>
+In-Reply-To: <20200921162033.346434578@linuxfoundation.org>
+References: <20200921162033.346434578@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,52 +42,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+From: Quentin Perret <qperret@google.com>
 
-[ Upstream commit ec0972adecb391a8d8650832263a4790f3bfb4df ]
+commit 29231826f3bd65500118c473fccf31c0cf14dbc0 upstream.
 
-syzbot is reporting OOB read at fbcon_resize() [1], for
-commit 39b3cffb8cf31117 ("fbcon: prevent user font height or width change
- from causing potential out-of-bounds access") is by error using
-registered_fb[con2fb_map[vc->vc_num]]->fbcon_par->p->userfont (which was
-set to non-zero) instead of fb_display[vc->vc_num].userfont (which remains
-zero for that display).
+The CRC calculation done by genksyms is triggered when the parser hits
+EXPORT_SYMBOL*() macros. At this point, genksyms recursively expands the
+types of the function parameters, and uses that as the input for the CRC
+calculation. In the case of forward-declared structs, the type expands
+to 'UNKNOWN'. Following this, it appears that the result of the
+expansion of each type is cached somewhere, and seems to be re-used
+when/if the same type is seen again for another exported symbol in the
+same C file.
 
-We could remove tricky userfont flag [2], for we can determine it by
-comparing address of the font data and addresses of built-in font data.
-But since that commit is failing to fix the original OOB read [3], this
-patch keeps the change minimal in case we decide to revert altogether.
+Unfortunately, this can cause CRC 'stability' issues when a struct
+definition becomes visible in the middle of a C file. For example, let's
+assume code with the following pattern:
 
-[1] https://syzkaller.appspot.com/bug?id=ebcbbb6576958a496500fee9cf7aa83ea00b5920
-[2] https://syzkaller.appspot.com/text?tag=Patch&x=14030853900000
-[3] https://syzkaller.appspot.com/bug?id=6fba8c186d97cf1011ab17660e633b1cc4e080c9
+    struct foo;
 
-Reported-by: syzbot <syzbot+b38b1ef6edf0c74a8d97@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Fixes: 39b3cffb8cf31117 ("fbcon: prevent user font height or width change from causing potential out-of-bounds access")
-Cc: George Kennedy <george.kennedy@oracle.com>
-Link: https://lore.kernel.org/r/f6e3e611-8704-1263-d163-f52c906a4f06@I-love.SAKURA.ne.jp
+    int bar(struct foo *arg)
+    {
+	/* Do work ... */
+    }
+    EXPORT_SYMBOL_GPL(bar);
+
+    /* This contains struct foo's definition */
+    #include "foo.h"
+
+    int baz(struct foo *arg)
+    {
+	/* Do more work ... */
+    }
+    EXPORT_SYMBOL_GPL(baz);
+
+Here, baz's CRC will be computed using the expansion of struct foo that
+was cached after bar's CRC calculation ('UNKOWN' here). But if
+EXPORT_SYMBOL_GPL(bar) is removed from the file (because of e.g. symbol
+trimming using CONFIG_TRIM_UNUSED_KSYMS), struct foo will be expanded
+late, during baz's CRC calculation, which now has visibility over the
+full struct definition, hence resulting in a different CRC for baz.
+
+The proper fix for this certainly is in genksyms, but that will take me
+some time to get right. In the meantime, we have seen one occurrence of
+this in the ehci-hcd code which hits this problem because of the way it
+includes C files halfway through the code together with an unlucky mix
+of symbol trimming.
+
+In order to workaround this, move the include done in ehci-hub.c early
+in ehci-hcd.c, hence making sure the struct definitions are visible to
+the entire file. This improves CRC stability of the ehci-hcd exports
+even when symbol trimming is enabled.
+
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Quentin Perret <qperret@google.com>
+Link: https://lore.kernel.org/r/20200916171825.3228122-1-qperret@google.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+
 ---
- drivers/video/console/fbcon.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/host/ehci-hcd.c |    1 +
+ drivers/usb/host/ehci-hub.c |    1 -
+ 2 files changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/video/console/fbcon.c b/drivers/video/console/fbcon.c
-index fedf50e091bab..4b7d0f9a820aa 100644
---- a/drivers/video/console/fbcon.c
-+++ b/drivers/video/console/fbcon.c
-@@ -1943,7 +1943,7 @@ static int fbcon_resize(struct vc_data *vc, unsigned int width,
- 	struct fb_var_screeninfo var = info->var;
- 	int x_diff, y_diff, virt_w, virt_h, virt_fw, virt_fh;
+--- a/drivers/usb/host/ehci-hcd.c
++++ b/drivers/usb/host/ehci-hcd.c
+@@ -35,6 +35,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/usb.h>
+ #include <linux/usb/hcd.h>
++#include <linux/usb/otg.h>
+ #include <linux/moduleparam.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/debugfs.h>
+--- a/drivers/usb/host/ehci-hub.c
++++ b/drivers/usb/host/ehci-hub.c
+@@ -27,7 +27,6 @@
+  */
  
--	if (ops->p && ops->p->userfont && FNTSIZE(vc->vc_font.data)) {
-+	if (p->userfont && FNTSIZE(vc->vc_font.data)) {
- 		int size;
- 		int pitch = PITCH(vc->vc_font.width);
+ /*-------------------------------------------------------------------------*/
+-#include <linux/usb/otg.h>
  
--- 
-2.25.1
-
+ #define	PORT_WAKE_BITS	(PORT_WKOC_E|PORT_WKDISC_E|PORT_WKCONN_E)
+ 
 
 
