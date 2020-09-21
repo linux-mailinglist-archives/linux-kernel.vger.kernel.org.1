@@ -2,84 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01E1E27246C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B30D272436
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 14:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726756AbgIUM5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 08:57:30 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:34455 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726445AbgIUM53 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 08:57:29 -0400
-X-Greylist: delayed 309 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Sep 2020 08:57:26 EDT
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600693048; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=eGPAEVHied9ipPQzc+EA5SSxuprSpzOxnsDeoTsKKhs=;
- b=tsFG10cD2/p9OGB3awJqDxexszIJEaFzLPFgNjfrA8nI/RmpOSFYd+9M2p73vu5wp6cca5C3
- J2PpI2J6ia+qAtO00zwpfKt5wC9SiGyb8E/FuXSsz/u1lz+MBWp+4immgXxVHxDv2V94s37B
- qzRrRtxoWIIK5XQsuH6FtEESMUA=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5f68a1fc0049ea5816e0969c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 21 Sep 2020 12:52:12
- GMT
-Sender: dikshita=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 13117C433CA; Mon, 21 Sep 2020 12:52:12 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: dikshita)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9AC6CC433C8;
-        Mon, 21 Sep 2020 12:52:11 +0000 (UTC)
+        id S1726764AbgIUMwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 08:52:40 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:47126 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726395AbgIUMwk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 08:52:40 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id A60241C0B81; Mon, 21 Sep 2020 14:52:37 +0200 (CEST)
+Date:   Mon, 21 Sep 2020 14:52:37 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Oliver Neukum <oneukum@suse.com>
+Cc:     Pavel Machek <pavel@denx.de>, gregkh@linuxfoundation.org,
+        stern@rowland.harvard.edu, johan@kernel.org, gustavoars@kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: yurex: Rearrange code not to need GFP_ATOMIC
+Message-ID: <20200921125237.GA24776@duo.ucw.cz>
+References: <20200920084452.GA2257@amd>
+ <1600691092.2424.85.camel@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 21 Sep 2020 18:22:11 +0530
-From:   dikshita@codeaurora.org
-To:     Dikshita Agarwal <dikshita@qti.qualcomm.com>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, mchehab@kernel.org,
-        hverkuil-cisco@xs4all.nl, ezequiel@collabora.com,
-        stanimir.varbanov@linaro.org, vgarodia@codeaurora.org,
-        majja@codeaurora.org
-Subject: Re: [PATCH 0/2] Add new controls for QP and layer bitrate
-In-Reply-To: <1600692113-32279-1-git-send-email-dikshita@qti.qualcomm.com>
-References: <1600692113-32279-1-git-send-email-dikshita@qti.qualcomm.com>
-Message-ID: <fc38f7871a52b66f388a5345714e6480@codeaurora.org>
-X-Sender: dikshita@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="FL5UXtIhxfXey3p5"
+Content-Disposition: inline
+In-Reply-To: <1600691092.2424.85.camel@suse.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
 
-Kindly ignore this patch series. Will be posting a new one.
+--FL5UXtIhxfXey3p5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-Dikshita
+Hi!
 
-On 2020-09-21 18:11, Dikshita Agarwal wrote:
-> This series adds frame specific min/max qp controls for hevc and
-> layer wise bitrate control for h264.
-> 
-> Dikshita Agarwal (2):
->   media: v4l2-ctrl: Add frame-specific min/max qp controls for hevc
->   media: v4l2-ctrl: Add layer wise bitrate controls for h264
-> 
->  .../userspace-api/media/v4l/ext-ctrls-codec.rst    | 74 
-> +++++++++++++++++++++-
->  drivers/media/v4l2-core/v4l2-ctrls.c               | 15 +++++
->  include/uapi/linux/v4l2-controls.h                 | 17 +++++
->  3 files changed, 104 insertions(+), 2 deletions(-)
+> > Move prepare to wait around, so that normal GFP_KERNEL allocation can
+> > be used.
+> >=20
+> > Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+> > Acked-by: Alan Stern <stern@rowland.harvard.edu>
+>=20
+> Ehm. Please recheck.
+
+Sorry about that.
+
+> > +++ b/drivers/usb/misc/yurex.c
+> > @@ -489,10 +489,10 @@ static ssize_t yurex_write(struct file *file, con=
+st char __user *user_buffer,
+> >  	}
+> > =20
+> >  	/* send the data as the control msg */
+> > -	prepare_to_wait(&dev->waitq, &wait, TASK_INTERRUPTIBLE);
+> >  	dev_dbg(&dev->interface->dev, "%s - submit %c\n", __func__,
+> >  		dev->cntl_buffer[0]);
+> > -	retval =3D usb_submit_urb(dev->cntl_urb, GFP_ATOMIC);
+> > +	retval =3D usb_submit_urb(dev->cntl_urb, GFP_KERNEL);
+>=20
+> URB completes here. wake_up() returns the task to RUNNING.
+>=20
+> > +	prepare_to_wait(&dev->waitq, &wait, TASK_INTERRUPTIBLE);
+>=20
+> Task goes to TASK_INTERRUPTIBLE
+>=20
+> >  	if (retval >=3D 0)
+> >  		timeout =3D schedule_timeout(YUREX_WRITE_TIMEOUT);
+>=20
+> Task turns into Sleeping Beauty until timeout
+
+Is there way to do the allocations for submit_urb before the
+prepare_to_wait? GFP_ATOMIC would be nice to avoid... and doing
+GFP_ATOMIC from normal process context just because of task_state
+seems ... wrong.
+
+								Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--FL5UXtIhxfXey3p5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX2iiFQAKCRAw5/Bqldv6
+8tnrAJ4yv71+Q+P6ArjsrTPlDQ7nQ+QIrQCdHjymlZ8hQ7EqYgentvBFzwxh0s0=
+=RmqP
+-----END PGP SIGNATURE-----
+
+--FL5UXtIhxfXey3p5--
