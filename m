@@ -2,43 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82D3C271F88
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5DB271F91
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:02:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726501AbgIUKCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 06:02:22 -0400
-Received: from mail-il1-f206.google.com ([209.85.166.206]:37569 "EHLO
-        mail-il1-f206.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726343AbgIUKCW (ORCPT
+        id S1726578AbgIUKCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:02:40 -0400
+Received: from mail-io1-f79.google.com ([209.85.166.79]:46601 "EHLO
+        mail-io1-f79.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726402AbgIUKCW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 21 Sep 2020 06:02:22 -0400
-Received: by mail-il1-f206.google.com with SMTP id c66so10574374ilf.4
+Received: by mail-io1-f79.google.com with SMTP id j8so9488192iof.13
         for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:02:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=j4KEEp1f2qaASWW5tBFBCzsHqw1ayvpgt5EnfAFvzn8=;
-        b=KMiw363WgZua4nBzSxU8upRJM+xa74HHuWX85pg1ktuygJCZzwUaTUq642gD0kd4w7
-         7LZlKzDJbx+n1Lw9nAiYjD9jUwh4esUbNUhMTK8NsFbUdqJyiMActhMY3yXGYcCy0SKF
-         yUow/FDNoZdS8DsPXeQfBKhEGCY6FD+Oajk84odzSXDOXaLMA4kJ8pK0Hj3Xi1DBroYP
-         PIJ2Ka4P2zoWZ5qas4FSThuDIuvB9sO6TnoneVeY+l6FQMlvk9BTglh7JZBnvbwkT4Td
-         LOV1ya/qlgIW0R+ktDX681DjTuHawLfAtKBn8Gj+Vu3IfT+mCR7OQFg2ctmHGd1Hj/9H
-         1qkg==
-X-Gm-Message-State: AOAM532PVRYYraEqvSyAX72PIfErkPbocO1wnRDAaQE5pssnr+HkVa2Q
-        aIVAcD54HLO0XuH01OftK+Znyo76RFAjARgmOOzZEjBQ6fA1
-X-Google-Smtp-Source: ABdhPJwLt7DzlZJWJctl/F34SRCVAjsAFiUtbybYIrf96SyQHJD+TOXM9uCb5u/+pscovRM+npE4XYXfgTPA+HeBZ1bYlNz4WZV4
+        bh=8At/pGVVkTvpu/mp8Xc1NUUCOQaO1LHGiWdU5OkrovU=;
+        b=n3Ltk3ix5RYrwWC+S3KRsGiE6CD6fTOnU3xmLYxyvk/+QDMzgld/wMDlqg2YOWjmGO
+         KupAUCVyvLKthUGfrWMGbIwN8yZI3dtgcySTK9iOKSUxUThi6nZaPsxSURYAmyV7GwOX
+         EyYDMXE6qU9d/tzciwq7TsHkEu6pR3E/Bw8Q1OgRXRvT4/ICdCYk3xtfaEeJANgpv4Fg
+         2k4+c+NJc5bMqeQznZPx9pJTwDjd9+6oFRm/oRXYFkCsCHvUWb88Ifhn0bKabFkboVn0
+         C9ozZQR6gWoH4vyMaA3+wwsCyr9klhhx987qKsEbFikMZ9sCbJmJzdqhJGf7HWk3Umed
+         lrng==
+X-Gm-Message-State: AOAM530QsDCCFvyYwILElZpdm8CjVd36oIcPVXWKFYubZGyt4Kcg5T3D
+        nOqaS/3XJqvRHWX+bO1LzJQKWWjwnGrOkqbSR3vaqShNDJxa
+X-Google-Smtp-Source: ABdhPJxPUybSAP4Njtc33THXv/FIAL+YAdszuiOczoJOLnIlLdsyLDL4g4fKHLTRtNpCNgn4E9o9Ol9mX2203FoqPwF5SL6quLgc
 MIME-Version: 1.0
-X-Received: by 2002:a92:6b04:: with SMTP id g4mr39343145ilc.203.1600682541201;
+X-Received: by 2002:a92:d07:: with SMTP id 7mr39101806iln.243.1600682541373;
  Mon, 21 Sep 2020 03:02:21 -0700 (PDT)
 Date:   Mon, 21 Sep 2020 03:02:21 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000443d8a05afcff2b5@google.com>
-Subject: memory leak in kobject_set_name_vargs (3)
-From:   syzbot <syzbot+9f864abad79fae7c17e1@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
+Message-ID: <00000000000046e0e905afcff205@google.com>
+Subject: KASAN: vmalloc-out-of-bounds Read in bpf_trace_run2
+From:   syzbot <syzbot+845923d2172947529b58@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        coreteam@netfilter.org, daniel@iogearbox.net, davem@davemloft.net,
+        hawk@kernel.org, john.fastabend@gmail.com, kaber@trash.net,
+        kadlec@blackhole.kfki.hu, kafai@fb.com, kpsingh@chromium.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, mchehab@kernel.org,
+        mchehab@s-opensource.com, mingo@redhat.com, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        rostedt@goodmis.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,72 +55,69 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    bdcf11de Merge tag 'riscv-for-linus-5.9-rc6' of git://git...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=179e18d3900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a1f3c5052e8097e9
-dashboard link: https://syzkaller.appspot.com/bug?extid=9f864abad79fae7c17e1
+HEAD commit:    70b97111 bpf: Use hlist_add_head_rcu when linking to local..
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=15c624ad900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7e0ca96a9b6ee858
+dashboard link: https://syzkaller.appspot.com/bug?extid=845923d2172947529b58
 compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14c33cad900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=154bc6c3900000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10193f3b900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=168c729b900000
+
+The issue was bisected to:
+
+commit 0a93dc1c18fd86f936bcb44f72dc044c0ea826a8
+Author: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Date:   Wed Oct 12 11:11:16 2016 +0000
+
+    [media] dvb-core: don't break long lines
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=170e18d3900000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=148e18d3900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=108e18d3900000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9f864abad79fae7c17e1@syzkaller.appspotmail.com
+Reported-by: syzbot+845923d2172947529b58@syzkaller.appspotmail.com
+Fixes: 0a93dc1c18fd ("[media] dvb-core: don't break long lines")
 
-BUG: memory leak
-unreferenced object 0xffff88811a0d75c0 (size 32):
-  comm "syz-executor307", pid 6444, jiffies 4294941412 (age 12.730s)
-  hex dump (first 32 bytes):
-    6c 6f 6f 70 30 00 00 00 00 00 00 00 00 00 00 00  loop0...........
-    01 00 00 00 03 00 00 00 2b 00 00 00 00 00 00 00  ........+.......
-  backtrace:
-    [<00000000f89b0bef>] kstrdup+0x36/0x70 mm/util.c:60
-    [<000000004b68a0da>] kstrdup_const+0x35/0x60 mm/util.c:82
-    [<000000008eb65a51>] kvasprintf_const+0x72/0xe0 lib/kasprintf.c:48
-    [<00000000691729e7>] kobject_set_name_vargs+0x3b/0xe0 lib/kobject.c:289
-    [<00000000dfb16dfe>] kobject_add_varg lib/kobject.c:384 [inline]
-    [<00000000dfb16dfe>] kobject_init_and_add+0x6d/0xc0 lib/kobject.c:473
-    [<000000005849f02f>] ext4_register_sysfs+0x6b/0x160 fs/ext4/sysfs.c:508
-    [<0000000027523718>] ext4_fill_super+0x2d04/0x46c0 fs/ext4/super.c:4799
-    [<0000000095f0e4f3>] mount_bdev+0x1d3/0x210 fs/super.c:1417
-    [<00000000415e8d00>] legacy_get_tree+0x26/0x70 fs/fs_context.c:592
-    [<00000000bf686d81>] vfs_get_tree+0x28/0xe0 fs/super.c:1547
-    [<00000000fd6d6aba>] do_new_mount fs/namespace.c:2875 [inline]
-    [<00000000fd6d6aba>] path_mount+0x90e/0xda0 fs/namespace.c:3192
-    [<000000008d02c1d0>] do_mount fs/namespace.c:3205 [inline]
-    [<000000008d02c1d0>] __do_sys_mount fs/namespace.c:3413 [inline]
-    [<000000008d02c1d0>] __se_sys_mount fs/namespace.c:3390 [inline]
-    [<000000008d02c1d0>] __x64_sys_mount+0x140/0x190 fs/namespace.c:3390
-    [<000000001c682859>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000095c447b2>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+==================================================================
+BUG: KASAN: vmalloc-out-of-bounds in __bpf_trace_run kernel/trace/bpf_trace.c:1937 [inline]
+BUG: KASAN: vmalloc-out-of-bounds in bpf_trace_run2+0x397/0x3d0 kernel/trace/bpf_trace.c:1974
+Read of size 8 at addr ffffc90000e76030 by task syz-executor514/6838
 
-BUG: memory leak
-unreferenced object 0xffff88811a0d74e0 (size 32):
-  comm "syz-executor307", pid 6451, jiffies 4294941943 (age 7.420s)
-  hex dump (first 32 bytes):
-    6c 6f 6f 70 30 00 00 00 00 00 00 00 00 00 00 00  loop0...........
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000f89b0bef>] kstrdup+0x36/0x70 mm/util.c:60
-    [<000000004b68a0da>] kstrdup_const+0x35/0x60 mm/util.c:82
-    [<000000008eb65a51>] kvasprintf_const+0x72/0xe0 lib/kasprintf.c:48
-    [<00000000691729e7>] kobject_set_name_vargs+0x3b/0xe0 lib/kobject.c:289
-    [<00000000dfb16dfe>] kobject_add_varg lib/kobject.c:384 [inline]
-    [<00000000dfb16dfe>] kobject_init_and_add+0x6d/0xc0 lib/kobject.c:473
-    [<000000005849f02f>] ext4_register_sysfs+0x6b/0x160 fs/ext4/sysfs.c:508
-    [<0000000027523718>] ext4_fill_super+0x2d04/0x46c0 fs/ext4/super.c:4799
-    [<0000000095f0e4f3>] mount_bdev+0x1d3/0x210 fs/super.c:1417
-    [<00000000415e8d00>] legacy_get_tree+0x26/0x70 fs/fs_context.c:592
-    [<00000000bf686d81>] vfs_get_tree+0x28/0xe0 fs/super.c:1547
-    [<00000000fd6d6aba>] do_new_mount fs/namespace.c:2875 [inline]
-    [<00000000fd6d6aba>] path_mount+0x90e/0xda0 fs/namespace.c:3192
-    [<000000008d02c1d0>] do_mount fs/namespace.c:3205 [inline]
-    [<000000008d02c1d0>] __do_sys_mount fs/namespace.c:3413 [inline]
-    [<000000008d02c1d0>] __se_sys_mount fs/namespace.c:3390 [inline]
-    [<000000008d02c1d0>] __x64_sys_mount+0x140/0x190 fs/namespace.c:3390
-    [<000000001c682859>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000095c447b2>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+CPU: 0 PID: 6838 Comm: syz-executor514 Not tainted 5.9.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0x5/0x497 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+ __bpf_trace_run kernel/trace/bpf_trace.c:1937 [inline]
+ bpf_trace_run2+0x397/0x3d0 kernel/trace/bpf_trace.c:1974
+ trace_sys_enter include/trace/events/syscalls.h:18 [inline]
+ syscall_trace_enter kernel/entry/common.c:64 [inline]
+ syscall_enter_from_user_mode+0x22c/0x290 kernel/entry/common.c:82
+ do_syscall_64+0xf/0x70 arch/x86/entry/common.c:41
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x4441ba
+Code: 25 18 00 00 00 00 74 01 f0 48 0f b1 3d ef f9 28 00 48 39 c2 75 da f3 c3 0f 1f 84 00 00 00 00 00 48 63 ff b8 e4 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 06 f3 c3 0f 1f 40 00 48 c7 c2 d0 ff ff ff f7
+RSP: 002b:00007ffeec2fd9d8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e4
+RAX: ffffffffffffffda RBX: 0000000000001ac2 RCX: 00000000004441ba
+RDX: 0000000000000000 RSI: 00007ffeec2fd9e0 RDI: 0000000000000001
+RBP: 000000000000e4f7 R08: 0000000000001ab6 R09: 00000000022b5880
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004022d0
+R13: 0000000000402360 R14: 0000000000000000 R15: 0000000000000000
 
+
+Memory state around the buggy address:
+ ffffc90000e75f00: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+ ffffc90000e75f80: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+>ffffc90000e76000: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+                                     ^
+ ffffc90000e76080: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+ ffffc90000e76100: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+==================================================================
 
 
 ---
@@ -123,5 +127,6 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 syzbot can test patches for this issue, for details see:
 https://goo.gl/tpsmEJ#testing-patches
