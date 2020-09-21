@@ -2,28 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB01E2724AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B0327250A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727095AbgIUNKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:10:18 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13757 "EHLO huawei.com"
+        id S1727368AbgIUNNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:13:36 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:42566 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727238AbgIUNKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:10:13 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 5EAA957A65AC674696D2;
-        Mon, 21 Sep 2020 21:10:11 +0800 (CST)
+        id S1727266AbgIUNKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:10:16 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id AEF9730C1945301A48AB;
+        Mon, 21 Sep 2020 21:10:14 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 21 Sep 2020 21:10:05 +0800
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 21 Sep 2020 21:10:06 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Johan Hovold <johan@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
         Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH -next] gnss: simplify the return expression of ubx_set functions
-Date:   Mon, 21 Sep 2020 21:10:29 +0800
-Message-ID: <20200921131029.91882-1-miaoqinglang@huawei.com>
+Subject: [PATCH -next] gpu/drm: simplify the return expression of drm_agp_info_ioctl()
+Date:   Mon, 21 Sep 2020 21:10:30 +0800
+Message-ID: <20200921131030.91927-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -38,41 +42,28 @@ Simplify the return expression.
 
 Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- drivers/gnss/ubx.c | 14 ++------------
- 1 file changed, 2 insertions(+), 12 deletions(-)
+ drivers/gpu/drm/drm_agpsupport.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/gnss/ubx.c b/drivers/gnss/ubx.c
-index 7b05bc405..7a22fc901 100644
---- a/drivers/gnss/ubx.c
-+++ b/drivers/gnss/ubx.c
-@@ -24,25 +24,15 @@ struct ubx_data {
- static int ubx_set_active(struct gnss_serial *gserial)
+diff --git a/drivers/gpu/drm/drm_agpsupport.c b/drivers/gpu/drm/drm_agpsupport.c
+index 4c7ad46fd..2405785ae 100644
+--- a/drivers/gpu/drm/drm_agpsupport.c
++++ b/drivers/gpu/drm/drm_agpsupport.c
+@@ -83,13 +83,8 @@ int drm_agp_info_ioctl(struct drm_device *dev, void *data,
+ 		       struct drm_file *file_priv)
  {
- 	struct ubx_data *data = gnss_serial_get_drvdata(gserial);
--	int ret;
+ 	struct drm_agp_info *info = data;
+-	int err;
  
--	ret = regulator_enable(data->vcc);
--	if (ret)
--		return ret;
+-	err = drm_agp_info(dev, info);
+-	if (err)
+-		return err;
 -
 -	return 0;
-+	return regulator_enable(data->vcc);
++	return drm_agp_info(dev, info);
  }
  
- static int ubx_set_standby(struct gnss_serial *gserial)
- {
- 	struct ubx_data *data = gnss_serial_get_drvdata(gserial);
--	int ret;
- 
--	ret = regulator_disable(data->vcc);
--	if (ret)
--		return ret;
--
--	return 0;
-+	return regulator_disable(data->vcc);
- }
- 
- static int ubx_set_power(struct gnss_serial *gserial,
+ /**
 -- 
 2.23.0
 
