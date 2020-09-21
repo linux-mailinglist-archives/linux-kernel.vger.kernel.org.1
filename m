@@ -2,114 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A18AF273023
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46FC6273007
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:02:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730370AbgIURCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 13:02:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35150 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728643AbgIURCh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 13:02:37 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6592EAFCA;
-        Mon, 21 Sep 2020 17:03:11 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 72A1DDA6E0; Mon, 21 Sep 2020 19:01:20 +0200 (CEST)
-Date:   Mon, 21 Sep 2020 19:01:20 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     syzbot <syzbot+4cfe71a4da060be47502@syzkaller.appspotmail.com>
-Cc:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: WARNING in close_fs_devices (2)
-Message-ID: <20200921170120.GK6756@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        syzbot <syzbot+4cfe71a4da060be47502@syzkaller.appspotmail.com>,
-        clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-References: <0000000000008fbadb05af94b61e@google.com>
+        id S1729916AbgIURCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 13:02:05 -0400
+Received: from mail-eopbgr1320090.outbound.protection.outlook.com ([40.107.132.90]:15968
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730395AbgIURBs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 13:01:48 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AN4dZxL9QSnMIt+N+znXqkwVASB+ixH++4RSJb2felk+5bpv2BG634/UpqGuDy8vnEGtdsaBIUNoSt7pXOgMi7Le9JmHfj6D1A4WQNtHFHkuQ+ODx7Ira/zt4a27RL9r7SfXSLOUW+n3WrC5fVZxdqQT+buzW4S8TCuWa2S8NMOZ19y5WeWKBKjnyyiLn3H2sSO0Ythnas2KTrQRexMdmKmK5BYNt2c0Ref1QANbLYsa/tLQABd8IgNX9jAofSx3ExOPjj51xhlf0X4GZpHacRHwnoPYMFalxB9tFb3vBAcXDPY/wRwaf1x6+8pJfzXhey/jIk+nbq5hNdvo/ImfDw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AbECJRC55ujkBJOAaQ8vYrje+7I/ZEVkIeK+mjXieEg=;
+ b=lUZRjgzP1ITj6oWv3+/+usj9XLnFQAM+Em90R0gTgXVeQGV+lWptU9VATMmi6BbzXGGwNum9dSgGFva7yHpIWtXlw/mVV7TSO27aX1JZWTF/FhVwnQottrAeGMaiH350JBr4lIsQZMNKWp9P3HxMspd1sM4ffwDUh6Hj+vxo1I4Kf/qUzrmX2+BCc3WkckK0wNDsFG9ahjH/HlQCzPrNkYY1YTuW0Ue+2UYUHEvgV+Ug6QU3MFms1sirKTkEbS6Q3OtVcX+WaqT+TBOUlnyRLZOsPDjoSbRI8bKvwd5kJ7BbOaKzYe49PWmunwlgUNavkrzrguGmEfXs+TKNGyXQeQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AbECJRC55ujkBJOAaQ8vYrje+7I/ZEVkIeK+mjXieEg=;
+ b=NLXjNXnQZ2HSYD9lK+l6MQZ0TsgdaNd1PLjOsjECD/mloo66nm8WDnEZDSqeOlZcofIDBwdSJWVDheOuVkuPIk6YF4JdEpSakBMFuZIUWUtqM6k+e5kM7PMjRfYtxq23cRt+cPoVuLgtvUivL+NCaMCNkaBP9vGkz1nd7uJRGRw=
+Received: from KU1P153MB0120.APCP153.PROD.OUTLOOK.COM (2603:1096:802:1a::17)
+ by KL1P15301MB0006.APCP153.PROD.OUTLOOK.COM (2603:1096:802:e::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.0; Mon, 21 Sep
+ 2020 17:01:43 +0000
+Received: from KU1P153MB0120.APCP153.PROD.OUTLOOK.COM
+ ([fe80::800c:633d:2d74:4f61]) by KU1P153MB0120.APCP153.PROD.OUTLOOK.COM
+ ([fe80::800c:633d:2d74:4f61%5]) with mapi id 15.20.3412.020; Mon, 21 Sep 2020
+ 17:01:42 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     Dexuan Cui <decui@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>
+CC:     Jake Oshins <jakeo@microsoft.com>
+Subject: RE: [PATCH v2] PCI: hv: Fix hibernation in case interrupts are not
+ re-created
+Thread-Topic: [PATCH v2] PCI: hv: Fix hibernation in case interrupts are not
+ re-created
+Thread-Index: AQHWhjZu2ALom6ybqEW4kSyfVSvz+KlzZFug
+Date:   Mon, 21 Sep 2020 17:01:42 +0000
+Message-ID: <KU1P153MB0120D7F862B8081BAF9FF136BF3A0@KU1P153MB0120.APCP153.PROD.OUTLOOK.COM>
+References: <20200908231759.13336-1-decui@microsoft.com>
+In-Reply-To: <20200908231759.13336-1-decui@microsoft.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=0fc0a1ad-afe6-4ac4-ba76-4cd06c61e164;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-09-21T16:58:13Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: microsoft.com; dkim=none (message not signed)
+ header.d=none;microsoft.com; dmarc=none action=none
+ header.from=microsoft.com;
+x-originating-ip: [2601:600:a280:7f70:708f:e6d8:2d4a:7623]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 2e11e5a6-4edd-4e7c-465d-08d85e5003f9
+x-ms-traffictypediagnostic: KL1P15301MB0006:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <KL1P15301MB00064EA72ECA9D6717992443BF3A0@KL1P15301MB0006.APCP153.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: cmiu3fV+B6V3xWVw+t/515rUJq9ck04sUB1RarCwPBFu+1zykz/9u1yk8SnFpjoOE0AcvD+yepO6BcVNuko7c9nZtd5BeelWCQtwWHAOEbZqG810qr8Wj/C99SrZSxKZCeXmi1MuCaLhBF4lCjBIH3IF6F2djkvSKZO3UeWXGJyoDjga8kyZjWMrNwh8JI4nMx494aujdddCq0T/Q44LEmkomOEZ+PajXjNm3qMlqQAcQPknU7xfeYPUw3zF0tm0YHb9dXv8CQW78SxdeMkm/Af38qUT/6Pr1kABnnoIokBWimBFfVXi2ijDJwIU6c5Q27xRWU909sr5l4qrfMRbKStCog5Y/YptVjsLcNDMWNupAM9v3nLZn8Z/UOIEMyrYYZ8uAVqZXxL5bmT15r8CIkpfnXnR7aCfz0ceGL2YbWI=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:KU1P153MB0120.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(346002)(39860400002)(396003)(376002)(66946007)(4326008)(107886003)(8990500004)(6506007)(66476007)(66556008)(66446008)(2906002)(64756008)(316002)(76116006)(8936002)(52536014)(83380400001)(33656002)(186003)(8676002)(82950400001)(82960400001)(10290500003)(71200400001)(110136005)(55016002)(9686003)(478600001)(5660300002)(86362001)(6636002)(7696005)(921003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: xTSLjfe0PgTifsssmnv4ID0NIj7tdEIs2pB/U/NUCOKzVwFBhtnCyNha0Pwu7FuL69hMB5WnmtCCRhU59EKZzJKQzWT3UAl9mrd9kD8nhhcvO1POfoyK0mDU19Ih9B8ty5yGIGYPXWQVuvcREkxm4uh00CcjGjtB1fZgcGbTWf1jLD26h6LVS8jAG+P0LTar97iod4SGpV3QRQuyETcdP9cqRsoIsYHZ7IyIoMYBtCMzGvGs1GLVIXijrX8wHqPzx8a5/QfLHZn+cktA0U66nI60lR2cBmhhGuEBaBVfPIZyL1KK9n3x6B5msJhps/+ZVMQWREUBrSdDRv8DT7iaJcxF+ryTvDRWHLTgCN5pEoWgnUIyMHnW2htW0CYRsEdupex8SYrLJqiOGC5vjEEuI4Zm2Q7yV3SYeTzJB8jQ1P7SrYJpsQ+zaTeG8giM4diAknq7SgDSw5mY9/yPNdjG7nnVKsDFSLEkznX1APyod1+huBBTNg4Al/pPOCoj5482mD+wCFSWy7pGTm3PT7eVVBo+hbNrX3ssrnsVvKuA9i+Hfn3JkMTtQUtpEDechkgraakbz6ypZKntDypux4e3OkurQm+anMHX0YkgAZuW/zl6dxeIsg9pF2xdJoc4UJbNvMYyQdt068I7Qf0Sn+/yg1G882N6oL3yqyB5vWeyC0WcTBqXfCWWLAyj8Nu2rs6jexn8fj3Fehv5vl2vzsocSw==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000000000008fbadb05af94b61e@google.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: KU1P153MB0120.APCP153.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2e11e5a6-4edd-4e7c-465d-08d85e5003f9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Sep 2020 17:01:42.3551
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /N6km9ru+D8egVITdKkWl/78L7NOFKdiWqBYGAWw710WQpMSqksNpiA+90PdK2mLSEe8MWKqJ9LqlF8xSssiSw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1P15301MB0006
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 04:22:16AM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    e4c26faa Merge tag 'usb-5.9-rc5' of git://git.kernel.org/p..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15bf1621900000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=c61610091f4ca8c4
-> dashboard link: https://syzkaller.appspot.com/bug?extid=4cfe71a4da060be47502
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+4cfe71a4da060be47502@syzkaller.appspotmail.com
-> 
-> ------------[ cut here ]------------
-> WARNING: CPU: 1 PID: 3612 at fs/btrfs/volumes.c:1166 close_fs_devices.part.0+0x607/0x800 fs/btrfs/volumes.c:1166
-> Kernel panic - not syncing: panic_on_warn set ...
-> CPU: 1 PID: 3612 Comm: syz-executor.2 Not tainted 5.9.0-rc4-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:77 [inline]
->  dump_stack+0x198/0x1fd lib/dump_stack.c:118
->  panic+0x347/0x7c0 kernel/panic.c:231
->  __warn.cold+0x20/0x46 kernel/panic.c:600
->  report_bug+0x1bd/0x210 lib/bug.c:198
->  handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
->  exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
->  asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-> RIP: 0010:close_fs_devices.part.0+0x607/0x800 fs/btrfs/volumes.c:1166
-> Code: 0f b6 04 02 84 c0 74 02 7e 33 48 8b 44 24 18 c6 80 30 01 00 00 00 48 83 c4 30 5b 5d 41 5c 41 5d 41 5e 41 5f c3 e8 99 ce 6a fe <0f> 0b e9 71 ff ff ff e8 8d ce 6a fe 0f 0b e9 20 ff ff ff e8 d1 d5
-> RSP: 0018:ffffc900091777e0 EFLAGS: 00010246
-> RAX: 0000000000040000 RBX: ffffffffffffffff RCX: ffffc9000c8b7000
-> RDX: 0000000000040000 RSI: ffffffff83097f47 RDI: 0000000000000007
-> RBP: dffffc0000000000 R08: 0000000000000001 R09: ffff8880988a187f
-> R10: 0000000000000000 R11: 0000000000000001 R12: ffff88809593a130
-> R13: ffff88809593a1ec R14: ffff8880988a1908 R15: ffff88809593a050
->  close_fs_devices fs/btrfs/volumes.c:1193 [inline]
->  btrfs_close_devices+0x95/0x1f0 fs/btrfs/volumes.c:1179
->  open_ctree+0x4984/0x4a2d fs/btrfs/disk-io.c:3434
->  btrfs_fill_super fs/btrfs/super.c:1316 [inline]
->  btrfs_mount_root.cold+0x14/0x165 fs/btrfs/super.c:1672
->  legacy_get_tree+0x105/0x220 fs/fs_context.c:592
->  vfs_get_tree+0x89/0x2f0 fs/super.c:1547
->  fc_mount fs/namespace.c:978 [inline]
->  vfs_kern_mount.part.0+0xd3/0x170 fs/namespace.c:1008
->  vfs_kern_mount+0x3c/0x60 fs/namespace.c:995
->  btrfs_mount+0x234/0xaa0 fs/btrfs/super.c:1732
->  legacy_get_tree+0x105/0x220 fs/fs_context.c:592
->  vfs_get_tree+0x89/0x2f0 fs/super.c:1547
->  do_new_mount fs/namespace.c:2875 [inline]
->  path_mount+0x1387/0x2070 fs/namespace.c:3192
->  do_mount fs/namespace.c:3205 [inline]
->  __do_sys_mount fs/namespace.c:3413 [inline]
->  __se_sys_mount fs/namespace.c:3390 [inline]
->  __x64_sys_mount+0x27f/0x300 fs/namespace.c:3390
->  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> RIP: 0033:0x46004a
-> Code: b8 a6 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 fd 89 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 da 89 fb ff c3 66 0f 1f 84 00 00 00 00 00
-> RSP: 002b:00007f414d78da88 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
-> RAX: ffffffffffffffda RBX: 00007f414d78db20 RCX: 000000000046004a
-> RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007f414d78dae0
-> RBP: 00007f414d78dae0 R08: 00007f414d78db20 R09: 0000000020000000
-> R10: 0000000000000000 R11: 0000000000000202 R12: 0000000020000000
-> R13: 0000000020000100 R14: 0000000020000200 R15: 000000002001a800
-> Kernel Offset: disabled
-> Rebooting in 86400 seconds..
+> From: Dexuan Cui <decui@microsoft.com>
+> Sent: Tuesday, September 8, 2020 4:18 PM
+>=20
+> Hyper-V doesn't trap and emulate the accesses to the MSI/MSI-X registers,
+> and we must use hv_compose_msi_msg() to ask Hyper-V to create the IOMMU
+> Interrupt Remapping Table Entries. This is not an issue for a lot of
+> PCI device drivers (e.g. NVMe driver, Mellanox NIC drivers), which
+> destroy and re-create the interrupts across hibernation, so
+> hv_compose_msi_msg() is called automatically. However, some other PCI
+> device drivers (e.g. the Nvidia driver) may not destroy and re-create
+> the interrupts across hibernation, so hv_pci_resume() has to call
+> hv_compose_msi_msg(), otherwise the PCI device drivers can no longer
+> receive MSI/MSI-X interrupts after hibernation.
+>=20
+> Fixes: ac82fc832708 ("PCI: hv: Add hibernation support")
+> Signed-off-by: Dexuan Cui <decui@microsoft.com>
+> Reviewed-by: Jake Oshins <jakeo@microsoft.com>
+>=20
+> ---
+>=20
+> Changes in v2:
+>     Fixed a typo in the comment in hv_irq_unmask. Thanks to Michael!
+>     Added Jake's Reviewed-by.
+>=20
+>  drivers/pci/controller/pci-hyperv.c | 44 +++++++++++++++++++++++++++++
+>  1 file changed, 44 insertions(+)
 
-#syz test: git://github.com/kdave/btrfs-devel.git misc-5.9
+Hi Lorenzo, Bjorn,
+Can you please take a look at this patch?=20
+I hope it still could have a chance to be in 5.9. :-)
+
+Thanks,
+-- Dexuan
