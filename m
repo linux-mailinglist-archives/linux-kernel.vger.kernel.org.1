@@ -2,116 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDF822735F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 00:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 199512735F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 00:47:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728651AbgIUWrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 18:47:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726457AbgIUWrj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 18:47:39 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92F37C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 15:47:39 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id nw23so20025587ejb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 15:47:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1OknaEg9Bci/GmvEYGWaLedEyeJNH74L0px+V8LWtVk=;
-        b=PrZDdKWvtRLSNhOb9RP6eNnIUgVJTSlB94UKHVbq+7u7SVH56YNAm517LUPziXzzOU
-         qmCOuHL86VcccMi5cn3ShjIP9I7/BD3p08FgNCMTiaRUXlaWNI+PMVNljswRuLd5exjM
-         lT/TKF33a9aAXRz7Z1Z8eUTOGwA9V63qNbTMlG4rni0zVP5Z9hAmwG0soFjqcnDuG1/+
-         XoG3KBHJExMbjHuLgvKWITyWEQjtyWV1kA0ENhxMfbqBJ22cjwddahVV2JVmE+67vxD0
-         k6+hYJVS3NQJIGEo+ymwlds70aJSgS7+QDhiZAF9XE72RH5AD65WLsDzHdlLWlQvoSyZ
-         8h6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1OknaEg9Bci/GmvEYGWaLedEyeJNH74L0px+V8LWtVk=;
-        b=j8/mBkRqyFac9rviLU5LLQwegOVFIAsl2ltcXIFP6Ffi22rXj010BT/5W7OYYD+/gx
-         r6qTtiihe8nA6cbjJ10peNh8ZinWAF/uMYmc+Jml24Uo5tfPP2a6o+i7VlgPhf2+iKkZ
-         69wRciB8uV1/KpMwSG8SeLJtpTpQShC3doiTgTWKkcBsiAivdGLJgEwjwO4LbqQFOKOt
-         R1t0mkzqSB+8XWVcMyStyG5wYEhUFFGOPSfeaYjNsKqbLRV5VFtZ8KbnNCOJgyh3zb1l
-         TCmeTKAjuE4uY0Saga5jO9PLWhdtoe42ZBzw+GCSBaEwdtKQ+6WJ8x9uRHcBGnH0Vwu3
-         u+sA==
-X-Gm-Message-State: AOAM532Zum8nxNochSeSH8p7dovnL40wyI27b0Ylg9ZuOZUcH9U8RwR5
-        gOom9aVNzUEXVVCjwXap3TzUHyoUChgOIUJVh/RJEA==
-X-Google-Smtp-Source: ABdhPJyzg3ydPvpidp6poimqhOhkx8yIBZhbrSy/eA0S4lOHee894Of+yQzFBqQjET+qq4gv2Ma7TZjal2kcJOD4Q48=
-X-Received: by 2002:a17:907:64d:: with SMTP id wq13mr1736153ejb.513.1600728458076;
- Mon, 21 Sep 2020 15:47:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200921211744.24758-1-peterx@redhat.com> <20200921211744.24758-2-peterx@redhat.com>
- <CAG48ez0o+yBpYdzR_-bU3A0nrpzXyM+c+Yk=ZtOZ92qe5x0izA@mail.gmail.com> <20200921223004.GB19098@xz-x1>
-In-Reply-To: <20200921223004.GB19098@xz-x1>
-From:   Jann Horn <jannh@google.com>
-Date:   Tue, 22 Sep 2020 00:47:11 +0200
-Message-ID: <CAG48ez25krKvd5hWqn0R3w5_AAPVWtWKofiOHEfKaB2+YoDoPw@mail.gmail.com>
-Subject: Re: [PATCH 1/5] mm: Introduce mm_struct.has_pinned
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
+        id S1728669AbgIUWrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 18:47:53 -0400
+Received: from mga09.intel.com ([134.134.136.24]:20176 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726457AbgIUWrx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 18:47:53 -0400
+IronPort-SDR: 6+t3HFiFJTADTQPyi2oYCkBlRmLSAFxM4x2/geF+KrTBdmzyXMeD5fiBfFW/MSDBHrbvKGVrSl
+ q7pAP2ubeNnw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="161413478"
+X-IronPort-AV: E=Sophos;i="5.77,288,1596524400"; 
+   d="scan'208";a="161413478"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 15:47:52 -0700
+IronPort-SDR: gycAem7Xa6ebdzaySf5YhbAulUIpxadRgZqjyY2BtOc6mPeDk0qKrkJkSx9M/el7HVu4AykyIt
+ /przTO84r3ag==
+X-IronPort-AV: E=Sophos;i="5.77,288,1596524400"; 
+   d="scan'208";a="346716477"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.102.78]) ([10.212.102.78])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 15:47:51 -0700
+Subject: Re: [PATCH v12 1/8] x86/cet/ibt: Add Kconfig option for user-mode
+ Indirect Branch Tracking
+To:     Dave Hansen <dave.hansen@intel.com>, Pavel Machek <pavel@ucw.cz>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
         Oleg Nesterov <oleg@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        Peter Zijlstra <peterz@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+References: <20200918192312.25978-1-yu-cheng.yu@intel.com>
+ <20200918192312.25978-2-yu-cheng.yu@intel.com>
+ <ce2524cc-081b-aec9-177a-11c7431cb20d@infradead.org>
+ <20200918205933.GB4304@duo.ucw.cz>
+ <019b5e45-b116-7f3d-f1f2-3680afbd676c@intel.com>
+ <20200918214020.GF4304@duo.ucw.cz>
+ <c2b5d697-634d-a5cb-2728-cead44a221c9@intel.com>
+ <c91021a9-adb0-8733-2423-f78dbea5c88a@intel.com>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <3a0b0baf-a0f5-fd15-3af1-0059a807100b@intel.com>
+Date:   Mon, 21 Sep 2020 15:47:50 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <c91021a9-adb0-8733-2423-f78dbea5c88a@intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 12:30 AM Peter Xu <peterx@redhat.com> wrote:
-> On Mon, Sep 21, 2020 at 11:43:38PM +0200, Jann Horn wrote:
-> > On Mon, Sep 21, 2020 at 11:17 PM Peter Xu <peterx@redhat.com> wrote:
-> > > (Commit message collected from Jason Gunthorpe)
-> > >
-> > > Reduce the chance of false positive from page_maybe_dma_pinned() by keeping
-> > > track if the mm_struct has ever been used with pin_user_pages(). mm_structs
-> > > that have never been passed to pin_user_pages() cannot have a positive
-> > > page_maybe_dma_pinned() by definition.
-> >
-> > There are some caveats here, right? E.g. this isn't necessarily true
-> > for pagecache pages, I think?
->
-> Sorry I didn't follow here.  Could you help explain with some details?
+On 9/21/2020 3:41 PM, Dave Hansen wrote:
+> On 9/21/20 3:30 PM, Yu, Yu-cheng wrote:
+>> +config X86_INTEL_BRANCH_TRACKING_USER
+>> +    prompt "Intel Indirect Branch Tracking for user-mode"
+> 
+> Take the "Intel " and "INTEL_" out, please.  It will only cause us all
+> pain later if some of our x86 compatriots decide to implement this.
+> 
+>> If the kernel is to be used only on older systems that do not support
+>> IBT, and the size of the binary is important, you can save 900 KB by
+>> disabling this feature.
+>>
+>> Otherwise, if unsure, say Y.
+> 
+> 900k seems like a *lot*.  Where the heck does that come from?
+> 
+> Also, comments like that don't age very well.  Consider:
+> 
+> 	Support for this feature is only known to be present on Intel
+> 	processors released in 2020 or later.  This feature is also
+> 	known to increase kernel text size substantially.
+> 
+> 	If unsure, say N.
+> 
 
-The commit message says "mm_structs that have never been passed to
-pin_user_pages() cannot have a positive page_maybe_dma_pinned() by
-definition"; but that is not true for pages which may also be mapped
-in a second mm and may have been passed to pin_user_pages() through
-that second mm (meaning they must be writable over there and not
-shared with us via CoW).
+Thanks!
 
-For example:
+> The 900KB is probably wrong today in a lot of configurations, and will;
+> only get *more* wrong over time.
+> 
 
-Process A:
+I was talking about the vmlinux file, and probably should have said 
+bzImage size, which has 14 KB increase when CET is enabled.
 
-fd_a = open("/foo/bar", O_RDWR);
-mapping_a = mmap(NULL, 0x1000, PROT_READ|PROT_WRITE, MAP_SHARED, fd_a, 0);
-pin_user_pages(mapping_a, 1, ...);
-
-Process B:
-
-fd_b = open("/foo/bar", O_RDONLY);
-mapping_b = mmap(NULL, 0x1000, PROT_READ|PROT_WRITE, MAP_PRIVATE, fd_b, 0);
-*(volatile char *)mapping_b;
-
-At this point, process B has never called pin_user_pages(), but
-page_maybe_dma_pinned() on the page at mapping_b would return true.
-
-
-I don't think this is a problem for the use of page_maybe_dma_pinned()
-in fork(), but I do think that the commit message is not entirely
-correct.
+Yu-cheng
