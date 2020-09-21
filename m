@@ -2,68 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B2932727ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDAC827287B
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:44:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727756AbgIUOkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 10:40:23 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:35485 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726341AbgIUOkW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:40:22 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kKMzJ-0002tN-Ps; Mon, 21 Sep 2020 14:40:17 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Jim Quinlan <jquinlan@broadcom.com>,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] PCI: brcmstb: fix a missing if statement on a return error check
-Date:   Mon, 21 Sep 2020 15:40:17 +0100
-Message-Id: <20200921144017.334602-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        id S1727645AbgIUOni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 10:43:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727384AbgIUOkl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 10:40:41 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 22FEA2076E;
+        Mon, 21 Sep 2020 14:40:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600699240;
+        bh=qSBxa+hR0DswKEbGWHDjnrrfzx2tHi92FAoUi0YWZ6E=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=OViTSyAnKyOQKo76HsUqZfd3x9/qT+WdLtQl2KWx3E0KpbxXBuRLxEKOo7zidixVg
+         OcdTEJvm0bB8CXsrmyzMh8Fu+gYGsYEwX+pC04EQLRAKjKd0SY2CbeUipHnlunD1Kr
+         hkTzj5z6Z878N5NJOu7p6nPwTe96FkLVXvv/dNj8=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Sven Schnelle <svens@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.8 10/20] lockdep: fix order in trace_hardirqs_off_caller()
+Date:   Mon, 21 Sep 2020 10:40:17 -0400
+Message-Id: <20200921144027.2135390-10-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200921144027.2135390-1-sashal@kernel.org>
+References: <20200921144027.2135390-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Sven Schnelle <svens@linux.ibm.com>
 
-The error return ret is not being check with an if statement and
-currently the code always returns leaving the following code as
-dead code. Fix this by adding in the missing if statement.
+[ Upstream commit 73ac74c7d489756d2313219a108809921dbfaea1 ]
 
-Addresses-Coverity: ("Structurally dead code")
-Fixes: ad3d29c77e1e ("PCI: brcmstb: Add control of rescal reset")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Switch order so that locking state is consistent even
+if the IRQ tracer calls into lockdep again.
+
+Acked-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/pcie-brcmstb.c | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/trace/trace_preemptirq.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-index 7a3ff4632e7c..cb0c11b7308e 100644
---- a/drivers/pci/controller/pcie-brcmstb.c
-+++ b/drivers/pci/controller/pcie-brcmstb.c
-@@ -1154,6 +1154,7 @@ static int brcm_pcie_resume(struct device *dev)
- 	clk_prepare_enable(pcie->clk);
+diff --git a/kernel/trace/trace_preemptirq.c b/kernel/trace/trace_preemptirq.c
+index f10073e626030..f4938040c2286 100644
+--- a/kernel/trace/trace_preemptirq.c
++++ b/kernel/trace/trace_preemptirq.c
+@@ -102,14 +102,14 @@ NOKPROBE_SYMBOL(trace_hardirqs_on_caller);
  
- 	ret = brcm_phy_start(pcie);
-+	if (ret)
- 		return ret;
- 
- 	/* Take bridge out of reset so we can access the SERDES reg */
+ __visible void trace_hardirqs_off_caller(unsigned long caller_addr)
+ {
++	lockdep_hardirqs_off(CALLER_ADDR0);
++
+ 	if (!this_cpu_read(tracing_irq_cpu)) {
+ 		this_cpu_write(tracing_irq_cpu, 1);
+ 		tracer_hardirqs_off(CALLER_ADDR0, caller_addr);
+ 		if (!in_nmi())
+ 			trace_irq_disable_rcuidle(CALLER_ADDR0, caller_addr);
+ 	}
+-
+-	lockdep_hardirqs_off(CALLER_ADDR0);
+ }
+ EXPORT_SYMBOL(trace_hardirqs_off_caller);
+ NOKPROBE_SYMBOL(trace_hardirqs_off_caller);
 -- 
-2.27.0
+2.25.1
 
