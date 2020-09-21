@@ -2,99 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 854C5272509
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:13:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0D082724A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 15:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727283AbgIUNKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 09:10:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727222AbgIUNKJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:10:09 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 813FBC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 06:10:08 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f07e300be7bcf3e7fc25083.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:e300:be7b:cf3e:7fc2:5083])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D391A1EC03CE;
-        Mon, 21 Sep 2020 15:10:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600693807;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=9/ujxYY+aQO9o6gv67WT5My/XdaKCAJBq6gZzzqrh60=;
-        b=S+7d7u/sq7HYFYv57bZLJtkf5+lw8JXx+Tr2DS5AXYBgLA1UEzN1klkOBnj1H6AdjyCcGP
-        kNxwsIAYIQ7uFjZid0CFoLqeHpJ63FSZ4p7snqa747CyatgmbPAti5bUoHZ6dAib1qtB5M
-        ANRtao6sCCyHy2SVWy8tyVS1Rifl6lA=
-Date:   Mon, 21 Sep 2020 15:10:05 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Mike Hommey <mh@glandium.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] x86/boot: Handle fpu-related and clearcpuid command
- line arguments earlier
-Message-ID: <20200921131005.GF5901@zn.tnic>
-References: <20200920083626.GA7473@zn.tnic>
- <20200920220036.7469-1-mh@glandium.org>
+        id S1727097AbgIUNJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 09:09:52 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:42056 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726417AbgIUNJv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:09:51 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 0226ED0F3774B90C5040;
+        Mon, 21 Sep 2020 21:09:49 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 21 Sep 2020 21:09:41 +0800
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+To:     Vishal Kulkarni <vishal@chelsio.com>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Qinglang Miao <miaoqinglang@huawei.com>
+Subject: [PATCH -next] chelsio: simplify the return expression of t3_ael2020_phy_prep()
+Date:   Mon, 21 Sep 2020 21:10:05 +0800
+Message-ID: <20200921131005.91054-1-miaoqinglang@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200920220036.7469-1-mh@glandium.org>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 07:00:36AM +0900, Mike Hommey wrote:
-> FPU initialization handles them currently. However, in the case of
-> clearcpuid, some other early initialization code may check for features
-> before the FPU initialization code is called. Handling the argument
-> earlier allows the command line to influence those early
-> initializations.
-> 
-> Signed-off-by: Mike Hommey <mh@glandium.org>
-> ---
->  arch/x86/kernel/cpu/common.c | 41 ++++++++++++++++++++++++++++++++++++
->  arch/x86/kernel/fpu/init.c   | 41 ------------------------------------
->  2 files changed, 41 insertions(+), 41 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-> index c5d6f17d9b9d..5e2e4d3621bd 100644
-> --- a/arch/x86/kernel/cpu/common.c
-> +++ b/arch/x86/kernel/cpu/common.c
-> @@ -23,6 +23,7 @@
->  #include <linux/syscore_ops.h>
->  #include <linux/pgtable.h>
->  
-> +#include <asm/cmdline.h>
->  #include <asm/stackprotector.h>
->  #include <asm/perf_event.h>
->  #include <asm/mmu_context.h>
-> @@ -1220,6 +1221,45 @@ static void detect_nopl(void)
->  #endif
->  }
->  
-> +/*
-> + * We parse cpu parameters early because early_identify_cpu() is executed
-> + * before parse_early_param().
-> + */
-> +static void __init cpu__init_parse_early_param(void)
+Simplify the return expression.
 
-Yeah, let's call it simply "cpu_parse_early_param".
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+---
+ drivers/net/ethernet/chelsio/cxgb3/ael1002.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-Also, I forgot to says this, sorry about that, but can you pls do your
-patch ontop of tip/master:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/log/
-
-because there are other changes in that area and your patch as is,
-doesn't apply.
-
-Thx.
-
+diff --git a/drivers/net/ethernet/chelsio/cxgb3/ael1002.c b/drivers/net/ethernet/chelsio/cxgb3/ael1002.c
+index dadf11e3d..9d591f0dd 100644
+--- a/drivers/net/ethernet/chelsio/cxgb3/ael1002.c
++++ b/drivers/net/ethernet/chelsio/cxgb3/ael1002.c
+@@ -815,17 +815,12 @@ static const struct cphy_ops ael2020_ops = {
+ int t3_ael2020_phy_prep(struct cphy *phy, struct adapter *adapter, int phy_addr,
+ 			const struct mdio_ops *mdio_ops)
+ {
+-	int err;
+-
+ 	cphy_init(phy, adapter, phy_addr, &ael2020_ops, mdio_ops,
+ 		  SUPPORTED_10000baseT_Full | SUPPORTED_AUI | SUPPORTED_FIBRE |
+ 		  SUPPORTED_IRQ, "10GBASE-R");
+ 	msleep(125);
+ 
+-	err = set_phy_regs(phy, ael2020_reset_regs);
+-	if (err)
+-		return err;
+-	return 0;
++	return set_phy_regs(phy, ael2020_reset_regs);
+ }
+ 
+ /*
 -- 
-Regards/Gruss,
-    Boris.
+2.23.0
 
-https://people.kernel.org/tglx/notes-about-netiquette
