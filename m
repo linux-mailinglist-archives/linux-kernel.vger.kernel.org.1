@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8813272F55
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E1B0272D44
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:39:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729686AbgIUQog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:44:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49280 "EHLO mail.kernel.org"
+        id S1729183AbgIUQil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:38:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729655AbgIUQoM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:44:12 -0400
+        id S1728014AbgIUQiT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:38:19 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9432D2399A;
-        Mon, 21 Sep 2020 16:44:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 55BCC238E6;
+        Mon, 21 Sep 2020 16:38:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706651;
-        bh=QVOwEp/ilvmsvcYp+pcYqh2Ijh/X4nvBuPUUyBevBuw=;
+        s=default; t=1600706298;
+        bh=LIe2YtDDhKZJCaujEltYpclxrE+FyGpd2g/SfCcVFXo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SWkDPzyrS3GOb8LEwtws/Lks1GIABzAK6fJwqY17w4cn8PeVCztXn6m1GmJxrZshW
-         2+X3a8iwoDziIphUFaju3865kW/lp1Mk2To3u2KGGdk9Ipup4FIPsreB2H8Pu5LC0I
-         U+qTQ86vYgDVaTqdlQ3weK8T/XYk3Yy34LyPcfH4=
+        b=fkCLeC0UXimNVTEvrQ5VdSvOe2bAhvQ6mde2w0B/5ypcC1y4Rd8slPBtLs3woJAt9
+         WVKmLSpJaA9CkPh5tfldbHV6yrvLK/PzudngxTyvFkntn4exyLv8QXMErBe6LHOZyX
+         D5Pu1rEN958/zMF5mXQjmTHkfGM+7XHAAqkIfFyk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 039/118] ASoC: qcom: Set card->owner to avoid warnings
+        Mike Christie <michael.christie@oracle.com>,
+        Hou Pu <houpu@bytedance.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 4.14 44/94] scsi: target: iscsi: Fix hang in iscsit_access_np() when getting tpg->np_login_sem
 Date:   Mon, 21 Sep 2020 18:27:31 +0200
-Message-Id: <20200921162038.118584776@linuxfoundation.org>
+Message-Id: <20200921162037.572575124@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
-References: <20200921162036.324813383@linuxfoundation.org>
+In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
+References: <20200921162035.541285330@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,96 +44,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephan Gerhold <stephan@gerhold.net>
+From: Hou Pu <houpu@bytedance.com>
 
-[ Upstream commit 3c27ea23ffb43262da6c64964163895951aaed4e ]
+commit ed43ffea78dcc97db3f561da834f1a49c8961e33 upstream.
 
-On Linux 5.9-rc1 I get the following warning with apq8016-sbc:
+The iSCSI target login thread might get stuck with the following stack:
 
-WARNING: CPU: 2 PID: 69 at sound/core/init.c:207 snd_card_new+0x36c/0x3b0 [snd]
-CPU: 2 PID: 69 Comm: kworker/2:1 Not tainted 5.9.0-rc1 #1
-Workqueue: events deferred_probe_work_func
-pc : snd_card_new+0x36c/0x3b0 [snd]
-lr : snd_card_new+0xf4/0x3b0 [snd]
-Call trace:
- snd_card_new+0x36c/0x3b0 [snd]
- snd_soc_bind_card+0x340/0x9a0 [snd_soc_core]
- snd_soc_register_card+0xf4/0x110 [snd_soc_core]
- devm_snd_soc_register_card+0x44/0xa0 [snd_soc_core]
- apq8016_sbc_platform_probe+0x11c/0x140 [snd_soc_apq8016_sbc]
+cat /proc/`pidof iscsi_np`/stack
+[<0>] down_interruptible+0x42/0x50
+[<0>] iscsit_access_np+0xe3/0x167
+[<0>] iscsi_target_locate_portal+0x695/0x8ac
+[<0>] __iscsi_target_login_thread+0x855/0xb82
+[<0>] iscsi_target_login_thread+0x2f/0x5a
+[<0>] kthread+0xfa/0x130
+[<0>] ret_from_fork+0x1f/0x30
 
-This warning was introduced in
-commit 81033c6b584b ("ALSA: core: Warn on empty module").
-It looks like we are supposed to set card->owner to THIS_MODULE.
+This can be reproduced via the following steps:
 
-Fix this for all the qcom ASoC drivers.
+1. Initiator A tries to log in to iqn1-tpg1 on port 3260. After finishing
+   PDU exchange in the login thread and before the negotiation is finished
+   the the network link goes down. At this point A has not finished login
+   and tpg->np_login_sem is held.
 
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Fixes: 79119c798649 ("ASoC: qcom: Add Storm machine driver")
-Fixes: bdb052e81f62 ("ASoC: qcom: add apq8016 sound card support")
-Fixes: a6f933f63f2f ("ASoC: qcom: apq8096: Add db820c machine driver")
-Fixes: 6b1687bf76ef ("ASoC: qcom: add sdm845 sound card support")
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-Link: https://lore.kernel.org/r/20200820154511.203072-1-stephan@gerhold.net
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+2. Initiator B tries to log in to iqn2-tpg1 on port 3260. After finishing
+   PDU exchange in the login thread the target expects to process remaining
+   login PDUs in workqueue context.
+
+3. Initiator A' tries to log in to iqn1-tpg1 on port 3260 from a new
+   socket. A' will wait for tpg->np_login_sem with np->np_login_timer
+   loaded to wait for at most 15 seconds. The lock is held by A so A'
+   eventually times out.
+
+4. Before A' got timeout initiator B gets negotiation failed and calls
+   iscsi_target_login_drop()->iscsi_target_login_sess_out().  The
+   np->np_login_timer is canceled and initiator A' will hang forever.
+   Because A' is now in the login thread, no new login requests can be
+   serviced.
+
+Fix this by moving iscsi_stop_login_thread_timer() out of
+iscsi_target_login_sess_out(). Also remove iscsi_np parameter from
+iscsi_target_login_sess_out().
+
+Link: https://lore.kernel.org/r/20200729130343.24976-1-houpu@bytedance.com
+Cc: stable@vger.kernel.org
+Reviewed-by: Mike Christie <michael.christie@oracle.com>
+Signed-off-by: Hou Pu <houpu@bytedance.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- sound/soc/qcom/apq8016_sbc.c | 1 +
- sound/soc/qcom/apq8096.c     | 1 +
- sound/soc/qcom/sdm845.c      | 1 +
- sound/soc/qcom/storm.c       | 1 +
- 4 files changed, 4 insertions(+)
+ drivers/target/iscsi/iscsi_target_login.c |    6 +++---
+ drivers/target/iscsi/iscsi_target_login.h |    3 +--
+ drivers/target/iscsi/iscsi_target_nego.c  |    3 +--
+ 3 files changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/qcom/apq8016_sbc.c b/sound/soc/qcom/apq8016_sbc.c
-index 2ef090f4af9e9..8abc1a95184b2 100644
---- a/sound/soc/qcom/apq8016_sbc.c
-+++ b/sound/soc/qcom/apq8016_sbc.c
-@@ -234,6 +234,7 @@ static int apq8016_sbc_platform_probe(struct platform_device *pdev)
- 		return -ENOMEM;
+--- a/drivers/target/iscsi/iscsi_target_login.c
++++ b/drivers/target/iscsi/iscsi_target_login.c
+@@ -1158,7 +1158,7 @@ iscsit_conn_set_transport(struct iscsi_c
+ }
  
- 	card->dev = dev;
-+	card->owner = THIS_MODULE;
- 	card->dapm_widgets = apq8016_sbc_dapm_widgets;
- 	card->num_dapm_widgets = ARRAY_SIZE(apq8016_sbc_dapm_widgets);
- 	data = apq8016_sbc_parse_of(card);
-diff --git a/sound/soc/qcom/apq8096.c b/sound/soc/qcom/apq8096.c
-index 287ad2aa27f37..d47bedc259c59 100644
---- a/sound/soc/qcom/apq8096.c
-+++ b/sound/soc/qcom/apq8096.c
-@@ -114,6 +114,7 @@ static int apq8096_platform_probe(struct platform_device *pdev)
- 		return -ENOMEM;
+ void iscsi_target_login_sess_out(struct iscsi_conn *conn,
+-		struct iscsi_np *np, bool zero_tsih, bool new_sess)
++				 bool zero_tsih, bool new_sess)
+ {
+ 	if (!new_sess)
+ 		goto old_sess_out;
+@@ -1180,7 +1180,6 @@ void iscsi_target_login_sess_out(struct
+ 	conn->sess = NULL;
  
- 	card->dev = dev;
-+	card->owner = THIS_MODULE;
- 	dev_set_drvdata(dev, card);
- 	ret = qcom_snd_parse_of(card);
- 	if (ret)
-diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
-index 68e9388ff46f1..b5b8465caf56f 100644
---- a/sound/soc/qcom/sdm845.c
-+++ b/sound/soc/qcom/sdm845.c
-@@ -557,6 +557,7 @@ static int sdm845_snd_platform_probe(struct platform_device *pdev)
- 	card->dapm_widgets = sdm845_snd_widgets;
- 	card->num_dapm_widgets = ARRAY_SIZE(sdm845_snd_widgets);
- 	card->dev = dev;
-+	card->owner = THIS_MODULE;
- 	dev_set_drvdata(dev, card);
- 	ret = qcom_snd_parse_of(card);
- 	if (ret)
-diff --git a/sound/soc/qcom/storm.c b/sound/soc/qcom/storm.c
-index 3a6e18709b9e2..4ba111c841375 100644
---- a/sound/soc/qcom/storm.c
-+++ b/sound/soc/qcom/storm.c
-@@ -96,6 +96,7 @@ static int storm_platform_probe(struct platform_device *pdev)
- 		return -ENOMEM;
+ old_sess_out:
+-	iscsi_stop_login_thread_timer(np);
+ 	/*
+ 	 * If login negotiation fails check if the Time2Retain timer
+ 	 * needs to be restarted.
+@@ -1440,8 +1439,9 @@ static int __iscsi_target_login_thread(s
+ new_sess_out:
+ 	new_sess = true;
+ old_sess_out:
++	iscsi_stop_login_thread_timer(np);
+ 	tpg_np = conn->tpg_np;
+-	iscsi_target_login_sess_out(conn, np, zero_tsih, new_sess);
++	iscsi_target_login_sess_out(conn, zero_tsih, new_sess);
+ 	new_sess = false;
  
- 	card->dev = &pdev->dev;
-+	card->owner = THIS_MODULE;
+ 	if (tpg) {
+--- a/drivers/target/iscsi/iscsi_target_login.h
++++ b/drivers/target/iscsi/iscsi_target_login.h
+@@ -22,8 +22,7 @@ extern int iscsit_put_login_tx(struct is
+ extern void iscsit_free_conn(struct iscsi_np *, struct iscsi_conn *);
+ extern int iscsit_start_kthreads(struct iscsi_conn *);
+ extern void iscsi_post_login_handler(struct iscsi_np *, struct iscsi_conn *, u8);
+-extern void iscsi_target_login_sess_out(struct iscsi_conn *, struct iscsi_np *,
+-				bool, bool);
++extern void iscsi_target_login_sess_out(struct iscsi_conn *, bool, bool);
+ extern int iscsi_target_login_thread(void *);
  
- 	ret = snd_soc_of_parse_card_name(card, "qcom,model");
- 	if (ret) {
--- 
-2.25.1
-
+ #endif   /*** ISCSI_TARGET_LOGIN_H ***/
+--- a/drivers/target/iscsi/iscsi_target_nego.c
++++ b/drivers/target/iscsi/iscsi_target_nego.c
+@@ -554,12 +554,11 @@ static bool iscsi_target_sk_check_and_cl
+ 
+ static void iscsi_target_login_drop(struct iscsi_conn *conn, struct iscsi_login *login)
+ {
+-	struct iscsi_np *np = login->np;
+ 	bool zero_tsih = login->zero_tsih;
+ 
+ 	iscsi_remove_failed_auth_entry(conn);
+ 	iscsi_target_nego_release(conn);
+-	iscsi_target_login_sess_out(conn, np, zero_tsih, true);
++	iscsi_target_login_sess_out(conn, zero_tsih, true);
+ }
+ 
+ static void iscsi_target_login_timeout(unsigned long data)
 
 
