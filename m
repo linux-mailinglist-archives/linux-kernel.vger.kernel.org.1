@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9E79272D11
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30AA6272F2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:55:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729035AbgIUQhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:37:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36468 "EHLO mail.kernel.org"
+        id S1729441AbgIUQps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:45:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728993AbgIUQgh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:36:37 -0400
+        id S1729515AbgIUQph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:45:37 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 499AB206DC;
-        Mon, 21 Sep 2020 16:36:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 687B323788;
+        Mon, 21 Sep 2020 16:45:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706196;
-        bh=rB+EPXfisiVIL6BaUv2t5N1wer3+ThBrZURnkwHPK9s=;
+        s=default; t=1600706735;
+        bh=9zGEvBYjjk3/TckniU3gjntHp7zocFs48AHjGEiHBsU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KTGUDd1GW2joUMjHYNCzzEOlNOpxMJXOLFyx//pbcN7dm8hM7zP4UUlBxcYE6utbi
-         h7bXCkL6hiSDQcRAraHUzV/2CWecIkwkQGvYI3kQ3FcJ8AXczSJzkO7FIHqF1KvjXe
-         PQR/mhs1hM+y1hTWJ3OuXPSjFu6wM4EXvhU8Y5NU=
+        b=mY7rvqqgPyGm6StdN/UD9R1IHq9InA9rhHA+sMqbHE5ZAqQCyuLzULcexYyOEmeUD
+         y5Sz8GtOePzTwFvaGUFug3Xk0NaqtliFtqvviVJePKjCfECaZceYQGH5U5ATCHHq5x
+         ZAtPQ8tYjyUw7LHd9FOwmzYhwjGQE9LbH4u6+mNM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 4.9 66/70] Input: i8042 - add Entroware Proteus EL07R4 to nomux and reset lists
+        stable@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 074/118] iommu/amd: Restore IRTE.RemapEn bit for amd_iommu_activate_guest_mode
 Date:   Mon, 21 Sep 2020 18:28:06 +0200
-Message-Id: <20200921162038.154693483@linuxfoundation.org>
+Message-Id: <20200921162039.772722555@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
-References: <20200921162035.136047591@linuxfoundation.org>
+In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
+References: <20200921162036.324813383@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,55 +44,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
 
-commit c4440b8a457779adeec42c5e181cb4016f19ce0f upstream.
+[ Upstream commit e97685abd5d711c885053d4949178f7ab9acbaef ]
 
-The keyboard drops keypresses early during boot unless both the nomux
-and reset quirks are set. Add DMI table entries for this.
+Commit e52d58d54a32 ("iommu/amd: Use cmpxchg_double() when updating
+128-bit IRTE") removed an assumption that modify_irte_ga always set
+the valid bit, which requires the callers to set the appropriate value
+for the struct irte_ga.valid bit before calling the function.
 
-BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1806085
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20200907095656.13155-1-hdegoede@redhat.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Similar to the commit 26e495f34107 ("iommu/amd: Restore IRTE.RemapEn
+bit after programming IRTE"), which is for the function
+amd_iommu_deactivate_guest_mode().
 
+The same change is also needed for the amd_iommu_activate_guest_mode().
+Otherwise, this could trigger IO_PAGE_FAULT for the VFIO based VMs with
+AVIC enabled.
+
+Fixes: e52d58d54a321 ("iommu/amd: Use cmpxchg_double() when updating 128-bit IRTE")
+Reported-by: Maxim Levitsky <mlevitsk@redhat.com>
+Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Tested-by: Maxim Levitsky <mlevitsk@redhat.com>
+Reviewed-by: Joao Martins <joao.m.martins@oracle.com>
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+Cc: Joao Martins <joao.m.martins@oracle.com>
+Link: https://lore.kernel.org/r/20200916111720.43913-1-suravee.suthikulpanit@amd.com
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/serio/i8042-x86ia64io.h |   16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ drivers/iommu/amd/iommu.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/input/serio/i8042-x86ia64io.h
-+++ b/drivers/input/serio/i8042-x86ia64io.h
-@@ -552,6 +552,14 @@ static const struct dmi_system_id __init
- 			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire 5738"),
- 		},
- 	},
-+	{
-+		/* Entroware Proteus */
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Entroware"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Proteus"),
-+			DMI_MATCH(DMI_PRODUCT_VERSION, "EL07R4"),
-+		},
-+	},
- 	{ }
- };
+diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+index 48fe272da6e9c..a51dcf26b09f2 100644
+--- a/drivers/iommu/amd/iommu.c
++++ b/drivers/iommu/amd/iommu.c
+@@ -3831,14 +3831,18 @@ int amd_iommu_activate_guest_mode(void *data)
+ {
+ 	struct amd_ir_data *ir_data = (struct amd_ir_data *)data;
+ 	struct irte_ga *entry = (struct irte_ga *) ir_data->entry;
++	u64 valid;
  
-@@ -752,6 +760,14 @@ static const struct dmi_system_id __init
- 			DMI_MATCH(DMI_PRODUCT_NAME, "33474HU"),
- 		},
- 	},
-+	{
-+		/* Entroware Proteus */
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Entroware"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Proteus"),
-+			DMI_MATCH(DMI_PRODUCT_VERSION, "EL07R4"),
-+		},
-+	},
- 	{ }
- };
+ 	if (!AMD_IOMMU_GUEST_IR_VAPIC(amd_iommu_guest_ir) ||
+ 	    !entry || entry->lo.fields_vapic.guest_mode)
+ 		return 0;
  
++	valid = entry->lo.fields_vapic.valid;
++
+ 	entry->lo.val = 0;
+ 	entry->hi.val = 0;
+ 
++	entry->lo.fields_vapic.valid       = valid;
+ 	entry->lo.fields_vapic.guest_mode  = 1;
+ 	entry->lo.fields_vapic.ga_log_intr = 1;
+ 	entry->hi.fields.ga_root_ptr       = ir_data->ga_root_ptr;
+-- 
+2.25.1
+
 
 
