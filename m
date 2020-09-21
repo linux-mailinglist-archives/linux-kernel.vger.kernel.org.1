@@ -2,119 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF499272711
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E2ED2727D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727329AbgIUOcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 10:32:23 -0400
-Received: from mail-il1-f206.google.com ([209.85.166.206]:52128 "EHLO
-        mail-il1-f206.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726341AbgIUOcW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:32:22 -0400
-Received: by mail-il1-f206.google.com with SMTP id i80so11139447ild.18
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 07:32:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=NWGruP60rl9r3pTkX1fQRkp0VOki59G8bmOunB0fjsU=;
-        b=Hr+i4i8+ZeHc83kUXIUjRPYsAWZBNUzSD9cVLYnwaY0Ol3eHo3hWIAR8+hudGKAo80
-         of636xbL1AIiQ3l4xf+TpSDa/wNSwpgY1YA2XAFyYz2sa9UeEzcRYCWC5c/gYR3JK3sM
-         1OKxZZjPccNFn6aCnadIuKbpwLslur3H7JnZh9PytU8dS2SnU41Bi1BXmze1q4ieEUlz
-         9ydJq2WA5PlqodUc0OVgVUPjc4QviKnIf/ED75u+58VgKilb3nWGGYdOYvmeaoIdjKh6
-         zrxmDP8w9CESO+vCymTmWE+9TZVoeio521KZLGE4MESNghx+W0infuJ3+TVpAGLgIZnO
-         nvNQ==
-X-Gm-Message-State: AOAM531hoB/NBRDfr3fE7HNajqG6J4qL4xOL4Px2PK8ruYYiPYOD9H+V
-        bVAEyoJbBr7/+UFqYp6xAbqhcdIz0rGvN4nTy+p69tx/LIhu
-X-Google-Smtp-Source: ABdhPJwZFezxiQaDkb74Us5Iq7oF3BGB9ZOM810V0t50g7NuA5ZqfnElD4SYYJP88XhP1mvSbRK6f7nBOYQxvOl7xi7ZC34md4vR
+        id S1727656AbgIUOhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 10:37:54 -0400
+Received: from mga02.intel.com ([134.134.136.20]:26666 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727481AbgIUOhe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 10:37:34 -0400
+IronPort-SDR: rp0bXso+35CwR4YBRHC/I+oCpRHPM/DFEP2hTl4Lw8JE3nU/HPTq/i3H36iZAO6NywvW1gpiYz
+ 871+t8SP/zwA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9750"; a="148046749"
+X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; 
+   d="scan'208";a="148046749"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 07:37:33 -0700
+IronPort-SDR: 7b348itX9JQ6/ZjBJn0IV8bFDMIpgtZD5POlaw5OBg6Az2iI4caq+sK85itTCweyt6BeZSqqYO
+ 6St2G1gTqh1A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; 
+   d="scan'208";a="337942774"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 21 Sep 2020 07:37:29 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kKMsJ-000kjt-Ob; Mon, 21 Sep 2020 17:33:03 +0300
+Date:   Mon, 21 Sep 2020 17:33:03 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Dan Scally <djrscally@gmail.com>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>, yong.zhi@intel.com,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
+        gregkh@linuxfoundation.org, davem@davemloft.net, robh@kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        devel@driverdev.osuosl.org, jorhand@linux.microsoft.com,
+        kitakar@gmail.com, kieran.bingham@ideasonboard.com
+Subject: Re: [RFC PATCH] Add bridge driver to connect sensors to CIO2 device
+ via software nodes on ACPI platforms
+Message-ID: <20200921143303.GA3956970@smile.fi.intel.com>
+References: <20200916213618.8003-1-djrscally@gmail.com>
+ <20200917103343.GW26842@paasikivi.fi.intel.com>
+ <8133a57d-ab4c-dccd-4325-9b10e7805648@gmail.com>
+ <20200917124514.GK3956970@smile.fi.intel.com>
+ <20200918075157.GF26842@paasikivi.fi.intel.com>
+ <20200918130739.GA3956970@smile.fi.intel.com>
+ <66e33cd5-6c1e-310a-61e8-6cde720ffa19@gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:8dcc:: with SMTP id p195mr36051382iod.39.1600698741367;
- Mon, 21 Sep 2020 07:32:21 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 07:32:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000df277105afd3b70e@google.com>
-Subject: KASAN: stack-out-of-bounds Write in read_extent_buffer
-From:   syzbot <syzbot+1d393803acac53c985a0@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <66e33cd5-6c1e-310a-61e8-6cde720ffa19@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Sep 21, 2020 at 02:33:57PM +0100, Dan Scally wrote:
+> On 18/09/2020 14:07, Andy Shevchenko wrote:
+> > On Fri, Sep 18, 2020 at 10:51:57AM +0300, Sakari Ailus wrote:
+> >> On Thu, Sep 17, 2020 at 03:45:14PM +0300, Andy Shevchenko wrote:
+> >>> On Thu, Sep 17, 2020 at 11:52:28AM +0100, Dan Scally wrote:
+> >>>> On 17/09/2020 11:33, Sakari Ailus wrote:
+> >>>>> a module and not enlarge everyone's kernel, and the initialisation would at
+> >>>>> the same time take place before the rest of what the CIO2 driver does in
+> >>>>> probe.
+> >>>> I thought of that as well, but wasn't sure which was preferable. I can
+> >>>> compress it into the CIO2 driver though sure.
+> >>> Sakari, I tend to agree with Dan and have the board file separated from the
+> >>> driver and even framework.
+> >> And it'll be linked to the kernel binary then I suppose?
+> > Solely depends to your Kconfig dependencies and declaration.
+> >
+> > From code perspective you may do it before enumeration of the certain device or
+> > after with reprobe.
+> >
+> >> I don't have a strong opinion either way, just thought that this will
+> >> affect anyone using x86 machines, whether or not they have IPU3. I guess it
+> >> could be compiled in if the ipu3-cio2 driver is enabled?
+> > Of course!
+> 
+> Apologies both - my inexperience is showing here: I thought you couldn't
+> make it compile into the kernel where it's dependent on another piece of
+> code that's configured to be a module? In my case, ipu3-cio2 plus some
+> other dependencies are configured as modules; VIDEO_DEV and VIDEO_V4L2
+> notably. Is that not right?
 
-syzbot found the following issue on:
+It's not correct.
 
-HEAD commit:    860461e4 Add linux-next specific files for 20200917
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=141fc5d9900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f2392812d6c63d5c
-dashboard link: https://syzkaller.appspot.com/bug?extid=1d393803acac53c985a0
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16778b07900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1216f8ad900000
+We specifically have export.h (usually implied by module.h) which provides an
+API for symbols that may be used in modules independently on where they are
+(in-kernel or in a module).
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1d393803acac53c985a0@syzkaller.appspotmail.com
+So, provider does
 
-==================================================================
-BUG: KASAN: stack-out-of-bounds in memcpy include/linux/string.h:399 [inline]
-BUG: KASAN: stack-out-of-bounds in read_extent_buffer+0x114/0x150 fs/btrfs/extent_io.c:5674
-Write of size 8 at addr ffffc90000dd79f0 by task kworker/u4:1/21
+bar.h:
+int foo();
 
-CPU: 1 PID: 21 Comm: kworker/u4:1 Not tainted 5.9.0-rc5-next-20200917-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: btrfs-endio-meta btrfs_work_helper
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fb lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0x5/0x497 mm/kasan/report.c:385
- __kasan_report mm/kasan/report.c:545 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
- check_memory_region_inline mm/kasan/generic.c:186 [inline]
- check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
- memcpy+0x39/0x60 mm/kasan/common.c:106
- memcpy include/linux/string.h:399 [inline]
- read_extent_buffer+0x114/0x150 fs/btrfs/extent_io.c:5674
- btree_readpage_end_io_hook+0x7de/0x950 fs/btrfs/disk-io.c:641
- end_bio_extent_readpage+0x4de/0x10c0 fs/btrfs/extent_io.c:2854
- bio_endio+0x3d3/0x7a0 block/bio.c:1449
- end_workqueue_fn+0x114/0x170 fs/btrfs/disk-io.c:1696
- btrfs_work_helper+0x20a/0xd20 fs/btrfs/async-thread.c:318
- process_one_work+0x933/0x15a0 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3af/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+bar.c:
+int foo()
+{
+}
+EXPORT_SYMBOL(foo); // normally is EXPORT_SYMBOL_GPL() in use
+
+Consumer:
+	#include <bar.h>
+
+	ret = foo();
+
+> It would probably make the probe() ordering issues easier if it could be
+> compiled in, since I could just rely on late_initcall() in that case and
+> I guess that should work.
+
+So, you may have two cases, your module went first, the other module went
+first. Some similar problems as your bridge is trying to address are mitigated
+in intel_cht_int33fe_typec.c. Look at it. It's not an ideal example, but that's
+due to miserable ACPI tables BIOS provided.
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-addr ffffc90000dd79f0 is located in stack of task kworker/u4:1/21 at offset 48 in frame:
- btree_readpage_end_io_hook+0x0/0x950 fs/btrfs/disk-io.c:201
-
-this frame has 4 objects:
- [48, 52) 'val'
- [64, 80) 'fsid'
- [96, 128) 'result'
- [160, 192) 'found'
-
-Memory state around the buggy address:
- ffffc90000dd7880: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffffc90000dd7900: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffffc90000dd7980: 00 00 00 00 00 00 00 00 f1 f1 f1 f1 f1 f1 04 f2
-                                                             ^
- ffffc90000dd7a00: 00 00 f2 f2 00 00 00 00 f2 f2 f2 f2 00 00 00 00
- ffffc90000dd7a80: f3 f3 f3 f3 00 00 00 00 00 00 00 00 00 00 00 00
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
