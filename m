@@ -2,109 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8F827229F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:36:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1760D2722AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 13:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726664AbgIULgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 07:36:01 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13796 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726326AbgIULgA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 07:36:00 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 0C87329B30D6C3AE099E;
-        Mon, 21 Sep 2020 19:35:59 +0800 (CST)
-Received: from [10.174.179.35] (10.174.179.35) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 21 Sep 2020 19:35:51 +0800
-Subject: Re: [RFC PATCH] mce: don't not enable IRQ in wait_for_panic()
-To:     <linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <openipmi-developer@lists.sourceforge.net>
-CC:     <tony.luck@intel.com>, <minyard@acm.org>, <bp@alien8.de>,
-        <tglx@linutronix.de>, <andi@firstfloor.org>, <mingo@redhat.com>,
-        <x86@kernel.org>, <hpa@zytor.com>, <arnd@arndb.de>,
-        <gregkh@linuxfoundation.org>, <hidehiro.kawai.ez@hitachi.com>,
-        <linfeilong@huawei.com>, <liuzhiqiang26@huawei.com>
-References: <1600339070-570840-1-git-send-email-wubo40@huawei.com>
-From:   Wu Bo <wubo40@huawei.com>
-Message-ID: <2262c2ee-3272-987a-0bdb-a0ce55a1d43c@huawei.com>
-Date:   Mon, 21 Sep 2020 19:35:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        id S1726799AbgIULgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 07:36:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58274 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726460AbgIULgi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 07:36:38 -0400
+Received: from gaia (unknown [31.124.44.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA9F52071A;
+        Mon, 21 Sep 2020 11:36:36 +0000 (UTC)
+Date:   Mon, 21 Sep 2020 12:36:34 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Amit Daniel Kachhap <amit.kachhap@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <shuah@kernel.org>, Will Deacon <will@kernel.org>,
+        Vincenzo Frascino <Vincenzo.Frascino@arm.com>,
+        Gabor Kertesz <gabor.kertesz@arm.com>
+Subject: Re: [PATCH 1/6] kselftest/arm64: Add utilities and a test to
+ validate mte memory
+Message-ID: <20200921113633.GB13882@gaia>
+References: <20200901092719.9918-1-amit.kachhap@arm.com>
+ <20200901092719.9918-2-amit.kachhap@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <1600339070-570840-1-git-send-email-wubo40@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.35]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200901092719.9918-2-amit.kachhap@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/9/17 18:37, Wu Bo wrote:
-> In my virtual machine (have 4 cpus), Use mce_inject to inject errors
-> into the system. After mce-inject injects an uncorrectable error,
-> there is a probability that the virtual machine is not reset immediately,
-> but hangs for more than 3000 seconds, and appeared unable to
-> handle kernel paging request.
-> 
-> The analysis reasons are as follows:
-> 1) MCE appears on all CPUs, Currently all CPUs are in the NMI interrupt
->     context. cpu0 is the first to seize the opportunity to run panic
->     routines, and panic event should stop the other processors before
->     do ipmi flush_messages(). but cpu1, cpu2 and cpu3 has already
->     in NMI interrupt context, So the Second NMI interrupt(IPI)
->     will not be processed again by cpu1, cpu2 and cpu3.
->     At this time, cpu1,cpu2 and cpu3 did not stopped.
-> 
-> 2) cpu1, cpu2 and cpu3 are waitting for cpu0 to finish the panic process.
->     if a timeout waiting for other CPUs happened, do wait_for_panic(),
->     the irq is enabled in the wait_for_panic() function.
-> 
-> 3) ipmi IRQ occurs on the cpu3, and the cpu0 is doing the panic,
->     they have the opportunity to call the smi_event_handler()
->     function concurrently. the ipmi IRQ affects the panic process of cpu0.
-> 
->    CPU0                                    CPU3
-> 
->     |-nmi_handle do mce_panic               |-nmi_handle do_machine_check
->     |                                       |
->     |-panic()                               |-wait_for_panic()
->     |                                       |
->     |-stop other cpus ---- NMI ------> (Ignore, already in nmi interrupt)
->     |                                       |
->     |-notifier call(ipmi panic_event)       |<-ipmi IRQ occurs
->     |                                       |
->    \|/                                     \|/
-> do smi_event_handler()             do smi_event_handler()
-> 
-> My understanding is that panic() runs with only one operational CPU
-> in the system, other CPUs should be stopped, if other CPUs does not stop,
-> at least IRQ interrupts should be disabled. The x86 architecture,
-> disable IRQ interrupt will not affect IPI when do mce panic,
-> because IPI is notified through NMI interrupt. If my analysis
-> is not right, please correct me, thanks.
-> 
-> Steps to reproduce (Have a certain probability):
-> 1. # vim /tmp/uncorrected
-> CPU 1 BANK 4
-> STATUS uncorrected 0xc0
-> MCGSTATUS  EIPV MCIP
-> ADDR 0x1234
-> RIP 0xdeadbabe
-> RAISINGCPU 0
-> MCGCAP SER CMCI TES 0x6
->   
-> 2. # modprobe mce_inject
-> 3. # cd /tmp
-> 4. # mce-inject uncorrected
-> 
-Hi,
+On Tue, Sep 01, 2020 at 02:57:14PM +0530, Amit Daniel Kachhap wrote:
+> diff --git a/tools/testing/selftests/arm64/mte/mte_common_util.c b/tools/testing/selftests/arm64/mte/mte_common_util.c
+> new file mode 100644
+> index 000000000000..ac311919567d
+> --- /dev/null
+> +++ b/tools/testing/selftests/arm64/mte/mte_common_util.c
+> @@ -0,0 +1,374 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +// Copyright (C) 2020 ARM Limited
+> +
+> +#include <fcntl.h>
+> +#include <sched.h>
+> +#include <signal.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <unistd.h>
+> +
+> +#include <linux/auxvec.h>
+> +#include <sys/auxv.h>
+> +#include <sys/mman.h>
+> +#include <sys/prctl.h>
+> +
+> +#include <asm/hwcap.h>
+> +
+> +#include "kselftest.h"
+> +#include "mte_common_util.h"
+> +#include "mte_def.h"
+> +
+> +/* The temp file must be created in a tmpfs filesystem */
+> +#ifdef ANDROID
+> +# define TEMPFILENAME    "/storage/tmp_XXXXXX"
+> +#else
+> +# define TEMPFILENAME    "/tmp/tmp_XXXXXX"
+> +#endif
 
-I tested the 5.9-rc5 version and found that the problem still exists. Is 
-there a good solution ?
+That's not guaranteed to be tmpfs (it's not on my Debian install). I
+think you'd have a better chance with /dev/shm/tmp_XXXXXX.
 
-Best regards,
-Wu Bo
-
+-- 
+Catalin
