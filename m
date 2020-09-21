@@ -2,84 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2041272808
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C80572727F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:40:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727919AbgIUOk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 10:40:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49250 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727837AbgIUOki (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:40:38 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 69BFD235FC;
-        Mon, 21 Sep 2020 14:40:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600699238;
-        bh=oQsBq+CnHlR+V9v4/Bx2lGJ9uMC9L2bhMPGikWBh58U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NdN31+VDNl/JsvEB93oQt1XSORxCfgFNl5r6duyQ4CYZwgK0WRR6BK84LqniNjWmn
-         DBqwYrwezij1LQDmXrbYP8sgl9jueGb/JGLNHtdbh5Gux/Lq9pXhxxVh0gPnpBdCS+
-         9wU5prxTl8ohVDEIpIqd4kXBrGxIk1AVbOLhMGkc=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Eddie James <eajames@linux.ibm.com>,
-        Tao Ren <rentao.bupt@gmail.com>, Wolfram Sang <wsa@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-i2c@vger.kernel.org,
-        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org
-Subject: [PATCH AUTOSEL 5.8 08/20] i2c: aspeed: Mask IRQ status to relevant bits
-Date:   Mon, 21 Sep 2020 10:40:15 -0400
-Message-Id: <20200921144027.2135390-8-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200921144027.2135390-1-sashal@kernel.org>
-References: <20200921144027.2135390-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        id S1727762AbgIUOk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 10:40:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726341AbgIUOkY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 10:40:24 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C01E5C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 07:40:24 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id t14so9205238pgl.10
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 07:40:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=jN92Mz9LhRgMy6R9r5bCTsDXQ/6vWkXL7O/cDsot2BM=;
+        b=zsL9JirMq5HpALimvd09iibQnWaz8tHvctE5DJPUqGY1Bwj9g7lv4HpCPEkrQr9x1D
+         cpTvDW2kqI+apf8ijcXSda4vBc8ThF18xsliUg37T67kR2P0z6GTDBOgF6jXdrgqh2Mg
+         Eoi6xq3GWQa4Nn1WZnpMZhl7RXyaqqo0UWZArO54H7BdBnZnlC5c0koY/nZx7PVkWXD8
+         eUcVLJ9PEJcGe+A1IqCTVNHYA+zZxkNyY+o8wPyGapJKWEuU80LWGurNuSjmfInZJjs3
+         BZgyddmubK/p2R0nUUao9TYW0hlnJj2sa0rcRJgfa5GCas8zN1/kB4ctlwZDjmc4eodn
+         H/+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=jN92Mz9LhRgMy6R9r5bCTsDXQ/6vWkXL7O/cDsot2BM=;
+        b=p7bByTolU+RbYGywVc6Usd67jh0bVecaFxd7XbcL1G+XrncfFOgO1+q6gpMqAQlJiK
+         e9L0rTOYrbabxvF1NvXg9UMkzyB5eM0CwUOkuct1d97rXpVSiMt0slZCY1Nx4HRa9IuB
+         30kDigZi+yhEq4TQeRxVYIEYDW8HZ5jdNbYgV1T2zyV4IeHHTBwlG1+Y8FNYOTNEpTOU
+         IMLmxf4lG0UudUfQpJcLfvKcdAtb6zGsBqOml/D0+ioVPmfagce/8ENfhUfyV/kCEjFo
+         bDujc/IVzQ9ZUBIx44S4ZJTxAJvAX3JuqTTJ1KlIv4usWocAFAtf2jbT77IaTAkPE+qi
+         L+Bg==
+X-Gm-Message-State: AOAM530u1eRIybua32xq1BjUpr207ryGkmLQlOlvRZsTsJTQ9kVjRbb9
+        gZISVlYGlbYaZagYnG3xHMzQTjo95KSQ
+X-Google-Smtp-Source: ABdhPJyohwO/EI2eSCs0mN25XzumXwMZMcxYuYeuVEzHBXk0/POa0bAgm6mlE0cA5pI1tGm+UvhWEg==
+X-Received: by 2002:aa7:8c09:0:b029:142:2501:3983 with SMTP id c9-20020aa78c090000b029014225013983mr229338pfd.72.1600699224149;
+        Mon, 21 Sep 2020 07:40:24 -0700 (PDT)
+Received: from Mani-XPS-13-9360.localdomain ([2409:4072:6d03:bd12:1004:2ccf:6900:b97])
+        by smtp.gmail.com with ESMTPSA id m24sm12085108pgn.44.2020.09.21.07.40.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 07:40:23 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH] bus: mhi: core: Fix the building of MHI module
+Date:   Mon, 21 Sep 2020 20:10:16 +0530
+Message-Id: <20200921144016.10519-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eddie James <eajames@linux.ibm.com>
+The Kbuild rule to build MHI should use the append operator. This fixes
+the below warning reported by Kbuild test bot.
 
-[ Upstream commit 1a1d6db23ddacde0b15ea589e9103373e05af8de ]
+WARNING: modpost: missing MODULE_LICENSE() in
+drivers/bus/mhi/core/main.o
+WARNING: modpost: missing MODULE_LICENSE() in drivers/bus/mhi/core/pm.o
+WARNING: modpost: missing MODULE_LICENSE() in
+drivers/bus/mhi/core/boot.o
 
-Mask the IRQ status to only the bits that the driver checks. This
-prevents excessive driver warnings when operating in slave mode
-when additional bits are set that the driver doesn't handle.
-
-Signed-off-by: Eddie James <eajames@linux.ibm.com>
-Reviewed-by: Tao Ren <rentao.bupt@gmail.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- drivers/i2c/busses/i2c-aspeed.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/bus/mhi/core/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspeed.c
-index f51702d86a90e..1ad74efcab372 100644
---- a/drivers/i2c/busses/i2c-aspeed.c
-+++ b/drivers/i2c/busses/i2c-aspeed.c
-@@ -69,6 +69,7 @@
-  * These share bit definitions, so use the same values for the enable &
-  * status bits.
-  */
-+#define ASPEED_I2CD_INTR_RECV_MASK			0xf000ffff
- #define ASPEED_I2CD_INTR_SDA_DL_TIMEOUT			BIT(14)
- #define ASPEED_I2CD_INTR_BUS_RECOVER_DONE		BIT(13)
- #define ASPEED_I2CD_INTR_SLAVE_MATCH			BIT(7)
-@@ -604,6 +605,7 @@ static irqreturn_t aspeed_i2c_bus_irq(int irq, void *dev_id)
- 	writel(irq_received & ~ASPEED_I2CD_INTR_RX_DONE,
- 	       bus->base + ASPEED_I2C_INTR_STS_REG);
- 	readl(bus->base + ASPEED_I2C_INTR_STS_REG);
-+	irq_received &= ASPEED_I2CD_INTR_RECV_MASK;
- 	irq_remaining = irq_received;
+diff --git a/drivers/bus/mhi/core/Makefile b/drivers/bus/mhi/core/Makefile
+index 12c57ab3724c..c3feb4130aa3 100644
+--- a/drivers/bus/mhi/core/Makefile
++++ b/drivers/bus/mhi/core/Makefile
+@@ -1,4 +1,4 @@
+-obj-$(CONFIG_MHI_BUS) := mhi.o
++obj-$(CONFIG_MHI_BUS) += mhi.o
  
- #if IS_ENABLED(CONFIG_I2C_SLAVE)
+ mhi-y := init.o main.o pm.o boot.o
+ mhi-$(CONFIG_MHI_BUS_DEBUG) += debugfs.o
 -- 
-2.25.1
+2.17.1
 
