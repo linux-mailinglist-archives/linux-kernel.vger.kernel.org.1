@@ -2,80 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED2FF273249
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 20:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7400C27324F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 20:59:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727430AbgIUS4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 14:56:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47539 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726395AbgIUS4s (ORCPT
+        id S1727622AbgIUS6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 14:58:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727014AbgIUS6c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 14:56:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600714607;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type;
-        bh=pWkNANwFp8KVnuJc5tgcb5hxDfStvMJRcSA/c6Kt/yw=;
-        b=HTiguvWWnr7HIylND5tUTgt/4QB8xcaEVbomiKXTVKpJB9MmIarjyR7ef9FzrzIsDhCCH2
-        wt2eKWY7+XASsXjtWiLYzFPXAhluiTpFu5bBC+/7Fd0pI3MEmI32xlmtUUdP7xSWUHqicm
-        9aJd1gXhjlEq2U5qOKgRajhs9E5SmAA=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-176-cKEdUrCwPQOi5uNt57d9hA-1; Mon, 21 Sep 2020 14:56:45 -0400
-X-MC-Unique: cKEdUrCwPQOi5uNt57d9hA-1
-Received: by mail-pj1-f69.google.com with SMTP id gc24so425781pjb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 11:56:45 -0700 (PDT)
+        Mon, 21 Sep 2020 14:58:32 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE264C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 11:58:31 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id gr14so19337649ejb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 11:58:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rrEufNVuY5dCBzinzTyZLnRAK6NDit4k748EnZ9ZGyU=;
+        b=VwM6SxPchzpHYvDq5MuGqptnfOCO+2u8UOZQsUHmvXP+yQTF+Z7wlraeVtjd/s9jlB
+         wV193ZvJeoHSX0mG5NaEp1P+oe7FoNjVRmUSb2Z+JinKsMwFIqn+MpalsijQarctvj4U
+         FH4y6mRhga1p9JKtJgLYS2O01gvN0JoRMzpIJ8sTPjHm+K3XvxLJoxyawOroxTt3ewXo
+         2erVwwtPxW6qCdmd6A02Wa5wSMbzwpQ/xA7DOELk4+u1Yv0Dw6Gb0gPjk1AInJx+Npb8
+         9g541oYiyMOVYQWN0p1s+dSK+qehJVoUb8ZcAzai39YkrQsAMRZIWHvBa3cE/5jkadoT
+         Dtig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:user-agent:from:to:subject:date:message-id
-         :mime-version;
-        bh=pWkNANwFp8KVnuJc5tgcb5hxDfStvMJRcSA/c6Kt/yw=;
-        b=svSbgvcae70Remr0CV11YdDDpXezwkbWkOM2xRTb8NKR7lupvrEv5XVy3FUKxF/ZvK
-         vvdCzFh1f+y0g1Sz//OlnZRZQFjOcNDpnHoreHy2j/N72y5MiQ2ARXxhLBjGItPS6zNG
-         dbErxaOjx6VIL2ma62jRR/VvvOAngOD4kyo8It6ZkJJBuFBKnQFQCZ06ZHJM08dBflBZ
-         RCpnpTlafIQTCstT6S3hOzOq96Ktd46rDKPuRdUvqhaAVHNhvfqx2gL7hZ7i4jdgB5Cg
-         Gmb583jrZKiWSx5agkuie5VRxIUeZHjuHae02VAg/566/UafaC5+LMwmHmeO8C1aE4Jz
-         kdNA==
-X-Gm-Message-State: AOAM5326C4rL0CShDVluXxm1EICf4OUm5zxwixYIPw/bkJFC4kNjfSGZ
-        ZYHOMkXr79I9WDLf5ZgqJa8AUqlvqHIr60Z3f6uyTkuvFi7QSDGCupJbNlMpz0u2VVQhbg11Xy5
-        DVG8SqyQ0EmLlH6JuJCRteoqx
-X-Received: by 2002:aa7:99c7:0:b029:13e:d13d:a056 with SMTP id v7-20020aa799c70000b029013ed13da056mr1065261pfi.28.1600714604909;
-        Mon, 21 Sep 2020 11:56:44 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzGtS9wJP1qEjTL2vZQLuVGFgxGjE7bi7YLAPHtKyeJGP8o7s+XsIA0TtINV5U5VfRwMCqwGw==
-X-Received: by 2002:aa7:99c7:0:b029:13e:d13d:a056 with SMTP id v7-20020aa799c70000b029013ed13da056mr1065245pfi.28.1600714604684;
-        Mon, 21 Sep 2020 11:56:44 -0700 (PDT)
-Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
-        by smtp.gmail.com with ESMTPSA id j9sm12285498pfc.175.2020.09.21.11.56.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 11:56:44 -0700 (PDT)
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Jerry Snitselaar <jsnitsel@redhat.com>
-To:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Joerg Roedel <joro@8bytes.org>,
-        Adrian Huang <adrianhuang0701@gmail.com>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Subject: kdump boot failing with IVRS checksum failure
-Date:   Mon, 21 Sep 2020 11:56:42 -0700
-Message-ID: <87o8lzvtzp.fsf@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rrEufNVuY5dCBzinzTyZLnRAK6NDit4k748EnZ9ZGyU=;
+        b=RyPcSTftBOqJ2iW+JmwbHnk9zRhgTKg4iINXf4SW3A9ZrTBjI/tm2XI3f7x2OEvSBQ
+         e8Yi/zJD/bPqFoS5PLIQqbCl7vlH/9Kg+45Mu/KuuKHgkVQKC0TqnLv1k43ldu2xR4Iv
+         GWm6B7aCZ7WjxWtSRFUllIMthBuzCccxMgIpJU8x1yo1jQvZl/O+sn/wPvkIbtPVUdsy
+         iAYH6hw5lO6lX7u6qoJASM5j2t0TKIlNJTyALR/Htzko+eVge8lpPyhIVlkVgANgYCno
+         QI2Bod42JSQlz6q+Km657pJGbeslCAaZNFEfD0r+eOrS+8yw4flcq/E7xlK8LaYB+b81
+         1ZXw==
+X-Gm-Message-State: AOAM531xFf5qNQZtl0ifiW7Rd9veq9jEwL1KdBguUBdvBP4rfewTBud0
+        W2PJGmkHaggdTbLfCpE3y8at8bgJ7K7rvoxWlsIwuw==
+X-Google-Smtp-Source: ABdhPJwAs9ksH6re9qMXbI2fsKP5Ghj4mOoCzkBFQS+BQszgLy1pqKFO8fFSdMFWe7XQ/UpW1tcdUlWla4BBqoqymc8=
+X-Received: by 2002:a17:906:ecf1:: with SMTP id qt17mr960026ejb.158.1600714709946;
+ Mon, 21 Sep 2020 11:58:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200918201436.2932360-1-samitolvanen@google.com>
+ <20200918201436.2932360-14-samitolvanen@google.com> <202009181427.86DE61B@keescook>
+In-Reply-To: <202009181427.86DE61B@keescook>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Mon, 21 Sep 2020 11:58:19 -0700
+Message-ID: <CABCJKuf5pKqEDaAKix5CaUmv92M5HOAB-psdNg=awF7BDZ+yvA@mail.gmail.com>
+Subject: Re: [PATCH v3 13/30] kbuild: lto: postpone objtool
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org,
+        X86 ML <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Nick and 0-day bot both let me know that there's a typo in this patch,
+which I'll fix in v4:
 
-Hello Joerg,
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index f7daa59ff14f..00d7baaf7949 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -223,7 +223,7 @@ dtc_cpp_flags  = -Wp,-MMD,$(depfile).pre.tmp
+-nostdinc                    \
+ objtool_args =                                                         \
+        $(if $(CONFIG_UNWINDER_ORC),orc generate,check)                 \
+        $(if $(part-of-module), --module,)                              \
+-       $(if $(CONFIG_FRAME_POINTER), --no-fp,)                         \
++       $(if $(CONFIG_FRAME_POINTER),, --no-fp)                         \
+        $(if $(CONFIG_GCOV_KERNEL), --no-unreachable,)                  \
+        $(if $(CONFIG_RETPOLINE), --retpoline,)                         \
+        $(if $(CONFIG_X86_SMAP), --uaccess,)                            \
 
-We are seeing a kdump kernel boot failure in test on an HP DL325 Gen10
-and it was tracked down to 387caf0b759a ("iommu/amd: Treat per-device
-exclusion ranges as r/w unity-mapped regions"). Reproduced on 5.9-rc5
-and goes away with revert of the commit. There is a follow on commit
-that depends on this that was reverted as well 2ca6b6dc8512 ("iommu/amd:
-Remove unused variable"). I'm working on getting system access and want
-to see what the IVRS table looks like, but thought I'd give you heads
-up.
+Sami
 
-Regards,
-Jerry
-
+On Fri, Sep 18, 2020 at 2:27 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Fri, Sep 18, 2020 at 01:14:19PM -0700, Sami Tolvanen wrote:
+> > With LTO, LLVM bitcode won't be compiled into native code until
+> > modpost_link, or modfinal for modules. This change postpones calls
+> > to objtool until after these steps, and moves objtool_args to
+> > Makefile.lib, so the arguments can be reused in Makefile.modfinal.
+> >
+> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+>
+> Thanks for reorganizing this!
+>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+>
+> --
+> Kees Cook
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/202009181427.86DE61B%40keescook.
