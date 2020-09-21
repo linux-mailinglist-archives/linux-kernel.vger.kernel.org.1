@@ -2,96 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77387272700
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF9E272701
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727019AbgIUO2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 10:28:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726341AbgIUO2f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:28:35 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2D8EC061755;
-        Mon, 21 Sep 2020 07:28:35 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id r8so12401842qtp.13;
-        Mon, 21 Sep 2020 07:28:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oe0CZjrJ6zi/aJiPSPUN0Nejlr7TC/IFhiMAmlC+lh8=;
-        b=WTihZJ9iYxFGsJglF1XEA7R8PkKVeSdLiSku0NxdQ8QcVoYV8a6lhVjKkMjbBPdpZZ
-         n4f8TToug8alm9r7oqsyahL7nxpYac2L/y4ncvte3BeHlfIYaNWINrZ5jEeekeS0K/WG
-         Mof4EGahfSAmBNfhKPyW2imMscRcTc20TYFgaLILS+W8pY/ow4ie6yHn81EyPQVwQ42e
-         X/nVqDBb1hR4B+un46HCj/o5pdDIr00WxcVrUCY2XmLQAodDPfvDIoTpL0HgjKeyNQcw
-         +akATxtq/3Ak+MX7uvpgTRKMID03hxFwK2hd1mldH/8Gh75qSVa9fkAhx9fMkZtnF1YG
-         9zyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=oe0CZjrJ6zi/aJiPSPUN0Nejlr7TC/IFhiMAmlC+lh8=;
-        b=tMWLpwgHV0t72CgDzBtLch2j1x07UVQ27kpmfueBFwxk/NZBdDqVO9kUoWukCeQtoN
-         V5tKUR8+27q4yrRTvLxBJklOT7ajJ+Hmeshibkuz5kF2wxm3BaXI6hZD51vdGyZUl52+
-         MPWbE3Q8cMR8B/T1ngxJjV6SqcvebrvLDJ9hoxdTGZKXSCLVzvY+jX7pZc1kbyOcKvF7
-         Bc9RBcdy3ko7n+7f1lN/1P9Tr3KOo5ibkFA2EhE3KNuVTkAcrSIkKTHNVxhKGbewlTYR
-         T7Kf/2vkouhj8b7ojqMw7t90iP0kcY+eEk8DPsjg6SlG4tlpxd7FwZR175DDYq6fAF/L
-         noZQ==
-X-Gm-Message-State: AOAM5321sLW35j/H9orstyN5ZcB4DMYB0xEHEF9gAvJTVT06DOpMBNEI
-        h9+sG8TdAHUlWDHb+cAKVHQWhgdAi2vVyw==
-X-Google-Smtp-Source: ABdhPJyIYYOF10xsV68170kw3MDKtnBDxIO7NLKB5vT7r3/UtaUa1QquQeO77oAn3R3HaoK3aSB9DA==
-X-Received: by 2002:ac8:76d0:: with SMTP id q16mr34274105qtr.164.1600698514768;
-        Mon, 21 Sep 2020 07:28:34 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:54a6])
-        by smtp.gmail.com with ESMTPSA id i18sm2417375qka.50.2020.09.21.07.28.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 07:28:33 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 21 Sep 2020 10:28:31 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-arm-msm@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>, timmurray@google.com
-Subject: Re: [PATCH 0/3] drm: commit_work scheduling
-Message-ID: <20200921142831.GA4268@mtj.duckdns.org>
-References: <20200919193727.2093945-1-robdclark@gmail.com>
- <20200921092154.GJ438822@phenom.ffwll.local>
+        id S1727117AbgIUO2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 10:28:41 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40230 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726341AbgIUO2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 10:28:40 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1600698519;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1RdoYXKwEjK4J3d1DYrl5vaMGQPhf2n+JMMWMOYRwtU=;
+        b=kTgxnzS7teOS36PrXh0wm+C0EApapZblNjjrebqXoJ5ChnxL4I+xPE9HMdxVW9xlGYz6eg
+        rK0EppRHDdkJma4AyUvZAvg18F2k2CLiiNFPHUNLRyPeGGLStbtax09rA13XWRpQXwxuZy
+        /tlacC6+W7gvF48ZV17gPjianbo/3Fk=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 28DB2B12E;
+        Mon, 21 Sep 2020 14:29:15 +0000 (UTC)
+Date:   Mon, 21 Sep 2020 16:28:34 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Tejun Heo <tj@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Maya B . Gokhale" <gokhale2@llnl.gov>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Marty Mcfadden <mcfadden8@llnl.gov>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
+Message-ID: <20200921142834.GL12990@dhcp22.suse.cz>
+References: <e6c352f8-7ee9-0702-10a4-122d2c4422fc@nvidia.com>
+ <20200916174804.GC8409@ziepe.ca>
+ <20200916184619.GB40154@xz-x1>
+ <20200917112538.GD8409@ziepe.ca>
+ <CAHk-=wjtfjB3TqTFRzVmOrB9Mii6Yzc-=wKq0fu4ruDE6AsJgg@mail.gmail.com>
+ <20200917193824.GL8409@ziepe.ca>
+ <CAHk-=wiY_g+SSjncZi8sO=LrxXmMox0NO7K34-Fs653XVXheGg@mail.gmail.com>
+ <20200918164032.GA5962@xz-x1>
+ <20200921134200.GK12990@dhcp22.suse.cz>
+ <20200921141830.GE5962@xz-x1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200921092154.GJ438822@phenom.ffwll.local>
+In-Reply-To: <20200921141830.GE5962@xz-x1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On Mon, Sep 21, 2020 at 11:21:54AM +0200, Daniel Vetter wrote:
-> The part I don't like about this is that it all feels rather hacked
-> together, and if we add more stuff (or there's some different thing in the
-> system that also needs rt scheduling) then it doesn't compose.
+On Mon 21-09-20 10:18:30, Peter Xu wrote:
+> Hi, Michal,
 > 
-> So question to rt/worker folks: What's the best way to let userspace set
-> the scheduling mode and priorities of things the kernel does on its
-> behalf? Surely we're not the first ones where if userspace runs with some
-> rt priority it'll starve out the kernel workers that it needs. Hardcoding
-> something behind a subsystem ioctl (which just means every time userspace
-> changes what it does, we need a new such flag or mode) can't be the right
-> thing.
+> On Mon, Sep 21, 2020 at 03:42:00PM +0200, Michal Hocko wrote:
+[...]
+> > I have only now
+> > learned about this feature so I am not deeply familiar with all the
+> > details and I might be easily wrong. Normally all the cgroup aware
+> > resources are accounted to the parent's cgroup. For memcg that includes
+> > all the page tables, early CoW and other allocations with __GFP_ACCOUNT.
+> > IIUC CLONE_INTO_CGROUP properly then this hasn't changed as the child is
+> > associated to its new cgroup (and memcg) only in cgroup_post_fork. If
+> > that is correct then we might have quite a lot of resources bound to
+> > child's lifetime but accounted to the parent's memcg which can lead to
+> > all sorts of interesting problems (e.g. unreclaimable memory - even by
+> > the oom killer).
+> 
+> Right that's one of the things that I'm confused too, on that if we always
+> account to the parent, then when the child quits whether we uncharge them or
+> not, and how..  Not sure whether the accounting of the parent could steadily
+> grow as it continues the fork()s.
+> 
+> So is it by design that we account all these to the parents?
 
-Maybe not first but there haven't been many. The main benefit of workqueue
-is that the users get to pool the worker threads automatically. I don't
-think the existing workqueue design is something suitable for actual RT use
-cases. Furthermore, there are inherent conflicts between sharing resources
-and RT as this this patchset is already showing w/ needing per-crtc worker
-thread. Maybe we can further abstract it if there are more use cases but for
-now kthread_worker based implementation sounds about right to me.
+Let me try to clarify a bit further my concern.  Without CLONE_INTO_CGROUP
+this makes some sense. Because both parent and child will live in
+the same cgroup. All the charges are reference counted so they will
+be released when the respective resource gets freed (e.g. page table
+released or the backing page dropped) irrespective of the current cgroup
+the owner is living in.
 
-Thanks.
-
+Fundamentaly CLONE_INTO_CGROUP is similar to regular fork + move to the
+target cgroup after the child gets executed. So in principle there
+shouldn't be any big difference. Except that the move has to be explicit
+and the the child has to have enough privileges to move itself. I am not
+completely sure about CLONE_INTO_CGROUP model though. According to man
+clone(2) it seems that O_RDONLY for the target cgroup directory is
+sufficient. That seems much more relaxed IIUC and it would allow to fork
+into a different cgroup while keeping a lot of resources in the parent's
+proper.
 -- 
-tejun
+Michal Hocko
+SUSE Labs
