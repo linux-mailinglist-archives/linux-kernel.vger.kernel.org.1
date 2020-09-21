@@ -2,75 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB7BB272179
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76107272184
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 12:55:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726487AbgIUKt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 06:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35522 "EHLO
+        id S1726478AbgIUKy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 06:54:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726333AbgIUKt5 (ORCPT
+        with ESMTP id S1726427AbgIUKy6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 06:49:57 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4DCBC061755;
-        Mon, 21 Sep 2020 03:49:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+Ce2j6BK4131uYjorGXmkaktnjo2xDWmD45iu81+eGY=; b=WBss3/+LJn25tf2jl2Kd4BllMI
-        We3aM8pS1bHk+lP+j+FgiErzPOP5101rI+iEOmhIiBWuEclNOK8yjXeMc8p2hvO66DyHQqRG+ibdj
-        fNxQM2TO9oPahOrflU5CGkUoPhPyktIfZxoWHOY3bCCiIiJip2uorUCAcIJ2/5F4nuohyg/YUHlNc
-        d5O5AVK+rnqDUnKxbfw+9B12rKUynM8ObjyYjNOPdklvEWrciu+346Xxd6P1M8ap9VwFZ/Hd4PL88
-        Vr3wsnD98TRmaevM03kBW8JZcL8svKW7/HBzjsWyHFHP01ZNBq6xW7/V+e56JiWbSDZ5VukELoex3
-        jH5DmECw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kKJOK-0008Ei-4J; Mon, 21 Sep 2020 10:49:52 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4F336301478;
-        Mon, 21 Sep 2020 12:49:47 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 89B2A243FFC0F; Mon, 21 Sep 2020 12:49:47 +0200 (CEST)
-Date:   Mon, 21 Sep 2020 12:49:47 +0200
-From:   peterz@infradead.org
-To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>,
-        linux-arm-msm@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>, timmurray@google.com,
-        Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH 0/3] drm: commit_work scheduling
-Message-ID: <20200921104947.GQ1362448@hirez.programming.kicks-ass.net>
-References: <20200919193727.2093945-1-robdclark@gmail.com>
- <20200921092154.GJ438822@phenom.ffwll.local>
+        Mon, 21 Sep 2020 06:54:58 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3418C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:54:57 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id a19so13206342ilq.10
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 03:54:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=K8RZdDizB1CuVUCgJzwzPFPrrXLKA2bZQ/9cYrL1MoI=;
+        b=LzNKZ6SKzhfchq5A5kLsBNYxnyO1+VPZi+9HxYvz3+D1M41bY3eg7jhfbbgvfMEF0o
+         EuIEgxwxm3MypTnjxRTlNxW48QcR7CwYYGc6QuE8jqixQkWTcIw9i0rpYaZ1NT40CQpj
+         DWBqVdAVUnhNEWb3tlJR7V5e7kYw03YaIVKq7khzvemGcLINwFybIWZeHAXCFJZiTidn
+         VF2huPZXeZVMnRMiPaiwY4MplevX6N8orvsNone29DmO4pyf2ekxuRFhhE7nTYooBcmZ
+         JIXebqY2eU4ZG4OeavoYRdBpRKm5NWRgIiTqjZd2Iv4C9MSoVfiPDLO+tmk89G2rVjxF
+         McJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=K8RZdDizB1CuVUCgJzwzPFPrrXLKA2bZQ/9cYrL1MoI=;
+        b=EIwOBV7YCLEiQgklYf5jJwVnbpqpN6y9t7PwUkC9SOzL255j9A5/kcPdUqIxOnCbOa
+         3Sc6obXjQEVwJQY9pQKH4u0NN9gHnqjtjKAjBBHHwv2l52bisDAjbIgY3uHur7d8oeBP
+         gPX+8W0+iRExSPAT3E1GgwArDix1J9dZiqDt5HT80jph8VhNU6scey2/QHPkyiexGWYa
+         nOnb3bd96EMLNmuWDKzbi0dsczCGd52gm2VJzY2evWGNi4TFgvxReCVFOJsPi+RcUH6w
+         Zy+Kf/zB3He4fW+2gACzD8CBnU5dtCGZ4GSKfHP2VhusPR1MADLKKbERgDxrrVmqlrN2
+         ZP7g==
+X-Gm-Message-State: AOAM532VsqvC7mo0NjDc/GJ16A6slLgE6xEBD2WUtcMFNmAmwhiv5nWm
+        hJ9sKKNrIVHW01wV/K7TXznn1YKM4LzbIrNK+tA=
+X-Google-Smtp-Source: ABdhPJxBcqDHZOATbsSCobCNfx0I2qszJfLH78MwhBxKEYtkX0KW3a2Cc1VJUIiikieC6C7Kkasvhtm3bxUlvWUONCA=
+X-Received: by 2002:a92:c908:: with SMTP id t8mr36852739ilp.60.1600685697074;
+ Mon, 21 Sep 2020 03:54:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200921092154.GJ438822@phenom.ffwll.local>
+Received: by 2002:a92:9e12:0:0:0:0:0 with HTTP; Mon, 21 Sep 2020 03:54:56
+ -0700 (PDT)
+Reply-To: michellegoodman45@gmail.com
+From:   michelle goodman <goodmanmichelle700@gmail.com>
+Date:   Mon, 21 Sep 2020 11:54:56 +0100
+Message-ID: <CAL=4yxdMm+ssCjFX_iV8aGhOpSXW5XB2oMGNy2yKO7U=kM=NjA@mail.gmail.com>
+Subject: From Michelle
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 11:21:54AM +0200, Daniel Vetter wrote:
-
-> So question to rt/worker folks: What's the best way to let userspace set
-> the scheduling mode and priorities of things the kernel does on its
-> behalf? Surely we're not the first ones where if userspace runs with some
-> rt priority it'll starve out the kernel workers that it needs. Hardcoding
-> something behind a subsystem ioctl (which just means every time userspace
-> changes what it does, we need a new such flag or mode) can't be the right
-> thing.
-> 
-> Peter, Tejun?
-
-So regular workqueues do not support RT priorities, but you can set
-their nice value somewhere in /sys.
-
-The kthread_work stuff used in these patches result in a regular kthread
-and as such the user interface for changing its scheduling class or
-priority is that of any other 'random' task.
-
-
+Hallo Schatz, ich hoffe du hast meine Nachricht bekommen.
+Ich brauche dringend eine Antwort
+Danke dir
+Michelle
