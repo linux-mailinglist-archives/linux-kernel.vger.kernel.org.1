@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 657B4272E26
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A12BB272DBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 18:43:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729677AbgIUQqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 12:46:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53076 "EHLO mail.kernel.org"
+        id S1729541AbgIUQm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 12:42:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729168AbgIUQqk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:46:40 -0400
+        id S1729089AbgIUQmw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:42:52 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 608D22388E;
-        Mon, 21 Sep 2020 16:46:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2DA792076B;
+        Mon, 21 Sep 2020 16:42:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706799;
-        bh=/MoVMQ+YV+oqcRcLnR9UqxOJQhWQ6bhb789n8we9Mbs=;
+        s=default; t=1600706571;
+        bh=hcubLVqPrBqXU0+oe6Qa2Fuo6ElvZgAx30ZYQhLXOjY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iO5vzpKEpujWlawDfnzdJKQ1rctFEK7MHo7irprk4TOvQhX94KydVSM588HMi9K60
-         P7ewKTwcsMfiy322vegXhNQiiHJ65SsqqiR2WqIOvF7e+d3DC+MVjuc/8FquVqhbKB
-         7vArYpk4Pj3fv+LmT/8qh4p0UWS4XCXaBgjqsW78=
+        b=qnRGH+joui3XuDsFpM6bL2k9h80Em1aQ8OFxnUI4Hpn0AxluIA1IbLIe9/+RGnndF
+         kUiHcRIdaKLtA/O3daHgSlr/qeYT62HHsOenBuoMFGC63QHCjnXedId+7eNj//e6Ml
+         hg8aoxKdU+aKy6nh8e4jw3gY0LdrnsykZC42PcPM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH 5.8 100/118] serial: core: fix port-lock initialisation
-Date:   Mon, 21 Sep 2020 18:28:32 +0200
-Message-Id: <20200921162041.022221044@linuxfoundation.org>
+        stable@vger.kernel.org, Adam Borowski <kilobyte@angband.pl>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-usb@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH 4.19 49/49] x86/defconfig: Enable CONFIG_USB_XHCI_HCD=y
+Date:   Mon, 21 Sep 2020 18:28:33 +0200
+Message-Id: <20200921162036.823911923@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
-References: <20200921162036.324813383@linuxfoundation.org>
+In-Reply-To: <20200921162034.660953761@linuxfoundation.org>
+References: <20200921162034.660953761@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,67 +46,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Adam Borowski <kilobyte@angband.pl>
 
-commit fe88c6489264eaea23570dfdf03e1d3f5f47f423 upstream.
+commit 72a9c673636b779e370983fea08e40f97039b981 upstream.
 
-Commit f743061a85f5 ("serial: core: Initialise spin lock before use in
-uart_configure_port()") tried to work around a breakage introduced by
-commit a3cb39d258ef ("serial: core: Allow detach and attach serial
-device for console") by adding a second initialisation of the port lock
-when registering the port.
+A spanking new machine I just got has all but one USB ports wired as 3.0.
+Booting defconfig resulted in no keyboard or mouse, which was pretty
+uncool.  Let's enable that -- USB3 is ubiquitous rather than an oddity.
+As 'y' not 'm' -- recovering from initrd problems needs a keyboard.
 
-As reported by the build robots [1], this doesn't really solve the
-regression introduced by the console-detach changes and also adds a
-second redundant initialisation of the lock for normal ports.
+Also add it to the 32-bit defconfig.
 
-Start cleaning up this mess by removing the redundant initialisation and
-making sure that the port lock is again initialised once-only for ports
-that aren't already in use as a console.
-
-[1] https://lore.kernel.org/r/20200802054852.GR23458@shao2-debian
-
-Fixes: f743061a85f5 ("serial: core: Initialise spin lock before use in uart_configure_port()")
-Fixes: a3cb39d258ef ("serial: core: Allow detach and attach serial device for console")
-Cc: stable <stable@vger.kernel.org>     # 5.7
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Link: https://lore.kernel.org/r/20200909143101.15389-2-johan@kernel.org
+Signed-off-by: Adam Borowski <kilobyte@angband.pl>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-usb@vger.kernel.org
+Link: http://lkml.kernel.org/r/20181009062803.4332-1-kilobyte@angband.pl
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/tty/serial/serial_core.c |   14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ arch/x86/configs/i386_defconfig   |    1 +
+ arch/x86/configs/x86_64_defconfig |    1 +
+ 2 files changed, 2 insertions(+)
 
---- a/drivers/tty/serial/serial_core.c
-+++ b/drivers/tty/serial/serial_core.c
-@@ -2376,13 +2376,6 @@ uart_configure_port(struct uart_driver *
- 		uart_change_pm(state, UART_PM_STATE_ON);
- 
- 		/*
--		 * If this driver supports console, and it hasn't been
--		 * successfully registered yet, initialise spin lock for it.
--		 */
--		if (port->cons && !(port->cons->flags & CON_ENABLED))
--			__uart_port_spin_lock_init(port);
--
--		/*
- 		 * Ensure that the modem control lines are de-activated.
- 		 * keep the DTR setting that is set in uart_set_options()
- 		 * We probably don't need a spinlock around this, but
-@@ -2897,7 +2890,12 @@ int uart_add_one_port(struct uart_driver
- 		goto out;
- 	}
- 
--	uart_port_spin_lock_init(uport);
-+	/*
-+	 * If this port is in use as a console then the spinlock is already
-+	 * initialised.
-+	 */
-+	if (!uart_console_enabled(uport))
-+		__uart_port_spin_lock_init(uport);
- 
- 	if (uport->cons && uport->dev)
- 		of_console_check(uport->dev->of_node, uport->cons->name, uport->line);
+--- a/arch/x86/configs/i386_defconfig
++++ b/arch/x86/configs/i386_defconfig
+@@ -245,6 +245,7 @@ CONFIG_USB_HIDDEV=y
+ CONFIG_USB=y
+ CONFIG_USB_ANNOUNCE_NEW_DEVICES=y
+ CONFIG_USB_MON=y
++CONFIG_USB_XHCI_HCD=y
+ CONFIG_USB_EHCI_HCD=y
+ CONFIG_USB_EHCI_TT_NEWSCHED=y
+ CONFIG_USB_OHCI_HCD=y
+--- a/arch/x86/configs/x86_64_defconfig
++++ b/arch/x86/configs/x86_64_defconfig
+@@ -241,6 +241,7 @@ CONFIG_USB_HIDDEV=y
+ CONFIG_USB=y
+ CONFIG_USB_ANNOUNCE_NEW_DEVICES=y
+ CONFIG_USB_MON=y
++CONFIG_USB_XHCI_HCD=y
+ CONFIG_USB_EHCI_HCD=y
+ CONFIG_USB_EHCI_TT_NEWSCHED=y
+ CONFIG_USB_OHCI_HCD=y
 
 
