@@ -2,492 +2,336 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 574142718B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 01:55:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B966A2718B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 02:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726305AbgITXzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Sep 2020 19:55:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726156AbgITXze (ORCPT
+        id S1726360AbgIUACX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Sep 2020 20:02:23 -0400
+Received: from mail-io1-f79.google.com ([209.85.166.79]:36340 "EHLO
+        mail-io1-f79.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726221AbgIUACX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Sep 2020 19:55:34 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74F1DC061755
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 16:55:34 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id r24so9611935ljm.3
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 16:55:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=LuilMyCwF9ufGDtrKTIYSWPEZnv99UWuIG8ugmN+hEs=;
-        b=F0dTp29vrj4qMTxRIqVi+dbv3lnAbcMO74OGKVCnXQAUYhSxh3tfVT0m5veoZEczKX
-         vAWzcbWBTfeJcVQhuW6J9trlZoTEhQIJduc2tOHLyu//EAb41hg8nCW+JF7Xsfkecr0i
-         B7g1Ush8PWDIb2yz0rN2liPqmSC+XZ1Ma+g0k=
+        Sun, 20 Sep 2020 20:02:23 -0400
+Received: by mail-io1-f79.google.com with SMTP id h8so8922313ioa.3
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 17:02:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=LuilMyCwF9ufGDtrKTIYSWPEZnv99UWuIG8ugmN+hEs=;
-        b=gXWcH0h5BDUoVQy7dmKMWN/JSm85TLQjY5QzPITuYJ71+cRGXBGloVsdrOXGezx7bZ
-         /veopwAyMXc/dBnosaGKctZjrtnZSyS55lkdpfKAW+89h0FxsBpWIzADXqU0UdZkHbti
-         aA8zd31VOuqqfHTKkciVdn2XFNeJ8bj2gnRv187dwQJqG+6L4ZBGA/EQ8epAh26I7t1R
-         JN0i6bPmaNlaWdFk8CLKJIuQkA9BBXjqnn9FQFO/STLhw8vQQA+2M+lilrwVAmub7wyu
-         3++5HnuH88OMpLvTBalmCOK3KVFROpBl0H+ZFSsMLLM45l4Arl1s8u9uphW+yf93X5ie
-         28Og==
-X-Gm-Message-State: AOAM533a0ZHMZINhxNUJapEQtpLAuS1ey1fgNX9BLbc2hQeLxc01sIpC
-        eb9W1gFRmNd91GO2qpoPCUJTRhgLIhSWXw==
-X-Google-Smtp-Source: ABdhPJws6iQBaaG6se5cXjtFOx6hj9XOkFAkw+E4lxUCGR4XhflNalUbbzn2Bct38O2CWKqFCpzIqw==
-X-Received: by 2002:a2e:958:: with SMTP id 85mr16361543ljj.151.1600646132243;
-        Sun, 20 Sep 2020 16:55:32 -0700 (PDT)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id k10sm2095984lfb.302.2020.09.20.16.55.31
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 20 Sep 2020 16:55:31 -0700 (PDT)
-Received: by mail-lf1-f49.google.com with SMTP id x69so12044930lff.3
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Sep 2020 16:55:31 -0700 (PDT)
-X-Received: by 2002:a19:e00a:: with SMTP id x10mr16290653lfg.603.1600646130758;
- Sun, 20 Sep 2020 16:55:30 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=HS0K3xdS76R9AgZj0Oh3zJuLPvtOQkwKkABf3WHaO/4=;
+        b=t8aNwhIvlmo+fL847JGXGQyPsuxuvdIXFNqTxTuaThUPwRGnp2MwvA9qdM4ln5gcs9
+         fDn6czx6FM5neSOEtXqFhUdXsP3p6jJLwC18wHCU1lrx57CMRuzc25CbQot+i/d6Mglb
+         Hey1xGHfZAsUX/NPICo8JR+ZO+vk12GDREPpeO4mWECLPBLxncy4SKBbRJwfEfsrfeZS
+         bC1n85QkeE3e1e8aWoBT/QYROXVxIUwHe7Z84ZUujrDmQD/haXCPM27YxEWAnFLWNJib
+         +JosHTKddfNUoYblQ2hnC3liRDCZ8pQbckIMropz8WLPBUFVOL78wOGGpB3d6OWGCoJe
+         vetw==
+X-Gm-Message-State: AOAM533F53L/o25MVquZpeEVucc5YEi9adadRH0bY6ATdk0d9bVKDE/6
+        woO8O/L6LZUi4o6cFzn0I5IVc7m+JyNuAtjUaerqzoeWP/X/
+X-Google-Smtp-Source: ABdhPJxCKArnOZIQ+LLX6CadNqL4STklksJzKsF8O0mS0/8xtE9XCyOwo/wWyaqPxWm+Tv7V+GeacPLLm4imxccMu+KOFSv/4h4F
 MIME-Version: 1.0
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 20 Sep 2020 16:55:15 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjSWKpiNbcMpzQ9fBUA5s11sU-STLztzQkHhCHtYvLP5A@mail.gmail.com>
-Message-ID: <CAHk-=wjSWKpiNbcMpzQ9fBUA5s11sU-STLztzQkHhCHtYvLP5A@mail.gmail.com>
-Subject: Linux 5.9-rc6
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+X-Received: by 2002:a05:6e02:4ca:: with SMTP id f10mr14042002ils.139.1600646541163;
+ Sun, 20 Sep 2020 17:02:21 -0700 (PDT)
+Date:   Sun, 20 Sep 2020 17:02:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007f44e005afc790bf@google.com>
+Subject: possible deadlock in xfrm_user_rcv_msg
+From:   syzbot <syzbot+537fc2e3dff863640cc1@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, herbert@gondor.apana.org.au, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        steffen.klassert@secunet.com, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Another week, another rc, and things look fairly normal: the diffstat
-looks fairly flat (implying small changes) and we don't have any
-unusual amount of activity.
+Hello,
 
-The one thing that does show up in the diffstat is the softscroll
-removal (both fbcon and vgacon), and there are people who want to save
-that, but we'll see if some maintainer steps up. I'm not willing to
-resurrect it in the broken form it was in, so I doubt that will happen
-in 5.9, but we'll see what happens.
+syzbot found the following issue on:
 
-The other stats also look normal: about 60% of the patch is drivers
-(and yes, the softscroll is a noticeable part, but not overwhelmingly
-so - there's sound, gpu, mtd, i2c, usb etc). And the usual arch
-updates, along with some vm fixes (including the fix for the
-performance regression noted last rc) and perf tooling updates.
+HEAD commit:    5fa35f24 Add linux-next specific files for 20200916
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=141e8701900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=619bde85d9eaaed5
+dashboard link: https://syzkaller.appspot.com/bug?extid=537fc2e3dff863640cc1
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-We also have a (test regression (not the performance one) in the VM
-that we know about - the test that triggers this was admittedly buggy,
-but if the test was buggy it is quite possible that real uses are
-buggy too. We don't actually have any known case of any such real user
-breakage, but we do have a nice fix for the test regression that is
-very  much the RightThing(tm) to do in the long run, so that has been
-actively discussed.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-We know what the fix looks like, and a few initial patches have been
-floating around, but a final patch doesn't exist yet, and depending on
-how that goes this might be something that pushes out the final 5.9 by
-a week. We'll see.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+537fc2e3dff863640cc1@syzkaller.appspotmail.com
 
-So there's still some development going on, but honestly, that VM case
-is a very odd corner case that normal users should never hit, so it
-should not keep anybody from testing this in the meantime.
+========================================================
+WARNING: possible irq lock inversion dependency detected
+5.9.0-rc5-next-20200916-syzkaller #0 Not tainted
+--------------------------------------------------------
+syz-executor.1/16600 just changed the state of lock:
+ffff88809ec85750
+ (&s->seqcount#11){+.+.}-{0:0}, at: xfrm_user_rcv_msg+0x41e/0x720 net/xfrm/xfrm_user.c:2684
+but this lock was taken by another, SOFTIRQ-safe lock in the past:
+ (slock-AF_INET){+.-.}-{2:2}
 
-Holler if you see anything odd,
 
-                  Linus
+and interrupts could create inverse lock ordering between them.
+
+
+other info that might help us debug this:
+ Possible interrupt unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&s->seqcount#11);
+                               local_irq_disable();
+                               lock(slock-AF_INET);
+                               lock(&s->seqcount#11);
+  <Interrupt>
+    lock(slock-AF_INET);
+
+ *** DEADLOCK ***
+
+2 locks held by syz-executor.1/16600:
+ #0: ffff88809ec85ae8 (&net->xfrm.xfrm_cfg_mutex){+.+.}-{3:3}
+, at: xfrm_netlink_rcv+0x5c/0x90 net/xfrm/xfrm_user.c:2691
+ #1: ffff88809ec85798 (&(&net->xfrm.policy_hthresh.lock)->lock){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ #1: ffff88809ec85798 (&(&net->xfrm.policy_hthresh.lock)->lock){+.+.}-{2:2}, at: write_seqlock include/linux/seqlock.h:882 [inline]
+ #1: ffff88809ec85798 (&(&net->xfrm.policy_hthresh.lock)->lock){+.+.}-{2:2}, at: xfrm_set_spdinfo+0x2b8/0x660 net/xfrm/xfrm_user.c:1185
+
+the shortest dependencies between 2nd lock and 1st lock:
+ -> (
+slock-AF_INET){+.-.}-{2:2} {
+    HARDIRQ-ON-W at:
+                      lock_acquire+0x1f2/0xaa0 kernel/locking/lockdep.c:5398
+                      __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
+                      _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:175
+                      spin_lock_bh include/linux/spinlock.h:359 [inline]
+                      lock_sock_nested+0x3b/0x110 net/core/sock.c:3034
+                      lock_sock include/net/sock.h:1581 [inline]
+                      inet_autobind+0x1a/0x190 net/ipv4/af_inet.c:180
+                      inet_dgram_connect+0x245/0x2d0 net/ipv4/af_inet.c:575
+                      __sys_connect_file+0x155/0x1a0 net/socket.c:1852
+                      __sys_connect+0x161/0x190 net/socket.c:1869
+                      __do_sys_connect net/socket.c:1879 [inline]
+                      __se_sys_connect net/socket.c:1876 [inline]
+                      __x64_sys_connect+0x6f/0xb0 net/socket.c:1876
+                      do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+                      entry_SYSCALL_64_after_hwframe+0x44/0xa9
+    IN-SOFTIRQ-W
+ at:
+                      lock_acquire+0x1f2/0xaa0 kernel/locking/lockdep.c:5398
+                      __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+                      _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+                      spin_lock include/linux/spinlock.h:354 [inline]
+                      sk_clone_lock+0x2a1/0x10b0 net/core/sock.c:1881
+                      inet_csk_clone_lock+0x21/0x480 net/ipv4/inet_connection_sock.c:830
+                      tcp_create_openreq_child+0x2d/0x1700 net/ipv4/tcp_minisocks.c:460
+                      tcp_v4_syn_recv_sock+0xb6/0x1370 net/ipv4/tcp_ipv4.c:1514
+                      tcp_check_req+0x607/0x17b0 net/ipv4/tcp_minisocks.c:773
+                      tcp_v4_rcv+0x21ba/0x3750 net/ipv4/tcp_ipv4.c:1973
+                      ip_protocol_deliver_rcu+0x5c/0x8a0 net/ipv4/ip_input.c:204
+                      ip_local_deliver_finish+0x20a/0x370 net/ipv4/ip_input.c:231
+                      NF_HOOK include/linux/netfilter.h:301 [inline]
+                      NF_HOOK include/linux/netfilter.h:295 [inline]
+                      ip_local_deliver+0x1b3/0x200 net/ipv4/ip_input.c:252
+                      dst_input include/net/dst.h:449 [inline]
+                      ip_sublist_rcv_finish+0x9a/0x2c0 net/ipv4/ip_input.c:550
+                      ip_list_rcv_finish.constprop.0+0x514/0x6e0 net/ipv4/ip_input.c:600
+                      ip_sublist_rcv net/ipv4/ip_input.c:608 [inline]
+                      ip_list_rcv+0x34e/0x490 net/ipv4/ip_input.c:643
+                      __netif_receive_skb_list_ptype net/core/dev.c:5330 [inline]
+                      __netif_receive_skb_list_core+0x549/0x8e0 net/core/dev.c:5378
+                      __netif_receive_skb_list net/core/dev.c:5430 [inline]
+                      netif_receive_skb_list_internal+0x777/0xd70 net/core/dev.c:5535
+                      gro_normal_list net/core/dev.c:5689 [inline]
+                      gro_normal_list net/core/dev.c:5685 [inline]
+                      napi_complete_done+0x1f1/0x940 net/core/dev.c:6414
+                      virtqueue_napi_complete+0x2c/0xc0 drivers/net/virtio_net.c:329
+                      virtnet_poll+0xae2/0xd90 drivers/net/virtio_net.c:1455
+                      napi_poll net/core/dev.c:6730 [inline]
+                      net_rx_action+0x587/0x1320 net/core/dev.c:6800
+                      __do_softirq+0x203/0xab6 kernel/softirq.c:298
+                      asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:786
+                      __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
+                      run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
+                      do_softirq_own_stack+0x9d/0xd0 arch/x86/kernel/irq_64.c:77
+                      invoke_softirq kernel/softirq.c:393 [inline]
+                      __irq_exit_rcu kernel/softirq.c:423 [inline]
+                      irq_exit_rcu+0x235/0x280 kernel/softirq.c:435
+                      common_interrupt+0xa3/0x1f0 arch/x86/kernel/irq.c:239
+                      asm_common_interrupt+0x1e/0x40 arch/x86/include/asm/idtentry.h:622
+                      x2apic_send_IPI+0x5f/0x120 arch/x86/kernel/apic/x2apic_phys.c:38
+                      __smp_call_single_queue kernel/smp.c:270 [inline]
+                      generic_exec_single+0x122/0x450 kernel/smp.c:303
+                      smp_call_function_single+0x186/0x500 kernel/smp.c:509
+                      smp_call_function_many_cond+0x1a4/0xa10 kernel/smp.c:648
+                      smp_call_function_many kernel/smp.c:711 [inline]
+                      smp_call_function kernel/smp.c:733 [inline]
+                      on_each_cpu+0x4c/0x1f0 kernel/smp.c:832
+                      text_poke_sync arch/x86/kernel/alternative.c:999 [inline]
+                      text_poke_bp_batch+0x1a7/0x550 arch/x86/kernel/alternative.c:1184
+                      text_poke_flush arch/x86/kernel/alternative.c:1338 [inline]
+                      text_poke_flush arch/x86/kernel/alternative.c:1335 [inline]
+                      text_poke_finish+0x16/0x30 arch/x86/kernel/alternative.c:1345
+                      arch_jump_label_transform_apply+0x13/0x20 arch/x86/kernel/jump_label.c:126
+                      jump_label_update kernel/jump_label.c:814 [inline]
+                      jump_label_update+0x1b3/0x3a0 kernel/jump_label.c:793
+                      static_key_disable_cpuslocked+0x152/0x1b0 kernel/jump_label.c:207
+                      static_key_disable+0x16/0x20 kernel/jump_label.c:215
+                      once_deferred+0x64/0x90 lib/once.c:18
+                      process_one_work+0x933/0x15a0 kernel/workqueue.c:2269
+                      worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+                      kthread+0x3af/0x4a0 kernel/kthread.c:292
+                      ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+    INITIAL USE at:
+                     lock_acquire+0x1f2/0xaa0 kernel/locking/lockdep.c:5398
+                     __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
+                     _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:175
+                     spin_lock_bh include/linux/spinlock.h:359 [inline]
+                     lock_sock_nested+0x3b/0x110 net/core/sock.c:3034
+                     lock_sock include/net/sock.h:1581 [inline]
+                     inet_autobind+0x1a/0x190 net/ipv4/af_inet.c:180
+                     inet_dgram_connect+0x245/0x2d0 net/ipv4/af_inet.c:575
+                     __sys_connect_file+0x155/0x1a0 net/socket.c:1852
+                     __sys_connect+0x161/0x190 net/socket.c:1869
+                     __do_sys_connect net/socket.c:1879 [inline]
+                     __se_sys_connect net/socket.c:1876 [inline]
+                     __x64_sys_connect+0x6f/0xb0 net/socket.c:1876
+                     do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+                     entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  }
+  ... key      at: [<ffffffff8e18f900>] af_family_slock_keys+0x20/0x300
+  ... acquired at:
+   seqcount_lockdep_reader_access+0x139/0x1a0 include/linux/seqlock.h:103
+   xfrm_policy_lookup_inexact_addr+0x57/0x200 net/xfrm/xfrm_policy.c:1909
+   xfrm_policy_find_inexact_candidates+0xac/0x1d0 net/xfrm/xfrm_policy.c:1953
+   xfrm_policy_lookup_bytype+0x4b8/0xa40 net/xfrm/xfrm_policy.c:2108
+   xfrm_policy_lookup net/xfrm/xfrm_policy.c:2144 [inline]
+   xfrm_bundle_lookup net/xfrm/xfrm_policy.c:2944 [inline]
+   xfrm_lookup_with_ifid+0xab3/0x2130 net/xfrm/xfrm_policy.c:3085
+   xfrm_lookup net/xfrm/xfrm_policy.c:3177 [inline]
+   xfrm_lookup_route+0x36/0x1e0 net/xfrm/xfrm_policy.c:3188
+   ip_route_output_flow+0xa6/0xc0 net/ipv4/route.c:2771
+   ip_route_output_ports include/net/route.h:169 [inline]
+   ip4_datagram_release_cb+0x701/0xaa0 net/ipv4/datagram.c:119
+   release_sock+0xb4/0x1b0 net/core/sock.c:3057
+   ip4_datagram_connect+0x36/0x40 net/ipv4/datagram.c:91
+   inet_dgram_connect+0x14a/0x2d0 net/ipv4/af_inet.c:577
+   __sys_connect_file+0x155/0x1a0 net/socket.c:1852
+   __sys_connect+0x161/0x190 net/socket.c:1869
+   __do_sys_connect net/socket.c:1879 [inline]
+   __se_sys_connect net/socket.c:1876 [inline]
+   __x64_sys_connect+0x6f/0xb0 net/socket.c:1876
+   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> (
+&s->seqcount
+#11){+.+.}-{0:0} {
+   HARDIRQ-ON-W at:
+                    lock_acquire+0x1f2/0xaa0 kernel/locking/lockdep.c:5398
+                    write_seqcount_t_begin_nested include/linux/seqlock.h:509 [inline]
+                    write_seqcount_t_begin include/linux/seqlock.h:535 [inline]
+                    __xfrm_policy_inexact_prune_bin+0xbc/0x1040 net/xfrm/xfrm_policy.c:1077
+                    xfrm_policy_inexact_insert+0x49b/0xbd0 net/xfrm/xfrm_policy.c:1205
+                    xfrm_policy_insert+0x502/0x870 net/xfrm/xfrm_policy.c:1572
+                    pfkey_spdadd+0xfb1/0x1550 net/key/af_key.c:2332
+                    pfkey_process+0x68b/0x800 net/key/af_key.c:2841
+                    pfkey_sendmsg+0x42d/0x800 net/key/af_key.c:3680
+                    sock_sendmsg_nosec net/socket.c:651 [inline]
+                    sock_sendmsg+0xcf/0x120 net/socket.c:671
+                    ____sys_sendmsg+0x6e8/0x810 net/socket.c:2362
+                    ___sys_sendmsg+0xf3/0x170 net/socket.c:2416
+                    __sys_sendmsg+0xe5/0x1b0 net/socket.c:2449
+                    do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+                    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+   SOFTIRQ-ON-W at:
+                    lock_acquire+0x1f2/0xaa0 kernel/locking/lockdep.c:5398
+                    write_seqcount_t_begin_nested include/linux/seqlock.h:509 [inline]
+                    write_seqcount_t_begin include/linux/seqlock.h:535 [inline]
+                    write_seqlock include/linux/seqlock.h:883 [inline]
+                    xfrm_set_spdinfo+0x302/0x660 net/xfrm/xfrm_user.c:1185
+                    xfrm_user_rcv_msg+0x41e/0x720 net/xfrm/xfrm_user.c:2684
+                    netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
+                    xfrm_netlink_rcv+0x6b/0x90 net/xfrm/xfrm_user.c:2692
+                    netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+                    netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+                    netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+                    sock_sendmsg_nosec net/socket.c:651 [inline]
+                    sock_sendmsg+0xcf/0x120 net/socket.c:671
+                    ____sys_sendmsg+0x6e8/0x810 net/socket.c:2362
+                    ___sys_sendmsg+0xf3/0x170 net/socket.c:2416
+                    __sys_sendmsg+0xe5/0x1b0 net/socket.c:2449
+                    do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+                    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+   INITIAL USE
+ at:
+                   lock_acquire+0x1f2/0xaa0 kernel/locking/lockdep.c:5398
+                   write_seqcount_t_begin_nested include/linux/seqlock.h:509 [inline]
+                   write_seqcount_t_begin include/linux/seqlock.h:535 [inline]
+                   __xfrm_policy_inexact_prune_bin+0xbc/0x1040 net/xfrm/xfrm_policy.c:1077
+                   xfrm_policy_inexact_insert+0x49b/0xbd0 net/xfrm/xfrm_policy.c:1205
+                   xfrm_policy_insert+0x502/0x870 net/xfrm/xfrm_policy.c:1572
+                   pfkey_spdadd+0xfb1/0x1550 net/key/af_key.c:2332
+                   pfkey_process+0x68b/0x800 net/key/af_key.c:2841
+                   pfkey_sendmsg+0x42d/0x800 net/key/af_key.c:3680
+                   sock_sendmsg_nosec net/socket.c:651 [inline]
+                   sock_sendmsg+0xcf/0x120 net/socket.c:671
+                   ____sys_sendmsg+0x6e8/0x810 net/socket.c:2362
+                   ___sys_sendmsg+0xf3/0x170 net/socket.c:2416
+                   __sys_sendmsg+0xe5/0x1b0 net/socket.c:2449
+                   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+                   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+   (null) at:
+================================================================================
+UBSAN: array-index-out-of-bounds in kernel/locking/lockdep.c:2240:40
+index 9 is out of range for type 'lock_trace *[9]'
+CPU: 1 PID: 16600 Comm: syz-executor.1 Not tainted 5.9.0-rc5-next-20200916-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fb lib/dump_stack.c:118
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_out_of_bounds.cold+0x62/0x6c lib/ubsan.c:356
+ print_lock_class_header kernel/locking/lockdep.c:2240 [inline]
+ print_shortest_lock_dependencies.cold+0x11c/0x2e2 kernel/locking/lockdep.c:2263
+ print_irq_inversion_bug.part.0+0x2c6/0x2ee kernel/locking/lockdep.c:3769
+ print_irq_inversion_bug kernel/locking/lockdep.c:3694 [inline]
+ check_usage_backwards kernel/locking/lockdep.c:3838 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3928 [inline]
+ mark_lock.cold+0x1a/0x74 kernel/locking/lockdep.c:4375
+ mark_usage kernel/locking/lockdep.c:4278 [inline]
+ __lock_acquire+0x886/0x56d0 kernel/locking/lockdep.c:4750
+ lock_acquire+0x1f2/0xaa0 kernel/locking/lockdep.c:5398
+ write_seqcount_t_begin_nested include/linux/seqlock.h:509 [inline]
+ write_seqcount_t_begin include/linux/seqlock.h:535 [inline]
+ write_seqlock include/linux/seqlock.h:883 [inline]
+ xfrm_set_spdinfo+0x302/0x660 net/xfrm/xfrm_user.c:1185
+ xfrm_user_rcv_msg+0x41e/0x720 net/xfrm/xfrm_user.c:2684
+ netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
+ xfrm_netlink_rcv+0x6b/0x90 net/xfrm/xfrm_user.c:2692
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:671
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2362
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2416
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2449
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45d5f9
+Code: 5d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 2b b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fc0b86b3c78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 000000000002cf80 RCX: 000000000045d5f9
+RDX: 0000000000000000 RSI: 0000000020000100 RDI: 0000000000000003
+RBP: 000000000118cf80 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118cf4c
+R13: 00007ffd902a0b1f R14: 00007fc0b86b49c0 R15: 000000000118cf4c
+================================================================================
+
 
 ---
-
-Adrian Huang (1):
-      dax: Fix stack overflow when mounting fsdax pmem device
-
-Alexey Kardashevskiy (1):
-      powerpc/dma: Fix dma_map_ops::get_required_mask
-
-Amol Grover (1):
-      device_cgroup: Fix RCU list debugging warning
-
-Andrew Jones (1):
-      arm64: paravirt: Initialize steal time when cpu is online
-
-Andrey Grodzovsky (1):
-      drm/amdgpu: Include sienna_cichlid in USBC PD FW support.
-
-Aneesh Kumar K.V (2):
-      powerpc/book3s64/radix: Fix boot failure with large amount of guest m=
-emory
-      powerpc/mm: Remove DEBUG_VM_PGTABLE support on powerpc
-
-Ard Biesheuvel (1):
-      efi: efibc: check for efivars write capability
-
-Arnaldo Carvalho de Melo (2):
-      tools headers UAPI: Sync kvm.h headers with the kernel sources
-      tools headers UAPI: update linux/in.h copy
-
-Arvind Sankar (1):
-      x86/boot/compressed: Disable relocation relaxation
-
-Bhawanpreet Lakha (2):
-      drm/amd/display: Don't use DRM_ERROR() for DTM add topology
-      drm/amd/display: Don't log hdcp module warnings in dmesg
-
-Borislav Petkov (2):
-      EDAC/ghes: Clear scanned data on unload
-      EDAC/ghes: Check whether the driver is on the safe list correctly
-
-Brent Lu (1):
-      ASoC: intel: atom: Add period size constraint
-
-Byron Stanoszek (1):
-      tmpfs: restore functionality of nr_inodes=3D0
-
-Camel Guo (2):
-      ASoC: tlv320adcx140: Fix accessing uninitialized adcx140->dev
-      ASoC: tlv320adcx140: Wake up codec before accessing register
-
-Cezary Rojewski (2):
-      ASoC: Intel: haswell: Fix power transition refactor
-      ASoC: core: Do not cleanup uninitialized dais on soc_pcm_open failure
-
-Changbin Du (1):
-      kcsan: kconfig: move to menu 'Generic Kernel Debugging Instruments'
-
-Chris Wilson (4):
-      drm/i915/gem: Delay tracking the GEM context until it is registered
-      drm/i915/gem: Reduce context termination list iteration guard to RCU
-      drm/i915: Be wary of data races when reading the active execlists
-      drm/i915: Filter wake_flags passed to default_wake_function
-
-Christian K=C3=B6nig (1):
-      drm/radeon: revert "Prefer lower feedback dividers"
-
-Christophe JAILLET (1):
-      clk: davinci: Use the correct size when allocating memory
-
-Christophe Leroy (1):
-      selftests/vm: fix display of page size in map_hugetlb
-
-Chun-Kuang Hu (1):
-      drm/mediatek: Use CPU when fail to get cmdq event
-
-Damien Le Moal (1):
-      riscv: Fix Kendryte K210 device tree
-
-Dan Carpenter (1):
-      scsi: libsas: Fix error path in sas_notify_lldd_dev_found()
-
-Dan Williams (1):
-      dm/dax: Fix table reference counts
-
-Daniel D=C3=ADaz (1):
-      x86/defconfigs: Explicitly unset CONFIG_64BIT in i386_defconfig
-
-David Sharp (1):
-      perf record: Set PERF_RECORD_PERIOD if attr->freq is set.
-
-Dennis Li (2):
-      drm/kfd: fix a system crash issue during GPU recovery
-      drm/amdkfd: fix a memory leak issue
-
-Dexuan Cui (1):
-      Drivers: hv: vmbus: hibernation: do not hang forever in vmbus_bus_res=
-ume()
-
-Dinghao Liu (1):
-      ASoC: qcom: common: Fix refcount imbalance on error
-
-Eddie James (1):
-      i2c: aspeed: Mask IRQ status to relevant bits
-
-Filipe Manana (1):
-      btrfs: fix wrong address when faulting in pages in the search ioctl
-
-Gautham R. Shenoy (1):
-      cpuidle: pseries: Fix CEDE latency conversion from tb to us
-
-Greentime Hu (1):
-      riscv: Add sfence.vma after early page table changes
-
-Hans de Goede (3):
-      ASoC: Intel: bytcr_rt5640: Add quirk for MPMAN Converter9 2-in-1
-      Input: i8042 - add Entroware Proteus EL07R4 to nomux and reset lists
-      i2c: core: Call i2c_acpi_install_space_handler() before
-i2c_acpi_register_devices()
-
-Harald Freudenberger (1):
-      s390/zcrypt: fix kmalloc 256k failure
-
-Heikki Krogerus (2):
-      usb: typec: ucsi: acpi: Increase command completion timeout value
-      usb: typec: ucsi: Prevent mode overrun
-
-Henry Burns (1):
-      perf vendor events amd: Remove trailing commas
-
-Hou Tao (1):
-      locking/percpu-rwsem: Use this_cpu_{inc,dec}() for read_count
-
-Hugh Dickins (4):
-      ksm: reinstate memcg charge on copied pages
-      mm: migration of hugetlbfs page skip memcg
-      mm: fix check_move_unevictable_pages() on THP
-      mlock: fix unevictable_pgs event counts on THP
-
-Hui Wang (1):
-      ALSA: hda/realtek - The Mic on a RedmiBook doesn't work
-
-Ian Rogers (3):
-      perf bench: Fix 2 memory sanitizer warnings
-      perf record: Don't clear event's period if set by a term
-      perf test: Leader sampling shouldn't clear sample period
-
-Ilias Apalodimas (1):
-      arm64: bpf: Fix branch offset in JIT
-
-Ilya Leoshkevich (1):
-      s390/init: add missing __init annotations
-
-Jan Kara (1):
-      dm: Call proper helper to determine dax support
-
-Janosch Frank (1):
-      s390: add 3f program exception handler
-
-Jean Delvare (1):
-      i2c: i801: Simplify the suspend callback
-
-Jerome Brunet (1):
-      ASoC: meson: axg-toddr: fix channel order on g12 platforms
-
-Jiansong Chen (2):
-      drm/amd/pm: support runtime pptable update for sienna_cichlid etc.
-      drm/amdgpu: declare ta firmware for navy_flounder
-
-Jing Xiangfeng (1):
-      clk: qcom: lpass: Correct goto target in lpass_core_sc7180_probe()
-
-Jiri Olsa (1):
-      perf test: Fix the "signal" test inline assembly
-
-Jitao Shi (1):
-      drm/mediatek: dsi: Fix scrolling of panel with small hfp or hbp
-
-Joao Martins (1):
-      iommu/amd: Fix potential @entry null deref
-
-Johan Hovold (2):
-      serial: core: fix port-lock initialisation
-      serial: core: fix console port-lock regression
-
-Josh Poimboeuf (2):
-      x86/unwind/fp: Fix FP unwinding in ret_from_fork
-      objtool: Fix noreturn detection for ignored functions
-
-Jun Lei (1):
-      drm/amd/display: update nv1x stutter latencies
-
-Kees Cook (2):
-      core/entry: Report syscall correctly for trace and audit
-      mailmap: add older email addresses for Kees Cook
-
-Kuninori Morimoto (3):
-      ASoC: pcm3168a: ignore 0 Hz settings
-      ASoC: ti: fixup ams_delta_mute() function name
-      ASoC: soc-core: add snd_soc_find_dai_with_mutex()
-
-Leon Romanovsky (1):
-      MAINTAINERS: Fix Max's and Shravan's emails
-
-Linus Torvalds (6):
-      fbcon: remove soft scrollback code
-      fbcon: remove now unusued 'softback_lines' cursor() argument
-      vgacon: remove software scrollback support
-      mm: allow a controlled amount of unfairness in the page lock
-      mm: fix wake_page_function() comment typos
-      Linux 5.9-rc6
-
-Luke D Jones (1):
-      ALSA: hda: fixup headset for ASUS GX502 laptop
-
-Madhusudanarao Amara (1):
-      usb: typec: intel_pmc_mux: Handle SCU IPC error conditions
-
-Marc Zyngier (1):
-      arm64: Allow CPUs unffected by ARM erratum 1418040 to come in late
-
-Masahiro Yamada (3):
-      kconfig: qconf: use delete[] instead of delete to free array (again)
-      kconfig: qconf: fix incomplete type 'struct gstr' warning
-      kconfig: qconf: revive help message in the info view
-
-Mateusz Gorski (1):
-      ASoC: Intel: skl_hda_dsp_generic: Fix NULLptr dereference in
-autosuspend delay
-
-Matthias Schiffer (1):
-      i2c: mxs: use MXS_DMA_CTRL_WAIT4END instead of DMA_CTRL_ACK
-
-Maxime Ripard (1):
-      clk: bcm: dvp: Select the reset framework
-
-Michael Ellerman (2):
-      selftests/powerpc: Skip PROT_SAO test in guests/LPARS
-      Revert "powerpc/build: vdso linker warning for orphan sections"
-
-Michael Kelley (1):
-      Drivers: hv: vmbus: Add timeout to vmbus_wait_for_unload
-
-Michel D=C3=A4nzer (1):
-      drm/amdgpu/dc: Require primary plane to be enabled whenever the CRTC =
-is
-
-Mika Westerberg (1):
-      thunderbolt: Retry DROM read once if parsing fails
-
-Muchun Song (1):
-      kprobes: fix kill kprobe which has been marked as gone
-
-Namhyung Kim (10):
-      perf test: Free aliases for PMU event map aliases test
-      perf metric: Fix some memory leaks
-      perf metric: Fix some memory leaks - part 2
-      perf evlist: Fix cpu/thread map leak
-      perf parse-event: Fix memory leak in evsel->unit
-      perf test: Fix memory leaks in parse-metric test
-      perf metric: Release expr_parse_ctx after testing
-      perf metric: Free metric when it failed to resolve
-      perf metric: Do not free metric when failed to resolve
-      perf test: Free formats for perf pmu parse test
-
-Nathan Chancellor (1):
-      clk: rockchip: Fix initialization of mux_pll_src_4plls_p
-
-Niklas Schnelle (1):
-      s390/pci: fix leak of DMA tables on hard unplug
-
-Oliver Neukum (2):
-      USB: UAS: fix disconnect by unplugging a hub
-      usblp: fix race between disconnect() and read()
-
-Palmer Dabbelt (2):
-      RISC-V: Take text_mutex in ftrace_init_nop()
-      RISC-V: Resurrect the MMIO timer implementation for M-mode systems
-
-Pavel Tatashin (1):
-      mm/memory_hotplug: drain per-cpu pages again during memory offline
-
-Penghao (1):
-      USB: quirks: Add USB_QUIRK_IGNORE_REMOTE_WAKEUP quirk for BYD
-zhaoxin notebook
-
-Peter Zijlstra (5):
-      s390/idle: fix suspicious RCU usage
-      ACPI: processor: Use CPUIDLE_FLAG_TIMER_STOP
-      ACPI: processor: Use CPUIDLE_FLAG_TLB_FLUSHED
-      cpuidle: Allow cpuidle drivers to take over RCU-idle
-      ACPI: processor: Take over RCU-idle for C3-BM idle
-
-Qi Liu (1):
-      perf stat: Fix the ratio comments of miss-events
-
-Qii Wang (2):
-      i2c: mediatek: Fix generic definitions for bus frequency
-      i2c: mediatek: Send i2c master code at more than 1MHz
-
-Quentin Perret (1):
-      ehci-hcd: Move include to keep CRC stable
-
-Ralph Campbell (1):
-      mm/thp: fix __split_huge_pmd_locked() for migration PMD
-
-Rander Wang (1):
-      ASoC: Intel: tgl_max98373: fix a runtime pm issue in multi-thread cas=
-e
-
-Ricardo Neri (1):
-      powercap: RAPL: Add support for Lakefield
-
-Rich Felker (2):
-      sh: remove spurious circular inclusion from asm/smp.h
-      sh: fix syscall tracing
-
-Stephan Gerhold (1):
-      ASoC: qcom: Set card->owner to avoid warnings
-
-Stephane Eranian (1):
-      perf record: Prevent override of attr->sample_period for libpfm4 even=
-ts
-
-Sumera Priyadarsini (1):
-      clk: versatile: Add of_node_put() before return statement
-
-Sunghyun Jin (1):
-      percpu: fix first chunk size calculation for populated bitmap
-
-Suravee Suthikulpanit (1):
-      iommu/amd: Restore IRTE.RemapEn bit for amd_iommu_activate_guest_mode
-
-Sven Schnelle (1):
-      lockdep: fix order in trace_hardirqs_off_caller()
-
-Sylwester Nawrocki (2):
-      ASoC: wm8994: Skip setting of the WM8994_MICBIAS register for WM1811
-      ASoC: wm8994: Ensure the device is resumed in wm89xx_mic_detect funct=
-ions
-
-Tetsuo Handa (1):
-      fbcon: Fix user font detection test at fbcon_resize().
-
-Thomas Bogendoerfer (2):
-      MIPS: SNI: Fix MIPS_L1_CACHE_SHIFT
-      MIPS: SNI: Fix spurious interrupts
-
-Tobias Diedrich (1):
-      serial: 8250_pci: Add Realtek 816a and 816b
-
-Tobias Klauser (3):
-      ftrace: let ftrace_enable_sysctl take a kernel pointer buffer
-      stackleak: let stack_erasing_sysctl take a kernel pointer buffer
-      fs/fs-writeback.c: adjust dirtytime_interval_handler definition
-to match prototype
-
-Vaibhav Jain (1):
-      powerpc/papr_scm: Limit the readability of 'perf_stats' sysfs attribu=
-te
-
-Vincent Huang (1):
-      Input: trackpoint - add new trackpoint variant IDs
-
-Vinod Koul (5):
-      ASoC: max98373: Fix return check for devm_regmap_init_sdw()
-      ASoC: rt1308-sdw: Fix return check for devm_regmap_init_sdw()
-      ASoC: rt711: Fix return check for devm_regmap_init_sdw()
-      ASoC: rt715: Fix return check for devm_regmap_init_sdw()
-      ASoC: rt700: Fix return check for devm_regmap_init_sdw()
-
-Volker R=C3=BCmelin (1):
-      i2c: i801: Fix resume bug
-
-Wang Hai (1):
-      drm/mediatek: Remove duplicated include
-
-Yicong Yang (2):
-      Revert "mtd: spi-nor: Disable the flash quad mode in spi_nor_restore(=
-)"
-      Revert "mtd: spi-nor: Add capability to disable flash quad mode"
-
-Yu Kuai (4):
-      drm/mediatek: Add missing put_device() call in mtk_ddp_comp_init()
-      drm/mediatek: Add exception handing in mtk_drm_probe() if
-component init fail
-      drm/mediatek: Add missing put_device() call in mtk_drm_kms_init()
-      drm/mediatek: Add missing put_device() call in mtk_hdmi_dt_parse_pdat=
-a()
-
-peterz@infradead.org (1):
-      locking/lockdep: Fix "USED" <- "IN-NMI" inversions
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
