@@ -2,92 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 680E62727D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA92D2727D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 16:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727589AbgIUOhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 10:37:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727333AbgIUOhq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:37:46 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF9FC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 07:37:46 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id e23so18097950eja.3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 07:37:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=YBeSXvLus4k89SuWvx5C+h9enofCPRsPbiAnHJnW60A=;
-        b=tS8DgT5159bYCvJY40SO6VuwxrqT1cXXFOCm8aXmbbh2ry1aGWGb6uDClNfEGnai+B
-         JGdMghZwvStBGl2hJBdKKtOJU8sr1wbo2sYxUewvTcW+gNi8IvoGxN8oM7rDOAYJ6SfN
-         0cKY7AE18gM+TPAi1eihr5MX0mk1rVn17OyxvxhOt+aa2dbgIAVTFMvZ/LQD2F6GFd0s
-         yzux9geU3RldxcPXVTFvORr7/Nxc0SyP13QMPqO3DW2/b6ALOomSesQcEe/wv3hL57VV
-         woNHgefDKYI5bgHLIglA4y4OrrwTK/qlX4sfbumrzaPWQrIoYdKhuVbE2ngSqqFzHw6M
-         wvbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=YBeSXvLus4k89SuWvx5C+h9enofCPRsPbiAnHJnW60A=;
-        b=f9f5V6y5YAAKowondBSyks+xkWzbfkiQi+7s37VnDfoQBnP58gAHJEJgvv4WSDFz0t
-         Ari5eNjoyAGluL08VvV8DVLep2jT90U1vrP8cDPd8R5lLwa1QQmF33+2twXIRfhzjyto
-         /Xg4K1n3HqqyxpSRbY6AGCjuFPb1PJW7MGzI3nz59C+0zUKYdNOJdLlzi6eeEXa9gXHz
-         jMrQNODTvmI8YQPuRV/ZU8687uFVe0u1BtooynIn64kZGjMiUdPsDlrZD5xiHqgMQOaU
-         9ZpgXrteFETUsgstoFj2G1YDZwDL0snhCw3mUl8mvjywnCO9joM4CYrPn8c+9UdZ22mT
-         2Uxw==
-X-Gm-Message-State: AOAM531LAws1azc4XZY3FZjYbP5F5hKMOD2/18oUU4IlOd/OHAwVWwLu
-        u9qBspcbbUvyZfWkbHU/COJvVJ1ZXttN5dCJOv5nS6WzLGBOSw==
-X-Google-Smtp-Source: ABdhPJwhXtSU3n2JqzHAvWL+ObX1hB9FbR/lmhh7oSMUv6M9LaBZioM3dK7aIllUn7WLtwD8GT0j9auDc6T8AYlGAhM=
-X-Received: by 2002:a17:906:d7ab:: with SMTP id pk11mr49816186ejb.472.1600699064876;
- Mon, 21 Sep 2020 07:37:44 -0700 (PDT)
+        id S1727688AbgIUOiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 10:38:05 -0400
+Received: from mga18.intel.com ([134.134.136.126]:54160 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726901AbgIUOiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 10:38:04 -0400
+IronPort-SDR: MyLTTzPZNdRs1y9knQA5YT7HkU3PA6A/V8vEpxP6Pf3ZXE/sOOctC3+xL+Ok2rG7Jyc7tooLHE
+ DmAS7mntPx8Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="148137710"
+X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; 
+   d="scan'208";a="148137710"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 07:38:01 -0700
+IronPort-SDR: Yr6Ou9Kpp30JO3lehVBuzaR7PSPo27rLfaSBy8DT+QX8KxyTQEW4BXepBPQWuiBoDqB+JMg3QN
+ oBSotKLc1gxg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; 
+   d="scan'208";a="412309314"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 21 Sep 2020 07:37:58 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 21 Sep 2020 17:37:57 +0300
+Date:   Mon, 21 Sep 2020 17:37:57 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Angus Ainslie <angus@akkea.ca>
+Cc:     kernel@puri.sm, MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        bryan.odonoghue@linaro.org
+Subject: Re: [PATCH 0/4] RFC: USB C extcon patchset for the tps6598x
+Message-ID: <20200921143757.GG1630537@kuha.fi.intel.com>
+References: <20200914164639.1487650-1-angus@akkea.ca>
 MIME-Version: 1.0
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 21 Sep 2020 07:37:33 -0700
-Message-ID: <CAPcyv4jCqzs7vjFCvLxHSL13OE0CX0Ptc75ApT-dyyGo_UZ1jw@mail.gmail.com>
-Subject: [GIT PULL] libnvdimm fix for v5.9-rc7
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>, Jan Kara <jack@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200914164639.1487650-1-angus@akkea.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus, please pull from:
+On Mon, Sep 14, 2020 at 09:46:35AM -0700, Angus Ainslie wrote:
+> We have a complex set of hardware components to manage our USB C data and
+> power. For these to work together we decided to use extcon to communicate
+> the system changes as various cables and devices are plugged in/out. We did
+> look at usb_roleswitch and the charging framework but thought it would be
+> preferable to keep all of the information together in one system.
+> 
+> The components we have in the system are:
+> 
+> 1) TPS65982 type USB type C controller
+> 2) dwc3 IP in the imx8mq
+> 3) BQ25895 battery charger
+> 
+> I'll break this into 2 parts the data role and the power role.
+> 
+> For the data role the TPS65982 senses connect and disconnect as well as data
+> source/sink. It is also controlling the USB 3 data lanes. The display port and
+> USB 3 muxing is handled by a different chip and we'll submit patches for that
+> later on. The dwc3 controls the USB 2 data lanes.
+> 
+> On the power side there are even more moving pieces. The TPS65982 negotiates
+> the power delivery contract, the dwc3 senses the BC1.2 charging current and the
+> BQ25895 sets whether we are sinking or sourcing current and what the current
+> limit is of the sink and source.
+> 
+> For both the data and power roles no single chip has all of the required
+> information. Is using extcon the correct way of doing this and if not what
+> are the alternatives ?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm
-tags/libnvdimm-fixes-5.9-rc7
+Do not use extcon with the Type-C drivers unless you have some really
+good reason for not using the dedicated frameworks for each thing. The
+reason why we even have some of the dedicated frameworks in the first
+place, for example the USB role switch class, is because extcon simply
+could not be made to work on every type of hardware architecture.
 
-...to receive a straggling compilation fixup. Apologies for the thrash
-this caused.
+So you will need to register a power supply in tps6598x.c just like
+the other USB Type-C drivers like tcpm.c and ucsi.c if the TPS65982
+does not communicated directly with the BQ25895. That can be one
+of "supplied_from" (and also "supplied_to" if needed for sourcing) for
+the bq25890_changer. You probable only need to implement the
+external_power_changed() hook for it if it's missing in order to make
+it work. You can also register a power supply in dwc3 and use it as a
+second supply for bq25890 if you still really need to handle BC1.2.
 
----
+The data role should already be handled for you. dwc3 already
+registers an USB role switch, and tps6598x.c already configures one.
+For data role you should not need any additional code.
 
-The following changes since commit ba4f184e126b751d1bffad5897f263108befc780:
+Please note that there is also framework for the alt mode muxes.
 
-  Linux 5.9-rc6 (2020-09-20 16:33:55 -0700)
 
-are available in the Git repository at:
+> The extcon extensions allow us to communicate the the power roles amongst
+> the various chips.
+> 
+> This patch series has been tested with the 5.9-rc4 kernel on the Purism
+> Librem5 HW. Assuming this is the correct way to use extcon there will be
+> follow on patches to the BQ25895 and dwc3 drivers.
+> 
+> Strictly speaking only the first 3 patches are needed for extcon support, the
+> forth patch decodes the power delivery contracts which makes use of the extcon
+> system.
+> 
+> 
+> Angus Ainslie (4):
+>   extcon: Add USB VBUS properties
+>   usb: typec: tps6589x: register as an extcon provider
+>   usb: typec: tps6598x: Add the extcon USB chargers
+>   usb: typec: tps6598x: Add the power delivery irq
+> 
+>  drivers/usb/typec/tps6598x.c | 488 ++++++++++++++++++++++++++++++++++-
+>  include/linux/extcon.h       |  17 +-
+>  2 files changed, 503 insertions(+), 2 deletions(-)
+> 
+> -- 
+> 2.25.1
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm
-tags/libnvdimm-fixes-5.9-rc7
+thanks,
 
-for you to fetch changes up to 88b67edd7247466bc47f01e1dc539b0d0d4b931e:
-
-  dax: Fix compilation for CONFIG_DAX && !CONFIG_FS_DAX (2020-09-21
-06:53:09 -0700)
-
-----------------------------------------------------------------
-libnvdimm fix 5.9-rc7
-
-- Fix compilation for the new dax_supported() exported helper
-
-----------------------------------------------------------------
-Jan Kara (1):
-      dax: Fix compilation for CONFIG_DAX && !CONFIG_FS_DAX
-
- include/linux/dax.h | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+-- 
+heikki
