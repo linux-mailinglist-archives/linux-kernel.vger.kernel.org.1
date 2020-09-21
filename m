@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C413272FDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 874F627309E
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 19:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730362AbgIURAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 13:00:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42928 "EHLO mail.kernel.org"
+        id S1728795AbgIURGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 13:06:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729333AbgIUQkS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:40:18 -0400
+        id S1728526AbgIUQcn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 12:32:43 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8F9C7206DC;
-        Mon, 21 Sep 2020 16:40:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A4BC120757;
+        Mon, 21 Sep 2020 16:32:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600706418;
-        bh=bIgKcud45TJ9ezMaRGKDFfyhxWAd/pP56z2eojzJ0PU=;
+        s=default; t=1600705963;
+        bh=4kLfHlDQJODGpW1NKeZhmlYOo8d6L46sqirgCi/N0Cs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bSQKzOBm9f9ow1+iDPeWfSkqFzr+6MP6tB8/BhQi2yu98/SBj+wWDeBmVOFgw/F/A
-         1shgOEEXUY7gU4pyHH3izSUBwMdh9NdqQ92QKATZosW0Qhuq0iifLonH9+sWgnEhr7
-         rPfClSoXrLMtN5DAoVH8ky5rYimq6akxIlmFZIg0=
+        b=ANK9IJiKj4uZG2TM/vtReFB0WYSoyCndtGB//Bog2f8NUHlYdOp0dfe2Nhm28nfP4
+         g+AC2m5pbHFBT094Kz2g4rcToWLi7+SNssDuzMmj8nnkpmiQ4CPN4qkm18ATL9bjrr
+         w/IFSoQqquQLjh7WC7wpXcYt00YfaPqg8oP7JO7o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Salvatore Bonaccorso <carnil@debian.org>
-Subject: [PATCH 4.14 61/94] gfs2: initialize transaction tr_ailX_lists earlier
+        stable@vger.kernel.org, Zhi Li <yieli@redhat.com>,
+        "J. Bruce Fields" <bfields@redhat.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 32/46] SUNRPC: stop printk reading past end of string
 Date:   Mon, 21 Sep 2020 18:27:48 +0200
-Message-Id: <20200921162038.353146842@linuxfoundation.org>
+Message-Id: <20200921162034.780549642@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
-References: <20200921162035.541285330@linuxfoundation.org>
+In-Reply-To: <20200921162033.346434578@linuxfoundation.org>
+References: <20200921162033.346434578@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,59 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Peterson <rpeterso@redhat.com>
+From: J. Bruce Fields <bfields@redhat.com>
 
-commit cbcc89b630447ec7836aa2b9242d9bb1725f5a61 upstream.
+[ Upstream commit 8c6b6c793ed32b8f9770ebcdf1ba99af423c303b ]
 
-Since transactions may be freed shortly after they're created, before
-a log_flush occurs, we need to initialize their ail1 and ail2 lists
-earlier. Before this patch, the ail1 list was initialized in gfs2_log_flush().
-This moves the initialization to the point when the transaction is first
-created.
+Since p points at raw xdr data, there's no guarantee that it's NULL
+terminated, so we should give a length.  And probably escape any special
+characters too.
 
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-Cc: Salvatore Bonaccorso <carnil@debian.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reported-by: Zhi Li <yieli@redhat.com>
+Signed-off-by: J. Bruce Fields <bfields@redhat.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/gfs2/glops.c |    2 ++
- fs/gfs2/log.c   |    2 --
- fs/gfs2/trans.c |    2 ++
- 3 files changed, 4 insertions(+), 2 deletions(-)
+ net/sunrpc/rpcb_clnt.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/fs/gfs2/glops.c
-+++ b/fs/gfs2/glops.c
-@@ -89,6 +89,8 @@ static void gfs2_ail_empty_gl(struct gfs
- 	memset(&tr, 0, sizeof(tr));
- 	INIT_LIST_HEAD(&tr.tr_buf);
- 	INIT_LIST_HEAD(&tr.tr_databuf);
-+	INIT_LIST_HEAD(&tr.tr_ail1_list);
-+	INIT_LIST_HEAD(&tr.tr_ail2_list);
- 	tr.tr_revokes = atomic_read(&gl->gl_ail_count);
+diff --git a/net/sunrpc/rpcb_clnt.c b/net/sunrpc/rpcb_clnt.c
+index c89626b2afffb..696381a516341 100644
+--- a/net/sunrpc/rpcb_clnt.c
++++ b/net/sunrpc/rpcb_clnt.c
+@@ -977,8 +977,8 @@ static int rpcb_dec_getaddr(struct rpc_rqst *req, struct xdr_stream *xdr,
+ 	p = xdr_inline_decode(xdr, len);
+ 	if (unlikely(p == NULL))
+ 		goto out_fail;
+-	dprintk("RPC: %5u RPCB_%s reply: %s\n", req->rq_task->tk_pid,
+-			req->rq_task->tk_msg.rpc_proc->p_name, (char *)p);
++	dprintk("RPC: %5u RPCB_%s reply: %*pE\n", req->rq_task->tk_pid,
++			req->rq_task->tk_msg.rpc_proc->p_name, len, (char *)p);
  
- 	if (!tr.tr_revokes)
---- a/fs/gfs2/log.c
-+++ b/fs/gfs2/log.c
-@@ -734,8 +734,6 @@ void gfs2_log_flush(struct gfs2_sbd *sdp
- 	tr = sdp->sd_log_tr;
- 	if (tr) {
- 		sdp->sd_log_tr = NULL;
--		INIT_LIST_HEAD(&tr->tr_ail1_list);
--		INIT_LIST_HEAD(&tr->tr_ail2_list);
- 		tr->tr_first = sdp->sd_log_flush_head;
- 		if (unlikely (state == SFS_FROZEN))
- 			gfs2_assert_withdraw(sdp, !tr->tr_num_buf_new && !tr->tr_num_databuf_new);
---- a/fs/gfs2/trans.c
-+++ b/fs/gfs2/trans.c
-@@ -56,6 +56,8 @@ int gfs2_trans_begin(struct gfs2_sbd *sd
- 						   sizeof(u64));
- 	INIT_LIST_HEAD(&tr->tr_databuf);
- 	INIT_LIST_HEAD(&tr->tr_buf);
-+	INIT_LIST_HEAD(&tr->tr_ail1_list);
-+	INIT_LIST_HEAD(&tr->tr_ail2_list);
- 
- 	sb_start_intwrite(sdp->sd_vfs);
- 
+ 	if (rpc_uaddr2sockaddr(req->rq_xprt->xprt_net, (char *)p, len,
+ 				sap, sizeof(address)) == 0)
+-- 
+2.25.1
+
 
 
