@@ -2,116 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 379D9272A4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 488F3272A4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 17:36:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727660AbgIUPfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 11:35:02 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:48258 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726611AbgIUPfC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 11:35:02 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08LFW5AR065829;
-        Mon, 21 Sep 2020 11:34:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=eOuvleoisJLOkfYrr6Wvhr73JMHk+mzZFLo3r3/rWr4=;
- b=WdGI3zK/c0E1ppXDH4DtIKE2zjXpjdGbWjCU59mI8AYUqlWJmMLs59GJfMs1ceH19J76
- TbGZfJY3Rsw8mRMnVqmzXnzbNfYjkVnuS2vsz62OomaBzyuSmqcWTTe9N5LmsDbhorfI
- v+8AfSVoMJ3J5zl+1Y5m1eijZZl/Em86wCylQdcjqxlxprth9xsExitCP29lwYIHeMCg
- BtEkLuxPG2Rr6BCz8+eKECd2oveK/dq2H+5NVvCHMTupp84wCEWGxC4Xf1lDwRBBoN//
- wIaZA1l+0VOOIATsDpN9XI9yvkpjoy3bdyy0iAQkfOZltfw7tXH9V8HTx5jNIOr7CFIN xg== 
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33pxw902ss-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Sep 2020 11:34:39 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08LFUJqZ002660;
-        Mon, 21 Sep 2020 15:34:37 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma01fra.de.ibm.com with ESMTP id 33n9m7s4dm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Sep 2020 15:34:37 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08LFYZlS32113026
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 21 Sep 2020 15:34:35 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1AF094C046;
-        Mon, 21 Sep 2020 15:34:35 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D85F54C04A;
-        Mon, 21 Sep 2020 15:34:34 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.145.187.68])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 21 Sep 2020 15:34:34 +0000 (GMT)
-Subject: Re: [PATCH -next] ocxl: simplify the return expression of
- free_function_dev()
-To:     Qinglang Miao <miaoqinglang@huawei.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20200921131047.92526-1-miaoqinglang@huawei.com>
-From:   Frederic Barrat <fbarrat@linux.ibm.com>
-Message-ID: <0dbda6be-6b5f-aeb7-76fa-39c5637fd758@linux.ibm.com>
-Date:   Mon, 21 Sep 2020 17:34:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <20200921131047.92526-1-miaoqinglang@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1727406AbgIUPgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 11:36:09 -0400
+Received: from mga17.intel.com ([192.55.52.151]:14365 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726720AbgIUPgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 11:36:09 -0400
+IronPort-SDR: l9NNHBS5tCx5RQKnVtB8UJQv90hIXDA+L0Eg5AWrBE6xOmTwxJyn0t8LVf2kD0dCT9j+nbP5CH
+ JP75pwT6jdIQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="140412176"
+X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; 
+   d="scan'208";a="140412176"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 08:36:08 -0700
+IronPort-SDR: 7ad+1nVDeDsYLl6lKHH1rGCwQwYKodf6VPRjBm/yFyFSLtsis/mfLXUp/eAVjyVUeMIpo3IS3N
+ KGIFQ3VA2HrQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,286,1596524400"; 
+   d="scan'208";a="290030759"
+Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
+  by fmsmga007.fm.intel.com with ESMTP; 21 Sep 2020 08:36:08 -0700
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 21 Sep 2020 08:36:08 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Mon, 21 Sep 2020 08:36:08 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.175)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Mon, 21 Sep 2020 08:36:04 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KuPw/bCKG+dBb5VyB9USFI1Jx+DErhb6+BDKgOLLg0DFvW1S07zky6/48a/KR7wWQwr+51aiwtQSVICDyME8AJV6NFkXfTI0g+T+oSPKLxPZH06Rpeutjft+lP+28BxHCFaNILnfbbcUZ/7s/HcpfKHQ9YGtg5OM7f5YxPNcbNs2i0wcFhAgqJmqq39F6mvriZa79cAF1axRdZkixRM+ivZ6+jfB2PXJ3VVlrQ7jt3vL7yJjNfbNtgoOWeG/U4rKL13fc/j7xhKiiL8c4jhy144NpHE8SwbwBLdqzQL4lX4Bkeg+Fz3/DUNWUNMYxKGNVaHmQo1q4MVt73AUa20b4w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kVjG0io+Qg4tuV7D96afQI+wfdt1aTUuu1Pl8McnNhg=;
+ b=ZiabBcZnAf09/aoZ1ccIETpFYr02lrb0O1/sKMqfd6KDXnOaavhiZdE5pzZ1h2NaK0P9xzvEGEsP6tm9JZMJVks4uvuSWjInXlsFy3iH3HGQupcPJhg3a01Bk+96uiyuxf2LUHMD6svaufGuE3VLS0gdIWjnQd8nFagCLrNj/exz+g9neUMLz+WVCWPVXrwCQhF4RTSSuHpYacDTaJLHGGHM6xOc+JiuWr/G6XWUlt0Co39fOb2UGvGwRcO0CeC7WhPS271o9ROiH/kOkv3URXF3y5EMf3MOLs+Kpoj2E01b/msBDPVtoT45s2BHsX/5gJiaocONvDMcv3oZTz5Mfg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kVjG0io+Qg4tuV7D96afQI+wfdt1aTUuu1Pl8McnNhg=;
+ b=UQv+WP34YXHFVlyhRiyqNHLVyGbW51pPgmMTBmDZYfkBDGD2Byn53zz0YNpsX+/gf4YHfdXIGRXiyxUXS7U2ppVrZ+zgt1+npEcTDupM6yRXxO56rhYq72HmEXrnuJ9S1WCo0Doc0RQolkQdkiLbkt9cq3HccxOydqqA+g5VKcw=
+Received: from DM6PR11MB3819.namprd11.prod.outlook.com (2603:10b6:5:13f::31)
+ by DM6PR11MB4644.namprd11.prod.outlook.com (2603:10b6:5:28f::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14; Mon, 21 Sep
+ 2020 15:36:03 +0000
+Received: from DM6PR11MB3819.namprd11.prod.outlook.com
+ ([fe80::7823:516e:1ec4:a60d]) by DM6PR11MB3819.namprd11.prod.outlook.com
+ ([fe80::7823:516e:1ec4:a60d%5]) with mapi id 15.20.3391.026; Mon, 21 Sep 2020
+ 15:36:03 +0000
+From:   "Wu, Hao" <hao.wu@intel.com>
+To:     Liu Shixin <liushixin2@huawei.com>, Tom Rix <trix@redhat.com>,
+        "Moritz Fischer" <mdf@kernel.org>
+CC:     "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH -next] fpga: dfl: simplify the return expression of
+ fme_perf_pmu_register
+Thread-Topic: [PATCH -next] fpga: dfl: simplify the return expression of
+ fme_perf_pmu_register
+Thread-Index: AQHWj+2UJse7LCHF60irHtKEohVbWKlzOYfg
+Date:   Mon, 21 Sep 2020 15:36:03 +0000
+Message-ID: <DM6PR11MB3819DE1E7F2FF14DF12C5D48853A0@DM6PR11MB3819.namprd11.prod.outlook.com>
+References: <20200921082433.2591305-1-liushixin2@huawei.com>
+In-Reply-To: <20200921082433.2591305-1-liushixin2@huawei.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-21_05:2020-09-21,2020-09-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- priorityscore=1501 adultscore=0 clxscore=1011 lowpriorityscore=0
- spamscore=0 mlxlogscore=999 mlxscore=0 suspectscore=2 bulkscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009210110
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+authentication-results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.198.147.217]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: fa2f4b0a-af52-4ee0-79b3-08d85e440c8a
+x-ms-traffictypediagnostic: DM6PR11MB4644:
+x-microsoft-antispam-prvs: <DM6PR11MB46441C3F8F12114D2D7D7891853A0@DM6PR11MB4644.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2331;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 0KDhtwRlnMgZm3VmVO8sj/C4S0q6YurAX5JrWzZd3teOidRytzb+GX4TENWdivuiim6BcatWHBvEHOhZuX0epL6NQAYUFPf4WjQoOkKRC5LyPm0Kr3HteE25MASGXX+1clMaU/J4r/M53ZEE7aahWZ6KtCbHuMAfEHn6sjN/GNY4vB1LCk76DGe2pM1SczddggOu3RAhg6Ljxs/HhG59Nle4ycb2Tvi4dmk5UIfz7t7wf+mGyV7OIAxaSKyh+2dbmMtW6Q+TkIFwQddJLVWXp+UIPW/y40cH0THkoMPGqVCvoPbNEgAbdDO9lICOXlWd2hR+NVJf7cXa02qPex3EAg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3819.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(366004)(39860400002)(376002)(136003)(7696005)(4326008)(26005)(33656002)(54906003)(110136005)(316002)(186003)(478600001)(76116006)(2906002)(66476007)(55016002)(83380400001)(52536014)(8936002)(71200400001)(6506007)(86362001)(5660300002)(66446008)(66556008)(9686003)(66946007)(64756008)(8676002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: ksaAD6GSGn56wGhSDBuuxQS/QNwiBgvFNPAAT1KagIR5EI3JoQfuJPGMCVcNVuiCg5n3jocycc2QrqSjr3LlrA75+/rhQJ3X0kKgWRS7aFLJfNy/VCTRzV4nWmWjf6aiebWmap++WkYOhklpI2CA/h3pbGZhMuAxKARZPTIe5CLY7qS+AXjttdBr7jVGVtCZiX6x3w+ES7eeWe7bx8cm9QiU1Srq/MY/46yTCrr5k4b4m5eoJRKmVqtczUIowDw5iP9GnW698BwtoN5IX+DL4QYcTfx7OJfXhqa9dcDod4ZRLdDTIpvL4zLzwJibZdEvH7ufFRvtViaGXpooyNiOHPFNgMb2NW+HNoJYOFAN85yRA05DXaTO2dxhpMArx0VhFCCdJNdmfu+v958wn3K9QWlnq+Znq//tw8bWFv5YgbIeqltsnWIA3T7A2prNtTal6s2vuaSYfjMzUs1wI5OC13UQu3HVd2LG2ERC98ypUS0NskLsUuG1pbfqWdd9yNo3mm5egYodIbv7OlgDflsyZj4e8IautdmnH0lMqDV9KPnLpFr1GXX9aXfnO+tTLRoim2cCl6eEgFH0+DOnuEo4kpX6+7FiEfvXsnRlbCFWemIbXHMtE5BOqPz69tFjKokq8WWeeV544ULuezUv7QQKuw==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3819.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fa2f4b0a-af52-4ee0-79b3-08d85e440c8a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Sep 2020 15:36:03.2155
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: p3XXqRptSA6GesVIES4/fGjSQurc1nAEqQq/+VP/oyA3R9hLQyE7dMbNY2lJjUh4yaQ4lVJfp0zx6ncvO4Y2jA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4644
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 21/09/2020 à 15:10, Qinglang Miao a écrit :
+> Subject: [PATCH -next] fpga: dfl: simplify the return expression of
+> fme_perf_pmu_register
+>=20
 > Simplify the return expression.
-> 
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+>=20
+> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+
+Looks good to me.
+
+Acked-by: Wu Hao <hao.wu@intel.com>
+
+Thanks
+Hao
+
 > ---
-
-
-Thanks!
-Acked-by: Frederic Barrat <fbarrat@linux.ibm.com>
-
-
->   drivers/misc/ocxl/core.c | 7 +------
->   1 file changed, 1 insertion(+), 6 deletions(-)
-> 
-> diff --git a/drivers/misc/ocxl/core.c b/drivers/misc/ocxl/core.c
-> index b7a09b21a..aebfc53a2 100644
-> --- a/drivers/misc/ocxl/core.c
-> +++ b/drivers/misc/ocxl/core.c
-> @@ -327,14 +327,9 @@ static void free_function_dev(struct device *dev)
->   
->   static int set_function_device(struct ocxl_fn *fn, struct pci_dev *dev)
->   {
-> -	int rc;
+>  drivers/fpga/dfl-fme-perf.c | 7 +------
+>  1 file changed, 1 insertion(+), 6 deletions(-)
+>=20
+> diff --git a/drivers/fpga/dfl-fme-perf.c b/drivers/fpga/dfl-fme-perf.c
+> index 531266287eee..e881fbe6d838 100644
+> --- a/drivers/fpga/dfl-fme-perf.c
+> +++ b/drivers/fpga/dfl-fme-perf.c
+> @@ -906,7 +906,6 @@ static int fme_perf_pmu_register(struct
+> platform_device *pdev,
+>  {
+>  	struct pmu *pmu =3D &priv->pmu;
+>  	char *name;
+> -	int ret;
+>=20
+>  	spin_lock_init(&priv->fab_lock);
+>=20
+> @@ -926,11 +925,7 @@ static int fme_perf_pmu_register(struct
+> platform_device *pdev,
+>=20
+>  	name =3D devm_kasprintf(priv->dev, GFP_KERNEL, "dfl_fme%d", pdev-
+> >id);
+>=20
+> -	ret =3D perf_pmu_register(pmu, name, -1);
+> -	if (ret)
+> -		return ret;
 > -
->   	fn->dev.parent = &dev->dev;
->   	fn->dev.release = free_function_dev;
-> -	rc = dev_set_name(&fn->dev, "ocxlfn.%s", dev_name(&dev->dev));
-> -	if (rc)
-> -		return rc;
 > -	return 0;
-> +	return dev_set_name(&fn->dev, "ocxlfn.%s", dev_name(&dev->dev));
->   }
->   
->   static int assign_function_actag(struct ocxl_fn *fn)
-> 
+> +	return perf_pmu_register(pmu, name, -1);
+>  }
+>=20
+>  static void fme_perf_pmu_unregister(struct fme_perf_priv *priv)
+> --
+> 2.25.1
+
