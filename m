@@ -2,111 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F71B273494
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 23:03:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BECE273498
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Sep 2020 23:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727867AbgIUVDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 17:03:37 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:46456 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726417AbgIUVDh (ORCPT
+        id S1727014AbgIUVGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 17:06:15 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:43748 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726427AbgIUVGO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 17:03:37 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kKSyE-0002gj-CM; Mon, 21 Sep 2020 21:03:34 +0000
-Subject: Re: [PATCH][next] PCI: brcmstb: fix a missing if statement on a
- return error check
-To:     Jim Quinlan <james.quinlan@broadcom.com>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Jim Quinlan <jquinlan@broadcom.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
-        <linux-pci@vger.kernel.org>, kernel-janitors@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200921144017.334602-1-colin.king@canonical.com>
- <c9d7435b-42a1-2e40-7d40-62d227523f79@gmail.com>
- <CA+-6iNyg16dEfnJZpSppRHO6Z6fsWyQdjyzoVsBRW4W1x_4Yeg@mail.gmail.com>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <2702aa0d-7f60-05c1-7b9b-cfe313024886@canonical.com>
-Date:   Mon, 21 Sep 2020 22:03:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        Mon, 21 Sep 2020 17:06:14 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 8A4241C0B8C; Mon, 21 Sep 2020 23:06:11 +0200 (CEST)
+Date:   Mon, 21 Sep 2020 23:06:10 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>, Dan Murphy <dmurphy@ti.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org, linux-pm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: move Milo Kim to credits
+Message-ID: <20200921210610.GA5338@amd>
+References: <20200921210233.21449-1-krzk@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CA+-6iNyg16dEfnJZpSppRHO6Z6fsWyQdjyzoVsBRW4W1x_4Yeg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="W/nzBZO5zC0uMSeA"
+Content-Disposition: inline
+In-Reply-To: <20200921210233.21449-1-krzk@kernel.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2020 21:53, Jim Quinlan wrote:
-> Hello,
-> I am fine with Colin's suggested change or Florians as well:
-> 
->          ret = brcm_phy_start(pcie);
-> +        if (ret) {
-> +                clk_disable_unprepare(pcie->clk);
->                  return ret;
-> +        }
-> 
-> Currently, our STB upstream suspend/resume is not functional yet and
-> this is how this omission slipped by testing.
-> 
-> Thanks,
-> Jim Quinlan
-> Broadcom STB
-> 
-> On Mon, Sep 21, 2020 at 3:43 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
->>
->> On 9/21/20 7:40 AM, Colin King wrote:
->>> From: Colin Ian King <colin.king@canonical.com>
->>>
->>> The error return ret is not being check with an if statement and
->>> currently the code always returns leaving the following code as
->>> dead code. Fix this by adding in the missing if statement.
->>>
->>> Addresses-Coverity: ("Structurally dead code")
->>> Fixes: ad3d29c77e1e ("PCI: brcmstb: Add control of rescal reset")
->>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
->>> ---
->>>  drivers/pci/controller/pcie-brcmstb.c | 1 +
->>>  1 file changed, 1 insertion(+)
->>>
->>> diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
->>> index 7a3ff4632e7c..cb0c11b7308e 100644
->>> --- a/drivers/pci/controller/pcie-brcmstb.c
->>> +++ b/drivers/pci/controller/pcie-brcmstb.c
->>> @@ -1154,6 +1154,7 @@ static int brcm_pcie_resume(struct device *dev)
->>>       clk_prepare_enable(pcie->clk);
->>>
->>>       ret = brcm_phy_start(pcie);
->>> +     if (ret)
->>>               return ret;
->>
->> Maybe this should also disable the clock if we failed to start the PHY
->> somehow.
-> 
-> Hi Florian,
-> 
-> I'm fine with Colin's change as
-> 
 
-I'll send a V2 in a short while
-> 
->>
->> --
->> Florian
+--W/nzBZO5zC0uMSeA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hi!
+
+> Milo Kim's email in TI bounces with permanent error (550: Invalid
+> recipient).  Last email from him on LKML was in 2017.  Move Milo Kim to
+> credits and remove the separate driver entries for:
+>=20
+>  - TI LP855x backlight driver,
+>  - TI LP8727 charger driver,
+>  - TI LP8788 MFD (ADC, LEDs, charger and regulator) drivers.
+>=20
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+
+I believe normal way would be to mark the entries "orphaned", not to
+drop them altogether. Plus, I believe someone from TI is likely to
+step up.
+
+Best regards,
+								Pavel
+
+
+
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 5b9621ca2b31..031adeff29cc 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -17471,29 +17471,6 @@ S:	Maintained
+>  F:	sound/soc/codecs/isabelle*
+>  F:	sound/soc/codecs/lm49453*
+> =20
+> -TI LP855x BACKLIGHT DRIVER
+> -M:	Milo Kim <milo.kim@ti.com>
+> -S:	Maintained
+> -F:	Documentation/driver-api/backlight/lp855x-driver.rst
+> -F:	drivers/video/backlight/lp855x_bl.c
+> -F:	include/linux/platform_data/lp855x.h
+> -
+> -TI LP8727 CHARGER DRIVER
+> -M:	Milo Kim <milo.kim@ti.com>
+> -S:	Maintained
+> -F:	drivers/power/supply/lp8727_charger.c
+> -F:	include/linux/platform_data/lp8727.h
+> -
+> -TI LP8788 MFD DRIVER
+> -M:	Milo Kim <milo.kim@ti.com>
+> -S:	Maintained
+> -F:	drivers/iio/adc/lp8788_adc.c
+> -F:	drivers/leds/leds-lp8788.c
+> -F:	drivers/mfd/lp8788*.c
+> -F:	drivers/power/supply/lp8788-charger.c
+> -F:	drivers/regulator/lp8788-*.c
+> -F:	include/linux/mfd/lp8788*.h
+> -
+>  TI NETCP ETHERNET DRIVER
+>  M:	Wingman Kwok <w-kwok2@ti.com>
+>  M:	Murali Karicheri <m-karicheri2@ti.com>
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--W/nzBZO5zC0uMSeA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl9pFcIACgkQMOfwapXb+vLy/QCgpLhlHZK8W60IO1WeGXWGyjdL
+DgUAnA9wxYGm4Wd3nk9+jCX3EnjhPK6A
+=Cjsr
+-----END PGP SIGNATURE-----
+
+--W/nzBZO5zC0uMSeA--
