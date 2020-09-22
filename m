@@ -2,109 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA6B274877
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 20:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0E3627487B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 20:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726686AbgIVSp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 14:45:58 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:49034 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726573AbgIVSp6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 14:45:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Sender:
-        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=X7NUEq0ufXOsugZoq6CuHmrSiYQPXwP5Ooq9psOTR50=; b=hgbszfn8Q8M+LUV4fO4UmpVrpo
-        W9L10nlBf4AUaJi6wIOyIwMb1CFqMtZY/o9YPR7nGiqdkOmv1tNNRIf5ZhnERq1qVDJh1Nc9vL0nD
-        dJqxD7xLNbLfgkEh7EKiYDePwAfQG01lcQHmMnJJ5jiTFq0cpwqA1E2mIuGRHrpQb4tjqdv1ALsZs
-        vmVwl83kpB1glfzXJMV2KiZK6XxfrMW9wMHWuwarvQfq7GqHyqSNYYu9JgOnHZUQVZuUBmsOf9Ie/
-        p4RgmnFrS92unexkZnUWkGuAIAFVc5EX/1pxqIwTMeQ9QJAqoKDGK/mQj+ZDdpwWf1oUhOiALDh9a
-        CILlE2Bg==;
-Received: from guinness.priv.deltatee.com ([172.16.1.162])
-        by ale.deltatee.com with esmtp (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1kKnIa-0003mC-Kv; Tue, 22 Sep 2020 12:45:57 -0600
-To:     Robin Murphy <robin.murphy@arm.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Tom Murphy <murphyt7@tcd.ie>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     Intel-gfx@lists.freedesktop.org, Ashok Raj <ashok.raj@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-References: <20200912032200.11489-1-baolu.lu@linux.intel.com>
- <776771a2-247a-d1be-d882-bee02d919ae0@deltatee.com>
- <d75e5c9c-1834-7f77-aa51-666186f3db5c@arm.com>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <3f50d09c-c9a1-77aa-0228-985c5d1f5b2b@deltatee.com>
-Date:   Tue, 22 Sep 2020 12:45:52 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726715AbgIVSqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 14:46:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45006 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726573AbgIVSqn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 14:46:43 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6DCC520715;
+        Tue, 22 Sep 2020 18:46:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600800402;
+        bh=/EPp8Eyd8DyfuPNncV9qHeoV1jlxMhy753ljerLLf+E=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=KSzieesIWpsfTrelXrNEUojdz2wlSgoYYYUuww2Pi71Vi7s+QfwTJtQnfKMwL+OMX
+         y0aLDRWwvoOFv/PGTwWcRJtHZqSzFnBvJs47eXxwdIQk+V0MVnQvPdSm4U7h7+ANie
+         z1FVUjwF+iip/1DA+02GvoClfAdNOGIfr+1yppqw=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <d75e5c9c-1834-7f77-aa51-666186f3db5c@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 172.16.1.162
-X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org, ashok.raj@intel.com, Intel-gfx@lists.freedesktop.org, hch@infradead.org, dwmw2@infradead.org, murphyt7@tcd.ie, joro@8bytes.org, baolu.lu@linux.intel.com, robin.murphy@arm.com
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE,MYRULES_FREE,NICE_REPLY_A autolearn=ham
-        autolearn_force=no version=3.4.2
-Subject: Re: [Intel-gfx] [PATCH v3 0/6] Convert the intel iommu driver to the
- dma-iommu api
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200904030958.13325-6-jonathan@marek.ca>
+References: <20200904030958.13325-1-jonathan@marek.ca> <20200904030958.13325-6-jonathan@marek.ca>
+Subject: Re: [PATCH v2 5/5] clk: qcom: add video clock controller driver for SM8250
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+To:     Jonathan Marek <jonathan@marek.ca>, linux-arm-msm@vger.kernel.org
+Date:   Tue, 22 Sep 2020 11:46:41 -0700
+Message-ID: <160080040123.310579.8471841951357841843@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Quoting Jonathan Marek (2020-09-03 20:09:54)
+> Add support for the video clock controller found on SM8250 based devices.
+>=20
+> Derived from the downstream driver.
+>=20
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> ---
+>  drivers/clk/qcom/Kconfig          |   9 +
+>  drivers/clk/qcom/Makefile         |   1 +
+>  drivers/clk/qcom/videocc-sm8250.c | 518 ++++++++++++++++++++++++++++++
+>  3 files changed, 528 insertions(+)
+>  create mode 100644 drivers/clk/qcom/videocc-sm8250.c
+>=20
+> diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
+> index 40d7ee9886c9..95efa38211d5 100644
+> --- a/drivers/clk/qcom/Kconfig
+> +++ b/drivers/clk/qcom/Kconfig
+> @@ -453,6 +453,15 @@ config SM_VIDEOCC_8150
+>           Say Y if you want to support video devices and functionality su=
+ch as
+>           video encode and decode.
+> =20
+> +config SM_VIDEOCC_8250
+> +       tristate "SM8250 Video Clock Controller"
+> +       select SDM_GCC_8250
+> +       select QCOM_GDSC
+> +       help
+> +         Support for the video clock controller on SM8250 devices.
+> +         Say Y if you want to support video devices and functionality su=
+ch as
+> +         video encode and decode.
+> +
+>  config SPMI_PMIC_CLKDIV
+>         tristate "SPMI PMIC clkdiv Support"
+>         depends on SPMI || COMPILE_TEST
+> diff --git a/drivers/clk/qcom/Makefile b/drivers/clk/qcom/Makefile
+> index 6f4c580d2728..55fb20800b66 100644
+> --- a/drivers/clk/qcom/Makefile
+> +++ b/drivers/clk/qcom/Makefile
+> @@ -69,6 +69,7 @@ obj-$(CONFIG_SM_GCC_8250) +=3D gcc-sm8250.o
+>  obj-$(CONFIG_SM_GPUCC_8150) +=3D gpucc-sm8150.o
+>  obj-$(CONFIG_SM_GPUCC_8250) +=3D gpucc-sm8250.o
+>  obj-$(CONFIG_SM_VIDEOCC_8150) +=3D videocc-sm8150.o
+> +obj-$(CONFIG_SM_VIDEOCC_8250) +=3D videocc-sm8250.o
+>  obj-$(CONFIG_SPMI_PMIC_CLKDIV) +=3D clk-spmi-pmic-div.o
+>  obj-$(CONFIG_KPSS_XCC) +=3D kpss-xcc.o
+>  obj-$(CONFIG_QCOM_HFPLL) +=3D hfpll.o
+> diff --git a/drivers/clk/qcom/videocc-sm8250.c b/drivers/clk/qcom/videocc=
+-sm8250.c
+> new file mode 100644
+> index 000000000000..a814d10945c4
+> --- /dev/null
+> +++ b/drivers/clk/qcom/videocc-sm8250.c
+> @@ -0,0 +1,518 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.
+> + */
+> +
+> +#include <linux/clk-provider.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +
+> +#include <dt-bindings/clock/qcom,videocc-sm8250.h>
+> +
+[...]
+> +static struct clk_rcg2 video_cc_ahb_clk_src =3D {
+> +       .cmd_rcgr =3D 0xbd4,
+> +       .mnd_width =3D 0,
+> +       .hid_width =3D 5,
+> +       .parent_map =3D video_cc_parent_map_0,
+> +       .freq_tbl =3D ftbl_video_cc_ahb_clk_src,
+> +       .clkr.hw.init =3D &(struct clk_init_data){
+> +               .name =3D "video_cc_ahb_clk_src",
+> +               .parent_data =3D video_cc_parent_data_0,
+> +               .num_parents =3D ARRAY_SIZE(video_cc_parent_data_0),
+> +               .flags =3D CLK_SET_RATE_PARENT,
+> +               .ops =3D &clk_rcg2_shared_ops,
+> +       },
+> +};
+> +
+> +static struct clk_rcg2 video_cc_xo_clk_src =3D {
+> +       .cmd_rcgr =3D 0xecc,
+> +       .mnd_width =3D 0,
+> +       .hid_width =3D 5,
+> +       .parent_map =3D video_cc_parent_map_0,
+> +       .freq_tbl =3D ftbl_video_cc_ahb_clk_src,
+> +       .clkr.hw.init =3D &(struct clk_init_data){
+> +               .name =3D "video_cc_xo_clk_src",
+> +               .parent_data =3D video_cc_parent_data_0,
+> +               .num_parents =3D ARRAY_SIZE(video_cc_parent_data_0),
+> +               .flags =3D CLK_IS_CRITICAL | CLK_SET_RATE_PARENT,
 
+Similar critical clk comment, see below.
 
-On 2020-09-22 3:51 a.m., Robin Murphy wrote:
-> On 2020-09-18 21:47, Logan Gunthorpe wrote:
->> Hi Lu,
->>
->> On 2020-09-11 9:21 p.m., Lu Baolu wrote:
->>> Tom Murphy has almost done all the work. His latest patch series was
->>> posted here.
->>>
->>> https://lore.kernel.org/linux-iommu/20200903201839.7327-1-murphyt7@tcd.ie/
->>>
->>> Thanks a lot!
->>>
->>> This series is a follow-up with below changes:
->>>
->>> 1. Add a quirk for the i915 driver issue described in Tom's cover
->>> letter.
->>> 2. Fix several bugs in patch "iommu: Allow the dma-iommu api to use
->>> bounce buffers" to make the bounce buffer work for untrusted devices.
->>> 3. Several cleanups in iommu/vt-d driver after the conversion.
->>>
->>
->> I'm trying to test this on an old Sandy Bridge, but found that I get
->> spammed with warnings on boot. I've put a sample of a few of them below.
->> They all seem to be related to ioat.
->>
->> I had the same issue with Tom's v2 but never saw this on his v1.
-> 
-> I think this might have more to do with ioat being totally broken - 
-> AFAICS it appears to allocate descriptors with a size of 2MB, but free 
-> them with a size of 512KB. Try throwing CONFIG_DMA_API_DEBUG at it to 
-> confirm.
+> +               .ops =3D &clk_rcg2_ops,
+> +       },
+> +};
+> +
+> +static struct clk_branch video_cc_ahb_clk =3D {
+> +       .halt_reg =3D 0xe58,
+> +       .halt_check =3D BRANCH_HALT,
+> +       .clkr =3D {
+> +               .enable_reg =3D 0xe58,
+> +               .enable_mask =3D BIT(0),
+> +               .hw.init =3D &(struct clk_init_data){
+> +                       .name =3D "video_cc_ahb_clk",
+> +                       .parent_data =3D &(const struct clk_parent_data){
+> +                               .hw =3D &video_cc_ahb_clk_src.clkr.hw,
+> +                       },
+> +                       .num_parents =3D 1,
+> +                       .flags =3D CLK_IS_CRITICAL | CLK_SET_RATE_PARENT,
 
-Ah, yes, nice catch. Looks like it was broken recently by the following
-commit, but nobody noticed and the dma-iommu patch set added a warning
-which caught it.
+Similar critical clk comment, see below.
 
-a02254f8a676 ("dmaengine: ioat: Decreasing allocation chunk size 2M->512K")
+> +                       .ops =3D &clk_branch2_ops,
+> +               },
+> +       },
+> +};
+> +
+> +static struct clk_branch video_cc_mvs0_clk =3D {
+> +       .halt_reg =3D 0xd34,
+> +       .halt_check =3D BRANCH_HALT_SKIP, /* TODO: hw gated ? */
 
-Reverting that fixes the issue. I'll try to send patch or two for this.
+Is this resolved?
 
-Logan
+> +       .clkr =3D {
+> +               .enable_reg =3D 0xd34,
+> +               .enable_mask =3D BIT(0),
+> +               .hw.init =3D &(struct clk_init_data){
+> +                       .name =3D "video_cc_mvs0_clk",
+> +                       .parent_data =3D &(const struct clk_parent_data){
+> +                               .hw =3D &video_cc_mvs0_div_clk_src.clkr.h=
+w,
+> +                       },
+> +                       .num_parents =3D 1,
+> +                       .flags =3D CLK_SET_RATE_PARENT,
+> +                       .ops =3D &clk_branch2_ops,
+> +               },
+> +       },
+> +};
+> +
+[...]
+> +
+> +static struct clk_branch video_cc_xo_clk =3D {
+> +       .halt_reg =3D 0xeec,
+> +       .halt_check =3D BRANCH_HALT,
+> +       .clkr =3D {
+> +               .enable_reg =3D 0xeec,
+> +               .enable_mask =3D BIT(0),
+> +               .hw.init =3D &(struct clk_init_data){
+> +                       .name =3D "video_cc_xo_clk",
+> +                       .parent_data =3D &(const struct clk_parent_data){
+> +                               .hw =3D &video_cc_xo_clk_src.clkr.hw,
+> +                       },
+> +                       .num_parents =3D 1,
+> +                       .flags =3D CLK_IS_CRITICAL | CLK_SET_RATE_PARENT,
 
+Please add a coment why it's critical. If no consumer of this clk exists
+it's preferred to move the enabling to probe and not waste memory
+modeling it in software.
+
+> +                       .ops =3D &clk_branch2_ops,
+> +               },
+> +       },
+> +};
+> +
