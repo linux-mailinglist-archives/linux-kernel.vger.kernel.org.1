@@ -2,192 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2904F27444D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 16:31:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 959A6274474
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 16:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726632AbgIVObq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 10:31:46 -0400
-Received: from verein.lst.de ([213.95.11.211]:44892 "EHLO verein.lst.de"
+        id S1726687AbgIVOjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 10:39:37 -0400
+Received: from thoth.sbs.de ([192.35.17.2]:49103 "EHLO thoth.sbs.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726494AbgIVObp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 10:31:45 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id C024567373; Tue, 22 Sep 2020 16:31:41 +0200 (CEST)
-Date:   Tue, 22 Sep 2020 16:31:41 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        linux-mm@kvack.org, Peter Zijlstra <peterz@infradead.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Minchan Kim <minchan@kernel.org>,
-        dri-devel@lists.freedesktop.org, xen-devel@lists.xenproject.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        intel-gfx@lists.freedesktop.org, Nitin Gupta <ngupta@vflare.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>
-Subject: Re: [Intel-gfx] [PATCH 3/6] drm/i915: use vmap in shmem_pin_map
-Message-ID: <20200922143141.GA26637@lst.de>
-References: <20200918163724.2511-1-hch@lst.de> <20200918163724.2511-4-hch@lst.de> <20200921191157.GX32101@casper.infradead.org> <20200922062249.GA30831@lst.de> <43d10588-2033-038b-14e4-9f41cd622d7b@linux.intel.com>
+        id S1726507AbgIVOjh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 10:39:37 -0400
+X-Greylist: delayed 445 seconds by postgrey-1.27 at vger.kernel.org; Tue, 22 Sep 2020 10:39:36 EDT
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by thoth.sbs.de (8.15.2/8.15.2) with ESMTPS id 08MEW4xx001606
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 22 Sep 2020 16:32:04 +0200
+Received: from [139.22.130.132] ([139.22.130.132])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 08MEW2GL031527;
+        Tue, 22 Sep 2020 16:32:03 +0200
+Subject: Re: [PATCH] scripts/gdb: fix list_for_each
+To:     George Prekas <prekageo@amazon.com>, linux-kernel@vger.kernel.org
+Cc:     Kieran Bingham <kbingham@kernel.org>
+References: <3b382958-9f1d-a3d2-a239-09ba084227e6@amazon.com>
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+Message-ID: <2516a051-306f-670b-1f9e-d46fc577c7f8@siemens.com>
+Date:   Tue, 22 Sep 2020 16:32:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <43d10588-2033-038b-14e4-9f41cd622d7b@linux.intel.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <3b382958-9f1d-a3d2-a239-09ba084227e6@amazon.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 09:23:59AM +0100, Tvrtko Ursulin wrote:
-> If I understood this sub-thread correctly, iterating and freeing the pages 
-> via the vmapped ptes, so no need for a
-> shmem_read_mapping_page_gfp loop in shmem_unpin_map looks plausible to me.
->
-> I did not get the reference to kernel/dma/remap.c though,
+On 22.09.20 16:28, George Prekas wrote:
+> If the next pointer is NULL, list_for_each gets stuck in an infinite
+> loop.
+> 
+> Signed-off-by: George Prekas <prekageo@amazon.com>
+> ---
+>   scripts/gdb/linux/lists.py | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/scripts/gdb/linux/lists.py b/scripts/gdb/linux/lists.py
+> index c487ddf09d38..424a91c1aa8b 100644
+> --- a/scripts/gdb/linux/lists.py
+> +++ b/scripts/gdb/linux/lists.py
+> @@ -27,6 +27,8 @@ def list_for_each(head):
+>           raise TypeError("Must be struct list_head not {}"
+>                              .format(head.type))
+> 
+> +    if head['next'] == 0:
+> +        return
+>       node = head['next'].dereference()
+>       while node.address != head.address:
+>           yield node.address
 
-What I mean is the code in dma_common_find_pages, which returns the
-page array for freeing.
+Obviously, infinite loops are bad and should be avoided. But NULL is 
+bug, isn't it? Shouldn't we report such a corruption?
 
->
-> and also not sure 
-> how to do the error unwind path in shmem_pin_map at which point the 
-> allocated vm area hasn't been fully populated yet. Hand-roll the loop 
-> walking vm area struct in there?
+Jan
 
-Yes.  What I originally did (re-created as I didn't save it) would be
-something like this:
-
----
-From 5605e77cda246df6dd7ded99ec22cb3f341ef5d5 Mon Sep 17 00:00:00 2001
-From: Christoph Hellwig <hch@lst.de>
-Date: Wed, 16 Sep 2020 13:54:04 +0200
-Subject: drm/i915: use vmap in shmem_pin_map
-
-shmem_pin_map somewhat awkwardly reimplements vmap using
-alloc_vm_area and manual pte setup.  The only practical difference
-is that alloc_vm_area prefeaults the vmalloc area PTEs, which doesn't
-seem to be required here (and could be added to vmap using a flag
-if actually required).
-
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/gpu/drm/i915/gt/shmem_utils.c | 81 +++++++++------------------
- 1 file changed, 27 insertions(+), 54 deletions(-)
-
-diff --git a/drivers/gpu/drm/i915/gt/shmem_utils.c b/drivers/gpu/drm/i915/gt/shmem_utils.c
-index 43c7acbdc79dea..7ec6ba4c1065b2 100644
---- a/drivers/gpu/drm/i915/gt/shmem_utils.c
-+++ b/drivers/gpu/drm/i915/gt/shmem_utils.c
-@@ -49,80 +49,53 @@ struct file *shmem_create_from_object(struct drm_i915_gem_object *obj)
- 	return file;
- }
- 
--static size_t shmem_npte(struct file *file)
-+static size_t shmem_npages(struct file *file)
- {
- 	return file->f_mapping->host->i_size >> PAGE_SHIFT;
- }
- 
--static void __shmem_unpin_map(struct file *file, void *ptr, size_t n_pte)
--{
--	unsigned long pfn;
--
--	vunmap(ptr);
--
--	for (pfn = 0; pfn < n_pte; pfn++) {
--		struct page *page;
--
--		page = shmem_read_mapping_page_gfp(file->f_mapping, pfn,
--						   GFP_KERNEL);
--		if (!WARN_ON(IS_ERR(page))) {
--			put_page(page);
--			put_page(page);
--		}
--	}
--}
--
- void *shmem_pin_map(struct file *file)
- {
--	const size_t n_pte = shmem_npte(file);
--	pte_t *stack[32], **ptes, **mem;
--	struct vm_struct *area;
--	unsigned long pfn;
--
--	mem = stack;
--	if (n_pte > ARRAY_SIZE(stack)) {
--		mem = kvmalloc_array(n_pte, sizeof(*mem), GFP_KERNEL);
--		if (!mem)
--			return NULL;
--	}
-+	size_t n_pages = shmem_npages(file), i;
-+	struct page **pages;
-+	void *vaddr;
- 
--	area = alloc_vm_area(n_pte << PAGE_SHIFT, mem);
--	if (!area) {
--		if (mem != stack)
--			kvfree(mem);
-+	pages = kvmalloc_array(n_pages, sizeof(*pages), GFP_KERNEL);
-+	if (!pages)
- 		return NULL;
--	}
--
--	ptes = mem;
--	for (pfn = 0; pfn < n_pte; pfn++) {
--		struct page *page;
- 
--		page = shmem_read_mapping_page_gfp(file->f_mapping, pfn,
--						   GFP_KERNEL);
--		if (IS_ERR(page))
-+	for (i = 0; i < n_pages; i++) {
-+		pages[i] = shmem_read_mapping_page_gfp(file->f_mapping, i,
-+						       GFP_KERNEL);
-+		if (IS_ERR(pages[i]))
- 			goto err_page;
--
--		**ptes++ = mk_pte(page,  PAGE_KERNEL);
- 	}
- 
--	if (mem != stack)
--		kvfree(mem);
--
-+	vaddr = vmap(pages, n_pages, 0, PAGE_KERNEL);
-+	if (!vaddr)
-+		goto err_page;
- 	mapping_set_unevictable(file->f_mapping);
--	return area->addr;
--
-+	return vaddr;
- err_page:
--	if (mem != stack)
--		kvfree(mem);
--
--	__shmem_unpin_map(file, area->addr, pfn);
-+	while (--i >= 0)
-+		put_page(pages[i]);
-+	kvfree(pages);
- 	return NULL;
- }
- 
- void shmem_unpin_map(struct file *file, void *ptr)
- {
-+	struct vm_struct *area = find_vm_area(ptr);
-+	size_t i = shmem_npages(file);
-+
-+	if (WARN_ON_ONCE(!area || !area->pages))
-+		return;
-+
- 	mapping_clear_unevictable(file->f_mapping);
--	__shmem_unpin_map(file, ptr, shmem_npte(file));
-+	for (i = 0; i < shmem_npages(file); i++)
-+		put_page(area->pages[i]);
-+	kvfree(area->pages);
-+	vunmap(ptr);
- }
- 
- static int __shmem_rw(struct file *file, loff_t off,
 -- 
-2.28.0
-
+Siemens AG, Corporate Technology, CT RDA IOT SES-DE
+Corporate Competence Center Embedded Linux
