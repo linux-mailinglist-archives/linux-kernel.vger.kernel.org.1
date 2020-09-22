@@ -2,170 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F813274201
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68BBA274209
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:28:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726586AbgIVMYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 08:24:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46752 "EHLO
+        id S1726583AbgIVM2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 08:28:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726533AbgIVMYc (ORCPT
+        with ESMTP id S1726531AbgIVM2g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 08:24:32 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F9B7C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 05:24:32 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id 5so10156416vsu.5
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 05:24:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=fiH5V+oCx2UHwAectwkT26jdydkLoaasF/MY0v5R+9c=;
-        b=aXsOZtj4gVpdc+fcHFlPnX4y/1YK1mKLQhjR4+Ejc0iozqxi6MY1K+Pt1zdJ8jwoWC
-         umk+cQgQ5jW0en/cTfYAHLFOX4EpU0lpfCXQXPvGQIwcZN1LgksgMRXfxDIJZKXq3qS0
-         1c+p7oHQ2Oi1xCxYJsTgGIR/VkanS0pqZPo6BpJXT9Fn2z3jZO7EI/TlVfqHMQv8fXNr
-         oPVP2AuKpbsg7Q2kRKH0bZSpyzA9+OV+Hi0oHwZ0Ied+WOu4yfrsjJgM5sOmoRgaXGui
-         FCnNGbvR+eLZXrXAbLBI0Vj+0AryKeGKqEMdSRh23W6bGjVg4fJk2CCVk/yqm4/RZ3pY
-         J5fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=fiH5V+oCx2UHwAectwkT26jdydkLoaasF/MY0v5R+9c=;
-        b=WgvfCFk82elErzKzROGCj3aDg437Y+DdMj4rD4kjeQCIcZbs6H90sJn6Lb1jbqsimL
-         kWh8uFpadpCpy3DiUyCPl1Tp5asoulwthWNnKzIoXI3xY7NvnDzq98eGHBKExjIjQwRg
-         /+abXJTr2bpMHj1AkGD04r9Fk6kyODdV6QcimujesJT4P85V+oFsvj3TqEMPtTOhkO1+
-         gwnKaG3c9ZHT8CTYnfUWJXTS/8yQEiHqLCul5E5zD8+7o8IwPkBABFr5RejsuynUmr0v
-         /wvkrySIFh9fRnE3G4D0Tx3AWeR0UcezloR122+KzQol1fbLUjN5qcxVjIrKiYb0l4xC
-         L5dQ==
-X-Gm-Message-State: AOAM532b6vaENtn5ST88Wp0UYFpG9d6ItKgRboZVVwPf0OOn5WHAjYhp
-        9ylv+mTLGUFM+DIsSYmpaeN+5jSKrUcB7fLpLmTfDw==
-X-Google-Smtp-Source: ABdhPJxraxqNDLyg42scpZ4bD4GD0v4u41aSAGimZD3UCZ2bSQ+6CwWc8ShXe970KrsirInOBSr8VqWzJG3D5Rxl61c=
-X-Received: by 2002:a67:bd12:: with SMTP id y18mr2988088vsq.45.1600777471046;
- Tue, 22 Sep 2020 05:24:31 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200921162035.136047591@linuxfoundation.org>
-In-Reply-To: <20200921162035.136047591@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 22 Sep 2020 17:54:19 +0530
-Message-ID: <CA+G9fYsjAT_ZSXOR8qkqOROrzB0iiin4aqkVx2_-vczHFaOo-Q@mail.gmail.com>
-Subject: Re: [PATCH 4.9 00/70] 4.9.237-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        linux- stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
+        Tue, 22 Sep 2020 08:28:36 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B479C061755;
+        Tue, 22 Sep 2020 05:28:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=QOf2JTCyG7BLU81U37VjbgSKPGgWOzBrM3G1telCsN0=; b=J8vJB8PGDvNZr3pL6E5VUXs5mh
+        7fhLdUsaxmKF5Q9VJEZoijpH3ddlo7CWLkRQyXc1cLv2C71vR5gsRKL2y+6Iil1ZlrXoZtpcokWZV
+        /sViwtrr/gn3EPRdVP6nrwsLDb4Tc3+Bw1MbQjXodXO2uI6uCmMvGItmnJ1PMckk2naxTYXBelE9m
+        BMheLjIYQiDNYHDQXPLDCJjsG/BRqimL/XtZph1DC1ZOKp9PoNiWLuWglCamn3s2nsUiTjnkFP6HE
+        ijBWNZGs3y0YPF32Hf/NaucqXzpCPa+DAMfw8XmcB+1xqcHmO5oxGSNupyWkbzyg4ooEVZnbICIsw
+        SUOOZ2rg==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kKhP9-0000rB-4w; Tue, 22 Sep 2020 12:28:19 +0000
+Date:   Tue, 22 Sep 2020 13:28:19 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mikulas Patocka <mpatocka@redhat.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Eric Sandeen <esandeen@redhat.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        "Kani, Toshi" <toshi.kani@hpe.com>,
+        "Norton, Scott J" <scott.norton@hpe.com>,
+        "Tadakamadla, Rajesh (DCIG/CDI/HPS Perf)" 
+        <rajesh.tadakamadla@hpe.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>
+Subject: Re: NVFS XFS metadata (was: [PATCH] pmem: export the symbols
+ __copy_user_flushcache and __copy_from_user_flushcache)
+Message-ID: <20200922122819.GD32101@casper.infradead.org>
+References: <alpine.LRH.2.02.2009140852030.22422@file01.intranet.prod.int.rdu2.redhat.com>
+ <CAPcyv4gh=QaDB61_9_QTgtt-pZuTFdR6td0orE0VMH6=6SA2vw@mail.gmail.com>
+ <alpine.LRH.2.02.2009151216050.16057@file01.intranet.prod.int.rdu2.redhat.com>
+ <alpine.LRH.2.02.2009151332280.3851@file01.intranet.prod.int.rdu2.redhat.com>
+ <alpine.LRH.2.02.2009160649560.20720@file01.intranet.prod.int.rdu2.redhat.com>
+ <CAPcyv4gW6AvR+RaShHdQzOaEPv9nrq5myXDmywuoCTYDZxk-hw@mail.gmail.com>
+ <alpine.LRH.2.02.2009161254400.745@file01.intranet.prod.int.rdu2.redhat.com>
+ <CAPcyv4gD0ZFkfajKTDnJhEEjf+5Av-GH+cHRFoyhzGe8bNEgAA@mail.gmail.com>
+ <alpine.LRH.2.02.2009161359540.20710@file01.intranet.prod.int.rdu2.redhat.com>
+ <alpine.LRH.2.02.2009191336380.3478@file01.intranet.prod.int.rdu2.redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LRH.2.02.2009191336380.3478@file01.intranet.prod.int.rdu2.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Sep 2020 at 22:05, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.9.237 release.
-> There are 70 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 23 Sep 2020 16:20:12 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.9.237-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.9.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Mon, Sep 21, 2020 at 12:20:42PM -0400, Mikulas Patocka wrote:
+> The same for directories - NVFS hashes the file name and uses radix-tree 
+> to locate a directory page where the directory entry is located. XFS 
+> b+trees would result in much more accesses than the radix-tree.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.9.237-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.9.y
-git commit: b7aa672795fd423afa4bd326c3abd59c991263ea
-git describe: v4.9.236-71-gb7aa672795fd
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.=
-y/build/v4.9.236-71-gb7aa672795fd
-
-
-No regressions (compared to build v4.9.236-47-g9769e65dc140)
-
-No Fixes (compared to build v4.9.236-47-g9769e65dc140)
-
-Ran 14478 total tests in the following environments and test suites.
-
-Environments
---------------
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-r2 - arm64
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15 - arm
-- x86_64
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* kselftest
-* kselftest/drivers
-* kselftest/filesystems
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fs-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-tracing-tests
-* perf
-* v4l2-compliance
-* network-basic-tests
-* ltp-open-posix-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-syscalls-tests
-* kselftest/net
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+What?  Radix trees behave _horribly_ badly when indexed by a hash.
+If you have a 64-bit hash and use 8 bits per level of the tree, you have
+to traverse 8 pointers to get to your destination.  You might as well
+use a linked list!
