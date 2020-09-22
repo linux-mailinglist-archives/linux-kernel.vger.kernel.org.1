@@ -2,104 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 548A9273EB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 11:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A29273EB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 11:42:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726600AbgIVJl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 05:41:58 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:57530 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726353AbgIVJl6 (ORCPT
+        id S1726627AbgIVJmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 05:42:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726353AbgIVJmG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 05:41:58 -0400
-Date:   Tue, 22 Sep 2020 09:41:54 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600767715;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=28OF8xyUuF3xth7yE+5wXNZgEp58b87Vdy2+zVFqVAY=;
-        b=iIAHq6lHY/nXhOjxqRreRHNAunAjeW37wBupcNej/UzBqfHInbbXo6xo0zdAG4BeGxKBvm
-        M5srlFDjlCn2r+DpHpoI+YeBKk4rlXABhMq5/bPEgwpe+/2kfOd+UPYmKVA+z6R+HRHFJf
-        LdH3G2nC7W+/6ZPd4KfXrx7QCpBXtTubgBg8n1dEfHyOWZeKo/m/7LpDoDQZxOHAN1fpQO
-        hjnpg8bd22L3W5y56aB+002V5CC5aTNdIrqDzDWdDJ53OORdhd+rFy5JowvM1EVziW1fNk
-        juCYYhGMMI8M0qR8G08BM3RFoVf5eYhYRpbvd9Pl+cIDFAID3zLuUsmmPgjPzw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600767715;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=28OF8xyUuF3xth7yE+5wXNZgEp58b87Vdy2+zVFqVAY=;
-        b=kl/KJbNbjo7+3v2LwryseS7+f6jPjrn/S08adXHeqylJ+usNElU3qjChPZctsvJV+mLG6G
-        +TigRqrWcSE51xAw==
-From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/pti] arch/um: Add a dummy <asm/cacheflush.h> header
-Cc:     Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200922074951.2192-1-bp@alien8.de>
-References: <20200922074951.2192-1-bp@alien8.de>
+        Tue, 22 Sep 2020 05:42:06 -0400
+Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C509C061755;
+        Tue, 22 Sep 2020 02:42:05 -0700 (PDT)
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id A0C4B11A001; Tue, 22 Sep 2020 10:41:57 +0100 (BST)
+Date:   Tue, 22 Sep 2020 10:41:57 +0100
+From:   Sean Young <sean@mess.org>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc:     mchehab@kernel.org, robh+dt@kernel.org,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-imx@nxp.com
+Subject: Re: [PATCH V2 2/2] media: rc: gpio-ir-recv: add QoS support for
+ cpuidle system
+Message-ID: <20200922094157.GA14307@gofer.mess.org>
+References: <20200918181717.24056-1-qiangqing.zhang@nxp.com>
+ <20200918181717.24056-3-qiangqing.zhang@nxp.com>
 MIME-Version: 1.0
-Message-ID: <160076771494.15536.16617325903250425535.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200918181717.24056-3-qiangqing.zhang@nxp.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/pti branch of tip:
+Hi Joakim,
 
-Commit-ID:     e9c142f6f54db85c212ca64aefd4f2c232dac4ae
-Gitweb:        https://git.kernel.org/tip/e9c142f6f54db85c212ca64aefd4f2c232d=
-ac4ae
-Author:        Borislav Petkov <bp@suse.de>
-AuthorDate:    Tue, 22 Sep 2020 09:49:51 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 22 Sep 2020 11:35:47 +02:00
+Thanks for your updated patch.
 
-arch/um: Add a dummy <asm/cacheflush.h> header
+On Sat, Sep 19, 2020 at 02:17:17AM +0800, Joakim Zhang wrote:
+> GPIO IR receive is much rely on interrupt response, uneven interrupt
+> latency will lead to incorrect timing, so the decoder fails to decode
+> it. The issue is particularly acute on some systems which support
+> cpuidle, not all, dynamically disable and enable cpuidle can solve this
+> problem to a great extent.
+> 
+> However, there is a downside to this approach, the measurement of header
+> on the first frame may incorrect. Test on i.MX8M serials, when enable
+> cpuidle, interrupt latency could be about 500us.
+> 
+> With this patch:
+> 1. has no side effect on non-cpuidle system.
+> 2. latency is still much longer for the first gpio interrupt on cpuidle
+> system, so the first frame may not be decoded. Generally, RC would transmit
+> multiple frames at once press, we can sacrifice the first frame.
+> 3. add "linux,autosuspend-period" property in device tree if you also
+> suffer this cpuidle issue.
+> 
+> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+> ---
+> ChangeLogs:
+> V1->V2:
+> 	* set autosuspend delay time via device tree.
+> ---
+>  drivers/media/rc/gpio-ir-recv.c | 50 +++++++++++++++++++++++++++++++++
+>  1 file changed, 50 insertions(+)
+> 
+> diff --git a/drivers/media/rc/gpio-ir-recv.c b/drivers/media/rc/gpio-ir-recv.c
+> index a20413008c3c..63cf8290eb19 100644
+> --- a/drivers/media/rc/gpio-ir-recv.c
+> +++ b/drivers/media/rc/gpio-ir-recv.c
+> @@ -11,6 +11,8 @@
+>  #include <linux/of.h>
+>  #include <linux/of_gpio.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/pm_runtime.h>
+> +#include <linux/pm_qos.h>
+>  #include <linux/irq.h>
+>  #include <media/rc-core.h>
+>  
+> @@ -20,17 +22,35 @@ struct gpio_rc_dev {
+>  	struct rc_dev *rcdev;
+>  	struct gpio_desc *gpiod;
+>  	int irq;
+> +	struct device *dev;
+> +	struct pm_qos_request qos;
+>  };
+>  
+>  static irqreturn_t gpio_ir_recv_irq(int irq, void *dev_id)
+>  {
+>  	int val;
+>  	struct gpio_rc_dev *gpio_dev = dev_id;
+> +	struct device *dev = gpio_dev->dev;
+> +
+> +	/*
+> +	 * For some cpuidle systems, not all:
+> +	 * Respond to interrupt taking more latency when cpu in idle.
+> +	 * Invoke asynchronous pm runtime get from interrupt context,
+> +	 * this may introduce a millisecond delay to call resume callback,
+> +	 * where to disable cpuilde.
+> +	 *
+> +	 * Two issues lead to fail to decode first frame, one is latency to
+> +	 * respond to interrupt, another is delay introduced by async api.
+> +	 */
+> +	pm_runtime_get(dev);
+>  
+>  	val = gpiod_get_value(gpio_dev->gpiod);
+>  	if (val >= 0)
+>  		ir_raw_event_store_edge(gpio_dev->rcdev, val == 1);
+>  
+> +	pm_runtime_mark_last_busy(dev);
+> +	pm_runtime_put_autosuspend(dev);
+> +
 
-... in order to fix the defconfig build:
+I've dusted off my rpi and tried to see if it fails with cpuidle enabled.
+As far as I can see, it always works fine. So, my only concern is that
+there is a bunch of pm busy work done here for devices that do not need it,
+including spinlocks, ktime. etc.
 
-  ./arch/x86/include/asm/cacheflush.h: In function =E2=80=98l1d_flush_hw=E2=
-=80=99:
-  ./arch/x86/include/asm/cacheflush.h:15:6: error: implicit declaration of \
-	  function =E2=80=98static_cpu_has=E2=80=99; did you mean =E2=80=98static_ke=
-y_false=E2=80=99? [-Werror=3Dimplicit-function-declaration]
+You could rename the dev field of gpio_rc_dev to pmdev and only do this
+work if pm_dev != NULL. Or some other mechanism of doing this work
+conditionally.
 
-[ mingo: Changed the header guard to the existing nomenclature. ]
+Having said that I'm not entirely sure this will make much of a difference.
 
-Fixes: a9210620ec36 ("x86/mm: Optionally flush L1D on context switch")
-Reported-by: Ingo Molnar <mingo@kernel.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20200922074951.2192-1-bp@alien8.de
----
- arch/um/include/asm/cacheflush.h |  9 +++++++++
- 1 file changed, 9 insertions(+)
- create mode 100644 arch/um/include/asm/cacheflush.h
-
-diff --git a/arch/um/include/asm/cacheflush.h b/arch/um/include/asm/cacheflus=
-h.h
-new file mode 100644
-index 0000000..f693cb9
---- /dev/null
-+++ b/arch/um/include/asm/cacheflush.h
-@@ -0,0 +1,9 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_UM_CACHEFLUSH_H
-+#define _ASM_UM_CACHEFLUSH_H
-+
-+#undef ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
-+#include <asm-generic/cacheflush.h>
-+
-+static inline int l1d_flush_hw(void) { return -EOPNOTSUPP; }
-+#endif /* _ASM_UM_CACHEFLUSH_H */
+>  	return IRQ_HANDLED;
+>  }
+>  
+> @@ -40,6 +60,7 @@ static int gpio_ir_recv_probe(struct platform_device *pdev)
+>  	struct device_node *np = dev->of_node;
+>  	struct gpio_rc_dev *gpio_dev;
+>  	struct rc_dev *rcdev;
+> +	u32 period = 0;
+>  	int rc;
+>  
+>  	if (!np)
+> @@ -83,6 +104,7 @@ static int gpio_ir_recv_probe(struct platform_device *pdev)
+>  		rcdev->map_name = RC_MAP_EMPTY;
+>  
+>  	gpio_dev->rcdev = rcdev;
+> +	gpio_dev->dev = dev;
+>  
+>  	rc = devm_rc_register_device(dev, rcdev);
+>  	if (rc < 0) {
+> @@ -90,6 +112,14 @@ static int gpio_ir_recv_probe(struct platform_device *pdev)
+>  		return rc;
+>  	}
+>  
+> +	of_property_read_u32(np, "linux,autosuspend-period", &period);
+> +	if (period) {
+> +		pm_runtime_set_autosuspend_delay(dev, period);
+> +		pm_runtime_use_autosuspend(dev);
+> +		pm_runtime_set_suspended(dev);
+> +		pm_runtime_enable(dev);
+> +	}
+> +
+>  	platform_set_drvdata(pdev, gpio_dev);
+>  
+>  	return devm_request_irq(dev, gpio_dev->irq, gpio_ir_recv_irq,
+> @@ -122,9 +152,29 @@ static int gpio_ir_recv_resume(struct device *dev)
+>  	return 0;
+>  }
+>  
+> +static int gpio_ir_recv_runtime_suspend(struct device *dev)
+> +{
+> +	struct gpio_rc_dev *gpio_dev = dev_get_drvdata(dev);
+> +
+> +	cpu_latency_qos_remove_request(&gpio_dev->qos);
+> +
+> +	return 0;
+> +}
+> +
+> +static int gpio_ir_recv_runtime_resume(struct device *dev)
+> +{
+> +	struct gpio_rc_dev *gpio_dev = dev_get_drvdata(dev);
+> +
+> +	cpu_latency_qos_add_request(&gpio_dev->qos, 0);
+> +
+> +	return 0;
+> +}
+> +
+>  static const struct dev_pm_ops gpio_ir_recv_pm_ops = {
+>  	.suspend        = gpio_ir_recv_suspend,
+>  	.resume         = gpio_ir_recv_resume,
+> +	.runtime_suspend = gpio_ir_recv_runtime_suspend,
+> +	.runtime_resume  = gpio_ir_recv_runtime_resume,
+>  };
+>  #endif
+>  
+> -- 
+> 2.17.1
