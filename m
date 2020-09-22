@@ -2,119 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 045F6273F35
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 12:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 718AC273F3C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 12:07:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726549AbgIVKHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 06:07:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53774 "EHLO
+        id S1726579AbgIVKHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 06:07:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726341AbgIVKHP (ORCPT
+        with ESMTP id S1726341AbgIVKHf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 06:07:15 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A98C061755;
-        Tue, 22 Sep 2020 03:07:14 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id b17so1214285pji.1;
-        Tue, 22 Sep 2020 03:07:14 -0700 (PDT)
+        Tue, 22 Sep 2020 06:07:35 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CF03C061755;
+        Tue, 22 Sep 2020 03:07:35 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id x69so17370140lff.3;
+        Tue, 22 Sep 2020 03:07:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XQCTCDED3kLyFk7oxR7SLh9rQyU4Xn0x1JeTlZw7/YU=;
-        b=iFFyR8+8QveEQxQa1NxO3YTMorPx7i2WTUBL1sMmU5YczvKheyJOEYhFMyQPibmml0
-         3ZXlCuVqEupLXoWHxoiDNOwxfcrYT8ag2iWy0Nes/k/a7nml/4+fedAoNB/JRkx5ZWFT
-         HcNQwOaAUk8udgkoAqt4yH5mY8vwT35nD1IdgLekLwTgRMLSwvR1MZ+JNdWEfTbFSWcq
-         MGqRAKR9y6SZYpj392gGpUJ7jUInG6UwqYyyT2092CGzsTte6o7y8lCR2Ex8mXa1Udux
-         U091PTo4tUx3YoNxBdeHd0DMy0OZ23aYzkCGyLzqp2F1baY7dkE40DuyQ36fE8s+qDgc
-         kx9Q==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=X3xqrdnSAeujW8eOtD+7+Lv8BWCJaPf9AgZ75a/h8S4=;
+        b=LF4PiLjYtqFh71NnnQ9xeMhrW54jII2IcLZwRYfA/1klXM2cL9NaBSZqOxvDv43i5j
+         +TeA6CRyw3VgQf2Dfl+uD/tN7Q6mx/W3X32KMFlNGMwWCfXuqRNIFcVgqoJ7re3kSfW+
+         SGj35VYjg2T1ZYOJoD8ch2FOLnuaQToK6x9Co2mquL5BcHWVChAcQL6ewBlaxpqfQjcs
+         YK1qxK9FpLtUkU5D0SSWPBxgjXlo15Zrc2iufKsdJF7tiIYx3JXGJ6u4XboB4E9ziRyq
+         ikJWSg9dVw++LPhcWyo6cQEcc8M9jYn06jdWgixe82raFANib8Siq99fbeWN3dFzphq9
+         NVDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XQCTCDED3kLyFk7oxR7SLh9rQyU4Xn0x1JeTlZw7/YU=;
-        b=EgHz/l2ocmkimefIDefw9LN+B2XUbbHBOO/NJG4NG4e1CtbPJ8r0Yc7MxhT8utE5qI
-         AKP4dnitoKIPHARLtVurZDd8hWCxjohFCTfV7Wy9zEXz33vIc8gau2t+LjDX4MlNbukS
-         XlU3WPLIxAQw9PEPgAHqoKmX+EShP0KEG74QzkX62PiwcVeVroPvi7IS6tzDVZNyng/W
-         KzatXjpTYCzc3RA5fA9hY8xqIAUL0whAXRr5bVviUSJJINO0O50bUHmMz9dtUOggv1gl
-         NBD1hCSYbV0iq3RSCuH6R5KVpiNBU0eAwXnRCVwxmIXRdIIoJMFEEG6mr2wFky5acrEy
-         hN8A==
-X-Gm-Message-State: AOAM533bG63OpOFcvE/jVPY/zZBDoUdd90yaBXbUvrAJihqXAecwJwY1
-        geTkEsUnBTjFYDnro9Gd67g=
-X-Google-Smtp-Source: ABdhPJzqZMnLiXRYLA8U3cnfjpLrBrRRtX6+/y6HmfOHsQqdiaZHU+8gT5ZziXuR8b+OGDMHgh3MMg==
-X-Received: by 2002:a17:90a:ed88:: with SMTP id k8mr3020248pjy.232.1600769234267;
-        Tue, 22 Sep 2020 03:07:14 -0700 (PDT)
-Received: from sol (106-69-189-59.dyn.iinet.net.au. [106.69.189.59])
-        by smtp.gmail.com with ESMTPSA id a18sm13705073pgw.50.2020.09.22.03.07.10
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=X3xqrdnSAeujW8eOtD+7+Lv8BWCJaPf9AgZ75a/h8S4=;
+        b=ujs3lCnms/i/VLBjqhCNbLk4vnYEiitFB7jkjiyPiO2JVmoJDcxOjfUdneavxxjHbO
+         ZXq2ZU9G+2sauSo84fed2YhTCgayG9uXCVgSby/cPEInDb0nEYsWgK25nvA7k1ye9DrW
+         NenzCnPLtmdKoQEQdYdD+HByThlTYgZn5KyuMUDnq/s/WZVMhACySi2GG9XJFx6tYD3u
+         vAR3e3c3UxVkhViZYBah2QyIGFJeRtPC7xMFjRGrudX9Ep86E4N6L9hNOWNufO8GaToA
+         9BwHa8JgdTuKEA+4rAG+FS5XKT9EzJWb2OOYPFQgZBpQvayZP9P3dFDSR+h1lJSUWirc
+         c7Gw==
+X-Gm-Message-State: AOAM533tvjgw58hg4wH7uEnmxfZg3EHOS9yjg2C+ANJDXQhYnJOHLtK3
+        +ZySbscQMhyADCAx42tyVq8=
+X-Google-Smtp-Source: ABdhPJyVEwzvra6GR386t2gQvxtiYRUxtWUrCycFIYOoTLkkmauRS1NGaUQKwJjzLyNnzC40St7hgA==
+X-Received: by 2002:a19:6b07:: with SMTP id d7mr1607059lfa.510.1600769253745;
+        Tue, 22 Sep 2020 03:07:33 -0700 (PDT)
+Received: from localhost.localdomain (c80-217-156-226.bredband.comhem.se. [80.217.156.226])
+        by smtp.gmail.com with ESMTPSA id j20sm3346031lfe.132.2020.09.22.03.07.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 03:07:13 -0700 (PDT)
-Date:   Tue, 22 Sep 2020 18:07:08 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v9 04/20] gpio: uapi: define uAPI v2
-Message-ID: <20200922100708.GB493023@sol>
-References: <20200922023151.387447-1-warthog618@gmail.com>
- <20200922023151.387447-5-warthog618@gmail.com>
- <CAK8P3a1o4fp=-gU=SpwR540Xw+oySJ_ESkG+YXZJsDV-N6UF5w@mail.gmail.com>
- <CAMpxmJVsBYY0w5BCyYaRDGR-cQD7o4VkJRatc0Ww5wXRA+3bhA@mail.gmail.com>
+        Tue, 22 Sep 2020 03:07:33 -0700 (PDT)
+From:   =?UTF-8?q?Mikael=20Wikstr=C3=B6m?= <leakim.wikstrom@gmail.com>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Mikael=20Wikstr=C3=B6m?= <leakim.wikstrom@gmail.com>
+Subject: [PATCH 2/2] HID: multitouch: Lenovo X1 Tablet Gen2 trackpoint and buttons
+Date:   Tue, 22 Sep 2020 12:07:15 +0200
+Message-Id: <20200922100715.3840-1-leakim.wikstrom@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMpxmJVsBYY0w5BCyYaRDGR-cQD7o4VkJRatc0Ww5wXRA+3bhA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 11:50:51AM +0200, Bartosz Golaszewski wrote:
-> On Tue, Sep 22, 2020 at 9:41 AM Arnd Bergmann <arnd@arndb.de> wrote:
-> >
-> > On Tue, Sep 22, 2020 at 4:34 AM Kent Gibson <warthog618@gmail.com> wrote:
-> > > +/**
-> > > + * struct gpio_v2_line_attribute - a configurable attribute of a line
-> > > + * @id: attribute identifier with value from &enum gpio_v2_line_attr_id
-> > > + * @padding: reserved for future use and must be zero filled
-> > > + * @flags: if id is GPIO_V2_LINE_ATTR_ID_FLAGS, the flags for the GPIO
-> > > + * line, with values from enum gpio_v2_line_flag, such as
-> > > + * GPIO_V2_LINE_FLAG_ACTIVE_LOW, GPIO_V2_LINE_FLAG_OUTPUT etc, OR:ed
-> > > + * together.  This overrides the default flags contained in the &struct
-> > > + * gpio_v2_line_config for the associated line.
-> > > + * @values: if id is GPIO_V2_LINE_ATTR_ID_OUTPUT_VALUES, a bitmap
-> > > + * containing the values to which the lines will be set, with each bit
-> > > + * number corresponding to the index into &struct
-> > > + * gpio_v2_line_request.offsets.
-> > > + * @debounce_period_us: if id is GPIO_V2_LINE_ATTR_ID_DEBOUNCE, the desired
-> > > + * debounce period, in microseconds
-> > > + */
-> > > +struct gpio_v2_line_attribute {
-> > > +       __u32 id;
-> > > +       __u32 padding;
-> > > +       union {
-> > > +               __aligned_u64 flags;
-> > > +               __aligned_u64 values;
-> > > +               __u32 debounce_period_us;
-> > > +       };
-> > > +};
-> >
-> > Having different-sized members in the union makes it hard for
-> > something like strace to print the contents. How about just making
-> > them all __aligned_u64 even when 32 bits are sufficient?
-> >
-> 
-> Ah yes, adding support for GPIO ioctl()'s to strace has been on my
-> TODO list for 3 years now. :(
-> 
+One more device that needs 40d5bb87 to resolve regression for the trackpoint
+and three mouse buttons on the type cover of the Lenovo X1 Tablet Gen2.
 
-Great - you beat me to it - I was going to ask if we could fix strace
-;-).  If it can be taught the id/union semantics I'd rather do that,
-so we could then also format the 64-bit values appropriately.
-e.g. flags and values are both bitmaps but the bits are interpreted
-very differently.
+Signed-off-by: Mikael Wikström <leakim.wikstrom@gmail.com>
+---
+ drivers/hid/hid-ids.h        | 1 +
+ drivers/hid/hid-multitouch.c | 6 ++++++
+ 2 files changed, 7 insertions(+)
 
-Cheers,
-Kent.
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index 6a6e2c1b6090..70fbcededc30 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -727,6 +727,7 @@
+ #define USB_DEVICE_ID_LENOVO_TP10UBKBD	0x6062
+ #define USB_DEVICE_ID_LENOVO_TPPRODOCK	0x6067
+ #define USB_DEVICE_ID_LENOVO_X1_COVER	0x6085
++#define USB_DEVICE_ID_LENOVO_X1_TAB	0x60a3
+ #define USB_DEVICE_ID_LENOVO_X1_TAB3	0x60b5
+ #define USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_608D	0x608d
+ #define USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_6019	0x6019
+diff --git a/drivers/hid/hid-multitouch.c b/drivers/hid/hid-multitouch.c
+index 99f041afd5c0..d670bcd57bde 100644
+--- a/drivers/hid/hid-multitouch.c
++++ b/drivers/hid/hid-multitouch.c
+@@ -1973,6 +1973,12 @@ static const struct hid_device_id mt_devices[] = {
+ 		HID_DEVICE(BUS_I2C, HID_GROUP_GENERIC,
+ 			USB_VENDOR_ID_LG, I2C_DEVICE_ID_LG_7010) },
+ 
++	/* Lenovo X1 TAB Gen 2 */
++	{ .driver_data = MT_CLS_WIN_8_FORCE_MULTI_INPUT,
++		HID_DEVICE(BUS_USB, HID_GROUP_MULTITOUCH_WIN_8,
++			   USB_VENDOR_ID_LENOVO,
++			   USB_DEVICE_ID_LENOVO_X1_TAB) },
++
+ 	/* Lenovo X1 TAB Gen 3 */
+ 	{ .driver_data = MT_CLS_WIN_8_FORCE_MULTI_INPUT,
+ 		HID_DEVICE(BUS_USB, HID_GROUP_MULTITOUCH_WIN_8,
+-- 
+2.25.1
 
