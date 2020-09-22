@@ -2,111 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0461D274D45
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 01:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34566274D48
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 01:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726794AbgIVXXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 19:23:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48016 "EHLO mx2.suse.de"
+        id S1726818AbgIVXYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 19:24:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726614AbgIVXXT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 19:23:19 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D7BEBAA55;
-        Tue, 22 Sep 2020 23:23:54 +0000 (UTC)
-Received: by lion.mk-sys.cz (Postfix, from userid 1000)
-        id 5923D60320; Wed, 23 Sep 2020 01:23:17 +0200 (CEST)
-Date:   Wed, 23 Sep 2020 01:23:17 +0200
-From:   Michal Kubecek <mkubecek@suse.cz>
-To:     Jarod Wilson <jarod@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
-Subject: Re: [PATCH net-next 2/5] bonding: rename slave to link where possible
-Message-ID: <20200922232317.jlbgpsy74q6tbx3a@lion.mk-sys.cz>
-References: <20200922133731.33478-1-jarod@redhat.com>
- <20200922133731.33478-3-jarod@redhat.com>
+        id S1726448AbgIVXY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 19:24:29 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0AB3A221EF;
+        Tue, 22 Sep 2020 23:24:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600817067;
+        bh=ww3myNQZZR3QHK5oyvZMyTi/dByPpeDC+MTZ6QuHf78=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ISYDf/M9hlYfZ3ezrb8br7mx/ICu2OTuOU8SlGObl2sPoqK9bgUJ2xVv0xdrqD+xs
+         5Yu1+wrVSoSvxTBweTGAvURq4ongAW0MYdV31gUeVwIF922ZPIHDGTedTdtZuLLJDB
+         xC0mPZs1SdrEe1XAhZik2FLG3M8m5VacVk0S2nPs=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id C3B1F3522CEC; Tue, 22 Sep 2020 16:24:26 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 16:24:26 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Hou Tao <houtao1@huawei.com>
+Cc:     Davidlohr Bueso <dave@stgolabs.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [PATCH 2/2] locktorture: call percpu_free_rwsem() to do
+ percpu-rwsem cleanup
+Message-ID: <20200922232426.GL29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200917135910.137389-1-houtao1@huawei.com>
+ <20200917135910.137389-3-houtao1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200922133731.33478-3-jarod@redhat.com>
+In-Reply-To: <20200917135910.137389-3-houtao1@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 09:37:28AM -0400, Jarod Wilson wrote:
-> Getting rid of as much usage of "slave" as we can here, without breaking
-> any user-facing API.
+On Thu, Sep 17, 2020 at 09:59:10PM +0800, Hou Tao wrote:
+> When do percpu-rwsem writer lock torture, the RCU callback
+> rcu_sync_func() may still be pending after locktorture module
+> is removed, and it will lead to the following Oops:
 > 
-> Cc: Jay Vosburgh <j.vosburgh@gmail.com>
-> Cc: Veaceslav Falico <vfalico@gmail.com>
-> Cc: Andy Gospodarek <andy@greyhouse.net>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Thomas Davis <tadavis@lbl.gov>
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Jarod Wilson <jarod@redhat.com>
+>   BUG: unable to handle page fault for address: ffffffffc00eb920
+>   #PF: supervisor read access in kernel mode
+>   #PF: error_code(0x0000) - not-present page
+>   PGD 6500a067 P4D 6500a067 PUD 6500c067 PMD 13a36c067 PTE 800000013691c163
+>   Oops: 0000 [#1] PREEMPT SMP
+>   CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.9.0-rc5+ #4
+>   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996)
+>   RIP: 0010:rcu_cblist_dequeue+0x12/0x30
+>   Call Trace:
+>    <IRQ>
+>    rcu_core+0x1b1/0x860
+>    __do_softirq+0xfe/0x326
+>    asm_call_on_stack+0x12/0x20
+>    </IRQ>
+>    do_softirq_own_stack+0x5f/0x80
+>    irq_exit_rcu+0xaf/0xc0
+>    sysvec_apic_timer_interrupt+0x2e/0xb0
+>    asm_sysvec_apic_timer_interrupt+0x12/0x20
+> 
+> Fix it by adding an exit hook in lock_torture_ops and
+> use it to call percpu_free_rwsem() for percpu rwsem torture
+> before the module is removed, so we can ensure rcu_sync_func()
+> completes before module exits.
+> 
+> Also needs to call exit hook if lock_torture_init() fails half-way,
+> so use ctx->cur_ops != NULL to signal that init hook has been called.
+
+Good catch, but please see below for comments and questions.
+
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
 > ---
-[...]
-> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-> index 1f602bcf10bd..8e2edebeb61a 100644
-> --- a/drivers/net/bonding/bond_main.c
-> +++ b/drivers/net/bonding/bond_main.c
-[...]
-> @@ -143,12 +143,12 @@ MODULE_PARM_DESC(mode, "Mode of operation; 0 for balance-rr, "
->  module_param(primary, charp, 0);
->  MODULE_PARM_DESC(primary, "Primary network device to use");
->  module_param(primary_reselect, charp, 0);
-> -MODULE_PARM_DESC(primary_reselect, "Reselect primary slave "
-> +MODULE_PARM_DESC(primary_reselect, "Reselect primary link "
->  				   "once it comes up; "
->  				   "0 for always (default), "
->  				   "1 for only if speed of primary is "
->  				   "better, "
-> -				   "2 for only on active slave "
-> +				   "2 for only on active link "
->  				   "failure");
->  module_param(lacp_rate, charp, 0);
->  MODULE_PARM_DESC(lacp_rate, "LACPDU tx rate to request from 802.3ad partner; "
-> @@ -176,24 +176,24 @@ MODULE_PARM_DESC(arp_validate, "validate src/dst of ARP probes; "
->  module_param(arp_all_targets, charp, 0);
->  MODULE_PARM_DESC(arp_all_targets, "fail on any/all arp targets timeout; 0 for any (default), 1 for all");
->  module_param(fail_over_mac, charp, 0);
-> -MODULE_PARM_DESC(fail_over_mac, "For active-backup, do not set all slaves to "
-> +MODULE_PARM_DESC(fail_over_mac, "For active-backup, do not set all links to "
->  				"the same MAC; 0 for none (default), "
->  				"1 for active, 2 for follow");
-> -module_param(all_slaves_active, int, 0);
-> -MODULE_PARM_DESC(all_slaves_active, "Keep all frames received on an interface "
-> -				     "by setting active flag for all slaves; "
-> +module_param(all_links_active, int, 0);
-> +MODULE_PARM_DESC(all_links_active, "Keep all frames received on an interface "
-> +				     "by setting active flag for all links; "
->  				     "0 for never (default), 1 for always.");
->  module_param(resend_igmp, int, 0);
->  MODULE_PARM_DESC(resend_igmp, "Number of IGMP membership reports to send on "
->  			      "link failure");
-> -module_param(packets_per_slave, int, 0);
-> -MODULE_PARM_DESC(packets_per_slave, "Packets to send per slave in balance-rr "
-> -				    "mode; 0 for a random slave, 1 packet per "
-> -				    "slave (default), >1 packets per slave.");
-> +module_param(packets_per_link, int, 0);
-> +MODULE_PARM_DESC(packets_per_link, "Packets to send per link in balance-rr "
-> +				    "mode; 0 for a random link, 1 packet per "
-> +				    "link (default), >1 packets per link.");
->  module_param(lp_interval, uint, 0);
->  MODULE_PARM_DESC(lp_interval, "The number of seconds between instances where "
->  			      "the bonding driver sends learning packets to "
-> -			      "each slaves peer switch. The default is 1.");
-> +			      "each links peer switch. The default is 1.");
+>  kernel/locking/locktorture.c | 28 ++++++++++++++++++++++------
+>  1 file changed, 22 insertions(+), 6 deletions(-)
+> 
+> diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
+> index bebdf98e6cd78..e91033e9b6f95 100644
+> --- a/kernel/locking/locktorture.c
+> +++ b/kernel/locking/locktorture.c
+> @@ -74,6 +74,7 @@ static void lock_torture_cleanup(void);
+>   */
+>  struct lock_torture_ops {
+>  	void (*init)(void);
+> +	void (*exit)(void);
 
-Even if the module parameters are deprecated and extremely inconvenient
-as a mean of bonding configuration, I would say changing their names
-would still count as "breaking the userspace".
+This is fine, but why not also add a flag to the lock_torture_cxt
+structure that is set when the ->init() function is called?  Perhaps
+something like this in lock_torture_init():
 
-Michal
+	if (cxt.cur_ops->init) {
+		cxt.cur_ops->init();
+		cxt.initcalled = true;
+	}
 
+>  	int (*writelock)(void);
+>  	void (*write_delay)(struct torture_random_state *trsp);
+>  	void (*task_boost)(struct torture_random_state *trsp);
+> @@ -571,6 +572,11 @@ void torture_percpu_rwsem_init(void)
+>  	BUG_ON(percpu_init_rwsem(&pcpu_rwsem));
+>  }
+>  
+> +static void torture_percpu_rwsem_exit(void)
+> +{
+> +	percpu_free_rwsem(&pcpu_rwsem);
+> +}
+> +
+>  static int torture_percpu_rwsem_down_write(void) __acquires(pcpu_rwsem)
+>  {
+>  	percpu_down_write(&pcpu_rwsem);
+> @@ -595,6 +601,7 @@ static void torture_percpu_rwsem_up_read(void) __releases(pcpu_rwsem)
+>  
+>  static struct lock_torture_ops percpu_rwsem_lock_ops = {
+>  	.init		= torture_percpu_rwsem_init,
+> +	.exit		= torture_percpu_rwsem_exit,
+>  	.writelock	= torture_percpu_rwsem_down_write,
+>  	.write_delay	= torture_rwsem_write_delay,
+>  	.task_boost     = torture_boost_dummy,
+> @@ -786,9 +793,10 @@ static void lock_torture_cleanup(void)
+>  
+>  	/*
+>  	 * Indicates early cleanup, meaning that the test has not run,
+> -	 * such as when passing bogus args when loading the module. As
+> -	 * such, only perform the underlying torture-specific cleanups,
+> -	 * and avoid anything related to locktorture.
+> +	 * such as when passing bogus args when loading the module.
+> +	 * However cxt->cur_ops.init() may have been invoked, so beside
+> +	 * perform the underlying torture-specific cleanups, cur_ops.exit()
+> +	 * will be invoked if needed.
+>  	 */
+>  	if (!cxt.lwsa && !cxt.lrsa)
+>  		goto end;
+> @@ -828,6 +836,12 @@ static void lock_torture_cleanup(void)
+>  	cxt.lrsa = NULL;
+>  
+>  end:
+> +	/* If init() has been called, then do exit() accordingly */
+> +	if (cxt.cur_ops) {
+> +		if (cxt.cur_ops->exit)
+> +			cxt.cur_ops->exit();
+> +		cxt.cur_ops = NULL;
+> +	}
+
+The above can then be:
+
+	if (cxt.initcalled && cxt.cur_ops->exit)
+		cxt.cur_ops->exit();
+
+Maybe you also need to clear cxt.initcalled at this point, but I don't
+immediately see why that would be needed.
+
+>  	torture_cleanup_end();
+>  }
+>  
+> @@ -835,6 +849,7 @@ static int __init lock_torture_init(void)
+>  {
+>  	int i, j;
+>  	int firsterr = 0;
+> +	struct lock_torture_ops *cur_ops;
+
+And then you don't need this extra pointer.  Not that this pointer is bad
+in and of itself, but using (!cxt.cur_ops) to indicate that the ->init()
+function has not been called is an accident waiting to happen.
+
+And the changes below are no longer needed.
+
+Or am I missing something subtle?
+
+							Thanx, Paul
+
+>  	static struct lock_torture_ops *torture_ops[] = {
+>  		&lock_busted_ops,
+>  		&spin_lock_ops, &spin_lock_irq_ops,
+> @@ -853,8 +868,8 @@ static int __init lock_torture_init(void)
+>  
+>  	/* Process args and tell the world that the torturer is on the job. */
+>  	for (i = 0; i < ARRAY_SIZE(torture_ops); i++) {
+> -		cxt.cur_ops = torture_ops[i];
+> -		if (strcmp(torture_type, cxt.cur_ops->name) == 0)
+> +		cur_ops = torture_ops[i];
+> +		if (strcmp(torture_type, cur_ops->name) == 0)
+>  			break;
+>  	}
+>  	if (i == ARRAY_SIZE(torture_ops)) {
+> @@ -869,12 +884,13 @@ static int __init lock_torture_init(void)
+>  	}
+>  
+>  	if (nwriters_stress == 0 &&
+> -	    (!cxt.cur_ops->readlock || nreaders_stress == 0)) {
+> +	    (!cur_ops->readlock || nreaders_stress == 0)) {
+>  		pr_alert("lock-torture: must run at least one locking thread\n");
+>  		firsterr = -EINVAL;
+>  		goto unwind;
+>  	}
+>  
+> +	cxt.cur_ops = cur_ops;
+>  	if (cxt.cur_ops->init)
+>  		cxt.cur_ops->init();
+>  
+> -- 
+> 2.25.0.4.g0ad7144999
+> 
