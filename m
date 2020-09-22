@@ -2,212 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCFCD27391C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 05:08:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEBB9273921
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 05:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727856AbgIVDIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 23:08:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55862 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726898AbgIVDIb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 23:08:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600744109;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=56SiaiFmcx0WZ7W7/RYC3m7L4WpINiOIKf5/ZUx5d1E=;
-        b=Ov5Dg5V8tSeZWzHwJ8/DNO1RtG26bnDHAX2kUU3f95jy16uH1L6NgxDGYko/G4Idc/iyYs
-        OTGuQFZxo/cl6Td01Vvlrvy29quuTFpEj6md78b2pIrFU4YQNJTPMcFPXxSUEw4QFsevzy
-        qAsvxRqURgIqRsdBfzKi/4scYl8EE90=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-144-xKMccpLTMruVsLaHcdSSZg-1; Mon, 21 Sep 2020 23:08:25 -0400
-X-MC-Unique: xKMccpLTMruVsLaHcdSSZg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BB680807333;
-        Tue, 22 Sep 2020 03:08:23 +0000 (UTC)
-Received: from [10.10.115.46] (ovpn-115-46.rdu2.redhat.com [10.10.115.46])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 808602633C;
-        Tue, 22 Sep 2020 03:08:21 +0000 (UTC)
-Subject: Re: [RFC][Patch v1 2/3] i40e: limit msix vectors based on
- housekeeping CPUs
-To:     Frederic Weisbecker <frederic@kernel.org>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, mtosatti@redhat.com,
-        sassmann@redhat.com, jeffrey.t.kirsher@intel.com,
-        jacob.e.keller@intel.com, jlelli@redhat.com, hch@infradead.org,
-        bhelgaas@google.com, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
-        jerinj@marvell.com, mathias.nyman@intel.com, jiri@nvidia.com
-References: <20200909150818.313699-1-nitesh@redhat.com>
- <20200909150818.313699-3-nitesh@redhat.com>
- <20200917112359.00006e10@intel.com> <20200921225834.GA30521@lenoir>
-From:   Nitesh Narayan Lal <nitesh@redhat.com>
-Autocrypt: addr=nitesh@redhat.com; prefer-encrypt=mutual; keydata=
- mQINBFl4pQoBEADT/nXR2JOfsCjDgYmE2qonSGjkM1g8S6p9UWD+bf7YEAYYYzZsLtbilFTe
- z4nL4AV6VJmC7dBIlTi3Mj2eymD/2dkKP6UXlliWkq67feVg1KG+4UIp89lFW7v5Y8Muw3Fm
- uQbFvxyhN8n3tmhRe+ScWsndSBDxYOZgkbCSIfNPdZrHcnOLfA7xMJZeRCjqUpwhIjxQdFA7
- n0s0KZ2cHIsemtBM8b2WXSQG9CjqAJHVkDhrBWKThDRF7k80oiJdEQlTEiVhaEDURXq+2XmG
- jpCnvRQDb28EJSsQlNEAzwzHMeplddfB0vCg9fRk/kOBMDBtGsTvNT9OYUZD+7jaf0gvBvBB
- lbKmmMMX7uJB+ejY7bnw6ePNrVPErWyfHzR5WYrIFUtgoR3LigKnw5apzc7UIV9G8uiIcZEn
- C+QJCK43jgnkPcSmwVPztcrkbC84g1K5v2Dxh9amXKLBA1/i+CAY8JWMTepsFohIFMXNLj+B
- RJoOcR4HGYXZ6CAJa3Glu3mCmYqHTOKwezJTAvmsCLd3W7WxOGF8BbBjVaPjcZfavOvkin0u
- DaFvhAmrzN6lL0msY17JCZo046z8oAqkyvEflFbC0S1R/POzehKrzQ1RFRD3/YzzlhmIowkM
- BpTqNBeHEzQAlIhQuyu1ugmQtfsYYq6FPmWMRfFPes/4JUU/PQARAQABtCVOaXRlc2ggTmFy
- YXlhbiBMYWwgPG5pbGFsQHJlZGhhdC5jb20+iQI9BBMBCAAnBQJZeKUKAhsjBQkJZgGABQsJ
- CAcCBhUICQoLAgQWAgMBAh4BAheAAAoJEKOGQNwGMqM56lEP/A2KMs/pu0URcVk/kqVwcBhU
- SnvB8DP3lDWDnmVrAkFEOnPX7GTbactQ41wF/xwjwmEmTzLrMRZpkqz2y9mV0hWHjqoXbOCS
- 6RwK3ri5e2ThIPoGxFLt6TrMHgCRwm8YuOSJ97o+uohCTN8pmQ86KMUrDNwMqRkeTRW9wWIQ
- EdDqW44VwelnyPwcmWHBNNb1Kd8j3xKlHtnS45vc6WuoKxYRBTQOwI/5uFpDZtZ1a5kq9Ak/
- MOPDDZpd84rqd+IvgMw5z4a5QlkvOTpScD21G3gjmtTEtyfahltyDK/5i8IaQC3YiXJCrqxE
- r7/4JMZeOYiKpE9iZMtS90t4wBgbVTqAGH1nE/ifZVAUcCtycD0f3egX9CHe45Ad4fsF3edQ
- ESa5tZAogiA4Hc/yQpnnf43a3aQ67XPOJXxS0Qptzu4vfF9h7kTKYWSrVesOU3QKYbjEAf95
- NewF9FhAlYqYrwIwnuAZ8TdXVDYt7Z3z506//sf6zoRwYIDA8RDqFGRuPMXUsoUnf/KKPrtR
- ceLcSUP/JCNiYbf1/QtW8S6Ca/4qJFXQHp0knqJPGmwuFHsarSdpvZQ9qpxD3FnuPyo64S2N
- Dfq8TAeifNp2pAmPY2PAHQ3nOmKgMG8Gn5QiORvMUGzSz8Lo31LW58NdBKbh6bci5+t/HE0H
- pnyVf5xhNC/FuQINBFl4pQoBEACr+MgxWHUP76oNNYjRiNDhaIVtnPRqxiZ9v4H5FPxJy9UD
- Bqr54rifr1E+K+yYNPt/Po43vVL2cAyfyI/LVLlhiY4yH6T1n+Di/hSkkviCaf13gczuvgz4
- KVYLwojU8+naJUsiCJw01MjO3pg9GQ+47HgsnRjCdNmmHiUQqksMIfd8k3reO9SUNlEmDDNB
- XuSzkHjE5y/R/6p8uXaVpiKPfHoULjNRWaFc3d2JGmxJpBdpYnajoz61m7XJlgwl/B5Ql/6B
- dHGaX3VHxOZsfRfugwYF9CkrPbyO5PK7yJ5vaiWre7aQ9bmCtXAomvF1q3/qRwZp77k6i9R3
- tWfXjZDOQokw0u6d6DYJ0Vkfcwheg2i/Mf/epQl7Pf846G3PgSnyVK6cRwerBl5a68w7xqVU
- 4KgAh0DePjtDcbcXsKRT9D63cfyfrNE+ea4i0SVik6+N4nAj1HbzWHTk2KIxTsJXypibOKFX
- 2VykltxutR1sUfZBYMkfU4PogE7NjVEU7KtuCOSAkYzIWrZNEQrxYkxHLJsWruhSYNRsqVBy
- KvY6JAsq/i5yhVd5JKKU8wIOgSwC9P6mXYRgwPyfg15GZpnw+Fpey4bCDkT5fMOaCcS+vSU1
- UaFmC4Ogzpe2BW2DOaPU5Ik99zUFNn6cRmOOXArrryjFlLT5oSOe4IposgWzdwARAQABiQIl
- BBgBCAAPBQJZeKUKAhsMBQkJZgGAAAoJEKOGQNwGMqM5ELoP/jj9d9gF1Al4+9bngUlYohYu
- 0sxyZo9IZ7Yb7cHuJzOMqfgoP4tydP4QCuyd9Q2OHHL5AL4VFNb8SvqAxxYSPuDJTI3JZwI7
- d8JTPKwpulMSUaJE8ZH9n8A/+sdC3CAD4QafVBcCcbFe1jifHmQRdDrvHV9Es14QVAOTZhnJ
- vweENyHEIxkpLsyUUDuVypIo6y/Cws+EBCWt27BJi9GH/EOTB0wb+2ghCs/i3h8a+bi+bS7L
- FCCm/AxIqxRurh2UySn0P/2+2eZvneJ1/uTgfxnjeSlwQJ1BWzMAdAHQO1/lnbyZgEZEtUZJ
- x9d9ASekTtJjBMKJXAw7GbB2dAA/QmbA+Q+Xuamzm/1imigz6L6sOt2n/X/SSc33w8RJUyor
- SvAIoG/zU2Y76pKTgbpQqMDmkmNYFMLcAukpvC4ki3Sf086TdMgkjqtnpTkEElMSFJC8npXv
- 3QnGGOIfFug/qs8z03DLPBz9VYS26jiiN7QIJVpeeEdN/LKnaz5LO+h5kNAyj44qdF2T2AiF
- HxnZnxO5JNP5uISQH3FjxxGxJkdJ8jKzZV7aT37sC+Rp0o3KNc+GXTR+GSVq87Xfuhx0LRST
- NK9ZhT0+qkiN7npFLtNtbzwqaqceq3XhafmCiw8xrtzCnlB/C4SiBr/93Ip4kihXJ0EuHSLn
- VujM7c/b4pps
-Organization: Red Hat Inc,
-Message-ID: <65513ee8-4678-1f96-1850-0e13dbf1810c@redhat.com>
-Date:   Mon, 21 Sep 2020 23:08:20 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1728087AbgIVDMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 23:12:48 -0400
+Received: from mail-eopbgr80085.outbound.protection.outlook.com ([40.107.8.85]:29638
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726818AbgIVDMr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 23:12:47 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=j7dyaNEo6Aft4t8ExjaksrRj+LWbw7MzTxeu3grWuaZzhN8e3rjdM4zb2dWWKbz1CVjteUAgIdlbUvf2NVltECR80BWHpiRwcd7kJBe/x/T3/M2FJpYfIaH2724ywIsaPqpLiYnkRJ2clpV01Wy/rpQguHkHgjRnlHxjcd9ER+Q6VAW31KGzK+50ryQRd7obqairfltkID1zTZXCD0ZHltponwcQ3WXQEZDl5vahC8XbwkJdw762F64aL8N++dNDri50F/0nM9Pq3+DzqplhkIz1Q2xrtvDvlTrk5y8tksekw2hSwGdtTOxEgktIxYNZd557jhJhF6jSYZtYdFMKSA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=u4VFLk1WxQU+yP2oNdMNeL9DkeDgdI2GSYTlMAI+inE=;
+ b=MvuAnSMkXnTVC4ORjGVELRgkX+rc7ZPeRi6agndiU7S/wkXhezrWI4J3yA7bD9AATkD+CrSdpwrtrDFtdiDbRJqfV6b11pcsdJfzLizOdjIVbTz1HB8mqYl0a2xtdMBLxxpPysdIzsd5gEopr+kbV7qh3bAnJ+HF2jmEyimFY4uw2Y5Yy5kdMe34boA+iNHtW4Fmt57vhJlhW/hUr+lkQjM+7aYUgaYhmpFVpvQYLppY6giEgpVG+4lkVz2yrZ+Awc9abaV1aFLeLq1t+dZzqiHIn7/W/0GI+3ksNerm4/4flTcjWAZ8KZve5EEd33+TSrHINos4Ze2JehdMCprgng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=u4VFLk1WxQU+yP2oNdMNeL9DkeDgdI2GSYTlMAI+inE=;
+ b=lm8YVF0KkwrN2mBLs9jxSd7R60+qJhnZSTtyugYYl+vRnqIS0mHnL6WAkREmzAHdfqf/49FS19at+w/BjzECUoWfn6M4m3pGCVC2Nw+sTk1x/JWQeuSG0YB4X/az8BHjEIC1cixGOCOTerX3Og1nZRW7SA1b5V4Ya0geIwv/oy8=
+Received: from DB6PR0401MB2438.eurprd04.prod.outlook.com (2603:10a6:4:33::14)
+ by DB7PR04MB5449.eurprd04.prod.outlook.com (2603:10a6:10:8d::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14; Tue, 22 Sep
+ 2020 03:12:41 +0000
+Received: from DB6PR0401MB2438.eurprd04.prod.outlook.com
+ ([fe80::c8a:a759:d4ba:181e]) by DB6PR0401MB2438.eurprd04.prod.outlook.com
+ ([fe80::c8a:a759:d4ba:181e%7]) with mapi id 15.20.3391.025; Tue, 22 Sep 2020
+ 03:12:41 +0000
+From:   Biwen Li <biwen.li@nxp.com>
+To:     Shawn Guo <shawnguo@kernel.org>,
+        "Biwen Li (OSS)" <biwen.li@oss.nxp.com>
+CC:     "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        Leo Li <leoyang.li@nxp.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jiafei Pan <jiafei.pan@nxp.com>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>
+Subject: RE: [EXT] Re: [PATCH 2/5] arm64: dts: lx2160a-rdb: remove useless
+ property of rtc
+Thread-Topic: [EXT] Re: [PATCH 2/5] arm64: dts: lx2160a-rdb: remove useless
+ property of rtc
+Thread-Index: AQHWizOOGLxVV6x4KkO7cstIkfxRIKl0Ax6AgAAAVAA=
+Date:   Tue, 22 Sep 2020 03:12:41 +0000
+Message-ID: <DB6PR0401MB2438ABB1DFE785F9EAADB69E8F3B0@DB6PR0401MB2438.eurprd04.prod.outlook.com>
+References: <20200915073213.12779-1-biwen.li@oss.nxp.com>
+ <20200915073213.12779-2-biwen.li@oss.nxp.com> <20200922030208.GY25109@dragon>
+In-Reply-To: <20200922030208.GY25109@dragon>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.73]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: c74aaf68-7c15-4637-21d2-08d85ea55e5b
+x-ms-traffictypediagnostic: DB7PR04MB5449:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB7PR04MB54497B4EBD80E726CA4E83718F3B0@DB7PR04MB5449.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3631;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: McT0x1WtCx/mcVgvcxsI1mYua1kzaZxD5/KOJJMt7h6f5qf580+rvPAuMHJ4p3DWMAi3vx8QtZumjdDqmfvgZSVTZPagG2HfrV4Mke/hKKOGCISKLBiSc2UT/r8mN8OKApjpOOe5Syu5fe28bZGbqjWWmMqqSKIOzMY1C2NvZ0A1zogb49uMdcu8OptciyQk8p+2+yFLQalhbwefBbcGjUf4Ubm8ZupxYmEjaigN7+PIojudMNoAtw0De/NHZKeNdZ6hJYjMVIWnZDuMDrw7ld8sT3TAfopNg+atpSn3/85D9M7sN+rjjXP95dWtWwxnJNCoJrO3/Vr0RZVhWVkM9WQZ/+ToVYfepp+vdijp3lNHTxLIGGQXTLOyquy33KXw
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0401MB2438.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(366004)(396003)(39860400002)(55016002)(6506007)(478600001)(52536014)(110136005)(316002)(4744005)(76116006)(44832011)(7696005)(54906003)(83380400001)(8936002)(66476007)(2906002)(33656002)(66946007)(86362001)(71200400001)(4326008)(66556008)(5660300002)(26005)(186003)(64756008)(8676002)(9686003)(66446008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: uJ0QGhNLTKX9F/91e+3x1cSVH6Zqys0hsFb26T4IvOFtpozkwDfBkDIHwZiniIvbq+snmpr1W08nSKheQc4vrM+BUl897Ix58b3Vn3SpfnQsObQCctJSgzkK0cBUSPC9aGlY4Tmgb27khpUUntPHbFVA1ol12bK83LtoxmMmTkdMNQy4XOdFS8aI/RWDSGwsGACpN7oRW7ltcVfLH5BStXj9oGieCwRPUoVN//HA3ngd+IYewoabtbEC2eZkqpkZWqNw8n3QM85TIZYd11KNuxWU5SoVhM2bQjEBAC2au9rA/FcvBuLVuknyshNDoi7msIu7PLsQkobuovXboUmJWM/OQB+Tl6wcIlAgWkFJH+HeuQcb2DT9S/yorDd9rfft24lY724wdxUmCPxSEcO9BMSnS0XdgURTvpLAFyuvSDN6z0SsTZGEoAz1Fcigawcv8QAmvUDjBY5y5LmSdVcVmkZTFFWXaXz6p2rMmSxcrAOX5dDO7QXFbJhCq4y6mjLtNgwAdr4zimGHjz31wFGDIPKooke+OFyV1Gk9x2+0Slrw9LX0m/eywkxr+d6AMAuCV5NIGDw9AcWk/pEki0I4uTr+EWuirIFb+VS2Y5X9qwtQGqptTdrSuwBxK3rOsnZebt8JX70AjRVhrIy3rRg5uQ==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <20200921225834.GA30521@lenoir>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=nitesh@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="oKDFpOFbxY7K0uJXqzOfR5adtfOqHM0cY"
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0401MB2438.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c74aaf68-7c15-4637-21d2-08d85ea55e5b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Sep 2020 03:12:41.7801
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: WftXCxOCAb48Z71eghSykhOk5sRTnnMtWGbhNQ6ggE1HEZ8STJmXSCgoYgtZSeCEYonjI1a687ZUEm3oNemWHQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB5449
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---oKDFpOFbxY7K0uJXqzOfR5adtfOqHM0cY
-Content-Type: multipart/mixed; boundary="0jeSKN7YbEcXkMb4OWyQ21AuKmUGsoZ1L"
+>=20
+> Caution: EXT Email
+>=20
+> On Tue, Sep 15, 2020 at 03:32:10PM +0800, Biwen Li wrote:
+> > From: Biwen Li <biwen.li@nxp.com>
+> >
+> > Remove useless property interrupts of rtc
+> >
+> > Signed-off-by: Biwen Li <biwen.li@nxp.com>
+> > ---
+> >  arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts | 2 --
+> >  1 file changed, 2 deletions(-)
+> >
+> > diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
+> > b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
+> > index dce79018d397..e9e982176e07 100644
+> > --- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
+> > +++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
+> > @@ -171,8 +171,6 @@
+> >       rtc@51 {
+> >               compatible =3D "nxp,pcf2129";
+> >               reg =3D <0x51>;
+> > -             // IRQ10_B
+> > -             interrupts =3D <0 150 0x4>;
+>=20
+> If it's a correct description of hardware, I do not see why we would need=
+ to
+> remove it.
+Hi Shawn,
 
---0jeSKN7YbEcXkMb4OWyQ21AuKmUGsoZ1L
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
+Don't need use the interrupt, only read time from rtc.
 
-
-On 9/21/20 6:58 PM, Frederic Weisbecker wrote:
-> On Thu, Sep 17, 2020 at 11:23:59AM -0700, Jesse Brandeburg wrote:
->> Nitesh Narayan Lal wrote:
->>
->>> In a realtime environment, it is essential to isolate unwanted IRQs fro=
-m
->>> isolated CPUs to prevent latency overheads. Creating MSIX vectors only
->>> based on the online CPUs could lead to a potential issue on an RT setup
->>> that has several isolated CPUs but a very few housekeeping CPUs. This i=
-s
->>> because in these kinds of setups an attempt to move the IRQs to the
->>> limited housekeeping CPUs from isolated CPUs might fail due to the per
->>> CPU vector limit. This could eventually result in latency spikes becaus=
-e
->>> of the IRQ threads that we fail to move from isolated CPUs.
->>>
->>> This patch prevents i40e to add vectors only based on available
->>> housekeeping CPUs by using num_housekeeping_cpus().
->>>
->>> Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
->> The driver changes are straightforward, but this isn't the only driver
->> with this issue, right?  I'm sure ixgbe and ice both have this problem
->> too, you should fix them as well, at a minimum, and probably other
->> vendors drivers:
->>
->> $ rg -c --stats num_online_cpus drivers/net/ethernet
->> ...
->> 50 files contained matches
-> Ouch, I was indeed surprised that these MSI vector allocations were done
-> at the driver level and not at some $SUBSYSTEM level.
->
-> The logic is already there in the driver so I wouldn't oppose to this ver=
-y patch
-> but would a shared infrastructure make sense for this? Something that wou=
-ld
-> also handle hotplug operations?
->
-> Does it possibly go even beyond networking drivers?
-
-From a generic solution perspective, I think it makes sense to come up with=
- a
-shared infrastructure.
-Something that can be consumed by all the drivers and maybe hotplug operati=
-ons
-as well (I will have to further explore the hotplug part).
-
-However, there are RT workloads that are getting affected because of this
-issue, so does it make sense to go ahead with this per-driver basis approac=
-h
-for now?
-
-Since a generic solution will require a fair amount of testing and
-understanding of different drivers. Having said that, I can definetly start
-looking in that direction.
-
-Thanks for reviewing.
-
-> Thanks.
->
->> for this patch i40e
->> Acked-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
---=20
-Nitesh
-
-
---0jeSKN7YbEcXkMb4OWyQ21AuKmUGsoZ1L--
-
---oKDFpOFbxY7K0uJXqzOfR5adtfOqHM0cY
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEkXcoRVGaqvbHPuAGo4ZA3AYyozkFAl9paqQACgkQo4ZA3AYy
-ozm5FA//Q0Z1C8cHYE+V2T9l32k2cMBP9lWb4o9X8NISq9YeLyWLNM8u22H/FzTm
-15TIcE7Ypv9WdrZkPM4iB1iHN3St7z9LxZs5QhFz1aMYonXG9W9GfyQ1YEs3hQHz
-obUAaOoPGGSttmgAwWz7AcxPiZ2tpZuPJ3Aq+3MZ3VWNGs14I79OyfKxT/GShg+w
-TTOiYXsW+BjFiz3ZUi4VKpGacCv83Qz603VBFIbxCQmTFh8OCIiWiRd6lDRrBdEr
-e/gU23GS+p/9IGrNjdjgFnRgKCHLp06xd6czVJK1OABNiJhdfETkQB3quKWCWcUF
-T0WTcSowqSNwhRXsMYD4uQnH/xdPGNGgg4Il/qjLkMnMsxTDerCJSGMPGGRW+/uK
-ipByG2Pp3kevLqtpu3tPKiq6sXojLLvPkslpjC8YEb/kRzCAlFtGOOJQoOmxa19A
-LtxJfN/pMXBIBL6X7vH7SHI7RzAlFr5EJud+n+2F8h/uPBKtCdTCdAcMkDhTl3P0
-SWXY7ufGbFrB/EzqJblJbB+4ceC7iHvcTq+A1u8SwF0vQ/4A+k9aS1AMD3QwW7LI
-xu7f077f7zz8IqclvQYvwoeO0EJlLaeKvfhcOrpKkIBK2e6aXXPgivFNhObs8ak3
-aIxSx831J4vuDbXwLKTL+t1CK0kpTy+TOGSkblnxT3BwpIdcWLQ=
-=CGoR
------END PGP SIGNATURE-----
-
---oKDFpOFbxY7K0uJXqzOfR5adtfOqHM0cY--
-
+Best Regards,
+Biwen Li
+>=20
+> Shawn
+>=20
+> >       };
+> >  };
+> >
+> > --
+> > 2.17.1
+> >
