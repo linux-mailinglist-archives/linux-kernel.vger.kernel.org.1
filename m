@@ -2,83 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51505274D63
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 01:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EB2A274D65
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 01:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726885AbgIVXda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 19:33:30 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:38724 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726448AbgIVXda (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 19:33:30 -0400
-Received: by mail-io1-f66.google.com with SMTP id q4so12290934iop.5;
-        Tue, 22 Sep 2020 16:33:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wOD073YFkEuqWXn9WNz67EW80D+y9ARv2S5hPcoEdZM=;
-        b=HzeMTTpT5y8T3KizRPYigNScDN5h3VUKNBFvvtCA1HUnZIjlDprtnI2+ljja1ARbZg
-         zC1VOlAHVEyXulVUgmNPR1CdvK/cuF/xm9DrPN8sLEzyac90mqYNaMEbarGCp7/xlZe/
-         JPKbVC/xDo932nCvmpcxbV5ZEuDo1lY+gcLmLnFzYzoLO+pYiikFg4O9cu+CgI19KRfZ
-         m1g470LfMiYtxQ8kiKwJIMqNroyz6DfxMJ6Tbw40onqP8qCQZvFSUWtcH7FGZvq0xWpU
-         aLYFLOEfIet6k2ZiJYMd9jY9K7pWZs+xT6w2nCuQUA9Yg5QujFgDC5ZWgb1P3vnLVO8O
-         U85Q==
-X-Gm-Message-State: AOAM531tV/DrjDgZwWb0AWUcnpM561jNbWoTeORY6f5r3z2Ed9qCjp5Q
-        Okt0PHi6QhTQPKL0j5AV3g==
-X-Google-Smtp-Source: ABdhPJz5blj1DQ3tggL5vJDaLWINJGBgevRqkv3eF0oNldHQMmuuWtoeWX5gSI9SZ+CCL3dV21eWeQ==
-X-Received: by 2002:a02:cd0e:: with SMTP id g14mr6328316jaq.74.1600817609087;
-        Tue, 22 Sep 2020 16:33:29 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id c12sm9930706ili.48.2020.09.22.16.33.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 16:33:28 -0700 (PDT)
-Received: (nullmailer pid 3476406 invoked by uid 1000);
-        Tue, 22 Sep 2020 23:33:27 -0000
-Date:   Tue, 22 Sep 2020 17:33:27 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Eugen Hristev <eugen.hristev@microchip.com>
-Cc:     vkoul@kernel.org, tudor.ambarus@microchip.com,
-        ludovic.desroches@microchip.com, dmaengine@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, nicolas.ferre@microchip.com
-Subject: Re: [PATCH 6/7] dt-bindings: dmaengine: at_xdmac: add optional
- microchip,m2m property
-Message-ID: <20200922233327.GA3474555@bogus>
-References: <20200914140956.221432-1-eugen.hristev@microchip.com>
- <20200914140956.221432-7-eugen.hristev@microchip.com>
+        id S1726904AbgIVXdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 19:33:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34542 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726448AbgIVXdf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 19:33:35 -0400
+Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BE4C922206;
+        Tue, 22 Sep 2020 23:33:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600817615;
+        bh=jwF9DOzeIZ5gGIZT8xl2A5S/glutG512fwYCGqAjLAk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=dX4p+3KSf39qcG29Ew5bgrb0FLVmXwGaUPhTipxz7INAEOdIUTvJEXVGsxPRyfBo3
+         ymW7sh8mrhapZHjGzoHvyJEUmrKICTqSGFentiRtvUkWNTcXH9NUcYpkVw1iLdwrQt
+         VW4ys9et354HHvptLSQHmaRegGTb01GqyzL9ex4k=
+Date:   Tue, 22 Sep 2020 18:33:33 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
+        Jay Vosburgh <jay.vosburgh@canonical.com>
+Subject: Re: [PATCH v3 1/1] PCI/ERR: Fix reset logic in pcie_do_recovery()
+ call
+Message-ID: <20200922233333.GA2239404@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200914140956.221432-7-eugen.hristev@microchip.com>
+In-Reply-To: <3cad1a07-509b-ef51-f635-71def2ff8293@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 05:09:55PM +0300, Eugen Hristev wrote:
-> Add optional microchip,m2m property that specifies if a controller is
-> dedicated to memory to memory operations only.
+On Tue, Sep 22, 2020 at 02:44:51PM -0700, Kuppuswamy, Sathyanarayanan wrote:
 > 
-> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
-> ---
->  Documentation/devicetree/bindings/dma/atmel-xdma.txt | 6 ++++++
->  1 file changed, 6 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/dma/atmel-xdma.txt b/Documentation/devicetree/bindings/dma/atmel-xdma.txt
-> index 510b7f25ba24..642da6b95a29 100644
-> --- a/Documentation/devicetree/bindings/dma/atmel-xdma.txt
-> +++ b/Documentation/devicetree/bindings/dma/atmel-xdma.txt
-> @@ -15,6 +15,12 @@ the dmas property of client devices.
->      interface identifier,
->      - bit 30-24: PERID, peripheral identifier.
->  
-> +Optional properties:
-> +- microchip,m2m: this controller is connected on AXI only to memory and it's
-> +	dedicated to memory to memory DMA operations. If this option is
-> +	missing, it's assumed that the DMA controller is connected to
-> +	peripherals, thus it's a per2mem and mem2per.
+> On 9/22/20 11:52 AM, Bjorn Helgaas wrote:
+> > On Fri, Jul 24, 2020 at 12:07:55PM -0700, sathyanarayanan.kuppuswamy@linux.intel.com wrote:
+> > > From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> > > 
+> > > Current pcie_do_recovery() implementation has following two issues:
+> > > 
+> > 
+> > I'm having trouble parsing this out, probably just lack of my
+> > understanding...
+> > 
+> > > 1. Fatal (DPC) error recovery is currently broken for non-hotplug
+> > > capable devices. Current fatal error recovery implementation relies
+> > > on PCIe hotplug (pciehp) handler for detaching and re-enumerating
+> > > the affected devices/drivers. pciehp handler listens for DLLSC state
+> > > changes and handles device/driver detachment on DLLSC_LINK_DOWN event
+> > > and re-enumeration on DLLSC_LINK_UP event. So when dealing with
+> > > non-hotplug capable devices, recovery code does not restore the state
+> > > of the affected devices correctly.
+> > 
+> > Apparently in the hotplug case, something *does* restore the state of
+> > affected devices?
+>
+> Yes, in hotplug case, DLLSC state change handler takes over detachment
+> /cleanup and re-attachment of affected devices/drivers.
 
-Wouldn't 'dma-requests = <0>' cover this case?
-
-Rob
+Where does the restore happen here?  I.e., what function does this?
