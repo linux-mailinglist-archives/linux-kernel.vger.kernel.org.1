@@ -2,67 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDE3B274C06
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:23:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DBDF274C0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726738AbgIVWXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 18:23:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726576AbgIVWXW (ORCPT
+        id S1726757AbgIVWZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 18:25:06 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:36423 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726608AbgIVWZF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 18:23:22 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17E15C061755;
-        Tue, 22 Sep 2020 15:23:22 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id jw11so2120986pjb.0;
-        Tue, 22 Sep 2020 15:23:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=OlSVKzFE1Q9BCH/xjw1bokQDCp7IHVagUzHPkq8I7WI=;
-        b=c3TkFKROQ0WbLC1h/nHUMG47isU8u5m1rD9F87MUto4wbBEGQ1TEtU2ImlXdCHc7Fl
-         HUkgzV9tipQhKqAaAzwbA1LcqJPKCQvywfA1jTH5jzCGYwL2WA/Qxp2g6VNA/NvMkUOt
-         0z4iNbPKh3dYCctTm05XR1LmIgDCMixh2QLNAqZxmU9bbP/P7ZWpbxPQUlPqm7klkPHJ
-         sDbRXlC1u0ocMpxQ30dFWVkRwtzgZ9o061H6fBL+qLkDpKyyx6wBoNCoHAXwnL3cQ5Fz
-         e5lxv0pGLp1ihzMDCEt28WQ4sskry1n+RocgDcsSPpE8gpUEz5GDey8ggq4vrC6FHT9m
-         pVxA==
+        Tue, 22 Sep 2020 18:25:05 -0400
+Received: by mail-il1-f193.google.com with SMTP id t12so18895958ilh.3;
+        Tue, 22 Sep 2020 15:25:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=OlSVKzFE1Q9BCH/xjw1bokQDCp7IHVagUzHPkq8I7WI=;
-        b=dOE8cgKNcePDno8QNjl3beDF7YFpFX/eL0O6bWnGPMWxtGqBNqAwIGE6Jvrd/vPF8m
-         l2oEcgGo/Q8XYNq/SzCy1FhW77+TK4A943Vc+2kRxqL/lii20lfqcXcbNm6fz0dOv1Zw
-         7Gp5S4B8OIrOdNqL9wHaiA3HBeN4tkgcLX5US5jH58D5dEMPuRgDH8JolWf5u1L5gKCE
-         WPR8ypeDx9bOkLPZD1wGvX7rW2jw9AXpwGnnUZn4EjOIY2FAJ6x0EYZ/fm8wAm+b3iNA
-         0vIyCFuUBsoaOtWYts4bOFvp6HJn6mbgf7TEFsf6oi8vRtnDN4r6ACD7pw8zdbNQMAtt
-         iw1w==
-X-Gm-Message-State: AOAM532hufOdytjkmMSdXrG3hkV6mh5JRq8OGz9L983yMYAkOoielJ0Y
-        ybrgzzouZS2Xe/RCVv7nLM+bK683M4SoWCj133O1UNQ3
-X-Google-Smtp-Source: ABdhPJxa0mkKAbHyoU1c0G8q9G1hDx28XT+sSeHEf9WSOoThtWtON3SZHZG+8pRNtHzpV4FIB4BCQmTu/o8A1VHcoDs=
-X-Received: by 2002:a17:90b:360a:: with SMTP id ml10mr5443221pjb.198.1600813401716;
- Tue, 22 Sep 2020 15:23:21 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bvurKRN2DDvC1Hgvp7WYCV624aS6APp8mw0PAo4N1WU=;
+        b=awhXKVxfBIitxslqQ3igb8vO7AZvDUAZPqoR/KqAqdnRFDQZKbhq5V8iWwIt5IaES1
+         zBaxrgwwEZb6pYuegZ709nD2XeD7U2ZXGlRUYUw5sh7U+sFgnBSjXI260c281RzfW4n1
+         97zvWcjVRr+yyAK0HLEVsRR3twAkvYraZ8Jmv4GX1rm8LAFLd7pVL1vrn/wdsX06HM7B
+         LNtl3LfK2Cl/5jn7Y1nSOfN5nX63T3I/ro+rPfhgFCZXVWqjy/V4OcFkBZ6d64kktB6Z
+         Zk+I4M2u/VRoszHTla8W6oPvcHVtX5Ff2giGP1x7PlnMTKPx3txfchhJI7f8XnYLnvcc
+         dSdQ==
+X-Gm-Message-State: AOAM533aFopA3nY2z4MY/0ZZ/JT1zkLPt3WTi47uB/2k48TlpEIJzi+y
+        IMt4mngS7QWwoEcT6ICERA==
+X-Google-Smtp-Source: ABdhPJxlUuCCBpD4JyTf1PVMpkz3ym+qfciLsM01eFcizDC6XpyBWcz9NAtaqjTPvL/oBLNul/hfbA==
+X-Received: by 2002:a05:6e02:e0a:: with SMTP id a10mr6491535ilk.113.1600813504600;
+        Tue, 22 Sep 2020 15:25:04 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id 64sm9991459ilv.0.2020.09.22.15.25.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 15:25:03 -0700 (PDT)
+Received: (nullmailer pid 3368435 invoked by uid 1000);
+        Tue, 22 Sep 2020 22:25:02 -0000
+Date:   Tue, 22 Sep 2020 16:25:02 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Chu Lin <linchuyuan@google.com>, jdelvare@suse.com,
+        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, qiongwang@google.com,
+        zhongqil@google.com, jasonling@google.com, belgaied@google.com
+Subject: Re: [PATCH] dt-bindings: hwmon: max20730: adding device tree doc for
+ max20730
+Message-ID: <20200922222502.GA3364463@bogus>
+References: <20200910170638.1985729-1-linchuyuan@google.com>
+ <6059ab76-02ff-0ab6-15bf-e34026a2f855@roeck-us.net>
 MIME-Version: 1.0
-References: <20200922135718.508013-1-xie.he.0141@gmail.com>
-In-Reply-To: <20200922135718.508013-1-xie.he.0141@gmail.com>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Tue, 22 Sep 2020 15:23:10 -0700
-Message-ID: <CAJht_EN3q_2+u92+TmE7QDE-RRwRQtvGx+NHyf4hDPSA50oPQA@mail.gmail.com>
-Subject: Re: [PATCH net] drivers/net/wan/x25_asy: Correct the ndo_open and
- ndo_stop functions
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin Schiller <ms@dev.tdt.de>,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6059ab76-02ff-0ab6-15bf-e34026a2f855@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry. I wish to drop the 3rd part (the 3rd point in the commit
-message) and re-send this patch.
+On Tue, Sep 15, 2020 at 08:04:24PM -0700, Guenter Roeck wrote:
+> On 9/10/20 10:06 AM, Chu Lin wrote:
+> > Testing:
+> > make dt_binding_check
+> > 
+> 
+> This isn't really an appropriate patch description.
 
-I'll re-address the problem discussed in the 3rd point in future patches.
+And will always pass with a .txt file...
+
+> 
+> > Signed-off-by: Chu Lin <linchuyuan@google.com>
+> > ---
+> >  .../devicetree/bindings/hwmon/max20730.txt    | 23 +++++++++++++++++++
+> 
+> AFAIK this needs to be written as .yaml file.
+
+Yes.
+
+> 
+> Guenter
+> 
+> >  MAINTAINERS                                   |  1 +
+> >  2 files changed, 24 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/hwmon/max20730.txt
+> > 
+> > diff --git a/Documentation/devicetree/bindings/hwmon/max20730.txt b/Documentation/devicetree/bindings/hwmon/max20730.txt
+> > new file mode 100644
+> > index 000000000000..3afb42b04567
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/hwmon/max20730.txt
+> > @@ -0,0 +1,23 @@
+> > +max20730 properties
+> > +
+> > +Required properties:
+> > +- compatible: Must be one of the supported compatible strings:
+> > +	"maxim,max20730" for max20730
+> > +	"maxim,max20734" for max20734
+> > +	"maxim,max20743" for max20743
+> > +- reg: I2C address
+> > +
+> > +Optional properties:
+> > +
+> > +- vout-voltage-divider
+> > +	Resistance of the vout voltage divider.
+> > +	Two numbers, the first number is the output resistor,
+> > +	the second number is the total resistance.
+
+Is this a common property for this type of device? And what type of 
+device is it because there's no description telling me?
+
+> > +
+> > +Example:
+> > +
+> > +max20730@10 {
+> > +	compatible = "maxim,max20730";
+> > +	reg = <0x10>;
+> > +	vout-voltage-divider = <1000 2000>;
+> > +};
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 0a6ac3f00ed5..a04bf34a65b8 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -12371,6 +12371,7 @@ W:	http://www.roeck-us.net/linux/drivers/
+> >  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git
+> >  S:	Maintained
+> >  F:	Documentation/devicetree/bindings/hwmon/ibm,cffps1.txt
+> > +F:	Documentation/devicetree/bindings/hwmon/max20730.txt
+> >  F:	Documentation/devicetree/bindings/hwmon/max31785.txt
+> >  F:	Documentation/devicetree/bindings/hwmon/ltc2978.txt
+> >  F:	Documentation/hwmon/adm1275
+> > 
+> 
