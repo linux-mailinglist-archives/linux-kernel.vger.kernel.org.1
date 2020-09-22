@@ -2,206 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC8D274971
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1BA5274973
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726727AbgIVTqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 15:46:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726448AbgIVTqj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 15:46:39 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72060C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 12:46:39 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id b17so1953643pji.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 12:46:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=A7K1Lk9w2JU/mzkk5n/G5HuZZXn4DaRG+1GGMP6qt10=;
-        b=o/QyLw5IOnPijUiB7gu11H8C/y8KX8qiQByDc/5cdDeCvxZCzAlzUMfPyxj1dquEej
-         LpfGQK36XgsNckrrSIllSf2r2nvJMtQsil24ezMvc4ACTw1OPVtnF4bBSfJkGUkjaTFE
-         w5PURjvycYfJZXSYiBjjGWb6kGKWujmGv+ZL0y9l5LOyk/f2d0dLFL+9I9JFX8k+0CUN
-         KCtB6X5lM8rRNz1mdvqiozdPmLu3AulERdS0BjmMlcM8hIffsXxuZAGeyKkESAxVVoTe
-         3MB/wLsMJ9ebKQZQ4CpxEs0j4l12BwD1cFfN2Fh28RD023yIt+YwUL21MguKhUUcbqDV
-         IB4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=A7K1Lk9w2JU/mzkk5n/G5HuZZXn4DaRG+1GGMP6qt10=;
-        b=jysV97/oLexbUpg2Zlh8B9XMQ2+731MMuLU3By9P0xFrVrGjYeNYHP7OlfJ1Gssk4P
-         uwOdkWADo2Qv0DyO8C+RozwNGgz7N9GCFBWj2DK4mFiClkJvOmkmaQAPHNs3xKb0JqDN
-         l+DgdqciRFtIyursXEveFq3kcqWZLlciW8+An4hwzXLg2ktZaTvG2svrwxGAFnrHNwxA
-         n83dsXCaE2owOHsvk/yF16ssAvL5W8HGpXGNWKXil2Yp/vG1SC/p3m2TET/oTihYrAxH
-         QRSwvBu3c8FakVDTHSp/5XeGOUFbaFNXKc6RX0DNkn8RZtIjuEOVMtt6C6qv7FFsbSTm
-         9Cqg==
-X-Gm-Message-State: AOAM5335TnMgv9cCRWwfFkycULY3xVD/1OKU12JXwM1PSoHauO/hr4a4
-        abcYH+Bwxu8FdBC5qqfMUP63JA==
-X-Google-Smtp-Source: ABdhPJz/Wu2OzlX03ege7flSALsdwmfjWfG5jAcjBQpcHUrEISSvHqsvcce6tgf9nazx2u33oiUpuQ==
-X-Received: by 2002:a17:90b:3014:: with SMTP id hg20mr5201262pjb.128.1600803998988;
-        Tue, 22 Sep 2020 12:46:38 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id y1sm14483510pgr.3.2020.09.22.12.46.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 12:46:38 -0700 (PDT)
-Date:   Tue, 22 Sep 2020 13:46:36 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Cc:     "ohad@wizery.com" <ohad@wizery.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "guennadi.liakhovetski@linux.intel.com" 
-        <guennadi.liakhovetski@linux.intel.com>,
-        Loic PALLARDY <loic.pallardy@st.com>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 08/10] rpmsg: core: Add RPMSG byte conversion operations
-Message-ID: <20200922194636.GC931970@xps15>
-References: <20200922001000.899956-1-mathieu.poirier@linaro.org>
- <20200922001000.899956-9-mathieu.poirier@linaro.org>
- <90c14e71-4c2b-9089-93d4-685b075873a9@st.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <90c14e71-4c2b-9089-93d4-685b075873a9@st.com>
+        id S1726656AbgIVTrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 15:47:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34448 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726448AbgIVTrv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 15:47:51 -0400
+Received: from X1 (unknown [216.241.194.61])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F396520888;
+        Tue, 22 Sep 2020 19:47:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600804071;
+        bh=MqlXCLEZquChpaBvVYye8Wj9L6hvnijd7TNDRmPo42U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=m2iYWrQa06vGlD6u9Pxv1j23pQGigrIJ6W9hx/BIbyOUnxz/oLVWjrqbYF5VButKN
+         e8+dXDDxntZ68M5Tb/r8309LZYt1Yg/ESNTRsiaBzCKik7GBadAYCDlbe8nV00H8fy
+         2E01dAKomwCYXai5m7tUk3B0RizOheqGXe4Gsy90=
+Date:   Tue, 22 Sep 2020 12:47:50 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Rafael Aquini <aquini@redhat.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        ying.huang@intel.com
+Subject: Re: [PATCH] mm: swapfile: avoid split_swap_cluster() NULL pointer
+ dereference
+Message-Id: <20200922124750.67a20d9764ec098b17705407@linux-foundation.org>
+In-Reply-To: <20200922184838.978540-1-aquini@redhat.com>
+References: <20200922184838.978540-1-aquini@redhat.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 04:34:53PM +0200, Arnaud POULIQUEN wrote:
-> 
-> 
-> On 9/22/20 2:09 AM, Mathieu Poirier wrote:
-> > Add RPMSG device specific byte conversion operations as a first
-> > step to separate the RPMSG name space service from the virtIO
-> > transport layer.
-> > 
-> > Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > ---
-> >  drivers/rpmsg/rpmsg_core.c     | 51 ++++++++++++++++++++++++++++++++++
-> >  drivers/rpmsg/rpmsg_internal.h | 12 ++++++++
-> >  2 files changed, 63 insertions(+)
-> > 
-> > diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
-> > index 50a835eaf1ba..66ad5b5f1e87 100644
-> > --- a/drivers/rpmsg/rpmsg_core.c
-> > +++ b/drivers/rpmsg/rpmsg_core.c
-> > @@ -20,6 +20,57 @@
-> >  
-> >  #include "rpmsg_internal.h"
-> >  
-> > +/**
-> > + * rpmsg{16|32}_to_cpu()
-> > + * cpu_to_rpmsg[16|32}() - rpmsg device specific byte conversion functions to
-> > + *			   perform byte conversion between rpmsg device and the
-> > + *			   transport layer it is operating on.
-> > + */
-> > +
-> > +u16 rpmsg16_to_cpu(struct rpmsg_device *rpdev, u16 val)
-> > +{
-> > +	if (WARN_ON(!rpdev))
-> > +		return -EINVAL;
-> > +	if (!rpdev->ops || !rpdev->ops->transport16_to_cpu)
-> > +		return -EPERM;
-> > +
-> > +	return rpdev->ops->transport16_to_cpu(rpdev, val);
-> > +}
-> > +EXPORT_SYMBOL(rpmsg16_to_cpu);
-> > +
-> > +u16 cpu_to_rpmsg16(struct rpmsg_device *rpdev, u16 val)
-> > +{
-> > +	if (WARN_ON(!rpdev))
-> > +		return -EINVAL;
-> > +	if (!rpdev->ops || !rpdev->ops->cpu_to_transport16)
-> > +		return -EPERM;
-> > +
-> > +	return rpdev->ops->cpu_to_transport16(rpdev, val);
-> > +}
-> > +EXPORT_SYMBOL(cpu_to_rpmsg16);
-> > +
-> > +u32 rpmsg32_to_cpu(struct rpmsg_device *rpdev, u32 val)
-> > +{
-> > +	if (WARN_ON(!rpdev))
-> > +		return -EINVAL;
-> > +	if (!rpdev->ops || !rpdev->ops->transport32_to_cpu)
-> > +		return -EPERM;
-> > +
-> > +	return rpdev->ops->transport32_to_cpu(rpdev, val);
-> > +}
-> > +EXPORT_SYMBOL(rpmsg32_to_cpu);
-> > +
-> > +u32 cpu_to_rpmsg32(struct rpmsg_device *rpdev, u32 val)
-> > +{
-> > +	if (WARN_ON(!rpdev))
-> > +		return -EINVAL;
-> > +	if (!rpdev->ops || !rpdev->ops->cpu_to_transport32)
-> > +		return -EPERM;
-> 
-> Alternative could be to choice the processor endianness ( it was the case
-> before the virtio patch to set the endianness
+On Tue, 22 Sep 2020 14:48:38 -0400 Rafael Aquini <aquini@redhat.com> wrote:
 
-That's a good idea.
-
+> The swap area descriptor only gets struct swap_cluster_info *cluster_info
+> allocated if the swapfile is backed by non-rotational storage.
+> When the swap area is laid on top of ordinary disk spindles, lock_cluster()
+> will naturally return NULL.
 > 
-> > +
-> > +	return rpdev->ops->cpu_to_transport32(rpdev, val);
-> > +}
-> > +EXPORT_SYMBOL(cpu_to_rpmsg32);
-> > +
-> >  /**
-> >   * rpmsg_create_channel() - create a new rpmsg channel
-> >   * using its name and address info.
-> > diff --git a/drivers/rpmsg/rpmsg_internal.h b/drivers/rpmsg/rpmsg_internal.h
-> > index 2e65386f191e..2f0ad1a52698 100644
-> > --- a/drivers/rpmsg/rpmsg_internal.h
-> > +++ b/drivers/rpmsg/rpmsg_internal.h
-> > @@ -81,6 +81,8 @@ struct virtio_rpmsg_channel {
-> >  
-> >  /**
-> >   * struct rpmsg_device_ops - indirection table for the rpmsg_device operations
-> > + * @transport{16|32}_to_cpu: byte conversion from rpmsg device to transport layer
-> > + * @cpu_to_transport{16|32}: byte conversion from transport layer to rpmsg device
-> >   * @create_channel:	create backend-specific channel, optional
-> >   * @release_channel:	release backend-specific channel, optional
-> >   * @create_ept:		create backend-specific endpoint, required
-> > @@ -92,6 +94,10 @@ struct virtio_rpmsg_channel {
-> >   * advertise new channels implicitly by creating the endpoints.
-> >   */
-> >  struct rpmsg_device_ops {
-> > +	u16 (*transport16_to_cpu)(struct rpmsg_device *rpdev, u16 val);
-> > +	u16 (*cpu_to_transport16)(struct rpmsg_device *rpdev, u16 val);
-> > +	u32 (*transport32_to_cpu)(struct rpmsg_device *rpdev, u32 val);
-> > +	u32 (*cpu_to_transport32)(struct rpmsg_device *rpdev, u32 val);
+> CONFIG_THP_SWAP exposes cluster_info infrastructure to a broader number of
+> use cases, and split_swap_cluster(), which is the counterpart of split_huge_page()
+> for the THPs in the swapcache, misses checking the return of lock_cluster before
+> operating on the cluster_info pointer.
 > 
-> This trigg me a suggestion. Perhaps it would be simpler to have only on ops
-> to get the endianness.
+> This patch addresses that issue by adding a proper check for the pointer
+> not being NULL in the wrappers cluster_{is,clear}_huge(), in order to avoid
+> crashes similar to the one below:
 > 
+> ...
+>
+> Fixes: 59807685a7e77 ("mm, THP, swap: support splitting THP for THP swap out")
+> Signed-off-by: Rafael Aquini <aquini@redhat.com>
 
-Another good idea, I'll look into it.
-
-Thanks for the comments,
-Mathieu
-
-> Regards
-> Arnaud
-> 
-> >  	struct rpmsg_device *(*create_channel)(struct rpmsg_device *rpdev,
-> >  					     struct rpmsg_channel_info *chinfo);
-> >  	int (*release_channel)(struct rpmsg_device *rpdev,
-> > @@ -148,6 +154,12 @@ rpmsg_create_channel(struct rpmsg_device *rpdev,
-> >  		     struct rpmsg_channel_info *chinfo);
-> >  int rpmsg_release_channel(struct rpmsg_device *rpdev,
-> >  			  struct rpmsg_channel_info *chinfo);
-> > +
-> > +u16 rpmsg16_to_cpu(struct rpmsg_device *rpdev, u16 val);
-> > +u16 cpu_to_rpmsg16(struct rpmsg_device *rpdev, u16 val);
-> > +u32 rpmsg32_to_cpu(struct rpmsg_device *rpdev, u32 val);
-> > +u32 cpu_to_rpmsg32(struct rpmsg_device *rpdev, u32 val);
-> > +
-> >  /**
-> >   * rpmsg_chrdev_register_device() - register chrdev device based on rpdev
-> >   * @rpdev:	prepared rpdev to be used for creating endpoints
-> > 
+Did you consider cc:stable?
