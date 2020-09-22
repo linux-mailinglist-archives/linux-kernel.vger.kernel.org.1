@@ -2,297 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C10C7274680
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A58274674
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726761AbgIVQVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 12:21:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726601AbgIVQVi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 12:21:38 -0400
-Received: from hillosipuli.retiisi.org.uk (hillosipuli.retiisi.org.uk [IPv6:2a01:4f9:c010:4572::81:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED58C061755;
-        Tue, 22 Sep 2020 09:21:38 -0700 (PDT)
-Received: from valkosipuli.localdomain (valkosipuli.retiisi.org.uk [IPv6:2a01:4f9:c010:4572::80:2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1726739AbgIVQUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 12:20:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49832 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726652AbgIVQUb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 12:20:31 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by hillosipuli.retiisi.org.uk (Postfix) with ESMTPS id 6CA67634C8D;
-        Tue, 22 Sep 2020 19:20:25 +0300 (EEST)
-Received: from sailus by valkosipuli.localdomain with local (Exim 4.92)
-        (envelope-from <sakari.ailus@retiisi.org.uk>)
-        id 1kKl1l-0002gO-JE; Tue, 22 Sep 2020 19:20:25 +0300
-Date:   Tue, 22 Sep 2020 19:20:25 +0300
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>, jonathanh@nvidia.com,
-        hverkuil@xs4all.nl, jacopo+renesas@jmondi.org,
-        luca@lucaceresoli.net, leonl@leopardimaging.com,
-        robh+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 3/3] media: i2c: imx274: Add IMX274 power on and off
- sequence
-Message-ID: <20200922162025.GB8644@valkosipuli.retiisi.org.uk>
-References: <1600724379-7324-1-git-send-email-skomatineni@nvidia.com>
- <1600724379-7324-4-git-send-email-skomatineni@nvidia.com>
- <20200922075501.GB3994831@ulmo>
- <c79b6253-8476-c51b-ba32-10d464cfa4cb@nvidia.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 2CF762086A;
+        Tue, 22 Sep 2020 16:20:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600791630;
+        bh=+Ol2f1a6qqykB0WuAVaSfN9rPddftBcmlZmKsY7qEsM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ElzeL8r99SINPN1iYglJvtw8zwPXCnWvUa5AZcw0aXgRqrDmb1gYVtvCIGR7TF+aF
+         ZUd3hlQkVWYKlP83M46eatNhLakip05MWAozoztNe8HkFHhAT7C2b74f+rUboa6KTu
+         oMjdFYMzc5bQYMVaY/i76jH6BWRTHtQrcso7PCVY=
+Date:   Tue, 22 Sep 2020 18:20:49 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Anthony Liguori <aliguori@amazon.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        David Duncan <davdunc@amazon.com>,
+        Bjoern Doebel <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Frank van der Linden <fllinden@amazon.com>,
+        Alexander Graf <graf@amazon.de>, Karen Noel <knoel@redhat.com>,
+        Martin Pohlack <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stewart Smith <trawets@amazon.com>,
+        Uwe Dannowski <uwed@amazon.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        kvm <kvm@vger.kernel.org>,
+        ne-devel-upstream <ne-devel-upstream@amazon.com>
+Subject: Re: [PATCH v9 14/18] nitro_enclaves: Add Kconfig for the Nitro
+ Enclaves driver
+Message-ID: <20200922162049.GA2299429@kroah.com>
+References: <20200911141141.33296-1-andraprs@amazon.com>
+ <20200911141141.33296-15-andraprs@amazon.com>
+ <20200914155913.GB3525000@kroah.com>
+ <c3a33dcf-794c-31ef-ced5-4f87ba21dd28@amazon.com>
+ <d7eaac0d-8855-ca83-6b10-ab4f983805a2@amazon.com>
+ <358e7470-b841-52fe-0532-e1154ef0e93b@amazon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c79b6253-8476-c51b-ba32-10d464cfa4cb@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <358e7470-b841-52fe-0532-e1154ef0e93b@amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sowjanya,
-
-On Tue, Sep 22, 2020 at 09:13:57AM -0700, Sowjanya Komatineni wrote:
+On Tue, Sep 22, 2020 at 05:13:02PM +0300, Paraschiv, Andra-Irina wrote:
 > 
-> On 9/22/20 12:55 AM, Thierry Reding wrote:
-> > On Mon, Sep 21, 2020 at 02:39:39PM -0700, Sowjanya Komatineni wrote:
-> > > IMX274 has analog 2.8V supply, digital core 1.8V supply, and vddl digital
-> > > io 1.2V supply which are optional based on camera module design.
+> 
+> On 21/09/2020 15:34, Paraschiv, Andra-Irina wrote:
+> > 
+> > 
+> > On 14/09/2020 20:23, Paraschiv, Andra-Irina wrote:
 > > > 
-> > > IMX274 also need external 24Mhz clock and is optional based on
-> > > camera module design.
 > > > 
-> > > This patch adds support for IMX274 power on and off to enable and
-> > > disable these supplies and external clock.
+> > > On 14/09/2020 18:59, Greg KH wrote:
+> > > > On Fri, Sep 11, 2020 at 05:11:37PM +0300, Andra Paraschiv wrote:
+> > > > > Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
+> > > > > Reviewed-by: Alexander Graf <graf@amazon.com>
+> > > > I can't take patches without any changelog text at all, sorry.
+> > > > 
+> > > > Same for a few other patches in this series :(
+> > > > 
 > > > 
-> > > Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
-> > > Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
-> > > ---
-> > >   drivers/media/i2c/imx274.c | 184 +++++++++++++++++++++++++++++++++------------
-> > >   1 file changed, 134 insertions(+), 50 deletions(-)
+> > > I can move the changelog text before the Sob tag(s) for all the
+> > > patches. I also can add a summary phrase in the commit message for
+> > > the commits like this one that have only the commit title and Sob &
+> > > Rb tags.
 > > > 
-> > > diff --git a/drivers/media/i2c/imx274.c b/drivers/media/i2c/imx274.c
-> > > index 5e515f0..b3057a5 100644
-> > > --- a/drivers/media/i2c/imx274.c
-> > > +++ b/drivers/media/i2c/imx274.c
-> > > @@ -18,7 +18,9 @@
-> > >   #include <linux/kernel.h>
-> > >   #include <linux/module.h>
-> > >   #include <linux/of_gpio.h>
-> > > +#include <linux/pm_runtime.h>
-> > >   #include <linux/regmap.h>
-> > > +#include <linux/regulator/consumer.h>
-> > >   #include <linux/slab.h>
-> > >   #include <linux/v4l2-mediabus.h>
-> > >   #include <linux/videodev2.h>
-> > > @@ -131,6 +133,15 @@
-> > >   #define IMX274_TABLE_WAIT_MS			0
-> > >   #define IMX274_TABLE_END			1
-> > > +/* regulator supplies */
-> > > +static const char * const imx274_supply_names[] = {
-> > > +	"vddl",  /* IF (1.2V) supply */
-> > > +	"vdig",  /* Digital Core (1.8V) supply */
-> > > +	"vana",  /* Analog (2.8V) supply */
-> > According to the device tree bindings these should be uppercase. Did I
-> > miss a patch that updates the bindings?
+> > > Would these updates to the commit messages match the expectations?
+> > > 
+> > > Let me know if remaining feedback to discuss and I should include as
+> > > updates in v10. Otherwise, I can send the new revision with the
+> > > updated commit messages.
+> > > 
+> > > Thanks for review.
 > > 
-> > I think the preference is for supply names to be lowercase and given
-> > that there are no users of this binding yet we could update it without
-> > breaking any existing device trees.
+> > Here we go, I published v10, including the updated commit messages and
+> > rebased on top of v5.9-rc6.
 > > 
-> > > +};
-> > > +
-> > > +#define IMX274_NUM_SUPPLIES ARRAY_SIZE(imx274_supply_names)
-> > > +
-> > >   /*
-> > >    * imx274 I2C operation related structure
-> > >    */
-> > > @@ -501,6 +512,8 @@ struct imx274_ctrls {
-> > >    * @frame_rate: V4L2 frame rate structure
-> > >    * @regmap: Pointer to regmap structure
-> > >    * @reset_gpio: Pointer to reset gpio
-> > > + * @supplies: List of analog and digital supply regulators
-> > > + * @inck: Pointer to sensor input clock
-> > >    * @lock: Mutex structure
-> > >    * @mode: Parameters for the selected readout mode
-> > >    */
-> > > @@ -514,6 +527,8 @@ struct stimx274 {
-> > >   	struct v4l2_fract frame_interval;
-> > >   	struct regmap *regmap;
-> > >   	struct gpio_desc *reset_gpio;
-> > > +	struct regulator_bulk_data supplies[IMX274_NUM_SUPPLIES];
-> > > +	struct clk *inck;
-> > >   	struct mutex lock; /* mutex lock for operations */
-> > >   	const struct imx274_mode *mode;
-> > >   };
-> > > @@ -726,6 +741,12 @@ static int imx274_start_stream(struct stimx274 *priv)
-> > >   {
-> > >   	int err = 0;
-> > > +	err = __v4l2_ctrl_handler_setup(&priv->ctrls.handler);
-> > > +	if (err) {
-> > > +		dev_err(&priv->client->dev, "Error %d setup controls\n", err);
-> > > +		return err;
-> > > +	}
-> > > +
-> > >   	/*
-> > >   	 * Refer to "Standby Cancel Sequence when using CSI-2" in
-> > >   	 * imx274 datasheet, it should wait 10ms or more here.
-> > > @@ -767,6 +788,66 @@ static void imx274_reset(struct stimx274 *priv, int rst)
-> > >   	usleep_range(IMX274_RESET_DELAY1, IMX274_RESET_DELAY2);
-> > >   }
-> > > +static int imx274_power_on(struct device *dev)
-> > > +{
-> > > +	struct i2c_client *client = to_i2c_client(dev);
-> > > +	struct v4l2_subdev *sd = i2c_get_clientdata(client);
-> > > +	struct stimx274 *imx274 = to_imx274(sd);
-> > > +	int ret;
-> > > +
-> > > +	/* keep sensor in reset before power on */
-> > > +	imx274_reset(imx274, 0);
-> > > +
-> > > +	ret = clk_prepare_enable(imx274->inck);
-> > > +	if (ret) {
-> > > +		dev_err(&imx274->client->dev,
-> > > +			"Failed to enable input clock: %d\n", ret);
-> > > +		return ret;
-> > > +	}
-> > > +
-> > > +	ret = regulator_bulk_enable(IMX274_NUM_SUPPLIES, imx274->supplies);
-> > > +	if (ret) {
-> > > +		dev_err(&imx274->client->dev,
-> > > +			"Failed to enable regulators: %d\n", ret);
-> > > +		goto fail_reg;
-> > > +	}
-> > > +
-> > > +	udelay(2);
-> > This looks like some sort of extra delay to make sure all the supply
-> > voltages have settled. Should this perhaps be encoded as part of the
-> > regulator ramp-up times? Or is this really an IC-specific delay that
-> > is needed for some internal timing?
-> This is IC-specific delay after power on regulators before releasing reset.
+> > https://lore.kernel.org/lkml/20200921121732.44291-1-andraprs@amazon.com/
 > > 
-> > > +	imx274_reset(imx274, 1);
-> > > +
-> > > +	return 0;
-> > > +
-> > > +fail_reg:
-> > > +	clk_disable_unprepare(imx274->inck);
-> > > +	return ret;
-> > > +}
-> > > +
-> > > +static int imx274_power_off(struct device *dev)
-> > > +{
-> > > +	struct i2c_client *client = to_i2c_client(dev);
-> > > +	struct v4l2_subdev *sd = i2c_get_clientdata(client);
-> > > +	struct stimx274 *imx274 = to_imx274(sd);
-> > > +
-> > > +	imx274_reset(imx274, 0);
-> > > +
-> > > +	regulator_bulk_disable(IMX274_NUM_SUPPLIES, imx274->supplies);
-> > > +
-> > > +	clk_disable_unprepare(imx274->inck);
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static int imx274_regulators_get(struct device *dev, struct stimx274 *imx274)
-> > > +{
-> > > +	unsigned int i;
-> > > +
-> > > +	for (i = 0; i < IMX274_NUM_SUPPLIES; i++)
-> > > +		imx274->supplies[i].supply = imx274_supply_names[i];
-> > > +
-> > > +	return devm_regulator_bulk_get(dev, IMX274_NUM_SUPPLIES,
-> > > +					imx274->supplies);
-> > > +}
-> > > +
-> > >   /**
-> > >    * imx274_s_ctrl - This is used to set the imx274 V4L2 controls
-> > >    * @ctrl: V4L2 control to be set
-> > > @@ -781,6 +862,9 @@ static int imx274_s_ctrl(struct v4l2_ctrl *ctrl)
-> > >   	struct stimx274 *imx274 = to_imx274(sd);
-> > >   	int ret = -EINVAL;
-> > > +	if (!pm_runtime_get_if_in_use(&imx274->client->dev))
-> > > +		return 0;
-> > I'm not sure I understand this, and sorry if this has been discussed
-> > earlier. Aren't there any other mechanisms in place to ensure that a
-> > control can only be configured when in use? If so, then is this even
-> > necessary?
+> > Any additional feedback, open to discuss.
 > > 
-> > If not, silently ignoring at this point seems like it could cause subtle
-> > failures by ignoring some control settings and applying others if the
-> > timing is right.
+> > If all looks good, we can move forward as we've talked before, to have
+> > the patch series on the char-misc branch and target v5.10-rc1.
 > 
-> With this patch, v4l2_ctrl setup is moved to start stream so all the control
-> values selected gets programmed during stream start. So s_ctrl callback
-> execution happens during that time after sensor rpm resume and I don't think
-> we need here either but I see all sensor drivers with RPM enabled checking
-> for this. So added just to make sure sensor programming don't happen when
-> power is off.
+> Thanks for merging the patch series on the char-misc-testing branch and for
+> the review sessions we've had.
 > 
-> Sakari/Jacob,
-> 
-> Can you please clarify if we can remove check pm_runtime_get_if_in_use() in
-> s_ctrl callback as v4l2_ctrl handler setup happens during stream start where
-> power is already on by then?
+> Let's see how all goes next; if anything in the meantime to be done (e.g.
+> and not coming via auto-generated mails), just let me know.
 
-The controls are accessible also when streaming is disabled. So you may end
-up here without the device being powered on. Therefore the check is needed.
+Will do, thanks for sticking with this and cleaning it up to look a lot
+better than the original submission.
 
-> 
-> > > +
-> > >   	dev_dbg(&imx274->client->dev,
-> > >   		"%s : s_ctrl: %s, value: %d\n", __func__,
-> > >   		ctrl->name, ctrl->val);
-> > > @@ -811,6 +895,8 @@ static int imx274_s_ctrl(struct v4l2_ctrl *ctrl)
-> > >   		break;
-> > >   	}
-> > > +	pm_runtime_put(&imx274->client->dev);
-> > > +
-> > >   	return ret;
-> > >   }
-> > > @@ -1269,10 +1355,8 @@ static int imx274_s_frame_interval(struct v4l2_subdev *sd,
-> > >    *
-> > >    * Return: 0 on success, errors otherwise
-> > >    */
-> > > -static int imx274_load_default(struct stimx274 *priv)
-> > > +static void imx274_load_default(struct stimx274 *priv)
-> > >   {
-> > > -	int ret;
-> > > -
-> > >   	/* load default control values */
-> > >   	priv->frame_interval.numerator = 1;
-> > >   	priv->frame_interval.denominator = IMX274_DEF_FRAME_RATE;
-> > > @@ -1280,29 +1364,6 @@ static int imx274_load_default(struct stimx274 *priv)
-> > >   	priv->ctrls.gain->val = IMX274_DEF_GAIN;
-> > >   	priv->ctrls.vflip->val = 0;
-> > >   	priv->ctrls.test_pattern->val = TEST_PATTERN_DISABLED;
-> > > -
-> > > -	/* update frame rate */
-> > > -	ret = imx274_set_frame_interval(priv,
-> > > -					priv->frame_interval);
-> > > -	if (ret)
-> > > -		return ret;
-> > > -
-> > > -	/* update exposure time */
-> > > -	ret = v4l2_ctrl_s_ctrl(priv->ctrls.exposure, priv->ctrls.exposure->val);
-> > > -	if (ret)
-> > > -		return ret;
-> > > -
-> > > -	/* update gain */
-> > > -	ret = v4l2_ctrl_s_ctrl(priv->ctrls.gain, priv->ctrls.gain->val);
-> > > -	if (ret)
-> > > -		return ret;
-> > > -
-> > > -	/* update vflip */
-> > > -	ret = v4l2_ctrl_s_ctrl(priv->ctrls.vflip, priv->ctrls.vflip->val);
-> > > -	if (ret)
-> > > -		return ret;
-> > This is not moved to somewhere else, so I assume the equivalent will
-> > happen somewhere higher up in the stack? Might be worth mentioning in
-> > the commit message why this can be dropped.
-> OK. Will add in commit message.
-> > 
-> > Thierry
+Now comes the real work, maintaining it for the next 10 years :)
 
--- 
-Sakari Ailus
+greg k-h
