@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20BB8274571
+	by mail.lfdr.de (Postfix) with ESMTP id 98320274572
 	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726766AbgIVPiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 11:38:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48416 "EHLO
+        id S1726775AbgIVPiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 11:38:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726646AbgIVPiT (ORCPT
+        with ESMTP id S1726746AbgIVPiU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 11:38:19 -0400
+        Tue, 22 Sep 2020 11:38:20 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0185C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 08:38:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18A6EC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 08:38:20 -0700 (PDT)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1600789098;
@@ -22,21 +22,21 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xNu6KmlvpGHW0KsXBSTK9VRP7pcSV7g9SWT1cxE87NM=;
-        b=0NbO4bgKWakfcvejolHeuqm0Gc43C1RljvlzgF1Y+XxUXBZrnCYycKdQIBOKdqfZzMScEJ
-        5RvYBNzBlhzpn+mhsCWiYKX/UvjSnSwYOogeCpPeV1sgZR7q66LP3cvACdyh59w0yXhf9v
-        2Yma9T15I8aImvNpEyRoL4IXlgtbN80D0mBPO9H7cLnlxK5T0p7Cezq48BNSmwQFKi/UIF
-        zP987m9d4xsJ/GMAPhV8xCuKCyQUJCVDNgcdT/Fw1FPbfovIE1NyNsx7rBzpwJ8sp5UGAr
-        VgBOGBend9QJrEOe7BGGQDz9L7ioNZMgBNVJY3b6DQpPKvhr4ecoFCGFKNEDiA==
+        bh=UCCVgMcycqiESfhtnp0v+kLf2CKu8F8FiQ7NWkVtMBo=;
+        b=uZwhRFYRj8v0Vd9rM1JFfvO+bTFu8V97oBFsYJ+PbpjDLjRvu41+hclsjGqagvOZ7O/ch6
+        Udb0rKO1k+olT9ey5EASBYnMdP/yqrU5IZJ4P2pcbTqJb7smFEMKfFp9rxONf9bRx6lfje
+        m2Ha3XR0/2SfRJ79vQ/2ioW3gKHwTICTd4K/9TPuDU+w2noDQz/Mn7YmDfMekkUDPpMPQY
+        ZHWVrmt7T5G2p144LdXiZTtQ4RIuP88t0/Auejz/Gzcar3H41LC7zlDi2rr+p6XKKdI83k
+        pRkfiEvtsfO/buj/Bip3gyGi7xUvDXMjizBtP7zgYVoKqAJZyODzVcGXnkJhNg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1600789098;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xNu6KmlvpGHW0KsXBSTK9VRP7pcSV7g9SWT1cxE87NM=;
-        b=Q9wgsfDdJBYqpuT6PpIawGiY6ix0oyrJjB3FA2rYSLjkLl8jUjhAiaLoVujORdMH7sRov8
-        W0vefcYc1Lud2kCQ==
+        bh=UCCVgMcycqiESfhtnp0v+kLf2CKu8F8FiQ7NWkVtMBo=;
+        b=V8gofiI/fyx/zVF97kud1sB8OfqVKP69dqBfpTRj1p850+SvWvx0y1Ly8E5QcZW0CQXXSC
+        EPDy/DEiTtkezHDg==
 To:     Petr Mladek <pmladek@suse.com>
 Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
         Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
@@ -45,9 +45,9 @@ Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH printk 1/5] printk: get new seq before enabling interrupts
-Date:   Tue, 22 Sep 2020 17:44:12 +0206
-Message-Id: <20200922153816.5883-2-john.ogness@linutronix.de>
+Subject: [PATCH printk 2/5] printk: kmsg_dump_rewind_nolock: start from first record
+Date:   Tue, 22 Sep 2020 17:44:13 +0206
+Message-Id: <20200922153816.5883-3-john.ogness@linutronix.de>
 In-Reply-To: <20200922153816.5883-1-john.ogness@linutronix.de>
 References: <20200922153816.5883-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -56,38 +56,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After copying all records to the dynamic ringbuffer, setup_log_buf()
-checks to see if any records were dropped during the switch. However,
-it needs to check before enabling interrupts since new records could
-arrive in an interrupt, thus causing setup_log_buf() to erroneously
-think that it had dropped messages.
+kmsg_dump_rewind_nolock() accesses @clear_seq without any locking.
+However, accessing this global variable requires holding
+@logbuf_lock. For the _nolock() variant, start from the first record
+in the ringbuffer rather than the @clear_seq record.
 
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
 ---
- kernel/printk/printk.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ kernel/printk/printk.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 1fe3d0cb2fe0..00bc1fce3299 100644
+index 00bc1fce3299..cff13b33e926 100644
 --- a/kernel/printk/printk.c
 +++ b/kernel/printk/printk.c
-@@ -1181,12 +1181,12 @@ void __init setup_log_buf(int early)
- 	 */
- 	prb = &printk_rb_dynamic;
+@@ -3410,11 +3410,12 @@ EXPORT_SYMBOL_GPL(kmsg_dump_get_buffer);
+  * kmsg_dump_get_buffer() can be called again and used multiple
+  * times within the same dumper.dump() callback.
+  *
+- * The function is similar to kmsg_dump_rewind(), but grabs no locks.
++ * The function is similar to kmsg_dump_rewind(), but grabs no locks
++ * and starts from the oldest record rather than from @clear_seq.
+  */
+ void kmsg_dump_rewind_nolock(struct kmsg_dumper *dumper)
+ {
+-	dumper->cur_seq = clear_seq;
++	dumper->cur_seq = 0;
+ 	dumper->next_seq = prb_next_seq(prb);
+ }
  
-+	seq = prb_next_seq(&printk_rb_static) - seq;
-+
+@@ -3431,7 +3432,8 @@ void kmsg_dump_rewind(struct kmsg_dumper *dumper)
+ 	unsigned long flags;
+ 
+ 	logbuf_lock_irqsave(flags);
+-	kmsg_dump_rewind_nolock(dumper);
++	dumper->cur_seq = clear_seq;
++	dumper->next_seq = prb_next_seq(prb);
  	logbuf_unlock_irqrestore(flags);
- 
--	if (seq != prb_next_seq(&printk_rb_static)) {
--		pr_err("dropped %llu messages\n",
--		       prb_next_seq(&printk_rb_static) - seq);
--	}
-+	if (seq)
-+		pr_err("dropped %llu messages\n", seq);
- 
- 	pr_info("log_buf_len: %u bytes\n", log_buf_len);
- 	pr_info("early log buf free: %u(%u%%)\n",
+ }
+ EXPORT_SYMBOL_GPL(kmsg_dump_rewind);
 -- 
 2.20.1
 
