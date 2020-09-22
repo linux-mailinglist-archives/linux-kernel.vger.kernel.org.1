@@ -2,137 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEBB9273921
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 05:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D559C273923
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 05:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728087AbgIVDMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 23:12:48 -0400
-Received: from mail-eopbgr80085.outbound.protection.outlook.com ([40.107.8.85]:29638
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726818AbgIVDMr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 23:12:47 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j7dyaNEo6Aft4t8ExjaksrRj+LWbw7MzTxeu3grWuaZzhN8e3rjdM4zb2dWWKbz1CVjteUAgIdlbUvf2NVltECR80BWHpiRwcd7kJBe/x/T3/M2FJpYfIaH2724ywIsaPqpLiYnkRJ2clpV01Wy/rpQguHkHgjRnlHxjcd9ER+Q6VAW31KGzK+50ryQRd7obqairfltkID1zTZXCD0ZHltponwcQ3WXQEZDl5vahC8XbwkJdw762F64aL8N++dNDri50F/0nM9Pq3+DzqplhkIz1Q2xrtvDvlTrk5y8tksekw2hSwGdtTOxEgktIxYNZd557jhJhF6jSYZtYdFMKSA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u4VFLk1WxQU+yP2oNdMNeL9DkeDgdI2GSYTlMAI+inE=;
- b=MvuAnSMkXnTVC4ORjGVELRgkX+rc7ZPeRi6agndiU7S/wkXhezrWI4J3yA7bD9AATkD+CrSdpwrtrDFtdiDbRJqfV6b11pcsdJfzLizOdjIVbTz1HB8mqYl0a2xtdMBLxxpPysdIzsd5gEopr+kbV7qh3bAnJ+HF2jmEyimFY4uw2Y5Yy5kdMe34boA+iNHtW4Fmt57vhJlhW/hUr+lkQjM+7aYUgaYhmpFVpvQYLppY6giEgpVG+4lkVz2yrZ+Awc9abaV1aFLeLq1t+dZzqiHIn7/W/0GI+3ksNerm4/4flTcjWAZ8KZve5EEd33+TSrHINos4Ze2JehdMCprgng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u4VFLk1WxQU+yP2oNdMNeL9DkeDgdI2GSYTlMAI+inE=;
- b=lm8YVF0KkwrN2mBLs9jxSd7R60+qJhnZSTtyugYYl+vRnqIS0mHnL6WAkREmzAHdfqf/49FS19at+w/BjzECUoWfn6M4m3pGCVC2Nw+sTk1x/JWQeuSG0YB4X/az8BHjEIC1cixGOCOTerX3Og1nZRW7SA1b5V4Ya0geIwv/oy8=
-Received: from DB6PR0401MB2438.eurprd04.prod.outlook.com (2603:10a6:4:33::14)
- by DB7PR04MB5449.eurprd04.prod.outlook.com (2603:10a6:10:8d::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14; Tue, 22 Sep
- 2020 03:12:41 +0000
-Received: from DB6PR0401MB2438.eurprd04.prod.outlook.com
- ([fe80::c8a:a759:d4ba:181e]) by DB6PR0401MB2438.eurprd04.prod.outlook.com
- ([fe80::c8a:a759:d4ba:181e%7]) with mapi id 15.20.3391.025; Tue, 22 Sep 2020
- 03:12:41 +0000
-From:   Biwen Li <biwen.li@nxp.com>
-To:     Shawn Guo <shawnguo@kernel.org>,
-        "Biwen Li (OSS)" <biwen.li@oss.nxp.com>
-CC:     "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        Leo Li <leoyang.li@nxp.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jiafei Pan <jiafei.pan@nxp.com>,
-        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>
-Subject: RE: [EXT] Re: [PATCH 2/5] arm64: dts: lx2160a-rdb: remove useless
- property of rtc
-Thread-Topic: [EXT] Re: [PATCH 2/5] arm64: dts: lx2160a-rdb: remove useless
- property of rtc
-Thread-Index: AQHWizOOGLxVV6x4KkO7cstIkfxRIKl0Ax6AgAAAVAA=
-Date:   Tue, 22 Sep 2020 03:12:41 +0000
-Message-ID: <DB6PR0401MB2438ABB1DFE785F9EAADB69E8F3B0@DB6PR0401MB2438.eurprd04.prod.outlook.com>
-References: <20200915073213.12779-1-biwen.li@oss.nxp.com>
- <20200915073213.12779-2-biwen.li@oss.nxp.com> <20200922030208.GY25109@dragon>
-In-Reply-To: <20200922030208.GY25109@dragon>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.73]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: c74aaf68-7c15-4637-21d2-08d85ea55e5b
-x-ms-traffictypediagnostic: DB7PR04MB5449:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB7PR04MB54497B4EBD80E726CA4E83718F3B0@DB7PR04MB5449.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3631;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: McT0x1WtCx/mcVgvcxsI1mYua1kzaZxD5/KOJJMt7h6f5qf580+rvPAuMHJ4p3DWMAi3vx8QtZumjdDqmfvgZSVTZPagG2HfrV4Mke/hKKOGCISKLBiSc2UT/r8mN8OKApjpOOe5Syu5fe28bZGbqjWWmMqqSKIOzMY1C2NvZ0A1zogb49uMdcu8OptciyQk8p+2+yFLQalhbwefBbcGjUf4Ubm8ZupxYmEjaigN7+PIojudMNoAtw0De/NHZKeNdZ6hJYjMVIWnZDuMDrw7ld8sT3TAfopNg+atpSn3/85D9M7sN+rjjXP95dWtWwxnJNCoJrO3/Vr0RZVhWVkM9WQZ/+ToVYfepp+vdijp3lNHTxLIGGQXTLOyquy33KXw
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0401MB2438.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(366004)(396003)(39860400002)(55016002)(6506007)(478600001)(52536014)(110136005)(316002)(4744005)(76116006)(44832011)(7696005)(54906003)(83380400001)(8936002)(66476007)(2906002)(33656002)(66946007)(86362001)(71200400001)(4326008)(66556008)(5660300002)(26005)(186003)(64756008)(8676002)(9686003)(66446008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: uJ0QGhNLTKX9F/91e+3x1cSVH6Zqys0hsFb26T4IvOFtpozkwDfBkDIHwZiniIvbq+snmpr1W08nSKheQc4vrM+BUl897Ix58b3Vn3SpfnQsObQCctJSgzkK0cBUSPC9aGlY4Tmgb27khpUUntPHbFVA1ol12bK83LtoxmMmTkdMNQy4XOdFS8aI/RWDSGwsGACpN7oRW7ltcVfLH5BStXj9oGieCwRPUoVN//HA3ngd+IYewoabtbEC2eZkqpkZWqNw8n3QM85TIZYd11KNuxWU5SoVhM2bQjEBAC2au9rA/FcvBuLVuknyshNDoi7msIu7PLsQkobuovXboUmJWM/OQB+Tl6wcIlAgWkFJH+HeuQcb2DT9S/yorDd9rfft24lY724wdxUmCPxSEcO9BMSnS0XdgURTvpLAFyuvSDN6z0SsTZGEoAz1Fcigawcv8QAmvUDjBY5y5LmSdVcVmkZTFFWXaXz6p2rMmSxcrAOX5dDO7QXFbJhCq4y6mjLtNgwAdr4zimGHjz31wFGDIPKooke+OFyV1Gk9x2+0Slrw9LX0m/eywkxr+d6AMAuCV5NIGDw9AcWk/pEki0I4uTr+EWuirIFb+VS2Y5X9qwtQGqptTdrSuwBxK3rOsnZebt8JX70AjRVhrIy3rRg5uQ==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1728228AbgIVDNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 23:13:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726818AbgIVDNY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 23:13:24 -0400
+Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B086DC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 20:13:24 -0700 (PDT)
+Received: by mail-ua1-x943.google.com with SMTP id q26so5012002uaa.12
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 20:13:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cFMWy0TRjIuMfOEPE0XT0KNNvOm8aVUOxVBKGmuUKbw=;
+        b=W1WRIrLPqLnp6CjLgvKqgHghVJxxeicps2XFZcbG1tXUzsLokxq7rvQKkooEMr7Vc/
+         peDqq3v0xHy4huXzFWt2mi1fgby26ip5LhDMOQvq2D0KiWLdn1vnaYSm7bIBA7s07KKW
+         KTQw7Dyc8gZG4Vo4S805LglYGx8t5vf31MoeMbMfG0YXhuYmmjdef5Jt0h0LMaVx7xvf
+         3YeqhDdQ1xvK4GgYlTA47CpULnOedAjkLDgJWUbL1jMN9ccwpGRmKae4TxVfIhqDojrq
+         NSXsDAcWTQL0HRpQTJZzdYYxwZy6tvjRvgr06NL8dZKU2SXhXhhcIGC7H6HIpkfN/E/6
+         ODsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cFMWy0TRjIuMfOEPE0XT0KNNvOm8aVUOxVBKGmuUKbw=;
+        b=rN+FspTnTsNpfESm+7eRxrOKcNUb60DLCLfiWmnrAyzyKuimuOeAiscXRWXa29ftOW
+         UKVPLGnefWr/bYPU4y0XnUIg+ykAnYeqsg49uQrsjn40vLT3p3GkTa1J5gcilvoxagZD
+         VpIu4ndCww0kkuTmDfxQP6fg4hn4VGZ1RZQ4rZReLytRyvL0+skCtetgm9lZsMiFq/jX
+         7MmKwozmn4LrObFg8XHpYMMqyKuAr6Dqx/CQrJ4vxiFn5Xe766s9P0mrDjaGzrlVnm32
+         57J3rjgWGE6hJVwykWvyxzddl1hADywfUAjavVQ4wEUswIZzSVRODp7nUG9YpTwSOlX7
+         AXzQ==
+X-Gm-Message-State: AOAM5327KupB38NIeq8/D9wV38J/KhX8uwAoir/EL4o4xJBMBO7c9KNA
+        VAi/rBOF1UcT4sOrojzRnuDH4Y2xpVGFzW+lLi0=
+X-Google-Smtp-Source: ABdhPJzVypldxJ6BIN3SBUDXkEaYfjGoVIrSl1VylNV3wji6wwJReFPu4ykIaChZkWafX5PjzAvP+mgV+k9viSXRXFY=
+X-Received: by 2002:ab0:130a:: with SMTP id g10mr2102187uae.100.1600744403807;
+ Mon, 21 Sep 2020 20:13:23 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0401MB2438.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c74aaf68-7c15-4637-21d2-08d85ea55e5b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Sep 2020 03:12:41.7801
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: WftXCxOCAb48Z71eghSykhOk5sRTnnMtWGbhNQ6ggE1HEZ8STJmXSCgoYgtZSeCEYonjI1a687ZUEm3oNemWHQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB5449
+References: <20200922020148.3261797-1-riel@surriel.com> <20200922020148.3261797-3-riel@surriel.com>
+In-Reply-To: <20200922020148.3261797-3-riel@surriel.com>
+From:   huang ying <huang.ying.caritas@gmail.com>
+Date:   Tue, 22 Sep 2020 11:13:12 +0800
+Message-ID: <CAC=cRTP3Em2C7tRpbFyHztnjAvUMFn-9t1yqFCb=yc3MavpUcg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm,swap: skip swap readahead if page was obtained instantaneously
+To:     Rik van Riel <riel@surriel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        kernel-team@fb.com, niketa@fb.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Huang Ying <ying.huang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->=20
-> Caution: EXT Email
->=20
-> On Tue, Sep 15, 2020 at 03:32:10PM +0800, Biwen Li wrote:
-> > From: Biwen Li <biwen.li@nxp.com>
-> >
-> > Remove useless property interrupts of rtc
-> >
-> > Signed-off-by: Biwen Li <biwen.li@nxp.com>
-> > ---
-> >  arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts | 2 --
-> >  1 file changed, 2 deletions(-)
-> >
-> > diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-> > b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-> > index dce79018d397..e9e982176e07 100644
-> > --- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-> > +++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-> > @@ -171,8 +171,6 @@
-> >       rtc@51 {
-> >               compatible =3D "nxp,pcf2129";
-> >               reg =3D <0x51>;
-> > -             // IRQ10_B
-> > -             interrupts =3D <0 150 0x4>;
->=20
-> If it's a correct description of hardware, I do not see why we would need=
- to
-> remove it.
-Hi Shawn,
+On Tue, Sep 22, 2020 at 10:02 AM Rik van Riel <riel@surriel.com> wrote:
+>
+> Check whether a swap page was obtained instantaneously, for example
+> because it is in zswap, or on a very fast IO device which uses busy
+> waiting, and we did not wait on IO to swap in this page.
+> If no IO was needed to get the swap page we want, kicking off readahead
+> on surrounding swap pages is likely to be counterproductive, because the
+> extra loads will cause additional latency, use up extra memory, and chances
+> are the surrounding pages in swap are just as fast to load as this one,
+> making readahead pointless.
+>
+> Signed-off-by: Rik van Riel <riel@surriel.com>
+> ---
+>  mm/swap_state.c | 14 +++++++++++---
+>  1 file changed, 11 insertions(+), 3 deletions(-)
+>
+> diff --git a/mm/swap_state.c b/mm/swap_state.c
+> index aacb9ba53f63..6919f9d5fe88 100644
+> --- a/mm/swap_state.c
+> +++ b/mm/swap_state.c
+> @@ -637,6 +637,7 @@ static struct page *swap_cluster_read_one(swp_entry_t entry,
+>  struct page *swap_cluster_readahead(swp_entry_t entry, gfp_t gfp_mask,
+>                                 struct vm_fault *vmf)
 
-Don't need use the interrupt, only read time from rtc.
+Why not do this for swap_vma_readahead() too?  swap_cluster_read_one()
+can be used in swap_vma_readahead() too.
+
+>  {
+> +       struct page *page;
+>         unsigned long entry_offset = swp_offset(entry);
+>         unsigned long offset = entry_offset;
+>         unsigned long start_offset, end_offset;
+> @@ -668,11 +669,18 @@ struct page *swap_cluster_readahead(swp_entry_t entry, gfp_t gfp_mask,
+>                 end_offset = si->max - 1;
+>
+>         blk_start_plug(&plug);
+> +       /* If we read the page without waiting on IO, skip readahead. */
+> +       page = swap_cluster_read_one(entry, offset, gfp_mask, vma, addr, false);
+> +       if (page && PageUptodate(page))
+> +               goto skip_unplug;
+> +
+> +       /* Ok, do the async read-ahead now. */
+>         for (offset = start_offset; offset <= end_offset ; offset++) {
+> -               /* Ok, do the async read-ahead now */
+> -               swap_cluster_read_one(entry, offset, gfp_mask, vma, addr,
+> -                                     offset != entry_offset);
+> +               if (offset == entry_offset)
+> +                       continue;
+> +               swap_cluster_read_one(entry, offset, gfp_mask, vma, addr, true);
+>         }
+> +skip_unplug:
+>         blk_finish_plug(&plug);
+>
+>         lru_add_drain();        /* Push any new pages onto the LRU now */
 
 Best Regards,
-Biwen Li
->=20
-> Shawn
->=20
-> >       };
-> >  };
-> >
-> > --
-> > 2.17.1
-> >
+Huang, Ying
