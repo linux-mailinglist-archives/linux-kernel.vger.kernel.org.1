@@ -2,164 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 317BA2741C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC462741C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726603AbgIVMFy convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Sep 2020 08:05:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726518AbgIVMFy (ORCPT
+        id S1726620AbgIVMHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 08:07:38 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:64402 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726533AbgIVMHi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 08:05:54 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E40A7C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 05:05:53 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kKh3N-0006tH-G1; Tue, 22 Sep 2020 14:05:49 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kKh3M-0008Fc-IZ; Tue, 22 Sep 2020 14:05:48 +0200
-Message-ID: <cf79a03117f4886dd91a624fd0081222ae87fea0.camel@pengutronix.de>
-Subject: Re: [PATCH V2 2/2] ata: ahci: ceva: Update the driver to support
- xilinx GT phy
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Piyush Mehta <piyush.mehta@xilinx.com>, axboe@kernel.dk,
-        robh+dt@kernel.org
-Cc:     linux-ide@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, git@xilinx.com, sgoud@xilinx.com,
-        michal.simek@xilinx.com
-Date:   Tue, 22 Sep 2020 14:05:48 +0200
-In-Reply-To: <1600769713-944-3-git-send-email-piyush.mehta@xilinx.com>
-References: <1600769713-944-1-git-send-email-piyush.mehta@xilinx.com>
-         <1600769713-944-3-git-send-email-piyush.mehta@xilinx.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        Tue, 22 Sep 2020 08:07:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1600776457; x=1632312457;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   in-reply-to:content-transfer-encoding;
+  bh=EbMxVxxFklRKS3zGijxq8O1nhhE8A4FeT/IHUzpIBpg=;
+  b=CxHmzwgbsYbcuRpq5gRr0I/ee9JDRtaJVuGTgq/tAO7/0jE+LTKRQe9S
+   em81zz7F/7DkGCpYPJZKmh1bodtdzQYAN5SdoEm6dfqS6wxrgDpR1bv9o
+   ReUP/4iQ9HCJhoRWfkNTktocXWKCkeVYL+0+0kYAZUDDahW7vTxWtYES+
+   c=;
+X-IronPort-AV: E=Sophos;i="5.77,290,1596499200"; 
+   d="scan'208";a="70077024"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-90c42d1d.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 22 Sep 2020 12:07:33 +0000
+Received: from EX13D31EUA004.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2a-90c42d1d.us-west-2.amazon.com (Postfix) with ESMTPS id 790E9A18C9;
+        Tue, 22 Sep 2020 12:07:32 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.160.185) by
+ EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 22 Sep 2020 12:07:25 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>
+CC:     SeongJae Park <sjpark@amazon.com>, <konrad.wilk@oracle.com>,
+        <jgross@suse.com>, SeongJae Park <sjpark@amazon.de>,
+        <axboe@kernel.dk>, <aliguori@amazon.com>, <amit@kernel.org>,
+        <mheyne@amazon.de>, <pdurrant@amazon.co.uk>,
+        <linux-block@vger.kernel.org>, <xen-devel@lists.xenproject.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] xen-blkback: add a parameter for disabling of persistent grants
+Date:   Tue, 22 Sep 2020 14:07:10 +0200
+Message-ID: <20200922120710.24685-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20200922113511.GK19254@Air-de-Roger>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.43.160.185]
+X-ClientProxiedBy: EX13D50UWC002.ant.amazon.com (10.43.162.189) To
+ EX13D31EUA004.ant.amazon.com (10.43.165.161)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-09-22 at 15:45 +0530, Piyush Mehta wrote:
-> SATA controller used in Xilinx ZynqMP platform uses xilinx GT phy
-> which has 4 GT lanes and can used by 4 peripherals at a time.
-> SATA controller uses 1 GT phy lane among the 4 GT lanes. To configure
-> the GT lane for SATA controller, the below sequence is expected.
+On Tue, 22 Sep 2020 13:35:11 +0200 "Roger Pau Monné" <roger.pau@citrix.com> wrote:
+
+> On Tue, Sep 22, 2020 at 01:26:38PM +0200, SeongJae Park wrote:
+> > On Tue, 22 Sep 2020 13:12:59 +0200 "Roger Pau Monné" <roger.pau@citrix.com> wrote:
+> > 
+> > > On Tue, Sep 22, 2020 at 12:52:07PM +0200, SeongJae Park wrote:
+> > > > From: SeongJae Park <sjpark@amazon.de>
+> > > > 
+> > > > Persistent grants feature provides high scalability.  On some small
+> > > > systems, however, it could incur data copy overheads[1] and thus it is
+> > > > required to be disabled.  But, there is no option to disable it.  For
+> > > > the reason, this commit adds a module parameter for disabling of the
+> > > > feature.
+> > > > 
+> > > > [1] https://wiki.xen.org/wiki/Xen_4.3_Block_Protocol_Scalability
+> > > > 
+> > > > Signed-off-by: Anthony Liguori <aliguori@amazon.com>
+> > > > Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> > > > ---
+> > > >  .../ABI/testing/sysfs-driver-xen-blkback      |  9 ++++++
+> > > >  drivers/block/xen-blkback/xenbus.c            | 28 ++++++++++++++-----
+> > > >  2 files changed, 30 insertions(+), 7 deletions(-)
+> > > > 
+> > > > diff --git a/Documentation/ABI/testing/sysfs-driver-xen-blkback b/Documentation/ABI/testing/sysfs-driver-xen-blkback
+> > > > index ecb7942ff146..ac2947b98950 100644
+> > > > --- a/Documentation/ABI/testing/sysfs-driver-xen-blkback
+> > > > +++ b/Documentation/ABI/testing/sysfs-driver-xen-blkback
+> > > > @@ -35,3 +35,12 @@ Description:
+> > > >                  controls the duration in milliseconds that blkback will not
+> > > >                  cache any page not backed by a grant mapping.
+> > > >                  The default is 10ms.
+> > > > +
+> > > > +What:           /sys/module/xen_blkback/parameters/feature_persistent
+> > > > +Date:           September 2020
+> > > > +KernelVersion:  5.10
+> > > > +Contact:        SeongJae Park <sjpark@amazon.de>
+> > > > +Description:
+> > > > +                Whether to enable the persistent grants feature or not.  Note
+> > > > +                that this option only takes effect on newly created backends.
+> > > > +                The default is Y (enable).
+> > > > diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
+> > > > index b9aa5d1ac10b..8a95ddd08b13 100644
+> > > > --- a/drivers/block/xen-blkback/xenbus.c
+> > > > +++ b/drivers/block/xen-blkback/xenbus.c
+> > > > @@ -879,6 +879,12 @@ static void reclaim_memory(struct xenbus_device *dev)
+> > > >  
+> > > >  /* ** Connection ** */
+> > > >  
+> > > > +/* Enable the persistent grants feature. */
+> > > > +static bool feature_persistent = true;
+> > > > +module_param(feature_persistent, bool, 0644);
+> > > > +MODULE_PARM_DESC(feature_persistent,
+> > > > +		"Enables the persistent grants feature");
+> > > > +
+> > > >  /*
+> > > >   * Write the physical details regarding the block device to the store, and
+> > > >   * switch to Connected state.
+> > > > @@ -906,11 +912,15 @@ static void connect(struct backend_info *be)
+> > > >  
+> > > >  	xen_blkbk_barrier(xbt, be, be->blkif->vbd.flush_support);
+> > > >  
+> > > > -	err = xenbus_printf(xbt, dev->nodename, "feature-persistent", "%u", 1);
+> > > > -	if (err) {
+> > > > -		xenbus_dev_fatal(dev, err, "writing %s/feature-persistent",
+> > > > -				 dev->nodename);
+> > > > -		goto abort;
+> > > > +	if (feature_persistent) {
+> > > > +		err = xenbus_printf(xbt, dev->nodename, "feature-persistent",
+> > > > +				"%u", feature_persistent);
+> > > > +		if (err) {
+> > > > +			xenbus_dev_fatal(dev, err,
+> > > > +					"writing %s/feature-persistent",
+> > > > +					dev->nodename);
+> > > > +			goto abort;
+> > > > +		}
+> > > >  	}
+> > > >  
+> > > >  	err = xenbus_printf(xbt, dev->nodename, "sectors", "%llu",
+> > > > @@ -1093,8 +1103,12 @@ static int connect_ring(struct backend_info *be)
+> > > >  		xenbus_dev_fatal(dev, err, "unknown fe protocol %s", protocol);
+> > > >  		return -ENOSYS;
+> > > >  	}
+> > > > -	pers_grants = xenbus_read_unsigned(dev->otherend, "feature-persistent",
+> > > > -					   0);
+> > > > +	if (feature_persistent)
+> > > > +		pers_grants = xenbus_read_unsigned(dev->otherend,
+> > > > +				"feature-persistent", 0);
+> > > > +	else
+> > > > +		pers_grants = 0;
+> > > > +
+> > > 
+> > > Sorry for not realizing earlier, but looking at it again I think you
+> > > need to cache the value of feature_persistent when it's first used in
+> > > the blkback state data, so that it's consistent.
+> > > 
+> > > What would happen for example with the following flow (assume a
+> > > persistent grants enabled frontend):
+> > > 
+> > > feature_persistent = false
+> > > 
+> > > connect(...)
+> > > feature-persistent is not written to xenstore
+> > > 
+> > > User changes feature_persistent = true
+> > > 
+> > > connect_ring(...)
+> > > pers_grants = true, because feature-persistent is set unconditionally
+> > > by the frontend and feature_persistent variable is now true.
+> > > 
+> > > Then blkback will try to use persistent grants and the whole
+> > > connection will malfunction because the frontend won't.
+> > 
+> > Ah, you're right.  I should also catch this before but didn't, sorry.
+> > 
+> > > 
+> > > The other option is to prevent changing the variable when there are
+> > > blkback instances already running.
+> > 
+> > I think storing the option value in xenstore would be simpler.  That said, if
+> > you prefer this way, please let me know.
 > 
-> 1. Assert the SATA controller reset.
-> 2. Configure the xilinx GT phy lane for SATA controller (phy_init).
-> 3. De-assert the SATA controller reset.
-> 4. Wait for PLL of the GT lane used by SATA to be locked (phy_power_on).
+> If possible I prefer to avoid reading from xenstore because it's slow,
+> very slow compared to storing this somewhere in the blkback
+> structure.
+
+Agreed.
+
 > 
-> The ahci_platform_enable_resources() by default does the phy_init()
-> and phy_power_on() but the default sequence doesn't work with Xilinx
-> platforms. Because of this reason, updated the driver to support the
-> new sequence.
-> 
-> Added is_rst_ctrl flag, for backward compatibility with the older
-> sequence. If the reset controller is not available, then the SATA
-> controller will configure with the older sequences.
-> 
-> Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
-> ---
->  drivers/ata/ahci_ceva.c | 39 +++++++++++++++++++++++++++++++++++++--
->  1 file changed, 37 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/ata/ahci_ceva.c b/drivers/ata/ahci_ceva.c
-> index b10fd4c..c704906 100644
-> --- a/drivers/ata/ahci_ceva.c
-> +++ b/drivers/ata/ahci_ceva.c
-> @@ -12,6 +12,7 @@
->  #include <linux/module.h>
->  #include <linux/of_device.h>
->  #include <linux/platform_device.h>
-> +#include <linux/reset.h>
->  #include "ahci.h"
->  
->  /* Vendor Specific Register Offsets */
-> @@ -87,6 +88,7 @@ struct ceva_ahci_priv {
->  	u32 axicc;
->  	bool is_cci_enabled;
->  	int flags;
-> +	struct reset_control *rst;
->  };
->  
->  static unsigned int ceva_ahci_read_id(struct ata_device *dev,
-> @@ -194,7 +196,7 @@ static int ceva_ahci_probe(struct platform_device *pdev)
->  	struct ahci_host_priv *hpriv;
->  	struct ceva_ahci_priv *cevapriv;
->  	enum dev_dma_attr attr;
-> -	int rc;
-> +	int rc, i, is_rst_ctrl = 1;
->  
->  	cevapriv = devm_kzalloc(dev, sizeof(*cevapriv), GFP_KERNEL);
->  	if (!cevapriv)
-> @@ -202,14 +204,47 @@ static int ceva_ahci_probe(struct platform_device *pdev)
->  
->  	cevapriv->ahci_pdev = pdev;
->  
-> +	cevapriv->rst = devm_reset_control_get(&pdev->dev, NULL);
+> Could you use the feature_gnt_persistent field in xen_vbd maybe as a
+> place to cache the value before it's set with the final negotiated
+> value between the frontend and the backend?
 
-Please use devm_reset_control_get_optional_exclusive()
+Ok, I will do so in the next version.
 
-> +	if (IS_ERR(cevapriv->rst)) {
-> +		if (PTR_ERR(cevapriv->rst) != -EPROBE_DEFER)
-> +			dev_err(&pdev->dev, "failed to get reset: %ld\n",
-> +				PTR_ERR(cevapriv->rst));
-> +		is_rst_ctrl = 0;
 
-is_rst_ctrl will not be required then.
-
-> +	}
-> +
->  	hpriv = ahci_platform_get_resources(pdev, 0);
->  	if (IS_ERR(hpriv))
->  		return PTR_ERR(hpriv);
-> +	if (is_rst_ctrl)
-> +		rc = ahci_platform_enable_clks(hpriv);
-> +	else
-> +		rc = ahci_platform_enable_resources(hpriv);
->  
-> -	rc = ahci_platform_enable_resources(hpriv);
->  	if (rc)
->  		return rc;
->  
-> +	if (is_rst_ctrl) {
-
-This can just be "if (cevapriv->rst)"
-
-> +		/* Assert the controller reset */
-> +		reset_control_assert(cevapriv->rst);
-> +
-> +		for (i = 0; i < hpriv->nports; i++) {
-> +			rc = phy_init(hpriv->phys[i]);
-> +			if (rc)
-> +				return rc;
-> +		}
-> +
-> +		/* De-assert the controller reset */
-> +		reset_control_deassert(cevapriv->rst);
-> +
-> +		for (i = 0; i < hpriv->nports; i++) {
-> +			rc = phy_power_on(hpriv->phys[i]);
-> +			if (rc) {
-> +				phy_exit(hpriv->phys[i]);
-> +				return rc;
-> +			}
-> +		}
-> +	}
-> +
->  	if (of_property_read_bool(np, "ceva,broken-gen2"))
->  		cevapriv->flags = CEVA_FLAG_BROKEN_GEN2;
->  
-
-regards
-Philipp
+Thanks,
+SeongJae Park
