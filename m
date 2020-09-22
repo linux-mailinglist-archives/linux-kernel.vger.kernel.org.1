@@ -2,90 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF142748C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15D112748C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgIVTG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 15:06:56 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:60140 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726563AbgIVTGz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 15:06:55 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08MJ6nSL104668;
-        Tue, 22 Sep 2020 14:06:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600801609;
-        bh=FXdbHyKP4OzNMIPypLxJLv10RnWs+v7R3nDuBJSAw6Q=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=mpNHno2PW+BcB4HeOBpbFHKx9ydO48kRdmI1NjZfb6oLgjdxaG7z19z24NYtyV18C
-         4D8hJ5P4g6RrKmMEEBivjAiB2zjti/IuP+/EI9i6bclVVQPG/tUJqGd6ZftXCrj5dx
-         dHlDDgwmESHID+T5b71TGIHHhQaHfBP8IXn771iQ=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08MJ6nlh093212
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 22 Sep 2020 14:06:49 -0500
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 22
- Sep 2020 14:06:49 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 22 Sep 2020 14:06:49 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08MJ6n2P130557;
-        Tue, 22 Sep 2020 14:06:49 -0500
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <pavel@ucw.cz>
-CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <marek.behun@nic.cz>, Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH 2/2] leds: lm36274: Fix warning for undefined parameters
-Date:   Tue, 22 Sep 2020 14:06:38 -0500
-Message-ID: <20200922190638.5323-2-dmurphy@ti.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200922190638.5323-1-dmurphy@ti.com>
-References: <20200922190638.5323-1-dmurphy@ti.com>
+        id S1726650AbgIVTHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 15:07:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47460 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726563AbgIVTHb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 15:07:31 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 656622311C;
+        Tue, 22 Sep 2020 19:07:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600801651;
+        bh=k3AY4xiVKzdMo94OTDSd61+F+ugh2rG2QE3WMwuqBZ4=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=B0KLkGRkwJ/hH7sCjBG6h2GkT62TVOrlsmL7+K1CkJYbp+vOZhb4/QSU4A68K/7I+
+         9t5fFjrhYOcYVh8NU76XtYf+v79qRgs/4hGHJeTeBZImfMLFdx3hbBB1m2K3FC0iWL
+         8gq1Hxryll2Bm8vRQ9gxtCSCv8Xv6+IIgknUua08=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAMS8qEUNGV5YgAc1D054JToe2ybPX8o4kPC8zgDc1=O0cqY0_A@mail.gmail.com>
+References: <20200922120909.97203-1-konradybcio@gmail.com> <160079963957.310579.17971187414769458107@swboyd.mtv.corp.google.com> <CAMS8qEUNGV5YgAc1D054JToe2ybPX8o4kPC8zgDc1=O0cqY0_A@mail.gmail.com>
+Subject: Re: [PATCH] clk: qcom: gcc-sdm660: Fix wrong parent_map
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-clk@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To:     Konrad Dybcio <konradybcio@gmail.com>
+Date:   Tue, 22 Sep 2020 12:07:30 -0700
+Message-ID: <160080165013.310579.5646553601425176923@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix warnings for undefined parameters when building with W=1.
+Quoting Konrad Dybcio (2020-09-22 11:35:14)
+> Sheesh, I cannot stop forgetting these...
+>=20
+> Fixes: f2a76a2955c0 (clk: qcom: Add Global Clock controller (GCC)
+> driver for SDM660)
+>=20
 
-Fixes: 11e1bbc116a75 ("leds: lm36274: Introduce the TI LM36274 LED driver")
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
- drivers/leds/leds-lm36274.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/leds/leds-lm36274.c b/drivers/leds/leds-lm36274.c
-index 10a63b7f2ecc..bf6487e9a1f4 100644
---- a/drivers/leds/leds-lm36274.c
-+++ b/drivers/leds/leds-lm36274.c
-@@ -26,8 +26,8 @@
-  * @lmu_data: Register and setting values for common code
-  * @regmap: Devices register map
-  * @dev: Pointer to the devices device struct
-- * @led_sources - The LED strings supported in this array
-- * @num_leds - Number of LED strings are supported in this array
-+ * @led_sources: The LED strings supported in this array
-+ * @num_leds: Number of LED strings are supported in this array
-  */
- struct lm36274 {
- 	struct platform_device *pdev;
-@@ -163,6 +163,7 @@ static struct platform_driver lm36274_driver = {
- 	.probe  = lm36274_probe,
- 	.driver = {
- 		.name = "lm36274-leds",
-+		.of_match_table = of_lm36274_leds_match,
- 	},
- };
- module_platform_driver(lm36274_driver)
--- 
-2.28.0
-
+Ok. Applied to clk-next.
