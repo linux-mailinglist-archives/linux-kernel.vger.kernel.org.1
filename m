@@ -2,119 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27ADD2747EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 20:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97F992747EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 20:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgIVSCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 14:02:05 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:18391 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726526AbgIVSCF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 14:02:05 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f6a3bee0002>; Tue, 22 Sep 2020 11:01:18 -0700
-Received: from [10.2.52.174] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 22 Sep
- 2020 18:02:04 +0000
-Subject: Re: [PATCH 1/5] mm: Introduce mm_struct.has_pinned
-To:     Peter Xu <peterx@redhat.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Jann Horn" <jannh@google.com>
-References: <20200921211744.24758-1-peterx@redhat.com>
- <20200921211744.24758-2-peterx@redhat.com>
- <224908c1-5d0f-8e01-baa9-94ec2374971f@nvidia.com>
- <20200922151736.GD19098@xz-x1>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <3d17619c-36b4-b080-08ff-26b3e9acb616@nvidia.com>
-Date:   Tue, 22 Sep 2020 11:02:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726716AbgIVSCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 14:02:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46382 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726526AbgIVSCV (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 14:02:21 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9E2112376F;
+        Tue, 22 Sep 2020 18:02:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600797740;
+        bh=Lz7Zq7qfizx32DWgiFyMSsCnnePT3u5M3aWpR9FNypg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=I0CdsgYoxYm0CrmhKkNbWV2HEJv3DM4mfLCkk3lGylxzXSVX5XsaaaakRpTM4Fjtj
+         7EEE3Lf19JHeWR7PqC6wNGX44ojv8J7I27enVBLbE5/6qCsi/GoIH4x05DYfSE5RsP
+         s18TgwLVcS4fbIZL7DD9CctCIYV8ERtWVBehrz7E=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id A996A400E9; Tue, 22 Sep 2020 15:02:18 -0300 (-03)
+Date:   Tue, 22 Sep 2020 15:02:18 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jin Yao <yao.jin@linux.intel.com>
+Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH] perf stat: Skip duration_time in setup_system_wide
+Message-ID: <20200922180218.GC2248446@kernel.org>
+References: <20200922015004.30114-1-yao.jin@linux.intel.com>
+ <20200922175630.GB2248446@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200922151736.GD19098@xz-x1>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600797678; bh=f5HBlmgjNz3J2e1EmpuzWn7tl8jPNjkQlDmEc1IEB1Y=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=groaZUA+qmBF2rUoWrmkRYVpMU0YkBRICplXas67ZSE9T/rX3VSAXlXyWFxX0NfYl
-         Hd8EJrp6xfKWCRpGgcXOic5poE0nXuCtiCB+CAQKOVzfHx1hoIGzeVRwFqbAmTfZ54
-         JzzM5cSw83VGErCbXpgLmdCqDCJFeiSfwPx5UbfMseX9yfG0PzokPxQ1nUsX2hVfKg
-         SWXGaKi1rVmQZ7lvKuZ1jQQOWOPFvySWH+km/nYy0h/HDfLJT6l9EcxkmKavbTjiW4
-         8nz+7HPoKQsFO1oCykWfJugPI90CXkfzAsu8wS/qXT65twuVMP5/RAS+ZpiOkFbAoX
-         AFBIwS/wbBBxQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922175630.GB2248446@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/22/20 8:17 AM, Peter Xu wrote:
-> On Mon, Sep 21, 2020 at 04:53:38PM -0700, John Hubbard wrote:
->> On 9/21/20 2:17 PM, Peter Xu wrote:
->>> (Commit message collected from Jason Gunthorpe)
->>>
->>> Reduce the chance of false positive from page_maybe_dma_pinned() by keeping
->>
->> Not yet, it doesn't. :)  More:
->>
->>> track if the mm_struct has ever been used with pin_user_pages(). mm_structs
->>> that have never been passed to pin_user_pages() cannot have a positive
->>> page_maybe_dma_pinned() by definition. This allows cases that might drive up
->>> the page ref_count to avoid any penalty from handling dma_pinned pages.
->>>
->>> Due to complexities with unpining this trivial version is a permanent sticky
->>> bit, future work will be needed to make this a counter.
->>
->> How about this instead:
->>
->> Subsequent patches intend to reduce the chance of false positives from
->> page_maybe_dma_pinned(), by also considering whether or not a page has
->> even been part of an mm struct that has ever had pin_user_pages*()
->> applied to any of its pages.
->>
->> In order to allow that, provide a boolean value (even though it's not
->> implemented exactly as a boolean type) within the mm struct, that is
->> simply set once and never cleared. This will suffice for an early, rough
->> implementation that fixes a few problems.
->>
->> Future work is planned, to provide a more sophisticated solution, likely
->> involving a counter, and *not* involving something that is set and never
->> cleared.
+Em Tue, Sep 22, 2020 at 02:56:30PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Tue, Sep 22, 2020 at 09:50:04AM +0800, Jin Yao escreveu:
+> > Some metrics (such as DRAM_BW_Use) consists of uncore events and
+> > duration_time. For uncore events, counter->core.system_wide is
+> > true. But for duration_time, counter->core.system_wide is false
+> > so target.system_wide is set to false.
+> > 
+> > Then 'enable_on_exec' is set in perf_event_attr of uncore event.
+> > Kernel will return error when trying to open the uncore event.
+> > 
+> > This patch skips the duration_time in setup_system_wide then
+> > target.system_wide will be set to true for the evlist of uncore
+> > events + duration_time.
+> > 
+> > Before (tested on skylake desktop):
+> > 
+> >  # perf stat -M DRAM_BW_Use -- sleep 1
+> >  Error:
+> >  The sys_perf_event_open() syscall returned with 22 (Invalid argument) for event (arb/event=0x84,umask=0x1/).
+> >  /bin/dmesg | grep -i perf may provide additional information.
+> > 
+> > After:
+> > 
+> >  # perf stat -M DRAM_BW_Use -- sleep 1
+> > 
+> >   Performance counter stats for 'system wide':
+> > 
+> >                 169      arb/event=0x84,umask=0x1/ #     0.00 DRAM_BW_Use
+> >              40,427      arb/event=0x81,umask=0x1/
+> >       1,000,902,197 ns   duration_time
+> > 
+> >         1.000902197 seconds time elapsed
+> > 
+> > Fixes: 648b5af3f3ae ("libperf: Move 'system_wide' from 'struct evsel' to 'struct perf_evsel'")
 > 
-> This looks good, thanks.  Though I think Jason's version is good too (as long
-> as we remove the confusing sentence, that's the one starting with "mm_structs
-> that have never been passed... ").  Before I drop Jason's version, I think I'd
-> better figure out what's the major thing we missed so that maybe we can add
-> another paragraph.  E.g., "future work will be needed to make this a counter"
-> already means "involving a counter, and *not* involving something that is set
-> and never cleared" to me... Because otherwise it won't be called a counter..
-> 
+> Humm, what makes you think that this cset was the one introducing this
+> problem? It just moves evsel->system_wide to evsel->core.system_wide.
 
-That's just a bit of harmless redundancy, intended to help clarify where this
-is going. But if the redundancy isn't actually helping, you could simply
-truncate it to the first half of the sentence, like this:
+Apart from that I reproduced the problem and after applying your patch
+it seems cured:
 
-"Future work is planned, to provide a more sophisticated solution, likely
-involving a counter."
+  [acme@quaco perf]$ grep 'model name' -m1 /proc/cpuinfo
+  model name	: Intel(R) Core(TM) i7-8650U CPU @ 1.90GHz
 
+Before (with -v to see details):
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+  [root@quaco ~]# perf stat -v -M DRAM_BW_Use -- sleep 1
+  Using CPUID GenuineIntel-6-8E-A
+  metric expr 64 * ( arb@event\=0x81\,umask\=0x1@ + arb@event\=0x84\,umask\=0x1@ ) / 1000000 / duration_time / 1000 for DRAM_BW_Use
+  found event duration_time
+  found event arb/event=0x84,umask=0x1/
+  found event arb/event=0x81,umask=0x1/
+  adding {arb/event=0x84,umask=0x1/,arb/event=0x81,umask=0x1/}:W,duration_time
+  Control descriptor is not initialized
+  Warning:
+  arb/event=0x84,umask=0x1/ event is not supported by the kernel.
+  Error:
+  The sys_perf_event_open() syscall returned with 22 (Invalid argument) for event (arb/event=0x84,umask=0x1/).
+  /bin/dmesg | grep -i perf may provide additional information.
+  
+  [root@quaco ~]#
+
+After:
+
+  [root@quaco ~]# perf stat -M DRAM_BW_Use -- sleep 1
+  
+   Performance counter stats for 'system wide':
+  
+               2,806      arb/event=0x84,umask=0x1/ #     0.63 DRAM_BW_Use
+          10,001,820      arb/event=0x81,umask=0x1/
+       1,016,875,686 ns   duration_time
+  
+         1.016875686 seconds time elapsed
+  
+  [root@quaco ~]#
+
+So I'm removing that fixes and adding this one, that I think is where
+"duration_time" was being considered...
+
+Fixes: e3ba76deef23064f ("perf tools: Force uncore events to system wide monitoring")
+
+Also, wouldn't it be better to have the duration_time event with its
+evsel->core.system_wide set to true?
+
+- Arnaldo
