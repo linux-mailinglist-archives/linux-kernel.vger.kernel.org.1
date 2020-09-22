@@ -2,178 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA25C273ADF
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 08:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEDDC273AE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 08:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729477AbgIVG1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 02:27:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728603AbgIVG1s (ORCPT
+        id S1729494AbgIVG2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 02:28:01 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:44858 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728603AbgIVG2B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 02:27:48 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8908C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 23:27:48 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id d9so11518078pfd.3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 23:27:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=woHFhNdFvWZhxnzjj5p36qds2qzyLIuLI/tFt/hEi8Y=;
-        b=UrlCgqemp+/Bor9qmpDKI/tKMYlxfjLjB5G7IpOHTCg8dK05bL1+AgPSL/OzBCBCtt
-         hHYEwaAtIXFUxnFvjdP2/H7j028gPXRq5ygqGraplX6ouXF66btXX4G7TUSdxNWHQjw3
-         KWKDmtjVuUdz8BlIlJOUujeTq4tYJjyIS9KupKlQsxubs7UAVxBr57NG7XMOUOErkGde
-         YP8/bLewl3HWvPviCBYOlq2BW5UMLTd2+pGk8vudVORWwhfsllS38RkuRWuX1bwFikW3
-         A1TCl0DpOx4B3RI5ZKE+APvi59MdDXryMtbELcEqrtA1yLlcjpp9Udz4EuvIrxzwKxP4
-         1kgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=woHFhNdFvWZhxnzjj5p36qds2qzyLIuLI/tFt/hEi8Y=;
-        b=Z894wuIhn2sDcsMbgXeA9qbKLBCOiViqXdLzN1SUNzn4D4atjQgW2aqu8n5Z04ch1y
-         hpVWQfm2MrstVJ/dwJoxpioPUjzCO2gZFt6Z0cT8Qp9PoI4Av37dxkAcRglZ6oppJ1ne
-         rNo8JbWPKfAwRsozoCRfZ55h/zJboGQCPXtGvMWEVn4hhXzWwqYQaloTvZlQ8nyML+C5
-         wVEIBYDbgwlL6dWySQIl0iuudmdIhv6H65+aB3Fk2pioOOKrsp6sg2V+wzacL9rsyS1B
-         zxhuieUxYtx4ay2JdkzV+3JY3IpdabFF0J7r+yh8kl+PZOFoE58zTotm6ANXpYOBJ0yL
-         vrhQ==
-X-Gm-Message-State: AOAM531xni1YgElcHlJHA2b7XxOpgYKtbAzdNjqWZBgXRB7CBHPLF5ot
-        DrGp+Oix/QV4rcK5UL3cMDOn
-X-Google-Smtp-Source: ABdhPJwBZlI2BuI4jTySxavQ+CeYSPq9SQ5+WuL5fnrirKYHpWeAlh82GocOydmJbKRN3O427LPLYQ==
-X-Received: by 2002:a17:902:7c0c:b029:d1:f38b:713b with SMTP id x12-20020a1709027c0cb02900d1f38b713bmr3330711pll.44.1600756068175;
-        Mon, 21 Sep 2020 23:27:48 -0700 (PDT)
-Received: from Mani-XPS-13-9360 ([2409:4072:6e1c:c062:1004:2ccf:6900:b97])
-        by smtp.gmail.com with ESMTPSA id a5sm13045509pgk.13.2020.09.21.23.27.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 21 Sep 2020 23:27:47 -0700 (PDT)
-Date:   Tue, 22 Sep 2020 11:57:40 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Matheus Castello <matheus@castello.eng.br>
-Cc:     afaerber@suse.de, mark.rutland@arm.com, robh+dt@kernel.org,
-        edgar.righi@lsitec.org.br, igor.lima@lsitec.org.br,
-        helen.koike@collabora.com, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-actions@lists.infradead.org
-Subject: Re: [PATCH v7 3/4] ARM: dts: Add Caninos Loucos Labrador v2
-Message-ID: <20200922062740.GD29035@Mani-XPS-13-9360>
-References: <20200922024302.205062-1-matheus@castello.eng.br>
- <20200922024302.205062-4-matheus@castello.eng.br>
+        Tue, 22 Sep 2020 02:28:01 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200922062759euoutp01eb1ed753f3cae7be27b1eadf7362620f~3ByxgcjUb1218912189euoutp010
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 06:27:59 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200922062759euoutp01eb1ed753f3cae7be27b1eadf7362620f~3ByxgcjUb1218912189euoutp010
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1600756079;
+        bh=DrYg1JhnENl9zqeHvER5284WgrVVROfZTW0ZjJGhxyo=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=WtUKU/e7+L8CTRCdCOWfpCf/OHUKmyq1O5VqDx5etRSbdxe/qBfaUpqfRg2Ize/tc
+         XmUYrxA6ziPrdq3/Fu/r53qQRCryc5syRChPBj1sgO+/UEVknnrA0kkS81Z5K6Zugl
+         RflLaKuEDaKXyZ+OQ8r9A4EpbEDTiKO/ZFGGuNIo=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200922062759eucas1p1d826d7ab32553376773aae1d20ebdbf4~3ByxM70VN2773427734eucas1p1C;
+        Tue, 22 Sep 2020 06:27:59 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 4F.3B.06318.F69996F5; Tue, 22
+        Sep 2020 07:27:59 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200922062759eucas1p1dafff6a91b3ad27c32fdd0a497b46f2a~3Byw4SByL2780327803eucas1p1R;
+        Tue, 22 Sep 2020 06:27:59 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200922062759eusmtrp17b8ac6d92e407fdfa8f7b8c9a5d5c89b~3Byw3kP2l1970619706eusmtrp1e;
+        Tue, 22 Sep 2020 06:27:59 +0000 (GMT)
+X-AuditID: cbfec7f5-371ff700000018ae-d6-5f69996f386d
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 22.70.06017.E69996F5; Tue, 22
+        Sep 2020 07:27:59 +0100 (BST)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200922062758eusmtip23638d9360b4e6791e9ed02649c33e9d1~3BywRNsNS2807728077eusmtip2d;
+        Tue, 22 Sep 2020 06:27:58 +0000 (GMT)
+Subject: Re: [PATCH v5 05/38] drm: prime: use sgtable iterators in
+ drm_prime_sg_to_page_addr_arrays()
+To:     Alex Goins <agoins@nvidia.com>
+Cc:     dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        David Airlie <airlied@linux.ie>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        linux-arm-kernel@lists.infradead.org
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <afb59d1b-1fcf-fd6d-2b48-e078e129f1eb@samsung.com>
+Date:   Tue, 22 Sep 2020 08:27:58 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200922024302.205062-4-matheus@castello.eng.br>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <alpine.DEB.2.20.2009211803580.19454@agoins-DiGiTS>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SeUhUURTGu2/zzdTIdVo8ZVRMZCRoiVKvsrIoeFCCpQQJaVM+1NLRZlwz
+        SJJCJovULB2nlKxcSxpXtMWRcpokcyvccJ2KNFtN0kLy9bL87/ed8517Fi5LKrvoZWyYJlrQ
+        atThKkZOVTVOvnSNzA4L2lD5ZgnXN+HFXWy2Etz9rDKa6/j+ieGKSp4SXN7jrdx4xyDBmYZf
+        01x7rZHhzJ9tNFfxIY32ns+X3ihFfPXEAM33X7AQfPmtM3zP9DDJZ3QWIL6uK4nhLyZ/ZPhL
+        FcWIL29K5L+ZVvjOD5B7BQvhYbGCdv32I/LQ1IyvRFS6Iv5nazedhAbkeiRjAXvCtLHfTo/k
+        rBIXIijPqSMlMY6gvXeClsQ3BJa6Z/RsSdbXIUJKFCDIGbz+V3xC0JacT4iuhTgEejLrkciL
+        sAoKDX2UaCLxDwL07e/+mBjsDvoxPSOyAm+H7u4WUmQKr4Hsh+cokRfjQGh8PkRJHgewZttm
+        mGVl2Bs+mLVimMQroXrMSErsCN223D8DAZ60g9anVkYaezdMvU0hJV4II5YKO4mXQ1NGKiUV
+        JCMYbL5rJ4nUmQuczUKSayv0Nk8xYmcSr4Oy2vUiAt4JTzKcJbSHzjEHaQZ7SK+6RkphBaSc
+        V0pvOIPBcu9fV3NLG3kZqQxzFjPM2cYwZxvD/7Z5iCpGjkKMLiJE0HlohDg3nTpCF6MJcTsW
+        GWFCMx+uadryvQY9+nW0AWEWqRYo6jNDg5S0OlaXENGAgCVVixS7XjQFKhXB6oRTgjYySBsT
+        LugakBNLqRwVHjffH1biEHW0cEIQogTtbJZgZcuSUNCvLJ9o+4+bE2s+OyucHk1NGusnvsh3
+        bKnM93c8sP9y3sjptavjNtkyV40tvVW0xeRrjcvXy0yjUfushm0Je+nKhoOtfpr4ZNxrO3Q1
+        xXdPnY9n9JU7sqqAXGcb8WA08KSfV6PZ9VV4r0tZjTuxZlq1cV6J//Hb1cbxqNI0H8L4REXp
+        QtXuLqRWp/4NxY1Oa2wDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrDIsWRmVeSWpSXmKPExsVy+t/xe7r5MzPjDXZ1M1rc+2Zj0XvuJJPF
+        xhnrWS2ufH3PZrFy9VEmiwX7rS2+XHnIZLHp8TVWi8u75rBZHPzwhNViy5uJrA7cHmvmrWH0
+        2P7tAavH/e7jTB6bl9R73P73mNlj8o3ljB67bzawefQ2v2Pz6NuyitFj8+lqj8+b5AK4o/Rs
+        ivJLS1IVMvKLS2yVog0tjPQMLS30jEws9QyNzWOtjEyV9O1sUlJzMstSi/TtEvQyeiZ/YiqY
+        xFvx++It1gbGB1xdjJwcEgImEjM+PWLqYuTiEBJYyiixtWk2G0RCRuLktAZWCFtY4s+1LjaI
+        oreMEnf2HWMGSQgLpEvcnnqAEcQWEVCSWDHrHgtIEbPADyaJPScfMkN0rGGS2PvqClgHm4Ch
+        RNfbLrAVvAJ2ErduXQCLswioSszc28oCYosKxEmc6XkBVSMocXLmE6A4BwengIPEm4NFIGFm
+        ATOJeZsfMkPY8hLb386BssUlbj2ZzzSBUWgWku5ZSFpmIWmZhaRlASPLKkaR1NLi3PTcYiO9
+        4sTc4tK8dL3k/NxNjMCY3nbs55YdjF3vgg8xCnAwKvHwHpiaES/EmlhWXJl7iFGCg1lJhNfp
+        7Ok4Id6UxMqq1KL8+KLSnNTiQ4ymQL9NZJYSTc4Hppu8knhDU0NzC0tDc2NzYzMLJXHeDoGD
+        MUIC6YklqdmpqQWpRTB9TBycUg2Mfek53It1ZhaVe2en8RdJXEx5fN1tWdIEX0nmNn3+u65n
+        F09z/vjXwGa6P1+M++21z7pTP64Ne8vI16wt5N6z7GdE0v2g17e9clkkP+y5/Nbw1JNNWru0
+        g563vFug3ZAtyDWPMThW+wc/73OurXqy10qUOjdNstD+NOGhdMCdt1Ju/WW5QW+UWIozEg21
+        mIuKEwFlUEQA/wIAAA==
+X-CMS-MailID: 20200922062759eucas1p1dafff6a91b3ad27c32fdd0a497b46f2a
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200513133259eucas1p273f0e05005b7b1158d884295d35745fd
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200513133259eucas1p273f0e05005b7b1158d884295d35745fd
+References: <20200513132114.6046-1-m.szyprowski@samsung.com>
+        <20200513133245.6408-1-m.szyprowski@samsung.com>
+        <CGME20200513133259eucas1p273f0e05005b7b1158d884295d35745fd@eucas1p2.samsung.com>
+        <20200513133245.6408-5-m.szyprowski@samsung.com>
+        <alpine.DEB.2.20.2009211803580.19454@agoins-DiGiTS>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 11:43:01PM -0300, Matheus Castello wrote:
-> Add Device Trees for Caninos Loucos Labrador CoM Core v2 and base board
-> M v1. Based on the work of Andreas Färber on Lemaker Guitar device tree.
-> 
-> Signed-off-by: Matheus Castello <matheus@castello.eng.br>
-> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> Reviewed-by: Andreas Färber <afaerber@suse.de>
+Hi Alex,
 
-Applied for v5.10!
+On 22.09.2020 01:15, Alex Goins wrote:
+> Tested-by: Alex Goins <agoins@nvidia.com>
+>
+> This change fixes a regression with drm_prime_sg_to_page_addr_arrays() and
+> AMDGPU in v5.9.
 
-Thanks,
-Mani
+Thanks for testing!
 
-> ---
->  arch/arm/boot/dts/Makefile                    |  1 +
->  .../arm/boot/dts/owl-s500-labrador-base-m.dts | 35 +++++++++++++++++++
->  arch/arm/boot/dts/owl-s500-labrador-v2.dtsi   | 22 ++++++++++++
->  3 files changed, 58 insertions(+)
->  create mode 100644 arch/arm/boot/dts/owl-s500-labrador-base-m.dts
->  create mode 100644 arch/arm/boot/dts/owl-s500-labrador-v2.dtsi
-> 
-> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-> index 4572db3fa5ae..5d5e370af290 100644
-> --- a/arch/arm/boot/dts/Makefile
-> +++ b/arch/arm/boot/dts/Makefile
-> @@ -868,6 +868,7 @@ dtb-$(CONFIG_ARCH_ORION5X) += \
->  dtb-$(CONFIG_ARCH_ACTIONS) += \
->  	owl-s500-cubieboard6.dtb \
->  	owl-s500-guitar-bb-rev-b.dtb \
-> +	owl-s500-labrador-base-m.dtb \
->  	owl-s500-sparky.dtb
->  dtb-$(CONFIG_ARCH_PRIMA2) += \
->  	prima2-evb.dtb
-> diff --git a/arch/arm/boot/dts/owl-s500-labrador-base-m.dts b/arch/arm/boot/dts/owl-s500-labrador-base-m.dts
-> new file mode 100644
-> index 000000000000..c92f8bdcb331
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/owl-s500-labrador-base-m.dts
-> @@ -0,0 +1,35 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Caninos Labrador Base Board
-> + *
-> + * Copyright (c) 2019-2020 Matheus Castello
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "owl-s500-labrador-v2.dtsi"
-> +
-> +/ {
-> +	model = "Caninos Labrador Core v2 on Labrador Base-M v1";
-> +	compatible = "caninos,labrador-base-m",
-> +		     "caninos,labrador-v2", "actions,s500";
-> +
-> +	aliases {
-> +		serial3 = &uart3;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path = "serial3:115200n8";
-> +	};
-> +
-> +	uart3_clk: uart3-clk {
-> +		compatible = "fixed-clock";
-> +		clock-frequency = <921600>;
-> +		#clock-cells = <0>;
-> +	};
-> +};
-> +
-> +&uart3 {
-> +	status = "okay";
-> +	clocks = <&uart3_clk>;
-> +};
-> diff --git a/arch/arm/boot/dts/owl-s500-labrador-v2.dtsi b/arch/arm/boot/dts/owl-s500-labrador-v2.dtsi
-> new file mode 100644
-> index 000000000000..883ff2f9886d
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/owl-s500-labrador-v2.dtsi
-> @@ -0,0 +1,22 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Caninos Labrador SoM V2
-> + *
-> + * Copyright (c) 2019-2020 Matheus Castello
-> + */
-> +
-> +#include "owl-s500.dtsi"
-> +
-> +/ {
-> +	model = "Caninos Labrador Core V2.1";
-> +	compatible = "caninos,labrador-v2", "actions,s500";
-> +
-> +	memory@0 {
-> +		device_type = "memory";
-> +		reg = <0x0 0x80000000>;
-> +	};
-> +};
-> +
-> +&timer {
-> +	clocks = <&hosc>;
-> +};
-> --
-> 2.28.0
-> 
+> Commit 39913934 similarly revamped AMDGPU to use sgtable helper functions. When
+> it changed from dma_map_sg_attrs() to dma_map_sgtable(), as a side effect it
+> started correctly updating sgt->nents to the return value of dma_map_sg_attrs().
+> However, drm_prime_sg_to_page_addr_arrays() incorrectly uses sgt->nents to
+> iterate over pages, rather than sgt->orig_nents, resulting in it now returning
+> the incorrect number of pages on AMDGPU.
+>
+> I had written a patch that changes drm_prime_sg_to_page_addr_arrays() to use
+> for_each_sgtable_sg() instead of for_each_sg(), iterating using sgt->orig_nents:
+>
+> -       for_each_sg(sgt->sgl, sg, sgt->nents, count) {
+> +       for_each_sgtable_sg(sgt, sg, count) {
+>
+> This patch takes it further, but still has the effect of fixing the number of
+> pages that drm_prime_sg_to_page_addr_arrays() returns. Something like this
+> should be included in v5.9 to prevent a regression with AMDGPU.
+
+Probably the easiest way to handle a fix for v5.9 would be to simply 
+merge the latest version of this patch also to v5.9-rcX: 
+https://lore.kernel.org/dri-devel/20200904131711.12950-3-m.szyprowski@samsung.com/ 
+
+
+This way we would get it fixed and avoid possible conflict in the -next. 
+Do you have any AMDGPU fixes for v5.9 in the queue? Maybe you can add 
+that patch to the queue? Dave: would it be okay that way?
+
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
+
