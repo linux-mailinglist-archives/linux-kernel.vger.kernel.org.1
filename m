@@ -2,75 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DB6B2741ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 914752741F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:18:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726583AbgIVMSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 08:18:31 -0400
-Received: from m17618.mail.qiye.163.com ([59.111.176.18]:39915 "EHLO
-        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726531AbgIVMS3 (ORCPT
+        id S1726621AbgIVMSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 08:18:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726588AbgIVMSj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 08:18:29 -0400
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
-        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id ACD7B4E114D;
-        Tue, 22 Sep 2020 20:18:25 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Wang Qing <wangqing@vivo.com>
-Subject: [PATCH] thunderbolt: use kobj_to_dev()
-Date:   Tue, 22 Sep 2020 20:18:13 +0800
-Message-Id: <1600777096-25725-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGE0dHx1CGUgfSU5LVkpNS0tMTExKS01LTkJVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PRA6Tzo6Pj8oCg4uMA8hPho8
-        HTMKCjhVSlVKTUtLTExMSktNT0xLVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISllXWQgBWUFJSUxINwY+
-X-HM-Tid: 0a74b5c032139376kuwsacd7b4e114d
+        Tue, 22 Sep 2020 08:18:39 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C07C061755;
+        Tue, 22 Sep 2020 05:18:39 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id r9so19319863ioa.2;
+        Tue, 22 Sep 2020 05:18:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=42PP+L0P7UrDlAUQ+gEm/uFRSDGJTrEup5hV3ngJiGo=;
+        b=rhJZXWD1dSNuMCuNR0DuR1E444XFj4jI1z6RYDLS2jN+Hu2LfVa5pzhpbNBcr565HR
+         FC2hxBx6FbnFbeYNhDyU7b36ah8xStOyNQnwjiSMI9Yi61oCD/3vLxSewppO4vT7tY5P
+         dfnwWqj2FLg9P/mmnf0A5BIbYB0x/J/FrW//0Un8GW1uOOR0oQrUDW49b71y0Ziguu80
+         /blDFmIl1QW17ucd7C5sygy+aQUq/hDhM35it/Bcwr8QeHpUg75wpLMTFjpeELmgQbQY
+         4QKpMVmDmei4AJCBV1uwGWaHV4HYwYKZGa2Oc9F6Azykl8rSeLDl/UiVRrdvE/jSyNMO
+         WU+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=42PP+L0P7UrDlAUQ+gEm/uFRSDGJTrEup5hV3ngJiGo=;
+        b=pd0XXjntYQAYpxONNA1fCnf44t7dToJp3GPRAUd2zputNZuLzwC8ISrIRqXSV3wv4w
+         e0OzgN53sEJxD/b3GKPky+WY1XNkjSo+LQvRp/sA3W3t+r9iFww91RVKddqvbuFLkE+y
+         VlN5SSoDJm3sJ18JBZ7uSgfghmCvYYY0DJPHqXUmXsg+KuXxJNbwUlfdzahj3ywi/lDa
+         rUnxKLskL0Ps21oof01nv7/Onj/T5tlX1HetPklpUjLi/gAnZsZX/mHdhcLRQZ0PlLUk
+         pC2+jTf4H/ByUE4C/leMO5vPaKGTo3KquZWO9/1iLwPrVZ0iYXuMiRJ0WWgFmlgm+Qcy
+         m/Pw==
+X-Gm-Message-State: AOAM5307Ib4+XdtosjNvufeWq5WGirtEelynDYHfF/HBfX+7yNye3Xxf
+        c70WwbHy4TBPL4JKluTl8/NvmOnoH3sNQsDimqs=
+X-Google-Smtp-Source: ABdhPJxNd1ARfGmnkBsYPcYrgCQe6SpcQ4UoTeAy2LoVim6jeFJ92m2Thejku2YrwvIeFngjWCa9d5eeXg3yrv2xN4g=
+X-Received: by 2002:a02:4b07:: with SMTP id q7mr3953267jaa.84.1600777118139;
+ Tue, 22 Sep 2020 05:18:38 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200922114905.2942859-1-gch981213@gmail.com> <20200922120112.GS4792@sirena.org.uk>
+In-Reply-To: <20200922120112.GS4792@sirena.org.uk>
+From:   Chuanhong Guo <gch981213@gmail.com>
+Date:   Tue, 22 Sep 2020 20:18:27 +0800
+Message-ID: <CAJsYDVKJHg=CNeomk7FAQXwyc1soQziJk3PLy=M+uYsb849w4g@mail.gmail.com>
+Subject: Re: [PATCH v2] spi: spi-mtk-nor: fix timeout calculation overflow
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-spi@vger.kernel.org,
+        =?UTF-8?B?QmF5aSBDaGVuZyAo56iL5YWr5oSPKQ==?= 
+        <bayi.cheng@mediatek.com>, stable@vger.kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use kobj_to_dev() instead of container_of()
+Hi!
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- drivers/thunderbolt/domain.c | 2 +-
- drivers/thunderbolt/switch.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+On Tue, Sep 22, 2020 at 8:02 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Tue, Sep 22, 2020 at 07:49:02PM +0800, Chuanhong Guo wrote:
+>
+> >               if ((op->data.dir == SPI_MEM_DATA_IN) &&
+> >                   mtk_nor_match_read(op)) {
+> > +                     // limit size to prevent timeout calculation overflow
+> > +                     if (op->data.nbytes > 0x400000)
+> > +                             op->data.nbytes = 0x400000;
+>
+> If there's a limit on transfer sizes there should also be a
+> max_transfer_size or max_message_size set (which we should pay attention
+> to in the core for flash stuff but IIRC we didn't do that yet).
 
-diff --git a/drivers/thunderbolt/domain.c b/drivers/thunderbolt/domain.c
-index bba4cbf..7a192b7
---- a/drivers/thunderbolt/domain.c
-+++ b/drivers/thunderbolt/domain.c
-@@ -275,7 +275,7 @@ static struct attribute *domain_attrs[] = {
- static umode_t domain_attr_is_visible(struct kobject *kobj,
- 				      struct attribute *attr, int n)
- {
--	struct device *dev = container_of(kobj, struct device, kobj);
-+	struct device *dev = kobj_to_dev(kobj);
- 	struct tb *tb = container_of(dev, struct tb, dev);
- 
- 	if (attr == &dev_attr_boot_acl.attr) {
-diff --git a/drivers/thunderbolt/switch.c b/drivers/thunderbolt/switch.c
-index 3845db5..99effd6
---- a/drivers/thunderbolt/switch.c
-+++ b/drivers/thunderbolt/switch.c
-@@ -1648,7 +1648,7 @@ static struct attribute *switch_attrs[] = {
- static umode_t switch_attr_is_visible(struct kobject *kobj,
- 				      struct attribute *attr, int n)
- {
--	struct device *dev = container_of(kobj, struct device, kobj);
-+	struct device *dev = kobj_to_dev(kobj);
- 	struct tb_switch *sw = tb_to_switch(dev);
- 
- 	if (attr == &dev_attr_device.attr) {
+There's already a 6-byte max_message_size limit on this controller.
+spi-mem dma read is the only operation which allows such a long transfer.
+
 -- 
-2.7.4
-
+Regards,
+Chuanhong Guo
