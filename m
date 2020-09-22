@@ -2,375 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8AF274647
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:13:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2C127464D
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726682AbgIVQNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 12:13:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726629AbgIVQNP (ORCPT
+        id S1726719AbgIVQOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 12:14:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21156 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726508AbgIVQOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 12:13:15 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C71F4C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 09:13:15 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id x69so21587438oia.8
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 09:13:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:reply-to:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=C77Hz/7zNMKiELakruIm7HJTiSUFOSNRvshNwAadJJw=;
-        b=cXh+ncGCq0hTKIgoaavmpoIKS+0uNQOmMYdAuwCozifdx1MrV1kiVieu8vlQuVDFFQ
-         m2XNxZIWthUrFZ9I/bimF5L58QrDWEJSTP65EkPg88u84rg0FWuLqPQt7qB6e9hsTken
-         20vlOJr2DlVLWiDtsJf99LBAfb9T08sG6dZog7sn3SBIBitmWxiFML/gujpv76sWvEQh
-         nekA1UclLN15jqxwH9xOT6ybPcW1/tZu3o3WjiuVBdKkOkVHMFdbMb8UuTyaUVhH2i2T
-         bPcLpllufiekEU6pxEut5BPzOWCQVIpAdLnT9+d1ObQdTND7mq4PRFPs0a20bUHf8LIk
-         h0Xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :reply-to:references:mime-version:content-disposition:in-reply-to
-         :user-agent;
-        bh=C77Hz/7zNMKiELakruIm7HJTiSUFOSNRvshNwAadJJw=;
-        b=RKHKXPmHGupaM50w2n7OKgMkJ29o9+/A+zC9Fp88+SChzPXU+T9nN7Z40Mmz2PVDAG
-         ZEIANFftL9TYIkQhmFBpO0lc+hTLBQ+lxhtgvWCebDm4q8TXbw/O1MuwhyHSnEE1DGwI
-         sif2dnHS0EugLSkEYtftcUv+AhA+mSEHnh5I1/UpTWmuzHBpmpEzKs72TqIbQS+J4yro
-         djl8f93+V99CCqkpwHTJFFx8cLJ5yo7fGC2QJyRKK+oLgY1KaW0iuXKZYPzl/tFn19pG
-         gNUeoBkfvA4lIdHkcWm72bXXof4kS1B93ykK6XTa+59K/dpMryghOCJY/OWMA7UzQRKP
-         CXyQ==
-X-Gm-Message-State: AOAM53057KiGHIig7ld/3n6lWLKu0+W/KNZ3DKdHvKIYqBduGGAGxEip
-        YZcp1upynuT22jiQSdqdFw==
-X-Google-Smtp-Source: ABdhPJyXssEaXdPPdnhkRZusVFXvekae8holXcRzJTjdG6Edx7dO1vJK6chAjnZJRdwRrOafRPwacg==
-X-Received: by 2002:aca:1007:: with SMTP id 7mr2978974oiq.63.1600791195002;
-        Tue, 22 Sep 2020 09:13:15 -0700 (PDT)
-Received: from serve.minyard.net ([47.184.170.156])
-        by smtp.gmail.com with ESMTPSA id y17sm6681493otq.68.2020.09.22.09.13.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 09:13:14 -0700 (PDT)
-Sender: Corey Minyard <tcminyard@gmail.com>
-Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:b947:d467:298:a358])
-        by serve.minyard.net (Postfix) with ESMTPSA id E3F0C18003B;
-        Tue, 22 Sep 2020 16:13:12 +0000 (UTC)
-Date:   Tue, 22 Sep 2020 11:13:11 -0500
-From:   Corey Minyard <minyard@acm.org>
-To:     Wu Bo <wubo40@huawei.com>
-Cc:     openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, arnd@arndb.de,
-        gregkh@linuxfoundation.org, hidehiro.kawai.ez@hitachi.com,
-        linfeilong@huawei.com, liuzhiqiang26@huawei.com
-Subject: Re: [RFC PATCH V2] ipmi: ssif: Fix out of bounds in write_next_byte()
-Message-ID: <20200922161311.GQ3674@minyard.net>
-Reply-To: minyard@acm.org
-References: <1600696808-613951-1-git-send-email-wubo40@huawei.com>
- <20200922133144.GP3674@minyard.net>
+        Tue, 22 Sep 2020 12:14:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600791241;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=i+fhWxS4Uy1qIr1hOIXhMJfQNFY0bG4QU0yaQGULSxo=;
+        b=idrm1a3Et8FEBd1uNMCxCblhLCzICwODof1v5qXNANsP2s3ZveVM0R1EtOgNKiA5D2j97k
+        +veh+3glVTmOzE6yjCvwbJzB/wXZ2EvuvVNi/D/czDK/BcXvb9R6b541y1YELGqSwy5CmI
+        iPO/RcYi8eKx8IWzyozhTW4/0r2v54A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-447-tUo3N-E1Nk-u8r_-0JjVoQ-1; Tue, 22 Sep 2020 12:13:56 -0400
+X-MC-Unique: tUo3N-E1Nk-u8r_-0JjVoQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C6367802B45;
+        Tue, 22 Sep 2020 16:13:54 +0000 (UTC)
+Received: from starship (unknown [10.35.206.154])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5F22A78810;
+        Tue, 22 Sep 2020 16:13:51 +0000 (UTC)
+Message-ID: <83dc0dc731ba7348af05a5124da3435024185594.camel@redhat.com>
+Subject: Re: [PATCH v5 2/4] KVM: x86: report negative values from wrmsr to
+ userspace
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     kvm@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Jim Mattson <jmattson@google.com>,
+        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Date:   Tue, 22 Sep 2020 19:13:49 +0300
+In-Reply-To: <20200921160812.GA23989@linux.intel.com>
+References: <20200921131923.120833-1-mlevitsk@redhat.com>
+         <20200921131923.120833-3-mlevitsk@redhat.com>
+         <20200921160812.GA23989@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922133144.GP3674@minyard.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 08:31:44AM -0500, Corey Minyard wrote:
-> On Mon, Sep 21, 2020 at 10:00:08PM +0800, Wu Bo wrote:
-> > In my virtual machine (have 4 cpus), Use mce_inject to inject errors
-> > into the system. After mce-inject injects an uncorrectable error,
-> > there is a probability that the virtual machine is not reset immediately,
-> > but hangs for more than 3000 seconds, and appeared unable to
-> > handle kernel paging request.
+On Mon, 2020-09-21 at 09:08 -0700, Sean Christopherson wrote:
+> On Mon, Sep 21, 2020 at 04:19:21PM +0300, Maxim Levitsky wrote:
+> > This will allow us to make some MSR writes fatal to the guest
+> > (e.g when out of memory condition occurs)
 > > 
-> > The analysis reasons are as follows:
-> > 1) MCE appears on all CPUs, Currently all CPUs are in the NMI interrupt
-> >    context. cpu0 is the first to seize the opportunity to run panic
-> >    routines, and panic event should stop the other processors before
-> >    do ipmi flush_messages(). but cpu1, cpu2 and cpu3 has already
-> >    in NMI interrupt context, So the Second NMI interrupt(IPI)
-> >    will not be processed again by cpu1, cpu2 and cpu3.
-> >    At this time, cpu1,cpu2 and cpu3 did not stopped.
-> > 
-> > 2) cpu1, cpu2 and cpu3 are waitting for cpu0 to finish the panic process.
-> >    if a timeout waiting for other CPUs happened, do wait_for_panic(),
-> >    the irq is enabled in the wait_for_panic() function.
-> > 
-> > 3) ipmi IRQ occurs on the cpu3, and the cpu0 is doing the panic,
-> >    they have the opportunity to call the smi_event_handler()
-> >    function concurrently. the ipmi IRQ affects the panic process of cpu0.
-> > 
-> >   CPU0                                    CPU3
-> > 
-> >    |-nmi_handle do mce_panic               |-nmi_handle do_machine_check
-> >    |                                       |
-> >    |-panic()                               |-wait_for_panic()
-> >    |                                       |
-> >    |-stop other cpus ---- NMI ------> (Ignore, already in nmi interrupt)
-> 
-> There is a step that happens before this.  In native_stop_other_cpus()
-> it uses the REBOOT_VECTOR irq to stop the other CPUs before it does the
-> NMI.
-> 
-> The question is: Why isn't that working?  That's why irqs are enabled in
-> wait_for_panic, so this REBOOT_VECTOR will work.
-> 
-> Again, changing the IPMI driver to account for this is ignoring the root
-> problem, and the root problem will cause other issues.
-> 
-> You mention you are running in a VM, but you don't mention which one.
-> Maybe the problem is in the VM?  I can't see how this is an issue unless
-> you are not using native_stop_other_cpus() (using Xen?) or you have
-> other kernel code changes.
-
-I looked a bit more, and I'm guessing you are using kdump.
-kdump_nmi_shuutdown_cpus() does not have the same handling for sending
-the REBOOT_VECTOR interrupts as native_stop_other_cpus().
-
-The kdump version of the code is not going to work with an MCE as it
-only uses the NMI, and the NMI is not going to work.
-
-I'm still not sure of the right way to fix this.  I can see two options:
-
-* Do the REBOOT_VECTOR handling in kdump_nmi_shuutdown_cpus().
-
-* In mce_panic, detect if you are going to do a kdump and handle it
-  appropriately there.
-
-We really need to get the x86 maintainers to see the issue and fix it.
-
--corey
-
-> 
-> -corey
-> 
-> >    |                                       |
-> >    |-notifier call(ipmi panic_event)       |<-ipmi IRQ occurs
-> >    |                                       |
-> >   \|/                                     \|/
-> > do smi_event_handler()             do smi_event_handler()
-> > 
-> > 
-> > The current scene encountered is a simulation injection error of the mce software, 
-> > and it is not confirmed whether there are other similar scenes. 
-> > 
-> > so add the try spinlocks in the IPMI panic handler to solve the concurrency problem of 
-> > panic process and IRQ process, and also to prevent the panic process from deadlock.
-> > 
-> > Steps to reproduce (Have a certain probability):
-> > 1. # vim /tmp/uncorrected
-> > CPU 1 BANK 4
-> > STATUS uncorrected 0xc0
-> > MCGSTATUS  EIPV MCIP
-> > ADDR 0x1234
-> > RIP 0xdeadbabe
-> > RAISINGCPU 0
-> > MCGCAP SER CMCI TES 0x6
-> > 
-> > 2. # modprobe mce_inject
-> > 3. # cd /tmp
-> > 4. # mce-inject uncorrected
-> > 
-> > The logs:
-> > [   55.086670] core: [Hardware Error]: RIP 00:<00000000deadbabe>
-> > [   55.086671] core: [Hardware Error]: TSC 2e11aff65eea ADDR 1234
-> > [   55.086673] core: [Hardware Error]: PROCESSOR 0:50654 TIME 1598967234 SOCKET 0 APIC 1 microcode 1
-> > [   55.086674] core: [Hardware Error]: Run the above through 'mcelog --ascii'
-> > [   55.086675] core: [Hardware Error]: Machine check: In kernel and no restart IP
-> > [   55.086676] Kernel panic - not syncing: Fatal machine check
-> > [   55.086677] kernel fault(0x5) notification starting on CPU 0
-> > [   55.086682] kernel fault(0x5) notification finished on CPU 0
-> > [ 4767.947960] BUG: unable to handle kernel paging request at ffff893e40000000
-> > [ 4767.947962] PGD 13c001067 P4D 13c001067 PUD 0
-> > [ 4767.947965] Oops: 0000 [#1] SMP PTI
-> > [ 4767.947967] CPU: 0 PID: 0 Comm: swapper/0
-> > [ 4767.947968] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.10.2-0-g5f4c7b1-20181220_000000-szxrtosci10000 04/01/2014
-> > [ 4767.947972] RIP: 0010:kcs_event+0x3c2/0x890 [ipmi_si]
-> > [ 4767.947974] Code: 74 0e 48 8b 7b 08 31 f6 48 8b 07 e8 98 4f 44 cd 83 bb 24 01
-> > [ 4767.947975] RSP: 0018:fffffe0000007658 EFLAGS: 00010046
-> > [ 4767.947976] RAX: 000000000c7c5ff0 RBX: ffff893e3383a000 RCX: 0000000000000000
-> > [ 4767.947976] RDX: 0000000000000ca2 RSI: 0000000000000000 RDI: ffff893e2fdf6e40
-> > [ 4767.947977] RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000a35
-> > [ 4767.947978] R10: 0000000000000002 R11: 0000000000000006 R12: 0000000000000000
-> > [ 4767.947978] R13: fffffe0000007b28 R14: ffff893e34bd0000 R15: 0000000000000000
-> > [ 4767.947979] FS:  0000000000000000(0000) GS:ffff893e3ec00000(0000) knlGS:0000000000000000
-> > [ 4767.947980] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [ 4767.947981] CR2: ffff893e40000000 CR3: 000000013b20a002 CR4: 00000000003606f0
-> > [ 4767.947987] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > [ 4767.947988] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > [ 4767.947988] Call Trace:
-> > [ 4767.947991]  <NMI>
-> > [ 4767.947994]  smi_event_handler+0x62/0x660 [ipmi_si]
-> > [ 4767.947997]  flush_messages+0x10/0x40 [ipmi_si]
-> > [ 4767.948001]  ipmi_panic_request_and_wait+0xf5/0x100 [ipmi_msghandler]
-> > [ 4767.948005]  ? symbol_string+0x5a/0x90
-> > [ 4767.948007]  ? dummy_smi_done_handler+0x10/0x10 [ipmi_msghandler]
-> > [ 4767.948011]  ? kvm_sched_clock_read+0xd/0x20
-> > [ 4767.948014]  ? sched_clock+0x5/0x10
-> > [ 4767.948017]  ? sched_clock_cpu+0xc/0xa0
-> > [ 4767.948019]  ? kvm_sched_clock_read+0xd/0x20
-> > [ 4767.948020]  ? sched_clock+0x5/0x10
-> > [ 4767.948022]  ? sched_clock_cpu+0xc/0xa0
-> > [ 4767.948026]  ? log_store+0x278/0x2c0
-> > [ 4767.948027]  ? kvm_sched_clock_read+0xd/0x20
-> > [ 4767.948029]  ? sched_clock+0x5/0x10
-> > [ 4767.948030]  ? sched_clock_cpu+0xc/0xa0
-> > [ 4767.948032]  ? log_store+0x278/0x2c0
-> > [ 4767.948034]  ? vprintk_emit+0x1dd/0x470
-> > [ 4767.948035]  ? vprintk_emit+0x234/0x470
-> > [ 4767.948039]  ? secondary_startup_64+0xb7/0xc0
-> > [ 4767.948040]  ? vprintk_deferred+0x3a/0x40
-> > [ 4767.948042]  ? kvm_sched_clock_read+0xd/0x20
-> > [ 4767.948043]  ? sched_clock+0x5/0x10
-> > [ 4767.948045]  ? sched_clock_cpu+0xc/0xa0
-> > [ 4767.948046]  ? log_store+0x278/0x2c0
-> > [ 4767.948048]  ? vprintk_emit+0x1dd/0x470
-> > [ 4767.948049]  ? vprintk_emit+0x234/0x470
-> > [ 4767.948051]  ? vprintk_deferred+0x3a/0x40
-> > [ 4767.948053]  ? printk+0x52/0x6e
-> > [ 4767.948055]  ? ipmi_addr_length+0x40/0x40 [ipmi_msghandler]
-> > [ 4767.948057]  ? panic_event+0x1d4/0x3e0 [ipmi_msghandler]
-> > [ 4767.948059]  panic_event+0x1d4/0x3e0 [ipmi_msghandler]
-> > [ 4767.948062]  ? vprintk_deferred+0x3a/0x40
-> > [ 4767.948063]  ? printk+0x52/0x6e
-> > [ 4767.948065]  ? cpumask_next+0x17/0x20
-> > [ 4767.948067]  notifier_call_chain+0x47/0x70
-> > [ 4767.948070]  panic+0x17d/0x2c2
-> > [ 4767.948075]  mce_panic+0x216/0x240
-> > [ 4767.948077]  do_machine_check+0xccd/0xdb0
-> > [ 4767.948082]  ? native_safe_halt+0xe/0x10
-> > [ 4767.948086]  raise_exception+0x47/0xb0 [mce_inject]
-> > [ 4767.948089]  ? __intel_pmu_enable_all+0x47/0x80
-> > [ 4767.948092]  ? native_apic_msr_write+0x27/0x30
-> > [ 4767.948093]  ? intel_pmu_handle_irq+0x10d/0x160
-> > [ 4767.948095]  mce_raise_notify+0x62/0x70 [mce_inject]
-> > [ 4767.948097]  ? raise_local+0xc0/0xc0 [mce_inject]
-> > [ 4767.948100]  nmi_handle+0x63/0x110
-> > [ 4767.948103]  default_do_nmi+0x4e/0x100
-> > [ 4767.948105]  do_nmi+0x12c/0x190
-> > [ 4767.948107]  end_repeat_nmi+0x16/0x6a
-> > 
-> > Call Trace:
-> > crash> bt -a
-> > PID: 0      TASK: ffffffff91c12780  CPU: 0   COMMAND: "swapper/0"
-> >  #0 [fffffe0000007ba0] panic at ffffffff90ab2e4b
-> >  #1 [fffffe0000007c28] mce_panic at ffffffff90a37ec6
-> >  #2 [fffffe0000007c70] do_machine_check at ffffffff90a391ad
-> >  #3 [fffffe0000007d80] raise_exception at ffffffffc0642117 [mce_inject]
-> >  #4 [fffffe0000007e48] mce_raise_notify at ffffffffc0642a92 [mce_inject]
-> >  #5 [fffffe0000007e58] nmi_handle at ffffffff90a21c73
-> >  #6 [fffffe0000007eb0] default_do_nmi at ffffffff90a2213e
-> >  #7 [fffffe0000007ed0] do_nmi at ffffffff90a2231c
-> >  #8 [fffffe0000007ef0] end_repeat_nmi at ffffffff914016b4
-> >     [exception RIP: native_safe_halt+14]
-> >     RIP: ffffffff9127223e  RSP: ffffffff91c03e90  RFLAGS: 00000246
-> >     RAX: ffffffff91271f30  RBX: 0000000000000000  RCX: 0000000000000000
-> >     RDX: 0000000000000001  RSI: 0000000000000000  RDI: 0000000000000000
-> >     RBP: 0000000000000000   R8: 00000031237ac86a   R9: 0000000000000001
-> >     R10: ffff9f7c01397b88  R11: 0000000002a3fabf  R12: 0000000000000000
-> >     R13: 0000000000000000  R14: 0000000000000000  R15: 0000000000000000
-> >     ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
-> > --- <NMI exception stack> ---
-> >  #9 [ffffffff91c03e90] native_safe_halt at ffffffff9127223e
-> >  #10 [ffffffff91c03e90] default_idle at ffffffff91271f4a
-> >  #11 [ffffffff91c03eb0] do_idle at ffffffff90ae959a
-> >  #12 [ffffffff91c03ef0] cpu_startup_entry at ffffffff90ae981f
-> >  #13 [ffffffff91c03f10] start_kernel at ffffffff9219b206
-> >  #14 [ffffffff91c03f50] secondary_startup_64 at ffffffff90a000e7
-> > 
-> > 
-> > PID: 0      TASK: ffff8b06c77dc740  CPU: 3   COMMAND: "swapper/3"
-> >      [exception RIP: port_outb+17]
-> >      RIP: ffffffffc035f1a1  RSP: ffff8b06fad83e90  RFLAGS: 00000002
-> >      RAX: 0000000000000000  RBX: ffff8b06f08bec00  RCX: 0000000000000010
-> >      RDX: 0000000000000ca2  RSI: 0000000000000000  RDI: ffff8b06f0bd5e40
-> >      RBP: 0000000000000001   R8: ffff8b06fad80080   R9: ffff8b06fad84000
-> >      R10: 0000000000000000  R11: 0000000000000000  R12: 0000000000000000
-> >      R13: ffff8b06fad83f54  R14: 0000000000000000  R15: 0000000000000000
-> >      CS: 0010  SS: 0018
-> >   #0 [ffff8b06fad83e90] kcs_event at ffffffffc035c2c7 [ipmi_si]
-> >   #1 [ffff8b06fad83eb0] smi_event_handler at ffffffffc035aa3f [ipmi_si]
-> >   #2 [ffff8b06fad83ee8] ipmi_si_irq_handler at ffffffffc035b0cc [ipmi_si]
-> >   #3 [ffff8b06fad83f08] __handle_irq_event_percpu at ffffffff9571dfc0
-> >   #4 [ffff8b06fad83f48] handle_irq_event_percpu at ffffffff9571e140
-> >   #5 [ffff8b06fad83f70] handle_irq_event at ffffffff9571e1b6
-> >   #6 [ffff8b06fad83f90] handle_fasteoi_irq at ffffffff95721b42
-> >   #7 [ffff8b06fad83fb0] handle_irq at ffffffff956209e8
-> >   #8 [ffff8b06fad83fc0] do_IRQ at ffffffff96001ee9
-> > --- <IRQ stack> ---
-> >   #9 [fffffe0000088b98] ret_from_intr at ffffffff96000a8f
-> >      [exception RIP: delay_tsc+52]
-> >      RIP: ffffffff95e5fb64  RSP: fffffe0000088c48  RFLAGS: 00000287
-> >      RAX: 000023fb5edf4b14  RBX: 00000000003e0451  RCX: 000023fb5edf4798
-> >      RDX: 000000000000037c  RSI: 0000000000000003  RDI: 000000000000095b
-> >      RBP: fffffe0000088cc0   R8: 0000000000000004   R9: fffffe0000088c5c
-> >      R10: ffffffff96a05ae0  R11: 0000000000000000  R12: fffffe0000088cb0
-> >      R13: 0000000000000001  R14: fffffe0000088ef8  R15: ffffffff9666a2f0
-> >      ORIG_RAX: ffffffffffffffd9  CS: 0010  SS: 0018
-> >  #10 [fffffe0000088c48] wait_for_panic at ffffffff95637c6c
-> >  #11 [fffffe0000088c58] mce_timed_out at ffffffff95637f5d
-> >  #12 [fffffe0000088c70] do_machine_check at ffffffff95638db4
-> >  #13 [fffffe0000088d80] raise_exception at ffffffffc05b6117 [mce_inject]
-> >  #14 [fffffe0000088e48] mce_raise_notify at ffffffffc05b6a92 [mce_inject]
-> >  #15 [fffffe0000088e58] nmi_handle at ffffffff95621c73
-> >  #16 [fffffe0000088eb0] default_do_nmi at ffffffff9562213e
-> >  #17 [fffffe0000088ed0] do_nmi at ffffffff9562231c
-> >  #18 [fffffe0000088ef0] end_repeat_nmi at ffffffff960016b4
-> >      [exception RIP: native_safe_halt+14]
-> >      RIP: ffffffff95e7223e  RSP: ffffa222c06a3eb0  RFLAGS: 00000246
-> >      RAX: ffffffff95e71f30  RBX: 0000000000000003  RCX: 0000000000000001
-> >      RDX: 0000000000000001  RSI: 0000000000000083  RDI: 0000000000000000
-> >      RBP: 0000000000000003   R8: 00000018cf7cd9a0   R9: 0000000000000001
-> >      R10: 0000000000000400  R11: 00000000000003fb  R12: 0000000000000000
-> >      R13: 0000000000000000  R14: 0000000000000000  R15: 0000000000000000
-> >      ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
-> >  --- <NMI exception stack> ---
-> >  #19 [ffffa222c06a3eb0] native_safe_halt at ffffffff95e7223e
-> >  #20 [ffffa222c06a3eb0] default_idle at ffffffff95e71f4a
-> >  #21 [ffffa222c06a3ed0] do_idle at ffffffff956e959a
-> >  #22 [ffffa222c06a3f10] cpu_startup_entry at ffffffff956e981f
-> >  #23 [ffffa222c06a3f30] start_secondary at ffffffff9564e697
-> >  #24 [ffffa222c06a3f50] secondary_startup_64 at ffffffff956000e7
-> > 
-> > Fixes: e45361d73 ("Factor out message flushing procedure")
-> > Signed-off-by: Feilong Lin <linfeilong@huawei.com>
-> > Signed-off-by: Wu Bo <wubo40@huawei.com>
+> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
 > > ---
-> >  drivers/char/ipmi/ipmi_si_intf.c | 21 ++++++++++++---------
-> >  1 file changed, 12 insertions(+), 9 deletions(-)
+> >  arch/x86/kvm/emulate.c | 7 +++++--
+> >  arch/x86/kvm/x86.c     | 5 +++--
+> >  2 files changed, 8 insertions(+), 4 deletions(-)
 > > 
-> > diff --git a/drivers/char/ipmi/ipmi_si_intf.c b/drivers/char/ipmi/ipmi_si_intf.c
-> > index 77b8d55..44ba9b6 100644
-> > --- a/drivers/char/ipmi/ipmi_si_intf.c
-> > +++ b/drivers/char/ipmi/ipmi_si_intf.c
-> > @@ -882,16 +882,19 @@ static void flush_messages(void *send_info)
+> > diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
+> > index 1d450d7710d63..d855304f5a509 100644
+> > --- a/arch/x86/kvm/emulate.c
+> > +++ b/arch/x86/kvm/emulate.c
+> > @@ -3702,13 +3702,16 @@ static int em_dr_write(struct x86_emulate_ctxt *ctxt)
+> >  static int em_wrmsr(struct x86_emulate_ctxt *ctxt)
 > >  {
-> >  	struct smi_info *smi_info = send_info;
-> >  	enum si_sm_result result;
-> > +	unsigned long flags = 0;
-> > +	int time = 0;
+> >  	u64 msr_data;
+> > +	int ret;
 > >  
-> > -	/*
-> > -	 * Currently, this function is called only in run-to-completion
-> > -	 * mode.  This means we are single-threaded, no need for locks.
-> > -	 */
-> > -	result = smi_event_handler(smi_info, 0);
-> > -	while (result != SI_SM_IDLE) {
-> > -		udelay(SI_SHORT_TIMEOUT_USEC);
-> > -		result = smi_event_handler(smi_info, SI_SHORT_TIMEOUT_USEC);
-> > -	}
-> > +restart:
-> > +        if (!spin_trylock_irqsave(&smi_info->si_lock, flags))
-> > +                return;
-> > +        result = smi_event_handler(smi_info, time);
-> > +        spin_unlock_irqrestore(&smi_info->si_lock, flags);
-> > +        if (result != SI_SM_IDLE) {
-> > +                udelay(SI_SHORT_TIMEOUT_USEC);
-> > +                time = SI_SHORT_TIMEOUT_USEC;
-> > +                goto restart;
-> > +        }
+> >  	msr_data = (u32)reg_read(ctxt, VCPU_REGS_RAX)
+> >  		| ((u64)reg_read(ctxt, VCPU_REGS_RDX) << 32);
+> > -	if (ctxt->ops->set_msr(ctxt, reg_read(ctxt, VCPU_REGS_RCX), msr_data))
+> > +
+> > +	ret = ctxt->ops->set_msr(ctxt, reg_read(ctxt, VCPU_REGS_RCX), msr_data);
+> > +	if (ret > 0)
+> >  		return emulate_gp(ctxt, 0);
+> >  
+> > -	return X86EMUL_CONTINUE;
+> > +	return ret < 0 ? X86EMUL_UNHANDLEABLE : X86EMUL_CONTINUE;
 > >  }
 > >  
-> >  static void sender(void                *send_info,
+> >  static int em_rdmsr(struct x86_emulate_ctxt *ctxt)
+> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > index 063d70e736f7f..b6c67ab7c4f34 100644
+> > --- a/arch/x86/kvm/x86.c
+> > +++ b/arch/x86/kvm/x86.c
+> > @@ -1612,15 +1612,16 @@ int kvm_emulate_wrmsr(struct kvm_vcpu *vcpu)
+> >  {
+> >  	u32 ecx = kvm_rcx_read(vcpu);
+> >  	u64 data = kvm_read_edx_eax(vcpu);
+> > +	int ret = kvm_set_msr(vcpu, ecx, data);
+> >  
+> > -	if (kvm_set_msr(vcpu, ecx, data)) {
+> > +	if (ret > 0) {
+> >  		trace_kvm_msr_write_ex(ecx, data);
+> >  		kvm_inject_gp(vcpu, 0);
+> >  		return 1;
+> >  	}
+> >  
+> >  	trace_kvm_msr_write(ecx, data);
+> 
+> Tracing the access as non-faulting feels wrong.  The WRMSR has not completed,
+> e.g. if userspace cleanly handles -ENOMEM and restarts the guest, KVM would
+> trace the WRMSR twice.
+
+I guess you are right. Since in this case we didn't actually executed the
+instruction (exception can also be thought as an execution of an instruction,
+since it leads to the exception handler), but in
+this case we just fail
+and let the userspace do something so we can restart from the same point again.
+ 
+So I'll go with your suggestion.
+
+Thanks for the review,
+	Best regards,
+		Maxim Levitsky
+
+> 
+> What about:
+> 
+> 	int ret = kvm_set_msr(vcpu, ecx, data);
+> 
+> 	if (ret < 0)
+> 		return ret;
+> 
+> 	if (ret) {
+> 		trace_kvm_msr_write_ex(ecx, data);
+> 		kvm_inject_gp(vcpu, 0);
+> 		return 1;
+> 	}
+> 
+> 	trace_kvm_msr_write(ecx, data);
+> 	return kvm_skip_emulated_instruction(vcpu);
+> 
+> > -	return kvm_skip_emulated_instruction(vcpu);
+> > +	return ret < 0 ? ret : kvm_skip_emulated_instruction(vcpu);
+> >  }
+> >  EXPORT_SYMBOL_GPL(kvm_emulate_wrmsr);
+> >  
 > > -- 
-> > 1.8.3.1
+> > 2.26.2
 > > 
+
+
