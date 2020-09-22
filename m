@@ -2,126 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5F7273D14
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 10:16:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35002273D0C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 10:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726682AbgIVIQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 04:16:36 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:33820 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726483AbgIVIQg (ORCPT
+        id S1726661AbgIVIOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 04:14:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726614AbgIVIOo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 04:16:36 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08M8FPqC040009;
-        Tue, 22 Sep 2020 08:16:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=NP69j30IgNuQBIP+fCRRkwYYH5uUJbj2+PP/5UVMlZ0=;
- b=dsREZJIyn2aaz/9Q42qsnZV1q4RGCsFuxkwJXiyZZK7KvtRcRxmrHZfKORFKs6PsIgda
- AdvIdmdN0nRQf7TSqVb5vof4ihnVSpuOQcZBjMvlp4+Yi/RCjdv6APmdxHyGk8vDvFZN
- eNCAy6ONOZh7QtinVgkz9w+l7ItqJ/1AaZgfL5DMhPmUTfhHk13p7Hsr7RQYwILuwujF
- yDsX4N4iRkVjYcmjtQIzY0zEC6hzHLOHwYfE3UDQepszW8Rg6KPHn2HTHqehnazOFKJd
- A+7n1RklmLg7c3s+7bxnB+foiYVJ7qmBoOapbv0GBa+6VdxgFwlvBMei+VPcSbq4nuix ZQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 33qcptr8q2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 22 Sep 2020 08:16:26 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08M8BQYu042800;
-        Tue, 22 Sep 2020 08:14:25 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 33nujmvc4r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 22 Sep 2020 08:14:25 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08M8ENc9030944;
-        Tue, 22 Sep 2020 08:14:23 GMT
-Received: from mwanda (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 22 Sep 2020 01:14:22 -0700
-Date:   Tue, 22 Sep 2020 11:14:16 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Mark Brown <broonie@opensource.wolfsonmicro.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Samuel Ortiz <sameo@linux.intel.com>,
-        Liam Girdwood <lrg@slimlogic.co.uk>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] mfd: max8998: fix potential double free in probe
-Message-ID: <20200922081416.GB1274646@mwanda>
+        Tue, 22 Sep 2020 04:14:44 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 504B0C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 01:14:44 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id l71so11331898pge.4
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 01:14:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=VvRTHWq9atT0M2ZBSCyp6rDibMZAJDzlcA9mNUPSa1Q=;
+        b=UIsiyD65QwMGiOab0ykzjaRHAo1ydlbju+cn5iZoBvahS1pS6vUlqWCapZgjLSeHaN
+         PdB9uj3WYuSdOPKVH1nwPcYDHA4EXJU36mVbBnBAAxrSytNZ/81cgPdZdDLOQc6hjVus
+         rDX5iZP8/rYc5sX7xUIxbJfIx34Zba5RDrwM3V7zvnTH4z1p3CuJf5sklEocne0UScwE
+         Wnug7L2foNRamyKS1UdgsVG8yhMYE2F8yrojPsAOACTpqHxpv9x1VZKO2NjB/H5ocwvI
+         7LHCvg0yy/5qXNjHtwtBhzZIG/WI8WpqRDQwvRxepxofyb/4T/44DOpZwkMEukcDfwal
+         9FKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=VvRTHWq9atT0M2ZBSCyp6rDibMZAJDzlcA9mNUPSa1Q=;
+        b=ftDkYl/Ydf0ZMmCM82tPs7go8mTnsD1SDSEo9eVBkL4CpHme+4dK7jV8pRA6FKUlbB
+         MASJTuJmfCaWT0zH3w9HvhAjMTCkC+UwuN9pzhbLr0xBr2rUyCyMgwzrbePnpkbV58oG
+         iuwlsoUeT8L7R/HSrroIKpqvESmTZcARTvYMkh0L4bFUlc0OmyH5z04TQJiAso4EgHKv
+         /VS37+DDEQ/qDvGaoiFpePVG/PU0VHD05ZvVnJtAlo5WS6KfH0HPn0Zn8ZucuE1oyhz8
+         uxsP9ZnkIlCpcDFIrCXciEVB9WoQO3i7isafGG8U5xrzyr9c6QUVL/L3o7FGZPZOB+sD
+         mY5g==
+X-Gm-Message-State: AOAM531ljLEMjV0Q32qr11agkcmLW8DF/9zoKnAkOPY4wdxErNqUfgJR
+        KA+Q/EqyI3JmdMV9dnaVuxm+
+X-Google-Smtp-Source: ABdhPJxXMg3Nn0XGG3SBhoXi4mamnDNcOX3VjcS+UMVk72R8qDISYWh3+KAXOZRb+pZ58Ei82a9m6A==
+X-Received: by 2002:a63:d918:: with SMTP id r24mr2597057pgg.158.1600762483807;
+        Tue, 22 Sep 2020 01:14:43 -0700 (PDT)
+Received: from Mani-XPS-13-9360 ([2409:4072:6e1c:c062:1004:2ccf:6900:b97])
+        by smtp.gmail.com with ESMTPSA id m25sm13846459pfa.32.2020.09.22.01.14.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 22 Sep 2020 01:14:43 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 13:44:32 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Matheus Castello <matheus@castello.eng.br>
+Cc:     afaerber@suse.de, mark.rutland@arm.com, robh+dt@kernel.org,
+        edgar.righi@lsitec.org.br, igor.lima@lsitec.org.br,
+        helen.koike@collabora.com, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-actions@lists.infradead.org, Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v7 1/4] dt-bindings: Add vendor prefix for Caninos Loucos
+Message-ID: <20200922081432.GK29035@Mani-XPS-13-9360>
+References: <20200922024302.205062-1-matheus@castello.eng.br>
+ <20200922024302.205062-2-matheus@castello.eng.br>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9751 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0
- mlxlogscore=999 phishscore=0 adultscore=0 spamscore=0 suspectscore=2
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009220067
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9751 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 mlxlogscore=999
- adultscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0 priorityscore=1501
- phishscore=0 spamscore=0 malwarescore=0 clxscore=1011 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009220068
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200922024302.205062-2-matheus@castello.eng.br>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The problem is that mfd_add_devices() calls mfd_remove_devices() on
-failure and then the probe function will also call mfd_remove_devices().
-I don't know exactly what problems this will cause but I'm pretty sure
-that it will trigger the BUG_ON() at the start of ida_free().
+On Mon, Sep 21, 2020 at 11:42:59PM -0300, Matheus Castello wrote:
+> The Caninos Loucos Program develops Single Board Computers with an open
+> structure. The Program wants to form a community of developers to use
+> IoT technologies and disseminate the learning of embedded systems in
+> Brazil.
+> 
+> It is an initiative of the Technological Integrated Systems Laboratory
+> (LSI-TEC) with the support of Polytechnic School of the University of
+> São Paulo (Poli-USP) and Jon "Maddog" Hall.
+> 
+> Signed-off-by: Matheus Castello <matheus@castello.eng.br>
+> Acked-by: Rob Herring <robh@kernel.org>
+> Reviewed-by: Andreas Färber <afaerber@suse.de>
 
-One thing that this patch changes is that it adds a check for if
-max8998_irq_init() fails.
+Applied for v5.10!
 
-Fixes: 156f252857df ("drivers: regulator: add Maxim 8998 driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-Checking max8998_irq_init() is slightly risky because sometimes these
-functions have been failing and we didn't know.
+Thanks,
+Mani
 
- drivers/mfd/max8998.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/mfd/max8998.c b/drivers/mfd/max8998.c
-index 785f8e9841b7..9713c3ea4a63 100644
---- a/drivers/mfd/max8998.c
-+++ b/drivers/mfd/max8998.c
-@@ -202,7 +202,9 @@ static int max8998_i2c_probe(struct i2c_client *i2c,
- 	}
- 	i2c_set_clientdata(max8998->rtc, max8998);
- 
--	max8998_irq_init(max8998);
-+	ret = max8998_irq_init(max8998);
-+	if (ret)
-+		goto unregister_dummy;
- 
- 	pm_runtime_set_active(max8998->dev);
- 
-@@ -222,15 +224,15 @@ static int max8998_i2c_probe(struct i2c_client *i2c,
- 	}
- 
- 	if (ret < 0)
--		goto err;
-+		goto release_irq;
- 
- 	device_init_wakeup(max8998->dev, max8998->wakeup);
- 
--	return ret;
-+	return 0;
- 
--err:
--	mfd_remove_devices(max8998->dev);
-+release_irq:
- 	max8998_irq_exit(max8998);
-+unregister_dummy:
- 	i2c_unregister_device(max8998->rtc);
- 	return ret;
- }
--- 
-2.28.0
-
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> index 63996ab03521..aac0dc3caf3b 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> @@ -179,6 +179,8 @@ patternProperties:
+>      description: CALAO Systems SAS
+>    "^calxeda,.*":
+>      description: Calxeda
+> +  "^caninos,.*":
+> +    description: Caninos Loucos Program
+>    "^capella,.*":
+>      description: Capella Microsystems, Inc
+>    "^cascoda,.*":
+> --
+> 2.28.0
+> 
