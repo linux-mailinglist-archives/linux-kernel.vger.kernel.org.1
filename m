@@ -2,217 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C31327393B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 05:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE49927393F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 05:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728638AbgIVD0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 23:26:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728546AbgIVD0x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 23:26:53 -0400
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C6C0C061755;
-        Mon, 21 Sep 2020 20:26:53 -0700 (PDT)
-Received: by mail-oo1-xc41.google.com with SMTP id r10so3807497oor.5;
-        Mon, 21 Sep 2020 20:26:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tLAbhc9hG8hMeoi+bM5VQG65H4Ga6azIRDdsWGwXFug=;
-        b=WIqaR4beJQ0GUBFjk06VaesFsJlavd8siwqFJBLFhBfh5cc6h6TSQ3/ksivWC2dU9j
-         lhs3j1yS8hjMl52eWMrPhwZ2lwvQA+yMMqXIeHpaOvmr/GiVYEssNYOHry8RK12htNLe
-         v/N0Acz1RkNNxmG/w56Z/jxYIlXPcyGhZHB5uJY9YtJrnKUvpbbtuEmUKZNJhMVD7ERP
-         K9V8MT+Yc4Lq/3nag2yM/JeWTsho+9g4FrTOGbRky9Q9RqdU1xwnsppHmrsun09mOerS
-         kMowLrHCAmgD+XkVAbkztaPj5IcQduwXLzhAMJpWRIFxnJbkLmqjma5JpLwl5pA+91rU
-         IJZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tLAbhc9hG8hMeoi+bM5VQG65H4Ga6azIRDdsWGwXFug=;
-        b=hV7RAW1RitBEw+gPSBh2K3zi5igtCgqkeYFS864Ozm25ZTCD7UIDw/g8ms9m5oKuCp
-         894+8XiPzAL+FwMBV8nki86Fer0tuPbfBgpy5Tjgg+yKpTLZ6kcm9s9Ch9Lk+PDt4q/H
-         NE75XL9DUHhVMxmBvAslUv5PbYLIfy9TiyZCjHGUh2tAOgpHQSZpIjQrc2OAqPJEFDg4
-         15w8V6iCZm0ee+JoisPm6au5pYBfj72b8UMx5jO3j6AiDrdT1jBs1j2DX2Z4+JoZQ3lS
-         cY+C+WBkfovWSNho7zFSaxMbF+t3jhaA0KwNtt3VRQepGHGaPdSKNOu2re4spORhfTQq
-         FIXg==
-X-Gm-Message-State: AOAM53346ip7Bvul8zARpeJaHdyFAKlABV19it2iRNaZ0EVnnMspRpwF
-        4sQZuhXwduxsRLtKWBcnx9I=
-X-Google-Smtp-Source: ABdhPJxNsFEUb5hcLJGgCHMImrPXc+7mZILZP92Ju/tLjaTX5HlhjFwnIXS/u7MCi6LlfNGJVKJXHg==
-X-Received: by 2002:a4a:9bde:: with SMTP id b30mr1685783ook.82.1600745212535;
-        Mon, 21 Sep 2020 20:26:52 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id w20sm6467851otk.24.2020.09.21.20.26.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 21 Sep 2020 20:26:52 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 21 Sep 2020 20:26:51 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     rjw@rjwysocki.net, bp@alien8.de, x86@kernel.org,
-        tony.luck@intel.com, lenb@kernel.org, daniel.lezcano@linaro.org,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-pm@vger.kernel.org, ulf.hansson@linaro.org,
-        paulmck@kernel.org, tglx@linutronix.de, naresh.kamboju@linaro.org
-Subject: Re: [RFC][PATCH 1/4] acpi: Use CPUIDLE_FLAG_TIMER_STOP
-Message-ID: <20200922032651.GA222679@roeck-us.net>
-References: <20200915103157.345404192@infradead.org>
- <20200915103806.280265587@infradead.org>
+        id S1728667AbgIVD2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 23:28:41 -0400
+Received: from mail-eopbgr10048.outbound.protection.outlook.com ([40.107.1.48]:7566
+        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728546AbgIVD2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 23:28:40 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lh8lbsju3DrIEkAqgVMcpDuLxUU7Vk3AiwFFcdCqm58V93GSqJnMBAPCzUyB/XWsbswGCkkOncMhkIPowNakEOGd2gJOBZw2fsJ7njK+/arpYXxca/Qdd1WXX8n4aYKpKyd7m86YAdG475/nZ7yHBfGAd5FyKTJ7OtH7TUe9Hm1ry+DBTsrGBWofbT2VZkUNpvpggUe54w4wjqnlAKtZYZk49fS37FdoG0brk2J9XGAtcfjoU+G6kMyZRpiqscGHPd2gfxjj1Yxwub/ZdhLdi0sTl5Xo/Cxx7oBVTw+Rt2srWRJAIGMp+PVI8EgOJOXTWOXqevRaZcBE/4McHAfhCQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=25w3hxG7ftRm4c7PRrlW71Lc7si8/DPcfFPczm7x6as=;
+ b=NxnMI/L16lcspWNojGpmIT3i4hv/+RnheuG5tb8Kqjg4c9d2ify0z1QGdBH2+t67WMsSMmwNxbp0uyBG0go5mDdykfhOTmMG2qHYnfy1y505W4pz4+nxK/xkpfu9/Vhd0kTqydwkMGqHJa3a9Th2oM60+8MYUeITvTAMXSyaY4MBwbnBeF1rq9oxfZtDye5wJQl1PkT7utS6Hi4FJ218wMIT33MEvLB06yfnFVLU20vGQrTSZc2j0JOM023TMHsqBfauMMYJXofPK76K6BsTfPajg1mE/8U+utb+qlqTu5dFBV934z3F9Srskq3xnZacwQawqjPVQd8v+LFYTfTOyQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=25w3hxG7ftRm4c7PRrlW71Lc7si8/DPcfFPczm7x6as=;
+ b=J73tU0JPLSu3fsI9bfbg3jwJ3jwbaiWMrFLlImG+YhIPwHAvDNep0NKAWCsq30UbxGaSUF72OCrv45u7NXhatnq2mfIOiyw8o5WyAqxsbOj16Snk9isz2hU8VOeJorpuCi1c71LmBnM6TwTL+rS0G5wpFr7nOclkVJRFrozLquo=
+Received: from VE1PR04MB6687.eurprd04.prod.outlook.com (2603:10a6:803:121::30)
+ by VI1PR04MB3183.eurprd04.prod.outlook.com (2603:10a6:802:b::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.15; Tue, 22 Sep
+ 2020 03:28:36 +0000
+Received: from VE1PR04MB6687.eurprd04.prod.outlook.com
+ ([fe80::8db9:c62f:dac5:ee3d]) by VE1PR04MB6687.eurprd04.prod.outlook.com
+ ([fe80::8db9:c62f:dac5:ee3d%3]) with mapi id 15.20.3391.026; Tue, 22 Sep 2020
+ 03:28:36 +0000
+From:   Leo Li <leoyang.li@nxp.com>
+To:     Biwen Li <biwen.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
+        "Biwen Li (OSS)" <biwen.li@oss.nxp.com>
+CC:     "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jiafei Pan <jiafei.pan@nxp.com>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>
+Subject: RE: [EXT] Re: [PATCH 2/5] arm64: dts: lx2160a-rdb: remove useless
+ property of rtc
+Thread-Topic: [EXT] Re: [PATCH 2/5] arm64: dts: lx2160a-rdb: remove useless
+ property of rtc
+Thread-Index: AQHWizONvf0ZYQj+3k2YLBbxVGhHg6l0Ax6AgAAC8YCAAAPFMA==
+Date:   Tue, 22 Sep 2020 03:28:36 +0000
+Message-ID: <VE1PR04MB6687237BD5D137C4B9EC6DBD8F3B0@VE1PR04MB6687.eurprd04.prod.outlook.com>
+References: <20200915073213.12779-1-biwen.li@oss.nxp.com>
+ <20200915073213.12779-2-biwen.li@oss.nxp.com> <20200922030208.GY25109@dragon>
+ <DB6PR0401MB2438ABB1DFE785F9EAADB69E8F3B0@DB6PR0401MB2438.eurprd04.prod.outlook.com>
+In-Reply-To: <DB6PR0401MB2438ABB1DFE785F9EAADB69E8F3B0@DB6PR0401MB2438.eurprd04.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [136.49.234.194]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 68cd1aaf-9fe8-4c93-fbe5-08d85ea79739
+x-ms-traffictypediagnostic: VI1PR04MB3183:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR04MB3183CC17FC22966A1E4B6E528F3B0@VI1PR04MB3183.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: miJcnJ36Tx5PKPW1xH7sdFatTgTqJ5kh/Q2AnlEZT9FsO6HyjHdrezmVkoCncikfDZ0YlQYLDvmE2JY9TOvSnaJ+Nx1cbl0l6t0U4xOuBnkcr7RJ7S04qG4FJy62W/STOnYAexzifxPzmNQOEOJBgzn3HgKZYysc3JjXxM+tZH6SpQi3cv1m02kqrDQ4RP6JF8jr2udiTmTA6obY2OguqZAvDYLcgwjY+RJCHQ9JldAAKtJKprnD+o66czDlL2UYkaoNM38R0hU1N11+Cg6MXUCe/+w3StmbmYy1S9jpFt8NW7mW/XPtHxwF21zENDhRUuPHrK1MPrltlyc0ASPoog==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6687.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(136003)(376002)(39860400002)(346002)(33656002)(8676002)(316002)(83380400001)(66556008)(478600001)(66946007)(66446008)(66476007)(64756008)(8936002)(76116006)(4326008)(5660300002)(2906002)(26005)(186003)(55016002)(7696005)(6506007)(110136005)(86362001)(54906003)(71200400001)(52536014)(9686003)(53546011);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: aulJSdt+9Du3QvqkcLxC4+FKydAE58Z1ziG0KicWaj/5ZTah2vlJH6JQphjzmszecvUx94TOOUClvWRl6PIq2nJQ+xX0lwqNWBXdOs3gr09EkHYRhrYrXdi6lLOmx9CSk5e0kJg/7Uzh3RoLGH6xLqv6vWpKkTwLA5KOjQuBXZmXfRPXCqUpJivA4T5XMEw1oj9AEFaODEe3TdHfpDCwLiJ1qhAs8AK8Ck9JXo6CRJc8ELfWDlWvlaoL/40krLjJxJq3mRRdwiYLuFqIglKFjFirKZixxIdb66e+4xELsPQV9Sm8T4+uG9YN0V2Y+HjJnnv9J2uEF/ypMcnojFUUKDzKMQCL0kYeDdAIqVROlxYiOmQ9H0oQ41UQVg3q7fN+2HMQe0V/8oXvMjh+LjKn7/Rvz7rL/XmIquRj2OB7tkYXz/yI+lzkyMQQgmwxHAwNxkDVGC0SlQyE7Zl7oummq4izCDtJhHKIXNmtccG2rDR6JK69t3zdOCyM4V7Jtlcq3qqmqKfzVhJkEbG9xPB9IYWBIjyJm73QHgS+QTPywxdPVVFez8CGdxn5l9Q9vjUb0oyLCIEILOQSqz03agOEyH1+8ABUVrbamSiV75nncxXOggyoLe1Wl8Xl+OeqV3cOd5F624PGBGY4+jzZVN5gkw==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915103806.280265587@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6687.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 68cd1aaf-9fe8-4c93-fbe5-08d85ea79739
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Sep 2020 03:28:36.1544
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: JC0oNQ08wt1B19sd34H+GqIBb7JWWQkVMVD/QLFv8Ayk2SfNqB48V2pvUilw9xx9jEKaGEDpG4H7+YCM0hpTQQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB3183
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 12:31:58PM +0200, Peter Zijlstra wrote:
-> Make acpi_processor_idle use the common broadcast code, there's no
-> reason not to. This also removes some RCU usage after
-> rcu_idle_enter().
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Reported-by: Borislav Petkov <bp@suse.de>
-> Tested-by: Borislav Petkov <bp@suse.de>
-> ---
->  drivers/acpi/processor_idle.c |   49 +++++++++++++-----------------------------
->  1 file changed, 16 insertions(+), 33 deletions(-)
-> 
-> --- a/drivers/acpi/processor_idle.c
-> +++ b/drivers/acpi/processor_idle.c
-> @@ -161,18 +161,10 @@ static void lapic_timer_propagate_broadc
->  }
->  
->  /* Power(C) State timer broadcast control */
-> -static void lapic_timer_state_broadcast(struct acpi_processor *pr,
-> -				       struct acpi_processor_cx *cx,
-> -				       int broadcast)
-> -{
-> -	int state = cx - pr->power.states;
-> -
-> -	if (state >= pr->power.timer_broadcast_on_state) {
-> -		if (broadcast)
-> -			tick_broadcast_enter();
-> -		else
-> -			tick_broadcast_exit();
-> -	}
-> +static bool lapic_timer_needs_broadcast(struct acpi_processor *pr,
-> +					struct acpi_processor_cx *cx)
-> +{
-> +	return cx - pr->power.states >= pr->power.timer_broadcast_on_state;
->  }
->  
->  #else
-> @@ -180,9 +172,9 @@ static void lapic_timer_state_broadcast(
->  static void lapic_timer_check_state(int state, struct acpi_processor *pr,
->  				   struct acpi_processor_cx *cstate) { }
->  static void lapic_timer_propagate_broadcast(struct acpi_processor *pr) { }
-> -static void lapic_timer_state_broadcast(struct acpi_processor *pr,
-> -				       struct acpi_processor_cx *cx,
-> -				       int broadcast)
-> +
-> +static bool lapic_timer_needs_broadcast(struct acpi_processor *pr,
-> +					struct acpi_processor_cx *cx)
->  {
->  }
 
-drivers/acpi/processor_idle.c: In function 'lapic_timer_needs_broadcast':
-drivers/acpi/processor_idle.c:179:1: warning: no return statement in function returning non-void [-Wreturn-type]
 
-Should this return true or false ?
+> -----Original Message-----
+> From: Biwen Li <biwen.li@nxp.com>
+> Sent: Monday, September 21, 2020 10:13 PM
+> To: Shawn Guo <shawnguo@kernel.org>; Biwen Li (OSS)
+> <biwen.li@oss.nxp.com>
+> Cc: alexandre.belloni@bootlin.com; Leo Li <leoyang.li@nxp.com>;
+> robh+dt@kernel.org; mark.rutland@arm.com; devicetree@vger.kernel.org;
+> linux-kernel@vger.kernel.org; Jiafei Pan <jiafei.pan@nxp.com>; linux-
+> rtc@vger.kernel.org
+> Subject: RE: [EXT] Re: [PATCH 2/5] arm64: dts: lx2160a-rdb: remove useles=
+s
+> property of rtc
+>=20
+> >
+> > Caution: EXT Email
+> >
+> > On Tue, Sep 15, 2020 at 03:32:10PM +0800, Biwen Li wrote:
+> > > From: Biwen Li <biwen.li@nxp.com>
+> > >
+> > > Remove useless property interrupts of rtc
+> > >
+> > > Signed-off-by: Biwen Li <biwen.li@nxp.com>
+> > > ---
+> > >  arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts | 2 --
+> > >  1 file changed, 2 deletions(-)
+> > >
+> > > diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
+> > > b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
+> > > index dce79018d397..e9e982176e07 100644
+> > > --- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
+> > > +++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
+> > > @@ -171,8 +171,6 @@
+> > >       rtc@51 {
+> > >               compatible =3D "nxp,pcf2129";
+> > >               reg =3D <0x51>;
+> > > -             // IRQ10_B
+> > > -             interrupts =3D <0 150 0x4>;
+> >
+> > If it's a correct description of hardware, I do not see why we would
+> > need to remove it.
+> Hi Shawn,
+>=20
+> Don't need use the interrupt, only read time from rtc.
 
-Guenter
+User probably will choose to use the alarm feature of the RTC and need the =
+interrupt property.  Is there any issue when the interrupt property is pres=
+ent?
 
->  
-> @@ -568,21 +560,13 @@ static DEFINE_RAW_SPINLOCK(c3_lock);
->   * acpi_idle_enter_bm - enters C3 with proper BM handling
->   * @pr: Target processor
->   * @cx: Target state context
-> - * @timer_bc: Whether or not to change timer mode to broadcast
->   */
->  static void acpi_idle_enter_bm(struct acpi_processor *pr,
-> -			       struct acpi_processor_cx *cx, bool timer_bc)
-> +			       struct acpi_processor_cx *cx)
->  {
->  	acpi_unlazy_tlb(smp_processor_id());
->  
->  	/*
-> -	 * Must be done before busmaster disable as we might need to
-> -	 * access HPET !
-> -	 */
-> -	if (timer_bc)
-> -		lapic_timer_state_broadcast(pr, cx, 1);
-> -
-> -	/*
->  	 * disable bus master
->  	 * bm_check implies we need ARB_DIS
->  	 * bm_control implies whether we can do ARB_DIS
-> @@ -609,9 +593,6 @@ static void acpi_idle_enter_bm(struct ac
->  		c3_cpu_count--;
->  		raw_spin_unlock(&c3_lock);
->  	}
-> -
-> -	if (timer_bc)
-> -		lapic_timer_state_broadcast(pr, cx, 0);
->  }
->  
->  static int acpi_idle_enter(struct cpuidle_device *dev,
-> @@ -630,7 +611,7 @@ static int acpi_idle_enter(struct cpuidl
->  			cx = per_cpu(acpi_cstate[index], dev->cpu);
->  		} else if (cx->type == ACPI_STATE_C3 && pr->flags.bm_check) {
->  			if (cx->bm_sts_skip || !acpi_idle_bm_check()) {
-> -				acpi_idle_enter_bm(pr, cx, true);
-> +				acpi_idle_enter_bm(pr, cx);
->  				return index;
->  			} else if (drv->safe_state_index >= 0) {
->  				index = drv->safe_state_index;
-> @@ -642,15 +623,11 @@ static int acpi_idle_enter(struct cpuidl
->  		}
->  	}
->  
-> -	lapic_timer_state_broadcast(pr, cx, 1);
-> -
->  	if (cx->type == ACPI_STATE_C3)
->  		ACPI_FLUSH_CPU_CACHE();
->  
->  	acpi_idle_do_entry(cx);
->  
-> -	lapic_timer_state_broadcast(pr, cx, 0);
-> -
->  	return index;
->  }
->  
-> @@ -666,7 +643,7 @@ static int acpi_idle_enter_s2idle(struct
->  			return 0;
->  
->  		if (pr->flags.bm_check) {
-> -			acpi_idle_enter_bm(pr, cx, false);
-> +			acpi_idle_enter_bm(pr, cx);
->  			return 0;
->  		} else {
->  			ACPI_FLUSH_CPU_CACHE();
-> @@ -682,6 +659,7 @@ static int acpi_processor_setup_cpuidle_
->  {
->  	int i, count = ACPI_IDLE_STATE_START;
->  	struct acpi_processor_cx *cx;
-> +	struct cpuidle_state *state;
->  
->  	if (max_cstate == 0)
->  		max_cstate = 1;
-> @@ -694,6 +672,11 @@ static int acpi_processor_setup_cpuidle_
->  
->  		per_cpu(acpi_cstate[count], dev->cpu) = cx;
->  
-> +		if (lapic_timer_needs_broadcast(pr, cx)) {
-> +			state = &acpi_idle_driver.states[count];
-> +			state->flags |= CPUIDLE_FLAG_TIMER_STOP;
-> +		}
-> +
->  		count++;
->  		if (count == CPUIDLE_STATE_MAX)
->  			break;
+>=20
+> Best Regards,
+> Biwen Li
+> >
+> > Shawn
+> >
+> > >       };
+> > >  };
+> > >
+> > > --
+> > > 2.17.1
+> > >
