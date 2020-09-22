@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C4B4274ADF
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A240A274AE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726782AbgIVVLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 17:11:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31074 "EHLO
+        id S1726792AbgIVVLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 17:11:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32160 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726652AbgIVVLB (ORCPT
+        by vger.kernel.org with ESMTP id S1726652AbgIVVLQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 17:11:01 -0400
+        Tue, 22 Sep 2020 17:11:16 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600809059;
+        s=mimecast20190719; t=1600809074;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/+oNahUyc1L8+SVW2454azJwTs5I30pVB67+1TYtBy0=;
-        b=YW2XPwDz/hpccHQFFEDqgEv7TcQcGfTGdaS8WfQLVA2S/WixxoubvZJn98OFgqdhYCSJte
-        K+cOWpPBpaylxxvSuWdSUjp/DahtQRphiRCym91wlsfG4xUph2MEcGUEFxR1nci0sliCBm
-        4YC2G8Q98XirYD3iMNAc/YgESizryws=
+        bh=Rm1tkxn9mEpl3JIIvGVbcRJQZfcGlR+5EQ+ttQUby1Y=;
+        b=blMkCEp+J8rrMAyj/saKbOwVxYJO03NfJd8NjuvKD9JXvdLAIuhsjejIOY+G2uieowtPo8
+        YsGwArojVZziYEj/LxZsFZ1rrD3e/JGKIDecdTPYN6QNAg0PUulAPjSMY2+af4kBhVTwnB
+        iKKUGJk2R4MWWNZD4qX6wMjDrG3y1Ow=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-355-4c3pJygNMGOxjtxY3k4UlQ-1; Tue, 22 Sep 2020 17:10:57 -0400
-X-MC-Unique: 4c3pJygNMGOxjtxY3k4UlQ-1
+ us-mta-562-HQM4lvvDOa2xv9pEKAEN5Q-1; Tue, 22 Sep 2020 17:11:12 -0400
+X-MC-Unique: HQM4lvvDOa2xv9pEKAEN5Q-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DAB81188C122;
-        Tue, 22 Sep 2020 21:10:55 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ECFEE1091061;
+        Tue, 22 Sep 2020 21:11:09 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.35.206.154])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id ADDA755789;
-        Tue, 22 Sep 2020 21:10:42 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4E6A855788;
+        Tue, 22 Sep 2020 21:10:56 +0000 (UTC)
 From:   Maxim Levitsky <mlevitsk@redhat.com>
 To:     kvm@vger.kernel.org
 Cc:     "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
@@ -47,9 +47,9 @@ Cc:     "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
         linux-kernel@vger.kernel.org, Jim Mattson <jmattson@google.com>,
         x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
         Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH v6 3/4] KVM: x86: allow kvm_x86_ops.set_efer to return an error value
-Date:   Wed, 23 Sep 2020 00:10:24 +0300
-Message-Id: <20200922211025.175547-4-mlevitsk@redhat.com>
+Subject: [PATCH v6 4/4] KVM: nSVM: implement on demand allocation of the nested state
+Date:   Wed, 23 Sep 2020 00:10:25 +0300
+Message-Id: <20200922211025.175547-5-mlevitsk@redhat.com>
 In-Reply-To: <20200922211025.175547-1-mlevitsk@redhat.com>
 References: <20200922211025.175547-1-mlevitsk@redhat.com>
 MIME-Version: 1.0
@@ -59,120 +59,242 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This will be used to signal an error to the userspace, in case
-the vendor code failed during handling of this msr. (e.g -ENOMEM)
+This way we don't waste memory on VMs which don't use nesting
+virtualization even when the host enabled it for them.
 
 Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
 ---
- arch/x86/include/asm/kvm_host.h | 2 +-
- arch/x86/kvm/svm/svm.c          | 3 ++-
- arch/x86/kvm/svm/svm.h          | 2 +-
- arch/x86/kvm/vmx/vmx.c          | 6 ++++--
- arch/x86/kvm/x86.c              | 8 +++++++-
- 5 files changed, 15 insertions(+), 6 deletions(-)
+ arch/x86/kvm/svm/nested.c | 42 ++++++++++++++++++++++++++++++
+ arch/x86/kvm/svm/svm.c    | 55 ++++++++++++++++++++++-----------------
+ arch/x86/kvm/svm/svm.h    |  6 +++++
+ 3 files changed, 79 insertions(+), 24 deletions(-)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 5303dbc5c9bce..b273c199b9a55 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1069,7 +1069,7 @@ struct kvm_x86_ops {
- 	void (*get_cs_db_l_bits)(struct kvm_vcpu *vcpu, int *db, int *l);
- 	void (*set_cr0)(struct kvm_vcpu *vcpu, unsigned long cr0);
- 	int (*set_cr4)(struct kvm_vcpu *vcpu, unsigned long cr4);
--	void (*set_efer)(struct kvm_vcpu *vcpu, u64 efer);
-+	int (*set_efer)(struct kvm_vcpu *vcpu, u64 efer);
- 	void (*get_idt)(struct kvm_vcpu *vcpu, struct desc_ptr *dt);
- 	void (*set_idt)(struct kvm_vcpu *vcpu, struct desc_ptr *dt);
- 	void (*get_gdt)(struct kvm_vcpu *vcpu, struct desc_ptr *dt);
+diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+index 09417f5197410..dd13856818a03 100644
+--- a/arch/x86/kvm/svm/nested.c
++++ b/arch/x86/kvm/svm/nested.c
+@@ -467,6 +467,9 @@ int nested_svm_vmrun(struct vcpu_svm *svm)
+ 
+ 	vmcb12 = map.hva;
+ 
++	if (WARN_ON(!svm->nested.initialized))
++		return 1;
++
+ 	if (!nested_vmcb_checks(svm, vmcb12)) {
+ 		vmcb12->control.exit_code    = SVM_EXIT_ERR;
+ 		vmcb12->control.exit_code_hi = 0;
+@@ -684,6 +687,45 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
+ 	return 0;
+ }
+ 
++int svm_allocate_nested(struct vcpu_svm *svm)
++{
++	struct page *hsave_page;
++
++	if (svm->nested.initialized)
++		return 0;
++
++	hsave_page = alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
++	if (!hsave_page)
++		return -ENOMEM;
++
++	svm->nested.hsave = page_address(hsave_page);
++
++	svm->nested.msrpm = svm_vcpu_init_msrpm();
++	if (!svm->nested.msrpm)
++		goto err_free_hsave;
++
++	svm->nested.initialized = true;
++	return 0;
++
++err_free_hsave:
++	__free_page(hsave_page);
++	return -ENOMEM;
++}
++
++void svm_free_nested(struct vcpu_svm *svm)
++{
++	if (!svm->nested.initialized)
++		return;
++
++	svm_vcpu_free_msrpm(svm->nested.msrpm);
++	svm->nested.msrpm = NULL;
++
++	__free_page(virt_to_page(svm->nested.hsave));
++	svm->nested.hsave = NULL;
++
++	svm->nested.initialized = false;
++}
++
+ /*
+  * Forcibly leave nested mode in order to be able to reset the VCPU later on.
+  */
 diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 3da5b2f1b4a19..18f8af55e970a 100644
+index 18f8af55e970a..d1265c95e2b0b 100644
 --- a/arch/x86/kvm/svm/svm.c
 +++ b/arch/x86/kvm/svm/svm.c
-@@ -263,7 +263,7 @@ static int get_max_npt_level(void)
- #endif
- }
- 
--void svm_set_efer(struct kvm_vcpu *vcpu, u64 efer)
-+int svm_set_efer(struct kvm_vcpu *vcpu, u64 efer)
+@@ -266,6 +266,7 @@ static int get_max_npt_level(void)
+ int svm_set_efer(struct kvm_vcpu *vcpu, u64 efer)
  {
  	struct vcpu_svm *svm = to_svm(vcpu);
++	u64 old_efer = vcpu->arch.efer;
  	vcpu->arch.efer = efer;
-@@ -283,6 +283,7 @@ void svm_set_efer(struct kvm_vcpu *vcpu, u64 efer)
+ 
+ 	if (!npt_enabled) {
+@@ -276,9 +277,27 @@ int svm_set_efer(struct kvm_vcpu *vcpu, u64 efer)
+ 			efer &= ~EFER_LME;
+ 	}
+ 
+-	if (!(efer & EFER_SVME)) {
+-		svm_leave_nested(svm);
+-		svm_set_gif(svm, true);
++	if ((old_efer & EFER_SVME) != (efer & EFER_SVME)) {
++		if (!(efer & EFER_SVME)) {
++			svm_leave_nested(svm);
++			svm_set_gif(svm, true);
++
++			/*
++			 * Free the nested guest state, unless we are in SMM.
++			 * In this case we will return to the nested guest
++			 * as soon as we leave SMM.
++			 */
++			if (!is_smm(&svm->vcpu))
++				svm_free_nested(svm);
++
++		} else {
++			int ret = svm_allocate_nested(svm);
++
++			if (ret) {
++				vcpu->arch.efer = old_efer;
++				return ret;
++			}
++		}
+ 	}
  
  	svm->vmcb->save.efer = efer | EFER_SVME;
- 	vmcb_mark_dirty(svm->vmcb, VMCB_CR);
-+	return 0;
+@@ -610,7 +629,7 @@ static void set_msr_interception(u32 *msrpm, unsigned msr,
+ 	msrpm[offset] = tmp;
  }
  
- static int is_external_interrupt(u32 info)
+-static u32 *svm_vcpu_init_msrpm(void)
++u32 *svm_vcpu_init_msrpm(void)
+ {
+ 	int i;
+ 	u32 *msrpm;
+@@ -630,7 +649,7 @@ static u32 *svm_vcpu_init_msrpm(void)
+ 	return msrpm;
+ }
+ 
+-static void svm_vcpu_free_msrpm(u32 *msrpm)
++void svm_vcpu_free_msrpm(u32 *msrpm)
+ {
+ 	__free_pages(virt_to_page(msrpm), MSRPM_ALLOC_ORDER);
+ }
+@@ -1204,7 +1223,6 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
+ {
+ 	struct vcpu_svm *svm;
+ 	struct page *vmcb_page;
+-	struct page *hsave_page;
+ 	int err;
+ 
+ 	BUILD_BUG_ON(offsetof(struct vcpu_svm, vcpu) != 0);
+@@ -1215,13 +1233,9 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
+ 	if (!vmcb_page)
+ 		goto out;
+ 
+-	hsave_page = alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
+-	if (!hsave_page)
+-		goto error_free_vmcb_page;
+-
+ 	err = avic_init_vcpu(svm);
+ 	if (err)
+-		goto error_free_hsave_page;
++		goto out;
+ 
+ 	/* We initialize this flag to true to make sure that the is_running
+ 	 * bit would be set the first time the vcpu is loaded.
+@@ -1229,15 +1243,9 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
+ 	if (irqchip_in_kernel(vcpu->kvm) && kvm_apicv_activated(vcpu->kvm))
+ 		svm->avic_is_running = true;
+ 
+-	svm->nested.hsave = page_address(hsave_page);
+-
+ 	svm->msrpm = svm_vcpu_init_msrpm();
+ 	if (!svm->msrpm)
+-		goto error_free_hsave_page;
+-
+-	svm->nested.msrpm = svm_vcpu_init_msrpm();
+-	if (!svm->nested.msrpm)
+-		goto error_free_msrpm;
++		goto error_free_vmcb_page;
+ 
+ 	svm->vmcb = page_address(vmcb_page);
+ 	svm->vmcb_pa = __sme_set(page_to_pfn(vmcb_page) << PAGE_SHIFT);
+@@ -1249,10 +1257,6 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
+ 
+ 	return 0;
+ 
+-error_free_msrpm:
+-	svm_vcpu_free_msrpm(svm->msrpm);
+-error_free_hsave_page:
+-	__free_page(hsave_page);
+ error_free_vmcb_page:
+ 	__free_page(vmcb_page);
+ out:
+@@ -1278,10 +1282,10 @@ static void svm_free_vcpu(struct kvm_vcpu *vcpu)
+ 	 */
+ 	svm_clear_current_vmcb(svm->vmcb);
+ 
++	svm_free_nested(svm);
++
+ 	__free_page(pfn_to_page(__sme_clr(svm->vmcb_pa) >> PAGE_SHIFT));
+ 	__free_pages(virt_to_page(svm->msrpm), MSRPM_ALLOC_ORDER);
+-	__free_page(virt_to_page(svm->nested.hsave));
+-	__free_pages(virt_to_page(svm->nested.msrpm), MSRPM_ALLOC_ORDER);
+ }
+ 
+ static void svm_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
+@@ -3964,6 +3968,9 @@ static int svm_pre_leave_smm(struct kvm_vcpu *vcpu, const char *smstate)
+ 					 gpa_to_gfn(vmcb12_gpa), &map) == -EINVAL)
+ 				return 1;
+ 
++			if (svm_allocate_nested(svm))
++				return 1;
++
+ 			ret = enter_svm_guest_mode(svm, vmcb12_gpa, map.hva);
+ 			kvm_vcpu_unmap(&svm->vcpu, &map, true);
+ 		}
 diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index 45496775f0db2..1e1842de0efe7 100644
+index 1e1842de0efe7..10453abc5bed3 100644
 --- a/arch/x86/kvm/svm/svm.h
 +++ b/arch/x86/kvm/svm/svm.h
-@@ -338,7 +338,7 @@ static inline bool gif_set(struct vcpu_svm *svm)
- #define MSR_INVALID				0xffffffffU
+@@ -96,6 +96,8 @@ struct svm_nested_state {
+ 
+ 	/* cache for control fields of the guest */
+ 	struct vmcb_control_area ctl;
++
++	bool initialized;
+ };
+ 
+ struct vcpu_svm {
+@@ -339,6 +341,8 @@ static inline bool gif_set(struct vcpu_svm *svm)
  
  u32 svm_msrpm_offset(u32 msr);
--void svm_set_efer(struct kvm_vcpu *vcpu, u64 efer);
-+int svm_set_efer(struct kvm_vcpu *vcpu, u64 efer);
+ int svm_set_efer(struct kvm_vcpu *vcpu, u64 efer);
++u32 *svm_vcpu_init_msrpm(void);
++void svm_vcpu_free_msrpm(u32 *msrpm);
  void svm_set_cr0(struct kvm_vcpu *vcpu, unsigned long cr0);
  int svm_set_cr4(struct kvm_vcpu *vcpu, unsigned long cr4);
  void svm_flush_tlb(struct kvm_vcpu *vcpu);
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 6f9a0c6d5dc59..7f7451ff80ffc 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -2835,13 +2835,14 @@ static void enter_rmode(struct kvm_vcpu *vcpu)
- 	kvm_mmu_reset_context(vcpu);
- }
- 
--void vmx_set_efer(struct kvm_vcpu *vcpu, u64 efer)
-+int vmx_set_efer(struct kvm_vcpu *vcpu, u64 efer)
- {
- 	struct vcpu_vmx *vmx = to_vmx(vcpu);
- 	struct shared_msr_entry *msr = find_msr_entry(vmx, MSR_EFER);
- 
-+	/* Nothing to do if hardware doesn't support EFER. */
- 	if (!msr)
--		return;
-+		return 0;
- 
- 	vcpu->arch.efer = efer;
- 	if (efer & EFER_LMA) {
-@@ -2853,6 +2854,7 @@ void vmx_set_efer(struct kvm_vcpu *vcpu, u64 efer)
- 		msr->data = efer & ~EFER_LME;
- 	}
- 	setup_msrs(vmx);
-+	return 0;
- }
- 
- #ifdef CONFIG_X86_64
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index e4b07be450d4e..df53baa0059fe 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -1456,6 +1456,7 @@ static int set_efer(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- {
- 	u64 old_efer = vcpu->arch.efer;
- 	u64 efer = msr_info->data;
-+	int r;
- 
- 	if (efer & efer_reserved_bits)
- 		return 1;
-@@ -1472,7 +1473,12 @@ static int set_efer(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 	efer &= ~EFER_LMA;
- 	efer |= vcpu->arch.efer & EFER_LMA;
- 
--	kvm_x86_ops.set_efer(vcpu, efer);
-+	r = kvm_x86_ops.set_efer(vcpu, efer);
-+
-+	if (r) {
-+		WARN_ON(r > 0);
-+		return r;
-+	}
- 
- 	/* Update reserved bits */
- 	if ((efer ^ old_efer) & EFER_NX)
+@@ -379,6 +383,8 @@ static inline bool nested_exit_on_nmi(struct vcpu_svm *svm)
+ int enter_svm_guest_mode(struct vcpu_svm *svm, u64 vmcb_gpa,
+ 			 struct vmcb *nested_vmcb);
+ void svm_leave_nested(struct vcpu_svm *svm);
++void svm_free_nested(struct vcpu_svm *svm);
++int svm_allocate_nested(struct vcpu_svm *svm);
+ int nested_svm_vmrun(struct vcpu_svm *svm);
+ void nested_svm_vmloadsave(struct vmcb *from_vmcb, struct vmcb *to_vmcb);
+ int nested_svm_vmexit(struct vcpu_svm *svm);
 -- 
 2.26.2
 
