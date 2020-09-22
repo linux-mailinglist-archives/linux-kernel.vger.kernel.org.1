@@ -2,139 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37ED1274B7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:49:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 947ED274B82
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726672AbgIVVtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 17:49:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726563AbgIVVtR (ORCPT
+        id S1726715AbgIVVt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 17:49:29 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:38329 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726563AbgIVVt3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 17:49:17 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11CDDC0613D2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 14:49:17 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id a22so15376335ljp.13
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 14:49:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YyT3Cqj49TWLOGm0xlbDdLx8xJJ2VmHIBnxNCQNfr+8=;
-        b=ijq884l+tRHc9b5yBCIKcy0PdJF9gVxr67m+oS3g/jGEcajKNEV+yzDDuII6GBXNA2
-         kdmrCv0CNxj4TwKLPpuE9QxdokL09sjjdjxsLfRMvhTRLfkMTcYYuq0QdpLHPT+0tm/B
-         AI0vaXE5w7flwhZc+x5QTFyrPzzrBNhgmfCTdKI/asZTclqF/e1EtDJQ3GvMNCTxpjeI
-         aBIclP8F1DROshY06R/q7EmeHDclZkhTf0t2dYsrxMW6gPdtbA5am/V5BmWVj6W0D/VW
-         3wa7SpX0jOzn7Zx3nea0GzfsrHnvZgdjjdzKvbm/Fq0pGEtXuANpkFRd1BuNiYq4lCoj
-         Hgbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YyT3Cqj49TWLOGm0xlbDdLx8xJJ2VmHIBnxNCQNfr+8=;
-        b=qBFKIyurAy8ApTJOyJPIB8laOwKkepq2h7jAJ8ZNLp72DkiiT1MaXjLmtYA5nfmbco
-         2L8EQ4/Lm4f42pCKYBAgfpre2W85lpPHqwSAHtFnPoTLuADhVu8dQbPvJQiFU02Vh+An
-         4ZbO7ydgYEiV7tQ7nyAGhlpbzRZaT9GQG6gJHbmq4oCXeNx9qNohd/UnlOf1mfy27e21
-         8Fb0OTq4Ea/02UWhJh/mfGp/W9sT7OL5uuOK57NkJVNRnls/noNyk9pgjP1qoihxzPuz
-         GybuNwI8C9G2QKKGLSH2XOyLMADWd5OxPprtBJRK/mFbucKKIU/2vEM41U0CR7XgOMnw
-         BIdw==
-X-Gm-Message-State: AOAM5315YTFLvTX2dTouZ79Th4m7w8fb9lUKQdD+afKZeTiNxO5WCGzK
-        h8vDeNcbEdDk8oURPiWENXPDQXPibjV1vg==
-X-Google-Smtp-Source: ABdhPJx8yNE+u6mtpmZmCr8b6V1cSsLYwrxMiPnor/XnMrQIT/t+7IrzJ2/xbJK1Rufl7QO60iXY5Q==
-X-Received: by 2002:a2e:86d3:: with SMTP id n19mr2304219ljj.368.1600811354955;
-        Tue, 22 Sep 2020 14:49:14 -0700 (PDT)
-Received: from [192.168.1.211] ([188.162.64.186])
-        by smtp.gmail.com with ESMTPSA id w30sm664526lfn.102.2020.09.22.14.49.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Sep 2020 14:49:14 -0700 (PDT)
-Subject: Re: [PATCH 3/4] clk: qcom: Add support to LPASS AUDIO_CC Glitch Free
- Mux clocks
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        sboyd@kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     bjorn.andersson@linaro.org, mturquette@baylibre.com,
-        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200917132850.7730-1-srinivas.kandagatla@linaro.org>
- <20200917132850.7730-4-srinivas.kandagatla@linaro.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <fd524c82-592c-fa41-f9bb-8693b68e4caf@linaro.org>
-Date:   Wed, 23 Sep 2020 00:49:12 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        Tue, 22 Sep 2020 17:49:29 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 6544C5C006C;
+        Tue, 22 Sep 2020 17:49:28 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Tue, 22 Sep 2020 17:49:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        oregontracks.org; h=from:to:cc:subject:date:message-id
+        :mime-version:content-transfer-encoding; s=fm1; bh=60ObtFMRbOqSH
+        +jpltMHZEFuEG9irVX3w3dTkwyG97g=; b=BM0LsxjTDUQHhXibNNn5smtgebdRD
+        ylXJ6DeqJ3E1iznqU7XnxD14IpMCSELoVLJabC6f0yIslrCBKWkRwrU+TUaiMCEq
+        e+PjphFwoPwFxeX4v+3Ee3/32nwGQgAGe/Vtn/vdvEZDwbglf5Y9ZFEmyQTaT8HE
+        jWRIJU7uqmDKy7E0qg9mFzlKLbx+aGLdZ003CYltRAgLlvjtKO0+dRzAr48q5APC
+        aYZeb0ldnTP+4mNnHFuZVlS196nDbv+WVhW1gOqNLnF5UQwv8ZsB01Z8RLq3I0bE
+        8NrfZB0cL3q9ZxNvWoj9E+yHtoaF/OJKcDLexvyQ6eVk1rcm2003XicKA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=60ObtFMRbOqSH+jpl
+        tMHZEFuEG9irVX3w3dTkwyG97g=; b=bOYuflQ1nWHb4fNfHHMI7swDPXajgX1dY
+        ihW4CCERtwUHqMqSu5eGTW6tNvpJ4WPvQsxjtrW1lCo0E22TwAU42eYPe1flbJVe
+        Jt/Nf3EgUZtw+5MRhdVKI8+WIFvHL/YnMvaycu2w6vAUcW+Y5Lf+9ZX1ZUysiNCG
+        tVsZQYQPCamr/ODWJiqLmoUqano8GookbrSxm3uo08/aq+RnuShLLN4s2oB9zV/P
+        h1l14yliwG6fPD1sgk0BR7vDxulvsUJiGRtae6yfpkJGD64/j1GGDsliWH7q5oku
+        zRoiAPMWn/r3x4B7L7748hAzNjXZYnDMjtwWUzavEN2QNFZvaPVLw==
+X-ME-Sender: <xms:aHFqX4ryTXH0Ycqildsf1KOPecaPDD5DSvFyqcUEsDe-PN-7dBTDWQ>
+    <xme:aHFqX-pcRtHKtOWICCPVzXdhlhf4VwJUArCFVHNeB3UbRQ2nVbvtbg3TKElpTSXOo
+    V64btHwUsg0TvHF>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudehgddtudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
+    dtnecuhfhrohhmpefuvggrnhcuggcumfgvlhhlvgihuceoshgvrghnvhhkrdguvghvseho
+    rhgvghhonhhtrhgrtghkshdrohhrgheqnecuggftrfgrthhtvghrnhepffeltdeuiefhhe
+    elhfegfeehjeevgfetvefhfeehfffhueduvdduffefkeetiedunecukfhppedvgedrvddt
+    rddugeekrdegleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+    hrohhmpehsvggrnhhvkhdruggvvhesohhrvghgohhnthhrrggtkhhsrdhorhhg
+X-ME-Proxy: <xmx:aHFqX9MjiN2B37zaPD0HdACXV0aCoOXYOXzdsFDrgdTxFtj2xFAAiw>
+    <xmx:aHFqX_4-jugSxtTmiFK8-1UWo6XeKS4EiR3lZQv6RKlBAe-w_nrXSg>
+    <xmx:aHFqX37KlGMayYzKMVq3dBGMqEiRctkEgglr3j7E8hcJhVVI6M8peg>
+    <xmx:aHFqX0sOpbKRTqBbHt_4o5ag9E98LKuIUzxjAH5B-P624H6t0O3FlQ>
+Received: from arch-ashland-svkelley.hsd1.or.comcast.net (c-24-20-148-49.hsd1.or.comcast.net [24.20.148.49])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 968843280060;
+        Tue, 22 Sep 2020 17:49:26 -0400 (EDT)
+From:   Sean V Kelley <seanvk.dev@oregontracks.org>
+To:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
+        rafael.j.wysocki@intel.com, ashok.raj@intel.com,
+        tony.luck@intel.com, sathyanarayanan.kuppuswamy@intel.com,
+        qiuxu.zhuo@intel.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v6 01/10] PCI/RCEC: Add RCEC class code and extended capability
+Date:   Tue, 22 Sep 2020 14:49:23 -0700
+Message-Id: <20200922214923.109905-1-seanvk.dev@oregontracks.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20200917132850.7730-4-srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/09/2020 16:28, Srinivas Kandagatla wrote:
-> GFM Muxes in AUDIO_CC control clocks to LPASS WSA and RX Codec Macros.
-> This patch adds support to these muxes.
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->   drivers/clk/qcom/Kconfig            |   7 +
->   drivers/clk/qcom/Makefile           |   1 +
->   drivers/clk/qcom/lpass-gfm-sm8250.c | 235 ++++++++++++++++++++++++++++
->   3 files changed, 243 insertions(+)
->   create mode 100644 drivers/clk/qcom/lpass-gfm-sm8250.c
-> 
-> diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
-> index 2eda63b7c46c..4e46fd339e62 100644
-> --- a/drivers/clk/qcom/Kconfig
-> +++ b/drivers/clk/qcom/Kconfig
-> @@ -494,4 +494,11 @@ config KRAITCC
->   	  Support for the Krait CPU clocks on Qualcomm devices.
->   	  Say Y if you want to support CPU frequency scaling.
->   
-> +config CLK_GFM_LPASS_SM8250
-> +	tristate "GFM LPASS Clocks"
+From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
 
-Since this driver can be built as module, few things are missing (see 
-below).
+A PCIe Root Complex Event Collector(RCEC) has the base class 0x08,
+sub-class 0x07, and programming interface 0x00. Add the class code
+0x0807 to identify RCEC devices and add the defines for the RCEC
+Endpoint Association Extended Capability.
 
-> +	depends on SND_SOC_QDSP6_COMMON
-> +	help
-> +	  Support for the GFM Glitch Free Mux LPASS clock. Say Y
-> +	  if you want to support GFM Clocks on LPASS for SM8250 SoC.
-> +
+See PCI Express Base Specification, version 5.0-1, section "1.3.4
+Root Complex Event Collector" and section "7.9.10 Root Complex
+Event Collector Endpoint Association Extended Capability"
 
-[skipped]
+Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+---
+ include/linux/pci_ids.h       | 1 +
+ include/uapi/linux/pci_regs.h | 7 +++++++
+ 2 files changed, 8 insertions(+)
 
-> +
-> +static const struct of_device_id lpass_gfm_clk_match_table[] = {
-> +	{
-> +		.compatible = "qcom,sm8250-lpass-audiocc",
-> +		.data = &audiocc_data,
-> +	},
-> +	{ }
-> +};
-
-MODULE_DEVICE_TABLE(of, lpass_gfm_clk_match_table);
-
-> +
-> +static struct platform_driver lpass_gfm_clk_driver = {
-> +	.probe		= lpass_gfm_clk_driver_probe,
-> +	.driver		= {
-> +		.name	= "lpass-gfm-clk",
-> +		.of_match_table = lpass_gfm_clk_match_table,
-> +	},
-> +};
-> +builtin_platform_driver(lpass_gfm_clk_driver);
-
-
-Wouldn't you like to use module_platform_driver() here, like other LPASS 
-CC drivers do?
-
-Also MODULE_LICENSE is missing.
-
-
+diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+index 1ab1e24bcbce..d8156a5dbee8 100644
+--- a/include/linux/pci_ids.h
++++ b/include/linux/pci_ids.h
+@@ -81,6 +81,7 @@
+ #define PCI_CLASS_SYSTEM_RTC		0x0803
+ #define PCI_CLASS_SYSTEM_PCI_HOTPLUG	0x0804
+ #define PCI_CLASS_SYSTEM_SDHCI		0x0805
++#define PCI_CLASS_SYSTEM_RCEC		0x0807
+ #define PCI_CLASS_SYSTEM_OTHER		0x0880
+ 
+ #define PCI_BASE_CLASS_INPUT		0x09
+diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
+index f9701410d3b5..f335f65f65d6 100644
+--- a/include/uapi/linux/pci_regs.h
++++ b/include/uapi/linux/pci_regs.h
+@@ -828,6 +828,13 @@
+ #define  PCI_PWR_CAP_BUDGET(x)	((x) & 1)	/* Included in system budget */
+ #define PCI_EXT_CAP_PWR_SIZEOF	16
+ 
++/* Root Complex Event Collector Endpoint Association  */
++#define PCI_RCEC_RCIEP_BITMAP	4	/* Associated Bitmap for RCiEPs */
++#define PCI_RCEC_BUSN		8	/* RCEC Associated Bus Numbers */
++#define  PCI_RCEC_BUSN_REG_VER	0x02	/* Least capability version that BUSN present */
++#define  PCI_RCEC_BUSN_NEXT(x)	(((x) >> 8) & 0xff)
++#define  PCI_RCEC_BUSN_LAST(x)	(((x) >> 16) & 0xff)
++
+ /* Vendor-Specific (VSEC, PCI_EXT_CAP_ID_VNDR) */
+ #define PCI_VNDR_HEADER		4	/* Vendor-Specific Header */
+ #define  PCI_VNDR_HEADER_ID(x)	((x) & 0xffff)
 -- 
-With best wishes
-Dmitry
+2.28.0
+
