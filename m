@@ -2,75 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD8DE273F88
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 12:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 756FA273F8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 12:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726513AbgIVKX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 06:23:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56362 "EHLO
+        id S1726518AbgIVKYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 06:24:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726419AbgIVKX4 (ORCPT
+        with ESMTP id S1726514AbgIVKYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 06:23:56 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE69C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 03:23:55 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id u8so17433942lff.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 03:23:55 -0700 (PDT)
+        Tue, 22 Sep 2020 06:24:48 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC4FBC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 03:24:47 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id k25so13684597ljk.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 03:24:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tFsyWx5+F5ciEqS9MPpeKvxqjYLpGGKF1xhv4oNr2Bk=;
-        b=tRTv1EYWaO1Kbjh0reygUy+9B34CYAO66hakY6V6zrGqMG5Gue0xe2HAH5QGk8Lc5Z
-         7Qde0YpSp+9nmP+oruQr2hP8OgUceiMnMhAbpT6PX18my6LaXI8e6jjxvl/9fp/Dz7h3
-         QFr53cYOtMGh4CVt52CXasnQyOAW6X7d/4SlwwwK2JLHHm4LroKUBU+iMDnzBpw4cLKk
-         XBD8c8qEZVpl9ng2jnCWo2qrCqJuBP/5kJr6skWbEGw01KxI/XnxTz0HVVECKtPQ4HB2
-         iPtzocFIyypgeRDUP6/ve/q04tGIWutWd27y6zEfOkWXb292ozbFHRuqGYtLD4M0GXq6
-         vgow==
+         :cc:content-transfer-encoding;
+        bh=g5wJkgiy/5FUVTvT1Ox6eVPIWc3NhBDnEL+aZwGUv7Y=;
+        b=ZtgOaPqmXy1A+Gbcwyx2WDHIh7QWWMV6+7AyiGVfXG59CKMLwIW2QZN4PY2kq21Tza
+         H/X+ct31ngIt+7wS3O7ROOUvcaUpup8Dbv+Ly1LggaWmUnBzAqLyYATz2WbmFpkmDrXm
+         AMPTCfrdy03wZTWDdlin2/sp+zqfx0M6mqn28RqJ0HBH7rVGFbcCSyFQ++I3f+wfehPY
+         52GRZKGV27KnUlbl9VCEdzjFVC8ApeVroVdRtAm9vN8YD9MQPMd1Vgii+dxp/L3CRb1K
+         Z4w4OlZeGH4w6ZbCl6wnq9J76mbtLsbIyGD/DGC9SxxJFiYUYVf0zRrb09OdoNwYEM2e
+         I+lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tFsyWx5+F5ciEqS9MPpeKvxqjYLpGGKF1xhv4oNr2Bk=;
-        b=L1RV8ykhBN97FtjpdhgAWsxk8+gDBXbigM/tDThhJ43ERt+p9/76oAgu6ksB3IjnoW
-         1McTwpcBwYQp3Blsy3Rw4xvExi1a69yfUxXa/Bh3eFxJSgUZRg7FwT1G45t07FMV5sPI
-         nda/OXdxdqobHkcGPdIkSjWvZUJovp9loSEu5tSeXRH1js9gpaJDmjR0cFJHhOpPPyIx
-         gTFSImHcaIBT5+eXhyY3gJ8pq4F+DpwAmHU3BAnNWOMyFP5NcSS2d+PnmqkKsPjst8EH
-         O+yJVMcEiMw00Ga1Ct5+/HkKU13+USJJcncXImsFP5Ba/c67olb9POo60/F+FYXUwbXU
-         w1yw==
-X-Gm-Message-State: AOAM532Lj9pO0YRWESburGxK0JzSRA09BSdI+8NJ7jo9VC2VDzqPqBQh
-        /2W4YXmg+Xj5rsp5lhBMVZsE/BwyFv76kqIj5gc=
-X-Google-Smtp-Source: ABdhPJw7CGbRjeQ83rDXtxYKKoDVQp5nfUL1VgAAiodHk/W0yyowjdENUdRQex2n/PGSdkWj9ZkPN2gGt2TQ2r7CvvI=
-X-Received: by 2002:a19:7e8d:: with SMTP id z135mr1527752lfc.158.1600770234227;
- Tue, 22 Sep 2020 03:23:54 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=g5wJkgiy/5FUVTvT1Ox6eVPIWc3NhBDnEL+aZwGUv7Y=;
+        b=R5YuOti3i0o3zTtIuUZx1RVzxxmZ02OlPmq/VLprIfAlONpnPq4wp1SSelaeQj9hfC
+         uOck52uvBy95UKjUCEuTYmtksHEvtSolDK49y07kxt7eucanH8CESq3+ZGb/K+GSztrP
+         vzWXKQtV6XxXFZ2elaRpwc1ndyNqu+9o2YwXkwhBUvUOGRzKyt+Je743bxZNPk5FXCZP
+         Llr1swRFGx1DcKhlHyOEFgQZ002hRMVYNl5NaejT1ilKYBBrCRHNCyn44HKUjuWRbFNQ
+         eGqCgN3SZF6nSBJ31Rt5Ow2/GagzhIp+1+phU5Gk9ld5mPPJyZAXVJv69dV2/KCSIXYU
+         e1+A==
+X-Gm-Message-State: AOAM533PtEKMR+G5OPuB6BTVfdATwuf7NSnvEZrJmNpmf2Nu+0l9Ivrl
+        UuJ4F41sjfFUHOKECxh2jKrjnwciIeSJsDyWfqCuxg==
+X-Google-Smtp-Source: ABdhPJxXgZA7Wz+QbkdSrznteFqsjG1l1yak8212eYOgy3YfDUn51qAkpOY4//6idh0NbD3pHLC0kbbYv+E8XlP7zWI=
+X-Received: by 2002:a05:651c:1203:: with SMTP id i3mr1217853lja.382.1600770286046;
+ Tue, 22 Sep 2020 03:24:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20191016082430.5955-1-poeschel@lemonage.de> <20200921144645.2061313-1-poeschel@lemonage.de>
-In-Reply-To: <20200921144645.2061313-1-poeschel@lemonage.de>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Tue, 22 Sep 2020 12:23:43 +0200
-Message-ID: <CANiq72mzgWRkstnGKNt7qwGowK3qSLKQa0jUQLAACELFvTgSxA@mail.gmail.com>
-Subject: Re: [PATCH v2 00/33] Make charlcd device independent
-To:     Lars Poeschel <poeschel@lemonage.de>
-Cc:     Willy Tarreau <willy@haproxy.com>,
-        Ksenija Stanojevic <ksenija.stanojevic@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20200921080255.15505-1-zangchunxin@bytedance.com>
+ <20200921081200.GE12990@dhcp22.suse.cz> <CALOAHbDKvT58UFjxy770VDxO0VWABRYb7GVwgw+NiJp62mB06w@mail.gmail.com>
+ <20200921110505.GH12990@dhcp22.suse.cz> <CAKRVAeN5U6S78jF1n8nCs5ioAdqvVn5f6GGTAnA93g_J0daOLw@mail.gmail.com>
+ <20200922095136.GA9682@chrisdown.name>
+In-Reply-To: <20200922095136.GA9682@chrisdown.name>
+From:   Chunxin Zang <zangchunxin@bytedance.com>
+Date:   Tue, 22 Sep 2020 18:24:35 +0800
+Message-ID: <CAKRVAePisoOg8QBz11gPqzEoUdwPiJ-9Z9MyFE2LHzR-r+PseQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm/memcontrol: Add the drop_cache
+ interface for cgroup v2
+To:     Chris Down <chris@chrisdown.name>
+Cc:     Michal Hocko <mhocko@suse.com>, Yafang Shao <laoar.shao@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, lizefan@huawei.com,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kafai@fb.com,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        andriin@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
+        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lars,
-
-On Mon, Sep 21, 2020 at 4:47 PM <poeschel@lemonage.de> wrote:
+On Tue, Sep 22, 2020 at 5:51 PM Chris Down <chris@chrisdown.name> wrote:
 >
-> This tries to make charlcd device independent.
+> Chunxin Zang writes:
+> >My usecase is that there are two types of services in one server. They
+> >have difference
+> >priorities. Type_A has the highest priority, we need to ensure it's
+> >schedule latency=E3=80=81I/O
+> >latency=E3=80=81memory enough. Type_B has the lowest priority, we expect=
+ it
+> >will not affect
+> >Type_A when executed.
+> >So Type_A could use memory without any limit. Type_B could use memory
+> >only when the
+> >memory is absolutely sufficient. But we cannot estimate how much
+> >memory Type_B should
+> >use. Because everything is dynamic. So we can't set Type_B's memory.high=
+.
+> >
+> >So we want to release the memory of Type_B when global memory is
+> >insufficient in order
+> >to ensure the quality of service of Type_A . In the past, we used the
+> >'force_empty' interface
+> >of cgroup v1.
+>
+> This sounds like a perfect use case for memory.low on Type_A, and it's pr=
+etty
+> much exactly what we invented it for. What's the problem with that?
 
-Thanks a lot for the series!
+But we cannot estimate how much memory Type_A uses at least.
+For example:
+total memory: 100G
+At the beginning, Type_A was in an idle state, and it only used 10G of memo=
+ry.
+The load is very low. We want to run Type_B to avoid wasting machine resour=
+ces.
+When Type_B runs for a while, it used 80G of memory.
+At this time Type_A is busy, it needs more memory.
 
-> [1] https://marc.info/?l=linux-kernel&m=157121432124507
-
-Nit: please use lore.kernel.org and the Link: tag instead.
-
-Cheers,
-Miguel
+Usually we will reclaim the memory of B first for Type_A . If not
+enough, we will
+kill Type_B.
