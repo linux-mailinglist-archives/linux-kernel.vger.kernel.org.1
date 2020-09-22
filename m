@@ -2,199 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 441C4274636
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B140D274638
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:09:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726673AbgIVQIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 12:08:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53112 "EHLO
+        id S1726752AbgIVQJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 12:09:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726340AbgIVQIm (ORCPT
+        with ESMTP id S1726340AbgIVQJB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 12:08:42 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC680C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 09:08:41 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id z9so3930418wmk.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 09:08:41 -0700 (PDT)
+        Tue, 22 Sep 2020 12:09:01 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD73C061755;
+        Tue, 22 Sep 2020 09:09:00 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id t13so17803917ile.9;
+        Tue, 22 Sep 2020 09:09:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=hkiycIgTIsBMOxXZar9zmMtd4RLKrrfIfW7nlrOS99c=;
-        b=VOh3+idyRCxyJXafN87dNSNGIsWog31qzjnjGuVQVtvZILfIABEcEEJhTxC9vghfTN
-         dSeiUWAv1itlQkd8eeHUF6+y9/EHDAIfph+jtLJmarclB0CRu8BQJ4wtcmojAwkczm1v
-         foI93yIHMlgieitiSesCMsWu6lYzl2XfBq9dXwCxuVfFhaKvbJZNUuG4ddrG7AbRjBSO
-         NhMwNVkDn3f2grzqetEhGmnFpIoQ9nIdCqYtgiT3VrdaOzxX2R24bjIK4PMFeYlgnoDz
-         kyFNqDjgBrthDZQtdkKL6OkhABr2A4irmree1bA/Z/tq0t1LADblX5kHJ2sJd9D+CZT/
-         554A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hwXGfCymxH2zVikO+qlmm8on7Y6r8A57p3kCLV35zAM=;
+        b=YMdZjI6aRmlwNHKDw6UCHWzH7x3HYoq5GQe4gFed956vb8XSraydYbPhSj0PZPAIvB
+         JOUcJ1gFYB+JoQCCNrjUniwSu65qJXaKdPMUUYKgq6yOUJ3OrhKy/4hcMioiDMe7xZPn
+         jm7uOnRIy0fq6LLD0tv+TMwaJ+ICs6EZc4kZiZrIbeEA6dJDpTZngxEb1QB8AF6fWnLo
+         /oBNn0t3k3qa7XybnQKrLaYCQrVLOlIRya5PALNKyuaEEQ9EwOc2LkGUZv87oGcSuNYc
+         TYaefZI/e+/r0bx/nWfi/Dh/4kQ51OGqBMAYYbzNn72/56U9lAvJfT6gkQYCN4TUMm4u
+         uNGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=hkiycIgTIsBMOxXZar9zmMtd4RLKrrfIfW7nlrOS99c=;
-        b=fvtWk3ed++WVvNMx7jRQ1Ja88kr1UtITO/lWlDg3WUVyRHDSbZOqYpeEXYdUE6tCyC
-         6hNJaX5au1LKBlMtVHg8hFzsJM0Kb3AJGJLW92M8n9E+BhhHNZ9Z0k+9SU2svg7b64oB
-         kFPUWcm1TO+CrmtyROBkBRISOSFNi1LHjPXJu2sH/QMbFqZ7wZwwd4FuRA6k2MOUmtkz
-         IewzRhNKdGcohFMAN4puiZC8gTjIIwwrWB+OR+4c6myJCBThjQfy2zg+iQ2bnb237sHo
-         XytVe8QR763XQBOjSsH5R1OfWfouQr7V30ShyJqbtqjQLC8wwmVG+YOe7znQOxH3SBTL
-         wM/Q==
-X-Gm-Message-State: AOAM533Q4ohqC0j86YWbtKX7wGx3kfpKCuDIMmRqCVw9xf1szn34guqo
-        U6NlKGIh3A33BH7H4iS7pNarJvYrfiU=
-X-Google-Smtp-Source: ABdhPJzEmHIrd32RCKeRMn12nes5n70gv7swSlj5sRP+z2lq0U1IJpgzv5K7lQV8/UNQeSWjJtQTSQ==
-X-Received: by 2002:a1c:ed01:: with SMTP id l1mr1930811wmh.152.1600790920239;
-        Tue, 22 Sep 2020 09:08:40 -0700 (PDT)
-Received: from ogabbay-VM.habana-labs.com ([213.57.90.10])
-        by smtp.gmail.com with ESMTPSA id l18sm27104914wrp.84.2020.09.22.09.08.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 22 Sep 2020 09:08:39 -0700 (PDT)
-Date:   Tue, 22 Sep 2020 19:08:37 +0300
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [git pull] habanalabs pull request for kernel 5.10-rc1
-Message-ID: <20200922160837.GA6025@ogabbay-VM.habana-labs.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hwXGfCymxH2zVikO+qlmm8on7Y6r8A57p3kCLV35zAM=;
+        b=YQlmyjQwnhX4ZKNWnan4oHYWViJsnoe7DTZ+Enb0dVw5vrM6ltCvYVIwXrdBRiMygZ
+         o4kpp8cYLnOaPHeCxJUEAff6Bq1hwvfACOjaoxJMtqf1+MY327yiPgl/QjHqmvbaKWyc
+         y5HFsgB9VGeu+MRVaCDRBADm99X9mwnnhMTR4HLNV46VvIJM1axZydRYFTtneaYt+awj
+         fbzQoKeNJ94XE80C6SUONFF5VHQjdKYCJM1YUbZga5a0tmpnr7x2OU7Fu+S5OgTdXxTf
+         nSFXcmEoe6o/oclwPQhVYOQEWVmd7YeEqFUzbViHwQh6nHkxUeH8LY4oy7uWvVNtW9cq
+         +WRA==
+X-Gm-Message-State: AOAM531Ulr7fuvGH9xX4Z9+KdT3KuCzoCJz9wfh/DKvs6z0pgzSJ8yNE
+        uKj1mQer/4Ls6PHsqir/3NqMIxwxaArXVGgkv9M=
+X-Google-Smtp-Source: ABdhPJwLeH3+K7rHShl3z2pHPlp6AyytciGqjpHU+JNBIrM+cMYdYDdgmZGV72mrsomKfqm095lIaxkVl+S+kQN4J7U=
+X-Received: by 2002:a92:8b41:: with SMTP id i62mr5152407ild.9.1600790940086;
+ Tue, 22 Sep 2020 09:09:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200911163403.79505-1-balsini@android.com> <20200911163403.79505-2-balsini@android.com>
+ <CAOQ4uxiWK5dNMkrriApMVZQi6apmnMijcCw5j4fa2thHFdnFcw@mail.gmail.com>
+ <20200918163354.GB3385065@google.com> <CAOQ4uxhNddkdZ5TCdg6Gdb9oYqNVUrpk25kGYxZNe-LDsZV_Ag@mail.gmail.com>
+ <20200922121508.GB600068@google.com>
+In-Reply-To: <20200922121508.GB600068@google.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Tue, 22 Sep 2020 19:08:48 +0300
+Message-ID: <CAOQ4uxjFjpbVBQ6zAhtVfjB=+_T48m1c-cdA-Qr+O=2=6YmW3w@mail.gmail.com>
+Subject: Re: [PATCH V8 1/3] fuse: Definitions and ioctl() for passthrough
+To:     Alessio Balsini <balsini@android.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Akilesh Kailash <akailash@google.com>,
+        David Anderson <dvander@google.com>,
+        Eric Yan <eric.yan@oneplus.com>, Jann Horn <jannh@google.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Martijn Coenen <maco@android.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Lawrence <paullawrence@google.com>,
+        Stefano Duo <stefanoduo@google.com>,
+        Zimuzo Ezeozue <zezeozue@google.com>,
+        fuse-devel <fuse-devel@lists.sourceforge.net>,
+        kernel-team <kernel-team@android.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Greg,
+On Tue, Sep 22, 2020 at 3:15 PM Alessio Balsini <balsini@android.com> wrote:
+>
+> On Fri, Sep 18, 2020 at 10:59:16PM +0300, Amir Goldstein wrote:
+> > On Fri, Sep 18, 2020 at 7:33 PM Alessio Balsini <balsini@android.com> wrote:
+> > [...]
+> > > > ... for example:
+> > > >
+> > > >        if (fs_stack_depth && passthrough_sb->s_type == fuse_fs_type) {
+> > > >                pr_err("FUSE: stacked passthrough file\n");
+> > > >                goto out;
+> > > >        }
+> > > >
+> > > > But maybe we want to ban passthrough to any lower FUSE at least for start.
+> > >
+> > >
+> > > Yes, what I proposed here is very conservative, and your solution sounds
+> > > good to me. Unfortunately I don't have a clear idea of what could go wrong
+> > > if we relax this constraint. I need some guidance from you experts here.
+> > >
+> >
+> > I guess the main concern would be locking order and deadlocks.
+> > With my suggestion I think deadlocks are avoided and I am less sure
+> > but think that lockdep should not have false positives either.
+> >
+> > If people do need the 1-level stacking, I can try to think harder
+> > if it is safe and maybe add some more compromise limitations.
+> >
+> > > What do you think if we keep this overly strict rule for now to avoid
+> > > unintended behaviors and come back as we find affected use case?
+> > >
+> >
+> > I can live with that if other designated users don't mind the limitation.
+> >
+> > I happen to be developing a passthrough FUSE fs [1] myself and
+> > I also happen to be using it to pass through to overlayfs.
+> > OTOH, the workloads for my use case are mostly large sequential IO,
+> > and the hardware can handle the few extra syscalls, so the passthrough
+> > fd feature is not urgent for my use case at this point in time.
+>
+>
+> This is something that only happens if the FUSE daemon opens a connection
+> wanting FUSE_PASSTHROUGH, so shouldn't affect existing use cases. Or am I
+> wrong?
 
-This is habanalabs pull request for the merge window of kernel 5.10. It
-contains many small improvements to common and GAUDI code. Details are in
-the tag.
+I meant, if I would have expected a significant performance improvement
+from FUSE_PASSTHROUGH in my use case, I would have wanted to use it
+and then passthrough to overlayfs would have mattered to me more.
 
-Thanks,
-Oded
+> If some users find this limitation to be an issue, we can rethink/relax
+> this policy in the future... Switching to something like the solution you
+> proposed does not break the current behavior, so we would be able to change
+> this with minimal effort.
+>
 
-The following changes since commit 8fd0e2a6df262539eaa28b0a2364cca10d1dc662:
+True.
 
-  uio: free uio id after uio file node is freed (2020-09-17 18:52:03 +0200)
+>
+> >
+> >
+> > >
+> > > >
+> > > > > +       ret = -EEXIST;
+> > > >
+> > > > Why EEXIST? Why not EINVAL?
+> > > >
+> > >
+> > >
+> > > Reaching the stacking limit sounded like an error caused by the undesired
+> > > existence of something, thus EEXIST sounded like a good fit.
+> > > No problem in changing that to EINVAL.
+> > >
+> > >
+> > >
+> > > > > +       if (fs_stack_depth > FILESYSTEM_MAX_STACK_DEPTH) {
+> > > > > +               pr_err("FUSE: maximum fs stacking depth exceeded for passthrough\n");
+> > > > > +               goto out;
+> > > > > +       }
+> > > > > +
+> > > > > +       req->args->passthrough_filp = passthrough_filp;
+> > > > > +       return 0;
+> > > > > +out:
+> > > > > +       fput(passthrough_filp);
+> > > > > +       return ret;
+> > > > > +}
+> > > > > +
+> > > >
+> > > > And speaking of overlayfs, I believe you may be able to test your code with
+> > > > fuse-overlayfs (passthrough to upper files).
+> > > >
+> > ...
+> > >
+> > > This is indeed a project with several common elements to what we are doing
+> > > in Android,
+> >
+> > Are you in liberty to share more information about the Android project?
+> > Is it related to Incremental FS [2]?
+> >
+> > Thanks,
+> > Amir.
+> >
+> > [1] https://github.com/amir73il/libfuse/commits/cachegwfs
+> > [2] https://lore.kernel.org/linux-fsdevel/20190502040331.81196-1-ezemtsov@google.com/
+>
+> Thanks for the pointer to cachegwfs, I'm glad I'm seeing more and more
+> passthrough file systems in addition to our use case in Android.
+>
 
-are available in the Git repository at:
+I am hearing about a lot of these projects.
+I think that FUSE_PASSTHROUGH is a very useful feature.
+I have an intention to explore passthrough to directory fd for
+directory modifications. I sure hope you will beat me to it ;-)
 
-  git://people.freedesktop.org/~gabbayo/linux tags/misc-habanalabs-next-2020-09-22
+> I'm not directly involved in the Incremental FS project, but, as far as I
+> remember, only for the first PoC was actually developed as a FUSE file
+> system. Because of the overhead introduced by the user space round-trips,
+> that design was left behind and the whole Incremental FS infrastructure
+> switched to becoming a kernel module.
+> In general, the FUSE passthrough patch set proposed in this series wouldn't
+> be helpful for that use case because, for example, Incremental FS requires
+> live (de)compression of data, that can only be performed by the FUSE
+> daemon.
+>
 
-for you to fetch changes up to f279e5cd95058ddbb8f86e1c32f25d36502a115c:
+Ext4 supports inline encryption. Btrfs supports encrypted/compressed extents.
+No reason for FUSE not to support the same.
+Is it trivial? No.
+Is it an excuse for not using FUSE and writing a new userspace fs. Not
+in my option.
 
-  habanalabs: update scratchpad register map (2020-09-22 18:49:54 +0300)
+> The specific use case I'm trying to improve with this FUSE passthrough
+> series is instead related to the scoped storage feature that we introduced
+> in Android 11, that is based on FUSE, and affects those folders that are
+> shared among all the Apps (e.g., DCIM, Downloads, etc). More details here:
+>
 
-----------------------------------------------------------------
-This tag contains the following changes for kernel 5.10-rc1:
+sdcard fs has had a lot of reincarnations :-)
 
-- Stop using the DRM's dma-fence module and instead use kernel completions.
-- Support PCIe AER
-- Use dma_mmap_coherent for memory allocated using dma_alloc_coherent
-- Use smallest possible alignment when allocating virtual addresses in our
-  MMU driver.
-- Refactor MMU driver code to be device-oriented
-- Allow user to check CS status without any sleep
-- Add an option to map a Command Buffer to the Device's MMU
-- Expose sync manager resource allocation to user through INFO IOCTL
-- Convert code to use standard BIT(), GENMASK() and FIELD_PREP()
-- Many small fixes (casting, better error messages, remove unused
-  defines, h/w configuration fixes, etc.)
+I for one am happy with the return to FUSE.
+Instead of saying "FUSE is too slow" and implementing a kernel sdcardfs,
+improve FUSE to be faster for everyone - that's the way to go ;-)
 
-----------------------------------------------------------------
-Dotan Barak (1):
-      habanalabs: print the queue id in case of an error
+> https://developer.android.com/about/versions/11/privacy/storage
+>
+> With FUSE we now have a flexible way to specify more fine-grained
+> permissions (e.g., specify if an App is allowed to access files depenind on
+> their type), create private App folders, maintain legacy paths for old
+> Apps, manipulate pieces of files at run-time, etc. Forgive me if I forgot
+> something. :)
+> These extra operations may slower the file system access comprared to a
+> native, direct access, but if:
+> - the file being accessed requires special treatment before being passed to
+>   the requesting App, then further tests will be performed at every
+>   read/write operation (with some optimizations). This overhead is of
+>   course annoying, but is something we are happy to pay because is
+>   beneficial to the user (i.e., improves privacy and security).
+> - Instead, if at open time a file is recognized as safe to access and does
+>   not require any further enforcement from the FUSE daemon, there's no need
+>   to pay for future read/write operations overheads, that wouldn't do
+>   anything more than just copying data (possibly with the help of
+>   splicing). In this case the FUSE passthrough feature proposed in this
+>   series can be enabled to reduce this overhead.
+>
+> Moreover, some Apps use big files that contain all their resources, then
+> access these files at random offsets, not taking advantage of read-ahead
+> cache. The same happens for files containing databases.
+> In addition, our specific use case involves a FUSE daemon is probably
+> heavier than the average passthrough file system (for example those that
+> are in libfuse/examples), so reducing user space round trips thanks to the
+> patchset proposed here gives a strong improvement.
+>
+> Anyway, only showing the improvements in our extreme use case would have
+> brought a limited case for upstreaming, and that is why the benchmarks I
+> ran (presented in the cover letter), are based on the vanilla
+> passthrough_hp daemon managing kind of standard storage workloads, and
+> still show evident performance improvements.
+> Running and sharing benchmarks on Android is also tricky because at the
+> time of first submission the most recent public real device was running a
+> 4.14 kernel, so that would have been maybe nice to see, but not that
+> interesting... :)
+>
+> I hope I answered all your questions, please let me know if I missed
+> something and feel free to ask for more details!
+>
 
-Hillf Danton (1):
-      habanalabs: make use of dma_mmap_coherent
-
-Moti Haimovski (4):
-      habanalabs: rename mmu.c to mmu_v1.c
-      habanalabs: refactor MMU as device-oriented
-      habanalabs: add num_hops to hl_mmu_properties
-      habanalabs: add debugfs support for MMU with 6 HOPs
-
-Oded Gabbay (28):
-      habanalabs: increase length of ASIC name
-      habanalabs: change CB's ID to be 64 bits
-      habanalabs: cast int to u32 before printing it with %u
-      habanalabs: eliminate redundant else condition
-      habanalabs: use standard BIT() and GENMASK()
-      habanalabs: use FIELD_PREP() instead of <<
-      habanalabs: remove redundant assignment to variable
-      habanalabs: check TPC vector pipe is empty
-      habanalabs: use 1U when shifting bits
-      habanalabs: update GAUDI hardware specs
-      habanalabs: replace armcp with the generic cpucp
-      habanalabs: cast to u64 before shift > 31 bits
-      habanalabs: restructure hl_mmap
-      habanalabs: clear vm_pgoff before doing the mmap
-      habanalabs: count dropped CS because max CS in-flight
-      habanalabs: rename ArmCP to CPU-CP
-      habanalabs: remove unused ASIC function pointer
-      habanalabs: remove unused define
-      habanalabs: increase PQ COMP_OFFSET by one nibble
-      habanalabs: check flag before reset because of f/w event
-      habanalabs/gaudi: increase timeout for boot fit load
-      habanalabs: allow to wait on CS without sleep
-      habanalabs: no need for DMA_SHARED_BUFFER
-      habanalabs: update firmware interface file
-      habanalabs/gaudi: remove axi drain support
-      habanalabs/gaudi: fix DMA completions max outstanding to 15
-      habanalabs: add indication of security-enabled F/W
-      habanalabs: update scratchpad register map
-
-Ofir Bitton (5):
-      habanalabs: Replace dma-fence mechanism with completions
-      habanalabs: add information about PCIe controller
-      habanalabs: expose sync manager resources allocation in INFO IOCTL
-      habanalabs: PCIe Advanced Error Reporting support
-      habanalabs: Fix alignment issue in cpucp_info structure
-
-Omer Shpigelman (1):
-      habanalabs: use smallest possible alignment for virtual addresses
-
-Tomer Tayar (3):
-      habanalabs: Include linux/bitfield.h only in habanalabs.h
-      habanalabs: Save context in a command buffer object
-      habanalabs: Add an option to map CB to device MMU
-
-farah kassabri (3):
-      habanalabs: remove security from ARB_MST_QUIET register
-      habanalabs: extend busy engines mask to 64 bits
-      habanalabs: add support for getting device total energy
-
- Documentation/ABI/testing/sysfs-driver-habanalabs  |    18 +-
- drivers/misc/habanalabs/Kconfig                    |     1 -
- drivers/misc/habanalabs/common/Makefile            |     4 +-
- drivers/misc/habanalabs/common/command_buffer.c    |   229 +-
- .../misc/habanalabs/common/command_submission.c    |   107 +-
- drivers/misc/habanalabs/common/context.c           |    25 +-
- drivers/misc/habanalabs/common/debugfs.c           |    92 +-
- drivers/misc/habanalabs/common/device.c            |    18 +-
- drivers/misc/habanalabs/common/firmware_if.c       |   229 +-
- drivers/misc/habanalabs/common/habanalabs.h        |   200 +-
- drivers/misc/habanalabs/common/habanalabs_drv.c    |    76 +-
- drivers/misc/habanalabs/common/habanalabs_ioctl.c  |   105 +-
- drivers/misc/habanalabs/common/hw_queue.c          |    10 +-
- drivers/misc/habanalabs/common/hwmon.c             |    60 +-
- drivers/misc/habanalabs/common/irq.c               |     2 +-
- drivers/misc/habanalabs/common/memory.c            |    86 +-
- drivers/misc/habanalabs/common/mmu.c               |   812 +-
- drivers/misc/habanalabs/common/mmu_v1.c            |   863 ++
- drivers/misc/habanalabs/common/pci.c               |    17 +-
- drivers/misc/habanalabs/common/sysfs.c             |    60 +-
- drivers/misc/habanalabs/gaudi/gaudi.c              |   192 +-
- drivers/misc/habanalabs/gaudi/gaudiP.h             |    52 +-
- drivers/misc/habanalabs/gaudi/gaudi_security.c     | 12351 +++++++++----------
- drivers/misc/habanalabs/goya/goya.c                |    89 +-
- drivers/misc/habanalabs/goya/goyaP.h               |     2 +-
- .../include/common/{armcp_if.h => cpucp_if.h}      |   298 +-
- drivers/misc/habanalabs/include/common/qman_if.h   |     2 +-
- drivers/misc/habanalabs/include/gaudi/gaudi.h      |     2 +
- .../misc/habanalabs/include/gaudi/gaudi_masks.h    |   273 +-
- .../misc/habanalabs/include/gaudi/gaudi_reg_map.h  |     1 +
- .../misc/habanalabs/include/goya/goya_reg_map.h    |     1 +
- .../habanalabs/include/hw_ip/mmu/mmu_general.h     |     2 +
- include/uapi/misc/habanalabs.h                     |    87 +-
- 33 files changed, 8662 insertions(+), 7704 deletions(-)
- create mode 100644 drivers/misc/habanalabs/common/mmu_v1.c
- rename drivers/misc/habanalabs/include/common/{armcp_if.h => cpucp_if.h} (60%)
+Thanks for sharing the details,
+Amir.
