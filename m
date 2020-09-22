@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E968274293
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 15:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17BBF274294
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 15:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726620AbgIVNEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 09:04:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21840 "EHLO
+        id S1726631AbgIVNEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 09:04:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53719 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726573AbgIVNEt (ORCPT
+        by vger.kernel.org with ESMTP id S1726609AbgIVNEw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 09:04:49 -0400
+        Tue, 22 Sep 2020 09:04:52 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600779888;
+        s=mimecast20190719; t=1600779891;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=XxM7MKaJ1BALXcudF9CtnaYMkyANiLbV3yHmtLh8dWE=;
-        b=VS9u8WxYpJkYQhYGNCDBEemNtAtovmZ8ce2cs7jHQOzOJ+y/5wqX/B0H7m1/X8WTMSBlj/
-        leFPtYdL1cjbcnrwUhM7bMf4u3HpTLsGzKhOYevD5CQDu+h1nFNLv6m6H0eS5eYxuQu5s+
-        9+HUMLv37FKZ3RUqMaozxbecFdQa/DI=
+        bh=SXXHQcFb7gymmjp65ADoyP/L0SPyAaT1S5TkZkbvSPM=;
+        b=TVwf0h1Wtexyy46tLt0HsqdEOIBV6PhlFezfDSkEuFNzNwO8UVqrYpe5/8oAJWYvqfeAUd
+        Tk0AEl4rzdIBGV0aycIz0PjjJA/LHcsipI2+Zyu1RRvZRNvfpiccHSmK3wL2g8qXKEemRp
+        ncCx3BhjG0/nl/P4qiVGXTY3OVhWURo=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-541-3KDJ0wUmNWe2zWMJkLzUrw-1; Tue, 22 Sep 2020 09:04:46 -0400
-X-MC-Unique: 3KDJ0wUmNWe2zWMJkLzUrw-1
+ us-mta-579-2lYE5RBaM_-wtTFhn3YD-Q-1; Tue, 22 Sep 2020 09:04:48 -0400
+X-MC-Unique: 2lYE5RBaM_-wtTFhn3YD-Q-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 720CD801AE3;
-        Tue, 22 Sep 2020 13:04:44 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1DA43ADC04;
+        Tue, 22 Sep 2020 13:04:47 +0000 (UTC)
 Received: from gshan.redhat.com (vpn2-54-30.bne.redhat.com [10.64.54.30])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4399273670;
-        Tue, 22 Sep 2020 13:04:42 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E7A6A73670;
+        Tue, 22 Sep 2020 13:04:44 +0000 (UTC)
 From:   Gavin Shan <gshan@redhat.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     linux-kernel@vger.kernel.org, Jonathan.Cameron@huawei.com,
         james.morse@arm.com, mark.rutland@arm.com, catalin.marinas@arm.com,
         will@kernel.org, shan.gavin@gmail.com
-Subject: [PATCH v5 01/13] firmware: arm_sdei: Remove sdei_is_err()
-Date:   Tue, 22 Sep 2020 23:04:11 +1000
-Message-Id: <20200922130423.10173-2-gshan@redhat.com>
+Subject: [PATCH v5 02/13] firmware: arm_sdei: Common block for failing path in sdei_event_create()
+Date:   Tue, 22 Sep 2020 23:04:12 +1000
+Message-Id: <20200922130423.10173-3-gshan@redhat.com>
 In-Reply-To: <20200922130423.10173-1-gshan@redhat.com>
 References: <20200922130423.10173-1-gshan@redhat.com>
 MIME-Version: 1.0
@@ -51,71 +51,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sdei_is_err() is only called by sdei_to_linux_errno(). The logic of
-checking on the error number is common to them. They can be combined
-finely.
+There are multiple calls of kfree(event) in the failing path of
+sdei_event_create() to free the SDEI event. It means we need to
+call it again when adding more code in the failing path. It's
+prone to miss doing that and introduce memory leakage.
 
-This removes sdei_is_err() and its logic is combined to the function
-sdei_to_linux_errno(). Also, the assignment of @err to zero is also
-dropped in invoke_sdei_fn() because it's always overridden afterwards.
-This shouldn't cause functional changes.
+This introduces common block for failing path in sdei_event_create()
+to resolve the issue. This shouldn't cause functional changes.
 
 Signed-off-by: Gavin Shan <gshan@redhat.com>
-Reviewed-by: James Morse <james.morse@arm.com>
 Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Acked-by: James Morse <james.morse@arm.com>
 ---
- drivers/firmware/arm_sdei.c | 26 +++-----------------------
- 1 file changed, 3 insertions(+), 23 deletions(-)
+ drivers/firmware/arm_sdei.c | 30 ++++++++++++++++--------------
+ 1 file changed, 16 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/firmware/arm_sdei.c b/drivers/firmware/arm_sdei.c
-index b4b9ce97f415..2d256b2ed4b4 100644
+index 2d256b2ed4b4..a126ab7e3490 100644
 --- a/drivers/firmware/arm_sdei.c
 +++ b/drivers/firmware/arm_sdei.c
-@@ -114,26 +114,7 @@ static int sdei_to_linux_errno(unsigned long sdei_err)
- 		return -ENOMEM;
- 	}
+@@ -190,33 +190,31 @@ static struct sdei_event *sdei_event_create(u32 event_num,
+ 	lockdep_assert_held(&sdei_events_lock);
  
--	/* Not an error value ... */
--	return sdei_err;
--}
--
--/*
-- * If x0 is any of these values, then the call failed, use sdei_to_linux_errno()
-- * to translate.
-- */
--static int sdei_is_err(struct arm_smccc_res *res)
--{
--	switch (res->a0) {
--	case SDEI_NOT_SUPPORTED:
--	case SDEI_INVALID_PARAMETERS:
--	case SDEI_DENIED:
--	case SDEI_PENDING:
--	case SDEI_OUT_OF_RESOURCE:
--		return true;
+ 	event = kzalloc(sizeof(*event), GFP_KERNEL);
+-	if (!event)
+-		return ERR_PTR(-ENOMEM);
++	if (!event) {
++		err = -ENOMEM;
++		goto fail;
++	}
+ 
+ 	INIT_LIST_HEAD(&event->list);
+ 	event->event_num = event_num;
+ 
+ 	err = sdei_api_event_get_info(event_num, SDEI_EVENT_INFO_EV_PRIORITY,
+ 				      &result);
+-	if (err) {
+-		kfree(event);
+-		return ERR_PTR(err);
 -	}
--
--	return false;
-+	return 0;
++	if (err)
++		goto fail;
+ 	event->priority = result;
+ 
+ 	err = sdei_api_event_get_info(event_num, SDEI_EVENT_INFO_EV_TYPE,
+ 				      &result);
+-	if (err) {
+-		kfree(event);
+-		return ERR_PTR(err);
+-	}
++	if (err)
++		goto fail;
+ 	event->type = result;
+ 
+ 	if (event->type == SDEI_EVENT_TYPE_SHARED) {
+ 		reg = kzalloc(sizeof(*reg), GFP_KERNEL);
+ 		if (!reg) {
+-			kfree(event);
+-			return ERR_PTR(-ENOMEM);
++			err = -ENOMEM;
++			goto fail;
+ 		}
+ 
+ 		reg->event_num = event_num;
+@@ -231,8 +229,8 @@ static struct sdei_event *sdei_event_create(u32 event_num,
+ 
+ 		regs = alloc_percpu(struct sdei_registered_event);
+ 		if (!regs) {
+-			kfree(event);
+-			return ERR_PTR(-ENOMEM);
++			err = -ENOMEM;
++			goto fail;
+ 		}
+ 
+ 		for_each_possible_cpu(cpu) {
+@@ -252,6 +250,10 @@ static struct sdei_event *sdei_event_create(u32 event_num,
+ 	spin_unlock(&sdei_list_lock);
+ 
+ 	return event;
++
++fail:
++	kfree(event);
++	return ERR_PTR(err);
  }
  
- static int invoke_sdei_fn(unsigned long function_id, unsigned long arg0,
-@@ -141,14 +122,13 @@ static int invoke_sdei_fn(unsigned long function_id, unsigned long arg0,
- 			  unsigned long arg3, unsigned long arg4,
- 			  u64 *result)
- {
--	int err = 0;
-+	int err;
- 	struct arm_smccc_res res;
- 
- 	if (sdei_firmware_call) {
- 		sdei_firmware_call(function_id, arg0, arg1, arg2, arg3, arg4,
- 				   &res);
--		if (sdei_is_err(&res))
--			err = sdei_to_linux_errno(res.a0);
-+		err = sdei_to_linux_errno(res.a0);
- 	} else {
- 		/*
- 		 * !sdei_firmware_call means we failed to probe or called
+ static void sdei_event_destroy_llocked(struct sdei_event *event)
 -- 
 2.23.0
 
