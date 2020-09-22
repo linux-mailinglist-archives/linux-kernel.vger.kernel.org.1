@@ -2,93 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7685227442D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 16:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72CC7274430
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 16:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726732AbgIVOZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 10:25:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59042 "EHLO mail.kernel.org"
+        id S1726739AbgIVO0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 10:26:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34962 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726579AbgIVOZe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 10:25:34 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D3F7E2073A;
-        Tue, 22 Sep 2020 14:25:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600784734;
-        bh=wQx7HRd1PEMCjgO+IIjRBfqRQ/i8QsVPVrEKxApVDCY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0GDOmErSh9Jgj+/3Vk7j0+x7Lp2zRADZFYttC95BZnGyB6R44l7r1m8K6t4ne0KDO
-         yjFVo7r7PwQN6hAXU6UmFCvrE4zaFqoPhnEA/Vry7VSuntc+4Ck8BYziSEF++uxYdU
-         ihnCKZgD8HyAyy8/c4aY1Fo2XZCXTbXhr7S4cf+o=
-Date:   Tue, 22 Sep 2020 10:25:32 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Michel =?iso-8859-1?Q?D=E4nzer?= <michel@daenzer.net>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-Subject: Re: [PATCH AUTOSEL 5.4 13/15] drm/amdgpu/dc: Require primary plane
- to be enabled whenever the CRTC is
-Message-ID: <20200922142532.GO2431@sasha-vm>
-References: <20200921144054.2135602-1-sashal@kernel.org>
- <20200921144054.2135602-13-sashal@kernel.org>
- <1ee666b4-f1af-a19f-e03a-fdfc00698d2f@daenzer.net>
+        id S1726507AbgIVO0A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 10:26:00 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1600784758;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=m55LpYIPz2/gLR7XJJbmS3D3fw3yA3M+76SUekukJQk=;
+        b=m0iLyt7iNT74lbvJnYoorfut2vAzNlJWmpgI3g8z8olHVRy7M4zUcJIm0uyB/KSHHY53JR
+        kRGyxfTp56noVOvVliW4GFTKSB8DG7W4jGQlFBY/tc74I14diYmS6Cok3KLioMRe1PaT9m
+        UwoTjhai2MFkTtZlUXqyNuLYslIA4BY=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 28970ACC2;
+        Tue, 22 Sep 2020 14:26:35 +0000 (UTC)
+Subject: Re: [PATCH v3 1/3] xen-blkback: add a parameter for disabling of
+ persistent grants
+To:     SeongJae Park <sjpark@amazon.com>, konrad.wilk@oracle.com,
+        roger.pau@citrix.com
+Cc:     SeongJae Park <sjpark@amazon.de>, axboe@kernel.dk,
+        aliguori@amazon.com, amit@kernel.org, mheyne@amazon.de,
+        pdurrant@amazon.co.uk, linux-block@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+References: <20200922141549.26154-1-sjpark@amazon.com>
+ <20200922141549.26154-2-sjpark@amazon.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <5d0f75f1-636e-e485-c616-bca47bd6932f@suse.com>
+Date:   Tue, 22 Sep 2020 16:25:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1ee666b4-f1af-a19f-e03a-fdfc00698d2f@daenzer.net>
+In-Reply-To: <20200922141549.26154-2-sjpark@amazon.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 04:48:05PM +0200, Michel Dänzer wrote:
->On 2020-09-21 4:40 p.m., Sasha Levin wrote:
->>From: Michel Dänzer <mdaenzer@redhat.com>
->>
->>[ Upstream commit 2f228aab21bbc74e90e267a721215ec8be51daf7 ]
->>
->>Don't check drm_crtc_state::active for this either, per its
->>documentation in include/drm/drm_crtc.h:
->>
->>  * Hence drivers must not consult @active in their various
->>  * &drm_mode_config_funcs.atomic_check callback to reject an atomic
->>  * commit.
->>
->>atomic_remove_fb disables the CRTC as needed for disabling the primary
->>plane.
->>
->>This prevents at least the following problems if the primary plane gets
->>disabled (e.g. due to destroying the FB assigned to the primary plane,
->>as happens e.g. with mutter in Wayland mode):
->>
->>* The legacy cursor ioctl returned EINVAL for a non-0 cursor FB ID
->>   (which enables the cursor plane).
->>* If the cursor plane was enabled, changing the legacy DPMS property
->>   value from off to on returned EINVAL.
->>
->>v2:
->>* Minor changes to code comment and commit log, per review feedback.
->>
->>GitLab: https://gitlab.gnome.org/GNOME/mutter/-/issues/1108
->>GitLab: https://gitlab.gnome.org/GNOME/mutter/-/issues/1165
->>GitLab: https://gitlab.gnome.org/GNOME/mutter/-/issues/1344
->>Suggested-by: Daniel Vetter <daniel.vetter@ffwll.ch>
->>Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
->>Reviewed-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
->>Signed-off-by: Michel Dänzer <mdaenzer@redhat.com>
->>Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
->>Signed-off-by: Sasha Levin <sashal@kernel.org>
->
->I'm a bit nervous about this getting backported so far back so 
->quickly. I'd prefer waiting for 5.9 final first at least.
+On 22.09.20 16:15, SeongJae Park wrote:
+> From: SeongJae Park <sjpark@amazon.de>
+> 
+> Persistent grants feature provides high scalability.  On some small
+> systems, however, it could incur data copy overheads[1] and thus it is
+> required to be disabled.  But, there is no option to disable it.  For
+> the reason, this commit adds a module parameter for disabling of the
+> feature.
+> 
+> [1] https://wiki.xen.org/wiki/Xen_4.3_Block_Protocol_Scalability
+> 
+> Signed-off-by: Anthony Liguori <aliguori@amazon.com>
+> Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> ---
+>   .../ABI/testing/sysfs-driver-xen-blkback      |  9 ++++++++
+>   drivers/block/xen-blkback/xenbus.c            | 22 ++++++++++++++-----
+>   2 files changed, 25 insertions(+), 6 deletions(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-driver-xen-blkback b/Documentation/ABI/testing/sysfs-driver-xen-blkback
+> index ecb7942ff146..ac2947b98950 100644
+> --- a/Documentation/ABI/testing/sysfs-driver-xen-blkback
+> +++ b/Documentation/ABI/testing/sysfs-driver-xen-blkback
+> @@ -35,3 +35,12 @@ Description:
+>                   controls the duration in milliseconds that blkback will not
+>                   cache any page not backed by a grant mapping.
+>                   The default is 10ms.
+> +
+> +What:           /sys/module/xen_blkback/parameters/feature_persistent
+> +Date:           September 2020
+> +KernelVersion:  5.10
+> +Contact:        SeongJae Park <sjpark@amazon.de>
+> +Description:
+> +                Whether to enable the persistent grants feature or not.  Note
+> +                that this option only takes effect on newly created backends.
+> +                The default is Y (enable).
+> diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
+> index b9aa5d1ac10b..f4c8827fa0ad 100644
+> --- a/drivers/block/xen-blkback/xenbus.c
+> +++ b/drivers/block/xen-blkback/xenbus.c
+> @@ -474,6 +474,12 @@ static void xen_vbd_free(struct xen_vbd *vbd)
+>   	vbd->bdev = NULL;
+>   }
+>   
+> +/* Enable the persistent grants feature. */
+> +static bool feature_persistent = true;
+> +module_param(feature_persistent, bool, 0644);
+> +MODULE_PARM_DESC(feature_persistent,
+> +		"Enables the persistent grants feature");
+> +
+>   static int xen_vbd_create(struct xen_blkif *blkif, blkif_vdev_t handle,
+>   			  unsigned major, unsigned minor, int readonly,
+>   			  int cdrom)
+> @@ -519,6 +525,8 @@ static int xen_vbd_create(struct xen_blkif *blkif, blkif_vdev_t handle,
+>   	if (q && blk_queue_secure_erase(q))
+>   		vbd->discard_secure = true;
+>   
+> +	vbd->feature_gnt_persistent = feature_persistent ? 1 : 0;
 
-Will drop it for now, thanks.
+Just assign the value instead of using the ternary operator?
 
--- 
-Thanks,
-Sasha
+With that changed you can add my
+
+Reviewed-by: Juergen Gross <jgross@suse.com>
+
+
+Juergen
