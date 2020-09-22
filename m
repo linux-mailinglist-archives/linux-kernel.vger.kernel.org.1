@@ -2,119 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8161D2748DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 901F42748DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726769AbgIVTLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 15:11:21 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:41759 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726752AbgIVTLT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 15:11:19 -0400
-Received: by mail-io1-f71.google.com with SMTP id j4so13430241iob.8
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 12:11:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=lAjFh73hmiU/WBQf5ax9GK7qWeGlhNJIYvF2cOOSRUQ=;
-        b=buj46ftYpZyay2yIhQ6+oKu5k897o4GlGA+W9pZ4GMklyRY5kemRM7IH0SL5G4d+U7
-         zApKqzLRgqAqf43LVwy0K3mBkbjtxlg7HiVIBnIcP8Y+RV0WSxLpcZ33BJN+m8twPW0B
-         F/iZYxVTIS3YqeQ9Om3Yme0F6UnLnwAnyJihtn9MknhHaYPL0X0t315pIuunCYJ/pS6j
-         lFDw9L6KhfYHF6GirkXYayBjh0EuPsIOPoBAo9GVOAV6AtcWrWNleQ2dcc2Eh2RjfG9L
-         8HaX76GIUFIh10Or9aKa4AHEv1THjgNy0To+T/2iueS5f80q6nc3AAG2GC9oaOtFezoI
-         i6GA==
-X-Gm-Message-State: AOAM531s95Awd35AXTXzCHXu/4C927uX7V6jUDmi+6mmen+z+cigkFGF
-        5sRQP0bxtQ/QTMXdHTNFeLBy0ccXwtDJ4MwSxmuAV4xF9ImT
-X-Google-Smtp-Source: ABdhPJy8yniI8MFudEaNa9KgbVwMWsCfxkZEpKwbgKb//f1MXSr5YF5rRi9LeZkJA0mjo9KaWhZAE7dguw2wjioqrH7T9AZEbBtW
+        id S1726789AbgIVTLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 15:11:42 -0400
+Received: from mail-bn7nam10on2043.outbound.protection.outlook.com ([40.107.92.43]:30497
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726686AbgIVTLm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 15:11:42 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Fvv5pD5nnnpW05xHbQ6ktouPfPDBmjtTXftKb0LZuJXAdziyftc4grty8fLG+HCQqxfry+QRAN7nnkewE469s2hVdVKh11cmTqMfQsA7ghSQqn2YUPyouYzzQz4JkYls/EYngOiNASnvI8utqjqd5f7Q7+a6Qg3CVketYugQtbBce/xoIkPB7m7/4R4fFcTDRW7ugYwV7sop9knsq1+H2iboNxqKND75wox1Klgm3/B/KEU1i8hQp41H2tUmZwz6uRCnSGZrR3y2mn9QsT9lERDWBgyDzhJPUC5zFPZerGCLEYeOLtS4duAVECs/s7nL2wx2gbFyld6IoOq7ELsNrw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f44pyRG8L/bJgLT3leUrhaOaXV7kwQkNGW+U3jpesOE=;
+ b=J6lXr4eIp0FqYiyniW1wwIYwfvq6dW4RCzbYfzc0a5fUQjuXeJDetGSrje5VNKViHKBAknKJHWUK0DadiupKi5RZp/zVPSxHtJxESeuo926SoluYyuJfuuu37arFT2ss1be1rTXeSvSKOGY6Fwu5QwOL27KhbB7v58gv12Djy+y5+/RK90OhreEo8aaV0T4gNF5KYPuoDgxED09CUFQvXWw7bSrswNEjC+Jrza86fCqwjsYsrl/EVxCpEx2CagY2YxacUOFS1y3o4Y31gmOdwEAtwTspcw0a53BDqaj6uiZHP8toNyX5I9XiXdA+QlWdDvKpl6kBnrzj9cZV4wXmFQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f44pyRG8L/bJgLT3leUrhaOaXV7kwQkNGW+U3jpesOE=;
+ b=KUZYBlVe+QM8nyQF9De4j/fnZRF7mny6WDFwAHUmvCwWP/Q6+4l3txyvxv4zqQIiQ+v8Rzpbss4H1L6gO3JJspGm/lT4B6RUkptkNm2NWNoQW1pf5P96M5zxgXCGTCtFVWLtWszzSG/RNEhFBrxaIBCYxb9QW7OGEo/3hhS7j8U=
+Authentication-Results: linutronix.de; dkim=none (message not signed)
+ header.d=none;linutronix.de; dmarc=none action=none header.from=amd.com;
+Received: from SN1PR12MB2560.namprd12.prod.outlook.com (2603:10b6:802:26::19)
+ by SN6PR12MB2606.namprd12.prod.outlook.com (2603:10b6:805:6e::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.19; Tue, 22 Sep
+ 2020 19:11:39 +0000
+Received: from SN1PR12MB2560.namprd12.prod.outlook.com
+ ([fe80::ccd9:728:9577:200d]) by SN1PR12MB2560.namprd12.prod.outlook.com
+ ([fe80::ccd9:728:9577:200d%4]) with mapi id 15.20.3391.026; Tue, 22 Sep 2020
+ 19:11:39 +0000
+Subject: RE: [PATCH v6 04/12] KVM: SVM: Modify intercept_exceptions to generic
+ intercepts
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "jmattson@google.com" <jmattson@google.com>,
+        "wanpengli@tencent.com" <wanpengli@tencent.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>
+References: <159985237526.11252.1516487214307300610.stgit@bmoger-ubuntu>
+ <159985250037.11252.1361972528657052410.stgit@bmoger-ubuntu>
+ <1654dd89-2f15-62b6-d3a7-53f3ec422dd0@redhat.com>
+ <20200914150627.GB6855@sjchrist-ice>
+ <e74fd79c-c3d0-5f9d-c01d-5d6f2c660927@redhat.com>
+From:   Babu Moger <babu.moger@amd.com>
+Message-ID: <408c7b65-11a5-29af-9b9f-ca8ccfcc0126@amd.com>
+Date:   Tue, 22 Sep 2020 14:11:36 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <e74fd79c-c3d0-5f9d-c01d-5d6f2c660927@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DM5PR18CA0087.namprd18.prod.outlook.com (2603:10b6:3:3::25)
+ To SN1PR12MB2560.namprd12.prod.outlook.com (2603:10b6:802:26::19)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2003:: with SMTP id y3mr4532911iod.203.1600801877916;
- Tue, 22 Sep 2020 12:11:17 -0700 (PDT)
-Date:   Tue, 22 Sep 2020 12:11:17 -0700
-In-Reply-To: <000000000000680f2905afd0649c@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004a0dd105afebbb10@google.com>
-Subject: Re: BUG: unable to handle kernel paging request in bpf_trace_run2
-From:   syzbot <syzbot+cc36fd07553c0512f5f7@syzkaller.appspotmail.com>
-To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org, mingo@redhat.com,
-        netdev@vger.kernel.org, rostedt@goodmis.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.236.31.136] (165.204.77.1) by DM5PR18CA0087.namprd18.prod.outlook.com (2603:10b6:3:3::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14 via Frontend Transport; Tue, 22 Sep 2020 19:11:37 +0000
+X-Originating-IP: [165.204.77.1]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: bd4668d5-291e-4d35-77ea-08d85f2b5514
+X-MS-TrafficTypeDiagnostic: SN6PR12MB2606:
+X-Microsoft-Antispam-PRVS: <SN6PR12MB26061CAFCC89F29A64765FC0953B0@SN6PR12MB2606.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qF7D7flmhkczvYzL9ED0iijVip8Jwwb2BTLpLxxbcSdDBTMXWFHb0bbCy16drze+6RXR0ZmHZ8qtL+kuDA63IyRn44xo/YGsrjXYilLMMP1Zk+AeOzZKdthlmyir7/lDCpyUrRZ8r4Qg0SD4rBOL56UvS5GpTg6s8wm6umcjbNS2242j3FkTxs7G2Txgnq6TiJjSbNnr2EazogMIKuXvCUb2Up8oXUJxdOq4Et9iq/kpW+aNlScvbOhM4AbJ81xNS4tgepEwSA+GEW+R5ojNY7RHHHpKhCgWGahrTSw7+rivpsog2qbfQTDXa8fcgg2TZvMchenz6NIhJ4JxTDS5tcW7nhXs/mJJlXwUOQZfrQzAgZnjqymbaYvzqwSg/wFMCWdT2gLdNBG4i9LF46wvgc4ej/LNikHLTVEu87ZV/LxEffFJoKPwiHCOHIlABBTriSfDikg0PpzbgTMA3fEFHw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN1PR12MB2560.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(366004)(136003)(396003)(66556008)(316002)(66946007)(7416002)(110136005)(8936002)(16576012)(8676002)(478600001)(4326008)(956004)(186003)(6486002)(16526019)(83380400001)(31696002)(86362001)(36756003)(54906003)(2906002)(26005)(66476007)(52116002)(2616005)(44832011)(31686004)(53546011)(5660300002)(41533002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: z0ff0G+6FeOMeC0vzfVRs5WvTvlUKimUlY/QWkhzLXeJgcDUW5wND0aWAfrjmpC6M8vu10L7V/ysLhRoQLaR5OdVtBjPHxitaUdqoDl1+YT0dZLto+Rqp6l6ay/SE5lLA5COTU0Y5ITLu7cyBBjtS29PVDKPwAOX5sMi5+ObtfLlAf9Z9qqNYh9IE14e2qlRYbkUtP5tciw32w0F+dPUYi67673HqYMeLAHivTZTu0GLiensXY8ZQk612obWGE80Wi/YyiFfKM3wXPby9UNYrLK/3qeJ/78mukzcoyfrXAK/Y47J+HZwXiet5vLafa+oEbCnlCvwEHdN+eztsMrPefg04vgVP8PkpgwNNjKu0itTSMFPKVE7dqp6hORIvXAwzgZuYD5Ga+Jd7Niu+gb1ddc6iy5igIlTr69GsTLw6qOKiNh1v7BO9VmPI2cp9A9M0YtgMI4egEsKSH04oB0qsUhs5z1LeK/z5lJr2Le3MznJyivWdmBjrgGvmSC6g/c4j8ronzevqRsg3xgiWTz+gS+3ptOiVeta7GwbCCmvNShgdRO3iyS2Q99E6wc8jOH4pYNkp0bsFEWaWjqojmur5PWwMJQpJAD6W5KueOh22Vq3Nr9rVw80nFI35/aRwoGWh1Pm9m5++my21DOZmLPm0w==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bd4668d5-291e-4d35-77ea-08d85f2b5514
+X-MS-Exchange-CrossTenant-AuthSource: SN1PR12MB2560.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2020 19:11:39.2879
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GuAAId4coCazDi2RIeHf4bt/fzM1rXl06kJmC1nWkgL67wr+p8lILutVTP1W/KIJ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2606
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
 
-HEAD commit:    12450081 libbpf: Fix native endian assumption when parsing..
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=17fedf8b900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5ac0d21536db480b
-dashboard link: https://syzkaller.appspot.com/bug?extid=cc36fd07553c0512f5f7
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1365d2c3900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16d5f08d900000
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+cc36fd07553c0512f5f7@syzkaller.appspotmail.com
+> -----Original Message-----
+> From: Paolo Bonzini <pbonzini@redhat.com>
+> Sent: Tuesday, September 22, 2020 8:39 AM
+> To: Sean Christopherson <sean.j.christopherson@intel.com>
+> Cc: Moger, Babu <Babu.Moger@amd.com>; vkuznets@redhat.com;
+> jmattson@google.com; wanpengli@tencent.com; kvm@vger.kernel.org;
+> joro@8bytes.org; x86@kernel.org; linux-kernel@vger.kernel.org;
+> mingo@redhat.com; bp@alien8.de; hpa@zytor.com; tglx@linutronix.de
+> Subject: Re: [PATCH v6 04/12] KVM: SVM: Modify intercept_exceptions to
+> generic intercepts
+> 
+> On 14/09/20 17:06, Sean Christopherson wrote:
+> >> I think these should take a vector instead, and add 64 in the functions.
+> >
+> > And "s/int bit/u32 vector" + BUILD_BUG_ON(vector > 32)?
+> 
+> Not sure if we can assume it to be constant, but WARN_ON_ONCE is good
+> enough as far as performance is concerned.  The same int->u32 +
+> WARN_ON_ONCE should be done in patch 1.
 
-BUG: unable to handle page fault for address: ffffc90000ed0030
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD aa000067 P4D aa000067 PUD aa169067 PMD a9031067 PTE 0
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 6868 Comm: syz-executor454 Not tainted 5.9.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:bpf_dispatcher_nop_func include/linux/bpf.h:586 [inline]
-RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:1887 [inline]
-RIP: 0010:bpf_trace_run2+0x12e/0x3d0 kernel/trace/bpf_trace.c:1924
-Code: f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 8e 02 00 00 48 8d 73 38 48 8d 7c 24 28 <ff> 53 30 e8 fa 03 f7 ff e8 45 c8 a4 06 31 ff 89 c3 89 c6 e8 4a 00
-RSP: 0018:ffffc900018e7e90 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffffc90000ed0000 RCX: ffffffff817f2b88
-RDX: 0000000000000000 RSI: ffffc90000ed0038 RDI: ffffc900018e7eb8
-RBP: 1ffff9200031cfd3 R08: 0000000000000000 R09: ffffffff8d0b69e7
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
-R13: ffffc900018e7f58 R14: 0000000000000000 R15: 0000000000000000
-FS:  0000000001079880(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffc90000ed0030 CR3: 000000009f63f000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- trace_sys_enter include/trace/events/syscalls.h:18 [inline]
- syscall_trace_enter kernel/entry/common.c:64 [inline]
- syscall_enter_from_user_mode+0x22c/0x290 kernel/entry/common.c:82
- do_syscall_64+0xf/0x70 arch/x86/entry/common.c:41
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x4441da
-Code: 25 18 00 00 00 00 74 01 f0 48 0f b1 3d cf f9 28 00 48 39 c2 75 da f3 c3 0f 1f 84 00 00 00 00 00 48 63 ff b8 e4 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 06 f3 c3 0f 1f 40 00 48 c7 c2 d0 ff ff ff f7
-RSP: 002b:00007ffc59deef98 EFLAGS: 00000246 ORIG_RAX: 00000000000000e4
-RAX: ffffffffffffffda RBX: 0000000000001ae1 RCX: 00000000004441da
-RDX: 0000000000000000 RSI: 00007ffc59deefa0 RDI: 0000000000000001
-RBP: 000000000000ee75 R08: 0000000000001ad4 R09: 0000000001079880
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004022f0
-R13: 0000000000402380 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
-CR2: ffffc90000ed0030
----[ end trace 7a32b71ba0e36806 ]---
-RIP: 0010:bpf_dispatcher_nop_func include/linux/bpf.h:586 [inline]
-RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:1887 [inline]
-RIP: 0010:bpf_trace_run2+0x12e/0x3d0 kernel/trace/bpf_trace.c:1924
-Code: f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 8e 02 00 00 48 8d 73 38 48 8d 7c 24 28 <ff> 53 30 e8 fa 03 f7 ff e8 45 c8 a4 06 31 ff 89 c3 89 c6 e8 4a 00
-RSP: 0018:ffffc900018e7e90 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffffc90000ed0000 RCX: ffffffff817f2b88
-RDX: 0000000000000000 RSI: ffffc90000ed0038 RDI: ffffc900018e7eb8
-RBP: 1ffff9200031cfd3 R08: 0000000000000000 R09: ffffffff8d0b69e7
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
-R13: ffffc900018e7f58 R14: 0000000000000000 R15: 0000000000000000
-FS:  0000000001079880(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffc90000ed0030 CR3: 000000009f63f000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Paolo, Ok sure. Will change "int bit" to "u32 vector". I will send a new
+patch to address this. This needs to be addressed in all these functions,
+vmcb_set_intercept, vmcb_clr_intercept, vmcb_is_intercept,
+set_exception_intercept, clr_exception_intercept, svm_set_intercept,
+svm_clr_intercept, svm_is_intercept.
+
+Also will add WARN_ON_ONCE(vector > 32); on set_exception_intercept,
+clr_exception_intercept.  Does that sound good?
+
+> 
+> Thanks for the review!
+> 
+> Paolo
 
