@@ -2,66 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3868D2742E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 15:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 248E82742EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 15:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726607AbgIVNZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 09:25:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726489AbgIVNZ3 (ORCPT
+        id S1726633AbgIVN0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 09:26:20 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:20046 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726473AbgIVN0U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 09:25:29 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19E5C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 06:25:29 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id w16so20986736oia.2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 06:25:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=MzgADEAaLqCZCtsDLm4ffnQ0XJMngefK8MXJLmFTvck=;
-        b=g0DxYfucIcGiGXOubcAR92+JlwzpN3mK5MJhW44TdJyVq+F/AUto+L/UN1JwHPIjkh
-         qYaomSnSxFLnYY9VK2onowMvIF5Y/6PRABwDqQvn5DnngdxVTMPqrSYlCe97h9cQB49/
-         G0Gw03BvXwahf5/ABKVP8g2BLpvU9/7KvO226k2nesr/9DemUIA/eUpN4zU7/xAjNAek
-         JjGztsDYWHwMbBGiDZ4abtmbTDegwj2AE6P0nT7lKIhWtVBf9LW2wkP4JtePqfoPZ2Ar
-         iHWvdT2XHe1Ja7jOz8DEp8B3ZUNdapM5SxyZNqoGUekMk38x2x2x9AvSjugaR11mMIBe
-         OJIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=MzgADEAaLqCZCtsDLm4ffnQ0XJMngefK8MXJLmFTvck=;
-        b=Lhiz7UBm5UxPBogfffMIp/yrFocaeQm3v2uC4kwYu0NHzdJksLusGWo2t7qS6gBSrs
-         rIcFw8KJjRzDQKyVyPQMhgksVMWYmlAyKli3aERacvZ+uJBrQLkk37M27XgMc8rL0bTg
-         7mxF7YTdE2FoWxiWIRkOtDzXv87TvZZldpKFxudbwQDpcNtQC/ce/qtES4OANEQaLi1M
-         ExaIWWZWUotIemm0vH/vMD55plNSaEspGf1xaJoZ9GA/G1xT0w7aDx69+aWhluZwaV2+
-         BIuRIXcX9rBKtJrGu+4fLLPV3OylOJuh92mCw8/bBIF/JiKtV835v7b1KhHCLOQeDZ6R
-         mJUA==
-X-Gm-Message-State: AOAM531r7i68Ow9DGlOgrnEp+th761Z5josVcO1hL/+7kdjKGXBKqik6
-        wDiit1OsolKjbrTTeWe78hpnebVGqxdrGhVEO9I=
-X-Google-Smtp-Source: ABdhPJzIbMX/RNHybHixTgT+xIAHSNcrTgBoHNJL7FlghbADx7xjJIdN0wAbNDufAr8YkefjGThzDfK/tYgAZY7UPc4=
-X-Received: by 2002:aca:f593:: with SMTP id t141mr2658945oih.166.1600781129004;
- Tue, 22 Sep 2020 06:25:29 -0700 (PDT)
+        Tue, 22 Sep 2020 09:26:20 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08MDMT0t017278;
+        Tue, 22 Sep 2020 09:26:19 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 33new49vcg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Sep 2020 09:26:19 -0400
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 08MDQIVZ062803
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Tue, 22 Sep 2020 09:26:18 -0400
+Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
+ ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Tue, 22 Sep 2020 09:26:18 -0400
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
+ ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Tue, 22 Sep 2020 09:26:18 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Tue, 22 Sep 2020 09:26:18 -0400
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 08MDQCon015940;
+        Tue, 22 Sep 2020 09:26:13 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <robh+dt@kernel.org>, <jic23@kernel.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v2 0/5] iio: adc: ad9467: add support for AD9434 & AD9265
+Date:   Tue, 22 Sep 2020 16:25:54 +0300
+Message-ID: <20200922132559.38456-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Received: by 2002:ac9:1a68:0:0:0:0:0 with HTTP; Tue, 22 Sep 2020 06:25:28
- -0700 (PDT)
-Reply-To: cephasagbeh1@gmail.com
-From:   Cephas Agbeh <peterokekechambers1@gmail.com>
-Date:   Tue, 22 Sep 2020 13:25:28 +0000
-Message-ID: <CACoj33UYr8_6ZjLJuXzjPkxVPQfWCL8YwMjfD-14_doS_QkBXg@mail.gmail.com>
-Subject: Important Notification
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-22_12:2020-09-21,2020-09-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ lowpriorityscore=0 mlxlogscore=999 spamscore=0 impostorscore=0
+ clxscore=1015 priorityscore=1501 mlxscore=0 adultscore=0 phishscore=0
+ suspectscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2009220104
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I am bringing this notice to your attention in respect of the death of
-a deceased client of mine that has the same surname with you and his
-fund valued at $19.9M to be paid to you.contact me at
-cephasagbeh1@gmail.com for more details.
+This is a V2 for:
+  https://lore.kernel.org/linux-iio/CA+U=DspC_W=j-eET38q1v+ytbntUXQwvUCBKx0DJ9hDGVtV-OA@mail.gmail.com/T/
 
-Yours Sincerely,
-Cephas Agbeh,
-Attorney At Law.
+It does a bit of rework/unification of the 2 chip-info constants, so
+that it's easier to add new devices 2 this driver.
+V1 only added only AD9434, but when adding AD9265, I noticed that some
+things could be a bit more unified for vref_mask & default_output_mode.
+
+Changelog v1 -> v2:
+* add AD9265 support
+* wrap axi-adc chip-info, to also define vref_mask & default_output_mode
+  in the chip-info table
+
+Alexandru Ardelean (3):
+  iio: adc: ad9467: wrap a axi-adc chip-info into a ad9467_chip_info
+    type
+  dt-bindings: iio: ad9467: add entry for for AD9434 ADC
+  dt-bindings: iio: ad9467: add entry for for AD9265 ADC
+
+Michael Hennerich (2):
+  iio: adc: ad9467: add support for AD9434 high-speed ADC
+  iio: adc: ad9467: add support for AD9265 high-speed ADC
+
+ .../bindings/iio/adc/adi,ad9467.yaml          |   2 +
+ drivers/iio/adc/ad9467.c                      | 121 +++++++++++++-----
+ 2 files changed, 90 insertions(+), 33 deletions(-)
+
+-- 
+2.17.1
+
