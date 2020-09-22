@@ -2,276 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 545682740F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 334862740F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726692AbgIVLfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 07:35:45 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:45736 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726655AbgIVLfk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 07:35:40 -0400
-Received: from Internal Mail-Server by MTLPINE1 (envelope-from ayal@mellanox.com)
-        with SMTP; 22 Sep 2020 14:35:35 +0300
-Received: from dev-l-vrt-210.mtl.labs.mlnx (dev-l-vrt-210.mtl.labs.mlnx [10.234.210.1])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 08MBZZaE014369;
-        Tue, 22 Sep 2020 14:35:35 +0300
-Received: from dev-l-vrt-210.mtl.labs.mlnx (localhost [127.0.0.1])
-        by dev-l-vrt-210.mtl.labs.mlnx (8.15.2/8.15.2/Debian-8ubuntu1) with ESMTP id 08MBZZVu009509;
-        Tue, 22 Sep 2020 14:35:35 +0300
-Received: (from ayal@localhost)
-        by dev-l-vrt-210.mtl.labs.mlnx (8.15.2/8.15.2/Submit) id 08MBZZi5009508;
-        Tue, 22 Sep 2020 14:35:35 +0300
-From:   Aya Levin <ayal@nvidia.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@nvidia.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        netdev <netdev@vger.kernel.org>
-Cc:     Moshe Shemesh <moshe@nvidia.com>,
-        Eran Ben Elisha <eranbe@nvidia.com>,
-        <linux-kernel@vger.kernel.org>, Aya Levin <ayal@mellanox.com>
-Subject: [PATCH net-next RFC v2 repost 3/3] net/mlx5e: Add devlink
-Date:   Tue, 22 Sep 2020 14:35:25 +0300
-Message-Id: <1600774525-9461-4-git-send-email-ayal@nvidia.com>
-X-Mailer: git-send-email 1.8.4.3
-In-Reply-To: <1600774525-9461-1-git-send-email-ayal@nvidia.com>
-References: <1600774525-9461-1-git-send-email-ayal@nvidia.com>
+        id S1726645AbgIVLfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 07:35:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47254 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726518AbgIVLfd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 07:35:33 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1600774530;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8xKyn37igCwVdW/X/CBmTomDtKCHpuashkMdG2jkb4c=;
+        b=NTjrurU/+zwFRQtn4hfGYg2GOko6dC0SeUB1QZtnNa696pUrSKZKZgYVa5HxMkhxO4U8oL
+        oOvogVfpTUYSvHszpbI59Xoup8VEs6dfyakD7OOTWNwduP1XAeRLB+kZMPVVcUxxN3ckj9
+        zGzn/HVDMrBuie6uMe1/nvylnsgDZLk=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6D52CAE1C;
+        Tue, 22 Sep 2020 11:36:07 +0000 (UTC)
+Subject: Re: [PATCH v2 1/3] xen-blkback: add a parameter for disabling of
+ persistent grants
+To:     SeongJae Park <sjpark@amazon.com>,
+        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>
+Cc:     konrad.wilk@oracle.com, SeongJae Park <sjpark@amazon.de>,
+        axboe@kernel.dk, aliguori@amazon.com, amit@kernel.org,
+        mheyne@amazon.de, pdurrant@amazon.co.uk,
+        linux-block@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org
+References: <20200922112638.14238-1-sjpark@amazon.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <33a8d880-d8ce-0cf7-d115-ca6938889f27@suse.com>
+Date:   Tue, 22 Sep 2020 13:35:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <20200922112638.14238-1-sjpark@amazon.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aya Levin <ayal@mellanox.com>
+On 22.09.20 13:26, SeongJae Park wrote:
+> On Tue, 22 Sep 2020 13:12:59 +0200 "Roger Pau Monné" <roger.pau@citrix.com> wrote:
+> 
+>> On Tue, Sep 22, 2020 at 12:52:07PM +0200, SeongJae Park wrote:
+>>> From: SeongJae Park <sjpark@amazon.de>
+>>>
+>>> Persistent grants feature provides high scalability.  On some small
+>>> systems, however, it could incur data copy overheads[1] and thus it is
+>>> required to be disabled.  But, there is no option to disable it.  For
+>>> the reason, this commit adds a module parameter for disabling of the
+>>> feature.
+>>>
+>>> [1] https://wiki.xen.org/wiki/Xen_4.3_Block_Protocol_Scalability
+>>>
+>>> Signed-off-by: Anthony Liguori <aliguori@amazon.com>
+>>> Signed-off-by: SeongJae Park <sjpark@amazon.de>
+>>> ---
+>>>   .../ABI/testing/sysfs-driver-xen-blkback      |  9 ++++++
+>>>   drivers/block/xen-blkback/xenbus.c            | 28 ++++++++++++++-----
+>>>   2 files changed, 30 insertions(+), 7 deletions(-)
+>>>
+>>> diff --git a/Documentation/ABI/testing/sysfs-driver-xen-blkback b/Documentation/ABI/testing/sysfs-driver-xen-blkback
+>>> index ecb7942ff146..ac2947b98950 100644
+>>> --- a/Documentation/ABI/testing/sysfs-driver-xen-blkback
+>>> +++ b/Documentation/ABI/testing/sysfs-driver-xen-blkback
+>>> @@ -35,3 +35,12 @@ Description:
+>>>                   controls the duration in milliseconds that blkback will not
+>>>                   cache any page not backed by a grant mapping.
+>>>                   The default is 10ms.
+>>> +
+>>> +What:           /sys/module/xen_blkback/parameters/feature_persistent
+>>> +Date:           September 2020
+>>> +KernelVersion:  5.10
+>>> +Contact:        SeongJae Park <sjpark@amazon.de>
+>>> +Description:
+>>> +                Whether to enable the persistent grants feature or not.  Note
+>>> +                that this option only takes effect on newly created backends.
+>>> +                The default is Y (enable).
+>>> diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
+>>> index b9aa5d1ac10b..8a95ddd08b13 100644
+>>> --- a/drivers/block/xen-blkback/xenbus.c
+>>> +++ b/drivers/block/xen-blkback/xenbus.c
+>>> @@ -879,6 +879,12 @@ static void reclaim_memory(struct xenbus_device *dev)
+>>>   
+>>>   /* ** Connection ** */
+>>>   
+>>> +/* Enable the persistent grants feature. */
+>>> +static bool feature_persistent = true;
+>>> +module_param(feature_persistent, bool, 0644);
+>>> +MODULE_PARM_DESC(feature_persistent,
+>>> +		"Enables the persistent grants feature");
+>>> +
+>>>   /*
+>>>    * Write the physical details regarding the block device to the store, and
+>>>    * switch to Connected state.
+>>> @@ -906,11 +912,15 @@ static void connect(struct backend_info *be)
+>>>   
+>>>   	xen_blkbk_barrier(xbt, be, be->blkif->vbd.flush_support);
+>>>   
+>>> -	err = xenbus_printf(xbt, dev->nodename, "feature-persistent", "%u", 1);
+>>> -	if (err) {
+>>> -		xenbus_dev_fatal(dev, err, "writing %s/feature-persistent",
+>>> -				 dev->nodename);
+>>> -		goto abort;
+>>> +	if (feature_persistent) {
+>>> +		err = xenbus_printf(xbt, dev->nodename, "feature-persistent",
+>>> +				"%u", feature_persistent);
+>>> +		if (err) {
+>>> +			xenbus_dev_fatal(dev, err,
+>>> +					"writing %s/feature-persistent",
+>>> +					dev->nodename);
+>>> +			goto abort;
+>>> +		}
+>>>   	}
+>>>   
+>>>   	err = xenbus_printf(xbt, dev->nodename, "sectors", "%llu",
+>>> @@ -1093,8 +1103,12 @@ static int connect_ring(struct backend_info *be)
+>>>   		xenbus_dev_fatal(dev, err, "unknown fe protocol %s", protocol);
+>>>   		return -ENOSYS;
+>>>   	}
+>>> -	pers_grants = xenbus_read_unsigned(dev->otherend, "feature-persistent",
+>>> -					   0);
+>>> +	if (feature_persistent)
+>>> +		pers_grants = xenbus_read_unsigned(dev->otherend,
+>>> +				"feature-persistent", 0);
+>>> +	else
+>>> +		pers_grants = 0;
+>>> +
+>>
+>> Sorry for not realizing earlier, but looking at it again I think you
+>> need to cache the value of feature_persistent when it's first used in
+>> the blkback state data, so that it's consistent.
+>>
+>> What would happen for example with the following flow (assume a
+>> persistent grants enabled frontend):
+>>
+>> feature_persistent = false
+>>
+>> connect(...)
+>> feature-persistent is not written to xenstore
+>>
+>> User changes feature_persistent = true
+>>
+>> connect_ring(...)
+>> pers_grants = true, because feature-persistent is set unconditionally
+>> by the frontend and feature_persistent variable is now true.
+>>
+>> Then blkback will try to use persistent grants and the whole
+>> connection will malfunction because the frontend won't.
+> 
+> Ah, you're right.  I should also catch this before but didn't, sorry.
+> 
+>>
+>> The other option is to prevent changing the variable when there are
+>> blkback instances already running.
+> 
+> I think storing the option value in xenstore would be simpler.  That said, if
+> you prefer this way, please let me know.
 
-Register MTU error trap to allow visibility of oversize packets. Display
-a naive use of devlink trap in devlink port context.
+No, Xenstore isn't the right place for that. This is a local
+implementation detail of blkback and shouldn't be exported to Xenstore.
 
-Signed-off-by: Aya Levin <ayal@mellanox.com>
----
-Changelog:
-v1->v2:
--Minor changes in trap's definition
--Adjustments to trap API and ops
 
- drivers/net/ethernet/mellanox/mlx5/core/Makefile   |  2 +-
- drivers/net/ethernet/mellanox/mlx5/core/en.h       |  2 +
- drivers/net/ethernet/mellanox/mlx5/core/en/traps.c | 38 +++++++++++++++++
- drivers/net/ethernet/mellanox/mlx5/core/en/traps.h | 14 +++++++
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c  | 48 ++++++++++++++++++++++
- drivers/net/ethernet/mellanox/mlx5/core/en_rx.c    | 11 ++++-
- 6 files changed, 112 insertions(+), 3 deletions(-)
- create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/traps.c
- create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/traps.h
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/Makefile b/drivers/net/ethernet/mellanox/mlx5/core/Makefile
-index 9826a041e407..32436325725c 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/Makefile
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/Makefile
-@@ -25,7 +25,7 @@ mlx5_core-$(CONFIG_MLX5_CORE_EN) += en_main.o en_common.o en_fs.o en_ethtool.o \
- 		en_tx.o en_rx.o en_dim.o en_txrx.o en/xdp.o en_stats.o \
- 		en_selftest.o en/port.o en/monitor_stats.o en/health.o \
- 		en/reporter_tx.o en/reporter_rx.o en/params.o en/xsk/pool.o \
--		en/xsk/setup.o en/xsk/rx.o en/xsk/tx.o en/devlink.o
-+		en/xsk/setup.o en/xsk/rx.o en/xsk/tx.o en/devlink.o en/traps.o
- 
- #
- # Netdev extra
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-index 0df40d24acb0..6e652a513a84 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-@@ -824,6 +824,8 @@ struct mlx5e_priv {
- 	struct mlx5e_hv_vhca_stats_agent stats_agent;
- #endif
- 	struct mlx5e_scratchpad    scratchpad;
-+	bool trap_oversize;
-+	void *trap_mtu;
- };
- 
- struct mlx5e_rx_handlers {
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/traps.c b/drivers/net/ethernet/mellanox/mlx5/core/en/traps.c
-new file mode 100644
-index 000000000000..211407666c3a
---- /dev/null
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/traps.c
-@@ -0,0 +1,38 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Mellanox Technologies.
-+#include "traps.h"
-+
-+#define MLX5E_TRAP(_id, _type, _group_id)                               \
-+	DEVLINK_TRAP_GENERIC(_type, DROP, _id,                          \
-+			     DEVLINK_TRAP_GROUP_GENERIC_ID_##_group_id, \
-+			     DEVLINK_TRAP_METADATA_TYPE_F_IN_PORT)
-+static struct devlink_trap mlx5e_traps_arr[] = {
-+	MLX5E_TRAP(MTU_ERROR, EXCEPTION, L2_DROPS),
-+};
-+
-+int mlx5e_devlink_traps_create(struct mlx5e_priv *priv)
-+{
-+	struct devlink_port *dl_port = &priv->dl_port;
-+
-+	return  devlink_port_traps_register(dl_port, mlx5e_traps_arr,
-+					   ARRAY_SIZE(mlx5e_traps_arr),
-+					   priv);
-+}
-+
-+void mlx5e_devlink_traps_destroy(struct mlx5e_priv *priv)
-+{
-+	struct devlink_port *dl_port = &priv->dl_port;
-+
-+	devlink_port_traps_unregister(dl_port, mlx5e_traps_arr,
-+				      ARRAY_SIZE(mlx5e_traps_arr));
-+}
-+
-+struct devlink_trap *mlx5e_trap_lookup(u16 id)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(mlx5e_traps_arr); i++)
-+		if (mlx5e_traps_arr[i].id == id)
-+			return &mlx5e_traps_arr[i];
-+	return NULL;
-+}
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/traps.h b/drivers/net/ethernet/mellanox/mlx5/core/en/traps.h
-new file mode 100644
-index 000000000000..7d95cd4b571c
---- /dev/null
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/traps.h
-@@ -0,0 +1,14 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* Copyright (c) 2020 Mellanox Technologies.*/
-+
-+#ifndef __MLX5E_EN_TRAPS_H
-+#define __MLX5E_EN_TRAPS_H
-+
-+#include "en.h"
-+
-+int mlx5e_devlink_traps_create(struct mlx5e_priv *priv);
-+void mlx5e_devlink_traps_destroy(struct mlx5e_priv *priv);
-+struct devlink_trap *mlx5e_trap_lookup(u16 id);
-+
-+#endif
-+
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index 472252ea67a1..81d1e6186bb8 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -64,6 +64,7 @@
- #include "en/hv_vhca_stats.h"
- #include "en/devlink.h"
- #include "lib/mlx5.h"
-+#include "en/traps.h"
- 
- bool mlx5e_check_fragmented_striding_rq_cap(struct mlx5_core_dev *mdev)
- {
-@@ -5003,6 +5004,50 @@ void mlx5e_destroy_q_counters(struct mlx5e_priv *priv)
- 	}
- }
- 
-+static int mlx5e_devlink_trap_init(struct devlink_port *devlink_port,
-+				   const struct devlink_trap *trap,
-+				   void *trap_ctx)
-+{
-+	struct mlx5e_priv *priv = (struct mlx5e_priv *)devlink_trap_ctx_priv(trap_ctx);
-+
-+	if (!mlx5e_trap_lookup(trap->id))
-+		return -EINVAL;
-+	priv->trap_oversize = false;
-+	priv->trap_mtu = trap_ctx;
-+	return 0;
-+}
-+
-+static void mlx5e_devlink_trap_fini(struct devlink_port *devlink_port,
-+				    const struct devlink_trap *trap,
-+				    void *trap_ctx)
-+{
-+	struct mlx5e_priv *priv = (struct mlx5e_priv *)devlink_trap_ctx_priv(trap_ctx);
-+
-+	if (!mlx5e_trap_lookup(trap->id))
-+		return;
-+	priv->trap_oversize = false;
-+	priv->trap_mtu = NULL;
-+}
-+
-+static int mlx5e_devlink_trap_action_set(struct devlink_port *devlink_port,
-+					 const struct devlink_trap *trap,
-+					 enum devlink_trap_action action,
-+					 struct netlink_ext_ack *extack)
-+{
-+	struct mlx5e_priv *priv = container_of(devlink_port, struct mlx5e_priv, dl_port);
-+
-+	if (!mlx5e_trap_lookup(trap->id))
-+		return -EINVAL;
-+	priv->trap_oversize = !!action;
-+	return 0;
-+}
-+
-+static const struct devlink_port_ops mlx5e_devlink_port_ops = {
-+	.trap_init		= mlx5e_devlink_trap_init,
-+	.trap_fini		= mlx5e_devlink_trap_fini,
-+	.trap_action_set	= mlx5e_devlink_trap_action_set,
-+};
-+
- static int mlx5e_nic_init(struct mlx5_core_dev *mdev,
- 			  struct net_device *netdev,
- 			  const struct mlx5e_profile *profile,
-@@ -5032,12 +5077,15 @@ static int mlx5e_nic_init(struct mlx5_core_dev *mdev,
- 	if (err)
- 		mlx5_core_err(mdev, "mlx5e_devlink_port_register failed, %d\n", err);
- 	mlx5e_health_create_reporters(priv);
-+	devlink_port_set_ops(&priv->dl_port, &mlx5e_devlink_port_ops);
-+	mlx5e_devlink_traps_create(priv);
- 
- 	return 0;
- }
- 
- static void mlx5e_nic_cleanup(struct mlx5e_priv *priv)
- {
-+	mlx5e_devlink_traps_destroy(priv);
- 	mlx5e_health_destroy_reporters(priv);
- 	mlx5e_devlink_port_unregister(priv);
- 	mlx5e_tls_cleanup(priv);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-index 85d545bb47be..ec2fd39a57d5 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-@@ -1445,6 +1445,7 @@ mlx5e_skb_from_cqe_mpwrq_linear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *wi,
- 				u16 cqe_bcnt, u32 head_offset, u32 page_idx)
- {
- 	struct mlx5e_dma_info *di = &wi->umr.dma_info[page_idx];
-+	struct mlx5e_priv *priv = rq->channel->priv;
- 	u16 rx_headroom = rq->buff.headroom;
- 	u32 cqe_bcnt32 = cqe_bcnt;
- 	struct xdp_buff xdp;
-@@ -1452,11 +1453,14 @@ mlx5e_skb_from_cqe_mpwrq_linear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *wi,
- 	void *va, *data;
- 	u32 frag_size;
- 	bool consumed;
-+	bool trap;
- 
- 	/* Check packet size. Note LRO doesn't use linear SKB */
- 	if (unlikely(cqe_bcnt > rq->hw_mtu)) {
- 		rq->stats->oversize_pkts_sw_drop++;
--		return NULL;
-+		if (!priv->trap_oversize)
-+			return NULL;
-+		trap = true;
- 	}
- 
- 	va             = page_address(di->page) + head_offset;
-@@ -1483,7 +1487,10 @@ mlx5e_skb_from_cqe_mpwrq_linear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *wi,
- 	skb = mlx5e_build_linear_skb(rq, va, frag_size, rx_headroom, cqe_bcnt32);
- 	if (unlikely(!skb))
- 		return NULL;
--
-+	if (trap) {
-+		devlink_port_trap_report(&priv->dl_port, skb, priv->trap_mtu, NULL);
-+		return NULL;
-+	}
- 	/* queue up for recycling/reuse */
- 	page_ref_inc(di->page);
- 
--- 
-2.14.1
-
+Juergen
