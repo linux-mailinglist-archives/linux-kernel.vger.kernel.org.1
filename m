@@ -2,115 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8261427455C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE81327455E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:35:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726666AbgIVPfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 11:35:01 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:57024 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726566AbgIVPfB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 11:35:01 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08MFXZ4A115377;
-        Tue, 22 Sep 2020 15:34:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=SQUZRxKbOrj7C5f6uXB0QaPDAWtQi5hHWGb3AMCGwok=;
- b=vXNxTqEaODuD+fyU1jUL8sgHm/70CoNspaljF2CVJy8YCkwoU79BXOLKh267UZHkplF8
- 8gDxgeFrbFB3MPy3LpGLNkXfd1SvSHwK+Aa1BHsHL6vvwsYit9kqi55PmIfQ5VEjTtfj
- xYG2uDen9YZs91OrBwjVJcj7oFo6Mv3iUblQ43Pm81r+jgqhZ/1Tcx8D1VYYb7+x69fb
- n+qGpLjCo2XbRGqid1wVg1IbrdOhxG/60xd/nbbzTVHN4KXX5ILRDFS7r3qd1qqYr6Ez
- qQJnMwFLIBPdG4ZIkFCq9APz0yHuY8A6pTbvyMU5RcXkzUXKRKPdNqjFklU4rSPXqE1a Hw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 33ndnudj4p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 22 Sep 2020 15:34:42 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08MFURVL072451;
-        Tue, 22 Sep 2020 15:34:41 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 33nujncaex-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 22 Sep 2020 15:34:41 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08MFYdJl019605;
-        Tue, 22 Sep 2020 15:34:39 GMT
-Received: from [10.74.86.236] (/10.74.86.236)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 22 Sep 2020 08:34:38 -0700
-Subject: Re: [PATCH 6/6] x86/xen: open code alloc_vm_area in
- arch_gnttab_valloc
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        id S1726686AbgIVPfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 11:35:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35774 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726566AbgIVPfb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 11:35:31 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1600788929;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mas1H8hGrnQpVC8euato2+uS4HKiD4shHs2BKrckZxI=;
+        b=mpQKbe36vjEVH+o3o3TbNunfUyRD6S8P40P1zCUuYU2cAePSKFb79leIXAiHFoAM8bejxp
+        KVAecwUAmYuhHHdgQzDFu2jUI4Qstor4TjmprXVOhHFdxEhm4yMwhtqT/x8Wnu/5pzs5hV
+        QNnd+mRUTmeiUNulyXIj1nu630HoELI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 166B9AEC3;
+        Tue, 22 Sep 2020 15:36:06 +0000 (UTC)
+Date:   Tue, 22 Sep 2020 17:35:28 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>, x86@kernel.org,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-mm@kvack.org
-References: <20200918163724.2511-1-hch@lst.de>
- <20200918163724.2511-7-hch@lst.de>
- <0833b9a8-5096-d105-a850-1336150eada1@oracle.com>
- <20200922145819.GA28420@lst.de>
- <ebd69ba1-fc06-3cc7-348e-3cb0004c2a34@oracle.com>
- <20200922152706.GA30633@lst.de>
-From:   boris.ostrovsky@oracle.com
-Organization: Oracle Corporation
-Message-ID: <a3daaf31-d1cd-2bf1-5b2f-aaae32baa7f6@oracle.com>
-Date:   Tue, 22 Sep 2020 11:34:35 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.2.1
+        Vlastimil Babka <vbabka@suse.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Mel Gorman <mgorman@suse.de>
+Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
+Message-ID: <20200922153528.GB12990@dhcp22.suse.cz>
+References: <20200918194817.48921-1-urezki@gmail.com>
+ <20200918194817.48921-3-urezki@gmail.com>
+ <20200921074716.GC12990@dhcp22.suse.cz>
+ <20200921154558.GD29330@paulmck-ThinkPad-P72>
+ <20200921160318.GO12990@dhcp22.suse.cz>
+ <20200921194819.GA24236@pc636>
+ <20200922075002.GU12990@dhcp22.suse.cz>
+ <20200922131257.GA29241@pc636>
 MIME-Version: 1.0
-In-Reply-To: <20200922152706.GA30633@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9752 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0
- mlxlogscore=999 phishscore=0 adultscore=0 spamscore=0 suspectscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009220121
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9752 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- lowpriorityscore=0 phishscore=0 adultscore=0 suspectscore=0 bulkscore=0
- clxscore=1015 impostorscore=0 mlxlogscore=999 mlxscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009220121
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922131257.GA29241@pc636>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue 22-09-20 15:12:57, Uladzislau Rezki wrote:
+[...]
+> > Mimicing a similar implementation shouldn't be all that hard
+> > and you will get your own pool which doesn't affect other page allocator
+> > users as much as a bonus.
+> > 
+> I see your point Michal. As i mentioned before, it is important to avoid of
+> having such own pools, because the aim is not to waste memory resources. A
+> page will be returned back to "page allocator" as soon as a scheduler place  
+> our reclaim thread on a CPU and grace period is passed. So, the resource
+> can be used for other needs. What is important.
+> 
+> Otherwise a memory footprint is increased what is bad for low memory
+> conditions when OOM is involved. Just in case, it is a big issue for
+> mobile devices.
 
-On 9/22/20 11:27 AM, Christoph Hellwig wrote:
-> On Tue, Sep 22, 2020 at 11:24:20AM -0400, boris.ostrovsky@oracle.com wrote:
->> On 9/22/20 10:58 AM, Christoph Hellwig wrote:
->>> On Mon, Sep 21, 2020 at 04:44:10PM -0400, boris.ostrovsky@oracle.com wrote:
->>>> This will end up incrementing area->ptes pointer. So perhaps something like
->>>>
->>>>
->>>> pte_t **ptes = area->ptes;
->>>>
->>>> if (apply_to_page_range(&init_mm, (unsigned long)area->area->addr,
->>>>                         PAGE_SIZE * nr_frames, gnttab_apply, &ptes)) {
->>>>
->>>>        ...
->>> Yeah.  What do you think of this version? 
->>
->> Oh yes, this is way better. This now can actually be read without trying to mentally unwind triple pointers. (You probably want to initialize idx to zero before calling apply_to_page_range(), I am not sure it's guaranteed to be zero).
-> Both instances are static variables, thus in .bss and initialized.
-> So unless you insist I don't think we need a manual one.
+Really, how much memory are we talking about here? Do you have any
+estimation? How many pointers do you need to store at once? 10k (that
+would be 20 pages per cpu? Doesn't sound too big to me. But again I do
+not know the scale here. Also if you really care you can fine tune this
+pool based on demand. All that is not a rocket science and it can be
+tuned outside of the page allocator rather than other way around.
 
+We will not move forward without any specific numbers here I am afraid.
 
-Yes, you are right. (I thought perhaps this code could be called more than once but no, it can't).
+[...]
 
+> > Would a similar scaling as the page allocator feasible. Really I mostly
+> > do care about shared nature of the pcp allocator list that one user can
+> > easily monopolize with this API.
+> > 
+> I see your concern. pcplist can be monopolized by already existing API:
+> 
+>     while (i < 100)
+>         __get_free_page(GFP_NOWAIT | __GFP_NOWARN);
 
--boris
+They will usually not, because even non-sleeping allocations will refill
+them unless the memory is scarce and memory reclaim is needed. As
+replied to Paul in other email, this is not a question of correctness.
+It is a matter of shifting the overhead around.
 
+> > > Single-argument details is here: https://lkml.org/lkml/2020/4/28/1626
+> > 
+> > Error 501
+> > 
+> Could you please elaborate? Do not want to speculate :)
+
+It thrown 501 on me. lkml.org is quite unreliable. It works now. I will
+read through that. Please use lore or lkml.kernel.org/r/$msg in future.
+
+-- 
+Michal Hocko
+SUSE Labs
