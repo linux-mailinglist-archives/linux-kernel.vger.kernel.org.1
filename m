@@ -2,130 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DBDF274C0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:25:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90AED274C14
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:29:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726757AbgIVWZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 18:25:06 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:36423 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726608AbgIVWZF (ORCPT
+        id S1726629AbgIVW26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 18:28:58 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:34404 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726448AbgIVW26 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 18:25:05 -0400
-Received: by mail-il1-f193.google.com with SMTP id t12so18895958ilh.3;
-        Tue, 22 Sep 2020 15:25:04 -0700 (PDT)
+        Tue, 22 Sep 2020 18:28:58 -0400
+Received: by mail-ot1-f68.google.com with SMTP id h17so17171679otr.1;
+        Tue, 22 Sep 2020 15:28:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bvurKRN2DDvC1Hgvp7WYCV624aS6APp8mw0PAo4N1WU=;
-        b=awhXKVxfBIitxslqQ3igb8vO7AZvDUAZPqoR/KqAqdnRFDQZKbhq5V8iWwIt5IaES1
-         zBaxrgwwEZb6pYuegZ709nD2XeD7U2ZXGlRUYUw5sh7U+sFgnBSjXI260c281RzfW4n1
-         97zvWcjVRr+yyAK0HLEVsRR3twAkvYraZ8Jmv4GX1rm8LAFLd7pVL1vrn/wdsX06HM7B
-         LNtl3LfK2Cl/5jn7Y1nSOfN5nX63T3I/ro+rPfhgFCZXVWqjy/V4OcFkBZ6d64kktB6Z
-         Zk+I4M2u/VRoszHTla8W6oPvcHVtX5Ff2giGP1x7PlnMTKPx3txfchhJI7f8XnYLnvcc
-         dSdQ==
-X-Gm-Message-State: AOAM533aFopA3nY2z4MY/0ZZ/JT1zkLPt3WTi47uB/2k48TlpEIJzi+y
-        IMt4mngS7QWwoEcT6ICERA==
-X-Google-Smtp-Source: ABdhPJxlUuCCBpD4JyTf1PVMpkz3ym+qfciLsM01eFcizDC6XpyBWcz9NAtaqjTPvL/oBLNul/hfbA==
-X-Received: by 2002:a05:6e02:e0a:: with SMTP id a10mr6491535ilk.113.1600813504600;
-        Tue, 22 Sep 2020 15:25:04 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id 64sm9991459ilv.0.2020.09.22.15.25.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 15:25:03 -0700 (PDT)
-Received: (nullmailer pid 3368435 invoked by uid 1000);
-        Tue, 22 Sep 2020 22:25:02 -0000
-Date:   Tue, 22 Sep 2020 16:25:02 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Chu Lin <linchuyuan@google.com>, jdelvare@suse.com,
-        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, qiongwang@google.com,
-        zhongqil@google.com, jasonling@google.com, belgaied@google.com
-Subject: Re: [PATCH] dt-bindings: hwmon: max20730: adding device tree doc for
- max20730
-Message-ID: <20200922222502.GA3364463@bogus>
-References: <20200910170638.1985729-1-linchuyuan@google.com>
- <6059ab76-02ff-0ab6-15bf-e34026a2f855@roeck-us.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ClEyF6YT/uBY6ngetqWoXu40MTV6oLWtuyfZ2xGB3Gk=;
+        b=gSo5YUhzXZHK3LOSgRoPxv5/BdTlotNV2XMUF3fg0IS7O8CgruSaps0gAUa+/fOZS0
+         T2/HKcr1ncI+MqBE5oUbCmYUpUm5f6nTco9TtB1Oyz6DSGyk/pu/DVvDuJGbEyPwBKdb
+         d4FTjwYABGfJ9rmmsG1Ifeosvh+oG/LT/djaAl1kmWopDmF+/Arwe1Xy67hwXm/ZPQMm
+         xeoT3dDvSYR93fxP7SdjT+azvdS1XgQuJbR+8auffX8PQpVq93MuvWc2Zvg1RuvyEPT9
+         9q2f/WBOfM0egEBc4g8FEoD2y8feBAlXcaV2LSBQiGW5L/EsLHoO0xDZPuB1NM73FJXG
+         4rOg==
+X-Gm-Message-State: AOAM533nRQuOkd+AjIKmry5VssIUZOMgnez1+ko8W6KsbVtHdCubKnia
+        CodMhgtQvC9TdnLFav5PLwBlxWEkGN+O0w==
+X-Google-Smtp-Source: ABdhPJxOebDa0AkEuG4GC5KONv1/8xhk+bRsv0R6G8ob/HoaXNS7KEsxwIEM9t1sgPma0mw9Tj6rdw==
+X-Received: by 2002:a9d:7d16:: with SMTP id v22mr4045603otn.372.1600813736694;
+        Tue, 22 Sep 2020 15:28:56 -0700 (PDT)
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com. [209.85.210.48])
+        by smtp.gmail.com with ESMTPSA id y25sm7174569oti.26.2020.09.22.15.28.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Sep 2020 15:28:56 -0700 (PDT)
+Received: by mail-ot1-f48.google.com with SMTP id n61so17134470ota.10;
+        Tue, 22 Sep 2020 15:28:55 -0700 (PDT)
+X-Received: by 2002:a05:6830:14cb:: with SMTP id t11mr4447643otq.74.1600813735429;
+ Tue, 22 Sep 2020 15:28:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6059ab76-02ff-0ab6-15bf-e34026a2f855@roeck-us.net>
+References: <20200915073213.12779-1-biwen.li@oss.nxp.com> <20200915073213.12779-2-biwen.li@oss.nxp.com>
+ <20200922030208.GY25109@dragon> <DB6PR0401MB2438ABB1DFE785F9EAADB69E8F3B0@DB6PR0401MB2438.eurprd04.prod.outlook.com>
+ <VE1PR04MB6687237BD5D137C4B9EC6DBD8F3B0@VE1PR04MB6687.eurprd04.prod.outlook.com>
+ <DB6PR0401MB243883AEA75F615A0768D03E8F3B0@DB6PR0401MB2438.eurprd04.prod.outlook.com>
+In-Reply-To: <DB6PR0401MB243883AEA75F615A0768D03E8F3B0@DB6PR0401MB2438.eurprd04.prod.outlook.com>
+From:   Li Yang <leoyang.li@nxp.com>
+Date:   Tue, 22 Sep 2020 17:28:43 -0500
+X-Gmail-Original-Message-ID: <CADRPPNSiYnj+H4_CoKKQcT2ROM32XRVHqwGYMAvuTAheTsK2pQ@mail.gmail.com>
+Message-ID: <CADRPPNSiYnj+H4_CoKKQcT2ROM32XRVHqwGYMAvuTAheTsK2pQ@mail.gmail.com>
+Subject: Re: [EXT] Re: [PATCH 2/5] arm64: dts: lx2160a-rdb: remove useless
+ property of rtc
+To:     Biwen Li <biwen.li@nxp.com>, V.Sethi@nxp.com, peter.newton@nxp.com
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        "Biwen Li (OSS)" <biwen.li@oss.nxp.com>,
+        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jiafei Pan <jiafei.pan@nxp.com>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 08:04:24PM -0700, Guenter Roeck wrote:
-> On 9/10/20 10:06 AM, Chu Lin wrote:
-> > Testing:
-> > make dt_binding_check
-> > 
-> 
-> This isn't really an appropriate patch description.
+On Mon, Sep 21, 2020 at 10:56 PM Biwen Li <biwen.li@nxp.com> wrote:
+>
+> >
+> >
+> >
+> > > -----Original Message-----
+> > > From: Biwen Li <biwen.li@nxp.com>
+> > > Sent: Monday, September 21, 2020 10:13 PM
+> > > To: Shawn Guo <shawnguo@kernel.org>; Biwen Li (OSS)
+> > > <biwen.li@oss.nxp.com>
+> > > Cc: alexandre.belloni@bootlin.com; Leo Li <leoyang.li@nxp.com>;
+> > > robh+dt@kernel.org; mark.rutland@arm.com; devicetree@vger.kernel.org;
+> > > linux-kernel@vger.kernel.org; Jiafei Pan <jiafei.pan@nxp.com>; linux-
+> > > rtc@vger.kernel.org
+> > > Subject: RE: [EXT] Re: [PATCH 2/5] arm64: dts: lx2160a-rdb: remove
+> > > useless property of rtc
+> > >
+> > > >
+> > > > Caution: EXT Email
+> > > >
+> > > > On Tue, Sep 15, 2020 at 03:32:10PM +0800, Biwen Li wrote:
+> > > > > From: Biwen Li <biwen.li@nxp.com>
+> > > > >
+> > > > > Remove useless property interrupts of rtc
+> > > > >
+> > > > > Signed-off-by: Biwen Li <biwen.li@nxp.com>
+> > > > > ---
+> > > > >  arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts | 2 --
+> > > > >  1 file changed, 2 deletions(-)
+> > > > >
+> > > > > diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
+> > > > > b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
+> > > > > index dce79018d397..e9e982176e07 100644
+> > > > > --- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
+> > > > > +++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
+> > > > > @@ -171,8 +171,6 @@
+> > > > >       rtc@51 {
+> > > > >               compatible = "nxp,pcf2129";
+> > > > >               reg = <0x51>;
+> > > > > -             // IRQ10_B
+> > > > > -             interrupts = <0 150 0x4>;
+> > > >
+> > > > If it's a correct description of hardware, I do not see why we would
+> > > > need to remove it.
+> > > Hi Shawn,
+> > >
+> > > Don't need use the interrupt, only read time from rtc.
+> >
+> > User probably will choose to use the alarm feature of the RTC and need the
+> > interrupt property.  Is there any issue when the interrupt property is present?
+> Generic interrupt controller on layerscape only support  IRQ_TYPE_LEVEL_HIGH and  IRQ_TYPE_EDGE_RISING(except SoC LS1043A, LS1046A),
+> Not support IRQ_TYPE_LEVEL_LOW,
 
-And will always pass with a .txt file...
+That is not true.  Although the GIC SPI only deals with level high and
+rising edge, there is a separate IRQCR register on LX2160 that can
+invert external interrupt.  If the current LX2160 code doesn't support
+that, we need to fix it.  Adding Varun for this.  We probably can
+extend the existing drivers/irqchip/irq-ls-extirq.c driver to support
+LX2160.
 
-> 
-> > Signed-off-by: Chu Lin <linchuyuan@google.com>
-> > ---
-> >  .../devicetree/bindings/hwmon/max20730.txt    | 23 +++++++++++++++++++
-> 
-> AFAIK this needs to be written as .yaml file.
+And btw, the interrupt number 150 is obviously wrong too.  We probably
+can remove it temporarily before the external interrupt is properly
+supported on lx2160.
 
-Yes.
-
-> 
-> Guenter
-> 
-> >  MAINTAINERS                                   |  1 +
-> >  2 files changed, 24 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/hwmon/max20730.txt
-> > 
-> > diff --git a/Documentation/devicetree/bindings/hwmon/max20730.txt b/Documentation/devicetree/bindings/hwmon/max20730.txt
-> > new file mode 100644
-> > index 000000000000..3afb42b04567
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/hwmon/max20730.txt
-> > @@ -0,0 +1,23 @@
-> > +max20730 properties
-> > +
-> > +Required properties:
-> > +- compatible: Must be one of the supported compatible strings:
-> > +	"maxim,max20730" for max20730
-> > +	"maxim,max20734" for max20734
-> > +	"maxim,max20743" for max20743
-> > +- reg: I2C address
-> > +
-> > +Optional properties:
-> > +
-> > +- vout-voltage-divider
-> > +	Resistance of the vout voltage divider.
-> > +	Two numbers, the first number is the output resistor,
-> > +	the second number is the total resistance.
-
-Is this a common property for this type of device? And what type of 
-device is it because there's no description telling me?
-
-> > +
-> > +Example:
-> > +
-> > +max20730@10 {
-> > +	compatible = "maxim,max20730";
-> > +	reg = <0x10>;
-> > +	vout-voltage-divider = <1000 2000>;
-> > +};
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 0a6ac3f00ed5..a04bf34a65b8 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -12371,6 +12371,7 @@ W:	http://www.roeck-us.net/linux/drivers/
-> >  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git
-> >  S:	Maintained
-> >  F:	Documentation/devicetree/bindings/hwmon/ibm,cffps1.txt
-> > +F:	Documentation/devicetree/bindings/hwmon/max20730.txt
-> >  F:	Documentation/devicetree/bindings/hwmon/max31785.txt
-> >  F:	Documentation/devicetree/bindings/hwmon/ltc2978.txt
-> >  F:	Documentation/hwmon/adm1275
-> > 
-> 
+> In drivers/rtc/rtc-pcf2127.c
+> ret = devm_request_threaded_irq(dev, alarm_irq, NULL,
+> pcf2127_rtc_irq,
+> IRQF_TRIGGER_LOW | IRQF_ONESHOT,
+> dev_name(dev), dev);
+>
+> >
+> > >
+> > > Best Regards,
+> > > Biwen Li
+> > > >
+> > > > Shawn
+> > > >
+> > > > >       };
+> > > > >  };
+> > > > >
+> > > > > --
+> > > > > 2.17.1
+> > > > >
