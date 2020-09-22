@@ -2,45 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F1B274292
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 15:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E968274293
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 15:04:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgIVNEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 09:04:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59324 "EHLO
+        id S1726620AbgIVNEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 09:04:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21840 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726563AbgIVNEs (ORCPT
+        by vger.kernel.org with ESMTP id S1726573AbgIVNEt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 09:04:48 -0400
+        Tue, 22 Sep 2020 09:04:49 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600779887;
+        s=mimecast20190719; t=1600779888;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=zYrq0SQgB2it8jTqnWHIu8ZhXX5avMcb4F7vxXt9Ivs=;
-        b=FwZMYk3p4r0/rsv7MHmGW3oH7qlP2baCB5JU8uwEbG2SLo6rbkf0qfzUKpep5AL4B3dVcf
-        dhEkKnwIbSX4z0qxlF977isEezKkl5ekhxsE2AOBG8TO46KgH9B3zQAbMcY0ViqJ7pGC8Y
-        UBCa2OXQYFEPulMMPqPjiiLBKuMskIM=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XxM7MKaJ1BALXcudF9CtnaYMkyANiLbV3yHmtLh8dWE=;
+        b=VS9u8WxYpJkYQhYGNCDBEemNtAtovmZ8ce2cs7jHQOzOJ+y/5wqX/B0H7m1/X8WTMSBlj/
+        leFPtYdL1cjbcnrwUhM7bMf4u3HpTLsGzKhOYevD5CQDu+h1nFNLv6m6H0eS5eYxuQu5s+
+        9+HUMLv37FKZ3RUqMaozxbecFdQa/DI=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-30-HB9WwhaZP0-4Jtgt_KGoVw-1; Tue, 22 Sep 2020 09:04:43 -0400
-X-MC-Unique: HB9WwhaZP0-4Jtgt_KGoVw-1
+ us-mta-541-3KDJ0wUmNWe2zWMJkLzUrw-1; Tue, 22 Sep 2020 09:04:46 -0400
+X-MC-Unique: 3KDJ0wUmNWe2zWMJkLzUrw-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D9938ADC00;
-        Tue, 22 Sep 2020 13:04:41 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 720CD801AE3;
+        Tue, 22 Sep 2020 13:04:44 +0000 (UTC)
 Received: from gshan.redhat.com (vpn2-54-30.bne.redhat.com [10.64.54.30])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 337CC73670;
-        Tue, 22 Sep 2020 13:04:38 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4399273670;
+        Tue, 22 Sep 2020 13:04:42 +0000 (UTC)
 From:   Gavin Shan <gshan@redhat.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     linux-kernel@vger.kernel.org, Jonathan.Cameron@huawei.com,
         james.morse@arm.com, mark.rutland@arm.com, catalin.marinas@arm.com,
         will@kernel.org, shan.gavin@gmail.com
-Subject: [PATCH v5 00/13] Refactor SDEI client driver
-Date:   Tue, 22 Sep 2020 23:04:10 +1000
-Message-Id: <20200922130423.10173-1-gshan@redhat.com>
+Subject: [PATCH v5 01/13] firmware: arm_sdei: Remove sdei_is_err()
+Date:   Tue, 22 Sep 2020 23:04:11 +1000
+Message-Id: <20200922130423.10173-2-gshan@redhat.com>
+In-Reply-To: <20200922130423.10173-1-gshan@redhat.com>
+References: <20200922130423.10173-1-gshan@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
@@ -48,74 +51,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series bases on 5.9.rc5 and extracted from (v4) series of "Refactoring
-SDEI client driver", which is prepatory work to support SDEI virtualizaton.
-This series can be checkout from github.
+sdei_is_err() is only called by sdei_to_linux_errno(). The logic of
+checking on the error number is common to them. They can be combined
+finely.
 
-   git@github.com:gwshan/linux.git (branch: "sdei_client")
+This removes sdei_is_err() and its logic is combined to the function
+sdei_to_linux_errno(). Also, the assignment of @err to zero is also
+dropped in invoke_sdei_fn() because it's always overridden afterwards.
+This shouldn't cause functional changes.
 
-Testing
-=======
-I have the SDEI virtualization code implemented as part of KVM module.
-With that, the SDEI event can be registered/unregistered/enabled/disabled.
-Also, the SDEI event can be injected from host and the guest handler runs
-properly.
+Signed-off-by: Gavin Shan <gshan@redhat.com>
+Reviewed-by: James Morse <james.morse@arm.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+---
+ drivers/firmware/arm_sdei.c | 26 +++-----------------------
+ 1 file changed, 3 insertions(+), 23 deletions(-)
 
-The code can be found from:
-
-   git@github.com:gwshan/linux.git
-   (branch: "sdei")
-
-Changelog
-=========
-v5:
-   Rebase to 5.9.rc5 and pick rbs from James                       (Gavin)
-   Improved changelog                                              (James)
-   Drop last two patches in v4 series and fold them to the series
-   of "Support SDEI virtualization"                                (James)
-   Fix use-after-free in sdei_reregister_shared()                  (James)  
-v4:
-   Rebase to last upstream kernel                                  (Gavin)
-   Use @event_el for SDEI internal event and use @event to cache
-   SDEI event if needed                                            (Jonathan)
-   Rename @se to @event for APIs                                   (Jonathan)
-v3:
-   Rebase to 5.8.rc7                                               (Gavin)
-   Pick rbs from Jonathan                                          (Gavin)
-   Correct spellings in commit logs                                (Jonathan)
-   Rename "out" to "unlock" tag                                    (Jonathan)
-   Keep the empty line in sdei_event_unregister()                  (Jonathan)
-   Drop tabs between type and field for struct sdei_crosscall_args (Jonathan)
-   Use smp_call_func_t for @fn argument in CPU callbacks           (Jonathan)
-   Split struct sdei_event into struct sdei_{internal,}_event      (Jonathan)
-   Remove last two patches and get it reviewed later               (Jonathan)
-v2:
-   Rebase to 5.8.rc6                                               (Gavin)
-   Improved changelog                                              (James/Gavin)
-   Split patches for easy review                                   (Gavin)
-   Drop changes to reorder variables                               (James)
-   Drop unnecessary (@regs removal) cleanup in sdei_event_create() (James)
-   Fix broken case for device-tree in sdei_init()                  (James)
-
-Gavin Shan (13):
-  firmware: arm_sdei: Remove sdei_is_err()
-  firmware: arm_sdei: Common block for failing path in
-    sdei_event_create()
-  firmware: arm_sdei: Retrieve event number from event instance
-  firmware: arm_sdei: Avoid nested statements in sdei_init()
-  firmware: arm_sdei: Unregister driver on error in sdei_init()
-  firmware: arm_sdei: Remove duplicate check in sdei_get_conduit()
-  firmware: arm_sdei: Remove redundant error message in sdei_probe()
-  firmware: arm_sdei: Remove while loop in sdei_event_register()
-  firmware: arm_sdei: Remove while loop in sdei_event_unregister()
-  firmware: arm_sdei: Cleanup on cross call function
-  firmware: arm_sdei: Introduce sdei_do_local_call()
-  firmware: arm_sdei: Remove _sdei_event_register()
-  firmware: arm_sdei: Remove _sdei_event_unregister()
-
- drivers/firmware/arm_sdei.c | 305 ++++++++++++++++--------------------
- 1 file changed, 136 insertions(+), 169 deletions(-)
-
+diff --git a/drivers/firmware/arm_sdei.c b/drivers/firmware/arm_sdei.c
+index b4b9ce97f415..2d256b2ed4b4 100644
+--- a/drivers/firmware/arm_sdei.c
++++ b/drivers/firmware/arm_sdei.c
+@@ -114,26 +114,7 @@ static int sdei_to_linux_errno(unsigned long sdei_err)
+ 		return -ENOMEM;
+ 	}
+ 
+-	/* Not an error value ... */
+-	return sdei_err;
+-}
+-
+-/*
+- * If x0 is any of these values, then the call failed, use sdei_to_linux_errno()
+- * to translate.
+- */
+-static int sdei_is_err(struct arm_smccc_res *res)
+-{
+-	switch (res->a0) {
+-	case SDEI_NOT_SUPPORTED:
+-	case SDEI_INVALID_PARAMETERS:
+-	case SDEI_DENIED:
+-	case SDEI_PENDING:
+-	case SDEI_OUT_OF_RESOURCE:
+-		return true;
+-	}
+-
+-	return false;
++	return 0;
+ }
+ 
+ static int invoke_sdei_fn(unsigned long function_id, unsigned long arg0,
+@@ -141,14 +122,13 @@ static int invoke_sdei_fn(unsigned long function_id, unsigned long arg0,
+ 			  unsigned long arg3, unsigned long arg4,
+ 			  u64 *result)
+ {
+-	int err = 0;
++	int err;
+ 	struct arm_smccc_res res;
+ 
+ 	if (sdei_firmware_call) {
+ 		sdei_firmware_call(function_id, arg0, arg1, arg2, arg3, arg4,
+ 				   &res);
+-		if (sdei_is_err(&res))
+-			err = sdei_to_linux_errno(res.a0);
++		err = sdei_to_linux_errno(res.a0);
+ 	} else {
+ 		/*
+ 		 * !sdei_firmware_call means we failed to probe or called
 -- 
 2.23.0
 
