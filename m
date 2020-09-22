@@ -2,140 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C52274251
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A23F8274253
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:45:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgIVMpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 08:45:25 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:10402 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726571AbgIVMpZ (ORCPT
+        id S1726688AbgIVMpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 08:45:31 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:33490 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726641AbgIVMpa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 08:45:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1600778725; x=1632314725;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   in-reply-to:content-transfer-encoding;
-  bh=4NWeS0xwxjfjyP4fYO5lNehd5ZKrflGYWnJgAJBxqGc=;
-  b=JsN94s/f5Er7SUolajdfNmQPufQPXBM3L/6NpLM9ygqipxGQWZJ5EfGM
-   9BOsU/aVcnxoWkOresjyxGLKsCO6olF0exMqrn3QELSxW2z8k950lGDeX
-   aNKHDgsZe7XaojROqCEzQAauDknp9StOsJESClPZxkZMx0muLLNVqJBLv
-   8=;
-X-IronPort-AV: E=Sophos;i="5.77,290,1596499200"; 
-   d="scan'208";a="70090946"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-119b4f96.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 22 Sep 2020 12:45:19 +0000
-Received: from EX13D31EUA004.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2a-119b4f96.us-west-2.amazon.com (Postfix) with ESMTPS id F00271A04B8;
-        Tue, 22 Sep 2020 12:45:17 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.160.183) by
- EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 22 Sep 2020 12:45:11 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     =?UTF-8?q?J=C3=BCrgen=20Gro=C3=9F?= <jgross@suse.com>
-CC:     SeongJae Park <sjpark@amazon.com>, <konrad.wilk@oracle.com>,
-        <roger.pau@citrix.com>, SeongJae Park <sjpark@amazon.de>,
-        <axboe@kernel.dk>, <aliguori@amazon.com>, <amit@kernel.org>,
-        <mheyne@amazon.de>, <pdurrant@amazon.co.uk>,
-        <linux-block@vger.kernel.org>, <xen-devel@lists.xenproject.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/3] xen-blkfront: add a parameter for disabling of persistent grants
-Date:   Tue, 22 Sep 2020 14:44:44 +0200
-Message-ID: <20200922124444.2231-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-In-Reply-To: <fdbaf955-0b92-d356-2792-21b27ea1087d@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.43.160.183]
-X-ClientProxiedBy: EX13D07UWB002.ant.amazon.com (10.43.161.131) To
- EX13D31EUA004.ant.amazon.com (10.43.165.161)
+        Tue, 22 Sep 2020 08:45:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600778727;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=+Jv1Wo3uUQSIMwzegggWKyycsTQOaza4eSXUljZNlQE=;
+        b=IPvSkLfyd+BKlmBhjnmwJ80oV/jWNTMLPTac4fVpAfJnSGUFXU0VmDpNPe74+s7k0DvpwE
+        +UfIBH2uTcFinQ69KXwfHd5ZpNIvlP6jmlTtdmKXbfyV8fudXEaRlGFfo6Ughg+AqGkQDF
+        KtbwrC3quexfbp0Bzr6VeFUGe9aGEug=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-344-URCr8RkoMr6xq3tfDwsmQA-1; Tue, 22 Sep 2020 08:45:25 -0400
+X-MC-Unique: URCr8RkoMr6xq3tfDwsmQA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6E217809ACE;
+        Tue, 22 Sep 2020 12:45:24 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.18])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B5E4B19C4F;
+        Tue, 22 Sep 2020 12:45:16 +0000 (UTC)
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>
+Cc:     Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>,
+        Richard Guy Briggs <rgb@redhat.com>
+Subject: [PATCH ghak120 V5] audit: trigger accompanying records when no rules present
+Date:   Tue, 22 Sep 2020 08:44:50 -0400
+Message-Id: <7081a5b9c7d2e8085c49cec2fa72fcbb0b25e0d7.1600778472.git.rgb@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Sep 2020 14:11:32 +0200 "Jürgen Groß" <jgross@suse.com> wrote:
+When there are no audit rules registered, mandatory records (config,
+etc.) are missing their accompanying records (syscall, proctitle, etc.).
 
-> On 22.09.20 12:52, SeongJae Park wrote:
-> > From: SeongJae Park <sjpark@amazon.de>
-> > 
-> > Persistent grants feature provides high scalability.  On some small
-> > systems, however, it could incur data copy overheads[1] and thus it is
-> > required to be disabled.  It can be disabled from blkback side using a
-> > module parameter, 'feature_persistent'.  But, it is impossible from
-> > blkfront side.  For the reason, this commit adds a blkfront module
-> > parameter for disabling of the feature.
-> > 
-> > [1] https://wiki.xen.org/wiki/Xen_4.3_Block_Protocol_Scalability
-> > 
-> > Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> > ---
-> >   .../ABI/testing/sysfs-driver-xen-blkfront     |  9 ++++++
-> >   drivers/block/xen-blkfront.c                  | 28 +++++++++++++------
-> >   2 files changed, 29 insertions(+), 8 deletions(-)
-> > 
-[...]
-> > diff --git a/drivers/block/xen-blkfront.c b/drivers/block/xen-blkfront.c
-> > index 91de2e0755ae..49c324f377de 100644
-> > --- a/drivers/block/xen-blkfront.c
-> > +++ b/drivers/block/xen-blkfront.c
-> > @@ -149,6 +149,13 @@ static unsigned int xen_blkif_max_ring_order;
-> >   module_param_named(max_ring_page_order, xen_blkif_max_ring_order, int, 0444);
-> >   MODULE_PARM_DESC(max_ring_page_order, "Maximum order of pages to be used for the shared ring");
-> >   
-> > +/* Enable the persistent grants feature. */
-> > +static bool feature_persistent = true;
-> > +module_param(feature_persistent, bool, 0644);
-> > +MODULE_PARM_DESC(feature_persistent,
-> > +		"Enables the persistent grants feature");
-> > +
-> > +
-> >   #define BLK_RING_SIZE(info)	\
-> >   	__CONST_RING_SIZE(blkif, XEN_PAGE_SIZE * (info)->nr_ring_pages)
-> >   
-> > @@ -1866,11 +1873,13 @@ static int talk_to_blkback(struct xenbus_device *dev,
-> >   		message = "writing protocol";
-> >   		goto abort_transaction;
-> >   	}
-> > -	err = xenbus_printf(xbt, dev->nodename,
-> > -			    "feature-persistent", "%u", 1);
-> > -	if (err)
-> > -		dev_warn(&dev->dev,
-> > -			 "writing persistent grants feature to xenbus");
-> > +	if (feature_persistent) {
-> > +		err = xenbus_printf(xbt, dev->nodename,
-> > +				    "feature-persistent", "%u", 1);
-> > +		if (err)
-> > +			dev_warn(&dev->dev,
-> > +				 "writing persistent grants feature to xenbus");
-> > +	}
-> >   
-> >   	err = xenbus_transaction_end(xbt, 0);
-> >   	if (err) {
-> > @@ -2316,9 +2325,12 @@ static void blkfront_gather_backend_features(struct blkfront_info *info)
-> >   	if (xenbus_read_unsigned(info->xbdev->otherend, "feature-discard", 0))
-> >   		blkfront_setup_discard(info);
-> >   
-> > -	info->feature_persistent =
-> > -		!!xenbus_read_unsigned(info->xbdev->otherend,
-> > -				       "feature-persistent", 0);
-> > +	if (feature_persistent)
-> > +		info->feature_persistent =
-> > +			!!xenbus_read_unsigned(info->xbdev->otherend,
-> > +					       "feature-persistent", 0);
-> > +	else
-> > +		info->feature_persistent = 0;
-> >   
-> >   	indirect_segments = xenbus_read_unsigned(info->xbdev->otherend,
-> >   					"feature-max-indirect-segments", 0);
-> > 
-> 
-> Here you have the same problem as in blkback: feature_persistent could
-> change its value between the two tests.
+This is due to audit context dummy set on syscall entry based on absence
+of rules that signals that no other records are to be printed.  Clear the dummy
+bit if any record is generated, open coding this in audit_log_start().
 
-Yes, indeed.  I will fix this in the next version.
+The proctitle context and dummy checks are pointless since the
+proctitle record will not be printed if no syscall records are printed.
 
+The fds array is reset to -1 after the first syscall to indicate it
+isn't valid any more, but was never set to -1 when the context was
+allocated to indicate it wasn't yet valid.
 
-Thanks,
-SeongJae Park
+Check ctx->pwd in audit_log_name().
+
+The audit_inode* functions can be called without going through
+getname_flags() or getname_kernel() that sets audit_names and cwd, so
+set the cwd in audit_alloc_name() if it has not already been done so due to
+audit_names being valid and purge all other audit_getcwd() calls.
+
+Revert the LSM dump_common_audit_data() LSM_AUDIT_DATA_* cases from the
+ghak96 patch since they are no longer necessary due to cwd coverage in
+audit_alloc_name().
+
+Thanks to bauen1 <j2468h@googlemail.com> for reporting LSM situations in
+which context->cwd is not valid, inadvertantly fixed by the ghak96 patch.
+
+Please see upstream github issue
+https://github.com/linux-audit/audit-kernel/issues/120
+This is also related to upstream github issue
+https://github.com/linux-audit/audit-kernel/issues/96
+
+Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+---
+Chagelog:
+v5:
+- open code audit_clear_dummy() in audit_log_start()
+- fix check for ctx->pwd in audit_log_name()
+- open code _audit_getcwd() contents in audit_alloc_name()
+- ditch all *audit_getcwd() calls
+
+v4:
+- resubmit after revert
+
+v3:
+- initialize fds[0] to -1
+- init cwd for ghak96 LSM_AUDIT_DATA_NET:AF_UNIX case
+- init cwd for audit_inode{,_child}
+
+v2:
+- unconditionally clear dummy
+- create audit_clear_dummy accessor function
+- remove proctitle context and dummy checks
+
+ include/linux/audit.h |  8 --------
+ kernel/audit.c        |  3 +++
+ kernel/auditsc.c      | 27 +++++++--------------------
+ security/lsm_audit.c  |  5 -----
+ 4 files changed, 10 insertions(+), 33 deletions(-)
+
+diff --git a/include/linux/audit.h b/include/linux/audit.h
+index b3d859831a31..82b7c1116a85 100644
+--- a/include/linux/audit.h
++++ b/include/linux/audit.h
+@@ -292,7 +292,6 @@ extern void __audit_syscall_entry(int major, unsigned long a0, unsigned long a1,
+ extern void __audit_syscall_exit(int ret_success, long ret_value);
+ extern struct filename *__audit_reusename(const __user char *uptr);
+ extern void __audit_getname(struct filename *name);
+-extern void __audit_getcwd(void);
+ extern void __audit_inode(struct filename *name, const struct dentry *dentry,
+ 				unsigned int flags);
+ extern void __audit_file(const struct file *);
+@@ -351,11 +350,6 @@ static inline void audit_getname(struct filename *name)
+ 	if (unlikely(!audit_dummy_context()))
+ 		__audit_getname(name);
+ }
+-static inline void audit_getcwd(void)
+-{
+-	if (unlikely(audit_context()))
+-		__audit_getcwd();
+-}
+ static inline void audit_inode(struct filename *name,
+ 				const struct dentry *dentry,
+ 				unsigned int aflags) {
+@@ -584,8 +578,6 @@ static inline struct filename *audit_reusename(const __user char *name)
+ }
+ static inline void audit_getname(struct filename *name)
+ { }
+-static inline void audit_getcwd(void)
+-{ }
+ static inline void audit_inode(struct filename *name,
+ 				const struct dentry *dentry,
+ 				unsigned int aflags)
+diff --git a/kernel/audit.c b/kernel/audit.c
+index 68cee3bc8cfe..dd9d22ba4fd2 100644
+--- a/kernel/audit.c
++++ b/kernel/audit.c
+@@ -1865,6 +1865,9 @@ struct audit_buffer *audit_log_start(struct audit_context *ctx, gfp_t gfp_mask,
+ 	}
+ 
+ 	audit_get_stamp(ab->ctx, &t, &serial);
++	/* cancel dummy context to enable supporting records */
++	if (ctx)
++		ctx->dummy = 0;
+ 	audit_log_format(ab, "audit(%llu.%03lu:%u): ",
+ 			 (unsigned long long)t.tv_sec, t.tv_nsec/1000000, serial);
+ 
+diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+index 8dba8f0983b5..183d79cc2e12 100644
+--- a/kernel/auditsc.c
++++ b/kernel/auditsc.c
+@@ -929,6 +929,7 @@ static inline struct audit_context *audit_alloc_context(enum audit_state state)
+ 	context->prio = state == AUDIT_RECORD_CONTEXT ? ~0ULL : 0;
+ 	INIT_LIST_HEAD(&context->killed_trees);
+ 	INIT_LIST_HEAD(&context->names_list);
++	context->fds[0] = -1;
+ 	return context;
+ }
+ 
+@@ -1367,7 +1368,10 @@ static void audit_log_name(struct audit_context *context, struct audit_names *n,
+ 			/* name was specified as a relative path and the
+ 			 * directory component is the cwd
+ 			 */
+-			audit_log_d_path(ab, " name=", &context->pwd);
++			if (context->pwd.dentry && context->pwd.mnt)
++				audit_log_d_path(ab, " name=", &context->pwd);
++			else
++				audit_log_format(ab, " name=(null)");
+ 			break;
+ 		default:
+ 			/* log the name's directory component */
+@@ -1435,9 +1439,6 @@ static void audit_log_proctitle(void)
+ 	struct audit_context *context = audit_context();
+ 	struct audit_buffer *ab;
+ 
+-	if (!context || context->dummy)
+-		return;
+-
+ 	ab = audit_log_start(context, GFP_KERNEL, AUDIT_PROCTITLE);
+ 	if (!ab)
+ 		return;	/* audit_panic or being filtered */
+@@ -1866,6 +1867,8 @@ static struct audit_names *audit_alloc_name(struct audit_context *context,
+ 	list_add_tail(&aname->list, &context->names_list);
+ 
+ 	context->name_count++;
++	if (!context->pwd.dentry)
++		get_fs_pwd(current->fs, &context->pwd);
+ 	return aname;
+ }
+ 
+@@ -1894,20 +1897,6 @@ __audit_reusename(const __user char *uptr)
+ 	return NULL;
+ }
+ 
+-inline void _audit_getcwd(struct audit_context *context)
+-{
+-	if (!context->pwd.dentry)
+-		get_fs_pwd(current->fs, &context->pwd);
+-}
+-
+-void __audit_getcwd(void)
+-{
+-	struct audit_context *context = audit_context();
+-
+-	if (context->in_syscall)
+-		_audit_getcwd(context);
+-}
+-
+ /**
+  * __audit_getname - add a name to the list
+  * @name: name to add
+@@ -1931,8 +1920,6 @@ void __audit_getname(struct filename *name)
+ 	n->name_len = AUDIT_NAME_FULL;
+ 	name->aname = n;
+ 	name->refcnt++;
+-
+-	_audit_getcwd(context);
+ }
+ 
+ static inline int audit_copy_fcaps(struct audit_names *name,
+diff --git a/security/lsm_audit.c b/security/lsm_audit.c
+index 53d0d183db8f..221370794d14 100644
+--- a/security/lsm_audit.c
++++ b/security/lsm_audit.c
+@@ -241,7 +241,6 @@ static void dump_common_audit_data(struct audit_buffer *ab,
+ 			audit_log_untrustedstring(ab, inode->i_sb->s_id);
+ 			audit_log_format(ab, " ino=%lu", inode->i_ino);
+ 		}
+-		audit_getcwd();
+ 		break;
+ 	}
+ 	case LSM_AUDIT_DATA_FILE: {
+@@ -255,7 +254,6 @@ static void dump_common_audit_data(struct audit_buffer *ab,
+ 			audit_log_untrustedstring(ab, inode->i_sb->s_id);
+ 			audit_log_format(ab, " ino=%lu", inode->i_ino);
+ 		}
+-		audit_getcwd();
+ 		break;
+ 	}
+ 	case LSM_AUDIT_DATA_IOCTL_OP: {
+@@ -271,7 +269,6 @@ static void dump_common_audit_data(struct audit_buffer *ab,
+ 		}
+ 
+ 		audit_log_format(ab, " ioctlcmd=0x%hx", a->u.op->cmd);
+-		audit_getcwd();
+ 		break;
+ 	}
+ 	case LSM_AUDIT_DATA_DENTRY: {
+@@ -286,7 +283,6 @@ static void dump_common_audit_data(struct audit_buffer *ab,
+ 			audit_log_untrustedstring(ab, inode->i_sb->s_id);
+ 			audit_log_format(ab, " ino=%lu", inode->i_ino);
+ 		}
+-		audit_getcwd();
+ 		break;
+ 	}
+ 	case LSM_AUDIT_DATA_INODE: {
+@@ -304,7 +300,6 @@ static void dump_common_audit_data(struct audit_buffer *ab,
+ 		audit_log_format(ab, " dev=");
+ 		audit_log_untrustedstring(ab, inode->i_sb->s_id);
+ 		audit_log_format(ab, " ino=%lu", inode->i_ino);
+-		audit_getcwd();
+ 		break;
+ 	}
+ 	case LSM_AUDIT_DATA_TASK: {
+-- 
+2.18.4
+
