@@ -2,90 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2A59273B3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 08:53:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 594FC273B40
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 08:54:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729529AbgIVGxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 02:53:20 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:57291 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727710AbgIVGxT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 02:53:19 -0400
-Received: from mail-pf1-f199.google.com ([209.85.210.199])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <koba.ko@canonical.com>)
-        id 1kKcAv-0003zg-Ho
-        for linux-kernel@vger.kernel.org; Tue, 22 Sep 2020 06:53:17 +0000
-Received: by mail-pf1-f199.google.com with SMTP id k13so10548515pfh.4
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 23:53:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=w9iqaz4NmjNGwlYOvyMuR9M9SYy/rnYZVpOGW5l2Yx8=;
-        b=b5cXLXZalNMTOQl61Qu/00+r8U8GC8Oc01YCOar4DTn5jKWzaeP7wE/oGxFYzsSWkE
-         qxwSd6iGLS/xRbyyVKxjUtbtG7CnLOblm42x/Fo9a8U6xWqc1DrgbJ2bun9TERYjbeI9
-         7nvpun6yhjiKx9sr1GoFv6tRBwn9u7oBj4zS2wBakmyjQT7jHA/ae5kJH3JfIxYa69by
-         aVsEBgkCt0uRptfmA+1XOCw7I9UtckFNQQ2rriag1XDyimiEwBt6v0pcmLvu5Vh7DIU+
-         MflFh/ufs/vrMgBaE9MsYsnEI6DuA5VFfPtin9fmO8N0Fjoj1Ll1BhQjCE8YyC3j2Bt2
-         Yo0A==
-X-Gm-Message-State: AOAM530xzueh39qvscN0DEWy7VpPrmGeTBGWLdE4bGvSZUQjULRgjc9d
-        tvUB5rVTbyUQe/KEz7UgGfdO9WNppM60MZPGoLG+OLVH69ingJ/GJiP+UWtDdjNiFKsHcZVVAvK
-        Ezf0Yls+DfR6xkL14HwY5bWF6cP5gvS0m/2eho/NVTA==
-X-Received: by 2002:aa7:93a2:0:b029:142:2501:39f4 with SMTP id x2-20020aa793a20000b0290142250139f4mr2866563pff.67.1600757596151;
-        Mon, 21 Sep 2020 23:53:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzNg1FrNUOYNUMcUorUSwdMpymWxJcD36ivwwRqyApLFMfCl7hC/L7diiu9Fxoog4xeBBrkfw==
-X-Received: by 2002:aa7:93a2:0:b029:142:2501:39f4 with SMTP id x2-20020aa793a20000b0290142250139f4mr2866542pff.67.1600757595700;
-        Mon, 21 Sep 2020 23:53:15 -0700 (PDT)
-Received: from canonical.com (61-220-137-37.HINET-IP.hinet.net. [61.220.137.37])
-        by smtp.gmail.com with ESMTPSA id y12sm7046142pga.53.2020.09.21.23.53.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 21 Sep 2020 23:53:15 -0700 (PDT)
-From:   Koba Ko <koba.ko@canonical.com>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Lyude Paul <lyude@redhat.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     anthony.wong@canonical.com
-Subject: [PATCH V4] drm/dp_mst: Retrieve extended DPCD caps for topology manager
-Date:   Tue, 22 Sep 2020 14:53:13 +0800
-Message-Id: <20200922065313.4794-1-koba.ko@canonical.com>
-X-Mailer: git-send-email 2.17.1
+        id S1729540AbgIVGye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 02:54:34 -0400
+Received: from mga05.intel.com ([192.55.52.43]:63428 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727710AbgIVGyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 02:54:33 -0400
+IronPort-SDR: 9E4BYeie6ROSMnkO9OqKOOEWpOYx1NFRxeW62lGliITZFPkUnzXBe5jLIbp0/zJ0iwUhXFsmC8
+ Xu7yX7jWsc0A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="245386212"
+X-IronPort-AV: E=Sophos;i="5.77,289,1596524400"; 
+   d="scan'208";a="245386212"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 23:54:33 -0700
+IronPort-SDR: uL6ZEh4+QkK4B7jYVcpSqFTt11KDoZHGeimnATf6+7xFTr8WG3QICWTd1zEhfHQ33LDV5UGrNZ
+ F8XxaCiSS9eQ==
+X-IronPort-AV: E=Sophos;i="5.77,289,1596524400"; 
+   d="scan'208";a="485834643"
+Received: from yhuang-mobile.sh.intel.com ([10.238.4.22])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 23:54:29 -0700
+From:   Huang Ying <ying.huang@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Huang Ying <ying.huang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>, Mel Gorman <mgorman@suse.de>,
+        Rik van Riel <riel@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>
+Subject: [RFC -V2] autonuma: Migrate on fault among multiple bound nodes
+Date:   Tue, 22 Sep 2020 14:54:01 +0800
+Message-Id: <20200922065401.376348-1-ying.huang@intel.com>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per DP-1.3, First check DP_EXTENDED_RECEIVER_CAP_FIELD_PRESENT.
-If DP_EXTENDED_RECEIVER_CAP_FIELD_PRESENT is 1,read the DP_DP13_DPCD_REV to
-get the faster capability.
-If DP_EXTENDED_RECEIVER_CAP_FIELD_PRESENT is 0,read DP_DPCD_REV.
+Now, AutoNUMA can only optimize the page placement among the NUMA nodes if the
+default memory policy is used.  Because the memory policy specified explicitly
+should take precedence.  But this seems too strict in some situations.  For
+example, on a system with 4 NUMA nodes, if the memory of an application is bound
+to the node 0 and 1, AutoNUMA can potentially migrate the pages between the node
+0 and 1 to reduce cross-node accessing without breaking the explicit memory
+binding policy.
 
-Signed-off-by: Koba Ko <koba.ko@canonical.com>
-Reviewed-by: Lyude Paul <lyude@redhat.com>
+So in this patch, if mbind(.mode=MPOL_BIND, .flags=MPOL_MF_LAZY) is used to bind
+the memory of the application to multiple nodes, and in the hint page fault
+handler both the faulting page node and the accessing node are in the policy
+nodemask, the page will be tried to be migrated to the accessing node to reduce
+the cross-node accessing.
+
+[Peter Zijlstra: provided the simplified implementation method.]
+
+Questions:
+
+Sysctl knob kernel.numa_balancing can enable/disable AutoNUMA optimizing
+globally.  But for the memory areas that are bound to multiple NUMA nodes, even
+if the AutoNUMA is enabled globally via the sysctl knob, we still need to enable
+AutoNUMA again with a special flag.  Why not just optimize the page placement if
+possible as long as AutoNUMA is enabled globally?  The interface would look
+simpler with that.
+
+Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Mel Gorman <mgorman@suse.de>
+Cc: Rik van Riel <riel@redhat.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: Dave Hansen <dave.hansen@intel.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: David Rientjes <rientjes@google.com>
 ---
- drivers/gpu/drm/drm_dp_mst_topology.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ mm/mempolicy.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
-index e87542533640..63f8809b9aa4 100644
---- a/drivers/gpu/drm/drm_dp_mst_topology.c
-+++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-@@ -3686,9 +3686,9 @@ int drm_dp_mst_topology_mgr_set_mst(struct drm_dp_mst_topology_mgr *mgr, bool ms
- 		WARN_ON(mgr->mst_primary);
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index eddbe4e56c73..273969204732 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -2494,15 +2494,19 @@ int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long
+ 		break;
  
- 		/* get dpcd info */
--		ret = drm_dp_dpcd_read(mgr->aux, DP_DPCD_REV, mgr->dpcd, DP_RECEIVER_CAP_SIZE);
--		if (ret != DP_RECEIVER_CAP_SIZE) {
--			DRM_DEBUG_KMS("failed to read DPCD\n");
-+		ret = drm_dp_read_dpcd_caps(mgr->aux, mgr->dpcd);
-+		if (ret < 0) {
-+			drm_dbg_kms(mgr->dev, "failed to read DPCD, ret %d\n", ret);
- 			goto out_unlock;
- 		}
+ 	case MPOL_BIND:
+-
+ 		/*
+-		 * allows binding to multiple nodes.
+-		 * use current page if in policy nodemask,
+-		 * else select nearest allowed node, if any.
+-		 * If no allowed nodes, use current [!misplaced].
++		 * Allows binding to multiple nodes.  If both current and
++		 * accessing nodes are in policy nodemask, migrate to
++		 * accessing node to optimize page placement. Otherwise,
++		 * use current page if in policy nodemask, else select
++		 * nearest allowed node, if any.  If no allowed nodes, use
++		 * current [!misplaced].
+ 		 */
+-		if (node_isset(curnid, pol->v.nodes))
++		if (node_isset(curnid, pol->v.nodes)) {
++			if (node_isset(thisnid, pol->v.nodes))
++				goto moron;
+ 			goto out;
++		}
+ 		z = first_zones_zonelist(
+ 				node_zonelist(numa_node_id(), GFP_HIGHUSER),
+ 				gfp_zone(GFP_HIGHUSER),
+@@ -2516,6 +2520,7 @@ int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long
  
+ 	/* Migrate the page towards the node whose CPU is referencing it */
+ 	if (pol->flags & MPOL_F_MORON) {
++moron:
+ 		polnid = thisnid;
+ 
+ 		if (!should_numa_migrate_memory(current, page, curnid, thiscpu))
 -- 
-2.17.1
+2.28.0
 
