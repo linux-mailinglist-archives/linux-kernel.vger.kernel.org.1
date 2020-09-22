@@ -2,126 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9044F273CDD
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 10:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01608273CBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726578AbgIVIAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 04:00:16 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:58891 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726334AbgIVIAQ (ORCPT
+        id S1726769AbgIVHzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 03:55:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726334AbgIVHzR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 04:00:16 -0400
-X-Greylist: delayed 300 seconds by postgrey-1.27 at vger.kernel.org; Tue, 22 Sep 2020 04:00:15 EDT
-X-UUID: 7158b61a1e5448668abfe74e009a824d-20200922
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=kzHH5APnEkOj/iTmhtuS6d+iRdyxeZzVST6CIJYTUHw=;
-        b=qTznJrcRIO9Wdi5AD/vUcmfRsiM5TuE0+pyF6SpqUHlyXdTOC/OHwzOgPO8/XCotoxo9R5A0F8M9b+Gq3hcePbNYH3Qsrc/BFJFkPCjIisJcuV/hnE2BF/WICJP0Uuh8IqXEi/8xSDwo/YikTZSCjvOZxk+ktwIRCGFFDFS0FMg=;
-X-UUID: 7158b61a1e5448668abfe74e009a824d-20200922
-Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1974907599; Tue, 22 Sep 2020 15:55:11 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 22 Sep 2020 15:55:08 +0800
-Received: from mtkslt301.mediatek.inc (10.21.14.114) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 22 Sep 2020 15:55:08 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Stanley Chu <stanley.chu@mediatek.com>
-CC:     Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Vinod Koul <vkoul@kernel.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        CK Hu <ck.hu@mediatek.com>, <dri-devel@lists.freedesktop.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-Subject: [PATCH 4/4] dt-bindings: phy: convert HDMI PHY binding to YAML schema
-Date:   Tue, 22 Sep 2020 15:55:08 +0800
-Message-ID: <4817a10e1c3b2beeb79b0cf5e182df747ce268e7.1600760719.git.chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <5af7c097d1c71a180d8ed1f1a44055859b42f1a0.1600760719.git.chunfeng.yun@mediatek.com>
-References: <5af7c097d1c71a180d8ed1f1a44055859b42f1a0.1600760719.git.chunfeng.yun@mediatek.com>
+        Tue, 22 Sep 2020 03:55:17 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07514C061755;
+        Tue, 22 Sep 2020 00:55:17 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id nw23so21422381ejb.4;
+        Tue, 22 Sep 2020 00:55:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=P22t681K3K6oM9ouAXbMdzIDaBOSsnrR2/jvxdmlo8A=;
+        b=ddOEu0ndSoHiNRkDH4m0ehG4Ha8b2DU4nBrrIRUXJ/rfuKmT0GhCRIbd7t7ELXvZRF
+         2RVJwAu4O7pVmUvqNR3OAVnIxp36BPzl+9ih3TNcjVDZHxHT71KH0gs9Rlrt2bm5RW1G
+         7ZqgnThRMgRjQuUtuVK5KZ3aazv5F4+b56D51vihtxrsrTPn2kdbRio8XaMZcrENXW6k
+         HhpcM/Wa49QnPOD1Dr3xdztR5oyg0SI/bK25EYKQOMsQJxJxwIL5EWkjvu8JmvC9ccJO
+         soDpFgQySGaodBzlslvDN33XxzUA+s6i/DKUxnTLB6tjXLeTEu2y/A7LelE2h3ycJAKa
+         ui1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=P22t681K3K6oM9ouAXbMdzIDaBOSsnrR2/jvxdmlo8A=;
+        b=B3Wuj0KdC2ygJo6H5yOTfVUaAfWtimP1Rdd+XnIgo6LK0yGG8dq/PJPNPQrqre6dmZ
+         BMoWEKC5OTH4kxR0S0t8Naemm20w/4q1XjlcdF2ut334tn4QWsMkWC7OXZqW6PAz2BHo
+         irWSC0A45tLNmqonirVGhDwHPt61EQMivW2BPFs9wPwd+4cAZF3gUkiQupAoUAneTWJP
+         1qDBQeBZFWYQi1nLamu8B5goPDqR09MUL2N0LXzORFsqFbhRW3LnWUQokiddswYGmym2
+         bgRWlM7c9+A1z3hjvTNHjXdQhquFDln+1K5YsvEma9zXcW8fZK5zxJObtxPoODHlUi8B
+         Iqbw==
+X-Gm-Message-State: AOAM5332gOJEENkoAl2Og4ncA9ulv74q7BbPrcS6FcaJjx7E0U4sih4e
+        UQBb8kW2Jn0uoEZ2kauFDUabbRJUmT8=
+X-Google-Smtp-Source: ABdhPJy8vy64IVPhwycK7YOML21tKq21KM+H8NPb2W1WboMLYS6Odg+ZcjowDtsPkTHswNddMbrPTA==
+X-Received: by 2002:a17:906:cf9b:: with SMTP id um27mr3615010ejb.66.1600761315744;
+        Tue, 22 Sep 2020 00:55:15 -0700 (PDT)
+Received: from localhost (pd9e51aa4.dip0.t-ipconnect.de. [217.229.26.164])
+        by smtp.gmail.com with ESMTPSA id w1sm10254124eds.18.2020.09.22.00.55.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 00:55:14 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 09:55:13 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>
+Cc:     jonathanh@nvidia.com, sakari.ailus@iki.fi, hverkuil@xs4all.nl,
+        jacopo+renesas@jmondi.org, luca@lucaceresoli.net,
+        leonl@leopardimaging.com, robh+dt@kernel.org, lgirdwood@gmail.com,
+        broonie@kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 1/3] media: i2c: imx274: Fix Y_OUT_SIZE register
+ setting
+Message-ID: <20200922075513.GC3994831@ulmo>
+References: <1600724379-7324-1-git-send-email-skomatineni@nvidia.com>
+ <1600724379-7324-2-git-send-email-skomatineni@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="lCAWRPmW1mITcIfM"
+Content-Disposition: inline
+In-Reply-To: <1600724379-7324-2-git-send-email-skomatineni@nvidia.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Q29udmVydCBIRE1JIFBIWSBiaW5kaW5nIHRvIFlBTUwgc2NoZW1hIG1lZGlhdGVrLHVmcy1waHku
-eWFtbA0KDQpTaWduZWQtb2ZmLWJ5OiBDaHVuZmVuZyBZdW4gPGNodW5mZW5nLnl1bkBtZWRpYXRl
-ay5jb20+DQotLS0NCiAuLi4vZGlzcGxheS9tZWRpYXRlay9tZWRpYXRlayxoZG1pLnR4dCAgICAg
-ICAgfCAxNyArLS0tDQogLi4uL2JpbmRpbmdzL3BoeS9tZWRpYXRlayxoZG1pLXBoeS55YW1sICAg
-ICAgIHwgOTAgKysrKysrKysrKysrKysrKysrKw0KIDIgZmlsZXMgY2hhbmdlZCwgOTEgaW5zZXJ0
-aW9ucygrKSwgMTYgZGVsZXRpb25zKC0pDQogY3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRp
-b24vZGV2aWNldHJlZS9iaW5kaW5ncy9waHkvbWVkaWF0ZWssaGRtaS1waHkueWFtbA0KDQpkaWZm
-IC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Rpc3BsYXkvbWVkaWF0
-ZWsvbWVkaWF0ZWssaGRtaS50eHQgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
-ZGlzcGxheS9tZWRpYXRlay9tZWRpYXRlayxoZG1pLnR4dA0KaW5kZXggN2IxMjQyNDJiMGM1Li5l
-ZGFjMTg5NTFhNzUgMTAwNjQ0DQotLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGlu
-Z3MvZGlzcGxheS9tZWRpYXRlay9tZWRpYXRlayxoZG1pLnR4dA0KKysrIGIvRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Rpc3BsYXkvbWVkaWF0ZWsvbWVkaWF0ZWssaGRtaS50eHQN
-CkBAIC01MCwyMiArNTAsNyBAQCBSZXF1aXJlZCBwcm9wZXJ0aWVzOg0KIA0KIEhETUkgUEhZDQog
-PT09PT09PT0NCi0NCi1UaGUgSERNSSBQSFkgc2VyaWFsaXplcyB0aGUgSERNSSBlbmNvZGVyJ3Mg
-dGhyZWUgY2hhbm5lbCAxMC1iaXQgcGFyYWxsZWwNCi1vdXRwdXQgYW5kIGRyaXZlcyB0aGUgSERN
-SSBwYWRzLg0KLQ0KLVJlcXVpcmVkIHByb3BlcnRpZXM6DQotLSBjb21wYXRpYmxlOiAibWVkaWF0
-ZWssPGNoaXA+LWhkbWktcGh5Ig0KLS0gcmVnOiBQaHlzaWNhbCBiYXNlIGFkZHJlc3MgYW5kIGxl
-bmd0aCBvZiB0aGUgbW9kdWxlJ3MgcmVnaXN0ZXJzDQotLSBjbG9ja3M6IFBMTCByZWZlcmVuY2Ug
-Y2xvY2sNCi0tIGNsb2NrLW5hbWVzOiBtdXN0IGNvbnRhaW4gInBsbF9yZWYiDQotLSBjbG9jay1v
-dXRwdXQtbmFtZXM6IG11c3QgYmUgImhkbWl0eF9kaWdfY3RzIiBvbiBtdDgxNzMNCi0tICNwaHkt
-Y2VsbHM6IG11c3QgYmUgPDA+DQotLSAjY2xvY2stY2VsbHM6IG11c3QgYmUgPDA+DQotDQotT3B0
-aW9uYWwgcHJvcGVydGllczoNCi0tIG1lZGlhdGVrLGliaWFzOiBUWCBEUlYgYmlhcyBjdXJyZW50
-IGZvciA8MS42NUdicHMsIGRlZmF1bHRzIHRvIDB4YQ0KLS0gbWVkaWF0ZWssaWJpYXNfdXA6IFRY
-IERSViBiaWFzIGN1cnJlbnQgZm9yID4xLjY1R2JwcywgZGVmYXVsdHMgdG8gMHgxYw0KK1NlZSBw
-aHkvbWVkaWF0ZWssaGRtaS1waHkueWFtbA0KIA0KIEV4YW1wbGU6DQogDQpkaWZmIC0tZ2l0IGEv
-RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BoeS9tZWRpYXRlayxoZG1pLXBoeS55
-YW1sIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BoeS9tZWRpYXRlayxoZG1p
-LXBoeS55YW1sDQpuZXcgZmlsZSBtb2RlIDEwMDY0NA0KaW5kZXggMDAwMDAwMDAwMDAwLi42Nzli
-NDAwNWVlNjINCi0tLSAvZGV2L251bGwNCisrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9i
-aW5kaW5ncy9waHkvbWVkaWF0ZWssaGRtaS1waHkueWFtbA0KQEAgLTAsMCArMSw5MCBAQA0KKyMg
-U1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IChHUEwtMi4wLW9ubHkgT1IgQlNELTItQ2xhdXNlKQ0K
-KyMgQ29weXJpZ2h0IChjKSAyMDIwIE1lZGlhVGVrDQorJVlBTUwgMS4yDQorLS0tDQorJGlkOiBo
-dHRwOi8vZGV2aWNldHJlZS5vcmcvc2NoZW1hcy9waHkvbWVkaWF0ZWssaGRtaS1waHkueWFtbCMN
-Ciskc2NoZW1hOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvbWV0YS1zY2hlbWFzL2NvcmUueWFtbCMN
-CisNCit0aXRsZTogTWVkaWFUZWsgSGlnaCBEZWZpbml0aW9uIE11bHRpbWVkaWEgSW50ZXJmYWNl
-IChIRE1JKSBQSFkgYmluZGluZw0KKw0KK21haW50YWluZXJzOg0KKyAgLSBDSyBIdSA8Y2suaHVA
-bWVkaWF0ZWsuY29tPg0KKyAgLSBDaHVuZmVuZyBZdW4gPGNodW5mZW5nLnl1bkBtZWRpYXRlay5j
-b20+DQorDQorZGVzY3JpcHRpb246IHwNCisgIFRoZSBIRE1JIFBIWSBzZXJpYWxpemVzIHRoZSBI
-RE1JIGVuY29kZXIncyB0aHJlZSBjaGFubmVsIDEwLWJpdCBwYXJhbGxlbA0KKyAgb3V0cHV0IGFu
-ZCBkcml2ZXMgdGhlIEhETUkgcGFkcy4NCisNCitwcm9wZXJ0aWVzOg0KKyAgJG5vZGVuYW1lOg0K
-KyAgICBwYXR0ZXJuOiAiXmhkbWktcGh5QFswLTlhLWZdKyQiDQorDQorICBjb21wYXRpYmxlOg0K
-KyAgICBlbnVtOg0KKyAgICAgIC0gbWVkaWF0ZWssbXQyNzAxLWhkbWktcGh5DQorICAgICAgLSBt
-ZWRpYXRlayxtdDgxNzMtaGRtaS1waHkNCisNCisgIHJlZzoNCisgICAgbWF4SXRlbXM6IDENCisN
-CisgIGNsb2NrczoNCisgICAgaXRlbXM6DQorICAgICAgLSBkZXNjcmlwdGlvbjogUExMIHJlZmVy
-ZW5jZSBjbG9jaw0KKw0KKyAgY2xvY2stbmFtZXM6DQorICAgIGl0ZW1zOg0KKyAgICAgIC0gY29u
-c3Q6IHBsbF9yZWYNCisNCisgIGNsb2NrLW91dHB1dC1uYW1lczoNCisgICAgaXRlbXM6DQorICAg
-ICAgLSBjb25zdDogaGRtaXR4X2RpZ19jdHMNCisNCisgICIjcGh5LWNlbGxzIjoNCisgICAgY29u
-c3Q6IDANCisNCisgICIjY2xvY2stY2VsbHMiOg0KKyAgICBjb25zdDogMA0KKw0KKyAgbWVkaWF0
-ZWssaWJpYXM6DQorICAgIGRlc2NyaXB0aW9uOg0KKyAgICAgIFRYIERSViBiaWFzIGN1cnJlbnQg
-Zm9yIDwgMS42NUdicHMNCisgICAgJHJlZjogL3NjaGVtYXMvdHlwZXMueWFtbCMvZGVmaW5pdGlv
-bnMvdWludDMyDQorICAgIG1pbmltdW06IDANCisgICAgbWF4aW11bTogNjMNCisgICAgZGVmYXVs
-dDogMHhhDQorDQorICBtZWRpYXRlayxpYmlhc191cDoNCisgICAgZGVzY3JpcHRpb246DQorICAg
-ICAgVFggRFJWIGJpYXMgY3VycmVudCBmb3IgPj0gMS42NUdicHMNCisgICAgJHJlZjogL3NjaGVt
-YXMvdHlwZXMueWFtbCMvZGVmaW5pdGlvbnMvdWludDMyDQorICAgIG1pbmltdW06IDANCisgICAg
-bWF4aW11bTogNjMNCisgICAgZGVmYXVsdDogMHgxYw0KKw0KK3JlcXVpcmVkOg0KKyAgLSBjb21w
-YXRpYmxlDQorICAtIHJlZw0KKyAgLSBjbG9ja3MNCisgIC0gY2xvY2stbmFtZXMNCisgIC0gY2xv
-Y2stb3V0cHV0LW5hbWVzDQorICAtICIjcGh5LWNlbGxzIg0KKyAgLSAiI2Nsb2NrLWNlbGxzIg0K
-Kw0KK2FkZGl0aW9uYWxQcm9wZXJ0aWVzOiBmYWxzZQ0KKw0KK2V4YW1wbGVzOg0KKyAgLSB8DQor
-ICAgICNpbmNsdWRlIDxkdC1iaW5kaW5ncy9jbG9jay9tdDgxNzMtY2xrLmg+DQorICAgIGhkbWlf
-cGh5OiBoZG1pLXBoeUAxMDIwOTEwMCB7DQorICAgICAgICBjb21wYXRpYmxlID0gIm1lZGlhdGVr
-LG10ODE3My1oZG1pLXBoeSI7DQorICAgICAgICByZWcgPSA8MCAweDEwMjA5MTAwIDAgMHgyND47
-DQorICAgICAgICBjbG9ja3MgPSA8JmFwbWl4ZWRzeXMgQ0xLX0FQTUlYRURfSERNSV9SRUY+Ow0K
-KyAgICAgICAgY2xvY2stbmFtZXMgPSAicGxsX3JlZiI7DQorICAgICAgICBjbG9jay1vdXRwdXQt
-bmFtZXMgPSAiaGRtaXR4X2RpZ19jdHMiOw0KKyAgICAgICAgbWVkaWF0ZWssaWJpYXMgPSA8MHhh
-PjsNCisgICAgICAgIG1lZGlhdGVrLGliaWFzX3VwID0gPDB4MWM+Ow0KKyAgICAgICAgI2Nsb2Nr
-LWNlbGxzID0gPDA+Ow0KKyAgICAgICAgI3BoeS1jZWxscyA9IDwwPjsNCisgICAgfTsNCisNCisu
-Li4NCi0tIA0KMi4xOC4wDQo=
 
+--lCAWRPmW1mITcIfM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Sep 21, 2020 at 02:39:37PM -0700, Sowjanya Komatineni wrote:
+> As per Sony IMX274 Y_OUT_SIZE should be the height of effective
+> image output from the sensor which are the actual total lines
+> sent over MIPI CSI to receiver.
+>=20
+> So, Y_OUT_SIZE should be same as crop height and this patch fixes it.
+>=20
+> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+> ---
+>  drivers/media/i2c/imx274.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+Reviewed-by: Thierry Reding <treding@nvidia.com>
+
+--lCAWRPmW1mITcIfM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9preEACgkQ3SOs138+
+s6H1PA/+LeZXqaxZyKg9s/EErvQKGgMPicukSNVbRPXQCUGOhErP8ofOj81WZL8X
+cNx9hRf+8JsgiSEro2JFe2wywp8ltH+n0j/GIrM+LNz2GRxiEzrR6nyfVA1dMD1u
+mIgGD3m63nzJogmkwkDEueVK/YjOpMvkj2EUQbxuPE8DRNazKSGm6gj+/JaruAG3
+JMHwiIfoK5+ex1WsIkanI1ozcQheN7HOsOC3+5cwaqeiV373Q162x7upW9c9++vj
+ER54+MhetaqR5hXYoQ8AlOD8XGOUfpD97tHNWnuBAfp2PfUVnpJlXUMQnq6entNA
+jQfnviG420JoIjumkfZgOpfswX7TMJlsk++l9cLNGPQav4L8joYvZTycDunVmV8x
+nNQ84ippNR2/CueI1imyWOprc0WAqj9xFcrWsP32/FieQ2kSwXYy+vpKI99b4U6E
+XbmXIs3KZNG/hlhAhSOrayFwtCvCbT5fnInH5dZqQSSkBKHlloz+FRq+UtyIRKHE
+VDbYceLFJ04CXVtO/2MJdSqKHJsYymFCOdLlAaTm1sdV/hZV19ztNafASpzS+JoY
+xYQ0LTh70AW6TNx05hlmg6CGZCNkiJslJS1Dh1qux1SKRggyr0ytMgsAnT8W6Xho
+S7IxxMt5Vh/4S9mUEAWDV+RP+60qbtM3eaQYtF4Gb4tzVAAXqnw=
+=Q3UG
+-----END PGP SIGNATURE-----
+
+--lCAWRPmW1mITcIfM--
