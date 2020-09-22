@@ -2,114 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D6D274263
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 590C1274278
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726628AbgIVMul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 08:50:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25579 "EHLO
+        id S1726661AbgIVMwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 08:52:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46101 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726578AbgIVMuk (ORCPT
+        by vger.kernel.org with ESMTP id S1726566AbgIVMwC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 08:50:40 -0400
+        Tue, 22 Sep 2020 08:52:02 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600779039;
+        s=mimecast20190719; t=1600779120;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rBy/ewZFYuHcIeTKmOeoXntrF9t6VS/+90A1J5EVLLs=;
-        b=bmZvDR7YNHYZi11nqmzumm30s44rpA838tlVBrEpoXSKh2l86HO7rsCYPZ/S3hMkHwimd0
-        zYx1vCNKh42d2ffCAwdqaByOdvgJPYJrfXIXjsZ3o3FacQoJCP20gR1pkvhFKf5naM8acO
-        MfrCfoBluEUuqZUmoUTPmFsTDPJz2co=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-104-B-WymzqDM_SkMQ1LMh0hMw-1; Tue, 22 Sep 2020 08:50:37 -0400
-X-MC-Unique: B-WymzqDM_SkMQ1LMh0hMw-1
-Received: by mail-wm1-f72.google.com with SMTP id t8so546300wmj.6
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 05:50:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rBy/ewZFYuHcIeTKmOeoXntrF9t6VS/+90A1J5EVLLs=;
-        b=P82WaE8aIMU0rTup5Bx2llzqWFtfzBIp2ehzlSLGKnceUEe6gWE0Nfm3j1mOSVjJTp
-         3ZTUvifBeQLVXL37K41ZhQYYT20z95g34aW2+gQ8VCQndVfB1dtOlhhJMyuN1elrC7fB
-         cvX3MGHJLBX8IX+38EtinL5Xouzk8x7zo4DNJ0zqR9mc+UOm3VuW4ygxdzPfzb/P/4HO
-         kpaxQeAir8Ui8VUBUSJBCsptrWvtqqX6c9p/Y1LN2lovEnpgO9QkXzENjI6NxRY5UUaw
-         qA0EdIB/Fa3vornYYIQRO/XiNYn9XO42bPolyFxtxoiz+CUAdweodttTU/xJU7Vhysi/
-         fuKA==
-X-Gm-Message-State: AOAM533rhugyix0lFct5XGzoAMrgawNbpOOY6ww2UH1aJkfMqoJn81Wb
-        qetHXjf3riEpYGSqMtZO6tTvzyimM/k36AHtSJIcWe29pDJcNCfTOQI5kJdP0FGoHuwX8ZPXVAy
-        JRH+uuJboqm43rrejAqmH2JUf
-X-Received: by 2002:a5d:570b:: with SMTP id a11mr5367282wrv.139.1600779036411;
-        Tue, 22 Sep 2020 05:50:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxaMutgSK9zT2Z/t3qizYV4H60BXFyLtlUFxU1c3gSGzb45WPn7A4MrDiZBlX0euAM5Vo8FYw==
-X-Received: by 2002:a5d:570b:: with SMTP id a11mr5367262wrv.139.1600779036221;
-        Tue, 22 Sep 2020 05:50:36 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:ec2c:90a9:1236:ebc6? ([2001:b07:6468:f312:ec2c:90a9:1236:ebc6])
-        by smtp.gmail.com with ESMTPSA id v17sm27868565wrc.23.2020.09.22.05.50.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Sep 2020 05:50:35 -0700 (PDT)
-Subject: Re: [PATCH v2 1/1] KVM: x86: fix MSR_IA32_TSC read for nested
- migration
-To:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-References: <20200921103805.9102-1-mlevitsk@redhat.com>
- <20200921103805.9102-2-mlevitsk@redhat.com>
- <20200921162326.GB23989@linux.intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <de9411ce-aa83-77c8-b2ae-a3873250a0b1@redhat.com>
-Date:   Tue, 22 Sep 2020 14:50:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        bh=mzF2SsHUb3UjWmBZrtDmWdBk/7nlXgiRIsvkXf0DAaI=;
+        b=e8ScccpqfV6R5va+u9CzHjJqjARniMMvOVjIgGVRRMFSBFKWfBjM6Nposk5shrouGbF7h1
+        7hh9Q+2IrsUfUNwbIADeZ9kmOWAu3gF136MDzShVZXj1Br7W9lvsCwKrjuB7iW49QeGCBG
+        j+TUZW47XlkWuA1Mp8LuxDlI+mEtudw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-39-rO_3mtOtMJ6jT1OnKmE6PA-1; Tue, 22 Sep 2020 08:51:58 -0400
+X-MC-Unique: rO_3mtOtMJ6jT1OnKmE6PA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7BE7A56C21;
+        Tue, 22 Sep 2020 12:51:56 +0000 (UTC)
+Received: from lorien.usersys.redhat.com (ovpn-113-73.phx2.redhat.com [10.3.113.73])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id EE06C55780;
+        Tue, 22 Sep 2020 12:51:54 +0000 (UTC)
+Date:   Tue, 22 Sep 2020 08:51:53 -0400
+From:   Phil Auld <pauld@redhat.com>
+To:     Huang Ying <ying.huang@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>, Mel Gorman <mgorman@suse.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>
+Subject: Re: [RFC -V2] autonuma: Migrate on fault among multiple bound nodes
+Message-ID: <20200922125049.GA10420@lorien.usersys.redhat.com>
+References: <20200922065401.376348-1-ying.huang@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200921162326.GB23989@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922065401.376348-1-ying.huang@intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/20 18:23, Sean Christopherson wrote:
-> Avoid "should" in code comments and describe what the code is doing, not what
-> it should be doing.  The only exception for this is when the code has a known
-> flaw/gap, e.g. "KVM should do X, but because of Y, KVM actually does Z".
+Hi,
+
+On Tue, Sep 22, 2020 at 02:54:01PM +0800 Huang Ying wrote:
+> Now, AutoNUMA can only optimize the page placement among the NUMA nodes if the
+> default memory policy is used.  Because the memory policy specified explicitly
+> should take precedence.  But this seems too strict in some situations.  For
+> example, on a system with 4 NUMA nodes, if the memory of an application is bound
+> to the node 0 and 1, AutoNUMA can potentially migrate the pages between the node
+> 0 and 1 to reduce cross-node accessing without breaking the explicit memory
+> binding policy.
 > 
->> +		 * return it's real L1 value so that its restore will be correct.
-> s/it's/its
+> So in this patch, if mbind(.mode=MPOL_BIND, .flags=MPOL_MF_LAZY) is used to bind
+> the memory of the application to multiple nodes, and in the hint page fault
+> handler both the faulting page node and the accessing node are in the policy
+> nodemask, the page will be tried to be migrated to the accessing node to reduce
+> the cross-node accessing.
+>
+
+Do you have any performance numbers that show the effects of this on
+a workload?
+
+
+> [Peter Zijlstra: provided the simplified implementation method.]
 > 
-> Perhaps add "unconditionally" somewhere, since arch.tsc_offset can also contain
-> the L1 value.  E.g. 
+> Questions:
 > 
-> 		 * Unconditionally return L1's TSC offset on userspace reads
-> 		 * so that userspace reads and writes always operate on L1's
-> 		 * offset, e.g. to ensure deterministic behavior for migration.
-> 		 */
+> Sysctl knob kernel.numa_balancing can enable/disable AutoNUMA optimizing
+> globally.  But for the memory areas that are bound to multiple NUMA nodes, even
+> if the AutoNUMA is enabled globally via the sysctl knob, we still need to enable
+> AutoNUMA again with a special flag.  Why not just optimize the page placement if
+> possible as long as AutoNUMA is enabled globally?  The interface would look
+> simpler with that.
+
+
+I agree. I think it should try to do this if globally enabled.
+
+
+> 
+> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Mel Gorman <mgorman@suse.de>
+> Cc: Rik van Riel <riel@redhat.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> Cc: Dave Hansen <dave.hansen@intel.com>
+> Cc: Andi Kleen <ak@linux.intel.com>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: David Rientjes <rientjes@google.com>
+> ---
+>  mm/mempolicy.c | 17 +++++++++++------
+>  1 file changed, 11 insertions(+), 6 deletions(-)
+> 
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index eddbe4e56c73..273969204732 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -2494,15 +2494,19 @@ int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long
+>  		break;
+>  
+>  	case MPOL_BIND:
+> -
+>  		/*
+> -		 * allows binding to multiple nodes.
+> -		 * use current page if in policy nodemask,
+> -		 * else select nearest allowed node, if any.
+> -		 * If no allowed nodes, use current [!misplaced].
+> +		 * Allows binding to multiple nodes.  If both current and
+> +		 * accessing nodes are in policy nodemask, migrate to
+> +		 * accessing node to optimize page placement. Otherwise,
+> +		 * use current page if in policy nodemask, else select
+> +		 * nearest allowed node, if any.  If no allowed nodes, use
+> +		 * current [!misplaced].
+>  		 */
+> -		if (node_isset(curnid, pol->v.nodes))
+> +		if (node_isset(curnid, pol->v.nodes)) {
+> +			if (node_isset(thisnid, pol->v.nodes))
+> +				goto moron;
+
+Nice label :)
+
+>  			goto out;
+> +		}
+>  		z = first_zones_zonelist(
+>  				node_zonelist(numa_node_id(), GFP_HIGHUSER),
+>  				gfp_zone(GFP_HIGHUSER),
+> @@ -2516,6 +2520,7 @@ int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long
+>  
+>  	/* Migrate the page towards the node whose CPU is referencing it */
+>  	if (pol->flags & MPOL_F_MORON) {
+> +moron:
+>  		polnid = thisnid;
+>  
+>  		if (!should_numa_migrate_memory(current, page, curnid, thiscpu))
+> -- 
+> 2.28.0
 > 
 
-Technically the host need not restore MSR_IA32_TSC at all.  This follows
-the idea of the discussion with Oliver Upton about transmitting the
-state of the kvmclock heuristics to userspace, which include a (TSC,
-CLOCK_MONOTONIC) pair to transmit the offset to the destination.  All
-that needs to be an L1 value is then the TSC value in that pair.
 
-I'm a bit torn over this patch.  On one hand it's an easy solution, on
-the other hand it's... just wrong if KVM_GET_MSR is used for e.g.
-debugging the guest.
+Cheers,
+Phil
 
-I'll talk to Maxim and see if he can work on the kvmclock migration stuff.
-
-Paolo
+-- 
 
