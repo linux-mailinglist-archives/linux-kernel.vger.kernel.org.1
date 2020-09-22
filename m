@@ -2,163 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58EFB274A0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 22:22:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3396A274A1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 22:29:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726614AbgIVUWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 16:22:08 -0400
-Received: from mga05.intel.com ([192.55.52.43]:8645 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726448AbgIVUWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 16:22:08 -0400
-IronPort-SDR: Xj93aYAV3LMQ1eJ8O7eHnc4n3iEMVqN+NrfnivW0ucUtIrS/vZZyn5zZeXH/BpEFssEpx44wxk
- NX5BLjC69P/A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9752"; a="245538604"
-X-IronPort-AV: E=Sophos;i="5.77,291,1596524400"; 
-   d="scan'208";a="245538604"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 13:22:07 -0700
-IronPort-SDR: 8CxwxhWgoL4Wn/YAMFmwoR54aP+Ht5jSCTlmmo9xGJ9mHUqC7zXk1hIDa44dNUPY85rDkB/xCt
- jmWVuCIQi6Sw==
-X-IronPort-AV: E=Sophos;i="5.77,291,1596524400"; 
-   d="scan'208";a="382436019"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 13:22:07 -0700
-Date:   Tue, 22 Sep 2020 13:24:12 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Jacob Pan <jacob.pan.linux@gmail.com>,
-        iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>, Wu Hao <hao.wu@intel.com>,
-        Yi Sun <yi.y.sun@intel.com>, jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v9 3/7] iommu/uapi: Introduce enum type for PASID data
- format
-Message-ID: <20200922132412.614d4461@jacob-builder>
-In-Reply-To: <20200918101108.672c2f5a@jacob-builder>
-References: <1599861476-53416-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1599861476-53416-4-git-send-email-jacob.jun.pan@linux.intel.com>
-        <20200918094450.GP31590@8bytes.org>
-        <20200918101108.672c2f5a@jacob-builder>
-Organization: OTC
-X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S1726625AbgIVU25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 16:28:57 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:44849 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726567AbgIVU25 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 16:28:57 -0400
+Received: by mail-il1-f193.google.com with SMTP id y8so18286122ilm.11;
+        Tue, 22 Sep 2020 13:28:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sG3/4Sm2TbdfoNZTEErI9bYJSMt9tAsj3PNbFfGW440=;
+        b=WJ1NhZqoAsaNrOLSJNdkJbrmBNluYYy0JVKh8mHIzM2HO8xBxhNwZKyXT4Cm/5evkA
+         nuaBB3wUuj2LVc4P0qXnBIUMWXnsPTgFh8yVvQr7W4CXLVBh3sOESq/yu5gt2fezn+H7
+         d3pGncXLKtlAwEIYIj5FBDwGIftkDrN+K8lUDaI1Sl+aloCJk5Zc30xidv0QZoU1Mfq9
+         6EcCnLLonzCgZ2JMsebX/QFFv+aEFIe+EbwpoumWjyaSRPIswPAfsPJu6UN5C97HY78r
+         PvHJjS7FmVFPdPdGzrbYPKXfuEfKwJnQPxKPvI9IJ+y0biOSiGvStNmnVhwbjkuCVZy6
+         g2+g==
+X-Gm-Message-State: AOAM530b66ngV7Q23NCSykeXRG9WeG1izwPC/PH6XICwy/ecpKqEW42S
+        1dZu8qhCJY4r1L5xw0BFMw==
+X-Google-Smtp-Source: ABdhPJwa0z2waMXySa0O+m+dIuO8EDFkC94aAPAWjkmJ8FNwkvzwEn3oTHwvj7PfsYkpPqkQ+KyLPg==
+X-Received: by 2002:a92:99cb:: with SMTP id t72mr5775658ilk.172.1600806535543;
+        Tue, 22 Sep 2020 13:28:55 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id u15sm7898833ior.6.2020.09.22.13.28.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 13:28:54 -0700 (PDT)
+Received: (nullmailer pid 3186311 invoked by uid 1000);
+        Tue, 22 Sep 2020 20:28:52 -0000
+Date:   Tue, 22 Sep 2020 14:28:52 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Hector Yuan <hector.yuan@mediatek.com>
+Cc:     linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        linux-kernel@vger.kernel.org, wsd_upstream@mediatek.com
+Subject: Re: [PATCH v7 2/2] dt-bindings: cpufreq: add bindings for MediaTek
+ cpufreq HW
+Message-ID: <20200922202852.GA3134161@bogus>
+References: <1599712262-8819-1-git-send-email-hector.yuan@mediatek.com>
+ <1599712262-8819-3-git-send-email-hector.yuan@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1599712262-8819-3-git-send-email-hector.yuan@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joerg,
+On Thu, Sep 10, 2020 at 12:31:02PM +0800, Hector Yuan wrote:
+> From: "Hector.Yuan" <hector.yuan@mediatek.com>
+> 
+> Add devicetree bindings for MediaTek HW driver.
+> 
+> Signed-off-by: Hector.Yuan <hector.yuan@mediatek.com>
+> ---
+>  .../bindings/cpufreq/cpufreq-mediatek-hw.yaml      |  141 ++++++++++++++++++++
+>  1 file changed, 141 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml b/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
+> new file mode 100644
+> index 0000000..118a163
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
+> @@ -0,0 +1,141 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/cpufreq/cpufreq-mediatek-hw.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MediaTek's CPUFREQ Bindings
+> +
+> +maintainers:
+> +  - Hector Yuan <hector.yuan@mediatek.com>
+> +
+> +description:
+> +  CPUFREQ HW is a hardware engine used by MediaTek
+> +  SoCs to manage frequency in hardware. It is capable of controlling frequency
+> +  for multiple clusters.
+> +
+> +properties:
+> +  compatible:
+> +    const: "mediatek,cpufreq-hw"
 
-I sent out v10 with Randy's comments addressed but I didn't change this
-patch. Does my explanation below make sense? I am hoping to make it in
-v5.10 since many other pieces depend on it, your guidance is much
-appreciated.
+Needs to be SoC specific. This stuff is never constant from one SoC to 
+the next. 'cpufreq' is a Linuxism. What's the block called in the 
+datasheet? Use that.
 
-Jacob
+Don't need quotes either.
 
+> +
+> +  reg:
+> +    minItems: 1
+> +    maxItems: 2
+> +    description: |
+> +      Addresses and sizes for the memory of the HW bases in each frequency domain.
+> +
+> +  reg-names:
+> +    items:
+> +      - const: "freq-domain0"
+> +      - const: "freq-domain1"
 
-On Fri, 18 Sep 2020 10:11:08 -0700, Jacob Pan
-<jacob.jun.pan@linux.intel.com> wrote:
+Kind of pointless to have names based on the index. Drop 'reg-names'.
 
-> Hi Joerg,
-> 
-> On Fri, 18 Sep 2020 11:44:50 +0200, Joerg Roedel <joro@8bytes.org> wrote:
-> 
-> > On Fri, Sep 11, 2020 at 02:57:52PM -0700, Jacob Pan wrote:  
-> > > There can be multiple vendor-specific PASID data formats used in UAPI
-> > > structures. This patch adds enum type with a last entry which makes
-> > > range checking much easier.    
-> > 
-> > But it also makes it much easier to screw up the numbers (which are ABI)
-> > by inserting a new value into the middle. I prefer defines here, or
-> > alternativly BUILD_BUG_ON() checks for the numbers.
-> >   
-> I am not following, the purpose of IOMMU_PASID_FORMAT_LAST *is* for
-> preparing the future insertion of new value into the middle.
-> The checking against IOMMU_PASID_FORMAT_LAST is to protect ABI
-> compatibility by making sure that out of range format are rejected in all
-> versions of the ABI.
-> For example, in v5.10, ABI has IOMMU_PASID_FORMAT_LAST = 2, then user data
-> with format = 2 will be rejected. So this user app will not work or
-> released.
-> 
-> Now say in v5.11, we add one more format in the middle and set
-> IOMMU_PASID_FORMAT_LAST = 3. Then user data with the new format = 2 can
-> be supported.
-> 
-> Without the checking for IOMMU_PASID_FORMAT_LAST, at v5.10 time the user
-> binary may succeed and become legacy binary that we cannot break in v5.11.
-> This renders format = 2 unusable for v5.11.
-> 
-> I thought enum makes it less susceptible to programming errors than
-> defines by making sure the ascending order. I might have missed your
-> point, could you elaborate?
-> 
-> > Regards,
-> > 
-> > 	Joerg
-> >   
-> > > 
-> > > Suggested-by: Alex Williamson <alex.williamson@redhat.com>
-> > > Reviewed-by: Eric Auger <eric.auger@redhat.com>
-> > > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> > > ---
-> > >  include/uapi/linux/iommu.h | 8 ++++++--
-> > >  1 file changed, 6 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/include/uapi/linux/iommu.h b/include/uapi/linux/iommu.h
-> > > index b42acc8fe007..7cc6ee6c41f7 100644
-> > > --- a/include/uapi/linux/iommu.h
-> > > +++ b/include/uapi/linux/iommu.h
-> > > @@ -298,11 +298,16 @@ struct iommu_gpasid_bind_data_vtd {
-> > >  					 IOMMU_SVA_VTD_GPASID_PCD |
-> > > \ IOMMU_SVA_VTD_GPASID_PWT)
-> > >  
-> > > +enum iommu_pasid_data_format {
-> > > +	IOMMU_PASID_FORMAT_INTEL_VTD = 1,
-> > > +	IOMMU_PASID_FORMAT_LAST,
-> > > +};
-> > > +
-> > >  /**
-> > >   * struct iommu_gpasid_bind_data - Information about device and guest
-> > > PASID binding
-> > >   * @argsz:	User filled size of this data
-> > >   * @version:	Version of this data structure
-> > > - * @format:	PASID table entry format
-> > > + * @format:	PASID table entry format of enum
-> > > iommu_pasid_data_format type
-> > >   * @flags:	Additional information on guest bind request
-> > >   * @gpgd:	Guest page directory base of the guest mm to bind
-> > >   * @hpasid:	Process address space ID used for the guest mm in
-> > > host IOMMU @@ -321,7 +326,6 @@ struct iommu_gpasid_bind_data {
-> > >  	__u32 argsz;
-> > >  #define IOMMU_GPASID_BIND_VERSION_1	1
-> > >  	__u32 version;
-> > > -#define IOMMU_PASID_FORMAT_INTEL_VTD	1
-> > >  	__u32 format;
-> > >  	__u32 addr_width;
-> > >  #define IOMMU_SVA_GPASID_VAL	(1 << 0) /* guest PASID valid */
-> > > -- 
-> > > 2.7.4    
-> 
-> 
-> Thanks,
-> 
-> Jacob
+> +    description: |
+> +      Frequency domain name. i.e.
+> +      "freq-domain0", "freq-domain1".
+> +
+> +  "#freq-domain-cells":
+> +    const: 1
+> +    description: |
+> +      Number of cells in a freqency domain specifier.
 
+You don't need this. It's not a common binding that's going to vary.
 
-Thanks,
+> +
+> +  mtk-freq-domain:
+> +    maxItems: 1
+> +    description: |
+> +      Define this cpu belongs to which frequency domain. i.e.
+> +      cpu0-3 belong to frequency domain0,
+> +      cpu4-6 belong to frequency domain1.
 
-Jacob
+This property doesn't go in the 'mediatek,cpufreq-hw' node. You would 
+need a separate schema. However, I think the easiest thing to do here is 
+something like this:
+
+mediatek,freq-domain-0 = <&cpu0>, <&cpu1>;
+
+Or you could just re-use the OPP binding with just 0 entries:
+
+opp-table-0 {
+  compatible = "mediatek,hw-operating-points", "operating-points-v2";
+};
+opp-table-1 {
+  compatible = "mediatek,hw-operating-points", "operating-points-v2";
+};
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - "#freq-domain-cells"
+> +
+> +examples:
+> +  - |
+> +    cpus {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            cpu0: cpu@0 {
+> +                device_type = "cpu";
+> +                compatible = "arm,cortex-a55";
+> +                enable-method = "psci";
+> +                mtk-freq-domain = <&cpufreq_hw 0>;
+> +                reg = <0x000>;
+> +            };
+> +
+> +            cpu1: cpu@1 {
+
+Unit address is wrong.
+
+> +                device_type = "cpu";
+> +                compatible = "arm,cortex-a55";
+> +                enable-method = "psci";
+> +                mtk-freq-domain = <&cpufreq_hw 0>;
+> +                reg = <0x100>;
+> +            };
+> +
+> +            cpu2: cpu@2 {
+> +                device_type = "cpu";
+> +                compatible = "arm,cortex-a55";
+> +                enable-method = "psci";
+> +                mtk-freq-domain = <&cpufreq_hw 0>;
+> +                reg = <0x200>;
+> +            };
+> +
+> +            cpu3: cpu@3 {
+> +                device_type = "cpu";
+> +                compatible = "arm,cortex-a55";
+> +                enable-method = "psci";
+> +                mtk-freq-domain = <&cpufreq_hw 0>;
+> +                reg = <0x300>;
+> +            };
+> +
+> +            cpu4: cpu@4 {
+> +                device_type = "cpu";
+> +                compatible = "arm,cortex-a55";
+> +                enable-method = "psci";
+> +                mtk-freq-domain = <&cpufreq_hw 1>;
+> +                reg = <0x400>;
+> +            };
+> +
+> +            cpu5: cpu@5 {
+> +                device_type = "cpu";
+> +                compatible = "arm,cortex-a55";
+> +                enable-method = "psci";
+> +                mtk-freq-domain = <&cpufreq_hw 1>;
+> +                reg = <0x500>;
+> +            };
+> +
+> +            cpu6: cpu@6 {
+> +                device_type = "cpu";
+> +                compatible = "arm,cortex-a75";
+> +                enable-method = "psci";
+> +                mtk-freq-domain = <&cpufreq_hw 1>;
+> +                reg = <0x600>;
+> +            };
+> +
+> +            cpu7: cpu@7 {
+> +                device_type = "cpu";
+> +                compatible = "arm,cortex-a75";
+> +                enable-method = "psci";
+> +                mtk-freq-domain = <&cpufreq_hw 1>;
+> +                reg = <0x700>;
+> +            };
+> +    };
+> +
+> +    /* ... */
+> +
+> +    soc {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +
+> +        cpufreq_hw: cpufreq@11bc00 {
+> +            compatible = "mediatek,cpufreq-hw";
+> +            reg = <0 0x11bc10 0 0x8c>,
+> +               <0 0x11bca0 0 0x8c>;
+> +            reg-names = "freq-domain0", "freq-domain1";
+> +            #freq-domain-cells = <1>;
+> +        };
+> +    };
+> +
+> +
+> +
+> +
+> -- 
+> 1.7.9.5
