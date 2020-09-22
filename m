@@ -2,99 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6146274A77
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 22:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAD41274A22
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 22:31:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726719AbgIVU5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 16:57:41 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:49992 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726448AbgIVU5l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 16:57:41 -0400
-X-Greylist: delayed 2926 seconds by postgrey-1.27 at vger.kernel.org; Tue, 22 Sep 2020 16:57:41 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=79PSozI9m8qEzrG9Klfx1TLRdoa057EVPadwK1EgUac=; b=KW7paQGHjjmNPAK1+iHprV2RrP
-        Pjyn36ukSG61uAPUratvBrwg0QAQLCIhj6j+CwQVXDCNBhi5cV99jqm2aBMwI+AAWfQPrViRkAHR0
-        S3sV51L7gORzwW5hSB3WDY8YFodZWDAVdtxrwwzH62oMjvEtkrDF3gyyOAqallQSAU2lkWtFbpjB9
-        0LbFszfeaKVc21J5NhCNk8z5ZxFqw6G5XD9eLCQ85jmwTqMlfuiSsI4CFbY3N+wEZ8aEH3eHWUg3f
-        AGghPAgk93qR9h8EvEtkoNh7B7YtfiStvUuhXoNsAP8Tr86tFQtwt7f9DQrQ95ApiRsFEOhDNCoyF
-        at4/8fww==;
-Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
-        by ale.deltatee.com with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <gunthorp@deltatee.com>)
-        id 1kKoar-00058z-R0; Tue, 22 Sep 2020 14:08:55 -0600
-Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.92)
-        (envelope-from <gunthorp@deltatee.com>)
-        id 1kKoaq-0000mq-D4; Tue, 22 Sep 2020 14:08:52 -0600
-From:   Logan Gunthorpe <logang@deltatee.com>
-To:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Logan Gunthorpe <logang@deltatee.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 22 Sep 2020 14:08:44 -0600
-Message-Id: <20200922200844.2982-1-logang@deltatee.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726652AbgIVUbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 16:31:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55302 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726567AbgIVUbr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 16:31:47 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 02520235FD;
+        Tue, 22 Sep 2020 20:31:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600806707;
+        bh=RsLf3KsvU0BPVszU0l9mTLEEEccmbTJ1ZzzU+yVAiIY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=NSpRrMhhepxbFfAvUKKbuPjELwiHnwhLcyz/DCLlIGDOFL47Nf8FBabyaDoc0kQ9w
+         ASCWzhR4SUPrEuqXgVhp8IgvQeHD39xSMuvZSJ1ZomHlkBvuVSua8vstDZz7shj1ke
+         qjAEtqCr1zWWlcuAdW8qkFNbHESaabTsjmVwyMrA=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 8F0C135227BD; Tue, 22 Sep 2020 13:31:46 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 13:31:46 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>, tytso@mit.edu,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        stable@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] random: use correct memory barriers for crng_node_pool
+Message-ID: <20200922203146.GC29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200916233042.51634-1-ebiggers@kernel.org>
+ <20200917072644.GA5311@gondor.apana.org.au>
+ <20200917165802.GC855@sol.localdomain>
+ <20200921081939.GA4193@gondor.apana.org.au>
+ <20200921152714.GC29330@paulmck-ThinkPad-P72>
+ <20200921221104.GA6556@gondor.apana.org.au>
+ <20200921232639.GK29330@paulmck-ThinkPad-P72>
+ <20200921235136.GA6796@gondor.apana.org.au>
+ <20200922184243.GA29330@paulmck-ThinkPad-P72>
+ <20200922185931.GA1616407@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 172.16.1.31
-X-SA-Exim-Rcpt-To: dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org, logang@deltatee.com, robin.murphy@arm.com, vkoul@kernel.org, dave.jiang@intel.com, dan.j.williams@intel.com
-X-SA-Exim-Mail-From: gunthorp@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-6.5 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        MYRULES_FREE,MYRULES_NO_TEXT,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.2
-Subject: [PATCH] dmaengine: ioat: Allocate correct size for descriptor chunk
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922185931.GA1616407@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dma_alloc_coherent() is called with a fixed SZ_2M size, but frees happen
-with IOAT_CHUNK_SIZE. Recently, IOAT_CHUNK_SIZE was reduced to 512M but
-the allocation did not change. To fix, change to using the
-IOAT_CHUNK_SIZE define.
+On Tue, Sep 22, 2020 at 11:59:31AM -0700, Eric Biggers wrote:
+> On Tue, Sep 22, 2020 at 11:42:43AM -0700, Paul E. McKenney wrote:
+> > On Tue, Sep 22, 2020 at 09:51:36AM +1000, Herbert Xu wrote:
+> > > On Mon, Sep 21, 2020 at 04:26:39PM -0700, Paul E. McKenney wrote:
+> > > >
+> > > > > But this reasoning could apply to any data structure that contains
+> > > > > a spin lock, in particular ones that are dereferenced through RCU.
+> > > > 
+> > > > I lost you on this one.  What is special about a spin lock?
+> > > 
+> > > I don't know, that was Eric's concern.  He is inferring that
+> > > spin locks through lockdep debugging may trigger dependencies
+> > > that require smp_load_acquire.
+> > > 
+> > > Anyway, my point is if it applies to crng_node_pool then it
+> > > would equally apply to RCU in general.
+> > 
+> > Referring to the patch you call out below...
+> > 
+> > Huh.  The old cmpxchg() primitive is fully ordered, so the old mb()
+> > preceding it must have been for correctly interacting with hardware on
+> > !SMP systems.  If that is the case, then the use of cmpxchg_release()
+> > is incorrect.  This is not the purview of the memory model, but rather
+> > of device-driver semantics.  Or does crng not (or no longer, as the case
+> > might be) interact with hardware RNGs?
+> 
+> No hardware involved here.  The mb() is just unnecessary, as I noted in my patch
+> https://lore.kernel.org/lkml/20200916233042.51634-1-ebiggers@kernel.org/.
+> 
+> > What prevents either the old or the new code from kfree()ing the old
+> > state out from under another CPU that just now picked up a pointer to the
+> > old state?  The combination of cmpxchg_release() and smp_load_acquire()
+> > won't do anything to prevent this from happening.  This is after all not
+> > a memory-ordering issue, but instead an object-lifetime issue.  But maybe
+> > you have a lock or something that provides the needed protection.  I don't
+> > see how this can be the case and still require the cmpxchg_release()
+> > and smp_load_acquire(), but perhaps this is a failure of imagination on
+> > my part.
+> 
+> crng_node_pool is initialized only once, and never freed.
 
-This was caught with the upcoming patchset for converting Intel platforms to the
-dma-iommu implementation. It has a warning when the unmapped size differs from
-the mapped size.
+Thank you on both counts!
 
-Fixes: a02254f8a676 ("dmaengine: ioat: Decreasing allocation chunk size 2M->512K")
-Link: https://lore.kernel.org/intel-gfx/776771a2-247a-d1be-d882-bee02d919ae0@deltatee.com/
-Suggested-by: Robin Murphy <robin.murphy@arm.com>
-Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-Cc: Vinod Koul <vkoul@kernel.org>
-Cc: Dave Jiang <dave.jiang@intel.com>
-Cc: Dan Williams <dan.j.williams@intel.com>
----
- drivers/dma/ioat/dma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/dma/ioat/dma.c b/drivers/dma/ioat/dma.c
-index a814b200299b..07296171e2bb 100644
---- a/drivers/dma/ioat/dma.c
-+++ b/drivers/dma/ioat/dma.c
-@@ -389,7 +389,7 @@ ioat_alloc_ring(struct dma_chan *c, int order, gfp_t flags)
- 		struct ioat_descs *descs = &ioat_chan->descs[i];
- 
- 		descs->virt = dma_alloc_coherent(to_dev(ioat_chan),
--						 SZ_2M, &descs->hw, flags);
-+					IOAT_CHUNK_SIZE, &descs->hw, flags);
- 		if (!descs->virt) {
- 			int idx;
- 
-
-base-commit: ba4f184e126b751d1bffad5897f263108befc780
--- 
-2.20.1
-
+							Thanx, Paul
