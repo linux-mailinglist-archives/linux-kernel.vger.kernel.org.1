@@ -2,87 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7065C274875
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 20:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FA6B274877
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 20:46:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726631AbgIVSpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 14:45:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726526AbgIVSpb (ORCPT
+        id S1726686AbgIVSp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 14:45:58 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:49034 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726573AbgIVSp6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 14:45:31 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5511AC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 11:45:31 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id b12so17126247edz.11
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 11:45:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8c6EeUGA2JVkso4IqlL2CrFeDrbUm7OKTRmu5kZhlsc=;
-        b=Me7B1W3OkL9a9k06+kK2W63aYlIIuMxl0iqyNohzY/tocACgvnxvoGcmA7rdU+MLsn
-         3xhq1hxlqnEu4Dpfr3BWE3xpj+R6ROCobHWOkYNTd35ydhNUmXp04rfxPPRoMhP0yo6H
-         auwc+dejMt8j1SaxmdEKtJE+1qHcbrMHYwb46BcrcrcPn7yewEksNXfqmtDXwley9j0/
-         TKzWYNoh2hmViMi7uIxY381wpO8dQqxaR+sHjZdzuqquuQ5f87XMFgfA780T8OYW0zHF
-         V50sLMyM3Heau2h5NGeseGV0FgUJgt7yoOI22FZEw4hBZPAzJ7+wMrzF9E7ey3Ajk9ly
-         /yqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8c6EeUGA2JVkso4IqlL2CrFeDrbUm7OKTRmu5kZhlsc=;
-        b=Kz9GRff4p52GHFTr/tXnwhcJhNg4V+l7iyNkmNhsVcaYXve7o0WQrBLjUquDu/2Jt1
-         Koluln7QzLjmfbRYJ+2JQvbUMP0cWByJeI3KldZYY3s5Y9Mk9u9Br0rpqFnJLvlkMVnM
-         igK64S3uZrqkhMzxcapxGD6/JpEs6YCJAioXKZ4/BGkLDDZVJR2oRZcgbomi21311M7s
-         HKaWY+0hos3IYawXKY3tNJQYY28q+r7FaY0bDGuN6CHqztTpCDEOwHDpmNFsX8F38z5P
-         +DydOp/HmZKCMrgMuUoWgJCYHKVbFZInoBb74FQt1eFHmFbAw0IlygBfJW3YcCXaLp1w
-         1NUw==
-X-Gm-Message-State: AOAM530HWBU0HKpWwqTirFWD1JEmyCjoU7b31KZVz82hc+bHfTyY4p7H
-        ZH5PdxX4Li30XqbE527IuAh9ZMSCMo5EmiEN+8HJOciRa1NKmydE
-X-Google-Smtp-Source: ABdhPJyk0BVSyYJapMFDle5dL3DsWiDP4I50lIkjosb7nliMNfC8qnZXKpMm63k6rUZV9l4bxYcH5qlxFFTELjF5qKE=
-X-Received: by 2002:aa7:c0d3:: with SMTP id j19mr5606292edp.40.1600800329142;
- Tue, 22 Sep 2020 11:45:29 -0700 (PDT)
+        Tue, 22 Sep 2020 14:45:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Sender:
+        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=X7NUEq0ufXOsugZoq6CuHmrSiYQPXwP5Ooq9psOTR50=; b=hgbszfn8Q8M+LUV4fO4UmpVrpo
+        W9L10nlBf4AUaJi6wIOyIwMb1CFqMtZY/o9YPR7nGiqdkOmv1tNNRIf5ZhnERq1qVDJh1Nc9vL0nD
+        dJqxD7xLNbLfgkEh7EKiYDePwAfQG01lcQHmMnJJ5jiTFq0cpwqA1E2mIuGRHrpQb4tjqdv1ALsZs
+        vmVwl83kpB1glfzXJMV2KiZK6XxfrMW9wMHWuwarvQfq7GqHyqSNYYu9JgOnHZUQVZuUBmsOf9Ie/
+        p4RgmnFrS92unexkZnUWkGuAIAFVc5EX/1pxqIwTMeQ9QJAqoKDGK/mQj+ZDdpwWf1oUhOiALDh9a
+        CILlE2Bg==;
+Received: from guinness.priv.deltatee.com ([172.16.1.162])
+        by ale.deltatee.com with esmtp (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1kKnIa-0003mC-Kv; Tue, 22 Sep 2020 12:45:57 -0600
+To:     Robin Murphy <robin.murphy@arm.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Tom Murphy <murphyt7@tcd.ie>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     Intel-gfx@lists.freedesktop.org, Ashok Raj <ashok.raj@intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <20200912032200.11489-1-baolu.lu@linux.intel.com>
+ <776771a2-247a-d1be-d882-bee02d919ae0@deltatee.com>
+ <d75e5c9c-1834-7f77-aa51-666186f3db5c@arm.com>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <3f50d09c-c9a1-77aa-0228-985c5d1f5b2b@deltatee.com>
+Date:   Tue, 22 Sep 2020 12:45:52 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <87pn6eb5tv.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87pn6eb5tv.fsf@nanos.tec.linutronix.de>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Tue, 22 Sep 2020 11:45:18 -0700
-Message-ID: <CABCJKufWOkWqhsUNwuNPkYRAZaAnaBH8XWdcRBO29C23QzdyHw@mail.gmail.com>
-Subject: Re: x86/irq: Make run_on_irqstack_cond() typesafe
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Jann Horn <jannh@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <d75e5c9c-1834-7f77-aa51-666186f3db5c@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 172.16.1.162
+X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org, ashok.raj@intel.com, Intel-gfx@lists.freedesktop.org, hch@infradead.org, dwmw2@infradead.org, murphyt7@tcd.ie, joro@8bytes.org, baolu.lu@linux.intel.com, robin.murphy@arm.com
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-8.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE,MYRULES_FREE,NICE_REPLY_A autolearn=ham
+        autolearn_force=no version=3.4.2
+Subject: Re: [Intel-gfx] [PATCH v3 0/6] Convert the intel iommu driver to the
+ dma-iommu api
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
 
-On Tue, Sep 22, 2020 at 12:58 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> Sami reported that run_on_irqstack_cond() requires the caller to cast
-> functions to mismatching types, which trips indirect call Control-Flow
-> Integrity (CFI) in Clang.
->
-> Instead of disabling CFI on that function, provide proper helpers for
-> the three call variants. The actual ASM code stays the same as that is
-> out of reach.
->
-> Reported-by: Sami Tolvanen <samitolvanen@google.com>
-> Fixes: 931b94145981 ("x86/entry: Provide helpers for executing on the irqstack")
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
-Thank you for the patch! I confirmed that this fixes the type mismatch
-issue with CFI for me:
+On 2020-09-22 3:51 a.m., Robin Murphy wrote:
+> On 2020-09-18 21:47, Logan Gunthorpe wrote:
+>> Hi Lu,
+>>
+>> On 2020-09-11 9:21 p.m., Lu Baolu wrote:
+>>> Tom Murphy has almost done all the work. His latest patch series was
+>>> posted here.
+>>>
+>>> https://lore.kernel.org/linux-iommu/20200903201839.7327-1-murphyt7@tcd.ie/
+>>>
+>>> Thanks a lot!
+>>>
+>>> This series is a follow-up with below changes:
+>>>
+>>> 1. Add a quirk for the i915 driver issue described in Tom's cover
+>>> letter.
+>>> 2. Fix several bugs in patch "iommu: Allow the dma-iommu api to use
+>>> bounce buffers" to make the bounce buffer work for untrusted devices.
+>>> 3. Several cleanups in iommu/vt-d driver after the conversion.
+>>>
+>>
+>> I'm trying to test this on an old Sandy Bridge, but found that I get
+>> spammed with warnings on boot. I've put a sample of a few of them below.
+>> They all seem to be related to ioat.
+>>
+>> I had the same issue with Tom's v2 but never saw this on his v1.
+> 
+> I think this might have more to do with ioat being totally broken - 
+> AFAICS it appears to allocate descriptors with a size of 2MB, but free 
+> them with a size of 512KB. Try throwing CONFIG_DMA_API_DEBUG at it to 
+> confirm.
 
-Tested-by: Sami Tolvanen <samitolvanen@google.com>
+Ah, yes, nice catch. Looks like it was broken recently by the following
+commit, but nobody noticed and the dma-iommu patch set added a warning
+which caught it.
 
-Also, please note that this was first reported by Nathan in this GitHub issue:
-https://github.com/ClangBuiltLinux/linux/issues/1052
+a02254f8a676 ("dmaengine: ioat: Decreasing allocation chunk size 2M->512K")
 
-Sami
+Reverting that fixes the issue. I'll try to send patch or two for this.
+
+Logan
+
