@@ -2,93 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97393274362
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 15:39:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1959B274364
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 15:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726806AbgIVNjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 09:39:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726778AbgIVNjn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 09:39:43 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29AAAC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 06:39:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=Dj0SE+agkMPt4RtgGrQDspMH2G8cNUOwicknqNk5yZA=; b=Qcrd+4KUpPW6lmO0FyhIU3+sBa
-        wcNoL5YDdT1H4u8iBEIvwmObNtIoR1ZviLjJ8tXgpCye/WihOtGde4DhWNMNxHD13FMMAXE0sTTcZ
-        auTQJKt3wq7plJ23hsuk5XTAR7DxcrqEjSVgG1xP9d7CTRWmaPQ5GiskA31NGC3ivN0ul1ceZ7OOH
-        Fo+fEFx4PkPZihLWHcNDXtta+Od+ryR7qYyhKdFZEjl9QWZSvHg1fCjidzuZd6I+CPZwj8EjvfPMm
-        dM7f57AEH6xyO0u1pgXUo5w9NFqN9iU5kP5TijIPzv/fT6fNXx8NMtHVWZxWwNm9MhQOm6vbF4KSN
-        O1SgBZdg==;
-Received: from p4fdb0c34.dip0.t-ipconnect.de ([79.219.12.52] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kKiWC-0005MM-RC; Tue, 22 Sep 2020 13:39:41 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     iommu@lists.linux-foundation.org
-Cc:     Dominik Brodowski <linux@dominikbrodowski.net>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] dma-mapping: better document dma_addr_t and DMA_MAPPING_ERROR
-Date:   Tue, 22 Sep 2020 15:40:02 +0200
-Message-Id: <20200922134002.1227279-4-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200922134002.1227279-1-hch@lst.de>
-References: <20200922134002.1227279-1-hch@lst.de>
+        id S1726617AbgIVNlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 09:41:11 -0400
+Received: from mail-dm6nam12on2069.outbound.protection.outlook.com ([40.107.243.69]:3009
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726576AbgIVNlK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 09:41:10 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KySX/cdr2cJq2azLbkyq+NybDZ2B/vU8hiBdc5pI7gT14f2shexfwopAPDv51TA3OM90B2gWVOP6yVUvsKlcqUDWBH7VwY0zJz5NjcixdTSnb5yjnSRaGIVOz3A+hDbhHlBYDLBoJvp0SHWn/N4Qu0Q+S+4qFukPiEdAMH0TVSQtvRnsh1iI+tf55HfSl1GQxr2MhKjga7TD9IvK6i8nDxin57Uk7qZEy0YL9XiSo79veUCGaWX+cI8sWuaxql8b1c5zoL7aduMYQ2tx8mM/+Ktt+yOTBu5kGjjou3L0mH7shk5mIS5h81hEVRJnf2YU1I40bCuILRttWVfnpA3Xjg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ylMbd3LjXvnyrrVWPsOvwQ/3x0p2lLKvYR58z6x2qX4=;
+ b=fjcPsavt2v6eblk3jRFvFo+qfAYRqZjSwQ9/2yJiX0lHomk3emtVvy4rV5nS3CEJonsDT7mQEBGi6YqON2nFwnZAscZtLI+KUmPONqOYKMtbSkYsE+zNJU5+reWkG6qYwwQdYPYDeZKRHEfEvZikZ1rcRb2DuyLFqpHsvaEkaVgF+Bv24i2MThniPmMqIh0Pb823Wgg1KkAP0JWAwCIftJ9GpUBJwqszGhBfGMWs0mmnTNJJZo1aEKa5RIDzsK3rGnhEDenEO0luwuEXzz1EREqkwh7/P4qKFm6vwKLqzihY4xDlNObvwOnBUlc0JbZlvpVDrPocskkqChv9jkY7iA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ylMbd3LjXvnyrrVWPsOvwQ/3x0p2lLKvYR58z6x2qX4=;
+ b=18D+CZcZ1AT9rNXvuTCC3O7lUN87AiF8uFPv1IdvKKQVZyTp9dv4QvVne2brJJ1szI1neEFYTQmE90v/s6JVUAqhan2YUH8NfwCgT3dpY+nJ7zDItItJrv1VReyHHQKTt+/xCuPt7I+KNYlATs9PwfyPUNjs+BEMLA7wa0RUH2Q=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
+ DM6PR12MB3179.namprd12.prod.outlook.com (2603:10b6:5:183::18) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3412.20; Tue, 22 Sep 2020 13:41:08 +0000
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::299a:8ed2:23fc:6346]) by DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::299a:8ed2:23fc:6346%3]) with mapi id 15.20.3391.024; Tue, 22 Sep 2020
+ 13:41:08 +0000
+Subject: Re: [PATCH] crypto: ccp - fix error handling
+To:     Pavel Machek <pavel@denx.de>, "Allen, John" <John.Allen@amd.com>,
+        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200921113435.GA20450@duo.ucw.cz>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+Message-ID: <620833c5-a2bf-852e-16f1-f8ed04bf8fea@amd.com>
+Date:   Tue, 22 Sep 2020 08:41:06 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20200921113435.GA20450@duo.ucw.cz>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DM5PR21CA0006.namprd21.prod.outlook.com
+ (2603:10b6:3:ac::16) To DM5PR12MB1355.namprd12.prod.outlook.com
+ (2603:10b6:3:6e::7)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.236.30.118] (165.204.77.1) by DM5PR21CA0006.namprd21.prod.outlook.com (2603:10b6:3:ac::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.7 via Frontend Transport; Tue, 22 Sep 2020 13:41:07 +0000
+X-Originating-IP: [165.204.77.1]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 3f47ee9a-5118-4503-2ae7-08d85efd28f1
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3179:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB3179DF7656937C446976F2A4EC3B0@DM6PR12MB3179.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1186;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CvBvPCAUNmQVKEGV8+iz4qMt8NlQmN3jcdtsH5LvLQhwEWz15ULYZ9k0U9G1iU2UEsTyVLEPxi1E4xvUqjGK0sLN1JYajuonovKVi/3L1ceVcZj8Bj2dH5gAcKut1jUbbcW9JOrjZIDEJeG6tJNTTrZg5/R/AtsYdEbrjUQk5CXsHFx8YnnJ7LfdbwNCx2zybjZqxL3ycRQKzLpzC69j0TvSarVyK3Ei411yfLQ+ctgW7J7hOavXaAL4Z8+LltPc8qNgYYj8GIYjHk8cRQVvDX4w2vZW2zcjONDTcuxOWa1yPoAbeHgbRIedTwMJa9/hyLUwDZDVD6yE3Vl63I0N/oDZPgCsOP2aqme2E1w9C1HaI/THzoDKug537QIHy5ZF
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(346002)(366004)(39860400002)(31686004)(26005)(52116002)(6486002)(53546011)(36756003)(16526019)(478600001)(186003)(316002)(2616005)(956004)(110136005)(16576012)(8676002)(2906002)(86362001)(5660300002)(66946007)(8936002)(31696002)(4744005)(66556008)(66476007)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: OXAGnMIWUeRjLqVQ1uVUA4m1KvE7/CreD+oPklmAP2ad4/qk1dLh+CjiiTHTX6YhN92viMym3u2ur8k85uuGJmHseL2GhLBgXMuBeDkIN0QTe6x2i6UtmO+qzG/ReZEEc6u0frlv4ndfYdi4Wj5NN7vIK1Zd7TpiMRpmp9XOdRxfJ4eOO6qe56oEv92NznRS6pmuNEBgnELRh0XUU4dkLoz/yxatRNvEIknquNWOQKWdN7MV7H1O6n2pKzPY0LOoYnlpkhqJY2frJW2YLavwox7q9hi73URk2AojYNNPNgysETuN0k2PBf4tDneQGarBzEi+UL51XnPKQR+cVUPsNUpVrOcHnSKJyruucRSj/D90YiAF72lTLjx29ymfq/ulbYgbqY0skbjzz7BNKzK2nq7QbgJpaipOity5oCZev/Kk12tJ1w+L0lz9r8Em3FuCkjYgorIZdiDFuQWelZHTDjfl+H01EtKKIb1JLzzkAfnt4T8zeV65GkPif9hT+n9rO3Y6fVSsNYrhBnAa5zQCMhMzKQc4pr0ePSbXPrQngjkiXxZdPpej7BX6leBDj8ivrz3UR3226ErTUoJlFjDiGOQ9RikzgOoN1OZkFwW4T+ty+AGq/166wGqOZeidF+tn0exNS/VQWpbrgw7P50qNRw==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3f47ee9a-5118-4503-2ae7-08d85efd28f1
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2020 13:41:08.6132
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WXC3wEt6p7lhtPjt9rwl2dqz/X/OX9IKuHUXjdd1NS0+Sg+R/THnL5wRlsgR6ROxXCY/eeyPyJjCBSVOTKbnWw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3179
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the comment documenting dma_addr_t away from the dma_map_ops
-definition which isn't very related to it, and toward DMA_MAPPING_ERROR,
-which is somewhat related.  Add a little blurb about DMA_MAPPING_ERROR
-as well.
+On 9/21/20 6:34 AM, Pavel Machek wrote:
+> Fix resource leak in error handling.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- include/linux/dma-mapping.h | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+Does it need a Fixes: tag?
 
-diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
-index 51e93d44b826c8..c4395cf7e265dd 100644
---- a/include/linux/dma-mapping.h
-+++ b/include/linux/dma-mapping.h
-@@ -67,12 +67,6 @@
-  */
- #define DMA_ATTR_PRIVILEGED		(1UL << 9)
- 
--/*
-- * A dma_addr_t can hold any valid DMA or bus address for the platform.
-- * It can be given to a device to use as a DMA source or target.  A CPU cannot
-- * reference a dma_addr_t directly because there may be translation between
-- * its physical address space and the bus address space.
-- */
- struct dma_map_ops {
- 	void* (*alloc)(struct device *dev, size_t size,
- 				dma_addr_t *dma_handle, gfp_t gfp,
-@@ -131,6 +125,16 @@ struct dma_map_ops {
- 	unsigned long (*get_merge_boundary)(struct device *dev);
- };
- 
-+/*
-+ * A dma_addr_t can hold any valid DMA or bus address for the platform.  It can
-+ * be given to a device to use as a DMA source or target.  A CPU cannot
-+ * reference a dma_addr_t directly because there may be translation between its
-+ * physical address space and the bus address space.
-+ *
-+ * DMA_MAPPING_ERROR is the magic error code if a mapping failed.  It should not
-+ * be used directly in drivers, but checked for using dma_mapping_error()
-+ * instead.
-+ */
- #define DMA_MAPPING_ERROR		(~(dma_addr_t)0)
- 
- extern const struct dma_map_ops dma_virt_ops;
--- 
-2.28.0
+Thanks,
+Tom
 
+> 
+> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+> 
+> diff --git a/drivers/crypto/ccp/ccp-ops.c b/drivers/crypto/ccp/ccp-ops.c
+> index bd270e66185e..40869ea1ed20 100644
+> --- a/drivers/crypto/ccp/ccp-ops.c
+> +++ b/drivers/crypto/ccp/ccp-ops.c
+> @@ -1744,7 +1744,7 @@ ccp_run_sha_cmd(struct ccp_cmd_queue *cmd_q, struct ccp_cmd *cmd)
+>  			break;
+>  		default:
+>  			ret = -EINVAL;
+> -			goto e_ctx;
+> +			goto e_data;
+>  		}
+>  	} else {
+>  		/* Stash the context */
+> 
