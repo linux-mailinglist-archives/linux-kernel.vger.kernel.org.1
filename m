@@ -2,88 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B365F2737E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 03:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C146D273806
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 03:26:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729524AbgIVBWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 21:22:31 -0400
-Received: from mga12.intel.com ([192.55.52.136]:20247 "EHLO mga12.intel.com"
+        id S1729557AbgIVBYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 21:24:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729471AbgIVBWa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 21:22:30 -0400
-IronPort-SDR: uUGBau7/ZMSeTS7O3qxfa9JX6Ue2nZSk6pvgib4E3g8c92GffVd+xyZgHC0WFn5YiTUBHlSEKe
- M2fZ98pb8+MQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="139993688"
-X-IronPort-AV: E=Sophos;i="5.77,288,1596524400"; 
-   d="scan'208";a="139993688"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 18:22:30 -0700
-IronPort-SDR: 3qZtqaB1FrWVP4m9mBYNne7FpZlhfQDqZGwQCRN8K+Sp95kSBXnh21PlPhlxmSWQzGFq6LG2No
- 1i+hY7J3yNTQ==
-X-IronPort-AV: E=Sophos;i="5.77,288,1596524400"; 
-   d="scan'208";a="485742456"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 18:22:29 -0700
-Date:   Mon, 21 Sep 2020 18:22:28 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Vipin Sharma <vipinsh@google.com>, thomas.lendacky@amd.com,
-        pbonzini@redhat.com, tj@kernel.org, lizefan@huawei.com,
-        joro@8bytes.org, corbet@lwn.net, brijesh.singh@amd.com,
-        jon.grimm@amd.com, eric.vantassell@amd.com, gingell@google.com,
-        rientjes@google.com, kvm@vger.kernel.org, x86@kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Erdem Aktas <erdemaktas@google.com>
-Subject: Re: [RFC Patch 1/2] KVM: SVM: Create SEV cgroup controller.
-Message-ID: <20200922012227.GA26483@linux.intel.com>
-References: <20200922004024.3699923-1-vipinsh@google.com>
- <20200922004024.3699923-2-vipinsh@google.com>
- <94c3407d-07ca-8eaf-4073-4a5e2a3fb7b8@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <94c3407d-07ca-8eaf-4073-4a5e2a3fb7b8@infradead.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+        id S1729471AbgIVBYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 21:24:52 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4C83923A79;
+        Tue, 22 Sep 2020 01:24:51 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1kKX33-001sGC-UD; Mon, 21 Sep 2020 21:24:49 -0400
+Message-ID: <20200922012414.115238201@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Mon, 21 Sep 2020 21:24:14 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [for-next][PATCH 00/26] tracing: Updates for 5.10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 06:04:04PM -0700, Randy Dunlap wrote:
-> Hi,
-> 
-> On 9/21/20 5:40 PM, Vipin Sharma wrote:
-> > diff --git a/init/Kconfig b/init/Kconfig
-> > index d6a0b31b13dc..1a57c362b803 100644
-> > --- a/init/Kconfig
-> > +++ b/init/Kconfig
-> > @@ -1101,6 +1101,20 @@ config CGROUP_BPF
-> >  	  BPF_CGROUP_INET_INGRESS will be executed on the ingress path of
-> >  	  inet sockets.
-> >  
-> > +config CGROUP_SEV
-> > +	bool "SEV ASID controller"
-> > +	depends on KVM_AMD_SEV
-> > +	default n
-> > +	help
-> > +	  Provides a controller for AMD SEV ASIDs. This controller limits and
-> > +	  shows the total usage of SEV ASIDs used in encrypted VMs on AMD
-> > +	  processors. Whenever a new encrypted VM is created using SEV on an
-> > +	  AMD processor, this controller will check the current limit in the
-> > +	  cgroup to which the task belongs and will deny the SEV ASID if the
-> > +	  cgroup has already reached its limit.
-> > +
-> > +	  Say N if unsure.
-> 
-> Something here (either in the bool prompt string or the help text) should
-> let a reader know w.t.h. SEV means.
-> 
-> Without having to look in other places...
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+for-next
 
-ASIDs too.  I'd also love to see more info in the docs and/or cover letter
-to explain why ASID management on SEV requires a cgroup.  I know what an
-ASID is, and have a decent idea of how KVM manages ASIDs for legacy VMs, but
-I know nothing about why ASIDs are limited for SEV and not legacy VMs.
+Head SHA1: fd264ce96c382bc2e36eb1f49ac45c5980650244
+
+
+Dan Carpenter (1):
+      tracing: remove a pointless assignment
+
+Davidlohr Bueso (1):
+      fgraph: Convert ret_stack tasklist scanning to rcu
+
+Jarkko Sakkinen (1):
+      kprobes: Use module_name() macro
+
+Masami Hiramatsu (19):
+      tools/bootconfig: Show bootconfig compact tree from bootconfig file
+      tools/bootconfig: Add list option
+      tools/bootconfig: Make all functions static
+      tools/bootconfig: Add a script to generate ftrace shell-command from bootconfig
+      tools/bootconfig: Add a script to generates bootconfig from ftrace
+      tools/bootconfig: Add --init option for bconf2ftrace.sh
+      tracing/boot: Add per-instance tracing_on option support
+      Documentation: tracing: Add tracing_on option to boot-time tracer
+      tracing/kprobes: Support perf-style return probe
+      tracing/uprobes: Support perf-style return probe
+      Documentation: tracing: Add %return suffix description
+      Documentation: tracing: boot: Add an example of tracing function-calls
+      selftests/ftrace: Add %return suffix tests
+      kprobes: Init kprobes in early_initcall
+      tracing: Define event fields early stage
+      tracing: Enable adding dynamic events early stage
+      tracing: Enable creating new instance early boot
+      tracing/boot, kprobe, synth: Initialize boot-time tracing earlier
+      Documentation: tracing: Add the startup timing of boot-time tracing
+
+Randy Dunlap (1):
+      tracing: Delete repeated words in comments
+
+Wei Yang (2):
+      tracing: toplevel d_entry already initialized
+      tracing: make tracing_init_dentry() returns an integer instead of a d_entry pointer
+
+Xianting Tian (1):
+      tracing: Use __this_cpu_read() in trace_buffered_event_enable()
+
+----
+ Documentation/trace/boottime-trace.rst             |  38 ++++
+ Documentation/trace/kprobetrace.rst                |   2 +
+ Documentation/trace/uprobetracer.rst               |   2 +
+ MAINTAINERS                                        |   1 +
+ kernel/kprobes.c                                   |   2 +-
+ kernel/trace/fgraph.c                              |   8 +-
+ kernel/trace/ftrace.c                              |   2 +-
+ kernel/trace/trace.c                               |  98 ++++++---
+ kernel/trace/trace.h                               |   9 +-
+ kernel/trace/trace_boot.c                          |  17 +-
+ kernel/trace/trace_dynevent.c                      |  10 +-
+ kernel/trace/trace_events.c                        | 110 ++++++----
+ kernel/trace/trace_events_synth.c                  |  30 ++-
+ kernel/trace/trace_functions.c                     |  22 +-
+ kernel/trace/trace_functions_graph.c               |   8 +-
+ kernel/trace/trace_hwlat.c                         |   8 +-
+ kernel/trace/trace_kprobe.c                        |  41 +++-
+ kernel/trace/trace_printk.c                        |   8 +-
+ kernel/trace/trace_probe.h                         |   1 +
+ kernel/trace/trace_stack.c                         |  12 +-
+ kernel/trace/trace_stat.c                          |   8 +-
+ kernel/trace/trace_uprobe.c                        |  24 +-
+ kernel/trace/tracing_map.c                         |   2 +-
+ tools/bootconfig/main.c                            | 147 +++++++++----
+ tools/bootconfig/scripts/bconf2ftrace.sh           | 199 +++++++++++++++++
+ tools/bootconfig/scripts/ftrace.sh                 | 109 +++++++++
+ tools/bootconfig/scripts/ftrace2bconf.sh           | 244 +++++++++++++++++++++
+ tools/bootconfig/scripts/xbc.sh                    |  56 +++++
+ .../ftrace/test.d/kprobe/kprobe_syntax_errors.tc   |   6 +
+ .../test.d/kprobe/kretprobe_return_suffix.tc       |  21 ++
+ .../ftrace/test.d/kprobe/uprobe_syntax_errors.tc   |   6 +
+ 31 files changed, 1055 insertions(+), 196 deletions(-)
+ create mode 100755 tools/bootconfig/scripts/bconf2ftrace.sh
+ create mode 100644 tools/bootconfig/scripts/ftrace.sh
+ create mode 100755 tools/bootconfig/scripts/ftrace2bconf.sh
+ create mode 100644 tools/bootconfig/scripts/xbc.sh
+ create mode 100644 tools/testing/selftests/ftrace/test.d/kprobe/kretprobe_return_suffix.tc
