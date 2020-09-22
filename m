@@ -2,81 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4972F27421E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:36:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE55D274222
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726593AbgIVMgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 08:36:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48618 "EHLO
+        id S1726607AbgIVMhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 08:37:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726505AbgIVMgm (ORCPT
+        with ESMTP id S1726505AbgIVMhP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 08:36:42 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9200C061755;
-        Tue, 22 Sep 2020 05:36:41 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id gx22so13565216ejb.5;
-        Tue, 22 Sep 2020 05:36:41 -0700 (PDT)
+        Tue, 22 Sep 2020 08:37:15 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 173D6C061755;
+        Tue, 22 Sep 2020 05:37:15 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id g128so19293550iof.11;
+        Tue, 22 Sep 2020 05:37:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:references:to:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=37wPUZzrX/ueT6NMg9kdHB6XHwPYogZuEw4uPuTq8sE=;
-        b=UVdqrcAopld6iqwnmFYqqatYlAwVgvPY4GOZkUByWKVEaTSj8gDTHr6fJqu+sSvgUl
-         P78O7cfKnKGWzh/Vlu7Dn+tRNVC/SUtIyOCCzM5yngQ4sdb2KebddqhInOnrqYOxf5wH
-         yJDkU2NEmZ531vZN3FQBqZUglkUG/eXe8tmRgb8VxoDD5u2a/T+6To/aXZMvDkfZE3g8
-         JkMLY7UQNjsz+quKqIgStDh/NWERlJsz3c3y1bnOMOjcqsOz81oGFlctjnXCSaRfeDMW
-         SMACO1gY5GAeIbCV/4vkjVVDEah4PD4QQMLnDJsExdXASyv/qLXbjPb0bgq1lCpOC1a9
-         OTrQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zFQzsuujKElV6LtzLXsM0uz/7sKSzxEF2swvXixbgcU=;
+        b=pPZFEYz772Y00aL6I89bLezhZ1ZSA+934tPUMBBiooGMWH19SXpJ8bl10e06NmMYWr
+         BuK/9pGS4qwZFIdpuGZmydXZxaxWXKBvslrO1C9ZY4VgVmNmTnqpbL7iFlf4sjR1Vo3r
+         sI2xwGwV/jaAtOXb49k9udGvyJ/bbFRTDOGx6K7Xekik/1B43qONcRllYBUW8jMLSMdj
+         ID2fqpZQwgvAnMkm9GNjMg0OP/4/FEMMaX8OQeXdD0wCmcMlTx+VP5UgVq7HcOfLVF9P
+         TI7cwfDv+ekZ333Lu9auSteTza9zPTrN1UpsXjROHSAwv8yhy5P4YPG6ZypqSDzKUedh
+         Y5Ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:references:to:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=37wPUZzrX/ueT6NMg9kdHB6XHwPYogZuEw4uPuTq8sE=;
-        b=j+d10HKPZPJB2yUTkTR9RA/VBfhQpINUcgw2CBwiVyyeQCBgfCFq3Dfpfeh4ODrfV8
-         o6CFJQC1FKOcU8lvpruaNqxBmRQ4ppTsSRYMOxwLFkRIGuKw5iP5+GG4Kv+BMevHziOW
-         4jf0AT+mPZDHJdNwA5BuBRkROlWJXsDFjEx9JGd0ia2hJ9j1Ir+BD2YyFn8tA7ADastf
-         f5u6SMKRlAxIfIzWF1sPrQuQpcNsmL6J/OLLoMgECyB1DPz7GwgTqc9HGQ6VHxKdZMb0
-         ZeG6ve2Z7noJ8GabNG31wWgIrkwvDIJq1tVLGthAUiJbaaN7ieVj4wskvUZsp+CrN0D5
-         xzug==
-X-Gm-Message-State: AOAM533lTKV8Ez2Zv7RY/3t4uEiV0omlnUsarLfRnn90MHV1dzmHu2kR
-        twE9QjHG1hWPwhBYlqJvFR1JGUoFL0sPOw==
-X-Google-Smtp-Source: ABdhPJx/ivoNrPnHok6AuooB49i9RX/dbfmnvOx1eoqAsN6bQv/uXgYgtW6w+3o970f9qAgo6DTdQw==
-X-Received: by 2002:a17:906:fa81:: with SMTP id lt1mr4561267ejb.459.1600778200068;
-        Tue, 22 Sep 2020 05:36:40 -0700 (PDT)
-Received: from [192.168.1.101] (abab42.neoplus.adsl.tpnet.pl. [83.6.165.42])
-        by smtp.gmail.com with ESMTPSA id r13sm10867936edo.48.2020.09.22.05.36.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Sep 2020 05:36:39 -0700 (PDT)
-Subject: Re: [PATCH -next] clk: qcom: Remove set but not used variable
-References: <3724370a-19da-d4c6-fa6a-245e5017869c@gmail.com>
-To:     Li Heng <liheng40@huawei.com>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        mturquette@baylibre.com, sboyd@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>
-From:   Konrad Dybcio <konradybcio@gmail.com>
-X-Forwarded-Message-Id: <3724370a-19da-d4c6-fa6a-245e5017869c@gmail.com>
-Message-ID: <710ed642-cafc-7a68-dfe7-f16b6a1f81e6@gmail.com>
-Date:   Tue, 22 Sep 2020 14:36:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zFQzsuujKElV6LtzLXsM0uz/7sKSzxEF2swvXixbgcU=;
+        b=kbzfBpau6iB6GAyUgVg5A6mIAVxgkOp0upsu4qtlRGq+j2eV96jaYdGtMDjDw5JayD
+         UTjk10PUuPpxl91XxGSRbiOvM9A5Pi/bnWkLXbkr8vZlshzx5xVyvUF10K8kOF7bZ3t9
+         ybUmrJUQyCeoBB6N8KGAamM8QcraRmsI3RM5rYPUxIVkdlvQW0iA6n5I1K4WujimV6ir
+         IZJtbtwgXRm8Nz/kZ2TS/eS1MvTNfC4N5S/tTFLW8UYc+cFRirOCBMAWZUFYsCLv5xLg
+         yFUAkROnQwvU4xPdMVh74Vi7q6//95pHzzRRFJd15s9NnmrndkY5FaCsMYdEY8VMzwYQ
+         Vhig==
+X-Gm-Message-State: AOAM533Ln1QzMlolPRgrOHEvnQ/k2x0WDHityqVPoU43N0mgrKckAcEy
+        3dlw1v5VvCE6Dq26R32ROkw9jOpMfMra/NMVMac=
+X-Google-Smtp-Source: ABdhPJxye/MkIp551boOR1WwfOkduVFP0l+ez27MYGdisf+spj9/XVdhXZ8I4q+9AKlggFGWhalMz+fJ3lALpCJVGkg=
+X-Received: by 2002:a05:6638:587:: with SMTP id a7mr3788125jar.72.1600778233885;
+ Tue, 22 Sep 2020 05:37:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <3724370a-19da-d4c6-fa6a-245e5017869c@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200922114905.2942859-1-gch981213@gmail.com> <20200922120112.GS4792@sirena.org.uk>
+In-Reply-To: <20200922120112.GS4792@sirena.org.uk>
+From:   Chuanhong Guo <gch981213@gmail.com>
+Date:   Tue, 22 Sep 2020 20:37:02 +0800
+Message-ID: <CAJsYDVLsBm9pnjd5hbDptXXN3Vd7e=cpuDMc-d-XZ-k46j9ztQ@mail.gmail.com>
+Subject: Re: [PATCH v2] spi: spi-mtk-nor: fix timeout calculation overflow
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-spi@vger.kernel.org,
+        =?UTF-8?B?QmF5aSBDaGVuZyAo56iL5YWr5oSPKQ==?= 
+        <bayi.cheng@mediatek.com>, stable@vger.kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Sep 22, 2020 at 8:02 PM Mark Brown <broonie@kernel.org> wrote:
+> (which we should pay attention to in the core for flash
+> stuff but IIRC we didn't do that yet).
 
-This is not the correct solution. I sent a proper fix here [1].
-
-Please do not modify critical platform drivers without having tested them on real hardware (I don't see any Tested-by's?). Instead, file a bug report so that more people can take a look at this. If this got merged, it would have had to be reverted eventually anyway..
-
-[1] https://patchwork.kernel.org/patch/11792407/
-
-Konrad
+BTW we do have that taken care. spi_mem_adjust_op_size will
+adjust the transfer size according to max_transfer/message_size
+if no custom adjust_op_size hook is defined in the driver. If a custom
+adjust_op_size is defined, the driver adjusts the transfer size for it's
+exec_op hook. The size limit between exec_op and transfer_one_message
+can be different. (this spi-mtk-nor is an example of that.)
+-- 
+Regards,
+Chuanhong Guo
