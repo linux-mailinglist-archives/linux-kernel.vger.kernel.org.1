@@ -2,207 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B386D274ACA
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD0D2274AD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726951AbgIVVHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 17:07:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726932AbgIVVGy (ORCPT
+        id S1726685AbgIVVKQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Sep 2020 17:10:16 -0400
+Received: from mail-ua1-f66.google.com ([209.85.222.66]:45759 "EHLO
+        mail-ua1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726625AbgIVVKQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 17:06:54 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B128C061755;
-        Tue, 22 Sep 2020 14:06:54 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id y14so2926136pgf.12;
-        Tue, 22 Sep 2020 14:06:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=s2HCAxyO+XuYMLzto3YJY+q/fwyGyhZhVewL5HVF+qc=;
-        b=lRIEw3LIKpK43VEPPd4xH2mox+Cahw0bTKVkceOo4e4tsWnt5YzukXsfzlUNgRv9rX
-         ZCl62JqQcu/+AzptIeEUCJ11pojyLp62XOrlMaTVNn9lCfe/ffIP6+RmmcR3uv3OKRF4
-         jNnFhLVl1f+5wv+iMlTTIzAe25W9N1BZMJ6loO/LdtXqJmPVN+KCGn/JDdnTP8ejlNqV
-         dDdKSRfBL4fY1GZAZ2hXSXAnSLH9TU4avltFpZHyyXiN4qKziIXMgnY+0hDHktBy3w7V
-         Yw5zbps37F/hmIAR7uIAuNYIQDvvot4GkiFWKxLolgxnriU/+Ii9AzDDmFvr5R1btozD
-         uHNQ==
+        Tue, 22 Sep 2020 17:10:16 -0400
+Received: by mail-ua1-f66.google.com with SMTP id q26so5924874uaa.12
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 14:10:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=s2HCAxyO+XuYMLzto3YJY+q/fwyGyhZhVewL5HVF+qc=;
-        b=myb0OtUg6jv8AjmZ7Gnr4raAWrruEu0AatCB1qCaWIrTGTZ32A41lx8MiWptYpDVkz
-         C3sid3Gaeu/tPR2GTQR/F/d3hJhHE13kDZFA5bZxJaelncY9DSBfYpMZ2Jciy0RC2usF
-         sAzrilAeSdWp5OijAhJdcYoLorMLWs9zfDk+PhVoIrjztamN2L62whIr9fjTztzjc26n
-         5kmQ6mlDjcmF1FA/Z+wJ24I2zgNF1kZ18FXGe9LAvVU+LFdwFbr+X+JYfIdLDLYrEHfQ
-         XIhnSChRvGF5PYjnJ692P8w648is0WBEDEFA7pgbwUMkxNjW+mUjfk27LpcvOtEilorm
-         j9Kg==
-X-Gm-Message-State: AOAM531cqcPWTMYPHkcAXsjzdOPgsiN6jQD2uLMDqdnhdPXIyb9KTEll
-        OrR3kG5YpJeeoHuAzud79I8=
-X-Google-Smtp-Source: ABdhPJyTivGi+ISDXozBH1tMjx78d74kOuBv8lXeZEL7dpO1lsp2fJNTibT4pdbAXO+tflxBsJijqw==
-X-Received: by 2002:aa7:9850:0:b029:142:2501:34f0 with SMTP id n16-20020aa798500000b0290142250134f0mr5610701pfq.73.1600808813520;
-        Tue, 22 Sep 2020 14:06:53 -0700 (PDT)
-Received: from nickserv.localdomain (c-98-33-101-203.hsd1.ca.comcast.net. [98.33.101.203])
-        by smtp.gmail.com with ESMTPSA id i15sm16118945pfk.145.2020.09.22.14.06.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 14:06:52 -0700 (PDT)
-From:   Nick Terrell <nickrterrell@gmail.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        squashfs-devel@lists.sourceforge.net,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
-        Nick Terrell <nickrterrell@gmail.com>,
-        Nick Terrell <terrelln@fb.com>, Chris Mason <clm@fb.com>,
-        Petr Malat <oss@malat.biz>, Johannes Weiner <jweiner@fb.com>,
-        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>
-Subject: [PATCH v2 9/9] lib: zstd: Remove zstd compatibility wrapper
-Date:   Tue, 22 Sep 2020 14:09:24 -0700
-Message-Id: <20200922210924.1725-10-nickrterrell@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200922210924.1725-1-nickrterrell@gmail.com>
-References: <20200922210924.1725-1-nickrterrell@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=y3bqfEWtFeqz84XjleRuAjyIAbuP49WihE9gT5z0Xpk=;
+        b=nqBjHH+hQYRASRVr8h0Va25uDOFbpW4o7QOk7gUQSt455GyvE+5DyeVj9lE04EK3sG
+         +QgEKawNYeCxgAyd3xnPYw2DfzGfqKeaptE9fvHeHL7yZAv2c76GDNmcgvOMIeSWYMAI
+         Pf6sT1kpI/fl/Ph4p9iZW4smYAUu2lhsdqQ/h1ZOal5D7R7V+SakAXJBIUPu/aHcj/6P
+         zpPESVA+6fw7u5Eaqj9q7+5cUzmcaKuzJOBrSr1edB20PqAnSECqDzdFFB6fs/OVPesU
+         YluBufIVAfi/5V5slyCTnPfVRyhfBOgo5QSCMzrpTOPvdF63wmk6hjSBA2zsvAbqJCP8
+         wU8Q==
+X-Gm-Message-State: AOAM531Qj0m5l7SeD8wSD+T6k+a1qlGOv+Nzk3l4nsOR7RSVOleSRiaa
+        nNnWuARRHqI6/6icrfIvZXr1DK4YoxTyje9lRRw=
+X-Google-Smtp-Source: ABdhPJwf458xGexI6j9rzdx76r+ZgU0CiTh4q+ebSzA/OSJtbqpD6+k8+n46tHaIl1obplPxHctYUXzksc5F574jzus=
+X-Received: by 2002:a9f:24d4:: with SMTP id 78mr4744540uar.47.1600809014913;
+ Tue, 22 Sep 2020 14:10:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200922210510.156220-1-lyude@redhat.com>
+In-Reply-To: <20200922210510.156220-1-lyude@redhat.com>
+From:   Ilia Mirkin <imirkin@alum.mit.edu>
+Date:   Tue, 22 Sep 2020 17:10:03 -0400
+Message-ID: <CAKb7UvhAb0wFd9Qi1FGJ=TAYZJ9DYXL6XXMfnG49xEO=a9TuYg@mail.gmail.com>
+Subject: Re: [PATCH] drm/nouveau/kms/nv50-: Fix clock checking algorithm in nv50_dp_mode_valid()
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     nouveau <nouveau@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <dri-devel@lists.freedesktop.org>, Ben Skeggs <bskeggs@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Terrell <terrelln@fb.com>
+Can we use 6bpc on arbitrary DP monitors, or is there a capability for
+it? Maybe only use 6bpc if display_info.bpc == 6 and otherwise use 8?
 
-All callers have been transitioned to the new zstd-1.4.6 API. There are
-no more callers of the zstd compatibility wrapper, so delete it.
-
-Signed-off-by: Nick Terrell <terrelln@fb.com>
----
- include/linux/zstd_compat.h | 116 ------------------------------------
- 1 file changed, 116 deletions(-)
- delete mode 100644 include/linux/zstd_compat.h
-
-diff --git a/include/linux/zstd_compat.h b/include/linux/zstd_compat.h
-deleted file mode 100644
-index cda9208bf04a..000000000000
---- a/include/linux/zstd_compat.h
-+++ /dev/null
-@@ -1,116 +0,0 @@
--/*
-- * Copyright (c) 2016-present, Facebook, Inc.
-- * All rights reserved.
-- *
-- * This source code is licensed under the BSD-style license found in the
-- * LICENSE file in the root directory of https://github.com/facebook/zstd.
-- * An additional grant of patent rights can be found in the PATENTS file in the
-- * same directory.
-- *
-- * This program is free software; you can redistribute it and/or modify it under
-- * the terms of the GNU General Public License version 2 as published by the
-- * Free Software Foundation. This program is dual-licensed; you may select
-- * either version 2 of the GNU General Public License ("GPL") or BSD license
-- * ("BSD").
-- */
--
--#ifndef ZSTD_COMPAT_H
--#define ZSTD_COMPAT_H
--
--#include <linux/zstd.h>
--
--#if defined(ZSTD_VERSION_NUMBER) && (ZSTD_VERSION_NUMBER >= 10406)
--/*
-- * This header provides backwards compatibility for the zstd-1.4.6 library
-- * upgrade. This header allows us to upgrade the zstd library version without
-- * modifying any callers. Then we will migrate callers from the compatibility
-- * wrapper one at a time until none remain. At which point we will delete this
-- * header.
-- *
-- * It is temporary and will be deleted once the upgrade is complete.
-- */
--
--#include <linux/zstd_errors.h>
--
--static inline size_t ZSTD_CCtxWorkspaceBound(ZSTD_compressionParameters compression_params)
--{
--    return ZSTD_estimateCCtxSize_usingCParams(compression_params);
--}
--
--static inline size_t ZSTD_CStreamWorkspaceBound(ZSTD_compressionParameters compression_params)
--{
--    return ZSTD_estimateCStreamSize_usingCParams(compression_params);
--}
--
--static inline size_t ZSTD_DCtxWorkspaceBound(void)
--{
--    return ZSTD_estimateDCtxSize();
--}
--
--static inline size_t ZSTD_DStreamWorkspaceBound(unsigned long long window_size)
--{
--    return ZSTD_estimateDStreamSize(window_size);
--}
--
--static inline ZSTD_CCtx* ZSTD_initCCtx(void* wksp, size_t wksp_size)
--{
--    if (wksp == NULL)
--        return NULL;
--    return ZSTD_initStaticCCtx(wksp, wksp_size);
--}
--
--static inline ZSTD_CStream* ZSTD_initCStream_compat(ZSTD_parameters params, uint64_t pledged_src_size, void* wksp, size_t wksp_size)
--{
--    ZSTD_CStream* cstream;
--    size_t ret;
--
--    if (wksp == NULL)
--        return NULL;
--
--    cstream = ZSTD_initStaticCStream(wksp, wksp_size);
--    if (cstream == NULL)
--        return NULL;
--
--    /* 0 means unknown in old API but means 0 in new API */
--    if (pledged_src_size == 0)
--        pledged_src_size = ZSTD_CONTENTSIZE_UNKNOWN;
--
--    ret = ZSTD_initCStream_advanced(cstream, NULL, 0, params, pledged_src_size);
--    if (ZSTD_isError(ret))
--        return NULL;
--
--    return cstream;
--}
--#define ZSTD_initCStream ZSTD_initCStream_compat
--
--static inline ZSTD_DCtx* ZSTD_initDCtx(void* wksp, size_t wksp_size)
--{
--    if (wksp == NULL)
--        return NULL;
--    return ZSTD_initStaticDCtx(wksp, wksp_size);
--}
--
--static inline ZSTD_DStream* ZSTD_initDStream_compat(unsigned long long window_size, void* wksp, size_t wksp_size)
--{
--    if (wksp == NULL)
--        return NULL;
--    (void)window_size;
--    return ZSTD_initStaticDStream(wksp, wksp_size);
--}
--#define ZSTD_initDStream ZSTD_initDStream_compat
--
--typedef ZSTD_frameHeader ZSTD_frameParams;
--
--static inline size_t ZSTD_getFrameParams(ZSTD_frameParams* frame_params, const void* src, size_t src_size)
--{
--    return ZSTD_getFrameHeader(frame_params, src, src_size);
--}
--
--static inline size_t ZSTD_compressCCtx_compat(ZSTD_CCtx* cctx, void* dst, size_t dst_capacity, const void* src, size_t src_size, ZSTD_parameters params)
--{
--    return ZSTD_compress_advanced(cctx, dst, dst_capacity, src, src_size, NULL, 0, params);
--}
--#define ZSTD_compressCCtx ZSTD_compressCCtx_compat
--
--#endif /* ZSTD_VERSION_NUMBER >= 10406 */
--#endif /* ZSTD_COMPAT_H */
--- 
-2.28.0
-
+On Tue, Sep 22, 2020 at 5:06 PM Lyude Paul <lyude@redhat.com> wrote:
+>
+> While I thought I had this correct (since it actually did reject modes
+> like I expected during testing), Ville Syrjala from Intel pointed out
+> that the logic here isn't correct. max_clock refers to the max symbol
+> rate supported by the encoder, so limiting clock to ds_clock using max()
+> doesn't make sense. Additionally, we want to check against 6bpc for the
+> time being since that's the minimum possible bpc here, not the reported
+> bpc from the connector. See:
+>
+> https://lists.freedesktop.org/archives/dri-devel/2020-September/280276.html
+>
+> For more info.
+>
+> So, let's rewrite this using Ville's advice.
+>
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
+> Fixes: 409d38139b42 ("drm/nouveau/kms/nv50-: Use downstream DP clock limits for mode validation")
+> Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
+> Cc: Lyude Paul <lyude@redhat.com>
+> Cc: Ben Skeggs <bskeggs@redhat.com>
+> ---
+>  drivers/gpu/drm/nouveau/nouveau_dp.c | 23 +++++++++++++----------
+>  1 file changed, 13 insertions(+), 10 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/nouveau/nouveau_dp.c b/drivers/gpu/drm/nouveau/nouveau_dp.c
+> index 7b640e05bd4cd..24c81e423d349 100644
+> --- a/drivers/gpu/drm/nouveau/nouveau_dp.c
+> +++ b/drivers/gpu/drm/nouveau/nouveau_dp.c
+> @@ -231,23 +231,26 @@ nv50_dp_mode_valid(struct drm_connector *connector,
+>                    const struct drm_display_mode *mode,
+>                    unsigned *out_clock)
+>  {
+> -       const unsigned min_clock = 25000;
+> -       unsigned max_clock, ds_clock, clock;
+> +       const unsigned int min_clock = 25000;
+> +       unsigned int max_clock, ds_clock, clock;
+> +       const u8 bpp = 18; /* 6 bpc */
+>         enum drm_mode_status ret;
+>
+>         if (mode->flags & DRM_MODE_FLAG_INTERLACE && !outp->caps.dp_interlace)
+>                 return MODE_NO_INTERLACE;
+>
+>         max_clock = outp->dp.link_nr * outp->dp.link_bw;
+> -       ds_clock = drm_dp_downstream_max_dotclock(outp->dp.dpcd,
+> -                                                 outp->dp.downstream_ports);
+> -       if (ds_clock)
+> -               max_clock = min(max_clock, ds_clock);
+> -
+> -       clock = mode->clock * (connector->display_info.bpc * 3) / 10;
+> -       ret = nouveau_conn_mode_clock_valid(mode, min_clock, max_clock,
+> -                                           &clock);
+> +       clock = mode->clock * bpp / 8;
+> +       if (clock > max_clock)
+> +               return MODE_CLOCK_HIGH;
+> +
+> +       ds_clock = drm_dp_downstream_max_dotclock(outp->dp.dpcd, outp->dp.downstream_ports);
+> +       if (ds_clock && mode->clock > ds_clock)
+> +               return MODE_CLOCK_HIGH;
+> +
+> +       ret = nouveau_conn_mode_clock_valid(mode, min_clock, max_clock, &clock);
+>         if (out_clock)
+>                 *out_clock = clock;
+> +
+>         return ret;
+>  }
+> --
+> 2.26.2
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
