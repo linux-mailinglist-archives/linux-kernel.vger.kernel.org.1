@@ -2,145 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7ECD2741D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1B602741DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:14:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726578AbgIVMLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 08:11:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50162 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726505AbgIVMLf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 08:11:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600776693;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5SAy2ca2q3L9EB+unO167nKo1fIg4hrYmsfk4Zg1pow=;
-        b=jaFs8q2xDCD9SVtqdDERHGzFf/DLQqfUWQxyKAdZtU46tzLG3E0u0MuYOIWseAzbuZ0vGO
-        asz2z7MgJtLCrXknt9zxubRAGffXzHd9ctK6Dh8ffDARFZH8nI+BwA1bw04Pt4FN0KwjXy
-        6RhgSwWDPoMWaJky8MiX4GqGKwhIpNA=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 584FCB330;
-        Tue, 22 Sep 2020 12:12:10 +0000 (UTC)
-Subject: Re: [PATCH v2 2/3] xen-blkfront: add a parameter for disabling of
- persistent grants
-To:     SeongJae Park <sjpark@amazon.com>, konrad.wilk@oracle.com,
-        roger.pau@citrix.com
-Cc:     SeongJae Park <sjpark@amazon.de>, axboe@kernel.dk,
-        aliguori@amazon.com, amit@kernel.org, mheyne@amazon.de,
-        pdurrant@amazon.co.uk, linux-block@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-References: <20200922105209.5284-1-sjpark@amazon.com>
- <20200922105209.5284-3-sjpark@amazon.com>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <fdbaf955-0b92-d356-2792-21b27ea1087d@suse.com>
-Date:   Tue, 22 Sep 2020 14:11:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <20200922105209.5284-3-sjpark@amazon.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726591AbgIVMOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 08:14:35 -0400
+Received: from m17618.mail.qiye.163.com ([59.111.176.18]:33187 "EHLO
+        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726563AbgIVMOf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 08:14:35 -0400
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
+        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id BC3364E1651;
+        Tue, 22 Sep 2020 20:14:32 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Bernie Thompson <bernie@plugable.com>,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     Wang Qing <wangqing@vivo.com>
+Subject: [PATCH] video: use kobj_to_dev()
+Date:   Tue, 22 Sep 2020 20:14:24 +0800
+Message-Id: <1600776867-24226-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGU1NT0pNSE5MT01IVkpNS0tMTE1DTEhKS0NVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Pkk6Ljo4HD8YAg4wMA5IOEkV
+        LEkwCjJVSlVKTUtLTExNQ0xITktNVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISllXWQgBWUFISkhJNwY+
+X-HM-Tid: 0a74b5bca43c9376kuwsbc3364e1651
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.09.20 12:52, SeongJae Park wrote:
-> From: SeongJae Park <sjpark@amazon.de>
-> 
-> Persistent grants feature provides high scalability.  On some small
-> systems, however, it could incur data copy overheads[1] and thus it is
-> required to be disabled.  It can be disabled from blkback side using a
-> module parameter, 'feature_persistent'.  But, it is impossible from
-> blkfront side.  For the reason, this commit adds a blkfront module
-> parameter for disabling of the feature.
-> 
-> [1] https://wiki.xen.org/wiki/Xen_4.3_Block_Protocol_Scalability
-> 
-> Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> ---
->   .../ABI/testing/sysfs-driver-xen-blkfront     |  9 ++++++
->   drivers/block/xen-blkfront.c                  | 28 +++++++++++++------
->   2 files changed, 29 insertions(+), 8 deletions(-)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-driver-xen-blkfront b/Documentation/ABI/testing/sysfs-driver-xen-blkfront
-> index c0a6cb7eb314..9c31334cb2e6 100644
-> --- a/Documentation/ABI/testing/sysfs-driver-xen-blkfront
-> +++ b/Documentation/ABI/testing/sysfs-driver-xen-blkfront
-> @@ -8,3 +8,12 @@ Description:
->                   is 32 - higher value means more potential throughput but more
->                   memory usage. The backend picks the minimum of the frontend
->                   and its default backend value.
-> +
-> +What:           /sys/module/xen_blkfront/parameters/feature_persistent
-> +Date:           September 2020
-> +KernelVersion:  5.10
-> +Contact:        SeongJae Park <sjpark@amazon.de>
-> +Description:
-> +                Whether to enable the persistent grants feature or not.  Note
-> +                that this option only takes effect on newly created frontends.
-> +                The default is Y (enable).
-> diff --git a/drivers/block/xen-blkfront.c b/drivers/block/xen-blkfront.c
-> index 91de2e0755ae..49c324f377de 100644
-> --- a/drivers/block/xen-blkfront.c
-> +++ b/drivers/block/xen-blkfront.c
-> @@ -149,6 +149,13 @@ static unsigned int xen_blkif_max_ring_order;
->   module_param_named(max_ring_page_order, xen_blkif_max_ring_order, int, 0444);
->   MODULE_PARM_DESC(max_ring_page_order, "Maximum order of pages to be used for the shared ring");
->   
-> +/* Enable the persistent grants feature. */
-> +static bool feature_persistent = true;
-> +module_param(feature_persistent, bool, 0644);
-> +MODULE_PARM_DESC(feature_persistent,
-> +		"Enables the persistent grants feature");
-> +
-> +
->   #define BLK_RING_SIZE(info)	\
->   	__CONST_RING_SIZE(blkif, XEN_PAGE_SIZE * (info)->nr_ring_pages)
->   
-> @@ -1866,11 +1873,13 @@ static int talk_to_blkback(struct xenbus_device *dev,
->   		message = "writing protocol";
->   		goto abort_transaction;
->   	}
-> -	err = xenbus_printf(xbt, dev->nodename,
-> -			    "feature-persistent", "%u", 1);
-> -	if (err)
-> -		dev_warn(&dev->dev,
-> -			 "writing persistent grants feature to xenbus");
-> +	if (feature_persistent) {
-> +		err = xenbus_printf(xbt, dev->nodename,
-> +				    "feature-persistent", "%u", 1);
-> +		if (err)
-> +			dev_warn(&dev->dev,
-> +				 "writing persistent grants feature to xenbus");
-> +	}
->   
->   	err = xenbus_transaction_end(xbt, 0);
->   	if (err) {
-> @@ -2316,9 +2325,12 @@ static void blkfront_gather_backend_features(struct blkfront_info *info)
->   	if (xenbus_read_unsigned(info->xbdev->otherend, "feature-discard", 0))
->   		blkfront_setup_discard(info);
->   
-> -	info->feature_persistent =
-> -		!!xenbus_read_unsigned(info->xbdev->otherend,
-> -				       "feature-persistent", 0);
-> +	if (feature_persistent)
-> +		info->feature_persistent =
-> +			!!xenbus_read_unsigned(info->xbdev->otherend,
-> +					       "feature-persistent", 0);
-> +	else
-> +		info->feature_persistent = 0;
->   
->   	indirect_segments = xenbus_read_unsigned(info->xbdev->otherend,
->   					"feature-max-indirect-segments", 0);
-> 
+Use kobj_to_dev() instead of container_of()
 
-Here you have the same problem as in blkback: feature_persistent could
-change its value between the two tests.
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+---
+ drivers/video/fbdev/aty/radeon_base.c | 4 ++--
+ drivers/video/fbdev/udlfb.c           | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
+diff --git a/drivers/video/fbdev/aty/radeon_base.c b/drivers/video/fbdev/aty/radeon_base.c
+index 3fe509c..878c39a
+--- a/drivers/video/fbdev/aty/radeon_base.c
++++ b/drivers/video/fbdev/aty/radeon_base.c
+@@ -2200,7 +2200,7 @@ static ssize_t radeon_show_edid1(struct file *filp, struct kobject *kobj,
+ 				 struct bin_attribute *bin_attr,
+ 				 char *buf, loff_t off, size_t count)
+ {
+-	struct device *dev = container_of(kobj, struct device, kobj);
++	struct device *dev = kobj_to_dev(kobj);
+ 	struct fb_info *info = dev_get_drvdata(dev);
+         struct radeonfb_info *rinfo = info->par;
+ 
+@@ -2212,7 +2212,7 @@ static ssize_t radeon_show_edid2(struct file *filp, struct kobject *kobj,
+ 				 struct bin_attribute *bin_attr,
+ 				 char *buf, loff_t off, size_t count)
+ {
+-	struct device *dev = container_of(kobj, struct device, kobj);
++	struct device *dev = kobj_to_dev(kobj);
+ 	struct fb_info *info = dev_get_drvdata(dev);
+         struct radeonfb_info *rinfo = info->par;
+ 
+diff --git a/drivers/video/fbdev/udlfb.c b/drivers/video/fbdev/udlfb.c
+index 5b014b4..f9b3c1c
+--- a/drivers/video/fbdev/udlfb.c
++++ b/drivers/video/fbdev/udlfb.c
+@@ -1457,7 +1457,7 @@ static ssize_t edid_show(
+ 			struct file *filp,
+ 			struct kobject *kobj, struct bin_attribute *a,
+ 			 char *buf, loff_t off, size_t count) {
+-	struct device *fbdev = container_of(kobj, struct device, kobj);
++	struct device *fbdev = kobj_to_dev(kobj);
+ 	struct fb_info *fb_info = dev_get_drvdata(fbdev);
+ 	struct dlfb_data *dlfb = fb_info->par;
+ 
+@@ -1479,7 +1479,7 @@ static ssize_t edid_store(
+ 			struct file *filp,
+ 			struct kobject *kobj, struct bin_attribute *a,
+ 			char *src, loff_t src_off, size_t src_size) {
+-	struct device *fbdev = container_of(kobj, struct device, kobj);
++	struct device *fbdev = kobj_to_dev(kobj);
+ 	struct fb_info *fb_info = dev_get_drvdata(fbdev);
+ 	struct dlfb_data *dlfb = fb_info->par;
+ 	int ret;
+-- 
+2.7.4
 
-Juergen
