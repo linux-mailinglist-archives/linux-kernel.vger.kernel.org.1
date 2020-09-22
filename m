@@ -2,281 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE8EB273E21
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 11:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9AA2273E28
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 11:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726341AbgIVJJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 05:09:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51263 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726594AbgIVJJv (ORCPT
+        id S1726633AbgIVJKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 05:10:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726594AbgIVJKM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 05:09:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600765788;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dlwBbmlT33V+h0BeMM8gRKX8e2iMIelZkNm7u7GyTbg=;
-        b=GAh4tO217k03vcV1t55K+4jz0fBe88bFiCf85unem2oA8YI/IvzP8JqpaDuQ57JEwGqBvd
-        E/vRcOScz9yWHmcRyXOqbLJ0rYmNfRXvEWMYDxPUwm7Htl2Vd2vVos0PmsdaYOOBkKHBC4
-        22oAWf3+4D3p7nS/OuCq8NEcmQ+64Qc=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-154-1I6Gb3IGMzeiJZI4PHTy_g-1; Tue, 22 Sep 2020 05:09:46 -0400
-X-MC-Unique: 1I6Gb3IGMzeiJZI4PHTy_g-1
-Received: by mail-wr1-f72.google.com with SMTP id f18so7139529wrv.19
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 02:09:46 -0700 (PDT)
+        Tue, 22 Sep 2020 05:10:12 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C417C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 02:10:12 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id d4so2511342wmd.5
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 02:10:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WTdxb0zAPu2kxNDHiiVz1yQGtJI5ctg2vuStvZG9n+c=;
+        b=TCRaakEFzq+QJyoFn5j6BBLtygVsJDqn0uXVtI6THqIniC/Be3Z+ZeG2iQxYaulMRE
+         jJlpfVoWNOlU1LhnaquN8c8z7TSVdH1ewk19xmzX0rwsHn3LSSqPKHYpbKZ2TXpSdu0p
+         Bc6lkcX66yixQjcy0GMnE54nucTj/Z7LgG5hpRpV5Fu5tvw9OiQV3FyvIqsvUhBKM4K8
+         b+5A7pukwm91O+JvzVR0GERlYRCjTHUL0YXQDQZkvjCnbUvoZtEGNqWyAYgziKv188Yl
+         7/6FsTiASjpY1qYkKUs08dfNst6mTReFVXhlVse/vk9qvhyG2sRqzxFmpC/eLDZ7nbFQ
+         gjIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=dlwBbmlT33V+h0BeMM8gRKX8e2iMIelZkNm7u7GyTbg=;
-        b=enmIpg1NGxePSjWFT2qVqbrYqKa/l+FIOAl5SZnkXto7J3fFGTLmSJMLMaWsDo7xRo
-         JFnWnbYNPEveRm4h/irXIeGGOcA2VhkkuyYXKikt+dbA02Q6ZT/4CN2qfAEgkx6eCymJ
-         B1q7tEmk+UiLWQ6/n8djubxP5axI5Rg4azX5H4Ga2dGP++g0+AIO8vfI7zyQblwDUL+c
-         eTgnMLO3MjVUGw2SZbLVwAPhANsF/YTdyS3O7bIBMsgrRM8safGQ5ARg2QhuKbGlEdrl
-         AVLVfj2Xv0OjCqYSfooQFoMQCbif06JvKmHz0YjgEmxUDS3UDXkhCyYwz0kvEWaebmvi
-         Gkhw==
-X-Gm-Message-State: AOAM530/SgjkRElcBnInBMbqIJM9QI1foS+bCqRkNz0wiNhkVrg/w+n0
-        5mTYsnQ45hrbwg/SEfhLZW0Ly+eztIHBHTCo7DYqNPVCJRAZOwSrUgCZ3dONaJrAcmKv0DujJGe
-        HXKC/53UmnBFg5Er+Zgyrnpjt
-X-Received: by 2002:a5d:4645:: with SMTP id j5mr3805573wrs.388.1600765785465;
-        Tue, 22 Sep 2020 02:09:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw7JqV24PrXJuYHeDqe3X8GvO65yGb5CIe9mFGwkxcEfjYU3ieJvPK/stYm5zTeJ+bk0vEEZQ==
-X-Received: by 2002:a5d:4645:: with SMTP id j5mr3805551wrs.388.1600765785182;
-        Tue, 22 Sep 2020 02:09:45 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:ec2c:90a9:1236:ebc6? ([2001:b07:6468:f312:ec2c:90a9:1236:ebc6])
-        by smtp.gmail.com with ESMTPSA id c25sm3454921wml.31.2020.09.22.02.09.43
+        bh=WTdxb0zAPu2kxNDHiiVz1yQGtJI5ctg2vuStvZG9n+c=;
+        b=Y3HoKEPj12umLcDA8XntWBwylz0dOn0JeGzlzGp3N7jJEnjbUg6mb8H/HjUWWk0rS4
+         D24zLLW4q6Qo+q9/oUBvHUfGMYQ6WaX5jrLMt5gL70f/xxk0AGhgz5MzPAIi0KwGtMjS
+         eAYEPMvalYIp62nQbLqWQNoZz0CCzhiuHxkP6s9OWl5nHekQh/DS9Ed3++72fzv7eVTd
+         TED2L2/KVzaa/6C168XIsVs0LGj2tsm3/5hPLxO/WVfk1TxgQgXZccRPTqmOWh7X+JQ+
+         6+SmPtxKEbrjl3L7VJeZ970l2QUA8kzcXbi7ilQV2kXOQ0jAUH+VqOdKNoTwZHtIB56C
+         f2sQ==
+X-Gm-Message-State: AOAM532m5M3+rZytWNoFku88GQWtpGQ79qqeHz9IXv+lUefpyMS1e4V2
+        jsXDzr6ABnt/yKDMXld3T6WyNAM9FjX15Q==
+X-Google-Smtp-Source: ABdhPJwHlrSXW/ckAl7IDPO3bePA4/ajKFF3Ux+50Cp/0vdT8b497QF7Kk3cJihG3d27RYwI1kiDtA==
+X-Received: by 2002:a7b:cb97:: with SMTP id m23mr3347723wmi.173.1600765810537;
+        Tue, 22 Sep 2020 02:10:10 -0700 (PDT)
+Received: from [192.168.1.143] ([170.253.60.68])
+        by smtp.gmail.com with ESMTPSA id t4sm25506608wrr.26.2020.09.22.02.10.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Sep 2020 02:09:44 -0700 (PDT)
-Subject: Re: [PATCH] KVM: x86: emulate wait-for-SIPI and SIPI-VMExit
-To:     yadong.qi@intel.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     sean.j.christopherson@intel.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        liran.alon@oracle.com, nikita.leshchenko@oracle.com,
-        chao.gao@intel.com, kevin.tian@intel.com, luhai.chen@intel.com,
-        bing.zhu@intel.com, kai.z.wang@intel.com
-References: <20200922052343.84388-1-yadong.qi@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <c0157014-d1bb-ef81-b92f-ebecb72396c9@redhat.com>
-Date:   Tue, 22 Sep 2020 11:09:43 +0200
+        Tue, 22 Sep 2020 02:10:09 -0700 (PDT)
+Subject: Re: Expose 'array_length()' macro in <sys/param.h>
+To:     Ville Voutilainen <ville.voutilainen@gmail.com>,
+        Jonathan Wakely <jwakely@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>
+Cc:     gcc@gcc.gnu.org, libstdc++ <libstdc++@gcc.gnu.org>,
+        Libc-alpha <libc-alpha@sourceware.org>,
+        libc-coord@lists.openwall.com, LKML <linux-kernel@vger.kernel.org>
+References: <946e9377-0558-3adf-3eb9-38c507afe2d0@gmail.com>
+ <874knr8qyl.fsf@oldenburg2.str.redhat.com>
+ <dbcf5c85-c468-72f8-0f83-92ec2a6a2991@gmail.com>
+ <875z875si2.fsf@oldenburg2.str.redhat.com>
+ <20200921140100.GA449323@redhat.com>
+ <e734429a-d543-7e75-48e9-a8297a94b035@gmail.com>
+ <20200921220443.GP6061@redhat.com>
+ <CAFk2RUbEtvgFb_FZmcM9L4-g1kG_E7S2p9gveM0Z5Fe=zEDm9w@mail.gmail.com>
+From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
+Message-ID: <34bae433-f67e-877d-f871-928cb55d2a87@gmail.com>
+Date:   Tue, 22 Sep 2020 11:10:08 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200922052343.84388-1-yadong.qi@intel.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAFk2RUbEtvgFb_FZmcM9L4-g1kG_E7S2p9gveM0Z5Fe=zEDm9w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/09/20 07:23, yadong.qi@intel.com wrote:
-> From: Yadong Qi <yadong.qi@intel.com>
-> 
-> Background: We have a lightweight HV, it needs INIT-VMExit and
-> SIPI-VMExit to wake-up APs for guests since it do not monitor
-> the Local APIC. But currently virtual wait-for-SIPI(WFS) state
-> is not supported in nVMX, so when running on top of KVM, the L1
-> HV cannot receive the INIT-VMExit and SIPI-VMExit which cause
-> the L2 guest cannot wake up the APs.
-> 
-> According to Intel SDM Chapter 25.2 Other Causes of VM Exits,
-> SIPIs cause VM exits when a logical processor is in
-> wait-for-SIPI state.
-> 
-> In this patch:
->     1. introduce SIPI exit reason,
->     2. introduce wait-for-SIPI state for nVMX,
->     3. advertise wait-for-SIPI support to guest.
-> 
-> When L1 hypervisor is not monitoring Local APIC, L0 need to emulate
-> INIT-VMExit and SIPI-VMExit to L1 to emulate INIT-SIPI-SIPI for
-> L2. L2 LAPIC write would be traped by L0 Hypervisor(KVM), L0 should
-> emulate the INIT/SIPI vmexit to L1 hypervisor to set proper state
-> for L2's vcpu state.
-> 
-> Handle procdure:
-> Source vCPU:
->     L2 write LAPIC.ICR(INIT).
->     L0 trap LAPIC.ICR write(INIT): inject a latched INIT event to target
->        vCPU.
-> Target vCPU:
->     L0 emulate an INIT VMExit to L1 if is guest mode.
->     L1 set guest VMCS, guest_activity_state=WAIT_SIPI, vmresume.
->     L0 set vcpu.mp_state to INIT_RECEIVED if (vmcs12.guest_activity_state
->        == WAIT_SIPI).
-> 
-> Source vCPU:
->     L2 write LAPIC.ICR(SIPI).
->     L0 trap LAPIC.ICR write(INIT): inject a latched SIPI event to traget
->        vCPU.
-> Target vCPU:
->     L0 emulate an SIPI VMExit to L1 if (vcpu.mp_state == INIT_RECEIVED).
->     L1 set CS:IP, guest_activity_state=ACTIVE, vmresume.
->     L0 resume to L2.
->     L2 start-up.
+[[ CC += LKML ]]
 
-Again, this looks good but it needs testcases.
+Thanks for all your input.  I learned some C++ :)
+
+The following code works for all C and C++ standards:
+g++ --std={c++98, c++03, c++11, c++14, c++17, c++20}
+gcc --std={c89, c99, c11, c18, c2x}
+With `-Wall -Wextra -Werror -pedantic -Wno-vla -Wno-sizeof-pointer-div`.
+It doesn't compile when '+ __array_length(p)' is uncommented.
+It compiles, and returns the correct value (18).
+  With some exceptions:
+c++ doesn't accept the VLA (w[]):
+
+array_length.c: In function 'int main()':
+array_length.c:101:22: error: no matching function for call to 
+'__array_slength(int [y])'
+   101 |   + __array_slength(w)
+       |                      ^
+array_length.c:38:1: note: candidate: 'template<class T, long int N> 
+std::ptrdiff_t __array_slength(const T (&)[N])'
+    38 | __array_slength(const T(&)[N])
+       | ^~~~~~~~~~~~~~~
+array_length.c:38:1: note:   template argument deduction/substitution 
+failed:
+array_length.c:101:22: note:   variable-sized array type 'long int' is 
+not a valid template argument
+   101 |   + __array_slength(w)
+       |                      ^
+
+But we can live with limited support for VLAs in C++.
+So I needed to comment '+ __array_slength(w)',
+and then the program correctly returns 11.
+
+As Ville suggested, I renamed the function/macro to __array_[s]length().
+However, (some) BSDs already provide nitems() in <sys/param.h>,
+so it probably wouldn't be very drastic to
+provide this function/macro with the name '[s]nitems()' there.
+
+Would you like to add anything else before I write the patch?
+
+
+BTW, I should note one more thing:
+
+Linux has a macro named '__must_be_array()' with the same API,
+but slightly different internal implementation,
+so they should be aware of this change.
+However, I don't think they include <sys/param.h> a lot,
+so maybe it doesn't break anything; but they should be aware anyway.
+I CC'd the LKML so they are aware and can give any suggestions.
 
 Thanks,
 
-Paolo
+Alex
 
-> Signed-off-by: Yadong Qi <yadong.qi@intel.com>
-> ---
->  arch/x86/include/asm/vmx.h      |  1 +
->  arch/x86/include/uapi/asm/vmx.h |  2 ++
->  arch/x86/kvm/lapic.c            |  5 ++--
->  arch/x86/kvm/vmx/nested.c       | 53 ++++++++++++++++++++++++---------
->  4 files changed, 45 insertions(+), 16 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/vmx.h b/arch/x86/include/asm/vmx.h
-> index cd7de4b401fe..bff06dc64c52 100644
-> --- a/arch/x86/include/asm/vmx.h
-> +++ b/arch/x86/include/asm/vmx.h
-> @@ -113,6 +113,7 @@
->  #define VMX_MISC_PREEMPTION_TIMER_RATE_MASK	0x0000001f
->  #define VMX_MISC_SAVE_EFER_LMA			0x00000020
->  #define VMX_MISC_ACTIVITY_HLT			0x00000040
-> +#define VMX_MISC_ACTIVITY_WAIT_SIPI		0x00000100
->  #define VMX_MISC_ZERO_LEN_INS			0x40000000
->  #define VMX_MISC_MSR_LIST_MULTIPLIER		512
->  
-> diff --git a/arch/x86/include/uapi/asm/vmx.h b/arch/x86/include/uapi/asm/vmx.h
-> index b8ff9e8ac0d5..ada955c5ebb6 100644
-> --- a/arch/x86/include/uapi/asm/vmx.h
-> +++ b/arch/x86/include/uapi/asm/vmx.h
-> @@ -32,6 +32,7 @@
->  #define EXIT_REASON_EXTERNAL_INTERRUPT  1
->  #define EXIT_REASON_TRIPLE_FAULT        2
->  #define EXIT_REASON_INIT_SIGNAL			3
-> +#define EXIT_REASON_SIPI_SIGNAL         4
->  
->  #define EXIT_REASON_INTERRUPT_WINDOW    7
->  #define EXIT_REASON_NMI_WINDOW          8
-> @@ -94,6 +95,7 @@
->  	{ EXIT_REASON_EXTERNAL_INTERRUPT,    "EXTERNAL_INTERRUPT" }, \
->  	{ EXIT_REASON_TRIPLE_FAULT,          "TRIPLE_FAULT" }, \
->  	{ EXIT_REASON_INIT_SIGNAL,           "INIT_SIGNAL" }, \
-> +	{ EXIT_REASON_SIPI_SIGNAL,           "SIPI_SIGNAL" }, \
->  	{ EXIT_REASON_INTERRUPT_WINDOW,      "INTERRUPT_WINDOW" }, \
->  	{ EXIT_REASON_NMI_WINDOW,            "NMI_WINDOW" }, \
->  	{ EXIT_REASON_TASK_SWITCH,           "TASK_SWITCH" }, \
-> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> index 5ccbee7165a2..d04ac7dc6adf 100644
-> --- a/arch/x86/kvm/lapic.c
-> +++ b/arch/x86/kvm/lapic.c
-> @@ -2839,7 +2839,7 @@ void kvm_apic_accept_events(struct kvm_vcpu *vcpu)
->  
->  	/*
->  	 * INITs are latched while CPU is in specific states
-> -	 * (SMM, VMX non-root mode, SVM with GIF=0).
-> +	 * (SMM, SVM with GIF=0).
->  	 * Because a CPU cannot be in these states immediately
->  	 * after it has processed an INIT signal (and thus in
->  	 * KVM_MP_STATE_INIT_RECEIVED state), just eat SIPIs
-> @@ -2847,7 +2847,8 @@ void kvm_apic_accept_events(struct kvm_vcpu *vcpu)
->  	 */
->  	if (kvm_vcpu_latch_init(vcpu)) {
->  		WARN_ON_ONCE(vcpu->arch.mp_state == KVM_MP_STATE_INIT_RECEIVED);
-> -		if (test_bit(KVM_APIC_SIPI, &apic->pending_events))
-> +		if (test_bit(KVM_APIC_SIPI, &apic->pending_events) &&
-> +		    !is_guest_mode(vcpu))
->  			clear_bit(KVM_APIC_SIPI, &apic->pending_events);
->  		return;
->  	}
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index 1bb6b31eb646..fe3bb68df987 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -2946,7 +2946,8 @@ static int nested_vmx_check_vmcs_link_ptr(struct kvm_vcpu *vcpu,
->  static int nested_check_guest_non_reg_state(struct vmcs12 *vmcs12)
->  {
->  	if (CC(vmcs12->guest_activity_state != GUEST_ACTIVITY_ACTIVE &&
-> -	       vmcs12->guest_activity_state != GUEST_ACTIVITY_HLT))
-> +	       vmcs12->guest_activity_state != GUEST_ACTIVITY_HLT &&
-> +	       vmcs12->guest_activity_state != GUEST_ACTIVITY_WAIT_SIPI))
->  		return -EINVAL;
->  
->  	return 0;
-> @@ -3543,19 +3544,29 @@ static int nested_vmx_run(struct kvm_vcpu *vcpu, bool launch)
->  	 */
->  	nested_cache_shadow_vmcs12(vcpu, vmcs12);
->  
-> -	/*
-> -	 * If we're entering a halted L2 vcpu and the L2 vcpu won't be
-> -	 * awakened by event injection or by an NMI-window VM-exit or
-> -	 * by an interrupt-window VM-exit, halt the vcpu.
-> -	 */
-> -	if ((vmcs12->guest_activity_state == GUEST_ACTIVITY_HLT) &&
-> -	    !(vmcs12->vm_entry_intr_info_field & INTR_INFO_VALID_MASK) &&
-> -	    !(vmcs12->cpu_based_vm_exec_control & CPU_BASED_NMI_WINDOW_EXITING) &&
-> -	    !((vmcs12->cpu_based_vm_exec_control & CPU_BASED_INTR_WINDOW_EXITING) &&
-> -	      (vmcs12->guest_rflags & X86_EFLAGS_IF))) {
-> +	switch (vmcs12->guest_activity_state) {
-> +	case GUEST_ACTIVITY_HLT:
-> +		/*
-> +		 * If we're entering a halted L2 vcpu and the L2 vcpu won't be
-> +		 * awakened by event injection or by an NMI-window VM-exit or
-> +		 * by an interrupt-window VM-exit, halt the vcpu.
-> +		 */
-> +		if (!(vmcs12->vm_entry_intr_info_field & INTR_INFO_VALID_MASK) &&
-> +		    !nested_cpu_has(vmcs12, CPU_BASED_NMI_WINDOW_EXITING) &&
-> +		    !(nested_cpu_has(vmcs12, CPU_BASED_INTR_WINDOW_EXITING) &&
-> +		      (vmcs12->guest_rflags & X86_EFLAGS_IF))) {
-> +			vmx->nested.nested_run_pending = 0;
-> +			return kvm_vcpu_halt(vcpu);
-> +		}
-> +		break;
-> +	case GUEST_ACTIVITY_WAIT_SIPI:
->  		vmx->nested.nested_run_pending = 0;
-> -		return kvm_vcpu_halt(vcpu);
-> +		vcpu->arch.mp_state = KVM_MP_STATE_INIT_RECEIVED;
-> +		break;
-> +	default:
-> +		break;
->  	}
-> +
->  	return 1;
->  
->  vmentry_failed:
-> @@ -3781,7 +3792,20 @@ static int vmx_check_nested_events(struct kvm_vcpu *vcpu)
->  			return -EBUSY;
->  		nested_vmx_update_pending_dbg(vcpu);
->  		clear_bit(KVM_APIC_INIT, &apic->pending_events);
-> -		nested_vmx_vmexit(vcpu, EXIT_REASON_INIT_SIGNAL, 0, 0);
-> +		if (vcpu->arch.mp_state != KVM_MP_STATE_INIT_RECEIVED)
-> +			nested_vmx_vmexit(vcpu, EXIT_REASON_INIT_SIGNAL, 0, 0);
-> +		return 0;
-> +	}
-> +
-> +	if (lapic_in_kernel(vcpu) &&
-> +	    test_bit(KVM_APIC_SIPI, &apic->pending_events)) {
-> +		if (block_nested_events)
-> +			return -EBUSY;
-> +
-> +		clear_bit(KVM_APIC_SIPI, &apic->pending_events);
-> +		if (vcpu->arch.mp_state == KVM_MP_STATE_INIT_RECEIVED)
-> +			nested_vmx_vmexit(vcpu, EXIT_REASON_SIPI_SIGNAL, 0,
-> +						apic->sipi_vector & 0xFFUL);
->  		return 0;
->  	}
->  
-> @@ -6471,7 +6495,8 @@ void nested_vmx_setup_ctls_msrs(struct nested_vmx_msrs *msrs, u32 ept_caps)
->  	msrs->misc_low |=
->  		MSR_IA32_VMX_MISC_VMWRITE_SHADOW_RO_FIELDS |
->  		VMX_MISC_EMULATED_PREEMPTION_TIMER_RATE |
-> -		VMX_MISC_ACTIVITY_HLT;
-> +		VMX_MISC_ACTIVITY_HLT |
-> +		VMX_MISC_ACTIVITY_WAIT_SIPI;
->  	msrs->misc_high = 0;
->  
->  	/*
-> 
 
+------------------------------------------------------------------------
+
+#if defined(__cplusplus)
+
+# include <cstddef>
+# if __cplusplus >= 201703L
+#  include <iterator>
+# endif
+
+template<typename T, std::size_t N>
+# if __cplusplus >= 201103L
+constexpr
+# endif
+inline std::size_t
+# if __cplusplus >= 201703L
+__array_length(const T(&arr)[N])
+# else
+__array_length(const T(&)[N])
+# endif
+# if __cplusplus >= 201103L
+noexcept
+# endif
+{
+# if __cplusplus >= 201703L
+	return	std::size(arr);
+# else
+	return	N;
+# endif
+}
+
+template<typename T, std::ptrdiff_t N>
+# if __cplusplus >= 201103L
+constexpr
+# endif
+inline std::ptrdiff_t
+# if __cplusplus >= 202002L
+__array_slength(const T(&arr)[N])
+# else
+__array_slength(const T(&)[N])
+# endif
+# if __cplusplus >= 201103L
+noexcept
+# endif
+{
+# if __cplusplus >= 202002L
+	return	std::ssize(arr);
+# else
+	return	N;
+# endif
+}
+
+
+#else /* !defined(__cplusplus) */
+#include <stddef.h>
+
+# define __is_same_type(a, b)						\
+	__builtin_types_compatible_p(__typeof__(a), __typeof__(b))
+# define __is_array(arr)	(!__is_same_type((arr), &(arr)[0]))
+
+# if __STDC_VERSION__ >= 201112L
+#  define __must_be(e, msg)	(					\
+	0 * (int)sizeof(						\
+		struct {						\
+			_Static_assert((e), msg);			\
+			char ISO_C_forbids_a_struct_with_no_members__;	\
+		}							\
+	)								\
+)
+# else
+#  define __must_be(e, msg)	(					\
+	0 * (int)sizeof(						\
+		struct {						\
+			int	: (-!(e));				\
+			char ISO_C_forbids_a_struct_with_no_members__;	\
+		}							\
+	)								\
+)
+# endif
+
+# define __must_be_array(arr)	__must_be(__is_array(arr), "Must be an 
+array!")
+
+# define __array_len(arr)	(sizeof(arr) / sizeof((arr)[0]))
+# define __array_length(arr)	(__array_len(arr) + __must_be_array(arr))
+# define __array_slength(arr)	((ptrdiff_t)__array_length(arr))
+#endif
+
+
+int main(void)
+{
+	int a[5];
+	const int x = 6;
+	int v[x];
+	int y = 7;
+	int w[y];
+	int *p;
+	(void)p;
+	(void)v;
+	(void)w;
+
+	return	__array_slength(a)
+		+ __array_slength(v)
+		+ __array_slength(w)
+//		+ __array_length(p)
+		;
+}
