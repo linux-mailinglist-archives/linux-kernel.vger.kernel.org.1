@@ -2,102 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D340727427B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:53:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76409274280
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:54:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726650AbgIVMxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 08:53:21 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:59289 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726563AbgIVMxV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 08:53:21 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600779201; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=hbKrx2SwcynLY6Cgk+5NmFAHVfb6P5BLBtwJdA9I6rQ=; b=FCGaANN1SXNAASt5sYfQN2aPO2GKtctnz6DfCXpA+fmjbhokP3Zsg5yeGahA/Kbqz68RgfZ+
- F5ULYd0VXG8Cv47lq0vH+9ock93nY2eQp2hJrgV9A5Qb5YLtLVyg+vRSplzEpdqsdXfMDWny
- Hpo1ukk+11dDB62hATWB4TlmQ0s=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5f69f3b7d9a2f87c84633269 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Sep 2020 12:53:11
- GMT
-Sender: rohitkr=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3FA62C43387; Tue, 22 Sep 2020 12:53:10 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.0.129] (unknown [183.83.141.209])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rohitkr)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 553B1C433C8;
-        Tue, 22 Sep 2020 12:53:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 553B1C433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rohitkr@codeaurora.org
-Subject: Re: [PATCH v6 3/5] Asoc:qcom:lpass-cpu:Update dts property read API
-To:     Mark Brown <broonie@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
-        perex@perex.cz, tiwai@suse.com, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-References: <1600409084-29093-1-git-send-email-srivasam@codeaurora.org>
- <1600409084-29093-4-git-send-email-srivasam@codeaurora.org>
- <040290a8-26a3-ab9c-04dc-beb23ee827e8@linaro.org>
- <20200922110825.GN4792@sirena.org.uk>
- <3866ce69-b7d0-5eb5-e0aa-874d150cd47a@linaro.org>
- <20200922114319.GR4792@sirena.org.uk>
-From:   Rohit Kumar <rohitkr@codeaurora.org>
-Message-ID: <7f682cf9-0f2a-0227-d5d8-8bedf1f06b00@codeaurora.org>
-Date:   Tue, 22 Sep 2020 18:23:01 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726609AbgIVMyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 08:54:45 -0400
+Received: from mail-m17613.qiye.163.com ([59.111.176.13]:45226 "EHLO
+        mail-m17613.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726571AbgIVMyp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 08:54:45 -0400
+Received: from ubuntu.localdomain (unknown [157.0.31.124])
+        by mail-m17613.qiye.163.com (Hmail) with ESMTPA id 532B948296B;
+        Tue, 22 Sep 2020 20:54:38 +0800 (CST)
+From:   Bernard Zhao <bernard@vivo.com>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alex Sierra <alex.sierra@amd.com>,
+        Nirmoy Das <nirmoy.das@amd.com>,
+        xinhui pan <xinhui.pan@amd.com>,
+        Bernard Zhao <bernard@vivo.com>,
+        Jonathan Kim <jonathan.kim@amd.com>,
+        James Zhu <James.Zhu@amd.com>, Huang Rui <ray.huang@amd.com>,
+        Leo Liu <leo.liu@amd.com>, Boyuan Zhang <boyuan.zhang@amd.com>,
+        Monk Liu <Monk.Liu@amd.com>, Jane Jian <Jane.Jian@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com
+Subject: [PATCH] drm/amd:fix typoes in comments
+Date:   Tue, 22 Sep 2020 05:54:18 -0700
+Message-Id: <20200922125431.27943-1-bernard@vivo.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20200922114319.GR4792@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZSR4dS0gaHklIGkhKVkpNS0tMTEJJTENNTUxVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NDY6Aww*Oj8sTw5JCTMsTEk9
+        PgkaCUlVSlVKTUtLTExCSUxCS0xDVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlKTkxV
+        S1VISlVKSU9ZV1kIAVlBQkJKSDcG
+X-HM-Tid: 0a74b5e1591393bakuws532b948296b
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Change the comment typo: "programm" -> "program".
 
-On 9/22/2020 5:13 PM, Mark Brown wrote:
-> On Tue, Sep 22, 2020 at 12:22:38PM +0100, Srinivas Kandagatla wrote:
->> On 22/09/2020 12:08, Mark Brown wrote:
->> I agree with you on this and I see the point, but Rob had a very different
->> opinion about the reg-names bindings to start with.
->> This topic been discussed in the past with Rob in many instances ex: https://lore.kernel.org/linux-devicetree/CAL_Jsq+MMunmVWqeW9v2RyzsMKP+=kMzeTHNMG4JDHM7Fy0HBg@mail.gmail.com/
->> According to him, reg-names seems to be highly discouraged as it came along
->> for the OMAP folks and was related to the hwmods stuff.
-> That's very much specific to reg, it's not true of the use of names in
-> general - Rob mentions cases like interrupts for example.
+Signed-off-by: Bernard Zhao <bernard@vivo.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h | 2 +-
+ drivers/gpu/drm/amd/amdgpu/uvd_v4_2.c  | 4 ++--
+ drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c  | 4 ++--
+ drivers/gpu/drm/amd/amdgpu/uvd_v6_0.c  | 4 ++--
+ drivers/gpu/drm/amd/amdgpu/uvd_v7_0.c  | 2 +-
+ drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c  | 4 ++--
+ drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c  | 4 ++--
+ drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c  | 4 ++--
+ 8 files changed, 14 insertions(+), 14 deletions(-)
 
-I see that patch to support hdmi adds another reg-name along with 
-"lpass-lpaif".
-
-So, platform_get_resource_byname() is better option.
-
-+       res = platform_get_resource_byname(pdev, IORESOURCE_MEM, 
-"lpass-hdmiif");
-
-Thanks,
-
-Rohit
-
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
+index 770025a5e500..7c46937c1c0e 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
+@@ -98,7 +98,7 @@ struct amdgpu_bo_list_entry;
+ #define AMDGPU_PTE_MTYPE_NV10(a)       ((uint64_t)(a) << 48)
+ #define AMDGPU_PTE_MTYPE_NV10_MASK     AMDGPU_PTE_MTYPE_NV10(7ULL)
+ 
+-/* How to programm VM fault handling */
++/* How to program VM fault handling */
+ #define AMDGPU_VM_FAULT_STOP_NEVER	0
+ #define AMDGPU_VM_FAULT_STOP_FIRST	1
+ #define AMDGPU_VM_FAULT_STOP_ALWAYS	2
+diff --git a/drivers/gpu/drm/amd/amdgpu/uvd_v4_2.c b/drivers/gpu/drm/amd/amdgpu/uvd_v4_2.c
+index 3cafba726587..b0c0c438fc93 100644
+--- a/drivers/gpu/drm/amd/amdgpu/uvd_v4_2.c
++++ b/drivers/gpu/drm/amd/amdgpu/uvd_v4_2.c
+@@ -348,7 +348,7 @@ static int uvd_v4_2_start(struct amdgpu_device *adev)
+ 	/* Set the write pointer delay */
+ 	WREG32(mmUVD_RBC_RB_WPTR_CNTL, 0);
+ 
+-	/* programm the 4GB memory segment for rptr and ring buffer */
++	/* program the 4GB memory segment for rptr and ring buffer */
+ 	WREG32(mmUVD_LMI_EXT40_ADDR, upper_32_bits(ring->gpu_addr) |
+ 				   (0x7 << 16) | (0x1 << 31));
+ 
+@@ -541,7 +541,7 @@ static void uvd_v4_2_mc_resume(struct amdgpu_device *adev)
+ 	uint64_t addr;
+ 	uint32_t size;
+ 
+-	/* programm the VCPU memory controller bits 0-27 */
++	/* program the VCPU memory controller bits 0-27 */
+ 	addr = (adev->uvd.inst->gpu_addr + AMDGPU_UVD_FIRMWARE_OFFSET) >> 3;
+ 	size = AMDGPU_UVD_FIRMWARE_SIZE(adev) >> 3;
+ 	WREG32(mmUVD_VCPU_CACHE_OFFSET0, addr);
+diff --git a/drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c b/drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c
+index a566ff926e90..6e57001f6d0a 100644
+--- a/drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c
+@@ -253,7 +253,7 @@ static void uvd_v5_0_mc_resume(struct amdgpu_device *adev)
+ 	uint64_t offset;
+ 	uint32_t size;
+ 
+-	/* programm memory controller bits 0-27 */
++	/* program memory controller bits 0-27 */
+ 	WREG32(mmUVD_LMI_VCPU_CACHE_64BIT_BAR_LOW,
+ 			lower_32_bits(adev->uvd.inst->gpu_addr));
+ 	WREG32(mmUVD_LMI_VCPU_CACHE_64BIT_BAR_HIGH,
+@@ -404,7 +404,7 @@ static int uvd_v5_0_start(struct amdgpu_device *adev)
+ 	/* set the wb address */
+ 	WREG32(mmUVD_RBC_RB_RPTR_ADDR, (upper_32_bits(ring->gpu_addr) >> 2));
+ 
+-	/* programm the RB_BASE for ring buffer */
++	/* program the RB_BASE for ring buffer */
+ 	WREG32(mmUVD_LMI_RBC_RB_64BIT_BAR_LOW,
+ 			lower_32_bits(ring->gpu_addr));
+ 	WREG32(mmUVD_LMI_RBC_RB_64BIT_BAR_HIGH,
+diff --git a/drivers/gpu/drm/amd/amdgpu/uvd_v6_0.c b/drivers/gpu/drm/amd/amdgpu/uvd_v6_0.c
+index 0a880bc101b8..d2d90fe5c6f8 100644
+--- a/drivers/gpu/drm/amd/amdgpu/uvd_v6_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/uvd_v6_0.c
+@@ -583,7 +583,7 @@ static void uvd_v6_0_mc_resume(struct amdgpu_device *adev)
+ 	uint64_t offset;
+ 	uint32_t size;
+ 
+-	/* programm memory controller bits 0-27 */
++	/* program memory controller bits 0-27 */
+ 	WREG32(mmUVD_LMI_VCPU_CACHE_64BIT_BAR_LOW,
+ 			lower_32_bits(adev->uvd.inst->gpu_addr));
+ 	WREG32(mmUVD_LMI_VCPU_CACHE_64BIT_BAR_HIGH,
+@@ -825,7 +825,7 @@ static int uvd_v6_0_start(struct amdgpu_device *adev)
+ 	/* set the wb address */
+ 	WREG32(mmUVD_RBC_RB_RPTR_ADDR, (upper_32_bits(ring->gpu_addr) >> 2));
+ 
+-	/* programm the RB_BASE for ring buffer */
++	/* program the RB_BASE for ring buffer */
+ 	WREG32(mmUVD_LMI_RBC_RB_64BIT_BAR_LOW,
+ 			lower_32_bits(ring->gpu_addr));
+ 	WREG32(mmUVD_LMI_RBC_RB_64BIT_BAR_HIGH,
+diff --git a/drivers/gpu/drm/amd/amdgpu/uvd_v7_0.c b/drivers/gpu/drm/amd/amdgpu/uvd_v7_0.c
+index e07e3fae99b5..b44c8677ce8d 100644
+--- a/drivers/gpu/drm/amd/amdgpu/uvd_v7_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/uvd_v7_0.c
+@@ -1073,7 +1073,7 @@ static int uvd_v7_0_start(struct amdgpu_device *adev)
+ 		WREG32_SOC15(UVD, k, mmUVD_RBC_RB_RPTR_ADDR,
+ 				(upper_32_bits(ring->gpu_addr) >> 2));
+ 
+-		/* programm the RB_BASE for ring buffer */
++		/* program the RB_BASE for ring buffer */
+ 		WREG32_SOC15(UVD, k, mmUVD_LMI_RBC_RB_64BIT_BAR_LOW,
+ 				lower_32_bits(ring->gpu_addr));
+ 		WREG32_SOC15(UVD, k, mmUVD_LMI_RBC_RB_64BIT_BAR_HIGH,
+diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c b/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c
+index 927c330fad21..73699eafb51e 100644
+--- a/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c
+@@ -910,7 +910,7 @@ static int vcn_v1_0_start_spg_mode(struct amdgpu_device *adev)
+ 	WREG32_SOC15(UVD, 0, mmUVD_RBC_RB_RPTR_ADDR,
+ 			(upper_32_bits(ring->gpu_addr) >> 2));
+ 
+-	/* programm the RB_BASE for ring buffer */
++	/* program the RB_BASE for ring buffer */
+ 	WREG32_SOC15(UVD, 0, mmUVD_LMI_RBC_RB_64BIT_BAR_LOW,
+ 			lower_32_bits(ring->gpu_addr));
+ 	WREG32_SOC15(UVD, 0, mmUVD_LMI_RBC_RB_64BIT_BAR_HIGH,
+@@ -1068,7 +1068,7 @@ static int vcn_v1_0_start_dpg_mode(struct amdgpu_device *adev)
+ 	WREG32_SOC15(UVD, 0, mmUVD_RBC_RB_RPTR_ADDR,
+ 								(upper_32_bits(ring->gpu_addr) >> 2));
+ 
+-	/* programm the RB_BASE for ring buffer */
++	/* program the RB_BASE for ring buffer */
+ 	WREG32_SOC15(UVD, 0, mmUVD_LMI_RBC_RB_64BIT_BAR_LOW,
+ 								lower_32_bits(ring->gpu_addr));
+ 	WREG32_SOC15(UVD, 0, mmUVD_LMI_RBC_RB_64BIT_BAR_HIGH,
+diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c b/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c
+index 23a9eb5b2c8a..e5d29dee0c88 100644
+--- a/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/vcn_v2_0.c
+@@ -900,7 +900,7 @@ static int vcn_v2_0_start_dpg_mode(struct amdgpu_device *adev, bool indirect)
+ 	WREG32_SOC15(UVD, 0, mmUVD_RBC_RB_RPTR_ADDR,
+ 		(upper_32_bits(ring->gpu_addr) >> 2));
+ 
+-	/* programm the RB_BASE for ring buffer */
++	/* program the RB_BASE for ring buffer */
+ 	WREG32_SOC15(UVD, 0, mmUVD_LMI_RBC_RB_64BIT_BAR_LOW,
+ 		lower_32_bits(ring->gpu_addr));
+ 	WREG32_SOC15(UVD, 0, mmUVD_LMI_RBC_RB_64BIT_BAR_HIGH,
+@@ -1060,7 +1060,7 @@ static int vcn_v2_0_start(struct amdgpu_device *adev)
+ 	WREG32_SOC15(UVD, 0, mmUVD_RBC_RB_CNTL, tmp);
+ 
+ 	fw_shared->multi_queue.decode_queue_mode |= FW_QUEUE_RING_RESET;
+-	/* programm the RB_BASE for ring buffer */
++	/* program the RB_BASE for ring buffer */
+ 	WREG32_SOC15(UVD, 0, mmUVD_LMI_RBC_RB_64BIT_BAR_LOW,
+ 		lower_32_bits(ring->gpu_addr));
+ 	WREG32_SOC15(UVD, 0, mmUVD_LMI_RBC_RB_64BIT_BAR_HIGH,
+diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c b/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c
+index e99bef6e2354..aa6f66c31709 100644
+--- a/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c
++++ b/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c
+@@ -887,7 +887,7 @@ static int vcn_v2_5_start_dpg_mode(struct amdgpu_device *adev, int inst_idx, boo
+ 	WREG32_SOC15(VCN, inst_idx, mmUVD_RBC_RB_RPTR_ADDR,
+ 		(upper_32_bits(ring->gpu_addr) >> 2));
+ 
+-	/* programm the RB_BASE for ring buffer */
++	/* program the RB_BASE for ring buffer */
+ 	WREG32_SOC15(VCN, inst_idx, mmUVD_LMI_RBC_RB_64BIT_BAR_LOW,
+ 		lower_32_bits(ring->gpu_addr));
+ 	WREG32_SOC15(VCN, inst_idx, mmUVD_LMI_RBC_RB_64BIT_BAR_HIGH,
+@@ -1067,7 +1067,7 @@ static int vcn_v2_5_start(struct amdgpu_device *adev)
+ 		WREG32_SOC15(VCN, i, mmUVD_RBC_RB_CNTL, tmp);
+ 
+ 		fw_shared->multi_queue.decode_queue_mode |= FW_QUEUE_RING_RESET;
+-		/* programm the RB_BASE for ring buffer */
++		/* program the RB_BASE for ring buffer */
+ 		WREG32_SOC15(VCN, i, mmUVD_LMI_RBC_RB_64BIT_BAR_LOW,
+ 			lower_32_bits(ring->gpu_addr));
+ 		WREG32_SOC15(VCN, i, mmUVD_LMI_RBC_RB_64BIT_BAR_HIGH,
 -- 
-Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
-of the Code Aurora Forum, hosted by the Linux Foundation.
+2.28.0
 
