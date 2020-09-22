@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE192274A93
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:05:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6952274A95
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726748AbgIVVEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 17:04:55 -0400
-Received: from o1.b.az.sendgrid.net ([208.117.55.133]:27529 "EHLO
+        id S1726769AbgIVVE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 17:04:58 -0400
+Received: from o1.b.az.sendgrid.net ([208.117.55.133]:9024 "EHLO
         o1.b.az.sendgrid.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726703AbgIVVEp (ORCPT
+        with ESMTP id S1726448AbgIVVEp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 22 Sep 2020 17:04:45 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
         h=from:subject:in-reply-to:references:to:cc:content-type:
         content-transfer-encoding;
-        s=001; bh=mikxWY2WrXrZaeo3Sy9pZz4F5Xpp8LK8RWbT2pvPkS8=;
-        b=ByLJQE8WTdgiYFoU2GNDvtC5ToxdCo4ko8uD9dYaL/iVENg80tVTYuzvoyXljOLeIO2k
-        86hpnl8vyHPEmParYL6qV2cFaaAfZMDeFvXuIV6TvoyGUIarimojm3JQ91+DEA1DGifGSZ
-        tXTj2zxvnrrtuWZTbwNoiWjle7TUHPrLs=
-Received: by filterdrecv-p3las1-6f66587546-wd65n with SMTP id filterdrecv-p3las1-6f66587546-wd65n-19-5F6A65BC-80
-        2020-09-22 20:59:41.162561464 +0000 UTC m=+82863.367221141
+        s=001; bh=z7v+PHtCfxxSYzksa8sjIkGNZO+Cebil1muBgONTycw=;
+        b=O4dYcW/nENsS02C/6wdnP6UatDC7VgiZ8M+Tt7huKkYZ0n+bVsKiV8SX5jVf80BAea1o
+        aXB+l2OytQXK49EwYQS2uNeJiQkudTM39c2mLWLTYCwOUE0PlsUctIeGYSDRdaY3qR86R9
+        J7vcDxPMzfs/AN1AKGdTiLgkkhhHPh5iI=
+Received: by filterdrecv-p3las1-6f66587546-wqxvn with SMTP id filterdrecv-p3las1-6f66587546-wqxvn-20-5F6A65BD-23
+        2020-09-22 20:59:41.437087089 +0000 UTC m=+82864.960540649
 Received: from bionic.localdomain (unknown)
         by ismtpd0007p1lon1.sendgrid.net (SG) with ESMTP
-        id qDtVS2F5SEisc2JX-EZFSQ
-        Tue, 22 Sep 2020 20:59:40.677 +0000 (UTC)
+        id NnXEwi6lTwuUw91Zhyu9WA
+        Tue, 22 Sep 2020 20:59:41.121 +0000 (UTC)
 From:   Jonas Karlman <jonas@kwiboo.se>
-Subject: [PATCH v3 3/6] phy/rockchip: inno-hdmi: remove unused no_c from
- rk3328 recalc_rate
+Subject: [PATCH v3 4/6] phy/rockchip: inno-hdmi: do not power on rk3328 post
+ pll on reg write
 Date:   Tue, 22 Sep 2020 20:59:41 +0000 (UTC)
-Message-Id: <20200922205933.5540-4-jonas@kwiboo.se>
+Message-Id: <20200922205933.5540-5-jonas@kwiboo.se>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200922205933.5540-1-jonas@kwiboo.se>
 References: <20200108210740.28769-1-jonas@kwiboo.se>
  <20200922205933.5540-1-jonas@kwiboo.se>
 X-SG-EID: =?us-ascii?Q?TdbjyGynYnRZWhH+7lKUQJL+ZxmxpowvO2O9SQF5CwCVrYgcwUXgU5DKUU3QxA?=
- =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0h0EFYUvRCdbi5PqXD?=
- =?us-ascii?Q?M9KjhtLOiEcn98rY5KWaxpvQor=2FnBcSy5Ll0VS8?=
- =?us-ascii?Q?iqPe2ESmb8uX2DQpRgtUHYXqTp3GrvJv+ufdYNi?=
- =?us-ascii?Q?EqyCgUCDd3M8n8z1X4WeIJGKzO2=2F1UCfpaG7Syv?=
- =?us-ascii?Q?5btuVAgCyfqMeysf1LOMUlMb87V9=2FrieoxVWwuK?=
- =?us-ascii?Q?a+fhI6xdpZ1XObkOXryXg=3D=3D?=
+ =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0hycbaCzZAc3bUCs33?=
+ =?us-ascii?Q?ze14gXl2dCdHz7UDSt+smZ7Bkz6LKFaWj5FDza4?=
+ =?us-ascii?Q?aLqhUHWjMWhAVxU9KtquBMpi2pAS2XJ3rz5dCT5?=
+ =?us-ascii?Q?2OTcApIT17Nbp61fbPyOhwn2Mzku=2FFaHWKMJNQn?=
+ =?us-ascii?Q?JwA6NL70jwxru+HTFyNjrFlxRROCP0n+3Z8dvYR?=
+ =?us-ascii?Q?THpO2O5jpEtDHv+NkH7vw=3D=3D?=
 To:     Kishon Vijay Abraham I <kishon@ti.com>,
         Heiko Stuebner <heiko@sntech.de>
 Cc:     Jonas Karlman <jonas@kwiboo.se>, Vinod Koul <vkoul@kernel.org>,
@@ -55,36 +55,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-no_c is not used in any calculation, lets remove it.
+inno_write is used to configure 0xaa reg, that also hold the
+POST_PLL_POWER_DOWN bit.
+When POST_PLL_REFCLK_SEL_TMDS is configured the power down bit is not
+taken into consideration.
 
+Fix this by keeping the power down bit until configuration is complete.
+Also reorder the reg write order for consistency.
+
+Fixes: 53706a116863 ("phy: add Rockchip Innosilicon hdmi phy")
 Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
 ---
- drivers/phy/rockchip/phy-rockchip-inno-hdmi.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/phy/rockchip/phy-rockchip-inno-hdmi.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/phy/rockchip/phy-rockchip-inno-hdmi.c b/drivers/phy/rockchip/phy-rockchip-inno-hdmi.c
-index 093d2334e8cd..06db69c8373e 100644
+index 06db69c8373e..3a59a6da0440 100644
 --- a/drivers/phy/rockchip/phy-rockchip-inno-hdmi.c
 +++ b/drivers/phy/rockchip/phy-rockchip-inno-hdmi.c
-@@ -714,7 +714,7 @@ unsigned long inno_hdmi_phy_rk3328_clk_recalc_rate(struct clk_hw *hw,
- {
- 	struct inno_hdmi_phy *inno = to_inno_hdmi_phy(hw);
- 	unsigned long frac;
--	u8 nd, no_a, no_b, no_c, no_d;
-+	u8 nd, no_a, no_b, no_d;
- 	u64 vco;
- 	u16 nf;
+@@ -1020,9 +1020,10 @@ inno_hdmi_phy_rk3328_power_on(struct inno_hdmi_phy *inno,
  
-@@ -737,9 +737,6 @@ unsigned long inno_hdmi_phy_rk3328_clk_recalc_rate(struct clk_hw *hw,
- 		no_b = inno_read(inno, 0xa5) & RK3328_PRE_PLL_PCLK_DIV_B_MASK;
- 		no_b >>= RK3328_PRE_PLL_PCLK_DIV_B_SHIFT;
- 		no_b += 2;
--		no_c = inno_read(inno, 0xa6) & RK3328_PRE_PLL_PCLK_DIV_C_MASK;
--		no_c >>= RK3328_PRE_PLL_PCLK_DIV_C_SHIFT;
--		no_c = 1 << no_c;
- 		no_d = inno_read(inno, 0xa6) & RK3328_PRE_PLL_PCLK_DIV_D_MASK;
+ 	inno_write(inno, 0xac, RK3328_POST_PLL_FB_DIV_7_0(cfg->fbdiv));
+ 	if (cfg->postdiv == 1) {
+-		inno_write(inno, 0xaa, RK3328_POST_PLL_REFCLK_SEL_TMDS);
+ 		inno_write(inno, 0xab, RK3328_POST_PLL_FB_DIV_8(cfg->fbdiv) |
+ 			   RK3328_POST_PLL_PRE_DIV(cfg->prediv));
++		inno_write(inno, 0xaa, RK3328_POST_PLL_REFCLK_SEL_TMDS |
++			   RK3328_POST_PLL_POWER_DOWN);
+ 	} else {
+ 		v = (cfg->postdiv / 2) - 1;
+ 		v &= RK3328_POST_PLL_POST_DIV_MASK;
+@@ -1030,7 +1031,8 @@ inno_hdmi_phy_rk3328_power_on(struct inno_hdmi_phy *inno,
+ 		inno_write(inno, 0xab, RK3328_POST_PLL_FB_DIV_8(cfg->fbdiv) |
+ 			   RK3328_POST_PLL_PRE_DIV(cfg->prediv));
+ 		inno_write(inno, 0xaa, RK3328_POST_PLL_POST_DIV_ENABLE |
+-			   RK3328_POST_PLL_REFCLK_SEL_TMDS);
++			   RK3328_POST_PLL_REFCLK_SEL_TMDS |
++			   RK3328_POST_PLL_POWER_DOWN);
+ 	}
  
- 		do_div(vco, (nd * (no_a == 1 ? no_b : no_a) * no_d * 2));
+ 	for (v = 0; v < 14; v++)
 -- 
 2.17.1
 
