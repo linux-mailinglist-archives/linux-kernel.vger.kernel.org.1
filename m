@@ -2,355 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CBB8273FD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 12:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26E60273FDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 12:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726506AbgIVKpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 06:45:46 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:56408 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726423AbgIVKpq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 06:45:46 -0400
-Received: from zn.tnic (p200300ec2f0bfb00b5db4aa9bc6d967b.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:fb00:b5db:4aa9:bc6d:967b])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 13FE41EC0114;
-        Tue, 22 Sep 2020 12:45:44 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600771544;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=KV+AIznwncL3m4lCijPPkTe9M8NJxOjO/EQJQDekkzE=;
-        b=E3uvcZBIX6xBAvVy9ljLvAVUwswlqj57o9mJK528BSkjPOEW6tf+TrwfVpMFrF+/P2CnV0
-        H6K2W7hIwVrk9gjxW9Je7Ydj/CWa1UabCXdsDbofeH4NdZIAyl74m5Rh4ke89D5PUfFhz4
-        wFiqD32dr0Ktwx9duXavENPjkaxmAlQ=
-Date:   Tue, 22 Sep 2020 12:45:38 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Jethro Beekman <jethro@fortanix.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Seth Moore <sethmo@google.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v38 16/24] x86/sgx: Add a page reclaimer
-Message-ID: <20200922104538.GE22660@zn.tnic>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-17-jarkko.sakkinen@linux.intel.com>
+        id S1726513AbgIVKrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 06:47:17 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:1076 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726423AbgIVKrQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 06:47:16 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08MAXQZr152375;
+        Tue, 22 Sep 2020 06:47:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=KFCG15WMf/4iA1ag+FZ0jOmqpdVA0pMM6w3vzBIZyWI=;
+ b=nf7MVkX0/6dHRRpGPOj5iNy2BrlIBZCyctm81xcVZbNCb2JCmTtTs2yNHH2yktvoZZUA
+ lqp4n04nkg1w70VMnkFaOrRWqGzyZ0Sqav9czvxk068WzFvNbj312lUghf8iUvTNHtxV
+ Oqm31D0zPIX7hmcNY1hVPE0uYSnlwv/cjN4RIgnijf4+LRoCs9Sav7yMdWM7R3+Y4fk9
+ W732DYbNk+aD9bompI4RfUu5d0t/V5XtGP8wb2t7lydh0vRYKvA+Du4zZudnaXVlE8sb
+ 1EjALoOynDmVeHSNhGVqv/d4VTh/6fmQ0hm4j0GZw1jkQCmJb0xVoa90YVn6t17Dgl0p Bg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33qf6c93jh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Sep 2020 06:47:16 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08MAkae5037623;
+        Tue, 22 Sep 2020 06:47:15 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33qf6c93h8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Sep 2020 06:47:15 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08MAgPqH027712;
+        Tue, 22 Sep 2020 10:47:12 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04ams.nl.ibm.com with ESMTP id 33payu9qc4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Sep 2020 10:47:12 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08MAl5rm30736770
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 22 Sep 2020 10:47:05 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9FC99AE045;
+        Tue, 22 Sep 2020 10:47:05 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 48581AE056;
+        Tue, 22 Sep 2020 10:47:05 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.145.94.117])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 22 Sep 2020 10:47:05 +0000 (GMT)
+Subject: Re: [PATCH] s390/zcrypt: Fix a size determination in
+ zcrypt_unlocked_ioctl()
+To:     Zhenzhong Duan <zhenzhong.duan@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     freude@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+        schwidefsky@de.ibm.com, linux-s390@vger.kernel.org
+References: <20200922103059.859-1-zhenzhong.duan@gmail.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Autocrypt: addr=borntraeger@de.ibm.com; prefer-encrypt=mutual; keydata=
+ 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
+ nS4h0HDFPrrp1C2EMVYIQrMokWvlFZbCpsdYbBI=
+Message-ID: <0091c0b5-ea48-dce2-1180-49a6b87113e4@de.ibm.com>
+Date:   Tue, 22 Sep 2020 12:47:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
+In-Reply-To: <20200922103059.859-1-zhenzhong.duan@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200915112842.897265-17-jarkko.sakkinen@linux.intel.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-22_09:2020-09-21,2020-09-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
+ malwarescore=0 priorityscore=1501 mlxlogscore=999 suspectscore=0
+ spamscore=0 mlxscore=0 lowpriorityscore=0 clxscore=1015 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009220088
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 02:28:34PM +0300, Jarkko Sakkinen wrote:
-> There is a limited amount of EPC available. Therefore, some of it must be
-> copied to the regular memory, and only subset kept in the SGX reserved
-> memory. While kernel cannot directly access enclave memory, SGX provides a
-> set of ENCLS leaf functions to perform reclaiming.
+On 22.09.20 12:30, Zhenzhong Duan wrote:
+> With new ioctl(ZCRYPT_PERDEV_REQCNT) introduced, kernel use dynamic
+> allocation for the 256 element array of unsigned integers for the number
+> of successfully completed requests per device. It's not a static array of
+> 64 elements any more.
 > 
-> This commits implements a page reclaimer by using these leaf functions. It
+> Fixes: af4a72276d49 ("s390/zcrypt: Support up to 256 crypto adapters.")
+> Signed-off-by: Zhenzhong Duan <zhenzhong.duan@gmail.com>
 
-s/This commits implements/Implement/
-
-> picks the victim pages in LRU fashion from all the enclaves running in the
-> system. The thread ksgxswapd reclaims pages on the event when the number of
-> free EPC pages goes below SGX_NR_LOW_PAGES up until it reaches
-> SGX_NR_HIGH_PAGES.
-
-...
-
-Had to grep the SDM for that "eldu" magic. It could use a comment:
-
-/*
- * ELDU: Load an EPC page as unblocked. For more info, see "OS
- * Management of EPC Pages" in the SDM.
- */
-
-or so, to denote what's going on here.
-
-> +static struct sgx_epc_page *sgx_encl_eldu(struct sgx_encl_page *encl_page,
-> +					  struct sgx_epc_page *secs_page)
-> +{
-> +	unsigned long va_offset = SGX_ENCL_PAGE_VA_OFFSET(encl_page);
-> +	struct sgx_encl *encl = encl_page->encl;
-> +	struct sgx_epc_page *epc_page;
-> +	int ret;
-> +
-> +	epc_page = sgx_alloc_epc_page(encl_page, false);
-> +	if (IS_ERR(epc_page))
-> +		return epc_page;
-> +
-> +	ret = __sgx_encl_eldu(encl_page, epc_page, secs_page);
-> +	if (ret) {
-> +		sgx_free_epc_page(epc_page);
-> +		return ERR_PTR(ret);
-> +	}
-> +
-> +	sgx_free_va_slot(encl_page->va_page, va_offset);
-> +	list_move(&encl_page->va_page->list, &encl->va_pages);
-> +	encl_page->desc &= ~SGX_ENCL_PAGE_VA_OFFSET_MASK;
-> +	encl_page->epc_page = epc_page;
-> +
-> +	return epc_page;
-> +}
-
-...
-
-> diff --git a/arch/x86/kernel/cpu/sgx/encl.h b/arch/x86/kernel/cpu/sgx/encl.h
-> index 0448d22d3010..11dcf4e7fb3e 100644
-> --- a/arch/x86/kernel/cpu/sgx/encl.h
-> +++ b/arch/x86/kernel/cpu/sgx/encl.h
-> @@ -19,6 +19,10 @@
->  
->  /**
->   * enum sgx_encl_page_desc - defines bits for an enclave page's descriptor
-> + * %SGX_ENCL_PAGE_RECLAIMED:		The page is in the process of being
-> + *					reclaimed.
-
-SGX_ENCL_PAGE_RECLAIMED means, tho, that the page has been reclaimed
-already.
-
-I guess that reads better:
-
-+		if (entry->desc & SGX_ENCL_PAGE_BEING_RECLAIMED)
-+			return ERR_PTR(-EBUSY);
-
-
-> + * %SGX_ENCL_PAGE_VA_OFFSET_MASK:	Holds the offset in the Version Array
-> + *					(VA) page for a swapped page.
->   * %SGX_ENCL_PAGE_ADDR_MASK:		Holds the virtual address of the page.
->   *
->   * The page address for SECS is zero and is used by the subsystem to recognize
-
-...
-
-> @@ -86,24 +123,34 @@ static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
->  {
->  	unsigned long encl_size = secs->size + PAGE_SIZE;
->  	struct sgx_epc_page *secs_epc;
-> +	struct sgx_va_page *va_page;
->  	struct sgx_pageinfo pginfo;
->  	struct sgx_secinfo secinfo;
->  	struct file *backing;
->  	long ret;
->  
-> +	va_page = sgx_encl_grow(encl);
-> +	if (IS_ERR(va_page))
-> +		return PTR_ERR(va_page);
-> +	else if (va_page)
-
-Not "else" simply?
-
-AFAICT, sgx_encl_grow() would either return an ERR_PTR or the actual
-page...
-
-Also, should the growing happen *after* the SECS validation?
-
-> +		list_add(&va_page->list, &encl->va_pages);
-> +
->  	if (sgx_validate_secs(secs)) {
->  		pr_debug("invalid SECS\n");
-> -		return -EINVAL;
-> +		ret = -EINVAL;
-> +		goto err_out_shrink;
->  	}
->  
->  	backing = shmem_file_setup("SGX backing", encl_size + (encl_size >> 5),
->  				   VM_NORESERVE);
-> -	if (IS_ERR(backing))
-> -		return PTR_ERR(backing);
-> +	if (IS_ERR(backing)) {
-> +		ret = PTR_ERR(backing);
-> +		goto err_out_shrink;
-> +	}
->  
->  	encl->backing = backing;
->  
-> -	secs_epc = __sgx_alloc_epc_page();
-> +	secs_epc = sgx_alloc_epc_page(&encl->secs, true);
->  	if (IS_ERR(secs_epc)) {
->  		ret = PTR_ERR(secs_epc);
->  		goto err_out_backing;
-> @@ -151,6 +198,9 @@ static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
->  	fput(encl->backing);
->  	encl->backing = NULL;
->  
-> +err_out_shrink:
-> +	sgx_encl_shrink(encl, va_page);
-> +
->  	return ret;
->  }
-
-...
-
-
-Let's add some comment blurb about "Write back/invalidate an EPC page"
-to at least start to explain what that "ewb" is.
-
-> +static void sgx_encl_ewb(struct sgx_epc_page *epc_page,
-> +			 struct sgx_backing *backing)
-> +{
-> +	struct sgx_encl_page *encl_page = epc_page->owner;
-> +	struct sgx_encl *encl = encl_page->encl;
-> +	struct sgx_va_page *va_page;
-> +	unsigned int va_offset;
-> +	void *va_slot;
-> +	int ret;
-> +
-> +	encl_page->desc &= ~SGX_ENCL_PAGE_RECLAIMED;
-> +
-> +	va_page = list_first_entry(&encl->va_pages, struct sgx_va_page,
-> +				   list);
-> +	va_offset = sgx_alloc_va_slot(va_page);
-> +	va_slot = sgx_get_epc_addr(va_page->epc_page) + va_offset;
-> +	if (sgx_va_page_full(va_page))
-> +		list_move_tail(&va_page->list, &encl->va_pages);
-> +
-> +	ret = __sgx_encl_ewb(epc_page, va_slot, backing);
-> +	if (ret == SGX_NOT_TRACKED) {
-> +		ret = __etrack(sgx_get_epc_addr(encl->secs.epc_page));
-> +		if (ret) {
-> +			if (encls_failed(ret))
-> +				ENCLS_WARN(ret, "ETRACK");
-> +		}
-> +
-> +		ret = __sgx_encl_ewb(epc_page, va_slot, backing);
-> +		if (ret == SGX_NOT_TRACKED) {
-> +			/*
-> +			 * Slow path, send IPIs to kick cpus out of the
-> +			 * enclave.  Note, it's imperative that the cpu
-> +			 * mask is generated *after* ETRACK, else we'll
-> +			 * miss cpus that entered the enclave between
-> +			 * generating the mask and incrementing epoch.
-> +			 */
-> +			on_each_cpu_mask(sgx_encl_ewb_cpumask(encl),
-> +					 sgx_ipi_cb, NULL, 1);
-> +			ret = __sgx_encl_ewb(epc_page, va_slot, backing);
-> +		}
-> +	}
-> +
-> +	if (ret) {
-> +		if (encls_failed(ret))
-> +			ENCLS_WARN(ret, "EWB");
-> +
-> +		sgx_free_va_slot(va_page, va_offset);
-> +	} else {
-> +		encl_page->desc |= va_offset;
-> +		encl_page->va_page = va_page;
-> +	}
-
-...
-
-> +static void sgx_reclaim_pages(void)
-> +{
-> +	struct sgx_epc_page *chunk[SGX_NR_TO_SCAN];
-> +	struct sgx_backing backing[SGX_NR_TO_SCAN];
-> +	struct sgx_epc_section *section;
-> +	struct sgx_encl_page *encl_page;
-> +	struct sgx_epc_page *epc_page;
-> +	int cnt = 0;
-> +	int ret;
-> +	int i;
-> +
-> +	spin_lock(&sgx_active_page_list_lock);
-> +	for (i = 0; i < SGX_NR_TO_SCAN; i++) {
-> +		if (list_empty(&sgx_active_page_list))
-
-Isn't it enough to do this once, i.e., not in the loop? You're holding
-sgx_active_page_list_lock...
-
-> +			break;
-> +
-> +		epc_page = list_first_entry(&sgx_active_page_list,
-> +					    struct sgx_epc_page, list);
-> +		list_del_init(&epc_page->list);
-> +		encl_page = epc_page->owner;
-> +
-> +		if (kref_get_unless_zero(&encl_page->encl->refcount) != 0)
-> +			chunk[cnt++] = epc_page;
-> +		else
-> +			/* The owner is freeing the page. No need to add the
-> +			 * page back to the list of reclaimable pages.
-> +			 */
-> +			epc_page->desc &= ~SGX_EPC_PAGE_RECLAIMABLE;
-> +	}
-> +	spin_unlock(&sgx_active_page_list_lock);
-> +
-> +	for (i = 0; i < cnt; i++) {
-> +		epc_page = chunk[i];
-> +		encl_page = epc_page->owner;
-> +
-> +		if (!sgx_reclaimer_age(epc_page))
-> +			goto skip;
-> +
-> +		ret = sgx_encl_get_backing(encl_page->encl,
-> +					   SGX_ENCL_PAGE_INDEX(encl_page),
-> +					   &backing[i]);
-> +		if (ret)
-> +			goto skip;
-> +
-> +		mutex_lock(&encl_page->encl->lock);
-> +		encl_page->desc |= SGX_ENCL_PAGE_RECLAIMED;
-> +		mutex_unlock(&encl_page->encl->lock);
-> +		continue;
-> +
-> +skip:
-> +		spin_lock(&sgx_active_page_list_lock);
-> +		list_add_tail(&epc_page->list, &sgx_active_page_list);
-> +		spin_unlock(&sgx_active_page_list_lock);
-> +
-> +		kref_put(&encl_page->encl->refcount, sgx_encl_release);
-> +
-> +		chunk[i] = NULL;
-> +	}
-> +
-> +	for (i = 0; i < cnt; i++) {
-> +		epc_page = chunk[i];
-> +		if (epc_page)
-> +			sgx_reclaimer_block(epc_page);
-> +	}
-> +
-> +	for (i = 0; i < cnt; i++) {
-> +		epc_page = chunk[i];
-> +		if (!epc_page)
-> +			continue;
-> +
-> +		encl_page = epc_page->owner;
-> +		sgx_reclaimer_write(epc_page, &backing[i]);
-> +		sgx_encl_put_backing(&backing[i], true);
-> +
-> +		kref_put(&encl_page->encl->refcount, sgx_encl_release);
-> +		epc_page->desc &= ~SGX_EPC_PAGE_RECLAIMABLE;
-> +
-> +		section = sgx_get_epc_section(epc_page);
-> +		spin_lock(&section->lock);
-> +		list_add_tail(&epc_page->list, &section->page_list);
-> +		section->free_cnt++;
-> +		spin_unlock(&section->lock);
-> +	}
-> +}
-> +
->  
->  static void sgx_sanitize_section(struct sgx_epc_section *section)
-
-...
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks for the patch, but we have a similar patch already queued internally.
+(Found with coccicheck). 
+> ---
+>  drivers/s390/crypto/zcrypt_api.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/s390/crypto/zcrypt_api.c b/drivers/s390/crypto/zcrypt_api.c
+> index 4dbbfd88262c..5c3f3f89e2f3 100644
+> --- a/drivers/s390/crypto/zcrypt_api.c
+> +++ b/drivers/s390/crypto/zcrypt_api.c
+> @@ -1449,7 +1449,7 @@ static long zcrypt_unlocked_ioctl(struct file *filp, unsigned int cmd,
+>  		if (!reqcnt)
+>  			return -ENOMEM;
+>  		zcrypt_perdev_reqcnt(reqcnt, AP_DEVICES);
+> -		if (copy_to_user((int __user *) arg, reqcnt, sizeof(reqcnt)))
+> +		if (copy_to_user((int __user *) arg, reqcnt, sizeof(u32) * AP_DEVICES))
+>  			rc = -EFAULT;
+>  		kfree(reqcnt);
+>  		return rc;
+> 
