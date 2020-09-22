@@ -2,84 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A12274AE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51EB2274A8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:04:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726795AbgIVVMT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Sep 2020 17:12:19 -0400
-Received: from 203.196.19.25.static.zoot.jp ([203.196.19.25]:57777 "EHLO
-        h21.daiwa-hotcom.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726589AbgIVVMS (ORCPT
+        id S1726682AbgIVVEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 17:04:44 -0400
+Received: from o1.b.az.sendgrid.net ([208.117.55.133]:64697 "EHLO
+        o1.b.az.sendgrid.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726448AbgIVVEo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 17:12:18 -0400
-X-Greylist: delayed 1576 seconds by postgrey-1.27 at vger.kernel.org; Tue, 22 Sep 2020 17:12:17 EDT
-Received: from h21.daiwa-hotcom.com (unknown [197.234.221.50])
-        by h21.daiwa-hotcom.com (Postfix) with ESMTP id 1F49A170191F
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 05:36:29 +0900 (JST)
-Reply-To: tolarokanse@gmail.com
-From:   Mr Tolar OKANSE <viola@h21.daiwa-hotcom.com>
-To:     linux-kernel@vger.kernel.org
-Subject: =?UTF-8?B?SU5WRVNUTUVOVCBPRkZFUiAvIE9GRlJFIETigJlJTlZFU1RJU1NFTUVOVA==?=
-Date:   22 Sep 2020 21:45:47 +0100
-Message-ID: <20200922214547.2839EBD5C77BFE34@h21.daiwa-hotcom.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+        Tue, 22 Sep 2020 17:04:44 -0400
+X-Greylist: delayed 303 seconds by postgrey-1.27 at vger.kernel.org; Tue, 22 Sep 2020 17:04:43 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
+        h=from:subject:in-reply-to:references:to:cc:content-type:
+        content-transfer-encoding;
+        s=001; bh=RXpY8dpHwOG6DTXBuKGsQgIxGYTQmxgNdlG63ogXV34=;
+        b=IGNLfkgfCClJtOSq7gH91CU2+3kDdVJ2Vhvr3KF66NcQQQ5UZG4NEFGwyXWarzHW2SdG
+        okToDwk1r377iCAcKRPhlnbWZoOuZ9wcW2YiyqmiTz7Nom8+BRk5aSBJJQEdE2P8fYnwfE
+        H0jvqMhM2iG5VuJt/Emin8uxBaN+PXqHY=
+Received: by filterdrecv-p3las1-6f66587546-d82vt with SMTP id filterdrecv-p3las1-6f66587546-d82vt-19-5F6A65BB-4E
+        2020-09-22 20:59:39.828778021 +0000 UTC m=+82856.869292196
+Received: from bionic.localdomain (unknown)
+        by ismtpd0007p1lon1.sendgrid.net (SG) with ESMTP
+        id 8HP0odj2Q3iwldJChdNcsg
+        Tue, 22 Sep 2020 20:59:39.176 +0000 (UTC)
+From:   Jonas Karlman <jonas@kwiboo.se>
+Subject: [PATCH v3 0/6] Support more HDMI modes on RK3228/RK3328
+Date:   Tue, 22 Sep 2020 20:59:39 +0000 (UTC)
+Message-Id: <20200922205933.5540-1-jonas@kwiboo.se>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200108210740.28769-1-jonas@kwiboo.se>
+References: <20200108210740.28769-1-jonas@kwiboo.se>
+X-SG-EID: =?us-ascii?Q?TdbjyGynYnRZWhH+7lKUQJL+ZxmxpowvO2O9SQF5CwCVrYgcwUXgU5DKUU3QxA?=
+ =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0h5Eiatl8ZaYBj6H9X?=
+ =?us-ascii?Q?aXTTzxnx4oxm3pCMKRYrCNYnjUiunOTnBlfBTxV?=
+ =?us-ascii?Q?JOYOWZMAQopiuHFLQnYX5NpevjkXzVjlvc7R6Q0?=
+ =?us-ascii?Q?Yrzp8nYiFEMuW2Xi4S4tnMnEupGgzXa7tg6u85T?=
+ =?us-ascii?Q?n323el9Hfrq4jpaAuhxGkrhZr+ka=2FAhYOX6Rg1j?=
+ =?us-ascii?Q?BlVqtv8Sdu4uJ1hM=2Fl09Q=3D=3D?=
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Heiko Stuebner <heiko@sntech.de>
+Cc:     Jonas Karlman <jonas@kwiboo.se>, Vinod Koul <vkoul@kernel.org>,
+        Zheng Yang <zhengyang@rock-chips.com>,
+        Algea Cao <algea.cao@rock-chips.com>,
+        Huicong Xu <xhc@rock-chips.com>,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-INVESTMENT OFFER
+This is a long overdue revival of an old series that prepares support for
+more HDMI modes, YUV420 and 10-bit output on RK3228/RK3328.
 
-I am Mr Tolar OKANSE, financial advisor, property and private 
-assets. I found your contact through a search through the 
-Internet and I apologize for this unexpected intrusion on my part 
-and the surprised effect it may cause given everything that is 
-currently happening on the Internet.
+This v3 series contains the original v2 patches targeting the inno hdmi phy
+driver, a separate series targeting drm driver should follow in a few days.
 
-Indeed, I am in direct contact with a Libyan community 
-(Politicians, Traders, Businessmen and Military) resident in 
-Ghana. The latter have significant funds and would like to make 
-investments and investments with their funds in all profitable 
-areas and they are looking for a serious manager to whom to 
-entrust all management.
+Part of this has been reworked from vendor BSP 4.4 kernel commits.
 
-If you are interested in my offer, I will put you in contact with 
-their representative on site for more details and information.
+Patch 1-5 fixes issues and shortcomings in the inno hdmi phy driver.
 
+Patch 6 adds support for more pixel clock rates in order to support
+common DMT modes in addition to CEA modes.
 
-Please contact me directly at my email address: 
-tolarokanse@gmail.com
+Changes in v3:
+  - split series
+  - drop drm and device tree changes
 
-Cordially...
-Mr T. Okanse
+Changes in v2:
+  - collect acked-by tag
+  - drop the limit resolution width to 3840 patch
 
-……………………………………………………………………………….
+This series is also available at [1].
 
-OFFRE D’INVESTISSEMENT
+[1] https://github.com/Kwiboo/linux-rockchip/commits/next-20200922-inno-hdmi-phy
 
-Je suis Mr Tolar OKANSE, conseiller financier, des biens et de 
-patrimoines privés. J'ai trouvé votre contact suite à une 
-recherche via l'Internet et je vous prie de m'excuser pour cette 
-intrusion inattendue de ma part et l'effet surpris que cela peut 
-causer vu tout ce qui se passe actuellement sur l'Internet.
+Regards,
+Jonas
 
-En effet, je suis en contact direct avec une communauté libyenne 
-(Politiciens, Commerçants, Hommes d’affaire et Militaires) 
-résidents au Ghana.  Ces derniers disposent d’importants fonds et 
-souhaiteraient faire des placements et investissement avec ses 
-fonds dans tous les domaines rentables et  ils sont à la 
-recherche de manager sérieux à qui confier  toute la gérance.
+Algea Cao (1):
+  phy/rockchip: inno-hdmi: Support more pre-pll configuration
 
-Dans le cas où vous serez intéressés par mon offre, je vous 
-mettrai en contact avec leur représentant sur place pour plus 
-amples détails et informations.
+Huicong Xu (1):
+  phy/rockchip: inno-hdmi: force set_rate on power_on
 
+Jonas Karlman (3):
+  phy/rockchip: inno-hdmi: use correct vco_div_5 macro on rk3328
+  phy/rockchip: inno-hdmi: remove unused no_c from rk3328 recalc_rate
+  phy/rockchip: inno-hdmi: do not power on rk3328 post pll on reg write
 
-Veuillez bien vouloir me contacter directement à mon adresse e-
-mail : tolarokanse@gmail.com
+Zheng Yang (1):
+  phy/rockchip: inno-hdmi: round fractal pixclock in rk3328 recalc_rate
 
-Cordialement...
-Mr T. Okanse
+ drivers/phy/rockchip/phy-rockchip-inno-hdmi.c | 110 ++++++++++++------
+ 1 file changed, 74 insertions(+), 36 deletions(-)
+
+-- 
+2.17.1
 
