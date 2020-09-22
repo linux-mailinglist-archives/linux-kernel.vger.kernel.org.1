@@ -2,108 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3366227413B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:48:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE92D274128
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726793AbgIVLrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 07:47:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726571AbgIVLpf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 07:45:35 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 172D9C061755;
-        Tue, 22 Sep 2020 04:43:46 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id u3so1320430pjr.3;
-        Tue, 22 Sep 2020 04:43:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=V2VjYly8YXl5EI4Tg/+laJM2UumOWuwQAVbPJYyz4D0=;
-        b=TZur9F8PDyYbsDiO0VBy9PuSALAJtXA7A3MOMzpLhDzIVb4bRaNHoZ5KRp/WqZlDY/
-         h3sNg9bhUDTzI5UPswWyPVcIHCXAsiGuyYgnwVoIyBBZdzaVESTe5ESdNqmwZKrAHxs2
-         6VD1IESsegZQcSGLs3E0wN2nGuLVX6tnTyhtPqzNuFjznNQZyG2Yg+m0JaWoxLqW+ErI
-         GA9OkKJ62D0CNxqKsr6+NYXAANEM9nkerzIrl779cGFivYG6HKhfglG9deCwxut/I1/3
-         Y23S++Rz25MI8+9+nQbTEfN+W0x5ixw5lA28hE0R9TovGEuoyATkFjN83OBliSTTS4K0
-         tC8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=V2VjYly8YXl5EI4Tg/+laJM2UumOWuwQAVbPJYyz4D0=;
-        b=O1VfOX2f8kHVPTN/w4NOycgtQEbLSLJNTdJ03KJblSxW+b6d/2H30qN2naLyWfsoHT
-         gR4vcBwNSD6rMKAGn2O6vTRSUrQMlZJJ7JW3MnlGQgJuy1+iIFCARtcrvhGfcpEUVL1P
-         gAWrpeauO95RtlSQzKkWle0BNZPNmGXcLIr4qeD1VOWH47EWh00+vliosBI6oojWCD3D
-         GLa7gY1aami5gj9Y0mPrXauDzgl/yViw5p9F2u7G9IfkQysILaWk4Sp11kCQgDrXh+OM
-         d/VccO5Qu7fzVt1zEc3payhT2PvCC5m9IBPciXXcNcd92fUSsfR7Tb3vitIAmDZOBtRz
-         fncw==
-X-Gm-Message-State: AOAM5304yvqrtuyCn/Y0wnJrRdMDuN4Zc9rNyNGAnAswDa9SLDSQqx2g
-        dbYCKLvRAQwhHWhIYrAPtvMPEPbpesCZAA==
-X-Google-Smtp-Source: ABdhPJzjspDLviipX8iGk3qMnTqf3IErP0S4c3BsVZUA3+sm4i0FljmNVmIT/3nchofuaHPwXUi95g==
-X-Received: by 2002:a17:90a:6741:: with SMTP id c1mr3331202pjm.6.1600775025377;
-        Tue, 22 Sep 2020 04:43:45 -0700 (PDT)
-Received: from guoguo-omen.lan ([156.96.148.94])
-        by smtp.gmail.com with ESMTPSA id r16sm2179486pjo.19.2020.09.22.04.43.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 04:43:44 -0700 (PDT)
-From:   Chuanhong Guo <gch981213@gmail.com>
-To:     linux-spi@vger.kernel.org
-Cc:     bayi.cheng@mediatek.com, Chuanhong Guo <gch981213@gmail.com>,
-        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] spi: spi-mtk-nor: fix timeout calculation overflow
+        id S1726697AbgIVLrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 07:47:03 -0400
+Received: from mga07.intel.com ([134.134.136.100]:39062 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726613AbgIVLoJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 07:44:09 -0400
+IronPort-SDR: 5kIa9//sSoRrccGI1VJvTD6hPPymJbHryMMAT3kySIdm2BWr/Q9dKd4WWjGWhQFf/4G3+0FjsN
+ PFAIB1FLY49w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="224732884"
+X-IronPort-AV: E=Sophos;i="5.77,290,1596524400"; 
+   d="scan'208";a="224732884"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 04:44:01 -0700
+IronPort-SDR: 5Ln4zF9HS+GIl+kqHAi435vBqIYYCKN7jDjY8Y5pBPvRXBNpmyIol0M657yTXnqzYvI0/YVgOH
+ Ynl+UOCdQ7mg==
+X-IronPort-AV: E=Sophos;i="5.77,290,1596524400"; 
+   d="scan'208";a="304909428"
+Received: from shsi6026.sh.intel.com (HELO localhost) ([10.239.147.135])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 04:43:55 -0700
+From:   shuo.a.liu@intel.com
+To:     linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Shuo Liu <shuo.a.liu@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>
+Subject: [PATCH v4 05/17] virt: acrn: Introduce ACRN HSM basic driver
 Date:   Tue, 22 Sep 2020 19:42:59 +0800
-Message-Id: <20200922114317.2935897-1-gch981213@gmail.com>
-X-Mailer: git-send-email 2.26.2
+Message-Id: <20200922114311.38804-6-shuo.a.liu@intel.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200922114311.38804-1-shuo.a.liu@intel.com>
+References: <20200922114311.38804-1-shuo.a.liu@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CLK_TO_US macro is used to calculate potential transfer time for various
-timeout handling. However it overflows on transfer bigger than 512 bytes
-because it first did (len * 8 * 1000000).
-This controller typically operates at 45MHz. This patch did 2 things:
-1. calculate clock / 1000000 first
-2. add a 4M transfer size cap so that the final timeout in DMA reading
-   doesn't overflow
+From: Shuo Liu <shuo.a.liu@intel.com>
 
-Fixes: 881d1ee9fe81f ("spi: add support for mediatek spi-nor controller")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
+ACRN Hypervisor Service Module (HSM) is a kernel module in Service VM
+which communicates with ACRN userspace through ioctls and talks to ACRN
+Hypervisor through hypercalls.
+
+Add a basic HSM driver which allows Service VM userspace to communicate
+with ACRN. The following patches will add more ioctls, guest VM memory
+mapping caching, I/O request processing, ioeventfd and irqfd into this
+module. HSM exports a char device interface (/dev/acrn_hsm) to userspace.
+
+Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+Cc: Dave Hansen <dave.hansen@intel.com>
+Cc: Zhi Wang <zhi.a.wang@intel.com>
+Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
+Cc: Yu Wang <yu1.wang@intel.com>
+Cc: Reinette Chatre <reinette.chatre@intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/spi/spi-mtk-nor.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ MAINTAINERS                  |  1 +
+ drivers/virt/Kconfig         |  2 +
+ drivers/virt/Makefile        |  1 +
+ drivers/virt/acrn/Kconfig    | 14 ++++++
+ drivers/virt/acrn/Makefile   |  3 ++
+ drivers/virt/acrn/acrn_drv.h | 18 ++++++++
+ drivers/virt/acrn/hsm.c      | 87 ++++++++++++++++++++++++++++++++++++
+ 7 files changed, 126 insertions(+)
+ create mode 100644 drivers/virt/acrn/Kconfig
+ create mode 100644 drivers/virt/acrn/Makefile
+ create mode 100644 drivers/virt/acrn/acrn_drv.h
+ create mode 100644 drivers/virt/acrn/hsm.c
 
-diff --git a/drivers/spi/spi-mtk-nor.c b/drivers/spi/spi-mtk-nor.c
-index 6e6ca2b8e6c82..619313db42c0e 100644
---- a/drivers/spi/spi-mtk-nor.c
-+++ b/drivers/spi/spi-mtk-nor.c
-@@ -89,7 +89,7 @@
- // Buffered page program can do one 128-byte transfer
- #define MTK_NOR_PP_SIZE			128
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e0fea5e464b4..3030d0e93d02 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -442,6 +442,7 @@ L:	acrn-dev@lists.projectacrn.org
+ S:	Supported
+ W:	https://projectacrn.org
+ F:	Documentation/virt/acrn/
++F:	drivers/virt/acrn/
  
--#define CLK_TO_US(sp, clkcnt)		((clkcnt) * 1000000 / sp->spi_freq)
-+#define CLK_TO_US(sp, clkcnt)		DIV_ROUND_UP(clkcnt, sp->spi_freq / 1000000)
+ AD1889 ALSA SOUND DRIVER
+ L:	linux-parisc@vger.kernel.org
+diff --git a/drivers/virt/Kconfig b/drivers/virt/Kconfig
+index cbc1f25c79ab..d9484a2e9b46 100644
+--- a/drivers/virt/Kconfig
++++ b/drivers/virt/Kconfig
+@@ -32,4 +32,6 @@ config FSL_HV_MANAGER
+ 	     partition shuts down.
  
- struct mtk_nor {
- 	struct spi_controller *ctlr;
-@@ -177,6 +177,10 @@ static int mtk_nor_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
- 	if ((op->addr.nbytes == 3) || (op->addr.nbytes == 4)) {
- 		if ((op->data.dir == SPI_MEM_DATA_IN) &&
- 		    mtk_nor_match_read(op)) {
-+			// limit size to prevent timeout calculation overflow
-+			if (op->data.nbytes > 0x2000000)
-+				op->data.nbytes = 0x2000000;
+ source "drivers/virt/vboxguest/Kconfig"
 +
- 			if ((op->addr.val & MTK_NOR_DMA_ALIGN_MASK) ||
- 			    (op->data.nbytes < MTK_NOR_DMA_ALIGN))
- 				op->data.nbytes = 1;
++source "drivers/virt/acrn/Kconfig"
+ endif
+diff --git a/drivers/virt/Makefile b/drivers/virt/Makefile
+index fd331247c27a..f0491bbf0d4d 100644
+--- a/drivers/virt/Makefile
++++ b/drivers/virt/Makefile
+@@ -5,3 +5,4 @@
+ 
+ obj-$(CONFIG_FSL_HV_MANAGER)	+= fsl_hypervisor.o
+ obj-y				+= vboxguest/
++obj-$(CONFIG_ACRN_HSM)		+= acrn/
+diff --git a/drivers/virt/acrn/Kconfig b/drivers/virt/acrn/Kconfig
+new file mode 100644
+index 000000000000..36c80378c30c
+--- /dev/null
++++ b/drivers/virt/acrn/Kconfig
+@@ -0,0 +1,14 @@
++# SPDX-License-Identifier: GPL-2.0
++config ACRN_HSM
++	tristate "ACRN Hypervisor Service Module"
++	depends on ACRN_GUEST
++	help
++	  ACRN Hypervisor Service Module (HSM) is a kernel module which
++	  communicates with ACRN userspace through ioctls and talks to
++	  the ACRN Hypervisor through hypercalls. HSM will only run in
++	  a privileged management VM, called Service VM, to manage User
++	  VMs and do I/O emulation. Not required for simply running
++	  under ACRN as a User VM.
++
++	  To compile as a module, choose M, the module will be called
++	  acrn. If unsure, say N.
+diff --git a/drivers/virt/acrn/Makefile b/drivers/virt/acrn/Makefile
+new file mode 100644
+index 000000000000..6920ed798aaf
+--- /dev/null
++++ b/drivers/virt/acrn/Makefile
+@@ -0,0 +1,3 @@
++# SPDX-License-Identifier: GPL-2.0
++obj-$(CONFIG_ACRN_HSM)	:= acrn.o
++acrn-y := hsm.o
+diff --git a/drivers/virt/acrn/acrn_drv.h b/drivers/virt/acrn/acrn_drv.h
+new file mode 100644
+index 000000000000..29eedd696327
+--- /dev/null
++++ b/drivers/virt/acrn/acrn_drv.h
+@@ -0,0 +1,18 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef __ACRN_HSM_DRV_H
++#define __ACRN_HSM_DRV_H
++
++#include <linux/types.h>
++
++#define ACRN_INVALID_VMID (0xffffU)
++
++/**
++ * struct acrn_vm - Properties of ACRN User VM.
++ * @vmid:	User VM ID
++ */
++struct acrn_vm {
++	u16	vmid;
++};
++
++#endif /* __ACRN_HSM_DRV_H */
+diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
+new file mode 100644
+index 000000000000..28a3052ffa55
+--- /dev/null
++++ b/drivers/virt/acrn/hsm.c
+@@ -0,0 +1,87 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * ACRN Hypervisor Service Module (HSM)
++ *
++ * Copyright (C) 2020 Intel Corporation. All rights reserved.
++ *
++ * Authors:
++ *	Fengwei Yin <fengwei.yin@intel.com>
++ *	Yakui Zhao <yakui.zhao@intel.com>
++ */
++
++#include <linux/miscdevice.h>
++#include <linux/mm.h>
++#include <linux/module.h>
++#include <linux/slab.h>
++
++#include <asm/acrn.h>
++#include <asm/hypervisor.h>
++
++#include "acrn_drv.h"
++
++/*
++ * When /dev/acrn_hsm is opened, a 'struct acrn_vm' object is created to
++ * represent a VM instance and continues to be associated with the opened file
++ * descriptor. All ioctl operations on this file descriptor will be targeted to
++ * the VM instance. Release of this file descriptor will destroy the object.
++ */
++static int acrn_dev_open(struct inode *inode, struct file *filp)
++{
++	struct acrn_vm *vm;
++
++	vm = kzalloc(sizeof(*vm), GFP_KERNEL);
++	if (!vm)
++		return -ENOMEM;
++
++	vm->vmid = ACRN_INVALID_VMID;
++	filp->private_data = vm;
++	return 0;
++}
++
++static int acrn_dev_release(struct inode *inode, struct file *filp)
++{
++	struct acrn_vm *vm = filp->private_data;
++
++	kfree(vm);
++	return 0;
++}
++
++static const struct file_operations acrn_fops = {
++	.owner		= THIS_MODULE,
++	.open		= acrn_dev_open,
++	.release	= acrn_dev_release,
++};
++
++static struct miscdevice acrn_dev = {
++	.minor	= MISC_DYNAMIC_MINOR,
++	.name	= "acrn_hsm",
++	.fops	= &acrn_fops,
++};
++
++static int __init hsm_init(void)
++{
++	int ret;
++
++	if (x86_hyper_type != X86_HYPER_ACRN)
++		return -ENODEV;
++
++	if (!acrn_is_privileged_vm())
++		return -EPERM;
++
++	ret = misc_register(&acrn_dev);
++	if (ret)
++		pr_err("Create misc dev failed!\n");
++
++	return ret;
++}
++
++static void __exit hsm_exit(void)
++{
++	misc_deregister(&acrn_dev);
++}
++module_init(hsm_init);
++module_exit(hsm_exit);
++
++MODULE_AUTHOR("Intel Corporation");
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("ACRN Hypervisor Service Module (HSM)");
 -- 
-2.26.2
+2.28.0
 
