@@ -2,84 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F588273B45
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 08:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77A41273B4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 08:58:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729559AbgIVGzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 02:55:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52134 "EHLO
+        id S1729525AbgIVG6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 02:58:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727710AbgIVGzu (ORCPT
+        with ESMTP id S1728278AbgIVG6o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 02:55:50 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 474FDC061755;
-        Mon, 21 Sep 2020 23:55:50 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id z18so11581270pfg.0;
-        Mon, 21 Sep 2020 23:55:50 -0700 (PDT)
+        Tue, 22 Sep 2020 02:58:44 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C1E5C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 23:58:44 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id jw11so996968pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 23:58:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=l0lVrflkphRizXCe1PVGD3ndOPWr+Uw8f1/K7e/54jQ=;
-        b=Z9G4J5FNAEIn7m+FP3pWtSHjRivCphThOixT5spWoLXh7n7p8oeQKoZ+E3U3Aqzh/b
-         3yOhLyO+fyghm1wtnIPDqLLAK7M9O+2DkxLulOh4iFWkHBAZPWpV9egh8tlG7GNig56A
-         8CaPf+IlyDH0T7rE5PoX+UOcVMSkzjUtoo6NANU9FQte5Mk2dtRwswHB3t/tWZe+0/Rk
-         zu96rSdCG3TVYMJL3Vn3fYb6F6ckfbSLCLIUFJuiyaxWS3DATEBXLqSDzUVKgjaPJUIb
-         G4/yKbHOZkO1NkYBfM0v1Q12KLb9L49dA1ldI8MkFzd1dK+eqZdPDXVveneUloLcNn+7
-         LIsg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=mk/fMaiisStJZ+eXeroeNoarMmCiP2S7sKsiqrsdduk=;
+        b=ZI2I3A+FjAgnP1cXGR3PslCfdiH9g5w0tXPci4401hJytPiSY4pry/LEjEi77uQPS8
+         2JW8MNcX6gJjuFSXrxUL2r6NnU96PIRJ4MWouHvm9FiH8QoPW9IhAwJ9DgTjaO6ljYqn
+         AT11HvdV2frVWOpHbNlg1/1TEXlizAajhDU3Q8+yqHwpQKcBv+VwnhMbHlu7QDhL8Sta
+         QawTDXw4awlDtcXia2QtrOMhj0QEAMNeOE7hJWzkxpFYRXdD0JcWGAQ/rbgaYdc/pFnD
+         Q16ZUGeTwlpsi05eCV0IVm6GZcY15a+jF6LzGh+5DUXFnz9p35Om2pu4p7GUg3h7HeT/
+         Zqvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=l0lVrflkphRizXCe1PVGD3ndOPWr+Uw8f1/K7e/54jQ=;
-        b=FNJ6GM5sAMvQsyGjBvJjeDys8mF9g/SC6FAJYZbg2CHNjLHjuRYeQAmTGqDWskF5XV
-         Rhmyzr7jgMw7OxB+pRScDM3cxaqF9pGxudA4wxq2r7O5doDH2IqUW+WRgXRuB906qXaH
-         q03F2GFZAykqbHwRTJJb3yjB8QztGBOileBQd+/a/Z7eP/YZvdXAkfT8fNMCDo+8pgaC
-         5hUtz2BaISoHRKCGntmGilR4kbVJ2emIdFdVp+ZPBaxOdFmDMiZMfX+y6IE9S2kMafli
-         SWgRuNzomeAcprilzXOG+D4jWawV86UWuaVrJ23BzJWkUE3hcV+VZPe48WbonkOEviJy
-         xFgg==
-X-Gm-Message-State: AOAM530xHzuMtjgVow8nBxkoiQMIIcaLSdvioLkm10vKktWX9yv+HViV
-        ugZsU3hKMXWi72haC6wmXKzy5O4e5yFCJS0=
-X-Google-Smtp-Source: ABdhPJzkFtP7MFDzgwrIyEP53M0B6vR7ccW098Kp+yfLAd4kuUNPV7TW6tSIlzERNs4pai/yL7ImKg==
-X-Received: by 2002:a17:902:b90b:b029:d1:cbf4:bcd1 with SMTP id bf11-20020a170902b90bb02900d1cbf4bcd1mr3259277plb.29.1600757749851;
-        Mon, 21 Sep 2020 23:55:49 -0700 (PDT)
-Received: from localhost.localdomain ([47.242.131.39])
-        by smtp.gmail.com with ESMTPSA id m14sm13381878pfo.202.2020.09.21.23.55.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 23:55:49 -0700 (PDT)
-From:   Pujin Shi <shipujin.t@gmail.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shipujin.t@gmail.com, Pujin Shi <shipj@lemote.com>
-Subject: [PATCH] MIPS: idle: Add prototype for function check_wait
-Date:   Tue, 22 Sep 2020 14:54:39 +0800
-Message-Id: <20200922065439.3760-1-shipujin.t@gmail.com>
-X-Mailer: git-send-email 2.18.4
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=mk/fMaiisStJZ+eXeroeNoarMmCiP2S7sKsiqrsdduk=;
+        b=sC5oHggmA6Ke25iFChLsSC8LBCpglQDP72GHonc2y+VHZ88GtRB9yHueAuPx6F2muC
+         lfsp0a3UmvOuJSkVfsdXICfkhslbiHX8jnMbhGmR56n6IZUC35AFX22YmsrDO1/27Oow
+         r45R3TCtBq/SjHIhZPNw43oPq/5Ol9Yh4OVUeXv54RzlZLglq5m4hBqo047c4zj1mRmK
+         rjJQiLFudACjVuPxpbb0/GQdWIzo0/winV5tU2yD56oo1ObRIChiYm1/SqmCQrKAGgbd
+         RJd6ucbKD8ahwwgghPzV6DXBZIKJkWfMqvBFa7dN/BelMiJ5yQk9hbxF6+wt1EEeQqmM
+         CCSg==
+X-Gm-Message-State: AOAM5320r+WUjjXOIg4w+vuuVUOG/8AVPdXqwlLvRYNGGlWe7MSG1ekC
+        MHL0+2HDPu9IWfl3a9plODy7
+X-Google-Smtp-Source: ABdhPJzYXDkCWpSsQQwpumImuIQg+NKhaOHmsnp+NWmglbl2F3wo41wsAexxMwwBCEyoIgdXf2IVlQ==
+X-Received: by 2002:a17:90b:510:: with SMTP id r16mr2566131pjz.75.1600757923416;
+        Mon, 21 Sep 2020 23:58:43 -0700 (PDT)
+Received: from Mani-XPS-13-9360 ([2409:4072:6e1c:c062:1004:2ccf:6900:b97])
+        by smtp.gmail.com with ESMTPSA id f4sm5290255pgk.19.2020.09.21.23.58.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 21 Sep 2020 23:58:41 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 12:28:34 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Amit Singh Tomar <amittomer25@gmail.com>
+Cc:     andre.przywara@arm.com, afaerber@suse.de, robh+dt@kernel.org,
+        cristian.ciocaltea@gmail.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v7 05/10] arm64: dts: actions: limit address range for
+ pinctrl node
+Message-ID: <20200922065833.GF29035@Mani-XPS-13-9360>
+References: <1595180527-11320-1-git-send-email-amittomer25@gmail.com>
+ <1595180527-11320-6-git-send-email-amittomer25@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1595180527-11320-6-git-send-email-amittomer25@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit adds a prototype to fix warning at W=1:
+On Sun, Jul 19, 2020 at 11:12:02PM +0530, Amit Singh Tomar wrote:
+> After commit 7cdf8446ed1d ("arm64: dts: actions: Add pinctrl node for
+> Actions Semi S700") following error has been observed while booting
+> Linux on Cubieboard7-lite(based on S700 SoC).
+> 
+> [    0.257415] pinctrl-s700 e01b0000.pinctrl: can't request region for
+> resource [mem 0xe01b0000-0xe01b0fff]
+> [    0.266902] pinctrl-s700: probe of e01b0000.pinctrl failed with error -16
+> 
+> This is due to the fact that memory range for "sps" power domain controller
+> clashes with pinctrl.
+> 
+> One way to fix it, is to limit pinctrl address range which is safe
+> to do as current pinctrl driver uses address range only up to 0x100.
+> 
+> This commit limits the pinctrl address range to 0x100 so that it doesn't
+> conflict with sps range.
+> 
+> Fixes: 7cdf8446ed1d ("arm64: dts: actions: Add pinctrl node for Actions
+> Semi S700")
+> 
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Suggested-by: Andre Przywara <andre.przywara@arm.com>
+> Signed-off-by: Amit Singh Tomar <amittomer25@gmail.com>
 
-  arch/mips/kernel/idle.c:126:13: error: no previous prototype for 'check_wait' [-Werror=missing-prototypes]
+Applied for v5.10!
 
-Signed-off-by: Pujin Shi <shipj@lemote.com>
----
- arch/mips/include/asm/idle.h | 2 ++
- 1 file changed, 2 insertions(+)
+Thanks,
+Mani
 
-diff --git a/arch/mips/include/asm/idle.h b/arch/mips/include/asm/idle.h
-index 655a6dbc861a..0992cad9c632 100644
---- a/arch/mips/include/asm/idle.h
-+++ b/arch/mips/include/asm/idle.h
-@@ -15,6 +15,8 @@ static inline int using_rollback_handler(void)
- 	return cpu_wait == r4k_wait;
- }
- 
-+extern void __init check_wait(void);
-+
- extern int mips_cpuidle_wait_enter(struct cpuidle_device *dev,
- 				   struct cpuidle_driver *drv, int index);
- 
--- 
-2.18.1
-
+> ---
+> Changes since v6:
+> 	* No change.
+> Changes since v5:
+>         * Added Mani's Reviewed-by: tag.
+> Changes since v4:
+>         * Reordered it from 04/10 to 05/10.
+> Changes since v3:
+>         * No change.
+> Changes since v2:
+>         * this is no more don't merge and fixed
+>           the broken S700 boot by limiting pinctrl
+>           address range.
+>         * Modified the subject to reflect the changes.
+> Changes since v1:
+>         * No change.
+> Changes since RFC:
+>         * kept as do not merge.
+> ---
+>  arch/arm64/boot/dts/actions/s700.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/actions/s700.dtsi b/arch/arm64/boot/dts/actions/s700.dtsi
+> index 2006ad5424fa..f8eb72bb4125 100644
+> --- a/arch/arm64/boot/dts/actions/s700.dtsi
+> +++ b/arch/arm64/boot/dts/actions/s700.dtsi
+> @@ -231,7 +231,7 @@
+>  
+>  		pinctrl: pinctrl@e01b0000 {
+>  			compatible = "actions,s700-pinctrl";
+> -			reg = <0x0 0xe01b0000 0x0 0x1000>;
+> +			reg = <0x0 0xe01b0000 0x0 0x100>;
+>  			clocks = <&cmu CLK_GPIO>;
+>  			gpio-controller;
+>  			gpio-ranges = <&pinctrl 0 0 136>;
+> -- 
+> 2.7.4
+> 
