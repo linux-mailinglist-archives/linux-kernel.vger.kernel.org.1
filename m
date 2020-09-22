@@ -2,116 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 828032745B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2877F2745E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726728AbgIVPuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 11:50:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726589AbgIVPuG (ORCPT
+        id S1726748AbgIVQAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 12:00:17 -0400
+Received: from bedivere.hansenpartnership.com ([66.63.167.143]:53162 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726651AbgIVQAR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 11:50:06 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA57AC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 08:50:05 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id s12so17636019wrw.11
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 08:50:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=k1qiM4bUagO9PvzG1mYjhQ2oeaOlyE+NHa+RI/UKMuI=;
-        b=OffjgK1VvQU3R4J2PDeHOOirKPulZND04R2KV4wX2yXgAdKlN82m3+qgP/YLrgHdoP
-         XRGEQpgSy/EvjUge6T9J532EjQGUOMSKUUm2YjrwEEnfFJYXoItcvuYoojcMCiFOLfCl
-         +a9sSbot03midkDhZaSzd4yF71ySdX6mfEYJ8UiYu3QOnw1082QuhAksGSZ6TEBI4DqE
-         YXpTPsDBx4UiAtoiXHGouZPixegjYM59VecZEk+F8kHX62SO35UKc/naF7K0IgW1DkdP
-         s9pm7Hru94v9+btXnyu2IXDVeNLGSWoDFO8I+lUf5O0ulzIoYYO61eFmy6f9gCBnvy+b
-         +miQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=k1qiM4bUagO9PvzG1mYjhQ2oeaOlyE+NHa+RI/UKMuI=;
-        b=pbdwsNyDGZKJfqm2INJY0ii3Nt5BNqMw73lCpjvYnU/5p3UTomMLFX2LVHX/lRyfXa
-         gdXMJF/AVJlYoa+7Bb/JvosK70IzVNdJQTjGsvPD/d2et9WjD1XnGHOPmKwWav3YFGqL
-         oMIheL/eE7xWPEzjBskDwJv7ps90BJ1oQv/Iu0LFqepGCho/W4VHEsguL9e2vTH/NmQj
-         5Z/+UwObHvYUSln/IKb2kr8dOL5Qo/Vw9CnXPUZoA16b1DlLqhQpKvef8USqLPujUXvt
-         Gv7AHgW8EsuPCYuxa8xCW6xE2yXpPB4N3YtryRFV0kWRjLMRRqXL0yTYo7TOwv3BemJp
-         QVQQ==
-X-Gm-Message-State: AOAM5336zQk8pY6NZRmV6XkMKHvbiXcm8jyDW2aodJ4ZyeIhUVhAqRuR
-        qgf0cNO4UUV1fQ3RSbm8VCVju1Y8zMkMCZzANtc=
-X-Google-Smtp-Source: ABdhPJzNUoLcCUJtNlHpGP5CHl4ouHNhSErzbaqeG9ZEfR+X8xgDw8Vu/pgn8/BMiFFtwMkSUKK2DOChEI2ZoswOEhw=
-X-Received: by 2002:adf:dd82:: with SMTP id x2mr6452043wrl.419.1600789804606;
- Tue, 22 Sep 2020 08:50:04 -0700 (PDT)
+        Tue, 22 Sep 2020 12:00:17 -0400
+X-Greylist: delayed 350 seconds by postgrey-1.27 at vger.kernel.org; Tue, 22 Sep 2020 12:00:16 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 6546F8EE1C7;
+        Tue, 22 Sep 2020 08:54:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1600790065;
+        bh=VqUSJxeMX2TLwu0Kcu6uIuml/FkxBKawirruqps7NM4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=G/8/Cgs3u9HagTPs+o8TbppdLmcVMz2WwHMlvmhWZCOYtKuPqaKlf/oATGXVbC2Uw
+         ieAAL2KjTQmx2zMGVbb5adX4A35PgzQl+rnqdGW45CAY6GgF5PTKjK/1ROkN6x1UH8
+         0XIa9uyNtuQ0lNoHKrp3q8IXVdaMVN6DSO3wBFSU=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id OrFAjECzZYHA; Tue, 22 Sep 2020 08:54:15 -0700 (PDT)
+Received: from jarvis.int.hansenpartnership.com (jarvis.ext.hansenpartnership.com [153.66.160.226])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 579AD8EE0E0;
+        Tue, 22 Sep 2020 08:54:12 -0700 (PDT)
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     linux-kbuild@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 0/1] Add explicit error for missing CONFIG_ASN1
+Date:   Tue, 22 Sep 2020 08:53:40 -0700
+Message-Id: <20200922155341.17906-1-James.Bottomley@HansenPartnership.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <1600773099-32693-1-git-send-email-wangqing@vivo.com> <CAD=4a=URYhNswOBfBj39b00HWR3vWeHF9ntP-n_SPa94YJZbTg@mail.gmail.com>
-In-Reply-To: <CAD=4a=URYhNswOBfBj39b00HWR3vWeHF9ntP-n_SPa94YJZbTg@mail.gmail.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 22 Sep 2020 11:49:53 -0400
-Message-ID: <CADnq5_ObAjsxfKsJgk6mE7OKK6Jw=-bacva6_rxySKSD8nqAjg@mail.gmail.com>
-Subject: Re: [PATCH] gpu/drm/radeon: fix spellint typo in comments
-To:     =?UTF-8?Q?Ernst_Sj=C3=B6strand?= <ernstp@gmail.com>
-Cc:     Wang Qing <wangqing@vivo.com>, David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied with subject typo fixed.  Thanks!
+I recently ran into this as an error from 0day.  On x86 it's pretty
+much impossible to build a configuration where CONFIG_ASN1 isn't set,
+so you rarely notice a problem using the ASN.1 compiler because
+something else has selected it.  However, this compiler is never built
+if CONFIG_ASN1 isn't set and the error you get from kbuild is
+particularly unhelpful:
 
-Alex
+   make[4]: *** No rule to make target 'security/keys/trusted-keys/tpm2key.asn1.o', needed by 'security/keys/trusted-keys/built-in.a'.
+   make[4]: *** [scripts/Makefile.build:283: security/keys/trusted-keys/trusted_tpm2.o] Error 1
+   make[4]: Target '__build' not remade because of errors.
 
-On Tue, Sep 22, 2020 at 10:07 AM Ernst Sj=C3=B6strand <ernstp@gmail.com> wr=
-ote:
->
-> There is a typo in your patch subject. ;-)
->
-> Regards
-> //Ernst
->
-> Den tis 22 sep. 2020 kl 15:11 skrev Wang Qing <wangqing@vivo.com>:
->>
->> Modify the comment typo: "definately" -> "definitely".
->>
->> Signed-off-by: Wang Qing <wangqing@vivo.com>
->> ---
->>  drivers/gpu/drm/radeon/radeon_vm.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/gpu/drm/radeon/radeon_vm.c b/drivers/gpu/drm/radeon=
-/radeon_vm.c
->> index f60fae0..3d6e2cd
->> --- a/drivers/gpu/drm/radeon/radeon_vm.c
->> +++ b/drivers/gpu/drm/radeon/radeon_vm.c
->> @@ -188,7 +188,7 @@ struct radeon_fence *radeon_vm_grab_id(struct radeon=
-_device *rdev,
->>             vm_id->last_id_use =3D=3D rdev->vm_manager.active[vm_id->id]=
-)
->>                 return NULL;
->>
->> -       /* we definately need to flush */
->> +       /* we definitely need to flush */
->>         vm_id->pd_gpu_addr =3D ~0ll;
->>
->>         /* skip over VMID 0, since it is the system VM */
->> --
->> 2.7.4
->>
->> _______________________________________________
->> amd-gfx mailing list
->> amd-gfx@lists.freedesktop.org
->> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
->
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+This patch changes the above error to the much easier to diagnose:
+
+   scripts/Makefile.build:387: *** CONFIG_ASN1 must be defined for the asn1_compiler.  Stop.
+   make[3]: *** [scripts/Makefile.build:505: security/keys/trusted-keys] Error 2
+
+James
+
+---
+
+James Bottomley (1):
+  Makefile.build: Add an explicit error for missing ASN.1 compiler
+
+ scripts/Makefile.build | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+-- 
+2.26.2
+
