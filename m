@@ -2,138 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81B3D273B79
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8805273B7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:13:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729620AbgIVHLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 03:11:31 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:15818 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728526AbgIVHLa (ORCPT
+        id S1729737AbgIVHNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 03:13:20 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:57489 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728526AbgIVHNQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 03:11:30 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f69a3740001>; Tue, 22 Sep 2020 00:10:44 -0700
-Received: from [10.2.52.174] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 22 Sep
- 2020 07:11:30 +0000
-Subject: Re: [PATCH 3/5] mm: Rework return value for copy_one_pte()
-To:     Peter Xu <peterx@redhat.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Jann Horn" <jannh@google.com>
-References: <20200921211744.24758-1-peterx@redhat.com>
- <20200921211744.24758-4-peterx@redhat.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <6eb46d4d-8267-4e10-0157-e2ce2be2850d@nvidia.com>
-Date:   Tue, 22 Sep 2020 00:11:29 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 22 Sep 2020 03:13:16 -0400
+X-UUID: d2c6de1f2a0642c3b4370b26606d871f-20200922
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=y5qtueSnd0gmXTgqaU7WrKuS0UH/8TSj72WVkDhtRI4=;
+        b=Dje6q1TmGkdE+S1arwuuvpcomXsB5uJj8NcGXs2/mInVgeXb75PlMTWmsiZ8cJGluR69zw9poVr5DCKqO4svW14kAkWnZ2GYU3rYkFxxY0/KmImbzKDbVBJ0+sFdAt774HLVTNoI3iHWfKzozNd9EblHrHR9S9cvaQyGydoWc/E=;
+X-UUID: d2c6de1f2a0642c3b4370b26606d871f-20200922
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <neal.liu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 618911528; Tue, 22 Sep 2020 15:13:11 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 22 Sep 2020 15:13:08 +0800
+Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 22 Sep 2020 15:13:08 +0800
+Message-ID: <1600758789.19001.4.camel@mtkswgap22>
+Subject: Re: [PATCH v7] Add MediaTek MT6779 devapc driver
+From:   Neal Liu <neal.liu@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     Neal Liu <neal.liu@mediatek.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>
+Date:   Tue, 22 Sep 2020 15:13:09 +0800
+In-Reply-To: <1600246737.14155.3.camel@mtkswgap22>
+References: <1598497593-15781-1-git-send-email-neal.liu@mediatek.com>
+         <1599028813.32069.1.camel@mtkswgap22> <1599640627.6370.3.camel@mtkswgap22>
+         <1600246737.14155.3.camel@mtkswgap22>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-In-Reply-To: <20200921211744.24758-4-peterx@redhat.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600758644; bh=8J71hRtGdhJ0Jg8YwjuNNAFNeiVmfi98qQdLTq8Xlvc=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=fd9UV+iK4layuQDHkfCQ0DfdIT0PjMADSSkh0YkG8MJXBIPzOodb/mgiW9vQGHQBi
-         rQ/2VftVeE/Dp6XoRpkgndJKAXocZAZb44nTXMVdcjO1mSlXbXLw+Vu+kgB12PlaJP
-         1GMip8RM86OZQUiZ2QUw92xRf929bxNx1UYc1eobvtyt7AitupF54FwjJQ1D4YuHt6
-         WyZs6WglqEciB/S8MXi2BCH8Vs9cRrpsdRtzvyY917NrN2qs2HBEGBdL4mDkTgt64u
-         mYzm6asnaANurCWu77r/dSbYG/xuyPbDuBpT+5TJzE2vlrlsDle1VMRp+Da5xu/dvH
-         z+6/jh35EVZgQ==
+X-TM-SNTS-SMTP: D9A970872699FB66BF596432F982953E3F524122165F704DE10755B81CEC28102000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/21/20 2:17 PM, Peter Xu wrote:
-> There's one special path for copy_one_pte() with swap entries, in which
-> add_swap_count_continuation(GFP_ATOMIC) might fail.  In that case we'll return
+SGkgTWF0dGhpYXMsDQoNCldlIG5lZWQgdGhpcyBkcml2ZXIgc3VwcG9ydGVkIG9uIG1haW4tbGlu
+ZS4NCkNvdWxkIHlvdSBzYXZlIHlvdXIgdGltZSBmb3IgdXMgdG8gcmV2aWV3IGl0Pw0KVGhhbmtz
+DQoNCi1OZWFsDQoNCk9uIFdlZCwgMjAyMC0wOS0xNiBhdCAxNjo1OCArMDgwMCwgTmVhbCBMaXUg
+d3JvdGU6DQo+IEhpIFJvYiwgTWF0dGhpYXMsIENodW4tS3VhbmcsDQo+IA0KPiBTb3JyeSBmb3Ig
+cHVzaGluZyB5b3Ugc28gaGFyZC4NCj4gTWF5IEkga25vdyBpcyB0aGlzIHBhdGNoIHNldCBpcyBj
+b21mb3J0YWJsZSB0byBhcHBseSBvbiBsYXRlc3Qga2VybmVsPw0KPiBUaGFua3MNCj4gDQo+IC1O
+ZWFsDQo+IA0KPiBPbiBXZWQsIDIwMjAtMDktMDkgYXQgMTY6MzcgKzA4MDAsIE5lYWwgTGl1IHdy
+b3RlOg0KPiA+IEhpIFJvYiwgTWF0dGhpYXMsIENodW4tS3VhbmcsDQo+ID4gDQo+ID4gUGxlYXNl
+IGtpbmRseSBsZXQgbWUga25vdyB5b3VyIGNvbW1lbnRzIGFib3V0IHRoaXMgcGF0Y2ggc2V0Lg0K
+PiA+IFRoYW5rcw0KPiA+IA0KPiA+IC1OZWFsDQo+ID4gDQo+ID4gT24gV2VkLCAyMDIwLTA5LTAy
+IGF0IDE0OjQwICswODAwLCBOZWFsIExpdSB3cm90ZToNCj4gPiA+IEhpIFJvYiwgTWF0dGhpYXMs
+IENodW4tS3VhbmcsDQo+ID4gPiANCj4gPiA+IEdlbnRsZSBwaW5nIGZvciB0aGlzIHBhdGNoIHNl
+dC4NCj4gPiA+IFRoYW5rcw0KPiA+ID4gDQo+ID4gPiAtTmVhbA0KPiA+ID4gDQo+ID4gPiBPbiBU
+aHUsIDIwMjAtMDgtMjcgYXQgMTE6MDYgKzA4MDAsIE5lYWwgTGl1IHdyb3RlOg0KPiA+ID4gPiBU
+aGVzZSBwYXRjaCBzZXJpZXMgaW50cm9kdWNlIGEgTWVkaWFUZWsgTVQ2Nzc5IGRldmFwYyBkcml2
+ZXIuDQo+ID4gPiA+IA0KPiA+ID4gPiBNZWRpYVRlayBidXMgZmFicmljIHByb3ZpZGVzIFRydXN0
+Wm9uZSBzZWN1cml0eSBzdXBwb3J0IGFuZCBkYXRhIHByb3RlY3Rpb24gdG8gcHJldmVudCBzbGF2
+ZXMgZnJvbSBiZWluZyBhY2Nlc3NlZCBieSB1bmV4cGVjdGVkIG1hc3RlcnMuDQo+ID4gPiA+IFRo
+ZSBzZWN1cml0eSB2aW9sYXRpb24gaXMgbG9nZ2VkIGFuZCBzZW50IHRvIHRoZSBwcm9jZXNzb3Ig
+Zm9yIGZ1cnRoZXIgYW5hbHlzaXMgb3IgY291bnRlcm1lYXN1cmVzLg0KPiA+ID4gPiANCj4gPiA+
+ID4gQW55IG9jY3VycmVuY2Ugb2Ygc2VjdXJpdHkgdmlvbGF0aW9uIHdvdWxkIHJhaXNlIGFuIGlu
+dGVycnVwdCwgYW5kIGl0IHdpbGwgYmUgaGFuZGxlZCBieSBtdGstZGV2YXBjIGRyaXZlci4NCj4g
+PiA+ID4gVGhlIHZpb2xhdGlvbiBpbmZvcm1hdGlvbiBpcyBwcmludGVkIGluIG9yZGVyIHRvIGZp
+bmQgdGhlIG11cmRlcmVyLg0KPiA+ID4gPiANCj4gPiA+ID4gY2hhbmdlcyBzaW5jZSB2NjoNCj4g
+PiA+ID4gLSByZW1vdmUgdW5uZWNlc3NhcnkgbWFzay91bm1hc2sgbW9kdWxlIGlycSBkdXJpbmcg
+SVNSLg0KPiA+ID4gPiANCj4gPiA+ID4gY2hhbmdlcyBzaW5jZSB2NToNCj4gPiA+ID4gLSByZW1v
+dmUgcmVkdW5kYW50IHdyaXRlIHJlZyBvcGVyYXRpb24uDQo+ID4gPiA+IC0gdXNlIHN0YXRpYyB2
+YXJpYWJsZSBvZiB2aW9fZGJncyBpbnN0ZWFkLg0KPiA+ID4gPiAtIGFkZCBzdG9wX2RldmFwYygp
+IGlmIGRyaXZlciBpcyByZW1vdmVkLg0KPiA+ID4gPiANCj4gPiA+ID4gY2hhbmdlcyBzaW5jZSB2
+NDoNCj4gPiA+ID4gLSByZWZhY3RvciBkYXRhIHN0cnVjdHVyZS4NCj4gPiA+ID4gLSBtZXJnZSB0
+d28gc2ltcGxlIGZ1bmN0aW9ucyBpbnRvIG9uZS4NCj4gPiA+ID4gLSByZWZhY3RvciByZWdpc3Rl
+ciBzZXR0aW5nIHRvIHByZXZlbnQgdG9vIG1hbnkgZnVuY3Rpb24gY2FsbCBvdmVyaGVhZC4NCj4g
+PiA+ID4gDQo+ID4gPiA+IGNoYW5nZXMgc2luY2UgdjM6DQo+ID4gPiA+IC0gcmV2aXNlIHZpb2xh
+dGlvbiBoYW5kbGluZyBmbG93IHRvIG1ha2UgaXQgbW9yZSBlYXNpbHkgdG8gdW5kZXJzdGFuZA0K
+PiA+ID4gPiAgIGhhcmR3YXJlIGJlaGF2aW9yLg0KPiA+ID4gPiAtIGFkZCBtb3JlIGNvbW1lbnRz
+IHRvIHVuZGVyc3RhbmQgaG93IGhhcmR3YXJlIHdvcmtzLg0KPiA+ID4gPiANCj4gPiA+ID4gY2hh
+bmdlcyBzaW5jZSB2MjoNCj4gPiA+ID4gLSBwYXNzIHBsYXRmb3JtIGluZm8gdGhyb3VnaCBEVCBk
+YXRhLg0KPiA+ID4gPiAtIHJlbW92ZSB1bm5lY2Vzc2FyeSBmdW5jdGlvbi4NCj4gPiA+ID4gLSBy
+ZW1vdmUgc2xhdmVfdHlwZSBiZWNhdXNlIGl0IGFsd2F5cyBlcXVhbHMgdG8gMSBpbiBjdXJyZW50
+IHN1cHBvcnQgU29DLg0KPiA+ID4gPiAtIHVzZSB2aW9faWR4X251bSBpbnN0cmVhZCBvZiBsaXN0
+IGFsbCBkZXZpY2VzJyBpbmRleC4NCj4gPiA+ID4gLSBhZGQgbW9yZSBjb21tZW50cyB0byBkZXNj
+cmliZSBoYXJkd2FyZSBiZWhhdmlvci4NCj4gPiA+ID4gDQo+ID4gPiA+IGNoYW5nZXMgc2luY2Ug
+djE6DQo+ID4gPiA+IC0gbW92ZSBTb0Mgc3BlY2lmaWMgcGFydCB0byBEVCBkYXRhLg0KPiA+ID4g
+PiAtIHJlbW92ZSB1bm5lY2Vzc2FyeSBib3VuZGFyeSBjaGVjay4NCj4gPiA+ID4gLSByZW1vdmUg
+dW5uZWNlc3NhcnkgZGF0YSB0eXBlIGRlY2xhcmF0aW9uLg0KPiA+ID4gPiAtIHVzZSByZWFkX3Bv
+bGxfdGltZW91dCgpIGluc3RyZWFkIG9mIGZvciBsb29wIHBvbGxpbmcuDQo+ID4gPiA+IC0gcmV2
+aXNlIGNvZGluZyBzdHlsZSBlbGVnYW50bHkuDQo+ID4gPiA+IA0KPiA+ID4gPiANCj4gPiA+ID4g
+KioqIEJMVVJCIEhFUkUgKioqDQo+ID4gPiA+IA0KPiA+ID4gPiBOZWFsIExpdSAoMik6DQo+ID4g
+PiA+ICAgZHQtYmluZGluZ3M6IGRldmFwYzogYWRkIGJpbmRpbmdzIGZvciBtdGstZGV2YXBjDQo+
+ID4gPiA+ICAgc29jOiBtZWRpYXRlazogYWRkIG10Njc3OSBkZXZhcGMgZHJpdmVyDQo+ID4gPiA+
+IA0KPiA+ID4gPiAgLi4uL2JpbmRpbmdzL3NvYy9tZWRpYXRlay9kZXZhcGMueWFtbCAgICAgICAg
+IHwgIDU4ICsrKysNCj4gPiA+ID4gIGRyaXZlcnMvc29jL21lZGlhdGVrL0tjb25maWcgICAgICAg
+ICAgICAgICAgICB8ICAgOSArDQo+ID4gPiA+ICBkcml2ZXJzL3NvYy9tZWRpYXRlay9NYWtlZmls
+ZSAgICAgICAgICAgICAgICAgfCAgIDEgKw0KPiA+ID4gPiAgZHJpdmVycy9zb2MvbWVkaWF0ZWsv
+bXRrLWRldmFwYy5jICAgICAgICAgICAgIHwgMzA1ICsrKysrKysrKysrKysrKysrKw0KPiA+ID4g
+PiAgNCBmaWxlcyBjaGFuZ2VkLCAzNzMgaW5zZXJ0aW9ucygrKQ0KPiA+ID4gPiAgY3JlYXRlIG1v
+ZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb2MvbWVkaWF0ZWsv
+ZGV2YXBjLnlhbWwNCj4gPiA+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL3NvYy9tZWRp
+YXRlay9tdGstZGV2YXBjLmMNCj4gPiA+ID4gDQo+ID4gPiANCj4gPiA+IA0KPiA+IA0KPiA+IA0K
+PiANCj4gDQoNCg==
 
-I might be looking at the wrong place, but the existing code seems to call
-add_swap_count_continuation(GFP_KERNEL), not with GFP_ATOMIC?
-
-> the swp_entry_t so that the caller will release the locks and redo the same
-> thing with GFP_KERNEL.
-> 
-> It's confusing when copy_one_pte() must return a swp_entry_t (even if all the
-> ptes are non-swap entries).  More importantly, we face other requirement to
-> extend this "we need to do something else, but without the locks held" case.
-> 
-> Rework the return value into something easier to understand, as defined in enum
-> copy_mm_ret.  We'll pass the swp_entry_t back using the newly introduced union
-
-I like the documentation here, but it doesn't match what you did in the patch.
-Actually, the documentation had the right idea (enum, rather than #define, for
-COPY_MM_* items). Below...
-
-> copy_mm_data parameter.
-> 
-> Another trivial change is to move the reset of the "progress" counter into the
-> retry path, so that we'll reset it for other reasons too.
-> 
-> This should prepare us with adding new return codes, very soon.
-> 
-> Signed-off-by: Peter Xu <peterx@redhat.com>
-> ---
->   mm/memory.c | 42 +++++++++++++++++++++++++++++-------------
->   1 file changed, 29 insertions(+), 13 deletions(-)
-> 
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 7525147908c4..1530bb1070f4 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -689,16 +689,24 @@ struct page *vm_normal_page_pmd(struct vm_area_struct *vma, unsigned long addr,
->   }
->   #endif
->   
-> +#define  COPY_MM_DONE               0
-> +#define  COPY_MM_SWAP_CONT          1
-
-Those should be enums, so as to get a little type safety and other goodness from
-using non-macro items.
-
-...
-> @@ -866,13 +877,18 @@ static int copy_pte_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
->   	pte_unmap_unlock(orig_dst_pte, dst_ptl);
->   	cond_resched();
->   
-> -	if (entry.val) {
-> -		if (add_swap_count_continuation(entry, GFP_KERNEL) < 0)
-> +	switch (copy_ret) {
-> +	case COPY_MM_SWAP_CONT:
-> +		if (add_swap_count_continuation(data.entry, GFP_KERNEL) < 0)
->   			return -ENOMEM;
-> -		progress = 0;
-
-Yes. Definitely a little cleaner to reset this above, instead of here.
-
-> +		break;
-> +	default:
-> +		break;
-
-I assume this no-op noise is to placate the compiler and/or static checkers. :)
-
-I'm unable to find any actual problems with the diffs, aside from the nit about
-using an enum.
-
-thanks,
--- 
-John Hubbard
-NVIDIA
