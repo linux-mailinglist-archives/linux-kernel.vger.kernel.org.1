@@ -2,49 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F008274BEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88641274BEF
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgIVWPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 18:15:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54788 "EHLO mail.kernel.org"
+        id S1726883AbgIVWPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 18:15:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726179AbgIVWPY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 18:15:24 -0400
-Subject: Re: [GIT PULL] io_uring fixes for 5.9-rc
+        id S1726667AbgIVWPZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 18:15:25 -0400
+Subject: Re: [git pull] vfs fixes
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1600812924;
-        bh=UVJzguGCm44sfbkoHo41EuT7SFHdka4Xy+rfnaiGpOA=;
+        bh=jmuAq5tea2wXdciq0ihXQtHSWAh1KGEWL9/YTE4qmjg=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=frTxDX0JEbe2wEYp3edRiiErA3OqcQ4gxCQzP+Vs/6zHp/XKmVgPirUtrBeVynBTj
-         t5cuD+v5yvS2aylJk7xE9tklQwpNuoBwO2h88qGmCuIWreUK1PcnMDRBY26wPrDRFk
-         1XodOs7QFkg9psHZM2y3FoogKYSVsn7uVsiEuuKk=
+        b=DHIuJxUIctqAyoedg/BGhoXQK24Z4O0p+Wq5yRvDgWMP+fjL8urIbPC0g4E5J1efR
+         UOZ/+kcIPUFW5XyDtdaJzYSwndXPzQakPaM5827un30g34l+nJChL8eToDxN2T+f8b
+         UqZHpodlQVVEufOgtH5+aKKZO3eBmIWWVJlPLptM=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <14cc3fb9-2f6e-ef49-c98b-994048c0b4d3@kernel.dk>
-References: <14cc3fb9-2f6e-ef49-c98b-994048c0b4d3@kernel.dk>
-X-PR-Tracked-List-Id: <io-uring.vger.kernel.org>
-X-PR-Tracked-Message-Id: <14cc3fb9-2f6e-ef49-c98b-994048c0b4d3@kernel.dk>
-X-PR-Tracked-Remote: git://git.kernel.dk/linux-block.git tags/io_uring-5.9-2020-09-22
-X-PR-Tracked-Commit-Id: 4eb8dded6b82e184c09bb963bea0335fa3f30b55
+In-Reply-To: <20200922212908.GB3421308@ZenIV.linux.org.uk>
+References: <20200922212908.GB3421308@ZenIV.linux.org.uk>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200922212908.GB3421308@ZenIV.linux.org.uk>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git fixes
+X-PR-Tracked-Commit-Id: 933a3752babcf6513117d5773d2b70782d6ad149
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0baca070068c58b95e342881d9da4840d5cf3bd1
-Message-Id: <160081292404.1950.8126323357580620009.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 805c6d3c19210c90c109107d189744e960eae025
+Message-Id: <160081292493.1950.2619560059383841489.pr-tracker-bot@kernel.org>
 Date:   Tue, 22 Sep 2020 22:15:24 +0000
-To:     Jens Axboe <axboe@kernel.dk>
+To:     Al Viro <viro@zeniv.linux.org.uk>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 22 Sep 2020 11:07:18 -0600:
+The pull request you sent on Tue, 22 Sep 2020 22:29:08 +0100:
 
-> git://git.kernel.dk/linux-block.git tags/io_uring-5.9-2020-09-22
+> git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git fixes
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0baca070068c58b95e342881d9da4840d5cf3bd1
+https://git.kernel.org/torvalds/c/805c6d3c19210c90c109107d189744e960eae025
 
 Thank you!
 
