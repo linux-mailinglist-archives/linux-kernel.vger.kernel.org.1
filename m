@@ -2,85 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4514E273F92
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 12:26:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CC4B273F94
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 12:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726551AbgIVK0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 06:26:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54058 "EHLO mail.kernel.org"
+        id S1726554AbgIVK04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 06:26:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48544 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726454AbgIVK0L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 06:26:11 -0400
-Received: from gaia (unknown [31.124.44.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 348FD2086A;
-        Tue, 22 Sep 2020 10:26:08 +0000 (UTC)
-Date:   Tue, 22 Sep 2020 11:26:05 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Matheus Castello <matheus@castello.eng.br>,
-        Olof Johansson <olof@lixom.net>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>, edgar.righi@lsitec.org.br,
-        igor.lima@lsitec.org.br, Helen Koike <helen.koike@collabora.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        DTML <devicetree@vger.kernel.org>,
+        id S1726423AbgIVK04 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 06:26:56 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1600770414;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NMJmnLI06vJXPxa6modAvGqnYZPCj9ff74h1pzwMv/4=;
+        b=dgDYvubZbMVTnG9XAG9gizyD0wYkqNHziClRtQHrrL5/1yRtJpQ6gaE+Ir2RbM0mHKRcvB
+        JP0QhPuW0SZ4s4l6SVeOsa7WFj32f+KHNx7jlQaC3f8mWgEdtK8ErwPJB49rhMy0hrs4Wy
+        E1xw+4IXKArfp+XVS4eR9s52Mh1JYkc=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4BD69B226;
+        Tue, 22 Sep 2020 10:27:31 +0000 (UTC)
+From:   =?utf-8?Q?Aur=C3=A9lien?= Aptel <aaptel@suse.com>
+To:     Pali =?utf-8?Q?Roh=C3=A1r?= <pali@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-actions@lists.infradead.org, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v7 4/4] arm64: dts: Add Caninos Loucos Labrador v3
-Message-ID: <20200922102605.GE15643@gaia>
-References: <20200922024302.205062-1-matheus@castello.eng.br>
- <20200922024302.205062-5-matheus@castello.eng.br>
- <20200922061454.GA29035@Mani-XPS-13-9360>
- <CAK8P3a0yGN80nJU0kcrvYGsSjpaNpU_nmu-ENwE3GMC_9DNBhg@mail.gmail.com>
+        "dsterba@suse.cz" <dsterba@suse.cz>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "joe@perches.com" <joe@perches.com>,
+        "mark@harmstone.com" <mark@harmstone.com>
+Subject: Re: [PATCH v3 04/10] fs/ntfs3: Add file operations and implementation
+In-Reply-To: <20200921133647.3tczqm5zfvae6q6a@pali>
+References: <20200828143938.102889-1-almaz.alexandrovich@paragon-software.com>
+ <20200828143938.102889-5-almaz.alexandrovich@paragon-software.com>
+ <20200904115049.i6zjfwba7egalxnp@pali>
+ <820d8a637a41448194f60dee4361dea0@paragon-software.com>
+ <20200921133647.3tczqm5zfvae6q6a@pali>
+Date:   Tue, 22 Sep 2020 12:26:53 +0200
+Message-ID: <877dsmksya.fsf@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a0yGN80nJU0kcrvYGsSjpaNpU_nmu-ENwE3GMC_9DNBhg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 10:32:06AM +0200, Arnd Bergmann wrote:
-> On Tue, Sep 22, 2020 at 8:15 AM Manivannan Sadhasivam
-> <manivannan.sadhasivam@linaro.org> wrote:
-> > On Mon, Sep 21, 2020 at 11:43:02PM -0300, Matheus Castello wrote:
-> > > +     /* Labrador v3 firmware does not support PSCI */
-> >
-> > Oops. This is unfortunate... I'm not sure if this is even acceptable for
-> > ARM64 machines.
-> >
-> > Let me add Olof and Arnd...
-> 
-> Adding Catalin and Will for additional input as well, this is more their
-> area than ours.
-> 
-> I don't think we have formalized this as a policy, but we clearly don't
-> want new boards to use the spin table hack. As there are other
-> boards using psci on the same chip, I don't think this is a
-> hardware bug.
+Pali Roh=C3=A1r <pali@kernel.org> writes:
+> I think ENAMETOOLONG could be useful also for other filesystem drivers.
+>
+> So for me it looks better to extend kernel's utf8s_to_utf16s() function
+> and use it in ntfs driver instead of having private (modified/duplicate)
+> copy of utf8s_to_utf16s() in ntfs driver.
 
-I fully agree, we shouldn't allow new boards to use the spin-table
-method unless EL3 is missing on the CPU implementation (not the case
-here; only the APM hardware has this issue). Unfortunately we missed
-another platform with A53, see commit bc66392d8258 ("arm64: dts: fsl:
-Add device tree for S32V234-EVB").
+As a side note, cifs has related functions that may be useful.
 
-The kernel relies on firmware for other things (power management, errata
-workarounds), so an SMC calling convention compliant firmware is highly
-recommended. I also don't see why it would be that hard to add PSCI.
-Even if you don't port something like Trusted Firmware, U-Boot has basic
-support for PSCI.
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/=
+cifs/cifs_unicode.c
 
-So from my perspective, NAK on this patch.
-
-I'm tempted to also modify smp_spin_table_cpu_init() to print a big
-warning and return an error if this is attempted on new platforms. IOW,
-we make it a policy from now on.
-
--- 
-Catalin
+Cheers,
+--=20
+Aur=C3=A9lien Aptel / SUSE Labs Samba Team
+GPG: 1839 CB5F 9F5B FB9B AA97  8C99 03C8 A49B 521B D5D3
+SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 N=C3=BCrnberg, DE
+GF: Felix Imend=C3=B6rffer, Mary Higgins, Sri Rasiah HRB 247165 (AG M=C3=BC=
+nchen)
