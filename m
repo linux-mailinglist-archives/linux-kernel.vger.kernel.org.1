@@ -2,85 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2274273D59
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 10:33:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB3E0273D63
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 10:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726826AbgIVIdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 04:33:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726756AbgIVIdg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 04:33:36 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AF3CC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 01:33:36 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id z19so11758434pfn.8
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 01:33:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=flgzfKyTcrJRrSnxciVz6vxo2TGF774YujpE4tgYeJw=;
-        b=juO0C0kAsBah7Hme7SMZ+bxAI4v2xYs2ekw/vaQejxgfFZcC2cHaWrTQUjR+6ad/W5
-         u1Q8hYK5UHcXLz8fitkfyic8sAs5sCX5tbP3c+KlTcOnCcppo04NNLKqIn2tR5H9HANg
-         8obLjThO5iETkXPy6xgtZJrWnXVOu13uGY00vfnHBNuI7RRHOHB/61LqOgqwliWGJGpp
-         NUpe8pousZSouA8mXIZrsmsae0gzVoogb50ia9E8HA31PYagddY9+CypR3TTV7qIuksN
-         De+aRgf6OtDby7zO5fJw3gWoEb0DJ2Nl1McBCxdegNgpMIeRvgowLJlA7FMFo91thfV+
-         scRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=flgzfKyTcrJRrSnxciVz6vxo2TGF774YujpE4tgYeJw=;
-        b=TOBcb85+7oxBTjVUEU3NhTXkIuwBK6bkL6nt7DcQEue868aEJ13qXjT/pXktlPAz4c
-         ynMxaHFMba2Wdsb0yf52oFNnrwuVG/aqPCR0No9vgl8FjWptEPhEhsqg+SqgJ7DUP50a
-         2Fp+z92vwMWTLvh2j5jmWQvHEBQoigHZzeske4O7xwu2/oZ1FrxL0Lx1YE65zWPlZIpC
-         GreWhZWtPcjl9ZB+rNDglS9sEVuXPnPYB2YaonmqwCZDB8FwYdwFAda85viRI6FnVAdh
-         uTrGlcKUqdDuS0LucFxWuTQjQlyi2XMR58y6pPER/62zcQPGxiXqgZuslZpI0fMiWVZv
-         7bMw==
-X-Gm-Message-State: AOAM530f5ZtQF/jEOV8NBE5xq2RBUJ7+vXZRr/+wrEFu+MbK5askCo4z
-        y3LZV6Y077mc27h3hdr452k=
-X-Google-Smtp-Source: ABdhPJzk89smF3UcQ8ZS8r7TNzAYXrcr86Si6mAkhGwKClWWc+d53s8nsHiYFqU1FCwaXBfOstzTnQ==
-X-Received: by 2002:a17:902:8e83:b029:d2:41d3:94e9 with SMTP id bg3-20020a1709028e83b02900d241d394e9mr1417884plb.75.1600763615757;
-        Tue, 22 Sep 2020 01:33:35 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.63])
-        by smtp.gmail.com with ESMTPSA id q15sm4503086pgr.27.2020.09.22.01.33.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 01:33:35 -0700 (PDT)
-From:   yuleixzhang <yulei.kernel@gmail.com>
-X-Google-Original-From: yuleixzhang <yuleixzhang@tencent.com>
-To:     akpm@linux-foundation.org, willy@infradead.org, ziy@nvidia.com
-Cc:     linux-kernel@vger.kernel.org, kernellwp@gmail.com,
-        yuleixzhang <yuleixzhang@tencent.com>
-Subject: [PATCH] mm:cleanup mincore_huge_pmd
-Date:   Tue, 22 Sep 2020 16:34:23 +0800
-Message-Id: <20200922083423.15074-1-yuleixzhang@tencent.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726489AbgIVIiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 04:38:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39278 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726343AbgIVIiu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 04:38:50 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F3DA23A1E;
+        Tue, 22 Sep 2020 08:38:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600763929;
+        bh=Mm0cw1XMHiTcGFvYZ5YAxmxvfxAfdbEoZVA80me39JE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lJGS3A93Lgq85UkTDgJdes21K55ht2plPLTIViCrhCUCIC3GbnIc5h/FFIvwdAN7y
+         GZhrRI/BtSs3f5OiCBv4YSrBUeSmOmarfFBLok5wtLaSTM8T+VppMPRyZogheOejZ9
+         PC9RJDxQ+/0Q63ijmDGf4+v/jSPWVgbPUXU+FO1g=
+Date:   Tue, 22 Sep 2020 10:39:09 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Jens Axboe <axboe@kernel.dk>, Rob Herring <robh+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Mark Brown <broonie@kernel.org>,
+        Niklas <niklas.soderlund@ragnatech.se>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, linux-ide@vger.kernel.org,
+        dmaengine <dmaengine@vger.kernel.org>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        alsa-devel <alsa-devel@alsa-project.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>
+Subject: Re: [PATCH 07/20] dt-bindings: usb: renesas,usb3-peri: Document
+ r8a774e1 support
+Message-ID: <20200922083909.GA2092905@kroah.com>
+References: <1594919915-5225-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1594919915-5225-8-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <CA+V-a8vJ2n3KEL8P+XmVob2zjoWaX+s4a6c1TV_WoPFkwdkZmA@mail.gmail.com>
+ <20200920140824.GA2915460@kroah.com>
+ <CAMuHMdUyXMfZcVKkqaZHJ8tJf-3Kotqg+S2NHMZT0VFO0ZJJww@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdUyXMfZcVKkqaZHJ8tJf-3Kotqg+S2NHMZT0VFO0ZJJww@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As mincore_huge_pmd() was dropped, remove the declaration from
-the head file huge_mm.h.
+On Mon, Sep 21, 2020 at 09:30:39AM +0200, Geert Uytterhoeven wrote:
+> Hi Greg,
+> 
+> On Sun, Sep 20, 2020 at 4:08 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> > On Sat, Sep 19, 2020 at 11:50:07AM +0100, Lad, Prabhakar wrote:
+> > > On Thu, Jul 16, 2020 at 6:19 PM Lad Prabhakar
+> > > <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > > >
+> > > > Document RZ/G2H (R8A774E1) SoC bindings.
+> > > >
+> > > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > > > Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+> > > > ---
+> > > >  Documentation/devicetree/bindings/usb/renesas,usb3-peri.yaml | 1 +
+> > > >  1 file changed, 1 insertion(+)
+> > > >
+> > > Could you please pick this patch.
+> >
+> > Don't DT patches have to be acked by a DT maintainer first?
+> 
+> https://lore.kernel.org/r/20200721033508.GA3504365@bogus
 
-Signed-off-by: Yulei Zhang <yuleixzhang@tencent.com>
----
- include/linux/huge_mm.h | 3 ---
- 1 file changed, 3 deletions(-)
+Ah, missed that, sorry.  This, and patch 11/20, now queued up.
 
-diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-index 8a8bc46a2432..0365aa97f8e7 100644
---- a/include/linux/huge_mm.h
-+++ b/include/linux/huge_mm.h
-@@ -38,9 +38,6 @@ extern int zap_huge_pmd(struct mmu_gather *tlb,
- extern int zap_huge_pud(struct mmu_gather *tlb,
- 			struct vm_area_struct *vma,
- 			pud_t *pud, unsigned long addr);
--extern int mincore_huge_pmd(struct vm_area_struct *vma, pmd_t *pmd,
--			unsigned long addr, unsigned long end,
--			unsigned char *vec);
- extern bool move_huge_pmd(struct vm_area_struct *vma, unsigned long old_addr,
- 			 unsigned long new_addr,
- 			 pmd_t *old_pmd, pmd_t *new_pmd);
--- 
-2.17.1
-
+greg k-h
