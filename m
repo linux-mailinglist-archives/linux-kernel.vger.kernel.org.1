@@ -2,313 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C4B274A74
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 22:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63BAD274A35
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 22:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726643AbgIVU47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 16:56:59 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:9168 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726448AbgIVU46 (ORCPT
+        id S1726667AbgIVUhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 16:37:18 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:33396 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726617AbgIVUhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 16:56:58 -0400
-X-Greylist: delayed 1171 seconds by postgrey-1.27 at vger.kernel.org; Tue, 22 Sep 2020 16:56:57 EDT
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 08MKYnAV016666
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 13:37:31 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=TypEATBWbpt53XcoP91sJwuxbGktC5GF4Gd45XiUxGA=;
- b=ZAHx4psjUHQKUy08Ja3T8bZ41pABf78i5/TqDw2OCMQlmFntdsRfYLYEODY4IQ1gCLgT
- pIN70pvgpHqOg3kzjH4PwnjeMYJIG7H32hmYkyTwHu0Nc4WkSb8CuZInylXSR7CP0lt0
- Sx6GexiL5wFlk/6RO9g5gUC7y/eeHp6tcOM= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 33qn0as92p-17
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 13:37:31 -0700
-Received: from intmgw001.41.prn1.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 22 Sep 2020 13:37:25 -0700
-Received: by devvm1755.vll0.facebook.com (Postfix, from userid 111017)
-        id DE5AF864B60; Tue, 22 Sep 2020 13:37:21 -0700 (PDT)
-From:   Roman Gushchin <guro@fb.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <kernel-team@fb.com>, Roman Gushchin <guro@fb.com>
-Subject: [PATCH v1 4/4] mm: convert page kmemcg type to a page memcg flag
-Date:   Tue, 22 Sep 2020 13:37:00 -0700
-Message-ID: <20200922203700.2879671-5-guro@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200922203700.2879671-1-guro@fb.com>
-References: <20200922203700.2879671-1-guro@fb.com>
+        Tue, 22 Sep 2020 16:37:18 -0400
+Received: by mail-il1-f193.google.com with SMTP id y2so7955719ila.0;
+        Tue, 22 Sep 2020 13:37:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=b6PLDdi8fxcl5wdYEMizGD4y37EzcneWERt48cXIEcA=;
+        b=kjMHJFuvt/NlRCAY7o7+W1sZhc0iS7/vCKM63sAy+TJTQ5m7Tpy+HqiMVC8+2qQgPJ
+         m2Hk0YpHWmLg74lxHIZ6H5hWsKhdvnfgmvQn55KeDse9RBUeY2o6qJqDfe/qCjdM5WM4
+         CRDOnessCFzzFNu3PXBdNZPKEgizSX439bktacTlUP8lDLZCGcgrjKMSOqH8jorUNWou
+         khoYwtPeFwuFT5nqJAiG4xedsDgShMLjSOmVa8RueKdqUJf2V7hNBIV/jLQbbGPxBx+F
+         m2ZAY5S/ksPO+W3Nwn2n1fL/Dj3eTN5ZUmvwnUlGQMi+S0AQ32ls5vG9mVKn4jmt/Az8
+         Eg9g==
+X-Gm-Message-State: AOAM531TYBob4OkUqJdwIQ0L8qhXOOSq/JpHEgWD6wg2fYoJdk6ibsVQ
+        PRWw9JThhGrPbLF86Qs72w==
+X-Google-Smtp-Source: ABdhPJxILOHU26JjUwj1e2C2a7BUhOjbr/XE/OtmvaSBy6NijsR8Rg+QvKohpCO4W6NfvHoCKokbPw==
+X-Received: by 2002:a92:bf0e:: with SMTP id z14mr5944896ilh.288.1600807036582;
+        Tue, 22 Sep 2020 13:37:16 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id i10sm7935475ioi.39.2020.09.22.13.37.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 13:37:15 -0700 (PDT)
+Received: (nullmailer pid 3199568 invoked by uid 1000);
+        Tue, 22 Sep 2020 20:37:14 -0000
+Date:   Tue, 22 Sep 2020 14:37:14 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Sagar Kadam <sagar.kadam@sifive.com>
+Cc:     linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, mturquette@baylibre.com,
+        sboyd@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
+        tglx@linutronix.de, jason@lakedaemon.net, maz@kernel.org,
+        thierry.reding@gmail.com, u.kleine-koenig@pengutronix.de,
+        lee.jones@linaro.org, aou@eecs.berkeley.edu, yash.shah@sifive.com
+Subject: Re: [PATCH v1 3/3] dt-bindings: riscv: convert pwm bindings to
+ json-schema
+Message-ID: <20200922203714.GA3195489@bogus>
+References: <1599734644-4791-1-git-send-email-sagar.kadam@sifive.com>
+ <1599734644-4791-4-git-send-email-sagar.kadam@sifive.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-22_18:2020-09-21,2020-09-22 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 adultscore=0
- bulkscore=0 lowpriorityscore=0 malwarescore=0 suspectscore=2 mlxscore=0
- mlxlogscore=916 clxscore=1015 priorityscore=1501 impostorscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009220161
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1599734644-4791-4-git-send-email-sagar.kadam@sifive.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PageKmemcg flag is currently defined as a page type (like buddy,
-offline, table and guard). Semantically it means that the page
-was accounted as a kernel memory by the page allocator and has
-to be uncharged on the release.
+On Thu, Sep 10, 2020 at 04:14:04PM +0530, Sagar Kadam wrote:
+> Convert device tree bindings for SiFive's PWM controller to YAML
+> format.
+> 
+> Signed-off-by: Sagar Kadam <sagar.kadam@sifive.com>
+> ---
+>  .../devicetree/bindings/pwm/pwm-sifive.txt         | 33 ----------
+>  .../devicetree/bindings/pwm/pwm-sifive.yaml        | 72 ++++++++++++++++++++++
+>  2 files changed, 72 insertions(+), 33 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/pwm/pwm-sifive.txt
+>  create mode 100644 Documentation/devicetree/bindings/pwm/pwm-sifive.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/pwm/pwm-sifive.txt b/Documentation/devicetree/bindings/pwm/pwm-sifive.txt
+> deleted file mode 100644
+> index 3d1dd7b0..0000000
+> --- a/Documentation/devicetree/bindings/pwm/pwm-sifive.txt
+> +++ /dev/null
+> @@ -1,33 +0,0 @@
+> -SiFive PWM controller
+> -
+> -Unlike most other PWM controllers, the SiFive PWM controller currently only
+> -supports one period for all channels in the PWM. All PWMs need to run at
+> -the same period. The period also has significant restrictions on the values
+> -it can achieve, which the driver rounds to the nearest achievable period.
+> -PWM RTL that corresponds to the IP block version numbers can be found
+> -here:
+> -
+> -https://github.com/sifive/sifive-blocks/tree/master/src/main/scala/devices/pwm
+> -
+> -Required properties:
+> -- compatible: Should be "sifive,<chip>-pwm" and "sifive,pwm<version>".
+> -  Supported compatible strings are: "sifive,fu540-c000-pwm" for the SiFive
+> -  PWM v0 as integrated onto the SiFive FU540 chip, and "sifive,pwm0" for the
+> -  SiFive PWM v0 IP block with no chip integration tweaks.
+> -  Please refer to sifive-blocks-ip-versioning.txt for details.
+> -- reg: physical base address and length of the controller's registers
+> -- clocks: Should contain a clock identifier for the PWM's parent clock.
+> -- #pwm-cells: Should be 3. See pwm.yaml in this directory
+> -  for a description of the cell format.
+> -- interrupts: one interrupt per PWM channel
+> -
+> -Examples:
+> -
+> -pwm:  pwm@10020000 {
+> -	compatible = "sifive,fu540-c000-pwm", "sifive,pwm0";
+> -	reg = <0x0 0x10020000 0x0 0x1000>;
+> -	clocks = <&tlclk>;
+> -	interrupt-parent = <&plic>;
+> -	interrupts = <42 43 44 45>;
+> -	#pwm-cells = <3>;
+> -};
+> diff --git a/Documentation/devicetree/bindings/pwm/pwm-sifive.yaml b/Documentation/devicetree/bindings/pwm/pwm-sifive.yaml
+> new file mode 100644
+> index 0000000..415d053
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pwm/pwm-sifive.yaml
+> @@ -0,0 +1,72 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (C) 2020 SiFive, Inc.
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pwm/pwm-sifive.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: SiFive PWM controller
+> +
+> +maintainers:
+> +  - Yash Shah <yash.shah@sifive.com>
+> +  - Sagar Kadam <sagar.kadam@sifive.com>
+> +  - Paul Walmsley <paul.walmsley@sifive.com>
+> +
+> +description:
+> +  Unlike most other PWM controllers, the SiFive PWM controller currently
+> +  only supports one period for all channels in the PWM. All PWMs need to
+> +  run at the same period. The period also has significant restrictions on
+> +  the values it can achieve, which the driver rounds to the nearest
+> +  achievable period. PWM RTL that corresponds to the IP block version
+> +  numbers can be found here -
+> +
+> +  https://github.com/sifive/sifive-blocks/tree/master/src/main/scala/devices/pwm
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - const: sifive,fu540-c000-pwm
+> +      - const: sifive,pwm0
+> +    description:
+> +      Should be "sifive,<chip>-pwm" and "sifive,pwm<version>". Supported
+> +      compatible strings are "sifive,fu540-c000-pwm" for the SiFive PWM v0
+> +      as integrated onto the SiFive FU540 chip, and "sifive,pwm0" for the
+> +      SiFive PWM v0 IP block with no chip integration tweaks.
+> +      Please refer to sifive-blocks-ip-versioning.txt for details.
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description: Physical base address and length of the controller's registers
 
-As a side effect of defining the flag as a page type, the accounted
-page can't be mapped to userspace (look at page_has_type() and
-comments above). In particular, this blocks the accounting of
-vmalloc-backed memory used by some bpf maps, because these maps
-do map the memory to userspace.
+Drop description.
 
-One option is to fix it by complicating the access to page->mapcount,
-which provides some free bits for page->page_type.
+> +
+> +  clocks:
+> +    description: Should contain a clock identifier for the PWM's parent clock.
 
-But it's way better to move this flag into page->memcg_data flags.
-Indeed, the flag makes no sense without enabled memory cgroups
-and memory cgroup pointer set in particular.
+How many clocks?
 
-This commit replaces PageKmemcg() and __SetPageKmemcg() with
-PageMemcgKmem() and SetPageMemcgKmem(). __ClearPageKmemcg()
-can be simple deleted because clear_page_mem_cgroup() already
-does the job.
+> +
+> +  "#pwm-cells":
+> +    const: 3
+> +    description:
+> +      Should be 3. See pwm.yaml in this directory for a description of the
+> +      cell format.
 
-As a bonus, on !CONFIG_MEMCG build the PageMemcgKmem() check will
-be compiled out.
+Drop.
 
-Signed-off-by: Roman Gushchin <guro@fb.com>
----
- include/linux/memcontrol.h | 58 ++++++++++++++++++++++++++++++++++++--
- include/linux/page-flags.h | 11 ++------
- mm/memcontrol.c            | 14 +++------
- mm/page_alloc.c            |  2 +-
- 4 files changed, 62 insertions(+), 23 deletions(-)
+> +
+> +  interrupts:
+> +    maxItems: 1
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 9a49f1e1c0c7..390db58500d5 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -346,8 +346,14 @@ extern struct mem_cgroup *root_mem_cgroup;
- enum page_memcg_flags {
- 	/* page->memcg_data is a pointer to an objcgs vector */
- 	PG_MEMCG_OBJ_CGROUPS,
-+	/* page has been accounted as a non-slab kernel page */
-+	PG_MEMCG_KMEM,
-+	/* the next bit after the last actual flag */
-+	PG_MEMCG_LAST_FLAG,
- };
-=20
-+#define MEMCG_FLAGS_MASK ((1UL << PG_MEMCG_LAST_FLAG) - 1)
-+
- /*
-  * page_mem_cgroup - get the memory cgroup associated with a page
-  * @page: a pointer to the page struct
-@@ -359,8 +365,12 @@ enum page_memcg_flags {
-  */
- static inline struct mem_cgroup *page_mem_cgroup(struct page *page)
- {
-+	unsigned long memcg_data =3D page->memcg_data;
-+
- 	VM_BUG_ON_PAGE(PageSlab(page), page);
--	return (struct mem_cgroup *)page->memcg_data;
-+	VM_BUG_ON_PAGE(test_bit(PG_MEMCG_OBJ_CGROUPS, &memcg_data), page);
-+
-+	return (struct mem_cgroup *)(memcg_data & ~MEMCG_FLAGS_MASK);
- }
-=20
- /*
-@@ -379,7 +389,7 @@ static inline struct mem_cgroup *page_mem_cgroup_chec=
-k(struct page *page)
- 	if (test_bit(PG_MEMCG_OBJ_CGROUPS, &memcg_data))
- 		return NULL;
-=20
--	return (struct mem_cgroup *)memcg_data;
-+	return (struct mem_cgroup *)(memcg_data & ~MEMCG_FLAGS_MASK);
- }
-=20
- /*
-@@ -408,6 +418,36 @@ static inline void clear_page_mem_cgroup(struct page=
- *page)
- 	page->memcg_data =3D 0;
- }
-=20
-+/*
-+ * PageMemcgKmem - check if the page has MemcgKmem flag set
-+ * @page: a pointer to the page struct
-+ *
-+ * Checks if the page has MemcgKmem flag set. The caller must ensure tha=
-t
-+ * the page has an associated memory cgroup. It's not safe to call this =
-function
-+ * against some types of pages, e.g. slab pages.
-+ */
-+static inline bool PageMemcgKmem(struct page *page)
-+{
-+	VM_BUG_ON_PAGE(test_bit(PG_MEMCG_OBJ_CGROUPS, &page->memcg_data), page)=
-;
-+	return test_bit(PG_MEMCG_KMEM, &page->memcg_data);
-+}
-+
-+/*
-+ * SetPageMemcgKmem - set the page's MemcgKmem flag
-+ * @page: a pointer to the page struct
-+ *
-+ * Set the page's MemcgKmem flag. The caller must ensure that the page h=
-as
-+ * an associated memory cgroup. It's not safe to call this function
-+ * against some types of pages, e.g. slab pages.
-+ */
-+static inline void SetPageMemcgKmem(struct page *page)
-+{
-+	VM_BUG_ON_PAGE(!page->memcg_data, page);
-+	VM_BUG_ON_PAGE(test_bit(PG_MEMCG_OBJ_CGROUPS, &page->memcg_data), page)=
-;
-+	__set_bit(PG_MEMCG_KMEM, &page->memcg_data);
-+}
-+
-+
- #ifdef CONFIG_MEMCG_KMEM
- /*
-  * page_obj_cgroups - get the object cgroups vector associated with a pa=
-ge
-@@ -426,6 +466,7 @@ static inline struct obj_cgroup **page_obj_cgroups(st=
-ruct page *page)
- 	VM_BUG_ON_PAGE(memcg_data && !test_bit(PG_MEMCG_OBJ_CGROUPS,
- 					       &memcg_data), page);
- 	__clear_bit(PG_MEMCG_OBJ_CGROUPS, &memcg_data);
-+	VM_BUG_ON_PAGE(test_bit(PG_MEMCG_KMEM, &memcg_data), page);
-=20
- 	return (struct obj_cgroup **)memcg_data;
- }
-@@ -442,8 +483,10 @@ static inline struct obj_cgroup **page_obj_cgroups_c=
-heck(struct page *page)
- {
- 	unsigned long memcg_data =3D page->memcg_data;
-=20
--	if (memcg_data && test_bit(PG_MEMCG_OBJ_CGROUPS, &memcg_data))
-+	if (memcg_data && test_bit(PG_MEMCG_OBJ_CGROUPS, &memcg_data)) {
-+		VM_BUG_ON_PAGE(test_bit(PG_MEMCG_KMEM, &memcg_data), page);
- 		return (struct obj_cgroup **)memcg_data;
-+	}
-=20
- 	return NULL;
- }
-@@ -1115,6 +1158,15 @@ static inline void clear_page_mem_cgroup(struct pa=
-ge *page)
- {
- }
-=20
-+static inline bool PageMemcgKmem(struct page *page)
-+{
-+	return false;
-+}
-+
-+static inline void SetPageMemcgKmem(struct page *page)
-+{
-+}
-+
- static inline bool mem_cgroup_is_root(struct mem_cgroup *memcg)
- {
- 	return true;
-diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-index fbbb841a9346..a7ca01ae78d9 100644
---- a/include/linux/page-flags.h
-+++ b/include/linux/page-flags.h
-@@ -712,9 +712,8 @@ PAGEFLAG_FALSE(DoubleMap)
- #define PAGE_MAPCOUNT_RESERVE	-128
- #define PG_buddy	0x00000080
- #define PG_offline	0x00000100
--#define PG_kmemcg	0x00000200
--#define PG_table	0x00000400
--#define PG_guard	0x00000800
-+#define PG_table	0x00000200
-+#define PG_guard	0x00000400
-=20
- #define PageType(page, flag)						\
- 	((page->page_type & (PAGE_TYPE_BASE | flag)) =3D=3D PAGE_TYPE_BASE)
-@@ -765,12 +764,6 @@ PAGE_TYPE_OPS(Buddy, buddy)
-  */
- PAGE_TYPE_OPS(Offline, offline)
-=20
--/*
-- * If kmemcg is enabled, the buddy allocator will set PageKmemcg() on
-- * pages allocated with __GFP_ACCOUNT. It gets cleared on page free.
-- */
--PAGE_TYPE_OPS(Kmemcg, kmemcg)
--
- /*
-  * Marks pages in use as page tables.
-  */
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 69e3dbb3d2cf..1d22fa4c4a88 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -3081,7 +3081,7 @@ int __memcg_kmem_charge_page(struct page *page, gfp=
-_t gfp, int order)
- 		ret =3D __memcg_kmem_charge(memcg, gfp, 1 << order);
- 		if (!ret) {
- 			set_page_mem_cgroup(page, memcg);
--			__SetPageKmemcg(page);
-+			SetPageMemcgKmem(page);
- 			return 0;
- 		}
- 		css_put(&memcg->css);
-@@ -3106,10 +3106,6 @@ void __memcg_kmem_uncharge_page(struct page *page,=
- int order)
- 	__memcg_kmem_uncharge(memcg, nr_pages);
- 	clear_page_mem_cgroup(page);
- 	css_put(&memcg->css);
--
--	/* slab pages do not have PageKmemcg flag set */
--	if (PageKmemcg(page))
--		__ClearPageKmemcg(page);
- }
-=20
- static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_=
-bytes)
-@@ -6890,12 +6886,10 @@ static void uncharge_page(struct page *page, stru=
-ct uncharge_gather *ug)
- 	nr_pages =3D compound_nr(page);
- 	ug->nr_pages +=3D nr_pages;
-=20
--	if (!PageKmemcg(page)) {
--		ug->pgpgout++;
--	} else {
-+	if (PageMemcgKmem(page))
- 		ug->nr_kmem +=3D nr_pages;
--		__ClearPageKmemcg(page);
--	}
-+	else
-+		ug->pgpgout++;
-=20
- 	ug->dummy_page =3D page;
- 	clear_page_mem_cgroup(page);
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index d4d181e15e7c..6807e37d78ba 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1197,7 +1197,7 @@ static __always_inline bool free_pages_prepare(stru=
-ct page *page,
- 	}
- 	if (PageMappingFlags(page))
- 		page->mapping =3D NULL;
--	if (memcg_kmem_enabled() && PageKmemcg(page))
-+	if (memcg_kmem_enabled() && PageMemcgKmem(page))
- 		__memcg_kmem_uncharge_page(page, order);
- 	if (check_free)
- 		bad +=3D check_free_page(page);
---=20
-2.26.2
+Is it 1 or...
 
+> +    description: One interrupt per PWM channel.
+
+one per channel?
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - "#pwm-cells"
+> +  - interrupts
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    pwm:  pwm@10020000 {
+> +      compatible = "sifive,fu540-c000-pwm", "sifive,pwm0";
+> +      reg = <0x10020000 0x1000>;
+> +      clocks = <&tlclk>;
+> +      interrupt-parent = <&plic>;
+> +      interrupts = <42 43 44 45>;
+
+Split entries:
+
+interrupts = <42>, <43>, <44>, <45>;
+
+> +      #pwm-cells = <3>;
+> +    };
+> -- 
+> 2.7.4
+> 
