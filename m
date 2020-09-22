@@ -2,142 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ECFB2749E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 22:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1F9B2749F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 22:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726721AbgIVUPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 16:15:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34536 "EHLO
+        id S1726682AbgIVURj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 16:17:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726686AbgIVUPn (ORCPT
+        with ESMTP id S1726563AbgIVURj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 16:15:43 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B242C0613D2;
-        Tue, 22 Sep 2020 13:15:43 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id t14so12873272pgl.10;
-        Tue, 22 Sep 2020 13:15:43 -0700 (PDT)
+        Tue, 22 Sep 2020 16:17:39 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05654C061755;
+        Tue, 22 Sep 2020 13:17:39 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id h17so16859806otr.1;
+        Tue, 22 Sep 2020 13:17:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=42ZLvMqGkMbjL9RB04eoud8+y4TLkWBqmGYPRgmoi0k=;
-        b=FS6u343LsEWEOkrgfMVcCfSbXxMfZH/x4Ng1F7cEQAW5KsmlRaixazwzmfS8faxfta
-         unxJAIafhzjG0Hw7yhZ41elKp+tK/WOu/UR9Hp9vjuayFsvP/of7tXMoqujdDo129Tr4
-         H6pJM43VE1H6V/+0cdci8xYJ5LJONABhsfK0IZ5vLwC72N3bA2KiIrAupXIZq2ReTuno
-         lgPqEW2zJZLPPp3mr8tIDJhv64REZEizd4u4EGVnZQy8ToT7rli7+XfNLH2y+UQNk8ll
-         tzILqJx+8lHqu57QRUWFJ4GAyiRWKvrsiBjrC75SfQttpOFMJtSOqysO9GtotJOmG9Gq
-         Or+w==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=mNj7G7Ic3mv2j6tH0eZ5Bv0KO9rpEhresnZN5IzGje0=;
+        b=le1TpTZ3iVqQIaVRg+9apcr1VxkMUeSXczqZWz9RWt3sEC1c6EeOHkQRME4RuEZX2J
+         IQt+lULl1M1Z84UzyN2xGGZ4EPVVJh3jwwkEX5nCYELUcXXa5r2qFBlVyaGx9v3rMoR0
+         wrECeEmy1FZC8iTe0dHStr4AgDE5HmWvM/LrJKQJ6w/oL3W3hv19csKoeYFRD7qxC6gJ
+         2WL0F/ffGJW9SSEqABlRfLJdjaCpN2rApgkUE4tnhElJuSW6N8lCu1AuDf4FT7NhgGD2
+         D4HBPA/cT28QHqAc7IuZwekKxrOg+nkHZdTODWPE6xFJm/A10044atw49+5nusoj9PJQ
+         Dy6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=42ZLvMqGkMbjL9RB04eoud8+y4TLkWBqmGYPRgmoi0k=;
-        b=XCcyJgFQLs+FRy+6SdzJcVr9M2j7NIeagxFk1Cw+VJfDrCQxS0OP1bYvDD7ip0cBRk
-         SYM30JTdEBjwjn2yaaSgyGuyh4hpCgYtQDKju+pHN9GBgxkEtBd2E9rQAGt11nlArXWB
-         NJAUVgyTqmrsFj1jBkix/vUDvWPsgvDjnIHJvbZP4USAM1y86zeB2M7tq6PRJaYpbY4B
-         +XkQM+GbuKs112U1hEAttRntHirS1Cs20t1pxVGReU1MZ1lg0E79X/MGhb2t/Z0TcSIj
-         USPYG76lKqWw4YWgWzGc4S5pg+M2V8B+pu8ow09ckMkRFgYsoMPAhUuOxYzZ/mrnF6F6
-         kZMQ==
-X-Gm-Message-State: AOAM530/RU+9Cw+Y1214LzP7/ym/KTdRKaopxoGEGv0US1BwLVg107uS
-        pbp/dAc7J0JDWNkgNP0Ifbo=
-X-Google-Smtp-Source: ABdhPJwNyOVM/0mf+mRUSD//8h8yGlquQcQtyLkw+vjpJI6zq2KMrDQdWDwKTKE4NyiQxipGFq2YHg==
-X-Received: by 2002:a17:902:8682:b029:d1:e5e7:be5b with SMTP id g2-20020a1709028682b02900d1e5e7be5bmr6156438plo.53.1600805743190;
-        Tue, 22 Sep 2020 13:15:43 -0700 (PDT)
-Received: from jacob-builder.jf.intel.com (jfdmzpr04-ext.jf.intel.com. [134.134.137.73])
-        by smtp.gmail.com with ESMTPSA id e10sm15793028pgb.45.2020.09.22.13.15.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 22 Sep 2020 13:15:42 -0700 (PDT)
-From:   Jacob Pan <jacob.pan.linux@gmail.com>
-X-Google-Original-From: Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Lu Baolu" <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-api@vger.kernel.org,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>, Wu Hao <hao.wu@intel.com>,
-        Yi Sun <yi.y.sun@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH v10 7/7] iommu/vt-d: Check UAPI data processed by IOMMU core
-Date:   Tue, 22 Sep 2020 13:17:02 -0700
-Message-Id: <1600805822-1177-8-git-send-email-jacob.jun.pan@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1600805822-1177-1-git-send-email-jacob.jun.pan@linux.intel.com>
-References: <1600805822-1177-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=mNj7G7Ic3mv2j6tH0eZ5Bv0KO9rpEhresnZN5IzGje0=;
+        b=mVFL3zyXLyacEfgJZUv9Pdy72Jz9lab2F1aBAPo+itf5MhO7GBsuXAp4iu/xwei2cU
+         gkENNpRCuXpVqYQGYzXM5ACbuMEi5FmGYsyzh01AnpCybZHnF4tFmh/Y6rTIqioO9URn
+         g7y5p6NLoxdmHfll8edaBFdHSFhzSiauSIt2f174dOVX8M3SBZGK+9zhm5ojWK9YLCUi
+         Ii1jk/0juOMCECIoQrBz3e9SQlG6lT6NskL6/7H312XmwlBgCmaYCMA4Q3SB/doGvViZ
+         sbqqrCCJIRjGq8+MIESg2tyTgs9aRqP1sY0XYIghy5LtqU437uJhzbZD1VEf6+6Y2Y68
+         LfYQ==
+X-Gm-Message-State: AOAM531JSylbyxKd6yHMBlgzIOd5lF7CHK+VBVKK7tbZAywrKxagDWpn
+        PpMYNQ1f6kBn0EhWeKtxki0=
+X-Google-Smtp-Source: ABdhPJwW3xEz7UrSNDXbxs/e7q2knnsFJWc1PmaeedeL/qPNLMG6Pnl0CpVQv31igYA7AO+TzZA/lA==
+X-Received: by 2002:a05:6830:1e90:: with SMTP id n16mr4009162otr.304.1600805858313;
+        Tue, 22 Sep 2020 13:17:38 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id q64sm7749000oib.2.2020.09.22.13.17.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 22 Sep 2020 13:17:37 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 22 Sep 2020 13:17:36 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 00/46] 4.4.237-rc1 review
+Message-ID: <20200922201736.GA127538@roeck-us.net>
+References: <20200921162033.346434578@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921162033.346434578@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IOMMU generic layer already does sanity checks on UAPI data for version
-match and argsz range based on generic information.
+On Mon, Sep 21, 2020 at 06:27:16PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.4.237 release.
+> There are 46 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 23 Sep 2020 16:20:12 +0000.
+> Anything received after that time might be too late.
+> 
 
-This patch adjusts the following data checking responsibilities:
-- removes the redundant version check from VT-d driver
-- removes the check for vendor specific data size
-- adds check for the use of reserved/undefined flags
+Build results:
+total: 169 pass: 169 fail: 0
+Qemu test results:
+total: 332 pass: 332 fail: 0
 
-Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
----
- drivers/iommu/intel/iommu.c |  3 +--
- drivers/iommu/intel/svm.c   | 11 +++++++++--
- include/uapi/linux/iommu.h  |  1 +
- 3 files changed, 11 insertions(+), 4 deletions(-)
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 461f3a6864d4..18ed3b3c70d7 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -5408,8 +5408,7 @@ intel_iommu_sva_invalidate(struct iommu_domain *domain, struct device *dev,
- 	int ret = 0;
- 	u64 size = 0;
- 
--	if (!inv_info || !dmar_domain ||
--	    inv_info->version != IOMMU_CACHE_INVALIDATE_INFO_VERSION_1)
-+	if (!inv_info || !dmar_domain)
- 		return -EINVAL;
- 
- 	if (!dev || !dev_is_pci(dev))
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index 99353d6468fa..0cb9a15f1112 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -284,8 +284,15 @@ int intel_svm_bind_gpasid(struct iommu_domain *domain, struct device *dev,
- 	if (WARN_ON(!iommu) || !data)
- 		return -EINVAL;
- 
--	if (data->version != IOMMU_GPASID_BIND_VERSION_1 ||
--	    data->format != IOMMU_PASID_FORMAT_INTEL_VTD)
-+	if (data->format != IOMMU_PASID_FORMAT_INTEL_VTD)
-+		return -EINVAL;
-+
-+	/* IOMMU core ensures argsz is more than the start of the union */
-+	if (data->argsz < offsetofend(struct iommu_gpasid_bind_data, vendor.vtd))
-+		return -EINVAL;
-+
-+	/* Make sure no undefined flags are used in vendor data */
-+	if (data->vendor.vtd.flags & ~(IOMMU_SVA_VTD_GPASID_LAST - 1))
- 		return -EINVAL;
- 
- 	if (!dev_is_pci(dev))
-diff --git a/include/uapi/linux/iommu.h b/include/uapi/linux/iommu.h
-index c64bca5af419..1ebc23df4fbc 100644
---- a/include/uapi/linux/iommu.h
-+++ b/include/uapi/linux/iommu.h
-@@ -288,6 +288,7 @@ struct iommu_gpasid_bind_data_vtd {
- #define IOMMU_SVA_VTD_GPASID_PWT	(1 << 3) /* page-level write through */
- #define IOMMU_SVA_VTD_GPASID_EMTE	(1 << 4) /* extended mem type enable */
- #define IOMMU_SVA_VTD_GPASID_CD		(1 << 5) /* PASID-level cache disable */
-+#define IOMMU_SVA_VTD_GPASID_LAST	(1 << 6)
- 	__u64 flags;
- 	__u32 pat;
- 	__u32 emt;
--- 
-2.7.4
-
+Guenter
