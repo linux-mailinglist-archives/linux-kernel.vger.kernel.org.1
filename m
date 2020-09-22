@@ -2,125 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13D5327473D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 19:07:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4661227473C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 19:07:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgIVRH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 13:07:27 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:18910 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726526AbgIVRH0 (ORCPT
+        id S1726629AbgIVRHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 13:07:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726563AbgIVRHU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 13:07:26 -0400
+        Tue, 22 Sep 2020 13:07:20 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92EE9C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 10:07:20 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id d9so13042005pfd.3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 10:07:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1600794446; x=1632330446;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=+66RGc6UUVFZ+2+Mk7EQ3yHIFNko439zQH8U23IJGF8=;
-  b=HiSbNEuz4JWneFiZDEH1OZcv0MNkOuBK9h4W/BIUHIhZg7ViLJnVD6RZ
-   rlfzehLPz/f5srG58qrdjXfdDofC1yvFaJMGDIl179FnAj18RaSXWBa63
-   ie/zGix4lumuZaWAMORGOVqa7aFYwMys1yZ81lMoTyxSmjvWuIvXOiZxk
-   c=;
-X-IronPort-AV: E=Sophos;i="5.77,291,1596499200"; 
-   d="scan'208";a="70170606"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2c-168cbb73.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 22 Sep 2020 17:07:18 +0000
-Received: from EX13D16EUB003.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2c-168cbb73.us-west-2.amazon.com (Postfix) with ESMTPS id 1951BA1928;
-        Tue, 22 Sep 2020 17:07:17 +0000 (UTC)
-Received: from 38f9d34ed3b1.ant.amazon.com (10.43.160.244) by
- EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 22 Sep 2020 17:07:07 +0000
-Subject: Re: [PATCH v9 14/18] nitro_enclaves: Add Kconfig for the Nitro
- Enclaves driver
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Anthony Liguori <aliguori@amazon.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        David Duncan <davdunc@amazon.com>,
-        Bjoern Doebel <doebel@amazon.de>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        "Frank van der Linden" <fllinden@amazon.com>,
-        Alexander Graf <graf@amazon.de>,
-        "Karen Noel" <knoel@redhat.com>,
-        Martin Pohlack <mpohlack@amazon.de>,
-        Matt Wilson <msw@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Stefan Hajnoczi" <stefanha@redhat.com>,
-        Stewart Smith <trawets@amazon.com>,
-        "Uwe Dannowski" <uwed@amazon.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        kvm <kvm@vger.kernel.org>,
-        ne-devel-upstream <ne-devel-upstream@amazon.com>
-References: <20200911141141.33296-1-andraprs@amazon.com>
- <20200911141141.33296-15-andraprs@amazon.com>
- <20200914155913.GB3525000@kroah.com>
- <c3a33dcf-794c-31ef-ced5-4f87ba21dd28@amazon.com>
- <d7eaac0d-8855-ca83-6b10-ab4f983805a2@amazon.com>
- <358e7470-b841-52fe-0532-e1154ef0e93b@amazon.com>
- <20200922162049.GA2299429@kroah.com>
-From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
-Message-ID: <b6acfeb5-b68f-f949-b737-1e6c859000f2@amazon.com>
-Date:   Tue, 22 Sep 2020 20:06:58 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
- Gecko/20100101 Thunderbird/78.2.2
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=qN7SFU2dhcxyjoItGgpNRR8UnnLTaYdcEBc0FU5f+iY=;
+        b=FeZg+yMPXx4Qr4+Bh/ENN8vowhkjIiqpvpa3CZsDhYFPJwLlvTeP6PsDssoUxNsG9G
+         OvMu7TPFGZ79XvT9lkB/8Or1tjcI/liACPbTY5Ox/DToMYPkDKzrvyi1OEpJaYDeRMsm
+         tDjuBb1JIlnoK80FQVe1M4m9py/sc2Z0JMkLJZZeJ1ubcxEGIpmHTv55M72Dz3cAZuhc
+         5AmMhCQhf4CsyBNDPN8j4TjwhxqJZ46zGHrrKgIOlX9dDmHEqUircaxvQkie8Bh6Frvm
+         TnwZjVUwu6RKT42edZPLru4SR0iLVmHL51K2p2vzPJUG8gbk2asl6adaUl69P2QnSpUY
+         k5wA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=qN7SFU2dhcxyjoItGgpNRR8UnnLTaYdcEBc0FU5f+iY=;
+        b=ZBBDlCwputJKEBEh+In5TBrkK0Top3r99nzU0xUBqcn2uocdtnwp/akBx2K/mVU3hJ
+         zeh06+49URtYjzZFAiC+h46xm0knjaqpr9dNSYYtlVcyHyikkDW3OAoqZky37Vm/2jtN
+         auX+MxLOkTsVjFJZ+fhIFqi7qcAhuRBjGeJ6REcUwxMWqSV5LyB2wnSTnQHOpRZFbQrz
+         3dtTJqJN0BuXyM3EeeG2AE28BvEVlGeCKrdsf2kUTTtamXKn2+7G6+mtEOK0Uu0NzMD7
+         H2+TrVkws1LWEcrdx29gYl9Xv0OCTThGJfXSysGcVLoRzsS8reiOnJrLx2LWExCAD74F
+         DobA==
+X-Gm-Message-State: AOAM531f8PYQT1jv3J2ofL5OB5t1/ZdE5TvYMyl0ebVrJ85Xzb5oxNdC
+        iEyMo9bvXe2WAIahEDRBWL7UdotL4uNSTA==
+X-Google-Smtp-Source: ABdhPJy60TbV4qhSIZFZBwhLm1nvhVxJ2xB14oZxPIRrCmVohH/YxLbDwsWgrlTpW6I7Ieg2/PMBWw==
+X-Received: by 2002:a62:7743:0:b029:13c:1611:658e with SMTP id s64-20020a6277430000b029013c1611658emr4834552pfc.11.1600794439731;
+        Tue, 22 Sep 2020 10:07:19 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id 72sm15396669pfx.79.2020.09.22.10.07.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Sep 2020 10:07:19 -0700 (PDT)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     io-uring <io-uring@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Subject: [GIT PULL] io_uring fixes for 5.9-rc
+Message-ID: <14cc3fb9-2f6e-ef49-c98b-994048c0b4d3@kernel.dk>
+Date:   Tue, 22 Sep 2020 11:07:18 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200922162049.GA2299429@kroah.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-Originating-IP: [10.43.160.244]
-X-ClientProxiedBy: EX13D34UWC001.ant.amazon.com (10.43.162.112) To
- EX13D16EUB003.ant.amazon.com (10.43.166.99)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpPbiAyMi8wOS8yMDIwIDE5OjIwLCBHcmVnIEtIIHdyb3RlOgo+IE9uIFR1ZSwgU2VwIDIyLCAy
-MDIwIGF0IDA1OjEzOjAyUE0gKzAzMDAsIFBhcmFzY2hpdiwgQW5kcmEtSXJpbmEgd3JvdGU6Cj4+
-Cj4+IE9uIDIxLzA5LzIwMjAgMTU6MzQsIFBhcmFzY2hpdiwgQW5kcmEtSXJpbmEgd3JvdGU6Cj4+
-Pgo+Pj4gT24gMTQvMDkvMjAyMCAyMDoyMywgUGFyYXNjaGl2LCBBbmRyYS1JcmluYSB3cm90ZToK
-Pj4+Pgo+Pj4+IE9uIDE0LzA5LzIwMjAgMTg6NTksIEdyZWcgS0ggd3JvdGU6Cj4+Pj4+IE9uIEZy
-aSwgU2VwIDExLCAyMDIwIGF0IDA1OjExOjM3UE0gKzAzMDAsIEFuZHJhIFBhcmFzY2hpdiB3cm90
-ZToKPj4+Pj4+IFNpZ25lZC1vZmYtYnk6IEFuZHJhIFBhcmFzY2hpdiA8YW5kcmFwcnNAYW1hem9u
-LmNvbT4KPj4+Pj4+IFJldmlld2VkLWJ5OiBBbGV4YW5kZXIgR3JhZiA8Z3JhZkBhbWF6b24uY29t
-Pgo+Pj4+PiBJIGNhbid0IHRha2UgcGF0Y2hlcyB3aXRob3V0IGFueSBjaGFuZ2Vsb2cgdGV4dCBh
-dCBhbGwsIHNvcnJ5Lgo+Pj4+Pgo+Pj4+PiBTYW1lIGZvciBhIGZldyBvdGhlciBwYXRjaGVzIGlu
-IHRoaXMgc2VyaWVzIDooCj4+Pj4+Cj4+Pj4gSSBjYW4gbW92ZSB0aGUgY2hhbmdlbG9nIHRleHQg
-YmVmb3JlIHRoZSBTb2IgdGFnKHMpIGZvciBhbGwgdGhlCj4+Pj4gcGF0Y2hlcy4gSSBhbHNvIGNh
-biBhZGQgYSBzdW1tYXJ5IHBocmFzZSBpbiB0aGUgY29tbWl0IG1lc3NhZ2UgZm9yCj4+Pj4gdGhl
-IGNvbW1pdHMgbGlrZSB0aGlzIG9uZSB0aGF0IGhhdmUgb25seSB0aGUgY29tbWl0IHRpdGxlIGFu
-ZCBTb2IgJgo+Pj4+IFJiIHRhZ3MuCj4+Pj4KPj4+PiBXb3VsZCB0aGVzZSB1cGRhdGVzIHRvIHRo
-ZSBjb21taXQgbWVzc2FnZXMgbWF0Y2ggdGhlIGV4cGVjdGF0aW9ucz8KPj4+Pgo+Pj4+IExldCBt
-ZSBrbm93IGlmIHJlbWFpbmluZyBmZWVkYmFjayB0byBkaXNjdXNzIGFuZCBJIHNob3VsZCBpbmNs
-dWRlIGFzCj4+Pj4gdXBkYXRlcyBpbiB2MTAuIE90aGVyd2lzZSwgSSBjYW4gc2VuZCB0aGUgbmV3
-IHJldmlzaW9uIHdpdGggdGhlCj4+Pj4gdXBkYXRlZCBjb21taXQgbWVzc2FnZXMuCj4+Pj4KPj4+
-PiBUaGFua3MgZm9yIHJldmlldy4KPj4+IEhlcmUgd2UgZ28sIEkgcHVibGlzaGVkIHYxMCwgaW5j
-bHVkaW5nIHRoZSB1cGRhdGVkIGNvbW1pdCBtZXNzYWdlcyBhbmQKPj4+IHJlYmFzZWQgb24gdG9w
-IG9mIHY1LjktcmM2Lgo+Pj4KPj4+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwvMjAyMDA5
-MjExMjE3MzIuNDQyOTEtMS1hbmRyYXByc0BhbWF6b24uY29tLwo+Pj4KPj4+IEFueSBhZGRpdGlv
-bmFsIGZlZWRiYWNrLCBvcGVuIHRvIGRpc2N1c3MuCj4+Pgo+Pj4gSWYgYWxsIGxvb2tzIGdvb2Qs
-IHdlIGNhbiBtb3ZlIGZvcndhcmQgYXMgd2UndmUgdGFsa2VkIGJlZm9yZSwgdG8gaGF2ZQo+Pj4g
-dGhlIHBhdGNoIHNlcmllcyBvbiB0aGUgY2hhci1taXNjIGJyYW5jaCBhbmQgdGFyZ2V0IHY1LjEw
-LXJjMS4KPj4gVGhhbmtzIGZvciBtZXJnaW5nIHRoZSBwYXRjaCBzZXJpZXMgb24gdGhlIGNoYXIt
-bWlzYy10ZXN0aW5nIGJyYW5jaCBhbmQgZm9yCj4+IHRoZSByZXZpZXcgc2Vzc2lvbnMgd2UndmUg
-aGFkLgo+Pgo+PiBMZXQncyBzZWUgaG93IGFsbCBnb2VzIG5leHQ7IGlmIGFueXRoaW5nIGluIHRo
-ZSBtZWFudGltZSB0byBiZSBkb25lIChlLmcuCj4+IGFuZCBub3QgY29taW5nIHZpYSBhdXRvLWdl
-bmVyYXRlZCBtYWlscyksIGp1c3QgbGV0IG1lIGtub3cuCj4gV2lsbCBkbywgdGhhbmtzIGZvciBz
-dGlja2luZyB3aXRoIHRoaXMgYW5kIGNsZWFuaW5nIGl0IHVwIHRvIGxvb2sgYSBsb3QKPiBiZXR0
-ZXIgdGhhbiB0aGUgb3JpZ2luYWwgc3VibWlzc2lvbi4KCkFuZCB0aGlzIGFsc28gY2FtZSB3aXRo
-IGEgY291cGxlIG9mIGxlc3NvbnMgbGVhcm50IHRoYXQgSSd2ZSBhcHBsaWVkIG9yIAp3aWxsIGFw
-cGx5IGZvciBvdGhlciBwaWVjZXMgb2YgY29kZWJhc2UgYXMgd2VsbCwgZWl0aGVyIGZvciB0aGUg
-TGludXggCmtlcm5lbCBvciBvdGhlciBwcm9qZWN0cy4KCj4KPiBOb3cgY29tZXMgdGhlIHJlYWwg
-d29yaywgbWFpbnRhaW5pbmcgaXQgZm9yIHRoZSBuZXh0IDEwIHllYXJzIDopCgpJIGFncmVlLCBt
-YWludGVuYW5jZSBpcyBlcXVhbGx5IGltcG9ydGFudC4gVGhlcmUgaXMgYW4gb25nb2luZyBwcm9j
-ZXNzIAp0byBtYWtlIHN1cmUgdGhlIHdob2xlIGVjb3N5c3RlbSBjb250aW51ZXMgdG8gd29yay4K
-CkFuZHJhCgoKCkFtYXpvbiBEZXZlbG9wbWVudCBDZW50ZXIgKFJvbWFuaWEpIFMuUi5MLiByZWdp
-c3RlcmVkIG9mZmljZTogMjdBIFNmLiBMYXphciBTdHJlZXQsIFVCQzUsIGZsb29yIDIsIElhc2ks
-IElhc2kgQ291bnR5LCA3MDAwNDUsIFJvbWFuaWEuIFJlZ2lzdGVyZWQgaW4gUm9tYW5pYS4gUmVn
-aXN0cmF0aW9uIG51bWJlciBKMjIvMjYyMS8yMDA1Lgo=
+Hi Linus,
+
+A few fixes - most of them regression fixes from this cycle, but also a
+few stable heading fixes, and a build fix for the included demo tool
+since some systems now actually have gettid() available.
+
+Please pull.
+
+
+The following changes since commit c127a2a1b7baa5eb40a7e2de4b7f0c51ccbbb2ef:
+
+  io_uring: fix linked deferred ->files cancellation (2020-09-05 16:02:42 -0600)
+
+are available in the Git repository at:
+
+  git://git.kernel.dk/linux-block.git tags/io_uring-5.9-2020-09-22
+
+for you to fetch changes up to 4eb8dded6b82e184c09bb963bea0335fa3f30b55:
+
+  io_uring: fix openat/openat2 unified prep handling (2020-09-21 07:51:03 -0600)
+
+----------------------------------------------------------------
+io_uring-5.9-2020-09-22
+
+----------------------------------------------------------------
+Douglas Gilbert (1):
+      tools/io_uring: fix compile breakage
+
+Jens Axboe (7):
+      io_uring: grab any needed state during defer prep
+      io_uring: drop 'ctx' ref on task work cancelation
+      io_uring: don't run task work on an exiting task
+      io_uring: don't re-setup vecs/iter in io_resumit_prep() is already there
+      io_uring: don't use retry based buffered reads for non-async bdev
+      io_uring: mark statx/files_update/epoll_ctl as non-SQPOLL
+      io_uring: fix openat/openat2 unified prep handling
+
+ fs/io_uring.c                   | 49 ++++++++++++++++++++++++++++++++---------
+ tools/io_uring/io_uring-bench.c |  4 ++--
+ 2 files changed, 40 insertions(+), 13 deletions(-)
+
+-- 
+Jens Axboe
 
