@@ -2,111 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4FD427418C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0039274175
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727033AbgIVLuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 07:50:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727015AbgIVLtp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 07:49:45 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D67C061755;
-        Tue, 22 Sep 2020 04:49:45 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id k14so11730213pgi.9;
-        Tue, 22 Sep 2020 04:49:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EJwpKrbgqo/Jc/SWHvyAGB9CrpkZ5L1Hzq9tInFHTYk=;
-        b=Gtqp4rrTgM1+bYxfUQXe+lfPcgHRW6GccdN42Iszl6ozMbezvftl1BUcKE22S6eFW3
-         Vs+lcKZN9Eh9C53YAAd0cuZYhJ2GqlfGNLA/9SyB7s/gIwHqO9Cuu17YpB9dAFfEUxoS
-         825uUcTeRe6BTagZAh2/MBluiMY3TszRi94MbOftxUg+wSqp0wMAPe9RN0gAEc/l2xgK
-         8PhXbZv3uItI4QqoKYiz93vrF/zYhj+oGTI44g2li2fpAgCNL7lXCpSE2C9NsEe+YqTw
-         aO5A3W8t4jvp8oCJEvr/MWY1ZZLd1fVJ17W3aGXoDi/7EUcAvX9G5Ee7U68UXGMtty/d
-         z5Nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EJwpKrbgqo/Jc/SWHvyAGB9CrpkZ5L1Hzq9tInFHTYk=;
-        b=CirDpApw6V0KgdZwYCAq+JCz7W1Htd1skOBUBXMH/Wr4Sq/FgOmuclnfJYgZib8wdV
-         Jso2NcecUFfGtVsjv1iwBrY6XzBHYRpx35EoI+T/kr7dDk6Wgid50/NAQX6XDnB+ykoW
-         /qQRRU8UmFpxzT5T3U26E69cloymc2w5JI2zS5/q7RdyOzyNLM+8UFYLOUUzC3r3TweH
-         YzF0b5ezfDUHTXqoDt0a1kQP50FH/TpRfCOfYxMXR5RzOsFunRO7p5i6wtm03rgWyiWs
-         1XdAEwpbcqtscU4hF3n6AZQ+TBjvk52S9MAPYMZKeexoTG562mZfqBPjLaA4d0G32Jos
-         vq+A==
-X-Gm-Message-State: AOAM532zZPkjUWHXbNLS55XKfaON8sTIZf0EcfEPxXLxfmBiALCdiepu
-        Ezg8f5eHEX0fGxK9RmW0BwCt4/ZN6q8OfA==
-X-Google-Smtp-Source: ABdhPJx36OliaaLkiX3ZeZNNWgd/qSKiRor2X0eeHScDrjMSi5bTiEzAfX5j7hkQgqz8ZUT0qqLRNA==
-X-Received: by 2002:a63:1863:: with SMTP id 35mr3131307pgy.413.1600775385014;
-        Tue, 22 Sep 2020 04:49:45 -0700 (PDT)
-Received: from guoguo-omen.lan ([156.96.148.94])
-        by smtp.gmail.com with ESMTPSA id r4sm2223750pjf.4.2020.09.22.04.49.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 04:49:44 -0700 (PDT)
-From:   Chuanhong Guo <gch981213@gmail.com>
-To:     linux-spi@vger.kernel.org
-Cc:     bayi.cheng@mediatek.com, Chuanhong Guo <gch981213@gmail.com>,
-        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] spi: spi-mtk-nor: fix timeout calculation overflow
-Date:   Tue, 22 Sep 2020 19:49:02 +0800
-Message-Id: <20200922114905.2942859-1-gch981213@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S1726986AbgIVLta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 07:49:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57096 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726559AbgIVLtM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 07:49:12 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1600775349;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8iCO/PMQ+aqpQdU9hV48d1gqGMqCBV8A5LG2dYfT6fo=;
+        b=M5sgCg2s8osPJ3ZVuc42+zVIj2rTfhWYsHKcOEZf462rAvgH+jYJokdHkCOSHGqVZOQk02
+        +j+lFGNj81JgHda+nGNY0F4arMJed2grCy8lUhG+4eRTz9krPSCwXF21bu7eMA6FBxpa4F
+        EoWnqZfcRw20HrBxp76lrsc483J6gRY=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5D22FAEAC;
+        Tue, 22 Sep 2020 11:49:46 +0000 (UTC)
+Date:   Tue, 22 Sep 2020 13:49:08 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeelb@google.com>
+Cc:     Roman Gushchin <guro@fb.com>, Greg Thelen <gthelen@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Yang Shi <shy828301@gmail.com>
+Subject: Re: [PATCH] memcg: introduce per-memcg reclaim interface
+Message-ID: <20200922114908.GZ12990@dhcp22.suse.cz>
+References: <20200909215752.1725525-1-shakeelb@google.com>
+ <20200921163055.GQ12990@dhcp22.suse.cz>
+ <CALvZod43VXKZ3StaGXK_EZG_fKcW3v3=cEYOWFwp4HNJpOOf8g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod43VXKZ3StaGXK_EZG_fKcW3v3=cEYOWFwp4HNJpOOf8g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CLK_TO_US macro is used to calculate potential transfer time for various
-timeout handling. However it overflows on transfer bigger than 512 bytes
-because it first did (len * 8 * 1000000).
-This controller typically operates at 45MHz. This patch did 2 things:
-1. calculate clock / 1000000 first
-2. add a 4M transfer size cap so that the final timeout in DMA reading
-   doesn't overflow
+On Mon 21-09-20 10:50:14, Shakeel Butt wrote:
+> On Mon, Sep 21, 2020 at 9:30 AM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Wed 09-09-20 14:57:52, Shakeel Butt wrote:
+> > > Introduce an memcg interface to trigger memory reclaim on a memory cgroup.
+> > >
+> > > Use cases:
+> > > ----------
+> > >
+> > > 1) Per-memcg uswapd:
+> > >
+> > > Usually applications consists of combination of latency sensitive and
+> > > latency tolerant tasks. For example, tasks serving user requests vs
+> > > tasks doing data backup for a database application. At the moment the
+> > > kernel does not differentiate between such tasks when the application
+> > > hits the memcg limits. So, potentially a latency sensitive user facing
+> > > task can get stuck in high reclaim and be throttled by the kernel.
+> > >
+> > > Similarly there are cases of single process applications having two set
+> > > of thread pools where threads from one pool have high scheduling
+> > > priority and low latency requirement. One concrete example from our
+> > > production is the VMM which have high priority low latency thread pool
+> > > for the VCPUs while separate thread pool for stats reporting, I/O
+> > > emulation, health checks and other managerial operations. The kernel
+> > > memory reclaim does not differentiate between VCPU thread or a
+> > > non-latency sensitive thread and a VCPU thread can get stuck in high
+> > > reclaim.
+> >
+> > As those are presumably in the same cgroup what does prevent them to get
+> > stuck behind shared resources with taken during the reclaim performed by
+> > somebody else? I mean, memory reclaim might drop memory used by the high
+> > priority task. Or they might simply stumble over same locks.
+> >
+> 
+> Yes there are a lot of challenges in providing isolation between
+> latency sensitive and latency tolerant jobs/threads. This proposal
+> aims to solve one specific challenge memcg limit reclaim.
 
-Fixes: 881d1ee9fe81f ("spi: add support for mediatek spi-nor controller")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
----
+I am fully aware that a complete isolation is hard to achieve. I am just
+trying evaluate how is this specific usecase worth a new interface that
+we will have to maintain for ever. Especially when I suspect that the
+interface will likely only paper over immediate problems rather than
+offer a long term maintainable solution for it.
 
-Change since v1: fix transfer size cap to 4M
+> > I am also more interested in actual numbers here. The high limit reclaim
+> > is normally swift and should be mostly unnoticeable. If the reclaim gets
+> > more expensive then it can get really noticeable for sure. But for the
+> > later the same can happen with the external pro-activee reclaimer as
+> 
+> I think you meant 'uswapd' here instead of pro-active reclaimer.
+>
+> > well, right? So there is no real "guarantee". Do you have any numbers
+> > from your workloads where you can demonstrate that the external reclaim
+> > has saved you this amount of effective cpu time of the sensitive
+> > workload? (Essentially measure how much time it has to consume in the
+> > high limit reclaim)
+> >
+> 
+> What we actually use in our production is the 'proactive reclaim'
+> which I have explained in the original message but I will add a couple
+> more sentences below.
+> 
+> For the uswapd use-case, let me point to the previous discussions and
+> feature requests by others [1, 2]. One of the limiting factors of
+> these previous proposals was the lack of CPU accounting of the
+> background reclaimer which the current proposal solves by enabling the
+> user space solution.
+> 
+> [1] https://lwn.net/Articles/753162/
+> [2] http://lkml.kernel.org/r/20200219181219.54356-1-hannes@cmpxchg.org
 
- drivers/spi/spi-mtk-nor.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+I remember those. My understanding was that the only problem is to
+properly account for CPU on behalf of the reclaimed cgroup and that has
+been work in progress for that.
 
-diff --git a/drivers/spi/spi-mtk-nor.c b/drivers/spi/spi-mtk-nor.c
-index 6e6ca2b8e6c82..62f5ff2779884 100644
---- a/drivers/spi/spi-mtk-nor.c
-+++ b/drivers/spi/spi-mtk-nor.c
-@@ -89,7 +89,7 @@
- // Buffered page program can do one 128-byte transfer
- #define MTK_NOR_PP_SIZE			128
- 
--#define CLK_TO_US(sp, clkcnt)		((clkcnt) * 1000000 / sp->spi_freq)
-+#define CLK_TO_US(sp, clkcnt)		DIV_ROUND_UP(clkcnt, sp->spi_freq / 1000000)
- 
- struct mtk_nor {
- 	struct spi_controller *ctlr;
-@@ -177,6 +177,10 @@ static int mtk_nor_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
- 	if ((op->addr.nbytes == 3) || (op->addr.nbytes == 4)) {
- 		if ((op->data.dir == SPI_MEM_DATA_IN) &&
- 		    mtk_nor_match_read(op)) {
-+			// limit size to prevent timeout calculation overflow
-+			if (op->data.nbytes > 0x400000)
-+				op->data.nbytes = 0x400000;
-+
- 			if ((op->addr.val & MTK_NOR_DMA_ALIGN_MASK) ||
- 			    (op->data.nbytes < MTK_NOR_DMA_ALIGN))
- 				op->data.nbytes = 1;
+Outsourcing all that to userspace surely sounds like an attractive
+option but it comes with usual user API price. More on that later.
+
+> Let me add one more point. Even if the high limit reclaim is swift, it
+> can still take 100s of usecs. Most of our jobs are anon-only and we
+> use zswap. Compressing a page can take a couple usec, so 100s of usecs
+> in limit reclaim is normal. For latency sensitive jobs, this amount of
+> hiccups do matters.
+
+Understood. But isn't this an implementation detail of zswap? Can it
+offload some of the heavy lifting to a different context and reduce the
+general overhead?
+
+> For the proactive reclaim, based on the refault medium, we define
+> tolerable refault rate of the applications. Then we proactively
+> reclaim memory from the applications and monitor the refault rates.
+> Based on the refault rates, the memory overcommit manager controls the
+> aggressiveness of the proactive reclaim.
+> 
+> This is exactly what we do in the production. Please let me know if
+> you want to know why we do proactive reclaim in the first place.
+
+This information is definitely useful and having it in the changelog
+would be useful. IIUC the only reason why you cannot use high limit
+to control this pro-active reclaim is the potential throttling due to
+expensive reclaim, correct?
+
+> > To the feature itself, I am not yet convinced we want to have a feature
+> > like that. It surely sounds easy to use and attractive for a better user
+> > space control. It is also much well defined than drop_caches/force_empty
+> > because it is not all or nothing. But it also sounds like something too
+> > easy to use incorrectly (remember drop_caches). I am also a bit worried
+> > about corner cases wich would be easier to hit - e.g. fill up the swap
+> > limit and turn anonymous memory into unreclaimable and who knows what
+> > else.
+> 
+> The corner cases you are worried about are already possible with the
+> existing interfaces. We can already do all such things with
+> memory.high interface but with some limitations. This new interface
+> resolves that limitation as explained in the original email.
+
+You are right that misconfigured limits can result in problems. But such
+a configuration should be quite easy to spot which is not the case for
+targetted reclaim calls which do not leave any footprints behind.
+Existing interfaces are trying to not expose internal implementation
+details as much as well. You are proposing a very targeted interface to
+fine control the memory reclaim. There is a risk that userspace will
+start depending on a specific reclaim implementation/behavior and future
+changes would be prone to regressions in workloads relying on that. So
+effectively, any user space memory reclaimer would need to be tuned to a
+specific implementation of the memory reclaim. My past experience tells
+me that this is not a great thing for maintainability of neither kernel
+nor the userspace part.
+
+All that being said, we really should consider whether the proposed
+interface is trying to work around existing limitations in the reclaim
+or the interface. If this is the former then I do not think we should be
+adding it. If the later then we should discuss on how to improve our
+existing interfaces (or their implementations) to be better usable and
+allow your usecase to work better.
+
+What is your take on that Johannes?
 -- 
-2.26.2
-
+Michal Hocko
+SUSE Labs
