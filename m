@@ -2,138 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C5B2740A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BA792740B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726604AbgIVLWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 07:22:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41592 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726340AbgIVLWw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 07:22:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600773771;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yWqXgKVOudzHOxmvqx4hQrEHAN/p0LKKU63yuRXDEKo=;
-        b=V6y+UuGWvhprAdoXLzXWLJMpvBLx98E3XetSmWGfxk0X92LY9ihAwTIB4/gaYVJOLT8VFW
-        uoI1l26kukJPQ63TSryXgSZrfpF4I67n3gn5+TzN02qqsGHI4TG/alNksCsIFD80NRpr8l
-        LWq/ZqR4v/GWsYyGvEdYnh9Y4ZGUONQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-239--ZDd0ej0N_e3pIzmhaBPTA-1; Tue, 22 Sep 2020 07:22:49 -0400
-X-MC-Unique: -ZDd0ej0N_e3pIzmhaBPTA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726640AbgIVLXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 07:23:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42116 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726613AbgIVLW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 07:22:59 -0400
+Received: from mail.kernel.org (ip5f5ad5bc.dynamic.kabel-deutschland.de [95.90.213.188])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 15F1A800469;
-        Tue, 22 Sep 2020 11:22:47 +0000 (UTC)
-Received: from gondolin (ovpn-112-114.ams2.redhat.com [10.36.112.114])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BAC5B614F5;
-        Tue, 22 Sep 2020 11:22:41 +0000 (UTC)
-Date:   Tue, 22 Sep 2020 13:22:39 +0200
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Matthew Rosato <mjrosato@linux.ibm.com>
-Cc:     alex.williamson@redhat.com, schnelle@linux.ibm.com,
-        pmorel@linux.ibm.com, borntraeger@de.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, gerald.schaefer@linux.ibm.com,
-        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] vfio-pci/zdev: use a device region to retrieve zPCI
- information
-Message-ID: <20200922132239.4be1e749.cohuck@redhat.com>
-In-Reply-To: <1600529318-8996-5-git-send-email-mjrosato@linux.ibm.com>
-References: <1600529318-8996-1-git-send-email-mjrosato@linux.ibm.com>
-        <1600529318-8996-5-git-send-email-mjrosato@linux.ibm.com>
-Organization: Red Hat GmbH
+        by mail.kernel.org (Postfix) with ESMTPSA id 4E4162399A;
+        Tue, 22 Sep 2020 11:22:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600773778;
+        bh=BXOV2/wMUecYDuk+Af/OccQnwb4IQj2Pi9tGe6aNU2k=;
+        h=From:To:Cc:Subject:Date:From;
+        b=vFvk7ZwMV6SNdK/3/D+GYOTYKMsfFwsEDIpY1YZWRtuwIjGgoM01CI+twtVBrkE1o
+         ImTeDXXYTEEAdCBHATt7CH8ZrUNKFR7nR+ipw45ihTn14l6sTrLZNtKds8OZBLMzxD
+         SuWdjRDzeBW3XbNWO76zax0qQH/EZxjmRrWby0nc=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kKgNr-0010Ke-Kx; Tue, 22 Sep 2020 13:22:55 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Eric Dumazet <edumazet@google.com>,
+        Francesco Ruggeri <fruggeri@arista.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>, Lyude Paul <lyude@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org, netdev@vger.kernel.org
+Subject: [PATCH 0/3] Fix Kernel-doc warnings introduced on next-20200921
+Date:   Tue, 22 Sep 2020 13:22:51 +0200
+Message-Id: <cover.1600773619.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 19 Sep 2020 11:28:38 -0400
-Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+A few new warnings were added at linux-next. Address them, in order for us
+to keep zero warnings at the docs.
 
-> Define a new configuration entry VFIO_PCI_ZDEV for VFIO/PCI.
-> 
-> When this s390-only feature is configured we initialize a new device
-> region, VFIO_REGION_SUBTYPE_IBM_ZPCI_CLP, to hold information provided
-> by the underlying hardware.
-> 
-> This patch is based on work previously done by Pierre Morel.
-> 
-> Signed-off-by: Matthew Rosato <mjrosato@linux.ibm.com>
-> ---
->  drivers/vfio/pci/Kconfig            |  13 ++
->  drivers/vfio/pci/Makefile           |   1 +
->  drivers/vfio/pci/vfio_pci.c         |   8 ++
->  drivers/vfio/pci/vfio_pci_private.h |  10 ++
->  drivers/vfio/pci/vfio_pci_zdev.c    | 242 ++++++++++++++++++++++++++++++++++++
+The entire patchset fixing all kernel-doc warnings is at:
+	https://git.linuxtv.org/mchehab/experimental.git/log/?h=doc-fixes
 
-Maybe you want to add yourself to MAINTAINERS for the zdev-specific
-files? You're probably better suited to review changes to the
-zpci-specific code :)
+Mauro Carvalho Chehab (3):
+  net: fix a new kernel-doc warning at dev.c
+  drm/dp: fix kernel-doc warnings at drm_dp_helper.c
+  drm/dp: fix a kernel-doc issue at drm_edid.c
 
->  5 files changed, 274 insertions(+)
->  create mode 100644 drivers/vfio/pci/vfio_pci_zdev.c
+ drivers/gpu/drm/drm_dp_helper.c | 5 +++++
+ drivers/gpu/drm/drm_edid.c      | 2 +-
+ net/core/dev.c                  | 4 ++--
+ 3 files changed, 8 insertions(+), 3 deletions(-)
 
-(...)
+-- 
+2.26.2
 
-> +int vfio_pci_zdev_init(struct vfio_pci_device *vdev)
-> +{
-> +	struct vfio_region_zpci_info *region;
-> +	struct zpci_dev *zdev;
-> +	size_t clp_offset;
-> +	int size;
-> +	int ret;
-> +
-> +	if (!vdev->pdev->bus)
-> +		return -ENODEV;
-> +
-> +	zdev = to_zpci(vdev->pdev);
-> +	if (!zdev)
-> +		return -ENODEV;
-> +
-> +	/* Calculate size needed for all supported CLP features  */
-> +	size = sizeof(*region) +
-> +	       sizeof(struct vfio_region_zpci_info_qpci) +
-> +	       sizeof(struct vfio_region_zpci_info_qpcifg) +
-> +	       (sizeof(struct vfio_region_zpci_info_util) + CLP_UTIL_STR_LEN) +
-> +	       (sizeof(struct vfio_region_zpci_info_pfip) +
-> +		CLP_PFIP_NR_SEGMENTS);
-> +
-> +	region = kmalloc(size, GFP_KERNEL);
-> +	if (!region)
-> +		return -ENOMEM;
-> +
-> +	/* Fill in header */
-> +	region->argsz = size;
-> +	clp_offset = region->offset = sizeof(struct vfio_region_zpci_info);
-> +
-> +	/* Fill the supported CLP features */
-> +	clp_offset = vfio_pci_zdev_add_qpci(zdev, region, clp_offset);
-> +	clp_offset = vfio_pci_zdev_add_qpcifg(zdev, region, clp_offset);
-> +	clp_offset = vfio_pci_zdev_add_util(zdev, region, clp_offset);
-> +	clp_offset = vfio_pci_zdev_add_pfip(zdev, region, clp_offset);
-
-So, the regions are populated once. Can any of the values in the
-hardware structures be modified by a guest? Or changed from the
-hardware side?
-
-> +
-> +	ret = vfio_pci_register_dev_region(vdev,
-> +		PCI_VENDOR_ID_IBM | VFIO_REGION_TYPE_PCI_VENDOR_TYPE,
-> +		VFIO_REGION_SUBTYPE_IBM_ZPCI_CLP, &vfio_pci_zdev_regops,
-> +		size, VFIO_REGION_INFO_FLAG_READ, region);
-> +	if (ret)
-> +		kfree(region);
-> +
-> +	return ret;
-> +}
 
