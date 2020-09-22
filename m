@@ -2,170 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5DDC274340
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 15:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 545D1274345
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 15:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726586AbgIVNhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 09:37:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726494AbgIVNhQ (ORCPT
+        id S1726614AbgIVNiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 09:38:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25491 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726473AbgIVNiU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 09:37:16 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3275C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 06:37:15 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id a15so14168982ljk.2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 06:37:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IBM0wDpz4gWqS8J0E28DVuLHcmz48nqEeS/I/Lgqig4=;
-        b=K/XqzqAzo0bNKgUmXmj/26iPesYp4qC178KcnW/J6mEOL9FDgDG2QQXYxWN6+u/kji
-         nMC33oyqITDgIhLDDsA3P4nxaG1PeaMhebQD7UeoAsCOJC14NPBEvawId0rszbv1ZdLN
-         +jSNOxfLi+Z2CpDzSNwG1xCFTYW9K11iIdG8TypFy0jfYpPY8Fs1n05/Yij37fbjl7Xh
-         MRE6ebkF2s/0+P9rCUqHlXHgxQIYQhWNEQ71By5HQ874206X4L71vF1iCRkyBKn7BC1S
-         S19bSVfHO25TjnEBcyMBJAKkspKxkARjnz2W7B7IiLEELIJKvgCbXNydASm5g48MEMil
-         ePzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IBM0wDpz4gWqS8J0E28DVuLHcmz48nqEeS/I/Lgqig4=;
-        b=OJhs9tImB+tSh8p0l1HkdAZUlE4JUVARnIHOPvP+zRHsE03X2az6LUq7P3dJU8w+Ms
-         clIx+7iX7m/tp/4ELvs3HD7zlUoCOITaMTI9lmMQShClt5XpiWC+gsanoUfiadZ0RcIh
-         M8QLYKgk3Hk0PGIgjhySx6Idyp5A+untkf+i3tFS7ZYXb7nmkVBetn7rIa1OMKF6IWaB
-         Ay9filOPu5FH6AlFeOcr8aY5QwsEiW38xKYXpRy9rPbKSXsFzxdf6Q/4UcAbNqcdu9UB
-         V7qu14st9VvXslbpNokugb37ItPslaXMn85C/8ztjbEq5lRroA3TL1KmTlTJ6SmreSmf
-         dgkA==
-X-Gm-Message-State: AOAM530PNIzxAijmH2NvS0P3o//Mpft0bAvTOgLGNL91U9BAAV4u35Kx
-        0jD5wy57YWD+07l4wJUnMHtA+5gzfO5DUCpXbBqB7w==
-X-Google-Smtp-Source: ABdhPJx5zNMjKsCRF+VPgehOttxLuFwA+urSURvTzIpMkTSR6PFJQxgRcpnikd9rZ6LIy9jvbsYLVFyEf4OI3+1eAK0=
-X-Received: by 2002:a2e:7c09:: with SMTP id x9mr1438805ljc.192.1600781833796;
- Tue, 22 Sep 2020 06:37:13 -0700 (PDT)
+        Tue, 22 Sep 2020 09:38:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600781898;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=gEQtsye1N5ZeSvXJeI4NA1lJbrYHXyarmLcoIWvJxgc=;
+        b=e+Ygm7PCqnjssgXxB1gFrziaFR62OkqsSfC4hhXJUKJkDS3OG+WBfU7EBoNMJhGXzgyETQ
+        6BiZeMyymGO/bt4nImws+229PUMt3JdzFhfEt93COJkn4YbtQY9hFswTHlxvUJZZ9K575S
+        cbL+siUa8rflFqUUOLO4tfdwFg1HmJ4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-393-SQsjlqhENvyST-45EM32Zw-1; Tue, 22 Sep 2020 09:38:16 -0400
+X-MC-Unique: SQsjlqhENvyST-45EM32Zw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 268F41084D9C;
+        Tue, 22 Sep 2020 13:38:05 +0000 (UTC)
+Received: from hp-dl360pgen8-07.khw2.lab.eng.bos.redhat.com (hp-dl360pgen8-07.khw2.lab.eng.bos.redhat.com [10.16.210.135])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3D9C978822;
+        Tue, 22 Sep 2020 13:38:04 +0000 (UTC)
+From:   Jarod Wilson <jarod@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Jarod Wilson <jarod@redhat.com>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
+Subject: [PATCH net-next 0/5] bonding: rename bond components
+Date:   Tue, 22 Sep 2020 09:37:26 -0400
+Message-Id: <20200922133731.33478-1-jarod@redhat.com>
 MIME-Version: 1.0
-References: <CALvZod4FWLsV9byrKQojeus7tMDhHjQHFF5J_JpNsyB0HkaERA@mail.gmail.com>
- <20200922111202.GY12990@dhcp22.suse.cz>
-In-Reply-To: <20200922111202.GY12990@dhcp22.suse.cz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 22 Sep 2020 06:37:02 -0700
-Message-ID: <CALvZod6=VwQduoG3GiW-=csAQja4vCsXAhKH_tSuA4JYx0dEiA@mail.gmail.com>
-Subject: Re: Machine lockups on extreme memory pressure
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Thelen <gthelen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 4:12 AM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Mon 21-09-20 11:35:35, Shakeel Butt wrote:
-> > Hi all,
-> >
-> > We are seeing machine lockups due extreme memory pressure where the
-> > free pages on all the zones are way below the min watermarks. The stack
-> > of the stuck CPU looks like the following (I had to crash the machine to
-> > get the info).
->
-> sysrq+l didn't report anything?
->
+The bonding driver's use of master and slave, while largely understood
+in technical circles, poses a barrier for inclusion to some potential
+members of the development and user community, due to the historical
+context of masters and slaves, particularly in the United States. This
+is a first full pass at replacing those phrases with more socially
+inclusive ones, opting for aggregator to replace master and link to
+replace slave, as the bonding driver itself is a link aggregation
+driver.
 
-Sorry I misspoke earlier that I personally crash the machine. I get to
-know the state of the machine from the crash dump. We have a crash
-timer on our machines which need to be reset every couple of hours
-from user space. If the user space daemon responsible to reset does
-not get chance to reset it, the machine get crashed, so, these crashes
-are where the user space timer resetter daemon could not run for
-couple of hours.
+There are a few problems with this change. First up, "link" is used for
+link state already in the bonding driver, so the first step here is to
+rename link to link_state. Second, aggregator is already used in the
+802.3ad code, but I feel the usage is actually consistent with referring
+to the bonding aggregation virtual device as the aggregator. Third, we
+have the issue of not wanting to break any existing userspace, which I
+believe this patchset accomplishes, while also adding alternative
+interfaces using new terminology, and a Kconfig option that will let
+people make the conscious decision to break userspace and no longer
+expose the original master/slave interfaces, once their userspace is
+able to cope with their removal.
 
-> >  #0 [ ] crash_nmi_callback
-> >  #1 [ ] nmi_handle
-> >  #2 [ ] default_do_nmi
-> >  #3 [ ] do_nmi
-> >  #4 [ ] end_repeat_nmi
-> > --- <NMI exception stack> ---
-> >  #5 [ ] queued_spin_lock_slowpath
-> >  #6 [ ] _raw_spin_lock
-> >  #7 [ ] ____cache_alloc_node
-> >  #8 [ ] fallback_alloc
-> >  #9 [ ] __kmalloc_node_track_caller
-> > #10 [ ] __alloc_skb
-> > #11 [ ] tcp_send_ack
-> > #12 [ ] tcp_delack_timer
-> > #13 [ ] run_timer_softirq
-> > #14 [ ] irq_exit
-> > #15 [ ] smp_apic_timer_interrupt
-> > #16 [ ] apic_timer_interrupt
-> > --- <IRQ stack> ---
-> > #17 [ ] apic_timer_interrupt
-> > #18 [ ] _raw_spin_lock
-> > #19 [ ] vmpressure
-> > #20 [ ] shrink_node
-> > #21 [ ] do_try_to_free_pages
-> > #22 [ ] try_to_free_pages
-> > #23 [ ] __alloc_pages_direct_reclaim
-> > #24 [ ] __alloc_pages_nodemask
-> > #25 [ ] cache_grow_begin
-> > #26 [ ] fallback_alloc
-> > #27 [ ] __kmalloc_node_track_caller
-> > #28 [ ] __alloc_skb
-> > #29 [ ] tcp_sendmsg_locked
-> > #30 [ ] tcp_sendmsg
-> > #31 [ ] inet6_sendmsg
-> > #32 [ ] ___sys_sendmsg
-> > #33 [ ] sys_sendmsg
-> > #34 [ ] do_syscall_64
-> >
-> > These are high traffic machines. Almost all the CPUs are stuck on the
-> > root memcg's vmpressure sr_lock and almost half of the CPUs are stuck
-> > on kmem cache node's list_lock in the IRQ.
->
-> Are you able to track down the lock holder?
->
-> > Note that the vmpressure sr_lock is irq-unsafe.
->
-> Which is ok because this is only triggered from the memory reclaim and
-> that cannot ever happen from the interrrupt context for obvoius reasons.
->
-> > Couple of months back, we observed a similar
-> > situation with swap locks which forces us to disable swap on global
-> > pressure. Since we do proactive reclaim disabling swap on global reclaim
-> > was not an issue. However now we have started seeing the same situation
-> > with other irq-unsafe locks like vmpressure sr_lock and almost all the
-> > slab shrinkers have irq-unsafe spinlocks. One of way to mitigate this
-> > is by converting all such locks (which can be taken in reclaim path)
-> > to be irq-safe but it does not seem like a maintainable solution.
->
-> This doesn't make much sense to be honest. We are not disabling IRQs
-> unless it is absolutely necessary.
->
-> > Please note that we are running user space oom-killer which is more
-> > aggressive than oomd/PSI but even that got stuck under this much memory
-> > pressure.
-> >
-> > I am wondering if anyone else has seen a similar situation in production
-> > and if there is a recommended way to resolve this situation.
->
-> I would recommend to focus on tracking down the who is blocking the
-> further progress.
+Lastly, we do still have the issue of ease of backporting fixes to
+-stable trees. I've not had a huge amount of time to spend on it, but
+brief forays into coccinelle didn't really pay off (since it's meant to
+operate on code, not patches), and the best solution I can come up with
+is providing a shell script someone could run over git-format-patch
+output before git-am'ing the result to a -stable tree, though scripting
+these changes in the first place turned out to be not the best thing to
+do anyway, due to subtle cases where use of master or slave can NOT yet
+be replaced, so a large amount of work was done by hand, inspection,
+trial and error, which is why this set is a lot longer in coming than
+I'd originally hoped. I don't expect -stable backports to be horrible to
+figure out one way or another though, and I don't believe that a bit of
+inconvenience on that front is enough to warrant not making these
+changes.
 
-I was able to find the CPU next in line for the list_lock from the
-dump. I don't think anyone is blocking the progress as such but more
-like the spinlock in the irq context is starving the spinlock in the
-process context. This is a high traffic machine and there are tens of
-thousands of potential network ACKs on the queue.
+See here for further details on Red Hat's commitment to this work:
+https://www.redhat.com/en/blog/making-open-source-more-inclusive-eradicating-problematic-language
 
-I talked about this problem with Johannes at LPC 2019 and I think we
-talked about two potential solutions. First was to somehow give memory
-reserves to oomd and second was in-kernel PSI based oom-killer. I am
-not sure the first one will work in this situation but the second one
-might help.
+As far as testing goes, I've manually operated on various bonds while
+working on this code, and have run it through multiple lnst test runs,
+which exercises the existing sysfs interfaces fairly extensively. As far
+as I can tell, there is no breakage of existing interfaces with this
+set, unless the user consciously opts to do so via Kconfig.
 
-Shakeel
+Jarod Wilson (5):
+  bonding: rename struct slave member link to link_state
+  bonding: rename slave to link where possible
+  bonding: rename master to aggregator where possible
+  bonding: make Kconfig toggle to disable legacy interfaces
+  bonding: update Documentation for link/aggregator terminology
+
+Cc: Jay Vosburgh <j.vosburgh@gmail.com>
+Cc: Veaceslav Falico <vfalico@gmail.com>
+Cc: Andy Gospodarek <andy@greyhouse.net>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Thomas Davis <tadavis@lbl.gov>
+Cc: netdev@vger.kernel.org
+
+ .clang-format                                 |    4 +-
+ Documentation/networking/bonding.rst          |  440 ++--
+ drivers/infiniband/core/cma.c                 |    2 +-
+ drivers/infiniband/core/lag.c                 |    2 +-
+ drivers/infiniband/core/roce_gid_mgmt.c       |   10 +-
+ drivers/infiniband/hw/mlx4/main.c             |    2 +-
+ drivers/net/Kconfig                           |   12 +
+ drivers/net/bonding/Makefile                  |    2 +-
+ drivers/net/bonding/bond_3ad.c                |  604 ++---
+ drivers/net/bonding/bond_alb.c                |  687 ++---
+ drivers/net/bonding/bond_debugfs.c            |    2 +-
+ drivers/net/bonding/bond_main.c               | 2336 +++++++++--------
+ drivers/net/bonding/bond_netlink.c            |  104 +-
+ drivers/net/bonding/bond_options.c            |  258 +-
+ drivers/net/bonding/bond_procfs.c             |   63 +-
+ drivers/net/bonding/bond_sysfs.c              |  249 +-
+ drivers/net/bonding/bond_sysfs_link.c         |  193 ++
+ drivers/net/bonding/bond_sysfs_slave.c        |  176 --
+ .../ethernet/chelsio/cxgb3/cxgb3_offload.c    |    2 +-
+ .../net/ethernet/mellanox/mlx4/en_netdev.c    |    4 +-
+ .../ethernet/mellanox/mlx5/core/en/rep/bond.c |    2 +-
+ .../net/ethernet/mellanox/mlx5/core/en_tc.c   |    2 +-
+ .../ethernet/netronome/nfp/flower/lag_conf.c  |    2 +-
+ .../ethernet/qlogic/netxen/netxen_nic_main.c  |   12 +-
+ include/linux/netdevice.h                     |   20 +-
+ include/net/bond_3ad.h                        |   20 +-
+ include/net/bond_alb.h                        |   31 +-
+ include/net/bond_options.h                    |   19 +-
+ include/net/bonding.h                         |  351 +--
+ include/net/lag.h                             |    2 +-
+ 30 files changed, 2902 insertions(+), 2711 deletions(-)
+ create mode 100644 drivers/net/bonding/bond_sysfs_link.c
+ delete mode 100644 drivers/net/bonding/bond_sysfs_slave.c
+
+-- 
+2.27.0
+
