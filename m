@@ -2,142 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7B04273EBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 11:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23E3B273EC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 11:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726579AbgIVJoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 05:44:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50198 "EHLO
+        id S1726590AbgIVJod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 05:44:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726461AbgIVJoF (ORCPT
+        with ESMTP id S1726470AbgIVJod (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 05:44:05 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8192DC0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 02:44:05 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id r24so13574289ljm.3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 02:44:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=guVVaBxnWrQ86fDPccANXl4ruP0cfa0fdBrEFJjzk2w=;
-        b=HrhPC/cSVDNvm9kRZbwXzKjP6DTk7b2Nny0qurmlykw8pbZ55EM/YwnTphGw0Phb0i
-         zLX5bT+td8tZrb0mEVN/5fL82j/z07O92s3jT9d8a3W4dm57qRVrcwJUKb/E954BVUFV
-         TFAFWTS9f1YWrkJmJXHSfoOpeRSQND+w5H5Fjv8qHCsv7cOPHBTyoHb2k7c4eymMDFdn
-         36bHMIDD9tsCIpE+KTz3b5R3eCf65PHRjGW/uP65gLuixUJGJ3T+62IcXjI47ThEu5eZ
-         VV1igHblTySvW9p8oAXIc5QU5B9pDzu/21y96VHJGLYi8awC0gVsJZPlzCzJkQh6mF7V
-         96iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=guVVaBxnWrQ86fDPccANXl4ruP0cfa0fdBrEFJjzk2w=;
-        b=ZL9no7bKhyprOnTfOZEwplbyRmA0QvO9w/I0LzK3+FO4mz66oIeZCS+9b1eUBUDCVD
-         m6uLs4pnGy1nqpeSG+deIcDyqprnZZU8hhNsXB2zofI9x/jfNXdsx/uETFUFKqXPxI0m
-         2UouGVDl7IfEV1VQOU6OG5ym/UD5A/z3QZgyqT6HD5LlCp4zDnI0XRsjvXVPRr4r/BAO
-         jLu6oCuoyX/EOgH/3xdQ3v/LzyY84LEpFZr9PQ4MHBNqY+//EjlrIr/Vx6jMYds7BXbI
-         38BK1+nYviRMgh/FZD23lXSJx0CK736RO56OJOBgGj4ISQFHceOVkKTV3zZorCj8UrSG
-         GPEg==
-X-Gm-Message-State: AOAM5333F5/SkSj0YYIgak5+1ctTIJ5aiQbiL3AXSSlcrm9ATrdliL4u
-        4qha6kg8pD+k42nDejlltIwsGdD4I9HsBOD+CDofVA==
-X-Google-Smtp-Source: ABdhPJxXVnl7GUvUOwrcD+5qdd9k2lu/yskeXQOKLRd98NXH9jTfBpsWC5OGIMBrUFqa0KDjRh3xVSSaQ18LIv9nGbI=
-X-Received: by 2002:a2e:b8d1:: with SMTP id s17mr1198265ljp.222.1600767843752;
- Tue, 22 Sep 2020 02:44:03 -0700 (PDT)
+        Tue, 22 Sep 2020 05:44:33 -0400
+Received: from smtp2-2.goneo.de (smtp2.goneo.de [IPv6:2001:1640:5::8:33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5544C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 02:44:32 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by smtp2.goneo.de (Postfix) with ESMTP id 2A76B23F72E;
+        Tue, 22 Sep 2020 11:44:31 +0200 (CEST)
+X-Virus-Scanned: by goneo
+X-Spam-Flag: NO
+X-Spam-Score: -3.004
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.004 tagged_above=-999 tests=[ALL_TRUSTED=-1,
+        AWL=-0.104, BAYES_00=-1.9] autolearn=ham
+Received: from smtp2.goneo.de ([127.0.0.1])
+        by localhost (smtp2.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id P4sCyejnBAcN; Tue, 22 Sep 2020 11:44:28 +0200 (CEST)
+Received: from lem-wkst-02.lemonage (hq.lemonage.de [87.138.178.34])
+        by smtp2.goneo.de (Postfix) with ESMTPSA id 91700242674;
+        Tue, 22 Sep 2020 11:44:28 +0200 (CEST)
+Date:   Tue, 22 Sep 2020 11:44:22 +0200
+From:   Lars Poeschel <poeschel@lemonage.de>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 31/32] auxdisplay: charlcd: Do not print chars at end
+ of line
+Message-ID: <20200922094422.ucj24ohtervhcetv@lem-wkst-02.lemonage>
+References: <20191016082430.5955-1-poeschel@lemonage.de>
+ <20200921144645.2061313-1-poeschel@lemonage.de>
+ <20200921144645.2061313-32-poeschel@lemonage.de>
+ <20200922052701.GB16386@1wt.eu>
 MIME-Version: 1.0
-References: <20200921080255.15505-1-zangchunxin@bytedance.com>
- <20200921081200.GE12990@dhcp22.suse.cz> <CALOAHbDKvT58UFjxy770VDxO0VWABRYb7GVwgw+NiJp62mB06w@mail.gmail.com>
- <20200921110505.GH12990@dhcp22.suse.cz>
-In-Reply-To: <20200921110505.GH12990@dhcp22.suse.cz>
-From:   Chunxin Zang <zangchunxin@bytedance.com>
-Date:   Tue, 22 Sep 2020 17:43:52 +0800
-Message-ID: <CAKRVAeN5U6S78jF1n8nCs5ioAdqvVn5f6GGTAnA93g_J0daOLw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm/memcontrol: Add the drop_cache
- interface for cgroup v2
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Yafang Shao <laoar.shao@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, lizefan@huawei.com,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kafai@fb.com,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        andriin@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
-        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922052701.GB16386@1wt.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 7:05 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Mon 21-09-20 18:55:40, Yafang Shao wrote:
-> > On Mon, Sep 21, 2020 at 4:12 PM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Mon 21-09-20 16:02:55, zangchunxin@bytedance.com wrote:
-> > > > From: Chunxin Zang <zangchunxin@bytedance.com>
-> > > >
-> > > > In the cgroup v1, we have 'force_mepty' interface. This is very
-> > > > useful for userspace to actively release memory. But the cgroup
-> > > > v2 does not.
-> > > >
-> > > > This patch reuse cgroup v1's function, but have a new name for
-> > > > the interface. Because I think 'drop_cache' may be is easier to
-> > > > understand :)
-> > >
-> > > This should really explain a usecase. Global drop_caches is a terribl=
-e
-> > > interface and it has caused many problems in the past. People have
-> > > learned to use it as a remedy to any problem they might see and cause
-> > > other problems without realizing that. This is the reason why we even
-> > > log each attempt to drop caches.
-> > >
-> > > I would rather not repeat the same mistake on the memcg level unless
-> > > there is a very strong reason for it.
-> > >
-> >
-> > I think we'd better add these comments above the function
-> > mem_cgroup_force_empty() to explain why we don't want to expose this
-> > interface in cgroup2, otherwise people will continue to send this
-> > proposal without any strong reason.
->
-> I do not mind people sending this proposal.  "V1 used to have an
-> interface, we need it in v2 as well" is not really viable without
-> providing more reasoning on the specific usecase.
->
-> _Any_ patch should have a proper justification. This is nothing really
-> new to the process and I am wondering why this is coming as a surprise.
->
+On Tue, Sep 22, 2020 at 07:27:01AM +0200, Willy Tarreau wrote:
+> On Mon, Sep 21, 2020 at 04:46:43PM +0200, poeschel@lemonage.de wrote:
+> > From: Lars Poeschel <poeschel@lemonage.de>
+> > 
+> > Skip printing characters at the end of a display line. This fits to the
+> > behaviour we already had, that the cursor is nailed to last position of
+> > a line.
+> 
+> Just very old memories, but wasn't this used with the ability to shift
+> the display ? IIRC the HD44780 has a 2x64 chars buffer and you can make
+> the buffered characters appear when you shift the display. That's akin
+> to seeing the display as an adjustable window over the buffer. I don't
+> remember having used that feature, so if it didn't previously work, please
+> disregard my comment, I just want to be sure we don't break a feature
+> others might be relying on.
 
-I'm so sorry for that.
-My usecase is that there are two types of services in one server. They
-have difference
-priorities. Type_A has the highest priority, we need to ensure it's
-schedule latency=E3=80=81I/O
-latency=E3=80=81memory enough. Type_B has the lowest priority, we expect it
-will not affect
-Type_A when executed.
-So Type_A could use memory without any limit. Type_B could use memory
-only when the
-memory is absolutely sufficient. But we cannot estimate how much
-memory Type_B should
-use. Because everything is dynamic. So we can't set Type_B's memory.high.
+Yes, indeed. But this is a point, where this was inconsistent. The
+feature you described worked only for displays with 2 lines or less. On
+displays with 4 lines there simply is no buffer that is not visible and
+in this case it sticks to the end of the line already.
+To make this work for all displays this would require a whole lot of
+work. We would need a fallback implementation that emulates this in
+software and then redraws the whole display from that software
+(linux-side) buffer when shifting.
 
-So we want to release the memory of Type_B when global memory is
-insufficient in order
-to ensure the quality of service of Type_A . In the past, we used the
-'force_empty' interface
-of cgroup v1.
+Currently my patchset cuts this feature for displays with one or two
+lines. I don't see clean an easy way to leave that in. Any ideas ?
 
-> --
-> Michal Hocko
-> SUSE Labs
-
-Best wishes
-Chunxin
+Regards,
+Lars
