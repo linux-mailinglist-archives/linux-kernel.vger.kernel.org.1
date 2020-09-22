@@ -2,174 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D4F7273AC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 08:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B8C273AC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 08:23:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728666AbgIVGXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 02:23:11 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:42306 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727939AbgIVGXK (ORCPT
+        id S1728780AbgIVGX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 02:23:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727710AbgIVGX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 02:23:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600755788;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=Mzmhfdv4n5rZyzbrasI27bxC5DpWgPB4WGSFctyqRwY=;
-        b=E69akbOXzsMIvbBLKicP5N0JJ1JR+ehqytVoWZQE8hETTHXCrfmB11WuE5yeVOD/ZYpwpF
-        iDJOvEOn3Gqj8+nqfYxVYcyQJy3pZzdJ4SCBIK4tRgeRrV3HPBDPwfYzsJdeHI9XPupX1X
-        J+UdSYoJTP9CNotubsy2CjbHP7zmh6k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-537-_Mdf06wSMq2VG4_GlCXl0g-1; Tue, 22 Sep 2020 02:23:04 -0400
-X-MC-Unique: _Mdf06wSMq2VG4_GlCXl0g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A31B41005E5E;
-        Tue, 22 Sep 2020 06:22:59 +0000 (UTC)
-Received: from [10.36.113.20] (ovpn-113-20.ams2.redhat.com [10.36.113.20])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 91CE073682;
-        Tue, 22 Sep 2020 06:22:55 +0000 (UTC)
-Subject: Re: [PATCH] kernel/resource: Fix use of ternary condition in
- release_mem_region_adjustable
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     akpm@linux-foundation.org, ardb@kernel.org, bhe@redhat.com,
-        dan.j.williams@intel.com, jgg@ziepe.ca, keescook@chromium.org,
-        linux-acpi@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-nvdimm@lists.01.org, linux-s390@vger.kernel.org,
-        mhocko@suse.com, pankaj.gupta.linux@gmail.com,
-        richardw.yang@linux.intel.com,
-        virtualization@lists.linux-foundation.org,
-        xen-devel@lists.xenproject.org, clang-built-linux@googlegroups.com
-References: <20200911103459.10306-2-david@redhat.com>
- <20200922060748.2452056-1-natechancellor@gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat GmbH
-Message-ID: <330ff427-6971-25ec-2380-d1c8ad2dc7bc@redhat.com>
-Date:   Tue, 22 Sep 2020 08:22:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Tue, 22 Sep 2020 02:23:28 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6951BC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 23:23:28 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id f18so11493498pfa.10
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 23:23:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2U8+uBAYm3xj+5UzC2gJ8PeZlHEk58iibAg0Az8yXNI=;
+        b=oCjjbwremslpduJT8W9PMBw1GwYpxoMp04JvZ3FyS2E6bVHQjUUdoZUE6PdtKrs6cm
+         HGtil+gYgdW+QzO2X9aJcF1DYjoH0jn0NjO/d9H2ZcJ1UpwAHGReVpP0OwIf/zWj5pjw
+         TnJ58MxE0tDyu9HavW0lz1EIEcB4MvQl0a1o8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2U8+uBAYm3xj+5UzC2gJ8PeZlHEk58iibAg0Az8yXNI=;
+        b=X+fOu+YS+wRaHOf/3QfqUb/wi23IZq6bUwC64YMAzkPBVKbENrReApL/P/WBgyEZsD
+         NlHHx/6kcBpoqznAfQZ+L6KoNJzgMOa3r0K07nTe1WlJzh2viHRVl+t0PrAThImpWiba
+         dqWlD7k7gkzTmAYkgeVaWhXeJkYsFmEW5HG/ID8YAK+a+UztwWOKoBFk428Y/ukrAr/i
+         b7Q15MhJHqRf1CkT5OM1qkaKzyX8R0L/vt+2mKvSwWrX7BDCNcTT3wl/9D6YVgO50kjV
+         wb0o/LDgmiBmOMPv2L5cxz8BSEohjo49WLz/BCOQhsvLexiKtuJVcm2A7cFIx77+njUk
+         0Lag==
+X-Gm-Message-State: AOAM533Z1U2B7lL+KjIqqTfexZ0E6UCpLjZhvcPcD1Szon/XN0RPpXbp
+        CqvxbMEfWLXth6qURMaGVkMYTA09U4fYWQ==
+X-Google-Smtp-Source: ABdhPJyf30S7UNCP9BWMNYqg/VsZI7r0E+1gWIlGbyLIQoAMBt0KOSt/44+rOjQxodPmOd4mE+DHPA==
+X-Received: by 2002:a17:902:7445:b029:d1:dea3:a3ca with SMTP id e5-20020a1709027445b02900d1dea3a3camr3238491plt.19.1600755807417;
+        Mon, 21 Sep 2020 23:23:27 -0700 (PDT)
+Received: from localhost ([2401:fa00:1:10:de4a:3eff:fe7d:d39c])
+        by smtp.gmail.com with ESMTPSA id 134sm14173234pfa.93.2020.09.21.23.23.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Sep 2020 23:23:26 -0700 (PDT)
+From:   Cheng-Yi Chiang <cychiang@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Mark Brown <broonie@kernel.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Srinivasa Rao <srivasam@codeaurora.org>, dianders@chromium.org,
+        dgreid@chromium.org, tzungbi@chromium.org,
+        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+        linux-mediatek@lists.infradead.org,
+        linux-rockchip@lists.infradead.org,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Tzung-Bi Shih <tzungbi@google.com>
+Subject: [PATCH] ASoC: hdmi-codec: Use set_jack ops to set jack
+Date:   Tue, 22 Sep 2020 14:23:16 +0800
+Message-Id: <20200922062316.1172935-1-cychiang@chromium.org>
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
 MIME-Version: 1.0
-In-Reply-To: <20200922060748.2452056-1-natechancellor@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.09.20 08:07, Nathan Chancellor wrote:
-> Clang warns:
-> 
-> kernel/resource.c:1281:53: warning: operator '?:' has lower precedence
-> than '|'; '|' will be evaluated first
-> [-Wbitwise-conditional-parentheses]
->         new_res = alloc_resource(GFP_KERNEL | alloc_nofail ? __GFP_NOFAIL : 0);
->                                  ~~~~~~~~~~~~~~~~~~~~~~~~~ ^
-> kernel/resource.c:1281:53: note: place parentheses around the '|'
-> expression to silence this warning
->         new_res = alloc_resource(GFP_KERNEL | alloc_nofail ? __GFP_NOFAIL : 0);
->                                  ~~~~~~~~~~~~~~~~~~~~~~~~~ ^
-> kernel/resource.c:1281:53: note: place parentheses around the '?:'
-> expression to evaluate it first
->         new_res = alloc_resource(GFP_KERNEL | alloc_nofail ? __GFP_NOFAIL : 0);
->                                                            ^
->                                               (                              )
-> 1 warning generated.
-> 
-> Add the parentheses as it was clearly intended for the ternary condition
-> to be evaluated first.
-> 
-> Fixes: 5fd23bd0d739 ("kernel/resource: make release_mem_region_adjustable() never fail")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1159
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> ---
-> 
-> Presumably, this will be squashed but I included a fixes tag
-> nonetheless. Apologies if this has already been noticed and fixed
-> already, I did not find anything on LKML.
+Use set_jack ops to set jack so machine drivers do not need to include
+hdmi-codec.h explicitly.
 
-Hasn't been noticed before (I guess most people build with GCC, which
-does not warn in this instance, at least for me) thanks!
+Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
+---
+Separate this patch from the machine driver patch series at
+https://patchwork.kernel.org/cover/11773209/
+in the hope that this can be merged first to ease other
+machine drivers' usage.
 
-Commit ids are not stable yet, so Andrew will most probably squash it.
+ include/sound/hdmi-codec.h                           |  3 ---
+ sound/soc/codecs/hdmi-codec.c                        | 12 ++++--------
+ sound/soc/mediatek/mt8173/mt8173-rt5650.c            |  5 ++---
+ sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c   |  5 ++---
+ .../mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c |  5 ++---
+ sound/soc/rockchip/rockchip_max98090.c               |  3 +--
+ 6 files changed, 11 insertions(+), 22 deletions(-)
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
-
-> 
->  kernel/resource.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/resource.c b/kernel/resource.c
-> index ca2a666e4317..3ae2f56cc79d 100644
-> --- a/kernel/resource.c
-> +++ b/kernel/resource.c
-> @@ -1278,7 +1278,7 @@ void release_mem_region_adjustable(resource_size_t start, resource_size_t size)
->  	 * similarly).
->  	 */
->  retry:
-> -	new_res = alloc_resource(GFP_KERNEL | alloc_nofail ? __GFP_NOFAIL : 0);
-> +	new_res = alloc_resource(GFP_KERNEL | (alloc_nofail ? __GFP_NOFAIL : 0));
->  
->  	p = &parent->child;
->  	write_lock(&resource_lock);
-> 
-> base-commit: 40ee82f47bf297e31d0c47547cd8f24ede52415a
-> 
-
-
+diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
+index 7754631a3102..b55970859a13 100644
+--- a/include/sound/hdmi-codec.h
++++ b/include/sound/hdmi-codec.h
+@@ -117,9 +117,6 @@ struct hdmi_codec_pdata {
+ struct snd_soc_component;
+ struct snd_soc_jack;
+ 
+-int hdmi_codec_set_jack_detect(struct snd_soc_component *component,
+-			       struct snd_soc_jack *jack);
+-
+ #define HDMI_CODEC_DRV_NAME "hdmi-audio-codec"
+ 
+ #endif /* __HDMI_CODEC_H__ */
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index 8c6f540533ba..403d4c6a49a8 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -698,13 +698,9 @@ static void plugged_cb(struct device *dev, bool plugged)
+ 		hdmi_codec_jack_report(hcp, 0);
+ }
+ 
+-/**
+- * hdmi_codec_set_jack_detect - register HDMI plugged callback
+- * @component: the hdmi-codec instance
+- * @jack: ASoC jack to report (dis)connection events on
+- */
+-int hdmi_codec_set_jack_detect(struct snd_soc_component *component,
+-			       struct snd_soc_jack *jack)
++static int hdmi_codec_set_jack(struct snd_soc_component *component,
++			       struct snd_soc_jack *jack,
++			       void *data)
+ {
+ 	struct hdmi_codec_priv *hcp = snd_soc_component_get_drvdata(component);
+ 	int ret = -EOPNOTSUPP;
+@@ -720,7 +716,6 @@ int hdmi_codec_set_jack_detect(struct snd_soc_component *component,
+ 	}
+ 	return ret;
+ }
+-EXPORT_SYMBOL_GPL(hdmi_codec_set_jack_detect);
+ 
+ static int hdmi_dai_spdif_probe(struct snd_soc_dai *dai)
+ {
+@@ -806,6 +801,7 @@ static const struct snd_soc_component_driver hdmi_driver = {
+ 	.use_pmdown_time	= 1,
+ 	.endianness		= 1,
+ 	.non_legacy_dai_naming	= 1,
++	.set_jack		= hdmi_codec_set_jack,
+ };
+ 
+ static int hdmi_codec_probe(struct platform_device *pdev)
+diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650.c b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
+index 347b095d478d..c28ebf891cb0 100644
+--- a/sound/soc/mediatek/mt8173/mt8173-rt5650.c
++++ b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
+@@ -11,7 +11,6 @@
+ #include <linux/of_gpio.h>
+ #include <sound/soc.h>
+ #include <sound/jack.h>
+-#include <sound/hdmi-codec.h>
+ #include "../../codecs/rt5645.h"
+ 
+ #define MCLK_FOR_CODECS		12288000
+@@ -154,8 +153,8 @@ static int mt8173_rt5650_hdmi_init(struct snd_soc_pcm_runtime *rtd)
+ 	if (ret)
+ 		return ret;
+ 
+-	return hdmi_codec_set_jack_detect(asoc_rtd_to_codec(rtd, 0)->component,
+-					  &mt8173_rt5650_hdmi_jack);
++	return snd_soc_component_set_jack(asoc_rtd_to_codec(rtd, 0)->component,
++					  &mt8173_rt5650_hdmi_jack, NULL);
+ }
+ 
+ enum {
+diff --git a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
+index 68fe23b96b14..15e48cde4921 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
++++ b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
+@@ -10,7 +10,6 @@
+ #include <linux/module.h>
+ #include <linux/of_device.h>
+ #include <linux/pinctrl/consumer.h>
+-#include <sound/hdmi-codec.h>
+ #include <sound/jack.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+@@ -375,8 +374,8 @@ static int mt8183_da7219_max98357_hdmi_init(struct snd_soc_pcm_runtime *rtd)
+ 	if (ret)
+ 		return ret;
+ 
+-	return hdmi_codec_set_jack_detect(asoc_rtd_to_codec(rtd, 0)->component,
+-					  &priv->hdmi_jack);
++	return snd_soc_component_set_jack(asoc_rtd_to_codec(rtd, 0)->component,
++					  &priv->hdmi_jack, NULL);
+ }
+ 
+ static struct snd_soc_dai_link mt8183_da7219_dai_links[] = {
+diff --git a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
+index 07410d7afaa9..327dfad41e31 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
++++ b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
+@@ -9,7 +9,6 @@
+ #include <linux/module.h>
+ #include <linux/of_device.h>
+ #include <linux/pinctrl/consumer.h>
+-#include <sound/hdmi-codec.h>
+ #include <sound/jack.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+@@ -350,8 +349,8 @@ mt8183_mt6358_ts3a227_max98357_hdmi_init(struct snd_soc_pcm_runtime *rtd)
+ 	if (ret)
+ 		return ret;
+ 
+-	return hdmi_codec_set_jack_detect(asoc_rtd_to_codec(rtd, 0)->component,
+-					  &priv->hdmi_jack);
++	return snd_soc_component_set_jack(asoc_rtd_to_codec(rtd, 0)->component,
++					  &priv->hdmi_jack, NULL);
+ }
+ 
+ static struct snd_soc_dai_link mt8183_mt6358_ts3a227_dai_links[] = {
+diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
+index 9acfd024aa5d..c8f1a28a92b7 100644
+--- a/sound/soc/rockchip/rockchip_max98090.c
++++ b/sound/soc/rockchip/rockchip_max98090.c
+@@ -12,7 +12,6 @@
+ #include <linux/gpio.h>
+ #include <linux/of_gpio.h>
+ #include <sound/core.h>
+-#include <sound/hdmi-codec.h>
+ #include <sound/jack.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -238,7 +237,7 @@ static int rk_hdmi_init(struct snd_soc_pcm_runtime *runtime)
+ 		return ret;
+ 	}
+ 
+-	return hdmi_codec_set_jack_detect(component, &rk_hdmi_jack);
++	return snd_soc_component_set_jack(component, &rk_hdmi_jack, NULL);
+ }
+ 
+ /* max98090 dai_link */
 -- 
-Thanks,
-
-David / dhildenb
+2.28.0.681.g6f77f65b4e-goog
 
