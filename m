@@ -2,125 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 034A5274258
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 594A4274260
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726633AbgIVMqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 08:46:51 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:20978 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726563AbgIVMqu (ORCPT
+        id S1726606AbgIVMuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 08:50:19 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:41103 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726563AbgIVMuT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 08:46:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1600778810; x=1632314810;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=nziyF0gCHf+QbUZWkcNumlIIbcw7LDkmtCIhMVokIFM=;
-  b=TfEOQVNe2a5SEJoigXV06ZCR+NEP1ZuUl27rQCymWfl8DCwejcAq4FJ8
-   5bc57ErZ70/WjpfAJxPpRepwHb3ogep+EODSbgn9NJ+VJ39yw58T8+CL0
-   s3e5hFLbBYgfNQVtfxRNe9D3kSdT70BOzmUNYMYR/j8AsFDjNXlL/POsK
-   I=;
-X-IronPort-AV: E=Sophos;i="5.77,290,1596499200"; 
-   d="scan'208";a="56952007"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-a70de69e.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 22 Sep 2020 12:46:48 +0000
-Received: from EX13D19EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1e-a70de69e.us-east-1.amazon.com (Postfix) with ESMTPS id E7FC8A1869;
-        Tue, 22 Sep 2020 12:46:43 +0000 (UTC)
-Received: from 8c85908914bf.ant.amazon.com (10.43.161.237) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 22 Sep 2020 12:46:34 +0000
-Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Oded Gabbay <oded.gabbay@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <izur@habana.ai>, Jakub Kicinski <kuba@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, SW_Drivers <SW_Drivers@habana.ai>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
+        Tue, 22 Sep 2020 08:50:19 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kKhkL-000132-Bd; Tue, 22 Sep 2020 12:50:13 +0000
+Subject: Re: [PATCH v2] PCI: brcmstb: fix a missing if statement on a return
+ error check
+To:     Jim Quinlan <james.quinlan@broadcom.com>,
+        Markus Elfring <Markus.Elfring@web.de>
+Cc:     "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
+        <linux-pci@vger.kernel.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        kernel-janitors@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
         Florian Fainelli <f.fainelli@gmail.com>,
-        <linux-rdma@vger.kernel.org>, Olof Johansson <olof@lixom.net>
-References: <20200918132645.GS8409@ziepe.ca>
- <CAFCwf109t5=GuNvqTqLUCiYbjLC6o2xVoLY5C-SBqbN66f6wxg@mail.gmail.com>
- <20200918135915.GT8409@ziepe.ca>
- <CAFCwf13rJgb4=as7yW-2ZHvSnUd2NK1GP0UKKjyMfkB3vsnE5w@mail.gmail.com>
- <20200918141909.GU8409@ziepe.ca>
- <CAFCwf121_UNivhfPfO6uFoHbF+2Odeb1c3+482bOXeOZUsEnug@mail.gmail.com>
- <20200918150735.GV8409@ziepe.ca>
- <CAFCwf13y1VVy90zAoBPC-Gfj6mwMVbefh3fxKDVneuscp4esqA@mail.gmail.com>
- <20200918152852.GW8409@ziepe.ca>
- <b0721756-d323-b95e-b2d2-ca3ce8d4a660@amazon.com>
- <20200922114101.GE8409@ziepe.ca>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <a16802a2-4a36-e03d-a927-c5cb7c766b99@amazon.com>
-Date:   Tue, 22 Sep 2020 15:46:29 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.2.2
+        Jim Quinlan <jquinlan@broadcom.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Rob Herring <robh@kernel.org>
+References: <fe38fa7c-8ff7-8e83-968f-91007c058fcc@web.de>
+ <CA+-6iNyGbL2jn1qUdX=AN17Xy5uX1-P=+Xi2NLSxHX-1FwLOwg@mail.gmail.com>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <22b12b8a-4c16-5377-043d-00750597f822@canonical.com>
+Date:   Tue, 22 Sep 2020 13:50:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-In-Reply-To: <20200922114101.GE8409@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <CA+-6iNyGbL2jn1qUdX=AN17Xy5uX1-P=+Xi2NLSxHX-1FwLOwg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.161.237]
-X-ClientProxiedBy: EX13D17UWB004.ant.amazon.com (10.43.161.132) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/09/2020 14:41, Jason Gunthorpe wrote:
-> On Mon, Sep 21, 2020 at 02:22:02PM +0300, Gal Pressman wrote:
+On 22/09/2020 13:43, Jim Quinlan wrote:
+> On Tue, Sep 22, 2020 at 7:49 AM Markus Elfring <Markus.Elfring@web.de> wrote:
+>>
+>>> The error return ret is not being check with an if statement and
+>>
+>> Wording alternative:
+>> The return value from a call of the function “brcm_phy_start” was not checked and
+>>
+>>
+>>> V2: disable clock as noted by Florian Fainelli and suggested by
+>>>     Jim Quinlan.
+>>
+>> Alex Dewar contributed another update suggestion.
+>>
+>> [PATCH v2] PCI: brcmstb: Add missing if statement and error path
+>> https://lore.kernel.org/linux-arm-kernel/20200921211623.33908-1-alex.dewar90@gmail.com/
+>> https://lore.kernel.org/patchwork/patch/1309860/
+>>
+>> The exception handling needs further development considerations
+>> for this function implementation.
+> Hello,
 > 
->> What is considered a RoCE port in this case if it's not compliant with RoCE?
->> Sounds like it's an implementation of RDMA over ethernet, not RoCE.
->> Does GAUDI support UD/RC/.. QPs? Is it using a proprietary wire protocol?
->> (BTW, Oded claims it's similar to nvlink, how is nvlink's implementation
->> exposed? Or is it closed source?)
-> 
-> I think Oded was drawing a parallel to how nvlink is integral with the
-> compute element. From Oded's descriptions I don't think it is much
-> like nvlink at all.
-> 
->> Jason, how do you imagine GAUDI in the RDMA subsystem? Userspace control path
->> verbs (used by hl-thunk?) and all data path verbs exposed as kverbs (used by
->> habanalabs driver)?
->> So neither any userspace verbs apps could use it nor kernel ULPs?
-> 
-> Based on what Oded described it seems like a reasonable RDMA device
-> with some limitations around MR IOVA.
-> 
-> Looks like the desire is to create a RDMA WR and CQ ring in userspace,
-> and then co-mingle that with the compute side of the device.
-> 
-> So instead of doing the special IOCTL and mmap against the compute FD
-> it would create a RDMA QP and RDMA CQ, use dv to access the raw
-> internals, and the propritary stack would have exactly the same stuff
-> it would have had with the misc ioctl.
-> 
-> But, completely separately, they'd also have to implement some of
-> verbs which serves as the open source userspace showing how this HW
-> works. What that is depends largely on what their HW can do, and if
-> they want to connect to UCX/mpi/libfabric/etc
-> 
-> A bunch of ioctl stubs or a few tests is far below our standard in
-> RDMA.
-> 
-> There may have been some argument that the compute side of this device
-> has no industry standards so should be a drivers/misc, but HPC
-> networking *does* have extensive standards and extensive open source
-> software stacks. It is very hard for me to see how a device in this
-> market could be competitive without integrating with that stuff.
+> I agree with Alex's patch.  I should have suggested this at the
+> beginning but as our upstream STB suspend/resume is not yet functional
+> and the one-line change would have worked until we fixed
+> suspend/resume..  But this is the proper modification.
 
-I agree, that makes sense.
-But assuming Oded actually goes and implements all the needed verbs to get a
-basic functional libibverbs provider (assuming their HW can do it somehow), is
-it really useful if no one is going to use it?
-It doesn't sound like habanalabs want people to use GAUDI as an RDMA adapter,
-and I'm assuming the only real world use case is going to be using the hl stack,
-which means we're left with a lot of dead code that's not used/tested by anyone.
+Yup, go with Alex's patch. That one is correct.
 
-Genuine question, wouldn't it be better if they only implement what's actually
-going to be used and tested by their customers?
+
+> 
+> Thanks,
+> Jim
+>> Regards,
+>> Markus
+
