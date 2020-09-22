@@ -2,159 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2C127464D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:14:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF1427464B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726719AbgIVQOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 12:14:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21156 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726508AbgIVQOD (ORCPT
+        id S1726662AbgIVQN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 12:13:59 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:2079 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726508AbgIVQN6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 12:14:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600791241;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=i+fhWxS4Uy1qIr1hOIXhMJfQNFY0bG4QU0yaQGULSxo=;
-        b=idrm1a3Et8FEBd1uNMCxCblhLCzICwODof1v5qXNANsP2s3ZveVM0R1EtOgNKiA5D2j97k
-        +veh+3glVTmOzE6yjCvwbJzB/wXZ2EvuvVNi/D/czDK/BcXvb9R6b541y1YELGqSwy5CmI
-        iPO/RcYi8eKx8IWzyozhTW4/0r2v54A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-447-tUo3N-E1Nk-u8r_-0JjVoQ-1; Tue, 22 Sep 2020 12:13:56 -0400
-X-MC-Unique: tUo3N-E1Nk-u8r_-0JjVoQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C6367802B45;
-        Tue, 22 Sep 2020 16:13:54 +0000 (UTC)
-Received: from starship (unknown [10.35.206.154])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5F22A78810;
-        Tue, 22 Sep 2020 16:13:51 +0000 (UTC)
-Message-ID: <83dc0dc731ba7348af05a5124da3435024185594.camel@redhat.com>
-Subject: Re: [PATCH v5 2/4] KVM: x86: report negative values from wrmsr to
- userspace
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     kvm@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Jim Mattson <jmattson@google.com>,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Date:   Tue, 22 Sep 2020 19:13:49 +0300
-In-Reply-To: <20200921160812.GA23989@linux.intel.com>
-References: <20200921131923.120833-1-mlevitsk@redhat.com>
-         <20200921131923.120833-3-mlevitsk@redhat.com>
-         <20200921160812.GA23989@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+        Tue, 22 Sep 2020 12:13:58 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f6a22980001>; Tue, 22 Sep 2020 09:13:12 -0700
+Received: from [10.2.161.222] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 22 Sep
+ 2020 16:13:57 +0000
+Subject: Re: [PATCH v6 3/3] media: i2c: imx274: Add IMX274 power on and off
+ sequence
+To:     Thierry Reding <thierry.reding@gmail.com>
+CC:     <jonathanh@nvidia.com>, <sakari.ailus@iki.fi>,
+        <hverkuil@xs4all.nl>, <jacopo+renesas@jmondi.org>,
+        <luca@lucaceresoli.net>, <leonl@leopardimaging.com>,
+        <robh+dt@kernel.org>, <lgirdwood@gmail.com>, <broonie@kernel.org>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1600724379-7324-1-git-send-email-skomatineni@nvidia.com>
+ <1600724379-7324-4-git-send-email-skomatineni@nvidia.com>
+ <20200922075501.GB3994831@ulmo>
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+Message-ID: <c79b6253-8476-c51b-ba32-10d464cfa4cb@nvidia.com>
+Date:   Tue, 22 Sep 2020 09:13:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200922075501.GB3994831@ulmo>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Language: en-US
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600791192; bh=IJR+Q/vM8xX1U/gfMgaRcmarscwyB+VzRw0hYZ8DO0w=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=dH5Er+IISnTn6bdCW5Gc/Dxm2scLrwktMjIhtf4tNq87uAlxC2epyFfnctGN9LTOA
+         oQCs8h8r2Ts/3fgfFdWYOqk53IGMBzFB6wDlheZZ8tbSOexTAMsfdrrVwSoliy28rb
+         6n02WWi17ThfU0b9E7pJurFqroyqQYHTsbDYnblSftTh9TLo+JuQQlKY7NrAHvfp9p
+         LN1h6O9MM1InsNZU1b0gk7RSrLJhkDFgPNDw6w+8YldD6+Es79YKCY8mib3dqdCYR9
+         fn0yOyD+80rwixLeoi2PQEXtCsFEoCqjNzMz5xdWqQsSBp43CWo3rBGQ8Um8GfK9d1
+         +Uqxhs+loPMdw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-09-21 at 09:08 -0700, Sean Christopherson wrote:
-> On Mon, Sep 21, 2020 at 04:19:21PM +0300, Maxim Levitsky wrote:
-> > This will allow us to make some MSR writes fatal to the guest
-> > (e.g when out of memory condition occurs)
-> > 
-> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> > ---
-> >  arch/x86/kvm/emulate.c | 7 +++++--
-> >  arch/x86/kvm/x86.c     | 5 +++--
-> >  2 files changed, 8 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
-> > index 1d450d7710d63..d855304f5a509 100644
-> > --- a/arch/x86/kvm/emulate.c
-> > +++ b/arch/x86/kvm/emulate.c
-> > @@ -3702,13 +3702,16 @@ static int em_dr_write(struct x86_emulate_ctxt *ctxt)
-> >  static int em_wrmsr(struct x86_emulate_ctxt *ctxt)
-> >  {
-> >  	u64 msr_data;
-> > +	int ret;
-> >  
-> >  	msr_data = (u32)reg_read(ctxt, VCPU_REGS_RAX)
-> >  		| ((u64)reg_read(ctxt, VCPU_REGS_RDX) << 32);
-> > -	if (ctxt->ops->set_msr(ctxt, reg_read(ctxt, VCPU_REGS_RCX), msr_data))
-> > +
-> > +	ret = ctxt->ops->set_msr(ctxt, reg_read(ctxt, VCPU_REGS_RCX), msr_data);
-> > +	if (ret > 0)
-> >  		return emulate_gp(ctxt, 0);
-> >  
-> > -	return X86EMUL_CONTINUE;
-> > +	return ret < 0 ? X86EMUL_UNHANDLEABLE : X86EMUL_CONTINUE;
-> >  }
-> >  
-> >  static int em_rdmsr(struct x86_emulate_ctxt *ctxt)
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index 063d70e736f7f..b6c67ab7c4f34 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -1612,15 +1612,16 @@ int kvm_emulate_wrmsr(struct kvm_vcpu *vcpu)
-> >  {
-> >  	u32 ecx = kvm_rcx_read(vcpu);
-> >  	u64 data = kvm_read_edx_eax(vcpu);
-> > +	int ret = kvm_set_msr(vcpu, ecx, data);
-> >  
-> > -	if (kvm_set_msr(vcpu, ecx, data)) {
-> > +	if (ret > 0) {
-> >  		trace_kvm_msr_write_ex(ecx, data);
-> >  		kvm_inject_gp(vcpu, 0);
-> >  		return 1;
-> >  	}
-> >  
-> >  	trace_kvm_msr_write(ecx, data);
-> 
-> Tracing the access as non-faulting feels wrong.  The WRMSR has not completed,
-> e.g. if userspace cleanly handles -ENOMEM and restarts the guest, KVM would
-> trace the WRMSR twice.
 
-I guess you are right. Since in this case we didn't actually executed the
-instruction (exception can also be thought as an execution of an instruction,
-since it leads to the exception handler), but in
-this case we just fail
-and let the userspace do something so we can restart from the same point again.
- 
-So I'll go with your suggestion.
+On 9/22/20 12:55 AM, Thierry Reding wrote:
+> On Mon, Sep 21, 2020 at 02:39:39PM -0700, Sowjanya Komatineni wrote:
+>> IMX274 has analog 2.8V supply, digital core 1.8V supply, and vddl digital
+>> io 1.2V supply which are optional based on camera module design.
+>>
+>> IMX274 also need external 24Mhz clock and is optional based on
+>> camera module design.
+>>
+>> This patch adds support for IMX274 power on and off to enable and
+>> disable these supplies and external clock.
+>>
+>> Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
+>> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+>> ---
+>>   drivers/media/i2c/imx274.c | 184 +++++++++++++++++++++++++++++++++------------
+>>   1 file changed, 134 insertions(+), 50 deletions(-)
+>>
+>> diff --git a/drivers/media/i2c/imx274.c b/drivers/media/i2c/imx274.c
+>> index 5e515f0..b3057a5 100644
+>> --- a/drivers/media/i2c/imx274.c
+>> +++ b/drivers/media/i2c/imx274.c
+>> @@ -18,7 +18,9 @@
+>>   #include <linux/kernel.h>
+>>   #include <linux/module.h>
+>>   #include <linux/of_gpio.h>
+>> +#include <linux/pm_runtime.h>
+>>   #include <linux/regmap.h>
+>> +#include <linux/regulator/consumer.h>
+>>   #include <linux/slab.h>
+>>   #include <linux/v4l2-mediabus.h>
+>>   #include <linux/videodev2.h>
+>> @@ -131,6 +133,15 @@
+>>   #define IMX274_TABLE_WAIT_MS			0
+>>   #define IMX274_TABLE_END			1
+>>   
+>> +/* regulator supplies */
+>> +static const char * const imx274_supply_names[] = {
+>> +	"vddl",  /* IF (1.2V) supply */
+>> +	"vdig",  /* Digital Core (1.8V) supply */
+>> +	"vana",  /* Analog (2.8V) supply */
+> According to the device tree bindings these should be uppercase. Did I
+> miss a patch that updates the bindings?
+>
+> I think the preference is for supply names to be lowercase and given
+> that there are no users of this binding yet we could update it without
+> breaking any existing device trees.
+>
+>> +};
+>> +
+>> +#define IMX274_NUM_SUPPLIES ARRAY_SIZE(imx274_supply_names)
+>> +
+>>   /*
+>>    * imx274 I2C operation related structure
+>>    */
+>> @@ -501,6 +512,8 @@ struct imx274_ctrls {
+>>    * @frame_rate: V4L2 frame rate structure
+>>    * @regmap: Pointer to regmap structure
+>>    * @reset_gpio: Pointer to reset gpio
+>> + * @supplies: List of analog and digital supply regulators
+>> + * @inck: Pointer to sensor input clock
+>>    * @lock: Mutex structure
+>>    * @mode: Parameters for the selected readout mode
+>>    */
+>> @@ -514,6 +527,8 @@ struct stimx274 {
+>>   	struct v4l2_fract frame_interval;
+>>   	struct regmap *regmap;
+>>   	struct gpio_desc *reset_gpio;
+>> +	struct regulator_bulk_data supplies[IMX274_NUM_SUPPLIES];
+>> +	struct clk *inck;
+>>   	struct mutex lock; /* mutex lock for operations */
+>>   	const struct imx274_mode *mode;
+>>   };
+>> @@ -726,6 +741,12 @@ static int imx274_start_stream(struct stimx274 *priv)
+>>   {
+>>   	int err = 0;
+>>   
+>> +	err = __v4l2_ctrl_handler_setup(&priv->ctrls.handler);
+>> +	if (err) {
+>> +		dev_err(&priv->client->dev, "Error %d setup controls\n", err);
+>> +		return err;
+>> +	}
+>> +
+>>   	/*
+>>   	 * Refer to "Standby Cancel Sequence when using CSI-2" in
+>>   	 * imx274 datasheet, it should wait 10ms or more here.
+>> @@ -767,6 +788,66 @@ static void imx274_reset(struct stimx274 *priv, int rst)
+>>   	usleep_range(IMX274_RESET_DELAY1, IMX274_RESET_DELAY2);
+>>   }
+>>   
+>> +static int imx274_power_on(struct device *dev)
+>> +{
+>> +	struct i2c_client *client = to_i2c_client(dev);
+>> +	struct v4l2_subdev *sd = i2c_get_clientdata(client);
+>> +	struct stimx274 *imx274 = to_imx274(sd);
+>> +	int ret;
+>> +
+>> +	/* keep sensor in reset before power on */
+>> +	imx274_reset(imx274, 0);
+>> +
+>> +	ret = clk_prepare_enable(imx274->inck);
+>> +	if (ret) {
+>> +		dev_err(&imx274->client->dev,
+>> +			"Failed to enable input clock: %d\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	ret = regulator_bulk_enable(IMX274_NUM_SUPPLIES, imx274->supplies);
+>> +	if (ret) {
+>> +		dev_err(&imx274->client->dev,
+>> +			"Failed to enable regulators: %d\n", ret);
+>> +		goto fail_reg;
+>> +	}
+>> +
+>> +	udelay(2);
+> This looks like some sort of extra delay to make sure all the supply
+> voltages have settled. Should this perhaps be encoded as part of the
+> regulator ramp-up times? Or is this really an IC-specific delay that
+> is needed for some internal timing?
+This is IC-specific delay after power on regulators before releasing reset.
+>
+>> +	imx274_reset(imx274, 1);
+>> +
+>> +	return 0;
+>> +
+>> +fail_reg:
+>> +	clk_disable_unprepare(imx274->inck);
+>> +	return ret;
+>> +}
+>> +
+>> +static int imx274_power_off(struct device *dev)
+>> +{
+>> +	struct i2c_client *client = to_i2c_client(dev);
+>> +	struct v4l2_subdev *sd = i2c_get_clientdata(client);
+>> +	struct stimx274 *imx274 = to_imx274(sd);
+>> +
+>> +	imx274_reset(imx274, 0);
+>> +
+>> +	regulator_bulk_disable(IMX274_NUM_SUPPLIES, imx274->supplies);
+>> +
+>> +	clk_disable_unprepare(imx274->inck);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int imx274_regulators_get(struct device *dev, struct stimx274 *imx274)
+>> +{
+>> +	unsigned int i;
+>> +
+>> +	for (i = 0; i < IMX274_NUM_SUPPLIES; i++)
+>> +		imx274->supplies[i].supply = imx274_supply_names[i];
+>> +
+>> +	return devm_regulator_bulk_get(dev, IMX274_NUM_SUPPLIES,
+>> +					imx274->supplies);
+>> +}
+>> +
+>>   /**
+>>    * imx274_s_ctrl - This is used to set the imx274 V4L2 controls
+>>    * @ctrl: V4L2 control to be set
+>> @@ -781,6 +862,9 @@ static int imx274_s_ctrl(struct v4l2_ctrl *ctrl)
+>>   	struct stimx274 *imx274 = to_imx274(sd);
+>>   	int ret = -EINVAL;
+>>   
+>> +	if (!pm_runtime_get_if_in_use(&imx274->client->dev))
+>> +		return 0;
+> I'm not sure I understand this, and sorry if this has been discussed
+> earlier. Aren't there any other mechanisms in place to ensure that a
+> control can only be configured when in use? If so, then is this even
+> necessary?
+>
+> If not, silently ignoring at this point seems like it could cause subtle
+> failures by ignoring some control settings and applying others if the
+> timing is right.
 
-Thanks for the review,
-	Best regards,
-		Maxim Levitsky
+With this patch, v4l2_ctrl setup is moved to start stream so all the 
+control values selected gets programmed during stream start. So s_ctrl 
+callback execution happens during that time after sensor rpm resume and 
+I don't think we need here either but I see all sensor drivers with RPM 
+enabled checking for this. So added just to make sure sensor programming 
+don't happen when power is off.
 
-> 
-> What about:
-> 
-> 	int ret = kvm_set_msr(vcpu, ecx, data);
-> 
-> 	if (ret < 0)
-> 		return ret;
-> 
-> 	if (ret) {
-> 		trace_kvm_msr_write_ex(ecx, data);
-> 		kvm_inject_gp(vcpu, 0);
-> 		return 1;
-> 	}
-> 
-> 	trace_kvm_msr_write(ecx, data);
-> 	return kvm_skip_emulated_instruction(vcpu);
-> 
-> > -	return kvm_skip_emulated_instruction(vcpu);
-> > +	return ret < 0 ? ret : kvm_skip_emulated_instruction(vcpu);
-> >  }
-> >  EXPORT_SYMBOL_GPL(kvm_emulate_wrmsr);
-> >  
-> > -- 
-> > 2.26.2
-> > 
+Sakari/Jacob,
 
+Can you please clarify if we can remove check pm_runtime_get_if_in_use() 
+in s_ctrl callback as v4l2_ctrl handler setup happens during stream 
+start where power is already on by then?
 
+>> +
+>>   	dev_dbg(&imx274->client->dev,
+>>   		"%s : s_ctrl: %s, value: %d\n", __func__,
+>>   		ctrl->name, ctrl->val);
+>> @@ -811,6 +895,8 @@ static int imx274_s_ctrl(struct v4l2_ctrl *ctrl)
+>>   		break;
+>>   	}
+>>   
+>> +	pm_runtime_put(&imx274->client->dev);
+>> +
+>>   	return ret;
+>>   }
+>>   
+>> @@ -1269,10 +1355,8 @@ static int imx274_s_frame_interval(struct v4l2_subdev *sd,
+>>    *
+>>    * Return: 0 on success, errors otherwise
+>>    */
+>> -static int imx274_load_default(struct stimx274 *priv)
+>> +static void imx274_load_default(struct stimx274 *priv)
+>>   {
+>> -	int ret;
+>> -
+>>   	/* load default control values */
+>>   	priv->frame_interval.numerator = 1;
+>>   	priv->frame_interval.denominator = IMX274_DEF_FRAME_RATE;
+>> @@ -1280,29 +1364,6 @@ static int imx274_load_default(struct stimx274 *priv)
+>>   	priv->ctrls.gain->val = IMX274_DEF_GAIN;
+>>   	priv->ctrls.vflip->val = 0;
+>>   	priv->ctrls.test_pattern->val = TEST_PATTERN_DISABLED;
+>> -
+>> -	/* update frame rate */
+>> -	ret = imx274_set_frame_interval(priv,
+>> -					priv->frame_interval);
+>> -	if (ret)
+>> -		return ret;
+>> -
+>> -	/* update exposure time */
+>> -	ret = v4l2_ctrl_s_ctrl(priv->ctrls.exposure, priv->ctrls.exposure->val);
+>> -	if (ret)
+>> -		return ret;
+>> -
+>> -	/* update gain */
+>> -	ret = v4l2_ctrl_s_ctrl(priv->ctrls.gain, priv->ctrls.gain->val);
+>> -	if (ret)
+>> -		return ret;
+>> -
+>> -	/* update vflip */
+>> -	ret = v4l2_ctrl_s_ctrl(priv->ctrls.vflip, priv->ctrls.vflip->val);
+>> -	if (ret)
+>> -		return ret;
+> This is not moved to somewhere else, so I assume the equivalent will
+> happen somewhere higher up in the stack? Might be worth mentioning in
+> the commit message why this can be dropped.
+OK. Will add in commit message.
+>
+> Thierry
