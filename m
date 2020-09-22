@@ -2,90 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3653627452E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7103274531
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726715AbgIVPYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 11:24:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726566AbgIVPYL (ORCPT
+        id S1726723AbgIVPYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 11:24:51 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:42192 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726654AbgIVPYu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 11:24:11 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 621B4C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 08:24:11 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id d4so3756695wmd.5
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 08:24:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MDxzFez2Jq/oZCpozKmvOzUQY5QqDzy9m2DduV+VOac=;
-        b=s+ISX4IpStUvjoIf0zi+9KXPBxYJcGpsmlbDp9NVdZkwJWfvW6ISr+oD4IjsxFtfOu
-         IyO30GRnPmC04zufw402514h6x0v93uhCpPKbhqU8WyLaRBiGawvfgpPmFyNJL3ziZPP
-         /Zo7y4muRtXmPTA3zPZJsgpod6YYRUL87KsYxMoHwbZGFkrh1zQYuh0U7mBwmatjbv3h
-         wV/HPZpDF2aiOnZj0fhQgedkvjWX9WLpN9UXgH8JBTNoCWUy6mRrYTCIYuDxkfKOwoA+
-         reEfhhGjMLJY3a4GfYg+iO/Jd8HNH5oKhZfHl3HhhpBXlfbmCOUiTyoy7NYtZjpik6FI
-         PCKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MDxzFez2Jq/oZCpozKmvOzUQY5QqDzy9m2DduV+VOac=;
-        b=MB7rEfYxQfGTMva1Z8zvkc0vX0eQF4TidFFVk9uetQP7Oh9Picc7bGFjXMvg8cVthJ
-         PEa0rQfc/oL1A4ABa6Kfkgs5CdqC2a8I/YjQ0abfjb9/D52EjNyaVEnui83lYhKJzylP
-         CgxHrKA1T0FHooIAEDKCsL/53jA5zFTDe3bCJ4D8H4fIIbxYgr1q2yo3uhOpzdcSPxjF
-         rS7ZA6js8EcD8tCSrme67xUkWMB9kQW6lxmI9D7G4R/dF7Tva7ryeinEyaWqw5CQLm6s
-         oqx0XUMEGzO5sy3KyPzoHJ1pqKxLW36Hk05OkZoWGUzEMPL4ZsvkoXAd+VT0wWnFOG80
-         1Cbg==
-X-Gm-Message-State: AOAM530mYrJBvI9OWJJo9Tucy3TZIheThqej2XRq+WcEoEKelMtAnwTK
-        vm5VUitWMbDtYN0L1Qy4oUKWl4MnAqonJw==
-X-Google-Smtp-Source: ABdhPJzXglh8d6Rj2NJwN9yUbmdtspM/AEg87GMODl5yYYPsWqYfzGebm3RIS+wF8F0Lg9zv7B7K5g==
-X-Received: by 2002:a05:600c:2283:: with SMTP id 3mr1510955wmf.37.1600788249723;
-        Tue, 22 Sep 2020 08:24:09 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:2047:2ab9:c10c:f4f? ([2a01:e34:ed2f:f020:2047:2ab9:c10c:f4f])
-        by smtp.googlemail.com with ESMTPSA id h204sm5053528wmf.35.2020.09.22.08.24.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Sep 2020 08:24:09 -0700 (PDT)
-Subject: Re: [PATCH] thermal/idle_inject: Fix comment of idle_duration_us and
- name of latency_ns
-To:     zhuguangqing83@gmail.com, amit.kachhap@gmail.com,
-        viresh.kumar@linaro.org, javi.merino@kernel.org,
-        rui.zhang@intel.com, amitk@kernel.org, rafael.j.wysocki@intel.com,
-        zhuguangqing@xiaomi.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200917073553.898-1-zhuguangqing83@gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <f1d0d69f-ab45-ac04-b2e7-76d9380c22a6@linaro.org>
-Date:   Tue, 22 Sep 2020 17:24:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 22 Sep 2020 11:24:50 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08MF99uD108659;
+        Tue, 22 Sep 2020 15:24:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=r25X6J1q+Ighced5STv1N+Q9x56TJMr0M8XmPWVmk4w=;
+ b=bB8Tp/a2lSI+UwYmqXXKz5Y23TH5yE09ciN0f0sy3qt19cNhEhgksqgJ9nY6Q7FHdqr5
+ Bj6NZjV37L+9k30k+sStCWjIWjb3Ku8CSL6l1POKFNXfXE7HYCIV82SAjw7MQKGPgnDR
+ Kw5X2XpfKcODiRMBXcg9wFTOahB8pyoEu3wJaCPA3pS5RO6mExJgFsqXBwcDKafq5t6B
+ hQMtnhiJ37dQzyVQCoh1oa9eh/nLFNekem8w4gp1vbNpKm+sEpYKhcbEqKkOoPjQ1OAn
+ 1TucTPU5tN6rNwjoHoSKQdXi9Gtq8zA8k12iNAEJCTzdfjm7ZqUf68EhJIGFWJhinzYg 9Q== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 33q5rgbsn3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 22 Sep 2020 15:24:29 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08MFAMQ1168760;
+        Tue, 22 Sep 2020 15:24:29 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 33nujnbted-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 22 Sep 2020 15:24:29 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08MFOPZn012709;
+        Tue, 22 Sep 2020 15:24:25 GMT
+Received: from [10.74.86.236] (/10.74.86.236)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 22 Sep 2020 08:24:25 -0700
+Subject: Re: [PATCH 6/6] x86/xen: open code alloc_vm_area in
+ arch_gnttab_valloc
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>, x86@kernel.org,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-mm@kvack.org
+References: <20200918163724.2511-1-hch@lst.de>
+ <20200918163724.2511-7-hch@lst.de>
+ <0833b9a8-5096-d105-a850-1336150eada1@oracle.com>
+ <20200922145819.GA28420@lst.de>
+From:   boris.ostrovsky@oracle.com
+Organization: Oracle Corporation
+Message-ID: <ebd69ba1-fc06-3cc7-348e-3cb0004c2a34@oracle.com>
+Date:   Tue, 22 Sep 2020 11:24:20 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.2.1
 MIME-Version: 1.0
-In-Reply-To: <20200917073553.898-1-zhuguangqing83@gmail.com>
+In-Reply-To: <20200922145819.GA28420@lst.de>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9752 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0
+ mlxlogscore=999 phishscore=0 adultscore=0 spamscore=0 suspectscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009220120
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9752 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 impostorscore=0
+ clxscore=1015 suspectscore=0 phishscore=0 malwarescore=0
+ priorityscore=1501 mlxlogscore=999 adultscore=0 bulkscore=0 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009220120
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/09/2020 09:35, zhuguangqing83@gmail.com wrote:
-> From: zhuguangqing <zhuguangqing@xiaomi.com>
-> 
-> The comment of idle_duration_us and the name of latency_ns can be misleading,
-> so fix them.
-> 
-> Signed-off-by: zhuguangqing <zhuguangqing@xiaomi.com>
-> ---
 
-Applied, thanks
+On 9/22/20 10:58 AM, Christoph Hellwig wrote:
+> On Mon, Sep 21, 2020 at 04:44:10PM -0400, boris.ostrovsky@oracle.com wrote:
+>> This will end up incrementing area->ptes pointer. So perhaps something like
+>>
+>>
+>> pte_t **ptes = area->ptes;
+>>
+>> if (apply_to_page_range(&init_mm, (unsigned long)area->area->addr,
+>>                         PAGE_SIZE * nr_frames, gnttab_apply, &ptes)) {
+>>
+>>        ...
+> Yeah.  What do you think of this version? 
 
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+Oh yes, this is way better. This now can actually be read without trying to mentally unwind triple pointers. (You probably want to initialize idx to zero before calling apply_to_page_range(), I am not sure it's guaranteed to be zero).
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+
+>  I think it is a little
+> cleaner and matches what xenbus does.  At this point it probably should
+> be split into a Xen and a alloc_vm_area removal patch, though.
+
+
+Right.
+
+
+-boris
+
