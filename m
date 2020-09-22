@@ -2,95 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0487C274BD3
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 934A9274BD7
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726713AbgIVWFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 18:05:01 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:23480 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726685AbgIVWFA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 18:05:00 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600812300; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=rM/B9BakHyUJZNVQSwabD9JaPVxM+jNpDiVkIVk/tQk=; b=Mq5xKOmT2gNC+W4h8+YYAzTpQmF6jD3HGIb0P51vLT+5m+MvEAptZft89JTU7ayON6782lqO
- vAb60ajTC2diRZnD7ai+1gJeS39j4MfRG2alWtzws7j82fpcSiLy0yYu3BYT9C0rdSEtwLjf
- iqeAWOGThm71YfQzwaFG3FCzkMg=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5f6a750b48c378a4cbbcbdbc (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Sep 2020 22:04:59
- GMT
-Sender: collinsd=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C0E01C433CB; Tue, 22 Sep 2020 22:04:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from codeaurora.org (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: collinsd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 22282C433C8;
-        Tue, 22 Sep 2020 22:04:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 22282C433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=collinsd@codeaurora.org
-From:   David Collins <collinsd@codeaurora.org>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     David Collins <collinsd@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH] spmi: prefix spmi bus device names with "spmi"
-Date:   Tue, 22 Sep 2020 15:04:18 -0700
-Message-Id: <1600812258-17722-1-git-send-email-collinsd@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
+        id S1726629AbgIVWFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 18:05:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60136 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726685AbgIVWFP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 18:05:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600812314;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1HuDu6VLipkoXjOvX2ydRAsRN46ZNECZq7n9nX0XdnI=;
+        b=K9YFCvRyRtZ+nAFcyjOo1zRHreHcjNEcMaoFHYrz4vMknwVSIZWS1XgM5QyUSdJnVVJXFI
+        Au9maU65hgc0OIXEaorDArlVSpUaBQaMDs214G7SRDuxZz5O+jxWiMYwJ32TNjin4T1t62
+        IpSlrh09aTIS2gghyeIEGaySS1KH2YU=
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
+ [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-165-K0MbwC7iOAGA1YSLKAhGzA-1; Tue, 22 Sep 2020 18:05:12 -0400
+X-MC-Unique: K0MbwC7iOAGA1YSLKAhGzA-1
+Received: by mail-ot1-f71.google.com with SMTP id x52so1775712otb.11
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 15:05:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1HuDu6VLipkoXjOvX2ydRAsRN46ZNECZq7n9nX0XdnI=;
+        b=KgDrnlRvr4LipYKajVXeqBR6S5Pfidl6CXQvFrejrWz2wzOlPSuVGZGOD1DxrVRaWu
+         r2ctz+7cs+dqjiTfiKXlwix+IeCt1UEW5qzdFnmdS8bLX4O5gsq5CCm3/O9968HxZcQ/
+         5aYMSwIym/a3pL5qZ2EbAlaVavryIWlmhmQQuKJjiyDII58Um1P2wCM6AjMAWy4VQwSe
+         n+mcjFwflS4PdTQXrpeNTGLyxjy7zBRNFYrJpGDhleCm+TSj6PLNVLPs6NtlLAoa4Iw4
+         GlYLJbYLEUYVf5/J47ehjBYuJM1vtaCVzrKACr00c+yCcKhzhZmJlX4EVVeLgzj9sDZj
+         9Qzw==
+X-Gm-Message-State: AOAM530o/GOTaH8Zihvq3P4kjQJbfQRfnvq/ZUumqeNkyyyNOsyjQeXX
+        lJW2TZJWNn9ezrio40V2fZml3hFOTsdd9RoJ2L6AYONPoVUtsy+IcptGUfWIfthblRMSVsY+hSa
+        G0a4xucWytmn2/Y5dZJpbE1JYDzy97TzkUn7OHsRd
+X-Received: by 2002:a4a:a385:: with SMTP id s5mr4526257ool.8.1600812311423;
+        Tue, 22 Sep 2020 15:05:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyFQQl79LZqD9ewINDxufXtajraSG49Z623jpMmetiwrW8RQQFJ+ZMcncq7gan5aXrAJDcTlr/7rNTZ7uMT/Ok=
+X-Received: by 2002:a4a:a385:: with SMTP id s5mr4526237ool.8.1600812311133;
+ Tue, 22 Sep 2020 15:05:11 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200922133731.33478-1-jarod@redhat.com> <20200922133731.33478-5-jarod@redhat.com>
+In-Reply-To: <20200922133731.33478-5-jarod@redhat.com>
+From:   Jarod Wilson <jarod@redhat.com>
+Date:   Tue, 22 Sep 2020 18:05:00 -0400
+Message-ID: <CAKfmpSfv8L46MjYHfUCMcz+Wxed4EpO1FEu8NjqVU6W8_m9E=w@mail.gmail.com>
+Subject: Re: [PATCH net-next 4/5] bonding: make Kconfig toggle to disable
+ legacy interfaces
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, Netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change the format of spmi bus device names from:
-  <spmi_bus_number>-<spmi_device_sid>
-  Example: 0-01
-to this:
-  spmi<spmi_bus_number>-<spmi_device_sid>
-  Example: spmi0-01
+On Tue, Sep 22, 2020 at 9:38 AM Jarod Wilson <jarod@redhat.com> wrote:
+>
+> By default, enable retaining all user-facing API that includes the use of
+> master and slave, but add a Kconfig knob that allows those that wish to
+> remove it entirely do so in one shot.
+> diff --git a/drivers/net/bonding/bond_procfs.c b/drivers/net/bonding/bond_procfs.c
+> index abd265d6e975..91ece68607b2 100644
+> --- a/drivers/net/bonding/bond_procfs.c
+> +++ b/drivers/net/bonding/bond_procfs.c
+> @@ -7,6 +7,12 @@
+>
+>  #include "bonding_priv.h"
+>
+> +#ifdef CONFIG_BONDING_LEGACY_INTERFACES
+> +const char *linkdesc = "Slave";
+> +#else
+> +const char *linkdesc = "Link";
+> +#endif
 
-This helps to disambiguate SPMI device regmaps from I2C ones
-at /sys/kernel/debug/regmap since I2C devices use a very
-similar naming scheme: 0-0000.
+I've been asked if it would be okay to add extra lines to the
+/proc/net/bonding/<bond interface> output, so that for example, both
+"Slave Interface: <interface>" and "Link Interface: <interface>" are
+both in the default output, with the Slave bits then suppressed by the
+Kconfig option being unset, versus the Kconfig option currently
+swapping out Slave for Link when disabled. It would bloat the output
+by a fair number of lines, but all the same data would be there and
+parseable. Wasn't sure on this one, so I wanted to check on it. If it
+would be acceptable, I'll rework that bit of code.
 
-Signed-off-by: David Collins <collinsd@codeaurora.org>
----
- drivers/spmi/spmi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/spmi/spmi.c b/drivers/spmi/spmi.c
-index c16b60f..ec94439 100644
---- a/drivers/spmi/spmi.c
-+++ b/drivers/spmi/spmi.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-- * Copyright (c) 2012-2015, The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2012-2015, 2020, The Linux Foundation. All rights reserved.
-  */
- #include <linux/kernel.h>
- #include <linux/errno.h>
-@@ -62,7 +62,7 @@ int spmi_device_add(struct spmi_device *sdev)
- 	struct spmi_controller *ctrl = sdev->ctrl;
- 	int err;
- 
--	dev_set_name(&sdev->dev, "%d-%02x", ctrl->nr, sdev->usid);
-+	dev_set_name(&sdev->dev, "spmi%d-%02x", ctrl->nr, sdev->usid);
- 
- 	err = device_add(&sdev->dev);
- 	if (err < 0) {
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Jarod Wilson
+jarod@redhat.com
 
