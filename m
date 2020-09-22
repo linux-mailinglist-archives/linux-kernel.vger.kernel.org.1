@@ -2,53 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858CD2749AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 057C32749AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726753AbgIVT7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 15:59:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56154 "EHLO mail.kernel.org"
+        id S1726757AbgIVT7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 15:59:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57072 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726563AbgIVT7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 15:59:34 -0400
-Received: from kernel.org (unknown [104.132.0.74])
+        id S1726563AbgIVT7u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 15:59:50 -0400
+Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6B718221E8;
-        Tue, 22 Sep 2020 19:59:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 250D6221E8;
+        Tue, 22 Sep 2020 19:59:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600804773;
-        bh=ko86j4eJVn/gqX1GowgA/ZepwfEpTucQ77XDZkPwucU=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=BsFx2w2ERwj/4fd2OPsoOVbjjbtig9ux3fOx0p6aJ+wFulOupGW2c9p0MQb7a9zyB
-         HE2ANBrx0ev/RHtBx98azFBSenxF6stYmmD2FEYN2w24MGyeu2rEdNf2qvmhieecgi
-         IAXP9dYHigU3buULJ+3T+PTG/9cTXBndAwqkCBa4=
-Content-Type: text/plain; charset="utf-8"
+        s=default; t=1600804789;
+        bh=9hKEx0c62BVTx8Jprj2kG0CvGf0oLBx3Vphp8tDxFl0=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=a0glveV8KOjNjV0gaRkagn2eu7ChZfJlNYdVLkddjH+t6O6yA9Sj3IK+vPhaxyXfx
+         w0y2RXJCrjT7wYe4K4TS2tN0rFgCUg5iDT0kS914KNrN84y91MnEWUX3yy1jLIoQpZ
+         EM3hlqy9uWQ5BYIrzJFWlxRNPQGLkeYJ7GOQW/pM=
+Date:   Tue, 22 Sep 2020 21:59:44 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Wolfram Sang <wsa@kernel.org>
+cc:     Sultan Alsawaf <sultan@kerneltoast.com>, linux-i2c@vger.kernel.org,
+        aaron.ma@canonical.com, admin@kryma.net,
+        andriy.shevchenko@linux.intel.com, benjamin.tissoires@redhat.com,
+        hdegoede@redhat.com, hn.chen@weidahitech.com,
+        jarkko.nikula@linux.intel.com, kai.heng.feng@canonical.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mika.westerberg@linux.intel.com, vicamo.yang@canonical.com
+Subject: Re: [PATCH v2 0/4] i2c-hid: Save power by reducing i2c xfers with
+ block reads
+In-Reply-To: <20200922113646.GA6731@ninjato>
+Message-ID: <nycvar.YFH.7.76.2009222159170.3336@cbobk.fhfr.pm>
+References: <20200917052256.5770-1-sultan@kerneltoast.com> <nycvar.YFH.7.76.2009221118150.3336@cbobk.fhfr.pm> <20200922113646.GA6731@ninjato>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200907085740.1083-4-t-kristo@ti.com>
-References: <20200907085740.1083-1-t-kristo@ti.com> <20200907085740.1083-4-t-kristo@ti.com>
-Subject: Re: [PATCH 3/3] clk: keystone: sci-clk: add 10% slack to set_rate
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     mturquette@baylibre.com
-To:     Tero Kristo <t-kristo@ti.com>, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ssantosh@kernel.org
-Date:   Tue, 22 Sep 2020 12:59:32 -0700
-Message-ID: <160080477208.310579.10011892284968417590@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Tero Kristo (2020-09-07 01:57:40)
-> Currently, we request exact clock rates from the firmware to be set with
-> set_rate. Due to some rounding errors and internal functionality of the
-> firmware itself, this can fail. Thus, add some slack to the set_rate
-> functionality so that we are always guaranteed to pass. The firmware
-> always attempts to use frequency as close to the target freq as
-> possible despite the slack given here.
->=20
-> Signed-off-by: Tero Kristo <t-kristo@ti.com>
-> ---
+On Tue, 22 Sep 2020, Wolfram Sang wrote:
 
-Applied to clk-next
+> > Hans, Benjamin, could you please give this patchset some smoke-testing? It 
+> > looks good to me, but I'd like it to get some testing from your testing 
+> > machinery before merging.
+> 
+> Please give me some more days. I am not fully convinced yet that this
+> use of I2C_M_RECV_LEN is not broken on some controllers.
+> 
+> Plus, I'd favor if this could go via I2C tree. It is within I2C where
+> the non-trivial changes are. The HID part is just the final bit. Can we
+> agree on that?
+
+Absolutely no problem with that. But I'd like to have this ran through 
+Benjamin/Hans first too.
+
+Thanks,
+
+-- 
+Jiri Kosina
+SUSE Labs
+
