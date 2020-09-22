@@ -2,189 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F67E274D20
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 01:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA74E274D23
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 01:13:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726716AbgIVXLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 19:11:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36070 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726448AbgIVXLv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 19:11:51 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB922221EF;
-        Tue, 22 Sep 2020 23:11:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600816311;
-        bh=O0EqAQUcxVlJ7D3OFsCNRhUqCVDPp2JvHYgx47vVf4g=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=JwGpufvJH9jIfpqR7ZaBC2A1k10LRr7324SlLWau7auL4JB0hYizSQseYnasHd51e
-         5BjmYGGC85cz0EQm890QH9H9I94HxUSDB6XSvMPGj0sZW33YU4j7tXsXqdMDVkbwmT
-         dC0R1XbanOTYO8sjf494n0UK/oocSq+GvvH9UXNM=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id B8A1B3522CEC; Tue, 22 Sep 2020 16:11:50 -0700 (PDT)
-Date:   Tue, 22 Sep 2020 16:11:50 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>
-Subject: Re: [RFC PATCH 01/12] rcu: Implement rcu_segcblist_is_offloaded()
- config dependent
-Message-ID: <20200922231150.GK29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200921124351.24035-1-frederic@kernel.org>
- <20200921124351.24035-2-frederic@kernel.org>
- <20200922002732.GT29330@paulmck-ThinkPad-P72>
- <20200922214326.GF5217@lenoir>
+        id S1726753AbgIVXNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 19:13:18 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:35967 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726448AbgIVXNR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 19:13:17 -0400
+Received: by mail-ot1-f65.google.com with SMTP id 60so17241597otw.3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 16:13:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kGTx/Fj2zjNke6CRvCD9QIl8uae51LrS8iKAvA6PRAw=;
+        b=DjrXCvQCehA1tMyNTo4eutnjicWIl8n7tQ1S4eZuP6O94XRFOShgMuPwO/7vRm9X7I
+         qd1xYpGmBbzSeOu75FmB3K2mwGdd4elnxv5ARWYMul5YnsgkmJVgyzEfubDWdWypUb+X
+         wvqu6dRLgLMXmWhWChUhzvv2kn8ZlVx5bP93tsy+5Y+4nrvbtxA5j4qkQOGCWmPXNdZ6
+         zLsaI23bq4GaF3lIKMsLqtZ5uxVjnUtTPryeFuZXtR2h+jFDub9wGmzcE6FsPU9lF0vd
+         eDfSKcdJesW4Y9f3qcI4Z1UCYeeVHTyt8f36qAUlYXxYBM48az58kjPYaFG/XVN02/cg
+         JlYA==
+X-Gm-Message-State: AOAM533qVoa7aAeZavAVYnUaYByHQHyRJ20Ktfxg2h+t8jWDlZAbDg4l
+        qGjIw58RNMk+r/dAhIaxGYAa7OjcOE5JAQ==
+X-Google-Smtp-Source: ABdhPJyDr/1F8jIQZfRcrqueIdwrGAExrftOA6h9E7ybdpa2G7NLQ6PY1LyviyuzgvHR5omxvLNTtA==
+X-Received: by 2002:a05:6830:101:: with SMTP id i1mr4473157otp.300.1600816396176;
+        Tue, 22 Sep 2020 16:13:16 -0700 (PDT)
+Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com. [209.85.167.177])
+        by smtp.gmail.com with ESMTPSA id l79sm7998263oih.41.2020.09.22.16.13.14
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Sep 2020 16:13:15 -0700 (PDT)
+Received: by mail-oi1-f177.google.com with SMTP id c13so22921785oiy.6
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 16:13:14 -0700 (PDT)
+X-Received: by 2002:a05:6808:2d7:: with SMTP id a23mr3898652oid.51.1600816394656;
+ Tue, 22 Sep 2020 16:13:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922214326.GF5217@lenoir>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200915110647.846-1-kuldip.dwivedi@puresoftware.com>
+ <4e008f0a-69da-d5c2-4dfc-ef8695e17f47@arm.com> <AM6PR04MB5413903EAAEDB2EED2E254C6F1210@AM6PR04MB5413.eurprd04.prod.outlook.com>
+ <caf01871-1c3d-bdf8-867d-daf7138966a8@arm.com>
+In-Reply-To: <caf01871-1c3d-bdf8-867d-daf7138966a8@arm.com>
+From:   Li Yang <leoyang.li@nxp.com>
+Date:   Tue, 22 Sep 2020 18:13:02 -0500
+X-Gmail-Original-Message-ID: <CADRPPNQAqoFTMRBnq6WZ+jqO8LG4n5fPFxEEh4hF4h=k_D+cLQ@mail.gmail.com>
+Message-ID: <CADRPPNQAqoFTMRBnq6WZ+jqO8LG4n5fPFxEEh4hF4h=k_D+cLQ@mail.gmail.com>
+Subject: Re: [PATCH v1] soc: fsl: rcpm: Add ACPI support
+To:     Ard Biesheuvel <ard.biesheuvel@arm.com>
+Cc:     Ran Wang <ran.wang_1@nxp.com>,
+        kuldip dwivedi <kuldip.dwivedi@puresoftware.com>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Biwen Li <biwen.li@nxp.com>, Varun Sethi <V.Sethi@nxp.com>,
+        Arokia Samy <arokia.samy@nxp.com>,
+        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
+        Paul Yang <Paul.Yang@arm.com>,
+        tanveer <tanveer.alam@puresoftware.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 11:43:26PM +0200, Frederic Weisbecker wrote:
-> On Mon, Sep 21, 2020 at 05:27:32PM -0700, Paul E. McKenney wrote:
-> > On Mon, Sep 21, 2020 at 02:43:40PM +0200, Frederic Weisbecker wrote:
-> > > This simplify the usage of this API and avoid checking the kernel
-> > > config from the callers.
-> > > 
-> > > Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-> > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > > Cc: Paul E. McKenney <paulmck@kernel.org>
-> > > Cc: Josh Triplett <josh@joshtriplett.org>
-> > > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> > > Cc: Joel Fernandes <joel@joelfernandes.org>
-> > 
-> > Nice cleanup!  I clearly should have done it this way to start with.
-> > 
-> > Any reason I shouldn't pull this into -rcu right now?
-> 
-> I think that very one can be applied indeed.
+On Wed, Sep 16, 2020 at 1:12 AM Ard Biesheuvel <ard.biesheuvel@arm.com> wrote:
+>
+> On 9/16/20 3:32 AM, Ran Wang wrote:
+> > Hi Ard,
+> >
+> > On Tuesday, September 15, 2020 7:10 PM, Ard Biesheuvel wrote:
+> >> Subject: Re: [PATCH v1] soc: fsl: rcpm: Add ACPI support
+> >>
+> >> On 9/15/20 1:06 PM, kuldip dwivedi wrote:
+> >>> Add ACPI support in fsl RCPM driver. This is required to support ACPI
+> >>> S3 state. S3 is the ACPI sleep state that is known as "sleep" or
+> >>> "suspend to RAM".
+> >>> It essentially turns off most power of the system but keeps memory
+> >>> powered.
+> >>>
+> >>> Signed-off-by: tanveer <tanveer.alam@puresoftware.com>
+> >>> Signed-off-by: kuldip dwivedi <kuldip.dwivedi@puresoftware.com>
+> >>
+> >> Why does the OS need to program this device? Can't this be done by
+> >> firmware?
+> >
+> > This device is use to tell HW which IP (such as USB, SDHC, SATA, etc) should not be
+> > clock gated during system enter low power state (to allow that IP work as a
+> > wakeup source). And user does this configuration in device tree.
+>
+> The point of ACPI is *not* to describe a DT topology using a table
+> format that is not suited for it. The point of ACPI is to describe a
+> machine that is more abstracted from the hardware than is typically
+> possible with DT, where the abstractions are implemented by AML code
+> that is provided by the firmware, but executed in the context of the OS.
+>
+> So the idea is *not* finding the shortest possible path to get your
+> existing DT driver code running on a system that boots via ACPI.
+> Instead, you should carefully think about the abstract ACPI machine that
+> you will expose to the OS, and hide everything else in firmware.
+>
+> In this particular case, it seems like your USB, SDHC and SATA device
+> objects may need power state dependent AML methods that program this
+> block directly.
 
-Very well!  I had to hand-apply it due to recent -rcu thrash, and as
-usual I could not resist wordsmithing the commit log.  Please let
-me know if I messed anything up.
+The platform PM driver was created to support PM on systems without a
+runtime PM firmware.   Even with PSCI firmware on later systems, there
+is no standard interface to communicate the wakeup source information
+directly from peripheral drivers to the PSCI firmware.  So we still
+need this platform power management driver in kernel to deal with this
+setup for non-ACPI scenarios.  From the code re-use perspective, I
+think it is probably better to keep this generic implementation in
+kernel instead of moving it to ACPI byte-code for each platform.
 
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit 99a2a9b00b1f44019e5667cdbd44b8eb82e9f0a9
-Author: Frederic Weisbecker <frederic@kernel.org>
-Date:   Mon Sep 21 14:43:40 2020 +0200
-
-    rcu: Implement rcu_segcblist_is_offloaded() config dependent
-    
-    This commit simplifies the use of the rcu_segcblist_is_offloaded() API so
-    that its callers no longer need to check the RCU_NOCB_CPU Kconfig option.
-    Note that rcu_segcblist_is_offloaded() is defined in the header file,
-    which means that the generated code should be just as efficient as before.
-    
-    Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-    Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-    Cc: Paul E. McKenney <paulmck@kernel.org>
-    Cc: Josh Triplett <josh@joshtriplett.org>
-    Cc: Steven Rostedt <rostedt@goodmis.org>
-    Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-    Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-    Cc: Joel Fernandes <joel@joelfernandes.org>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
-index 5c293af..492262b 100644
---- a/kernel/rcu/rcu_segcblist.h
-+++ b/kernel/rcu/rcu_segcblist.h
-@@ -62,7 +62,7 @@ static inline bool rcu_segcblist_is_enabled(struct rcu_segcblist *rsclp)
- /* Is the specified rcu_segcblist offloaded?  */
- static inline bool rcu_segcblist_is_offloaded(struct rcu_segcblist *rsclp)
- {
--	return rsclp->offloaded;
-+	return IS_ENABLED(CONFIG_RCU_NOCB_CPU) && rsclp->offloaded;
- }
- 
- /*
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 2424e2a..6d9ec8e 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1609,8 +1609,7 @@ static bool __note_gp_changes(struct rcu_node *rnp, struct rcu_data *rdp)
- {
- 	bool ret = false;
- 	bool need_qs;
--	const bool offloaded = IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
--			       rcu_segcblist_is_offloaded(&rdp->cblist);
-+	const bool offloaded = rcu_segcblist_is_offloaded(&rdp->cblist);
- 
- 	raw_lockdep_assert_held_rcu_node(rnp);
- 
-@@ -2054,8 +2053,7 @@ static void rcu_gp_cleanup(void)
- 		needgp = true;
- 	}
- 	/* Advance CBs to reduce false positives below. */
--	offloaded = IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
--		    rcu_segcblist_is_offloaded(&rdp->cblist);
-+	offloaded = rcu_segcblist_is_offloaded(&rdp->cblist);
- 	if ((offloaded || !rcu_accelerate_cbs(rnp, rdp)) && needgp) {
- 		WRITE_ONCE(rcu_state.gp_flags, RCU_GP_FLAG_INIT);
- 		WRITE_ONCE(rcu_state.gp_req_activity, jiffies);
-@@ -2254,8 +2252,7 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
- 	unsigned long flags;
- 	unsigned long mask;
- 	bool needwake = false;
--	const bool offloaded = IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
--			       rcu_segcblist_is_offloaded(&rdp->cblist);
-+	const bool offloaded = rcu_segcblist_is_offloaded(&rdp->cblist);
- 	struct rcu_node *rnp;
- 
- 	WARN_ON_ONCE(rdp->cpu != smp_processor_id());
-@@ -2423,8 +2420,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
- {
- 	int div;
- 	unsigned long flags;
--	const bool offloaded = IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
--			       rcu_segcblist_is_offloaded(&rdp->cblist);
-+	const bool offloaded = rcu_segcblist_is_offloaded(&rdp->cblist);
- 	struct rcu_head *rhp;
- 	struct rcu_cblist rcl = RCU_CBLIST_INITIALIZER(rcl);
- 	long bl, count;
-@@ -2681,8 +2677,7 @@ static __latent_entropy void rcu_core(void)
- 	unsigned long flags;
- 	struct rcu_data *rdp = raw_cpu_ptr(&rcu_data);
- 	struct rcu_node *rnp = rdp->mynode;
--	const bool offloaded = IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
--			       rcu_segcblist_is_offloaded(&rdp->cblist);
-+	const bool offloaded = rcu_segcblist_is_offloaded(&rdp->cblist);
- 
- 	if (cpu_is_offline(smp_processor_id()))
- 		return;
-@@ -2984,8 +2979,7 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
- 				   rcu_segcblist_n_cbs(&rdp->cblist));
- 
- 	/* Go handle any RCU core processing required. */
--	if (IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
--	    unlikely(rcu_segcblist_is_offloaded(&rdp->cblist))) {
-+	if (unlikely(rcu_segcblist_is_offloaded(&rdp->cblist))) {
- 		__call_rcu_nocb_wake(rdp, was_alldone, flags); /* unlocks */
- 	} else {
- 		__call_rcu_core(rdp, head, flags);
-@@ -3739,8 +3733,7 @@ static int rcu_pending(int user)
- 
- 	/* Has RCU gone idle with this CPU needing another grace period? */
- 	if (!gp_in_progress && rcu_segcblist_is_enabled(&rdp->cblist) &&
--	    (!IS_ENABLED(CONFIG_RCU_NOCB_CPU) ||
--	     !rcu_segcblist_is_offloaded(&rdp->cblist)) &&
-+	    !rcu_segcblist_is_offloaded(&rdp->cblist) &&
- 	    !rcu_segcblist_restempty(&rdp->cblist, RCU_NEXT_READY_TAIL))
- 		return 1;
- 
+>
+>
+>
+> > So implement
+> > this RCPM driver to do it in kernel rather than firmware.
+> >
+> > Regards,
+> > Ran
+> >
+> >>> ---
+> >>>
+> >>> Notes:
+> >>>       1. Add ACPI match table
+> >>>       2. NXP team members are added for confirming HID changes
+> >>>       3. There is only one node in ACPI so no need to check for
+> >>>          current device explicitly
+> >>>       4. These changes are tested on LX2160A and LS1046A platforms
+> >>>
+> >>>    drivers/soc/fsl/rcpm.c | 22 +++++++++++++++++++---
+> >>>    1 file changed, 19 insertions(+), 3 deletions(-)
+> >>>
+> >>> diff --git a/drivers/soc/fsl/rcpm.c b/drivers/soc/fsl/rcpm.c index
+> >>> a093dbe6d2cb..e75a436fb159 100644
+> >>> --- a/drivers/soc/fsl/rcpm.c
+> >>> +++ b/drivers/soc/fsl/rcpm.c
+> >>> @@ -2,10 +2,12 @@
+> >>>    //
+> >>>    // rcpm.c - Freescale QorIQ RCPM driver
+> >>>    //
+> >>> -// Copyright 2019 NXP
+> >>> +// Copyright 2019-2020 NXP
+> >>> +// Copyright 2020 Puresoftware Ltd.
+> >>>    //
+> >>>    // Author: Ran Wang <ran.wang_1@nxp.com>
+> >>>
+> >>> +#include <linux/acpi.h>
+> >>>    #include <linux/init.h>
+> >>>    #include <linux/module.h>
+> >>>    #include <linux/platform_device.h>
+> >>> @@ -57,8 +59,13 @@ static int rcpm_pm_prepare(struct device *dev)
+> >>>                             rcpm->wakeup_cells + 1);
+> >>>
+> >>>             /*  Wakeup source should refer to current rcpm device */
+> >>> -           if (ret || (np->phandle != value[0]))
+> >>> -                   continue;
+> >>> +           if (is_acpi_node(dev->fwnode)) {
+> >>> +                   if (ret)
+> >>> +                           continue;
+> >>> +           } else {
+> >>> +                   if (ret || (np->phandle != value[0]))
+> >>> +                           continue;
+> >>> +           }
+> >>>
+> >>>             /* Property "#fsl,rcpm-wakeup-cells" of rcpm node defines the
+> >>>              * number of IPPDEXPCR register cells, and "fsl,rcpm-wakeup"
+> >>> @@ -139,10 +146,19 @@ static const struct of_device_id rcpm_of_match[]
+> >> = {
+> >>>    };
+> >>>    MODULE_DEVICE_TABLE(of, rcpm_of_match);
+> >>>
+> >>> +#ifdef CONFIG_ACPI
+> >>> +static const struct acpi_device_id rcpm_acpi_match[] = {
+> >>> +   { "NXP0015", },
+> >>> +   { }
+> >>> +};
+> >>> +MODULE_DEVICE_TABLE(acpi, rcpm_acpi_match); #endif
+> >>> +
+> >>>    static struct platform_driver rcpm_driver = {
+> >>>     .driver = {
+> >>>             .name = "rcpm",
+> >>>             .of_match_table = rcpm_of_match,
+> >>> +           .acpi_match_table = ACPI_PTR(rcpm_acpi_match),
+> >>>             .pm     = &rcpm_pm_ops,
+> >>>     },
+> >>>     .probe = rcpm_probe,
+> >>>
+> >
+>
