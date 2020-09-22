@@ -2,122 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C7A2749BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 22:03:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E65592749BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 22:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726620AbgIVUDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 16:03:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60816 "EHLO
+        id S1726654AbgIVUEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 16:04:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726550AbgIVUDC (ORCPT
+        with ESMTP id S1726448AbgIVUEE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 16:03:02 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D004C061755;
-        Tue, 22 Sep 2020 13:03:02 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id o8so24607139ejb.10;
-        Tue, 22 Sep 2020 13:03:02 -0700 (PDT)
+        Tue, 22 Sep 2020 16:04:04 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E42C061755;
+        Tue, 22 Sep 2020 13:04:04 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id n14so13460517pff.6;
+        Tue, 22 Sep 2020 13:04:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ux/FWhUKlfKba4R9gSVXh2d9U57fEhQO969QMh4dk+k=;
-        b=gQf7T+W348/cUa7xWPDW9mvfpBriiULeP1ZiFwI/jDSAJXi3GsqBEJgVzaZkuZ3KCN
-         DAYlg61fYR1XNjaNGtmQGHh+hKXwEWxOJ2n9Ghee/kUzRlnQLH4Zeu/fTNenx15m6XXp
-         FX71AJvEK80xn0Xkbrrlt/6VoGll00mpOfki/B1Ag5oQTK/iMuyJLByVfKQai4xyvfj0
-         6cq+Fp5kLtWHQ1iy4C4sDrTPsNplpHsgHhuCGhzzQTpVKI0kxMIqTs4NYwGmwWMehVua
-         LE3pRNdZ19xyq6AwCiTwJBamQsck+Xhems9XXbzyJSxo7b4G4hWnCHQ+KzCpyQTnyven
-         0LKw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=raI+QVbC2G+Sm4NSqtCVz0mf55/V/jwNAalaxam1OZw=;
+        b=WL0ur06FwhqzS3/hTnI3/gNGftH0ByOksChfDJC7tO3/Ob218kDp95j/3i18FSn6jY
+         a1dmQU8BJQVw/OmhgXbQk6AYWoz06NUPmZBakA2ve3pC1yyssAwhx+yCDaE07dVbgG+Z
+         Vxa7vbBe4ig6dpR0gUWZnHFu0m/WFSSQMIPpIId1vIS5M27L3xq2QY6i+fym3cC/kQ0M
+         dy7jVJITnRrh9POVUN/VnBt9wgDq1Iusr3GO/1BEf8Ub9Wf3voFPqFocpqcmNSbwj6h4
+         YTv9t1iAyJ4lxQdCj4UNoWF69Z5dnOqEikbn2dwhF4JHkG4Z2/zToam649R+WVbgOtVu
+         PCKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ux/FWhUKlfKba4R9gSVXh2d9U57fEhQO969QMh4dk+k=;
-        b=N+2KpZLN+5mB2r2CVLvgX29NKSq4cFmCKw3En9MlLy2gVt79c5YBCRXfmeFnCwMTQz
-         SK/I3EK3fhChS2ounQCBU0V8PqwtV0I5qJc7MF9luUwIvuAsTAoknDMQdVDUAMK9Arym
-         mBvicK9DTvGjxykBddhOAecy+lethJrVZzFIs6hp0bJSOcXd2O5OBON20+iIFnUVU8tG
-         PUxkSLJAQLE3DtyVgtyXd5iAX7nxt3hfRdH+pza9uiRcqgUSkSVebGH6IrLJty7X5uEU
-         QdF85RqYnFS/eWA+axAL+Gv68QgX1cCJ4kAEkXOLIYIbRv4ANJzzE+FW/tNvxYnvyItp
-         XAVQ==
-X-Gm-Message-State: AOAM530eYeqcujeIgTuo38XUxtdDlZlcf4qf1sG/h0fUv5hkQJgHE1mM
-        xW/p+dbpI9RULXPr+3JD0wc9Yw+DHh9HKudM1xo=
-X-Google-Smtp-Source: ABdhPJzrukxcqBwmPMNwZEfjF9bZU4xr+6NJgA7Fjwt063EvqbKJpTcRE4M8HENKWwjen25q8n7in1Ofle1X8HiQuYQ=
-X-Received: by 2002:a17:906:fb8f:: with SMTP id lr15mr6669776ejb.25.1600804980354;
- Tue, 22 Sep 2020 13:03:00 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=raI+QVbC2G+Sm4NSqtCVz0mf55/V/jwNAalaxam1OZw=;
+        b=RBPrgQJOC1hDtg3ZTz+xGqa/svzT1PCZ15s/PFKFYZlB7zJ7Mey5CrhlB815t5Bbw1
+         fUuJpzn2f5em4fj4DJqSqa0Nip0DPK0kQRlH5bAXygYMsXEOUrq/YIPioSRknjVTEv9l
+         9kvvgCDdwyDp/Zd91cXDONDWEaOMVfWFDozgOsjyexK4qHsF75PbRn1sUyclHj7pRN/4
+         jb48OSW/nS0hhlLUNPRGKaJrKAe4KmjhRnBtFMk3NYfm0TWlB4jC/CWLeYHbTGsF1j+t
+         MRqUz+nGFujCTziwzEceKFUiq7Bp8eJfPOX03NqT7eyJZq750m7n7rN6jTtMOFuOKHxx
+         ntag==
+X-Gm-Message-State: AOAM532FV/Txo6PlZABXcn2jy1DZ/18BP+/CqIusHqMPN9qB9XzUsV1c
+        /SGzngZmXFAa3sDSJIOUelPhQ5N7vlgtEA==
+X-Google-Smtp-Source: ABdhPJzen5yMD3M2El2N7pJ+6vPPXtVMxP66QFxBJtjRH9klbnDdBbpMsbU0HXzBoJjJyAcC4eWNdQ==
+X-Received: by 2002:a17:902:522:b029:d1:9bc8:15df with SMTP id 31-20020a1709020522b02900d19bc815dfmr6400861plf.25.1600805043084;
+        Tue, 22 Sep 2020 13:04:03 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id q18sm15562700pfg.158.2020.09.22.13.04.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 13:04:02 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net-next 0/2] net: dsa: bcm_sf2: Additional DT changes
+Date:   Tue, 22 Sep 2020 13:03:54 -0700
+Message-Id: <20200922200356.2611257-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20200909215752.1725525-1-shakeelb@google.com> <20200921163055.GQ12990@dhcp22.suse.cz>
- <CALvZod43VXKZ3StaGXK_EZG_fKcW3v3=cEYOWFwp4HNJpOOf8g@mail.gmail.com>
- <20200922114908.GZ12990@dhcp22.suse.cz> <CALvZod4FvE12o53BpeH5WB_McTdCkFTFXgc9gcT1CEHXzQLy_A@mail.gmail.com>
- <20200922165527.GD12990@dhcp22.suse.cz> <CALvZod7K9g9mi599c5+ayLeC4__kckv155QQGVMVy2rXXOY1Rw@mail.gmail.com>
- <20200922190859.GH12990@dhcp22.suse.cz>
-In-Reply-To: <20200922190859.GH12990@dhcp22.suse.cz>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 22 Sep 2020 13:02:47 -0700
-Message-ID: <CAHbLzkoBRAEWeDAh8Hd+3kNUMVUr-L79m4fpXoeez0wkBqUYxw@mail.gmail.com>
-Subject: Re: [PATCH] memcg: introduce per-memcg reclaim interface
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Greg Thelen <gthelen@google.com>,
-        David Rientjes <rientjes@google.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 12:09 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Tue 22-09-20 11:10:17, Shakeel Butt wrote:
-> > On Tue, Sep 22, 2020 at 9:55 AM Michal Hocko <mhocko@suse.com> wrote:
-> [...]
-> > > Last but not least the memcg
-> > > background reclaim is something that should be possible without a new
-> > > interface.
-> >
-> > So, it comes down to adding more functionality/semantics to
-> > memory.high or introducing a new simple interface. I am fine with
-> > either of one but IMO convoluted memory.high might have a higher
-> > maintenance cost.
->
-> One idea would be to schedule a background worker (which work on behalf
-> on the memcg) to do the high limit reclaim with high limit target as
-> soon as the high limit is reached. There would be one work item for each
-> memcg. Userspace would recheck the high limit on return to the userspace
-> and do the reclaim if the excess is larger than a threshold, and sleep
-> as the fallback.
->
-> Excessive consumers would get throttled if the background work cannot
-> keep up with the charge pace and most of them would return without doing
-> any reclaim because there is somebody working on their behalf - and is
-> accounted for that.
->
-> The semantic of high limit would be preserved IMHO because high limit is
-> actively throttled. Where that work is done shouldn't matter as long as
-> it is accounted properly and memcg cannot outsource all the work to the
-> rest of the system.
->
-> Would something like that (with many details to be sorted out of course)
-> be feasible?
+Hi David,
 
-This is exactly how our "per-memcg kswapd" works. The missing piece is
-how to account the background worker (it is a kernel work thread)
-properly as what we discussed before. You mentioned such work is WIP
-in earlier email of this thread, I think once this is done the
-per-memcg background worker could be supported easily.
+This patch series includes some additional changes to the bcm_sf2 in
+order to support the Device Tree firmwares provided on such platforms.
 
->
-> If we do not want to change the existing semantic of high and want a new
-> api then I think having another limit for the background reclaim then
-> that would make more sense to me. It would resemble the global reclaim
-> and kswapd model and something that would be easier to reason about.
-> Comparing to echo $N > reclaim which might mean to reclaim any number
-> pages around N.
-> --
-> Michal Hocko
-> SUSE Labs
+Florian Fainelli (2):
+  net: dsa: bcm_sf2: Disallow port 5 to be a DSA CPU port
+  net: dsa: bcm_sf2: Include address 0 for MDIO diversion
+
+ drivers/net/dsa/bcm_sf2.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+-- 
+2.25.1
+
