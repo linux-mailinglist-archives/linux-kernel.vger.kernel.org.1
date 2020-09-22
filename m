@@ -2,122 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B89E2273BBB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B17273B87
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:15:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729867AbgIVHZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 03:25:01 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:18751 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729748AbgIVHZA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 03:25:00 -0400
-X-Greylist: delayed 610 seconds by postgrey-1.27 at vger.kernel.org; Tue, 22 Sep 2020 03:24:57 EDT
-X-IronPort-AV: E=Sophos;i="5.77,289,1596470400"; 
-   d="scan'208";a="99496002"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 22 Sep 2020 15:14:46 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id 9FBBC48990EC;
-        Tue, 22 Sep 2020 15:14:44 +0800 (CST)
-Received: from G08CNEXCHPEKD05.g08.fujitsu.local (10.167.33.203) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Tue, 22 Sep 2020 15:14:43 +0800
-Received: from TSO.g08.fujitsu.local (10.167.226.60) by
- G08CNEXCHPEKD05.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.2 via Frontend Transport; Tue, 22 Sep 2020 15:14:42 +0800
-From:   Cao jin <caoj.fnst@cn.fujitsu.com>
-To:     <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
-        <linux-doc@vger.kernel.org>
-CC:     <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <hpa@zytor.com>, <corbet@lwn.net>
-Subject: [RFC PATCH] Documentation/x86/boot.rst: minor languge improvement
-Date:   Tue, 22 Sep 2020 15:14:54 +0800
-Message-ID: <20200922071454.21726-1-caoj.fnst@cn.fujitsu.com>
-X-Mailer: git-send-email 2.21.0
+        id S1729796AbgIVHPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 03:15:09 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:48496 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729774AbgIVHPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 03:15:05 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600758905; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=YQ/fWdaquh58Ptplm8zLwL0YmL9KIai8upADVMc42FM=;
+ b=nStROMFB+JhNLAm8mJud8zKr+nfn6+KAzjjDKJwJJRYhmfucepYd5kOFbHqpsyyIR3aRtzdC
+ df4by6bBmI0AJwBbX6fueravZD9o/NfJRi9u6OTyFNqbkuLlhn91UyEvvTZMTyUdkIjOYPFx
+ nD2lSjFJ7QAc+q4ljqsQnTpRRSg=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5f69a476aac060135417998a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Sep 2020 07:15:02
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8DCAFC433F1; Tue, 22 Sep 2020 07:15:02 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B8F54C433C8;
+        Tue, 22 Sep 2020 07:14:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B8F54C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: 9FBBC48990EC.AC552
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: caoj.fnst@cn.fujitsu.com
-X-Spam-Status: No
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH 2/5] wlcore: Remove unused function no_write_handler()
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200918131305.20976-1-yuehaibing@huawei.com>
+References: <20200918131305.20976-1-yuehaibing@huawei.com>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     <davem@davemloft.net>, <kuba@kernel.org>, <yuehaibing@huawei.com>,
+        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200922071502.8DCAFC433F1@smtp.codeaurora.org>
+Date:   Tue, 22 Sep 2020 07:15:02 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Suggested-by: H. Peter Anvin <hpa@zytor.com>
-Signed-off-by: Cao jin <caoj.fnst@cn.fujitsu.com>
----
-for 64-bit protocol, setup data still needs to be mapped, as there is
-operation on it in extract_kernel(), like:
+YueHaibing <yuehaibing@huawei.com> wrote:
 
-        sanitize_boot_params(boot_params);
+> There is no caller in tree, so can remove it.
+> 
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-initrd doesn't need to be mapped, which is also what KASLR does in its
-mem_avoid_init().
+Patch applied to wireless-drivers-next.git, thanks.
 
- Documentation/x86/boot.rst | 31 +++++++++++++++----------------
- 1 file changed, 15 insertions(+), 16 deletions(-)
+d0c8ff7c1e47 wlcore: Remove unused function no_write_handler()
 
-diff --git a/Documentation/x86/boot.rst b/Documentation/x86/boot.rst
-index 7fafc7ac00d7..392c6e147e70 100644
---- a/Documentation/x86/boot.rst
-+++ b/Documentation/x86/boot.rst
-@@ -1353,12 +1353,12 @@ In 32-bit boot protocol, the kernel is started by jumping to the
- 32/64-bit kernel.
- 
- At entry, the CPU must be in 32-bit protected mode with paging
--disabled; a GDT must be loaded with the descriptors for selectors
--__BOOT_CS(0x10) and __BOOT_DS(0x18); both descriptors must be 4G flat
--segment; __BOOT_CS must have execute/read permission, and __BOOT_DS
--must have read/write permission; CS must be __BOOT_CS and DS, ES, SS
--must be __BOOT_DS; interrupt must be disabled; %esi must hold the base
--address of the struct boot_params; %ebp, %edi and %ebx must be zero.
-+disabled and a GDT must be loaded with the descriptors for selectors
-+__BOOT_CS(0x10) and __BOOT_DS(0x18): both descriptors must be 4G flat
-+segment with __BOOT_CS having execute/read permission and __BOOT_DS
-+having read/write permission. CS must be __BOOT_CS and DS, ES, SS
-+must be __BOOT_DS. Interrupt must be disabled and %esi must hold the
-+base address of the struct boot_params. %ebp, %edi and %ebx must be zero.
- 
- 64-bit Boot Protocol
- ====================
-@@ -1379,7 +1379,7 @@ can be calculated as follows::
- In addition to read/modify/write the setup header of the struct
- boot_params as that of 16-bit boot protocol, the boot loader should
- also fill the additional fields of the struct boot_params as described
--in zero-page.txt.
-+in zero-page.rst.
- 
- After setting up the struct boot_params, the boot loader can load
- 64-bit kernel in the same way as that of 16-bit boot protocol, but
-@@ -1389,15 +1389,14 @@ In 64-bit boot protocol, the kernel is started by jumping to the
- 64-bit kernel entry point, which is the start address of loaded
- 64-bit kernel plus 0x200.
- 
--At entry, the CPU must be in 64-bit mode with paging enabled.
--The range with setup_header.init_size from start address of loaded
--kernel and zero page and command line buffer get ident mapping;
--a GDT must be loaded with the descriptors for selectors
--__BOOT_CS(0x10) and __BOOT_DS(0x18); both descriptors must be 4G flat
--segment; __BOOT_CS must have execute/read permission, and __BOOT_DS
--must have read/write permission; CS must be __BOOT_CS and DS, ES, SS
--must be __BOOT_DS; interrupt must be disabled; %rsi must hold the base
--address of the struct boot_params.
-+At entry, the CPU must be in 64-bit mode. The range with
-+setup_header.init_size from start address of loaded kernel, the zero page,
-+and the command line buffer get identity-mapped, and a GDT must be loaded
-+with the descriptors for selectors __BOOT_CS(0x10) and __BOOT_DS(0x18):
-+both descriptors must be 4G flat segment with __BOOT_CS having execute/read
-+permission and __BOOT_DS having read/write permission. CS must be __BOOT_CS
-+and DS, ES, SS must be __BOOT_DS. Interrupt must be disabled and %rsi must
-+hold the base address of the struct boot_params.
- 
- EFI Handover Protocol (deprecated)
- ==================================
 -- 
-2.21.0
+https://patchwork.kernel.org/patch/11785047/
 
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
