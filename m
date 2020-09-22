@@ -2,82 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19BAE274B50
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75CCE274B5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726716AbgIVVnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 17:43:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48064 "EHLO
+        id S1726719AbgIVVpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 17:45:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726703AbgIVVnm (ORCPT
+        with ESMTP id S1726615AbgIVVpL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 17:43:42 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D95C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 14:43:42 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id bw23so2118248pjb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 14:43:42 -0700 (PDT)
+        Tue, 22 Sep 2020 17:45:11 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94A69C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 14:45:11 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id z1so18708837wrt.3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 14:45:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=53UukHq1kI2LdwgBLERIarUaHHt0dzvP8+s+/bYd0A4=;
-        b=Yo/dZ0rKd7ba8E4CjQo7R++SRdvO91W2Be1bVaFPNpmftnEjeKNMhZyfqtTOHgkWss
-         NA8eRjWJXrhuQbVpp/7JhT0BMEbSDuZUo44llHK33htMK3ZJX/eQ6LnsomI/f72O4GMa
-         /+zTRQXI3bTC/qi3kJ4wNKx/TwM8xJxGFH2ng=
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=w4Sr3PY5vsv9Crdbf5k5DOz31reA+305B7dkZ8nMiGE=;
+        b=HK8hKMneHf+mU9w7jeszAsV8T0xOUCYx0LE8Eh+nEmEHpN10lcFSa8/QjiavuNtoe8
+         CL7JYhCGkszVRUclBZ9/aDVP/7/iSstEE9Nll2A1uqmFTXByh9O7MMoZS1C0S6W4S9GJ
+         iath+ngQFTdiCpYU5mYPxTfgpfT3TM+0gT8//EAMs57VuLcnmFA4CQyCS0pyWUHOX6Yl
+         /xjQTYFYMqRK0kUbU5ab84cxCq6KS6vTnB7DMyiGVV3LLYtaxDWvb/Z0JU3uDZ80lNM1
+         Zg9fbkAVQrVH8PvYMegSKed46At+ubsGy+HUF7Yg5g1SPGINH14Ik2W94kFBvDkKsUB1
+         0MeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=53UukHq1kI2LdwgBLERIarUaHHt0dzvP8+s+/bYd0A4=;
-        b=F2aJrBEnsndsN0f0detWLsRg6cta226Gr77ZpmKk5D/kNOqMqBbRTkAPuXDDTg+8qf
-         XU8Wo9cQIajjwdc5N9CrOeNCxSxQVPS+lhtv52CQSnwyC7kqkydkAc1+U4HHrG8QH8mh
-         e/q5phaJVlqSkC/XqbtmAhDXuRKy4uq4mcArEHg+jir3me0PsSrp/ofVJ86RDi2RnMo9
-         PJcojHjHsVMIChKNFuHqXetcvUDw+cV40JmrLoW6TKV6I6rsA2h1/x9FpxeOT8PifA4R
-         z/5FeGC74dJbQ8lz9Aj1xYBwIsClLEVMw670WItt9m30uMfhEnEXQWag44lbL/AvHkyA
-         HjvA==
-X-Gm-Message-State: AOAM532O/xZDimuetgjqggBBlpOJ7voa1u0jExfpRv+pg6EfcwElcFTC
-        Yk1t/y9aEtynyZlzJmLhw9/nWA==
-X-Google-Smtp-Source: ABdhPJy9rBpspmhIKC5WF3bw8wowSoG4ZWVQC2GUasuY/7UVLzNqqUZ6h/5v8Wo5mE23MeV9k84F1g==
-X-Received: by 2002:a17:90b:707:: with SMTP id s7mr5518349pjz.25.1600811021681;
-        Tue, 22 Sep 2020 14:43:41 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id y25sm15572761pfn.71.2020.09.22.14.43.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 14:43:40 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=w4Sr3PY5vsv9Crdbf5k5DOz31reA+305B7dkZ8nMiGE=;
+        b=mn+xImWpIV8MNhb76+B25GH2gfQkcvRZfnOmEwwvJViY9nGIFYAsAsug7nfkUtyWs6
+         SU9zbzCEQXmNv39Uf4tZLe8/YQgVFmzMzFOGyRv6pZYGWkuMAZB+x1QZTQQ+W1ZWta8N
+         nVXl3P8eT6529Adc6pWtr3mthepFEndIHco2yoBZs2CHMiTDjOwv1Y4uoX93hND4XEIp
+         GeAQVN8CH9IQdmXhC6Y927cnuGhPEwqbahJ0i8oprNpUi7qWf9A8qTvoRfyFCXsr7xVS
+         NNR2duhHwuf7pS4GIzCVNs/k8q+nCiX8oYpTvnZdyPcyPCPRs1OaDvUR80P9RLEP4MGd
+         eNJA==
+X-Gm-Message-State: AOAM5304xhlwzg6XQIi9PcJluY4AWQukKElxEjACY9LryQWaIx5pd1B4
+        XmD8/uHq02hlPBw59tLFOYoT+Sn4GqMang==
+X-Google-Smtp-Source: ABdhPJxt5E3Wtt6wVHjC7mW21UW8kyk9EDeLzo/ZDWev4V+ta9a/FIhp6YB3Xcf6TtXu4TxjUzFRxA==
+X-Received: by 2002:adf:a1d6:: with SMTP id v22mr7764439wrv.185.1600811109572;
+        Tue, 22 Sep 2020 14:45:09 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id v128sm6014927wme.2.2020.09.22.14.45.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 22 Sep 2020 14:45:08 -0700 (PDT)
+Subject: Re: [PATCH 3/4] clk: qcom: Add support to LPASS AUDIO_CC Glitch Free
+ Mux clocks
+To:     Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Cc:     bjorn.andersson@linaro.org, mturquette@baylibre.com,
+        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200917132850.7730-1-srinivas.kandagatla@linaro.org>
+ <20200917132850.7730-4-srinivas.kandagatla@linaro.org>
+ <160080010215.310579.4526434246523292987@swboyd.mtv.corp.google.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <a8713637-d240-d22d-02a7-f15080620467@linaro.org>
+Date:   Tue, 22 Sep 2020 22:45:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200914210047.GA232617@bogus>
-References: <20200903221828.3657250-1-swboyd@chromium.org> <20200914210047.GA232617@bogus>
-Subject: Re: [PATCH] dt-bindings: iio: sx9310: Add various settings as DT properties
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, Daniel Campello <campello@chromium.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        devicetree@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Evan Green <evgreen@chromium.org>
-To:     Rob Herring <robh@kernel.org>
-Date:   Tue, 22 Sep 2020 14:43:39 -0700
-Message-ID: <160081101949.310579.13737183960958276765@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <160080010215.310579.4526434246523292987@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Rob Herring (2020-09-14 14:00:47)
-> On Thu, Sep 03, 2020 at 03:18:28PM -0700, Stephen Boyd wrote:
-> > +  semtech,cs1-gain-factor:
-> > +    allOf:
-> > +      - $ref: /schemas/types.yaml#definitions/uint32
-> > +      - enum: [1, 2, 4, 8]
->=20
-> Now that everyone is trained on 'allOf', you can drop it. json-schema=20
-> draft8 changed this behavior.
->=20
+Thanks Stephen for review,
 
-Ok. Do I need $ref: still or that is implicit now?
+On 22/09/2020 19:41, Stephen Boyd wrote:
+> Quoting Srinivas Kandagatla (2020-09-17 06:28:49)
+>> GFM Muxes in AUDIO_CC control clocks to LPASS WSA and RX Codec Macros.
+>> This patch adds support to these muxes.
+>>
+>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> ---
+>>   drivers/clk/qcom/Kconfig            |   7 +
+>>   drivers/clk/qcom/Makefile           |   1 +
+>>   drivers/clk/qcom/lpass-gfm-sm8250.c | 235 ++++++++++++++++++++++++++++
+>>   3 files changed, 243 insertions(+)
+>>   create mode 100644 drivers/clk/qcom/lpass-gfm-sm8250.c
+>>
+>> diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
+>> index 2eda63b7c46c..4e46fd339e62 100644
+>> --- a/drivers/clk/qcom/Kconfig
+>> +++ b/drivers/clk/qcom/Kconfig
+>> @@ -494,4 +494,11 @@ config KRAITCC
+>>            Support for the Krait CPU clocks on Qualcomm devices.
+>>            Say Y if you want to support CPU frequency scaling.
+>>   
+>> +config CLK_GFM_LPASS_SM8250
+>> +       tristate "GFM LPASS Clocks"
+>> +       depends on SND_SOC_QDSP6_COMMON
+> 
+> What is the depends for?
+I think I forgot to remove this!
+
+> 
+>> +       help
+>> +         Support for the GFM Glitch Free Mux LPASS clock. Say Y
+>> +         if you want to support GFM Clocks on LPASS for SM8250 SoC.
+>> +
+>>   endif
+>> diff --git a/drivers/clk/qcom/Makefile b/drivers/clk/qcom/Makefile
+>> index 8eb395d02a32..c18e4ead6c9e 100644
+>> --- a/drivers/clk/qcom/Makefile
+>> +++ b/drivers/clk/qcom/Makefile
+>> @@ -74,3 +74,4 @@ obj-$(CONFIG_SPMI_PMIC_CLKDIV) += clk-spmi-pmic-div.o
+>>   obj-$(CONFIG_KPSS_XCC) += kpss-xcc.o
+>>   obj-$(CONFIG_QCOM_HFPLL) += hfpll.o
+>>   obj-$(CONFIG_KRAITCC) += krait-cc.o
+>> +obj-$(CONFIG_CLK_GFM_LPASS_SM8250) += lpass-gfm-sm8250.o
+> 
+> I don't know but probably this should be sorted by Kconfig instead of
+> tacked onto the end here.
+> 
+>> diff --git a/drivers/clk/qcom/lpass-gfm-sm8250.c b/drivers/clk/qcom/lpass-gfm-sm8250.c
+>> new file mode 100644
+>> index 000000000000..2d5c41ae4969
+>> --- /dev/null
+>> +++ b/drivers/clk/qcom/lpass-gfm-sm8250.c
+>> @@ -0,0 +1,235 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +
+>> +#include <linux/kernel.h>
+>> +#include <linux/module.h>
+>> +#include <linux/clk-provider.h>
+>> +#include <linux/io.h>
+>> +#include <linux/clk.h>
+>> +#include <linux/slab.h>
+>> +#include <linux/err.h>
+>> +#include <linux/notifier.h>
+>> +#include <linux/device.h>
+>> +#include <linux/platform_device.h>
+>> +#include <linux/of_device.h>
+>> +#include <dt-bindings/clock/qcom,sm8250-lpass-audiocc.h>
+>> +
+>> +struct lpass_gfm {
+>> +       struct device *dev;
+>> +       void __iomem *base;
+>> +       struct clk *core_vote;
+>> +       struct clk *bus_clk;
+>> +};
+>> +
+>> +struct clk_gfm {
+>> +       unsigned int mux_reg;
+>> +       unsigned int mux_mask;
+>> +       struct clk_hw   hw;
+>> +       struct lpass_gfm *priv;
+>> +       void __iomem *gfm_mux;
+>> +};
+>> +
+...
+>> +static struct clk_gfm lpass_gfm_rx_npl = {
+>> +       .mux_reg = 0x240d8,
+>> +       .mux_mask = BIT(0),
+>> +       .hw.init = &(struct clk_init_data) {
+>> +               .name = "RX_NPL",
+>> +               .ops = &clk_gfm_ops,
+>> +               .flags = CLK_SET_RATE_PARENT | CLK_OPS_PARENT_ENABLE,
+>> +               .parent_names = (const char *[]){
+>> +                       "LPASS_CLK_ID_TX_CORE_NPL_MCLK",
+>> +                       "LPASS_CLK_ID_RX_CORE_NPL_MCLK",
+>> +               },
+>> +               .parent_data = (const struct clk_parent_data[]){
+>> +                               { .index = 0 },
+>> +                               { .index = 1 },
+>> +               },
+> 
+> Please use parent_data instead of parent_names. The name can go in the
+> parent_data struct.
+
+Ah.. I missed that, will fix that in next version!
+
+> 
+>> +               .num_parents = 2,
+>> +       },
+>> +};
+>> +
+>> +static struct clk_gfm *audiocc_gfm_clks[] = {
+>> +       [LPASS_CDC_WSA_NPL]             = &lpass_gfm_wsa_npl,
+>> +       [LPASS_CDC_WSA_MCLK]            = &lpass_gfm_wsa_mclk,
+>> +       [LPASS_CDC_RX_NPL]              = &lpass_gfm_rx_npl,
+>> +       [LPASS_CDC_RX_MCLK_MCLK2]       = &lpass_gfm_rx_mclk_mclk2,
+>> +};
+>> +
+>> +static struct clk_hw_onecell_data audiocc_hw_onecell_data = {
+>> +       .hws = {
+>> +               [LPASS_CDC_WSA_NPL]     = &lpass_gfm_wsa_npl.hw,
+>> +               [LPASS_CDC_WSA_MCLK]    = &lpass_gfm_wsa_mclk.hw,
+>> +               [LPASS_CDC_RX_NPL]      = &lpass_gfm_rx_npl.hw,
+>> +               [LPASS_CDC_RX_MCLK_MCLK2] = &lpass_gfm_rx_mclk_mclk2.hw,
+>> +       },
+>> +       .num = ARRAY_SIZE(audiocc_gfm_clks),
+>> +};
+>> +
+>> +struct lpass_gfm_data {
+>> +       struct clk_hw_onecell_data *onecell_data;
+>> +       struct clk_gfm **gfm_clks;
+>> +};
+>> +
+>> +static struct lpass_gfm_data audiocc_data = {
+>> +       .onecell_data = &audiocc_hw_onecell_data,
+>> +       .gfm_clks = audiocc_gfm_clks,
+>> +};
+>> +
+>> +static int lpass_gfm_clk_driver_probe(struct platform_device *pdev)
+>> +{
+>> +       const struct lpass_gfm_data *data;
+>> +       struct device *dev = &pdev->dev;
+>> +       struct resource *res;
+>> +       struct clk_gfm *gfm;
+>> +       struct lpass_gfm *cc;
+>> +       int err, i;
+>> +
+>> +       cc = devm_kzalloc(dev, sizeof(*cc), GFP_KERNEL);
+>> +       if (!cc)
+>> +               return -ENOMEM;
+>> +
+>> +       cc->core_vote = devm_clk_get(&pdev->dev, "core");
+>> +       if (IS_ERR(cc->core_vote)) {
+>> +               dev_dbg(dev, "Failed to get lpass core clk\n");
+>> +               return PTR_ERR(cc->core_vote);
+>> +       }
+> 
+> Can this use the pm_clk stuff?
+
+you mean add runtime pm support or something else?
+
+I can give it a go and see!
+
+
+> 
+>> +
+>> +       data = of_device_get_match_data(dev);
+> 
+> What if data is NULL?
+It should not be here if there is no match of compatible string, so data 
+should not be NULL!
+
+> 
+>> +       cc->bus_clk = devm_clk_get(&pdev->dev, "bus");
+>> +       if (IS_ERR(cc->bus_clk)) {
+>> +               dev_dbg(dev, "Failed to get lpass bus clk\n");
+>> +               return PTR_ERR(cc->bus_clk);
+>> +       }
+>> +
+>> +       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> +       cc->base = devm_ioremap_resource(dev, res);
+>> +       if (IS_ERR(cc->base))
+>> +               return PTR_ERR(cc->base);
+>> +
+>> +       clk_prepare_enable(cc->core_vote);
+>> +       clk_prepare_enable(cc->bus_clk);
+> 
+> These will always be left enabled if the probe function bails out after here.
+> 
+I agree, Will add some error handling
+>> +
+>> +       for (i = 0; i < data->onecell_data->num; i++) {
+>> +               if (!data->gfm_clks[i])
+>> +                       continue;
+>> +
+>> +               gfm = data->gfm_clks[i];
+>> +               gfm->priv = cc;
+>> +               gfm->gfm_mux = cc->base;
+>> +               gfm->gfm_mux = gfm->gfm_mux + data->gfm_clks[i]->mux_reg;
+>> +
+>> +               err = devm_clk_hw_register(dev, &data->gfm_clks[i]->hw);
+>> +               if (err)
+>> +                       return err;
+>> +
+>> +       }
+>> +
+>> +       return devm_of_clk_add_hw_provider(dev, of_clk_hw_onecell_get,
+>> +                                          data->onecell_data);
+>> +}
+>> +
+>> +static const struct of_device_id lpass_gfm_clk_match_table[] = {
+>> +       {
+>> +               .compatible = "qcom,sm8250-lpass-audiocc",
+>> +               .data = &audiocc_data,
+>> +       },
+>> +       { }
+>> +};
+>> +
+>> +static struct platform_driver lpass_gfm_clk_driver = {
+>> +       .probe          = lpass_gfm_clk_driver_probe,
+>> +       .driver         = {
+>> +               .name   = "lpass-gfm-clk",
+>> +               .of_match_table = lpass_gfm_clk_match_table,
+>> +       },
+>> +};
+>> +builtin_platform_driver(lpass_gfm_clk_driver);
+> 
+> Should be module_platform_driver()?
+sure, will do that!
+
+> 
