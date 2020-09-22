@@ -2,122 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1AE4274BE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8605A274BC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726640AbgIVWO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 18:14:58 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:37842 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726179AbgIVWO5 (ORCPT
+        id S1726706AbgIVWAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 18:00:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726179AbgIVWAc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 18:14:57 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08MKQAhe042415;
-        Tue, 22 Sep 2020 15:26:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600806371;
-        bh=kIqH1V5ealEVC5EO+6vAJW+B9sEXlZ5Fpg3hzaZaIWU=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=ikwtlh5/gSnu+ZQbloMTppJU2t6nrvxg1KhvJ1e0nSfoNQqfhIu/Hr110QSiZBe6t
-         eYMkEIryEsfQoq5vl28jW+KI3qqAa249dMB1RhkHO3IL5ups+XxTSy0EZHAtuFXJ98
-         NoUGWSPHHCovssPbAAvIXARf03NRXzPssZiTx/rk=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08MKQAvA008719
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 22 Sep 2020 15:26:10 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 22
- Sep 2020 15:26:10 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 22 Sep 2020 15:26:10 -0500
-Received: from [10.250.36.109] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08MKQAJV061179;
-        Tue, 22 Sep 2020 15:26:10 -0500
-Subject: Re: [PATCH v4 0/4] TI K3 R5F remoteproc support
-To:     Rob Herring <robh@kernel.org>
-CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200908174556.21277-1-s-anna@ti.com>
- <20200922194753.GA3105316@bogus>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <f5c8b7f1-1ac6-2134-89da-d1b91d4643bf@ti.com>
-Date:   Tue, 22 Sep 2020 15:26:05 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 22 Sep 2020 18:00:32 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAFD4C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 15:00:31 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id m5so19749221lfp.7
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 15:00:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=86q55Tr0QudFzxfkcEZ2vlbQ/9CqhlRA2bDGJM6FWDw=;
+        b=gHe08sYsW2kD/eMobC5Q8fjgyZfiZaL3Ih/BA4UJ70CyoUJ7b1lDCnI0aTglZzmSWf
+         IGqsLkG9kl5G3Vg+JyoL/DIti0Y5FyTXckHKhu+SMBjBcfw/Gb/JxN8yREZkjgu554yN
+         /ikktke2+yZ49YxkOKHXaOA/+qbBUXz7JY6yPWdhMid+ttQ9B5ivAr7Vz5U7CPhTu5sB
+         Pz5GeJm/1A3Wsz6/r488N9A7X2PjgCa2jrqA06ssulDxajcTYKQZIxNYW2mzpcR4pmC0
+         MM1wt0ZryZHbQ6ZZ2Dz24r9Z8Q7C7g6Lmf5D4+eZwH2qiEz0TBO7uvvzPjtQMlcCMmwN
+         Br/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=86q55Tr0QudFzxfkcEZ2vlbQ/9CqhlRA2bDGJM6FWDw=;
+        b=bUMIW2wWJ81qpTQfOhHEx8hCYC7qM11GCrj0GHxP3kUkOr353WhbVg2OQridp7pQ6X
+         +54YEg1ECmG2xzEdSaBgb3armsj49qtRA/vd13owkIzdCfok2PeOcPwDTJapEI3WTP6d
+         G7pMseRRLcFCXKVfsduIC3NHPIY/2cso70G/Rmo7DDqOZAmb9VlD9Koh9YwPhHpjWyUU
+         Wtf8ujI4chVJf05ZeoL1fi658aIt+vXqns1J4u2VKi2iEev2sIEJnjMDIH8gQdoecwKA
+         6JcN1UrAwFDD1UjPYAVoEQ6Zk6unICCQaHz2nFHu9B3VvgHy/PUgzxucijQDChFKGDcF
+         hkFw==
+X-Gm-Message-State: AOAM5313k/Tu9+UbHAQ1BR6xiTpMqr4i1ufR6xZ0+LtjVT5WaVlMqEoj
+        OQGe1R8scxp7I7XsQNt0rns=
+X-Google-Smtp-Source: ABdhPJxkzTZP2kgKbBgtwOMplc6I6l7NMB/i3VNjG4/fapnJgL+JKhvrt7HAmbikS+KE3opddnG8Kw==
+X-Received: by 2002:a19:7912:: with SMTP id u18mr2570752lfc.298.1600812030118;
+        Tue, 22 Sep 2020 15:00:30 -0700 (PDT)
+Received: from rikard (h-82-196-111-59.NA.cust.bahnhof.se. [82.196.111.59])
+        by smtp.gmail.com with ESMTPSA id o3sm3919719lfb.168.2020.09.22.15.00.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 15:00:29 -0700 (PDT)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+X-Google-Original-From: Rikard Falkeborn <rikard.falkeborn>
+Date:   Wed, 23 Sep 2020 00:00:24 +0200
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH 2/8] mfd: intel: Constify static struct resource
+Message-ID: <20200922220024.GA66604@rikard>
+References: <20200922192659.14535-1-rikard.falkeborn@gmail.com>
+ <20200922192659.14535-3-rikard.falkeborn@gmail.com>
+ <CAHp75VfQNs=JvhPn6rWvvSdUn2a4PZtQ8LWndQoJ54W7ebrtsA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200922194753.GA3105316@bogus>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75VfQNs=JvhPn6rWvvSdUn2a4PZtQ8LWndQoJ54W7ebrtsA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-On 9/22/20 2:47 PM, Rob Herring wrote:
-> On Tue, Sep 08, 2020 at 12:45:52PM -0500, Suman Anna wrote:
->> Hi All,
->>
->> The following is v4 of the TI K3 R5F remoteproc driver series supporting all
->> the R5F processor clusters/subsystems on TI AM65x and J721E SoCs. Please
->> see the v1 cover-letter [1] for the features supported on these R5F processors.
->>
->> This series is a rebased version on top of the latest v5.9-rc baseline and
->> includes very minor fixes w.r.t v3. The previous K3 DSP dependencies are now
->> available in mainline kernel. Please see the individual patches for the delta
->> differences (Only patches 1 and 2 updated).
->>
->> Bjorn,
->> This series is only waiting on bindings ack and the conclusion on the bindings
->> discussion from v2 [4] on which I haven't seen any forward progress on this 
->> despite all the clarifications. I do not expect any changes even w.r.t System DT,
->> and we can't really have a common binding between TI and Xilinx R5Fs. 
->
-
-First of all, thank you for reviewing this and your response.
-
-> Why not? I'm pretty sure lockstep or not is a thing for both and TCMs 
-> seem to be a common thing.
-
-The cluster mode is a common theme, and if you have a preference for a common
-property-name, both I and Ben can use that. The values though might vary between
-different vendor SoCs.
-
-I have given out all the differences and reasons on a v2 thread, the SoC and
-clock and reset integration aspects make it look very different.
-Please see the discussion here,
-https://patchwork.kernel.org/comment/23560321/
-
-There was only one open comment/question I had regarding Core identification
-w.r.t my binding. Do you prefer a node-name index difference or a separate
-core-id/cpu-id property identifying which is Core0 and Core1.
-
+On Wed, Sep 23, 2020 at 12:31:28AM +0300, Andy Shevchenko wrote:
+> On Tue, Sep 22, 2020 at 10:32 PM Rikard Falkeborn
+> <rikard.falkeborn@gmail.com> wrote:
+> >
+> > Constify a number of static struct resource. The only usage of the
+> > structs are to assign their address to the resources field in the
+> > mfd_cell struct. This allows the compiler to put them in read-only
+> > memory. Done with the help of Coccinelle.
 > 
-> And I don't really think System DT will not impact it. Though it's not 
-> well enough defined to say either way IMO.
-
-Yeah agreed. But the current architecture in System DT does allow you to add
-plugins to generate the proper compliant dts node.
-
-In anycase, I doubt TI will ever be using it in general, because we do not have
-a concept of DT on our firmwares. I have given all these inputs again on v2, but
-haven't seen any responses on it. So, I do appreciate your feedback.
-
+> How had you tested this?
 > 
-> But if Bjorn wants to take this, fine. I'm not acking it though nor 
-> worrying about it for any compatibility with system DT.
 
-Any specific reasons? For the most part, I am using all standard properties.
+It's compile-tested only.
 
-regards
-Suman
+Rikard
