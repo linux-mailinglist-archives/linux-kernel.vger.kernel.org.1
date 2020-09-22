@@ -2,88 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858A2274132
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F9F3274135
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726761AbgIVLrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 07:47:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48822 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726685AbgIVLp6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 07:45:58 -0400
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2A3AF23600;
-        Tue, 22 Sep 2020 11:45:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600775158;
-        bh=KhrRBx22Zo8YLhOA9Kmsv44o/2fP94Lgd5T40CutoBs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=FWJTE6FZ+J4+3x+ntnTY7/64zukYESEjiMiU5E6qFeJU30GV4POgqVGBpGRhXp9ty
-         TBH5y1L1hwg/AbJJ7mXIDGkORCpNYdNx2sdKkqqG4/N6LPUxaE3yQH/9J4EegfRmCt
-         c7XDKbCqIA88Y7+X3/RJcyxxbfxZj5EHA4Yn7Iu8=
-Received: by mail-ed1-f50.google.com with SMTP id l17so15804688edq.12;
-        Tue, 22 Sep 2020 04:45:58 -0700 (PDT)
-X-Gm-Message-State: AOAM530NOEgLALt5SEtgvbv6ByNOnnC35algt/HTHB3Jy+KF3vlI6m9k
-        Z0xCweVUkygJsSSGWBSfqfUNW41FnzR5Js8SCr8=
-X-Google-Smtp-Source: ABdhPJxPZwz2sZgxkwXAxO6r3UJuoTaSBzjBPnrsefm9nDa0zYZ4j5Qq7O92PIlts1wDcqr2WEJd93Xn/6QwzI6Xz3s=
-X-Received: by 2002:a50:e78f:: with SMTP id b15mr3529383edn.104.1600775156644;
- Tue, 22 Sep 2020 04:45:56 -0700 (PDT)
+        id S1726752AbgIVLrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 07:47:35 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:47904 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726552AbgIVLrF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 07:47:05 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08MBknuH116918;
+        Tue, 22 Sep 2020 06:46:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600775209;
+        bh=vBbafl7fEA1/CjC7Cf2Do+x7azKOAfufAmMH0n8iMUY=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=d2wmt7zlElrpCj4+tv8c8gcC/u9iOpKCAeyvlp06YqiwI7uZ2ake76Vcp6kLVxx9L
+         7p1cHnfsSzinmpv+4cg5xhTx/skQsCA91qHxWORN8zxfbOdHiBrAYah1yW6JvUldGh
+         i7JsMSAN+8Dhj4k4gW9Xew2GP8OCsqzt1P4c0xNA=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08MBknCs078468
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 22 Sep 2020 06:46:49 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 22
+ Sep 2020 06:46:49 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 22 Sep 2020 06:46:49 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08MBknuj013488;
+        Tue, 22 Sep 2020 06:46:49 -0500
+Date:   Tue, 22 Sep 2020 06:46:49 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Zou Wei <zou_wei@huawei.com>
+CC:     <t-kristo@ti.com>, <ssantosh@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Lokesh Vutla <lokeshvutla@ti.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: Re: [PATCH -next] firmware: ti_sci: Remove unneeded semicolon
+Message-ID: <20200922114649.g3lpmdx2gcbgj7u4@akan>
+References: <1600772344-79841-1-git-send-email-zou_wei@huawei.com>
 MIME-Version: 1.0
-References: <20200921210233.21449-1-krzk@kernel.org> <20200921210610.GA5338@amd>
- <CAJKOXPdwQc86H-S=C4v_1VCbd7RhC2Soepj_2LqG1e_E_bgAug@mail.gmail.com>
- <20200922093637.GK4792@sirena.org.uk> <346f2ecd-a015-7f26-b68d-10cf6b5343b6@ti.com>
-In-Reply-To: <346f2ecd-a015-7f26-b68d-10cf6b5343b6@ti.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Tue, 22 Sep 2020 13:45:44 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPfUsCMR4gbOvsasfgzhOe-7b3iHOboQeVhvKF7RvgQGsw@mail.gmail.com>
-Message-ID: <CAJKOXPfUsCMR4gbOvsasfgzhOe-7b3iHOboQeVhvKF7RvgQGsw@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: move Milo Kim to credits
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-iio@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-leds@vger.kernel.org, linux-pm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1600772344-79841-1-git-send-email-zou_wei@huawei.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Sep 2020 at 13:36, Dan Murphy <dmurphy@ti.com> wrote:
->
-> All
->
-> On 9/22/20 4:36 AM, Mark Brown wrote:
-> > On Tue, Sep 22, 2020 at 09:08:37AM +0200, Krzysztof Kozlowski wrote:
-> >> On Mon, 21 Sep 2020 at 23:06, Pavel Machek <pavel@ucw.cz> wrote:
-> >>> I believe normal way would be to mark the entries "orphaned", not to
-> >>> drop them altogether. Plus, I believe someone from TI is likely to
-> >>> step up.
-> >> These are entries for specific drivers so they are covered by the
-> >> subsystem maintainers. You believe someone will step up, I believe if
-> >> these were important for TI, they would find the person some time ago,
-> >> so the emails won't bounce... This was similar with BQ chargers where
-> > It's fairly common for mobile parts to get dropped relatively quickly as
-> > the technology moves fairly quickly in that market, I think a lot of teh
-> > parts that Milo was working on were mobile ones.
->
-> These specific drivers don't see many patches applied to them. These
-> drivers did have a few patches this year to fix random bugs.
->
-> Since I have worked in these other subsystems if replacing the
-> Maintainer is desired over removal then my name and email can be added
-> like I did with Andrews.
->
-> Dan Murphy <dmurphy@ti.com>
+On 18:59-20200922, Zou Wei wrote:
+> Fixes coccicheck warning:
+> 
+> ./drivers/firmware/ti_sci.c:1759:2-3: Unneeded semicolon
+> ./drivers/firmware/ti_sci.c:2191:2-3: Unneeded semicolon
+> 
+> Fixes: 9c19fb6895be ("firmware: ti_sci: Add support for RM core ops")
+> Fixes: 68608b5e5063 ("firmware: ti_sci: Add resource management APIs for ringacc, psi-l and udma")
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+> ---
+>  drivers/firmware/ti_sci.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/firmware/ti_sci.c b/drivers/firmware/ti_sci.c
+> index 896f53e..e0c8adf 100644
+> --- a/drivers/firmware/ti_sci.c
+> +++ b/drivers/firmware/ti_sci.c
+> @@ -1756,7 +1756,7 @@ static int ti_sci_get_resource_range(const struct ti_sci_handle *handle,
+>  	} else {
+>  		*range_start = resp->range_start;
+>  		*range_num = resp->range_num;
+> -	};
+> +	}
+>  
+>  fail:
+>  	ti_sci_put_one_xfer(&info->minfo, xfer);
+> @@ -2188,7 +2188,7 @@ static int ti_sci_cmd_ring_get_config(const struct ti_sci_handle *handle,
+>  			*size = resp->size;
+>  		if (order_id)
+>  			*order_id = resp->order_id;
+> -	};
+> +	}
+>  
+>  fail:
+>  	ti_sci_put_one_xfer(&info->minfo, xfer);
 
-I will add then yours name in v2 of this patch. Thanks for taking care of these.
+Thanks.
+Reviewed-by: Nishanth Menon <nm@ti.com>
 
-Best regards,
-Krzysztof
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
