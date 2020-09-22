@@ -2,91 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 594A4274260
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93D6D274263
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:50:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726606AbgIVMuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 08:50:19 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:41103 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726563AbgIVMuT (ORCPT
+        id S1726628AbgIVMul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 08:50:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25579 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726578AbgIVMuk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 08:50:19 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kKhkL-000132-Bd; Tue, 22 Sep 2020 12:50:13 +0000
-Subject: Re: [PATCH v2] PCI: brcmstb: fix a missing if statement on a return
- error check
-To:     Jim Quinlan <james.quinlan@broadcom.com>,
-        Markus Elfring <Markus.Elfring@web.de>
-Cc:     "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
-        <linux-pci@vger.kernel.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        kernel-janitors@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jim Quinlan <jquinlan@broadcom.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Rob Herring <robh@kernel.org>
-References: <fe38fa7c-8ff7-8e83-968f-91007c058fcc@web.de>
- <CA+-6iNyGbL2jn1qUdX=AN17Xy5uX1-P=+Xi2NLSxHX-1FwLOwg@mail.gmail.com>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <22b12b8a-4c16-5377-043d-00750597f822@canonical.com>
-Date:   Tue, 22 Sep 2020 13:50:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        Tue, 22 Sep 2020 08:50:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600779039;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rBy/ewZFYuHcIeTKmOeoXntrF9t6VS/+90A1J5EVLLs=;
+        b=bmZvDR7YNHYZi11nqmzumm30s44rpA838tlVBrEpoXSKh2l86HO7rsCYPZ/S3hMkHwimd0
+        zYx1vCNKh42d2ffCAwdqaByOdvgJPYJrfXIXjsZ3o3FacQoJCP20gR1pkvhFKf5naM8acO
+        MfrCfoBluEUuqZUmoUTPmFsTDPJz2co=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-104-B-WymzqDM_SkMQ1LMh0hMw-1; Tue, 22 Sep 2020 08:50:37 -0400
+X-MC-Unique: B-WymzqDM_SkMQ1LMh0hMw-1
+Received: by mail-wm1-f72.google.com with SMTP id t8so546300wmj.6
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 05:50:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rBy/ewZFYuHcIeTKmOeoXntrF9t6VS/+90A1J5EVLLs=;
+        b=P82WaE8aIMU0rTup5Bx2llzqWFtfzBIp2ehzlSLGKnceUEe6gWE0Nfm3j1mOSVjJTp
+         3ZTUvifBeQLVXL37K41ZhQYYT20z95g34aW2+gQ8VCQndVfB1dtOlhhJMyuN1elrC7fB
+         cvX3MGHJLBX8IX+38EtinL5Xouzk8x7zo4DNJ0zqR9mc+UOm3VuW4ygxdzPfzb/P/4HO
+         kpaxQeAir8Ui8VUBUSJBCsptrWvtqqX6c9p/Y1LN2lovEnpgO9QkXzENjI6NxRY5UUaw
+         qA0EdIB/Fa3vornYYIQRO/XiNYn9XO42bPolyFxtxoiz+CUAdweodttTU/xJU7Vhysi/
+         fuKA==
+X-Gm-Message-State: AOAM533rhugyix0lFct5XGzoAMrgawNbpOOY6ww2UH1aJkfMqoJn81Wb
+        qetHXjf3riEpYGSqMtZO6tTvzyimM/k36AHtSJIcWe29pDJcNCfTOQI5kJdP0FGoHuwX8ZPXVAy
+        JRH+uuJboqm43rrejAqmH2JUf
+X-Received: by 2002:a5d:570b:: with SMTP id a11mr5367282wrv.139.1600779036411;
+        Tue, 22 Sep 2020 05:50:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxaMutgSK9zT2Z/t3qizYV4H60BXFyLtlUFxU1c3gSGzb45WPn7A4MrDiZBlX0euAM5Vo8FYw==
+X-Received: by 2002:a5d:570b:: with SMTP id a11mr5367262wrv.139.1600779036221;
+        Tue, 22 Sep 2020 05:50:36 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:ec2c:90a9:1236:ebc6? ([2001:b07:6468:f312:ec2c:90a9:1236:ebc6])
+        by smtp.gmail.com with ESMTPSA id v17sm27868565wrc.23.2020.09.22.05.50.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Sep 2020 05:50:35 -0700 (PDT)
+Subject: Re: [PATCH v2 1/1] KVM: x86: fix MSR_IA32_TSC read for nested
+ migration
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+References: <20200921103805.9102-1-mlevitsk@redhat.com>
+ <20200921103805.9102-2-mlevitsk@redhat.com>
+ <20200921162326.GB23989@linux.intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <de9411ce-aa83-77c8-b2ae-a3873250a0b1@redhat.com>
+Date:   Tue, 22 Sep 2020 14:50:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <CA+-6iNyGbL2jn1qUdX=AN17Xy5uX1-P=+Xi2NLSxHX-1FwLOwg@mail.gmail.com>
+In-Reply-To: <20200921162326.GB23989@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/09/2020 13:43, Jim Quinlan wrote:
-> On Tue, Sep 22, 2020 at 7:49 AM Markus Elfring <Markus.Elfring@web.de> wrote:
->>
->>> The error return ret is not being check with an if statement and
->>
->> Wording alternative:
->> The return value from a call of the function “brcm_phy_start” was not checked and
->>
->>
->>> V2: disable clock as noted by Florian Fainelli and suggested by
->>>     Jim Quinlan.
->>
->> Alex Dewar contributed another update suggestion.
->>
->> [PATCH v2] PCI: brcmstb: Add missing if statement and error path
->> https://lore.kernel.org/linux-arm-kernel/20200921211623.33908-1-alex.dewar90@gmail.com/
->> https://lore.kernel.org/patchwork/patch/1309860/
->>
->> The exception handling needs further development considerations
->> for this function implementation.
-> Hello,
+On 21/09/20 18:23, Sean Christopherson wrote:
+> Avoid "should" in code comments and describe what the code is doing, not what
+> it should be doing.  The only exception for this is when the code has a known
+> flaw/gap, e.g. "KVM should do X, but because of Y, KVM actually does Z".
 > 
-> I agree with Alex's patch.  I should have suggested this at the
-> beginning but as our upstream STB suspend/resume is not yet functional
-> and the one-line change would have worked until we fixed
-> suspend/resume..  But this is the proper modification.
-
-Yup, go with Alex's patch. That one is correct.
-
-
+>> +		 * return it's real L1 value so that its restore will be correct.
+> s/it's/its
 > 
-> Thanks,
-> Jim
->> Regards,
->> Markus
+> Perhaps add "unconditionally" somewhere, since arch.tsc_offset can also contain
+> the L1 value.  E.g. 
+> 
+> 		 * Unconditionally return L1's TSC offset on userspace reads
+> 		 * so that userspace reads and writes always operate on L1's
+> 		 * offset, e.g. to ensure deterministic behavior for migration.
+> 		 */
+> 
+
+Technically the host need not restore MSR_IA32_TSC at all.  This follows
+the idea of the discussion with Oliver Upton about transmitting the
+state of the kvmclock heuristics to userspace, which include a (TSC,
+CLOCK_MONOTONIC) pair to transmit the offset to the destination.  All
+that needs to be an L1 value is then the TSC value in that pair.
+
+I'm a bit torn over this patch.  On one hand it's an easy solution, on
+the other hand it's... just wrong if KVM_GET_MSR is used for e.g.
+debugging the guest.
+
+I'll talk to Maxim and see if he can work on the kvmclock migration stuff.
+
+Paolo
 
