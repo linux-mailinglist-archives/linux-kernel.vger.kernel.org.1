@@ -2,129 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23E932746F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC6C02746FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726614AbgIVQvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 12:51:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37450 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726558AbgIVQvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 12:51:16 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 23A9822262;
-        Tue, 22 Sep 2020 16:51:15 +0000 (UTC)
-Date:   Tue, 22 Sep 2020 12:51:13 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michel Lespinasse <walken@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Subject: Re: [PATCH] mmap_lock: add tracepoints around lock acquisition
-Message-ID: <20200922125113.12ef1e03@gandalf.local.home>
-In-Reply-To: <CALOAHbBr=ASfvHw1ZscWBE=CY-e7sBrLV0F5Ow=g1UGxmQsWcw@mail.gmail.com>
-References: <20200917181347.1359365-1-axelrasmussen@google.com>
-        <CALOAHbDSHGeXjJN3E5mTOAFTVsXAvQL9+nSYTqht5Lz8HRNv0A@mail.gmail.com>
-        <CAJHvVcg6eY0vVtfi8D6D9aus7=5zeP2H7Yc0mY5ofXztSzOFqQ@mail.gmail.com>
-        <CALOAHbBr=ASfvHw1ZscWBE=CY-e7sBrLV0F5Ow=g1UGxmQsWcw@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726631AbgIVQvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 12:51:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726558AbgIVQvo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 12:51:44 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 002CBC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 09:51:43 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id w11so18820292lfn.2
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 09:51:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cmG4gWH7mH9Yym3rTKQITk7kl2T0JyBGiXJV3JhogtU=;
+        b=h56pNQpbRuJmaQ/iAcYPzBagq4xzwkoUCflfi5oHkyEYg384lzsM5puRFSYQp/cDMM
+         gkGXZHco6Ta+r9ZyRpfSANfZt6lPGnUpBS7EsqjfVfv3fq1FxSeN9AxmzvTpvjnHyx7f
+         whsvt3IbKszYKHDDbFElCrd9VzT+bYOPHi+V67DwZihVNZpsRjT6vk35cXi9obP9NHjo
+         L3Th6YqkI3RTL40MGp78aB3igMsn7xn7MDpA3JDGXlV3SUJFezdPKVML7DJWWvBWpDkf
+         JjfEMnKmowbd9TZ5QHtoHjxn6WUvgZGTSuMSEg/hA4lQcA4D6uEUaa2zcxXPLh/ChE69
+         MlJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cmG4gWH7mH9Yym3rTKQITk7kl2T0JyBGiXJV3JhogtU=;
+        b=PSffeQh8l+q+aDtuhMqa/1qOPEPsuUnvhIuHQbBujRNr8jFlMjL9prisZIymzC5EjM
+         ovJUEy/mHxcX9neNPV5hP/EiJeQCisltH9gt6PIY9TlyIYIWocRjX/ImZNMNq6itqrLy
+         a8Tc0NL5ea/Pmj1KKTFPScsAU4mWYII2WnnFtG4tOfVN+mFkOkKBXcF3lmyUosFATIoU
+         QiWx9ZW5NIsAwrix3zgf4Dz2rslwjsm3StnLkP1f1TN6HMK/9TjF2LEgtNoR0oNfF71+
+         ip0jKrewg4v0uWHBifeYGyouqe3uZTDKmIzlh8zTvSVGHSwKZiLXXjZiJw+R8lN9oZdC
+         H8ww==
+X-Gm-Message-State: AOAM531JlPHx3E4rRMyStfwyXCmW3JdWQqkRMSqmEbP4IxZ2GJfgH9GW
+        IoBulWrykc21NOods94mN497odj4uySnBZoEnSW4Iw==
+X-Google-Smtp-Source: ABdhPJzvdN6z6GZ+Y9LPlyAqmPBcusa4j8dDsWFrAOqj1gGESHXbahMf1uaByCLmMISg8t0LDsEJJqDdE1v+MBFxVJc=
+X-Received: by 2002:ac2:59da:: with SMTP id x26mr2122036lfn.346.1600793502076;
+ Tue, 22 Sep 2020 09:51:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <CALvZod4FWLsV9byrKQojeus7tMDhHjQHFF5J_JpNsyB0HkaERA@mail.gmail.com>
+ <20200922111202.GY12990@dhcp22.suse.cz> <CALvZod6=VwQduoG3GiW-=csAQja4vCsXAhKH_tSuA4JYx0dEiA@mail.gmail.com>
+ <20200922151654.GA12990@dhcp22.suse.cz> <CALvZod7jvxEdbMzrmmt6Vrse=Ui4yhhVYyxPkPmmzWC5Z_6rtw@mail.gmail.com>
+ <20200922163401.GC12990@dhcp22.suse.cz>
+In-Reply-To: <20200922163401.GC12990@dhcp22.suse.cz>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 22 Sep 2020 09:51:30 -0700
+Message-ID: <CALvZod753Peyyg6aHUaFoiv3uXEPHqsyrSiariV8bF-vhH6iRA@mail.gmail.com>
+Subject: Re: Machine lockups on extreme memory pressure
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Thelen <gthelen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Sep 2020 12:09:19 +0800
-Yafang Shao <laoar.shao@gmail.com> wrote:
-
-> > > Are there any methods to avoid un-inlining these wrappers ?
+On Tue, Sep 22, 2020 at 9:34 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Tue 22-09-20 09:29:48, Shakeel Butt wrote:
+> > On Tue, Sep 22, 2020 at 8:16 AM Michal Hocko <mhocko@suse.com> wrote:
 > > >
-> > > For example,
-> > > // include/linux/mmap_lock.h
+> > > On Tue 22-09-20 06:37:02, Shakeel Butt wrote:
+> [...]
+> > > > I talked about this problem with Johannes at LPC 2019 and I think we
+> > > > talked about two potential solutions. First was to somehow give memory
+> > > > reserves to oomd and second was in-kernel PSI based oom-killer. I am
+> > > > not sure the first one will work in this situation but the second one
+> > > > might help.
 > > >
-> > > void mmap_lock_start_trace_wrapper();
-> > > void mmap_lock_acquire_trace_wrapper();
+> > > Why does your oomd depend on memory allocation?
 > > >
-> > > static inline void mmap_write_lock(struct mm_struct *mm)
-> > > {
-> > >     mmap_lock_start_trace_wrapper();
-> > >     down_write(&mm->mmap_lock);
-> > >     mmap_lock_acquire_trace_wrapper();
-> > > }
-> > >
-> > > // mm/mmap_lock.c
-> > > void mmap_lock_start_trace_wrapper()
-> > > {
-> > >     trace_mmap_lock_start();
-> > > }
-> > >
-> > > void mmap_lock_start_trace_wrapper()
-> > > {
-> > >     trace_mmap_lock_acquired();
-> > > }  
 > >
-> > We can do something like that, but I don't think it would end up being better.
-> >
-> > At the end of the day, because the trace stuff cannot be in the
-> > header, we have to add an extra function call one way or the other.
-> > This would just move the call one step further down the call stack.
-> > So, I don't think it would affect performance in the
-> > CONFIG_MMAP_LOCK_STATS + tracepoints not enabled at runtime case.
-> >  
-> 
-> Right, it seems we have to add an extra function call.
-> 
-> > Also the wrappers aren't quite so simple as this, they need some
-> > parameters to work. (the struct mm_struct, whether it was a read or a
-> > write lock, and whether or not the lock operation succeeded), so it
-> > would mean adding more inlined code, which I think adds up to be a
-> > nontrivial amount since these wrappers are called so often in the
-> > kernel.
-> >
-> > If you feel strongly, let me know and I can send a version as you
-> > describe and we can compare the two.
-> >  
-> 
-> These tracepoints will be less useful if we have to turn on the config
-> to enable it.
-> I don't mind implementing it that way if we can't optimize it.
-> 
-> Maybe Steven can give some suggestions, Steven ?
-> 
+> > It does not but I think my concern was the potential allocations
+> > during syscalls.
+>
+> So what is the problem then? Why your oomd cannot kill anything?
+>
 
+From the dump, it seems like it is not able to get the CPU. I am still
+trying to extract the reason though.
 
-What you can do, and what we have done is the following:
+> > Anyways, what do you think of the in-kernel PSI based
+> > oom-kill trigger. I think Johannes had a prototype as well.
+>
+> We have talked about something like that in the past and established
+> that auto tuning for oom killer based on PSI is almost impossible to get
+> right for all potential workloads and that so this belongs to userspace.
+> The kernel's oom killer is there as a last resort when system gets close
+> to meltdown.
 
-(see include/linux/page_ref.h)
-
-
-#ifdef CONFIG_TRACING
-extern struct tracepoint __tracepoint_mmap_lock_start_locking;
-extern struct tracepoint __tracepoint_mmap_lock_acquire_returned;
-
-#define mmap_lock_tracepoint_active(t) static_key_false(&(__tracepoint_mmap_lock_##t).key)
-
-#else
-#define mmap_lock_tracepoint_active(t) false
-#endif
-
-static inline void mmap_write_lock(struct mm_struct *mm)
-{
-	if (mmap_lock_tracepoint_active(start_locking))
-		mmap_lock_start_trace_wrapper();
-	down_write(&mm->mmap_lock);
-	if (mmap_lock_tracepoint_active(acquire_returned))
-		mmap_lock_acquire_trace_wrapper();
-}
-
-
--- Steve
+The system is already in meltdown state from the users perspective. I
+still think allowing the users to optionally set the oom-kill trigger
+based on PSI makes sense. Something like 'if all processes on the
+system are stuck for 60 sec, trigger oom-killer'.
