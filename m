@@ -2,115 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2227127486C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 20:42:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8A527486E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 20:42:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726703AbgIVSmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 14:42:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42160 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726573AbgIVSmp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 14:42:45 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E1F5E20756;
-        Tue, 22 Sep 2020 18:42:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600800163;
-        bh=vWdBLoVbkQK0uBB8eLz4Qke3ppIS989P2MuC9zKvAMw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=uejHr0y9cNmKAwGL07lfg133P1ZjGlWsE+gBUg3tZNpPPo/klhhbPYhlHosi022Mz
-         1VPCueCo3XG3Kev1BDVX4ZcB7aOjEnToG2NZZrnxuoI0VwgPAQw54KchH1uUMaFAKM
-         e3uJ4bcRi8aq4SWS/xasVIjPPiWOY8MvStpWdQ0s=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 8AFB335227BD; Tue, 22 Sep 2020 11:42:43 -0700 (PDT)
-Date:   Tue, 22 Sep 2020 11:42:43 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Eric Biggers <ebiggers@kernel.org>, tytso@mit.edu,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] random: use correct memory barriers for crng_node_pool
-Message-ID: <20200922184243.GA29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200916233042.51634-1-ebiggers@kernel.org>
- <20200917072644.GA5311@gondor.apana.org.au>
- <20200917165802.GC855@sol.localdomain>
- <20200921081939.GA4193@gondor.apana.org.au>
- <20200921152714.GC29330@paulmck-ThinkPad-P72>
- <20200921221104.GA6556@gondor.apana.org.au>
- <20200921232639.GK29330@paulmck-ThinkPad-P72>
- <20200921235136.GA6796@gondor.apana.org.au>
+        id S1726758AbgIVSmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 14:42:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726573AbgIVSms (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 14:42:48 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F591C061755;
+        Tue, 22 Sep 2020 11:42:48 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 18:42:45 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600800166;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FDF3LmYYtba4CPbwBlFtLzTEVFwUNBc19iFUGF/xMsM=;
+        b=ci4zngPDGHqk6K9cwxO2IwnW7rU8ePa1DJ1eOO6lUbdIWtNSbvnMA6+A4rWjgm5iujdRjW
+        kkuZTVu9tXY4jASkT70YsoQ4qI5cImckAOvx0Tab3bT/Ac6JukdYnl8pCm6MqVQIpDZltP
+        0V28pm4qz5ckK2hxwFmUTXGpj4diMhUp/bIaCg8HGv0cOEQRpI16ofT5Tey7E8uAdgnccy
+        /qHXg2FsnlfvYdr/UE+rty4q3ta1CyZc2YJuHc0Tj/3fMjsc74dhUvTt3ZuLo+KrB14dR2
+        /Xfo5UDuURM5iD9+QBqcenzm4Q8d3gWWUy5ZwV2glbcVSDU6qfyuGe/HGB8OIw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600800166;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FDF3LmYYtba4CPbwBlFtLzTEVFwUNBc19iFUGF/xMsM=;
+        b=YB9FgR4nkycWooqiBSuJDwn2dY1jdBA7HJs4bDiTT3ME4ClAj0fow4igIBy37f6gujg4D4
+        blqnCqQhD8hmHoDg==
+From:   "tip-bot2 for Kees Cook" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cleanups] x86/entry: Fix typo in comments for
+ syscall_enter_from_user_mode()
+Cc:     Kees Cook <keescook@chromium.org>, Borislav Petkov <bp@suse.de>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200919080936.259819-1-keescook@chromium.org>
+References: <20200919080936.259819-1-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200921235136.GA6796@gondor.apana.org.au>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Message-ID: <160080016557.6608.15555894134715499563.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 09:51:36AM +1000, Herbert Xu wrote:
-> On Mon, Sep 21, 2020 at 04:26:39PM -0700, Paul E. McKenney wrote:
-> >
-> > > But this reasoning could apply to any data structure that contains
-> > > a spin lock, in particular ones that are dereferenced through RCU.
-> > 
-> > I lost you on this one.  What is special about a spin lock?
-> 
-> I don't know, that was Eric's concern.  He is inferring that
-> spin locks through lockdep debugging may trigger dependencies
-> that require smp_load_acquire.
-> 
-> Anyway, my point is if it applies to crng_node_pool then it
-> would equally apply to RCU in general.
+The following commit has been merged into the x86/cleanups branch of tip:
 
-Referring to the patch you call out below...
+Commit-ID:     900ffe39fec908e0aa26a30612e43ebc7140db79
+Gitweb:        https://git.kernel.org/tip/900ffe39fec908e0aa26a30612e43ebc7140db79
+Author:        Kees Cook <keescook@chromium.org>
+AuthorDate:    Sat, 19 Sep 2020 01:09:36 -07:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Tue, 22 Sep 2020 18:24:46 +02:00
 
-Huh.  The old cmpxchg() primitive is fully ordered, so the old mb()
-preceding it must have been for correctly interacting with hardware on
-!SMP systems.  If that is the case, then the use of cmpxchg_release()
-is incorrect.  This is not the purview of the memory model, but rather
-of device-driver semantics.  Or does crng not (or no longer, as the case
-might be) interact with hardware RNGs?
+x86/entry: Fix typo in comments for syscall_enter_from_user_mode()
 
-What prevents either the old or the new code from kfree()ing the old
-state out from under another CPU that just now picked up a pointer to the
-old state?  The combination of cmpxchg_release() and smp_load_acquire()
-won't do anything to prevent this from happening.  This is after all not
-a memory-ordering issue, but instead an object-lifetime issue.  But maybe
-you have a lock or something that provides the needed protection.  I don't
-see how this can be the case and still require the cmpxchg_release()
-and smp_load_acquire(), but perhaps this is a failure of imagination on
-my part.
+Just to help myself and others with finding the correct function names,
+fix a typo for "usermode" vs "user_mode".
 
-I am guessing that this lifetime issue prompted RCU to be introduced
-into this discussion.  This would be one way of handling the lifetime
-of the pool[] array and the objects that its elements point to, but at
-some cost in either latency or memory footprint for synchronize_rcu()
-and call_rcu(), respectively.
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20200919080936.259819-1-keescook@chromium.org
+---
+ include/linux/entry-common.h | 2 +-
+ kernel/entry/common.c        | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Or am I missing something subtle here?
-
-> > > So my question if this reasoning is valid, then why aren't we first
-> > > converting rcu_dereference to use smp_load_acquire?
-> > 
-> > For LTO in ARM, rumor has it that Will is doing so.  Which was what
-> > motivated the BoF on this topic at Linux Plumbers Conference.
-> 
-> Sure, if RCU switches over to smp_load_acquire then I would have
-> no problems with everybody else following in its footsteps.
-
-The x86 guys might well be OK with this change, but I would guess that
-the ARM and PowerPC guys might have some heartburn.  ;-)
-
-> Here is the original patch in question:
-> 
-> https://lore.kernel.org/lkml/20200916233042.51634-1-ebiggers@kernel.org/
-
-Thank you for the pointer!  I freely confess that I was wondering what
-this was all about.
-
-							Thanx, Paul
+diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
+index efebbff..3b6754d 100644
+--- a/include/linux/entry-common.h
++++ b/include/linux/entry-common.h
+@@ -38,7 +38,7 @@
+ #endif
+ 
+ /*
+- * TIF flags handled in syscall_enter_from_usermode()
++ * TIF flags handled in syscall_enter_from_user_mode()
+  */
+ #ifndef ARCH_SYSCALL_ENTER_WORK
+ # define ARCH_SYSCALL_ENTER_WORK	(0)
+diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+index fcae019..7c7b9d0 100644
+--- a/kernel/entry/common.c
++++ b/kernel/entry/common.c
+@@ -183,7 +183,7 @@ static inline bool report_single_step(unsigned long ti_work)
+ /*
+  * If TIF_SYSCALL_EMU is set, then the only reason to report is when
+  * TIF_SINGLESTEP is set (i.e. PTRACE_SYSEMU_SINGLESTEP).  This syscall
+- * instruction has been already reported in syscall_enter_from_usermode().
++ * instruction has been already reported in syscall_enter_from_user_mode().
+  */
+ #define SYSEMU_STEP	(_TIF_SINGLESTEP | _TIF_SYSCALL_EMU)
+ 
