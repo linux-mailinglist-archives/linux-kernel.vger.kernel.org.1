@@ -2,129 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 176A52743CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 16:06:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A83F2743D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 16:06:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726653AbgIVOGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 10:06:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726473AbgIVOGL (ORCPT
+        id S1726673AbgIVOGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 10:06:18 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20080 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726473AbgIVOGS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 10:06:11 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A8D7C061755;
-        Tue, 22 Sep 2020 07:06:11 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id f11so9590526qvw.3;
-        Tue, 22 Sep 2020 07:06:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=ggv8VuLQMJBV80+GzZgkXohh+I/h8XJJBp5IUz+/fvo=;
-        b=p4MQ96FSgJ+qhEE9FsMlf9iPP1EKo3i6eXh8PekF+Z8ZJtAvSWWKJomaFDWkJIVBxx
-         g1UdB6PKqDQjHPJ5Y2QI1uLWZmpj03Ie1OmKV6QETtOXAKTF0Bx89UVOwOqZehk8WZ1C
-         gnrOSydC3qqJkUpEYgZxurxgz9TtKFDfYav3YuPgELvHyiCIavz9slbW3V8eaogcoLoV
-         zbS+W0qZ3+GyizlbrtqXJI8ecYXiK3ucVB/XoHit7s0vE2VU9vTf1WmkeS4pWw4M7L6L
-         g5APi97Ksne3ulKMs47b1+Xde0+Pcp1wJ+getd21S4iypZo63u4s0QJBOvJIymfdghak
-         otXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=ggv8VuLQMJBV80+GzZgkXohh+I/h8XJJBp5IUz+/fvo=;
-        b=rFWpffKZzO3Qaw2Pw/VJIzigkC221g/Q11WpT9PHK+7nAIc1dBEjfxAchvuvEHcyZs
-         QvYWMPEcc8nYRRSpj9aGVxIu0fdT+0+gtx6BgIyr/tjFtwazG8n8mbrccxk/EVv/XtPw
-         Mb5SAWgmtVbTZ3l/10aPzdFkvioRZG887DT+4Yj4mnf4eMp1/JmwoDwWAS0JQxsj5u7x
-         5qdOS1y1SLnO2HHb3nDnwe3p7l78GyTFFa/wAvziEsTvOLXw1ZXzFGcGyl3pA0xgTy31
-         YnSgbFPhnvFFovRhzoqpneSuaAd0Joo01Y3vnyqIRA++tfHS4GTK86joGojsI+mJpPr0
-         btJw==
-X-Gm-Message-State: AOAM530tTjBOO6jltFiLV3wXybWqR6G2JLyKNMM2u8suQ2ZYxYOxWens
-        keax5LoqWri9zxiZbxVOFOFV7/wQHGCjoyMNXCOe7mR2
-X-Google-Smtp-Source: ABdhPJy0quvn8ooCZ9FzdxcJz0oeTjjL80e0/hZRi09LVHcCir/HqRUgAdt1yOaX3YPW4XrtaivqT5W9aYtNJsycsSA=
-X-Received: by 2002:a0c:e152:: with SMTP id c18mr5893009qvl.41.1600783570742;
- Tue, 22 Sep 2020 07:06:10 -0700 (PDT)
+        Tue, 22 Sep 2020 10:06:18 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08ME3ZtX090055;
+        Tue, 22 Sep 2020 10:06:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=BLWIvwPeufNrsK+EkVjlcC/z474nAfaph4hqeuuJTjg=;
+ b=qr1HtbWX2Azt13/WO8ccFRIEbPqQAC9jsoRlg5RKK7/gOkwN2H4oXHNyMp6EemwGTGqZ
+ XcrniNC7UHvbD/KCpsRsQVO86WSOu62ciDkNxkC47s2x7yTvxRIwY4jlvX6J8SPf7KEO
+ c2UPA96H+4WWRpMEAF8w1W2wAxSOKfoY8B1xPD14Vik9+JqDaG33vCD7vByZZHQAcwnY
+ etxmLGd1wMrXki1MvRmWAngE8OxtwAB193ShRyvCgKIhIx7+hOwegfQvC4sOxNVHJjm9
+ iDuXWMDfAUOUAPVkesV12CHuSUpMb6mrDJEh6b69afa+oou4RYC8lP3YXBdjkYUDM1LV aA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33qj5uhcqc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Sep 2020 10:06:17 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08ME5I7K097783;
+        Tue, 22 Sep 2020 10:06:17 -0400
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33qj5uhcpd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Sep 2020 10:06:17 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08ME1faO018937;
+        Tue, 22 Sep 2020 14:06:16 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma03wdc.us.ibm.com with ESMTP id 33n9m8yb6j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Sep 2020 14:06:15 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08ME6CKF26608036
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 22 Sep 2020 14:06:12 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D7932C605D;
+        Tue, 22 Sep 2020 14:06:11 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B20BCC6057;
+        Tue, 22 Sep 2020 14:06:10 +0000 (GMT)
+Received: from oc4221205838.ibm.com (unknown [9.163.16.144])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 22 Sep 2020 14:06:10 +0000 (GMT)
+Subject: Re: [PATCH 2/4] s390/pci: track whether util_str is valid in the
+ zpci_dev
+To:     Niklas Schnelle <schnelle@linux.ibm.com>,
+        alex.williamson@redhat.com, cohuck@redhat.com
+Cc:     pmorel@linux.ibm.com, borntraeger@de.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, gerald.schaefer@linux.ibm.com,
+        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1600529318-8996-1-git-send-email-mjrosato@linux.ibm.com>
+ <1600529318-8996-3-git-send-email-mjrosato@linux.ibm.com>
+ <d1bc0e6b-2a9b-3de0-4dd6-59e26d6c1da4@linux.ibm.com>
+From:   Matthew Rosato <mjrosato@linux.ibm.com>
+Message-ID: <5ef66994-e085-7d7d-141f-7a68e3915fe3@linux.ibm.com>
+Date:   Tue, 22 Sep 2020 10:06:10 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <alpine.DEB.2.22.394.2009221219560.2659@hadrien>
-In-Reply-To: <alpine.DEB.2.22.394.2009221219560.2659@hadrien>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Tue, 22 Sep 2020 15:05:59 +0100
-Message-ID: <CAL3q7H6e7gQWs9X-N4RMxK+UhZKHGxNmP0-q+B6x19uyH9TOwA@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fix memdup.cocci warnings
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Filipe Manana <fdmanana@suse.com>,
-        Chris Mason <chris.mason@fusionio.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kbuild-all@lists.01.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <d1bc0e6b-2a9b-3de0-4dd6-59e26d6c1da4@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-22_13:2020-09-21,2020-09-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 spamscore=0 clxscore=1015 mlxscore=0 mlxlogscore=999
+ bulkscore=0 phishscore=0 priorityscore=1501 impostorscore=0 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009220111
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 11:29 AM Julia Lawall <julia.lawall@inria.fr> wrote=
-:
->
-> From: kernel test robot <lkp@intel.com>
->
-> fs/btrfs/send.c:3854:8-15: WARNING opportunity for kmemdup
->
->  Use kmemdup rather than duplicating its implementation
->
-> Generated by: scripts/coccinelle/api/memdup.cocci
->
-> Fixes: 28314eb24e6c ("btrfs: send, recompute reference path after orphani=
-zation of a directory")
-> Signed-off-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+On 9/21/20 5:41 AM, Niklas Schnelle wrote:
+> Hi Matthew,
+> 
+> On 9/19/20 5:28 PM, Matthew Rosato wrote:
+>> We'll need to keep track of whether or not the byte string in util_str is
+>> valid and thus needs to be passed to a vfio-pci passthrough device.
+>>
+>> Signed-off-by: Matthew Rosato <mjrosato@linux.ibm.com>
+>> ---
+>>   arch/s390/include/asm/pci.h | 3 ++-
+>>   arch/s390/pci/pci_clp.c     | 1 +
+>>   2 files changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/s390/include/asm/pci.h b/arch/s390/include/asm/pci.h
+>> index 882e233..32eb975 100644
+>> --- a/arch/s390/include/asm/pci.h
+>> +++ b/arch/s390/include/asm/pci.h
+>> @@ -132,7 +132,8 @@ struct zpci_dev {
+>>   	u8		rid_available	: 1;
+>>   	u8		has_hp_slot	: 1;
+>>   	u8		is_physfn	: 1;
+>> -	u8		reserved	: 5;
+>> +	u8		util_avail	: 1;
+> 
+> Any reason you're not matching the util_str_avail name in the response struct? > I think this is currently always an EBCDIC encoded string so the 
+information that
+> even if it looks like binary for anyone with a non-mainframe background
+> it is in fact a string seems quite helpful.
 
-Since this is not in Linus' tree yet, it can be folded in the original patc=
-h.
-David, can you do that when you pick it?
+Frankly, the dropping of 'str_' was arbitrary on my part -- I'll go 
+ahead and rename it to util_str_avail with v2.
 
-Btw, isn't the Fixes tag meant only for bug fixes? This is a pure
-cleanup afaics.
+> Other than that
+> 
+> Acked-by: Niklas Schnelle <schnelle@linux.ibm.com>
+> 
 
-Thanks.
+Thanks!
 
-> ---
->
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/fdmanana/linux.gi=
-t misc-next
-> head:   28314eb24e6cb8124d1e5da2ef2ccb90ec44cc06
-> commit: 28314eb24e6cb8124d1e5da2ef2ccb90ec44cc06 [2/2] btrfs: send, recom=
-pute reference path after orphanization of a directory
-> :::::: branch date: 17 hours ago
-> :::::: commit date: 17 hours ago
->
->
->  send.c |    3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> --- a/fs/btrfs/send.c
-> +++ b/fs/btrfs/send.c
-> @@ -3851,10 +3851,9 @@ static int refresh_ref_path(struct send_
->         char *name;
->         int ret;
->
-> -       name =3D kmalloc(ref->name_len, GFP_KERNEL);
-> +       name =3D kmemdup(ref->name, ref->name_len, GFP_KERNEL);
->         if (!name)
->                 return -ENOMEM;
-> -       memcpy(name, ref->name, ref->name_len);
->
->         fs_path_reset(ref->full_path);
->         ret =3D get_cur_path(sctx, ref->dir, ref->dir_gen, ref->full_path=
-);
+>> +	u8		reserved	: 4;
+>>   	unsigned int	devfn;		/* DEVFN part of the RID*/
+>>   
+>>   	struct mutex lock;
+>> diff --git a/arch/s390/pci/pci_clp.c b/arch/s390/pci/pci_clp.c
+>> index 48bf316..d011134 100644
+>> --- a/arch/s390/pci/pci_clp.c
+>> +++ b/arch/s390/pci/pci_clp.c
+>> @@ -168,6 +168,7 @@ static int clp_store_query_pci_fn(struct zpci_dev *zdev,
+>>   	if (response->util_str_avail) {
+>>   		memcpy(zdev->util_str, response->util_str,
+>>   		       sizeof(zdev->util_str));
+>> +		zdev->util_avail = 1;
+>>   	}
+>>   	zdev->mio_capable = response->mio_addr_avail;
+>>   	for (i = 0; i < PCI_STD_NUM_BARS; i++) {
+>>
 
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
