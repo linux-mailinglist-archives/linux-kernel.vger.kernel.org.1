@@ -2,104 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF0112747C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 19:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B34A2747CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 19:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726737AbgIVRwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 13:52:13 -0400
-Received: from mga12.intel.com ([192.55.52.136]:45249 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726615AbgIVRwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 13:52:12 -0400
-IronPort-SDR: ddcOIDm69ZzICYcxq2RnKZ8qRhnrXeOq5/sX/FQ0A8SwW9ic2B+N12FAgam0gSu8OSPIQT3VB3
- Vgp1hclaBYFA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9752"; a="140153337"
-X-IronPort-AV: E=Sophos;i="5.77,291,1596524400"; 
-   d="scan'208";a="140153337"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 10:52:12 -0700
-IronPort-SDR: hzGM7ZD/TLaivxNqob4cD0Y2BbYb0rbiuqA54mVS/DQldSC8tI27QcHr3AkXn3MwS/VtAnY3kk
- teMxcet2SI5g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,291,1596524400"; 
-   d="scan'208";a="290475502"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
-  by fmsmga007.fm.intel.com with SMTP; 22 Sep 2020 10:52:06 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Tue, 22 Sep 2020 20:52:06 +0300
-Date:   Tue, 22 Sep 2020 20:52:06 +0300
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Lyude Paul <lyude@redhat.com>
+        id S1726629AbgIVRyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 13:54:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53187 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726563AbgIVRyR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 13:54:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600797256;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=alwBugiUW8xhAC3yh9HKqdv3Lr5JciXw+OErJT8eH5U=;
+        b=SYsHHg1rongJPRlFKYcIZmt9oHGNM9qG94BYs7ppAGLL615JyBTbnP6sgdw24vG2NrrLZw
+        rsbMBUePQwaidXDk6nGU/pSbwAoX1oPnr4xIIubOWy5EH11tLA/PcHdHqQsXBGsXhpKYdB
+        qBUmqHhLmZSyUQ1Q1cfg5v3u1A25tsw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-265-8Soh6L6WOce9OXEe3dfgMw-1; Tue, 22 Sep 2020 13:54:14 -0400
+X-MC-Unique: 8Soh6L6WOce9OXEe3dfgMw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 02D3D186DD29;
+        Tue, 22 Sep 2020 17:54:12 +0000 (UTC)
+Received: from Ruby.redhat.com (unknown [10.10.115.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 74E8C7368D;
+        Tue, 22 Sep 2020 17:54:10 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     intel-gfx@lists.freedesktop.org
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Eric Dumazet <edumazet@google.com>,
-        Francesco Ruggeri <fruggeri@arista.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Maxime Ripard <mripard@kernel.org>,
-        Taehee Yoo <ap420073@gmail.com>,
         Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org, netdev@vger.kernel.org
-Subject: Re: [PATCH 0/3] Fix Kernel-doc warnings introduced on next-20200921
-Message-ID: <20200922175206.GY6112@intel.com>
-References: <cover.1600773619.git.mchehab+huawei@kernel.org>
- <a2c0d1ac02fb4bef142196d837323bcde41e9427.camel@redhat.com>
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [RESEND PATCH 1/2] drm/dp: fix kernel-doc warnings at drm_dp_helper.c
+Date:   Tue, 22 Sep 2020 13:53:56 -0400
+Message-Id: <20200922175357.42998-2-lyude@redhat.com>
+In-Reply-To: <20200922175357.42998-1-lyude@redhat.com>
+References: <20200922175357.42998-1-lyude@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <a2c0d1ac02fb4bef142196d837323bcde41e9427.camel@redhat.com>
-X-Patchwork-Hint: comment
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 01:39:41PM -0400, Lyude Paul wrote:
-> For patches 2 and 3:
-> 
-> Reviewed-by: Lyude Paul <lyude@redhat.com>
-> 
-> I'll go ahead and push these to drm-intel-next-queued (since drm-misc-next
-> doesn't have these patches in yet, and the commits these fix were originally
-> merged through drm-intel-next-queued anyway). thanks!
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Mea culpa. My doc test build was foiled by the sphinx 2 vs. 3
-regression and I was too lazy to start downgrading things.
-Any ETA for getting that fixed btw?
+As warned by kernel-doc:
 
-> 
-> On Tue, 2020-09-22 at 13:22 +0200, Mauro Carvalho Chehab wrote:
-> > A few new warnings were added at linux-next. Address them, in order for us
-> > to keep zero warnings at the docs.
-> > 
-> > The entire patchset fixing all kernel-doc warnings is at:
-> > 	https://git.linuxtv.org/mchehab/experimental.git/log/?h=doc-fixes
-> > 
-> > Mauro Carvalho Chehab (3):
-> >   net: fix a new kernel-doc warning at dev.c
-> >   drm/dp: fix kernel-doc warnings at drm_dp_helper.c
-> >   drm/dp: fix a kernel-doc issue at drm_edid.c
-> > 
-> >  drivers/gpu/drm/drm_dp_helper.c | 5 +++++
-> >  drivers/gpu/drm/drm_edid.c      | 2 +-
-> >  net/core/dev.c                  | 4 ++--
-> >  3 files changed, 8 insertions(+), 3 deletions(-)
-> > 
-> -- 
-> Cheers,
-> 	Lyude Paul (she/her)
-> 	Software Engineer at Red Hat
+	./drivers/gpu/drm/drm_dp_helper.c:385: warning: Function parameter or member 'type' not described in 'drm_dp_downstream_is_type'
+	./drivers/gpu/drm/drm_dp_helper.c:886: warning: Function parameter or member 'dev' not described in 'drm_dp_downstream_mode'
 
+Some function parameters weren't documented.
+
+Fixes: 38784f6f8805 ("drm/dp: Add helpers to identify downstream facing port types")
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Reviewed-by: Lyude Paul <lyude@redhat.com>
+---
+ drivers/gpu/drm/drm_dp_helper.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
+index 90807a6b415c..478dd51f738d 100644
+--- a/drivers/gpu/drm/drm_dp_helper.c
++++ b/drivers/gpu/drm/drm_dp_helper.c
+@@ -374,6 +374,10 @@ static bool is_edid_digital_input_dp(const struct edid *edid)
+  * drm_dp_downstream_is_type() - is the downstream facing port of certain type?
+  * @dpcd: DisplayPort configuration data
+  * @port_cap: port capabilities
++ * @type: port type to be checked. Can be:
++ * 	  %DP_DS_PORT_TYPE_DP, %DP_DS_PORT_TYPE_VGA, %DP_DS_PORT_TYPE_DVI,
++ * 	  %DP_DS_PORT_TYPE_HDMI, %DP_DS_PORT_TYPE_NON_EDID,
++ *	  %DP_DS_PORT_TYPE_DP_DUALMODE or %DP_DS_PORT_TYPE_WIRELESS.
+  *
+  * Caveat: Only works with DPCD 1.1+ port caps.
+  *
+@@ -870,6 +874,7 @@ EXPORT_SYMBOL(drm_dp_downstream_444_to_420_conversion);
+ 
+ /**
+  * drm_dp_downstream_mode() - return a mode for downstream facing port
++ * @dev: DRM device
+  * @dpcd: DisplayPort configuration data
+  * @port_cap: port capabilities
+  *
 -- 
-Ville Syrjälä
-Intel
+2.26.2
+
