@@ -2,137 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 917C02747B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 19:49:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C607D2747BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 19:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726713AbgIVRtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 13:49:50 -0400
-Received: from conuserg-10.nifty.com ([210.131.2.77]:41481 "EHLO
-        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726573AbgIVRtt (ORCPT
+        id S1726731AbgIVRuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 13:50:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726573AbgIVRuR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 13:49:49 -0400
-Received: from oscar.flets-west.jp (softbank126090211135.bbtec.net [126.90.211.135]) (authenticated)
-        by conuserg-10.nifty.com with ESMTP id 08MHn0Nm019599;
-        Wed, 23 Sep 2020 02:49:00 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 08MHn0Nm019599
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1600796940;
-        bh=7r+QVIfUJ3sIljVKmpOn/byhmJJPSCK7+h4sbICb0vM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=YvuOzGATOytrS/3cxAJUelQ5Iz0Ou2Ff502Ghp8v/LeqMpxsf4Zbxlyt71OUi3fn7
-         8IBaTO+kQsgCHD/J0a8SiRyCDnwYZKE5A6C5M/l8JwnWAHirUJtrTHDL7WIISU+C0C
-         XYdZ8Cn9oHExl2VAP+a7vioGtqBFb25XF2pmB+Qo9IYvnNO93p7JcYl0PYNnBEL9b0
-         lpADxx8FyJqxqvXb9mnXzJOx0zhZo55vy3/Roqy4sHv22K+N7Y31xB/71wW0nC+GsJ
-         VjsNwG4gyNI3AG1F3I5GQkbYhkobV1yvT/fkF1ZVc/NiVDARLzzQwYNT8dkVNK/TH/
-         UFxpNmM1ID/Rw==
-X-Nifty-SrcIP: [126.90.211.135]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] scripts/kallsyms: skip ppc compiler stub *.long_branch.* / *.plt_branch.*
-Date:   Wed, 23 Sep 2020 02:48:56 +0900
-Message-Id: <20200922174856.2001167-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        Tue, 22 Sep 2020 13:50:17 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52792C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 10:50:17 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id z2so16253274qtv.12
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 10:50:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=googlenew;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qVqxL2owg2kDSpSts9aypi+G5FFY2GmKeEfU085U83Y=;
+        b=KSIMJ50P2g5c+zdsX3OlgRaXG4s9ZIitZhumJ4SRpbbXmLwqs/emuUBxlr5SP97yDg
+         WVeWpTL14BeASFSREXxjK1skzELOW8DhwBsV5po53MEjXLAJOeVaejuHTfC/BSut8j8x
+         7PMKst/YNnQ7LGgSIPPxx1GLygEuNgnDvvy0eLj8a8HCG0G39gB17mL/67FwX+mg1G3F
+         XayZDShHeAk5QkEXT3bcAMD8KklY/kKRT9RxzARRbWXuIyAzaWc7nWLqI/Ff0ZLUDd2P
+         AE0FriiMcabZApft3bx43BIR6GXQK3y5CS83rXr41VP5afBrWQYyYhiUjD5RFTjgLcmr
+         RYOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qVqxL2owg2kDSpSts9aypi+G5FFY2GmKeEfU085U83Y=;
+        b=YQD9ud4ZlrIZsXtet5AlDSAbPdyrq4tm+KIPaF4baPq6pVMayfb2ImIxF4m0/fEr0+
+         HfYQDM1fYSL+42kS4fLUNXtKhjpVQbG9Qz90p3SPAXxRaIF6DBUxKrzJYwVJe1lfwPz6
+         o23wjpJZ+AUBWCdifwFRS23okElqON+kfFIyZxFEEzGsqPTfiAcEi3frLXb8JDxsKbBm
+         Gt5HvN4GHLrhSRI4g6Hpc3lu1U02qjfuB+L6EDyq0ZIhypMXiUpPG1X1v29QgQmP2Dq/
+         tY0AGvovb76X8YbfQtfpl8OcKGf2uUy+L+2B5O2HnSzjutWleuTDAfOQ6TtD32pRrZo4
+         Tf6g==
+X-Gm-Message-State: AOAM532SyzVxvRGRCCvDzl5Qs/Usq38mT+tKZ3JX8S5exnWCV5AmSwj7
+        lQxPBYlYGhmKsXVzIHh0CSYnUtW1CW5tA64lsXq5cw==
+X-Google-Smtp-Source: ABdhPJzcHCCx4i3x532DghjgMG9V9lFw0EQjpowLAmLV8FQ1OrArugK0rbakIqePo5op6GFYjtIeWUVm0gT5ceMbjU4=
+X-Received: by 2002:ac8:165d:: with SMTP id x29mr5734327qtk.117.1600797016466;
+ Tue, 22 Sep 2020 10:50:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1600773619.git.mchehab+huawei@kernel.org> <dbe62eb5e9dda5a5ee145f866a24c4cfddbd754f.1600773619.git.mchehab+huawei@kernel.org>
+In-Reply-To: <dbe62eb5e9dda5a5ee145f866a24c4cfddbd754f.1600773619.git.mchehab+huawei@kernel.org>
+From:   Francesco Ruggeri <fruggeri@arista.com>
+Date:   Tue, 22 Sep 2020 10:50:05 -0700
+Message-ID: <CA+HUmGhxP7HkhhQoqQ+wpM2V-qYTRq13aXntK6SGDyRLyVkCdQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] net: fix a new kernel-doc warning at dev.c
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PowerPC allmodconfig often fails to build as follows:
+On Tue, Sep 22, 2020 at 4:22 AM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+>
+> kernel-doc expects the function prototype to be just after
+> the kernel-doc markup, as otherwise it will get it all wrong:
+>
+>         ./net/core/dev.c:10036: warning: Excess function parameter 'dev' description in 'WAIT_REFS_MIN_MSECS'
+>
+> Fixes: 0e4be9e57e8c ("net: use exponential backoff in netdev_wait_allrefs")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-    LD      .tmp_vmlinux.kallsyms1
-    KSYM    .tmp_vmlinux.kallsyms1.o
-    LD      .tmp_vmlinux.kallsyms2
-    KSYM    .tmp_vmlinux.kallsyms2.o
-    LD      .tmp_vmlinux.kallsyms3
-    KSYM    .tmp_vmlinux.kallsyms3.o
-    LD      vmlinux
-    SORTTAB vmlinux
-    SYSMAP  System.map
-  Inconsistent kallsyms data
-  Try make KALLSYMS_EXTRA_PASS=1 as a workaround
-  make[2]: *** [../Makefile:1162: vmlinux] Error 1
+Reviewed-by: Francesco Ruggeri <fruggeri@arista.com>
 
-Setting KALLSYMS_EXTRA_PASS=1 does not help.
-
-This is caused by the compiler inserting stubs such as *.long_branch.*
-and *.plt_branch.*
-
-  $ powerpc-linux-nm -n .tmp_vmlinux.kallsyms2
-   [ snip ]
-  c00000000210c000 T __init_begin
-  c00000000210c000 T _sinittext
-  c00000000210c010 t 00000075.plt_branch.da9:19
-  c00000000210c020 t 00000075.plt_branch.1677:5
-  c00000000210c030 t 00000075.long_branch.memmove
-  c00000000210c034 t 00000075.plt_branch.9e0:5
-  c00000000210c044 t 00000075.plt_branch.free_initrd_mem
-    ...
-
-Actually, the problem mentioned in scripts/link-vmlinux.sh comments;
-"In theory it's possible this results in even more stubs, but unlikely"
-is happening here, and ends up with another kallsyms step required.
-
-scripts/kallsyms.c already ignores various compiler stubs. Let's do
-similar to make kallsysms for PowerPC always succeed in 2 steps.
-
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- scripts/kallsyms.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
-
-diff --git a/scripts/kallsyms.c b/scripts/kallsyms.c
-index 0096cd965332..306b9b38150f 100644
---- a/scripts/kallsyms.c
-+++ b/scripts/kallsyms.c
-@@ -120,17 +120,25 @@ static bool is_ignored_symbol(const char *name, char type)
- 		NULL
- 	};
- 
-+	static const char * const ignored_matches[] = {
-+		".long_branch.",	/* ppc stub */
-+		".plt_branch.",		/* ppc stub */
-+		NULL
-+	};
-+
- 	const char * const *p;
- 
--	/* Exclude symbols which vary between passes. */
-+	/* ignore symbol names that exactly match to a particular string. */
- 	for (p = ignored_symbols; *p; p++)
- 		if (!strcmp(name, *p))
- 			return true;
- 
-+	/* ignore symbol names that start with a particular string. */
- 	for (p = ignored_prefixes; *p; p++)
- 		if (!strncmp(name, *p, strlen(*p)))
- 			return true;
- 
-+	/* ignore symbol names that end with a particular string. */
- 	for (p = ignored_suffixes; *p; p++) {
- 		int l = strlen(name) - strlen(*p);
- 
-@@ -138,6 +146,12 @@ static bool is_ignored_symbol(const char *name, char type)
- 			return true;
- 	}
- 
-+	/* ignore symbol names that contain a particular string. */
-+	for (p = ignored_matches; *p; p++) {
-+		if (strstr(name, *p))
-+			return true;
-+	}
-+
- 	if (type == 'U' || type == 'u')
- 		return true;
- 	/* exclude debugging symbols */
--- 
-2.25.1
-
+Thanks for fixing this!
