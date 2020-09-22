@@ -2,182 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1999A274C1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5CFB274C28
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726716AbgIVWbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 18:31:14 -0400
-Received: from mga03.intel.com ([134.134.136.65]:10288 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726448AbgIVWbO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 18:31:14 -0400
-IronPort-SDR: Tm6Z5frl7PlOz4C9v8/Qkns4fw+4uD77vcmntpHNKzMTR1keZiVt2Ly6W+er+lbQ/8fXAR5n9m
- xFAlNkanJZNQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9752"; a="160805208"
-X-IronPort-AV: E=Sophos;i="5.77,292,1596524400"; 
-   d="scan'208";a="160805208"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 15:31:12 -0700
-IronPort-SDR: nW3gdMCynutjvSTUUEYodsdC6+CVVvVe8VGXY9QncgSOeLWO/AUh3Yd++7mE3hrAeSaever+h4
- 64HF/sSW+Cug==
-X-IronPort-AV: E=Sophos;i="5.77,292,1596524400"; 
-   d="scan'208";a="511402424"
-Received: from rhweight-mobl2.amr.corp.intel.com (HELO [10.0.2.15]) ([10.212.137.114])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 15:31:11 -0700
-Subject: Re: [PATCH v1 07/12] fpga: expose sec-mgr update status
-To:     Tom Rix <trix@redhat.com>, mdf@kernel.org, lee.jones@linaro.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
-        matthew.gerlach@intel.com
-References: <20200904235305.6254-1-russell.h.weight@intel.com>
- <20200904235305.6254-8-russell.h.weight@intel.com>
- <4fdb6000-ced9-1713-cace-8e7b09c6d586@redhat.com>
-From:   Russ Weight <russell.h.weight@intel.com>
-Message-ID: <3dc77b88-8d6c-424e-3c6e-a39ac8de8fb6@intel.com>
-Date:   Tue, 22 Sep 2020 15:31:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726620AbgIVWf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 18:35:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726448AbgIVWf6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 18:35:58 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BC41C061755;
+        Tue, 22 Sep 2020 15:35:58 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bwx3b1pTGz9sSn;
+        Wed, 23 Sep 2020 08:35:55 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1600814155;
+        bh=an68nPl8slCXksOVFaUNMbm9pNneezalt7mdFAWTZoA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=F3Kp87lV2EaJZ3iJgUPbaA5EuMVaSb/jtpmyIvPo0Rn8Uf6j1DUkLMjo/WhSLa+ub
+         PqcO4hLlJDxJLfz+uFby9d3qqp5Q+//fxMZDbXTZ1Np/tBmV9vwB0J1ls/Sc5AtKa8
+         cK0Ye8KJzlKKiXtQ6CV7ci2cWAM8U1vRo/S8+ITHen/Id+7yUYi/FZetTChDN/G7GM
+         arJYxjSAc5OSL/KKr8HerBSiH9Mg8+NWK3oU8iG3+3Cj6zldjdzrak+Qu/KfYuVlG6
+         hzoCSKr8zjAzz6d0bQVuHQAZ9HIHbrlbYuaMJyMD3z4a9kSeEIxHzcZ3so3uYCFkFB
+         Q6qcWESipMrUQ==
+Date:   Wed, 23 Sep 2020 08:35:54 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commit in the rcu tree
+Message-ID: <20200923083554.41525dcf@canb.auug.org.au>
+In-Reply-To: <20200917180005.GM29330@paulmck-ThinkPad-P72>
+References: <20200917132652.738c4cc2@canb.auug.org.au>
+        <20200917180005.GM29330@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-In-Reply-To: <4fdb6000-ced9-1713-cace-8e7b09c6d586@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: multipart/signed; boundary="Sig_/B7AKGsV7sz1/MHpXfane8Ep";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/B7AKGsV7sz1/MHpXfane8Ep
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi Paul,
 
-On 9/6/20 9:16 AM, Tom Rix wrote:
-> On 9/4/20 4:53 PM, Russ Weight wrote:
->> Extend the Intel Security Manager class driver to
->> include an update/status sysfs node that can be polled
->> and read to monitor the progress of an ongoing secure
->> update. Sysfs_notify() is used to signal transitions
->> between different phases of the update process.
->>
->> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
->> Reviewed-by: Wu Hao <hao.wu@intel.com>
->> ---
->>  .../ABI/testing/sysfs-class-ifpga-sec-mgr     | 11 ++++++
->>  drivers/fpga/ifpga-sec-mgr.c                  | 34 ++++++++++++++++---
->>  2 files changed, 41 insertions(+), 4 deletions(-)
->>
->> diff --git a/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr b/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
->> index a476504b7ae9..849ccb2802f8 100644
->> --- a/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
->> +++ b/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
->> @@ -86,3 +86,14 @@ Description:	Write only. Write the filename of an Intel image
->>  		BMC images, BMC firmware, Static Region images,
->>  		and Root Entry Hashes, and to cancel Code Signing
->>  		Keys (CSK).
->> +
->> +What: 		/sys/class/ifpga_sec_mgr/ifpga_secX/update/status
->> +Date:		Sep 2020
->> +KernelVersion:  5.10
->> +Contact:	Russ Weight <russell.h.weight@intel.com>
->> +Description:	Read-only. Returns a string describing the current
->> +		status of an update. The string will be one of the
->> +		following: idle, read_file, preparing, writing,
-> For consistency, read_file -> reading
-Yes - I'll make the change.
->> +		programming. Userspace code can poll on this file,
->> +		as it will be signaled by sysfs_notify() on each
->> +		state change.
->> diff --git a/drivers/fpga/ifpga-sec-mgr.c b/drivers/fpga/ifpga-sec-mgr.c
->> index 73173badbe96..5fe3d85e2963 100644
->> --- a/drivers/fpga/ifpga-sec-mgr.c
->> +++ b/drivers/fpga/ifpga-sec-mgr.c
->> @@ -139,6 +139,13 @@ static struct attribute *sec_mgr_security_attrs[] = {
->>  	NULL,
->>  };
->>  
->> +static void update_progress(struct ifpga_sec_mgr *imgr,
->> +			    enum ifpga_sec_prog new_progress)
->> +{
->> +	imgr->progress = new_progress;
->> +	sysfs_notify(&imgr->dev.kobj, "update", "status");
->> +}
->> +
->>  static void ifpga_sec_dev_error(struct ifpga_sec_mgr *imgr,
->>  				enum ifpga_sec_err err_code)
->>  {
->> @@ -149,7 +156,7 @@ static void ifpga_sec_dev_error(struct ifpga_sec_mgr *imgr,
->>  static void progress_complete(struct ifpga_sec_mgr *imgr)
->>  {
->>  	mutex_lock(&imgr->lock);
->> -	imgr->progress = IFPGA_SEC_PROG_IDLE;
->> +	update_progress(imgr, IFPGA_SEC_PROG_IDLE);
->>  	complete_all(&imgr->update_done);
->>  	mutex_unlock(&imgr->lock);
->>  }
->> @@ -177,14 +184,14 @@ static void ifpga_sec_mgr_update(struct work_struct *work)
->>  		goto release_fw_exit;
->>  	}
->>  
->> -	imgr->progress = IFPGA_SEC_PROG_PREPARING;
->> +	update_progress(imgr, IFPGA_SEC_PROG_PREPARING);
->>  	ret = imgr->iops->prepare(imgr);
->>  	if (ret) {
->>  		ifpga_sec_dev_error(imgr, ret);
->>  		goto modput_exit;
->>  	}
->>  
->> -	imgr->progress = IFPGA_SEC_PROG_WRITING;
->> +	update_progress(imgr, IFPGA_SEC_PROG_WRITING);
->>  	size = imgr->remaining_size;
->>  	while (size) {
->>  		blk_size = min_t(u32, size, WRITE_BLOCK_SIZE);
->> @@ -199,7 +206,7 @@ static void ifpga_sec_mgr_update(struct work_struct *work)
->>  		offset += blk_size;
->>  	}
->>  
->> -	imgr->progress = IFPGA_SEC_PROG_PROGRAMMING;
->> +	update_progress(imgr, IFPGA_SEC_PROG_PROGRAMMING);
->>  	ret = imgr->iops->poll_complete(imgr);
->>  	if (ret) {
->>  		ifpga_sec_dev_error(imgr, ret);
->> @@ -251,6 +258,24 @@ static struct attribute_group sec_mgr_security_attr_group = {
->>  	.is_visible = sec_mgr_visible,
->>  };
->>  
->> +static const char * const sec_mgr_prog_str[] = {
->> +	"idle",			/* IFPGA_SEC_PROG_IDLE */
->> +	"read_file",		/* IFPGA_SEC_PROG_READ_FILE */
-> "reading"
-yes
->> +	"preparing",		/* IFPGA_SEC_PROG_PREPARING */
->> +	"writing",		/* IFPGA_SEC_PROG_WRITING */
->> +	"programming"		/* IFPGA_SEC_PROG_PROGRAMMING */
->> +};
->> +
->> +static ssize_t
->> +status_show(struct device *dev, struct device_attribute *attr, char *buf)
->> +{
->> +	struct ifpga_sec_mgr *imgr = to_sec_mgr(dev);
->> +
->> +	return sprintf(buf, "%s\n", (imgr->progress < IFPGA_SEC_PROG_MAX) ?
->> +		       sec_mgr_prog_str[imgr->progress] : "unknown-status");
-> when imgr->progress is unknown, should there be a dev_warn ?
-Yes, this is a case that should not happen so it probably warrants something in
-the kernel log. I'll add that.
+On Thu, 17 Sep 2020 11:00:05 -0700 "Paul E. McKenney" <paulmck@kernel.org> =
+wrote:
 >
-> Tom
->
->> +}
->> +static DEVICE_ATTR_RO(status);
->> +
->>  static ssize_t filename_store(struct device *dev, struct device_attribute *attr,
->>  			      const char *buf, size_t count)
->>  {
->> @@ -288,6 +313,7 @@ static DEVICE_ATTR_WO(filename);
->>  
->>  static struct attribute *sec_mgr_update_attrs[] = {
->>  	&dev_attr_filename.attr,
->> +	&dev_attr_status.attr,
->>  	NULL,
->>  };
->>  
+> On Thu, Sep 17, 2020 at 01:26:52PM +1000, Stephen Rothwell wrote:
+> >=20
+> > Commit
+> >=20
+> >   903c5302fa2d ("sched/core: Allow try_invoke_on_locked_down_task() wit=
+h irqs disabled")
+> >=20
+> > is missing a Signed-off-by from its author and committer.
+> >=20
+> > I didn't complain about this when it was first present because I figured
+> > it was just a debugging commit that would be removed quickly.  However,
+> > there are now quite a few follow up commits ... =20
+>=20
+> Without Peter's Signed-off-by, I clearly won't be submitting it to the
+> upcoming merge window.
+>=20
+> Peter, this is now quite close to your original patch.  May I please
+> add your Signed-off-by?
 
+Rebased today, but still no SOB lines.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/B7AKGsV7sz1/MHpXfane8Ep
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9qfEoACgkQAVBC80lX
+0Gz0Awf/WuA22zboVIO4zh0IgAe22xQir3/jpwT/ikw8FN7nq1ZBsoFhlMZx/5oc
+bIvAhjZEZplAZqhJUM6zBWAPZ+Kb2dmtZ3j0x8pRpCALuh/7aaxJJijixeAs1QTM
+GPFDcqkCLpQfgjV2C9AhUuZP7YZ3TdOLAn6WUeX3ganwn+VBdWgbXGi5wspnl6qL
+WRilGz/j3MCF/cVSviPhCaxsVi8kESWxdD3BwZzNln3+VT3E7oeRXBrIAyl9zyWR
+jDPk8IMqDzwUCR0EvhBJ30/gjx6XhVD2nfETIvjCF159ORphB2ww749X3shTX7Dj
+VopRpbjN9OFuLh3CAZ4YnxOL3mpeyA==
+=qvKb
+-----END PGP SIGNATURE-----
+
+--Sig_/B7AKGsV7sz1/MHpXfane8Ep--
