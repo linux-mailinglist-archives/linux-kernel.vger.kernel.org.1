@@ -2,118 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE09274AEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:13:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B176F274AF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726731AbgIVVNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 17:13:06 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:7983 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726650AbgIVVNF (ORCPT
+        id S1726589AbgIVVOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 17:14:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726607AbgIVVOK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 17:13:05 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f6a68b20000>; Tue, 22 Sep 2020 14:12:18 -0700
-Received: from [10.20.170.18] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 22 Sep
- 2020 21:12:54 +0000
-Date:   Tue, 22 Sep 2020 16:12:49 -0500
-From:   Alex Goins <agoins@nvidia.com>
-X-X-Sender: agoins@agoins-DiGiTS
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-CC:     <dri-devel@lists.freedesktop.org>,
-        <iommu@lists.linux-foundation.org>,
-        <linaro-mm-sig@lists.linaro.org>, <linux-kernel@vger.kernel.org>,
-        "Thomas Zimmermann" <tzimmermann@suse.de>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        David Airlie <airlied@linux.ie>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v5 05/38] drm: prime: use sgtable iterators in
- drm_prime_sg_to_page_addr_arrays()
-In-Reply-To: <afb59d1b-1fcf-fd6d-2b48-e078e129f1eb@samsung.com>
-Message-ID: <alpine.DEB.2.20.2009221610450.27953@agoins-DiGiTS>
-References: <20200513132114.6046-1-m.szyprowski@samsung.com> <20200513133245.6408-1-m.szyprowski@samsung.com> <CGME20200513133259eucas1p273f0e05005b7b1158d884295d35745fd@eucas1p2.samsung.com> <20200513133245.6408-5-m.szyprowski@samsung.com>
- <alpine.DEB.2.20.2009211803580.19454@agoins-DiGiTS> <afb59d1b-1fcf-fd6d-2b48-e078e129f1eb@samsung.com>
-User-Agent: Alpine 2.20 (DEB 67 2015-01-07)
-X-NVConfidentiality: public
+        Tue, 22 Sep 2020 17:14:10 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95477C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 14:14:10 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id w7so13641082pfi.4
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 14:14:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jX0oqiM8ZRWUr1y81TApDh2RLCO5qMFygk0a8MYzzVI=;
+        b=B1hYCzRIzXGxf476oO1RyhjC26uBYCDdckWaQTm5Z1XUjvlWEEJN1luX8NvRRESzqy
+         uI37IR6+6MX61y1oGcN8An610Ee2QYGs6VGNllKq9m+zlneUHDzy3UsAGGBHv9DE1E1D
+         qT8GQM4UVAesCA8kLMpRrA9ZeI4cfw8eGjxYKtyE0yjY59irZXh2Dfmz9OjumiYUu/qm
+         yHTO7ctPRUbZ9EigdnrWAIXnwvosn5CW58fpf0+coea0060UfoW1dsYi0nQkVmy0O4VO
+         g81iae2/630fno3kknm7E/zhJn0XhCUt3WhKQcA0ckIX/ElhyihqNT81SRkD23FlxBLs
+         OQcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jX0oqiM8ZRWUr1y81TApDh2RLCO5qMFygk0a8MYzzVI=;
+        b=cYV+cC2G+KUPondblGDwHAWYJS8uc4qD26w6sdwidTmtxVsQJWtvEfOs0TS/qb6WgM
+         oN1Yn19GOeEuW4/5gw/xBVL9Oh/nrmGPPGTjKfH8aySvnurrlnp+mhbmTLyKHgHX/qA9
+         O55qadTDZKxncKZSFxr0gOzWZULdOCbe/e/+HuJ2OaRxObf59MwY+TF3lrdINI0MmgtX
+         eezwts6hjqPGo3gdjp0FnhqzTbK2oBqFvzve/i4CVd9/yeha5wra7yJbTGjYY7mMy6ps
+         KgsQ+Npw2ubQYgtFFpmx8WMpJpw/kv4/D4SPZ7F26R7OfiIwa8DY5VcGX0hHOeMgxkJD
+         e5xA==
+X-Gm-Message-State: AOAM532Q06W4dvBX8iqCJqBqVI+Zg6XBFr3zTwokX0VoAHSHfMmn9E3P
+        asnZ/CIfJSGjezKE/mlmG6tCng==
+X-Google-Smtp-Source: ABdhPJzzrNDDUM06Vr4/E2y5sYnq1wUrhSBwgHDHzOZNGlz/fG05U62zoyb1FdFl0XlVuaTCkIKrPg==
+X-Received: by 2002:a63:516:: with SMTP id 22mr5143414pgf.316.1600809249779;
+        Tue, 22 Sep 2020 14:14:09 -0700 (PDT)
+Received: from google.com ([2620:0:1008:10:1ea0:b8ff:fe75:b885])
+        by smtp.gmail.com with ESMTPSA id r15sm15218636pgg.17.2020.09.22.14.14.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 14:14:09 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 14:14:04 -0700
+From:   Vipin Sharma <vipinsh@google.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     thomas.lendacky@amd.com, pbonzini@redhat.com, tj@kernel.org,
+        lizefan@huawei.com, joro@8bytes.org, corbet@lwn.net,
+        brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
+        gingell@google.com, rientjes@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC Patch 0/2] KVM: SVM: Cgroup support for SVM SEV ASIDs
+Message-ID: <20200922211404.GA4141897@google.com>
+References: <20200922004024.3699923-1-vipinsh@google.com>
+ <20200922014836.GA26507@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600809138; bh=eDw/Y+WvGisaFJLGeLDL1cgx4wGsvRwxMR3w6+tFJgE=;
-        h=Date:From:X-X-Sender:To:CC:Subject:In-Reply-To:Message-ID:
-         References:User-Agent:X-NVConfidentiality:MIME-Version:
-         Content-Type:X-Originating-IP:X-ClientProxiedBy;
-        b=Eo9od3YgFzrokUrlC+GkylUgaEM6H3/JoZ8VAsxxdIl9L1k7fmfTTeaMtcSVONyNe
-         ugVp5jMHoqMBBnEgkhlJLszfUZYtSl8RQ5G3uRlXt7zoCgIY/0h6XX4FNuiH8Kb0S7
-         WyRCcKI/bgFvn3zgzEfYD2tAqDxNiPDV/Dq3tjbte0g6Nhf4/YhF6akfbfcy/Styf4
-         bUNbi2Zb7AFaWAuZBIsbRGocbT6iAy6lQbVA6v2eMw6KTlEKdB+PzvydytW5YeufYd
-         t70q9gBMMRUD1C9tRuLLmMiYDa1OQo3J792HaY7U0hejkWFXmjlraDz1/kB/W6H1mV
-         4/CT5hDoP5xiQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922014836.GA26507@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marek,
+On Mon, Sep 21, 2020 at 06:48:38PM -0700, Sean Christopherson wrote:
+> On Mon, Sep 21, 2020 at 05:40:22PM -0700, Vipin Sharma wrote:
+> > Hello,
+> > 
+> > This patch series adds a new SEV controller for tracking and limiting
+> > the usage of SEV ASIDs on the AMD SVM platform.
+> > 
+> > SEV ASIDs are used in creating encrypted VM and lightweight sandboxes
+> > but this resource is in very limited quantity on a host.
+> > 
+> > This limited quantity creates issues like SEV ASID starvation and
+> > unoptimized scheduling in the cloud infrastructure.
+> > 
+> > SEV controller provides SEV ASID tracking and resource control
+> > mechanisms.
+> 
+> This should be genericized to not be SEV specific.  TDX has a similar
+> scarcity issue in the form of key IDs, which IIUC are analogous to SEV ASIDs
+> (gave myself a quick crash course on SEV ASIDs).  Functionally, I doubt it
+> would change anything, I think it'd just be a bunch of renaming.  The hardest
+> part would probably be figuring out a name :-).
+> 
+> Another idea would be to go even more generic and implement a KVM cgroup
+> that accounts the number of VMs of a particular type, e.g. legacy, SEV,
+> SEV-ES?, and TDX.  That has potential future problems though as it falls
+> apart if hardware every supports 1:MANY VMs:KEYS, or if there is a need to
+> account keys outside of KVM, e.g. if MKTME for non-KVM cases ever sees the
+> light of day.
 
-On Tue, 22 Sep 2020, Marek Szyprowski wrote:
+I read about the TDX and its use of the KeyID for encrypting VMs. TDX
+has two kinds of KeyIDs private and shared.
 
-> External email: Use caution opening links or attachments
-> 
-> 
-> Hi Alex,
-> 
-> On 22.09.2020 01:15, Alex Goins wrote:
-> > Tested-by: Alex Goins <agoins@nvidia.com>
-> >
-> > This change fixes a regression with drm_prime_sg_to_page_addr_arrays() and
-> > AMDGPU in v5.9.
-> 
-> Thanks for testing!
-> 
-> > Commit 39913934 similarly revamped AMDGPU to use sgtable helper functions. When
-> > it changed from dma_map_sg_attrs() to dma_map_sgtable(), as a side effect it
-> > started correctly updating sgt->nents to the return value of dma_map_sg_attrs().
-> > However, drm_prime_sg_to_page_addr_arrays() incorrectly uses sgt->nents to
-> > iterate over pages, rather than sgt->orig_nents, resulting in it now returning
-> > the incorrect number of pages on AMDGPU.
-> >
-> > I had written a patch that changes drm_prime_sg_to_page_addr_arrays() to use
-> > for_each_sgtable_sg() instead of for_each_sg(), iterating using sgt->orig_nents:
-> >
-> > -       for_each_sg(sgt->sgl, sg, sgt->nents, count) {
-> > +       for_each_sgtable_sg(sgt, sg, count) {
-> >
-> > This patch takes it further, but still has the effect of fixing the number of
-> > pages that drm_prime_sg_to_page_addr_arrays() returns. Something like this
-> > should be included in v5.9 to prevent a regression with AMDGPU.
-> 
-> Probably the easiest way to handle a fix for v5.9 would be to simply
-> merge the latest version of this patch also to v5.9-rcX:
-> https://lore.kernel.org/dri-devel/20200904131711.12950-3-m.szyprowski@samsung.com/
+On AMD platform there are two types of ASIDs for encryption.
+1. SEV ASID - Normal runtime guest memory encryption.
+2. SEV-ES ASID - Extends SEV ASID by adding register state encryption with
+		 integrity.
 
-Tested-by: Alex Goins <agoins@nvidia.com> that version too.
+Both types of ASIDs have their own maximum value which is provisioned in
+the firmware
 
-> 
-> This way we would get it fixed and avoid possible conflict in the -next.
+So, we are talking about 4 different types of resources:
+1. AMD SEV ASID (implemented in this patch as sev.* files in SEV cgroup)
+2. AMD SEV-ES ASID (in future, adding files like sev_es.*)
+3. Intel TDX private KeyID
+4. Intel TDX shared KeyID
 
-> Do you have any AMDGPU fixes for v5.9 in the queue? Maybe you can add that
-> patch to the queue? 
+TDX private KeyID is similar to SEV and SEV-ES ASID. I think coming up
+with the same name which can be used by both platforms will not be easy,
+and extensible with the future enhancements. This will get even more
+difficult if Arm also comes up with something similar but with different
+nuances.
 
-I don't have any more AMDGPU fixes, just want to ensure that this makes it in.
+I like the idea of the KVM cgroup and when it is mounted it will have
+different files based on the hardware platform.
 
-Thanks,
-Alex
+1. KVM cgroup on AMD will have:
+sev.max & sev.current.
+sev_es.max & sev_es.current.
 
-> Dave: would it be okay that way?
-> 
-> Best regards
-> --
-> Marek Szyprowski, PhD
-> Samsung R&D Institute Poland
-> 
-> 
+2. KVM cgroup mounted on Intel:
+tdx_private_keys.max
+tdx_shared_keys.max
+
+The KVM cgroup can be used to have control files which are generic (no
+use case in my mind right now) and hardware platform specific files
+also.
