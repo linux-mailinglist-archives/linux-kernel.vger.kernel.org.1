@@ -2,470 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CFA62740C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 772552740BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726643AbgIVL0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 07:26:10 -0400
-Received: from mga02.intel.com ([134.134.136.20]:49095 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726454AbgIVL0K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 07:26:10 -0400
-IronPort-SDR: hdqCU9MayGCXVdeuAb8qY/c58sHaymGA3Igs+U6CI60SRVGYAThK/fwNTHsy6j/tX4CDeTeh0T
- VbOpyaHerVog==
-X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="148245091"
-X-IronPort-AV: E=Sophos;i="5.77,290,1596524400"; 
-   d="scan'208";a="148245091"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 04:26:07 -0700
-IronPort-SDR: Kur+dhn17MHtUpo7n7moW7dCFudSWJ1VAoW3vMO3W/uHyiiLHpzDK2zTraAFDE5/LGH6SCYJ32
- I7Ff5NJQeQDw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,290,1596524400"; 
-   d="scan'208";a="338261909"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 22 Sep 2020 04:26:03 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kKgOi-0014sL-V4; Tue, 22 Sep 2020 14:23:48 +0300
-Date:   Tue, 22 Sep 2020 14:23:48 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
-        wsa+renesas@sang-engineering.com, wsa@kernel.org,
-        jarkko.nikula@linux.intel.com, jdelvare@suse.de,
-        Sergey.Semin@baikalelectronics.ru, krzk@kernel.org,
-        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
-        bjorn.andersson@linaro.org, shuo.a.liu@intel.com,
-        conghui.chen@intel.com, yu1.wang@intel.com
-Subject: Re: [PATCH v3] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20200922112348.GL3956970@smile.fi.intel.com>
-References: <1350309657ab0c7b9f97e7a5c71d084f88caa549.1600743079.git.jie.deng@intel.com>
+        id S1726562AbgIVLYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 07:24:32 -0400
+Received: from mail-eopbgr700058.outbound.protection.outlook.com ([40.107.70.58]:12513
+        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726487AbgIVLYb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 07:24:31 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TmPyrRmUOawCdEhYr3hNgkBXa7iUYioBBLXE7jk5+jQ3jyEThhAItq42capNAo2qlWOtET743jJhKEWA9qH9knH1ZA/i6Qh/M3ok7FVY8Cia9nZcADpzD/MSUsufjpz1b+K8v4yLL1GcSTXC/Zn2fyXUKJ9xwTRKSch4ytJ0Q4JihcKNZg4D1oYizBDC5Q8Th07TisVWOwRjE2rg+LGd2XPle+qMW5TzMXO7SkCtLLDhRGRRYCHSiEEGKwKonMAXCn0QN+S+onKSPl9q3OrF9kLJv9P4ZHUv30J63vZr4cuxyuUqkOoypYV48J/2Ra83KcEWg6UiL+XLb3coIM49xw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2u/t+N1FE4J0M10wDKz3Y7xajhRe4nnIQmwLw9CvtYc=;
+ b=fL+4xUx3gzekyoe5kmvVYyAICRT3dIKP29nnd0fV0lYBTygFdjvc5IuMa6JhQn2TjPRADA83o9MSqcP5X/S9Xbc7/dLOpltEf/05EcxdG5gjH6kgwIopsYLE/37hq5G+IHO/37KDPFXYFD/V8D/wviQu6o7b2vXmLj9s6HXK8GyX+5ogAKyIhcvz6uZcETTmS79xhDHIHUYaNjpgTlSX6OlkPCY4YpijW9G3Yp3bAp1IO1IKE1EwaLF5Wvj5NtCbnxOqevU2+abV6H5Q7m8lh6EQIi+ruhw+RWPBeWm8T/sUd4N5lutMj/FgI0caTO0iaqmJrMdHkxe6AuZiUvyWjg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.60.83) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2u/t+N1FE4J0M10wDKz3Y7xajhRe4nnIQmwLw9CvtYc=;
+ b=BGeJxNbyjjg9j3yb+O76iJP37+L01tlLErSAIB14rCV0EzdOSj7bWYparBVJQloEb8RfAN9d20HBmHrP5+8GJ2iA0LFJGwkDpOPHhtKFQ6nIU+AVMbqYnTKSArTUnKL6AWzF0M4PhQVqs3Vjy1RgtyW5/m9ADK6UYp8ZT/Er0wE=
+Received: from SN6PR04CA0089.namprd04.prod.outlook.com (2603:10b6:805:f2::30)
+ by DM5PR02MB2699.namprd02.prod.outlook.com (2603:10b6:3:107::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14; Tue, 22 Sep
+ 2020 11:24:28 +0000
+Received: from SN1NAM02FT004.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:805:f2:cafe::3a) by SN6PR04CA0089.outlook.office365.com
+ (2603:10b6:805:f2::30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14 via Frontend
+ Transport; Tue, 22 Sep 2020 11:24:27 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
+ smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
+Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
+ SN1NAM02FT004.mail.protection.outlook.com (10.152.72.175) with Microsoft SMTP
+ Server id 15.20.3391.15 via Frontend Transport; Tue, 22 Sep 2020 11:24:27
+ +0000
+Received: from [149.199.38.66] (port=37170 helo=smtp.xilinx.com)
+        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1kKgP7-000717-8u; Tue, 22 Sep 2020 04:24:13 -0700
+Received: from [127.0.0.1] (helo=localhost)
+        by smtp.xilinx.com with smtp (Exim 4.63)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1kKgPL-0004pj-HL; Tue, 22 Sep 2020 04:24:27 -0700
+Received: from xsj-pvapsmtp01 (smtp-fallback.xilinx.com [149.199.38.66] (may be forged))
+        by xsj-smtp-dlp2.xlnx.xilinx.com (8.13.8/8.13.1) with ESMTP id 08MBOM4v017024;
+        Tue, 22 Sep 2020 04:24:22 -0700
+Received: from [172.30.17.109]
+        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
+        (envelope-from <michals@xilinx.com>)
+        id 1kKgPF-0004oj-Jm; Tue, 22 Sep 2020 04:24:22 -0700
+Subject: Re: [PATCH 1/3] spi: spi-zynqmp-gqspi: Fix kernel-doc warnings
+To:     Mark Brown <broonie@kernel.org>,
+        Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        michal.simek@xilinx.com, sgoud@xilinx.com, nagasure@xilinx.com
+References: <20200909152708.2767-1-amit.kumar-mahapatra@xilinx.com>
+ <20200909152708.2767-2-amit.kumar-mahapatra@xilinx.com>
+ <20200917172819.GA50407@sirena.org.uk>
+From:   Michal Simek <michal.simek@xilinx.com>
+Autocrypt: addr=michals@xilinx.com; keydata=
+ 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
+ 0Z1MQlmNcq2bhOMzTxuXX2NDzUZs4aqEyZQ=
+Message-ID: <83866279-52f2-6c85-40b4-e0b78ad2d713@xilinx.com>
+Date:   Tue, 22 Sep 2020 13:24:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1350309657ab0c7b9f97e7a5c71d084f88caa549.1600743079.git.jie.deng@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200917172819.GA50407@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-RCIS-Action: ALLOW
+X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
+X-TM-AS-User-Approved-Sender: Yes;Yes
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d03cb211-2610-4977-f6c0-08d85eea1146
+X-MS-TrafficTypeDiagnostic: DM5PR02MB2699:
+X-Microsoft-Antispam-PRVS: <DM5PR02MB269956DE494914B8DF0605C3C63B0@DM5PR02MB2699.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4MsR8xAQxkfYiGFGEQmJ+gKxUH2vjunuZpaU3DbXXpNnkutsFpjJz64iRzlUMMjUk4Zbmm4b2sxzGXgdDOP/kTXDSDs5FrpuLxrRR79jI3TGOj7TEYr86cFohyHKWqMWiqwrSVCGjgjRV61FfHTIr6xO9JNXDypvqz38OozmDkcwlNJM8FcExEG4D5kNt/O53hKgRoJghprEsXEbaeDw7lbSfAU4DAOlLs/zk/AFbmFMy23NPzn8pb6X2tra7xVbQxkx/qcxLz01eLOisHHaThOeBUJwXaEbUkb5lepLFlCtXPDh2AyOb5Ajm4O26Eet5yxz2OZmEKXTJIMgSnEgZOFvxXJ0SO84QaV3Ut6m/3/bL8cw9rEiRTMKDJcjiZKjCNabhWrXneb/mRP5RbubHogM22KqQS/XFUNfzgcbzfrbQ9lsDYPazE5Y/GV7nen5aOsxFhTg7KPLal+Xdrkzlrt2MAkmn+9gJd9jnN4b/CKUHaBltD5lGNEixkRT95hamOGzzTVjnTHwK6hg58NNzg==
+X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFS:(376002)(346002)(136003)(396003)(39860400002)(46966005)(426003)(36756003)(81166007)(478600001)(2616005)(316002)(110136005)(4744005)(356005)(966005)(44832011)(82740400003)(83380400001)(47076004)(31686004)(8936002)(2906002)(6666004)(9786002)(70586007)(26005)(107886003)(8676002)(6636002)(82310400003)(4326008)(70206006)(5660300002)(31696002)(186003)(336012)(42866002)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2020 11:24:27.8096
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d03cb211-2610-4977-f6c0-08d85eea1146
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT004.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR02MB2699
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 10:58:43AM +0800, Jie Deng wrote:
-> Add an I2C bus driver for virtio para-virtualization.
-> 
-> The controller can be emulated by the backend driver in
-> any device model software by following the virtio protocol.
-> 
-> This driver communicates with the backend driver through a
-> virtio I2C message structure which includes following parts:
-> 
-> - Header: i2c_msg addr, flags, len.
-> - Data buffer: the pointer to the I2C msg data.
-> - Status: the processing result from the backend.
-> 
-> People may implement different backend drivers to emulate
-> different controllers according to their needs. A backend
-> example can be found in the device model of the open source
-> project ACRN. For more information, please refer to
-> https://projectacrn.org.
-> 
-> The virtio device ID 34 is used for this I2C adpter since IDs
-> before 34 have been reserved by other virtio devices.
-> 
-> Co-developed-by: Conghui Chen <conghui.chen@intel.com>
-> Signed-off-by: Conghui Chen <conghui.chen@intel.com>
-> Signed-off-by: Jie Deng <jie.deng@intel.com>
-> Reviewed-by: Shuo Liu <shuo.a.liu@intel.com>
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
-> The device ID request:
->         https://github.com/oasis-tcs/virtio-spec/issues/85
-> 
-> The specification:
-> 	https://lists.oasis-open.org/archives/virtio-comment/202009/msg00021.html
-> 
-> Changes in v3:
->         - Move the interface into uAPI according to Jason.
->         - Fix issues reported by Dan Carpenter.
-> 	- Fix typo reported by Randy.
-> 
-> Changes in v2:
->         - Addressed comments received from Michael, Andy and Jason.
-> 
->  drivers/i2c/busses/Kconfig      |  11 ++
->  drivers/i2c/busses/Makefile     |   3 +
->  drivers/i2c/busses/i2c-virtio.c | 256 ++++++++++++++++++++++++++++++++++++++++
->  include/uapi/linux/virtio_i2c.h |  31 +++++
->  include/uapi/linux/virtio_ids.h |   1 +
->  5 files changed, 302 insertions(+)
->  create mode 100644 drivers/i2c/busses/i2c-virtio.c
->  create mode 100644 include/uapi/linux/virtio_i2c.h
-> 
-> diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
-> index 293e7a0..f2f6543 100644
-> --- a/drivers/i2c/busses/Kconfig
-> +++ b/drivers/i2c/busses/Kconfig
-> @@ -21,6 +21,17 @@ config I2C_ALI1535
->  	  This driver can also be built as a module.  If so, the module
->  	  will be called i2c-ali1535.
->  
-> +config I2C_VIRTIO
-> +	tristate "Virtio I2C Adapter"
-> +	depends on VIRTIO
-> +	help
-> +	  If you say yes to this option, support will be included for the virtio
-> +	  I2C adapter driver. The hardware can be emulated by any device model
-> +	  software according to the virtio protocol.
-> +
-> +	  This driver can also be built as a module. If so, the module
-> +	  will be called i2c-virtio.
-> +
->  config I2C_ALI1563
->  	tristate "ALI 1563"
->  	depends on PCI
-> diff --git a/drivers/i2c/busses/Makefile b/drivers/i2c/busses/Makefile
-> index 19aff0e..821acfa 100644
-> --- a/drivers/i2c/busses/Makefile
-> +++ b/drivers/i2c/busses/Makefile
-> @@ -6,6 +6,9 @@
->  # ACPI drivers
->  obj-$(CONFIG_I2C_SCMI)		+= i2c-scmi.o
->  
-> +# VIRTIO I2C host controller driver
-> +obj-$(CONFIG_I2C_VIRTIO)	+= i2c-virtio.o
-> +
->  # PC SMBus host controller drivers
->  obj-$(CONFIG_I2C_ALI1535)	+= i2c-ali1535.o
->  obj-$(CONFIG_I2C_ALI1563)	+= i2c-ali1563.o
-> diff --git a/drivers/i2c/busses/i2c-virtio.c b/drivers/i2c/busses/i2c-virtio.c
-> new file mode 100644
-> index 0000000..48fd780
-> --- /dev/null
-> +++ b/drivers/i2c/busses/i2c-virtio.c
-> @@ -0,0 +1,256 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Virtio I2C Bus Driver
-> + *
-> + * Copyright (c) 2020 Intel Corporation. All rights reserved.
-> + */
-> +
-> +#include <linux/acpi.h>
-> +#include <linux/completion.h>
-> +#include <linux/err.h>
-> +#include <linux/i2c.h>
-> +#include <linux/io.h>
-> +#include <linux/jiffies.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/wait.h>
-> +
-> +#include <linux/virtio.h>
-> +#include <linux/virtio_i2c.h>
-> +
-> +/**
-> + * struct virtio_i2c_msg - the virtio I2C message structure
-> + * @hdr: the virtio I2C message header
-> + * @buf: virtio I2C message data buffer
-> + * @status: the processing result from the backend
-> + */
-> +struct virtio_i2c_msg {
-> +	struct virtio_i2c_hdr hdr;
-> +	u8 *buf;
-> +	u8 status;
-> +};
-> +
-> +/**
-> + * struct virtio_i2c - virtio I2C data
-> + * @vdev: virtio device for this controller
-> + * @completion: completion of virtio I2C message
-> + * @vmsg: the virtio I2C message for communication
-> + * @adap: I2C adapter for this controller
-> + * @i2c_lock: lock for virtqueue processing
-> + * @vq: the virtio virtqueue for communication
-> + */
-> +struct virtio_i2c {
-> +	struct virtio_device *vdev;
-> +	struct completion completion;
-> +	struct virtio_i2c_msg vmsg;
-> +	struct i2c_adapter adap;
-> +	struct mutex i2c_lock;
-> +	struct virtqueue *vq;
-> +};
-> +
-> +static void virtio_i2c_msg_done(struct virtqueue *vq)
-> +{
-> +	struct virtio_i2c *vi = vq->vdev->priv;
-> +
-> +	complete(&vi->completion);
-> +}
-> +
-> +static int virtio_i2c_add_msg(struct virtqueue *vq,
-> +			      struct virtio_i2c_msg *vmsg,
-> +			      struct i2c_msg *msg)
-> +{
-> +	struct scatterlist *sgs[3], hdr, bout, bin, status;
-> +	int outcnt = 0, incnt = 0;
-> +
-> +	if (!msg->len)
-> +		return -EINVAL;
-> +
-> +	vmsg->hdr.addr = cpu_to_le16(msg->addr);
-> +	vmsg->hdr.flags = cpu_to_le16(msg->flags);
-> +	vmsg->hdr.len = cpu_to_le16(msg->len);
-> +
-> +	vmsg->buf = kzalloc(msg->len, GFP_KERNEL);
-> +	if (!vmsg->buf)
-> +		return -ENOMEM;
-> +
-> +	sg_init_one(&hdr, &vmsg->hdr, sizeof(struct virtio_i2c_hdr));
-> +	sgs[outcnt++] = &hdr;
-> +	if (msg->flags & I2C_M_RD) {
-> +		sg_init_one(&bin, vmsg->buf, msg->len);
-> +		sgs[outcnt + incnt++] = &bin;
-> +	} else {
-> +		memcpy(vmsg->buf, msg->buf, msg->len);
-> +		sg_init_one(&bout, vmsg->buf, msg->len);
-> +		sgs[outcnt++] = &bout;
-> +	}
-> +	sg_init_one(&status, &vmsg->status, sizeof(vmsg->status));
-> +	sgs[outcnt + incnt++] = &status;
-> +
-> +	return virtqueue_add_sgs(vq, sgs, outcnt, incnt, vmsg, GFP_KERNEL);
-> +}
-> +
-> +static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
-> +{
-> +	struct virtio_i2c *vi = i2c_get_adapdata(adap);
-> +	struct virtqueue *vq = vi->vq;
-> +	struct virtio_i2c_msg *vmsg;
-> +	unsigned long time_left;
-> +	int len, i, ret = 0;
-> +
-> +	mutex_lock(&vi->i2c_lock);
-> +	vmsg = &vi->vmsg;
-> +	vmsg->buf = NULL;
-> +
-> +	for (i = 0; i < num; i++) {
-> +		ret = virtio_i2c_add_msg(vq, vmsg, &msgs[i]);
-> +		if (ret) {
-> +			dev_err(&adap->dev, "failed to add msg[%d] to virtqueue.\n", i);
-> +			break;
-> +		}
-> +
-> +		virtqueue_kick(vq);
-> +
-> +		time_left = wait_for_completion_timeout(&vi->completion, adap->timeout);
-> +		if (!time_left) {
-> +			dev_err(&adap->dev, "msg[%d]: addr=0x%x timeout.\n", i, msgs[i].addr);
-> +			break;
-> +		}
-> +
-> +		vmsg = (struct virtio_i2c_msg *)virtqueue_get_buf(vq, &len);
-> +		/* vmsg should point to the same address with &vi->vmsg */
+Hi Mark,
 
-> +		if ((!vmsg) || (vmsg != &vi->vmsg)) {
-
-This is a bit difficult to read (esp. taking into account the above comment)
-besides the fact of redundant parentheses. Why not simply:
-
-		if (!(vmsg && vmsg == &vi->vmsg)) {
-
-?
-
-> +			dev_err(&adap->dev, "msg[%d]: addr=0x%x virtqueue error.\n",
-> +				i, msgs[i].addr);
-> +			break;
-> +		}
-> +
-> +		if (vmsg->status != VIRTIO_I2C_MSG_OK) {
-> +			dev_err(&adap->dev, "msg[%d]: addr=0x%x error=%d.\n",
-> +				i, msgs[i].addr, vmsg->status);
-> +			break;
-> +		}
-> +
-> +		if ((msgs[i].flags & I2C_M_RD) && msgs[i].len)
-> +			memcpy(msgs[i].buf, vmsg->buf, msgs[i].len);
-> +
-> +		kfree(vmsg->buf);
-> +		vmsg->buf = NULL;
-> +
-> +		reinit_completion(&vi->completion);
-> +	}
-> +
-> +	mutex_unlock(&vi->i2c_lock);
-> +	kfree(vi->vmsg.buf);
-> +	vi->vmsg.buf = NULL;
-> +	return ((ret < 0) ? ret : i);
-> +}
-> +
-> +static void virtio_i2c_del_vqs(struct virtio_device *vdev)
-> +{
-> +	vdev->config->reset(vdev);
-> +	vdev->config->del_vqs(vdev);
-> +}
-> +
-> +static int virtio_i2c_setup_vqs(struct virtio_i2c *vi)
-> +{
-> +	struct virtio_device *vdev = vi->vdev;
-> +
-> +	vi->vq = virtio_find_single_vq(vdev, virtio_i2c_msg_done, "msg");
-> +	return PTR_ERR_OR_ZERO(vi->vq);
-> +}
-> +
-> +static u32 virtio_i2c_func(struct i2c_adapter *adap)
-> +{
-> +	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL;
-> +}
-> +
-> +static struct i2c_algorithm virtio_algorithm = {
-> +	.master_xfer = virtio_i2c_xfer,
-> +	.functionality = virtio_i2c_func,
-> +};
-> +
-> +static struct i2c_adapter virtio_adapter = {
-> +	.owner = THIS_MODULE,
-> +	.name = "Virtio I2C Adapter",
-> +	.class = I2C_CLASS_DEPRECATED,
-> +	.algo = &virtio_algorithm,
-> +};
-> +
-> +static int virtio_i2c_probe(struct virtio_device *vdev)
-> +{
-> +	struct device *pdev = vdev->dev.parent;
-> +	struct virtio_i2c *vi;
-> +	int ret;
-> +
-> +	vi = devm_kzalloc(&vdev->dev, sizeof(*vi), GFP_KERNEL);
-> +	if (!vi)
-> +		return -ENOMEM;
-> +
-> +	vdev->priv = vi;
-> +	vi->vdev = vdev;
-> +
-> +	mutex_init(&vi->i2c_lock);
-> +	init_completion(&vi->completion);
-> +
-> +	ret = virtio_i2c_setup_vqs(vi);
-> +	if (ret)
-> +		return ret;
-> +
-> +	vi->adap = virtio_adapter;
-> +	i2c_set_adapdata(&vi->adap, vi);
-> +	vi->adap.dev.parent = &vdev->dev;
-> +	/* Setup ACPI node for slave devices which will be probed through ACPI */
-> +	ACPI_COMPANION_SET(&vi->adap.dev, ACPI_COMPANION(pdev));
-> +	vi->adap.timeout = HZ / 10;
-> +
-> +	ret = i2c_add_adapter(&vi->adap);
-> +	if (ret) {
-> +		virtio_i2c_del_vqs(vdev);
-> +		dev_err(&vdev->dev, "failed to add virtio-i2c adapter.\n");
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static void virtio_i2c_remove(struct virtio_device *vdev)
-> +{
-> +	struct virtio_i2c *vi = vdev->priv;
-> +
-> +	i2c_del_adapter(&vi->adap);
-> +	virtio_i2c_del_vqs(vdev);
-> +}
-> +
-> +static struct virtio_device_id id_table[] = {
-> +	{ VIRTIO_ID_I2C_ADPTER, VIRTIO_DEV_ANY_ID },
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(virtio, id_table);
-> +
-> +static int __maybe_unused virtio_i2c_freeze(struct virtio_device *vdev)
-> +{
-> +	virtio_i2c_del_vqs(vdev);
-> +	return 0;
-> +}
-> +
-> +static int __maybe_unused virtio_i2c_restore(struct virtio_device *vdev)
-> +{
-> +	return virtio_i2c_setup_vqs(vdev->priv);
-> +}
-> +
-> +static struct virtio_driver virtio_i2c_driver = {
-> +	.id_table	= id_table,
-> +	.probe		= virtio_i2c_probe,
-> +	.remove		= virtio_i2c_remove,
-> +	.driver	= {
-> +		.name	= "i2c_virtio",
-> +	},
-> +#ifdef CONFIG_PM_SLEEP
-> +	.freeze = virtio_i2c_freeze,
-> +	.restore = virtio_i2c_restore,
-> +#endif
-> +};
-> +module_virtio_driver(virtio_i2c_driver);
-> +
-> +MODULE_DESCRIPTION("Virtio i2c bus driver");
-> +MODULE_LICENSE("GPL");
-> diff --git a/include/uapi/linux/virtio_i2c.h b/include/uapi/linux/virtio_i2c.h
-> new file mode 100644
-> index 0000000..7413e45
-> --- /dev/null
-> +++ b/include/uapi/linux/virtio_i2c.h
-> @@ -0,0 +1,31 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later OR BSD-3-Clause */
-> +/*
-> + * Definitions for virtio I2C Adpter
-> + *
-> + * Copyright (c) 2020 Intel Corporation. All rights reserved.
-> + */
-> +
-> +#ifndef _UAPI_LINUX_VIRTIO_I2C_H
-> +#define _UAPI_LINUX_VIRTIO_I2C_H
-> +
-> +#include <linux/types.h>
-> +#include <linux/virtio_ids.h>
-> +#include <linux/virtio_config.h>
-> +
-> +/**
-> + * struct virtio_i2c_hdr - the virtio I2C message header structure
-> + * @addr: i2c_msg addr, the slave address
-> + * @flags: i2c_msg flags
-> + * @len: i2c_msg len
-> + */
-> +struct virtio_i2c_hdr {
-> +	__le16 addr;
-> +	__le16 flags;
-> +	__le16 len;
-> +};
-> +
-> +/* The final status written by the device */
-> +#define VIRTIO_I2C_MSG_OK	0
-> +#define VIRTIO_I2C_MSG_ERR	1
-> +
-> +#endif /* _UAPI_LINUX_VIRTIO_I2C_H */
-> diff --git a/include/uapi/linux/virtio_ids.h b/include/uapi/linux/virtio_ids.h
-> index b052355..398ef2d 100644
-> --- a/include/uapi/linux/virtio_ids.h
-> +++ b/include/uapi/linux/virtio_ids.h
-> @@ -48,5 +48,6 @@
->  #define VIRTIO_ID_FS           26 /* virtio filesystem */
->  #define VIRTIO_ID_PMEM         27 /* virtio pmem */
->  #define VIRTIO_ID_MAC80211_HWSIM 29 /* virtio mac80211-hwsim */
-> +#define VIRTIO_ID_I2C_ADPTER   34 /* virtio i2c adpter */
->  
->  #endif /* _LINUX_VIRTIO_IDS_H */
-> -- 
-> 2.7.4
+On 17. 09. 20 19:28, Mark Brown wrote:
+> On Wed, Sep 09, 2020 at 09:27:06AM -0600, Amit Kumar Mahapatra wrote:
+>> Fix kernel-doc warnings in ZynqMP qspi driver file.
 > 
+> This doesn't apply against current code, please check and resend.
 
--- 
-With Best Regards,
-Andy Shevchenko
+I have tried to apply these 3 patches to your branches at
+ https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git
 
+for-next/for-linus/for-5.10 and I can't see any issue with applying
+these patches.
+Can you please let us know if what tree/branch should be used?
 
+Thanks,
+Michal
