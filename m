@@ -2,148 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A1DC273DC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 10:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BCB1273DCB
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 10:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726588AbgIVIvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 04:51:11 -0400
-Received: from mail-dm6nam10on2045.outbound.protection.outlook.com ([40.107.93.45]:41169
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726098AbgIVIvK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 04:51:10 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Pj1Z1AUvf644WGgTrueI8bhgzNyK2deebT8jE+4jwVX8rP/VlYkKOJF2vxz9i9Xxvc75oCcpsOapqo81HdNW/mDJulE5Ye2R/93yYM+zsmg9mBXKuphCKKkIKOOVkN3XozU7e74CGjXRPT6rw1wZmJff+BVmV0SGHtaXQZMFwq49koLP5KE8Ly9ZWXMQDtODhUouxR2wMulFn8ZxbD6LKnxtpO+Qlhpx4AIAtLIL2FJVUwInqRU+PYu9+sx+8mRwUk6vcdl9psH0l7cC9c7CtZpCMQtDPmoBuTepSZe9K9KJ4FJWm3AfE2OJAFM/0zEz3iV+sS3GX8n1PhDRg9VvUg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UckRBRR05g19PH2qqSyvnCwZhGLCWayn09vV4fEmaqE=;
- b=k6vp4xSCg8DfPCOHcB8cpVSsKKFM3kwt+CAjkcaLePX070EQkwz2m7LxgEPpTjejXFOX+3HkN2aVdqGxyG4/7V6t3n+13tO52NJN7tMizKXoXQk7VqdAUEkHnDPH/X74631CFwH3A49+yrecv1vXvzye9cWhD0sMb7dMu6pTWx8WkImHyNbgrxtKGvzEyp03YNOVvLxJSe0txYPSJ9lvyO1X/ztZJyzG0yAppgc6oGUpyGFRLFTEdglcM5QyAfK1erGfjcKOPCZqOTfqY04ZNBkqe5bS038Wzf1mYd6mQbZmre9iQMebTqUBYY5j8I0j2snVoqWdjNZyM8iNJrpfPw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UckRBRR05g19PH2qqSyvnCwZhGLCWayn09vV4fEmaqE=;
- b=f5qFvucBzhlzKOmPyP9SlxVk+rEvCHLOePLOr0Qt3ov8nYoxqQD6oxHOFwGTmvaeX3hmXLqNsVuEJDXmaGoIvJYMvdJVUdj7yF3dSCmpN19gk6FRXwjNlL59hM6ZfrFS0q7YhA0t+hSwTm81I1fuaQ6mHr4W09CrnVsSTVxpikQ=
-Received: from BYAPR05MB4839.namprd05.prod.outlook.com (52.135.235.141) by
- SJ0PR05MB7392.namprd05.prod.outlook.com (20.181.200.212) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3412.8; Tue, 22 Sep 2020 08:51:06 +0000
-Received: from BYAPR05MB4839.namprd05.prod.outlook.com
- ([fe80::4cec:47f6:a0be:8304]) by BYAPR05MB4839.namprd05.prod.outlook.com
- ([fe80::4cec:47f6:a0be:8304%6]) with mapi id 15.20.3391.025; Tue, 22 Sep 2020
- 08:51:05 +0000
-From:   Abdul Anshad Azeez <aazees@vmware.com>
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-CC:     "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>
-Subject: Performance regressions in networking & storage benchmarks in Linux
- kernel 5.8
-Thread-Topic: Performance regressions in networking & storage benchmarks in
- Linux kernel 5.8
-Thread-Index: AQHWkLxv33yBR7j1VE2lVgq0lG/dkA==
-Date:   Tue, 22 Sep 2020 08:51:05 +0000
-Message-ID: <BYAPR05MB4839189DFC487A1529D6734CA63B0@BYAPR05MB4839.namprd05.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=vmware.com;
-x-originating-ip: [183.82.221.236]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6719534e-4b59-4741-e756-08d85ed4a48b
-x-ms-traffictypediagnostic: SJ0PR05MB7392:
-x-microsoft-antispam-prvs: <SJ0PR05MB7392A7F22390FC9640D130E7A63B0@SJ0PR05MB7392.namprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: N/2zpkm77UcejifI3PVInlFNFUUwwxroOzK7n3FNMlwueNrmTliprkXm6vtDNYo24AsyeChuVVMSMWeUS/rwDntnacKqsn2+HI1/KVkeIefFZOTEss3PoB7WCPfj5uC3i1jJa0OOOjKMQIp78drVRfsxW3Nx2SVdix7EuqWeM/17oY8cMuRCnYNAyGy2Iac/voX4CDEQOS6qknuhTm8xL4+ucx5ggXsdPVE7uThYs2hSUNCyvRTwT499fYGRLOkB/TKIXjPYXzW6jFTQpeGFv/Pi+31qEntSqRDXLVN2tOCbTE/P6wtAI5ogsNqjbwQB7kvSb5YVuPOjND+7uQROpass2yfnNVcyceALqU4w5zfpMTpDiLMh7vtwp5/Wv0tu
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR05MB4839.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(376002)(39860400002)(366004)(54906003)(76116006)(6506007)(2906002)(9686003)(66476007)(66946007)(8936002)(26005)(66556008)(64756008)(186003)(110136005)(55016002)(4326008)(86362001)(478600001)(5660300002)(71200400001)(33656002)(7696005)(52536014)(91956017)(66446008)(8676002)(83380400001)(316002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: 5Sn448QOeVmXWAlaPdrN5e4+mPcfQCfncIQCfnBSXDOwL/OLSExdoIdah0ip03tjb30qmNmWDo5Ep4eLLr42aYcQzZiuhPC6q2mksyt5LuQUZSgh11yApL9Ae/mLXsjcR33/WuMs9jrD2mmzYJEphv9pSg+VXt35Ivq3hpeb/6Ve1bdz7zuYPqJa9VFMcMTDMUzgABOUPpjhk0DixMFoZOIh0MSU1eTOAwsfpMTI9diEr2OpMHNqHSRcaIgHkm7AJt0LLiuDdB/TNJk3IMcKf9pjV7jwHAKKYHXmLoZ/OdgXw6FYKOV+Ooz4hJThereMx8l7Lv4/9y+oS6gm7mtW1Qw1GUZGdhi2AWPEDapOkqg6r3mM3hkhtn5Z9frbhPGs+1S6UtYwGAinKfPyEFLJeqpnQ3ORIP3gn7mm6g/as3bKulyzWuEG0JTSgrc5TumTglchfc7ye9MbRWQRd+8S0wDxIAwXiwiSVou6IV/23QobioSs/ygJ50vgw6xmRjJ+UFwg1Pi419l62gQkhJdj0S4RvW0pOccasXsC6/A0BQPoU+1lezKwZRErBq6xsUMGtNpMfLu9PO56dNuLCWM+OTrkw3hNscrHx6gGQ09Glb87BGCLBFNa9HotVxufdvyf9XHXZH4OmVonDCG4U/nYTg==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S1726486AbgIVIxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 04:53:12 -0400
+Received: from foss.arm.com ([217.140.110.172]:57620 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726142AbgIVIxM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 04:53:12 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1086C11B3;
+        Tue, 22 Sep 2020 01:53:12 -0700 (PDT)
+Received: from [10.163.73.153] (unknown [10.163.73.153])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E25E73F718;
+        Tue, 22 Sep 2020 01:53:08 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: Re: [mm/debug_vm_pgtable/locks] e2aad6f1d2:
+ BUG:unable_to_handle_page_fault_for_address
+To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        kernel test robot <rong.a.chen@intel.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com
+References: <20200921092114.GG13157@shao2-debian>
+ <289c3fdb-1394-c1af-bdc4-5542907089dc@linux.ibm.com>
+Message-ID: <84ce4dc1-9763-c7df-b7b2-55000e53b502@arm.com>
+Date:   Tue, 22 Sep 2020 14:22:32 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR05MB4839.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6719534e-4b59-4741-e756-08d85ed4a48b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Sep 2020 08:51:05.9065
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Qgr3s/8HXKh0W8hyFoCBtRKiLR8/fJC8xElxDdMMM3l9okt3Hpfzwe+e2t/ptWDl9prrwt4qi//LOA/SRH1LCg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR05MB7392
+In-Reply-To: <289c3fdb-1394-c1af-bdc4-5542907089dc@linux.ibm.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Part of VMware's performance regression testing for Linux Kernel upstream r=
-ele=0A=
-ases we compared Linux kernel 5.8 against 5.7. Our evaluation revealed perf=
-orm=0A=
-ance regressions mostly in networking latency/response-time benchmarks up t=
-o 6=0A=
-0%. Storage throughput & latency benchmarks were also up by 8%.=0A=
-=0A=
-After performing the bisect between kernel 5.8 and 5.7, we identified the r=
-oot=0A=
- cause behaviour to be an interrupt related change from Thomas Gleixner's "=
-633=0A=
-260fa143bbed05e65dc557a492667dfdc45bb(x86/irq: Convey vector as argument an=
-d n=0A=
-ot in ptregs)" commit. To confirm this, we backed out the commit from 5.8 &=
- re=0A=
-ran our tests and found that the performance was similar to 5.7 kernel.=0A=
-=0A=
-Impacted test cases:=0A=
-=0A=
-Networking:=0A=
-    - Netperf TCP_RR & TCP_CRR - Response time=0A=
-    - Ping - Response time=0A=
-    - Memcache - Response time=0A=
-    - Netperf TCP_STREAM small(8K socket & 256B message)(TCP_NODELAY set) p=
-ack=0A=
-ets - Throughput & CPU utilization(CPU/Gbits)=0A=
-=0A=
-Storage:=0A=
-    - FIO:=0A=
-        - 4K (rand|seq)_(read|write) local-NVMe MultiVM tests - Throughput =
-& l=0A=
-atency=0A=
-=0A=
-From our testing, overall results indicate that above-mentioned commit has =
-int=0A=
-roduced performance regressions in latency-sensitive workloads for networki=
-ng.=0A=
- For storage, it affected both throughput & latency workloads.=0A=
-=0A=
-Also, since Linux 5.9-rc4 kernel was released recently, we repeated the sam=
-e e=0A=
-xperiments on 5.9-rc4. We observed all regressions were fixed and the perfo=
-rma=0A=
-nce numbers between 5.7 and 5.9-rc4 were similar.=0A=
-=0A=
-In order to find the fix commit, we bisected again between 5.8 and 5.9-rc4 =
-and=0A=
- identified that regressions were fixed from a commit made by the same auth=
-or =0A=
-Thomas Gleixner, which unbreaks the interrupt affinity settings - "e027ffff=
-f79=0A=
-9cdd70400c5485b1a54f482255985(x86/irq: Unbreak interrupt affinity setting)"=
-.=0A=
-=0A=
-We believe these findings would be useful to the Linux community and wanted=
- to=0A=
- document the same.=0A=
-=0A=
-Abdul Anshad Azeez=0A=
-Performance Engineering=0A=
-VMware, Inc.=
+
+
+On 09/22/2020 09:33 AM, Aneesh Kumar K.V wrote:
+> On 9/21/20 2:51 PM, kernel test robot wrote:
+>> Greeting,
+>>
+>> FYI, we noticed the following commit (built with gcc-9):
+>>
+>> commit: e2aad6f1d232b457ea6a3194992dd4c0a83534a5 ("mm/debug_vm_pgtable/locks: take correct page table lock")
+>> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+>>
+>>
+>> in testcase: trinity
+>> version: trinity-i386
+>> with following parameters:
+>>
+>>     runtime: 300s
+>>
+>> test-description: Trinity is a linux system call fuzz tester.
+>> test-url: http://codemonkey.org.uk/projects/trinity/
+>>
+>>
+>> on test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 -m 8G
+>>
+>> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+>>
+>>
+>> +----------------------------------------------------------------------+------------+------------+
+>> |                                                                      | c50eb1ed65 | e2aad6f1d2 |
+>> +----------------------------------------------------------------------+------------+------------+
+>> | boot_successes                                                       | 0          | 0          |
+>> | boot_failures                                                        | 61         | 17         |
+>> | BUG:workqueue_lockup-pool                                            | 1          |            |
+>> | BUG:sleeping_function_called_from_invalid_context_at_mm/page_alloc.c | 60         | 17         |
+>> | BUG:unable_to_handle_page_fault_for_address                          | 0          | 17         |
+>> | Oops:#[##]                                                           | 0          | 17         |
+>> | EIP:ptep_get                                                         | 0          | 17         |
+>> | Kernel_panic-not_syncing:Fatal_exception                             | 0          | 17         |
+>> +----------------------------------------------------------------------+------------+------------+
+>>
+>>
+>> If you fix the issue, kindly add following tag
+>> Reported-by: kernel test robot <rong.a.chen@intel.com>
+>>
+>>
+>> [   28.726464] BUG: sleeping function called from invalid context at mm/page_alloc.c:4822
+>> [   28.727835] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 1, name: swapper
+>> [   28.729221] no locks held by swapper/1.
+>> [   28.729954] CPU: 0 PID: 1 Comm: swapper Not tainted 5.9.0-rc3-00324-ge2aad6f1d232b4 #1
+>> [   28.731484] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
+>> [   28.732891] Call Trace:
+>> [   28.733295]  ? show_stack+0x48/0x50
+>> [   28.733943]  dump_stack+0x1b/0x1d
+>> [   28.734569]  ___might_sleep+0x205/0x219
+>> [   28.735292]  __might_sleep+0x106/0x10f
+>> [   28.736022]  __alloc_pages_nodemask+0xe0/0x2c8
+>> [   28.736845]  swap_migration_tests+0x62/0x295
+>> [   28.737639]  debug_vm_pgtable+0x587/0x9b5
+>> [   28.738374]  ? pte_advanced_tests+0x267/0x267
+>> [   28.739318]  do_one_initcall+0x129/0x31c
+>> [   28.740023]  ? rcu_read_lock_sched_held+0x46/0x74
+>> [   28.740944]  kernel_init_freeable+0x201/0x250
+>> [   28.741763]  ? rest_init+0xf8/0xf8
+>> [   28.742401]  kernel_init+0xe/0x15d
+>> [   28.743040]  ? rest_init+0xf8/0xf8
+>> [   28.743694]  ret_from_fork+0x1c/0x30
+> 
+> 
+> This should be fixed by
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/mm/debug_vm_pgtable.c?id=3a4f9a45eadb6ed5fc04686e8db4dc7bb1caec44
+> 
+>> [   28.744364] BUG: unable to handle page fault for address: fffbbea4
+>> [   28.745465] #PF: supervisor read access in kernel mode
+>> [   28.746373] #PF: error_code(0x0000) - not-present page
+>> [   28.747275] *pde = 0492b067 *pte = 00000000
+>> [   28.748054] Oops: 0000 [#1]
+>> [   28.748548] CPU: 0 PID: 1 Comm: swapper Tainted: G        W         5.9.0-rc3-00324-ge2aad6f1d232b4 #1
+>> [   28.750188] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
+>> [   28.751641] EIP: ptep_get+0x0/0x3
+>> [   28.752226] Code: 5d fc c9 c3 55 c1 e8 1a 89 e5 53 31 db 83 f8 1f 6a 00 0f 94 c3 b8 80 67 02 c4 31 c9 89 da e8 16 5c f1 ff 89 d8 8b 5d fc c9 c3 <8b> 00 c3 55 31 c9 89 e5 57 56 53 8b 70 04 89 c3 b8 10 68 02 c4 6a
+>> [   28.755465] EAX: fffbbea4 EBX: fffbbea4 ECX: 000047bd EDX: fffbbea4
+>> [   28.756418] ESI: 000047bd EDI: 00000025 EBP: f406bed8 ESP: f406bebc
+>> [   28.757522] DS: 007b ES: 007b FS: 0000 GS: 0000 SS: 0068 EFLAGS: 00010286
+>> [   28.758739] CR0: 80050033 CR2: fffbbea4 CR3: 04928000 CR4: 000406d0
+>> [   28.759828] Call Trace:
+>> [   28.760235]  ? hugetlb_advanced_tests+0x2a/0x27f
+>> [   28.761099]  ? do_raw_spin_unlock+0xd7/0x112
+>> [   28.761872]  debug_vm_pgtable+0x927/0x9b5
+>> [   28.762578]  ? pte_advanced_tests+0x267/0x267
+>> [   28.763462]  do_one_initcall+0x129/0x31c
+>> [   28.764134]  ? rcu_read_lock_sched_held+0x46/0x74
+>> [   28.764948]  kernel_init_freeable+0x201/0x250
+>> [   28.765654]  ? rest_init+0xf8/0xf8
+>> [   28.766277]  kernel_init+0xe/0x15d
+>> [   28.766878]  ? rest_init+0xf8/0xf8
+>> [   28.767488]  ret_from_fork+0x1c/0x30
+>> [   28.768052] Modules linked in:
+>> [   28.768532] CR2: 00000000fffbbea4
+>> [   28.769065] ---[ end trace 9c4395cf49c7b3e7 ]---
+>>
+> 
+> IIUC, Anshuman is reworking the test to follow the page table update rules.
+
+The failure here has been attributed to this particular patch, and
+IIRC we did not see this particular failure before this series.
