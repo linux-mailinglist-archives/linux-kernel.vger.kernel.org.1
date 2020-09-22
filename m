@@ -2,46 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D429273FDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 12:47:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9772027401E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 12:56:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726531AbgIVKro convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Sep 2020 06:47:44 -0400
-Received: from mail.office.gov35.ru ([91.207.5.10]:59166 "EHLO
-        mail.office.gov35.ru" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726419AbgIVKrn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 06:47:43 -0400
-X-Greylist: delayed 9695 seconds by postgrey-1.27 at vger.kernel.org; Tue, 22 Sep 2020 06:47:42 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by mail.office.gov35.ru (mail.office.gov35.ru) with ESMTP id F1D9B38ADD8
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 06:28:00 +0300 (MSK)
-X-Virus-Scanned: amavisd-new at office.gov35.ru
-Received: from mail.office.gov35.ru ([127.0.0.1])
-        by localhost (office.gov35.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Lk0kbUgv6UXR for <linux-kernel@vger.kernel.org>;
-        Tue, 22 Sep 2020 06:27:59 +0300 (MSK)
-Received: from [156.96.56.34] (unknown [10.135.151.200])
-        by mail.office.gov35.ru (mail.office.gov35.ru) with ESMTP id DD23827B98E;
-        Mon, 21 Sep 2020 12:49:01 +0300 (MSK)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1726549AbgIVK4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 06:56:21 -0400
+Received: from elvis.franken.de ([193.175.24.41]:51117 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726473AbgIVK4U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 06:56:20 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kKfxr-000822-00; Tue, 22 Sep 2020 12:56:03 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id AF6B3C0FE6; Tue, 22 Sep 2020 10:48:48 +0200 (CEST)
+Date:   Tue, 22 Sep 2020 10:48:48 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        iommu@lists.linux-foundation.org,
+        Stefan Richter <stefanr@s5r6.in-berlin.de>,
+        linux1394-devel@lists.sourceforge.net, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-mm@kvack.org,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH 06/18] lib82596: move DMA allocation into the callers of
+ i82596_probe
+Message-ID: <20200922084848.GA8477@alpha.franken.de>
+References: <20200915155122.1768241-1-hch@lst.de>
+ <20200915155122.1768241-7-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Re : Good Day
-To:     Recipients <noreply@gmail.com>
-From:   "Gareth Henry" <noreply@gmail.com>
-Date:   Mon, 21 Sep 2020 02:48:55 -0700
-Reply-To: garethh@consultant.com
-Message-Id: <20200921094902.DD23827B98E@mail.office.gov35.ru>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915155122.1768241-7-hch@lst.de>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I Hope you are having a good day and the Covid-19 is not hitting hard on your side. I would like to know if you got my previous email with regards to the inheritance claims I informed you about earlier. Please let me know your interest. I will send further details if you wish to proceed.
+On Tue, Sep 15, 2020 at 05:51:10PM +0200, Christoph Hellwig wrote:
+> This allows us to get rid of the LIB82596_DMA_ATTR defined and prepare
+> for untangling the coherent vs non-coherent DMA allocation API.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  drivers/net/ethernet/i825xx/lasi_82596.c | 24 ++++++++++------
+>  drivers/net/ethernet/i825xx/lib82596.c   | 36 ++++++++----------------
+>  drivers/net/ethernet/i825xx/sni_82596.c  | 19 +++++++++----
+>  3 files changed, 40 insertions(+), 39 deletions(-)
 
+Tested-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de> (SNI part)
 
-
-Best regards,
-
-Gareth A. Henry  
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
