@@ -2,134 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AC742748B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 523582748D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726706AbgIVTC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 15:02:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42830 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726573AbgIVTC6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 15:02:58 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 183E22311C;
-        Tue, 22 Sep 2020 19:02:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600801377;
-        bh=kfSHjo9onjvmI6pMBNdhR3lxeQF9LkBIVqUdjFkkZOU=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=gF37dLFEuJkiXyqf/Z5fbwTmkIE1AqH6lHhce6qh8OA+RP1rXD5Jsxb1/X7mVS0y7
-         Uw7bPGpxiJLr9P1VGDrVpaFZUIlL7U9EWpmbMzZGSOC8u5fyugn73OhdkO5IImpdaK
-         rNvZOAsShkNXns+J1R6KFVsQcqirfkS7yKUwlX1I=
-Content-Type: text/plain; charset="utf-8"
+        id S1726722AbgIVTKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 15:10:00 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:54314 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726563AbgIVTKA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 15:10:00 -0400
+X-Greylist: delayed 401 seconds by postgrey-1.27 at vger.kernel.org; Tue, 22 Sep 2020 15:09:58 EDT
+Received: from 89-64-89-53.dynamic.chello.pl (89.64.89.53) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.468)
+ id 1a302cbbceee2e3b; Tue, 22 Sep 2020 21:03:16 +0200
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>, bp@alien8.de,
+        x86@kernel.org, tony.luck@intel.com, lenb@kernel.org,
+        daniel.lezcano@linaro.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
+        ulf.hansson@linaro.org, paulmck@kernel.org, tglx@linutronix.de,
+        naresh.kamboju@linaro.org
+Subject: Re: [RFC][PATCH 1/4] acpi: Use CPUIDLE_FLAG_TIMER_STOP
+Date:   Tue, 22 Sep 2020 21:03:15 +0200
+Message-ID: <5947336.4NNQoPcqAU@kreacher>
+In-Reply-To: <20200922032651.GA222679@roeck-us.net>
+References: <20200915103157.345404192@infradead.org> <20200915103806.280265587@infradead.org> <20200922032651.GA222679@roeck-us.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200911153412.21672-4-jonathan@marek.ca>
-References: <20200911153412.21672-1-jonathan@marek.ca> <20200911153412.21672-4-jonathan@marek.ca>
-Subject: Re: [PATCH v3 3/7] dt-bindings: clock: combine qcom,sdm845-dispcc and qcom,sc7180-dispcc
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-To:     Jonathan Marek <jonathan@marek.ca>, linux-arm-msm@vger.kernel.org
-Date:   Tue, 22 Sep 2020 12:02:55 -0700
-Message-ID: <160080137590.310579.8319855170599098111@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Jonathan Marek (2020-09-11 08:34:03)
-> These two bindings are almost identical, so combine them into one. This
-> will make it easier to add the sm8150 and sm8250 dispcc bindings.
+On Tuesday, September 22, 2020 5:26:51 AM CEST Guenter Roeck wrote:
+> On Tue, Sep 15, 2020 at 12:31:58PM +0200, Peter Zijlstra wrote:
+> > Make acpi_processor_idle use the common broadcast code, there's no
+> > reason not to. This also removes some RCU usage after
+> > rcu_idle_enter().
+> > 
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > Reported-by: Borislav Petkov <bp@suse.de>
+> > Tested-by: Borislav Petkov <bp@suse.de>
+> > ---
+> >  drivers/acpi/processor_idle.c |   49 +++++++++++++-----------------------------
+> >  1 file changed, 16 insertions(+), 33 deletions(-)
+> > 
+> > --- a/drivers/acpi/processor_idle.c
+> > +++ b/drivers/acpi/processor_idle.c
+> > @@ -161,18 +161,10 @@ static void lapic_timer_propagate_broadc
+> >  }
+> >  
+> >  /* Power(C) State timer broadcast control */
+> > -static void lapic_timer_state_broadcast(struct acpi_processor *pr,
+> > -				       struct acpi_processor_cx *cx,
+> > -				       int broadcast)
+> > -{
+> > -	int state = cx - pr->power.states;
+> > -
+> > -	if (state >= pr->power.timer_broadcast_on_state) {
+> > -		if (broadcast)
+> > -			tick_broadcast_enter();
+> > -		else
+> > -			tick_broadcast_exit();
+> > -	}
+> > +static bool lapic_timer_needs_broadcast(struct acpi_processor *pr,
+> > +					struct acpi_processor_cx *cx)
+> > +{
+> > +	return cx - pr->power.states >= pr->power.timer_broadcast_on_state;
+> >  }
+> >  
+> >  #else
+> > @@ -180,9 +172,9 @@ static void lapic_timer_state_broadcast(
+> >  static void lapic_timer_check_state(int state, struct acpi_processor *pr,
+> >  				   struct acpi_processor_cx *cstate) { }
+> >  static void lapic_timer_propagate_broadcast(struct acpi_processor *pr) { }
+> > -static void lapic_timer_state_broadcast(struct acpi_processor *pr,
+> > -				       struct acpi_processor_cx *cx,
+> > -				       int broadcast)
+> > +
+> > +static bool lapic_timer_needs_broadcast(struct acpi_processor *pr,
+> > +					struct acpi_processor_cx *cx)
+> >  {
+> >  }
+> 
+> drivers/acpi/processor_idle.c: In function 'lapic_timer_needs_broadcast':
+> drivers/acpi/processor_idle.c:179:1: warning: no return statement in function returning non-void [-Wreturn-type]
+> 
+> Should this return true or false ?
 
-Why not just add the sm8150 and sm8250 to the sc7180 binding?
+false - if the lapic timer doesn't stop, it doesn't need broadcast.
 
->=20
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> ---
->  ...om,sdm845-dispcc.yaml =3D> qcom,dispcc.yaml} | 18 ++--
->  .../bindings/clock/qcom,sc7180-dispcc.yaml    | 86 -------------------
->  2 files changed, 12 insertions(+), 92 deletions(-)
->  rename Documentation/devicetree/bindings/clock/{qcom,sdm845-dispcc.yaml =
-=3D> qcom,dispcc.yaml} (86%)
->  delete mode 100644 Documentation/devicetree/bindings/clock/qcom,sc7180-d=
-ispcc.yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/clock/qcom,sdm845-dispcc.y=
-aml b/Documentation/devicetree/bindings/clock/qcom,dispcc.yaml
-> similarity index 86%
-> rename from Documentation/devicetree/bindings/clock/qcom,sdm845-dispcc.ya=
-ml
-> rename to Documentation/devicetree/bindings/clock/qcom,dispcc.yaml
-> index ead44705333b..7d5b25dfe0b1 100644
-> --- a/Documentation/devicetree/bindings/clock/qcom,sdm845-dispcc.yaml
-> +++ b/Documentation/devicetree/bindings/clock/qcom,dispcc.yaml
-> @@ -1,32 +1,37 @@
->  # SPDX-License-Identifier: GPL-2.0-only
->  %YAML 1.2
->  ---
-> -$id: http://devicetree.org/schemas/clock/qcom,sdm845-dispcc.yaml#
-> +$id: http://devicetree.org/schemas/clock/qcom,dispcc.yaml#
->  $schema: http://devicetree.org/meta-schemas/core.yaml#
-> =20
-> -title: Qualcomm Display Clock & Reset Controller Binding for SDM845
-> +title: Qualcomm Display Clock & Reset Controller Binding
-> =20
->  maintainers:
->    - Taniya Das <tdas@codeaurora.org>
-> =20
->  description: |
->    Qualcomm display clock control module which supports the clocks, reset=
-s and
-> -  power domains on SDM845.
-> +  power domains on SDM845/SC7180.
-> =20
-> -  See also dt-bindings/clock/qcom,dispcc-sdm845.h.
-> +  See also:
-> +    dt-bindings/clock/qcom,dispcc-sdm845.h
-> +    dt-bindings/clock/qcom,dispcc-sc7180.h
+FWIW, patch appended.
 
-Sort please.
+Cheers!
 
-> =20
->  properties:
->    compatible:
-> -    const: qcom,sdm845-dispcc
-> +    enum:
-> +      - qcom,sdm845-dispcc
-> +      - qcom,sc7180-dispcc
+---
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Subject: [PATCH] ACPI: processor: Fix build for ARCH_APICTIMER_STOPS_ON_C3 unset
 
-Sort please.
+Fix the lapic_timer_needs_broadcast() stub for
+ARCH_APICTIMER_STOPS_ON_C3 unset to actually return
+a value.
 
-> =20
->    # NOTE: sdm845.dtsi existed for quite some time and specified no clock=
-s.
->    # The code had to use hardcoded mechanisms to find the input clocks.
->    # New dts files should have these clocks.
->    clocks:
-> +    minItems: 8
->      items:
->        - description: Board XO source
->        - description: GPLL0 source from GCC
-> -      - description: GPLL0 div source from GCC
-> +      - description: GPLL0 div source from GCC (sdm845 only)
+Fixes: aa6b43d57f99 ("ACPI: processor: Use CPUIDLE_FLAG_TIMER_STOP")
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/processor_idle.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-They're not the same. Why are we combining them?
+Index: linux-pm/drivers/acpi/processor_idle.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/processor_idle.c
++++ linux-pm/drivers/acpi/processor_idle.c
+@@ -176,6 +176,7 @@ static void lapic_timer_propagate_broadc
+ static bool lapic_timer_needs_broadcast(struct acpi_processor *pr,
+ 					struct acpi_processor_cx *cx)
+ {
++	return false;
+ }
+ 
+ #endif
 
->        - description: Byte clock from DSI PHY0
->        - description: Pixel clock from DSI PHY0
->        - description: Byte clock from DSI PHY1
-> @@ -35,6 +40,7 @@ properties:
->        - description: VCO DIV clock from DP PHY
-> =20
->    clock-names:
-> +    minItems: 8
->      items:
->        - const: bi_tcxo
->        - const: gcc_disp_gpll0_clk_src
+
+
