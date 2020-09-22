@@ -2,186 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE652741C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B8CE2741D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726591AbgIVMIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 08:08:45 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:64716 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726531AbgIVMIp (ORCPT
+        id S1726650AbgIVMJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 08:09:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726589AbgIVMJT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 08:08:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1600776524; x=1632312524;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   in-reply-to:content-transfer-encoding;
-  bh=Iu17TnezrR9cCfm/mX2pd36Twy2NLDZBTF2SbIDH3UQ=;
-  b=CXKxGxyZTYCTm4WIambZmZP50xwAdBYJjY00gOwelHXkA/MSGkzG4ELL
-   Oyk4p4kIe+82c8JMID3z6/25CBr8tznq3qLdG1BzM0tqbB0eVG97umGnA
-   hVsy9WQvaLc2kdobhEWYgATiD0GT/a2636KDrDZj4GzgEbSoT6Qzf6CD7
-   g=;
-X-IronPort-AV: E=Sophos;i="5.77,290,1596499200"; 
-   d="scan'208";a="70077461"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-6e2fc477.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 22 Sep 2020 12:08:43 +0000
-Received: from EX13D31EUA004.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2a-6e2fc477.us-west-2.amazon.com (Postfix) with ESMTPS id 216E3A227B;
-        Tue, 22 Sep 2020 12:08:43 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.162.43) by
- EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 22 Sep 2020 12:08:36 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     =?UTF-8?q?J=C3=BCrgen=20Gro=C3=9F?= <jgross@suse.com>
-CC:     SeongJae Park <sjpark@amazon.com>,
-        =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>,
-        <konrad.wilk@oracle.com>, SeongJae Park <sjpark@amazon.de>,
-        <axboe@kernel.dk>, <aliguori@amazon.com>, <amit@kernel.org>,
-        <mheyne@amazon.de>, <pdurrant@amazon.co.uk>,
-        <linux-block@vger.kernel.org>, <xen-devel@lists.xenproject.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] xen-blkback: add a parameter for disabling of persistent grants
-Date:   Tue, 22 Sep 2020 14:08:20 +0200
-Message-ID: <20200922120820.24978-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 22 Sep 2020 08:09:19 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91BA8C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 05:09:19 -0700 (PDT)
+Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <pza@pengutronix.de>)
+        id 1kKh6P-0007EV-MR; Tue, 22 Sep 2020 14:08:57 +0200
+Received: from pza by dude02.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <pza@pengutronix.de>)
+        id 1kKh6M-0003wj-DL; Tue, 22 Sep 2020 14:08:54 +0200
+Date:   Tue, 22 Sep 2020 14:08:54 +0200
+From:   Philipp Zabel <pza@pengutronix.de>
+To:     "Viorel Suman (OSS)" <viorel.suman@oss.nxp.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Timur Tabi <timur@kernel.org>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Viorel Suman <viorel.suman@nxp.com>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Viorel Suman <viorel.suman@gmail.com>
+Subject: Re: [PATCH v2 1/2] ASoC: fsl_xcvr: Add XCVR ASoC CPU DAI driver
+Message-ID: <20200922120854.GA15104@pengutronix.de>
+References: <1600715292-28529-1-git-send-email-viorel.suman@oss.nxp.com>
+ <1600715292-28529-2-git-send-email-viorel.suman@oss.nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <33a8d880-d8ce-0cf7-d115-ca6938889f27@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.43.162.43]
-X-ClientProxiedBy: EX13D50UWC002.ant.amazon.com (10.43.162.189) To
- EX13D31EUA004.ant.amazon.com (10.43.165.161)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1600715292-28529-2-git-send-email-viorel.suman@oss.nxp.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 14:07:31 up 213 days, 23:24, 242 users,  load average: 0.15, 0.91,
+ 2.62
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::28
+X-SA-Exim-Mail-From: pza@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Sep 2020 13:35:30 +0200 "Jürgen Groß" <jgross@suse.com> wrote:
-
-> On 22.09.20 13:26, SeongJae Park wrote:
-> > On Tue, 22 Sep 2020 13:12:59 +0200 "Roger Pau Monné" <roger.pau@citrix.com> wrote:
-> > 
-> >> On Tue, Sep 22, 2020 at 12:52:07PM +0200, SeongJae Park wrote:
-> >>> From: SeongJae Park <sjpark@amazon.de>
-> >>>
-> >>> Persistent grants feature provides high scalability.  On some small
-> >>> systems, however, it could incur data copy overheads[1] and thus it is
-> >>> required to be disabled.  But, there is no option to disable it.  For
-> >>> the reason, this commit adds a module parameter for disabling of the
-> >>> feature.
-> >>>
-> >>> [1] https://wiki.xen.org/wiki/Xen_4.3_Block_Protocol_Scalability
-> >>>
-> >>> Signed-off-by: Anthony Liguori <aliguori@amazon.com>
-> >>> Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> >>> ---
-> >>>   .../ABI/testing/sysfs-driver-xen-blkback      |  9 ++++++
-> >>>   drivers/block/xen-blkback/xenbus.c            | 28 ++++++++++++++-----
-> >>>   2 files changed, 30 insertions(+), 7 deletions(-)
-> >>>
-> >>> diff --git a/Documentation/ABI/testing/sysfs-driver-xen-blkback b/Documentation/ABI/testing/sysfs-driver-xen-blkback
-> >>> index ecb7942ff146..ac2947b98950 100644
-> >>> --- a/Documentation/ABI/testing/sysfs-driver-xen-blkback
-> >>> +++ b/Documentation/ABI/testing/sysfs-driver-xen-blkback
-> >>> @@ -35,3 +35,12 @@ Description:
-> >>>                   controls the duration in milliseconds that blkback will not
-> >>>                   cache any page not backed by a grant mapping.
-> >>>                   The default is 10ms.
-> >>> +
-> >>> +What:           /sys/module/xen_blkback/parameters/feature_persistent
-> >>> +Date:           September 2020
-> >>> +KernelVersion:  5.10
-> >>> +Contact:        SeongJae Park <sjpark@amazon.de>
-> >>> +Description:
-> >>> +                Whether to enable the persistent grants feature or not.  Note
-> >>> +                that this option only takes effect on newly created backends.
-> >>> +                The default is Y (enable).
-> >>> diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
-> >>> index b9aa5d1ac10b..8a95ddd08b13 100644
-> >>> --- a/drivers/block/xen-blkback/xenbus.c
-> >>> +++ b/drivers/block/xen-blkback/xenbus.c
-> >>> @@ -879,6 +879,12 @@ static void reclaim_memory(struct xenbus_device *dev)
-> >>>   
-> >>>   /* ** Connection ** */
-> >>>   
-> >>> +/* Enable the persistent grants feature. */
-> >>> +static bool feature_persistent = true;
-> >>> +module_param(feature_persistent, bool, 0644);
-> >>> +MODULE_PARM_DESC(feature_persistent,
-> >>> +		"Enables the persistent grants feature");
-> >>> +
-> >>>   /*
-> >>>    * Write the physical details regarding the block device to the store, and
-> >>>    * switch to Connected state.
-> >>> @@ -906,11 +912,15 @@ static void connect(struct backend_info *be)
-> >>>   
-> >>>   	xen_blkbk_barrier(xbt, be, be->blkif->vbd.flush_support);
-> >>>   
-> >>> -	err = xenbus_printf(xbt, dev->nodename, "feature-persistent", "%u", 1);
-> >>> -	if (err) {
-> >>> -		xenbus_dev_fatal(dev, err, "writing %s/feature-persistent",
-> >>> -				 dev->nodename);
-> >>> -		goto abort;
-> >>> +	if (feature_persistent) {
-> >>> +		err = xenbus_printf(xbt, dev->nodename, "feature-persistent",
-> >>> +				"%u", feature_persistent);
-> >>> +		if (err) {
-> >>> +			xenbus_dev_fatal(dev, err,
-> >>> +					"writing %s/feature-persistent",
-> >>> +					dev->nodename);
-> >>> +			goto abort;
-> >>> +		}
-> >>>   	}
-> >>>   
-> >>>   	err = xenbus_printf(xbt, dev->nodename, "sectors", "%llu",
-> >>> @@ -1093,8 +1103,12 @@ static int connect_ring(struct backend_info *be)
-> >>>   		xenbus_dev_fatal(dev, err, "unknown fe protocol %s", protocol);
-> >>>   		return -ENOSYS;
-> >>>   	}
-> >>> -	pers_grants = xenbus_read_unsigned(dev->otherend, "feature-persistent",
-> >>> -					   0);
-> >>> +	if (feature_persistent)
-> >>> +		pers_grants = xenbus_read_unsigned(dev->otherend,
-> >>> +				"feature-persistent", 0);
-> >>> +	else
-> >>> +		pers_grants = 0;
-> >>> +
-> >>
-> >> Sorry for not realizing earlier, but looking at it again I think you
-> >> need to cache the value of feature_persistent when it's first used in
-> >> the blkback state data, so that it's consistent.
-> >>
-> >> What would happen for example with the following flow (assume a
-> >> persistent grants enabled frontend):
-> >>
-> >> feature_persistent = false
-> >>
-> >> connect(...)
-> >> feature-persistent is not written to xenstore
-> >>
-> >> User changes feature_persistent = true
-> >>
-> >> connect_ring(...)
-> >> pers_grants = true, because feature-persistent is set unconditionally
-> >> by the frontend and feature_persistent variable is now true.
-> >>
-> >> Then blkback will try to use persistent grants and the whole
-> >> connection will malfunction because the frontend won't.
-> > 
-> > Ah, you're right.  I should also catch this before but didn't, sorry.
-> > 
-> >>
-> >> The other option is to prevent changing the variable when there are
-> >> blkback instances already running.
-> > 
-> > I think storing the option value in xenstore would be simpler.  That said, if
-> > you prefer this way, please let me know.
+On Mon, Sep 21, 2020 at 10:08:11PM +0300, Viorel Suman (OSS) wrote:
+> From: Viorel Suman <viorel.suman@nxp.com>
 > 
-> No, Xenstore isn't the right place for that. This is a local
-> implementation detail of blkback and shouldn't be exported to Xenstore.
+> XCVR (Audio Transceiver) is a on-chip functional module found
+> on i.MX8MP. It support HDMI2.1 eARC, HDMI1.4 ARC and SPDIF.
+> 
+> Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+> ---
+>  sound/soc/fsl/Kconfig    |   10 +
+>  sound/soc/fsl/Makefile   |    2 +
+>  sound/soc/fsl/fsl_xcvr.c | 1343 ++++++++++++++++++++++++++++++++++++++++++++++
+>  sound/soc/fsl/fsl_xcvr.h |  266 +++++++++
+>  4 files changed, 1621 insertions(+)
+>  create mode 100644 sound/soc/fsl/fsl_xcvr.c
+>  create mode 100644 sound/soc/fsl/fsl_xcvr.h
+> 
+> diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+> index 3f76ff7..d04b64d 100644
+> --- a/sound/soc/fsl/Kconfig
+> +++ b/sound/soc/fsl/Kconfig
+> @@ -95,6 +95,16 @@ config SND_SOC_FSL_EASRC
+>  	  destination sample rate. It is a new design module compare with the
+>  	  old ASRC.
+>  
+> +config SND_SOC_FSL_XCVR
+> +	tristate "NXP Audio Transceiver (XCVR) module support"
+> +	select REGMAP_MMIO
+> +	select SND_SOC_IMX_PCM_DMA if SND_IMX_SOC != n
+> +	select SND_SOC_GENERIC_DMAENGINE_PCM
+> +	help
+> +	  Say Y if you want to add Audio Transceiver (XCVR) support for NXP
+> +	  iMX CPUs. XCVR is a digital module that supports HDMI2.1 eARC,
+> +	  HDMI1.4 ARC and SPDIF.
+> +
+>  config SND_SOC_FSL_UTILS
+>  	tristate
+>  
+> diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
+> index b835eeb..1d2231f 100644
+> --- a/sound/soc/fsl/Makefile
+> +++ b/sound/soc/fsl/Makefile
+> @@ -25,6 +25,7 @@ snd-soc-fsl-utils-objs := fsl_utils.o
+>  snd-soc-fsl-dma-objs := fsl_dma.o
+>  snd-soc-fsl-mqs-objs := fsl_mqs.o
+>  snd-soc-fsl-easrc-objs := fsl_easrc.o
+> +snd-soc-fsl-xcvr-objs := fsl_xcvr.o
+>  
+>  obj-$(CONFIG_SND_SOC_FSL_AUDMIX) += snd-soc-fsl-audmix.o
+>  obj-$(CONFIG_SND_SOC_FSL_ASOC_CARD) += snd-soc-fsl-asoc-card.o
+> @@ -38,6 +39,7 @@ obj-$(CONFIG_SND_SOC_FSL_UTILS) += snd-soc-fsl-utils.o
+>  obj-$(CONFIG_SND_SOC_FSL_MQS) += snd-soc-fsl-mqs.o
+>  obj-$(CONFIG_SND_SOC_FSL_EASRC) += snd-soc-fsl-easrc.o
+>  obj-$(CONFIG_SND_SOC_POWERPC_DMA) += snd-soc-fsl-dma.o
+> +obj-$(CONFIG_SND_SOC_FSL_XCVR) += snd-soc-fsl-xcvr.o
+>  
+>  # MPC5200 Platform Support
+>  obj-$(CONFIG_SND_MPC52xx_DMA) += mpc5200_dma.o
+> diff --git a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c
+> new file mode 100644
+> index 00000000..7391bca
+> --- /dev/null
+> +++ b/sound/soc/fsl/fsl_xcvr.c
+> @@ -0,0 +1,1343 @@
+[...]
+> +static int fsl_xcvr_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct device_node *np = dev->of_node;
+> +	const struct of_device_id *of_id;
+> +	struct fsl_xcvr *xcvr;
+> +	struct resource *ram_res, *regs_res, *rx_res, *tx_res;
+> +	void __iomem *regs;
+> +	int ret, irq;
+> +
+> +	of_id = of_match_device(fsl_xcvr_dt_ids, dev);
+> +	if (!of_id)
+> +		return -EINVAL;
+> +
+> +	xcvr = devm_kzalloc(dev, sizeof(*xcvr), GFP_KERNEL);
+> +	if (!xcvr)
+> +		return -ENOMEM;
+> +
+> +	xcvr->pdev = pdev;
+> +	xcvr->ipg_clk = devm_clk_get(dev, "ipg");
+> +	if (IS_ERR(xcvr->ipg_clk)) {
+> +		dev_err(dev, "failed to get ipg clock\n");
+> +		return PTR_ERR(xcvr->ipg_clk);
+> +	}
+> +
+> +	xcvr->phy_clk = devm_clk_get(dev, "phy");
+> +	if (IS_ERR(xcvr->phy_clk)) {
+> +		dev_err(dev, "failed to get phy clock\n");
+> +		return PTR_ERR(xcvr->phy_clk);
+> +	}
+> +
+> +	xcvr->spba_clk = devm_clk_get(dev, "spba");
+> +	if (IS_ERR(xcvr->spba_clk)) {
+> +		dev_err(dev, "failed to get spba clock\n");
+> +		return PTR_ERR(xcvr->spba_clk);
+> +	}
+> +
+> +	xcvr->pll_ipg_clk = devm_clk_get(dev, "pll_ipg");
+> +	if (IS_ERR(xcvr->pll_ipg_clk)) {
+> +		dev_err(dev, "failed to get pll_ipg clock\n");
+> +		return PTR_ERR(xcvr->pll_ipg_clk);
+> +	}
+> +
+> +	ram_res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ram");
+> +	xcvr->ram_addr = devm_ioremap_resource(dev, ram_res);
+> +	if (IS_ERR(xcvr->ram_addr))
+> +		return PTR_ERR(xcvr->ram_addr);
+> +
+> +	regs_res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "regs");
+> +	regs = devm_ioremap_resource(dev, regs_res);
+> +	if (IS_ERR(regs))
+> +		return PTR_ERR(regs);
+> +
+> +	xcvr->regmap = devm_regmap_init_mmio_clk(dev, NULL, regs,
+> +						 &fsl_xcvr_regmap_cfg);
+> +	if (IS_ERR(xcvr->regmap)) {
+> +		dev_err(dev, "failed to init XCVR regmap: %ld\n",
+> +			PTR_ERR(xcvr->regmap));
+> +		return PTR_ERR(xcvr->regmap);
+> +	}
+> +
+> +	xcvr->reset = of_reset_control_get(np, NULL);
 
-Agreed.  I will try using the 'feature_gnt_persistent' as Roger recommended.
+Please use devm_reset_control_get_exclusive().
 
+[...]
+> +static __maybe_unused int fsl_xcvr_runtime_resume(struct device *dev)
+> +{
+> +	struct fsl_xcvr *xcvr = dev_get_drvdata(dev);
+> +	int ret;
+> +
+> +	ret = clk_prepare_enable(xcvr->ipg_clk);
+> +	if (ret) {
+> +		dev_err(dev, "failed to start IPG clock.\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = clk_prepare_enable(xcvr->pll_ipg_clk);
+> +	if (ret) {
+> +		dev_err(dev, "failed to start PLL IPG clock.\n");
+> +		goto stop_ipg_clk;
+> +	}
+> +
+> +	ret = clk_prepare_enable(xcvr->phy_clk);
+> +	if (ret) {
+> +		dev_err(dev, "failed to start PHY clock: %d\n", ret);
+> +		goto stop_pll_ipg_clk;
+> +	}
+> +
+> +	ret = clk_prepare_enable(xcvr->spba_clk);
+> +	if (ret) {
+> +		dev_err(dev, "failed to start SPBA clock.\n");
+> +		goto stop_phy_clk;
+> +	}
+> +
+> +	regcache_cache_only(xcvr->regmap, false);
+> +	regcache_mark_dirty(xcvr->regmap);
+> +	ret = regcache_sync(xcvr->regmap);
+> +
+> +	if (ret) {
+> +		dev_err(dev, "failed to sync regcache.\n");
+> +		goto stop_spba_clk;
+> +	}
+> +
+> +	reset_control_assert(xcvr->reset);
+> +	reset_control_deassert(xcvr->reset);
 
-Thanks,
-SeongJae Park
+No delay required between the two?
+
+regards
+Philipp
