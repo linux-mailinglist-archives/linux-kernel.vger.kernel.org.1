@@ -2,118 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBECE273EF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 11:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87558273EAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 11:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726554AbgIVJyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 05:54:08 -0400
-Received: from mickerik.phytec.de ([195.145.39.210]:47156 "EHLO
-        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726353AbgIVJyH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 05:54:07 -0400
-X-Greylist: delayed 901 seconds by postgrey-1.27 at vger.kernel.org; Tue, 22 Sep 2020 05:54:06 EDT
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a1; c=relaxed/simple;
-        q=dns/txt; i=@phytec.de; t=1600767544; x=1603359544;
-        h=From:Sender:Reply-To:Subject:Date:Message-Id:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=gBdQ4nNU4LkVwgCAoPqPWR+JZVeyyiWG4BrFHfAS0SQ=;
-        b=BiycNBTrW1uKR/TUyxJXEkO1sKjodzuyxmEFOu/aGWNLOH5WAroQO7a73kPgbq1P
-        HTEIhZfxN2GPQXRGuaUkU6J4GpARd832eZMCX5bS15rJXfWl4aPU4kwvrX8vGvCy
-        HzZd4Qvyx/T7O+HyXq55I45OR94E33v3CPMSB7zBQRM=;
-X-AuditID: c39127d2-253ff70000001c25-d1-5f69c638ed81
-Received: from idefix.phytec.de (Unknown_Domain [172.16.0.10])
-        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id AD.07.07205.836C96F5; Tue, 22 Sep 2020 11:39:04 +0200 (CEST)
-Received: from lws-riedmueller.phytec.de ([172.16.23.108])
-          by idefix.phytec.de (IBM Domino Release 9.0.1FP7)
-          with ESMTP id 2020092211390466-474099 ;
-          Tue, 22 Sep 2020 11:39:04 +0200 
-From:   Stefan Riedmueller <s.riedmueller@phytec.de>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Stefan Riedmueller <s.riedmueller@phytec.de>
-Subject: [PATCH] Input: stmpe: Add axis inversion and swapping capability
-Date:   Tue, 22 Sep 2020 11:39:03 +0200
-Message-Id: <20200922093903.157232-1-s.riedmueller@phytec.de>
-X-Mailer: git-send-email 2.25.1
+        id S1726579AbgIVJjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 05:39:35 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49520 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726353AbgIVJje (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 05:39:34 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CCD2CAC6E;
+        Tue, 22 Sep 2020 09:40:08 +0000 (UTC)
+Subject: Re: [PATCH 03/13] bcache: inherit the optimal I/O size
+To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc:     Song Liu <song@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
+        Richard Weinberger <richard@nod.at>,
+        Minchan Kim <minchan@kernel.org>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Justin Sanders <justin@coraid.com>,
+        linux-mtd@lists.infradead.org, dm-devel@redhat.com,
+        linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
+        linux-kernel@vger.kernel.org, drbd-dev@lists.linbit.com,
+        linux-raid@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org
+References: <20200921080734.452759-1-hch@lst.de>
+ <20200921080734.452759-4-hch@lst.de>
+From:   Coly Li <colyli@suse.de>
+Autocrypt: addr=colyli@suse.de; keydata=
+ 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
+Message-ID: <5ce140e1-a6c1-42d7-7d10-c3eb9b2785df@suse.de>
+Date:   Tue, 22 Sep 2020 17:39:24 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-X-MIMETrack: Itemize by SMTP Server on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
- 22.09.2020 11:39:04,
-        Serialize by Router on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
- 22.09.2020 11:39:04
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: quoted-printable
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprOLMWRmVeSWpSXmKPExsWyRoCBS9fiWGa8wc2/+haHF71gtLj/9Sij
-        xabH11gtbn76xmpxedccNgdWj52z7rJ73Lm2h81j85J6j8+b5AJYorhsUlJzMstSi/TtErgy
-        jszYxl6wg7/i2OcW9gbGmbxdjBwcEgImEj3dPl2MXBxCAtsYJSa/XcYO4VxjlDjT/5epi5GT
-        g03ASGLBtEYwW0RAX2L77F+MIEXMApsZJX60vWAGSQgLeEps/bKWFcRmEVCV+Nu3jw1kA6+A
-        rcTWNhOQsISAvMTMS9/ZQWxeAUGJkzOfsIDMkRC4wijR/2AdI0SRkMTpxWfBZjILaEssW/ia
-        eQIj3ywkPbOQpBYwMq1iFMrNTM5OLcrM1ivIqCxJTdZLSd3ECAy8wxPVL+1g7JvjcYiRiYPx
-        EKMEB7OSCK+aUXq8EG9KYmVValF+fFFpTmrxIUZpDhYlcd4NvCVhQgLpiSWp2ampBalFMFkm
-        Dk6pBsalK5of7D129nTXT37HC9mXFxrHZ9611ZZ5kp7t+ESI08zH75fQi0j5+VkXaza7aecf
-        vXNXX2TJq7b3aR0qBVPqPa4tOKHSo8CZ6sgdbCrHdFgwMSNWVSFrNddL81LDzOtLVp8WZ5W/
-        /+rK+yQzxz2KvZoLi+7WN6+N3KkZsv9msGfalrtH/iqxFGckGmoxFxUnAgDQlXCtKgIAAA==
+In-Reply-To: <20200921080734.452759-4-hch@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make use of generic touchscreen=5Fproperties structure to add axis
-inversion and swapping capabilities. It's configurable via devicetree
-properties:
-  touchscreen-inverted-x
-  touchscreen-inverted-y
-  touchscreen-swapped-x-y
+On 2020/9/21 16:07, Christoph Hellwig wrote:
+> Inherit the optimal I/O size setting just like the readahead window,
+> as any reason to do larger I/O does not apply to just readahead.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
----
- drivers/input/touchscreen/stmpe-ts.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Acked-by: Coly Li <colyli@suse.de>
 
-diff --git a/drivers/input/touchscreen/stmpe-ts.c b/drivers/input/touchscre=
-en/stmpe-ts.c
-index 7e16fcfe3b95..cd747725589b 100644
---- a/drivers/input/touchscreen/stmpe-ts.c
-+++ b/drivers/input/touchscreen/stmpe-ts.c
-@@ -14,6 +14,7 @@
- #include <linux/of.h>
- #include <linux/platform=5Fdevice.h>
- #include <linux/input.h>
-+#include <linux/input/touchscreen.h>
- #include <linux/slab.h>
- #include <linux/delay.h>
- #include <linux/i2c.h>
-@@ -72,6 +73,7 @@ struct stmpe=5Ftouch {
- 	struct input=5Fdev *idev;
- 	struct delayed=5Fwork work;
- 	struct device *dev;
-+	struct touchscreen=5Fproperties prop;
- 	u8 ave=5Fctrl;
- 	u8 touch=5Fdet=5Fdelay;
- 	u8 settling;
-@@ -150,8 +152,7 @@ static irqreturn=5Ft stmpe=5Fts=5Fhandler(int irq, void=
- *data)
- 	y =3D ((data=5Fset[1] & 0xf) << 8) | data=5Fset[2];
- 	z =3D data=5Fset[3];
-=20
--	input=5Freport=5Fabs(ts->idev, ABS=5FX, x);
--	input=5Freport=5Fabs(ts->idev, ABS=5FY, y);
-+	touchscreen=5Freport=5Fpos(ts->idev, &ts->prop, x, y, false);
- 	input=5Freport=5Fabs(ts->idev, ABS=5FPRESSURE, z);
- 	input=5Freport=5Fkey(ts->idev, BTN=5FTOUCH, 1);
- 	input=5Fsync(ts->idev);
-@@ -337,6 +338,8 @@ static int stmpe=5Finput=5Fprobe(struct platform=5Fdevi=
-ce *pdev)
- 	input=5Fset=5Fabs=5Fparams(idev, ABS=5FY, 0, XY=5FMASK, 0, 0);
- 	input=5Fset=5Fabs=5Fparams(idev, ABS=5FPRESSURE, 0x0, 0xff, 0, 0);
-=20
-+	touchscreen=5Fparse=5Fproperties(idev, false, &ts->prop);
-+
- 	error =3D input=5Fregister=5Fdevice(idev);
- 	if (error) {
- 		dev=5Ferr(&pdev->dev, "Could not register input device\n");
---=20
-2.25.1
+Thanks.
+
+Coly Li
+
+> ---
+>  drivers/md/bcache/super.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+> index 1bbdc410ee3c51..48113005ed86ad 100644
+> --- a/drivers/md/bcache/super.c
+> +++ b/drivers/md/bcache/super.c
+> @@ -1430,6 +1430,8 @@ static int cached_dev_init(struct cached_dev *dc, unsigned int block_size)
+>  	dc->disk.disk->queue->backing_dev_info->ra_pages =
+>  		max(dc->disk.disk->queue->backing_dev_info->ra_pages,
+>  		    q->backing_dev_info->ra_pages);
+> +	blk_queue_io_opt(dc->disk.disk->queue,
+> +		max(queue_io_opt(dc->disk.disk->queue), queue_io_opt(q)));
+>  
+>  	atomic_set(&dc->io_errors, 0);
+>  	dc->io_disable = false;
+> 
 
