@@ -2,166 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D32F2745B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:49:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 828032745B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:50:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726710AbgIVPtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 11:49:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37834 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726589AbgIVPtw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 11:49:52 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB2702399A;
-        Tue, 22 Sep 2020 15:49:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600789792;
-        bh=k8lQswR/ur1/wuPRVh5gbCd394H2XZkoHnw+6GQw8FU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=K/CfZDPvToBo2iV6+CtBqFBAdcthZDngvNYyI9CcDd+DuMk7OwDKf5n4gXuah9DTJ
-         uiPh7It0WasVrKHkqUFF1PxtDL52ZoX336L8T8boxKrdWQwf2ntpVBGQb5ld463Ke0
-         pFe4r7+ABm2TaCSUtf3Qd5LlK4yvLlykf6eb26mA=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id B537535226AA; Tue, 22 Sep 2020 08:49:51 -0700 (PDT)
-Date:   Tue, 22 Sep 2020 08:49:51 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Mel Gorman <mgorman@suse.de>
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20200922154951.GX29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200918194817.48921-1-urezki@gmail.com>
- <20200918194817.48921-3-urezki@gmail.com>
- <20200921074716.GC12990@dhcp22.suse.cz>
- <20200921154558.GD29330@paulmck-ThinkPad-P72>
- <20200921160318.GO12990@dhcp22.suse.cz>
- <20200921194819.GA24236@pc636>
- <20200922075002.GU12990@dhcp22.suse.cz>
+        id S1726728AbgIVPuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 11:50:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726589AbgIVPuG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 11:50:06 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA57AC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 08:50:05 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id s12so17636019wrw.11
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 08:50:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=k1qiM4bUagO9PvzG1mYjhQ2oeaOlyE+NHa+RI/UKMuI=;
+        b=OffjgK1VvQU3R4J2PDeHOOirKPulZND04R2KV4wX2yXgAdKlN82m3+qgP/YLrgHdoP
+         XRGEQpgSy/EvjUge6T9J532EjQGUOMSKUUm2YjrwEEnfFJYXoItcvuYoojcMCiFOLfCl
+         +a9sSbot03midkDhZaSzd4yF71ySdX6mfEYJ8UiYu3QOnw1082QuhAksGSZ6TEBI4DqE
+         YXpTPsDBx4UiAtoiXHGouZPixegjYM59VecZEk+F8kHX62SO35UKc/naF7K0IgW1DkdP
+         s9pm7Hru94v9+btXnyu2IXDVeNLGSWoDFO8I+lUf5O0ulzIoYYO61eFmy6f9gCBnvy+b
+         +miQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=k1qiM4bUagO9PvzG1mYjhQ2oeaOlyE+NHa+RI/UKMuI=;
+        b=pbdwsNyDGZKJfqm2INJY0ii3Nt5BNqMw73lCpjvYnU/5p3UTomMLFX2LVHX/lRyfXa
+         gdXMJF/AVJlYoa+7Bb/JvosK70IzVNdJQTjGsvPD/d2et9WjD1XnGHOPmKwWav3YFGqL
+         oMIheL/eE7xWPEzjBskDwJv7ps90BJ1oQv/Iu0LFqepGCho/W4VHEsguL9e2vTH/NmQj
+         5Z/+UwObHvYUSln/IKb2kr8dOL5Qo/Vw9CnXPUZoA16b1DlLqhQpKvef8USqLPujUXvt
+         Gv7AHgW8EsuPCYuxa8xCW6xE2yXpPB4N3YtryRFV0kWRjLMRRqXL0yTYo7TOwv3BemJp
+         QVQQ==
+X-Gm-Message-State: AOAM5336zQk8pY6NZRmV6XkMKHvbiXcm8jyDW2aodJ4ZyeIhUVhAqRuR
+        qgf0cNO4UUV1fQ3RSbm8VCVju1Y8zMkMCZzANtc=
+X-Google-Smtp-Source: ABdhPJzNUoLcCUJtNlHpGP5CHl4ouHNhSErzbaqeG9ZEfR+X8xgDw8Vu/pgn8/BMiFFtwMkSUKK2DOChEI2ZoswOEhw=
+X-Received: by 2002:adf:dd82:: with SMTP id x2mr6452043wrl.419.1600789804606;
+ Tue, 22 Sep 2020 08:50:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922075002.GU12990@dhcp22.suse.cz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <1600773099-32693-1-git-send-email-wangqing@vivo.com> <CAD=4a=URYhNswOBfBj39b00HWR3vWeHF9ntP-n_SPa94YJZbTg@mail.gmail.com>
+In-Reply-To: <CAD=4a=URYhNswOBfBj39b00HWR3vWeHF9ntP-n_SPa94YJZbTg@mail.gmail.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 22 Sep 2020 11:49:53 -0400
+Message-ID: <CADnq5_ObAjsxfKsJgk6mE7OKK6Jw=-bacva6_rxySKSD8nqAjg@mail.gmail.com>
+Subject: Re: [PATCH] gpu/drm/radeon: fix spellint typo in comments
+To:     =?UTF-8?Q?Ernst_Sj=C3=B6strand?= <ernstp@gmail.com>
+Cc:     Wang Qing <wangqing@vivo.com>, David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 09:50:02AM +0200, Michal Hocko wrote:
-> [Cc Mel - the thread starts http://lkml.kernel.org/r/20200918194817.48921-1-urezki@gmail.com]
-> 
-> On Mon 21-09-20 21:48:19, Uladzislau Rezki wrote:
-> > Hello, Michal.
-> > 
-> > > >
-> > > > Yes, I do well remember that you are unhappy with this approach.
-> > > > Unfortunately, thus far, there is no solution that makes all developers
-> > > > happy.  You might be glad to hear that we are also looking into other
-> > > > solutions, each of which makes some other developers unhappy.  So we
-> > > > are at least not picking on you alone.  :-/
-> > > 
-> > > No worries I do not feel like a whipping boy here. But do expect me to
-> > > argue against the approach. I would also appreciate it if there was some
-> > > more information on other attempts, why they have failed. E.g. why
-> > > pre-allocation is not an option that works well enough in most
-> > > reasonable workloads.
-> > Pre-allocating has some drawbacks:
-> > 
-> > a) It is impossible to predict how many pages will be required to
-> >    cover a demand that is controlled by different workloads on
-> >    various systems.
-> 
-> Yes, this is not trivial but not a rocket science either. Remember that
-> you are relying on a very dumb watermark based pcp pool from the
-> allocator. Mimicing a similar implementation shouldn't be all that hard
-> and you will get your own pool which doesn't affect other page allocator
-> users as much as a bonus.
-> 
-> > b) Memory overhead since we do not know how much pages should be
-> >    preloaded: 100, 200 or 300
-> 
-> Does anybody who really needs this optimization actually cares about 300
-> pages?
+Applied with subject typo fixed.  Thanks!
 
-That would be 100-300 (maybe more) pages -per- -CPU-, so yes, some people
-will care quite deeply about this.
+Alex
 
-							Thanx, Paul
-
-> > As for memory overhead, it is important to reduce it because of
-> > embedded devices like phones, where a low memory condition is a
-> > big issue. In that sense pre-allocating is something that we strongly
-> > would like to avoid.
-> 
-> How big "machines" are we talking about here? I would expect that really
-> tiny machines would have hard times to really fill up thousands of pages
-> with pointers to free...
-> 
-> Would a similar scaling as the page allocator feasible. Really I mostly
-> do care about shared nature of the pcp allocator list that one user can
-> easily monopolize with this API.
-> 
-> > > I would also appreciate some more thoughts why we
-> > > need to optimize for heavy abusers of RCU (like close(open) extremes).
-> > > 
-> > I think here is a small misunderstanding. Please note, that is not only
-> > about performance and corner cases. There is a single argument support
-> > of the kvfree_rcu(ptr), where maintaining an array in time is needed.
-> > The fallback of the single argument case is extrimely slow.
-> 
-> This should be part of the changelog.
-> > 
-> > Single-argument details is here: https://lkml.org/lkml/2020/4/28/1626
-> 
-> Error 501
-> 
-> > > > > I strongly agree with Thomas http://lkml.kernel.org/r/87tux4kefm.fsf@nanos.tec.linutronix.de
-> > > > > that this optimization is not aiming at reasonable workloads. Really, go
-> > > > > with pre-allocated buffer and fallback to whatever slow path you have
-> > > > > already. Exposing more internals of the allocator is not going to do any
-> > > > > good for long term maintainability.
-> > > > 
-> > > > I suggest that you carefully re-read the thread following that email.
-> > > 
-> > > I clearly remember Thomas not being particularly happy that you optimize
-> > > for a corner case. I do not remember there being a consensus that this
-> > > is the right approach. There was some consensus that this is better than
-> > > a gfp flag. Still quite bad though if you ask me.
-> > > 
-> > > > Given a choice between making users unhappy and making developers
-> > > > unhappy, I will side with the users each and every time.
-> > > 
-> > > Well, let me rephrase. It is not only about me (as a developer) being
-> > > unhappy but also all the side effects this would have for users when
-> > > performance of their favorite workload declines for no apparent reason
-> > > just because pcp caches are depleted by an unrelated process.
-> > >
-> > If depleted, we have a special worker that charge it. From the other hand,
-> > the pcplist can be depleted by its nature, what _is_ not wrong. But just
-> > in case we secure it since you had a concern about it.
-> 
-> pcp free lists should ever get empty when we run out of memory and need
-> to reclaim. Otherwise they are constantly refilled/rebalanced on demand.
-> The fact that you are refilling them from outside just suggest that you
-> are operating on a wrong layer. Really, create your own pool of pages
-> and rebalance them based on the workload.
-> 
-> > Could you please specify a real test case or workload you are talking about?
-> 
-> I am not a performance expert but essentially any memory allocator heavy
-> workload might notice. I am pretty sure Mel would tell you more.
-> 
-> -- 
-> Michal Hocko
-> SUSE Labs
+On Tue, Sep 22, 2020 at 10:07 AM Ernst Sj=C3=B6strand <ernstp@gmail.com> wr=
+ote:
+>
+> There is a typo in your patch subject. ;-)
+>
+> Regards
+> //Ernst
+>
+> Den tis 22 sep. 2020 kl 15:11 skrev Wang Qing <wangqing@vivo.com>:
+>>
+>> Modify the comment typo: "definately" -> "definitely".
+>>
+>> Signed-off-by: Wang Qing <wangqing@vivo.com>
+>> ---
+>>  drivers/gpu/drm/radeon/radeon_vm.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/radeon/radeon_vm.c b/drivers/gpu/drm/radeon=
+/radeon_vm.c
+>> index f60fae0..3d6e2cd
+>> --- a/drivers/gpu/drm/radeon/radeon_vm.c
+>> +++ b/drivers/gpu/drm/radeon/radeon_vm.c
+>> @@ -188,7 +188,7 @@ struct radeon_fence *radeon_vm_grab_id(struct radeon=
+_device *rdev,
+>>             vm_id->last_id_use =3D=3D rdev->vm_manager.active[vm_id->id]=
+)
+>>                 return NULL;
+>>
+>> -       /* we definately need to flush */
+>> +       /* we definitely need to flush */
+>>         vm_id->pd_gpu_addr =3D ~0ll;
+>>
+>>         /* skip over VMID 0, since it is the system VM */
+>> --
+>> 2.7.4
+>>
+>> _______________________________________________
+>> amd-gfx mailing list
+>> amd-gfx@lists.freedesktop.org
+>> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
