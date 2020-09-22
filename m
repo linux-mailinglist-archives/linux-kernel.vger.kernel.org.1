@@ -2,71 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC9D2737D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 03:07:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF4482737D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 03:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729452AbgIVBHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 21:07:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728518AbgIVBHS (ORCPT
+        id S1729468AbgIVBIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 21:08:14 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:47571 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1728854AbgIVBIN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 21:07:18 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43021C061755;
-        Mon, 21 Sep 2020 18:07:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=IRyDuYDjojtg055tU3K1OwNhO7te0/xwWWHnR7nYvnI=; b=zS2t9I4YJ5PtaGYAW0Qbt849D8
-        RJLutzGjiuydQmJXlplbLoxfzBOHp11HQcfuOC1io4AVuI9mBeReML6lF2KBkCeLg0BkhfrLBuo7o
-        CamKKPvEwF5VRF4v7P6QdI2iqZCtJx5HlnuFGsh4O4IGlVp0nZML8nAQ9Hb2e2hyegvxczewEBP3i
-        VbXzIaYhs/J1M3L9y0LFpq6KnkMW1/OZSnS/YvRKRHjF8OqlOyRtc4L7Uao5QLPYsE4Wzdb0PTxeE
-        IaBquFLZKt4R5KA+oQWO4JIWgqCp9rBFtcAPaeaXc+dYPmzD3j9FYZGIp8HmQy4EvIoGcqlriFJ0z
-        RGdrRoNQ==;
-Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kKWm3-0004mA-Fe; Tue, 22 Sep 2020 01:07:15 +0000
-Subject: Re: [PATCH 08/10] rpmsg: core: Add RPMSG byte conversion operations
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>, ohad@wizery.com,
-        bjorn.andersson@linaro.org, guennadi.liakhovetski@linux.intel.com
-Cc:     loic.pallardy@st.com, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200922001000.899956-1-mathieu.poirier@linaro.org>
- <20200922001000.899956-9-mathieu.poirier@linaro.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <49d5921c-c619-f9de-3ff1-f2617d3c9594@infradead.org>
-Date:   Mon, 21 Sep 2020 18:07:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 21 Sep 2020 21:08:13 -0400
+Received: (qmail 1238377 invoked by uid 1000); 21 Sep 2020 21:08:12 -0400
+Date:   Mon, 21 Sep 2020 21:08:12 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-usb@vger.kernel.org, Bastien Nocera <hadess@hadess.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        devicetree@vger.kernel.org,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Peter Chen <peter.chen@nxp.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH v2 2/2] USB: misc: Add onboard_usb_hub driver
+Message-ID: <20200922010812.GA1238082@rowland.harvard.edu>
+References: <20200917114600.v2.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
+ <20200917114600.v2.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
+ <20200917195416.GA1099735@rowland.harvard.edu>
+ <20200922004158.GC21107@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20200922001000.899956-9-mathieu.poirier@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922004158.GC21107@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/21/20 5:09 PM, Mathieu Poirier wrote:
-> +/**
+On Mon, Sep 21, 2020 at 05:41:58PM -0700, Matthias Kaehlcke wrote:
+> > > +	put_device(hub->dev);
+> > 
+> > Is there a matching get_device somewhere (like in _find_onboard_hub)?
+> > If so, I didn't see it.  And I don't see any reason for it.
+> 
+> Yes, implicitly, of_find_device_by_node() "takes a reference to the
+> embedded struct device which needs to be dropped after use."
 
-Hi,
-This block is not in kernel-doc format, so the comment block should not
-begin with /**.
+Okay.  In that case it probably would be better to do the put_device()
+right away, at the end of _find_onboard_hub().
 
-> + * rpmsg{16|32}_to_cpu()
-> + * cpu_to_rpmsg[16|32}() - rpmsg device specific byte conversion functions to
-> + *			   perform byte conversion between rpmsg device and the
-> + *			   transport layer it is operating on.
-> + */
-> +
-> +u16 rpmsg16_to_cpu(struct rpmsg_device *rpdev, u16 val)
-> +{
+There would be no danger of the platform device getting freed too soon 
+if you make onboard_hub_remove unbind the associated USB hub devices.  
+But there would still be a danger of those devices somehow getting 
+rebound again at the wrong time; this suggests that you should add a 
+flag to the onboard_hub structure saying that the platform device is 
+about to go away.
 
-
-thanks.
--- 
-~Randy
-
+Alan Stern
