@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E722739DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 06:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C46C2739E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 06:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726763AbgIVE2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 00:28:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57810 "EHLO
+        id S1727435AbgIVEbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 00:31:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726492AbgIVE2n (ORCPT
+        with ESMTP id S1726492AbgIVEbp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 00:28:43 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 323DEC061755;
-        Mon, 21 Sep 2020 21:28:43 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id e16so15499913wrm.2;
-        Mon, 21 Sep 2020 21:28:43 -0700 (PDT)
+        Tue, 22 Sep 2020 00:31:45 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0446BC061755;
+        Mon, 21 Sep 2020 21:31:44 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id b79so1876850wmb.4;
+        Mon, 21 Sep 2020 21:31:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=O/SAKpEChXy3CT9sJ0R5MO0RuMAcSDnDJ1mWKr2Nu7Y=;
-        b=Jd5lf3rMucFwtzA/d7nG2Vou9f2ChiQQ08ncHTDmnB55EOHMnTQMl3jWEis4Pu837m
-         WmP5GZ5JWOxXgdRuOJR987jDax4hNZDBjXAkJDSTQlztRW2GMmjPRqB9w7UjMF2h3TA2
-         vNnfcMdZJBA5R6JYbpO4K0PUbqLyMrJ65wqvsNc13DdixOnw9rHIYQU1tZQxqOjaWlQU
-         fvk//vcNkNX32IPKxhtzi9XcCFvBMuKsU0pDiYepGxa91M4xiF4YOAG2kYi5/6+JIm2j
-         R1FQQq1Zle+3xQXGL+xW1R1Z25cmNgdzabViTE2r8hMLO/2Nij8k5cvNY/1ffPDEKVsp
-         pqKA==
+        bh=dBMKv7Deo23fcUft/+4uee+gTmxJlYqKyjhLhZ254Pw=;
+        b=GmwMiF1Zf2+D5MYRba2R6yoL9aCwzI3F2CsAWvP3HcNdxmcSFKTZbuagWvYmwth/Ao
+         BJb5UXHtIT3PO5CQYq50qv0Kx9XmO9/WW8Dqb6Mk4pDrz7wtN/b/ZPWLcxgxzy67vXNM
+         orcBmTBxbq1xLUQ1xxgAIBgDkQoIoVa/Ee3CjyXN4KiGq6fcVzbMgmj/Q1MxjzayEaNS
+         m/xIUVsnrMW6tf6WRkNZXbbmMqUYUpyxXwxogy4rrJFKyRzyNHANoD4gq6ZQEwaPd6wy
+         wxKr1X3E/n0M8oNlZ1u4jde8HaqvhxtZPxyE705O4/UdAMzROa7hWtjMQYSeqCF2QOWU
+         3QBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=O/SAKpEChXy3CT9sJ0R5MO0RuMAcSDnDJ1mWKr2Nu7Y=;
-        b=JeLFVJ6LtT2cw1T3frvYrdTVInj2N/lW/6tezpiPV47M2vpPQlG2O2CsK2/4YnEiGN
-         dhWoXBnp4KK6yURnL5Ds9uaeG+13NZkeRQVDOQJUc+44947VFqggHfONFK/6bNqxI2Gk
-         8GOr1F/ud1JgwQDmzp4RR68H/3m83Tz/9sh5270OuczpjJPDm0bFPnYG9uvSHdqMIzHD
-         u2x2cJRsX0VeI/h7MrdUBCwyiPv8r6E03gbEo/AVvPPeJMOKDilhRlm2s8GTKLiSpFMQ
-         qw6LrCeuSxsQPsF5RZta5qmCfiyNCYQW5iqc9fKUv/NKCoxFZ91uZA/cWOnMhMjCdo9T
-         K1YQ==
-X-Gm-Message-State: AOAM532Jzli4G5AgBesRQpYSsjvRDJGfzU3qpS/F3RAVlIAQVbLnGu5+
-        iBfIH/5q69dMsmz2ORmWI4g=
-X-Google-Smtp-Source: ABdhPJwVJVbFgz5EpNoeoSB9SR/nTQ8dxCWh+onWVCRwph4Sqvodsh5Fp9DUiOFmRqfiOAa6zdikAg==
-X-Received: by 2002:adf:fd01:: with SMTP id e1mr2898250wrr.44.1600748921729;
-        Mon, 21 Sep 2020 21:28:41 -0700 (PDT)
+        bh=dBMKv7Deo23fcUft/+4uee+gTmxJlYqKyjhLhZ254Pw=;
+        b=ovME3uYCrQC/vFPCvFo1t1IumsRfk6b3D653preBAv2WNs5IaXbGrpdWnZZIwzyXuw
+         /62/0wjcBY1ouskDh5GQ4N7vj3z1Ze1IvSAjC+YMHgxIqyi3W9ex7F1seXSsMJUCBuKP
+         lm/I19VGvQeDMOmjfeBWXjZorJQy/mrGfIk34j+RRkKyyMnhDUqxr+UxWXw8KbYq1FYI
+         ONGvCtBJaGc+5DKh3dWSNjK4xTaas1DvDvydXdlwUdYLeAvOPecY92TZuCJ6LhK/iwWC
+         odsYCbQS34NFLFsS5CgapNQEjnsq5HYoQ0hJFzIVtP3neWRMCLxMut8YegQtDUD93xFa
+         PfuA==
+X-Gm-Message-State: AOAM533/1dLCl5XKxlyuLNKnLgDrFbca1D3lo/806FOZQWVlUCP41GyL
+        0fgzNvleGTqcpXkoNFo1PRY=
+X-Google-Smtp-Source: ABdhPJzV7ZUnMfimwcWMnYTdwhHgykJjvi8jtzf2pqAX5rKfT4DmD0vjgbz/diT+oYQPeD938jOFIg==
+X-Received: by 2002:a05:600c:258:: with SMTP id 24mr2522749wmj.66.1600749103531;
+        Mon, 21 Sep 2020 21:31:43 -0700 (PDT)
 Received: from mamamia.internal (a89-183-78-237.net-htp.de. [89.183.78.237])
-        by smtp.gmail.com with ESMTPSA id x2sm24616397wrl.13.2020.09.21.21.28.40
+        by smtp.gmail.com with ESMTPSA id z127sm2585159wmc.2.2020.09.21.21.31.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 21:28:41 -0700 (PDT)
+        Mon, 21 Sep 2020 21:31:42 -0700 (PDT)
 From:   Andre Heider <a.heider@gmail.com>
 To:     Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
         Gregory Clement <gregory.clement@bootlin.com>,
@@ -57,9 +57,9 @@ To:     Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
         =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
 Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2] arm64: dts: marvell: espressobin: Get rid of duplicate serial aliases
-Date:   Tue, 22 Sep 2020 06:28:39 +0200
-Message-Id: <20200922042839.1138546-1-a.heider@gmail.com>
+Subject: [PATCH v3] arm64: dts: marvell: espressobin: Get rid of duplicate serial aliases
+Date:   Tue, 22 Sep 2020 06:31:41 +0200
+Message-Id: <20200922043141.1138665-1-a.heider@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921164830.499548-1-a.heider@gmail.com>
 References: <20200921164830.499548-1-a.heider@gmail.com>
@@ -70,11 +70,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The included armada-3xxx.dtsi already defines these two aliases.
+The included armada-37xx.dtsi already defines these two aliases.
 
 Signed-off-by: Andre Heider <a.heider@gmail.com>
 Reviewed-by: Pali Rohár <pali@kernel.org>
 ---
+v3: really fix filename, sorry for the spam... too early, not enough coffee
 v2: fix filename in commit message
 
 This goes on top of Pali's patch:
