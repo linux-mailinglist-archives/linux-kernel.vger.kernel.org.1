@@ -2,114 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E0C02741A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8B92741B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726583AbgIVL5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 07:57:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54644 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726509AbgIVL5N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 07:57:13 -0400
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B967A2388B;
-        Tue, 22 Sep 2020 11:57:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600775833;
-        bh=JzX0UWVhsqqZWZ21G01cSXkn5qwSlkYla79J8KYPlOA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=LMsl+4ueGZzXFyO5Chwc5vTZZa34WwHVgdvZtzadg2Iy+hIi3Z04TRi6PZVMboYo1
-         NmP9NJsESc/94cQ5lJcUGf7CAKDirJroFWVJdJaNv7s79NKQTz2alpW2WpS/8vCmuz
-         /SjrboilA9XMi1Nf07/CU5djf8IZ42RUd9+kAnA0=
-Received: by mail-ed1-f52.google.com with SMTP id n13so15822734edo.10;
-        Tue, 22 Sep 2020 04:57:12 -0700 (PDT)
-X-Gm-Message-State: AOAM530aIAvKBj2JoNQ9iKHk6y70gHGO/8cpVOz7HIuVDjCa0uSPPQ8V
-        wKficOFXJlXZ/+Ac5ZujeQOY32f7VqgxSdqjXzg=
-X-Google-Smtp-Source: ABdhPJx6F8zoxz3fiIJuJ3HfhDz1x3+14UraYWfnus99n33U49cVmZ47m+VJqi+2Yp3i7enBtwxhxbNwiyUU5fNa52Y=
-X-Received: by 2002:a50:e78f:: with SMTP id b15mr3569103edn.104.1600775831336;
- Tue, 22 Sep 2020 04:57:11 -0700 (PDT)
+        id S1726578AbgIVMBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 08:01:42 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14211 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726543AbgIVMBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 08:01:41 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id B35FCAF25208706C1759;
+        Tue, 22 Sep 2020 20:01:39 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 22 Sep 2020 20:01:33 +0800
+From:   Xiaofei Tan <tanxiaofei@huawei.com>
+To:     <jikos@kernel.org>, <benjamin.tissoires@redhat.com>,
+        <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <linuxarm@huawei.com>, Xiaofei Tan <tanxiaofei@huawei.com>
+Subject: [PATCH] HID: core: fix some doc warnings in hid-core.c
+Date:   Tue, 22 Sep 2020 20:00:12 +0800
+Message-ID: <1600776012-7663-1-git-send-email-tanxiaofei@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-References: <20200921162342.7348-1-krzk@kernel.org> <20200921162342.7348-7-krzk@kernel.org>
- <20200922093726.GN26842@paasikivi.fi.intel.com>
-In-Reply-To: <20200922093726.GN26842@paasikivi.fi.intel.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Tue, 22 Sep 2020 13:56:59 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPeAyiPHdxBNocNCCsX8c_jM8hpPqRB4crjcOOBOt5MtLQ@mail.gmail.com>
-Message-ID: <CAJKOXPeAyiPHdxBNocNCCsX8c_jM8hpPqRB4crjcOOBOt5MtLQ@mail.gmail.com>
-Subject: Re: [PATCH 07/25] media: i2c: imx355: silence unused acpi_device_id warning
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Pavel Machek <pavel@ucw.cz>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Shawn Tu <shawnx.tu@intel.com>,
-        Ricardo Ribalda <ribalda@kernel.org>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Rui Miguel Silva <rmfrfs@gmail.com>,
-        Shunqian Zheng <zhengsq@rock-chips.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
-        Hyungwoo Yang <hyungwoo.yang@intel.com>,
-        Wenyou Yang <wenyou.yang@microchip.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        linux-media@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Sep 2020 at 11:37, Sakari Ailus <sakari.ailus@linux.intel.com> w=
-rote:
->
-> Hi Krzysztof,
->
-> Thanks for the patchset!
->
-> I believe the I=E6=B6=8E client has been dug up first as we've been deali=
-ng with
-> I=E6=B6=8E devices all the time, and it's been a pattern. I don't see tha=
-t as a
-> reason to reject the patches either though, it definitely cleans up the
-> drivers.
->
-> On Mon, Sep 21, 2020 at 06:23:24PM +0200, Krzysztof Kozlowski wrote:
-> > If driver is built without ACPI, the struct acpi_device_id won't be
-> > used:
-> >
-> >   drivers/media/i2c/imx355.c:1836:36: warning:
-> >     'imx355_acpi_ids' defined but not used [-Wunused-const-variable=3D]
-> >
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > ---
-> >  drivers/media/i2c/imx355.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/media/i2c/imx355.c b/drivers/media/i2c/imx355.c
-> > index 51245e71b411..8db287251f49 100644
-> > --- a/drivers/media/i2c/imx355.c
-> > +++ b/drivers/media/i2c/imx355.c
-> > @@ -1833,7 +1833,7 @@ static const struct dev_pm_ops imx355_pm_ops =3D =
-{
-> >       SET_SYSTEM_SLEEP_PM_OPS(imx355_suspend, imx355_resume)
-> >  };
-> >
-> > -static const struct acpi_device_id imx355_acpi_ids[] =3D {
-> > +static const struct acpi_device_id imx355_acpi_ids[]__maybe_unused =3D=
- {
->
-> A space before __ perhaps?
->
-> Albeit this seems to be all, I can address that while applying if that's
-> ok.
+Fix following warnings caused by mismatch bewteen function parameters
+and comments.
+drivers/hid/hid-core.c:931: warning: Function parameter or member 'hid' not described in 'hid_parse_report'
+drivers/hid/hid-core.c:931: warning: Excess function parameter 'device' description in 'hid_parse_report'
+drivers/hid/hid-core.c:961: warning: Function parameter or member 'hid' not described in 'hid_validate_values'
+drivers/hid/hid-core.c:961: warning: Excess function parameter 'device' description in 'hid_validate_values'
+drivers/hid/hid-core.c:1452: warning: Function parameter or member 'report' not described in 'hid_match_report'
+drivers/hid/hid-core.c:1452: warning: Excess function parameter 'report_type' description in 'hid_match_report'
+drivers/hid/hid-core.c:2132: warning: Function parameter or member 'drv' not described in 'new_id_store'
+drivers/hid/hid-core.c:2132: warning: Excess function parameter 'driver' description in 'new_id_store'
 
-Yes, there should be a space here. Let me know if I should send v2.
+Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
+---
+ drivers/hid/hid-core.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Best regards,
-Krzysztof
+diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
+index d2ecc9c..727d042 100644
+--- a/drivers/hid/hid-core.c
++++ b/drivers/hid/hid-core.c
+@@ -920,7 +920,7 @@ static int hid_scan_report(struct hid_device *hid)
+ /**
+  * hid_parse_report - parse device report
+  *
+- * @device: hid device
++ * @hid: hid device
+  * @start: report start
+  * @size: report size
+  *
+@@ -945,7 +945,7 @@ static const char * const hid_report_names[] = {
+ /**
+  * hid_validate_values - validate existing device report's value indexes
+  *
+- * @device: hid device
++ * @hid: hid device
+  * @type: which report type to examine
+  * @id: which report ID to examine (0 for first)
+  * @field_index: which report field to examine
+@@ -1444,7 +1444,7 @@ static int search(__s32 *array, __s32 value, unsigned n)
+  * hid_match_report - check if driver's raw_event should be called
+  *
+  * @hid: hid device
+- * @report_type: type to match against
++ * @report: hid report to match against
+  *
+  * compare hid->driver->report_table->report_type to report->type
+  */
+@@ -2120,7 +2120,7 @@ struct hid_dynid {
+ 
+ /**
+  * store_new_id - add a new HID device ID to this driver and re-probe devices
+- * @driver: target device driver
++ * @drv: target device driver
+  * @buf: buffer for scanning device ID data
+  * @count: input size
+  *
+-- 
+2.8.1
+
