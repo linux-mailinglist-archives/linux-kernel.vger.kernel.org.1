@@ -2,76 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 037BF2744BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 16:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 013382744C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 16:53:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726728AbgIVOwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 10:52:50 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:25453 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726640AbgIVOwu (ORCPT
+        id S1726654AbgIVOxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 10:53:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726507AbgIVOxo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 10:52:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1600786371; x=1632322371;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   in-reply-to:content-transfer-encoding;
-  bh=T9Oqjy4Aak9yvrDD8pdwIk5ZvPiudTMfoePpU2Nlp48=;
-  b=Z+jhQ3zrac0xjEd+3UCzosyOHRc6xBQjlc/bu72xy+H/wKbbvyA8CiJp
-   WVMv1XBbt2VBOUyGmjd9/DkxDnP7hj9GtysJu96+8eM2GYQMNZ5CG9V23
-   4hnvZI5vFC4UHpclxgB+yM5RBRytLfyEp8ocsua5QAHUgUkgYYL7hdBtQ
-   s=;
-X-IronPort-AV: E=Sophos;i="5.77,291,1596499200"; 
-   d="scan'208";a="78282518"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1a-7d76a15f.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 22 Sep 2020 14:52:47 +0000
-Received: from EX13D31EUA004.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1a-7d76a15f.us-east-1.amazon.com (Postfix) with ESMTPS id 9F408A18FB;
-        Tue, 22 Sep 2020 14:52:44 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.160.137) by
- EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 22 Sep 2020 14:52:37 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>
-CC:     SeongJae Park <sjpark@amazon.com>, <konrad.wilk@oracle.com>,
-        <jgross@suse.com>, SeongJae Park <sjpark@amazon.de>,
-        <axboe@kernel.dk>, <aliguori@amazon.com>, <amit@kernel.org>,
-        <mheyne@amazon.de>, <pdurrant@amazon.co.uk>,
-        <linux-block@vger.kernel.org>, <xen-devel@lists.xenproject.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 0/3] xen-blk(back|front): Let users disable persistent grants
-Date:   Tue, 22 Sep 2020 16:52:21 +0200
-Message-ID: <20200922145221.3131-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 22 Sep 2020 10:53:44 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37FFAC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 07:53:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=PwB7PgSBMCf1i80JEZZeqaAM6Spcvmy9ewYyeFjPsVI=; b=uqlDPU6SPAe3x1DDKo8G1qtut1
+        YwG3PA4mc8CLJ1oJyPiko0/UbU5ybdUeleXBeV8YHEyvVNYLAMBaj9YGVnr8/JyuAmcKGkiiTdejs
+        bVQysHpa55j4+LiObyETCdlPouw9Nwil/VnTPyLQvh9hBrpeU/Wmc3llTMeW/vjL27ShndfDs1p17
+        1HtwFHqpD+N1OhT15+cuZIdFzM2p+uhSCE063YoA7faH9tQzfuFItic4W+TEbWs9VLsTKgtP5hMCZ
+        z1+P1JChn7/bURfHcxuqNO0QLmQHNZ4osoavXcBcFeMSltMsN9VNgTTTzxDcDVb8dMbZA2ChSspNL
+        P4owvfJg==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kKjfX-0001op-62; Tue, 22 Sep 2020 14:53:23 +0000
+Date:   Tue, 22 Sep 2020 15:53:23 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>, x86@kernel.org,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 3/6] drm/i915: use vmap in shmem_pin_map
+Message-ID: <20200922145323.GG32101@casper.infradead.org>
+References: <20200918163724.2511-1-hch@lst.de>
+ <20200918163724.2511-4-hch@lst.de>
+ <20200921191157.GX32101@casper.infradead.org>
+ <20200922062249.GA30831@lst.de>
+ <20200922112144.GB32101@casper.infradead.org>
+ <20200922143906.GB26664@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <20200922144556.GM19254@Air-de-Roger>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.43.160.137]
-X-ClientProxiedBy: EX13P01UWB001.ant.amazon.com (10.43.161.59) To
- EX13D31EUA004.ant.amazon.com (10.43.165.161)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922143906.GB26664@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Sep 2020 16:45:56 +0200 "Roger Pau Monné" <roger.pau@citrix.com> wrote:
-
-> On Tue, Sep 22, 2020 at 04:15:46PM +0200, SeongJae Park wrote:
-> > From: SeongJae Park <sjpark@amazon.de>
-> > 
-> > Persistent grants feature provides high scalability.  On some small
-> > systems, however, it could incur data copy overheads[1] and thus it is
-> > required to be disabled.  But, there is no option to disable it.  For
-> > the reason, this commit adds module parameters for disabling of the
-> > feature.
+On Tue, Sep 22, 2020 at 04:39:06PM +0200, Christoph Hellwig wrote:
+> On Tue, Sep 22, 2020 at 12:21:44PM +0100, Matthew Wilcox wrote:
+> > Actually, vfree() will work today; I cc'd you on a documentation update
+> > to make it clear that this is permitted.
 > 
-> With the changes requested by Jürgen you can add my:
+> vfree calls __free_pages, the i915 and a lot of other code calls
+> put_page.  They are mostly the same, but not quite and everytime I
+> look into that mess I'm more confused than before.
 > 
-> Acked-by: Roger Pau Monné <roger.pau@citrix.com>
+> Can someone in the know write sensible documentation on when to use
+> __free_page(s) vs put_page?
 
-Thank you for your kind and helpful reviews!
+I started on that, and then I found a bug that's been lurking for 12
+years, so that delayed the documentation somewhat.  The short answer is
+that __free_pages() lets you free non-compound high-order pages while
+put_page() can only free order-0 and compound pages.
 
+I would really like to overhaul our memory allocation APIs:
 
-Thanks,
-SeongJae Park
+current			new
+__get_free_page(s)	alloc_page(s)
+free_page(s)		free_page(s)
+alloc_page(s)		get_free_page(s)
+__free_pages		put_page_order
+
+Then put_page() and put_page_order() are more obviously friends.
+
+But I cannot imagine a world in which Linus says yes to that upheaval.
+He's previous expressed dislike of the get_free_page() family of APIs,
+and thinks all those callers should just use kmalloc().  Maybe we can
+make that transition happen, now that kmalloc() aligns larger allocations.
