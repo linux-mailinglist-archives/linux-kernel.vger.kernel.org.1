@@ -2,99 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAD41274A22
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 22:31:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB94274A2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 22:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726652AbgIVUbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 16:31:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55302 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726567AbgIVUbr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 16:31:47 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 02520235FD;
-        Tue, 22 Sep 2020 20:31:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600806707;
-        bh=RsLf3KsvU0BPVszU0l9mTLEEEccmbTJ1ZzzU+yVAiIY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=NSpRrMhhepxbFfAvUKKbuPjELwiHnwhLcyz/DCLlIGDOFL47Nf8FBabyaDoc0kQ9w
-         ASCWzhR4SUPrEuqXgVhp8IgvQeHD39xSMuvZSJ1ZomHlkBvuVSua8vstDZz7shj1ke
-         qjAEtqCr1zWWlcuAdW8qkFNbHESaabTsjmVwyMrA=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 8F0C135227BD; Tue, 22 Sep 2020 13:31:46 -0700 (PDT)
-Date:   Tue, 22 Sep 2020 13:31:46 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>, tytso@mit.edu,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] random: use correct memory barriers for crng_node_pool
-Message-ID: <20200922203146.GC29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200916233042.51634-1-ebiggers@kernel.org>
- <20200917072644.GA5311@gondor.apana.org.au>
- <20200917165802.GC855@sol.localdomain>
- <20200921081939.GA4193@gondor.apana.org.au>
- <20200921152714.GC29330@paulmck-ThinkPad-P72>
- <20200921221104.GA6556@gondor.apana.org.au>
- <20200921232639.GK29330@paulmck-ThinkPad-P72>
- <20200921235136.GA6796@gondor.apana.org.au>
- <20200922184243.GA29330@paulmck-ThinkPad-P72>
- <20200922185931.GA1616407@gmail.com>
+        id S1726656AbgIVUed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 16:34:33 -0400
+Received: from mail-il1-f195.google.com ([209.85.166.195]:37784 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726550AbgIVUed (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 16:34:33 -0400
+Received: by mail-il1-f195.google.com with SMTP id q4so18628374ils.4;
+        Tue, 22 Sep 2020 13:34:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GVXRqEHXrZ3iuCE86AKACwgjvepk2Jk8PvwnmbjbrKk=;
+        b=DtCPEvbCNm0ql6258L4naFpjaqy9PYG5W8EmWqnSylC2Ee3xZmKpTL4hBbDBXcDnSQ
+         eNZm2z7vryTNMT2Tadx0uP6zkW6brx2P+909IVf+yXcq6GbLC+XyQ3KJmrysJhR/RAYx
+         HafmK2VaYC/9mkfIOnQ6jBSCRnp/30ZM7gWWR3aIke7U6BF4ULmkeOei15VUYBCLh3Rg
+         Lr6OYp1WzOKDF3y8nwHzvErT4Zq7npdK+Ax1NVGyLc3N5WmugMyzepABPYXfGGxfCigD
+         2nSrsxDCccAkhbFZN0b+xhO1QquNc5RK5NUFEO4/AmQcjM1VeyRETedz7bLaLTtryhNv
+         LcyA==
+X-Gm-Message-State: AOAM53232ntgjnO/drbNVTHMFVKi7xF9UE3f1nkeDtjkbtDdvSyjBfvI
+        70vBnoygzCPS7tF+/rbApw==
+X-Google-Smtp-Source: ABdhPJztkpG3s/gqZ3SqL0LUOYMffJ8BBUk3C1/1qIyhG4fiknVIIXEF6njrh2KnCmWxFJA9J7gVQA==
+X-Received: by 2002:a92:6b0d:: with SMTP id g13mr6189676ilc.242.1600806871421;
+        Tue, 22 Sep 2020 13:34:31 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id c5sm1008173ill.1.2020.09.22.13.34.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 13:34:30 -0700 (PDT)
+Received: (nullmailer pid 3195166 invoked by uid 1000);
+        Tue, 22 Sep 2020 20:34:29 -0000
+Date:   Tue, 22 Sep 2020 14:34:29 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Sagar Kadam <sagar.kadam@sifive.com>
+Cc:     linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, mturquette@baylibre.com,
+        sboyd@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
+        tglx@linutronix.de, jason@lakedaemon.net, maz@kernel.org,
+        thierry.reding@gmail.com, u.kleine-koenig@pengutronix.de,
+        lee.jones@linaro.org, aou@eecs.berkeley.edu, yash.shah@sifive.com
+Subject: Re: [PATCH v1 2/3] dt-bindings: riscv: convert plic bindings to
+ json-schema
+Message-ID: <20200922203429.GA3188204@bogus>
+References: <1599734644-4791-1-git-send-email-sagar.kadam@sifive.com>
+ <1599734644-4791-3-git-send-email-sagar.kadam@sifive.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200922185931.GA1616407@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1599734644-4791-3-git-send-email-sagar.kadam@sifive.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 11:59:31AM -0700, Eric Biggers wrote:
-> On Tue, Sep 22, 2020 at 11:42:43AM -0700, Paul E. McKenney wrote:
-> > On Tue, Sep 22, 2020 at 09:51:36AM +1000, Herbert Xu wrote:
-> > > On Mon, Sep 21, 2020 at 04:26:39PM -0700, Paul E. McKenney wrote:
-> > > >
-> > > > > But this reasoning could apply to any data structure that contains
-> > > > > a spin lock, in particular ones that are dereferenced through RCU.
-> > > > 
-> > > > I lost you on this one.  What is special about a spin lock?
-> > > 
-> > > I don't know, that was Eric's concern.  He is inferring that
-> > > spin locks through lockdep debugging may trigger dependencies
-> > > that require smp_load_acquire.
-> > > 
-> > > Anyway, my point is if it applies to crng_node_pool then it
-> > > would equally apply to RCU in general.
-> > 
-> > Referring to the patch you call out below...
-> > 
-> > Huh.  The old cmpxchg() primitive is fully ordered, so the old mb()
-> > preceding it must have been for correctly interacting with hardware on
-> > !SMP systems.  If that is the case, then the use of cmpxchg_release()
-> > is incorrect.  This is not the purview of the memory model, but rather
-> > of device-driver semantics.  Or does crng not (or no longer, as the case
-> > might be) interact with hardware RNGs?
+On Thu, Sep 10, 2020 at 04:14:03PM +0530, Sagar Kadam wrote:
+> Convert device tree bindings for SiFive's PLIC to YAML format
 > 
-> No hardware involved here.  The mb() is just unnecessary, as I noted in my patch
-> https://lore.kernel.org/lkml/20200916233042.51634-1-ebiggers@kernel.org/.
+> Signed-off-by: Sagar Kadam <sagar.kadam@sifive.com>
+> ---
+>  .../interrupt-controller/sifive,plic-1.0.0.txt     |  58 -----------
+>  .../interrupt-controller/sifive,plic-1.0.0.yaml    | 107 +++++++++++++++++++++
+>  2 files changed, 107 insertions(+), 58 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.txt
+>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
 > 
-> > What prevents either the old or the new code from kfree()ing the old
-> > state out from under another CPU that just now picked up a pointer to the
-> > old state?  The combination of cmpxchg_release() and smp_load_acquire()
-> > won't do anything to prevent this from happening.  This is after all not
-> > a memory-ordering issue, but instead an object-lifetime issue.  But maybe
-> > you have a lock or something that provides the needed protection.  I don't
-> > see how this can be the case and still require the cmpxchg_release()
-> > and smp_load_acquire(), but perhaps this is a failure of imagination on
-> > my part.
-> 
-> crng_node_pool is initialized only once, and never freed.
+> diff --git a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.txt b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.txt
+> deleted file mode 100644
+> index 6adf7a6..0000000
+> --- a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.txt
+> +++ /dev/null
+> @@ -1,58 +0,0 @@
+> -SiFive Platform-Level Interrupt Controller (PLIC)
+> --------------------------------------------------
+> -
+> -SiFive SOCs include an implementation of the Platform-Level Interrupt Controller
+> -(PLIC) high-level specification in the RISC-V Privileged Architecture
+> -specification.  The PLIC connects all external interrupts in the system to all
+> -hart contexts in the system, via the external interrupt source in each hart.
+> -
+> -A hart context is a privilege mode in a hardware execution thread.  For example,
+> -in an 4 core system with 2-way SMT, you have 8 harts and probably at least two
+> -privilege modes per hart; machine mode and supervisor mode.
+> -
+> -Each interrupt can be enabled on per-context basis.  Any context can claim
+> -a pending enabled interrupt and then release it once it has been handled.
+> -
+> -Each interrupt has a configurable priority.  Higher priority interrupts are
+> -serviced first.  Each context can specify a priority threshold. Interrupts
+> -with priority below this threshold will not cause the PLIC to raise its
+> -interrupt line leading to the context.
+> -
+> -While the PLIC supports both edge-triggered and level-triggered interrupts,
+> -interrupt handlers are oblivious to this distinction and therefore it is not
+> -specified in the PLIC device-tree binding.
+> -
+> -While the RISC-V ISA doesn't specify a memory layout for the PLIC, the
+> -"sifive,plic-1.0.0" device is a concrete implementation of the PLIC that
+> -contains a specific memory layout, which is documented in chapter 8 of the
+> -SiFive U5 Coreplex Series Manual <https://static.dev.sifive.com/U54-MC-RVCoreIP.pdf>.
+> -
+> -Required properties:
+> -- compatible : "sifive,plic-1.0.0" and a string identifying the actual
+> -  detailed implementation in case that specific bugs need to be worked around.
+> -- #address-cells : should be <0> or more.
+> -- #interrupt-cells : should be <1> or more.
+> -- interrupt-controller : Identifies the node as an interrupt controller.
+> -- reg : Should contain 1 register range (address and length).
+> -- interrupts-extended : Specifies which contexts are connected to the PLIC,
+> -  with "-1" specifying that a context is not present.  Each node pointed
+> -  to should be a riscv,cpu-intc node, which has a riscv node as parent.
+> -- riscv,ndev: Specifies how many external interrupts are supported by
+> -  this controller.
+> -
+> -Example:
+> -
+> -	plic: interrupt-controller@c000000 {
+> -		#address-cells = <0>;
+> -		#interrupt-cells = <1>;
+> -		compatible = "sifive,plic-1.0.0", "sifive,fu540-c000-plic";
+> -		interrupt-controller;
+> -		interrupts-extended = <
+> -			&cpu0-intc 11
+> -			&cpu1-intc 11 &cpu1-intc 9
+> -			&cpu2-intc 11 &cpu2-intc 9
+> -			&cpu3-intc 11 &cpu3-intc 9
+> -			&cpu4-intc 11 &cpu4-intc 9>;
+> -		reg = <0xc000000 0x4000000>;
+> -		riscv,ndev = <10>;
+> -	};
+> diff --git a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+> new file mode 100644
+> index 0000000..95c8c85
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+> @@ -0,0 +1,107 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +# Copyright (C) 2020 SiFive, Inc.
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/interrupt-controller/sifive,plic-1.0.0.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: SiFive Platform-Level Interrupt Controller (PLIC)
+> +
+> +description:
+> +  SiFive SOCs include an implementation of the Platform-Level Interrupt Controller
+> +  (PLIC) high-level specification in the RISC-V Privileged Architecture
+> +  specification. The PLIC connects all external interrupts in the system to all
+> +  hart contexts in the system, via the external interrupt source in each hart.
+> +
+> +  A hart context is a privilege mode in a hardware execution thread. For example,
+> +  in an 4 core system with 2-way SMT, you have 8 harts and probably at least two
+> +  privilege modes per hart; machine mode and supervisor mode.
+> +
+> +  Each interrupt can be enabled on per-context basis. Any context can claim
+> +  a pending enabled interrupt and then release it once it has been handled.
+> +
+> +  Each interrupt has a configurable priority. Higher priority interrupts are
+> +  serviced first.  Each context can specify a priority threshold. Interrupts
+> +  with priority below this threshold will not cause the PLIC to raise its
+> +  interrupt line leading to the context.
+> +
+> +  While the PLIC supports both edge-triggered and level-triggered interrupts,
+> +  interrupt handlers are oblivious to this distinction and therefore it is not
+> +  specified in the PLIC device-tree binding.
+> +
+> +  While the RISC-V ISA doesn't specify a memory layout for the PLIC, the
+> +  "sifive,plic-1.0.0" device is a concrete implementation of the PLIC that
+> +  contains a specific memory layout, which is documented in chapter 8 of the
+> +  SiFive U5 Coreplex Series Manual <https://static.dev.sifive.com/U54-MC-RVCoreIP.pdf>.
+> +
+> +maintainers:
+> +  - Sagar Kadam <sagar.kadam@sifive.com>
+> +  - Paul Walmsley  <paul.walmsley@sifive.com>
+> +  - Palmer Dabbelt <palmer@dabbelt.com>
+> +
+> +allOf:
+> +  - $ref: /schemas/interrupt-controller.yaml#
 
-Thank you on both counts!
+Don't need this. It gets selected matching on node name.
 
-							Thanx, Paul
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - const: sifive,plic-1.0.0
+> +      - const: sifive,fu540-c000-plic
+
+Somehow these ended up in the wrong order. Should be most specific to 
+least specific.
+
+> +
+> +    description:
+> +      Should be "sifive,plic-1.0.0" and a string identifying the actual
+> +      detailed implementation in case that specific bugs need to be worked around.
+
+Drop this.
+
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description:  Should contain 1 register range (address and length).
+
+Drop this. The schema says this...
+
+> +
+> +  '#address-cells':
+> +    const: 0
+> +    description: Should be <0> or more.
+
+Drop. 'or more' is wrong. If there's a case with more, it will need to 
+be documented.
+
+> +
+> +  '#interrupt-cells':
+> +    const: 1
+> +    description: Should be <1> or more.
+
+Same here.
+
+> +
+> +  interrupt-controller: true
+> +
+> +  interrupts-extended:
+> +    minItems: 1
+> +    description:
+> +      Specifies which contexts are connected to the PLIC, with "-1" specifying
+> +      that a context is not present. Each node pointed to should be a
+> +      riscv,cpu-intc node, which has a riscv node as parent.
+> +
+> +  riscv,ndev:
+> +    $ref: "/schemas/types.yaml#/definitions/uint32"
+> +    description:
+> +      Specifies how many external interrupts are supported by this controller.
+> +
+> +required:
+> +  - compatible
+> +  - '#address-cells'
+> +  - '#interrupt-cells'
+> +  - interrupt-controller
+> +  - reg
+> +  - interrupts-extended
+> +  - riscv,ndev
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    plic: interrupt-controller@c000000 {
+> +      #address-cells = <0>;
+> +      #interrupt-cells = <1>;
+> +      compatible = "sifive,plic-1.0.0", "sifive,fu540-c000-plic";
+> +      interrupt-controller;
+> +      interrupts-extended = <
+> +        &cpu0_intc 11
+> +        &cpu1_intc 11 &cpu1_intc 9
+> +        &cpu2_intc 11 &cpu2_intc 9
+> +        &cpu3_intc 11 &cpu3_intc 9
+> +        &cpu4_intc 11 &cpu4_intc 9>;
+> +      reg = <0xc000000 0x4000000>;
+> +      riscv,ndev = <10>;
+> +    };
+> -- 
+> 2.7.4
+> 
