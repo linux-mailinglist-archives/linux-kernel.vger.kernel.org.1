@@ -2,89 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8A4A2749CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 22:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6BE52749CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 22:07:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726761AbgIVUF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 16:05:26 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:54916 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726567AbgIVUF0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 16:05:26 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 9238C1C0BAC; Tue, 22 Sep 2020 22:05:24 +0200 (CEST)
-Date:   Tue, 22 Sep 2020 22:05:24 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Saeed Mahameed <saeed@kernel.org>
-Cc:     eranbe@mellanox.com, lariel@mellanox.com, saeedm@mellanox.com,
-        leon@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net/mlx5: remove unreachable return
-Message-ID: <20200922200524.GA4975@duo.ucw.cz>
-References: <20200921114103.GA21071@duo.ucw.cz>
- <5d37fdcb0d50d79f93e8cdb31cb3f182548ffcc1.camel@kernel.org>
- <4eb581435bd7ac528c29815a7d26016bd1c429f4.camel@kernel.org>
+        id S1726641AbgIVUHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 16:07:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52490 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726567AbgIVUHK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 16:07:10 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CEC17221E7;
+        Tue, 22 Sep 2020 20:07:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600805230;
+        bh=8iswYPu27PYcGlTr8O09zocLUcfIkTWGoqABqHa5FAo=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=VIRKZd4PdH0+ucDTB4Q/dOS3oU9+8o3xpAM0FhwQSjwV5l+KfZlSxXS834A8vSZBM
+         X3vy5kUH20IJYJhiBIyY7Ac84msnjfdZH+E5XqVCqPY4OSiDlk0sPrUmLhX1nqg8WA
+         3W/SU6MydX6Yo5r7evQmlC5WT4nkmZHeysC3oQwY=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="jRHKVT23PllUwdXP"
-Content-Disposition: inline
-In-Reply-To: <4eb581435bd7ac528c29815a7d26016bd1c429f4.camel@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1599684288-20917-1-git-send-email-amit.sunil.dhamne@xilinx.com>
+References: <1599684288-20917-1-git-send-email-amit.sunil.dhamne@xilinx.com>
+Subject: Re: [PATCH v4 0/3] clk: zynqmp: Add firmware specific clock flags
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     rajanv@xilinx.com, jollys@xilinx.com, tejasp@xilinx.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>
+To:     Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>,
+        linux-clk@vger.kernel.org, m.tretter@pengutronix.de,
+        mark.rutland@arm.com, michal.simek@xilinx.com,
+        mturquette@baylibre.com
+Date:   Tue, 22 Sep 2020 13:07:08 -0700
+Message-ID: <160080522837.310579.7160115709529621594@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---jRHKVT23PllUwdXP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue 2020-09-22 12:54:20, Saeed Mahameed wrote:
-> On Mon, 2020-09-21 at 22:54 -0700, Saeed Mahameed wrote:
-> > On Mon, 2020-09-21 at 13:41 +0200, Pavel Machek wrote:
-> > > The last return statement is unreachable code. I'm not sure if it
-> > > will
-> > > provoke any warnings, but it looks ugly.
-> > >    =20
-> > > Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
-> > >=20
-> > >=20
-> >=20
-> > Applied to net-next-mlx5.
-> >=20
-> > Thanks,
-> > Saeed.
-> >=20
+Quoting Amit Sunil Dhamne (2020-09-09 13:44:45)
+> Currently firmware is maintaining CCF specific flags and provides to
+> CCF as it is. But CCF flag numbers may change and that shouldn't mean
+> that the firmware needs to change. The firmware should have its own
+> 'flag number space' that is distinct from the common clk framework's
+> 'flag number space'. So use firmware specific clock flags in ZynqMP
+> clock driver instead of CCF flags.
 >=20
-> Actually checkpatch reports this issue:
-> WARNING:NO_AUTHOR_SIGN_OFF: Missing Signed-off-by: line by nominal
-> patch author 'Pavel Machek <pavel@ucw.cz>'
+> Changes in v4:
+>  - Use if condition instead of ternary operator.
 >=20
-> Do you want me to override the Signed-off-by tag with the above email ?
 
-Sorry about that.
+Thanks. This patch series doesn't apply for me though. What is the base
+of the patches? Can you use the --base option when formatting patches
+with git format-patch? That would help me.
 
-Actually, overriding patch author to match signoff would be better (I
-should have sent it from: denx), but either way is okay with me.
+Also, I think your MUA or SMTP server is mangling the format. I had
+trouble trying to apply the patches from my local copy so I had to
+fallback to lore but even that didn't work.
 
-Best regards,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---jRHKVT23PllUwdXP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX2pZBAAKCRAw5/Bqldv6
-8jkJAKCN+rn7YSGCZRIAF9TT3/s9SQHGWQCfdyaR/Z42wf5Wjz13hY8Ctge+uIk=
-=sk8T
------END PGP SIGNATURE-----
-
---jRHKVT23PllUwdXP--
+Please resend.
