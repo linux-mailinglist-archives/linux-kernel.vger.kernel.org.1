@@ -2,113 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1959B274364
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 15:41:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A01A27436E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 15:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726617AbgIVNlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 09:41:11 -0400
-Received: from mail-dm6nam12on2069.outbound.protection.outlook.com ([40.107.243.69]:3009
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726576AbgIVNlK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 09:41:10 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KySX/cdr2cJq2azLbkyq+NybDZ2B/vU8hiBdc5pI7gT14f2shexfwopAPDv51TA3OM90B2gWVOP6yVUvsKlcqUDWBH7VwY0zJz5NjcixdTSnb5yjnSRaGIVOz3A+hDbhHlBYDLBoJvp0SHWn/N4Qu0Q+S+4qFukPiEdAMH0TVSQtvRnsh1iI+tf55HfSl1GQxr2MhKjga7TD9IvK6i8nDxin57Uk7qZEy0YL9XiSo79veUCGaWX+cI8sWuaxql8b1c5zoL7aduMYQ2tx8mM/+Ktt+yOTBu5kGjjou3L0mH7shk5mIS5h81hEVRJnf2YU1I40bCuILRttWVfnpA3Xjg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ylMbd3LjXvnyrrVWPsOvwQ/3x0p2lLKvYR58z6x2qX4=;
- b=fjcPsavt2v6eblk3jRFvFo+qfAYRqZjSwQ9/2yJiX0lHomk3emtVvy4rV5nS3CEJonsDT7mQEBGi6YqON2nFwnZAscZtLI+KUmPONqOYKMtbSkYsE+zNJU5+reWkG6qYwwQdYPYDeZKRHEfEvZikZ1rcRb2DuyLFqpHsvaEkaVgF+Bv24i2MThniPmMqIh0Pb823Wgg1KkAP0JWAwCIftJ9GpUBJwqszGhBfGMWs0mmnTNJJZo1aEKa5RIDzsK3rGnhEDenEO0luwuEXzz1EREqkwh7/P4qKFm6vwKLqzihY4xDlNObvwOnBUlc0JbZlvpVDrPocskkqChv9jkY7iA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ylMbd3LjXvnyrrVWPsOvwQ/3x0p2lLKvYR58z6x2qX4=;
- b=18D+CZcZ1AT9rNXvuTCC3O7lUN87AiF8uFPv1IdvKKQVZyTp9dv4QvVne2brJJ1szI1neEFYTQmE90v/s6JVUAqhan2YUH8NfwCgT3dpY+nJ7zDItItJrv1VReyHHQKTt+/xCuPt7I+KNYlATs9PwfyPUNjs+BEMLA7wa0RUH2Q=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
- DM6PR12MB3179.namprd12.prod.outlook.com (2603:10b6:5:183::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3412.20; Tue, 22 Sep 2020 13:41:08 +0000
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::299a:8ed2:23fc:6346]) by DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::299a:8ed2:23fc:6346%3]) with mapi id 15.20.3391.024; Tue, 22 Sep 2020
- 13:41:08 +0000
-Subject: Re: [PATCH] crypto: ccp - fix error handling
-To:     Pavel Machek <pavel@denx.de>, "Allen, John" <John.Allen@amd.com>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20200921113435.GA20450@duo.ucw.cz>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <620833c5-a2bf-852e-16f1-f8ed04bf8fea@amd.com>
-Date:   Tue, 22 Sep 2020 08:41:06 -0500
+        id S1726614AbgIVNnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 09:43:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43587 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726526AbgIVNnm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 09:43:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600782221;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+RjqZZpcz133eDPIDFweleVoraiJQPcRg1Z09eullZA=;
+        b=QwXC7xYwdpbWvrTTJcuyl9vH31Z25aqFGBr0iLqMJU+fO8qQpfWfDIUaEDRJmY4Mog2n6J
+        Ri0ZB+f34RS/4x5aW9t/Ahjnml8Az08ezc1pxw8Xp4G5gbZN4MAhuRo6cMtKcarvrD4BFT
+        4GgyYb2Nqwq47SM51JAMdaDm7H7VgLs=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-427-26BbOyNyOOSe3WsSTqOvYQ-1; Tue, 22 Sep 2020 09:43:38 -0400
+X-MC-Unique: 26BbOyNyOOSe3WsSTqOvYQ-1
+Received: by mail-wm1-f71.google.com with SMTP id t10so585473wmi.9
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 06:43:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+RjqZZpcz133eDPIDFweleVoraiJQPcRg1Z09eullZA=;
+        b=MhajYWpVgVmrUEapfEXZ8roKC8yMVHgsDF4pEEyxLzZu9wUCfvZJ6P+0NeYmuUjJcD
+         4tii2xyUe05e8LZFNovfWFvwdnFVCQmj/K4CVbJ8TOAWTse6jSeJbULQp7ZV6RReeq3K
+         r+j4Q+MQsWASx1Sjcb1PivUaYJtraln3A+uXUBuG3UgIMlRD8lQngeZM8vZHldntLjBK
+         G+J41h5QOlFun+cKSPitIrkavYpbo10jEtYRdP5s80gwtOyw9P0uatrYC5GDNZC3C21g
+         LK1WWS2MXWDGhqYqi3X8a3/cJGz7N1UhBjNMwRgGoD7y5h18PTrFWjIswD/bnYo01yIT
+         ptww==
+X-Gm-Message-State: AOAM5332I6CWn/uMXKHpe+ExoRQVUzhwwPIpbMwuVhwIiBtTNU/WYmd0
+        6wqaVHbkue9zIiKLMAX5S+aAb7dM1WLKUQirP2rZ2A3bWeHyhh1UscOerldpKOdt2XNgbdGR9UK
+        fXj5wrqZj6HLC7j8OOof3xRTZ
+X-Received: by 2002:a5d:4811:: with SMTP id l17mr3442599wrq.252.1600782217720;
+        Tue, 22 Sep 2020 06:43:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyglyepT72u0u8qRUeIVHeaIrPCxmCf6cGs6FlYed7irsbKA367/aa58zjJODiu1leT5jKnpg==
+X-Received: by 2002:a5d:4811:: with SMTP id l17mr3442574wrq.252.1600782217526;
+        Tue, 22 Sep 2020 06:43:37 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:ec2c:90a9:1236:ebc6? ([2001:b07:6468:f312:ec2c:90a9:1236:ebc6])
+        by smtp.gmail.com with ESMTPSA id l10sm25008213wru.59.2020.09.22.06.43.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Sep 2020 06:43:36 -0700 (PDT)
+Subject: Re: [PATCH] KVM: SVM: Analyze is_guest_mode() in svm_vcpu_run()
+To:     Krish Sadhukhan <krish.sadhukhan@oracle.com>,
+        Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+References: <1600066548-4343-1-git-send-email-wanpengli@tencent.com>
+ <b39b1599-9e1e-8ef6-1b97-a4910d9c3784@oracle.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <91baab6a-3007-655a-5c59-6425473d2e33@redhat.com>
+Date:   Tue, 22 Sep 2020 15:43:35 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20200921113435.GA20450@duo.ucw.cz>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DM5PR21CA0006.namprd21.prod.outlook.com
- (2603:10b6:3:ac::16) To DM5PR12MB1355.namprd12.prod.outlook.com
- (2603:10b6:3:6e::7)
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.236.30.118] (165.204.77.1) by DM5PR21CA0006.namprd21.prod.outlook.com (2603:10b6:3:ac::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.7 via Frontend Transport; Tue, 22 Sep 2020 13:41:07 +0000
-X-Originating-IP: [165.204.77.1]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 3f47ee9a-5118-4503-2ae7-08d85efd28f1
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3179:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB3179DF7656937C446976F2A4EC3B0@DM6PR12MB3179.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1186;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CvBvPCAUNmQVKEGV8+iz4qMt8NlQmN3jcdtsH5LvLQhwEWz15ULYZ9k0U9G1iU2UEsTyVLEPxi1E4xvUqjGK0sLN1JYajuonovKVi/3L1ceVcZj8Bj2dH5gAcKut1jUbbcW9JOrjZIDEJeG6tJNTTrZg5/R/AtsYdEbrjUQk5CXsHFx8YnnJ7LfdbwNCx2zybjZqxL3ycRQKzLpzC69j0TvSarVyK3Ei411yfLQ+ctgW7J7hOavXaAL4Z8+LltPc8qNgYYj8GIYjHk8cRQVvDX4w2vZW2zcjONDTcuxOWa1yPoAbeHgbRIedTwMJa9/hyLUwDZDVD6yE3Vl63I0N/oDZPgCsOP2aqme2E1w9C1HaI/THzoDKug537QIHy5ZF
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(346002)(366004)(39860400002)(31686004)(26005)(52116002)(6486002)(53546011)(36756003)(16526019)(478600001)(186003)(316002)(2616005)(956004)(110136005)(16576012)(8676002)(2906002)(86362001)(5660300002)(66946007)(8936002)(31696002)(4744005)(66556008)(66476007)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: OXAGnMIWUeRjLqVQ1uVUA4m1KvE7/CreD+oPklmAP2ad4/qk1dLh+CjiiTHTX6YhN92viMym3u2ur8k85uuGJmHseL2GhLBgXMuBeDkIN0QTe6x2i6UtmO+qzG/ReZEEc6u0frlv4ndfYdi4Wj5NN7vIK1Zd7TpiMRpmp9XOdRxfJ4eOO6qe56oEv92NznRS6pmuNEBgnELRh0XUU4dkLoz/yxatRNvEIknquNWOQKWdN7MV7H1O6n2pKzPY0LOoYnlpkhqJY2frJW2YLavwox7q9hi73URk2AojYNNPNgysETuN0k2PBf4tDneQGarBzEi+UL51XnPKQR+cVUPsNUpVrOcHnSKJyruucRSj/D90YiAF72lTLjx29ymfq/ulbYgbqY0skbjzz7BNKzK2nq7QbgJpaipOity5oCZev/Kk12tJ1w+L0lz9r8Em3FuCkjYgorIZdiDFuQWelZHTDjfl+H01EtKKIb1JLzzkAfnt4T8zeV65GkPif9hT+n9rO3Y6fVSsNYrhBnAa5zQCMhMzKQc4pr0ePSbXPrQngjkiXxZdPpej7BX6leBDj8ivrz3UR3226ErTUoJlFjDiGOQ9RikzgOoN1OZkFwW4T+ty+AGq/166wGqOZeidF+tn0exNS/VQWpbrgw7P50qNRw==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3f47ee9a-5118-4503-2ae7-08d85efd28f1
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2020 13:41:08.6132
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WXC3wEt6p7lhtPjt9rwl2dqz/X/OX9IKuHUXjdd1NS0+Sg+R/THnL5wRlsgR6ROxXCY/eeyPyJjCBSVOTKbnWw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3179
+In-Reply-To: <b39b1599-9e1e-8ef6-1b97-a4910d9c3784@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/21/20 6:34 AM, Pavel Machek wrote:
-> Fix resource leak in error handling.
-
-Does it need a Fixes: tag?
-
-Thanks,
-Tom
-
+On 14/09/20 22:43, Krish Sadhukhan wrote:
+>>
 > 
-> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+> Not related to your changes, but should we get rid of the variable
+> 'exit_fastpath' and just do,
 > 
-> diff --git a/drivers/crypto/ccp/ccp-ops.c b/drivers/crypto/ccp/ccp-ops.c
-> index bd270e66185e..40869ea1ed20 100644
-> --- a/drivers/crypto/ccp/ccp-ops.c
-> +++ b/drivers/crypto/ccp/ccp-ops.c
-> @@ -1744,7 +1744,7 @@ ccp_run_sha_cmd(struct ccp_cmd_queue *cmd_q, struct ccp_cmd *cmd)
->  			break;
->  		default:
->  			ret = -EINVAL;
-> -			goto e_ctx;
-> +			goto e_data;
->  		}
->  	} else {
->  		/* Stash the context */
+>         return svm_exit_handler_fastpath(vcpu);
 > 
+> It seems the variable isn't used anywhere else and svm_vcpu_run()
+> doesn't return from anywhere else either.
+
+Yes (also because vmx will do the same once we can push
+EXIT_FASTPATH_REENTER_GUEST handling up to vcpu_enter_guest)...
+
+> Also, svm_exit_handlers_fastpath() doesn't have any other caller. 
+> Should we get rid of it as well ?
+
+... and no, because svm_vcpu_run is a very large function and therefore
+it's better to keep its flow streamlined.
+
+Paolo
+
