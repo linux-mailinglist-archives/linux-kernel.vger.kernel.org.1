@@ -2,131 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1456F27451D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:19:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7901274529
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726706AbgIVPTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 11:19:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45516 "EHLO
+        id S1726667AbgIVPWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 11:22:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726566AbgIVPTZ (ORCPT
+        with ESMTP id S1726566AbgIVPWo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 11:19:25 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8675C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 08:19:24 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id x23so3742549wmi.3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 08:19:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=scqHhJ8H2F1OwqEQAUQOLL4YJrrUXBZObQzVzFZayBI=;
-        b=ud7Z8q5Iaz3v0wMl9sijNgJWLoh+EObUkH3gLhvAfMqP9C5Z7tRIQ534KlkbFRgfv9
-         z2DD3DE+h2jOvVD1DMpp7Y1TfCNZXb3e/BrPf6Sr0zloAVm3KaDh44i4BK5S/tHMPCRi
-         Gw7bHVM0QAeBLqrCtD5cMYMkstDteJjuR0xOcOaTA7uku4h3iXT/0tP6e3rKoXGO+R2c
-         V3A+DvvT8joCtcYJNKXIkwxk0jU3BDgnl0RHgDv4fPFby36cZsLUZC0jF+NADyZz2uqf
-         ln8jFfTgv5P6BUOuXaEbGATW1CrKZT3e5d6Zw+PgRFlmgq/XViIJ6Sy3RNrGNnp8eOa9
-         Rokg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=scqHhJ8H2F1OwqEQAUQOLL4YJrrUXBZObQzVzFZayBI=;
-        b=uWP0FgbDimcpY/muqD/r0Obw9fkFEhEL40BQIIjteHbaTCkIHDcRKAWK4Zq2MKQAP8
-         Cl+CRMXRzbKiVhDzJQqLP3qS7RZRvvfiUzIf2cHNNONsIlnT7IMCCWQ42/t4U7qD38cE
-         /I0EEXNeEDznLB4QM4hDD3G/3YtvWMTMbqUY/JYceJftDLgDMYPhkqp8MfAmshW4uzRT
-         IFrdIuNVZsglBzfudoaHqGuGYZLYaA6Lmy1PWr+rC5qJef2/+fZ/qw9C1bZ8N4MOSgjK
-         Km1c53yndAJ72qlNI9QExSA9pwJgmGw89jtvhtJhoE1qS5khWwaxRHvRHB01JcKTfWK6
-         xfCg==
-X-Gm-Message-State: AOAM533jPAKJJruBuFceQi/i10ol4emwI2KLNMGGOcX4iKnc3GG2hL0e
-        Zy/KHU3zANyzqb97eVIYtrAuLACivtK+hsX9CM4=
-X-Google-Smtp-Source: ABdhPJwSuNJ2YKBapkwBsT/onLn/HzjF5NQVk8AzJyU5PzUKmm9KvtKj4eIV23ATNS6J6xa0M1JW8/GaRgVLmlXy73E=
-X-Received: by 2002:a1c:7d4d:: with SMTP id y74mr1562936wmc.73.1600787963365;
- Tue, 22 Sep 2020 08:19:23 -0700 (PDT)
+        Tue, 22 Sep 2020 11:22:44 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3F7EC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 08:22:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=47IgGGQcOCGVOf/10+SQlAajxJWXxBSCU0PDicFXtkQ=; b=Nk8D8afDKDMQRFSjD6NLhYDDGP
+        8z35Z+0f0THPgALMziI37cQjTCJ83agSD5D7eoYqE9haljcEWI/kCVHLIGD4ENNnOql3VNeo9Arjc
+        mw1jdyE4ASIwoSoxoziaHqgP8Nx7KGZicQxCi/GeG2OhZJVKDom9fxV8wxAOBt25bAsz3HCJFZu6j
+        zsalt0MTZFbDvLaqoZ7IKuRpo3F+nCB9xaaVz7X5bqj9x9cKL0RP8f7RwJzqIPRp0kWYWPqIN2kfu
+        XO/UYZM2SXNX2ck6pdhPFWJTZOmu/qs/2fFcWVsPa+/pf2Rf05RMkWPTUQR/ts/HL6MVT6zCxwiWr
+        Wm+tHVoQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kKk7s-0003rS-Ur; Tue, 22 Sep 2020 15:22:40 +0000
+Date:   Tue, 22 Sep 2020 16:22:40 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Uladzislau Rezki <urezki@gmail.com>
+Subject: Re: [PATCH 2/2] vfree: Update documentation
+Message-ID: <20200922152240.GI32101@casper.infradead.org>
+References: <20200921224628.20704-1-willy@infradead.org>
+ <20200921224628.20704-2-willy@infradead.org>
+ <20200922143506.GA26664@lst.de>
+ <20200922150603.GH32101@casper.infradead.org>
+ <20200922150910.GA29302@lst.de>
 MIME-Version: 1.0
-References: <20200922054743.2422929-1-natechancellor@gmail.com>
-In-Reply-To: <20200922054743.2422929-1-natechancellor@gmail.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 22 Sep 2020 11:19:12 -0400
-Message-ID: <CADnq5_MP85Qqv9N6VYnyRYAACU82G+e1oXyESUYoqp=QMYEbYg@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/display: Simplify condition in try_disable_dsc
-To:     Nathan Chancellor <natechancellor@gmail.com>,
-        "Wentland, Harry" <Harry.Wentland@amd.com>,
-        "Leo (Sunpeng) Li" <Sunpeng.Li@amd.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922150910.GA29302@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 3:47 AM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
->
-> Clang warns:
->
-> drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_mst_types.c:637:8:
-> warning: logical not is only applied to the left hand side of this
-> comparison [-Wlogical-not-parentheses]
->                                 && !params[i].clock_force_enable == DSC_CLK_FORCE_DEFAULT) {
->                                    ^                             ~~
-> drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_mst_types.c:637:8:
-> note: add parentheses after the '!' to evaluate the comparison first
->                                 && !params[i].clock_force_enable == DSC_CLK_FORCE_DEFAULT) {
->                                    ^
->                                     (
-> )
-> drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_mst_types.c:637:8:
-> note: add parentheses around left hand side expression to silence this
-> warning
->                                 && !params[i].clock_force_enable == DSC_CLK_FORCE_DEFAULT) {
->                                    ^
->                                    (                            )
-> 1 warning generated.
->
-> The expression "!a == 0" can be more simply written as "a", which makes
-> it easier to reason about the logic and prevents the warning.
->
-> Fixes: 0749ddeb7d6c ("drm/amd/display: Add DSC force disable to dsc_clock_en debugfs entry")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1158
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+On Tue, Sep 22, 2020 at 05:09:10PM +0200, Christoph Hellwig wrote:
+> On Tue, Sep 22, 2020 at 04:06:03PM +0100, Matthew Wilcox wrote:
+> > I don't think it makes sense to list all vmalloc-style allocators here.
+> > It won't be updated by people who add new variations.  How about this?
+> > 
+> >  * Free the virtually continuous memory area starting at @addr, as
+> >  * obtained from one of the vmalloc() family of APIs.  This will
+> >  * usually also free the physical memory underlying the virtual
+> >  * allocation, but that memory is reference counted, so it will not
+> >  * be freed until the last user goes away.
+> >  *
+> >  * If @addr is NULL, no operation is performed.
+> > 
+> > I'm trying to strike a balance between being accurate and not requiring
+> > device driver authors to learn all about struct page.  I may be too
+> > close to the implementation to write good documentation for it.
+> 
+> I think the above is sensible, but not enough.  vmap really needs to
+> be treated special, as by default area->pages for vmap is NULL.  So
+> for vfree to be useful on a vmap mapping, the callers needs to
+> manually set it up by poking into the internals.  Actually, I think
+> we really want another API rather than vmap for that.  Let me respin
+> my series to include that.
 
-@Wentland, Harry or @Leo (Sunpeng) Li  can you provide some guidance
-on what the logic is supposed to be here?
+I've been thinking about somethng like:
 
-Thanks,
+void *vmap_mapping(struct address_space *mapping, pgoff_t start,
+		unsigned long len);
 
-Alex
+but it doesn't quite work for the shmem cases because they need to use
+shmem_read_mapping_page_gfp() instead of ->readpage.  I'd also want it
+to work for DAX, but I don't have a user for that yet so it's hard to
+justify adding it.
 
-> ---
->  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
-> index 9d7333a36fac..0852a24ee392 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
-> @@ -634,7 +634,7 @@ static void try_disable_dsc(struct drm_atomic_state *state,
->         for (i = 0; i < count; i++) {
->                 if (vars[i].dsc_enabled
->                                 && vars[i].bpp_x16 == params[i].bw_range.max_target_bpp_x16
-> -                               && !params[i].clock_force_enable == DSC_CLK_FORCE_DEFAULT) {
-> +                               && params[i].clock_force_enable) {
->                         kbps_increase[i] = params[i].bw_range.stream_kbps - params[i].bw_range.max_kbps;
->                         tried[i] = false;
->                         remaining_to_try += 1;
->
-> base-commit: 6651cdf3bfeeaeb499db11668313666bf756579a
-> --
-> 2.28.0
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+I have ideas for making shmem/tmpfs work more like other filesystems,
+so we don't need shmem_read_mapping_page_gfp() but there are only so
+many hours in the day.
