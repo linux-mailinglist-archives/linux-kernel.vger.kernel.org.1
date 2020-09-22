@@ -2,132 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE9E227459C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C62D02745A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:43:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726762AbgIVPmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 11:42:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726673AbgIVPmq (ORCPT
+        id S1726783AbgIVPnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 11:43:01 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:35835 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726632AbgIVPnA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 11:42:46 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AD70C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 08:42:46 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id a17so17589393wrn.6
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 08:42:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5zqe84Nk1UowCxWHEiI4DgdqPuTuGGYYmgeHmTBq0fk=;
-        b=uHadmq3Kz2/+CUFAUGs/3cB8L1OaAkv/I+ZV8ZYzgFHRz2FsDq65zy5S8iqf3cN4jq
-         8h9cAwvHa8idmrrH4ZpHw1qPEGpcxVIHNCr9NuY1vRhvhNLIJ9lNCMc5DviJQy8oqsEb
-         NnR1rL3ma/9uNi9Hopsfs7oqbz7Grs20FVqgFW9MP9ofBiFG7xBQVGzLAVNu8oAXq9PM
-         7jk9wJrr4275SyylH/FxyBzL9A6nhdiQ8VXpM8/xky2R8GqWrHPVZ1KjbxF5JEVsKROb
-         VUJTVVwj1zfHyeWUk3mGkDKhWSQXET8j28VgkEsnu9DXm0ba1gLO0Y2z3t9fmfygxOHJ
-         49TA==
+        Tue, 22 Sep 2020 11:43:00 -0400
+Received: by mail-io1-f67.google.com with SMTP id r9so20146342ioa.2;
+        Tue, 22 Sep 2020 08:43:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5zqe84Nk1UowCxWHEiI4DgdqPuTuGGYYmgeHmTBq0fk=;
-        b=YwnfrYaUf10bJ1EfYKWIm+Ei2SkCiCqeWrr7hT+HJ04Jc31XQiVVkLEvldGHnG3ZcY
-         cKYw7d+2XQUGXLLGRceOyiVJ71xfuh7WkCUGpb7quPf5e0dtWDPZ5Z1TGFaleYqXd56y
-         B49D6VyskJy2V1AM3O7N0pB4r9CkK1+WUvdNuheI8vvanzQ2SVd052zNFL5xehx2HJob
-         +fAbP2Y9STvIJNBCS5XFKi7khX+ErWdt0FXGUifd13Fxg80+yeoqUIJ78QWDVoZKsHR9
-         5aTNIwFpCJ42+OAeKu4LznXbbzbWdWTWVkLSk7pYtoT5xLWl0kdp5lJhP56xad5gvEXG
-         Vu0A==
-X-Gm-Message-State: AOAM5334hyBdMciiNnGOo1qsvxyYKAqma59n0UnL6mm0syjts+FwBWw0
-        oXGPpvwIeOjNdoST+MddMfILZQpHmGuY33nS0rc=
-X-Google-Smtp-Source: ABdhPJxF6Yvtfum2cD2X7jpiXkb4a9Vmy8ViEa3nivHp1A5xnwW3JO/PQV7tnrzLGN7mG0h8o9ULIacpXRoA7QLPSAg=
-X-Received: by 2002:adf:fc0a:: with SMTP id i10mr6081863wrr.111.1600789365196;
- Tue, 22 Sep 2020 08:42:45 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TYaXL7cZi02QTFmVE3KbgOk5ke0TQzCQlpLbVieBcpQ=;
+        b=O09mjFFzJ/fMYEk/Ay59Qln6k3epi1j3TS1r0QFhoVzXUyPWyDnOeQUBi48XZzJ9zS
+         beTsO+68si/SO6a/oNo1wovDkZYtDY4MJJzPeTOdKGLl47DOuf8M1XAGKim51QutKSy/
+         LmwkFwoqRE+yHUsn8Se5W/D0HIrplCMuC5arcgDvNCjElvBfW+Df2Xuf1DJaoJ37r8q1
+         /D4dj7p78Ov0GjzhdIbpx9Ve2av3BEazppVN6njVqtAEBo5n8VNVu51FWjkX7GPpaEJ0
+         7n7siETbmuOwztZnAABs5PAD2ZTUfG8i2nIRuONIHXIDbX8w/soMKjYElOHNFsuCARkD
+         isxQ==
+X-Gm-Message-State: AOAM5310den4Zke+IDkWM/0aTtytTi3hmsdSs0oqcNtZjYtnhqNI183i
+        IU3YTru69u9Wa5OSJBda/w==
+X-Google-Smtp-Source: ABdhPJy+Hq99CXsctsqgNL6jGVICW70cZDShAPM0k7zPu/xyL8LLbocFjQ/SeALO44nL1LPVzKDynA==
+X-Received: by 2002:a02:a498:: with SMTP id d24mr4624545jam.137.1600789379991;
+        Tue, 22 Sep 2020 08:42:59 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id k1sm9023999ilq.59.2020.09.22.08.42.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 08:42:59 -0700 (PDT)
+Received: (nullmailer pid 2734521 invoked by uid 1000);
+        Tue, 22 Sep 2020 15:42:58 -0000
+Date:   Tue, 22 Sep 2020 09:42:58 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Alexander Dahl <post@lespocky.de>
+Cc:     Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alexander Dahl <ada@thorsis.com>, linux-leds@vger.kernel.org,
+        Pavel Machek <pavel@ucw.cz>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        devicetree@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
+        linux-kernel@vger.kernel.org,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Subject: Re: [PATCH v5 3/3] dt-bindings: leds: Convert pwm to yaml
+Message-ID: <20200922154258.GA2731185@bogus>
+References: <20200919053145.7564-1-post@lespocky.de>
+ <20200919053145.7564-4-post@lespocky.de>
 MIME-Version: 1.0
-References: <20200922021106.24733-1-bernard@vivo.com>
-In-Reply-To: <20200922021106.24733-1-bernard@vivo.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 22 Sep 2020 11:42:34 -0400
-Message-ID: <CADnq5_OrnViA+RQkkrmTuBFkuK++yPY4Mhmp4grEuKzJiOmAEg@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/amd/display: optimize code runtime a bit
-To:     Bernard Zhao <bernard@vivo.com>
-Cc:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Jun Lei <Jun.Lei@amd.com>, Aric Cyr <aric.cyr@amd.com>,
-        Wenjing Liu <wenjing.liu@amd.com>,
-        Brandon Syu <Brandon.Syu@amd.com>,
-        Michael Strauss <michael.strauss@amd.com>,
-        abdoulaye berthe <abdoulaye.berthe@amd.com>,
-        Martin Leung <martin.leung@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, opensource.kernel@vivo.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200919053145.7564-4-post@lespocky.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
-
-Alex
-
-On Tue, Sep 22, 2020 at 3:52 AM Bernard Zhao <bernard@vivo.com> wrote:
->
-> In the function dal_ddc_service_query_ddc_data,
-> get rid of dal_ddc_i2c_payloads_destroy, call
-> dal_vector_destruct() directly.
-> This change is to make the code run a bit fast.
->
-> Signed-off-by: Bernard Zhao <bernard@vivo.com>
-> Changes since V1:
-> *get rid of dal_ddc_i2c_payloads_destroy, call
-> dal_vector_destruct() directly.
->
-> Link for V1:
-> *https://lore.kernel.org/patchwork/patch/1309014/
+On Sat, 19 Sep 2020 07:31:45 +0200, Alexander Dahl wrote:
+> The example was adapted slightly to make use of the 'function' and
+> 'color' properties.  License discussed with the original author.
+> 
+> Suggested-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+> Signed-off-by: Alexander Dahl <post@lespocky.de>
+> Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
 > ---
->  drivers/gpu/drm/amd/display/dc/core/dc_link_ddc.c | 10 +---------
->  1 file changed, 1 insertion(+), 9 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_ddc.c b/drivers/gpu/drm/amd/display/dc/core/dc_link_ddc.c
-> index b984eecca58b..dec12de37642 100644
-> --- a/drivers/gpu/drm/amd/display/dc/core/dc_link_ddc.c
-> +++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_ddc.c
-> @@ -148,14 +148,6 @@ static uint32_t dal_ddc_i2c_payloads_get_count(struct i2c_payloads *p)
->         return p->payloads.count;
->  }
->
-> -static void dal_ddc_i2c_payloads_destroy(struct i2c_payloads *p)
-> -{
-> -       if (!p)
-> -               return;
-> -
-> -       dal_vector_destruct(&p->payloads);
-> -}
-> -
->  #define DDC_MIN(a, b) (((a) < (b)) ? (a) : (b))
->
->  void dal_ddc_i2c_payloads_add(
-> @@ -582,7 +574,7 @@ bool dal_ddc_service_query_ddc_data(
->                                 ddc->link,
->                                 &command);
->
-> -               dal_ddc_i2c_payloads_destroy(&payloads);
-> +               dal_vector_destruct(&payloads.payloads);
->         }
->
->         return success;
-> --
-> 2.28.0
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> 
+> Notes:
+>     v4 -> v5:
+>       * updated based on feedback by Rob Herring
+>       * removed Acked-by
+> 
+>     v3 -> v4:
+>       * added Cc to original author of the binding
+> 
+>     v2 -> v3:
+>       * changed license identifier to recommended one
+>       * added Acked-by
+> 
+>     v2:
+>       * added this patch to series (Suggested-by: Jacek Anaszewski)
+> 
+>  .../devicetree/bindings/leds/leds-pwm.txt     | 50 -----------
+>  .../devicetree/bindings/leds/leds-pwm.yaml    | 82 +++++++++++++++++++
+>  2 files changed, 82 insertions(+), 50 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/leds/leds-pwm.txt
+>  create mode 100644 Documentation/devicetree/bindings/leds/leds-pwm.yaml
+> 
+
+
+My bot found errors running 'make dt_binding_check' on your patch:
+
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mfd/iqs62x.example.dt.yaml: pwmleds: 'panel' does not match any of the regexes: '^led(-[0-9a-f]+)?$', 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/leds/leds-pwm.yaml
+
+
+See https://patchwork.ozlabs.org/patch/1367461
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
+
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+
+Please check and re-submit.
+
