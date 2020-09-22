@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 820172737FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 03:26:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC4F42737FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 03:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729568AbgIVBYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1729579AbgIVBYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 21 Sep 2020 21:24:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56484 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:56490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729094AbgIVBYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729528AbgIVBYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 21 Sep 2020 21:24:52 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4D3AD23A7B;
+        by mail.kernel.org (Postfix) with ESMTPSA id 54C4423A84;
         Tue, 22 Sep 2020 01:24:51 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1kKX34-001sGp-35; Mon, 21 Sep 2020 21:24:50 -0400
-Message-ID: <20200922012449.957719149@goodmis.org>
+        id 1kKX34-001sHL-Ag; Mon, 21 Sep 2020 21:24:50 -0400
+Message-ID: <20200922012450.115825248@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Mon, 21 Sep 2020 21:24:15 -0400
+Date:   Mon, 21 Sep 2020 21:24:16 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [for-next][PATCH 01/26] tools/bootconfig: Show bootconfig compact tree from bootconfig file
+Subject: [for-next][PATCH 02/26] tools/bootconfig: Add list option
 References: <20200922012414.115238201@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -37,149 +37,153 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Masami Hiramatsu <mhiramat@kernel.org>
 
-Show the bootconfig compact tree from the bootconfig file
-instead of an initrd if the given file has no magic number
-and is smaller than 32KB.
+Add list option (-l) to show the bootconfig in the list style.
+This is same output of /proc/bootconfig. So users can check
+how their bootconfig will be shown in procfs. This will help
+them to write a user-space script to parse the /proc/bootconfig.
 
-User can use this for checking the syntax error or output
-checking before applying the bootconfig to initrd.
-
-Link: https://lkml.kernel.org/r/159704848156.175360.6621139371000789360.stgit@devnote2
+Link: https://lkml.kernel.org/r/159704849087.175360.8761890802048625207.stgit@devnote2
 
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- tools/bootconfig/main.c | 81 +++++++++++++++++++++++++++++------------
- 1 file changed, 58 insertions(+), 23 deletions(-)
+ tools/bootconfig/main.c | 52 +++++++++++++++++++++++++++++++----------
+ 1 file changed, 40 insertions(+), 12 deletions(-)
 
 diff --git a/tools/bootconfig/main.c b/tools/bootconfig/main.c
-index e0878f5f74b1..d165e63b5d5a 100644
+index d165e63b5d5a..78025267df20 100644
 --- a/tools/bootconfig/main.c
 +++ b/tools/bootconfig/main.c
-@@ -195,10 +195,55 @@ int load_xbc_from_initrd(int fd, char **buf)
- 	return size;
+@@ -14,18 +14,19 @@
+ #include <linux/kernel.h>
+ #include <linux/bootconfig.h>
+ 
+-static int xbc_show_value(struct xbc_node *node)
++static int xbc_show_value(struct xbc_node *node, bool semicolon)
+ {
+-	const char *val;
++	const char *val, *eol;
+ 	char q;
+ 	int i = 0;
+ 
++	eol = semicolon ? ";\n" : "\n";
+ 	xbc_array_for_each_value(node, val) {
+ 		if (strchr(val, '"'))
+ 			q = '\'';
+ 		else
+ 			q = '"';
+-		printf("%c%s%c%s", q, val, q, node->next ? ", " : ";\n");
++		printf("%c%s%c%s", q, val, q, node->next ? ", " : eol);
+ 		i++;
+ 	}
+ 	return i;
+@@ -53,7 +54,7 @@ static void xbc_show_compact_tree(void)
+ 			continue;
+ 		} else if (cnode && xbc_node_is_value(cnode)) {
+ 			printf("%s = ", xbc_node_get_data(node));
+-			xbc_show_value(cnode);
++			xbc_show_value(cnode, true);
+ 		} else {
+ 			printf("%s;\n", xbc_node_get_data(node));
+ 		}
+@@ -77,6 +78,26 @@ static void xbc_show_compact_tree(void)
+ 	}
  }
  
-+static void show_xbc_error(const char *data, const char *msg, int pos)
++static void xbc_show_list(void)
 +{
-+	int lin = 1, col, i;
++	char key[XBC_KEYLEN_MAX];
++	struct xbc_node *leaf;
++	const char *val;
++	int ret = 0;
 +
-+	if (pos < 0) {
-+		pr_err("Error: %s.\n", msg);
-+		return;
-+	}
-+
-+	/* Note that pos starts from 0 but lin and col should start from 1. */
-+	col = pos + 1;
-+	for (i = 0; i < pos; i++) {
-+		if (data[i] == '\n') {
-+			lin++;
-+			col = pos - i;
++	xbc_for_each_key_value(leaf, val) {
++		ret = xbc_node_compose_key(leaf, key, XBC_KEYLEN_MAX);
++		if (ret < 0)
++			break;
++		printf("%s = ", key);
++		if (!val || val[0] == '\0') {
++			printf("\"\"\n");
++			continue;
 +		}
++		xbc_show_value(xbc_node_get_child(leaf), false);
 +	}
-+	pr_err("Parse Error: %s at %d:%d\n", msg, lin, col);
-+
 +}
 +
-+static int init_xbc_with_error(char *buf, int len)
-+{
-+	char *copy = strdup(buf);
-+	const char *msg;
-+	int ret, pos;
-+
-+	if (!copy)
-+		return -ENOMEM;
-+
-+	ret = xbc_init(buf, &msg, &pos);
-+	if (ret < 0)
-+		show_xbc_error(copy, msg, pos);
-+	free(copy);
-+
-+	return ret;
-+}
-+
- int show_xbc(const char *path)
+ /* Simple real checksum */
+ int checksum(unsigned char *buf, int len)
+ {
+@@ -233,7 +254,7 @@ static int init_xbc_with_error(char *buf, int len)
+ 	return ret;
+ }
+ 
+-int show_xbc(const char *path)
++int show_xbc(const char *path, bool list)
  {
  	int ret, fd;
  	char *buf = NULL;
-+	struct stat st;
-+
-+	ret = stat(path, &st);
-+	if (ret < 0) {
-+		pr_err("Failed to stat %s: %d\n", path, -errno);
-+		return -errno;
-+	}
- 
- 	fd = open(path, O_RDONLY);
- 	if (fd < 0) {
-@@ -207,14 +252,24 @@ int show_xbc(const char *path)
+@@ -267,7 +288,10 @@ int show_xbc(const char *path)
+ 		if (init_xbc_with_error(buf, ret) < 0)
+ 			goto out;
  	}
- 
- 	ret = load_xbc_from_initrd(fd, &buf);
-+	close(fd);
- 	if (ret < 0) {
- 		pr_err("Failed to load a boot config from initrd: %d\n", ret);
- 		goto out;
- 	}
-+	/* Assume a bootconfig file if it is enough small */
-+	if (ret == 0 && st.st_size <= XBC_DATA_MAX) {
-+		ret = load_xbc_file(path, &buf);
-+		if (ret < 0) {
-+			pr_err("Failed to load a boot config: %d\n", ret);
-+			goto out;
-+		}
-+		if (init_xbc_with_error(buf, ret) < 0)
-+			goto out;
-+	}
- 	xbc_show_compact_tree();
+-	xbc_show_compact_tree();
++	if (list)
++		xbc_show_list();
++	else
++		xbc_show_compact_tree();
  	ret = 0;
  out:
--	close(fd);
  	free(buf);
- 
- 	return ret;
-@@ -251,27 +306,6 @@ int delete_xbc(const char *path)
- 	return ret;
- }
- 
--static void show_xbc_error(const char *data, const char *msg, int pos)
--{
--	int lin = 1, col, i;
--
--	if (pos < 0) {
--		pr_err("Error: %s.\n", msg);
--		return;
--	}
--
--	/* Note that pos starts from 0 but lin and col should start from 1. */
--	col = pos + 1;
--	for (i = 0; i < pos; i++) {
--		if (data[i] == '\n') {
--			lin++;
--			col = pos - i;
--		}
--	}
--	pr_err("Parse Error: %s at %d:%d\n", msg, lin, col);
--
--}
--
- int apply_xbc(const char *path, const char *xbc_path)
- {
- 	u32 size, csum;
-@@ -352,11 +386,12 @@ int apply_xbc(const char *path, const char *xbc_path)
- int usage(void)
- {
- 	printf("Usage: bootconfig [OPTIONS] <INITRD>\n"
-+		"Or     bootconfig <CONFIG>\n"
+@@ -390,7 +414,8 @@ int usage(void)
  		" Apply, delete or show boot config to initrd.\n"
  		" Options:\n"
  		"		-a <config>: Apply boot config to initrd\n"
- 		"		-d : Delete boot config file from initrd\n\n"
--		" If no option is given, show current applied boot config.\n");
-+		" If no option is given, show the bootconfig in the given file.\n");
+-		"		-d : Delete boot config file from initrd\n\n"
++		"		-d : Delete boot config file from initrd\n"
++		"		-l : list boot config in initrd or file\n\n"
+ 		" If no option is given, show the bootconfig in the given file.\n");
  	return -1;
  }
+@@ -399,10 +424,10 @@ int main(int argc, char **argv)
+ {
+ 	char *path = NULL;
+ 	char *apply = NULL;
+-	bool delete = false;
++	bool delete = false, list = false;
+ 	int opt;
  
+-	while ((opt = getopt(argc, argv, "hda:")) != -1) {
++	while ((opt = getopt(argc, argv, "hda:l")) != -1) {
+ 		switch (opt) {
+ 		case 'd':
+ 			delete = true;
+@@ -410,14 +435,17 @@ int main(int argc, char **argv)
+ 		case 'a':
+ 			apply = optarg;
+ 			break;
++		case 'l':
++			list = true;
++			break;
+ 		case 'h':
+ 		default:
+ 			return usage();
+ 		}
+ 	}
+ 
+-	if (apply && delete) {
+-		pr_err("Error: You can not specify both -a and -d at once.\n");
++	if ((apply && delete) || (delete && list) || (apply && list)) {
++		pr_err("Error: You can give one of -a, -d or -l at once.\n");
+ 		return usage();
+ 	}
+ 
+@@ -433,5 +461,5 @@ int main(int argc, char **argv)
+ 	else if (delete)
+ 		return delete_xbc(path);
+ 
+-	return show_xbc(path);
++	return show_xbc(path, list);
+ }
 -- 
 2.28.0
 
