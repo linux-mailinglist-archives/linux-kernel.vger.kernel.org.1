@@ -2,108 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB46F274BD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0487C274BD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726676AbgIVWEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 18:04:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726550AbgIVWEB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 18:04:01 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30868C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 15:04:01 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id t16so17734300edw.7
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 15:04:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=gWapH+G9nYjlIO4hGELdVklKpsq8sACoI1gVBeSVnu4=;
-        b=EITEgpF4ntktPf1T80SDT1pfY0hIUCg5rNxP+/V7+Qs4C/vIRyUSqCJNAD7rGrVo8R
-         wa/Hz2OdcjU+Ex+h9jHzh+hDHc7moghyv+quzQunrZ0k0rkYXmUe/L9rLoHCFNXYZxj0
-         gSym1XxRWJ/TNhYdC653fnU+aaH1N4ovNW0ZuRfA+6FxOX3XZ0w7mIkTLpBR6TEMW1RB
-         OyrbTQxwWUyNZgak3n2GVEf3GyJBbmrc76wfmuf0qQv4XQXSuDQd/CWIqD8m1GbVX+fH
-         WA53YoMMhVOMulz6xm3PF4+wmQwq2eY7FxxfojsEBGPE/+62r0cnlZpwqXDq/3Lw7eeH
-         fGFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=gWapH+G9nYjlIO4hGELdVklKpsq8sACoI1gVBeSVnu4=;
-        b=MCnhHM8Ln7Lr6d4f2ncTfwv9R8qS3uK83BMxWBfeFCxoxUrTtNTJFVWvZQN4LNCXzL
-         gDOd6i8Gr7PctPsE4FvcBLZbxPC3K3/6xrEN4isUQlduVwc99lqAFzOCQKnf7ZGHpAuZ
-         Mz4/VThefckNfpuCr256aHcsCjCwHQxrRvxq6HShrqhoTATEkqtF60dW7ynJ+/3TnBKu
-         MHUsvQn5RbnnlzlymIpkhvWpVJe/s7tTMhiRcz2WMXR+V7FXUgIWmllKCH+PEH7Xj4ku
-         U/upeP+4iPnAW4ajrt9Qa7P4bJKRVUlXcGCwwQ0ZLE96MBMPfdGH+2zYmOCnGMWPfEKG
-         EKgg==
-X-Gm-Message-State: AOAM530MUGCMjZ/qr89niaJt4EzaMDp/LOeqQzxblf8NPQjcVOkQuDMX
-        UBZ/+a9NHNitBXkn82P/xgD0iT3ZLeBvLqUs4mKt1A==
-X-Google-Smtp-Source: ABdhPJxOjj738nogRJo0/8+S11mLmjZ9RROKTTWqJgufMAjwv/PuRW560hU7CbGoKgbjldqG04qMMZK6zliXeHN5wrk=
-X-Received: by 2002:a50:fe98:: with SMTP id d24mr6208341edt.223.1600812239432;
- Tue, 22 Sep 2020 15:03:59 -0700 (PDT)
-MIME-Version: 1.0
-From:   Jann Horn <jannh@google.com>
-Date:   Wed, 23 Sep 2020 00:03:32 +0200
-Message-ID: <CAG48ez3tZAb9JVhw4T5e-i=h2_DUZxfNRTDsagSRCVazNXx5qA@mail.gmail.com>
-Subject: mmap locking in atomisp staging driver looks bogus
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726713AbgIVWFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 18:05:01 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:23480 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726685AbgIVWFA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 18:05:00 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600812300; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=rM/B9BakHyUJZNVQSwabD9JaPVxM+jNpDiVkIVk/tQk=; b=Mq5xKOmT2gNC+W4h8+YYAzTpQmF6jD3HGIb0P51vLT+5m+MvEAptZft89JTU7ayON6782lqO
+ vAb60ajTC2diRZnD7ai+1gJeS39j4MfRG2alWtzws7j82fpcSiLy0yYu3BYT9C0rdSEtwLjf
+ iqeAWOGThm71YfQzwaFG3FCzkMg=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5f6a750b48c378a4cbbcbdbc (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Sep 2020 22:04:59
+ GMT
+Sender: collinsd=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C0E01C433CB; Tue, 22 Sep 2020 22:04:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from codeaurora.org (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: collinsd)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 22282C433C8;
+        Tue, 22 Sep 2020 22:04:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 22282C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=collinsd@codeaurora.org
+From:   David Collins <collinsd@codeaurora.org>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     David Collins <collinsd@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH] spmi: prefix spmi bus device names with "spmi"
+Date:   Tue, 22 Sep 2020 15:04:18 -0700
+Message-Id: <1600812258-17722-1-git-send-email-collinsd@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I noticed this code in alloc_user_pages() in
-drivers/staging/media/atomisp/pci/hmm/hmm_bo.c:
+Change the format of spmi bus device names from:
+  <spmi_bus_number>-<spmi_device_sid>
+  Example: 0-01
+to this:
+  spmi<spmi_bus_number>-<spmi_device_sid>
+  Example: spmi0-01
 
-/*
- * Convert user space virtual address into pages list
- */
-static int alloc_user_pages(struct hmm_buffer_object *bo,
-                            const void __user *userptr, bool cached)
-{
-        int page_nr;
-        int i;
-        struct vm_area_struct *vma;
-        struct page **pages;
+This helps to disambiguate SPMI device regmaps from I2C ones
+at /sys/kernel/debug/regmap since I2C devices use a very
+similar naming scheme: 0-0000.
 
-        pages = [...]
-[...]
-        mmap_read_lock(current->mm);
-        vma = find_vma(current->mm, (unsigned long)userptr);
-        mmap_read_unlock(current->mm);
-        if (!vma) {
-[...]
-                return -EFAULT;
-        }
-[...]
-        /*
-         * Handle frame buffer allocated in other kerenl space driver
-         * and map to user space
-         */
-[...]
-        if (vma->vm_flags & (VM_IO | VM_PFNMAP)) {
-                page_nr = pin_user_pages((unsigned long)userptr, bo->pgnr,
-                                         FOLL_LONGTERM | FOLL_WRITE,
-                                         pages, NULL);
-                bo->mem_type = HMM_BO_MEM_TYPE_PFN;
-        } else {
-                /*Handle frame buffer allocated in user space*/
-[...]
-                page_nr = get_user_pages_fast((unsigned long)userptr,
-                                              (int)(bo->pgnr), 1, pages);
-[...]
-        }
-[...]
-}
+Signed-off-by: David Collins <collinsd@codeaurora.org>
+---
+ drivers/spmi/spmi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/spmi/spmi.c b/drivers/spmi/spmi.c
+index c16b60f..ec94439 100644
+--- a/drivers/spmi/spmi.c
++++ b/drivers/spmi/spmi.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /*
+- * Copyright (c) 2012-2015, The Linux Foundation. All rights reserved.
++ * Copyright (c) 2012-2015, 2020, The Linux Foundation. All rights reserved.
+  */
+ #include <linux/kernel.h>
+ #include <linux/errno.h>
+@@ -62,7 +62,7 @@ int spmi_device_add(struct spmi_device *sdev)
+ 	struct spmi_controller *ctrl = sdev->ctrl;
+ 	int err;
+ 
+-	dev_set_name(&sdev->dev, "%d-%02x", ctrl->nr, sdev->usid);
++	dev_set_name(&sdev->dev, "spmi%d-%02x", ctrl->nr, sdev->usid);
+ 
+ 	err = device_add(&sdev->dev);
+ 	if (err < 0) {
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-This code looks extremely dodgy to me. After
-mmap_read_unlock(current->mm), the vma can be freed, and the following
-access to vma->vm_flags can be a use-after-free. Also,
-pin_user_pages() must be called with the mmap lock held, and you're
-calling it without holding that lock.
