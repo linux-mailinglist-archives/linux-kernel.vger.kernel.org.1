@@ -2,44 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 386E8274A94
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FF26274A92
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726758AbgIVVE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 17:04:57 -0400
-Received: from o1.b.az.sendgrid.net ([208.117.55.133]:30301 "EHLO
+        id S1726728AbgIVVEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 17:04:51 -0400
+Received: from o1.b.az.sendgrid.net ([208.117.55.133]:35279 "EHLO
         o1.b.az.sendgrid.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726589AbgIVVEq (ORCPT
+        with ESMTP id S1726706AbgIVVEr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 17:04:46 -0400
+        Tue, 22 Sep 2020 17:04:47 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
         h=from:subject:in-reply-to:references:to:cc:content-type:
         content-transfer-encoding;
-        s=001; bh=nAJZakghzr7JwdXt31dydBHC6AGXJnAIYTAyCKaQf5U=;
-        b=k001Em5ks9QORaRnjuI7yiSHD0/K7UZjxrqC2pFrVS53JDxPnzNWRsmThLp6bLEI5Mca
-        4/YYJ3pSZWPpmjsq++O7csSSsVrXfwPxk6s6GROYAFs0jzpk8avKUk0attNcbEfCuKtVOy
-        Rvf3iXzsfMQ90j9qaOtz6SSInjIV3f5rc=
-Received: by filterdrecv-p3las1-6f66587546-tf6q5 with SMTP id filterdrecv-p3las1-6f66587546-tf6q5-19-5F6A65BD-57
-        2020-09-22 20:59:42.035583574 +0000 UTC m=+82869.342859397
+        s=001; bh=nKHc7PP51SSnABUdouUOk7MONm9v7F3W5A5WPyVt3og=;
+        b=TBhWvR9NobhbKNXHHeCjAI2VCn++ezgIQGn/CWBc5HSlyTh4xppBD8K862SrSYSk5ZZw
+        n1IZj/S7ihSjANV5MMgnSWvG6XIkoMw+Z/bOKGdF5/0FuVgbfAsXhTOCSEiDg8KkeDnL/N
+        E8wtfXFgJFqN7i0t/3y2NQgLVgh/8cXQE=
+Received: by filterdrecv-p3las1-6f66587546-gxzxg with SMTP id filterdrecv-p3las1-6f66587546-gxzxg-19-5F6A65BE-23
+        2020-09-22 20:59:42.510385124 +0000 UTC m=+82870.381942095
 Received: from bionic.localdomain (unknown)
         by ismtpd0007p1lon1.sendgrid.net (SG) with ESMTP
-        id L7ZyU879SjKUF6bCxXobkA
-        Tue, 22 Sep 2020 20:59:41.567 +0000 (UTC)
+        id -sVmS0vKS6KhAk6pij2uGg
+        Tue, 22 Sep 2020 20:59:42.013 +0000 (UTC)
 From:   Jonas Karlman <jonas@kwiboo.se>
-Subject: [PATCH v3 5/6] phy/rockchip: inno-hdmi: force set_rate on power_on
+Subject: [PATCH v3 6/6] phy/rockchip: inno-hdmi: Support more pre-pll
+ configuration
 Date:   Tue, 22 Sep 2020 20:59:42 +0000 (UTC)
-Message-Id: <20200922205933.5540-6-jonas@kwiboo.se>
+Message-Id: <20200922205933.5540-7-jonas@kwiboo.se>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200922205933.5540-1-jonas@kwiboo.se>
 References: <20200108210740.28769-1-jonas@kwiboo.se>
  <20200922205933.5540-1-jonas@kwiboo.se>
 X-SG-EID: =?us-ascii?Q?TdbjyGynYnRZWhH+7lKUQJL+ZxmxpowvO2O9SQF5CwCVrYgcwUXgU5DKUU3QxA?=
- =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0hwQH6xSmNBdIGRg9J?=
- =?us-ascii?Q?GdwnPbEq7RtjOs9+cav6Qmt6JmuUxSaXmS=2FBi9v?=
- =?us-ascii?Q?lihhpM20HgDQ24mV8MCNBrC8Tp6RDyAdAUJU2bW?=
- =?us-ascii?Q?6F3W9uivb7FSvjjBrta+O+uMQECNI0MJyNd8saW?=
- =?us-ascii?Q?SzrTlci9IPpova7CVktQHvzZA8L9dXDTaXkDzKd?=
- =?us-ascii?Q?Fb6B7DJ3Ut8zblB+0p5HA=3D=3D?=
+ =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0h87hS728AR8axzeqJ?=
+ =?us-ascii?Q?P0f3VISdzIGFZYl+xBTKkZRDG1DJE6kWhnOjUYE?=
+ =?us-ascii?Q?umuUoGMNlMaUY+gswDXJDznSEbjZ3NeFMQif9vg?=
+ =?us-ascii?Q?tvI7=2FMESP1I5NpXZ58yrBAlkhYJWuLnnqEBV5ZS?=
+ =?us-ascii?Q?TuQXfL8sRTvVeLN=2Fv9KEqsoXJNg=2FLQC7I0uibCq?=
+ =?us-ascii?Q?AkEk2=2FezK+sxhfiUFV+yw=3D=3D?=
 To:     Kishon Vijay Abraham I <kishon@ti.com>,
         Heiko Stuebner <heiko@sntech.de>
 Cc:     Jonas Karlman <jonas@kwiboo.se>, Vinod Koul <vkoul@kernel.org>,
@@ -54,90 +55,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huicong Xu <xhc@rock-chips.com>
+From: Algea Cao <algea.cao@rock-chips.com>
 
-Regular 8-bit and Deep Color video formats mainly differ in TMDS rate and
-not in pixel clock rate.
-When the hdmiphy clock is configured with the same pixel clock rate using
-clk_set_rate() the clock framework do not signal the hdmi phy driver
-to set_rate when switching between 8-bit and Deep Color.
-This result in pre/post pll not being re-configured when switching between
-regular 8-bit and Deep Color video formats.
+Adding the following freq cfg in 8-bit and 10-bit color depth:
 
-Fix this by calling set_rate in power_on to force pre pll re-configuration.
+{
+  40000000,  65000000,  71000000,  83500000, 85750000,
+  88750000, 108000000, 119000000, 162000000
+}
 
-Signed-off-by: Huicong Xu <xhc@rock-chips.com>
+New freq has been validated by quantumdata 980.
+
+For some freq which can't be got by only using integer freq div,
+frac freq div is needed, Such as 88.75Mhz 10-bit. But The actual
+freq is different from the target freq, We must try to narrow
+the gap between them. RK322X only support integer freq div.
+
+The VCO of pre-PLL must be more than 2Ghz, otherwise PLL may be
+unlocked.
+
+Signed-off-by: Algea Cao <algea.cao@rock-chips.com>
 Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
+Acked-by: Heiko Stuebner <heiko@sntech.de>
 ---
- drivers/phy/rockchip/phy-rockchip-inno-hdmi.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ drivers/phy/rockchip/phy-rockchip-inno-hdmi.c | 74 ++++++++++++-------
+ 1 file changed, 49 insertions(+), 25 deletions(-)
 
 diff --git a/drivers/phy/rockchip/phy-rockchip-inno-hdmi.c b/drivers/phy/rockchip/phy-rockchip-inno-hdmi.c
-index 3a59a6da0440..3719309ad0d0 100644
+index 3719309ad0d0..bb8bdf5e3301 100644
 --- a/drivers/phy/rockchip/phy-rockchip-inno-hdmi.c
 +++ b/drivers/phy/rockchip/phy-rockchip-inno-hdmi.c
-@@ -245,6 +245,7 @@ struct inno_hdmi_phy {
- 	struct clk_hw hw;
- 	struct clk *phyclk;
- 	unsigned long pixclock;
-+	unsigned long tmdsclock;
+@@ -291,32 +291,56 @@ struct inno_hdmi_phy_drv_data {
+ 	const struct phy_config		*phy_cfg_table;
  };
  
- struct pre_pll_config {
-@@ -485,6 +486,8 @@ static int inno_hdmi_phy_power_on(struct phy *phy)
++/*
++ * If only using integer freq div can't get frequency we want, frac
++ * freq div is needed. For example, pclk 88.75 Mhz and tmdsclk
++ * 110.9375 Mhz must use frac div 0xF00000. The actual frequency is different
++ * from the target frequency. Such as the tmds clock 110.9375 Mhz,
++ * the actual tmds clock we get is 110.93719 Mhz. It is important
++ * to note that RK322X platforms do not support frac div.
++ */
+ static const struct pre_pll_config pre_pll_cfg_table[] = {
+-	{ 27000000,  27000000, 1,  90, 3, 2, 2, 10, 3, 3, 4, 0, 0},
+-	{ 27000000,  33750000, 1,  90, 1, 3, 3, 10, 3, 3, 4, 0, 0},
+-	{ 40000000,  40000000, 1,  80, 2, 2, 2, 12, 2, 2, 2, 0, 0},
+-	{ 59341000,  59341000, 1,  98, 3, 1, 2,  1, 3, 3, 4, 0, 0xE6AE6B},
+-	{ 59400000,  59400000, 1,  99, 3, 1, 1,  1, 3, 3, 4, 0, 0},
+-	{ 59341000,  74176250, 1,  98, 0, 3, 3,  1, 3, 3, 4, 0, 0xE6AE6B},
+-	{ 59400000,  74250000, 1,  99, 1, 2, 2,  1, 3, 3, 4, 0, 0},
+-	{ 74176000,  74176000, 1,  98, 1, 2, 2,  1, 2, 3, 4, 0, 0xE6AE6B},
+-	{ 74250000,  74250000, 1,  99, 1, 2, 2,  1, 2, 3, 4, 0, 0},
+-	{ 74176000,  92720000, 4, 494, 1, 2, 2,  1, 3, 3, 4, 0, 0x816817},
+-	{ 74250000,  92812500, 4, 495, 1, 2, 2,  1, 3, 3, 4, 0, 0},
+-	{148352000, 148352000, 1,  98, 1, 1, 1,  1, 2, 2, 2, 0, 0xE6AE6B},
+-	{148500000, 148500000, 1,  99, 1, 1, 1,  1, 2, 2, 2, 0, 0},
+-	{148352000, 185440000, 4, 494, 0, 2, 2,  1, 3, 2, 2, 0, 0x816817},
+-	{148500000, 185625000, 4, 495, 0, 2, 2,  1, 3, 2, 2, 0, 0},
+-	{296703000, 296703000, 1,  98, 0, 1, 1,  1, 0, 2, 2, 0, 0xE6AE6B},
+-	{297000000, 297000000, 1,  99, 0, 1, 1,  1, 0, 2, 2, 0, 0},
+-	{296703000, 370878750, 4, 494, 1, 2, 0,  1, 3, 1, 1, 0, 0x816817},
+-	{297000000, 371250000, 4, 495, 1, 2, 0,  1, 3, 1, 1, 0, 0},
+-	{593407000, 296703500, 1,  98, 0, 1, 1,  1, 0, 2, 1, 0, 0xE6AE6B},
+-	{594000000, 297000000, 1,  99, 0, 1, 1,  1, 0, 2, 1, 0, 0},
+-	{593407000, 370879375, 4, 494, 1, 2, 0,  1, 3, 1, 1, 1, 0x816817},
+-	{594000000, 371250000, 4, 495, 1, 2, 0,  1, 3, 1, 1, 1, 0},
+-	{593407000, 593407000, 1,  98, 0, 2, 0,  1, 0, 1, 1, 0, 0xE6AE6B},
+-	{594000000, 594000000, 1,  99, 0, 2, 0,  1, 0, 1, 1, 0, 0},
++	{ 27000000,  27000000, 1,  90, 3, 2, 2, 10, 3, 3,  4, 0, 0},
++	{ 27000000,  33750000, 1,  90, 1, 3, 3, 10, 3, 3,  4, 0, 0},
++	{ 40000000,  40000000, 1,  80, 2, 2, 2, 12, 2, 2,  2, 0, 0},
++	{ 40000000,  50000000, 1, 100, 2, 2, 2,  1, 0, 0, 15, 0, 0},
++	{ 59341000,  59341000, 1,  98, 3, 1, 2,  1, 3, 3,  4, 0, 0xE6AE6B},
++	{ 59400000,  59400000, 1,  99, 3, 1, 1,  1, 3, 3,  4, 0, 0},
++	{ 59341000,  74176250, 1,  98, 0, 3, 3,  1, 3, 3,  4, 0, 0xE6AE6B},
++	{ 59400000,  74250000, 1,  99, 1, 2, 2,  1, 3, 3,  4, 0, 0},
++	{ 65000000,  65000000, 1, 130, 2, 2, 2,  1, 0, 0, 12, 0, 0},
++	{ 65000000,  81250000, 3, 325, 0, 3, 3,  1, 0, 0, 10, 0, 0},
++	{ 71000000,  71000000, 3, 284, 0, 3, 3,  1, 0, 0,  8, 0, 0},
++	{ 71000000,  88750000, 3, 355, 0, 3, 3,  1, 0, 0, 10, 0, 0},
++	{ 74176000,  74176000, 1,  98, 1, 2, 2,  1, 2, 3,  4, 0, 0xE6AE6B},
++	{ 74250000,  74250000, 1,  99, 1, 2, 2,  1, 2, 3,  4, 0, 0},
++	{ 74176000,  92720000, 4, 494, 1, 2, 2,  1, 3, 3,  4, 0, 0x816817},
++	{ 74250000,  92812500, 4, 495, 1, 2, 2,  1, 3, 3,  4, 0, 0},
++	{ 83500000,  83500000, 2, 167, 2, 1, 1,  1, 0, 0,  6, 0, 0},
++	{ 83500000, 104375000, 1, 104, 2, 1, 1,  1, 1, 0,  5, 0, 0x600000},
++	{ 85750000,  85750000, 3, 343, 0, 3, 3,  1, 0, 0,  8, 0, 0},
++	{ 88750000,  88750000, 3, 355, 0, 3, 3,  1, 0, 0,  8, 0, 0},
++	{ 88750000, 110937500, 1, 110, 2, 1, 1,  1, 1, 0,  5, 0, 0xF00000},
++	{108000000, 108000000, 1,  90, 3, 0, 0,  1, 0, 0,  5, 0, 0},
++	{108000000, 135000000, 1,  90, 0, 2, 2,  1, 0, 0,  5, 0, 0},
++	{119000000, 119000000, 1, 119, 2, 1, 1,  1, 0, 0,  6, 0, 0},
++	{119000000, 148750000, 1,  99, 0, 2, 2,  1, 0, 0,  5, 0, 0x2AAAAA},
++	{148352000, 148352000, 1,  98, 1, 1, 1,  1, 2, 2,  2, 0, 0xE6AE6B},
++	{148500000, 148500000, 1,  99, 1, 1, 1,  1, 2, 2,  2, 0, 0},
++	{148352000, 185440000, 4, 494, 0, 2, 2,  1, 3, 2,  2, 0, 0x816817},
++	{148500000, 185625000, 4, 495, 0, 2, 2,  1, 3, 2,  2, 0, 0},
++	{162000000, 162000000, 1, 108, 0, 2, 2,  1, 0, 0,  4, 0, 0},
++	{162000000, 202500000, 1, 135, 0, 2, 2,  1, 0, 0,  5, 0, 0},
++	{296703000, 296703000, 1,  98, 0, 1, 1,  1, 0, 2,  2, 0, 0xE6AE6B},
++	{297000000, 297000000, 1,  99, 0, 1, 1,  1, 0, 2,  2, 0, 0},
++	{296703000, 370878750, 4, 494, 1, 2, 0,  1, 3, 1,  1, 0, 0x816817},
++	{297000000, 371250000, 4, 495, 1, 2, 0,  1, 3, 1,  1, 0, 0},
++	{593407000, 296703500, 1,  98, 0, 1, 1,  1, 0, 2,  1, 0, 0xE6AE6B},
++	{594000000, 297000000, 1,  99, 0, 1, 1,  1, 0, 2,  1, 0, 0},
++	{593407000, 370879375, 4, 494, 1, 2, 0,  1, 3, 1,  1, 1, 0x816817},
++	{594000000, 371250000, 4, 495, 1, 2, 0,  1, 3, 1,  1, 1, 0},
++	{593407000, 593407000, 1,  98, 0, 2, 0,  1, 0, 1,  1, 0, 0xE6AE6B},
++	{594000000, 594000000, 1,  99, 0, 2, 0,  1, 0, 1,  1, 0, 0},
+ 	{ /* sentinel */ }
+ };
  
- 	dev_dbg(inno->dev, "Inno HDMI PHY Power On\n");
- 
-+	inno->plat_data->clk_ops->set_rate(&inno->hw, inno->pixclock, 24000000);
-+
- 	ret = clk_prepare_enable(inno->phyclk);
- 	if (ret)
- 		return ret;
-@@ -509,6 +512,8 @@ static int inno_hdmi_phy_power_off(struct phy *phy)
- 
- 	clk_disable_unprepare(inno->phyclk);
- 
-+	inno->tmdsclock = 0;
-+
- 	dev_dbg(inno->dev, "Inno HDMI PHY Power Off\n");
- 
- 	return 0;
-@@ -628,6 +633,9 @@ static int inno_hdmi_phy_rk3228_clk_set_rate(struct clk_hw *hw,
- 	dev_dbg(inno->dev, "%s rate %lu tmdsclk %lu\n",
- 		__func__, rate, tmdsclock);
- 
-+	if (inno->pixclock == rate && inno->tmdsclock == tmdsclock)
-+		return 0;
-+
- 	cfg = inno_hdmi_phy_get_pre_pll_cfg(inno, rate);
- 	if (IS_ERR(cfg))
- 		return PTR_ERR(cfg);
-@@ -670,6 +678,7 @@ static int inno_hdmi_phy_rk3228_clk_set_rate(struct clk_hw *hw,
- 	}
- 
- 	inno->pixclock = rate;
-+	inno->tmdsclock = tmdsclock;
- 
- 	return 0;
- }
-@@ -781,6 +790,9 @@ static int inno_hdmi_phy_rk3328_clk_set_rate(struct clk_hw *hw,
- 	dev_dbg(inno->dev, "%s rate %lu tmdsclk %lu\n",
- 		__func__, rate, tmdsclock);
- 
-+	if (inno->pixclock == rate && inno->tmdsclock == tmdsclock)
-+		return 0;
-+
- 	cfg = inno_hdmi_phy_get_pre_pll_cfg(inno, rate);
- 	if (IS_ERR(cfg))
- 		return PTR_ERR(cfg);
-@@ -820,6 +832,7 @@ static int inno_hdmi_phy_rk3328_clk_set_rate(struct clk_hw *hw,
- 	}
- 
- 	inno->pixclock = rate;
-+	inno->tmdsclock = tmdsclock;
- 
- 	return 0;
- }
 -- 
 2.17.1
 
