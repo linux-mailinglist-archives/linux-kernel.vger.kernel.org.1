@@ -2,808 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F00274059
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15DBF27407E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726586AbgIVLE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 07:04:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726340AbgIVLE4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 07:04:56 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61776C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 04:04:56 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id j2so15723524eds.9
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 04:04:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Iljx3hlznfUOlzZFRWHMoIF312p8EqGvnsICc6+uq4s=;
-        b=m8+pDRT1UYR17DvhL1oirMw7xuK2AaE3Duy8o3mYCTGXGo+hWktKxaNFygKcib58xt
-         lM6e184mT5WjUic8yOwR/kh8kaQva0jFZEx1K9phgU9Qfcc6yAEeHtIrYSCpE+TJrQ7X
-         A5mE/rsenA4m2mPQgGUU+ykitXKFlMl9/y7N9/bHiNe6ZLKu581Ev/rFN+mTPU1vU5Ed
-         m8BuOXol0MX2UGJiUUAAqcOkdoEqTrJhO0XyEBa/H8J4e8669gmgd4n2cUhvjCKUbBhq
-         IoB/hkmVATWCfze6SLEOm4KlNwSKCGsv2tF/S+v7cO8CWQGDUgk1k4i/34OCA7fGObNN
-         DlVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Iljx3hlznfUOlzZFRWHMoIF312p8EqGvnsICc6+uq4s=;
-        b=KIQX8fd4JFQmGpUQaHi9+XEkKRkRe81YgVHv04GJ+c1FDdYorMasJRvJerK+ozuBFJ
-         k/EBCS2J/nIQR+83SZ2xn/Mv7GnWZXpFt12lld4+xfSW81xOzIIxriC+aUzJqJwiMEva
-         VNJHa4zf9dSViIifgG64Y7+BRJrhdJCVip5Gs7ewGZcbHJNfE6tfVdBqHWjjbj9nfiGu
-         FPRMRg93btHdKGN/sM5l0vteVwqitfBnEA+Jxl+lJ/OQR+nGoY7MgyzyCDNCQjlmb9Zp
-         BI0qz8CWbD0Lz1jPcenq08Qs+MnZG8dwWXh+cE0Rn28v7jerKCr1TsR2EirP57YumHqL
-         eQlQ==
-X-Gm-Message-State: AOAM531OVlwOX+4ps30+mz7AdTAv0mTys0Y24Tr9GNSBmF9Xn+0zteSv
-        8EtiRudPKMEZCautJU27CVnAFJ7u4A9+qdgP33pF9Q==
-X-Google-Smtp-Source: ABdhPJyoZ4shyg8YdvTRpdsw/qs9lya3crCPGnKu9PlTtwPsmdvsPOUphYbLFewzZICDSB9Bh6xuKNXVYdh3v30qi5o=
-X-Received: by 2002:aa7:c6cf:: with SMTP id b15mr3372034eds.134.1600772694574;
- Tue, 22 Sep 2020 04:04:54 -0700 (PDT)
+        id S1726534AbgIVLLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 07:11:08 -0400
+Received: from mail-eopbgr70117.outbound.protection.outlook.com ([40.107.7.117]:27247
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726340AbgIVLLH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 07:11:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ALfyndWmHopd0CAf5wbnGmufiOoWrzjxcU/7kL2TT/Wt4nU7mP7+yL9BkH6NrFcT1HO/VCWAiVw2oLbxQvDnQKvK/bLLS51l+m5V8KC3v7cdsfiQVpDtI7buWvQPi7xO2mI3oQMIt8R1G+TYX0jQU5FtzXVcj6NTUqhCbsQgTHfnAUco320B2mVCBDNGJ97bEKauPLvx6Gy7KkwLZxEz3SF46OgQ00KpBdZhHHed7iNVGuNlIETVNwq3JtWG/BTwdxKJzd9NVK3hAhC3EzguIdW08BFV3+lPfEXJZlAKpwjhz+yTZFjx420waaNpqrq6sRykD4zEHBs46/WLfIxBVA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ynzBhX7Cr3cpGMc9ACF2DsTSFs6vMCd4PmvPPOuJ0H0=;
+ b=NUvgdALxxbcnCGRru9dnJqNyZeaCU5zatdoLGLFKMnJ9cM9m9PcGAw52Upqf0HNjOLgi2uzYMYTvS2+Oha7U1JRulBechDWc9qifGfbTimLmu5s3GE+GZ8Tltk7Jsr3MJcZrDaZCrQS7AGn3YWLpDTzzAxXwsSFybMc1wIpclQknv6MKiB+VASK5VBTVOxwIHKqA3w4388EYT+na381MHnYQRdeHAM0z3midCf26dFMilIxv5sqigtQYOvYr2Sgqth5TCKk+vdzRkTZJN43OntjALdee0OwtT6Ba9onMehhEHkX3hOYx0nYEqMC/UKGM+MPR0rwG2WMZsaxAz8MuZw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
+ dkim=pass header.d=plvision.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ynzBhX7Cr3cpGMc9ACF2DsTSFs6vMCd4PmvPPOuJ0H0=;
+ b=t8ygOZJyFNFIY8MJvsjx3y9KBnWFmGgV7vxHZSYoDwtzJd7DHb3I69UMCmW5L0w5TYzT/t7HAAFG/oOlDS5FnkrP2/ixel2W1hflsFmBVgnB0OV13yMG6cqzSWfgc87ayLFxl9rSTXZhzf/rmb9bCogLXc/wGq0OcVboOC7RqgA=
+Authentication-Results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=plvision.eu;
+Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:56::28) by
+ HE1P190MB0460.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:58::23) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3391.13; Tue, 22 Sep 2020 11:11:02 +0000
+Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ ([fe80::c1ab:71de:6bc2:89fe]) by HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ ([fe80::c1ab:71de:6bc2:89fe%6]) with mapi id 15.20.3391.019; Tue, 22 Sep 2020
+ 11:11:02 +0000
+Date:   Tue, 22 Sep 2020 14:10:59 +0300
+From:   Vadym Kochan <vadym.kochan@plvision.eu>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/3] nvmem: core: introduce cells parser
+Message-ID: <20200922111059.GC22590@plvision.eu>
+References: <20200915124116.7196-1-vadym.kochan@plvision.eu>
+ <20200915124116.7196-2-vadym.kochan@plvision.eu>
+ <b2e63a28-7678-832e-f585-6d0f959d1b75@linaro.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b2e63a28-7678-832e-f585-6d0f959d1b75@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: AM6PR02CA0035.eurprd02.prod.outlook.com
+ (2603:10a6:20b:6e::48) To HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:7:56::28)
 MIME-Version: 1.0
-References: <1600286167-4432-1-git-send-email-hemantk@codeaurora.org> <1600286167-4432-5-git-send-email-hemantk@codeaurora.org>
-In-Reply-To: <1600286167-4432-5-git-send-email-hemantk@codeaurora.org>
-From:   Loic Poulain <loic.poulain@linaro.org>
-Date:   Tue, 22 Sep 2020 13:10:07 +0200
-Message-ID: <CAMZdPi9yQDCWXwHoYtby=LWbK2i3zrgCuW_+7OT8k6kq0qAJWg@mail.gmail.com>
-Subject: Re: [PATCH v6 4/4] bus: mhi: Add userspace client interface driver
-To:     Hemant Kumar <hemantk@codeaurora.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>, jhugo@codeaurora.org,
-        bbhatt@codeaurora.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from plvision.eu (217.20.186.93) by AM6PR02CA0035.eurprd02.prod.outlook.com (2603:10a6:20b:6e::48) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14 via Frontend Transport; Tue, 22 Sep 2020 11:11:02 +0000
+X-Originating-IP: [217.20.186.93]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d3592c27-9199-43b3-e656-08d85ee83162
+X-MS-TrafficTypeDiagnostic: HE1P190MB0460:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <HE1P190MB0460D0C0EB9E031F4CB04427953B0@HE1P190MB0460.EURP190.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mS+LXwfcG0uXD5g2MCkDWYtGny5CAWZLR53+jVSDYGM77aWSc6WWlAL1vKeZqUBMqXiauGHtC3w1dQ1apeHWEo9p4paW7YZW5P8AbWYNMwQ6zmYAzxGyxZmZVgeevg+ff3YcaoufLL17yCJA+01cP9bOTG0Q4Gsq1wyw+K7zPx/VzdTq+LWO56QyRTIxGcbCqx8cd/0F2KJPgZA3P/xh0+67XqZUuEIwK0OSSo2geL8XOxrJ1xX7XWqj4CaSYfoU/UIKIDH+CWA2EvKFGKrUY8frJ0mSo/LdutciJ7wdPbmg/r6Q2H8MD6ftH6qRKjTEZXGG6LfXktriGFbE0/VmCjbGPwCtVJWNZ70X57kMNaf+dNPK+559w+pVXY50C3wX
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1P190MB0539.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(396003)(376002)(136003)(346002)(39830400003)(366004)(53546011)(36756003)(186003)(6666004)(2906002)(26005)(5660300002)(6916009)(66556008)(8676002)(1076003)(66476007)(83380400001)(55016002)(478600001)(8886007)(66946007)(86362001)(956004)(8936002)(52116002)(7696005)(44832011)(33656002)(4326008)(2616005)(16526019)(316002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: VhVpn3VhPidx97uw1R/YoTj6ZpfSweLLYB4zyz4ot6/S7vO99PUcjH0N0L3R07O1kYMQhGou+X2aZ9Qf+sToIPJA5vOQj+rmtLiV4U/+VFpjpjsQXJiOnIB0dV5ZHnEC4Yf2ynrnmfsRB7ZC6w6ek+AU1+0TB8mFEDLrQNbI283Zs1szW/1kHDkgWZ0KL/zt9R9VG4jB6IfRxfLkbUQTOmAuaqequulOUqGVe4JzhTtJlDmUkN6rBObE9TmEx1RvzRDRnnWFQ1o3Eq+bpimxRHOJrGqIIX+Ra+OJcAuqLaJQMbj+JBGBKIERuLriZlBuOHRhq0mvDFMY7iITwRHDD9Nnx9aEktT6cunedKnrkp/tqO2+p9OfQ0lXw4NFkhWok12tcnK/3w1WwVYnM4Q56p4aQzgmTenm8JZFoCaw405ACmQLa7E73iTEKvUBoLop7pAIFXwbfEwF6diLZIUs6OUhtKupw3k7hMQaX4Z+eV2QQ8SSw2/EE+cHinkb4jrWUPEM5SnJ7tjw+RUZUSW/IY2+3MunUFFsmhTClVgV3Gm6LWL8wOUaSFFw/1OV9zlDScLlXylI1wGX2UuUvdWpef3nzc4Ot7adgmBqdqfXXQB9sOdwfSYpMQ8LGrpYlP4Y4B3sJv5IAWJqrPlYdEKvdw==
+X-OriginatorOrg: plvision.eu
+X-MS-Exchange-CrossTenant-Network-Message-Id: d3592c27-9199-43b3-e656-08d85ee83162
+X-MS-Exchange-CrossTenant-AuthSource: HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2020 11:11:02.8113
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yAX8I+EAURZOtLV5aXaFIn7g7y9xwyDgZvrzhBsK13XtpiSp0MBrgPvvn9Ct8NGwNsSu2m5CBGBPCM6PpQ3fro4zHO6KnXch2FM7tEobnuM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1P190MB0460
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hemant,
+On Tue, Sep 22, 2020 at 10:48:27AM +0100, Srinivas Kandagatla wrote:
+> 
+> 
+> On 15/09/2020 13:41, Vadym Kochan wrote:
+> > Currently NVMEM core does not allow to register cells for an already
+> > registered nvmem device and requires that this should be done before.
+> > But there might a driver which needs to parse the nvmem device and then
+> > register a cells table.
+> > 
+> > Introduce nvmem_parser API which allows to register cells parser which
+> > is called during nvmem device registration. During this stage the parser
+> > can read the nvmem device and register the cells table.
+> > 
+> 
+> Overall this approach looks okay to me!
+> 
+> Rather than a binding for onie cell parser, I think we should add a generic
+> bindings for parser something like:
+> 
+> 
+> nvmem-cell-parser = "onie-tlv-cells";
+> 
+> 
+> I also think the parser matching should be done based on this string which
+> can remove
+> 1. new DT node for onie parser.
+> 2. works for both DT and non-DT setups.
+> 
+> nvmem provider register will automatically parse this once it finds a
+> matching parser or it will EPROBE_DEFER!
+> 
+> Let me know if you think it works for you!
+> 
+> 
+> --srini
 
-See comments inline, but globally, the locking and ref counting is
-more complicated than it should be.
+Indeed, it sounds very good and fixes the early dependency that
+parser should be registered first before nvmem provider.
 
-On Wed, 16 Sep 2020 at 21:57, Hemant Kumar <hemantk@codeaurora.org> wrote:
->
-> This MHI client driver allows userspace clients to transfer
-> raw data between MHI device and host using standard file operations.
-> Device file node is created with format
->
-> /dev/mhi_<controller_name>_<mhi_device_name>
->
-> Currently it supports LOOPBACK channel.
->
-> Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
-> ---
->  drivers/bus/mhi/Kconfig  |  13 +
->  drivers/bus/mhi/Makefile |   4 +
->  drivers/bus/mhi/uci.c    | 657 +++++++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 674 insertions(+)
->  create mode 100644 drivers/bus/mhi/uci.c
->
-> diff --git a/drivers/bus/mhi/Kconfig b/drivers/bus/mhi/Kconfig
-> index 6a217ff..8aebe8b 100644
-> --- a/drivers/bus/mhi/Kconfig
-> +++ b/drivers/bus/mhi/Kconfig
-> @@ -20,3 +20,16 @@ config MHI_BUS_DEBUG
->          Enable debugfs support for use with the MHI transport. Allows
->          reading and/or modifying some values within the MHI controller
->          for debug and test purposes.
-> +
-> +config MHI_UCI
-> +       tristate "MHI UCI"
-> +       depends on MHI_BUS
-> +       help
-> +        MHI based userspace client interface driver is used for transferring
-> +        raw data between host and device using standard file operations from
-> +        userspace. Open, read, write, and close operations are supported
-> +        by this driver. Please check mhi_uci_match_table for all supported
-> +        channels that are exposed to userspace.
-> +
-> +        To compile this driver as a module, choose M here: the module will be
-> +        called mhi_uci.
-> diff --git a/drivers/bus/mhi/Makefile b/drivers/bus/mhi/Makefile
-> index 19e6443..80feefb 100644
-> --- a/drivers/bus/mhi/Makefile
-> +++ b/drivers/bus/mhi/Makefile
-> @@ -1,2 +1,6 @@
->  # core layer
->  obj-y += core/
-> +
-> +# MHI client
-> +mhi_uci-y := uci.o
-> +obj-$(CONFIG_MHI_UCI) += mhi_uci.o
-> diff --git a/drivers/bus/mhi/uci.c b/drivers/bus/mhi/uci.c
-> new file mode 100644
-> index 0000000..d6758f2
-> --- /dev/null
-> +++ b/drivers/bus/mhi/uci.c
-> @@ -0,0 +1,657 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/* Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.*/
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/mhi.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/module.h>
-> +#include <linux/poll.h>
-> +
-> +#define DEVICE_NAME "mhi"
-> +#define MHI_UCI_DRIVER_NAME "mhi_uci"
-> +#define MAX_UCI_MINORS (128)
-> +
-> +static DEFINE_IDR(uci_idr);
-> +static DEFINE_MUTEX(uci_idr_mutex);
-> +static struct class *uci_dev_class;
-> +static int uci_dev_major;
-> +
-> +/**
-> + * struct uci_chan - MHI channel for a uci device
-> + * @wq: wait queue for reader/writer
-> + * @lock: spin lock
-> + * @pending: list of rx buffers userspace is waiting to read
-> + * @cur_buf: current buffer userspace is reading
-> + * @rx_size: size of the current rx buffer userspace is reading
-> + */
-> +struct uci_chan {
-> +       wait_queue_head_t wq;
-> +
-> +       /* protects pending and cur_buf members in bh context */
-> +       spinlock_t lock;
-> +
-> +       struct list_head pending;
-> +       struct uci_buf *cur_buf;
-> +       size_t rx_size;
-> +};
-> +
-> +/**
-> + * struct uci_buf - uci buffer
-> + * @data: data buffer
-> + * @len: length of data buffer
-> + * @node: list node of the uci buffer
-> + */
-> +struct uci_buf {
-> +       void *data;
-> +       size_t len;
-> +       struct list_head node;
-> +};
-> +
-> +/**
-> + * struct uci_dev - MHI uci device
-> + * @minor: uci device node minor number
-> + * @mhi_dev: associated mhi device object
-> + * @chan: MHI channel name
-> + * @lock: mutex lock
-> + * @ul_chan: uplink uci channel object
-> + * @dl_chan: downlink uci channel object
-> + * @mtu: max tx buffer length
-> + * @actual_mtu: maximum size of incoming buffer
-> + * @open: open called for device node
-> + * @enabled: uci device probed
-> + * @ref_count: uci_dev reference count
-> + */
-> +struct uci_dev {
-> +       unsigned int minor;
-> +       struct mhi_device *mhi_dev;
-> +       const char *chan;
-> +
-> +       /* protects uci_dev struct members */
-> +       struct mutex lock;
-> +
-> +       struct uci_chan ul_chan;
-> +       struct uci_chan dl_chan;
-> +       size_t mtu;
-> +       size_t actual_mtu;
-> +       bool enabled;
-> +       struct kref ref_count;
-> +};
-> +
-> +static int mhi_queue_inbound(struct uci_dev *udev)
-> +{
-> +       struct mhi_device *mhi_dev = udev->mhi_dev;
-> +       struct device *dev = &mhi_dev->dev;
-> +       size_t mtu = udev->mtu;
-> +       size_t actual_mtu = udev->actual_mtu;
-> +       int nr_trbs, i, ret = -EIO;
-> +       void *buf;
-> +       struct uci_buf *uci_buf;
-> +
-> +       nr_trbs = mhi_get_no_free_descriptors(mhi_dev, DMA_FROM_DEVICE);
-> +
-> +       for (i = 0; i < nr_trbs; i++) {
-> +               buf = kmalloc(mtu, GFP_KERNEL);
-> +               if (!buf)
-> +                       return -ENOMEM;
-> +
-> +               uci_buf = buf + actual_mtu;
-> +               uci_buf->data = buf;
-> +
-> +               dev_dbg(dev, "Allocated buf %d of %d size %ld\n", i, nr_trbs,
-> +                       actual_mtu);
-> +
-> +               ret = mhi_queue_buf(mhi_dev, DMA_FROM_DEVICE, buf, actual_mtu,
-> +                                   MHI_EOT);
-> +               if (ret) {
-> +                       kfree(buf);
-> +                       dev_err(dev, "Failed to queue buffer %d\n", i);
-> +                       return ret;
-> +               }
-> +       }
-> +
-> +       return ret;
-> +}
-> +
-> +static void mhi_uci_dev_release(struct kref *ref)
-> +{
-> +       struct uci_dev *udev =
-> +               container_of(ref, struct uci_dev, ref_count);
-> +
-> +       mutex_destroy(&udev->lock);
-> +
-> +       dev_set_drvdata(&udev->mhi_dev->dev, NULL);
-> +
-> +       kfree(udev);
-> +}
-> +
-> +static int mhi_uci_release(struct inode *inode, struct file *file)
-> +{
-> +       struct uci_dev *udev = file->private_data;
-> +       struct uci_buf *itr, *tmp;
-> +       struct uci_chan *uchan;
-> +
-> +       if (kref_read(&udev->ref_count) > 2)
-> +               goto exit_uci_release;
-> +
-> +       if (udev->enabled)
-> +               mhi_unprepare_from_transfer(udev->mhi_dev);
-> +
-> +       /* clean inbound channel */
-> +       uchan = &udev->dl_chan;
-> +
-> +       spin_lock_bh(&uchan->lock);
-> +       list_for_each_entry_safe(itr, tmp, &uchan->pending, node) {
-> +               list_del(&itr->node);
-> +               kfree(itr->data);
-> +       }
-> +
-> +       if (uchan->cur_buf)
-> +               kfree(uchan->cur_buf->data);
-> +
-> +       uchan->cur_buf = NULL;
-> +       spin_unlock_bh(&uchan->lock);
-> +
-> +exit_uci_release:
-> +       kref_put(&udev->ref_count, mhi_uci_dev_release);
-> +
-> +       return 0;
-> +}
-> +
-> +static __poll_t mhi_uci_poll(struct file *file, poll_table *wait)
-> +{
-> +       struct uci_dev *udev = file->private_data;
-> +       struct mhi_device *mhi_dev = udev->mhi_dev;
-> +       struct device *dev = &mhi_dev->dev;
-> +       struct uci_chan *uchan;
-> +       __poll_t mask = 0;
-> +
-> +       poll_wait(file, &udev->dl_chan.wq, wait);
-> +       poll_wait(file, &udev->ul_chan.wq, wait);
-> +
-> +       if (!udev->enabled) {
-> +               mask = EPOLLERR;
-> +       } else {
-> +               uchan = &udev->dl_chan;
-> +               spin_lock_bh(&uchan->lock);
-> +               if (!list_empty(&uchan->pending) || uchan->cur_buf) {
-> +                       dev_dbg(dev, "Client can read from node\n");
-> +                       mask |= EPOLLIN | EPOLLRDNORM;
-> +               }
-> +               spin_unlock_bh(&uchan->lock);
-> +       }
-> +
-> +       if (!udev->enabled) {
-> +               mask |= EPOLLERR;
-> +       } else if (mhi_get_no_free_descriptors(mhi_dev, DMA_TO_DEVICE) > 0) {
-> +               dev_dbg(dev, "Client can write to node\n");
-> +               mask |= EPOLLOUT | EPOLLWRNORM;
-> +       }
-> +
-> +       dev_dbg(dev, "Client attempted to poll, returning mask 0x%x\n", mask);
-> +
-> +       return mask;
-> +}
-> +
-> +static ssize_t mhi_uci_write(struct file *file,
-> +                            const char __user *buf,
-> +                            size_t count,
-> +                            loff_t *offp)
-> +{
-> +       struct uci_dev *udev = file->private_data;
-> +       struct mhi_device *mhi_dev = udev->mhi_dev;
-> +       struct device *dev = &mhi_dev->dev;
-> +       struct uci_chan *uchan = &udev->ul_chan;
-> +       size_t bytes_xfered = 0;
-> +       int ret, nr_avail = 0;
-> +
-> +       if (!buf || !count)
-> +               return -EINVAL;
-> +
-> +       /* confirm channel is active */
-> +       mutex_lock(&udev->lock);
-> +       if (!udev->enabled) {
-> +               ret = -ENODEV;
-> +               goto err_mtx_unlock;
-> +       }
-> +
-> +       dev_dbg(dev, "%s: to xfer: %lu bytes\n", __func__, count);
-> +
-> +       while (count) {
-> +               size_t xfer_size;
-> +               void *kbuf;
-> +               enum mhi_flags flags;
-> +
-> +               mutex_unlock(&udev->lock);
-> +               /* wait for free descriptors */
-> +               ret = wait_event_interruptible(uchan->wq,
-> +                                              (!udev->enabled) ||
-> +                               (nr_avail = mhi_get_no_free_descriptors(mhi_dev,
-> +                                              DMA_TO_DEVICE)) > 0);
-> +
-> +               mutex_lock(&udev->lock);
+I will try!
 
-All this locking unlocking is odd:
-- why do you need locking for testing wait_event return code?
-- why do you need this udev->enabled?
-- The MHI core should be thread safe + mhi_queue_buf should simply
-fail if removing is ongoing.
-
-> +               if (ret == -ERESTARTSYS) {
-> +                       dev_dbg(dev, "Exit signal caught for node\n");
-> +                       goto err_mtx_unlock;
-> +               }
-> +
-> +               if (!udev->enabled) {
-> +                       ret = -ENODEV;
-> +                       goto err_mtx_unlock;
-> +               }
-> +
-> +               xfer_size = min_t(size_t, count, udev->mtu);
-> +               kbuf = kmalloc(xfer_size, GFP_KERNEL);
-> +               if (!kbuf) {
-> +                       ret = -ENOMEM;
-> +                       goto err_mtx_unlock;
-> +               }
-> +
-> +               ret = copy_from_user(kbuf, buf, xfer_size);
-> +               if (ret) {
-> +                       kfree(kbuf);
-> +                       ret = -EFAULT;
-> +                       goto err_mtx_unlock;
-> +               }
-> +
-> +               /* if ring is full after this force EOT */
-> +               if (nr_avail > 1 && (count - xfer_size))
-> +                       flags = MHI_CHAIN;
-> +               else
-> +                       flags = MHI_EOT;
-> +
-> +               if (udev->enabled)
-> +                       ret = mhi_queue_buf(mhi_dev, DMA_TO_DEVICE, kbuf,
-> +                                           xfer_size, flags);
-> +               else
-> +                       ret = -ENODEV;
-> +
-> +               if (ret) {
-> +                       kfree(kbuf);
-> +                       goto err_mtx_unlock;
-> +               }
-> +
-> +               bytes_xfered += xfer_size;
-> +               count -= xfer_size;
-> +               buf += xfer_size;
-> +       }
-> +
-> +       mutex_unlock(&udev->lock);
-> +       dev_dbg(dev, "%s: bytes xferred: %lu\n", __func__, bytes_xfered);
-> +
-> +       return bytes_xfered;
-> +
-> +err_mtx_unlock:
-> +       mutex_unlock(&udev->lock);
-> +
-> +       return ret;
-> +}
-> +
-> +static ssize_t mhi_uci_read(struct file *file,
-> +                           char __user *buf,
-> +                           size_t count,
-> +                           loff_t *ppos)
-> +{
-> +       struct uci_dev *udev = file->private_data;
-> +       struct mhi_device *mhi_dev = udev->mhi_dev;
-> +       struct uci_chan *uchan = &udev->dl_chan;
-> +       struct device *dev = &mhi_dev->dev;
-> +       struct uci_buf *ubuf;
-> +       char *ptr;
-> +       size_t to_copy;
-> +       int ret = 0;
-> +
-> +       if (!buf)
-> +               return -EINVAL;
-> +
-> +       mutex_lock(&udev->lock);
-> +       /* confirm channel is active */
-> +       if (!udev->enabled) {
-> +               ret = -ENODEV;
-> +               goto err_mtx_unlock;
-> +       }
-> +
-> +       spin_lock_bh(&uchan->lock);
-> +       /* No data available to read, wait */
-> +       if (!uchan->cur_buf && list_empty(&uchan->pending)) {
-> +               dev_dbg(dev, "No data available to read waiting\n");
-> +
-> +               spin_unlock_bh(&uchan->lock);
-> +               mutex_unlock(&udev->lock);
-> +               ret = wait_event_interruptible(uchan->wq,
-> +                                              (!udev->enabled ||
-> +                                             !list_empty(&uchan->pending)));
-> +
-> +               mutex_lock(&udev->lock);
-> +               if (ret == -ERESTARTSYS) {
-> +                       dev_dbg(dev, "Exit signal caught for node\n");
-> +                       goto err_mtx_unlock;
-> +               }
-> +
-> +               if (!udev->enabled) {
-> +                       ret = -ENODEV;
-> +                       goto err_mtx_unlock;
-> +               }
-> +               spin_lock_bh(&uchan->lock);
-> +       }
-> +
-> +       /* new read, get the next descriptor from the list */
-> +       if (!uchan->cur_buf) {
-> +               ubuf = list_first_entry_or_null(&uchan->pending,
-> +                                               struct uci_buf, node);
-> +               if (!ubuf) {
-> +                       ret = -EIO;
-> +                       goto err_spin_unlock;
-> +               }
-> +
-> +               list_del(&ubuf->node);
-> +               uchan->cur_buf = ubuf;
-> +               uchan->rx_size = ubuf->len;
-> +               dev_dbg(dev, "Got pkt of size: %zu\n", uchan->rx_size);
-> +       }
-> +
-> +       ubuf = uchan->cur_buf;
-> +
-> +       /* Copy the buffer to user space */
-> +       to_copy = min_t(size_t, count, uchan->rx_size);
-> +       ptr = ubuf->data + (ubuf->len - uchan->rx_size);
-> +       spin_unlock_bh(&uchan->lock);
-> +
-> +       ret = copy_to_user(buf, ptr, to_copy);
-> +       if (ret) {
-> +               ret = -EFAULT;
-> +               goto err_mtx_unlock;
-> +       }
-> +
-> +       spin_lock_bh(&uchan->lock);
-> +
-> +       dev_dbg(dev, "Copied %lu of %lu bytes\n", to_copy, uchan->rx_size);
-> +       uchan->rx_size -= to_copy;
-> +
-> +       /* we finished with this buffer, queue it back to hardware */
-> +       if (!uchan->rx_size) {
-> +               uchan->cur_buf = NULL;
-> +
-> +               if (udev->enabled)
-> +                       ret = mhi_queue_buf(mhi_dev, DMA_FROM_DEVICE,
-> +                                           ubuf->data,
-> +                                           udev->actual_mtu, MHI_EOT);
-> +               else
-> +                       ret = -ENODEV;
-> +
-> +               if (ret) {
-> +                       dev_err(dev, "Failed to recycle element: %d\n", ret);
-> +                       kfree(ubuf->data);
-> +                       goto err_spin_unlock;
-> +               }
-> +       }
-> +       spin_unlock_bh(&uchan->lock);
-> +       mutex_unlock(&udev->lock);
-> +
-> +       dev_dbg(dev, "%s: Returning %lu bytes\n", __func__, to_copy);
-> +
-> +       return to_copy;
-> +
-> +err_spin_unlock:
-> +       spin_unlock_bh(&uchan->lock);
-> +err_mtx_unlock:
-> +       mutex_unlock(&udev->lock);
-> +       return ret;
-> +}
-> +
-> +static int mhi_uci_open(struct inode *inode, struct file *filp)
-> +{
-> +       struct uci_dev *udev = NULL;
-> +       unsigned int minor = iminor(inode);
-> +       int ret = -EIO;
-> +       struct uci_buf *buf_itr, *tmp;
-> +       struct uci_chan *dl_chan;
-> +       struct mhi_device *mhi_dev;
-> +       struct device *dev;
-> +
-> +       mutex_lock(&uci_idr_mutex);
-> +       udev = idr_find(&uci_idr, minor);
-> +       mutex_unlock(&uci_idr_mutex);
-> +       if (!udev) {
-> +               pr_err("uci dev: minor %d not found\n", minor);
-> +               ret = -ENODEV;
-> +               goto error_no_dev;
-> +       }
-> +
-> +       kref_get(&udev->ref_count);
-> +
-> +       mhi_dev = udev->mhi_dev;
-> +       dev = &mhi_dev->dev;
-> +
-> +       mutex_lock(&udev->lock);
-> +       if (kref_read(&udev->ref_count) > 2) {
-> +               dev_dbg(dev, "Node already opened\n");
-> +               goto exit_uci_open;
-> +       }
-> +
-> +       if (!udev->enabled) {
-> +               dev_info(dev, "Node exists, but is not in active state!\n");
-> +               goto error_open_chan;
-> +       }
-> +
-> +       dev_dbg(dev, "Starting channel\n");
-> +       ret = mhi_prepare_for_transfer(udev->mhi_dev);
-> +       if (ret) {
-> +               dev_err(dev, "Error starting transfer channels\n");
-> +               goto error_open_chan;
-> +       }
-> +
-> +       ret = mhi_queue_inbound(udev);
-> +       if (ret)
-> +               goto error_rx_queue;
-> +
-> +exit_uci_open:
-> +       filp->private_data = udev;
-> +       mutex_unlock(&udev->lock);
-> +
-> +       return 0;
-> +
-> +error_rx_queue:
-> +       dl_chan = &udev->dl_chan;
-> +       mhi_unprepare_from_transfer(udev->mhi_dev);
-> +       list_for_each_entry_safe(buf_itr, tmp, &dl_chan->pending, node) {
-> +               list_del(&buf_itr->node);
-> +               kfree(buf_itr->data);
-> +       }
-> +error_open_chan:
-> +       mutex_unlock(&udev->lock);
-> +       kref_put(&udev->ref_count, mhi_uci_dev_release);
-> +error_no_dev:
-> +       return ret;
-> +}
-> +
-> +static const struct file_operations mhidev_fops = {
-> +       .owner = THIS_MODULE,
-> +       .open = mhi_uci_open,
-> +       .release = mhi_uci_release,
-> +       .read = mhi_uci_read,
-> +       .write = mhi_uci_write,
-> +       .poll = mhi_uci_poll,
-> +};
-> +
-> +static void mhi_ul_xfer_cb(struct mhi_device *mhi_dev,
-> +                          struct mhi_result *mhi_result)
-> +{
-> +       struct uci_dev *udev = dev_get_drvdata(&mhi_dev->dev);
-> +       struct uci_chan *uchan = &udev->ul_chan;
-> +       struct device *dev = &mhi_dev->dev;
-> +
-> +       dev_dbg(dev, "status: %d xfer_len: %zu\n",
-> +               mhi_result->transaction_status, mhi_result->bytes_xferd);
-> +
-> +       kfree(mhi_result->buf_addr);
-> +
-> +       if (!mhi_result->transaction_status)
-> +               wake_up(&uchan->wq);
-> +}
-> +
-> +static void mhi_dl_xfer_cb(struct mhi_device *mhi_dev,
-> +                          struct mhi_result *mhi_result)
-> +{
-> +       struct uci_dev *udev = dev_get_drvdata(&mhi_dev->dev);
-> +       struct uci_chan *uchan = &udev->dl_chan;
-> +       struct device *dev = &mhi_dev->dev;
-> +       struct uci_buf *buf;
-> +
-> +       dev_dbg(dev, "status: %d receive_len: %zu\n",
-> +               mhi_result->transaction_status, mhi_result->bytes_xferd);
-> +
-> +       if (mhi_result->transaction_status == -ENOTCONN) {
-> +               kfree(mhi_result->buf_addr);
-> +               return;
-> +       }
-> +
-> +       spin_lock_bh(&uchan->lock);
-> +       buf = mhi_result->buf_addr + udev->actual_mtu;
-> +       buf->data = mhi_result->buf_addr;
-> +       buf->len = mhi_result->bytes_xferd;
-
-You don't need to protect buf here, only uchan pending list, right? so
-move lock here.
-
-> +       list_add_tail(&buf->node, &uchan->pending);
-> +       spin_unlock_bh(&uchan->lock);
-> +
-> +       wake_up(&uchan->wq);
-> +}
-> +
-> +static int mhi_uci_probe(struct mhi_device *mhi_dev,
-> +                        const struct mhi_device_id *id)
-> +{
-> +       struct uci_dev *udev;
-> +       struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
-> +       struct device *dev;
-> +       int index, dir;
-> +
-> +       udev = kzalloc(sizeof(*udev), GFP_KERNEL);
-> +       if (!udev)
-> +               return -ENOMEM;
-> +
-> +       kref_init(&udev->ref_count);
-> +       mutex_init(&udev->lock);
-> +       udev->mhi_dev = mhi_dev;
-> +
-> +       mutex_lock(&udev->lock);
-
-Why locking here? udev has just been created, it cannot be used concurrently.
-
-> +
-> +       mutex_lock(&uci_idr_mutex);
-> +       index = idr_alloc(&uci_idr, udev, 0, MAX_UCI_MINORS, GFP_KERNEL);
-> +       mutex_unlock(&uci_idr_mutex);
-> +       if (index < 0) {
-> +               mutex_unlock(&udev->lock);
-> +               kfree(udev);
-> +               return index;
-> +       }
-> +
-> +       udev->minor = index;
-> +
-> +       /* create device file node /dev/mhi_<cntrl_dev_name>_<mhi_dev_name> */
-> +       dev = device_create(uci_dev_class, &mhi_dev->dev,
-> +                           MKDEV(uci_dev_major, index), udev,
-> +                           DEVICE_NAME "_%s_%s",
-> +                           dev_name(mhi_cntrl->cntrl_dev), mhi_dev->name);
-> +       if (IS_ERR(dev)) {
-> +               mutex_lock(&uci_idr_mutex);
-> +               idr_remove(&uci_idr, udev->minor);
-> +               mutex_unlock(&uci_idr_mutex);
-> +               mutex_unlock(&udev->lock);
-> +               kfree(udev);
-> +               return PTR_ERR(dev);
-> +       }
-
-I would suggest adding the device at the very end of the probe, when
-everything has been initialized.
-
-Regards,
-Loic
-
-
-
-> +
-> +       for (dir = 0; dir < 2; dir++) {
-> +               struct uci_chan *uchan = (dir) ?
-> +                       &udev->ul_chan : &udev->dl_chan;
-> +               spin_lock_init(&uchan->lock);
-> +               init_waitqueue_head(&uchan->wq);
-> +               INIT_LIST_HEAD(&uchan->pending);
-> +       }
-> +
-> +       udev->mtu = min_t(size_t, id->driver_data, MHI_MAX_MTU);
-> +       udev->actual_mtu = udev->mtu - sizeof(struct uci_buf);
-> +       dev_set_drvdata(&mhi_dev->dev, udev);
-> +       udev->enabled = true;
-> +
-> +       mutex_unlock(&udev->lock);
-> +
-> +       dev_info(&mhi_dev->dev, "probed uci dev: minor %d\n", index);
-> +
-> +       return 0;
-> +};
-> +
-> +static void mhi_uci_remove(struct mhi_device *mhi_dev)
-> +{
-> +       struct uci_dev *udev = dev_get_drvdata(&mhi_dev->dev);
-> +
-> +       mutex_lock(&udev->lock);
-> +
-> +       /* disable the node */
-> +       udev->enabled = false;
-> +
-> +       wake_up(&udev->dl_chan.wq);
-> +       wake_up(&udev->ul_chan.wq);
-> +
-> +       /* delete the node to prevent new opens */
-> +       device_destroy(uci_dev_class, MKDEV(uci_dev_major, udev->minor));
-> +
-> +       mutex_lock(&uci_idr_mutex);
-> +       idr_remove(&uci_idr, udev->minor);
-> +       mutex_unlock(&uci_idr_mutex);
-> +
-> +       mutex_unlock(&udev->lock);
-> +
-> +       kref_put(&udev->ref_count, mhi_uci_dev_release);
-> +}
-> +
-> +/* .driver_data stores max mtu */
-> +static const struct mhi_device_id mhi_uci_match_table[] = {
-> +       { .chan = "LOOPBACK", .driver_data = 0x1000},
-> +       {},
-> +};
-> +MODULE_DEVICE_TABLE(mhi, mhi_uci_match_table);
-> +
-> +static struct mhi_driver mhi_uci_driver = {
-> +       .id_table = mhi_uci_match_table,
-> +       .remove = mhi_uci_remove,
-> +       .probe = mhi_uci_probe,
-> +       .ul_xfer_cb = mhi_ul_xfer_cb,
-> +       .dl_xfer_cb = mhi_dl_xfer_cb,
-> +       .driver = {
-> +               .name = MHI_UCI_DRIVER_NAME,
-> +       },
-> +};
-> +
-> +static int mhi_uci_init(void)
-> +{
-> +       int ret;
-> +
-> +       ret = register_chrdev(0, MHI_UCI_DRIVER_NAME, &mhidev_fops);
-> +       if (ret < 0)
-> +               return ret;
-> +
-> +       uci_dev_major = ret;
-> +       uci_dev_class = class_create(THIS_MODULE, MHI_UCI_DRIVER_NAME);
-> +       if (IS_ERR(uci_dev_class)) {
-> +               unregister_chrdev(uci_dev_major, MHI_UCI_DRIVER_NAME);
-> +               return -ENODEV;
-> +       }
-> +
-> +       ret = mhi_driver_register(&mhi_uci_driver);
-> +       if (ret) {
-> +               class_destroy(uci_dev_class);
-> +               unregister_chrdev(uci_dev_major, MHI_UCI_DRIVER_NAME);
-> +       }
-> +
-> +       return ret;
-> +}
-> +
-> +static void __exit mhi_uci_exit(void)
-> +{
-> +       mhi_driver_unregister(&mhi_uci_driver);
-> +       class_destroy(uci_dev_class);
-> +       unregister_chrdev(uci_dev_major, MHI_UCI_DRIVER_NAME);
-> +}
-> +
-> +module_init(mhi_uci_init);
-> +module_exit(mhi_uci_exit);
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_DESCRIPTION("MHI UCI Driver");
-> --
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
->
+> 
+> > Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+> > ---
+> >   drivers/nvmem/core.c           | 89 ++++++++++++++++++++++++++++++++++
+> >   include/linux/nvmem-provider.h | 27 +++++++++++
+> >   2 files changed, 116 insertions(+)
+> > 
+> > diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+> > index 6cd3edb2eaf6..82a96032bc3f 100644
+> > --- a/drivers/nvmem/core.c
+> > +++ b/drivers/nvmem/core.c
+> > @@ -55,6 +55,14 @@ struct nvmem_cell {
+> >   	struct list_head	node;
+> >   };
+> > +struct nvmem_parser {
+> > +	struct device_node	*nvmem_of;
+> > +	struct kref		refcnt;
+> > +	struct list_head	head;
+> > +	nvmem_parse_t		cells_parse;
+> > +	void *priv;
+> > +};
+> > +
+> >   static DEFINE_MUTEX(nvmem_mutex);
+> >   static DEFINE_IDA(nvmem_ida);
+> > @@ -64,6 +72,9 @@ static LIST_HEAD(nvmem_cell_tables);
+> >   static DEFINE_MUTEX(nvmem_lookup_mutex);
+> >   static LIST_HEAD(nvmem_lookup_list);
+> > +static DEFINE_MUTEX(nvmem_parser_mutex);
+> > +static LIST_HEAD(nvmem_parser_list);
+> > +
+> >   static BLOCKING_NOTIFIER_HEAD(nvmem_notifier);
+> >   static int nvmem_reg_read(struct nvmem_device *nvmem, unsigned int offset,
+> > @@ -571,6 +582,30 @@ static int nvmem_add_cells_from_of(struct nvmem_device *nvmem)
+> >   	return 0;
+> >   }
+> > +static struct nvmem_parser *
+> > +__nvmem_parser_find_of(const struct nvmem_device *nvmem)
+> > +{
+> > +	struct nvmem_parser *parser;
+> > +
+> > +	list_for_each_entry(parser, &nvmem_parser_list, head) {
+> > +		if (dev_of_node(nvmem->base_dev) == parser->nvmem_of)
+> > +			return parser;
+> > +	}
+> > +
+> > +	return NULL;
+> > +}
+> > +
+> > +static void nvmem_cells_parse(struct nvmem_device *nvmem)
+> > +{
+> > +	struct nvmem_parser *parser;
+> > +
+> > +	mutex_lock(&nvmem_parser_mutex);
+> > +	parser = __nvmem_parser_find_of(nvmem);
+> > +	if (parser && parser->cells_parse)
+> > +		parser->cells_parse(parser->priv, nvmem);
+> > +	mutex_unlock(&nvmem_parser_mutex);
+> > +}
+> > +
+> >   /**
+> >    * nvmem_register() - Register a nvmem device for given nvmem_config.
+> >    * Also creates a binary entry in /sys/bus/nvmem/devices/dev-name/nvmem
+> > @@ -674,6 +709,8 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
+> >   			goto err_teardown_compat;
+> >   	}
+> > +	nvmem_cells_parse(nvmem);
+> > +
+> >   	rval = nvmem_add_cells_from_table(nvmem);
+> >   	if (rval)
+> >   		goto err_remove_cells;
+> > @@ -1630,6 +1667,58 @@ const char *nvmem_dev_name(struct nvmem_device *nvmem)
+> >   }
+> >   EXPORT_SYMBOL_GPL(nvmem_dev_name);
+> > +struct nvmem_parser *
+> > +nvmem_parser_register(const struct nvmem_parser_config *config)
+> > +{
+> > +	struct device_node *nvmem_of;
+> > +	struct nvmem_parser *parser;
+> > +	int err;
+> > +
+> > +	if (!config->cells_parse)
+> > +		return ERR_PTR(-EINVAL);
+> > +
+> > +	if (!config->dev)
+> > +		return ERR_PTR(-EINVAL);
+> > +
+> > +	nvmem_of = of_parse_phandle(dev_of_node(config->dev), "nvmem", 0);
+> > +	if (!nvmem_of)
+> > +		return ERR_PTR(-EINVAL);
+> > +
+> > +	parser = kzalloc(sizeof(*parser), GFP_KERNEL);
+> > +	if (!parser) {
+> > +		err = -ENOMEM;
+> > +		goto err_alloc;
+> > +	}
+> > +
+> > +	parser->cells_parse = config->cells_parse;
+> > +	/* parser->cells_remove = config->cells_remove; */
+> > +	parser->nvmem_of = nvmem_of;
+> > +	parser->priv = config->priv;
+> > +	kref_init(&parser->refcnt);
+> > +
+> > +	mutex_lock(&nvmem_parser_mutex);
+> > +	list_add(&parser->head, &nvmem_parser_list);
+> > +	mutex_unlock(&nvmem_parser_mutex);
+> > +
+> > +	return parser;
+> > +
+> > +err_alloc:
+> > +	of_node_put(nvmem_of);
+> > +
+> > +	return ERR_PTR(err);
+> > +}
+> > +EXPORT_SYMBOL(nvmem_parser_register);
+> > +
+> > +void nvmem_parser_unregister(struct nvmem_parser *parser)
+> > +{
+> > +	mutex_lock(&nvmem_parser_mutex);
+> > +	of_node_put(parser->nvmem_of);
+> > +	list_del(&parser->head);
+> > +	kfree(parser);
+> > +	mutex_unlock(&nvmem_parser_mutex);
+> > +}
+> > +EXPORT_SYMBOL(nvmem_parser_unregister);
+> > +
+> >   static int __init nvmem_init(void)
+> >   {
+> >   	return bus_register(&nvmem_bus_type);
+> > diff --git a/include/linux/nvmem-provider.h b/include/linux/nvmem-provider.h
+> > index 06409a6c40bc..854d0cf5234f 100644
+> > --- a/include/linux/nvmem-provider.h
+> > +++ b/include/linux/nvmem-provider.h
+> > @@ -15,10 +15,13 @@
+> >   struct nvmem_device;
+> >   struct nvmem_cell_info;
+> > +struct nvmem_cell_table;
+> > +
+> >   typedef int (*nvmem_reg_read_t)(void *priv, unsigned int offset,
+> >   				void *val, size_t bytes);
+> >   typedef int (*nvmem_reg_write_t)(void *priv, unsigned int offset,
+> >   				 void *val, size_t bytes);
+> > +typedef void (*nvmem_parse_t)(void *priv, struct nvmem_device *nvmem);
+> >   enum nvmem_type {
+> >   	NVMEM_TYPE_UNKNOWN = 0,
+> > @@ -100,6 +103,12 @@ struct nvmem_cell_table {
+> >   	struct list_head	node;
+> >   };
+> > +struct nvmem_parser_config {
+> > +	nvmem_parse_t	cells_parse;
+> > +	void		*priv;
+> > +	struct device	*dev;
+> > +};
+> > +
+> >   #if IS_ENABLED(CONFIG_NVMEM)
+> >   struct nvmem_device *nvmem_register(const struct nvmem_config *cfg);
+> > @@ -110,9 +119,19 @@ struct nvmem_device *devm_nvmem_register(struct device *dev,
+> >   int devm_nvmem_unregister(struct device *dev, struct nvmem_device *nvmem);
+> > +int nvmem_cell_parser_register(const char *nvmem_name,
+> > +			       const struct nvmem_config *cfg);
+> > +void nvmem_cell_parser_unregister(const char *nvmem_name,
+> > +				  const struct nvmem_config *cfg);
+> > +
+> >   void nvmem_add_cell_table(struct nvmem_cell_table *table);
+> >   void nvmem_del_cell_table(struct nvmem_cell_table *table);
+> > +struct nvmem_parser *
+> > +nvmem_parser_register(const struct nvmem_parser_config *config);
+> > +
+> > +void nvmem_parser_unregister(struct nvmem_parser *parser);
+> > +
+> >   #else
+> >   static inline struct nvmem_device *nvmem_register(const struct nvmem_config *c)
+> > @@ -137,5 +156,13 @@ devm_nvmem_unregister(struct device *dev, struct nvmem_device *nvmem)
+> >   static inline void nvmem_add_cell_table(struct nvmem_cell_table *table) {}
+> >   static inline void nvmem_del_cell_table(struct nvmem_cell_table *table) {}
+> > +static inline struct nvmem_parser *
+> > +nvmem_parser_register(const struct nvmem_parser_config *config)
+> > +{
+> > +	return -EOPNOTSUPP;
+> > +}
+> > +
+> > +static inline void nvmem_parser_unregister(struct nvmem_parser *parser) {}
+> > +
+> >   #endif /* CONFIG_NVMEM */
+> >   #endif  /* ifndef _LINUX_NVMEM_PROVIDER_H */
+> > 
