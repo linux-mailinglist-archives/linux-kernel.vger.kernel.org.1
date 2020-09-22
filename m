@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4CEE27490F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:27:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 094BF274919
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726641AbgIVT1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 15:27:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55222 "EHLO
+        id S1726782AbgIVT1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 15:27:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726625AbgIVT1K (ORCPT
+        with ESMTP id S1726629AbgIVT1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 15:27:10 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D392EC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 12:27:09 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id x69so19309725lff.3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 12:27:09 -0700 (PDT)
+        Tue, 22 Sep 2020 15:27:11 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42A32C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 12:27:11 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id y11so19315305lfl.5
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 12:27:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=PayRoMmiYdsIP5LqP0+POV5Nj2TYp2unTk9mqYApYLc=;
-        b=rZ+8dnN+mtAg8NPpayPfyuXOU+7g/eMLzhnn+JlpIbGAwNpo1DB9g773+C3yX5wVAI
-         plrd34WOwdw0l4ZRGKTerdb3xUVind/iGqTgKUY1/mpFWa1H0MRe4iISMVN3IxBzfDRV
-         2jxNGVJD3wu/pOXwoizzanu/WQcFgCaB/hOr9CrR0L9QfABrdQHMa74btwq2r17wvyD1
-         tmteD0YosflgIVNvPzKgK0TqRGck9BTpBKUS5bD04f0tJhP0m5F+FO1xisx5h764x76u
-         amEWa2GaJ5xsF9cBTT9wXZGTZgTQT7mGWBSNFW5FqNdpZxv63DAeSGM51iPVidBpf9s0
-         DjcA==
+        bh=zg6ilJOJPijk+82aRAFHt7wNQSPk2Nri12CuIZN1pbI=;
+        b=qryF1qeVUWrQeTcTH3EEwVlwDoJGpvp5Y0gz9QhWYXj6eSKMSbdvrcZkuHt/JBSl34
+         HMgXo87bp0vgZg5cW5bCcHjSujwhVAOtulhMesO+Hs4GH389nIFQkdGxTBeGDY/ahR5w
+         /V75nrmmCfVHGO5Wk8iC5pxKWRj1nH23O1uS+0s7MvQv/lLL7WwQd+PhtqhioKtebvwr
+         08mewC6v9x8Ln0+8CSPh7d8TaJdvxSWiMuPZF3okM6SJXkOfS/y/yk+d0EFIev8RSvIS
+         aPSdwUlKuq/KHw7azPa1cOg0MK0x0vO5wCtXeNPy8B7u6HfjuCNNHUGrkVaJCdRARAKW
+         imXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=PayRoMmiYdsIP5LqP0+POV5Nj2TYp2unTk9mqYApYLc=;
-        b=NDMvR7a1URzUquFa6jVP4E6fw0cac/nZj5hkHWCP5KCnNdYNwQp8ePmaScarezpJFv
-         hOeoiQIvEuMSnYVmNGkv/KFff0gJVla8LdAe89tOSH9p7b5bxoq8S787qDzGUQZrJggj
-         DCxAha9kks9R76mKFD0u6F66OPE4hbywf9BZIYWA0BscWCC6uCLDgiI9Mi3OyF1sLIN5
-         ptihsdXAvB359I3RKvgLNK2uUSGA7wirBXqbrmAhPUzZppK/zVepV1KyYF62EthUHT42
-         cUvqKYBK6rpYq0CuO9Lpk7ZKbIrHZPK9hX13k43hI+DnKibapqnPmM5FNu+tESCUy6t+
-         h8uw==
-X-Gm-Message-State: AOAM53208xL6JL0aOZ2X15DM+G4UFLeiEgSmK9jefK7qJuaLeEv7lGZK
-        gBfcNxIjXUv4U2pSd0go/Xw=
-X-Google-Smtp-Source: ABdhPJzbXTryfAd2CuckvNbXpVoh6HeUFHfydNcAlcvcbERrFC5eUmUd1V48ijXyWGDM/7aMJ3b5HQ==
-X-Received: by 2002:a19:7ece:: with SMTP id z197mr1981862lfc.545.1600802828160;
-        Tue, 22 Sep 2020 12:27:08 -0700 (PDT)
+        bh=zg6ilJOJPijk+82aRAFHt7wNQSPk2Nri12CuIZN1pbI=;
+        b=tY1hBTx2us2/uYPXjo2PMplt+y5jig5cUwoyMv/P2t9jmv65uq0NGeODgHThiKEwBU
+         YKG96LNxxmDCRAI1tvnzNBadJOEkV7tcrN4gJMYN4oVeFyC77l1IYQzoPPrCUoTN+ElE
+         yg5DrdnHIV1QTMxCeIFFQ/d+c28cCBas/YkKbpaN1WFOU/96AblNTNfexfxkJW+1AYQH
+         ldb+FE1s0E8Y1kGWCfKvV2OEV8NRde4UgeqZ2knMNFRLDfirZN/+MOIfIHlKYdyGiCzG
+         84CcnSBibNBI0pKVV2Q/S2OXquLWPX5nyZF/6mo5dK9aoHvWUL7CN4BzC1j73/K8+Dqp
+         ZLTA==
+X-Gm-Message-State: AOAM530AZGx8H+6ycYPb+9S6jdYXmN/smD3NbhIrYxtnHRLD4j7Mu2jK
+        3qPwvaEQ6oi15rpi5qWXH1s=
+X-Google-Smtp-Source: ABdhPJxQBSI8aDCLTDagNGHnc3s/M4o+M388lEFb2d9oBJl0jRRi+kv+CSFx53B/iJDzEpbG1zEaDQ==
+X-Received: by 2002:a19:ac49:: with SMTP id r9mr2030828lfc.582.1600802829605;
+        Tue, 22 Sep 2020 12:27:09 -0700 (PDT)
 Received: from localhost.localdomain (h-82-196-111-59.NA.cust.bahnhof.se. [82.196.111.59])
-        by smtp.gmail.com with ESMTPSA id r132sm3770013lff.167.2020.09.22.12.27.07
+        by smtp.gmail.com with ESMTPSA id r132sm3770013lff.167.2020.09.22.12.27.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 12:27:07 -0700 (PDT)
+        Tue, 22 Sep 2020 12:27:08 -0700 (PDT)
 From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     linux-kernel@vger.kernel.org,
         Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        support.opensource@diasemi.com
-Subject: [PATCH 1/8] mfd: da: Constify static struct resource
-Date:   Tue, 22 Sep 2020 21:26:52 +0200
-Message-Id: <20200922192659.14535-2-rikard.falkeborn@gmail.com>
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH 2/8] mfd: intel: Constify static struct resource
+Date:   Tue, 22 Sep 2020 21:26:53 +0200
+Message-Id: <20200922192659.14535-3-rikard.falkeborn@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200922192659.14535-1-rikard.falkeborn@gmail.com>
 References: <20200922192659.14535-1-rikard.falkeborn@gmail.com>
@@ -72,187 +72,196 @@ memory. Done with the help of Coccinelle.
 
 Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 ---
- drivers/mfd/da9055-core.c |  8 ++++----
- drivers/mfd/da9062-core.c | 24 ++++++++++++------------
- drivers/mfd/da9063-core.c |  8 ++++----
- drivers/mfd/da9150-core.c |  6 +++---
- 4 files changed, 23 insertions(+), 23 deletions(-)
+ drivers/mfd/intel_msic.c              | 18 +++++++++---------
+ drivers/mfd/intel_soc_pmic_bxtwc.c    | 14 +++++++-------
+ drivers/mfd/intel_soc_pmic_chtdc_ti.c | 10 +++++-----
+ drivers/mfd/intel_soc_pmic_chtwc.c    |  4 ++--
+ drivers/mfd/intel_soc_pmic_crc.c      | 10 +++++-----
+ 5 files changed, 28 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/mfd/da9055-core.c b/drivers/mfd/da9055-core.c
-index 6d0af8486269..d074d213e661 100644
---- a/drivers/mfd/da9055-core.c
-+++ b/drivers/mfd/da9055-core.c
-@@ -254,14 +254,14 @@ const struct regmap_config da9055_regmap_config = {
- };
- EXPORT_SYMBOL_GPL(da9055_regmap_config);
- 
--static struct resource da9055_onkey_resource = {
-+static const struct resource da9055_onkey_resource = {
- 	.name = "ONKEY",
- 	.start = DA9055_IRQ_NONKEY,
- 	.end   = DA9055_IRQ_NONKEY,
- 	.flags = IORESOURCE_IRQ,
+diff --git a/drivers/mfd/intel_msic.c b/drivers/mfd/intel_msic.c
+index bb24c2a07900..daa772f8146b 100644
+--- a/drivers/mfd/intel_msic.c
++++ b/drivers/mfd/intel_msic.c
+@@ -50,23 +50,23 @@ struct intel_msic {
+ 	void __iomem			*irq_base;
  };
  
--static struct resource da9055_rtc_resource[] = {
-+static const struct resource da9055_rtc_resource[] = {
- 	{
- 		.name = "ALM",
- 		.start = DA9055_IRQ_ALARM,
-@@ -276,14 +276,14 @@ static struct resource da9055_rtc_resource[] = {
- 	},
+-static struct resource msic_touch_resources[] = {
++static const struct resource msic_touch_resources[] = {
+ 	DEFINE_RES_IRQ(0),
  };
  
--static struct resource da9055_hwmon_resource = {
-+static const struct resource da9055_hwmon_resource = {
- 	.name = "HWMON",
- 	.start = DA9055_IRQ_HWMON,
- 	.end   = DA9055_IRQ_HWMON,
- 	.flags = IORESOURCE_IRQ,
+-static struct resource msic_adc_resources[] = {
++static const struct resource msic_adc_resources[] = {
+ 	DEFINE_RES_IRQ(0),
  };
  
--static struct resource da9055_ld05_6_resource = {
-+static const struct resource da9055_ld05_6_resource = {
- 	.name = "REGULATOR",
- 	.start = DA9055_IRQ_REGULATOR,
- 	.end   = DA9055_IRQ_REGULATOR,
-diff --git a/drivers/mfd/da9062-core.c b/drivers/mfd/da9062-core.c
-index fc30726e2e27..9583a98d3aae 100644
---- a/drivers/mfd/da9062-core.c
-+++ b/drivers/mfd/da9062-core.c
-@@ -160,23 +160,23 @@ static struct regmap_irq_chip da9062_irq_chip = {
- 	.ack_base = DA9062AA_EVENT_A,
+-static struct resource msic_battery_resources[] = {
++static const struct resource msic_battery_resources[] = {
+ 	DEFINE_RES_IRQ(0),
  };
  
--static struct resource da9061_core_resources[] = {
-+static const struct resource da9061_core_resources[] = {
- 	DEFINE_RES_IRQ_NAMED(DA9061_IRQ_VDD_WARN, "VDD_WARN"),
+-static struct resource msic_gpio_resources[] = {
++static const struct resource msic_gpio_resources[] = {
+ 	DEFINE_RES_IRQ(0),
  };
  
--static struct resource da9061_regulators_resources[] = {
-+static const struct resource da9061_regulators_resources[] = {
- 	DEFINE_RES_IRQ_NAMED(DA9061_IRQ_LDO_LIM, "LDO_LIM"),
+-static struct resource msic_audio_resources[] = {
++static const struct resource msic_audio_resources[] = {
+ 	DEFINE_RES_IRQ_NAMED(0, "IRQ"),
+ 	/*
+ 	 * We will pass IRQ_BASE to the driver now but this can be removed
+@@ -75,19 +75,19 @@ static struct resource msic_audio_resources[] = {
+ 	DEFINE_RES_MEM_NAMED(MSIC_IRQ_STATUS_ACCDET, 1, "IRQ_BASE"),
  };
  
--static struct resource da9061_thermal_resources[] = {
-+static const struct resource da9061_thermal_resources[] = {
- 	DEFINE_RES_IRQ_NAMED(DA9061_IRQ_TEMP, "THERMAL"),
+-static struct resource msic_hdmi_resources[] = {
++static const struct resource msic_hdmi_resources[] = {
+ 	DEFINE_RES_IRQ(0),
  };
  
--static struct resource da9061_wdt_resources[] = {
-+static const struct resource da9061_wdt_resources[] = {
- 	DEFINE_RES_IRQ_NAMED(DA9061_IRQ_WDG_WARN, "WD_WARN"),
+-static struct resource msic_thermal_resources[] = {
++static const struct resource msic_thermal_resources[] = {
+ 	DEFINE_RES_IRQ(0),
  };
  
--static struct resource da9061_onkey_resources[] = {
-+static const struct resource da9061_onkey_resources[] = {
- 	DEFINE_RES_IRQ_NAMED(DA9061_IRQ_ONKEY, "ONKEY"),
+-static struct resource msic_power_btn_resources[] = {
++static const struct resource msic_power_btn_resources[] = {
+ 	DEFINE_RES_IRQ(0),
  };
  
-@@ -211,32 +211,32 @@ static const struct mfd_cell da9061_devs[] = {
- 	},
+-static struct resource msic_ocd_resources[] = {
++static const struct resource msic_ocd_resources[] = {
+ 	DEFINE_RES_IRQ(0),
  };
  
--static struct resource da9062_core_resources[] = {
-+static const struct resource da9062_core_resources[] = {
- 	DEFINE_RES_NAMED(DA9062_IRQ_VDD_WARN, 1, "VDD_WARN", IORESOURCE_IRQ),
+diff --git a/drivers/mfd/intel_soc_pmic_bxtwc.c b/drivers/mfd/intel_soc_pmic_bxtwc.c
+index eba89780dbe7..47d0d3a69a58 100644
+--- a/drivers/mfd/intel_soc_pmic_bxtwc.c
++++ b/drivers/mfd/intel_soc_pmic_bxtwc.c
+@@ -200,32 +200,32 @@ static struct regmap_irq_chip bxtwc_regmap_irq_chip_crit = {
+ 	.num_regs = 1,
  };
  
--static struct resource da9062_regulators_resources[] = {
-+static const struct resource da9062_regulators_resources[] = {
- 	DEFINE_RES_NAMED(DA9062_IRQ_LDO_LIM, 1, "LDO_LIM", IORESOURCE_IRQ),
+-static struct resource gpio_resources[] = {
++static const struct resource gpio_resources[] = {
+ 	DEFINE_RES_IRQ_NAMED(BXTWC_GPIO_LVL1_IRQ, "GPIO"),
  };
  
--static struct resource da9062_thermal_resources[] = {
-+static const struct resource da9062_thermal_resources[] = {
- 	DEFINE_RES_NAMED(DA9062_IRQ_TEMP, 1, "THERMAL", IORESOURCE_IRQ),
+-static struct resource adc_resources[] = {
++static const struct resource adc_resources[] = {
+ 	DEFINE_RES_IRQ_NAMED(BXTWC_ADC_IRQ, "ADC"),
  };
  
--static struct resource da9062_wdt_resources[] = {
-+static const struct resource da9062_wdt_resources[] = {
- 	DEFINE_RES_NAMED(DA9062_IRQ_WDG_WARN, 1, "WD_WARN", IORESOURCE_IRQ),
+-static struct resource usbc_resources[] = {
++static const struct resource usbc_resources[] = {
+ 	DEFINE_RES_IRQ(BXTWC_USBC_IRQ),
  };
  
--static struct resource da9062_rtc_resources[] = {
-+static const struct resource da9062_rtc_resources[] = {
- 	DEFINE_RES_NAMED(DA9062_IRQ_ALARM, 1, "ALARM", IORESOURCE_IRQ),
- 	DEFINE_RES_NAMED(DA9062_IRQ_TICK, 1, "TICK", IORESOURCE_IRQ),
+-static struct resource charger_resources[] = {
++static const struct resource charger_resources[] = {
+ 	DEFINE_RES_IRQ_NAMED(BXTWC_CHGR0_IRQ, "CHARGER"),
+ 	DEFINE_RES_IRQ_NAMED(BXTWC_CHGR1_IRQ, "CHARGER1"),
  };
  
--static struct resource da9062_onkey_resources[] = {
-+static const struct resource da9062_onkey_resources[] = {
- 	DEFINE_RES_NAMED(DA9062_IRQ_ONKEY, 1, "ONKEY", IORESOURCE_IRQ),
+-static struct resource thermal_resources[] = {
++static const struct resource thermal_resources[] = {
+ 	DEFINE_RES_IRQ(BXTWC_THRM_LVL1_IRQ),
  };
  
--static struct resource da9062_gpio_resources[] = {
-+static const struct resource da9062_gpio_resources[] = {
- 	DEFINE_RES_NAMED(DA9062_IRQ_GPI0, 1, "GPI0", IORESOURCE_IRQ),
- 	DEFINE_RES_NAMED(DA9062_IRQ_GPI1, 1, "GPI1", IORESOURCE_IRQ),
- 	DEFINE_RES_NAMED(DA9062_IRQ_GPI2, 1, "GPI2", IORESOURCE_IRQ),
-diff --git a/drivers/mfd/da9063-core.c b/drivers/mfd/da9063-core.c
-index a353d52210a9..df407c3afce3 100644
---- a/drivers/mfd/da9063-core.c
-+++ b/drivers/mfd/da9063-core.c
-@@ -29,7 +29,7 @@
- #include <linux/uaccess.h>
- 
- 
--static struct resource da9063_regulators_resources[] = {
-+static const struct resource da9063_regulators_resources[] = {
- 	{
- 		.name	= "LDO_LIM",
- 		.start	= DA9063_IRQ_LDO_LIM,
-@@ -38,7 +38,7 @@ static struct resource da9063_regulators_resources[] = {
- 	},
+-static struct resource bcu_resources[] = {
++static const struct resource bcu_resources[] = {
+ 	DEFINE_RES_IRQ_NAMED(BXTWC_BCU_IRQ, "BCU"),
  };
  
--static struct resource da9063_rtc_resources[] = {
-+static const struct resource da9063_rtc_resources[] = {
- 	{
- 		.name	= "ALARM",
- 		.start	= DA9063_IRQ_ALARM,
-@@ -53,7 +53,7 @@ static struct resource da9063_rtc_resources[] = {
- 	}
+-static struct resource tmu_resources[] = {
++static const struct resource tmu_resources[] = {
+ 	DEFINE_RES_IRQ_NAMED(BXTWC_TMU_IRQ, "TMU"),
  };
  
--static struct resource da9063_onkey_resources[] = {
-+static const struct resource da9063_onkey_resources[] = {
- 	{
- 		.name	= "ONKEY",
- 		.start	= DA9063_IRQ_ONKEY,
-@@ -62,7 +62,7 @@ static struct resource da9063_onkey_resources[] = {
- 	},
+diff --git a/drivers/mfd/intel_soc_pmic_chtdc_ti.c b/drivers/mfd/intel_soc_pmic_chtdc_ti.c
+index 64b5c3cc30e7..1c7577b881ff 100644
+--- a/drivers/mfd/intel_soc_pmic_chtdc_ti.c
++++ b/drivers/mfd/intel_soc_pmic_chtdc_ti.c
+@@ -32,23 +32,23 @@ enum {
+ 	CHTDC_TI_CCEOCAL = 7,	/* battery */
  };
  
--static struct resource da9063_hwmon_resources[] = {
-+static const struct resource da9063_hwmon_resources[] = {
- 	{
- 		.start	= DA9063_IRQ_ADC_RDY,
- 		.end	= DA9063_IRQ_ADC_RDY,
-diff --git a/drivers/mfd/da9150-core.c b/drivers/mfd/da9150-core.c
-index 7f0aa1e8db96..d8b0cde48589 100644
---- a/drivers/mfd/da9150-core.c
-+++ b/drivers/mfd/da9150-core.c
-@@ -350,18 +350,18 @@ static const struct regmap_irq_chip da9150_regmap_irq_chip = {
- 	.num_irqs = ARRAY_SIZE(da9150_irqs),
+-static struct resource power_button_resources[] = {
++static const struct resource power_button_resources[] = {
+ 	DEFINE_RES_IRQ(CHTDC_TI_PWRBTN),
  };
  
--static struct resource da9150_gpadc_resources[] = {
-+static const struct resource da9150_gpadc_resources[] = {
- 	DEFINE_RES_IRQ_NAMED(DA9150_IRQ_GPADC, "GPADC"),
+-static struct resource thermal_resources[] = {
++static const struct resource thermal_resources[] = {
+ 	DEFINE_RES_IRQ(CHTDC_TI_DIETMPWARN),
  };
  
--static struct resource da9150_charger_resources[] = {
-+static const struct resource da9150_charger_resources[] = {
- 	DEFINE_RES_IRQ_NAMED(DA9150_IRQ_CHG, "CHG_STATUS"),
- 	DEFINE_RES_IRQ_NAMED(DA9150_IRQ_TJUNC, "CHG_TJUNC"),
- 	DEFINE_RES_IRQ_NAMED(DA9150_IRQ_VFAULT, "CHG_VFAULT"),
- 	DEFINE_RES_IRQ_NAMED(DA9150_IRQ_VBUS, "CHG_VBUS"),
+-static struct resource adc_resources[] = {
++static const struct resource adc_resources[] = {
+ 	DEFINE_RES_IRQ(CHTDC_TI_ADCCMPL),
  };
  
--static struct resource da9150_fg_resources[] = {
-+static const struct resource da9150_fg_resources[] = {
- 	DEFINE_RES_IRQ_NAMED(DA9150_IRQ_FG, "FG"),
+-static struct resource pwrsrc_resources[] = {
++static const struct resource pwrsrc_resources[] = {
+ 	DEFINE_RES_IRQ(CHTDC_TI_VBUSDET),
+ };
+ 
+-static struct resource battery_resources[] = {
++static const struct resource battery_resources[] = {
+ 	DEFINE_RES_IRQ(CHTDC_TI_VBATLOW),
+ 	DEFINE_RES_IRQ(CHTDC_TI_CCEOCAL),
+ };
+diff --git a/drivers/mfd/intel_soc_pmic_chtwc.c b/drivers/mfd/intel_soc_pmic_chtwc.c
+index be84bb2aa837..49c5f71664bc 100644
+--- a/drivers/mfd/intel_soc_pmic_chtwc.c
++++ b/drivers/mfd/intel_soc_pmic_chtwc.c
+@@ -41,11 +41,11 @@ enum {
+ 	CHT_WC_CRIT_IRQ = 7,
+ };
+ 
+-static struct resource cht_wc_pwrsrc_resources[] = {
++static const struct resource cht_wc_pwrsrc_resources[] = {
+ 	DEFINE_RES_IRQ(CHT_WC_PWRSRC_IRQ),
+ };
+ 
+-static struct resource cht_wc_ext_charger_resources[] = {
++static const struct resource cht_wc_ext_charger_resources[] = {
+ 	DEFINE_RES_IRQ(CHT_WC_EXT_CHGR_IRQ),
+ };
+ 
+diff --git a/drivers/mfd/intel_soc_pmic_crc.c b/drivers/mfd/intel_soc_pmic_crc.c
+index 429efa1f8e55..38acb20e2d60 100644
+--- a/drivers/mfd/intel_soc_pmic_crc.c
++++ b/drivers/mfd/intel_soc_pmic_crc.c
+@@ -28,23 +28,23 @@
+ #define CRYSTAL_COVE_IRQ_GPIO		5
+ #define CRYSTAL_COVE_IRQ_VHDMIOCP	6
+ 
+-static struct resource gpio_resources[] = {
++static const struct resource gpio_resources[] = {
+ 	DEFINE_RES_IRQ_NAMED(CRYSTAL_COVE_IRQ_GPIO, "GPIO"),
+ };
+ 
+-static struct resource pwrsrc_resources[] = {
++static const struct resource pwrsrc_resources[] = {
+ 	DEFINE_RES_IRQ_NAMED(CRYSTAL_COVE_IRQ_PWRSRC, "PWRSRC"),
+ };
+ 
+-static struct resource adc_resources[] = {
++static const struct resource adc_resources[] = {
+ 	DEFINE_RES_IRQ_NAMED(CRYSTAL_COVE_IRQ_ADC, "ADC"),
+ };
+ 
+-static struct resource thermal_resources[] = {
++static const struct resource thermal_resources[] = {
+ 	DEFINE_RES_IRQ_NAMED(CRYSTAL_COVE_IRQ_THRM, "THERMAL"),
+ };
+ 
+-static struct resource bcu_resources[] = {
++static const struct resource bcu_resources[] = {
+ 	DEFINE_RES_IRQ_NAMED(CRYSTAL_COVE_IRQ_BCU, "BCU"),
  };
  
 -- 
