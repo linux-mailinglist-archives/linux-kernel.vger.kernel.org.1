@@ -2,151 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4BA4273942
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 05:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BB76273963
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 05:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728700AbgIVD3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 23:29:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728546AbgIVD3F (ORCPT
+        id S1728032AbgIVDsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 23:48:15 -0400
+Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:15498 "EHLO
+        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726818AbgIVDsP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 23:29:05 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73A62C061755;
-        Mon, 21 Sep 2020 20:29:05 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id i17so19486855oig.10;
-        Mon, 21 Sep 2020 20:29:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=UV9LYgvlr7nqZDgZi3jIcKJdwzfRvVah5SxtcsrnOGM=;
-        b=KoKe73aFPikkUbG8GYe06ozeJAu4/2a25kb63aOfPdf90P/bCMwXrXxQNWEj/+BdMG
-         emVMirahXvWmG4+kn7I/1OuV9dDo9AYiUjdXfevVkAto9uGr85XaCyu0wIp42YQdiyNS
-         Cx9XPXV4VimluUOcyRQmXgBYYa7wTxxJLhBdRq17SJIPCZ6a+0POJPqTmgeziISK4Euu
-         4kZLlxL748D/pYQcZAdrezzUnpdbcj4KkdUEGKOnCcJITH9/fJsbqBo/drmyFmc//utD
-         MShls/2vlEp/Dz+iLZRVq9S6H/3RLcwHQ69617Fos5u/F/g0tvUZZstfQrrpXNTMpiLn
-         kcLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=UV9LYgvlr7nqZDgZi3jIcKJdwzfRvVah5SxtcsrnOGM=;
-        b=E5ybhSFT2q90rsrBN8v64pHkf5XedI+l53jb9vouJHe6iw+IJt9Vf5IAOxkLJrtBdn
-         dOey7h9HViNJ+dNqCS4L/FSsoJoqS2jKD8fq9Uz0hM5A8T+RyVTj9+xs6tAaV66daD09
-         2LrLrzE3P8Zirg7OzkvJj6BR9XEu7j87VtjbSrV/bxjuMdNWW8X9lDcLRsY2hRiKSKoj
-         2o74oq570L3c6ova3P74KNlG0yhvar1Z1nquq1ai+OqPvICzxogmTTgO+pb7K84nik8Z
-         P6mKqyBZllTxxb3sXLLBEFJaB8xfhmDeGiS6TDgKGoxTjX+AYzdzxYiI6AVmv4+HvJLI
-         YHcg==
-X-Gm-Message-State: AOAM533DzFtzdeAdhLEaC71dMPAiDhf+xatw+UgE8La4M+0hj3DgaNm/
-        KgktbpHkSHSuW1gw8NpCjtU=
-X-Google-Smtp-Source: ABdhPJyCLJN/QaBzUgpC9F4GziOQoNNqGuKYPZbXVB7xkaiYJ+VN1C1N9URFbTPlRwyYFy9iFI/Utg==
-X-Received: by 2002:aca:913:: with SMTP id 19mr1404267oij.169.1600745344779;
-        Mon, 21 Sep 2020 20:29:04 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 34sm6355428otg.23.2020.09.21.20.29.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 21 Sep 2020 20:29:04 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 21 Sep 2020 20:29:03 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] kbuild: Try up to eight kallsyms link passes
-Message-ID: <20200922032903.GA222779@roeck-us.net>
-References: <20200910153204.156871-1-linux@roeck-us.net>
+        Mon, 21 Sep 2020 23:48:15 -0400
+X-Greylist: delayed 4950 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Sep 2020 23:48:14 EDT
+Received: from pps.filterd (m0134425.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08M2NwcI024796;
+        Tue, 22 Sep 2020 02:25:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pps0720; bh=YhlXw8QcjdddmawFlgsEQRqTwEMEyQzgIm4huUErdIc=;
+ b=bnOaR2j9kDgMQs06jkwuTkSCw1fc+B1zMs1RKDrC8ByV+4+QA4UaoXR/G5Lb8ASRQNlc
+ t1fnUw5ZT0ZXorWmUz4EYEMmSsv6tl78Zi3ie2JCaM30/vqDxRA0hTPbzpAulzF3CUR0
+ 4cl8DuA3DzyBOI6o2BY3+s6RX37ITkyktd9QZJ3DD3H+oLgU8WG/vxLc0ynzkncmjuOp
+ opCSUfSRACYGYOkdkkowWgAcgJF3dsPmHVUqoO5S4C9frKa6nIVXP8S3pB83I4OTfYUQ
+ LlGKo/N1/EnTL43I30XEtJC59qf5W+CrU/YwRsf2qQJ+5LHkyQ5PEpejzZUxPUgkdEel fA== 
+Received: from g4t3426.houston.hpe.com (g4t3426.houston.hpe.com [15.241.140.75])
+        by mx0b-002e3701.pphosted.com with ESMTP id 33q53yh0va-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Sep 2020 02:25:08 +0000
+Received: from g4t3433.houston.hpecorp.net (g4t3433.houston.hpecorp.net [16.208.49.245])
+        by g4t3426.houston.hpe.com (Postfix) with ESMTP id BC36759;
+        Tue, 22 Sep 2020 02:25:06 +0000 (UTC)
+Received: from hpe.com (ben.americas.hpqcorp.net [10.33.153.7])
+        by g4t3433.houston.hpecorp.net (Postfix) with ESMTP id E3C8548;
+        Tue, 22 Sep 2020 02:25:04 +0000 (UTC)
+Date:   Mon, 21 Sep 2020 21:25:04 -0500
+From:   Russ Anderson <rja@hpe.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Mike Travis <mike.travis@hpe.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Steve Wahl <steve.wahl@hpe.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Jian Cai <caij2003@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH v2 13/13] x86/platform/uv: Update Copyrights to conform
+ to HPE standards
+Message-ID: <20200922022504.unsi33w4njahh6pv@hpe.com>
+Reply-To: Russ Anderson <rja@hpe.com>
+References: <20200916192039.162934-1-mike.travis@hpe.com>
+ <20200916192039.162934-14-mike.travis@hpe.com>
+ <20200917075429.GB3333802@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200910153204.156871-1-linux@roeck-us.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200917075429.GB3333802@kroah.com>
+User-Agent: NeoMutt/20170421 (1.8.2)
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-22_03:2020-09-21,2020-09-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=778
+ malwarescore=0 priorityscore=1501 phishscore=0 impostorscore=0
+ clxscore=1011 suspectscore=2 bulkscore=0 adultscore=0 spamscore=0
+ mlxscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2009220018
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 08:32:04AM -0700, Guenter Roeck wrote:
-> Since v5.8, powerpc:allmodconfig often fails to build with the following
-> error message.
+On Thu, Sep 17, 2020 at 09:54:29AM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Sep 16, 2020 at 02:20:39PM -0500, Mike Travis wrote:
+> > Add Copyrights to those files that have been updated for UV5 changes.
+> > 
+> > Signed-off-by: Mike Travis <mike.travis@hpe.com>
+> > ---
+> >  arch/x86/include/asm/uv/bios.h      | 1 +
+> >  arch/x86/include/asm/uv/uv_hub.h    | 1 +
+> >  arch/x86/include/asm/uv/uv_mmrs.h   | 1 +
+> >  arch/x86/kernel/apic/x2apic_uv_x.c  | 1 +
+> >  arch/x86/platform/uv/bios_uv.c      | 1 +
+> >  arch/x86/platform/uv/uv_nmi.c       | 1 +
+> >  arch/x86/platform/uv/uv_time.c      | 1 +
+> >  drivers/misc/sgi-gru/grufile.c      | 1 +
+> >  drivers/misc/sgi-xp/xp.h            | 1 +
+> >  drivers/misc/sgi-xp/xp_main.c       | 1 +
+> >  drivers/misc/sgi-xp/xp_uv.c         | 1 +
+> >  drivers/misc/sgi-xp/xpc_main.c      | 1 +
+> >  drivers/misc/sgi-xp/xpc_partition.c | 1 +
+> >  drivers/misc/sgi-xp/xpnet.c         | 1 +
+> >  14 files changed, 14 insertions(+)
+> > 
+> > diff --git a/arch/x86/include/asm/uv/bios.h b/arch/x86/include/asm/uv/bios.h
+> > index 97ac595ebc6a..08b3d810dfba 100644
+> > --- a/arch/x86/include/asm/uv/bios.h
+> > +++ b/arch/x86/include/asm/uv/bios.h
+> > @@ -5,6 +5,7 @@
+> >  /*
+> >   * UV BIOS layer definitions.
+> >   *
+> > + * (C) Copyright 2020 Hewlett Packard Enterprise Development LP
+> >   * Copyright (C) 2007-2017 Silicon Graphics, Inc. All rights reserved.
+> >   * Copyright (c) Russ Anderson <rja@sgi.com>
 > 
-> 	Inconsistent kallsyms data
-> 	Try make KALLSYMS_EXTRA_PASS=1 as a workaround
+> Gotta love the different ways of text here :(
 > 
-> Setting KALLSYMS_EXTRA_PASS=1 does not help. As it turns out, the build
-> currently needs up to four link passes to succeed.
-> 
-> Similar problems have been observed over time for other architectures.
-> 
-> Make the number of link passes dynamic to solve the problem. Try up to
-> eight passes before giving up. If KALLSYMS_EXTRA_PASS is set, add one
-> additional pass after succeeding.
-> 
-> Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> Anyway, much better than before, thanks.
 
-I still see a build failure for powerpc:allmodconfig due to this problem.
+The HPE copyright text is different than the old SGI copyright text.
+We could update the SGI copyright line to be consistent, change
+"Copyright (C)" to "(C) Copyright", if that is desired.
 
-Feedback/comments/thoughts ? Does anyone have a better idea ?
+The HPE lawyers said the old SGI copyrights do not need to be
+updated as far as they are concerned, because HPE owns the SGI
+copyrights, but they can.  So the two lines could be combined to 
 
-Thanks,
-Guenter
+  * (C) Copyright 2007-2017, 2020 Hewlett Packard Enterprise Development LP
 
-> ---
->  scripts/link-vmlinux.sh | 31 +++++++++++++++++++------------
->  1 file changed, 19 insertions(+), 12 deletions(-)
-> 
-> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-> index e6e2d9e5ff48..72abdee0e649 100755
-> --- a/scripts/link-vmlinux.sh
-> +++ b/scripts/link-vmlinux.sh
-> @@ -316,11 +316,10 @@ if [ -n "${CONFIG_KALLSYMS}" ]; then
->  	#     From here, we generate a correct .tmp_kallsyms2.o
->  	# 3)  That link may have expanded the kernel image enough that
->  	#     more linker branch stubs / trampolines had to be added, which
-> -	#     introduces new names, which further expands kallsyms. Do another
-> -	#     pass if that is the case. In theory it's possible this results
-> -	#     in even more stubs, but unlikely.
-> -	#     KALLSYMS_EXTRA_PASS=1 may also used to debug or work around
-> -	#     other bugs.
-> +	#     introduces new names, which further expands kallsyms. Try up
-> +	#     to eight passes to handle that situation before giving up.
-> +	#     KALLSYMS_EXTRA_PASS=1 may be used to add an extra step
-> +	#     for debugging or to work around other bugs.
->  	# 4)  The correct ${kallsymso} is linked into the final vmlinux.
->  	#
->  	# a)  Verify that the System.map from vmlinux matches the map from
-> @@ -329,13 +328,21 @@ if [ -n "${CONFIG_KALLSYMS}" ]; then
->  	kallsyms_step 1
->  	kallsyms_step 2
->  
-> -	# step 3
-> -	size1=$(${CONFIG_SHELL} "${srctree}/scripts/file-size.sh" ${kallsymso_prev})
-> -	size2=$(${CONFIG_SHELL} "${srctree}/scripts/file-size.sh" ${kallsymso})
-> -
-> -	if [ $size1 -ne $size2 ] || [ -n "${KALLSYMS_EXTRA_PASS}" ]; then
-> -		kallsyms_step 3
-> -	fi
-> +	# step n
-> +	step=3
-> +	while [ $step -le 8 ]; do
-> +		size1=$(${CONFIG_SHELL} "${srctree}/scripts/file-size.sh" ${kallsymso_prev})
-> +		size2=$(${CONFIG_SHELL} "${srctree}/scripts/file-size.sh" ${kallsymso})
-> +
-> +		if [ $size1 -eq $size2 ]; then
-> +			if [ -z "${KALLSYMS_EXTRA_PASS}" ]; then
-> +				break
-> +			fi
-> +			KALLSYMS_EXTRA_PASS=""
-> +		fi
-> +		kallsyms_step $step
-> +		step="$(expr $step + 1)"
-> +	done
->  fi
->  
->  vmlinux_link vmlinux "${kallsymso}" ${btf_vmlinux_bin_o}
-> -- 
-> 2.17.1
-> 
+I will do whatever the lawyers and community want as far as format.
+
+For what it's worth, the rja@sgi.com email still works, as does rja@hpe.com.
+
+Thanks.
+-- 
+Russ Anderson,  SuperDome Flex Linux Kernel Group Manager
+HPE - Hewlett Packard Enterprise (formerly SGI)  rja@hpe.com
