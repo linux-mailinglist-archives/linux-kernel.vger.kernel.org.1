@@ -2,126 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD0D2274AD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E98A274AD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726685AbgIVVKQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Sep 2020 17:10:16 -0400
-Received: from mail-ua1-f66.google.com ([209.85.222.66]:45759 "EHLO
-        mail-ua1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726625AbgIVVKQ (ORCPT
+        id S1726721AbgIVVKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 17:10:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37014 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726179AbgIVVKf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 17:10:16 -0400
-Received: by mail-ua1-f66.google.com with SMTP id q26so5924874uaa.12
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 14:10:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=y3bqfEWtFeqz84XjleRuAjyIAbuP49WihE9gT5z0Xpk=;
-        b=nqBjHH+hQYRASRVr8h0Va25uDOFbpW4o7QOk7gUQSt455GyvE+5DyeVj9lE04EK3sG
-         +QgEKawNYeCxgAyd3xnPYw2DfzGfqKeaptE9fvHeHL7yZAv2c76GDNmcgvOMIeSWYMAI
-         Pf6sT1kpI/fl/Ph4p9iZW4smYAUu2lhsdqQ/h1ZOal5D7R7V+SakAXJBIUPu/aHcj/6P
-         zpPESVA+6fw7u5Eaqj9q7+5cUzmcaKuzJOBrSr1edB20PqAnSECqDzdFFB6fs/OVPesU
-         YluBufIVAfi/5V5slyCTnPfVRyhfBOgo5QSCMzrpTOPvdF63wmk6hjSBA2zsvAbqJCP8
-         wU8Q==
-X-Gm-Message-State: AOAM531Qj0m5l7SeD8wSD+T6k+a1qlGOv+Nzk3l4nsOR7RSVOleSRiaa
-        nNnWuARRHqI6/6icrfIvZXr1DK4YoxTyje9lRRw=
-X-Google-Smtp-Source: ABdhPJwf458xGexI6j9rzdx76r+ZgU0CiTh4q+ebSzA/OSJtbqpD6+k8+n46tHaIl1obplPxHctYUXzksc5F574jzus=
-X-Received: by 2002:a9f:24d4:: with SMTP id 78mr4744540uar.47.1600809014913;
- Tue, 22 Sep 2020 14:10:14 -0700 (PDT)
+        Tue, 22 Sep 2020 17:10:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600809034;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=bNjVgWpgtIkPhRa8XVCPnausw2GfEoBb82DdGdZXVvc=;
+        b=ekIwuyE46DrYdAaRR3VUm9LJ6r86ZyXtW9vna51dozcxfWozLSzNT6srwE2a0xuuuUv4XQ
+        AEg5PntS9WxpfXwePKBvt4KyJRAGcL9RvrB036MI35X+RjLHN8wY7TVNG517Fc9UqGOOIU
+        ahdkDAwhtTWQKy7OVlzx6mYY3DHOA3k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-91-EmSHZr1ePa6cO30n87NEuA-1; Tue, 22 Sep 2020 17:10:32 -0400
+X-MC-Unique: EmSHZr1ePa6cO30n87NEuA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E4AE01007B36;
+        Tue, 22 Sep 2020 21:10:30 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.35.206.154])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EF02155768;
+        Tue, 22 Sep 2020 21:10:26 +0000 (UTC)
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Jim Mattson <jmattson@google.com>,
+        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: [PATCH v6 0/4] KVM: nSVM: ondemand nested state allocation
+Date:   Wed, 23 Sep 2020 00:10:21 +0300
+Message-Id: <20200922211025.175547-1-mlevitsk@redhat.com>
 MIME-Version: 1.0
-References: <20200922210510.156220-1-lyude@redhat.com>
-In-Reply-To: <20200922210510.156220-1-lyude@redhat.com>
-From:   Ilia Mirkin <imirkin@alum.mit.edu>
-Date:   Tue, 22 Sep 2020 17:10:03 -0400
-Message-ID: <CAKb7UvhAb0wFd9Qi1FGJ=TAYZJ9DYXL6XXMfnG49xEO=a9TuYg@mail.gmail.com>
-Subject: Re: [PATCH] drm/nouveau/kms/nv50-: Fix clock checking algorithm in nv50_dp_mode_valid()
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     nouveau <nouveau@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
-        <dri-devel@lists.freedesktop.org>, Ben Skeggs <bskeggs@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Can we use 6bpc on arbitrary DP monitors, or is there a capability for
-it? Maybe only use 6bpc if display_info.bpc == 6 and otherwise use 8?
+This is the next version of this patch series.=0D
+=0D
+In V5 I adopted Sean Christopherson's suggestion to make .set_efer return=0D
+a negative error (-ENOMEM in this case) which in most cases in kvm=0D
+propagates to the userspace.=0D
+=0D
+I noticed though that wrmsr emulation code doesn't do this and instead=0D
+it injects #GP to the guest on _any_ error.=0D
+=0D
+So I fixed the wrmsr code to behave in a similar way to the rest=0D
+of the kvm code.=0D
+(#GP only on a positive error value, and forward the negative error to=0D
+the userspace)=0D
+=0D
+I had to adjust one wrmsr handler (xen_hvm_config) to stop it from returnin=
+g=0D
+negative values	so that new WRMSR emulation behavior doesn't break it.=0D
+This patch was only compile tested.=0D
+=0D
+The memory allocation failure was tested by always returning -ENOMEM=0D
+from svm_allocate_nested.=0D
+=0D
+The nested allocation itself was tested by countless attempts to run=0D
+nested guests, do nested migration on both my AMD and Intel machines.=0D
+I wasn't able to break it.=0D
+=0D
+Changes from V5: addressed Sean Christopherson's review feedback.=0D
+=0D
+Best regards,=0D
+	Maxim Levitsky=0D
+=0D
+Maxim Levitsky (4):=0D
+  KVM: x86: xen_hvm_config: cleanup return values=0D
+  KVM: x86: report negative values from wrmsr emulation to userspace=0D
+  KVM: x86: allow kvm_x86_ops.set_efer to return an error value=0D
+  KVM: nSVM: implement on demand allocation of the nested state=0D
+=0D
+ arch/x86/include/asm/kvm_host.h |  2 +-=0D
+ arch/x86/kvm/emulate.c          |  7 ++--=0D
+ arch/x86/kvm/svm/nested.c       | 42 ++++++++++++++++++++++++=0D
+ arch/x86/kvm/svm/svm.c          | 58 +++++++++++++++++++--------------=0D
+ arch/x86/kvm/svm/svm.h          |  8 ++++-=0D
+ arch/x86/kvm/vmx/vmx.c          |  6 ++--=0D
+ arch/x86/kvm/x86.c              | 37 ++++++++++++---------=0D
+ 7 files changed, 113 insertions(+), 47 deletions(-)=0D
+=0D
+-- =0D
+2.26.2=0D
+=0D
 
-On Tue, Sep 22, 2020 at 5:06 PM Lyude Paul <lyude@redhat.com> wrote:
->
-> While I thought I had this correct (since it actually did reject modes
-> like I expected during testing), Ville Syrjala from Intel pointed out
-> that the logic here isn't correct. max_clock refers to the max symbol
-> rate supported by the encoder, so limiting clock to ds_clock using max()
-> doesn't make sense. Additionally, we want to check against 6bpc for the
-> time being since that's the minimum possible bpc here, not the reported
-> bpc from the connector. See:
->
-> https://lists.freedesktop.org/archives/dri-devel/2020-September/280276.html
->
-> For more info.
->
-> So, let's rewrite this using Ville's advice.
->
-> Signed-off-by: Lyude Paul <lyude@redhat.com>
-> Fixes: 409d38139b42 ("drm/nouveau/kms/nv50-: Use downstream DP clock limits for mode validation")
-> Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
-> Cc: Lyude Paul <lyude@redhat.com>
-> Cc: Ben Skeggs <bskeggs@redhat.com>
-> ---
->  drivers/gpu/drm/nouveau/nouveau_dp.c | 23 +++++++++++++----------
->  1 file changed, 13 insertions(+), 10 deletions(-)
->
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_dp.c b/drivers/gpu/drm/nouveau/nouveau_dp.c
-> index 7b640e05bd4cd..24c81e423d349 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_dp.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_dp.c
-> @@ -231,23 +231,26 @@ nv50_dp_mode_valid(struct drm_connector *connector,
->                    const struct drm_display_mode *mode,
->                    unsigned *out_clock)
->  {
-> -       const unsigned min_clock = 25000;
-> -       unsigned max_clock, ds_clock, clock;
-> +       const unsigned int min_clock = 25000;
-> +       unsigned int max_clock, ds_clock, clock;
-> +       const u8 bpp = 18; /* 6 bpc */
->         enum drm_mode_status ret;
->
->         if (mode->flags & DRM_MODE_FLAG_INTERLACE && !outp->caps.dp_interlace)
->                 return MODE_NO_INTERLACE;
->
->         max_clock = outp->dp.link_nr * outp->dp.link_bw;
-> -       ds_clock = drm_dp_downstream_max_dotclock(outp->dp.dpcd,
-> -                                                 outp->dp.downstream_ports);
-> -       if (ds_clock)
-> -               max_clock = min(max_clock, ds_clock);
-> -
-> -       clock = mode->clock * (connector->display_info.bpc * 3) / 10;
-> -       ret = nouveau_conn_mode_clock_valid(mode, min_clock, max_clock,
-> -                                           &clock);
-> +       clock = mode->clock * bpp / 8;
-> +       if (clock > max_clock)
-> +               return MODE_CLOCK_HIGH;
-> +
-> +       ds_clock = drm_dp_downstream_max_dotclock(outp->dp.dpcd, outp->dp.downstream_ports);
-> +       if (ds_clock && mode->clock > ds_clock)
-> +               return MODE_CLOCK_HIGH;
-> +
-> +       ret = nouveau_conn_mode_clock_valid(mode, min_clock, max_clock, &clock);
->         if (out_clock)
->                 *out_clock = clock;
-> +
->         return ret;
->  }
-> --
-> 2.26.2
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
