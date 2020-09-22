@@ -2,95 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10FBC273B6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 308AC273B72
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729705AbgIVHHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 03:07:32 -0400
-Received: from mga01.intel.com ([192.55.52.88]:5955 "EHLO mga01.intel.com"
+        id S1729725AbgIVHIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 03:08:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56160 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729595AbgIVHHb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 03:07:31 -0400
-IronPort-SDR: UkDjaQT3hrM4DVY1XfZPKhV8XstBoBC15L9dTASKf4dlNPqN7Y6swQPTxfPb1vZ/YkXDaVMJgI
- KdsOA+n5J79A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="178611777"
-X-IronPort-AV: E=Sophos;i="5.77,289,1596524400"; 
-   d="scan'208";a="178611777"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 00:07:31 -0700
-IronPort-SDR: uV+Arf2krlvG4v2YQ5M33nIRn5nCbo/BcRIYDkVVj+6ef4TxPZdbS/cNZY5ryGpuEJbavViVOw
- XsIKWuc972uA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,289,1596524400"; 
-   d="scan'208";a="309404721"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga006.jf.intel.com with ESMTP; 22 Sep 2020 00:07:27 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-        id 26882F2; Tue, 22 Sep 2020 10:07:26 +0300 (EEST)
-Date:   Tue, 22 Sep 2020 10:07:26 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     Vijay Balakrishna <vijayb@linux.microsoft.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Allen Pais <apais@microsoft.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [v4] mm: khugepaged: avoid overriding min_free_kbytes set by user
-Message-ID: <20200922070726.dlw24lf3wd3p2ias@black.fi.intel.com>
-References: <1600324779-6782-1-git-send-email-vijayb@linux.microsoft.com>
- <20200917092805.GA29887@dhcp22.suse.cz>
- <21c4788c-2516-2e47-5885-486c352c2b6e@linux.microsoft.com>
- <20200917175217.GD29887@dhcp22.suse.cz>
- <f2231b44-6d14-fb63-43cd-43aaad02bef1@linux.microsoft.com>
- <20200918055637.GB28827@dhcp22.suse.cz>
- <e4eb32bb-f905-d15b-8596-13bf387b9f57@linux.microsoft.com>
+        id S1728526AbgIVHIx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 03:08:53 -0400
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 403EE23A1E;
+        Tue, 22 Sep 2020 07:08:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600758532;
+        bh=Q9EIerF2YpUp4pwyWgck/zaWlyKSSyBy1o2vS+YkpDw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=yLaNCV3E1ni8PMWPJKhZHUP5zyH9/RIGelJRkhz0XnXaoRSXGqrVYlGa0h+1p08wj
+         HdDbxtzf7mwTjYGAOiSG1Iq/iO3UwI5pvEaiJD8F+G7WAMD//GA1WuWb8TLttRJNWO
+         rbgd3Rs+Si3uwTfnnPpxh3Rc9JzaXSGwbSJQ+2HY=
+Received: by mail-ej1-f52.google.com with SMTP id q13so21254299ejo.9;
+        Tue, 22 Sep 2020 00:08:52 -0700 (PDT)
+X-Gm-Message-State: AOAM533no99YWwAw10XMK+FpbGbhm4KDQ76GbNDv3XenSYz9Npnv52eE
+        Nhrj48JnVBjKUUJA3sfJ2x9kkAgxcR8TjbM0H14=
+X-Google-Smtp-Source: ABdhPJz5Bpo4sLZx+VgODKy1nNTRF0OkATsG2D8nukSvGgRjPsORZPEEbE8mlh2UulqYR1jQq3wGmko6aeeETpH/EZQ=
+X-Received: by 2002:a17:907:724f:: with SMTP id ds15mr3277198ejc.119.1600758530722;
+ Tue, 22 Sep 2020 00:08:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e4eb32bb-f905-d15b-8596-13bf387b9f57@linux.microsoft.com>
+References: <20200921210233.21449-1-krzk@kernel.org> <20200921210610.GA5338@amd>
+In-Reply-To: <20200921210610.GA5338@amd>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Tue, 22 Sep 2020 09:08:37 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPdwQc86H-S=C4v_1VCbd7RhC2Soepj_2LqG1e_E_bgAug@mail.gmail.com>
+Message-ID: <CAJKOXPdwQc86H-S=C4v_1VCbd7RhC2Soepj_2LqG1e_E_bgAug@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: move Milo Kim to credits
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Jonathan Cameron <jic23@kernel.org>, Dan Murphy <dmurphy@ti.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-iio@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-leds@vger.kernel.org, linux-pm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 12:07:23PM -0700, Vijay Balakrishna wrote:
-> > 
-> > I would recommend reposting the patch which adds heuristic for THP (if
-> > THP is enabled) into the hotplug path, arguing with the consistency and
-> > surprising results when adding memory decreases the value.
-> 
-> I hope my reposted patch
-> ([v3 1/2] mm: khugepaged: recalculate min_free_kbytes after memory hotplug
-> as expected by khugepaged)
-> change log is ok:
-> 
-> When memory is hotplug added or removed the min_free_kbytes must be
-> recalculated based on what is expected by khugepaged.  Currently
-> after hotplug, min_free_kbytes will be set to a lower default and higher
-> default set when THP enabled is lost.  This change restores min_free_kbytes
-> as expected for THP consumers.
+On Mon, 21 Sep 2020 at 23:06, Pavel Machek <pavel@ucw.cz> wrote:
+>
+> Hi!
+>
+> > Milo Kim's email in TI bounces with permanent error (550: Invalid
+> > recipient).  Last email from him on LKML was in 2017.  Move Milo Kim to
+> > credits and remove the separate driver entries for:
+> >
+> >  - TI LP855x backlight driver,
+> >  - TI LP8727 charger driver,
+> >  - TI LP8788 MFD (ADC, LEDs, charger and regulator) drivers.
+> >
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+>
+> I believe normal way would be to mark the entries "orphaned", not to
+> drop them altogether. Plus, I believe someone from TI is likely to
+> step up.
 
-Any scenario when hotremove would result in changing min_free_kbytes?
+These are entries for specific drivers so they are covered by the
+subsystem maintainers. You believe someone will step up, I believe if
+these were important for TI, they would find the person some time ago,
+so the emails won't bounce... This was similar with BQ chargers where
+Andrew's email was bouncing and after a few weeks it was fixed. To me
+it looks like TI does not have any priority in maintaining separate
+driver entries so what is the point to keep orphaned driver-entry? It
+is not the case where we have an orphaned subsystem and we look for a
+person to handle it...
 
-> > Your initial
-> > problem is in sizing as mentioned in other email thread and you should
-> > be investigating more but this inconsistency might really come as a
-> > surprise.
-> > 
-> > All that if Kirill is reconsidering his initial position of course.
-> > 
-> 
-> Kirill, can you comment or share your opinion?
-
-Looking again, never decreasing min_free_kbytes is the most reasonable
-policy. Sorry for the noise.
-
-But I would like to see a scenario when hotremov will end up changing
-min_free_kbytes. It's not obvious to me.
-
--- 
- Kirill A. Shutemov
+Best regards,
+Krzysztof
