@@ -2,208 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8066274833
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 20:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55164274835
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 20:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726727AbgIVSes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 14:34:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54321 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726614AbgIVSes (ORCPT
+        id S1726746AbgIVSe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 14:34:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726614AbgIVSe4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 14:34:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600799686;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2e2tdhFMlrwW+fXumGUoJr4qesGrHM0WZlHkfuqDvsA=;
-        b=PUop3uVf41N1PWssvJ8T8JJQqTeD5ToVjVSfGnllcmzlsq8GOhm8V+aytYIvRnubrQrieB
-        jpKj0UV0VmP9eNejiCrXDY3NWshx6o+2l9fwaf4GyPEIw9bD9aR246EjhLjBBtKz5P6SOo
-        +CfJoBocqPe7vrV9X4lxFx3GLKOOIMU=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-493-kdpPVgISNEWV0uLjyyKJ_g-1; Tue, 22 Sep 2020 14:34:42 -0400
-X-MC-Unique: kdpPVgISNEWV0uLjyyKJ_g-1
-Received: by mail-qk1-f197.google.com with SMTP id a136so11499315qkb.18
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 11:34:42 -0700 (PDT)
+        Tue, 22 Sep 2020 14:34:56 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63D73C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 11:34:56 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id l15so2781639wmh.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 11:34:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ig3mZwlM5VgOYpaLezhg7vQFxV24lXeVdfnz5xWj0rM=;
+        b=j74lrtCwlnu6fqYOp87AYQKgh20vY4HWutnBUDTD/MqKbmkWvoiV1gzSZV1V651W6t
+         0EKrZbRNvxSaOS5XQN/3rRjYUWD+Ybjv7r9BGve2BX11HJKB1svj+6D+/qfyXmfvs5PX
+         +uTe4FmQnZePv8i6hoTB84tksthKi2ioxGQFqtqwFVhQQsPsEIsaZHKXIpuaML4TRitw
+         C99CuqPCX6sqXqJwRmpmlW0UUiuKt8OkI4se3513BsxjHTyOHyDzrjDiH2IAT20a8hxQ
+         syrZurWX6+zVVt9bSCPXFUuRjAYKQbteOrwVjfILeDBIkZQWQziXt/ZnAD2Waf7SR4a8
+         vZ0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=2e2tdhFMlrwW+fXumGUoJr4qesGrHM0WZlHkfuqDvsA=;
-        b=Zn5znGwsUe7lkIURfzGL81OXTRafw7B57nm0yJJLy65XY72xVrqmKCtnuixFN5NJhH
-         wSNZEI8Bkm51PFtCGM5zNvsyFzPOAH6vK27I5wRBXN3CXCTRVTRsE3HhmAZh3HEr9G+W
-         PsU2BIqHRQXDD3sh3ksa51lAB/TrCDOrzx8FJVV2HuROSsBlV2fNfGL2PsM9B3NCjhZZ
-         hD4gUvIV40R+C4ERUtNCI+v74b4pOlZpj/WNiHNKgZncZTOXALzbCWhGeD87/2GUyQGV
-         YJUSZe6oaTKDpIsV4cJPQSjoeDTWpFc2ApJnqnvvjeBxHRu2Yj+FHYsqVVmAkeurauBL
-         Np7Q==
-X-Gm-Message-State: AOAM531Obh+xtYtOGiowhj66ADByFHYUu9IlwRBcNcFco/iD5cFeEkmC
-        4eUQkmGLbXRpiFx904G1bWyqdj5ZqZyBTSiL3nlRC8gIFTonh/u5uGrPhyjpV+dNeEIMlYOkJik
-        YBN6dQtgYxVxO1ABI/4dT1qIM
-X-Received: by 2002:ac8:7003:: with SMTP id x3mr1340900qtm.206.1600799681492;
-        Tue, 22 Sep 2020 11:34:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwnAgffUvZjfrts3wLzysg5oFbP4RLUg3wVexTDXtde8ji2nEgCqs8IgonDSwF3ckMD2fRUHw==
-X-Received: by 2002:ac8:7003:: with SMTP id x3mr1340868qtm.206.1600799681190;
-        Tue, 22 Sep 2020 11:34:41 -0700 (PDT)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
-        by smtp.gmail.com with ESMTPSA id x126sm12083779qkb.101.2020.09.22.11.34.39
+        bh=Ig3mZwlM5VgOYpaLezhg7vQFxV24lXeVdfnz5xWj0rM=;
+        b=lVK9okyblYMarb2Gc6JLzmzENAPn9Wrs1VawwC2rrGvR3JNyBpLl4M/KGbxAaI5iFx
+         485vAaAo7665sS4ko5PsLGyKZwdpc7fcWu2Pelm3Rs6F5cjRFe3mkc7rfU8N+Jd48YHc
+         7fXSk4ZWSNikdQ0I8/dJenIWttLTgZx3snZK9xq1BQ801ufWzrMQ/7d1yDrVYelJmhgu
+         d0/Cx8U3214JIf/hbyqvS6usQu/Cm37KJLTk7pr/b9kGoy54bbPZ4IgEZzivEibTzw7Q
+         jKLc+j6gJScDq7P2VD+iJswJ6vANd3AFG/CR7j4Pno5v1K+jHwyBWcPPHu2xSpHd/pu9
+         A4Pg==
+X-Gm-Message-State: AOAM532LsudEGDaytiv6WVZTInTvCqvDRddxBvvE+vgS3XL12xBHymZc
+        HvqS5OBjz8DoPew/8ml6ecXv3A==
+X-Google-Smtp-Source: ABdhPJxj0h/V08O5vb8gOXVPpqliJJY+kmMZI4zN+kzRDjl+BRuapEiHWcZOA9NImhQeqmN/2EE34w==
+X-Received: by 2002:a1c:40a:: with SMTP id 10mr1283670wme.61.1600799694728;
+        Tue, 22 Sep 2020 11:34:54 -0700 (PDT)
+Received: from google.com ([2a01:4b00:8523:2d03:55c2:2cdf:ff31:96a3])
+        by smtp.gmail.com with ESMTPSA id 63sm29411016wrh.71.2020.09.22.11.34.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 11:34:40 -0700 (PDT)
-Date:   Tue, 22 Sep 2020 14:34:38 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Jann Horn <jannh@google.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Hugh Dickins <hughd@google.com>,
-        Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [PATCH 4/5] mm: Do early cow for pinned pages during fork() for
- ptes
-Message-ID: <20200922183438.GL19098@xz-x1>
-References: <20200921211744.24758-1-peterx@redhat.com>
- <20200921212028.25184-1-peterx@redhat.com>
- <20200922114839.GC11679@redhat.com>
- <20200922124013.GD11679@redhat.com>
- <20200922155842.GG19098@xz-x1>
- <20200922165216.GF11679@redhat.com>
+        Tue, 22 Sep 2020 11:34:53 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 19:34:52 +0100
+From:   David Brazdil <dbrazdil@google.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     kvmarm@lists.cs.columbia.edu,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v3 10/11] kvm: arm64: Set up hyp percpu data for nVHE
+Message-ID: <20200922183452.xalwog2ojsc5ogpe@google.com>
+References: <20200916173439.32265-1-dbrazdil@google.com>
+ <20200916173439.32265-11-dbrazdil@google.com>
+ <20200918122219.GD31096@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200922165216.GF11679@redhat.com>
+In-Reply-To: <20200918122219.GD31096@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 06:52:17PM +0200, Oleg Nesterov wrote:
-> On 09/22, Peter Xu wrote:
-> >
-> > On Tue, Sep 22, 2020 at 02:40:14PM +0200, Oleg Nesterov wrote:
-> > > On 09/22, Oleg Nesterov wrote:
-> > > >
-> > > > On 09/21, Peter Xu wrote:
-> > > > >
-> > > > > @@ -859,6 +989,25 @@ static int copy_pte_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
-> > > > >  			    spin_needbreak(src_ptl) || spin_needbreak(dst_ptl))
-> > > > >  				break;
-> > > > >  		}
-> > > > > +
-> > > > > +		if (unlikely(data.cow_new_page)) {
-> > > > > +			/*
-> > > > > +			 * If cow_new_page set, we must be at the 2nd round of
-> > > > > +			 * a previous COPY_MM_BREAK_COW.  Try to arm the new
-> > > > > +			 * page now.  Note that in all cases page_break_cow()
-> > > > > +			 * will properly release the objects in copy_mm_data.
-> > > > > +			 */
-> > > > > +			WARN_ON_ONCE(copy_ret != COPY_MM_BREAK_COW);
-> > > > > +			if (pte_install_copied_page(dst_mm, new, src_pte,
-> > > > > +						    dst_pte, addr, rss,
-> > > > > +						    &data)) {
-> > > > > +				/* We installed the pte successfully; move on */
-> > > > > +				progress++;
-> > > > > +				continue;
-> > > >
-> > > > I'm afraid I misread this patch too ;)
-> > > >
-> > > > But it seems to me in this case the main loop can really "leak"
-> > > > COPY_MM_BREAK_COW. Suppose the the next 31 pte's are pte_none() and
-> > > > need_resched() is true.
-> > > >
-> > > > No?
-> >
-> > I still think it's a no...
-> >
-> > Note that now we'll reset "progress" every time before the do loop, so we'll
-> > never reach need_resched() (since progress<32) before pte_install_copied_page()
-> > when needed.
+> > -#define this_cpu_ptr_nvhe(sym)		this_cpu_ptr(&kvm_nvhe_sym(sym))
+> > -#define per_cpu_ptr_nvhe(sym, cpu)	per_cpu_ptr(&kvm_nvhe_sym(sym), cpu)
+> > +/* Array of percpu base addresses. Length of the array is nr_cpu_ids. */
+> > +extern unsigned long *kvm_arm_hyp_percpu_base;
+> > +
+> > +/*
+> > + * Compute pointer to a symbol defined in nVHE percpu region.
+> > + * Returns NULL if percpu memory has not been allocated yet.
+> > + */
+> > +#define this_cpu_ptr_nvhe(sym)	per_cpu_ptr_nvhe(sym, smp_processor_id())
 > 
-> Yes. But copy_ret is still COPY_MM_BREAK_COW after pte_install_copied_page().
-> Now suppose that the next 31 pte's are pte_none(), progress will be incremented
-> every time.
+> Don't you run into similar problems here with the pcpu accessors when
+> CONFIG_DEBUG_PREEMPT=y? I'm worried we can end up with an unresolved
+> reference to debug_smp_processor_id().
 
-Yes, I think you're right - I'll need to reset that.
+Fortunately not. This now doesn't use the generic macros at all.
 
+> >  /* The VMID used in the VTTBR */
+> >  static atomic64_t kvm_vmid_gen = ATOMIC64_INIT(1);
+> > @@ -1258,6 +1259,15 @@ long kvm_arch_vm_ioctl(struct file *filp,
+> >  	}
+> >  }
+> >  
+> > +#define kvm_hyp_percpu_base(cpu)	((unsigned long)per_cpu_ptr_nvhe(__per_cpu_start, cpu))
 > 
-> > I explicitly put the pte_install_copied_page() into the loop just...
-> ...
-> > >  	progress = 0;
-> > > +	if (unlikely(copy_ret == COPY_MM_BREAK_COW)) {
-> > > +		/*
-> > > +		 * Note that in all cases pte_install_copied_page()
-> > > +		 * will properly release the objects in copy_mm_data.
-> > > +		 */
-> > > +		copy_ret = COPY_MM_DONE;
-> > > +		if (pte_install_copied_page(dst_mm, new, src_pte,
-> > > +					    dst_pte, addr, rss,
-> > > +					    &data)) {
-> > > +			/* We installed the pte successfully; move on */
-> > > +			progress++;
-> > > +			goto next;
-> >
-> > ... to avoid jumps like this because I think it's really tricky. :)
+> Having both kvm_arm_hyp_percpu_base and kvm_hyp_percpu_base be so
+> completely different is a recipe for disaster! Please can you rename
+> one/both of them to make it clearer what they represent?
+
+I am heavily simplifying this code in v4. Got rid of this macro completely, so
+hopefully there will be no confusion.
+
+> > -	if (!kvm_pmu_switch_needed(attr))
+> > +	if (!ctx || !kvm_pmu_switch_needed(attr))
+> >  		return;
+> >  
+> >  	if (!attr->exclude_host)
+> > @@ -49,6 +49,9 @@ void kvm_clr_pmu_events(u32 clr)
+> >  {
+> >  	struct kvm_host_data *ctx = this_cpu_ptr_hyp(kvm_host_data);
+> >  
+> > +	if (!ctx)
+> > +		return;
 > 
-> To me it looks better before the main loop because we know that
-> data.cow_new_page != NULL is only possible at the 1st iterattion after
-> restart ;)
+> I guess this should only happen if KVM failed to initialise or something,
+> right? (e.g. if we were booted at EL1). If so, I'm wondering whether it
+> would be better to do something like:
 > 
-> But I agree, this is subjective, please ignore.
-
-Thanks.  For simplicity, I'll keep the code majorly as is.  But I'm still open
-to change if e.g. someone else still perfers the other way.
-
-> However, I still think
-> it is better to rely on the copy_ret == COPY_MM_BREAK_COW check rather
-> than data.cow_new_page != NULL.
-
-Yes.  Logically we should check both, but now as I'm written it as:
-
-        if (unlikely(data.cow_new_page)) {
-                WARN_ON_ONCE(copy_ret != COPY_MM_BREAK_COW);
-                ...
-        }
-
-I think it's even safer because it's actually checking both, but also warn if
-only cow_new_page is set, which should never happen anyways.
-
-Or I can also do it in inverted order if you think better:
-
-        if (unlikely(copy_ret == COPY_MM_BREAK_COW)) {
-                WARN_ON_ONCE(!data.cow_new_page);
-                ...
-        }
-
+> 	if (!is_hyp_mode_available())
+> 		return;
 > 
-> > >  	case COPY_MM_SWAP_CONT:
-> > >  		if (add_swap_count_continuation(data.entry, GFP_KERNEL) < 0)
-> > >  			return -ENOMEM;
-> > > -		break;
-> > > +		copy_ret = COPY_MM_DONE;
-> >
-> > Kind of a continuation of the discussion from previous patch - I think we'd
-> > better reset copy_ret not only for this case, but move it after the switch
-> > (just in case there'll be new ones).  The new BREAK_COW uses goto so it's quite
-> > special.
-> >
-> > > +		goto again;
-> >
-> > I feel like this could go wrong without the "addr != end" check later, when
-> > this is the last pte to check.
+> 	WARN_ON_ONCE(!ctx);
 > 
-> How? We know that copy_one_pte() failed and returned COPY_MM_SWAP_CONT
-> before addr = end.
+> so that any unexpected NULL pointer there screams loudly, rather than causes
+> the register switch to be silently ignored. What do you think?
 
-I think you're right, again. :)
-
-Thanks,
-
--- 
-Peter Xu
+Unfortunately, this happens on every boot. I don't fully understand how the
+boot order is determined, so please correct me if this makes no sense, but 
+kvm_clr_pmu_events is called as part of CPUHP_AP_PERF_ARM_STARTING. The first
+time that happens is before KVM initialized (tested from inserting
+BUG_ON(!ctx)). That's not a problem, the per-CPU memory is there and it's all
+zeroes. It becomes a problem with this patch because the per-CPU memory is not
+there *yet*.
 
