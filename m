@@ -2,109 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8B4273A2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 07:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E25DF273A33
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 07:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728646AbgIVFaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 01:30:07 -0400
-Received: from mga11.intel.com ([192.55.52.93]:40904 "EHLO mga11.intel.com"
+        id S1728879AbgIVFgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 01:36:55 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:42064 "EHLO 1wt.eu"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728290AbgIVFaG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 01:30:06 -0400
-IronPort-SDR: LVXTg3k/Fnl2vUsn+GE2s5ET43jcbsWAvfVZWv4HPRrOwAThAvdN8xA986Z5HuAbtG3AFFxN3I
- 0vQx7JX3hEpA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="157913369"
-X-IronPort-AV: E=Sophos;i="5.77,289,1596524400"; 
-   d="scan'208";a="157913369"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 22:30:06 -0700
-IronPort-SDR: nGQQBZPA7Jx3RlVW05VNnlissbQRj9vRriLHdQXnlHWb//2RP+j02eB0LZWKQuO8vTqhxgz5XA
- cclF3j19Umsg==
-X-IronPort-AV: E=Sophos;i="5.77,289,1596524400"; 
-   d="scan'208";a="454349247"
-Received: from krodolf-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.49.25])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 22:29:59 -0700
-Date:   Tue, 22 Sep 2020 08:29:57 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        asapek@google.com, Borislav Petkov <bp@alien8.de>,
-        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
-        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
-        Christian Ludloff <ludloff@google.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Patrick Uiterwijk <puiterwijk@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
-Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
-Message-ID: <20200922052957.GA97272@linux.intel.com>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-11-jarkko.sakkinen@linux.intel.com>
- <CALCETrX9T1ZUug=M5ba9g4H5B7kV=yL5RzuTaeAEdy3uAieN_A@mail.gmail.com>
- <20200918235337.GA21189@sjchrist-ice>
- <20200921124946.GF6038@linux.intel.com>
- <20200921165758.GA24156@linux.intel.com>
- <20200921210736.GB58176@linux.intel.com>
- <20200921211849.GA25403@linux.intel.com>
+        id S1726495AbgIVFgv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 01:36:51 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 08M5MRpj016410;
+        Tue, 22 Sep 2020 07:22:27 +0200
+Date:   Tue, 22 Sep 2020 07:22:27 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     poeschel@lemonage.de
+Cc:     Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 28/32] auxdisplay: hd44780: Remove clear_fast
+Message-ID: <20200922052227.GA16386@1wt.eu>
+References: <20191016082430.5955-1-poeschel@lemonage.de>
+ <20200921144645.2061313-1-poeschel@lemonage.de>
+ <20200921144645.2061313-29-poeschel@lemonage.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200921211849.GA25403@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200921144645.2061313-29-poeschel@lemonage.de>
+User-Agent: Mutt/1.6.1 (2016-04-27)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 02:18:49PM -0700, Sean Christopherson wrote:
-> On Tue, Sep 22, 2020 at 12:07:36AM +0300, Jarkko Sakkinen wrote:
-> > On Mon, Sep 21, 2020 at 09:57:58AM -0700, Sean Christopherson wrote:
-> > > On Mon, Sep 21, 2020 at 03:49:46PM +0300, Jarkko Sakkinen wrote:
-> > > > On Fri, Sep 18, 2020 at 04:53:37PM -0700, Sean Christopherson wrote:
-> > > > > a noexec filesystem by loading code into an enclave, and to give the kernel the
-> > > > > option of adding enclave specific LSM policies in the future.
-> > > > > 
-> > > > > The source file (if one exists) for the enclave is long gone when the enclave
-> > > > > is actually mmap()'d and mprotect()'d.  To enforce noexec, the requested
-> > > > > permissions for a given page are snapshotted when the page is added to the
-> > > > > enclave, i.e. when the enclave is built.  Enclave pages that will be executable
-> > > > > must originate from an a MAYEXEC VMA, e.g. the source page can't come from a
-> > > > > noexec file system.
-> > > > 
-> > > > noexec check is done in __sgx_encl_add_page(), not in this callback.
-> > > > sgx_vma_mprotect() calls sgx_encl_may_map(), which iterates the
-> > > > addresses, checks that permissions are not surpassed and there are
-> > > > no holes.
-> > > 
-> > > Yes, that's what I said.
-> > 
-> > sgx_encl_add_page() will remove such page. The callback does not
-> > interact with this process as such pages never get to the enclave.
+Hi Lars,
+
+On Mon, Sep 21, 2020 at 04:46:40PM +0200, poeschel@lemonage.de wrote:
+> From: Lars Poeschel <poeschel@lemonage.de>
 > 
-> I think we're in violent agreement, mostly.
-> 
-> Userspace can add the page without EXEC permissions in the EPCM, and thus
-> avoid the noexec/VM_MAYEXEC check.  The enclave can then do EMODPE to gain
-> EXEC permissions in the EPMC.  Without the ->mprotect() hook, we wouldn't
-> be able to detect/prevent such shenanigans.
+> We remove the hd44780_clear_fast (display) clear implementation. charlcd
+> will fall back to use hd44780_common_clear_display then, which is much
+> much faster.
 
-Right, the VM_MAYEXEC in the code is nested under VM_EXEC check.
+I might have got confused, but it looks to me like patches 27 and 28
+basically undo patch 26: in 26 you moved code to hd44780 and wrote a
+fallback, just to later delete that code.
 
-I'm only wondering why not block noexec completely with any permissions,
-i.e. why not just have unconditional VM_MAYEXEC check?
+I seem to remember that the reason for the clear_fast() implementation
+is that the default clear_display() is quite slow for small displays,
+compared to what can be achieved by just filling the display with spaces
+(in the order of tens of milliseconds vs hundreds of microseconds). But
+I could be mistaken given how old this is, so please take my comment
+with a grain of salt.
 
-/Jarkko
+Willy
