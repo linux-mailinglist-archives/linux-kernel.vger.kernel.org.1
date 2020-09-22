@@ -2,118 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C691327417E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 513FF27419B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727007AbgIVLtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 07:49:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727004AbgIVLtl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 07:49:41 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C6DEC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 04:49:41 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id w16so18644267qkj.7
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 04:49:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1D8ju+sMCrprb+0b/yOahK+eYVzPNlNBaX9NLNExdtI=;
-        b=muDDi0pTHyd9JBABm8RyGLvWbVcMxru6wlVrHBiDJUY0jrq7Ma6mMxfMSYqQR2sE7S
-         n6oWDLWu5dVTDb7iJrAWfjxmSdDqSDAJJW9NGZCBpfYbdyI9g1jOOFjEAzn7/UzcB7vf
-         6kHbhNt0CKfpSocliMKcT3ueUyylf+kgqxUPyKzVGLicVzXOW+EPcdqsXV6Z51wTI+Lq
-         mFn1Jmghmfz+QaX+PmjcpkzNu4kwAmbrY1iH3ow2hdHyCneXpKtLqwPJ9kIdYF1wt1Fy
-         7Ad6pYgKKRqILeVv4+7BbG5JUDTj8gXQYUqzkQ2twtMOgHE/dr3KehrG6Q9VeF5IoCH0
-         WnTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1D8ju+sMCrprb+0b/yOahK+eYVzPNlNBaX9NLNExdtI=;
-        b=ryZthdcfyySxfsT+3e1ItfVp9htiRcf+MG3JhP9gVVhJem+wXrnKPCSGHXr6F5+Kja
-         4hLhp9yG0fCDooWZ9lLABwAHmzmuny1UGwDLeFEm6FRotmPnKTGiCQ5Dds37Ejr5bDCq
-         31JEyRwg/mUIATwrRbCaEyT6nxXeE3HcyBLe59lprjhECo56/W34GmmFyqQBT6O2eda7
-         t+u46yMkPGdcBzh0On3hcGBrPzM7l2qivnbDfJEIjL0O7WdWhtiP45047CM0Z7NtQ0Yn
-         Kax9LwgeWQq0fZm3fSxZhwp6muJdCx1UeaAxoKr2NtYxeGKlcm5gc9C6bmaamSUc+xV9
-         qkyA==
-X-Gm-Message-State: AOAM533ABkeu0t4AyEOr2WsWzJ4RaaGAz3aXglNBTx9smv4StomYaMw9
-        Ri6A6CL71QtB+utuKLMvzI7fVQ==
-X-Google-Smtp-Source: ABdhPJynCuK8vUTw9DbgSp3TWPoe/lJE1NnbKoGAO/to47jv50SynIh4q+Mrv7MDzz74la/2EhiNeA==
-X-Received: by 2002:a37:c203:: with SMTP id i3mr4203326qkm.155.1600775380815;
-        Tue, 22 Sep 2020 04:49:40 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id q142sm11081340qke.48.2020.09.22.04.49.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 04:49:40 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kKgnj-0030YZ-N6; Tue, 22 Sep 2020 08:49:39 -0300
-Date:   Tue, 22 Sep 2020 08:49:39 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Gal Pressman <galpress@amazon.com>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
-Message-ID: <20200922114939.GF8409@ziepe.ca>
-References: <20200918121905.GU869610@unreal>
- <20200919064020.GC439518@kroah.com>
- <20200919082003.GW869610@unreal>
- <20200919083012.GA465680@kroah.com>
- <CAFCwf122V-ep44Kqk1DgRJN+tq3ctxE9uVbqYL07apLkLe2Z7g@mail.gmail.com>
- <20200919172730.GC2733595@kroah.com>
- <20200919192235.GB8409@ziepe.ca>
- <20200920084702.GA533114@kroah.com>
- <20200921115239.GC8409@ziepe.ca>
- <20200921142053.1d2310f6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S1727004AbgIVLu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 07:50:27 -0400
+Received: from mga09.intel.com ([134.134.136.24]:21220 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726918AbgIVLuW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 07:50:22 -0400
+IronPort-SDR: +vnWP6gHv46+XF9acqS/a1+eG0n03FgEFcRIlezk97IAX9OzBE4MxJ36oF/r3SnivvmD812vV0
+ zCWvBlR/UCxw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="161511978"
+X-IronPort-AV: E=Sophos;i="5.77,290,1596524400"; 
+   d="scan'208";a="161511978"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 04:50:20 -0700
+IronPort-SDR: lIwk2gZMiibyudb/P/DyKaKvhifqKwT0UqtUFS0BoCQhCdO3upAFOcrz6ug+BVR7XiRRMyLp9j
+ B40oc8E1aZyQ==
+X-IronPort-AV: E=Sophos;i="5.77,290,1596524400"; 
+   d="scan'208";a="485924412"
+Received: from krodolf-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.49.25])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 04:50:12 -0700
+Date:   Tue, 22 Sep 2020 14:50:10 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 14/24] x86/sgx: Add SGX_IOC_ENCLAVE_INIT
+Message-ID: <20200922115010.GA102220@linux.intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-15-jarkko.sakkinen@linux.intel.com>
+ <20200921173514.GI5901@zn.tnic>
+ <20200921181021.GA24481@linux.intel.com>
+ <20200921182753.GK5901@zn.tnic>
+ <20200921191658.GA24823@linux.intel.com>
+ <20200922082918.GC22660@zn.tnic>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200921142053.1d2310f6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200922082918.GC22660@zn.tnic>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 02:20:53PM -0700, Jakub Kicinski wrote:
-> I'd wager the only reason you expose the netdevs at all is for link
-> settings, stats, packet capture and debug. You'd never run TCP traffic
-> over those links. And you're fighting against using Linux APIs for the
-> only real traffic that runs on those links - RDMA(ish) traffic.
+On Tue, Sep 22, 2020 at 10:29:18AM +0200, Borislav Petkov wrote:
+> On Mon, Sep 21, 2020 at 12:17:00PM -0700, Sean Christopherson wrote:
+> > That was effectively my original suggestion as well, check for a stale cache
+> > and retry indefinitely.  I capitulated because it did feel like I was being
+> > overly paranoid.  I'm obviously ok going the retry indefinitely route :-).
+> > 
+> > https://lkml.kernel.org/r/20180904163546.GA5421@linux.intel.com
+> 
+> Right, so if EINIT is so expensive, why does it matter how many cyccles
+> WRMSR has? I.e., you don't really need to cache - you simply write the 4
+> MSRs and you're done. Simple.
+> 
+> As to "indefinitely" - caller can increment a counter which counts
+> how many times it returned SGX_INVALID_EINITTOKEN. I guess when it
+> reaches some too high number which should not be reached during normal
+> usage patterns, you can give up and issue a message to say that counter
+> reached max retries or so but other than that, you should be ok. That
+> thing is running interruptible in a loop anyway...
 
-The usual working flow is to use something like TCP to exchange
-connection information then pivot to RDMA for the actual data
-flow. This is why a driver like this could get away with such a low
-performance implementation for a 100G NIC, it is just application boot
-metadata being exchanged.
+The way I see it after reading the thread is:
 
-Sniffing probably won't work as typically the HW will capture the RoCE
-traffic before reaching Linux - and the Linux driver couldn't handle a
-100G flow anyhow. Stats might not work either.
+1. Start with simpler always-update-MSRs in this patch set.
+2. If this ever causes a bottleneck, then we will fix it.
 
-As far as the "usual rules" we do require that accelerator devices
-sharing a netdev are secure in the concept of netdev userspace
-security. They can access the assigned RoCEv2 UDP port but cannot do
-things like forge src IP/MAC addresses, violate VLANs, reach outside
-net namespaces, capature arbitary traffic, etc.
+> Thx.
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
 
-This stuff is tricky and generally requires HW support. Someone has to
-audit all of this and ensure it meets the netdev security requirements
-too, otherwise it will need CAP_NET_RAW to function. Obviously this
-requires seeing enough of a userspace implementation to understand how
-the design approaches verbs 'Address Handles' and so forth.
-
-RDMA HW has had errors before and when discovered it was blocked with
-CAP_NET_RAW until new chip revs came out, this is something I take
-very seriously.
-
-Jason
+/Jarkko
