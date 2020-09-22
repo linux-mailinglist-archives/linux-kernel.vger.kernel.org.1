@@ -2,51 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88641274BEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B460274BF3
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726883AbgIVWPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 18:15:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54874 "EHLO mail.kernel.org"
+        id S1726748AbgIVWRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 18:17:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726667AbgIVWPZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 18:15:25 -0400
-Subject: Re: [git pull] vfs fixes
+        id S1726550AbgIVWRg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 18:17:36 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7019020684;
+        Tue, 22 Sep 2020 22:17:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600812924;
-        bh=jmuAq5tea2wXdciq0ihXQtHSWAh1KGEWL9/YTE4qmjg=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=DHIuJxUIctqAyoedg/BGhoXQK24Z4O0p+Wq5yRvDgWMP+fjL8urIbPC0g4E5J1efR
-         UOZ/+kcIPUFW5XyDtdaJzYSwndXPzQakPaM5827un30g34l+nJChL8eToDxN2T+f8b
-         UqZHpodlQVVEufOgtH5+aKKZO3eBmIWWVJlPLptM=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200922212908.GB3421308@ZenIV.linux.org.uk>
-References: <20200922212908.GB3421308@ZenIV.linux.org.uk>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200922212908.GB3421308@ZenIV.linux.org.uk>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git fixes
-X-PR-Tracked-Commit-Id: 933a3752babcf6513117d5773d2b70782d6ad149
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 805c6d3c19210c90c109107d189744e960eae025
-Message-Id: <160081292493.1950.2619560059383841489.pr-tracker-bot@kernel.org>
-Date:   Tue, 22 Sep 2020 22:15:24 +0000
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+        s=default; t=1600813056;
+        bh=4/jieAoPQSkO21CuFx1L8pagE0cMJDwGFEnT8iu5MrI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=M1BDRnqTMU8ibv4p7dmvSsWLlc80mCDzV3qBqOkJn1teZEqbiIGhTvlxrLjEy31on
+         Uaj4hQmobt+8dc5MkkZA5akUWstiNAp+WkSgxo+LpsfdqhtDi5/dy3KJQFFhUVSYUs
+         NZwA8ZhTL653rhM1/eax/fdFEXroc2/2vy2qd3n0=
+Date:   Tue, 22 Sep 2020 15:17:34 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     David Miller <davem@davemloft.net>,
+        Netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT] Networking
+Message-ID: <20200922151734.44461552@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CAHk-=whKx3FCCXR+VQoCwcEmOFe45fmaJWXYL0UHiQPqYMOX-w@mail.gmail.com>
+References: <20200921184443.72952cb4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CAHk-=whKx3FCCXR+VQoCwcEmOFe45fmaJWXYL0UHiQPqYMOX-w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 22 Sep 2020 22:29:08 +0100:
+On Tue, 22 Sep 2020 15:02:24 -0700 Linus Torvalds wrote:
+> Pulled.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git fixes
+Thanks!
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/805c6d3c19210c90c109107d189744e960eae025
+>  (a) please put "git pull" somewhere in the email (lots of people just
+> put it in the subject by prepending it with "[GIT PULL]" but all I
+> really look for is "git" and "pull" anywhere in the email. You had the
+> "git" but there was no "pull" anywhere).
+ 
+>  (b) please use an imperative sentence structure for the description
+> instead of present tense.
 
-Thank you!
+> Also, I'd love to see signed tags. I don't _require_ them for
+> git.kernel.org pulls, but I do prefer them.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Thanks a lot for the guidance. Will do better next time!
