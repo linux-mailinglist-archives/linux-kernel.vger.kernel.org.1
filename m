@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 041972737EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 03:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C17952737EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 03:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729658AbgIVBZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 21:25:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56732 "EHLO mail.kernel.org"
+        id S1729648AbgIVBZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 21:25:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729596AbgIVBYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729599AbgIVBYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 21 Sep 2020 21:24:55 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8A52423B08;
+        by mail.kernel.org (Postfix) with ESMTPSA id AF14323B09;
         Tue, 22 Sep 2020 01:24:54 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1kKX37-001sS0-KD; Mon, 21 Sep 2020 21:24:53 -0400
-Message-ID: <20200922012453.507002285@goodmis.org>
+        id 1kKX37-001sSU-P1; Mon, 21 Sep 2020 21:24:53 -0400
+Message-ID: <20200922012453.653572248@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Mon, 21 Sep 2020 21:24:38 -0400
+Date:   Mon, 21 Sep 2020 21:24:39 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [for-next][PATCH 24/26] tracing: Enable creating new instance early boot
+Subject: [for-next][PATCH 25/26] tracing/boot, kprobe, synth: Initialize boot-time tracing earlier
 References: <20200922012414.115238201@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -37,205 +37,96 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Masami Hiramatsu <mhiramat@kernel.org>
 
-Enable creating new trace_array instance in early boot stage.
-If the instances directory is not created, postpone it until
-the tracefs is initialized.
+Initialize boot-time tracing in core_initcall_sync instead of
+fs_initcall, and initialize required tracers (kprobes and synth)
+in core_initcall. This will allow the boot-time tracing to trace
+__init code from the beginning of postcore_initcall stage.
 
-Link: https://lkml.kernel.org/r/159974154763.478751.6289753509587233103.stgit@devnote2
+Link: https://lkml.kernel.org/r/159974155727.478751.7486926132902849578.stgit@devnote2
 
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/trace/trace.c           | 53 +++++++++++++++++++++++++++-------
- kernel/trace/trace.h           |  7 +++++
- kernel/trace/trace_functions.c | 22 +++++++++-----
- 3 files changed, 63 insertions(+), 19 deletions(-)
+ kernel/trace/trace_boot.c         |  7 +++++--
+ kernel/trace/trace_events_synth.c | 19 ++++++++++++++-----
+ kernel/trace/trace_kprobe.c       |  6 +++---
+ 3 files changed, 22 insertions(+), 10 deletions(-)
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index c35fcd2f2529..6211a13b3327 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -8636,6 +8636,24 @@ struct trace_array *trace_array_find_get(const char *instance)
- 	return tr;
- }
+diff --git a/kernel/trace/trace_boot.c b/kernel/trace/trace_boot.c
+index d52d441a17e8..754e3cf2df3a 100644
+--- a/kernel/trace/trace_boot.c
++++ b/kernel/trace/trace_boot.c
+@@ -340,5 +340,8 @@ static int __init trace_boot_init(void)
  
-+static int trace_array_create_dir(struct trace_array *tr)
-+{
-+	int ret;
-+
-+	tr->dir = tracefs_create_dir(tr->name, trace_instance_dir);
-+	if (!tr->dir)
-+		return -EINVAL;
-+
-+	ret = event_trace_add_tracer(tr->dir, tr);
-+	if (ret)
-+		tracefs_remove(tr->dir);
-+
-+	init_tracer_tracefs(tr, tr->dir);
-+	__update_tracer_options(tr);
-+
-+	return ret;
-+}
-+
- static struct trace_array *trace_array_create(const char *name)
- {
- 	struct trace_array *tr;
-@@ -8671,30 +8689,27 @@ static struct trace_array *trace_array_create(const char *name)
- 	if (allocate_trace_buffers(tr, trace_buf_size) < 0)
- 		goto out_free_tr;
- 
--	tr->dir = tracefs_create_dir(name, trace_instance_dir);
--	if (!tr->dir)
--		goto out_free_tr;
--
--	ret = event_trace_add_tracer(tr->dir, tr);
--	if (ret) {
--		tracefs_remove(tr->dir);
-+	if (ftrace_allocate_ftrace_ops(tr) < 0)
- 		goto out_free_tr;
--	}
- 
- 	ftrace_init_trace_array(tr);
- 
--	init_tracer_tracefs(tr, tr->dir);
- 	init_trace_flags_index(tr);
--	__update_tracer_options(tr);
-+
-+	if (trace_instance_dir) {
-+		ret = trace_array_create_dir(tr);
-+		if (ret)
-+			goto out_free_tr;
-+	}
- 
- 	list_add(&tr->list, &ftrace_trace_arrays);
- 
- 	tr->ref++;
- 
--
- 	return tr;
- 
-  out_free_tr:
-+	ftrace_free_ftrace_ops(tr);
- 	free_trace_buffers(tr);
- 	free_cpumask_var(tr->tracing_cpumask);
- 	kfree(tr->name);
-@@ -8852,11 +8867,27 @@ static int instance_rmdir(const char *name)
- 
- static __init void create_trace_instances(struct dentry *d_tracer)
- {
-+	struct trace_array *tr;
-+
- 	trace_instance_dir = tracefs_create_instance_dir("instances", d_tracer,
- 							 instance_mkdir,
- 							 instance_rmdir);
- 	if (MEM_FAIL(!trace_instance_dir, "Failed to create instances directory\n"))
- 		return;
-+
-+	mutex_lock(&event_mutex);
-+	mutex_lock(&trace_types_lock);
-+
-+	list_for_each_entry(tr, &ftrace_trace_arrays, list) {
-+		if (!tr->name)
-+			continue;
-+		if (MEM_FAIL(trace_array_create_dir(tr) < 0,
-+			     "Failed to create instance directory\n"))
-+			break;
-+	}
-+
-+	mutex_unlock(&trace_types_lock);
-+	mutex_unlock(&event_mutex);
- }
- 
- static void
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index 0d3a405fe446..525434145eea 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -1125,6 +1125,8 @@ extern int ftrace_is_dead(void);
- int ftrace_create_function_files(struct trace_array *tr,
- 				 struct dentry *parent);
- void ftrace_destroy_function_files(struct trace_array *tr);
-+int ftrace_allocate_ftrace_ops(struct trace_array *tr);
-+void ftrace_free_ftrace_ops(struct trace_array *tr);
- void ftrace_init_global_array_ops(struct trace_array *tr);
- void ftrace_init_array_ops(struct trace_array *tr, ftrace_func_t func);
- void ftrace_reset_array_ops(struct trace_array *tr);
-@@ -1146,6 +1148,11 @@ ftrace_create_function_files(struct trace_array *tr,
- {
  	return 0;
  }
-+static inline int ftrace_allocate_ftrace_ops(struct trace_array *tr)
-+{
-+	return 0;
-+}
-+static inline void ftrace_free_ftrace_ops(struct trace_array *tr) { }
- static inline void ftrace_destroy_function_files(struct trace_array *tr) { }
- static inline __init void
- ftrace_init_global_array_ops(struct trace_array *tr) { }
-diff --git a/kernel/trace/trace_functions.c b/kernel/trace/trace_functions.c
-index dd4dff71d89a..2c2126e1871d 100644
---- a/kernel/trace/trace_functions.c
-+++ b/kernel/trace/trace_functions.c
-@@ -34,10 +34,14 @@ enum {
- 	TRACE_FUNC_OPT_STACK	= 0x1,
+-
+-fs_initcall(trace_boot_init);
++/*
++ * Start tracing at the end of core-initcall, so that it starts tracing
++ * from the beginning of postcore_initcall.
++ */
++core_initcall_sync(trace_boot_init);
+diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
+index 7c765e80e974..a9cd7793f7ea 100644
+--- a/kernel/trace/trace_events_synth.c
++++ b/kernel/trace/trace_events_synth.c
+@@ -1754,17 +1754,26 @@ static const struct file_operations synth_events_fops = {
+ 	.release        = seq_release,
  };
  
--static int allocate_ftrace_ops(struct trace_array *tr)
-+int ftrace_allocate_ftrace_ops(struct trace_array *tr)
+-static __init int trace_events_synth_init(void)
++/*
++ * Register dynevent at core_initcall. This allows kernel to setup kprobe
++ * events in postcore_initcall without tracefs.
++ */
++static __init int trace_events_synth_init_early(void)
  {
- 	struct ftrace_ops *ops;
+-	struct dentry *entry = NULL;
+ 	int err = 0;
  
-+	/* The top level array uses the "global_ops" */
-+	if (tr->flags & TRACE_ARRAY_FL_GLOBAL)
-+		return 0;
-+
- 	ops = kzalloc(sizeof(*ops), GFP_KERNEL);
- 	if (!ops)
- 		return -ENOMEM;
-@@ -48,15 +52,19 @@ static int allocate_ftrace_ops(struct trace_array *tr)
+ 	err = dyn_event_register(&synth_event_ops);
+-	if (err) {
++	if (err)
+ 		pr_warn("Could not register synth_event_ops\n");
+-		return err;
+-	}
  
- 	tr->ops = ops;
- 	ops->private = tr;
++	return err;
++}
++core_initcall(trace_events_synth_init_early);
 +
++static __init int trace_events_synth_init(void)
++{
++	struct dentry *entry = NULL;
++	int err = 0;
+ 	err = tracing_init_dentry();
+ 	if (err)
+ 		goto err;
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index 9d46415296eb..b911e9f6d9f5 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -1897,8 +1897,8 @@ static __init void setup_boot_kprobe_events(void)
+ }
+ 
+ /*
+- * Register dynevent at subsys_initcall. This allows kernel to setup kprobe
+- * events in fs_initcall without tracefs.
++ * Register dynevent at core_initcall. This allows kernel to setup kprobe
++ * events in postcore_initcall without tracefs.
+  */
+ static __init int init_kprobe_trace_early(void)
+ {
+@@ -1913,7 +1913,7 @@ static __init int init_kprobe_trace_early(void)
+ 
  	return 0;
  }
+-subsys_initcall(init_kprobe_trace_early);
++core_initcall(init_kprobe_trace_early);
  
-+void ftrace_free_ftrace_ops(struct trace_array *tr)
-+{
-+	kfree(tr->ops);
-+	tr->ops = NULL;
-+}
- 
- int ftrace_create_function_files(struct trace_array *tr,
- 				 struct dentry *parent)
- {
--	int ret;
--
- 	/*
- 	 * The top level array uses the "global_ops", and the files are
- 	 * created on boot up.
-@@ -64,9 +72,8 @@ int ftrace_create_function_files(struct trace_array *tr,
- 	if (tr->flags & TRACE_ARRAY_FL_GLOBAL)
- 		return 0;
- 
--	ret = allocate_ftrace_ops(tr);
--	if (ret)
--		return ret;
-+	if (!tr->ops)
-+		return -EINVAL;
- 
- 	ftrace_create_filter_files(tr->ops, parent);
- 
-@@ -76,8 +83,7 @@ int ftrace_create_function_files(struct trace_array *tr,
- void ftrace_destroy_function_files(struct trace_array *tr)
- {
- 	ftrace_destroy_filter_files(tr->ops);
--	kfree(tr->ops);
--	tr->ops = NULL;
-+	ftrace_free_ftrace_ops(tr);
- }
- 
- static int function_trace_init(struct trace_array *tr)
+ /* Make a tracefs interface for controlling probe points */
+ static __init int init_kprobe_trace(void)
 -- 
 2.28.0
 
