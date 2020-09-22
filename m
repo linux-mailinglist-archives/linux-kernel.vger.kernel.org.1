@@ -2,182 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 730952748DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:11:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8161D2748DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726780AbgIVTL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 15:11:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726563AbgIVTLT (ORCPT
+        id S1726769AbgIVTLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 15:11:21 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:41759 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726752AbgIVTLT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 22 Sep 2020 15:11:19 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61897C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 12:11:19 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id di5so10099556qvb.13
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 12:11:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nJzybE70QTOPMpDnlJVwD/ZPuk6VG/Jsid2ppZBVbg8=;
-        b=fSgjqGxhSdA2emNUxN5J3kJsAInQNePdNNyRlh0DibVU1PK6HY+XFWRbK0A+GZ8xd6
-         f/f5ds0qAFNBOg/U6Kubc4kxUul6pSup+XlKjeg6JTC8TFPClElz8ajgvmqV0c6nVXJm
-         h0GaGzvAK1FAYVnCL5mi7mjykrgni4pNZFgFZP9suG42agx6xnJrNZgG7BIgD2SSGo8y
-         JG+UNIjCh9Swt0JMp1rDO6dEczR0DW8MpWYWY/z+hV32QPbbaJW9gyBOzE7bwGU3u/HP
-         wvFt40309MaHemZoodAJzlGd9DbvQwOhiAX/7GJRSrJojhwLigngsm4oqW9XcD/Gy3Ne
-         bo1w==
+Received: by mail-io1-f71.google.com with SMTP id j4so13430241iob.8
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 12:11:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nJzybE70QTOPMpDnlJVwD/ZPuk6VG/Jsid2ppZBVbg8=;
-        b=nd05jviF8v7mahiq237+wuXBPJ1C/h9UtHmAvBhMQiNaXuo6ol9IUmMVjl78mK7b1x
-         eEi5W7Y4X2N3PyyBNsKxGuecRAm2SizYt1cqQdrK4mgaRlecxxVj7tjZ293R7SVzq3Pa
-         hJ+0IKicX+HVRAMzHAu3FkCVhotgvfEX4SSO0atF9UOfzzglK3PkxkPVSOSD6FANML6l
-         dG8anryeYezxcqzSr+Lk3eBfshItQO4o0WjSWg1eywB6IdJFO5ekq9vh8HcXQi9KngMs
-         WnWcdBnuXyTZI4RYtKKnerfbYuNTxqToxLtApM7N9Opob5/RKTtPdfVSOV4+PGqGh9D1
-         wukA==
-X-Gm-Message-State: AOAM533Cq7cWtgRNcozbFGfyTVg+cNRmB69VW0AQRK5OeXAJ7rCnNUIQ
-        3dvbieYnwXxWKan/x1V5Lu5B/w==
-X-Google-Smtp-Source: ABdhPJxgNsemk9TCKYufv5zWpiXrJqwTy+d9RJH+Ya2JMq9rnWECwJGQxJNp6HGFkTkZ5UY03xNq8w==
-X-Received: by 2002:a0c:c492:: with SMTP id u18mr7589580qvi.18.1600801878171;
-        Tue, 22 Sep 2020 12:11:18 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id e24sm11954844qka.76.2020.09.22.12.11.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 12:11:17 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kKnh6-003EqE-UY; Tue, 22 Sep 2020 16:11:16 -0300
-Date:   Tue, 22 Sep 2020 16:11:16 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     John Hubbard <jhubbard@nvidia.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jann Horn <jannh@google.com>
-Subject: Re: [PATCH 1/5] mm: Introduce mm_struct.has_pinned
-Message-ID: <20200922191116.GK8409@ziepe.ca>
-References: <20200921211744.24758-1-peterx@redhat.com>
- <20200921211744.24758-2-peterx@redhat.com>
- <224908c1-5d0f-8e01-baa9-94ec2374971f@nvidia.com>
- <20200922151736.GD19098@xz-x1>
- <20200922161046.GB731578@ziepe.ca>
- <20200922175415.GI19098@xz-x1>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=lAjFh73hmiU/WBQf5ax9GK7qWeGlhNJIYvF2cOOSRUQ=;
+        b=buj46ftYpZyay2yIhQ6+oKu5k897o4GlGA+W9pZ4GMklyRY5kemRM7IH0SL5G4d+U7
+         zApKqzLRgqAqf43LVwy0K3mBkbjtxlg7HiVIBnIcP8Y+RV0WSxLpcZ33BJN+m8twPW0B
+         F/iZYxVTIS3YqeQ9Om3Yme0F6UnLnwAnyJihtn9MknhHaYPL0X0t315pIuunCYJ/pS6j
+         lFDw9L6KhfYHF6GirkXYayBjh0EuPsIOPoBAo9GVOAV6AtcWrWNleQ2dcc2Eh2RjfG9L
+         8HaX76GIUFIh10Or9aKa4AHEv1THjgNy0To+T/2iueS5f80q6nc3AAG2GC9oaOtFezoI
+         i6GA==
+X-Gm-Message-State: AOAM531s95Awd35AXTXzCHXu/4C927uX7V6jUDmi+6mmen+z+cigkFGF
+        5sRQP0bxtQ/QTMXdHTNFeLBy0ccXwtDJ4MwSxmuAV4xF9ImT
+X-Google-Smtp-Source: ABdhPJy8yniI8MFudEaNa9KgbVwMWsCfxkZEpKwbgKb//f1MXSr5YF5rRi9LeZkJA0mjo9KaWhZAE7dguw2wjioqrH7T9AZEbBtW
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922175415.GI19098@xz-x1>
+X-Received: by 2002:a05:6602:2003:: with SMTP id y3mr4532911iod.203.1600801877916;
+ Tue, 22 Sep 2020 12:11:17 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 12:11:17 -0700
+In-Reply-To: <000000000000680f2905afd0649c@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004a0dd105afebbb10@google.com>
+Subject: Re: BUG: unable to handle kernel paging request in bpf_trace_run2
+From:   syzbot <syzbot+cc36fd07553c0512f5f7@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org, mingo@redhat.com,
+        netdev@vger.kernel.org, rostedt@goodmis.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 01:54:15PM -0400, Peter Xu wrote:
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 8f3521be80ca..6591f3f33299 100644
-> +++ b/mm/memory.c
-> @@ -888,8 +888,8 @@ copy_one_pte(struct mm_struct *dst_mm, struct mm_struct *src_mm,
->                  * Because we'll need to release the locks before doing cow,
->                  * pass this work to upper layer.
->                  */
-> -               if (READ_ONCE(src_mm->has_pinned) && wp &&
-> -                   page_maybe_dma_pinned(page)) {
-> +               if (wp && page_maybe_dma_pinned(page) &&
-> +                   READ_ONCE(src_mm->has_pinned)) {
->                         /* We've got the page already; we're safe */
->                         data->cow_old_page = page;
->                         data->cow_oldpte = *src_pte;
-> 
-> I can also add some more comment to emphasize this.
+syzbot has found a reproducer for the following issue on:
 
-It is not just that, but the ptep_set_wrprotect() has to be done
-earlier.
+HEAD commit:    12450081 libbpf: Fix native endian assumption when parsing..
+git tree:       bpf
+console output: https://syzkaller.appspot.com/x/log.txt?x=17fedf8b900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5ac0d21536db480b
+dashboard link: https://syzkaller.appspot.com/bug?extid=cc36fd07553c0512f5f7
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1365d2c3900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16d5f08d900000
 
-Otherwise it races like:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+cc36fd07553c0512f5f7@syzkaller.appspotmail.com
 
-   pin_user_pages_fast()                   fork()
-    atomic_set(has_pinned, 1);
-    [..]
-                                           atomic_read(page->_refcount) //false
-                                           // skipped atomic_read(has_pinned)
-    atomic_add(page->_refcount)
-    ordered check write protect()
-                                           ordered set write protect()
+BUG: unable to handle page fault for address: ffffc90000ed0030
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD aa000067 P4D aa000067 PUD aa169067 PMD a9031067 PTE 0
+Oops: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 6868 Comm: syz-executor454 Not tainted 5.9.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:bpf_dispatcher_nop_func include/linux/bpf.h:586 [inline]
+RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:1887 [inline]
+RIP: 0010:bpf_trace_run2+0x12e/0x3d0 kernel/trace/bpf_trace.c:1924
+Code: f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 8e 02 00 00 48 8d 73 38 48 8d 7c 24 28 <ff> 53 30 e8 fa 03 f7 ff e8 45 c8 a4 06 31 ff 89 c3 89 c6 e8 4a 00
+RSP: 0018:ffffc900018e7e90 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: ffffc90000ed0000 RCX: ffffffff817f2b88
+RDX: 0000000000000000 RSI: ffffc90000ed0038 RDI: ffffc900018e7eb8
+RBP: 1ffff9200031cfd3 R08: 0000000000000000 R09: ffffffff8d0b69e7
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
+R13: ffffc900018e7f58 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000000001079880(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffc90000ed0030 CR3: 000000009f63f000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ trace_sys_enter include/trace/events/syscalls.h:18 [inline]
+ syscall_trace_enter kernel/entry/common.c:64 [inline]
+ syscall_enter_from_user_mode+0x22c/0x290 kernel/entry/common.c:82
+ do_syscall_64+0xf/0x70 arch/x86/entry/common.c:41
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x4441da
+Code: 25 18 00 00 00 00 74 01 f0 48 0f b1 3d cf f9 28 00 48 39 c2 75 da f3 c3 0f 1f 84 00 00 00 00 00 48 63 ff b8 e4 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 06 f3 c3 0f 1f 40 00 48 c7 c2 d0 ff ff ff f7
+RSP: 002b:00007ffc59deef98 EFLAGS: 00000246 ORIG_RAX: 00000000000000e4
+RAX: ffffffffffffffda RBX: 0000000000001ae1 RCX: 00000000004441da
+RDX: 0000000000000000 RSI: 00007ffc59deefa0 RDI: 0000000000000001
+RBP: 000000000000ee75 R08: 0000000000001ad4 R09: 0000000001079880
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004022f0
+R13: 0000000000402380 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+CR2: ffffc90000ed0030
+---[ end trace 7a32b71ba0e36806 ]---
+RIP: 0010:bpf_dispatcher_nop_func include/linux/bpf.h:586 [inline]
+RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:1887 [inline]
+RIP: 0010:bpf_trace_run2+0x12e/0x3d0 kernel/trace/bpf_trace.c:1924
+Code: f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 8e 02 00 00 48 8d 73 38 48 8d 7c 24 28 <ff> 53 30 e8 fa 03 f7 ff e8 45 c8 a4 06 31 ff 89 c3 89 c6 e8 4a 00
+RSP: 0018:ffffc900018e7e90 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: ffffc90000ed0000 RCX: ffffffff817f2b88
+RDX: 0000000000000000 RSI: ffffc90000ed0038 RDI: ffffc900018e7eb8
+RBP: 1ffff9200031cfd3 R08: 0000000000000000 R09: ffffffff8d0b69e7
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
+R13: ffffc900018e7f58 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000000001079880(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffc90000ed0030 CR3: 000000009f63f000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-And now have a write protect on a DMA pinned page, which is the
-invarient we are trying to create.
-
-The best algorithm I've thought of is something like:
-
- pte_map_lock()
-  if (page) {
-      if (wp) {
-	  ptep_set_wrprotect()
-	  /* Order with try_grab_compound_head(), either we see
-	   * page_maybe_dma_pinned(), or they see the wrprotect */
-	  get_page();
-
-	  if (page_maybe_dma_pinned() && READ_ONCE(src_mm->has_pinned)) {
-	       put_page();
-	       ptep_clear_wrprotect()
-
-	       // do copy
-	       return
-	  }
-      } else {
-	  get_page();
-      }
-      page_dup_rmap()
- pte_unmap_lock()
-
-Then the do_wp_page() path would have to detect that the page is not
-write protected under the pte lock inside the fault handler and just
-do nothing. Ie the set/clear could be visible to the CPU and trigger a
-spurious fault, but never trigger a COW.
-
-Thus 'wp' becomes a 'lock' that prevents GUP from returning this page.
-
-Very tricky, deserves a huge comment near the ptep_clear_wrprotect()
-
-Consider the above algorithm beside the gup_fast() algorithm:
-
-		if (!pte_access_permitted(pte, flags & FOLL_WRITE))
-			goto pte_unmap;
-                [..]
-		head = try_grab_compound_head(page, 1, flags);
-		if (!head)
-			goto pte_unmap;
-		if (unlikely(pte_val(pte) != pte_val(*ptep))) {
-			put_compound_head(head, 1, flags);
-			goto pte_unmap;
-
-That last *ptep will check that the WP is not set after making
-page_maybe_dma_pinned() true.
-
-It still looks reasonable, the extra work is still just the additional
-atomic in page_maybe_dma_pinned(), just everything else has to be very
-carefully sequenced due to unlocked page table accessors.
-
-> I think the WRITE_ONCE/READ_ONCE can actually be kept, because atomic ops
-> should contain proper memory barriers already so the memory access orders
-> should be guaranteed 
-
-I always have to carefully check ORDERING in
-Documentation/atomic_t.txt when asking those questions..
-
-It seems very subtle to me, but yes, try_grab_compound_head() and
-page_maybe_dma_pinned() are already paired ordering barriers, so both
-the pte_val() on the GUP side and the READ_ONCE(has_pinned) look OK.
-
-Jason
