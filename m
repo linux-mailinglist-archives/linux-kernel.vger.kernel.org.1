@@ -2,194 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B4FC273A8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 08:13:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97CC0273A8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 08:15:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729156AbgIVGNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 02:13:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45610 "EHLO
+        id S1729170AbgIVGPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 02:15:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729094AbgIVGNX (ORCPT
+        with ESMTP id S1728831AbgIVGPF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 02:13:23 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED48C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 23:13:23 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id o8so14602519otl.4
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 23:13:23 -0700 (PDT)
+        Tue, 22 Sep 2020 02:15:05 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D80C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 23:15:04 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id o25so6143620pgm.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 23:15:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=WBUjk5sa2qSjZc05mc4Eihluz20Uyb3yXZp0vXYSAao=;
-        b=WB/3I6zQHZvM8TfVLEJMlPFQrTIpfsU1zdOf1VurZPu72ZMZEaoo7SH356HOoSJJOw
-         EKwBCy7d/TyKnNeXXKOUW5zk+bqIOjLHCJ6ZiSFyYEnC+Euj4h8fo14+jrnzeu2jgIBF
-         53xrD3/b4xTaGC/iTpL/ulzQHeY26XpyZ/b+299hSLzBpDXltk+x+4eBjq7eYELQzz1x
-         gKXJ+0lEUiZNnjiD6gENrAppDXE/pvR++XVaVbjUnX2tjQsXzoGS6TdcYZ0EtsVe4Bw3
-         JcV/h1yIyD756SHiiB2UFeko7C0okLxWUaCBg6mcoEecwVx0KqJHQp0ZLszZ9HV/C8F7
-         8bpw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=GUI0or54jzs6SWBeOTIhXJI7pPtDOpGteq+qBUK8BXM=;
+        b=dR+Z4ASnMZM/ntfY2CiUiX3vW/jiV+bylVZky7bRX2d8UXPI64aHPjz8sbTX4XtE1z
+         ul/fItqCDEBaHqVw/ti2Spj4E8xf28cRj4AaFvHElxj+TAVqRZUIre+oo6fAmJy/6xGq
+         Poz9QL9fVnM1wEmmJwTwgpl6PMwc3yIOXLJ8H/T0xeLk3YG/a2IxTz5cqFnt4EWwufeP
+         hh9H7UTZl0CCsnpHyxPE8swF1EiFBBVjHmAuAG5iHKqBpXpsQqxINN3jQvg5x+3V7wWk
+         G9E+kqvKdgG5mxQ6VWxOK7tBUhJj1c4I1KAghNiGglJGzyhg1Pv0EJo4NZZx8gOS+2uT
+         jNPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=WBUjk5sa2qSjZc05mc4Eihluz20Uyb3yXZp0vXYSAao=;
-        b=KPemcY4xyQICWDe4RIgBFFXVRv4lBRb3FZ5qVq3bTwjXjWlLiMr7O21aw/6qUCHVEh
-         PE6KMBfw6zHRTAwItIhrMiyByhvYOCIrA9K+1Je1ns08sYY60gC88QDgPHtrCpNSYgGp
-         Ipgv4/b/aCw9/PbbW66h75VvvS+dxnXgbvMw5MdiBrVmDxr8/kFkkxsuWetG/1CXKieg
-         jE4b/q2mbqKoVxy7AN5sHpxVC180XjeLGhRyLUeCCCPCDJ8UUacYdEYGVJiHKy1gPd+g
-         99ktrjiKHQtjyhVPzN7u230teEidXxUJ1pX8g5K+NbkD1PcOt4LA4O7DozucpAXdTyGk
-         hXnw==
-X-Gm-Message-State: AOAM532LSpdEVZ/YA8fsKH2G12UI9RC+Gd65klmLBDgorv1rCcbvtQuH
-        B5rk+Bz5fYVQJ8DVZfb6+AO7NQ==
-X-Google-Smtp-Source: ABdhPJxHTfoPta25AJAE5KGLMyigkV+kpo5kxM+XL4/T/LV9u02+BIX4BSvwURmGDy4M5Ox0xceunw==
-X-Received: by 2002:a9d:2925:: with SMTP id d34mr1879677otb.140.1600755202300;
-        Mon, 21 Sep 2020 23:13:22 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id h135sm7396281oib.50.2020.09.21.23.13.19
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Mon, 21 Sep 2020 23:13:21 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 23:13:17 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, willy@infradead.org,
-        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        shakeelb@google.com, iamjoonsoo.kim@lge.com,
-        richard.weiyang@gmail.com, kirill@shutemov.name,
-        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
-        vdavydov.dev@gmail.com, shy828301@gmail.com,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH v18 25/32] mm/mlock: remove lru_lock on TestClearPageMlocked
- in munlock_vma_page
-In-Reply-To: <1598273705-69124-26-git-send-email-alex.shi@linux.alibaba.com>
-Message-ID: <alpine.LSU.2.11.2009212253320.6434@eggly.anvils>
-References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com> <1598273705-69124-26-git-send-email-alex.shi@linux.alibaba.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=GUI0or54jzs6SWBeOTIhXJI7pPtDOpGteq+qBUK8BXM=;
+        b=QDiS66dtbT+O3vInRdwAK6/t1tPO4Pt1VXXZSosKbM+IFxi4Dv7BqKhITKgq/exOsO
+         c4pyEnvKJSqpH76vKH2gJy++GyfWmVllaNsvJyOxK5qrkbixmoSPXVbjlZK1aMp9row5
+         pWcL/eF9L6TAQtvWqEHT9Q2SaJ/RivEMMyKBC5fG2O8+CAqr3g2QmVd1F4vhe8SI8KaD
+         bQ19oDa9XZ2fxWZ/o9lw3tvMnbvurWSjKk7mx980dCE8trV6NZFCEVQ01QGew3cQvfYI
+         78q8Qu7k+XsOxP5zkwyz1U66ctGkUxNnMxuNTD883R6NVQjFJIcg+nOxT2249Adng/Vj
+         lpaQ==
+X-Gm-Message-State: AOAM532cPglWOHrlAuSjcqol41UMAFDjfs6sWLzgz4o2QbWrzXtz3Eg8
+        AwHKcECfZP1nDEsIIEiiDYeWv8hW79to
+X-Google-Smtp-Source: ABdhPJxvg+wYdjy6w01oHbUTHSHS/EIXkvVEtjrXQpBo+TWQuI/+LGjhw6GlsI59oWMbmx7JNpTvuw==
+X-Received: by 2002:a63:500e:: with SMTP id e14mr2359458pgb.36.1600755304319;
+        Mon, 21 Sep 2020 23:15:04 -0700 (PDT)
+Received: from Mani-XPS-13-9360 ([2409:4072:6e1c:c062:1004:2ccf:6900:b97])
+        by smtp.gmail.com with ESMTPSA id e62sm13483624pfh.76.2020.09.21.23.14.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 21 Sep 2020 23:15:03 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 11:44:54 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Matheus Castello <matheus@castello.eng.br>, arnd@arndb.de,
+        olof@lixom.net
+Cc:     afaerber@suse.de, mark.rutland@arm.com, robh+dt@kernel.org,
+        edgar.righi@lsitec.org.br, igor.lima@lsitec.org.br,
+        helen.koike@collabora.com, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-actions@lists.infradead.org
+Subject: Re: [PATCH v7 4/4] arm64: dts: Add Caninos Loucos Labrador v3
+Message-ID: <20200922061454.GA29035@Mani-XPS-13-9360>
+References: <20200922024302.205062-1-matheus@castello.eng.br>
+ <20200922024302.205062-5-matheus@castello.eng.br>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200922024302.205062-5-matheus@castello.eng.br>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Aug 2020, Alex Shi wrote:
+Hi,
 
-> In the func munlock_vma_page, the page must be PageLocked as well as
-> pages in split_huge_page series funcs. Thus the PageLocked is enough
-> to serialize both funcs.
+On Mon, Sep 21, 2020 at 11:43:02PM -0300, Matheus Castello wrote:
+> Add Device Trees for Caninos Loucos Labrador CoM Core v3 and base board
+> M v2. Based on the work of Andreas Färber on Cubieboard 7 device tree.
 > 
-> So we could relief the TestClearPageMlocked/hpage_nr_pages which are not
-> necessary under lru lock.
-> 
-> As to another munlock func __munlock_pagevec, which no PageLocked
-> protection and should remain lru protecting.
-> 
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-
-I made some comments on the mlock+munlock situation last week:
-I won't review this 24/32 and 25/32 now, but will take a look
-at your github tree tomorrow instead.  Perhaps I'll find you have
-already done the fixes, perhaps I'll find you have merged these back
-into earlier patches.  And I won't be reviewing beyond this point:
-this is enough for now, I think.
-
-Hugh
-
-> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Cc: Vlastimil Babka <vbabka@suse.cz>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Matheus Castello <matheus@castello.eng.br>
 > ---
->  mm/mlock.c | 41 +++++++++++++++--------------------------
->  1 file changed, 15 insertions(+), 26 deletions(-)
+>  arch/arm64/boot/dts/actions/Makefile          |   2 +
+>  .../dts/actions/s700-labrador-base-m2.dts     |  34 +++++
+>  .../boot/dts/actions/s700-labrador-v3.dtsi    | 122 ++++++++++++++++++
+>  3 files changed, 158 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/actions/s700-labrador-base-m2.dts
+>  create mode 100644 arch/arm64/boot/dts/actions/s700-labrador-v3.dtsi
 > 
-> diff --git a/mm/mlock.c b/mm/mlock.c
-> index 0448409184e3..46a05e6ec5ba 100644
-> --- a/mm/mlock.c
-> +++ b/mm/mlock.c
-> @@ -69,9 +69,9 @@ void clear_page_mlock(struct page *page)
->  	 *
->  	 * See __pagevec_lru_add_fn for more explanation.
->  	 */
-> -	if (!isolate_lru_page(page)) {
-> +	if (!isolate_lru_page(page))
->  		putback_lru_page(page);
-> -	} else {
-> +	else {
->  		/*
->  		 * We lost the race. the page already moved to evictable list.
->  		 */
-> @@ -178,7 +178,6 @@ static void __munlock_isolation_failed(struct page *page)
->  unsigned int munlock_vma_page(struct page *page)
->  {
->  	int nr_pages;
-> -	struct lruvec *lruvec;
->  
->  	/* For try_to_munlock() and to serialize with page migration */
->  	BUG_ON(!PageLocked(page));
-> @@ -186,37 +185,22 @@ unsigned int munlock_vma_page(struct page *page)
->  	VM_BUG_ON_PAGE(PageTail(page), page);
->  
->  	/*
-> -	 * Serialize split tail pages in __split_huge_page_tail() which
-> -	 * might otherwise copy PageMlocked to part of the tail pages before
-> -	 * we clear it in the head page. It also stabilizes thp_nr_pages().
-> -	 * TestClearPageLRU can't be used here to block page isolation, since
-> -	 * out of lock clear_page_mlock may interfer PageLRU/PageMlocked
-> -	 * sequence, same as __pagevec_lru_add_fn, and lead the page place to
-> -	 * wrong lru list here. So relay on PageLocked to stop lruvec change
-> -	 * in mem_cgroup_move_account().
-> +	 * Serialize split tail pages in __split_huge_page_tail() by
-> +	 * lock_page(); Do TestClearPageMlocked/PageLRU sequence like
-> +	 * clear_page_mlock().
->  	 */
-> -	lruvec = lock_page_lruvec_irq(page);
-> -
-> -	if (!TestClearPageMlocked(page)) {
-> +	if (!TestClearPageMlocked(page))
->  		/* Potentially, PTE-mapped THP: do not skip the rest PTEs */
-> -		nr_pages = 1;
-> -		goto unlock_out;
-> -	}
-> +		return 0;
->  
->  	nr_pages = thp_nr_pages(page);
->  	__mod_zone_page_state(page_zone(page), NR_MLOCK, -nr_pages);
->  
-> -	if (__munlock_isolate_lru_page(page, lruvec, true)) {
-> -		unlock_page_lruvec_irq(lruvec);
-> +	if (!isolate_lru_page(page))
->  		__munlock_isolated_page(page);
-> -		goto out;
-> -	}
-> -	__munlock_isolation_failed(page);
-> -
-> -unlock_out:
-> -	unlock_page_lruvec_irq(lruvec);
-> +	else
-> +		__munlock_isolation_failed(page);
->  
-> -out:
->  	return nr_pages - 1;
->  }
->  
-> @@ -305,6 +289,11 @@ static void __munlock_pagevec(struct pagevec *pvec, struct zone *zone)
->  
->  		/* block memcg change in mem_cgroup_move_account */
->  		lock_page_memcg(page);
-> +		/*
-> +		 * Serialize split tail pages in __split_huge_page_tail() which
-> +		 * might otherwise copy PageMlocked to part of the tail pages
-> +		 * before we clear it in the head page.
-> +		 */
->  		lruvec = relock_page_lruvec_irq(page, lruvec);
->  		if (TestClearPageMlocked(page)) {
->  			/*
-> -- 
-> 1.8.3.1
+> diff --git a/arch/arm64/boot/dts/actions/Makefile b/arch/arm64/boot/dts/actions/Makefile
+> index b57fd2372ecd..3765697fa91e 100644
+> --- a/arch/arm64/boot/dts/actions/Makefile
+> +++ b/arch/arm64/boot/dts/actions/Makefile
+> @@ -2,4 +2,6 @@
 > 
+>  dtb-$(CONFIG_ARCH_ACTIONS) += s700-cubieboard7.dtb
+> 
+> +dtb-$(CONFIG_ARCH_ACTIONS) += s700-labrador-base-m2.dtb
+> +
+>  dtb-$(CONFIG_ARCH_ACTIONS) += s900-bubblegum-96.dtb
+> diff --git a/arch/arm64/boot/dts/actions/s700-labrador-base-m2.dts b/arch/arm64/boot/dts/actions/s700-labrador-base-m2.dts
+> new file mode 100644
+> index 000000000000..63bbca46475b
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/actions/s700-labrador-base-m2.dts
+> @@ -0,0 +1,34 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Copyright (c) 2020 Matheus Castello
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "s700-labrador-v3.dtsi"
+> +
+> +/ {
+> +	compatible = "caninos,labrador-base-m2",
+> +		     "caninos,labrador-v3", "actions,s700";
+> +	model = "Caninos Labrador Core v3 on Labrador Base-M v2";
+> +
+> +	aliases {
+> +		serial3 = &uart3;
+> +	};
+> +
+> +	chosen {
+> +		stdout-path = "serial3:115200n8";
+> +	};
+> +};
+> +
+> +&uart3 {
+> +	status = "okay";
+
+No fixed clock?
+
+> +};
+> +
+> +&i2c0 {
+> +	status = "okay";
+> +};
+> +
+> +&i2c1 {
+> +	status = "okay";
+> +};
+> diff --git a/arch/arm64/boot/dts/actions/s700-labrador-v3.dtsi b/arch/arm64/boot/dts/actions/s700-labrador-v3.dtsi
+> new file mode 100644
+> index 000000000000..91addba6382b
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/actions/s700-labrador-v3.dtsi
+> @@ -0,0 +1,122 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Copyright (c) 2020 Matheus Castello
+> + */
+> +
+> +#include "s700.dtsi"
+> +
+> +/ {
+> +	compatible = "caninos,labrador-v3", "actions,s700";
+> +	model = "Caninos Labrador Core v3.1";
+> +
+> +	memory@0 {
+> +		device_type = "memory";
+> +		reg = <0x0 0x0 0x0 0x80000000>;
+> +	};
+> +
+> +	memory@1,e0000000 {
+> +		device_type = "memory";
+> +		reg = <0x1 0xe0000000 0x0 0x0>;
+> +	};
+> +
+
+What is the size of this memory? The datasheet says only 512MB Max.
+
+> +	/* Labrador v3 firmware does not support PSCI */
+
+Oops. This is unfortunate... I'm not sure if this is even acceptable for
+ARM64 machines.
+
+Let me add Olof and Arnd...
+
+Thanks,
+Mani
+
+> +	cpus {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		cpu0: cpu@0 {
+> +			device_type = "cpu";
+> +			compatible = "arm,cortex-a53";
+> +			reg = <0x0>;
+> +			enable-method = "spin-table";
+> +			cpu-release-addr = <0 0x1f000020>;
+> +			next-level-cache = <&L2>;
+> +		};
+> +
+> +		cpu1: cpu@1 {
+> +			device_type = "cpu";
+> +			compatible = "arm,cortex-a53";
+> +			reg = <0x1>;
+> +			enable-method = "spin-table";
+> +			cpu-release-addr = <0 0x1f000020>;
+> +			next-level-cache = <&L2>;
+> +		};
+> +
+> +		cpu2: cpu@2 {
+> +			device_type = "cpu";
+> +			compatible = "arm,cortex-a53";
+> +			reg = <0x2>;
+> +			enable-method = "spin-table";
+> +			cpu-release-addr = <0 0x1f000020>;
+> +			next-level-cache = <&L2>;
+> +		};
+> +
+> +		cpu3: cpu@3 {
+> +			device_type = "cpu";
+> +			compatible = "arm,cortex-a53";
+> +			reg = <0x3>;
+> +			enable-method = "spin-table";
+> +			cpu-release-addr = <0 0x1f000020>;
+> +			next-level-cache = <&L2>;
+> +		};
+> +	};
+> +
+> +	L2: l2-cache {
+> +		compatible = "cache";
+> +		cache-level = <2>;
+> +	};
+> +};
+> +
+> +&timer {
+> +	clocks = <&hosc>;
+> +};
+> +
+> +&i2c0 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&i2c0_default>;
+> +};
+> +
+> +&i2c1 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&i2c1_default>;
+> +};
+> +
+> +&i2c2 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&i2c2_default>;
+> +};
+> +
+> +&pinctrl {
+> +	i2c0_default: i2c0_default {
+> +		pinmux {
+> +			groups = "i2c0_mfp";
+> +			function = "i2c0";
+> +		};
+> +		pinconf {
+> +			pins = "i2c0_sclk", "i2c0_sdata";
+> +			bias-pull-up;
+> +		};
+> +	};
+> +
+> +	i2c1_default: i2c1_default {
+> +		pinmux {
+> +			groups = "i2c1_dummy";
+> +			function = "i2c1";
+> +		};
+> +		pinconf {
+> +			pins = "i2c1_sclk", "i2c1_sdata";
+> +			bias-pull-up;
+> +		};
+> +	};
+> +
+> +	i2c2_default: i2c2_default {
+> +		pinmux {
+> +			groups = "i2c2_dummy";
+> +			function = "i2c2";
+> +		};
+> +		pinconf {
+> +			pins = "i2c2_sclk", "i2c2_sdata";
+> +			bias-pull-up;
+> +		};
+> +	};
+> +};
+> --
+> 2.28.0
 > 
