@@ -2,141 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E91F27425B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C52274251
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726676AbgIVMrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 08:47:09 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14212 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726613AbgIVMrF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 08:47:05 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 75E55A48500049286DA0;
-        Tue, 22 Sep 2020 20:47:03 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 22 Sep 2020 20:46:57 +0800
-From:   Tian Tao <tiantao6@hisilicon.com>
-To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
-        <kraxel@redhat.com>, <alexander.deucher@amd.com>,
-        <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
-        <xinliang.liu@linaro.org>, <linux-kernel@vger.kernel.org>
-CC:     <linuxarm@huawei.com>
-Subject: [PATCH drm/hisilicon v3 2/2] drm/hisilicon: Features to support reading resolutions from EDID
-Date:   Tue, 22 Sep 2020 20:44:30 +0800
-Message-ID: <1600778670-60370-3-git-send-email-tiantao6@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1600778670-60370-1-git-send-email-tiantao6@hisilicon.com>
-References: <1600778670-60370-1-git-send-email-tiantao6@hisilicon.com>
+        id S1726629AbgIVMpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 08:45:25 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:10402 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726571AbgIVMpZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 08:45:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1600778725; x=1632314725;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   in-reply-to:content-transfer-encoding;
+  bh=4NWeS0xwxjfjyP4fYO5lNehd5ZKrflGYWnJgAJBxqGc=;
+  b=JsN94s/f5Er7SUolajdfNmQPufQPXBM3L/6NpLM9ygqipxGQWZJ5EfGM
+   9BOsU/aVcnxoWkOresjyxGLKsCO6olF0exMqrn3QELSxW2z8k950lGDeX
+   aNKHDgsZe7XaojROqCEzQAauDknp9StOsJESClPZxkZMx0muLLNVqJBLv
+   8=;
+X-IronPort-AV: E=Sophos;i="5.77,290,1596499200"; 
+   d="scan'208";a="70090946"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-119b4f96.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 22 Sep 2020 12:45:19 +0000
+Received: from EX13D31EUA004.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2a-119b4f96.us-west-2.amazon.com (Postfix) with ESMTPS id F00271A04B8;
+        Tue, 22 Sep 2020 12:45:17 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.160.183) by
+ EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 22 Sep 2020 12:45:11 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     =?UTF-8?q?J=C3=BCrgen=20Gro=C3=9F?= <jgross@suse.com>
+CC:     SeongJae Park <sjpark@amazon.com>, <konrad.wilk@oracle.com>,
+        <roger.pau@citrix.com>, SeongJae Park <sjpark@amazon.de>,
+        <axboe@kernel.dk>, <aliguori@amazon.com>, <amit@kernel.org>,
+        <mheyne@amazon.de>, <pdurrant@amazon.co.uk>,
+        <linux-block@vger.kernel.org>, <xen-devel@lists.xenproject.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/3] xen-blkfront: add a parameter for disabling of persistent grants
+Date:   Tue, 22 Sep 2020 14:44:44 +0200
+Message-ID: <20200922124444.2231-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+In-Reply-To: <fdbaf955-0b92-d356-2792-21b27ea1087d@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.43.160.183]
+X-ClientProxiedBy: EX13D07UWB002.ant.amazon.com (10.43.161.131) To
+ EX13D31EUA004.ant.amazon.com (10.43.165.161)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use drm_get_edid to get the resolution, if that fails, set it to
-a fixed resolution. Rewrite the desrtoy callback function to release
-resources.
+On Tue, 22 Sep 2020 14:11:32 +0200 "Jürgen Groß" <jgross@suse.com> wrote:
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
----
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c | 38 +++++++++++++++++++++---
- 1 file changed, 34 insertions(+), 4 deletions(-)
+> On 22.09.20 12:52, SeongJae Park wrote:
+> > From: SeongJae Park <sjpark@amazon.de>
+> > 
+> > Persistent grants feature provides high scalability.  On some small
+> > systems, however, it could incur data copy overheads[1] and thus it is
+> > required to be disabled.  It can be disabled from blkback side using a
+> > module parameter, 'feature_persistent'.  But, it is impossible from
+> > blkfront side.  For the reason, this commit adds a blkfront module
+> > parameter for disabling of the feature.
+> > 
+> > [1] https://wiki.xen.org/wiki/Xen_4.3_Block_Protocol_Scalability
+> > 
+> > Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> > ---
+> >   .../ABI/testing/sysfs-driver-xen-blkfront     |  9 ++++++
+> >   drivers/block/xen-blkfront.c                  | 28 +++++++++++++------
+> >   2 files changed, 29 insertions(+), 8 deletions(-)
+> > 
+[...]
+> > diff --git a/drivers/block/xen-blkfront.c b/drivers/block/xen-blkfront.c
+> > index 91de2e0755ae..49c324f377de 100644
+> > --- a/drivers/block/xen-blkfront.c
+> > +++ b/drivers/block/xen-blkfront.c
+> > @@ -149,6 +149,13 @@ static unsigned int xen_blkif_max_ring_order;
+> >   module_param_named(max_ring_page_order, xen_blkif_max_ring_order, int, 0444);
+> >   MODULE_PARM_DESC(max_ring_page_order, "Maximum order of pages to be used for the shared ring");
+> >   
+> > +/* Enable the persistent grants feature. */
+> > +static bool feature_persistent = true;
+> > +module_param(feature_persistent, bool, 0644);
+> > +MODULE_PARM_DESC(feature_persistent,
+> > +		"Enables the persistent grants feature");
+> > +
+> > +
+> >   #define BLK_RING_SIZE(info)	\
+> >   	__CONST_RING_SIZE(blkif, XEN_PAGE_SIZE * (info)->nr_ring_pages)
+> >   
+> > @@ -1866,11 +1873,13 @@ static int talk_to_blkback(struct xenbus_device *dev,
+> >   		message = "writing protocol";
+> >   		goto abort_transaction;
+> >   	}
+> > -	err = xenbus_printf(xbt, dev->nodename,
+> > -			    "feature-persistent", "%u", 1);
+> > -	if (err)
+> > -		dev_warn(&dev->dev,
+> > -			 "writing persistent grants feature to xenbus");
+> > +	if (feature_persistent) {
+> > +		err = xenbus_printf(xbt, dev->nodename,
+> > +				    "feature-persistent", "%u", 1);
+> > +		if (err)
+> > +			dev_warn(&dev->dev,
+> > +				 "writing persistent grants feature to xenbus");
+> > +	}
+> >   
+> >   	err = xenbus_transaction_end(xbt, 0);
+> >   	if (err) {
+> > @@ -2316,9 +2325,12 @@ static void blkfront_gather_backend_features(struct blkfront_info *info)
+> >   	if (xenbus_read_unsigned(info->xbdev->otherend, "feature-discard", 0))
+> >   		blkfront_setup_discard(info);
+> >   
+> > -	info->feature_persistent =
+> > -		!!xenbus_read_unsigned(info->xbdev->otherend,
+> > -				       "feature-persistent", 0);
+> > +	if (feature_persistent)
+> > +		info->feature_persistent =
+> > +			!!xenbus_read_unsigned(info->xbdev->otherend,
+> > +					       "feature-persistent", 0);
+> > +	else
+> > +		info->feature_persistent = 0;
+> >   
+> >   	indirect_segments = xenbus_read_unsigned(info->xbdev->otherend,
+> >   					"feature-max-indirect-segments", 0);
+> > 
+> 
+> Here you have the same problem as in blkback: feature_persistent could
+> change its value between the two tests.
 
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-index 376a05d..c6999ed 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-+++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-@@ -21,12 +21,24 @@
- static int hibmc_connector_get_modes(struct drm_connector *connector)
- {
- 	int count;
-+	void *edid;
-+	struct hibmc_connector *hibmc_connector = to_hibmc_connector(connector);
-+
-+	edid = drm_get_edid(connector, &hibmc_connector->adapter);
-+	if (edid) {
-+		drm_connector_update_edid_property(connector, edid);
-+		count = drm_add_edid_modes(connector, edid);
-+		if (count)
-+			goto out;
-+	}
- 
- 	count = drm_add_modes_noedid(connector,
- 				     connector->dev->mode_config.max_width,
- 				     connector->dev->mode_config.max_height);
- 	drm_set_preferred_mode(connector, 1024, 768);
- 
-+out:
-+	kfree(edid);
- 	return count;
- }
- 
-@@ -36,6 +48,14 @@ static enum drm_mode_status hibmc_connector_mode_valid(struct drm_connector *con
- 	return MODE_OK;
- }
- 
-+static void hibmc_connector_destroy(struct drm_connector *connector)
-+{
-+	struct hibmc_connector *hibmc_connector = to_hibmc_connector(connector);
-+
-+	i2c_del_adapter(&hibmc_connector->adapter);
-+	drm_connector_cleanup(connector);
-+}
-+
- static const struct drm_connector_helper_funcs
- 	hibmc_connector_helper_funcs = {
- 	.get_modes = hibmc_connector_get_modes,
-@@ -44,7 +64,7 @@ static const struct drm_connector_helper_funcs
- 
- static const struct drm_connector_funcs hibmc_connector_funcs = {
- 	.fill_modes = drm_helper_probe_single_connector_modes,
--	.destroy = drm_connector_cleanup,
-+	.destroy = hibmc_connector_destroy,
- 	.reset = drm_atomic_helper_connector_reset,
- 	.atomic_duplicate_state = drm_atomic_helper_connector_duplicate_state,
- 	.atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
-@@ -77,10 +97,17 @@ static const struct drm_encoder_funcs hibmc_encoder_funcs = {
- int hibmc_vdac_init(struct hibmc_drm_private *priv)
- {
- 	struct drm_device *dev = priv->dev;
-+	struct hibmc_connector *hibmc_connector = &priv->connector;
- 	struct drm_encoder *encoder = &priv->encoder;
--	struct drm_connector *connector = &priv->connector;
-+	struct drm_connector *connector = &hibmc_connector->base;
- 	int ret;
- 
-+	ret = hibmc_ddc_create(dev, hibmc_connector);
-+	if (ret) {
-+		drm_err(dev, "failed to create ddc: %d\n", ret);
-+		return ret;
-+	}
-+
- 	encoder->possible_crtcs = 0x1;
- 	ret = drm_encoder_init(dev, encoder, &hibmc_encoder_funcs,
- 			       DRM_MODE_ENCODER_DAC, NULL);
-@@ -91,12 +118,15 @@ int hibmc_vdac_init(struct hibmc_drm_private *priv)
- 
- 	drm_encoder_helper_add(encoder, &hibmc_encoder_helper_funcs);
- 
--	ret = drm_connector_init(dev, connector, &hibmc_connector_funcs,
--				 DRM_MODE_CONNECTOR_VGA);
-+	ret = drm_connector_init_with_ddc(dev, connector,
-+					  &hibmc_connector_funcs,
-+					  DRM_MODE_CONNECTOR_VGA,
-+					  &hibmc_connector->adapter);
- 	if (ret) {
- 		drm_err(dev, "failed to init connector: %d\n", ret);
- 		return ret;
- 	}
-+
- 	drm_connector_helper_add(connector, &hibmc_connector_helper_funcs);
- 
- 	drm_connector_attach_encoder(connector, encoder);
--- 
-2.7.4
+Yes, indeed.  I will fix this in the next version.
 
+
+Thanks,
+SeongJae Park
