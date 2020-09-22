@@ -2,120 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BBDA273830
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 03:48:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEE19273833
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 03:50:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729205AbgIVBsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 21:48:52 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:42226 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728633AbgIVBsv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 21:48:51 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 2CFD05FDB7C8BA64F8C9;
-        Tue, 22 Sep 2020 09:48:50 +0800 (CST)
-Received: from [10.174.179.91] (10.174.179.91) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 22 Sep 2020 09:48:49 +0800
-Subject: Re: [PATCH -next] mlxsw: spectrum_acl_tcam: simplify the return
- expression of ishtp_cl_driver_register()
-To:     Ido Schimmel <idosch@nvidia.com>
-CC:     Jiri Pirko <jiri@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200921131039.92249-1-miaoqinglang@huawei.com>
- <20200921135158.GC1072139@shredder>
-From:   miaoqinglang <miaoqinglang@huawei.com>
-Message-ID: <eadef853-e308-f40f-6dd4-e4318a1d7e91@huawei.com>
-Date:   Tue, 22 Sep 2020 09:48:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200921135158.GC1072139@shredder>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.91]
-X-CFilter-Loop: Reflected
+        id S1729225AbgIVBu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 21:50:29 -0400
+Received: from mga04.intel.com ([192.55.52.120]:43655 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728633AbgIVBu2 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 21:50:28 -0400
+IronPort-SDR: 4EkRwBZr7X1vPWsGmgqvq6GsN1782se4Sc/6RnqW8dhsnyI3n4/S6RO1VhPJYnH9zpgGGVVVpy
+ kw14e5tI9TpA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="157892997"
+X-IronPort-AV: E=Sophos;i="5.77,288,1596524400"; 
+   d="scan'208";a="157892997"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 18:50:28 -0700
+IronPort-SDR: fJP63Xq2QTZXN+uoYzpd7A+Xkp6ORTK5RZu4JC2LvCR/kxi0LqIFxtJhTimxNQEUaEtbyUgOY8
+ gucrHlPYdnmA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,288,1596524400"; 
+   d="scan'208";a="412496097"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.55])
+  by fmsmga001.fm.intel.com with ESMTP; 21 Sep 2020 18:50:26 -0700
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH] perf stat: Skip duration_time in setup_system_wide
+Date:   Tue, 22 Sep 2020 09:50:04 +0800
+Message-Id: <20200922015004.30114-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Some metrics (such as DRAM_BW_Use) consists of uncore events and
+duration_time. For uncore events, counter->core.system_wide is
+true. But for duration_time, counter->core.system_wide is false
+so target.system_wide is set to false.
 
+Then 'enable_on_exec' is set in perf_event_attr of uncore event.
+Kernel will return error when trying to open the uncore event.
 
-ÔÚ 2020/9/21 21:51, Ido Schimmel Ð´µÀ:
-> On Mon, Sep 21, 2020 at 09:10:39PM +0800, Qinglang Miao wrote:
->> Simplify the return expression.
->>
->> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
->> ---
->>   drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c | 8 +-------
->>   1 file changed, 1 insertion(+), 7 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c
->> index 5c0204033..5b4313991 100644
->> --- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c
->> +++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c
->> @@ -289,17 +289,11 @@ static int
->>   mlxsw_sp_acl_tcam_group_add(struct mlxsw_sp_acl_tcam *tcam,
->>   			    struct mlxsw_sp_acl_tcam_group *group)
->>   {
->> -	int err;
->> -
->>   	group->tcam = tcam;
->>   	mutex_init(&group->lock);
->>   	INIT_LIST_HEAD(&group->region_list);
->>   
->> -	err = mlxsw_sp_acl_tcam_group_id_get(tcam, &group->id);
->> -	if (err)
->> -		return err;
->> -
->> -	return 0;
->> +	return mlxsw_sp_acl_tcam_group_id_get(tcam, &group->id);
+This patch skips the duration_time in setup_system_wide then
+target.system_wide will be set to true for the evlist of uncore
+events + duration_time.
 
-> There is actually a problem here. We don't call mutex_destroy() on
-> error. Should be:
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c
-> index 5c020403342f..7cccc41dd69c 100644
-> --- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c
-> +++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl_tcam.c
-> @@ -292,13 +292,14 @@ mlxsw_sp_acl_tcam_group_add(struct mlxsw_sp_acl_tcam *tcam,
->          int err;
->   
->          group->tcam = tcam;
-> -       mutex_init(&group->lock);
->          INIT_LIST_HEAD(&group->region_list);
->   
->          err = mlxsw_sp_acl_tcam_group_id_get(tcam, &group->id);
->          if (err)
->                  return err;
->   
-> +       mutex_init(&group->lock);
-> +
->          return 0;
->   }
-> 
-> Then it's symmetric with mlxsw_sp_acl_tcam_group_del(). Do you want to
-> send this patch to 'net' or should I? If so, it should have this Fixes
-> line:
-> 
-> Fixes: 5ec2ee28d27b ("mlxsw: spectrum_acl: Introduce a mutex to guard region list updates")
-> 
-> Thanks
-> 
-Hi Ido,
+Before (tested on skylake desktop):
 
-Sorry I didn't realize this problem. As for this bugfix patch, I think 
-there's no doubt that you are the one who should send it :D.
+ # perf stat -M DRAM_BW_Use -- sleep 1
+ Error:
+ The sys_perf_event_open() syscall returned with 22 (Invalid argument) for event (arb/event=0x84,umask=0x1/).
+ /bin/dmesg | grep -i perf may provide additional information.
 
-Thanks.
+After:
 
->>   }
->>   
->>   static void mlxsw_sp_acl_tcam_group_del(struct mlxsw_sp_acl_tcam_group *group)
->> -- 
->> 2.23.0
->>
-> .
-> 
+ # perf stat -M DRAM_BW_Use -- sleep 1
+
+  Performance counter stats for 'system wide':
+
+                169      arb/event=0x84,umask=0x1/ #     0.00 DRAM_BW_Use
+             40,427      arb/event=0x81,umask=0x1/
+      1,000,902,197 ns   duration_time
+
+        1.000902197 seconds time elapsed
+
+Fixes: 648b5af3f3ae ("libperf: Move 'system_wide' from 'struct evsel' to 'struct perf_evsel'")
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+---
+ tools/perf/builtin-stat.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index 7f8d756d9408..9bcc93bc0973 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -2047,8 +2047,10 @@ static void setup_system_wide(int forks)
+ 		struct evsel *counter;
+ 
+ 		evlist__for_each_entry(evsel_list, counter) {
+-			if (!counter->core.system_wide)
++			if (!counter->core.system_wide &&
++			    strcmp(counter->name, "duration_time")) {
+ 				return;
++			}
+ 		}
+ 
+ 		if (evsel_list->core.nr_entries)
+-- 
+2.17.1
+
