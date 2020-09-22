@@ -2,126 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DA38274752
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 19:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E5B1274757
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 19:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgIVRRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 13:17:37 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:8088 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726583AbgIVRRg (ORCPT
+        id S1726672AbgIVRUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 13:20:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726526AbgIVRUD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 13:17:36 -0400
+        Tue, 22 Sep 2020 13:20:03 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17D51C061755;
+        Tue, 22 Sep 2020 10:20:03 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id e23so16334811otk.7;
+        Tue, 22 Sep 2020 10:20:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1600795056; x=1632331056;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=HN/3INYpkkEkVuXVTMcZLyB76gj/EZwzK/U53lRqnzA=;
-  b=WyrtapbFYqgaQIaDWEBlHrUys7xWfJEkjFtaojeW6hvarOiR636H5LiA
-   A3S4Fers+B6BnKPZWrV68Dgh/1zyFriIBwWBqr6v7FFaKOI7kfj9IKUMf
-   9Bp9rDLCPh1vqgc5N+I86YYA0BY/K0q+S6cvdK+XIa1CL1i+wt1sdG4ov
-   c=;
-X-IronPort-AV: E=Sophos;i="5.77,291,1596499200"; 
-   d="scan'208";a="78328752"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1a-821c648d.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 22 Sep 2020 17:17:04 +0000
-Received: from EX13MTAUWC001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1a-821c648d.us-east-1.amazon.com (Postfix) with ESMTPS id 2B90FA205A;
-        Tue, 22 Sep 2020 17:17:04 +0000 (UTC)
-Received: from EX13D12UWC002.ant.amazon.com (10.43.162.253) by
- EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 22 Sep 2020 17:17:03 +0000
-Received: from [10.88.31.162] (10.43.160.185) by EX13D12UWC002.ant.amazon.com
- (10.43.162.253) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 22 Sep
- 2020 17:17:02 +0000
-Subject: Re: [PATCH] scripts/gdb: fix list_for_each
-To:     Jan Kiszka <jan.kiszka@siemens.com>, <linux-kernel@vger.kernel.org>
-CC:     Kieran Bingham <kbingham@kernel.org>
-References: <3b382958-9f1d-a3d2-a239-09ba084227e6@amazon.com>
- <2516a051-306f-670b-1f9e-d46fc577c7f8@siemens.com>
-From:   "Prekas, George" <prekageo@amazon.com>
-Message-ID: <109fe98d-4143-cfd3-b145-8d5fee189f63@amazon.com>
-Date:   Tue, 22 Sep 2020 12:17:00 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EItoq1kaiHeWVc5lky8YhdzGpyspzkaqvTZAN+0uG8s=;
+        b=ek1BIZZyVl3RntwXpKxZKVRy7AjMYd2t5ZjDu0Gkr+83ZXPJiTnzcLSziQYU5YQi9M
+         zz5wOAudN8qHSec8RMYhz3079Sg2fztpxsFVlYPTbpjJj4NEFIouF6csvy38nV6qdvO4
+         LHFyhEB6+sDeNLM20tDikE0MdOwP+PWOSb8F52houXJNiMI3wO2FMRTniR98K97dgkZ4
+         EtCLz1jHbknfXgrX6t3JeREbjP8noQCnc9wvt1K0D+0uAg6Q1ij30KxXkn+n5pJw/Wot
+         Jh3lFs3CaqraBeH+JP3TFUsIDL8If4ZRXHdII6p6FMHRs1zjGRt8K18vJWC8slKoX1wA
+         E1DQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EItoq1kaiHeWVc5lky8YhdzGpyspzkaqvTZAN+0uG8s=;
+        b=l0+h5lLkvRLkkQnFYZ/5cFi7WhDHwLkvwEFVEfINT1DSl/+zies1OznIRuV0Z3BaAm
+         VMW7M1QEcE/c+uYsf4J7xr40L7fWLWvTZCF9QyOlr9Rn+l3Sr9gaJfMBR0JmQs4nVwCO
+         GCnbhXSf+mCRQ9RLoN1YynMgH1+q3YEhCOyQ4eDJU3l28AQaJqoFHRBZeUvM+e9SfW2E
+         /fjlgdJT2fFZQHT9FVJs8cWCK6j+H2i7jYQ5xkljd0rZqTlQoBekJDflzEhHwhBWkCDK
+         6F2H/BMaQ0ow0OL5GQS0lsikYszpOZZ1rr36FOdSX3Bu0sl/MOYZUFXmrlefP7WyjPj2
+         sxMQ==
+X-Gm-Message-State: AOAM531IjbME+drraLp1MfJkm4ZexmoZ4pmEMl0/g0cNPoV07MNnQGYY
+        FARMH/iwbZAPDa7qQcElOtrbgJJ2SAZrguiEfbk=
+X-Google-Smtp-Source: ABdhPJwNcpShFc8c3V/UC1bmKbpnJq1sPySTQ40fTrCHUXJ486Nscbfvc9yXAnnr7C/wr8kImZHNzbiYtV9UD4Td08Q=
+X-Received: by 2002:a9d:4695:: with SMTP id z21mr3525657ote.91.1600795202320;
+ Tue, 22 Sep 2020 10:20:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <2516a051-306f-670b-1f9e-d46fc577c7f8@siemens.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.43.160.185]
-X-ClientProxiedBy: EX13D40UWC002.ant.amazon.com (10.43.162.191) To
- EX13D12UWC002.ant.amazon.com (10.43.162.253)
+References: <20200921163021.v1.1.Id3160295d33d44a59fa3f2a444d74f40d132ea5c@changeid>
+ <CABBYNZJGfDoV+E-f6T=ZQ2RT0doXDdOB7tgVrt=4fpvKcpmH4w@mail.gmail.com> <CAJQfnxHcvm_-iCP-2Y6GR1vG4ZmMr==ZuMHBua8TeeiNbqAJgA@mail.gmail.com>
+In-Reply-To: <CAJQfnxHcvm_-iCP-2Y6GR1vG4ZmMr==ZuMHBua8TeeiNbqAJgA@mail.gmail.com>
+From:   Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date:   Tue, 22 Sep 2020 10:19:50 -0700
+Message-ID: <CABBYNZKuXtf5Z_zHG1h2c6_0to8o2MqvmQvt-8mmX0hdb3_B9g@mail.gmail.com>
+Subject: Re: [PATCH v1] Bluetooth: Enforce key size of 16 bytes on FIPS level
+To:     Archie Pusaka <apusaka@google.com>
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Alain Michaud <alainm@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Archie,
 
-On 9/22/2020 9:32 AM, Jan Kiszka wrote:
- >
- > On 22.09.20 16:28, George Prekas wrote:
- >> If the next pointer is NULL, list_for_each gets stuck in an infinite
- >> loop.
- >>
- >> Signed-off-by: George Prekas <prekageo@amazon.com>
- >> ---
- >>   scripts/gdb/linux/lists.py | 2 ++
- >>   1 file changed, 2 insertions(+)
- >>
- >> diff --git a/scripts/gdb/linux/lists.py b/scripts/gdb/linux/lists.py
- >> index c487ddf09d38..424a91c1aa8b 100644
- >> --- a/scripts/gdb/linux/lists.py
- >> +++ b/scripts/gdb/linux/lists.py
- >> @@ -27,6 +27,8 @@ def list_for_each(head):
- >>           raise TypeError("Must be struct list_head not {}"
- >>                              .format(head.type))
- >>
- >> +    if head['next'] == 0:
- >> +        return
- >>       node = head['next'].dereference()
- >>       while node.address != head.address:
- >>           yield node.address
- >
- > Obviously, infinite loops are bad and should be avoided. But NULL is
- > bug, isn't it? Shouldn't we report such a corruption?
- >
+On Tue, Sep 22, 2020 at 12:37 AM Archie Pusaka <apusaka@google.com> wrote:
+>
+> Hi Luiz,
+>
+> On Tue, 22 Sep 2020 at 01:13, Luiz Augusto von Dentz
+> <luiz.dentz@gmail.com> wrote:
+> >
+> > Hi Archie,
+> >
+> > On Mon, Sep 21, 2020 at 1:31 AM Archie Pusaka <apusaka@google.com> wrote:
+> > >
+> > > From: Archie Pusaka <apusaka@chromium.org>
+> > >
+> > > According to the spec Ver 5.2, Vol 3, Part C, Sec 5.2.2.8:
+> > > Device in security mode 4 level 4 shall enforce:
+> > > 128-bit equivalent strength for link and encryption keys required
+> > > using FIPS approved algorithms (E0 not allowed, SAFER+ not allowed,
+> > > and P-192 not allowed; encryption key not shortened)
+> > >
+> > > This patch rejects connection with key size below 16 for FIPS level
+> > > services.
+> > >
+> > > Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+> > > Reviewed-by: Alain Michaud <alainm@chromium.org>
+> > >
+> > > ---
+> > >
+> > >  net/bluetooth/l2cap_core.c | 7 ++++++-
+> > >  1 file changed, 6 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
+> > > index ade83e224567..306616ec26e6 100644
+> > > --- a/net/bluetooth/l2cap_core.c
+> > > +++ b/net/bluetooth/l2cap_core.c
+> > > @@ -1515,8 +1515,13 @@ static bool l2cap_check_enc_key_size(struct hci_conn *hcon)
+> > >          * that have no key size requirements. Ensure that the link is
+> > >          * actually encrypted before enforcing a key size.
+> > >          */
+> > > +       int min_key_size = hcon->hdev->min_enc_key_size;
+> > > +
+> > > +       if (hcon->sec_level == BT_SECURITY_FIPS)
+> > > +               min_key_size = 16;
+> > > +
+> > >         return (!test_bit(HCI_CONN_ENCRYPT, &hcon->flags) ||
+> > > -               hcon->enc_key_size >= hcon->hdev->min_enc_key_size);
+> > > +               hcon->enc_key_size >= min_key_size);
+> >
+> > While this looks fine to me, it looks like this should be placed
+> > elsewhere since it takes an hci_conn and it is not L2CAP specific.
+>
+> From what I understood, it is permissible to use AES-CCM P-256
+> encryption with key length < 16 when encrypting the link, but such a
+> connection does not satisfy security level 4, and therefore must not
+> be given access to level 4 services. However, I think it is
+> permissible to give them access to level 3 services or below.
+>
+> Should I use l2cap chan->sec_level for this purpose? I'm kind of lost
+> on the difference between hcon->sec_level and chan->sec_level.
 
-Hi Jan,
+The chan->sec_level is L2CAP channel required sec_level while
+hcon->sec_level is the current secure level in effect, at some point I
+guess we assign the hcon->sec_level with chan->sec_level but Im not
+sure if that has already happened here or not.
 
-Is it a bug? Or does it mean that the list is empty?
+> >
+> > >  }
+> > >
+> > >  static void l2cap_do_start(struct l2cap_chan *chan)
+> > > --
+> > > 2.28.0.681.g6f77f65b4e-goog
+> > >
+> >
+> >
+> > --
+> > Luiz Augusto von Dentz
 
-Let me give some background. If you do the following:
 
-$ qemu-system-x86_64 -nographic -m 1024 -kernel 
-build/arch/x86/boot/bzImage -s -S < /dev/null > /dev/null &
-$ gdb -q build/vmlinux -ex 'target remote localhost:1234' -iex 'set 
-auto-load safe-path /' -ex 'lx-symbols'
 
-You will see:
-
-loading vmlinux
-scanning for modules in /home/ubuntu/linux-5.8.10
-no module object found for ''
-
-And the last line repeats forever. This happens because modules.next == 
-NULL. This is the Python stack trace:
-
-   File ".../symbols.py", line 174, in invoke
-     self.load_all_symbols()
-   File ".../symbols.py", line 161, in load_all_symbols
-     [self.load_module_symbols(module) for module in module_list]
-   File ".../symbols.py", line 161, in <listcomp>
-     [self.load_module_symbols(module) for module in module_list]
-   File ".../modules.py", line 30, in module_list
-     for module in lists.list_for_each_entry(modules, module_ptr_type, 
-"list"):
-   File ".../lists.py", line 41, in list_for_each_entry
-     for node in list_for_each(head):
-   File ".../lists.py", line 31, in list_for_each
-     traceback.print_stack()
-
-This patch tries to fix the above problem.
-
-George
-
+-- 
+Luiz Augusto von Dentz
