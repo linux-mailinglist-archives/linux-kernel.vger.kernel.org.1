@@ -2,100 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 934A9274BD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:05:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66571274BEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgIVWFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 18:05:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60136 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726685AbgIVWFP (ORCPT
+        id S1726732AbgIVWPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 18:15:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726179AbgIVWP0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 18:05:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600812314;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1HuDu6VLipkoXjOvX2ydRAsRN46ZNECZq7n9nX0XdnI=;
-        b=K9YFCvRyRtZ+nAFcyjOo1zRHreHcjNEcMaoFHYrz4vMknwVSIZWS1XgM5QyUSdJnVVJXFI
-        Au9maU65hgc0OIXEaorDArlVSpUaBQaMDs214G7SRDuxZz5O+jxWiMYwJ32TNjin4T1t62
-        IpSlrh09aTIS2gghyeIEGaySS1KH2YU=
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
- [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-165-K0MbwC7iOAGA1YSLKAhGzA-1; Tue, 22 Sep 2020 18:05:12 -0400
-X-MC-Unique: K0MbwC7iOAGA1YSLKAhGzA-1
-Received: by mail-ot1-f71.google.com with SMTP id x52so1775712otb.11
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 15:05:12 -0700 (PDT)
+        Tue, 22 Sep 2020 18:15:26 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C038DC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 15:15:26 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id d20so20878704qka.5
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 15:15:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7k9n/OKHilgdBd4xEN29xdZczBeCe9kTHhEJaWina5I=;
+        b=KHzh108T8sbucLuij78e8c4BPMasRVUaXMklA6VdOOqfjOaB997h1VtEm4ewt8WwC1
+         R34WqDGPJhaArxi6FQSALt0zcr2S0Mpw6g+DJDQGlS4aqMpWtqU9gn0XUT6MyGuweIcr
+         4nBH2fI9nhnq7bPlJSEbNFb8mJQqQgbyZ32BWZi369wS+I/zYt1hwk75S7fwqbeN30NS
+         gHWTL7ZjoQq01YLM+s1KvVfdaYg2xCV6/fy/QFxriL4g9a4Bp0wJWifuCkO9CgAKVHCy
+         Cum+FGH/+ibJTEt2E2bSW+dl/7YBG8+oM3LayIXieqrlbi6fjI7feKk7D/gdgoi+PphQ
+         fnCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1HuDu6VLipkoXjOvX2ydRAsRN46ZNECZq7n9nX0XdnI=;
-        b=KgDrnlRvr4LipYKajVXeqBR6S5Pfidl6CXQvFrejrWz2wzOlPSuVGZGOD1DxrVRaWu
-         r2ctz+7cs+dqjiTfiKXlwix+IeCt1UEW5qzdFnmdS8bLX4O5gsq5CCm3/O9968HxZcQ/
-         5aYMSwIym/a3pL5qZ2EbAlaVavryIWlmhmQQuKJjiyDII58Um1P2wCM6AjMAWy4VQwSe
-         n+mcjFwflS4PdTQXrpeNTGLyxjy7zBRNFYrJpGDhleCm+TSj6PLNVLPs6NtlLAoa4Iw4
-         GlYLJbYLEUYVf5/J47ehjBYuJM1vtaCVzrKACr00c+yCcKhzhZmJlX4EVVeLgzj9sDZj
-         9Qzw==
-X-Gm-Message-State: AOAM530o/GOTaH8Zihvq3P4kjQJbfQRfnvq/ZUumqeNkyyyNOsyjQeXX
-        lJW2TZJWNn9ezrio40V2fZml3hFOTsdd9RoJ2L6AYONPoVUtsy+IcptGUfWIfthblRMSVsY+hSa
-        G0a4xucWytmn2/Y5dZJpbE1JYDzy97TzkUn7OHsRd
-X-Received: by 2002:a4a:a385:: with SMTP id s5mr4526257ool.8.1600812311423;
-        Tue, 22 Sep 2020 15:05:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyFQQl79LZqD9ewINDxufXtajraSG49Z623jpMmetiwrW8RQQFJ+ZMcncq7gan5aXrAJDcTlr/7rNTZ7uMT/Ok=
-X-Received: by 2002:a4a:a385:: with SMTP id s5mr4526237ool.8.1600812311133;
- Tue, 22 Sep 2020 15:05:11 -0700 (PDT)
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=7k9n/OKHilgdBd4xEN29xdZczBeCe9kTHhEJaWina5I=;
+        b=pXMSyRMhzlA2jrRGDO2vo/u+SR14fCAr2BuRY0v2geIhAH+TKGoZmnEyk9KXKkRdlM
+         fFdcijTXkLWMk+OAGKkZb+NZuPBuIQ1nouverJzitXPaF63HcnS+j41s/2arWi1ReKdH
+         06lRgJDHX5BJa83ZfmW3wyjia1eZZOVnTAzwSFuz5ZW96OExaPf+eADRvuuUlpEDdeDB
+         rHaxup8X2z9EL6vQ0WWW17Sxv4GlekvFRx2wA0gASTSGYqupR9/iZLYuF+QHNY+0bmru
+         FlUBXBo8JQ/UsgsFGDoDncHykUc8pCySmuzw3avBEaMfZfshBo6VlyO8sKzqFbKc+xvw
+         lDfg==
+X-Gm-Message-State: AOAM530W2YQxf3ELwUC18CyP3pGSAR59V0DQsdKzQUThK7ufMKF3Y7To
+        9IZecOudg+X9gGVPa+1hQuE=
+X-Google-Smtp-Source: ABdhPJzi0nZ7QU6De1fzUSMl0+0ffnqWTuaA1x8ARvlqdBeahIXVGBPQRjZs6LQXuJjO/7I6KEuapQ==
+X-Received: by 2002:a05:620a:134f:: with SMTP id c15mr6776628qkl.316.1600812925930;
+        Tue, 22 Sep 2020 15:15:25 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id r5sm13258806qtd.87.2020.09.22.15.15.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 15:15:25 -0700 (PDT)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Tue, 22 Sep 2020 18:15:23 -0400
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Feng Tang <feng.tang@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        Wei Huang <wei.huang2@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2] tools/x86: add kcpuid tool to show raw CPU
+ features
+Message-ID: <20200922221523.GA1185357@rani.riverdale.lan>
+References: <1600752470-43179-1-git-send-email-feng.tang@intel.com>
+ <20200922201024.GS22660@zn.tnic>
 MIME-Version: 1.0
-References: <20200922133731.33478-1-jarod@redhat.com> <20200922133731.33478-5-jarod@redhat.com>
-In-Reply-To: <20200922133731.33478-5-jarod@redhat.com>
-From:   Jarod Wilson <jarod@redhat.com>
-Date:   Tue, 22 Sep 2020 18:05:00 -0400
-Message-ID: <CAKfmpSfv8L46MjYHfUCMcz+Wxed4EpO1FEu8NjqVU6W8_m9E=w@mail.gmail.com>
-Subject: Re: [PATCH net-next 4/5] bonding: make Kconfig toggle to disable
- legacy interfaces
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Davis <tadavis@lbl.gov>, Netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200922201024.GS22660@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 9:38 AM Jarod Wilson <jarod@redhat.com> wrote:
->
-> By default, enable retaining all user-facing API that includes the use of
-> master and slave, but add a Kconfig knob that allows those that wish to
-> remove it entirely do so in one shot.
-> diff --git a/drivers/net/bonding/bond_procfs.c b/drivers/net/bonding/bond_procfs.c
-> index abd265d6e975..91ece68607b2 100644
-> --- a/drivers/net/bonding/bond_procfs.c
-> +++ b/drivers/net/bonding/bond_procfs.c
-> @@ -7,6 +7,12 @@
->
->  #include "bonding_priv.h"
->
-> +#ifdef CONFIG_BONDING_LEGACY_INTERFACES
-> +const char *linkdesc = "Slave";
-> +#else
-> +const char *linkdesc = "Link";
-> +#endif
+On Tue, Sep 22, 2020 at 10:10:24PM +0200, Borislav Petkov wrote:
+> + AMD folks.
+> 
+> On Tue, Sep 22, 2020 at 01:27:50PM +0800, Feng Tang wrote:
+> > End users frequently want to know what features their processor
+> > supports, independent of what the kernel supports.
+> > 
+> > /proc/cpuinfo is great. It is omnipresent and since it is provided by
+> > the kernel it is always as up to date as the kernel. But, it could be
+> > ambiguous about processor features which can be disabled by the kernel
+> > at boot-time or compile-time.
+> > 
+> > There are some user space tools showing more raw features, but they are
+> > not bound with kernel, and go with distros. Many end users are still
+> > using old distros with new kernels (upgraded by themselves), and may
+> > not upgrade the distros only to get a newer tool.
+> > 
+> > So here arise the need for a new tool, which
+> >   * Shows raw cpu features got from running cpuid
+> >   * Be easier to obtain updates for compared to existing userspace
+> >     tooling (perhaps distributed like perf)
+> >   * Inherits "modern" kernel development process, in contrast to some
+> >     of the existing userspace cpuid tools which are still being developed
+> >     without git and distributed in tarballs from non-https sites.
+> >   * Can produce output consistent with /proc/cpuinfo to make comparison
+> >     easier.
 
-I've been asked if it would be okay to add extra lines to the
-/proc/net/bonding/<bond interface> output, so that for example, both
-"Slave Interface: <interface>" and "Link Interface: <interface>" are
-both in the default output, with the Slave bits then suppressed by the
-Kconfig option being unset, versus the Kconfig option currently
-swapping out Slave for Link when disabled. It would bloat the output
-by a fair number of lines, but all the same data would be there and
-parseable. Wasn't sure on this one, so I wanted to check on it. If it
-would be acceptable, I'll rework that bit of code.
+Rather than a tool, would additional file(s) in, say,
+/sys/devices/system/cpu/cpu<n> be nicer? They could show the raw CPUID
+features, one file per leaf or sub-leaf, maybe even along with whether
+they were disabled at boot-time.
 
--- 
-Jarod Wilson
-jarod@redhat.com
+> >   * Be in-kernel, could leverage kernel enabling, and even
+> >     theoretically consume arch/x86/boot/cpustr.h so it could pick up
+> >     new features directly from one-line X86_FEATURE_* definitions.
+
+That's arch/x86/include/asm/cpufeatures.h right -- cpustr.h is generated
+from that. The table there already has comments which could be extracted
+as the one-line description.
 
