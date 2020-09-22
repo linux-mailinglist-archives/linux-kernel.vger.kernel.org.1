@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59788274A61
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 22:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA061274A5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 22:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726805AbgIVUtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 16:49:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39750 "EHLO
+        id S1726784AbgIVUtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 16:49:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726637AbgIVUtX (ORCPT
+        with ESMTP id S1726676AbgIVUtY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 16:49:23 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED7FDC0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 13:49:22 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id g4so18553855wrs.5
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 13:49:22 -0700 (PDT)
+        Tue, 22 Sep 2020 16:49:24 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D25FC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 13:49:24 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id y15so4748956wmi.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 13:49:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4owpoQA0YZkU55g3xZqB0P4GXzrY6zfnXz2TqZZIyZ0=;
-        b=KYMM1B96Jv7z2OSW2J1SxoT0oCmfO8gzdOG3M1m8MGUzXriMClxvjHa/SFXuKswpCm
-         RXSDpcMVpydS7yQvsSinqKRB4luwMTtxl9yqngeD3k1qPCwL1tyaO6lZDQwcOBnmvohX
-         u3CxFJrBb5HXhwlotYXSVREXOiEaAsCN8mVf/eDVM2sXPVh5UmS3JoU8JdJtDXU9b8y/
-         yIzBCfYtb7WXokc+pb7TdoScbplDeCH0U9QuIDyYx2LfgAkMx9l7SpOD6T0AUzSp2jj0
-         jPoMAfE1qHyVwF5n11jwIJ2KZ0DPEPFe37y2qMCLi5Mq5zD5r7MgYvB3/9Ocys280cNY
-         VrnQ==
+        bh=1lIItytl4uaajAuc4uwjjecDrxF8pHsYAvzuoqJkgTQ=;
+        b=h91v9QY6L9oWSaDPJHFteU/oL4xg7PilB7f/6CYc07qQVjY5g5BXNxK79cDfXKdf7z
+         w91Gm+c8CoiF+WxxSPQFzZyKEdxVg1k9zFI3I8JKv0GngbjFQCHWIrUmL7skJlMS89Le
+         YrnWmM/lupsZAknwvzYKorwsy6vAmiFNdypuKNRisxOq7ERbbC9zH5/htix+dlV7IFle
+         mv39K4QMWiI4yFj8FbV4iW+8WAX+bDPdunOlrgzd5wfIjG77A38Bt5PS+LD0+1S/ktTW
+         Y0sq2MOJtkH9XDHtzgcfvpqtt86pwVJKPrYkxv63eSUN940SvFv6/K4cxdNwwf5rRg9t
+         4glw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4owpoQA0YZkU55g3xZqB0P4GXzrY6zfnXz2TqZZIyZ0=;
-        b=ZAqK9sMrwGi5hiUIigCMRmwqFBaHqlfmOkfad1rkPi7TEIPcaZV3vElVAD0RyVcCqM
-         XAAII6/uM/HE5e1wrZHDVHs3yzSzr3Yb+YRyzv87EcE/HDWW7ro2sJHGj2yr9dYSUi5G
-         fhZpsTGE/OiwIbaOlVyXgHEIoAWL+NutD18XAiGTaul7B3NnniUrxfxsu1w75jpPIg9M
-         v2m2l78MdcWegP5RoNBlh5BWVRe7Y/HJBbVFX/3VIyMl2RHRNAMOFXoFiMr6OOy4q7/N
-         R9D04qmL6dgSTD/Q2XwUrrj/nlCm1muFWHkW2NtaVKDIrWMPOWj1VW/V/Vzo5BoV18ib
-         YmVQ==
-X-Gm-Message-State: AOAM530DmNZOuTwESytdeNMj/sMkubQcGMq5HL9xl/kDpmFxevAcslBj
-        RODXdrcb4cPlIs0Ljrc4Cw9+Jw==
-X-Google-Smtp-Source: ABdhPJxX9uBzSAKnJBAmtj/fHGztbwr3USOr+K3MXcKDIWkd6igzfbo8A1qOGNiBRh7RnslToVGEkg==
-X-Received: by 2002:a5d:4dcb:: with SMTP id f11mr5757666wru.163.1600807761459;
-        Tue, 22 Sep 2020 13:49:21 -0700 (PDT)
+        bh=1lIItytl4uaajAuc4uwjjecDrxF8pHsYAvzuoqJkgTQ=;
+        b=ZB74URCo69e1+uYlin97u+tEXMWu10eolWIFWU+3sI5LMP6wv+Wz9Orj2kLr8qwRTE
+         0Oiy7hx1VAW/O9jBGkTT/NVQovKo9mbVFWqEmlYOVvveYA64bUwqu3WNVvTG3oYFeEFA
+         Xxi3fgiPTUYN0zcuDmB17Zk5LMpUmPubjNCZECBrjm/S9WeoGev5sce2fH2Y2W+Va+wo
+         u4eT/aayJkreU0vdrsNoGOVgkJmmRpacqrfwOWVFH/iiotJ24lEPB41ILpdFWSP2ZuD+
+         HLSbV4O4tO4POfdLRMGH+zyiEu4cKKo7/sXPrLkOrdkcIovxa5PZV17Rbku+p8U1xx8X
+         pPyw==
+X-Gm-Message-State: AOAM532a+9nxY38TAWh7B+uBNrzmLasuS1nB19ImNRGmrgEs1OnO05yq
+        RG3EYXvV2v+tGWjbf2n12a1Pzw==
+X-Google-Smtp-Source: ABdhPJzic7hX1yo72NPyqxIktIR3nBzaVEb/nfU/OsgI1VH33QpC01Aoy+b0MmzoIP/ac4TNW3Ye2Q==
+X-Received: by 2002:a7b:ce0d:: with SMTP id m13mr3028538wmc.83.1600807762992;
+        Tue, 22 Sep 2020 13:49:22 -0700 (PDT)
 Received: from localhost ([2a01:4b00:8523:2d03:1105:630f:e990:272f])
-        by smtp.gmail.com with ESMTPSA id y207sm6365851wmc.17.2020.09.22.13.49.19
+        by smtp.gmail.com with ESMTPSA id z11sm27827857wru.88.2020.09.22.13.49.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Sep 2020 13:49:20 -0700 (PDT)
+        Tue, 22 Sep 2020 13:49:22 -0700 (PDT)
 From:   David Brazdil <dbrazdil@google.com>
 To:     kvmarm@lists.cs.columbia.edu
 Cc:     Catalin Marinas <catalin.marinas@arm.com>,
@@ -58,11 +58,10 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
         Christoph Lameter <cl@linux.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, David Brazdil <dbrazdil@google.com>,
-        Andrew Scull <ascull@google.com>
-Subject: [PATCH v4 05/10] kvm: arm64: Remove hyp_adr/ldr_this_cpu
-Date:   Tue, 22 Sep 2020 21:49:05 +0100
-Message-Id: <20200922204910.7265-6-dbrazdil@google.com>
+        kernel-team@android.com, David Brazdil <dbrazdil@google.com>
+Subject: [PATCH v4 06/10] kvm: arm64: Add helpers for accessing nVHE hyp per-cpu vars
+Date:   Tue, 22 Sep 2020 21:49:06 +0100
+Message-Id: <20200922204910.7265-7-dbrazdil@google.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200922204910.7265-1-dbrazdil@google.com>
 References: <20200922204910.7265-1-dbrazdil@google.com>
@@ -72,116 +71,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The hyp_adr/ldr_this_cpu helpers were introduced for use in hyp code
-because they always needed to use TPIDR_EL2 for base, while
-adr/ldr_this_cpu from kernel proper would select between TPIDR_EL2 and
-_EL1 based on VHE/nVHE.
+Defining a per-CPU variable in hyp/nvhe will result in its name being
+prefixed with __kvm_nvhe_. Add helpers for declaring these variables
+in kernel proper and accessing them with this_cpu_ptr and per_cpu_ptr.
 
-Simplify this now that the hyp mode case can be handled using the
-__KVM_VHE/NVHE_HYPERVISOR__ macros.
-
-Acked-by: Andrew Scull <ascull@google.com>
 Acked-by: Will Deacon <will@kernel.org>
 Signed-off-by: David Brazdil <dbrazdil@google.com>
 ---
- arch/arm64/include/asm/assembler.h | 29 +++++++++++++++++++----------
- arch/arm64/include/asm/kvm_asm.h   | 14 +-------------
- arch/arm64/kvm/hyp/hyp-entry.S     |  2 +-
- 3 files changed, 21 insertions(+), 24 deletions(-)
+ arch/arm64/include/asm/kvm_asm.h | 25 +++++++++++++++++++++++--
+ 1 file changed, 23 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
-index 54d181177656..86e0ef79a799 100644
---- a/arch/arm64/include/asm/assembler.h
-+++ b/arch/arm64/include/asm/assembler.h
-@@ -218,6 +218,23 @@ lr	.req	x30		// link register
- 	str	\src, [\tmp, :lo12:\sym]
- 	.endm
- 
-+	/*
-+	 * @dst: destination register (32 or 64 bit wide)
-+	 */
-+#if defined(__KVM_NVHE_HYPERVISOR__) || defined(__KVM_VHE_HYPERVISOR__)
-+	.macro	this_cpu_offset, dst
-+	mrs	\dst, tpidr_el2
-+	.endm
-+#else
-+	.macro	this_cpu_offset, dst
-+alternative_if_not ARM64_HAS_VIRT_HOST_EXTN
-+	mrs	\dst, tpidr_el1
-+alternative_else
-+	mrs	\dst, tpidr_el2
-+alternative_endif
-+	.endm
-+#endif
-+
- 	/*
- 	 * @dst: Result of per_cpu(sym, smp_processor_id()) (can be SP)
- 	 * @sym: The name of the per-cpu variable
-@@ -226,11 +243,7 @@ lr	.req	x30		// link register
- 	.macro adr_this_cpu, dst, sym, tmp
- 	adrp	\tmp, \sym
- 	add	\dst, \tmp, #:lo12:\sym
--alternative_if_not ARM64_HAS_VIRT_HOST_EXTN
--	mrs	\tmp, tpidr_el1
--alternative_else
--	mrs	\tmp, tpidr_el2
--alternative_endif
-+	this_cpu_offset \tmp
- 	add	\dst, \dst, \tmp
- 	.endm
- 
-@@ -241,11 +254,7 @@ alternative_endif
- 	 */
- 	.macro ldr_this_cpu dst, sym, tmp
- 	adr_l	\dst, \sym
--alternative_if_not ARM64_HAS_VIRT_HOST_EXTN
--	mrs	\tmp, tpidr_el1
--alternative_else
--	mrs	\tmp, tpidr_el2
--alternative_endif
-+	this_cpu_offset \tmp
- 	ldr	\dst, [\dst, \tmp]
- 	.endm
- 
 diff --git a/arch/arm64/include/asm/kvm_asm.h b/arch/arm64/include/asm/kvm_asm.h
-index c196eec25498..cf9456663289 100644
+index cf9456663289..911d91787fa0 100644
 --- a/arch/arm64/include/asm/kvm_asm.h
 +++ b/arch/arm64/include/asm/kvm_asm.h
-@@ -173,20 +173,8 @@ extern char __smccc_workaround_1_smc[__SMCCC_WORKAROUND_1_SMC_SZ];
+@@ -54,9 +54,21 @@
+ 	DECLARE_KVM_VHE_SYM(sym);		\
+ 	DECLARE_KVM_NVHE_SYM(sym)
  
- #else /* __ASSEMBLY__ */
++#define DECLARE_KVM_VHE_PER_CPU(type, sym)	\
++	DECLARE_PER_CPU(type, sym)
++#define DECLARE_KVM_NVHE_PER_CPU(type, sym)	\
++	DECLARE_PER_CPU(type, kvm_nvhe_sym(sym))
++
++#define DECLARE_KVM_HYP_PER_CPU(type, sym)	\
++	DECLARE_KVM_VHE_PER_CPU(type, sym);	\
++	DECLARE_KVM_NVHE_PER_CPU(type, sym)
++
+ #define CHOOSE_VHE_SYM(sym)	sym
+ #define CHOOSE_NVHE_SYM(sym)	kvm_nvhe_sym(sym)
  
--.macro hyp_adr_this_cpu reg, sym, tmp
--	adr_l	\reg, \sym
--	mrs	\tmp, tpidr_el2
--	add	\reg, \reg, \tmp
--.endm
--
--.macro hyp_ldr_this_cpu reg, sym, tmp
--	adr_l	\reg, \sym
--	mrs	\tmp, tpidr_el2
--	ldr	\reg,  [\reg, \tmp]
--.endm
--
- .macro get_host_ctxt reg, tmp
--	hyp_adr_this_cpu \reg, kvm_host_data, \tmp
-+	adr_this_cpu \reg, kvm_host_data, \tmp
- 	add	\reg, \reg, #HOST_DATA_CONTEXT
- .endm
++#define this_cpu_ptr_nvhe_sym(sym)	this_cpu_ptr(&kvm_nvhe_sym(sym))
++#define per_cpu_ptr_nvhe_sym(sym, cpu)	per_cpu_ptr(&kvm_nvhe_sym(sym), cpu)
++
+ #ifndef __KVM_NVHE_HYPERVISOR__
+ /*
+  * BIG FAT WARNINGS:
+@@ -69,12 +81,21 @@
+  * - Don't let the nVHE hypervisor have access to this, as it will
+  *   pick the *wrong* symbol (yes, it runs at EL2...).
+  */
+-#define CHOOSE_HYP_SYM(sym)	(is_kernel_in_hyp_mode() ? CHOOSE_VHE_SYM(sym) \
++#define CHOOSE_HYP_SYM(sym)		(is_kernel_in_hyp_mode()	\
++					   ? CHOOSE_VHE_SYM(sym)	\
+ 					   : CHOOSE_NVHE_SYM(sym))
++#define this_cpu_ptr_hyp_sym(sym)	(is_kernel_in_hyp_mode()	\
++					   ? this_cpu_ptr(&sym)		\
++					   : this_cpu_ptr_nvhe_sym(sym))
++#define per_cpu_ptr_hyp_sym(sym, cpu)	(is_kernel_in_hyp_mode()	\
++					   ? per_cpu_ptr(&sym, cpu)	\
++					   : per_cpu_ptr_nvhe_sym(sym, cpu))
+ #else
+ /* The nVHE hypervisor shouldn't even try to access anything */
+ extern void *__nvhe_undefined_symbol;
+-#define CHOOSE_HYP_SYM(sym)	__nvhe_undefined_symbol
++#define CHOOSE_HYP_SYM(sym)		__nvhe_undefined_symbol
++#define this_cpu_ptr_hyp_sym(sym)	(&__nvhe_undefined_symbol)
++#define per_cpu_ptr_hyp_sym(sym, cpu)	(&__nvhe_undefined_symbol)
+ #endif
  
-diff --git a/arch/arm64/kvm/hyp/hyp-entry.S b/arch/arm64/kvm/hyp/hyp-entry.S
-index 46b4dab933d0..fba91c2ab410 100644
---- a/arch/arm64/kvm/hyp/hyp-entry.S
-+++ b/arch/arm64/kvm/hyp/hyp-entry.S
-@@ -132,7 +132,7 @@ alternative_cb_end
- 	str	x0, [x2, #VCPU_WORKAROUND_FLAGS]
- 
- 	/* Check that we actually need to perform the call */
--	hyp_ldr_this_cpu x0, arm64_ssbd_callback_required, x2
-+	ldr_this_cpu x0, arm64_ssbd_callback_required, x2
- 	cbz	x0, wa2_end
- 
- 	mov	w0, #ARM_SMCCC_ARCH_WORKAROUND_2
+ /* Translate a kernel address @ptr into its equivalent linear mapping */
 -- 
 2.28.0.681.g6f77f65b4e-goog
 
