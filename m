@@ -2,186 +2,347 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4360E274864
+	by mail.lfdr.de (Postfix) with ESMTP id B254C274865
 	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 20:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726715AbgIVSlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726767AbgIVSlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 14:41:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726714AbgIVSlo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 22 Sep 2020 14:41:44 -0400
-Received: from mx0a-00010702.pphosted.com ([148.163.156.75]:25488 "EHLO
-        mx0b-00010702.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726662AbgIVSll (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 14:41:41 -0400
-Received: from pps.filterd (m0098781.ppops.net [127.0.0.1])
-        by mx0a-00010702.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 08MITEdo012681;
-        Tue, 22 Sep 2020 13:41:23 -0500
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2175.outbound.protection.outlook.com [104.47.59.175])
-        by mx0a-00010702.pphosted.com with ESMTP id 33ne10gtyb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Sep 2020 13:41:23 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EpvipjRR3o8MkPspcsWGhsXWVDVHHTnS1k1aPL9MVErwP2kaSu4qoOUU7WNw6QefjAmieYPMRYvh1rbmWfecQ0hHlOPcTtKNNao/GM3p1e0IhJqrU2aenxwsMoBlUMbMpm/qw6Q24VUkgNnPITRVdPRfsygZDPLxaW//SEG2oGOrrXRYuYVLGBGRUDQUqFVcCDeXKo1fbJ4fXiamg7iQDH/8JJkjU77AJ+IdbwRWGwB5hXISuvlsKFQpRyJ2xwlWOhYhQ4iphc/ggxEeA2+GhcZE10OOCJ3F9NVOKWn3RP1WisD/0G2OhHwXVeGln8w0nG1zV4BFXKPtKbLIkSnHAA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wqpilKEkL8lh151YQ4fjOcwTx0bUvTNC5Tgm5SF2pWY=;
- b=AvVXlUq5/l2A9TtP2aAzndlUyWQf0HMZj3tzVJ5xN+If/lPySwib717WenNl6tphhKHrkCkmMlvDRqqWhvMrl7e6doGAwdVeiY0y75SRwvgjC5p2cDiANKY1abiC1IXFIHI0aZwDmQ6Yqe4ZRgzCAbdjAhiaoCA/5hw/N1Yxy+WP3QJ6taZBq4iCtINo9omMEBwg8QBcReBpnoBELE/bBvm9CO+4+2FGmLp+MAeYPeQM9DkEnddDptaBN2hM7634Vo0kiK6MRKlXI2VcRApoWM+UQWJk47R0HTf5LN5nAZhzGYQGKCcNbTEZITMfZuRtK/f7LC+ClRVVuoOyBqdXQA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=ni.com; dmarc=pass action=none header.from=ni.com; dkim=pass
- header.d=ni.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=nio365.onmicrosoft.com; s=selector2-nio365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wqpilKEkL8lh151YQ4fjOcwTx0bUvTNC5Tgm5SF2pWY=;
- b=szRz1islj0a496qkLv4jUbQT9G4dbw5p5tP07bicfoTWD1VRWjf00QBSu1u3KzBLb/BjE6tt0T0yw/842QXx3HGfSMpKNxuyTPrDijT0F6Ybc5KJ+GnG/RXfk0FkjcviBKNlcXkR11449Ot7S8AToBb7l5CuMSveucHo46OmXjw=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=ni.com;
-Received: from SN4PR0401MB3646.namprd04.prod.outlook.com
- (2603:10b6:803:4b::29) by SN6PR04MB4909.namprd04.prod.outlook.com
- (2603:10b6:805:95::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Tue, 22 Sep
- 2020 18:41:21 +0000
-Received: from SN4PR0401MB3646.namprd04.prod.outlook.com
- ([fe80::f4f0:f1bc:f09a:da84]) by SN4PR0401MB3646.namprd04.prod.outlook.com
- ([fe80::f4f0:f1bc:f09a:da84%7]) with mapi id 15.20.3391.023; Tue, 22 Sep 2020
- 18:41:21 +0000
-From:   Michael Auchter <michael.auchter@ni.com>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Auchter <michael.auchter@ni.com>
-Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] dt-bindings: iio: dac: ad5686: add binding
-Date:   Tue, 22 Sep 2020 13:40:12 -0500
-Message-Id: <20200922184012.557622-3-michael.auchter@ni.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200922184012.557622-1-michael.auchter@ni.com>
-References: <20200922184012.557622-1-michael.auchter@ni.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SN6PR16CA0039.namprd16.prod.outlook.com
- (2603:10b6:805:ca::16) To SN4PR0401MB3646.namprd04.prod.outlook.com
- (2603:10b6:803:4b::29)
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C70020756;
+        Tue, 22 Sep 2020 18:41:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600800103;
+        bh=tDKJ29i52obLnz6kMpc36hmPeyQhmdy700T68xXHhEE=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=r9E95aiX5+6Jv5pxo2n9HIzt2WXI6qawTE2iMlPlRK1SiJihHkWeZOwfNJi0oefba
+         QDkqvqYS5MWKILpr+mHqOjTz5BPbmksvjibKM/LSC5ecLB/2SAp9nT62vgYH14uDf1
+         ukeQ0eH4+2UvMCRpeb2Q7vJGViMdsOe31leIGDU4=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (2605:a601:ab6f:2000:2739:a39e:9b12:ab20) by SN6PR16CA0039.namprd16.prod.outlook.com (2603:10b6:805:ca::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Tue, 22 Sep 2020 18:41:21 +0000
-X-Mailer: git-send-email 2.25.1
-X-Originating-IP: [2605:a601:ab6f:2000:2739:a39e:9b12:ab20]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 50a44cf8-8ba7-4ba5-2d83-08d85f2719cc
-X-MS-TrafficTypeDiagnostic: SN6PR04MB4909:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR04MB4909BEF5EA2C4FEE3F9A71C2873B0@SN6PR04MB4909.namprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1388;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2DSLV0o6aSduN9e1480+huzul4qfGXwAQzKCIXBJ4H8GST045Y+0LOi/4np4MUagFG1hmk1L2NM57410B15uBCbgC0FmpIqDRQ9RLWo2Ip777W/UWRokTcKLLhnMVoMyfQHlT+DpSco4CDLJUWm/5dU0m4x4XQharNlSkVzBRdp4mv7FgZddGUYTlIAa/NGssbcdJ5G59b7C+/O/nfwQj5t5tvHV4I17aMohQqv3CLJBsebnLCONbd5LAvpMHph4K7caDtyEzSoUkKHn5Nk7h/cnwoMYKGA/PxvpG6CNinsP/kCrx3ht1O25SkCLhHqd6kal51TGuzSo4Pg1MjywsYN8GAxDGTwLY1GD85bS2cRdWo+MbMNR3aCOoOTfUMcQlJhJ3lG2KB3AAbUTfPl49ow6iSgJUtEFIUVKLLBe1CLwknupr4sVv31ZnPEOuMLovzM9NzHz/DIIgcO5KSFA+jJ5z+m2zfeV49xZB9JF5wVplWxv+yyr3Va8+5etR819
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3646.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(396003)(346002)(376002)(366004)(52116002)(66946007)(6512007)(44832011)(66556008)(478600001)(966005)(186003)(6486002)(5660300002)(6666004)(2616005)(8676002)(2906002)(7049001)(16526019)(4326008)(36756003)(6506007)(66476007)(8936002)(86362001)(69590400008)(1076003)(110136005)(316002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: vJEF88BFqhoYEG7S1dISleMnrUcGN/9rZ9LHANr7BdXDkgyzdVDmbMYK/JTJhQ5U/7CCFu3FdOd5TitaluTlsMBG0giNqSnFU2MXXKguvn/4P/qgFzrrT4Nt1vcLtxF8pbsrt4JDTSLNrWMUQ4FojEidbD5KfApNuHXxt9MGKP3P83153oqO7ljn9xpwXs0GBFaLkuGLq8+kFP7c2L6ae3aSL1wLvB7DD490UPRGOpUjfZaDNTHIlmaMG+3IxTqT+ztsM50gzTqbu0ztC1rBDrVRhhqfEEkeorLK7dpiVXL02yL3TqSukNNDq8U8NPNfNlcdMnM3k1gIYt6JAUxRtmtJkJfyBtp1FJKeibaqt0FwQnTgDgbFooLnQb/Fxq3SfXIrN0oio/eVj+CuXsrP0agDO9b3EJLicprBAAT1yKuNB+VHSlBX9JZAPdX96xZ1a4Xxtzo2tm+XkfenTd4zoZC2ZcSqODH9H/238PPtauz7f8tQxVsCe/8yfd/wOgPDs2beZvmqbRBRDR+XAv5Olgo+3cI15fS1y8WyKAIYbOEXPm962BKodulGxsQj8MlmXw4SeVtQZVpKouqNvghkZwMXneZCclT/LBkVKUiKNiSzdwk8rBRXSiC3VRrkdgqnXpIkljSlwVCgxtJKSwfLjJ+pCBAVIKu2ADbrXS5iNUWM+5QVfbunupgfWuSs3yXk8zBqinI0ChAnFGmh52LX2A==
-X-OriginatorOrg: ni.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 50a44cf8-8ba7-4ba5-2d83-08d85f2719cc
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3646.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2020 18:41:21.6118
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 87ba1f9a-44cd-43a6-b008-6fdb45a5204e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7GG7e28/cwaVUzb1pZ0t4qTO26aZGjaTfzL8bz40WdbT5vKaQHSbW63X5iV0df7MZW23D2ws5I6EM7e6oSiVSQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4909
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-22_17:2020-09-21,2020-09-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_policy_notspam policy=outbound_policy score=30 phishscore=0
- impostorscore=0 priorityscore=1501 spamscore=0 mlxscore=0 adultscore=0
- malwarescore=0 lowpriorityscore=0 bulkscore=0 mlxlogscore=999
- suspectscore=0 clxscore=1015 classifier=spam adjust=30 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2009220144
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200917132850.7730-4-srinivas.kandagatla@linaro.org>
+References: <20200917132850.7730-1-srinivas.kandagatla@linaro.org> <20200917132850.7730-4-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH 3/4] clk: qcom: Add support to LPASS AUDIO_CC Glitch Free Mux clocks
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     bjorn.andersson@linaro.org, mturquette@baylibre.com,
+        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org
+Date:   Tue, 22 Sep 2020 11:41:42 -0700
+Message-ID: <160080010215.310579.4526434246523292987@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a binding for AD5686
+Quoting Srinivas Kandagatla (2020-09-17 06:28:49)
+> GFM Muxes in AUDIO_CC control clocks to LPASS WSA and RX Codec Macros.
+> This patch adds support to these muxes.
+>=20
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  drivers/clk/qcom/Kconfig            |   7 +
+>  drivers/clk/qcom/Makefile           |   1 +
+>  drivers/clk/qcom/lpass-gfm-sm8250.c | 235 ++++++++++++++++++++++++++++
+>  3 files changed, 243 insertions(+)
+>  create mode 100644 drivers/clk/qcom/lpass-gfm-sm8250.c
+>=20
+> diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
+> index 2eda63b7c46c..4e46fd339e62 100644
+> --- a/drivers/clk/qcom/Kconfig
+> +++ b/drivers/clk/qcom/Kconfig
+> @@ -494,4 +494,11 @@ config KRAITCC
+>           Support for the Krait CPU clocks on Qualcomm devices.
+>           Say Y if you want to support CPU frequency scaling.
+> =20
+> +config CLK_GFM_LPASS_SM8250
+> +       tristate "GFM LPASS Clocks"
+> +       depends on SND_SOC_QDSP6_COMMON
 
-Signed-off-by: Michael Auchter <michael.auchter@ni.com>
----
-Changes since v1:
-- Keep supported device sorted
-- fix adc -> dac type in schema path
+What is the depends for?
 
- .../bindings/iio/dac/adi,ad5686.yaml          | 61 +++++++++++++++++++
- 1 file changed, 61 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
+> +       help
+> +         Support for the GFM Glitch Free Mux LPASS clock. Say Y
+> +         if you want to support GFM Clocks on LPASS for SM8250 SoC.
+> +
+>  endif
+> diff --git a/drivers/clk/qcom/Makefile b/drivers/clk/qcom/Makefile
+> index 8eb395d02a32..c18e4ead6c9e 100644
+> --- a/drivers/clk/qcom/Makefile
+> +++ b/drivers/clk/qcom/Makefile
+> @@ -74,3 +74,4 @@ obj-$(CONFIG_SPMI_PMIC_CLKDIV) +=3D clk-spmi-pmic-div.o
+>  obj-$(CONFIG_KPSS_XCC) +=3D kpss-xcc.o
+>  obj-$(CONFIG_QCOM_HFPLL) +=3D hfpll.o
+>  obj-$(CONFIG_KRAITCC) +=3D krait-cc.o
+> +obj-$(CONFIG_CLK_GFM_LPASS_SM8250) +=3D lpass-gfm-sm8250.o
 
-diff --git a/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml b/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
-new file mode 100644
-index 000000000000..9ce76d75f31b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
-@@ -0,0 +1,61 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/iio/dac/adi,ad5686.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Analog Devices AD5686 and similar multi-channel DACs
-+
-+maintainers:
-+  - Michael Auchter <michael.auchter@ni.com>
-+
-+description: |
-+  Binding for Analog Devices AD5686 and similar multi-channel DACs
-+
-+properties:
-+  compatible:
-+    enum:
-+      - adi,ad5311r
-+      - adi,ad5338r
-+      - adi,ad5671r
-+      - adi,ad5675r
-+      - adi,ad5691r
-+      - adi,ad5692r
-+      - adi,ad5693
-+      - adi,ad5693r
-+      - adi,ad5694
-+      - adi,ad5694r
-+      - adi,ad5695r
-+      - adi,ad5696
-+      - adi,ad5696r
-+
-+  reg:
-+    maxItems: 1
-+
-+  vcc-supply:
-+    description: |
-+      The regulator supply for DAC reference voltage.
-+
-+  '#address-cells':
-+    const: 1
-+
-+  '#size-cells':
-+    const: 0
-+
-+required:
-+  - compatible
-+  - reg
-+
-+examples:
-+  - |
-+    i2c {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      ad5686: dac@0 {
-+        compatible = "adi,ad5686";
-+        reg = <0>;
-+        vcc-supply = <&dac_vref>;
-+      };
-+    };
-+
--- 
-2.25.1
+I don't know but probably this should be sorted by Kconfig instead of
+tacked onto the end here.
 
+> diff --git a/drivers/clk/qcom/lpass-gfm-sm8250.c b/drivers/clk/qcom/lpass=
+-gfm-sm8250.c
+> new file mode 100644
+> index 000000000000..2d5c41ae4969
+> --- /dev/null
+> +++ b/drivers/clk/qcom/lpass-gfm-sm8250.c
+> @@ -0,0 +1,235 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/clk-provider.h>
+> +#include <linux/io.h>
+> +#include <linux/clk.h>
+> +#include <linux/slab.h>
+> +#include <linux/err.h>
+> +#include <linux/notifier.h>
+> +#include <linux/device.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/of_device.h>
+> +#include <dt-bindings/clock/qcom,sm8250-lpass-audiocc.h>
+> +
+> +struct lpass_gfm {
+> +       struct device *dev;
+> +       void __iomem *base;
+> +       struct clk *core_vote;
+> +       struct clk *bus_clk;
+> +};
+> +
+> +struct clk_gfm {
+> +       unsigned int mux_reg;
+> +       unsigned int mux_mask;
+> +       struct clk_hw   hw;
+> +       struct lpass_gfm *priv;
+> +       void __iomem *gfm_mux;
+> +};
+> +
+> +#define GFM_MASK       BIT(1)
+> +#define to_clk_gfm(_hw) container_of(_hw, struct clk_gfm, hw)
+> +
+> +static u8 clk_gfm_get_parent(struct clk_hw *hw)
+> +{
+> +       struct clk_gfm *clk =3D to_clk_gfm(hw);
+> +
+> +       return readl(clk->gfm_mux) & GFM_MASK;
+> +}
+> +
+> +static int clk_gfm_set_parent(struct clk_hw *hw, u8 index)
+> +{
+> +       struct clk_gfm *clk =3D to_clk_gfm(hw);
+> +       unsigned int val;
+> +
+> +       val =3D readl(clk->gfm_mux);
+> +
+> +       if (index)
+> +               val |=3D GFM_MASK;
+> +       else
+> +               val &=3D ~GFM_MASK;
+> +
+> +       writel(val, clk->gfm_mux);
+> +
+> +       return 0;
+> +}
+> +
+> +static const struct clk_ops clk_gfm_ops =3D {
+> +       .get_parent =3D clk_gfm_get_parent,
+> +       .set_parent =3D clk_gfm_set_parent,
+> +       .determine_rate =3D __clk_mux_determine_rate,
+> +};
+> +
+> +static struct clk_gfm lpass_gfm_wsa_mclk =3D {
+> +       .mux_reg =3D 0x220d8,
+> +       .mux_mask =3D BIT(0),
+> +       .hw.init =3D &(struct clk_init_data) {
+> +               .name =3D "WSA_MCLK",
+> +               .ops =3D &clk_gfm_ops,
+> +               .flags =3D CLK_SET_RATE_PARENT | CLK_OPS_PARENT_ENABLE,
+> +               .parent_names =3D (const char *[]){
+> +                       "LPASS_CLK_ID_TX_CORE_MCLK",
+> +                       "LPASS_CLK_ID_WSA_CORE_MCLK",
+> +               },
+> +               .parent_data =3D (const struct clk_parent_data[]){
+> +                               { .index =3D 0 },
+> +                               { .index =3D 1 },
+> +               },
+> +               .num_parents =3D 2,
+> +       },
+> +};
+> +
+> +static struct clk_gfm lpass_gfm_wsa_npl =3D {
+> +       .mux_reg =3D 0x220d8,
+> +       .mux_mask =3D BIT(0),
+> +       .hw.init =3D &(struct clk_init_data) {
+> +               .name =3D "WSA_NPL",
+> +               .ops =3D &clk_gfm_ops,
+> +               .flags =3D CLK_SET_RATE_PARENT | CLK_OPS_PARENT_ENABLE,
+> +               .parent_names =3D (const char *[]){
+> +                       "LPASS_CLK_ID_TX_CORE_NPL_MCLK",
+> +                       "LPASS_CLK_ID_WSA_CORE_NPL_MCLK",
+> +               },
+> +               .parent_data =3D (const struct clk_parent_data[]){
+> +                               { .index =3D 0 },
+> +                               { .index =3D 1 },
+> +               },
+> +               .num_parents =3D 2,
+> +       },
+> +};
+> +
+> +static struct clk_gfm lpass_gfm_rx_mclk_mclk2 =3D {
+> +       .mux_reg =3D 0x240d8,
+> +       .mux_mask =3D BIT(0),
+> +       .hw.init =3D &(struct clk_init_data) {
+> +               .name =3D "RX_MCLK_MCLK2",
+> +               .ops =3D &clk_gfm_ops,
+> +               .flags =3D CLK_SET_RATE_PARENT | CLK_OPS_PARENT_ENABLE,
+> +               .parent_names =3D (const char *[]){
+> +                       "LPASS_CLK_ID_TX_CORE_MCLK",
+> +                       "LPASS_CLK_ID_RX_CORE_MCLK",
+> +               },
+> +               .parent_data =3D (const struct clk_parent_data[]){
+> +                               { .index =3D 0 },
+> +                               { .index =3D 1 },
+> +               },
+> +               .num_parents =3D 2,
+> +       },
+> +};
+> +
+> +static struct clk_gfm lpass_gfm_rx_npl =3D {
+> +       .mux_reg =3D 0x240d8,
+> +       .mux_mask =3D BIT(0),
+> +       .hw.init =3D &(struct clk_init_data) {
+> +               .name =3D "RX_NPL",
+> +               .ops =3D &clk_gfm_ops,
+> +               .flags =3D CLK_SET_RATE_PARENT | CLK_OPS_PARENT_ENABLE,
+> +               .parent_names =3D (const char *[]){
+> +                       "LPASS_CLK_ID_TX_CORE_NPL_MCLK",
+> +                       "LPASS_CLK_ID_RX_CORE_NPL_MCLK",
+> +               },
+> +               .parent_data =3D (const struct clk_parent_data[]){
+> +                               { .index =3D 0 },
+> +                               { .index =3D 1 },
+> +               },
+
+Please use parent_data instead of parent_names. The name can go in the
+parent_data struct.
+
+> +               .num_parents =3D 2,
+> +       },
+> +};
+> +
+> +static struct clk_gfm *audiocc_gfm_clks[] =3D {
+> +       [LPASS_CDC_WSA_NPL]             =3D &lpass_gfm_wsa_npl,
+> +       [LPASS_CDC_WSA_MCLK]            =3D &lpass_gfm_wsa_mclk,
+> +       [LPASS_CDC_RX_NPL]              =3D &lpass_gfm_rx_npl,
+> +       [LPASS_CDC_RX_MCLK_MCLK2]       =3D &lpass_gfm_rx_mclk_mclk2,
+> +};
+> +
+> +static struct clk_hw_onecell_data audiocc_hw_onecell_data =3D {
+> +       .hws =3D {
+> +               [LPASS_CDC_WSA_NPL]     =3D &lpass_gfm_wsa_npl.hw,
+> +               [LPASS_CDC_WSA_MCLK]    =3D &lpass_gfm_wsa_mclk.hw,
+> +               [LPASS_CDC_RX_NPL]      =3D &lpass_gfm_rx_npl.hw,
+> +               [LPASS_CDC_RX_MCLK_MCLK2] =3D &lpass_gfm_rx_mclk_mclk2.hw,
+> +       },
+> +       .num =3D ARRAY_SIZE(audiocc_gfm_clks),
+> +};
+> +
+> +struct lpass_gfm_data {
+> +       struct clk_hw_onecell_data *onecell_data;
+> +       struct clk_gfm **gfm_clks;
+> +};
+> +
+> +static struct lpass_gfm_data audiocc_data =3D {
+> +       .onecell_data =3D &audiocc_hw_onecell_data,
+> +       .gfm_clks =3D audiocc_gfm_clks,
+> +};
+> +
+> +static int lpass_gfm_clk_driver_probe(struct platform_device *pdev)
+> +{
+> +       const struct lpass_gfm_data *data;
+> +       struct device *dev =3D &pdev->dev;
+> +       struct resource *res;
+> +       struct clk_gfm *gfm;
+> +       struct lpass_gfm *cc;
+> +       int err, i;
+> +
+> +       cc =3D devm_kzalloc(dev, sizeof(*cc), GFP_KERNEL);
+> +       if (!cc)
+> +               return -ENOMEM;
+> +
+> +       cc->core_vote =3D devm_clk_get(&pdev->dev, "core");
+> +       if (IS_ERR(cc->core_vote)) {
+> +               dev_dbg(dev, "Failed to get lpass core clk\n");
+> +               return PTR_ERR(cc->core_vote);
+> +       }
+
+Can this use the pm_clk stuff?
+
+> +
+> +       data =3D of_device_get_match_data(dev);
+
+What if data is NULL?
+
+> +       cc->bus_clk =3D devm_clk_get(&pdev->dev, "bus");
+> +       if (IS_ERR(cc->bus_clk)) {
+> +               dev_dbg(dev, "Failed to get lpass bus clk\n");
+> +               return PTR_ERR(cc->bus_clk);
+> +       }
+> +
+> +       res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +       cc->base =3D devm_ioremap_resource(dev, res);
+> +       if (IS_ERR(cc->base))
+> +               return PTR_ERR(cc->base);
+> +
+> +       clk_prepare_enable(cc->core_vote);
+> +       clk_prepare_enable(cc->bus_clk);
+
+These will always be left enabled if the probe function bails out after her=
+e.
+
+> +
+> +       for (i =3D 0; i < data->onecell_data->num; i++) {
+> +               if (!data->gfm_clks[i])
+> +                       continue;
+> +
+> +               gfm =3D data->gfm_clks[i];
+> +               gfm->priv =3D cc;
+> +               gfm->gfm_mux =3D cc->base;
+> +               gfm->gfm_mux =3D gfm->gfm_mux + data->gfm_clks[i]->mux_re=
+g;
+> +
+> +               err =3D devm_clk_hw_register(dev, &data->gfm_clks[i]->hw);
+> +               if (err)
+> +                       return err;
+> +
+> +       }
+> +
+> +       return devm_of_clk_add_hw_provider(dev, of_clk_hw_onecell_get,
+> +                                          data->onecell_data);
+> +}
+> +
+> +static const struct of_device_id lpass_gfm_clk_match_table[] =3D {
+> +       {
+> +               .compatible =3D "qcom,sm8250-lpass-audiocc",
+> +               .data =3D &audiocc_data,
+> +       },
+> +       { }
+> +};
+> +
+> +static struct platform_driver lpass_gfm_clk_driver =3D {
+> +       .probe          =3D lpass_gfm_clk_driver_probe,
+> +       .driver         =3D {
+> +               .name   =3D "lpass-gfm-clk",
+> +               .of_match_table =3D lpass_gfm_clk_match_table,
+> +       },
+> +};
+> +builtin_platform_driver(lpass_gfm_clk_driver);
+
+Should be module_platform_driver()?
