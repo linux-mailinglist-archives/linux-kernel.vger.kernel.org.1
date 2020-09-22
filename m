@@ -2,79 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 257932737EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 03:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DE322737EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 03:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729666AbgIVBZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 21:25:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56646 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729603AbgIVBYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 21:24:55 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DB37123B16;
-        Tue, 22 Sep 2020 01:24:54 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1kKX37-001sSy-Ua; Mon, 21 Sep 2020 21:24:53 -0400
-Message-ID: <20200922012453.807317415@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Mon, 21 Sep 2020 21:24:40 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [for-next][PATCH 26/26] Documentation: tracing: Add the startup timing of boot-time tracing
-References: <20200922012414.115238201@goodmis.org>
+        id S1729712AbgIVBZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 21:25:24 -0400
+Received: from out28-50.mail.aliyun.com ([115.124.28.50]:49989 "EHLO
+        out28-50.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729673AbgIVBZV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 21:25:21 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1911304|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.0124073-0.000538969-0.987054;FP=0|0|0|0|0|-1|-1|-1;HT=e01l07381;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=17;RT=17;SR=0;TI=SMTPD_---.IaRRVwp_1600737910;
+Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.IaRRVwp_1600737910)
+          by smtp.aliyun-inc.com(10.147.41.138);
+          Tue, 22 Sep 2020 09:25:17 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     tsbogend@alpha.franken.de, robh+dt@kernel.org,
+        paul@crapouillou.net, paulburton@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, jiaxun.yang@flygoat.com,
+        Sergey.Semin@baikalelectronics.ru, akpm@linux-foundation.org,
+        rppt@kernel.org, dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
+        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
+Subject: [PATCH v3 0/3] Repair Ingenic SoCs L2 cache capacity detection.
+Date:   Tue, 22 Sep 2020 09:24:41 +0800
+Message-Id: <20200922012444.44089-1-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu <mhiramat@kernel.org>
+1.The X1000E SoC has a 4-way L2 cache with a capacity of 128 KiB.
+  The current code cannot detect its correctly, which will cause the
+  CU1000-Neo board using the X1000E SoC to report that it has found
+  a 5-way 320KiB L2 cache at boot time.
+2.The JZ4775 SoC has a 4-way L2 cache with a capacity of 256 KiB.
+  The current code cannot detect its correctly, which will cause the
+  Mensa board using the JZ4775 SoC to report that it has found a 5-way
+  320KiB L2 cache at boot time.
 
-Add the note about when to start the boot-time tracing.
-This will be needed for the people who wants to trace
-earlier boot sequence.
+This series of patches is to fix this problem.
 
-Link: https://lkml.kernel.org/r/159974156678.478751.10215894815285734481.stgit@devnote2
+v2->v3:
+Fix the warning that appears when running checkpatch, add relevant
+compatible string.
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- Documentation/trace/boottime-trace.rst | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+周琰杰 (Zhou Yanjie) (3):
+  dt-bindings: MIPS: Add X2000E based CU2000-Neo.
+  MIPS: Ingenic: Add system type for new Ingenic SoCs.
+  MIPS: Ingenic: Fix bugs when detecting L2 cache of JZ4775 and X1000E.
 
-diff --git a/Documentation/trace/boottime-trace.rst b/Documentation/trace/boottime-trace.rst
-index ab3bfd67197c..89b64334929b 100644
---- a/Documentation/trace/boottime-trace.rst
-+++ b/Documentation/trace/boottime-trace.rst
-@@ -120,6 +120,20 @@ instance node, but those are also visible from other instances. So please
- take care for event name conflict.
- 
- 
-+When to Start
-+=============
-+
-+All boot-time tracing options starting with ``ftrace`` will be enabled at the
-+end of core_initcall. This means you can trace the events from postcore_initcall.
-+Most of the subsystems and architecture dependent drivers will be initialized
-+after that (arch_initcall or subsys_initcall). Thus, you can trace those with
-+boot-time tracing.
-+If you want to trace events before core_initcall, you can use the options
-+starting with ``kernel``. Some of them will be enabled eariler than the initcall
-+processing (for example,. ``kernel.ftrace=function`` and ``kernel.trace_event``
-+will start before the initcall.)
-+
-+
- Examples
- ========
- 
+ Documentation/devicetree/bindings/mips/ingenic/devices.yaml |  5 +++++
+ arch/mips/generic/board-ingenic.c                           | 12 ++++++++++++
+ arch/mips/include/asm/bootinfo.h                            |  2 ++
+ arch/mips/mm/sc-mips.c                                      |  2 ++
+ 4 files changed, 21 insertions(+)
+
 -- 
-2.28.0
-
+2.11.0
 
