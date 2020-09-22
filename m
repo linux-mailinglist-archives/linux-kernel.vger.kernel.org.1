@@ -2,169 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 378B1274515
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF88D274524
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726716AbgIVPRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 11:17:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54310 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726566AbgIVPRo (ORCPT
+        id S1726739AbgIVPUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 11:20:33 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:7725 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726643AbgIVPUb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 11:17:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600787863;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=stngSWzZPetsvj++1tiyUoEccJXuMfV3PLP1Yk0w4TE=;
-        b=BijKpcdNnp1TElmDJDvTziWXJk5Q9zVxSx8U6CMwMePgGNGYleCpF0Uk25naC+AWOmXfvV
-        5y5bbsa0ihRm3S5orbPh+vEfH1zToXr9BsgheXRNI/85PnFxXkCDYXpzQDgpP9oc8Pd5bN
-        G8zyJY+JEOkO1Y3uVRT40NXIMqyyjF8=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-506-li7MeSfMOfGEOdHre-FCug-1; Tue, 22 Sep 2020 11:17:40 -0400
-X-MC-Unique: li7MeSfMOfGEOdHre-FCug-1
-Received: by mail-qv1-f72.google.com with SMTP id l1so11739125qvr.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 08:17:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=stngSWzZPetsvj++1tiyUoEccJXuMfV3PLP1Yk0w4TE=;
-        b=TW9L2qbswqEdS5J2sei8SHQW4umQL8qwg/MshaVZu7b8XasaXeE5JPssuPYk50WJgh
-         Q1g/+wezKISnufJIJzxo0okBgSFglfHZqZM57iA7iSdwiwSCU5iFDcIBrt4neNV5M0qB
-         jrm1Kn/J2uMVToaLRTahua/9jDkJM0617Qe8roQfNBPBLZiNNVO7bFeDAsI2m8gvta2a
-         axnjhVfAJlQAEJfDU4MsaDpuRUJVhR3yXG2XwtIoSaqkD3ew6vlmqGclHQ0OJ8GQMK2G
-         j3Y4K7zXfIjQ+JG1kKcxtube3zhTDQDYRxXT3fJhI5EoftOB5yoe7Q0AQOyBwwqj920J
-         xSwA==
-X-Gm-Message-State: AOAM531bMSLR7bqbjWYqGCdIHTLkr6mwiX4FW1waTdMvPaUxz4QmZIRV
-        RoRbG00db9TlpE/FaK7uGmkgMLCzeo4Wyrq036kUP+Lbyet6+8H0sETXqEx+hU24iIw31HZrtmm
-        hInFqlYEwdH38JHSVXh/Nm/Z4
-X-Received: by 2002:a37:8484:: with SMTP id g126mr4829941qkd.119.1600787859240;
-        Tue, 22 Sep 2020 08:17:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyNj2fsPXKI9avxY2ntwJeZST+nN/BfCLVpgNX+5WSlsWAV7mZfn+bK9EKVHF1t74PJCuFT0Q==
-X-Received: by 2002:a37:8484:: with SMTP id g126mr4829914qkd.119.1600787858869;
-        Tue, 22 Sep 2020 08:17:38 -0700 (PDT)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
-        by smtp.gmail.com with ESMTPSA id x197sm11883363qkb.17.2020.09.22.08.17.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 08:17:38 -0700 (PDT)
-Date:   Tue, 22 Sep 2020 11:17:36 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Jason Gunthorpe <jgg@ziepe.ca>,
+        Tue, 22 Sep 2020 11:20:31 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08MFI9C6002529;
+        Tue, 22 Sep 2020 11:19:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=s7b0G9lisUfCrCNxaUFmc71Hbq6lYd3xM2O0ZMyJbVU=;
+ b=fNQUiQQjJ0O5RSJT3y1fx+etwvA15nMBC5V5JgxKwHs06zE3C6vupZyyi+OuN6tL45bI
+ 1pHqyK4HANqAFdynEtxHFiGAQA4HZkIUq2lq32AKF55q9+hBYrTvnP43Kh8xkLl+ticB
+ iQty6dX6it0Qgwj3rxk8xee7nDY7h79H/j5eXPu4LbmuNqKQFc03OncT9GbrTOUWW5Y8
+ pvnlW1qj1A8XEr8bnrvC4vSK+oXRFDkzVfoYmps/YsGYh7XzaJDyln87jDOJK5BEqVuw
+ +f9GiyqWVmzWQQxAR0jZPUme45PCu5WpV9Wko+qwYDmGCbkxRpudRNsyw6jonoFNtsLU 7w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33qjj1a9n9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Sep 2020 11:19:13 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08MFIPF6003571;
+        Tue, 22 Sep 2020 11:19:07 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33qjj1a9kr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Sep 2020 11:19:07 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08MFCBYk017630;
+        Tue, 22 Sep 2020 15:19:03 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma02fra.de.ibm.com with ESMTP id 33n9m81nnf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Sep 2020 15:19:03 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08MFIweT23265540
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 22 Sep 2020 15:18:58 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3BA144203F;
+        Tue, 22 Sep 2020 15:19:00 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 81EB64204B;
+        Tue, 22 Sep 2020 15:18:59 +0000 (GMT)
+Received: from linux.fritz.box (unknown [9.145.169.80])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 22 Sep 2020 15:18:59 +0000 (GMT)
+Subject: Re: [PATCH 08/14] dasd: cleanup dasd_scan_partitions
+To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Jan Hoeppner <hoeppner@linux.ibm.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jann Horn <jannh@google.com>
-Subject: Re: [PATCH 1/5] mm: Introduce mm_struct.has_pinned
-Message-ID: <20200922151736.GD19098@xz-x1>
-References: <20200921211744.24758-1-peterx@redhat.com>
- <20200921211744.24758-2-peterx@redhat.com>
- <224908c1-5d0f-8e01-baa9-94ec2374971f@nvidia.com>
+        linux-kernel@vger.kernel.org, nbd@other.debian.org,
+        linux-ide@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        linux-pm@vger.kernel.org, linux-mm@kvack.org,
+        linux-block@vger.kernel.org
+References: <20200921071958.307589-1-hch@lst.de>
+ <20200921071958.307589-9-hch@lst.de>
+From:   Stefan Haberland <sth@linux.ibm.com>
+Autocrypt: addr=sth@linux.ibm.com; keydata=
+ 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
+ cH4TNHyhiR0KAbxE8qKx3Jc=
+Message-ID: <88ca251c-c417-cd92-3d47-653dff346d7c@linux.ibm.com>
+Date:   Tue, 22 Sep 2020 17:18:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
+In-Reply-To: <20200921071958.307589-9-hch@lst.de>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <224908c1-5d0f-8e01-baa9-94ec2374971f@nvidia.com>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-22_13:2020-09-21,2020-09-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ suspectscore=0 mlxlogscore=999 phishscore=0 impostorscore=0 adultscore=0
+ clxscore=1011 spamscore=0 mlxscore=0 malwarescore=0 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009220116
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 04:53:38PM -0700, John Hubbard wrote:
-> On 9/21/20 2:17 PM, Peter Xu wrote:
-> > (Commit message collected from Jason Gunthorpe)
-> > 
-> > Reduce the chance of false positive from page_maybe_dma_pinned() by keeping
-> 
-> Not yet, it doesn't. :)  More:
-> 
-> > track if the mm_struct has ever been used with pin_user_pages(). mm_structs
-> > that have never been passed to pin_user_pages() cannot have a positive
-> > page_maybe_dma_pinned() by definition. This allows cases that might drive up
-> > the page ref_count to avoid any penalty from handling dma_pinned pages.
-> > 
-> > Due to complexities with unpining this trivial version is a permanent sticky
-> > bit, future work will be needed to make this a counter.
-> 
-> How about this instead:
-> 
-> Subsequent patches intend to reduce the chance of false positives from
-> page_maybe_dma_pinned(), by also considering whether or not a page has
-> even been part of an mm struct that has ever had pin_user_pages*()
-> applied to any of its pages.
-> 
-> In order to allow that, provide a boolean value (even though it's not
-> implemented exactly as a boolean type) within the mm struct, that is
-> simply set once and never cleared. This will suffice for an early, rough
-> implementation that fixes a few problems.
-> 
-> Future work is planned, to provide a more sophisticated solution, likely
-> involving a counter, and *not* involving something that is set and never
-> cleared.
+Am 21.09.20 um 09:19 schrieb Christoph Hellwig:
+> Use blkdev_get_by_dev instead of bdget_disk + blkdev_get.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-This looks good, thanks.  Though I think Jason's version is good too (as long
-as we remove the confusing sentence, that's the one starting with "mm_structs
-that have never been passed... ").  Before I drop Jason's version, I think I'd
-better figure out what's the major thing we missed so that maybe we can add
-another paragraph.  E.g., "future work will be needed to make this a counter"
-already means "involving a counter, and *not* involving something that is set
-and never cleared" to me... Because otherwise it won't be called a counter..
+Beside what Sergei mentioned...
 
-> 
-> > 
-> > Suggested-by: Jason Gunthorpe <jgg@ziepe.ca>
-> > Signed-off-by: Peter Xu <peterx@redhat.com>
-> > ---
-> >   include/linux/mm_types.h | 10 ++++++++++
-> >   kernel/fork.c            |  1 +
-> >   mm/gup.c                 |  6 ++++++
-> >   3 files changed, 17 insertions(+)
-> > 
-> > diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> > index 496c3ff97cce..6f291f8b74c6 100644
-> > --- a/include/linux/mm_types.h
-> > +++ b/include/linux/mm_types.h
-> > @@ -441,6 +441,16 @@ struct mm_struct {
-> >   #endif
-> >   		int map_count;			/* number of VMAs */
-> > +		/**
-> > +		 * @has_pinned: Whether this mm has pinned any pages.  This can
-> > +		 * be either replaced in the future by @pinned_vm when it
-> > +		 * becomes stable, or grow into a counter on its own. We're
-> > +		 * aggresive on this bit now - even if the pinned pages were
-> > +		 * unpinned later on, we'll still keep this bit set for the
-> > +		 * lifecycle of this mm just for simplicity.
-> > +		 */
-> > +		int has_pinned;
-> 
-> I think this would be elegant as an atomic_t, and using atomic_set() and
-> atomic_read(), which seem even more self-documenting that what you have here.
-> 
-> But it's admittedly a cosmetic point, combined with my perennial fear that
-> I'm missing something when I look at a READ_ONCE()/WRITE_ONCE() pair. :)
+Reviewed-by: Stefan Haberland <sth@linux.ibm.com>
 
-Yeah but I hope I'm using it right.. :) I used READ_ONCE/WRITE_ONCE explicitly
-because I think they're cheaper than atomic operations, (which will, iiuc, lock
-the bus).
 
-> 
-> It's completely OK to just ignore this comment, but I didn't want to completely
-> miss the opportunity to make it a tiny bit cleaner to the reader.
-
-This can always become an atomic in the future, or am I wrong?  Actually if
-we're going to the counter way I feel like it's a must.
-
-Thanks,
-
--- 
-Peter Xu
+> ---
+>  drivers/s390/block/dasd_genhd.c | 15 ++++-----------
+>  1 file changed, 4 insertions(+), 11 deletions(-)
+>
+> diff --git a/drivers/s390/block/dasd_genhd.c b/drivers/s390/block/dasd_genhd.c
+> index af5b0ecb8f8923..a9698fba9b76ce 100644
+> --- a/drivers/s390/block/dasd_genhd.c
+> +++ b/drivers/s390/block/dasd_genhd.c
+> @@ -101,18 +101,11 @@ int dasd_scan_partitions(struct dasd_block *block)
+>  	struct block_device *bdev;
+>  	int rc;
+>  
+> -	bdev = bdget_disk(block->gdp, 0);
+> -	if (!bdev) {
+> -		DBF_DEV_EVENT(DBF_ERR, block->base, "%s",
+> -			      "scan partitions error, bdget returned NULL");
+> -		return -ENODEV;
+> -	}
+> -
+> -	rc = blkdev_get(bdev, FMODE_READ, NULL);
+> -	if (rc < 0) {
+> +	bdev = blkdev_get_by_dev(disk_devt(block->gdp), FMODE_READ, NULL);
+> +	if (IS_ERR(bdev)) {
+>  		DBF_DEV_EVENT(DBF_ERR, block->base,
+> -			      "scan partitions error, blkdev_get returned %d",
+> -			      rc);
+> +			      "scan partitions error, blkdev_get returned %ld",
+> +			      PTR_ERR(bdev));
+>  		return -ENODEV;
+>  	}
+>  
 
