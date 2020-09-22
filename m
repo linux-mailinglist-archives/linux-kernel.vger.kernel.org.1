@@ -2,188 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15481274424
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 16:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7236A274428
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 16:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726686AbgIVOYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 10:24:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58218 "EHLO mail.kernel.org"
+        id S1726694AbgIVOYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 10:24:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726593AbgIVOYd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 10:24:33 -0400
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+        id S1726579AbgIVOYx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 10:24:53 -0400
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 688C1239D2;
-        Tue, 22 Sep 2020 14:24:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 63F5323A1D;
+        Tue, 22 Sep 2020 14:24:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600784672;
-        bh=fyhGiT07YqgY1sX7H5cYuZEWhzgxX1cJqk4Q9y19gjs=;
+        s=default; t=1600784692;
+        bh=VH0jM+A8P5sFG/bKWMqp/z6QPkFgM7VMiqVFFHF/OLA=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=O4GhqNTLUyIkVNe1g35MNvHUi2N1TQP2CaB0iKDfqgMBCvw2bTHDR9akkw6s3alVj
-         rte5MyJ4m9s6DATOviv0bJ9O4ed08Zub/j+0K/7dA5f1+zeN7EwZE9Ig+vmW+pWk38
-         mYaaC98M2jlAgvbVJaFDroKt8yB8NkeISVNCFAWw=
-Received: by mail-oo1-f44.google.com with SMTP id h8so4177572ooc.12;
-        Tue, 22 Sep 2020 07:24:32 -0700 (PDT)
-X-Gm-Message-State: AOAM53040d8nvgSe7iqqayS7UFQEAeSD//7IaLaMbJWaBYkCmsTCIslM
-        VHIM0Vi5v5NHJ8Y/uo2lUk6/zzOfOhWLWYs4Uw==
-X-Google-Smtp-Source: ABdhPJzUFEuKoDPplE32fF2OW24xWYgi/9lL9nNZnKQwkQwBHwCVey8YSOKSt3310TZYoa/pm+iYTw1x55KM9sBA3qs=
-X-Received: by 2002:a4a:b30d:: with SMTP id m13mr3077541ooo.50.1600784671655;
- Tue, 22 Sep 2020 07:24:31 -0700 (PDT)
+        b=W4rY78hm5XDVexazBMATM/BiRb0z27jzC/vRN5xE9xgcCJY9MOjEo0XJUMwF5iGiY
+         7DBzTFkmqCan30A0d1IwOSHSB1LFxCa3M1x12h71/E6qHMSvaIWd3/l0QmAC6EKDj2
+         CWtFrXRF8bqvw3GhdxqO16GSz7UePw8Uin+cg7/8=
+Received: by mail-ed1-f43.google.com with SMTP id n13so16296072edo.10;
+        Tue, 22 Sep 2020 07:24:52 -0700 (PDT)
+X-Gm-Message-State: AOAM530iauyFwkjPKZZERAXAO0R3ZGXPY2qWiTn/rv1OqmD9tlG9cwJ/
+        q7BtDNm8U55et5763T3JcCCOzLrEf0ru1eyfNuU=
+X-Google-Smtp-Source: ABdhPJxZ2CrqnrJLb1T6VBVOBSunR4FrEAjor/RNBGpBRboAOMh20/Svsx+Y1Q0FoTRmqeOWKEl8LD1QHAzIXKbyk7U=
+X-Received: by 2002:a05:6402:ca7:: with SMTP id cn7mr4049681edb.143.1600784690888;
+ Tue, 22 Sep 2020 07:24:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200722155533.252844-1-helen.koike@collabora.com> <20200722155533.252844-6-helen.koike@collabora.com>
-In-Reply-To: <20200722155533.252844-6-helen.koike@collabora.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 22 Sep 2020 08:24:20 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+qB=yUtHKKujiUWrsq+W-3ggM3B_SuuDzfYEheczn=8g@mail.gmail.com>
-Message-ID: <CAL_Jsq+qB=yUtHKKujiUWrsq+W-3ggM3B_SuuDzfYEheczn=8g@mail.gmail.com>
-Subject: Re: [PATCH v5 5/9] media: staging: rkisp1: remove unecessary clocks
-To:     Helen Koike <helen.koike@collabora.com>
-Cc:     devicetree@vger.kernel.org,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
-        "heiko@sntech.de" <heiko@sntech.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Mark Rutland <mark.rutland@arm.com>, karthik.poduval@gmail.com,
-        Johan Jonker <jbx6244@gmail.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Eddie Cai <eddie.cai.linux@gmail.com>,
-        Shunqian Zheng <zhengsq@rock-chips.com>,
-        Robin Murphy <robin.murphy@arm.com>
+References: <20200920195749.26952-1-krzk@kernel.org> <20200920195749.26952-2-krzk@kernel.org>
+ <20200922065154.GH25109@dragon>
+In-Reply-To: <20200922065154.GH25109@dragon>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Tue, 22 Sep 2020 16:24:39 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPemE-mHdp-OAOMi5xQvTcW4k-f1aMcmX10zFLFFTRMv2Q@mail.gmail.com>
+Message-ID: <CAJKOXPemE-mHdp-OAOMi5xQvTcW4k-f1aMcmX10zFLFFTRMv2Q@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] arm64: dts: imx8mq-librem5: align GPIO hog names
+ with dtschema
+To:     Shawn Guo <shawnguo@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Martin Kepplinger <martink@posteo.de>,
+        "Angus Ainslie (Purism)" <angus@akkea.ca>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 9:56 AM Helen Koike <helen.koike@collabora.com> wrote:
+On Tue, 22 Sep 2020 at 08:52, Shawn Guo <shawnguo@kernel.org> wrote:
 >
-> aclk_isp_wrap is a child of aclk_isp, and hclk_isp_wrap is a child of
-> hclk_isp, thus we can remove parents from the list.
+> On Sun, Sep 20, 2020 at 09:57:48PM +0200, Krzysztof Kozlowski wrote:
+> > dtschema expects GPIO hogs to end with 'hog' suffix.
+> >
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 >
-> Also, for the isp0, we only need the ISP clock, ACLK and HCLK.
-> In the future we'll need a pixel clock for RK3288 and RK3399, and a JPEG
-> clock for RK3288.
->
-> So with the goal to cleanup the dt-bindings and remove it from staging,
-> simplify clock names to isp, aclk and hclk.
->
-> Assigned clocks are meant to refer to the full path in the clock tree,
-> i.e. the leaf in the tree.
-> For instance, in RK3399, the clock responsible for ACLK (ISP AXI CLOCK)
-> is aclk_isp0_wrapper.
->
-> For reference, this is the isp clock topology on RK3399:
->
->  xin24m
->     pll_npll
->        npll
->           clk_isp1
->           clk_isp0
->     pll_cpll
->        cpll
->           aclk_isp1
->              aclk_isp1_noc
->              hclk_isp1
->                 aclk_isp1_wrapper
->                 hclk_isp1_noc
->           aclk_isp0
->              hclk_isp1_wrapper
->              aclk_isp0_wrapper
->              aclk_isp0_noc
->              hclk_isp0
->                 hclk_isp0_wrapper
->                 hclk_isp0_noc
->  pclkin_isp1_wrapper
->
-> Signed-off-by: Helen Koike <helen.koike@collabora.com>
->
-> ---
-> Changes in V5:
-> - Use if/then schema as suggested by Rob Herring on
-> https://patchwork.linuxtv.org/project/linux-media/patch/20200702191322.2639681-6-helen.koike@collabora.com/#119729
->
-> Changes in V4:
-> - update binding according to suggestion by Robin Murphy
-> on https://patchwork.kernel.org/patch/11475007/
->
-> Changes in V3:
-> - this is a new patch in the series
-> ---
->  .../bindings/media/rockchip-isp1.yaml         | 50 ++++++++++++-------
->  drivers/staging/media/rkisp1/rkisp1-dev.c     |  8 ++-
->  2 files changed, 36 insertions(+), 22 deletions(-)
->
-> diff --git a/drivers/staging/media/rkisp1/Documentation/devicetree/bindings/media/rockchip-isp1.yaml b/drivers/staging/media/rkisp1/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
-> index 62a6b9c959498..23c677d15037a 100644
-> --- a/drivers/staging/media/rkisp1/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
-> +++ b/drivers/staging/media/rkisp1/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
-> @@ -24,20 +24,10 @@ properties:
->      maxItems: 1
->
->    clocks:
-> -    items:
-> -      - description: ISP clock
-> -      - description: ISP AXI clock clock
-> -      - description: ISP AXI clock  wrapper clock
-> -      - description: ISP AHB clock clock
-> -      - description: ISP AHB wrapper clock
-> +    minItems: 3
+> Ping me after dtschema gets accepted.
 
-You need maxItems here too or it will always be 3.
+Hi Shawn,
 
->
->    clock-names:
-> -    items:
-> -      - const: clk_isp
-> -      - const: aclk_isp
-> -      - const: aclk_isp_wrap
-> -      - const: hclk_isp
-> -      - const: hclk_isp_wrap
-> +    minItems: 3
->
->    iommus:
->      maxItems: 1
-> @@ -116,6 +106,34 @@ required:
->    - power-domains
->    - ports
->
-> +if:
-> +  properties:
-> +    compatible:
-> +      contains:
-> +        const: rockchip,rk3399-cif-isp
-> +then:
-> +  properties:
-> +    clocks:
-> +      maxItems: 4
-> +      minItems: 3
+Happened just now, in dt-schema repo:
+https://github.com/devicetree-org/dt-schema/pull/47
 
-For a single compatible you shouldn't really have a variable number of clocks.
-
-> +      items:
-> +        # isp0 and isp1
-> +        - description: ISP clock
-> +        - description: ISP AXI clock
-> +        - description: ISP AHB clock
-> +        # only for isp1
-> +        - description: ISP Pixel clock
-> +    clock-names:
-> +      maxItems: 4
-> +      minItems: 3
-> +      items:
-> +        # isp0 and isp1
-> +        - const: isp
-> +        - const: aclk
-> +        - const: hclk
-> +        # only for isp1
-> +        - const: pclk_isp
-
-Don't you need an 'else' clause. For not rockchip,rk3399-cif-isp,
-there's no definition of what clocks there are.
-
-Rob
+Best regards,
+Krzysztof
