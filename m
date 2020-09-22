@@ -2,90 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC575274A0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 22:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA30274A07
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 22:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726795AbgIVUTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 16:19:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35192 "EHLO
+        id S1726783AbgIVUTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 16:19:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726757AbgIVUTv (ORCPT
+        with ESMTP id S1726448AbgIVUTq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 16:19:51 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA862C061755;
-        Tue, 22 Sep 2020 13:19:50 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id r24so15261234ljm.3;
-        Tue, 22 Sep 2020 13:19:50 -0700 (PDT)
+        Tue, 22 Sep 2020 16:19:46 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA56CC0613D0;
+        Tue, 22 Sep 2020 13:19:45 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id 185so22437470oie.11;
+        Tue, 22 Sep 2020 13:19:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S2U6wwtCWqdcr4h4UyNb/EZpSOd/ROirDasW3vU93+Y=;
-        b=JpbkxPjtTdP5pr3nrKNG031XI7P9vzMgcAdea4CMTqhyX4/DoVCNEpvY5rMRLxW2Vq
-         4rIom6amGd4jem3NVPAYRrTfH3O9L4EZwTS7iwsvdmvFVtUG7jCFDhzUCL6H+qq0HwcW
-         BU32w7uoxshPo4Q+nax4EGGfVeqcjuw74H+1Yd9BhhS5DRatOOqqn51C5LuS0MMX7F5c
-         YsxYtjxFYOypBv4ZmWdU5A6r+tPqJfvigeYlh/2IBnCErjftzbFW6DKVM5Le/CsjWzwp
-         UGCncJo8RRXEc7nJD9T/Qpf27nfZzszP0XHVyLfqjLn6le110fB5+fNUL7R6DJGUf4l8
-         yzhg==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=cU/mqRwfS+hHHjS1iyHpDuR0Mxkm7cO5mWCSouzpmbc=;
+        b=sE3T0v1fU6UhCVKyPuKKBoMCEivsNMZ/8QGAfiBNS3/XrvPqCnRqcHhvozrvOx4Tma
+         eVGALTBmhk1rJarrcdMGLUOuOjLQ6kK9ZHEiVFMBIKGHWiu7zPgNOpRRG6w333bYlXnu
+         L6JRtVaH501E/Y7jWMe/adaglnp3Kd5aQsj+q0OeRYtqoNiiLKtTc/xzeJJgg7w3Qnqh
+         eWyLsz6PTDrVnNKIcbe1GOlcTFsb4nduXVd/gKSKFrT8jTht4Bn5nFnEBhLgpV4adTR5
+         fNyTtILl3BZyNleJPU5RNa6TOfRR68i1Jte/upwHPjhTVaUUAWIWoOIf72rOLtnXOw5R
+         m3Xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S2U6wwtCWqdcr4h4UyNb/EZpSOd/ROirDasW3vU93+Y=;
-        b=BMbNIC+ArOjOtoypyjoIwDwQwzhJmivqstbm80B2X9AU1V+4DJAlkegNf/YuHDrDn7
-         4bH8jDYEBHJBw8aHaRQm8cVh80to/cEEaOnn+dnwehdZ3VR14JpsV4elddrP5Q1bcEpE
-         gEx54GnUBtiU14kih8By+vJt65bLmAfoaJ7okz7gDYF/FRk8lMn1k307noY+eyiX98b5
-         s5vtCpWOB9W9ldZMIJKj/ewfObR9jBVz4RqoB+SgKc9lRKq2KmW3rk7BSxv8BCfHcIJi
-         1uGdxHHzywUWFyY4ZiKA91V4BhjFGw0GPwq8x6QtDpOIM08hSFje1Xorq7jZhyIrnPvz
-         +GNw==
-X-Gm-Message-State: AOAM530dnOWi0oUspdAtLWsKvnSqQRjOJqEmZJuNy6q0H3zwACPJU0E1
-        VBVG0lwpXr5a8NxlYe0d9Y8=
-X-Google-Smtp-Source: ABdhPJxOEQoClB2ZdVBHcyBliyMuqRLy+PoyXyZe7RP6Bk4Ct2s0a3CAs4Bf4refaGvkIn7AoRX5KQ==
-X-Received: by 2002:a05:651c:386:: with SMTP id e6mr2212684ljp.424.1600805989074;
-        Tue, 22 Sep 2020 13:19:49 -0700 (PDT)
-Received: from localhost.localdomain (h-82-196-111-59.NA.cust.bahnhof.se. [82.196.111.59])
-        by smtp.gmail.com with ESMTPSA id z9sm4143867ljc.22.2020.09.22.13.19.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 13:19:48 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Kamel Bouhara <kamel.bouhara@bootlin.com>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH] counter: microchip-tcb-capture: Constify mchp_tc_ops
-Date:   Tue, 22 Sep 2020 22:19:41 +0200
-Message-Id: <20200922201941.41328-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=cU/mqRwfS+hHHjS1iyHpDuR0Mxkm7cO5mWCSouzpmbc=;
+        b=bTutenuYgTbsI67hvaDwON0VL1koQuKwdRVFWViznDBxK7oSPd9ilnjvP55Ddl6mVo
+         GJ1VLJEod7KKdli2WvohOSJFpedJnaBlOqL5kWdQYBxBWeFq/HPDMNNYAxKIuAC5MKmv
+         GqRE/dcIViiP0MUHPigYp4vEVbCiEiIOLy8f6Kfm9q1WsDQ9IPEmCWgCdG2rs18aWiv9
+         23+KB6ylqGgJWPYDK4j/bENN3ot3wKWlZm50KPKCZBAact1Xscow1eKv7FccuZS/nwsQ
+         z0EzxmIlx9pjoyY1oV3vKYha6APctewOkYizP3pX//ONtPxyremQ6KYRY3OEFQto3bP3
+         xGdg==
+X-Gm-Message-State: AOAM530C1R7WVKllZgcc77wuwHQnjWPIVq0rLvTPJdl9V4b47wjXCZ95
+        kAr40sHgD+k4OIttlQI1Psc=
+X-Google-Smtp-Source: ABdhPJyhxIQI3Kou0tWa6voX7hZh/lnusZzzc2SXWzK1Xc+4DDMwQ5iXrkR4snm5qM4Wx+fog2tw1w==
+X-Received: by 2002:aca:f5cb:: with SMTP id t194mr3521763oih.144.1600805985324;
+        Tue, 22 Sep 2020 13:19:45 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id w25sm1886353oth.22.2020.09.22.13.19.44
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 22 Sep 2020 13:19:44 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 22 Sep 2020 13:19:43 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 5.8 000/118] 5.8.11-rc1 review
+Message-ID: <20200922201943.GF127538@roeck-us.net>
+References: <20200921162036.324813383@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921162036.324813383@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only usage of mchp_tc_ops is to assign its address to the ops field
-in the counter_device struct which is a const pointer. Make it const to
-allow the compiler to put it in read-only memory.
+On Mon, Sep 21, 2020 at 06:26:52PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.8.11 release.
+> There are 118 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 23 Sep 2020 16:20:12 +0000.
+> Anything received after that time might be too late.
+> 
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- drivers/counter/microchip-tcb-capture.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Build results:
+	total: 154 pass: 154 fail: 0
+Qemu test results:
+	total: 430 pass: 430 fail: 0
 
-diff --git a/drivers/counter/microchip-tcb-capture.c b/drivers/counter/microchip-tcb-capture.c
-index b7b252c5addf..039c54a78aa5 100644
---- a/drivers/counter/microchip-tcb-capture.c
-+++ b/drivers/counter/microchip-tcb-capture.c
-@@ -253,7 +253,7 @@ static struct counter_count mchp_tc_counts[] = {
- 	},
- };
- 
--static struct counter_ops mchp_tc_ops = {
-+static const struct counter_ops mchp_tc_ops = {
- 	.signal_read  = mchp_tc_count_signal_read,
- 	.count_read   = mchp_tc_count_read,
- 	.function_get = mchp_tc_count_function_get,
--- 
-2.28.0
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
+Guenter
