@@ -2,84 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E167273BA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18E78273BA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:22:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729844AbgIVHVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 03:21:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729630AbgIVHVC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 03:21:02 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D928C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 00:21:02 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id b22so16843575lfs.13
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 00:21:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YDJN3EXMJU3d3rFlGH/rbr1Jkw5/Z+5EHDzOysJfBeA=;
-        b=op90nJ/Xilj6wj8zFYKVPWih3L7bMN2b/pmbPyxdblp9CDe7tU531EzGIZf2FK5fWJ
-         U9zpnkChjQf1ULa+aXwAebSAB+WAL0W4tu1rwnDM54HFhNmuVxKOR+/K90NtyyWMxTe5
-         lYD02J1xdeKO+3jm1a2zUBdcb0KD3Z1k/avJBxGfyg1wSQc4Vk67TxiIG7nxEwme2qrq
-         svO+YCFq8aXLUVATCM/O3Z5r2GQSu1XE93bbbFTunI3Z+T5bBPAfLSRs6vkEUltRnOJ/
-         8MX0LZavN3NmdDjGsQKlvrPocR/xMwp4p+St+jzyiEu5fiGx52l+DhBRXcL6l7XYpdRn
-         wJww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YDJN3EXMJU3d3rFlGH/rbr1Jkw5/Z+5EHDzOysJfBeA=;
-        b=WolaupC4ZmWKIn7VHoYd6E2mZs7q1p8p7UD6J7dcufDb3TAsVFQFtrugxQK1+uazJG
-         HvYtoV0eR1gew79yU+9k1TgiTtPEcfdpRi+8xXYvy914PgMr2dPXg/kJQ69n4DU6mjvl
-         YZFAoGsBrQl3p3UXtg5Yl6MRA/7hwn01fT+pn6NBCsvtumsUpDXg4PR/0Vb/aX7fJECl
-         jEbAKZAm9qmQGUy6y9n9bO5KpnzriRyUnteYRMXmfeWVZ/VZIJ3C/SXqEB7hgoyDV2SB
-         BtQ7dgZ39bgdwM225U1niLqudyBfunSVfWyBmXxZp9J0kTxbMaawILQpb5vkazpssYom
-         Ja4A==
-X-Gm-Message-State: AOAM531KjiuvTCbM8IsR/9/TJa1Ag9PmtaBhgK2BFHF4gm8jC88Ynw0l
-        9wf0XkxOuMypa4EuhfIIPbDs+59QfNvwo71YTzBhNg==
-X-Google-Smtp-Source: ABdhPJwh3O18KE6fGKtQXUrgxn8PXxjeImqE7D3w3MW4Mz4e1jPndLWojCXgXFlL+dyvzth3ePoQxBdjtoxLMc5pb48=
-X-Received: by 2002:ac2:4a81:: with SMTP id l1mr1089424lfp.388.1600759260572;
- Tue, 22 Sep 2020 00:21:00 -0700 (PDT)
+        id S1729885AbgIVHWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 03:22:08 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:53182 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729742AbgIVHWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 03:22:08 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600759327; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=2yC4x95NralxjfNA+QJtjVnLiVD1vKvkgky5RcN0aG8=;
+ b=ihlAnq03Ij3EMv2nyfJ7VaQPz0F88ttnGtlb9PTL7UTBgPR66y9yvg71qqSEsXJMITXmr6A+
+ wVgZMl8VRIlD2EwsHY0TAPSy9Oikashv+dAy0haCH0OTTvlFK6uL3mS9OVz80Shpfe/bVmGT
+ tL5Uo32+7nBjfxec/jFWzQSF05k=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5f69a60653220b80d73b1216 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Sep 2020 07:21:42
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D65AAC433C8; Tue, 22 Sep 2020 07:21:41 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3A929C433CB;
+        Tue, 22 Sep 2020 07:21:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3A929C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20200902064407.30712-1-sumit.semwal@linaro.org>
-In-Reply-To: <20200902064407.30712-1-sumit.semwal@linaro.org>
-From:   Sumit Semwal <sumit.semwal@linaro.org>
-Date:   Tue, 22 Sep 2020 12:50:49 +0530
-Message-ID: <CAO_48GHiAB1VOxd=bJWAqAh5paWAVRqLRDESiEXY_=c=uQ1jvg@mail.gmail.com>
-Subject: Re: [PATCH v7 0/2]dd support for Tianma nt36672a video mode panel
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        devicetree@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v2] ath10k: Use bdf calibration variant for snoc targets
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1600157948-2042-1-git-send-email-pillair@codeaurora.org>
+References: <1600157948-2042-1-git-send-email-pillair@codeaurora.org>
+To:     Rakesh Pillai <pillair@codeaurora.org>
+Cc:     ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Rakesh Pillai <pillair@codeaurora.org>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200922072141.D65AAC433C8@smtp.codeaurora.org>
+Date:   Tue, 22 Sep 2020 07:21:41 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sam / Theirry,
+Rakesh Pillai <pillair@codeaurora.org> wrote:
 
-On Wed, 2 Sep 2020 at 12:14, Sumit Semwal <sumit.semwal@linaro.org> wrote:
->
-> Some Poco F1 phones from Xiaomi have a FHD+ video mode panel based on the
-> Novatek NT36672A display controller; Add support for the same.
+> Board Data File (BDF) is loaded upon driver boot-up procedure.
+> The right board data file is identified using bus and qmi-board-id.
+> 
+> The problem, however, can occur when the (default) board data
+> file cannot fulfill with the vendor requirements and it is
+> necessary to use a different board data file.
+> 
+> Also using the chip_id for identifying the board data helps
+> in dealing with different variants of the board data file based
+> on the RF card. If the chip_id is not programmed, a default value
+> of 0xff will be used for parsing the board data file.
+> 
+> Add the support to get the variant field from DTSI and
+> use this information along with the chip_id to load the vendor
+> specific BDF.
+> 
+> The device tree requires addition strings to define the variant name
+> 
+>     wifi@a000000 {
+>             status = "okay";
+>             qcom,ath10k-calibration-variant = "xyz-v2";
+>     };
+> 
+>     wifi@a800000 {
+>             status = "okay";
+>             qcom,ath10k-calibration-variant = "xyz-v1";
+>     };
+> 
+> This would create the boarddata identifiers for the board-2.bin search
+> 
+>  *  bus=snoc,qmi-board-id=16,qmi-chip-id=0,variant=xyz-v1
+>  *  bus=snoc,qmi-board-id=17,qmi-chip-id=0,variant=xyz-v2
+> 
+> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
+> 
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-This latest version (v7) had all the outstanding comments fixed, and
-Bjorn has also given his r-b, so could you please get this set of
-patches merged?
+Patch applied to ath-next branch of ath.git, thanks.
 
->
+4e9381056547 ath10k: Use bdf calibration variant for snoc targets
 
-<snip>
+-- 
+https://patchwork.kernel.org/patch/11775827/
 
-Best,
-Sumit.
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
