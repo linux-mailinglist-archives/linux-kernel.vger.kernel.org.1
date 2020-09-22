@@ -2,89 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8916B27389B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 04:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 572472738B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 04:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729746AbgIVCdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 22:33:31 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13816 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729379AbgIVCdb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 22:33:31 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id A910716B416F9FC71983;
-        Tue, 22 Sep 2020 10:33:26 +0800 (CST)
-Received: from [10.174.179.91] (10.174.179.91) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 22 Sep 2020 10:33:21 +0800
-Subject: Re: [PATCH -next] gpu: host1x: simplify the return expression of
- host1x_cdma_init()
-To:     Mikko Perttunen <cyndis@kapsi.fi>,
-        Thierry Reding <thierry.reding@gmail.com>
-CC:     <dri-devel@lists.freedesktop.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200921131032.91972-1-miaoqinglang@huawei.com>
- <4378d69a-2338-779f-ab4d-3c64fbf7dfd3@kapsi.fi>
-From:   miaoqinglang <miaoqinglang@huawei.com>
-Message-ID: <1d224422-a67d-8157-4212-646098f223c9@huawei.com>
-Date:   Tue, 22 Sep 2020 10:33:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1729880AbgIVCfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 22:35:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54538 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729870AbgIVCfS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 22:35:18 -0400
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 59282207C4;
+        Tue, 22 Sep 2020 02:35:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600742117;
+        bh=3MgUw8675/kbmfSGD0oscui8OSQisSWDE3fsdVyPj8U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YD1+2S8WeiLmCUVs+URFky1KpVdJsW4jbjAVBrXhz6+Y8mGtKhGRN4sWfJiw4wtf1
+         fJ7fKHqfJX7sQHrfvzwdcI7J5O57XZOaEg/Glawa6QZ1W+EIYk1keIcHFQfeWWoLg5
+         2b85v0D3zCdOWVSaMFHD5i8VBD6cqMXW5I2sFQ0o=
+Date:   Tue, 22 Sep 2020 10:35:13 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-input@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Input: imx6ul_tsc - unify open/close and PM paths
+Message-ID: <20200922023504.GW25109@dragon>
+References: <20200914175042.GA1497032@dtor-ws>
 MIME-Version: 1.0
-In-Reply-To: <4378d69a-2338-779f-ab4d-3c64fbf7dfd3@kapsi.fi>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.91]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200914175042.GA1497032@dtor-ws>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-在 2020/9/21 21:12, Mikko Perttunen 写道:
-> On 9/21/20 4:10 PM, Qinglang Miao wrote:
->> Simplify the return expression.
->>
->> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
->> ---
->>   drivers/gpu/host1x/cdma.c | 8 +-------
->>   1 file changed, 1 insertion(+), 7 deletions(-)
->>
->> diff --git a/drivers/gpu/host1x/cdma.c b/drivers/gpu/host1x/cdma.c
->> index e8d3fda91..08a0f9e10 100644
->> --- a/drivers/gpu/host1x/cdma.c
->> +++ b/drivers/gpu/host1x/cdma.c
->> @@ -448,8 +448,6 @@ void host1x_cdma_update_sync_queue(struct 
->> host1x_cdma *cdma,
->>    */
->>   int host1x_cdma_init(struct host1x_cdma *cdma)
->>   {
->> -    int err;
->> -
->>       mutex_init(&cdma->lock);
->>       init_completion(&cdma->complete);
->> @@ -459,11 +457,7 @@ int host1x_cdma_init(struct host1x_cdma *cdma)
->>       cdma->running = false;
->>       cdma->torndown = false;
->> -    err = host1x_pushbuffer_init(&cdma->push_buffer);
->> -    if (err)
->> -        return err;
->> -
->> -    return 0;
->> +    return host1x_pushbuffer_init(&cdma->push_buffer);
+On Mon, Sep 14, 2020 at 10:50:42AM -0700, Dmitry Torokhov wrote:
+> Open/close and resume/suspend paths are very similar, let's factor out
+> common parts.
 > 
-> IMHO, this makes it less readable since now it kind of looks like 
-> host1x_pushbuffer_init is returning some meaningful value, instead of 
-> the code just handling error values in a sequence.
-> 
-> Mikko
-> 
-Hi Mikko,
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-It sounds resonable, thanks for your reply.
-
->>   }
->>   /*
->>
-> .
+Acked-by: Shawn Guo <shawnguo@kernel.org>
