@@ -2,109 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAF30274B60
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:46:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7B8274B45
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:41:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726780AbgIVVpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 17:45:50 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:58151 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726643AbgIVVpt (ORCPT
+        id S1726629AbgIVVkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 17:40:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37611 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726448AbgIVVkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 17:45:49 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 5F0C85C01C9;
-        Tue, 22 Sep 2020 17:39:28 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Tue, 22 Sep 2020 17:39:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        oregontracks.org; h=from:to:cc:subject:date:message-id
-        :in-reply-to:references:mime-version:content-transfer-encoding;
-         s=fm1; bh=ERnpPU+gIC6hydkrdvGearFQ2eli18omiMWIHaoJwrQ=; b=cAmeS
-        XXSEfcV5mIKhek96Y6PY8VtdNZ/EX0Q+CG+uFXrdakw/F2BPsdpBYetlvyhA2JfR
-        TzPzfby4c0B0FdCPLRCD3F3NFW8lLCDoV5Vwk10lhV+wvGCAC188fkueisO3g3Zs
-        OR6IoZ6r534X+f5kW5nWdt1COKmDJDPMwz0J9zVn0f53vYhIUjOcKxyKZGNReVjO
-        75Y/lvM4kIakcnTeX41o4SNLguTg5pJKQYwsZHT3MGNEX+UA0b5AWgdsnqpYa1lk
-        CNbaFAGlcsljsthYFhrnDPVWMW/QsmpXxrAkw4EY7Sf6jPmkPiGJ2jbjUJWoWJbs
-        aEADox0zWHULzLd2g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=ERnpPU+gIC6hydkrdvGearFQ2eli18omiMWIHaoJwrQ=; b=g2CQofjz
-        G+aVr1kdoteVyLLL14QPVoUkMa9orx4qI5QlyPoSKdP4zMLF9SdKtshUYzYqrTP4
-        xUOD+pjAzN95HWWtWdPhT9C0E2a6dy05R6jy5QzBYPhUXRir83meGG8kSdY6SBzJ
-        7X5WOi4K84DB6RoVtJbRzutAs4IPZ6xxspkuUu/rBpay2t+N2y7q4zkaKhFnDbuf
-        y60+M8rWpPFg3sU7j29R0T0bxtY+ylpZ+pA654B5CH/ZJf/OkiSUaEETTwbgBU0c
-        yb7NWraAiT2vbYDbWvig57ZaST3FWDr7IhH1ohg2G24Y8Rfg3fqzyUFqR4u6PHui
-        Gds+d7RnuGF9tg==
-X-ME-Sender: <xms:EG9qXyuDKWNnAI83yVuFcghMG5fOwriE2nyuU92pk1uuDF9_7c02XA>
-    <xme:EG9qX3eXHwId5Tvkh-zQW1gfDL1FsQ36w6GibQaIFwMye2j0GNy9NpdridnJSgUNc
-    _7c3spQHwAI_UdQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeggdduieefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
-    dtredttdenucfhrhhomhepufgvrghnucggucfmvghllhgvhicuoehsvggrnhhvkhdruggv
-    vhesohhrvghgohhnthhrrggtkhhsrdhorhhgqeenucggtffrrghtthgvrhhnpeehkeffte
-    eiudeiffelkeelvefftdelhfeitdeigeffleeufedvgfegvdefvedtteenucfkphepvdeg
-    rddvtddrudegkedrgeelnecuvehluhhsthgvrhfuihiivgepleenucfrrghrrghmpehmrg
-    hilhhfrhhomhepshgvrghnvhhkrdguvghvsehorhgvghhonhhtrhgrtghkshdrohhrgh
-X-ME-Proxy: <xmx:EG9qX9y_nBRjsKtiIjdxw57-Lyw9mK_5vEF2YJnhBiYgOsnf3xuEAw>
-    <xmx:EG9qX9PE0Ib9myGDyKne5FWwFkNMedTbAOTrXBPY4ua9uekfkCMOvg>
-    <xmx:EG9qXy8kgaD_KlNDTk8oPg5vJYbC19FBo0pAzpQ62kFhoCpD9cq-zw>
-    <xmx:EG9qX3Ptif0-U13I-iB-MWTtfI0HXunv0PSZg67N9zhkGW1ybKt7GA>
-Received: from arch-ashland-svkelley.hsd1.or.comcast.net (c-24-20-148-49.hsd1.or.comcast.net [24.20.148.49])
-        by mail.messagingengine.com (Postfix) with ESMTPA id BEC073064682;
-        Tue, 22 Sep 2020 17:39:26 -0400 (EDT)
-From:   Sean V Kelley <seanvk.dev@oregontracks.org>
-To:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
-        rafael.j.wysocki@intel.com, ashok.raj@intel.com,
-        tony.luck@intel.com, sathyanarayanan.kuppuswamy@intel.com,
-        qiuxu.zhuo@intel.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean V Kelley <sean.v.kelley@intel.com>
-Subject: [PATCH v6 10/10] PCI/AER: Add RCEC AER error injection support
-Date:   Tue, 22 Sep 2020 14:38:59 -0700
-Message-Id: <20200922213859.108826-11-seanvk.dev@oregontracks.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200922213859.108826-1-seanvk.dev@oregontracks.org>
-References: <20200922213859.108826-1-seanvk.dev@oregontracks.org>
+        Tue, 22 Sep 2020 17:40:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600810841;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wvKLK45f+pV+aZpx2RncLiRV10TEdFA1YgHDgtiks7E=;
+        b=UOz4kyopzxWcuCgaGctR4lrf+6REmhAepLicHTdRpZC16iFQxninSLfJvrV5CS36XzuCNt
+        pLFSdhf3YUTpzyyh0O/GakB34qdZzUthUG0MlAtL7iQUWYqnffg8KdWfwin33UAenPnktw
+        AgBSm52n9MW9q+r4gghWH8uZDzCAZvA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-277-jKa5IYJEOQqvVwTebOPlGQ-1; Tue, 22 Sep 2020 17:40:39 -0400
+X-MC-Unique: jKa5IYJEOQqvVwTebOPlGQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 21AFD186DD2C;
+        Tue, 22 Sep 2020 21:40:37 +0000 (UTC)
+Received: from krava (ovpn-112-28.ams2.redhat.com [10.36.112.28])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 874C073689;
+        Tue, 22 Sep 2020 21:40:34 +0000 (UTC)
+Date:   Tue, 22 Sep 2020 23:40:33 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH 2/5] perf stat: Add --for-each-cgroup option
+Message-ID: <20200922214033.GD2893484@krava>
+References: <20200921094610.83736-1-namhyung@kernel.org>
+ <20200921094610.83736-3-namhyung@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921094610.83736-3-namhyung@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+On Mon, Sep 21, 2020 at 06:46:07PM +0900, Namhyung Kim wrote:
 
-The Root Complex Event Collectors(RCEC) appear as peers to Root Ports
-and also have the AER capability. So add RCEC support to the current AER
-error injection driver.
+SNIP
 
-Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
-Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
----
- drivers/pci/pcie/aer_inject.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+> +int evlist__expand_cgroup(struct evlist *evlist, const char *str)
+> +{
+> +	struct evlist *orig_list, *tmp_list;
+> +	struct evsel *pos, *evsel, *leader;
+> +	struct cgroup *cgrp = NULL;
+> +	const char *p, *e, *eos = str + strlen(str);
+> +	int ret = -1;
+> +
+> +	if (evlist->core.nr_entries == 0) {
+> +		fprintf(stderr, "must define events before cgroups\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	orig_list = evlist__new();
+> +	tmp_list = evlist__new();
+> +	if (orig_list == NULL || tmp_list == NULL) {
+> +		fprintf(stderr, "memory allocation failed\n");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	/* save original events and init evlist */
+> +	perf_evlist__splice_list_tail(orig_list, &evlist->core.entries);
+> +	evlist->core.nr_entries = 0;
+> +
+> +	for (;;) {
+> +		p = strchr(str, ',');
+> +		e = p ? p : eos;
+> +
+> +		/* allow empty cgroups, i.e., skip */
+> +		if (e - str) {
+> +			/* termination added */
+> +			char *name = strndup(str, e - str);
+> +			if (!name)
+> +				goto out_err;
+> +
+> +			cgrp = cgroup__new(name);
+> +			free(name);
+> +			if (cgrp == NULL)
+> +				goto out_err;
+> +		} else {
+> +			cgrp = NULL;
+> +		}
+> +
+> +		leader = NULL;
+> +		evlist__for_each_entry(orig_list, pos) {
+> +			evsel = evsel__clone(pos);
+> +			if (evsel == NULL)
+> +				goto out_err;
+> +
+> +			cgroup__put(evsel->cgrp);
+> +			evsel->cgrp = cgroup__get(cgrp);
+> +
+> +			if (evsel__is_group_leader(pos))
+> +				leader = evsel;
+> +			evsel->leader = leader;
 
-diff --git a/drivers/pci/pcie/aer_inject.c b/drivers/pci/pcie/aer_inject.c
-index c2cbf425afc5..011a6c54b4e3 100644
---- a/drivers/pci/pcie/aer_inject.c
-+++ b/drivers/pci/pcie/aer_inject.c
-@@ -333,8 +333,11 @@ static int aer_inject(struct aer_error_inj *einj)
- 	if (!dev)
- 		return -ENODEV;
- 	rpdev = pcie_find_root_port(dev);
-+	/* If Root port not found, try to find an RCEC */
-+	if (!rpdev)
-+		rpdev = dev->rcec;
- 	if (!rpdev) {
--		pci_err(dev, "Root port not found\n");
-+		pci_err(dev, "Neither root port nor RCEC found\n");
- 		ret = -ENODEV;
- 		goto out_put;
- 	}
--- 
-2.28.0
+hum, will this work if there's standalone event after group? like:
+
+  {cycles,instructions},cache-misses
+
+cache-misses will get cycles as group leader no?
+
+jirka
+
+> +
+> +			evlist__add(tmp_list, evsel);
+> +		}
+> +		/* cgroup__new() has a refcount, release it here */
+> +		cgroup__put(cgrp);
+> +		nr_cgroups++;
+
+SNIP
 
