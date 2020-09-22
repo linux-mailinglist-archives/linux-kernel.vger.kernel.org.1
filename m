@@ -2,97 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE35C2746AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:30:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 776B82746A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:29:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726711AbgIVQaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 12:30:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726508AbgIVQaB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 12:30:01 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 561C2C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 09:30:01 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id m5so18736853lfp.7
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 09:30:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+Bx8gekgm2SEOvt6u33teukzzHIcXbMrSd4fJ3huDS4=;
-        b=k9V3cN/rbuswExLp67fruMpypgqAsZd+NisBoTQvS+xzFFj+/mdrPU/GcSAmSlXgsR
-         3I01CvoEm2O8zkQOEw8J0Y2KZKyD5QSMRhtcVQcUQx3drK5Lje0kTDvU8eFnJx5PDa4k
-         E3blL8kFwcTLssklMilM9R2qGHtef2b1DVXhkyhjS1/juNyd4ISZXq+c9sOb9tzJkcWB
-         glwO4W3iGR7SJ/isjmflyTnALmC+fYbI8+eCeDFKbH+cH3GxyHG+CYsrDi6RUgNpH58+
-         CW7rbZ/pM5i0JcOz+7yRy0O0rbNXrDqHgw9pSTahiSPmSRVewNxhaYn//AF8o2roPDyH
-         BE3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+Bx8gekgm2SEOvt6u33teukzzHIcXbMrSd4fJ3huDS4=;
-        b=NoXIGT4rixD1mt9D5p3+f0zourZwsWDxhcICaPPoNZCweglVFbQlv+lpJ5McEeKd8c
-         AkQWyPn6WeglVMXNO9N5RA50vP9WM7EhDUOCCNksvuDxpml/IhtLFBGRHyLiZLfzdSCa
-         kk4YBr7CNW/aJu+ziAHNOhKriQFnCY5pYgsE9lC2mGiV/fe2u2eeZ498awbnEH3UtiCz
-         jYdjtsup063PxWSFB8Zv6SfZ1SeeldOVJ1NCCzboLP30zQd0kp0THeNmhGgq+eehp6FH
-         yYFV12/BL1sCVMvTp/HSVO3H0UWc/UoaTYh5gXr4258gJsEyjmZwOpHEXMaKrsF5cETj
-         K/vA==
-X-Gm-Message-State: AOAM531cxhHOlv5Zrd5fQIxhN9Gk76zyAEeKeEfD5RiZLVonFauQ0f9G
-        MNiSS9DLMxe7UAe3QE5JzHIKti1C7IK8D0phrzlBHg==
-X-Google-Smtp-Source: ABdhPJyirm0v+rO7vqImS4UsI+KLO3mtBjQY6yfGaAUPyv3UQn89NbK8UvFvw9pzcyMGvD4manAbbc7DR8AwSP6QVPU=
-X-Received: by 2002:a19:4084:: with SMTP id n126mr1793874lfa.54.1600792199501;
- Tue, 22 Sep 2020 09:29:59 -0700 (PDT)
+        id S1726661AbgIVQ3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 12:29:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:46782 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726650AbgIVQ3H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 12:29:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 59F3D101E;
+        Tue, 22 Sep 2020 09:29:06 -0700 (PDT)
+Received: from [192.168.0.110] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4FB1B3F718;
+        Tue, 22 Sep 2020 09:29:05 -0700 (PDT)
+Subject: Re: [PATCH v6 0/7] arm_pmu: Use NMI for perf interrupt
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     mark.rutland@arm.com, sumit.garg@linaro.org, maz@kernel.org,
+        linux-kernel@vger.kernel.org, swboyd@chromium.org,
+        catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org
+References: <20200819133419.526889-1-alexandru.elisei@arm.com>
+ <20200921135951.GN2139@willie-the-truck>
+ <296304b8-aadd-817d-bb12-dc7524b6f0f5@arm.com>
+Message-ID: <e7a67a3c-1d09-2413-a1d5-d7f708a30e97@arm.com>
+Date:   Tue, 22 Sep 2020 17:30:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <CALvZod4FWLsV9byrKQojeus7tMDhHjQHFF5J_JpNsyB0HkaERA@mail.gmail.com>
- <20200922111202.GY12990@dhcp22.suse.cz> <CALvZod6=VwQduoG3GiW-=csAQja4vCsXAhKH_tSuA4JYx0dEiA@mail.gmail.com>
- <20200922151654.GA12990@dhcp22.suse.cz>
-In-Reply-To: <20200922151654.GA12990@dhcp22.suse.cz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 22 Sep 2020 09:29:48 -0700
-Message-ID: <CALvZod7jvxEdbMzrmmt6Vrse=Ui4yhhVYyxPkPmmzWC5Z_6rtw@mail.gmail.com>
-Subject: Re: Machine lockups on extreme memory pressure
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Thelen <gthelen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <296304b8-aadd-817d-bb12-dc7524b6f0f5@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 8:16 AM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Tue 22-09-20 06:37:02, Shakeel Butt wrote:
-> [...]
-> > > I would recommend to focus on tracking down the who is blocking the
-> > > further progress.
-> >
-> > I was able to find the CPU next in line for the list_lock from the
-> > dump. I don't think anyone is blocking the progress as such but more
-> > like the spinlock in the irq context is starving the spinlock in the
-> > process context. This is a high traffic machine and there are tens of
-> > thousands of potential network ACKs on the queue.
->
-> So there is a forward progress but it is too slow to have any reasonable
-> progress in userspace?
+Hi,
 
-Yes.
+On 9/21/20 4:41 PM, Alexandru Elisei wrote:
+> Hi Will,
+>
+> Thank you so much for reviewing the series!
+>
+> On 9/21/20 2:59 PM, Will Deacon wrote:
+>> On Wed, Aug 19, 2020 at 02:34:12PM +0100, Alexandru Elisei wrote:
+>>> The series makes the arm_pmu driver use NMIs for the perf interrupt when
+>>> NMIs are available on the platform (currently, only arm64 + GICv3). To make
+>>> it easier to play with the patches, I've pushed a branch at [1]:
+>> This mostly looks good to me, but see some of the comments I left on the
+>> code. One other thing I'm not sure about is whether or not we should tell
+>> userspace that we're using an NMI for the sampling. Do any other
+>> architectures have a conditional NMI?
+> I'm not sure about other architectures being able to configure the perf interrupt
+> as NMI or a regular interrupt, I'll try to find out. Regardless of what the other
+> architecture do, I am of the opinion that we should spell out explicitly when the
+> PMU is using pseudo-NMIs, because it makes a huge difference in the accuracy of
+> the instrumentation and the overall usefulness of perf.
 
->
-> > I talked about this problem with Johannes at LPC 2019 and I think we
-> > talked about two potential solutions. First was to somehow give memory
-> > reserves to oomd and second was in-kernel PSI based oom-killer. I am
-> > not sure the first one will work in this situation but the second one
-> > might help.
->
-> Why does your oomd depend on memory allocation?
->
+Coming back to this, looked at what other architectures are doing by grepping for
+perf_pmu_register() and going from there, results below. I've found xtensa to
+allow both regular IRQs and NMIs for PMU, based on a kernel config option (just
+like arm64). However, the description for the config option states clearly the the
+PMU IRQ will be an IRQ, while we don't have that for arm64 - the IRQ will be an
+NMI automatically if the GIC is configured to use pseudo-NMIs. I think displaying
+a message is the right thing to do, I'll do that for v7.
 
-It does not but I think my concern was the potential allocations
-during syscalls. Anyways, what do you think of the in-kernel PSI based
-oom-kill trigger. I think Johannes had a prototype as well.
+PMU IRQs for other architectures:
+
+* alpha - PMU interrupt is always IRQ.
+* arc - optional PMU interrupt; when present it's requested with
+request_percpu_irq(); it prints to dmesg when overflow IRQ support has been detected.
+* arm - no NMIs.
+* c6x - seems like it doesn't have a PMU at all.
+* csky - PMU interrupts is always IRQ.
+* h8300 - seems like it doesn't have a PMU at all.
+* hexagon - seems like it doesn't have a PMU at all.
+* ia64 - perfmon interrupt is registered with register_percpu_irq(); it prints the
+IRQ number.
+* m64k - couldn't find anything resembling a PMU.
+* microblaze - seems like it doesn't have a PMU.
+* mips - regular IRQ; irq number and if it's shared with the timer interrupt is
+printed.
+* nds32 - regular IRQ; doesn't print anything regarding IRQ number.
+* nios2 - seems like it doesn't have a PMU.
+* openrisc - no PMU.
+* parisc - no PMU IRQ, free-running counters?
+* powerpc - no IRQ for IMC, hv_24x7 and hv_gpci PMUs; looks like for powerpc64,
+the PMU interrupt is treated like an NMI if it is taken when interrupts are
+"soft-masked", for powerpc32 it's always a regular interrupt; no information
+displayed about the interrupt.
+* riscv - they use regular IRQs only when multiplexing events; I haven't found any
+information displayed about the PMU.
+* s390 - no IRQ for cpum_cf_diag and cpm_cf; regular IRQ for cpum_sf; no dmesg output.
+* sh - no IRQ.
+* sparc - looks like it's always NMI; no information about IRQ is displayed.
+* um - no PMU.
+* x86 - the PMU interrupt is always a NMI, the lapic is configured to deliver the
+PMI as an NMI (in arch/x86/events/core.c::perf_events_lapic_init()). Nothing about
+interrupts printed in init_hw_perf_events();
+* xtensa - the interrupt can be configurated as an NMI (EXTENSA_FAKE_NMI), but no
+information about it is displayed.
+
+Thanks,
+Alex
