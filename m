@@ -2,97 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6621F2737B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 02:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B88892737B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 02:58:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729391AbgIVA6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 20:58:18 -0400
-Received: from m176150.mail.qiye.163.com ([59.111.176.150]:3711 "EHLO
-        m176150.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726702AbgIVA6S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 20:58:18 -0400
-Received: from vivo.com (wm-10.qy.internal [127.0.0.1])
-        by m176150.mail.qiye.163.com (Hmail) with ESMTP id 06FDB1A2DD2;
-        Tue, 22 Sep 2020 08:57:42 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <AEcAcACLDcKt*nUYZ6IRcKql.3.1600736262001.Hmail.bernard@vivo.com>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Jun Lei <Jun.Lei@amd.com>, Aric Cyr <aric.cyr@amd.com>,
-        Wenjing Liu <wenjing.liu@amd.com>,
-        abdoulaye berthe <abdoulaye.berthe@amd.com>,
-        Michael Strauss <michael.strauss@amd.com>,
-        Brandon Syu <Brandon.Syu@amd.com>,
-        Martin Leung <martin.leung@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, opensource.kernel@vivo.com
-Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSF0gZHJtL2FtZC9kaXNwbGF5OiBvcHRpbWl6ZSBjb2RlIHJ1bnRpbWUgYSBiaXQ=?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 157.0.31.124
-In-Reply-To: <CADnq5_PJrpJpPjexVpN-r_9XZbKDS3NnQ=dBS5RdO1NYjw+8uA@mail.gmail.com>
+        id S1729434AbgIVA6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 20:58:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50972 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729405AbgIVA6f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 20:58:35 -0400
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 34A6923A9C
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 00:58:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600736314;
+        bh=mO4DYr7N0RLjWZa37eU/VgHJpvS4aRf2iPegAH0iEtc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZvsltSwjMQQjZiYWUVNiO25TW5AUeBh08HcndWK7Xe35RS/hY9lrzTe2a+eWc93Vs
+         W63+BpGaM0/hEmj0H5NNiiF+B4Dto3ZfhGCuYSg/VL/ifmFADrmP21pnAjqQPEbpTf
+         GPIWfRyXGAJ/aoCVrG5ZycMOv5bit2MDE6Nn2vFw=
+Received: by mail-wm1-f44.google.com with SMTP id l9so1605783wme.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 17:58:34 -0700 (PDT)
+X-Gm-Message-State: AOAM5322roAqqsvHE/XmJDhe9SUFlYcxRkI41EQXgIP5v1Ak1ZHcdNx9
+        vUcq38bI4vUrsJrAH/9n0enxpSRRAF8AkuglCfJZdA==
+X-Google-Smtp-Source: ABdhPJzzXZz8FGhOqJIy3SOg0uhFjle8bEWKILqBSG3M41u7cJLjsHkjpP4JLeSfHDUPrx8gGM2D3rP9PVKnU83D0i8=
+X-Received: by 2002:a1c:740c:: with SMTP id p12mr1761323wmc.176.1600736312695;
+ Mon, 21 Sep 2020 17:58:32 -0700 (PDT)
 MIME-Version: 1.0
-Received: from bernard@vivo.com( [157.0.31.124) ] by ajax-webmail ( [127.0.0.1] ) ; Tue, 22 Sep 2020 08:57:42 +0800 (GMT+08:00)
-From:   Bernard <bernard@vivo.com>
-Date:   Tue, 22 Sep 2020 08:57:42 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZShgZSEJITUgaGB5CVkpNS0tMSE1JTUlLTk1VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVKS0tZBg++
-X-HM-Sender-Digest: e1kJHlYWEh9ZQU5DTE9JT0xKTE9ON1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6Phg6GDo4Nz8YMA9RFS4iIU0yKRgwChdVSFVKTUtLTEhNSU1JTE5PVTMWGhIXVRkeCRUaCR87
-        DRINFFUYFBZFWVdZEgtZQVlKTkxVS1VISlVKSU9ZV1kIAVlBTUpKSjcG
-X-HM-Tid: 0a74b350f7ac93b4kuws06fdb1a2dd2
+References: <CAK8P3a2Mi+1yttyGk4k7HxRVrMtmFqJewouVhynqUL0PJycmog@mail.gmail.com>
+ <D0791499-1190-4C3F-A984-0A313ECA81C7@amacapital.net> <563138b5-7073-74bc-f0c5-b2bad6277e87@gmail.com>
+ <486c92d0-0f2e-bd61-1ab8-302524af5e08@gmail.com> <CALCETrW3rwGsgfLNnu_0JAcL5jvrPVTLTWM3JpbB5P9Hye6Fdw@mail.gmail.com>
+ <d5c6736a-2cb4-4e22-78da-a667bda5c05a@gmail.com>
+In-Reply-To: <d5c6736a-2cb4-4e22-78da-a667bda5c05a@gmail.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Mon, 21 Sep 2020 17:58:20 -0700
+X-Gmail-Original-Message-ID: <CALCETrUEC81va8-fuUXG1uA5rbKxnKDYsDOXC70_HtKD4LAeAg@mail.gmail.com>
+Message-ID: <CALCETrUEC81va8-fuUXG1uA5rbKxnKDYsDOXC70_HtKD4LAeAg@mail.gmail.com>
+Subject: Re: [PATCH 1/9] kernel: add a PF_FORCE_COMPAT flag
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Christoph Hellwig <hch@lst.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        David Howells <dhowells@redhat.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Linux SCSI List <linux-scsi@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-aio <linux-aio@kvack.org>, io-uring@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Network Development <netdev@vger.kernel.org>,
+        keyrings@vger.kernel.org,
+        LSM List <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CkZyb206IEFsZXggRGV1Y2hlciA8YWxleGRldWNoZXJAZ21haWwuY29tPgpEYXRlOiAyMDIwLTA5
-LTIyIDAzOjMzOjIwClRvOiAgQmVybmFyZCBaaGFvIDxiZXJuYXJkQHZpdm8uY29tPgpDYzogIEhh
-cnJ5IFdlbnRsYW5kIDxoYXJyeS53ZW50bGFuZEBhbWQuY29tPixMZW8gTGkgPHN1bnBlbmcubGlA
-YW1kLmNvbT4sQWxleCBEZXVjaGVyIDxhbGV4YW5kZXIuZGV1Y2hlckBhbWQuY29tPiwiQ2hyaXN0
-aWFuIEvDtm5pZyIgPGNocmlzdGlhbi5rb2VuaWdAYW1kLmNvbT4sRGF2aWQgQWlybGllIDxhaXJs
-aWVkQGxpbnV4LmllPixEYW5pZWwgVmV0dGVyIDxkYW5pZWxAZmZ3bGwuY2g+LFJvZHJpZ28gU2lx
-dWVpcmEgPFJvZHJpZ28uU2lxdWVpcmFAYW1kLmNvbT4sSnVuIExlaSA8SnVuLkxlaUBhbWQuY29t
-PixBcmljIEN5ciA8YXJpYy5jeXJAYW1kLmNvbT4sV2VuamluZyBMaXUgPHdlbmppbmcubGl1QGFt
-ZC5jb20+LGFiZG91bGF5ZSBiZXJ0aGUgPGFiZG91bGF5ZS5iZXJ0aGVAYW1kLmNvbT4sTWljaGFl
-bCBTdHJhdXNzIDxtaWNoYWVsLnN0cmF1c3NAYW1kLmNvbT4sQnJhbmRvbiBTeXUgPEJyYW5kb24u
-U3l1QGFtZC5jb20+LE1hcnRpbiBMZXVuZyA8bWFydGluLmxldW5nQGFtZC5jb20+LGFtZC1nZngg
-bGlzdCA8YW1kLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmc+LE1hbGluZyBsaXN0IC0gRFJJIGRl
-dmVsb3BlcnMgPGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmc+LExLTUwgPGxpbnV4LWtl
-cm5lbEB2Z2VyLmtlcm5lbC5vcmc+LG9wZW5zb3VyY2Uua2VybmVsQHZpdm8uY29tClN1YmplY3Q6
-IFJlOiBbUEFUQ0hdIGRybS9hbWQvZGlzcGxheTogb3B0aW1pemUgY29kZSBydW50aW1lIGEgYml0
-Pk9uIE1vbiwgU2VwIDIxLCAyMDIwIGF0IDk6MTQgQU0gQmVybmFyZCBaaGFvIDxiZXJuYXJkQHZp
-dm8uY29tPiB3cm90ZToKPj4KPj4gU3RhdGljIGZ1bmN0aW9uIGRhbF9kZGNfaTJjX3BheWxvYWRz
-X2Rlc3Ryb3kgaXMgb25seSBjYWxsZWQKPj4gaW4gZGFsX2RkY19zZXJ2aWNlX3F1ZXJ5X2RkY19k
-YXRhLCB0aGUgcGFyYW1ldGVyIGlzICZwYXlsb2Fkcwo+PiAsIHRoZXJlIGlzIG5vIHBvaW50IE5V
-TEwgcmlzaywgc28gbm8gbmVlZCB0byBjaGVjay4KPj4gVGhpcyBjaGFuZ2UgaXMgdG8gbWFrZSB0
-aGUgY29kZSBydW4gYSBiaXQgZmFzdC4KPj4KPgo+SG93IGFib3V0IGp1c3QgZ2V0dGluZyByaWQg
-b2YgZGFsX2RkY19pMmNfcGF5bG9hZHNfZGVzdHJveSgpIGFuZCBqdXN0Cj5jYWxsIGRhbF92ZWN0
-b3JfZGVzdHJ1Y3QoKSBkaXJlY3RseS4KCkdvb2QgaWRlYSwgSSB3aWxsIHJlc3VibWl0IGEgcGF0
-Y2gsIHRoYW5rcyEKCkJSLy9CZXJuYXJkCgo+QWxleAo+Cj4KPj4gU2lnbmVkLW9mZi1ieTogQmVy
-bmFyZCBaaGFvIDxiZXJuYXJkQHZpdm8uY29tPgo+PiAtLS0KPj4gIGRyaXZlcnMvZ3B1L2RybS9h
-bWQvZGlzcGxheS9kYy9jb3JlL2RjX2xpbmtfZGRjLmMgfCAzIC0tLQo+PiAgMSBmaWxlIGNoYW5n
-ZWQsIDMgZGVsZXRpb25zKC0pCj4+Cj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vYW1k
-L2Rpc3BsYXkvZGMvY29yZS9kY19saW5rX2RkYy5jIGIvZHJpdmVycy9ncHUvZHJtL2FtZC9kaXNw
-bGF5L2RjL2NvcmUvZGNfbGlua19kZGMuYwo+PiBpbmRleCBiOTg0ZWVjY2E1OGIuLjZkY2M2NjY3
-MzhmYyAxMDA2NDQKPj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL2FtZC9kaXNwbGF5L2RjL2NvcmUv
-ZGNfbGlua19kZGMuYwo+PiArKysgYi9kcml2ZXJzL2dwdS9kcm0vYW1kL2Rpc3BsYXkvZGMvY29y
-ZS9kY19saW5rX2RkYy5jCj4+IEBAIC0xNTAsOSArMTUwLDYgQEAgc3RhdGljIHVpbnQzMl90IGRh
-bF9kZGNfaTJjX3BheWxvYWRzX2dldF9jb3VudChzdHJ1Y3QgaTJjX3BheWxvYWRzICpwKQo+Pgo+
-PiAgc3RhdGljIHZvaWQgZGFsX2RkY19pMmNfcGF5bG9hZHNfZGVzdHJveShzdHJ1Y3QgaTJjX3Bh
-eWxvYWRzICpwKQo+PiAgewo+PiAtICAgICAgIGlmICghcCkKPj4gLSAgICAgICAgICAgICAgIHJl
-dHVybjsKPj4gLQo+PiAgICAgICAgIGRhbF92ZWN0b3JfZGVzdHJ1Y3QoJnAtPnBheWxvYWRzKTsK
-Pj4gIH0KPj4KPj4gLS0KPj4gMi4yOC4wCj4+Cj4+IF9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCj4+IGFtZC1nZnggbWFpbGluZyBsaXN0Cj4+IGFtZC1nZnhA
-bGlzdHMuZnJlZWRlc2t0b3Aub3JnCj4+IGh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21h
-aWxtYW4vbGlzdGluZm8vYW1kLWdmeAoNCg0K
+On Mon, Sep 21, 2020 at 5:24 PM Pavel Begunkov <asml.silence@gmail.com> wro=
+te:
+>
+>
+>
+> On 22/09/2020 02:51, Andy Lutomirski wrote:
+> > On Mon, Sep 21, 2020 at 9:15 AM Pavel Begunkov <asml.silence@gmail.com>=
+ wrote:
+> >>
+> >> On 21/09/2020 19:10, Pavel Begunkov wrote:
+> >>> On 20/09/2020 01:22, Andy Lutomirski wrote:
+> >>>>
+> >>>>> On Sep 19, 2020, at 2:16 PM, Arnd Bergmann <arnd@arndb.de> wrote:
+> >>>>>
+> >>>>> =EF=BB=BFOn Sat, Sep 19, 2020 at 6:21 PM Andy Lutomirski <luto@kern=
+el.org> wrote:
+> >>>>>>> On Fri, Sep 18, 2020 at 8:16 AM Christoph Hellwig <hch@lst.de> wr=
+ote:
+> >>>>>>> On Fri, Sep 18, 2020 at 02:58:22PM +0100, Al Viro wrote:
+> >>>>>>>> Said that, why not provide a variant that would take an explicit
+> >>>>>>>> "is it compat" argument and use it there?  And have the normal
+> >>>>>>>> one pass in_compat_syscall() to that...
+> >>>>>>>
+> >>>>>>> That would help to not introduce a regression with this series ye=
+s.
+> >>>>>>> But it wouldn't fix existing bugs when io_uring is used to access
+> >>>>>>> read or write methods that use in_compat_syscall().  One example =
+that
+> >>>>>>> I recently ran into is drivers/scsi/sg.c.
+> >>>>>
+> >>>>> Ah, so reading /dev/input/event* would suffer from the same issue,
+> >>>>> and that one would in fact be broken by your patch in the hypotheti=
+cal
+> >>>>> case that someone tried to use io_uring to read /dev/input/event on=
+ x32...
+> >>>>>
+> >>>>> For reference, I checked the socket timestamp handling that has a
+> >>>>> number of corner cases with time32/time64 formats in compat mode,
+> >>>>> but none of those appear to be affected by the problem.
+> >>>>>
+> >>>>>> Aside from the potentially nasty use of per-task variables, one th=
+ing
+> >>>>>> I don't like about PF_FORCE_COMPAT is that it's one-way.  If we're
+> >>>>>> going to have a generic mechanism for this, shouldn't we allow a f=
+ull
+> >>>>>> override of the syscall arch instead of just allowing forcing comp=
+at
+> >>>>>> so that a compat syscall can do a non-compat operation?
+> >>>>>
+> >>>>> The only reason it's needed here is that the caller is in a kernel
+> >>>>> thread rather than a system call. Are there any possible scenarios
+> >>>>> where one would actually need the opposite?
+> >>>>>
+> >>>>
+> >>>> I can certainly imagine needing to force x32 mode from a kernel thre=
+ad.
+> >>>>
+> >>>> As for the other direction: what exactly are the desired bitness/arc=
+h semantics of io_uring?  Is the operation bitness chosen by the io_uring c=
+reation or by the io_uring_enter() bitness?
+> >>>
+> >>> It's rather the second one. Even though AFAIR it wasn't discussed
+> >>> specifically, that how it works now (_partially_).
+> >>
+> >> Double checked -- I'm wrong, that's the former one. Most of it is base=
+d
+> >> on a flag that was set an creation.
+> >>
+> >
+> > Could we get away with making io_uring_enter() return -EINVAL (or
+> > maybe -ENOTTY?) if you try to do it with bitness that doesn't match
+> > the io_uring?  And disable SQPOLL in compat mode?
+>
+> Something like below. If PF_FORCE_COMPAT or any other solution
+> doesn't lend by the time, I'll take a look whether other io_uring's
+> syscalls need similar checks, etc.
+>
+>
+> diff --git a/fs/io_uring.c b/fs/io_uring.c
+> index 0458f02d4ca8..aab20785fa9a 100644
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -8671,6 +8671,10 @@ SYSCALL_DEFINE6(io_uring_enter, unsigned int, fd, =
+u32, to_submit,
+>         if (ctx->flags & IORING_SETUP_R_DISABLED)
+>                 goto out;
+>
+> +       ret =3D -EINVAl;
+> +       if (ctx->compat !=3D in_compat_syscall())
+> +               goto out;
+> +
+
+This seems entirely reasonable to me.  Sharing an io_uring ring
+between programs with different ABIs seems a bit nutty.
+
+>         /*
+>          * For SQ polling, the thread will do all submissions and complet=
+ions.
+>          * Just return the requested submit count, and wake the thread if
+> @@ -9006,6 +9010,10 @@ static int io_uring_create(unsigned entries, struc=
+t io_uring_params *p,
+>         if (ret)
+>                 goto err;
+>
+> +       ret =3D -EINVAL;
+> +       if (ctx->compat)
+> +               goto err;
+> +
+
+I may be looking at a different kernel than you, but aren't you
+preventing creating an io_uring regardless of whether SQPOLL is
+requested?
+
+>         /* Only gets the ring fd, doesn't install it in the file table */
+>         fd =3D io_uring_get_fd(ctx, &file);
+>         if (fd < 0) {
+> --
+> Pavel Begunkov
