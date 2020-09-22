@@ -2,86 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64CA22744D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 16:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D5612744CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 16:56:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726753AbgIVO4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 10:56:48 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:30242 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726650AbgIVO4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 10:56:46 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600786605; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=w8SwwyDZi49J/LRRslQzSR10Itlo02aPR2rsKvDIPZ8=; b=WSI1MtxiEvRALW31rEwHII8MXbd1lel34+uwvWJo6iuJkkzSj5lK86j03xCP0QAiC1z/Ouxd
- /YOP98efv/SRssJi2B8mkcUR5cyjYIZ+IcZuuPd7LrtdOa3hzBsc+RD/Ryfm6WBVJpxQkh+F
- mCy6HZJv+ObI5YZxZKmC/K+vsZQ=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5f6a106c3e7bfb5c378460eb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Sep 2020 14:55:40
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 148A3C433FE; Tue, 22 Sep 2020 14:55:40 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from akhilpo-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DBC64C43382;
-        Tue, 22 Sep 2020 14:55:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DBC64C43382
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-To:     freedreno@lists.freedesktop.org
-Cc:     dri-devel@freedesktop.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jcrouse@codeaurora.org,
-        mka@chromium.org, jonathan@marek.ca, robdclark@gmail.com,
-        dianders@chromium.org
-Subject: [PATCH v2 2/2] drm/msm: Leave inuse count intact on map failure
-Date:   Tue, 22 Sep 2020 20:25:27 +0530
-Message-Id: <1600786527-7343-2-git-send-email-akhilpo@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1600786527-7343-1-git-send-email-akhilpo@codeaurora.org>
-References: <1600786527-7343-1-git-send-email-akhilpo@codeaurora.org>
+        id S1726720AbgIVO4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 10:56:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44463 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726623AbgIVO4m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 10:56:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600786601;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7fQZ3CsVAakZ0XBmAEYMPM13fOqKXxB3YkpyUsuX4ts=;
+        b=OkzWxXJBoHyTpaMHl8av9r8I0F5tL/IB4YxMOKNrwQfzCzkzM1MQ+vao74nVcN1AHdubaa
+        G/2zMdgGdazF5cRmXLZfIxffNkeyRVp0VocRPVwaZiqP/jNSxH/vBHZ3MAnb7fCQW6QzXZ
+        qHemEN9Rcp1KHldR0O+MsPTbCy74nm8=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-227-2JV-2NlnNumDT25NLd-EJg-1; Tue, 22 Sep 2020 10:56:39 -0400
+X-MC-Unique: 2JV-2NlnNumDT25NLd-EJg-1
+Received: by mail-wm1-f69.google.com with SMTP id c200so1007596wmd.5
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 07:56:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7fQZ3CsVAakZ0XBmAEYMPM13fOqKXxB3YkpyUsuX4ts=;
+        b=C5bxWvbMScOyPkSVBq+Ojb6vBAfc1etFd+Pa4oz8pzx4jL0jvL72lUHjHGfMMgdpse
+         6/2CBimAZ9XFsSJ7DSGQb+F0AFZ+2O/P/l1UjbqQjV/5DaFIsFI9f8kCDszt6WobofOI
+         wnGZwjfiOyskq8cufRLw8P/Q4zEk1Z4QfUMF/Vf0aX99/MpQDIbqhDKywdhoZQymceSh
+         im3s2qTlfMAUf+X0987FZO878a2x4ywGrBvG0et3FGLNl66T3pqqiHyheVIO+9esGzAP
+         hqF2Tke2RG3TqNBHESCbLPzgKMM448LMLHjpY9FfN2ciHs8GdtHo25wFPcRaS1HJ92iL
+         vecg==
+X-Gm-Message-State: AOAM531F1jwnBSt22Sb0sNfasbh80FKjQGk4Rx1xDFeiXhKzUJ3ldGXa
+        XXZaYECcNloXUN7M/dmpvXbD4FSpmt1syJLyDLZh2dwzPN+XjVu3sXRpJmQfrqwaDNLbMCTosoN
+        VCYpvh/L9OZ5S2V/WPNrnLmc7
+X-Received: by 2002:adf:e4cc:: with SMTP id v12mr5749646wrm.216.1600786598706;
+        Tue, 22 Sep 2020 07:56:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJycHG/qyFPrbTWyMA6o+icN09XP4SKvKb2PRcjckpm9cJP8do2/gpvlR9PXbycQsdrOnpPkpg==
+X-Received: by 2002:adf:e4cc:: with SMTP id v12mr5749626wrm.216.1600786598464;
+        Tue, 22 Sep 2020 07:56:38 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:ec2c:90a9:1236:ebc6? ([2001:b07:6468:f312:ec2c:90a9:1236:ebc6])
+        by smtp.gmail.com with ESMTPSA id k4sm27735243wrx.51.2020.09.22.07.56.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Sep 2020 07:56:37 -0700 (PDT)
+Subject: Re: [PATCH] KVM: SVM: Analyze is_guest_mode() in svm_vcpu_run()
+To:     Haiwei Li <lihaiwei.kernel@gmail.com>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
+        Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+References: <1600066548-4343-1-git-send-email-wanpengli@tencent.com>
+ <b39b1599-9e1e-8ef6-1b97-a4910d9c3784@oracle.com>
+ <91baab6a-3007-655a-5c59-6425473d2e33@redhat.com>
+ <CAB5KdOaV81ro=F8BiuFfR_OWrY1+AJ4QngSOXOZt7vH_bXPR5A@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <66a1479f-9603-5045-c307-804db1a62845@redhat.com>
+Date:   Tue, 22 Sep 2020 16:56:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <CAB5KdOaV81ro=F8BiuFfR_OWrY1+AJ4QngSOXOZt7vH_bXPR5A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Leave the inuse count intact on map failure to keep the accounting
-accurate.
+On 22/09/20 16:54, Haiwei Li wrote:
+>> EXIT_FASTPATH_REENTER_GUEST handling up to vcpu_enter_guest)...
+> Hi, Paolo
+> 
+> I have sent a patch to do this,
+> 
+> https://lore.kernel.org/kvm/20200915113033.61817-1-lihaiwei.kernel@gmail.com/
 
-Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
----
- drivers/gpu/drm/msm/msm_gem_vma.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Cool, thanks.  I think I'll just squash it in Wanpeng's if you don't mind.
 
-diff --git a/drivers/gpu/drm/msm/msm_gem_vma.c b/drivers/gpu/drm/msm/msm_gem_vma.c
-index 80a8a26..f914ddb 100644
---- a/drivers/gpu/drm/msm/msm_gem_vma.c
-+++ b/drivers/gpu/drm/msm/msm_gem_vma.c
-@@ -88,8 +88,10 @@ msm_gem_map_vma(struct msm_gem_address_space *aspace,
- 		ret = aspace->mmu->funcs->map(aspace->mmu, vma->iova, sgt,
- 				size, prot);
- 
--	if (ret)
-+	if (ret) {
- 		vma->mapped = false;
-+		vma->inuse--;
-+	}
- 
- 	return ret;
- }
--- 
-2.7.4
+Paolo
 
