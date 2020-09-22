@@ -2,127 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3EAE274114
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD4E2274121
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726645AbgIVLmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 07:42:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40060 "EHLO
+        id S1726684AbgIVLpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 07:45:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726632AbgIVLlb (ORCPT
+        with ESMTP id S1726629AbgIVLnX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 07:41:31 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D42C5C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 04:41:03 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id g72so18583865qke.8
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 04:41:03 -0700 (PDT)
+        Tue, 22 Sep 2020 07:43:23 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 260C1C061755;
+        Tue, 22 Sep 2020 04:43:22 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id s13so2987701wmh.4;
+        Tue, 22 Sep 2020 04:43:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yhD10jJduf1dgKkP68ou+U9mMDBt7tD8b18c/5OZcv0=;
-        b=oLM4ZSFXdQRQNrMGFA4YSb6qTb/uhf0RGHa3k3SHj0ZvzobirHOgZvwEubXTdnmD8X
-         g0x2RU5kwhc8KV33C74sw3XINlT28bOzpw2rBecqgyf3FXT7ZXS47XhIkkoeQL9f2Jfe
-         EIQqCmlHxu3fRAjdPUH9yINPWViY4hmkzh5lHkLBKDKogJ630hwcVUz6cn09PmzhnOO/
-         KL+VM28MhtYEZFAeBEVy/+CFbM/Pi3l7fJJG1rbNdVoWuN35JeMvqO0PShhsgCysTdlE
-         HRLoZtFkdaOnoxgQxky1XAaqQenuLuplSVwOQa/0fViN1SStlWfN6no7PzOe/A2XUkfw
-         P8Pw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hx5o5MPaK7diP2i6MWvOvec7p9+pTYWAqdrxIV16j5g=;
+        b=a19IzS1kHQO70+YrqmLrKGarjNoDKBE8HeWYimBCTOXwa/I0kvA2OTwYQyGDeM4NI0
+         vYA/+MQa5UHZY+snA0BPnHwyksq3RB8Pn+gB7rub4IrNAJWd+nyC/hKygLhj3e23vkOM
+         3d7lWdoQ8sm+x6te2lBMta00NiYnuhly35WALC56aJyPgSFJJH7eVOGSkOkCIT3fqXy5
+         DTFwAr3tWEbo2t70wZ/0BHGykvUI96yfveMLF9VViQShL8TtmJzqakbEaaCuhPx7/dWp
+         rMbUcOUGCPlFtwEnoJcW/KAglOEgw2Z8GkYwyrc7v98kALdEl5e8LmBA4ptNFZpPskPL
+         CAMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yhD10jJduf1dgKkP68ou+U9mMDBt7tD8b18c/5OZcv0=;
-        b=Wql4zjGG9CZBmeIaEWlebQ8zNXxWFe3j1adfjsbNFfQB3Pww5KPQrlyUkEJT+D2Yso
-         imt+BS9FYJS6xrcQBVaPxwYmEwgDglbN8TYfpy3wGIx7JG0YaVZRM1Qnig+TYTH/vqJw
-         3xM10crkYWqNZmvVjmaLUTta/Na53IEvVm60OWBK+V0BWovJwWIa8Fh2ycLlnyqrZEyI
-         ENTFd0yp9vb+CaKOiciuwIvbzY6RWfQlXggb7qUOi3GODwBzboEqknWPJ4SHT6VGMW8R
-         waPMPE1QF7/DWRcaE6obXnSSickF16XEPmsN40zUBKSEtldB3eVEGMIVoNkPubJzetCC
-         WeXQ==
-X-Gm-Message-State: AOAM531aZppnMyPLCsAsOwTk6DvzSMJ3rXrojbJTMYGx9iVak6QDvsSw
-        ojoIT7uWcp4Ccy2qR9YulOwU8Q==
-X-Google-Smtp-Source: ABdhPJxoKo95FitIWDwXAcSfyfcOjyXkE53rqNXh2wpAj0K7EF3gP3JDLJjqBxC4M8Uz6fncjY2f4g==
-X-Received: by 2002:a37:7f82:: with SMTP id a124mr4296755qkd.70.1600774862931;
-        Tue, 22 Sep 2020 04:41:02 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id 192sm11863559qkn.9.2020.09.22.04.41.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 04:41:02 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kKgfN-0030RG-Hf; Tue, 22 Sep 2020 08:41:01 -0300
-Date:   Tue, 22 Sep 2020 08:41:01 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        izur@habana.ai, Jakub Kicinski <kuba@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-rdma@vger.kernel.org, Olof Johansson <olof@lixom.net>
-Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
-Message-ID: <20200922114101.GE8409@ziepe.ca>
-References: <20200918132645.GS8409@ziepe.ca>
- <CAFCwf109t5=GuNvqTqLUCiYbjLC6o2xVoLY5C-SBqbN66f6wxg@mail.gmail.com>
- <20200918135915.GT8409@ziepe.ca>
- <CAFCwf13rJgb4=as7yW-2ZHvSnUd2NK1GP0UKKjyMfkB3vsnE5w@mail.gmail.com>
- <20200918141909.GU8409@ziepe.ca>
- <CAFCwf121_UNivhfPfO6uFoHbF+2Odeb1c3+482bOXeOZUsEnug@mail.gmail.com>
- <20200918150735.GV8409@ziepe.ca>
- <CAFCwf13y1VVy90zAoBPC-Gfj6mwMVbefh3fxKDVneuscp4esqA@mail.gmail.com>
- <20200918152852.GW8409@ziepe.ca>
- <b0721756-d323-b95e-b2d2-ca3ce8d4a660@amazon.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hx5o5MPaK7diP2i6MWvOvec7p9+pTYWAqdrxIV16j5g=;
+        b=jo1lR1c/MGkfnA8i5uwN2cnAnUqQsqC5fdUX05UeDcwA+V95zl4Hlcq296MW7okXyT
+         b4W2ceR1wbEzwkUrjJIl2uU82fx4uuG88FqD4NhIIVx+GrT5UECSMnV3p4emy7jgt6Zp
+         a4okGye22h28z7jHz1ntxI2F5xxpLyA/Y9fOUjJuyBn3rIQRnSz6+N6ey/2ECnVAik58
+         itvElOVtmhvgCxtr5h9ocxPTXTmjil+DZfvZagI7BFVGeXMVWH0oJcgVJVtjssfaPQKe
+         jdUtJJd4AIdFAj2DqeRIOcRhlzxSlROHmt8ZgubmL+aXCOS4oIYCpNkHtnC4lxyNiQ7q
+         TQyw==
+X-Gm-Message-State: AOAM530y6bpSiEfWfpdY32Uoymr+khuWhaLtYvRgc2YBl/F74QPr/mne
+        ASTyHpzuCvz16WOFg2fmtCk=
+X-Google-Smtp-Source: ABdhPJwXPz4IBVcHUUaBogWlqzeGDAMa6qqmCb/lNjtX+tLgO5rjRDfkkqryocSu/hUJwsVSZMzVOA==
+X-Received: by 2002:a7b:c317:: with SMTP id k23mr580999wmj.44.1600775000716;
+        Tue, 22 Sep 2020 04:43:20 -0700 (PDT)
+Received: from localhost (178-169-161-196.razgrad.ddns.bulsat.com. [178.169.161.196])
+        by smtp.gmail.com with ESMTPSA id z8sm3009611wrl.11.2020.09.22.04.43.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Sep 2020 04:43:19 -0700 (PDT)
+From:   Iskren Chernev <iskren.chernev@gmail.com>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Jonathan Bakker <xc-racer2@live.ca>,
+        Vladimir Barinov <vladimir.barinov@cogentembedded.com>,
+        Iskren Chernev <iskren.chernev@gmail.com>
+Subject: [PATCH v5 0/7] power: supply: max17040 support compatible devices
+Date:   Tue, 22 Sep 2020 14:42:30 +0300
+Message-Id: <20200922114237.1803628-1-iskren.chernev@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b0721756-d323-b95e-b2d2-ca3ce8d4a660@amazon.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 02:22:02PM +0300, Gal Pressman wrote:
+The max17040 fuel gauge is part of a family of 8 chips that have very
+similar mode of operations and registers.
 
-> What is considered a RoCE port in this case if it's not compliant with RoCE?
-> Sounds like it's an implementation of RDMA over ethernet, not RoCE.
-> Does GAUDI support UD/RC/.. QPs? Is it using a proprietary wire protocol?
-> (BTW, Oded claims it's similar to nvlink, how is nvlink's implementation
-> exposed? Or is it closed source?)
+This patch set adds:
+- compatible strings for all supported devices and handles the minor
+  differences between them;
+- handling for devices reporting double capacity via maxim,double-soc;
+- handling for setting rcomp, a compensation value for more accurate
+  reading, affected by battery chemistry and operating temps;
+- suppot for SOC alerts (capacity changes by +/- 1%), to prevent polling
+  every second;
+- improved max17040 driver with regmap and devm_
 
-I think Oded was drawing a parallel to how nvlink is integral with the
-compute element. From Oded's descriptions I don't think it is much
-like nvlink at all.
+The datasheets of the supported devices are linked [0] [1] [2] [3].
 
-> Jason, how do you imagine GAUDI in the RDMA subsystem? Userspace control path
-> verbs (used by hl-thunk?) and all data path verbs exposed as kverbs (used by
-> habanalabs driver)?
-> So neither any userspace verbs apps could use it nor kernel ULPs?
+[0] https://datasheets.maximintegrated.com/en/ds/MAX17040-MAX17041.pdf
+[1] https://datasheets.maximintegrated.com/en/ds/MAX17043-MAX17044.pdf
+[2] https://datasheets.maximintegrated.com/en/ds/MAX17048-MAX17049.pdf
+[3] https://datasheets.maximintegrated.com/en/ds/MAX17058-MAX17059.pdf
 
-Based on what Oded described it seems like a reasonable RDMA device
-with some limitations around MR IOVA.
+v4: https://lkml.org/lkml/2020/9/6/237
+v3: https://lkml.org/lkml/2020/6/24/874
+v2: https://lkml.org/lkml/2020/6/18/260
+v1: https://lkml.org/lkml/2020/6/8/682
 
-Looks like the desire is to create a RDMA WR and CQ ring in userspace,
-and then co-mingle that with the compute side of the device.
+Changes from v4:
+- fix warning reported by kernel test robot <lkp@intel.com> for v4
+  patch 4/7
+- ensure all patches have Sign-off-by matching author (was violated
+  for v4 patch 2/7)
 
-So instead of doing the special IOCTL and mmap against the compute FD
-it would create a RDMA QP and RDMA CQ, use dv to access the raw
-internals, and the propritary stack would have exactly the same stuff
-it would have had with the misc ioctl.
+Iskren Chernev (7):
+  power: supply: max17040: Use devm_ to automate remove
+  power: supply: max17040: Use regmap i2c
+  dt-bindings: power: supply: Extend max17040 compatibility
+  power: supply: max17040: Support compatible devices
+  dt-bindings: power: supply: max17040: Add maxim,rcomp
+  power: supply: max17040: Support setting rcomp
+  power: supply: max17040: Support soc alert
 
-But, completely separately, they'd also have to implement some of
-verbs which serves as the open source userspace showing how this HW
-works. What that is depends largely on what their HW can do, and if
-they want to connect to UCX/mpi/libfabric/etc
+ .../power/supply/max17040_battery.txt         |  21 +-
+ drivers/power/supply/Kconfig                  |  11 +-
+ drivers/power/supply/max17040_battery.c       | 489 ++++++++++++------
+ 3 files changed, 367 insertions(+), 154 deletions(-)
 
-A bunch of ioctl stubs or a few tests is far below our standard in
-RDMA.
 
-There may have been some argument that the compute side of this device
-has no industry standards so should be a drivers/misc, but HPC
-networking *does* have extensive standards and extensive open source
-software stacks. It is very hard for me to see how a device in this
-market could be competitive without integrating with that stuff.
+base-commit: e64997027d5f171148687e58b78c8b3c869a6158
+--
+2.28.0
 
-Jason
