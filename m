@@ -2,170 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39094273927
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 05:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2991927392D
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 05:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728363AbgIVDOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 23:14:34 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:37098 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728260AbgIVDOe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 23:14:34 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 97E30C202CA77BABC662;
-        Tue, 22 Sep 2020 11:14:31 +0800 (CST)
-Received: from euler.huawei.com (10.175.124.27) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 22 Sep 2020 11:14:21 +0800
-From:   Wei Li <liwei391@huawei.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        "Namhyung Kim" <namhyung@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <huawei.libin@huawei.com>
-Subject: [PATCH 2/2] perf stat: Unbreak perf stat with armv8_pmu events
-Date:   Tue, 22 Sep 2020 11:13:46 +0800
-Message-ID: <20200922031346.15051-3-liwei391@huawei.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200922031346.15051-1-liwei391@huawei.com>
-References: <20200922031346.15051-1-liwei391@huawei.com>
+        id S1728424AbgIVDRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 23:17:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42264 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728386AbgIVDRE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 23:17:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600744623;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=E1FrgnT73f1I3GcchMDzc1CmjIu4+GPiYz+qAyIWjmw=;
+        b=HIh3beLS/sHFnEiuixl/mtg5Ps9Ft6JpJJ5DRhjqowhFfHnQhWL+w0kHbeqT7X2oJmrP00
+        QcUnVdvb0FXipKIOLRcIMiv7KSs7GBwhfLuesC2HDLTD+F0nkwq6HI9Y4/Fbm5rnWeBntX
+        7n0PGuKc0Mdy3JlcZU6p3Vp25EJdlcU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-187-fgIzlDpnPpehmOU7BUzqww-1; Mon, 21 Sep 2020 23:16:58 -0400
+X-MC-Unique: fgIzlDpnPpehmOU7BUzqww-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 11EA01084C86;
+        Tue, 22 Sep 2020 03:16:56 +0000 (UTC)
+Received: from [10.10.115.46] (ovpn-115-46.rdu2.redhat.com [10.10.115.46])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3E68378827;
+        Tue, 22 Sep 2020 03:16:53 +0000 (UTC)
+Subject: Re: [RFC][Patch v1 1/3] sched/isolation: API to get num of
+ hosekeeping CPUs
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-pci@vger.kernel.org, mtosatti@redhat.com,
+        sassmann@redhat.com, jeffrey.t.kirsher@intel.com,
+        jacob.e.keller@intel.com, jlelli@redhat.com, hch@infradead.org,
+        bhelgaas@google.com, mike.marciniszyn@intel.com,
+        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
+        jerinj@marvell.com, mathias.nyman@intel.com, jiri@nvidia.com
+References: <20200909150818.313699-1-nitesh@redhat.com>
+ <20200909150818.313699-2-nitesh@redhat.com> <20200921234044.GA31047@lenoir>
+From:   Nitesh Narayan Lal <nitesh@redhat.com>
+Autocrypt: addr=nitesh@redhat.com; prefer-encrypt=mutual; keydata=
+ mQINBFl4pQoBEADT/nXR2JOfsCjDgYmE2qonSGjkM1g8S6p9UWD+bf7YEAYYYzZsLtbilFTe
+ z4nL4AV6VJmC7dBIlTi3Mj2eymD/2dkKP6UXlliWkq67feVg1KG+4UIp89lFW7v5Y8Muw3Fm
+ uQbFvxyhN8n3tmhRe+ScWsndSBDxYOZgkbCSIfNPdZrHcnOLfA7xMJZeRCjqUpwhIjxQdFA7
+ n0s0KZ2cHIsemtBM8b2WXSQG9CjqAJHVkDhrBWKThDRF7k80oiJdEQlTEiVhaEDURXq+2XmG
+ jpCnvRQDb28EJSsQlNEAzwzHMeplddfB0vCg9fRk/kOBMDBtGsTvNT9OYUZD+7jaf0gvBvBB
+ lbKmmMMX7uJB+ejY7bnw6ePNrVPErWyfHzR5WYrIFUtgoR3LigKnw5apzc7UIV9G8uiIcZEn
+ C+QJCK43jgnkPcSmwVPztcrkbC84g1K5v2Dxh9amXKLBA1/i+CAY8JWMTepsFohIFMXNLj+B
+ RJoOcR4HGYXZ6CAJa3Glu3mCmYqHTOKwezJTAvmsCLd3W7WxOGF8BbBjVaPjcZfavOvkin0u
+ DaFvhAmrzN6lL0msY17JCZo046z8oAqkyvEflFbC0S1R/POzehKrzQ1RFRD3/YzzlhmIowkM
+ BpTqNBeHEzQAlIhQuyu1ugmQtfsYYq6FPmWMRfFPes/4JUU/PQARAQABtCVOaXRlc2ggTmFy
+ YXlhbiBMYWwgPG5pbGFsQHJlZGhhdC5jb20+iQI9BBMBCAAnBQJZeKUKAhsjBQkJZgGABQsJ
+ CAcCBhUICQoLAgQWAgMBAh4BAheAAAoJEKOGQNwGMqM56lEP/A2KMs/pu0URcVk/kqVwcBhU
+ SnvB8DP3lDWDnmVrAkFEOnPX7GTbactQ41wF/xwjwmEmTzLrMRZpkqz2y9mV0hWHjqoXbOCS
+ 6RwK3ri5e2ThIPoGxFLt6TrMHgCRwm8YuOSJ97o+uohCTN8pmQ86KMUrDNwMqRkeTRW9wWIQ
+ EdDqW44VwelnyPwcmWHBNNb1Kd8j3xKlHtnS45vc6WuoKxYRBTQOwI/5uFpDZtZ1a5kq9Ak/
+ MOPDDZpd84rqd+IvgMw5z4a5QlkvOTpScD21G3gjmtTEtyfahltyDK/5i8IaQC3YiXJCrqxE
+ r7/4JMZeOYiKpE9iZMtS90t4wBgbVTqAGH1nE/ifZVAUcCtycD0f3egX9CHe45Ad4fsF3edQ
+ ESa5tZAogiA4Hc/yQpnnf43a3aQ67XPOJXxS0Qptzu4vfF9h7kTKYWSrVesOU3QKYbjEAf95
+ NewF9FhAlYqYrwIwnuAZ8TdXVDYt7Z3z506//sf6zoRwYIDA8RDqFGRuPMXUsoUnf/KKPrtR
+ ceLcSUP/JCNiYbf1/QtW8S6Ca/4qJFXQHp0knqJPGmwuFHsarSdpvZQ9qpxD3FnuPyo64S2N
+ Dfq8TAeifNp2pAmPY2PAHQ3nOmKgMG8Gn5QiORvMUGzSz8Lo31LW58NdBKbh6bci5+t/HE0H
+ pnyVf5xhNC/FuQINBFl4pQoBEACr+MgxWHUP76oNNYjRiNDhaIVtnPRqxiZ9v4H5FPxJy9UD
+ Bqr54rifr1E+K+yYNPt/Po43vVL2cAyfyI/LVLlhiY4yH6T1n+Di/hSkkviCaf13gczuvgz4
+ KVYLwojU8+naJUsiCJw01MjO3pg9GQ+47HgsnRjCdNmmHiUQqksMIfd8k3reO9SUNlEmDDNB
+ XuSzkHjE5y/R/6p8uXaVpiKPfHoULjNRWaFc3d2JGmxJpBdpYnajoz61m7XJlgwl/B5Ql/6B
+ dHGaX3VHxOZsfRfugwYF9CkrPbyO5PK7yJ5vaiWre7aQ9bmCtXAomvF1q3/qRwZp77k6i9R3
+ tWfXjZDOQokw0u6d6DYJ0Vkfcwheg2i/Mf/epQl7Pf846G3PgSnyVK6cRwerBl5a68w7xqVU
+ 4KgAh0DePjtDcbcXsKRT9D63cfyfrNE+ea4i0SVik6+N4nAj1HbzWHTk2KIxTsJXypibOKFX
+ 2VykltxutR1sUfZBYMkfU4PogE7NjVEU7KtuCOSAkYzIWrZNEQrxYkxHLJsWruhSYNRsqVBy
+ KvY6JAsq/i5yhVd5JKKU8wIOgSwC9P6mXYRgwPyfg15GZpnw+Fpey4bCDkT5fMOaCcS+vSU1
+ UaFmC4Ogzpe2BW2DOaPU5Ik99zUFNn6cRmOOXArrryjFlLT5oSOe4IposgWzdwARAQABiQIl
+ BBgBCAAPBQJZeKUKAhsMBQkJZgGAAAoJEKOGQNwGMqM5ELoP/jj9d9gF1Al4+9bngUlYohYu
+ 0sxyZo9IZ7Yb7cHuJzOMqfgoP4tydP4QCuyd9Q2OHHL5AL4VFNb8SvqAxxYSPuDJTI3JZwI7
+ d8JTPKwpulMSUaJE8ZH9n8A/+sdC3CAD4QafVBcCcbFe1jifHmQRdDrvHV9Es14QVAOTZhnJ
+ vweENyHEIxkpLsyUUDuVypIo6y/Cws+EBCWt27BJi9GH/EOTB0wb+2ghCs/i3h8a+bi+bS7L
+ FCCm/AxIqxRurh2UySn0P/2+2eZvneJ1/uTgfxnjeSlwQJ1BWzMAdAHQO1/lnbyZgEZEtUZJ
+ x9d9ASekTtJjBMKJXAw7GbB2dAA/QmbA+Q+Xuamzm/1imigz6L6sOt2n/X/SSc33w8RJUyor
+ SvAIoG/zU2Y76pKTgbpQqMDmkmNYFMLcAukpvC4ki3Sf086TdMgkjqtnpTkEElMSFJC8npXv
+ 3QnGGOIfFug/qs8z03DLPBz9VYS26jiiN7QIJVpeeEdN/LKnaz5LO+h5kNAyj44qdF2T2AiF
+ HxnZnxO5JNP5uISQH3FjxxGxJkdJ8jKzZV7aT37sC+Rp0o3KNc+GXTR+GSVq87Xfuhx0LRST
+ NK9ZhT0+qkiN7npFLtNtbzwqaqceq3XhafmCiw8xrtzCnlB/C4SiBr/93Ip4kihXJ0EuHSLn
+ VujM7c/b4pps
+Organization: Red Hat Inc,
+Message-ID: <fd48e554-6a19-f799-b273-e814e5389db9@redhat.com>
+Date:   Mon, 21 Sep 2020 23:16:51 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.124.27]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200921234044.GA31047@lenoir>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=nitesh@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="rWMZpENy2JXtixdCR2Q8UXdNmnZ2CCR0V"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the segfault is fixed, perf-stat with armv8_pmu events with a
-workload is still broken:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--rWMZpENy2JXtixdCR2Q8UXdNmnZ2CCR0V
+Content-Type: multipart/mixed; boundary="Yl9iv8fzA3hBXL78rnM0sgz9M6jEuIwcJ"
 
-[root@localhost hulk]# tools/perf/perf stat -e armv8_pmuv3_0/ll_cache_rd/,armv8_pmuv3_0/ll_cache_miss_rd/ ls > /dev/null
+--Yl9iv8fzA3hBXL78rnM0sgz9M6jEuIwcJ
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
 
- Performance counter stats for 'ls':
 
-     <not counted>      armv8_pmuv3_0/ll_cache_rd/                                     (0.00%)
-     <not counted>      armv8_pmuv3_0/ll_cache_miss_rd/                                     (0.00%)
+On 9/21/20 7:40 PM, Frederic Weisbecker wrote:
+> On Wed, Sep 09, 2020 at 11:08:16AM -0400, Nitesh Narayan Lal wrote:
+>> +/*
+>> + * num_housekeeping_cpus() - Read the number of housekeeping CPUs.
+>> + *
+>> + * This function returns the number of available housekeeping CPUs
+>> + * based on __num_housekeeping_cpus which is of type atomic_t
+>> + * and is initialized at the time of the housekeeping setup.
+>> + */
+>> +unsigned int num_housekeeping_cpus(void)
+>> +{
+>> +=09unsigned int cpus;
+>> +
+>> +=09if (static_branch_unlikely(&housekeeping_overridden)) {
+>> +=09=09cpus =3D atomic_read(&__num_housekeeping_cpus);
+>> +=09=09/* We should always have at least one housekeeping CPU */
+>> +=09=09BUG_ON(!cpus);
+>> +=09=09return cpus;
+>> +=09}
+>> +=09return num_online_cpus();
+>> +}
+>> +EXPORT_SYMBOL_GPL(num_housekeeping_cpus);
+>> +
+>>  int housekeeping_any_cpu(enum hk_flags flags)
+>>  {
+>>  =09int cpu;
+>> @@ -131,6 +153,7 @@ static int __init housekeeping_setup(char *str, enum=
+ hk_flags flags)
+>> =20
+>>  =09housekeeping_flags |=3D flags;
+>> =20
+>> +=09atomic_set(&__num_housekeeping_cpus, cpumask_weight(housekeeping_mas=
+k));
+> So the problem here is that it takes the whole cpumask weight but you're =
+only
+> interested in the housekeepers who take the managed irq duties I guess
+> (HK_FLAG_MANAGED_IRQ ?).
 
-       0.002052670 seconds time elapsed
+IMHO we should also consider the cases where we only have nohz_full.
+Otherwise, we may run into the same situation on those setups, do you agree=
+?
 
-       0.000000000 seconds user
-       0.002086000 seconds sys
+>
+>>  =09free_bootmem_cpumask_var(non_housekeeping_mask);
+>> =20
+>>  =09return 1;
+>> --=20
+>> 2.27.0
+>>
+--=20
+Thanks
+Nitesh
 
-In fact, while the event will be opened per-thread,
-create_perf_stat_counter() is called as many times as the count of cpu
-in the evlist's cpumap, and lost all the file descriptors except the
-last one. If this counter is not scheduled during the period of time,
-it will be "not counted".
 
-Add the process to don't open the needless events in such situation.
+--Yl9iv8fzA3hBXL78rnM0sgz9M6jEuIwcJ--
 
-Fixes: 4804e0111662 ("perf stat: Use affinity for opening events")
-Signed-off-by: Wei Li <liwei391@huawei.com>
----
- tools/perf/builtin-stat.c | 36 +++++++++++++++++++++++-------------
- 1 file changed, 23 insertions(+), 13 deletions(-)
+--rWMZpENy2JXtixdCR2Q8UXdNmnZ2CCR0V
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 6e6ceacce634..9a43b3de26d1 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -712,6 +712,7 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
- 	struct affinity affinity;
- 	int i, cpu;
- 	bool second_pass = false;
-+	bool open_per_thread = false;
- 
- 	if (forks) {
- 		if (perf_evlist__prepare_workload(evsel_list, &target, argv, is_pipe,
-@@ -726,16 +727,17 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
- 		perf_evlist__set_leader(evsel_list);
- 
- 	if (!(target__has_cpu(&target) && !target__has_per_thread(&target)))
--		evsel_list->core.open_per_thread = true;
-+		evsel_list->core.open_per_thread = open_per_thread = true;
- 
- 	if (affinity__setup(&affinity) < 0)
- 		return -1;
- 
- 	evlist__for_each_cpu (evsel_list, i, cpu) {
--		affinity__set(&affinity, cpu);
-+		if (!open_per_thread)
-+			affinity__set(&affinity, cpu);
- 
- 		evlist__for_each_entry(evsel_list, counter) {
--			if (evsel__cpu_iter_skip(counter, cpu))
-+			if (!open_per_thread && evsel__cpu_iter_skip(counter, cpu))
- 				continue;
- 			if (counter->reset_group || counter->errored)
- 				continue;
-@@ -753,7 +755,8 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
- 				if ((errno == EINVAL || errno == EBADF) &&
- 				    counter->leader != counter &&
- 				    counter->weak_group) {
--					perf_evlist__reset_weak_group(evsel_list, counter, false);
-+					perf_evlist__reset_weak_group(evsel_list, counter,
-+							open_per_thread);
- 					assert(counter->reset_group);
- 					second_pass = true;
- 					continue;
-@@ -773,6 +776,9 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
- 			}
- 			counter->supported = true;
- 		}
-+
-+		if (open_per_thread)
-+			break;
- 	}
- 
- 	if (second_pass) {
-@@ -782,20 +788,22 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
- 		 */
- 
- 		evlist__for_each_cpu(evsel_list, i, cpu) {
--			affinity__set(&affinity, cpu);
--			/* First close errored or weak retry */
--			evlist__for_each_entry(evsel_list, counter) {
--				if (!counter->reset_group && !counter->errored)
--					continue;
--				if (evsel__cpu_iter_skip_no_inc(counter, cpu))
--					continue;
--				perf_evsel__close_cpu(&counter->core, counter->cpu_iter);
-+			if (!open_per_thread) {
-+				affinity__set(&affinity, cpu);
-+				/* First close errored or weak retry */
-+				evlist__for_each_entry(evsel_list, counter) {
-+					if (!counter->reset_group && !counter->errored)
-+						continue;
-+					if (evsel__cpu_iter_skip_no_inc(counter, cpu))
-+						continue;
-+					perf_evsel__close_cpu(&counter->core, counter->cpu_iter);
-+				}
- 			}
- 			/* Now reopen weak */
- 			evlist__for_each_entry(evsel_list, counter) {
- 				if (!counter->reset_group && !counter->errored)
- 					continue;
--				if (evsel__cpu_iter_skip(counter, cpu))
-+				if (!open_per_thread && evsel__cpu_iter_skip(counter, cpu))
- 					continue;
- 				if (!counter->reset_group)
- 					continue;
-@@ -817,6 +825,8 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
- 				}
- 				counter->supported = true;
- 			}
-+			if (open_per_thread)
-+				break;
- 		}
- 	}
- 	affinity__cleanup(&affinity);
--- 
-2.17.1
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEkXcoRVGaqvbHPuAGo4ZA3AYyozkFAl9pbKMACgkQo4ZA3AYy
+ozlyJBAAsYZ6ty//fnP9eKkhSCXRPQa4F+TiKOYzDEE2rVLrGePTyFeL5myvmzCB
+tG5o16+rToTlx9SfwaxPUl5Auvc5moKwmRv9eX1+c1l+RF7SlD2gBO53GE+MipuK
+58kUg66GmZcc2eonYeJqTCVJCbYQSk24oA3m4nvy+YtzGcDUG6PWsRBrg6U3E55S
+YG61GlGuHGIURjYxXm2oBoU180B48k5EuR8dSAzz3Isr3TzNwrUHbkgDmlolPs0O
+myzBgbXDcE+KjRSYF5d1dSO4xUA7F7hTSnWwyKGiSAfHOLFA6omV4IGh1f7TYckA
+sMPvOWeF7h28TuZYN2N5LfcGu5lboXK+QHjWM0XxZBRVRdLopLTreURNO64yskt2
+fmZ1igQDxLRxSnkZSLR42hoGixk2FdPQ/opg/O8/m0SV+7ygphRIYBugFL+FTQiC
+VDSU5w3k3/mY69fSVDpVBB/KkMVls6VS6qhKYgWDxV2iiEW2Ze7TaUd8jIGNo5Le
+iz8TuoCQ5rMQB55BK48NOBoF/n9xnskMqhRYqYJqjFdfDghgLsxYtc8vUWSOXfeh
+DZn6mJ8fHF8KCGJWs5pyZ363QGafJ+V+Z3UBVG52cJBWjQwx+sV4mvrcoIRePOWW
+KBfLxoxwsec99FCGNJKI32ABYqJfgr1vKHk2IGQDMOxUDrh/WCU=
+=Hk2/
+-----END PGP SIGNATURE-----
+
+--rWMZpENy2JXtixdCR2Q8UXdNmnZ2CCR0V--
 
