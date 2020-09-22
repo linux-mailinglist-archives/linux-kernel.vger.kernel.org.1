@@ -2,106 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA789274304
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 15:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8507327430A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 15:30:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726748AbgIVN1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 09:27:44 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:40240 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726507AbgIVN1o (ORCPT
+        id S1726591AbgIVNaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 09:30:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726489AbgIVNaQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 09:27:44 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08MDP9wb097337;
-        Tue, 22 Sep 2020 13:27:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=wiG3zxQLA/xFWKswr8Rjz6vXQBD/EbXcKYQalDy23nQ=;
- b=dUWSD+WQTXbY6f8xp+nqhei853F11t8Y2qX4PYhGvihLrWBrGWXTaGhc0Bc4BM9QwW9s
- tbOaPHhp4DYpM4hYxifZrFo0MxXZhyl/Mdiv/rxOfUPzNH8lLHyuDnTTztVJ33OjJuq0
- L/Qtwi1GN8e2BCHOKAtnIMUvYVbCEmjZFojrk4+MAuAe1pMN06MnSs4jPUd7tNA/fjFs
- KPV4rld+g9F5MqmYFPWdNnuMzUFBRjC5VmZujvMtP9/e5a6O0TWSg+6E4lvUXsDxjTw3
- mYoEzb94y3Z/dSIoVTgoWEx8T/tOhBroqED40UBloMP8lMEV9yE6bzYKk+kF7YornPzy LA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 33q5rgb23e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 22 Sep 2020 13:27:37 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08MDPskh103218;
-        Tue, 22 Sep 2020 13:27:36 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 33nuw3w8w5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 22 Sep 2020 13:27:36 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08MDRY7E016869;
-        Tue, 22 Sep 2020 13:27:35 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 22 Sep 2020 06:27:34 -0700
-Date:   Tue, 22 Sep 2020 16:27:27 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Alex Dewar <alex.dewar90@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        devel@driverdev.osuosl.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Alan Cox <alan@linux.intel.com>, linux-media@vger.kernel.org
-Subject: Re: [PATCH REBASE 0/3] atomisp: Rebased fixes
-Message-ID: <20200922132727.GG4282@kadam>
-References: <21f18dc2-a1bc-0a37-0336-fc35170a40e9@gmail.com>
- <20200922090914.20702-1-alex.dewar90@gmail.com>
- <20200922112729.313d454d@coco.lan>
- <f14fac45-d713-a6ee-f0be-906a6d971b43@gmail.com>
+        Tue, 22 Sep 2020 09:30:16 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92903C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 06:30:16 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id g29so11973348pgl.2
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 06:30:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=2/R/oDUGducvjUOkFGRB4yHjl6PPO14jUmeK6ANox9c=;
+        b=pMS+IJOMEVM9wkUeCUQ1ARmiLkLho6MwK7z6PAdSVm+TqtQAR622t1mK6t/zi0eMOP
+         yDaQr9hk60zS1p1coEY0s6h3984Yy47jdtvszbK5b8t0u0T/NTMXRq/oZRvfcPF8e5s9
+         z3XFllg9bMJmiduYsMqg/ZhpHjM9LR+w91qZMosBYNMsc2fxZ/admwEArurwX1vz8N15
+         VtDmckxoBktSQWV2/etOeUtEgXbeTbqATNDHZgNa6WDwqvK0NeC5qPvuUAJg5OxeCdmZ
+         Ke1AjRfowIKM88pYdvIA0BYe5wNWTCcojxzq2+EhjBMOS7soU2Fc/WrUMxOA6DZCi4SJ
+         /AAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=2/R/oDUGducvjUOkFGRB4yHjl6PPO14jUmeK6ANox9c=;
+        b=M+rTk1qnRxDYMZINrteV9ZGf0i/1ZkaEa1MW9BFjIGIIEIoD5CSU47gJumSgnrnSAZ
+         aFyfOO2yEwh1xYedudktkXO4GlgeuNcKu7eio/07h1abis2nTp8O7pYjN0gEcAvn4B2k
+         qINTVNo6NI/PpDuoukqqUyWG2YbEwyds4w7N8O9Hts1HTR8FFZg6MfgHBok8/y3kTSrr
+         yylTXyM4GV+dtu6KVqDKhO4MooY3pqrZUCLij8vNhhjb+cPLOPN6Je74Tx+95ndeoQpi
+         zbdg/jWgXztdLagQzJyGFRVx4jG52t3oOrs5bJ21XHSW03/drEOfWCj37ZngTL7z+//y
+         ZGmw==
+X-Gm-Message-State: AOAM531ebLmphcJ/Fh0C+RcYSsipm1retvifthYlhLXxryV5FSt/NqL8
+        L60kP/iuW87qeF5ppcqO0XWQJA==
+X-Google-Smtp-Source: ABdhPJy0Pb6z6+/Dt/u2tAJWB6aDaKpho6z3MqyTTGnzm6s9IKTCkUx7ZF9GcYA/G55EBG+QElXtXQ==
+X-Received: by 2002:a63:1a21:: with SMTP id a33mr3545043pga.305.1600781415892;
+        Tue, 22 Sep 2020 06:30:15 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id w185sm16583239pfc.36.2020.09.22.06.30.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 22 Sep 2020 06:30:15 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 19:00:07 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Liu Shixin <liushixin2@huawei.com>
+Cc:     Viresh Kumar <vireshk@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] pinctrl: spear: simplify the return expression of
+ spear310_pinctrl_probe
+Message-ID: <20200922133007.dx46iszynpjcm6oq@vireshk-i7>
+References: <20200921082448.2591929-1-liushixin2@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f14fac45-d713-a6ee-f0be-906a6d971b43@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9751 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
- mlxscore=0 suspectscore=0 adultscore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009220105
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9751 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 impostorscore=0
- clxscore=1015 suspectscore=0 phishscore=0 malwarescore=0
- priorityscore=1501 mlxlogscore=999 adultscore=0 bulkscore=0 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009220105
+In-Reply-To: <20200921082448.2591929-1-liushixin2@huawei.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 12:02:33PM +0100, Alex Dewar wrote:
-> On 22/09/2020 10:27, Mauro Carvalho Chehab wrote:
-> > Em Tue, 22 Sep 2020 10:09:07 +0100
-> > Alex Dewar <alex.dewar90@gmail.com> escreveu:
-> > 
-> > > Hi Mauro,
-> > > 
-> > > I've rebased the patches now, but there is a slight hiccup. For patches 2
-> > > and 3 of this series there will now be a conflict with commit 9289cdf39992
-> > > ("staging: media: atomisp: Convert to GPIO descriptors") in Greg's tree.
-> > > 
-> > > I'm not sure what the best way to handle this is? The merge conflicts
-> > > will be trivial (due to a conversion between the gpio_* and gpiod_*
-> > > APIs), but I could alternatively send these last two patches in via
-> > > Greg's tree if that's easier for people. Let me know what works.
-> > Maybe the best would be to re-send those after the merge window, when
-> > both patches will arrive upstream.
-> > 
-> > Thanks,
-> > Mauro
-> That sounds more sensible. I've also just noticed that I introduced a bug in
-> the first patch when rebasing it :-/, so let's hold off on the whole series
-> and I'll do a proper tidy and resend after the next merge window.
+On 21-09-20, 16:24, Liu Shixin wrote:
+> Simplify the return expression.
+> 
+> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+> ---
+>  drivers/pinctrl/spear/pinctrl-spear310.c | 8 +-------
+>  1 file changed, 1 insertion(+), 7 deletions(-)
+> 
+> diff --git a/drivers/pinctrl/spear/pinctrl-spear310.c b/drivers/pinctrl/spear/pinctrl-spear310.c
+> index 393b2b97d527..9d9facc4a6e4 100644
+> --- a/drivers/pinctrl/spear/pinctrl-spear310.c
+> +++ b/drivers/pinctrl/spear/pinctrl-spear310.c
+> @@ -379,8 +379,6 @@ static const struct of_device_id spear310_pinctrl_of_match[] = {
+>  
+>  static int spear310_pinctrl_probe(struct platform_device *pdev)
+>  {
+> -	int ret;
+> -
+>  	spear3xx_machdata.groups = spear310_pingroups;
+>  	spear3xx_machdata.ngroups = ARRAY_SIZE(spear310_pingroups);
+>  	spear3xx_machdata.functions = spear310_functions;
+> @@ -392,11 +390,7 @@ static int spear310_pinctrl_probe(struct platform_device *pdev)
+>  
+>  	spear3xx_machdata.modes_supported = false;
+>  
+> -	ret = spear_pinctrl_probe(pdev, &spear3xx_machdata);
+> -	if (ret)
+> -		return ret;
+> -
+> -	return 0;
+> +	return spear_pinctrl_probe(pdev, &spear3xx_machdata);
+>  }
+>  
+>  static struct platform_driver spear310_pinctrl_driver = {
 
-Is the bug the memory leak if lm3554_platform_data_func() fails?
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-regards,
-dan carpenter
-
+-- 
+viresh
