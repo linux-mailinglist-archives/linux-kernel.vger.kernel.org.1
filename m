@@ -2,117 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD686273F3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 12:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C07A8273F41
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 12:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726589AbgIVKIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 06:08:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49632 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726341AbgIVKIV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 06:08:21 -0400
-Received: from localhost (lfbn-ncy-1-588-162.w81-51.abo.wanadoo.fr [81.51.203.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726596AbgIVKI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 06:08:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28838 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726514AbgIVKI4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 06:08:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600769334;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gGR7V9tUvMvnwzfQmUgvL1nLdW3VG7denZbrBkVV9h0=;
+        b=V53pX2Nc9BnjtDw6F+QY0oIg4gS5TLX5qkksRIMW2/eOQ+AShET6FUh2Y8pvbVAMPh3M+p
+        QwzwKxqkBjCnJOpPqD5XD+CQ79io9pnmQTKRLrpIPT2/hobl5lx94bjRXdFK0tiPeZoUHT
+        V54JMFOrzEZbpIw7F3vLVzMFdXAAY9w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-111-urx0l_LYOWqn5Q15pZEV4w-1; Tue, 22 Sep 2020 06:08:51 -0400
+X-MC-Unique: urx0l_LYOWqn5Q15pZEV4w-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A6120238A1;
-        Tue, 22 Sep 2020 10:08:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600769300;
-        bh=8DhSYCbvL/5uQLKa1OoCbzQjAI1KVYGhNkk/tvbAHZ0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NHlyRnU9UhfcxJcB2NGTMckkO90/LQ4r1quggB0dvN5ilY1C6sPfDw4FdL5Avvzeu
-         VF1DknG4aCbj7mPorxnXwITF3ByQsjgWGj8ujFNnYTcTsNMY9cofIF5xZtHHWKa4jd
-         UVXu7GVI1s9vlH9MtIWjb3cSqadLBcN5sal4PMPg=
-Date:   Tue, 22 Sep 2020 12:08:17 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Nitesh Narayan Lal <nitesh@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, mtosatti@redhat.com,
-        sassmann@redhat.com, jeffrey.t.kirsher@intel.com,
-        jacob.e.keller@intel.com, jlelli@redhat.com, hch@infradead.org,
-        bhelgaas@google.com, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
-        jerinj@marvell.com, mathias.nyman@intel.com, jiri@nvidia.com
-Subject: Re: [RFC][Patch v1 1/3] sched/isolation: API to get num of
- hosekeeping CPUs
-Message-ID: <20200922100817.GB5217@lenoir>
-References: <20200909150818.313699-1-nitesh@redhat.com>
- <20200909150818.313699-2-nitesh@redhat.com>
- <20200921234044.GA31047@lenoir>
- <fd48e554-6a19-f799-b273-e814e5389db9@redhat.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A503B801AED;
+        Tue, 22 Sep 2020 10:08:48 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.146])
+        by smtp.corp.redhat.com (Postfix) with SMTP id A1E1A5DA7B;
+        Tue, 22 Sep 2020 10:08:41 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Tue, 22 Sep 2020 12:08:48 +0200 (CEST)
+Date:   Tue, 22 Sep 2020 12:08:40 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jann Horn <jannh@google.com>
+Subject: Re: [PATCH 3/5] mm: Rework return value for copy_one_pte()
+Message-ID: <20200922100840.GA11679@redhat.com>
+References: <20200921211744.24758-1-peterx@redhat.com>
+ <20200921211744.24758-4-peterx@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fd48e554-6a19-f799-b273-e814e5389db9@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200921211744.24758-4-peterx@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 11:16:51PM -0400, Nitesh Narayan Lal wrote:
-> 
-> On 9/21/20 7:40 PM, Frederic Weisbecker wrote:
-> > On Wed, Sep 09, 2020 at 11:08:16AM -0400, Nitesh Narayan Lal wrote:
-> >> +/*
-> >> + * num_housekeeping_cpus() - Read the number of housekeeping CPUs.
-> >> + *
-> >> + * This function returns the number of available housekeeping CPUs
-> >> + * based on __num_housekeeping_cpus which is of type atomic_t
-> >> + * and is initialized at the time of the housekeeping setup.
-> >> + */
-> >> +unsigned int num_housekeeping_cpus(void)
-> >> +{
-> >> +	unsigned int cpus;
-> >> +
-> >> +	if (static_branch_unlikely(&housekeeping_overridden)) {
-> >> +		cpus = atomic_read(&__num_housekeeping_cpus);
-> >> +		/* We should always have at least one housekeeping CPU */
-> >> +		BUG_ON(!cpus);
-> >> +		return cpus;
-> >> +	}
-> >> +	return num_online_cpus();
-> >> +}
-> >> +EXPORT_SYMBOL_GPL(num_housekeeping_cpus);
-> >> +
-> >>  int housekeeping_any_cpu(enum hk_flags flags)
-> >>  {
-> >>  	int cpu;
-> >> @@ -131,6 +153,7 @@ static int __init housekeeping_setup(char *str, enum hk_flags flags)
-> >>  
-> >>  	housekeeping_flags |= flags;
-> >>  
-> >> +	atomic_set(&__num_housekeeping_cpus, cpumask_weight(housekeeping_mask));
-> > So the problem here is that it takes the whole cpumask weight but you're only
-> > interested in the housekeepers who take the managed irq duties I guess
-> > (HK_FLAG_MANAGED_IRQ ?).
-> 
-> IMHO we should also consider the cases where we only have nohz_full.
-> Otherwise, we may run into the same situation on those setups, do you agree?
+On 09/21, Peter Xu wrote:
+>
+> @@ -866,13 +877,18 @@ static int copy_pte_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+>  	pte_unmap_unlock(orig_dst_pte, dst_ptl);
+>  	cond_resched();
+>  
+> -	if (entry.val) {
+> -		if (add_swap_count_continuation(entry, GFP_KERNEL) < 0)
+> +	switch (copy_ret) {
+> +	case COPY_MM_SWAP_CONT:
+> +		if (add_swap_count_continuation(data.entry, GFP_KERNEL) < 0)
+>  			return -ENOMEM;
+> -		progress = 0;
+> +		break;
 
-I guess it's up to the user to gather the tick and managed irq housekeeping
-together?
+Note that you didn't clear copy_ret, it is still COPY_MM_SWAP_CONT,
 
-Of course that makes the implementation more complicated. But if this is
-called only on drivers initialization for now, this could be just a function
-that does:
+> +	default:
+> +		break;
+>  	}
+> +
+>  	if (addr != end)
+>  		goto again;
 
-cpumask_weight(cpu_online_mask | housekeeping_cpumask(HK_FLAG_MANAGED_IRQ))
+After that the main loop can stop again because of need_resched(), and
+in this case add_swap_count_continuation(data.entry) will be called again?
 
-And then can we rename it to housekeeping_num_online()?
-
-Thanks.
-
-> >
-> >>  	free_bootmem_cpumask_var(non_housekeeping_mask);
-> >>  
-> >>  	return 1;
-> >> -- 
-> >> 2.27.0
-> >>
-> -- 
-> Thanks
-> Nitesh
-> 
-
-
+Oleg.
 
