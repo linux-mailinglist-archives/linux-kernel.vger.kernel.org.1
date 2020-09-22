@@ -2,98 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5495227494A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:38:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01BCE274948
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726682AbgIVTii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 15:38:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726563AbgIVTie (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 15:38:34 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E456CC061755;
-        Tue, 22 Sep 2020 12:38:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=G3QWEdw+757lC/qv3n3af3eKsuWkIoRvV7SYsgeP/Mc=; b=KA2WoiQVQC59KkiQQMAWf2APcY
-        S36ZrUloebq8Qsq5ko0tlAU3RaLOLE7fFe3zbrdis9SOn82/dUnXuC27jDqsP3rGait3BryqqOc4o
-        oGK4VQUAplYDVjXBlIolSL1zpejHLCclSDpZ/NfLDQpw2IQhMc1ey6EnqKNm/1B97o04hB/md2nii
-        c+ZLxV0otc0zIhVZOaK8IbPXGe72iKUc0vC0MHs3k8C8lJLm3kq5UotieqrJshEHWkzUa7fIGVobf
-        F8p7HNN3EDSQtOw51nqVVW8yyYUJ/TlL5M4n+2g4AcBqX622LVCIxsHxiCP0RsycMWHyouLoQKJAR
-        kaozgWgw==;
-Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kKo7T-0004hQ-RQ; Tue, 22 Sep 2020 19:38:32 +0000
-Subject: Re: [PATCH 0/1] Add explicit error for missing CONFIG_ASN1
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        linux-kbuild@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>
-References: <20200922155341.17906-1-James.Bottomley@HansenPartnership.com>
- <dfae4d4f-aa96-674d-93b1-d4c097e720e4@infradead.org>
- <260b4b85d714df822da259554ef8cc2873f3096f.camel@HansenPartnership.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <36232f66-58b1-77a8-91a3-f9d3428fffb5@infradead.org>
-Date:   Tue, 22 Sep 2020 12:38:27 -0700
+        id S1726620AbgIVTic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 15:38:32 -0400
+Received: from mga09.intel.com ([134.134.136.24]:1952 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726563AbgIVTic (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 15:38:32 -0400
+IronPort-SDR: Hku2JOFgYDfYWn/sTvKVuTJ47mnjraCFzeBgNSx2xGwTLzl1NjogQKFF717ERtjZDvrx0gEax5
+ AMUlctuda50w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9752"; a="161631874"
+X-IronPort-AV: E=Sophos;i="5.77,291,1596524400"; 
+   d="scan'208";a="161631874"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 12:38:31 -0700
+IronPort-SDR: IkemjNIOzr5PxbVNgme/kK6PcW72PVYK5Os3nJzqCldSNJ+N2+ax1L9N1u8tLqdVOUUcfCn5E3
+ 8IP/xGGSBITg==
+X-IronPort-AV: E=Sophos;i="5.77,291,1596524400"; 
+   d="scan'208";a="309616085"
+Received: from subratmo-mobl.amr.corp.intel.com (HELO [10.209.179.63]) ([10.209.179.63])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 12:38:31 -0700
+Subject: Re: [RFC PATCH v2] tools/x86: add kcpuid tool to show raw CPU
+ features
+To:     Feng Tang <feng.tang@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1600752470-43179-1-git-send-email-feng.tang@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <51821d92-8c77-7661-5cf6-bd5dbe0cdbaf@intel.com>
+Date:   Tue, 22 Sep 2020 12:38:30 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <260b4b85d714df822da259554ef8cc2873f3096f.camel@HansenPartnership.com>
+In-Reply-To: <1600752470-43179-1-git-send-email-feng.tang@intel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/22/20 12:19 PM, James Bottomley wrote:
-> On Tue, 2020-09-22 at 11:54 -0700, Randy Dunlap wrote:
->> On 9/22/20 8:53 AM, James Bottomley wrote:
->>> I recently ran into this as an error from 0day.  On x86 it's pretty
->>> much impossible to build a configuration where CONFIG_ASN1 isn't
->>> set, so you rarely notice a problem using the ASN.1 compiler
->>> because something else has selected it.  However, this compiler is
->>> never built if CONFIG_ASN1 isn't set and the error you get from
->>> kbuild is particularly unhelpful:
->>>
->>>    make[4]: *** No rule to make target 'security/keys/trusted-
->>> keys/tpm2key.asn1.o', needed by 'security/keys/trusted-keys/built-
->>> in.a'.
->>>    make[4]: *** [scripts/Makefile.build:283: security/keys/trusted-
->>> keys/trusted_tpm2.o] Error 1
->>>    make[4]: Target '__build' not remade because of errors.
->>>
->>> This patch changes the above error to the much easier to diagnose:
->>>
->>>    scripts/Makefile.build:387: *** CONFIG_ASN1 must be defined for
->>> the asn1_compiler.  Stop.
->>>    make[3]: *** [scripts/Makefile.build:505: security/keys/trusted-
->>> keys] Error 2
->>>
->>> James
->>>
->>> ---
->>>
->>> James Bottomley (1):
->>>   Makefile.build: Add an explicit error for missing ASN.1 compiler
->>>
->>>  scripts/Makefile.build | 5 +++++
->>>  1 file changed, 5 insertions(+)
->>
->> Is there a missing
->> 	select ASN1
->> somewhere?
-> 
-> You mean in the build used to produce the errors above?  Yes, so the
-> patch is to make the problem more explicit.
+On 9/21/20 10:27 PM, Feng Tang wrote:
+> +static void parse_text(void)
+> +{
+> +	FILE *file;
+> +	char *line = NULL;
+> +	size_t len = 0;
+> +	int ret;
+> +
+> +	file = fopen("cpuid.txt", "r");
+> +	if (!file) {
+> +		printf("Error in opening 'cpuid.txt'\n");
+> +		return;
+> +	}
 
-I appreciate that the message can be improved, but it seems possible
-that some Kconfig could also be improved.
+This mostly looks fine to me.  A few things about cpuid.txt, though...
+It needs to be read out of *some* location which is not the current
+directory.  Maybe:
 
--- 
-~Randy
+	/usr/share/hwdata/cpu.ids
 
+or something.  It also needs a "-f" argument to override this default
+location.  I don't know if there's a better per-kernel place to put this
+file, though.
