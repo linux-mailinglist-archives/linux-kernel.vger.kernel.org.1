@@ -2,86 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD23274721
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 19:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 157FD27471A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 19:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726722AbgIVRDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 13:03:38 -0400
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:33680 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726563AbgIVRDd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 13:03:33 -0400
-Received: from relay6-d.mail.gandi.net (unknown [217.70.183.198])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id 4FE413AEE87;
-        Tue, 22 Sep 2020 16:56:09 +0000 (UTC)
-X-Originating-IP: 90.89.95.46
-Received: from pc-2.home (lfbn-tou-1-1532-46.w90-89.abo.wanadoo.fr [90.89.95.46])
-        (Authenticated sender: maxime.chevallier@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 2B492C000C;
-        Tue, 22 Sep 2020 16:55:46 +0000 (UTC)
-From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc:     Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Helen Koike <helen.koike@collabora.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Subject: [PATCH v3 3/3] arm64: dts: rockchip: Add the camera interface description of the PX30
-Date:   Tue, 22 Sep 2020 18:55:35 +0200
-Message-Id: <20200922165535.1356622-4-maxime.chevallier@bootlin.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200922165535.1356622-1-maxime.chevallier@bootlin.com>
-References: <20200922165535.1356622-1-maxime.chevallier@bootlin.com>
+        id S1726641AbgIVRBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 13:01:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44518 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726566AbgIVRBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 13:01:07 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1600794066;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uoRTNE0li2f5w49NlqYezoCQ6/u5c+NnH/4Xsxw2QEg=;
+        b=VxXRGDcwBaxWDlnWl8EMkQZcVSoulvuH49g/1H+HNKBZSsYLV0zzQGYzFbX/84Hv6eYTnO
+        kmstxEdnmN7X5K0MJdrKyqtb7/WviBsn5HZ8lqgSY1EZt4DNe4lEPUKEekk6C1tqLtDcUi
+        LNmia1RBx6qxn7ceJU+FL80ZvAa38zc=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9CB1FAD0B;
+        Tue, 22 Sep 2020 17:01:43 +0000 (UTC)
+Date:   Tue, 22 Sep 2020 19:01:06 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Thelen <gthelen@google.com>
+Subject: Re: Machine lockups on extreme memory pressure
+Message-ID: <20200922170106.GE12990@dhcp22.suse.cz>
+References: <CALvZod4FWLsV9byrKQojeus7tMDhHjQHFF5J_JpNsyB0HkaERA@mail.gmail.com>
+ <20200922111202.GY12990@dhcp22.suse.cz>
+ <CALvZod6=VwQduoG3GiW-=csAQja4vCsXAhKH_tSuA4JYx0dEiA@mail.gmail.com>
+ <20200922151654.GA12990@dhcp22.suse.cz>
+ <CALvZod7jvxEdbMzrmmt6Vrse=Ui4yhhVYyxPkPmmzWC5Z_6rtw@mail.gmail.com>
+ <20200922163401.GC12990@dhcp22.suse.cz>
+ <CALvZod753Peyyg6aHUaFoiv3uXEPHqsyrSiariV8bF-vhH6iRA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod753Peyyg6aHUaFoiv3uXEPHqsyrSiariV8bF-vhH6iRA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PX30 has a camera interface, supporting CSI2 and BT656
-modes. Add a DT description for this interface.
+On Tue 22-09-20 09:51:30, Shakeel Butt wrote:
+> On Tue, Sep 22, 2020 at 9:34 AM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Tue 22-09-20 09:29:48, Shakeel Butt wrote:
+[...]
+> > > Anyways, what do you think of the in-kernel PSI based
+> > > oom-kill trigger. I think Johannes had a prototype as well.
+> >
+> > We have talked about something like that in the past and established
+> > that auto tuning for oom killer based on PSI is almost impossible to get
+> > right for all potential workloads and that so this belongs to userspace.
+> > The kernel's oom killer is there as a last resort when system gets close
+> > to meltdown.
+> 
+> The system is already in meltdown state from the users perspective. I
+> still think allowing the users to optionally set the oom-kill trigger
+> based on PSI makes sense. Something like 'if all processes on the
+> system are stuck for 60 sec, trigger oom-killer'.
 
-Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
----
-V3: Renamed the driver
-
- arch/arm64/boot/dts/rockchip/px30.dtsi | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/rockchip/px30.dtsi b/arch/arm64/boot/dts/rockchip/px30.dtsi
-index 2695ea8cda14..8c81eb35da86 100644
---- a/arch/arm64/boot/dts/rockchip/px30.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/px30.dtsi
-@@ -1106,6 +1106,18 @@ vopl_mmu: iommu@ff470f00 {
- 		status = "disabled";
- 	};
- 
-+	vip: vip@ff490000 {
-+		compatible = "rockchip,px30-vip";
-+		reg = <0x0 0xff490000 0x0 0x200>;
-+		interrupts = <GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>;
-+		clocks = <&cru ACLK_CIF>, <&cru HCLK_CIF>, <&cru PCLK_CIF>, <&cru SCLK_CIF_OUT>;
-+		clock-names = "aclk", "hclk", "pclkin";
-+		power-domains = <&power PX30_PD_VI>;
-+		resets = <&cru SRST_CIF_A>, <&cru SRST_CIF_H>, <&cru SRST_CIF_PCLKIN>;
-+		reset-names = "axi", "ahb", "pclkin";
-+		status = "disabled";
-+	};
-+
- 	qos_gmac: qos@ff518000 {
- 		compatible = "syscon";
- 		reg = <0x0 0xff518000 0x0 0x20>;
+We already do have watchdogs for that no? If you cannot really schedule
+anything then soft lockup detector should fire. In a meltdown state like
+that the reboot is likely the best way forward anyway.
 -- 
-2.25.4
-
+Michal Hocko
+SUSE Labs
