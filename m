@@ -2,60 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB84273C2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:41:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 304FA273C91
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:49:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730030AbgIVHlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 03:41:16 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13818 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729751AbgIVHlQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 03:41:16 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 1D7E5767AB46DA20738D;
-        Tue, 22 Sep 2020 15:41:11 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 22 Sep 2020 15:41:00 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <robert.moore@intel.com>, <erik.kaneda@intel.com>,
-        <rafael.j.wysocki@intel.com>, <lenb@kernel.org>
-CC:     <linux-acpi@vger.kernel.org>, <devel@acpica.org>,
-        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] ACPICA: Remove unneeded semicolon
-Date:   Tue, 22 Sep 2020 15:48:49 +0800
-Message-ID: <1600760929-102547-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        id S1727727AbgIVHtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 03:49:14 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:40480 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726766AbgIVHtO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 03:49:14 -0400
+Received: by mail-ed1-f67.google.com with SMTP id t16so15257461edw.7;
+        Tue, 22 Sep 2020 00:49:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tkNnH/LgGWRWsIkn54prukiE/8IPOzAY4WWXu7q2L5k=;
+        b=bImS9oUzS9t8T7o04HjS1aRXx2VKkdTGkuE0gfqIinp4l3bWuN90kKBvMOJQLNmKwh
+         8D3wKFCaocjNCZhyha0ieacf6Z+qImev/u1yEwA7vW/Ff0hgByxqVM/s2xtj0NFDFi00
+         b+LmZWHZHN22zhLvgdM7dwgoLF6e78QTfmx0giJr0+fLekS4FoFiKeijradqXfa/lnQd
+         JE7qhyJD7qrdou8l1ghc2jqhAe8rSI7+XalxrG1h4rQmI7wppsEE966jYooNQLg37GYO
+         9TUwFD9uq+qQcsa9xoPyNbHWOceTfKvCmDwviaDc1OE5mpcaS2qtOxk4hntHfpXHK2kY
+         VD3w==
+X-Gm-Message-State: AOAM5311vT2I2IIYcw2PMINPeKVSYlpSxLFEkZl1NniG3LnxYwVUOEtK
+        41Jx0UEPrN+WjFA1TiYlaqnEGVft/ympK1tr6adJFDoM7ME=
+X-Google-Smtp-Source: ABdhPJwLcWWCUEt8p5yQlYU14gxPGSkOs/brGp7CghOj4dX4vV/dJJ3Vht6R7gMlSgXaW39nMNNloTCoG83wj5/qPrs=
+X-Received: by 2002:a05:6402:17ed:: with SMTP id t13mr2688983edy.163.1600760951985;
+ Tue, 22 Sep 2020 00:49:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+References: <20200920210834.116411-1-tsbogend@alpha.franken.de>
+In-Reply-To: <20200920210834.116411-1-tsbogend@alpha.franken.de>
+From:   =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <f4bug@amsat.org>
+Date:   Tue, 22 Sep 2020 09:49:00 +0200
+Message-ID: <CAAdtpL57e02iAcPY78tqXGzVGOgGz7b4Mu91siXuM9zZJu8+pA@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: malta: remove unused header file
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes coccicheck warning:
+On Sun, Sep 20, 2020 at 11:09 PM Thomas Bogendoerfer
+<tsbogend@alpha.franken.de> wrote:
+>
+> Remove unused heasder file asm/mach-malta/malta-pm.h.
 
-./drivers/acpi/acpica/nsalloc.c:297:2-3: Unneeded semicolon
+Typo "header".
 
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
----
- drivers/acpi/acpica/nsalloc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/acpi/acpica/nsalloc.c b/drivers/acpi/acpica/nsalloc.c
-index fe9b363..83d26ab 100644
---- a/drivers/acpi/acpica/nsalloc.c
-+++ b/drivers/acpi/acpica/nsalloc.c
-@@ -294,7 +294,7 @@ void acpi_ns_delete_children(struct acpi_namespace_node *parent_node)
- 		node_to_delete = next_node;
- 		next_node = next_node->peer;
- 		acpi_ns_delete_node(node_to_delete);
--	};
-+	}
- 
- 	/* Clear the parent's child pointer */
- 
--- 
-2.6.2
-
+>
+> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> ---
+>  arch/mips/include/asm/mach-malta/malta-pm.h | 33 -----------------------------
+>  1 file changed, 33 deletions(-)
+>  delete mode 100644 arch/mips/include/asm/mach-malta/malta-pm.h
+>
+> diff --git a/arch/mips/include/asm/mach-malta/malta-pm.h b/arch/mips/include/asm/mach-malta/malta-pm.h
+> deleted file mode 100644
+> index 2a5146d79313..000000000000
+> --- a/arch/mips/include/asm/mach-malta/malta-pm.h
+> +++ /dev/null
+> @@ -1,33 +0,0 @@
+> -/* SPDX-License-Identifier: GPL-2.0-or-later */
+> -/*
+> - * Copyright (C) 2014 Imagination Technologies
+> - * Author: Paul Burton <paul.burton@mips.com>
+> - */
+> -
+> -#ifndef __ASM_MIPS_MACH_MALTA_PM_H__
+> -#define __ASM_MIPS_MACH_MALTA_PM_H__
+> -
+> -#include <asm/mips-boards/piix4.h>
+> -
+> -#ifdef CONFIG_MIPS_MALTA_PM
+> -
+> -/**
+> - * mips_pm_suspend - enter a suspend state
+> - * @state: the state to enter, one of PIIX4_FUNC3IO_PMCNTRL_SUS_TYP_*
+> - *
+> - * Enters a suspend state via the Malta's PIIX4. If the state to be entered
+> - * is one which loses context (eg. SOFF) then this function will never
+> - * return.
+> - */
+> -extern int mips_pm_suspend(unsigned state);
+> -
+> -#else /* !CONFIG_MIPS_MALTA_PM */
+> -
+> -static inline int mips_pm_suspend(unsigned state)
+> -{
+> -       return -EINVAL;
+> -}
+> -
+> -#endif /* !CONFIG_MIPS_MALTA_PM */
+> -
+> -#endif /* __ASM_MIPS_MACH_MALTA_PM_H__ */
+> --
+> 2.16.4
+>
