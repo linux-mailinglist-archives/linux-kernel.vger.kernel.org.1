@@ -2,156 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5845F27394E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 05:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 337CE273954
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 05:35:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728771AbgIVDea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 23:34:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728712AbgIVDea (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 23:34:30 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 632A3C061755;
-        Mon, 21 Sep 2020 20:34:29 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1728802AbgIVDfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 23:35:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43616 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728634AbgIVDfy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 23:35:54 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BwRkS1XHyz9sTQ;
-        Tue, 22 Sep 2020 13:34:22 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1600745665;
-        bh=kE/eQIIvejiVNgVuiLPMxkDduOmD4b/H7xjzjTsXLIU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=fMTLWIDcxx7IKUxHM2cILY1eClHKUPacmZhfXtNbmMVddOoHRVln+kL/tDlP4QxVo
-         9k7q1kgV7N/THWNCKryveGIxZHwjdxq9kIQhaTsCwWvtLie4IKhmIwyOxFAiLbpr3J
-         AcuwsDoPvJuVCf364cSQfowGZ/+evVONvJ3+pnTXGHSCFzU4cvw3HVVHiazRt/mtqC
-         43VwDxQlC1XtVOTlWPm+bfGHGpFO8d1vN2JFgzHOYJG/3rtmJIa5BjkqBx6qFIp2wr
-         z+bGdgb6QIofKdk3J0yv3eaNXAllgtFIIie7CA08o/tqwCAU0eY2zwRTjiP7fZRMyi
-         x0fQZXi2/lZ9w==
-Date:   Tue, 22 Sep 2020 13:34:20 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc:     Chris Wilson <chris@chris-wilson.co.uk>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: manual merge of the drm-misc tree with the drm-intel
- tree
-Message-ID: <20200922133420.149dcbd0@canb.auug.org.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id EBC5A23A32;
+        Tue, 22 Sep 2020 03:35:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600745754;
+        bh=Zg1voEFK6z5Rkm7iaxnBwo567WXU9h8mw+sC++e4x68=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=xLzkxeIta7HsB3m7JlSEs6z5XXhdnouoGY7Dz2Us48cNimR5KW5TnxbmCVc1m9pCE
+         OdxIirw8AAnRGZyDoOfR6I4K+hQFLRpukm5FmqQbEz1qyDOP1HO/EJpqORMQMrOtrx
+         vZLsgtqPiNsHjdZPJScyqzSSwmCANVB6rHnY26Pg=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id BD4D735226C1; Mon, 21 Sep 2020 20:35:53 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 20:35:53 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
+Message-ID: <20200922033553.GU29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200918194817.48921-1-urezki@gmail.com>
+ <20200918194817.48921-3-urezki@gmail.com>
+ <20200921074716.GC12990@dhcp22.suse.cz>
+ <20200921154558.GD29330@paulmck-ThinkPad-P72>
+ <20200921160318.GO12990@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/9mjQf=4/FmIV+m0uvcJus0L";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921160318.GO12990@dhcp22.suse.cz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/9mjQf=4/FmIV+m0uvcJus0L
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Sep 21, 2020 at 06:03:18PM +0200, Michal Hocko wrote:
+> On Mon 21-09-20 08:45:58, Paul E. McKenney wrote:
+> > On Mon, Sep 21, 2020 at 09:47:16AM +0200, Michal Hocko wrote:
+> > > On Fri 18-09-20 21:48:15, Uladzislau Rezki (Sony) wrote:
+> > > [...]
+> > > > Proposal
+> > > > ========
+> > > > Introduce a lock-free function that obtain a page from the per-cpu-lists
+> > > > on current CPU. It returns NULL rather than acquiring any non-raw spinlock.
+> > > 
+> > > I was not happy about this solution when we have discussed this
+> > > last time and I have to say I am still not happy. This is exposing
+> > > an internal allocator optimization and allows a hard to estimate
+> > > consumption of pcp free pages. IIUC this run on pcp cache can be
+> > > controled directly from userspace (close(open) loop IIRC) which makes it
+> > > even bigger no-no.
+> > 
+> > Yes, I do well remember that you are unhappy with this approach.
+> > Unfortunately, thus far, there is no solution that makes all developers
+> > happy.  You might be glad to hear that we are also looking into other
+> > solutions, each of which makes some other developers unhappy.  So we
+> > are at least not picking on you alone.  :-/
+> 
+> No worries I do not feel like a whipping boy here. But do expect me to
+> argue against the approach. I would also appreciate it if there was some
+> more information on other attempts, why they have failed. E.g. why
+> pre-allocation is not an option that works well enough in most
+> reasonable workloads. I would also appreciate some more thoughts why we
+> need to optimize for heavy abusers of RCU (like close(open) extremes).
 
-Hi all,
+Not optimizing for them, but rather defending against them.  Uladzislau
+gave the example of low-memory phones.  And we have quite the array
+of defenses against other userspace bugs including MMUs, the "limit"
+command, and so on.
 
-Today's linux-next merge of the drm-misc tree got a conflict in:
+There have been quite a few successful attempts, starting from the
+introduction of blimit and RCU-bh more than 15 years ago, continuing
+through making call_rcu() jump-start grace periods, IPIing reluctant
+CPUs, tuning RCU callback offloading, and many others.  But these prior
+approaches have only taken us so far.
 
-  drivers/gpu/drm/i915/selftests/mock_gem_device.c
+Other approaches under consideration include making CONFIG_PREEMPT_COUNT
+unconditional and thus allowing call_rcu() and kvfree_rcu() to determine
+whether direct calls to the allocator are safe (some guy named Linus
+doesn't like this one), preallocation (Uladzislau covered this, and
+the amount that would need to be preallocated is excessive), deferring
+allocation to RCU_SOFTIRQ (this would also need CONFIG_PREEMPT_COUNT),
+and deferring to some clean context (which is the best we can do within
+the confines of RCU, but which can have issues with delay).
 
-between commit:
+So it is not the need to address this general problem that is new.
+Far from it!  What is new is the need for changes outside of RCU.
 
-  9f9f4101fc98 ("drm/i915/selftests: Push the fake iommu device from the st=
-ack to data")
+> > > I strongly agree with Thomas http://lkml.kernel.org/r/87tux4kefm.fsf@nanos.tec.linutronix.de
+> > > that this optimization is not aiming at reasonable workloads. Really, go
+> > > with pre-allocated buffer and fallback to whatever slow path you have
+> > > already. Exposing more internals of the allocator is not going to do any
+> > > good for long term maintainability.
+> > 
+> > I suggest that you carefully re-read the thread following that email.
+> 
+> I clearly remember Thomas not being particularly happy that you optimize
+> for a corner case. I do not remember there being a consensus that this
+> is the right approach. There was some consensus that this is better than
+> a gfp flag. Still quite bad though if you ask me.
 
-from the drm-intel tree and commit:
+Again, this "optimization" is for robustness more than raw speed.
 
-  cd01269d11a3 ("drm/i915/selftests: align more to real device lifetimes")
+> > Given a choice between making users unhappy and making developers
+> > unhappy, I will side with the users each and every time.
+> 
+> Well, let me rephrase. It is not only about me (as a developer) being
+> unhappy but also all the side effects this would have for users when
+> performance of their favorite workload declines for no apparent reason
+> just because pcp caches are depleted by an unrelated process.
 
-from the drm-misc tree.
+But in the close(open()) case, wouldn't the allocations on the open()
+side refill those caches?  Yes, cases where one CPU is doing the
+allocating and another the call_rcu()/kvfree_rcu() need additional
+help, but as Uladzislau noted, we do have patches that ensure that the
+refilling happens.
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/gpu/drm/i915/selftests/mock_gem_device.c
-index 397c313a8b69,c207d2239791..000000000000
---- a/drivers/gpu/drm/i915/selftests/mock_gem_device.c
-+++ b/drivers/gpu/drm/i915/selftests/mock_gem_device.c
-@@@ -118,12 -116,11 +116,11 @@@ static struct dev_pm_domain pm_domain=20
- =20
-  struct drm_i915_private *mock_gem_device(void)
-  {
- -	struct drm_i915_private *i915;
- -	struct pci_dev *pdev;
-  #if IS_ENABLED(CONFIG_IOMMU_API) && defined(CONFIG_INTEL_IOMMU)
- -	struct dev_iommu iommu;
- +	static struct dev_iommu fake_iommu =3D { .priv =3D (void *)-1 };
-  #endif
- +	struct drm_i915_private *i915;
- +	struct pci_dev *pdev;
-- 	int err;
- =20
-  	pdev =3D kzalloc(sizeof(*pdev), GFP_KERNEL);
-  	if (!pdev)
-@@@ -141,11 -132,28 +132,26 @@@
-  	dma_coerce_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
- =20
-  #if IS_ENABLED(CONFIG_IOMMU_API) && defined(CONFIG_INTEL_IOMMU)
- -	/* HACK HACK HACK to disable iommu for the fake device; force identity m=
-apping */
- -	memset(&iommu, 0, sizeof(iommu));
- -	iommu.priv =3D (void *)-1;
- -	pdev->dev.iommu =3D &iommu;
- +	/* HACK to disable iommu for the fake device; force identity mapping */
- +	pdev->dev.iommu =3D &fake_iommu;
-  #endif
-+ 	if (!devres_open_group(&pdev->dev, NULL, GFP_KERNEL)) {
-+ 		put_device(&pdev->dev);
-+ 		return NULL;
-+ 	}
-+=20
-+ 	i915 =3D devm_drm_dev_alloc(&pdev->dev, &mock_driver,
-+ 				  struct drm_i915_private, drm);
-+ 	if (IS_ERR(i915)) {
-+ 		pr_err("Failed to allocate mock GEM device: err=3D%ld\n", PTR_ERR(i915)=
-);
-+ 		devres_release_group(&pdev->dev, NULL);
-+ 		put_device(&pdev->dev);
-+=20
-+ 		return NULL;
-+ 	}
- =20
-  	pci_set_drvdata(pdev, i915);
-+ 	i915->drm.pdev =3D pdev;
- =20
-  	dev_pm_domain_set(&pdev->dev, &pm_domain);
-  	pm_runtime_enable(&pdev->dev);
-
---Sig_/9mjQf=4/FmIV+m0uvcJus0L
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9pcLwACgkQAVBC80lX
-0Gwq9Af/S1WDHFw/FtKLGg+c18sLxAFdxecg+cuEhRg2XgfecUztRz3r7J8/JX9Z
-UCwQqiv0kGB5+IKpKEve9TZWH78r9Sao9DXj9TbcHgz/FU110+rkuCutKiA/gpYt
-ChH0KdeICx0y1WkGV3lvlhTdqJ4Gr/8+Pvr62OzY0R2VK+u7ocxuuCE/lOjfvGJE
-EoAdC2roIaNse1zWGCQgf3QRx9LpmKJS8XhQfWOVkXgy0qyDuBbzcSyYABF4YTFw
-+SjQaV860zXvDMs0JqnrMo6QECF7Y29SZrsFbCc9aTP1EG/s/PR3ttfwKWtjuLv0
-+2i2G6t5x1neRS5HnXFRXhE7Eyl2yQ==
-=4Ip8
------END PGP SIGNATURE-----
-
---Sig_/9mjQf=4/FmIV+m0uvcJus0L--
+							Thanx, Paul
