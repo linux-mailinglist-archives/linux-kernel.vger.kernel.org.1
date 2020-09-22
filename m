@@ -2,85 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 308AC273B72
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:08:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0635C273B7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:13:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729725AbgIVHIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 03:08:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56160 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728526AbgIVHIx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 03:08:53 -0400
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 403EE23A1E;
-        Tue, 22 Sep 2020 07:08:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600758532;
-        bh=Q9EIerF2YpUp4pwyWgck/zaWlyKSSyBy1o2vS+YkpDw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=yLaNCV3E1ni8PMWPJKhZHUP5zyH9/RIGelJRkhz0XnXaoRSXGqrVYlGa0h+1p08wj
-         HdDbxtzf7mwTjYGAOiSG1Iq/iO3UwI5pvEaiJD8F+G7WAMD//GA1WuWb8TLttRJNWO
-         rbgd3Rs+Si3uwTfnnPpxh3Rc9JzaXSGwbSJQ+2HY=
-Received: by mail-ej1-f52.google.com with SMTP id q13so21254299ejo.9;
-        Tue, 22 Sep 2020 00:08:52 -0700 (PDT)
-X-Gm-Message-State: AOAM533no99YWwAw10XMK+FpbGbhm4KDQ76GbNDv3XenSYz9Npnv52eE
-        Nhrj48JnVBjKUUJA3sfJ2x9kkAgxcR8TjbM0H14=
-X-Google-Smtp-Source: ABdhPJz5Bpo4sLZx+VgODKy1nNTRF0OkATsG2D8nukSvGgRjPsORZPEEbE8mlh2UulqYR1jQq3wGmko6aeeETpH/EZQ=
-X-Received: by 2002:a17:907:724f:: with SMTP id ds15mr3277198ejc.119.1600758530722;
- Tue, 22 Sep 2020 00:08:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200921210233.21449-1-krzk@kernel.org> <20200921210610.GA5338@amd>
-In-Reply-To: <20200921210610.GA5338@amd>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Tue, 22 Sep 2020 09:08:37 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPdwQc86H-S=C4v_1VCbd7RhC2Soepj_2LqG1e_E_bgAug@mail.gmail.com>
-Message-ID: <CAJKOXPdwQc86H-S=C4v_1VCbd7RhC2Soepj_2LqG1e_E_bgAug@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: move Milo Kim to credits
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Jonathan Cameron <jic23@kernel.org>, Dan Murphy <dmurphy@ti.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-iio@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-leds@vger.kernel.org, linux-pm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S1729711AbgIVHNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 03:13:13 -0400
+Received: from labrats.qualcomm.com ([199.106.110.90]:9654 "EHLO
+        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728526AbgIVHNN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 03:13:13 -0400
+IronPort-SDR: e7YpYL10wF24JN8gGfcVAhUbG85jKVpKaDX25U3G+TtfcH+0agOiqCM1tlBnKKscgFdsFUueFj
+ FfykhwMzS1WXRbUaQ/IpQhySUMYX7yw4d0DYh3ztmebWHCUctl/p/m2cjElqemzh5AFN5pjjBu
+ lVqgVDvqaDsdoYqumvrJOENQM+Zxe2J9IQGgGyV/hl3k4kXt5JeqD52PzS14prcvXR0+Ml2Ibo
+ xmlXtiqdpCmqu/LHTOaZO/rv/YPTvMWfYn+5lkidd05zU7iWPjvc+FouVdA+6K4yNbHZq956fp
+ +Vs=
+X-IronPort-AV: E=Sophos;i="5.77,289,1596524400"; 
+   d="scan'208";a="47332985"
+Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
+  by labrats.qualcomm.com with ESMTP; 22 Sep 2020 00:09:12 -0700
+Received: from wsp769891wss.qualcomm.com (HELO stor-presley.qualcomm.com) ([192.168.140.85])
+  by ironmsg05-sd.qualcomm.com with ESMTP; 22 Sep 2020 00:09:10 -0700
+Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
+        id C9F3B21653; Tue, 22 Sep 2020 00:09:09 -0700 (PDT)
+From:   Can Guo <cang@codeaurora.org>
+To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        saravanak@google.com, salyzyn@google.com, cang@codeaurora.org
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] scsi: ufs: Make sure clk scaling happens only when hba is runtime ACTIVE
+Date:   Tue, 22 Sep 2020 00:09:04 -0700
+Message-Id: <1600758548-28576-1-git-send-email-cang@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Sep 2020 at 23:06, Pavel Machek <pavel@ucw.cz> wrote:
->
-> Hi!
->
-> > Milo Kim's email in TI bounces with permanent error (550: Invalid
-> > recipient).  Last email from him on LKML was in 2017.  Move Milo Kim to
-> > credits and remove the separate driver entries for:
-> >
-> >  - TI LP855x backlight driver,
-> >  - TI LP8727 charger driver,
-> >  - TI LP8788 MFD (ADC, LEDs, charger and regulator) drivers.
-> >
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
->
-> I believe normal way would be to mark the entries "orphaned", not to
-> drop them altogether. Plus, I believe someone from TI is likely to
-> step up.
+If someone plays with the UFS clk scaling devfreq governor through sysfs,
+ufshcd_devfreq_scale may be called even when hba is not runtime ACTIVE,
+which can lead to unexpected error. We cannot just protect it by calling
+pm_runtime_get_sync, because that may cause racing problem since hba
+runtime suspend ops needs to suspend clk scaling. In order to fix it, call
+pm_runtime_get_noresume and check hba's runtime status, then only proceed
+if hba is runtime ACTIVE, otherwise just bail.
 
-These are entries for specific drivers so they are covered by the
-subsystem maintainers. You believe someone will step up, I believe if
-these were important for TI, they would find the person some time ago,
-so the emails won't bounce... This was similar with BQ chargers where
-Andrew's email was bouncing and after a few weeks it was fixed. To me
-it looks like TI does not have any priority in maintaining separate
-driver entries so what is the point to keep orphaned driver-entry? It
-is not the case where we have an orphaned subsystem and we look for a
-person to handle it...
+governor_store
+ devfreq_performance_handler
+  update_devfreq
+   devfreq_set_target
+    ufshcd_devfreq_target
+     ufshcd_devfreq_scale
 
-Best regards,
-Krzysztof
+Signed-off-by: Can Guo <cang@codeaurora.org>
+
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index e4cb994..847f355 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -1294,8 +1294,15 @@ static int ufshcd_devfreq_target(struct device *dev,
+ 	}
+ 	spin_unlock_irqrestore(hba->host->host_lock, irq_flags);
+ 
++	pm_runtime_get_noresume(hba->dev);
++	if (!pm_runtime_active(hba->dev)) {
++		pm_runtime_put_noidle(hba->dev);
++		ret = -EAGAIN;
++		goto out;
++	}
+ 	start = ktime_get();
+ 	ret = ufshcd_devfreq_scale(hba, scale_up);
++	pm_runtime_put(hba->dev);
+ 
+ 	trace_ufshcd_profile_clk_scaling(dev_name(hba->dev),
+ 		(scale_up ? "up" : "down"),
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
