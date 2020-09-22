@@ -2,98 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4B2274CE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD939274CEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726825AbgIVWzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 18:55:38 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:53225 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726654AbgIVWzi (ORCPT
+        id S1726868AbgIVW4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 18:56:13 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:48984 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726654AbgIVW4N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 18:55:38 -0400
-Received: by mail-wm1-f65.google.com with SMTP id q9so5026601wmj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 15:55:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4NROQY74ZndOZ+p5fr+GaaolzsVSn9rBnu2dnFCtdNs=;
-        b=AMPrFTgSF7GhwrmdjL09mTahY1GtGdM32f5t/ASVPZwTRGbHsEYZeFV4eFhSDZJCBM
-         ZPKnac2a4qJAdKmB9qT+Vyjg41VkVAfP9SAg+bKzWnYWiWSKV5C6yJNZeyqgQQUpUTvp
-         DpYDagwRl3QhlT7nfrf3PlEVPAzBwMguD6jTBzQ2JiSiG/uiJWCUpxF9RPmBANpdbl5q
-         Jt+wlkeR7dyNAIK5JVj09aJO2/y2eNGK6x4HvepgQ1OgcUrPs1+uWqN3dK6oike4Nj1n
-         RMa1x4Le7NE+koRv/g9P2z4YLopHpBT/lH20Cb2naBT/cOS/H2JruUqp4VFZ7oELNEBi
-         ZbQw==
-X-Gm-Message-State: AOAM533ve/pFPuLkRn/FAjFOL3Z+FFowo9uoBsQjre9ALih+bfli4evt
-        KQEdnVlZAFZzPPTFqdgiQYIbjen7FZ1LL2kmT7Y=
-X-Google-Smtp-Source: ABdhPJx+XgPPbUdpz/htYqF6AzbbWV+sLJ9PO9qoUqYH60AH+nAxtKhuVWe+pxV5wri6q9Qt7zwf25E7zNonFsVGWKI=
-X-Received: by 2002:a05:600c:4142:: with SMTP id h2mr3205019wmm.128.1600815337118;
- Tue, 22 Sep 2020 15:55:37 -0700 (PDT)
+        Tue, 22 Sep 2020 18:56:13 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08MMuAGw122085;
+        Tue, 22 Sep 2020 17:56:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600815370;
+        bh=DwUK73G8fRoTDbjxGcRj64g70ISqbTcwXOgh0vcYjc0=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=FoFkQylUX/EEbpzJ/jXF2GKdIog1cxtopal3bkBP2EmkrnXW8eEhQl16uIckRUW8E
+         Rh4qw3hRWgQCOXU0XZm3Z4rLyQIOpNIthBS2+a57OWefu0RbLGrz+8mrDwPP9ofIdS
+         Ra82ZB2HS8qUpjkTo1gs4PHDQZTa93kmEouj1vB8=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08MMuAW0069255
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 22 Sep 2020 17:56:10 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 22
+ Sep 2020 17:56:10 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 22 Sep 2020 17:56:10 -0500
+Received: from [10.250.32.225] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08MMuA9L070124;
+        Tue, 22 Sep 2020 17:56:10 -0500
+Subject: Re: [EXTERNAL] Re: [PATCH v3 1/2] dt-bindings: power: Add the bq256xx
+ dt bindings
+To:     Rob Herring <robh@kernel.org>
+CC:     <sre@kernel.org>, <linux-pm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <dmurphy@ti.com>
+References: <20200910164534.16987-1-r-rivera-matos@ti.com>
+ <20200910164534.16987-2-r-rivera-matos@ti.com>
+ <20200922222203.GA3360459@bogus>
+From:   Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+Message-ID: <db285d10-2c9a-22bc-1853-cf6e24486d27@ti.com>
+Date:   Tue, 22 Sep 2020 17:56:10 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200921094610.83736-1-namhyung@kernel.org> <20200921094610.83736-3-namhyung@kernel.org>
- <CABPqkBRnzGbfk0_K_eK47XDU9Fu4CTJC=4RXTXYc=cFLE-xtkg@mail.gmail.com>
-In-Reply-To: <CABPqkBRnzGbfk0_K_eK47XDU9Fu4CTJC=4RXTXYc=cFLE-xtkg@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 23 Sep 2020 07:55:26 +0900
-Message-ID: <CAM9d7ch5ZejOpDgj6fAGcGHAcbgEV6dZ4SfArw7xDMPKkTphvQ@mail.gmail.com>
-Subject: Re: [PATCH 2/5] perf stat: Add --for-each-cgroup option
-To:     Stephane Eranian <eranian@google.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200922222203.GA3360459@bogus>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephane,
+Rob
 
-On Wed, Sep 23, 2020 at 6:52 AM Stephane Eranian <eranian@google.com> wrote:
+On 9/22/20 5:22 PM, Rob Herring wrote:
+> On Thu, Sep 10, 2020 at 11:45:33AM -0500, Ricardo Rivera-Matos wrote:
+>> Add the bindings for the bq256xx series of battery charging ICs.
+>>
+>> Datasheets:
+>> - https://www.ti.com/lit/ds/symlink/bq25600.pdf
+>> - https://www.ti.com/lit/ds/symlink/bq25601.pdf
+>> - https://www.ti.com/lit/ds/symlink/bq25600d.pdf
+>> - https://www.ti.com/lit/ds/symlink/bq25601d.pdf
+>> - https://www.ti.com/lit/ds/symlink/bq25611d.pdf
+>> - https://www.ti.com/lit/ds/symlink/bq25618.pdf
+>> - https://www.ti.com/lit/ds/symlink/bq25619.pdf
+>>
+>> Signed-off-by: Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+>> ---
+>>   .../bindings/power/supply/bq256xx.yaml        | 97 +++++++++++++++++++
+>>   1 file changed, 97 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/power/supply/bq256xx.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/power/supply/bq256xx.yaml b/Documentation/devicetree/bindings/power/supply/bq256xx.yaml
+>> new file mode 100644
+>> index 000000000000..8cc2242f7df0
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/power/supply/bq256xx.yaml
+>> @@ -0,0 +1,97 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
+>> +# Copyright (C) 2020 Texas Instruments Incorporated
+>> +%YAML 1.2
+>> +---
+>> +$id: "http://devicetree.org/schemas/power/supply/bq256xx.yaml#"
+>> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+>> +
+>> +title: TI bq256xx Switch Mode Buck Charger
+>> +
+>> +maintainers:
+>> +  - Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+>> +
+>> +description: |
+>> +  The bq256xx devices are a family of highly-integrated battery charge
+>> +  management and system power management ICs for single cell Li-ion and Li-
+>> +  polymer batteries.
+>> +
+>> +  Datasheets:
+>> +    - https://www.ti.com/lit/ds/symlink/bq25600.pdf
+>> +    - https://www.ti.com/lit/ds/symlink/bq25601.pdf
+>> +    - https://www.ti.com/lit/ds/symlink/bq25600d.pdf
+>> +    - https://www.ti.com/lit/ds/symlink/bq25601d.pdf
+>> +    - https://www.ti.com/lit/ds/symlink/bq25611d.pdf
+>> +    - https://www.ti.com/lit/ds/symlink/bq25618.pdf
+>> +    - https://www.ti.com/lit/ds/symlink/bq25619.pdf
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - ti,bq25600
+>> +      - ti,bq25601
+>> +      - ti,bq25600d
+>> +      - ti,bq25601d
+>> +      - ti,bq25611d
+>> +      - ti,bq25618
+>> +      - ti,bq25619
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  ti,watchdog-timer:
+>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>> +    description: |
+>> +      Watchdog timer in ms. 0 (default) disables the watchdog
+>> +    minimum: 0
+>> +    maximum: 160000
+>> +    enum: [ 0, 40000, 80000, 160000]
+>> +
+>> +  input-voltage-limit-microvolt:
+>> +    description: |
+>> +       Minimum input voltage limit in µV with a 100000 µV step
+>> +    minimum: 3900000
+>> +    maximum: 5400000
+>> +
+>> +  input-current-limit-microamp:
+>> +    description: |
+>> +       Maximum input current limit in µA with a 100000 µA step
+>> +    minimum: 100000
+>> +    maximum: 3200000
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +  - monitored-battery
+> additionalProperties: false
 >
-> Hi,
+> And then fix what breaks in the example.
+ACK. I will document the monitored-battery and interrupts properties and 
+fix the example. Is ti,watchdog-timer okay as it is currently documented?
 >
-> On Mon, Sep 21, 2020 at 2:46 AM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > The --for-each-cgroup option is a syntax sugar to monitor large number
-> > of cgroups easily.  Current command line requires to list all the
-> > events and cgroups even if users want to monitor same events for each
-> > cgroup.  This patch addresses that usage by copying given events for
-> > each cgroup on user's behalf.
-> >
-> > For instance, if they want to monitor 6 events for 200 cgroups each
-> > they should write 1200 event names (with -e) AND 1200 cgroup names
-> > (with -G) on the command line.  But with this change, they can just
-> > specify 6 events and 200 cgroups with a new option.
-> >
-> > A simpler example below: It wants to measure 3 events for 2 cgroups
-> > ('A' and 'B').  The result is that total 6 events are counted like
-> > below.
-> >
-> >   $ ./perf stat -a -e cpu-clock,cycles,instructions --for-each-cgroup A,B sleep 1
-> >
-> You could also do it by keeping the -G option and providing
-> --for-each-cgroup as a modifier
-> of the behavior of -G:
->
-> $ ./perf stat -a -e cpu-clock,cycles,instructions --for-each-cgroup -G
->  A,B sleep 1
->
-> That way, you do not have to handle the case where both are used.
-> And it makes transitioning to the new style simpler, i.e., the -G
-> option remains, just need
-> to trim the number of cgroups to 200 in your example.
->
-> Just a suggestion.
-
-Thanks for the suggestion.  Actually that's the approach I took
-in my v1 submission.  And Jiri suggested the current way.
-Personally I'm fine with either.
-
-Thanks
-Namhyung
+>> +
+>> +examples:
+>> +  - |
+>> +    bat: battery {
+>> +      compatible = "simple-battery";
+>> +      constant-charge-current-max-microamp = <2040000>;
+>> +      constant-charge-voltage-max-microvolt = <4352000>;
+>> +      precharge-current-microamp = <180000>;
+>> +      charge-term-current-microamp = <180000>;
+>> +    };
+>> +    #include <dt-bindings/gpio/gpio.h>
+>> +    #include <dt-bindings/interrupt-controller/irq.h>
+>> +    i2c {
+>> +
+>> +      clock-frequency = <400000>;
+>> +
+>> +      #address-cells = <1>;
+>> +      #size-cells = <0>;
+>> +
+>> +      charger@6b {
+>> +        compatible = "ti,bq25601";
+>> +        reg = <0x6b>;
+>> +        monitored-battery = <&bat>;
+>> +
+>> +        interrupt-parent = <&gpio1>;
+>> +        interrupts = <16 IRQ_TYPE_EDGE_FALLING>;
+>> +        watchdog-timer = <40000>;
+>> +
+>> +        input-voltage-limit-microvolt = <4500000>;
+>> +        input-current-limit-microamp = <2400000>;
+>> +       };
+>> +    };
+>> +...
+>> -- 
+>> 2.28.0
+>>
+Ricardo
