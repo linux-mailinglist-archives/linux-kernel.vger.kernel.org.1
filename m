@@ -2,242 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 086662745D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:54:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27CF62745D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:56:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726667AbgIVPyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 11:54:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50932 "EHLO
+        id S1726672AbgIVP4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 11:56:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726589AbgIVPyj (ORCPT
+        with ESMTP id S1726566AbgIVP4O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 11:54:39 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23960C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 08:54:39 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id z17so18554452lfi.12
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 08:54:38 -0700 (PDT)
+        Tue, 22 Sep 2020 11:56:14 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D9BC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 08:56:13 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id c62so6317858qke.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 08:56:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DhBF2jTvMWCeriVUASDADc+szYByXALrPY3a1EYhNro=;
-        b=P3Ay9SRHDAkztQKMKlq51qYwGa0G4GvghvS429uCrJf/zHMee0gjHpu7fkwDoCuDim
-         1ydzqB/8qgvIZNmYdbdVu5uUlbiWFOUCKtVCVkQJhlbt7dhgC7slXv4qIcTwI6H747q2
-         uVh1OmoTZVd2o5jfD141skL1dsqraDkdAAHRyFhgq0xqW58sFC8R2TIykHf1blGeHq48
-         eyjactwu6LwP6ujN/Yli9NeIlLdyKOa7h9jgHQvTirbTFhCcZSXLXDueom+1COnZcD+p
-         En+P60VJbdZwZ7li+eZb/rQntxvREWU+lD4i6IGaD8a5HCZw9iAeWJhqXTyVjjdiG1y1
-         TsVQ==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IYRTnlo90GNwIVVFhycLDwsrTtG0682e9ZAFQMaySN4=;
+        b=l7hoQh1ejgd7aceitowuvAcgWnfb6V3IVadFJbkyLd0RsGpVIZrRAmC4qrxxiLU9mR
+         4VjBXw1UoI/QGOkYjE5oY+xdYlhNSs2jybizOpABLiKM6Wy7cuILDhq6W3lVg1HhneDh
+         cNQksP8240Cm61ESg3I4jkLAXUjzRpb7wmx05Fk1rofGFheST7e2Fio35+trXpK6RdOZ
+         fFPFTXnEYuzAqgdPAKmx+eMDGc0Or6jRk9J+c0FIe4CIRucI+VceaTitnmv58UBTHOrO
+         yoAgQnha7oLMAKNQ7vtfmn6xsIejFx6kw4yTRqISvj1iOjfuBLwgtS31BiM74C4BP5Rw
+         Ni8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DhBF2jTvMWCeriVUASDADc+szYByXALrPY3a1EYhNro=;
-        b=X3jD/uhRC8hAx2YZIcnfKszr/LUQBEp9klVbMDGsECN4A6kGZYrkisCZuAvEhD0q6Y
-         X0tTVHfrb7yV1jNWaT2xPzkXL3mxowiKESoAgKZp7FtTE3j0bmoO93AQdykVWXbzYWsv
-         67w84xKR7D+8EIm8tIsi02cwTHCGGbl4v8JTaifhwxB6Wh5Y+8q258WA4miScCKuWmoD
-         7woK9GutKS8BMOMaKd0lCaeQpgVRcNAe0M0/2huWkNxZ7CR6r16OhrBbwlB6IpzlA2Iw
-         APs2TRkweIwHdyWh1gh3aJjm9Xx/9OpGl7L8yk1k6lqMTTYeWotGVL1+dkSuBEdCkBUN
-         HXyw==
-X-Gm-Message-State: AOAM532wxEO1vPIjvWr+mACYWktkbrXU9ocOpqwgPzhorLpMZHBG4iEG
-        EVjlEzehh2mZQG9V1y+ByVdSUFkucA1OK19HDHtKJg==
-X-Google-Smtp-Source: ABdhPJz9THFykcuDwM1ucynB6yeLrG0lINVX7zrsFgjYHGIPLzWNr0W4g4HXO9WFHaBCAxZYK55VcbuQCtAHokYS3H0=
-X-Received: by 2002:ac2:59da:: with SMTP id x26mr2037249lfn.346.1600790076981;
- Tue, 22 Sep 2020 08:54:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200909215752.1725525-1-shakeelb@google.com> <20200921163055.GQ12990@dhcp22.suse.cz>
- <CALvZod43VXKZ3StaGXK_EZG_fKcW3v3=cEYOWFwp4HNJpOOf8g@mail.gmail.com> <20200922114908.GZ12990@dhcp22.suse.cz>
-In-Reply-To: <20200922114908.GZ12990@dhcp22.suse.cz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 22 Sep 2020 08:54:25 -0700
-Message-ID: <CALvZod4FvE12o53BpeH5WB_McTdCkFTFXgc9gcT1CEHXzQLy_A@mail.gmail.com>
-Subject: Re: [PATCH] memcg: introduce per-memcg reclaim interface
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
-        Greg Thelen <gthelen@google.com>,
-        David Rientjes <rientjes@google.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IYRTnlo90GNwIVVFhycLDwsrTtG0682e9ZAFQMaySN4=;
+        b=RBEpWLB6z9HrgYX0pz6imm90WkoKbkSmgRVs7MmVSHXAFKew4oKvwnVH7vGtFgL59V
+         Uac+cMOjOLJxSIdOIZkKNO5yon8oywPCWO9dfnWlFWhtqxCdbiguGPpo69OmATO1ViyR
+         v3xYGa31uYgilX44iqlhWmDTJX47BlQOJl+oN/BtgT/0vLfdQSL04WEUl8VIAyaU3Qor
+         S0GTwpTql5Npnv9wiNvGbyTaOWuwNHSMSv9Y6FMDQpVpoGa3A2ZhWEVLYf5ggdyKUZge
+         gQTG9mm3NCUZ4+UGNcDwp7/Fz0fSy0yIq30PMPhN/uXXwzl4ZzaQaWwEgmx/J47X51cE
+         lQqQ==
+X-Gm-Message-State: AOAM532TwZObDWfk1iHGFDZNClNCg115QwK7gY8pQTzQQsAs6K5BQq87
+        WJ5LoNzc4/J2dtHMefJ2+m6T4w==
+X-Google-Smtp-Source: ABdhPJxiNGLGozHFwhcJgJgUPSubcn3CK125SBHmwyhXN/SmG+epVQJjoF+wjAJP3DRk6zkVVubwOw==
+X-Received: by 2002:a37:a414:: with SMTP id n20mr5531835qke.332.1600790166390;
+        Tue, 22 Sep 2020 08:56:06 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id 7sm11768068qkc.73.2020.09.22.08.56.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 08:56:05 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kKkeC-0034WT-Nw; Tue, 22 Sep 2020 12:56:04 -0300
+Date:   Tue, 22 Sep 2020 12:56:04 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Jann Horn <jannh@google.com>, Linux-MM <linux-mm@kvack.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Yang Shi <shy828301@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH 1/5] mm: Introduce mm_struct.has_pinned
+Message-ID: <20200922155604.GA731578@ziepe.ca>
+References: <20200921211744.24758-1-peterx@redhat.com>
+ <20200921211744.24758-2-peterx@redhat.com>
+ <CAG48ez0o+yBpYdzR_-bU3A0nrpzXyM+c+Yk=ZtOZ92qe5x0izA@mail.gmail.com>
+ <20200921223004.GB19098@xz-x1>
+ <CAG48ez25krKvd5hWqn0R3w5_AAPVWtWKofiOHEfKaB2+YoDoPw@mail.gmail.com>
+ <20200922115436.GG8409@ziepe.ca>
+ <20200922142802.GC19098@xz-x1>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922142802.GC19098@xz-x1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 4:49 AM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Mon 21-09-20 10:50:14, Shakeel Butt wrote:
-> > On Mon, Sep 21, 2020 at 9:30 AM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Wed 09-09-20 14:57:52, Shakeel Butt wrote:
-> > > > Introduce an memcg interface to trigger memory reclaim on a memory cgroup.
+On Tue, Sep 22, 2020 at 10:28:02AM -0400, Peter Xu wrote:
+> On Tue, Sep 22, 2020 at 08:54:36AM -0300, Jason Gunthorpe wrote:
+> > On Tue, Sep 22, 2020 at 12:47:11AM +0200, Jann Horn wrote:
+> > > On Tue, Sep 22, 2020 at 12:30 AM Peter Xu <peterx@redhat.com> wrote:
+> > > > On Mon, Sep 21, 2020 at 11:43:38PM +0200, Jann Horn wrote:
+> > > > > On Mon, Sep 21, 2020 at 11:17 PM Peter Xu <peterx@redhat.com> wrote:
+> > > > > > (Commit message collected from Jason Gunthorpe)
+> > > > > >
+> > > > > > Reduce the chance of false positive from page_maybe_dma_pinned() by keeping
+> > > > > > track if the mm_struct has ever been used with pin_user_pages(). mm_structs
+> > > > > > that have never been passed to pin_user_pages() cannot have a positive
+> > > > > > page_maybe_dma_pinned() by definition.
+> > > > >
+> > > > > There are some caveats here, right? E.g. this isn't necessarily true
+> > > > > for pagecache pages, I think?
 > > > >
-> > > > Use cases:
-> > > > ----------
-> > > >
-> > > > 1) Per-memcg uswapd:
-> > > >
-> > > > Usually applications consists of combination of latency sensitive and
-> > > > latency tolerant tasks. For example, tasks serving user requests vs
-> > > > tasks doing data backup for a database application. At the moment the
-> > > > kernel does not differentiate between such tasks when the application
-> > > > hits the memcg limits. So, potentially a latency sensitive user facing
-> > > > task can get stuck in high reclaim and be throttled by the kernel.
-> > > >
-> > > > Similarly there are cases of single process applications having two set
-> > > > of thread pools where threads from one pool have high scheduling
-> > > > priority and low latency requirement. One concrete example from our
-> > > > production is the VMM which have high priority low latency thread pool
-> > > > for the VCPUs while separate thread pool for stats reporting, I/O
-> > > > emulation, health checks and other managerial operations. The kernel
-> > > > memory reclaim does not differentiate between VCPU thread or a
-> > > > non-latency sensitive thread and a VCPU thread can get stuck in high
-> > > > reclaim.
-> > >
-> > > As those are presumably in the same cgroup what does prevent them to get
-> > > stuck behind shared resources with taken during the reclaim performed by
-> > > somebody else? I mean, memory reclaim might drop memory used by the high
-> > > priority task. Or they might simply stumble over same locks.
-> > >
-> >
-> > Yes there are a lot of challenges in providing isolation between
-> > latency sensitive and latency tolerant jobs/threads. This proposal
-> > aims to solve one specific challenge memcg limit reclaim.
->
-> I am fully aware that a complete isolation is hard to achieve. I am just
-> trying evaluate how is this specific usecase worth a new interface that
-> we will have to maintain for ever. Especially when I suspect that the
-> interface will likely only paper over immediate problems rather than
-> offer a long term maintainable solution for it.
->
+> > > > Sorry I didn't follow here.  Could you help explain with some details?
+> > > 
+> > > The commit message says "mm_structs that have never been passed to
+> > > pin_user_pages() cannot have a positive page_maybe_dma_pinned() by
+> > > definition"; but that is not true for pages which may also be mapped
+> > > in a second mm and may have been passed to pin_user_pages() through
+> > > that second mm (meaning they must be writable over there and not
+> > > shared with us via CoW).
+> > 
+> > The message does need a few more words to explain this trick can only
+> > be used with COW'able pages.
+> >  
+> > > Process A:
+> > > 
+> > > fd_a = open("/foo/bar", O_RDWR);
+> > > mapping_a = mmap(NULL, 0x1000, PROT_READ|PROT_WRITE, MAP_SHARED, fd_a, 0);
+> > > pin_user_pages(mapping_a, 1, ...);
+> > > 
+> > > Process B:
+> > > 
+> > > fd_b = open("/foo/bar", O_RDONLY);
+> > > mapping_b = mmap(NULL, 0x1000, PROT_READ|PROT_WRITE, MAP_PRIVATE, fd_b, 0);
+> > > *(volatile char *)mapping_b;
+> > > 
+> > > At this point, process B has never called pin_user_pages(), but
+> > > page_maybe_dma_pinned() on the page at mapping_b would return true.
+> > 
+> > My expectation is the pin_user_pages() should have already broken the
+> > COW for the MAP_PRIVATE, so process B should not have a
+> > page_maybe_dma_pinned()
+> 
+> When process B maps with PROT_READ only (w/o PROT_WRITE) then it seems the same
+> page will be mapped.
 
-I think you are getting too focused on the uswapd use-case only. The
-proposed interface enables the proactive reclaim as well which we
-actually use in production.
+I thought MAP_PRIVATE without PROT_WRITE was nonsensical, it only has
+meaning for writes initiated by the mapping. MAP_SHARED/PROT_READ is
+the same behavior on Linux, IIRC.
 
-> > > I am also more interested in actual numbers here. The high limit reclaim
-> > > is normally swift and should be mostly unnoticeable. If the reclaim gets
-> > > more expensive then it can get really noticeable for sure. But for the
-> > > later the same can happen with the external pro-activee reclaimer as
-> >
-> > I think you meant 'uswapd' here instead of pro-active reclaimer.
-> >
-> > > well, right? So there is no real "guarantee". Do you have any numbers
-> > > from your workloads where you can demonstrate that the external reclaim
-> > > has saved you this amount of effective cpu time of the sensitive
-> > > workload? (Essentially measure how much time it has to consume in the
-> > > high limit reclaim)
-> > >
-> >
-> > What we actually use in our production is the 'proactive reclaim'
-> > which I have explained in the original message but I will add a couple
-> > more sentences below.
-> >
-> > For the uswapd use-case, let me point to the previous discussions and
-> > feature requests by others [1, 2]. One of the limiting factors of
-> > these previous proposals was the lack of CPU accounting of the
-> > background reclaimer which the current proposal solves by enabling the
-> > user space solution.
-> >
-> > [1] https://lwn.net/Articles/753162/
-> > [2] http://lkml.kernel.org/r/20200219181219.54356-1-hannes@cmpxchg.org
->
-> I remember those. My understanding was that the only problem is to
-> properly account for CPU on behalf of the reclaimed cgroup and that has
-> been work in progress for that.
->
-> Outsourcing all that to userspace surely sounds like an attractive
-> option but it comes with usual user API price. More on that later.
->
-> > Let me add one more point. Even if the high limit reclaim is swift, it
-> > can still take 100s of usecs. Most of our jobs are anon-only and we
-> > use zswap. Compressing a page can take a couple usec, so 100s of usecs
-> > in limit reclaim is normal. For latency sensitive jobs, this amount of
-> > hiccups do matters.
->
-> Understood. But isn't this an implementation detail of zswap? Can it
-> offload some of the heavy lifting to a different context and reduce the
-> general overhead?
->
+But, yes, you certainly can end up with B having
+page_maybe_dma_pinned() pages in shared VMA, just not in COW'able
+mappings.
 
-Are you saying doing the compression asynchronously? Similar to how
-the disk-based swap triggers the writeback and puts the page back to
-LRU, so the next time reclaim sees it, it will be instantly reclaimed?
-Or send the batch of pages to be compressed to a different CPU and
-wait for the completion?
+> I think I get the point from Jann now.  Maybe it's easier I just remove the
+> whole "mm_structs that have never been passed to pin_user_pages() cannot have a
+> positive page_maybe_dma_pinned() by definition" sentence if that's misleading,
+> because the rest seem to be clear enough on what this new field is used for.
 
-BTW the proactive reclaim naturally offloads that to a different context.
+"for COW" I think is still the important detail here, see for instance
+my remark on the PUD/PMD splitting where it is necessary to test for
+cow before using this.
 
-> > For the proactive reclaim, based on the refault medium, we define
-> > tolerable refault rate of the applications. Then we proactively
-> > reclaim memory from the applications and monitor the refault rates.
-> > Based on the refault rates, the memory overcommit manager controls the
-> > aggressiveness of the proactive reclaim.
-> >
-> > This is exactly what we do in the production. Please let me know if
-> > you want to know why we do proactive reclaim in the first place.
->
-> This information is definitely useful and having it in the changelog
-> would be useful. IIUC the only reason why you cannot use high limit
-> to control this pro-active reclaim is the potential throttling due to
-> expensive reclaim, correct?
->
+Perhaps we should call it "has_pinned_for_cow" to place emphasis on
+this detail? Due to the shared pages issue It really doesn't have any
+broader utility, eg for file back pages or otherwise.
 
-Yes.
-
-> > > To the feature itself, I am not yet convinced we want to have a feature
-> > > like that. It surely sounds easy to use and attractive for a better user
-> > > space control. It is also much well defined than drop_caches/force_empty
-> > > because it is not all or nothing. But it also sounds like something too
-> > > easy to use incorrectly (remember drop_caches). I am also a bit worried
-> > > about corner cases wich would be easier to hit - e.g. fill up the swap
-> > > limit and turn anonymous memory into unreclaimable and who knows what
-> > > else.
-> >
-> > The corner cases you are worried about are already possible with the
-> > existing interfaces. We can already do all such things with
-> > memory.high interface but with some limitations. This new interface
-> > resolves that limitation as explained in the original email.
->
-> You are right that misconfigured limits can result in problems. But such
-> a configuration should be quite easy to spot which is not the case for
-> targetted reclaim calls which do not leave any footprints behind.
-> Existing interfaces are trying to not expose internal implementation
-> details as much as well. You are proposing a very targeted interface to
-> fine control the memory reclaim. There is a risk that userspace will
-> start depending on a specific reclaim implementation/behavior and future
-> changes would be prone to regressions in workloads relying on that. So
-> effectively, any user space memory reclaimer would need to be tuned to a
-> specific implementation of the memory reclaim.
-
-I don't see the exposure of internal memory reclaim implementation.
-The interface is very simple. Reclaim a given amount of memory. Either
-the kernel will reclaim less memory or it will over reclaim. In case
-of reclaiming less memory, the user space can retry given there is
-enough reclaimable memory. For the over reclaim case, the user space
-will backoff for a longer time. How are the internal reclaim
-implementation details exposed?
-
-> My past experience tells
-> me that this is not a great thing for maintainability of neither kernel
-> nor the userspace part.
->
-> All that being said, we really should consider whether the proposed
-> interface is trying to work around existing limitations in the reclaim
-> or the interface. If this is the former then I do not think we should be
-> adding it. If the later then we should discuss on how to improve our
-> existing interfaces (or their implementations) to be better usable and
-> allow your usecase to work better.
-
-It is the limitation of the interface. My concern is in fixing the
-interface we might convolute the memory.high interface making it more
-burden to maintain than simply adding a new interface.
-
->
-> What is your take on that Johannes?
-> --
-> Michal Hocko
-> SUSE Labs
+Jason
