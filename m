@@ -2,110 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87060273DB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 10:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D49B9273DB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 10:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726506AbgIVItW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 04:49:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726098AbgIVItV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 04:49:21 -0400
-Received: from smtp1.goneo.de (smtp1.goneo.de [IPv6:2001:1640:5::8:30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 131EDC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 01:49:21 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by smtp1.goneo.de (Postfix) with ESMTP id B960023F145;
-        Tue, 22 Sep 2020 10:49:18 +0200 (CEST)
-X-Virus-Scanned: by goneo
-X-Spam-Flag: NO
-X-Spam-Score: -2.992
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.992 tagged_above=-999 tests=[ALL_TRUSTED=-1,
-        AWL=-0.092, BAYES_00=-1.9] autolearn=ham
-Received: from smtp1.goneo.de ([127.0.0.1])
-        by localhost (smtp1.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 5pBoK3EoOgG4; Tue, 22 Sep 2020 10:49:17 +0200 (CEST)
-Received: from lem-wkst-02.lemonage (hq.lemonage.de [87.138.178.34])
-        by smtp1.goneo.de (Postfix) with ESMTPSA id 7766E23F1E7;
-        Tue, 22 Sep 2020 10:49:17 +0200 (CEST)
-Date:   Tue, 22 Sep 2020 10:49:12 +0200
-From:   Lars Poeschel <poeschel@lemonage.de>
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 28/32] auxdisplay: hd44780: Remove clear_fast
-Message-ID: <20200922084912.sck4j3iazqevaskg@lem-wkst-02.lemonage>
-References: <20191016082430.5955-1-poeschel@lemonage.de>
- <20200921144645.2061313-1-poeschel@lemonage.de>
- <20200921144645.2061313-29-poeschel@lemonage.de>
- <20200922052227.GA16386@1wt.eu>
+        id S1726541AbgIVIt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 04:49:58 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54648 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726098AbgIVIt5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 04:49:57 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 01CA2AF16;
+        Tue, 22 Sep 2020 08:50:32 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id EA6C01E12E3; Tue, 22 Sep 2020 10:49:54 +0200 (CEST)
+Date:   Tue, 22 Sep 2020 10:49:54 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Song Liu <song@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Coly Li <colyli@suse.de>, Richard Weinberger <richard@nod.at>,
+        Minchan Kim <minchan@kernel.org>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Justin Sanders <justin@coraid.com>,
+        linux-mtd@lists.infradead.org, dm-devel@redhat.com,
+        linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
+        linux-kernel@vger.kernel.org, drbd-dev@lists.linbit.com,
+        linux-raid@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH 05/13] bdi: initialize ->ra_pages and ->io_pages in
+ bdi_init
+Message-ID: <20200922084954.GC16464@quack2.suse.cz>
+References: <20200921080734.452759-1-hch@lst.de>
+ <20200921080734.452759-6-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200922052227.GA16386@1wt.eu>
+In-Reply-To: <20200921080734.452759-6-hch@lst.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Willy,
-
-On Tue, Sep 22, 2020 at 07:22:27AM +0200, Willy Tarreau wrote:
-> Hi Lars,
+On Mon 21-09-20 10:07:26, Christoph Hellwig wrote:
+> Set up a readahead size by default, as very few users have a good
+> reason to change it.
 > 
-> On Mon, Sep 21, 2020 at 04:46:40PM +0200, poeschel@lemonage.de wrote:
-> > From: Lars Poeschel <poeschel@lemonage.de>
-> > 
-> > We remove the hd44780_clear_fast (display) clear implementation. charlcd
-> > will fall back to use hd44780_common_clear_display then, which is much
-> > much faster.
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Acked-by: David Sterba <dsterba@suse.com> [btrfs]
+> Acked-by: Richard Weinberger <richard@nod.at> [ubifs, mtd]
+
+The patch looks good to me. You can add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+I'd just prefer if the changelog explicitely mentioned that this patch
+results in enabling readahead for coda, ecryptfs, and orangefs... Just in
+case someone bisects some issue down to this patch :).
+
+								Honza
+
+> ---
+>  block/blk-core.c      | 2 --
+>  drivers/mtd/mtdcore.c | 2 ++
+>  fs/9p/vfs_super.c     | 6 ++++--
+>  fs/afs/super.c        | 1 -
+>  fs/btrfs/disk-io.c    | 1 -
+>  fs/fuse/inode.c       | 1 -
+>  fs/nfs/super.c        | 9 +--------
+>  fs/ubifs/super.c      | 2 ++
+>  fs/vboxsf/super.c     | 2 ++
+>  mm/backing-dev.c      | 2 ++
+>  10 files changed, 13 insertions(+), 15 deletions(-)
 > 
-> I might have got confused, but it looks to me like patches 27 and 28
-> basically undo patch 26: in 26 you moved code to hd44780 and wrote a
-> fallback, just to later delete that code.
-
-To be honest: I also got confused by this whole clear code and why are
-there 3 different clear variants. ;-)
-The reason why I did it this way is to show what happened to the
-original code. The original code has a fallback that kind of does the
-same like my naive implementation but it uses the fact, that on hd44780
-displays the underlying buffer can be accessed in a linear manner to
-speed things up a little. This then also clears the not visible area of
-the buffer (which my naive implementation does not). To become
-independent of hd44780 code at this point I had to do something.
-I opted to for this naive implementation as a replacement for the old
-optimized clear loop. The fallback was already there.
-And then I did a separate step to remove it because I found it a bit
-suboptimal. All current users have the clear command...
-
-> I seem to remember that the reason for the clear_fast() implementation
-> is that the default clear_display() is quite slow for small displays,
-> compared to what can be achieved by just filling the display with spaces
-> (in the order of tens of milliseconds vs hundreds of microseconds). But
-> I could be mistaken given how old this is, so please take my comment
-> with a grain of salt.
-
-... well, and what the hd44780 controller does when it executes the
-clear command is also writing a space character to all character
-locations (also to the not visible ones). Probably very much the same
-than the original fallback implementation.
-For me issuing the clear command is faster by at least one order!
-I have one of these cheap china displays with 4x20 characters. The flow
-is like this: i2c -> gpio -> hd44780 in 4 bit mode. And gpio is issuing
-a i2c request for EVERY SINGLE gpio. This is slow as hell. But it works.
-:-)
-As I said I also was a bit confused by the different clean
-implementations, but the only real user of the clear_fast is the panel
-driver. The hd44780 one I use did not provide a clear_fast.
-
-So I would opt for the way I proposed in the patch series with the clear
-command instead of the loop. And let the panel driver use its optimized
-clear.
-
-I am open about squashing things together if that is wanted, so we don't
-have the step inbetween with the naive implementation and to not
-confuse people. ;-)
-
-Regards,
-Lars
+> diff --git a/block/blk-core.c b/block/blk-core.c
+> index ca3f0f00c9435f..865d39e5be2b28 100644
+> --- a/block/blk-core.c
+> +++ b/block/blk-core.c
+> @@ -538,8 +538,6 @@ struct request_queue *blk_alloc_queue(int node_id)
+>  	if (!q->stats)
+>  		goto fail_stats;
+>  
+> -	q->backing_dev_info->ra_pages = VM_READAHEAD_PAGES;
+> -	q->backing_dev_info->io_pages = VM_READAHEAD_PAGES;
+>  	q->backing_dev_info->capabilities = BDI_CAP_CGROUP_WRITEBACK;
+>  	q->node = node_id;
+>  
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index 7d930569a7dfb7..b5e5d3140f578e 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -2196,6 +2196,8 @@ static struct backing_dev_info * __init mtd_bdi_init(char *name)
+>  	bdi = bdi_alloc(NUMA_NO_NODE);
+>  	if (!bdi)
+>  		return ERR_PTR(-ENOMEM);
+> +	bdi->ra_pages = 0;
+> +	bdi->io_pages = 0;
+>  
+>  	/*
+>  	 * We put '-0' suffix to the name to get the same name format as we
+> diff --git a/fs/9p/vfs_super.c b/fs/9p/vfs_super.c
+> index 74df32be4c6a52..e34fa20acf612e 100644
+> --- a/fs/9p/vfs_super.c
+> +++ b/fs/9p/vfs_super.c
+> @@ -80,8 +80,10 @@ v9fs_fill_super(struct super_block *sb, struct v9fs_session_info *v9ses,
+>  	if (ret)
+>  		return ret;
+>  
+> -	if (v9ses->cache)
+> -		sb->s_bdi->ra_pages = VM_READAHEAD_PAGES;
+> +	if (!v9ses->cache) {
+> +		sb->s_bdi->ra_pages = 0;
+> +		sb->s_bdi->io_pages = 0;
+> +	}
+>  
+>  	sb->s_flags |= SB_ACTIVE | SB_DIRSYNC;
+>  	if (!v9ses->cache)
+> diff --git a/fs/afs/super.c b/fs/afs/super.c
+> index b552357b1d1379..3a40ee752c1e3f 100644
+> --- a/fs/afs/super.c
+> +++ b/fs/afs/super.c
+> @@ -456,7 +456,6 @@ static int afs_fill_super(struct super_block *sb, struct afs_fs_context *ctx)
+>  	ret = super_setup_bdi(sb);
+>  	if (ret)
+>  		return ret;
+> -	sb->s_bdi->ra_pages	= VM_READAHEAD_PAGES;
+>  
+>  	/* allocate the root inode and dentry */
+>  	if (as->dyn_root) {
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index f6bba7eb1fa171..047934cea25efa 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -3092,7 +3092,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+>  	}
+>  
+>  	sb->s_bdi->capabilities |= BDI_CAP_CGROUP_WRITEBACK;
+> -	sb->s_bdi->ra_pages = VM_READAHEAD_PAGES;
+>  	sb->s_bdi->ra_pages *= btrfs_super_num_devices(disk_super);
+>  	sb->s_bdi->ra_pages = max(sb->s_bdi->ra_pages, SZ_4M / PAGE_SIZE);
+>  
+> diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
+> index bba747520e9b08..17b00670fb539e 100644
+> --- a/fs/fuse/inode.c
+> +++ b/fs/fuse/inode.c
+> @@ -1049,7 +1049,6 @@ static int fuse_bdi_init(struct fuse_conn *fc, struct super_block *sb)
+>  	if (err)
+>  		return err;
+>  
+> -	sb->s_bdi->ra_pages = VM_READAHEAD_PAGES;
+>  	/* fuse does it's own writeback accounting */
+>  	sb->s_bdi->capabilities = BDI_CAP_NO_ACCT_WB | BDI_CAP_STRICTLIMIT;
+>  
+> diff --git a/fs/nfs/super.c b/fs/nfs/super.c
+> index 7a70287f21a2c1..f943e37853fa25 100644
+> --- a/fs/nfs/super.c
+> +++ b/fs/nfs/super.c
+> @@ -1200,13 +1200,6 @@ static void nfs_get_cache_cookie(struct super_block *sb,
+>  }
+>  #endif
+>  
+> -static void nfs_set_readahead(struct backing_dev_info *bdi,
+> -			      unsigned long iomax_pages)
+> -{
+> -	bdi->ra_pages = VM_READAHEAD_PAGES;
+> -	bdi->io_pages = iomax_pages;
+> -}
+> -
+>  int nfs_get_tree_common(struct fs_context *fc)
+>  {
+>  	struct nfs_fs_context *ctx = nfs_fc2context(fc);
+> @@ -1251,7 +1244,7 @@ int nfs_get_tree_common(struct fs_context *fc)
+>  					     MINOR(server->s_dev));
+>  		if (error)
+>  			goto error_splat_super;
+> -		nfs_set_readahead(s->s_bdi, server->rpages);
+> +		s->s_bdi->io_pages = server->rpages;
+>  		server->super = s;
+>  	}
+>  
+> diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+> index a2420c900275a8..fbddb2a1c03f5e 100644
+> --- a/fs/ubifs/super.c
+> +++ b/fs/ubifs/super.c
+> @@ -2177,6 +2177,8 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
+>  				   c->vi.vol_id);
+>  	if (err)
+>  		goto out_close;
+> +	sb->s_bdi->ra_pages = 0;
+> +	sb->s_bdi->io_pages = 0;
+>  
+>  	sb->s_fs_info = c;
+>  	sb->s_magic = UBIFS_SUPER_MAGIC;
+> diff --git a/fs/vboxsf/super.c b/fs/vboxsf/super.c
+> index 8fe03b4a0d2b03..8e3792177a8523 100644
+> --- a/fs/vboxsf/super.c
+> +++ b/fs/vboxsf/super.c
+> @@ -167,6 +167,8 @@ static int vboxsf_fill_super(struct super_block *sb, struct fs_context *fc)
+>  	err = super_setup_bdi_name(sb, "vboxsf-%d", sbi->bdi_id);
+>  	if (err)
+>  		goto fail_free;
+> +	sb->s_bdi->ra_pages = 0;
+> +	sb->s_bdi->io_pages = 0;
+>  
+>  	/* Turn source into a shfl_string and map the folder */
+>  	size = strlen(fc->source) + 1;
+> diff --git a/mm/backing-dev.c b/mm/backing-dev.c
+> index 8e8b00627bb2d8..2dac3be6127127 100644
+> --- a/mm/backing-dev.c
+> +++ b/mm/backing-dev.c
+> @@ -746,6 +746,8 @@ struct backing_dev_info *bdi_alloc(int node_id)
+>  		kfree(bdi);
+>  		return NULL;
+>  	}
+> +	bdi->ra_pages = VM_READAHEAD_PAGES;
+> +	bdi->io_pages = VM_READAHEAD_PAGES;
+>  	return bdi;
+>  }
+>  EXPORT_SYMBOL(bdi_alloc);
+> -- 
+> 2.28.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
