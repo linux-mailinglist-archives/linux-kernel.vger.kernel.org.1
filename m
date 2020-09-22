@@ -2,86 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F794274952
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:40:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0F9A274956
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:42:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726640AbgIVTkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 15:40:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726550AbgIVTko (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 15:40:44 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B48E1C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 12:40:44 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id 7so12797102pgm.11
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 12:40:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2BLOzorBaeMlVA6pN2kcbxJVGruVZzdD42GOXHQAwXs=;
-        b=QF/L4AUzghb8cbfbsn5C54l9EjVtyQlMBHw5DBOgg702StUFumc+dQnYDzxOVBLvXW
-         M4U1Mc3JjnACeI3kX2ghKWxBYt8Uq94PfCZm39zZ98KItafpCVjviJoAeCBOG3IFdh9A
-         X2N5hMxWBBIjm9bwj8dz5X7orXiGp8WJZDqrQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2BLOzorBaeMlVA6pN2kcbxJVGruVZzdD42GOXHQAwXs=;
-        b=PBkOCV/v5yXN3jxYvBRCDfNytBqUb9Z0mK4gL2KgnX8jyy2k0XXYJI+bZNj+k9/u2j
-         hjPw4laWceGNhtvD1hEToNBFnVlWC28s4qycwXwJ5ka1dWw0G9pEql26UU8gHZnWxpdz
-         rPvrnohAeqHF97nAPJU+bp/38QQTI77LKTG3o/4YDVBQQUGk++8kgi6Ww69SOCgHh7MI
-         df2U6kUFtUzzn8A4wq2i9z2BzuMB6GX0St2OrD1DRXxG7SptSs7KhOwRniCJyLJkL+cS
-         tnsIf/7DBg9dUMfk3q3FlNMROny44nnzwf7Jtd+dmuxC/NF5x+nAtJRdTqgoXC+9cQRq
-         ynIQ==
-X-Gm-Message-State: AOAM531I+vpHSkUfHr8ieAuZszVNTTBhlckNGSeysllejvtw3gjX3Q9W
-        mA6v6qWt40VaJs3tHPx4FJ1NeA==
-X-Google-Smtp-Source: ABdhPJwvYT+NFhGms3dCbMaV9tf8Dw4PMzNnCfSDO3kcJYCAgiqqgfJQsGvvKNmk9TA+xIVl2/U5ug==
-X-Received: by 2002:a63:c20b:: with SMTP id b11mr1483828pgd.421.1600803644339;
-        Tue, 22 Sep 2020 12:40:44 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id m5sm3003272pjn.19.2020.09.22.12.40.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 12:40:43 -0700 (PDT)
-Date:   Tue, 22 Sep 2020 12:40:42 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     luto@kernel.org, tglx@linutronix.de, x86@kernel.org,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        willy@infradead.org, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org, kernel@collabora.com
-Subject: Re: [PATCH v6 3/9] x86: vdso: Expose sigreturn address on vdso to
- the kernel
-Message-ID: <202009221240.D7B051D3@keescook>
-References: <20200904203147.2908430-1-krisman@collabora.com>
- <20200904203147.2908430-4-krisman@collabora.com>
+        id S1726625AbgIVTm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 15:42:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57434 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726550AbgIVTm0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 15:42:26 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EAE27221E8;
+        Tue, 22 Sep 2020 19:42:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600803746;
+        bh=GFRBsj9K7jrHHePKuRmNnXLW6wr/JMGePhL8WYlgtko=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=13Orbs9cEwMpmMPmQXfUFPwwxuZciWYS8B1xzgTL97uRAuTRIa4OCQpC5MkH13NeD
+         AKvgSg1Wun1Yd4wiHYxwQoIdS3AqO/Kkkd4V/MZXcx8pmpzvMHCl97fJSbFUkpBPFM
+         +BxxBnAhuF69FPOxS2jUbxvrPX50u+Vzfoq4ycR8=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200904203147.2908430-4-krisman@collabora.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200915024138.GA1827@epycbox.lan>
+References: <20200810134252.68614-1-alexandru.ardelean@analog.com> <20200810134252.68614-8-alexandru.ardelean@analog.com> <CA+U=Dsr41kKGXmgE1KjdTzAso3rwtNXAEoSy+Li=uym7G=D=Jw@mail.gmail.com> <20200915024138.GA1827@epycbox.lan>
+Subject: Re: [PATCH v2 0/6] clk: axi-clk-gen: misc updates to the driver
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-clk@vger.kernel.org, linux-fpga@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, mturquette@baylibre.com,
+        Moritz Fischer <mdf@kernel.org>
+To:     Alexandru Ardelean <ardeleanalex@gmail.com>,
+        Moritz Fischer <mdf@kernel.org>
+Date:   Tue, 22 Sep 2020 12:42:24 -0700
+Message-ID: <160080374459.310579.14438590389388419207@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 04, 2020 at 04:31:41PM -0400, Gabriel Krisman Bertazi wrote:
-> Syscall user redirection requires the signal trampoline code to not be
-> captured, in order to support returning with a locked selector while
-> avoiding recursion back into the signal handler.  For ia-32, which has
-> the trampoline in the vDSO, expose the entry points to the kernel, such
-> that it can avoid dispatching syscalls from that region to userspace.
-> 
-> Changes since V1
->   - Change return address to bool (Andy)
-> 
-> Suggested-by: Andy Lutomirski <luto@kernel.org>
-> Acked-by: Andy Lutomirski <luto@kernel.org>
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+Quoting Moritz Fischer (2020-09-14 19:41:38)
+> On Mon, Sep 14, 2020 at 11:11:05AM +0300, Alexandru Ardelean wrote:
+> > On Mon, Aug 10, 2020 at 4:41 PM Alexandru Ardelean
+> > <alexandru.ardelean@analog.com> wrote:
+> > >
+> > > These patches synchronize the driver with the current state in the
+> > > Analog Devices Linux tree:
+> > >   https://github.com/analogdevicesinc/linux/
+> > >
+> > > They have been in the tree for about 2-3, so they did receive some
+> > > testing.
+> >=20
+> > Ping on this series.
+> > Do I need to do a re-send?
 
-Look good to me; would anything else benefit from this information?
+I got this patch series twice. Not sure why.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+>=20
+> I've applied the FPGA one, the other ones should go through the clock
+> tree I think?
 
--- 
-Kees Cook
+Doesn't patch 6 rely on the FPGA patch? How can that driver build
+without the header file?
