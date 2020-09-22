@@ -2,130 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F992747EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 20:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AFBC2747F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 20:07:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726716AbgIVSCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 14:02:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46382 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726526AbgIVSCV (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 14:02:21 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9E2112376F;
-        Tue, 22 Sep 2020 18:02:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600797740;
-        bh=Lz7Zq7qfizx32DWgiFyMSsCnnePT3u5M3aWpR9FNypg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I0CdsgYoxYm0CrmhKkNbWV2HEJv3DM4mfLCkk3lGylxzXSVX5XsaaaakRpTM4Fjtj
-         7EEE3Lf19JHeWR7PqC6wNGX44ojv8J7I27enVBLbE5/6qCsi/GoIH4x05DYfSE5RsP
-         s18TgwLVcS4fbIZL7DD9CctCIYV8ERtWVBehrz7E=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id A996A400E9; Tue, 22 Sep 2020 15:02:18 -0300 (-03)
-Date:   Tue, 22 Sep 2020 15:02:18 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH] perf stat: Skip duration_time in setup_system_wide
-Message-ID: <20200922180218.GC2248446@kernel.org>
-References: <20200922015004.30114-1-yao.jin@linux.intel.com>
- <20200922175630.GB2248446@kernel.org>
+        id S1726620AbgIVSHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 14:07:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726526AbgIVSHt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 14:07:49 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6E82C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 11:07:48 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id g4so18099667wrs.5
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 11:07:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6y72uZ7YdWD1XXfQ+XTc3NqqPVXw5bQyVkymr14fQGQ=;
+        b=CRd63rpNjyrzDcmAXaGmKY+nIczGjjMJGpL77E2ju9oloTgn2/h43kyf7RWLd6TSb1
+         drxGmpeR76PV5D4kIrtMak0BTXiG5QqFMzjzRfQlbfXHW05r/mynwAVi8WOU7EzJz668
+         1OQ4vm0VTMoo+qE1KCxXK/ZC2MaA+0D0xpWJECvrWvULe4ay+hp8jpleCDlSQl6ynXDm
+         hdn5fKFjis/9QrlFTJZ65bXGTQnbSyH4tgejSXC753c+nYjHnfeoxaGtt5vIr7zmYhnN
+         eQl+KORPu/uRAmRcXz71wLELsQ70yI9fMXN5m2dnfT3ZLENatNSfDyQyWqxnCJ+hp3Lj
+         Jh9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6y72uZ7YdWD1XXfQ+XTc3NqqPVXw5bQyVkymr14fQGQ=;
+        b=RQi6xGKxvA/RV+rjvl6gAdFvfBu1ePaFRWcYMppQ6nbiimcvTRo1FFbgVHB/LzEUl9
+         gV5vQoyzJbg7gc5RRFLevC1/nQ+lbEpbSdyu5dEKz1KROh0OjDLJFiMKMu5dFHyrEkrW
+         zRb1f1ZRDE51uAGByVuV01Gxa6mgv+t8pDgLna/RTR7kiZP1OQg162+T01BciWyadRXe
+         bM8la7/z8NkUVMECrAuqRv6+LC//z5pTHq896GUAsJJq35EF+WRtPqB5u25c1JoHkz1F
+         +xHLwqQaChAAFq8NEAbhkbKzztXuybRN6BXJfjXNUsKphha7l2hqklsJ4EDLoJkHBCAi
+         8uGA==
+X-Gm-Message-State: AOAM5329EZyGRjnOcTH4ynsCu+QsZMbP/L6ZVhsg0II+063zzjLlz/8R
+        vE0gUZZtGDfozGtnQaZkRAqc1Q==
+X-Google-Smtp-Source: ABdhPJwZPTozi74qAG3/aClHpnw3RnRnKS0i65Quxl7eR1kjuVfhlagjStYPlzzSrntMUCfignnPpQ==
+X-Received: by 2002:a5d:46cf:: with SMTP id g15mr6822937wrs.107.1600798067242;
+        Tue, 22 Sep 2020 11:07:47 -0700 (PDT)
+Received: from google.com ([2a01:4b00:8523:2d03:55c2:2cdf:ff31:96a3])
+        by smtp.gmail.com with ESMTPSA id e1sm28558820wrp.49.2020.09.22.11.07.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 11:07:46 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 19:07:45 +0100
+From:   David Brazdil <dbrazdil@google.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     kvmarm@lists.cs.columbia.edu,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v3 07/11] kvm: arm64: Duplicate
+ arm64_ssbd_callback_required for nVHE hyp
+Message-ID: <20200922180745.m6bjgjzz6cwercgf@google.com>
+References: <20200916173439.32265-1-dbrazdil@google.com>
+ <20200916173439.32265-8-dbrazdil@google.com>
+ <20200918115911.GB31096@willie-the-truck>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200922175630.GB2248446@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20200918115911.GB31096@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Sep 22, 2020 at 02:56:30PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Tue, Sep 22, 2020 at 09:50:04AM +0800, Jin Yao escreveu:
-> > Some metrics (such as DRAM_BW_Use) consists of uncore events and
-> > duration_time. For uncore events, counter->core.system_wide is
-> > true. But for duration_time, counter->core.system_wide is false
-> > so target.system_wide is set to false.
-> > 
-> > Then 'enable_on_exec' is set in perf_event_attr of uncore event.
-> > Kernel will return error when trying to open the uncore event.
-> > 
-> > This patch skips the duration_time in setup_system_wide then
-> > target.system_wide will be set to true for the evlist of uncore
-> > events + duration_time.
-> > 
-> > Before (tested on skylake desktop):
-> > 
-> >  # perf stat -M DRAM_BW_Use -- sleep 1
-> >  Error:
-> >  The sys_perf_event_open() syscall returned with 22 (Invalid argument) for event (arb/event=0x84,umask=0x1/).
-> >  /bin/dmesg | grep -i perf may provide additional information.
-> > 
-> > After:
-> > 
-> >  # perf stat -M DRAM_BW_Use -- sleep 1
-> > 
-> >   Performance counter stats for 'system wide':
-> > 
-> >                 169      arb/event=0x84,umask=0x1/ #     0.00 DRAM_BW_Use
-> >              40,427      arb/event=0x81,umask=0x1/
-> >       1,000,902,197 ns   duration_time
-> > 
-> >         1.000902197 seconds time elapsed
-> > 
-> > Fixes: 648b5af3f3ae ("libperf: Move 'system_wide' from 'struct evsel' to 'struct perf_evsel'")
+> >  		u64 *ptr;
+> >  
+> > -		ptr = per_cpu_ptr(&arm64_ssbd_callback_required, cpu);
+> > +		ptr = per_cpu_ptr_nvhe(arm64_ssbd_callback_required, cpu);
+> >  		err = create_hyp_mappings(ptr, ptr + 1, PAGE_HYP);
+> >  		if (err)
+> >  			return err;
+> > +
+> > +		/* Copy value from kernel to hyp. */
+> > +		*ptr = per_cpu(arm64_ssbd_callback_required, cpu);
 > 
-> Humm, what makes you think that this cset was the one introducing this
-> problem? It just moves evsel->system_wide to evsel->core.system_wide.
+> Hmm. Is this correct for late arriving CPUs, where we don't know whether
+> a callback is required at the point we do the copy?
+> 
+> That sounds fiddly to resolve, but this _might_ all be moot because I'm
+> about to post a series that allows us to remove the hyp mapping of this
+> variable entirely. So leave this for now, but maybe stick a comment in
+> that it doesn't work for late cpus.
 
-Apart from that I reproduced the problem and after applying your patch
-it seems cured:
-
-  [acme@quaco perf]$ grep 'model name' -m1 /proc/cpuinfo
-  model name	: Intel(R) Core(TM) i7-8650U CPU @ 1.90GHz
-
-Before (with -v to see details):
-
-  [root@quaco ~]# perf stat -v -M DRAM_BW_Use -- sleep 1
-  Using CPUID GenuineIntel-6-8E-A
-  metric expr 64 * ( arb@event\=0x81\,umask\=0x1@ + arb@event\=0x84\,umask\=0x1@ ) / 1000000 / duration_time / 1000 for DRAM_BW_Use
-  found event duration_time
-  found event arb/event=0x84,umask=0x1/
-  found event arb/event=0x81,umask=0x1/
-  adding {arb/event=0x84,umask=0x1/,arb/event=0x81,umask=0x1/}:W,duration_time
-  Control descriptor is not initialized
-  Warning:
-  arb/event=0x84,umask=0x1/ event is not supported by the kernel.
-  Error:
-  The sys_perf_event_open() syscall returned with 22 (Invalid argument) for event (arb/event=0x84,umask=0x1/).
-  /bin/dmesg | grep -i perf may provide additional information.
-  
-  [root@quaco ~]#
-
-After:
-
-  [root@quaco ~]# perf stat -M DRAM_BW_Use -- sleep 1
-  
-   Performance counter stats for 'system wide':
-  
-               2,806      arb/event=0x84,umask=0x1/ #     0.63 DRAM_BW_Use
-          10,001,820      arb/event=0x81,umask=0x1/
-       1,016,875,686 ns   duration_time
-  
-         1.016875686 seconds time elapsed
-  
-  [root@quaco ~]#
-
-So I'm removing that fixes and adding this one, that I think is where
-"duration_time" was being considered...
-
-Fixes: e3ba76deef23064f ("perf tools: Force uncore events to system wide monitoring")
-
-Also, wouldn't it be better to have the duration_time event with its
-evsel->core.system_wide set to true?
-
-- Arnaldo
+Ah, good point. I'll move the value copy at the end of cpu_init_hyp_mode().
+It must be known at that point. And if your series gets rid of this completely,
+even better.
