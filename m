@@ -2,86 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C8E27493D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:35:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46AA827493F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726614AbgIVTfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 15:35:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726550AbgIVTfQ (ORCPT
+        id S1726634AbgIVTfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 15:35:38 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:40697 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726550AbgIVTfh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 15:35:16 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F265C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 12:35:16 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id z19so13385588pfn.8
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 12:35:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Sqo10I328LeM2dGrmAMbMDjHGHNfY3AhrHLzAaG7Zcc=;
-        b=SbYZH3mSnGlVgEsFBRoL6JaNbinBFwv3MKZkfeP6QtPh9H7MfyP0AJW8GxXvXyh7oS
-         rB2MZP6qWoEmVuRs7JlfEwiBbgK4lZ23Vz2hvbf2mKPSWCpyTVqeghNS5302lcgAU1Ot
-         3V8jL6xUcHt55VvzDvDGK3RdK/gVmXzdyxNNg=
+        Tue, 22 Sep 2020 15:35:37 -0400
+Received: by mail-il1-f194.google.com with SMTP id x18so16032392ila.7;
+        Tue, 22 Sep 2020 12:35:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Sqo10I328LeM2dGrmAMbMDjHGHNfY3AhrHLzAaG7Zcc=;
-        b=ZHHGunmxP8G0uks72/b6ULjT2Za4XZ93K5oMIVEO8VL30VSJz8xosoPXKfAr1g53fp
-         yYTLyARLSuNvuZy1r57Tq6M6G9wk5kluI5eWhPx59Q75A1AwgwR/60nLQ9TvYHyOuvYg
-         KUsMAYHQiQ/F8hd89IINOX4WWnG+CAhPkST1olNr61yHmgQ4dOcttjonvTIS/fFv5Gbj
-         Gj7byLwdUz2SRm1BmfaEQI9rB0eCx/yeOHiFyS8Lqo44ZnJHGgrCLs/8znArDV5ZsMIW
-         cTr4ZZx0hjcER6oPSDZkZ5WlZBwVgcykmMCw8Ckus9D1kb8bKjy9RqcCfMivmLtRDRki
-         QTow==
-X-Gm-Message-State: AOAM532/g6Mr5FU93ao6oERapj6HFkMxqanrk3zSvtLRcdlgE+5u0LKn
-        jFDhyzROZ+yDAwUI2VVuNaRWkw==
-X-Google-Smtp-Source: ABdhPJwJXWR+YYhKJY5dfjikhbiB5OtlnQmdHcgPbPiQaDOduurUwJgYHZOyXscbN5iibVyCq0TsTQ==
-X-Received: by 2002:a65:6917:: with SMTP id s23mr4517004pgq.389.1600803316089;
-        Tue, 22 Sep 2020 12:35:16 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y6sm3378542pjl.9.2020.09.22.12.35.14
+        bh=jPBD0XmzIV/W0iZGo3u7QE8dbhQcu1GYPOKQ4Uj0YkA=;
+        b=H7TS5gyhTzI1GRYtp1iMLia9n75dX+G8dpIYYqhZRl7cW2YEY+8sH4JK3/RPD2bkav
+         ELkTtB3G+piZCRN7PfsmW7O0lPMLBpmKc/RUEvrrCOLjZsZ//ixWlXPiR/NGYF/KqFBL
+         QmXjmY3eA5+l0dQP09k6sw2c9alMMmqhrw8KwS79FTNAyxdK8tOiDP/OKokwYsL6uCom
+         kaUu+V3fjirnUWLLVM8qHiE5wnLEbBfKoL+BVkmlla5tnFXZNqTrrfZ4evI2d2LxXrAF
+         aPcea0jUytZWWquhwQvgG8Kz8Nmno/GdZleTQRCpEHMd4rBk4OPjsfAz+sWiUixbycYg
+         xUVQ==
+X-Gm-Message-State: AOAM5336MCvwGwtIAYJ/EV2iHnAntUg4CsbtU52hONETtdYVPAPzumP/
+        s7Ud+zC8TS3hSdadt+EUZw==
+X-Google-Smtp-Source: ABdhPJzNqdROL+jdJ3dVRE9aodQED8gpbXyKrtUeG8JK3C/kXVBgCpAfcjl4U3P55eEquDFbPiY9lw==
+X-Received: by 2002:a92:d34f:: with SMTP id a15mr5920759ilh.226.1600803337012;
+        Tue, 22 Sep 2020 12:35:37 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id q2sm6502219ils.81.2020.09.22.12.35.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 12:35:14 -0700 (PDT)
-Date:   Tue, 22 Sep 2020 12:35:13 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     luto@kernel.org, tglx@linutronix.de, x86@kernel.org,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        willy@infradead.org, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org, kernel@collabora.com
-Subject: Re: [PATCH v6 8/9] selftests: Add kselftest for syscall user dispatch
-Message-ID: <202009221234.C0189A8F@keescook>
-References: <20200904203147.2908430-1-krisman@collabora.com>
- <20200904203147.2908430-9-krisman@collabora.com>
+        Tue, 22 Sep 2020 12:35:36 -0700 (PDT)
+Received: (nullmailer pid 3100940 invoked by uid 1000);
+        Tue, 22 Sep 2020 19:35:34 -0000
+Date:   Tue, 22 Sep 2020 13:35:34 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     repk@triplefau.lt, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, kishon@ti.com,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] dt-bindings: phy: amlogic,
+ meson-axg-mipi-pcie-analog: remove phy cell parameter
+Message-ID: <20200922193534.GA3100774@bogus>
+References: <20200915130339.11079-1-narmstrong@baylibre.com>
+ <20200915130339.11079-3-narmstrong@baylibre.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200904203147.2908430-9-krisman@collabora.com>
+In-Reply-To: <20200915130339.11079-3-narmstrong@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 04, 2020 at 04:31:46PM -0400, Gabriel Krisman Bertazi wrote:
-> Implement functionality tests for syscall user dispatch.  In order to
-> make the test portable, refrain from open coding syscall dispatchers and
-> calculating glibc memory ranges.
+On Tue, 15 Sep 2020 15:03:38 +0200, Neil Armstrong wrote:
+> The Amlogic AXG MIPI + PCIe Analog PHY provides function for both PCIe and
+> MIPI DSI at the same time, and is not exclusive.
 > 
-> Changes since v4:
->   - Update bad selector test to reflect change in API
+> Thus remove the invalid phy cell parameter.
 > 
-> Changes since v3:
->   - Sort entry in Makefile
->   - Add SPDX header
->   - Use __NR_syscalls if available
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> ---
+>  .../bindings/phy/amlogic,meson-axg-mipi-pcie-analog.yaml      | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 
-This passes, looks good. Thank you again for the self tests!
-
-Acked-by: Kees Cook <keescook@chromium.org>
-
--- 
-Kees Cook
+Acked-by: Rob Herring <robh@kernel.org>
