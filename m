@@ -2,76 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393F22740D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:30:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15BD22740D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726566AbgIVLas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 07:30:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44092 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726454AbgIVLas (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 07:30:48 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 35B60221EB;
-        Tue, 22 Sep 2020 11:30:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600774247;
-        bh=kkHMiTnA8Nd+aNMKB4+cFh6WyDZVD2UyQqEdCRsNUHI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Dbq8X/tmUq2LMM968Bp1Ys6XHzFCqQ8pvadivZlll9wmipSA3kAcm/4GO4Bsr71Kq
-         EpL+rhPpGlnjHlpy4a1IJiTlIBCS5Mbwn2XWPmvhV6Cb3W3I6qmOen+N79zxQUcaS+
-         YzzrL5PWJB1Itu+C3gjJU75AxcJGeyXmXIgeVPTg=
-Date:   Tue, 22 Sep 2020 12:29:54 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sgoud@xilinx.com, nagasure@xilinx.com
-Subject: Re: [PATCH 1/3] spi: spi-zynqmp-gqspi: Fix kernel-doc warnings
-Message-ID: <20200922112954.GQ4792@sirena.org.uk>
-References: <20200909152708.2767-1-amit.kumar-mahapatra@xilinx.com>
- <20200909152708.2767-2-amit.kumar-mahapatra@xilinx.com>
- <20200917172819.GA50407@sirena.org.uk>
- <83866279-52f2-6c85-40b4-e0b78ad2d713@xilinx.com>
+        id S1726621AbgIVLbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 07:31:01 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:56112 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726454AbgIVLbB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 07:31:01 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 24B7DA009396B05D645B;
+        Tue, 22 Sep 2020 19:30:56 +0800 (CST)
+Received: from huawei.com (10.175.104.57) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Tue, 22 Sep 2020
+ 19:30:52 +0800
+From:   Li Heng <liheng40@huawei.com>
+To:     <ath9k-devel@qca.qualcomm.com>, <kvalo@codeaurora.org>,
+        <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] ath9k: Remove set but not used variable
+Date:   Tue, 22 Sep 2020 19:30:52 +0800
+Message-ID: <1600774252-48564-1-git-send-email-liheng40@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="0fZkDq/H4AmqaB8D"
-Content-Disposition: inline
-In-Reply-To: <83866279-52f2-6c85-40b4-e0b78ad2d713@xilinx.com>
-X-Cookie: Love thy neighbor, tune thy piano.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.104.57]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This addresses the following gcc warning with "make W=1":
 
---0fZkDq/H4AmqaB8D
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+drivers/net/wireless/ath/ath9k/ar9580_1p0_initvals.h:1338:18: warning:
+‘ar9580_1p0_pcie_phy_clkreq_disable_L1’ defined but not used [-Wunused-const-variable=]
 
-On Tue, Sep 22, 2020 at 01:24:18PM +0200, Michal Simek wrote:
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Li Heng <liheng40@huawei.com>
+---
+ drivers/net/wireless/ath/ath9k/ar9580_1p0_initvals.h | 7 -------
+ 1 file changed, 7 deletions(-)
 
-> for-next/for-linus/for-5.10 and I can't see any issue with applying
-> these patches.
-> Can you please let us know if what tree/branch should be used?
+diff --git a/drivers/net/wireless/ath/ath9k/ar9580_1p0_initvals.h b/drivers/net/wireless/ath/ath9k/ar9580_1p0_initvals.h
+index f4c9bef..f67f537 100644
+--- a/drivers/net/wireless/ath/ath9k/ar9580_1p0_initvals.h
++++ b/drivers/net/wireless/ath/ath9k/ar9580_1p0_initvals.h
+@@ -1335,13 +1335,6 @@ static const u32 ar9580_1p0_pcie_phy_clkreq_enable_L1[][2] = {
+ 	{0x00004044, 0x00000000},
+ };
 
-In the first instance I'll try to apply against for-5.10.
+-static const u32 ar9580_1p0_pcie_phy_clkreq_disable_L1[][2] = {
+-	/* Addr      allmodes  */
+-	{0x00004040, 0x0831365e},
+-	{0x00004040, 0x0008003b},
+-	{0x00004044, 0x00000000},
+-};
+-
+ static const u32 ar9580_1p0_pcie_phy_pll_on_clkreq[][2] = {
+ 	/* Addr      allmodes  */
+ 	{0x00004040, 0x0831265e},
+--
+2.7.4
 
---0fZkDq/H4AmqaB8D
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9p4DEACgkQJNaLcl1U
-h9A50wf+N6ohMbgVl81zvY1qCcAAWyJl1teB1/HySXDUtt5pZaNWpYqztgcRnywQ
-sKE/A1/XQqwEHoEhDaqaI29/y3yGpu9RX4CH1AYr5oh6KGVWiYjRZXij7uraAzFK
-lZ4ZhUIpJXL/FLDtfZ5JyajRA4QmqgE4dYqowJUr+6tVLAJENaODC2zk/Up1U+Uj
-te7foQrDbC1nt4sJ/oSVXRpksdAI798WcatoH4DeeunRRYez3nVqgmkbsk8PCM0V
-4YC/R9sQIvYlP8KpgLL3gZew1/jEtPZaJFr5j+0dUSZRbR30HyAZPRaQA3135bZm
-7LZMPNPclFt4EfflmRkHnKsspoPHIw==
-=1N3X
------END PGP SIGNATURE-----
-
---0fZkDq/H4AmqaB8D--
