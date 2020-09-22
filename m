@@ -2,170 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94949274623
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1641E274626
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:06:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726731AbgIVQGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 12:06:04 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:46696 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726526AbgIVQGE (ORCPT
+        id S1726863AbgIVQGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 12:06:19 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:57300 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726567AbgIVQGT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 12:06:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600790762;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2PxdfcFiZl6sLx0ncb6aNHiRBqDwfAspKHL2qjnrSjE=;
-        b=BvBcgKnqk/nwP3jY/IGbhaclDVbkHlawwa7gyyynQGxT3vACh1WT/s2VrCdD7v1KSpnb13
-        4sJcRpNarniFWBWYb02+4y5TTj3wXRv1D0mgTMoPhQkWFL+02tWh4UCYnYOkD6AX82XcMn
-        TIM15k7rwcwryJtC7O7roQ3dUeKe3hI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-568-bIY8BwJaOsWby4N7PGD8AQ-1; Tue, 22 Sep 2020 12:05:58 -0400
-X-MC-Unique: bIY8BwJaOsWby4N7PGD8AQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BAE56109106B;
-        Tue, 22 Sep 2020 16:05:56 +0000 (UTC)
-Received: from starship (unknown [10.35.206.154])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 242F31001281;
-        Tue, 22 Sep 2020 16:05:52 +0000 (UTC)
-Message-ID: <57ca638581ce6e4db9b7c879f3aa7140cc5915c6.camel@redhat.com>
-Subject: Re: [PATCH v5 3/4] KVM: x86: allow kvm_x86_ops.set_efer to return a
- value
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     kvm@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Jim Mattson <jmattson@google.com>,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Date:   Tue, 22 Sep 2020 19:05:48 +0300
-In-Reply-To: <20200921154151.GA23807@linux.intel.com>
-References: <20200921131923.120833-1-mlevitsk@redhat.com>
-         <20200921131923.120833-4-mlevitsk@redhat.com>
-         <20200921154151.GA23807@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+        Tue, 22 Sep 2020 12:06:19 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08MG6Hhp008709;
+        Tue, 22 Sep 2020 11:06:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600790777;
+        bh=qOqYAeqS4BzRHTWSyUFnOQnw+Px2O+bmnnmcnnYt9IM=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=KXcFpyCrGGSufriJfqiv6ATmBAxuidi3j6fH98jQlKIZA6EXOR022Z+d7rYyeO+C6
+         9g6gS/UEcPwq1mtafRm82H/yRnC3QZ1SnAo3sLq+BxvDwFGcJc8cU851EwPX0LMTGz
+         TIOmycCQt7S4yjr8GLfNa1NTkoT6M0c8jeFYdlL4=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08MG6Hf5089351
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 22 Sep 2020 11:06:17 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 22
+ Sep 2020 11:06:16 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 22 Sep 2020 11:06:17 -0500
+Received: from [10.250.71.177] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08MG6GJA070402;
+        Tue, 22 Sep 2020 11:06:16 -0500
+Subject: Re: [PATCH v2 2/2] power: supply: bq25790: Introduce the BQ25790
+ charger driver
+To:     <sre@kernel.org>, <robh@kernel.org>
+CC:     <devicetree@vger.kernel.org>, <r-rivera-matos@ti.com>,
+        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200817151629.11019-1-dmurphy@ti.com>
+ <20200817151629.11019-2-dmurphy@ti.com>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <64928603-9b3e-cc69-c630-b13d96c37a8d@ti.com>
+Date:   Tue, 22 Sep 2020 11:06:16 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200817151629.11019-2-dmurphy@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-09-21 at 08:41 -0700, Sean Christopherson wrote:
-> On Mon, Sep 21, 2020 at 04:19:22PM +0300, Maxim Levitsky wrote:
-> > This will be used later to return an error when setting this msr fails.
-> > 
-> > Note that we ignore this return value for qemu initiated writes to
-> > avoid breaking backward compatibility.
-> > 
-> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> > ---
-> > --- a/arch/x86/kvm/vmx/vmx.c
-> > +++ b/arch/x86/kvm/vmx/vmx.c
-> > @@ -2835,13 +2835,15 @@ static void enter_rmode(struct kvm_vcpu *vcpu)
-> >  	kvm_mmu_reset_context(vcpu);
-> >  }
-> >  
-> > -void vmx_set_efer(struct kvm_vcpu *vcpu, u64 efer)
-> > +int vmx_set_efer(struct kvm_vcpu *vcpu, u64 efer)
-> >  {
-> >  	struct vcpu_vmx *vmx = to_vmx(vcpu);
-> >  	struct shared_msr_entry *msr = find_msr_entry(vmx, MSR_EFER);
-> >  
-> > -	if (!msr)
-> > -		return;
-> > +	if (!msr) {
-> > +		/* Host doen't support EFER, nothing to do */
-> > +		return 0;
-> > +	}
-> 
-> Kernel style is to omit braces, even with a line comment.  Though I would
-> do something like so to avoid the question.
-I didn't knew this, but next time I'll will take this in account!
+Hello
 
-> 
-> 	/* Nothing to do if hardware doesn't support EFER. */
-> 	if (!msr)
-> 		return 0
-I'll do this.
-
-> >  
-> >  	vcpu->arch.efer = efer;
-> >  	if (efer & EFER_LMA) {
-> > @@ -2853,6 +2855,7 @@ void vmx_set_efer(struct kvm_vcpu *vcpu, u64 efer)
-> >  		msr->data = efer & ~EFER_LME;
-> >  	}
-> >  	setup_msrs(vmx);
-> > +	return 0;
-> >  }
-> >  
-> >  #ifdef CONFIG_X86_64
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index b6c67ab7c4f34..cab189a71cbb7 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -1456,6 +1456,7 @@ static int set_efer(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
-> >  {
-> >  	u64 old_efer = vcpu->arch.efer;
-> >  	u64 efer = msr_info->data;
-> > +	int r;
-> >  
-> >  	if (efer & efer_reserved_bits)
-> >  		return 1;
-> > @@ -1472,7 +1473,12 @@ static int set_efer(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
-> >  	efer &= ~EFER_LMA;
-> >  	efer |= vcpu->arch.efer & EFER_LMA;
-> >  
-> > -	kvm_x86_ops.set_efer(vcpu, efer);
-> > +	r = kvm_x86_ops.set_efer(vcpu, efer);
-> > +
-> > +	if (r && !msr_info->host_initiated) {
-> 
-> I get the desire to not break backwards compatibility, but this feels all
-> kinds of wrong, and potentially dangerous as it will KVM in a mixed state.
-> E.g. vcpu->arch.efer will show that nSVM is enabled, but SVM will not have
-> the necessary tracking state allocated.  That could lead to a userspace
-> triggerable #GP/panic.
-Actually I take care to restore the vcpu->arch.efer to its old value
-if an error happens, so in case of failure everything would indicate
-that nothing happened, and the offending EFER write can even be retried,
-however since we agreed that .set_efer will only fail with negative
-errors like -ENOMEM, I agree that there is no reason to treat userspace
-writes differently. This code is actually a leftover from previous version,
-which I should have removed.
-
-I'll send a new version soon.
-
-Thanks for the review,
-	Best regards,
-		Maxim Levitsky
-
-> 
-> Is ignoring OOM scenario really considered backwards compability?  The VM
-> is probably hosted if KVM returns -ENOMEM, e.g. a sophisticated userspace
-> stack could trigger OOM killer to free memory and resume the VM.  On the
-> other hand, the VM is most definitely hosed if KVM ignores the error and
-> puts itself into an invalid state.
-> 
-> > +		WARN_ON(r > 0);
-> > +		return r;
-> > +	}
-> >  
-> >  	/* Update reserved bits */
-> >  	if ((efer ^ old_efer) & EFER_NX)
-> > -- 
-> > 2.26.2
-> > 
-
-
+On 8/17/20 10:16 AM, Dan Murphy wrote:
+> BQ25790 is a highly integrated switch-mode buck-boost charger
+> for 1-4 cell Li-ion battery and Li-polymer battery.
+Gentle bump
