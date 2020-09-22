@@ -2,174 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F06AD2739A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 06:21:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D56842739A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 06:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728393AbgIVEV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 00:21:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726790AbgIVEV2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 00:21:28 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD2DC061755;
-        Mon, 21 Sep 2020 21:21:28 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id y2so5319600ila.0;
-        Mon, 21 Sep 2020 21:21:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZNNbuALh04//uifYVPdDjh++fb2lT/Xqcs4an3gHVio=;
-        b=eF/EbBSe9yFBqTjdwzbFsunrkCPqbYXgfxHDSEkrckP5A1JHkh3XKpgKh1/IGo/vpm
-         PxlwoZMqDyyio84Vt96+iIDsRTiLJBgiQsTvGsDCpKt/pgm36IvvjTbwaqIKrGYde6Hi
-         0BHrqmtRg+GVQzDb9NRZEk/zfFZn8kaIVBnLwClJLRYsQc+uNdTo9V0vEmmil93p8bpC
-         gB9+qh4AB+tp0jmSgoo6Fcn9UmBpXDRPaykudNaQMqKbTqnFcAEL0jv3aGMx7vnanVue
-         GIlYCRrZPBKR9PHUH6u1kyqfeUZu/yQM1gKgTq9owy3HhmFOH2sUvEg8zRosVx5M7MpM
-         vbyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZNNbuALh04//uifYVPdDjh++fb2lT/Xqcs4an3gHVio=;
-        b=ELqTN1ptjUZ0xy1YDpLE9z7r94uOTlGql3AEKLgPWcJXgJxfN5qBJI5wwUnzNN5+CK
-         F6F8WcjvtJ6qqGaxdqwMvfQIal0zB5TqIoeFxdP03h1px1mgZtrFM9DST+aHm2ggBqRf
-         IOGR9K1f/anaiHIZ+IMzg+DpSb5LpJ9o0sEZNvW+Fb+Ezv6dbZkmiV2vPBiKpJp14yNE
-         1VhxKOtYIG0ZQUGkHnTUlo30LabxAB2vKp0ISXefpHWkuhTF7kvDp3GqCXWqa7tjNP7Q
-         waA1ZvlQCjDtbUmX2HMx/dvOUiFkJIYshrms/VzlxyKF+AcmkNzQ1EWTCwWch4nMQHdj
-         NYXw==
-X-Gm-Message-State: AOAM532YZq5wlZa8xJvtykpux3TuSunX5IuatjMb46MZB0W4/dgqYZHe
-        peysrAANkkMyU6wUEk5fRXpopzv6nvwEgV1qlzc=
-X-Google-Smtp-Source: ABdhPJzDl8MdjPVNRJmS4FRLkv0hUY6IYs3el3g0ioVtIQKA0mfz3YZi4KUDwxEL6Q++VW2yZEYb9pNfWRlG4ObXVfo=
-X-Received: by 2002:a92:c7b0:: with SMTP id f16mr2847131ilk.137.1600748488148;
- Mon, 21 Sep 2020 21:21:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200921080255.15505-1-zangchunxin@bytedance.com>
- <20200921081200.GE12990@dhcp22.suse.cz> <CALOAHbDKvT58UFjxy770VDxO0VWABRYb7GVwgw+NiJp62mB06w@mail.gmail.com>
- <20200921110505.GH12990@dhcp22.suse.cz> <CALOAHbCDXwjN+WDSGVv+G3ho-YRRPjAAqMJBtyxeGHH6utb5ew@mail.gmail.com>
- <20200921113646.GJ12990@dhcp22.suse.cz>
-In-Reply-To: <20200921113646.GJ12990@dhcp22.suse.cz>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Tue, 22 Sep 2020 12:20:52 +0800
-Message-ID: <CALOAHbCker64WEW9w4oq8=avA6oKf3-Jrn-vOOgkpqkV3g+CYA@mail.gmail.com>
-Subject: Re: [PATCH] mm/memcontrol: Add the drop_cache interface for cgroup v2
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     zangchunxin@bytedance.com, Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, lizefan@huawei.com,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kafai@fb.com,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        andriin@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
-        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
-        Linux MM <linux-mm@kvack.org>,
+        id S1728449AbgIVEVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 00:21:37 -0400
+Received: from mga18.intel.com ([134.134.136.126]:51222 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726790AbgIVEVf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 00:21:35 -0400
+IronPort-SDR: K6TEJh7RtMb86KxJ4/qzQvUTvJ7VFUkyueumbIcLtPexDJB0zur4nKX1FUX/r2AEDGG8VkD8a/
+ WrjT6rCU9t6Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="148282267"
+X-IronPort-AV: E=Sophos;i="5.77,289,1596524400"; 
+   d="scan'208";a="148282267"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 21:21:34 -0700
+IronPort-SDR: iGxqjyRDLUS1y98vuXY8eB3HROqQQ4TcOPMlcRFeWQUSzH3Sc5k0/f4+pxVJaWvaOtF3W41RWe
+ v5S0VYXI3NBw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,289,1596524400"; 
+   d="scan'208";a="348343830"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga007.jf.intel.com with ESMTP; 21 Sep 2020 21:21:35 -0700
+Received: from [10.213.147.65] (vramuthx-MOBL1.gar.corp.intel.com [10.213.147.65])
+        by linux.intel.com (Postfix) with ESMTP id 644AD580812;
+        Mon, 21 Sep 2020 21:21:32 -0700 (PDT)
+Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
+Subject: Re: [PATCH -next] phy: fix USB_LGM_PHY warning & build errors
+To:     Randy Dunlap <rdunlap@infradead.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        USB list <linux-usb@vger.kernel.org>
+Cc:     Li Yin <yin1.li@intel.com>, Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <d1dd0ddd-3143-5777-1c63-195e1a32f237@infradead.org>
+ <cb3b277e-109d-82c5-9dec-153b4e035c2a@infradead.org>
+From:   "Ramuthevar, Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Message-ID: <7a0129e7-b023-29ad-963f-345bb762b35e@linux.intel.com>
+Date:   Tue, 22 Sep 2020 12:21:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <cb3b277e-109d-82c5-9dec-153b4e035c2a@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 7:36 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Mon 21-09-20 19:23:01, Yafang Shao wrote:
-> > On Mon, Sep 21, 2020 at 7:05 PM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Mon 21-09-20 18:55:40, Yafang Shao wrote:
-> > > > On Mon, Sep 21, 2020 at 4:12 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > > >
-> > > > > On Mon 21-09-20 16:02:55, zangchunxin@bytedance.com wrote:
-> > > > > > From: Chunxin Zang <zangchunxin@bytedance.com>
-> > > > > >
-> > > > > > In the cgroup v1, we have 'force_mepty' interface. This is very
-> > > > > > useful for userspace to actively release memory. But the cgroup
-> > > > > > v2 does not.
-> > > > > >
-> > > > > > This patch reuse cgroup v1's function, but have a new name for
-> > > > > > the interface. Because I think 'drop_cache' may be is easier to
-> > > > > > understand :)
-> > > > >
-> > > > > This should really explain a usecase. Global drop_caches is a terrible
-> > > > > interface and it has caused many problems in the past. People have
-> > > > > learned to use it as a remedy to any problem they might see and cause
-> > > > > other problems without realizing that. This is the reason why we even
-> > > > > log each attempt to drop caches.
-> > > > >
-> > > > > I would rather not repeat the same mistake on the memcg level unless
-> > > > > there is a very strong reason for it.
-> > > > >
-> > > >
-> > > > I think we'd better add these comments above the function
-> > > > mem_cgroup_force_empty() to explain why we don't want to expose this
-> > > > interface in cgroup2, otherwise people will continue to send this
-> > > > proposal without any strong reason.
-> > >
-> > > I do not mind people sending this proposal.  "V1 used to have an
-> > > interface, we need it in v2 as well" is not really viable without
-> > > providing more reasoning on the specific usecase.
-> > >
-> > > _Any_ patch should have a proper justification. This is nothing really
-> > > new to the process and I am wondering why this is coming as a surprise.
-> > >
-> >
-> > Container users always want to drop cache in a specific container,
-> > because they used to use drop_caches to fix memory pressure issues.
->
-> This is exactly the kind of problems we have seen in the past. There
-> should be zero reason to addre potential reclaim problems by dropping
-> page cache on the floor. There is a huge cargo cult about this
-> procedure and I have seen numerous reports when people complained about
-> performance afterwards just to learn that the dropped page cache was one
-> of the resons for that.
->
-> > Although drop_caches can cause some unexpected issues, it could also
-> > fix some issues.
->
-> "Some issues" is way too general. We really want to learn about those
-> issues and address them properly.
->
+Hi Randy,
 
-One use case in our production environment is that some of our tasks
-become very latency sensitive from 7am to 10am, so before these tasks
-become active we will use drop_caches to drop page caches generated by
-other tasks at night to avoid these tasks triggering direct reclaim.
-The best way to do it is to fix the latency in direct reclaim, but it
-will take great effort. while drop_caches give us an easier way to
-achieve the same goal.
-IOW, drop_caches give the users an option to achieve their goal before
-they find a better solution.
+   Thank you for the report, surely will fix it.
 
-> > So container users want to use it in containers as
-> > well.
-> > If this feature is not implemented in cgroup, they will ask you why
-> > but there is no explanation in the kernel.
->
-> There is no usecase that would really require it so far.
->
-> > Regarding the memory.high, it is not perfect as well, because you have
-> > to set it to 0 to drop_caches, and the processes in the containers
-> > have to reclaim pages as well because they reach the memory.high, but
-> > memory.force_empty won't make other processes to reclaim.
->
-> Since 536d3bf261a2 ("mm: memcontrol: avoid workload stalls when lowering
-> memory.high") the limit is set after the reclaim so the race window when
-> somebody would be pushed to high limit reclaim is reduced. But I do
-> agree this is just a workaround.
->
-> > That doesn't mean I agree to add this interface, while I really mean
-> > that if we discard one feature we'd better explain why.
->
-> We need to understand why somebody wants an interface because once it is
-> added it will have to be maintained for ever.
-> --
-> Michal Hocko
-> SUSE Labs
+Regards
+Vadivel
 
-
-
--- 
-Thanks
-Yafang
+On 21/9/2020 11:45 pm, Randy Dunlap wrote:
+> Ping.  Still seeing this in linux-next.
+> 
+> On 9/17/20 10:51 AM, Randy Dunlap wrote:
+>> From: Randy Dunlap <rdunlap@infradead.org>
+>>
+>> Fix a Kconfig warning that is causing lots of build errors
+>> when USB_SUPPORT is not set.
+>>
+>> USB_PHY depends on USB_SUPPORT but "select" doesn't care about
+>> dependencies, so this driver should also depend on USB_SUPPORT.
+>> It should not select USB_SUPPORT.
+>>
+>> WARNING: unmet direct dependencies detected for USB_PHY
+>>    Depends on [n]: USB_SUPPORT [=n]
+>>    Selected by [m]:
+>>    - USB_LGM_PHY [=m]
+>>
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Cc: Li Yin <yin1.li@intel.com>
+>> Cc: Vadivel Murugan R <vadivel.muruganx.ramuthevar@linux.intel.com>
+>> Cc: Kishon Vijay Abraham I <kishon@ti.com>
+>> Cc: Vinod Koul <vkoul@kernel.org>
+>> ---
+>>   drivers/phy/Kconfig |    1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> --- linux-next-20200917.orig/drivers/phy/Kconfig
+>> +++ linux-next-20200917/drivers/phy/Kconfig
+>> @@ -51,6 +51,7 @@ config PHY_XGENE
+>>   
+>>   config USB_LGM_PHY
+>>   	tristate "INTEL Lightning Mountain USB PHY Driver"
+>> +	depends on USB_SUPPORT
+>>   	select USB_PHY
+>>   	select REGULATOR
+>>   	select REGULATOR_FIXED_VOLTAGE
+>>
+> 
+> 
