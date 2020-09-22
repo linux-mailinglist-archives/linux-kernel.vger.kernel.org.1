@@ -2,139 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55164274835
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 20:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71765274839
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 20:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726746AbgIVSe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 14:34:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47222 "EHLO
+        id S1726756AbgIVSfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 14:35:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726614AbgIVSe4 (ORCPT
+        with ESMTP id S1726563AbgIVSfw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 14:34:56 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63D73C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 11:34:56 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id l15so2781639wmh.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 11:34:56 -0700 (PDT)
+        Tue, 22 Sep 2020 14:35:52 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3DCFC061755;
+        Tue, 22 Sep 2020 11:35:51 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id o8so24286563ejb.10;
+        Tue, 22 Sep 2020 11:35:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Ig3mZwlM5VgOYpaLezhg7vQFxV24lXeVdfnz5xWj0rM=;
-        b=j74lrtCwlnu6fqYOp87AYQKgh20vY4HWutnBUDTD/MqKbmkWvoiV1gzSZV1V651W6t
-         0EKrZbRNvxSaOS5XQN/3rRjYUWD+Ybjv7r9BGve2BX11HJKB1svj+6D+/qfyXmfvs5PX
-         +uTe4FmQnZePv8i6hoTB84tksthKi2ioxGQFqtqwFVhQQsPsEIsaZHKXIpuaML4TRitw
-         C99CuqPCX6sqXqJwRmpmlW0UUiuKt8OkI4se3513BsxjHTyOHyDzrjDiH2IAT20a8hxQ
-         syrZurWX6+zVVt9bSCPXFUuRjAYKQbteOrwVjfILeDBIkZQWQziXt/ZnAD2Waf7SR4a8
-         vZ0g==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3/6CyOFP20UY15Iz8QDJdwyWLdhO4bKaeA/gA0Zeels=;
+        b=EjZ0Z0cyfztnFQruvef1htbCxrqsfoExLvCtzWAeRg0me12yyKy8V/oAFFD+JM999I
+         bvkKftVXTdv6XwnIzoNp3jEYffHE5zcUbc4iCBin/HKDH2maoUHuWo6NmpDcTSBAc2B3
+         zmF343g36T0sjfGu1XgPc2JbB6gq60bULjxaDYqXyZzYEfpJfOfhaQBpbU1KRBoXWlW3
+         VDKSfa/vKcJXKM0NQZi/ibq7vKrEPBs/NNeZa9MK61zRtBdOOkCfwMtjaosKxF4NmtSk
+         EK8dDWVsN0Ion4QZ2eqjFtyZzOqRGFgMrK7r9NEuTGbM7tjc3STkMlWYjW8JfE1hv4pz
+         GTlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ig3mZwlM5VgOYpaLezhg7vQFxV24lXeVdfnz5xWj0rM=;
-        b=lVK9okyblYMarb2Gc6JLzmzENAPn9Wrs1VawwC2rrGvR3JNyBpLl4M/KGbxAaI5iFx
-         485vAaAo7665sS4ko5PsLGyKZwdpc7fcWu2Pelm3Rs6F5cjRFe3mkc7rfU8N+Jd48YHc
-         7fXSk4ZWSNikdQ0I8/dJenIWttLTgZx3snZK9xq1BQ801ufWzrMQ/7d1yDrVYelJmhgu
-         d0/Cx8U3214JIf/hbyqvS6usQu/Cm37KJLTk7pr/b9kGoy54bbPZ4IgEZzivEibTzw7Q
-         jKLc+j6gJScDq7P2VD+iJswJ6vANd3AFG/CR7j4Pno5v1K+jHwyBWcPPHu2xSpHd/pu9
-         A4Pg==
-X-Gm-Message-State: AOAM532LsudEGDaytiv6WVZTInTvCqvDRddxBvvE+vgS3XL12xBHymZc
-        HvqS5OBjz8DoPew/8ml6ecXv3A==
-X-Google-Smtp-Source: ABdhPJxj0h/V08O5vb8gOXVPpqliJJY+kmMZI4zN+kzRDjl+BRuapEiHWcZOA9NImhQeqmN/2EE34w==
-X-Received: by 2002:a1c:40a:: with SMTP id 10mr1283670wme.61.1600799694728;
-        Tue, 22 Sep 2020 11:34:54 -0700 (PDT)
-Received: from google.com ([2a01:4b00:8523:2d03:55c2:2cdf:ff31:96a3])
-        by smtp.gmail.com with ESMTPSA id 63sm29411016wrh.71.2020.09.22.11.34.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 11:34:53 -0700 (PDT)
-Date:   Tue, 22 Sep 2020 19:34:52 +0100
-From:   David Brazdil <dbrazdil@google.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     kvmarm@lists.cs.columbia.edu,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 10/11] kvm: arm64: Set up hyp percpu data for nVHE
-Message-ID: <20200922183452.xalwog2ojsc5ogpe@google.com>
-References: <20200916173439.32265-1-dbrazdil@google.com>
- <20200916173439.32265-11-dbrazdil@google.com>
- <20200918122219.GD31096@willie-the-truck>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3/6CyOFP20UY15Iz8QDJdwyWLdhO4bKaeA/gA0Zeels=;
+        b=HUGCOFUva1KHO+UzihoMyB5rMgBNvTIIv7xkLrceiswq7hZzS88ZHXDsBaCf1TMwKU
+         Y9ZhPZ5bRMkDXnIbYO3PvTMVV4AGgGEEqiWYx1bbiMVokgxbp/4w+xUG0vzC44MwPzpa
+         yvav61tYupwV03hgkPYjLlH3/sF5IhMETK5Q0M9YA7PwB+gAbllgeL7v3687VPVnQB8i
+         Kvke4KrUsIhNKB+Ej7AQ+zMdmev1hZjoIolfGKQIOeL+dIP+5U+9ac0bp07Czw7ZfdHt
+         ycGznWCy1O6Ga1x+uBSdhj+b1MeY5zb8GlUcKz5URf+CrV22jsKW+7A71kr0YqrKuXrj
+         0T9A==
+X-Gm-Message-State: AOAM533yo/sQ8E0kRyq22j5vAYtPrep+6OUGLiB7Si/gF9JaaWxWhwwn
+        hFCi+NFxFOrdIZ2kIBfOdrEbCFWjMfyRrMGrf3w=
+X-Google-Smtp-Source: ABdhPJxumdDU8Z8DezP7vDqnyScxyf3YqhVMAmxLWkFuC+LF7SsrMGU0pBoC8ewRCraKlmXdUWla1WPKLjlHpNrrDfc=
+X-Received: by 2002:a17:906:cf9b:: with SMTP id um27mr6507698ejb.66.1600799750499;
+ Tue, 22 Sep 2020 11:35:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918122219.GD31096@willie-the-truck>
+References: <20200922120909.97203-1-konradybcio@gmail.com> <160079963957.310579.17971187414769458107@swboyd.mtv.corp.google.com>
+In-Reply-To: <160079963957.310579.17971187414769458107@swboyd.mtv.corp.google.com>
+From:   Konrad Dybcio <konradybcio@gmail.com>
+Date:   Tue, 22 Sep 2020 20:35:14 +0200
+Message-ID: <CAMS8qEUNGV5YgAc1D054JToe2ybPX8o4kPC8zgDc1=O0cqY0_A@mail.gmail.com>
+Subject: Re: [PATCH] clk: qcom: gcc-sdm660: Fix wrong parent_map
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-clk@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > -#define this_cpu_ptr_nvhe(sym)		this_cpu_ptr(&kvm_nvhe_sym(sym))
-> > -#define per_cpu_ptr_nvhe(sym, cpu)	per_cpu_ptr(&kvm_nvhe_sym(sym), cpu)
-> > +/* Array of percpu base addresses. Length of the array is nr_cpu_ids. */
-> > +extern unsigned long *kvm_arm_hyp_percpu_base;
-> > +
-> > +/*
-> > + * Compute pointer to a symbol defined in nVHE percpu region.
-> > + * Returns NULL if percpu memory has not been allocated yet.
-> > + */
-> > +#define this_cpu_ptr_nvhe(sym)	per_cpu_ptr_nvhe(sym, smp_processor_id())
-> 
-> Don't you run into similar problems here with the pcpu accessors when
-> CONFIG_DEBUG_PREEMPT=y? I'm worried we can end up with an unresolved
-> reference to debug_smp_processor_id().
+Sheesh, I cannot stop forgetting these...
 
-Fortunately not. This now doesn't use the generic macros at all.
+Fixes: f2a76a2955c0 (clk: qcom: Add Global Clock controller (GCC)
+driver for SDM660)
 
-> >  /* The VMID used in the VTTBR */
-> >  static atomic64_t kvm_vmid_gen = ATOMIC64_INIT(1);
-> > @@ -1258,6 +1259,15 @@ long kvm_arch_vm_ioctl(struct file *filp,
-> >  	}
-> >  }
-> >  
-> > +#define kvm_hyp_percpu_base(cpu)	((unsigned long)per_cpu_ptr_nvhe(__per_cpu_start, cpu))
-> 
-> Having both kvm_arm_hyp_percpu_base and kvm_hyp_percpu_base be so
-> completely different is a recipe for disaster! Please can you rename
-> one/both of them to make it clearer what they represent?
-
-I am heavily simplifying this code in v4. Got rid of this macro completely, so
-hopefully there will be no confusion.
-
-> > -	if (!kvm_pmu_switch_needed(attr))
-> > +	if (!ctx || !kvm_pmu_switch_needed(attr))
-> >  		return;
-> >  
-> >  	if (!attr->exclude_host)
-> > @@ -49,6 +49,9 @@ void kvm_clr_pmu_events(u32 clr)
-> >  {
-> >  	struct kvm_host_data *ctx = this_cpu_ptr_hyp(kvm_host_data);
-> >  
-> > +	if (!ctx)
-> > +		return;
-> 
-> I guess this should only happen if KVM failed to initialise or something,
-> right? (e.g. if we were booted at EL1). If so, I'm wondering whether it
-> would be better to do something like:
-> 
-> 	if (!is_hyp_mode_available())
-> 		return;
-> 
-> 	WARN_ON_ONCE(!ctx);
-> 
-> so that any unexpected NULL pointer there screams loudly, rather than causes
-> the register switch to be silently ignored. What do you think?
-
-Unfortunately, this happens on every boot. I don't fully understand how the
-boot order is determined, so please correct me if this makes no sense, but 
-kvm_clr_pmu_events is called as part of CPUHP_AP_PERF_ARM_STARTING. The first
-time that happens is before KVM initialized (tested from inserting
-BUG_ON(!ctx)). That's not a problem, the per-CPU memory is there and it's all
-zeroes. It becomes a problem with this patch because the per-CPU memory is not
-there *yet*.
-
+Konrad
