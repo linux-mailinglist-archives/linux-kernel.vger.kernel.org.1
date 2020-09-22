@@ -2,121 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4510727496F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EC8D274971
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726676AbgIVTqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 15:46:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58274 "EHLO
+        id S1726727AbgIVTqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 15:46:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726448AbgIVTqe (ORCPT
+        with ESMTP id S1726448AbgIVTqj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 15:46:34 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B46AC061755;
-        Tue, 22 Sep 2020 12:46:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=vpSLW0AXxHiTl89BtY+FVX4uAPscibs5ZsZA2qiROfY=; b=wDZyCv7yvGG2GnkpZaURO0RTZS
-        E6UlFGA+vTLWqu85rvy6v9LuN6InuVbFG9d1v3qiAYZxWelZrMS20Fbb1riEL1AeOh52DdFQ6+qcR
-        zNw0H26caKWFZ6AbewC3Oat/38yjDxd1G3x648tngQwEy0mU3jwPWsc7+ri+fGfzvjSkzJICxm8gP
-        kpVUL8WQ0XigraXMH3DeGlBArarM1Z6aRgyIo1Y0/YmZvZdyLE0y2kceU0/jMAsps4Rlnrqh2dTqp
-        zTdrjItl2pwUl8mbVINEbTjZs2/MpvJ/pqZpEdAvrnwCu8Lx17TCew3QRt6tmX2wmKZgv/JSwuA9t
-        BRUQq3mA==;
-Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kKoFD-0005mC-9i; Tue, 22 Sep 2020 19:46:32 +0000
-Subject: Re: [PATCH 0/1] Add explicit error for missing CONFIG_ASN1
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        linux-kbuild@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>
-References: <20200922155341.17906-1-James.Bottomley@HansenPartnership.com>
- <dfae4d4f-aa96-674d-93b1-d4c097e720e4@infradead.org>
- <260b4b85d714df822da259554ef8cc2873f3096f.camel@HansenPartnership.com>
- <36232f66-58b1-77a8-91a3-f9d3428fffb5@infradead.org>
- <15cc1edce12357799ae3caea3b89a3aad3a3bd07.camel@HansenPartnership.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <8a346ff9-21a4-db8b-1636-b9b2472b5b87@infradead.org>
-Date:   Tue, 22 Sep 2020 12:46:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 22 Sep 2020 15:46:39 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72060C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 12:46:39 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id b17so1953643pji.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 12:46:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=A7K1Lk9w2JU/mzkk5n/G5HuZZXn4DaRG+1GGMP6qt10=;
+        b=o/QyLw5IOnPijUiB7gu11H8C/y8KX8qiQByDc/5cdDeCvxZCzAlzUMfPyxj1dquEej
+         LpfGQK36XgsNckrrSIllSf2r2nvJMtQsil24ezMvc4ACTw1OPVtnF4bBSfJkGUkjaTFE
+         w5PURjvycYfJZXSYiBjjGWb6kGKWujmGv+ZL0y9l5LOyk/f2d0dLFL+9I9JFX8k+0CUN
+         KCtB6X5lM8rRNz1mdvqiozdPmLu3AulERdS0BjmMlcM8hIffsXxuZAGeyKkESAxVVoTe
+         3MB/wLsMJ9ebKQZQ4CpxEs0j4l12BwD1cFfN2Fh28RD023yIt+YwUL21MguKhUUcbqDV
+         IB4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=A7K1Lk9w2JU/mzkk5n/G5HuZZXn4DaRG+1GGMP6qt10=;
+        b=jysV97/oLexbUpg2Zlh8B9XMQ2+731MMuLU3By9P0xFrVrGjYeNYHP7OlfJ1Gssk4P
+         uwOdkWADo2Qv0DyO8C+RozwNGgz7N9GCFBWj2DK4mFiClkJvOmkmaQAPHNs3xKb0JqDN
+         l+DgdqciRFtIyursXEveFq3kcqWZLlciW8+An4hwzXLg2ktZaTvG2svrwxGAFnrHNwxA
+         n83dsXCaE2owOHsvk/yF16ssAvL5W8HGpXGNWKXil2Yp/vG1SC/p3m2TET/oTihYrAxH
+         QRSwvBu3c8FakVDTHSp/5XeGOUFbaFNXKc6RX0DNkn8RZtIjuEOVMtt6C6qv7FFsbSTm
+         9Cqg==
+X-Gm-Message-State: AOAM5335TnMgv9cCRWwfFkycULY3xVD/1OKU12JXwM1PSoHauO/hr4a4
+        abcYH+Bwxu8FdBC5qqfMUP63JA==
+X-Google-Smtp-Source: ABdhPJz/Wu2OzlX03ege7flSALsdwmfjWfG5jAcjBQpcHUrEISSvHqsvcce6tgf9nazx2u33oiUpuQ==
+X-Received: by 2002:a17:90b:3014:: with SMTP id hg20mr5201262pjb.128.1600803998988;
+        Tue, 22 Sep 2020 12:46:38 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id y1sm14483510pgr.3.2020.09.22.12.46.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 12:46:38 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 13:46:36 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Cc:     "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "guennadi.liakhovetski@linux.intel.com" 
+        <guennadi.liakhovetski@linux.intel.com>,
+        Loic PALLARDY <loic.pallardy@st.com>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 08/10] rpmsg: core: Add RPMSG byte conversion operations
+Message-ID: <20200922194636.GC931970@xps15>
+References: <20200922001000.899956-1-mathieu.poirier@linaro.org>
+ <20200922001000.899956-9-mathieu.poirier@linaro.org>
+ <90c14e71-4c2b-9089-93d4-685b075873a9@st.com>
 MIME-Version: 1.0
-In-Reply-To: <15cc1edce12357799ae3caea3b89a3aad3a3bd07.camel@HansenPartnership.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <90c14e71-4c2b-9089-93d4-685b075873a9@st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/22/20 12:44 PM, James Bottomley wrote:
-> On Tue, 2020-09-22 at 12:38 -0700, Randy Dunlap wrote:
->> On 9/22/20 12:19 PM, James Bottomley wrote:
->>> On Tue, 2020-09-22 at 11:54 -0700, Randy Dunlap wrote:
->>>> On 9/22/20 8:53 AM, James Bottomley wrote:
->>>>> I recently ran into this as an error from 0day.  On x86 it's
->>>>> pretty
->>>>> much impossible to build a configuration where CONFIG_ASN1
->>>>> isn't
->>>>> set, so you rarely notice a problem using the ASN.1 compiler
->>>>> because something else has selected it.  However, this compiler
->>>>> is
->>>>> never built if CONFIG_ASN1 isn't set and the error you get from
->>>>> kbuild is particularly unhelpful:
->>>>>
->>>>>    make[4]: *** No rule to make target 'security/keys/trusted-
->>>>> keys/tpm2key.asn1.o', needed by 'security/keys/trusted-
->>>>> keys/built-
->>>>> in.a'.
->>>>>    make[4]: *** [scripts/Makefile.build:283:
->>>>> security/keys/trusted-
->>>>> keys/trusted_tpm2.o] Error 1
->>>>>    make[4]: Target '__build' not remade because of errors.
->>>>>
->>>>> This patch changes the above error to the much easier to
->>>>> diagnose:
->>>>>
->>>>>    scripts/Makefile.build:387: *** CONFIG_ASN1 must be defined
->>>>> for
->>>>> the asn1_compiler.  Stop.
->>>>>    make[3]: *** [scripts/Makefile.build:505:
->>>>> security/keys/trusted-
->>>>> keys] Error 2
->>>>>
->>>>> James
->>>>>
->>>>> ---
->>>>>
->>>>> James Bottomley (1):
->>>>>   Makefile.build: Add an explicit error for missing ASN.1
->>>>> compiler
->>>>>
->>>>>  scripts/Makefile.build | 5 +++++
->>>>>  1 file changed, 5 insertions(+)
->>>>
->>>> Is there a missing
->>>> 	select ASN1
->>>> somewhere?
->>>
->>> You mean in the build used to produce the errors above?  Yes, so
->>> the
->>> patch is to make the problem more explicit.
->>
->> I appreciate that the message can be improved, but it seems possible
->> that some Kconfig could also be improved.
+On Tue, Sep 22, 2020 at 04:34:53PM +0200, Arnaud POULIQUEN wrote:
 > 
-> I don't really see how.  To find the problem you have to identify a
-> conditional build in the Makefile that requires the asn1 compiler but
-> for which the config option doesn't have a select ASN1.  We don't
-> currently preserve the "what selected this symbol" information in
-> kconfig, which is what we'd need.
+> 
+> On 9/22/20 2:09 AM, Mathieu Poirier wrote:
+> > Add RPMSG device specific byte conversion operations as a first
+> > step to separate the RPMSG name space service from the virtIO
+> > transport layer.
+> > 
+> > Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > ---
+> >  drivers/rpmsg/rpmsg_core.c     | 51 ++++++++++++++++++++++++++++++++++
+> >  drivers/rpmsg/rpmsg_internal.h | 12 ++++++++
+> >  2 files changed, 63 insertions(+)
+> > 
+> > diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
+> > index 50a835eaf1ba..66ad5b5f1e87 100644
+> > --- a/drivers/rpmsg/rpmsg_core.c
+> > +++ b/drivers/rpmsg/rpmsg_core.c
+> > @@ -20,6 +20,57 @@
+> >  
+> >  #include "rpmsg_internal.h"
+> >  
+> > +/**
+> > + * rpmsg{16|32}_to_cpu()
+> > + * cpu_to_rpmsg[16|32}() - rpmsg device specific byte conversion functions to
+> > + *			   perform byte conversion between rpmsg device and the
+> > + *			   transport layer it is operating on.
+> > + */
+> > +
+> > +u16 rpmsg16_to_cpu(struct rpmsg_device *rpdev, u16 val)
+> > +{
+> > +	if (WARN_ON(!rpdev))
+> > +		return -EINVAL;
+> > +	if (!rpdev->ops || !rpdev->ops->transport16_to_cpu)
+> > +		return -EPERM;
+> > +
+> > +	return rpdev->ops->transport16_to_cpu(rpdev, val);
+> > +}
+> > +EXPORT_SYMBOL(rpmsg16_to_cpu);
+> > +
+> > +u16 cpu_to_rpmsg16(struct rpmsg_device *rpdev, u16 val)
+> > +{
+> > +	if (WARN_ON(!rpdev))
+> > +		return -EINVAL;
+> > +	if (!rpdev->ops || !rpdev->ops->cpu_to_transport16)
+> > +		return -EPERM;
+> > +
+> > +	return rpdev->ops->cpu_to_transport16(rpdev, val);
+> > +}
+> > +EXPORT_SYMBOL(cpu_to_rpmsg16);
+> > +
+> > +u32 rpmsg32_to_cpu(struct rpmsg_device *rpdev, u32 val)
+> > +{
+> > +	if (WARN_ON(!rpdev))
+> > +		return -EINVAL;
+> > +	if (!rpdev->ops || !rpdev->ops->transport32_to_cpu)
+> > +		return -EPERM;
+> > +
+> > +	return rpdev->ops->transport32_to_cpu(rpdev, val);
+> > +}
+> > +EXPORT_SYMBOL(rpmsg32_to_cpu);
+> > +
+> > +u32 cpu_to_rpmsg32(struct rpmsg_device *rpdev, u32 val)
+> > +{
+> > +	if (WARN_ON(!rpdev))
+> > +		return -EINVAL;
+> > +	if (!rpdev->ops || !rpdev->ops->cpu_to_transport32)
+> > +		return -EPERM;
+> 
+> Alternative could be to choice the processor endianness ( it was the case
+> before the virtio patch to set the endianness
 
-Well, if you have a failing .config file, I would be glad to take a
-look at it...
+That's a good idea.
 
--- 
-~Randy
+> 
+> > +
+> > +	return rpdev->ops->cpu_to_transport32(rpdev, val);
+> > +}
+> > +EXPORT_SYMBOL(cpu_to_rpmsg32);
+> > +
+> >  /**
+> >   * rpmsg_create_channel() - create a new rpmsg channel
+> >   * using its name and address info.
+> > diff --git a/drivers/rpmsg/rpmsg_internal.h b/drivers/rpmsg/rpmsg_internal.h
+> > index 2e65386f191e..2f0ad1a52698 100644
+> > --- a/drivers/rpmsg/rpmsg_internal.h
+> > +++ b/drivers/rpmsg/rpmsg_internal.h
+> > @@ -81,6 +81,8 @@ struct virtio_rpmsg_channel {
+> >  
+> >  /**
+> >   * struct rpmsg_device_ops - indirection table for the rpmsg_device operations
+> > + * @transport{16|32}_to_cpu: byte conversion from rpmsg device to transport layer
+> > + * @cpu_to_transport{16|32}: byte conversion from transport layer to rpmsg device
+> >   * @create_channel:	create backend-specific channel, optional
+> >   * @release_channel:	release backend-specific channel, optional
+> >   * @create_ept:		create backend-specific endpoint, required
+> > @@ -92,6 +94,10 @@ struct virtio_rpmsg_channel {
+> >   * advertise new channels implicitly by creating the endpoints.
+> >   */
+> >  struct rpmsg_device_ops {
+> > +	u16 (*transport16_to_cpu)(struct rpmsg_device *rpdev, u16 val);
+> > +	u16 (*cpu_to_transport16)(struct rpmsg_device *rpdev, u16 val);
+> > +	u32 (*transport32_to_cpu)(struct rpmsg_device *rpdev, u32 val);
+> > +	u32 (*cpu_to_transport32)(struct rpmsg_device *rpdev, u32 val);
+> 
+> This trigg me a suggestion. Perhaps it would be simpler to have only on ops
+> to get the endianness.
+> 
 
+Another good idea, I'll look into it.
+
+Thanks for the comments,
+Mathieu
+
+> Regards
+> Arnaud
+> 
+> >  	struct rpmsg_device *(*create_channel)(struct rpmsg_device *rpdev,
+> >  					     struct rpmsg_channel_info *chinfo);
+> >  	int (*release_channel)(struct rpmsg_device *rpdev,
+> > @@ -148,6 +154,12 @@ rpmsg_create_channel(struct rpmsg_device *rpdev,
+> >  		     struct rpmsg_channel_info *chinfo);
+> >  int rpmsg_release_channel(struct rpmsg_device *rpdev,
+> >  			  struct rpmsg_channel_info *chinfo);
+> > +
+> > +u16 rpmsg16_to_cpu(struct rpmsg_device *rpdev, u16 val);
+> > +u16 cpu_to_rpmsg16(struct rpmsg_device *rpdev, u16 val);
+> > +u32 rpmsg32_to_cpu(struct rpmsg_device *rpdev, u32 val);
+> > +u32 cpu_to_rpmsg32(struct rpmsg_device *rpdev, u32 val);
+> > +
+> >  /**
+> >   * rpmsg_chrdev_register_device() - register chrdev device based on rpdev
+> >   * @rpdev:	prepared rpdev to be used for creating endpoints
+> > 
