@@ -2,68 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 101832747AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 19:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D74902747B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 19:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726623AbgIVRqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 13:46:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46740 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726563AbgIVRqt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 13:46:49 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 41889235FD;
-        Tue, 22 Sep 2020 17:46:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600796808;
-        bh=oenH9vdrSeEwpGAAQSosUc2ancjCFiFt+bS7Q3FodvE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WzHe7IvkaPznnNvUEzD3HwVFa5e3MVZPSx77gO0aZ7obkzaUe+1w5lnx9cjPynG49
-         S4IcH0FK0xhrWB4p729EYloa8Vtdxk0cBD/6um7Dk3R9Tt+j56tb1o176lW6K32VR1
-         PpShnQ1Ju8htQOEUxZl8dNJGKjSJbShLV1eRTv3s=
-Date:   Tue, 22 Sep 2020 13:46:47 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        patches@opensource.cirrus.com, alsa-devel@alsa-project.org
-Subject: Re: [PATCH AUTOSEL 5.8 03/20] ASoC: wm8994: Skip setting of the
- WM8994_MICBIAS register for WM1811
-Message-ID: <20200922174647.GP2431@sasha-vm>
-References: <20200921144027.2135390-1-sashal@kernel.org>
- <20200921144027.2135390-3-sashal@kernel.org>
- <20200921150701.GA12231@sirena.org.uk>
- <20200922142515.GN2431@sasha-vm>
- <20200922144221.GW4792@sirena.org.uk>
+        id S1726667AbgIVRsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 13:48:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726573AbgIVRsf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 13:48:35 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C586C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 10:48:35 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id n133so19892323qkn.11
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 10:48:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=googlenew;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2aImMSnGp0pJrdFWOz26We7RBiEPBSUZx13H022GgJk=;
+        b=DxOBv3qoM3preiXZlTrA23F8KS/0dfsZzcwtKNzDnEDOfmu2QbYS9fb2M4dVe+VwJN
+         eIi4bm6z1Q32I9kCk6IouFlOV6onOMKllOQ4xmp6NiF+QMUj1sChrZFO2O13GJ2ZUGZj
+         1JttwgsLZ1FXynVclf1OMeyExGb50MUINaiA5aKtI4sWnJbh2+wsqAl9bnwjXGVcvDUV
+         ZOTMuTI6Yz8GZFtDOZi1keZ+JwijruT2uSo0W5y2QvNAG8IfmQ8oct/epenRAdJzn2ns
+         x5Cl10PYLDejc/HxDf2bwmtIfiHALn0xBI7OfA2k69P9X8IqH7Sy5GNgQbZQcJLGjdOn
+         vBLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2aImMSnGp0pJrdFWOz26We7RBiEPBSUZx13H022GgJk=;
+        b=nPtTSbu3sEwMYj6L/YRxLTWPwOh5LuDVrns4PsqUocjySzB8bqMbopB1BI3RbzOuKP
+         LGv1k3nJBOxDgkTFIwtY+PJSbrEoHzvYU9KLHbsUHq27knQwZXcNf6DEfFP0SdTPrPUM
+         bbRntZP6wmmHT7qJCurp9thn1tYtG2Hoo9nP9iX6zsihkDTSQPDnZqvUeOtOnrIoioqx
+         QeKFWW8Yk5xCWd2v9tjMEVxG2vGzS/+FADWXzlN0k2gzY2Cfz+jICNbxH1yE3SQQbtj2
+         PmYn26j1TVl2fmbEIg9tqOXyev9VzKwsfjTfLq/Sa2ZFaaeRocSpNda5WRm+q/B+c89X
+         ZqcA==
+X-Gm-Message-State: AOAM532neo91icxUIOn8qGbiMLSPB7Fr+c6ou4VjQQy6F8SZMjuzWmVj
+        /nzZbb2KlL1bohyRzqSjqwQ6TMi51MiCgB3R5w9c8A==
+X-Google-Smtp-Source: ABdhPJxdVOTXA8JKluaF1GCiDQFNU/3UjvH0jLxyMa1niL5vqM7Q7sVsd4OQRFjZYcKclYl4XQXSEmIvjvQaWKMPjy8=
+X-Received: by 2002:a05:620a:2450:: with SMTP id h16mr6200692qkn.326.1600796914399;
+ Tue, 22 Sep 2020 10:48:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200922144221.GW4792@sirena.org.uk>
+References: <cover.1600773619.git.mchehab+huawei@kernel.org> <dbe62eb5e9dda5a5ee145f866a24c4cfddbd754f.1600773619.git.mchehab+huawei@kernel.org>
+In-Reply-To: <dbe62eb5e9dda5a5ee145f866a24c4cfddbd754f.1600773619.git.mchehab+huawei@kernel.org>
+From:   Francesco Ruggeri <fruggeri@arista.com>
+Date:   Tue, 22 Sep 2020 10:48:23 -0700
+Message-ID: <CA+HUmGhDWTKfg9BKpwKpr5j=JATaWka54rh8chAnmyaOR+HAsA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] net: fix a new kernel-doc warning at dev.c
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 03:42:21PM +0100, Mark Brown wrote:
->On Tue, Sep 22, 2020 at 10:25:15AM -0400, Sasha Levin wrote:
->> On Mon, Sep 21, 2020 at 04:07:01PM +0100, Mark Brown wrote:
+On Tue, Sep 22, 2020 at 4:22 AM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
 >
->> > This is pretty much a cosmetic change - previously we were silently not
->> > reading the register, this just removes the attempt to read it since we
->> > added an error message in the core.
+> kernel-doc expects the function prototype to be just after
+> the kernel-doc markup, as otherwise it will get it all wrong:
 >
->> Right, the only reason I took it is that error message - I find that
->> bogus error messages have almost the same (bad) impact as real kernel
->> bugs.
+>         ./net/core/dev.c:10036: warning: Excess function parameter 'dev' description in 'WAIT_REFS_MIN_MSECS'
 >
->The point is that the error message isn't present in stable kernels so
->there is no impact on any user visible behaviour.
-
-Ah, I see. I'll drop it. Thanks!
-
--- 
-Thanks,
-Sasha
+> Fixes: 0e4be9e57e8c ("net: use exponential backoff in netdev_wait_allrefs")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  net/core/dev.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index a268ff35ad38..873b50ac9668 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -10021,6 +10021,8 @@ int netdev_refcnt_read(const struct net_device *dev)
+>  }
+>  EXPORT_SYMBOL(netdev_refcnt_read);
+>
+> +#define WAIT_REFS_MIN_MSECS 1
+> +#define WAIT_REFS_MAX_MSECS 250
+>  /**
+>   * netdev_wait_allrefs - wait until all references are gone.
+>   * @dev: target net_device
+> @@ -10033,8 +10035,6 @@ EXPORT_SYMBOL(netdev_refcnt_read);
+>   * We can get stuck here if buggy protocols don't correctly
+>   * call dev_put.
+>   */
+> -#define WAIT_REFS_MIN_MSECS 1
+> -#define WAIT_REFS_MAX_MSECS 250
+>  static void netdev_wait_allrefs(struct net_device *dev)
+>  {
+>         unsigned long rebroadcast_time, warning_time;
+> --
+> 2.26.2
+>
