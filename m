@@ -2,47 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C314273F0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 11:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FEBD273F13
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 11:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726553AbgIVJ7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 05:59:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46830 "EHLO mail.kernel.org"
+        id S1726562AbgIVJ72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 05:59:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726353AbgIVJ7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 05:59:00 -0400
-Received: from gaia (unknown [31.124.44.166])
+        id S1726353AbgIVJ71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 05:59:27 -0400
+Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 584C42388B;
-        Tue, 22 Sep 2020 09:58:59 +0000 (UTC)
-Date:   Tue, 22 Sep 2020 10:58:56 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Chen Jun <chenjun102@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, rui.xiang@huawei.com,
-        weiyongjun1@huawei.com
-Subject: Re: [PATCH -next 4/5] mm/kmemleak-test: use %px instead of %p in
- print
-Message-ID: <20200922095856.GD15643@gaia>
-References: <20200921020007.35803-1-chenjun102@huawei.com>
- <20200921020007.35803-5-chenjun102@huawei.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 63DDB2388B;
+        Tue, 22 Sep 2020 09:59:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600768767;
+        bh=N3eSb6tFG2JA1+ia7D37JtNSaVT+szMuO1tsrhO1840=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=GslNNUh/+C7hKUhIYoO1wkLfBSnLTGq+jwofj9mk5x6vmq8se9G7suiePfLL8DYbg
+         7ivz67PjJ2qL+nJ3TdGldfc36ZR33SdI1B5WfX7Ta9+JkcWOoR88bH8VPPLh8Agd15
+         2VhvzwkbCOHQu/lOgQ0j+QbZQOEWjI8h+dCo6zII=
+Date:   Tue, 22 Sep 2020 11:59:24 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     =?ISO-8859-15?Q?Mikael_Wikstr=F6m?= <leakim.wikstrom@gmail.com>
+cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] HID: multitouch: Lenovo X1 Tablet Gen3 trackpoint
+ and buttons
+In-Reply-To: <20200922094810.3669-1-leakim.wikstrom@gmail.com>
+Message-ID: <nycvar.YFH.7.76.2009221159170.3336@cbobk.fhfr.pm>
+References: <20200922094810.3669-1-leakim.wikstrom@gmail.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200921020007.35803-5-chenjun102@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 02:00:06AM +0000, Chen Jun wrote:
-> From: Wei Yongjun <weiyongjun1@huawei.com>
-> 
-> Real addresses are used for diagnose issues.
-> Convert %p with %px to print kernel addresses.
-> 
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-> Signed-off-by: Chen Jun <chenjun102@huawei.com>
+On Tue, 22 Sep 2020, Mikael Wikström wrote:
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> One more device that needs 40d5bb87 to resolve regression for the trackpoint
+> and three mouse buttons on the type cover of the Lenovo X1 Tablet Gen3.
+> 
+> It is probably also needed for the Lenovo X1 Tablet Gen2 with PID 0x60a3
+> 
+> Signed-off-by: Mikael Wikström <leakim.wikstrom@gmail.com>
+
+Applied, thanks.
+
+-- 
+Jiri Kosina
+SUSE Labs
+
