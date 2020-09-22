@@ -2,173 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE25027477F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 19:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FBF4274784
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 19:32:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726655AbgIVRbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 13:31:06 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:11730 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726526AbgIVRbG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 13:31:06 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f6a34cd0000>; Tue, 22 Sep 2020 10:30:53 -0700
-Received: from rcampbell-dev.nvidia.com (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 22 Sep
- 2020 17:31:02 +0000
-Subject: Re: [PATCH] mm/hmm/test: use after free in dmirror_allocate_chunk()
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>
-CC:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Wei Yongjun <weiyongjun1@huawei.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
-References: <20200922081234.GA1274646@mwanda>
-X-Nvconfidentiality: public
-From:   Ralph Campbell <rcampbell@nvidia.com>
-Message-ID: <c25729e4-8a53-07e3-ae98-d77919f3ac21@nvidia.com>
-Date:   Tue, 22 Sep 2020 10:31:01 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1726674AbgIVRco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 13:32:44 -0400
+Received: from vm1.sequanux.org ([188.165.36.56]:57543 "EHLO vm1.sequanux.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726526AbgIVRco (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 13:32:44 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by vm1.sequanux.org (Postfix) with ESMTP id 18740108646;
+        Tue, 22 Sep 2020 19:32:42 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at vm1.sequanux.org
+Received: from vm1.sequanux.org ([127.0.0.1])
+        by localhost (vm1.sequanux.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 8oeo1XofqNEz; Tue, 22 Sep 2020 19:32:40 +0200 (CEST)
+Received: from localhost (softwrestling.org [188.165.144.248])
+        by vm1.sequanux.org (Postfix) with ESMTPSA id 4756A108638;
+        Tue, 22 Sep 2020 19:32:40 +0200 (CEST)
+Date:   Tue, 22 Sep 2020 19:32:40 +0200
+From:   Simon Guinot <simon.guinot@sequanux.org>
+To:     Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>
+Cc:     linux-leds@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>,
+        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org,
+        =?utf-8?B?w4FsdmFybyBGZXJuw6FuZGV6?= Rojas <noltari@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andrey Utkin <andrey_utkin@fastmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Baolin Wang <baolin.wang@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Christian Mauderer <oss@c-mauderer.de>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Daniel Mack <daniel@caiaq.de>,
+        David Rivshin <drivshin@allworx.com>,
+        Grant Feng <von81@163.com>,
+        Haojian Zhuang <haojian.zhuang@marvell.com>,
+        "H . Nikolaus Schaller" <hns@goldelico.com>,
+        Jaedon Shin <jaedon.shin@gmail.com>,
+        John Crispin <john@phrozen.org>,
+        Kevin Cernekee <cernekee@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Milo Kim <milo.kim@ti.com>, NeilBrown <neilb@suse.de>,
+        Nikita Travkin <nikitos.tr@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Philippe Retornaz <philippe.retornaz@epfl.ch>,
+        Riku Voipio <riku.voipio@iki.fi>,
+        Rod Whitby <rod@whitby.id.au>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Simon Guinot <sguinot@lacie.com>,
+        Simon Shields <simon@lineageos.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Bogendoerfer <tbogendoerfer@suse.de>,
+        Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Vasant Hegde <hegdevasant@linux.vnet.ibm.com>,
+        Vincent Donnefort <vdonnefort@gmail.com>,
+        Xiaotong Lu <xiaotong.lu@spreadtrum.com>
+Subject: Re: [PATCH leds v2 00/50] Start moving parsing of
+ `linux,default-trigger` to LED core (a cleanup of LED drivers)
+Message-ID: <20200922173240.GG4828@kw.sim.vm.gnt>
+References: <20200917223338.14164-1-marek.behun@nic.cz>
 MIME-Version: 1.0
-In-Reply-To: <20200922081234.GA1274646@mwanda>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600795853; bh=FlTvSkg2VeAuml+QolVZZc+aE27r29315SlOmjxh39E=;
-        h=Subject:To:CC:References:X-Nvconfidentiality:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=n2rX4xtVEiYQ+FBTCrawg4dcPx1HKTKZZHFu0wsmNM8BaYERwT533PghchwBmk3j8
-         s5yMw/N9YH0s1iYauljogWzTK3X8jTUXNAPy33WzDSN5K1btEOE4hNX5k53kx58ECM
-         ClVIdF7hiCenQf2kBsArGICJ/IlK45S6P8oh719RJxsPpoYc3+kuLDJnsztru8Ln64
-         ievHxAsZuu3L1QDQjmjxs4HymhO5JABI6r7NJcW4L6BSXOqBnR3yr6Mk5xaMHZlfls
-         NppkhtfMRJXOM5ZSAZ5JN/3HUGAAf9ZMeXSf1fTzM1YLnmaCiveLzz+YAwb3FK04q+
-         fpbNBkpGmJlgQ==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pyE8wggRBhVBcj8z"
+Content-Disposition: inline
+In-Reply-To: <20200917223338.14164-1-marek.behun@nic.cz>
+User-Agent: Mutt/1.6.0 (2016-04-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 9/22/20 1:12 AM, Dan Carpenter wrote:
-> The error handling code does this:
-> 
-> err_free:
-> 	kfree(devmem);
->          ^^^^^^^^^^^^^
-> err_release:
-> 	release_mem_region(devmem->pagemap.range.start, range_len(&devmem->pagemap.range));
->                             ^^^^^^^^
-> The problem is that when we use "devmem->pagemap.range.start" the
-> "devmem" pointer is either NULL or freed.
-> 
-> Neither the allocation nor the call to request_free_mem_region() has to
-> be done under the lock so I moved those to the start of the function.
-> 
-> Fixes: b2ef9f5a5cb3 ("mm/hmm/test: add selftest driver for HMM")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
-> It's weird that I didn't catch the use after free when this code was
-> merged in May...  My bad.  Not sure what happened there.  How I found
-> this was that I have been reviewing release_mem_region() leaks and the
-> NULL dereference path is a leak.
-> 
+--pyE8wggRBhVBcj8z
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for fixing this. I missed it too. :-)
+On Fri, Sep 18, 2020 at 12:32:48AM +0200, Marek Beh=C3=BAn wrote:
+> Hi,
+>=20
+> this series is also available at [1].
+>=20
+> This is v2, you can read cover letter of v1 at [2] (togehter with
+> explanation of why I did this).
 
->   lib/test_hmm.c | 47 ++++++++++++++++++++++++-----------------------
->   1 file changed, 24 insertions(+), 23 deletions(-)
-> 
-> diff --git a/lib/test_hmm.c b/lib/test_hmm.c
-> index c8133f50160b..0503c78cb322 100644
-> --- a/lib/test_hmm.c
-> +++ b/lib/test_hmm.c
-> @@ -459,6 +459,22 @@ static bool dmirror_allocate_chunk(struct dmirror_device *mdevice,
->   	unsigned long pfn_last;
->   	void *ptr;
->   
-> +	devmem = kzalloc(sizeof(*devmem), GFP_KERNEL);
-> +	if (!devmem)
-> +		return -ENOMEM;
-> +
-> +	res = request_free_mem_region(&iomem_resource, DEVMEM_CHUNK_SIZE,
-> +				      "hmm_dmirror");
-> +	if (IS_ERR(res))
-> +		goto err_devmem;
-> +
-> +	devmem->pagemap.type = MEMORY_DEVICE_PRIVATE;
-> +	devmem->pagemap.range.start = res->start;
-> +	devmem->pagemap.range.end = res->end;
-> +	devmem->pagemap.nr_range = 1;
-> +	devmem->pagemap.ops = &dmirror_devmem_ops;
-> +	devmem->pagemap.owner = mdevice;
-> +
->   	mutex_lock(&mdevice->devmem_lock);
->   
->   	if (mdevice->devmem_count == mdevice->devmem_capacity) {
-> @@ -471,30 +487,16 @@ static bool dmirror_allocate_chunk(struct dmirror_device *mdevice,
->   				sizeof(new_chunks[0]) * new_capacity,
->   				GFP_KERNEL);
->   		if (!new_chunks)
+=2E..
 
-Need to call mutex_unlock(&mdevice->devmem_lock).
-In fact, why not make this goto err_unlock and add
-err_unlock: mutex_unlock() before the err_release:.
+>   leds: ns2: use devres LED registering function
+>   leds: ns2: alloc simple array instead of struct ns2_led_priv
+>   leds: ns2: support OF probing only, forget platdata
+>   leds: ns2: move parsing of one LED into separate function
+>   leds: ns2: use devres API for getting GPIO descriptors
+>   leds: ns2: cosmetic structure rename
+>   leds: ns2: cosmetic variable rename
+>   leds: ns2: cosmetic change
+>   leds: ns2: cosmetic change: use helper variable
+>   leds: ns2: register LED immediately after parsing DT properties
+>   leds: ns2: remove unneeded variable
+>   leds: ns2: cosmetic: use reverse christmas tree
+>   leds: ns2: reorder headers alphabetically
+>   leds: ns2: use struct led_init_data when registering
 
-> -			goto err;
-> +			goto err_release;>   		mdevice->devmem_capacity = new_capacity;
->   		mdevice->devmem_chunks = new_chunks;
->   	}
->   
-> -	res = request_free_mem_region(&iomem_resource, DEVMEM_CHUNK_SIZE,
-> -					"hmm_dmirror");
-> -	if (IS_ERR(res))
-> -		goto err;
-> -
-> -	devmem = kzalloc(sizeof(*devmem), GFP_KERNEL);
-> -	if (!devmem)
-> -		goto err_release;
-> -
-> -	devmem->pagemap.type = MEMORY_DEVICE_PRIVATE;
-> -	devmem->pagemap.range.start = res->start;
-> -	devmem->pagemap.range.end = res->end;
-> -	devmem->pagemap.nr_range = 1;
-> -	devmem->pagemap.ops = &dmirror_devmem_ops;
-> -	devmem->pagemap.owner = mdevice;
-> -
->   	ptr = memremap_pages(&devmem->pagemap, numa_node_id());
-> -	if (IS_ERR(ptr))
-> -		goto err_free;
-> +	if (IS_ERR(ptr)) {
-> +		mutex_unlock(&mdevice->devmem_lock);
-> +		goto err_release;
-> +	}
+Hi Marek,
 
-This could then be just goto err_unlock.
+If you agree, I'll wait the fwnode support before reviewing and testing
+this patches.
 
->   	devmem->mdevice = mdevice;
->   	pfn_first = devmem->pagemap.range.start >> PAGE_SHIFT;
-> @@ -525,12 +527,11 @@ static bool dmirror_allocate_chunk(struct dmirror_device *mdevice,
->   
->   	return true;
->   
-> -err_free:
-> -	kfree(devmem);
->   err_release:
->   	release_mem_region(devmem->pagemap.range.start, range_len(&devmem->pagemap.range));
-> -err:
-> -	mutex_unlock(&mdevice->devmem_lock);
-> +err_devmem:
-> +	kfree(devmem);
-> +
->   	return false;
->   }
->   
+Simon
 
-With the suggested change, you can add
-Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
+--pyE8wggRBhVBcj8z
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEXW8DgovlR3VS5hA0zyg/RDPmszoFAl9qNTcACgkQzyg/RDPm
+szrw9Q/+IX/cwi/lHhvzrSlcq8Zbv/kJa44/0dyAmXhWnU8fabW2bYhT1JTwGroN
+XiMPOwC6u3PWi7B17KaqoXm2U3HlESZy7tGQhG2cSjadm99aKlKqPOW+YVrkLgo1
+LwVlVY6on1/neUM367LC8I+XoltPpOUNv0LbaKm2bGEkMhGGJXrjtWTNfEv9BqJt
+X54su5DHrigGVwD3vpv6VVjgx//uk8bhiVhbCE/nHqWOuU9LjWTCRioHa92slCLS
+k3vudoCKXUontO1a0v9iUs6IdSMN5SIUVuK2WQWZRdWa9CbH4n4jr5UUFy58iX81
+TiNae8AzOpoAjQWvMXmY1Fxv0hJ0A6ql6GXtk42mXlsS89RITdr0+kF4eoj2JW7E
+3K+/UOJV+uA/kl+XgjtI3ya68AkQGRjMpYU0NjkMB5ag+VDOyKX1bul8Dt0MPqqK
+f9pD2Ko6i1IbbYejkyjtMqmUWrenkvN82YmVwH0zfvvdN8BP2IiKGWzIjWSo1vzu
+b4oldw/9OZV7eQxQWWHAHhgwiLX77CINueDYSH8dBWGPL4SBsQp87YL3Eo7nKFbP
+7Oh5R94Rjc63EiilhzG4IEmMLF+n9nENu3Zw/UmqygkYDenXX2SiwD68EVFTKG5o
+CtWjDvMLPtUcS3ZLJIhZqHRE57NmNF3qJjef/1pYTuQ1TBurkeA=
+=8FNN
+-----END PGP SIGNATURE-----
+
+--pyE8wggRBhVBcj8z--
