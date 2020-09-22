@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32DCF27412D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA44227413A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:48:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726723AbgIVLrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 07:47:18 -0400
-Received: from mga06.intel.com ([134.134.136.31]:59809 "EHLO mga06.intel.com"
+        id S1726784AbgIVLrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 07:47:45 -0400
+Received: from mga06.intel.com ([134.134.136.31]:59836 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726682AbgIVLpf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726683AbgIVLpf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 22 Sep 2020 07:45:35 -0400
-IronPort-SDR: Gc31CsHd2RJI3lI1V16Ul8qiaNBMrb6g6/C36J5t1WI5EeK1/U0nzhLjLjuM1A4gZLX18QUspA
- 8rDDOGHkzS4A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="222177013"
+IronPort-SDR: 5QpO3h5FKxJiX/FWoG3ZDGUdN8LPVxwicXeujVbN3SWFkxqOkWKT9/6o/wQDzpeBSGLkBISfUf
+ nos8KvjL0Srw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="222177027"
 X-IronPort-AV: E=Sophos;i="5.77,290,1596524400"; 
-   d="scan'208";a="222177013"
+   d="scan'208";a="222177027"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 04:45:00 -0700
-IronPort-SDR: PvHSLxYJqqp7tF4sDbdY4WOxXKTauR5IIUvy1v36oLh08qQ4a2vNP0+GjwfyM+9uQpUpbv6FEF
- lRkFPqwlME0w==
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 04:45:11 -0700
+IronPort-SDR: 0kl/KAHpO8mJ1VbpDKs5ZIV4gT2zlBqesQQRjrkJat/oLUFgb/5VfBiqDVEQzNDjK6GliXg2zk
+ sfIWjBvTDK3w==
 X-IronPort-AV: E=Sophos;i="5.77,290,1596524400"; 
-   d="scan'208";a="338268838"
+   d="scan'208";a="412633404"
 Received: from shsi6026.sh.intel.com (HELO localhost) ([10.239.147.135])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 04:44:56 -0700
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 04:45:08 -0700
 From:   shuo.a.liu@intel.com
 To:     linux-kernel@vger.kernel.org, x86@kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -38,9 +38,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Shuo Liu <shuo.a.liu@intel.com>,
         Zhi Wang <zhi.a.wang@intel.com>,
         Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: [PATCH v4 12/17] virt: acrn: Introduce interrupt injection interfaces
-Date:   Tue, 22 Sep 2020 19:43:06 +0800
-Message-Id: <20200922114311.38804-13-shuo.a.liu@intel.com>
+Subject: [PATCH v4 14/17] virt: acrn: Introduce I/O ranges operation interfaces
+Date:   Tue, 22 Sep 2020 19:43:08 +0800
+Message-Id: <20200922114311.38804-15-shuo.a.liu@intel.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200922114311.38804-1-shuo.a.liu@intel.com>
 References: <20200922114311.38804-1-shuo.a.liu@intel.com>
@@ -52,27 +52,14 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Shuo Liu <shuo.a.liu@intel.com>
 
-ACRN userspace need to inject virtual interrupts into a User VM in
-devices emulation.
+An I/O request of a User VM, which is constructed by hypervisor, is
+distributed by the ACRN Hypervisor Service Module to an I/O client
+corresponding to the address range of the I/O request.
 
-HSM needs provide interfaces to do so.
-
-Introduce following interrupt injection interfaces:
-
-ioctl ACRN_IOCTL_SET_IRQLINE:
-  Pass data from userspace to the hypervisor, and inform the hypervisor
-  to inject a virtual IOAPIC GSI interrupt to a User VM.
-
-ioctl ACRN_IOCTL_INJECT_MSI:
-  Pass data struct acrn_msi_entry from userspace to the hypervisor, and
-  inform the hypervisor to inject a virtual MSI to a User VM.
-
-ioctl ACRN_IOCTL_VM_INTR_MONITOR:
-  Set a 4-Kbyte aligned shared page for statistics information of
-  interrupts of a User VM.
+I/O client maintains a list of address ranges. Introduce
+acrn_ioreq_range_{add,del}() to manage these address ranges.
 
 Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
-Reviewed-by: Zhi Wang <zhi.a.wang@intel.com>
 Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
 Cc: Zhi Wang <zhi.a.wang@intel.com>
 Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
@@ -80,243 +67,96 @@ Cc: Yu Wang <yu1.wang@intel.com>
 Cc: Reinette Chatre <reinette.chatre@intel.com>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/virt/acrn/acrn_drv.h  |  4 ++++
- drivers/virt/acrn/hsm.c       | 39 +++++++++++++++++++++++++++++++++
- drivers/virt/acrn/hypercall.h | 41 +++++++++++++++++++++++++++++++++++
- drivers/virt/acrn/vm.c        | 36 ++++++++++++++++++++++++++++++
- include/uapi/linux/acrn.h     | 17 +++++++++++++++
- 5 files changed, 137 insertions(+)
+ drivers/virt/acrn/acrn_drv.h |  4 +++
+ drivers/virt/acrn/ioreq.c    | 60 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 64 insertions(+)
 
 diff --git a/drivers/virt/acrn/acrn_drv.h b/drivers/virt/acrn/acrn_drv.h
-index 97d2aab8b70a..701c83319115 100644
+index 701c83319115..5b824fa1ee57 100644
 --- a/drivers/virt/acrn/acrn_drv.h
 +++ b/drivers/virt/acrn/acrn_drv.h
-@@ -157,6 +157,7 @@ extern rwlock_t acrn_vm_list_lock;
-  * @ioreq_buf:			I/O request shared buffer
-  * @ioreq_page:			The page of the I/O request shared buffer
-  * @pci_conf_addr:		Address of a PCI configuration access emulation
-+ * @monitor_page:		Page of interrupt statistics of User VM
-  */
- struct acrn_vm {
- 	struct list_head		list;
-@@ -172,6 +173,7 @@ struct acrn_vm {
- 	struct acrn_io_request_buffer	*ioreq_buf;
- 	struct page			*ioreq_page;
- 	u32				pci_conf_addr;
-+	struct page			*monitor_page;
- };
- 
- struct acrn_vm *acrn_vm_create(struct acrn_vm *vm,
-@@ -198,4 +200,6 @@ struct acrn_ioreq_client *acrn_ioreq_client_create(struct acrn_vm *vm,
+@@ -199,6 +199,10 @@ struct acrn_ioreq_client *acrn_ioreq_client_create(struct acrn_vm *vm,
+ 						   void *data, bool is_default,
  						   const char *name);
  void acrn_ioreq_client_destroy(struct acrn_ioreq_client *client);
++int acrn_ioreq_range_add(struct acrn_ioreq_client *client,
++			 u32 type, u64 start, u64 end);
++void acrn_ioreq_range_del(struct acrn_ioreq_client *client,
++			  u32 type, u64 start, u64 end);
  
-+int acrn_msi_inject(struct acrn_vm *vm, u64 msi_addr, u64 msi_data);
-+
- #endif /* __ACRN_HSM_DRV_H */
-diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
-index bcb5e273dcc3..5c82e0491210 100644
---- a/drivers/virt/acrn/hsm.c
-+++ b/drivers/virt/acrn/hsm.c
-@@ -51,7 +51,9 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
- 	struct acrn_ioreq_notify notify;
- 	struct acrn_ptdev_irq *irq_info;
- 	struct acrn_vm_memmap memmap;
-+	struct acrn_msi_entry *msi;
- 	struct acrn_pcidev *pcidev;
-+	struct page *page;
- 	int ret = 0;
+ int acrn_msi_inject(struct acrn_vm *vm, u64 msi_addr, u64 msi_data);
  
- 	if (vm->vmid == ACRN_INVALID_VMID && cmd != ACRN_IOCTL_CREATE_VM) {
-@@ -178,6 +180,43 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
- 				"Failed to reset intr for ptdev!\n");
- 		kfree(irq_info);
- 		break;
-+	case ACRN_IOCTL_SET_IRQLINE:
-+		ret = hcall_set_irqline(vm->vmid, ioctl_param);
-+		if (ret < 0)
-+			dev_err(acrn_dev.this_device,
-+				"Failed to set interrupt line!\n");
-+		break;
-+	case ACRN_IOCTL_INJECT_MSI:
-+		msi = memdup_user((void __user *)ioctl_param,
-+				  sizeof(struct acrn_msi_entry));
-+		if (IS_ERR(msi))
-+			return PTR_ERR(msi);
-+
-+		ret = hcall_inject_msi(vm->vmid, virt_to_phys(msi));
-+		if (ret < 0)
-+			dev_err(acrn_dev.this_device,
-+				"Failed to inject MSI!\n");
-+		kfree(msi);
-+		break;
-+	case ACRN_IOCTL_VM_INTR_MONITOR:
-+		ret = get_user_pages_fast(ioctl_param, 1, FOLL_WRITE, &page);
-+		if (unlikely(ret != 1)) {
-+			dev_err(acrn_dev.this_device,
-+				"Failed to pin intr hdr buffer!\n");
-+			return -EFAULT;
-+		}
-+
-+		ret = hcall_vm_intr_monitor(vm->vmid, page_to_phys(page));
-+		if (ret < 0) {
-+			put_page(page);
-+			dev_err(acrn_dev.this_device,
-+				"Failed to monitor intr data!\n");
-+			return ret;
-+		}
-+		if (vm->monitor_page)
-+			put_page(vm->monitor_page);
-+		vm->monitor_page = page;
-+		break;
- 	case ACRN_IOCTL_CREATE_IOREQ_CLIENT:
- 		if (vm->default_client)
- 			return -EEXIST;
-diff --git a/drivers/virt/acrn/hypercall.h b/drivers/virt/acrn/hypercall.h
-index f448301832cf..a8813397a3fe 100644
---- a/drivers/virt/acrn/hypercall.h
-+++ b/drivers/virt/acrn/hypercall.h
-@@ -21,6 +21,11 @@
- #define HC_RESET_VM			_HC_ID(HC_ID, HC_ID_VM_BASE + 0x05)
- #define HC_SET_VCPU_REGS		_HC_ID(HC_ID, HC_ID_VM_BASE + 0x06)
- 
-+#define HC_ID_IRQ_BASE			0x20UL
-+#define HC_INJECT_MSI			_HC_ID(HC_ID, HC_ID_IRQ_BASE + 0x03)
-+#define HC_VM_INTR_MONITOR		_HC_ID(HC_ID, HC_ID_IRQ_BASE + 0x04)
-+#define HC_SET_IRQLINE			_HC_ID(HC_ID, HC_ID_IRQ_BASE + 0x05)
-+
- #define HC_ID_IOREQ_BASE		0x30UL
- #define HC_SET_IOREQ_BUFFER		_HC_ID(HC_ID, HC_ID_IOREQ_BASE + 0x00)
- #define HC_NOTIFY_REQUEST_FINISH	_HC_ID(HC_ID, HC_ID_IOREQ_BASE + 0x01)
-@@ -101,6 +106,42 @@ static inline long hcall_set_vcpu_regs(u64 vmid, u64 regs_state)
- 	return acrn_hypercall2(HC_SET_VCPU_REGS, vmid, regs_state);
+diff --git a/drivers/virt/acrn/ioreq.c b/drivers/virt/acrn/ioreq.c
+index bf194f0fbd70..acf4edfb8c74 100644
+--- a/drivers/virt/acrn/ioreq.c
++++ b/drivers/virt/acrn/ioreq.c
+@@ -101,6 +101,66 @@ int acrn_ioreq_request_default_complete(struct acrn_vm *vm, u16 vcpu)
+ 	return ret;
  }
  
 +/**
-+ * hcall_inject_msi() - Deliver a MSI interrupt to a User VM
-+ * @vmid:	User VM ID
-+ * @msi:	Service VM GPA of MSI message
-+ *
-+ * Return: 0 on success, <0 on failure
-+ */
-+static inline long hcall_inject_msi(u64 vmid, u64 msi)
-+{
-+	return acrn_hypercall2(HC_INJECT_MSI, vmid, msi);
-+}
-+
-+/**
-+ * hcall_vm_intr_monitor() - Set a shared page for User VM interrupt statistics
-+ * @vmid:	User VM ID
-+ * @addr:	Service VM GPA of the shared page
-+ *
-+ * Return: 0 on success, <0 on failure
-+ */
-+static inline long hcall_vm_intr_monitor(u64 vmid, u64 addr)
-+{
-+	return acrn_hypercall2(HC_VM_INTR_MONITOR, vmid, addr);
-+}
-+
-+/**
-+ * hcall_set_irqline() - Set or clear an interrupt line
-+ * @vmid:	User VM ID
-+ * @op:		Service VM GPA of interrupt line operations
-+ *
-+ * Return: 0 on success, <0 on failure
-+ */
-+static inline long hcall_set_irqline(u64 vmid, u64 op)
-+{
-+	return acrn_hypercall2(HC_SET_IRQLINE, vmid, op);
-+}
-+
- /**
-  * hcall_set_ioreq_buffer() - Set up the shared buffer for I/O Requests.
-  * @vmid:	User VM ID
-diff --git a/drivers/virt/acrn/vm.c b/drivers/virt/acrn/vm.c
-index 4ee1a99df4b7..38304aeef181 100644
---- a/drivers/virt/acrn/vm.c
-+++ b/drivers/virt/acrn/vm.c
-@@ -68,6 +68,10 @@ int acrn_vm_destroy(struct acrn_vm *vm)
- 	write_unlock_bh(&acrn_vm_list_lock);
- 
- 	acrn_ioreq_deinit(vm);
-+	if (vm->monitor_page) {
-+		put_page(vm->monitor_page);
-+		vm->monitor_page = NULL;
-+	}
- 
- 	ret = hcall_destroy_vm(vm->vmid);
- 	if (ret < 0) {
-@@ -83,3 +87,35 @@ int acrn_vm_destroy(struct acrn_vm *vm)
- 	vm->vmid = ACRN_INVALID_VMID;
- 	return 0;
- }
-+
-+/**
-+ * acrn_inject_msi() - Inject a MSI interrupt into a User VM
-+ * @vm:		User VM
-+ * @msi_addr:	The MSI address
-+ * @msi_data:	The MSI data
++ * acrn_ioreq_range_add() - Add an iorange monitored by an ioreq client
++ * @client:	The ioreq client
++ * @type:	Type (ACRN_IOREQ_TYPE_MMIO or ACRN_IOREQ_TYPE_PORTIO)
++ * @start:	Start address of iorange
++ * @end:	End address of iorange
 + *
 + * Return: 0 on success, <0 on error
 + */
-+int acrn_msi_inject(struct acrn_vm *vm, u64 msi_addr, u64 msi_data)
++int acrn_ioreq_range_add(struct acrn_ioreq_client *client,
++			 u32 type, u64 start, u64 end)
 +{
-+	struct acrn_msi_entry *msi;
-+	int ret;
++	struct acrn_ioreq_range *range;
 +
-+	/* might be used in interrupt context, so use GFP_ATOMIC */
-+	msi = kzalloc(sizeof(*msi), GFP_ATOMIC);
-+	if (!msi)
++	if (end < start) {
++		dev_err(acrn_dev.this_device,
++			"Invalid IO range [0x%llx,0x%llx]\n", start, end);
++		return -EINVAL;
++	}
++
++	range = kzalloc(sizeof(*range), GFP_KERNEL);
++	if (!range)
 +		return -ENOMEM;
 +
-+	/*
-+	 * msi_addr: addr[19:12] with dest vcpu id
-+	 * msi_data: data[7:0] with vector
-+	 */
-+	msi->msi_addr = msi_addr;
-+	msi->msi_data = msi_data;
-+	ret = hcall_inject_msi(vm->vmid, virt_to_phys(msi));
-+	if (ret < 0)
-+		dev_err(acrn_dev.this_device,
-+			"Failed to inject MSI to VM %u!\n", vm->vmid);
-+	kfree(msi);
-+	return ret;
++	range->type = type;
++	range->start = start;
++	range->end = end;
++
++	write_lock_bh(&client->range_lock);
++	list_add(&range->list, &client->range_list);
++	write_unlock_bh(&client->range_lock);
++
++	return 0;
 +}
-diff --git a/include/uapi/linux/acrn.h b/include/uapi/linux/acrn.h
-index 893389babbcb..7764459e130c 100644
---- a/include/uapi/linux/acrn.h
-+++ b/include/uapi/linux/acrn.h
-@@ -343,6 +343,16 @@ struct acrn_pcidev {
- 	__u32	reserved[6];
- } __attribute__((aligned(8)));
- 
++
 +/**
-+ * struct acrn_msi_entry - Info for injecting a MSI interrupt to a VM
-+ * @msi_addr:	MSI addr[19:12] with dest vCPU ID
-+ * @msi_data:	MSI data[7:0] with vector
++ * acrn_ioreq_range_del() - Del an iorange monitored by an ioreq client
++ * @client:	The ioreq client
++ * @type:	Type (ACRN_IOREQ_TYPE_MMIO or ACRN_IOREQ_TYPE_PORTIO)
++ * @start:	Start address of iorange
++ * @end:	End address of iorange
 + */
-+struct acrn_msi_entry {
-+	__u64	msi_addr;
-+	__u64	msi_data;
-+};
++void acrn_ioreq_range_del(struct acrn_ioreq_client *client,
++			  u32 type, u64 start, u64 end)
++{
++	struct acrn_ioreq_range *range;
 +
- /* The ioctl type, documented in ioctl-number.rst */
- #define ACRN_IOCTL_TYPE			0xA2
- 
-@@ -362,6 +372,13 @@ struct acrn_pcidev {
- #define ACRN_IOCTL_SET_VCPU_REGS	\
- 	_IOW(ACRN_IOCTL_TYPE, 0x16, struct acrn_vcpu_regs)
- 
-+#define ACRN_IOCTL_INJECT_MSI		\
-+	_IOW(ACRN_IOCTL_TYPE, 0x23, struct acrn_msi_entry)
-+#define ACRN_IOCTL_VM_INTR_MONITOR	\
-+	_IOW(ACRN_IOCTL_TYPE, 0x24, unsigned long)
-+#define ACRN_IOCTL_SET_IRQLINE		\
-+	_IOW(ACRN_IOCTL_TYPE, 0x25, __u64)
++	write_lock_bh(&client->range_lock);
++	list_for_each_entry(range, &client->range_list, list) {
++		if (type == range->type &&
++		    start == range->start &&
++		    end == range->end) {
++			list_del(&range->list);
++			kfree(range);
++			break;
++		}
++	}
++	write_unlock_bh(&client->range_lock);
++}
 +
- #define ACRN_IOCTL_NOTIFY_REQUEST_FINISH \
- 	_IOW(ACRN_IOCTL_TYPE, 0x31, struct acrn_ioreq_notify)
- #define ACRN_IOCTL_CREATE_IOREQ_CLIENT	\
+ /*
+  * ioreq_task() is the execution entity of handler thread of an I/O client.
+  * The handler callback of the I/O client is called within the handler thread.
 -- 
 2.28.0
 
