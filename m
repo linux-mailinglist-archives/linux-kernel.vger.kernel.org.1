@@ -2,167 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7701E273B81
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD5EF273B86
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729765AbgIVHN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 03:13:26 -0400
-Received: from mail-mw2nam10on2077.outbound.protection.outlook.com ([40.107.94.77]:9791
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728526AbgIVHNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 03:13:25 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nSshHqcdTVj5EXjdgaq2EqCH6TiVqi5h7QNqsYRDgUN5OiFC55PMAfwZkrHZO6KPExcHsvYHNXQN6QWNp93+mNbWV0TbDfhbpAaU33NwMdjQIfu/G8ofygfELY3vMmj4UZGxXKuSlLPENu16KWfrLL9yhhZ6s4ZwuEasNVLdnicvu3kUqD63iXihByQZ2cmLeknLjvm5UCBPPvVhhgpAqvreQqrvEpO07jOHxnQLqqMbVS4EsVSAysqjdCKz4pJOK117xZ9QdNYcnNcv40/95dOeG/M+aBrw/qXCOIC/AsmfvD7JI6F38oSyV+DqiwtubGBBdH4mDdolPwlKOYzq1A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yhZ5Bby6cSbL9Ie1syzqNxQf/n8VGdxooLRWVbfFNlk=;
- b=DiwKOnFl0W38WSt2oFNhXpq5bIuq0Ekd4Ul/9wDcJy9Msgu5zgquIwTpheMQ8aNxouiIU6NZbK+X8Ij9xAxGXZKOa8r0cAHIKJPRhULak3evP/b+NcfkYZ4ebA+UVenVlFt4XXx+wguXgzD/L/nW2RBFNdaufff8voqdKolShdTCGsjM0fVQBsYKPvrBWhMATzP9t82gX2rNYxsL2RXlnpMSsOsrHcO42i1GGEPas9Shbw7l7yN0ftZkRUYezCWPKZySaLlDnxj5Yhp0s+SCKIS0rAQn2ssGwokLd8eFikcS7WehCH70YrWF5uTpt9sL8qcdttv85Z+3j6etf5It8A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S1729769AbgIVHPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 03:15:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728526AbgIVHPD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 03:15:03 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 168A2C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 00:15:03 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id u8so16881578lff.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 00:15:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yhZ5Bby6cSbL9Ie1syzqNxQf/n8VGdxooLRWVbfFNlk=;
- b=LMcurrL9mwAlD/pKvxWGXujzUw5kupZR5QdvMrM7mbHki50IDOGMqAbB1RRjXlYp63d8ejIauuxdqjPh3xYZcCjB2QB90ro37VUsD47d6GaJugQtk8HxVXpfRJnlXGNxKi8twGVEMFOETfKZZp+pVURwbhIpdOWIPS547m6DlKk=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=windriver.com;
-Received: from SN6PR11MB3360.namprd11.prod.outlook.com (2603:10b6:805:c8::30)
- by SN6PR11MB2557.namprd11.prod.outlook.com (2603:10b6:805:56::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14; Tue, 22 Sep
- 2020 07:13:22 +0000
-Received: from SN6PR11MB3360.namprd11.prod.outlook.com
- ([fe80::4dbe:2ab5:9b68:a966]) by SN6PR11MB3360.namprd11.prod.outlook.com
- ([fe80::4dbe:2ab5:9b68:a966%7]) with mapi id 15.20.3412.020; Tue, 22 Sep 2020
- 07:13:22 +0000
-Subject: Re: [PATCH] SUNRPC: Fix svc_flush_dcache()
-To:     Chuck Lever <chuck.lever@oracle.com>
-Cc:     linux-nfs@vger.kernel.org,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Bruce Fields <bfields@fieldses.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-References: <160063136387.1537.11599713172507546412.stgit@klimt.1015granger.net>
-From:   He Zhe <zhe.he@windriver.com>
-Message-ID: <07c27f89-187b-69a3-fd40-f9beef29da40@windriver.com>
-Date:   Tue, 22 Sep 2020 15:13:14 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <160063136387.1537.11599713172507546412.stgit@klimt.1015granger.net>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: HKAPR03CA0006.apcprd03.prod.outlook.com
- (2603:1096:203:c8::11) To SN6PR11MB3360.namprd11.prod.outlook.com
- (2603:10b6:805:c8::30)
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lXslmgBel6dbSP4nCnZW17o117FCuHt4umungsqetNM=;
+        b=n4zjNj4yIBwuFZu9W/H7uqNyuv2z3J5WbadGFHWilYbdKYPFDoAk9ZE/phbNvsZwl5
+         VKOJusMUjTe6H7dk4QoX4Rmc7X2BHtKImCsRM8fp87g0LrlCbkCsIBb2MX539fyJN9C5
+         znZU449K5KenF19WH7lMIOD5o7wciz5FhgfpIxtnGzXb5T454dXbxraAfztcg+FloqlV
+         7NtJT0FvdbRdNoR14zM5njtiLNAFvy9/XhK+WG4ACmIahqB3tblmmy0BjNa7Iru7DM0b
+         GY+AuQKzZtRj+OHYhQLdRQwY5TAUCEPwKcACnWS0K0rWiC06qAla+ZLiofH2BKb0g5UE
+         LzyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lXslmgBel6dbSP4nCnZW17o117FCuHt4umungsqetNM=;
+        b=GaGQJuHBpxmexXniWXi9j+G4wDGgiK9jcUu1WYJaOGjKod+VedMx4nxW4O9SpyJAp4
+         lzpxxm95rA7Z2qmh0cdWYYlWzGbAeaHKVbXjJRkPRwcfS+vvQ81mtL+OqsyCBowebuqL
+         egFjkJGdTqd3N21ieXTSR2fB/aMa8xwrCGQCNH0wJzcO/6yPsolO8i7bDdaKFCyQfTE8
+         LH+aRD/rRT3UHxWbsK61A4yzCw3+SD1os1eDJ1C18CFRL5VQKCiUbboiLp7pK5HlAKBm
+         fwNlm9/4tZAI8sWP/zVlmZvhAB7dNV2nuLSKncIRGpG1nxFygbQrjMEIES73abixD7Xy
+         I83Q==
+X-Gm-Message-State: AOAM533kttzLpsbnLlrHruNK9N0BOHMfx5cuFMkS+bDwunVxQIhCvFnm
+        cOqYRWLOF8jB7QYK2JLsNT2jasbmUHB/OL8tLUpvQQ==
+X-Google-Smtp-Source: ABdhPJysT6MTwA7MygZEoHGPXupJtCmQdzRfsDWyphDv2uGb+uwjltWVj/j1Zq9pRf1u5Nvqsv9yS/G9n38Qh0o8nHc=
+X-Received: by 2002:ac2:43c2:: with SMTP id u2mr1103714lfl.573.1600758900983;
+ Tue, 22 Sep 2020 00:15:00 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [128.224.162.175] (60.247.85.82) by HKAPR03CA0006.apcprd03.prod.outlook.com (2603:1096:203:c8::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.4 via Frontend Transport; Tue, 22 Sep 2020 07:13:19 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 262792d6-a33e-43d2-4e43-08d85ec6fd7b
-X-MS-TrafficTypeDiagnostic: SN6PR11MB2557:
-X-Microsoft-Antispam-PRVS: <SN6PR11MB2557BBA051337FB97448496B8F3B0@SN6PR11MB2557.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3383;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xdc85fTxM2Km4CVGkU7T7vuKQR5mDi0/j0wMptNA4M9cFYDmISkrV5Nsf+7CP3O1Ez08TiteLEAFwIhPUyvbXRGIFxZqfqRoSV6Sxtan02u1QMdh/L3NcLL+mq18+nWWOyM75r7eAWJbatXsLBnW/sSPBuw3jZ72cXub+fKo/ERbALkVyvuui142fB+WdqvwV9Zdmml26Kv7Q9bQMCFcUHmgq00jgrb6wx5A+sEbzbacCJ+P9f8VDC8qHqfdIgth2PatIEyVfiBZIF86TEpZXerO+vWgXxmzy2hQuLd3X1Iam5WWS1ksUrZY8oVOo1G3y1W1KTidTqDf+N3Y5JrWXmXMWgong2n9vghmHsGUaEq8Liqd01Ml1xm5GpSXT+mpJz5urYsVLG3FjtZRHN7HQA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB3360.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(346002)(136003)(39850400004)(396003)(6486002)(66476007)(66556008)(8676002)(5660300002)(66946007)(52116002)(83380400001)(31686004)(2906002)(6666004)(2616005)(478600001)(956004)(316002)(4326008)(6916009)(53546011)(186003)(6706004)(31696002)(16526019)(8936002)(36756003)(54906003)(26005)(86362001)(16576012)(78286007)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: baw92ZpjURATg95nVpmsEXuLXuGosIjr+4msEdeipUJxXFkHhP2BeK5EDqdIdv9nj5eQsecHtcEmBPPY5eBQN/4wQv+CVf9UYXhVLx7ynxmX0cpLhqPTabYFMoJPG3BPGI48Fe1gPqBwR2p0JWeQDoPbEVjeoHy7N/fXZLbtTf0wHWzUQ722+d6Wr4mUCunyvLjLRH6PKkSETEpm6SdigoyH25IcDCpkBUjxIxVPOXsz4iGLM1HdYzihq7I0ZRe+ZKRuyObKejx8Bz0yNA2wDtlM5HNCpofJPUyyRlN+rsJCofGM7Y6iJQRJOx0taY53W16VVFhZGWDNNe5ZUme6J8VdO3CYpwHY3ApR1TKq1ZdtKfDYIsKtCy3ObmcGPRwYP7Q0kCYdYd7o8ljVdXiEaN8sXwupBIouNv03mQSCoHBeqkPJq02+mDLNE6z/UzIprWG+CEQC3qJptPAf87y39gQe13hLGUkDfoo5/te7iG/eBvYoIg2lPo+RJLOEcSYd560HSi5bD0zi+PKKpampl0s7lBK+FT8+B5+iJtkcUJ56O0LYH3vT/Gi73rfimPeAQjcPVtQBllIBllYGaWLOoUF4Wsx+zT6kDFbZEXpd4bzcZc/e/1izuqycX5Jdeu+5JiaEqHq1vZ/Z2lfEzu9f9w==
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 262792d6-a33e-43d2-4e43-08d85ec6fd7b
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB3360.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2020 07:13:22.5705
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Bl11E+2hSa2UC/0O9G+l2ea2T0TFd7119jXqZTxW4gVlRRmIpHESDqE5g2ttxi44wy3hlFo8l0MLcka6Rflpbg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB2557
+References: <20200916043103.606132-1-aubrey.li@linux.intel.com>
+ <20200916110039.GG3117@suse.de> <78d608f2-b974-e940-da32-b37777bc405a@linux.intel.com>
+ <CAKfTPtAVkg081VEGp3Hx3i7D+jxRJcyBi2=NJypvHH6HVJ8Nwg@mail.gmail.com>
+ <CAKfTPtA2yE_sFfP5MFN=K+ph7rqpYUhapUdDBJ5hFLxnQPktJw@mail.gmail.com> <af0237e0-1451-9d11-2ee2-1468a8bb6180@linux.intel.com>
+In-Reply-To: <af0237e0-1451-9d11-2ee2-1468a8bb6180@linux.intel.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Tue, 22 Sep 2020 09:14:49 +0200
+Message-ID: <CAKfTPtD71z-n2dVTpZk5tLwy5OZjkju9v5vJ-3QNHhw8Grhc_Q@mail.gmail.com>
+Subject: Re: [RFC PATCH v2] sched/fair: select idle cpu from idle cpumask in
+ sched domain
+To:     "Li, Aubrey" <aubrey.li@linux.intel.com>
+Cc:     Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Jiang Biao <benbjiang@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 22 Sep 2020 at 05:33, Li, Aubrey <aubrey.li@linux.intel.com> wrote:
+>
+> On 2020/9/21 23:21, Vincent Guittot wrote:
+> > On Mon, 21 Sep 2020 at 17:14, Vincent Guittot
+> > <vincent.guittot@linaro.org> wrote:
+> >>
+> >> On Thu, 17 Sep 2020 at 11:21, Li, Aubrey <aubrey.li@linux.intel.com> wrote:
+> >>>
+> >>> On 2020/9/16 19:00, Mel Gorman wrote:
+> >>>> On Wed, Sep 16, 2020 at 12:31:03PM +0800, Aubrey Li wrote:
+> >>>>> Added idle cpumask to track idle cpus in sched domain. When a CPU
+> >>>>> enters idle, its corresponding bit in the idle cpumask will be set,
+> >>>>> and when the CPU exits idle, its bit will be cleared.
+> >>>>>
+> >>>>> When a task wakes up to select an idle cpu, scanning idle cpumask
+> >>>>> has low cost than scanning all the cpus in last level cache domain,
+> >>>>> especially when the system is heavily loaded.
+> >>>>>
+> >>>>> The following benchmarks were tested on a x86 4 socket system with
+> >>>>> 24 cores per socket and 2 hyperthreads per core, total 192 CPUs:
+> >>>>>
+> >>>>
+> >>>> This still appears to be tied to turning the tick off. An idle CPU
+> >>>> available for computation does not necessarily have the tick turned off
+> >>>> if it's for short periods of time. When nohz is disabled or a machine is
+> >>>> active enough that CPUs are not disabling the tick, select_idle_cpu may
+> >>>> fail to select an idle CPU and instead stack tasks on the old CPU.
+> >>>>
+> >>>> The other subtlety is that select_idle_sibling() currently allows a
+> >>>> SCHED_IDLE cpu to be used as a wakeup target. The CPU is not really
+> >>>> idle as such, it's simply running a low priority task that is suitable
+> >>>> for preemption. I suspect this patch breaks that.
+> >>>>
+> >>> Thanks!
+> >>>
+> >>> I shall post a v3 with performance data, I made a quick uperf testing and
+> >>> found the benefit is still there. So I posted the patch here and looking
+> >>> forward to your comments before I start the benchmarks.
+> >>>
+> >>> Thanks,
+> >>> -Aubrey
+> >>>
+> >>> -----------------------------------------------------------------------
+> >>> diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+> >>> index fb11091129b3..43a641d26154 100644
+> >>> --- a/include/linux/sched/topology.h
+> >>> +++ b/include/linux/sched/topology.h
+> >>> @@ -65,8 +65,21 @@ struct sched_domain_shared {
+> >>>         atomic_t        ref;
+> >>>         atomic_t        nr_busy_cpus;
+> >>>         int             has_idle_cores;
+> >>> +       /*
+> >>> +        * Span of all idle CPUs in this domain.
+> >>> +        *
+> >>> +        * NOTE: this field is variable length. (Allocated dynamically
+> >>> +        * by attaching extra space to the end of the structure,
+> >>> +        * depending on how many CPUs the kernel has booted up with)
+> >>> +        */
+> >>> +       unsigned long   idle_cpus_span[];
+> >>>  };
+> >>>
+> >>> +static inline struct cpumask *sds_idle_cpus(struct sched_domain_shared *sds)
+> >>> +{
+> >>> +       return to_cpumask(sds->idle_cpus_span);
+> >>> +}
+> >>> +
+> >>>  struct sched_domain {
+> >>>         /* These fields must be setup */
+> >>>         struct sched_domain __rcu *parent;      /* top domain must be null terminated */
+> >>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> >>> index 6b3b59cc51d6..9a3c82645472 100644
+> >>> --- a/kernel/sched/fair.c
+> >>> +++ b/kernel/sched/fair.c
+> >>> @@ -6023,6 +6023,26 @@ void __update_idle_core(struct rq *rq)
+> >>>         rcu_read_unlock();
+> >>>  }
+> >>>
+> >>> +/*
+> >>> + * Update cpu idle state and record this information
+> >>> + * in sd_llc_shared->idle_cpus_span.
+> >>> + */
+> >>> +void update_idle_cpumask(struct rq *rq)
+> >>> +{
+> >>> +       struct sched_domain *sd;
+> >>> +       int cpu = cpu_of(rq);
+> >>> +
+> >>> +       rcu_read_lock();
+> >>> +       sd = rcu_dereference(per_cpu(sd_llc, cpu));
+> >>> +       if (!sd || !sd->shared)
+> >>> +               goto unlock;
+> >>> +       if (!available_idle_cpu(cpu) || !sched_idle_cpu(cpu))
+> >>> +               goto unlock;
+> >>> +       cpumask_set_cpu(cpu, sds_idle_cpus(sd->shared));
+> >>> +unlock:
+> >>> +       rcu_read_unlock();
+> >>> +}
+> >>> +
+> >>>  /*
+> >>>   * Scan the entire LLC domain for idle cores; this dynamically switches off if
+> >>>   * there are no idle cores left in the system; tracked through
+> >>> @@ -6136,7 +6156,12 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+> >>>
+> >>>         time = cpu_clock(this);
+> >>>
+> >>> -       cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+> >>> +       /*
+> >>> +        * sched_domain_shared is set only at shared cache level,
+> >>> +        * this works only because select_idle_cpu is called with
+> >>> +        * sd_llc.
+> >>> +        */
+> >>> +       cpumask_and(cpus, sds_idle_cpus(sd->shared), p->cpus_ptr);
+> >>>
+> >>>         for_each_cpu_wrap(cpu, cpus, target) {
+> >>>                 if (!--nr)
+> >>> @@ -6712,6 +6737,10 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu, int sd_flag, int wake_f
+> >>>
+> >>>                 if (want_affine)
+> >>>                         current->recent_used_cpu = cpu;
+> >>> +
+> >>> +               sd = rcu_dereference(per_cpu(sd_llc, new_cpu));
+> >>> +               if (sd && sd->shared)
+> >>> +                       cpumask_clear_cpu(new_cpu, sds_idle_cpus(sd->shared));
+> >>
+> >> Why are you clearing the bit only for the fast path ? the slow path
+> >> can also select an idle CPU
+>
+> Right, I saw idle core searching is turned off in the fast path only too,
+> because next wakeup we'll check if the CPU is idle, this only affects the
+> idle cpu searching span.
+>
+> >>
+> >> Then, I'm afraid that updating a cpumask at each and every task wakeup
+> >> will be far too expensive. That's why we are ot updating
+> >
+> > That's why we are not updating
+>
+> AFAIK, uperf/netperf is the workload with bunches of short idles, do you
+> have any other workloads in your mind? I can measure to verify this.
+> >
+> >> nohz.idle_cpus_mask at each and every enter/exit idle but only once
+> >> per tick.
+> Yes, agreed, need more think about this, especially if the data is really
+> bad.
+>
+> >>
+> >> And a quick test with hackbench on my octo cores arm64 gives for 12
+> >> iterations of: hackbench -l 2560 -g 1
+> >> tip/sched/core :  1.324(+/- 1.26%)
+> >> with this patch :  2.419(+/- 12.31%) -82% regression
+>
+> Can you please clarify this, is this running 2560 loops and 1 group?
 
+yes it's 2560 loops and 1 group and I run 12 times the bench:
+$ hackbench -l 2560 -g 1
+Running in process mode with 1 groups using 40 file descriptors each
+(== 40 tasks)
+Each sender will pass 2560 messages of 100 bytes
+Time: 2.953
 
-On 9/21/20 3:51 AM, Chuck Lever wrote:
-> On platforms that implement flush_dcache_page(), a large NFS WRITE
-> triggers the WARN_ONCE in bvec_iter_advance():
->
-> Sep 20 14:01:05 klimt.1015granger.net kernel: Attempted to advance past end of bvec iter
-> Sep 20 14:01:05 klimt.1015granger.net kernel: WARNING: CPU: 0 PID: 1032 at include/linux/bvec.h:101 bvec_iter_advance.isra.0+0xa7/0x158 [sunrpc]
->
-> Sep 20 14:01:05 klimt.1015granger.net kernel: Call Trace:
-> Sep 20 14:01:05 klimt.1015granger.net kernel:  svc_tcp_recvfrom+0x60c/0x12c7 [sunrpc]
-> Sep 20 14:01:05 klimt.1015granger.net kernel:  ? bvec_iter_advance.isra.0+0x158/0x158 [sunrpc]
-> Sep 20 14:01:05 klimt.1015granger.net kernel:  ? del_timer_sync+0x4b/0x55
-> Sep 20 14:01:05 klimt.1015granger.net kernel:  ? test_bit+0x1d/0x27 [sunrpc]
-> Sep 20 14:01:05 klimt.1015granger.net kernel:  svc_recv+0x1193/0x15e4 [sunrpc]
-> Sep 20 14:01:05 klimt.1015granger.net kernel:  ? try_to_freeze.isra.0+0x6f/0x6f [sunrpc]
-> Sep 20 14:01:05 klimt.1015granger.net kernel:  ? refcount_sub_and_test.constprop.0+0x13/0x40 [sunrpc]
-> Sep 20 14:01:05 klimt.1015granger.net kernel:  ? svc_xprt_put+0x1e/0x29f [sunrpc]
-> Sep 20 14:01:05 klimt.1015granger.net kernel:  ? svc_send+0x39f/0x3c1 [sunrpc]
-> Sep 20 14:01:05 klimt.1015granger.net kernel:  nfsd+0x282/0x345 [nfsd]
-> Sep 20 14:01:05 klimt.1015granger.net kernel:  ? __kthread_parkme+0x74/0xba
-> Sep 20 14:01:05 klimt.1015granger.net kernel:  kthread+0x2ad/0x2bc
-> Sep 20 14:01:05 klimt.1015granger.net kernel:  ? nfsd_destroy+0x124/0x124 [nfsd]
-> Sep 20 14:01:05 klimt.1015granger.net kernel:  ? test_bit+0x1d/0x27
-> Sep 20 14:01:05 klimt.1015granger.net kernel:  ? kthread_mod_delayed_work+0x115/0x115
-> Sep 20 14:01:05 klimt.1015granger.net kernel:  ret_from_fork+0x22/0x30
->
-> Reported-by: He Zhe <zhe.he@windriver.com>
-> Fixes: ca07eda33e01 ("SUNRPC: Refactor svc_recvfrom()")
-> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-> ---
->  net/sunrpc/svcsock.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> Hi Zhe-
->
-> If you confirm this fixes your issue and there are no other
-> objections or regressions, I can submit this for v5.9-rc.
+you can also have a look at perf sched pipe
+tip/sched/core
+$ perf bench sched pipe -T -l 50000
+# Running 'sched/pipe' benchmark:
+# Executed 50000 pipe operations between two threads
 
-I don't quite get why we add "seek" to "size". It seems this action does not
-reflect the actual scenario and forcedly neutralizes the WARN_ONCE check in
-bvec_iter_advance, so that it may "advance past end of bvec iter" and thus
-introduces overflow.
+     Total time: 0.980 [sec]
 
-Why don't we avoid this problem at the very begginning like my v1? That is, call
-svc_flush_bvec only when we have received more than we want to seek.
+      19.609160 usecs/op
+          50996 ops/sec
 
-        len = sock_recvmsg(svsk->sk_sock, &msg, MSG_DONTWAIT);
--       if (len > 0)
-+       if (len > 0 && (size_t)len > (seek & PAGE_MASK))
-                svc_flush_bvec(bvec, len, seek);
+With your patch :
+$ perf bench sched pipe -T -l 50000
+# Running 'sched/pipe' benchmark:
+# Executed 50000 pipe operations between two threads
 
+     Total time: 1.283 [sec]
 
-Regards,
-Zhe
+      25.674200 usecs/op
+          38949 ops/sec
+
+which is a 23% regression
+
+> 10 iterations "./hackbench 1 process 2560" on my side are:
+>
+> 5.8.10: 0.14(+/- 12.01%)
+> =========================
+> [0.089, 0.148, 0.147, 0.141, 0.143, 0.143, 0.143, 0.146, 0.143, 0.142]
+> Score:   avg - 0.1385, std - 12.01%
+>
+> With this patch
+> ================
+> [0.095, 0.142, 0.143, 0.142, 0.15, 0.146, 0.144, 0.145, 0.143, 0.145]
+> Score:   avg - 0.1395, std - 10.88%
+>
+> I didn't see such big regression.
+>
+> >>
+> >>>         }
+> >>>         rcu_read_unlock();
+> >>>
+> >>> @@ -10871,6 +10900,9 @@ static void set_next_task_fair(struct rq *rq, struct task_struct *p, bool first)
+> >>>                 /* ensure bandwidth has been allocated on our new cfs_rq */
+> >>>                 account_cfs_rq_runtime(cfs_rq, 0);
+> >>>         }
+> >>> +       /* Update idle cpumask if task has idle policy */
+> >>> +       if (unlikely(task_has_idle_policy(p)))
+> >>> +               update_idle_cpumask(rq);
+> >>
+> >> it's wrong because a sched_idle task will run for time to time even
+> >> when some cfs tasks are runnable
+> >>
+> Sorry I didn't get your point. The intention here is to add a SCHED_IDLE cpu to the idle cpumask,
+> so that this cpu can be used as a target for wakeup preemption.
+
+a cpu with sched_idle tasks can be considered idle iff there is only
+sched_idle tasks runnable. Look at sched_idle_cpu()
 
 >
+> >>>  }
+> >>>
+> >>>  void init_cfs_rq(struct cfs_rq *cfs_rq)
+> >>> diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
+> >>> index 1ae95b9150d3..876dfdfe35bb 100644
+> >>> --- a/kernel/sched/idle.c
+> >>> +++ b/kernel/sched/idle.c
+> >>> @@ -405,6 +405,7 @@ static void put_prev_task_idle(struct rq *rq, struct task_struct *prev)
+> >>>  static void set_next_task_idle(struct rq *rq, struct task_struct *next, bool first)
+> >>>  {
+> >>>         update_idle_core(rq);
+> >>> +       update_idle_cpumask(rq);
+> >>>         schedstat_inc(rq->sched_goidle);
+> >>>  }
+> >>>
+> >>> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> >>> index c82857e2e288..7a3355f61bcf 100644
+> >>> --- a/kernel/sched/sched.h
+> >>> +++ b/kernel/sched/sched.h
+> >>> @@ -1069,6 +1069,7 @@ static inline void update_idle_core(struct rq *rq)
+> >>>  #else
+> >>>  static inline void update_idle_core(struct rq *rq) { }
+> >>>  #endif
+> >>> +void update_idle_cpumask(struct rq *rq);
+> >>>
+> >>>  DECLARE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
+> >>>
+> >>> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> >>> index 9079d865a935..f14a6ef4de57 100644
+> >>> --- a/kernel/sched/topology.c
+> >>> +++ b/kernel/sched/topology.c
+> >>> @@ -1407,6 +1407,7 @@ sd_init(struct sched_domain_topology_level *tl,
+> >>>                 sd->shared = *per_cpu_ptr(sdd->sds, sd_id);
+> >>>                 atomic_inc(&sd->shared->ref);
+> >>>                 atomic_set(&sd->shared->nr_busy_cpus, sd_weight);
+> >>> +               cpumask_copy(sds_idle_cpus(sd->shared), sched_domain_span(sd));
+> >>>         }
+> >>>
+> >>>         sd->private = sdd;
+> >>> @@ -1769,7 +1770,7 @@ static int __sdt_alloc(const struct cpumask *cpu_map)
+> >>>
+> >>>                         *per_cpu_ptr(sdd->sd, j) = sd;
+> >>>
+> >>> -                       sds = kzalloc_node(sizeof(struct sched_domain_shared),
+> >>> +                       sds = kzalloc_node(sizeof(struct sched_domain_shared) + cpumask_size(),
+> >>>                                         GFP_KERNEL, cpu_to_node(j));
+> >>>                         if (!sds)
+> >>>                                 return -ENOMEM;
+> >>>
 >
-> diff --git a/net/sunrpc/svcsock.c b/net/sunrpc/svcsock.c
-> index d5805fa1d066..c2752e2b9ce3 100644
-> --- a/net/sunrpc/svcsock.c
-> +++ b/net/sunrpc/svcsock.c
-> @@ -228,7 +228,7 @@ static int svc_one_sock_name(struct svc_sock *svsk, char *buf, int remaining)
->  static void svc_flush_bvec(const struct bio_vec *bvec, size_t size, size_t seek)
->  {
->  	struct bvec_iter bi = {
-> -		.bi_size	= size,
-> +		.bi_size	= size + seek,
->  	};
->  	struct bio_vec bv;
->  
->
->
->
-
