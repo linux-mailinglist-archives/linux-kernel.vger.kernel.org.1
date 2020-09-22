@@ -2,99 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 977CB2748F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:19:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF9EB2748FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:22:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726666AbgIVTTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 15:19:36 -0400
-Received: from bedivere.hansenpartnership.com ([66.63.167.143]:56376 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726563AbgIVTTg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 15:19:36 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id B5AC88EE1C7;
-        Tue, 22 Sep 2020 12:19:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1600802375;
-        bh=YsNqVbeQd2v74WKrK117qfh0w/ViIkMCrqIU2Ydxrgc=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=c3WB2/VP3zi3D/WaHuea3ERylHCmcDIIF5djmzpGDU95dKEFoZboTgJAnesZYNYDW
-         DSmjFVE4FDs8HdgnRtei+YJDqd00j7HjcO29pR5BNwrtMa6vXKg8Y5Nmtga68qxo9h
-         WHSlzqJZqSqVQVYwKKxqFY4OisbN9RRC7t7CPzUo=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id JUcZkkX4LTgh; Tue, 22 Sep 2020 12:19:35 -0700 (PDT)
-Received: from [153.66.254.174] (c-73-35-198-56.hsd1.wa.comcast.net [73.35.198.56])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 318668EE0E0;
-        Tue, 22 Sep 2020 12:19:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1600802375;
-        bh=YsNqVbeQd2v74WKrK117qfh0w/ViIkMCrqIU2Ydxrgc=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=c3WB2/VP3zi3D/WaHuea3ERylHCmcDIIF5djmzpGDU95dKEFoZboTgJAnesZYNYDW
-         DSmjFVE4FDs8HdgnRtei+YJDqd00j7HjcO29pR5BNwrtMa6vXKg8Y5Nmtga68qxo9h
-         WHSlzqJZqSqVQVYwKKxqFY4OisbN9RRC7t7CPzUo=
-Message-ID: <260b4b85d714df822da259554ef8cc2873f3096f.camel@HansenPartnership.com>
-Subject: Re: [PATCH 0/1] Add explicit error for missing CONFIG_ASN1
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kbuild@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 22 Sep 2020 12:19:34 -0700
-In-Reply-To: <dfae4d4f-aa96-674d-93b1-d4c097e720e4@infradead.org>
-References: <20200922155341.17906-1-James.Bottomley@HansenPartnership.com>
-         <dfae4d4f-aa96-674d-93b1-d4c097e720e4@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S1726589AbgIVTWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 15:22:02 -0400
+Received: from mga09.intel.com ([134.134.136.24]:65154 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726550AbgIVTWC (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 15:22:02 -0400
+IronPort-SDR: F5hTQwBDy2fDyO9W6VhOPiOLquECHfQ6B3r/IvN/j59uuv7BU23J71NJj1KQsa/DF6cYLMe9FX
+ dPoxp+oyHZTQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9752"; a="161629257"
+X-IronPort-AV: E=Sophos;i="5.77,291,1596524400"; 
+   d="scan'208";a="161629257"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 12:22:02 -0700
+IronPort-SDR: rz+ca7oucet3OHRxohSiDugDpNelsjl8XXIahXMblWa7CoVQE44F4OiZsUEm80keEpdnAKUYJ3
+ 5xbA3gw+VK2w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,291,1596524400"; 
+   d="scan'208";a="291405671"
+Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.54.74.11])
+  by fmsmga008.fm.intel.com with ESMTP; 22 Sep 2020 12:22:01 -0700
+Received: by tassilo.localdomain (Postfix, from userid 1000)
+        id A5850301C71; Tue, 22 Sep 2020 12:22:01 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 12:22:01 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Jin Yao <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, kan.liang@intel.com,
+        yao.jin@intel.com, irogers@google.com
+Subject: Re: [PATCH v2 0/2] perf: Update CascadelakeX and SkylakeX events list
+Message-ID: <20200922192201.GK13818@tassilo.jf.intel.com>
+References: <20200922031918.3723-1-yao.jin@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922031918.3723-1-yao.jin@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-09-22 at 11:54 -0700, Randy Dunlap wrote:
-> On 9/22/20 8:53 AM, James Bottomley wrote:
-> > I recently ran into this as an error from 0day.  On x86 it's pretty
-> > much impossible to build a configuration where CONFIG_ASN1 isn't
-> > set, so you rarely notice a problem using the ASN.1 compiler
-> > because something else has selected it.  However, this compiler is
-> > never built if CONFIG_ASN1 isn't set and the error you get from
-> > kbuild is particularly unhelpful:
-> > 
-> >    make[4]: *** No rule to make target 'security/keys/trusted-
-> > keys/tpm2key.asn1.o', needed by 'security/keys/trusted-keys/built-
-> > in.a'.
-> >    make[4]: *** [scripts/Makefile.build:283: security/keys/trusted-
-> > keys/trusted_tpm2.o] Error 1
-> >    make[4]: Target '__build' not remade because of errors.
-> > 
-> > This patch changes the above error to the much easier to diagnose:
-> > 
-> >    scripts/Makefile.build:387: *** CONFIG_ASN1 must be defined for
-> > the asn1_compiler.  Stop.
-> >    make[3]: *** [scripts/Makefile.build:505: security/keys/trusted-
-> > keys] Error 2
-> > 
-> > James
-> > 
-> > ---
-> > 
-> > James Bottomley (1):
-> >   Makefile.build: Add an explicit error for missing ASN.1 compiler
-> > 
-> >  scripts/Makefile.build | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> 
-> Is there a missing
-> 	select ASN1
-> somewhere?
+On Tue, Sep 22, 2020 at 11:19:16AM +0800, Jin Yao wrote:
+> This patchset updates CascadelakeX events to v1.08 and
+> updates SkylakeX events to v1.21.
 
-You mean in the build used to produce the errors above?  Yes, so the
-patch is to make the problem more explicit.
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
 
-James
-
-
+-Andi
