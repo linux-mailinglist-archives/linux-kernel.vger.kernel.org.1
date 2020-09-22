@@ -2,72 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F96C274584
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:40:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2E3F27458A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:40:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726839AbgIVPkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 11:40:01 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:47062 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726566AbgIVPkB (ORCPT
+        id S1726849AbgIVPkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 11:40:23 -0400
+Received: from mail-il1-f196.google.com ([209.85.166.196]:33292 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726566AbgIVPkW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 11:40:01 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id B78861C0B76; Tue, 22 Sep 2020 17:39:57 +0200 (CEST)
-Date:   Tue, 22 Sep 2020 17:39:57 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Vincent Huang <vincent.huang@tw.synaptics.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH 4.19 43/49] Input: trackpoint - add new trackpoint
- variant IDs
-Message-ID: <20200922153957.GB18907@duo.ucw.cz>
-References: <20200921162034.660953761@linuxfoundation.org>
- <20200921162036.567357303@linuxfoundation.org>
+        Tue, 22 Sep 2020 11:40:22 -0400
+Received: by mail-il1-f196.google.com with SMTP id y2so7038542ila.0;
+        Tue, 22 Sep 2020 08:40:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8GdJRN6siN1K/3VUt/RzQ7dwFh0PUHODAfHPAkJXVec=;
+        b=WGB1VOEU6jpfTlda4fWmes7xisIZXnU6Tzzeqph8/n3wBAOw1Zzd+FJ+curOT93GwE
+         EkaZEedS9NkDk7+PI4hrva4N7KYDxzhmTY22Ix8InMEmNPOfO+FawxWqqw8Xr9jDNkp6
+         nxWcILJ21C3JkJzg2pXXNe3R1uz8QvhYY7x0G38GQJSYDFOFQdq0CfM7DO68biSUS/3v
+         sbs+Nxmr843R79GP+k1CPv5IhNeldoP2gLXB8+amaKE+JnXZCj8/6V4C/ACr+c49zPWC
+         q+aP+op6vxuTRbnsxS17429wALAIsiQ1Y6y1x6Hy6d3TFnzZ4r9z0b+6jGcBD6dw7bDB
+         EuvQ==
+X-Gm-Message-State: AOAM531hp0fJc1iilTU2KuDJ2eBO3I+rtTA+fYomPskh8DUMCUJVR+yx
+        o7yqgA4/0Y9liM4Z9nOKOA==
+X-Google-Smtp-Source: ABdhPJyREJxSIdBKii6r07HwAtgscFY+xZM0Hzr/ADdWxpwvmnoH8SQzW6oBqLEpp2gzISGF/n+Kjw==
+X-Received: by 2002:a92:b503:: with SMTP id f3mr4935318ile.23.1600789220548;
+        Tue, 22 Sep 2020 08:40:20 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id e4sm7533543iom.14.2020.09.22.08.40.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 08:40:19 -0700 (PDT)
+Received: (nullmailer pid 2730094 invoked by uid 1000);
+        Tue, 22 Sep 2020 15:40:18 -0000
+Date:   Tue, 22 Sep 2020 09:40:18 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-unisoc@lists.infradead.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        "moderated list:ARM/STM32 ARCHITECTURE" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:MEDIA DRIVERS FOR RENESAS - FCP" 
+        <linux-renesas-soc@vger.kernel.org>
+Subject: Re: [PATCH v2 01/13] dt-bindings: gpio: add common schema for GPIO
+ controllers
+Message-ID: <20200922154018.GA2657058@bogus>
+References: <20200917165301.23100-1-krzk@kernel.org>
+ <20200917165301.23100-2-krzk@kernel.org>
+ <CAL_JsqJCLgf6syqV=jNPHPyu02ygwWCDDV+U9VCm0qRpLkirSQ@mail.gmail.com>
+ <20200920193915.GA31074@kozik-lap>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="wq9mPyueHGvFACwf"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200921162036.567357303@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200920193915.GA31074@kozik-lap>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Sep 20, 2020 at 09:39:15PM +0200, Krzysztof Kozlowski wrote:
+> On Fri, Sep 18, 2020 at 08:30:02AM -0600, Rob Herring wrote:
+> > On Thu, Sep 17, 2020 at 10:53 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> > >
+> > > Convert parts of gpio.txt bindings into common dtschema file for GPIO
+> > > controllers.  The schema enforces proper naming of GPIO controller nodes
+> > > and GPIO hogs.
+> > 
+> > Did you not see my previous reply about a common schema? We already
+> > have a common GPIO and hog schema in dtschema. Please add to it
+> > whatever is missing.
+> 
+> Indeed, I'll enhance the dt-schema.
+> 
+> The trouble is that each in-kernel YAML file still has to mention
+> possible gpio-hogs nodes. Is the proper solution to put them in common
+> YAML inside kernel sources?
 
---wq9mPyueHGvFACwf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Currently, the gpio.yaml schema is applied to all nodes. That has the 
+advantage that GPIO related properties are always checked whether we 
+have a device specific schema or not. It has the disadvantage that you 
+can't do some constraints like required properties or what's in child 
+nodes.
 
-Hi!
+We could (and probably should) change it to be referenced by specific 
+gpio controller schemas like we do for i2c, spi, etc. Then you can 
+define required properties there and do something like:
 
-> From: Vincent Huang <vincent.huang@tw.synaptics.com>
->=20
-> commit 6c77545af100a72bf5e28142b510ba042a17648d upstream.
->=20
-> Add trackpoint variant IDs to allow supported control on Synaptics
-> trackpoints.
+"-hogs$":
+  type: object
+  $ref: gpio-hogs.yaml#
 
-This just adds unused definitions. I don't think it is needed in
-stable.
 
-Best regards,
-								Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
+> > My goal is all common schema end up in dtschema, but I haven't pushed
+> > folks to do that yet. Ones I've done are there though. One issue is
+> > what's in dtschema should be GPL/BSD and the existing text bindings
+> > are default GPL, so there's a relicensing exercise. In some cases, the
+> > schema is there but I haven't copied over the descriptions.
+> 
+> Right, I'll skip the descriptions when posting to dt-schema.
 
---wq9mPyueHGvFACwf
-Content-Type: application/pgp-signature; name="signature.asc"
+I was hoping someone would add the descriptions. :)
 
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX2oazQAKCRAw5/Bqldv6
-8t5UAJ9i/9UakFJLc278tt771ExFDDR8vwCgpxQ/Cu7Thi3AlH2z4JPDUG7ktFc=
-=HFp8
------END PGP SIGNATURE-----
-
---wq9mPyueHGvFACwf--
+Rob
