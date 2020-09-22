@@ -2,149 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BCB1273DCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 10:53:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 525A2273DCE
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 10:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726486AbgIVIxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 04:53:12 -0400
-Received: from foss.arm.com ([217.140.110.172]:57620 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726142AbgIVIxM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 04:53:12 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1086C11B3;
-        Tue, 22 Sep 2020 01:53:12 -0700 (PDT)
-Received: from [10.163.73.153] (unknown [10.163.73.153])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E25E73F718;
-        Tue, 22 Sep 2020 01:53:08 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: Re: [mm/debug_vm_pgtable/locks] e2aad6f1d2:
- BUG:unable_to_handle_page_fault_for_address
-To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        kernel test robot <rong.a.chen@intel.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com
-References: <20200921092114.GG13157@shao2-debian>
- <289c3fdb-1394-c1af-bdc4-5542907089dc@linux.ibm.com>
-Message-ID: <84ce4dc1-9763-c7df-b7b2-55000e53b502@arm.com>
-Date:   Tue, 22 Sep 2020 14:22:32 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1726515AbgIVIyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 04:54:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726430AbgIVIyi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 04:54:38 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 507BEC061755;
+        Tue, 22 Sep 2020 01:54:38 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BwZqt217Wz9sS8;
+        Tue, 22 Sep 2020 18:54:34 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1600764875;
+        bh=pqiHuE+/p5e1RTN5422hw1dR9KckX9+PEcZG+c5Jg8c=;
+        h=Date:From:To:Cc:Subject:From;
+        b=I3okOOaYXLzG/toNL6q+TYe/57n0afqYGZYQ+vTY78wu0+7LpEGkxek2hnKZUme5c
+         gbN7THtkQjK4S+IfixtWaBWDqd5wOX8bReI88Gylcw2iOm7o9NmFNF/sJtD3DNz8wr
+         UmhtMPdzyQ9Jo912+hcIXiowtXU/rIR+hwtAGXPEShC4Z6Zrq7zokQZHK5FUrC2swN
+         1zAa0szwE3ReGTN1Bw23oQVGAaodCn8xIX9mNMIm/x1b4aRl4kftheiYzSBvbNvxQT
+         xKdVa8cqYXtTMqI5pBdncI38Kkm1oFyOqxZC/5vHvxWaW/j5dEjJ/5/txioOD5uTn+
+         Jc3zvWzpWdVFg==
+Date:   Tue, 22 Sep 2020 18:54:33 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian@brauner.io>
+Cc:     Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Rientjes <rientjes@google.com>
+Subject: linux-next: manual merge of the akpm-current tree with the pidfd
+ tree
+Message-ID: <20200922185433.62eafe4c@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <289c3fdb-1394-c1af-bdc4-5542907089dc@linux.ibm.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/lE.8lsnWgmtAeriroXtV+XH";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/lE.8lsnWgmtAeriroXtV+XH
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 09/22/2020 09:33 AM, Aneesh Kumar K.V wrote:
-> On 9/21/20 2:51 PM, kernel test robot wrote:
->> Greeting,
->>
->> FYI, we noticed the following commit (built with gcc-9):
->>
->> commit: e2aad6f1d232b457ea6a3194992dd4c0a83534a5 ("mm/debug_vm_pgtable/locks: take correct page table lock")
->> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
->>
->>
->> in testcase: trinity
->> version: trinity-i386
->> with following parameters:
->>
->>     runtime: 300s
->>
->> test-description: Trinity is a linux system call fuzz tester.
->> test-url: http://codemonkey.org.uk/projects/trinity/
->>
->>
->> on test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 -m 8G
->>
->> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
->>
->>
->> +----------------------------------------------------------------------+------------+------------+
->> |                                                                      | c50eb1ed65 | e2aad6f1d2 |
->> +----------------------------------------------------------------------+------------+------------+
->> | boot_successes                                                       | 0          | 0          |
->> | boot_failures                                                        | 61         | 17         |
->> | BUG:workqueue_lockup-pool                                            | 1          |            |
->> | BUG:sleeping_function_called_from_invalid_context_at_mm/page_alloc.c | 60         | 17         |
->> | BUG:unable_to_handle_page_fault_for_address                          | 0          | 17         |
->> | Oops:#[##]                                                           | 0          | 17         |
->> | EIP:ptep_get                                                         | 0          | 17         |
->> | Kernel_panic-not_syncing:Fatal_exception                             | 0          | 17         |
->> +----------------------------------------------------------------------+------------+------------+
->>
->>
->> If you fix the issue, kindly add following tag
->> Reported-by: kernel test robot <rong.a.chen@intel.com>
->>
->>
->> [   28.726464] BUG: sleeping function called from invalid context at mm/page_alloc.c:4822
->> [   28.727835] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 1, name: swapper
->> [   28.729221] no locks held by swapper/1.
->> [   28.729954] CPU: 0 PID: 1 Comm: swapper Not tainted 5.9.0-rc3-00324-ge2aad6f1d232b4 #1
->> [   28.731484] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
->> [   28.732891] Call Trace:
->> [   28.733295]  ? show_stack+0x48/0x50
->> [   28.733943]  dump_stack+0x1b/0x1d
->> [   28.734569]  ___might_sleep+0x205/0x219
->> [   28.735292]  __might_sleep+0x106/0x10f
->> [   28.736022]  __alloc_pages_nodemask+0xe0/0x2c8
->> [   28.736845]  swap_migration_tests+0x62/0x295
->> [   28.737639]  debug_vm_pgtable+0x587/0x9b5
->> [   28.738374]  ? pte_advanced_tests+0x267/0x267
->> [   28.739318]  do_one_initcall+0x129/0x31c
->> [   28.740023]  ? rcu_read_lock_sched_held+0x46/0x74
->> [   28.740944]  kernel_init_freeable+0x201/0x250
->> [   28.741763]  ? rest_init+0xf8/0xf8
->> [   28.742401]  kernel_init+0xe/0x15d
->> [   28.743040]  ? rest_init+0xf8/0xf8
->> [   28.743694]  ret_from_fork+0x1c/0x30
-> 
-> 
-> This should be fixed by
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/mm/debug_vm_pgtable.c?id=3a4f9a45eadb6ed5fc04686e8db4dc7bb1caec44
-> 
->> [   28.744364] BUG: unable to handle page fault for address: fffbbea4
->> [   28.745465] #PF: supervisor read access in kernel mode
->> [   28.746373] #PF: error_code(0x0000) - not-present page
->> [   28.747275] *pde = 0492b067 *pte = 00000000
->> [   28.748054] Oops: 0000 [#1]
->> [   28.748548] CPU: 0 PID: 1 Comm: swapper Tainted: G        W         5.9.0-rc3-00324-ge2aad6f1d232b4 #1
->> [   28.750188] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
->> [   28.751641] EIP: ptep_get+0x0/0x3
->> [   28.752226] Code: 5d fc c9 c3 55 c1 e8 1a 89 e5 53 31 db 83 f8 1f 6a 00 0f 94 c3 b8 80 67 02 c4 31 c9 89 da e8 16 5c f1 ff 89 d8 8b 5d fc c9 c3 <8b> 00 c3 55 31 c9 89 e5 57 56 53 8b 70 04 89 c3 b8 10 68 02 c4 6a
->> [   28.755465] EAX: fffbbea4 EBX: fffbbea4 ECX: 000047bd EDX: fffbbea4
->> [   28.756418] ESI: 000047bd EDI: 00000025 EBP: f406bed8 ESP: f406bebc
->> [   28.757522] DS: 007b ES: 007b FS: 0000 GS: 0000 SS: 0068 EFLAGS: 00010286
->> [   28.758739] CR0: 80050033 CR2: fffbbea4 CR3: 04928000 CR4: 000406d0
->> [   28.759828] Call Trace:
->> [   28.760235]  ? hugetlb_advanced_tests+0x2a/0x27f
->> [   28.761099]  ? do_raw_spin_unlock+0xd7/0x112
->> [   28.761872]  debug_vm_pgtable+0x927/0x9b5
->> [   28.762578]  ? pte_advanced_tests+0x267/0x267
->> [   28.763462]  do_one_initcall+0x129/0x31c
->> [   28.764134]  ? rcu_read_lock_sched_held+0x46/0x74
->> [   28.764948]  kernel_init_freeable+0x201/0x250
->> [   28.765654]  ? rest_init+0xf8/0xf8
->> [   28.766277]  kernel_init+0xe/0x15d
->> [   28.766878]  ? rest_init+0xf8/0xf8
->> [   28.767488]  ret_from_fork+0x1c/0x30
->> [   28.768052] Modules linked in:
->> [   28.768532] CR2: 00000000fffbbea4
->> [   28.769065] ---[ end trace 9c4395cf49c7b3e7 ]---
->>
-> 
-> IIUC, Anshuman is reworking the test to follow the page table update rules.
+Today's linux-next merge of the akpm-current tree got a conflict in:
 
-The failure here has been attributed to this particular patch, and
-IIRC we did not see this particular failure before this series.
+  kernel/exit.c
+
+between commit:
+
+  ba7d25f3dff6 ("exit: support non-blocking pidfds")
+
+from the pidfd tree and patch:
+
+  "pid: move pidfd_get_pid() to pid.c"
+
+from the akpm-current tree.
+
+I fixed it up (I made the changes from the former to kernel/pid.c - see
+below) and can carry the fix as necessary. This is now fixed as far as
+linux-next is concerned, but any non trivial conflicts should be mentioned
+to your upstream maintainer when your tree is submitted for merging.
+You may also want to consider cooperating with the maintainer of the
+conflicting tree to minimise any particularly complex conflicts.
+
+I also had to add the following fix patch after
+
+  "mm/madvise: introduce process_madvise() syscall: an external memory hint=
+ing API"
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Tue, 22 Sep 2020 18:36:35 +1000
+Subject: [PATCH] fix up for pidfd_get_pid() API change
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ mm/madvise.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/mm/madvise.c b/mm/madvise.c
+index a0ebeb5e2411..51317bd3c69d 100644
+--- a/mm/madvise.c
++++ b/mm/madvise.c
+@@ -1189,11 +1189,12 @@ static ssize_t do_process_madvise(int pidfd, struct=
+ iov_iter *iter,
+ 	struct task_struct *task;
+ 	struct mm_struct *mm;
+ 	size_t total_len =3D iov_iter_count(iter);
++	unsigned int pidfd_flags;
+=20
+ 	if (flags !=3D 0)
+ 		return -EINVAL;
+=20
+-	pid =3D pidfd_get_pid(pidfd);
++	pid =3D pidfd_get_pid(pidfd, &pidfd_flags);
+ 	if (IS_ERR(pid))
+ 		return PTR_ERR(pid);
+=20
+--=20
+2.28.0
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --git a/include/linux/pid.h b/include/linux/pid.h
+index 176d6cf80e7c..fa10acb8d6a4 100644
+--- a/include/linux/pid.h
++++ b/include/linux/pid.h
+@@ -77,7 +77,7 @@ extern const struct file_operations pidfd_fops;
+ struct file;
+=20
+ extern struct pid *pidfd_pid(const struct file *file);
+-struct pid *pidfd_get_pid(unsigned int fd);
++struct pid *pidfd_get_pid(unsigned int fd, unsigned int *flags);
+=20
+ static inline struct pid *get_pid(struct pid *pid)
+ {
+diff --git a/kernel/pid.c b/kernel/pid.c
+index c791fe63fa36..47466d0bbc5b 100644
+--- a/kernel/pid.c
++++ b/kernel/pid.c
+@@ -520,7 +520,7 @@ struct pid *find_ge_pid(int nr, struct pid_namespace *n=
+s)
+ 	return idr_get_next(&ns->idr, &nr);
+ }
+=20
+-struct pid *pidfd_get_pid(unsigned int fd)
++struct pid *pidfd_get_pid(unsigned int fd, unsigned int *flags)
+ {
+ 	struct fd f;
+ 	struct pid *pid;
+@@ -530,8 +530,10 @@ struct pid *pidfd_get_pid(unsigned int fd)
+ 		return ERR_PTR(-EBADF);
+=20
+ 	pid =3D pidfd_pid(f.file);
+-	if (!IS_ERR(pid))
++	if (!IS_ERR(pid)) {
+ 		get_pid(pid);
++		*flags =3D f.file->f_flags;
++	}
+=20
+ 	fdput(f);
+ 	return pid;
+
+--Sig_/lE.8lsnWgmtAeriroXtV+XH
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9pu8kACgkQAVBC80lX
+0Gx4sQf+NFW8HcJdvvomweVUMeacS0KZw2s9GONociNxULMqeuTK08rJ+wd2eN6T
+VNCSt9fDFR03W7Udkux/WuTGb96KQLQhLRVAjdx74LjIohlJCI6xfUvF/+eNT4NS
+rKVsvajRCdeYCnqoDiRBSGWE2Tf7lSb5yBSTeIgAHY7h8yAIE6F12wzxSmbsbUSK
+dS7P7gXAva6AKV0dGANFk3I+OQhCdWGN0F/oXBA0ixDNs6f9864MQXx+9Dm6F588
+4pOVr/mmsmgF42FDqdImv7wWHni5OM/1MOe8CYvW/HI7vq4iU315OnNKVV1ABuHN
+iMGN5ooqpduoLWh32xVXSFhmDFp1Ig==
+=grFY
+-----END PGP SIGNATURE-----
+
+--Sig_/lE.8lsnWgmtAeriroXtV+XH--
