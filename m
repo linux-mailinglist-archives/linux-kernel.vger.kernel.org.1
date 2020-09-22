@@ -2,193 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DC462741C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DD392741C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:07:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726620AbgIVMHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 08:07:38 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:64402 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726533AbgIVMHi (ORCPT
+        id S1726631AbgIVMHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 08:07:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726533AbgIVMHq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 08:07:38 -0400
+        Tue, 22 Sep 2020 08:07:46 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03FA7C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 05:07:46 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id f18so12236696pfa.10
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 05:07:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1600776457; x=1632312457;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   in-reply-to:content-transfer-encoding;
-  bh=EbMxVxxFklRKS3zGijxq8O1nhhE8A4FeT/IHUzpIBpg=;
-  b=CxHmzwgbsYbcuRpq5gRr0I/ee9JDRtaJVuGTgq/tAO7/0jE+LTKRQe9S
-   em81zz7F/7DkGCpYPJZKmh1bodtdzQYAN5SdoEm6dfqS6wxrgDpR1bv9o
-   ReUP/4iQ9HCJhoRWfkNTktocXWKCkeVYL+0+0kYAZUDDahW7vTxWtYES+
-   c=;
-X-IronPort-AV: E=Sophos;i="5.77,290,1596499200"; 
-   d="scan'208";a="70077024"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-90c42d1d.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 22 Sep 2020 12:07:33 +0000
-Received: from EX13D31EUA004.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2a-90c42d1d.us-west-2.amazon.com (Postfix) with ESMTPS id 790E9A18C9;
-        Tue, 22 Sep 2020 12:07:32 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.160.185) by
- EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 22 Sep 2020 12:07:25 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>
-CC:     SeongJae Park <sjpark@amazon.com>, <konrad.wilk@oracle.com>,
-        <jgross@suse.com>, SeongJae Park <sjpark@amazon.de>,
-        <axboe@kernel.dk>, <aliguori@amazon.com>, <amit@kernel.org>,
-        <mheyne@amazon.de>, <pdurrant@amazon.co.uk>,
-        <linux-block@vger.kernel.org>, <xen-devel@lists.xenproject.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] xen-blkback: add a parameter for disabling of persistent grants
-Date:   Tue, 22 Sep 2020 14:07:10 +0200
-Message-ID: <20200922120710.24685-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=5w6SYj6vWVMvIwwfbbKQJ7hkdAAvG6nTX7Ove35nPyQ=;
+        b=CtryYgyTS+ASsBVG1pv29mIdumxIuR/lxW9K3GOAsKANseouwbzROqgz1VNXu+CW3t
+         nt/zHTOJgQput8qHHYKRuV2cJvFHOUroiBo6qCJs+fArbqb7I2Ev5T4rjl5CbBpQQptv
+         aHkUx+JL72eRIN7f5JrYkiJ0rED3VhAvO6SW2/pXhSxF0MTDxs+oecBXoSXLhObr27/A
+         eHdnqnguq6NZvvhLCfvSRj0LPoGS3Q0kwEq24FoOJAE8FhDbUYOqe7WTEMS+FbhdQx1E
+         YXjjmpLzZ5wgHeuoONwsWJ3XiIlq1YzyHVptyRNn8hd6S/rHkXSMMZxHESXjSg3k5EC9
+         JpJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=5w6SYj6vWVMvIwwfbbKQJ7hkdAAvG6nTX7Ove35nPyQ=;
+        b=HkBNZevggrj1ZF1Fqof/4Dk5beea1IoGJhowK5criRzDiOKTPPzo42+MBYW6UNulFr
+         Y2gv6Fnqml3TPsXw4dAqvnIYTz7+DBMGl0TaCcHZM8zjowGsk0bkEDaZhs9QUymDAimV
+         AX62KATDeRTYezNH9bpI5YA7MPm6Piwo2RJZEqdpzq/3ZeDhDRhWL55NfRXd+fJ+6Jda
+         R/xwKWYLSinedMcBrEoEAc61kEdYsZD3Ukv/QFB+bJAhyocBTiGfwcdAcmFGIXPefqdh
+         199mJI9elPEyiPhODLxxDjZmf/Vi9O7TsFUEnZU2O/F5AwZvqSk0jB86l8P0a4rLDxVE
+         Iy7w==
+X-Gm-Message-State: AOAM530ZPFDlAM5yXQ5BpTM7wVUqbVM5ckhw8wtlTn+Foy6LXKBPnfwG
+        qk3NId1U0arB5Y8h6q1PbQTfVw==
+X-Google-Smtp-Source: ABdhPJx6T7KnM9MqwtLugPvi3nz330TRm2l5rZXYyEZSHIBJb69POrkDVr82YgEQjWsuN69viztsnw==
+X-Received: by 2002:a63:5848:: with SMTP id i8mr3276774pgm.269.1600776465341;
+        Tue, 22 Sep 2020 05:07:45 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([2600:3c01::f03c:91ff:fe8a:bb03])
+        by smtp.gmail.com with ESMTPSA id z4sm14884008pfr.197.2020.09.22.05.07.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 22 Sep 2020 05:07:44 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 20:07:32 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kemeng Shi <shikemeng@huawei.com>,
+        Ian Rogers <irogers@google.com>,
+        Remi Bernon <rbernon@codeweavers.com>,
+        Nick Gasson <nick.gasson@arm.com>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Steve MacLean <Steve.MacLean@Microsoft.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Zou Wei <zou_wei@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 0/6] Perf tool: Support TSC for Arm64
+Message-ID: <20200922120732.GB15124@leoy-ThinkPad-X240s>
+References: <20200914115311.2201-1-leo.yan@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20200922113511.GK19254@Air-de-Roger>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.43.160.185]
-X-ClientProxiedBy: EX13D50UWC002.ant.amazon.com (10.43.162.189) To
- EX13D31EUA004.ant.amazon.com (10.43.165.161)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200914115311.2201-1-leo.yan@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Sep 2020 13:35:11 +0200 "Roger Pau Monné" <roger.pau@citrix.com> wrote:
+Hi Arnaldo,
 
-> On Tue, Sep 22, 2020 at 01:26:38PM +0200, SeongJae Park wrote:
-> > On Tue, 22 Sep 2020 13:12:59 +0200 "Roger Pau Monné" <roger.pau@citrix.com> wrote:
-> > 
-> > > On Tue, Sep 22, 2020 at 12:52:07PM +0200, SeongJae Park wrote:
-> > > > From: SeongJae Park <sjpark@amazon.de>
-> > > > 
-> > > > Persistent grants feature provides high scalability.  On some small
-> > > > systems, however, it could incur data copy overheads[1] and thus it is
-> > > > required to be disabled.  But, there is no option to disable it.  For
-> > > > the reason, this commit adds a module parameter for disabling of the
-> > > > feature.
-> > > > 
-> > > > [1] https://wiki.xen.org/wiki/Xen_4.3_Block_Protocol_Scalability
-> > > > 
-> > > > Signed-off-by: Anthony Liguori <aliguori@amazon.com>
-> > > > Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> > > > ---
-> > > >  .../ABI/testing/sysfs-driver-xen-blkback      |  9 ++++++
-> > > >  drivers/block/xen-blkback/xenbus.c            | 28 ++++++++++++++-----
-> > > >  2 files changed, 30 insertions(+), 7 deletions(-)
-> > > > 
-> > > > diff --git a/Documentation/ABI/testing/sysfs-driver-xen-blkback b/Documentation/ABI/testing/sysfs-driver-xen-blkback
-> > > > index ecb7942ff146..ac2947b98950 100644
-> > > > --- a/Documentation/ABI/testing/sysfs-driver-xen-blkback
-> > > > +++ b/Documentation/ABI/testing/sysfs-driver-xen-blkback
-> > > > @@ -35,3 +35,12 @@ Description:
-> > > >                  controls the duration in milliseconds that blkback will not
-> > > >                  cache any page not backed by a grant mapping.
-> > > >                  The default is 10ms.
-> > > > +
-> > > > +What:           /sys/module/xen_blkback/parameters/feature_persistent
-> > > > +Date:           September 2020
-> > > > +KernelVersion:  5.10
-> > > > +Contact:        SeongJae Park <sjpark@amazon.de>
-> > > > +Description:
-> > > > +                Whether to enable the persistent grants feature or not.  Note
-> > > > +                that this option only takes effect on newly created backends.
-> > > > +                The default is Y (enable).
-> > > > diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
-> > > > index b9aa5d1ac10b..8a95ddd08b13 100644
-> > > > --- a/drivers/block/xen-blkback/xenbus.c
-> > > > +++ b/drivers/block/xen-blkback/xenbus.c
-> > > > @@ -879,6 +879,12 @@ static void reclaim_memory(struct xenbus_device *dev)
-> > > >  
-> > > >  /* ** Connection ** */
-> > > >  
-> > > > +/* Enable the persistent grants feature. */
-> > > > +static bool feature_persistent = true;
-> > > > +module_param(feature_persistent, bool, 0644);
-> > > > +MODULE_PARM_DESC(feature_persistent,
-> > > > +		"Enables the persistent grants feature");
-> > > > +
-> > > >  /*
-> > > >   * Write the physical details regarding the block device to the store, and
-> > > >   * switch to Connected state.
-> > > > @@ -906,11 +912,15 @@ static void connect(struct backend_info *be)
-> > > >  
-> > > >  	xen_blkbk_barrier(xbt, be, be->blkif->vbd.flush_support);
-> > > >  
-> > > > -	err = xenbus_printf(xbt, dev->nodename, "feature-persistent", "%u", 1);
-> > > > -	if (err) {
-> > > > -		xenbus_dev_fatal(dev, err, "writing %s/feature-persistent",
-> > > > -				 dev->nodename);
-> > > > -		goto abort;
-> > > > +	if (feature_persistent) {
-> > > > +		err = xenbus_printf(xbt, dev->nodename, "feature-persistent",
-> > > > +				"%u", feature_persistent);
-> > > > +		if (err) {
-> > > > +			xenbus_dev_fatal(dev, err,
-> > > > +					"writing %s/feature-persistent",
-> > > > +					dev->nodename);
-> > > > +			goto abort;
-> > > > +		}
-> > > >  	}
-> > > >  
-> > > >  	err = xenbus_printf(xbt, dev->nodename, "sectors", "%llu",
-> > > > @@ -1093,8 +1103,12 @@ static int connect_ring(struct backend_info *be)
-> > > >  		xenbus_dev_fatal(dev, err, "unknown fe protocol %s", protocol);
-> > > >  		return -ENOSYS;
-> > > >  	}
-> > > > -	pers_grants = xenbus_read_unsigned(dev->otherend, "feature-persistent",
-> > > > -					   0);
-> > > > +	if (feature_persistent)
-> > > > +		pers_grants = xenbus_read_unsigned(dev->otherend,
-> > > > +				"feature-persistent", 0);
-> > > > +	else
-> > > > +		pers_grants = 0;
-> > > > +
-> > > 
-> > > Sorry for not realizing earlier, but looking at it again I think you
-> > > need to cache the value of feature_persistent when it's first used in
-> > > the blkback state data, so that it's consistent.
-> > > 
-> > > What would happen for example with the following flow (assume a
-> > > persistent grants enabled frontend):
-> > > 
-> > > feature_persistent = false
-> > > 
-> > > connect(...)
-> > > feature-persistent is not written to xenstore
-> > > 
-> > > User changes feature_persistent = true
-> > > 
-> > > connect_ring(...)
-> > > pers_grants = true, because feature-persistent is set unconditionally
-> > > by the frontend and feature_persistent variable is now true.
-> > > 
-> > > Then blkback will try to use persistent grants and the whole
-> > > connection will malfunction because the frontend won't.
-> > 
-> > Ah, you're right.  I should also catch this before but didn't, sorry.
-> > 
-> > > 
-> > > The other option is to prevent changing the variable when there are
-> > > blkback instances already running.
-> > 
-> > I think storing the option value in xenstore would be simpler.  That said, if
-> > you prefer this way, please let me know.
+On Mon, Sep 14, 2020 at 07:53:05PM +0800, Leo Yan wrote:
+> This patch set is to refactor TSC implementation and move TSC code from
+> x86 folder to util/tsc.c, this allows all archs to reuse the code.  And
+> alse move the TSC testing from x86 folder to tests so can work as a
+> common testing.
 > 
-> If possible I prefer to avoid reading from xenstore because it's slow,
-> very slow compared to storing this somewhere in the blkback
-> structure.
-
-Agreed.
-
+> So far, for x86 it needs to support cap_user_time_zero and for Arm64
+> it needs to support cap_user_time_short.  For architecture specific
+> code, every arch only needs to implement its own rdtsc() to read out
+> timer's counter.
 > 
-> Could you use the feature_gnt_persistent field in xen_vbd maybe as a
-> place to cache the value before it's set with the final negotiated
-> value between the frontend and the backend?
+> This patch set has been rebased on the perf/core branch with latest
+> commit b1f815c479c1 ("perf vendor events power9: Add hv_24x7 core level
+> metric events") and tested on Arm64 DB410c.
 
-Ok, I will do so in the next version.
+Could you pick up this patch set?  Thanks!
 
+Leo
 
-Thanks,
-SeongJae Park
+>   $ perf test list
+>     [...]
+>     68: Convert perf time to TSC
+>     [...]
+> 
+>   $ perf test 68 -v
+>     68: Convert perf time to TSC
+>     --- start ---
+>     test child forked, pid 10961
+>     mmap size 528384B
+>     1st event perf time 35715036563417 tsc 686221770989
+>     rdtsc          time 35715036649719 tsc 686221772647
+>     2nd event perf time 35715036660448 tsc 686221772852
+>     test child finished with 0
+>     ---- end ----
+>     Convert perf time to TSC: Ok
+> 
+> Changes from v3:
+> * Added comments for Arm64's rdtsc() for short counter (PeterZ);
+> * Rebased on latest acme/perf/core branch.
+> 
+> Changes from v2:
+> * Refactored patch set to move TSC common code to util/tsc.c (Wei/Al);
+> * Moved TSC testing to perf/tests (Wei);
+> * Dropped Arm SPE timestamp patch so can have clear purpose and easier
+>   reviewing; will send Arm SPE timestamp as separate patch.
+> 
+> 
+> Leo Yan (6):
+>   perf tsc: Move out common functions from x86
+>   perf tsc: Add rdtsc() for Arm64
+>   perf tsc: Calculate timestamp with cap_user_time_short
+>   perf tsc: Support cap_user_time_short for event TIME_CONV
+>   perf tests tsc: Make tsc testing as a common testing
+>   perf tests tsc: Add checking helper is_supported()
+> 
+>  tools/lib/perf/include/perf/event.h           |  4 +
+>  tools/perf/arch/arm64/util/Build              |  1 +
+>  tools/perf/arch/arm64/util/tsc.c              | 21 +++++
+>  tools/perf/arch/x86/include/arch-tests.h      |  1 -
+>  tools/perf/arch/x86/tests/Build               |  1 -
+>  tools/perf/arch/x86/tests/arch-tests.c        |  4 -
+>  tools/perf/arch/x86/util/tsc.c                | 73 +----------------
+>  tools/perf/tests/Build                        |  1 +
+>  tools/perf/tests/builtin-test.c               |  5 ++
+>  .../{arch/x86 => }/tests/perf-time-to-tsc.c   | 13 +++
+>  tools/perf/tests/tests.h                      |  2 +
+>  tools/perf/util/jitdump.c                     | 14 ++--
+>  tools/perf/util/synthetic-events.c            |  8 --
+>  tools/perf/util/tsc.c                         | 81 +++++++++++++++++++
+>  tools/perf/util/tsc.h                         |  5 ++
+>  15 files changed, 143 insertions(+), 91 deletions(-)
+>  create mode 100644 tools/perf/arch/arm64/util/tsc.c
+>  rename tools/perf/{arch/x86 => }/tests/perf-time-to-tsc.c (93%)
+> 
+> -- 
+> 2.17.1
+> 
