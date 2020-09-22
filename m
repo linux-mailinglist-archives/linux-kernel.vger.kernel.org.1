@@ -2,120 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE0D2746C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DF3F2746CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726623AbgIVQjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 12:39:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726558AbgIVQjE (ORCPT
+        id S1726641AbgIVQjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 12:39:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30680 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726558AbgIVQjW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 12:39:04 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5ACFC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 09:39:03 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id w11so18777340lfn.2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 09:39:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jEYTUxgXf40ffFyDS+gnGY/I2xLCtPOv98IxbY5PcTE=;
-        b=vOV/OC35IQit1BTLpem91agoDvtw5gjPaKc/7lAUwUYI0y07sEIztMRGiFKE6LeF2u
-         eT7t0L3xzRw3jDW4lXZ/yaDOlhSfz67HXlxnue8IPa0cgbvRv5BrmuZTKyCvlAS7mSw3
-         9iTm75vXDy507oA69frPL/F/2zSY/lqWXoo+/g+GoMrl8vatMmeelpw+RwS2w+v0XHJb
-         s50kW/BU+DCtxU3JvAbzT7W/zcfa4T64mzMuJ5xyF2BN9qHRQKdIMXKmGGjJ3qsOGtjU
-         xXLSDQi17w3dFe4bEUH+S3y6KXIySyI6/Igw9+kY7l6IA8kxfc5duL41rENxCNAWcumF
-         IQ9A==
+        Tue, 22 Sep 2020 12:39:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600792760;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9xBbtaESBNONtl2sEaNAAY6yvG0vlYmdzD4boWs1/M0=;
+        b=L6Qp5xTl2GkuyCK61UFbRgZt9AO47xQESnFQD3mWlum3nnilSucsyqdXT6qRdLt/mNVYj5
+        wgdR+vr4/YJkmoYcpU3bg8l/unuj1i6pLomYt7P2jqbzYb2PZoT3acon1XTVKwAgSMUxDm
+        b5rl1y8+zEdgxClemgte/YEXKh5zOKg=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-147-aQQRvrsYMxOFXp_YgO-k1A-1; Tue, 22 Sep 2020 12:39:19 -0400
+X-MC-Unique: aQQRvrsYMxOFXp_YgO-k1A-1
+Received: by mail-wr1-f70.google.com with SMTP id b2so1481953wrs.7
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 09:39:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jEYTUxgXf40ffFyDS+gnGY/I2xLCtPOv98IxbY5PcTE=;
-        b=SDteUrij3RqliQ8VWtOnVwB6Ft98IS8K5w0qWG1rtv6LqLa6o/H/uYTd0GqFTZd4zd
-         2ok92BEYL0cRSTL5k5Ls4YGtF6MpyXbjxHlfKnovy6xVwd/zvcIsk4tu/SFT/Hg3bazB
-         brgoMt6kQ3stFCrcFAc/i21tbf5vx93s2ocdxjXj73xYqntGZujU47wA/fn63fh1CdNC
-         jxSFRGvPGhHm0qYBgeEk6NyaUL4dIROEnoEnjTEYqSfjsg1W5VLF/T24FGE9Z8/MuOZ9
-         kEmm0TGHOsBtLuOgKgb45IqI2R6qYIuNZ8Mtz1Dp3v4QZpdTlNp18XQ5MWDqeyqDPyZI
-         qu0w==
-X-Gm-Message-State: AOAM531ybcqNe/j5YK60i3/0EEiPFYPNvrFlzrYmPgHqzQ/LNzRwAmTB
-        dJU445t+apK8c2kjb8VS2v1e6g==
-X-Google-Smtp-Source: ABdhPJwe51281cmBUhyqJO54eaqY8oLkb7qacqZy1e2LOCYbeZm+HGuE34uHDPz5CWSqywUWX6D6cA==
-X-Received: by 2002:ac2:54b4:: with SMTP id w20mr2092932lfk.13.1600792742314;
-        Tue, 22 Sep 2020 09:39:02 -0700 (PDT)
-Received: from jade (h-249-223.A175.priv.bahnhof.se. [98.128.249.223])
-        by smtp.gmail.com with ESMTPSA id 21sm3636499lfg.263.2020.09.22.09.39.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 09:39:01 -0700 (PDT)
-Date:   Tue, 22 Sep 2020 18:38:59 +0200
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-To:     Jorge Ramirez-Ortiz <jorge@foundries.io>
-Cc:     sumit.garg@linaro.org, ricardo@foundries.io, mike@foundries.io,
-        tee-dev@lists.linaro.org, linux-kernel@vger.kernel.org,
-        op-tee@lists.trustedfirmware.org
-Subject: Re: [PATCH] drivers: optee: i2c: add bus retry configuration
-Message-ID: <20200922163859.GA1518183@jade>
-References: <20200916152732.23604-1-jorge@foundries.io>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9xBbtaESBNONtl2sEaNAAY6yvG0vlYmdzD4boWs1/M0=;
+        b=HeB6nvHc+El8jmD0sTXA750S/2rIKuiBMbNqpbEVvmX7ZxpcDGRQG81udN6bpZdylh
+         pV0VqmQ7nmdSXFodz7k7UFwbVDUsTRM/QCv0uN6wUOnD1VOjRmX1BsgESBYLVgltSiGH
+         bdOM3gCjabci9+pfPFfNMp7OBS4p1RtP5EX7RFZXzHidF9yvbm5BbcpAgtxonvLQMsWg
+         IDdsqJU25XTv5tZmgPB1xbJVjL5fabDEDkuh/YgmyFUjrm9CHhHQRfUUEsB31btBeIc/
+         7uIo+oQEVSIK3PHHUTnxKYtnnmlp4izUBA6VGdSIl20djKxXjFXXN2Ax7tJ5IAaQAFma
+         hHLw==
+X-Gm-Message-State: AOAM531rgKK01Ec9c/eS0j3wVECtaEQCcojXLDH336l9yK9aXA8UI/57
+        uH/SqfRzyPZFPjzXMwHV2mQJD7PtL3pDW+ccZ0pLK8AWkw235RbbmJr7lJOUqMs15zbBU4vxiu2
+        YaOS/BKgAAfhi2UFbBrZMH9sl
+X-Received: by 2002:a5d:69c9:: with SMTP id s9mr6311136wrw.348.1600792757923;
+        Tue, 22 Sep 2020 09:39:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy55yy1otoo4eP/r/wzYIY/yD2fT568vjN8DvRtJ7I7RnyRbSpv6lMckPNIRrBW7YhJr2SF1Q==
+X-Received: by 2002:a5d:69c9:: with SMTP id s9mr6311107wrw.348.1600792757673;
+        Tue, 22 Sep 2020 09:39:17 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:ec2c:90a9:1236:ebc6? ([2001:b07:6468:f312:ec2c:90a9:1236:ebc6])
+        by smtp.gmail.com with ESMTPSA id r15sm4982205wmn.24.2020.09.22.09.39.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Sep 2020 09:39:17 -0700 (PDT)
+Subject: Re: [PATCH v2 1/1] KVM: x86: fix MSR_IA32_TSC read for nested
+ migration
+To:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+References: <20200921103805.9102-1-mlevitsk@redhat.com>
+ <20200921103805.9102-2-mlevitsk@redhat.com>
+ <20200921162326.GB23989@linux.intel.com>
+ <de9411ce-aa83-77c8-b2ae-a3873250a0b1@redhat.com>
+ <7db1383cc9d40f76a02076c3b86cf832fd7463cc.camel@redhat.com>
+ <5d19bbf5bcc4975e4ac6c4aef8b92b4a1ed4bc16.camel@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <a0821152-19b7-9d46-aefd-759f462902b7@redhat.com>
+Date:   Tue, 22 Sep 2020 18:39:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
+In-Reply-To: <5d19bbf5bcc4975e4ac6c4aef8b92b4a1ed4bc16.camel@redhat.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200916152732.23604-1-jorge@foundries.io>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 05:27:32PM +0200, Jorge Ramirez-Ortiz wrote:
-> Allow OP-TEE to specify the number of retries in the adaptor.
+On 22/09/20 17:39, Maxim Levitsky wrote:
+>>> I'll talk to Maxim and see if he can work on the kvmclock migration stuff.
 > 
-> Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
-> ---
->  drivers/tee/optee/rpc.c | 7 +++++++
->  1 file changed, 7 insertions(+)
+> We talked about this on IRC and now I am also convinced that we should implement
+> proper TSC migration instead, so I guess I'll drop this patch and I will implement it.
 > 
-> diff --git a/drivers/tee/optee/rpc.c b/drivers/tee/optee/rpc.c
-> index 1e3614e4798f..2d46a9ecb1de 100644
-> --- a/drivers/tee/optee/rpc.c
-> +++ b/drivers/tee/optee/rpc.c
-> @@ -58,6 +58,7 @@ static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
->  	struct tee_param *params;
->  	size_t i;
->  	int ret = -EOPNOTSUPP;
-> +	int retries = 0;
->  	u8 attr[] = {
->  		TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT,
->  		TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT,
-> @@ -102,12 +103,17 @@ static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
->  	client.addr = params[0].u.value.c;
->  	snprintf(client.name, I2C_NAME_SIZE, "i2c%d", client.adapter->nr);
+> Last few weeks I was digging through all the timing code, and I mostly understand it
+> so it shouldn't take me much time to implement it.
+> 
+> There is hope that this will make nested migration fully stable since, with this patch,
+> it still sometimes hangs. While on my AMD machine it takes about half a day of migration
+> cycles to reproduce this, on my Intel's laptop even with this patch I can hang the nested
+> guest after 10-20 cycles. The symptoms look very similar to the issue that this patch
+> tried to fix.
 >  
-> +	/* cache the current value */
-> +	retries = client.adapter->retries;
-> +
->  	switch (params[0].u.value.a) {
->  	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_RD:
-> +		client.adapter->retries = params[1].u.value.b;
-Do we need to take any locks befor this?
+> Maybe we should keep the *comment* I added to document this funny TSC read behavior. 
+> When I implement the whole thing, maybe I add a comment only version of this patch
+> for that.
 
-Cheers,
-Jens
+Sure, that's a good idea.
 
->  		ret = i2c_master_recv(&client, params[2].u.memref.shm->kaddr,
->  				      params[2].u.memref.size);
->  		break;
->  	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_WR:
-> +		client.adapter->retries = params[1].u.value.b;
->  		ret = i2c_master_send(&client, params[2].u.memref.shm->kaddr,
->  				      params[2].u.memref.size);
->  		break;
-> @@ -126,6 +132,7 @@ static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
->  			arg->ret = TEEC_SUCCESS;
->  	}
->  
-> +	client.adapter->retries = retries;
->  	i2c_put_adapter(client.adapter);
->  	kfree(params);
->  	return;
-> -- 
-> 2.17.1
-> 
+Paolo
+
