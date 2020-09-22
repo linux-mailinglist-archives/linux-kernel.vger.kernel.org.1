@@ -2,336 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C341273CB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C408273CBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727134AbgIVHzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 03:55:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726749AbgIVHzF (ORCPT
+        id S1726869AbgIVHzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 03:55:22 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:35126 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726341AbgIVHzR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 03:55:05 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21179C061755;
-        Tue, 22 Sep 2020 00:55:05 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id n13so15205715edo.10;
-        Tue, 22 Sep 2020 00:55:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=8Y0eoAAVvTlQTtClTNZT8dMBuCeS4tXBS0lHaKFesUQ=;
-        b=LR8zaOyduG95uWj2psOzVGyWOgCXlDpA3baG2ZYrARU/YpfY6JkeMDDFNftujghYGF
-         1Ob37cdTndqaOFVofy5VF8day8zQhcbErMRfLe0b383OyBzt3RrCUL/r+IpueIf0h17s
-         XZM2v3FApPRMtdbImsi+ktYZTnooftBgq2dAdiYKdEAGLb9ZVgdlfpdVH88LJlo1klh0
-         z3OkQLwQKS4fI1/S9/VboDnth8XraOxVupgUUq0q6Sogfr6K+8oJ6KdLeiqssOqx9otH
-         /oWS0/sC/+P7CBLwbR6x4+THZCP0oBfvdcXVgJ+Odvu/o4+UNfpRjAlrzyHecom0FBN2
-         5sdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8Y0eoAAVvTlQTtClTNZT8dMBuCeS4tXBS0lHaKFesUQ=;
-        b=Z2hYYAG9/BqEkYofLZ49VeeS17WAgmVAnsDthNjExM4dFlM2YByUAzwJr83HW3Ou4g
-         pXDZc17hHtYyy4OFx60bPybcjeEz/E1grxT9ltqe9CqQ+dtNj9VsZtOqZmdT1wlBcTOi
-         iLvPdcg39NPR+XqwESALiZ91ILZm73fnP3UnQhHG6ryTfZMwXY+DoOG4n1dcFa+5oL18
-         SHJC9SjKZgO9NjAF4bK3fU4ctjMSaZzHLk/Aw2FrAM8y5a+VrqUMGDuREzNpNeerQkTg
-         NFLIkFmRqwn68hWIMrjBtxy2HkL961J1ptUGoS4Oh/F7GHANsJB8Jlo5eW9R102AeDJt
-         Osuw==
-X-Gm-Message-State: AOAM533IJoFp507pMwJ9Q+DJAkcf/+2kk03svjcFvTAJp3sCxFTsqTp7
-        nUcAb58vMwss4GxNRxJDEK3H/k9wRfY=
-X-Google-Smtp-Source: ABdhPJw+QZf3tnq9ZsQ1WGTaT/9K/AGje73UG18a9x2AoWbh5ArRYnmD0zVTBbOF7/uBFAKNDGZ++g==
-X-Received: by 2002:a50:fb99:: with SMTP id e25mr2614476edq.281.1600761303593;
-        Tue, 22 Sep 2020 00:55:03 -0700 (PDT)
-Received: from localhost (pd9e51aa4.dip0.t-ipconnect.de. [217.229.26.164])
-        by smtp.gmail.com with ESMTPSA id gh21sm10693086ejb.32.2020.09.22.00.55.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 00:55:02 -0700 (PDT)
-Date:   Tue, 22 Sep 2020 09:55:01 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>
-Cc:     jonathanh@nvidia.com, sakari.ailus@iki.fi, hverkuil@xs4all.nl,
-        jacopo+renesas@jmondi.org, luca@lucaceresoli.net,
-        leonl@leopardimaging.com, robh+dt@kernel.org, lgirdwood@gmail.com,
-        broonie@kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 3/3] media: i2c: imx274: Add IMX274 power on and off
- sequence
-Message-ID: <20200922075501.GB3994831@ulmo>
-References: <1600724379-7324-1-git-send-email-skomatineni@nvidia.com>
- <1600724379-7324-4-git-send-email-skomatineni@nvidia.com>
+        Tue, 22 Sep 2020 03:55:17 -0400
+X-UUID: 0c571a1277dd462fbeccf04e79430489-20200922
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=hq5x9xZuRCXn9RiN7WIPWNOzdWvbKOV5nFcOM1vUYe0=;
+        b=LsiF621AggH9q9yaE8fH5nBC1AN8fABA1S2WWxlL4qdxcFrdAVok7O8LG6xEoh80g/Pq4c1y0XlYn6SNHu9oZjVPgUI2T9+31LaMeuNWPdRqafX1VT+vYTf/PUREPZ0nnqWguq1tBsq7WtvM8l1TqM4O0JQycLPqcwBZ/fKNsug=;
+X-UUID: 0c571a1277dd462fbeccf04e79430489-20200922
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 422294359; Tue, 22 Sep 2020 15:55:10 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 22 Sep 2020 15:55:08 +0800
+Received: from mtkslt301.mediatek.inc (10.21.14.114) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 22 Sep 2020 15:55:07 +0800
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Stanley Chu <stanley.chu@mediatek.com>
+CC:     Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Vinod Koul <vkoul@kernel.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        CK Hu <ck.hu@mediatek.com>, <dri-devel@lists.freedesktop.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Subject: [PATCH 1/4] dt-bindings: phy: convert phy-mtk-xsphy.txt to YAML schema
+Date:   Tue, 22 Sep 2020 15:55:05 +0800
+Message-ID: <5af7c097d1c71a180d8ed1f1a44055859b42f1a0.1600760719.git.chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="tjCHc7DPkfUGtrlw"
-Content-Disposition: inline
-In-Reply-To: <1600724379-7324-4-git-send-email-skomatineni@nvidia.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Q29udmVydCBwaHktbXRrLXhzcGh5LnR4dCB0byBZQU1MIHNjaGVtYSBtZWRpYXRlayx4c3BoeS55
+YW1sDQoNClNpZ25lZC1vZmYtYnk6IENodW5mZW5nIFl1biA8Y2h1bmZlbmcueXVuQG1lZGlhdGVr
+LmNvbT4NCi0tLQ0KIC4uLi9iaW5kaW5ncy9waHkvbWVkaWF0ZWsseHNwaHkueWFtbCAgICAgICAg
+ICB8IDIwMyArKysrKysrKysrKysrKysrKysNCiAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9waHkv
+cGh5LW10ay14c3BoeS50eHQgfCAxMDkgLS0tLS0tLS0tLQ0KIDIgZmlsZXMgY2hhbmdlZCwgMjAz
+IGluc2VydGlvbnMoKyksIDEwOSBkZWxldGlvbnMoLSkNCiBjcmVhdGUgbW9kZSAxMDA2NDQgRG9j
+dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BoeS9tZWRpYXRlayx4c3BoeS55YW1sDQog
+ZGVsZXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9waHkv
+cGh5LW10ay14c3BoeS50eHQNCg0KZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJl
+ZS9iaW5kaW5ncy9waHkvbWVkaWF0ZWsseHNwaHkueWFtbCBiL0RvY3VtZW50YXRpb24vZGV2aWNl
+dHJlZS9iaW5kaW5ncy9waHkvbWVkaWF0ZWsseHNwaHkueWFtbA0KbmV3IGZpbGUgbW9kZSAxMDA2
+NDQNCmluZGV4IDAwMDAwMDAwMDAwMC4uMGFhYTEwNjQwYjVhDQotLS0gL2Rldi9udWxsDQorKysg
+Yi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGh5L21lZGlhdGVrLHhzcGh5Lnlh
+bWwNCkBAIC0wLDAgKzEsMjAzIEBADQorIyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogKEdQTC0y
+LjAtb25seSBPUiBCU0QtMi1DbGF1c2UpDQorIyBDb3B5cmlnaHQgKGMpIDIwMjAgTWVkaWFUZWsN
+CislWUFNTCAxLjINCistLS0NCiskaWQ6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9zY2hlbWFzL3Bo
+eS9tZWRpYXRlayx4c3BoeS55YW1sIw0KKyRzY2hlbWE6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9t
+ZXRhLXNjaGVtYXMvY29yZS55YW1sIw0KKw0KK3RpdGxlOiBNZWRpYVRlayBYUy1QSFkgQ29udHJv
+bGxlciBEZXZpY2UgVHJlZSBCaW5kaW5ncw0KKw0KK21haW50YWluZXJzOg0KKyAgLSBDaHVuZmVu
+ZyBZdW4gPGNodW5mZW5nLnl1bkBtZWRpYXRlay5jb20+DQorDQorZGVzY3JpcHRpb246IHwNCisg
+IFRoZSBYUy1QSFkgY29udHJvbGxlciBzdXBwb3J0cyBwaHlzaWNhbCBsYXllciBmdW5jdGlvbmFs
+aXR5IGZvciBVU0IzLjENCisgIEdFTjIgY29udHJvbGxlciBvbiBNZWRpYVRlayBTb0NzLg0KKw0K
+K3Byb3BlcnRpZXM6DQorICAkbm9kZW5hbWU6DQorICAgIHBhdHRlcm46ICJeeHMtcGh5QFswLTlh
+LWZdKyQiDQorDQorICBjb21wYXRpYmxlOg0KKyAgICBvbmVPZjoNCisgICAgICAtIGl0ZW1zOg0K
+KyAgICAgICAgICAtIGVudW06DQorICAgICAgICAgICAgICAtIG1lZGlhdGVrLG10MzYxMS14c3Bo
+eQ0KKyAgICAgICAgICAtIGVudW06DQorICAgICAgICAgICAgICAtIG1lZGlhdGVrLHhzcGh5DQor
+ICAgICAgLSBpdGVtczoNCisgICAgICAgICAgLSBjb25zdDogbWVkaWF0ZWsseHNwaHkNCisNCisg
+IHJlZzoNCisgICAgZGVzY3JpcHRpb246IHwNCisgICAgICBSZWdpc3RlciBzaGFyZWQgYnkgbXVs
+dGlwbGUgVTMgcG9ydHMsIGV4Y2x1ZGUgcG9ydCdzIHByaXZhdGUgcmVnaXN0ZXIsDQorICAgICAg
+aWYgb25seSBVMiBwb3J0cyBwcm92aWRlZCwgc2hvdWxkbid0IHVzZSB0aGUgcHJvcGVydHkuDQor
+ICAgIG1heEl0ZW1zOiAxDQorDQorICAiI2FkZHJlc3MtY2VsbHMiOg0KKyAgICAgIGVudW06IFsx
+LCAyXQ0KKw0KKyAgIiNzaXplLWNlbGxzIjoNCisgICAgICBlbnVtOiBbMSwgMl0NCisNCisgIHJh
+bmdlczogdHJ1ZQ0KKw0KKyAgbWVkaWF0ZWssc3JjLXJlZi1jbGstbWh6Og0KKyAgICBkZXNjcmlw
+dGlvbjoNCisgICAgICBGcmVxdWVuY3kgb2YgcmVmZXJlbmNlIGNsb2NrIGZvciBzbGV3IHJhdGUg
+Y2FsaWJyYXRlDQorICAgICRyZWY6IC9zY2hlbWFzL3R5cGVzLnlhbWwjL2RlZmluaXRpb25zL3Vp
+bnQzMg0KKyAgICBkZWZhdWx0OiAyNg0KKw0KKyAgbWVkaWF0ZWssc3JjLWNvZWY6DQorICAgIGRl
+c2NyaXB0aW9uOg0KKyAgICAgIENvZWZmaWNpZW50IGZvciBzbGV3IHJhdGUgY2FsaWJyYXRlLCBk
+ZXBlbmRzIG9uIFNvQyBwcm9jZXNzDQorICAgICRyZWY6IC9zY2hlbWFzL3R5cGVzLnlhbWwjL2Rl
+ZmluaXRpb25zL3VpbnQzMg0KKyAgICBkZWZhdWx0OiAxNw0KKw0KKyMgUmVxdWlyZWQgY2hpbGQg
+bm9kZToNCitwYXR0ZXJuUHJvcGVydGllczoNCisgICJedXNiLXBoeUBbMC05YS1mXSskIjoNCisg
+ICAgdHlwZTogb2JqZWN0DQorICAgIGRlc2NyaXB0aW9uOiB8DQorICAgICAgQSBzdWItbm9kZSBp
+cyByZXF1aXJlZCBmb3IgZWFjaCBwb3J0IHRoZSBjb250cm9sbGVyIHByb3ZpZGVzLg0KKyAgICAg
+IEFkZHJlc3MgcmFuZ2UgaW5mb3JtYXRpb24gaW5jbHVkaW5nIHRoZSB1c3VhbCAncmVnJyBwcm9w
+ZXJ0eQ0KKyAgICAgIGlzIHVzZWQgaW5zaWRlIHRoZXNlIG5vZGVzIHRvIGRlc2NyaWJlIHRoZSBj
+b250cm9sbGVyJ3MgdG9wb2xvZ3kuDQorDQorICAgIHByb3BlcnRpZXM6DQorICAgICAgcmVnOg0K
+KyAgICAgICAgbWF4SXRlbXM6IDENCisNCisgICAgICBjbG9ja3M6DQorICAgICAgICBpdGVtczoN
+CisgICAgICAgICAgLSBkZXNjcmlwdGlvbjogUmVmZXJlbmNlIGNsb2NrLCAoSFMgaXMgNDhNaHos
+IFNTL1AgaXMgMjR+MjdNaHopDQorDQorICAgICAgY2xvY2stbmFtZXM6DQorICAgICAgICBpdGVt
+czoNCisgICAgICAgICAgLSBjb25zdDogcmVmDQorDQorICAgICAgIiNwaHktY2VsbHMiOg0KKyAg
+ICAgICAgY29uc3Q6IDENCisgICAgICAgIGRlc2NyaXB0aW9uOiB8DQorICAgICAgICAgIFRoZSBj
+ZWxscyBjb250YWluIHRoZSBmb2xsb3dpbmcgYXJndW1lbnRzLg0KKw0KKyAgICAgICAgICAtIGRl
+c2NyaXB0aW9uOiBUaGUgUEhZIHR5cGUNCisgICAgICAgICAgICAgIGVudW06DQorICAgICAgICAg
+ICAgICAgIC0gUEhZX1RZUEVfVVNCMg0KKyAgICAgICAgICAgICAgICAtIFBIWV9UWVBFX1VTQjMN
+CisNCisgICAgICAjVGhlIGZvbGxvd2luZyBvcHRpb25hbCB2ZW5kb3IgcHJvcGVydGllcyBhcmUg
+b25seSBmb3IgZGVidWcgb3IgSFFBIHRlc3QNCisgICAgICBtZWRpYXRlayxleWUtc3JjOg0KKyAg
+ICAgICAgZGVzY3JpcHRpb246DQorICAgICAgICAgIFRoZSB2YWx1ZSBvZiBzbGV3IHJhdGUgY2Fs
+aWJyYXRlIChVMiBwaHkpDQorICAgICAgICAkcmVmOiAvc2NoZW1hcy90eXBlcy55YW1sIy9kZWZp
+bml0aW9ucy91aW50MzINCisgICAgICAgIG1pbmltdW06IDENCisgICAgICAgIG1heGltdW06IDcN
+CisNCisgICAgICBtZWRpYXRlayxleWUtdnJ0Og0KKyAgICAgICAgZGVzY3JpcHRpb246DQorICAg
+ICAgICAgIFRoZSBzZWxlY3Rpb24gb2YgVlJUIHJlZmVyZW5jZSB2b2x0YWdlIChVMiBwaHkpDQor
+ICAgICAgICAkcmVmOiAvc2NoZW1hcy90eXBlcy55YW1sIy9kZWZpbml0aW9ucy91aW50MzINCisg
+ICAgICAgIG1pbmltdW06IDENCisgICAgICAgIG1heGltdW06IDcNCisNCisgICAgICBtZWRpYXRl
+ayxleWUtdGVybToNCisgICAgICAgIGRlc2NyaXB0aW9uOg0KKyAgICAgICAgICBUaGUgc2VsZWN0
+aW9uIG9mIEhTX1RYIFRFUk0gcmVmZXJlbmNlIHZvbHRhZ2UgKFUyIHBoeSkNCisgICAgICAgICRy
+ZWY6IC9zY2hlbWFzL3R5cGVzLnlhbWwjL2RlZmluaXRpb25zL3VpbnQzMg0KKyAgICAgICAgbWlu
+aW11bTogMQ0KKyAgICAgICAgbWF4aW11bTogNw0KKw0KKyAgICAgIG1lZGlhdGVrLGVmdXNlLWlu
+dHI6DQorICAgICAgICBkZXNjcmlwdGlvbjoNCisgICAgICAgICAgVGhlIHNlbGVjdGlvbiBvZiBJ
+bnRlcm5hbCBSZXNpc3RvciAoVTIvVTMgcGh5KQ0KKyAgICAgICAgJHJlZjogL3NjaGVtYXMvdHlw
+ZXMueWFtbCMvZGVmaW5pdGlvbnMvdWludDMyDQorICAgICAgICBtaW5pbXVtOiAxDQorICAgICAg
+ICBtYXhpbXVtOiA2Mw0KKw0KKyAgICAgIG1lZGlhdGVrLGVmdXNlLXR4LWltcDoNCisgICAgICAg
+IGRlc2NyaXB0aW9uOg0KKyAgICAgICAgICBUaGUgc2VsZWN0aW9uIG9mIFRYIEltcGVkYW5jZSAo
+VTMgcGh5KQ0KKyAgICAgICAgJHJlZjogL3NjaGVtYXMvdHlwZXMueWFtbCMvZGVmaW5pdGlvbnMv
+dWludDMyDQorICAgICAgICBtaW5pbXVtOiAxDQorICAgICAgICBtYXhpbXVtOiAzMQ0KKw0KKyAg
+ICAgIG1lZGlhdGVrLGVmdXNlLXJ4LWltcDoNCisgICAgICAgIGRlc2NyaXB0aW9uOg0KKyAgICAg
+ICAgICBUaGUgc2VsZWN0aW9uIG9mIFJYIEltcGVkYW5jZSAoVTMgcGh5KQ0KKyAgICAgICAgJHJl
+ZjogL3NjaGVtYXMvdHlwZXMueWFtbCMvZGVmaW5pdGlvbnMvdWludDMyDQorICAgICAgICBtaW5p
+bXVtOiAxDQorICAgICAgICBtYXhpbXVtOiAzMQ0KKw0KKyAgICByZXF1aXJlZDoNCisgICAgICAt
+IHJlZw0KKyAgICAgIC0gY2xvY2tzDQorICAgICAgLSBjbG9jay1uYW1lcw0KKyAgICAgIC0gIiNw
+aHktY2VsbHMiDQorDQorICAgIGFkZGl0aW9uYWxQcm9wZXJ0aWVzOiBmYWxzZQ0KKw0KK3JlcXVp
+cmVkOg0KKyAgLSBjb21wYXRpYmxlDQorICAtICIjYWRkcmVzcy1jZWxscyINCisgIC0gIiNzaXpl
+LWNlbGxzIg0KKyAgLSByYW5nZXMNCisNCithZGRpdGlvbmFsUHJvcGVydGllczogZmFsc2UNCisN
+CisjQmFua3MgbGF5b3V0IG9mIHhzcGh5DQorIy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCisjcG9ydCAgICAgICAgb2Zmc2V0ICAg
+IGJhbmsNCisjdTIgcG9ydDAgICAgMHgwMDAwICAgIE1JU0MNCisjICAgICAgICAgICAgMHgwMTAw
+ICAgIEZNUkVHDQorIyAgICAgICAgICAgIDB4MDMwMCAgICBVMlBIWV9DT00NCisjdTIgcG9ydDEg
+ICAgMHgxMDAwICAgIE1JU0MNCisjICAgICAgICAgICAgMHgxMTAwICAgIEZNUkVHDQorIyAgICAg
+ICAgICAgIDB4MTMwMCAgICBVMlBIWV9DT00NCisjdTIgcG9ydDIgICAgMHgyMDAwICAgIE1JU0MN
+CisjICAgICAgICAgICAgLi4uDQorI3UzMSBjb21tb24gIDB4MzAwMCAgICBESUdfR0xCDQorIyAg
+ICAgICAgICAgIDB4MzEwMCAgICBQSFlBX0dMQg0KKyN1MzEgcG9ydDAgICAweDM0MDAgICAgRElH
+X0xOX1RPUA0KKyMgICAgICAgICAgICAweDM1MDAgICAgRElHX0xOX1RYMA0KKyMgICAgICAgICAg
+ICAweDM2MDAgICAgRElHX0xOX1JYMA0KKyMgICAgICAgICAgICAweDM3MDAgICAgRElHX0xOX0RB
+SUYNCisjICAgICAgICAgICAgMHgzODAwICAgIFBIWUFfTE4NCisjdTMxIHBvcnQxICAgMHgzYTAw
+ICAgIERJR19MTl9UT1ANCisjICAgICAgICAgICAgMHgzYjAwICAgIERJR19MTl9UWDANCisjICAg
+ICAgICAgICAgMHgzYzAwICAgIERJR19MTl9SWDANCisjICAgICAgICAgICAgMHgzZDAwICAgIERJ
+R19MTl9EQUlGDQorIyAgICAgICAgICAgIDB4M2UwMCAgICBQSFlBX0xODQorIyAgICAgICAgICAg
+IC4uLg0KKyNESUdfR0xCICYgUEhZQV9HTEIgYXJlIHNoYXJlZCBieSBVMzEgcG9ydHMuDQorDQor
+ZXhhbXBsZXM6DQorICAtIHwNCisgICAgI2luY2x1ZGUgPGR0LWJpbmRpbmdzL3BoeS9waHkuaD4N
+CisNCisgICAgdTNwaHk6IHhzLXBoeUAxMWM0MDAwMCB7DQorICAgICAgICBjb21wYXRpYmxlID0g
+Im1lZGlhdGVrLG10MzYxMS14c3BoeSIsICJtZWRpYXRlayx4c3BoeSI7DQorICAgICAgICByZWcg
+PSA8MHgxMWM0MzAwMCAweDAyMDA+Ow0KKyAgICAgICAgbWVkaWF0ZWssc3JjLXJlZi1jbGstbWh6
+ID0gPDI2PjsNCisgICAgICAgIG1lZGlhdGVrLHNyYy1jb2VmID0gPDE3PjsNCisgICAgICAgICNh
+ZGRyZXNzLWNlbGxzID0gPDE+Ow0KKyAgICAgICAgI3NpemUtY2VsbHMgPSA8MT47DQorICAgICAg
+ICByYW5nZXM7DQorDQorICAgICAgICB1MnBvcnQwOiB1c2ItcGh5QDExYzQwMDAwIHsNCisgICAg
+ICAgICAgICByZWcgPSA8MHgxMWM0MDAwMCAweDA0MDA+Ow0KKyAgICAgICAgICAgIGNsb2NrcyA9
+IDwmY2xrNDhtPjsNCisgICAgICAgICAgICBjbG9jay1uYW1lcyA9ICJyZWYiOw0KKyAgICAgICAg
+ICAgIG1lZGlhdGVrLGV5ZS1zcmMgPSA8ND47DQorICAgICAgICAgICAgI3BoeS1jZWxscyA9IDwx
+PjsNCisgICAgICAgIH07DQorDQorICAgICAgICB1M3BvcnQwOiB1c2ItcGh5QDExYzQzMDAwIHsN
+CisgICAgICAgICAgICByZWcgPSA8MHgxMWM0MzQwMCAweDA1MDA+Ow0KKyAgICAgICAgICAgIGNs
+b2NrcyA9IDwmY2xrMjZtPjsNCisgICAgICAgICAgICBjbG9jay1uYW1lcyA9ICJyZWYiOw0KKyAg
+ICAgICAgICAgIG1lZGlhdGVrLGVmdXNlLWludHIgPSA8Mjg+Ow0KKyAgICAgICAgICAgICNwaHkt
+Y2VsbHMgPSA8MT47DQorICAgICAgICB9Ow0KKyAgICB9Ow0KKw0KKy4uLg0KZGlmZiAtLWdpdCBh
+L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9waHkvcGh5LW10ay14c3BoeS50eHQg
+Yi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGh5L3BoeS1tdGsteHNwaHkudHh0
+DQpkZWxldGVkIGZpbGUgbW9kZSAxMDA2NDQNCmluZGV4IGU3Y2FlZmEwYjljMi4uMDAwMDAwMDAw
+MDAwDQotLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGh5L3BoeS1tdGst
+eHNwaHkudHh0DQorKysgL2Rldi9udWxsDQpAQCAtMSwxMDkgKzAsMCBAQA0KLU1lZGlhVGVrIFhT
+LVBIWSBiaW5kaW5nDQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCi0NCi1UaGUgWFMtUEhZ
+IGNvbnRyb2xsZXIgc3VwcG9ydHMgcGh5c2ljYWwgbGF5ZXIgZnVuY3Rpb25hbGl0eSBmb3IgVVNC
+My4xDQotR0VOMiBjb250cm9sbGVyIG9uIE1lZGlhVGVrIFNvQ3MuDQotDQotUmVxdWlyZWQgcHJv
+cGVydGllcyAoY29udHJvbGxlciAocGFyZW50KSBub2RlKToNCi0gLSBjb21wYXRpYmxlCTogc2hv
+dWxkIGJlICJtZWRpYXRlayw8c29jLW1vZGVsPi14c3BoeSIsICJtZWRpYXRlayx4c3BoeSIsDQot
+CQkgIHNvYy1tb2RlbCBpcyB0aGUgbmFtZSBvZiBTb0MsIHN1Y2ggYXMgbXQzNjExIGV0YzsNCi0J
+CSAgd2hlbiB1c2luZyAibWVkaWF0ZWsseHNwaHkiIGNvbXBhdGlibGUgc3RyaW5nLCB5b3UgbmVl
+ZCBTb0Mgc3BlY2lmaWMNCi0JCSAgb25lcyBpbiBhZGRpdGlvbiwgb25lIG9mOg0KLQkJICAtICJt
+ZWRpYXRlayxtdDM2MTEteHNwaHkiDQotDQotIC0gI2FkZHJlc3MtY2VsbHMsICNzaXplLWNlbGxz
+IDogc2hvdWxkIHVzZSB0aGUgc2FtZSB2YWx1ZXMgYXMgdGhlIHJvb3Qgbm9kZQ0KLSAtIHJhbmdl
+czogbXVzdCBiZSBwcmVzZW50DQotDQotT3B0aW9uYWwgcHJvcGVydGllcyAoY29udHJvbGxlciAo
+cGFyZW50KSBub2RlKToNCi0gLSByZWcJCTogb2Zmc2V0IGFuZCBsZW5ndGggb2YgcmVnaXN0ZXIg
+c2hhcmVkIGJ5IG11bHRpcGxlIFUzIHBvcnRzLA0KLQkJICBleGNsdWRlIHBvcnQncyBwcml2YXRl
+IHJlZ2lzdGVyLCBpZiBvbmx5IFUyIHBvcnRzIHByb3ZpZGVkLA0KLQkJICBzaG91bGRuJ3QgdXNl
+IHRoZSBwcm9wZXJ0eS4NCi0gLSBtZWRpYXRlayxzcmMtcmVmLWNsay1taHoJOiB1MzIsIGZyZXF1
+ZW5jeSBvZiByZWZlcmVuY2UgY2xvY2sgZm9yIHNsZXcgcmF0ZQ0KLQkJICBjYWxpYnJhdGUNCi0g
+LSBtZWRpYXRlayxzcmMtY29lZgk6IHUzMiwgY29lZmZpY2llbnQgZm9yIHNsZXcgcmF0ZSBjYWxp
+YnJhdGUsIGRlcGVuZHMgb24NCi0JCSAgU29DIHByb2Nlc3MNCi0NCi1SZXF1aXJlZCBub2Rlcwk6
+IGEgc3ViLW5vZGUgaXMgcmVxdWlyZWQgZm9yIGVhY2ggcG9ydCB0aGUgY29udHJvbGxlcg0KLQkJ
+ICBwcm92aWRlcy4gQWRkcmVzcyByYW5nZSBpbmZvcm1hdGlvbiBpbmNsdWRpbmcgdGhlIHVzdWFs
+DQotCQkgICdyZWcnIHByb3BlcnR5IGlzIHVzZWQgaW5zaWRlIHRoZXNlIG5vZGVzIHRvIGRlc2Ny
+aWJlDQotCQkgIHRoZSBjb250cm9sbGVyJ3MgdG9wb2xvZ3kuDQotDQotUmVxdWlyZWQgcHJvcGVy
+dGllcyAocG9ydCAoY2hpbGQpIG5vZGUpOg0KLS0gcmVnCQk6IGFkZHJlc3MgYW5kIGxlbmd0aCBv
+ZiB0aGUgcmVnaXN0ZXIgc2V0IGZvciB0aGUgcG9ydC4NCi0tIGNsb2Nrcwk6IGEgbGlzdCBvZiBw
+aGFuZGxlICsgY2xvY2stc3BlY2lmaWVyIHBhaXJzLCBvbmUgZm9yIGVhY2gNCi0JCSAgZW50cnkg
+aW4gY2xvY2stbmFtZXMNCi0tIGNsb2NrLW5hbWVzCTogbXVzdCBjb250YWluDQotCQkgICJyZWYi
+OiA0OE0gcmVmZXJlbmNlIGNsb2NrIGZvciBIaWdoU3BlZWQgYW5hbG9nIHBoeTsgYW5kIDI2TQ0K
+LQkJCXJlZmVyZW5jZSBjbG9jayBmb3IgU3VwZXJTcGVlZFBsdXMgYW5hbG9nIHBoeSwgc29tZXRp
+bWVzIGlzDQotCQkJMjRNLCAyNU0gb3IgMjdNLCBkZXBlbmRlZCBvbiBwbGF0Zm9ybS4NCi0tICNw
+aHktY2VsbHMJOiBzaG91bGQgYmUgMQ0KLQkJICBjZWxsIGFmdGVyIHBvcnQgcGhhbmRsZSBpcyBw
+aHkgdHlwZSBmcm9tOg0KLQkJCS0gUEhZX1RZUEVfVVNCMg0KLQkJCS0gUEhZX1RZUEVfVVNCMw0K
+LQ0KLVRoZSBmb2xsb3dpbmcgb3B0aW9uYWwgcHJvcGVydGllcyBhcmUgb25seSBmb3IgZGVidWcg
+b3IgSFFBIHRlc3QNCi1PcHRpb25hbCBwcm9wZXJ0aWVzIChQSFlfVFlQRV9VU0IyIHBvcnQgKGNo
+aWxkKSBub2RlKToNCi0tIG1lZGlhdGVrLGV5ZS1zcmMJOiB1MzIsIHRoZSB2YWx1ZSBvZiBzbGV3
+IHJhdGUgY2FsaWJyYXRlDQotLSBtZWRpYXRlayxleWUtdnJ0CTogdTMyLCB0aGUgc2VsZWN0aW9u
+IG9mIFZSVCByZWZlcmVuY2Ugdm9sdGFnZQ0KLS0gbWVkaWF0ZWssZXllLXRlcm0JOiB1MzIsIHRo
+ZSBzZWxlY3Rpb24gb2YgSFNfVFggVEVSTSByZWZlcmVuY2Ugdm9sdGFnZQ0KLS0gbWVkaWF0ZWss
+ZWZ1c2UtaW50cgk6IHUzMiwgdGhlIHNlbGVjdGlvbiBvZiBJbnRlcm5hbCBSZXNpc3Rvcg0KLQ0K
+LU9wdGlvbmFsIHByb3BlcnRpZXMgKFBIWV9UWVBFX1VTQjMgcG9ydCAoY2hpbGQpIG5vZGUpOg0K
+LS0gbWVkaWF0ZWssZWZ1c2UtaW50cgk6IHUzMiwgdGhlIHNlbGVjdGlvbiBvZiBJbnRlcm5hbCBS
+ZXNpc3Rvcg0KLS0gbWVkaWF0ZWssZWZ1c2UtdHgtaW1wCTogdTMyLCB0aGUgc2VsZWN0aW9uIG9m
+IFRYIEltcGVkYW5jZQ0KLS0gbWVkaWF0ZWssZWZ1c2UtcngtaW1wCTogdTMyLCB0aGUgc2VsZWN0
+aW9uIG9mIFJYIEltcGVkYW5jZQ0KLQ0KLUJhbmtzIGxheW91dCBvZiB4c3BoeQ0KLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCi1w
+b3J0ICAgICAgICBvZmZzZXQgICAgYmFuaw0KLXUyIHBvcnQwICAgIDB4MDAwMCAgICBNSVNDDQot
+ICAgICAgICAgICAgMHgwMTAwICAgIEZNUkVHDQotICAgICAgICAgICAgMHgwMzAwICAgIFUyUEhZ
+X0NPTQ0KLXUyIHBvcnQxICAgIDB4MTAwMCAgICBNSVNDDQotICAgICAgICAgICAgMHgxMTAwICAg
+IEZNUkVHDQotICAgICAgICAgICAgMHgxMzAwICAgIFUyUEhZX0NPTQ0KLXUyIHBvcnQyICAgIDB4
+MjAwMCAgICBNSVNDDQotICAgICAgICAgICAgLi4uDQotdTMxIGNvbW1vbiAgMHgzMDAwICAgIERJ
+R19HTEINCi0gICAgICAgICAgICAweDMxMDAgICAgUEhZQV9HTEINCi11MzEgcG9ydDAgICAweDM0
+MDAgICAgRElHX0xOX1RPUA0KLSAgICAgICAgICAgIDB4MzUwMCAgICBESUdfTE5fVFgwDQotICAg
+ICAgICAgICAgMHgzNjAwICAgIERJR19MTl9SWDANCi0gICAgICAgICAgICAweDM3MDAgICAgRElH
+X0xOX0RBSUYNCi0gICAgICAgICAgICAweDM4MDAgICAgUEhZQV9MTg0KLXUzMSBwb3J0MSAgIDB4
+M2EwMCAgICBESUdfTE5fVE9QDQotICAgICAgICAgICAgMHgzYjAwICAgIERJR19MTl9UWDANCi0g
+ICAgICAgICAgICAweDNjMDAgICAgRElHX0xOX1JYMA0KLSAgICAgICAgICAgIDB4M2QwMCAgICBE
+SUdfTE5fREFJRg0KLSAgICAgICAgICAgIDB4M2UwMCAgICBQSFlBX0xODQotICAgICAgICAgICAg
+Li4uDQotDQotRElHX0dMQiAmIFBIWUFfR0xCIGFyZSBzaGFyZWQgYnkgVTMxIHBvcnRzLg0KLQ0K
+LUV4YW1wbGU6DQotDQotdTNwaHk6IHVzYi1waHlAMTFjNDAwMDAgew0KLQljb21wYXRpYmxlID0g
+Im1lZGlhdGVrLG10MzYxMS14c3BoeSIsICJtZWRpYXRlayx4c3BoeSI7DQotCXJlZyA9IDwwIDB4
+MTFjNDMwMDAgMCAweDAyMDA+Ow0KLQltZWRpYXRlayxzcmMtcmVmLWNsay1taHogPSA8MjY+Ow0K
+LQltZWRpYXRlayxzcmMtY29lZiA9IDwxNz47DQotCSNhZGRyZXNzLWNlbGxzID0gPDI+Ow0KLQkj
+c2l6ZS1jZWxscyA9IDwyPjsNCi0JcmFuZ2VzOw0KLQ0KLQl1MnBvcnQwOiB1c2ItcGh5QDExYzQw
+MDAwIHsNCi0JCXJlZyA9IDwwIDB4MTFjNDAwMDAgMCAweDA0MDA+Ow0KLQkJY2xvY2tzID0gPCZj
+bGs0OG0+Ow0KLQkJY2xvY2stbmFtZXMgPSAicmVmIjsNCi0JCW1lZGlhdGVrLGV5ZS1zcmMgPSA8
+ND47DQotCQkjcGh5LWNlbGxzID0gPDE+Ow0KLQl9Ow0KLQ0KLQl1M3BvcnQwOiB1c2ItcGh5QDEx
+YzQzMDAwIHsNCi0JCXJlZyA9IDwwIDB4MTFjNDM0MDAgMCAweDA1MDA+Ow0KLQkJY2xvY2tzID0g
+PCZjbGsyNm0+Ow0KLQkJY2xvY2stbmFtZXMgPSAicmVmIjsNCi0JCW1lZGlhdGVrLGVmdXNlLWlu
+dHIgPSA8Mjg+Ow0KLQkJI3BoeS1jZWxscyA9IDwxPjsNCi0JfTsNCi19Ow0KLS0gDQoyLjE4LjAN
+Cg==
 
---tjCHc7DPkfUGtrlw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Sep 21, 2020 at 02:39:39PM -0700, Sowjanya Komatineni wrote:
-> IMX274 has analog 2.8V supply, digital core 1.8V supply, and vddl digital
-> io 1.2V supply which are optional based on camera module design.
->=20
-> IMX274 also need external 24Mhz clock and is optional based on
-> camera module design.
->=20
-> This patch adds support for IMX274 power on and off to enable and
-> disable these supplies and external clock.
->=20
-> Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
-> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
-> ---
->  drivers/media/i2c/imx274.c | 184 +++++++++++++++++++++++++++++++++------=
-------
->  1 file changed, 134 insertions(+), 50 deletions(-)
->=20
-> diff --git a/drivers/media/i2c/imx274.c b/drivers/media/i2c/imx274.c
-> index 5e515f0..b3057a5 100644
-> --- a/drivers/media/i2c/imx274.c
-> +++ b/drivers/media/i2c/imx274.c
-> @@ -18,7 +18,9 @@
->  #include <linux/kernel.h>
->  #include <linux/module.h>
->  #include <linux/of_gpio.h>
-> +#include <linux/pm_runtime.h>
->  #include <linux/regmap.h>
-> +#include <linux/regulator/consumer.h>
->  #include <linux/slab.h>
->  #include <linux/v4l2-mediabus.h>
->  #include <linux/videodev2.h>
-> @@ -131,6 +133,15 @@
->  #define IMX274_TABLE_WAIT_MS			0
->  #define IMX274_TABLE_END			1
-> =20
-> +/* regulator supplies */
-> +static const char * const imx274_supply_names[] =3D {
-> +	"vddl",  /* IF (1.2V) supply */
-> +	"vdig",  /* Digital Core (1.8V) supply */
-> +	"vana",  /* Analog (2.8V) supply */
-
-According to the device tree bindings these should be uppercase. Did I
-miss a patch that updates the bindings?
-
-I think the preference is for supply names to be lowercase and given
-that there are no users of this binding yet we could update it without
-breaking any existing device trees.
-
-> +};
-> +
-> +#define IMX274_NUM_SUPPLIES ARRAY_SIZE(imx274_supply_names)
-> +
->  /*
->   * imx274 I2C operation related structure
->   */
-> @@ -501,6 +512,8 @@ struct imx274_ctrls {
->   * @frame_rate: V4L2 frame rate structure
->   * @regmap: Pointer to regmap structure
->   * @reset_gpio: Pointer to reset gpio
-> + * @supplies: List of analog and digital supply regulators
-> + * @inck: Pointer to sensor input clock
->   * @lock: Mutex structure
->   * @mode: Parameters for the selected readout mode
->   */
-> @@ -514,6 +527,8 @@ struct stimx274 {
->  	struct v4l2_fract frame_interval;
->  	struct regmap *regmap;
->  	struct gpio_desc *reset_gpio;
-> +	struct regulator_bulk_data supplies[IMX274_NUM_SUPPLIES];
-> +	struct clk *inck;
->  	struct mutex lock; /* mutex lock for operations */
->  	const struct imx274_mode *mode;
->  };
-> @@ -726,6 +741,12 @@ static int imx274_start_stream(struct stimx274 *priv)
->  {
->  	int err =3D 0;
-> =20
-> +	err =3D __v4l2_ctrl_handler_setup(&priv->ctrls.handler);
-> +	if (err) {
-> +		dev_err(&priv->client->dev, "Error %d setup controls\n", err);
-> +		return err;
-> +	}
-> +
->  	/*
->  	 * Refer to "Standby Cancel Sequence when using CSI-2" in
->  	 * imx274 datasheet, it should wait 10ms or more here.
-> @@ -767,6 +788,66 @@ static void imx274_reset(struct stimx274 *priv, int =
-rst)
->  	usleep_range(IMX274_RESET_DELAY1, IMX274_RESET_DELAY2);
->  }
-> =20
-> +static int imx274_power_on(struct device *dev)
-> +{
-> +	struct i2c_client *client =3D to_i2c_client(dev);
-> +	struct v4l2_subdev *sd =3D i2c_get_clientdata(client);
-> +	struct stimx274 *imx274 =3D to_imx274(sd);
-> +	int ret;
-> +
-> +	/* keep sensor in reset before power on */
-> +	imx274_reset(imx274, 0);
-> +
-> +	ret =3D clk_prepare_enable(imx274->inck);
-> +	if (ret) {
-> +		dev_err(&imx274->client->dev,
-> +			"Failed to enable input clock: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret =3D regulator_bulk_enable(IMX274_NUM_SUPPLIES, imx274->supplies);
-> +	if (ret) {
-> +		dev_err(&imx274->client->dev,
-> +			"Failed to enable regulators: %d\n", ret);
-> +		goto fail_reg;
-> +	}
-> +
-> +	udelay(2);
-
-This looks like some sort of extra delay to make sure all the supply
-voltages have settled. Should this perhaps be encoded as part of the
-regulator ramp-up times? Or is this really an IC-specific delay that
-is needed for some internal timing?
-
-> +	imx274_reset(imx274, 1);
-> +
-> +	return 0;
-> +
-> +fail_reg:
-> +	clk_disable_unprepare(imx274->inck);
-> +	return ret;
-> +}
-> +
-> +static int imx274_power_off(struct device *dev)
-> +{
-> +	struct i2c_client *client =3D to_i2c_client(dev);
-> +	struct v4l2_subdev *sd =3D i2c_get_clientdata(client);
-> +	struct stimx274 *imx274 =3D to_imx274(sd);
-> +
-> +	imx274_reset(imx274, 0);
-> +
-> +	regulator_bulk_disable(IMX274_NUM_SUPPLIES, imx274->supplies);
-> +
-> +	clk_disable_unprepare(imx274->inck);
-> +
-> +	return 0;
-> +}
-> +
-> +static int imx274_regulators_get(struct device *dev, struct stimx274 *im=
-x274)
-> +{
-> +	unsigned int i;
-> +
-> +	for (i =3D 0; i < IMX274_NUM_SUPPLIES; i++)
-> +		imx274->supplies[i].supply =3D imx274_supply_names[i];
-> +
-> +	return devm_regulator_bulk_get(dev, IMX274_NUM_SUPPLIES,
-> +					imx274->supplies);
-> +}
-> +
->  /**
->   * imx274_s_ctrl - This is used to set the imx274 V4L2 controls
->   * @ctrl: V4L2 control to be set
-> @@ -781,6 +862,9 @@ static int imx274_s_ctrl(struct v4l2_ctrl *ctrl)
->  	struct stimx274 *imx274 =3D to_imx274(sd);
->  	int ret =3D -EINVAL;
-> =20
-> +	if (!pm_runtime_get_if_in_use(&imx274->client->dev))
-> +		return 0;
-
-I'm not sure I understand this, and sorry if this has been discussed
-earlier. Aren't there any other mechanisms in place to ensure that a
-control can only be configured when in use? If so, then is this even
-necessary?
-
-If not, silently ignoring at this point seems like it could cause subtle
-failures by ignoring some control settings and applying others if the
-timing is right.
-
-> +
->  	dev_dbg(&imx274->client->dev,
->  		"%s : s_ctrl: %s, value: %d\n", __func__,
->  		ctrl->name, ctrl->val);
-> @@ -811,6 +895,8 @@ static int imx274_s_ctrl(struct v4l2_ctrl *ctrl)
->  		break;
->  	}
-> =20
-> +	pm_runtime_put(&imx274->client->dev);
-> +
->  	return ret;
->  }
-> =20
-> @@ -1269,10 +1355,8 @@ static int imx274_s_frame_interval(struct v4l2_sub=
-dev *sd,
->   *
->   * Return: 0 on success, errors otherwise
->   */
-> -static int imx274_load_default(struct stimx274 *priv)
-> +static void imx274_load_default(struct stimx274 *priv)
->  {
-> -	int ret;
-> -
->  	/* load default control values */
->  	priv->frame_interval.numerator =3D 1;
->  	priv->frame_interval.denominator =3D IMX274_DEF_FRAME_RATE;
-> @@ -1280,29 +1364,6 @@ static int imx274_load_default(struct stimx274 *pr=
-iv)
->  	priv->ctrls.gain->val =3D IMX274_DEF_GAIN;
->  	priv->ctrls.vflip->val =3D 0;
->  	priv->ctrls.test_pattern->val =3D TEST_PATTERN_DISABLED;
-> -
-> -	/* update frame rate */
-> -	ret =3D imx274_set_frame_interval(priv,
-> -					priv->frame_interval);
-> -	if (ret)
-> -		return ret;
-> -
-> -	/* update exposure time */
-> -	ret =3D v4l2_ctrl_s_ctrl(priv->ctrls.exposure, priv->ctrls.exposure->va=
-l);
-> -	if (ret)
-> -		return ret;
-> -
-> -	/* update gain */
-> -	ret =3D v4l2_ctrl_s_ctrl(priv->ctrls.gain, priv->ctrls.gain->val);
-> -	if (ret)
-> -		return ret;
-> -
-> -	/* update vflip */
-> -	ret =3D v4l2_ctrl_s_ctrl(priv->ctrls.vflip, priv->ctrls.vflip->val);
-> -	if (ret)
-> -		return ret;
-
-This is not moved to somewhere else, so I assume the equivalent will
-happen somewhere higher up in the stack? Might be worth mentioning in
-the commit message why this can be dropped.
-
-Thierry
-
---tjCHc7DPkfUGtrlw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9prdIACgkQ3SOs138+
-s6Go5RAAsl5nrRCHjpW/doOtwSxgurImfXBAlaiTHZa+XbQWVDe4M8GOUZCT3jTF
-ToWTmnqNRcsNdy5x6yWftMz4ZpAt2eV9L3o1YFAFlGD93oXSB+Eb+C4U97oJXbln
-foamDXzIrNJdDANMj+BombChMNuFoWrTfGoOPsn2sH9TUjjMIgf3HGLJNMR3SasI
-0vSkH7qc/fdeNzEQ9Zs6J6cX5mW/D2j73nd90RhOF8XDT+ke68epWJbnbcWwkfR+
-DKoE5XHE9dHUzdqZpzJxY0XzSL2O1inBHwB10NuGcvYi/im+EDjf7Fi0ej/LANPl
-My+rjipeQYPauIJdnsxMgVcmgmn3fgLya9WlPW9T0gMBG2Ky3eHWR0OOiTIjuwMU
-NenxOdQ2JAU+qTNnxL/OPzItGK14lZekQNHgKbcVTk8N2YPKHzw9Ki2AhvE3d0nf
-PFum/eFsmd6HUAgyvpGuH2J9lcDMIrrKA1jJvKEycDrFTzx5Iv8DkuV3l+OEbN2L
-H5/uCl6WGafy9VbNIMDp3E7MPb4KHTQ4Em3wy4g0MPpb18lk+oCx8T98dBz9I8aV
-HDhJ/s2I5XiRgLTlPsDOUX2JPcu2UrCfUG90s8VN+AzpUWzXU5n9c1OrbtaacLe1
-9Fr56ytJr5L3gvW30CYMaaWyeGtolv4gZruXBsQA1ifqOGzpAQQ=
-=3iqU
------END PGP SIGNATURE-----
-
---tjCHc7DPkfUGtrlw--
