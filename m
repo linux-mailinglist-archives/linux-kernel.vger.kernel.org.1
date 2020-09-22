@@ -2,188 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F942743C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 16:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 972BF2743CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 16:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726650AbgIVOCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 10:02:45 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:30422 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726507AbgIVOCn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 10:02:43 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08MDhnu6018176;
-        Tue, 22 Sep 2020 10:02:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=1JU6MVfafMU5o1iLvErT4N9OypiVcthSuaXm4aj5xq8=;
- b=YBw0WmWI3XYsW66/MRgIjx6A/tSlNyLlU4X0VTOeGt5wRyo//29kt0NFToeiEXT8QYpc
- Xfp1A9Mt2PWN4jZwWHqgTIk+IOHpSa1y24wDVlpy794ZI9UuSWRKMC0f/brUuZtXV8I2
- ljGWj+xxF9L9SDHvr77vurRhXephrN7t+VUUZo0TCTDSJ7S7n8oD2im5rizLgFKXP3mL
- LDLsEu5plYJSMHUOpxuxCgk6/bInj4/oP4hg62+YQPZTghnChSJ2yWoNj2Fr0F6adPV4
- wtNv8LxRZTFzBS/1kASi1opGTGCQhBFOVF3ndJFDSQiGg7LN5N5yMFjdM0XEIX7Fs6pR 2A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33qjdfrnay-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Sep 2020 10:02:42 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08MDivlI026121;
-        Tue, 22 Sep 2020 10:02:42 -0400
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33qjdfrna5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Sep 2020 10:02:42 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08MDuqVC022921;
-        Tue, 22 Sep 2020 14:02:41 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma03dal.us.ibm.com with ESMTP id 33n9m95223-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Sep 2020 14:02:41 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08ME2cei62980502
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 22 Sep 2020 14:02:38 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5417BC6069;
-        Tue, 22 Sep 2020 14:02:38 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 59E33C605A;
-        Tue, 22 Sep 2020 14:02:37 +0000 (GMT)
-Received: from oc4221205838.ibm.com (unknown [9.163.16.144])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 22 Sep 2020 14:02:37 +0000 (GMT)
-Subject: Re: [PATCH 4/4] vfio-pci/zdev: use a device region to retrieve zPCI
- information
-To:     Cornelia Huck <cohuck@redhat.com>
-Cc:     alex.williamson@redhat.com, schnelle@linux.ibm.com,
-        pmorel@linux.ibm.com, borntraeger@de.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, gerald.schaefer@linux.ibm.com,
-        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1600529318-8996-1-git-send-email-mjrosato@linux.ibm.com>
- <1600529318-8996-5-git-send-email-mjrosato@linux.ibm.com>
- <20200922132239.4be1e749.cohuck@redhat.com>
-From:   Matthew Rosato <mjrosato@linux.ibm.com>
-Message-ID: <4c339a61-8013-f380-e608-1d81ebdfc0d0@linux.ibm.com>
-Date:   Tue, 22 Sep 2020 10:02:36 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726627AbgIVODi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 10:03:38 -0400
+Received: from mga18.intel.com ([134.134.136.126]:38185 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726473AbgIVODh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 10:03:37 -0400
+IronPort-SDR: gISH8xOQdQgHhDJZhCQEBJTQNtIlshRNdTaBOB0H9o/dLttka2op45rdjUqQHS00r7wu0yRTpT
+ Gh4AxmJMC4/A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="148355521"
+X-IronPort-AV: E=Sophos;i="5.77,290,1596524400"; 
+   d="scan'208";a="148355521"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 07:03:35 -0700
+IronPort-SDR: //JSbquJ3crr4TnUhHSTmhoc61lX1lZnrVo/7i0jEjzvAlM9YcztaO3dOz1MyPS+XOyldSh/i7
+ Jgkt4gJvsYXA==
+X-IronPort-AV: E=Sophos;i="5.77,290,1596524400"; 
+   d="scan'208";a="485970502"
+Received: from haijindi-mobl.ger.corp.intel.com (HELO localhost) ([10.249.47.132])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 07:03:25 -0700
+Date:   Tue, 22 Sep 2020 17:03:23 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Jethro Beekman <jethro@fortanix.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Seth Moore <sethmo@google.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 16/24] x86/sgx: Add a page reclaimer
+Message-ID: <20200922140314.GA164527@linux.intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-17-jarkko.sakkinen@linux.intel.com>
+ <20200922104538.GE22660@zn.tnic>
 MIME-Version: 1.0
-In-Reply-To: <20200922132239.4be1e749.cohuck@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-22_12:2020-09-21,2020-09-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
- spamscore=0 priorityscore=1501 clxscore=1015 mlxlogscore=999
- impostorscore=0 suspectscore=0 malwarescore=0 phishscore=0 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009220106
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922104538.GE22660@zn.tnic>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/22/20 7:22 AM, Cornelia Huck wrote:
-> On Sat, 19 Sep 2020 11:28:38 -0400
-> Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+On Tue, Sep 22, 2020 at 12:45:38PM +0200, Borislav Petkov wrote:
+> > + * %SGX_ENCL_PAGE_VA_OFFSET_MASK:	Holds the offset in the Version Array
+> > + *					(VA) page for a swapped page.
+> >   * %SGX_ENCL_PAGE_ADDR_MASK:		Holds the virtual address of the page.
+> >   *
+> >   * The page address for SECS is zero and is used by the subsystem to recognize
 > 
->> Define a new configuration entry VFIO_PCI_ZDEV for VFIO/PCI.
->>
->> When this s390-only feature is configured we initialize a new device
->> region, VFIO_REGION_SUBTYPE_IBM_ZPCI_CLP, to hold information provided
->> by the underlying hardware.
->>
->> This patch is based on work previously done by Pierre Morel.
->>
->> Signed-off-by: Matthew Rosato <mjrosato@linux.ibm.com>
->> ---
->>   drivers/vfio/pci/Kconfig            |  13 ++
->>   drivers/vfio/pci/Makefile           |   1 +
->>   drivers/vfio/pci/vfio_pci.c         |   8 ++
->>   drivers/vfio/pci/vfio_pci_private.h |  10 ++
->>   drivers/vfio/pci/vfio_pci_zdev.c    | 242 ++++++++++++++++++++++++++++++++++++
-> 
-> Maybe you want to add yourself to MAINTAINERS for the zdev-specific
-> files? You're probably better suited to review changes to the
-> zpci-specific code :)
+> ...
 
-Of course, will do.  Looking at how we split vfio-ap and vfio-ccw, I'll 
-add an S390 VFIO-PCI DRIVER category and point to the new .h and .c file 
-for now.
+So what's wrong over here?
 
+> > @@ -86,24 +123,34 @@ static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
+> >  {
+> >  	unsigned long encl_size = secs->size + PAGE_SIZE;
+> >  	struct sgx_epc_page *secs_epc;
+> > +	struct sgx_va_page *va_page;
+> >  	struct sgx_pageinfo pginfo;
+> >  	struct sgx_secinfo secinfo;
+> >  	struct file *backing;
+> >  	long ret;
+> >  
+> > +	va_page = sgx_encl_grow(encl);
+> > +	if (IS_ERR(va_page))
+> > +		return PTR_ERR(va_page);
+> > +	else if (va_page)
 > 
->>   5 files changed, 274 insertions(+)
->>   create mode 100644 drivers/vfio/pci/vfio_pci_zdev.c
+> Not "else" simply?
 > 
-> (...)
+> AFAICT, sgx_encl_grow() would either return an ERR_PTR or the actual
+> page...
 > 
->> +int vfio_pci_zdev_init(struct vfio_pci_device *vdev)
->> +{
->> +	struct vfio_region_zpci_info *region;
->> +	struct zpci_dev *zdev;
->> +	size_t clp_offset;
->> +	int size;
->> +	int ret;
->> +
->> +	if (!vdev->pdev->bus)
->> +		return -ENODEV;
->> +
->> +	zdev = to_zpci(vdev->pdev);
->> +	if (!zdev)
->> +		return -ENODEV;
->> +
->> +	/* Calculate size needed for all supported CLP features  */
->> +	size = sizeof(*region) +
->> +	       sizeof(struct vfio_region_zpci_info_qpci) +
->> +	       sizeof(struct vfio_region_zpci_info_qpcifg) +
->> +	       (sizeof(struct vfio_region_zpci_info_util) + CLP_UTIL_STR_LEN) +
->> +	       (sizeof(struct vfio_region_zpci_info_pfip) +
->> +		CLP_PFIP_NR_SEGMENTS);
->> +
->> +	region = kmalloc(size, GFP_KERNEL);
->> +	if (!region)
->> +		return -ENOMEM;
->> +
->> +	/* Fill in header */
->> +	region->argsz = size;
->> +	clp_offset = region->offset = sizeof(struct vfio_region_zpci_info);
->> +
->> +	/* Fill the supported CLP features */
->> +	clp_offset = vfio_pci_zdev_add_qpci(zdev, region, clp_offset);
->> +	clp_offset = vfio_pci_zdev_add_qpcifg(zdev, region, clp_offset);
->> +	clp_offset = vfio_pci_zdev_add_util(zdev, region, clp_offset);
->> +	clp_offset = vfio_pci_zdev_add_pfip(zdev, region, clp_offset);
-> 
-> So, the regions are populated once. Can any of the values in the
-> hardware structures be modified by a guest? Or changed from the
-> hardware side?
-> 
+> Also, should the growing happen *after* the SECS validation?
 
-The region is created read-only (vfio_pci_zdev_rw returns -EINVAL on 
-writes), so no guest modification.  The expectation is the guest can 
-read the region and take what it wants / ignore what it doesn't.
+Yes, it would make sense. I'll move it.
 
-The CLPs covered by this region are not intended to change once the 
-device is up.
+> Let's add some comment blurb about "Write back/invalidate an EPC page"
+> to at least start to explain what that "ewb" is.
 
-If we end up needing either of the above for a different CLP, I would 
-think an additional/different region would be appropriate.
+OK, I'll try to write something understandable.
+
+> > +	spin_lock(&sgx_active_page_list_lock);
+> > +	for (i = 0; i < SGX_NR_TO_SCAN; i++) {
+> > +		if (list_empty(&sgx_active_page_list))
+> 
+> Isn't it enough to do this once, i.e., not in the loop? You're holding
+> sgx_active_page_list_lock...
+
+I think that would make sense. Distantly analogous to the EINIT
+discussion. Too complex code for yet to be known problem workloads I'd
+say.
 
 
->> +
->> +	ret = vfio_pci_register_dev_region(vdev,
->> +		PCI_VENDOR_ID_IBM | VFIO_REGION_TYPE_PCI_VENDOR_TYPE,
->> +		VFIO_REGION_SUBTYPE_IBM_ZPCI_CLP, &vfio_pci_zdev_regops,
->> +		size, VFIO_REGION_INFO_FLAG_READ, region);
->> +	if (ret)
->> +		kfree(region);
->> +
->> +	return ret;
->> +}
+> >  static void sgx_sanitize_section(struct sgx_epc_section *section)
 > 
+> ...
 
+Is this about documenting this function?
+
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
+
+Thanks, this was valuable feedback.
+
+/Jarkko
