@@ -2,120 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49E3E273D3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 10:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30383273D4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 10:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726715AbgIVI0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 04:26:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37256 "EHLO mail.kernel.org"
+        id S1726756AbgIVI3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 04:29:25 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:34792 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726486AbgIVI0r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 04:26:47 -0400
-Received: from localhost (unknown [213.57.247.131])
+        id S1726488AbgIVI3Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 04:29:25 -0400
+Received: from zn.tnic (p200300ec2f0bfb00524dde00a85e5113.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:fb00:524d:de00:a85e:5113])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A17F7239E5;
-        Tue, 22 Sep 2020 08:26:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600763206;
-        bh=+wLGhuvBipQJDc5R24NSR7JgfQiCe86ceunbt34Awi4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=u3ihSVvhoihD45AS6xIW4tHGqrkE46WNYMoLUnolnrT47IFeLuCRt4GTm8e1E6kC/
-         5QDAy1dhu3XHoYsev2HNdx2bFtBMGjhSFEeC7gMoC3buMI5Xhi9H/UhWEVnVl+jTCz
-         ZPNPXb+K8Qr/9mX+Vzj/Is/OVVCCDq0rosJdUvFI=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Avihai Horon <avihaih@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Michal Kalderon <mkalderon@marvell.com>
-Subject: [PATCH rdma-next v2 0/4] Query GID table API
-Date:   Tue, 22 Sep 2020 11:26:37 +0300
-Message-Id: <20200922082641.2149549-1-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 964C61EC047E;
+        Tue, 22 Sep 2020 10:29:23 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600763363;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=my0BiTfuw78PRSxQkYalUvNGgbAS+8+tGotWiPO3720=;
+        b=qKHk11PS4bsI8+fCWlD1orBMgH8FXAnqSal8BmRD2ycHTiQsgjAkQT/XaD4CRP8asQb4Iw
+        Xxj6FBbXRHicVhjY94W12OQZY6bK8N5DfajU60ba6qtc8Mh63Td5RC1HtTmLNeB9r8n1Sj
+        YHOgngTbhQHUbA4k+/R3gZgeDe/udLE=
+Date:   Tue, 22 Sep 2020 10:29:18 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 14/24] x86/sgx: Add SGX_IOC_ENCLAVE_INIT
+Message-ID: <20200922082918.GC22660@zn.tnic>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-15-jarkko.sakkinen@linux.intel.com>
+ <20200921173514.GI5901@zn.tnic>
+ <20200921181021.GA24481@linux.intel.com>
+ <20200921182753.GK5901@zn.tnic>
+ <20200921191658.GA24823@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200921191658.GA24823@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On Mon, Sep 21, 2020 at 12:17:00PM -0700, Sean Christopherson wrote:
+> That was effectively my original suggestion as well, check for a stale cache
+> and retry indefinitely.  I capitulated because it did feel like I was being
+> overly paranoid.  I'm obviously ok going the retry indefinitely route :-).
+> 
+> https://lkml.kernel.org/r/20180904163546.GA5421@linux.intel.com
 
-Changelog:
-v2:
- * Embedded RoCE protocol type into rdma_read_gid_attr_ndev_rcu
-v1: https://lore.kernel.org/lkml/20200914111129.343651-1-leon@kernel.org
- * Moved git_type logic to cma_set_default_gid_type - Patch #2
- * Changed signature of rdma_query_gid_table - Patch #3
- * Changed i to be unsigned - Patch #3
- * Fixed multiplication overflow - Patch #4
-v0: https://lore.kernel.org/lkml/20200910142204.1309061-1-leon@kernel.org
+Right, so if EINIT is so expensive, why does it matter how many cyccles
+WRMSR has? I.e., you don't really need to cache - you simply write the 4
+MSRs and you're done. Simple.
 
-------------------------------------------------------------------------------
+As to "indefinitely" - caller can increment a counter which counts
+how many times it returned SGX_INVALID_EINITTOKEN. I guess when it
+reaches some too high number which should not be reached during normal
+usage patterns, you can give up and issue a message to say that counter
+reached max retries or so but other than that, you should be ok. That
+thing is running interruptible in a loop anyway...
 
-From Avihai,
+Thx.
 
-When an application is not using RDMA CM and if it is using multiple RDMA
-devices with one or more RoCE ports, finding the right GID table entry is
-a long process.
+-- 
+Regards/Gruss,
+    Boris.
 
-For example, with two RoCE dual-port devices in a system, when IP
-failover is used between two RoCE ports, searching a suitable GID
-entry for a given source IP, matching netdevice of given RoCEv1/v2 type
-requires iterating over all 4 ports * 256 entry GID table.
-
-Even though the best first match GID table for given criteria is used,
-when the matching entry is on the 4th port, it requires reading
-3 ports * 256 entries * 3 files (GID, netdev, type) = 2304 files.
-
-The GID table needs to be referred on every QP creation during IP
-failover on other netdevice of an RDMA device.
-
-In an alternative approach, a GID cache may be maintained and updated on
-GID change event was reported by the kernel. However, it comes with below
-two limitations:
-(a) Maintain a thread per application process instance to listen and update
- the cache.
-(b) Without the thread, on cache miss event, query the GID table. Even in
- this approach, if multiple processes are used, a GID cache needs to be
- maintained on a per-process basis. With a large number of processes,
- this method doesn't scale.
-
-Hence, we introduce this series of patches, which introduces an API to
-query the complete GID tables of an RDMA device, that returns all valid
-GID table entries.
-
-This is done through single ioctl, eliminating 2304 read, 2304 open and
-2304 close system calls to just a total of 2 calls (one for each device).
-
-While at it, we also introduce an API to query an individual GID entry
-over ioctl interface, which provides all GID attributes information.
-
-Thanks
-
-Avihai Horon (4):
-  RDMA/core: Change rdma_get_gid_attr returned error code
-  RDMA/core: Modify enum ib_gid_type and enum rdma_network_type
-  RDMA/core: Introduce new GID table query API
-  RDMA/uverbs: Expose the new GID query API to user space
-
- drivers/infiniband/core/cache.c               |  81 +++++++-
- drivers/infiniband/core/cma.c                 |   4 +
- drivers/infiniband/core/cma_configfs.c        |   9 +-
- drivers/infiniband/core/sysfs.c               |   3 +-
- .../infiniband/core/uverbs_std_types_device.c | 193 +++++++++++++++++-
- drivers/infiniband/core/verbs.c               |   2 +-
- drivers/infiniband/hw/mlx5/cq.c               |   2 +-
- drivers/infiniband/hw/mlx5/main.c             |   4 +-
- drivers/infiniband/hw/qedr/verbs.c            |   4 +-
- include/rdma/ib_cache.h                       |   3 +
- include/rdma/ib_verbs.h                       |  19 +-
- include/uapi/rdma/ib_user_ioctl_cmds.h        |  16 ++
- include/uapi/rdma/ib_user_ioctl_verbs.h       |  14 ++
- 13 files changed, 331 insertions(+), 23 deletions(-)
-
---
-2.26.2
-
+https://people.kernel.org/tglx/notes-about-netiquette
