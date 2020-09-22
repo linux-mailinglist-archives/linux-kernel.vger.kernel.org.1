@@ -2,113 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0B8F2748A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 20:56:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 426622748AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 20:59:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726666AbgIVS41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 14:56:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726563AbgIVS40 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 14:56:26 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4809EC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 11:56:26 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id a22so15004513ljp.13
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 11:56:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ymw2XfYcqbrKxbh+VHjYTBZabPIEIeS/kxNNZK3Q7GE=;
-        b=DV4EUlN276uVi19xQ/E+YB845hHum+zfsKpyj63GqwBiuV/FeabyS0GRc7fKnRLj2n
-         El2H+Lui81CyaiWNLzdMPKDWLYLYwcx1t3Bl0cf+3L3WPo3DEuDxNQ32HUZUDZriBXaM
-         MpWGnrUlGQSZRctkk3h9v7LtyueARTH7Zw6ACifO2t2eH/xXoieLo19WCHGh6emFW2HL
-         GmTE8yAVvlKEsLZkzm01E/hInUAIwYjUtnkYA0EwlKOTTk4FrV1nf3ocHelxTfr1uAC7
-         KyOW0HGEZ68aIlHfds/PzuFOpCRUeXZ9/wITZ9lIbqEi8gGIzTntzaPkj4b6fpNPQFBp
-         MF5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ymw2XfYcqbrKxbh+VHjYTBZabPIEIeS/kxNNZK3Q7GE=;
-        b=kXRDXE+bZ1d92j0Tu++OZUr0EWWwiaQK6yR8mYOrUneACUoPwU7UdX3hyVmXHASYtR
-         s6q+JJ46fDjBgYUMvxVuaJID6FvRKNdbPQwO8u71xVnv8liRIoej782xnHPohvMsEa1Y
-         +/uJi7pFf4qVXCR8JPbrRhlAYzaCKkGEv3sgr7/OUb+UKp+tqIyrOjxlKz1+PdcQr+Yt
-         8+RsIrluLKOM4J8DIg5n2RVw9CeeFGMFXiSBi/D4gqIUcBcZaF/lvzIiYJ0DRiYjHYhy
-         hfew5vmqWdJlFN9nEkpjBmhAnxbyeFPxNEc3Deq7ksFRZb6wrCPf3+Eq6X1cyXA0Yz+c
-         QKew==
-X-Gm-Message-State: AOAM532fkDP/+6wPTgcgYaAoM0UozU7O0aefFxM1amAANseFP77O7gPr
-        vSwETD8gaxdQnjBIKUahKf+dtrv33DJwsFuQJVbZcQ==
-X-Google-Smtp-Source: ABdhPJwLnjVHv9kqWNAXJHHZUxAgZeGN3nABkUBKLoVXg62pr+US6oGOL0/oKZAaTMwyytU8AZeTPBQ7uIKxZuOEl74=
-X-Received: by 2002:a05:651c:1af:: with SMTP id c15mr2096875ljn.347.1600800984328;
- Tue, 22 Sep 2020 11:56:24 -0700 (PDT)
+        id S1726629AbgIVS7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 14:59:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38378 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726563AbgIVS7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 14:59:33 -0400
+Received: from gmail.com (unknown [104.132.1.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2A3DD206F4;
+        Tue, 22 Sep 2020 18:59:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600801173;
+        bh=T+ja20+KkhDc/68kT+bFCy5o4/aJH6M/ZBfoymLFxzg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=w7b1TIv64cEk9yVwIBRYvfjUzFFFmmlLGOCdd893DjTqMuwznP1nMRlivv0CzJuob
+         +pxKc7odISQbQDQ5K7IPLaTvKAVRlXMvCy4q0/on9fMb34fU3ojSGNBFTUIxSHd9bc
+         GetbtticD8jpr1MSvmVygpkzz9oqaM8/cNDwClFQ=
+Date:   Tue, 22 Sep 2020 11:59:31 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>, tytso@mit.edu,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        stable@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] random: use correct memory barriers for crng_node_pool
+Message-ID: <20200922185931.GA1616407@gmail.com>
+References: <20200916233042.51634-1-ebiggers@kernel.org>
+ <20200917072644.GA5311@gondor.apana.org.au>
+ <20200917165802.GC855@sol.localdomain>
+ <20200921081939.GA4193@gondor.apana.org.au>
+ <20200921152714.GC29330@paulmck-ThinkPad-P72>
+ <20200921221104.GA6556@gondor.apana.org.au>
+ <20200921232639.GK29330@paulmck-ThinkPad-P72>
+ <20200921235136.GA6796@gondor.apana.org.au>
+ <20200922184243.GA29330@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-References: <20200909215752.1725525-1-shakeelb@google.com> <20200921163055.GQ12990@dhcp22.suse.cz>
- <CALvZod43VXKZ3StaGXK_EZG_fKcW3v3=cEYOWFwp4HNJpOOf8g@mail.gmail.com>
- <20200922114908.GZ12990@dhcp22.suse.cz> <CALvZod4FvE12o53BpeH5WB_McTdCkFTFXgc9gcT1CEHXzQLy_A@mail.gmail.com>
- <20200922165527.GD12990@dhcp22.suse.cz> <CALvZod7K9g9mi599c5+ayLeC4__kckv155QQGVMVy2rXXOY1Rw@mail.gmail.com>
- <20200922183125.GG12990@dhcp22.suse.cz>
-In-Reply-To: <20200922183125.GG12990@dhcp22.suse.cz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 22 Sep 2020 11:56:13 -0700
-Message-ID: <CALvZod6kfF_r5u2ydZ34Q+6QWvg11ZFwfRMHdiNUvi3NJnms=A@mail.gmail.com>
-Subject: Re: [PATCH] memcg: introduce per-memcg reclaim interface
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Greg Thelen <gthelen@google.com>,
-        David Rientjes <rientjes@google.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Yang Shi <shy828301@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922184243.GA29330@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 11:31 AM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Tue 22-09-20 11:10:17, Shakeel Butt wrote:
-> > On Tue, Sep 22, 2020 at 9:55 AM Michal Hocko <mhocko@suse.com> wrote:
-> [...]
-> > > So far I have learned that you are primarily working around an
-> > > implementation detail in the zswap which is doing the swapout path
-> > > directly in the pageout path.
-> >
-> > Wait how did you reach this conclusion? I have explicitly said that we
-> > are not using uswapd like functionality in production. We are using
-> > this interface for proactive reclaim and proactive reclaim is not a
-> > workaround for implementation detail in the zswap.
->
-> Hmm, I must have missed the distinction between the two you have
-> mentioned. Correct me if I am wrong but "latency sensitive" workload is
-> the one that cannot use the high limit, right.
+On Tue, Sep 22, 2020 at 11:42:43AM -0700, Paul E. McKenney wrote:
+> On Tue, Sep 22, 2020 at 09:51:36AM +1000, Herbert Xu wrote:
+> > On Mon, Sep 21, 2020 at 04:26:39PM -0700, Paul E. McKenney wrote:
+> > >
+> > > > But this reasoning could apply to any data structure that contains
+> > > > a spin lock, in particular ones that are dereferenced through RCU.
+> > > 
+> > > I lost you on this one.  What is special about a spin lock?
+> > 
+> > I don't know, that was Eric's concern.  He is inferring that
+> > spin locks through lockdep debugging may trigger dependencies
+> > that require smp_load_acquire.
+> > 
+> > Anyway, my point is if it applies to crng_node_pool then it
+> > would equally apply to RCU in general.
+> 
+> Referring to the patch you call out below...
+> 
+> Huh.  The old cmpxchg() primitive is fully ordered, so the old mb()
+> preceding it must have been for correctly interacting with hardware on
+> !SMP systems.  If that is the case, then the use of cmpxchg_release()
+> is incorrect.  This is not the purview of the memory model, but rather
+> of device-driver semantics.  Or does crng not (or no longer, as the case
+> might be) interact with hardware RNGs?
 
-Yes.
+No hardware involved here.  The mb() is just unnecessary, as I noted in my patch
+https://lore.kernel.org/lkml/20200916233042.51634-1-ebiggers@kernel.org/.
 
-> For some reason I thought
-> that your pro-active reclaim usecase is also not compatible with the
-> throttling imposed by the high limit. Hence my conclusion above.
->
+> What prevents either the old or the new code from kfree()ing the old
+> state out from under another CPU that just now picked up a pointer to the
+> old state?  The combination of cmpxchg_release() and smp_load_acquire()
+> won't do anything to prevent this from happening.  This is after all not
+> a memory-ordering issue, but instead an object-lifetime issue.  But maybe
+> you have a lock or something that provides the needed protection.  I don't
+> see how this can be the case and still require the cmpxchg_release()
+> and smp_load_acquire(), but perhaps this is a failure of imagination on
+> my part.
 
-For proactive reclaim use-case, it is more about the weirdness of
-using memory.high interface for proactive reclaim.
+crng_node_pool is initialized only once, and never freed.
 
-Let's suppose I want to reclaim 20 MiB from a job. To use memory.high,
-I have to read memory.current and subtract 20MiB from it and then
-write that to memory.high and once that is done, I have to set
-memory.high to the previous value (job's original high limit).
-
-There is a time window where the allocation of the target job can hit
-the temporary memory.high which will cause uninteresting MEMCG_HIGH
-event, PSI pressure and can potentially over reclaim. Also there is a
-race between reading memory.current and setting the temporary
-memory.high. There are many non-deterministic  variables added to the
-request of reclaiming 20MiB from a job.
-
-Shakeel
+- Eric
