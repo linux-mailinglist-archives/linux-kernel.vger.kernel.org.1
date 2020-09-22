@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAEC927380A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 03:26:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3FC227380C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 03:26:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729795AbgIVB0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 21:26:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56614 "EHLO mail.kernel.org"
+        id S1729811AbgIVB0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 21:26:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729531AbgIVBYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729534AbgIVBYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 21 Sep 2020 21:24:52 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B84F723AA9;
+        by mail.kernel.org (Postfix) with ESMTPSA id D886923ABA;
         Tue, 22 Sep 2020 01:24:51 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1kKX34-001sIn-P4; Mon, 21 Sep 2020 21:24:50 -0400
-Message-ID: <20200922012450.653240048@goodmis.org>
+        id 1kKX34-001sJH-To; Mon, 21 Sep 2020 21:24:50 -0400
+Message-ID: <20200922012450.804166879@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Mon, 21 Sep 2020 21:24:19 -0400
+Date:   Mon, 21 Sep 2020 21:24:20 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [for-next][PATCH 05/26] tools/bootconfig: Add a script to generates bootconfig from ftrace
+Subject: [for-next][PATCH 06/26] tools/bootconfig: Add --init option for bconf2ftrace.sh
 References: <20200922012414.115238201@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -37,278 +37,184 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Masami Hiramatsu <mhiramat@kernel.org>
 
-Add a ftrace2bconf.sh under tools/bootconfig/scripts which generates
-a bootconfig file from the current ftrace settings.
+Since the ftrace current setting may conflict with the new setting
+from bootconfig, add the --init option to initialize ftrace before
+setting for bconf2ftrace.sh.
 
-To read the ftrace settings, ftrace2bconf.sh requires the root
-privilege (or sudo). The ftrace2bconf.sh will output the bootconfig
-to stdout and error messages to stderr, so usually you'll run it as
+E.g.
+ $ bconf2ftrace.sh --init boottrace.bconf
 
- # ftrace2bconf.sh > ftrace.bconf
+This initialization method copied from selftests/ftrace.
 
-Note that some ftrace configurations are not supported. For example,
-function-call/callgraph trace/notrace settings are not supported because
-the wildcard has been expanded and lost in the ftrace anymore.
-
-Link: https://lkml.kernel.org/r/159704852163.175360.16738029520293360558.stgit@devnote2
+Link: https://lkml.kernel.org/r/159704853203.175360.17029578033994278231.stgit@devnote2
 
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- tools/bootconfig/scripts/ftrace2bconf.sh | 244 +++++++++++++++++++++++
- 1 file changed, 244 insertions(+)
- create mode 100755 tools/bootconfig/scripts/ftrace2bconf.sh
+ tools/bootconfig/scripts/bconf2ftrace.sh |  12 ++-
+ tools/bootconfig/scripts/ftrace.sh       | 109 +++++++++++++++++++++++
+ 2 files changed, 120 insertions(+), 1 deletion(-)
+ create mode 100644 tools/bootconfig/scripts/ftrace.sh
 
-diff --git a/tools/bootconfig/scripts/ftrace2bconf.sh b/tools/bootconfig/scripts/ftrace2bconf.sh
-new file mode 100755
-index 000000000000..6c0d4b61e0c2
+diff --git a/tools/bootconfig/scripts/bconf2ftrace.sh b/tools/bootconfig/scripts/bconf2ftrace.sh
+index a46e984fb2ff..595e164dc352 100755
+--- a/tools/bootconfig/scripts/bconf2ftrace.sh
++++ b/tools/bootconfig/scripts/bconf2ftrace.sh
+@@ -3,8 +3,9 @@
+ 
+ usage() {
+ 	echo "Ftrace boottime trace test tool"
+-	echo "Usage: $0 [--apply] [--debug] BOOTCONFIG-FILE"
++	echo "Usage: $0 [--apply|--init] [--debug] BOOTCONFIG-FILE"
+ 	echo "    --apply: Test actual apply to tracefs (need sudo)"
++	echo "    --init:  Initialize ftrace before applying (imply --apply)"
+ 	exit 1
+ }
+ 
+@@ -13,12 +14,16 @@ usage() {
+ BCONF=
+ DEBUG=
+ APPLY=
++INIT=
+ while [ x"$1" != x ]; do
+ 	case "$1" in
+ 	"--debug")
+ 		DEBUG=$1;;
+ 	"--apply")
+ 		APPLY=$1;;
++	"--init")
++		APPLY=$1
++		INIT=$1;;
+ 	*)
+ 		[ ! -f $1 ] && usage
+ 		BCONF=$1;;
+@@ -57,6 +62,11 @@ if [ -z "$TRACEFS" ]; then
+ 	fi
+ fi
+ 
++if [ x"$INIT" != x ]; then
++	. `dirname $0`/ftrace.sh
++	(cd $TRACEFS; initialize_ftrace)
++fi
++
+ . `dirname $0`/xbc.sh
+ 
+ ######## main #########
+diff --git a/tools/bootconfig/scripts/ftrace.sh b/tools/bootconfig/scripts/ftrace.sh
+new file mode 100644
+index 000000000000..186eed923041
 --- /dev/null
-+++ b/tools/bootconfig/scripts/ftrace2bconf.sh
-@@ -0,0 +1,244 @@
-+#!/bin/sh
++++ b/tools/bootconfig/scripts/ftrace.sh
+@@ -0,0 +1,109 @@
 +# SPDX-License-Identifier: GPL-2.0-only
 +
-+usage() {
-+	echo "Dump boot-time tracing bootconfig from ftrace"
-+	echo "Usage: $0 [--debug] [ > BOOTCONFIG-FILE]"
-+	exit 1
++clear_trace() { # reset trace output
++    echo > trace
 +}
 +
-+DEBUG=
-+while [ x"$1" != x ]; do
-+	case "$1" in
-+	"--debug")
-+		DEBUG=$1;;
-+	-*)
-+		usage
-+		;;
-+	esac
-+	shift 1
-+done
++disable_tracing() { # stop trace recording
++    echo 0 > tracing_on
++}
 +
-+if [ x"$DEBUG" != x ]; then
-+	set -x
-+fi
++enable_tracing() { # start trace recording
++    echo 1 > tracing_on
++}
 +
-+TRACEFS=`grep -m 1 -w tracefs /proc/mounts | cut -f 2 -d " "`
-+if [ -z "$TRACEFS" ]; then
-+	if ! grep -wq debugfs /proc/mounts; then
-+		echo "Error: No tracefs/debugfs was mounted."
-+		exit 1
++reset_tracer() { # reset the current tracer
++    echo nop > current_tracer
++}
++
++reset_trigger_file() {
++    # remove action triggers first
++    grep -H ':on[^:]*(' $@ |
++    while read line; do
++        cmd=`echo $line | cut -f2- -d: | cut -f1 -d"["`
++	file=`echo $line | cut -f1 -d:`
++	echo "!$cmd" >> $file
++    done
++    grep -Hv ^# $@ |
++    while read line; do
++        cmd=`echo $line | cut -f2- -d: | cut -f1 -d"["`
++	file=`echo $line | cut -f1 -d:`
++	echo "!$cmd" > $file
++    done
++}
++
++reset_trigger() { # reset all current setting triggers
++    if [ -d events/synthetic ]; then
++        reset_trigger_file events/synthetic/*/trigger
++    fi
++    reset_trigger_file events/*/*/trigger
++}
++
++reset_events_filter() { # reset all current setting filters
++    grep -v ^none events/*/*/filter |
++    while read line; do
++	echo 0 > `echo $line | cut -f1 -d:`
++    done
++}
++
++reset_ftrace_filter() { # reset all triggers in set_ftrace_filter
++    if [ ! -f set_ftrace_filter ]; then
++      return 0
++    fi
++    echo > set_ftrace_filter
++    grep -v '^#' set_ftrace_filter | while read t; do
++	tr=`echo $t | cut -d: -f2`
++	if [ "$tr" = "" ]; then
++	    continue
 +	fi
-+	TRACEFS=`grep -m 1 -w debugfs /proc/mounts | cut -f 2 -d " "`/tracing
-+	if [ ! -d $TRACEFS ]; then
-+		echo "Error: ftrace is not enabled on this kernel." 1>&2
-+		exit 1
++	if ! grep -q "$t" set_ftrace_filter; then
++		continue;
 +	fi
-+fi
-+
-+######## main #########
-+
-+set -e
-+
-+emit_kv() { # key =|+= value
-+	echo "$@"
-+}
-+
-+global_options() {
-+	val=`cat $TRACEFS/max_graph_depth`
-+	[ $val != 0 ] && emit_kv kernel.fgraph_max_depth = $val
-+	if grep -qv "^#" $TRACEFS/set_graph_function $TRACEFS/set_graph_notrace ; then
-+		cat 1>&2 << EOF
-+# WARN: kernel.fgraph_filters and kernel.fgraph_notrace are not supported, since the wild card expression was expanded and lost from memory.
-+EOF
-+	fi
-+}
-+
-+kprobe_event_options() {
-+	cat $TRACEFS/kprobe_events | while read p args; do
-+		case $p in
-+		r*)
-+		cat 1>&2 << EOF
-+# WARN: A return probe found but it is not supported by bootconfig. Skip it.
-+EOF
-+		continue;;
-+		esac
-+		p=${p#*:}
-+		event=${p#*/}
-+		group=${p%/*}
-+		if [ $group != "kprobes" ]; then
-+			cat 1>&2 << EOF
-+# WARN: kprobes group name $group is changed to "kprobes" for bootconfig.
-+EOF
-+		fi
-+		emit_kv $PREFIX.event.kprobes.$event.probes += $args
-+	done
-+}
-+
-+synth_event_options() {
-+	cat $TRACEFS/synthetic_events | while read event fields; do
-+		emit_kv $PREFIX.event.synthetic.$event.fields = `echo $fields | sed "s/;/,/g"`
-+	done
-+}
-+
-+# Variables resolver
-+DEFINED_VARS=
-+UNRESOLVED_EVENTS=
-+
-+defined_vars() { # event-dir
-+	grep "^hist" $1/trigger | grep -o ':[a-zA-Z0-9]*='
-+}
-+referred_vars() {
-+	grep "^hist" $1/trigger | grep -o '$[a-zA-Z0-9]*'
-+}
-+
-+per_event_options() { # event-dir
-+	evdir=$1
-+	# Check the special event which has no filter and no trigger
-+	[ ! -f $evdir/filter ] && return
-+
-+	if grep -q "^hist:" $evdir/trigger; then
-+		# hist action can refer the undefined variables
-+		__vars=`defined_vars $evdir`
-+		for v in `referred_vars $evdir`; do
-+			if echo $DEFINED_VARS $__vars | grep -vqw ${v#$}; then
-+				# $v is not defined yet, defer it
-+				UNRESOLVED_EVENTS="$UNRESOLVED_EVENTS $evdir"
-+				return;
-+			fi
-+		done
-+		DEFINED_VARS="$DEFINED_VARS "`defined_vars $evdir`
-+	fi
-+	grep -v "^#" $evdir/trigger | while read action active; do
-+		emit_kv $PREFIX.event.$group.$event.actions += \'$action\'
-+	done
-+
-+	# enable is not checked; this is done by set_event in the instance.
-+	val=`cat $evdir/filter`
-+	if [ "$val" != "none" ]; then
-+		emit_kv $PREFIX.event.$group.$event.filter = "$val"
-+	fi
-+}
-+
-+retry_unresolved() {
-+	unresolved=$UNRESOLVED_EVENTS
-+	UNRESOLVED_EVENTS=
-+	for evdir in $unresolved; do
-+		event=${evdir##*/}
-+		group=${evdir%/*}; group=${group##*/}
-+		per_event_options $evdir
-+	done
-+}
-+
-+event_options() {
-+	# PREFIX and INSTANCE must be set
-+	if [ $PREFIX = "ftrace" ]; then
-+		# define the dynamic events
-+		kprobe_event_options
-+		synth_event_options
-+	fi
-+	for group in `ls $INSTANCE/events/` ; do
-+		[ ! -d $INSTANCE/events/$group ] && continue
-+		for event in `ls $INSTANCE/events/$group/` ;do
-+			[ ! -d $INSTANCE/events/$group/$event ] && continue
-+			per_event_options $INSTANCE/events/$group/$event
-+		done
-+	done
-+	retry=0
-+	while [ $retry -lt 3 ]; do
-+		retry_unresolved
-+		retry=$((retry + 1))
-+	done
-+	if [ "$UNRESOLVED_EVENTS" ]; then
-+		cat 1>&2 << EOF
-+! ERROR: hist triggers in $UNRESOLVED_EVENTS use some undefined variables.
-+EOF
-+	fi
-+}
-+
-+is_default_trace_option() { # option
-+grep -qw $1 << EOF
-+print-parent
-+nosym-offset
-+nosym-addr
-+noverbose
-+noraw
-+nohex
-+nobin
-+noblock
-+trace_printk
-+annotate
-+nouserstacktrace
-+nosym-userobj
-+noprintk-msg-only
-+context-info
-+nolatency-format
-+record-cmd
-+norecord-tgid
-+overwrite
-+nodisable_on_free
-+irq-info
-+markers
-+noevent-fork
-+nopause-on-trace
-+function-trace
-+nofunction-fork
-+nodisplay-graph
-+nostacktrace
-+notest_nop_accept
-+notest_nop_refuse
-+EOF
-+}
-+
-+instance_options() { # [instance-name]
-+	if [ $# -eq 0 ]; then
-+		PREFIX="ftrace"
-+		INSTANCE=$TRACEFS
++	name=`echo $t | cut -d: -f1 | cut -d' ' -f1`
++	if [ $tr = "enable_event" -o $tr = "disable_event" ]; then
++	    tr=`echo $t | cut -d: -f2-4`
++	    limit=`echo $t | cut -d: -f5`
 +	else
-+		PREFIX="ftrace.instance.$1"
-+		INSTANCE=$TRACEFS/instances/$1
++	    tr=`echo $t | cut -d: -f2`
++	    limit=`echo $t | cut -d: -f3`
 +	fi
-+	val=
-+	for i in `cat $INSTANCE/trace_options`; do
-+		is_default_trace_option $i && continue
-+		val="$val, $i"
-+	done
-+	[ "$val" ] && emit_kv $PREFIX.options = "${val#,}"
-+	val="local"
-+	for i in `cat $INSTANCE/trace_clock` ; do
-+		[ "${i#*]}" ] && continue
-+		i=${i%]}; val=${i#[}
-+	done
-+	[ $val != "local" ] && emit_kv $PREFIX.trace_clock = $val
-+	val=`cat $INSTANCE/buffer_size_kb`
-+	if echo $val | grep -vq "expanded" ; then
-+		emit_kv $PREFIX.buffer_size = $val"KB"
++	if [ "$limit" != "unlimited" ]; then
++	    tr="$tr:$limit"
 +	fi
-+	if grep -q "is allocated" $INSTANCE/snapshot ; then
-+		emit_kv $PREFIX.alloc_snapshot
-+	fi
-+	val=`cat $INSTANCE/tracing_cpumask`
-+	if [ `echo $val | sed -e s/f//g`x != x ]; then
-+		emit_kv $PREFIX.cpumask = $val
-+	fi
-+
-+	val=
-+	for i in `cat $INSTANCE/set_event`; do
-+		val="$val, $i"
-+	done
-+	[ "$val" ] && emit_kv $PREFIX.events = "${val#,}"
-+	val=`cat $INSTANCE/current_tracer`
-+	[ $val != nop ] && emit_kv $PREFIX.tracer = $val
-+	if grep -qv "^#" $INSTANCE/set_ftrace_filter $INSTANCE/set_ftrace_notrace; then
-+		cat 1>&2 << EOF
-+# WARN: kernel.ftrace.filters and kernel.ftrace.notrace are not supported, since the wild card expression was expanded and lost from memory.
-+EOF
-+	fi
-+	event_options
++	echo "!$name:$tr" > set_ftrace_filter
++    done
 +}
 +
-+global_options
-+instance_options
-+for i in `ls $TRACEFS/instances` ; do
-+	instance_options $i
-+done
++disable_events() {
++    echo 0 > events/enable
++}
++
++clear_synthetic_events() { # reset all current synthetic events
++    grep -v ^# synthetic_events |
++    while read line; do
++        echo "!$line" >> synthetic_events
++    done
++}
++
++initialize_ftrace() { # Reset ftrace to initial-state
++# As the initial state, ftrace will be set to nop tracer,
++# no events, no triggers, no filters, no function filters,
++# no probes, and tracing on.
++    disable_tracing
++    reset_tracer
++    reset_trigger
++    reset_events_filter
++    reset_ftrace_filter
++    disable_events
++    [ -f set_event_pid ] && echo > set_event_pid
++    [ -f set_ftrace_pid ] && echo > set_ftrace_pid
++    [ -f set_ftrace_notrace ] && echo > set_ftrace_notrace
++    [ -f set_graph_function ] && echo | tee set_graph_*
++    [ -f stack_trace_filter ] && echo > stack_trace_filter
++    [ -f kprobe_events ] && echo > kprobe_events
++    [ -f uprobe_events ] && echo > uprobe_events
++    [ -f synthetic_events ] && echo > synthetic_events
++    [ -f snapshot ] && echo 0 > snapshot
++    clear_trace
++    enable_tracing
++}
 -- 
 2.28.0
 
