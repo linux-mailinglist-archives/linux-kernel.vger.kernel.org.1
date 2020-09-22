@@ -2,118 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8805273B7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7701E273B81
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:13:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729737AbgIVHNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 03:13:20 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:57489 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728526AbgIVHNQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 03:13:16 -0400
-X-UUID: d2c6de1f2a0642c3b4370b26606d871f-20200922
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=y5qtueSnd0gmXTgqaU7WrKuS0UH/8TSj72WVkDhtRI4=;
-        b=Dje6q1TmGkdE+S1arwuuvpcomXsB5uJj8NcGXs2/mInVgeXb75PlMTWmsiZ8cJGluR69zw9poVr5DCKqO4svW14kAkWnZ2GYU3rYkFxxY0/KmImbzKDbVBJ0+sFdAt774HLVTNoI3iHWfKzozNd9EblHrHR9S9cvaQyGydoWc/E=;
-X-UUID: d2c6de1f2a0642c3b4370b26606d871f-20200922
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
-        (envelope-from <neal.liu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 618911528; Tue, 22 Sep 2020 15:13:11 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 22 Sep 2020 15:13:08 +0800
-Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 22 Sep 2020 15:13:08 +0800
-Message-ID: <1600758789.19001.4.camel@mtkswgap22>
-Subject: Re: [PATCH v7] Add MediaTek MT6779 devapc driver
-From:   Neal Liu <neal.liu@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Neal Liu <neal.liu@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>
-Date:   Tue, 22 Sep 2020 15:13:09 +0800
-In-Reply-To: <1600246737.14155.3.camel@mtkswgap22>
-References: <1598497593-15781-1-git-send-email-neal.liu@mediatek.com>
-         <1599028813.32069.1.camel@mtkswgap22> <1599640627.6370.3.camel@mtkswgap22>
-         <1600246737.14155.3.camel@mtkswgap22>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        id S1729765AbgIVHN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 03:13:26 -0400
+Received: from mail-mw2nam10on2077.outbound.protection.outlook.com ([40.107.94.77]:9791
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728526AbgIVHNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 03:13:25 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nSshHqcdTVj5EXjdgaq2EqCH6TiVqi5h7QNqsYRDgUN5OiFC55PMAfwZkrHZO6KPExcHsvYHNXQN6QWNp93+mNbWV0TbDfhbpAaU33NwMdjQIfu/G8ofygfELY3vMmj4UZGxXKuSlLPENu16KWfrLL9yhhZ6s4ZwuEasNVLdnicvu3kUqD63iXihByQZ2cmLeknLjvm5UCBPPvVhhgpAqvreQqrvEpO07jOHxnQLqqMbVS4EsVSAysqjdCKz4pJOK117xZ9QdNYcnNcv40/95dOeG/M+aBrw/qXCOIC/AsmfvD7JI6F38oSyV+DqiwtubGBBdH4mDdolPwlKOYzq1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yhZ5Bby6cSbL9Ie1syzqNxQf/n8VGdxooLRWVbfFNlk=;
+ b=DiwKOnFl0W38WSt2oFNhXpq5bIuq0Ekd4Ul/9wDcJy9Msgu5zgquIwTpheMQ8aNxouiIU6NZbK+X8Ij9xAxGXZKOa8r0cAHIKJPRhULak3evP/b+NcfkYZ4ebA+UVenVlFt4XXx+wguXgzD/L/nW2RBFNdaufff8voqdKolShdTCGsjM0fVQBsYKPvrBWhMATzP9t82gX2rNYxsL2RXlnpMSsOsrHcO42i1GGEPas9Shbw7l7yN0ftZkRUYezCWPKZySaLlDnxj5Yhp0s+SCKIS0rAQn2ssGwokLd8eFikcS7WehCH70YrWF5uTpt9sL8qcdttv85Z+3j6etf5It8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yhZ5Bby6cSbL9Ie1syzqNxQf/n8VGdxooLRWVbfFNlk=;
+ b=LMcurrL9mwAlD/pKvxWGXujzUw5kupZR5QdvMrM7mbHki50IDOGMqAbB1RRjXlYp63d8ejIauuxdqjPh3xYZcCjB2QB90ro37VUsD47d6GaJugQtk8HxVXpfRJnlXGNxKi8twGVEMFOETfKZZp+pVURwbhIpdOWIPS547m6DlKk=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=windriver.com;
+Received: from SN6PR11MB3360.namprd11.prod.outlook.com (2603:10b6:805:c8::30)
+ by SN6PR11MB2557.namprd11.prod.outlook.com (2603:10b6:805:56::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14; Tue, 22 Sep
+ 2020 07:13:22 +0000
+Received: from SN6PR11MB3360.namprd11.prod.outlook.com
+ ([fe80::4dbe:2ab5:9b68:a966]) by SN6PR11MB3360.namprd11.prod.outlook.com
+ ([fe80::4dbe:2ab5:9b68:a966%7]) with mapi id 15.20.3412.020; Tue, 22 Sep 2020
+ 07:13:22 +0000
+Subject: Re: [PATCH] SUNRPC: Fix svc_flush_dcache()
+To:     Chuck Lever <chuck.lever@oracle.com>
+Cc:     linux-nfs@vger.kernel.org,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bruce Fields <bfields@fieldses.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+References: <160063136387.1537.11599713172507546412.stgit@klimt.1015granger.net>
+From:   He Zhe <zhe.he@windriver.com>
+Message-ID: <07c27f89-187b-69a3-fd40-f9beef29da40@windriver.com>
+Date:   Tue, 22 Sep 2020 15:13:14 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <160063136387.1537.11599713172507546412.stgit@klimt.1015granger.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HKAPR03CA0006.apcprd03.prod.outlook.com
+ (2603:1096:203:c8::11) To SN6PR11MB3360.namprd11.prod.outlook.com
+ (2603:10b6:805:c8::30)
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: D9A970872699FB66BF596432F982953E3F524122165F704DE10755B81CEC28102000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [128.224.162.175] (60.247.85.82) by HKAPR03CA0006.apcprd03.prod.outlook.com (2603:1096:203:c8::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.4 via Frontend Transport; Tue, 22 Sep 2020 07:13:19 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 262792d6-a33e-43d2-4e43-08d85ec6fd7b
+X-MS-TrafficTypeDiagnostic: SN6PR11MB2557:
+X-Microsoft-Antispam-PRVS: <SN6PR11MB2557BBA051337FB97448496B8F3B0@SN6PR11MB2557.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3383;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xdc85fTxM2Km4CVGkU7T7vuKQR5mDi0/j0wMptNA4M9cFYDmISkrV5Nsf+7CP3O1Ez08TiteLEAFwIhPUyvbXRGIFxZqfqRoSV6Sxtan02u1QMdh/L3NcLL+mq18+nWWOyM75r7eAWJbatXsLBnW/sSPBuw3jZ72cXub+fKo/ERbALkVyvuui142fB+WdqvwV9Zdmml26Kv7Q9bQMCFcUHmgq00jgrb6wx5A+sEbzbacCJ+P9f8VDC8qHqfdIgth2PatIEyVfiBZIF86TEpZXerO+vWgXxmzy2hQuLd3X1Iam5WWS1ksUrZY8oVOo1G3y1W1KTidTqDf+N3Y5JrWXmXMWgong2n9vghmHsGUaEq8Liqd01Ml1xm5GpSXT+mpJz5urYsVLG3FjtZRHN7HQA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB3360.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(346002)(136003)(39850400004)(396003)(6486002)(66476007)(66556008)(8676002)(5660300002)(66946007)(52116002)(83380400001)(31686004)(2906002)(6666004)(2616005)(478600001)(956004)(316002)(4326008)(6916009)(53546011)(186003)(6706004)(31696002)(16526019)(8936002)(36756003)(54906003)(26005)(86362001)(16576012)(78286007)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: baw92ZpjURATg95nVpmsEXuLXuGosIjr+4msEdeipUJxXFkHhP2BeK5EDqdIdv9nj5eQsecHtcEmBPPY5eBQN/4wQv+CVf9UYXhVLx7ynxmX0cpLhqPTabYFMoJPG3BPGI48Fe1gPqBwR2p0JWeQDoPbEVjeoHy7N/fXZLbtTf0wHWzUQ722+d6Wr4mUCunyvLjLRH6PKkSETEpm6SdigoyH25IcDCpkBUjxIxVPOXsz4iGLM1HdYzihq7I0ZRe+ZKRuyObKejx8Bz0yNA2wDtlM5HNCpofJPUyyRlN+rsJCofGM7Y6iJQRJOx0taY53W16VVFhZGWDNNe5ZUme6J8VdO3CYpwHY3ApR1TKq1ZdtKfDYIsKtCy3ObmcGPRwYP7Q0kCYdYd7o8ljVdXiEaN8sXwupBIouNv03mQSCoHBeqkPJq02+mDLNE6z/UzIprWG+CEQC3qJptPAf87y39gQe13hLGUkDfoo5/te7iG/eBvYoIg2lPo+RJLOEcSYd560HSi5bD0zi+PKKpampl0s7lBK+FT8+B5+iJtkcUJ56O0LYH3vT/Gi73rfimPeAQjcPVtQBllIBllYGaWLOoUF4Wsx+zT6kDFbZEXpd4bzcZc/e/1izuqycX5Jdeu+5JiaEqHq1vZ/Z2lfEzu9f9w==
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 262792d6-a33e-43d2-4e43-08d85ec6fd7b
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB3360.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2020 07:13:22.5705
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Bl11E+2hSa2UC/0O9G+l2ea2T0TFd7119jXqZTxW4gVlRRmIpHESDqE5g2ttxi44wy3hlFo8l0MLcka6Rflpbg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB2557
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTWF0dGhpYXMsDQoNCldlIG5lZWQgdGhpcyBkcml2ZXIgc3VwcG9ydGVkIG9uIG1haW4tbGlu
-ZS4NCkNvdWxkIHlvdSBzYXZlIHlvdXIgdGltZSBmb3IgdXMgdG8gcmV2aWV3IGl0Pw0KVGhhbmtz
-DQoNCi1OZWFsDQoNCk9uIFdlZCwgMjAyMC0wOS0xNiBhdCAxNjo1OCArMDgwMCwgTmVhbCBMaXUg
-d3JvdGU6DQo+IEhpIFJvYiwgTWF0dGhpYXMsIENodW4tS3VhbmcsDQo+IA0KPiBTb3JyeSBmb3Ig
-cHVzaGluZyB5b3Ugc28gaGFyZC4NCj4gTWF5IEkga25vdyBpcyB0aGlzIHBhdGNoIHNldCBpcyBj
-b21mb3J0YWJsZSB0byBhcHBseSBvbiBsYXRlc3Qga2VybmVsPw0KPiBUaGFua3MNCj4gDQo+IC1O
-ZWFsDQo+IA0KPiBPbiBXZWQsIDIwMjAtMDktMDkgYXQgMTY6MzcgKzA4MDAsIE5lYWwgTGl1IHdy
-b3RlOg0KPiA+IEhpIFJvYiwgTWF0dGhpYXMsIENodW4tS3VhbmcsDQo+ID4gDQo+ID4gUGxlYXNl
-IGtpbmRseSBsZXQgbWUga25vdyB5b3VyIGNvbW1lbnRzIGFib3V0IHRoaXMgcGF0Y2ggc2V0Lg0K
-PiA+IFRoYW5rcw0KPiA+IA0KPiA+IC1OZWFsDQo+ID4gDQo+ID4gT24gV2VkLCAyMDIwLTA5LTAy
-IGF0IDE0OjQwICswODAwLCBOZWFsIExpdSB3cm90ZToNCj4gPiA+IEhpIFJvYiwgTWF0dGhpYXMs
-IENodW4tS3VhbmcsDQo+ID4gPiANCj4gPiA+IEdlbnRsZSBwaW5nIGZvciB0aGlzIHBhdGNoIHNl
-dC4NCj4gPiA+IFRoYW5rcw0KPiA+ID4gDQo+ID4gPiAtTmVhbA0KPiA+ID4gDQo+ID4gPiBPbiBU
-aHUsIDIwMjAtMDgtMjcgYXQgMTE6MDYgKzA4MDAsIE5lYWwgTGl1IHdyb3RlOg0KPiA+ID4gPiBU
-aGVzZSBwYXRjaCBzZXJpZXMgaW50cm9kdWNlIGEgTWVkaWFUZWsgTVQ2Nzc5IGRldmFwYyBkcml2
-ZXIuDQo+ID4gPiA+IA0KPiA+ID4gPiBNZWRpYVRlayBidXMgZmFicmljIHByb3ZpZGVzIFRydXN0
-Wm9uZSBzZWN1cml0eSBzdXBwb3J0IGFuZCBkYXRhIHByb3RlY3Rpb24gdG8gcHJldmVudCBzbGF2
-ZXMgZnJvbSBiZWluZyBhY2Nlc3NlZCBieSB1bmV4cGVjdGVkIG1hc3RlcnMuDQo+ID4gPiA+IFRo
-ZSBzZWN1cml0eSB2aW9sYXRpb24gaXMgbG9nZ2VkIGFuZCBzZW50IHRvIHRoZSBwcm9jZXNzb3Ig
-Zm9yIGZ1cnRoZXIgYW5hbHlzaXMgb3IgY291bnRlcm1lYXN1cmVzLg0KPiA+ID4gPiANCj4gPiA+
-ID4gQW55IG9jY3VycmVuY2Ugb2Ygc2VjdXJpdHkgdmlvbGF0aW9uIHdvdWxkIHJhaXNlIGFuIGlu
-dGVycnVwdCwgYW5kIGl0IHdpbGwgYmUgaGFuZGxlZCBieSBtdGstZGV2YXBjIGRyaXZlci4NCj4g
-PiA+ID4gVGhlIHZpb2xhdGlvbiBpbmZvcm1hdGlvbiBpcyBwcmludGVkIGluIG9yZGVyIHRvIGZp
-bmQgdGhlIG11cmRlcmVyLg0KPiA+ID4gPiANCj4gPiA+ID4gY2hhbmdlcyBzaW5jZSB2NjoNCj4g
-PiA+ID4gLSByZW1vdmUgdW5uZWNlc3NhcnkgbWFzay91bm1hc2sgbW9kdWxlIGlycSBkdXJpbmcg
-SVNSLg0KPiA+ID4gPiANCj4gPiA+ID4gY2hhbmdlcyBzaW5jZSB2NToNCj4gPiA+ID4gLSByZW1v
-dmUgcmVkdW5kYW50IHdyaXRlIHJlZyBvcGVyYXRpb24uDQo+ID4gPiA+IC0gdXNlIHN0YXRpYyB2
-YXJpYWJsZSBvZiB2aW9fZGJncyBpbnN0ZWFkLg0KPiA+ID4gPiAtIGFkZCBzdG9wX2RldmFwYygp
-IGlmIGRyaXZlciBpcyByZW1vdmVkLg0KPiA+ID4gPiANCj4gPiA+ID4gY2hhbmdlcyBzaW5jZSB2
-NDoNCj4gPiA+ID4gLSByZWZhY3RvciBkYXRhIHN0cnVjdHVyZS4NCj4gPiA+ID4gLSBtZXJnZSB0
-d28gc2ltcGxlIGZ1bmN0aW9ucyBpbnRvIG9uZS4NCj4gPiA+ID4gLSByZWZhY3RvciByZWdpc3Rl
-ciBzZXR0aW5nIHRvIHByZXZlbnQgdG9vIG1hbnkgZnVuY3Rpb24gY2FsbCBvdmVyaGVhZC4NCj4g
-PiA+ID4gDQo+ID4gPiA+IGNoYW5nZXMgc2luY2UgdjM6DQo+ID4gPiA+IC0gcmV2aXNlIHZpb2xh
-dGlvbiBoYW5kbGluZyBmbG93IHRvIG1ha2UgaXQgbW9yZSBlYXNpbHkgdG8gdW5kZXJzdGFuZA0K
-PiA+ID4gPiAgIGhhcmR3YXJlIGJlaGF2aW9yLg0KPiA+ID4gPiAtIGFkZCBtb3JlIGNvbW1lbnRz
-IHRvIHVuZGVyc3RhbmQgaG93IGhhcmR3YXJlIHdvcmtzLg0KPiA+ID4gPiANCj4gPiA+ID4gY2hh
-bmdlcyBzaW5jZSB2MjoNCj4gPiA+ID4gLSBwYXNzIHBsYXRmb3JtIGluZm8gdGhyb3VnaCBEVCBk
-YXRhLg0KPiA+ID4gPiAtIHJlbW92ZSB1bm5lY2Vzc2FyeSBmdW5jdGlvbi4NCj4gPiA+ID4gLSBy
-ZW1vdmUgc2xhdmVfdHlwZSBiZWNhdXNlIGl0IGFsd2F5cyBlcXVhbHMgdG8gMSBpbiBjdXJyZW50
-IHN1cHBvcnQgU29DLg0KPiA+ID4gPiAtIHVzZSB2aW9faWR4X251bSBpbnN0cmVhZCBvZiBsaXN0
-IGFsbCBkZXZpY2VzJyBpbmRleC4NCj4gPiA+ID4gLSBhZGQgbW9yZSBjb21tZW50cyB0byBkZXNj
-cmliZSBoYXJkd2FyZSBiZWhhdmlvci4NCj4gPiA+ID4gDQo+ID4gPiA+IGNoYW5nZXMgc2luY2Ug
-djE6DQo+ID4gPiA+IC0gbW92ZSBTb0Mgc3BlY2lmaWMgcGFydCB0byBEVCBkYXRhLg0KPiA+ID4g
-PiAtIHJlbW92ZSB1bm5lY2Vzc2FyeSBib3VuZGFyeSBjaGVjay4NCj4gPiA+ID4gLSByZW1vdmUg
-dW5uZWNlc3NhcnkgZGF0YSB0eXBlIGRlY2xhcmF0aW9uLg0KPiA+ID4gPiAtIHVzZSByZWFkX3Bv
-bGxfdGltZW91dCgpIGluc3RyZWFkIG9mIGZvciBsb29wIHBvbGxpbmcuDQo+ID4gPiA+IC0gcmV2
-aXNlIGNvZGluZyBzdHlsZSBlbGVnYW50bHkuDQo+ID4gPiA+IA0KPiA+ID4gPiANCj4gPiA+ID4g
-KioqIEJMVVJCIEhFUkUgKioqDQo+ID4gPiA+IA0KPiA+ID4gPiBOZWFsIExpdSAoMik6DQo+ID4g
-PiA+ICAgZHQtYmluZGluZ3M6IGRldmFwYzogYWRkIGJpbmRpbmdzIGZvciBtdGstZGV2YXBjDQo+
-ID4gPiA+ICAgc29jOiBtZWRpYXRlazogYWRkIG10Njc3OSBkZXZhcGMgZHJpdmVyDQo+ID4gPiA+
-IA0KPiA+ID4gPiAgLi4uL2JpbmRpbmdzL3NvYy9tZWRpYXRlay9kZXZhcGMueWFtbCAgICAgICAg
-IHwgIDU4ICsrKysNCj4gPiA+ID4gIGRyaXZlcnMvc29jL21lZGlhdGVrL0tjb25maWcgICAgICAg
-ICAgICAgICAgICB8ICAgOSArDQo+ID4gPiA+ICBkcml2ZXJzL3NvYy9tZWRpYXRlay9NYWtlZmls
-ZSAgICAgICAgICAgICAgICAgfCAgIDEgKw0KPiA+ID4gPiAgZHJpdmVycy9zb2MvbWVkaWF0ZWsv
-bXRrLWRldmFwYy5jICAgICAgICAgICAgIHwgMzA1ICsrKysrKysrKysrKysrKysrKw0KPiA+ID4g
-PiAgNCBmaWxlcyBjaGFuZ2VkLCAzNzMgaW5zZXJ0aW9ucygrKQ0KPiA+ID4gPiAgY3JlYXRlIG1v
-ZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb2MvbWVkaWF0ZWsv
-ZGV2YXBjLnlhbWwNCj4gPiA+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL3NvYy9tZWRp
-YXRlay9tdGstZGV2YXBjLmMNCj4gPiA+ID4gDQo+ID4gPiANCj4gPiA+IA0KPiA+IA0KPiA+IA0K
-PiANCj4gDQoNCg==
+
+
+On 9/21/20 3:51 AM, Chuck Lever wrote:
+> On platforms that implement flush_dcache_page(), a large NFS WRITE
+> triggers the WARN_ONCE in bvec_iter_advance():
+>
+> Sep 20 14:01:05 klimt.1015granger.net kernel: Attempted to advance past end of bvec iter
+> Sep 20 14:01:05 klimt.1015granger.net kernel: WARNING: CPU: 0 PID: 1032 at include/linux/bvec.h:101 bvec_iter_advance.isra.0+0xa7/0x158 [sunrpc]
+>
+> Sep 20 14:01:05 klimt.1015granger.net kernel: Call Trace:
+> Sep 20 14:01:05 klimt.1015granger.net kernel:  svc_tcp_recvfrom+0x60c/0x12c7 [sunrpc]
+> Sep 20 14:01:05 klimt.1015granger.net kernel:  ? bvec_iter_advance.isra.0+0x158/0x158 [sunrpc]
+> Sep 20 14:01:05 klimt.1015granger.net kernel:  ? del_timer_sync+0x4b/0x55
+> Sep 20 14:01:05 klimt.1015granger.net kernel:  ? test_bit+0x1d/0x27 [sunrpc]
+> Sep 20 14:01:05 klimt.1015granger.net kernel:  svc_recv+0x1193/0x15e4 [sunrpc]
+> Sep 20 14:01:05 klimt.1015granger.net kernel:  ? try_to_freeze.isra.0+0x6f/0x6f [sunrpc]
+> Sep 20 14:01:05 klimt.1015granger.net kernel:  ? refcount_sub_and_test.constprop.0+0x13/0x40 [sunrpc]
+> Sep 20 14:01:05 klimt.1015granger.net kernel:  ? svc_xprt_put+0x1e/0x29f [sunrpc]
+> Sep 20 14:01:05 klimt.1015granger.net kernel:  ? svc_send+0x39f/0x3c1 [sunrpc]
+> Sep 20 14:01:05 klimt.1015granger.net kernel:  nfsd+0x282/0x345 [nfsd]
+> Sep 20 14:01:05 klimt.1015granger.net kernel:  ? __kthread_parkme+0x74/0xba
+> Sep 20 14:01:05 klimt.1015granger.net kernel:  kthread+0x2ad/0x2bc
+> Sep 20 14:01:05 klimt.1015granger.net kernel:  ? nfsd_destroy+0x124/0x124 [nfsd]
+> Sep 20 14:01:05 klimt.1015granger.net kernel:  ? test_bit+0x1d/0x27
+> Sep 20 14:01:05 klimt.1015granger.net kernel:  ? kthread_mod_delayed_work+0x115/0x115
+> Sep 20 14:01:05 klimt.1015granger.net kernel:  ret_from_fork+0x22/0x30
+>
+> Reported-by: He Zhe <zhe.he@windriver.com>
+> Fixes: ca07eda33e01 ("SUNRPC: Refactor svc_recvfrom()")
+> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+> ---
+>  net/sunrpc/svcsock.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> Hi Zhe-
+>
+> If you confirm this fixes your issue and there are no other
+> objections or regressions, I can submit this for v5.9-rc.
+
+I don't quite get why we add "seek" to "size". It seems this action does not
+reflect the actual scenario and forcedly neutralizes the WARN_ONCE check in
+bvec_iter_advance, so that it may "advance past end of bvec iter" and thus
+introduces overflow.
+
+Why don't we avoid this problem at the very begginning like my v1? That is, call
+svc_flush_bvec only when we have received more than we want to seek.
+
+        len = sock_recvmsg(svsk->sk_sock, &msg, MSG_DONTWAIT);
+-       if (len > 0)
++       if (len > 0 && (size_t)len > (seek & PAGE_MASK))
+                svc_flush_bvec(bvec, len, seek);
+
+
+Regards,
+Zhe
+
+>
+>
+> diff --git a/net/sunrpc/svcsock.c b/net/sunrpc/svcsock.c
+> index d5805fa1d066..c2752e2b9ce3 100644
+> --- a/net/sunrpc/svcsock.c
+> +++ b/net/sunrpc/svcsock.c
+> @@ -228,7 +228,7 @@ static int svc_one_sock_name(struct svc_sock *svsk, char *buf, int remaining)
+>  static void svc_flush_bvec(const struct bio_vec *bvec, size_t size, size_t seek)
+>  {
+>  	struct bvec_iter bi = {
+> -		.bi_size	= size,
+> +		.bi_size	= size + seek,
+>  	};
+>  	struct bio_vec bv;
+>  
+>
+>
+>
 
