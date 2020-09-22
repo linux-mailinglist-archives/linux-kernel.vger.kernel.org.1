@@ -2,137 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D791C273AB2
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 08:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A5F7273A9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 08:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729354AbgIVGTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 02:19:10 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:17441 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729268AbgIVGTF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 02:19:05 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600755544; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=4GUNzUcTkCM9VsYnPHaHYvGYU2ijp90ZsCxBr7hq2To=; b=ploLOqSEoICMqKyV8kxZI15v6mplrg78KseSt08iGc+EWXJbmIzCIMrwHEyohGg2XdItuHiz
- kvbASi90p72C2Tziygaw7OKyk0qRIDBiSPIQUdswQFuOpzlL7Da78MIepr24u6DWC+cp5UyZ
- 3X78yj+99pcwWKfVnI74djo1jQU=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 5f69974d4a8a578ddcf87eeb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Sep 2020 06:18:53
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7483BC433BA; Tue, 22 Sep 2020 06:18:53 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 10A08C433A1;
-        Tue, 22 Sep 2020 06:18:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 10A08C433A1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>
-Cc:     iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        freedreno@lists.freedesktop.org,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        dri-devel@lists.freedesktop.org,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCHv5 3/6] drm/msm: rearrange the gpu_rmw() function
-Date:   Tue, 22 Sep 2020 11:48:16 +0530
-Message-Id: <fc69d5c3a68c11b9d4cb692de76bc8d875062cb8.1600754909.git.saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <cover.1600754909.git.saiprakash.ranjan@codeaurora.org>
-References: <cover.1600754909.git.saiprakash.ranjan@codeaurora.org>
+        id S1729223AbgIVGS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 02:18:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728316AbgIVGS2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 02:18:28 -0400
+Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D318BC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 23:18:28 -0700 (PDT)
+Received: by mail-oo1-xc44.google.com with SMTP id t3so3861373ook.8
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 23:18:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=THG6vXPDgMK2k7M4yyjWTbzR9oGicsRPw9gT2Zgg6Sk=;
+        b=Qd4Tdn1whmgSMaYeHJVAjI8lu/OUqAsaY6nMEildJ5Wcz+HOxT7jXMUD03tm9yR8G/
+         vDzyb+d1lGxQNLYIXQnFVhKqaG73yC0TaoNUjzC++ozwpShucs6pqMzhnsZxjr1Nzb4h
+         K1wCeilU3Fa+351ZL8SHv8tnUER/5ayy20tGJ+Jy3mcBP4iSlxPb6pgoN1jPd4Q3Eeam
+         ayKBIA93D2dJaa8PMAJ4fCf08YI7Tow7I09AS1hKl6PGi/YEqKRGKJf0D0x+YgzKHRdo
+         /qbO9M29ylVanv5qWiyLs/g4pHmvhvUZPxJXOAOkBlwa6w0235QHuMaIfR4oJF8EDJME
+         vaJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=THG6vXPDgMK2k7M4yyjWTbzR9oGicsRPw9gT2Zgg6Sk=;
+        b=nnwq6NFuqL5H/23SUNGEOMY6eA0COWUIjEnF75XxeX+RrAe0GXsgOQJs8xgNfLMGJX
+         QLcMg5qs1+qgbObBVhOmpuNuK20EuHUxQPYgAMr0wrH+gxtUiPsgSPENStaE/9PtS7Dj
+         yp+d7b8J3kGs3v/snB5lCj3AaOC6yuKy1nclOKBQ+lJ50+LMhvz0CqVLGZdQRV2TDb0w
+         wZWr+viUrf36vI6REC+JllIcHzea3A0CaoHirWIfZxR9MLm7/lEx2KbnMGZn4X9K5iMF
+         C9g05NbnVSpjrtpaHA+qzOMHOUMt7WyuSqbC/tieDfbfrFQs93rCQf/cUzQqNvFIZnqo
+         eD4Q==
+X-Gm-Message-State: AOAM530SQUmyMmHIXg8cEc33vYkqre9p37y119i3B8c/FyPuQZQbnXGn
+        kF1bHpTpBvaUrO/XYYJsMWv7CoX8K8fM91We0Cv3F3YEsu2CFVJB
+X-Google-Smtp-Source: ABdhPJwiYGOeLvLhGoogpy5gPNwnvC+JJiMwI4f1hoq32kpb9NOx05Ev2dELtbD9Mb/3dVl5K4CX6bx+/hBa8I6MKSY=
+X-Received: by 2002:a4a:5258:: with SMTP id d85mr1950472oob.72.1600755507994;
+ Mon, 21 Sep 2020 23:18:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200708091237.3922153-1-drosen@google.com> <20200708091237.3922153-5-drosen@google.com>
+ <87lfh4djdq.fsf@collabora.com> <20200921182948.GA885472@gmail.com>
+In-Reply-To: <20200921182948.GA885472@gmail.com>
+From:   Daniel Rosenberg <drosen@google.com>
+Date:   Mon, 21 Sep 2020 23:18:17 -0700
+Message-ID: <CA+PiJmQU-bupmSTHbW2MPzDxfO+3f2bu+7aKzBL1VF2D8mvqZQ@mail.gmail.com>
+Subject: Re: [PATCH v12 4/4] ext4: Use generic casefolding support
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
+        "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fscrypt@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sharat Masetty <smasetty@codeaurora.org>
+On Mon, Sep 21, 2020 at 11:29 AM Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> On Sun, Sep 20, 2020 at 09:10:57PM -0400, Gabriel Krisman Bertazi wrote:
+> > Daniel Rosenberg <drosen@google.com> writes:
+> >
+> > > This switches ext4 over to the generic support provided in
+> > > the previous patch.
+> > >
+> > > Since casefolded dentries behave the same in ext4 and f2fs, we decrease
+> > > the maintenance burden by unifying them, and any optimizations will
+> > > immediately apply to both.
+> > >
+> > > Signed-off-by: Daniel Rosenberg <drosen@google.com>
+> > > Reviewed-by: Eric Biggers <ebiggers@google.com>
+> > >
+> > >  #ifdef CONFIG_UNICODE
+> > > -   if (EXT4_SB(parent->i_sb)->s_encoding && IS_CASEFOLDED(parent)) {
+> > > +   if (parent->i_sb->s_encoding && IS_CASEFOLDED(parent)) {
+> > >             if (fname->cf_name.name) {
+> > >                     struct qstr cf = {.name = fname->cf_name.name,
+> > >                                       .len = fname->cf_name.len};
+> > > @@ -2171,9 +2171,6 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
+> > >     struct buffer_head *bh = NULL;
+> > >     struct ext4_dir_entry_2 *de;
+> > >     struct super_block *sb;
+> > > -#ifdef CONFIG_UNICODE
+> > > -   struct ext4_sb_info *sbi;
+> > > -#endif
+> > >     struct ext4_filename fname;
+> > >     int     retval;
+> > >     int     dx_fallback=0;
+> > > @@ -2190,9 +2187,8 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
+> > >             return -EINVAL;
+> > >
+> > >  #ifdef CONFIG_UNICODE
+> > > -   sbi = EXT4_SB(sb);
+> > > -   if (ext4_has_strict_mode(sbi) && IS_CASEFOLDED(dir) &&
+> > > -       sbi->s_encoding && utf8_validate(sbi->s_encoding, &dentry->d_name))
+> > > +   if (sb_has_strict_encoding(sb) && IS_CASEFOLDED(dir) &&
+> > > +       sb->s_encoding && utf8_validate(sb->s_encoding, &dentry->d_name))
+> > >             return -EINVAL;
+> >
+> > hm, just noticed the sb->s_encoding check here is superfluous, since the
+> > has_strict_mode() cannot be true if !s_encoding.  Not related to this
+> > patch though.
+> >
+> > Daniel, are you still working on getting this upstream?  The fscrypt
+> > support would be very useful for us. :)
+> >
+> > In the hope this will get upstream, as its been flying for a while and
+> > looks correct.
+> >
+> > Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+>
+> We couldn't get a response from Ted, so instead Jaegeuk has applied patches 1-3
+> to f2fs/dev for 5.10.  Hopefully Ted will take the ext4 patch for 5.11.
+>
+> I believe that Daniel is planning to resend the actual encryption+casefolding
+> support soon, but initially only for f2fs since that will be ready first.
+>
+> - Eric
 
-The register read-modify-write construct is generic enough
-that it can be used by other subsystems as needed, create
-a more generic rmw() function and have the gpu_rmw() use
-this new function.
+Yes, planning to send them shortly. Just checking that I've not missed
+anything. For the sb_has_strict_encoding, I don't think that's
+actually checking s_encoding, though it does check s_encoding_flags.
+I'm planning to resend this one with that set, since it's not queued
+in the f2fs tree.
 
-Signed-off-by: Sharat Masetty <smasetty@codeaurora.org>
-Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
----
- drivers/gpu/drm/msm/msm_drv.c | 8 ++++++++
- drivers/gpu/drm/msm/msm_drv.h | 1 +
- drivers/gpu/drm/msm/msm_gpu.h | 5 +----
- 3 files changed, 10 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-index 49685571dc0e..a1e22b974b77 100644
---- a/drivers/gpu/drm/msm/msm_drv.c
-+++ b/drivers/gpu/drm/msm/msm_drv.c
-@@ -180,6 +180,14 @@ u32 msm_readl(const void __iomem *addr)
- 	return val;
- }
- 
-+void msm_rmw(void __iomem *addr, u32 mask, u32 or)
-+{
-+	u32 val = msm_readl(addr);
-+
-+	val &= ~mask;
-+	msm_writel(val | or, addr);
-+}
-+
- struct msm_vblank_work {
- 	struct work_struct work;
- 	int crtc_id;
-diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
-index 319327462b29..079e33680a6c 100644
---- a/drivers/gpu/drm/msm/msm_drv.h
-+++ b/drivers/gpu/drm/msm/msm_drv.h
-@@ -474,6 +474,7 @@ void __iomem *msm_ioremap_quiet(struct platform_device *pdev, const char *name,
- 		const char *dbgname);
- void msm_writel(u32 data, void __iomem *addr);
- u32 msm_readl(const void __iomem *addr);
-+void msm_rmw(void __iomem *addr, u32 mask, u32 or);
- 
- struct msm_gpu_submitqueue;
- int msm_submitqueue_init(struct drm_device *drm, struct msm_file_private *ctx);
-diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
-index 6c9e1fdc1a76..b2b419277953 100644
---- a/drivers/gpu/drm/msm/msm_gpu.h
-+++ b/drivers/gpu/drm/msm/msm_gpu.h
-@@ -246,10 +246,7 @@ static inline u32 gpu_read(struct msm_gpu *gpu, u32 reg)
- 
- static inline void gpu_rmw(struct msm_gpu *gpu, u32 reg, u32 mask, u32 or)
- {
--	uint32_t val = gpu_read(gpu, reg);
--
--	val &= ~mask;
--	gpu_write(gpu, reg, val | or);
-+	msm_rmw(gpu->mmio + (reg << 2), mask, or);
- }
- 
- static inline u64 gpu_read64(struct msm_gpu *gpu, u32 lo, u32 hi)
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
-
+-Daniel
