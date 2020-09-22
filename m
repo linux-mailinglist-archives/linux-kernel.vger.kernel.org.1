@@ -2,71 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4226C273F85
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 12:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD8DE273F88
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 12:24:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726705AbgIVKV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 06:21:27 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:19694 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726686AbgIVKVZ (ORCPT
+        id S1726513AbgIVKX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 06:23:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726419AbgIVKX4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 06:21:25 -0400
-X-IronPort-AV: E=Sophos;i="5.77,290,1596492000"; 
-   d="scan'208";a="468931721"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 12:21:22 +0200
-Date:   Tue, 22 Sep 2020 12:21:21 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Filipe Manana <fdmanana@suse.com>
-cc:     Chris Mason <chris.mason@fusionio.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org
-Subject: [PATCH] btrfs: fix memdup.cocci warnings
-Message-ID: <alpine.DEB.2.22.394.2009221219560.2659@hadrien>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Tue, 22 Sep 2020 06:23:56 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE69C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 03:23:55 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id u8so17433942lff.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 03:23:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tFsyWx5+F5ciEqS9MPpeKvxqjYLpGGKF1xhv4oNr2Bk=;
+        b=tRTv1EYWaO1Kbjh0reygUy+9B34CYAO66hakY6V6zrGqMG5Gue0xe2HAH5QGk8Lc5Z
+         7Qde0YpSp+9nmP+oruQr2hP8OgUceiMnMhAbpT6PX18my6LaXI8e6jjxvl/9fp/Dz7h3
+         QFr53cYOtMGh4CVt52CXasnQyOAW6X7d/4SlwwwK2JLHHm4LroKUBU+iMDnzBpw4cLKk
+         XBD8c8qEZVpl9ng2jnCWo2qrCqJuBP/5kJr6skWbEGw01KxI/XnxTz0HVVECKtPQ4HB2
+         iPtzocFIyypgeRDUP6/ve/q04tGIWutWd27y6zEfOkWXb292ozbFHRuqGYtLD4M0GXq6
+         vgow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tFsyWx5+F5ciEqS9MPpeKvxqjYLpGGKF1xhv4oNr2Bk=;
+        b=L1RV8ykhBN97FtjpdhgAWsxk8+gDBXbigM/tDThhJ43ERt+p9/76oAgu6ksB3IjnoW
+         1McTwpcBwYQp3Blsy3Rw4xvExi1a69yfUxXa/Bh3eFxJSgUZRg7FwT1G45t07FMV5sPI
+         nda/OXdxdqobHkcGPdIkSjWvZUJovp9loSEu5tSeXRH1js9gpaJDmjR0cFJHhOpPPyIx
+         gTFSImHcaIBT5+eXhyY3gJ8pq4F+DpwAmHU3BAnNWOMyFP5NcSS2d+PnmqkKsPjst8EH
+         O+yJVMcEiMw00Ga1Ct5+/HkKU13+USJJcncXImsFP5Ba/c67olb9POo60/F+FYXUwbXU
+         w1yw==
+X-Gm-Message-State: AOAM532Lj9pO0YRWESburGxK0JzSRA09BSdI+8NJ7jo9VC2VDzqPqBQh
+        /2W4YXmg+Xj5rsp5lhBMVZsE/BwyFv76kqIj5gc=
+X-Google-Smtp-Source: ABdhPJw7CGbRjeQ83rDXtxYKKoDVQp5nfUL1VgAAiodHk/W0yyowjdENUdRQex2n/PGSdkWj9ZkPN2gGt2TQ2r7CvvI=
+X-Received: by 2002:a19:7e8d:: with SMTP id z135mr1527752lfc.158.1600770234227;
+ Tue, 22 Sep 2020 03:23:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20191016082430.5955-1-poeschel@lemonage.de> <20200921144645.2061313-1-poeschel@lemonage.de>
+In-Reply-To: <20200921144645.2061313-1-poeschel@lemonage.de>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Tue, 22 Sep 2020 12:23:43 +0200
+Message-ID: <CANiq72mzgWRkstnGKNt7qwGowK3qSLKQa0jUQLAACELFvTgSxA@mail.gmail.com>
+Subject: Re: [PATCH v2 00/33] Make charlcd device independent
+To:     Lars Poeschel <poeschel@lemonage.de>
+Cc:     Willy Tarreau <willy@haproxy.com>,
+        Ksenija Stanojevic <ksenija.stanojevic@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+Hi Lars,
 
-fs/btrfs/send.c:3854:8-15: WARNING opportunity for kmemdup
+On Mon, Sep 21, 2020 at 4:47 PM <poeschel@lemonage.de> wrote:
+>
+> This tries to make charlcd device independent.
 
- Use kmemdup rather than duplicating its implementation
+Thanks a lot for the series!
 
-Generated by: scripts/coccinelle/api/memdup.cocci
+> [1] https://marc.info/?l=linux-kernel&m=157121432124507
 
-Fixes: 28314eb24e6c ("btrfs: send, recompute reference path after orphanization of a directory")
-Signed-off-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
----
+Nit: please use lore.kernel.org and the Link: tag instead.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/fdmanana/linux.git misc-next
-head:   28314eb24e6cb8124d1e5da2ef2ccb90ec44cc06
-commit: 28314eb24e6cb8124d1e5da2ef2ccb90ec44cc06 [2/2] btrfs: send, recompute reference path after orphanization of a directory
-:::::: branch date: 17 hours ago
-:::::: commit date: 17 hours ago
-
-
- send.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -3851,10 +3851,9 @@ static int refresh_ref_path(struct send_
- 	char *name;
- 	int ret;
-
--	name = kmalloc(ref->name_len, GFP_KERNEL);
-+	name = kmemdup(ref->name, ref->name_len, GFP_KERNEL);
- 	if (!name)
- 		return -ENOMEM;
--	memcpy(name, ref->name, ref->name_len);
-
- 	fs_path_reset(ref->full_path);
- 	ret = get_cur_path(sctx, ref->dir, ref->dir_gen, ref->full_path);
+Cheers,
+Miguel
