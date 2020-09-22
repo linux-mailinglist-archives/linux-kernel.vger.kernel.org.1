@@ -2,96 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C47274CF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB50274CFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 01:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726854AbgIVW54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 18:57:56 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:46901 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726614AbgIVW54 (ORCPT
+        id S1726686AbgIVXA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 19:00:28 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:39991 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726448AbgIVXA1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 18:57:56 -0400
-Received: by mail-wr1-f68.google.com with SMTP id o5so18812898wrn.13
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 15:57:55 -0700 (PDT)
+        Tue, 22 Sep 2020 19:00:27 -0400
+Received: by mail-io1-f66.google.com with SMTP id j2so21556626ioj.7;
+        Tue, 22 Sep 2020 16:00:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9yz/dntHJAQmyWx39DxcIDsmJJPCYBH5IoHF45cttlA=;
-        b=SSvI+2AR4b+qVlOYWZ72Fupp6LpXbdQqYWpd+U3gtE3dtbfyyZ3WqEjLOYYTf5m8Lv
-         iIX3QHDNiqLXSyDSLjwn7EuDAJqlbMwLoG9PE2/e4rIKK3Ycu7Xb2SJi5dBhj7j+s9Rq
-         9WQ/Qymnl95x1QVJVYDoYju7pCw+Vf6j6JFlwd+sfKAPn4E+l+t8r2dSUxQdaSpUaIBY
-         GkP1HoIKXvqoYAyEihEGz1roRTPAkS3Jx35TLNKfbms1kkuo/lAgswKZ6n8wldE0cYIY
-         8T7WgeDmTOe7egIDwA3KgTEYRXSY+uWxiEcH4gQmLxkLa5cY/b37dbW4vf3FGqGz1a+R
-         ukoA==
-X-Gm-Message-State: AOAM532AsSYyEGaZVgKm2ZNwREjkO779Vb6VhJK20UbrzS2tX40qZenT
-        ZuNQ6E3h12o2hRT+TPrrXMNGjKCC33YsS34Va4Q=
-X-Google-Smtp-Source: ABdhPJwIOluJ/iktY7gzbZybpFZK6LtVf+Z30aSQGhqVtz1DYGhg5+WjKoIZWAzDG4Jz+IaQlzWJ7qPS83I+Ru3lqOo=
-X-Received: by 2002:adf:9e41:: with SMTP id v1mr8514600wre.60.1600815474589;
- Tue, 22 Sep 2020 15:57:54 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RVMguUIzmTtaxt/UzDSsjScytUJaBesIrEnv/YQ+RmI=;
+        b=ZzXR5/Z4ACK66TNrVddy75qOjLkOq1qoe68axTotW5sUyo/DoTiOWPCjIetiLiqgDq
+         sGzbG8zeJdi3Yz2Mk8fawNuhh9d13nxIy2c1nxX7MGQ+b1qAsjNTuBDHRRHK8zzKGn8/
+         3+ka3Xt80cXkH9w3UL8JbqXhd5PMhv0BkQtG0hbuA4zssn44VLOUF7rU053C9cLjS3yV
+         LrSGspVs3y0AP93cMn2Vc/UmrlF5N6CaBjPdSE7iJQh2ldzwA0uprQrsG/as0IwcfUjq
+         diclh3p94/nPpsHbVPAM3f0wp4m9vjNvRv2/RrurOO+A+au07YYhOvcHMxgDQMR/pX5F
+         WBqg==
+X-Gm-Message-State: AOAM532LJnM4pqb7tAG7bfSztohvhK9F60oZlKpW/p4ckrV6Qr7pybFo
+        tDqqFE4m0bmPXn/G0JlZpw==
+X-Google-Smtp-Source: ABdhPJz26l6SojL0Zz2qL3wOe+3ynhmyzZn2NCaiBJEE5oKVykLJ0KiIKrfvPkaL31K0xDj2zzRltg==
+X-Received: by 2002:a05:6602:2043:: with SMTP id z3mr5017770iod.93.1600815626986;
+        Tue, 22 Sep 2020 16:00:26 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id l6sm1841382ils.6.2020.09.22.16.00.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 16:00:26 -0700 (PDT)
+Received: (nullmailer pid 3424647 invoked by uid 1000);
+        Tue, 22 Sep 2020 23:00:25 -0000
+Date:   Tue, 22 Sep 2020 17:00:25 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Martin Cerveny <m.cerveny@computer.org>
+Cc:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, Chen-Yu Tsai <wens@csie.org>,
+        devel@driverdev.osuosl.org, linux-media@vger.kernel.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 2/6] dt-bindings: sram: allwinner,
+ sun4i-a10-system-control: Add V3s compatibles
+Message-ID: <20200922230025.GA3424613@bogus>
+References: <20200912143052.30952-1-m.cerveny@computer.org>
+ <20200912143052.30952-3-m.cerveny@computer.org>
 MIME-Version: 1.0
-References: <20200921094610.83736-1-namhyung@kernel.org> <20200921094610.83736-3-namhyung@kernel.org>
-In-Reply-To: <20200921094610.83736-3-namhyung@kernel.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 23 Sep 2020 07:57:43 +0900
-Message-ID: <CAM9d7ci09Qrkc6w-ysCTD5ARAZNXb0rqAg+K6Xbn=KaHFQzM5g@mail.gmail.com>
-Subject: Re: [PATCH 2/5] perf stat: Add --for-each-cgroup option
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200912143052.30952-3-m.cerveny@computer.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 6:46 PM Namhyung Kim <namhyung@kernel.org> wrote:
->
-> The --for-each-cgroup option is a syntax sugar to monitor large number
-> of cgroups easily.  Current command line requires to list all the
-> events and cgroups even if users want to monitor same events for each
-> cgroup.  This patch addresses that usage by copying given events for
-> each cgroup on user's behalf.
->
-> For instance, if they want to monitor 6 events for 200 cgroups each
-> they should write 1200 event names (with -e) AND 1200 cgroup names
-> (with -G) on the command line.  But with this change, they can just
-> specify 6 events and 200 cgroups with a new option.
->
-> A simpler example below: It wants to measure 3 events for 2 cgroups
-> ('A' and 'B').  The result is that total 6 events are counted like
-> below.
->
->   $ ./perf stat -a -e cpu-clock,cycles,instructions --for-each-cgroup A,B sleep 1
->
->    Performance counter stats for 'system wide':
->
->               988.18 msec cpu-clock                 A #    0.987 CPUs utilized
->        3,153,761,702      cycles                    A #    3.200 GHz                      (100.00%)
->        8,067,769,847      instructions              A #    2.57  insn per cycle           (100.00%)
->               982.71 msec cpu-clock                 B #    0.982 CPUs utilized
->        3,136,093,298      cycles                    B #    3.182 GHz                      (99.99%)
->        8,109,619,327      instructions              B #    2.58  insn per cycle           (99.99%)
->
->          1.001228054 seconds time elapsed
->
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+On Sat, 12 Sep 2020 16:30:48 +0200, Martin Cerveny wrote:
+> Allwinner V3s has system control similar to that in H3.
+> Add compatibles for system control with SRAM C1 region.
+> 
+> Signed-off-by: Martin Cerveny <m.cerveny@computer.org>
 > ---
->  tools/perf/builtin-stat.c | 20 +++++++++-
->  tools/perf/util/cgroup.c  | 84 +++++++++++++++++++++++++++++++++++++++
->  tools/perf/util/cgroup.h  |  1 +
->  tools/perf/util/stat.h    |  1 +
->  4 files changed, 105 insertions(+), 1 deletion(-)
+>  .../bindings/sram/allwinner,sun4i-a10-system-control.yaml   | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
 
-Oh, I've realized that I didn't update the man page..
-I'll send v4 soon.
-
-Thanks
-Namhyung
+Acked-by: Rob Herring <robh@kernel.org>
