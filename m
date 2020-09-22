@@ -2,96 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ABF52746AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:30:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 593762746B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:33:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726727AbgIVQay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 12:30:54 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:56224 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726508AbgIVQay (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 12:30:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1600792253; x=1632328253;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=K4HWuij3R4oEOk1m1Z6GT4wg3YqvVFj3qM8OdKI1HL8=;
-  b=hlVGyjSFPSWTXGPaZJaeFF45OCjpEWkfZFbJmI+1XCdQHL8TTxnINK8V
-   UO9O6hYpwO3/Okq1eWUhNNPy1/89S4DtGFp1XmDVVHOpFs5Bu4SCoSjhA
-   6NVZ/qVptJpCg3zbj9e16SZSTCKK6ZNs7RZs4RN37B9kfrlSepQOpMIJI
-   Q=;
-X-IronPort-AV: E=Sophos;i="5.77,291,1596499200"; 
-   d="scan'208";a="57002667"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 22 Sep 2020 16:30:52 +0000
-Received: from EX13D19EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com (Postfix) with ESMTPS id 37AAB281FDE;
-        Tue, 22 Sep 2020 16:30:47 +0000 (UTC)
-Received: from 8c85908914bf.ant.amazon.com (10.43.161.237) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 22 Sep 2020 16:30:39 +0000
-Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Oded Gabbay <oded.gabbay@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <izur@habana.ai>, Jakub Kicinski <kuba@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, SW_Drivers <SW_Drivers@habana.ai>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        <linux-rdma@vger.kernel.org>, Olof Johansson <olof@lixom.net>
-References: <20200918135915.GT8409@ziepe.ca>
- <CAFCwf13rJgb4=as7yW-2ZHvSnUd2NK1GP0UKKjyMfkB3vsnE5w@mail.gmail.com>
- <20200918141909.GU8409@ziepe.ca>
- <CAFCwf121_UNivhfPfO6uFoHbF+2Odeb1c3+482bOXeOZUsEnug@mail.gmail.com>
- <20200918150735.GV8409@ziepe.ca>
- <CAFCwf13y1VVy90zAoBPC-Gfj6mwMVbefh3fxKDVneuscp4esqA@mail.gmail.com>
- <20200918152852.GW8409@ziepe.ca>
- <b0721756-d323-b95e-b2d2-ca3ce8d4a660@amazon.com>
- <20200922114101.GE8409@ziepe.ca>
- <a16802a2-4a36-e03d-a927-c5cb7c766b99@amazon.com>
- <20200922161429.GI8409@ziepe.ca>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <e06c573a-99a7-906c-8197-847a61fba44a@amazon.com>
-Date:   Tue, 22 Sep 2020 19:30:32 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.2.2
+        id S1726620AbgIVQdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 12:33:51 -0400
+Received: from verein.lst.de ([213.95.11.211]:45428 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726508AbgIVQdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 12:33:51 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id DF8FD67373; Tue, 22 Sep 2020 18:33:46 +0200 (CEST)
+Date:   Tue, 22 Sep 2020 18:33:46 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        linux-mm@kvack.org, Peter Zijlstra <peterz@infradead.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Minchan Kim <minchan@kernel.org>,
+        dri-devel@lists.freedesktop.org, xen-devel@lists.xenproject.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        intel-gfx@lists.freedesktop.org, Nitin Gupta <ngupta@vflare.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>
+Subject: Re: [Intel-gfx] [PATCH 3/6] drm/i915: use vmap in shmem_pin_map
+Message-ID: <20200922163346.GA1701@lst.de>
+References: <20200918163724.2511-1-hch@lst.de> <20200918163724.2511-4-hch@lst.de> <20200921191157.GX32101@casper.infradead.org> <20200922062249.GA30831@lst.de> <43d10588-2033-038b-14e4-9f41cd622d7b@linux.intel.com> <20200922143141.GA26637@lst.de> <e429c3e6-2143-f51a-4c1c-c1470076ad3e@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200922161429.GI8409@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.161.237]
-X-ClientProxiedBy: EX13D03UWA001.ant.amazon.com (10.43.160.141) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e429c3e6-2143-f51a-4c1c-c1470076ad3e@linux.intel.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/09/2020 19:14, Jason Gunthorpe wrote:
-> On Tue, Sep 22, 2020 at 03:46:29PM +0300, Gal Pressman wrote:
-> 
->> I agree, that makes sense.
->> But assuming Oded actually goes and implements all the needed verbs to get a
->> basic functional libibverbs provider (assuming their HW can do it somehow), is
->> it really useful if no one is going to use it?
->> It doesn't sound like habanalabs want people to use GAUDI as an RDMA adapter,
->> and I'm assuming the only real world use case is going to be using the hl stack,
->> which means we're left with a lot of dead code that's not used/tested by anyone.
->>
->> Genuine question, wouldn't it be better if they only implement what's actually
->> going to be used and tested by their customers?
-> 
-> The general standard for this 'accel' hardware, both in DRM and RDMA
-> is to present an open source userspace. Companies are encouraged to
-> use that as their main interface but I suppose are free to carry the
-> cost of dual APIs, and the community's wrath if they want.
+On Tue, Sep 22, 2020 at 05:13:45PM +0100, Tvrtko Ursulin wrote:
+>>   void *shmem_pin_map(struct file *file)
+>>   {
+>> -	const size_t n_pte = shmem_npte(file);
+>> -	pte_t *stack[32], **ptes, **mem;
+>
+> Chris can comment how much he'd miss the 32 page stack shortcut.
 
-I didn't mean they should maintain two interfaces.
-The question is whether they should implement libibverbs support that covers the
-cases used by their stack, or should they implement all "mandatory" verbs so
-they could be able to run libibverbs' examples/perftest/pyverbs as well, even
-though these will likely be the only apps covering these verbs.
+I'd like to see a profile that claim that kmalloc matters in a
+path that does a vmap and reads pages through the page cache.
+Especially when the kmalloc saves doing another page cache lookup
+on the free side.
+
+> Is there something in vmap() preventing us from freeing the pages array 
+> here? I can't spot anything that is holding on to the pointer. Or it was 
+> just a sketch before you realized we could walk the vm_area?
+>
+> Also, I may be totally misunderstanding something, but I think you need to 
+> assign area->pages manually so shmem_unpin_map can access it below.
+
+We need area->pages to hold the pages for the free side.  That being
+said the patch I posted is broken because it never assigned to that.
+As said it was a sketch.  This is the patch I just rebooted into on
+my Laptop:
+
+http://git.infradead.org/users/hch/misc.git/commitdiff/048522dfa26b6667adfb0371ff530dc263abe829
+
+it needs extra prep patches from the series:
+
+http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/alloc_vm_area
+
+>>   	mapping_clear_unevictable(file->f_mapping);
+>> -	__shmem_unpin_map(file, ptr, shmem_npte(file));
+>> +	for (i = 0; i < shmem_npages(file); i++)
+>> +		put_page(area->pages[i]);
+>> +	kvfree(area->pages);
+>> +	vunmap(ptr);
+>
+> Is the verdict from mm experts that we can't use vfree due __free_pages vs 
+> put_page differences?
+
+Switched to vfree now.
+
+> Could we get from ptes to pages, so that we don't have to keep the 
+> area->pages array allocated for the duration of the pin?
+
+We could do vmalloc_to_page, but that is fairly expensive (not as bad
+as reading from the page cache..).  Are you really worried about the
+allocation?
