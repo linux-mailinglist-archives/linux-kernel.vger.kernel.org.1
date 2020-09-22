@@ -2,70 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E85227445E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 16:36:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07475274463
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 16:37:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726656AbgIVOgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 10:36:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726566AbgIVOgI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 10:36:08 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3F4DC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 07:36:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=u3YeIXCT+AG4vi1F0coTjYeWDIv5hXBb8Fo6mRGjaEQ=; b=S1ylR72KAde9/JozVWndgysyCo
-        zrOd6tCZswcFuJIwKAu89x4A8JIBKHl98dBDgJyYg2rf8T5eoW26aLR/ZdxUu7jPGiDrZHDZ6YBYk
-        lLY1HgX6sDbwJ+QZmrTh4JKOvcWp7jjqE7giQLRsEl1Aeitc0pf+Eyk3h7QTYa/dlt+Six5R6RI63
-        KvZGYOhoDm/prGFwcJxMtEkPI+llcUIdMIYvEqp0A2FBS2rcFpuiszeuKBYGarEwXIJCF5DLD0sks
-        xW4wKVqlEs3CaW2600c28KwpWr0gvE3r92zdwzeSfGwCJaJ8DJ7wkzkrXFSV7ejDBK/eK9uQtAqrQ
-        JOSJMqnA==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kKjOh-0000kW-QN; Tue, 22 Sep 2020 14:35:59 +0000
-Date:   Tue, 22 Sep 2020 15:35:59 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Nick Piggin <npiggin@suse.de>, Hugh Dickins <hughd@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daisuke Nishimura <nishimura@mxp.nes.nec.co.jp>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] page_alloc: Fix freeing non-compound pages
-Message-ID: <20200922143559.GF32101@casper.infradead.org>
-References: <20200922140017.26387-1-willy@infradead.org>
+        id S1726762AbgIVOhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 10:37:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46398 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726645AbgIVOhW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 10:37:22 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 03AE1B0B3;
+        Tue, 22 Sep 2020 14:37:57 +0000 (UTC)
+From:   Vlastimil Babka <vbabka@suse.cz>
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: [PATCH 0/9] disable pcplists during memory offline
+Date:   Tue, 22 Sep 2020 16:37:03 +0200
+Message-Id: <20200922143712.12048-1-vbabka@suse.cz>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922140017.26387-1-willy@infradead.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 03:00:17PM +0100, Matthew Wilcox (Oracle) wrote:
->  void __free_pages(struct page *page, unsigned int order)
->  {
->  	if (put_page_testzero(page))
->  		free_the_page(page, order);
-> +	else
-> +		while (order-- > 0)
-> +			free_the_page(page + (1 << order), order);
->  }
->  EXPORT_SYMBOL(__free_pages);
+As per the discussions [1] [2] this is an attempt to implement David's
+suggestion that page isolation should disable pcplists to avoid races with page
+freeing in progress. This is done without extra checks in fast paths, as
+explained in Patch 9. The repeated draining done by [2] is then no longer
+needed. Previous version (RFC) is at [3].
 
-... a three line patch and one of them is wrong.
+The RFC tried to hide pcplists disabling/enabling into page isolation, but it
+wasn't completely possible, as memory offline does not unisolation. Michal
+suggested an explicit API in [4] so that's the current implementation and it
+seems indeed nicer.
 
--       else
-+       else if (!PageHead(page))
+Once we accept that page isolation users need to do explicit actions around it
+depending on the needed guarantees, we can also IMHO accept that the current
+pcplist draining can be also done by the callers, which is more effective.
+After all, there are only two users of page isolation. So patch 7 does
+effectively the same thing as Pavel proposed in [5], and patches 8-9 implement
+stronger guarantees only for memory offline. If CMA decides to opt-in to the
+stronger guarantee, it's easy to do so.
 
-Anyone got a smart idea about how to _test_ this code path?  I'm
-wondering about loading one kernel module which wanders through memmap
-calling
-	if (page_cache_get_speculative(page)) put_page(page);
-and another kernel module that calls
-	__free_pages(alloc_page(GFP_KERNEL, 1), 1);
+Patches 1-6 are preparatory cleanups for pcplist disabling.
 
-and putting in a printk to let me know when we hit it.
+Patchset was briefly tested in QEMU so that memory online/offline works, but
+I haven't done a stress test that would prove the race fixed by [2] is
+eliminated.
+
+Note that patch 9 could be avoided if we instead adjusted page freeing in shown
+in [6], but I believe the current implementation of disabling pcplists is not
+too much complex, so I would prefer this instead of adding new checks and
+longer irq-disabled section into page freeing hotpaths.
+
+[1] https://lore.kernel.org/linux-mm/20200901124615.137200-1-pasha.tatashin@soleen.com/
+[2] https://lore.kernel.org/linux-mm/20200903140032.380431-1-pasha.tatashin@soleen.com/
+[3] https://lore.kernel.org/linux-mm/20200907163628.26495-1-vbabka@suse.cz/
+[4] https://lore.kernel.org/linux-mm/20200909113647.GG7348@dhcp22.suse.cz/
+[5] https://lore.kernel.org/linux-mm/20200904151448.100489-3-pasha.tatashin@soleen.com/
+[6] https://lore.kernel.org/linux-mm/3d3b53db-aeaa-ff24-260b-36427fac9b1c@suse.cz/
+
+Vlastimil Babka (9):
+  mm, page_alloc: clean up pageset high and batch update
+  mm, page_alloc: calculate pageset high and batch once per zone
+  mm, page_alloc: remove setup_pageset()
+  mm, page_alloc: simplify pageset_update()
+  mm, page_alloc: make per_cpu_pageset accessible only after init
+  mm, page_alloc: cache pageset high and batch in struct zone
+  mm, page_alloc: move draining pcplists to page isolation users
+  mm, page_alloc: drain all pcplists during memory offline
+  mm, page_alloc: optionally disable pcplists during page isolation
+
+ include/linux/gfp.h            |   1 +
+ include/linux/mmzone.h         |   8 ++
+ include/linux/page-isolation.h |   2 +
+ mm/internal.h                  |   4 +
+ mm/memory_hotplug.c            |  27 +++--
+ mm/page_alloc.c                | 190 ++++++++++++++++++---------------
+ mm/page_isolation.c            |  26 ++++-
+ 7 files changed, 152 insertions(+), 106 deletions(-)
+
+-- 
+2.28.0
+
