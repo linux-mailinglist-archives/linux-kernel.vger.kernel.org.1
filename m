@@ -2,64 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2361D273E85
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 11:27:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8044A273EA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 11:37:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726595AbgIVJ1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 05:27:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40164 "EHLO mail.kernel.org"
+        id S1726513AbgIVJhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 05:37:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726424AbgIVJ1g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 05:27:36 -0400
-Received: from coco.lan (ip5f5ad5bc.dynamic.kabel-deutschland.de [95.90.213.188])
+        id S1726341AbgIVJhb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 05:37:31 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0F67420BED;
-        Tue, 22 Sep 2020 09:27:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A79F320C09;
+        Tue, 22 Sep 2020 09:37:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600766856;
-        bh=VxFgH7Ev5rUGi3aRCl8C8jCW5freXl117SHPqM83i78=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SPr3dMqyGCY+VVlQoTe8XCBnE3dVciItQvAf7hxzeqpJNrME8+dvwKDcCSZ4okhfn
-         JaP4nHSjzeKw3/VSZEFDpEC705UOPe91iyraLq6iHeBKxQnFcFOeZfrwjjaEHV+uE9
-         /zNlNviWHM5AveopipKbPWa7DI5q09qdktRw4Blo=
-Date:   Tue, 22 Sep 2020 11:27:29 +0200
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Alex Dewar <alex.dewar90@gmail.com>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Alan Cox <alan@linux.intel.com>, linux-media@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH REBASE 0/3] atomisp: Rebased fixes
-Message-ID: <20200922112729.313d454d@coco.lan>
-In-Reply-To: <20200922090914.20702-1-alex.dewar90@gmail.com>
-References: <21f18dc2-a1bc-0a37-0336-fc35170a40e9@gmail.com>
-        <20200922090914.20702-1-alex.dewar90@gmail.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        s=default; t=1600767451;
+        bh=fHtEteBsD0utS+5Z4pAiitprR0KWEh/ch/SvniGloaw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gSAYlWDaOIl/yKeumXTxuJFUA578UlndAMW7YZFdRBlg2TcN1VLRMkkxHu5B8UBZh
+         vG8i+3zaJleLgaqR9y3jEothnNvma2k8YnZgj2cEgkrH2TUsPHWRjXCiX/eSydzVW9
+         S1xBIUc319XXKE/pRx5GZuyEpoz1eZHVwsk66+ro=
+Date:   Tue, 22 Sep 2020 10:36:37 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Pavel Machek <pavel@ucw.cz>, Jonathan Cameron <jic23@kernel.org>,
+        Dan Murphy <dmurphy@ti.com>, Lee Jones <lee.jones@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-iio@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-leds@vger.kernel.org, linux-pm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: move Milo Kim to credits
+Message-ID: <20200922093637.GK4792@sirena.org.uk>
+References: <20200921210233.21449-1-krzk@kernel.org>
+ <20200921210610.GA5338@amd>
+ <CAJKOXPdwQc86H-S=C4v_1VCbd7RhC2Soepj_2LqG1e_E_bgAug@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="fLj60tP2PZ34xyqD"
+Content-Disposition: inline
+In-Reply-To: <CAJKOXPdwQc86H-S=C4v_1VCbd7RhC2Soepj_2LqG1e_E_bgAug@mail.gmail.com>
+X-Cookie: Love thy neighbor, tune thy piano.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 22 Sep 2020 10:09:07 +0100
-Alex Dewar <alex.dewar90@gmail.com> escreveu:
 
-> Hi Mauro,
-> 
-> I've rebased the patches now, but there is a slight hiccup. For patches 2
-> and 3 of this series there will now be a conflict with commit 9289cdf39992
-> ("staging: media: atomisp: Convert to GPIO descriptors") in Greg's tree.
-> 
-> I'm not sure what the best way to handle this is? The merge conflicts
-> will be trivial (due to a conversion between the gpio_* and gpiod_*
-> APIs), but I could alternatively send these last two patches in via
-> Greg's tree if that's easier for people. Let me know what works.
+--fLj60tP2PZ34xyqD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Maybe the best would be to re-send those after the merge window, when
-both patches will arrive upstream.
+On Tue, Sep 22, 2020 at 09:08:37AM +0200, Krzysztof Kozlowski wrote:
+> On Mon, 21 Sep 2020 at 23:06, Pavel Machek <pavel@ucw.cz> wrote:
 
-Thanks,
-Mauro
+> > I believe normal way would be to mark the entries "orphaned", not to
+> > drop them altogether. Plus, I believe someone from TI is likely to
+> > step up.
+
+> These are entries for specific drivers so they are covered by the
+> subsystem maintainers. You believe someone will step up, I believe if
+> these were important for TI, they would find the person some time ago,
+> so the emails won't bounce... This was similar with BQ chargers where
+
+It's fairly common for mobile parts to get dropped relatively quickly as
+the technology moves fairly quickly in that market, I think a lot of teh
+parts that Milo was working on were mobile ones.
+
+--fLj60tP2PZ34xyqD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9pxaUACgkQJNaLcl1U
+h9A8jgf/XwLmQCXqZi5d6aBUz5PAPdLGA5vnKQNpz0j7xmPhp7r6AFolVSpZjpv+
+OR988o11WmSsyfe5qZyZpyF+XpudRx6dEJn20LSVy6ljt79fiofT8KiEnsUVFOMQ
+YnHce9WMKartib/dSshAafpmpEMqdE32At6GsymdPjMaolh1ziq/tek/q3i8vbP0
++4t1TFHElfhwvY0p97fBY0PGrlYaFXX8N2vLciXSPP1gqGPXi6MXP9RKgEx0Ctd7
+OpLmehc0nogMoHz0zx5Jz15eoG1hgGKhsBX/igQzrGkDBW3qX1/kRpwBUcjhx8xv
+WiSF/GE4ac5w5JnVvhAdamxUJDVtKQ==
+=Gqfl
+-----END PGP SIGNATURE-----
+
+--fLj60tP2PZ34xyqD--
