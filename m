@@ -2,73 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BB432748EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 977CB2748F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726715AbgIVTQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 15:16:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58256 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726641AbgIVTQm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 15:16:42 -0400
-Received: from mail.kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726666AbgIVTTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 15:19:36 -0400
+Received: from bedivere.hansenpartnership.com ([66.63.167.143]:56376 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726563AbgIVTTg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 15:19:36 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id B5AC88EE1C7;
+        Tue, 22 Sep 2020 12:19:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1600802375;
+        bh=YsNqVbeQd2v74WKrK117qfh0w/ViIkMCrqIU2Ydxrgc=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=c3WB2/VP3zi3D/WaHuea3ERylHCmcDIIF5djmzpGDU95dKEFoZboTgJAnesZYNYDW
+         DSmjFVE4FDs8HdgnRtei+YJDqd00j7HjcO29pR5BNwrtMa6vXKg8Y5Nmtga68qxo9h
+         WHSlzqJZqSqVQVYwKKxqFY4OisbN9RRC7t7CPzUo=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id JUcZkkX4LTgh; Tue, 22 Sep 2020 12:19:35 -0700 (PDT)
+Received: from [153.66.254.174] (c-73-35-198-56.hsd1.wa.comcast.net [73.35.198.56])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 34713206FC;
-        Tue, 22 Sep 2020 19:16:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600802202;
-        bh=xFAegshdal4oOFaZe0xOh2NNgkqPJPvZzLl0b11jFcw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=sPqHsK5xTBVlrFS5V8D8Wi7xnOOszj7cfZKZAUpMFKFHJYJO+CoJxpfvQJ2l44+W4
-         HktAjslwLIrurrpF1cgwjH6Ut/AVl+/sN3o0E/WjGTL3d8OCtxPV7OGXZfrrm6zTWc
-         BWYJPnWpg2oYkKk9Lb/DRhYboZ0my/m5MGUmhEpw=
-From:   Stephen Boyd <sboyd@kernel.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        Joseph Lo <josephl@nvidia.com>,
-        Thierry Reding <treding@nvidia.com>
-Subject: [PATCH] clk: tegra: Drop !provider check in tegra210_clk_emc_set_rate()
-Date:   Tue, 22 Sep 2020 12:16:41 -0700
-Message-Id: <20200922191641.2305144-1-sboyd@kernel.org>
-X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 318668EE0E0;
+        Tue, 22 Sep 2020 12:19:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1600802375;
+        bh=YsNqVbeQd2v74WKrK117qfh0w/ViIkMCrqIU2Ydxrgc=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=c3WB2/VP3zi3D/WaHuea3ERylHCmcDIIF5djmzpGDU95dKEFoZboTgJAnesZYNYDW
+         DSmjFVE4FDs8HdgnRtei+YJDqd00j7HjcO29pR5BNwrtMa6vXKg8Y5Nmtga68qxo9h
+         WHSlzqJZqSqVQVYwKKxqFY4OisbN9RRC7t7CPzUo=
+Message-ID: <260b4b85d714df822da259554ef8cc2873f3096f.camel@HansenPartnership.com>
+Subject: Re: [PATCH 0/1] Add explicit error for missing CONFIG_ASN1
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kbuild@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 22 Sep 2020 12:19:34 -0700
+In-Reply-To: <dfae4d4f-aa96-674d-93b1-d4c097e720e4@infradead.org>
+References: <20200922155341.17906-1-James.Bottomley@HansenPartnership.com>
+         <dfae4d4f-aa96-674d-93b1-d4c097e720e4@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The provider variable is already dereferenced earlier in this function.
-Drop the check for NULL as it is impossible.
+On Tue, 2020-09-22 at 11:54 -0700, Randy Dunlap wrote:
+> On 9/22/20 8:53 AM, James Bottomley wrote:
+> > I recently ran into this as an error from 0day.  On x86 it's pretty
+> > much impossible to build a configuration where CONFIG_ASN1 isn't
+> > set, so you rarely notice a problem using the ASN.1 compiler
+> > because something else has selected it.  However, this compiler is
+> > never built if CONFIG_ASN1 isn't set and the error you get from
+> > kbuild is particularly unhelpful:
+> > 
+> >    make[4]: *** No rule to make target 'security/keys/trusted-
+> > keys/tpm2key.asn1.o', needed by 'security/keys/trusted-keys/built-
+> > in.a'.
+> >    make[4]: *** [scripts/Makefile.build:283: security/keys/trusted-
+> > keys/trusted_tpm2.o] Error 1
+> >    make[4]: Target '__build' not remade because of errors.
+> > 
+> > This patch changes the above error to the much easier to diagnose:
+> > 
+> >    scripts/Makefile.build:387: *** CONFIG_ASN1 must be defined for
+> > the asn1_compiler.  Stop.
+> >    make[3]: *** [scripts/Makefile.build:505: security/keys/trusted-
+> > keys] Error 2
+> > 
+> > James
+> > 
+> > ---
+> > 
+> > James Bottomley (1):
+> >   Makefile.build: Add an explicit error for missing ASN.1 compiler
+> > 
+> >  scripts/Makefile.build | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> 
+> Is there a missing
+> 	select ASN1
+> somewhere?
 
-Found with smatch
+You mean in the build used to produce the errors above?  Yes, so the
+patch is to make the problem more explicit.
 
-drivers/clk/tegra/clk-tegra210-emc.c:131 tegra210_clk_emc_set_rate() warn: variable dereferenced before check 'provider' (see line 124)
+James
 
-Cc: Joseph Lo <josephl@nvidia.com>
-Cc: Thierry Reding <treding@nvidia.com>
-Fixes: 0ac65fc946d3 ("clk: tegra: Implement Tegra210 EMC clock")
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
----
- drivers/clk/tegra/clk-tegra210-emc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/clk/tegra/clk-tegra210-emc.c b/drivers/clk/tegra/clk-tegra210-emc.c
-index 352a2c3fc374..971c919b2994 100644
---- a/drivers/clk/tegra/clk-tegra210-emc.c
-+++ b/drivers/clk/tegra/clk-tegra210-emc.c
-@@ -126,7 +126,7 @@ static int tegra210_clk_emc_set_rate(struct clk_hw *hw, unsigned long rate,
- 	unsigned int i;
- 	int err;
- 
--	if (!provider || !provider->configs || provider->num_configs == 0)
-+	if (!provider->configs || provider->num_configs == 0)
- 		return -EINVAL;
- 
- 	for (i = 0; i < provider->num_configs; i++) {
-
-base-commit: 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5
--- 
-https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
 
