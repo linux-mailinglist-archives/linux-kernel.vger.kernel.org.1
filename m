@@ -2,83 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F6F7273F1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 12:01:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12F07273F23
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 12:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726582AbgIVKB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 06:01:56 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37456 "EHLO mx2.suse.de"
+        id S1726586AbgIVKC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 06:02:27 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37936 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726526AbgIVKBz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 06:01:55 -0400
+        id S1726494AbgIVKC1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 06:02:27 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600768914;
+        t=1600768946;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=QLO3suN0B5LIt4PxRcxRdNDdQcD9omAqbXVobcJQit0=;
-        b=bvB8VbMcv76lg7v+mTn3uy5QgST4NRQnUu47qUNl8D+fm1OVsZ7ir5iOajEgMTc5mRolsx
-        +JdjG1UKUAcMkTR1JPArn3y+yQ4W+XuUYFTGDk2Xl/4Whb68KND0i+avmivAL2Jgd2GPke
-        OFEuWW6aD69MpOK/i3dMkpRkCKNKoZU=
+        bh=RThaCP/K7i2WlK+tnesoAZh0Ej0QWixxsXP5VJ9Q2fo=;
+        b=KXresjSEQ1RLkxjO/7vUtKt0PgDzifAtxmqIDGJ1OSaY6w1WvLlsqE8Tjgkpl/S6EypJzH
+        ByKLv7vSmxOw1HnKzYSiNRTs8AoIjlsvShVS3UsyNNuQm/XMKJ6T9LHwtm+We2CJVuz/Pw
+        pXrg0SJ5aOaiJzeexljXbOiccBaAIrk=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B9B66B1AD;
-        Tue, 22 Sep 2020 10:02:30 +0000 (UTC)
-Date:   Tue, 22 Sep 2020 12:01:52 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     zangchunxin@bytedance.com, Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, lizefan@huawei.com,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kafai@fb.com,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        andriin@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
-        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
-Subject: Re: [PATCH] mm/memcontrol: Add the drop_cache interface for cgroup v2
-Message-ID: <20200922100152.GW12990@dhcp22.suse.cz>
-References: <20200921080255.15505-1-zangchunxin@bytedance.com>
- <20200921081200.GE12990@dhcp22.suse.cz>
- <CALOAHbDKvT58UFjxy770VDxO0VWABRYb7GVwgw+NiJp62mB06w@mail.gmail.com>
- <20200921110505.GH12990@dhcp22.suse.cz>
- <CALOAHbCDXwjN+WDSGVv+G3ho-YRRPjAAqMJBtyxeGHH6utb5ew@mail.gmail.com>
- <20200921113646.GJ12990@dhcp22.suse.cz>
- <CALOAHbCker64WEW9w4oq8=avA6oKf3-Jrn-vOOgkpqkV3g+CYA@mail.gmail.com>
- <20200922072733.GT12990@dhcp22.suse.cz>
- <CALOAHbCvRA61NbamdKSxLoy4eNqR6G_1OA=zEjb7Mu0Yh9O0sg@mail.gmail.com>
+        by mx2.suse.de (Postfix) with ESMTP id 068A0B1AD;
+        Tue, 22 Sep 2020 10:03:03 +0000 (UTC)
+Date:   Tue, 22 Sep 2020 12:02:25 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk v2 0/3] printk: move dictionaries to meta data
+Message-ID: <20200922100225.GK14605@alley>
+References: <20200918223421.21621-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALOAHbCvRA61NbamdKSxLoy4eNqR6G_1OA=zEjb7Mu0Yh9O0sg@mail.gmail.com>
+In-Reply-To: <20200918223421.21621-1-john.ogness@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 22-09-20 16:06:31, Yafang Shao wrote:
-> On Tue, Sep 22, 2020 at 3:27 PM Michal Hocko <mhocko@suse.com> wrote:
-[...]
-> > What is the latency triggered by the memory reclaim? It should be mostly
-> > a clean page cache right as drop_caches only drops clean pages. Or is
-> > this more about [id]cache? Do you have any profiles where is the time
-> > spent?
-> >
+On Sat 2020-09-19 00:40:18, John Ogness wrote:
+> Hello,
 > 
-> Yes, we have analyzed the issues in the direct reclaim, but that is
-> not the point.
+> Here is v2 for a series to move all existing dictionary
+> properties (SUBSYSTEM and DEVICE) into the meta data of a
+> record, thus eliminating the need for the dict ring. This
+> change affects how the dictionaries are stored, but does not
+> affect how they are presented to userspace. (v1 is here [0]).
+> 
+> John Ogness (3):
+>   printk: move printk_info into separate array
+>   printk: move dictionary keys to dev_printk_info
+>   printk: remove dict ring
 
-Are those fixed?
+The patchset is committed in printk/linux.git, branch printk-rework.
 
-> The point is that each case may take us several days to analyze, while
-> the user can't wait, so they will use drop_caches to workaround it
-> until we find the solution.
+The 4th version of the 2nd patch is used.
 
-As I've said there are several options to achieve an immediate action.
-Careful resource domains configuration will certainly help with that.
--- 
-Michal Hocko
-SUSE Labs
+Best Regards,
+Petr
