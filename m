@@ -2,139 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B375B273930
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 05:17:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2B2D273932
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 05:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728467AbgIVDRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 23:17:39 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:39841 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728386AbgIVDRi (ORCPT
+        id S1728502AbgIVDSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 23:18:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728472AbgIVDSs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 23:17:38 -0400
-Received: by mail-pg1-f194.google.com with SMTP id d13so10778863pgl.6;
-        Mon, 21 Sep 2020 20:17:38 -0700 (PDT)
+        Mon, 21 Sep 2020 23:18:48 -0400
+Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE3E0C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 20:18:47 -0700 (PDT)
+Received: by mail-vk1-xa44.google.com with SMTP id q124so3918632vkb.8
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 20:18:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=a399iMwad77Pjy4LzbXkCDo8iyJ1PbYFH+ke+Rxn7Uk=;
+        b=Xi5CVdRBDwfUKjomm9GdawzAxb2XCK50F3VmBba6sFTowJpj1kg5sr6jMdCAkrreKx
+         tYJZLP8yRu60u5UqSBBwD5zLI3RbelyV3qU61jwX1hbL+AbWBBXHP6ZUFhLUS3jFcYzI
+         kBC3qP1woDhGEXSYfDOmU0SxQy2CNSIsks7ag2iz89GxaMXvg60Q20CMwxLRZ7gw+6Al
+         HCfM/ffysfoBMTaDH2JzS5xcv0JVnn7CDYmdD15kerq94H2k853s5oyaiCfecLJcgNuc
+         inHVCS120DGZGy68+nORlSUKZdJjgYrDI7jw8k/9Lh0fKFy2ceRB+PSnwNo+omicCP+O
+         slWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zRZaria47CVi1lDFzYKI56Fnp059Wif+DaIlvUEMWGU=;
-        b=g4HYU/0pHbUc7i0H6b5sL5x+NXeYEih3i18IOpbQj8W2QI0+dviSCdmXhfi2pb+PYH
-         1zqgE0bd0x/zAHs7jpTOAdSMXM6r+ENhA79dJy2m+O20F74t4WvY0dTT+U71YSnxxLX/
-         0dLUJSU1yKwH59gVyzkgO1JrFrwCCXmMvZe/TO0PDMVGz/3h0mbR1+dsAbIBjikfFw++
-         bvvuRN85qGL+7IfiyrUd5xssVomICXalwam0kwXDlCaQRL+2WpmENz/LGK1hYYRRfm6p
-         6JhyPynRfzaNoedm0Qg0WG7c1C59Akxsy6bjwUYI1JNUwMgiX3rPplnIo9fdywchVLxP
-         CZnw==
-X-Gm-Message-State: AOAM532xReAotGK/yttue2ox4w/A7bSY8uuunDDflECpkD8/SIt1zoM3
-        BPs7OjH10HE+BRWvjyG10VU=
-X-Google-Smtp-Source: ABdhPJygMNmppaVjHKO+bzyfeDkiG8zmau+rxQaBUTSy/O0EZmn4TjXemJJ+O/07Z8WXY9p7hcaiAQ==
-X-Received: by 2002:a17:902:74ca:b029:d2:2cc0:5389 with SMTP id f10-20020a17090274cab02900d22cc05389mr2494230plt.15.1600744657833;
-        Mon, 21 Sep 2020 20:17:37 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1162:1ac0:17a6:4cc6:d1ef])
-        by smtp.gmail.com with ESMTPSA id j1sm12757426pgp.93.2020.09.21.20.17.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 20:17:37 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 20:17:36 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
-        linux-fpga@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        trix@redhat.com, lgoncalv@redhat.com,
-        Russ Weight <russell.h.weight@intel.com>
-Subject: Re: [PATCH v3] memory: dfl-emif: add the DFL EMIF private feature
- driver
-Message-ID: <20200922031736.GA55292@archbook>
-References: <1600666280-25651-1-git-send-email-yilun.xu@intel.com>
- <1600666280-25651-2-git-send-email-yilun.xu@intel.com>
- <20200921072311.GA6133@kozik-lap>
- <20200921203104.GA35580@epycbox.lan>
- <CAJKOXPeHRQ14mBGJ7mSg=97H+c+bGJwpss=ADL1z_gW4ac0ESA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=a399iMwad77Pjy4LzbXkCDo8iyJ1PbYFH+ke+Rxn7Uk=;
+        b=JP655iwzHTYLRxh4fkV0IPudEDnR7LfhZzjsyrgc3Y1bVJ97cc8x0FVkaNkjVKuMtx
+         4CW3oPaLNJ3HzHWDU+8AjJiPLVoryAuHcpEGOSPvbqeLZzxtQZ30DWes0i3wiyq61oRc
+         fJs5P92a6yOjf99LX55Uq4dcjr7kjKcX/fMT9LRDyKxtX3Y6ZoQzDvMgep4qtIu4fInq
+         vhf5L6jkIvn4pP7ySPMQ8qC/LKHnzBBANVPkgDT8eLbJFsE7otNenEthRVHtC78GKqU4
+         m7D4m0E2aAqL7aQ5l/yZedwkg9S6b93x6q8NHqnFr/KnIwRsFrMcILtEXXkXFXozUV+J
+         nB9Q==
+X-Gm-Message-State: AOAM532YiEESIFOhspF53T4mi5+f2xh3bO4qpuhZ8JaDQyx7ptuxd9Bu
+        hflybjCiszHzqlLvykqXR4jZUfCUG+YC/69CU5tmpQ==
+X-Google-Smtp-Source: ABdhPJyxBLzdXdTesnpHTplStB5Xn7/rADNj/6HmT1maoy3kyBYH52XP9XDJfcMA2cA3I131efLv9swvLxvGLmjFEs8=
+X-Received: by 2002:a1f:fec9:: with SMTP id l192mr2121611vki.21.1600744726839;
+ Mon, 21 Sep 2020 20:18:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJKOXPeHRQ14mBGJ7mSg=97H+c+bGJwpss=ADL1z_gW4ac0ESA@mail.gmail.com>
+References: <20200612073549.1658336-1-noltari@gmail.com> <20200615091740.2958303-1-noltari@gmail.com>
+ <20200814085617.GA129183@roeck-us.net>
+In-Reply-To: <20200814085617.GA129183@roeck-us.net>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 22 Sep 2020 08:48:35 +0530
+Message-ID: <CA+G9fYvGkowdQmi1eBfoq2dhzBfgkFh9+7tgdNw75LydxkAEPw@mail.gmail.com>
+Subject: Re: [PATCH v4] mtd: parsers: bcm63xx: simplify CFE detection
+To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>,
+        linux-mips@vger.kernel.org
+Cc:     tsbogend@alpha.franken.de, Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>, jonas.gorski@gmail.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mtd@lists.infradead.org, lkft-triage@lists.linaro.org,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+On Fri, 14 Aug 2020 at 14:26, Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On Mon, Jun 15, 2020 at 11:17:40AM +0200, =C3=81lvaro Fern=C3=A1ndez Roja=
+s wrote:
+> > Instead of trying to parse CFE version string, which is customized by s=
+ome
+> > vendors, let's just check that "CFE1" was passed on argument 3.
+> >
+> > Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
+> > Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
+> > Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+>
 
-On Mon, Sep 21, 2020 at 10:46:45PM +0200, Krzysztof Kozlowski wrote:
-> WhOn Mon, 21 Sep 2020 at 22:31, Moritz Fischer <mdf@kernel.org> wrote:
-> >
-> > Hi Krzysztof,
-> >
-> > On Mon, Sep 21, 2020 at 09:23:11AM +0200, Krzysztof Kozlowski wrote:
-> > > On Mon, Sep 21, 2020 at 01:31:20PM +0800, Xu Yilun wrote:
-> > > > This driver is for the EMIF private feature implemented under FPGA
-> > > > Device Feature List (DFL) framework. It is used to expose memory
-> > > > interface status information as well as memory clearing control.
-> > > >
-> > > > The purpose of memory clearing block is to zero out all private memory
-> > > > when FPGA is to be reprogrammed. This gives users a reliable method to
-> > > > prevent potential data leakage.
-> > > >
-> > > > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> > > > Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> > > > ---
-> > > > v2: Adjust the position of this driver in Kconfig.
-> > > >     Improves the name of the Kconfig option.
-> > > >     Change the include dfl-bus.h to dfl.h, cause the previous patchset
-> > > >      renames the file.
-> > > >     Some minor fixes and comment improvement.
-> > > > v3: Adjust the position of the driver in Makefile.
-> > > > ---
-> > > >  .../ABI/testing/sysfs-bus-dfl-devices-emif         |  25 +++
-> > > >  drivers/memory/Kconfig                             |   9 +
-> > > >  drivers/memory/Makefile                            |   2 +
-> > > >  drivers/memory/dfl-emif.c                          | 207 +++++++++++++++++++++
-> > > >  4 files changed, 243 insertions(+)
-> > > >  create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
-> > > >  create mode 100644 drivers/memory/dfl-emif.c
-> > > >
-> > >
-> > > Hi Moritz,
-> > >
-> > > Since this depends on dfl patches, I would need a stable tag with them
-> > > or you can take it directly:
-> > > Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > >
-> > > Best regards,
-> > > Krzysztof
-> >
-> > The FPGA patches go through Greg's tree. For the time being it's
-> > probably easiest if I take the changes through my tree once Greg pulled
-> > my tree.
-> 
-> Yes.
-> 
-> >
-> > Do you have any feedback to better handle this sort of subsystem
-> > spanning changesets for me?
-> 
-> The easiest through a separate branch. Assuming that such need for
-> sharing patches is known.
-> 
-> If the patches touch generic things, which could be used by other
-> drivers/subsystems, or if it is known that there will be someone
-> depending on them, the easiest is to put them on separate branch which
-> you later merge into your for-next. You send to Greg your for-next. If
-> these patches are needed by someone else, e.g. me, you prepare a tag
-> on them and send a pull request with that tag. I pull it and send
-> these (and only these!) along with other patches. No duplication of
-> commits, only two merges.
-> 
-> Recent example was here:
-> https://lore.kernel.org/lkml/20200819191722.GA38371@sirena.org.uk/
-> where Mark Brown wanted these through his tree, but later work on
-> Samsung ARM depended on them.
-> 
-> Best regards,
-> Krzysztof
+We still see mips: allmodconfig build failure on Linus tree
 
-Appreciate the explanation, that makes sense. Thanks for taking the
-time. I'll do this moving forward.
+make -sk KBUILD_BUILD_USER=3DTuxBuild -C/linux ARCH=3Dmips
+CROSS_COMPILE=3Dmips-linux-gnu- HOSTCC=3Dgcc CC=3D"sccache
+mips-linux-gnu-gcc" O=3Dbuild allmodconfig
 
-Cheers,
-Moritz
+make -sk KBUILD_BUILD_USER=3DTuxBuild -C/linux -j16 ARCH=3Dmips
+CROSS_COMPILE=3Dmips-linux-gnu- HOSTCC=3Dgcc CC=3D"sccache
+mips-linux-gnu-gcc" O=3Dbuild
+
+
+> mips:allmodconfig:
+>
+> ERROR: modpost: "fw_arg3" [drivers/mtd/parsers/bcm63xxpart.ko] undefined!
+
+ERROR: modpost: "fw_arg3" [drivers/mtd/parsers/bcm63xxpart.ko] undefined!
+
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+
+Full build link,
+https://builds.tuxbuild.com/Sm59_9tjFMpIvT27qf5kNA/build.log
+
+>
+> This is not surprising, since fw_arg3 is not exported.
+>
+> Guenter
+>
+> > ---
+> >  v4: shorten conditional compilation part as suggested by Miqu=C3=A8l.
+> >  v3: keep COMPILE_TEST compatibility by adding a new function that only=
+ checks
+> >      fw_arg3 when CONFIG_MIPS is defined.
+> >  v2: use CFE_EPTSEAL definition and avoid using an additional function.
+> >
+> >  drivers/mtd/parsers/bcm63xxpart.c | 32 ++++++++++++-------------------
+> >  1 file changed, 12 insertions(+), 20 deletions(-)
+> >
+> > diff --git a/drivers/mtd/parsers/bcm63xxpart.c b/drivers/mtd/parsers/bc=
+m63xxpart.c
+> > index 78f90c6c18fd..b15bdadaedb5 100644
+> > --- a/drivers/mtd/parsers/bcm63xxpart.c
+> > +++ b/drivers/mtd/parsers/bcm63xxpart.c
+> > @@ -22,6 +22,11 @@
+> >  #include <linux/mtd/partitions.h>
+> >  #include <linux/of.h>
+> >
+> > +#ifdef CONFIG_MIPS
+> > +#include <asm/bootinfo.h>
+> > +#include <asm/fw/cfe/cfe_api.h>
+> > +#endif /* CONFIG_MIPS */
+> > +
+> >  #define BCM963XX_CFE_BLOCK_SIZE              SZ_64K  /* always at leas=
+t 64KiB */
+> >
+> >  #define BCM963XX_CFE_MAGIC_OFFSET    0x4e0
+> > @@ -32,28 +37,15 @@
+> >  #define STR_NULL_TERMINATE(x) \
+> >       do { char *_str =3D (x); _str[sizeof(x) - 1] =3D 0; } while (0)
+> >
+> > -static int bcm63xx_detect_cfe(struct mtd_info *master)
+> > +static inline int bcm63xx_detect_cfe(void)
+> >  {
+> > -     char buf[9];
+> > -     int ret;
+> > -     size_t retlen;
+> > +     int ret =3D 0;
+> >
+> > -     ret =3D mtd_read(master, BCM963XX_CFE_VERSION_OFFSET, 5, &retlen,
+> > -                    (void *)buf);
+> > -     buf[retlen] =3D 0;
+> > +#ifdef CONFIG_MIPS
+> > +     ret =3D (fw_arg3 =3D=3D CFE_EPTSEAL);
+> > +#endif /* CONFIG_MIPS */
+> >
+> > -     if (ret)
+> > -             return ret;
+> > -
+> > -     if (strncmp("cfe-v", buf, 5) =3D=3D 0)
+> > -             return 0;
+> > -
+> > -     /* very old CFE's do not have the cfe-v string, so check for magi=
+c */
+> > -     ret =3D mtd_read(master, BCM963XX_CFE_MAGIC_OFFSET, 8, &retlen,
+> > -                    (void *)buf);
+> > -     buf[retlen] =3D 0;
+> > -
+> > -     return strncmp("CFE1CFE1", buf, 8);
+> > +     return ret;
+> >  }
+> >
+> >  static int bcm63xx_read_nvram(struct mtd_info *master,
+> > @@ -138,7 +130,7 @@ static int bcm63xx_parse_cfe_partitions(struct mtd_=
+info *master,
+> >       struct bcm963xx_nvram *nvram =3D NULL;
+> >       int ret;
+> >
+> > -     if (bcm63xx_detect_cfe(master))
+> > +     if (!bcm63xx_detect_cfe())
+> >               return -EINVAL;
+> >
+> >       nvram =3D vzalloc(sizeof(*nvram));
