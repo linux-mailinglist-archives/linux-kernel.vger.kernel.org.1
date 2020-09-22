@@ -2,1182 +2,882 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E880273A2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 07:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2EF8273A28
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 07:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728575AbgIVF2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 01:28:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728215AbgIVF2O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 01:28:14 -0400
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF95C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 22:28:13 -0700 (PDT)
-Received: by mail-oo1-xc33.google.com with SMTP id w25so69876oos.10
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 22:28:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=CqOvVrpGj6f5XVWsB4f84cUoYxcg7xxLUooh0yyLvTM=;
-        b=DN02zx0zZWPjDTe1cpUfOnE9tGPw+9E28N72cEIr+Gq4SwDh8znLmzH0jLXC0ai6ZP
-         6urBcV48s0EL1gO95YdC/Veo26dHuaXe4UtWL4IKpqgSS5Id1TP6+FAE16aRuEsHVEvG
-         7UPVFF7wESxwxgEhcklxYdlGJjLUOBmhFdMAyBbvN1rJY/T/0L3BnewQ0uFYEtXpT9iy
-         Cpzrh5xtz6R1QxwMeB1c2AGmbRkKjt+nqg1n/+xL/J0l2mX7jILmh0w0fp6si8z21WmZ
-         QSnvMQZx3M3wK6V7rO/DuxsR9DiJncMBIe8O4dRH9CHd8K93nXdUZDroWmHHXNqRk82R
-         PmhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=CqOvVrpGj6f5XVWsB4f84cUoYxcg7xxLUooh0yyLvTM=;
-        b=NRq59r/FchqFbqL0EgtsxTz+wCj7lf8pEPEMcd0f2A06DzfJ8O2yKHcnZVJk9rEJlk
-         ycfHctuX4sY1Iv1Ce3svq6Magjzw/dXzo5vkmyCIPDFXWMOBSwnjANFm7Bxk++ut7AkD
-         r5V859f1YWBijEiMUgI33Lz/E1NdWWl5a7s3ufQGDqfeyvQxybE/bUV9L7ELqA3U2phj
-         q+Xc3Yq423R07LNIt1+Vy1aXuAPFvW66ci93L0/LSJIr78aGcfh7OaSYCxafAg7tGCEx
-         GD95AEMhyGbxXy3zEo5de2jGwDVqBRPvogxu2oMJFC/UmmWG8+gg9no5NYScxXrxCy40
-         PeHg==
-X-Gm-Message-State: AOAM531ejh2J7Y1PwZYRG/kd8Zvmkdpu69A9ekWbPkWBmcVI4I4oJ6F5
-        JTCS+H7d9rJXW14LeqrVSHywjw==
-X-Google-Smtp-Source: ABdhPJy+my/2kkaY08IviFiDOP9i0rzAmAFMEShhXs/gIn2SVwFhg5BDGbd9tbU3n0/hrlUd5hqppg==
-X-Received: by 2002:a4a:95f1:: with SMTP id p46mr1779987ooi.93.1600752492061;
-        Mon, 21 Sep 2020 22:28:12 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id p16sm6562029otl.17.2020.09.21.22.28.09
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Mon, 21 Sep 2020 22:28:10 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 22:27:36 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, willy@infradead.org,
-        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        shakeelb@google.com, iamjoonsoo.kim@lge.com,
-        richard.weiyang@gmail.com, kirill@shutemov.name,
-        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
-        vdavydov.dev@gmail.com, shy828301@gmail.com,
-        Michal Hocko <mhocko@kernel.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>
-Subject: Re: [PATCH v18 20/32] mm/lru: replace pgdat lru_lock with lruvec
- lock
-In-Reply-To: <1598273705-69124-21-git-send-email-alex.shi@linux.alibaba.com>
-Message-ID: <alpine.LSU.2.11.2009211908080.6434@eggly.anvils>
-References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com> <1598273705-69124-21-git-send-email-alex.shi@linux.alibaba.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+        id S1728516AbgIVF1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 01:27:54 -0400
+Received: from mga12.intel.com ([192.55.52.136]:40670 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728215AbgIVF1y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 01:27:54 -0400
+IronPort-SDR: 3ut4MlKVeQ/ygaOqP/jXXi8aXrSOnwGgv/rMjdaKvMqBs72/WquQbioszL0eSIXR/p9K7b78KZ
+ vJpvDZC+3rEw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="140017397"
+X-IronPort-AV: E=Sophos;i="5.77,289,1596524400"; 
+   d="scan'208";a="140017397"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 22:27:54 -0700
+IronPort-SDR: UqM+zhmDOHCyYzBgbFZPye44z8+QxmfakHW30DQvhGwj42O0wFAYklWacuJ84lHtnoGo1u03AB
+ fW8NlJ8zMglw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,289,1596524400"; 
+   d="scan'208";a="348358006"
+Received: from shbuild999.sh.intel.com ([10.239.146.107])
+  by orsmga007.jf.intel.com with ESMTP; 21 Sep 2020 22:27:51 -0700
+From:   Feng Tang <feng.tang@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Feng Tang <feng.tang@intel.com>
+Subject: [RFC PATCH v2] tools/x86: add kcpuid tool to show raw CPU features
+Date:   Tue, 22 Sep 2020 13:27:50 +0800
+Message-Id: <1600752470-43179-1-git-send-email-feng.tang@intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Aug 2020, Alex Shi wrote:
+End users frequently want to know what features their processor
+supports, independent of what the kernel supports.
 
-> This patch moves per node lru_lock into lruvec, thus bring a lru_lock for
-> each of memcg per node. So on a large machine, each of memcg don't
-> have to suffer from per node pgdat->lru_lock competition. They could go
-> fast with their self lru_lock.
-> 
-> After move memcg charge before lru inserting, page isolation could
-> serialize page's memcg, then per memcg lruvec lock is stable and could
-> replace per node lru lock.
-> 
-> In func isolate_migratepages_block, compact_unlock_should_abort is
-> opend, and lock_page_lruvec logical is embedded for tight process.
+/proc/cpuinfo is great. It is omnipresent and since it is provided by
+the kernel it is always as up to date as the kernel. But, it could be
+ambiguous about processor features which can be disabled by the kernel
+at boot-time or compile-time.
 
-Hard to understand: perhaps:
+There are some user space tools showing more raw features, but they are
+not bound with kernel, and go with distros. Many end users are still
+using old distros with new kernels (upgraded by themselves), and may
+not upgrade the distros only to get a newer tool.
 
-In func isolate_migratepages_block, compact_unlock_should_abort and
-lock_page_lruvec_irqsave are open coded to work with compact_control.
+So here arise the need for a new tool, which
+  * Shows raw cpu features got from running cpuid
+  * Be easier to obtain updates for compared to existing userspace
+    tooling (perhaps distributed like perf)
+  * Inherits "modern" kernel development process, in contrast to some
+    of the existing userspace cpuid tools which are still being developed
+    without git and distributed in tarballs from non-https sites.
+  * Can produce output consistent with /proc/cpuinfo to make comparison
+    easier.
+  * Be in-kernel, could leverage kernel enabling, and even
+    theoretically consume arch/x86/boot/cpustr.h so it could pick up
+    new features directly from one-line X86_FEATURE_* definitions.
 
-> Also add a debug func in locking which may give some clues if there are
-> sth out of hands.
-> 
-> According to Daniel Jordan's suggestion, I run 208 'dd' with on 104
-> containers on a 2s * 26cores * HT box with a modefied case:
-> https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/tree/case-lru-file-readtwice
+This RFC is an early prototype, and would get community's opinion on
+whether it's the right thing to do, and what functions it should also
+support.
 
-s/modeified/modified/
-lruv19 has an lkml.org link there, please substitute
-https://lore.kernel.org/lkml/01ed6e45-3853-dcba-61cb-b429a49a7572@linux.alibaba.com/
+It contains one .c core file and one text file which shows the bits
+definition of all CPUID output data, while in v1, a specific data
+structure is defined for each eax/ebx/ecx/edx output of each leaf
+and subleaf, which is less expandable [1].
 
-> 
-> With this and later patches, the readtwice performance increases
-> about 80% within concurrent containers.
-> 
-> On a large machine with memcg enabled but not used, the page's lruvec
-> seeking pass a few pointers, that may lead to lru_lock holding time
-> increase and a bit regression.
-> 
-> Hugh Dickins helped on patch polish, thanks!
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
+The supported options are:
 
-Eh? It may have reported some locking bugs somewhere, but this
-is the main patch of your per-memcg lru_lock: I don't think the
-kernel test robot inspired your whole design, did it?  Delete that.
+  Usage: kcpuid [-adfhr] [-l leaf] [-s subleaf]
+	-a|--all		Show info of all CPUID leafs and subleafs(default on)
+	-d|--detail		Show details of the flag/fields
+	-f|--flags		Show boolean flags only
+	-h|--help		Show usage info
+	-l|--leaf=index		Specify the leaf
+	-r|--raw		Show raw cpuid data
+	-s|--subleaf=sub	Specify the subleaf
 
+Current RFC version only shows limited number of cpu features, and will
+be completed
 
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+This is based on the prototype code from Borislav Petkov [2]. 
 
-I can't quite Ack this one yet, because there are several functions
-(mainly __munlock_pagevec and check_move_unevictable_pages) which are
-not right in this v18 version, and a bit tricky to correct: I already
-suggested what to do in other mail, but this patch comes before
-relock_page_lruvec, so must look different from the final result;
-I need to look at a later version, perhaps already there in your
-github tree, before I can Ack: but it's not far off.
-Comments below.
+output of the tool (output cut version)
+---------------------------------------
 
-> Cc: Hugh Dickins <hughd@google.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-> Cc: Yang Shi <yang.shi@linux.alibaba.com>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-> Cc: Tejun Heo <tj@kernel.org>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-mm@kvack.org
-> Cc: cgroups@vger.kernel.org
-> ---
->  include/linux/memcontrol.h |  58 +++++++++++++++++++++++++
->  include/linux/mmzone.h     |   2 +
->  mm/compaction.c            |  56 +++++++++++++++---------
->  mm/huge_memory.c           |  11 ++---
->  mm/memcontrol.c            |  60 +++++++++++++++++++++++++-
->  mm/mlock.c                 |  47 +++++++++++++-------
->  mm/mmzone.c                |   1 +
->  mm/swap.c                  | 105 +++++++++++++++++++++------------------------
->  mm/vmscan.c                |  70 +++++++++++++++++-------------
->  9 files changed, 279 insertions(+), 131 deletions(-)
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index d0b036123c6a..7b170e9028b5 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -494,6 +494,19 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
->  
->  struct mem_cgroup *get_mem_cgroup_from_page(struct page *page);
->  
-> +struct lruvec *lock_page_lruvec(struct page *page);
-> +struct lruvec *lock_page_lruvec_irq(struct page *page);
-> +struct lruvec *lock_page_lruvec_irqsave(struct page *page,
-> +						unsigned long *flags);
-> +
-> +#ifdef CONFIG_DEBUG_VM
-> +void lruvec_memcg_debug(struct lruvec *lruvec, struct page *page);
-> +#else
-> +static inline void lruvec_memcg_debug(struct lruvec *lruvec, struct page *page)
-> +{
-> +}
-> +#endif
-> +
->  static inline
->  struct mem_cgroup *mem_cgroup_from_css(struct cgroup_subsys_state *css){
->  	return css ? container_of(css, struct mem_cgroup, css) : NULL;
-> @@ -1035,6 +1048,31 @@ static inline void mem_cgroup_put(struct mem_cgroup *memcg)
->  {
->  }
->  
-> +static inline struct lruvec *lock_page_lruvec(struct page *page)
-> +{
-> +	struct pglist_data *pgdat = page_pgdat(page);
-> +
-> +	spin_lock(&pgdat->__lruvec.lru_lock);
-> +	return &pgdat->__lruvec;
-> +}
-> +
-> +static inline struct lruvec *lock_page_lruvec_irq(struct page *page)
-> +{
-> +	struct pglist_data *pgdat = page_pgdat(page);
-> +
-> +	spin_lock_irq(&pgdat->__lruvec.lru_lock);
-> +	return &pgdat->__lruvec;
-> +}
-> +
-> +static inline struct lruvec *lock_page_lruvec_irqsave(struct page *page,
-> +		unsigned long *flagsp)
-> +{
-> +	struct pglist_data *pgdat = page_pgdat(page);
-> +
-> +	spin_lock_irqsave(&pgdat->__lruvec.lru_lock, *flagsp);
-> +	return &pgdat->__lruvec;
-> +}
-> +
->  static inline struct mem_cgroup *
->  mem_cgroup_iter(struct mem_cgroup *root,
->  		struct mem_cgroup *prev,
-> @@ -1282,6 +1320,10 @@ static inline void count_memcg_page_event(struct page *page,
->  void count_memcg_event_mm(struct mm_struct *mm, enum vm_event_item idx)
->  {
->  }
-> +
-> +static inline void lruvec_memcg_debug(struct lruvec *lruvec, struct page *page)
-> +{
-> +}
->  #endif /* CONFIG_MEMCG */
->  
->  /* idx can be of type enum memcg_stat_item or node_stat_item */
-> @@ -1411,6 +1453,22 @@ static inline struct lruvec *parent_lruvec(struct lruvec *lruvec)
->  	return mem_cgroup_lruvec(memcg, lruvec_pgdat(lruvec));
->  }
->  
-> +static inline void unlock_page_lruvec(struct lruvec *lruvec)
-> +{
-> +	spin_unlock(&lruvec->lru_lock);
-> +}
-> +
-> +static inline void unlock_page_lruvec_irq(struct lruvec *lruvec)
-> +{
-> +	spin_unlock_irq(&lruvec->lru_lock);
-> +}
-> +
-> +static inline void unlock_page_lruvec_irqrestore(struct lruvec *lruvec,
-> +		unsigned long flags)
-> +{
-> +	spin_unlock_irqrestore(&lruvec->lru_lock, flags);
-> +}
-> +
+	#kcpuid -r
 
-I may have trouble deciding when to use the unlock_page_lruvec
-wrapper and when to use the direct spin_unlock: but your choices
-throughout looked sensible to me.
+	Basic Leafs:
+	0x00000000: EAX=0x0000000d, EBX=0x756e6547, ECX=0x6c65746e, EDX=0x49656e69
+	0x00000001: EAX=0x000206d7, EBX=0x0a200800, ECX=0x1fbee3ff, EDX=0xbfebfbff
+	0x00000004: subleafs:
+	  0: EAX=0x3c004121, EBX=0x01c0003f, ECX=0x0000003f, EDX=0x00000000
+	  1: EAX=0x3c004122, EBX=0x01c0003f, ECX=0x0000003f, EDX=0x00000000
+	  2: EAX=0x3c004143, EBX=0x01c0003f, ECX=0x000001ff, EDX=0x00000000
 
->  #ifdef CONFIG_CGROUP_WRITEBACK
->  
->  struct wb_domain *mem_cgroup_wb_domain(struct bdi_writeback *wb);
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 8379432f4f2f..27a1513a43fc 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -273,6 +273,8 @@ enum lruvec_flags {
->  };
->  
->  struct lruvec {
-> +	/* per lruvec lru_lock for memcg */
-> +	spinlock_t			lru_lock;
->  	struct list_head		lists[NR_LRU_LISTS];
->  	/*
->  	 * These track the cost of reclaiming one LRU - file or anon -
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index 253382d99969..b724eacf6421 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -805,7 +805,7 @@ static bool too_many_isolated(pg_data_t *pgdat)
->  	unsigned long nr_scanned = 0, nr_isolated = 0;
->  	struct lruvec *lruvec;
->  	unsigned long flags = 0;
-> -	bool locked = false;
-> +	struct lruvec *locked = NULL;
->  	struct page *page = NULL, *valid_page = NULL;
->  	unsigned long start_pfn = low_pfn;
->  	bool skip_on_failure = false;
-> @@ -865,11 +865,20 @@ static bool too_many_isolated(pg_data_t *pgdat)
->  		 * contention, to give chance to IRQs. Abort completely if
->  		 * a fatal signal is pending.
->  		 */
-> -		if (!(low_pfn % SWAP_CLUSTER_MAX)
-> -		    && compact_unlock_should_abort(&pgdat->lru_lock,
-> -					    flags, &locked, cc)) {
-> -			low_pfn = 0;
-> -			goto fatal_pending;
-> +		if (!(low_pfn % SWAP_CLUSTER_MAX)) {
-> +			if (locked) {
-> +				unlock_page_lruvec_irqrestore(locked, flags);
-> +				locked = NULL;
-> +			}
-> +
-> +			if (fatal_signal_pending(current)) {
-> +				cc->contended = true;
-> +
-> +				low_pfn = 0;
-> +				goto fatal_pending;
-> +			}
-> +
-> +			cond_resched();
->  		}
->  
->  		if (!pfn_valid_within(low_pfn))
-> @@ -941,9 +950,8 @@ static bool too_many_isolated(pg_data_t *pgdat)
->  			if (unlikely(__PageMovable(page)) &&
->  					!PageIsolated(page)) {
->  				if (locked) {
-> -					spin_unlock_irqrestore(&pgdat->lru_lock,
-> -									flags);
-> -					locked = false;
-> +					unlock_page_lruvec_irqrestore(locked, flags);
-> +					locked = NULL;
->  				}
->  
->  				if (!isolate_movable_page(page, isolate_mode))
-> @@ -984,10 +992,19 @@ static bool too_many_isolated(pg_data_t *pgdat)
->  		if (!TestClearPageLRU(page))
->  			goto isolate_fail_put;
->  
-> +		rcu_read_lock();
-> +		lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> +
->  		/* If we already hold the lock, we can skip some rechecking */
-> -		if (!locked) {
-> -			locked = compact_lock_irqsave(&pgdat->lru_lock,
-> -								&flags, cc);
-> +		if (lruvec != locked) {
-> +			if (locked)
-> +				unlock_page_lruvec_irqrestore(locked, flags);
-> +
-> +			compact_lock_irqsave(&lruvec->lru_lock, &flags, cc);
-> +			locked = lruvec;
-> +			rcu_read_unlock();
-> +
-> +			lruvec_memcg_debug(lruvec, page);
->  
->  			/* Try get exclusive access under lock */
->  			if (!skip_updated) {
-> @@ -1006,9 +1023,8 @@ static bool too_many_isolated(pg_data_t *pgdat)
->  				SetPageLRU(page);
->  				goto isolate_fail_put;
->  			}
-> -		}
-> -
-> -		lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> +		} else
-> +			rcu_read_unlock();
->  
->  		/* The whole page is taken off the LRU; skip the tail pages. */
->  		if (PageCompound(page))
-> @@ -1042,8 +1058,8 @@ static bool too_many_isolated(pg_data_t *pgdat)
->  isolate_fail_put:
->  		/* Avoid potential deadlock in freeing page under lru_lock */
->  		if (locked) {
-> -			spin_unlock_irqrestore(&pgdat->lru_lock, flags);
-> -			locked = false;
-> +			unlock_page_lruvec_irqrestore(locked, flags);
-> +			locked = NULL;
->  		}
->  		put_page(page);
->  
-> @@ -1058,8 +1074,8 @@ static bool too_many_isolated(pg_data_t *pgdat)
->  		 */
->  		if (nr_isolated) {
->  			if (locked) {
-> -				spin_unlock_irqrestore(&pgdat->lru_lock, flags);
-> -				locked = false;
-> +				unlock_page_lruvec_irqrestore(locked, flags);
-> +				locked = NULL;
->  			}
->  			putback_movable_pages(&cc->migratepages);
->  			cc->nr_migratepages = 0;
-> @@ -1087,7 +1103,7 @@ static bool too_many_isolated(pg_data_t *pgdat)
->  
->  isolate_abort:
->  	if (locked)
-> -		spin_unlock_irqrestore(&pgdat->lru_lock, flags);
-> +		unlock_page_lruvec_irqrestore(locked, flags);
->  	if (page) {
->  		SetPageLRU(page);
->  		put_page(page);
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 6380c925e904..c9e08fdc08e9 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -2319,7 +2319,7 @@ static void lru_add_page_tail(struct page *head, struct page *page_tail,
->  	VM_BUG_ON_PAGE(!PageHead(head), head);
->  	VM_BUG_ON_PAGE(PageCompound(page_tail), head);
->  	VM_BUG_ON_PAGE(PageLRU(page_tail), head);
-> -	lockdep_assert_held(&lruvec_pgdat(lruvec)->lru_lock);
-> +	lockdep_assert_held(&lruvec->lru_lock);
->  
->  	if (list) {
->  		/* page reclaim is reclaiming a huge page */
-> @@ -2403,7 +2403,6 @@ static void __split_huge_page(struct page *page, struct list_head *list,
->  			      pgoff_t end)
->  {
->  	struct page *head = compound_head(page);
-> -	pg_data_t *pgdat = page_pgdat(head);
->  	struct lruvec *lruvec;
->  	struct address_space *swap_cache = NULL;
->  	unsigned long offset = 0;
-> @@ -2420,10 +2419,8 @@ static void __split_huge_page(struct page *page, struct list_head *list,
->  		xa_lock(&swap_cache->i_pages);
->  	}
->  
-> -	/* prevent PageLRU to go away from under us, and freeze lru stats */
-> -	spin_lock(&pgdat->lru_lock);
-> -
-> -	lruvec = mem_cgroup_page_lruvec(head, pgdat);
-> +	/* lock lru list/PageCompound, ref freezed by page_ref_freeze */
-> +	lruvec = lock_page_lruvec(head);
->  
->  	for (i = HPAGE_PMD_NR - 1; i >= 1; i--) {
->  		__split_huge_page_tail(head, i, lruvec, list);
-> @@ -2444,7 +2441,7 @@ static void __split_huge_page(struct page *page, struct list_head *list,
->  	}
->  
->  	ClearPageCompound(head);
-> -	spin_unlock(&pgdat->lru_lock);
-> +	unlock_page_lruvec(lruvec);
->  	/* Caller disabled irqs, so they are still disabled here */
->  
->  	split_page_owner(head, HPAGE_PMD_ORDER);
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 65c1e873153e..5b95529e64a4 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -1302,6 +1302,19 @@ int mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
->  	return ret;
->  }
->  
-> +#ifdef CONFIG_DEBUG_VM
-> +void lruvec_memcg_debug(struct lruvec *lruvec, struct page *page)
-> +{
-> +	if (mem_cgroup_disabled())
-> +		return;
-> +
-> +	if (!page->mem_cgroup)
-> +		VM_BUG_ON_PAGE(lruvec_memcg(lruvec) != root_mem_cgroup, page);
-> +	else
-> +		VM_BUG_ON_PAGE(lruvec_memcg(lruvec) != page->mem_cgroup, page);
-> +}
-> +#endif
+	Extended Leafs :
+	0x80000000: EAX=0x80000008, EBX=0x00000000, ECX=0x00000000, EDX=0x00000000
+	0x80000001: EAX=0x00000000, EBX=0x00000000, ECX=0x00000001, EDX=0x2c100800
+	0x80000002: EAX=0x20202020, EBX=0x49202020, ECX=0x6c65746e, EDX=0x20295228
+	...
 
-That function is not very effective, but I don't see how to improve it
-either: the trouble is, it gets called to confirm what has just been
-decided a moment before, when it would be much more powerful if it were
-called later, at the time of unlocking - but we generally don't know the
-page by then. I'll be tempted just to delete it later on (historically,
-bugs have tended to show up as list_debug or update_lru_size warnings);
-but we should certainly leave it in for now.
+	#kcpuid -d
 
-> +
->  /**
->   * mem_cgroup_page_lruvec - return lruvec for isolating/putting an LRU page
->   * @page: the page
-> @@ -1341,6 +1354,51 @@ struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgd
->  	return lruvec;
->  }
->  
-> +struct lruvec *lock_page_lruvec(struct page *page)
-> +{
-> +	struct lruvec *lruvec;
-> +	struct pglist_data *pgdat = page_pgdat(page);
-> +
-> +	rcu_read_lock();
-> +	lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> +	spin_lock(&lruvec->lru_lock);
-> +	rcu_read_unlock();
-> +
-> +	lruvec_memcg_debug(lruvec, page);
-> +
-> +	return lruvec;
-> +}
-> +
-> +struct lruvec *lock_page_lruvec_irq(struct page *page)
-> +{
-> +	struct lruvec *lruvec;
-> +	struct pglist_data *pgdat = page_pgdat(page);
-> +
-> +	rcu_read_lock();
-> +	lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> +	spin_lock_irq(&lruvec->lru_lock);
-> +	rcu_read_unlock();
-> +
-> +	lruvec_memcg_debug(lruvec, page);
-> +
-> +	return lruvec;
-> +}
-> +
-> +struct lruvec *lock_page_lruvec_irqsave(struct page *page, unsigned long *flags)
-> +{
-> +	struct lruvec *lruvec;
-> +	struct pglist_data *pgdat = page_pgdat(page);
-> +
-> +	rcu_read_lock();
-> +	lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> +	spin_lock_irqsave(&lruvec->lru_lock, *flags);
-> +	rcu_read_unlock();
-> +
-> +	lruvec_memcg_debug(lruvec, page);
-> +
-> +	return lruvec;
-> +}
-> +
->  /**
->   * mem_cgroup_update_lru_size - account for adding or removing an lru page
->   * @lruvec: mem_cgroup per zone lru vector
-> @@ -3222,7 +3280,7 @@ void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size)
->  
->  /*
->   * Because tail pages are not marked as "used", set it. We're under
-> - * pgdat->lru_lock and migration entries setup in all page mappings.
-> + * lruvec->lru_lock and migration entries setup in all page mappings.
->   */
->  void mem_cgroup_split_huge_fixup(struct page *head)
->  {
+	max_basic_leafs     	: 0xd       	- Max input value for supported subleafs
+	stepping            	: 0x7       	- Stepping ID
+	model               	: 0xd       	- Model
+	family              	: 0x6       	- Family ID
+	processor           	: 0x0       	- Processor Type
+	sse3                 - Streaming SIMD Extensions 3(SSE3)
+	pclmulqdq            - Support PCLMULQDQ instruction
+	dtes64               - DS area uses 64-bit layout
+	mwait                - MONITOR/MWAIT supported
+	ds_cpl               - CPL Qualified Debug Store, which allows for branch message storage qualified by CPL
+	vmx                  - Virtual Machine Extensions supported
+	smx                  - Safer Mode Extension supported
+	...
 
-Don't you come back to that comment in 23/32, correctly changing
-"We're under" to "Don't need". Might as well get the comment right
-in one place or the other, I don't mind which (get it right in this
-one and 23/32 need not touch mm/memcontrol.c).  The reference to
-"used" goes back several years, to when there was a special flag to
-mark a page as charged: now it's just done by setting mem_cgroup,
-so I think the comment should just say:
+	#kcpuid -f
 
-* Because page->mem_cgroup is not set on compound tails, set it now.
+	sse3
+	pclmulqdq
+	dtes64
+	mwait
+	ds_cpl
+	vmx
+	smx
+	eist
+	tm2
+	...
 
-I tried to make sense of "and migration entries setup in all page
-mappings" but couldn't: oh, it means that the page is unmapped from
-userspace at this point; well, that's true, but irrelevant here.
-No need to mention that or the lru_lock here at all.
+	#kcpuid -l 0x1
 
-> diff --git a/mm/mlock.c b/mm/mlock.c
-> index 3762d9dd5b31..177d2588e863 100644
-> --- a/mm/mlock.c
-> +++ b/mm/mlock.c
-> @@ -105,12 +105,10 @@ void mlock_vma_page(struct page *page)
->   * Isolate a page from LRU with optional get_page() pin.
->   * Assumes lru_lock already held and page already pinned.
->   */
-> -static bool __munlock_isolate_lru_page(struct page *page, bool getpage)
-> +static bool __munlock_isolate_lru_page(struct page *page,
-> +				struct lruvec *lruvec, bool getpage)
->  {
->  	if (TestClearPageLRU(page)) {
-> -		struct lruvec *lruvec;
-> -
-> -		lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
->  		if (getpage)
->  			get_page(page);
->  		del_page_from_lru_list(page, lruvec, page_lru(page));
-> @@ -180,7 +178,7 @@ static void __munlock_isolation_failed(struct page *page)
->  unsigned int munlock_vma_page(struct page *page)
->  {
->  	int nr_pages;
-> -	pg_data_t *pgdat = page_pgdat(page);
-> +	struct lruvec *lruvec;
->  
->  	/* For try_to_munlock() and to serialize with page migration */
->  	BUG_ON(!PageLocked(page));
-> @@ -188,11 +186,16 @@ unsigned int munlock_vma_page(struct page *page)
->  	VM_BUG_ON_PAGE(PageTail(page), page);
->  
->  	/*
-> -	 * Serialize with any parallel __split_huge_page_refcount() which
-> +	 * Serialize split tail pages in __split_huge_page_tail() which
->  	 * might otherwise copy PageMlocked to part of the tail pages before
->  	 * we clear it in the head page. It also stabilizes thp_nr_pages().
-> +	 * TestClearPageLRU can't be used here to block page isolation, since
-> +	 * out of lock clear_page_mlock may interfer PageLRU/PageMlocked
-> +	 * sequence, same as __pagevec_lru_add_fn, and lead the page place to
-> +	 * wrong lru list here. So relay on PageLocked to stop lruvec change
-> +	 * in mem_cgroup_move_account().
->  	 */
+	stepping            	: 0x7
+	model               	: 0xd
+	family              	: 0x6
+	processor           	: 0x0
+	clflush_size        	: 0x8
+	max_cpu_id          	: 0x20
+	apic_id             	: 0xf
+	sse3
+	pclmulqdq
+	dtes64
+	mwait
+	ds_cpl
+	...
 
-I have elsewhere recommended just deleting all of that comment, typos
-(interfere, rely) and misunderstandings and all. But you are right that
-PageLocked keeps mem_cgroup_move_account() out there.
+[1]. https://lore.kernel.org/lkml/1598514543-90152-1-git-send-email-feng.tang@intel.com/
+[2]. http://sr71.net/~dave/intel/stupid-cpuid.c
 
-> -	spin_lock_irq(&pgdat->lru_lock);
-> +	lruvec = lock_page_lruvec_irq(page);
->  
->  	if (!TestClearPageMlocked(page)) {
->  		/* Potentially, PTE-mapped THP: do not skip the rest PTEs */
-> @@ -203,15 +206,15 @@ unsigned int munlock_vma_page(struct page *page)
->  	nr_pages = thp_nr_pages(page);
->  	__mod_zone_page_state(page_zone(page), NR_MLOCK, -nr_pages);
->  
-> -	if (__munlock_isolate_lru_page(page, true)) {
-> -		spin_unlock_irq(&pgdat->lru_lock);
-> +	if (__munlock_isolate_lru_page(page, lruvec, true)) {
-> +		unlock_page_lruvec_irq(lruvec);
->  		__munlock_isolated_page(page);
->  		goto out;
->  	}
->  	__munlock_isolation_failed(page);
->  
->  unlock_out:
-> -	spin_unlock_irq(&pgdat->lru_lock);
-> +	unlock_page_lruvec_irq(lruvec);
->  
->  out:
->  	return nr_pages - 1;
-> @@ -291,23 +294,34 @@ static void __munlock_pagevec(struct pagevec *pvec, struct zone *zone)
->  	int nr = pagevec_count(pvec);
->  	int delta_munlocked = -nr;
->  	struct pagevec pvec_putback;
-> +	struct lruvec *lruvec = NULL;
->  	int pgrescued = 0;
->  
->  	pagevec_init(&pvec_putback);
->  
->  	/* Phase 1: page isolation */
-> -	spin_lock_irq(&zone->zone_pgdat->lru_lock);
->  	for (i = 0; i < nr; i++) {
->  		struct page *page = pvec->pages[i];
-> +		struct lruvec *new_lruvec;
-> +
-> +		/* block memcg change in mem_cgroup_move_account */
-> +		lock_page_memcg(page);
+Originally-by: Borislav Petkov <bp@alien8.de>
+Suggested-by: Dave Hansen <dave.hansen@intel.com>
+Suggested-by: Borislav Petkov <bp@alien8.de>
+Signed-off-by: Feng Tang <feng.tang@intel.com>
+---
+Changelog:
 
-And elsewhere I've explained that lock_page_memcg() before
-lock_page_lruvec() is good there the first time round the loop,
-but the second time it is trying to lock_page_memcg() while
-still holding lruvec lock: possibility of deadlock, not good.
-I'll need to check your next version of this patch before Acking.
+  v2:
+  * use a new text file to store all the bits definition of each
+    CPUID leaf/subleafs, which is easier for future expansion, as
+    the core .c file will be kept untouched, suggested by Borislav/Dave
+  * some code cleanup
 
-> +		new_lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
-> +		if (new_lruvec != lruvec) {
-> +			if (lruvec)
-> +				unlock_page_lruvec_irq(lruvec);
-> +			lruvec = lock_page_lruvec_irq(page);
-> +		}
->  
->  		if (TestClearPageMlocked(page)) {
->  			/*
->  			 * We already have pin from follow_page_mask()
->  			 * so we can spare the get_page() here.
->  			 */
-> -			if (__munlock_isolate_lru_page(page, false))
-> +			if (__munlock_isolate_lru_page(page, lruvec, false)) {
-> +				unlock_page_memcg(page);
->  				continue;
-> -			else
-> +			} else
->  				__munlock_isolation_failed(page);
->  		} else {
->  			delta_munlocked++;
-> @@ -319,11 +333,14 @@ static void __munlock_pagevec(struct pagevec *pvec, struct zone *zone)
->  		 * pin. We cannot do it under lru_lock however. If it's
->  		 * the last pin, __page_cache_release() would deadlock.
->  		 */
-> +		unlock_page_memcg(page);
->  		pagevec_add(&pvec_putback, pvec->pages[i]);
->  		pvec->pages[i] = NULL;
->  	}
-> -	__mod_zone_page_state(zone, NR_MLOCK, delta_munlocked);
-> -	spin_unlock_irq(&zone->zone_pgdat->lru_lock);
-> +	if (lruvec) {
-> +		__mod_zone_page_state(zone, NR_MLOCK, delta_munlocked);
-> +		unlock_page_lruvec_irq(lruvec);
-> +	}
->  
->  	/* Now we can release pins of pages that we are not munlocking */
->  	pagevec_release(&pvec_putback);
-> diff --git a/mm/mmzone.c b/mm/mmzone.c
-> index 4686fdc23bb9..3750a90ed4a0 100644
-> --- a/mm/mmzone.c
-> +++ b/mm/mmzone.c
-> @@ -91,6 +91,7 @@ void lruvec_init(struct lruvec *lruvec)
->  	enum lru_list lru;
->  
->  	memset(lruvec, 0, sizeof(struct lruvec));
-> +	spin_lock_init(&lruvec->lru_lock);
->  
->  	for_each_lru(lru)
->  		INIT_LIST_HEAD(&lruvec->lists[lru]);
-> diff --git a/mm/swap.c b/mm/swap.c
-> index 2d9a86bf93a4..b67959b701c0 100644
-> --- a/mm/swap.c
-> +++ b/mm/swap.c
-> @@ -79,15 +79,13 @@ static DEFINE_PER_CPU(struct lru_pvecs, lru_pvecs) = {
->  static void __page_cache_release(struct page *page)
->  {
->  	if (PageLRU(page)) {
-> -		pg_data_t *pgdat = page_pgdat(page);
->  		struct lruvec *lruvec;
->  		unsigned long flags;
->  
->  		__ClearPageLRU(page);
-> -		spin_lock_irqsave(&pgdat->lru_lock, flags);
-> -		lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> +		lruvec = lock_page_lruvec_irqsave(page, &flags);
->  		del_page_from_lru_list(page, lruvec, page_off_lru(page));
-> -		spin_unlock_irqrestore(&pgdat->lru_lock, flags);
-> +		unlock_page_lruvec_irqrestore(lruvec, flags);
+ tools/arch/x86/kcpuid/Makefile  |  21 ++
+ tools/arch/x86/kcpuid/cpuid.txt |  59 ++++
+ tools/arch/x86/kcpuid/kcpuid.c  | 598 ++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 678 insertions(+)
+ create mode 100644 tools/arch/x86/kcpuid/Makefile
+ create mode 100644 tools/arch/x86/kcpuid/cpuid.txt
+ create mode 100644 tools/arch/x86/kcpuid/kcpuid.c
 
-This is where I asked you to drop a hunk from the TestClearPageLRU
-patch; and a VM_BUG_ON_PAGE(!PageLRU) went missing. I agree it looks
-very weird immediately after checking PageLRU, but IIRC years ago it
-did actually catch some racy bugs, so I guess better to retain it.
+diff --git a/tools/arch/x86/kcpuid/Makefile b/tools/arch/x86/kcpuid/Makefile
+new file mode 100644
+index 0000000..21453e5
+--- /dev/null
++++ b/tools/arch/x86/kcpuid/Makefile
+@@ -0,0 +1,21 @@
++# SPDX-License-Identifier: GPL-2.0
++# Makefile for x86/kcpuid tool
++
++kcpuid : kcpuid.c
++
++CFLAGS =  -Wextra
++
++BINDIR ?= /usr/sbin
++
++override CFLAGS += -O2 -Wall -I../../../include
++
++%: %.c
++	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
++
++.PHONY : clean
++clean :
++	@rm -f kcpuid
++
++install : kcpuid
++	install -d  $(DESTDIR)$(BINDIR)
++	install -m 755 -p kcpuid $(DESTDIR)$(BINDIR)/kcpuid
+diff --git a/tools/arch/x86/kcpuid/cpuid.txt b/tools/arch/x86/kcpuid/cpuid.txt
+new file mode 100644
+index 0000000..8c2c5ec
+--- /dev/null
++++ b/tools/arch/x86/kcpuid/cpuid.txt
+@@ -0,0 +1,58 @@
++# Leaf 00H
++
++LEAF[00000000],SUBLEAF[00],EAX[ 31:0],max_basic_leafs, Max input value for supported subleafs
++
++
++# Leaf 01H
++
++LEAF[00000001],SUBLEAF[00],EAX[  3:0],stepping, Stepping ID
++LEAF[00000001],SUBLEAF[00],EAX[  7:4],model, Model
++LEAF[00000001],SUBLEAF[00],EAX[ 11:8],family, Family ID
++LEAF[00000001],SUBLEAF[00],EAX[13:12],processor, Processor Type
++LEAF[00000001],SUBLEAF[00],EAX[19:16],model_ext, Extended Model ID
++LEAF[00000001],SUBLEAF[00],EAX[27:20],family_ext, Extended Family ID
++
++LEAF[00000001],SUBLEAF[00],EBX[  7:0],brand, Brand Index
++LEAF[00000001],SUBLEAF[00],EBX[ 15:8],clflush_size, CLFLUSH line size (value * 8) in bytes
++LEAF[00000001],SUBLEAF[00],EBX[23:16],max_cpu_id, Maxim number of addressable logic cpu ID in this package
++LEAF[00000001],SUBLEAF[00],EBX[31:24],apic_id, Initial APIC ID
++
++LEAF[00000001],SUBLEAF[00],ECX[    0],sse3, Streaming SIMD Extensions 3(SSE3)
++LEAF[00000001],SUBLEAF[00],ECX[    1],pclmulqdq, Support PCLMULQDQ instruction
++LEAF[00000001],SUBLEAF[00],ECX[    2],dtes64, DS area uses 64-bit layout
++LEAF[00000001],SUBLEAF[00],ECX[    3],mwait, MONITOR/MWAIT supported
++LEAF[00000001],SUBLEAF[00],ECX[    4],ds_cpl, CPL Qualified Debug Store, which allows for branch message storage qualified by CPL
++LEAF[00000001],SUBLEAF[00],ECX[    5],vmx, Virtual Machine Extensions supported
++LEAF[00000001],SUBLEAF[00],ECX[    6],smx, Safer Mode Extension supported
++LEAF[00000001],SUBLEAF[00],ECX[    7],eist, Enhanced Intel SpeedStep Technology
++LEAF[00000001],SUBLEAF[00],ECX[    8],tm2, Thermal Monitor 2
++LEAF[00000001],SUBLEAF[00],ECX[    9],ssse3, Supplemental Streaming SIMD Extensions 3 (SSSE3)
++LEAF[00000001],SUBLEAF[00],ECX[   10],l1_ctx_id, L1 data cache could be set to either adaptive mode or shared mode (check IA32_MISC_ENABLE bit 24 definition)
++LEAF[00000001],SUBLEAF[00],ECX[   11],sdbg, IA32_DEBUG_INTERFACE MSR for silicon debug supported
++LEAF[00000001],SUBLEAF[00],ECX[   12],fma, FMA extensions using YMM state supported
++LEAF[00000001],SUBLEAF[00],ECX[   13],cmpxchg16b, 'CMPXCHG16B - Compare and Exchange Bytes' supported
++LEAF[00000001],SUBLEAF[00],ECX[   14],xtpr_update, xTPR Update Control supported
++LEAF[00000001],SUBLEAF[00],ECX[   15],pdcm, Perfmon and Debug Capability supported
++LEAF[00000001],SUBLEAF[00],ECX[   17],pcid, Process-Context Identifiers supported
++LEAF[00000001],SUBLEAF[00],ECX[   18],dca, Prefetching data from a memory mapped device supported
++LEAF[00000001],SUBLEAF[00],ECX[   19],sss4_1, SSE4.1 feature present
++LEAF[00000001],SUBLEAF[00],ECX[   20],sse4_2, SSE4.2 feature present
++LEAF[00000001],SUBLEAF[00],ECX[   21],x2apic, x2APIC supported
++LEAF[00000001],SUBLEAF[00],ECX[   22],movbe, MOVBE instruction supported
++LEAF[00000001],SUBLEAF[00],ECX[   23],popcnt, POPCNT instruction supported
++LEAF[00000001],SUBLEAF[00],ECX[   24],tsc_deadline_timer, LAPIC supports not-shot operation usinga a TSC deadline value
++LEAF[00000001],SUBLEAF[00],ECX[   25],aesni, AESNI instruction supported
++LEAF[00000001],SUBLEAF[00],ECX[   26],xsave, XSAVE/XRSTOR processor extended states, XSETBV/XGETBV, XCR0 supported
++LEAF[00000001],SUBLEAF[00],ECX[   27],osxsave, OS has set CR4.OSXSAVE bit to enable XSETBV/XGETBV, XCR0
++LEAF[00000001],SUBLEAF[00],ECX[   28],avx, AVX instruction supported
++LEAF[00000001],SUBLEAF[00],ECX[   29],f16c, 16-bit floating-point conversion instruction supported
++LEAF[00000001],SUBLEAF[00],ECX[   30],rdrand, RDRAND instruction supported
++
++#
++# !!! Test data for testing different options, will be removed in formal version
++#
++LEAF[00000004],SUBLEAF[00],ECX[    1],aaa, AAA
++LEAF[00000004],SUBLEAF[01],ECX[    1],bbb, BBB
++LEAF[00000004],SUBLEAF[02],ECX[    1],ccc, CCC
++LEAF[00000004],SUBLEAF[03],ECX[    1],ddd, DDD
++LEAF[80000000],SUBLEAF[00],EAX[    3],eee, EEE
+diff --git a/tools/arch/x86/kcpuid/kcpuid.c b/tools/arch/x86/kcpuid/kcpuid.c
+new file mode 100644
+index 0000000..ab2ab32
+--- /dev/null
++++ b/tools/arch/x86/kcpuid/kcpuid.c
+@@ -0,0 +1,598 @@
++#include <stdio.h>
++#include <stdbool.h>
++#include <stdlib.h>
++#include <string.h>
++#include <getopt.h>
++
++#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
++
++typedef unsigned int u32;
++typedef unsigned long long u64;
++
++struct bits_desc {
++	int start, end;		/* start and end bits */
++	int value;		/* 0 or 1 for 1-bit flag */
++	char simp[32];
++	char detail[256];	/* 256B should be big enough? */
++};
++
++/* descriptor info for eax/ebx/ecx/edx */
++struct reg_desc {
++	int nr;		/* number of valid entries */
++	struct bits_desc descs[32];
++};
++
++enum {
++	R_EAX = 0,
++	R_EBX,
++	R_ECX,
++	R_EDX,
++	NR_REGS
++};
++
++struct subleaf {
++	u32 index;
++	u32 sub;
++	u32 eax, ebx, ecx, edx;
++	struct reg_desc info[NR_REGS];	/* eax, ebx, ecx, edx */
++};
++
++/* cpuid_func represents one leaf (basic or extended) */
++struct cpuid_func {
++	/*
++	 * Array of subleafs for this func, if there is no subleafs
++	 * then the leafs[0] is the main leaf
++	 */
++	struct subleaf *leafs;
++	int nr;
++};
++
++struct cpuid_range {
++	/* Array of leafs in this range */
++	struct cpuid_func *funcs;
++	/* Number of valid leafs */
++	int nr;
++
++	bool is_ext;
++};
++
++
++/*
++ * 'basic' means basic functions started from 0
++ * 'ext' means extended functions started from 0x80000000
++ */
++struct cpuid_range *leafs_basic, *leafs_ext;
++
++static int num_leafs;
++static bool is_amd;
++static bool show_details;
++static bool show_all = true;
++static bool show_raw;
++static bool show_flags_only;
++
++static u32 user_index = 0xFFFFFFFF;
++static u32 user_sub = 0xFFFFFFFF;
++
++static inline void cpuid(u32 *eax, u32 *ebx, u32 *ecx, u32 *edx)
++{
++	/* ecx is often an input as well as an output. */
++	asm volatile("cpuid"
++	    : "=a" (*eax),
++	      "=b" (*ebx),
++	      "=c" (*ecx),
++	      "=d" (*edx)
++	    : "0" (*eax), "2" (*ecx));
++}
++
++static inline bool has_subleafs(u32 f)
++{
++	if (f == 0x7 || f == 0xd)
++		return true;
++
++	if (is_amd) {
++		if (f == 0x8000001d)
++			return true;
++		return false;
++	}
++
++	if (f == 0x4 || f == 0xf || f == 0x10 || f == 0x14)
++		return true;
++
++	return false;
++}
++
++static void leaf_print_raw(struct subleaf *leaf)
++{
++	if (has_subleafs(leaf->index)) {
++		if (leaf->sub == 0)
++			printf("0x%08x: subleafs:\n", leaf->index);
++
++		printf(" %2d: EAX=0x%08x, EBX=0x%08x, ECX=0x%08x, EDX=0x%08x\n",
++			leaf->sub, leaf->eax, leaf->ebx, leaf->ecx, leaf->edx);
++	} else {
++		printf("0x%08x: EAX=0x%08x, EBX=0x%08x, ECX=0x%08x, EDX=0x%08x\n",
++			leaf->index, leaf->eax, leaf->ebx, leaf->ecx, leaf->edx);
++	}
++}
++
++static void cpuid_store(struct cpuid_range *range, u32 f, int subleaf,
++			u32 a, u32 b, u32 c, u32 d)
++{
++	struct cpuid_func *func;
++	struct subleaf *leaf;
++	int s = 0;
++
++	if (a == 0 && b == 0 && c == 0 && d == 0)
++		return;
++
++	/*
++	 * Cut off vendor-prefix from CPUID function as we're using it as an
++	 * index into ->funcs.
++	 */
++	func = &range->funcs[f & 0xffff];
++	if (!func->leafs) {
++		func->leafs = malloc(sizeof(struct subleaf));
++		if (!func->leafs)
++			perror("malloc func leaf");
++
++		func->nr = 1;
++	} else {
++		s = func->nr;
++		func->leafs = realloc(func->leafs, (s + 1) * sizeof(struct subleaf));
++		if (!func->leafs)
++			perror("realloc f->leafs");
++
++		func->nr++;
++	}
++
++	leaf = &func->leafs[s];
++
++	leaf->index = f;
++	leaf->sub = subleaf;
++	leaf->eax = a;
++	leaf->ebx = b;
++	leaf->ecx = c;
++	leaf->edx = d;
++}
++
++static void raw_dump_range(struct cpuid_range *range)
++{
++	u32 f;
++	int i;
++
++	printf("\n%s Leafs :\n", range->is_ext ? "Extended" : "Basic");
++
++	for (f = 0; (int)f < range->nr; f++) {
++		struct cpuid_func *func = &range->funcs[f];
++		u32 index = f;
++
++		if (range->is_ext)
++			index += 0x80000000;
++
++		if (!func->nr) {
++			printf("0x%08x: ...\n", f);
++		} else {
++			for (i = 0; i < func->nr; i++)
++				leaf_print_raw(&func->leafs[i]);
++		}
++	}
++}
++
++struct cpuid_range *setup_cpuid_range(u32 input_eax)
++{
++	u32 max_func, idx_func;
++	int subleaf;
++	struct cpuid_range *range;
++	u32 eax, ebx, ecx, edx;
++	u32 f = input_eax;
++
++	eax = input_eax;
++	ebx = ecx = edx = 0;
++
++	cpuid(&eax, &ebx, &ecx, &edx);
++	max_func = eax;
++	idx_func = (max_func & 0xffff) + 1;
++
++	range = malloc(sizeof(struct cpuid_range));
++	if (!range)
++		perror("malloc range");
++
++	if (input_eax & 0x80000000)
++		range->is_ext = true;
++	else
++		range->is_ext = false;
++
++	range->funcs = malloc(sizeof(struct cpuid_func) * idx_func);
++	if (!range->funcs)
++		perror("malloc range->funcs");
++
++	range->nr = idx_func;
++	memset(range->funcs, 0, sizeof(struct cpuid_func) * idx_func);
++
++	for (; f <= max_func; f++) {
++		eax = f;
++		subleaf = ecx = 0;
++
++		cpuid(&eax, &ebx, &ecx, &edx);
++		cpuid_store(range, f, subleaf, eax, ebx, ecx, edx);
++		num_leafs++;
++
++		if (!has_subleafs(f))
++			continue;
++
++		for (subleaf = 1; subleaf < 64; subleaf++) {
++			eax = f;
++			ecx = subleaf;
++
++			cpuid(&eax, &ebx, &ecx, &edx);
++
++			/* is subleaf valid? */
++			if (eax == 0 && ebx == 0 && ecx == 0 && edx == 0)
++				continue;
++
++			cpuid_store(range, f, subleaf, eax, ebx, ecx, edx);
++			num_leafs++;
++		}
++	}
++
++	return range;
++}
++
++/*
++ * The max nubmer returned by CPUID is honored and we
++ * created leafs for all of them, even some has no valid info
++ */
++
++/*
++ * Currently the input text is assumed to be correct, without bits overlapping
++ * and wrong format. More error check could be added later on demand, sample
++ * like below:
++ *
++ *	LEAF[00000000],SUBLEAF[00],EAX[31:00],aaa, AAAAAAAAAAAA
++ *	LEAF[80000001],SUBLEAF[00],EAX[    2],bbb, BBBBBBBBBBBB
++ */
++static int parse_line(char *line)
++{
++	char *str, *buf;
++	struct cpuid_range *range;
++	struct cpuid_func *func;
++	struct subleaf *leaf;
++	u32 index, sub;
++	char buffer[512];
++	char *tokens[5];
++	struct reg_desc *reg;
++	struct bits_desc *bdesc;
++	char *start, *end;
++	int i;
++
++	/* Skip comments parts in cpuid.txt */
++	if (line[0] == '#' || line[0] == '\n' || line[0] == ' ')
++		return 0;
++
++	/*
++	 * Tokens:
++	 *  1. leaf
++	 *  2. subleaf
++	 *  3. bits
++	 *  4. simiple text
++	 *  5. detail string
++	 */
++	str = line;
++	for (i = 0; i < 4; i++) {
++		tokens[i] = strtok(str, ",");
++		if (!tokens[i])
++			goto err_exit;
++		str = NULL;
++	}
++	tokens[4] = strtok(str, "\n");
++
++	/* index */
++	buf = tokens[0];
++	if (strncmp(buf, "LEAF[", 5) || buf[13] != ']')
++		goto err_exit;
++
++	buffer[0] = '0';
++	buffer[1] = 'x';
++	strncpy(buffer + 2, buf + 5, 8);
++	index = strtoul(buffer, NULL, 0);
++
++	if (index & 0x80000000)
++		range = leafs_ext;
++	else
++		range = leafs_basic;
++
++	index &= 0x7FFFFFFF;
++	if ((int)index > range->nr) {
++		printf("ERR: invalid index[0x%x] nr:%d\n",
++				index,
++				range->nr);
++		return -1;
++	}
++	func = &range->funcs[index];
++
++	/* subleaf */
++	buf = tokens[1];
++	if (strncmp(buf, "SUBLEAF[", 8) || buf[10] != ']')
++		goto err_exit;
++
++	strncpy(buffer + 2, buf + 8, 2);
++	buffer[4] = 0;
++	sub = strtoul(buffer, NULL, 0);
++	if (sub > (u32)func->nr)  {
++		printf("ERR: invalid subleaf[%d]\n", sub);
++		return -1;
++	}
++
++	/* token[2]: register and bits field */
++	leaf = &func->leafs[sub];
++	buf = tokens[2];
++	if (buf[0] != 'E' || buf[2] != 'X' || buf[1] < 'A' || buf[1] > 'D')
++		goto err_exit;
++
++	reg = &leaf->info[buf[1] - 'A'];
++	bdesc = &reg->descs[reg->nr++];
++
++	strcpy(buffer, buf + 4);
++	if (strstr(buffer, ":")) {
++		end = strtok(buffer, ":");
++		start = strtok(NULL, "]");
++
++		bdesc->end = strtoul(end, NULL, 0);
++		bdesc->start = strtoul(start, NULL, 0);
++	} else {
++		start = strtok(buffer, "]");
++		bdesc->start = bdesc->end = strtoul(start, NULL, 0);
++	}
++
++	strcpy(bdesc->simp, tokens[3]);
++	strcpy(bdesc->detail, tokens[4]);
++	return 0;
++
++err_exit:
++	printf("ERR: wrong line formt!\n\n");
++	return -1;
++}
++
++/*
++ * Parse text file, and construct the array of all CPUID leafs and subleafs
++ */
++static void parse_text(void)
++{
++	FILE *file;
++	char *line = NULL;
++	size_t len = 0;
++	int ret;
++
++	file = fopen("cpuid.txt", "r");
++	if (!file) {
++		printf("Error in opening 'cpuid.txt'\n");
++		return;
++	}
++
++	while (1) {
++		ret = getline(&line, &len, file);
++		if (ret > 0)
++			parse_line(line);
++
++		if (feof(file))
++			break;
++	}
++	fclose(file);
++}
++
++/* Parse every eax/ebx/ecx/edx */
++static void decode_bits(u32 value, struct reg_desc *rdesc)
++{
++	struct bits_desc *bdesc;
++	int start, end, i;
++	u32 mask;
++
++	for (i = 0; i < rdesc->nr; i++) {
++		bdesc = &rdesc->descs[i];
++		start = bdesc->start;
++		end = bdesc->end;
++
++		if (start == end) {
++			/* single bit flag */
++			if (value & (1 << start)) {
++				printf("\t%-20s %s%s\n",
++					bdesc->simp,
++					show_details ? "-" : "",
++					show_details ? bdesc->detail : ""
++					);
++			}
++		} else {
++			/* bit fields */
++			if (show_flags_only)
++				continue;
++			mask = ((u64)1 << (end - start + 1)) - 1;
++			printf("\t%-20s\t: 0x%-8x\t%s%s\n",
++					bdesc->simp,
++					(value >> start) & mask,
++					show_details ? "-" : "",
++					show_details ? bdesc->detail : ""
++					);
++		}
++	}
++}
++
++static void show_leaf(struct subleaf *leaf)
++{
++	if (!leaf)
++		return;
++
++	decode_bits(leaf->eax, &leaf->info[R_EAX]);
++	decode_bits(leaf->ebx, &leaf->info[R_EBX]);
++	decode_bits(leaf->ecx, &leaf->info[R_ECX]);
++	decode_bits(leaf->edx, &leaf->info[R_EDX]);
++}
++
++static void show_func(struct cpuid_func *func)
++{
++	int i;
++
++	if (!func)
++		return;
++
++	for (i = 0; i < func->nr; i++)
++		show_leaf(&func->leafs[i]);
++}
++
++static void show_range(struct cpuid_range *range)
++{
++	int i;
++
++	for (i = 0; i < range->nr; i++)
++		show_func(&range->funcs[i]);
++}
++
++static inline struct cpuid_func *index_to_func(u32 index)
++{
++	struct cpuid_range *range;
++
++	range = (index & 0x80000000) ? leafs_ext : leafs_basic;
++	index &= 0x7FFFFFFF;
++
++	if (((index & 0xFFFF) + 1) > (u32)range->nr) {
++		printf("ERR: invalid input index (0x%x)\n", index);
++		return NULL;
++	}
++	return &range->funcs[index];
++}
++
++static void show_info(void)
++{
++	struct cpuid_func *func;
++
++	if (show_raw) {
++		/* Show all of the raw output data of running cpuid */
++		raw_dump_range(leafs_basic);
++		raw_dump_range(leafs_ext);
++		return;
++	}
++
++	if (show_all) {
++		show_range(leafs_basic);
++		show_range(leafs_ext);
++		return;
++	}
++
++	/* Show specific leaf/subleaf info */
++	func = index_to_func(user_index);
++	if (!func)
++		return;
++
++	if (user_sub != 0xFFFFFFFF) {
++		if (user_sub + 1 <= (u32)func->nr) {
++			show_leaf(&func->leafs[user_sub]);
++			return;
++		} else {
++			printf("ERR: invalid input index (0x%x)\n", user_sub);
++		}
++	}
++
++	show_func(func);
++}
++
++static void setup_platform_cpuid(void)
++{
++	 u32 eax, ebx, ecx, edx;
++
++	/* check vendor */
++	eax = ebx = ecx = edx = 0;
++	cpuid(&eax, &ebx, &ecx, &edx);
++	/* "htuA" */
++	if (ebx == 0x68747541)
++		is_amd = 1;
++
++	/* setup leafs by getting the base and extended range */
++	leafs_basic = setup_cpuid_range(0x0);
++	leafs_ext = setup_cpuid_range(0x80000000);
++	printf("This platform has %d CPUID leafs and subleafs.\n\n",
++		num_leafs);
++}
++
++static void usage(void)
++{
++	printf("  Usage: kcpuid [-adfhr] [-l leaf] [-s subleaf]\n"
++		"\t-a|--all		Show info of all CPUID leafs and subleafs(default on)\n"
++		"\t-d|--detail		Show details of the flag/fields\n"
++		"\t-f|--flags		Show boolean flags only \n"
++		"\t-h|--help		Show usage info\n"
++		"\t-l|--leaf=index	Specify the leaf you want to check\n"
++		"\t-r|--raw		Show raw cpuid data\n"
++		"\t-s|--subleaf=sub	Specify the subleaf you want to check\n"
++		"\n"
++	);
++}
++
++struct option opts[] = {
++	{ "all", no_argument, NULL, 'a' },		/* show all leafs */
++	{ "detail", no_argument, NULL, 'd' },		/* show detail descriptions, default no */
++	{ "flags", no_argument, NULL, 'f' },		/* only show flags */
++	{ "help", no_argument, NULL, 'h'},		/* show usage */
++	{ "leaf", required_argument, NULL, 'l'},	/* give the specific leaf you want to check */
++	{ "raw", no_argument, NULL, 'r'},		/* show raw CPUID leaf data */
++	{ "subleaf", required_argument, NULL, 's'},	/* give the specific subleaf you want to check */
++	{ NULL, 0, NULL, 0 }
++};
++
++static int parse_options(int argc, char *argv[])
++{
++	int c;
++
++	while ((c = getopt_long(argc, argv, "adfg:hl:rs:",
++					opts, NULL)) != -1)
++		switch (c) {
++		case 'a':
++			show_all = true;
++			break;
++		case 'd':
++			show_details = true;
++			break;
++		case 'f':
++			show_flags_only = true;
++			break;
++		case 'h':
++			usage();
++			exit(1);
++			break;
++		case 'l':
++			user_index = strtoul(optarg, NULL, 0);
++			show_all = false;
++			break;
++		case 'r':
++			show_raw = true;
++			break;
++		case 's':
++			user_sub = strtoul(optarg, NULL, 0);
++			break;
++		default:
++			printf("%s: Invalid option '%c'\n", argv[0], optopt);
++			return -1;
++	}
++
++	return 0;
++}
++
++/*
++ * Do 4 things in turn:
++ * 1. Parse user input options
++ * 2. Parse and store all the CPUID leaf data supported on this platform
++ * 2. Parse the text file according, skip leafs which is not available
++ *    on this platform
++ * 3. Print leafs info based on uers options
++ */
++int main(int argc, char *argv[])
++{
++	if (parse_options(argc, argv))
++		return -1;
++
++	/* setup the cpuid leafs of current platform */
++	setup_platform_cpuid();
++
++	/* read and parse the 'cpuid.txt' */
++	parse_text();
++
++	show_info();
++	return 0;
++}
+-- 
+2.7.4
 
-I suppose it's then best to keep to the original ordering,
-lock, BUG, __Clear, del, unlock - to widen the gap between the PageLRU
-checks - though usually we would prefer to BUG outside of holding a lock.
-
->  	}
->  	__ClearPageWaiters(page);
->  }
-> @@ -206,32 +204,30 @@ static void pagevec_lru_move_fn(struct pagevec *pvec,
->  	void (*move_fn)(struct page *page, struct lruvec *lruvec))
->  {
->  	int i;
-> -	struct pglist_data *pgdat = NULL;
-> -	struct lruvec *lruvec;
-> +	struct lruvec *lruvec = NULL;
->  	unsigned long flags = 0;
->  
->  	for (i = 0; i < pagevec_count(pvec); i++) {
->  		struct page *page = pvec->pages[i];
-> -		struct pglist_data *pagepgdat = page_pgdat(page);
-> -
-> -		if (pagepgdat != pgdat) {
-> -			if (pgdat)
-> -				spin_unlock_irqrestore(&pgdat->lru_lock, flags);
-> -			pgdat = pagepgdat;
-> -			spin_lock_irqsave(&pgdat->lru_lock, flags);
-> -		}
-> +		struct lruvec *new_lruvec;
->  
->  		/* block memcg migration during page moving between lru */
->  		if (!TestClearPageLRU(page))
->  			continue;
->  
-> -		lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> +		new_lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
-> +		if (lruvec != new_lruvec) {
-> +			if (lruvec)
-> +				unlock_page_lruvec_irqrestore(lruvec, flags);
-> +			lruvec = lock_page_lruvec_irqsave(page, &flags);
-> +		}
-> +
->  		(*move_fn)(page, lruvec);
->  
->  		SetPageLRU(page);
->  	}
-> -	if (pgdat)
-> -		spin_unlock_irqrestore(&pgdat->lru_lock, flags);
-> +	if (lruvec)
-> +		unlock_page_lruvec_irqrestore(lruvec, flags);
->  	release_pages(pvec->pages, pvec->nr);
->  	pagevec_reinit(pvec);
->  }
-> @@ -274,9 +270,8 @@ void lru_note_cost(struct lruvec *lruvec, bool file, unsigned int nr_pages)
->  {
->  	do {
->  		unsigned long lrusize;
-> -		struct pglist_data *pgdat = lruvec_pgdat(lruvec);
->  
-> -		spin_lock_irq(&pgdat->lru_lock);
-> +		spin_lock_irq(&lruvec->lru_lock);
->  		/* Record cost event */
->  		if (file)
->  			lruvec->file_cost += nr_pages;
-> @@ -300,7 +295,7 @@ void lru_note_cost(struct lruvec *lruvec, bool file, unsigned int nr_pages)
->  			lruvec->file_cost /= 2;
->  			lruvec->anon_cost /= 2;
->  		}
-> -		spin_unlock_irq(&pgdat->lru_lock);
-> +		spin_unlock_irq(&lruvec->lru_lock);
->  	} while ((lruvec = parent_lruvec(lruvec)));
->  }
->  
-> @@ -364,13 +359,13 @@ static inline void activate_page_drain(int cpu)
->  
->  void activate_page(struct page *page)
->  {
-> -	pg_data_t *pgdat = page_pgdat(page);
-> +	struct lruvec *lruvec;
->  
->  	page = compound_head(page);
-> -	spin_lock_irq(&pgdat->lru_lock);
-> +	lruvec = lock_page_lruvec_irq(page);
->  	if (PageLRU(page))
-> -		__activate_page(page, mem_cgroup_page_lruvec(page, pgdat));
-> -	spin_unlock_irq(&pgdat->lru_lock);
-> +		__activate_page(page, lruvec);
-> +	unlock_page_lruvec_irq(lruvec);
->  }
->  #endif
->  
-> @@ -819,8 +814,7 @@ void release_pages(struct page **pages, int nr)
->  {
->  	int i;
->  	LIST_HEAD(pages_to_free);
-> -	struct pglist_data *locked_pgdat = NULL;
-> -	struct lruvec *lruvec;
-> +	struct lruvec *lruvec = NULL;
->  	unsigned long flags;
->  	unsigned int lock_batch;
->  
-> @@ -830,21 +824,20 @@ void release_pages(struct page **pages, int nr)
->  		/*
->  		 * Make sure the IRQ-safe lock-holding time does not get
->  		 * excessive with a continuous string of pages from the
-> -		 * same pgdat. The lock is held only if pgdat != NULL.
-> +		 * same lruvec. The lock is held only if lruvec != NULL.
->  		 */
-> -		if (locked_pgdat && ++lock_batch == SWAP_CLUSTER_MAX) {
-> -			spin_unlock_irqrestore(&locked_pgdat->lru_lock, flags);
-> -			locked_pgdat = NULL;
-> +		if (lruvec && ++lock_batch == SWAP_CLUSTER_MAX) {
-> +			unlock_page_lruvec_irqrestore(lruvec, flags);
-> +			lruvec = NULL;
->  		}
->  
->  		if (is_huge_zero_page(page))
->  			continue;
->  
->  		if (is_zone_device_page(page)) {
-> -			if (locked_pgdat) {
-> -				spin_unlock_irqrestore(&locked_pgdat->lru_lock,
-> -						       flags);
-> -				locked_pgdat = NULL;
-> +			if (lruvec) {
-> +				unlock_page_lruvec_irqrestore(lruvec, flags);
-> +				lruvec = NULL;
->  			}
->  			/*
->  			 * ZONE_DEVICE pages that return 'false' from
-> @@ -863,29 +856,29 @@ void release_pages(struct page **pages, int nr)
->  			continue;
->  
->  		if (PageCompound(page)) {
-> -			if (locked_pgdat) {
-> -				spin_unlock_irqrestore(&locked_pgdat->lru_lock, flags);
-> -				locked_pgdat = NULL;
-> +			if (lruvec) {
-> +				unlock_page_lruvec_irqrestore(lruvec, flags);
-> +				lruvec = NULL;
->  			}
->  			__put_compound_page(page);
->  			continue;
->  		}
->  
->  		if (PageLRU(page)) {
-> -			struct pglist_data *pgdat = page_pgdat(page);
-> +			struct lruvec *new_lruvec;
->  
-> -			if (pgdat != locked_pgdat) {
-> -				if (locked_pgdat)
-> -					spin_unlock_irqrestore(&locked_pgdat->lru_lock,
-> +			new_lruvec = mem_cgroup_page_lruvec(page,
-> +							page_pgdat(page));
-> +			if (new_lruvec != lruvec) {
-> +				if (lruvec)
-> +					unlock_page_lruvec_irqrestore(lruvec,
->  									flags);
->  				lock_batch = 0;
-> -				locked_pgdat = pgdat;
-> -				spin_lock_irqsave(&locked_pgdat->lru_lock, flags);
-> +				lruvec = lock_page_lruvec_irqsave(page, &flags);
->  			}
->  
->  			VM_BUG_ON_PAGE(!PageLRU(page), page);
->  			__ClearPageLRU(page);
-> -			lruvec = mem_cgroup_page_lruvec(page, locked_pgdat);
->  			del_page_from_lru_list(page, lruvec, page_off_lru(page));
->  		}
->  
-> @@ -895,8 +888,8 @@ void release_pages(struct page **pages, int nr)
->  
->  		list_add(&page->lru, &pages_to_free);
->  	}
-> -	if (locked_pgdat)
-> -		spin_unlock_irqrestore(&locked_pgdat->lru_lock, flags);
-> +	if (lruvec)
-> +		unlock_page_lruvec_irqrestore(lruvec, flags);
->  
->  	mem_cgroup_uncharge_list(&pages_to_free);
->  	free_unref_page_list(&pages_to_free);
-> @@ -984,26 +977,24 @@ static void __pagevec_lru_add_fn(struct page *page, struct lruvec *lruvec)
->  void __pagevec_lru_add(struct pagevec *pvec)
->  {
->  	int i;
-> -	struct pglist_data *pgdat = NULL;
-> -	struct lruvec *lruvec;
-> +	struct lruvec *lruvec = NULL;
->  	unsigned long flags = 0;
->  
->  	for (i = 0; i < pagevec_count(pvec); i++) {
->  		struct page *page = pvec->pages[i];
-> -		struct pglist_data *pagepgdat = page_pgdat(page);
-> +		struct lruvec *new_lruvec;
->  
-> -		if (pagepgdat != pgdat) {
-> -			if (pgdat)
-> -				spin_unlock_irqrestore(&pgdat->lru_lock, flags);
-> -			pgdat = pagepgdat;
-> -			spin_lock_irqsave(&pgdat->lru_lock, flags);
-> +		new_lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
-> +		if (lruvec != new_lruvec) {
-> +			if (lruvec)
-> +				unlock_page_lruvec_irqrestore(lruvec, flags);
-> +			lruvec = lock_page_lruvec_irqsave(page, &flags);
->  		}
->  
-> -		lruvec = mem_cgroup_page_lruvec(page, pgdat);
->  		__pagevec_lru_add_fn(page, lruvec);
->  	}
-> -	if (pgdat)
-> -		spin_unlock_irqrestore(&pgdat->lru_lock, flags);
-> +	if (lruvec)
-> +		unlock_page_lruvec_irqrestore(lruvec, flags);
->  	release_pages(pvec->pages, pvec->nr);
->  	pagevec_reinit(pvec);
->  }
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 48b50695f883..789444ae4c88 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -1768,15 +1768,13 @@ int isolate_lru_page(struct page *page)
->  	WARN_RATELIMIT(PageTail(page), "trying to isolate tail page");
->  
->  	if (TestClearPageLRU(page)) {
-> -		pg_data_t *pgdat = page_pgdat(page);
->  		struct lruvec *lruvec;
->  		int lru = page_lru(page);
->  
->  		get_page(page);
-> -		lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> -		spin_lock_irq(&pgdat->lru_lock);
-> +		lruvec = lock_page_lruvec_irq(page);
->  		del_page_from_lru_list(page, lruvec, lru);
-> -		spin_unlock_irq(&pgdat->lru_lock);
-> +		unlock_page_lruvec_irq(lruvec);
->  		ret = 0;
->  	}
->  
-> @@ -1843,20 +1841,22 @@ static int too_many_isolated(struct pglist_data *pgdat, int file,
->  static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
->  						     struct list_head *list)
->  {
-> -	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
->  	int nr_pages, nr_moved = 0;
->  	LIST_HEAD(pages_to_free);
->  	struct page *page;
-> +	struct lruvec *orig_lruvec = lruvec;
->  	enum lru_list lru;
->  
->  	while (!list_empty(list)) {
-> +		struct lruvec *new_lruvec = NULL;
-> +
->  		page = lru_to_page(list);
->  		VM_BUG_ON_PAGE(PageLRU(page), page);
->  		list_del(&page->lru);
->  		if (unlikely(!page_evictable(page))) {
-> -			spin_unlock_irq(&pgdat->lru_lock);
-> +			spin_unlock_irq(&lruvec->lru_lock);
->  			putback_lru_page(page);
-> -			spin_lock_irq(&pgdat->lru_lock);
-> +			spin_lock_irq(&lruvec->lru_lock);
->  			continue;
->  		}
->  
-> @@ -1871,6 +1871,12 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
->  		 *     list_add(&page->lru,)
->  		 *                                        list_add(&page->lru,)
->  		 */
-> +		new_lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
-> +		if (new_lruvec != lruvec) {
-> +			if (lruvec)
-> +				spin_unlock_irq(&lruvec->lru_lock);
-> +			lruvec = lock_page_lruvec_irq(page);
-> +		}
->  		SetPageLRU(page);
->  
->  		if (unlikely(put_page_testzero(page))) {
-> @@ -1878,16 +1884,15 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
->  			__ClearPageActive(page);
->  
->  			if (unlikely(PageCompound(page))) {
-> -				spin_unlock_irq(&pgdat->lru_lock);
-> +				spin_unlock_irq(&lruvec->lru_lock);
->  				destroy_compound_page(page);
-> -				spin_lock_irq(&pgdat->lru_lock);
-> +				spin_lock_irq(&lruvec->lru_lock);
->  			} else
->  				list_add(&page->lru, &pages_to_free);
->  
->  			continue;
->  		}
->  
-> -		lruvec = mem_cgroup_page_lruvec(page, pgdat);
->  		lru = page_lru(page);
->  		nr_pages = thp_nr_pages(page);
->  
-> @@ -1897,6 +1902,11 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
->  		if (PageActive(page))
->  			workingset_age_nonresident(lruvec, nr_pages);
->  	}
-> +	if (orig_lruvec != lruvec) {
-> +		if (lruvec)
-> +			spin_unlock_irq(&lruvec->lru_lock);
-> +		spin_lock_irq(&orig_lruvec->lru_lock);
-> +	}
->  
->  	/*
->  	 * To save our caller's stack, now use input list for pages to free.
-
-No, AlexD was right, most of these changes in move_pages_to_lru(),
-saving orig_lruvec, and allowing for change of lruvec from one page
-to the next, are not necessary, and the patch much nicer without them.
-
-All you need here is the change from pgdat to lruvec,
-and add a check that that lruvec really is not changing:
-		VM_BUG_ON_PAGE(mem_cgroup_page_lruvec(page, page_pgdat(page))
-							!= lruvec, page);
-after the VM_BUG_ON_PAGE(PageLRU) at the head of the loop in this patch,
-which can be updated to the nicer
-		VM_BUG_ON_PAGE(!lruvec_holds_page_lru_lock(page, lruvec),
-								page);
-in the next patch, where that function becomes available.
-
-It certainly used to be true that move_pages_to_lru() had to allow
-for lruvec to change; and that was still true at the time of my v5.3
-tarball; but down the years the various reasons for it have gone away,
-most recently with Johannes's swapcache charging simplifications.
-
-I did see your mail to AlexD, where you showed a NULL deref you had
-hit in move_pages_to_lru() two months ago.  I spent quite a while
-puzzling over that last night, but don't have an explanation, and
-don't know exactly what source you were built from when you hit it.
-I had hoped to explain it by that bug I've fixed in v5.9-rc6:
-62fdb1632bcb ("ksm: reinstate memcg charge on copied pages")
-but did not quite succeed in explaining it that way.
-
-And you said that you haven't hit it again recently.  Whatever,
-I don't see it as any reason for keeping the more complicated and
-unnecessary code in move_pages_to_lru(): if we hit such a bug again,
-then we investigate it.
-
-> @@ -1952,7 +1962,7 @@ static int current_may_throttle(void)
->  
->  	lru_add_drain();
->  
-> -	spin_lock_irq(&pgdat->lru_lock);
-> +	spin_lock_irq(&lruvec->lru_lock);
->  
->  	nr_taken = isolate_lru_pages(nr_to_scan, lruvec, &page_list,
->  				     &nr_scanned, sc, lru);
-> @@ -1964,7 +1974,7 @@ static int current_may_throttle(void)
->  	__count_memcg_events(lruvec_memcg(lruvec), item, nr_scanned);
->  	__count_vm_events(PGSCAN_ANON + file, nr_scanned);
->  
-> -	spin_unlock_irq(&pgdat->lru_lock);
-> +	spin_unlock_irq(&lruvec->lru_lock);
->  
->  	if (nr_taken == 0)
->  		return 0;
-> @@ -1972,7 +1982,7 @@ static int current_may_throttle(void)
->  	nr_reclaimed = shrink_page_list(&page_list, pgdat, sc, 0,
->  				&stat, false);
->  
-> -	spin_lock_irq(&pgdat->lru_lock);
-> +	spin_lock_irq(&lruvec->lru_lock);
->  	move_pages_to_lru(lruvec, &page_list);
->  
->  	__mod_node_page_state(pgdat, NR_ISOLATED_ANON + file, -nr_taken);
-> @@ -1981,7 +1991,7 @@ static int current_may_throttle(void)
->  		__count_vm_events(item, nr_reclaimed);
->  	__count_memcg_events(lruvec_memcg(lruvec), item, nr_reclaimed);
->  	__count_vm_events(PGSTEAL_ANON + file, nr_reclaimed);
-> -	spin_unlock_irq(&pgdat->lru_lock);
-> +	spin_unlock_irq(&lruvec->lru_lock);
->  
->  	lru_note_cost(lruvec, file, stat.nr_pageout);
->  	mem_cgroup_uncharge_list(&page_list);
-> @@ -2034,7 +2044,7 @@ static void shrink_active_list(unsigned long nr_to_scan,
->  
->  	lru_add_drain();
->  
-> -	spin_lock_irq(&pgdat->lru_lock);
-> +	spin_lock_irq(&lruvec->lru_lock);
->  
->  	nr_taken = isolate_lru_pages(nr_to_scan, lruvec, &l_hold,
->  				     &nr_scanned, sc, lru);
-> @@ -2045,7 +2055,7 @@ static void shrink_active_list(unsigned long nr_to_scan,
->  		__count_vm_events(PGREFILL, nr_scanned);
->  	__count_memcg_events(lruvec_memcg(lruvec), PGREFILL, nr_scanned);
->  
-> -	spin_unlock_irq(&pgdat->lru_lock);
-> +	spin_unlock_irq(&lruvec->lru_lock);
->  
->  	while (!list_empty(&l_hold)) {
->  		cond_resched();
-> @@ -2091,7 +2101,7 @@ static void shrink_active_list(unsigned long nr_to_scan,
->  	/*
->  	 * Move pages back to the lru list.
->  	 */
-> -	spin_lock_irq(&pgdat->lru_lock);
-> +	spin_lock_irq(&lruvec->lru_lock);
->  
->  	nr_activate = move_pages_to_lru(lruvec, &l_active);
->  	nr_deactivate = move_pages_to_lru(lruvec, &l_inactive);
-> @@ -2102,7 +2112,7 @@ static void shrink_active_list(unsigned long nr_to_scan,
->  	__count_memcg_events(lruvec_memcg(lruvec), PGDEACTIVATE, nr_deactivate);
->  
->  	__mod_node_page_state(pgdat, NR_ISOLATED_ANON + file, -nr_taken);
-> -	spin_unlock_irq(&pgdat->lru_lock);
-> +	spin_unlock_irq(&lruvec->lru_lock);
->  
->  	mem_cgroup_uncharge_list(&l_active);
->  	free_unref_page_list(&l_active);
-> @@ -2684,10 +2694,10 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
->  	/*
->  	 * Determine the scan balance between anon and file LRUs.
->  	 */
-> -	spin_lock_irq(&pgdat->lru_lock);
-> +	spin_lock_irq(&target_lruvec->lru_lock);
->  	sc->anon_cost = target_lruvec->anon_cost;
->  	sc->file_cost = target_lruvec->file_cost;
-> -	spin_unlock_irq(&pgdat->lru_lock);
-> +	spin_unlock_irq(&target_lruvec->lru_lock);
->  
->  	/*
->  	 * Target desirable inactive:active list ratios for the anon
-> @@ -4263,24 +4273,22 @@ int node_reclaim(struct pglist_data *pgdat, gfp_t gfp_mask, unsigned int order)
->   */
->  void check_move_unevictable_pages(struct pagevec *pvec)
-
-And as I've described elsewhere, some changes needed here,
-that I'll have to check in later versions before Acking this patch.
-
->  {
-> -	struct lruvec *lruvec;
-> -	struct pglist_data *pgdat = NULL;
-> +	struct lruvec *lruvec = NULL;
->  	int pgscanned = 0;
->  	int pgrescued = 0;
->  	int i;
->  
->  	for (i = 0; i < pvec->nr; i++) {
->  		struct page *page = pvec->pages[i];
-> -		struct pglist_data *pagepgdat = page_pgdat(page);
-> +		struct lruvec *new_lruvec;
->  
->  		pgscanned++;
-> -		if (pagepgdat != pgdat) {
-> -			if (pgdat)
-> -				spin_unlock_irq(&pgdat->lru_lock);
-> -			pgdat = pagepgdat;
-> -			spin_lock_irq(&pgdat->lru_lock);
-> +		new_lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
-> +		if (lruvec != new_lruvec) {
-> +			if (lruvec)
-> +				unlock_page_lruvec_irq(lruvec);
-> +			lruvec = lock_page_lruvec_irq(page);
->  		}
-> -		lruvec = mem_cgroup_page_lruvec(page, pgdat);
->  
->  		if (!PageLRU(page) || !PageUnevictable(page))
->  			continue;
-> @@ -4296,10 +4304,10 @@ void check_move_unevictable_pages(struct pagevec *pvec)
->  		}
->  	}
->  
-> -	if (pgdat) {
-> +	if (lruvec) {
->  		__count_vm_events(UNEVICTABLE_PGRESCUED, pgrescued);
->  		__count_vm_events(UNEVICTABLE_PGSCANNED, pgscanned);
-> -		spin_unlock_irq(&pgdat->lru_lock);
-> +		unlock_page_lruvec_irq(lruvec);
->  	}
->  }
->  EXPORT_SYMBOL_GPL(check_move_unevictable_pages);
-> -- 
-> 1.8.3.1
