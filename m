@@ -2,191 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0FB1274053
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F013F27405B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:06:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726582AbgIVLCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 07:02:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726340AbgIVLCs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 07:02:48 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79B45C061755;
-        Tue, 22 Sep 2020 04:02:48 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id m13so10718977otl.9;
-        Tue, 22 Sep 2020 04:02:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LrvS5KIZ2nQwGS4d7z8Xaz8559QAzBmEAKS76SNI7ac=;
-        b=PwMqQKXxEGR6+8YaAKDnmjPdm4BYptaFCDjFiJYH/NbqUGi3Q4DujTLWhcSyo6WzEe
-         QYGhzvIidRxqdzrOXaf2YU85I/h7o+vi2mxHbW88huIR+HE6dZlaQDdHmQUYwptZLtJv
-         xHezAvtdMsOBlPdKsB9r1gVDMtHs2FFH+2NrLanz52NVUvieqaGRvoeNmpefi6MV2+cy
-         QBTDerzX2vLb8OEOkg9AeVVZPYnuJK8wQAY/qI4/tJbc4Vmx23GFEsGRIdhw/gsW4dzs
-         jdZNaKhKnC/Gj0kW4wwn363HIM0ZyshfkCdTPMLkdNq+m9eZqMCNdsywIVaI9aP+6k1/
-         I7jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LrvS5KIZ2nQwGS4d7z8Xaz8559QAzBmEAKS76SNI7ac=;
-        b=A1PbbeHBx3dOvIB45e0mj/nDdAAsgTwkoo9m3cU5ik5clqoxYrgZdJMnTBwtnMBpET
-         UMvKkaHa5Xb3E/kMCS2TFDrPvA9ICW4GzFMXt+VV3/pZy1G87DarZLFW8ljiymQsIYWA
-         aXAiL2kIrpijUckQnZO7kts0eYFGZ5Nxd8fEBQrZjR1Kk0UZnPlJaduGiVs0uAGTKaTI
-         q+CWdj9Sg7bTN0B/zVvXRAx5btvpbjKvx4HlT5jQXtdOoJt0KmL9rUZbNnmcZNIy3PeP
-         1ry1GegE3aq//rjS4EY68A86tabd/fsYcmuI1EMuPWxhZonOCuph6wHYXPdgJlwpp9NW
-         RnZg==
-X-Gm-Message-State: AOAM532ZzWIF5oeb61z6me73ZMMZLYVdDhvKmmI7UoGY30GkTFemnO1S
-        V8lBFzsPNEpb8+t/PIHibs7GSzokrr4MkiG7zbJYSQk4qNWqGA==
-X-Google-Smtp-Source: ABdhPJxLIRaSE1BxLtYMbvjeKEuHdtLQvB+vyDR0w9aZXPUAx1vdDZHjpNA0LteuLrYLQ10Scg3E8vtIgv5EiXtPCzQ=
-X-Received: by 2002:a9d:50a:: with SMTP id 10mr2300865otw.207.1600772567766;
- Tue, 22 Sep 2020 04:02:47 -0700 (PDT)
+        id S1726539AbgIVLF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 07:05:57 -0400
+Received: from foss.arm.com ([217.140.110.172]:35696 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726340AbgIVLF5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 07:05:57 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9F7D6113E;
+        Tue, 22 Sep 2020 04:05:56 -0700 (PDT)
+Received: from [10.57.48.76] (unknown [10.57.48.76])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 162F83F70D;
+        Tue, 22 Sep 2020 04:05:54 -0700 (PDT)
+Subject: Re: [PATCH v3 0/6] Convert the intel iommu driver to the dma-iommu
+ api
+To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Tom Murphy <murphyt7@tcd.ie>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     Intel-gfx@lists.freedesktop.org, Ashok Raj <ashok.raj@intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <20200912032200.11489-1-baolu.lu@linux.intel.com>
+ <51a1baec-48d1-c0ac-181b-1fba92aa428d@linux.intel.com>
+ <001f4446-7c43-9832-42d8-55dc4a13c2ae@linux.intel.com>
+ <9173fed9-e60f-5189-e17d-b23bfabdaa38@linux.intel.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <d4633137-136e-d96c-877a-b523018c51e7@arm.com>
+Date:   Tue, 22 Sep 2020 12:05:53 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-References: <20200921102850.192224-1-alexandru.ardelean@analog.com>
-In-Reply-To: <20200921102850.192224-1-alexandru.ardelean@analog.com>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Tue, 22 Sep 2020 14:02:36 +0300
-Message-ID: <CA+U=DspC_W=j-eET38q1v+ytbntUXQwvUCBKx0DJ9hDGVtV-OA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] iio: adc ad9467: add support for AD9434 high-speed ADC
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     linux-iio <linux-iio@vger.kernel.org>, devicetree@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Hennerich <michael.hennerich@analog.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <9173fed9-e60f-5189-e17d-b23bfabdaa38@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 1:29 PM Alexandru Ardelean
-<alexandru.ardelean@analog.com> wrote:
->
-> From: Michael Hennerich <michael.hennerich@analog.com>
->
-> The AD9434 is a 12-bit monolithic sampling analog-to-digital converter
-> (ADC) optimized for high performance, low power, and ease of use. The part
-> operates at up to a 500 MSPS conversion rate and is optimized for
-> outstanding dynamic performance in wideband carrier and broadband systems.
->
-> All necessary functions, including a sample-and-hold and voltage reference,
-> are included on the chip to provide a complete signal conversion solution.
-> The VREF pin can be used to monitor the internal reference or provide an
-> external voltage reference (external reference mode must be enabled through
-> the SPI port).
->
-> The ADC requires a 1.8 V analog voltage supply and a differential clock
-> for full performance operation. The digital outputs are LVDS (ANSI-644)
-> compatible and support twos complement, offset binary format, or Gray code.
-> A data clock output is available for proper output data timing.
->
-> Link: https://www.analog.com/media/en/technical-documentation/data-sheets/AD9434.pdf
->
-> The driver supports the same register set as the AD9467, so the support for
-> this chip is added to the 'ad9467' driver.
+On 2020-09-15 09:31, Tvrtko Ursulin wrote:
+> 
+> On 15/09/2020 02:47, Lu Baolu wrote:
+>> Hi Tvrtko,
+>>
+>> On 9/14/20 4:04 PM, Tvrtko Ursulin wrote:
+>>>
+>>> Hi,
+>>>
+>>> On 12/09/2020 04:21, Lu Baolu wrote:
+>>>> Tom Murphy has almost done all the work. His latest patch series was
+>>>> posted here.
+>>>>
+>>>> https://lore.kernel.org/linux-iommu/20200903201839.7327-1-murphyt7@tcd.ie/ 
+>>>>
+>>>>
+>>>> Thanks a lot!
+>>>>
+>>>> This series is a follow-up with below changes:
+>>>>
+>>>> 1. Add a quirk for the i915 driver issue described in Tom's cover
+>>>> letter.
+>>>
+>>> Last week I have copied you on an i915 series which appears to remove 
+>>> the need for this quirk. so if we get those i915 patches reviewed and 
+>>> merged, do you still want to pursue this quirk?
+>>
+>> It's up to the graphic guys. I don't know the details in i915 driver.
+>> I don't think my tests could cover all cases.
+> 
+> I am the graphic guy. :) I just need some reviews (internally) for my 
+> series and then we can merge it, at which point you don't need the quirk 
+> patch any more. I'll try to accelerate this.
+> 
+> With regards to testing, you could send your series with my patches on 
+> top to our trybot mailing list (intel-gfx-trybot@lists.freedesktop.org / 
+> https://patchwork.freedesktop.org/project/intel-gfx-trybot/series/?ordering=-last_updated) 
+> which would show you if it is still hitting the DMAR issues in i915.
+> 
+>>>
+>>>> 2. Fix several bugs in patch "iommu: Allow the dma-iommu api to use
+>>>> bounce buffers" to make the bounce buffer work for untrusted devices.
+>>>> 3. Several cleanups in iommu/vt-d driver after the conversion.
+>>>
+>>> With the previous version of the series I hit a problem on Ivybridge 
+>>> where apparently the dma engine width is not respected. At least that 
+>>> is my layman interpretation of the errors. From the older thread:
+>>>
+>>> <3> [209.526605] DMAR: intel_iommu_map: iommu width (39) is not 
+>>> sufficient for the mapped address (ffff008000)
+>>>
+>>> Relevant iommu boot related messages are:
+>>>
+>>> <6>[    0.184234] DMAR: Host address width 36
+>>> <6>[    0.184245] DMAR: DRHD base: 0x000000fed90000 flags: 0x0
+>>> <6>[    0.184288] DMAR: dmar0: reg_base_addr fed90000 ver 1:0 cap 
+>>> c0000020e60262 ecap f0101a
+>>> <6>[    0.184308] DMAR: DRHD base: 0x000000fed91000 flags: 0x1
+>>> <6>[    0.184337] DMAR: dmar1: reg_base_addr fed91000 ver 1:0 cap 
+>>> c9008020660262 ecap f0105a
+>>> <6>[    0.184357] DMAR: RMRR base: 0x000000d8d28000 end: 
+>>> 0x000000d8d46fff
+>>> <6>[    0.184377] DMAR: RMRR base: 0x000000db000000 end: 
+>>> 0x000000df1fffff
+>>> <6>[    0.184398] DMAR-IR: IOAPIC id 2 under DRHD base  0xfed91000 
+>>> IOMMU 1
+>>> <6>[    0.184414] DMAR-IR: HPET id 0 under DRHD base 0xfed91000
+>>> <6>[    0.184428] DMAR-IR: Queued invalidation will be enabled to 
+>>> support x2apic and Intr-remapping.
+>>> <6>[    0.185173] DMAR-IR: Enabled IRQ remapping in x2apic mode
+>>>
+>>> <6>[    0.878934] DMAR: No ATSR found
+>>> <6>[    0.878966] DMAR: dmar0: Using Queued invalidation
+>>> <6>[    0.879007] DMAR: dmar1: Using Queued invalidation
+>>>
+>>> <6>[    0.915032] DMAR: Intel(R) Virtualization Technology for 
+>>> Directed I/O
+>>> <6>[    0.915060] PCI-DMA: Using software bounce buffering for IO 
+>>> (SWIOTLB)
+>>> <6>[    0.915084] software IO TLB: mapped [mem 0xc80d4000-0xcc0d4000] 
+>>> (64MB)
+>>>
+>>> (Full boot log at 
+>>> https://intel-gfx-ci.01.org/tree/drm-tip/Trybot_7054/fi-ivb-3770/boot0.txt, 
+>>> failures at 
+>>> https://intel-gfx-ci.01.org/tree/drm-tip/Trybot_7054/fi-ivb-3770/igt@i915_selftest@live@blt.html.) 
+>>>
+>>>
+>>> Does this look familiar or at least plausible to you? Is this 
+>>> something your new series has fixed?
+>>
+>> This happens during attaching a domain to device. It has nothing to do
+>> with this patch series. I will look into this issue, but not in this
+>> email thread context.
+> 
+> I am not sure what step is attaching domain to device, but these type 
+> messages:
+> 
+> <3> [209.526605] DMAR: intel_iommu_map: iommu width (39) is not
+>  >> sufficient for the mapped address (ffff008000)
+> 
+> They definitely appear to happen at runtime, as i915 is getting 
+> exercised by userspace.
 
-I'll probably do a V2 here.
-I'd like to change a few things.
+AFAICS this certainly might be related to this series - iommu-dma will 
+constrain IOVA allocation based on the domain geometry that the driver 
+reports, which in this case is set only once when first allocating the 
+domain. Thus it looks like both the dmar_domain->gaw adjustment in 
+prepare_domain_attach_device() and the domain_use_first_level() business 
+in intel_alloc_iova() effectively get lost in this conversion, since the 
+domain geometry never gets updated to reflect those additional constraints.
 
->
-> Signed-off-by: Michael Hennerich <michael.hennerich@analog.com>
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> ---
->  drivers/iio/adc/ad9467.c | 37 +++++++++++++++++++++++++++++++++++--
->  1 file changed, 35 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/iio/adc/ad9467.c b/drivers/iio/adc/ad9467.c
-> index f068256cfca9..aee3007ea3f2 100644
-> --- a/drivers/iio/adc/ad9467.c
-> +++ b/drivers/iio/adc/ad9467.c
-> @@ -76,6 +76,14 @@
->  /* AN877_ADC_REG_OUTPUT_DELAY */
->  #define AN877_ADC_DCO_DELAY_ENABLE             0x80
->
-> +/*
-> + * Analog Devices AD9434 12-Bit, 370/500 MSPS ADC
-> + */
-> +
-> +#define CHIPID_AD9434                  0x6A
-> +#define AD9434_DEF_OUTPUT_MODE         0x00
-> +#define AD9434_REG_VREF_MASK           0xC0
-> +
->  /*
->   * Analog Devices AD9467 16-Bit, 200/250 MSPS ADC
->   */
-> @@ -85,6 +93,7 @@
->  #define AD9467_REG_VREF_MASK           0x0F
->
->  enum {
-> +       ID_AD9434,
->         ID_AD9467,
->  };
->
-> @@ -154,6 +163,13 @@ static const unsigned int ad9467_scale_table[][2] = {
->         {2300, 8}, {2400, 9}, {2500, 10},
->  };
->
-> +static const unsigned int ad9434_scale_table[][2] = {
-> +       {1600, 0x1C}, {1580, 0x1D}, {1550, 0x1E}, {1520, 0x1F}, {1500, 0x00},
-> +       {1470, 0x01}, {1440, 0x02}, {1420, 0x03}, {1390, 0x04}, {1360, 0x05},
-> +       {1340, 0x06}, {1310, 0x07}, {1280, 0x08}, {1260, 0x09}, {1230, 0x0A},
-> +       {1200, 0x0B}, {1180, 0x0C},
-> +};
-> +
->  static void __ad9467_get_scale(struct adi_axi_adc_conv *conv, int index,
->                                unsigned int *val, unsigned int *val2)
->  {
-> @@ -182,11 +198,23 @@ static void __ad9467_get_scale(struct adi_axi_adc_conv *conv, int index,
->         },                                                              \
->  }
->
-> +static const struct iio_chan_spec ad9434_channels[] = {
-> +       AD9467_CHAN(0, 0, 12, 'S'),
-> +};
-> +
->  static const struct iio_chan_spec ad9467_channels[] = {
->         AD9467_CHAN(0, 0, 16, 'S'),
->  };
->
->  static const struct adi_axi_adc_chip_info ad9467_chip_tbl[] = {
-> +       [ID_AD9434] = {
-> +               .id = CHIPID_AD9434,
-> +               .max_rate = 500000000UL,
-> +               .scale_table = ad9434_scale_table,
-> +               .num_scales = ARRAY_SIZE(ad9434_scale_table),
-> +               .channels = ad9434_channels,
-> +               .num_channels = ARRAY_SIZE(ad9434_channels),
-> +       },
->         [ID_AD9467] = {
->                 .id = CHIPID_AD9467,
->                 .max_rate = 250000000UL,
-> @@ -318,10 +346,14 @@ static int ad9467_preenable_setup(struct adi_axi_adc_conv *conv)
->
->  static int ad9467_setup(struct ad9467_state *st, unsigned int chip_id)
->  {
-> +       st->output_mode = AN877_ADC_OUTPUT_MODE_TWOS_COMPLEMENT;
-> +
->         switch (chip_id) {
-> +       case CHIPID_AD9434:
-> +               st->output_mode |= AD9434_DEF_OUTPUT_MODE;
-> +               return 0;
->         case CHIPID_AD9467:
-> -               st->output_mode = AD9467_DEF_OUTPUT_MODE |
-> -                                 AN877_ADC_OUTPUT_MODE_TWOS_COMPLEMENT;
-> +               st->output_mode |= AD9467_DEF_OUTPUT_MODE;
->                 return 0;
->         default:
->                 return -ENODEV;
-> @@ -404,6 +436,7 @@ static int ad9467_probe(struct spi_device *spi)
->  }
->
->  static const struct of_device_id ad9467_of_match[] = {
-> +       { .compatible = "adi,ad9434", .data = &ad9467_chip_tbl[ID_AD9434], },
->         { .compatible = "adi,ad9467", .data = &ad9467_chip_tbl[ID_AD9467], },
->         {}
->  };
-> --
-> 2.25.1
->
+Robin.
+
+> 
+> Regards,
+> 
+> Tvrtko
+> _______________________________________________
+> iommu mailing list
+> iommu@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/iommu
