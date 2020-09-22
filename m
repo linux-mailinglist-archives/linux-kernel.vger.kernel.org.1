@@ -2,68 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7337274629
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75DEE27462B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726672AbgIVQGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 12:06:49 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:57482 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726577AbgIVQGt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 12:06:49 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08MG6lRI009009;
-        Tue, 22 Sep 2020 11:06:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600790807;
-        bh=fwBnnCBR4CpbSsAk4csWJ8DO1oh/xfiCJORpRbHF5ME=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=RhvMSrGk8zDJ3oauz5zfJZm27loeElvKV854kHOBw5jlTC3c/HGFG5nbx3D2KDr1o
-         dk2mYBBFH+W4lTPjL0OrXhwIbDkU4DgKKHWq+tW4/ycPV4M1yGAve4aPpipmlE5haC
-         ID8qOVJ9OLKzxOUQDj3qeSewFM+KfY9XSY65P6gw=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08MG6lmV027815
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 22 Sep 2020 11:06:47 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 22
- Sep 2020 11:06:47 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 22 Sep 2020 11:06:47 -0500
-Received: from [10.250.71.177] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08MG6k0f070715;
-        Tue, 22 Sep 2020 11:06:46 -0500
-Subject: Re: [PATCH 2/2] power: bq25980: Add support for the BQ259xx family
-To:     <sre@kernel.org>, <robh@kernel.org>
-CC:     <devicetree@vger.kernel.org>, <r-rivera-matos@ti.com>,
-        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200831164849.31313-1-dmurphy@ti.com>
- <20200831164849.31313-2-dmurphy@ti.com>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <699bf615-0f08-2d9b-8e47-25e2604f82ad@ti.com>
-Date:   Tue, 22 Sep 2020 11:06:46 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726722AbgIVQHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 12:07:07 -0400
+Received: from foss.arm.com ([217.140.110.172]:46488 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726567AbgIVQHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 12:07:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4B210101E;
+        Tue, 22 Sep 2020 09:07:06 -0700 (PDT)
+Received: from localhost (e108754-lin.cambridge.arm.com [10.1.199.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E04923F718;
+        Tue, 22 Sep 2020 09:07:05 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 17:07:04 +0100
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     will@kernel.org, sudeep.holla@arm.com, morten.rasmussen@arm.com,
+        valentin.schneider@arm.com, souvik.chakravarty@arm.com,
+        viresh.kumar@linaro.org, dietmar.eggemann@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] arm64: implement CPPC FFH support using AMUs
+Message-ID: <20200922160704.GA796@arm.com>
+References: <20200826130309.28027-1-ionela.voinescu@arm.com>
+ <20200826130309.28027-5-ionela.voinescu@arm.com>
+ <20200911144032.GC12835@gaia>
 MIME-Version: 1.0
-In-Reply-To: <20200831164849.31313-2-dmurphy@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200911144032.GC12835@gaia>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
+Hi Catalin,
 
-On 8/31/20 11:48 AM, Dan Murphy wrote:
-> Add support for the BQ25980, BQ25975 and BQ25960 family of flash
-> chargers.
+Sorry for the delayed reply. I took advantage of a last chance for a
+holiday before the weather gets bad :).
 
-Gentle Bump
+On Friday 11 Sep 2020 at 15:40:32 (+0100), Catalin Marinas wrote:
+> On Wed, Aug 26, 2020 at 02:03:09PM +0100, Ionela Voinescu wrote:
+> > +/*
+> > + * Refer to drivers/acpi/cppc_acpi.c for the description of the functions
+> > + * below.
+> > + */
+> > +bool cpc_ffh_supported(void)
+> > +{
+> > +	const struct cpumask *cnt_cpu_mask = cpus_with_amu_counters();
+> > +	int cpu = nr_cpu_ids;
+> > +
+> > +	if (cnt_cpu_mask)
+> > +		cpu = cpumask_any_and(cnt_cpu_mask, cpu_present_mask);
+> > +
+> > +	if ((cpu >= nr_cpu_ids) || !freq_counters_valid(cpu))
+> > +		return false;
+> > +
+> > +	return true;
+> > +}
+> 
+> IIUC, the only need for the cpumask is this function, the others would
+> have worked just fine with the existing cpu_has_amu_feat(). So you have
+> a lot more !cnt_cpu_mask checks now.
+> 
+> I wonder whether instead you could add a new function near
+> cpu_has_amu_feat(), something like get_cpu_with_amu_feat() and do the
+> cpumask_any_and() in there.
+> 
+
+Yes, it does look ugly. I went for this because I wanted to avoid adding
+new functions to the cpu feature code with new AMU usecase additions,
+functions that might just end up doing cpumask operations, and nothing
+more. This way there is a single function that basically extracts all the
+information that the feature code is able to provide on AMU support and
+the user of the counters can then manipulate the mask as it sees fit.
+
+Basically I was thinking that with a potential new usecase we might have
+to add yet another function and I did not like that prospect.
+
+From performance point of view, the !cnt_cpu_mask checks wouldn't affect
+that much: cpc_ffh_supported() is only called during CPPC probe and
+freq_counters_valid() is only called at init.
+counters_read_on_cpu() will be called more often (cpufreq .get
+function) but not as much as to bring significant overhead.
+
+To make this nicer I can do the following:
+ - make the !cnt_cpu_mask unlikely due to CONFIG_ARM64_AMU_EXTN being
+   enabled by default.
+ - wrap all the cpus_with_amu_counters() uses under:
+
+static inline int amu_cpus_any_and(const struct cpumask *cpus)
+{
+	const struct cpumask *cnt_cpu_mask = cpus_with_amu_counters();
+	int cpu = nr_cpu_ids;
+
+	if (likely(cnt_cpu_mask))
+		cpu = cpumask_any_and(cnt_cpu_mask, cpus);
+
+	return cpu;
+}
+
+This is to be called as:
+ - "if (!freq_counters_valid(amu_cpus_any_and(cpu_present_mask)))"
+   in cpc_ffh_supported();
+ - "if (amu_cpus_any_and(cpumask_of(cpu)) == cpu)"
+   in the other two.
+
+It won't eliminate the useless checks but it will make the code a bit
+nicer.
+
+If you don't think it's worth it, I'll go with your suggestion.
+
+Thank you for the review,
+Ionela.
 
 
+> -- 
+> Catalin
