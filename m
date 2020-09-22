@@ -2,147 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D65B274D35
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 01:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DD89274D37
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 01:21:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726788AbgIVXUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 19:20:18 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:62538 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726448AbgIVXUR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 19:20:17 -0400
-Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f6a86af0000>; Wed, 23 Sep 2020 07:20:15 +0800
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL104.nvidia.com
- (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 22 Sep
- 2020 23:20:15 +0000
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.172)
- by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 22 Sep 2020 23:20:15 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=S+RC9TRwJM209o3SEVxl9taMNvd492FYwCayy/wnqPyR+rRvP/u4ZEvH7vYhgGyqC1Wch9EFJ9qwt2QcLn0oQPxRB4X7bHSAD7x4FJ+8ACbiYqayYVmEnmOLrAtcM4lJHBPoFi/4OakdUpYNMJrY04Gn9d8o2Nx9uCFMvfeBvP7vLADsICxgunfGXqq5eAZhuPAnrEByjJv8oA5HV7MjHQ1hGF9pKCKYwU0o5Y+6D1YfvEy5vMCeIGbiHxDmyi08fPYVhEGk89yT72ihHx/h7jikrs5VxlBcJjVI+v/Qb9Rjb3A+cscFVV+NIGTTY7rkB9/jGd+5b4GeRR9gNb3YMQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ny6EGvye4dr/Am6N7SUBvdm2qkxAZ24nQ2EXQxgj59A=;
- b=N5FtJPi9UjUQjDD2sjLFxTr7rxO3RLGF0q/0DRlw28PzT0AExYfRNWMbuKnAw4tIYzEWolyBHlStsNVLrVXsFsuj/J/BOBodRJWfQpcIV0LVYmHTwfR9pi8bMkQLpyDryjbO4Z8TYXDzOJ0ZT9OUEB3HpYq248Izbqa0bnfAdK2xq9qadmHGIqMw4gKfFvBbc4zOR0EtDKO/zPFwRpOMrD7l8akOS6hJjEPWRucDBw2jJ7pDx6NEZ7A4LbHUHRlJOOjtWGyNWrjvngCNf3HnH9wxE/S+6Clkk7E8Ds/QqKSf4brYeOo5EUHQRHI6DbN91Q6HPMrLfN01ncZvwvt2/w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB2812.namprd12.prod.outlook.com (2603:10b6:5:44::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.22; Tue, 22 Sep
- 2020 23:20:11 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3412.020; Tue, 22 Sep 2020
- 23:20:11 +0000
-Date:   Tue, 22 Sep 2020 20:20:08 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Mark Zhang <markz@nvidia.com>
-Subject: Re: [PATCH rdma-next v3 0/5] Cleanup restrack code
-Message-ID: <20200922232008.GA798263@nvidia.com>
-References: <20200922091106.2152715-1-leon@kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200922091106.2152715-1-leon@kernel.org>
-X-Originating-IP: [156.34.48.30]
-X-ClientProxiedBy: MN2PR05CA0061.namprd05.prod.outlook.com
- (2603:10b6:208:236::30) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1726832AbgIVXVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 19:21:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726448AbgIVXVT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 19:21:19 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 323FAC061755;
+        Tue, 22 Sep 2020 16:21:19 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id b19so15564824lji.11;
+        Tue, 22 Sep 2020 16:21:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wto1lfSHBTmfREetyWLDZnc6AY7l78uuUDVKMqaUTyE=;
+        b=ID8iAlY4ls9D/QjT0mUgVU9OdN2PG9hI9yj5d/6o0kdBfSGxQl19P7WCagqvhDm9K0
+         JjwwlnEQM73tlCtBEsV1bO7votjB6wEFN+wSw0d5GA/cl3kRE9e7pQMEPep7k6g1z9mM
+         OiPGa+ZridNOyQPlReXoSkAcZxpBdy8COxWgdhaU+7RqRCpX3XmTcO2pcHfzgfVIi8cR
+         de3H4evSX5N9wwiWEesfYeE3LKLUsUa2hDJ4X/JeH/Zk9GNNHUT/tctvG2VzDjbRqLWi
+         QeGjxz5A0YRTegUQuD3/lc/h6KhwQ4FVcAY21DNzobRBWy0KVnhbW0X7OvfGz6ROFk+5
+         gMdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wto1lfSHBTmfREetyWLDZnc6AY7l78uuUDVKMqaUTyE=;
+        b=lGBaiHIuj5mDwSMEIo4FAa8Zg0FfSSrNrbD7nG3/TcNRml+g5m9eB+Cm3tU8W3YTK7
+         EVY1mwBDyWxJrw8vW0zRnNipDwbIrJM9xqYGGubt4xWaAtCtWFy8nqh0qYQZuViX/7az
+         U1Mx+s9q6sO/YbBkBagJjIZaL17AXvWky6d4lW/razmWIgz3KsPi+g9HeGR5Y2kISbiJ
+         YdjbHBKNHr1zzTOYrcqwk/w0qFcGGuCpMrWjbqQf+94p4y0f/lrM5+UJcuPPbEL58FZs
+         XhwhwqIP94GzHkYYqlHhrzrtj9RXVWC9VlDGbY2SEmDqVHCxtHGcoYa+Q6ScLSmH9skP
+         J6xw==
+X-Gm-Message-State: AOAM531QXwUuZxPUYzTPtXBNZqOW0LPXa+69AnuvZCCdXFP4ARENOcKT
+        u9bZSEqLcbJx2vGAEXpp2zo=
+X-Google-Smtp-Source: ABdhPJwCwb0txemQccr9IvfcvZNgCRr0ozV2cVM5l12Fx+BFOlmogtc32aMjAJCgPKiG0X49BZ/ddA==
+X-Received: by 2002:a2e:a411:: with SMTP id p17mr753838ljn.282.1600816877662;
+        Tue, 22 Sep 2020 16:21:17 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id 13sm3933886lfn.239.2020.09.22.16.21.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Sep 2020 16:21:17 -0700 (PDT)
+Subject: Re: [PATCH v1 2/3] Input: atmel_mxt_ts - implement I2C retries for
+ mXT1368
+To:     Jiada Wang <jiada_wang@mentor.com>, dmitry.torokhov@gmail.com,
+        robh+dt@kernel.org, thierry.reding@gmail.com, jonathanh@nvidia.com
+Cc:     nick@shmanahar.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        erosca@de.adit-jv.com, Andrew_Gabbasov@mentor.com
+References: <20200921140054.2389-1-jiada_wang@mentor.com>
+ <20200921140054.2389-2-jiada_wang@mentor.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <e8c700b5-93f3-4069-1b9e-a85934a52515@gmail.com>
+Date:   Wed, 23 Sep 2020 02:21:16 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR05CA0061.namprd05.prod.outlook.com (2603:10b6:208:236::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.19 via Frontend Transport; Tue, 22 Sep 2020 23:20:10 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kKrZw-003LgG-PO; Tue, 22 Sep 2020 20:20:08 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 335f199c-653c-435b-7a06-08d85f4e0cdd
-X-MS-TrafficTypeDiagnostic: DM6PR12MB2812:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB2812CDA5B5EA4D45DB8CF4E1C23B0@DM6PR12MB2812.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2512;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AphEu99TQ0n3/Gg6oUe39G1j6ogRz+rRRo5oRiPbxkILGR8utzyu2pd8BpPIp8mygUFY3llAzY1yAyYgm2XXg+a1ZcpHBGVKaZ4oguxUgsMjd7nIpV5CKDpu78AgWhfY9WAk3qcsWhoCPTkat3N6FR9SWEjX3WQ0vbSGKrhfV8xKxELaXEtIttAKEXw9C1Ws4d3M5J+mBX7eDaNYwMyOcySi6hMirj2OixjzIgQu0EdZD0DUREERA0Ogf7utxGiTsAxtcJ3vTTSNt8pWau225nKCIQ8ywkyRKAjNmcSMitjbkZF4psuqPbAGT3HorITAnw6R+CLl/RmAPJb542q0MzYNn9RImsNGyWcN5uXR5ZqvO7KLHq+5L3Afd3Ryucc3gugvJXkvxjnI5rHzqiUj7EgEws8mOyjJm7W2HOHhvoJmHuFuMPxDtpcR04b15tjscypL4lKNOT48FibOpAG4pR3GLrdRkORZW2GSkf8uek7wwUGv2fi9GUa5TY20pDnU
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39850400004)(366004)(376002)(346002)(136003)(66946007)(33656002)(9746002)(478600001)(5660300002)(426003)(186003)(9786002)(26005)(107886003)(8936002)(36756003)(4326008)(316002)(2616005)(83380400001)(8676002)(66476007)(86362001)(2906002)(66556008)(6916009)(1076003)(54906003)(966005)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: ie4AdwDD7isGc6zyPIpK6eWjg2S9r2nDqxLxu9tNRQ8YEsAaLi03WLJVn6aiBsZ1s5C+me1r4MHYpr+fn9rCZo+1SDnltumeZ/35rhlf9M2aTILv8VgFJwZlxWJql5MS2BlZcIvkpcPcS+6kurX8G3P9Gm+lFPIqPy8UeFcCOooi5AXegOy6oCUnujVSC7s8AfOrPnn5P1BWPH7tkKSSf2l+kdn+eBuP3WETGEG1dqG4Zr3FAPJSUwcdlN/qnmS0Toxl1qVJqEgNXKrJsq4gKWnh3L5MQFYCF9sAtW123gliih2J+05PGhsQnezpbtAg854OMoR3GzLiFS26qB3EsZsy2xbuRkus9H1nbwyXVcte/dwXEaajwLW+x7bn+z5EzuR5pihRLtyQ9paYp+R/hBXoed2l+KL5GgERfZvLJ1sTr80sVADcyD/UfeBDzN7ClK7cOpsJab0upkYwkEuWnN2bezKxEdr7d3/YGXnsx7idAxcHX7wlkf23FYRrVg/qaqZPQ9fyi57PYeeM5H+ciovn30zmi5N9qTAo5hW5SEHzyAh1k+PYCRpoF0NY+5GqZ1BHaAZVhm+22SaLJdN7uJAqtaWQUpw5NQ9UCXPkKq7wEu6hzo5ofwsVJ8VctCWXqKy4VR8RgfsDt9MTdjyfdg==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 335f199c-653c-435b-7a06-08d85f4e0cdd
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2020 23:20:11.0428
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: P/t4f7Qj/c5MbhIxuTbCYi71ZB8wX1/iVkL9+oVna5BDHabjgV/IlmemVrTfa1RA
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2812
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600816815; bh=ny6EGvye4dr/Am6N7SUBvdm2qkxAZ24nQ2EXQxgj59A=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:
-         Authentication-Results:Date:From:To:CC:Subject:Message-ID:
-         References:Content-Type:Content-Disposition:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-MS-PublicTrafficType:
-         X-MS-Office365-Filtering-Correlation-Id:X-MS-TrafficTypeDiagnostic:
-         X-MS-Exchange-Transport-Forked:X-Microsoft-Antispam-PRVS:
-         X-MS-Oob-TLC-OOBClassifiers:X-MS-Exchange-SenderADCheck:
-         X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-         X-Forefront-Antispam-Report:X-MS-Exchange-AntiSpam-MessageData:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-         X-MS-Exchange-CrossTenant-FromEntityHeader:
-         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-         X-MS-Exchange-CrossTenant-UserPrincipalName:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=c46Z6f/JnK0ftLNRTaalbu+jdVn+jFUE+znEjMBv6HAA+FQxHK8nm+FNGz5/Ovjit
-         v0ymMSNwf3xX6TJGj7mGdPAcOzil4ugeXgdH+An6KkpD324ikGprFBmvj9trwDdLLi
-         510eIOankegJDybNKTOEEgSUilJ9UvZK98AS+wcDkAxmd0oQWP6k/k0djOblHzMOoA
-         FwCEajSQtUk+Zsdba4ljMmSp06vu832ZQeHVlWAXfCk7IzJRx0KQVqhtOZxiLhixiW
-         iiOtgOKXQ/j1aVJITC8JUrKJkColixGEPuckTV5CakbhNQCt9vXtM1Pe6TuCZEYMt1
-         iIPQE3zJcT64A==
+In-Reply-To: <20200921140054.2389-2-jiada_wang@mentor.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 12:11:01PM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
+21.09.2020 17:00, Jiada Wang пишет:
+> According to datasheet, mXT1386 chip has a WAKE line, it is used
+> to wake the chip up from deep sleep mode before communicating with
+> it via the I2C-compatible interface.
 > 
-> Changelog:
-> v3:
->  * Removed the mlx4 SR-IOV patch in favour of more robust fix that not needed in
->    this series.
->  * Cut the eroginal series to already reviewed and standalone patches.
-> v2: https://lore.kernel.org/linux-rdma/20200907122156.478360-1-leon@kernel.org/
->  * Added new patch to fix mlx4 failure on SR-IOV, it didn't have port set.
->  * Changed "RDMA/cma: Delete from restrack DB after successful destroy" patch.
-> v1:
->  * Fixed rebase error, deleted second assignment of qp_type.
->  * Rebased code on latests rdma-next, the changes in cma.c caused to change
->    in patch "RDMA/cma: Delete from restrack DB after successful destroy".
->  * Dropped patch of port assignment, it is already done as part of this
->    series.
->  * I didn't add @calller description, regular users should not use _named() funciton.
->  * https://lore.kernel.org/lkml/20200830101436.108487-1-leon@kernel.org
-> v0: https://lore.kernel.org/lkml/20200824104415.1090901-1-leon@kernel.org
+> if the WAKE line is connected to a GPIO line, the line must be
+> asserted 25 ms before the host attempts to communicate with the mXT1386.
+> If the WAKE line is connected to the SCL pin, the mXT1386 will send a
+> NACK on the first attempt to address it, the host must then retry 25 ms
+> later.
 > 
+> This patch adds compatible string "atmel,mXT1386" for mXT1386 controller,
+> when I2C transfer on mXT1386 fails, retry the transfer once after a 25 ms
+> sleep.
 > 
-> Leon Romanovsky (5):
->   RDMA/cma: Delete from restrack DB after successful destroy
->   RDMA/mlx5: Don't call to restrack recursively
->   RDMA/restrack: Count references to the verbs objects
->   RDMA/restrack: Simplify restrack tracking in kernel flows
->   RDMA/restrack: Improve readability in task name management
+> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+> ---
+>  drivers/input/touchscreen/atmel_mxt_ts.c | 44 +++++++++++++++++-------
+>  1 file changed, 32 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/input/touchscreen/atmel_mxt_ts.c b/drivers/input/touchscreen/atmel_mxt_ts.c
+> index 98f17fa3a892..96d5f4d64cb0 100644
+> --- a/drivers/input/touchscreen/atmel_mxt_ts.c
+> +++ b/drivers/input/touchscreen/atmel_mxt_ts.c
+> @@ -198,6 +198,7 @@ enum t100_type {
+>  #define MXT_CRC_TIMEOUT		1000	/* msec */
+>  #define MXT_FW_RESET_TIME	3000	/* msec */
+>  #define MXT_FW_CHG_TIMEOUT	300	/* msec */
+> +#define MXT_WAKEUP_TIME		25	/* msec */
+>  
+>  /* Command to unlock bootloader */
+>  #define MXT_UNLOCK_CMD_MSB	0xaa
+> @@ -627,7 +628,9 @@ static int mxt_send_bootloader_cmd(struct mxt_data *data, bool unlock)
+>  static int __mxt_read_reg(struct i2c_client *client,
+>  			       u16 reg, u16 len, void *val)
+>  {
+> +	struct device_node *np = client->dev.of_node;
+>  	struct i2c_msg xfer[2];
+> +	bool retried = false;
+>  	u8 buf[2];
+>  	int ret;
+>  
+> @@ -646,22 +649,30 @@ static int __mxt_read_reg(struct i2c_client *client,
+>  	xfer[1].len = len;
+>  	xfer[1].buf = val;
+>  
+> -	ret = i2c_transfer(client->adapter, xfer, 2);
+> -	if (ret == 2) {
+> -		ret = 0;
+> -	} else {
+> -		if (ret >= 0)
+> -			ret = -EIO;
+> +retry_read:
+> +	ret = i2c_transfer(client->adapter, xfer, ARRAY_SIZE(xfer));
+> +	if (ret != ARRAY_SIZE(xfer)) {
+> +		if (of_device_is_compatible(np, "atmel,mXT1386") && !retried) {
 
-Applied to for-next, thanks
+Hello, Jiada!
 
-Jason
+This looks almost good to me! But I think we should add "bool
+retry_i2c_transfers" to the struct mxt_data and then set it to true for
+atmel,mXT1386 because of_device_is_compatible() looks a bit too bulky
+and this is usually discouraged to have in the code.
+
+Secondly, we should also add a clarifying comment to the code, telling
+why retries are needed for 1386, something like this:
+
+static int mxt_probe(struct i2c_client *client, const struct
+i2c_device_id *id)
+{
+...
+
+/*
+ * The mXT1386 has a dedicated WAKE-line that could be connected to a
+ * dedicated GPIO, or to the I2C SCL pin, or permanently asserted LOW.
+ * It's used for waking controller from a deep-sleep and it needs to be
+ * asserted LOW for 25 milliseconds before issuing I2C transfer if
+controller
+ * was in a deep-sleep mode. If WAKE-line is connected to I2C SCL pin, then
+ * the first I2C transfer will get an instant NAK and transfer needs to be
+ * retried after 25ms. There are too many places in the code where the
+wake-up
+ * needs to be inserted, hence it's much easier to add a retry to the common
+ * I2C accessors, also given that the WAKE-GPIO is unsupported by the
+driver.
+ */
+if (of_device_is_compatible(np, "atmel,mXT1386")
+	data->retry_i2c_transfers = true;
