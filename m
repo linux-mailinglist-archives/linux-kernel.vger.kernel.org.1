@@ -2,184 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7021E273AD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 08:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DF7B273AD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 08:25:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728910AbgIVGZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 02:25:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40550 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728136AbgIVGZW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 02:25:22 -0400
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8B97623A9F
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 06:25:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600755921;
-        bh=cqAe/xvYS1mKuUzouttPZql96UUUGsOLKDqLlQHN2fE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=EtYfDgdBAPbP8TWKG8ogioyyv2hNt8kTWC8+g/UxDQCcGPrJrj7FW5xapAMC5Gkd8
-         91qi/JafAXKnQLAeyj+jrs2czqVkVEgRjHZcRiYSaOxTVhFO7Mzf9khlgve2OCtB3t
-         UnpWlFVMOtqao6dtxVNt5u/RTG5XMBE9773uHIKo=
-Received: by mail-ot1-f49.google.com with SMTP id a2so14602989otr.11
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 23:25:21 -0700 (PDT)
-X-Gm-Message-State: AOAM533lBgU1w+EGEMOfpaLCm0HY+7dRWSH7cOb9QaW5s3aB6RxSBKE1
-        3M7w7l+TAgLHt9tx6eqcgNmntsr1u8qlytFTvwQ=
-X-Google-Smtp-Source: ABdhPJzzIMjrpFZf7tW8i3GVrgOWyDkDIbg2SZA3bBZky8u+QkYObueHgvcCao0HML0mkFCtzxaW4n9zExlg4+V/2Ro=
-X-Received: by 2002:a9d:6250:: with SMTP id i16mr2003546otk.77.1600755920735;
- Mon, 21 Sep 2020 23:25:20 -0700 (PDT)
+        id S1729005AbgIVGZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 02:25:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728136AbgIVGZd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 02:25:33 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F7EFC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 23:25:33 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id n14so11494159pff.6
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 23:25:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=jE8bKNUEYX0p9na0axQtlNwtSFGEl7YB1wgKxWCgUWU=;
+        b=VALlm1wyfx0/Cl2qmHG0xEKmtzipNXQAe75b/Wo2/LsRYMsfDfyTMzFPM6K4ZY+Jqz
+         BiIJdlrU/iediEjretvq2SRlfeAUWILvGIkhDEd5/fXBXJ7/sf6KxruA5M0sKfkNLONQ
+         cLBgryhuaFYe/v4ZHO8nUj5f8bGwHJJHpZhaosUkK8ujell2OJtMf3yII7jdfuFwVko3
+         m1T9dEh/fnNVo9KWIGbeq5Lv76HZ81fTqqJjRG0DkyiCLZZF8ULthvmqLJwHSev8WpSn
+         PgrPLgXby2GYUJSJUuR71l2/2mdJEAiYb015gdcTRy79KHx+Z5hFjQNftwXgaexMmI5N
+         Ab6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=jE8bKNUEYX0p9na0axQtlNwtSFGEl7YB1wgKxWCgUWU=;
+        b=kgbEB1IcCQT7V/ETU0UknAeyFR8R4F3LFVOxX/i1EXIIOkCcdXsviMnByElGPrmBJO
+         ijqq5QcZlPg49gddCyxmsn0Ql++K5P4jqHWXXT6PSylNezm0+jpOTzP5u5N2LiAd/GXr
+         JYJUNhd9NM7gUAI2uVChX0atm4+I7btZvoKBBChxI4NQvDJGq5fM1iDhBdij9XUVs0rs
+         BZEt0Z6gVG5qXNc54uAUowL4TIMiHdUXU1blrZumzC9O3xQcPj/ydDRVIirTh6kWbPR9
+         YP/N4R+S22DcIHkLvV2yejbMu7P7aQ6qfxhr3zaqTr2u71mwAmzmvJEdp0gaviBee2z8
+         bfgA==
+X-Gm-Message-State: AOAM5314gAX6ADujYq77Lw9ErjRnHwB5it5V91CxFaJnAEOUhsw14joA
+        4vxVOmrbbaZR+KpQL5IM8p1X
+X-Google-Smtp-Source: ABdhPJxDVgPjzYhXfkavSe0KLHyvdLTNY0mkMoL6BUjVuGvo3IGAtksWco8/leHEmmNKh4vklbmeow==
+X-Received: by 2002:aa7:85d4:0:b029:142:4339:42ca with SMTP id z20-20020aa785d40000b0290142433942camr2819944pfn.5.1600755932793;
+        Mon, 21 Sep 2020 23:25:32 -0700 (PDT)
+Received: from Mani-XPS-13-9360 ([2409:4072:6e1c:c062:1004:2ccf:6900:b97])
+        by smtp.gmail.com with ESMTPSA id 9sm760747pgx.76.2020.09.21.23.25.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 21 Sep 2020 23:25:32 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 11:55:22 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Matheus Castello <matheus@castello.eng.br>,
+        Rob Herring <robh@kernel.org>
+Cc:     afaerber@suse.de, mark.rutland@arm.com, robh+dt@kernel.org,
+        edgar.righi@lsitec.org.br, igor.lima@lsitec.org.br,
+        helen.koike@collabora.com, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-actions@lists.infradead.org, Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v7 1/4] dt-bindings: Add vendor prefix for Caninos Loucos
+Message-ID: <20200922062522.GB29035@Mani-XPS-13-9360>
+References: <20200922024302.205062-1-matheus@castello.eng.br>
+ <20200922024302.205062-2-matheus@castello.eng.br>
 MIME-Version: 1.0
-References: <20200921172603.1.Id9450c1d3deef17718bd5368580a3c44895209ee@changeid>
-In-Reply-To: <20200921172603.1.Id9450c1d3deef17718bd5368580a3c44895209ee@changeid>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 22 Sep 2020 08:25:09 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXH4XUS7g8FMZ1noboyZB28B08MTzjEGKpUVLZPAbq1wQA@mail.gmail.com>
-Message-ID: <CAMj1kXH4XUS7g8FMZ1noboyZB28B08MTzjEGKpUVLZPAbq1wQA@mail.gmail.com>
-Subject: Re: [PATCH] arm64: crypto: Add an option to assume NEON XOR is the fastest
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jackie Liu <liuyun01@kylinos.cn>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200922024302.205062-2-matheus@castello.eng.br>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Sep 2020 at 02:27, Douglas Anderson <dianders@chromium.org> wrote:
->
-> On every boot time we see messages like this:
->
-> [    0.025360] calling  calibrate_xor_blocks+0x0/0x134 @ 1
-> [    0.025363] xor: measuring software checksum speed
-> [    0.035351]    8regs     :  3952.000 MB/sec
-> [    0.045384]    32regs    :  4860.000 MB/sec
-> [    0.055418]    arm64_neon:  5900.000 MB/sec
-> [    0.055423] xor: using function: arm64_neon (5900.000 MB/sec)
-> [    0.055433] initcall calibrate_xor_blocks+0x0/0x134 returned 0 after 29296 usecs
->
-> As you can see, we spend 30 ms on every boot re-confirming that, yet
-> again, the arm64_neon implementation is the fastest way to do XOR.
-> ...and the above is on a system with HZ=1000.  Due to the way the
-> testing happens, if we have HZ defined to something slower it'll take
-> much longer.  HZ=100 means we spend 300 ms on every boot re-confirming
-> a fact that will be the same for every bootup.
->
-> Trying to super-optimize the xor operation makes a lot of sense if
-> you're using software RAID, but the above is probably not worth it for
-> most Linux users because:
-> 1. Quite a few arm64 kernels are built for embedded systems where
->    software raid isn't common.  That means we're spending lots of time
->    on every boot trying to optimize something we don't use.
-> 2. Presumably, if we have neon, it's faster than alternatives.  If
->    it's not, it's not expected to be tons slower.
-> 3. Quite a lot of arm64 systems are big.LITTLE.  This means that the
->    existing test is somewhat misguided because it's assuming that test
->    results on the boot CPU apply to the other CPUs in the system.
->    This is not necessarily the case.
->
-> Let's add a new config option that allows us to just use the neon
-> functions (if present) without benchmarking.
->
-> NOTE: One small side effect is that on an arm64 system _without_ neon
-> we'll end up testing the xor_block_8regs_p and xor_block_32regs_p
-> versions of the function.  That's presumably OK since we already test
-> all those when KERNEL_MODE_NEON is disabled.
->
-> ALSO NOTE: presumably the way to do better than this is to add some
-> sort of per-CPU-core lookup table and jump to a per-CPU-core-specific
-> XOR function each time xor is called.  Without seeing evidence that
-> this would really help someone, though, that doesn't seem worth it.
->
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+On Mon, Sep 21, 2020 at 11:42:59PM -0300, Matheus Castello wrote:
+> The Caninos Loucos Program develops Single Board Computers with an open
+> structure. The Program wants to form a community of developers to use
+> IoT technologies and disseminate the learning of embedded systems in
+> Brazil.
+> 
+> It is an initiative of the Technological Integrated Systems Laboratory
+> (LSI-TEC) with the support of Polytechnic School of the University of
+> São Paulo (Poli-USP) and Jon "Maddog" Hall.
+> 
+> Signed-off-by: Matheus Castello <matheus@castello.eng.br>
+> Acked-by: Rob Herring <robh@kernel.org>
+> Reviewed-by: Andreas Färber <afaerber@suse.de>
 
-On the two arm64 machines that I happen to have running right now, I get
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-SynQuacer (Cortex-A53)
+Rob, are you going to take this patch?
 
-    8regs     :  1917.000 MB/sec
-    32regs    :  2270.000 MB/sec
-    arm64_neon:  2053.000 MB/sec
-
-ThunderX2
-
-    8regs     : 10170.000 MB/sec
-    32regs    : 12051.000 MB/sec
-    arm64_neon: 10948.000 MB/sec
-
-so your assertion is not entirely valid.
-
-If the system does not need XOR, it is free not to load the module, so
-there is no reason it has to affect the boot time.
-
-What we /can/ do is remove 8regs - arm64 has plenty of registers so I
-don't think it will ever be the fastest.
-
-
+Thanks,
+Mani
 
 > ---
->
->  arch/arm64/Kconfig           | 15 +++++++++++++++
->  arch/arm64/include/asm/xor.h |  5 +++++
->  2 files changed, 20 insertions(+)
->
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index 64ae5e4eb814..fc18df45a5f8 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -306,6 +306,21 @@ config SMP
->  config KERNEL_MODE_NEON
->         def_bool y
->
-> +menuconfig FORCE_NEON_XOR_IF_AVAILABLE
-> +       bool "Assume neon is fastest for xor if the CPU supports it"
-> +       default y
-> +       depends on KERNEL_MODE_NEON
-> +       help
-> +         Normally the kernel will run through several different XOR
-> +         algorithms at boot, timing them on the boot processor to see
-> +         which is fastest. This can take quite some time. On many
-> +         machines it's expected that, if NEON is available, it's going
-> +         to provide the fastest implementation. If you set this option
-> +         we'll skip testing this every boot and just assume NEON is the
-> +         fastest if present. Setting this option will speed up your
-> +         boot but you might end up with a less-optimal xor
-> +         implementation.
-> +
->  config FIX_EARLYCON_MEM
->         def_bool y
->
-> diff --git a/arch/arm64/include/asm/xor.h b/arch/arm64/include/asm/xor.h
-> index 947f6a4f1aa0..1acb290866ab 100644
-> --- a/arch/arm64/include/asm/xor.h
-> +++ b/arch/arm64/include/asm/xor.h
-> @@ -57,6 +57,10 @@ static struct xor_block_template xor_block_arm64 = {
->         .do_4   = xor_neon_4,
->         .do_5   = xor_neon_5
->  };
-> +#ifdef CONFIG_FORCE_NEON_XOR_IF_AVAILABLE
-> +#define XOR_SELECT_TEMPLATE(FASTEST) \
-> +       (cpu_has_neon() ? &xor_block_arm64 : FASTEST)
-> +#else /* ! CONFIG_FORCE_NEON_XOR_IF_AVAILABLE */
->  #undef XOR_TRY_TEMPLATES
->  #define XOR_TRY_TEMPLATES           \
->         do {        \
-> @@ -66,5 +70,6 @@ static struct xor_block_template xor_block_arm64 = {
->                         xor_speed(&xor_block_arm64);\
->                 } \
->         } while (0)
-> +#endif /* ! CONFIG_FORCE_NEON_XOR_IF_AVAILABLE */
->
->  #endif /* ! CONFIG_KERNEL_MODE_NEON */
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> index 63996ab03521..aac0dc3caf3b 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> @@ -179,6 +179,8 @@ patternProperties:
+>      description: CALAO Systems SAS
+>    "^calxeda,.*":
+>      description: Calxeda
+> +  "^caninos,.*":
+> +    description: Caninos Loucos Program
+>    "^capella,.*":
+>      description: Capella Microsystems, Inc
+>    "^cascoda,.*":
 > --
-> 2.28.0.681.g6f77f65b4e-goog
->
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 2.28.0
+> 
