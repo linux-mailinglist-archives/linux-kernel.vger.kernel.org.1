@@ -2,64 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95764274536
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:27:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBF68274538
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:27:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726666AbgIVP1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 11:27:10 -0400
-Received: from verein.lst.de ([213.95.11.211]:45148 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726614AbgIVP1K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 11:27:10 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 6CC1F67373; Tue, 22 Sep 2020 17:27:06 +0200 (CEST)
-Date:   Tue, 22 Sep 2020 17:27:06 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     boris.ostrovsky@oracle.com
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>, x86@kernel.org,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 6/6] x86/xen: open code alloc_vm_area in
- arch_gnttab_valloc
-Message-ID: <20200922152706.GA30633@lst.de>
-References: <20200918163724.2511-1-hch@lst.de> <20200918163724.2511-7-hch@lst.de> <0833b9a8-5096-d105-a850-1336150eada1@oracle.com> <20200922145819.GA28420@lst.de> <ebd69ba1-fc06-3cc7-348e-3cb0004c2a34@oracle.com>
+        id S1726710AbgIVP1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 11:27:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726672AbgIVP1R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 11:27:17 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29CACC0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 08:27:17 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id x14so17520388wrl.12
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 08:27:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=daWCo1RFCRJHeJIJbYudV3s6gpJF4K5dmJezag8Qxqc=;
+        b=PQ0Av58MFvLr8hCz6Yr/XxwJJ7Rgqi5vRs6SigDx5kZJM55s9csvPupwqeaTQWbb5z
+         TRGOieLlELVhujXUHDOon7IzLBsGs3ni5pwKbtN4mB5zBPYampC9UdWB+vt9L+9B+kA3
+         R5vvd2tolQMyPqDvZ3F8UN102erJ643KTs9FuimjTL9q7XVs6EIOZuAzaz6Nhm5enw7s
+         9jMD1N9hAov6lVgtCVQx4WoWiHmWIAtsOIkf8+5Z6ycPjYAZHMv10udgKsbxF+JwHDxd
+         msuvSW9jl3394JT8quDkK7Mx9/08S7nGKzMTHlj5eIue6YMna08FEjFemZ4KefCcu3Z3
+         4Dpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=daWCo1RFCRJHeJIJbYudV3s6gpJF4K5dmJezag8Qxqc=;
+        b=q1Ok6kBhl3PGKx0IroYK/j8AXK17ORClvGYpU1vu1B70GnODjd2GR1a753TM4ihdom
+         tCK9rfRE25P2M8RdWvF9kUVoijL2Gmr9Ys/6Ihec2iFGJiVo24PUHXKX+erKKUnf2Xs5
+         9F1azSU9KizMLWQu45wjljlNmEi7y0i5TpeU4OScHqNg7VFZiCiImskcxqoA/Gse2XsE
+         xAyoWFTc2lhg+bDw5GWh0KqVwNCh2dmQMHEfC1u5h/9Ii9AldwynGo0gcMoE/m3yKK48
+         tIWVZNSGAN/E0LDH9e6HX2CBu9dQqSOk8+0m68DrceXdAS+FMUPdQyB0pUehXC8Dnaqb
+         RLNw==
+X-Gm-Message-State: AOAM532Kf/wIC7QdP/WJA39Uiqj00FbX4L/G31ORXNw70q/oauw6ykc3
+        BFUZWBTAwQtBp9TVJ0U3KrEWHndIU2psSg==
+X-Google-Smtp-Source: ABdhPJxIF3wfnvfDxTeIOMmGPLFmN7hQs1E4eU47akeBeJuybRbsqN+aPPzVy9tpPtD1sT/n/nNwzQ==
+X-Received: by 2002:a5d:4a0c:: with SMTP id m12mr6017594wrq.83.1600788434458;
+        Tue, 22 Sep 2020 08:27:14 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:2047:2ab9:c10c:f4f? ([2a01:e34:ed2f:f020:2047:2ab9:c10c:f4f])
+        by smtp.googlemail.com with ESMTPSA id f6sm27290103wro.5.2020.09.22.08.27.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Sep 2020 08:27:13 -0700 (PDT)
+Subject: Re: [PATCH -next] thermal: core: remove unnecessary mutex_init()
+To:     Qinglang Miao <miaoqinglang@huawei.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200916062139.191233-1-miaoqinglang@huawei.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <6c4c2d70-e901-74e4-185a-8f8bb105f03b@linaro.org>
+Date:   Tue, 22 Sep 2020 17:27:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <20200916062139.191233-1-miaoqinglang@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ebd69ba1-fc06-3cc7-348e-3cb0004c2a34@oracle.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 11:24:20AM -0400, boris.ostrovsky@oracle.com wrote:
+On 16/09/2020 08:21, Qinglang Miao wrote:
+> The mutex poweroff_lock is initialized statically. It is
+> unnecessary to initialize by mutex_init().
 > 
-> On 9/22/20 10:58 AM, Christoph Hellwig wrote:
-> > On Mon, Sep 21, 2020 at 04:44:10PM -0400, boris.ostrovsky@oracle.com wrote:
-> >> This will end up incrementing area->ptes pointer. So perhaps something like
-> >>
-> >>
-> >> pte_t **ptes = area->ptes;
-> >>
-> >> if (apply_to_page_range(&init_mm, (unsigned long)area->area->addr,
-> >>                         PAGE_SIZE * nr_frames, gnttab_apply, &ptes)) {
-> >>
-> >>        ...
-> > Yeah.  What do you think of this version? 
-> 
-> 
-> Oh yes, this is way better. This now can actually be read without trying to mentally unwind triple pointers. (You probably want to initialize idx to zero before calling apply_to_page_range(), I am not sure it's guaranteed to be zero).
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> ---
 
-Both instances are static variables, thus in .bss and initialized.
-So unless you insist I don't think we need a manual one.
+Applied, thanks
+
+
+-- 
+<http://www.linaro.org/> Linaro.org â”‚ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
