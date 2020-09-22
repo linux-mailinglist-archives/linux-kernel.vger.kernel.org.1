@@ -2,104 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A0727374D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 02:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91EF527374E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 02:26:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729194AbgIVAY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 20:24:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728608AbgIVAYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 20:24:54 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4546623A79;
-        Tue, 22 Sep 2020 00:24:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600734293;
-        bh=1i72I6ReI4I0vb4/9IrxFkMANwrUjbDHvzuX1cJumbs=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=d2MtSFb1NemAw+7qw55kECtaw3Ttk+ljjQMKIMaJbLRXQz1oJQGSmmC7ydNadZ3qe
-         ZGd15fAfXkHBUclxrAjlkrcUsSbmOOkJ712KZsXQ15JW/EyU3ymXmljQk8cvF6MA5D
-         hCBJJVVITWo56HFkkzopzKLNP/FRiP1g2d9I9eCA=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id EEF3535226C1; Mon, 21 Sep 2020 17:24:52 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 17:24:52 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>
-Subject: Re: [RFC PATCH 11/12] rcu: Locally accelerate callbacks as long as
- offloading isn't complete
-Message-ID: <20200922002452.GR29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200921124351.24035-1-frederic@kernel.org>
- <20200921124351.24035-12-frederic@kernel.org>
+        id S1729197AbgIVA0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 20:26:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728000AbgIVA0O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 20:26:14 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B6EBC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 17:26:14 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id e22so14552888edq.6
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 17:26:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=G7Ck98WMie8De6O0pTDamAVkzQynN+XYnigX3qz8tH0=;
+        b=k/z93i6OyQSEoXepask26HHwQk3IBf+bJK74Jop2UZRbnG76zfY4uGo4LrMenkM0zm
+         vuXXzpu248e8WXJjF+yIbRf1oQSTDH/vH+HbRMObPEnr3axoMbxhiB3SAJgULvCCz79M
+         uNljKMUaSbJyXYEa16ZHOYWCpO2wjYahMiL6kgPZqGlfMEGyMHCn1fyT9gqVquT2YY12
+         BH5YyBtacnsqwewtapzcJe7jIZiqSkh3jfZWeeRpaGWM08VK1l+8loXjp+N671wTOw2N
+         kMIsG4Ab98xHV23Gs1TY1e6EiYdOk4NEHCohbJKjOK2vT5lzDigPQznFKsKNjT39jRiy
+         Z7VA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=G7Ck98WMie8De6O0pTDamAVkzQynN+XYnigX3qz8tH0=;
+        b=EflV9rG0OBV/FnkNSoMes8DXXimh4oQxelzD8m7WdPGy+fpV86Czi3+r+lpyiKjhOX
+         mDXov3KxBuUua/q3jxRiBzEgdHKX5WDOJBb6cdyqIZP06GFMgj+yy9kwgVB2xCM0PBgI
+         O02ifOD8Ln4U57uAl2FzN/b/OzdpQQiczZj5nekJia4R/UfdPtkaMYrh1ZMcHDgLRFvN
+         c/fAEkYtQitxTuFgfzhgcEJa1q/kVPeSASzgQ7q0dxJAOlxkq0bBbGoRUkailqLCfHLa
+         /Qpnn/TOlgDZFQHik96UHYUr7XeTveWGm0S8YPNjUx1D4UOCIyPIslI/9LbX2toeMVWA
+         VuDw==
+X-Gm-Message-State: AOAM530szQ8o8+/a3RN8XhLolI7hcYlsafsgp8Y5b5XsVv6xGpla22Zl
+        srvkV9LkZGgB+eALnCl1/xOKWcdaS4s87ff/DU4Ulg==
+X-Google-Smtp-Source: ABdhPJyFQ1Gq/sHgfmYT/vq4s/qP10k5TYYWZoaOsilWoxhPoBnktNQHuIjFbeqYafUSymIhlYjKGFwLYz/eJFOUEeY=
+X-Received: by 2002:a50:fe98:: with SMTP id d24mr1408695edt.223.1600734372652;
+ Mon, 21 Sep 2020 17:26:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200921124351.24035-12-frederic@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <cover.1600661418.git.yifeifz2@illinois.edu> <6af89348c08a4820039e614a090d35aa1583acff.1600661419.git.yifeifz2@illinois.edu>
+ <CAG48ez0OqZavgm0BkGjCAJUr5UfRgbeCbmLOZFJ=Rj46COcN3Q@mail.gmail.com> <CABqSeAQhVFeG1Frvu60XfUnRQ78YRS2Uaw1EsBobKVku-vVoDQ@mail.gmail.com>
+In-Reply-To: <CABqSeAQhVFeG1Frvu60XfUnRQ78YRS2Uaw1EsBobKVku-vVoDQ@mail.gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Tue, 22 Sep 2020 02:25:46 +0200
+Message-ID: <CAG48ez1YWz9cnp08UZgeieYRhHdqh-ch7aNwc4JRBnGyrmgfMg@mail.gmail.com>
+Subject: Re: [RFC PATCH seccomp 1/2] seccomp/cache: Add "emulator" to check if
+ filter is arg-dependent
+To:     YiFei Zhu <zhuyifei1999@gmail.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        kernel list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 02:43:50PM +0200, Frederic Weisbecker wrote:
-> I have no idea what I'm doing but doing that looks necessary to me.
+On Tue, Sep 22, 2020 at 1:44 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> On Mon, Sep 21, 2020 at 12:47 PM Jann Horn <jannh@google.com> wrote:
+> > > +       depends on SECCOMP
+> > > +       depends on SECCOMP_FILTER
+> >
+> > SECCOMP_FILTER already depends on SECCOMP, so the "depends on SECCOMP"
+> > line is unnecessary.
+>
+> The reason that this is here is because of the looks in menuconfig.
+> SECCOMP is the direct previous entry, so if this depends on SECCOMP
+> then the config would be indented. Is this looks not worth keeping or
+> is there some better way to do this?
 
-Now -there- is a commit log that inspires confidence!!!  ;-)
+Ah, I didn't realize this.
 
-> Inspired-by: Paul E. McKenney <paulmck@kernel.org>
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Josh Triplett <josh@joshtriplett.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> Cc: Joel Fernandes <joel@joelfernandes.org>
-> ---
->  kernel/rcu/tree.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 928907e9ba94..8cef5ea8d1f0 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -2619,7 +2619,6 @@ static __latent_entropy void rcu_core(void)
->  	unsigned long flags;
->  	struct rcu_data *rdp = raw_cpu_ptr(&rcu_data);
->  	struct rcu_node *rnp = rdp->mynode;
-> -	const bool offloaded = rcu_segcblist_is_offloaded(&rdp->cblist);
->  	const bool do_batch = !rcu_segcblist_completely_offloaded(&rdp->cblist);
->  
->  	if (cpu_is_offline(smp_processor_id()))
-> @@ -2640,11 +2639,11 @@ static __latent_entropy void rcu_core(void)
->  
->  	/* No grace period and unregistered callbacks? */
->  	if (!rcu_gp_in_progress() &&
-> -	    rcu_segcblist_is_enabled(&rdp->cblist) && !offloaded) {
-> -		local_irq_save(flags);
-> +	    rcu_segcblist_is_enabled(&rdp->cblist) && do_batch) {
-> +		rcu_nocb_lock_irqsave(rdp, flags);
->  		if (!rcu_segcblist_restempty(&rdp->cblist, RCU_NEXT_READY_TAIL))
->  			rcu_accelerate_cbs_unlocked(rnp, rdp);
+> > > +       help
+> > > +         Seccomp filters can potentially incur large overhead for each
+> > > +         system call. This can alleviate some of the overhead.
+> > > +
+> > > +         If in doubt, select 'none'.
+> >
+> > This should not be in arch/x86. Other architectures, such as arm64,
+> > should also be able to use this without extra work.
+>
+> In the initial RFC patch I only added to x86. I could add it to any
+> arch that has seccomp filters. Though, I'm wondering, why is SECCOMP
+> in the arch-specific Kconfigs?
 
-It might also be that rcu_advance_cbs() is needed somewhere.  I will
-need to look carefully to work out whether either of them need to be
-invoked at this particular point in the code.
-
-							Thanx, Paul
-
-> -		local_irq_restore(flags);
-> +		rcu_nocb_unlock_irqrestore(rdp, flags);
->  	}
->  
->  	rcu_check_gp_start_stall(rnp, rdp, rcu_jiffies_till_stall_check());
-> -- 
-> 2.28.0
-> 
+Ugh, yeah, the existing code is already bad... as far as I can tell,
+SECCOMP shouldn't be there, and instead the arch-specific Kconfig
+should define something like HAVE_ARCH_SECCOMP and then arch/Kconfig
+would define SECCOMP and let it depend on HAVE_ARCH_SECCOMP. It's
+really gross how the SECCOMP config description has been copypasted
+into a dozen different Kconfig files; and looking around a bit, you
+can actually see that e.g. s390 has an utterly outdated help text
+which still claims that seccomp is controlled via the ancient
+"/proc/<pid>/seccomp". I guess this very nicely illustrates why
+putting such options into arch-specific Kconfig is a bad idea. :P
