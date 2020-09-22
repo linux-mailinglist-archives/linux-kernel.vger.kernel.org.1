@@ -2,112 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B4662747DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 19:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2EB32747E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 20:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726739AbgIVR4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 13:56:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33152 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726526AbgIVR4d (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 13:56:33 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A9D22376F;
-        Tue, 22 Sep 2020 17:56:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600797392;
-        bh=wsMmIF1yjGFZH+6s2BiRmHOZqU/Wicuf88jr0HoRfFg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NZFEPsAeoBCUGYG33bC6NDkDRcjzPeOrvjsQgtV3/Fo89WWNQbUMxP8Ga1pKPZSG7
-         eGxqDLhyYuAdvxEgtvjVHAj14ma+Zd2M3A1joHALQ4GHh4TcqBtYP/5Inz9qIsH93Y
-         /mo0jyugBKxXcbLmyuEilYzbr1fWIN4Q7oIYI/60=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 7A72F400E9; Tue, 22 Sep 2020 14:56:30 -0300 (-03)
-Date:   Tue, 22 Sep 2020 14:56:30 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH] perf stat: Skip duration_time in setup_system_wide
-Message-ID: <20200922175630.GB2248446@kernel.org>
-References: <20200922015004.30114-1-yao.jin@linux.intel.com>
+        id S1726623AbgIVSAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 14:00:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726526AbgIVSAa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 14:00:30 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0049EC061755;
+        Tue, 22 Sep 2020 11:00:29 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id x69so19029672lff.3;
+        Tue, 22 Sep 2020 11:00:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+S+ikiHuz2HpdLIm249+t1T7WSf8kgaFrd1ScxmbIRA=;
+        b=YZIjQQBQaCTguWnuWRudyJEvWdfCGsiGP4kcXSZDxXIXMl9BrgwKsNOQ5vhEwhpd42
+         BB+qD14yjvJXe6MA+qJI9G0nzA/29OhohYyF62O0sXLNGEI+5ylCcPWmvqi7jjKz8o1g
+         +StyCcm1ImuD7xtsED8OhSs8u7y9IPkkJWLVVIe57i80PQggTrkr+f0re42QGFLzVzu+
+         96OHyMnIOWFlppIZrEScA074aNG9eUDIfmOW8J/gY8NPfhjz1T2QaoGZiX/CCEhKuEFo
+         2HklH0TtjbizH/aGzbKig0VzsqzcDJG6xjsRapLfCHkg5kLh1OO94HSRweDsyfwWR95j
+         eIAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+S+ikiHuz2HpdLIm249+t1T7WSf8kgaFrd1ScxmbIRA=;
+        b=U8NXQhP67Lh5wn27Y2eSm9vzpjb78P0JBgB+38+agij0OSc2WcgFF9WCjqLle7tK1D
+         1VCf3s5oVq+rEkkG8h/L8sK9KshuubxN/nr0iD/zu3sUOdNMjRnyHuGvHYElU/Bt2XP1
+         +uwMAje4CdRoqF8hNr2GDmwQ4mG+LUioxtLp97Vxx0+fmbdfWDoEqaWkFA74d6k7E9ig
+         El7AaOuMqIo6mxqqT3JAB3UixeQ+ATOjJBzvXLLDAP/QPVyNT0C5UOB2HNOtZjoxcW/X
+         /ZGcYdodxHBGj8Xz5ViCE3BdsGspvE1zebMWx+PJl53xY9pYQUGI77bG5qmE7IaJqC/x
+         jfCQ==
+X-Gm-Message-State: AOAM530vfBaFb+qbBB8LsgmonQpjhBvUcvqjpSCkzW66eWRtso6BS6Xw
+        g/y2bAF8njPj4aYMlyhHLRtrk8I//kWK+Ii7eBQ=
+X-Google-Smtp-Source: ABdhPJxFr6fvcuGTXCkhdw0fxH5jeW4JUrPm1uyVhIRE7All5r8ND3+dP6QkxMaEDP499RMjkx2GkD6vnB//iKZrYaQ=
+X-Received: by 2002:a19:dcb:: with SMTP id 194mr2068732lfn.25.1600797628205;
+ Tue, 22 Sep 2020 11:00:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922015004.30114-1-yao.jin@linux.intel.com>
-X-Url:  http://acmel.wordpress.com
+References: <1600224517-31465-1-git-send-email-peng.fan@nxp.com>
+In-Reply-To: <1600224517-31465-1-git-send-email-peng.fan@nxp.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Tue, 22 Sep 2020 15:00:16 -0300
+Message-ID: <CAOMZO5BUxEF4s+0XFz8Uoos8d8Wk-rp+K8LyO7az8MKV3kHH5A@mail.gmail.com>
+Subject: Re: [PATCH V2 0/4] imx: support i.MX7ULP HSRUN mode
+To:     Peng Fan <peng.fan@nxp.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Abel Vesa <abel.vesa@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Yongcai Huang <Anson.Huang@nxp.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Sep 22, 2020 at 09:50:04AM +0800, Jin Yao escreveu:
-> Some metrics (such as DRAM_BW_Use) consists of uncore events and
-> duration_time. For uncore events, counter->core.system_wide is
-> true. But for duration_time, counter->core.system_wide is false
-> so target.system_wide is set to false.
-> 
-> Then 'enable_on_exec' is set in perf_event_attr of uncore event.
-> Kernel will return error when trying to open the uncore event.
-> 
-> This patch skips the duration_time in setup_system_wide then
-> target.system_wide will be set to true for the evlist of uncore
-> events + duration_time.
-> 
-> Before (tested on skylake desktop):
-> 
->  # perf stat -M DRAM_BW_Use -- sleep 1
->  Error:
->  The sys_perf_event_open() syscall returned with 22 (Invalid argument) for event (arb/event=0x84,umask=0x1/).
->  /bin/dmesg | grep -i perf may provide additional information.
-> 
-> After:
-> 
->  # perf stat -M DRAM_BW_Use -- sleep 1
-> 
->   Performance counter stats for 'system wide':
-> 
->                 169      arb/event=0x84,umask=0x1/ #     0.00 DRAM_BW_Use
->              40,427      arb/event=0x81,umask=0x1/
->       1,000,902,197 ns   duration_time
-> 
->         1.000902197 seconds time elapsed
-> 
-> Fixes: 648b5af3f3ae ("libperf: Move 'system_wide' from 'struct evsel' to 'struct perf_evsel'")
+Hi Peng,
 
-Humm, what makes you think that this cset was the one introducing this
-problem? It just moves evsel->system_wide to evsel->core.system_wide.
+On Tue, Sep 15, 2020 at 11:55 PM <peng.fan@nxp.com> wrote:
+>
+> From: Peng Fan <peng.fan@nxp.com>
+>
+> V2:
+>  Update to use pmc0/pmc1 following hardware naming
+>
+> This patchset is to add HSRUN mode support.
+> Patch 1,2 is to add binding doc and dts node
+> Patch 3 is to support HSRUN mode
+> Patch 4 is to use wait mode when HSRUN working per hardware state machine requirement.
+>
+> Peng Fan (4):
+>   dt-bindings: fsl: add i.MX7ULP PMC
+>   ARM: dts: imx7ulp: add pmc node
+>   ARM: imx: imx7ulp: support HSRUN mode
+>   ARM: imx: cpuidle-imx7ulp: Stop mode disallowed when HSRUN
 
-- Arnaldo
+It seems that a patch adding the 720MHz HSRUN operational point in
+imx7ulp.dtsi is missing.
 
-
-> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-> ---
->  tools/perf/builtin-stat.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-> index 7f8d756d9408..9bcc93bc0973 100644
-> --- a/tools/perf/builtin-stat.c
-> +++ b/tools/perf/builtin-stat.c
-> @@ -2047,8 +2047,10 @@ static void setup_system_wide(int forks)
->  		struct evsel *counter;
->  
->  		evlist__for_each_entry(evsel_list, counter) {
-> -			if (!counter->core.system_wide)
-> +			if (!counter->core.system_wide &&
-> +			    strcmp(counter->name, "duration_time")) {
->  				return;
-> +			}
->  		}
->  
->  		if (evsel_list->core.nr_entries)
-> -- 
-> 2.17.1
-> 
-
--- 
-
-- Arnaldo
+Thanks
