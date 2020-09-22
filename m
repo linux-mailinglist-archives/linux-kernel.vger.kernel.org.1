@@ -2,126 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F99274988
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 575DF27498B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726709AbgIVTyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 15:54:14 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:34031 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726617AbgIVTyN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 15:54:13 -0400
-Received: by mail-io1-f66.google.com with SMTP id m17so21068251ioo.1;
-        Tue, 22 Sep 2020 12:54:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+qF2EAj+xZ27M9bstX87bUprxWqOcd9qGhCKaOFiGNc=;
-        b=K1tsSEABTJtF80U2hngG6anJgaHEvEkXykeeK/sZEWuSP0W0nXzUiBmEtJOr8UgP/C
-         j/O85hmFqosCgS1pmso/HWrTptRFx2Gaz/3OsEcxDxKQDOkS+F0mHCFXJpGHctNEYeQh
-         aeESxILJPH9AaBsDzDJLwuQXoszTBYF4w3r38CuF29r7kaTmGXQpQbJLVpfyAa8TJ7oR
-         GoUhM1/2QNRbobR1rubOZcHve+FBOnShiNX20QX54SSj2XMcv1k2J0C0OrNwmIHTXPXj
-         J359t5JFq3VhzTe18+puqB08LXGNnSVvIZRbnosSRumh0a1x775y3V1YxC2f48KGZiEQ
-         kHpg==
-X-Gm-Message-State: AOAM532cla4nZ38KK449zXJD566XpRiCKRxoPzQ46NIs6EBvgsC9Dh1h
-        wABzDseRGhKrvUMUPSG6aEgg+5NW/Hxc
-X-Google-Smtp-Source: ABdhPJzijmPheoOp8k8M0D8ZYTknwbf0gqU6P2fI0sRjA5TFSpfxcEdmfuQ37IRLZxfB19R2VHB5Zg==
-X-Received: by 2002:a05:6602:2e0e:: with SMTP id o14mr4889500iow.111.1600804452622;
-        Tue, 22 Sep 2020 12:54:12 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id e9sm9498571ilr.20.2020.09.22.12.54.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 12:54:11 -0700 (PDT)
-Received: (nullmailer pid 3131804 invoked by uid 1000);
-        Tue, 22 Sep 2020 19:54:10 -0000
-Date:   Tue, 22 Sep 2020 13:54:10 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Manish Narani <manish.narani@xilinx.com>
-Cc:     gregkh@linuxfoundation.org, michal.simek@xilinx.com,
-        balbi@kernel.org, p.zabel@pengutronix.de,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        git@xilinx.com
-Subject: Re: [PATCH v2 1/2] dt-bindings: usb: dwc3-xilinx: Add documentation
- for Versal DWC3 Controller
-Message-ID: <20200922195410.GA3122345@bogus>
-References: <1599678185-119412-1-git-send-email-manish.narani@xilinx.com>
- <1599678185-119412-2-git-send-email-manish.narani@xilinx.com>
+        id S1726727AbgIVTyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 15:54:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42384 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726577AbgIVTyX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 15:54:23 -0400
+Received: from lt-jalone-7480.mtl.com (c-24-6-56-119.hsd1.ca.comcast.net [24.6.56.119])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 25C9E20888;
+        Tue, 22 Sep 2020 19:54:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600804462;
+        bh=Zn/Z2CdaIP6QTx5Ejt047CW4S3boZcy3W7WAuEFn30k=;
+        h=Subject:From:To:Date:In-Reply-To:References:From;
+        b=Db7Wf/TKf+Icycp6D4n17ldpBebSu5xt9LHevpygPcG8t+x9js04ayIdmleRUvANc
+         6K9mU4URBnuc4dtfIUBSsgng/N4YQkcWfaoBtYt6vQ/Wwibc6xqTQ1pSOfz8lksVXO
+         0RIPhqh3f7Mnk/h5Ua+gfTE/m0AvVaRXGoYn8HA0=
+Message-ID: <4eb581435bd7ac528c29815a7d26016bd1c429f4.camel@kernel.org>
+Subject: Re: [PATCH] net/mlx5: remove unreachable return
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Pavel Machek <pavel@ucw.cz>, eranbe@mellanox.com,
+        lariel@mellanox.com, saeedm@mellanox.com, leon@kernel.org,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 22 Sep 2020 12:54:20 -0700
+In-Reply-To: <5d37fdcb0d50d79f93e8cdb31cb3f182548ffcc1.camel@kernel.org>
+References: <20200921114103.GA21071@duo.ucw.cz>
+         <5d37fdcb0d50d79f93e8cdb31cb3f182548ffcc1.camel@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1599678185-119412-2-git-send-email-manish.narani@xilinx.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 12:33:04AM +0530, Manish Narani wrote:
-> Add documentation for Versal DWC3 controller. Add required property
-> 'reg' for the same. Also add optional properties for snps,dwc3.
+On Mon, 2020-09-21 at 22:54 -0700, Saeed Mahameed wrote:
+> On Mon, 2020-09-21 at 13:41 +0200, Pavel Machek wrote:
+> > The last return statement is unreachable code. I'm not sure if it
+> > will
+> > provoke any warnings, but it looks ugly.
+> >     
+> > Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+> > 
+> > 
 > 
-> Signed-off-by: Manish Narani <manish.narani@xilinx.com>
-> ---
->  .../devicetree/bindings/usb/dwc3-xilinx.txt   | 20 +++++++++++++++++--
->  1 file changed, 18 insertions(+), 2 deletions(-)
+> Applied to net-next-mlx5.
 > 
-> diff --git a/Documentation/devicetree/bindings/usb/dwc3-xilinx.txt b/Documentation/devicetree/bindings/usb/dwc3-xilinx.txt
-> index 4aae5b2cef56..219b5780dbee 100644
-> --- a/Documentation/devicetree/bindings/usb/dwc3-xilinx.txt
-> +++ b/Documentation/devicetree/bindings/usb/dwc3-xilinx.txt
-> @@ -1,7 +1,8 @@
->  Xilinx SuperSpeed DWC3 USB SoC controller
->  
->  Required properties:
-> -- compatible:	Should contain "xlnx,zynqmp-dwc3"
-> +- compatible:	May contain "xlnx,zynqmp-dwc3" or "xlnx,versal-dwc3"
-> +- reg:		Base address and length of the register control block
->  - clocks:	A list of phandles for the clocks listed in clock-names
->  - clock-names:	Should contain the following:
->    "bus_clk"	 Master/Core clock, have to be >= 125 MHz for SS
-> @@ -13,12 +14,24 @@ Required child node:
->  A child node must exist to represent the core DWC3 IP block. The name of
->  the node is not important. The content of the node is defined in dwc3.txt.
->  
-> +Optional properties for snps,dwc3:
-> +- dma-coherent:	Enable this flag if CCI is enabled in design. Adding this
-> +		flag configures Global SoC bus Configuration Register and
-> +		Xilinx USB 3.0 IP - USB coherency register to enable CCI.
-> +- snps,enable-hibernation: Add this flag to enable hibernation support for
-> +		peripheral mode.
+> Thanks,
+> Saeed.
+> 
 
-This belongs in the DWC3 binding. It also implies that hibernation is 
-not supported by any other DWC3 based platform. Can't this be implied by 
-the compatible string (in the parent)?
+Actually checkpatch reports this issue:
+WARNING:NO_AUTHOR_SIGN_OFF: Missing Signed-off-by: line by nominal
+patch author 'Pavel Machek <pavel@ucw.cz>'
 
-> +- interrupt-names: Should contain the following:
-> +  "dwc_usb3"	USB gadget mode interrupts
-> +  "otg"		USB OTG mode interrupts
-> +  "hiber"	USB hibernation interrupts
-> +
->  Example device node:
->  
->  		usb@0 {
->  			#address-cells = <0x2>;
->  			#size-cells = <0x1>;
->  			compatible = "xlnx,zynqmp-dwc3";
-> +			reg = <0x0 0xff9d0000 0x0 0x100>;
->  			clock-names = "bus_clk" "ref_clk";
->  			clocks = <&clk125>, <&clk125>;
->  			ranges;
-> @@ -26,7 +39,10 @@ Example device node:
->  			dwc3@fe200000 {
->  				compatible = "snps,dwc3";
->  				reg = <0x0 0xfe200000 0x40000>;
-> -				interrupts = <0x0 0x41 0x4>;
-> +				interrupt-names = "dwc_usb3", "otg", "hiber";
-> +				interrupts = <0 65 4>, <0 69 4>, <0 75 4>;
->  				dr_mode = "host";
-> +				dma-coherent;
-> +				snps,enable-hibernation;
->  			};
->  		};
-> -- 
-> 2.17.1
-> 
+Do you want me to override the Signed-off-by tag with the above email ?
+
+Thanks,
+Saeed.
+
