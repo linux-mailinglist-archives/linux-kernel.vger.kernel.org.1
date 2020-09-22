@@ -2,149 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90AED274C14
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:29:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1999A274C1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:31:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgIVW26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 18:28:58 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:34404 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726448AbgIVW26 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 18:28:58 -0400
-Received: by mail-ot1-f68.google.com with SMTP id h17so17171679otr.1;
-        Tue, 22 Sep 2020 15:28:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ClEyF6YT/uBY6ngetqWoXu40MTV6oLWtuyfZ2xGB3Gk=;
-        b=gSo5YUhzXZHK3LOSgRoPxv5/BdTlotNV2XMUF3fg0IS7O8CgruSaps0gAUa+/fOZS0
-         T2/HKcr1ncI+MqBE5oUbCmYUpUm5f6nTco9TtB1Oyz6DSGyk/pu/DVvDuJGbEyPwBKdb
-         d4FTjwYABGfJ9rmmsG1Ifeosvh+oG/LT/djaAl1kmWopDmF+/Arwe1Xy67hwXm/ZPQMm
-         xeoT3dDvSYR93fxP7SdjT+azvdS1XgQuJbR+8auffX8PQpVq93MuvWc2Zvg1RuvyEPT9
-         9q2f/WBOfM0egEBc4g8FEoD2y8feBAlXcaV2LSBQiGW5L/EsLHoO0xDZPuB1NM73FJXG
-         4rOg==
-X-Gm-Message-State: AOAM533nRQuOkd+AjIKmry5VssIUZOMgnez1+ko8W6KsbVtHdCubKnia
-        CodMhgtQvC9TdnLFav5PLwBlxWEkGN+O0w==
-X-Google-Smtp-Source: ABdhPJxOebDa0AkEuG4GC5KONv1/8xhk+bRsv0R6G8ob/HoaXNS7KEsxwIEM9t1sgPma0mw9Tj6rdw==
-X-Received: by 2002:a9d:7d16:: with SMTP id v22mr4045603otn.372.1600813736694;
-        Tue, 22 Sep 2020 15:28:56 -0700 (PDT)
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com. [209.85.210.48])
-        by smtp.gmail.com with ESMTPSA id y25sm7174569oti.26.2020.09.22.15.28.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Sep 2020 15:28:56 -0700 (PDT)
-Received: by mail-ot1-f48.google.com with SMTP id n61so17134470ota.10;
-        Tue, 22 Sep 2020 15:28:55 -0700 (PDT)
-X-Received: by 2002:a05:6830:14cb:: with SMTP id t11mr4447643otq.74.1600813735429;
- Tue, 22 Sep 2020 15:28:55 -0700 (PDT)
+        id S1726716AbgIVWbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 18:31:14 -0400
+Received: from mga03.intel.com ([134.134.136.65]:10288 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726448AbgIVWbO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 18:31:14 -0400
+IronPort-SDR: Tm6Z5frl7PlOz4C9v8/Qkns4fw+4uD77vcmntpHNKzMTR1keZiVt2Ly6W+er+lbQ/8fXAR5n9m
+ xFAlNkanJZNQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9752"; a="160805208"
+X-IronPort-AV: E=Sophos;i="5.77,292,1596524400"; 
+   d="scan'208";a="160805208"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 15:31:12 -0700
+IronPort-SDR: nW3gdMCynutjvSTUUEYodsdC6+CVVvVe8VGXY9QncgSOeLWO/AUh3Yd++7mE3hrAeSaever+h4
+ 64HF/sSW+Cug==
+X-IronPort-AV: E=Sophos;i="5.77,292,1596524400"; 
+   d="scan'208";a="511402424"
+Received: from rhweight-mobl2.amr.corp.intel.com (HELO [10.0.2.15]) ([10.212.137.114])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 15:31:11 -0700
+Subject: Re: [PATCH v1 07/12] fpga: expose sec-mgr update status
+To:     Tom Rix <trix@redhat.com>, mdf@kernel.org, lee.jones@linaro.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
+        matthew.gerlach@intel.com
+References: <20200904235305.6254-1-russell.h.weight@intel.com>
+ <20200904235305.6254-8-russell.h.weight@intel.com>
+ <4fdb6000-ced9-1713-cace-8e7b09c6d586@redhat.com>
+From:   Russ Weight <russell.h.weight@intel.com>
+Message-ID: <3dc77b88-8d6c-424e-3c6e-a39ac8de8fb6@intel.com>
+Date:   Tue, 22 Sep 2020 15:31:10 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200915073213.12779-1-biwen.li@oss.nxp.com> <20200915073213.12779-2-biwen.li@oss.nxp.com>
- <20200922030208.GY25109@dragon> <DB6PR0401MB2438ABB1DFE785F9EAADB69E8F3B0@DB6PR0401MB2438.eurprd04.prod.outlook.com>
- <VE1PR04MB6687237BD5D137C4B9EC6DBD8F3B0@VE1PR04MB6687.eurprd04.prod.outlook.com>
- <DB6PR0401MB243883AEA75F615A0768D03E8F3B0@DB6PR0401MB2438.eurprd04.prod.outlook.com>
-In-Reply-To: <DB6PR0401MB243883AEA75F615A0768D03E8F3B0@DB6PR0401MB2438.eurprd04.prod.outlook.com>
-From:   Li Yang <leoyang.li@nxp.com>
-Date:   Tue, 22 Sep 2020 17:28:43 -0500
-X-Gmail-Original-Message-ID: <CADRPPNSiYnj+H4_CoKKQcT2ROM32XRVHqwGYMAvuTAheTsK2pQ@mail.gmail.com>
-Message-ID: <CADRPPNSiYnj+H4_CoKKQcT2ROM32XRVHqwGYMAvuTAheTsK2pQ@mail.gmail.com>
-Subject: Re: [EXT] Re: [PATCH 2/5] arm64: dts: lx2160a-rdb: remove useless
- property of rtc
-To:     Biwen Li <biwen.li@nxp.com>, V.Sethi@nxp.com, peter.newton@nxp.com
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        "Biwen Li (OSS)" <biwen.li@oss.nxp.com>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jiafei Pan <jiafei.pan@nxp.com>,
-        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <4fdb6000-ced9-1713-cace-8e7b09c6d586@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 10:56 PM Biwen Li <biwen.li@nxp.com> wrote:
+
+
+On 9/6/20 9:16 AM, Tom Rix wrote:
+> On 9/4/20 4:53 PM, Russ Weight wrote:
+>> Extend the Intel Security Manager class driver to
+>> include an update/status sysfs node that can be polled
+>> and read to monitor the progress of an ongoing secure
+>> update. Sysfs_notify() is used to signal transitions
+>> between different phases of the update process.
+>>
+>> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+>> Reviewed-by: Wu Hao <hao.wu@intel.com>
+>> ---
+>>  .../ABI/testing/sysfs-class-ifpga-sec-mgr     | 11 ++++++
+>>  drivers/fpga/ifpga-sec-mgr.c                  | 34 ++++++++++++++++---
+>>  2 files changed, 41 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr b/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
+>> index a476504b7ae9..849ccb2802f8 100644
+>> --- a/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
+>> +++ b/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
+>> @@ -86,3 +86,14 @@ Description:	Write only. Write the filename of an Intel image
+>>  		BMC images, BMC firmware, Static Region images,
+>>  		and Root Entry Hashes, and to cancel Code Signing
+>>  		Keys (CSK).
+>> +
+>> +What: 		/sys/class/ifpga_sec_mgr/ifpga_secX/update/status
+>> +Date:		Sep 2020
+>> +KernelVersion:  5.10
+>> +Contact:	Russ Weight <russell.h.weight@intel.com>
+>> +Description:	Read-only. Returns a string describing the current
+>> +		status of an update. The string will be one of the
+>> +		following: idle, read_file, preparing, writing,
+> For consistency, read_file -> reading
+Yes - I'll make the change.
+>> +		programming. Userspace code can poll on this file,
+>> +		as it will be signaled by sysfs_notify() on each
+>> +		state change.
+>> diff --git a/drivers/fpga/ifpga-sec-mgr.c b/drivers/fpga/ifpga-sec-mgr.c
+>> index 73173badbe96..5fe3d85e2963 100644
+>> --- a/drivers/fpga/ifpga-sec-mgr.c
+>> +++ b/drivers/fpga/ifpga-sec-mgr.c
+>> @@ -139,6 +139,13 @@ static struct attribute *sec_mgr_security_attrs[] = {
+>>  	NULL,
+>>  };
+>>  
+>> +static void update_progress(struct ifpga_sec_mgr *imgr,
+>> +			    enum ifpga_sec_prog new_progress)
+>> +{
+>> +	imgr->progress = new_progress;
+>> +	sysfs_notify(&imgr->dev.kobj, "update", "status");
+>> +}
+>> +
+>>  static void ifpga_sec_dev_error(struct ifpga_sec_mgr *imgr,
+>>  				enum ifpga_sec_err err_code)
+>>  {
+>> @@ -149,7 +156,7 @@ static void ifpga_sec_dev_error(struct ifpga_sec_mgr *imgr,
+>>  static void progress_complete(struct ifpga_sec_mgr *imgr)
+>>  {
+>>  	mutex_lock(&imgr->lock);
+>> -	imgr->progress = IFPGA_SEC_PROG_IDLE;
+>> +	update_progress(imgr, IFPGA_SEC_PROG_IDLE);
+>>  	complete_all(&imgr->update_done);
+>>  	mutex_unlock(&imgr->lock);
+>>  }
+>> @@ -177,14 +184,14 @@ static void ifpga_sec_mgr_update(struct work_struct *work)
+>>  		goto release_fw_exit;
+>>  	}
+>>  
+>> -	imgr->progress = IFPGA_SEC_PROG_PREPARING;
+>> +	update_progress(imgr, IFPGA_SEC_PROG_PREPARING);
+>>  	ret = imgr->iops->prepare(imgr);
+>>  	if (ret) {
+>>  		ifpga_sec_dev_error(imgr, ret);
+>>  		goto modput_exit;
+>>  	}
+>>  
+>> -	imgr->progress = IFPGA_SEC_PROG_WRITING;
+>> +	update_progress(imgr, IFPGA_SEC_PROG_WRITING);
+>>  	size = imgr->remaining_size;
+>>  	while (size) {
+>>  		blk_size = min_t(u32, size, WRITE_BLOCK_SIZE);
+>> @@ -199,7 +206,7 @@ static void ifpga_sec_mgr_update(struct work_struct *work)
+>>  		offset += blk_size;
+>>  	}
+>>  
+>> -	imgr->progress = IFPGA_SEC_PROG_PROGRAMMING;
+>> +	update_progress(imgr, IFPGA_SEC_PROG_PROGRAMMING);
+>>  	ret = imgr->iops->poll_complete(imgr);
+>>  	if (ret) {
+>>  		ifpga_sec_dev_error(imgr, ret);
+>> @@ -251,6 +258,24 @@ static struct attribute_group sec_mgr_security_attr_group = {
+>>  	.is_visible = sec_mgr_visible,
+>>  };
+>>  
+>> +static const char * const sec_mgr_prog_str[] = {
+>> +	"idle",			/* IFPGA_SEC_PROG_IDLE */
+>> +	"read_file",		/* IFPGA_SEC_PROG_READ_FILE */
+> "reading"
+yes
+>> +	"preparing",		/* IFPGA_SEC_PROG_PREPARING */
+>> +	"writing",		/* IFPGA_SEC_PROG_WRITING */
+>> +	"programming"		/* IFPGA_SEC_PROG_PROGRAMMING */
+>> +};
+>> +
+>> +static ssize_t
+>> +status_show(struct device *dev, struct device_attribute *attr, char *buf)
+>> +{
+>> +	struct ifpga_sec_mgr *imgr = to_sec_mgr(dev);
+>> +
+>> +	return sprintf(buf, "%s\n", (imgr->progress < IFPGA_SEC_PROG_MAX) ?
+>> +		       sec_mgr_prog_str[imgr->progress] : "unknown-status");
+> when imgr->progress is unknown, should there be a dev_warn ?
+Yes, this is a case that should not happen so it probably warrants something in
+the kernel log. I'll add that.
 >
-> >
-> >
-> >
-> > > -----Original Message-----
-> > > From: Biwen Li <biwen.li@nxp.com>
-> > > Sent: Monday, September 21, 2020 10:13 PM
-> > > To: Shawn Guo <shawnguo@kernel.org>; Biwen Li (OSS)
-> > > <biwen.li@oss.nxp.com>
-> > > Cc: alexandre.belloni@bootlin.com; Leo Li <leoyang.li@nxp.com>;
-> > > robh+dt@kernel.org; mark.rutland@arm.com; devicetree@vger.kernel.org;
-> > > linux-kernel@vger.kernel.org; Jiafei Pan <jiafei.pan@nxp.com>; linux-
-> > > rtc@vger.kernel.org
-> > > Subject: RE: [EXT] Re: [PATCH 2/5] arm64: dts: lx2160a-rdb: remove
-> > > useless property of rtc
-> > >
-> > > >
-> > > > Caution: EXT Email
-> > > >
-> > > > On Tue, Sep 15, 2020 at 03:32:10PM +0800, Biwen Li wrote:
-> > > > > From: Biwen Li <biwen.li@nxp.com>
-> > > > >
-> > > > > Remove useless property interrupts of rtc
-> > > > >
-> > > > > Signed-off-by: Biwen Li <biwen.li@nxp.com>
-> > > > > ---
-> > > > >  arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts | 2 --
-> > > > >  1 file changed, 2 deletions(-)
-> > > > >
-> > > > > diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-> > > > > b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-> > > > > index dce79018d397..e9e982176e07 100644
-> > > > > --- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-> > > > > +++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-> > > > > @@ -171,8 +171,6 @@
-> > > > >       rtc@51 {
-> > > > >               compatible = "nxp,pcf2129";
-> > > > >               reg = <0x51>;
-> > > > > -             // IRQ10_B
-> > > > > -             interrupts = <0 150 0x4>;
-> > > >
-> > > > If it's a correct description of hardware, I do not see why we would
-> > > > need to remove it.
-> > > Hi Shawn,
-> > >
-> > > Don't need use the interrupt, only read time from rtc.
-> >
-> > User probably will choose to use the alarm feature of the RTC and need the
-> > interrupt property.  Is there any issue when the interrupt property is present?
-> Generic interrupt controller on layerscape only support  IRQ_TYPE_LEVEL_HIGH and  IRQ_TYPE_EDGE_RISING(except SoC LS1043A, LS1046A),
-> Not support IRQ_TYPE_LEVEL_LOW,
-
-That is not true.  Although the GIC SPI only deals with level high and
-rising edge, there is a separate IRQCR register on LX2160 that can
-invert external interrupt.  If the current LX2160 code doesn't support
-that, we need to fix it.  Adding Varun for this.  We probably can
-extend the existing drivers/irqchip/irq-ls-extirq.c driver to support
-LX2160.
-
-And btw, the interrupt number 150 is obviously wrong too.  We probably
-can remove it temporarily before the external interrupt is properly
-supported on lx2160.
-
-> In drivers/rtc/rtc-pcf2127.c
-> ret = devm_request_threaded_irq(dev, alarm_irq, NULL,
-> pcf2127_rtc_irq,
-> IRQF_TRIGGER_LOW | IRQF_ONESHOT,
-> dev_name(dev), dev);
+> Tom
 >
-> >
-> > >
-> > > Best Regards,
-> > > Biwen Li
-> > > >
-> > > > Shawn
-> > > >
-> > > > >       };
-> > > > >  };
-> > > > >
-> > > > > --
-> > > > > 2.17.1
-> > > > >
+>> +}
+>> +static DEVICE_ATTR_RO(status);
+>> +
+>>  static ssize_t filename_store(struct device *dev, struct device_attribute *attr,
+>>  			      const char *buf, size_t count)
+>>  {
+>> @@ -288,6 +313,7 @@ static DEVICE_ATTR_WO(filename);
+>>  
+>>  static struct attribute *sec_mgr_update_attrs[] = {
+>>  	&dev_attr_filename.attr,
+>> +	&dev_attr_status.attr,
+>>  	NULL,
+>>  };
+>>  
+
