@@ -2,149 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E655273CEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 10:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC971273CF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 10:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726572AbgIVIEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 04:04:34 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:58859 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726559AbgIVIEd (ORCPT
+        id S1726578AbgIVIHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 04:07:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726334AbgIVIHI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 04:04:33 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200922080432euoutp02eb069c6eacef4ba3b38099e09f2068b6~3DHEXMW3k1086510865euoutp02j
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 08:04:32 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200922080432euoutp02eb069c6eacef4ba3b38099e09f2068b6~3DHEXMW3k1086510865euoutp02j
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1600761872;
-        bh=t5JgHuaA0LpHPq4LbftovBXGuGuzQ1cQIB+yPo9jjcs=;
-        h=Subject:To:From:Date:In-Reply-To:References:From;
-        b=dF+Dqn99CopSxq1ozccMHygJgkX9xFlCP23wGeXqtrS5UeMsxhJMFW6R7ljaeCwFs
-         VnUqqKUREeeFzTOpWEhH0Y0hCcNFR5l7jk7jFoyJ5QBk6FwJIBws86b7gVizntUofB
-         Fw+kr57Ksb+jtcfsi4fk4XKXNcoxuPThG/hnbCHM=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200922080432eucas1p2937967313737d3aacd37477a069791f9~3DHEHaiiS2319723197eucas1p2b;
-        Tue, 22 Sep 2020 08:04:32 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 76.DC.06318.F00B96F5; Tue, 22
-        Sep 2020 09:04:31 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200922080431eucas1p23ff07fa3bb202e7d3ab90a55aa833d48~3DHDqRS-x0085000850eucas1p2v;
-        Tue, 22 Sep 2020 08:04:31 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200922080431eusmtrp1d7fab84d77fa82174f81f89cb23a7f5e~3DHDplAdy1146911469eusmtrp1V;
-        Tue, 22 Sep 2020 08:04:31 +0000 (GMT)
-X-AuditID: cbfec7f5-38bff700000018ae-49-5f69b00f8bbf
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 39.71.06314.F00B96F5; Tue, 22
-        Sep 2020 09:04:31 +0100 (BST)
-Received: from [106.210.88.143] (unknown [106.210.88.143]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200922080431eusmtip1759b71075b7ca2ba90c31bf9521834c9~3DHDLncnh0969309693eusmtip1O;
-        Tue, 22 Sep 2020 08:04:31 +0000 (GMT)
-Subject: Re: [PATCH] clk: s2mps11: initialize driver via
- module_platform_driver
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Sangbeom Kim <sbkim73@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <fc06b97d-a2b4-f263-fba4-505dfc75c43f@samsung.com>
-Date:   Tue, 22 Sep 2020 10:04:30 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.12.0
+        Tue, 22 Sep 2020 04:07:08 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B0BBC061755;
+        Tue, 22 Sep 2020 01:07:08 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id m17so18631896ioo.1;
+        Tue, 22 Sep 2020 01:07:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dI2SOSDVGxObAVcXLG7drnzqQGI8RgnuHUnXIEvu+us=;
+        b=ce1QZHfPYr5zB923i5Vse/ct0CsPz2mKEtK2BbKoGHWENzw/eroXjVr04Ewvb2hGJS
+         QftNRfFEtfhs6OKUpC2ikzJAlZsa5r8xvteqqh4LEdNI+fgTY/I/WgLziY0QpPKVLEkb
+         GG21E8+R4F7QBCrhWRnnz9XX/jPxaMKK3QjvEXC/4OyyQ0XvGH3tTppXeBz54NRX2Clk
+         P5Cj3fSL5NObe+IXN+Xaj5LGNyn3qX5hrv5tR12V1FQ4ExbmniCg+wgzL9F+GGvyzcj1
+         u9yPJ5iY6r126F19PpbOXJqj6zYd4X2giCbe9fUrSLDp/sXu3N7X8lCc5jGBkUojuD+w
+         BG5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dI2SOSDVGxObAVcXLG7drnzqQGI8RgnuHUnXIEvu+us=;
+        b=XaAbCcHqtg2p3eFp3TSEc9lAtI5Nf/7amY7P0HTrS1RlALsSEryDM0AjkN0OUCATYF
+         hpWhhpnu16vf26eSbHrTqKlhYUwVIHLJFNU8rInS6bgmTZjsyvvZa/TkrlFpDEVSDdBd
+         n7UvXK5au+gK/BM6zEYHkJIobo6iDkdg4I/yHSly0gB3Kzyqc01rJwuNXQppjcAl6prO
+         SPhll63GuXkOOlWSC9oloydQN0oiqcOSTXGT8BQ+z9WovRo42vabqNLqoURxmVDnfpcU
+         ekF1IvKjAVto/6IP+TORojf8TwaVsJAmfA+Z53aJ2UWSKeaPn1VM5ISujSLj+COBPoi3
+         ac1A==
+X-Gm-Message-State: AOAM533SSnEym4XNFHPNCMQF/PmlKGPQQC9D9CrLLfZRgaoGAs6rr1ew
+        szqlB23fiJ72g6LnaV4CwhI4TvtAzZUyTSsgKoU=
+X-Google-Smtp-Source: ABdhPJxagr4gGtyErOUVlTZvQUbPaIuBkq84e2wnan3wMmEaYz2iq80yB0igTr3V5Jt0SIm8xZQL9HWaX00/Y7JcFoo=
+X-Received: by 2002:a5e:dc08:: with SMTP id b8mr2463838iok.13.1600762027413;
+ Tue, 22 Sep 2020 01:07:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200921203558.19554-1-krzk@kernel.org>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrOKsWRmVeSWpSXmKPExsWy7djP87r8GzLjDX5usbbYOGM9q8X58xvY
-        LT723GO1uLxrDpvFjPP7mCwunnK1uLjiC5PFv2sbWRw4PN7faGX32LSqk82jb8sqRo/Pm+QC
-        WKK4bFJSczLLUov07RK4Mr5fnMRU0MtTceXTHtYGxhlcXYycHBICJhKHnu1jA7GFBFYwSrQ2
-        mELYXxglnq2Wh7A/M0rsOK4MU79jRSN7FyMXUHw5o8TuZetZIZz3jBKHv35jBKkSFgiU+H3s
-        OhNIQkRgK5PExhmdYCvYBAwlut52gdm8AnYSkw9sZAKxWQRUJZZc6gFrFhWIkzh26hELRI2g
-        xMmZT4BsDg5OAVOJHe85QcLMAvIS29/OYYawxSVuPZkPtktCYBW7xOPj71khTnWRuLRnBROE
-        LSzx6vgWdghbRuL05B4WiIZmRomH59ayQzg9jBKXm2YwQlRZS9w594sNZDOzgKbE+l36EGFH
-        iWfPvjKDhCUE+CRuvBWEOIJPYtK26VBhXomONiGIajWJWcfXwa09eOESVImHxN17BRMYFWch
-        eXIWks9mIflsFsIJCxhZVjGKp5YW56anFhvnpZbrFSfmFpfmpesl5+duYgQmn9P/jn/dwbjv
-        T9IhRgEORiUe3gNTM+KFWBPLiitzDzFKcDArifA6nT0dJ8SbklhZlVqUH19UmpNafIhRmoNF
-        SZzXeNHLWCGB9MSS1OzU1ILUIpgsEwenVAOjaefe5nA9bbf/6cfyZa6ybeBmUN7uvfnkjnv6
-        t69vWvP0g+3qx8obdjNMuZn+7Py3vGntH9QZHktsN27btin9985V+R55c3z87q3w0v+TNSNs
-        gZNatnPdtAVXgty5St9JWjIftZhtFtC222E7g5qs66vFtdF1G3eYbbKNDshuM16R27bHlddM
-        iaU4I9FQi7moOBEAqLuKzjoDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrAIsWRmVeSWpSXmKPExsVy+t/xu7r8GzLjDab/UrHYOGM9q8X58xvY
-        LT723GO1uLxrDpvFjPP7mCwunnK1uLjiC5PFv2sbWRw4PN7faGX32LSqk82jb8sqRo/Pm+QC
-        WKL0bIryS0tSFTLyi0tslaINLYz0DC0t9IxMLPUMjc1jrYxMlfTtbFJSczLLUov07RL0Mr5f
-        nMRU0MtTceXTHtYGxhlcXYycHBICJhI7VjSydzFycQgJLGWU+Hb1PhtEQkbi5LQGVghbWOLP
-        tS42iKK3jBLTf+xnBkkICwRK/D52nQkkISKwlUmib3c7WEJIoINRYv87FxCbTcBQouttF9hU
-        XgE7ickHNjKB2CwCqhJLLvUwgtiiAnESZ3peQNUISpyc+YSli5GDg1PAVGLHe06QMLOAmcS8
-        zQ+ZIWx5ie1v50DZ4hK3nsxnmsAoOAtJ9ywkLbOQtMxC0rKAkWUVo0hqaXFuem6xoV5xYm5x
-        aV66XnJ+7iZGYGxtO/Zz8w7GSxuDDzEKcDAq8fAemJoRL8SaWFZcmXuIUYKDWUmE1+ns6Tgh
-        3pTEyqrUovz4otKc1OJDjKZAv01klhJNzgfGfV5JvKGpobmFpaG5sbmxmYWSOG+HwMEYIYH0
-        xJLU7NTUgtQimD4mDk6pBsYJ33327vCdM3PuB9MPWeI7mI9e/xe52+yw4PziKdmpAaXWB6zC
-        9kYefBN86ocIS9cc1SfCZTm3w7ZLXDL12VdnI1XivP9w0cVfbgeSp3VUPN3dfC/I9LehqtWP
-        bZO6eJYmazQFvjrjO+/jjlLDXEFnUXGRhl7OV/6nmxJjt8pOWOToNM0qea4SS3FGoqEWc1Fx
-        IgC1xMfPwwIAAA==
-X-CMS-MailID: 20200922080431eucas1p23ff07fa3bb202e7d3ab90a55aa833d48
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200921203614eucas1p19b9203eb6bbd7b80647f7e48705c731a
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200921203614eucas1p19b9203eb6bbd7b80647f7e48705c731a
-References: <CGME20200921203614eucas1p19b9203eb6bbd7b80647f7e48705c731a@eucas1p1.samsung.com>
-        <20200921203558.19554-1-krzk@kernel.org>
+References: <20200921080255.15505-1-zangchunxin@bytedance.com>
+ <20200921081200.GE12990@dhcp22.suse.cz> <CALOAHbDKvT58UFjxy770VDxO0VWABRYb7GVwgw+NiJp62mB06w@mail.gmail.com>
+ <20200921110505.GH12990@dhcp22.suse.cz> <CALOAHbCDXwjN+WDSGVv+G3ho-YRRPjAAqMJBtyxeGHH6utb5ew@mail.gmail.com>
+ <20200921113646.GJ12990@dhcp22.suse.cz> <CALOAHbCker64WEW9w4oq8=avA6oKf3-Jrn-vOOgkpqkV3g+CYA@mail.gmail.com>
+ <20200922072733.GT12990@dhcp22.suse.cz>
+In-Reply-To: <20200922072733.GT12990@dhcp22.suse.cz>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Tue, 22 Sep 2020 16:06:31 +0800
+Message-ID: <CALOAHbCvRA61NbamdKSxLoy4eNqR6G_1OA=zEjb7Mu0Yh9O0sg@mail.gmail.com>
+Subject: Re: [PATCH] mm/memcontrol: Add the drop_cache interface for cgroup v2
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     zangchunxin@bytedance.com, Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, lizefan@huawei.com,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kafai@fb.com,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        andriin@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
+        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
-
-On 21.09.2020 22:35, Krzysztof Kozlowski wrote:
-> The driver was using subsys_initcall() because in old times deferred
-> probe was not supported everywhere and specific ordering was needed.
-> Since probe deferral works fine and specific ordering is discouraged
-> (hides dependencies between drivers and couples their boot order), the
-> driver can be converted to regular module_platform_driver.
+On Tue, Sep 22, 2020 at 3:27 PM Michal Hocko <mhocko@suse.com> wrote:
 >
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> ---
->   drivers/clk/clk-s2mps11.c | 13 +------------
->   1 file changed, 1 insertion(+), 12 deletions(-)
+> On Tue 22-09-20 12:20:52, Yafang Shao wrote:
+> > On Mon, Sep 21, 2020 at 7:36 PM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Mon 21-09-20 19:23:01, Yafang Shao wrote:
+> > > > On Mon, Sep 21, 2020 at 7:05 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > > >
+> > > > > On Mon 21-09-20 18:55:40, Yafang Shao wrote:
+> > > > > > On Mon, Sep 21, 2020 at 4:12 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > > > > >
+> > > > > > > On Mon 21-09-20 16:02:55, zangchunxin@bytedance.com wrote:
+> > > > > > > > From: Chunxin Zang <zangchunxin@bytedance.com>
+> > > > > > > >
+> > > > > > > > In the cgroup v1, we have 'force_mepty' interface. This is very
+> > > > > > > > useful for userspace to actively release memory. But the cgroup
+> > > > > > > > v2 does not.
+> > > > > > > >
+> > > > > > > > This patch reuse cgroup v1's function, but have a new name for
+> > > > > > > > the interface. Because I think 'drop_cache' may be is easier to
+> > > > > > > > understand :)
+> > > > > > >
+> > > > > > > This should really explain a usecase. Global drop_caches is a terrible
+> > > > > > > interface and it has caused many problems in the past. People have
+> > > > > > > learned to use it as a remedy to any problem they might see and cause
+> > > > > > > other problems without realizing that. This is the reason why we even
+> > > > > > > log each attempt to drop caches.
+> > > > > > >
+> > > > > > > I would rather not repeat the same mistake on the memcg level unless
+> > > > > > > there is a very strong reason for it.
+> > > > > > >
+> > > > > >
+> > > > > > I think we'd better add these comments above the function
+> > > > > > mem_cgroup_force_empty() to explain why we don't want to expose this
+> > > > > > interface in cgroup2, otherwise people will continue to send this
+> > > > > > proposal without any strong reason.
+> > > > >
+> > > > > I do not mind people sending this proposal.  "V1 used to have an
+> > > > > interface, we need it in v2 as well" is not really viable without
+> > > > > providing more reasoning on the specific usecase.
+> > > > >
+> > > > > _Any_ patch should have a proper justification. This is nothing really
+> > > > > new to the process and I am wondering why this is coming as a surprise.
+> > > > >
+> > > >
+> > > > Container users always want to drop cache in a specific container,
+> > > > because they used to use drop_caches to fix memory pressure issues.
+> > >
+> > > This is exactly the kind of problems we have seen in the past. There
+> > > should be zero reason to addre potential reclaim problems by dropping
+> > > page cache on the floor. There is a huge cargo cult about this
+> > > procedure and I have seen numerous reports when people complained about
+> > > performance afterwards just to learn that the dropped page cache was one
+> > > of the resons for that.
+> > >
+> > > > Although drop_caches can cause some unexpected issues, it could also
+> > > > fix some issues.
+> > >
+> > > "Some issues" is way too general. We really want to learn about those
+> > > issues and address them properly.
+> > >
+> >
+> > One use case in our production environment is that some of our tasks
+> > become very latency sensitive from 7am to 10am, so before these tasks
+> > become active we will use drop_caches to drop page caches generated by
+> > other tasks at night to avoid these tasks triggering direct reclaim.
+> >
+> > The best way to do it is to fix the latency in direct reclaim, but it
+> > will take great effort.
 >
-> diff --git a/drivers/clk/clk-s2mps11.c b/drivers/clk/clk-s2mps11.c
-> index 2ce370c804aa..aa21371f9104 100644
-> --- a/drivers/clk/clk-s2mps11.c
-> +++ b/drivers/clk/clk-s2mps11.c
-> @@ -267,18 +267,7 @@ static struct platform_driver s2mps11_clk_driver = {
->   	.remove = s2mps11_clk_remove,
->   	.id_table = s2mps11_clk_id,
->   };
-> -
-> -static int __init s2mps11_clk_init(void)
-> -{
-> -	return platform_driver_register(&s2mps11_clk_driver);
-> -}
-> -subsys_initcall(s2mps11_clk_init);
-> -
-> -static void __exit s2mps11_clk_cleanup(void)
-> -{
-> -	platform_driver_unregister(&s2mps11_clk_driver);
-> -}
-> -module_exit(s2mps11_clk_cleanup);
-> +module_platform_driver(s2mps11_clk_driver);
->   
->   MODULE_DESCRIPTION("S2MPS11 Clock Driver");
->   MODULE_AUTHOR("Yadwinder Singh Brar <yadi.brar@samsung.com>");
+> What is the latency triggered by the memory reclaim? It should be mostly
+> a clean page cache right as drop_caches only drops clean pages. Or is
+> this more about [id]cache? Do you have any profiles where is the time
+> spent?
+>
 
-Best regards
+Yes, we have analyzed the issues in the direct reclaim, but that is
+not the point.
+The point is that each case may take us several days to analyze, while
+the user can't wait, so they will use drop_caches to workaround it
+until we find the solution.
+
+> > while drop_caches give us an easier way to achieve the same goal.
+>
+> It papers over real problems and that is my earlier comment about.
+>
+> > IOW, drop_caches give the users an option to achieve their goal before
+> > they find a better solution.
+>
+> You can achieve the same by a different configuration already. You can
+> isolate your page cache hungry overnight (likely a backup) workload into
+> its own memcg. You can either use an aggressive high limit during the
+> run or simply reduce the high/max limit after the work is done.
+>
+> If you cannot isolate that easily then you can lower high limit
+> temporarily before your peak workload.
+>
+
+Right, there're many better solutions if you have _enough_ time.
+But as I described above, the user needs to fix it ASAP before you
+find a better solution.
+
+> Really throwing all the page cache away just to prepare for a peak
+> workload sounds like a bad idea to me. You are potentially throwing
+> data that you have to spend time to refault again.
+
+If some tasks work at night but idle at day, while the others work at
+day but idle at night, it is not bad to drop all caches when you
+switch the workload.
+It may be useless to drop these caches, but these caches are really
+useless for the next workload.
+
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+Thanks
+Yafang
