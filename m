@@ -2,177 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 027842740C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 312EE2740BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:26:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726586AbgIVL1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 07:27:08 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:65144 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726454AbgIVL1G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 07:27:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1600774026; x=1632310026;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   in-reply-to:content-transfer-encoding;
-  bh=g3JRr23a6mY+Y62r/GZOjEp5HQn72fVEKBXRryfrcNw=;
-  b=F3MsGnXMafsGQs0Ejhj7xoQe2BKE8oJj0h7BZLJhbOIPLaGt+9kDhQTD
-   iDrWhVHin0ARXwnP0VCE7srHxvQp6th/4PhYeJWyJ2FTNvOvrYF3EWI6h
-   XS9/pjtdc7rVqCEOaYk3EOgF78sE6BwX1MONp1ss+pylY+VPbElkUIJ1D
-   g=;
-X-IronPort-AV: E=Sophos;i="5.77,290,1596499200"; 
-   d="scan'208";a="56930374"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 22 Sep 2020 11:27:05 +0000
-Received: from EX13D31EUA004.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com (Postfix) with ESMTPS id C017BA20B0;
-        Tue, 22 Sep 2020 11:27:02 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.160.244) by
- EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 22 Sep 2020 11:26:55 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>
-CC:     SeongJae Park <sjpark@amazon.com>, <konrad.wilk@oracle.com>,
-        <jgross@suse.com>, SeongJae Park <sjpark@amazon.de>,
-        <axboe@kernel.dk>, <aliguori@amazon.com>, <amit@kernel.org>,
-        <mheyne@amazon.de>, <pdurrant@amazon.co.uk>,
-        <linux-block@vger.kernel.org>, <xen-devel@lists.xenproject.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] xen-blkback: add a parameter for disabling of persistent grants
-Date:   Tue, 22 Sep 2020 13:26:38 +0200
-Message-ID: <20200922112638.14238-1-sjpark@amazon.com>
+        id S1726578AbgIVLZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 07:25:29 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13822 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726454AbgIVLZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 07:25:27 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id A3E57DF062D1CF9B7B66;
+        Tue, 22 Sep 2020 19:25:24 +0800 (CST)
+Received: from localhost.localdomain (10.175.118.36) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 22 Sep 2020 19:25:15 +0800
+From:   Luo bin <luobin9@huawei.com>
+To:     <davem@davemloft.net>
+CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <yin.yinshi@huawei.com>, <cloud.wangxiaoyun@huawei.com>,
+        <chiqijun@huawei.com>, <zengweiliang.zengweiliang@huawei.com>
+Subject: [PATCH net] hinic: fix wrong return value of mac-set cmd
+Date:   Tue, 22 Sep 2020 19:26:43 +0800
+Message-ID: <20200922112643.15726-1-luobin9@huawei.com>
 X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20200922111259.GJ19254@Air-de-Roger>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.43.160.244]
-X-ClientProxiedBy: EX13D17UWC001.ant.amazon.com (10.43.162.188) To
- EX13D31EUA004.ant.amazon.com (10.43.165.161)
+Content-Type: text/plain
+X-Originating-IP: [10.175.118.36]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Sep 2020 13:12:59 +0200 "Roger Pau Monné" <roger.pau@citrix.com> wrote:
+It should also be regarded as an error when hw return status=4 for PF's
+setting mac cmd. Only if PF return status=4 to VF should this cmd be
+taken special treatment.
 
-> On Tue, Sep 22, 2020 at 12:52:07PM +0200, SeongJae Park wrote:
-> > From: SeongJae Park <sjpark@amazon.de>
-> > 
-> > Persistent grants feature provides high scalability.  On some small
-> > systems, however, it could incur data copy overheads[1] and thus it is
-> > required to be disabled.  But, there is no option to disable it.  For
-> > the reason, this commit adds a module parameter for disabling of the
-> > feature.
-> > 
-> > [1] https://wiki.xen.org/wiki/Xen_4.3_Block_Protocol_Scalability
-> > 
-> > Signed-off-by: Anthony Liguori <aliguori@amazon.com>
-> > Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> > ---
-> >  .../ABI/testing/sysfs-driver-xen-blkback      |  9 ++++++
-> >  drivers/block/xen-blkback/xenbus.c            | 28 ++++++++++++++-----
-> >  2 files changed, 30 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/Documentation/ABI/testing/sysfs-driver-xen-blkback b/Documentation/ABI/testing/sysfs-driver-xen-blkback
-> > index ecb7942ff146..ac2947b98950 100644
-> > --- a/Documentation/ABI/testing/sysfs-driver-xen-blkback
-> > +++ b/Documentation/ABI/testing/sysfs-driver-xen-blkback
-> > @@ -35,3 +35,12 @@ Description:
-> >                  controls the duration in milliseconds that blkback will not
-> >                  cache any page not backed by a grant mapping.
-> >                  The default is 10ms.
-> > +
-> > +What:           /sys/module/xen_blkback/parameters/feature_persistent
-> > +Date:           September 2020
-> > +KernelVersion:  5.10
-> > +Contact:        SeongJae Park <sjpark@amazon.de>
-> > +Description:
-> > +                Whether to enable the persistent grants feature or not.  Note
-> > +                that this option only takes effect on newly created backends.
-> > +                The default is Y (enable).
-> > diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
-> > index b9aa5d1ac10b..8a95ddd08b13 100644
-> > --- a/drivers/block/xen-blkback/xenbus.c
-> > +++ b/drivers/block/xen-blkback/xenbus.c
-> > @@ -879,6 +879,12 @@ static void reclaim_memory(struct xenbus_device *dev)
-> >  
-> >  /* ** Connection ** */
-> >  
-> > +/* Enable the persistent grants feature. */
-> > +static bool feature_persistent = true;
-> > +module_param(feature_persistent, bool, 0644);
-> > +MODULE_PARM_DESC(feature_persistent,
-> > +		"Enables the persistent grants feature");
-> > +
-> >  /*
-> >   * Write the physical details regarding the block device to the store, and
-> >   * switch to Connected state.
-> > @@ -906,11 +912,15 @@ static void connect(struct backend_info *be)
-> >  
-> >  	xen_blkbk_barrier(xbt, be, be->blkif->vbd.flush_support);
-> >  
-> > -	err = xenbus_printf(xbt, dev->nodename, "feature-persistent", "%u", 1);
-> > -	if (err) {
-> > -		xenbus_dev_fatal(dev, err, "writing %s/feature-persistent",
-> > -				 dev->nodename);
-> > -		goto abort;
-> > +	if (feature_persistent) {
-> > +		err = xenbus_printf(xbt, dev->nodename, "feature-persistent",
-> > +				"%u", feature_persistent);
-> > +		if (err) {
-> > +			xenbus_dev_fatal(dev, err,
-> > +					"writing %s/feature-persistent",
-> > +					dev->nodename);
-> > +			goto abort;
-> > +		}
-> >  	}
-> >  
-> >  	err = xenbus_printf(xbt, dev->nodename, "sectors", "%llu",
-> > @@ -1093,8 +1103,12 @@ static int connect_ring(struct backend_info *be)
-> >  		xenbus_dev_fatal(dev, err, "unknown fe protocol %s", protocol);
-> >  		return -ENOSYS;
-> >  	}
-> > -	pers_grants = xenbus_read_unsigned(dev->otherend, "feature-persistent",
-> > -					   0);
-> > +	if (feature_persistent)
-> > +		pers_grants = xenbus_read_unsigned(dev->otherend,
-> > +				"feature-persistent", 0);
-> > +	else
-> > +		pers_grants = 0;
-> > +
-> 
-> Sorry for not realizing earlier, but looking at it again I think you
-> need to cache the value of feature_persistent when it's first used in
-> the blkback state data, so that it's consistent.
-> 
-> What would happen for example with the following flow (assume a
-> persistent grants enabled frontend):
-> 
-> feature_persistent = false
-> 
-> connect(...)
-> feature-persistent is not written to xenstore
-> 
-> User changes feature_persistent = true
-> 
-> connect_ring(...)
-> pers_grants = true, because feature-persistent is set unconditionally
-> by the frontend and feature_persistent variable is now true.
-> 
-> Then blkback will try to use persistent grants and the whole
-> connection will malfunction because the frontend won't.
+Signed-off-by: Luo bin <luobin9@huawei.com>
+---
+ drivers/net/ethernet/huawei/hinic/hinic_port.c  |  6 +++---
+ drivers/net/ethernet/huawei/hinic/hinic_sriov.c | 12 ++----------
+ 2 files changed, 5 insertions(+), 13 deletions(-)
 
-Ah, you're right.  I should also catch this before but didn't, sorry.
+diff --git a/drivers/net/ethernet/huawei/hinic/hinic_port.c b/drivers/net/ethernet/huawei/hinic/hinic_port.c
+index 02cd635d6914..eb97f2d6b1ad 100644
+--- a/drivers/net/ethernet/huawei/hinic/hinic_port.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_port.c
+@@ -58,9 +58,9 @@ static int change_mac(struct hinic_dev *nic_dev, const u8 *addr,
+ 				 sizeof(port_mac_cmd),
+ 				 &port_mac_cmd, &out_size);
+ 	if (err || out_size != sizeof(port_mac_cmd) ||
+-	    (port_mac_cmd.status  &&
+-	    port_mac_cmd.status != HINIC_PF_SET_VF_ALREADY &&
+-	    port_mac_cmd.status != HINIC_MGMT_STATUS_EXIST)) {
++	    (port_mac_cmd.status &&
++	     (port_mac_cmd.status != HINIC_PF_SET_VF_ALREADY || !HINIC_IS_VF(hwif)) &&
++	     port_mac_cmd.status != HINIC_MGMT_STATUS_EXIST)) {
+ 		dev_err(&pdev->dev, "Failed to change MAC, err: %d, status: 0x%x, out size: 0x%x\n",
+ 			err, port_mac_cmd.status, out_size);
+ 		return -EFAULT;
+diff --git a/drivers/net/ethernet/huawei/hinic/hinic_sriov.c b/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
+index 4d63680f2143..f8a26459ff65 100644
+--- a/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
+@@ -38,8 +38,7 @@ static int hinic_set_mac(struct hinic_hwdev *hwdev, const u8 *mac_addr,
+ 	err = hinic_port_msg_cmd(hwdev, HINIC_PORT_CMD_SET_MAC, &mac_info,
+ 				 sizeof(mac_info), &mac_info, &out_size);
+ 	if (err || out_size != sizeof(mac_info) ||
+-	    (mac_info.status && mac_info.status != HINIC_PF_SET_VF_ALREADY &&
+-	    mac_info.status != HINIC_MGMT_STATUS_EXIST)) {
++	    (mac_info.status && mac_info.status != HINIC_MGMT_STATUS_EXIST)) {
+ 		dev_err(&hwdev->func_to_io.hwif->pdev->dev, "Failed to set MAC, err: %d, status: 0x%x, out size: 0x%x\n",
+ 			err, mac_info.status, out_size);
+ 		return -EIO;
+@@ -503,8 +502,7 @@ struct hinic_sriov_info *hinic_get_sriov_info_by_pcidev(struct pci_dev *pdev)
+ 
+ static int hinic_check_mac_info(u8 status, u16 vlan_id)
+ {
+-	if ((status && status != HINIC_MGMT_STATUS_EXIST &&
+-	     status != HINIC_PF_SET_VF_ALREADY) ||
++	if ((status && status != HINIC_MGMT_STATUS_EXIST) ||
+ 	    (vlan_id & CHECK_IPSU_15BIT &&
+ 	     status == HINIC_MGMT_STATUS_EXIST))
+ 		return -EINVAL;
+@@ -546,12 +544,6 @@ static int hinic_update_mac(struct hinic_hwdev *hwdev, u8 *old_mac,
+ 		return -EINVAL;
+ 	}
+ 
+-	if (mac_info.status == HINIC_PF_SET_VF_ALREADY) {
+-		dev_warn(&hwdev->hwif->pdev->dev,
+-			 "PF has already set VF MAC. Ignore update operation\n");
+-		return HINIC_PF_SET_VF_ALREADY;
+-	}
+-
+ 	if (mac_info.status == HINIC_MGMT_STATUS_EXIST)
+ 		dev_warn(&hwdev->hwif->pdev->dev, "MAC is repeated. Ignore update operation\n");
+ 
+-- 
+2.17.1
 
-> 
-> The other option is to prevent changing the variable when there are
-> blkback instances already running.
-
-I think storing the option value in xenstore would be simpler.  That said, if
-you prefer this way, please let me know.
-
-
-Thanks,
-SeongJae Park
