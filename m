@@ -2,69 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8957627445B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 16:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E85227445E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 16:36:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726621AbgIVOfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 10:35:10 -0400
-Received: from verein.lst.de ([213.95.11.211]:44905 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726566AbgIVOfJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 10:35:09 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id DB79767373; Tue, 22 Sep 2020 16:35:06 +0200 (CEST)
-Date:   Tue, 22 Sep 2020 16:35:06 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, hch@lst.de,
-        Uladzislau Rezki <urezki@gmail.com>
-Subject: Re: [PATCH 2/2] vfree: Update documentation
-Message-ID: <20200922143506.GA26664@lst.de>
-References: <20200921224628.20704-1-willy@infradead.org> <20200921224628.20704-2-willy@infradead.org>
+        id S1726656AbgIVOgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 10:36:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726566AbgIVOgI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 10:36:08 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3F4DC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 07:36:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=u3YeIXCT+AG4vi1F0coTjYeWDIv5hXBb8Fo6mRGjaEQ=; b=S1ylR72KAde9/JozVWndgysyCo
+        zrOd6tCZswcFuJIwKAu89x4A8JIBKHl98dBDgJyYg2rf8T5eoW26aLR/ZdxUu7jPGiDrZHDZ6YBYk
+        lLY1HgX6sDbwJ+QZmrTh4JKOvcWp7jjqE7giQLRsEl1Aeitc0pf+Eyk3h7QTYa/dlt+Six5R6RI63
+        KvZGYOhoDm/prGFwcJxMtEkPI+llcUIdMIYvEqp0A2FBS2rcFpuiszeuKBYGarEwXIJCF5DLD0sks
+        xW4wKVqlEs3CaW2600c28KwpWr0gvE3r92zdwzeSfGwCJaJ8DJ7wkzkrXFSV7ejDBK/eK9uQtAqrQ
+        JOSJMqnA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kKjOh-0000kW-QN; Tue, 22 Sep 2020 14:35:59 +0000
+Date:   Tue, 22 Sep 2020 15:35:59 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Nick Piggin <npiggin@suse.de>, Hugh Dickins <hughd@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Daisuke Nishimura <nishimura@mxp.nes.nec.co.jp>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] page_alloc: Fix freeing non-compound pages
+Message-ID: <20200922143559.GF32101@casper.infradead.org>
+References: <20200922140017.26387-1-willy@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200921224628.20704-2-willy@infradead.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200922140017.26387-1-willy@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 11:46:28PM +0100, Matthew Wilcox (Oracle) wrote:
->  * Document that you can call vfree() on an address returned from vmap()
->  * Remove the note about the minimum size -- the minimum size of a vmalloc
->    allocation is one page
->  * Add a Context: section
->  * Fix capitalisation
->  * Reword the prohibition on calling from NMI context to avoid a double
->    negative
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  mm/vmalloc.c | 20 ++++++++++----------
->  1 file changed, 10 insertions(+), 10 deletions(-)
-> 
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index 3893fc8915c4..942a44bdeec6 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -2313,20 +2313,20 @@ static void __vfree(const void *addr)
+On Tue, Sep 22, 2020 at 03:00:17PM +0100, Matthew Wilcox (Oracle) wrote:
+>  void __free_pages(struct page *page, unsigned int order)
+>  {
+>  	if (put_page_testzero(page))
+>  		free_the_page(page, order);
+> +	else
+> +		while (order-- > 0)
+> +			free_the_page(page + (1 << order), order);
 >  }
->  
->  /**
-> - * vfree - release memory allocated by vmalloc()
-> - * @addr:  memory base address
-> + * vfree - Release memory allocated by vmalloc()
-> + * @addr:  Memory base address
->   *
->   * Free the virtually continuous memory area starting at @addr, as
-> + * obtained from vmalloc(), vmalloc_32() or __vmalloc().  If called
-> + * on an @addr obtained from vmap(), it will put one refcount on each
-> + * mapped page, which will free the page if this is the last refcount
-> + * on the page.  If @addr is NULL, no operation is performed.
+>  EXPORT_SYMBOL(__free_pages);
 
-This reads a little confusing.  First it only allows vmalloc* and
-then it mentions vmap in the next sentence.  And what about
-vmalloc_32_user, vzalloc_node, vmalloc_node, vmalloc_user, vzalloc and
-__vmalloc_node?
+... a three line patch and one of them is wrong.
+
+-       else
++       else if (!PageHead(page))
+
+Anyone got a smart idea about how to _test_ this code path?  I'm
+wondering about loading one kernel module which wanders through memmap
+calling
+	if (page_cache_get_speculative(page)) put_page(page);
+and another kernel module that calls
+	__free_pages(alloc_page(GFP_KERNEL, 1), 1);
+
+and putting in a printk to let me know when we hit it.
