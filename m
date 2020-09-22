@@ -2,75 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2503B274476
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 16:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39BDC27447D
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 16:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726676AbgIVOlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 10:41:07 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48658 "EHLO mx2.suse.de"
+        id S1726662AbgIVOnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 10:43:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726507AbgIVOlG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 10:41:06 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E5063ACC2;
-        Tue, 22 Sep 2020 14:41:41 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id AD317DA6E9; Tue, 22 Sep 2020 16:39:49 +0200 (CEST)
-Date:   Tue, 22 Sep 2020 16:39:49 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Filipe Manana <fdmanana@gmail.com>
-Cc:     Julia Lawall <julia.lawall@inria.fr>,
-        Filipe Manana <fdmanana@suse.com>,
-        Chris Mason <chris.mason@fusionio.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kbuild-all@lists.01.org
-Subject: Re: [PATCH] btrfs: fix memdup.cocci warnings
-Message-ID: <20200922143949.GB6756@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Filipe Manana <fdmanana@gmail.com>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Filipe Manana <fdmanana@suse.com>,
-        Chris Mason <chris.mason@fusionio.com>,
-        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kbuild-all@lists.01.org
-References: <alpine.DEB.2.22.394.2009221219560.2659@hadrien>
- <CAL3q7H6e7gQWs9X-N4RMxK+UhZKHGxNmP0-q+B6x19uyH9TOwA@mail.gmail.com>
+        id S1726507AbgIVOnO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 10:43:14 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 884782395C;
+        Tue, 22 Sep 2020 14:43:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600785794;
+        bh=m1hM4c6dFFDnao7F9PZYKBupx4rTzbl45tccKtkOQjU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VmuJKVX8oP36C9cT3aUT+BZ+z1eEDAm3kR764yQxu4qROx0SIWjH1yFmjoYMzg57W
+         ViFCLl3xNJk57KtrYDbEGraAFYAOppbTA+wz4KCHULRmFtfyPP/uaUfCy2J33YXGOX
+         FNiDelp7905draUXgZSWkW2KtL/9De70llt0R5fI=
+Date:   Tue, 22 Sep 2020 15:42:21 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        patches@opensource.cirrus.com, alsa-devel@alsa-project.org
+Subject: Re: [PATCH AUTOSEL 5.8 03/20] ASoC: wm8994: Skip setting of the
+ WM8994_MICBIAS register for WM1811
+Message-ID: <20200922144221.GW4792@sirena.org.uk>
+References: <20200921144027.2135390-1-sashal@kernel.org>
+ <20200921144027.2135390-3-sashal@kernel.org>
+ <20200921150701.GA12231@sirena.org.uk>
+ <20200922142515.GN2431@sasha-vm>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="gvPGo+RAdjC9O5ul"
 Content-Disposition: inline
-In-Reply-To: <CAL3q7H6e7gQWs9X-N4RMxK+UhZKHGxNmP0-q+B6x19uyH9TOwA@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20200922142515.GN2431@sasha-vm>
+X-Cookie: Love thy neighbor, tune thy piano.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 03:05:59PM +0100, Filipe Manana wrote:
-> On Tue, Sep 22, 2020 at 11:29 AM Julia Lawall <julia.lawall@inria.fr> wrote:
-> >
-> > From: kernel test robot <lkp@intel.com>
-> >
-> > fs/btrfs/send.c:3854:8-15: WARNING opportunity for kmemdup
-> >
-> >  Use kmemdup rather than duplicating its implementation
-> >
-> > Generated by: scripts/coccinelle/api/memdup.cocci
-> >
-> > Fixes: 28314eb24e6c ("btrfs: send, recompute reference path after orphanization of a directory")
-> > Signed-off-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
-> 
-> Since this is not in Linus' tree yet, it can be folded in the original patch.
-> David, can you do that when you pick it?
 
-Yes, I'll do that.
+--gvPGo+RAdjC9O5ul
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Btw, isn't the Fixes tag meant only for bug fixes? This is a pure
-> cleanup afaics.
+On Tue, Sep 22, 2020 at 10:25:15AM -0400, Sasha Levin wrote:
+> On Mon, Sep 21, 2020 at 04:07:01PM +0100, Mark Brown wrote:
 
-Agreed.
+> > This is pretty much a cosmetic change - previously we were silently not
+> > reading the register, this just removes the attempt to read it since we
+> > added an error message in the core.
+
+> Right, the only reason I took it is that error message - I find that
+> bogus error messages have almost the same (bad) impact as real kernel
+> bugs.
+
+The point is that the error message isn't present in stable kernels so
+there is no impact on any user visible behaviour.
+
+--gvPGo+RAdjC9O5ul
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9qDUwACgkQJNaLcl1U
+h9CjdAf+PXoDfp7834wZQ9f1rb79rWZspO34iLgtd2QfsiJLwuTe2hFDIKkdoXXU
+ajhzk5ZjNKGpRq9aid6yJWpRor0e3qn1fUDdJgavmPHoNnTQ6q1EKzHv6nDRMSWD
+doWsRBkTkSmignj73JlG9keOyvMgihQVIZSZSEafqIsKWYHXMwLE96Qghgt0hFDv
+DrDEz6xHrA4AhTGBEMvhQMy2rvU5O8AwfzyD+u2vD6j+ejy/Q3DdldGMhrPbNvB2
+W4l2rheJ1a0km9anTOOUUYHDiDp7ttqpvzuDOB42lttBXk+jgLroxkcU4EKZrsuL
+nmlsEikx87yrqnX68TKTrlZGqoaxAg==
+=7xiC
+-----END PGP SIGNATURE-----
+
+--gvPGo+RAdjC9O5ul--
