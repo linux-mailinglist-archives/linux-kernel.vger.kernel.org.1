@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2CAF273DC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 10:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA354273DC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 10:51:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726551AbgIVIup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 04:50:45 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:50048 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726098AbgIVIup (ORCPT
+        id S1726559AbgIVIvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 04:51:01 -0400
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:20532 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726098AbgIVIvB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 04:50:45 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 08M8lVoX007736;
-        Tue, 22 Sep 2020 03:48:22 -0500
+        Tue, 22 Sep 2020 04:51:01 -0400
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 08M8mcnd014151;
+        Tue, 22 Sep 2020 03:48:38 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
  : subject : message-id : references : mime-version : content-type :
  in-reply-to; s=PODMain02222019;
- bh=7mo8Fc5FHHBXhLe2tP5mEGXlyE39D0hHM9x69WSCILM=;
- b=Uby5+klipqYWx7pvOSpV2Ml48bnhAlByP7hIil5KejHaiA/LamTgNSn5w+T0p8Nkn+na
- IPQQ/rFmsUDpGH7edNtPfVrASVzfdtxEnz0S7Cp3tmP+1yYn3GNxG1I6SMBu511c80Jj
- joDZts+2/kZrjL59VMpjp9QOPo65ha8gJSJkjq3MaWg4bRPKBBr00mwPLgI3NMAJsnzn
- UE8akVjCV4knxFfqIlcGBpsXTyJdDP87hNQupQYyn8Ymvwg+KGSViB2AbrgyDc/h3POE
- v+uDwN6SWqxaDQQJaQKoGI+m5Ca/ybgsVV5xGwPN2I4uAmwKxaLN7C0nxPmZgIWlqDTi rw== 
+ bh=GxV27+tLXppg8HDYES9Goi4p8K9GLNXB0MdulW/ixng=;
+ b=J4M2KdVZLWdzYF8q+0LS7G5r0FtWHigRzPUK1CnC0PN7q2ZUPPc39JW6ksv10NzoyVKV
+ 9gbUCIYpV6TJamLlZgnm88GHKrS6EE8A9FtcAOsYcsdgnHTJbbb+J11JgFffHJi6WcV5
+ RVZ5ma1jc2a6ZflvJKByHtMTQXLp1eMnPnkdBP6JpWWbT4B6QvYTZP1dMtbUCNPnRdiX
+ mJD6U/yeglsVMnlNuDELeAadIUw1/optjbR0I7pTssJIZJFqvfYk15A2Iodpnz3ybtcO
+ tEHp5tfGZw7fZ0YSfGBQTVW/PBJzPMrcdhofzvISOQAOlRB0WJiQhwbybWfaqMlElRnh nQ== 
 Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 33nedn37tr-1
+        by mx0a-001ae601.pphosted.com with ESMTP id 33nfd23das-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 22 Sep 2020 03:48:22 -0500
+        Tue, 22 Sep 2020 03:48:38 -0500
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 22 Sep
- 2020 09:48:21 +0100
+ 2020 09:48:36 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Tue, 22 Sep 2020 09:48:21 +0100
+ Transport; Tue, 22 Sep 2020 09:48:36 +0100
 Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id F1DA545;
-        Tue, 22 Sep 2020 08:48:20 +0000 (UTC)
-Date:   Tue, 22 Sep 2020 08:48:20 +0000
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 16C4C45;
+        Tue, 22 Sep 2020 08:48:36 +0000 (UTC)
+Date:   Tue, 22 Sep 2020 08:48:36 +0000
 From:   Charles Keepax <ckeepax@opensource.cirrus.com>
 To:     Krzysztof Kozlowski <krzk@kernel.org>
 CC:     Lee Jones <lee.jones@linaro.org>,
@@ -62,24 +62,25 @@ CC:     Lee Jones <lee.jones@linaro.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-rpi-kernel@lists.infradead.org>,
         <linux-samsung-soc@vger.kernel.org>, <linux-omap@vger.kernel.org>
-Subject: Re: [PATCH 01/42] mfd: arizona: use PLATFORM_DEVID_NONE
-Message-ID: <20200922084820.GR10899@ediswmail.ad.cirrus.com>
+Subject: Re: [PATCH 41/42] mfd: wm8400: use PLATFORM_DEVID_NONE
+Message-ID: <20200922084836.GS10899@ediswmail.ad.cirrus.com>
 References: <20200921205016.20461-1-krzk@kernel.org>
+ <20200921205016.20461-41-krzk@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20200921205016.20461-1-krzk@kernel.org>
+In-Reply-To: <20200921205016.20461-41-krzk@kernel.org>
 User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- impostorscore=0 lowpriorityscore=0 mlxscore=0 phishscore=0 spamscore=0
- adultscore=0 mlxlogscore=601 suspectscore=0 bulkscore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009220073
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0
+ priorityscore=1501 impostorscore=0 phishscore=0 suspectscore=0
+ mlxlogscore=624 adultscore=0 clxscore=1011 malwarescore=0 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009220073
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 10:49:35PM +0200, Krzysztof Kozlowski wrote:
+On Mon, Sep 21, 2020 at 10:50:15PM +0200, Krzysztof Kozlowski wrote:
 > Use PLATFORM_DEVID_NONE define instead of "-1" value because:
 >  - it brings some meaning,
 >  - it might point attention why auto device ID was not used.
