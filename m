@@ -2,62 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 893BF2742E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 15:24:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3868D2742E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 15:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726507AbgIVNYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 09:24:23 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:41416 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726470AbgIVNYX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 09:24:23 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 43BA166D63C5CBD85B6E;
-        Tue, 22 Sep 2020 21:24:19 +0800 (CST)
-Received: from localhost (10.174.179.108) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Tue, 22 Sep 2020
- 21:24:12 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <mingo@redhat.com>, <peterz@infradead.org>,
-        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
-        <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>,
-        <bsegall@google.com>, <mgorman@suse.de>
-CC:     <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] sched: Remove unused inline function uclamp_bucket_base_value()
-Date:   Tue, 22 Sep 2020 21:24:10 +0800
-Message-ID: <20200922132410.48440-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S1726607AbgIVNZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 09:25:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726489AbgIVNZ3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 09:25:29 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19E5C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 06:25:29 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id w16so20986736oia.2
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 06:25:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=MzgADEAaLqCZCtsDLm4ffnQ0XJMngefK8MXJLmFTvck=;
+        b=g0DxYfucIcGiGXOubcAR92+JlwzpN3mK5MJhW44TdJyVq+F/AUto+L/UN1JwHPIjkh
+         qYaomSnSxFLnYY9VK2onowMvIF5Y/6PRABwDqQvn5DnngdxVTMPqrSYlCe97h9cQB49/
+         G0Gw03BvXwahf5/ABKVP8g2BLpvU9/7KvO226k2nesr/9DemUIA/eUpN4zU7/xAjNAek
+         JjGztsDYWHwMbBGiDZ4abtmbTDegwj2AE6P0nT7lKIhWtVBf9LW2wkP4JtePqfoPZ2Ar
+         iHWvdT2XHe1Ja7jOz8DEp8B3ZUNdapM5SxyZNqoGUekMk38x2x2x9AvSjugaR11mMIBe
+         OJIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=MzgADEAaLqCZCtsDLm4ffnQ0XJMngefK8MXJLmFTvck=;
+        b=Lhiz7UBm5UxPBogfffMIp/yrFocaeQm3v2uC4kwYu0NHzdJksLusGWo2t7qS6gBSrs
+         rIcFw8KJjRzDQKyVyPQMhgksVMWYmlAyKli3aERacvZ+uJBrQLkk37M27XgMc8rL0bTg
+         7mxF7YTdE2FoWxiWIRkOtDzXv87TvZZldpKFxudbwQDpcNtQC/ce/qtES4OANEQaLi1M
+         ExaIWWZWUotIemm0vH/vMD55plNSaEspGf1xaJoZ9GA/G1xT0w7aDx69+aWhluZwaV2+
+         BIuRIXcX9rBKtJrGu+4fLLPV3OylOJuh92mCw8/bBIF/JiKtV835v7b1KhHCLOQeDZ6R
+         mJUA==
+X-Gm-Message-State: AOAM531r7i68Ow9DGlOgrnEp+th761Z5josVcO1hL/+7kdjKGXBKqik6
+        wDiit1OsolKjbrTTeWe78hpnebVGqxdrGhVEO9I=
+X-Google-Smtp-Source: ABdhPJzIbMX/RNHybHixTgT+xIAHSNcrTgBoHNJL7FlghbADx7xjJIdN0wAbNDufAr8YkefjGThzDfK/tYgAZY7UPc4=
+X-Received: by 2002:aca:f593:: with SMTP id t141mr2658945oih.166.1600781129004;
+ Tue, 22 Sep 2020 06:25:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.108]
-X-CFilter-Loop: Reflected
+Received: by 2002:ac9:1a68:0:0:0:0:0 with HTTP; Tue, 22 Sep 2020 06:25:28
+ -0700 (PDT)
+Reply-To: cephasagbeh1@gmail.com
+From:   Cephas Agbeh <peterokekechambers1@gmail.com>
+Date:   Tue, 22 Sep 2020 13:25:28 +0000
+Message-ID: <CACoj33UYr8_6ZjLJuXzjPkxVPQfWCL8YwMjfD-14_doS_QkBXg@mail.gmail.com>
+Subject: Important Notification
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no caller in tree, so can remove it.
+I am bringing this notice to your attention in respect of the death of
+a deceased client of mine that has the same surname with you and his
+fund valued at $19.9M to be paid to you.contact me at
+cephasagbeh1@gmail.com for more details.
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- kernel/sched/core.c | 5 -----
- 1 file changed, 5 deletions(-)
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 2d95dc3f4644..1b06b952dbbe 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -940,11 +940,6 @@ static inline unsigned int uclamp_bucket_id(unsigned int clamp_value)
- 	return clamp_value / UCLAMP_BUCKET_DELTA;
- }
- 
--static inline unsigned int uclamp_bucket_base_value(unsigned int clamp_value)
--{
--	return UCLAMP_BUCKET_DELTA * uclamp_bucket_id(clamp_value);
--}
--
- static inline unsigned int uclamp_none(enum uclamp_id clamp_id)
- {
- 	if (clamp_id == UCLAMP_MIN)
--- 
-2.17.1
-
+Yours Sincerely,
+Cephas Agbeh,
+Attorney At Law.
