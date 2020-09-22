@@ -2,180 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB6E2741BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 722B12741C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgIVMCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 08:02:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726518AbgIVMCd (ORCPT
+        id S1726606AbgIVMGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 08:06:44 -0400
+Received: from m17618.mail.qiye.163.com ([59.111.176.18]:19121 "EHLO
+        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726518AbgIVMGo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 08:02:33 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C01F6C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 05:02:33 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id p24so5166133vsf.8
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 05:02:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ZEZI6d89xtcDpCUxbSSBtDGiHmLzirfqGGVXHJyGnUw=;
-        b=kpZ21DETq3qmsqIXgENyGBnedGKtG0o2BqY2UGvygheJzJ44mOIazFKrsSHMsKDl5k
-         5v+8V1bPNg8dpSSv90R6SznSPRI7NhE1PaAaV5skoXyZWxgUpot5RyIJwmMKawMfsD5D
-         N4d4HncBU4Fbs38tvty9FDE7O8FY1TtFjbnIAFqzizmubQ1vyhAFkl0/mL/0lkLh55I0
-         FiMEzBtKi7qVWGH5em6tOqHKjB54CiA3wR3VyPY0It5Hm5BPqLRmnmzwnZXBEVL4cG00
-         bLG3r26HEqzu6nooZmcqF6H5uSNJGJbjUsBwVq/UjhIlAWgBZVzDtTop+f4ABUrLD434
-         votA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ZEZI6d89xtcDpCUxbSSBtDGiHmLzirfqGGVXHJyGnUw=;
-        b=kD9tbSwcy6qkuxwWOZEgLO2bstXtYbsFYocb9LLL3Zkwq3/eF0FyRiyu872bMPC7uS
-         lHRnwR96fU9G2KNHswsIA+z7zv6ClGov+8rdaWi1GwyV9YDyGTa7z3zK9uzMTcD8PWlZ
-         usIIU+B9IU/fEzh0s5oaTqIvdRvT664YXr1zNplrCs0uLZRcDW0KWDnnv0nUdeEsI5Qb
-         4Cm0Xw6o56RzpSlb6gvwOy333QIx63JLd2hBD4Fun4hfVALByf7BKQivcIUwyaLPcv1C
-         a/ZGFvmtQQsKuuT4ih0zg9u5911c90c4HPxKFzJMUJ0vU5yQkeyAQmtPSxEjL25DGsau
-         aQgQ==
-X-Gm-Message-State: AOAM530dZrnuG1OZp4vfJycO4mm1PmlQkRhphjFnSV4RT/gjluJ2JSa4
-        tUbaWtgde/s/t1F/YFqGxWydpYPAsx/kKoFsOMI9Vw==
-X-Google-Smtp-Source: ABdhPJwbo9LgmtKpB2tssrPZSBr0qZOOaG8yki+KLaZUb2syRELosYEkNIWqTWCXQt8GikRG8EBVsVDRuPk+4aCC3Cg=
-X-Received: by 2002:a67:80d2:: with SMTP id b201mr2994191vsd.12.1600776151680;
- Tue, 22 Sep 2020 05:02:31 -0700 (PDT)
+        Tue, 22 Sep 2020 08:06:44 -0400
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
+        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id 8790C4E163F;
+        Tue, 22 Sep 2020 20:06:40 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Harry Wei <harryxiyou@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Wang Qing <wangqing@vivo.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] doc: zh_CN: add translatation for btrfs
+Date:   Tue, 22 Sep 2020 20:03:34 +0800
+Message-Id: <1600776267-20146-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <20200921162035.541285330@linuxfoundation.org>
-In-Reply-To: <20200921162035.541285330@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 22 Sep 2020 17:32:20 +0530
-Message-ID: <CA+G9fYstmfZAfx4ZDsbfHHs-7Ys6Kdcb1K++TKyztE1YJ0pQ+Q@mail.gmail.com>
-Subject: Re: [PATCH 4.14 00/94] 4.14.199-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        lkft-triage@lists.linaro.org, pavel@denx.de,
-        linux- stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=y
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQkkfTxpKTUJJHU8ZVkpNS0tMTE1PS0tDSE9VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OhQ6Qxw*TD8sCg4yGhouGi4T
+        GSsaCzJVSlVKTUtLTExNT0tKSUhOVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISllXWQgBWUFJTUNCNwY+
+X-HM-Tid: 0a74b5b56f6a9376kuws8790c4e163f
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Sep 2020 at 22:07, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.14.199 release.
-> There are 94 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 23 Sep 2020 16:20:12 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.14.199-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+Translate Documentation/filesystems/btrfs.rst into Chinese.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+---
+ .../translations/zh_CN/filesystems/btrfs.rst       | 37 ++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+diff --git a/Documentation/translations/zh_CN/filesystems/btrfs.rst b/Documentation/translations/zh_CN/filesystems/btrfs.rst
+index 0000000..8b8cca2
+--- /dev/null
++++ b/Documentation/translations/zh_CN/filesystems/btrfs.rst
+@@ -0,0 +1,37 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++.. include:: ../disclaimer-zh_CN.rst
++
++:Original: :ref:`Documentation/filesystems/ext3.rst <ext3_index>`
++
++translated by 王擎 Wang Qing<wangqing@vivo.com>
++
++=====
++BTRFS
++=====
++
++Btrfs是一个写时复制更新的文件系统，它注重容错、修复和易于管理。
++Btrfs由多家公司联合开发，并获得GPL许可，免费开放给所有人。
++
++Btrfs的主要功能包括：
++
++    *扩展大小的文件存储（文件最大支持2^64）
++    *填充方式使小文件更节省空间
++    *索引目录的方式更节省空间
++    *动态的索引节点分配方式
++    *可写快照的特性
++    *支持子卷（独立的内部根文件系统）
++    *对象级别的镜像克隆
++    *基于数据和元数据的校验和（支持多种算法）
++    *支持压缩
++    *內建多种磁盘阵列算法，支持多种设备
++    *支持离线的文件系统检查
++    *高效的增量备份和文件系统镜像
++    *在线文件系统碎片整理
++
++更多有关信息，请参阅Wiki
++
++  https://btrfs.wiki.kernel.org
++
++维护信息包含管理任务、常见问题、用例、挂载选项、变更日志、
++特性、手册、源码仓、联系人等。
+-- 
+2.7.4
 
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.14.199-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.14.y
-git commit: fbc0d5c8464b4a7bd7ad25355d983c3b815a2723
-git describe: v4.14.198-95-gfbc0d5c8464b
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14=
-.y/build/v4.14.198-95-gfbc0d5c8464b
-
-No regressions (compared to build v4.14.198-60-gec572a7e7f50)
-
-No fixes (compared to build v4.14.198-60-gec572a7e7f50)
-
-Ran 25204 total tests in the following environments and test suites.
-
-Environments
---------------
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-r2 - arm64
-- juno-r2-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15 - arm
-- x86_64
-- x86-kasan
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* kselftest
-* kselftest/drivers
-* kselftest/filesystems
-* kselftest/net
-* linux-log-parser
-* ltp-commands-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* perf
-* ltp-cap_bounds-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fs-tests
-* ltp-io-tests
-* network-basic-tests
-* v4l2-compliance
-* libhugetlbfs
-* ltp-controllers-tests
-* ltp-open-posix-tests
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-native/drivers
-* kselftest-vsyscall-mode-native/filesystems
-* kselftest-vsyscall-mode-native/net
-* kselftest-vsyscall-mode-none
-* kselftest-vsyscall-mode-none/drivers
-* kselftest-vsyscall-mode-none/filesystems
-* kselftest-vsyscall-mode-none/net
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
