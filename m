@@ -2,163 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B5B1273CEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 10:04:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E655273CEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 10:04:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726588AbgIVIEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 04:04:54 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:38428 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726424AbgIVIEy (ORCPT
+        id S1726572AbgIVIEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 04:04:34 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:58859 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726559AbgIVIEd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 04:04:54 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08M84dwP073465;
-        Tue, 22 Sep 2020 08:04:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=M6GGCIzMM2JQm1SHxuewh7c+XdCDsbBYBVhLw6TeLvA=;
- b=cYqrCV2ToSuFdduguii5Ip0u+Ah+uw/icCkhfOv8kGTVgJpPEuixHcfDEGcDwqxG7Li6
- 13A0ORUs6dgZ4bIX1PVDL30xJUv+0WBcqRyvY4xdWnrqxOecYWU3BZGYm0kitlX8UhPn
- R2PSArol1qd5rdWxmT9pBLsgAuraEraGlWM5SWAVFTJcAf1YS3h1wvd6OoGhaMhYMtAf
- TWeWEgPoSq2/Yw+rj7bUI+0VVjy5aAWbbLE0Wkm1En0mSJTF9n//piggwp+n5cSesO8Y
- 4dcCcPDSVzBnJHDtt3TcJLu2FbC+MPyM0r4czfMcNHoCI+Zm8/GwVSDq1n6Qm/sVOMoq 2Q== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 33ndnubajv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 22 Sep 2020 08:04:39 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08M83KON121690;
-        Tue, 22 Sep 2020 08:04:36 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 33nuwxwe37-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 22 Sep 2020 08:04:36 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08M84Yna007638;
-        Tue, 22 Sep 2020 08:04:34 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 22 Sep 2020 01:04:34 -0700
-Date:   Tue, 22 Sep 2020 11:04:26 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
-Cc:     mporter@kernel.crashing.org, alex.bou9@gmail.com,
-        akpm@linux-foundation.org, gustavoars@kernel.org,
-        jhubbard@nvidia.com, keescook@chromium.org,
-        madhuparnabhowmik10@gmail.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rapidio: fix the missed put_device() for
- rio_mport_add_riodev
-Message-ID: <20200922080426.GB18329@kadam>
-References: <20200922072525.42330-1-jingxiangfeng@huawei.com>
+        Tue, 22 Sep 2020 04:04:33 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200922080432euoutp02eb069c6eacef4ba3b38099e09f2068b6~3DHEXMW3k1086510865euoutp02j
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 08:04:32 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200922080432euoutp02eb069c6eacef4ba3b38099e09f2068b6~3DHEXMW3k1086510865euoutp02j
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1600761872;
+        bh=t5JgHuaA0LpHPq4LbftovBXGuGuzQ1cQIB+yPo9jjcs=;
+        h=Subject:To:From:Date:In-Reply-To:References:From;
+        b=dF+Dqn99CopSxq1ozccMHygJgkX9xFlCP23wGeXqtrS5UeMsxhJMFW6R7ljaeCwFs
+         VnUqqKUREeeFzTOpWEhH0Y0hCcNFR5l7jk7jFoyJ5QBk6FwJIBws86b7gVizntUofB
+         Fw+kr57Ksb+jtcfsi4fk4XKXNcoxuPThG/hnbCHM=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200922080432eucas1p2937967313737d3aacd37477a069791f9~3DHEHaiiS2319723197eucas1p2b;
+        Tue, 22 Sep 2020 08:04:32 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 76.DC.06318.F00B96F5; Tue, 22
+        Sep 2020 09:04:31 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200922080431eucas1p23ff07fa3bb202e7d3ab90a55aa833d48~3DHDqRS-x0085000850eucas1p2v;
+        Tue, 22 Sep 2020 08:04:31 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200922080431eusmtrp1d7fab84d77fa82174f81f89cb23a7f5e~3DHDplAdy1146911469eusmtrp1V;
+        Tue, 22 Sep 2020 08:04:31 +0000 (GMT)
+X-AuditID: cbfec7f5-38bff700000018ae-49-5f69b00f8bbf
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 39.71.06314.F00B96F5; Tue, 22
+        Sep 2020 09:04:31 +0100 (BST)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200922080431eusmtip1759b71075b7ca2ba90c31bf9521834c9~3DHDLncnh0969309693eusmtip1O;
+        Tue, 22 Sep 2020 08:04:31 +0000 (GMT)
+Subject: Re: [PATCH] clk: s2mps11: initialize driver via
+ module_platform_driver
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Sangbeom Kim <sbkim73@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <fc06b97d-a2b4-f263-fba4-505dfc75c43f@samsung.com>
+Date:   Tue, 22 Sep 2020 10:04:30 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922072525.42330-1-jingxiangfeng@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9751 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 adultscore=0
- bulkscore=0 mlxlogscore=999 phishscore=0 suspectscore=2 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009220066
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9751 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- lowpriorityscore=0 phishscore=0 adultscore=0 suspectscore=2 bulkscore=0
- clxscore=1015 impostorscore=0 mlxlogscore=999 mlxscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009220066
+In-Reply-To: <20200921203558.19554-1-krzk@kernel.org>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrOKsWRmVeSWpSXmKPExsWy7djP87r8GzLjDX5usbbYOGM9q8X58xvY
+        LT723GO1uLxrDpvFjPP7mCwunnK1uLjiC5PFv2sbWRw4PN7faGX32LSqk82jb8sqRo/Pm+QC
+        WKK4bFJSczLLUov07RK4Mr5fnMRU0MtTceXTHtYGxhlcXYycHBICJhKHnu1jA7GFBFYwSrQ2
+        mELYXxglnq2Wh7A/M0rsOK4MU79jRSN7FyMXUHw5o8TuZetZIZz3jBKHv35jBKkSFgiU+H3s
+        OhNIQkRgK5PExhmdYCvYBAwlut52gdm8AnYSkw9sZAKxWQRUJZZc6gFrFhWIkzh26hELRI2g
+        xMmZT4BsDg5OAVOJHe85QcLMAvIS29/OYYawxSVuPZkPtktCYBW7xOPj71khTnWRuLRnBROE
+        LSzx6vgWdghbRuL05B4WiIZmRomH59ayQzg9jBKXm2YwQlRZS9w594sNZDOzgKbE+l36EGFH
+        iWfPvjKDhCUE+CRuvBWEOIJPYtK26VBhXomONiGIajWJWcfXwa09eOESVImHxN17BRMYFWch
+        eXIWks9mIflsFsIJCxhZVjGKp5YW56anFhvnpZbrFSfmFpfmpesl5+duYgQmn9P/jn/dwbjv
+        T9IhRgEORiUe3gNTM+KFWBPLiitzDzFKcDArifA6nT0dJ8SbklhZlVqUH19UmpNafIhRmoNF
+        SZzXeNHLWCGB9MSS1OzU1ILUIpgsEwenVAOjaefe5nA9bbf/6cfyZa6ybeBmUN7uvfnkjnv6
+        t69vWvP0g+3qx8obdjNMuZn+7Py3vGntH9QZHktsN27btin9985V+R55c3z87q3w0v+TNSNs
+        gZNatnPdtAVXgty5St9JWjIftZhtFtC222E7g5qs66vFtdF1G3eYbbKNDshuM16R27bHlddM
+        iaU4I9FQi7moOBEAqLuKzjoDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrAIsWRmVeSWpSXmKPExsVy+t/xu7r8GzLjDab/UrHYOGM9q8X58xvY
+        LT723GO1uLxrDpvFjPP7mCwunnK1uLjiC5PFv2sbWRw4PN7faGX32LSqk82jb8sqRo/Pm+QC
+        WKL0bIryS0tSFTLyi0tslaINLYz0DC0t9IxMLPUMjc1jrYxMlfTtbFJSczLLUov07RL0Mr5f
+        nMRU0MtTceXTHtYGxhlcXYycHBICJhI7VjSydzFycQgJLGWU+Hb1PhtEQkbi5LQGVghbWOLP
+        tS42iKK3jBLTf+xnBkkICwRK/D52nQkkISKwlUmib3c7WEJIoINRYv87FxCbTcBQouttF9hU
+        XgE7ickHNjKB2CwCqhJLLvUwgtiiAnESZ3peQNUISpyc+YSli5GDg1PAVGLHe06QMLOAmcS8
+        zQ+ZIWx5ie1v50DZ4hK3nsxnmsAoOAtJ9ywkLbOQtMxC0rKAkWUVo0hqaXFuem6xoV5xYm5x
+        aV66XnJ+7iZGYGxtO/Zz8w7GSxuDDzEKcDAq8fAemJoRL8SaWFZcmXuIUYKDWUmE1+ns6Tgh
+        3pTEyqrUovz4otKc1OJDjKZAv01klhJNzgfGfV5JvKGpobmFpaG5sbmxmYWSOG+HwMEYIYH0
+        xJLU7NTUgtQimD4mDk6pBsYJ33327vCdM3PuB9MPWeI7mI9e/xe52+yw4PziKdmpAaXWB6zC
+        9kYefBN86ocIS9cc1SfCZTm3w7ZLXDL12VdnI1XivP9w0cVfbgeSp3VUPN3dfC/I9LehqtWP
+        bZO6eJYmazQFvjrjO+/jjlLDXEFnUXGRhl7OV/6nmxJjt8pOWOToNM0qea4SS3FGoqEWc1Fx
+        IgC1xMfPwwIAAA==
+X-CMS-MailID: 20200922080431eucas1p23ff07fa3bb202e7d3ab90a55aa833d48
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200921203614eucas1p19b9203eb6bbd7b80647f7e48705c731a
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200921203614eucas1p19b9203eb6bbd7b80647f7e48705c731a
+References: <CGME20200921203614eucas1p19b9203eb6bbd7b80647f7e48705c731a@eucas1p1.samsung.com>
+        <20200921203558.19554-1-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 03:25:25PM +0800, Jing Xiangfeng wrote:
-> rio_mport_add_riodev() misses to call put_device() when the device
-> already exists. Add the missed function call to fix it.
-> 
+Hi Krzysztof,
 
-Looks good.
+On 21.09.2020 22:35, Krzysztof Kozlowski wrote:
+> The driver was using subsys_initcall() because in old times deferred
+> probe was not supported everywhere and specific ordering was needed.
+> Since probe deferral works fine and specific ordering is discouraged
+> (hides dependencies between drivers and couples their boot order), the
+> driver can be converted to regular module_platform_driver.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> ---
+>   drivers/clk/clk-s2mps11.c | 13 +------------
+>   1 file changed, 1 insertion(+), 12 deletions(-)
+>
+> diff --git a/drivers/clk/clk-s2mps11.c b/drivers/clk/clk-s2mps11.c
+> index 2ce370c804aa..aa21371f9104 100644
+> --- a/drivers/clk/clk-s2mps11.c
+> +++ b/drivers/clk/clk-s2mps11.c
+> @@ -267,18 +267,7 @@ static struct platform_driver s2mps11_clk_driver = {
+>   	.remove = s2mps11_clk_remove,
+>   	.id_table = s2mps11_clk_id,
+>   };
+> -
+> -static int __init s2mps11_clk_init(void)
+> -{
+> -	return platform_driver_register(&s2mps11_clk_driver);
+> -}
+> -subsys_initcall(s2mps11_clk_init);
+> -
+> -static void __exit s2mps11_clk_cleanup(void)
+> -{
+> -	platform_driver_unregister(&s2mps11_clk_driver);
+> -}
+> -module_exit(s2mps11_clk_cleanup);
+> +module_platform_driver(s2mps11_clk_driver);
+>   
+>   MODULE_DESCRIPTION("S2MPS11 Clock Driver");
+>   MODULE_AUTHOR("Yadwinder Singh Brar <yadi.brar@samsung.com>");
 
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
-I notice that rio_mport_del_riodev() has a related bug.
-
-  1802          err = rio_add_device(rdev);
-  1803          if (err)
-  1804                  goto cleanup;
-  1805          rio_dev_get(rdev);
-                ^^^^^^^^^^^^^^^^^
-This calls get_device(&rdev->dev);
-
-  1806  
-  1807          return 0;
-  1808  cleanup:
-  1809          kfree(rdev);
-  1810          return err;
-  1811  }
-  1812  
-  1813  static int rio_mport_del_riodev(struct mport_cdev_priv *priv, void __user *arg)
-  1814  {
-  1815          struct rio_rdev_info dev_info;
-  1816          struct rio_dev *rdev = NULL;
-  1817          struct device  *dev;
-  1818          struct rio_mport *mport;
-  1819          struct rio_net *net;
-  1820  
-  1821          if (copy_from_user(&dev_info, arg, sizeof(dev_info)))
-  1822                  return -EFAULT;
-  1823          dev_info.name[sizeof(dev_info.name) - 1] = '\0';
-  1824  
-  1825          mport = priv->md->mport;
-  1826  
-  1827          /* If device name is specified, removal by name has priority */
-  1828          if (strlen(dev_info.name)) {
-  1829                  dev = bus_find_device_by_name(&rio_bus_type, NULL,
-  1830                                                dev_info.name);
-  1831                  if (dev)
-  1832                          rdev = to_rio_dev(dev);
-
-This path takes a second get_device(&rdev->dev);
-
-  1833          } else {
-  1834                  do {
-  1835                          rdev = rio_get_comptag(dev_info.comptag, rdev);
-  1836                          if (rdev && rdev->dev.parent == &mport->net->dev &&
-  1837                              rdev->destid == dev_info.destid &&
-  1838                              rdev->hopcount == dev_info.hopcount)
-  1839                                  break;
-
-This path does not call get_device().
-
-  1840                  } while (rdev);
-  1841          }
-  1842  
-  1843          if (!rdev) {
-  1844                  rmcd_debug(RDEV,
-  1845                          "device name:%s ct:0x%x did:0x%x hc:0x%x not found",
-  1846                          dev_info.name, dev_info.comptag, dev_info.destid,
-  1847                          dev_info.hopcount);
-  1848                  return -ENODEV;
-  1849          }
-  1850  
-  1851          net = rdev->net;
-  1852          rio_dev_put(rdev);
-
-This drops a reference.
-
-  1853          rio_del_device(rdev, RIO_DEVICE_SHUTDOWN);
-
-This drops a second reference.  So presumably deleting by component tag
-will lead to a use after free.
-
-  1854  
-  1855          if (list_empty(&net->devices)) {
-  1856                  rio_free_net(net);
-  1857                  mport->net = NULL;
-  1858          }
-  1859  
-  1860          return 0;
-  1861  }
-
-regards,
-dan carpenter
