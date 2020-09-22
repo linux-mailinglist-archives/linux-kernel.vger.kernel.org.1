@@ -2,208 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8C9B2744E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B59F8274518
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:18:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726737AbgIVPAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 11:00:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726579AbgIVPAc (ORCPT
+        id S1726727AbgIVPSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 11:18:17 -0400
+Received: from mx0a-00010702.pphosted.com ([148.163.156.75]:48194 "EHLO
+        mx0b-00010702.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726566AbgIVPSQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 11:00:32 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E414BC061755;
-        Tue, 22 Sep 2020 08:00:31 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id y15so3680714wmi.0;
-        Tue, 22 Sep 2020 08:00:31 -0700 (PDT)
+        Tue, 22 Sep 2020 11:18:16 -0400
+X-Greylist: delayed 1908 seconds by postgrey-1.27 at vger.kernel.org; Tue, 22 Sep 2020 11:18:16 EDT
+Received: from pps.filterd (m0098781.ppops.net [127.0.0.1])
+        by mx0a-00010702.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 08MEd7CG010733;
+        Tue, 22 Sep 2020 09:46:09 -0500
+Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2059.outbound.protection.outlook.com [104.47.36.59])
+        by mx0a-00010702.pphosted.com with ESMTP id 33ne10g2sx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Sep 2020 09:46:09 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eRs49q/adcGFfZE+bKd3z16Vwv9ebe1WVQnQzRY6NtmNjUFS5OGjjYhh1Hu2vY7P3z41abdNTamypkqGcryIpwBtY3f51LJUATKMWralTCryENlVo1qP1dYEgPpTorFKAMNwtskEvWbSCI4pMNzp4ZcTwoc7lHHzKhLOzI/aaQf13WMsEzo2HmA2crPG0a/+W0EFCmDYmMRvQAv3P4pDOAJkVn7wLnCIcM4Y7OSLj23PynQJykv9FeS/oCjloFR6SnC8yC2hX6Q+chwjqLpgJSScdBb63m5mgNx4mt4G5pyOEmFlZSgh9zqF8Cf4XgQ4wP0hesdxN5Ro/SsLGIzOwg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UyhUg8ZcjktFjLXCW8uu2969bAUi1gob0BHF3cxYzmI=;
+ b=ke/MAGjJqfWYcYcYT7GL+eVpjb2WOb0lEgaheva7A6LJAMYZXTggSSiMQ6StoIOnS2SrmUOT+aYIZhv/WNKGtK6Po0ixcvlPg+t67+4lr6Q4ohSbhtfdouupLpyeGT/ZkuGoxbLfqAwscrjzkxLvxAe9rQB0r/h/uZDbuOOMjofoNeXYm9YwLj4dGROCuuZnPiCB5uKrbndeUtd7ZN1m78nW8F8QU+1Sa6WQbBuzY/Rvi54OmHbGadSlePX2lID0qalIO6IhhiVZBZ8DZD0b76svdR43KxUD9aY/B9Tc2LH02uHsUmOQogp7KmJTI3yQNXLZdm78soHfs8rOrOUwTA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=ni.com; dmarc=pass action=none header.from=ni.com; dkim=pass
+ header.d=ni.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=usg4wSsmo9yfZpzURo8K/L+xg+b2bka9XCSX0nS4/tU=;
-        b=aNEmeAVg49G/W7g21+lUs2KjLuOQThymhFqcaMgXHS2577CSVI4Z4iHlEE/XJX8Sox
-         ArMJnsFOetYVXAumMH164Fz6Lyq7BzcDyeqKu8L1FQm+ZAzZj2Kf4DgE4kWDVkMathyU
-         Ep0BhmwydSB4/LE6VwyZu6JNQ0P8idqED/981ye2xOotPf6xsNlB/3kbUaB/zGc3CwWX
-         y0XGbCNR+1sFK+N2mO9XS3Dp81VYFANxoWl64zpXVMtAOglhy3tR8O5jj1nw9T6nRZCo
-         WwQFi98f+UqYtzUU1Ja0Jfs65Mivhy/CxRa1EngpqSWxHX9OkPsVd8n1H84ibF4LcBp+
-         yGRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=usg4wSsmo9yfZpzURo8K/L+xg+b2bka9XCSX0nS4/tU=;
-        b=CrWQCTJ47IT88oHsWPxC4Se0uGbUCe5Oh+I16BWZGt9/pIXLXZqfQQ09gc5Nsk4SVc
-         mYlpApK/CPtvqsyAAAZbcCiWyivKG4TbpBmEE9QWLv9Bgko1Q+p+BCHrK9j5KlnyYzTk
-         0ZfUhwnS8kFYUauT8jgvDVm4ls+JMs1P5jXUsNju5/aDmpREyrBe9rqy7Jx3mSK8pcZ/
-         OZOigOD3YXRb+gxEuobs5cYtlYuXc3ICozraRtoUEywyaaqjqY0rEc0/IgqLWj5MZtXP
-         g+kUAkpOaPPIzHyXu1uV5h/L6HWj+pnzFR4fYaE2puQzvRKMUPCUY0Khp01vmkRKtQ+s
-         4tIw==
-X-Gm-Message-State: AOAM533F56/4xHVmz3winoniW2QXf1ncuV1RAQDRmCZWuZ82NmqHt2lE
-        K3N0rTxYn9VxaomX5GLuahk=
-X-Google-Smtp-Source: ABdhPJxVA6X9UxTMq9O+yob9ZOu3MDVkPMFmqwM4hwUs1DRHl+gXnTGn1T4sL5QqskI+Y7mjJ32lnQ==
-X-Received: by 2002:a05:600c:1293:: with SMTP id t19mr1550063wmd.34.1600786830529;
-        Tue, 22 Sep 2020 08:00:30 -0700 (PDT)
-Received: from localhost.localdomain ([170.253.60.68])
-        by smtp.googlemail.com with ESMTPSA id y6sm27215861wrn.41.2020.09.22.08.00.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 08:00:29 -0700 (PDT)
-From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
-To:     libc-alpha@sourceware.org
-Cc:     libc-coord@lists.openwall.com, libstdc++@gcc.gnu.org,
-        linux-kernel@vger.kernel.org, linux-man@vger.kernel.org,
-        gcc@gcc.gnu.org, fweimer@redhat.com, jwakely@redhat.com,
-        ville.voutilainen@gmail.com, enh@google.com,
-        Alejandro Colomar <colomar.6.4.3@gmail.com>
-Subject: [RFC] <sys/param.h>: Add nitems() and snitems() macros
-Date:   Tue, 22 Sep 2020 16:58:45 +0200
-Message-Id: <20200922145844.31867-1-colomar.6.4.3@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <87zh5ixcn9.fsf@oldenburg2.str.redhat.com>
-References: <87zh5ixcn9.fsf@oldenburg2.str.redhat.com>
-MIME-Version: 1.0
+ d=nio365.onmicrosoft.com; s=selector2-nio365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UyhUg8ZcjktFjLXCW8uu2969bAUi1gob0BHF3cxYzmI=;
+ b=N4+yaGhDRTt/qLX4lteEe0WVplgpJ9q4V/pD60dpGGvD5ZK7WbQEvjhv/d+0v0kWgPFfdPeLpMiTYofA/4RQq1GA3RR59KgtDqeFuAor6bBCtEh/7x5zHg06ifAcDdpxMrYecCOUVvaXPRBvGYOTqFT2fc6RQQ2e3tQo2/Y2YK8=
+Authentication-Results: rocketlab.co.nz; dkim=none (message not signed)
+ header.d=none;rocketlab.co.nz; dmarc=none action=none header.from=ni.com;
+Received: from SN4PR0401MB3646.namprd04.prod.outlook.com
+ (2603:10b6:803:4b::29) by SN6PR04MB3856.namprd04.prod.outlook.com
+ (2603:10b6:805:3f::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Tue, 22 Sep
+ 2020 14:46:05 +0000
+Received: from SN4PR0401MB3646.namprd04.prod.outlook.com
+ ([fe80::f4f0:f1bc:f09a:da84]) by SN4PR0401MB3646.namprd04.prod.outlook.com
+ ([fe80::f4f0:f1bc:f09a:da84%7]) with mapi id 15.20.3391.023; Tue, 22 Sep 2020
+ 14:46:05 +0000
+From:   Michael Auchter <michael.auchter@ni.com>
+To:     j.lamorie@rocketlab.co.nz, Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Auchter <michael.auchter@ni.com>
+Cc:     Rob Herring <robh@kernel.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 2/2] dt-bindings: iio: adc: ad7291: add binding
+Date:   Tue, 22 Sep 2020 09:44:21 -0500
+Message-Id: <20200922144422.542669-2-michael.auchter@ni.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200922144422.542669-1-michael.auchter@ni.com>
+References: <20200922144422.542669-1-michael.auchter@ni.com>
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: DM5PR20CA0031.namprd20.prod.outlook.com
+ (2603:10b6:3:13d::17) To SN4PR0401MB3646.namprd04.prod.outlook.com
+ (2603:10b6:803:4b::29)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (2605:a601:ab6f:2000:2739:a39e:9b12:ab20) by DM5PR20CA0031.namprd20.prod.outlook.com (2603:10b6:3:13d::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14 via Frontend Transport; Tue, 22 Sep 2020 14:46:04 +0000
+X-Mailer: git-send-email 2.25.1
+X-Originating-IP: [2605:a601:ab6f:2000:2739:a39e:9b12:ab20]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 80321534-42cf-4726-7224-08d85f063bdb
+X-MS-TrafficTypeDiagnostic: SN6PR04MB3856:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN6PR04MB3856CF7A484B619ECDDD09FA873B0@SN6PR04MB3856.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1388;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: welqMwD3gCrjo4G4V2ODTwA0cDsgDgyTfxJu/a5HKmKk1Jc5zZtf1327Y7wwCca/mnhc+l8pvqPooEdPhEvl+T3B8L1hbO3ZXNfcpFOP8cN29Od2bC7UXtb+TTVSbT2LmEVN7A2w8v1TEX0BtEauoacrr8YPFs3NMf82TUEinq4TIOiUDSvyZuBPXQi1v2ynoyVDwlQOLnjS0b1hXRhrkRt2GSL28A4EX0RYKXKMXgNzLqs6fJ/9uKQ27GxsTCbdk2/sufe89qcuU8aGjgS2gkzWfiGT62OgrU09ZjYSnspSdWKu4t6lpW2iLuwxVfJaD8A6xEBwOTwWkGTCEc9rfsB0oR2lFPfZhfe4tpuDPvg4rS6qOzwqYsdJvRG7sdqBkDQfZ5DvC0MbggTHRzqgQxzgYbrEKbEIZQVb3towErdyTqtS5PTR5w+QoMlQ+0rweP4abRhZdBu/HULNtFawMg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3646.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(136003)(366004)(396003)(39860400002)(478600001)(6512007)(186003)(16526019)(66946007)(2906002)(1076003)(6486002)(86362001)(66476007)(66556008)(6666004)(36756003)(5660300002)(316002)(8676002)(7049001)(8936002)(4326008)(110136005)(44832011)(2616005)(69590400008)(52116002)(966005)(7416002)(6506007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: RK55ESIE7N8luLvehzOiDjIpfRH6ivlajXWhvbAu3pSIOXFBx4WJPyNOfa29XXE1sJgNFMWrFNPK8sXD/cWQN1nRMrLH21H68t2obTjQIebR3zlQMzTvTcms98UW1mvcuz7OP1s+gxPTH6C+Z/o0ZkOT9a+0YZTpkw7dFKjAl3ZQnqUj3jSgom0WszU//q7o4XXexENzt2Sk/r+rTLlwHxONs7g3ThJWCjzddrz3py/3A3BBR5L7oPrqDNXc2shSyxoBcY6nEtd5iNOwXvAJ4U6yjvGazLhohLhDJdcIcYutKBA+IO8mYJhNrFIHoHuQ74Nx6/0ecfRtpwOxwDiZa0PlllfcdMebMA4BL/FsDvehtofYEYY8dg09b0o1q8SR7m3keHKF4N+2X50VMC1ITf3DxWtMHqgHRsEXclK8CKG8LRS55w8wLz7D0Fm9N8ecEdXwfehFBKsS8zZ5jhvfnhsua25TX+vqkHP1wd5z46eHOquDBlhMD+j0GE9KhiEKNwZTJKWVzHd/jelI/CpAm8Gi3ZcKAxHRS1ONLxUUJuGFibPdhnVy9imgAw0+g/vL7BGqLBpSe2fiLdUyDxkZoZwcLjmZoPHhQPX66kp2cNRNrseq1kUtK9IALITv7yxz2U0qdgcEVOWp7xAQVATpXddvGjarAUH4AKkeKT2I10h10n588Qvtovy2vPmyRqsX8obhgs+d7n0cdc5OMFPypA==
+X-OriginatorOrg: ni.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 80321534-42cf-4726-7224-08d85f063bdb
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3646.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2020 14:46:05.3374
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 87ba1f9a-44cd-43a6-b008-6fdb45a5204e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nhDTMQP7r1QbxQ1M/nFEeYiNzmXWrinDSB/YNJwDXBwAQm90Le6B42/cKg8tHnWdqqcmenPNZJGU9w1wiqan2g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB3856
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-22_13:2020-09-21,2020-09-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_policy_notspam policy=outbound_policy score=30 phishscore=0
+ impostorscore=0 priorityscore=1501 spamscore=0 mlxscore=0 adultscore=0
+ malwarescore=0 lowpriorityscore=0 bulkscore=0 mlxlogscore=999
+ suspectscore=0 clxscore=1011 classifier=spam adjust=30 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2009220117
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'nitems()' calculates the length of an array in number of items.
-It is safe: if a pointer is passed to the macro (or function, in C++),
-the compilation is broken due to:
- - In >= C11: _Static_assert()
- - In C89, C99: Negative anonymous bitfield
- - In C++: The template requires an array
+Add device-tree binding for ADI AD7291 ADC.
 
-'snitems()' is equivalent to nitems(),
-but it returns a 'ptrdiff_t' instead of a 'size_t'.
-It is useful for comparison with signed integer values.
-
-Some BSDs already provide a macro nitems() in <sys/param.h>,
-although it usually doesn't provide safety against pointers.
-
-This patch uses the same name for compatibility reasons,
-and to be the least disruptive with existing code.
-
-This patch also adds some other macros, which are required by 'nitems()':
-
-__is_same_type(_A, _B):
-Returns non-zero if the two input arguments are of the same type.
-
-__is_array(_Arr):
-Returns non-zero if the input argument is of an array type.
-
-__must_be(_Expr, _Msg):
-Allows using _Static_assert() everywhere an expression can be used.
-It evaluates '(int)0' or breaks the compilation.
-
-__must_be_array(_Arr):
-It evaluates to '(int)0' if the argument is of an array type.
-Else, it breaks compilation.
-
-__array_len(_Arr):
-It implements the basic sizeof division needed to calculate the array length.
-
-
-P.S.: I'd like to put this patch in the public domain.
-
-
-Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
+Signed-off-by: Michael Auchter <michael.auchter@ni.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
 ---
+ .../bindings/iio/adc/adi,ad7291.yaml          | 50 +++++++++++++++++++
+ 1 file changed, 50 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad7291.yaml
 
-[[ CC += linux-man ]]
-
-A few more things:
-
-I copied the contents of this patch into my system <sys/param.h>
-and recompiled my projects to use these definitions, and they worked correctly.
-
-A few more notes:
-
-For linux-man (which is CC'd):
-
-When/if this patch is accepted, I'll write nitems.3 (and snitems.3).
-
-For LKML (which is CC'd):
-
-Please comment if there are any conflicts with your macro '__must_be_array()'
-(or any other conflicts, BTW).
-
-Cheers,
-
-Alex
-
-
-
- misc/sys/param.h | 57 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 57 insertions(+)
-
-diff --git a/misc/sys/param.h b/misc/sys/param.h
-index d7c319b157..f11f5dd4fd 100644
---- a/misc/sys/param.h
-+++ b/misc/sys/param.h
-@@ -102,5 +102,62 @@
- #define MIN(a,b) (((a)<(b))?(a):(b))
- #define MAX(a,b) (((a)>(b))?(a):(b))
- 
-+/* Macros related to the types of variables */
-+# define __is_same_type(_A, _B)  __builtin_types_compatible_p(__typeof__(_A), \
-+                                                              __typeof__(_B))
-+# define __is_array(_Arr)	(!__is_same_type((_Arr), &(_Arr)[0]))
+diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7291.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7291.yaml
+new file mode 100644
+index 000000000000..93aa29413049
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7291.yaml
+@@ -0,0 +1,50 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/adc/adi,ad7291.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+/* Macros for embedding _Static_assert() in expressions */
-+# if __STDC_VERSION__ >= 201112L
-+#  define __must_be(_Expr, _Msg)  (                                           \
-+        0 * (int)sizeof(                                                      \
-+          struct {                                                            \
-+            _Static_assert((_Expr), _Msg);                                    \
-+            char _ISO_C_forbids_a_struct_with_no_members;                     \
-+          }                                                                   \
-+        )                                                                     \
-+)
-+# else
-+#  define __must_be(_Expr, _Msg)  (                                           \
-+        0 * (int)sizeof(                                                      \
-+          struct {                                                            \
-+            int  : (-!(_Expr));                                               \
-+            char _ISO_C_forbids_a_struct_with_no_members;                     \
-+          }                                                                   \
-+        )                                                                     \
-+)
-+# endif
++title: AD7291 8-Channel, I2C, 12-Bit SAR ADC with Temperature Sensor
 +
-+# define __must_be_array(_Arr)	__must_be(__is_array(_Arr), "Must be an array!")
++maintainers:
++  - Michael Auchter <michael.auchter@ni.com>
 +
-+/* Macros for array sizes */
-+#if defined(__cplusplus)
-+# if __cplusplus >= 201103L
-+template<typename _Tp, std::size_t _Len>
-+  constexpr inline std::size_t
-+  nitems(const _Tp(&)[_Len]) __THROW
-+  {
-+    return _Len;
-+  }
++description: |
++  Analog Devices AD7291 8-Channel I2C 12-Bit SAR ADC with Temperature Sensor
++  https://www.analog.com/media/en/technical-documentation/data-sheets/ad7291.pdf
 +
-+template<typename _Tp, std::size_t _Len>
-+  constexpr inline std::ptrdiff_t
-+  snitems(const _Tp(&)[_Len]) __THROW
-+  {
-+    return _Len;
-+  }
-+# else /* __cplusplus < 201103L */
-+template<typename _Tp, std::size_t _Len>
-+  char (&__nitems_chararr(const _Tp(&)[_Len]))[_Len];
++properties:
++  compatible:
++    enum:
++      - adi,ad7291
 +
-+#  define nitems(_Arr)          (sizeof(__nitems_chararr(_Arr)))
-+#  define snitems(_Arr)         (static_cast<std::ptrdiff_t>(nitems(_Arr)))
-+# endif /* __cplusplus < 201103L */
-+#else /* !defined(__cplusplus) */
-+# define __array_len(_Arr)      (sizeof(_Arr) / sizeof((_Arr)[0]))
-+# define nitems(_Arr)           (__array_len(_Arr) + __must_be_array(_Arr))
-+# define snitems(_Arr)          ((ptrdiff_t)nitems(_Arr))
-+#endif /* !defined(__cplusplus) */
++  reg:
++    maxItems: 1
 +
- 
- #endif  /* sys/param.h */
++  vref-supply:
++    description: |
++      The regulator supply for ADC reference voltage.
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 0
++
++required:
++  - compatible
++  - reg
++
++examples:
++  - |
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      ad7291: adc@0 {
++        compatible = "adi,ad7291";
++        reg = <0>;
++        vref-supply = <&adc_vref>;
++      };
++    };
++
 -- 
-2.28.0
+2.25.1
 
