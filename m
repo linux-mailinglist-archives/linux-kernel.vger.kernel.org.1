@@ -2,142 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E6CD273903
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 04:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0075273919
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 05:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729132AbgIVC7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 22:59:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59904 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728991AbgIVC7O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 22:59:14 -0400
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5A63F239A1;
-        Tue, 22 Sep 2020 02:59:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600743554;
-        bh=b2qwnEFh+ba+rThRPVC7+mIXVik4Np6wC8ogIy5np/E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tkH+HRlJL6TKGegQlflvBRnj+TIfWuAQPjXVI8pWBtpZOXwhNMefqNKGTU0bpuMVw
-         DD6Ga0B1wscRBHHGKEVoH5uyZqzR4yY2wu+W2k4UwMKfHbrxS9AtdUUgF6f1ZMGon/
-         YGWy+3a3BE7LVRfsD2XXyK7tnl3j5p/XgI+sKie8=
-Date:   Tue, 22 Sep 2020 10:59:05 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Li Yang <leoyang.li@nxp.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Pavel Machek <pavel@ucw.cz>
-Subject: Re: [PATCH v10 11/13] arm64: dts: freescale: sl28: enable LED support
-Message-ID: <20200922025904.GX25109@dragon>
-References: <20200914214341.14268-1-michael@walle.cc>
- <20200914214341.14268-12-michael@walle.cc>
+        id S1727719AbgIVDH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 23:07:57 -0400
+Received: from gateway34.websitewelcome.com ([192.185.148.196]:33494 "EHLO
+        gateway34.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727511AbgIVDHy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 23:07:54 -0400
+Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
+        by gateway34.websitewelcome.com (Postfix) with ESMTP id 10AF6110C02
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 21:45:37 -0500 (CDT)
+Received: from br164.hostgator.com.br ([192.185.176.180])
+        by cmsmtp with SMTP
+        id KYJFkgRADPiqfKYJFkMaH3; Mon, 21 Sep 2020 21:45:37 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=castello.eng.br; s=default; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=MnT3/FU25WEKijRCGEmb2THy7/7Yb3rTT3w1jz0YeGI=; b=Y98dKFKc7gDuaPVLPy4DtmxDPC
+        4TNQtwVpyTH7SztNbx5K5zrqkwXO+/lE9s/Yib3lCsO6FQxl/PXKnvqmo37kD66tryvw9JxUn4ldp
+        RXhKPdeE8E7LaKhr8zVUGe0OJlsIp6bpDYHI5UqQsBauIFJ95goDPL52s2ckVUhg7IpHVGVamk3lx
+        OyjCx5fiilk/2C2/hkR2UqXRjoa+DTpeWYvWnzfhtCmkLJviM0X8VSUCKQd1rkvoJw5cx//l1sY/T
+        xehiP+Dkxv20AGsMMGbr+QO776o7xlbAC03OYCshHpUivu/Hy1xMbM16iFKrF4k1Nx/xTYmpQOytw
+        AqkyA+eA==;
+Received: from 179-197-124-241.user.veloxzone.com.br ([179.197.124.241]:43534 helo=localhost.localdomain)
+        by br164.hostgator.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <matheus@castello.eng.br>)
+        id 1kKYJE-000jSR-CU; Mon, 21 Sep 2020 23:45:36 -0300
+From:   Matheus Castello <matheus@castello.eng.br>
+To:     manivannan.sadhasivam@linaro.org, afaerber@suse.de,
+        mark.rutland@arm.com, robh+dt@kernel.org
+Cc:     edgar.righi@lsitec.org.br, igor.lima@lsitec.org.br,
+        helen.koike@collabora.com, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-actions@lists.infradead.org,
+        Matheus Castello <matheus@castello.eng.br>
+Subject: [PATCH v7 0/4] Add Caninos Loucos Labrador CoM and Base Board Device Tree
+Date:   Mon, 21 Sep 2020 23:42:58 -0300
+Message-Id: <20200922024302.205062-1-matheus@castello.eng.br>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914214341.14268-12-michael@walle.cc>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - br164.hostgator.com.br
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - castello.eng.br
+X-BWhitelist: no
+X-Source-IP: 179.197.124.241
+X-Source-L: No
+X-Exim-ID: 1kKYJE-000jSR-CU
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 179-197-124-241.user.veloxzone.com.br (localhost.localdomain) [179.197.124.241]:43534
+X-Source-Auth: matheus@castello.eng.br
+X-Email-Count: 3
+X-Source-Cap: Y2FzdGUyNDg7Y2FzdGUyNDg7YnIxNjQuaG9zdGdhdG9yLmNvbS5icg==
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 11:43:39PM +0200, Michael Walle wrote:
-> Now that we have support for GPIO lines of the SMARC connector, enable
-> LED support on the KBox A-230-LS. There are two LEDs without fixed
-> functions, one is yellow and one is green. Unfortunately, it is just one
-> multi-color LED, thus while it is possible to enable both at the same
-> time it is hard to tell the difference between "yellow only" and "yellow
-> and green".
-> 
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> Acked-by: Pavel Machek <pavel@ucw.cz>
-> ---
-> Changes since v9:
->  - none
-> 
-> Changes since v8:
->  - none
-> 
-> Changes since v7:
->  - use new "function" and "color" properties instead of a label
->  - added default-on trigger for the power-led
-> 
-> Changes since v6:
->  - none
-> 
-> Changes since v5:
->  - changed the label, suggested by Pavel Machek
-> 
-> Changes since v4:
->  - none
-> 
-> Changes since v3:
->  - see cover letter
-> 
->  .../fsl-ls1028a-kontron-kbox-a-230-ls.dts      | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-kbox-a-230-ls.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-kbox-a-230-ls.dts
-> index 4b4cc6a1573d..dd516c0efd8b 100644
-> --- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-kbox-a-230-ls.dts
-> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-kbox-a-230-ls.dts
-> @@ -11,11 +11,29 @@
->  
->  /dts-v1/;
->  #include "fsl-ls1028a-kontron-sl28-var4.dts"
-> +#include <dt-bindings/leds/common.h>
->  
->  / {
->  	model = "Kontron KBox A-230-LS";
->  	compatible = "kontron,kbox-a-230-ls", "kontron,sl28-var4",
->  		     "kontron,sl28", "fsl,ls1028a";
-> +
-> +	leds {
-> +		compatible = "gpio-leds";
-> +
-> +		alarm-led {
-> +			function = LED_FUNCTION_ALARM;
-> +			color = <LED_COLOR_ID_YELLOW>;
-> +			gpios = <&sl28cpld_gpio0 0 0>;
-> +		};
-> +
-> +		power-led {
-> +			linux,default-trigger = "default-on";
-> +			function = LED_FUNCTION_POWER;
-> +			color = <LED_COLOR_ID_GREEN>;
-> +			gpios = <&sl28cpld_gpio1 3 0>;
+I'm adding to the series the new Labrador v3, since it uses the same vendor
+prefix. Thanks Andreas, Mani and Rob for your time reviewing it.
 
-Use GPIO_ACTIVE_HIGH for polarity to improve the readability.
+Changes since v6:
+- Add new caninos,labrador-v3 CoM and caninos,labrador-base-m2 base board
+- Improve Model description
 
-I fixed them up and applied patch #9 ~ #13.
+Changes since v5:
+(Suggested by Andreas Färber)
+- Put caninos,labrador-v2 as const one level down
 
-Shawn
+Matheus Castello (4):
+  dt-bindings: Add vendor prefix for Caninos Loucos
+  dt-bindings: arm: actions: Document Caninos Loucos Labrador
+  ARM: dts: Add Caninos Loucos Labrador v2
+  arm64: dts: Add Caninos Loucos Labrador v3
 
-> +		};
-> +	};
->  };
->  
->  &enetc_mdio_pf3 {
-> -- 
-> 2.20.1
-> 
+ .../devicetree/bindings/arm/actions.yaml      |  10 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ arch/arm/boot/dts/Makefile                    |   1 +
+ .../arm/boot/dts/owl-s500-labrador-base-m.dts |  35 +++++
+ arch/arm/boot/dts/owl-s500-labrador-v2.dtsi   |  22 ++++
+ arch/arm64/boot/dts/actions/Makefile          |   2 +
+ .../dts/actions/s700-labrador-base-m2.dts     |  34 +++++
+ .../boot/dts/actions/s700-labrador-v3.dtsi    | 122 ++++++++++++++++++
+ 8 files changed, 228 insertions(+)
+ create mode 100644 arch/arm/boot/dts/owl-s500-labrador-base-m.dts
+ create mode 100644 arch/arm/boot/dts/owl-s500-labrador-v2.dtsi
+ create mode 100644 arch/arm64/boot/dts/actions/s700-labrador-base-m2.dts
+ create mode 100644 arch/arm64/boot/dts/actions/s700-labrador-v3.dtsi
+
+--
+2.28.0
+
