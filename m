@@ -2,155 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4304D273C0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BDF8273C25
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:39:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730124AbgIVHch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 03:32:37 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:49339 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729976AbgIVHch (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 03:32:37 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600759956; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To: From:
- Subject: Sender; bh=XMkIYt7brFpIOXbFvg/bEeHfh+eGJ7z5UeCurwHdJS4=; b=RnMkT5N1s1aYanbZ84B4e0GpkQ6K8QJwdngr//dnYpFcd5XyeGjvK7v6VPX2Zd0Ef8NmsTob
- oWzNCHKt8Wf1FfWNPGMp1kQtZcfaM0gSBQQzUG7gb8K+MtfkYz/Vgj1yBX62e4Ea+h0/3buR
- B2z15FYcqhawgshx0E3wIbOGXQE=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5f69a8568d7a44125d431e05 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Sep 2020 07:31:34
- GMT
-Sender: gkohli=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8A3A7C433FE; Tue, 22 Sep 2020 07:31:33 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.1.4] (unknown [117.98.148.205])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: gkohli)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B5E1BC433CB;
-        Tue, 22 Sep 2020 07:31:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B5E1BC433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=gkohli@codeaurora.org
-Subject: Re: [PATCH] trace: Fix race in trace_open and buffer resize call
-From:   Gaurav Kohli <gkohli@codeaurora.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <1599199797-25978-1-git-send-email-gkohli@codeaurora.org>
- <d4691a90-9a47-b946-f2cd-bb1fce3981b0@codeaurora.org>
- <2fe2a843-e2b5-acf8-22e4-7231d24a9382@codeaurora.org>
- <20200915092353.5b805468@gandalf.local.home>
- <08d6f338-3be3-c5a2-ba4b-0116de9672c2@codeaurora.org>
- <20200915141304.41fa7c30@gandalf.local.home>
- <17b53f76-fa90-0086-8a9e-de166b789e60@codeaurora.org>
-Message-ID: <42818d2b-41b8-ef43-24eb-c7c75b939cf5@codeaurora.org>
-Date:   Tue, 22 Sep 2020 13:01:29 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1730046AbgIVHjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 03:39:18 -0400
+Received: from esa5.hc3370-68.iphmx.com ([216.71.155.168]:21341 "EHLO
+        esa5.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729762AbgIVHjS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 03:39:18 -0400
+X-Greylist: delayed 426 seconds by postgrey-1.27 at vger.kernel.org; Tue, 22 Sep 2020 03:39:17 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1600760357;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=imblkrn9ceDLM/emiZtlefFra0U8yImhIQZNSNE+Xbs=;
+  b=fR6q+2xF+OVU+queIemzHH5qmkjbFs+DEdXSYe6v8cq/90cyWhTec6GT
+   AIiQGANw4xhszQJaxE4mxNHsvskk4MnuaehtLqhOnEfUxayeC3Whzsgtd
+   GXkPyYL0yUMHqWeThU7uk4nKXgvVI4BEtV6LE0F1IcZuJ+E5V87A6Fpcb
+   c=;
+Authentication-Results: esa5.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+IronPort-SDR: pN38FHBviY2A2B5jjvRXaMfl4t3R5hwYAYISS+7aBNZxvxjJUKclvXnCiss46rNidW/rkcA1W1
+ a3xRTTF8/B5YKfC42ryKQrWH5V9IWyZP2ZGc6JFgHQdMir8tMOZUWfkcBXN1oi7Whoq+6yp0Ru
+ eE8HH6DJ5ajGNeX4wo8cPJ+bgLvbT85NXNTPvq9RsJot7hqGBPTvBCW2Sjv2RhsM6uYl1ELlYR
+ hbujwj3cq0kDHCBTMJNlmAwucLHQQCWAiwM0SInhQPQawg0A4KwCBsNu7hlgdeqywp2Q0DUWFV
+ xF4=
+X-SBRS: 2.7
+X-MesageID: 27333621
+X-Ironport-Server: esa5.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.158.21
+X-Policy: $RELAYED
+X-IronPort-AV: E=Sophos;i="5.77,289,1596513600"; 
+   d="scan'208";a="27333621"
+Date:   Tue, 22 Sep 2020 09:32:02 +0200
+From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
+To:     SeongJae Park <sjpark@amazon.com>
+CC:     <konrad.wilk@oracle.com>, SeongJae Park <sjpark@amazon.de>,
+        <axboe@kernel.dk>, <aliguori@amazon.com>, <amit@kernel.org>,
+        <mheyne@amazon.de>, <linux-block@vger.kernel.org>,
+        <xen-devel@lists.xenproject.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] xen-blkback: add a parameter for disabling of persistent
+ grants
+Message-ID: <20200922073202.GH19254@Air-de-Roger>
+References: <20200922070125.27251-1-sjpark@amazon.com>
 MIME-Version: 1.0
-In-Reply-To: <17b53f76-fa90-0086-8a9e-de166b789e60@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20200922070125.27251-1-sjpark@amazon.com>
+X-ClientProxiedBy: AMSPEX02CAS01.citrite.net (10.69.22.112) To
+ FTLPEX02CL06.citrite.net (10.13.108.179)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 22, 2020 at 09:01:25AM +0200, SeongJae Park wrote:
+> From: SeongJae Park <sjpark@amazon.de>
+> 
+> Persistent grants feature provides high scalability.  On some small
+> systems, however, it could incur data copy overhead[1] and thus it is
+> required to be disabled.  But, there is no option to disable it.  For
+> the reason, this commit adds a module parameter for disabling of the
+> feature.
 
+Have you considered adding a similar option for blkfront?
 
-On 9/16/2020 12:02 PM, Gaurav Kohli wrote:
+> 
+> [1] https://wiki.xen.org/wiki/Xen_4.3_Block_Protocol_Scalability
+> 
+> Signed-off-by: Anthony Liguori <aliguori@amazon.com>
+> Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> ---
+>  .../ABI/testing/sysfs-driver-xen-blkback        |  8 ++++++++
+>  drivers/block/xen-blkback/xenbus.c              | 17 ++++++++++++++---
+>  2 files changed, 22 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-driver-xen-blkback b/Documentation/ABI/testing/sysfs-driver-xen-blkback
+> index ecb7942ff146..0c42285c75ee 100644
+> --- a/Documentation/ABI/testing/sysfs-driver-xen-blkback
+> +++ b/Documentation/ABI/testing/sysfs-driver-xen-blkback
+> @@ -35,3 +35,11 @@ Description:
+>                  controls the duration in milliseconds that blkback will not
+>                  cache any page not backed by a grant mapping.
+>                  The default is 10ms.
+> +
+> +What:           /sys/module/xen_blkback/parameters/feature_persistent
+> +Date:           September 2020
+> +KernelVersion:  5.10
+> +Contact:        SeongJae Park <sjpark@amazon.de>
+> +Description:
+> +                Whether to enable the persistent grants feature or not.
+> +                The default is 1 (enable).
 
->>>
->>> Yes, got your point. then we can avoid export. Actually we are seeing
->>> issue in older kernel like 4.19/4.14/5.4 and there below patch was not
->>> present in stable branches:
->>>
->>> ommit b23d7a5f4a07 ("ring-buffer: speed up buffer resets by
->>>   > avoiding synchronize_rcu for each CPU")
->>
->> If you mark this patch for stable, you can add:
->>
->> Depends-on: b23d7a5f4a07 ("ring-buffer: speed up buffer resets by 
->> avoiding synchronize_rcu for each CPU")
->>
-> 
-> Thanks Steven, Yes this needs to be back ported. I have tried this in 
-> 5.4 but this need more patches like
-> 13292494379f92f532de71b31a54018336adc589
-> tracing: Make struct ring_buffer less ambiguous
-> 
-> Instead of protecting all reset, can we do it individually like below:
-> 
-> 
-> +++ b/kernel/trace/ring_buffer.c
-> @@ -4838,7 +4838,9 @@ rb_reset_cpu(struct ring_buffer_per_cpu *cpu_buffer)
->   static void reset_disabled_cpu_buffer(struct ring_buffer_per_cpu 
-> *cpu_buffer)
->   {
->          unsigned long flags;
-> +       struct trace_buffer *buffer = cpu_buffer->buffer;
-> 
-> +       mutex_lock(&buffer->mutex);
->          raw_spin_lock_irqsave(&cpu_buffer->reader_lock, flags);
-> 
->          if (RB_WARN_ON(cpu_buffer, local_read(&cpu_buffer->committing)))
-> @@ -4852,6 +4854,7 @@ static void reset_disabled_cpu_buffer(struct 
-> ring_buffer_per_cpu *cpu_buffer)
-> 
->    out:
->          raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
-> +       mutex_unlock(&buffer->mutex);
->   }
-> 
+I would add that this option only takes effect on newly created
+backends, existing backends when the option is set will continue to
+use persistent grants.
 
-Hi Steven,
-Not seeing issue with above patch in 5.4, Please let me know if above 
-approach looks good to you, will raise patch for same.
+For already running backends you could drain the buffer of persistent
+grants and flip the option, but that's more complex and not required.
 
-Otherwise we will raise patch for older approach by marking depends on 
-of below patch:
-depends-on: b23d7a5f4a07 ("ring-buffer: speed up buffer resets by
+> diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
+> index b9aa5d1ac10b..9c03d70469f4 100644
+> --- a/drivers/block/xen-blkback/xenbus.c
+> +++ b/drivers/block/xen-blkback/xenbus.c
+> @@ -879,6 +879,12 @@ static void reclaim_memory(struct xenbus_device *dev)
+>  
+>  /* ** Connection ** */
+>  
+> +/* Enable the persistent grants feature. */
+> +static unsigned int feature_persistent = 1;
+> +module_param_named(feature_persistent, feature_persistent, int, 0644);
+> +MODULE_PARM_DESC(feature_persistent,
+> +		"Enables the persistent grants feature");
+> +
+>  /*
+>   * Write the physical details regarding the block device to the store, and
+>   * switch to Connected state.
+> @@ -906,7 +912,8 @@ static void connect(struct backend_info *be)
+>  
+>  	xen_blkbk_barrier(xbt, be, be->blkif->vbd.flush_support);
+>  
+> -	err = xenbus_printf(xbt, dev->nodename, "feature-persistent", "%u", 1);
+> +	err = xenbus_printf(xbt, dev->nodename, "feature-persistent", "%u",
+> +			feature_persistent ? 1 : 0);
 
-Thanks,
-Gaurav
-> Please let me know, if above looks good, we will do testing with this.
-> And this we can directly use in older kernel as well in 
-> ring_buffer_reset_cpu.
-> 
->>>
->>> Actually i have also thought to take mutex lock in ring_buffer_reset_cpu
->>> while doing individual cpu reset, but this could cause another problem:
->>
->> Hmm, I think we should also take the buffer lock in the reset_cpu() call
->> too, and modify tracing_reset_cpu() the same way.
->>
-> 
-> if we take above patch, then this is not required.
-> Please let me know for the approach.
->>>
->>> Different cpu buffer may have different state, so i have taken lock in
->>> tracing_reset_online_cpus.
->>
->> Why would different states be an issue in synchronizing?
->>
->> -- Steve
->>
-> 
-> Yes, this should not be problem.
+You can avoid writing the feature altogether if it's not enabled,
+there's no need to set feature-persistent = 0.
 
-
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center,
-Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+Thanks, Roger.
