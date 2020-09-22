@@ -2,102 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEC77273E65
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 11:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9BFD273E66
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 11:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726664AbgIVJTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 05:19:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36700 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726489AbgIVJTG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 05:19:06 -0400
-Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 320A72075E;
-        Tue, 22 Sep 2020 09:19:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600766345;
-        bh=mWFRSZMyBbjwK/FEQm1JMdfw+4awqsgxyVdSlSR+BE4=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=eDRX5gyGqt2fplwA55rpFPGnTMwa7OmKZ8zKsKHi8HAF8J7UzNVeDKZG9TPudC4lZ
-         BL3+12jGTB0Kas3zxYvSAjUG4TFgcq9dxzn9MrZ4A4qgsLziUbz0kBLw1zUvqxTacD
-         GCbP6OCWx4JXcS4XXTZ/CZItrNszCOm2jUYTrW6o=
-Date:   Tue, 22 Sep 2020 11:19:00 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Sultan Alsawaf <sultan@kerneltoast.com>
-cc:     linux-i2c@vger.kernel.org, aaron.ma@canonical.com, admin@kryma.net,
-        andriy.shevchenko@linux.intel.com, benjamin.tissoires@redhat.com,
-        hdegoede@redhat.com, hn.chen@weidahitech.com,
-        jarkko.nikula@linux.intel.com, kai.heng.feng@canonical.com,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mika.westerberg@linux.intel.com, vicamo.yang@canonical.com,
-        wsa@kernel.org
-Subject: Re: [PATCH v2 0/4] i2c-hid: Save power by reducing i2c xfers with
- block reads
-In-Reply-To: <20200917052256.5770-1-sultan@kerneltoast.com>
-Message-ID: <nycvar.YFH.7.76.2009221118150.3336@cbobk.fhfr.pm>
-References: <20200917052256.5770-1-sultan@kerneltoast.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1726673AbgIVJTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 05:19:15 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14207 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726489AbgIVJTP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 05:19:15 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id B6282F9DFDC43B78E195;
+        Tue, 22 Sep 2020 17:19:12 +0800 (CST)
+Received: from [10.174.178.248] (10.174.178.248) by smtp.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 22 Sep
+ 2020 17:19:07 +0800
+Subject: Re: [PATCH] rapidio: fix the missed put_device() for
+ rio_mport_add_riodev
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+References: <20200922072525.42330-1-jingxiangfeng@huawei.com>
+ <20200922080426.GB18329@kadam>
+CC:     <mporter@kernel.crashing.org>, <alex.bou9@gmail.com>,
+        <akpm@linux-foundation.org>, <gustavoars@kernel.org>,
+        <jhubbard@nvidia.com>, <keescook@chromium.org>,
+        <madhuparnabhowmik10@gmail.com>, <linux-kernel@vger.kernel.org>
+From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
+Message-ID: <5F69C18A.2070800@huawei.com>
+Date:   Tue, 22 Sep 2020 17:19:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200922080426.GB18329@kadam>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.248]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Sep 2020, Sultan Alsawaf wrote:
 
-> From: Sultan Alsawaf <sultan@kerneltoast.com>
-> 
-> This is a fixed resubmission of "[PATCH 0/2] i2c-hid: Save power by reducing i2c
-> xfers with block reads". That original patchset did not have enough fixes for
-> the designware i2c adapter's I2C_M_RECV_LEN feature, which is documented
-> extensively in the original email thread.
-> 
-> Here is the original cover letter, which still applies:
-> "I noticed on my Dell Precision 15 5540 with an i9-9880H that simply putting my
-> finger on the touchpad would increase my system's power consumption by 4W, which
-> is quite considerable. Resting my finger on the touchpad would generate roughly
-> 4000 i2c irqs per second, or roughly 20 i2c irqs per touchpad irq.
-> 
-> Upon closer inspection, I noticed that the i2c-hid driver would always transfer
-> the maximum report size over i2c (which is 60 bytes for my touchpad), but all of
-> my touchpad's normal touch events are only 32 bytes long according to the length
-> byte contained in the buffer sequence.
-> 
-> Therefore, I was able to save about 2W of power by passing the I2C_M_RECV_LEN
-> flag in i2c-hid, which says to look for the payload length in the first byte of
-> the transfer buffer and adjust the i2c transaction accordingly. The only problem
-> though is that my i2c controller's driver allows bytes other than the first one
-> to be used to retrieve the payload length, which is incorrect according to the
-> SMBus spec, and would break my i2c-hid change since not *all* of the reports
-> from my touchpad are conforming SMBus block reads.
-> 
-> This patchset fixes the I2C_M_RECV_LEN behavior in the designware i2c driver and
-> modifies i2c-hid to use I2C_M_RECV_LEN to save quite a bit of power. Even if the
-> peripheral controlled by i2c-hid doesn't support block reads, the i2c controller
-> drivers should cope with this and proceed with the i2c transfer using the
-> original requested length."
-> 
-> Sultan
-> 
-> Sultan Alsawaf (4):
->   i2c: designware: Fix transfer failures for invalid SMBus block reads
->   i2c: designware: Ensure tx_buf_len is nonzero for SMBus block reads
->   i2c: designware: Allow SMBus block reads up to 255 bytes in length
->   HID: i2c-hid: Use block reads when possible to save power
-> 
->  drivers/hid/i2c-hid/i2c-hid-core.c         |  5 ++++-
->  drivers/i2c/busses/i2c-designware-master.c | 15 +++++++++------
->  2 files changed, 13 insertions(+), 7 deletions(-)
 
-Hans, Benjamin, could you please give this patchset some smoke-testing? It 
-looks good to me, but I'd like it to get some testing from your testing 
-machinery before merging.
+On 2020/9/22 16:04, Dan Carpenter wrote:
+> On Tue, Sep 22, 2020 at 03:25:25PM +0800, Jing Xiangfeng wrote:
+>> rio_mport_add_riodev() misses to call put_device() when the device
+>> already exists. Add the missed function call to fix it.
+>>
+> Looks good.
+>
+> Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+>
+> I notice that rio_mport_del_riodev() has a related bug.
+>
+>    1802          err = rio_add_device(rdev);
+>    1803          if (err)
+>    1804                  goto cleanup;
+>    1805          rio_dev_get(rdev);
+>                  ^^^^^^^^^^^^^^^^^
+> This calls get_device(&rdev->dev);
+>
+>    1806
+>    1807          return 0;
+>    1808  cleanup:
+>    1809          kfree(rdev);
+>    1810          return err;
+>    1811  }
+>    1812
+>    1813  static int rio_mport_del_riodev(struct mport_cdev_priv *priv, void __user *arg)
+>    1814  {
+>    1815          struct rio_rdev_info dev_info;
+>    1816          struct rio_dev *rdev = NULL;
+>    1817          struct device  *dev;
+>    1818          struct rio_mport *mport;
+>    1819          struct rio_net *net;
+>    1820
+>    1821          if (copy_from_user(&dev_info, arg, sizeof(dev_info)))
+>    1822                  return -EFAULT;
+>    1823          dev_info.name[sizeof(dev_info.name) - 1] = '\0';
+>    1824
+>    1825          mport = priv->md->mport;
+>    1826
+>    1827          /* If device name is specified, removal by name has priority */
+>    1828          if (strlen(dev_info.name)) {
+>    1829                  dev = bus_find_device_by_name(&rio_bus_type, NULL,
+>    1830                                                dev_info.name);
+>    1831                  if (dev)
+>    1832                          rdev = to_rio_dev(dev);
+>
+> This path takes a second get_device(&rdev->dev);
+>
+>    1833          } else {
+>    1834                  do {
+>    1835                          rdev = rio_get_comptag(dev_info.comptag, rdev);
+>    1836                          if (rdev && rdev->dev.parent == &mport->net->dev &&
+>    1837                              rdev->destid == dev_info.destid &&
+>    1838                              rdev->hopcount == dev_info.hopcount)
+>    1839                                  break;
+>
+> This path does not call get_device().
+  Add  calling rio_dev_get()  in this path? like the following changes:
 
-Thanks,
+  static int rio_mport_del_riodev(struct mport_cdev_priv *priv, void 
+__user *arg)
+                         rdev = rio_get_comptag(dev_info.comptag, rdev);
+                         if (rdev && rdev->dev.parent == &mport->net->dev &&
+                             rdev->destid == dev_info.destid &&
+-                           rdev->hopcount == dev_info.hopcount)
++                           rdev->hopcount == dev_info.hopcount) {
++                               rio_dev_get(rdev);
+                                 break;
++                       }
+                 } while (rdev);
+         }
 
--- 
-Jiri Kosina
-SUSE Labs
+>
+>    1840                  } while (rdev);
+>    1841          }
+>    1842
+>    1843          if (!rdev) {
+>    1844                  rmcd_debug(RDEV,
+>    1845                          "device name:%s ct:0x%x did:0x%x hc:0x%x not found",
+>    1846                          dev_info.name, dev_info.comptag, dev_info.destid,
+>    1847                          dev_info.hopcount);
+>    1848                  return -ENODEV;
+>    1849          }
+>    1850
+>    1851          net = rdev->net;
+>    1852          rio_dev_put(rdev);
+>
+> This drops a reference.
+>
+>    1853          rio_del_device(rdev, RIO_DEVICE_SHUTDOWN);
+>
+> This drops a second reference.  So presumably deleting by component tag
+> will lead to a use after free.
+Indeed,  it  is a mismatched reference.
+>
+>    1854
+>    1855          if (list_empty(&net->devices)) {
+>    1856                  rio_free_net(net);
+>    1857                  mport->net = NULL;
+>    1858          }
+>    1859
+>    1860          return 0;
+>    1861  }
+>
+> regards,
+> dan carpenter
+> .
+>
 
