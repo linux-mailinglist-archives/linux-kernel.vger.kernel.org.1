@@ -2,91 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A32274700
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD6C3274706
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgIVQyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 12:54:10 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:38500 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726558AbgIVQyK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 12:54:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600793648;
+        id S1726634AbgIVQzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 12:55:35 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42354 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726558AbgIVQzf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 12:55:35 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1600793733;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=gBHg3zNIec+WeQog3j//eJu6/QAaq+YzhOHDbDBO6PM=;
-        b=OzuMisA5eK2dDN0iDc28X9XYnam0SEsvXqcMxKYMyhvO8bC+x8160eTH1RMIBR2DRG9kHY
-        HTvlIZ26uOjkFvcZAdNmlZd/ufJF82fO/X5WaVsGIgZNqrFG9NsjT0PdPb++bc7mm118/V
-        T0Mzsiyr/KEUhGYQNeOSB1Az53Rq7eM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-182-VDiYQtyBMdir2oJfykRdmg-1; Tue, 22 Sep 2020 12:54:04 -0400
-X-MC-Unique: VDiYQtyBMdir2oJfykRdmg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AFAB91891E93;
-        Tue, 22 Sep 2020 16:54:02 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.146])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 0344A614F5;
-        Tue, 22 Sep 2020 16:53:56 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Tue, 22 Sep 2020 18:54:02 +0200 (CEST)
-Date:   Tue, 22 Sep 2020 18:53:55 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Jason Gunthorpe <jgg@ziepe.ca>,
+        bh=5jCObW2aZuYsbwA3+WNFccCphyTXD8hTQNq4fK3Vcz4=;
+        b=hzHNG52oRkd8BTbo/rvSiMraoa3PW+GRD3nIN/EKcbZ1CcZkYHkNfV7IqIX12/325qcZP5
+        rIk2+5rEZzHWH5/tM/25LnBmaoGyWt0r8F2V2paOE5XNRFwpqnGImXV+mDk7khw/js3/3h
+        YaNIIXAhRI97QIaQHHtm1a+yn8pPrTY=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 64A23AD32;
+        Tue, 22 Sep 2020 16:56:10 +0000 (UTC)
+Date:   Tue, 22 Sep 2020 18:55:27 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
+        Greg Thelen <gthelen@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jann Horn <jannh@google.com>
-Subject: Re: [PATCH 3/5] mm: Rework return value for copy_one_pte()
-Message-ID: <20200922165354.GG11679@redhat.com>
-References: <20200921211744.24758-1-peterx@redhat.com>
- <20200921211744.24758-4-peterx@redhat.com>
- <20200922100840.GA11679@redhat.com>
- <20200922101815.GB11679@redhat.com>
- <20200922153612.GF19098@xz-x1>
- <20200922154845.GE11679@redhat.com>
- <20200922160330.GH19098@xz-x1>
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Yang Shi <shy828301@gmail.com>
+Subject: Re: [PATCH] memcg: introduce per-memcg reclaim interface
+Message-ID: <20200922165527.GD12990@dhcp22.suse.cz>
+References: <20200909215752.1725525-1-shakeelb@google.com>
+ <20200921163055.GQ12990@dhcp22.suse.cz>
+ <CALvZod43VXKZ3StaGXK_EZG_fKcW3v3=cEYOWFwp4HNJpOOf8g@mail.gmail.com>
+ <20200922114908.GZ12990@dhcp22.suse.cz>
+ <CALvZod4FvE12o53BpeH5WB_McTdCkFTFXgc9gcT1CEHXzQLy_A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200922160330.GH19098@xz-x1>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <CALvZod4FvE12o53BpeH5WB_McTdCkFTFXgc9gcT1CEHXzQLy_A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/22, Peter Xu wrote:
->
-> On Tue, Sep 22, 2020 at 05:48:46PM +0200, Oleg Nesterov wrote:
-> > > However since I didn't change this logic in this patch, it probably means this
-> > > bug is also in the original code before this series...  I'm thinking maybe I
-> > > should prepare a standalone patch to clear the swp_entry_t and cc stable.
+On Tue 22-09-20 08:54:25, Shakeel Butt wrote:
+> On Tue, Sep 22, 2020 at 4:49 AM Michal Hocko <mhocko@suse.com> wrote:
 > >
-> > Well, if copy_one_pte(src_pte) hits a swap entry and returns entry.val != 0, then
-> > pte_none(*src_pte) is not possible after restart? This means that copy_one_pte()
-> > will be called at least once.
->
-> Note that we've released the page table locks, so afaict the old swp entry can
-> be gone under us when we go back to the "do" loop... :)
+> > On Mon 21-09-20 10:50:14, Shakeel Butt wrote:
+[...]
+> > > Let me add one more point. Even if the high limit reclaim is swift, it
+> > > can still take 100s of usecs. Most of our jobs are anon-only and we
+> > > use zswap. Compressing a page can take a couple usec, so 100s of usecs
+> > > in limit reclaim is normal. For latency sensitive jobs, this amount of
+> > > hiccups do matters.
+> >
+> > Understood. But isn't this an implementation detail of zswap? Can it
+> > offload some of the heavy lifting to a different context and reduce the
+> > general overhead?
+> >
+> 
+> Are you saying doing the compression asynchronously? Similar to how
+> the disk-based swap triggers the writeback and puts the page back to
+> LRU, so the next time reclaim sees it, it will be instantly reclaimed?
+> Or send the batch of pages to be compressed to a different CPU and
+> wait for the completion?
 
-But how?
+Yes.
 
-I am just curious, I don't understand this code enough.
+[...]
 
-Oleg.
+> > You are right that misconfigured limits can result in problems. But such
+> > a configuration should be quite easy to spot which is not the case for
+> > targetted reclaim calls which do not leave any footprints behind.
+> > Existing interfaces are trying to not expose internal implementation
+> > details as much as well. You are proposing a very targeted interface to
+> > fine control the memory reclaim. There is a risk that userspace will
+> > start depending on a specific reclaim implementation/behavior and future
+> > changes would be prone to regressions in workloads relying on that. So
+> > effectively, any user space memory reclaimer would need to be tuned to a
+> > specific implementation of the memory reclaim.
+> 
+> I don't see the exposure of internal memory reclaim implementation.
+> The interface is very simple. Reclaim a given amount of memory. Either
+> the kernel will reclaim less memory or it will over reclaim. In case
+> of reclaiming less memory, the user space can retry given there is
+> enough reclaimable memory. For the over reclaim case, the user space
+> will backoff for a longer time. How are the internal reclaim
+> implementation details exposed?
 
+In an ideal world yes. A feedback mechanism will be independent on the
+particular implementation. But the reality tends to disagree quite
+often. Once we provide a tool there will be users using it to the best
+of their knowlege. Very often as a hammer. This is what the history of
+kernel regressions and "we have to revert an obvious fix because
+userspace depends on an undocumented behavior which happened to work for
+some time" has thought us in a hard way.
+
+I really do not want to deal with reports where a new heuristic in the
+memory reclaim will break something just because the reclaim takes
+slightly longer or over/under reclaims differently so the existing
+assumptions break and the overall balancing from userspace breaks.
+
+This might be a shiny exception of course. And please note that I am not
+saying that the interface is completely wrong or unacceptable. I just
+want to be absolutely sure we cannot move forward with the existing API
+space that we have.
+
+So far I have learned that you are primarily working around an
+implementation detail in the zswap which is doing the swapout path
+directly in the pageout path. That sounds like a very bad reason to add
+a new interface. You are right that there are likely other usecases to
+like this new interface - mostly to emulate drop_caches - but I believe
+those are quite misguided as well and we should work harder to help
+them out to use the existing APIs. Last but not least the memcg
+background reclaim is something that should be possible without a new
+interface.
+-- 
+Michal Hocko
+SUSE Labs
