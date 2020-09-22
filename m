@@ -2,131 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BDF8273C25
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:39:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8365273C16
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730046AbgIVHjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 03:39:18 -0400
-Received: from esa5.hc3370-68.iphmx.com ([216.71.155.168]:21341 "EHLO
-        esa5.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729762AbgIVHjS (ORCPT
+        id S1729988AbgIVHhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 03:37:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729894AbgIVHhO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 03:39:18 -0400
-X-Greylist: delayed 426 seconds by postgrey-1.27 at vger.kernel.org; Tue, 22 Sep 2020 03:39:17 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1600760357;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=imblkrn9ceDLM/emiZtlefFra0U8yImhIQZNSNE+Xbs=;
-  b=fR6q+2xF+OVU+queIemzHH5qmkjbFs+DEdXSYe6v8cq/90cyWhTec6GT
-   AIiQGANw4xhszQJaxE4mxNHsvskk4MnuaehtLqhOnEfUxayeC3Whzsgtd
-   GXkPyYL0yUMHqWeThU7uk4nKXgvVI4BEtV6LE0F1IcZuJ+E5V87A6Fpcb
-   c=;
-Authentication-Results: esa5.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-IronPort-SDR: pN38FHBviY2A2B5jjvRXaMfl4t3R5hwYAYISS+7aBNZxvxjJUKclvXnCiss46rNidW/rkcA1W1
- a3xRTTF8/B5YKfC42ryKQrWH5V9IWyZP2ZGc6JFgHQdMir8tMOZUWfkcBXN1oi7Whoq+6yp0Ru
- eE8HH6DJ5ajGNeX4wo8cPJ+bgLvbT85NXNTPvq9RsJot7hqGBPTvBCW2Sjv2RhsM6uYl1ELlYR
- hbujwj3cq0kDHCBTMJNlmAwucLHQQCWAiwM0SInhQPQawg0A4KwCBsNu7hlgdeqywp2Q0DUWFV
- xF4=
-X-SBRS: 2.7
-X-MesageID: 27333621
-X-Ironport-Server: esa5.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.158.21
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.77,289,1596513600"; 
-   d="scan'208";a="27333621"
-Date:   Tue, 22 Sep 2020 09:32:02 +0200
-From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-To:     SeongJae Park <sjpark@amazon.com>
-CC:     <konrad.wilk@oracle.com>, SeongJae Park <sjpark@amazon.de>,
-        <axboe@kernel.dk>, <aliguori@amazon.com>, <amit@kernel.org>,
-        <mheyne@amazon.de>, <linux-block@vger.kernel.org>,
-        <xen-devel@lists.xenproject.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] xen-blkback: add a parameter for disabling of persistent
- grants
-Message-ID: <20200922073202.GH19254@Air-de-Roger>
-References: <20200922070125.27251-1-sjpark@amazon.com>
+        Tue, 22 Sep 2020 03:37:14 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48576C0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 00:37:14 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id y15so2251321wmi.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 00:37:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=f6NEte3lutGwCOE6JLOavb/M9H8I1XfzDGWcZi3Iq7Q=;
+        b=XNaPLn0t+kxDTIOfVoPVBX4FPKsDFUw4iGC5BV0MEuJKWj/BvrlvjgHDauwC0X3iri
+         klyOdAfM43Y3kMVpgvFWfFpwgIgy/4bLbHMv2iaKFjCSacJv5dHinCvYaGYW+H7Anrgo
+         DHcq25ogTZUd/m5pG0b1NjM6JTn/fFVJtDY1E6vPZ89HxAi8vGOVIFVxL7tlHk0Hznp3
+         FDoQs92XNxUgQ80msZD3Axv/B0hTL33ZPIga+06PWwEN4jw3bXdGUlhja3t6o6+NCzHF
+         /3q6zFTs5kMF70vvrisNhfHUbgH90fmb0A5Nz6HggmxQdyRPyUBYqQWE5ndgyOqCXGuP
+         azEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=f6NEte3lutGwCOE6JLOavb/M9H8I1XfzDGWcZi3Iq7Q=;
+        b=Z1qYmTSNEm3ORRqvfikTAqW4ENTMnO0GBfRYQI2X5DSW9P5zghWMvsHxnd2xYvXcSR
+         S8yqjrB0FgSBSFzY6qZYGOMM5IYSe7lP8Z4IKUmggSbEODwlzfyvJjWkVtu4pLFGrenp
+         O8Ghw1Hy0Q4+FHK/+4apLsbvuRF3pwUtRpX6/bSl0/Dv5E6OfuTCjFHYQY0fmv/JwFc/
+         JQ58JQIrKFCCL90xxUl5EQJ1OmdSzSXrzQyzcvoheOKmuOHLJAnX3pnqhqcagfX3ZC9N
+         0MpjW5kQfGESNIcWkLIZBlpR96NG2qZ1x8QRwyH9AQErpoN0sQSBhk2+wgI7UDN7KYqf
+         BeDg==
+X-Gm-Message-State: AOAM533u2sGI5XAaORCum4zHt/adMZCCwnEWFlbz8v5GNBuFaIN8l4PO
+        O6hBIpsrVwPNVXQFAIXfMIii8M8q86zm0F6Tj3Qjrg==
+X-Google-Smtp-Source: ABdhPJzVWqCDtrVv7PLgmds+KflwVNovPQCQJ66ow/a2qlmcY4wT3p6qVfV9Z66NlM7m5l2WQeWjU4ZdmDud0sjo51k=
+X-Received: by 2002:a1c:7308:: with SMTP id d8mr3081805wmb.55.1600760232528;
+ Tue, 22 Sep 2020 00:37:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20200922070125.27251-1-sjpark@amazon.com>
-X-ClientProxiedBy: AMSPEX02CAS01.citrite.net (10.69.22.112) To
- FTLPEX02CL06.citrite.net (10.13.108.179)
+References: <20200921163021.v1.1.Id3160295d33d44a59fa3f2a444d74f40d132ea5c@changeid>
+ <CABBYNZJGfDoV+E-f6T=ZQ2RT0doXDdOB7tgVrt=4fpvKcpmH4w@mail.gmail.com>
+In-Reply-To: <CABBYNZJGfDoV+E-f6T=ZQ2RT0doXDdOB7tgVrt=4fpvKcpmH4w@mail.gmail.com>
+From:   Archie Pusaka <apusaka@google.com>
+Date:   Tue, 22 Sep 2020 15:37:01 +0800
+Message-ID: <CAJQfnxHcvm_-iCP-2Y6GR1vG4ZmMr==ZuMHBua8TeeiNbqAJgA@mail.gmail.com>
+Subject: Re: [PATCH v1] Bluetooth: Enforce key size of 16 bytes on FIPS level
+To:     Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Alain Michaud <alainm@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 09:01:25AM +0200, SeongJae Park wrote:
-> From: SeongJae Park <sjpark@amazon.de>
-> 
-> Persistent grants feature provides high scalability.  On some small
-> systems, however, it could incur data copy overhead[1] and thus it is
-> required to be disabled.  But, there is no option to disable it.  For
-> the reason, this commit adds a module parameter for disabling of the
-> feature.
+Hi Luiz,
 
-Have you considered adding a similar option for blkfront?
+On Tue, 22 Sep 2020 at 01:13, Luiz Augusto von Dentz
+<luiz.dentz@gmail.com> wrote:
+>
+> Hi Archie,
+>
+> On Mon, Sep 21, 2020 at 1:31 AM Archie Pusaka <apusaka@google.com> wrote:
+> >
+> > From: Archie Pusaka <apusaka@chromium.org>
+> >
+> > According to the spec Ver 5.2, Vol 3, Part C, Sec 5.2.2.8:
+> > Device in security mode 4 level 4 shall enforce:
+> > 128-bit equivalent strength for link and encryption keys required
+> > using FIPS approved algorithms (E0 not allowed, SAFER+ not allowed,
+> > and P-192 not allowed; encryption key not shortened)
+> >
+> > This patch rejects connection with key size below 16 for FIPS level
+> > services.
+> >
+> > Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+> > Reviewed-by: Alain Michaud <alainm@chromium.org>
+> >
+> > ---
+> >
+> >  net/bluetooth/l2cap_core.c | 7 ++++++-
+> >  1 file changed, 6 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
+> > index ade83e224567..306616ec26e6 100644
+> > --- a/net/bluetooth/l2cap_core.c
+> > +++ b/net/bluetooth/l2cap_core.c
+> > @@ -1515,8 +1515,13 @@ static bool l2cap_check_enc_key_size(struct hci_conn *hcon)
+> >          * that have no key size requirements. Ensure that the link is
+> >          * actually encrypted before enforcing a key size.
+> >          */
+> > +       int min_key_size = hcon->hdev->min_enc_key_size;
+> > +
+> > +       if (hcon->sec_level == BT_SECURITY_FIPS)
+> > +               min_key_size = 16;
+> > +
+> >         return (!test_bit(HCI_CONN_ENCRYPT, &hcon->flags) ||
+> > -               hcon->enc_key_size >= hcon->hdev->min_enc_key_size);
+> > +               hcon->enc_key_size >= min_key_size);
+>
+> While this looks fine to me, it looks like this should be placed
+> elsewhere since it takes an hci_conn and it is not L2CAP specific.
 
-> 
-> [1] https://wiki.xen.org/wiki/Xen_4.3_Block_Protocol_Scalability
-> 
-> Signed-off-by: Anthony Liguori <aliguori@amazon.com>
-> Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> ---
->  .../ABI/testing/sysfs-driver-xen-blkback        |  8 ++++++++
->  drivers/block/xen-blkback/xenbus.c              | 17 ++++++++++++++---
->  2 files changed, 22 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-driver-xen-blkback b/Documentation/ABI/testing/sysfs-driver-xen-blkback
-> index ecb7942ff146..0c42285c75ee 100644
-> --- a/Documentation/ABI/testing/sysfs-driver-xen-blkback
-> +++ b/Documentation/ABI/testing/sysfs-driver-xen-blkback
-> @@ -35,3 +35,11 @@ Description:
->                  controls the duration in milliseconds that blkback will not
->                  cache any page not backed by a grant mapping.
->                  The default is 10ms.
-> +
-> +What:           /sys/module/xen_blkback/parameters/feature_persistent
-> +Date:           September 2020
-> +KernelVersion:  5.10
-> +Contact:        SeongJae Park <sjpark@amazon.de>
-> +Description:
-> +                Whether to enable the persistent grants feature or not.
-> +                The default is 1 (enable).
+From what I understood, it is permissible to use AES-CCM P-256
+encryption with key length < 16 when encrypting the link, but such a
+connection does not satisfy security level 4, and therefore must not
+be given access to level 4 services. However, I think it is
+permissible to give them access to level 3 services or below.
 
-I would add that this option only takes effect on newly created
-backends, existing backends when the option is set will continue to
-use persistent grants.
+Should I use l2cap chan->sec_level for this purpose? I'm kind of lost
+on the difference between hcon->sec_level and chan->sec_level.
 
-For already running backends you could drain the buffer of persistent
-grants and flip the option, but that's more complex and not required.
-
-> diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
-> index b9aa5d1ac10b..9c03d70469f4 100644
-> --- a/drivers/block/xen-blkback/xenbus.c
-> +++ b/drivers/block/xen-blkback/xenbus.c
-> @@ -879,6 +879,12 @@ static void reclaim_memory(struct xenbus_device *dev)
->  
->  /* ** Connection ** */
->  
-> +/* Enable the persistent grants feature. */
-> +static unsigned int feature_persistent = 1;
-> +module_param_named(feature_persistent, feature_persistent, int, 0644);
-> +MODULE_PARM_DESC(feature_persistent,
-> +		"Enables the persistent grants feature");
-> +
->  /*
->   * Write the physical details regarding the block device to the store, and
->   * switch to Connected state.
-> @@ -906,7 +912,8 @@ static void connect(struct backend_info *be)
->  
->  	xen_blkbk_barrier(xbt, be, be->blkif->vbd.flush_support);
->  
-> -	err = xenbus_printf(xbt, dev->nodename, "feature-persistent", "%u", 1);
-> +	err = xenbus_printf(xbt, dev->nodename, "feature-persistent", "%u",
-> +			feature_persistent ? 1 : 0);
-
-You can avoid writing the feature altogether if it's not enabled,
-there's no need to set feature-persistent = 0.
-
-Thanks, Roger.
+>
+> >  }
+> >
+> >  static void l2cap_do_start(struct l2cap_chan *chan)
+> > --
+> > 2.28.0.681.g6f77f65b4e-goog
+> >
+>
+>
+> --
+> Luiz Augusto von Dentz
