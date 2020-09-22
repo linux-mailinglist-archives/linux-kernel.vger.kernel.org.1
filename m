@@ -2,60 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FAB3274916
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77FDD274912
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726763AbgIVT1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 15:27:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55244 "EHLO
+        id S1726722AbgIVT1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 15:27:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726655AbgIVT1Q (ORCPT
+        with ESMTP id S1726625AbgIVT1S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 15:27:16 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A8B6C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 12:27:16 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id u8so19324832lff.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 12:27:16 -0700 (PDT)
+        Tue, 22 Sep 2020 15:27:18 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92EE5C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 12:27:17 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id u4so15116222ljd.10
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 12:27:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=lZAYCNZd2exSauEKT0RXF+wYwkkwt1jBDEAUNXpjVmY=;
-        b=qKvbpqHMzxC+6dctj6zg6RQtqnuu986ed6Y9mJqE3n1Cwd1N1dPPeXuthOWgXC+S79
-         hoyTAoSbhhIjD0vZbu0c6vw7ucem4cti6n5qDltOluPf41fseNChBJaaOQhW2M5RB4So
-         u9m3clEPHCOF2F3WG5DzHD4ySaWvfQ74w7vO0XnfQHTGuIAwNK5KTvRjM48aROKngXr9
-         lvafhJsWC0lQTvE9ndTMZGONBMKbz6ppvtzKSUuwvjl6Wqbp1xLqSD/xpkUjmGZ/W7KF
-         yw1VeIKWRzVEipr6IqRJ3TExn6EY2tltLZ3vCzyqrxrN5Jr8LpSQRkCl6bLUi7RO2jHl
-         EY7Q==
+        bh=yWBOpq0UkvWk4FWbtpDOqSYC9sVpVEgdziUpvPMeV90=;
+        b=X5nqZI2YveTvjI1P9aihzxrPaO7idkcriq7Q3Fw9E5sIEuVBnN0tCZWxr/+xZQ6vab
+         /AsqPVPT9S8tCYAppc6yafyaQVCnENKgTh4DBalrrlwhZrvmFrIKSxC3xAwhTwj2mgL8
+         FIVpiBEUbW2Mp3NvHZgUfcRV2x3sPP/Vsd3EimQ/DWnrsQFP0HdgAukZ+1yEMD0PFIAl
+         CEGEF8QVcZNokfI3ZyZbuLVlHYLmdnFMnpyrrOKFAe7u5AMZD+VvYBVcue75k4pr7iOe
+         iwg6HJW0NVbrW1TKcHaPKDDwm+BaiyQl+c0ZSFU4tHmIaOYbq/1C6zSMJgZSF7Jlh7ZB
+         JXkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=lZAYCNZd2exSauEKT0RXF+wYwkkwt1jBDEAUNXpjVmY=;
-        b=I/vnhW1TXc98/Ji2cj/Apu13R5l9L7DqXZMHDsFjjFqiWlm0VQHQwQdzfEbEVZ7p3r
-         Qp33PvX1Yd4NjKWyXavKrBIQYYd8Vx5NTHX5MNeuUUzqEds5X+RyUdsVjaEx1msYhUHW
-         go3kLzfmFPuPvkku8gRIpdDyYYNdwMmdgVZB9QlXFtSofFEohlourVBv2hS2snKDSsSO
-         fhDyPW92w8VD46yU3K+4iLcz2fHsFA6wxkpCa+VZ8h8IOjDOtkn+jSxCTU70Wscrfag9
-         js3aLpuVHIKux1acUZs43mD92s+WFIJw/jOXaZ9+LQeTP11NvnadHD0HJ5wdkbz8uAnn
-         /FvA==
-X-Gm-Message-State: AOAM533FrJa5zS6DhQx3NtYtxsN1ykU84PnSdTTLIrB9vSGXYEYGgiPr
-        9egcS1xS0fn4J12Hsh1c48FPqjuWxUxg6A==
-X-Google-Smtp-Source: ABdhPJzSN7x8xqn84ju4eisTSjh56thSDZ38ni6PbjQwMB6iDF23Gy54W16+kkXCpc99iVz/VkhfdA==
-X-Received: by 2002:ac2:548d:: with SMTP id t13mr2299635lfk.602.1600802834729;
-        Tue, 22 Sep 2020 12:27:14 -0700 (PDT)
+        bh=yWBOpq0UkvWk4FWbtpDOqSYC9sVpVEgdziUpvPMeV90=;
+        b=RS3t4WU9Tzi5+V72jQLRrKEYYcF+nfLePtyQVFjBeFYRKMxoslXSj146HbSM0z2CXC
+         zHnoerF4/pcB1Y08Iz1pmfcFohK5ODKH8L5TwwwJpE2MwN9fUHtVGnTQEuomvBDcYfKR
+         FfGNEtPePfQFtgsfrLgQfesvHfC+Z9jU4eqc1lRv+1Iv4wPW+8MduBGZvlfl4imq/t+6
+         l6nEdZ24KJZquiy4RQ/zPy7qqQNv7b9hLbs3UU5iKVlsl7R/epdzRm6djm++KX5GPJwu
+         vuwK9k1RqMHCay9wONRGLJ/Nj9MAb24q0wFXmVdvA7du/gpsMbFer/PylU0erJRJVmYU
+         r0vw==
+X-Gm-Message-State: AOAM530mffVxvQsmLUc3SNWmHxe49OdSycVCNrN3t0tVCRl+o0V8D8gE
+        y9mAbBsInQ+Dirjr9njQ3E8=
+X-Google-Smtp-Source: ABdhPJwQkesYT7pCpI4VaOYmlUf6IunWjE7IVXyowtAYLEmbr03p7XsYeHEorcJOd6c0Tmav90Nn1g==
+X-Received: by 2002:a2e:8695:: with SMTP id l21mr1892135lji.106.1600802835960;
+        Tue, 22 Sep 2020 12:27:15 -0700 (PDT)
 Received: from localhost.localdomain (h-82-196-111-59.NA.cust.bahnhof.se. [82.196.111.59])
-        by smtp.gmail.com with ESMTPSA id r132sm3770013lff.167.2020.09.22.12.27.12
+        by smtp.gmail.com with ESMTPSA id r132sm3770013lff.167.2020.09.22.12.27.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 12:27:13 -0700 (PDT)
+        Tue, 22 Sep 2020 12:27:15 -0700 (PDT)
 From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     linux-kernel@vger.kernel.org,
         Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Milo Kim <milo.kim@ti.com>
-Subject: [PATCH 5/8] mfd: lp8788: Constify static struct resource
-Date:   Tue, 22 Sep 2020 21:26:56 +0200
-Message-Id: <20200922192659.14535-6-rikard.falkeborn@gmail.com>
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 6/8] mfd: stmpe: Constify static struct resource
+Date:   Tue, 22 Sep 2020 21:26:57 +0200
+Message-Id: <20200922192659.14535-7-rikard.falkeborn@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200922192659.14535-1-rikard.falkeborn@gmail.com>
 References: <20200922192659.14535-1-rikard.falkeborn@gmail.com>
@@ -72,31 +75,58 @@ memory. Done with the help of Coccinelle.
 
 Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 ---
- drivers/mfd/lp8788.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mfd/stmpe.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mfd/lp8788.c b/drivers/mfd/lp8788.c
-index 768d556b3fe9..c223d2c6a363 100644
---- a/drivers/mfd/lp8788.c
-+++ b/drivers/mfd/lp8788.c
-@@ -34,7 +34,7 @@
- 	.num_resources = num_resource,				\
- }
+diff --git a/drivers/mfd/stmpe.c b/drivers/mfd/stmpe.c
+index 1aee3b3253fc..90f3292230c9 100644
+--- a/drivers/mfd/stmpe.c
++++ b/drivers/mfd/stmpe.c
+@@ -312,7 +312,7 @@ EXPORT_SYMBOL_GPL(stmpe_set_altfunc);
+  * GPIO (all variants)
+  */
  
--static struct resource chg_irqs[] = {
-+static const struct resource chg_irqs[] = {
- 	/* Charger Interrupts */
+-static struct resource stmpe_gpio_resources[] = {
++static const struct resource stmpe_gpio_resources[] = {
+ 	/* Start and end filled dynamically */
  	{
- 		.start = LP8788_INT_CHG_INPUT_STATE,
-@@ -58,7 +58,7 @@ static struct resource chg_irqs[] = {
- 	},
- };
+ 		.flags	= IORESOURCE_IRQ,
+@@ -336,7 +336,7 @@ static const struct mfd_cell stmpe_gpio_cell_noirq = {
+  * Keypad (1601, 2401, 2403)
+  */
  
--static struct resource rtc_irqs[] = {
-+static const struct resource rtc_irqs[] = {
+-static struct resource stmpe_keypad_resources[] = {
++static const struct resource stmpe_keypad_resources[] = {
  	{
- 		.start = LP8788_INT_RTC_ALARM1,
- 		.end   = LP8788_INT_RTC_ALARM2,
+ 		.name	= "KEYPAD",
+ 		.flags	= IORESOURCE_IRQ,
+@@ -357,7 +357,7 @@ static const struct mfd_cell stmpe_keypad_cell = {
+ /*
+  * PWM (1601, 2401, 2403)
+  */
+-static struct resource stmpe_pwm_resources[] = {
++static const struct resource stmpe_pwm_resources[] = {
+ 	{
+ 		.name	= "PWM0",
+ 		.flags	= IORESOURCE_IRQ,
+@@ -445,7 +445,7 @@ static struct stmpe_variant_info stmpe801_noirq = {
+  * Touchscreen (STMPE811 or STMPE610)
+  */
+ 
+-static struct resource stmpe_ts_resources[] = {
++static const struct resource stmpe_ts_resources[] = {
+ 	{
+ 		.name	= "TOUCH_DET",
+ 		.flags	= IORESOURCE_IRQ,
+@@ -467,7 +467,7 @@ static const struct mfd_cell stmpe_ts_cell = {
+  * ADC (STMPE811)
+  */
+ 
+-static struct resource stmpe_adc_resources[] = {
++static const struct resource stmpe_adc_resources[] = {
+ 	{
+ 		.name	= "STMPE_TEMP_SENS",
+ 		.flags	= IORESOURCE_IRQ,
 -- 
 2.28.0
 
