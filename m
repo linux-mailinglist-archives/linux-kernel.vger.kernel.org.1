@@ -2,87 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EA24274124
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:46:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 858A2274132
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726576AbgIVLqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 07:46:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48124 "EHLO mail.kernel.org"
+        id S1726761AbgIVLrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 07:47:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726661AbgIVLoN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 07:44:13 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726685AbgIVLp6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 07:45:58 -0400
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 22C62214F1;
-        Tue, 22 Sep 2020 11:44:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2A3AF23600;
+        Tue, 22 Sep 2020 11:45:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600775052;
-        bh=3OhywcltP9VHm6MmXFAi4kj4+8+FaFh5Jl0cjhgWevI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R6seZPA/KYfch3970nAndvescUMM14RveYUo8rkB69y4KfOAWHalRvlDVbbLGz0xD
-         xHFTtQR7oplTb/Vvc2IisPURG10cscMznhU8yXAZ0N/mf+kVyArQ5LTW/Ii7maQv72
-         JABAfDNdUV2pBtjZaHU/tWkZ9jouuf240imOrPZo=
-Date:   Tue, 22 Sep 2020 12:43:19 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
-        perex@perex.cz, tiwai@suse.com, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Subject: Re: [PATCH v6 3/5] Asoc:qcom:lpass-cpu:Update dts property read API
-Message-ID: <20200922114319.GR4792@sirena.org.uk>
-References: <1600409084-29093-1-git-send-email-srivasam@codeaurora.org>
- <1600409084-29093-4-git-send-email-srivasam@codeaurora.org>
- <040290a8-26a3-ab9c-04dc-beb23ee827e8@linaro.org>
- <20200922110825.GN4792@sirena.org.uk>
- <3866ce69-b7d0-5eb5-e0aa-874d150cd47a@linaro.org>
+        s=default; t=1600775158;
+        bh=KhrRBx22Zo8YLhOA9Kmsv44o/2fP94Lgd5T40CutoBs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=FWJTE6FZ+J4+3x+ntnTY7/64zukYESEjiMiU5E6qFeJU30GV4POgqVGBpGRhXp9ty
+         TBH5y1L1hwg/AbJJ7mXIDGkORCpNYdNx2sdKkqqG4/N6LPUxaE3yQH/9J4EegfRmCt
+         c7XDKbCqIA88Y7+X3/RJcyxxbfxZj5EHA4Yn7Iu8=
+Received: by mail-ed1-f50.google.com with SMTP id l17so15804688edq.12;
+        Tue, 22 Sep 2020 04:45:58 -0700 (PDT)
+X-Gm-Message-State: AOAM530NOEgLALt5SEtgvbv6ByNOnnC35algt/HTHB3Jy+KF3vlI6m9k
+        Z0xCweVUkygJsSSGWBSfqfUNW41FnzR5Js8SCr8=
+X-Google-Smtp-Source: ABdhPJxPZwz2sZgxkwXAxO6r3UJuoTaSBzjBPnrsefm9nDa0zYZ4j5Qq7O92PIlts1wDcqr2WEJd93Xn/6QwzI6Xz3s=
+X-Received: by 2002:a50:e78f:: with SMTP id b15mr3529383edn.104.1600775156644;
+ Tue, 22 Sep 2020 04:45:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="TMgB3/Ch1aWgZB1L"
-Content-Disposition: inline
-In-Reply-To: <3866ce69-b7d0-5eb5-e0aa-874d150cd47a@linaro.org>
-X-Cookie: Love thy neighbor, tune thy piano.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200921210233.21449-1-krzk@kernel.org> <20200921210610.GA5338@amd>
+ <CAJKOXPdwQc86H-S=C4v_1VCbd7RhC2Soepj_2LqG1e_E_bgAug@mail.gmail.com>
+ <20200922093637.GK4792@sirena.org.uk> <346f2ecd-a015-7f26-b68d-10cf6b5343b6@ti.com>
+In-Reply-To: <346f2ecd-a015-7f26-b68d-10cf6b5343b6@ti.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Tue, 22 Sep 2020 13:45:44 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPfUsCMR4gbOvsasfgzhOe-7b3iHOboQeVhvKF7RvgQGsw@mail.gmail.com>
+Message-ID: <CAJKOXPfUsCMR4gbOvsasfgzhOe-7b3iHOboQeVhvKF7RvgQGsw@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: move Milo Kim to credits
+To:     Dan Murphy <dmurphy@ti.com>
+Cc:     Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-iio@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-leds@vger.kernel.org, linux-pm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 22 Sep 2020 at 13:36, Dan Murphy <dmurphy@ti.com> wrote:
+>
+> All
+>
+> On 9/22/20 4:36 AM, Mark Brown wrote:
+> > On Tue, Sep 22, 2020 at 09:08:37AM +0200, Krzysztof Kozlowski wrote:
+> >> On Mon, 21 Sep 2020 at 23:06, Pavel Machek <pavel@ucw.cz> wrote:
+> >>> I believe normal way would be to mark the entries "orphaned", not to
+> >>> drop them altogether. Plus, I believe someone from TI is likely to
+> >>> step up.
+> >> These are entries for specific drivers so they are covered by the
+> >> subsystem maintainers. You believe someone will step up, I believe if
+> >> these were important for TI, they would find the person some time ago,
+> >> so the emails won't bounce... This was similar with BQ chargers where
+> > It's fairly common for mobile parts to get dropped relatively quickly as
+> > the technology moves fairly quickly in that market, I think a lot of teh
+> > parts that Milo was working on were mobile ones.
+>
+> These specific drivers don't see many patches applied to them. These
+> drivers did have a few patches this year to fix random bugs.
+>
+> Since I have worked in these other subsystems if replacing the
+> Maintainer is desired over removal then my name and email can be added
+> like I did with Andrews.
+>
+> Dan Murphy <dmurphy@ti.com>
 
---TMgB3/Ch1aWgZB1L
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I will add then yours name in v2 of this patch. Thanks for taking care of these.
 
-On Tue, Sep 22, 2020 at 12:22:38PM +0100, Srinivas Kandagatla wrote:
-> On 22/09/2020 12:08, Mark Brown wrote:
-
-> I agree with you on this and I see the point, but Rob had a very different
-> opinion about the reg-names bindings to start with.
-
-> This topic been discussed in the past with Rob in many instances ex: https://lore.kernel.org/linux-devicetree/CAL_Jsq+MMunmVWqeW9v2RyzsMKP+=kMzeTHNMG4JDHM7Fy0HBg@mail.gmail.com/
-
-> According to him, reg-names seems to be highly discouraged as it came along
-> for the OMAP folks and was related to the hwmods stuff.
-
-That's very much specific to reg, it's not true of the use of names in
-general - Rob mentions cases like interrupts for example.
-
---TMgB3/Ch1aWgZB1L
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9p41YACgkQJNaLcl1U
-h9AuWQf/ca9nQ2PmzHcNzlz7TsFIO+ht142QjTqAQlUdhHDiYcPpG9jqzYi81epi
-FLGHcE+NK0CCvc7fgnWsPv776/Fbj2+19GtH1bbQxARF2Oc9fkBvzP7x9lV92iUh
-KZ7aX5RAgvA+87nDF2jmOgfcJbeTnMw3ToKLbvlEqS4k+zsXhSWFuGbgCogexiSg
-TGI8So/Mp296hyFsgLFYIyF4pc2FPP9gulIwzyk+tPanIXZIXMgrWJvGVvq/BXp+
-32W1NMxm0HX5mY4vdAqPid7EiP+7wZCp/YtxmoOiY9XhqK38c5YZnqQV8rv+azpO
-ffsGe76ABBy85FJ4OdxsXt+7iw3cZg==
-=oQkO
------END PGP SIGNATURE-----
-
---TMgB3/Ch1aWgZB1L--
+Best regards,
+Krzysztof
