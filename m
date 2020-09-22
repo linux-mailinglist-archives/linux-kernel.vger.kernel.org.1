@@ -2,151 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB89A2746F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23E932746F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726673AbgIVQtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 12:49:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37056 "EHLO mail.kernel.org"
+        id S1726614AbgIVQvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 12:51:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726558AbgIVQtK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 12:49:10 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        id S1726558AbgIVQvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 12:51:16 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 16B7120738;
-        Tue, 22 Sep 2020 16:49:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600793349;
-        bh=cdXHCF9oAj+yuX5K7JBhj671wsoA6V7y/1bcuOWn4Ls=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WBdjHDdOoU2J0KWlc5G+kPG+p+cV16o2ZLBpzjJPpCmd41CopnP0UAVLC5KRl9Ja4
-         SSdktonstRSoyKko12tbCpa0e6fqSBzEUJllGFDnruZcM6QU232BAOfhvNRcdTmzJW
-         ha+HVEzLxNc7Qe5xpr0tSFoKB7GSActsHpmRFz78=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id BDC95400E9; Tue, 22 Sep 2020 13:49:06 -0300 (-03)
-Date:   Tue, 22 Sep 2020 13:49:06 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kemeng Shi <shikemeng@huawei.com>,
-        Ian Rogers <irogers@google.com>,
-        Remi Bernon <rbernon@codeweavers.com>,
-        Nick Gasson <nick.gasson@arm.com>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Steve MacLean <Steve.MacLean@microsoft.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Zou Wei <zou_wei@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 0/6] Perf tool: Support TSC for Arm64
-Message-ID: <20200922164906.GA2248446@kernel.org>
-References: <20200914115311.2201-1-leo.yan@linaro.org>
- <20200922120732.GB15124@leoy-ThinkPad-X240s>
+        by mail.kernel.org (Postfix) with ESMTPSA id 23A9822262;
+        Tue, 22 Sep 2020 16:51:15 +0000 (UTC)
+Date:   Tue, 22 Sep 2020 12:51:13 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Axel Rasmussen <axelrasmussen@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michel Lespinasse <walken@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Subject: Re: [PATCH] mmap_lock: add tracepoints around lock acquisition
+Message-ID: <20200922125113.12ef1e03@gandalf.local.home>
+In-Reply-To: <CALOAHbBr=ASfvHw1ZscWBE=CY-e7sBrLV0F5Ow=g1UGxmQsWcw@mail.gmail.com>
+References: <20200917181347.1359365-1-axelrasmussen@google.com>
+        <CALOAHbDSHGeXjJN3E5mTOAFTVsXAvQL9+nSYTqht5Lz8HRNv0A@mail.gmail.com>
+        <CAJHvVcg6eY0vVtfi8D6D9aus7=5zeP2H7Yc0mY5ofXztSzOFqQ@mail.gmail.com>
+        <CALOAHbBr=ASfvHw1ZscWBE=CY-e7sBrLV0F5Ow=g1UGxmQsWcw@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922120732.GB15124@leoy-ThinkPad-X240s>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Sep 22, 2020 at 08:07:32PM +0800, Leo Yan escreveu:
-> Hi Arnaldo,
+On Tue, 22 Sep 2020 12:09:19 +0800
+Yafang Shao <laoar.shao@gmail.com> wrote:
+
+> > > Are there any methods to avoid un-inlining these wrappers ?
+> > >
+> > > For example,
+> > > // include/linux/mmap_lock.h
+> > >
+> > > void mmap_lock_start_trace_wrapper();
+> > > void mmap_lock_acquire_trace_wrapper();
+> > >
+> > > static inline void mmap_write_lock(struct mm_struct *mm)
+> > > {
+> > >     mmap_lock_start_trace_wrapper();
+> > >     down_write(&mm->mmap_lock);
+> > >     mmap_lock_acquire_trace_wrapper();
+> > > }
+> > >
+> > > // mm/mmap_lock.c
+> > > void mmap_lock_start_trace_wrapper()
+> > > {
+> > >     trace_mmap_lock_start();
+> > > }
+> > >
+> > > void mmap_lock_start_trace_wrapper()
+> > > {
+> > >     trace_mmap_lock_acquired();
+> > > }  
+> >
+> > We can do something like that, but I don't think it would end up being better.
+> >
+> > At the end of the day, because the trace stuff cannot be in the
+> > header, we have to add an extra function call one way or the other.
+> > This would just move the call one step further down the call stack.
+> > So, I don't think it would affect performance in the
+> > CONFIG_MMAP_LOCK_STATS + tracepoints not enabled at runtime case.
+> >  
 > 
-> On Mon, Sep 14, 2020 at 07:53:05PM +0800, Leo Yan wrote:
-> > This patch set is to refactor TSC implementation and move TSC code from
-> > x86 folder to util/tsc.c, this allows all archs to reuse the code.  And
-> > alse move the TSC testing from x86 folder to tests so can work as a
-> > common testing.
-> > 
-> > So far, for x86 it needs to support cap_user_time_zero and for Arm64
-> > it needs to support cap_user_time_short.  For architecture specific
-> > code, every arch only needs to implement its own rdtsc() to read out
-> > timer's counter.
-> > 
-> > This patch set has been rebased on the perf/core branch with latest
-> > commit b1f815c479c1 ("perf vendor events power9: Add hv_24x7 core level
-> > metric events") and tested on Arm64 DB410c.
+> Right, it seems we have to add an extra function call.
 > 
-> Could you pick up this patch set?  Thanks!
-
-Yeah, I picked it up now, its a pity nobody provided Acks :-\
-
-Or have a missed them somehow?
-
-- Arnaldo
- 
-> Leo
+> > Also the wrappers aren't quite so simple as this, they need some
+> > parameters to work. (the struct mm_struct, whether it was a read or a
+> > write lock, and whether or not the lock operation succeeded), so it
+> > would mean adding more inlined code, which I think adds up to be a
+> > nontrivial amount since these wrappers are called so often in the
+> > kernel.
+> >
+> > If you feel strongly, let me know and I can send a version as you
+> > describe and we can compare the two.
+> >  
 > 
-> >   $ perf test list
-> >     [...]
-> >     68: Convert perf time to TSC
-> >     [...]
-> > 
-> >   $ perf test 68 -v
-> >     68: Convert perf time to TSC
-> >     --- start ---
-> >     test child forked, pid 10961
-> >     mmap size 528384B
-> >     1st event perf time 35715036563417 tsc 686221770989
-> >     rdtsc          time 35715036649719 tsc 686221772647
-> >     2nd event perf time 35715036660448 tsc 686221772852
-> >     test child finished with 0
-> >     ---- end ----
-> >     Convert perf time to TSC: Ok
-> > 
-> > Changes from v3:
-> > * Added comments for Arm64's rdtsc() for short counter (PeterZ);
-> > * Rebased on latest acme/perf/core branch.
-> > 
-> > Changes from v2:
-> > * Refactored patch set to move TSC common code to util/tsc.c (Wei/Al);
-> > * Moved TSC testing to perf/tests (Wei);
-> > * Dropped Arm SPE timestamp patch so can have clear purpose and easier
-> >   reviewing; will send Arm SPE timestamp as separate patch.
-> > 
-> > 
-> > Leo Yan (6):
-> >   perf tsc: Move out common functions from x86
-> >   perf tsc: Add rdtsc() for Arm64
-> >   perf tsc: Calculate timestamp with cap_user_time_short
-> >   perf tsc: Support cap_user_time_short for event TIME_CONV
-> >   perf tests tsc: Make tsc testing as a common testing
-> >   perf tests tsc: Add checking helper is_supported()
-> > 
-> >  tools/lib/perf/include/perf/event.h           |  4 +
-> >  tools/perf/arch/arm64/util/Build              |  1 +
-> >  tools/perf/arch/arm64/util/tsc.c              | 21 +++++
-> >  tools/perf/arch/x86/include/arch-tests.h      |  1 -
-> >  tools/perf/arch/x86/tests/Build               |  1 -
-> >  tools/perf/arch/x86/tests/arch-tests.c        |  4 -
-> >  tools/perf/arch/x86/util/tsc.c                | 73 +----------------
-> >  tools/perf/tests/Build                        |  1 +
-> >  tools/perf/tests/builtin-test.c               |  5 ++
-> >  .../{arch/x86 => }/tests/perf-time-to-tsc.c   | 13 +++
-> >  tools/perf/tests/tests.h                      |  2 +
-> >  tools/perf/util/jitdump.c                     | 14 ++--
-> >  tools/perf/util/synthetic-events.c            |  8 --
-> >  tools/perf/util/tsc.c                         | 81 +++++++++++++++++++
-> >  tools/perf/util/tsc.h                         |  5 ++
-> >  15 files changed, 143 insertions(+), 91 deletions(-)
-> >  create mode 100644 tools/perf/arch/arm64/util/tsc.c
-> >  rename tools/perf/{arch/x86 => }/tests/perf-time-to-tsc.c (93%)
-> > 
-> > -- 
-> > 2.17.1
-> > 
+> These tracepoints will be less useful if we have to turn on the config
+> to enable it.
+> I don't mind implementing it that way if we can't optimize it.
+> 
+> Maybe Steven can give some suggestions, Steven ?
+> 
 
--- 
 
-- Arnaldo
+What you can do, and what we have done is the following:
+
+(see include/linux/page_ref.h)
+
+
+#ifdef CONFIG_TRACING
+extern struct tracepoint __tracepoint_mmap_lock_start_locking;
+extern struct tracepoint __tracepoint_mmap_lock_acquire_returned;
+
+#define mmap_lock_tracepoint_active(t) static_key_false(&(__tracepoint_mmap_lock_##t).key)
+
+#else
+#define mmap_lock_tracepoint_active(t) false
+#endif
+
+static inline void mmap_write_lock(struct mm_struct *mm)
+{
+	if (mmap_lock_tracepoint_active(start_locking))
+		mmap_lock_start_trace_wrapper();
+	down_write(&mm->mmap_lock);
+	if (mmap_lock_tracepoint_active(acquire_returned))
+		mmap_lock_acquire_trace_wrapper();
+}
+
+
+-- Steve
