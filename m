@@ -2,198 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE9512743A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 15:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5E322743A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 15:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726852AbgIVN57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 09:57:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32816 "EHLO
+        id S1726604AbgIVN5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 09:57:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726811AbgIVN5m (ORCPT
+        with ESMTP id S1726826AbgIVN5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 09:57:42 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A11C061755;
-        Tue, 22 Sep 2020 06:57:42 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id d9so12531984pfd.3;
-        Tue, 22 Sep 2020 06:57:42 -0700 (PDT)
+        Tue, 22 Sep 2020 09:57:44 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 405EBC0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 06:57:44 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id m6so17218162wrn.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 06:57:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IJ6p6KQrFHv/X0gpBRR8tAtaYHzz851/rFcYD/vBdOI=;
-        b=ePjTJvVQH1Vw/PEOrpuUHva9+mLlnwB/qKuH0+uB+MENSmJXg1HOdl7gjQ3iAXelHQ
-         g9SoUf/O1ORkp1hL2jW1acBEig0U2V3MbL9oFx1XDBbB34cvCC+cvzRq2Y+GX43cbDqP
-         75xt+WjcQkpuC0FGSW+NB95VPOWZXQKLQWu9/vQaddgsOzg37jaEHMmg6f5Jow/kUXpk
-         Dmbag9eyNKZxBoY7zRpCiIUq6HC19I2glVcXzToPcv509LBE24ktlh1H4VGcF+DmGk5t
-         mzhnuU1lkXDGGIh60R8ctxAAg707dCMpkdPH9wpBP9rPHuQ71YM58VHWUgf9NFdhsLYR
-         UUOA==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=DGZVXpkjzjAC3dg7W3FDDgroJ+KRU7eRW2TjieEPGOs=;
+        b=UT3JyknqdxpX0GVGQvqz0KGFU3G+44tECHiTJakqfTgxQfmfx17OKkiR9ajC1sX3Xp
+         CJU05LOZPCOyqUTWXjt12eYomA14K1WKduDmbnwifPLFF9XhOKtdIvFriDxX++0LtvoH
+         RAYdkKwHwnaO1+1qdGGZvBsTpGkC9ve/8ljnfOll4DsvuNHOfTKfwg2+dYqhevVNxFy8
+         N4IU9aO89d7RpgKoIp1V+7YDO3BvOYxl1MxeR3Gk2v/sQ1Npv5ytDindtqat7oiEj0XC
+         x6E1dlEo8ScoTW37+iY14WChjlKXgt3h+aHwvG4SSYZerJY5INGU78zahzWQOgUoYXHw
+         FBTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=IJ6p6KQrFHv/X0gpBRR8tAtaYHzz851/rFcYD/vBdOI=;
-        b=j5xdLkSsR9rf0+Nqu2EdNRiuEjc+7V55bo9sPEuyNW0eDPVWXR83E+wr5+CX/ViWpX
-         oS41wf92YRXjaz8LTDLTZtl15hI/VPFuxZ3DXAOs4OM+LkbVROCgv5Id1vCYIZBiDbMj
-         +FJ7Zb7hFwM9AnCSXn2hwDO8XK8uU6Lmi6EFTgHxmQvPEMfAvzOD44fSKqPRNqPVoJMY
-         tJQcFxiavhjli8a+Ya6tv8sUbT1Z7AtgKZsP5nxlzfdz27AilKCGmr+erGhFMxv1c/bj
-         YdL2V2xGvle4pRlSsB8hbFZx5tSpwj3DJhJeiiC0FSKxMC2ENZRkIvxIySORWQPAdjQW
-         6Rew==
-X-Gm-Message-State: AOAM5327GXUKB6WJOKqL9hvK/TxlDwiV+XigdU0bphcu2/W8OcaEIr9D
-        m7UftIQWqEeiaD4AGJE16SY=
-X-Google-Smtp-Source: ABdhPJyne0983SQ6UBZwrfGAmMTGKjtVtIuCCYtICO8KBPdondAJjQD4BW/8rjtl9uW6fV1xPz5c1w==
-X-Received: by 2002:a17:902:c252:b029:d2:4345:5c7 with SMTP id 18-20020a170902c252b02900d2434505c7mr2174961plg.4.1600783062223;
+        bh=DGZVXpkjzjAC3dg7W3FDDgroJ+KRU7eRW2TjieEPGOs=;
+        b=EoaUI4lMMIbAoyOJau6wVoo9H0otvGIC5UDFcL28gKadlQU9EZ7aNUjtXYF2Oiwnh0
+         zl4gi0A0WfRwulkPHv/XZ8o8PLCFTz1GH5iZHFMb2/vddMwdgvHLuNKhrFEykXa6ocOb
+         +PZeMmUFlhoCbJAiH14E6g7SlIAy40wrYU3AEGuB9t2m0KKWqNSq8CQtAZ7JyijqzemX
+         y5w6aF6P7KwtxC10W/+5sNghhPp+N1DIx36v92HUQT3fNXeb4JKb8IjLHFIHZllifZUT
+         TOyZOqwRcnr1zzu2UgRZJwdTwwbcRZPnfA9I5S+cqc8jdqvR2Ldl6B0OGzKT1lJ3oN+e
+         5N/Q==
+X-Gm-Message-State: AOAM533h0a6hFCs/jk/WrVytkj6OmEcHSRrgYrvvYJOZiGpFANySK4fF
+        HBsKrOrzYo55q4PvIicUqkxHfg==
+X-Google-Smtp-Source: ABdhPJxpJEG80evddGcTBWHxSsTnTTMSk1RXYjfsOksHLJyqxlBLEQ6HPFNPDCpHk8sVBsEHqBKKew==
+X-Received: by 2002:adf:e852:: with SMTP id d18mr5881170wrn.40.1600783062860;
         Tue, 22 Sep 2020 06:57:42 -0700 (PDT)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:e94c:84f3:ad0e:58d7])
-        by smtp.gmail.com with ESMTPSA id r206sm15413461pfr.91.2020.09.22.06.57.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 06:57:41 -0700 (PDT)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Martin Schiller <ms@dev.tdt.de>,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-Cc:     Xie He <xie.he.0141@gmail.com>
-Subject: [PATCH net] drivers/net/wan/x25_asy: Correct the ndo_open and ndo_stop functions
-Date:   Tue, 22 Sep 2020 06:57:18 -0700
-Message-Id: <20200922135718.508013-1-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.25.1
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id z9sm5085802wmg.46.2020.09.22.06.57.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 22 Sep 2020 06:57:42 -0700 (PDT)
+Subject: Re: [PATCH v6 3/5] Asoc:qcom:lpass-cpu:Update dts property read API
+To:     Rohit Kumar <rohitkr@codeaurora.org>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
+        perex@perex.cz, tiwai@suse.com, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+References: <1600409084-29093-1-git-send-email-srivasam@codeaurora.org>
+ <1600409084-29093-4-git-send-email-srivasam@codeaurora.org>
+ <040290a8-26a3-ab9c-04dc-beb23ee827e8@linaro.org>
+ <20200922110825.GN4792@sirena.org.uk>
+ <3866ce69-b7d0-5eb5-e0aa-874d150cd47a@linaro.org>
+ <20200922114319.GR4792@sirena.org.uk>
+ <7f682cf9-0f2a-0227-d5d8-8bedf1f06b00@codeaurora.org>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <6b80f060-cb96-1cf9-69bd-f56f7934747a@linaro.org>
+Date:   Tue, 22 Sep 2020 14:57:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
+In-Reply-To: <7f682cf9-0f2a-0227-d5d8-8bedf1f06b00@codeaurora.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1.
-Move the lapb_register/lapb_unregister calls into the ndo_open/ndo_stop
-functions in x25_asy_netdev_ops.
-This makes the LAPB protocol start/stop when the network interface
-starts/stops. When the network interface is down, the LAPB protocol
-shouldn't be running and the LAPB module shoudn't be generating control
-frames.
 
-2.
-Move netif_start_queue/netif_stop_queue into the ndo_open/ndo_stop
-functions in x25_asy_netdev_ops.
-This makes the TX queue start/stop when the network interface
-starts/stops.
 
-3.
-The x25_asy_close function was originally used as the ndo_stop function.
-However, I think when stopping the interface we shouldn't do the things
-that this function does (except netif_stop_queue).
- 1) We shouldn't clear TTY_DO_WRITE_WAKEUP and set sl->xleft to 0,
-    because this may cause the transmission of the last frame before
-    stopping to be incomplete.
- 2) We shouldn't set sl->rcount to 0,
-    because if we stop the interface and quickly start it again,
-    the first frame we receive could be incomplete.
-So I moved it to make it be called in x25_asy_close_tty (when closing
-the TTY line discipline) instead. (This also makes the code look better
-because x25_asy_open is called in x25_asy_open_tty.)
+On 22/09/2020 13:53, Rohit Kumar wrote:
+>> That's very much specific to reg, it's not true of the use of names in
+>> general - Rob mentions cases like interrupts for example.
+> 
+Ofcourse using names suffix for clocks and interrupts has been justified!
 
-Cc: Martin Schiller <ms@dev.tdt.de>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
----
- drivers/net/wan/x25_asy.c | 42 +++++++++++++++++++++++----------------
- 1 file changed, 25 insertions(+), 17 deletions(-)
+I don't mind having dependency on reg-names as long as Rob is happy with 
+DT Bindings!
 
-diff --git a/drivers/net/wan/x25_asy.c b/drivers/net/wan/x25_asy.c
-index 7ee980575208..88a73ce6d9f4 100644
---- a/drivers/net/wan/x25_asy.c
-+++ b/drivers/net/wan/x25_asy.c
-@@ -464,7 +464,6 @@ static int x25_asy_open(struct net_device *dev)
- {
- 	struct x25_asy *sl = netdev_priv(dev);
- 	unsigned long len;
--	int err;
- 
- 	if (sl->tty == NULL)
- 		return -ENODEV;
-@@ -490,14 +489,7 @@ static int x25_asy_open(struct net_device *dev)
- 	sl->xleft    = 0;
- 	sl->flags   &= (1 << SLF_INUSE);      /* Clear ESCAPE & ERROR flags */
- 
--	netif_start_queue(dev);
--
--	/*
--	 *	Now attach LAPB
--	 */
--	err = lapb_register(dev, &x25_asy_callbacks);
--	if (err == LAPB_OK)
--		return 0;
-+	return 0;
- 
- 	/* Cleanup */
- 	kfree(sl->xbuff);
-@@ -519,7 +511,6 @@ static int x25_asy_close(struct net_device *dev)
- 	if (sl->tty)
- 		clear_bit(TTY_DO_WRITE_WAKEUP, &sl->tty->flags);
- 
--	netif_stop_queue(dev);
- 	sl->rcount = 0;
- 	sl->xleft  = 0;
- 	spin_unlock(&sl->lock);
-@@ -604,7 +595,6 @@ static int x25_asy_open_tty(struct tty_struct *tty)
- static void x25_asy_close_tty(struct tty_struct *tty)
- {
- 	struct x25_asy *sl = tty->disc_data;
--	int err;
- 
- 	/* First make sure we're connected. */
- 	if (!sl || sl->magic != X25_ASY_MAGIC)
-@@ -615,11 +605,7 @@ static void x25_asy_close_tty(struct tty_struct *tty)
- 		dev_close(sl->dev);
- 	rtnl_unlock();
- 
--	err = lapb_unregister(sl->dev);
--	if (err != LAPB_OK)
--		pr_err("%s: lapb_unregister error: %d\n",
--		       __func__, err);
--
-+	x25_asy_close(sl->dev);
- 	tty->disc_data = NULL;
- 	sl->tty = NULL;
- 	x25_asy_free(sl);
-@@ -722,15 +708,37 @@ static int x25_asy_ioctl(struct tty_struct *tty, struct file *file,
- 
- static int x25_asy_open_dev(struct net_device *dev)
- {
-+	int err;
- 	struct x25_asy *sl = netdev_priv(dev);
- 	if (sl->tty == NULL)
- 		return -ENODEV;
-+
-+	err = lapb_register(dev, &x25_asy_callbacks);
-+	if (err != LAPB_OK)
-+		return -ENOMEM;
-+
-+	netif_start_queue(dev);
-+
-+	return 0;
-+}
-+
-+static int x25_asy_close_dev(struct net_device *dev)
-+{
-+	int err;
-+
-+	netif_stop_queue(dev);
-+
-+	err = lapb_unregister(dev);
-+	if (err != LAPB_OK)
-+		pr_err("%s: lapb_unregister error: %d\n",
-+		       __func__, err);
-+
- 	return 0;
- }
- 
- static const struct net_device_ops x25_asy_netdev_ops = {
- 	.ndo_open	= x25_asy_open_dev,
--	.ndo_stop	= x25_asy_close,
-+	.ndo_stop	= x25_asy_close_dev,
- 	.ndo_start_xmit	= x25_asy_xmit,
- 	.ndo_tx_timeout	= x25_asy_timeout,
- 	.ndo_change_mtu	= x25_asy_change_mtu,
--- 
-2.25.1
+--srini
 
+
+> I see that patch to support hdmi adds another reg-name along with 
+> "lpass-lpaif".
+> 
+> So, platform_get_resource_byname() is better option.
+> 
+> +       res = platform_get_resource_byname(pdev, IORESOURCE_MEM, 
+> "lpass-hdmiif");
+> 
