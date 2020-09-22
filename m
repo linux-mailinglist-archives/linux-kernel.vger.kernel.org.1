@@ -2,97 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9A5273C36
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75C22273C3C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:43:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730082AbgIVHnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 03:43:23 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:56626 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729751AbgIVHnW (ORCPT
+        id S1730145AbgIVHnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 03:43:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729751AbgIVHng (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 03:43:22 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08M7bgtp028642;
-        Tue, 22 Sep 2020 09:43:07 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : subject :
- date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=xSlMzHlQugpdZFck23OK9HNUyveeCKKUCM08ZtAZ/yg=;
- b=ZKTgEE0cjt+sSG02tfaGuf9/2nnnnTMLamcxEQoElPfT7ZN+JlJppCupStPwYax3sU5i
- OAYA4Xe44rnhc7GI9dXiy6HwGSV715g6Xy71PawIFTN19NOudI/yCQ6ff3pOUdwxEyI+
- yCEbHdCo0+TaCWkcutdL9RZzrRh62OEi1FxClv8CPtsC7VIuVRs/8lgZP+Lg2u+y/NYv
- 74KhzmhI/h13fbbHmcfCuKgImzxlUbzsCwfLg9DuFpcDnm1LN/NJGhLmLOoqEYE+O4ji
- x7wVU0U7yftTQEOmvX8lUC9LhgwoZw0jBjNN1M6CMfJVbOOkXsycox//PeRCaLQ/WlV+ vg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 33n8vepctk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Sep 2020 09:43:07 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B6F85100039;
-        Tue, 22 Sep 2020 09:43:05 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag6node1.st.com [10.75.127.16])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9AC7E212FAA;
-        Tue, 22 Sep 2020 09:43:05 +0200 (CEST)
-Received: from localhost (10.75.127.47) by SFHDAG6NODE1.st.com (10.75.127.16)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 22 Sep 2020 09:42:59
- +0200
-From:   Yannick Fertre <yannick.fertre@st.com>
-To:     Yannick Fertre <yannick.fertre@st.com>,
-        Philippe Cornu <philippe.cornu@st.com>,
-        Antonio Borneo <antonio.borneo@st.com>,
-        "Vincent Abriou" <vincent.abriou@st.com>,
-        David Airlie <airlied@linux.ie>,
-        "Daniel Vetter" <daniel@ffwll.ch>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        <dri-devel@lists.freedesktop.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] drm/panel: otm8009a: allow using non-continuous dsi clock
-Date:   Tue, 22 Sep 2020 09:42:53 +0200
-Message-ID: <20200922074253.28810-1-yannick.fertre@st.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 22 Sep 2020 03:43:36 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D1AEC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 00:43:36 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id k18so2244214wmj.5
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 00:43:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2iT1w5OmGTePaz6cPC9J26HUj56MevFwxnKu+3syfaQ=;
+        b=rPDcdualm6YMrcbc3eMktBX8jiJQ1bEENbdDkdqSt5IVZXjrqWmxUeTbXtmHQugVYA
+         45/qT9kzOgOxhITM/LfNC7KVRRDJ41kvhUTHzYW5eKahikBBuPwx0iZTwTxHnJd4zbhC
+         n3/w4ACPUs/E9Gb+STSXcuS6lk41Z4PlwpnWPc9R/Ea4NJ9++9SrJaDbOqYPoG1gqbZk
+         EDLPd6gkEm/57f7zAoZYCzDOkR4+RRQNdw+3YKKAoudJ3cThD/mMCPRS7GcLygAZi2yT
+         NOVOIAClvRo1A/IdqptDvddMWUd+JRDoKWXSWAo7pYpMYsJQ5HmnahFdn4d3U/XEm9tt
+         Tv+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2iT1w5OmGTePaz6cPC9J26HUj56MevFwxnKu+3syfaQ=;
+        b=IDyRrRAZLU11WlTsVImop9pa8JKslUir3R5zXz3NX4F9ySk7xj83rYNGCEajzV2oK8
+         u3lKchS6xOSPY7OxlXVau8+xeoTrXtOpZC05i+UemRaypkyyKcFm/SVeyXaj5sHh4AmL
+         JyoXVG2J1TSBseZfyLs5YEJ0wE9Jjaj7jLze6lZSl051ZMppXfJpF2d4JIFsptmhLd6s
+         x/k+Ij9ZBrtuD+dIatpTxHHOVdsSGE3G7D36rxYLID2wsb5VGQmBmINNNdMds27Zb0Zc
+         3/77N2aK/P8vHe9lMgdQfxmZoNr2rQJYLe6zye5FPIMNGHh3IFDO0V3yoOyLEnKTvDr1
+         IcCw==
+X-Gm-Message-State: AOAM5328bQ32dN09A9R0EdGzIKaDLb9O9dYOJAqNjkDVhbenMjUSkuOc
+        e5Z3NKIWzgjxdSIRanFlMWUtSw==
+X-Google-Smtp-Source: ABdhPJzSrZlkK5KqSJm/7Q0y549YB+encVrmS9UpmlHFJDqTR04Bmq6wQ55dNrycFHrCQvPZatyd4g==
+X-Received: by 2002:a1c:f20b:: with SMTP id s11mr3195175wmc.144.1600760615075;
+        Tue, 22 Sep 2020 00:43:35 -0700 (PDT)
+Received: from localhost (49.222.77.34.bc.googleusercontent.com. [34.77.222.49])
+        by smtp.gmail.com with ESMTPSA id c14sm24062347wrv.12.2020.09.22.00.43.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Sep 2020 00:43:34 -0700 (PDT)
+From:   George-Aurelian Popescu <georgepope@google.com>
+To:     masahiroy@kernel.org, michal.lkml@markovi.net,
+        natechancellor@gmail.com, ndesaulniers@google.com,
+        keescook@chromium.org, akpm@linux-foundation.org, elver@google.com,
+        dvyukov@google.com
+Cc:     peterz@infradead.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com, dbrazdil@google.com,
+        George Popescu <georgepope@android.com>
+Subject: [PATCH v3] ubsan: introducing CONFIG_UBSAN_LOCAL_BOUNDS for Clang
+Date:   Tue, 22 Sep 2020 07:43:30 +0000
+Message-Id: <20200922074330.2549523-1-georgepope@google.com>
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG4NODE2.st.com (10.75.127.11) To SFHDAG6NODE1.st.com
- (10.75.127.16)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-22_06:2020-09-21,2020-09-22 signatures=0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Antonio Borneo <antonio.borneo@st.com>
+From: George Popescu <georgepope@android.com>
 
-The panel is able to work when dsi clock is non-continuous, thus
-the system power consumption can be reduced using such feature.
+When the kernel is compiled with Clang, -fsanitize=bounds expands to
+-fsanitize=array-bounds and -fsanitize=local-bounds.
 
-Add MIPI_DSI_CLOCK_NON_CONTINUOUS to panel's mode_flags.
+Enabling -fsanitize=local-bounds with Clang has the unfortunate
+side-effect of inserting traps; this goes back to its original intent,
+which was as a hardening and not a debugging feature [1]. The same feature
+made its way into -fsanitize=bounds, but the traps remained. For that
+reason, -fsanitize=bounds was split into 'array-bounds' and
+'local-bounds' [2].
 
-Changes in v2:
-  - Added my signed-off
+Since 'local-bounds' doesn't behave like a normal sanitizer, enable
+it with Clang only if trapping behaviour was requested by
+CONFIG_UBSAN_TRAP=y.
 
-Signed-off-by: Antonio Borneo <antonio.borneo@st.com>
-Signed-off-by: Yannick Fertre <yannick.fertre@st.com>
+Add the UBSAN_BOUNDS_LOCAL config to Kconfig.ubsan to enable the
+'local-bounds' option by default when UBSAN_TRAP is enabled.
+
+[1] http://lists.llvm.org/pipermail/llvm-dev/2012-May/049972.html
+[2] http://lists.llvm.org/pipermail/cfe-commits/Week-of-Mon-20131021/091536.html
+
+Suggested-by: Marco Elver <elver@google.com>
+Reviewed-by: David Brazdil <dbrazdil@google.com>
+Reviewed-by: Marco Elver <elver@google.com>
+Signed-off-by: George Popescu <georgepope@android.com>
+
 ---
- drivers/gpu/drm/panel/panel-orisetech-otm8009a.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v2: changed the name of the config, in Kconfig, to UBSAN_LOCAL_BOUNDS
+---
+v3: added Reviewed-by tag
+---
+ lib/Kconfig.ubsan      | 14 ++++++++++++++
+ scripts/Makefile.ubsan | 10 +++++++++-
+ 2 files changed, 23 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c b/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
-index b6e377aa1131..6ac1accade80 100644
---- a/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
-+++ b/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
-@@ -452,7 +452,7 @@ static int otm8009a_probe(struct mipi_dsi_device *dsi)
- 	dsi->lanes = 2;
- 	dsi->format = MIPI_DSI_FMT_RGB888;
- 	dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
--			  MIPI_DSI_MODE_LPM;
-+			  MIPI_DSI_MODE_LPM | MIPI_DSI_CLOCK_NON_CONTINUOUS;
+diff --git a/lib/Kconfig.ubsan b/lib/Kconfig.ubsan
+index 774315de555a..58f8d03d037b 100644
+--- a/lib/Kconfig.ubsan
++++ b/lib/Kconfig.ubsan
+@@ -47,6 +47,20 @@ config UBSAN_BOUNDS
+ 	  to the {str,mem}*cpy() family of functions (that is addressed
+ 	  by CONFIG_FORTIFY_SOURCE).
  
- 	drm_panel_init(&ctx->panel, dev, &otm8009a_drm_funcs,
- 		       DRM_MODE_CONNECTOR_DSI);
++config UBSAN_LOCAL_BOUNDS
++	bool "Perform array local bounds checking"
++	depends on UBSAN_TRAP
++	depends on CC_IS_CLANG
++	depends on !UBSAN_KCOV_BROKEN
++	help
++	  This option enables -fsanitize=local-bounds which traps when an
++	  exception/error is detected. Therefore, it should be enabled only
++	  if trapping is expected.
++	  Enabling this option detects errors due to accesses through a
++	  pointer that is derived from an object of a statically-known size,
++	  where an added offset (which may not be known statically) is
++	  out-of-bounds.
++
+ config UBSAN_MISC
+ 	bool "Enable all other Undefined Behavior sanity checks"
+ 	default UBSAN
+diff --git a/scripts/Makefile.ubsan b/scripts/Makefile.ubsan
+index 27348029b2b8..4e3fff0745e8 100644
+--- a/scripts/Makefile.ubsan
++++ b/scripts/Makefile.ubsan
+@@ -4,7 +4,15 @@ ifdef CONFIG_UBSAN_ALIGNMENT
+ endif
+ 
+ ifdef CONFIG_UBSAN_BOUNDS
+-      CFLAGS_UBSAN += $(call cc-option, -fsanitize=bounds)
++      ifdef CONFIG_CC_IS_CLANG
++            CFLAGS_UBSAN += -fsanitize=array-bounds
++      else
++            CFLAGS_UBSAN += $(call cc-option, -fsanitize=bounds)
++      endif
++endif
++
++ifdef CONFIG_UBSAN_LOCAL_BOUNDS
++      CFLAGS_UBSAN += -fsanitize=local-bounds
+ endif
+ 
+ ifdef CONFIG_UBSAN_MISC
 -- 
-2.17.1
+2.28.0.681.g6f77f65b4e-goog
 
