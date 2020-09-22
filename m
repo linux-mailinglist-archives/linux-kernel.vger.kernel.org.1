@@ -2,108 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 776B82746A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DF0C2746B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:31:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726661AbgIVQ3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 12:29:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:46782 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726650AbgIVQ3H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 12:29:07 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 59F3D101E;
-        Tue, 22 Sep 2020 09:29:06 -0700 (PDT)
-Received: from [192.168.0.110] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4FB1B3F718;
-        Tue, 22 Sep 2020 09:29:05 -0700 (PDT)
-Subject: Re: [PATCH v6 0/7] arm_pmu: Use NMI for perf interrupt
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     mark.rutland@arm.com, sumit.garg@linaro.org, maz@kernel.org,
-        linux-kernel@vger.kernel.org, swboyd@chromium.org,
-        catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org
-References: <20200819133419.526889-1-alexandru.elisei@arm.com>
- <20200921135951.GN2139@willie-the-truck>
- <296304b8-aadd-817d-bb12-dc7524b6f0f5@arm.com>
-Message-ID: <e7a67a3c-1d09-2413-a1d5-d7f708a30e97@arm.com>
-Date:   Tue, 22 Sep 2020 17:30:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726739AbgIVQba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 12:31:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726508AbgIVQb3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 12:31:29 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CCE9C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 09:31:27 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id z19so18757179lfr.4
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 09:31:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DFpj/fnUMBVQLv0uLvE3QXIgKUcQAnB9yQv3L++wgJU=;
+        b=YkybzvgsCHqPgIFq6Rud8tyuaqdZr9vGTAyZxsIiWRVexRhWCRrS+v9oNSbrCu4xIR
+         8UcTYJaVaI/Gu3cfE/F1I43yvPFkhcJBS/XIFCWtBjzB7SQ6lY7UOhuCPISzX1jLKYxR
+         39zZRGKf5CbJwSqWpkH7pq/5qL2nGedfUDJHI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DFpj/fnUMBVQLv0uLvE3QXIgKUcQAnB9yQv3L++wgJU=;
+        b=OZHXQDf0Ca6ayNzn2bHCYe42ynxNhneaR5EEp/zmufM0H/FszKFoJcl3l2+tfhWVRk
+         mIZbl8I1QrprHGL6WV62hgtESTXx8cVJZ5iNpZXtsQOD129XLpTRyK3VPOPFhBc0caZL
+         42SjlbuPCZ+I48i22x7J3KD3yIpn7om8yvgJju/p0CbSthfWCFM2pgsEZXtpQ/OJIxub
+         VC2FzuHJD/AX89Um3NTQVYul44aTYqQ8HiXWT08rqXBHiMt7WQAVjfMkPGbB5XNd07ES
+         17uHtrXrKPQIG3rUKR0KF3Pb2KzeCtFKdCuh4JOJNCNgGP4x273z55G+KN1IybvzxwMF
+         otAw==
+X-Gm-Message-State: AOAM531Azx3ZdQcQpjRoZ0V9/zP3PTuLahRH7VmLIydl/X4sLoZTf+0f
+        PLHsaYbJ0zoCrW8v8En72ala6/LQg6thmg==
+X-Google-Smtp-Source: ABdhPJyXQ+g3HVPsoRYNwBYfyyBPYbSrpb7UIA5zjOIsUnqsTVLjqZNXgZMcTAeQ6uf/BX5WOzWiSw==
+X-Received: by 2002:ac2:4477:: with SMTP id y23mr2155497lfl.378.1600792285416;
+        Tue, 22 Sep 2020 09:31:25 -0700 (PDT)
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
+        by smtp.gmail.com with ESMTPSA id y26sm3921964ljy.88.2020.09.22.09.31.22
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Sep 2020 09:31:23 -0700 (PDT)
+Received: by mail-lj1-f182.google.com with SMTP id u21so14672412ljl.6
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 09:31:22 -0700 (PDT)
+X-Received: by 2002:a05:651c:104c:: with SMTP id x12mr1929758ljm.285.1600792282400;
+ Tue, 22 Sep 2020 09:31:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <296304b8-aadd-817d-bb12-dc7524b6f0f5@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20200921211744.24758-1-peterx@redhat.com> <20200921211744.24758-2-peterx@redhat.com>
+ <CAG48ez0o+yBpYdzR_-bU3A0nrpzXyM+c+Yk=ZtOZ92qe5x0izA@mail.gmail.com>
+ <20200921223004.GB19098@xz-x1> <CAG48ez25krKvd5hWqn0R3w5_AAPVWtWKofiOHEfKaB2+YoDoPw@mail.gmail.com>
+ <20200922115436.GG8409@ziepe.ca> <20200922142802.GC19098@xz-x1> <20200922155604.GA731578@ziepe.ca>
+In-Reply-To: <20200922155604.GA731578@ziepe.ca>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 22 Sep 2020 09:25:04 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiNcEu+xFxKH=jba42DEp_yGMcywEsrbLBgpGmZxAGV-g@mail.gmail.com>
+Message-ID: <CAHk-=wiNcEu+xFxKH=jba42DEp_yGMcywEsrbLBgpGmZxAGV-g@mail.gmail.com>
+Subject: Re: [PATCH 1/5] mm: Introduce mm_struct.has_pinned
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Peter Xu <peterx@redhat.com>, Jann Horn <jannh@google.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 9/21/20 4:41 PM, Alexandru Elisei wrote:
-> Hi Will,
+On Tue, Sep 22, 2020 at 8:56 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
 >
-> Thank you so much for reviewing the series!
->
-> On 9/21/20 2:59 PM, Will Deacon wrote:
->> On Wed, Aug 19, 2020 at 02:34:12PM +0100, Alexandru Elisei wrote:
->>> The series makes the arm_pmu driver use NMIs for the perf interrupt when
->>> NMIs are available on the platform (currently, only arm64 + GICv3). To make
->>> it easier to play with the patches, I've pushed a branch at [1]:
->> This mostly looks good to me, but see some of the comments I left on the
->> code. One other thing I'm not sure about is whether or not we should tell
->> userspace that we're using an NMI for the sampling. Do any other
->> architectures have a conditional NMI?
-> I'm not sure about other architectures being able to configure the perf interrupt
-> as NMI or a regular interrupt, I'll try to find out. Regardless of what the other
-> architecture do, I am of the opinion that we should spell out explicitly when the
-> PMU is using pseudo-NMIs, because it makes a huge difference in the accuracy of
-> the instrumentation and the overall usefulness of perf.
+> I thought MAP_PRIVATE without PROT_WRITE was nonsensical,
 
-Coming back to this, looked at what other architectures are doing by grepping for
-perf_pmu_register() and going from there, results below. I've found xtensa to
-allow both regular IRQs and NMIs for PMU, based on a kernel config option (just
-like arm64). However, the description for the config option states clearly the the
-PMU IRQ will be an IRQ, while we don't have that for arm64 - the IRQ will be an
-NMI automatically if the GIC is configured to use pseudo-NMIs. I think displaying
-a message is the right thing to do, I'll do that for v7.
+MAP_PRIVATE without PROT_WRITE is very common.
 
-PMU IRQs for other architectures:
+It's what happens for every executable mapping, for example.
 
-* alpha - PMU interrupt is always IRQ.
-* arc - optional PMU interrupt; when present it's requested with
-request_percpu_irq(); it prints to dmesg when overflow IRQ support has been detected.
-* arm - no NMIs.
-* c6x - seems like it doesn't have a PMU at all.
-* csky - PMU interrupts is always IRQ.
-* h8300 - seems like it doesn't have a PMU at all.
-* hexagon - seems like it doesn't have a PMU at all.
-* ia64 - perfmon interrupt is registered with register_percpu_irq(); it prints the
-IRQ number.
-* m64k - couldn't find anything resembling a PMU.
-* microblaze - seems like it doesn't have a PMU.
-* mips - regular IRQ; irq number and if it's shared with the timer interrupt is
-printed.
-* nds32 - regular IRQ; doesn't print anything regarding IRQ number.
-* nios2 - seems like it doesn't have a PMU.
-* openrisc - no PMU.
-* parisc - no PMU IRQ, free-running counters?
-* powerpc - no IRQ for IMC, hv_24x7 and hv_gpci PMUs; looks like for powerpc64,
-the PMU interrupt is treated like an NMI if it is taken when interrupts are
-"soft-masked", for powerpc32 it's always a regular interrupt; no information
-displayed about the interrupt.
-* riscv - they use regular IRQs only when multiplexing events; I haven't found any
-information displayed about the PMU.
-* s390 - no IRQ for cpum_cf_diag and cpm_cf; regular IRQ for cpum_sf; no dmesg output.
-* sh - no IRQ.
-* sparc - looks like it's always NMI; no information about IRQ is displayed.
-* um - no PMU.
-* x86 - the PMU interrupt is always a NMI, the lapic is configured to deliver the
-PMI as an NMI (in arch/x86/events/core.c::perf_events_lapic_init()). Nothing about
-interrupts printed in init_hw_perf_events();
-* xtensa - the interrupt can be configurated as an NMI (EXTENSA_FAKE_NMI), but no
-information about it is displayed.
+And no, it's not the same as MAP_SHARED, for a couple of simple
+reasons. It does end up being similar for all the *normal* cases, but
+there are various cases where it isn't.
 
-Thanks,
-Alex
+ - mprotect() and friends. MAP_PRIVATE is fixed, but it might have
+been writable in the past, and it might become writable in the future.
+
+ - breakpoints and ptrace. This will punch through even a non-writable
+mapping and force a COW (since that's the whole point: executables are
+not writable, but to do a SW breakpoint you have to write to the page)
+
+So no, MAP_PRIVATE is not nonsensical without PROT_WRITE, and it's not
+even remotely unusual.
+
+              Linus
