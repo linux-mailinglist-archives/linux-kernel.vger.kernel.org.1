@@ -2,122 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0AC3273C2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:41:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDAA5273C38
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730065AbgIVHld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 03:41:33 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:33989 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729751AbgIVHld (ORCPT
+        id S1730103AbgIVHn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 03:43:26 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:50407 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729751AbgIVHn0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 03:41:33 -0400
-Received: from mail-qk1-f169.google.com ([209.85.222.169]) by
- mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1MEVFi-1kEY770C0A-00FxzM; Tue, 22 Sep 2020 09:41:31 +0200
-Received: by mail-qk1-f169.google.com with SMTP id d20so18163177qka.5;
-        Tue, 22 Sep 2020 00:41:30 -0700 (PDT)
-X-Gm-Message-State: AOAM530EfDl0mq76ecxKNVmlWDH+nLLJ5NYYKtnTxig3UJesG/GFuVrC
-        j+o+YsnLQhf4VbgYBWPPR0rpYgjF76LEEbGtVgI=
-X-Google-Smtp-Source: ABdhPJyM1tNepTGALsdlHBv1Fa4ejpqxEEgdFOkA02UZmfdvHSDO3faSvK+QsRae1sJuOzwbaRgOudnQ3ZjIVeOH5XE=
-X-Received: by 2002:a05:620a:15a7:: with SMTP id f7mr3368890qkk.3.1600760489821;
- Tue, 22 Sep 2020 00:41:29 -0700 (PDT)
+        Tue, 22 Sep 2020 03:43:26 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08M7gTc3002829;
+        Tue, 22 Sep 2020 09:43:07 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : subject :
+ date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=6mBvDaCXFncoS27ajTyWe8Q1+g8qOj3nydHGBDl8Nus=;
+ b=YA2MrzjJnG2u02KkE4z1+J4r4lLTRDUHVPcRpIRlN68xXvBbXKnHUGEk8+0FcXp2s7ar
+ R5HYe791+k2LIM3XkrQdQR0FeOho/a12YMa5jtfQTQlTfh93Mv5A1s8EKCvCJX8TOv1C
+ uoEpAFdM/UAzQybJmfd2HLc0aEYlPSDRGEHdluZ45Q8NG1E+ca4F9RxKs75eXqH5ZYGY
+ dlSomrmTERkTSfGWNFsF/rZi4l6UCNQGoNDQCOHq1MamIsp0IDz5RYspjfmJVHeoKwZS
+ 7npDV7xvJK43yx+tq2bsvq8tpzAdQNP1Kis0qJbUhwaNGFUZbdm5fTqxLY5VyELuSu6l Eg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 33n7eynfd2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Sep 2020 09:43:07 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B3B8C100038;
+        Tue, 22 Sep 2020 09:43:05 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag6node1.st.com [10.75.127.16])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 89B37212FA9;
+        Tue, 22 Sep 2020 09:43:05 +0200 (CEST)
+Received: from localhost (10.75.127.44) by SFHDAG6NODE1.st.com (10.75.127.16)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 22 Sep 2020 09:42:50
+ +0200
+From:   Yannick Fertre <yannick.fertre@st.com>
+To:     Yannick Fertre <yannick.fertre@st.com>,
+        Philippe Cornu <philippe.cornu@st.com>,
+        Antonio Borneo <antonio.borneo@st.com>,
+        "Vincent Abriou" <vincent.abriou@st.com>,
+        David Airlie <airlied@linux.ie>,
+        "Daniel Vetter" <daniel@ffwll.ch>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        <dri-devel@lists.freedesktop.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] drm/panel: otm8009a: remove hack to force commands in HS
+Date:   Tue, 22 Sep 2020 09:42:42 +0200
+Message-ID: <20200922074242.28719-1-yannick.fertre@st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20200922023151.387447-1-warthog618@gmail.com> <20200922023151.387447-5-warthog618@gmail.com>
-In-Reply-To: <20200922023151.387447-5-warthog618@gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 22 Sep 2020 09:41:13 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1o4fp=-gU=SpwR540Xw+oySJ_ESkG+YXZJsDV-N6UF5w@mail.gmail.com>
-Message-ID: <CAK8P3a1o4fp=-gU=SpwR540Xw+oySJ_ESkG+YXZJsDV-N6UF5w@mail.gmail.com>
-Subject: Re: [PATCH v9 04/20] gpio: uapi: define uAPI v2
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:MgJul94/STlqBONRR9G7hUEh7dJFOZ9YRjtbMyIgDeedXYjKSWf
- nbl2rD9b4VeYHalvWj+DjTcbjTwqnNtgCGtPcbhbzgYhKQfkPl3wcGSuLWr/3TFCjFHh3Hb
- ao/qOsbQvOEx2TKR+tzW40qHslRiL/kK75vP6bAUaGZmw97CU/2Mohm6MTFxkRCzDjPSt3v
- lBoaxYHaQbczC+h9F6R+A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:eWmhPfKqk8c=:IP0PGelGYrFnOg56Z1gXwh
- 8f5vuMn3qLK4FRpyj3A34YNunWVqTTn3b8/vfdteV9+FBCKyzyx5WEtq6Lj365XTj6V0Oo6Tl
- Z1honnEDhDjV8DOwf7NvQECZbiMqgMdtmSUTJphT+NdM3h81AcoNNtKebknbcn6jqGdDbQS2X
- b1Rc1JbO78OCZkjlofF1FYEI/lVGRBPwGPax7vr0dUeWsXf/ffYvwqdv4kudusdNJUhdFzZqo
- NrkuRtMSwTuv6YrJV7ltc7fn/t9aSZ0AN1gSd3hLMYVCI7wheklWfW/hCZOrNpLLFc9jcabnl
- 5Xb5qdwAY/ThQDIJwwo3fI65yoPFxx1UmvGFmOVWJioNRmlqW2fUUttC2Hd2uba8O0l4Hzh7y
- hEAjJsSJsMi5jndCZuqCUWa4gcb+4uLzSp2mDt7Tntqri/X1ordr433wL85/kjvVJytn16DeM
- Lj0Ag5WRTLfdOrsCoIoo2PZDETFl2ovwJQCyoSBae+wVYawt8toOoPkaWgt2kmx5d5Ob4Nbdw
- Sh7focFwlG4V6IzjgJjG0eRc6jrWZJdqZl093XQSU6VZ6fB0C2ik5cgacMhYT18vGkDOTZhR/
- O2Df8bxJcaI5RDEFHN+Eix+F5OrXdhbQacgzapE+qEdJvWO9cPyDmuVkEaoskvBzCZN186Rpd
- VNaUBRYWYpAzaa99DE4skHfTe0MeQh65QuQ47fGXK0wtrUOt0Cg8w/9EY6GrGQ7krG9MtLCSh
- DoQulKdrN6iTumNjrgVArcSVgNZv0yi+aTqXC6uEGVCtQEGx1bdiOBtoUNh/tab814BjE3pVh
- a2V7oXFSC4msa9hZ/x/As4WzN+k3AUCDy8WSFpoKl28vpcz0OSbczw1DJETUtbFStoDd09FRx
- pkMaxQwcs0K2SnbSJI581IxYEx4wxLKggJ0UGqsAZTcc56ydE6iM/z1xj3q/Zk7uljCzAhyQK
- n/jtBq0NA8RGHqto/JS392yO+0s5BXJupi6mbaIPeCTd4yHn/xc9d
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG7NODE1.st.com (10.75.127.19) To SFHDAG6NODE1.st.com
+ (10.75.127.16)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-22_06:2020-09-21,2020-09-22 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 4:34 AM Kent Gibson <warthog618@gmail.com> wrote:
-> +/**
-> + * struct gpio_v2_line_attribute - a configurable attribute of a line
-> + * @id: attribute identifier with value from &enum gpio_v2_line_attr_id
-> + * @padding: reserved for future use and must be zero filled
-> + * @flags: if id is GPIO_V2_LINE_ATTR_ID_FLAGS, the flags for the GPIO
-> + * line, with values from enum gpio_v2_line_flag, such as
-> + * GPIO_V2_LINE_FLAG_ACTIVE_LOW, GPIO_V2_LINE_FLAG_OUTPUT etc, OR:ed
-> + * together.  This overrides the default flags contained in the &struct
-> + * gpio_v2_line_config for the associated line.
-> + * @values: if id is GPIO_V2_LINE_ATTR_ID_OUTPUT_VALUES, a bitmap
-> + * containing the values to which the lines will be set, with each bit
-> + * number corresponding to the index into &struct
-> + * gpio_v2_line_request.offsets.
-> + * @debounce_period_us: if id is GPIO_V2_LINE_ATTR_ID_DEBOUNCE, the desired
-> + * debounce period, in microseconds
-> + */
-> +struct gpio_v2_line_attribute {
-> +       __u32 id;
-> +       __u32 padding;
-> +       union {
-> +               __aligned_u64 flags;
-> +               __aligned_u64 values;
-> +               __u32 debounce_period_us;
-> +       };
-> +};
+From: Antonio Borneo <antonio.borneo@st.com>
 
-Having different-sized members in the union makes it hard for
-something like strace to print the contents. How about just making
-them all __aligned_u64 even when 32 bits are sufficient?
+The panel is able to receive commands in LP. The current hack to
+force backlight commands in HS was due to workaround an incorrect
+settings on DSI controller that prevents sending LP commands while
+video out was active.
 
-> +struct gpio_v2_line_request {
-> +       __u32 offsets[GPIO_V2_LINES_MAX];
-> +       char consumer[GPIO_MAX_NAME_SIZE];
-> +       struct gpio_v2_line_config config;
-> +       __u32 num_lines;
-> +       __u32 event_buffer_size;
-> +       /* Pad to fill implicit padding and reserve space for future use. */
-> +       __u32 padding[5];
-> +       __s32 fd;
-> +};
+Remove the hack that forces HS commands.
 
-> +struct gpio_v2_line_info {
-> +       char name[GPIO_MAX_NAME_SIZE];
-> +       char consumer[GPIO_MAX_NAME_SIZE];
-> +       __u32 offset;
-> +       __u32 num_attrs;
-> +       __aligned_u64 flags;
-> +       struct gpio_v2_line_attribute attrs[GPIO_V2_LINE_NUM_ATTRS_MAX];
-> +       /* Space reserved for future use. */
-> +       __u32 padding[4];
-> +};
+Changes in v2:
+  - Added my signed-off
 
-These are both several hundred bytes long, requiring a lot of data
-to be copied to the stack and take up space there. I see this is not
-actually much different for the v1 API, but I wonder if there has been
-any analysis of whether this has a noticeable effect on application
-runtime.
+Signed-off-by: Antonio Borneo <antonio.borneo@st.com>
+Signed-off-by: Yannick Fertre <yannick.fertre@st.com>
+---
+ .../gpu/drm/panel/panel-orisetech-otm8009a.c   | 18 ++----------------
+ 1 file changed, 2 insertions(+), 16 deletions(-)
 
-         Arnd
+diff --git a/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c b/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
+index 6ac1accade80..f80b44a8a700 100644
+--- a/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
++++ b/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
+@@ -99,20 +99,6 @@ static void otm8009a_dcs_write_buf(struct otm8009a *ctx, const void *data,
+ 		dev_warn(ctx->dev, "mipi dsi dcs write buffer failed\n");
+ }
+ 
+-static void otm8009a_dcs_write_buf_hs(struct otm8009a *ctx, const void *data,
+-				      size_t len)
+-{
+-	struct mipi_dsi_device *dsi = to_mipi_dsi_device(ctx->dev);
+-
+-	/* data will be sent in dsi hs mode (ie. no lpm) */
+-	dsi->mode_flags &= ~MIPI_DSI_MODE_LPM;
+-
+-	otm8009a_dcs_write_buf(ctx, data, len);
+-
+-	/* restore back the dsi lpm mode */
+-	dsi->mode_flags |= MIPI_DSI_MODE_LPM;
+-}
+-
+ #define dcs_write_seq(ctx, seq...)			\
+ ({							\
+ 	static const u8 d[] = { seq };			\
+@@ -400,7 +386,7 @@ static int otm8009a_backlight_update_status(struct backlight_device *bd)
+ 		 */
+ 		data[0] = MIPI_DCS_SET_DISPLAY_BRIGHTNESS;
+ 		data[1] = bd->props.brightness;
+-		otm8009a_dcs_write_buf_hs(ctx, data, ARRAY_SIZE(data));
++		otm8009a_dcs_write_buf(ctx, data, ARRAY_SIZE(data));
+ 
+ 		/* set Brightness Control & Backlight on */
+ 		data[1] = 0x24;
+@@ -412,7 +398,7 @@ static int otm8009a_backlight_update_status(struct backlight_device *bd)
+ 
+ 	/* Update Brightness Control & Backlight */
+ 	data[0] = MIPI_DCS_WRITE_CONTROL_DISPLAY;
+-	otm8009a_dcs_write_buf_hs(ctx, data, ARRAY_SIZE(data));
++	otm8009a_dcs_write_buf(ctx, data, ARRAY_SIZE(data));
+ 
+ 	return 0;
+ }
+-- 
+2.17.1
+
