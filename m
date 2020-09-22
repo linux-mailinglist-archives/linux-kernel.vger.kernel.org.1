@@ -2,110 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 234C8273EA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 11:37:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBECE273EF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 11:54:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726549AbgIVJhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 05:37:37 -0400
-Received: from mga06.intel.com ([134.134.136.31]:50465 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726341AbgIVJhe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 05:37:34 -0400
-IronPort-SDR: VfG8n6HJ4q+Y+FaPEYxgXr2SNci9TTgiHOZZ3VFeKbouMoiw4CrI+orrRaXsCRZ1N+I0beYRx2
- MgFe68Dvv6rw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="222162737"
-X-IronPort-AV: E=Sophos;i="5.77,290,1596524400"; 
-   d="scan'208";a="222162737"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 02:37:33 -0700
-IronPort-SDR: 5dTH0aMWWDlqA83WBT5OraY8R0WaqZsG4Ki9+grMis2bnidcLtPQFbBjaTC4m4EFVkw6gpzGH+
- KQuTRWxr6ycw==
-X-IronPort-AV: E=Sophos;i="5.77,290,1596524400"; 
-   d="scan'208";a="346878098"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 02:37:28 -0700
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 51C9B207DA; Tue, 22 Sep 2020 12:37:26 +0300 (EEST)
-Date:   Tue, 22 Sep 2020 12:37:26 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Pavel Machek <pavel@ucw.cz>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Shawn Tu <shawnx.tu@intel.com>,
-        Ricardo Ribalda <ribalda@kernel.org>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Rui Miguel Silva <rmfrfs@gmail.com>,
-        Shunqian Zheng <zhengsq@rock-chips.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
-        Hyungwoo Yang <hyungwoo.yang@intel.com>,
-        Wenyou Yang <wenyou.yang@microchip.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 07/25] media: i2c: imx355: silence unused acpi_device_id
- warning
-Message-ID: <20200922093726.GN26842@paasikivi.fi.intel.com>
-References: <20200921162342.7348-1-krzk@kernel.org>
- <20200921162342.7348-7-krzk@kernel.org>
+        id S1726554AbgIVJyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 05:54:08 -0400
+Received: from mickerik.phytec.de ([195.145.39.210]:47156 "EHLO
+        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726353AbgIVJyH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 05:54:07 -0400
+X-Greylist: delayed 901 seconds by postgrey-1.27 at vger.kernel.org; Tue, 22 Sep 2020 05:54:06 EDT
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a1; c=relaxed/simple;
+        q=dns/txt; i=@phytec.de; t=1600767544; x=1603359544;
+        h=From:Sender:Reply-To:Subject:Date:Message-Id:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=gBdQ4nNU4LkVwgCAoPqPWR+JZVeyyiWG4BrFHfAS0SQ=;
+        b=BiycNBTrW1uKR/TUyxJXEkO1sKjodzuyxmEFOu/aGWNLOH5WAroQO7a73kPgbq1P
+        HTEIhZfxN2GPQXRGuaUkU6J4GpARd832eZMCX5bS15rJXfWl4aPU4kwvrX8vGvCy
+        HzZd4Qvyx/T7O+HyXq55I45OR94E33v3CPMSB7zBQRM=;
+X-AuditID: c39127d2-253ff70000001c25-d1-5f69c638ed81
+Received: from idefix.phytec.de (Unknown_Domain [172.16.0.10])
+        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id AD.07.07205.836C96F5; Tue, 22 Sep 2020 11:39:04 +0200 (CEST)
+Received: from lws-riedmueller.phytec.de ([172.16.23.108])
+          by idefix.phytec.de (IBM Domino Release 9.0.1FP7)
+          with ESMTP id 2020092211390466-474099 ;
+          Tue, 22 Sep 2020 11:39:04 +0200 
+From:   Stefan Riedmueller <s.riedmueller@phytec.de>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Stefan Riedmueller <s.riedmueller@phytec.de>
+Subject: [PATCH] Input: stmpe: Add axis inversion and swapping capability
+Date:   Tue, 22 Sep 2020 11:39:03 +0200
+Message-Id: <20200922093903.157232-1-s.riedmueller@phytec.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200921162342.7348-7-krzk@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-MIMETrack: Itemize by SMTP Server on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 22.09.2020 11:39:04,
+        Serialize by Router on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 22.09.2020 11:39:04
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: quoted-printable
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprOLMWRmVeSWpSXmKPExsWyRoCBS9fiWGa8wc2/+haHF71gtLj/9Sij
+        xabH11gtbn76xmpxedccNgdWj52z7rJ73Lm2h81j85J6j8+b5AJYorhsUlJzMstSi/TtErgy
+        jszYxl6wg7/i2OcW9gbGmbxdjBwcEgImEj3dPl2MXBxCAtsYJSa/XcYO4VxjlDjT/5epi5GT
+        g03ASGLBtEYwW0RAX2L77F+MIEXMApsZJX60vWAGSQgLeEps/bKWFcRmEVCV+Nu3jw1kA6+A
+        rcTWNhOQsISAvMTMS9/ZQWxeAUGJkzOfsIDMkRC4wijR/2AdI0SRkMTpxWfBZjILaEssW/ia
+        eQIj3ywkPbOQpBYwMq1iFMrNTM5OLcrM1ivIqCxJTdZLSd3ECAy8wxPVL+1g7JvjcYiRiYPx
+        EKMEB7OSCK+aUXq8EG9KYmVValF+fFFpTmrxIUZpDhYlcd4NvCVhQgLpiSWp2ampBalFMFkm
+        Dk6pBsalK5of7D129nTXT37HC9mXFxrHZ9611ZZ5kp7t+ESI08zH75fQi0j5+VkXaza7aecf
+        vXNXX2TJq7b3aR0qBVPqPa4tOKHSo8CZ6sgdbCrHdFgwMSNWVSFrNddL81LDzOtLVp8WZ5W/
+        /+rK+yQzxz2KvZoLi+7WN6+N3KkZsv9msGfalrtH/iqxFGckGmoxFxUnAgDQlXCtKgIAAA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+Make use of generic touchscreen=5Fproperties structure to add axis
+inversion and swapping capabilities. It's configurable via devicetree
+properties:
+  touchscreen-inverted-x
+  touchscreen-inverted-y
+  touchscreen-swapped-x-y
 
-Thanks for the patchset!
+Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
+---
+ drivers/input/touchscreen/stmpe-ts.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-I believe the I²C client has been dug up first as we've been dealing with
-I²C devices all the time, and it's been a pattern. I don't see that as a
-reason to reject the patches either though, it definitely cleans up the
-drivers.
+diff --git a/drivers/input/touchscreen/stmpe-ts.c b/drivers/input/touchscre=
+en/stmpe-ts.c
+index 7e16fcfe3b95..cd747725589b 100644
+--- a/drivers/input/touchscreen/stmpe-ts.c
++++ b/drivers/input/touchscreen/stmpe-ts.c
+@@ -14,6 +14,7 @@
+ #include <linux/of.h>
+ #include <linux/platform=5Fdevice.h>
+ #include <linux/input.h>
++#include <linux/input/touchscreen.h>
+ #include <linux/slab.h>
+ #include <linux/delay.h>
+ #include <linux/i2c.h>
+@@ -72,6 +73,7 @@ struct stmpe=5Ftouch {
+ 	struct input=5Fdev *idev;
+ 	struct delayed=5Fwork work;
+ 	struct device *dev;
++	struct touchscreen=5Fproperties prop;
+ 	u8 ave=5Fctrl;
+ 	u8 touch=5Fdet=5Fdelay;
+ 	u8 settling;
+@@ -150,8 +152,7 @@ static irqreturn=5Ft stmpe=5Fts=5Fhandler(int irq, void=
+ *data)
+ 	y =3D ((data=5Fset[1] & 0xf) << 8) | data=5Fset[2];
+ 	z =3D data=5Fset[3];
+=20
+-	input=5Freport=5Fabs(ts->idev, ABS=5FX, x);
+-	input=5Freport=5Fabs(ts->idev, ABS=5FY, y);
++	touchscreen=5Freport=5Fpos(ts->idev, &ts->prop, x, y, false);
+ 	input=5Freport=5Fabs(ts->idev, ABS=5FPRESSURE, z);
+ 	input=5Freport=5Fkey(ts->idev, BTN=5FTOUCH, 1);
+ 	input=5Fsync(ts->idev);
+@@ -337,6 +338,8 @@ static int stmpe=5Finput=5Fprobe(struct platform=5Fdevi=
+ce *pdev)
+ 	input=5Fset=5Fabs=5Fparams(idev, ABS=5FY, 0, XY=5FMASK, 0, 0);
+ 	input=5Fset=5Fabs=5Fparams(idev, ABS=5FPRESSURE, 0x0, 0xff, 0, 0);
+=20
++	touchscreen=5Fparse=5Fproperties(idev, false, &ts->prop);
++
+ 	error =3D input=5Fregister=5Fdevice(idev);
+ 	if (error) {
+ 		dev=5Ferr(&pdev->dev, "Could not register input device\n");
+--=20
+2.25.1
 
-On Mon, Sep 21, 2020 at 06:23:24PM +0200, Krzysztof Kozlowski wrote:
-> If driver is built without ACPI, the struct acpi_device_id won't be
-> used:
-> 
->   drivers/media/i2c/imx355.c:1836:36: warning:
->     'imx355_acpi_ids' defined but not used [-Wunused-const-variable=]
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  drivers/media/i2c/imx355.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/i2c/imx355.c b/drivers/media/i2c/imx355.c
-> index 51245e71b411..8db287251f49 100644
-> --- a/drivers/media/i2c/imx355.c
-> +++ b/drivers/media/i2c/imx355.c
-> @@ -1833,7 +1833,7 @@ static const struct dev_pm_ops imx355_pm_ops = {
->  	SET_SYSTEM_SLEEP_PM_OPS(imx355_suspend, imx355_resume)
->  };
->  
-> -static const struct acpi_device_id imx355_acpi_ids[] = {
-> +static const struct acpi_device_id imx355_acpi_ids[]__maybe_unused = {
-
-A space before __ perhaps?
-
-Albeit this seems to be all, I can address that while applying if that's
-ok.
-
->  	{ "SONY355A" },
->  	{ /* sentinel */ }
->  };
-
--- 
-Kind regards,
-
-Sakari Ailus
