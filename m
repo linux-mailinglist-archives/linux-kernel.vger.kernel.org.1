@@ -2,78 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 588DA2744E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04ACF2744ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726709AbgIVPDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 11:03:22 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:57183 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726672AbgIVPDW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 11:03:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1600787001; x=1632323001;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   in-reply-to:content-transfer-encoding;
-  bh=eRDTrtuN85IXUqjdLp1BB4IHHjXsWG5mm0q8q4Un7ZA=;
-  b=KGOFFgy9HvG1RXo0U04xoIFJum581aoyB44eWgLeZpIB7H/f6GZhoUal
-   478+5nVoD2s4XvJlfZ6eeouCvlz/AJq/7O0kHaMhb65fClKVzqwnzLPlr
-   mAjsANk21X7bd8fUaERcGUln0DCgIwIUbrVF7xooIh7IKdUY4BW1RHyBn
-   4=;
-X-IronPort-AV: E=Sophos;i="5.77,291,1596499200"; 
-   d="scan'208";a="56981745"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-119b4f96.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 22 Sep 2020 15:03:18 +0000
-Received: from EX13D31EUA004.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2a-119b4f96.us-west-2.amazon.com (Postfix) with ESMTPS id A6C051A00BF;
-        Tue, 22 Sep 2020 15:03:17 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.145) by
- EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 22 Sep 2020 15:03:10 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>
-CC:     =?UTF-8?q?J=C3=BCrgen=20Gro=C3=9F?= <jgross@suse.com>,
-        SeongJae Park <sjpark@amazon.com>, <konrad.wilk@oracle.com>,
-        SeongJae Park <sjpark@amazon.de>, <axboe@kernel.dk>,
-        <aliguori@amazon.com>, <amit@kernel.org>, <mheyne@amazon.de>,
-        <pdurrant@amazon.co.uk>, <linux-block@vger.kernel.org>,
-        <xen-devel@lists.xenproject.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 3/3] xen-blkfront: Apply changed parameter name to the document
-Date:   Tue, 22 Sep 2020 17:02:55 +0200
-Message-ID: <20200922150255.5850-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726731AbgIVPE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 11:04:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45700 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726641AbgIVPE2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 11:04:28 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B93582395C;
+        Tue, 22 Sep 2020 15:04:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600787068;
+        bh=AXw2tfK29u5pN8a/sQAZ5oYaSay0GrxXyeLbzU7BfV4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=xCIbHC4uF6h2VAaoSR+FDu3Loy7x7tSEZ6k4dfg6SGY6vl0x42IPebwqwZY/fYS0K
+         eEuWBwxI2yNs+BIuwGxzxtha07zs+dNUdahLQYI5MhLsZoHXCzkIosuOE7swsRPjsj
+         pEsz/Tb0vzr0WNL1dnNn4PK45JGnoNUyMVT2ov8I=
+Date:   Tue, 22 Sep 2020 08:04:26 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Saeed Mahameed <saeed@kernel.org>
+Cc:     Qinglang Miao <miaoqinglang@huawei.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] net/mlx5: simplify the return expression of
+ mlx5_ec_init()
+Message-ID: <20200922080426.164e5af1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <ae06288c3c4d5d8ad59202ff7967d479af1152a5.camel@kernel.org>
+References: <20200921131044.92430-1-miaoqinglang@huawei.com>
+        <ae06288c3c4d5d8ad59202ff7967d479af1152a5.camel@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200922144425.GL19254@Air-de-Roger>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.43.161.145]
-X-ClientProxiedBy: EX13D47UWA001.ant.amazon.com (10.43.163.6) To
- EX13D31EUA004.ant.amazon.com (10.43.165.161)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Sep 2020 16:44:25 +0200 "Roger Pau Monné" <roger.pau@citrix.com> wrote:
+On Mon, 21 Sep 2020 22:52:30 -0700 Saeed Mahameed wrote:
+> On Mon, 2020-09-21 at 21:10 +0800, Qinglang Miao wrote:
+> > Simplify the return expression.
+> >=20
+> > Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> > ---
+> >  drivers/net/ethernet/mellanox/mlx5/core/ecpf.c | 6 +-----
+> >  1 file changed, 1 insertion(+), 5 deletions(-)
+> >=20
+> >  =20
+>=20
+> Applied to net-next-mlx5.
 
-> On Tue, Sep 22, 2020 at 04:27:39PM +0200, Jürgen Groß wrote:
-> > On 22.09.20 16:15, SeongJae Park wrote:
-> > > From: SeongJae Park <sjpark@amazon.de>
-> > > 
-> > > Commit 14e710fe7897 ("xen-blkfront: rename indirect descriptor
-> > > parameter") changed the name of the module parameter for the maximum
-> > > amount of segments in indirect requests but missed updating the
-> > > document.  This commit updates the document.
-> > > 
-> > > Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> > 
-> > Reviewed-by: Juergen Gross <jgross@suse.com>
-> 
-> Does this need to be backported to stable branches?
+Beware:
 
-I don't think so, as this is not a bug affecting users?
-
-
-Thanks,
-SeongJae Park
+drivers/net/ethernet/mellanox/mlx5/core/ecpf.c: In function =E2=80=98mlx5_e=
+c_init=E2=80=99:
+drivers/net/ethernet/mellanox/mlx5/core/ecpf.c:46:6: warning: unused variab=
+le =E2=80=98err=E2=80=99 [-Wunused-variable]
+  46 |  int err =3D 0;
+     |      ^~~
