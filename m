@@ -2,110 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E16273CBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76369273CC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:56:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726906AbgIVHzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 03:55:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33098 "EHLO
+        id S1726586AbgIVH4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 03:56:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726341AbgIVHzb (ORCPT
+        with ESMTP id S1726341AbgIVH4S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 03:55:31 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E759C061755;
-        Tue, 22 Sep 2020 00:55:31 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id n22so15290903edt.4;
-        Tue, 22 Sep 2020 00:55:31 -0700 (PDT)
+        Tue, 22 Sep 2020 03:56:18 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A56C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 00:56:18 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id a13so11087971qvl.6
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 00:56:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=DqVbTwbYiBxMrS1Mg/yzIA403pvGVRr5eBul8cO/rDM=;
-        b=QAX7XmEbrrt8H/7JieE9bp/r7axLJQuiNARmOGUjQCoAd3DeGAYaygDIOMgsX4PUcS
-         q6IGvEYwkax+qCwMPr++7Sd+iin5wON0y9ZQS49cKTCRMlzt0QSEGcGadZ/e3Do+G11f
-         R9gOiOewwdAXJfZEBLqNvSAphJBTMn5eQHQz46UAdPC3qCi1Genn/acxidEGSa6xe1EN
-         OkXwcLoOWs2hQk9gnBrHsgdZ5YJ4e9sXi6vmG0KqccL69PvtGzazOHe6c8jiDYlmwNyL
-         2na3t7FBIox34tpU0Tnr4lmtrSp+PEUFmRAqbBU2eTEL9LOOVqQxmtfpF8qjqhh0bkvN
-         75ag==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=ClKheBsVPCjUi1w0lCfGtWlJh8qfJBEdB5PCy2ar4eQ=;
+        b=AucI3MRGxCu1uQ3YwRyhbF9AV90VUSbzOq+E13sGK46lv3zhafkIXVxlaRdbZkMOFp
+         uD+RQhz++rvrSt6zSCfX/jNrMzRJDUKglbhV+XnvrPhf8d5vfmHukiMUmnCgNCeVYv0d
+         13PDmn7qysJV03qMFOEe+mdUoYRLiowtLKjq44/u9/viZqJFz8tM9/zjxebu5IypWNw1
+         as2UZN+TQH0E3iuIDsafThBzdP7AFwsToQprz9uMK1YtM7n35824NKcJnf3OLaAQESqV
+         IPhbZNrRqs/Tmj6NLv8mloisoRhBVAzbirZftx6ipmL+J3MELZiMjgu7h51BMWwg6aoq
+         8xFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=DqVbTwbYiBxMrS1Mg/yzIA403pvGVRr5eBul8cO/rDM=;
-        b=VcLJDBjHttiHo47BaTx4kjD8xlzrGDVVCdWMrFiXsNyP96rl97tdtvqKtpFiftQhzE
-         BGaJUW4NHHMto/CFrBttuvDv9Sl/vBPs6kBNtKAnxRWIKApuQ6Z3gnOGaUogTOFYCxFf
-         0j45LhIBeHGaGJw4AJh0cwNgTzUKjzpUKuFgBls6gxYFd/JVQTsOKudXxU8ObFwWefoo
-         eKh9L+FIiTTEY5B/G+Bndsi93IE1U8mrF4YegGA2WSVJWpUlEb6aMvcpKxyNAMXPyU9w
-         jn2HEjkf8tLr4NiR1fKHFNRjyOrNUb87o0X6fHuWvGelu9OYL91OuiiWsIJMr/iI7yar
-         H2ew==
-X-Gm-Message-State: AOAM533E8wWL9TmE9qei7RVGkM++tW+ox/4f8o1Gm3tVLdLuyqIYADAA
-        NTuXsT9jnruHfGSr1259skg=
-X-Google-Smtp-Source: ABdhPJyuVCBdI8ZUu3wIFclXczhxXAR2rY3sI0ea8IZCKcsj/Nmb+lMRiBum29r9gHqjgZPSpUBTRw==
-X-Received: by 2002:a50:84a2:: with SMTP id 31mr2725023edq.138.1600761330047;
-        Tue, 22 Sep 2020 00:55:30 -0700 (PDT)
-Received: from localhost (pd9e51aa4.dip0.t-ipconnect.de. [217.229.26.164])
-        by smtp.gmail.com with ESMTPSA id z18sm11090511ejb.92.2020.09.22.00.55.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 00:55:28 -0700 (PDT)
-Date:   Tue, 22 Sep 2020 09:55:28 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>
-Cc:     jonathanh@nvidia.com, sakari.ailus@iki.fi, hverkuil@xs4all.nl,
-        jacopo+renesas@jmondi.org, luca@lucaceresoli.net,
-        leonl@leopardimaging.com, robh+dt@kernel.org, lgirdwood@gmail.com,
-        broonie@kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 2/3] media: i2c: imx274: Remove stop stream i2c writes
- during remove
-Message-ID: <20200922075528.GD3994831@ulmo>
-References: <1600724379-7324-1-git-send-email-skomatineni@nvidia.com>
- <1600724379-7324-3-git-send-email-skomatineni@nvidia.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="FFoLq8A0u+X9iRU8"
-Content-Disposition: inline
-In-Reply-To: <1600724379-7324-3-git-send-email-skomatineni@nvidia.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=ClKheBsVPCjUi1w0lCfGtWlJh8qfJBEdB5PCy2ar4eQ=;
+        b=dIddGNGw7WrB/Inwf9YycWXJp1MIN3lpZOq26pPmBWpchT+W2awrtJBjO4lNMtcmhx
+         sZ2se/zUouHGbBQA73qm3So8XwC+ilTF80LfbpOFhfdXM8m+QLSCSaBpZVcP8605jxpi
+         lEeddCL8FhVYNejggdTSoVX+RLs9niv1sCnwuu9u1PRjO05qL+cTZ6PLwKEUCE0EEeUm
+         fbZSlFFtTQ4Yftid90VFyq0lZkojfLER9cRO+vdpeujaow2uULGddrLkcV6xt0LKOqUT
+         lpfnLbnywQbh4O5FHWUdJ9x6bD5Nc/dOuaVLWHPws/vvHG1KqwV9+AKH/ltNjRs46y5r
+         SeKg==
+X-Gm-Message-State: AOAM532Bi0DQ51geqIyP8gv1Oml60KhF/lQiakPrZ+O+T7d+1Ir7aWGD
+        bHp3wSUwJ58yKsM44qttT+9ZAhIqkK8b
+X-Google-Smtp-Source: ABdhPJyR9yLwG5vy6sWNnj6uUqoZ9+AuNeiZPDSyud1VBRfooMC47509/9C+6TBmwN4TjtWXTMXV0zSHSyMT
+Sender: "apusaka via sendgmr" <apusaka@apusaka-p920.tpe.corp.google.com>
+X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:10:f693:9fff:fef4:2347])
+ (user=apusaka job=sendgmr) by 2002:ad4:57cc:: with SMTP id
+ y12mr4563202qvx.48.1600761376969; Tue, 22 Sep 2020 00:56:16 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 15:56:11 +0800
+Message-Id: <20200922155548.v3.1.I67a8b8cd4def8166970ca37109db46d731b62bb6@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
+Subject: [PATCH v3] Bluetooth: Check for encryption key size on connect
+From:   Archie Pusaka <apusaka@google.com>
+To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>
+Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Archie Pusaka <apusaka@chromium.org>
 
---FFoLq8A0u+X9iRU8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+When receiving connection, we only check whether the link has been
+encrypted, but not the encryption key size of the link.
 
-On Mon, Sep 21, 2020 at 02:39:38PM -0700, Sowjanya Komatineni wrote:
-> Sensor should already be in standby during remove and there is no
-> need to configure sensor registers for stream stop.
->=20
-> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
-> ---
->  drivers/media/i2c/imx274.c | 3 ---
->  1 file changed, 3 deletions(-)
+This patch adds check for encryption key size, and reject L2CAP
+connection which size is below the specified threshold (default 7)
+with security block.
 
-Reviewed-by: Thierry Reding <treding@nvidia.com>
+Here is some btmon trace.
+@ MGMT Event: New Link Key (0x0009) plen 26    {0x0001} [hci0] 5.847722
+        Store hint: No (0x00)
+        BR/EDR Address: 38:00:25:F7:F1:B0 (OUI 38-00-25)
+        Key type: Unauthenticated Combination key from P-192 (0x04)
+        Link key: 7bf2f68c81305d63a6b0ee2c5a7a34bc
+        PIN length: 0
+> HCI Event: Encryption Change (0x08) plen 4        #29 [hci0] 5.871537
+        Status: Success (0x00)
+        Handle: 256
+        Encryption: Enabled with E0 (0x01)
+< HCI Command: Read Encryp... (0x05|0x0008) plen 2  #30 [hci0] 5.871609
+        Handle: 256
+> HCI Event: Command Complete (0x0e) plen 7         #31 [hci0] 5.872524
+      Read Encryption Key Size (0x05|0x0008) ncmd 1
+        Status: Success (0x00)
+        Handle: 256
+        Key size: 3
 
---FFoLq8A0u+X9iRU8
-Content-Type: application/pgp-signature; name="signature.asc"
+////// WITHOUT PATCH //////
+> ACL Data RX: Handle 256 flags 0x02 dlen 12        #42 [hci0] 5.895023
+      L2CAP: Connection Request (0x02) ident 3 len 4
+        PSM: 4097 (0x1001)
+        Source CID: 64
+< ACL Data TX: Handle 256 flags 0x00 dlen 16        #43 [hci0] 5.895213
+      L2CAP: Connection Response (0x03) ident 3 len 8
+        Destination CID: 64
+        Source CID: 64
+        Result: Connection successful (0x0000)
+        Status: No further information available (0x0000)
 
------BEGIN PGP SIGNATURE-----
+////// WITH PATCH //////
+> ACL Data RX: Handle 256 flags 0x02 dlen 12        #42 [hci0] 4.887024
+      L2CAP: Connection Request (0x02) ident 3 len 4
+        PSM: 4097 (0x1001)
+        Source CID: 64
+< ACL Data TX: Handle 256 flags 0x00 dlen 16        #43 [hci0] 4.887127
+      L2CAP: Connection Response (0x03) ident 3 len 8
+        Destination CID: 0
+        Source CID: 64
+        Result: Connection refused - security block (0x0003)
+        Status: No further information available (0x0000)
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9prfAACgkQ3SOs138+
-s6G69BAAhqB7vtCBhhILEkJbiIMCfRIBCD0M5kFeQRcHWApvm/kaXybwaPyRSJGv
-s4odjDaGktLwdR/i2BAXZ7NVu+0N6Yp427iLtuZjiXZTZOm3E5AGcrbOnibz1mRD
-sdgmAzxdpuBU9ltOAmEAOlNUuJeEtyLccqBpmCSHzCfM9qmSlmzInARzLJOBDX//
-jAwiNICrvrdRkZSbzFhXsyqDLfJf/+rj4cvtDx41p6SY9M/35bBR+IKc9RJEsM6G
-xEUSqBMxlosn7vgCVmL8FjJIHz6/sBS/zHocYlylbqJwKat8NWgA+SP+WbRnDdDf
-tTkRCjqCJP1n+duHohYR+f1TaG7NGNTts4ZtLQHmjAIpG4O3rJE92PFDJHB+h1EF
-spuGgKVJpFaeqyXCrpS6JNt32QYx97WsgeiP1OPtMbXESeOBMa3JwVnCXj5my10B
-n9A+QvmYtdq0bZoQuohfaZSQY/xXS3x1BIh+Zj+VHzjf0DILs2RlF+sQQiYJ7w7S
-1OIao91R5342P1dTDo4l4TFJ8b+YkObs5EIvmD6oB+3R8r602D35IgzFuqy0ECMG
-lKbd/sr/qQHZyTljEKj7c/lnBe0H8fS1F9JGxfjjVpuH0x5wDbwZXXScJK7rIpy+
-NlkVyjNq21RYsWAiSVLrEiveiQWcpr81QK1udHI7M6LVmVBecco=
-=IiTc
------END PGP SIGNATURE-----
+Signed-off-by: Archie Pusaka <apusaka@chromium.org>
 
---FFoLq8A0u+X9iRU8--
+---
+
+Changes in v3:
+* Move the check to hci_conn_check_link_mode()
+
+Changes in v2:
+* Add btmon trace to the commit message
+
+ net/bluetooth/hci_conn.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/net/bluetooth/hci_conn.c b/net/bluetooth/hci_conn.c
+index 9832f8445d43..89085fac797c 100644
+--- a/net/bluetooth/hci_conn.c
++++ b/net/bluetooth/hci_conn.c
+@@ -1348,6 +1348,10 @@ int hci_conn_check_link_mode(struct hci_conn *conn)
+ 	    !test_bit(HCI_CONN_ENCRYPT, &conn->flags))
+ 		return 0;
+ 
++	if (test_bit(HCI_CONN_ENCRYPT, &conn->flags) &&
++	    conn->enc_key_size < conn->hdev->min_enc_key_size)
++		return 0;
++
+ 	return 1;
+ }
+ 
+-- 
+2.28.0.681.g6f77f65b4e-goog
+
