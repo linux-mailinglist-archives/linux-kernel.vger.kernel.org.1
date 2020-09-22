@@ -2,85 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B176727489A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 20:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4AF427489E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 20:52:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726656AbgIVSvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 14:51:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52574 "EHLO mail.kernel.org"
+        id S1726737AbgIVSwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 14:52:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726563AbgIVSvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 14:51:45 -0400
-Received: from kernel.org (unknown [104.132.0.74])
+        id S1726563AbgIVSwK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 14:52:10 -0400
+Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 36C5F238D7;
-        Tue, 22 Sep 2020 18:51:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D2301238D7;
+        Tue, 22 Sep 2020 18:52:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600800704;
-        bh=0LMbuk6CTeq8oAjc5gUwElHC9G/u0ZceND1LbMPooW8=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=Yz1vM3+RpUUucrLlVs7Y0neNjzYqN7ve/G4RlFvzlNwxhL1WmBQBBCeT+gzQQHcx8
-         T3Dg5sku9fEBEk4htqncGFuoYGGu9NKTqStj0xOoHaJWWsLFWEF3eBPa9NyWKQ6ZP/
-         M6tl+xZFmGyQNEQEhtw/JksZ6vw0PWcTY/0iMDPI=
-Content-Type: text/plain; charset="utf-8"
+        s=default; t=1600800730;
+        bh=GwkgfugyQ4Ep54Xky8JSEaOER8YI4ReiJg8rOAm/CVw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=b+QQwAICCf3FfpggZWCA0+S+/9BJpvk/992YEIXtKALKQG+kjNkX89UjrBDinUL4u
+         aDHUYT6ruzJa2OfVfywCXVieAeNEVhTgwfT0NBvzE7YW6/fjOFB8rYMd/mXCx8sSuN
+         vSfjeCxfWKkrJC6Ts9aN7OXt6sT5ZTBPtLRZZHog=
+Date:   Tue, 22 Sep 2020 13:52:08 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
+        Jay Vosburgh <jay.vosburgh@canonical.com>
+Subject: Re: [PATCH v3 1/1] PCI/ERR: Fix reset logic in pcie_do_recovery()
+ call
+Message-ID: <20200922185208.GA1743622@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200916231202.3637932-10-swboyd@chromium.org>
-References: <20200916231202.3637932-1-swboyd@chromium.org> <20200916231202.3637932-10-swboyd@chromium.org>
-Subject: Re: [PATCH v4 09/10] clk: qcom: dispcc: Update DP clk ops for phy design
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Jeykumar Sankaran <jsanka@codeaurora.org>,
-        Chandan Uddaraju <chandanu@codeaurora.org>,
-        Vara Reddy <varar@codeaurora.org>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@chromium.org>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-Date:   Tue, 22 Sep 2020 11:51:43 -0700
-Message-ID: <160080070307.310579.1550032345045011322@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cbba08a5e9ca62778c8937f44eda2192a2045da7.1595617529.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Stephen Boyd (2020-09-16 16:12:01)
-> The clk_rcg2_dp_determine_rate() function is used for the DP pixel clk.
-> This function should return the rate that can be achieved by the pixel
-> clk in 'struct clk_rate_request::rate' and match the logic similar to
-> what is seen in clk_rcg2_dp_set_rate(). But that isn't the case. Instead
-> the code merely bubbles the rate request up to the parent of the pixel
-> clk and doesn't try to do a rational approximation of the rate that
-> would be achieved by picking some m/n value for the RCG.
->=20
-> Let's change this logic so that we can assume the parent clk frequency
-> is fixed (it is because it's the VCO of the DP PLL that is configured
-> based on the link rate) and so that we can calculate what the m/n value
-> will be and adjust the req->rate appropriately.
->=20
-> Cc: Jeykumar Sankaran <jsanka@codeaurora.org>
-> Cc: Chandan Uddaraju <chandanu@codeaurora.org>
-> Cc: Vara Reddy <varar@codeaurora.org>
-> Cc: Tanmay Shah <tanmay@codeaurora.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Manu Gautam <mgautam@codeaurora.org>
-> Cc: Sandeep Maheswaram <sanm@codeaurora.org>
-> Cc: Douglas Anderson <dianders@chromium.org>
-> Cc: Sean Paul <seanpaul@chromium.org>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Jonathan Marek <jonathan@marek.ca>
-> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Cc: Rob Clark <robdclark@chromium.org>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
+On Fri, Jul 24, 2020 at 12:07:55PM -0700, sathyanarayanan.kuppuswamy@linux.intel.com wrote:
+> From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> 
+> Current pcie_do_recovery() implementation has following two issues:
+> 
 
-Applied to clk-next
+I'm having trouble parsing this out, probably just lack of my
+understanding...
+
+> 1. Fatal (DPC) error recovery is currently broken for non-hotplug
+> capable devices. Current fatal error recovery implementation relies
+> on PCIe hotplug (pciehp) handler for detaching and re-enumerating
+> the affected devices/drivers. pciehp handler listens for DLLSC state
+> changes and handles device/driver detachment on DLLSC_LINK_DOWN event
+> and re-enumeration on DLLSC_LINK_UP event. So when dealing with
+> non-hotplug capable devices, recovery code does not restore the state
+> of the affected devices correctly. 
+
+Apparently in the hotplug case, something *does* restore the state of
+affected devices?
+
+> Correct implementation should
+> restore the device state and call report_slot_reset() function after
+> resetting the link to restore the state of the device/driver.
+> 
+> You can find fatal non-hotplug related issues reported in following links:
+> 
+> https://lore.kernel.org/linux-pci/20200527083130.4137-1-Zhiqiang.Hou@nxp.com/
+> https://lore.kernel.org/linux-pci/12115.1588207324@famine/
+> https://lore.kernel.org/linux-pci/0e6f89cd6b9e4a72293cc90fafe93487d7c2d295.1585000084.git.sathyanarayanan.kuppuswamy@linux.intel.com/
+> 
+> 2. For non-fatal errors if report_error_detected() or
+> report_mmio_enabled() functions requests PCI_ERS_RESULT_NEED_RESET then
+> current pcie_do_recovery() implementation does not do the requested
+> explicit device reset, instead just calls the report_slot_reset() on all
+> affected devices. Notifying about the reset via report_slot_reset()
+> without doing the actual device reset is incorrect.
+
+Is it possible to fix these two issues separately?
+
+> To fix above issues, use PCI_ERS_RESULT_NEED_RESET as error state after
+> successful reset_link() operation. This will ensure ->slot_reset() be
+> called after reset_link() operation for fatal errors. Also call
+> pci_bus_reset() to do slot/bus reset() before triggering device specific
+> ->slot_reset() callback. Also, using pci_bus_reset() will restore the state
+> of the devices after performing the reset operation.
+> 
+> Even though using pci_bus_reset() will do redundant reset operation after
+> ->reset_link() for fatal errors, it should should affect the functional
+> behavior.
+> 
+> [original patch is from jay.vosburgh@canonical.com]
+> [original patch link https://lore.kernel.org/linux-pci/12115.1588207324@famine/]
+> Fixes: 6d2c89441571 ("PCI/ERR: Update error status after reset_link()")
+> Signed-off-by: Jay Vosburgh <jay.vosburgh@canonical.com>
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> ---
+> 
+> Changes since v2:
+>  * Changed the subject of patch to "PCI/ERR: Fix reset logic in
+>    pcie_do_recovery() call". v2 patch link is,
+>    https://lore.kernel.org/linux-pci/ce417fbf81a8a46a89535f44b9224ee9fbb55a29.1591307288.git.sathyanarayanan.kuppuswamy@linux.intel.com/
+>  * Squashed "PCI/ERR: Add reset support for non fatal errors" patch.
+> 
+>  drivers/pci/pcie/err.c | 41 +++++++++++++++++++++++++++++++++++++----
+>  1 file changed, 37 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+> index 14bb8f54723e..b5eb6ba65be1 100644
+> --- a/drivers/pci/pcie/err.c
+> +++ b/drivers/pci/pcie/err.c
+> @@ -165,8 +165,29 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>  	pci_dbg(dev, "broadcast error_detected message\n");
+>  	if (state == pci_channel_io_frozen) {
+>  		pci_walk_bus(bus, report_frozen_detected, &status);
+> +		/*
+> +		 * After resetting the link using reset_link() call, the
+> +		 * possible value of error status is either
+> +		 * PCI_ERS_RESULT_DISCONNECT (failure case) or
+> +		 * PCI_ERS_RESULT_NEED_RESET (success case).
+> +		 * So ignore the return value of report_error_detected()
+> +		 * call for fatal errors.
+> +		 *
+> +		 * In EDR mode, since AER and DPC Capabilities are owned by
+> +		 * firmware, reported_error_detected() will return error
+> +		 * status PCI_ERS_RESULT_NO_AER_DRIVER. Continuing
+> +		 * pcie_do_recovery() with error status as
+> +		 * PCI_ERS_RESULT_NO_AER_DRIVER will report recovery failure
+> +		 * irrespective of recovery status. But successful reset_link()
+> +		 * call usually recovers all fatal errors. So ignoring the
+> +		 * status result of report_error_detected() also helps EDR based
+> +		 * error recovery.
+
+This chain of connections is too long and complicated to be
+maintainable: EDR, AER/DPC ownership, NO_AER_DRIVER, etc.  It's always
+a bad sign when code needs this much explanation.
+
+I don't know how to simplify this, but it does need to be simplified
+somehow.  I think it might have been my idea to feed all these paths
+(AER, DPC, EDR) through the same recovery function, but I'm starting
+to think it was a bad idea.
+
+Or maybe it just isn't factored correctly.  IIUC for the DPC and EDR
+paths, but not for AER, the device (actually the whole subtree) has
+been reset before we even get here.  So it might help to separate out
+the reset part.
+
+> +		 */
+>  		status = reset_link(dev);
+> -		if (status != PCI_ERS_RESULT_RECOVERED) {
+> +		if (status == PCI_ERS_RESULT_RECOVERED) {
+> +			status = PCI_ERS_RESULT_NEED_RESET;
+> +		} else {
+> +			status = PCI_ERS_RESULT_DISCONNECT;
+>  			pci_warn(dev, "link reset failed\n");
+>  			goto failed;
+>  		}
+> @@ -182,10 +203,22 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>  
+>  	if (status == PCI_ERS_RESULT_NEED_RESET) {
+>  		/*
+> -		 * TODO: Should call platform-specific
+> -		 * functions to reset slot before calling
+> -		 * drivers' slot_reset callbacks?
+> +		 * TODO: Optimize the call to pci_reset_bus()
+> +		 *
+> +		 * There are two components to pci_reset_bus().
+> +		 *
+> +		 * 1. Do platform specific slot/bus reset.
+> +		 * 2. Save/Restore all devices in the bus.
+> +		 *
+> +		 * For hotplug capable devices and fatal errors,
+> +		 * device is already in reset state due to link
+> +		 * reset. So repeating platform specific slot/bus
+> +		 * reset via pci_reset_bus() call is redundant. So
+> +		 * can optimize this logic and conditionally call
+> +		 * pci_reset_bus().
+>  		 */
+> +		pci_reset_bus(dev);
+> +
+>  		status = PCI_ERS_RESULT_RECOVERED;
+>  		pci_dbg(dev, "broadcast slot_reset message\n");
+>  		pci_walk_bus(bus, report_slot_reset, &status);
+> -- 
+> 2.17.1
+> 
