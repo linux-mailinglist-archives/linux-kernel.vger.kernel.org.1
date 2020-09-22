@@ -2,118 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87558273EAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 11:39:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D584273EB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 11:40:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726579AbgIVJjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 05:39:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49520 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726353AbgIVJje (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 05:39:34 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CCD2CAC6E;
-        Tue, 22 Sep 2020 09:40:08 +0000 (UTC)
-Subject: Re: [PATCH 03/13] bcache: inherit the optimal I/O size
-To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-Cc:     Song Liu <song@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
-        Richard Weinberger <richard@nod.at>,
-        Minchan Kim <minchan@kernel.org>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Justin Sanders <justin@coraid.com>,
-        linux-mtd@lists.infradead.org, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
-        linux-kernel@vger.kernel.org, drbd-dev@lists.linbit.com,
-        linux-raid@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, cgroups@vger.kernel.org
-References: <20200921080734.452759-1-hch@lst.de>
- <20200921080734.452759-4-hch@lst.de>
-From:   Coly Li <colyli@suse.de>
-Autocrypt: addr=colyli@suse.de; keydata=
- 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
-Message-ID: <5ce140e1-a6c1-42d7-7d10-c3eb9b2785df@suse.de>
-Date:   Tue, 22 Sep 2020 17:39:24 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        id S1726543AbgIVJk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 05:40:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21812 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726353AbgIVJk3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 05:40:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600767627;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PFaYWl9y6maxkGFuHtFhNugW9vc6NhhO2VDs3o2V5HI=;
+        b=LWlfujQKnAhFmTDW27IbhWbKWAqZeS3p0rGGRHgknJhNr+ZF/2OUxz9LaParhE06Z7fjlo
+        wYblcXogHky3SEdtrR8xW26HA7VTMfIL29MAMOV7UhSTf4nzveW5DPaCOAJhq5T3JMujR5
+        bSaXWlhoJ/iiEvGTycaeggOhwltM84A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-341-SuCItxG2MgebvJ5vQjuOtA-1; Tue, 22 Sep 2020 05:40:23 -0400
+X-MC-Unique: SuCItxG2MgebvJ5vQjuOtA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BF4761017DC2;
+        Tue, 22 Sep 2020 09:40:21 +0000 (UTC)
+Received: from localhost (unknown [10.33.36.46])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6971810013BD;
+        Tue, 22 Sep 2020 09:40:21 +0000 (UTC)
+Date:   Tue, 22 Sep 2020 10:40:20 +0100
+From:   Jonathan Wakely <jwakely@redhat.com>
+To:     Alejandro Colomar <colomar.6.4.3@gmail.com>
+Cc:     Ville Voutilainen <ville.voutilainen@gmail.com>,
+        Florian Weimer <fweimer@redhat.com>, gcc@gcc.gnu.org,
+        libstdc++ <libstdc++@gcc.gnu.org>,
+        Libc-alpha <libc-alpha@sourceware.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        libc-coord@lists.openwall.com
+Subject: Re: Expose 'array_length()' macro in <sys/param.h>
+Message-ID: <20200922094020.GS6061@redhat.com>
+References: <946e9377-0558-3adf-3eb9-38c507afe2d0@gmail.com>
+ <874knr8qyl.fsf@oldenburg2.str.redhat.com>
+ <dbcf5c85-c468-72f8-0f83-92ec2a6a2991@gmail.com>
+ <875z875si2.fsf@oldenburg2.str.redhat.com>
+ <20200921140100.GA449323@redhat.com>
+ <e734429a-d543-7e75-48e9-a8297a94b035@gmail.com>
+ <20200921220443.GP6061@redhat.com>
+ <CAFk2RUbEtvgFb_FZmcM9L4-g1kG_E7S2p9gveM0Z5Fe=zEDm9w@mail.gmail.com>
+ <34bae433-f67e-877d-f871-928cb55d2a87@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200921080734.452759-4-hch@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <34bae433-f67e-877d-f871-928cb55d2a87@gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/9/21 16:07, Christoph Hellwig wrote:
-> Inherit the optimal I/O size setting just like the readahead window,
-> as any reason to do larger I/O does not apply to just readahead.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+On 22/09/20 11:10 +0200, Alejandro Colomar via Libstdc++ wrote:
+>[[ CC += LKML ]]
+>
+>Thanks for all your input.  I learned some C++ :)
+>
+>The following code works for all C and C++ standards:
+>g++ --std={c++98, c++03, c++11, c++14, c++17, c++20}
+>gcc --std={c89, c99, c11, c18, c2x}
+>With `-Wall -Wextra -Werror -pedantic -Wno-vla -Wno-sizeof-pointer-div`.
+>It doesn't compile when '+ __array_length(p)' is uncommented.
+>It compiles, and returns the correct value (18).
+> With some exceptions:
+>c++ doesn't accept the VLA (w[]):
+>
+>array_length.c: In function 'int main()':
+>array_length.c:101:22: error: no matching function for call to 
+>'__array_slength(int [y])'
+>  101 |   + __array_slength(w)
+>      |                      ^
+>array_length.c:38:1: note: candidate: 'template<class T, long int N> 
+>std::ptrdiff_t __array_slength(const T (&)[N])'
+>   38 | __array_slength(const T(&)[N])
+>      | ^~~~~~~~~~~~~~~
+>array_length.c:38:1: note:   template argument deduction/substitution 
+>failed:
+>array_length.c:101:22: note:   variable-sized array type 'long int' is 
+>not a valid template argument
+>  101 |   + __array_slength(w)
+>      |                      ^
+>
+>But we can live with limited support for VLAs in C++.
+>So I needed to comment '+ __array_slength(w)',
+>and then the program correctly returns 11.
+>
+>As Ville suggested, I renamed the function/macro to __array_[s]length().
+>However, (some) BSDs already provide nitems() in <sys/param.h>,
+>so it probably wouldn't be very drastic to
+>provide this function/macro with the name '[s]nitems()' there.
+>
+>Would you like to add anything else before I write the patch?
+>
+>
+>BTW, I should note one more thing:
+>
+>Linux has a macro named '__must_be_array()' with the same API,
+>but slightly different internal implementation,
+>so they should be aware of this change.
+>However, I don't think they include <sys/param.h> a lot,
+>so maybe it doesn't break anything; but they should be aware anyway.
+>I CC'd the LKML so they are aware and can give any suggestions.
+>
+>Thanks,
+>
+>Alex
+>
+>
+>------------------------------------------------------------------------
+>
+>#if defined(__cplusplus)
+>
+># include <cstddef>
+># if __cplusplus >= 201703L
+>#  include <iterator>
+># endif
+>
+>template<typename T, std::size_t N>
 
-Acked-by: Coly Li <colyli@suse.de>
+You need to use reserved names here.
 
-Thanks.
+># if __cplusplus >= 201103L
+>constexpr
+># endif
+>inline std::size_t
+># if __cplusplus >= 201703L
+>__array_length(const T(&arr)[N])
+># else
+>__array_length(const T(&)[N])
+># endif
+># if __cplusplus >= 201103L
+>noexcept
 
-Coly Li
+If this is going to be part of Glibc then you can use its __THROW
+macro instead.
 
-> ---
->  drivers/md/bcache/super.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-> index 1bbdc410ee3c51..48113005ed86ad 100644
-> --- a/drivers/md/bcache/super.c
-> +++ b/drivers/md/bcache/super.c
-> @@ -1430,6 +1430,8 @@ static int cached_dev_init(struct cached_dev *dc, unsigned int block_size)
->  	dc->disk.disk->queue->backing_dev_info->ra_pages =
->  		max(dc->disk.disk->queue->backing_dev_info->ra_pages,
->  		    q->backing_dev_info->ra_pages);
-> +	blk_queue_io_opt(dc->disk.disk->queue,
-> +		max(queue_io_opt(dc->disk.disk->queue), queue_io_opt(q)));
->  
->  	atomic_set(&dc->io_errors, 0);
->  	dc->io_disable = false;
-> 
+
+># endif
+>{
+># if __cplusplus >= 201703L
+>	return	std::size(arr);
+># else
+>	return	N;
+># endif
+>}
+
+I don't see much point in using std::size here. If you're going to
+provide the alternative implementation for when std::size isn't
+defined, why not just use it always?
+
+template<typename _Tp, std::size_t _Num>
+#if __cplusplus >= 201103L
+constexpr
+#endif
+inline std::size_t
+__array_length(const _Tp(&)[_Num]) __THROW
+{
+   return _Num;
+}
+
+This only requires <cstddef>, not <iterator>.
+
+>
+>template<typename T, std::ptrdiff_t N>
+
+This declaration is wrong, the array extent has type std::size_t. The
+type you return from the function doesn't change that.
+
+The __array_slength definition should be identical to __array_length
+except for its name and return type.
+
+template<typename _Tp, std::size_t _Num>
+#if __cplusplus >= 201103L
+constexpr
+#endif
+inline std::ptrdiff_t
+__array_slength(const _Tp(&)[_Num]) __THROW
+{
+   return _Num;
+}
+
+
+>
+>
+>#else /* !defined(__cplusplus) */
+>#include <stddef.h>
+>
+># define __is_same_type(a, b)						\
+>	__builtin_types_compatible_p(__typeof__(a), __typeof__(b))
+># define __is_array(arr)	(!__is_same_type((arr), &(arr)[0]))
+>
+># if __STDC_VERSION__ >= 201112L
+>#  define __must_be(e, msg)	(					\
+>	0 * (int)sizeof(						\
+>		struct {						\
+>			_Static_assert((e), msg);			\
+>			char ISO_C_forbids_a_struct_with_no_members__;	\
+>		}							\
+>	)								\
+>)
+># else
+>#  define __must_be(e, msg)	(					\
+>	0 * (int)sizeof(						\
+>		struct {						\
+>			int	: (-!(e));				\
+>			char ISO_C_forbids_a_struct_with_no_members__;	\
+>		}							\
+>	)								\
+>)
+># endif
+>
+># define __must_be_array(arr)	__must_be(__is_array(arr), "Must be an 
+>array!")
+>
+># define __array_len(arr)	(sizeof(arr) / sizeof((arr)[0]))
+># define __array_length(arr)	(__array_len(arr) + __must_be_array(arr))
+># define __array_slength(arr)	((ptrdiff_t)__array_length(arr))
+>#endif
+>
+>
+>int main(void)
+>{
+>	int a[5];
+>	const int x = 6;
+>	int v[x];
+>	int y = 7;
+>	int w[y];
+>	int *p;
+>	(void)p;
+>	(void)v;
+>	(void)w;
+>
+>	return	__array_slength(a)
+>		+ __array_slength(v)
+>		+ __array_slength(w)
+>//		+ __array_length(p)
+>		;
+>}
+>
 
