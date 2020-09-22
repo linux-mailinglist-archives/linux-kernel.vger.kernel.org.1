@@ -2,235 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 533F4274B1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 098BD274A8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726714AbgIVVZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 17:25:51 -0400
-Received: from mga04.intel.com ([192.55.52.120]:47565 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726179AbgIVVZu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 17:25:50 -0400
-IronPort-SDR: qnOw3k5FQ3PQHh1jBoiU6i11/xU6vGpYvXHx6F+J3zHrKJHHgtoWE6PqhUNTj41VQvw4NrHub6
- +IHNp+nKwMcQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9752"; a="158093406"
-X-IronPort-AV: E=Sophos;i="5.77,292,1596524400"; 
-   d="scan'208";a="158093406"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 14:20:50 -0700
-IronPort-SDR: L5jiwMm5kQnjG9OEhGz/u9w4d/4vmV8CiE1O29DfmNzWuaoLngu+7LOiiF1aczi3pj765lSkcu
- +sACR7NgpO8Q==
-X-IronPort-AV: E=Sophos;i="5.77,292,1596524400"; 
-   d="scan'208";a="511368019"
-Received: from km-skylake-client-platform.sc.intel.com ([10.3.52.153])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 14:20:49 -0700
-From:   Kyung Min Park <kyung.min.park@intel.com>
-To:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
-Cc:     dwmw2@infradead.org, baolu.lu@linux.intel.com, joro@8bytes.org,
-        sohil.mehta@intel.com, ravi.v.shankar@intel.com,
-        ricardo.neri@intel.com, ashok.raj@intel.com, kevin.tian@intel.com,
-        yi.l.liu@intel.com, Kyung Min Park <kyung.min.park@intel.com>
-Subject: [PATCH 2/4] iommu/vt-d: Report out when IOMMU features have inconsistencies
-Date:   Tue, 22 Sep 2020 14:02:38 -0700
-Message-Id: <20200922210240.27178-3-kyung.min.park@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200922210240.27178-1-kyung.min.park@intel.com>
-References: <20200922210240.27178-1-kyung.min.park@intel.com>
+        id S1726629AbgIVVEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 17:04:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726448AbgIVVE3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 17:04:29 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C536C0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 14:04:29 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id x14so18571803wrl.12
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 14:04:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CY6nb8G0qLvT+19gnqmRvOP7iYy+NDmqCyqksYDWTPk=;
+        b=HNiF/Fd9SDJpX7Wj/YWGV4ikRVCq6feHBiWsMkelzLqsWmHNvkWpzoxMbnkn54Pf8C
+         PEs06azMVjhoqcLkG6yUVuMKfVYo7vmcCCsEfuXJqreE7dVlqQMa6qUbaaTgZJt+8RQ6
+         dfDcen7wKA1cjh5gFRbOoxx/94mkllUFRV2uI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CY6nb8G0qLvT+19gnqmRvOP7iYy+NDmqCyqksYDWTPk=;
+        b=OPs2AqZ6JvAdxEMCasfmHtdug1ZrTH8Ma2GS1sR87+xzC7yBwTmiywPf51sCEQrlV+
+         eTfH2SmAZqOSVNiAQEcNcZC2br7KwFcO9ylc8BsTo2WcGbe/WCEja2sdCgb5NRmM++cD
+         MybIWXSXk7/d3LmIeEHvjoK2/oa9KFH+IZtpqKI6aLJ+H/PnXmyX3o18zHqELLQlHuX5
+         V8LDMiy3m/9/UMWa6pDSm7DRdJYA/FUpdWsA1HstlwBJndRkRhxyrnaHAPTrgd9OzRwO
+         Opbke9MVrgVqLmCKiI0rfIhtNLB7NHVCT+ZFEusCRuv9vkiZZGBl59zbWiQpPy9oFxCI
+         HkGA==
+X-Gm-Message-State: AOAM532XhoLunIuwvcKsUFBHgQnxT3Iuxj7afwVPhb0BfaQcrgP1nD9Q
+        xFew1b4rCBSYoT8XrQtIArnXpHn+cGcr8NPgSgVm
+X-Google-Smtp-Source: ABdhPJxPW96N1YmBldjxT3/hJJ8ZkPt7zs1MA7vd2que3V+r+lEN7W9dAdh1A8YCBXAgxYyGqngQURp6XgfRsLxTgNM=
+X-Received: by 2002:a5d:4c4c:: with SMTP id n12mr7247874wrt.162.1600808667659;
+ Tue, 22 Sep 2020 14:04:27 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200918201140.3172284-1-atish.patra@wdc.com> <20200921164947.000048e1@Huawei.com>
+ <CAOnJCU+mg13P609kut2cK9igmyepOvDc4kU-EzXsdjde7D_RpQ@mail.gmail.com> <20200922122912.00004bcb@Huawei.com>
+In-Reply-To: <20200922122912.00004bcb@Huawei.com>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Tue, 22 Sep 2020 14:04:16 -0700
+Message-ID: <CAOnJCULdRR1JOkZq6aHW3Xv6ZHo8edOAU-3gf1zxNqQdioek9w@mail.gmail.com>
+Subject: Re: [RFT PATCH v3 0/5] Unify NUMA implementation between ARM64 & RISC-V
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Zong Li <zong.li@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Will Deacon <will@kernel.org>, linux-arch@vger.kernel.org,
+        Anup Patel <anup@brainfault.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IOMMU features as below can have incompatibilities among IOMMUs.
-Audit IOMMU Capability/Extended Capability and check if the IOMMUs have
-the consistent value for features as below. Report out when features as
-below have incompatibility among IOMMUs.
+On Tue, Sep 22, 2020 at 4:30 AM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> On Mon, 21 Sep 2020 17:08:32 -0700
+> Atish Patra <atishp@atishpatra.org> wrote:
+>
+> > On Mon, Sep 21, 2020 at 8:51 AM Jonathan Cameron
+> > <Jonathan.Cameron@huawei.com> wrote:
+> > >
+> > > On Fri, 18 Sep 2020 13:11:35 -0700
+> > > Atish Patra <atish.patra@wdc.com> wrote:
+> > >
+> > > > This series attempts to move the ARM64 numa implementation to common
+> > > > code so that RISC-V can leverage that as well instead of reimplementing
+> > > > it again.
+> > > >
+> > > > RISC-V specific bits are based on initial work done by Greentime Hu [1] but
+> > > > modified to reuse the common implementation to avoid duplication.
+> > > >
+> > > > [1] https://lkml.org/lkml/2020/1/10/233
+> > > >
+> > > > This series has been tested on qemu with numa enabled for both RISC-V & ARM64.
+> > > > It would be great if somebody can test it on numa capable ARM64 hardware platforms.
+> > > > This patch series doesn't modify the maintainers list for the common code (arch_numa)
+> > > > as I am not sure if somebody from ARM64 community or Greg should take up the
+> > > > maintainership. Ganapatrao was the original author of the arm64 version.
+> > > > I would be happy to update that in the next revision once it is decided.
+> > >
+> >
+> > Any thoughts on the maintenanership of this code ?
+>
+> Currently it is a trivial enough bit of code, I'd not be too worried
+> as long as it doesn't fall through the cracks.  Changes that directory are going
+> to need a GregKH Ack so unlikely anything will get missed.
+>
 
-Report out features when below features are mismatched:
-  - First Level 5 Level Paging Support (FL5LP)
-  - First Level 1 GByte Page Support (FL1GP)
-  - Read Draining (DRD)
-  - Write Draining (DWD)
-  - Page Selective Invalidation (PSI)
-  - Caching Mode (CM)
-  - Protected High/Low-Memory Region (PHMR/PLMR)
-  - Scalable Mode Page Walk Coherency (SMPWC)
-  - First Level Translation Support (FLTS)
-  - Second Level Translation Support (SLTS)
-  - Second Level Accessed/Dirty Support (SLADS)
-  - Virtual Command Support (VCS)
-  - Scalable Mode Translation Support (SMTS)
-  - Device TLB Invalidation Throttle (DIT)
-  - Page Drain Support (PDS)
-  - Nested Translation Support (NEST)
-  - Snoop Control (SC)
-  - Pass Through (PT)
-  - Device TLB Support (DT)
-  - Queued Invalidation (QI)
-  - Page walk Coherency (C)
+Yeah. I am fine with the current structure. I just wanted to confirm that
+everybody is on board with that.
 
-Signed-off-by: Kyung Min Park <kyung.min.park@intel.com>
----
- drivers/iommu/intel/audit.c | 48 +++++++++++++++++++++++++++++++++++++
- drivers/iommu/intel/audit.h | 43 +++++++++++++++++++++++++++++++++
- include/linux/intel-iommu.h |  2 ++
- 3 files changed, 93 insertions(+)
+> If you feel a specific entry is needed in MAINTAINERS go for it.
+> Feel free to stick me down as a reviewer and I'll keep an eye on
+> it from ARM64 side of things.
+>
 
-diff --git a/drivers/iommu/intel/audit.c b/drivers/iommu/intel/audit.c
-index 2893170f5b6c..f783acabb402 100644
---- a/drivers/iommu/intel/audit.c
-+++ b/drivers/iommu/intel/audit.c
-@@ -13,6 +13,8 @@
- #include "audit.h"
- 
- static bool svm_sanity_check = true;
-+/* global variables that hold feature consistency and minimum features */
-+static u64 intel_iommu_cap_sanity = ~0ULL;
- static u64 intel_iommu_ecap_sanity = ~0ULL;
- 
- static void set_cap_audit_svm_sanity(bool svm_sanity)
-@@ -30,12 +32,58 @@ static inline void check_dmar_capabilities(struct intel_iommu *a,
- {
- 	if (MINIMAL_SVM_ECAP & (a->ecap ^ b->ecap))
- 		set_cap_audit_svm_sanity(false);
-+
-+	CHECK_FEATURE_MISMATCH(a, b, cap, 5lp_support, CAP_FL5LP_MASK);
-+	CHECK_FEATURE_MISMATCH(a, b, cap, fl1gp_support, CAP_FL1GP_MASK);
-+	CHECK_FEATURE_MISMATCH(a, b, cap, read_drain, CAP_RD_MASK);
-+	CHECK_FEATURE_MISMATCH(a, b, cap, write_drain, CAP_WD_MASK);
-+	CHECK_FEATURE_MISMATCH(a, b, cap, pgsel_inv, CAP_PSI_MASK);
-+	CHECK_FEATURE_MISMATCH(a, b, cap, caching_mode, CAP_CM_MASK);
-+	CHECK_FEATURE_MISMATCH(a, b, cap, phmr, CAP_PHMR_MASK);
-+	CHECK_FEATURE_MISMATCH(a, b, cap, plmr, CAP_PLMR_MASK);
-+	CHECK_FEATURE_MISMATCH(a, b, ecap, smpwc, ECAP_SMPWC_MASK);
-+	CHECK_FEATURE_MISMATCH(a, b, ecap, flts, ECAP_FLTS_MASK);
-+	CHECK_FEATURE_MISMATCH(a, b, ecap, slts, ECAP_SLTS_MASK);
-+	CHECK_FEATURE_MISMATCH(a, b, ecap, slads, ECAP_SLADS_MASK);
-+	CHECK_FEATURE_MISMATCH(a, b, ecap, vcs, ECAP_VCS_MASK);
-+	CHECK_FEATURE_MISMATCH(a, b, ecap, smts, ECAP_SMTS_MASK);
-+	CHECK_FEATURE_MISMATCH(a, b, ecap, pds, ECAP_PDS_MASK);
-+	CHECK_FEATURE_MISMATCH(a, b, ecap, dit, ECAP_DIT_MASK);
-+	CHECK_FEATURE_MISMATCH(a, b, ecap, nest, ECAP_NEST_MASK);
-+	CHECK_FEATURE_MISMATCH(a, b, ecap, sc_support, ECAP_SC_MASK);
-+	CHECK_FEATURE_MISMATCH(a, b, ecap, pass_through, ECAP_PT_MASK);
-+	CHECK_FEATURE_MISMATCH(a, b, ecap, dev_iotlb_support, ECAP_DT_MASK);
-+	CHECK_FEATURE_MISMATCH(a, b, ecap, qis, ECAP_QI_MASK);
-+	CHECK_FEATURE_MISMATCH(a, b, ecap, coherent, ECAP_C_MASK);
- }
- 
- static int audit_iommu_capabilities_hotplug(struct intel_iommu *hot_iommu)
- {
- 	bool mismatch = false;
- 
-+	CHECK_FEATURE_MISMATCH_HOTPLUG(hot_iommu, cap, 5lp_support, CAP_FL5LP_MASK);
-+	CHECK_FEATURE_MISMATCH_HOTPLUG(hot_iommu, cap, fl1gp_support, CAP_FL1GP_MASK);
-+	CHECK_FEATURE_MISMATCH_HOTPLUG(hot_iommu, cap, read_drain, CAP_RD_MASK);
-+	CHECK_FEATURE_MISMATCH_HOTPLUG(hot_iommu, cap, write_drain, CAP_WD_MASK);
-+	CHECK_FEATURE_MISMATCH_HOTPLUG(hot_iommu, cap, pgsel_inv, CAP_PSI_MASK);
-+	CHECK_FEATURE_MISMATCH_HOTPLUG(hot_iommu, cap, caching_mode, CAP_CM_MASK);
-+	CHECK_FEATURE_MISMATCH_HOTPLUG(hot_iommu, cap, phmr, CAP_PHMR_MASK);
-+	CHECK_FEATURE_MISMATCH_HOTPLUG(hot_iommu, cap, plmr, CAP_PLMR_MASK);
-+	CHECK_FEATURE_MISMATCH_HOTPLUG(hot_iommu, ecap, smpwc, ECAP_SMPWC_MASK);
-+	CHECK_FEATURE_MISMATCH_HOTPLUG(hot_iommu, ecap, flts, ECAP_FLTS_MASK);
-+	CHECK_FEATURE_MISMATCH_HOTPLUG(hot_iommu, ecap, slts, ECAP_SLTS_MASK);
-+	CHECK_FEATURE_MISMATCH_HOTPLUG(hot_iommu, ecap, slads, ECAP_SLADS_MASK);
-+	CHECK_FEATURE_MISMATCH_HOTPLUG(hot_iommu, ecap, vcs, ECAP_VCS_MASK);
-+	CHECK_FEATURE_MISMATCH_HOTPLUG(hot_iommu, ecap, smts, ECAP_SMTS_MASK);
-+	CHECK_FEATURE_MISMATCH_HOTPLUG(hot_iommu, ecap, pds, ECAP_PDS_MASK);
-+	CHECK_FEATURE_MISMATCH_HOTPLUG(hot_iommu, ecap, dit, ECAP_DIT_MASK);
-+	CHECK_FEATURE_MISMATCH_HOTPLUG(hot_iommu, ecap, nest, ECAP_NEST_MASK);
-+	CHECK_FEATURE_MISMATCH_HOTPLUG(hot_iommu, ecap, sc_support, ECAP_SC_MASK);
-+	CHECK_FEATURE_MISMATCH_HOTPLUG(hot_iommu, ecap, pass_through, ECAP_PT_MASK);
-+	CHECK_FEATURE_MISMATCH_HOTPLUG(hot_iommu, ecap, dev_iotlb_support, ECAP_DT_MASK);
-+	CHECK_FEATURE_MISMATCH_HOTPLUG(hot_iommu, ecap, qis, ECAP_QI_MASK);
-+	CHECK_FEATURE_MISMATCH_HOTPLUG(hot_iommu, ecap, coherent, ECAP_C_MASK);
-+
- 	if (!IS_ENABLED(CONFIG_INTEL_IOMMU_SVM))
- 		goto out;
- 
-diff --git a/drivers/iommu/intel/audit.h b/drivers/iommu/intel/audit.h
-index 887900d9517d..e3a370405f82 100644
---- a/drivers/iommu/intel/audit.h
-+++ b/drivers/iommu/intel/audit.h
-@@ -7,19 +7,62 @@
-  * Author: Kyung Min Park <kyung.min.park@intel.com>
-  */
- 
-+/*
-+ * Capability Register Mask
-+ */
-+#define CAP_FL5LP_MASK		BIT(60)
-+#define CAP_FL1GP_MASK		BIT(56)
-+#define CAP_RD_MASK		BIT(55)
-+#define CAP_WD_MASK		BIT(54)
-+#define CAP_PSI_MASK		BIT(39)
-+#define CAP_CM_MASK		BIT(7)
-+#define CAP_PHMR_MASK		BIT(6)
-+#define CAP_PLMR_MASK		BIT(5)
-+
- /*
-  * Extended Capability Register Mask
-  */
-+#define ECAP_SMPWC_MASK		BIT(48)
- #define ECAP_FLTS_MASK		BIT(47)
-+#define ECAP_SLTS_MASK		BIT(46)
-+#define ECAP_SLADS_MASK		BIT(45)
-+#define ECAP_VCS_MASK		BIT(44)
-+#define ECAP_SMTS_MASK		BIT(43)
-+#define ECAP_PDS_MASK		BIT(42)
-+#define ECAP_DIT_MASK		BIT(41)
- #define ECAP_PASID_MASK		BIT(40)
- #define ECAP_EAFS_MASK		BIT(34)
- #define ECAP_SRS_MASK		BIT(31)
- #define ECAP_ERS_MASK		BIT(30)
- #define ECAP_PRS_MASK		BIT(29)
-+#define ECAP_NEST_MASK		BIT(26)
-+#define ECAP_SC_MASK		BIT(7)
-+#define ECAP_PT_MASK		BIT(6)
-+#define ECAP_DT_MASK		BIT(2)
-+#define ECAP_QI_MASK		BIT(1)
-+#define ECAP_C_MASK		BIT(0)
- 
- #define MINIMAL_SVM_ECAP (ECAP_FLTS_MASK | ECAP_PASID_MASK | ECAP_EAFS_MASK | \
- 			  ECAP_SRS_MASK | ECAP_ERS_MASK | ECAP_PRS_MASK)
- 
-+#define DO_CHECK_FEATURE_MISMATCH(a, b, cap, feature, MASK) \
-+do { \
-+	if (cap##_##feature(a) != cap##_##feature(b)) { \
-+		intel_iommu_##cap##_sanity &= ~(MASK); \
-+		pr_info("IOMMU feature %s inconsistent.", #feature); \
-+	} \
-+} while (0)
-+
-+#define CHECK_FEATURE_MISMATCH(a, b, cap, feature, MASK) \
-+	DO_CHECK_FEATURE_MISMATCH((a)->cap, (b)->cap, cap, feature, MASK)
-+
-+#define CHECK_FEATURE_MISMATCH_HOTPLUG(b, cap, feature, MASK) \
-+do { \
-+	if (cap##_##feature(intel_iommu_##cap##_sanity)) \
-+		DO_CHECK_FEATURE_MISMATCH(intel_iommu_##cap##_sanity, \
-+					  (b)->cap, cap, feature, MASK); \
-+} while (0)
-+
- enum cap_audit_type {
- 	CAP_AUDIT_STATIC_DMAR,
- 	CAP_AUDIT_HOTPLUG_DMAR,
-diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
-index b1ed2f25f7c0..6744f00a144a 100644
---- a/include/linux/intel-iommu.h
-+++ b/include/linux/intel-iommu.h
-@@ -171,8 +171,10 @@
- #define ecap_smpwc(e)		(((e) >> 48) & 0x1)
- #define ecap_flts(e)		(((e) >> 47) & 0x1)
- #define ecap_slts(e)		(((e) >> 46) & 0x1)
-+#define ecap_slads(e)		(((e) >> 45) & 0x1)
- #define ecap_vcs(e)		(((e) >> 44) & 0x1)
- #define ecap_smts(e)		(((e) >> 43) & 0x1)
-+#define ecap_pds(e)		(((e) >> 42) & 0x1)
- #define ecap_dit(e)		((e >> 41) & 0x1)
- #define ecap_pasid(e)		((e >> 40) & 0x1)
- #define ecap_pss(e)		((e >> 35) & 0x1f)
--- 
-2.17.1
+I will not add any specific entry in MAINTAINERS unless somebody
+complains about it.
 
+
+> Thanks,
+>
+> Jonathan
+>
+>
+> >
+> > > Was fairly sure this set was a noop on arm64 ACPI systems, but ran a quick
+> > > sanity check on a 2 socket kunpeng920 and everything came up as normal
+> > > (4 nodes, around 250G a node)
+> > >
+> > > Tested-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > > For patches 1 and 2.  Doesn't seem relevant to the rest :)
+> > >
+> >
+> > Thanks a lot!
+> >
+> > > >
+> > > > # numactl --hardware
+> > > > available: 2 nodes (0-1)
+> > > > node 0 cpus: 0 1 2 3
+> > > > node 0 size: 486 MB
+> > > > node 0 free: 470 MB
+> > > > node 1 cpus: 4 5 6 7
+> > > > node 1 size: 424 MB
+> > > > node 1 free: 408 MB
+> > > > node distances:
+> > > > node   0   1
+> > > >   0:  10  20
+> > > >   1:  20  10
+> > > > # numactl -show
+> > > > policy: default
+> > > > preferred node: current
+> > > > physcpubind: 0 1 2 3 4 5 6 7
+> > > > cpubind: 0 1
+> > > > nodebind: 0 1
+> > > > membind: 0 1
+> > > >
+> > > > For RISC-V, the following qemu series is a pre-requisite(already available in upstream)
+> > > > to test the patches in Qemu and 2 socket OmniXtend FPGA.
+> > > >
+> > > > https://patchwork.kernel.org/project/qemu-devel/list/?series=303313
+> > > >
+> > > > The patches are also available at
+> > > >
+> > > > https://github.com/atishp04/linux/tree/5.10_numa_unified_v3
+> > > >
+> > > > There may be some minor conflicts with Mike's cleanup series [2] depending on the
+> > > > order in which these two series are being accepted. I can rebase on top his series
+> > > > if required.
+> > > >
+> > > > [2] https://lkml.org/lkml/2020/8/18/754
+> > > >
+> > > > Changes from v2->v3:
+> > > > 1. Added Acked-by/Reviewed-by tags.
+> > > > 2. Replaced asm/acpi.h with linux/acpi.h
+> > > > 3. Defined arch_acpi_numa_init as static.
+> > > >
+> > > > Changes from v1->v2:
+> > > > 1. Replaced ARM64 specific compile time protection with ACPI specific ones.
+> > > > 2. Dropped common pcibus_to_node changes. Added required changes in RISC-V.
+> > > > 3. Fixed few typos.
+> > > >
+> > > > Atish Patra (4):
+> > > > numa: Move numa implementation to common code
+> > > > arm64, numa: Change the numa init functions name to be generic
+> > > > riscv: Separate memory init from paging init
+> > > > riscv: Add numa support for riscv64 platform
+> > > >
+> > > > Greentime Hu (1):
+> > > > riscv: Add support pte_protnone and pmd_protnone if
+> > > > CONFIG_NUMA_BALANCING
+> > > >
+> > > > arch/arm64/Kconfig                            |  1 +
+> > > > arch/arm64/include/asm/numa.h                 | 45 +----------------
+> > > > arch/arm64/kernel/acpi_numa.c                 | 13 -----
+> > > > arch/arm64/mm/Makefile                        |  1 -
+> > > > arch/arm64/mm/init.c                          |  4 +-
+> > > > arch/riscv/Kconfig                            | 31 +++++++++++-
+> > > > arch/riscv/include/asm/mmzone.h               | 13 +++++
+> > > > arch/riscv/include/asm/numa.h                 |  8 +++
+> > > > arch/riscv/include/asm/pci.h                  | 14 ++++++
+> > > > arch/riscv/include/asm/pgtable.h              | 21 ++++++++
+> > > > arch/riscv/kernel/setup.c                     | 11 ++++-
+> > > > arch/riscv/kernel/smpboot.c                   | 12 ++++-
+> > > > arch/riscv/mm/init.c                          | 10 +++-
+> > > > drivers/base/Kconfig                          |  6 +++
+> > > > drivers/base/Makefile                         |  1 +
+> > > > .../mm/numa.c => drivers/base/arch_numa.c     | 31 ++++++++++--
+> > > > include/asm-generic/numa.h                    | 49 +++++++++++++++++++
+> > > > 17 files changed, 201 insertions(+), 70 deletions(-)
+> > > > create mode 100644 arch/riscv/include/asm/mmzone.h
+> > > > create mode 100644 arch/riscv/include/asm/numa.h
+> > > > rename arch/arm64/mm/numa.c => drivers/base/arch_numa.c (95%)
+> > > > create mode 100644 include/asm-generic/numa.h
+> > > >
+> > > > --
+> > > > 2.25.1
+> > > >
+> > >
+> > >
+> > >
+> > > _______________________________________________
+> > > linux-riscv mailing list
+> > > linux-riscv@lists.infradead.org
+> > > http://lists.infradead.org/mailman/listinfo/linux-riscv
+> >
+> >
+> >
+>
+>
+
+
+--
+Regards,
+Atish
