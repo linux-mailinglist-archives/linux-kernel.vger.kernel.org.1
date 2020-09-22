@@ -2,81 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 200E42737F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 03:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFEEA273804
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 03:26:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729731AbgIVBZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 21:25:30 -0400
-Received: from out28-49.mail.aliyun.com ([115.124.28.49]:40109 "EHLO
-        out28-49.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729701AbgIVBZZ (ORCPT
+        id S1729788AbgIVB0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 21:26:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729157AbgIVBZl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 21:25:25 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1956483|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00634263-0.00035871-0.993299;FP=6623214144479563714|3|2|12|0|-1|-1|-1;HT=e02c03302;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=17;RT=17;SR=0;TI=SMTPD_---.IaRRVwp_1600737910;
-Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.IaRRVwp_1600737910)
-          by smtp.aliyun-inc.com(10.147.41.138);
-          Tue, 22 Sep 2020 09:25:21 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     tsbogend@alpha.franken.de, robh+dt@kernel.org,
-        paul@crapouillou.net, paulburton@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, jiaxun.yang@flygoat.com,
-        Sergey.Semin@baikalelectronics.ru, akpm@linux-foundation.org,
-        rppt@kernel.org, dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-Subject: [PATCH v3 3/3] MIPS: Ingenic: Fix bugs when detecting L2 cache of JZ4775 and X1000E.
-Date:   Tue, 22 Sep 2020 09:24:44 +0800
-Message-Id: <20200922012444.44089-4-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200922012444.44089-1-zhouyanjie@wanyeetech.com>
-References: <20200922012444.44089-1-zhouyanjie@wanyeetech.com>
+        Mon, 21 Sep 2020 21:25:41 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B64C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 18:25:41 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id b124so10912908pfg.13
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 18:25:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=I0eUgn+1/7SqcuhuU2PZ8mvA7ls7+b+G4GSVOgPbobY=;
+        b=kg8LSqWa36Ui9Tdtw/52MLWHs/0S3TsA7XUaYFrzUiUHk0pMc0PJ4h+8QuRWbyA/KU
+         lUG0m+I7x+A3iyXDQAaXbOfntCWoJtUOHWMRxcvBTjveRDhgoOZGppRilADR8nVf41uF
+         n2P4kQsHz8fGes3WE9s1raOr7yalEEPejdulw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=I0eUgn+1/7SqcuhuU2PZ8mvA7ls7+b+G4GSVOgPbobY=;
+        b=KG9MfQ4PMPeQ+ywc1VCGOYkKCumYS4X5Wfjy2ENPJ+6bHGS4pKq+cwgXLRW69VOHPe
+         rXwaqkaouA/GU6Fr8YC8EkmwH6zx07GWRVdb7yvaq5lyrYWxPGcU0y/Rq3p+Pi1yU0ja
+         B/PllRKTbqpKzJz++qgNMXZMCSEszHCcvrEtwgNmIvhzo0PvxZc/384T0XwDbD4ldkmA
+         hO/mAaND345Cy4sCwEW42X72TBsK8F2gr8PMBK4zR79uDybmZp1sfooNxy6RUJamEzrk
+         uaVGsjss04uHMP3VXoOm57Hkv8tItcnWfvC2VgTCV+r9bBdDqC7UJFWA8iWIxnPgWq4v
+         kBrw==
+X-Gm-Message-State: AOAM533S3/6O6k4OFmmqnEdPlurlI67k2lSLTtdUb5rjhM+OcbT5P/QN
+        abTmJHU/Wfn08G32hlnGKp08PA==
+X-Google-Smtp-Source: ABdhPJygjesAPhrh79F6hkbBlCGP7bPlLKt44quSkQStNoFZ6zbETbNEnZb8C4aZ1S7dZp3yYjnj1w==
+X-Received: by 2002:a17:902:b90b:b029:d1:cbf4:bcd1 with SMTP id bf11-20020a170902b90bb02900d1cbf4bcd1mr2324246plb.29.1600737940566;
+        Mon, 21 Sep 2020 18:25:40 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
+        by smtp.gmail.com with ESMTPSA id e27sm13050093pfj.62.2020.09.21.18.25.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Sep 2020 18:25:40 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 18:25:38 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-usb@vger.kernel.org, Bastien Nocera <hadess@hadess.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        devicetree@vger.kernel.org,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Peter Chen <peter.chen@nxp.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH v2 2/2] USB: misc: Add onboard_usb_hub driver
+Message-ID: <20200922012538.GF21107@google.com>
+References: <20200917114600.v2.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
+ <20200917114600.v2.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
+ <20200917195416.GA1099735@rowland.harvard.edu>
+ <20200922004158.GC21107@google.com>
+ <20200922010812.GA1238082@rowland.harvard.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200922010812.GA1238082@rowland.harvard.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1.Fix bugs when detecting ways value of JZ4775's L2 cache.
-2.Fix bugs when detecting sets value and ways value of X1000E's L2 cache.
+On Mon, Sep 21, 2020 at 09:08:12PM -0400, Alan Stern wrote:
+> On Mon, Sep 21, 2020 at 05:41:58PM -0700, Matthias Kaehlcke wrote:
+> > > > +	put_device(hub->dev);
+> > > 
+> > > Is there a matching get_device somewhere (like in _find_onboard_hub)?
+> > > If so, I didn't see it.  And I don't see any reason for it.
+> > 
+> > Yes, implicitly, of_find_device_by_node() "takes a reference to the
+> > embedded struct device which needs to be dropped after use."
+> 
+> Okay.  In that case it probably would be better to do the put_device()
+> right away, at the end of _find_onboard_hub().
 
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-Reviewed-by: Paul Cercueil <paul@crapouillou.net>
----
+ok
 
-Notes:
-    v1->v2:
-    1.Add corrections to JZ4775's L2 cache ways parameter.
-    2.Add Paul Cercueil's Reviewed-by.
-    
-    v2->v3:
-    No change.
+> There would be no danger of the platform device getting freed too soon 
+> if you make onboard_hub_remove unbind the associated USB hub devices.
 
- arch/mips/mm/sc-mips.c | 2 ++
- 1 file changed, 2 insertions(+)
+Yes, I'll add the unbinding as you suggested earlier
 
-diff --git a/arch/mips/mm/sc-mips.c b/arch/mips/mm/sc-mips.c
-index 97dc0511e63f..dd0a5becaabd 100644
---- a/arch/mips/mm/sc-mips.c
-+++ b/arch/mips/mm/sc-mips.c
-@@ -228,6 +228,7 @@ static inline int __init mips_sc_probe(void)
- 		 * contradicted by all documentation.
- 		 */
- 		case MACH_INGENIC_JZ4770:
-+		case MACH_INGENIC_JZ4775:
- 			c->scache.ways = 4;
- 			break;
- 
-@@ -236,6 +237,7 @@ static inline int __init mips_sc_probe(void)
- 		 * but that is contradicted by all documentation.
- 		 */
- 		case MACH_INGENIC_X1000:
-+		case MACH_INGENIC_X1000E:
- 			c->scache.sets = 256;
- 			c->scache.ways = 4;
- 			break;
--- 
-2.11.0
+> But there would still be a danger of those devices somehow getting 
+> rebound again at the wrong time; this suggests that you should add a 
+> flag to the onboard_hub structure saying that the platform device is 
+> about to go away.
 
+Indeed, we want to avoid that. I'll add a flag to the struct as you
+suggested.
