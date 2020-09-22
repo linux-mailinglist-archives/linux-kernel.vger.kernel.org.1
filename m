@@ -2,49 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A5DA274B21
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 520DD274B24
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726732AbgIVV0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 17:26:55 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:50202 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726179AbgIVV0z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 17:26:55 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kKpoG-00Fnl5-T3; Tue, 22 Sep 2020 23:26:48 +0200
-Date:   Tue, 22 Sep 2020 23:26:48 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, mtosatti@redhat.com,
-        sassmann@redhat.com, jeffrey.t.kirsher@intel.com,
-        jacob.e.keller@intel.com, jlelli@redhat.com, hch@infradead.org,
-        bhelgaas@google.com, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
-        jerinj@marvell.com, mathias.nyman@intel.com, jiri@nvidia.com
-Subject: Re: [RFC][Patch v1 1/3] sched/isolation: API to get num of
- hosekeeping CPUs
-Message-ID: <20200922212648.GA3764123@lunn.ch>
-References: <20200909150818.313699-1-nitesh@redhat.com>
- <20200909150818.313699-2-nitesh@redhat.com>
- <20200921234044.GA31047@lenoir>
- <fd48e554-6a19-f799-b273-e814e5389db9@redhat.com>
- <20200922100817.GB5217@lenoir>
- <b0608566-21c6-8fc9-4615-aa00099f6d04@redhat.com>
- <20200922205805.GD5217@lenoir>
+        id S1726650AbgIVV3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 17:29:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726179AbgIVV3L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 17:29:11 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47D37C061755;
+        Tue, 22 Sep 2020 14:29:11 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kKpqX-0045vx-0B; Tue, 22 Sep 2020 21:29:09 +0000
+Date:   Tue, 22 Sep 2020 22:29:08 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [git pull] vfs fixes
+Message-ID: <20200922212908.GB3421308@ZenIV.linux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200922205805.GD5217@lenoir>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Subject: Re: [RFC][Patch v1 1/3] sched/isolation: API to get num of hosekeeping CPUs
+	No common topic, just several assorted fixes.
 
-Hosekeeping? Are these CPUs out gardening in the weeds?
+The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
 
-	     Andrew
+  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git fixes
+
+for you to fetch changes up to 933a3752babcf6513117d5773d2b70782d6ad149:
+
+  fuse: fix the ->direct_IO() treatment of iov_iter (2020-09-17 17:26:56 -0400)
+
+----------------------------------------------------------------
+Al Viro (1):
+      fuse: fix the ->direct_IO() treatment of iov_iter
+
+Alexey Dobriyan (1):
+      fs: fix cast in fsparam_u32hex() macro
+
+Hans de Goede (1):
+      vboxsf: Fix the check for the old binary mount-arguments struct
+
+ fs/fuse/file.c            | 25 ++++++++++++-------------
+ fs/vboxsf/super.c         |  2 +-
+ include/linux/fs_parser.h |  2 +-
+ 3 files changed, 14 insertions(+), 15 deletions(-)
