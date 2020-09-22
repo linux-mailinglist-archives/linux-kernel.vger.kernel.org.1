@@ -2,118 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C671273CFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 10:10:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0FE7273D00
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 10:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726606AbgIVIJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 04:09:58 -0400
-Received: from mga07.intel.com ([134.134.136.100]:22403 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726442AbgIVIJ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 04:09:57 -0400
-IronPort-SDR: gx0SszusU5X9CekBflUEIRUmoJdGgK7s5mrLR+5Dd8PiergPhI1MAVAzlo/SYz5LPqV1ugqkys
- q+Ik942d/lug==
-X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="224705439"
-X-IronPort-AV: E=Sophos;i="5.77,289,1596524400"; 
-   d="scan'208";a="224705439"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 01:09:56 -0700
-IronPort-SDR: i7DFCMZeT46WErhKpRsRnSZs2581l90UwkFPUCZJVstwMaNBYaW9dVKes7AlufRBPwHUVMqVIT
- JypBlKYcV8NQ==
-X-IronPort-AV: E=Sophos;i="5.77,290,1596524400"; 
-   d="scan'208";a="485857398"
-Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu) ([10.252.49.176])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 01:09:47 -0700
-Date:   Tue, 22 Sep 2020 10:09:44 +0200
-From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org, loic.pallardy@st.com,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/10] rpmsg: Make RPMSG name service modular
-Message-ID: <20200922080944.GB4648@ubuntu>
-References: <20200922001000.899956-1-mathieu.poirier@linaro.org>
+        id S1726613AbgIVILT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 04:11:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726436AbgIVILT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 04:11:19 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 412F0C061755;
+        Tue, 22 Sep 2020 01:11:19 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id f2so11326063pgd.3;
+        Tue, 22 Sep 2020 01:11:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Kjqu8oiQnpukngndV4Aa0Ssw8pga7Wr4GCqPnaHdW3s=;
+        b=Mre6u2EH7OYjPAiCgPg6+fmLT8kIuFDLJREv4dIau4eqCOoQcu89o7n/TC4B4U041W
+         ev8R11UyS28+pccci62N8TcY6kw995XrJLppjvZwBn54pn15d6OV17l3bsi/J3WwQgrq
+         vUb1cUAuGYs0/WrgutX+GYaxYnX/Yd3l6na8oMZ3QN6DVOXxy0AlR6kfEk62JIl33lCn
+         rOUuxcYv1p+3nWn5hX/vLOAzp5BJydRqH5uEMn1ELQZJnkLbZNLWvQR0F/K2ll+vGPPT
+         k4ACKaPY3q2UWmlBA5mxRuv5OycO+JvBDO5uZhU5Zwm/GIJhVPndPyga2U2a1nhY+jft
+         S6rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Kjqu8oiQnpukngndV4Aa0Ssw8pga7Wr4GCqPnaHdW3s=;
+        b=f0Ppwej04rV/E5bzlDlMMma9ptIvWOsqeHefQN6KxgzUJ4ImW+CBrfcPle050a5nE6
+         RZ7jumGHGApk0Z/Dh5XcwPmSL0YrOlLYmnWv5asUzVPxr6DyV7+vq/GbZvlizdbtF9rk
+         ++cSvQ0/gr8vNrSIqkTNRaaOIMiAYGguVwN6Hv1YIsBLQyczZIM4185aoaboXEewguqo
+         OtbabWiptDlCJ1zEUg2pl+zpFvgFG9L8qYvmUKlBhPzU06vybvmeneiAL851UlFeHZVA
+         1+dePBE4jUwugIP4ullIjUcjpZsgYa5UqzIzTNVGX11kH2Vs+xuOs1x1233BUUW6hk6P
+         Y9HA==
+X-Gm-Message-State: AOAM531ksOT4h2M2gVU7LKV7USVpYTu5VF3v4D4xs6Y48pA6mXxdgzk1
+        CyvwH7iJ1nQPlrEgKLEYz6Djb8fkGd5ZikKAPhI=
+X-Google-Smtp-Source: ABdhPJwRmCYBQAbxTO7gpz1iMN4UReCiBmVNQt2bIghMvb9gJSivHKXDkQqPTV4bjV9h9I/AaO6jcFjW6qeNii2FxDo=
+X-Received: by 2002:a17:902:778b:b029:d1:bb21:513d with SMTP id
+ o11-20020a170902778bb02900d1bb21513dmr3493734pll.17.1600762278657; Tue, 22
+ Sep 2020 01:11:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922001000.899956-1-mathieu.poirier@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200922023151.387447-1-warthog618@gmail.com> <20200922023151.387447-14-warthog618@gmail.com>
+ <CAK8P3a2S3YLgy001xB-xWib9kYkkQKgFmEEP1MGYFhvd2HZAXQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a2S3YLgy001xB-xWib9kYkkQKgFmEEP1MGYFhvd2HZAXQ@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 22 Sep 2020 11:11:02 +0300
+Message-ID: <CAHp75VfBddSLz47YQkNUOX0PEYzujC2ghFYrhzh+Js5cEoJ_MQ@mail.gmail.com>
+Subject: Re: [PATCH v9 13/20] gpio: uapi: document uAPI v1 as deprecated
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Kent Gibson <warthog618@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu,
+On Tue, Sep 22, 2020 at 10:49 AM Arnd Bergmann <arnd@arndb.de> wrote:
+> On Tue, Sep 22, 2020 at 4:36 AM Kent Gibson <warthog618@gmail.com> wrote:
+> >  /*
+> >   *  ABI v1
+> > + *
+> > + * This version of the ABI is deprecated and will be removed in the future.
+> > + * Use the latest version of the ABI, defined above, instead.
+> >   */
+>
+> How intentional is the wording here? It seems unrealistic that the v1 ABI
+> would be removed any time soon if there are existing users and applications
+> cannot yet rely on v2 to be present in all kernels, so it sounds like a hollow
+> threat.
 
-Thanks for the patches. I'm trying to understand the concept of 
-this approach and I'm probably failing at that. It seems to me 
-that this patch set is making the NS announcement service to a 
-separate RPMsg device and I don't understand the reasoning for 
-doing this. As far as I understand namespace announcements 
-belong to RPMsg devices / channels, they create a dedicated 
-endpoint on them with a fixed pre-defined address. But they 
-don't form a separate RPMsg device. I think the current 
-virtio_rpmsg_bus.c has that correctly: for each rpmsg device / 
-channel multiple endpoints can be created, where the NS 
-service is one of them. It's just an endpoing of an rpmsg 
-device, not a complete separate device. Have I misunderstood 
-anything?
+I have similar thoughts when commenting on previous versions of this piece.
 
-Thanks
-Guennadi
+> At the same time I can see that telling users it will be removed can lead to
+> them moving on to the new version more quickly, so maybe a hollow threat
+> is in fact appropriate here ;-)
 
-On Mon, Sep 21, 2020 at 06:09:50PM -0600, Mathieu Poirier wrote:
-> Hi all,
-> 
-> After looking at Guennadi[1] and Arnaud's patchsets[2] it became
-> clear that we need to go back to a generic rpmsg_ns_msg structure
-> if we wanted to make progress.  To do that some of the work from
-> Arnaud had to be modified in a way that common name service
-> functionality was transport agnostic.
-> 
-> This patchset is based on Arnaud's work but also include a patch
-> from Guennadi and some input from me.  It should serve as a
-> foundation for the next revision of [1].
-> 
-> Applies on rpmsg-next (4e3dda0bc603) and tested on stm32mp157. I
-> did not test the modularisation.   
-> 
-> Comments and feedback would be greatly appreciated.
-> 
-> Thanks,
-> Mathieu 
-> 
-> [1]. https://patchwork.kernel.org/project/linux-remoteproc/list/?series=346593
-> [2]. https://patchwork.kernel.org/project/linux-remoteproc/list/?series=338335
-> 
-> Arnaud Pouliquen (5):
->   rpmsg: virtio: rename rpmsg_create_channel
->   rpmsg: core: Add channel creation internal API
->   rpmsg: virtio: Add rpmsg channel device ops
->   rpmsg: Turn name service into a stand alone driver
->   rpmsg: virtio: use rpmsg ns device for the ns announcement
-> 
-> Guennadi Liakhovetski (1):
->   rpmsg: Move common structures and defines to headers
-> 
-> Mathieu Poirier (4):
->   rpmsg: virtio: Move virtio RPMSG structures to private header
->   rpmsg: core: Add RPMSG byte conversion operations
->   rpmsg: virtio: Make endianness conversion virtIO specific
->   rpmsg: ns: Make Name service module transport agnostic
-> 
->  drivers/rpmsg/Kconfig            |   9 +
->  drivers/rpmsg/Makefile           |   1 +
->  drivers/rpmsg/rpmsg_core.c       |  96 +++++++++++
->  drivers/rpmsg/rpmsg_internal.h   | 102 +++++++++++
->  drivers/rpmsg/rpmsg_ns.c         | 108 ++++++++++++
->  drivers/rpmsg/virtio_rpmsg_bus.c | 284 +++++++++----------------------
->  include/linux/rpmsg_ns.h         |  83 +++++++++
->  include/uapi/linux/rpmsg.h       |   3 +
->  8 files changed, 487 insertions(+), 199 deletions(-)
->  create mode 100644 drivers/rpmsg/rpmsg_ns.c
->  create mode 100644 include/linux/rpmsg_ns.h
-> 
-> -- 
-> 2.25.1
-> 
+Users all know that if something will be broken, they may escalate to
+Linus T. and get things reverted. So, above depends on the user's
+knowledge about the process.
+
+-- 
+With Best Regards,
+Andy Shevchenko
