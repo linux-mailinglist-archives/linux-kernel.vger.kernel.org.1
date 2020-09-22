@@ -2,71 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A073C2743CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 16:05:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 176A52743CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 16:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726633AbgIVOFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 10:05:50 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:46669 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726473AbgIVOFu (ORCPT
+        id S1726653AbgIVOGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 10:06:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726473AbgIVOGL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 10:05:50 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=2;SR=0;TI=SMTPD_---0U9mbIf7_1600783545;
-Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U9mbIf7_1600783545)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 22 Sep 2020 22:05:46 +0800
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Subject: a bug on 325d0eab4f31
-Message-ID: <c41149a8-211e-390b-af1d-d5eee690fecb@linux.alibaba.com>
-Date:   Tue, 22 Sep 2020 22:03:36 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        Tue, 22 Sep 2020 10:06:11 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A8D7C061755;
+        Tue, 22 Sep 2020 07:06:11 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id f11so9590526qvw.3;
+        Tue, 22 Sep 2020 07:06:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=ggv8VuLQMJBV80+GzZgkXohh+I/h8XJJBp5IUz+/fvo=;
+        b=p4MQ96FSgJ+qhEE9FsMlf9iPP1EKo3i6eXh8PekF+Z8ZJtAvSWWKJomaFDWkJIVBxx
+         g1UdB6PKqDQjHPJ5Y2QI1uLWZmpj03Ie1OmKV6QETtOXAKTF0Bx89UVOwOqZehk8WZ1C
+         gnrOSydC3qqJkUpEYgZxurxgz9TtKFDfYav3YuPgELvHyiCIavz9slbW3V8eaogcoLoV
+         zbS+W0qZ3+GyizlbrtqXJI8ecYXiK3ucVB/XoHit7s0vE2VU9vTf1WmkeS4pWw4M7L6L
+         g5APi97Ksne3ulKMs47b1+Xde0+Pcp1wJ+getd21S4iypZo63u4s0QJBOvJIymfdghak
+         otXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=ggv8VuLQMJBV80+GzZgkXohh+I/h8XJJBp5IUz+/fvo=;
+        b=rFWpffKZzO3Qaw2Pw/VJIzigkC221g/Q11WpT9PHK+7nAIc1dBEjfxAchvuvEHcyZs
+         QvYWMPEcc8nYRRSpj9aGVxIu0fdT+0+gtx6BgIyr/tjFtwazG8n8mbrccxk/EVv/XtPw
+         Mb5SAWgmtVbTZ3l/10aPzdFkvioRZG887DT+4Yj4mnf4eMp1/JmwoDwWAS0JQxsj5u7x
+         5qdOS1y1SLnO2HHb3nDnwe3p7l78GyTFFa/wAvziEsTvOLXw1ZXzFGcGyl3pA0xgTy31
+         YnSgbFPhnvFFovRhzoqpneSuaAd0Joo01Y3vnyqIRA++tfHS4GTK86joGojsI+mJpPr0
+         btJw==
+X-Gm-Message-State: AOAM530tTjBOO6jltFiLV3wXybWqR6G2JLyKNMM2u8suQ2ZYxYOxWens
+        keax5LoqWri9zxiZbxVOFOFV7/wQHGCjoyMNXCOe7mR2
+X-Google-Smtp-Source: ABdhPJy0quvn8ooCZ9FzdxcJz0oeTjjL80e0/hZRi09LVHcCir/HqRUgAdt1yOaX3YPW4XrtaivqT5W9aYtNJsycsSA=
+X-Received: by 2002:a0c:e152:: with SMTP id c18mr5893009qvl.41.1600783570742;
+ Tue, 22 Sep 2020 07:06:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
+References: <alpine.DEB.2.22.394.2009221219560.2659@hadrien>
+In-Reply-To: <alpine.DEB.2.22.394.2009221219560.2659@hadrien>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Tue, 22 Sep 2020 15:05:59 +0100
+Message-ID: <CAL3q7H6e7gQWs9X-N4RMxK+UhZKHGxNmP0-q+B6x19uyH9TOwA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: fix memdup.cocci warnings
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Filipe Manana <fdmanana@suse.com>,
+        Chris Mason <chris.mason@fusionio.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kbuild-all@lists.01.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 22, 2020 at 11:29 AM Julia Lawall <julia.lawall@inria.fr> wrote=
+:
+>
+> From: kernel test robot <lkp@intel.com>
+>
+> fs/btrfs/send.c:3854:8-15: WARNING opportunity for kmemdup
+>
+>  Use kmemdup rather than duplicating its implementation
+>
+> Generated by: scripts/coccinelle/api/memdup.cocci
+>
+> Fixes: 28314eb24e6c ("btrfs: send, recompute reference path after orphani=
+zation of a directory")
+> Signed-off-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
 
-I just found a bug on recent upstream kernel on my x86 box.
-	325d0eab4f31 Merge branch 'akpm' (patches from Andrew)
-The last good kernel I known is 5.9-rc2.
+Since this is not in Linus' tree yet, it can be folded in the original patc=
+h.
+David, can you do that when you pick it?
 
-Thanks
-Alex
+Btw, isn't the Fixes tag meant only for bug fixes? This is a pure
+cleanup afaics.
 
-Linux aliy8 5.9.0-rc5-00156-g325d0eab4f31 #88 SMP PREEMPT Mon Sep 21 08:48:19 CST 2020 x86_64 x86_64 x86_64 GNU/Linux
+Thanks.
 
- 1841.488609] BUG: Bad page state in process userfaultfd  pfn:1a7d7
-[ 1841.494930] page:00000000ec5d2f1e refcount:0 mapcount:0 mapping:0000000000000000 index:0x7fd6181a6 pfn:0x1a7d7
-[ 1841.505080] flags: 0xfffffc0080004(uptodate|swapbacked)
-[ 1841.510427] raw: 000fffffc0080004 dead000000000100 dead000000000122 0000000000000000
-[ 1841.518318] raw: 00000007fd6181a6 0000000000000000 00000000ffffffff 0000000000000000
-[ 1841.526207] page dumped because: PAGE_FLAGS_CHECK_AT_FREE flag(s) set
-[ 1841.532775] Modules linked in: loop xt_addrtype br_netfilter xt_CHECKSUM iptable_mangle xt_MASQUERADE iptable_nat nf_nat xt_conntrack nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 libcrc32c ipt_REJECT nf_reject_ipv4 tun bridge stp llc overlay ebtable_filter ebtables ip6table_filter ip6_tables iptable_filter dm_mirror dm_region_hash dm_log dm_mod ipmi_ssif intel_rapl_msr intel_rapl_common x86_pkg_temp_thermal coretemp kvm_intel kvm irqbypass crct10dif_pclmul crc32_pclmul ghash_clmulni_intel aesni_intel glue_helper crypto_simd cryptd pcspkr i2c_i801 joydev i2c_smbus mei_me mei ipmi_si ipmi_devintf ipmi_msghandler ip_tables ext4 mbcache jbd2 crc32c_intel drm_vram_helper drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops drm_ttm_helper ttm drm ahci libahci libata virtio_net net_failover failover
-[ 1841.603813] CPU: 0 PID: 26221 Comm: userfaultfd Kdump: loaded Tainted: G S  B   W         5.9.0-rc5-00156-g325d0eab4f31 #88
-[ 1841.615080] Hardware name: Alibaba X-Dragon CN 01/20G4B, BIOS 1ALSP017 04/09/2019
-[ 1841.622701] Call Trace:
-[ 1841.625280]  dump_stack+0x8d/0xc0
-[ 1841.628726]  bad_page.cold.130+0x63/0x93
-[ 1841.632776]  free_pcp_prepare+0x20b/0x250
-[ 1841.636908]  free_unref_page+0x18/0x90
-[ 1841.640780]  wp_page_copy+0x2cd/0x5d0
-[ 1841.644569]  __handle_mm_fault+0x791/0x7a0
-[ 1841.648790]  ? handle_mm_fault+0x4b/0x3f0
-[ 1841.652925]  handle_mm_fault+0x16f/0x3f0
-[ 1841.656968]  exc_page_fault+0x3cb/0x6a0
-[ 1841.660920]  ? asm_exc_page_fault+0x8/0x30
-[ 1841.665131]  asm_exc_page_fault+0x1e/0x30
-[ 1841.669259] RIP: 0033:0x7fd625da6d5d
-[ 1841.672957] Code: 00 00 89 77 10 89 f2 49 8d 70 16 4c 89 c7 81 e2 80 00 00 00 e9 04 6c 00 00 0f 1f 40 00 81 e6 80 00 00 00 bf 01 00 00 00 31 c0 <f0> 41 0f b1 38 0f 85 24 01 00 00 64 8b 04 25 d0 02 00 00 41 89 40
-[ 1841.691889] RSP: 002b:00007fd6147b2e58 EFLAGS: 00010246
-[ 1841.697239] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00000000000027da
-[ 1841.704497] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000001
-[ 1841.711759] RBP: 00007fd6147b2f10 R08: 00007fd6181a6000 R09: 00007fd6147b2eb0
-[ 1841.719028] R10: 000000000000000f R11: 0000000000000206 R12: 0000000000000000
-[ 1841.726286] R13: 0000000001001000 R14: 0000000000000000 R15: 00007fd6147b3700
+> ---
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/fdmanana/linux.gi=
+t misc-next
+> head:   28314eb24e6cb8124d1e5da2ef2ccb90ec44cc06
+> commit: 28314eb24e6cb8124d1e5da2ef2ccb90ec44cc06 [2/2] btrfs: send, recom=
+pute reference path after orphanization of a directory
+> :::::: branch date: 17 hours ago
+> :::::: commit date: 17 hours ago
+>
+>
+>  send.c |    3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> --- a/fs/btrfs/send.c
+> +++ b/fs/btrfs/send.c
+> @@ -3851,10 +3851,9 @@ static int refresh_ref_path(struct send_
+>         char *name;
+>         int ret;
+>
+> -       name =3D kmalloc(ref->name_len, GFP_KERNEL);
+> +       name =3D kmemdup(ref->name, ref->name_len, GFP_KERNEL);
+>         if (!name)
+>                 return -ENOMEM;
+> -       memcpy(name, ref->name, ref->name_len);
+>
+>         fs_path_reset(ref->full_path);
+>         ret =3D get_cur_path(sctx, ref->dir, ref->dir_gen, ref->full_path=
+);
 
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
