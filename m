@@ -2,188 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A0DE274C29
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:36:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31484274C2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:37:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726667AbgIVWgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 18:36:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36090 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726448AbgIVWgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 18:36:32 -0400
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 426AF20715;
-        Tue, 22 Sep 2020 22:36:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600814192;
-        bh=42JEbkwJ0QcZASq1Xu6y67Bf8D/3KmeHjzJ9YCx8dHE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=G985UI6DInk3QstKOjZeMHQVb2yBKJKcr6wo7bgw8wgSz4csAVdeiEuGxORsC3F23
-         q4qGJSGjNjjnFmVVei6AUkvzfizaJgozFleRVSrIihdOax5W8Xy2AK63PMc9rMW4Yf
-         QowxKuDNnZJxXEIrPiSYDGQsyoGCKkAl1tZzvttY=
-Received: by mail-oi1-f172.google.com with SMTP id x14so22830497oic.9;
-        Tue, 22 Sep 2020 15:36:32 -0700 (PDT)
-X-Gm-Message-State: AOAM531W6xYiGcPzQUEpWukcOVhbbg/UGYGcBXblMgDBlIJcAWOKSzI9
-        0IFVpw72IZGzto8Hjr8MMUyYkNZrUYRS/O4ugQ==
-X-Google-Smtp-Source: ABdhPJzZN0UgDaU6VdXUbXGFsCMsyMLMdcBZ6UFDqWV5LRcZ8PQQtjB9wUHpc6lYoWnyT/qiwTJuMWEE8IMBZfMrad8=
-X-Received: by 2002:aca:fc07:: with SMTP id a7mr4015483oii.106.1600814191611;
- Tue, 22 Sep 2020 15:36:31 -0700 (PDT)
+        id S1726709AbgIVWhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 18:37:10 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:60682 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726662AbgIVWhJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 18:37:09 -0400
+Received: from [192.168.1.171] (50-39-235-197.bvtn.or.frontiernet.net [50.39.235.197])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 1508920B7179;
+        Tue, 22 Sep 2020 15:37:09 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1508920B7179
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1600814229;
+        bh=ClwMIaEy1QkOug3GZQC9xiEgNvcZxX8uczkxLFHFqh8=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=LZItGfNojTl6mkytfVVoC0bv8uWfNuAm4O+yL0CV3M1p16sUodwOl7UeKSdCC3Jjp
+         jDiDKmyPNrCyl41pbnvRZlnSU0S4/EDIHlVoJeBNGZp5hyVL218Z6QDyqjHYrIus+A
+         d94Y64Yk3ZocNDV8HOZqm7ZAlTv8QChWSIONOCIo=
+Subject: Re: [PATCH v2] iommu/arm: Add module parameter to set msi iova
+ address
+To:     Will Deacon <will@kernel.org>
+Cc:     robin.murphy@arm.com, joro@8bytes.org, srinath.mannam@broadcom.com,
+        jean-philippe@linaro.org, eric.auger@redhat.com,
+        shameerali.kolothum.thodi@huawei.com, tyhicks@linux.microsoft.com,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com
+References: <20200914181307.117792-1-vemegava@linux.microsoft.com>
+ <20200921204545.GA3811@willie-the-truck>
+From:   Vennila Megavannan <vemegava@linux.microsoft.com>
+Message-ID: <f2de12f9-b53b-abcd-4133-7bcb90341f0c@linux.microsoft.com>
+Date:   Tue, 22 Sep 2020 15:37:08 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-References: <20200910172826.3074357-1-enric.balletbo@collabora.com>
- <20200910172826.3074357-2-enric.balletbo@collabora.com> <20200911230255.GA2972120@bogus>
- <7a1c89b6-f483-5d57-f154-b80b72964077@gmail.com>
-In-Reply-To: <7a1c89b6-f483-5d57-f154-b80b72964077@gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 22 Sep 2020 16:36:20 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLCOXKCTbjw=8MMhnq0YdhrOb7tY6QpT7d3XTAgUrbg=w@mail.gmail.com>
-Message-ID: <CAL_JsqLCOXKCTbjw=8MMhnq0YdhrOb7tY6QpT7d3XTAgUrbg=w@mail.gmail.com>
-Subject: Re: [PATCH 01/12] dt-bindings: power: Add bindings for the Mediatek
- SCPSYS power domains controller
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Weiyi Lu <weiyi.lu@mediatek.com>,
-        Matthias Brugger <mbrugger@suse.com>,
-        devicetree@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200921204545.GA3811@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 2:59 AM Matthias Brugger <matthias.bgg@gmail.com> wrote:
->
->
->
-> On 12/09/2020 01:02, Rob Herring wrote:
-> > On Thu, Sep 10, 2020 at 07:28:15PM +0200, Enric Balletbo i Serra wrote:
-> >> The System Control Processor System (SCPSYS) has several power management
-> >> related tasks in the system. Add the bindings to define the power
-> >> domains for the SCPSYS power controller.
-> >>
-> >> Co-developed-by: Matthias Brugger <mbrugger@suse.com>
-> >> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
-> >> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> >> ---
-> >> Dear Rob,
-> >>
-> >> I am awasre that this binding is not ready, but I prefered to send because I'm
-> >> kind of blocked. Compiling this binding triggers the following error:
-> >>
-> >>      mediatek,power-controller.example.dt.yaml: syscon@10006000: mfg_async@7:
-> >>      '#address-cells', '#size-cells', 'mfg_2d@8'
-> >>      do not match any of the regexes: 'pinctrl-[0-9]+'
-> >>
-> >> This happens when a definition of a power-domain (parent) contains
-> >> another power-domain (child), like the example. I am not sure how to
-> >> specify this in the yaml and deal with this, so any clue is welcome.
-> >
-> > You just have to keep nesting schemas all the way down. Define a
-> > grandchild node under the child node and then all of its properties.
-> >
-> >>
-> >> Thanks,
-> >>    Enric
-> >>
-> >>   .../power/mediatek,power-controller.yaml      | 171 ++++++++++++++++++
-> >>   1 file changed, 171 insertions(+)
-> >>   create mode 100644 Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml b/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
-> >> new file mode 100644
-> >> index 000000000000..8be9244ad160
-> >> --- /dev/null
-> >> +++ b/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
-> >> @@ -0,0 +1,171 @@
-> >> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> >> +%YAML 1.2
-> >> +---
-> >> +$id: http://devicetree.org/schemas/power/mediatek,power-controller.yaml#
-> >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> >> +
-> >> +title: Mediatek Power Domains Controller
-> >> +
-> >> +maintainers:
-> >> +  - Weiyi Lu <weiyi.lu@mediatek.com>
-> >> +  - Matthias Brugger <mbrugger@suse.com>
-> >> +
-> >> +description: |
-> >> +  Mediatek processors include support for multiple power domains which can be
-> >> +  powered up/down by software based on different application scenes to save power.
-> >> +
-> >> +  IP cores belonging to a power domain should contain a 'power-domains'
-> >> +  property that is a phandle for SCPSYS node representing the domain.
-> >> +
-> >> +properties:
-> >> +  $nodename:
-> >> +    pattern: "^syscon@[0-9a-f]+$"
-> >> +
-> >> +  compatible:
-> >> +    items:
-> >> +      - enum:
-> >> +        - mediatek,mt8173-power-controller
-> >> +      - const: syscon
-> >> +
-> >> +  reg:
-> >> +    maxItems: 1
-> >> +
-> >> +patternProperties:
-> >> +  "^.*@[0-9]$":
-> >
-> > Node names should be generic:
-> >
-> > power-domain@
-> >
->
-> Enric correct me if I'm wrong, if we want to see the power domains in debugfs,
-> they are listed by their name. If all are called power-domain then the listing
-> is pretty much useless.
+Sure, that's a great suggestion, I'll rework on the patch and post again.
 
-Sorry, but not a binding problem.
+Vennila
 
-Maybe if debugfs shows what devices are contained within a power
-domain then it doesn't matter so much.
-
-> >> +    type: object
-> >> +    description: |
-> >> +      Represents the power domains within the power controller node as documented
-> >> +      in Documentation/devicetree/bindings/power/power-domain.yaml.
-> >> +
-> >> +    properties:
-> >> +      reg:
-> >> +        description: |
-> >> +          Power domain index. Valid values are defined in:
-> >> +              "include/dt-bindings/power/mt8173-power.h" - for MT8173 type power domain.
-> >> +        maxItems: 1
-> >> +
-> >> +      '#power-domain-cells':
-> >> +        description:
-> >> +          Documented by the generic PM Domain bindings in
-> >> +          Documentation/devicetree/bindings/power/power-domain.yaml.
-> >
-> > No need to redefine a common property. This should define valid values
-> > for it.
-> >
-> >> +
-> >> +      clocks:
-> >> +        description: |
-> >> +          A number of phandles to clocks that need to be enabled during domain
-> >> +          power-up sequencing.
-> >
-> > No need to redefine 'clocks'. You need to define how many, what each one
-> > is, and the order.
-> >
+On 9/21/2020 1:45 PM, Will Deacon wrote:
+> On Mon, Sep 14, 2020 at 11:13:07AM -0700, Vennila Megavannan wrote:
+>> From: Srinath Mannam <srinath.mannam@broadcom.com>
+>>
+>> Add provision to change default value of MSI IOVA base to platform's
+>> suitable IOVA using module parameter. The present hardcoded MSI IOVA base
+>> may not be the accessible IOVA ranges of platform.
+>>
+>> If any platform has the limitaion to access default MSI IOVA, then it can
+>> be changed using "arm-smmu.msi_iova_base=0xa0000000" command line argument.
+>>
+>> Signed-off-by: Srinath Mannam <srinath.mannam@broadcom.com>
+>> Co-developed-by: Vennila Megavannan <vemegava@linux.microsoft.com>
+>> Signed-off-by: Vennila Megavannan <vemegava@linux.microsoft.com>
+>> ---
+>>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 5 ++++-
+>>   drivers/iommu/arm/arm-smmu/arm-smmu.c       | 5 ++++-
+>>   2 files changed, 8 insertions(+), 2 deletions(-)
+> This feels pretty fragile. Wouldn't it be better to realise that there's
+> a region conflict with iommu_dma_get_resv_regions() and move the MSI window
+> accordingly at runtime?
 >
-> Do you mean we have to define each clock for each power domain of each SoC?
-
-Yes.
-
-Rob
+> Will
