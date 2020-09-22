@@ -2,97 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EC63274C96
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA4B2274CE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:55:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727103AbgIVWxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 18:53:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727059AbgIVWxC (ORCPT
+        id S1726825AbgIVWzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 18:55:38 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:53225 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726654AbgIVWzi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 18:53:02 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4350FC061755;
-        Tue, 22 Sep 2020 15:53:02 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id m5so19866085lfp.7;
-        Tue, 22 Sep 2020 15:53:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/ZMOQHMaqG4ejJzqXZ0omtNspdRCXUNdXjlNKCcyJPs=;
-        b=s/KCTmFIAZq2nI563ceQHT+VTSdShyI7x95WSqdjyey+X1G3pPobQkaZEtJQQgi1UN
-         8TnTPqKOscA/Aa62dJ34+tfGIta+7gBlCaVKJsNK/QSBAs6KDZrrxnCdnFMLrezJrWEK
-         i7p0wkVnoII15AMSvtFLrsGVnAGSGw7aFOsvH2Gez9Y3n0YSRr7OnNAgjq7i9efPlzJk
-         SOtlFn9O0zCuc/t5c4YhifPf9YlZnhpwaGiqQkHSkQKv817jiRbgH85CZo8RdmgnK0D5
-         Z9oGKliLmqEGddDAj+jtWdpzFG+NjJ9obHJ18xjrhe1ONDis0kY5E/5nfKKzbqCXZXBX
-         WpfA==
+        Tue, 22 Sep 2020 18:55:38 -0400
+Received: by mail-wm1-f65.google.com with SMTP id q9so5026601wmj.2
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 15:55:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/ZMOQHMaqG4ejJzqXZ0omtNspdRCXUNdXjlNKCcyJPs=;
-        b=YhA4hlXA/HVEpZtoVvzXC+zaVWqrbvKByvdCXY/JzIEZStqyCmGeDEY9VgkDCrlDyD
-         AHCptRQCEgVljruDnk7j2Yp9c+hqrvnvy3Jdl90M7qcXkEd/cxbntHOHtT8ysrsWro48
-         5cSO5zGABuvCCM2EzkV0M/945kyWmHIoV6ZZOsJTIoxmFH+zaQGBHmdV/H++dpFl8aZF
-         /lE7qFJ6xd7D0F3B4d8lp27Kqes5K6kK5yV6/hcmd0kzx9VsIostaQbDkUfDT9Op3dDD
-         IsyjzLYJXRdz/uE8LeiffteKO/0emhtObzJooNn8pIaIcZXI0t+T+hANcPLBQmwxhOad
-         Dc8w==
-X-Gm-Message-State: AOAM533BG4J3323DdWTaf3NGe1hyhdZqYvbMz65WrZl9sopBO57KE9ky
-        0C6JqWCFj9bGpgBo3xXGD3kYgimynxc=
-X-Google-Smtp-Source: ABdhPJyw9h8PsbsmcscRsDRJA7/iEtSL8dgVuiDr7YDhRO8LuUTfifeIiQHN6f8fvDv7awZPP+2r5Q==
-X-Received: by 2002:a19:8502:: with SMTP id h2mr2600210lfd.17.1600815180765;
-        Tue, 22 Sep 2020 15:53:00 -0700 (PDT)
-Received: from localhost.localdomain (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.gmail.com with ESMTPSA id l15sm3977588lfk.71.2020.09.22.15.52.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 15:53:00 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v8 32/32] i2c: tegra: Improve driver module description
-Date:   Wed, 23 Sep 2020 01:51:55 +0300
-Message-Id: <20200922225155.10798-33-digetx@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200922225155.10798-1-digetx@gmail.com>
-References: <20200922225155.10798-1-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4NROQY74ZndOZ+p5fr+GaaolzsVSn9rBnu2dnFCtdNs=;
+        b=AMPrFTgSF7GhwrmdjL09mTahY1GtGdM32f5t/ASVPZwTRGbHsEYZeFV4eFhSDZJCBM
+         ZPKnac2a4qJAdKmB9qT+Vyjg41VkVAfP9SAg+bKzWnYWiWSKV5C6yJNZeyqgQQUpUTvp
+         DpYDagwRl3QhlT7nfrf3PlEVPAzBwMguD6jTBzQ2JiSiG/uiJWCUpxF9RPmBANpdbl5q
+         Jt+wlkeR7dyNAIK5JVj09aJO2/y2eNGK6x4HvepgQ1OgcUrPs1+uWqN3dK6oike4Nj1n
+         RMa1x4Le7NE+koRv/g9P2z4YLopHpBT/lH20Cb2naBT/cOS/H2JruUqp4VFZ7oELNEBi
+         ZbQw==
+X-Gm-Message-State: AOAM533ve/pFPuLkRn/FAjFOL3Z+FFowo9uoBsQjre9ALih+bfli4evt
+        KQEdnVlZAFZzPPTFqdgiQYIbjen7FZ1LL2kmT7Y=
+X-Google-Smtp-Source: ABdhPJx+XgPPbUdpz/htYqF6AzbbWV+sLJ9PO9qoUqYH60AH+nAxtKhuVWe+pxV5wri6q9Qt7zwf25E7zNonFsVGWKI=
+X-Received: by 2002:a05:600c:4142:: with SMTP id h2mr3205019wmm.128.1600815337118;
+ Tue, 22 Sep 2020 15:55:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20200921094610.83736-1-namhyung@kernel.org> <20200921094610.83736-3-namhyung@kernel.org>
+ <CABPqkBRnzGbfk0_K_eK47XDU9Fu4CTJC=4RXTXYc=cFLE-xtkg@mail.gmail.com>
+In-Reply-To: <CABPqkBRnzGbfk0_K_eK47XDU9Fu4CTJC=4RXTXYc=cFLE-xtkg@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 23 Sep 2020 07:55:26 +0900
+Message-ID: <CAM9d7ch5ZejOpDgj6fAGcGHAcbgEV6dZ4SfArw7xDMPKkTphvQ@mail.gmail.com>
+Subject: Re: [PATCH 2/5] perf stat: Add --for-each-cgroup option
+To:     Stephane Eranian <eranian@google.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use proper spelling of "NVIDIA" and don't designate driver as Tegra2-only
-since newer SoC generations are supported as well.
+Hi Stephane,
 
-Reviewed-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Acked-by: Thierry Reding <treding@nvidia.com>
-Tested-by: Thierry Reding <treding@nvidia.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/i2c/busses/i2c-tegra.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Wed, Sep 23, 2020 at 6:52 AM Stephane Eranian <eranian@google.com> wrote:
+>
+> Hi,
+>
+> On Mon, Sep 21, 2020 at 2:46 AM Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > The --for-each-cgroup option is a syntax sugar to monitor large number
+> > of cgroups easily.  Current command line requires to list all the
+> > events and cgroups even if users want to monitor same events for each
+> > cgroup.  This patch addresses that usage by copying given events for
+> > each cgroup on user's behalf.
+> >
+> > For instance, if they want to monitor 6 events for 200 cgroups each
+> > they should write 1200 event names (with -e) AND 1200 cgroup names
+> > (with -G) on the command line.  But with this change, they can just
+> > specify 6 events and 200 cgroups with a new option.
+> >
+> > A simpler example below: It wants to measure 3 events for 2 cgroups
+> > ('A' and 'B').  The result is that total 6 events are counted like
+> > below.
+> >
+> >   $ ./perf stat -a -e cpu-clock,cycles,instructions --for-each-cgroup A,B sleep 1
+> >
+> You could also do it by keeping the -G option and providing
+> --for-each-cgroup as a modifier
+> of the behavior of -G:
+>
+> $ ./perf stat -a -e cpu-clock,cycles,instructions --for-each-cgroup -G
+>  A,B sleep 1
+>
+> That way, you do not have to handle the case where both are used.
+> And it makes transitioning to the new style simpler, i.e., the -G
+> option remains, just need
+> to trim the number of cgroups to 200 in your example.
+>
+> Just a suggestion.
 
-diff --git a/drivers/i2c/busses/i2c-tegra.c b/drivers/i2c/busses/i2c-tegra.c
-index e3f3bee585fb..eb95fc8c0c69 100644
---- a/drivers/i2c/busses/i2c-tegra.c
-+++ b/drivers/i2c/busses/i2c-tegra.c
-@@ -1912,6 +1912,6 @@ static struct platform_driver tegra_i2c_driver = {
- };
- module_platform_driver(tegra_i2c_driver);
- 
--MODULE_DESCRIPTION("nVidia Tegra2 I2C Bus Controller driver");
-+MODULE_DESCRIPTION("NVIDIA Tegra I2C Bus Controller driver");
- MODULE_AUTHOR("Colin Cross");
- MODULE_LICENSE("GPL v2");
--- 
-2.27.0
+Thanks for the suggestion.  Actually that's the approach I took
+in my v1 submission.  And Jiri suggested the current way.
+Personally I'm fine with either.
 
+Thanks
+Namhyung
