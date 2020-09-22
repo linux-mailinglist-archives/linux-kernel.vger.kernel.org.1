@@ -2,93 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 633532741CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7ECD2741D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726637AbgIVMJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 08:09:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726531AbgIVMJQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 08:09:16 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B449DC061755;
-        Tue, 22 Sep 2020 05:09:15 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id r7so22451405ejs.11;
-        Tue, 22 Sep 2020 05:09:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=steyxlT4LVPBsfe8IJH2NOc1f2Mr0MYY3HiC50X/c/0=;
-        b=PqcBVJ7UteV28rSmL9CuvhOhID/Uowd4Vi5TEe7GA2bzJUzqbTmmZm7SWjiPB2GWLl
-         Zl8QrP2PohhWHRpBtKC0fYkFrUo2P40E0n0SjX/zq5YKu7gSpNmgKTPEGxMy5yEeu8dB
-         m1C4jOnOFn9Kdc1XxkKDBXNa+VCReqLMFADIZjD/gyAGo/I+3Ees8nlVC+00UJ+9KGi7
-         6eVmzJV6g5GaH2rmaFYxhC56lyJt//9Ct3th439Vw0eY6AIwMrEVnCIHORO9e6pRPAvF
-         2m6xbPbL8r35BI85U4lbUH9Z1LGOsHYHeWBQ/FOi1FopTp+Nlj8hqPSnDaAQHPLKN6SO
-         HZBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=steyxlT4LVPBsfe8IJH2NOc1f2Mr0MYY3HiC50X/c/0=;
-        b=fTkiT/GVD5Z311TMhJZp3EbFLYyTuRlExLNsjRTQ0uh016p+ftRHcuUC04v0vKuV7r
-         f9SvRMnBf00qMRuG0X6sS/06yaVUAtnZxtJIo6oQJi8jGf02fRUCCtx+VJOH0LbBVi5l
-         mi+VBF7m4WLrSvOMJcjLB+2o6K310igUoBnnnU871k2pU7ohaTjNcl5Oqifx3y+NJCyv
-         qNxlcchFwiPvQqpg05xOCj9SfrxiVYXye+FJkz2clYcnl9RcEGKC4GB7jOXYOLUGYoXJ
-         23G2EONnPWchq1e4O60FEnwhtktXHY91acnAI4abrvDF5UXOJd/4/cJV1k0Nss7S2ivx
-         aPKQ==
-X-Gm-Message-State: AOAM533cDZq3TZsOfGbpE/fgEuubLV4+5bj8ZBSlpBoTAaEnJHOOt9t9
-        +xkZ3zkjROwmoAkaE6V9A4Q=
-X-Google-Smtp-Source: ABdhPJzlCM3Uyjl7gfhzf06ug/kOBwEhcs+oi+eQu3ZTZlZOD1QO+qA+foqWGCToItKWcrF5S8Bsgg==
-X-Received: by 2002:a17:906:474f:: with SMTP id j15mr4786337ejs.468.1600776554474;
-        Tue, 22 Sep 2020 05:09:14 -0700 (PDT)
-Received: from localhost.localdomain (abab42.neoplus.adsl.tpnet.pl. [83.6.165.42])
-        by smtp.googlemail.com with ESMTPSA id c25sm3575013ejd.88.2020.09.22.05.09.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 05:09:13 -0700 (PDT)
-From:   Konrad Dybcio <konradybcio@gmail.com>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] clk: qcom: gcc-sdm660: Fix wrong parent_map
-Date:   Tue, 22 Sep 2020 14:09:09 +0200
-Message-Id: <20200922120909.97203-1-konradybcio@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        id S1726578AbgIVMLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 08:11:36 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50162 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726505AbgIVMLf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 08:11:35 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1600776693;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5SAy2ca2q3L9EB+unO167nKo1fIg4hrYmsfk4Zg1pow=;
+        b=jaFs8q2xDCD9SVtqdDERHGzFf/DLQqfUWQxyKAdZtU46tzLG3E0u0MuYOIWseAzbuZ0vGO
+        asz2z7MgJtLCrXknt9zxubRAGffXzHd9ctK6Dh8ffDARFZH8nI+BwA1bw04Pt4FN0KwjXy
+        6RhgSwWDPoMWaJky8MiX4GqGKwhIpNA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 584FCB330;
+        Tue, 22 Sep 2020 12:12:10 +0000 (UTC)
+Subject: Re: [PATCH v2 2/3] xen-blkfront: add a parameter for disabling of
+ persistent grants
+To:     SeongJae Park <sjpark@amazon.com>, konrad.wilk@oracle.com,
+        roger.pau@citrix.com
+Cc:     SeongJae Park <sjpark@amazon.de>, axboe@kernel.dk,
+        aliguori@amazon.com, amit@kernel.org, mheyne@amazon.de,
+        pdurrant@amazon.co.uk, linux-block@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+References: <20200922105209.5284-1-sjpark@amazon.com>
+ <20200922105209.5284-3-sjpark@amazon.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <fdbaf955-0b92-d356-2792-21b27ea1087d@suse.com>
+Date:   Tue, 22 Sep 2020 14:11:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20200922105209.5284-3-sjpark@amazon.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This was likely overlooked while porting the driver upstream.
+On 22.09.20 12:52, SeongJae Park wrote:
+> From: SeongJae Park <sjpark@amazon.de>
+> 
+> Persistent grants feature provides high scalability.  On some small
+> systems, however, it could incur data copy overheads[1] and thus it is
+> required to be disabled.  It can be disabled from blkback side using a
+> module parameter, 'feature_persistent'.  But, it is impossible from
+> blkfront side.  For the reason, this commit adds a blkfront module
+> parameter for disabling of the feature.
+> 
+> [1] https://wiki.xen.org/wiki/Xen_4.3_Block_Protocol_Scalability
+> 
+> Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> ---
+>   .../ABI/testing/sysfs-driver-xen-blkfront     |  9 ++++++
+>   drivers/block/xen-blkfront.c                  | 28 +++++++++++++------
+>   2 files changed, 29 insertions(+), 8 deletions(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-driver-xen-blkfront b/Documentation/ABI/testing/sysfs-driver-xen-blkfront
+> index c0a6cb7eb314..9c31334cb2e6 100644
+> --- a/Documentation/ABI/testing/sysfs-driver-xen-blkfront
+> +++ b/Documentation/ABI/testing/sysfs-driver-xen-blkfront
+> @@ -8,3 +8,12 @@ Description:
+>                   is 32 - higher value means more potential throughput but more
+>                   memory usage. The backend picks the minimum of the frontend
+>                   and its default backend value.
+> +
+> +What:           /sys/module/xen_blkfront/parameters/feature_persistent
+> +Date:           September 2020
+> +KernelVersion:  5.10
+> +Contact:        SeongJae Park <sjpark@amazon.de>
+> +Description:
+> +                Whether to enable the persistent grants feature or not.  Note
+> +                that this option only takes effect on newly created frontends.
+> +                The default is Y (enable).
+> diff --git a/drivers/block/xen-blkfront.c b/drivers/block/xen-blkfront.c
+> index 91de2e0755ae..49c324f377de 100644
+> --- a/drivers/block/xen-blkfront.c
+> +++ b/drivers/block/xen-blkfront.c
+> @@ -149,6 +149,13 @@ static unsigned int xen_blkif_max_ring_order;
+>   module_param_named(max_ring_page_order, xen_blkif_max_ring_order, int, 0444);
+>   MODULE_PARM_DESC(max_ring_page_order, "Maximum order of pages to be used for the shared ring");
+>   
+> +/* Enable the persistent grants feature. */
+> +static bool feature_persistent = true;
+> +module_param(feature_persistent, bool, 0644);
+> +MODULE_PARM_DESC(feature_persistent,
+> +		"Enables the persistent grants feature");
+> +
+> +
+>   #define BLK_RING_SIZE(info)	\
+>   	__CONST_RING_SIZE(blkif, XEN_PAGE_SIZE * (info)->nr_ring_pages)
+>   
+> @@ -1866,11 +1873,13 @@ static int talk_to_blkback(struct xenbus_device *dev,
+>   		message = "writing protocol";
+>   		goto abort_transaction;
+>   	}
+> -	err = xenbus_printf(xbt, dev->nodename,
+> -			    "feature-persistent", "%u", 1);
+> -	if (err)
+> -		dev_warn(&dev->dev,
+> -			 "writing persistent grants feature to xenbus");
+> +	if (feature_persistent) {
+> +		err = xenbus_printf(xbt, dev->nodename,
+> +				    "feature-persistent", "%u", 1);
+> +		if (err)
+> +			dev_warn(&dev->dev,
+> +				 "writing persistent grants feature to xenbus");
+> +	}
+>   
+>   	err = xenbus_transaction_end(xbt, 0);
+>   	if (err) {
+> @@ -2316,9 +2325,12 @@ static void blkfront_gather_backend_features(struct blkfront_info *info)
+>   	if (xenbus_read_unsigned(info->xbdev->otherend, "feature-discard", 0))
+>   		blkfront_setup_discard(info);
+>   
+> -	info->feature_persistent =
+> -		!!xenbus_read_unsigned(info->xbdev->otherend,
+> -				       "feature-persistent", 0);
+> +	if (feature_persistent)
+> +		info->feature_persistent =
+> +			!!xenbus_read_unsigned(info->xbdev->otherend,
+> +					       "feature-persistent", 0);
+> +	else
+> +		info->feature_persistent = 0;
+>   
+>   	indirect_segments = xenbus_read_unsigned(info->xbdev->otherend,
+>   					"feature-max-indirect-segments", 0);
+> 
 
-Reported-by: Pavel Dubrova <pashadubrova@gmail.com>
-Signed-off-by: Konrad Dybcio <konradybcio@gmail.com>
----
- drivers/clk/qcom/gcc-sdm660.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Here you have the same problem as in blkback: feature_persistent could
+change its value between the two tests.
 
-diff --git a/drivers/clk/qcom/gcc-sdm660.c b/drivers/clk/qcom/gcc-sdm660.c
-index 3cffadc77bce..1a5e98e5c965 100644
---- a/drivers/clk/qcom/gcc-sdm660.c
-+++ b/drivers/clk/qcom/gcc-sdm660.c
-@@ -666,7 +666,7 @@ static struct clk_rcg2 hmss_rbcpr_clk_src = {
- 	.cmd_rcgr = 0x48044,
- 	.mnd_width = 0,
- 	.hid_width = 5,
--	.parent_map = gcc_parent_map_xo_gpll0_gpll0_early_div,
-+	.parent_map = gcc_parent_map_xo_gpll0,
- 	.freq_tbl = ftbl_hmss_rbcpr_clk_src,
- 	.clkr.hw.init = &(struct clk_init_data){
- 		.name = "hmss_rbcpr_clk_src",
--- 
-2.28.0
 
+Juergen
