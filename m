@@ -2,135 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 901F42748DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:11:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E77912748E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:12:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726789AbgIVTLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 15:11:42 -0400
-Received: from mail-bn7nam10on2043.outbound.protection.outlook.com ([40.107.92.43]:30497
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726686AbgIVTLm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 15:11:42 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Fvv5pD5nnnpW05xHbQ6ktouPfPDBmjtTXftKb0LZuJXAdziyftc4grty8fLG+HCQqxfry+QRAN7nnkewE469s2hVdVKh11cmTqMfQsA7ghSQqn2YUPyouYzzQz4JkYls/EYngOiNASnvI8utqjqd5f7Q7+a6Qg3CVketYugQtbBce/xoIkPB7m7/4R4fFcTDRW7ugYwV7sop9knsq1+H2iboNxqKND75wox1Klgm3/B/KEU1i8hQp41H2tUmZwz6uRCnSGZrR3y2mn9QsT9lERDWBgyDzhJPUC5zFPZerGCLEYeOLtS4duAVECs/s7nL2wx2gbFyld6IoOq7ELsNrw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=f44pyRG8L/bJgLT3leUrhaOaXV7kwQkNGW+U3jpesOE=;
- b=J6lXr4eIp0FqYiyniW1wwIYwfvq6dW4RCzbYfzc0a5fUQjuXeJDetGSrje5VNKViHKBAknKJHWUK0DadiupKi5RZp/zVPSxHtJxESeuo926SoluYyuJfuuu37arFT2ss1be1rTXeSvSKOGY6Fwu5QwOL27KhbB7v58gv12Djy+y5+/RK90OhreEo8aaV0T4gNF5KYPuoDgxED09CUFQvXWw7bSrswNEjC+Jrza86fCqwjsYsrl/EVxCpEx2CagY2YxacUOFS1y3o4Y31gmOdwEAtwTspcw0a53BDqaj6uiZHP8toNyX5I9XiXdA+QlWdDvKpl6kBnrzj9cZV4wXmFQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1726686AbgIVTMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 15:12:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726608AbgIVTMx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 15:12:53 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20FE6C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 12:12:53 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id z25so20872401iol.10
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 12:12:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=f44pyRG8L/bJgLT3leUrhaOaXV7kwQkNGW+U3jpesOE=;
- b=KUZYBlVe+QM8nyQF9De4j/fnZRF7mny6WDFwAHUmvCwWP/Q6+4l3txyvxv4zqQIiQ+v8Rzpbss4H1L6gO3JJspGm/lT4B6RUkptkNm2NWNoQW1pf5P96M5zxgXCGTCtFVWLtWszzSG/RNEhFBrxaIBCYxb9QW7OGEo/3hhS7j8U=
-Authentication-Results: linutronix.de; dkim=none (message not signed)
- header.d=none;linutronix.de; dmarc=none action=none header.from=amd.com;
-Received: from SN1PR12MB2560.namprd12.prod.outlook.com (2603:10b6:802:26::19)
- by SN6PR12MB2606.namprd12.prod.outlook.com (2603:10b6:805:6e::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.19; Tue, 22 Sep
- 2020 19:11:39 +0000
-Received: from SN1PR12MB2560.namprd12.prod.outlook.com
- ([fe80::ccd9:728:9577:200d]) by SN1PR12MB2560.namprd12.prod.outlook.com
- ([fe80::ccd9:728:9577:200d%4]) with mapi id 15.20.3391.026; Tue, 22 Sep 2020
- 19:11:39 +0000
-Subject: RE: [PATCH v6 04/12] KVM: SVM: Modify intercept_exceptions to generic
- intercepts
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "jmattson@google.com" <jmattson@google.com>,
-        "wanpengli@tencent.com" <wanpengli@tencent.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>
-References: <159985237526.11252.1516487214307300610.stgit@bmoger-ubuntu>
- <159985250037.11252.1361972528657052410.stgit@bmoger-ubuntu>
- <1654dd89-2f15-62b6-d3a7-53f3ec422dd0@redhat.com>
- <20200914150627.GB6855@sjchrist-ice>
- <e74fd79c-c3d0-5f9d-c01d-5d6f2c660927@redhat.com>
-From:   Babu Moger <babu.moger@amd.com>
-Message-ID: <408c7b65-11a5-29af-9b9f-ca8ccfcc0126@amd.com>
-Date:   Tue, 22 Sep 2020 14:11:36 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <e74fd79c-c3d0-5f9d-c01d-5d6f2c660927@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DM5PR18CA0087.namprd18.prod.outlook.com (2603:10b6:3:3::25)
- To SN1PR12MB2560.namprd12.prod.outlook.com (2603:10b6:802:26::19)
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IK/WwG3AGahlrI8huDh/Mfh9jtUCebEoFj9j81IUuC4=;
+        b=kO+RCErR7nBT8L31iBPYZSwMJUK5FHZrA7PwnVY1QwcxJ7CU/QLulnpvmblB/uUfra
+         7FRa6zO0Pq3t/Soz/mVcUvQaIgYBYIhHa702+ayIdwyIgaVOvt1ubqrHtUh9hkLAgWvR
+         23qtmb9RCifAYQc0jC/Y7h2CnYNKxeBIf0JuKrFfNIQmtAQ0BYgVdRNKytNMcr/9r8wI
+         1IVCu4Sksbptu5w54Sf8MuU/mjV1ipbIUqAREDStCl6uZVD7667zPoI4cw6nYHPZguq8
+         SP896O22rKylXcFSwrtAXMtXPUyV/nSf+VjmJc8B4vk2W5GcTmgLaZH0qiyEncIoi2hm
+         sFOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IK/WwG3AGahlrI8huDh/Mfh9jtUCebEoFj9j81IUuC4=;
+        b=fsURk1aZOdqd+ZJoRoet0L2r0uNEJcshPhwVBvjcS6WoEXLWmaFlsn3qyLMm2bFJfr
+         l8l6aETUM8xqPoQefvae7IZhuYu0DNHD8nV/gZDBFaFT6O97m1hSQ4zmONsL5Si4le6C
+         WV7JySUBGNmgaoM3vmrxJMJeuIbvJ8abhIU1waYoPYuxtD1gVtSA+ww8rHFiILxK0nuj
+         6G70IOtJ53xBU4pMea90oLjuiaisxealxnjZitmPvAHdsdTozkhmzCqn5ZQ5ZjLvbIII
+         Tnjh7YiND7oAuztwoSdsKjNB9lcvG563gPro1kFxWtAKa2JvTobVeKsVkHbjf8Xj89RI
+         Phwg==
+X-Gm-Message-State: AOAM532OHj9hJyNFBLPIOcS7lnDFsEehwXa8pso+M8EtMrHyeWf5fZ6D
+        FRBhZjnHurW1V4ECrGC6O/VMZVnyAhmW5zlRBRTKxn9dqC8=
+X-Google-Smtp-Source: ABdhPJw9JGzZ6f9NF0ngRg8kr47VeaaltgVfk6nGNrw5MkgjXsUhxuElVdDZ9jViGPVJiMY98vAeD7Po2Pisbnid0E4=
+X-Received: by 2002:a05:6638:d02:: with SMTP id q2mr5225604jaj.98.1600801972410;
+ Tue, 22 Sep 2020 12:12:52 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.236.31.136] (165.204.77.1) by DM5PR18CA0087.namprd18.prod.outlook.com (2603:10b6:3:3::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14 via Frontend Transport; Tue, 22 Sep 2020 19:11:37 +0000
-X-Originating-IP: [165.204.77.1]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: bd4668d5-291e-4d35-77ea-08d85f2b5514
-X-MS-TrafficTypeDiagnostic: SN6PR12MB2606:
-X-Microsoft-Antispam-PRVS: <SN6PR12MB26061CAFCC89F29A64765FC0953B0@SN6PR12MB2606.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qF7D7flmhkczvYzL9ED0iijVip8Jwwb2BTLpLxxbcSdDBTMXWFHb0bbCy16drze+6RXR0ZmHZ8qtL+kuDA63IyRn44xo/YGsrjXYilLMMP1Zk+AeOzZKdthlmyir7/lDCpyUrRZ8r4Qg0SD4rBOL56UvS5GpTg6s8wm6umcjbNS2242j3FkTxs7G2Txgnq6TiJjSbNnr2EazogMIKuXvCUb2Up8oXUJxdOq4Et9iq/kpW+aNlScvbOhM4AbJ81xNS4tgepEwSA+GEW+R5ojNY7RHHHpKhCgWGahrTSw7+rivpsog2qbfQTDXa8fcgg2TZvMchenz6NIhJ4JxTDS5tcW7nhXs/mJJlXwUOQZfrQzAgZnjqymbaYvzqwSg/wFMCWdT2gLdNBG4i9LF46wvgc4ej/LNikHLTVEu87ZV/LxEffFJoKPwiHCOHIlABBTriSfDikg0PpzbgTMA3fEFHw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN1PR12MB2560.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(366004)(136003)(396003)(66556008)(316002)(66946007)(7416002)(110136005)(8936002)(16576012)(8676002)(478600001)(4326008)(956004)(186003)(6486002)(16526019)(83380400001)(31696002)(86362001)(36756003)(54906003)(2906002)(26005)(66476007)(52116002)(2616005)(44832011)(31686004)(53546011)(5660300002)(41533002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: z0ff0G+6FeOMeC0vzfVRs5WvTvlUKimUlY/QWkhzLXeJgcDUW5wND0aWAfrjmpC6M8vu10L7V/ysLhRoQLaR5OdVtBjPHxitaUdqoDl1+YT0dZLto+Rqp6l6ay/SE5lLA5COTU0Y5ITLu7cyBBjtS29PVDKPwAOX5sMi5+ObtfLlAf9Z9qqNYh9IE14e2qlRYbkUtP5tciw32w0F+dPUYi67673HqYMeLAHivTZTu0GLiensXY8ZQk612obWGE80Wi/YyiFfKM3wXPby9UNYrLK/3qeJ/78mukzcoyfrXAK/Y47J+HZwXiet5vLafa+oEbCnlCvwEHdN+eztsMrPefg04vgVP8PkpgwNNjKu0itTSMFPKVE7dqp6hORIvXAwzgZuYD5Ga+Jd7Niu+gb1ddc6iy5igIlTr69GsTLw6qOKiNh1v7BO9VmPI2cp9A9M0YtgMI4egEsKSH04oB0qsUhs5z1LeK/z5lJr2Le3MznJyivWdmBjrgGvmSC6g/c4j8ronzevqRsg3xgiWTz+gS+3ptOiVeta7GwbCCmvNShgdRO3iyS2Q99E6wc8jOH4pYNkp0bsFEWaWjqojmur5PWwMJQpJAD6W5KueOh22Vq3Nr9rVw80nFI35/aRwoGWh1Pm9m5++my21DOZmLPm0w==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bd4668d5-291e-4d35-77ea-08d85f2b5514
-X-MS-Exchange-CrossTenant-AuthSource: SN1PR12MB2560.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2020 19:11:39.2879
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GuAAId4coCazDi2RIeHf4bt/fzM1rXl06kJmC1nWkgL67wr+p8lILutVTP1W/KIJ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2606
+References: <20200922001000.899956-1-mathieu.poirier@linaro.org> <20200922080944.GB4648@ubuntu>
+In-Reply-To: <20200922080944.GB4648@ubuntu>
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+Date:   Tue, 22 Sep 2020 13:12:41 -0600
+Message-ID: <CANLsYkyh16_G0y3ZP1_Fv1R1jE83xmSh1kXPpQVBBaz-kdOL4Q@mail.gmail.com>
+Subject: Re: [PATCH 00/10] rpmsg: Make RPMSG name service modular
+To:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Loic PALLARDY <loic.pallardy@st.com>,
+        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Good day Guennadi,
 
+On Tue, 22 Sep 2020 at 02:09, Guennadi Liakhovetski
+<guennadi.liakhovetski@linux.intel.com> wrote:
+>
+> Hi Mathieu,
+>
+> Thanks for the patches. I'm trying to understand the concept of
+> this approach and I'm probably failing at that. It seems to me
+> that this patch set is making the NS announcement service to a
+> separate RPMsg device and I don't understand the reasoning for
+> doing this. As far as I understand namespace announcements
+> belong to RPMsg devices / channels, they create a dedicated
+> endpoint on them with a fixed pre-defined address. But they
+> don't form a separate RPMsg device. I think the current
+> virtio_rpmsg_bus.c has that correctly: for each rpmsg device /
+> channel multiple endpoints can be created, where the NS
+> service is one of them. It's just an endpoing of an rpmsg
+> device, not a complete separate device. Have I misunderstood
+> anything?
 
-> -----Original Message-----
-> From: Paolo Bonzini <pbonzini@redhat.com>
-> Sent: Tuesday, September 22, 2020 8:39 AM
-> To: Sean Christopherson <sean.j.christopherson@intel.com>
-> Cc: Moger, Babu <Babu.Moger@amd.com>; vkuznets@redhat.com;
-> jmattson@google.com; wanpengli@tencent.com; kvm@vger.kernel.org;
-> joro@8bytes.org; x86@kernel.org; linux-kernel@vger.kernel.org;
-> mingo@redhat.com; bp@alien8.de; hpa@zytor.com; tglx@linutronix.de
-> Subject: Re: [PATCH v6 04/12] KVM: SVM: Modify intercept_exceptions to
-> generic intercepts
-> 
-> On 14/09/20 17:06, Sean Christopherson wrote:
-> >> I think these should take a vector instead, and add 64 in the functions.
+This patchset does not introduce any new features - the end result in
+terms of functionality is exactly the same.  It is also a carbon copy
+of the work introduced by Arnaud (hence reusing his patches), with the
+exception that the code is presented in a slightly different order to
+allow for a complete dissociation of RPMSG name service from the
+virtIO transport mechanic.
+
+To make that happen rpmsg device specific byte conversion operations
+had to be introduced in struct rpmsg_device_ops and the explicit
+creation of an rpmsg_device associated with the name service (that
+wasn't needed when name service was welded to virtIO).  But
+associating a rpmsg_device to the name service doesn't change anything
+- RPMSG devices are created the same way when name service messages
+are received from the host or the remote processor.
+
+To prove my theory I ran the rpmsg_client_sample.c and it just worked,
+no changes to client code needed.
+
+Let's keep talking, it's the only way we'll get through this.
+
+Mathieu
+
+>
+> Thanks
+> Guennadi
+>
+> On Mon, Sep 21, 2020 at 06:09:50PM -0600, Mathieu Poirier wrote:
+> > Hi all,
 > >
-> > And "s/int bit/u32 vector" + BUILD_BUG_ON(vector > 32)?
-> 
-> Not sure if we can assume it to be constant, but WARN_ON_ONCE is good
-> enough as far as performance is concerned.  The same int->u32 +
-> WARN_ON_ONCE should be done in patch 1.
-
-Paolo, Ok sure. Will change "int bit" to "u32 vector". I will send a new
-patch to address this. This needs to be addressed in all these functions,
-vmcb_set_intercept, vmcb_clr_intercept, vmcb_is_intercept,
-set_exception_intercept, clr_exception_intercept, svm_set_intercept,
-svm_clr_intercept, svm_is_intercept.
-
-Also will add WARN_ON_ONCE(vector > 32); on set_exception_intercept,
-clr_exception_intercept.  Does that sound good?
-
-> 
-> Thanks for the review!
-> 
-> Paolo
-
+> > After looking at Guennadi[1] and Arnaud's patchsets[2] it became
+> > clear that we need to go back to a generic rpmsg_ns_msg structure
+> > if we wanted to make progress.  To do that some of the work from
+> > Arnaud had to be modified in a way that common name service
+> > functionality was transport agnostic.
+> >
+> > This patchset is based on Arnaud's work but also include a patch
+> > from Guennadi and some input from me.  It should serve as a
+> > foundation for the next revision of [1].
+> >
+> > Applies on rpmsg-next (4e3dda0bc603) and tested on stm32mp157. I
+> > did not test the modularisation.
+> >
+> > Comments and feedback would be greatly appreciated.
+> >
+> > Thanks,
+> > Mathieu
+> >
+> > [1]. https://patchwork.kernel.org/project/linux-remoteproc/list/?series=346593
+> > [2]. https://patchwork.kernel.org/project/linux-remoteproc/list/?series=338335
+> >
+> > Arnaud Pouliquen (5):
+> >   rpmsg: virtio: rename rpmsg_create_channel
+> >   rpmsg: core: Add channel creation internal API
+> >   rpmsg: virtio: Add rpmsg channel device ops
+> >   rpmsg: Turn name service into a stand alone driver
+> >   rpmsg: virtio: use rpmsg ns device for the ns announcement
+> >
+> > Guennadi Liakhovetski (1):
+> >   rpmsg: Move common structures and defines to headers
+> >
+> > Mathieu Poirier (4):
+> >   rpmsg: virtio: Move virtio RPMSG structures to private header
+> >   rpmsg: core: Add RPMSG byte conversion operations
+> >   rpmsg: virtio: Make endianness conversion virtIO specific
+> >   rpmsg: ns: Make Name service module transport agnostic
+> >
+> >  drivers/rpmsg/Kconfig            |   9 +
+> >  drivers/rpmsg/Makefile           |   1 +
+> >  drivers/rpmsg/rpmsg_core.c       |  96 +++++++++++
+> >  drivers/rpmsg/rpmsg_internal.h   | 102 +++++++++++
+> >  drivers/rpmsg/rpmsg_ns.c         | 108 ++++++++++++
+> >  drivers/rpmsg/virtio_rpmsg_bus.c | 284 +++++++++----------------------
+> >  include/linux/rpmsg_ns.h         |  83 +++++++++
+> >  include/uapi/linux/rpmsg.h       |   3 +
+> >  8 files changed, 487 insertions(+), 199 deletions(-)
+> >  create mode 100644 drivers/rpmsg/rpmsg_ns.c
+> >  create mode 100644 include/linux/rpmsg_ns.h
+> >
+> > --
+> > 2.25.1
+> >
