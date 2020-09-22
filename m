@@ -2,87 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B52032742E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 15:23:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 893BF2742E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 15:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgIVNXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 09:23:51 -0400
-Received: from verein.lst.de ([213.95.11.211]:44626 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726470AbgIVNXv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 09:23:51 -0400
-Received: by verein.lst.de (Postfix, from userid 2005)
-        id A38CE68B02; Tue, 22 Sep 2020 15:23:45 +0200 (CEST)
-Date:   Tue, 22 Sep 2020 15:23:44 +0200
-From:   Torsten Duwe <duwe@lst.de>
-To:     Stephan Mueller <smueller@chronox.de>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Nicolai Stange <nstange@suse.de>, linux-crypto@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Willy Tarreau <w@1wt.eu>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Roman Drahtmueller <draht@schaltsekun.de>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andy Lavr <andy.lavr@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Petr Tesarik <ptesarik@suse.cz>
-Subject: Re: [DISCUSSION PATCH 00/41] random: possible ways towards NIST
- SP800-90B compliance
-Message-ID: <20200922132344.GA2728@lst.de>
-References: <20200921075857.4424-1-nstange@suse.de> <8618155.4vTCxPXJkl@tauon.chronox.de>
+        id S1726507AbgIVNYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 09:24:23 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:41416 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726470AbgIVNYX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 09:24:23 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 43BA166D63C5CBD85B6E;
+        Tue, 22 Sep 2020 21:24:19 +0800 (CST)
+Received: from localhost (10.174.179.108) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Tue, 22 Sep 2020
+ 21:24:12 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <mingo@redhat.com>, <peterz@infradead.org>,
+        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
+        <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>,
+        <bsegall@google.com>, <mgorman@suse.de>
+CC:     <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] sched: Remove unused inline function uclamp_bucket_base_value()
+Date:   Tue, 22 Sep 2020 21:24:10 +0800
+Message-ID: <20200922132410.48440-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8618155.4vTCxPXJkl@tauon.chronox.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.108]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 10:40:37AM +0200, Stephan Mueller wrote:
-> Am Montag, 21. September 2020, 09:58:16 CEST schrieb Nicolai Stange:
-> 
-> > - people dislike the approach of having two competing implementations for
-> >   what is basically the same functionality in the kernel.
-> 
-> Is this really so bad considering the security implications on this topic? We 
-> also have multiple file systems, multiple memory allocators, etc...
+There is no caller in tree, so can remove it.
 
-Exactly. I thought Linux was about the freedom of choice. Some people choose
-to get a FIPS certification for their Linux-based products, which mostly
-means to restrict crypto capabilities to an "allowed" set, granted. But in
-this case people might opt for some sort of "entropy QA". I find it hard to
-accept that this option is suppressed, especially if it's because of personal
-antipathy of the maintainer about the origin of this change and not for
-technical reasons. Restrictions on cryptographic functionality are ok, but
-health tests on entropy sources are not?
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ kernel/sched/core.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-I do understand people's reluctance after the dual-ECC DRBG desaster, but
-OTOH SElinux is generally considered an improvement. Definitely not
-everything coming from that direction is tainted.
-
-A big portion of this patch set is cleanup, another one said introduction of
-entropy source monitoring. This is important, no matter what your attitude
-towards certifications might be.
-
-	Torsten
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 2d95dc3f4644..1b06b952dbbe 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -940,11 +940,6 @@ static inline unsigned int uclamp_bucket_id(unsigned int clamp_value)
+ 	return clamp_value / UCLAMP_BUCKET_DELTA;
+ }
+ 
+-static inline unsigned int uclamp_bucket_base_value(unsigned int clamp_value)
+-{
+-	return UCLAMP_BUCKET_DELTA * uclamp_bucket_id(clamp_value);
+-}
+-
+ static inline unsigned int uclamp_none(enum uclamp_id clamp_id)
+ {
+ 	if (clamp_id == UCLAMP_MIN)
+-- 
+2.17.1
 
