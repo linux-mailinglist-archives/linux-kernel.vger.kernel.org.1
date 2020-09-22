@@ -2,140 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB2AF273762
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 02:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CACBA273764
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 02:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729320AbgIVA1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 20:27:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56192 "EHLO mail.kernel.org"
+        id S1728571AbgIVA1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 20:27:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729312AbgIVA11 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 20:27:27 -0400
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        id S1729312AbgIVA1d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 20:27:33 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3464A23A79;
-        Tue, 22 Sep 2020 00:27:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D81B023A9A;
+        Tue, 22 Sep 2020 00:27:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600734447;
-        bh=WJ9vUtalwvX0VoxlCJ9TGwxylNWpZKu4FE8jhq+HMCg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pf/d7qFw3WZA2gru9HH3l5bhO3AXSs/qy9hyRCF00/odkdcTnbJm9WyK7R+4/GCP3
-         bAAzMWhh1YsXr85NLmsyN5dc0Y8ljcSl/0vX1N2kUJC1hnafqXrge2t5xx5uUj1mHa
-         rLS2GuHCOgL3g88Sy2pk5wjV2vfgA5evLQZtxLdw=
-Date:   Mon, 21 Sep 2020 17:27:25 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dm-devel@redhat.com, Jens Axboe <axboe@kernel.dk>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: Re: [PATCH 1/3] block: keyslot-manager: Introduce passthrough
- keyslot manager
-Message-ID: <20200922002725.GB32959@sol.localdomain>
-References: <20200909234422.76194-1-satyat@google.com>
- <20200909234422.76194-2-satyat@google.com>
+        s=default; t=1600734452;
+        bh=dtYc39MVgJFjRczJ5+ycdeO9YjYmRsr+ge2DSIIgCQw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=aILr1eZttNjitMpSaW2VCXKdn87jnKoPny5xUjmUs4aMJ9RKJPh8TZNAaUnJopsN3
+         HRRtupCT6v8xwVMsFAiOHG2docbhS+/QqQHXx1XlBUXsP0vru50ZRJ0ag/2giBAeo6
+         ykNmnhRJNYLqTSemmhPWTm079ynbm+RyqlWr8xS4=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id A1C5535226C1; Mon, 21 Sep 2020 17:27:32 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 17:27:32 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>
+Subject: Re: [RFC PATCH 01/12] rcu: Implement rcu_segcblist_is_offloaded()
+ config dependent
+Message-ID: <20200922002732.GT29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200921124351.24035-1-frederic@kernel.org>
+ <20200921124351.24035-2-frederic@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200909234422.76194-2-satyat@google.com>
+In-Reply-To: <20200921124351.24035-2-frederic@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 11:44:20PM +0000, Satya Tangirala wrote:
-> The device mapper may map over devices that have inline encryption
-> capabilities, and to make use of those capabilities, the DM device must
-> itself advertise those inline encryption capabilities. One way to do this
-> would be to have the DM device set up a keyslot manager with a
-> "sufficiently large" number of keyslots, but that would use a lot of
-> memory. Also, the DM device itself has no "keyslots", and it doesn't make
-> much sense to talk about "programming a key into a DM device's keyslot
-> manager", so all that extra memory used to represent those keyslots is just
-> wasted. All a DM device really needs to be able to do is advertise the
-> crypto capabilities of the underlying devices in a coherent manner and
-> expose a way to evict keys from the underlying devices.
+On Mon, Sep 21, 2020 at 02:43:40PM +0200, Frederic Weisbecker wrote:
+> This simplify the usage of this API and avoid checking the kernel
+> config from the callers.
 > 
-> There are also devices with inline encryption hardware that do not
-> have a limited number of keyslots. One can send a raw encryption key along
-> with a bio to these devices (as opposed to typical inline encryption
-> hardware that require users to first program a raw encryption key into a
-> keyslot, and send the index of that keyslot along with the bio). These
-> devices also only need the same things from the keyslot manager that DM
-> devices need - a way to advertise crypto capabilities and potentially a way
-> to expose a function to evict keys from hardware.
+> Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: Joel Fernandes <joel@joelfernandes.org>
 
-To be a bit more concrete, FMP (Flash Memory Protector) on Exynos SoCs is an
-example of hardware that supports inline encryption without having the concept
-of keyslots.  On that hardware, each request takes an actual key, rather than a
-keyslot number.  Likewise, some Mediatek SoCs are like this too.
+Nice cleanup!  I clearly should have done it this way to start with.
 
-So support for inline encryption without keyslots is something that is useful
-for real hardware, in addition to the device-mapper support which is the initial
-use case included in this patchset.
+Any reason I shouldn't pull this into -rcu right now?
 
-> So we introduce a "passthrough" keyslot manager that provides a way to
-> represent a keyslot manager that doesn't have just a limited number of
-> keyslots, and for which do not require keys to be programmed into keyslots.
-> DM devices can set up a passthrough keyslot manager in their request
-> queues, and advertise appropriate crypto capabilities based on those of the
-> underlying devices. Blk-crypto does not attempt to program keys into any
-> keyslots in the passthrough keyslot manager. Instead, if/when the bio is
-> resubmitted to the underlying device, blk-crypto will try to program the
-> key into the underlying device's keyslot manager.
+							Thanx, Paul
+
+> ---
+>  kernel/rcu/rcu_segcblist.h |  2 +-
+>  kernel/rcu/tree.c          | 21 +++++++--------------
+>  2 files changed, 8 insertions(+), 15 deletions(-)
 > 
-> Signed-off-by: Satya Tangirala <satyat@google.com>
-
-Generally looks good, feel free to add:
-
-	Reviewed-by: Eric Biggers <ebiggers@google.com>
-
-However, maybe it's worth reconsidering the suggestion I've made previously
-(https://lkml.kernel.org/linux-block/20200326062213.GF858@sol.localdomain) of
-separating the crypto capabilities from the keyslot manager.  If we did that,
-then this case could be handled by a NULL keyslot manager, rather than a special
-kind of keyslot manager that doesn't actually do the keyslot management.
-
-I realize that it's a bit tricky because the key eviction callback would still
-be needed.  So maybe it's not really better.  Also, previously other people have
-seemed to prefer just the keyslot manager, e.g.
-https://lkml.kernel.org/linux-block/20200327170047.GA24682@infradead.org.
-
-Does anyone have any new thoughts on this?
-
-Also, a couple minor comments below.
-
-> @@ -353,6 +372,9 @@ void blk_ksm_reprogram_all_keys(struct blk_keyslot_manager *ksm)
+> diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
+> index 5c293afc07b8..492262bcb591 100644
+> --- a/kernel/rcu/rcu_segcblist.h
+> +++ b/kernel/rcu/rcu_segcblist.h
+> @@ -62,7 +62,7 @@ static inline bool rcu_segcblist_is_enabled(struct rcu_segcblist *rsclp)
+>  /* Is the specified rcu_segcblist offloaded?  */
+>  static inline bool rcu_segcblist_is_offloaded(struct rcu_segcblist *rsclp)
 >  {
->  	unsigned int slot;
+> -	return rsclp->offloaded;
+> +	return IS_ENABLED(CONFIG_RCU_NOCB_CPU) && rsclp->offloaded;
+>  }
 >  
-> +	if (WARN_ON(blk_ksm_is_passthrough(ksm)))
-> +		return;
-> +
-
-I think the above WARN_ON() should just be removed:
-
-	if (blk_ksm_is_passthrough(ksm))
-		return;
-
-Otherwise callers might need to conditionally call blk_ksm_reprogram_all_keys()
-depending on whether there are keyslots or not.
-
-> +/**
-> + * blk_ksm_init_passthrough() - Init a passthrough keyslot manager
-> + * @ksm: The keyslot manager to init
-> + *
-> + * Initialize a passthrough keyslot manager.
-> + * Called by e.g. storage drivers to set up a keyslot manager in their
-> + * request_queue, when the storage driver wants to manage its keys by itself.
-> + * This is useful for inline encryption hardware that don't have a small fixed
-> + * number of keyslots, and for layered devices.
-> + *
-
-Maybe:
-
-"inline encryption hardware that don't have a small fixed number of keyslots"
-
-=>
-
-"inline encryption hardware that doesn't have the concept of keyslots"
+>  /*
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 8ce77d9ac716..c0286ce8fc03 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1583,8 +1583,7 @@ static bool __note_gp_changes(struct rcu_node *rnp, struct rcu_data *rdp)
+>  {
+>  	bool ret = false;
+>  	bool need_qs;
+> -	const bool offloaded = IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
+> -			       rcu_segcblist_is_offloaded(&rdp->cblist);
+> +	const bool offloaded = rcu_segcblist_is_offloaded(&rdp->cblist);
+>  
+>  	raw_lockdep_assert_held_rcu_node(rnp);
+>  
+> @@ -2011,8 +2010,7 @@ static void rcu_gp_cleanup(void)
+>  		needgp = true;
+>  	}
+>  	/* Advance CBs to reduce false positives below. */
+> -	offloaded = IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
+> -		    rcu_segcblist_is_offloaded(&rdp->cblist);
+> +	offloaded = rcu_segcblist_is_offloaded(&rdp->cblist);
+>  	if ((offloaded || !rcu_accelerate_cbs(rnp, rdp)) && needgp) {
+>  		WRITE_ONCE(rcu_state.gp_flags, RCU_GP_FLAG_INIT);
+>  		WRITE_ONCE(rcu_state.gp_req_activity, jiffies);
+> @@ -2207,8 +2205,7 @@ rcu_report_qs_rdp(int cpu, struct rcu_data *rdp)
+>  	unsigned long flags;
+>  	unsigned long mask;
+>  	bool needwake = false;
+> -	const bool offloaded = IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
+> -			       rcu_segcblist_is_offloaded(&rdp->cblist);
+> +	const bool offloaded = rcu_segcblist_is_offloaded(&rdp->cblist);
+>  	struct rcu_node *rnp;
+>  
+>  	rnp = rdp->mynode;
+> @@ -2375,8 +2372,7 @@ int rcutree_dead_cpu(unsigned int cpu)
+>  static void rcu_do_batch(struct rcu_data *rdp)
+>  {
+>  	unsigned long flags;
+> -	const bool offloaded = IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
+> -			       rcu_segcblist_is_offloaded(&rdp->cblist);
+> +	const bool offloaded = rcu_segcblist_is_offloaded(&rdp->cblist);
+>  	struct rcu_head *rhp;
+>  	struct rcu_cblist rcl = RCU_CBLIST_INITIALIZER(rcl);
+>  	long bl, count;
+> @@ -2620,8 +2616,7 @@ static __latent_entropy void rcu_core(void)
+>  	unsigned long flags;
+>  	struct rcu_data *rdp = raw_cpu_ptr(&rcu_data);
+>  	struct rcu_node *rnp = rdp->mynode;
+> -	const bool offloaded = IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
+> -			       rcu_segcblist_is_offloaded(&rdp->cblist);
+> +	const bool offloaded = rcu_segcblist_is_offloaded(&rdp->cblist);
+>  
+>  	if (cpu_is_offline(smp_processor_id()))
+>  		return;
+> @@ -2919,8 +2914,7 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
+>  				   rcu_segcblist_n_cbs(&rdp->cblist));
+>  
+>  	/* Go handle any RCU core processing required. */
+> -	if (IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
+> -	    unlikely(rcu_segcblist_is_offloaded(&rdp->cblist))) {
+> +	if (unlikely(rcu_segcblist_is_offloaded(&rdp->cblist))) {
+>  		__call_rcu_nocb_wake(rdp, was_alldone, flags); /* unlocks */
+>  	} else {
+>  		__call_rcu_core(rdp, head, flags);
+> @@ -3655,8 +3649,7 @@ static int rcu_pending(int user)
+>  
+>  	/* Has RCU gone idle with this CPU needing another grace period? */
+>  	if (!gp_in_progress && rcu_segcblist_is_enabled(&rdp->cblist) &&
+> -	    (!IS_ENABLED(CONFIG_RCU_NOCB_CPU) ||
+> -	     !rcu_segcblist_is_offloaded(&rdp->cblist)) &&
+> +	    !rcu_segcblist_is_offloaded(&rdp->cblist) &&
+>  	    !rcu_segcblist_restempty(&rdp->cblist, RCU_NEXT_READY_TAIL))
+>  		return 1;
+>  
+> -- 
+> 2.28.0
+> 
