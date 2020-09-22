@@ -2,174 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 334862740F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F416A274111
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726645AbgIVLfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 07:35:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47254 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726518AbgIVLfd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 07:35:33 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600774530;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8xKyn37igCwVdW/X/CBmTomDtKCHpuashkMdG2jkb4c=;
-        b=NTjrurU/+zwFRQtn4hfGYg2GOko6dC0SeUB1QZtnNa696pUrSKZKZgYVa5HxMkhxO4U8oL
-        oOvogVfpTUYSvHszpbI59Xoup8VEs6dfyakD7OOTWNwduP1XAeRLB+kZMPVVcUxxN3ckj9
-        zGzn/HVDMrBuie6uMe1/nvylnsgDZLk=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6D52CAE1C;
-        Tue, 22 Sep 2020 11:36:07 +0000 (UTC)
-Subject: Re: [PATCH v2 1/3] xen-blkback: add a parameter for disabling of
- persistent grants
-To:     SeongJae Park <sjpark@amazon.com>,
-        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>
-Cc:     konrad.wilk@oracle.com, SeongJae Park <sjpark@amazon.de>,
-        axboe@kernel.dk, aliguori@amazon.com, amit@kernel.org,
-        mheyne@amazon.de, pdurrant@amazon.co.uk,
-        linux-block@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org
-References: <20200922112638.14238-1-sjpark@amazon.com>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <33a8d880-d8ce-0cf7-d115-ca6938889f27@suse.com>
-Date:   Tue, 22 Sep 2020 13:35:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726625AbgIVLkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 07:40:12 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13823 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726454AbgIVLkD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 07:40:03 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 5966745496516D02CC23;
+        Tue, 22 Sep 2020 19:40:01 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 22 Sep 2020 19:39:53 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <linmiaohe@huawei.com>,
+        <martin.varghese@nokia.com>, <fw@strlen.de>, <edumazet@google.com>,
+        <dcaratti@redhat.com>, <steffen.klassert@secunet.com>,
+        <pabeni@redhat.com>, <kyk.segfault@gmail.com>, <saeed@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>
+Subject: [PATCH RFC] net: add in_softirq() debug checking in napi_consume_skb()
+Date:   Tue, 22 Sep 2020 19:36:21 +0800
+Message-ID: <1600774581-150072-1-git-send-email-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-In-Reply-To: <20200922112638.14238-1-sjpark@amazon.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.09.20 13:26, SeongJae Park wrote:
-> On Tue, 22 Sep 2020 13:12:59 +0200 "Roger Pau Monné" <roger.pau@citrix.com> wrote:
-> 
->> On Tue, Sep 22, 2020 at 12:52:07PM +0200, SeongJae Park wrote:
->>> From: SeongJae Park <sjpark@amazon.de>
->>>
->>> Persistent grants feature provides high scalability.  On some small
->>> systems, however, it could incur data copy overheads[1] and thus it is
->>> required to be disabled.  But, there is no option to disable it.  For
->>> the reason, this commit adds a module parameter for disabling of the
->>> feature.
->>>
->>> [1] https://wiki.xen.org/wiki/Xen_4.3_Block_Protocol_Scalability
->>>
->>> Signed-off-by: Anthony Liguori <aliguori@amazon.com>
->>> Signed-off-by: SeongJae Park <sjpark@amazon.de>
->>> ---
->>>   .../ABI/testing/sysfs-driver-xen-blkback      |  9 ++++++
->>>   drivers/block/xen-blkback/xenbus.c            | 28 ++++++++++++++-----
->>>   2 files changed, 30 insertions(+), 7 deletions(-)
->>>
->>> diff --git a/Documentation/ABI/testing/sysfs-driver-xen-blkback b/Documentation/ABI/testing/sysfs-driver-xen-blkback
->>> index ecb7942ff146..ac2947b98950 100644
->>> --- a/Documentation/ABI/testing/sysfs-driver-xen-blkback
->>> +++ b/Documentation/ABI/testing/sysfs-driver-xen-blkback
->>> @@ -35,3 +35,12 @@ Description:
->>>                   controls the duration in milliseconds that blkback will not
->>>                   cache any page not backed by a grant mapping.
->>>                   The default is 10ms.
->>> +
->>> +What:           /sys/module/xen_blkback/parameters/feature_persistent
->>> +Date:           September 2020
->>> +KernelVersion:  5.10
->>> +Contact:        SeongJae Park <sjpark@amazon.de>
->>> +Description:
->>> +                Whether to enable the persistent grants feature or not.  Note
->>> +                that this option only takes effect on newly created backends.
->>> +                The default is Y (enable).
->>> diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
->>> index b9aa5d1ac10b..8a95ddd08b13 100644
->>> --- a/drivers/block/xen-blkback/xenbus.c
->>> +++ b/drivers/block/xen-blkback/xenbus.c
->>> @@ -879,6 +879,12 @@ static void reclaim_memory(struct xenbus_device *dev)
->>>   
->>>   /* ** Connection ** */
->>>   
->>> +/* Enable the persistent grants feature. */
->>> +static bool feature_persistent = true;
->>> +module_param(feature_persistent, bool, 0644);
->>> +MODULE_PARM_DESC(feature_persistent,
->>> +		"Enables the persistent grants feature");
->>> +
->>>   /*
->>>    * Write the physical details regarding the block device to the store, and
->>>    * switch to Connected state.
->>> @@ -906,11 +912,15 @@ static void connect(struct backend_info *be)
->>>   
->>>   	xen_blkbk_barrier(xbt, be, be->blkif->vbd.flush_support);
->>>   
->>> -	err = xenbus_printf(xbt, dev->nodename, "feature-persistent", "%u", 1);
->>> -	if (err) {
->>> -		xenbus_dev_fatal(dev, err, "writing %s/feature-persistent",
->>> -				 dev->nodename);
->>> -		goto abort;
->>> +	if (feature_persistent) {
->>> +		err = xenbus_printf(xbt, dev->nodename, "feature-persistent",
->>> +				"%u", feature_persistent);
->>> +		if (err) {
->>> +			xenbus_dev_fatal(dev, err,
->>> +					"writing %s/feature-persistent",
->>> +					dev->nodename);
->>> +			goto abort;
->>> +		}
->>>   	}
->>>   
->>>   	err = xenbus_printf(xbt, dev->nodename, "sectors", "%llu",
->>> @@ -1093,8 +1103,12 @@ static int connect_ring(struct backend_info *be)
->>>   		xenbus_dev_fatal(dev, err, "unknown fe protocol %s", protocol);
->>>   		return -ENOSYS;
->>>   	}
->>> -	pers_grants = xenbus_read_unsigned(dev->otherend, "feature-persistent",
->>> -					   0);
->>> +	if (feature_persistent)
->>> +		pers_grants = xenbus_read_unsigned(dev->otherend,
->>> +				"feature-persistent", 0);
->>> +	else
->>> +		pers_grants = 0;
->>> +
->>
->> Sorry for not realizing earlier, but looking at it again I think you
->> need to cache the value of feature_persistent when it's first used in
->> the blkback state data, so that it's consistent.
->>
->> What would happen for example with the following flow (assume a
->> persistent grants enabled frontend):
->>
->> feature_persistent = false
->>
->> connect(...)
->> feature-persistent is not written to xenstore
->>
->> User changes feature_persistent = true
->>
->> connect_ring(...)
->> pers_grants = true, because feature-persistent is set unconditionally
->> by the frontend and feature_persistent variable is now true.
->>
->> Then blkback will try to use persistent grants and the whole
->> connection will malfunction because the frontend won't.
-> 
-> Ah, you're right.  I should also catch this before but didn't, sorry.
-> 
->>
->> The other option is to prevent changing the variable when there are
->> blkback instances already running.
-> 
-> I think storing the option value in xenstore would be simpler.  That said, if
-> you prefer this way, please let me know.
+The current semantic for napi_consume_skb() is that caller need
+to provide non-zero budget when calling from NAPI context, and
+breaking this semantic will cause hard to debug problem, because
+_kfree_skb_defer() need to run in atomic context in order to push
+the skb to the particular cpu' napi_alloc_cache atomically.
 
-No, Xenstore isn't the right place for that. This is a local
-implementation detail of blkback and shouldn't be exported to Xenstore.
+So add a in_softirq() debug checking in napi_consume_skb() to catch
+this kind of error.
 
+Suggested-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+---
+ include/linux/netdevice.h | 6 ++++++
+ net/Kconfig               | 7 +++++++
+ net/core/skbuff.c         | 4 ++++
+ 3 files changed, 17 insertions(+)
 
-Juergen
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index fef0eb9..e06d5e5 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -5095,6 +5095,12 @@ do {								\
+ })
+ #endif
+ 
++#if defined(CONFIG_DEBUG_NET)
++#define DEBUG_NET_WARN(condition, ...)	WARN(condition, ##__VA_ARGS__)
++#else
++#define DEBUG_NET_WARN(condition, ...)
++#endif
++
+ /*
+  *	The list of packet types we will receive (as opposed to discard)
+  *	and the routines to invoke.
+diff --git a/net/Kconfig b/net/Kconfig
+index 3831206..b176670 100644
+--- a/net/Kconfig
++++ b/net/Kconfig
+@@ -460,6 +460,13 @@ config ETHTOOL_NETLINK
+ 	  netlink. It provides better extensibility and some new features,
+ 	  e.g. notification messages.
+ 
++config DEBUG_NET
++	bool "Net debugging and diagnostics"
++	depends on DEBUG_KERNEL
++	default n
++	help
++	  Say Y here to add some extra checks and diagnostics to networking.
++
+ endif   # if NET
+ 
+ # Used by archs to tell that they support BPF JIT compiler plus which flavour.
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index e077447..378e66c 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -901,6 +901,10 @@ void napi_consume_skb(struct sk_buff *skb, int budget)
+ 		return;
+ 	}
+ 
++	DEBUG_NET_WARN(!in_softirq(),
++		       "%s is called with non-zero budget outside softirq context.\n",
++		       __func__);
++
+ 	if (!skb_unref(skb))
+ 		return;
+ 
+-- 
+2.8.1
+
