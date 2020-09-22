@@ -2,95 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96324273EB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 11:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 548A9273EB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 11:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726567AbgIVJlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 05:41:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42778 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726353AbgIVJlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 05:41:49 -0400
-Received: from e123331-lin.nice.arm.com (lfbn-nic-1-188-42.w2-15.abo.wanadoo.fr [2.15.37.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE322239A1;
-        Tue, 22 Sep 2020 09:41:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600767708;
-        bh=ttUaxpIoiZeqwIvQOhaNFmyYIhNSRt/G+yBAvPlz2is=;
-        h=From:To:Cc:Subject:Date:From;
-        b=BJ39ovw6VE7ZMD0AA2u98IyiuiYME3jBM9sXvoNy8Ft+JWMjZyHcVJwtvmPFPE//W
-         /iK5le6ma37lYtFiGtTrtRTAx1/r1AShY/LYID9q0S/5Fd76/JbiG+jtmNHxPpZ6g5
-         i7VSqgb94mZiYrIHEvum2OdY3lHxtJiL9rNlW/5s=
-From:   Ard Biesheuvel <ardb@kernel.org>
-To:     linux-integrity@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Subject: [PATCH] tpm: of: avoid __va() translation for event log address
-Date:   Tue, 22 Sep 2020 11:41:28 +0200
-Message-Id: <20200922094128.26245-1-ardb@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        id S1726600AbgIVJl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 05:41:58 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:57530 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726353AbgIVJl6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 05:41:58 -0400
+Date:   Tue, 22 Sep 2020 09:41:54 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600767715;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=28OF8xyUuF3xth7yE+5wXNZgEp58b87Vdy2+zVFqVAY=;
+        b=iIAHq6lHY/nXhOjxqRreRHNAunAjeW37wBupcNej/UzBqfHInbbXo6xo0zdAG4BeGxKBvm
+        M5srlFDjlCn2r+DpHpoI+YeBKk4rlXABhMq5/bPEgwpe+/2kfOd+UPYmKVA+z6R+HRHFJf
+        LdH3G2nC7W+/6ZPd4KfXrx7QCpBXtTubgBg8n1dEfHyOWZeKo/m/7LpDoDQZxOHAN1fpQO
+        hjnpg8bd22L3W5y56aB+002V5CC5aTNdIrqDzDWdDJ53OORdhd+rFy5JowvM1EVziW1fNk
+        juCYYhGMMI8M0qR8G08BM3RFoVf5eYhYRpbvd9Pl+cIDFAID3zLuUsmmPgjPzw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600767715;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=28OF8xyUuF3xth7yE+5wXNZgEp58b87Vdy2+zVFqVAY=;
+        b=kl/KJbNbjo7+3v2LwryseS7+f6jPjrn/S08adXHeqylJ+usNElU3qjChPZctsvJV+mLG6G
+        +TigRqrWcSE51xAw==
+From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/pti] arch/um: Add a dummy <asm/cacheflush.h> header
+Cc:     Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200922074951.2192-1-bp@alien8.de>
+References: <20200922074951.2192-1-bp@alien8.de>
+MIME-Version: 1.0
+Message-ID: <160076771494.15536.16617325903250425535.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The TPM event log is provided to the OS by the firmware, by loading
-it into an area in memory and passing the physical address via a node
-in the device tree.
+The following commit has been merged into the x86/pti branch of tip:
 
-Currently, we use __va() to access the memory via the kernel's linear
-map: however, it is not guaranteed that the linear map covers this
-particular address, as we may be running under HIGHMEM on a 32-bit
-architecture, or running firmware that uses a memory type for the
-event log that is omitted from the linear map (such as EfiReserved).
+Commit-ID:     e9c142f6f54db85c212ca64aefd4f2c232dac4ae
+Gitweb:        https://git.kernel.org/tip/e9c142f6f54db85c212ca64aefd4f2c232d=
+ac4ae
+Author:        Borislav Petkov <bp@suse.de>
+AuthorDate:    Tue, 22 Sep 2020 09:49:51 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Tue, 22 Sep 2020 11:35:47 +02:00
 
-So instead, use memremap(), which will reuse the linear mapping if
-it is valid, or create another mapping otherwise.
+arch/um: Add a dummy <asm/cacheflush.h> header
 
-Cc: Peter Huewe <peterhuewe@gmx.de>
-Cc: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+... in order to fix the defconfig build:
+
+  ./arch/x86/include/asm/cacheflush.h: In function =E2=80=98l1d_flush_hw=E2=
+=80=99:
+  ./arch/x86/include/asm/cacheflush.h:15:6: error: implicit declaration of \
+	  function =E2=80=98static_cpu_has=E2=80=99; did you mean =E2=80=98static_ke=
+y_false=E2=80=99? [-Werror=3Dimplicit-function-declaration]
+
+[ mingo: Changed the header guard to the existing nomenclature. ]
+
+Fixes: a9210620ec36 ("x86/mm: Optionally flush L1D on context switch")
+Reported-by: Ingo Molnar <mingo@kernel.org>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20200922074951.2192-1-bp@alien8.de
 ---
- drivers/char/tpm/eventlog/of.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ arch/um/include/asm/cacheflush.h |  9 +++++++++
+ 1 file changed, 9 insertions(+)
+ create mode 100644 arch/um/include/asm/cacheflush.h
 
-diff --git a/drivers/char/tpm/eventlog/of.c b/drivers/char/tpm/eventlog/of.c
-index a9ce66d09a75..9178547589a3 100644
---- a/drivers/char/tpm/eventlog/of.c
-+++ b/drivers/char/tpm/eventlog/of.c
-@@ -11,6 +11,7 @@
-  */
- 
- #include <linux/slab.h>
-+#include <linux/io.h>
- #include <linux/of.h>
- #include <linux/tpm_eventlog.h>
- 
-@@ -25,6 +26,7 @@ int tpm_read_log_of(struct tpm_chip *chip)
- 	struct tpm_bios_log *log;
- 	u32 size;
- 	u64 base;
-+	void *p;
- 
- 	log = &chip->log;
- 	if (chip->dev.parent && chip->dev.parent->of_node)
-@@ -65,7 +67,11 @@ int tpm_read_log_of(struct tpm_chip *chip)
- 		return -EIO;
- 	}
- 
--	log->bios_event_log = kmemdup(__va(base), size, GFP_KERNEL);
-+	p = memremap(base, size, MEMREMAP_WB);
-+	if (!p)
-+		return -ENOMEM;
-+	log->bios_event_log = kmemdup(p, size, GFP_KERNEL);
-+	memunmap(p);
- 	if (!log->bios_event_log)
- 		return -ENOMEM;
- 
--- 
-2.17.1
-
+diff --git a/arch/um/include/asm/cacheflush.h b/arch/um/include/asm/cacheflus=
+h.h
+new file mode 100644
+index 0000000..f693cb9
+--- /dev/null
++++ b/arch/um/include/asm/cacheflush.h
+@@ -0,0 +1,9 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_UM_CACHEFLUSH_H
++#define _ASM_UM_CACHEFLUSH_H
++
++#undef ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
++#include <asm-generic/cacheflush.h>
++
++static inline int l1d_flush_hw(void) { return -EOPNOTSUPP; }
++#endif /* _ASM_UM_CACHEFLUSH_H */
