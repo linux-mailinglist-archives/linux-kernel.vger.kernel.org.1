@@ -2,56 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB78B273D9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 10:44:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8211B273D9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 10:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726507AbgIVIoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 04:44:23 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51266 "EHLO mx2.suse.de"
+        id S1726552AbgIVIoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 04:44:34 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51464 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726142AbgIVIoX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 04:44:23 -0400
+        id S1726522AbgIVIod (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 04:44:33 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600764261;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=p3AfavqP40RUc2ETYtkDYnb3b9veh8eZpjijhPHw0fc=;
-        b=TWukYMwD7NFNDXCfb/SO1wW+Oz14Lc4t+udWA6n+g3RqJeXVz2Juwadua8CE15vItHHMrs
-        X6WmgQfgzuJ2s2nZDqn6V++LThK0r867znHK8COMio8Ev1fv4NV1F1uVtxdHD6OCRwLsKU
-        rvXF2wfA4LKaMQ6GOgWLDnTfsNUc0CE=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 733E9ACBF;
-        Tue, 22 Sep 2020 08:44:58 +0000 (UTC)
-Subject: Re: [PATCH] xen: remove redundant initialization of variable ret
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        boris.ostrovsky@oracle.com, sstabellini@kernel.org
-Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-References: <20200919031702.32192-1-jingxiangfeng@huawei.com>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <94b57348-2a8c-b0b9-1b83-b92b1e0216c9@suse.com>
-Date:   Tue, 22 Sep 2020 10:44:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        by mx2.suse.de (Postfix) with ESMTP id AC920ACBF;
+        Tue, 22 Sep 2020 08:45:08 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 7FB371E12E3; Tue, 22 Sep 2020 10:44:31 +0200 (CEST)
+Date:   Tue, 22 Sep 2020 10:44:31 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Song Liu <song@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Coly Li <colyli@suse.de>, Richard Weinberger <richard@nod.at>,
+        Minchan Kim <minchan@kernel.org>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Justin Sanders <justin@coraid.com>,
+        linux-mtd@lists.infradead.org, dm-devel@redhat.com,
+        linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
+        linux-kernel@vger.kernel.org, drbd-dev@lists.linbit.com,
+        linux-raid@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH 03/13] bcache: inherit the optimal I/O size
+Message-ID: <20200922084431.GA16464@quack2.suse.cz>
+References: <20200921080734.452759-1-hch@lst.de>
+ <20200921080734.452759-4-hch@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <20200919031702.32192-1-jingxiangfeng@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921080734.452759-4-hch@lst.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.09.20 05:17, Jing Xiangfeng wrote:
-> After commit 9f51c05dc41a ("pvcalls-front: Avoid
-> get_free_pages(GFP_KERNEL) under spinlock"), the variable ret is being
-> initialized with '-ENOMEM' that is meaningless. So remove it.
+On Mon 21-09-20 10:07:24, Christoph Hellwig wrote:
+> Inherit the optimal I/O size setting just like the readahead window,
+> as any reason to do larger I/O does not apply to just readahead.
 > 
-> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Reviewed-by: Juergen Gross <jgross@suse.com>
+The patch looks good to me. You can add:
 
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Juergen
+								Honza
+
+> ---
+>  drivers/md/bcache/super.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+> index 1bbdc410ee3c51..48113005ed86ad 100644
+> --- a/drivers/md/bcache/super.c
+> +++ b/drivers/md/bcache/super.c
+> @@ -1430,6 +1430,8 @@ static int cached_dev_init(struct cached_dev *dc, unsigned int block_size)
+>  	dc->disk.disk->queue->backing_dev_info->ra_pages =
+>  		max(dc->disk.disk->queue->backing_dev_info->ra_pages,
+>  		    q->backing_dev_info->ra_pages);
+> +	blk_queue_io_opt(dc->disk.disk->queue,
+> +		max(queue_io_opt(dc->disk.disk->queue), queue_io_opt(q)));
+>  
+>  	atomic_set(&dc->io_errors, 0);
+>  	dc->io_disable = false;
+> -- 
+> 2.28.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
