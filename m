@@ -2,151 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E5B1274757
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 19:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D0FA274763
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 19:25:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726672AbgIVRUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 13:20:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726526AbgIVRUD (ORCPT
+        id S1726632AbgIVRZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 13:25:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30512 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726526AbgIVRZu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 13:20:03 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17D51C061755;
-        Tue, 22 Sep 2020 10:20:03 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id e23so16334811otk.7;
-        Tue, 22 Sep 2020 10:20:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EItoq1kaiHeWVc5lky8YhdzGpyspzkaqvTZAN+0uG8s=;
-        b=ek1BIZZyVl3RntwXpKxZKVRy7AjMYd2t5ZjDu0Gkr+83ZXPJiTnzcLSziQYU5YQi9M
-         zz5wOAudN8qHSec8RMYhz3079Sg2fztpxsFVlYPTbpjJj4NEFIouF6csvy38nV6qdvO4
-         LHFyhEB6+sDeNLM20tDikE0MdOwP+PWOSb8F52houXJNiMI3wO2FMRTniR98K97dgkZ4
-         EtCLz1jHbknfXgrX6t3JeREbjP8noQCnc9wvt1K0D+0uAg6Q1ij30KxXkn+n5pJw/Wot
-         Jh3lFs3CaqraBeH+JP3TFUsIDL8If4ZRXHdII6p6FMHRs1zjGRt8K18vJWC8slKoX1wA
-         E1DQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EItoq1kaiHeWVc5lky8YhdzGpyspzkaqvTZAN+0uG8s=;
-        b=l0+h5lLkvRLkkQnFYZ/5cFi7WhDHwLkvwEFVEfINT1DSl/+zies1OznIRuV0Z3BaAm
-         VMW7M1QEcE/c+uYsf4J7xr40L7fWLWvTZCF9QyOlr9Rn+l3Sr9gaJfMBR0JmQs4nVwCO
-         GCnbhXSf+mCRQ9RLoN1YynMgH1+q3YEhCOyQ4eDJU3l28AQaJqoFHRBZeUvM+e9SfW2E
-         /fjlgdJT2fFZQHT9FVJs8cWCK6j+H2i7jYQ5xkljd0rZqTlQoBekJDflzEhHwhBWkCDK
-         6F2H/BMaQ0ow0OL5GQS0lsikYszpOZZ1rr36FOdSX3Bu0sl/MOYZUFXmrlefP7WyjPj2
-         sxMQ==
-X-Gm-Message-State: AOAM531IjbME+drraLp1MfJkm4ZexmoZ4pmEMl0/g0cNPoV07MNnQGYY
-        FARMH/iwbZAPDa7qQcElOtrbgJJ2SAZrguiEfbk=
-X-Google-Smtp-Source: ABdhPJwNcpShFc8c3V/UC1bmKbpnJq1sPySTQ40fTrCHUXJ486Nscbfvc9yXAnnr7C/wr8kImZHNzbiYtV9UD4Td08Q=
-X-Received: by 2002:a9d:4695:: with SMTP id z21mr3525657ote.91.1600795202320;
- Tue, 22 Sep 2020 10:20:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200921163021.v1.1.Id3160295d33d44a59fa3f2a444d74f40d132ea5c@changeid>
- <CABBYNZJGfDoV+E-f6T=ZQ2RT0doXDdOB7tgVrt=4fpvKcpmH4w@mail.gmail.com> <CAJQfnxHcvm_-iCP-2Y6GR1vG4ZmMr==ZuMHBua8TeeiNbqAJgA@mail.gmail.com>
-In-Reply-To: <CAJQfnxHcvm_-iCP-2Y6GR1vG4ZmMr==ZuMHBua8TeeiNbqAJgA@mail.gmail.com>
-From:   Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Date:   Tue, 22 Sep 2020 10:19:50 -0700
-Message-ID: <CABBYNZKuXtf5Z_zHG1h2c6_0to8o2MqvmQvt-8mmX0hdb3_B9g@mail.gmail.com>
-Subject: Re: [PATCH v1] Bluetooth: Enforce key size of 16 bytes on FIPS level
-To:     Archie Pusaka <apusaka@google.com>
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Alain Michaud <alainm@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
+        Tue, 22 Sep 2020 13:25:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600795549;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KZmFKoK2MR7ChNH+SzztUzepcIAB3ilvtz5u7xppUU8=;
+        b=KaGUDsghMH06JVkDh9tBIO7FrkwGAkaXtk+MyCbqRfmz1Y3Vy477b/ItzZR4GEVU/ZEetM
+        a3hXnITqhmUmX0PWopJAaVuwvc7a8tE523PnTZQpWdeD19aamHhi2uJL64fPp3Lq0KkUOL
+        dLkGlWj4IR5FZ7W1YmU5qqMwmhl+nVs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-463-mvCMT2fhNdqivAS76rFhIg-1; Tue, 22 Sep 2020 13:25:46 -0400
+X-MC-Unique: mvCMT2fhNdqivAS76rFhIg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EBC1D80EF8B;
+        Tue, 22 Sep 2020 17:25:44 +0000 (UTC)
+Received: from ovpn-66-35.rdu2.redhat.com (unknown [10.10.67.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 606C310013D7;
+        Tue, 22 Sep 2020 17:25:43 +0000 (UTC)
+Message-ID: <c804f9ec9e15daa4e82483c546558599c662f53c.camel@redhat.com>
+Subject: Re: [PATCH v2 5/9] iomap: Support arbitrarily many blocks per page
+From:   Qian Cai <cai@redhat.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org,
+        Dave Kleikamp <shaggy@kernel.org>,
+        jfs-discussion@lists.sourceforge.net,
+        Dave Chinner <dchinner@redhat.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-next@vger.kernel.org
+Date:   Tue, 22 Sep 2020 13:25:42 -0400
+In-Reply-To: <20200922170526.GK32101@casper.infradead.org>
+References: <20200910234707.5504-1-willy@infradead.org>
+         <20200910234707.5504-6-willy@infradead.org>
+         <163f852ba12fd9de5dec7c4a2d6b6c7cdb379ebc.camel@redhat.com>
+         <20200922170526.GK32101@casper.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Archie,
+On Tue, 2020-09-22 at 18:05 +0100, Matthew Wilcox wrote:
+> On Tue, Sep 22, 2020 at 12:23:45PM -0400, Qian Cai wrote:
+> > On Fri, 2020-09-11 at 00:47 +0100, Matthew Wilcox (Oracle) wrote:
+> > > Size the uptodate array dynamically to support larger pages in the
+> > > page cache.  With a 64kB page, we're only saving 8 bytes per page today,
+> > > but with a 2MB maximum page size, we'd have to allocate more than 4kB
+> > > per page.  Add a few debugging assertions.
+> > > 
+> > > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> > > Reviewed-by: Dave Chinner <dchinner@redhat.com>
+> > 
+> > Some syscall fuzzing will trigger this on powerpc:
+> > 
+> > .config: https://gitlab.com/cailca/linux-mm/-/blob/master/powerpc.config
+> > 
+> > [ 8805.895344][T445431] WARNING: CPU: 61 PID: 445431 at fs/iomap/buffered-
+> > io.c:78 iomap_page_release+0x250/0x270
+> 
+> Well, I'm glad it triggered.  That warning is:
+>         WARN_ON_ONCE(bitmap_full(iop->uptodate, nr_blocks) !=
+>                         PageUptodate(page));
+> so there was definitely a problem of some kind.
+> 
+> truncate_cleanup_page() calls
+> do_invalidatepage() calls
+> iomap_invalidatepage() calls
+> iomap_page_release()
+> 
+> Is this the first warning?  I'm wondering if maybe there was an I/O error
+> earlier which caused PageUptodate to get cleared again.  If it's easy to
+> reproduce, perhaps you could try something like this?
 
-On Tue, Sep 22, 2020 at 12:37 AM Archie Pusaka <apusaka@google.com> wrote:
->
-> Hi Luiz,
->
-> On Tue, 22 Sep 2020 at 01:13, Luiz Augusto von Dentz
-> <luiz.dentz@gmail.com> wrote:
-> >
-> > Hi Archie,
-> >
-> > On Mon, Sep 21, 2020 at 1:31 AM Archie Pusaka <apusaka@google.com> wrote:
-> > >
-> > > From: Archie Pusaka <apusaka@chromium.org>
-> > >
-> > > According to the spec Ver 5.2, Vol 3, Part C, Sec 5.2.2.8:
-> > > Device in security mode 4 level 4 shall enforce:
-> > > 128-bit equivalent strength for link and encryption keys required
-> > > using FIPS approved algorithms (E0 not allowed, SAFER+ not allowed,
-> > > and P-192 not allowed; encryption key not shortened)
-> > >
-> > > This patch rejects connection with key size below 16 for FIPS level
-> > > services.
-> > >
-> > > Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-> > > Reviewed-by: Alain Michaud <alainm@chromium.org>
-> > >
-> > > ---
-> > >
-> > >  net/bluetooth/l2cap_core.c | 7 ++++++-
-> > >  1 file changed, 6 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
-> > > index ade83e224567..306616ec26e6 100644
-> > > --- a/net/bluetooth/l2cap_core.c
-> > > +++ b/net/bluetooth/l2cap_core.c
-> > > @@ -1515,8 +1515,13 @@ static bool l2cap_check_enc_key_size(struct hci_conn *hcon)
-> > >          * that have no key size requirements. Ensure that the link is
-> > >          * actually encrypted before enforcing a key size.
-> > >          */
-> > > +       int min_key_size = hcon->hdev->min_enc_key_size;
-> > > +
-> > > +       if (hcon->sec_level == BT_SECURITY_FIPS)
-> > > +               min_key_size = 16;
-> > > +
-> > >         return (!test_bit(HCI_CONN_ENCRYPT, &hcon->flags) ||
-> > > -               hcon->enc_key_size >= hcon->hdev->min_enc_key_size);
-> > > +               hcon->enc_key_size >= min_key_size);
-> >
-> > While this looks fine to me, it looks like this should be placed
-> > elsewhere since it takes an hci_conn and it is not L2CAP specific.
->
-> From what I understood, it is permissible to use AES-CCM P-256
-> encryption with key length < 16 when encrypting the link, but such a
-> connection does not satisfy security level 4, and therefore must not
-> be given access to level 4 services. However, I think it is
-> permissible to give them access to level 3 services or below.
->
-> Should I use l2cap chan->sec_level for this purpose? I'm kind of lost
-> on the difference between hcon->sec_level and chan->sec_level.
+Yes, this is the first warning. BTW, I did run the reproducer of a805c111650c
+("iomap: fix WARN_ON_ONCE() from unprivileged users") earlier, so I am wondering
+if this is just another victim WARN_ON_ONCE() from it.
 
-The chan->sec_level is L2CAP channel required sec_level while
-hcon->sec_level is the current secure level in effect, at some point I
-guess we assign the hcon->sec_level with chan->sec_level but Im not
-sure if that has already happened here or not.
+> 
+> +void dump_iomap_page(struct page *page, const char *reason)
+> +{
+> +       struct iomap_page *iop = to_iomap_page(page);
+> +       unsigned int nr_blocks = i_blocks_per_page(page->mapping->host, page);
+> +
+> +       dump_page(page, reason);
+> +       if (iop)
+> +               printk("iop:reads %d writes %d uptodate %*pb\n",
+> +                               atomic_read(&iop->read_bytes_pending),
+> +                               atomic_read(&iop->write_bytes_pending),
+> +                               nr_blocks, iop->uptodate);
+> +       else
+> +               printk("iop:none\n");
+> +}
+> 
+> and then do something like:
+> 
+> 	if (bitmap_full(iop->uptodate, nr_blocks) != PageUptodate(page))
+> 		dump_iomap_page(page, NULL);
+> 
 
-> >
-> > >  }
-> > >
-> > >  static void l2cap_do_start(struct l2cap_chan *chan)
-> > > --
-> > > 2.28.0.681.g6f77f65b4e-goog
-> > >
-> >
-> >
-> > --
-> > Luiz Augusto von Dentz
-
-
-
--- 
-Luiz Augusto von Dentz
