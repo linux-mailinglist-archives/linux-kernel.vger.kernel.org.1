@@ -2,336 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C25B27370B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 02:07:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3979B273718
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 02:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729066AbgIVAHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 20:07:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40714 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729053AbgIVAHC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 20:07:02 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6BD0C23A6C;
-        Tue, 22 Sep 2020 00:07:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600733220;
-        bh=Xw3jzyduP1JqYAPyhuBQ4r2oBw7XxmeR+o+CnmWvRn4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=j9dM7x2OrnL9S6cVU7ruSoqOmyyhY8AIrxcIyryBjfzmOqJ1kFPOzDJZYMcMqAIO/
-         iGYPvY+5EzihuMfs+gE4SV2CTJ1fJatSVi2HJUxVPWIA++5mNzSqzHPnnkGA+JjZ3K
-         ikFiYucrFIMJX31RYEiDsKPHZZng9g4PigFh55Bg=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 3736735226C1; Mon, 21 Sep 2020 17:07:00 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 17:07:00 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>
-Subject: Re: [RFC PATCH 04/12] rcu: De-offloading CB kthread
-Message-ID: <20200922000700.GN29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200921124351.24035-1-frederic@kernel.org>
- <20200921124351.24035-5-frederic@kernel.org>
+        id S1729002AbgIVAIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 20:08:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728978AbgIVAIp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 20:08:45 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24800C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 17:08:45 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id y15so1527561wmi.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 17:08:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hEV8TO4mdFZF8/iM9S4OFGlFE4L0gQ5gzDQBkMBrODI=;
+        b=gYIGIDI+OKHtg00WTkRcUagV3FN4QuKjLS6GPsx/DCSktOkq2OQmm8LosqoZDTsii5
+         1zvRr9v2n81J/6UtZvWxHyTMW/8BqDj5AF4HJ6V7HCaasuIJMiRLytw6mWIhQ+iZeZMY
+         zCOb+PV+//UAFc+RhirY6n79q0VnYXyL1V+E8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hEV8TO4mdFZF8/iM9S4OFGlFE4L0gQ5gzDQBkMBrODI=;
+        b=IxaNwgA59q6Wcy/I7jqo/tpefyUg7xhEtH9OjCmN9pFHRlgnvd4fOFqnWQeDAFYHiy
+         8Uij27tZF75pqjiczeLvQOfPEKr37MzRIfcWANPlPHG8tbG+8vWCNUSQR9sVrL9VS0kX
+         nSc2yU9PQMmTPbZWUi2jC652NUD0Ryu+M2+eJ7ze4l8jgUjrMjavd7p1CQFXH0i3LBw9
+         qbQmz493ZOToJOlrjx21g/RUab6J5w8jlsViGQdNIjxLDL7Coi920UhyuEyyC1WwiQ7Y
+         L6MG8gcSQcWZrqOIy6fk++99x4Wio16TEk+fdkhKcp/tYizM37+fws1vTf77ebEezma/
+         ojOA==
+X-Gm-Message-State: AOAM531YGSudP4MWn+/R+zzqc4Bfug+LcREHeCAPBWVgPHLtMU21HRIR
+        /+ti2FYxt4eiQsvyCpcLi/H0/oMIfdsaKz0qq4sO
+X-Google-Smtp-Source: ABdhPJwjJextrW2u2RMl/77W5IKbRzlLI/rNGeMx1PYcfnUc2oAuEhYU9I1Obt1omiSn8H/SIpY/n0H/ktHwbS9FQrk=
+X-Received: by 2002:a1c:a988:: with SMTP id s130mr1589106wme.31.1600733323651;
+ Mon, 21 Sep 2020 17:08:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200921124351.24035-5-frederic@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200918201140.3172284-1-atish.patra@wdc.com> <20200921164947.000048e1@Huawei.com>
+In-Reply-To: <20200921164947.000048e1@Huawei.com>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Mon, 21 Sep 2020 17:08:32 -0700
+Message-ID: <CAOnJCU+mg13P609kut2cK9igmyepOvDc4kU-EzXsdjde7D_RpQ@mail.gmail.com>
+Subject: Re: [RFT PATCH v3 0/5] Unify NUMA implementation between ARM64 & RISC-V
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     Atish Patra <atish.patra@wdc.com>, linux-arch@vger.kernel.org,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Zong Li <zong.li@sifive.com>, Arnd Bergmann <arnd@arndb.de>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Anup Patel <anup@brainfault.org>,
+        David Hildenbrand <david@redhat.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 02:43:43PM +0200, Frederic Weisbecker wrote:
-> In order to de-offload the callbacks processing of an rdp, we must clear
-> SEGCBLIST_OFFLOAD and notify the CB kthread so that it clears its own
-> bit flag and goes to sleep to stop handling callbacks. The GP kthread
-> will also be notified the same way. Whoever acknowledges and clears its
-> own bit last must notify the de-offloading worker so that it can resume
-> the de-offloading while being sure that callbacks won't be handled
-> remotely anymore.
-> 
-> Inspired-by: Paul E. McKenney <paulmck@kernel.org>
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Josh Triplett <josh@joshtriplett.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> Cc: Joel Fernandes <joel@joelfernandes.org>
-> ---
->  include/linux/rcupdate.h   |   2 +
->  kernel/rcu/rcu_segcblist.c |  10 ++-
->  kernel/rcu/rcu_segcblist.h |   2 +-
->  kernel/rcu/tree.h          |   1 +
->  kernel/rcu/tree_plugin.h   | 124 ++++++++++++++++++++++++++++++++-----
->  5 files changed, 119 insertions(+), 20 deletions(-)
-> 
-> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> index d15d46db61f7..44ddee921441 100644
-> --- a/include/linux/rcupdate.h
-> +++ b/include/linux/rcupdate.h
-> @@ -97,8 +97,10 @@ static inline void rcu_user_exit(void) { }
->  
->  #ifdef CONFIG_RCU_NOCB_CPU
->  void rcu_init_nohz(void);
-> +void rcu_nocb_cpu_deoffload(int cpu);
->  #else /* #ifdef CONFIG_RCU_NOCB_CPU */
->  static inline void rcu_init_nohz(void) { }
-> +static inline void rcu_nocb_cpu_deoffload(int cpu) { }
->  #endif /* #else #ifdef CONFIG_RCU_NOCB_CPU */
->  
->  /**
-> diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-> index 31cc27ee98d8..b70032d77025 100644
-> --- a/kernel/rcu/rcu_segcblist.c
-> +++ b/kernel/rcu/rcu_segcblist.c
-> @@ -170,10 +170,14 @@ void rcu_segcblist_disable(struct rcu_segcblist *rsclp)
->   * Mark the specified rcu_segcblist structure as offloaded.  This
->   * structure must be empty.
->   */
-> -void rcu_segcblist_offload(struct rcu_segcblist *rsclp)
-> +void rcu_segcblist_offload(struct rcu_segcblist *rsclp, bool offload)
->  {
-> -	rcu_segcblist_clear_flags(rsclp, SEGCBLIST_SOFTIRQ_ONLY);
-> -	rcu_segcblist_set_flags(rsclp, SEGCBLIST_OFFLOADED);
-> +	if (offload) {
-> +		rcu_segcblist_clear_flags(rsclp, SEGCBLIST_SOFTIRQ_ONLY);
-> +		rcu_segcblist_set_flags(rsclp, SEGCBLIST_OFFLOADED);
-> +	} else {
-> +		rcu_segcblist_clear_flags(rsclp, SEGCBLIST_OFFLOADED);
-> +	}
->  }
->  
->  /*
-> diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
-> index 575896a2518b..00ebeb8d39b7 100644
-> --- a/kernel/rcu/rcu_segcblist.h
-> +++ b/kernel/rcu/rcu_segcblist.h
-> @@ -105,7 +105,7 @@ static inline bool rcu_segcblist_restempty(struct rcu_segcblist *rsclp, int seg)
->  void rcu_segcblist_inc_len(struct rcu_segcblist *rsclp);
->  void rcu_segcblist_init(struct rcu_segcblist *rsclp);
->  void rcu_segcblist_disable(struct rcu_segcblist *rsclp);
-> -void rcu_segcblist_offload(struct rcu_segcblist *rsclp);
-> +void rcu_segcblist_offload(struct rcu_segcblist *rsclp, bool offload);
->  bool rcu_segcblist_ready_cbs(struct rcu_segcblist *rsclp);
->  bool rcu_segcblist_pend_cbs(struct rcu_segcblist *rsclp);
->  struct rcu_head *rcu_segcblist_first_cb(struct rcu_segcblist *rsclp);
-> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-> index c96ae351688b..5b37f7103b0d 100644
-> --- a/kernel/rcu/tree.h
-> +++ b/kernel/rcu/tree.h
-> @@ -198,6 +198,7 @@ struct rcu_data {
->  	/* 5) Callback offloading. */
->  #ifdef CONFIG_RCU_NOCB_CPU
->  	struct swait_queue_head nocb_cb_wq; /* For nocb kthreads to sleep on. */
-> +	struct swait_queue_head nocb_state_wq; /* For offloading state changes */
->  	struct task_struct *nocb_gp_kthread;
->  	raw_spinlock_t nocb_lock;	/* Guard following pair of fields. */
->  	atomic_t nocb_lock_contended;	/* Contention experienced. */
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> index 982fc5be5269..3ea43c75c7a3 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -2052,6 +2052,17 @@ static int rcu_nocb_gp_kthread(void *arg)
->  	return 0;
->  }
->  
-> +static inline bool nocb_cb_can_run(struct rcu_data *rdp)
-> +{
-> +	u8 flags = SEGCBLIST_OFFLOADED | SEGCBLIST_KTHREAD_CB;
-> +	return rcu_segcblist_test_flags(&rdp->cblist, flags);
-> +}
-> +
-> +static inline bool nocb_cb_wait_cond(struct rcu_data *rdp)
-> +{
-> +	return nocb_cb_can_run(rdp) && !READ_ONCE(rdp->nocb_cb_sleep);
-> +}
-> +
->  /*
->   * Invoke any ready callbacks from the corresponding no-CBs CPU,
->   * then, if there are no more, wait for more to appear.
-> @@ -2061,7 +2072,9 @@ static void nocb_cb_wait(struct rcu_data *rdp)
->  	unsigned long cur_gp_seq;
->  	unsigned long flags;
->  	bool needwake_gp = false;
-> +	bool needwake_state = false;
->  	struct rcu_node *rnp = rdp->mynode;
-> +	struct rcu_segcblist *cblist = &rdp->cblist;
+On Mon, Sep 21, 2020 at 8:51 AM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> On Fri, 18 Sep 2020 13:11:35 -0700
+> Atish Patra <atish.patra@wdc.com> wrote:
+>
+> > This series attempts to move the ARM64 numa implementation to common
+> > code so that RISC-V can leverage that as well instead of reimplementing
+> > it again.
+> >
+> > RISC-V specific bits are based on initial work done by Greentime Hu [1] but
+> > modified to reuse the common implementation to avoid duplication.
+> >
+> > [1] https://lkml.org/lkml/2020/1/10/233
+> >
+> > This series has been tested on qemu with numa enabled for both RISC-V & ARM64.
+> > It would be great if somebody can test it on numa capable ARM64 hardware platforms.
+> > This patch series doesn't modify the maintainers list for the common code (arch_numa)
+> > as I am not sure if somebody from ARM64 community or Greg should take up the
+> > maintainership. Ganapatrao was the original author of the arm64 version.
+> > I would be happy to update that in the next revision once it is decided.
+>
 
-This is just a convenience variable, correct?  As in to avoid typing
-"&rdp->" repeatedly?  If so, please put a "const" on it.
+Any thoughts on the maintenanership of this code ?
 
->  
->  	local_irq_save(flags);
->  	rcu_momentary_dyntick_idle();
-> @@ -2071,32 +2084,50 @@ static void nocb_cb_wait(struct rcu_data *rdp)
->  	local_bh_enable();
->  	lockdep_assert_irqs_enabled();
->  	rcu_nocb_lock_irqsave(rdp, flags);
-> -	if (rcu_segcblist_nextgp(&rdp->cblist, &cur_gp_seq) &&
-> +	if (rcu_segcblist_nextgp(cblist, &cur_gp_seq) &&
->  	    rcu_seq_done(&rnp->gp_seq, cur_gp_seq) &&
->  	    raw_spin_trylock_rcu_node(rnp)) { /* irqs already disabled. */
->  		needwake_gp = rcu_advance_cbs(rdp->mynode, rdp);
->  		raw_spin_unlock_rcu_node(rnp); /* irqs remain disabled. */
->  	}
-> -	if (rcu_segcblist_ready_cbs(&rdp->cblist)) {
-> -		rcu_nocb_unlock_irqrestore(rdp, flags);
-> -		if (needwake_gp)
-> -			rcu_gp_kthread_wake();
-> -		return;
-> -	}
->  
-> -	trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("CBSleep"));
->  	WRITE_ONCE(rdp->nocb_cb_sleep, true);
-> +
-> +	if (rcu_segcblist_test_flags(cblist, SEGCBLIST_OFFLOADED)) {
-> +		if (rcu_segcblist_ready_cbs(cblist))
-> +			WRITE_ONCE(rdp->nocb_cb_sleep, false);
-> +	} else {
-> +		/*
-> +		 * De-offloading. Clear our flag and notify the de-offload worker.
-> +		 * We won't touch the callbacks and keep sleeping until we ever
-> +		 * get re-offloaded.
-> +		 */
-> +		WARN_ON_ONCE(!rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB));
-> +		rcu_segcblist_clear_flags(cblist, SEGCBLIST_KTHREAD_CB);
-> +		if (!rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_GP))
-> +			needwake_state = true;
-> +	}
-> +
-> +	if (rdp->nocb_cb_sleep)
-> +		trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("CBSleep"));
-> +
->  	rcu_nocb_unlock_irqrestore(rdp, flags);
->  	if (needwake_gp)
->  		rcu_gp_kthread_wake();
-> -	swait_event_interruptible_exclusive(rdp->nocb_cb_wq,
-> -				 !READ_ONCE(rdp->nocb_cb_sleep));
-> -	if (!smp_load_acquire(&rdp->nocb_cb_sleep)) { /* VVV */
-> +
-> +	if (needwake_state)
-> +		swake_up_one(&rdp->nocb_state_wq);
-> +
-> +	do {
-> +		swait_event_interruptible_exclusive(rdp->nocb_cb_wq,
-> +						    nocb_cb_wait_cond(rdp));
-> +
->  		/* ^^^ Ensure CB invocation follows _sleep test. */
-> -		return;
-> -	}
-> -	WARN_ON(signal_pending(current));
-> -	trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("WokeEmpty"));
-> +		if (smp_load_acquire(&rdp->nocb_cb_sleep)) {
-> +			WARN_ON(signal_pending(current));
-> +			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("WokeEmpty"));
-> +		}
-> +	} while (!nocb_cb_can_run(rdp));
->  }
->  
->  /*
-> @@ -2158,6 +2189,65 @@ static void do_nocb_deferred_wakeup(struct rcu_data *rdp)
->  		do_nocb_deferred_wakeup_common(rdp);
->  }
->  
-> +static void __rcu_nocb_rdp_deoffload(struct rcu_data *rdp)
-> +{
-> +	unsigned long flags;
-> +	struct rcu_node *rnp = rdp->mynode;
-> +	struct rcu_segcblist *cblist = &rdp->cblist;
-> +	bool wake_cb = false;
-> +
-> +	printk("De-offloading %d\n", rdp->cpu);
-> +
-> +	rcu_nocb_lock_irqsave(rdp, flags);
-> +	raw_spin_lock_rcu_node(rnp);
-> +	rcu_segcblist_offload(cblist, false);
-> +	raw_spin_unlock_rcu_node(rnp);
-> +
-> +	if (rdp->nocb_cb_sleep) {
-> +		rdp->nocb_cb_sleep = false;
-> +		wake_cb = true;
-> +	}
-> +	rcu_nocb_unlock_irqrestore(rdp, flags);
-> +
-> +	if (wake_cb)
-> +		swake_up_one(&rdp->nocb_cb_wq);
-> +
-> +	swait_event_exclusive(rdp->nocb_state_wq,
-> +			      !rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB));
-> +}
-> +
-> +static long rcu_nocb_rdp_deoffload(void *arg)
-> +{
-> +	struct rcu_data *rdp = arg;
-> +
-> +	WARN_ON_ONCE(rdp->cpu != raw_smp_processor_id());
-> +	__rcu_nocb_rdp_deoffload(rdp);
-> +
-> +	return 0;
-> +}
-> +
-> +void rcu_nocb_cpu_deoffload(int cpu)
-> +{
-> +	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
-> +
-> +	if (rdp == rdp->nocb_gp_rdp) {
-> +		pr_info("Can't deoffload an rdp GP leader (yet)\n");
-> +		return;
-> +	}
-> +	mutex_lock(&rcu_state.barrier_mutex);
-> +	cpus_read_lock();
+> Was fairly sure this set was a noop on arm64 ACPI systems, but ran a quick
+> sanity check on a 2 socket kunpeng920 and everything came up as normal
+> (4 nodes, around 250G a node)
+>
+> Tested-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> For patches 1 and 2.  Doesn't seem relevant to the rest :)
+>
 
-And you do in fact acquire rcu_state.barrier_mutex as well as blocking
-CPU-hotplug operations.  Very good!
+Thanks a lot!
 
-> +	if (rcu_segcblist_is_offloaded(&rdp->cblist)) {
-> +		if (cpu_online(cpu)) {
-> +			work_on_cpu(cpu, rcu_nocb_rdp_deoffload, rdp);
-> +		} else {
-> +			__rcu_nocb_rdp_deoffload(rdp);
-> +		}
-> +		cpumask_clear_cpu(cpu, rcu_nocb_mask);
+> >
+> > # numactl --hardware
+> > available: 2 nodes (0-1)
+> > node 0 cpus: 0 1 2 3
+> > node 0 size: 486 MB
+> > node 0 free: 470 MB
+> > node 1 cpus: 4 5 6 7
+> > node 1 size: 424 MB
+> > node 1 free: 408 MB
+> > node distances:
+> > node   0   1
+> >   0:  10  20
+> >   1:  20  10
+> > # numactl -show
+> > policy: default
+> > preferred node: current
+> > physcpubind: 0 1 2 3 4 5 6 7
+> > cpubind: 0 1
+> > nodebind: 0 1
+> > membind: 0 1
+> >
+> > For RISC-V, the following qemu series is a pre-requisite(already available in upstream)
+> > to test the patches in Qemu and 2 socket OmniXtend FPGA.
+> >
+> > https://patchwork.kernel.org/project/qemu-devel/list/?series=303313
+> >
+> > The patches are also available at
+> >
+> > https://github.com/atishp04/linux/tree/5.10_numa_unified_v3
+> >
+> > There may be some minor conflicts with Mike's cleanup series [2] depending on the
+> > order in which these two series are being accepted. I can rebase on top his series
+> > if required.
+> >
+> > [2] https://lkml.org/lkml/2020/8/18/754
+> >
+> > Changes from v2->v3:
+> > 1. Added Acked-by/Reviewed-by tags.
+> > 2. Replaced asm/acpi.h with linux/acpi.h
+> > 3. Defined arch_acpi_numa_init as static.
+> >
+> > Changes from v1->v2:
+> > 1. Replaced ARM64 specific compile time protection with ACPI specific ones.
+> > 2. Dropped common pcibus_to_node changes. Added required changes in RISC-V.
+> > 3. Fixed few typos.
+> >
+> > Atish Patra (4):
+> > numa: Move numa implementation to common code
+> > arm64, numa: Change the numa init functions name to be generic
+> > riscv: Separate memory init from paging init
+> > riscv: Add numa support for riscv64 platform
+> >
+> > Greentime Hu (1):
+> > riscv: Add support pte_protnone and pmd_protnone if
+> > CONFIG_NUMA_BALANCING
+> >
+> > arch/arm64/Kconfig                            |  1 +
+> > arch/arm64/include/asm/numa.h                 | 45 +----------------
+> > arch/arm64/kernel/acpi_numa.c                 | 13 -----
+> > arch/arm64/mm/Makefile                        |  1 -
+> > arch/arm64/mm/init.c                          |  4 +-
+> > arch/riscv/Kconfig                            | 31 +++++++++++-
+> > arch/riscv/include/asm/mmzone.h               | 13 +++++
+> > arch/riscv/include/asm/numa.h                 |  8 +++
+> > arch/riscv/include/asm/pci.h                  | 14 ++++++
+> > arch/riscv/include/asm/pgtable.h              | 21 ++++++++
+> > arch/riscv/kernel/setup.c                     | 11 ++++-
+> > arch/riscv/kernel/smpboot.c                   | 12 ++++-
+> > arch/riscv/mm/init.c                          | 10 +++-
+> > drivers/base/Kconfig                          |  6 +++
+> > drivers/base/Makefile                         |  1 +
+> > .../mm/numa.c => drivers/base/arch_numa.c     | 31 ++++++++++--
+> > include/asm-generic/numa.h                    | 49 +++++++++++++++++++
+> > 17 files changed, 201 insertions(+), 70 deletions(-)
+> > create mode 100644 arch/riscv/include/asm/mmzone.h
+> > create mode 100644 arch/riscv/include/asm/numa.h
+> > rename arch/arm64/mm/numa.c => drivers/base/arch_numa.c (95%)
+> > create mode 100644 include/asm-generic/numa.h
+> >
+> > --
+> > 2.25.1
+> >
+>
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
-In the direct-call case, I get it.  But in the work_on_cpu() case,
-how do you know that the work has completed?  Ah, because work_on_cpu()
-is defined to wait until the work is done.  Never mind!  ;-)
 
-						Thanx, Paul
 
-> +	}
-> +	cpus_read_unlock();
-> +	mutex_unlock(&rcu_state.barrier_mutex);
-> +}
-> +
->  void __init rcu_init_nohz(void)
->  {
->  	int cpu;
-> @@ -2200,7 +2290,8 @@ void __init rcu_init_nohz(void)
->  		rdp = per_cpu_ptr(&rcu_data, cpu);
->  		if (rcu_segcblist_empty(&rdp->cblist))
->  			rcu_segcblist_init(&rdp->cblist);
-> -		rcu_segcblist_offload(&rdp->cblist);
-> +		rcu_segcblist_offload(&rdp->cblist, true);
-> +		rcu_segcblist_set_flags(&rdp->cblist, SEGCBLIST_KTHREAD_CB);
->  	}
->  	rcu_organize_nocb_kthreads();
->  }
-> @@ -2210,6 +2301,7 @@ static void __init rcu_boot_init_nocb_percpu_data(struct rcu_data *rdp)
->  {
->  	init_swait_queue_head(&rdp->nocb_cb_wq);
->  	init_swait_queue_head(&rdp->nocb_gp_wq);
-> +	init_swait_queue_head(&rdp->nocb_state_wq);
->  	raw_spin_lock_init(&rdp->nocb_lock);
->  	raw_spin_lock_init(&rdp->nocb_bypass_lock);
->  	raw_spin_lock_init(&rdp->nocb_gp_lock);
-> -- 
-> 2.28.0
-> 
+-- 
+Regards,
+Atish
