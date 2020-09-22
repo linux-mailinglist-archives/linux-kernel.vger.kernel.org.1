@@ -2,269 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B698E27379C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 02:41:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 022932737A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 02:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729357AbgIVAlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 20:41:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51178 "EHLO
+        id S1729374AbgIVAlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 20:41:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729332AbgIVAk7 (ORCPT
+        with ESMTP id S1729290AbgIVAlo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 20:40:59 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF78DC0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 17:40:59 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id f21so10546748qve.9
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 17:40:59 -0700 (PDT)
+        Mon, 21 Sep 2020 20:41:44 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE790C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 17:41:44 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id n14so10844535pff.6
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 17:41:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=kaVjY3pUnRyNkcqQ+wVStnw4aNjDpVWSIpiyJwQk3hM=;
-        b=NzlEG3pMa4LAPyw5A4qMlN21mE2oVkOifW4wsp0GltmmOJdRWj73QzooJxEB84Aeh7
-         dwyd04/U+wB+LB+pHb2q2J6TsMz5x9WJM3GZw3qrcdILExfo1xSoRGLpskcjOjOMiYcH
-         P405BPOdXAP8cd8kT1ihZkBOWSWKE33ZM7WtagvKbUuwNk4Mr6EDeyi8M6vuAEwGrbr8
-         Gk2Q266kF5ND2MP+GdfP/fwrNhKxaPgBU6Y4Tp2fI4Dt/MW4CS1aq6FnfZuBSJMVc5lG
-         YyNz/thr7BtjOH8GCEu3gfy8iOI1WT9e7iUYiCk1fiIDlIofQnWlD+jKYadkPUisVbcs
-         V/IA==
+        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PNKUy9UbxB71ZPxOMn8QCcnMX+5rNdWeZS8ckF8exiY=;
+        b=nXrnj59q/BigDoGxqrKS+nz+d5zciYsxKnab5vm7DDfjItfKx7YVwSi35TC7Un+CDh
+         CaCSV29g8onW3AURu4PA7jrYgc2cdsuXvYKK1gMhcuIoFBlu8PYRvYzkzrQNHeYBUlEp
+         t5gnPzHVjTyIWVWnDeITKsZN1UX+JVX/FoDb0bxXXQ2I0BAGVV9s9JEojMSDES0Nl3i2
+         VBFgBLIEf1gCPCH4Ddwc3O8ecdHHxnTKpwj/3YhIp0K2xg/XcVNIPRRoZuQ1SfXA4M7q
+         6aFg5oO3RQnIg5/7+/gfjYNzS3FbSJjm23cV5D6NL+zDhaufc3BG9smP4PSbA3PQaoxr
+         FB1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=kaVjY3pUnRyNkcqQ+wVStnw4aNjDpVWSIpiyJwQk3hM=;
-        b=Yarse04W/YlBYZgNqXKk/Ap8fmd6tv7pizqTfj//FsUQjtzXWO7aO+Cq5MaoOUyKdt
-         LhY/vpNMIp7xVGxRtgP3+rNh6mvw4h4gTad77lUZQg1Epnrujc+jENlsZiVwIGgvi8xv
-         hbGj2EairTIKJkwZOYLEIKdQcJFJRQSCMHp+DFF3Q2xo2dp0eH7Y9WlV/k+znhLe4YXW
-         3ZFZzx4ijpjXuqNSiCrELz5SIqKAJUnoOw0oORqOHtGg+UqbD/dAlKDIFYoQRdJtt8ke
-         Y8/r1M8lxb1h/xD6SlsqeCbvqtJVnd4U9UnMYjv0X2GFutrsEO/k6n+/1CLqY3nlpTiS
-         nV+A==
-X-Gm-Message-State: AOAM533HSY9SYq5vLKhKcBJAFL/ICF1F8+NS/27plwkHB2/CRkghSA++
-        1BQOWIH+3f+VrOySatmMqCxpqUImyTJD
-X-Google-Smtp-Source: ABdhPJym5F9+vtb5khA7NMloj/CkMeW16IPsfEOaDbOQHBkE0JF4HAwxB6Ap8U3NqmZ9VPQD048sv8IIVaZi
-Sender: "vipinsh via sendgmr" <vipinsh@vipinsh.kir.corp.google.com>
-X-Received: from vipinsh.kir.corp.google.com ([2620:0:1008:10:1ea0:b8ff:fe75:b885])
- (user=vipinsh job=sendgmr) by 2002:a0c:e2c9:: with SMTP id
- t9mr3215691qvl.48.1600735258933; Mon, 21 Sep 2020 17:40:58 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 17:40:24 -0700
-In-Reply-To: <20200922004024.3699923-1-vipinsh@google.com>
-Message-Id: <20200922004024.3699923-3-vipinsh@google.com>
-Mime-Version: 1.0
-References: <20200922004024.3699923-1-vipinsh@google.com>
-X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
-Subject: [RFC Patch 2/2] KVM: SVM: SEV cgroup controller documentation
-From:   Vipin Sharma <vipinsh@google.com>
-To:     thomas.lendacky@amd.com, pbonzini@redhat.com,
-        sean.j.christopherson@intel.com, tj@kernel.org, lizefan@huawei.com
-Cc:     joro@8bytes.org, corbet@lwn.net, brijesh.singh@amd.com,
-        jon.grimm@amd.com, eric.vantassell@amd.com, gingell@google.com,
-        rientjes@google.com, kvm@vger.kernel.org, x86@kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vipin Sharma <vipinsh@google.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Erdem Aktas <erdemaktas@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PNKUy9UbxB71ZPxOMn8QCcnMX+5rNdWeZS8ckF8exiY=;
+        b=XdAi6BspFCbz3Wrw33cnw0wMbkr1Skq8N/PqxnKnhVdaZOT14oA1pnAuDr0DO7N/mW
+         R9J1JUD1w3IF3FBv73Vvjz+gZ8t+gmEXSWeJJ9XHyaQkENoI054dlISPsBl5mufmkHT3
+         dLOZGN942jmCw9Fq5UdO8J+IH4pMwR3umIb83DfzV1e/YFKLdXi/Si7cvjW6JYj3ozAy
+         qpnGxI7CUj56YN4tTL4cQx/RWZJB2W3VYuuvKpzsyQw9Vqd3/6cbAVh4Y/HoVoLiH6Qi
+         JSFVH5+5Ya98qmAI6JNvfRpCkwr70Wm9A+yEnld3SiiyS6/ze8hJWi8Dzm5799gqeC3b
+         yBYg==
+X-Gm-Message-State: AOAM531Bql19np3/0xViNbHXrHvOTfuPU2UeZvDMfrXjT2qRinKQnsE/
+        MbKcKbLzWjYwhWn46mCweIJy3UYsuXsKcW+k
+X-Google-Smtp-Source: ABdhPJyt79n191zAavGNJS2WkhpFIM6gerGv5gXOsS5aaxptWFBvCmZ1b0l9Msiq85FeDgjXCriePg==
+X-Received: by 2002:a17:902:b186:b029:d1:cc21:9a7d with SMTP id s6-20020a170902b186b02900d1cc219a7dmr2214352plr.8.1600735303844;
+        Mon, 21 Sep 2020 17:41:43 -0700 (PDT)
+Received: from [192.168.10.94] (124-171-83-152.dyn.iinet.net.au. [124.171.83.152])
+        by smtp.gmail.com with ESMTPSA id 17sm12803858pfi.55.2020.09.21.17.41.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Sep 2020 17:41:43 -0700 (PDT)
+Subject: Re: [PATCH kernel] srcu: Fix static initialization
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org
+References: <20200908144306.33355-1-aik@ozlabs.ru>
+ <cc25257d-804e-8cf7-150b-e6bdbaf184be@ozlabs.ru>
+ <20200909115010.GG29330@paulmck-ThinkPad-P72>
+ <37f76aac-d8e3-8ab1-24e9-c417b719e2a6@ozlabs.ru>
+ <20200910185353.GS29330@paulmck-ThinkPad-P72>
+ <611a6a87-f673-c5b7-3b60-58805fba580a@ozlabs.ru>
+ <20200911135208.GX29330@paulmck-ThinkPad-P72>
+ <20200916161224.GA30546@paulmck-ThinkPad-P72>
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+Message-ID: <ef2179e0-ddad-05c0-2292-9b9dcfd348f9@ozlabs.ru>
+Date:   Tue, 22 Sep 2020 10:41:37 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
+MIME-Version: 1.0
+In-Reply-To: <20200916161224.GA30546@paulmck-ThinkPad-P72>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SEV cgroup controller documentation.
 
-Documentation for both cgroup versions, v1 and v2, of SEV cgroup
-controller. SEV controller is used to distribute and account SEV ASIDs
-usage by KVM on AMD processor.
 
-Signed-off-by: Vipin Sharma <vipinsh@google.com>
-Reviewed-by: David Rientjes <rientjes@google.com>
-Reviewed-by: Dionna Glaze <dionnaglaze@google.com>
-Reviewed-by: Erdem Aktas <erdemaktas@google.com>
----
- Documentation/admin-guide/cgroup-v1/sev.rst | 94 +++++++++++++++++++++
- Documentation/admin-guide/cgroup-v2.rst     | 56 +++++++++++-
- 2 files changed, 147 insertions(+), 3 deletions(-)
- create mode 100644 Documentation/admin-guide/cgroup-v1/sev.rst
+On 17/09/2020 02:12, Paul E. McKenney wrote:
+> On Fri, Sep 11, 2020 at 06:52:08AM -0700, Paul E. McKenney wrote:
+>> On Fri, Sep 11, 2020 at 03:09:41PM +1000, Alexey Kardashevskiy wrote:
+>>> On 11/09/2020 04:53, Paul E. McKenney wrote:
+>>>> On Wed, Sep 09, 2020 at 10:31:03PM +1000, Alexey Kardashevskiy wrote:
+> 
+> [ . . . ]
+> 
+>>>>> init_srcu_struct_nodes() assumes ssp->sda!=NULL but alloc_percpu() fails
+>>>>> here:
+>>>>>
+>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/mm/percpu.c#n1734
+>>>>> ===
+>>>>> 	} else if (mutex_lock_killable(&pcpu_alloc_mutex)) {
+>>>>> 			pcpu_memcg_post_alloc_hook(objcg, NULL, 0, size);
+>>>>> 			return NULL;
+>>>>> ===
+>>>>>
+>>>>> I am still up to reading that osr-rcuusage.pdf to provide better
+>>>>> analysis :) Thanks,
+>>>>
+>>>> Ah, got it!  Does the following patch help?
+>>>>
+>>>> There will likely also need to be changes to cleanup_srcu_struct(),
+>>>> but first let's see if I understand the problem.  ;-)
+>>>>
+>>>> 							Thanx, Paul
+>>>>
+>>>> ------------------------------------------------------------------------
+>>>>
+>>>> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+>>>> index c13348e..6f7880a 100644
+>>>> --- a/kernel/rcu/srcutree.c
+>>>> +++ b/kernel/rcu/srcutree.c
+>>>> @@ -177,11 +177,13 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
+>>>>  	INIT_DELAYED_WORK(&ssp->work, process_srcu);
+>>>>  	if (!is_static)
+>>>>  		ssp->sda = alloc_percpu(struct srcu_data);
+>>>> +	if (!ssp->sda)
+>>>> +		return -ENOMEM;
+>>>>  	init_srcu_struct_nodes(ssp, is_static);
+>>>>  	ssp->srcu_gp_seq_needed_exp = 0;
+>>>>  	ssp->srcu_last_gp_end = ktime_get_mono_fast_ns();
+>>>>  	smp_store_release(&ssp->srcu_gp_seq_needed, 0); /* Init done. */
+>>>
+>>> The line above confuses me a bit. What you propose returns without
+>>> smp_store_release() called which should not matter I suppose.
+>>
+>> The idea is that if init_srcu_struct() returns -ENOMEM, the structure
+>> has not been initialized and had better not be used.  If the calling code
+>> cannot handle that outcome, then the calling code needs to do something
+>> to insulate init_srcu_struct() from signals.  One thing that it could
+>> do would be to invoke init_srcu_struct() from a workqueue handler and
+>> wait for this handler to complete.
+>>
+>> Please keep in mind that there is nothing init_srcu_struct() can do
+>> about this:  The srcu_struct is useless unless alloc_percpu() succeeds.
+>>
+>> And yes, I do need to update the header comments to make this clear.
+>>
+>>> Otherwise it should work, although I cannot verify right now as my box
+>>> went down and since it is across Pacific - it may take time to power
+>>> cycle it :) Thanks,
+>>
+>> I know that feeling!  And here is hoping that the box is out of reach
+>> of the local hot spots.  ;-)
+> 
+> Just following up...  Did that patch help?
 
-diff --git a/Documentation/admin-guide/cgroup-v1/sev.rst b/Documentation/admin-guide/cgroup-v1/sev.rst
-new file mode 100644
-index 000000000000..04d0024360a1
---- /dev/null
-+++ b/Documentation/admin-guide/cgroup-v1/sev.rst
-@@ -0,0 +1,94 @@
-+==============
-+SEV Controller
-+==============
-+
-+Overview
-+========
-+
-+The SEV controller regulates the distribution of SEV ASIDs. SEV ASIDs are used
-+in creating encrypted VMs on AMD processors. SEV ASIDs are stateful and one
-+ASID is only used in one KVM object at a time. It cannot be used with other KVM
-+before unbinding it from the previous KVM.
-+
-+All SEV ASIDs are tracked by this controller and it allows for accounting and
-+distribution of this resource.
-+
-+How to Enable Controller
-+========================
-+
-+- Enable memory encryption on AMD platform::
-+
-+        CONFIG_KVM_AMD_SEV=y
-+
-+- Enable SEV controller::
-+
-+        CONFIG_CGROUP_SEV=y
-+
-+- Above options will build SEV controller support in the kernel.
-+  To mount sev controller::
-+
-+        mount -t cgroup -o sev none /sys/fs/cgroup/sev
-+
-+Interface Files
-+==============
-+
-+  sev.current
-+        A read-only single value file which exists on non-root cgroups.
-+
-+        The total number of SEV ASIDs currently in use by the cgroup and its
-+        descendants.
-+
-+  sev.max
-+        A read-write single value file which exists on non-root cgroups. The
-+        default is "max".
-+
-+        SEV ASIDs usage hard limit. If the cgroup's current SEV ASIDs usage
-+        reach this limit then the new SEV VMs creation will return error
-+        -EBUSY.  This limit cannot be set lower than sev.current.
-+
-+  sev.events
-+        A read-only flat-keyed single value file which exists on non-root
-+        cgroups. A value change in this file generates a file modified event.
-+
-+          max
-+                 The number of times the cgroup's SEV ASIDs usage was about to
-+                 go over the max limit. This is a tally of SEV VM creation
-+                 failures in the cgroup.
-+
-+Hierarchy
-+=========
-+
-+SEV controller supports hierarchical accounting. It supports following
-+features:
-+
-+1. SEV ASID usage in the cgroup includes itself and its descendent cgroups.
-+2. SEV ASID usage can never exceed the max limit set in the cgroup and its
-+   ancestor's chain up to the root.
-+3. SEV events keep a tally of SEV VM creation failures in the cgroup and not in
-+   its child subtree.
-+
-+Suppose the following example hierarchy::
-+
-+                        root
-+                        /  \
-+                       A    B
-+                       |
-+                       C
-+
-+1. A will show the count of SEV ASID used in A and C.
-+2. C's SEV ASID usage may not exceed any of the max limits set in C, A, or
-+   root.
-+3. A's event file lists only SEV VM creation failed in A, and not the ones in
-+   C.
-+
-+Migration and SEV ASID ownership
-+================================
-+
-+An SEV ASID is charged to the cgroup which instantiated it, and stays charged
-+to that cgroup until that SEV ASID is freed. Migrating a process to a different
-+cgroup do not move the SEV ASID charge to the destination cgroup where the
-+process has moved.
-+
-+Deletion of a cgroup with existing ASIDs charges will migrate those ASIDs to
-+the parent cgroup.
-+
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 6be43781ec7f..66b8bdee8ff3 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -63,8 +63,11 @@ v1 is available under :ref:`Documentation/admin-guide/cgroup-v1/index.rst <cgrou
-        5-7-1. RDMA Interface Files
-      5-8. HugeTLB
-        5.8-1. HugeTLB Interface Files
--     5-8. Misc
--       5-8-1. perf_event
-+     5-9 SEV
-+       5-9-1 SEV Interface Files
-+       5-9-2 SEV ASIDs Ownership
-+     5-10. Misc
-+       5-10-1. perf_event
-      5-N. Non-normative information
-        5-N-1. CPU controller root cgroup process behaviour
-        5-N-2. IO controller root cgroup process behaviour
-@@ -2109,6 +2112,54 @@ HugeTLB Interface Files
- 	are local to the cgroup i.e. not hierarchical. The file modified event
- 	generated on this file reflects only the local events.
- 
-+SEV
-+---
-+
-+The SEV controller regulates the distribution of SEV ASIDs. SEV ASIDs are used
-+in creating encrypted VMs on AMD processors. SEV ASIDs are stateful and one
-+ASID is only used in one KVM object at a time. It cannot be used with other KVM
-+before unbinding it from the previous KVM.
-+
-+All SEV ASIDs are tracked by this controller and it allows for accounting and
-+distribution of this resource.
-+
-+SEV Interface Files
-+~~~~~~~~~~~~~~~~~~~
-+
-+  sev.current
-+        A read-only single value file which exists on non-root cgroups.
-+
-+        The total number of SEV ASIDs currently in use by the cgroup and its
-+        descendants.
-+
-+  sev.max
-+        A read-write single value file which exists on non-root cgroups. The
-+        default is "max".
-+
-+        SEV ASIDs usage hard limit. If the cgroup's current SEV ASIDs usage
-+        reach this limit then the new SEV VMs creation will return error
-+        -EBUSY.  This limit cannot be set lower than sev.current.
-+
-+  sev.events
-+        A read-only flat-keyed single value file which exists on non-root
-+        cgroups. A value change in this file generates a file modified event.
-+
-+          max
-+                 The number of times the cgroup's SEV ASIDs usage was about to
-+                 go over the max limit. This is a tally of SEV VM creation
-+                 failures in the cgroup.
-+
-+SEV ASIDs Ownership
-+~~~~~~~~~~~~~~~~~~~
-+
-+An SEV ASID is charged to the cgroup which instantiated it, and stays charged
-+to the cgroup until the ASID is freed. Migrating a process to a different
-+cgroup do not move the SEV ASID charge to the destination cgroup where the
-+process has moved.
-+
-+Deletion of a cgroup with existing ASIDs charges will migrate those ASIDs to
-+the parent cgroup.
-+
- Misc
- ----
- 
-@@ -2120,7 +2171,6 @@ automatically enabled on the v2 hierarchy so that perf events can
- always be filtered by cgroup v2 path.  The controller can still be
- moved to a legacy hierarchy after v2 hierarchy is populated.
- 
--
- Non-normative information
- -------------------------
- 
+
+Yes it did.
+
+Tested-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+
+
+
+> 
+> 							Thanx, Paul
+> 
+
 -- 
-2.28.0.681.g6f77f65b4e-goog
-
+Alexey
