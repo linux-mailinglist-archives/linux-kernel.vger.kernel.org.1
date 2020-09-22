@@ -2,136 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CDA527457B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54E60274580
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726737AbgIVPjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 11:39:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726566AbgIVPjd (ORCPT
+        id S1726829AbgIVPjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 11:39:46 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:54557 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726566AbgIVPjp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 11:39:33 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0515C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 08:39:32 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id d4so3810650wmd.5
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 08:39:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+DDHh48hUhaZM9vXx+KNvw8NfXShcDtMcHxV9xxIOts=;
-        b=V9x082tFsavECxmKgNMIK9Wq1WWUsqy/d69/S+J2gvE5b2H723klZEisQ60MVgW4Qi
-         bmL/zxtUvGA5YhoErIhGZC0zyH+q1iIRBZvrSQVEqTKoSlUCP+ieT1SE9WdiLyhVGS13
-         0QA8x2nJI3hruNv6pQJdKAXnvaiuR3mRCzBDzmqvw+dkx20/dKtlGPK3H+Za8w73s2kB
-         etExTz7+7nw6Wbded+nlyg71BToKGzsNJnpIR5ZfMs2rmaDT0xbiU76fSZaectXwozLP
-         nHWQrmK5u6NW5GxfchIv72aQpMXlb10nUI3pF5QdPv/BaaUzFVz9cuxiCIINQehNw9T9
-         OKSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+DDHh48hUhaZM9vXx+KNvw8NfXShcDtMcHxV9xxIOts=;
-        b=iMSRa6mL0B6KObPOvpLd/kAEFYNE/irpmsrksx3mgm+Ha7qEYc/VIlrsqMf01XVX5f
-         7HTZEzrLV2qgGWQTsID93ZCfAIEnRMLM1vnfCUSg+0QmSx6kTtagE2GVreCsOvzcJ13d
-         FCBwVhJI7mQm0PKnB7wY4BPnWKV5TQ9jTUHGXrfE6S3kFxVgpMhAp0nCblRpf+jHzYEA
-         t1ABMEWlTRmveHNbTxPWj+9CWuemCXWvuk7Xf7PfwE+LMKGt4oF56e8b383XK3U/zL45
-         n7sJOJuy1UBj2RFlMfqlORiHlzgZYKDy53vAIeEdh8JRySUZAQV4t6DEdL2rveGiaUjV
-         cXRA==
-X-Gm-Message-State: AOAM531IaAvCLVhNlRQKwz9IZl7cT7U+7+2Rh53+g39ZqgGg+m51uG/B
-        8xykJ0ZfgsGsGbK43ovtmXDDnqQztrZLk37laa8=
-X-Google-Smtp-Source: ABdhPJxOUJWknVLKUhCLW7xnXjLZyic+3stY5q2umXf20WkebOVMhD3AnwCsYAxz/rRo/Ey7dj3LYpsMveqbF3JMdX4=
-X-Received: by 2002:a1c:a184:: with SMTP id k126mr1633913wme.39.1600789171418;
- Tue, 22 Sep 2020 08:39:31 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200922124029.27500-1-bernard@vivo.com>
-In-Reply-To: <20200922124029.27500-1-bernard@vivo.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 22 Sep 2020 11:39:20 -0400
-Message-ID: <CADnq5_ODhc7PuiT6OY5hh1bLdR74iVYRnR1fWR2jZHtobdLr2g@mail.gmail.com>
-Subject: Re: [PATCH] drm/radeon:fix typoes in comments
-To:     Bernard Zhao <bernard@vivo.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, opensource.kernel@vivo.com
+        Tue, 22 Sep 2020 11:39:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600789184;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lmWuOZWC5vEFLn9TZNSK2MRdB7KP5iT7n5gHz6qa7g0=;
+        b=hUGkDRZ5fRx7+8cw41fs8qSWqrOU7e9miMAeGVvhBfgRlf640TCUwX0KDFI1n3mfxEo34S
+        b1c9SYpGiGxJgf74Beo1vsXN4iTNzzBUKnoQ01jv4LITYOh6nNTTZ4DwKNxsHJqTTBk0q0
+        KTGbFK/sxRUgty7B06GYftZl4rEAnA0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-165-073ccWMMNsyOZ4DBoXHx2g-1; Tue, 22 Sep 2020 11:39:42 -0400
+X-MC-Unique: 073ccWMMNsyOZ4DBoXHx2g-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 782188C3360;
+        Tue, 22 Sep 2020 15:39:40 +0000 (UTC)
+Received: from starship (unknown [10.35.206.154])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E026710013D7;
+        Tue, 22 Sep 2020 15:39:35 +0000 (UTC)
+Message-ID: <5d19bbf5bcc4975e4ac6c4aef8b92b4a1ed4bc16.camel@redhat.com>
+Subject: Re: [PATCH v2 1/1] KVM: x86: fix MSR_IA32_TSC read for nested
+ migration
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Date:   Tue, 22 Sep 2020 18:39:34 +0300
+In-Reply-To: <7db1383cc9d40f76a02076c3b86cf832fd7463cc.camel@redhat.com>
+References: <20200921103805.9102-1-mlevitsk@redhat.com>
+         <20200921103805.9102-2-mlevitsk@redhat.com>
+         <20200921162326.GB23989@linux.intel.com>
+         <de9411ce-aa83-77c8-b2ae-a3873250a0b1@redhat.com>
+         <7db1383cc9d40f76a02076c3b86cf832fd7463cc.camel@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+On Tue, 2020-09-22 at 17:50 +0300, Maxim Levitsky wrote:
+> On Tue, 2020-09-22 at 14:50 +0200, Paolo Bonzini wrote:
+> > On 21/09/20 18:23, Sean Christopherson wrote:
+> > > Avoid "should" in code comments and describe what the code is doing, not what
+> > > it should be doing.  The only exception for this is when the code has a known
+> > > flaw/gap, e.g. "KVM should do X, but because of Y, KVM actually does Z".
+> > > 
+> > > > +		 * return it's real L1 value so that its restore will be correct.
+> > > s/it's/its
+> > > 
+> > > Perhaps add "unconditionally" somewhere, since arch.tsc_offset can also contain
+> > > the L1 value.  E.g. 
+> > > 
+> > > 		 * Unconditionally return L1's TSC offset on userspace reads
+> > > 		 * so that userspace reads and writes always operate on L1's
+> > > 		 * offset, e.g. to ensure deterministic behavior for migration.
+> > > 		 */
+> > > 
+> > 
+> > Technically the host need not restore MSR_IA32_TSC at all.  This follows
+> > the idea of the discussion with Oliver Upton about transmitting the
+> > state of the kvmclock heuristics to userspace, which include a (TSC,
+> > CLOCK_MONOTONIC) pair to transmit the offset to the destination.  All
+> > that needs to be an L1 value is then the TSC value in that pair.
+> > 
+> > I'm a bit torn over this patch.  On one hand it's an easy solution, on
+> > the other hand it's... just wrong if KVM_GET_MSR is used for e.g.
+> > debugging the guest.
+> 
+> Could you explain why though? After my patch, the KVM_GET_MSR will consistently
+> read the L1 TSC, just like all other MSRs as I explained. I guess for debugging,
+> this should work?
+> 
+> The fact that TSC reads with the guest offset is a nice exception made for the guests,
+> that insist on reading this msr without inteception and not using rdtsc.
+> 
+> Best regards,
+> 	Maxim Levitsky
+> 
+> > I'll talk to Maxim and see if he can work on the kvmclock migration stuff.
 
-Alex
+We talked about this on IRC and now I am also convinced that we should implement
+proper TSC migration instead, so I guess I'll drop this patch and I will implement it.
 
-On Tue, Sep 22, 2020 at 9:11 AM Bernard Zhao <bernard@vivo.com> wrote:
->
-> Change the comment typo: "programm" -> "program".
->
-> Signed-off-by: Bernard Zhao <bernard@vivo.com>
-> ---
->  drivers/gpu/drm/radeon/uvd_v1_0.c | 4 ++--
->  drivers/gpu/drm/radeon/uvd_v2_2.c | 2 +-
->  drivers/gpu/drm/radeon/uvd_v4_2.c | 2 +-
->  3 files changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/radeon/uvd_v1_0.c b/drivers/gpu/drm/radeon/uvd_v1_0.c
-> index 800721153d51..58557c2263a7 100644
-> --- a/drivers/gpu/drm/radeon/uvd_v1_0.c
-> +++ b/drivers/gpu/drm/radeon/uvd_v1_0.c
-> @@ -117,7 +117,7 @@ int uvd_v1_0_resume(struct radeon_device *rdev)
->         if (r)
->                 return r;
->
-> -       /* programm the VCPU memory controller bits 0-27 */
-> +       /* program the VCPU memory controller bits 0-27 */
->         addr = (rdev->uvd.gpu_addr >> 3) + 16;
->         size = RADEON_GPU_PAGE_ALIGN(rdev->uvd_fw->size) >> 3;
->         WREG32(UVD_VCPU_CACHE_OFFSET0, addr);
-> @@ -360,7 +360,7 @@ int uvd_v1_0_start(struct radeon_device *rdev)
->         /* Set the write pointer delay */
->         WREG32(UVD_RBC_RB_WPTR_CNTL, 0);
->
-> -       /* programm the 4GB memory segment for rptr and ring buffer */
-> +       /* program the 4GB memory segment for rptr and ring buffer */
->         WREG32(UVD_LMI_EXT40_ADDR, upper_32_bits(ring->gpu_addr) |
->                                    (0x7 << 16) | (0x1 << 31));
->
-> diff --git a/drivers/gpu/drm/radeon/uvd_v2_2.c b/drivers/gpu/drm/radeon/uvd_v2_2.c
-> index 23b18edda20e..6266167886d9 100644
-> --- a/drivers/gpu/drm/radeon/uvd_v2_2.c
-> +++ b/drivers/gpu/drm/radeon/uvd_v2_2.c
-> @@ -109,7 +109,7 @@ int uvd_v2_2_resume(struct radeon_device *rdev)
->         if (r)
->                 return r;
->
-> -       /* programm the VCPU memory controller bits 0-27 */
-> +       /* program the VCPU memory controller bits 0-27 */
->         addr = rdev->uvd.gpu_addr >> 3;
->         size = RADEON_GPU_PAGE_ALIGN(rdev->uvd_fw->size + 4) >> 3;
->         WREG32(UVD_VCPU_CACHE_OFFSET0, addr);
-> diff --git a/drivers/gpu/drm/radeon/uvd_v4_2.c b/drivers/gpu/drm/radeon/uvd_v4_2.c
-> index dc54fa4aaea8..f9e97fa63674 100644
-> --- a/drivers/gpu/drm/radeon/uvd_v4_2.c
-> +++ b/drivers/gpu/drm/radeon/uvd_v4_2.c
-> @@ -40,7 +40,7 @@ int uvd_v4_2_resume(struct radeon_device *rdev)
->         uint64_t addr;
->         uint32_t size;
->
-> -       /* programm the VCPU memory controller bits 0-27 */
-> +       /* program the VCPU memory controller bits 0-27 */
->
->         /* skip over the header of the new firmware format */
->         if (rdev->uvd.fw_header_present)
-> --
-> 2.28.0
->
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+Last few weeks I was digging through all the timing code, and I mostly understand it
+so it shouldn't take me much time to implement it.
+
+There is hope that this will make nested migration fully stable since, with this patch,
+it still sometimes hangs. While on my AMD machine it takes about half a day of migration
+cycles to reproduce this, on my Intel's laptop even with this patch I can hang the nested
+guest after 10-20 cycles. The symptoms look very similar to the issue that this patch
+tried to fix.
+ 
+Maybe we should keep the *comment* I added to document this funny TSC read behavior. 
+When I implement the whole thing, maybe I add a comment only version of this patch
+for that.
+
+Best regards,
+	Maxim Levitsky 
+
+> > 
+> > Paolo
+> > 
+
+
