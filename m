@@ -2,296 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F01012737A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 02:42:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C96FC2737A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 02:42:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729402AbgIVAmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 20:42:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51352 "EHLO
+        id S1729395AbgIVAms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 20:42:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729290AbgIVAmB (ORCPT
+        with ESMTP id S1728701AbgIVAms (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 20:42:01 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55150C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 17:42:01 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id 7so10488315pgm.11
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 17:42:01 -0700 (PDT)
+        Mon, 21 Sep 2020 20:42:48 -0400
+Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2DABC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 17:42:46 -0700 (PDT)
+Received: by mail-oo1-xc43.google.com with SMTP id o20so3740636ook.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 17:42:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CaGeSvPYLRYBm98UO6Jry86VMBCqcS8gmrX0rLLRuOo=;
-        b=UVWVU0fbt3UEKUYJ92XpmWL02+0ZZG+3A1SSfXv4mzj9EmM+5wPT0JugLs1A1pTkgs
-         GvwFgkaLyI7j3I22oeHMuDDE7hUnqOrHHOkP8Msf3V+Ax6fnak1f0BqDfabxgg9kmDXb
-         fEd7tC05asleoEk921rx4kEVfKq3LyTKxAUdg=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=R2R7WH/B9uorM3A755wPvM+NF9B+5Y9TzKQCMLEQCzw=;
+        b=nHYRBUybpof6BfO9qgW0DwAlj2Q8hrrwjsx+WrbRtnVElQvMV8mPnKlrB5f1vHCE6K
+         f1YW6WLqfPCzHihvOiBU5+kQFm/N7Ql9wLsJdpI2XMtrKheCjme5CR3XsZhHIdYiiusr
+         x3Hwt+vxQk9fH5cMXiaaGXe/qO7DPFWCCii4vIfjQr4CuVwlmLMYlPj45b+eug9QUGlw
+         M2kzP+M5/BOTbtNMToaUteYtoRH1jXm+Z267vcqLLCVrC0SpkvzNrURe8sgWTJhg/g/9
+         TpD4sFqfoJ0mdzJBoTT7KEW8YrbNqybsJlF+9F7vzTyMYrWUiuEX6SDNK8RYZqEXIBCw
+         aqNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CaGeSvPYLRYBm98UO6Jry86VMBCqcS8gmrX0rLLRuOo=;
-        b=bHEIA1TgSyIE81muC9TdjgBXEsWBD/Ou/GsdHCz1qnphml2EK1A4TGPi6KosJe2zYH
-         4XBATZhkcncZ5ABVENs5ZRS5PxWIi2CmeYgoEBPccveJsCHuFt/oE5EktNlSvVmaQBFs
-         rLKFrbRJwAXOL3SGvzL9ZRErlYDOWXa9uWG+mZ5MzkJTr2xZrkMF2/H6tbCqMM0zxAoW
-         rs+sJBkJUTr59Ud+cnCcVzex62KSnd9XrdQdZy9r24BNaXv4dAMpbFdzchkDrZy1TO37
-         qNKYA2OBdyYjK6BQRK5FToi1qTGF8TtTm1hpISkfuqzzje3rqzIyBtqgIGW7tHBk60Zl
-         /wYA==
-X-Gm-Message-State: AOAM530DO1rFulqkziFwp9p1m3VZT6SHrQirCE5HiiVj14WG6mDMfyCs
-        LOilKwx2kj83BXJogcqpbgGWhQ==
-X-Google-Smtp-Source: ABdhPJzrP7IAhyFSlSdePZhYT6llTUXfmudyC5btRBnQE8UwmQ3o815KAwRkrvJlha1c1bQQjUFnZw==
-X-Received: by 2002:a63:3645:: with SMTP id d66mr1639938pga.167.1600735320822;
-        Mon, 21 Sep 2020 17:42:00 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
-        by smtp.gmail.com with ESMTPSA id e123sm13488203pfh.167.2020.09.21.17.41.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Sep 2020 17:42:00 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 17:41:58 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-usb@vger.kernel.org, Bastien Nocera <hadess@hadess.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        devicetree@vger.kernel.org,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Peter Chen <peter.chen@nxp.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH v2 2/2] USB: misc: Add onboard_usb_hub driver
-Message-ID: <20200922004158.GC21107@google.com>
-References: <20200917114600.v2.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
- <20200917114600.v2.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
- <20200917195416.GA1099735@rowland.harvard.edu>
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=R2R7WH/B9uorM3A755wPvM+NF9B+5Y9TzKQCMLEQCzw=;
+        b=cvYCEpgAmuppJVi39RxinRfQCYCtnIyczKvi1S7IoQj9qgskFRl4uah0qO9P/PPf8C
+         l0Oe+PsqY/eW7DQurRaaQRZTRu6cSpJ9UMCG7IZVbNDGuo9qARpvvJlkW0r7p3HIThPc
+         Jwej4GirDtHG9tZs8BaQUfqPy/tOJXpeyGqtC7wUzbjBPHARLfgYq/awp/pFjuHns4PC
+         8et6S5OAhV/4f6GeaOUgUS6q3qH2AT2s0r3ITu+3Rj58U+odIy/5e0Dxfenxe+ACurWd
+         qf752TK8BUvXcaKjgSABa6fAmlGjCb0fzE7GD3CsJvZ4sSmKYBECbGGSyuTzIadGz5yE
+         +NLw==
+X-Gm-Message-State: AOAM532C6QT9kbMr/Onpxjbwq7tMryCwZZNs29L8u1NdJWe+AJCVnX+n
+        L3CpFysg6fgWa0suKJ2nMStJyA==
+X-Google-Smtp-Source: ABdhPJw1u7dTAMqNjdfZpV1uZ7U6wjy6vAvFezS5ILPqoII1fWNCGnPgAYMBjfTuSe9KtTndRZ0zJQ==
+X-Received: by 2002:a4a:bb05:: with SMTP id f5mr1334298oop.5.1600735366120;
+        Mon, 21 Sep 2020 17:42:46 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id b16sm6379801otq.31.2020.09.21.17.42.42
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Mon, 21 Sep 2020 17:42:45 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 17:42:41 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, willy@infradead.org,
+        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        shakeelb@google.com, iamjoonsoo.kim@lge.com,
+        richard.weiyang@gmail.com, kirill@shutemov.name,
+        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
+        vdavydov.dev@gmail.com, shy828301@gmail.com
+Subject: Re: [PATCH v18 19/32] mm/swap.c: serialize memcg changes in
+ pagevec_lru_move_fn
+In-Reply-To: <1598273705-69124-20-git-send-email-alex.shi@linux.alibaba.com>
+Message-ID: <alpine.LSU.2.11.2009211713440.5214@eggly.anvils>
+References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com> <1598273705-69124-20-git-send-email-alex.shi@linux.alibaba.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200917195416.GA1099735@rowland.harvard.edu>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alan,
+On Mon, 24 Aug 2020, Alex Shi wrote:
 
-thanks for taking time to review!
-
-On Thu, Sep 17, 2020 at 03:54:16PM -0400, Alan Stern wrote:
-> On Thu, Sep 17, 2020 at 11:46:22AM -0700, Matthias Kaehlcke wrote:
-> > The main issue this driver addresses is that a USB hub needs to be
-> > powered before it can be discovered. For onboard hubs this is often
-> > solved by supplying the hub with an 'always-on' regulator, which is
-> > kind of a hack. Some onboard hubs may require further initialization
-> > steps, like changing the state of a GPIO or enabling a clock, which
-> > requires further hacks. This driver creates a platform device
-> > representing the hub which performs the necessary initialization.
-> > Currently it only supports switching on a single regulator, support
-> > for multiple regulators or other actions can be added as needed.
-> > Different initialization sequences can be supported based on the
-> > compatible string.
-> > 
-> > Besides performing the initialization the driver can be configured
-> > to power the hub off during system suspend. This can help to extend
-> > battery life on battery powered devices which have no requirements
-> > to keep the hub powered during suspend. The driver can also be
-> > configured to leave the hub powered when a wakeup capable USB device
-> > is connected when suspending, and power it off otherwise.
-> > 
-> > Technically the driver consists of two drivers, the platform driver
-> > described above and a very thin USB driver that subclasses the
-> > generic driver. The purpose of this driver is to provide the platform
-> > driver with the USB devices corresponding to the hub(s) (a hub
-> > controller may provide multiple 'logical' hubs, e.g. one to support
-> > USB 2.0 and another for USB 3.x).
-> > 
-> > Co-developed-by: Ravi Chandra Sadineni <ravisadineni@chromium.org>
-> > Signed-off-by: Ravi Chandra Sadineni <ravisadineni@chromium.org>
-> > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> Hugh Dickins' found a memcg change bug on original version:
+> If we want to change the pgdat->lru_lock to memcg's lruvec lock, we have
+> to serialize mem_cgroup_move_account during pagevec_lru_move_fn. The
+> possible bad scenario would like:
 > 
-> > +config USB_ONBOARD_HUB
-> > +	tristate "Onboard USB hub support"
-> > +	depends on OF
-> > +	help
-> > +	  Say Y here if you want to support onboard USB hubs. The driver
-> > +	  powers supported hubs on and may perform other initialization
-> > +	  steps.
+> 	cpu 0					cpu 1
+> lruvec = mem_cgroup_page_lruvec()
+> 					if (!isolate_lru_page())
+> 						mem_cgroup_move_account
 > 
-> I have a nagging feeling that this description may be too vague for a
-> lot of people to understand.  Does everybody know what an "onboard"
-> USB hub is?
+> spin_lock_irqsave(&lruvec->lru_lock <== wrong lock.
 > 
-> Consider for example that Intel's current EHCI host controllers all
-> come with a USB hub built into the chipset.  That built-in hub
-> certainly could be considered "onboard", but it doesn't need this
-> driver.
+> So we need the ClearPageLRU to block isolate_lru_page(), that serializes
+
+s/the ClearPageLRU/TestClearPageLRU/
+
+> the memcg change. and then removing the PageLRU check in move_fn callee
+> as the consequence.
+
+Deserves another paragraph about __pagevec_lru_add():
+"__pagevec_lru_add_fn() is different from the others, because the pages
+it deals with are, by definition, not yet on the lru.  TestClearPageLRU
+is not needed and would not work, so __pagevec_lru_add() goes its own way."
+
 > 
-> Maybe also give some examples of devices that require this driver, to
-> help make the idea clear to readers.
+> Reported-by: Hugh Dickins <hughd@google.com>
 
-Ok, I'll try to come up with a better description.
+True.
 
-> > +static int __maybe_unused onboard_hub_suspend(struct device *dev)
-> > +{
-> > +	struct onboard_hub *hub = dev_get_drvdata(dev);
-> > +	struct udev_node *node;
-> > +	int rc = 0;
-> > +
-> > +	hub->has_wakeup_capable_descendants = false;
-> > +
-> > +	if (!hub->power_off_in_suspend)
-> > +		return 0;
-> > +
-> > +	mutex_lock(&hub->lock);
-> > +
-> > +	list_for_each_entry(node, &hub->udev_list, list) {
-> > +		if (!device_may_wakeup(node->udev->bus->controller))
-> > +			break;
+> Signed-off-by: Hugh Dickins <hughd@google.com>
+
+I did provide some lines, but I think it's just
+Acked-by: Hugh Dickins <hughd@google.com>
+to go below your Signed-off-by.
+
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  mm/swap.c | 44 +++++++++++++++++++++++++++++++++++---------
+>  1 file changed, 35 insertions(+), 9 deletions(-)
+
+In your lruv19 branch, this patch got renamed (s/moveing/moving/):
+but I think it's better with the old name used here in v18, and without
+those mm/vmscan.c mods to check_move_unevictable_pages() tacked on:
+please move those back to 16/32, which already makes changes to vmscan.c.
+
 > 
-> You're assuming that node->udev->bus->controller is going to be the
-> same for the nodes on the list, right?
+> diff --git a/mm/swap.c b/mm/swap.c
+> index 446ffe280809..2d9a86bf93a4 100644
+> --- a/mm/swap.c
+> +++ b/mm/swap.c
+> @@ -221,8 +221,14 @@ static void pagevec_lru_move_fn(struct pagevec *pvec,
+>  			spin_lock_irqsave(&pgdat->lru_lock, flags);
+>  		}
+>  
+> +		/* block memcg migration during page moving between lru */
+> +		if (!TestClearPageLRU(page))
+> +			continue;
+> +
+>  		lruvec = mem_cgroup_page_lruvec(page, pgdat);
+>  		(*move_fn)(page, lruvec);
+> +
+> +		SetPageLRU(page);
+>  	}
+>  	if (pgdat)
+>  		spin_unlock_irqrestore(&pgdat->lru_lock, flags);
+> @@ -232,7 +238,7 @@ static void pagevec_lru_move_fn(struct pagevec *pvec,
+>  
+>  static void pagevec_move_tail_fn(struct page *page, struct lruvec *lruvec)
+>  {
+> -	if (PageLRU(page) && !PageUnevictable(page)) {
+> +	if (!PageUnevictable(page)) {
+>  		del_page_from_lru_list(page, lruvec, page_lru(page));
+>  		ClearPageActive(page);
+>  		add_page_to_lru_list_tail(page, lruvec, page_lru(page));
+> @@ -306,7 +312,7 @@ void lru_note_cost_page(struct page *page)
+>  
+>  static void __activate_page(struct page *page, struct lruvec *lruvec)
+>  {
+> -	if (PageLRU(page) && !PageActive(page) && !PageUnevictable(page)) {
+> +	if (!PageActive(page) && !PageUnevictable(page)) {
+>  		int lru = page_lru_base_type(page);
+>  		int nr_pages = thp_nr_pages(page);
+>  
+> @@ -362,7 +368,8 @@ void activate_page(struct page *page)
+>  
+>  	page = compound_head(page);
+>  	spin_lock_irq(&pgdat->lru_lock);
+> -	__activate_page(page, mem_cgroup_page_lruvec(page, pgdat));
+> +	if (PageLRU(page))
+> +		__activate_page(page, mem_cgroup_page_lruvec(page, pgdat));
+>  	spin_unlock_irq(&pgdat->lru_lock);
+>  }
+>  #endif
 
-Yes, that is the assumption, although you have a point that this isn't
-necessarily the case. It's probably true in the vast majority of cases,
-but a hub could be wired up to multiple controllers. I'll change the
-loop to set the flag without breaking, it's a micro-optimization
-anyway.
+Every time I look at this, I wonder if that's right, or an unnecessary
+optimization strayed in, or whatever.  For the benefit of others looking
+at this patch, yes it is right: this is the !CONFIG_SMP alternative
+version of activate_page(), and needs that PageLRU check to compensate
+for the check that has now been removed from __activate_page() itself.
 
-> > +
-> > +		if (usb_wakeup_enabled_descendants(node->udev)) {
-> > +			hub->has_wakeup_capable_descendants = true;
-> > +			break;
-> > +		}
-> > +	}
-> > +
-> > +	mutex_unlock(&hub->lock);
-> > +
-> > +	if (!hub->has_wakeup_capable_descendants)
-> > +		rc = onboard_hub_power_off(hub);
-> > +
-> > +	return rc;
-> > +}
-> > +
-> > +static int __maybe_unused onboard_hub_resume(struct device *dev)
-> > +{
-> > +	struct onboard_hub *hub = dev_get_drvdata(dev);
-> > +	int rc = 0;
-> > +
-> > +	if (hub->power_off_in_suspend && !hub->has_wakeup_capable_descendants)
-> 
-> Instead of this cumbersome two-condition test, how about simply
-> having a hub->is_powered_on flag?  Then
-> hub->has_wakeup_capable_descendants wouldn't be needed.
-
-Ok, less cumbersome code is always good :)
-
-> > +		rc = onboard_hub_power_on(hub);
-> > +
-> > +	return rc;
-> > +}
-> 
-> > +static int onboard_hub_remove_usbdev(struct onboard_hub *hub, struct usb_device *udev)
-> > +{
-> > +	struct udev_node *node;
-> > +
-> > +	mutex_lock(&hub->lock);
-> > +
-> > +	list_for_each_entry(node, &hub->udev_list, list) {
-> > +		if (node->udev == udev) {
-> > +			list_del(&node->list);
-> > +			devm_kfree(hub->dev, node);
-> 
-> Why have an explicit kfree here but not anywhere else?  And if you do
-> have an explicit kfree, why use devm_kzalloc rather than plain kzalloc?
-
-The motivation of the explicit kfree was to avoid hogging memory if the
-USB device disappears and reappears repeatedly. However this doesn't seem
-to be a very common scenario so maybe we can ignore it.
-
-> > +			break;
-> > +		}
-> > +	}
-> > +
-> > +	mutex_unlock(&hub->lock);
-> > +
-> > +	if (node == NULL)
-> > +		return -EINVAL;
-> 
-> This test is wrong.  Look at the definition of list_for_each_entry;
-> node will never be NULL.  Probably the best approach is to use a local
-> "ret" variable.
-
-Ack, thanks for catching!
-
-> > +
-> > +	return 0;
-> > +}
-> 
-> > +static int onboard_hub_remove(struct platform_device *pdev)
-> > +{
-> > +	struct onboard_hub *hub = dev_get_drvdata(&pdev->dev);
-> > +
-> > +	sysfs_remove_file(&pdev->dev.kobj, &dev_attr_power_off_in_suspend.attr);
-> > +
-> > +	return onboard_hub_power_off(hub);
-> > +}
-> 
-> Shouldn't this routine unbind the onboard_hub_usbdev driver from all
-> the associated devices?  Otherwise you end up with more-or-less
-> dangling references to hub (I say more-or-less because with the devm
-> allocations, the structures will hang around as zombies for a while).
-
-True, the dangling references aren't a good idea. Initially I thought
-that the USB devices holding a reference of the hub device would prevent
-this, but apparently that was wishful thinking. IIUC unbinding would be
-done through device_driver_detach().
-
-> Relying on the onboard_hub_power_off call to do this for you isn't a
-> great idea, because the effect won't happen immediately.
-> 
-> > +static int onboard_hub_usbdev_probe(struct usb_device *udev)
-> > +{
-> > +	struct device *dev = &udev->dev;
-> > +	struct onboard_hub *hub;
-> > +
-> > +	/* ignore supported hubs without device tree node */
-> > +	if (!dev->of_node)
-> > +		return -ENODEV;
-> > +
-> > +	hub = _find_onboard_hub(dev);
-> > +	if (IS_ERR(hub))
-> > +		return PTR_ERR(dev);
-> > +
-> > +	dev_set_drvdata(dev, hub);
-> > +
-> > +	onboard_hub_add_usbdev(hub, udev);
-> 
-> Ignoring the return code?  Then why does that routine return int rather
-> than void?
-
-Ok, will abort if the function returns an error.
-
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static void onboard_hub_usbdev_disconnect(struct usb_device *udev)
-> > +{
-> > +	struct onboard_hub *hub = dev_get_drvdata(&udev->dev);
-> > +
-> > +	onboard_hub_remove_usbdev(hub, udev);
-> 
-> Ditto.
-
-In this case it's probably better to change the return type to void, since
-there is not really an alternative course of action.
-
-> > +
-> > +	put_device(hub->dev);
-> 
-> Is there a matching get_device somewhere (like in _find_onboard_hub)?
-> If so, I didn't see it.  And I don't see any reason for it.
-
-Yes, implicitly, of_find_device_by_node() "takes a reference to the
-embedded struct device which needs to be dropped after use."
+> @@ -521,9 +528,6 @@ static void lru_deactivate_file_fn(struct page *page, struct lruvec *lruvec)
+>  	bool active;
+>  	int nr_pages = thp_nr_pages(page);
+>  
+> -	if (!PageLRU(page))
+> -		return;
+> -
+>  	if (PageUnevictable(page))
+>  		return;
+>  
+> @@ -564,7 +568,7 @@ static void lru_deactivate_file_fn(struct page *page, struct lruvec *lruvec)
+>  
+>  static void lru_deactivate_fn(struct page *page, struct lruvec *lruvec)
+>  {
+> -	if (PageLRU(page) && PageActive(page) && !PageUnevictable(page)) {
+> +	if (PageActive(page) && !PageUnevictable(page)) {
+>  		int lru = page_lru_base_type(page);
+>  		int nr_pages = thp_nr_pages(page);
+>  
+> @@ -581,7 +585,7 @@ static void lru_deactivate_fn(struct page *page, struct lruvec *lruvec)
+>  
+>  static void lru_lazyfree_fn(struct page *page, struct lruvec *lruvec)
+>  {
+> -	if (PageLRU(page) && PageAnon(page) && PageSwapBacked(page) &&
+> +	if (PageAnon(page) && PageSwapBacked(page) &&
+>  	    !PageSwapCache(page) && !PageUnevictable(page)) {
+>  		bool active = PageActive(page);
+>  		int nr_pages = thp_nr_pages(page);
+> @@ -979,7 +983,29 @@ static void __pagevec_lru_add_fn(struct page *page, struct lruvec *lruvec)
+>   */
+>  void __pagevec_lru_add(struct pagevec *pvec)
+>  {
+> -	pagevec_lru_move_fn(pvec, __pagevec_lru_add_fn);
+> +	int i;
+> +	struct pglist_data *pgdat = NULL;
+> +	struct lruvec *lruvec;
+> +	unsigned long flags = 0;
+> +
+> +	for (i = 0; i < pagevec_count(pvec); i++) {
+> +		struct page *page = pvec->pages[i];
+> +		struct pglist_data *pagepgdat = page_pgdat(page);
+> +
+> +		if (pagepgdat != pgdat) {
+> +			if (pgdat)
+> +				spin_unlock_irqrestore(&pgdat->lru_lock, flags);
+> +			pgdat = pagepgdat;
+> +			spin_lock_irqsave(&pgdat->lru_lock, flags);
+> +		}
+> +
+> +		lruvec = mem_cgroup_page_lruvec(page, pgdat);
+> +		__pagevec_lru_add_fn(page, lruvec);
+> +	}
+> +	if (pgdat)
+> +		spin_unlock_irqrestore(&pgdat->lru_lock, flags);
+> +	release_pages(pvec->pages, pvec->nr);
+> +	pagevec_reinit(pvec);
+>  }
+>  
+>  /**
+> -- 
+> 1.8.3.1
