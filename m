@@ -2,140 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E2B273B6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09FF5273B60
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729695AbgIVHGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 03:06:33 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:36482 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729545AbgIVHG2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 03:06:28 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 6E7D71941BDA90A9D88A;
-        Tue, 22 Sep 2020 15:06:23 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 22 Sep 2020 15:06:16 +0800
-From:   Tian Tao <tiantao6@hisilicon.com>
-To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
-        <kraxel@redhat.com>, <alexander.deucher@amd.com>,
-        <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
-        <xinliang.liu@linaro.org>, <linux-kernel@vger.kernel.org>
-CC:     <linuxarm@huawei.com>
-Subject: [PATCH drm/hisilicon v2 2/2] drm/hisilicon: Features to support reading resolutions from EDID
-Date:   Tue, 22 Sep 2020 15:03:50 +0800
-Message-ID: <1600758230-13389-3-git-send-email-tiantao6@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1600758230-13389-1-git-send-email-tiantao6@hisilicon.com>
-References: <1600758230-13389-1-git-send-email-tiantao6@hisilicon.com>
+        id S1729667AbgIVHEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 03:04:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729168AbgIVHEH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 03:04:07 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9D65C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 00:04:07 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id k14so11173760pgi.9
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 00:04:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=YRpi9KwHALoKXKQSBhCBZZ06f6McWrPvpfammLbLT8k=;
+        b=Vx4xa5YTBKUlMeIHTr3nUG0IcbX8yqVOQaPcvn8RIxMp1hyTKR1u8hm9kMvSOuyZ6V
+         DzfQZgoxbcFyDF3t52mS/eLs+E7S6qThce7Gt2yc+mYETqAaoVpegKaRf8sUN7zAy6gV
+         hwLSNv5idj6wgSIZB1yIOYoC91lK9gKAxKqG3Pdw90vTlj//h1YT60+ebH1AwyATN9sC
+         k4pPnWXPMS5TmSwP0OGVZ7h378rUfe7aWSwaGaTCOtVTRckVv6UZYNQZ23tddKXNyb0G
+         NTv8/F8v/rrZBu7fsUfPZUTTJn+8Au3MJyfuGnvALnIZHIRh/bG4W7k6WTemfdMFMArG
+         kDqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=YRpi9KwHALoKXKQSBhCBZZ06f6McWrPvpfammLbLT8k=;
+        b=AUP6PFA5OIAguePuz1zlT4GVGvwb8GTndnrb/1pTuw0fuGMOdqrz4O3gz2jk6O0ITX
+         MX9kGQXsMH/+cB8ih+3XytrIxTNTdSUZoogstSgEd/7a2sneLXHssdaRy+WYGePoMW/d
+         DkJsDDg1SDF7KA+o72v94LIdMPZYAqXUH3GtWB28dVvwwVQaGfmLaH5hk1kbDE0MZYWK
+         AJzV+BaFANae0prBfqqZJhSc4lUvDTKdpLg69r67WAQrd/2/lzrp14u77GCvl87JErEq
+         AzOaSt8XeJJMO4RyPMc+NIOrEccRrWR4Wc/R9qJkugdQjL9cEunyoDdyPravQ+ISEt95
+         HFcg==
+X-Gm-Message-State: AOAM5329Xu31NGTgNnCsOVGtTr19RHo8b/oj3ZabG6M6Qu8vL5Xu/Yes
+        faqxqulsq7UJ/RWF1XN/KEkN
+X-Google-Smtp-Source: ABdhPJz6WA77oaxPRuROoCyX6vVBITEzYe90bgErw1k8pwMtDD7+wfNZ93rVhhxEneNx8PRzQwC5CQ==
+X-Received: by 2002:a17:902:8e83:b029:d2:41d3:94e9 with SMTP id bg3-20020a1709028e83b02900d241d394e9mr1172015plb.75.1600758247230;
+        Tue, 22 Sep 2020 00:04:07 -0700 (PDT)
+Received: from Mani-XPS-13-9360 ([2409:4072:6e1c:c062:1004:2ccf:6900:b97])
+        by smtp.gmail.com with ESMTPSA id e2sm1412821pjm.27.2020.09.22.00.04.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 22 Sep 2020 00:04:06 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 12:33:59 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Amit Singh Tomar <amittomer25@gmail.com>
+Cc:     andre.przywara@arm.com, afaerber@suse.de, robh+dt@kernel.org,
+        cristian.ciocaltea@gmail.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v7 10/10] arm64: dts: actions: Add uSD support for
+ Cubieboard7
+Message-ID: <20200922070359.GI29035@Mani-XPS-13-9360>
+References: <1595180527-11320-1-git-send-email-amittomer25@gmail.com>
+ <1595180527-11320-11-git-send-email-amittomer25@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1595180527-11320-11-git-send-email-amittomer25@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use drm_get_edid to get the resolution, if that fails, set it to
-a fixed resolution. Rewrite the desrtoy callback function to release
-resources.
+On Sun, Jul 19, 2020 at 11:12:07PM +0530, Amit Singh Tomar wrote:
+> This commit adds uSD support for Cubieboard7 board based on Actions Semi
+> S700 SoC. SD0 is connected to uSD slot. Since there is no PMIC support
+> added yet, fixed regulator has been used as a regulator node.
+> 
+> Signed-off-by: Amit Singh Tomar <amittomer25@gmail.com>
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
----
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c | 38 +++++++++++++++++++++---
- 1 file changed, 34 insertions(+), 4 deletions(-)
+Not applying this one! Please post it in next revision.
 
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-index 376a05d..c6999ed 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-+++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-@@ -21,12 +21,24 @@
- static int hibmc_connector_get_modes(struct drm_connector *connector)
- {
- 	int count;
-+	void *edid;
-+	struct hibmc_connector *hibmc_connector = to_hibmc_connector(connector);
-+
-+	edid = drm_get_edid(connector, &hibmc_connector->adapter);
-+	if (edid) {
-+		drm_connector_update_edid_property(connector, edid);
-+		count = drm_add_edid_modes(connector, edid);
-+		if (count)
-+			goto out;
-+	}
- 
- 	count = drm_add_modes_noedid(connector,
- 				     connector->dev->mode_config.max_width,
- 				     connector->dev->mode_config.max_height);
- 	drm_set_preferred_mode(connector, 1024, 768);
- 
-+out:
-+	kfree(edid);
- 	return count;
- }
- 
-@@ -36,6 +48,14 @@ static enum drm_mode_status hibmc_connector_mode_valid(struct drm_connector *con
- 	return MODE_OK;
- }
- 
-+static void hibmc_connector_destroy(struct drm_connector *connector)
-+{
-+	struct hibmc_connector *hibmc_connector = to_hibmc_connector(connector);
-+
-+	i2c_del_adapter(&hibmc_connector->adapter);
-+	drm_connector_cleanup(connector);
-+}
-+
- static const struct drm_connector_helper_funcs
- 	hibmc_connector_helper_funcs = {
- 	.get_modes = hibmc_connector_get_modes,
-@@ -44,7 +64,7 @@ static const struct drm_connector_helper_funcs
- 
- static const struct drm_connector_funcs hibmc_connector_funcs = {
- 	.fill_modes = drm_helper_probe_single_connector_modes,
--	.destroy = drm_connector_cleanup,
-+	.destroy = hibmc_connector_destroy,
- 	.reset = drm_atomic_helper_connector_reset,
- 	.atomic_duplicate_state = drm_atomic_helper_connector_duplicate_state,
- 	.atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
-@@ -77,10 +97,17 @@ static const struct drm_encoder_funcs hibmc_encoder_funcs = {
- int hibmc_vdac_init(struct hibmc_drm_private *priv)
- {
- 	struct drm_device *dev = priv->dev;
-+	struct hibmc_connector *hibmc_connector = &priv->connector;
- 	struct drm_encoder *encoder = &priv->encoder;
--	struct drm_connector *connector = &priv->connector;
-+	struct drm_connector *connector = &hibmc_connector->base;
- 	int ret;
- 
-+	ret = hibmc_ddc_create(dev, hibmc_connector);
-+	if (ret) {
-+		drm_err(dev, "failed to create ddc: %d\n", ret);
-+		return ret;
-+	}
-+
- 	encoder->possible_crtcs = 0x1;
- 	ret = drm_encoder_init(dev, encoder, &hibmc_encoder_funcs,
- 			       DRM_MODE_ENCODER_DAC, NULL);
-@@ -91,12 +118,15 @@ int hibmc_vdac_init(struct hibmc_drm_private *priv)
- 
- 	drm_encoder_helper_add(encoder, &hibmc_encoder_helper_funcs);
- 
--	ret = drm_connector_init(dev, connector, &hibmc_connector_funcs,
--				 DRM_MODE_CONNECTOR_VGA);
-+	ret = drm_connector_init_with_ddc(dev, connector,
-+					  &hibmc_connector_funcs,
-+					  DRM_MODE_CONNECTOR_VGA,
-+					  &hibmc_connector->adapter);
- 	if (ret) {
- 		drm_err(dev, "failed to init connector: %d\n", ret);
- 		return ret;
- 	}
-+
- 	drm_connector_helper_add(connector, &hibmc_connector_helper_funcs);
- 
- 	drm_connector_attach_encoder(connector, encoder);
--- 
-2.7.4
+Thanks,
+Mani
 
+> ---
+> Changes since v6:
+> 	* Brought back the uSD fixed regulator.
+> Changes since v5:
+>         * Removed the Fixed regulators as these are
+>           not needed.
+> Changes since v4:
+>         * No change.
+> Changes since v3:
+>         * No change.
+> Changes since v2:
+>         * No change.
+> Changes since v1:
+>         * No change.
+> Changes since RFC:
+>         * No change.
+> ---
+>  arch/arm64/boot/dts/actions/s700-cubieboard7.dts | 33 ++++++++++++++++++++++++
+>  arch/arm64/boot/dts/actions/s700.dtsi            |  1 +
+>  2 files changed, 34 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/actions/s700-cubieboard7.dts b/arch/arm64/boot/dts/actions/s700-cubieboard7.dts
+> index 63e375cd9eb4..f81d63261ba2 100644
+> --- a/arch/arm64/boot/dts/actions/s700-cubieboard7.dts
+> +++ b/arch/arm64/boot/dts/actions/s700-cubieboard7.dts
+> @@ -13,6 +13,7 @@
+>  
+>  	aliases {
+>  		serial3 = &uart3;
+> +		mmc0 = &mmc0;
+>  	};
+>  
+>  	chosen {
+> @@ -28,6 +29,15 @@
+>  		device_type = "memory";
+>  		reg = <0x1 0xe0000000 0x0 0x0>;
+>  	};
+> +
+> +	/* Fixed regulator used in the absence of PMIC */
+> +	sd_vcc: sd-vcc {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "fixed-3.1V";
+> +		regulator-min-microvolt = <3100000>;
+> +		regulator-max-microvolt = <3100000>;
+> +		regulator-always-on;
+> +	};
+>  };
+>  
+>  &i2c0 {
+> @@ -81,6 +91,14 @@
+>  			bias-pull-up;
+>  		};
+>  	};
+> +
+> +	mmc0_default: mmc0_default {
+> +		pinmux {
+> +			groups = "sd0_d0_mfp", "sd0_d1_mfp", "sd0_d2_d3_mfp",
+> +				 "sd0_cmd_mfp", "sd0_clk_mfp";
+> +			function = "sd0";
+> +		};
+> +	};
+>  };
+>  
+>  &timer {
+> @@ -90,3 +108,18 @@
+>  &uart3 {
+>  	status = "okay";
+>  };
+> +
+> +/* uSD */
+> +&mmc0 {
+> +	status = "okay";
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&mmc0_default>;
+> +	cd-gpios = <&pinctrl 120 GPIO_ACTIVE_LOW>;
+> +	no-sdio;
+> +	no-mmc;
+> +	no-1-8-v;
+> +	bus-width = <4>;
+> +	vmmc-supply = <&sd_vcc>;
+> +	vqmmc-supply = <&sd_vcc>;
+> +};
+> +
+> diff --git a/arch/arm64/boot/dts/actions/s700.dtsi b/arch/arm64/boot/dts/actions/s700.dtsi
+> index 9ed88aafc2da..ba498cf9217d 100644
+> --- a/arch/arm64/boot/dts/actions/s700.dtsi
+> +++ b/arch/arm64/boot/dts/actions/s700.dtsi
+> @@ -4,6 +4,7 @@
+>   */
+>  
+>  #include <dt-bindings/clock/actions,s700-cmu.h>
+> +#include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/interrupt-controller/arm-gic.h>
+>  #include <dt-bindings/power/owl-s700-powergate.h>
+>  #include <dt-bindings/reset/actions,s700-reset.h>
+> -- 
+> 2.7.4
+> 
