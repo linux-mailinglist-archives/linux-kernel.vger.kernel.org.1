@@ -2,212 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63BAD274A35
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 22:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A99C0274A3A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 22:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726667AbgIVUhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 16:37:18 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:33396 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726617AbgIVUhS (ORCPT
+        id S1726672AbgIVUi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 16:38:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726179AbgIVUi2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 16:37:18 -0400
-Received: by mail-il1-f193.google.com with SMTP id y2so7955719ila.0;
-        Tue, 22 Sep 2020 13:37:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=b6PLDdi8fxcl5wdYEMizGD4y37EzcneWERt48cXIEcA=;
-        b=kjMHJFuvt/NlRCAY7o7+W1sZhc0iS7/vCKM63sAy+TJTQ5m7Tpy+HqiMVC8+2qQgPJ
-         m2Hk0YpHWmLg74lxHIZ6H5hWsKhdvnfgmvQn55KeDse9RBUeY2o6qJqDfe/qCjdM5WM4
-         CRDOnessCFzzFNu3PXBdNZPKEgizSX439bktacTlUP8lDLZCGcgrjKMSOqH8jorUNWou
-         khoYwtPeFwuFT5nqJAiG4xedsDgShMLjSOmVa8RueKdqUJf2V7hNBIV/jLQbbGPxBx+F
-         m2ZAY5S/ksPO+W3Nwn2n1fL/Dj3eTN5ZUmvwnUlGQMi+S0AQ32ls5vG9mVKn4jmt/Az8
-         Eg9g==
-X-Gm-Message-State: AOAM531TYBob4OkUqJdwIQ0L8qhXOOSq/JpHEgWD6wg2fYoJdk6ibsVQ
-        PRWw9JThhGrPbLF86Qs72w==
-X-Google-Smtp-Source: ABdhPJxILOHU26JjUwj1e2C2a7BUhOjbr/XE/OtmvaSBy6NijsR8Rg+QvKohpCO4W6NfvHoCKokbPw==
-X-Received: by 2002:a92:bf0e:: with SMTP id z14mr5944896ilh.288.1600807036582;
-        Tue, 22 Sep 2020 13:37:16 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id i10sm7935475ioi.39.2020.09.22.13.37.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 13:37:15 -0700 (PDT)
-Received: (nullmailer pid 3199568 invoked by uid 1000);
-        Tue, 22 Sep 2020 20:37:14 -0000
-Date:   Tue, 22 Sep 2020 14:37:14 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Sagar Kadam <sagar.kadam@sifive.com>
-Cc:     linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, mturquette@baylibre.com,
-        sboyd@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
-        tglx@linutronix.de, jason@lakedaemon.net, maz@kernel.org,
-        thierry.reding@gmail.com, u.kleine-koenig@pengutronix.de,
-        lee.jones@linaro.org, aou@eecs.berkeley.edu, yash.shah@sifive.com
-Subject: Re: [PATCH v1 3/3] dt-bindings: riscv: convert pwm bindings to
- json-schema
-Message-ID: <20200922203714.GA3195489@bogus>
-References: <1599734644-4791-1-git-send-email-sagar.kadam@sifive.com>
- <1599734644-4791-4-git-send-email-sagar.kadam@sifive.com>
+        Tue, 22 Sep 2020 16:38:28 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42C01C061755;
+        Tue, 22 Sep 2020 13:38:28 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 20:38:25 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600807106;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=05s98Rz0WKN9/qhFHUJ64ku8EqVk5WFKo3JdL5WgLZA=;
+        b=U1vkAPKGOn/+ycbbymjwnhQ+EqUnAlSu4L6XFc42ji8TrDd7xCqxCW+IJ/1sjVnfmdqlbV
+        1FNwsBvQ1cCCM4FOU2YYba1pCPQibe8xn/VRuWfzupYFM2kO5C2qCRNHutIHVkYc1Kpdyz
+        OdWRuEUYJKq7qqE1U8ymxrzIAcoYC0JHydBXiTvBNyikR2EFyVoE+ZTqFB9i4m2Kl/aGTj
+        MrxTJJUQsiKEBSD8fHPlRD9LgwgMCdns+M0ZbgbXAa3Emzt5u84Pstj6QArzCZI6Ry/y+S
+        nW9CYRshGCUJHY4HU+cLuN7OmZMsV56C3hbWJ5pDp5e7HJ4EmTRX7oXEiAVvRQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600807106;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=05s98Rz0WKN9/qhFHUJ64ku8EqVk5WFKo3JdL5WgLZA=;
+        b=7S7CRuYzJoG4Pwx5qiHVHmTgrc4F1Kqq1yMRr6HCQ1QkmNPQi39TDv7Vx7B4b6W+v/UiQL
+        eRtZIdUl4cwXIMAA==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/irq: Make run_on_irqstack_cond() typesafe
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@suse.de>, <stable@vger.kernel.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <87pn6eb5tv.fsf@nanos.tec.linutronix.de>
+References: <87pn6eb5tv.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1599734644-4791-4-git-send-email-sagar.kadam@sifive.com>
+Message-ID: <160080710510.7002.14619344176977382059.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 04:14:04PM +0530, Sagar Kadam wrote:
-> Convert device tree bindings for SiFive's PWM controller to YAML
-> format.
-> 
-> Signed-off-by: Sagar Kadam <sagar.kadam@sifive.com>
-> ---
->  .../devicetree/bindings/pwm/pwm-sifive.txt         | 33 ----------
->  .../devicetree/bindings/pwm/pwm-sifive.yaml        | 72 ++++++++++++++++++++++
->  2 files changed, 72 insertions(+), 33 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/pwm/pwm-sifive.txt
->  create mode 100644 Documentation/devicetree/bindings/pwm/pwm-sifive.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/pwm/pwm-sifive.txt b/Documentation/devicetree/bindings/pwm/pwm-sifive.txt
-> deleted file mode 100644
-> index 3d1dd7b0..0000000
-> --- a/Documentation/devicetree/bindings/pwm/pwm-sifive.txt
-> +++ /dev/null
-> @@ -1,33 +0,0 @@
-> -SiFive PWM controller
-> -
-> -Unlike most other PWM controllers, the SiFive PWM controller currently only
-> -supports one period for all channels in the PWM. All PWMs need to run at
-> -the same period. The period also has significant restrictions on the values
-> -it can achieve, which the driver rounds to the nearest achievable period.
-> -PWM RTL that corresponds to the IP block version numbers can be found
-> -here:
-> -
-> -https://github.com/sifive/sifive-blocks/tree/master/src/main/scala/devices/pwm
-> -
-> -Required properties:
-> -- compatible: Should be "sifive,<chip>-pwm" and "sifive,pwm<version>".
-> -  Supported compatible strings are: "sifive,fu540-c000-pwm" for the SiFive
-> -  PWM v0 as integrated onto the SiFive FU540 chip, and "sifive,pwm0" for the
-> -  SiFive PWM v0 IP block with no chip integration tweaks.
-> -  Please refer to sifive-blocks-ip-versioning.txt for details.
-> -- reg: physical base address and length of the controller's registers
-> -- clocks: Should contain a clock identifier for the PWM's parent clock.
-> -- #pwm-cells: Should be 3. See pwm.yaml in this directory
-> -  for a description of the cell format.
-> -- interrupts: one interrupt per PWM channel
-> -
-> -Examples:
-> -
-> -pwm:  pwm@10020000 {
-> -	compatible = "sifive,fu540-c000-pwm", "sifive,pwm0";
-> -	reg = <0x0 0x10020000 0x0 0x1000>;
-> -	clocks = <&tlclk>;
-> -	interrupt-parent = <&plic>;
-> -	interrupts = <42 43 44 45>;
-> -	#pwm-cells = <3>;
-> -};
-> diff --git a/Documentation/devicetree/bindings/pwm/pwm-sifive.yaml b/Documentation/devicetree/bindings/pwm/pwm-sifive.yaml
-> new file mode 100644
-> index 0000000..415d053
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pwm/pwm-sifive.yaml
-> @@ -0,0 +1,72 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# Copyright (C) 2020 SiFive, Inc.
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pwm/pwm-sifive.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: SiFive PWM controller
-> +
-> +maintainers:
-> +  - Yash Shah <yash.shah@sifive.com>
-> +  - Sagar Kadam <sagar.kadam@sifive.com>
-> +  - Paul Walmsley <paul.walmsley@sifive.com>
-> +
-> +description:
-> +  Unlike most other PWM controllers, the SiFive PWM controller currently
-> +  only supports one period for all channels in the PWM. All PWMs need to
-> +  run at the same period. The period also has significant restrictions on
-> +  the values it can achieve, which the driver rounds to the nearest
-> +  achievable period. PWM RTL that corresponds to the IP block version
-> +  numbers can be found here -
-> +
-> +  https://github.com/sifive/sifive-blocks/tree/master/src/main/scala/devices/pwm
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - const: sifive,fu540-c000-pwm
-> +      - const: sifive,pwm0
-> +    description:
-> +      Should be "sifive,<chip>-pwm" and "sifive,pwm<version>". Supported
-> +      compatible strings are "sifive,fu540-c000-pwm" for the SiFive PWM v0
-> +      as integrated onto the SiFive FU540 chip, and "sifive,pwm0" for the
-> +      SiFive PWM v0 IP block with no chip integration tweaks.
-> +      Please refer to sifive-blocks-ip-versioning.txt for details.
-> +
-> +  reg:
-> +    maxItems: 1
-> +    description: Physical base address and length of the controller's registers
+The following commit has been merged into the x86/urgent branch of tip:
 
-Drop description.
+Commit-ID:     a7b3474cbb2864d5500d5e4f48dd57c903975cab
+Gitweb:        https://git.kernel.org/tip/a7b3474cbb2864d5500d5e4f48dd57c903975cab
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Tue, 22 Sep 2020 09:58:52 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Tue, 22 Sep 2020 22:13:34 +02:00
 
-> +
-> +  clocks:
-> +    description: Should contain a clock identifier for the PWM's parent clock.
+x86/irq: Make run_on_irqstack_cond() typesafe
 
-How many clocks?
+Sami reported that run_on_irqstack_cond() requires the caller to cast
+functions to mismatching types, which trips indirect call Control-Flow
+Integrity (CFI) in Clang.
 
-> +
-> +  "#pwm-cells":
-> +    const: 3
-> +    description:
-> +      Should be 3. See pwm.yaml in this directory for a description of the
-> +      cell format.
+Instead of disabling CFI on that function, provide proper helpers for
+the three call variants. The actual ASM code stays the same as that is
+out of reach.
 
-Drop.
+ [ bp: Fix __run_on_irqstack() prototype to match. ]
 
-> +
-> +  interrupts:
-> +    maxItems: 1
+Fixes: 931b94145981 ("x86/entry: Provide helpers for executing on the irqstack")
+Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+Reported-by: Sami Tolvanen <samitolvanen@google.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Tested-by: Sami Tolvanen <samitolvanen@google.com>
+Cc: <stable@vger.kernel.org>
+Link: https://github.com/ClangBuiltLinux/linux/issues/1052
+Link: https://lkml.kernel.org/r/87pn6eb5tv.fsf@nanos.tec.linutronix.de
+---
+ arch/x86/entry/common.c          |  2 +-
+ arch/x86/entry/entry_64.S        |  2 +-
+ arch/x86/include/asm/idtentry.h  |  2 +-
+ arch/x86/include/asm/irq_stack.h | 69 +++++++++++++++++++++++++++----
+ arch/x86/kernel/irq.c            |  2 +-
+ arch/x86/kernel/irq_64.c         |  2 +-
+ 6 files changed, 67 insertions(+), 12 deletions(-)
 
-Is it 1 or...
-
-> +    description: One interrupt per PWM channel.
-
-one per channel?
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - "#pwm-cells"
-> +  - interrupts
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    pwm:  pwm@10020000 {
-> +      compatible = "sifive,fu540-c000-pwm", "sifive,pwm0";
-> +      reg = <0x10020000 0x1000>;
-> +      clocks = <&tlclk>;
-> +      interrupt-parent = <&plic>;
-> +      interrupts = <42 43 44 45>;
-
-Split entries:
-
-interrupts = <42>, <43>, <44>, <45>;
-
-> +      #pwm-cells = <3>;
-> +    };
-> -- 
-> 2.7.4
-> 
+diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
+index 2f84c7c..870efee 100644
+--- a/arch/x86/entry/common.c
++++ b/arch/x86/entry/common.c
+@@ -299,7 +299,7 @@ __visible noinstr void xen_pv_evtchn_do_upcall(struct pt_regs *regs)
+ 	old_regs = set_irq_regs(regs);
+ 
+ 	instrumentation_begin();
+-	run_on_irqstack_cond(__xen_pv_evtchn_do_upcall, NULL, regs);
++	run_on_irqstack_cond(__xen_pv_evtchn_do_upcall, regs);
+ 	instrumentation_begin();
+ 
+ 	set_irq_regs(old_regs);
+diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
+index 70dea93..d977079 100644
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -682,6 +682,8 @@ SYM_CODE_END(.Lbad_gs)
+  * rdx: Function argument (can be NULL if none)
+  */
+ SYM_FUNC_START(asm_call_on_stack)
++SYM_INNER_LABEL(asm_call_sysvec_on_stack, SYM_L_GLOBAL)
++SYM_INNER_LABEL(asm_call_irq_on_stack, SYM_L_GLOBAL)
+ 	/*
+ 	 * Save the frame pointer unconditionally. This allows the ORC
+ 	 * unwinder to handle the stack switch.
+diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
+index a433661..a063864 100644
+--- a/arch/x86/include/asm/idtentry.h
++++ b/arch/x86/include/asm/idtentry.h
+@@ -242,7 +242,7 @@ __visible noinstr void func(struct pt_regs *regs)			\
+ 	instrumentation_begin();					\
+ 	irq_enter_rcu();						\
+ 	kvm_set_cpu_l1tf_flush_l1d();					\
+-	run_on_irqstack_cond(__##func, regs, regs);			\
++	run_sysvec_on_irqstack_cond(__##func, regs);			\
+ 	irq_exit_rcu();							\
+ 	instrumentation_end();						\
+ 	irqentry_exit(regs, state);					\
+diff --git a/arch/x86/include/asm/irq_stack.h b/arch/x86/include/asm/irq_stack.h
+index 4ae66f0..7758169 100644
+--- a/arch/x86/include/asm/irq_stack.h
++++ b/arch/x86/include/asm/irq_stack.h
+@@ -12,20 +12,50 @@ static __always_inline bool irqstack_active(void)
+ 	return __this_cpu_read(irq_count) != -1;
+ }
+ 
+-void asm_call_on_stack(void *sp, void *func, void *arg);
++void asm_call_on_stack(void *sp, void (*func)(void), void *arg);
++void asm_call_sysvec_on_stack(void *sp, void (*func)(struct pt_regs *regs),
++			      struct pt_regs *regs);
++void asm_call_irq_on_stack(void *sp, void (*func)(struct irq_desc *desc),
++			   struct irq_desc *desc);
+ 
+-static __always_inline void __run_on_irqstack(void *func, void *arg)
++static __always_inline void __run_on_irqstack(void (*func)(void))
+ {
+ 	void *tos = __this_cpu_read(hardirq_stack_ptr);
+ 
+ 	__this_cpu_add(irq_count, 1);
+-	asm_call_on_stack(tos - 8, func, arg);
++	asm_call_on_stack(tos - 8, func, NULL);
++	__this_cpu_sub(irq_count, 1);
++}
++
++static __always_inline void
++__run_sysvec_on_irqstack(void (*func)(struct pt_regs *regs),
++			 struct pt_regs *regs)
++{
++	void *tos = __this_cpu_read(hardirq_stack_ptr);
++
++	__this_cpu_add(irq_count, 1);
++	asm_call_sysvec_on_stack(tos - 8, func, regs);
++	__this_cpu_sub(irq_count, 1);
++}
++
++static __always_inline void
++__run_irq_on_irqstack(void (*func)(struct irq_desc *desc),
++		      struct irq_desc *desc)
++{
++	void *tos = __this_cpu_read(hardirq_stack_ptr);
++
++	__this_cpu_add(irq_count, 1);
++	asm_call_irq_on_stack(tos - 8, func, desc);
+ 	__this_cpu_sub(irq_count, 1);
+ }
+ 
+ #else /* CONFIG_X86_64 */
+ static inline bool irqstack_active(void) { return false; }
+-static inline void __run_on_irqstack(void *func, void *arg) { }
++static inline void __run_on_irqstack(void (*func)(void)) { }
++static inline void __run_sysvec_on_irqstack(void (*func)(struct pt_regs *regs),
++					    struct pt_regs *regs) { }
++static inline void __run_irq_on_irqstack(void (*func)(struct irq_desc *desc),
++					 struct irq_desc *desc) { }
+ #endif /* !CONFIG_X86_64 */
+ 
+ static __always_inline bool irq_needs_irq_stack(struct pt_regs *regs)
+@@ -37,17 +67,40 @@ static __always_inline bool irq_needs_irq_stack(struct pt_regs *regs)
+ 	return !user_mode(regs) && !irqstack_active();
+ }
+ 
+-static __always_inline void run_on_irqstack_cond(void *func, void *arg,
++
++static __always_inline void run_on_irqstack_cond(void (*func)(void),
+ 						 struct pt_regs *regs)
+ {
+-	void (*__func)(void *arg) = func;
++	lockdep_assert_irqs_disabled();
++
++	if (irq_needs_irq_stack(regs))
++		__run_on_irqstack(func);
++	else
++		func();
++}
++
++static __always_inline void
++run_sysvec_on_irqstack_cond(void (*func)(struct pt_regs *regs),
++			    struct pt_regs *regs)
++{
++	lockdep_assert_irqs_disabled();
+ 
++	if (irq_needs_irq_stack(regs))
++		__run_sysvec_on_irqstack(func, regs);
++	else
++		func(regs);
++}
++
++static __always_inline void
++run_irq_on_irqstack_cond(void (*func)(struct irq_desc *desc), struct irq_desc *desc,
++			 struct pt_regs *regs)
++{
+ 	lockdep_assert_irqs_disabled();
+ 
+ 	if (irq_needs_irq_stack(regs))
+-		__run_on_irqstack(__func, arg);
++		__run_irq_on_irqstack(func, desc);
+ 	else
+-		__func(arg);
++		func(desc);
+ }
+ 
+ #endif
+diff --git a/arch/x86/kernel/irq.c b/arch/x86/kernel/irq.c
+index 1810602..c5dd503 100644
+--- a/arch/x86/kernel/irq.c
++++ b/arch/x86/kernel/irq.c
+@@ -227,7 +227,7 @@ static __always_inline void handle_irq(struct irq_desc *desc,
+ 				       struct pt_regs *regs)
+ {
+ 	if (IS_ENABLED(CONFIG_X86_64))
+-		run_on_irqstack_cond(desc->handle_irq, desc, regs);
++		run_irq_on_irqstack_cond(desc->handle_irq, desc, regs);
+ 	else
+ 		__handle_irq(desc, regs);
+ }
+diff --git a/arch/x86/kernel/irq_64.c b/arch/x86/kernel/irq_64.c
+index 1b4fe93..440eed5 100644
+--- a/arch/x86/kernel/irq_64.c
++++ b/arch/x86/kernel/irq_64.c
+@@ -74,5 +74,5 @@ int irq_init_percpu_irqstack(unsigned int cpu)
+ 
+ void do_softirq_own_stack(void)
+ {
+-	run_on_irqstack_cond(__do_softirq, NULL, NULL);
++	run_on_irqstack_cond(__do_softirq, NULL);
+ }
