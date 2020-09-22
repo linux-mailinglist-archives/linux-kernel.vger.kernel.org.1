@@ -2,95 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6422274109
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 912F1274102
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:37:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726767AbgIVLhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 07:37:04 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:45934 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726722AbgIVLhD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 07:37:03 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08MBamS7113201;
-        Tue, 22 Sep 2020 06:36:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600774608;
-        bh=ld3vYC0kWkXR/z2w5WEX+jmQfpiHTi9KtNWEfTWxkxA=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=aoqNyr+rCe46BR+SfRZoyMr8YYfuA5vR9gPlhXw/ccUNa7mDrVehyH+FWgL1MEFMv
-         Lf7RRP/Aoi0Bj2ziIFR6RdbDu1xVMg8+ZV/Enok+EepcoubHUSLp+TtnjvKkM44MYL
-         B9HRop2MT/71r2hqWDGsZX1+mkDYrwCI1VKzlg0U=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08MBamkK064472;
-        Tue, 22 Sep 2020 06:36:48 -0500
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 22
- Sep 2020 06:36:48 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 22 Sep 2020 06:36:48 -0500
-Received: from [10.250.35.164] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08MBal3X004763;
-        Tue, 22 Sep 2020 06:36:47 -0500
-Subject: Re: [PATCH] MAINTAINERS: move Milo Kim to credits
-To:     Mark Brown <broonie@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-CC:     Pavel Machek <pavel@ucw.cz>, Jonathan Cameron <jic23@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        <linux-iio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        <linux-leds@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <linux-fbdev@vger.kernel.org>,
-        <linux-pwm@vger.kernel.org>
-References: <20200921210233.21449-1-krzk@kernel.org>
- <20200921210610.GA5338@amd>
- <CAJKOXPdwQc86H-S=C4v_1VCbd7RhC2Soepj_2LqG1e_E_bgAug@mail.gmail.com>
- <20200922093637.GK4792@sirena.org.uk>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <346f2ecd-a015-7f26-b68d-10cf6b5343b6@ti.com>
-Date:   Tue, 22 Sep 2020 06:36:47 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726751AbgIVLg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 07:36:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46778 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726522AbgIVLgv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 07:36:51 -0400
+Received: from localhost (p54b332c9.dip0.t-ipconnect.de [84.179.50.201])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9165D22574;
+        Tue, 22 Sep 2020 11:36:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600774610;
+        bh=DMjnXJT5pUIL2x6gmtXF97o0/LW9XS6SHEJq5VqC4Uo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hZZGrBvmKd5K8YqDxKwLig70vjELHxzmw+Zz6/rNGfYMRlH5huKEiiNe9fCgDtAz7
+         0l2yaTtWlLp7VmiXLvPGrQIKVG1sbXHpoKB/VrYEMWBJMlhX46AzK4tqVTfeQAEcyP
+         sXSaUgN5keWS8MPDjAOqVzaC5ITyBYxjzfNLDEIo=
+Date:   Tue, 22 Sep 2020 13:36:47 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     Sultan Alsawaf <sultan@kerneltoast.com>, linux-i2c@vger.kernel.org,
+        aaron.ma@canonical.com, admin@kryma.net,
+        andriy.shevchenko@linux.intel.com, benjamin.tissoires@redhat.com,
+        hdegoede@redhat.com, hn.chen@weidahitech.com,
+        jarkko.nikula@linux.intel.com, kai.heng.feng@canonical.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mika.westerberg@linux.intel.com, vicamo.yang@canonical.com
+Subject: Re: [PATCH v2 0/4] i2c-hid: Save power by reducing i2c xfers with
+ block reads
+Message-ID: <20200922113646.GA6731@ninjato>
+References: <20200917052256.5770-1-sultan@kerneltoast.com>
+ <nycvar.YFH.7.76.2009221118150.3336@cbobk.fhfr.pm>
 MIME-Version: 1.0
-In-Reply-To: <20200922093637.GK4792@sirena.org.uk>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7JfCtLOvnd9MIVvH"
+Content-Disposition: inline
+In-Reply-To: <nycvar.YFH.7.76.2009221118150.3336@cbobk.fhfr.pm>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All
 
-On 9/22/20 4:36 AM, Mark Brown wrote:
-> On Tue, Sep 22, 2020 at 09:08:37AM +0200, Krzysztof Kozlowski wrote:
->> On Mon, 21 Sep 2020 at 23:06, Pavel Machek <pavel@ucw.cz> wrote:
->>> I believe normal way would be to mark the entries "orphaned", not to
->>> drop them altogether. Plus, I believe someone from TI is likely to
->>> step up.
->> These are entries for specific drivers so they are covered by the
->> subsystem maintainers. You believe someone will step up, I believe if
->> these were important for TI, they would find the person some time ago,
->> so the emails won't bounce... This was similar with BQ chargers where
-> It's fairly common for mobile parts to get dropped relatively quickly as
-> the technology moves fairly quickly in that market, I think a lot of teh
-> parts that Milo was working on were mobile ones.
+--7JfCtLOvnd9MIVvH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-These specific drivers don't see many patches applied to them. These 
-drivers did have a few patches this year to fix random bugs.
 
-Since I have worked in these other subsystems if replacing the 
-Maintainer is desired over removal then my name and email can be added 
-like I did with Andrews.
+> Hans, Benjamin, could you please give this patchset some smoke-testing? I=
+t=20
+> looks good to me, but I'd like it to get some testing from your testing=
+=20
+> machinery before merging.
 
-Dan Murphy <dmurphy@ti.com>
+Please give me some more days. I am not fully convinced yet that this
+use of I2C_M_RECV_LEN is not broken on some controllers.
 
-Dan
+Plus, I'd favor if this could go via I2C tree. It is within I2C where
+the non-trivial changes are. The HID part is just the final bit. Can we
+agree on that?
 
+
+--7JfCtLOvnd9MIVvH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9p4csACgkQFA3kzBSg
+Kbb4Fw/+JxENn5QNY+ByGfl2QuhEVSUt9E2ZnVcISGm9WVX09c9+Xa13sRL9uw4A
+UPVDQOIj7iDNfGw3c8oIXEk8r72pJqxUVeAp61P3xVlui4TzQiESHospv+Ib/ohz
+Tf491w51UbWfOiHFvye88nLJrmOYv/1t+3jLKuO35IKxV1LGxAioBW9t2JisF5rN
+PcDWDsfxy8YhM/S5+QHe8PIg2OycDcoEi+U3nyJwFa4lKIlAkPQ60T8ZXKl+D8y4
+Y57k7lwSqe49aPvFbZLTV99aDvdTTQwWkSNFqf+4ajXy3Chbthqj/ghDUoTKn7/M
+TbgFh7C7YrgQknfyIjfNne5oAjQDXhSCPmNnFlH7QXIh04/mZxWP5hfkYdvkMgfb
+2G63XrJmMhCtHQ1jBfUh0/hwsNre3r55tI/3xYu3EpHlP3V/Zb1r3qNWXVwZwfig
+MCHc9fHOLtA/HJQLFKWD3uIZs4Z4O3Fs9pvxe1cWGjDhXWS5MvxuTN+GjSEe2lDk
+qTrWTMaSNBzM4xCFLmEzuk/ID0ThwHChRYLOTwFR/jMPS4lCLHjOAgXIgRZaSr7B
+AYm0SD5FU737N2ZXesCVOuEyWeb065Q9Dmc0a9ONlZm/qhJwegXaZFCZr/tN+jgp
+r5IIpdgbVbhL/FDtrFwpHUrfrAouT71TPbV96DOf+S8mn0YGX6Q=
+=zhtE
+-----END PGP SIGNATURE-----
+
+--7JfCtLOvnd9MIVvH--
