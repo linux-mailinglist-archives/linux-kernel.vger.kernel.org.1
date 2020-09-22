@@ -2,241 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 098BD274A8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E7E274AB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgIVVEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 17:04:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726448AbgIVVE3 (ORCPT
+        id S1726849AbgIVVGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 17:06:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44164 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726583AbgIVVGV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 17:04:29 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C536C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 14:04:29 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id x14so18571803wrl.12
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 14:04:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CY6nb8G0qLvT+19gnqmRvOP7iYy+NDmqCyqksYDWTPk=;
-        b=HNiF/Fd9SDJpX7Wj/YWGV4ikRVCq6feHBiWsMkelzLqsWmHNvkWpzoxMbnkn54Pf8C
-         PEs06azMVjhoqcLkG6yUVuMKfVYo7vmcCCsEfuXJqreE7dVlqQMa6qUbaaTgZJt+8RQ6
-         dfDcen7wKA1cjh5gFRbOoxx/94mkllUFRV2uI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CY6nb8G0qLvT+19gnqmRvOP7iYy+NDmqCyqksYDWTPk=;
-        b=OPs2AqZ6JvAdxEMCasfmHtdug1ZrTH8Ma2GS1sR87+xzC7yBwTmiywPf51sCEQrlV+
-         eTfH2SmAZqOSVNiAQEcNcZC2br7KwFcO9ylc8BsTo2WcGbe/WCEja2sdCgb5NRmM++cD
-         MybIWXSXk7/d3LmIeEHvjoK2/oa9KFH+IZtpqKI6aLJ+H/PnXmyX3o18zHqELLQlHuX5
-         V8LDMiy3m/9/UMWa6pDSm7DRdJYA/FUpdWsA1HstlwBJndRkRhxyrnaHAPTrgd9OzRwO
-         Opbke9MVrgVqLmCKiI0rfIhtNLB7NHVCT+ZFEusCRuv9vkiZZGBl59zbWiQpPy9oFxCI
-         HkGA==
-X-Gm-Message-State: AOAM532XhoLunIuwvcKsUFBHgQnxT3Iuxj7afwVPhb0BfaQcrgP1nD9Q
-        xFew1b4rCBSYoT8XrQtIArnXpHn+cGcr8NPgSgVm
-X-Google-Smtp-Source: ABdhPJxPW96N1YmBldjxT3/hJJ8ZkPt7zs1MA7vd2que3V+r+lEN7W9dAdh1A8YCBXAgxYyGqngQURp6XgfRsLxTgNM=
-X-Received: by 2002:a5d:4c4c:: with SMTP id n12mr7247874wrt.162.1600808667659;
- Tue, 22 Sep 2020 14:04:27 -0700 (PDT)
+        Tue, 22 Sep 2020 17:06:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600808780;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=sr3T0ukk/W15C/CAPmiVoDX0sWYPsfGDtdGAlrgJm+c=;
+        b=avh1bC7QujYvVsuf6piGAUgO+JMfbtj3hvKv1zmvzvry8I5zVfZSGmh+ZGO4M89b04ID+x
+        c1FpGVKAgtKL3XMZbbA4q2ec6MpptNiJCN5UiwoMGTNGh9V0lYihb726FLZPMkoP8rULqg
+        pJDBC91xU1ZNbd/V/+zX8NdbFCsi9JY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-15-owTXjB_mP5WW8xca94WYQQ-1; Tue, 22 Sep 2020 17:06:16 -0400
+X-MC-Unique: owTXjB_mP5WW8xca94WYQQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6351C1007464;
+        Tue, 22 Sep 2020 21:06:15 +0000 (UTC)
+Received: from Ruby.redhat.com (unknown [10.10.115.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 777FA5DE50;
+        Tue, 22 Sep 2020 21:06:10 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     nouveau@lists.freedesktop.org
+Cc:     =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>, Ben Skeggs <bskeggs@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR NVIDIA
+        GEFORCE/QUADRO GPUS), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] drm/nouveau/kms/nv50-: Fix clock checking algorithm in nv50_dp_mode_valid()
+Date:   Tue, 22 Sep 2020 17:05:10 -0400
+Message-Id: <20200922210510.156220-1-lyude@redhat.com>
 MIME-Version: 1.0
-References: <20200918201140.3172284-1-atish.patra@wdc.com> <20200921164947.000048e1@Huawei.com>
- <CAOnJCU+mg13P609kut2cK9igmyepOvDc4kU-EzXsdjde7D_RpQ@mail.gmail.com> <20200922122912.00004bcb@Huawei.com>
-In-Reply-To: <20200922122912.00004bcb@Huawei.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Tue, 22 Sep 2020 14:04:16 -0700
-Message-ID: <CAOnJCULdRR1JOkZq6aHW3Xv6ZHo8edOAU-3gf1zxNqQdioek9w@mail.gmail.com>
-Subject: Re: [RFT PATCH v3 0/5] Unify NUMA implementation between ARM64 & RISC-V
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Zong Li <zong.li@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Will Deacon <will@kernel.org>, linux-arch@vger.kernel.org,
-        Anup Patel <anup@brainfault.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 4:30 AM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
->
-> On Mon, 21 Sep 2020 17:08:32 -0700
-> Atish Patra <atishp@atishpatra.org> wrote:
->
-> > On Mon, Sep 21, 2020 at 8:51 AM Jonathan Cameron
-> > <Jonathan.Cameron@huawei.com> wrote:
-> > >
-> > > On Fri, 18 Sep 2020 13:11:35 -0700
-> > > Atish Patra <atish.patra@wdc.com> wrote:
-> > >
-> > > > This series attempts to move the ARM64 numa implementation to common
-> > > > code so that RISC-V can leverage that as well instead of reimplementing
-> > > > it again.
-> > > >
-> > > > RISC-V specific bits are based on initial work done by Greentime Hu [1] but
-> > > > modified to reuse the common implementation to avoid duplication.
-> > > >
-> > > > [1] https://lkml.org/lkml/2020/1/10/233
-> > > >
-> > > > This series has been tested on qemu with numa enabled for both RISC-V & ARM64.
-> > > > It would be great if somebody can test it on numa capable ARM64 hardware platforms.
-> > > > This patch series doesn't modify the maintainers list for the common code (arch_numa)
-> > > > as I am not sure if somebody from ARM64 community or Greg should take up the
-> > > > maintainership. Ganapatrao was the original author of the arm64 version.
-> > > > I would be happy to update that in the next revision once it is decided.
-> > >
-> >
-> > Any thoughts on the maintenanership of this code ?
->
-> Currently it is a trivial enough bit of code, I'd not be too worried
-> as long as it doesn't fall through the cracks.  Changes that directory are going
-> to need a GregKH Ack so unlikely anything will get missed.
->
+While I thought I had this correct (since it actually did reject modes
+like I expected during testing), Ville Syrjala from Intel pointed out
+that the logic here isn't correct. max_clock refers to the max symbol
+rate supported by the encoder, so limiting clock to ds_clock using max()
+doesn't make sense. Additionally, we want to check against 6bpc for the
+time being since that's the minimum possible bpc here, not the reported
+bpc from the connector. See:
 
-Yeah. I am fine with the current structure. I just wanted to confirm that
-everybody is on board with that.
+https://lists.freedesktop.org/archives/dri-devel/2020-September/280276.html
 
-> If you feel a specific entry is needed in MAINTAINERS go for it.
-> Feel free to stick me down as a reviewer and I'll keep an eye on
-> it from ARM64 side of things.
->
+For more info.
 
-I will not add any specific entry in MAINTAINERS unless somebody
-complains about it.
+So, let's rewrite this using Ville's advice.
 
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Fixes: 409d38139b42 ("drm/nouveau/kms/nv50-: Use downstream DP clock limits for mode validation")
+Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Cc: Lyude Paul <lyude@redhat.com>
+Cc: Ben Skeggs <bskeggs@redhat.com>
+---
+ drivers/gpu/drm/nouveau/nouveau_dp.c | 23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
 
-> Thanks,
->
-> Jonathan
->
->
-> >
-> > > Was fairly sure this set was a noop on arm64 ACPI systems, but ran a quick
-> > > sanity check on a 2 socket kunpeng920 and everything came up as normal
-> > > (4 nodes, around 250G a node)
-> > >
-> > > Tested-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> > > For patches 1 and 2.  Doesn't seem relevant to the rest :)
-> > >
-> >
-> > Thanks a lot!
-> >
-> > > >
-> > > > # numactl --hardware
-> > > > available: 2 nodes (0-1)
-> > > > node 0 cpus: 0 1 2 3
-> > > > node 0 size: 486 MB
-> > > > node 0 free: 470 MB
-> > > > node 1 cpus: 4 5 6 7
-> > > > node 1 size: 424 MB
-> > > > node 1 free: 408 MB
-> > > > node distances:
-> > > > node   0   1
-> > > >   0:  10  20
-> > > >   1:  20  10
-> > > > # numactl -show
-> > > > policy: default
-> > > > preferred node: current
-> > > > physcpubind: 0 1 2 3 4 5 6 7
-> > > > cpubind: 0 1
-> > > > nodebind: 0 1
-> > > > membind: 0 1
-> > > >
-> > > > For RISC-V, the following qemu series is a pre-requisite(already available in upstream)
-> > > > to test the patches in Qemu and 2 socket OmniXtend FPGA.
-> > > >
-> > > > https://patchwork.kernel.org/project/qemu-devel/list/?series=303313
-> > > >
-> > > > The patches are also available at
-> > > >
-> > > > https://github.com/atishp04/linux/tree/5.10_numa_unified_v3
-> > > >
-> > > > There may be some minor conflicts with Mike's cleanup series [2] depending on the
-> > > > order in which these two series are being accepted. I can rebase on top his series
-> > > > if required.
-> > > >
-> > > > [2] https://lkml.org/lkml/2020/8/18/754
-> > > >
-> > > > Changes from v2->v3:
-> > > > 1. Added Acked-by/Reviewed-by tags.
-> > > > 2. Replaced asm/acpi.h with linux/acpi.h
-> > > > 3. Defined arch_acpi_numa_init as static.
-> > > >
-> > > > Changes from v1->v2:
-> > > > 1. Replaced ARM64 specific compile time protection with ACPI specific ones.
-> > > > 2. Dropped common pcibus_to_node changes. Added required changes in RISC-V.
-> > > > 3. Fixed few typos.
-> > > >
-> > > > Atish Patra (4):
-> > > > numa: Move numa implementation to common code
-> > > > arm64, numa: Change the numa init functions name to be generic
-> > > > riscv: Separate memory init from paging init
-> > > > riscv: Add numa support for riscv64 platform
-> > > >
-> > > > Greentime Hu (1):
-> > > > riscv: Add support pte_protnone and pmd_protnone if
-> > > > CONFIG_NUMA_BALANCING
-> > > >
-> > > > arch/arm64/Kconfig                            |  1 +
-> > > > arch/arm64/include/asm/numa.h                 | 45 +----------------
-> > > > arch/arm64/kernel/acpi_numa.c                 | 13 -----
-> > > > arch/arm64/mm/Makefile                        |  1 -
-> > > > arch/arm64/mm/init.c                          |  4 +-
-> > > > arch/riscv/Kconfig                            | 31 +++++++++++-
-> > > > arch/riscv/include/asm/mmzone.h               | 13 +++++
-> > > > arch/riscv/include/asm/numa.h                 |  8 +++
-> > > > arch/riscv/include/asm/pci.h                  | 14 ++++++
-> > > > arch/riscv/include/asm/pgtable.h              | 21 ++++++++
-> > > > arch/riscv/kernel/setup.c                     | 11 ++++-
-> > > > arch/riscv/kernel/smpboot.c                   | 12 ++++-
-> > > > arch/riscv/mm/init.c                          | 10 +++-
-> > > > drivers/base/Kconfig                          |  6 +++
-> > > > drivers/base/Makefile                         |  1 +
-> > > > .../mm/numa.c => drivers/base/arch_numa.c     | 31 ++++++++++--
-> > > > include/asm-generic/numa.h                    | 49 +++++++++++++++++++
-> > > > 17 files changed, 201 insertions(+), 70 deletions(-)
-> > > > create mode 100644 arch/riscv/include/asm/mmzone.h
-> > > > create mode 100644 arch/riscv/include/asm/numa.h
-> > > > rename arch/arm64/mm/numa.c => drivers/base/arch_numa.c (95%)
-> > > > create mode 100644 include/asm-generic/numa.h
-> > > >
-> > > > --
-> > > > 2.25.1
-> > > >
-> > >
-> > >
-> > >
-> > > _______________________________________________
-> > > linux-riscv mailing list
-> > > linux-riscv@lists.infradead.org
-> > > http://lists.infradead.org/mailman/listinfo/linux-riscv
-> >
-> >
-> >
->
->
+diff --git a/drivers/gpu/drm/nouveau/nouveau_dp.c b/drivers/gpu/drm/nouveau/nouveau_dp.c
+index 7b640e05bd4cd..24c81e423d349 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_dp.c
++++ b/drivers/gpu/drm/nouveau/nouveau_dp.c
+@@ -231,23 +231,26 @@ nv50_dp_mode_valid(struct drm_connector *connector,
+ 		   const struct drm_display_mode *mode,
+ 		   unsigned *out_clock)
+ {
+-	const unsigned min_clock = 25000;
+-	unsigned max_clock, ds_clock, clock;
++	const unsigned int min_clock = 25000;
++	unsigned int max_clock, ds_clock, clock;
++	const u8 bpp = 18; /* 6 bpc */
+ 	enum drm_mode_status ret;
+ 
+ 	if (mode->flags & DRM_MODE_FLAG_INTERLACE && !outp->caps.dp_interlace)
+ 		return MODE_NO_INTERLACE;
+ 
+ 	max_clock = outp->dp.link_nr * outp->dp.link_bw;
+-	ds_clock = drm_dp_downstream_max_dotclock(outp->dp.dpcd,
+-						  outp->dp.downstream_ports);
+-	if (ds_clock)
+-		max_clock = min(max_clock, ds_clock);
+-
+-	clock = mode->clock * (connector->display_info.bpc * 3) / 10;
+-	ret = nouveau_conn_mode_clock_valid(mode, min_clock, max_clock,
+-					    &clock);
++	clock = mode->clock * bpp / 8;
++	if (clock > max_clock)
++		return MODE_CLOCK_HIGH;
++
++	ds_clock = drm_dp_downstream_max_dotclock(outp->dp.dpcd, outp->dp.downstream_ports);
++	if (ds_clock && mode->clock > ds_clock)
++		return MODE_CLOCK_HIGH;
++
++	ret = nouveau_conn_mode_clock_valid(mode, min_clock, max_clock, &clock);
+ 	if (out_clock)
+ 		*out_clock = clock;
++
+ 	return ret;
+ }
+-- 
+2.26.2
 
-
---
-Regards,
-Atish
