@@ -2,163 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 590C1274278
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D340727427B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726661AbgIVMwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 08:52:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46101 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726566AbgIVMwC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 08:52:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600779120;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mzF2SsHUb3UjWmBZrtDmWdBk/7nlXgiRIsvkXf0DAaI=;
-        b=e8ScccpqfV6R5va+u9CzHjJqjARniMMvOVjIgGVRRMFSBFKWfBjM6Nposk5shrouGbF7h1
-        7hh9Q+2IrsUfUNwbIADeZ9kmOWAu3gF136MDzShVZXj1Br7W9lvsCwKrjuB7iW49QeGCBG
-        j+TUZW47XlkWuA1Mp8LuxDlI+mEtudw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-39-rO_3mtOtMJ6jT1OnKmE6PA-1; Tue, 22 Sep 2020 08:51:58 -0400
-X-MC-Unique: rO_3mtOtMJ6jT1OnKmE6PA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726650AbgIVMxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 08:53:21 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:59289 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726563AbgIVMxV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 08:53:21 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600779201; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=hbKrx2SwcynLY6Cgk+5NmFAHVfb6P5BLBtwJdA9I6rQ=; b=FCGaANN1SXNAASt5sYfQN2aPO2GKtctnz6DfCXpA+fmjbhokP3Zsg5yeGahA/Kbqz68RgfZ+
+ F5ULYd0VXG8Cv47lq0vH+9ock93nY2eQp2hJrgV9A5Qb5YLtLVyg+vRSplzEpdqsdXfMDWny
+ Hpo1ukk+11dDB62hATWB4TlmQ0s=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5f69f3b7d9a2f87c84633269 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Sep 2020 12:53:11
+ GMT
+Sender: rohitkr=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3FA62C43387; Tue, 22 Sep 2020 12:53:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.0.129] (unknown [183.83.141.209])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7BE7A56C21;
-        Tue, 22 Sep 2020 12:51:56 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (ovpn-113-73.phx2.redhat.com [10.3.113.73])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id EE06C55780;
-        Tue, 22 Sep 2020 12:51:54 +0000 (UTC)
-Date:   Tue, 22 Sep 2020 08:51:53 -0400
-From:   Phil Auld <pauld@redhat.com>
-To:     Huang Ying <ying.huang@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, linux-mm@kvack.org,
+        (Authenticated sender: rohitkr)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 553B1C433C8;
+        Tue, 22 Sep 2020 12:53:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 553B1C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rohitkr@codeaurora.org
+Subject: Re: [PATCH v6 3/5] Asoc:qcom:lpass-cpu:Update dts property read API
+To:     Mark Brown <broonie@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
+        perex@perex.cz, tiwai@suse.com, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Mel Gorman <mgorman@suse.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>
-Subject: Re: [RFC -V2] autonuma: Migrate on fault among multiple bound nodes
-Message-ID: <20200922125049.GA10420@lorien.usersys.redhat.com>
-References: <20200922065401.376348-1-ying.huang@intel.com>
+        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+References: <1600409084-29093-1-git-send-email-srivasam@codeaurora.org>
+ <1600409084-29093-4-git-send-email-srivasam@codeaurora.org>
+ <040290a8-26a3-ab9c-04dc-beb23ee827e8@linaro.org>
+ <20200922110825.GN4792@sirena.org.uk>
+ <3866ce69-b7d0-5eb5-e0aa-874d150cd47a@linaro.org>
+ <20200922114319.GR4792@sirena.org.uk>
+From:   Rohit Kumar <rohitkr@codeaurora.org>
+Message-ID: <7f682cf9-0f2a-0227-d5d8-8bedf1f06b00@codeaurora.org>
+Date:   Tue, 22 Sep 2020 18:23:01 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922065401.376348-1-ying.huang@intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20200922114319.GR4792@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Tue, Sep 22, 2020 at 02:54:01PM +0800 Huang Ying wrote:
-> Now, AutoNUMA can only optimize the page placement among the NUMA nodes if the
-> default memory policy is used.  Because the memory policy specified explicitly
-> should take precedence.  But this seems too strict in some situations.  For
-> example, on a system with 4 NUMA nodes, if the memory of an application is bound
-> to the node 0 and 1, AutoNUMA can potentially migrate the pages between the node
-> 0 and 1 to reduce cross-node accessing without breaking the explicit memory
-> binding policy.
-> 
-> So in this patch, if mbind(.mode=MPOL_BIND, .flags=MPOL_MF_LAZY) is used to bind
-> the memory of the application to multiple nodes, and in the hint page fault
-> handler both the faulting page node and the accessing node are in the policy
-> nodemask, the page will be tried to be migrated to the accessing node to reduce
-> the cross-node accessing.
->
+On 9/22/2020 5:13 PM, Mark Brown wrote:
+> On Tue, Sep 22, 2020 at 12:22:38PM +0100, Srinivas Kandagatla wrote:
+>> On 22/09/2020 12:08, Mark Brown wrote:
+>> I agree with you on this and I see the point, but Rob had a very different
+>> opinion about the reg-names bindings to start with.
+>> This topic been discussed in the past with Rob in many instances ex: https://lore.kernel.org/linux-devicetree/CAL_Jsq+MMunmVWqeW9v2RyzsMKP+=kMzeTHNMG4JDHM7Fy0HBg@mail.gmail.com/
+>> According to him, reg-names seems to be highly discouraged as it came along
+>> for the OMAP folks and was related to the hwmods stuff.
+> That's very much specific to reg, it's not true of the use of names in
+> general - Rob mentions cases like interrupts for example.
 
-Do you have any performance numbers that show the effects of this on
-a workload?
+I see that patch to support hdmi adds another reg-name along with 
+"lpass-lpaif".
 
+So, platform_get_resource_byname() is better option.
 
-> [Peter Zijlstra: provided the simplified implementation method.]
-> 
-> Questions:
-> 
-> Sysctl knob kernel.numa_balancing can enable/disable AutoNUMA optimizing
-> globally.  But for the memory areas that are bound to multiple NUMA nodes, even
-> if the AutoNUMA is enabled globally via the sysctl knob, we still need to enable
-> AutoNUMA again with a special flag.  Why not just optimize the page placement if
-> possible as long as AutoNUMA is enabled globally?  The interface would look
-> simpler with that.
++       res = platform_get_resource_byname(pdev, IORESOURCE_MEM, 
+"lpass-hdmiif");
 
+Thanks,
 
-I agree. I think it should try to do this if globally enabled.
-
-
-> 
-> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Rik van Riel <riel@redhat.com>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> Cc: Dave Hansen <dave.hansen@intel.com>
-> Cc: Andi Kleen <ak@linux.intel.com>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: David Rientjes <rientjes@google.com>
-> ---
->  mm/mempolicy.c | 17 +++++++++++------
->  1 file changed, 11 insertions(+), 6 deletions(-)
-> 
-> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> index eddbe4e56c73..273969204732 100644
-> --- a/mm/mempolicy.c
-> +++ b/mm/mempolicy.c
-> @@ -2494,15 +2494,19 @@ int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long
->  		break;
->  
->  	case MPOL_BIND:
-> -
->  		/*
-> -		 * allows binding to multiple nodes.
-> -		 * use current page if in policy nodemask,
-> -		 * else select nearest allowed node, if any.
-> -		 * If no allowed nodes, use current [!misplaced].
-> +		 * Allows binding to multiple nodes.  If both current and
-> +		 * accessing nodes are in policy nodemask, migrate to
-> +		 * accessing node to optimize page placement. Otherwise,
-> +		 * use current page if in policy nodemask, else select
-> +		 * nearest allowed node, if any.  If no allowed nodes, use
-> +		 * current [!misplaced].
->  		 */
-> -		if (node_isset(curnid, pol->v.nodes))
-> +		if (node_isset(curnid, pol->v.nodes)) {
-> +			if (node_isset(thisnid, pol->v.nodes))
-> +				goto moron;
-
-Nice label :)
-
->  			goto out;
-> +		}
->  		z = first_zones_zonelist(
->  				node_zonelist(numa_node_id(), GFP_HIGHUSER),
->  				gfp_zone(GFP_HIGHUSER),
-> @@ -2516,6 +2520,7 @@ int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long
->  
->  	/* Migrate the page towards the node whose CPU is referencing it */
->  	if (pol->flags & MPOL_F_MORON) {
-> +moron:
->  		polnid = thisnid;
->  
->  		if (!should_numa_migrate_memory(current, page, curnid, thiscpu))
-> -- 
-> 2.28.0
-> 
-
-
-Cheers,
-Phil
+Rohit
 
 -- 
+Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
+of the Code Aurora Forum, hosted by the Linux Foundation.
 
