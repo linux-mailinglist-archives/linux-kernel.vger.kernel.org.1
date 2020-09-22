@@ -2,300 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E421027412A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01F5527415D
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726711AbgIVLrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 07:47:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726678AbgIVLpf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 07:45:35 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CA9AC0613D5;
-        Tue, 22 Sep 2020 04:43:40 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id w5so16696330wrp.8;
-        Tue, 22 Sep 2020 04:43:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=OGGgDc0zw64X8TwEtKAZByA+ztkHxVMcszbd5ooLrjg=;
-        b=pCLsXh0VUjRRgzgjJWSD/of4QoW4h99ncz4DT3pAG3ijebmQaUYgUl8Xk1K5fVzEan
-         c3XXRrm1Y1tFTD2LDpx9OEmpFN2JcKm0N/fFjcWpnPoSJfdC56lLN0xNDSyK3YInYqiu
-         6Ktgwz9svQjKwm6u0c+viMw0Vd0kGMgQy8RFNQ1obpmPerrFllIVzJX1ku3eIGXaV25s
-         79xIoHZyS1Qq6dk3bXIPvi2meoe108ACnSGPHkS156TULAOSi60gX1qgsvi3LInppJ1G
-         5e1LaSfZE2yeAVzLwMAxrjzHcVfQcJS3dUVwI5SCHd9JLucg2mULFXjo5pf1g8F/QemO
-         r08g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OGGgDc0zw64X8TwEtKAZByA+ztkHxVMcszbd5ooLrjg=;
-        b=HuoIicHrDx28WzDWfip8PJW586VtwtdXGJgHAAtTvsD0QiAVUSwJkGvhTODVuEHUsu
-         3nnny+g/sV1qfbPas9+elMJTiTtONxvR6gfEFtS+uRPa4TlmVmMtwdQX/eiWTjfIzpbg
-         QCQECbEsuW+ZOd0q8A/r/3uSRdfKxpJdZnJW9xIZgI64e+nM57dFLLyVB6nHBSkeYHOj
-         R+w3ChTueEpKnRm6BmqtI2VGJwyV9/hnLf8aeG9tYErtTYaFUpqQCKtPbsXIWKzmODRd
-         Y41UeILUT1N8IebPFCYcc7rNw7uxta/BfL6vMgSjo97mKPTdmhesK8WhLPkxNCNrcLKe
-         MBkQ==
-X-Gm-Message-State: AOAM5322oMQmbZmFoMXVwWFr5VnYJnAfwvgt92nqtGwg6Um2w04qPA5L
-        McT2cc93X36YuiageanatQ4=
-X-Google-Smtp-Source: ABdhPJxvOtvhAYygLTXEEoViRwoEgzFw0G9wWsmoKFVMXYBuAmg//sMcJGnXgeiUMHL2nWcC6Bpv8g==
-X-Received: by 2002:a5d:69c9:: with SMTP id s9mr4854602wrw.348.1600775018909;
-        Tue, 22 Sep 2020 04:43:38 -0700 (PDT)
-Received: from localhost (178-169-161-196.razgrad.ddns.bulsat.com. [178.169.161.196])
-        by smtp.gmail.com with ESMTPSA id t17sm26522049wrx.82.2020.09.22.04.43.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Sep 2020 04:43:38 -0700 (PDT)
-From:   Iskren Chernev <iskren.chernev@gmail.com>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Jonathan Bakker <xc-racer2@live.ca>,
-        Vladimir Barinov <vladimir.barinov@cogentembedded.com>,
-        Iskren Chernev <iskren.chernev@gmail.com>
-Subject: [PATCH v5 7/7] power: supply: max17040: Support soc alert
-Date:   Tue, 22 Sep 2020 14:42:37 +0300
-Message-Id: <20200922114237.1803628-8-iskren.chernev@gmail.com>
+        id S1726608AbgIVLsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 07:48:33 -0400
+Received: from mga06.intel.com ([134.134.136.31]:59809 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726645AbgIVLnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 07:43:43 -0400
+IronPort-SDR: nvo4gbECrW6KHJLrSfHYAfQ2wllyiKB/6prsIOJoHwC3fNrFireXqp6SLlPrY5wBD2vtNvXP1O
+ QJtV4MS5ON6A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="222176855"
+X-IronPort-AV: E=Sophos;i="5.77,290,1596524400"; 
+   d="scan'208";a="222176855"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 04:43:28 -0700
+IronPort-SDR: eIP0bj9an+SeCJ/SOEAyFKCXJP+ukzPqzUgECcHvkJgo1xY2NZf1ea18WvZ4sTqDG65mp1HL2Z
+ fkdnvjk8n0Mw==
+X-IronPort-AV: E=Sophos;i="5.77,290,1596524400"; 
+   d="scan'208";a="485922067"
+Received: from shsi6026.sh.intel.com (HELO localhost) ([10.239.147.135])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 04:43:24 -0700
+From:   shuo.a.liu@intel.com
+To:     linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Shuo Liu <shuo.a.liu@intel.com>
+Subject: [PATCH v4 00/17] HSM driver for ACRN hypervisor
+Date:   Tue, 22 Sep 2020 19:42:54 +0800
+Message-Id: <20200922114311.38804-1-shuo.a.liu@intel.com>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200922114237.1803628-1-iskren.chernev@gmail.com>
-References: <20200922114237.1803628-1-iskren.chernev@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-max17048 and max17049 support SOC alerts (interrupts when battery
-capacity changes by +/- 1%). At the moment the driver polls for changes
-every second. Using the alerts removes the need for polling.
+From: Shuo Liu <shuo.a.liu@intel.com>
 
-Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
-Tested-by: Jonathan Bakker <xc-racer2@live.ca>
----
- drivers/power/supply/max17040_battery.c | 82 ++++++++++++++++++++++---
- 1 file changed, 73 insertions(+), 9 deletions(-)
+ACRN is a Type 1 reference hypervisor stack, running directly on the bare-metal
+hardware, and is suitable for a variety of IoT and embedded device solutions.
 
-diff --git a/drivers/power/supply/max17040_battery.c b/drivers/power/supply/max17040_battery.c
-index ae39ca5c6753e..1d7510a59295d 100644
---- a/drivers/power/supply/max17040_battery.c
-+++ b/drivers/power/supply/max17040_battery.c
-@@ -25,6 +25,7 @@
- #define MAX17040_MODE	0x06
- #define MAX17040_VER	0x08
- #define MAX17040_CONFIG	0x0C
-+#define MAX17040_STATUS	0x1A
- #define MAX17040_CMD	0xFE
- 
- 
-@@ -33,7 +34,10 @@
- #define MAX17040_RCOMP_DEFAULT  0x9700
- 
- #define MAX17040_ATHD_MASK		0x3f
-+#define MAX17040_ALSC_MASK		0x40
- #define MAX17040_ATHD_DEFAULT_POWER_UP	4
-+#define MAX17040_STATUS_HD_MASK		0x1000
-+#define MAX17040_STATUS_SC_MASK		0x2000
- #define MAX17040_CFG_RCOMP_MASK		0xff00
- 
- enum chip_id {
-@@ -55,6 +59,7 @@ struct chip_data {
- 	u16 vcell_div;
- 	u8  has_low_soc_alert;
- 	u8  rcomp_bytes;
-+	u8  has_soc_alert;
- };
- 
- static struct chip_data max17040_family[] = {
-@@ -65,6 +70,7 @@ static struct chip_data max17040_family[] = {
- 		.vcell_div = 1,
- 		.has_low_soc_alert = 0,
- 		.rcomp_bytes = 2,
-+		.has_soc_alert = 0,
- 	},
- 	[ID_MAX17041] = {
- 		.reset_val = 0x0054,
-@@ -73,6 +79,7 @@ static struct chip_data max17040_family[] = {
- 		.vcell_div = 1,
- 		.has_low_soc_alert = 0,
- 		.rcomp_bytes = 2,
-+		.has_soc_alert = 0,
- 	},
- 	[ID_MAX17043] = {
- 		.reset_val = 0x0054,
-@@ -81,6 +88,7 @@ static struct chip_data max17040_family[] = {
- 		.vcell_div = 1,
- 		.has_low_soc_alert = 1,
- 		.rcomp_bytes = 1,
-+		.has_soc_alert = 0,
- 	},
- 	[ID_MAX17044] = {
- 		.reset_val = 0x0054,
-@@ -89,6 +97,7 @@ static struct chip_data max17040_family[] = {
- 		.vcell_div = 1,
- 		.has_low_soc_alert = 1,
- 		.rcomp_bytes = 1,
-+		.has_soc_alert = 0,
- 	},
- 	[ID_MAX17048] = {
- 		.reset_val = 0x5400,
-@@ -97,6 +106,7 @@ static struct chip_data max17040_family[] = {
- 		.vcell_div = 8,
- 		.has_low_soc_alert = 1,
- 		.rcomp_bytes = 1,
-+		.has_soc_alert = 1,
- 	},
- 	[ID_MAX17049] = {
- 		.reset_val = 0x5400,
-@@ -105,6 +115,7 @@ static struct chip_data max17040_family[] = {
- 		.vcell_div = 4,
- 		.has_low_soc_alert = 1,
- 		.rcomp_bytes = 1,
-+		.has_soc_alert = 1,
- 	},
- 	[ID_MAX17058] = {
- 		.reset_val = 0x5400,
-@@ -113,6 +124,7 @@ static struct chip_data max17040_family[] = {
- 		.vcell_div = 8,
- 		.has_low_soc_alert = 1,
- 		.rcomp_bytes = 1,
-+		.has_soc_alert = 0,
- 	},
- 	[ID_MAX17059] = {
- 		.reset_val = 0x5400,
-@@ -121,6 +133,7 @@ static struct chip_data max17040_family[] = {
- 		.vcell_div = 4,
- 		.has_low_soc_alert = 1,
- 		.rcomp_bytes = 1,
-+		.has_soc_alert = 0,
- 	},
- };
- 
-@@ -156,6 +169,12 @@ static int max17040_set_low_soc_alert(struct max17040_chip *chip, u32 level)
- 			MAX17040_ATHD_MASK, level);
- }
- 
-+static int max17040_set_soc_alert(struct max17040_chip *chip, bool enable)
-+{
-+	return regmap_update_bits(chip->regmap, MAX17040_CONFIG,
-+			MAX17040_ALSC_MASK, enable ? MAX17040_ALSC_MASK : 0);
-+}
-+
- static int max17040_set_rcomp(struct max17040_chip *chip, u16 rcomp)
- {
- 	u16 mask = chip->data.rcomp_bytes == 2 ?
-@@ -300,11 +319,33 @@ static void max17040_work(struct work_struct *work)
- 	max17040_queue_work(chip);
- }
- 
-+/* Returns true if alert cause was SOC change, not low SOC */
-+static bool max17040_handle_soc_alert(struct max17040_chip *chip)
-+{
-+	bool ret = true;
-+	u32 data;
-+
-+	regmap_read(chip->regmap, MAX17040_STATUS, &data);
-+
-+	if (data & MAX17040_STATUS_HD_MASK) {
-+		// this alert was caused by low soc
-+		ret = false;
-+	}
-+	if (data & MAX17040_STATUS_SC_MASK) {
-+		// soc change bit -- deassert to mark as handled
-+		regmap_write(chip->regmap, MAX17040_STATUS,
-+				data & ~MAX17040_STATUS_SC_MASK);
-+	}
-+
-+	return ret;
-+}
-+
- static irqreturn_t max17040_thread_handler(int id, void *dev)
- {
- 	struct max17040_chip *chip = dev;
- 
--	dev_warn(&chip->client->dev, "IRQ: Alert battery low level");
-+	if (!(chip->data.has_soc_alert && max17040_handle_soc_alert(chip)))
-+		dev_warn(&chip->client->dev, "IRQ: Alert battery low level\n");
- 
- 	/* read registers */
- 	max17040_check_changes(chip);
-@@ -428,6 +469,7 @@ static int max17040_probe(struct i2c_client *client,
- 	struct power_supply_config psy_cfg = {};
- 	struct max17040_chip *chip;
- 	enum chip_id chip_id;
-+	bool enable_irq = false;
- 	int ret;
- 
- 	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE))
-@@ -479,6 +521,27 @@ static int max17040_probe(struct i2c_client *client,
- 			return ret;
- 		}
- 
-+		enable_irq = true;
-+	}
-+
-+	if (client->irq && chip->data.has_soc_alert) {
-+		ret = max17040_set_soc_alert(chip, 1);
-+		if (ret) {
-+			dev_err(&client->dev,
-+				"Failed to set SOC alert: err %d\n", ret);
-+			return ret;
-+		}
-+		enable_irq = true;
-+	} else {
-+		/* soc alerts negate the need for polling */
-+		INIT_DEFERRABLE_WORK(&chip->work, max17040_work);
-+		ret = devm_add_action(&client->dev, max17040_stop_work, chip);
-+		if (ret)
-+			return ret;
-+		max17040_queue_work(chip);
-+	}
-+
-+	if (enable_irq) {
- 		ret = max17040_enable_alert_irq(chip);
- 		if (ret) {
- 			client->irq = 0;
-@@ -487,12 +550,6 @@ static int max17040_probe(struct i2c_client *client,
- 		}
- 	}
- 
--	INIT_DEFERRABLE_WORK(&chip->work, max17040_work);
--	ret = devm_add_action(&client->dev, max17040_stop_work, chip);
--	if (ret)
--		return ret;
--	max17040_queue_work(chip);
--
- 	return 0;
- }
- 
-@@ -503,7 +560,11 @@ static int max17040_suspend(struct device *dev)
- 	struct i2c_client *client = to_i2c_client(dev);
- 	struct max17040_chip *chip = i2c_get_clientdata(client);
- 
--	cancel_delayed_work(&chip->work);
-+	if (client->irq && chip->data.has_soc_alert)
-+		// disable soc alert to prevent wakeup
-+		max17040_set_soc_alert(chip, 0);
-+	else
-+		cancel_delayed_work(&chip->work);
- 
- 	if (client->irq && device_may_wakeup(dev))
- 		enable_irq_wake(client->irq);
-@@ -519,7 +580,10 @@ static int max17040_resume(struct device *dev)
- 	if (client->irq && device_may_wakeup(dev))
- 		disable_irq_wake(client->irq);
- 
--	max17040_queue_work(chip);
-+	if (client->irq && chip->data.has_soc_alert)
-+		max17040_set_soc_alert(chip, 1);
-+	else
-+		max17040_queue_work(chip);
- 
- 	return 0;
- }
+ACRN implements a hybrid VMM architecture, using a privileged Service VM. The
+Service VM manages the system resources (CPU, memory, etc.) and I/O devices of
+User VMs. Multiple User VMs are supported, with each of them running Linux,
+Android OS or Windows. Both Service VM and User VMs are guest VM.
+
+Below figure shows the architecture.
+
+                Service VM                    User VM
+      +----------------------------+  |  +------------------+
+      |        +--------------+    |  |  |                  |
+      |        |ACRN userspace|    |  |  |                  |
+      |        +--------------+    |  |  |                  |
+      |-----------------ioctl------|  |  |                  |   ...
+      |kernel space   +----------+ |  |  |                  |
+      |               |   HSM    | |  |  | Drivers          |
+      |               +----------+ |  |  |                  |
+      +--------------------|-------+  |  +------------------+
+  +---------------------hypercall----------------------------------------+
+  |                       ACRN Hypervisor                                |
+  +----------------------------------------------------------------------+
+  |                          Hardware                                    |
+  +----------------------------------------------------------------------+
+
+There is only one Service VM which could run Linux as OS.
+
+In a typical case, the Service VM will be auto started when ACRN Hypervisor is
+booted. Then the ACRN userspace (an application running in Service VM) could be
+used to start/stop User VMs by communicating with ACRN Hypervisor Service
+Module (HSM).
+
+ACRN Hypervisor Service Module (HSM) is a middle layer that allows the ACRN
+userspace and Service VM OS kernel to communicate with ACRN Hypervisor
+and manage different User VMs. This middle layer provides the following
+functionalities,
+  - Issues hypercalls to the hypervisor to manage User VMs:
+      * VM/vCPU management
+      * Memory management
+      * Device passthrough
+      * Interrupts injection
+  - I/O requests handling from User VMs.
+  - Exports ioctl through HSM char device.
+  - Exports function calls for other kernel modules
+
+ACRN is focused on embedded system. So it doesn't support some features.
+E.g.,
+  - ACRN doesn't support VM migration.
+  - ACRN doesn't support vCPU migration.
+
+This patch set adds the HSM to the Linux kernel.
+
+The basic ARCN support was merged to upstream already.
+https://lore.kernel.org/lkml/1559108037-18813-3-git-send-email-yakui.zhao@intel.com/
+
+ChangeLog:
+v4:
+  - Used acrn_dev.this_device directly for dev_*() (Reinette)
+  - Removed the odd usage of {get|put}_device() on &acrn_dev->this_device (Greg)
+  - Removed unused log code. (Greg)
+  - Corrected the return error values. (Greg)
+  - Mentioned that HSM relies hypervisor for sanity check in acrn_dev_ioctl() comments (Greg)
+
+v3:
+  - Used {get|put}_device() helpers on &acrn_dev->this_device
+  - Moved unused code from front patches to later ones.
+  - Removed self-defined pr_fmt() and dev_fmt()
+  - Provided comments for acrn_vm_list_lock.
+
+v2:
+  - Removed API version related code. (Dave)
+  - Replaced pr_*() by dev_*(). (Greg)
+  - Used -ENOTTY as the error code of unsupported ioctl. (Greg)
+
+Shuo Liu (16):
+  docs: acrn: Introduce ACRN
+  x86/acrn: Introduce acrn_{setup, remove}_intr_handler()
+  x86/acrn: Introduce hypercall interfaces
+  virt: acrn: Introduce ACRN HSM basic driver
+  virt: acrn: Introduce VM management interfaces
+  virt: acrn: Introduce an ioctl to set vCPU registers state
+  virt: acrn: Introduce EPT mapping management
+  virt: acrn: Introduce I/O request management
+  virt: acrn: Introduce PCI configuration space PIO accesses combiner
+  virt: acrn: Introduce interfaces for PCI device passthrough
+  virt: acrn: Introduce interrupt injection interfaces
+  virt: acrn: Introduce interfaces to query C-states and P-states
+    allowed by hypervisor
+  virt: acrn: Introduce I/O ranges operation interfaces
+  virt: acrn: Introduce ioeventfd
+  virt: acrn: Introduce irqfd
+  virt: acrn: Introduce an interface for Service VM to control vCPU
+
+Yin Fengwei (1):
+  x86/acrn: Introduce an API to check if a VM is privileged
+
+ .../userspace-api/ioctl/ioctl-number.rst      |   1 +
+ Documentation/virt/acrn/index.rst             |  11 +
+ Documentation/virt/acrn/introduction.rst      |  40 ++
+ Documentation/virt/acrn/io-request.rst        |  97 +++
+ Documentation/virt/index.rst                  |   1 +
+ MAINTAINERS                                   |   9 +
+ arch/x86/include/asm/acrn.h                   |  74 ++
+ arch/x86/kernel/cpu/acrn.c                    |  35 +-
+ drivers/virt/Kconfig                          |   2 +
+ drivers/virt/Makefile                         |   1 +
+ drivers/virt/acrn/Kconfig                     |  15 +
+ drivers/virt/acrn/Makefile                    |   3 +
+ drivers/virt/acrn/acrn_drv.h                  | 229 +++++++
+ drivers/virt/acrn/hsm.c                       | 437 ++++++++++++
+ drivers/virt/acrn/hypercall.h                 | 254 +++++++
+ drivers/virt/acrn/ioeventfd.c                 | 273 ++++++++
+ drivers/virt/acrn/ioreq.c                     | 645 ++++++++++++++++++
+ drivers/virt/acrn/irqfd.c                     | 235 +++++++
+ drivers/virt/acrn/mm.c                        | 305 +++++++++
+ drivers/virt/acrn/vm.c                        | 126 ++++
+ include/uapi/linux/acrn.h                     | 486 +++++++++++++
+ 21 files changed, 3278 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/virt/acrn/index.rst
+ create mode 100644 Documentation/virt/acrn/introduction.rst
+ create mode 100644 Documentation/virt/acrn/io-request.rst
+ create mode 100644 arch/x86/include/asm/acrn.h
+ create mode 100644 drivers/virt/acrn/Kconfig
+ create mode 100644 drivers/virt/acrn/Makefile
+ create mode 100644 drivers/virt/acrn/acrn_drv.h
+ create mode 100644 drivers/virt/acrn/hsm.c
+ create mode 100644 drivers/virt/acrn/hypercall.h
+ create mode 100644 drivers/virt/acrn/ioeventfd.c
+ create mode 100644 drivers/virt/acrn/ioreq.c
+ create mode 100644 drivers/virt/acrn/irqfd.c
+ create mode 100644 drivers/virt/acrn/mm.c
+ create mode 100644 drivers/virt/acrn/vm.c
+ create mode 100644 include/uapi/linux/acrn.h
+
+
+base-commit: 18445bf405cb331117bc98427b1ba6f12418ad17
 -- 
 2.28.0
 
