@@ -2,237 +2,360 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71DE927438E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 15:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BEAD274391
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 15:56:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726620AbgIVNzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 09:55:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55443 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726473AbgIVNzT (ORCPT
+        id S1726650AbgIVN4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 09:56:01 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:63396 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726563AbgIVN4B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 09:55:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600782917;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=jdEJ0y8H2IADTtde1QqqSnKCJ1vHwxBCZrJ7EWnb5qs=;
-        b=NTD+HxkR2QABfmwOIR0dz6IOTFvZ2nhEwR9/94L22YqsQhUg+Z+vtEzSZjSK82DeUTK4fa
-        faIFp5P4OUYMNiZXsF1bIOKVHmoElbTg4tQy6KwUhW9remnc9ZpY9s1xBkdOvG6wi6f/SB
-        RcfgC6D0354yIIRZywlidz62FjtDCik=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-410-DyZmYKtJOrGgV6nprKQK0Q-1; Tue, 22 Sep 2020 09:55:15 -0400
-X-MC-Unique: DyZmYKtJOrGgV6nprKQK0Q-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C5E3D800400;
-        Tue, 22 Sep 2020 13:55:13 +0000 (UTC)
-Received: from [10.10.115.78] (ovpn-115-78.rdu2.redhat.com [10.10.115.78])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 29AE827C21;
-        Tue, 22 Sep 2020 13:55:00 +0000 (UTC)
-Subject: Re: [RFC][Patch v1 3/3] PCI: Limit pci_alloc_irq_vectors as per
- housekeeping CPUs
-From:   Nitesh Narayan Lal <nitesh@redhat.com>
-To:     Marcelo Tosatti <mtosatti@redhat.com>, frederic@kernel.org,
-        bhelgaas@google.com
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, sassmann@redhat.com,
-        jeffrey.t.kirsher@intel.com, jacob.e.keller@intel.com,
-        jlelli@redhat.com, hch@infradead.org, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
-        jerinj@marvell.com, mathias.nyman@intel.com, jiri@nvidia.com
-References: <20200909150818.313699-1-nitesh@redhat.com>
- <20200909150818.313699-4-nitesh@redhat.com>
- <20200910192208.GA24845@fuller.cnet>
- <cfdf9186-89a4-2a29-9bbb-3bf3ffebffcd@redhat.com>
-Autocrypt: addr=nitesh@redhat.com; prefer-encrypt=mutual; keydata=
- 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
- VujM7c/b4pps
-Organization: Red Hat Inc,
-Message-ID: <75a398cd-2050-e298-d718-eb56d4910133@redhat.com>
-Date:   Tue, 22 Sep 2020 09:54:58 -0400
+        Tue, 22 Sep 2020 09:56:01 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08MDngvT093881;
+        Tue, 22 Sep 2020 09:56:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=tJ7qfg5cVK2cVNVTi3DHQ2nDLrMgU8mKoi2z1b+/IB4=;
+ b=J8Rkq4qbrXQ+RLDXqQ3Lpvq555ZJ5Jd1R7jhXE9ZQr+CH4W1m1q34Yd+Epam13QUtf/Y
+ ZZbvybLuhSkUfjK0ps1+L+N8GOHnraqngMy6CyVzm3dUXxmSka1v/P9H1hXU5+talERZ
+ PzHgtYNmnABe1wbJ3v+ikrIvk9DkLia2C+nGWzepCDbs6yw3SI7cfHedIRADBteHm16W
+ XNKZlYZyAIZsbE+Eko/Y9SYFqEbQp5lWUwFlnBNk2lOk/a5NGLeSd+3Fznt/S6RBidvu
+ EIeEIW+kYaLtuAxwozNmS5N16WfEqVUo6DZ9ZF0bh5KU5WtLzP8nMJjR/9S4RQbz07f/ dw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33qjgag6h5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Sep 2020 09:55:59 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08MDq1Pp101353;
+        Tue, 22 Sep 2020 09:55:59 -0400
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33qjgag6gr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Sep 2020 09:55:59 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08MDqbgR006853;
+        Tue, 22 Sep 2020 13:55:58 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma01dal.us.ibm.com with ESMTP id 33n9m9cx8s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Sep 2020 13:55:58 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08MDtniL54657484
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 22 Sep 2020 13:55:49 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E339FC6055;
+        Tue, 22 Sep 2020 13:55:54 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C6C3AC6057;
+        Tue, 22 Sep 2020 13:55:53 +0000 (GMT)
+Received: from oc4221205838.ibm.com (unknown [9.163.16.144])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 22 Sep 2020 13:55:53 +0000 (GMT)
+Subject: Re: [PATCH 3/4] vfio-pci/zdev: define the vfio_zdev header
+To:     Cornelia Huck <cohuck@redhat.com>
+Cc:     alex.williamson@redhat.com, schnelle@linux.ibm.com,
+        pmorel@linux.ibm.com, borntraeger@de.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, gerald.schaefer@linux.ibm.com,
+        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1600529318-8996-1-git-send-email-mjrosato@linux.ibm.com>
+ <1600529318-8996-4-git-send-email-mjrosato@linux.ibm.com>
+ <20200922125409.4127797c.cohuck@redhat.com>
+From:   Matthew Rosato <mjrosato@linux.ibm.com>
+Message-ID: <b825731c-c2c5-ff17-014a-bc63fcc87927@linux.ibm.com>
+Date:   Tue, 22 Sep 2020 09:55:52 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <cfdf9186-89a4-2a29-9bbb-3bf3ffebffcd@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=nitesh@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="QUlCYZirVSnzLEka9GGa8MU8J8LhWkkvL"
+In-Reply-To: <20200922125409.4127797c.cohuck@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-22_12:2020-09-21,2020-09-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
+ priorityscore=1501 bulkscore=0 phishscore=0 lowpriorityscore=0
+ mlxlogscore=999 suspectscore=0 malwarescore=0 clxscore=1015 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009220101
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---QUlCYZirVSnzLEka9GGa8MU8J8LhWkkvL
-Content-Type: multipart/mixed; boundary="FcDyyLvNvIuwxqbIsEYXJONQcvkR6PsHT"
-
---FcDyyLvNvIuwxqbIsEYXJONQcvkR6PsHT
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-
-
-On 9/10/20 3:31 PM, Nitesh Narayan Lal wrote:
-> On 9/10/20 3:22 PM, Marcelo Tosatti wrote:
->> On Wed, Sep 09, 2020 at 11:08:18AM -0400, Nitesh Narayan Lal wrote:
->>> This patch limits the pci_alloc_irq_vectors max vectors that is passed =
-on
->>> by the caller based on the available housekeeping CPUs by only using th=
-e
->>> minimum of the two.
->>>
->>> A minimum of the max_vecs passed and available housekeeping CPUs is
->>> derived to ensure that we don't create excess vectors which can be
->>> problematic specifically in an RT environment. This is because for an R=
-T
->>> environment unwanted IRQs are moved to the housekeeping CPUs from
->>> isolated CPUs to keep the latency overhead to a minimum. If the number =
-of
->>> housekeeping CPUs are significantly lower than that of the isolated CPU=
-s
->>> we can run into failures while moving these IRQs to housekeeping due to
->>> per CPU vector limit.
->>>
->>> Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
->>> ---
->>>  include/linux/pci.h | 16 ++++++++++++++++
->>>  1 file changed, 16 insertions(+)
->>>
->>> diff --git a/include/linux/pci.h b/include/linux/pci.h
->>> index 835530605c0d..750ba927d963 100644
->>> --- a/include/linux/pci.h
->>> +++ b/include/linux/pci.h
->>> @@ -38,6 +38,7 @@
->>>  #include <linux/interrupt.h>
->>>  #include <linux/io.h>
->>>  #include <linux/resource_ext.h>
->>> +#include <linux/sched/isolation.h>
->>>  #include <uapi/linux/pci.h>
->>> =20
->>>  #include <linux/pci_ids.h>
->>> @@ -1797,6 +1798,21 @@ static inline int
->>>  pci_alloc_irq_vectors(struct pci_dev *dev, unsigned int min_vecs,
->>>  =09=09      unsigned int max_vecs, unsigned int flags)
->>>  {
->>> +=09unsigned int num_housekeeping =3D num_housekeeping_cpus();
->>> +=09unsigned int num_online =3D num_online_cpus();
->>> +
->>> +=09/*
->>> +=09 * Try to be conservative and at max only ask for the same number o=
-f
->>> +=09 * vectors as there are housekeeping CPUs. However, skip any
->>> +=09 * modification to the of max vectors in two conditions:
->>> +=09 * 1. If the min_vecs requested are higher than that of the
->>> +=09 *    housekeeping CPUs as we don't want to prevent the initializat=
-ion
->>> +=09 *    of a device.
->>> +=09 * 2. If there are no isolated CPUs as in this case the driver shou=
-ld
->>> +=09 *    already have taken online CPUs into consideration.
->>> +=09 */
->>> +=09if (min_vecs < num_housekeeping && num_housekeeping !=3D num_online=
-)
->>> +=09=09max_vecs =3D min_t(int, max_vecs, num_housekeeping);
->>>  =09return pci_alloc_irq_vectors_affinity(dev, min_vecs, max_vecs, flag=
-s,
->>>  =09=09=09=09=09      NULL);
->>>  }
->> If min_vecs > num_housekeeping, for example:
+On 9/22/20 6:54 AM, Cornelia Huck wrote:
+> On Sat, 19 Sep 2020 11:28:37 -0400
+> Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+> 
+>> We define a new device region in vfio.h to be able to get the ZPCI CLP
+>> information by reading this region from userspace.
 >>
->> /* PCI MSI/MSIx support */
->> #define XGBE_MSI_BASE_COUNT     4
->> #define XGBE_MSI_MIN_COUNT      (XGBE_MSI_BASE_COUNT + 1)
+>> We create a new file, vfio_zdev.h to define the structure of the new
+>> region defined in vfio.h
 >>
->> Then the protection fails.
-> Right, I was ignoring that case.
->
->> How about reducing max_vecs down to min_vecs, if min_vecs >
->> num_housekeeping ?
-> Yes, I think this makes sense.
-> I will wait a bit to see if anyone else has any other comment and will po=
-st
-> the next version then.
->
+>> Signed-off-by: Matthew Rosato <mjrosato@linux.ibm.com>
+>> ---
+>>   include/uapi/linux/vfio.h      |   5 ++
+>>   include/uapi/linux/vfio_zdev.h | 116 +++++++++++++++++++++++++++++++++++++++++
+>>   2 files changed, 121 insertions(+)
+>>   create mode 100644 include/uapi/linux/vfio_zdev.h
+>>
+>> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
+>> index 9204705..65eb367 100644
+>> --- a/include/uapi/linux/vfio.h
+>> +++ b/include/uapi/linux/vfio.h
+>> @@ -326,6 +326,11 @@ struct vfio_region_info_cap_type {
+>>    * to do TLB invalidation on a GPU.
+>>    */
+>>   #define VFIO_REGION_SUBTYPE_IBM_NVLINK2_ATSD	(1)
+>> +/*
+>> + * IBM zPCI specific hardware feature information for a devcie.  The contents
+>> + * of this region are mapped by struct vfio_region_zpci_info.
+>> + */
+>> +#define VFIO_REGION_SUBTYPE_IBM_ZPCI_CLP	(2)
+> 
+> This is not really for a 10de vendor, but for all pci devices accessed
+> via zpci, isn't it?
+s/10de/1014/ (10de is the set of regions prior to this one)
 
-Are there any other comments/concerns on this patch that I need to address =
-in
-the next posting?
+1014 == PCI_VENDOR_ID_IBM
 
---=20
-Nitesh
+But yes, this region is intended to be assigned to all pci devices 
+accessed thru zpci.  But the next patch always assigns the region to the 
+zpci device using type 1014 subtype 2 (and userspace always searches 
+using that pair) -- So it should always be unique as I understand it 
+unless someone re-defines another type 1014 subtype 2?
 
+> We obviously want to avoid collisions here; not really sure how to
+> cover all possible vendors. Maybe just pick a high number?
+> 
 
---FcDyyLvNvIuwxqbIsEYXJONQcvkR6PsHT--
+I don't think this is necessary unless I'm misunderstanding something.
 
---QUlCYZirVSnzLEka9GGa8MU8J8LhWkkvL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+>>   
+>>   /* sub-types for VFIO_REGION_TYPE_GFX */
+>>   #define VFIO_REGION_SUBTYPE_GFX_EDID            (1)
+>> diff --git a/include/uapi/linux/vfio_zdev.h b/include/uapi/linux/vfio_zdev.h
+>> new file mode 100644
+>> index 0000000..c9e4891
+>> --- /dev/null
+>> +++ b/include/uapi/linux/vfio_zdev.h
+>> @@ -0,0 +1,116 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+>> +/*
+>> + * Region definition for ZPCI devices
+>> + *
+>> + * Copyright IBM Corp. 2020
+>> + *
+>> + * Author(s): Pierre Morel <pmorel@linux.ibm.com>
+>> + *            Matthew Rosato <mjrosato@linux.ibm.com>
+>> + */
+>> +
+>> +#ifndef _VFIO_ZDEV_H_
+>> +#define _VFIO_ZDEV_H_
+>> +
+>> +#include <linux/types.h>
+>> +
+>> +/**
+>> + * struct vfio_region_zpci_info - ZPCI information
+>> + *
+>> + * This region provides zPCI specific hardware feature information for a
+>> + * device.
+>> + *
+>> + * The ZPCI information structure is presented as a chain of CLP features
+> 
+> "CLP features" == "features returned by the CLP instruction", I guess?
+> Maybe mention that explicitly?
 
------BEGIN PGP SIGNATURE-----
+Yes, that's correct.  I'm trying to clarify that these things aren't a 
+1:1 relationship to a CLP instruction payload.
 
-iQIzBAEBCAAdFiEEkXcoRVGaqvbHPuAGo4ZA3AYyozkFAl9qAjIACgkQo4ZA3AYy
-ozk33w//QnSYbMCUx+8+VUAoHYDuyHaWIzzfcxjcrd9UXCQMI6hqcnoXfTx4yZxi
-daHkOR3jQPzlAZskWRCe1HHQsvkSFSJa8Ux1SbtB+JW1jSJgDWB6trt43GlrZN02
-tyzNDfqYpFEwxdXzjYQcAp9eWuRzo0KDojWQ0FJyL2Rqgc7U4CNA2W0DsTx/lZUP
-UQMc4nbdBLwYd9RwZn/MKyrT3WCGgGnHLVx8nmUsvX5kH+jI9Z71csbN2kX3AhiF
-sVZuYY4Xmqf+hbFmbXynN0af/WijUrNWFh3KRpOtMVBtErPO5E6CN90kq3xOs5zT
-ngd4Zku2WydJptrZPprLPDMcyfQZjzbggfneW1+jTnI1r3PLiQMzUfG5AWo8YhZP
-HEPZ6J7bjqr+pfYzSUIB5WkuRO6S3nEIBLN0mpR62Ss3WUz73/HakQaFrKdulJR+
-yFSF/5+CYxSzn8CNM2XWGPCgU9BFIiJy5koUsJYtjpsxcnSApxINtYK4Zsb43Xht
-V6ki3CY7ZNtaDVQGpdmWa/wqOuC/Sb4grdTCMMygp/Cv0RbNTCCN8n7XQcRwnfIP
-1sSCnuqxKcAwvcXMOfRLCA9niM3cxfeBhauL+YzfkowM5GDvrHbZ/uqO0SMWy6cL
-zqrMEiblm5ycee1ajc0shb3SV8Uf/gIZv5hOMLtHHZSSXoXmV2o=
-=92yK
------END PGP SIGNATURE-----
+> 
+>> + * defined below. argsz provides the size of the entire region, and offset
+>> + * provides the location of the first CLP feature in the chain.
+>> + *
+>> + */
+>> +struct vfio_region_zpci_info {
+>> +	__u32 argsz;		/* Size of entire payload */
+>> +	__u32 offset;		/* Location of first entry */
+>> +} __packed;
+> 
+> This '__packed' annotation seems redundant. I think that all of these
+> structures should be defined in a way that packing is unneeded (which
+> seems to be the case on a quick browse.)
+> 
+OK, I'll double-check and remove the __packed annotation.
 
---QUlCYZirVSnzLEka9GGa8MU8J8LhWkkvL--
+>> +
+>> +/**
+>> + * struct vfio_region_zpci_info_hdr - ZPCI header information
+>> + *
+>> + * This structure is included at the top of each CLP feature to define what
+>> + * type of CLP feature is presented / the structure version. The next value
+>> + * defines the offset of the next CLP feature, and is an offset from the very
+>> + * beginning of the region (vfio_region_zpci_info).
+>> + *
+>> + * Each CLP feature must have it's own unique 'id'.
+> 
+> s/it's/its/
+> 
+> Is the 'id' something that is already provided by the CLP instruction?
+> 
+
+No, these IDs correspond only to the API for the vfio region and don't 
+directly relate to which CLP instruction they are associated with.  The 
+term 'CLP feature' was intended to abstract these structures from 
+individual CLP instructions.
+
+So, it might help to explain the design a bit here -- The CLP 
+instructions each return a specific, hardware-architected payload.  But 
+we're not sending the entirety of that payload to the guest, rather 
+identifying a subset to forward via the vfio region.  Currently, I've 
+sub-divided it as follows:
+
+1) query pci info we currently care about
+2) query pci fg info we currently care about
+3) utility string
+4) function path
+
+This was done in such a way that, when we need to add further CLP 
+information to this region (ex: new device support, new zpci feature 
+support, etc) we can do so by adding new 'CLP features' to the region. 
+Those 'CLP features' could be additional parts of the query pci CLP, 
+additional parts of the query pci fg CLP, or parts of some other CLP. 
+Technically, #3 and #4 are part of query pci info, but the nature of the 
+way they are sized made it more convenient to make them separate features.
+
+Userspace can then scan the region only for the 'CLP features' it 
+understands (or is enabled for) and pick only those (and use defaults 
+and/or turn support off for 'CLP features' it cannot find but expected to).
+
+>> + */
+>> +struct vfio_region_zpci_info_hdr {
+>> +	__u16 id;		/* Identifies the CLP type */
+>> +	__u16	version;	/* version of the CLP data */
+>> +	__u32 next;		/* Offset of next entry */
+>> +} __packed;
+>> +
+>> +/**
+>> + * struct vfio_region_zpci_info_qpci - Initial Query PCI information
+>> + *
+>> + * This region provides an initial set of data from the Query PCI Function
+> 
+> What does 'initial' mean in this context? Information you get for a
+> freshly initialized function?
+> 
+
+So this goes back to my statement above about 'query pci info we 
+currently care about' - It's not the entire query pci payload and I was 
+trying to avoid implying it was to prevent future confusion.  So 
+'initial' is more in a sense of 'what we initially care to send to 
+userspace.'
+
+But really, the vfio region API doesn't care which CLP the info came 
+from / where userspace is planning to stick these fields -- Perhaps I 
+should drop 'initial' and re-phrase without mentioning the CLP itself. 
+This feature is providing basic descriptive information about the 
+device, so maybe something like "Base zPCI device information"
+
+>> + * CLP.
+>> + */
+>> +#define VFIO_REGION_ZPCI_INFO_QPCI	1
+>> +
+>> +struct vfio_region_zpci_info_qpci {
+>> +	struct vfio_region_zpci_info_hdr hdr;
+>> +	__u64 start_dma;	/* Start of available DMA addresses */
+>> +	__u64 end_dma;		/* End of available DMA addresses */
+>> +	__u16 pchid;		/* Physical Channel ID */
+>> +	__u16 vfn;		/* Virtual function number */
+>> +	__u16 fmb_length;	/* Measurement Block Length (in bytes) */
+>> +	__u8 pft;		/* PCI Function Type */
+>> +	__u8 gid;		/* PCI function group ID */
+>> +} __packed;
+>> +
+>> +
+>> +/**
+>> + * struct vfio_region_zpci_info_qpcifg - Initial Query PCI Function Group info
+>> + *
+>> + * This region provides an initial set of data from the Query PCI Function
+>> + * Group CLP.
+>> + */
+
+And the same thing here -- It's the subset of query pci fg info we 
+currently care about -- So I can rename and drop the 'Initial' bit. 
+Something like "Base zPCI group information"
+
+>> +#define VFIO_REGION_ZPCI_INFO_QPCIFG	2
+>> +
+>> +struct vfio_region_zpci_info_qpcifg {
+>> +	struct vfio_region_zpci_info_hdr hdr;
+>> +	__u64 dasm;		/* DMA Address space mask */
+>> +	__u64 msi_addr;		/* MSI address */
+>> +	__u64 flags;
+>> +#define VFIO_PCI_ZDEV_FLAGS_REFRESH 1 /* Use program-specified TLB refresh */
+>> +	__u16 mui;		/* Measurement Block Update Interval */
+>> +	__u16 noi;		/* Maximum number of MSIs */
+>> +	__u16 maxstbl;		/* Maximum Store Block Length */
+>> +	__u8 version;		/* Supported PCI Version */
+>> +} __packed;
+>> +
+>> +/**
+>> + * struct vfio_region_zpci_info_util - Utility String
+>> + *
+>> + * This region provides the utility string for the associated device, which is
+>> + * a device identifier string.
+> 
+> Is there an upper boundary for this string?
+> 
+> Is this a classic NUL-terminated string, or a list of EBCDIC characters?
+> 
+
+EBCDIC characters.
+
+So, there is indeed an upper-boundary for the string, CLP_UTIL_STR_LEN. 
+It's coming from a hardware-architected field and shouldn't change size, 
+but we send the length anyway so that the API can act independent of the 
+CLP hardware region.  So the expectation is that userspace (qemu) would 
+compare the provided size of the util_str with what it expects the CLP 
+hardware payload to look like -- If it's too big, userspace can't use 
+that string to properly emulate the CLP response so it would have to 
+ignore this feature and use defaults.
+
+>> + */
+>> +#define VFIO_REGION_ZPCI_INFO_UTIL	3
+>> +
+>> +struct vfio_region_zpci_info_util {
+>> +	struct vfio_region_zpci_info_hdr hdr;
+>> +	__u32 size;
+>> +	__u8 util_str[];
+>> +} __packed;
+>> +
+>> +/**
+>> + * struct vfio_region_zpci_info_pfip - PCI Function Path
+>> + *
+>> + * This region provides the PCI function path string, which is an identifier
+>> + * that describes the internal hardware path of the device.
+> 
+> Same question here.
+
+Hex string bounded by CLP_PFIP_NR_SEGMENTS and again coming from a 
+hardware-architected field that shouldn't change -- the rest of my 
+answer from above applies here too.
+
+> 
+>> + */
+>> +#define VFIO_REGION_ZPCI_INFO_PFIP	4
+>> +
+>> +struct vfio_region_zpci_info_pfip {
+>> +struct vfio_region_zpci_info_hdr hdr;
+>> +	__u32 size;
+>> +	__u8 pfip[];
+>> +} __packed;
+>> +
+>> +#endif
+> 
 
