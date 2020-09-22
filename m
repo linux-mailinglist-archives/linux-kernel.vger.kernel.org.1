@@ -2,439 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F1F1273E3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 11:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3D1B273E40
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 11:13:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726661AbgIVJMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 05:12:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60560 "EHLO mail.kernel.org"
+        id S1726607AbgIVJNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 05:13:17 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58278 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726424AbgIVJMD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 05:12:03 -0400
-Received: from mail.kernel.org (ip5f5ad5bc.dynamic.kabel-deutschland.de [95.90.213.188])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 461AB2086A;
-        Tue, 22 Sep 2020 09:12:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600765921;
-        bh=ka9oI4jDSYrEWvUO5DxUx9BvGYoyQJBNBrXxJt61hMQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DzrbIbtCjW4njnwf8QFeFzAlEqNiq80gTg8RN/jrZLydzFg8D98W7HEOPnNg8D1wS
-         fVDypV2VV1lU9diNYTKnQhtvbuv+EYLvjS0frz9QAjPywNWJnraTfLVkFvvWndvDAQ
-         ATw8f1JsqGAt+Z2dWyj1k5rpI481K1LPq4ih3yYo=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1kKeL9-000uV4-1g; Tue, 22 Sep 2020 11:11:59 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: [PATCH 2/2] media: vidtv: avoid copying data for PES structs
-Date:   Tue, 22 Sep 2020 11:11:58 +0200
-Message-Id: <b314c0514745490e5103bc53343a4d6c180e9c40.1600765915.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <e4e165fab8a0f0f4a61ca3f4d35dffc97a238d1e.1600765915.git.mchehab+huawei@kernel.org>
-References: <e4e165fab8a0f0f4a61ca3f4d35dffc97a238d1e.1600765915.git.mchehab+huawei@kernel.org>
+        id S1726341AbgIVJNR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 05:13:17 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3198DAEEF;
+        Tue, 22 Sep 2020 09:13:51 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 1C2AD1E12E3; Tue, 22 Sep 2020 11:13:14 +0200 (CEST)
+Date:   Tue, 22 Sep 2020 11:13:14 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Song Liu <song@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Coly Li <colyli@suse.de>, Richard Weinberger <richard@nod.at>,
+        Minchan Kim <minchan@kernel.org>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Justin Sanders <justin@coraid.com>,
+        linux-mtd@lists.infradead.org, dm-devel@redhat.com,
+        linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
+        linux-kernel@vger.kernel.org, drbd-dev@lists.linbit.com,
+        linux-raid@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH 07/13] block: lift setting the readahead size into the
+ block layer
+Message-ID: <20200922091314.GD16464@quack2.suse.cz>
+References: <20200921080734.452759-1-hch@lst.de>
+ <20200921080734.452759-8-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921080734.452759-8-hch@lst.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Minimize the number of data copies and initialization at
-the code, passing them as pointers instead of duplicating
-the data.
+On Mon 21-09-20 10:07:28, Christoph Hellwig wrote:
+> Drivers shouldn't really mess with the readahead size, as that is a VM
+> concept.  Instead set it based on the optimal I/O size by lifting the
+> algorithm from the md driver when registering the disk.  Also set
+> bdi->io_pages there as well by applying the same scheme based on
+> max_sectors.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+...
+> diff --git a/block/blk-settings.c b/block/blk-settings.c
+> index 76a7e03bcd6cac..01049e9b998f1d 100644
+> --- a/block/blk-settings.c
+> +++ b/block/blk-settings.c
+> @@ -452,6 +452,8 @@ EXPORT_SYMBOL(blk_limits_io_opt);
+>  void blk_queue_io_opt(struct request_queue *q, unsigned int opt)
+>  {
+>  	blk_limits_io_opt(&q->limits, opt);
+> +	q->backing_dev_info->ra_pages =
+> +		max(queue_io_opt(q) * 2 / PAGE_SIZE, VM_READAHEAD_PAGES);
+>  }
+>  EXPORT_SYMBOL(blk_queue_io_opt);
+>  
+> @@ -628,9 +630,6 @@ void disk_stack_limits(struct gendisk *disk, struct block_device *bdev,
+>  		printk(KERN_NOTICE "%s: Warning: Device %s is misaligned\n",
+>  		       top, bottom);
+>  	}
+> -
+> -	t->backing_dev_info->io_pages =
+> -		t->limits.max_sectors >> (PAGE_SHIFT - 9);
+>  }
+>  EXPORT_SYMBOL(disk_stack_limits);
 
-The only case where we're keeping the data copy is at
-vidtv_pes_write_h(), as it needs a copy of the passed
-arguments. On such case, we're being more explicit.
+One thing I've noticed is that blk_stack_limits() does not use
+blk_queue_io_opt() to set new optimal limit. That means that ra_pages won't
+be updated for the new queue. E.g. your DRDB change below will result in
+ra_pages not being properly updated AFAICT.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/media/test-drivers/vidtv/vidtv_mux.c |  30 ++--
- drivers/media/test-drivers/vidtv/vidtv_pes.c | 178 +++++++++----------
- drivers/media/test-drivers/vidtv/vidtv_pes.h |   2 +-
- 3 files changed, 102 insertions(+), 108 deletions(-)
+Similarly it isn't clear to me how io_pages would get updated after
+blk_stack_limits() updates max_hw_sectors...
 
-diff --git a/drivers/media/test-drivers/vidtv/vidtv_mux.c b/drivers/media/test-drivers/vidtv/vidtv_mux.c
-index 6127e9ff71a1..80b28aa75d33 100644
---- a/drivers/media/test-drivers/vidtv/vidtv_mux.c
-+++ b/drivers/media/test-drivers/vidtv/vidtv_mux.c
-@@ -238,22 +238,28 @@ static u32 vidtv_mux_packetize_access_units(struct vidtv_mux *m,
- 					    struct vidtv_encoder *e)
- {
- 	u32 nbytes = 0;
--
--	struct pes_write_args args = {};
-+	struct pes_write_args args = {
-+		.dest_buf           = m->mux_buf,
-+		.dest_buf_sz        = m->mux_buf_sz,
-+		.pid                = be16_to_cpu(e->es_pid),
-+		.encoder_id         = e->id,
-+		.stream_id          = be16_to_cpu(e->stream_id),
-+		.send_pts           = true,  /* forbidden value '01'... */
-+		.send_dts           = false, /* ...for PTS_DTS flags    */
-+	};
- 	u32 initial_offset = m->mux_buf_offset;
- 	struct vidtv_access_unit *au = e->access_units;
--
- 	u8 *buf = NULL;
--	struct vidtv_mux_pid_ctx *pid_ctx = vidtv_mux_create_pid_ctx_once(m,
--									  be16_to_cpu(e->es_pid));
-+	struct vidtv_mux_pid_ctx *pid_ctx;
- 
--	args.dest_buf           = m->mux_buf;
--	args.dest_buf_sz        = m->mux_buf_sz;
--	args.pid                = be16_to_cpu(e->es_pid);
--	args.encoder_id         = e->id;
-+	/* see SMPTE 302M clause 6.4 */
-+	if (args.encoder_id == S302M) {
-+		args.send_dts = false;
-+		args.send_pts = true;
-+	}
-+
-+	pid_ctx = vidtv_mux_create_pid_ctx_once(m, be16_to_cpu(e->es_pid));
- 	args.continuity_counter = &pid_ctx->cc;
--	args.stream_id          = be16_to_cpu(e->stream_id);
--	args.send_pts           = true;
- 
- 	while (au) {
- 		buf                  = e->encoder_buf + au->offset;
-@@ -263,7 +269,7 @@ static u32 vidtv_mux_packetize_access_units(struct vidtv_mux *m,
- 		args.pts             = au->pts;
- 		args.pcr	     = m->timing.clk;
- 
--		m->mux_buf_offset += vidtv_pes_write_into(args);
-+		m->mux_buf_offset += vidtv_pes_write_into(&args);
- 
- 		au = au->next;
- 	}
-diff --git a/drivers/media/test-drivers/vidtv/vidtv_pes.c b/drivers/media/test-drivers/vidtv/vidtv_pes.c
-index c4fef54c383d..5c93734a0d07 100644
---- a/drivers/media/test-drivers/vidtv/vidtv_pes.c
-+++ b/drivers/media/test-drivers/vidtv/vidtv_pes.c
-@@ -56,7 +56,7 @@ static u32 vidtv_pes_h_get_len(bool send_pts, bool send_dts)
- 	return len;
- }
- 
--static u32 vidtv_pes_write_header_stuffing(struct pes_header_write_args args)
-+static u32 vidtv_pes_write_header_stuffing(struct pes_header_write_args *args)
- {
- 	/*
- 	 * This is a fixed 8-bit value equal to '0xFF' that can be inserted
-@@ -64,20 +64,20 @@ static u32 vidtv_pes_write_header_stuffing(struct pes_header_write_args args)
- 	 * It is discarded by the decoder. No more than 32 stuffing bytes shall
- 	 * be present in one PES packet header.
- 	 */
--	if (args.n_pes_h_s_bytes > PES_HEADER_MAX_STUFFING_BYTES) {
-+	if (args->n_pes_h_s_bytes > PES_HEADER_MAX_STUFFING_BYTES) {
- 		pr_warn_ratelimited("More than %d stuffing bytes in PES packet header\n",
- 				    PES_HEADER_MAX_STUFFING_BYTES);
--		args.n_pes_h_s_bytes = PES_HEADER_MAX_STUFFING_BYTES;
-+		args->n_pes_h_s_bytes = PES_HEADER_MAX_STUFFING_BYTES;
- 	}
- 
--	return vidtv_memset(args.dest_buf,
--			    args.dest_offset,
--			    args.dest_buf_sz,
-+	return vidtv_memset(args->dest_buf,
-+			    args->dest_offset,
-+			    args->dest_buf_sz,
- 			    TS_FILL_BYTE,
--			    args.n_pes_h_s_bytes);
-+			    args->n_pes_h_s_bytes);
- }
- 
--static u32 vidtv_pes_write_pts_dts(struct pes_header_write_args args)
-+static u32 vidtv_pes_write_pts_dts(struct pes_header_write_args *args)
- {
- 	u32 nbytes = 0;  /* the number of bytes written by this function */
- 
-@@ -89,7 +89,7 @@ static u32 vidtv_pes_write_pts_dts(struct pes_header_write_args args)
- 	u64 mask2;
- 	u64 mask3;
- 
--	if (!args.send_pts && args.send_dts)
-+	if (!args->send_pts && args->send_dts)
- 		return 0;
- 
- 	mask1 = GENMASK_ULL(32, 30);
-@@ -97,80 +97,81 @@ static u32 vidtv_pes_write_pts_dts(struct pes_header_write_args args)
- 	mask3 = GENMASK_ULL(14, 0);
- 
- 	/* see ISO/IEC 13818-1 : 2000 p. 32 */
--	if (args.send_pts && args.send_dts) {
--		pts_dts.pts1 = (0x3 << 4) | ((args.pts & mask1) >> 29) | 0x1;
--		pts_dts.pts2 = cpu_to_be16(((args.pts & mask2) >> 14) | 0x1);
--		pts_dts.pts3 = cpu_to_be16(((args.pts & mask3) << 1) | 0x1);
-+	if (args->send_pts && args->send_dts) {
-+		pts_dts.pts1 = (0x3 << 4) | ((args->pts & mask1) >> 29) | 0x1;
-+		pts_dts.pts2 = cpu_to_be16(((args->pts & mask2) >> 14) | 0x1);
-+		pts_dts.pts3 = cpu_to_be16(((args->pts & mask3) << 1) | 0x1);
- 
--		pts_dts.dts1 = (0x1 << 4) | ((args.dts & mask1) >> 29) | 0x1;
--		pts_dts.dts2 = cpu_to_be16(((args.dts & mask2) >> 14) | 0x1);
--		pts_dts.dts3 = cpu_to_be16(((args.dts & mask3) << 1) | 0x1);
-+		pts_dts.dts1 = (0x1 << 4) | ((args->dts & mask1) >> 29) | 0x1;
-+		pts_dts.dts2 = cpu_to_be16(((args->dts & mask2) >> 14) | 0x1);
-+		pts_dts.dts3 = cpu_to_be16(((args->dts & mask3) << 1) | 0x1);
- 
- 		op = &pts_dts;
- 		op_sz = sizeof(pts_dts);
- 
--	} else if (args.send_pts) {
--		pts.pts1 = (0x1 << 5) | ((args.pts & mask1) >> 29) | 0x1;
--		pts.pts2 = cpu_to_be16(((args.pts & mask2) >> 14) | 0x1);
--		pts.pts3 = cpu_to_be16(((args.pts & mask3) << 1) | 0x1);
-+	} else if (args->send_pts) {
-+		pts.pts1 = (0x1 << 5) | ((args->pts & mask1) >> 29) | 0x1;
-+		pts.pts2 = cpu_to_be16(((args->pts & mask2) >> 14) | 0x1);
-+		pts.pts3 = cpu_to_be16(((args->pts & mask3) << 1) | 0x1);
- 
- 		op = &pts;
- 		op_sz = sizeof(pts);
- 	}
- 
- 	/* copy PTS/DTS optional */
--	nbytes += vidtv_memcpy(args.dest_buf,
--			       args.dest_offset + nbytes,
--			       args.dest_buf_sz,
-+	nbytes += vidtv_memcpy(args->dest_buf,
-+			       args->dest_offset + nbytes,
-+			       args->dest_buf_sz,
- 			       op,
- 			       op_sz);
- 
- 	return nbytes;
- }
- 
--static u32 vidtv_pes_write_h(struct pes_header_write_args args)
-+static u32 vidtv_pes_write_h(struct pes_header_write_args *args)
- {
- 	u32 nbytes = 0;  /* the number of bytes written by this function */
- 
- 	struct vidtv_mpeg_pes pes_header          = {};
- 	struct vidtv_pes_optional pes_optional    = {};
--	struct pes_header_write_args pts_dts_args = args;
--	u32 stream_id = (args.encoder_id == S302M) ? PRIVATE_STREAM_1_ID : args.stream_id;
-+	struct pes_header_write_args pts_dts_args;
-+	u32 stream_id = (args->encoder_id == S302M) ? PRIVATE_STREAM_1_ID : args->stream_id;
- 	u16 pes_opt_bitfield = 0x01 << 15;
- 
- 	pes_header.bitfield = cpu_to_be32((PES_START_CODE_PREFIX << 8) | stream_id);
- 
--	pes_header.length = cpu_to_be16(vidtv_pes_op_get_len(args.send_pts,
--							     args.send_dts) +
--							     args.access_unit_len);
-+	pes_header.length = cpu_to_be16(vidtv_pes_op_get_len(args->send_pts,
-+							     args->send_dts) +
-+							     args->access_unit_len);
- 
--	if (args.send_pts && args.send_dts)
-+	if (args->send_pts && args->send_dts)
- 		pes_opt_bitfield |= (0x3 << 6);
--	else if (args.send_pts)
-+	else if (args->send_pts)
- 		pes_opt_bitfield |= (0x1 << 7);
- 
- 	pes_optional.bitfield = cpu_to_be16(pes_opt_bitfield);
--	pes_optional.length = vidtv_pes_op_get_len(args.send_pts, args.send_dts) +
--			      args.n_pes_h_s_bytes -
-+	pes_optional.length = vidtv_pes_op_get_len(args->send_pts, args->send_dts) +
-+			      args->n_pes_h_s_bytes -
- 			      sizeof(struct vidtv_pes_optional);
- 
- 	/* copy header */
--	nbytes += vidtv_memcpy(args.dest_buf,
--			       args.dest_offset + nbytes,
--			       args.dest_buf_sz,
-+	nbytes += vidtv_memcpy(args->dest_buf,
-+			       args->dest_offset + nbytes,
-+			       args->dest_buf_sz,
- 			       &pes_header,
- 			       sizeof(pes_header));
- 
- 	/* copy optional header bits */
--	nbytes += vidtv_memcpy(args.dest_buf,
--			       args.dest_offset + nbytes,
--			       args.dest_buf_sz,
-+	nbytes += vidtv_memcpy(args->dest_buf,
-+			       args->dest_offset + nbytes,
-+			       args->dest_buf_sz,
- 			       &pes_optional,
- 			       sizeof(pes_optional));
- 
- 	/* copy the timing information */
--	pts_dts_args.dest_offset = args.dest_offset + nbytes;
--	nbytes += vidtv_pes_write_pts_dts(pts_dts_args);
-+	pts_dts_args = *args;
-+	pts_dts_args.dest_offset = args->dest_offset + nbytes;
-+	nbytes += vidtv_pes_write_pts_dts(&pts_dts_args);
- 
- 	/* write any PES header stuffing */
- 	nbytes += vidtv_pes_write_header_stuffing(args);
-@@ -299,14 +300,31 @@ static u32 vidtv_pes_write_ts_h(struct pes_ts_header_write_args args,
- 	return nbytes;
- }
- 
--u32 vidtv_pes_write_into(struct pes_write_args args)
-+u32 vidtv_pes_write_into(struct pes_write_args *args)
- {
--	u32 unaligned_bytes = (args.dest_offset % TS_PACKET_LEN);
--	struct pes_ts_header_write_args ts_header_args = {};
--	struct pes_header_write_args pes_header_args = {};
--	u32 remaining_len = args.access_unit_len;
-+	u32 unaligned_bytes = (args->dest_offset % TS_PACKET_LEN);
-+	struct pes_ts_header_write_args ts_header_args = {
-+		.dest_buf		= args->dest_buf,
-+		.dest_buf_sz		= args->dest_buf_sz,
-+		.pid			= args->pid,
-+		.pcr		  	= args->pcr,
-+		.continuity_counter	= args->continuity_counter,
-+	};
-+	struct pes_header_write_args pes_header_args = {
-+		.dest_buf		= args->dest_buf,
-+		.dest_buf_sz		= args->dest_buf_sz,
-+		.encoder_id		= args->encoder_id,
-+		.send_pts		= args->send_pts,
-+		.pts			= args->pts,
-+		.send_dts		= args->send_dts,
-+		.dts			= args->dts,
-+		.stream_id		= args->stream_id,
-+		.n_pes_h_s_bytes	= args->n_pes_h_s_bytes,
-+		.access_unit_len	= args->access_unit_len,
-+	};
-+	u32 remaining_len = args->access_unit_len;
- 	bool wrote_pes_header = false;
--	u64 last_pcr = args.pcr;
-+	u64 last_pcr = args->pcr;
- 	bool need_pcr = true;
- 	u32 available_space;
- 	u32 payload_size;
-@@ -317,25 +335,13 @@ u32 vidtv_pes_write_into(struct pes_write_args args)
- 		pr_warn_ratelimited("buffer is misaligned, while starting PES\n");
- 
- 		/* forcibly align and hope for the best */
--		nbytes += vidtv_memset(args.dest_buf,
--				       args.dest_offset + nbytes,
--				       args.dest_buf_sz,
-+		nbytes += vidtv_memset(args->dest_buf,
-+				       args->dest_offset + nbytes,
-+				       args->dest_buf_sz,
- 				       TS_FILL_BYTE,
- 				       TS_PACKET_LEN - unaligned_bytes);
- 	}
- 
--	if (args.send_dts && !args.send_pts) {
--		pr_warn_ratelimited("forbidden value '01' for PTS_DTS flags\n");
--		args.send_pts = true;
--		args.pts      = args.dts;
--	}
--
--	/* see SMPTE 302M clause 6.4 */
--	if (args.encoder_id == S302M) {
--		args.send_dts = false;
--		args.send_pts = true;
--	}
--
- 	while (remaining_len) {
- 		available_space = TS_PAYLOAD_LEN;
- 		/*
-@@ -344,14 +350,14 @@ u32 vidtv_pes_write_into(struct pes_write_args args)
- 		 * the space needed for the TS header _and_ for the PES header
- 		 */
- 		if (!wrote_pes_header)
--			available_space -= vidtv_pes_h_get_len(args.send_pts,
--							       args.send_dts);
-+			available_space -= vidtv_pes_h_get_len(args->send_pts,
-+							       args->send_dts);
- 
- 		/*
- 		 * if the encoder has inserted stuffing bytes in the PES
- 		 * header, account for them.
- 		 */
--		available_space -= args.n_pes_h_s_bytes;
-+		available_space -= args->n_pes_h_s_bytes;
- 
- 		/* Take the extra adaptation into account if need to send PCR */
- 		if (need_pcr) {
-@@ -386,14 +392,9 @@ u32 vidtv_pes_write_into(struct pes_write_args args)
- 		}
- 
- 		/* write ts header */
--		ts_header_args.dest_buf           = args.dest_buf;
--		ts_header_args.dest_offset        = args.dest_offset + nbytes;
--		ts_header_args.dest_buf_sz        = args.dest_buf_sz;
--		ts_header_args.pid                = args.pid;
--		ts_header_args.pcr		  = args.pcr;
--		ts_header_args.continuity_counter = args.continuity_counter;
--		ts_header_args.wrote_pes_header   = wrote_pes_header;
--		ts_header_args.n_stuffing_bytes   = stuff_bytes;
-+		ts_header_args.dest_offset = args->dest_offset + nbytes;
-+		ts_header_args.wrote_pes_header	= wrote_pes_header;
-+		ts_header_args.n_stuffing_bytes	= stuff_bytes;
- 
- 		nbytes += vidtv_pes_write_ts_h(ts_header_args, need_pcr,
- 					       &last_pcr);
-@@ -402,33 +403,20 @@ u32 vidtv_pes_write_into(struct pes_write_args args)
- 
- 		if (!wrote_pes_header) {
- 			/* write the PES header only once */
--			pes_header_args.dest_buf        = args.dest_buf;
--
--			pes_header_args.dest_offset     = args.dest_offset +
--							  nbytes;
--
--			pes_header_args.dest_buf_sz     = args.dest_buf_sz;
--			pes_header_args.encoder_id      = args.encoder_id;
--			pes_header_args.send_pts        = args.send_pts;
--			pes_header_args.pts             = args.pts;
--			pes_header_args.send_dts        = args.send_dts;
--			pes_header_args.dts             = args.dts;
--			pes_header_args.stream_id       = args.stream_id;
--			pes_header_args.n_pes_h_s_bytes = args.n_pes_h_s_bytes;
--			pes_header_args.access_unit_len = args.access_unit_len;
--
--			nbytes           += vidtv_pes_write_h(pes_header_args);
--			wrote_pes_header  = true;
-+			pes_header_args.dest_offset = args->dest_offset +
-+						      nbytes;
-+			nbytes += vidtv_pes_write_h(&pes_header_args);
-+			wrote_pes_header = true;
- 		}
- 
- 		/* write as much of the payload as we possibly can */
--		nbytes += vidtv_memcpy(args.dest_buf,
--				       args.dest_offset + nbytes,
--				       args.dest_buf_sz,
--				       args.from,
-+		nbytes += vidtv_memcpy(args->dest_buf,
-+				       args->dest_offset + nbytes,
-+				       args->dest_buf_sz,
-+				       args->from,
- 				       payload_size);
- 
--		args.from += payload_size;
-+		args->from += payload_size;
- 
- 		remaining_len -= payload_size;
- 	}
-diff --git a/drivers/media/test-drivers/vidtv/vidtv_pes.h b/drivers/media/test-drivers/vidtv/vidtv_pes.h
-index a152693233a9..99f45056adc2 100644
---- a/drivers/media/test-drivers/vidtv/vidtv_pes.h
-+++ b/drivers/media/test-drivers/vidtv/vidtv_pes.h
-@@ -185,6 +185,6 @@ struct pes_write_args {
-  * equal to the size of the access unit, since we need space for PES headers, TS headers
-  * and padding bytes, if any.
-  */
--u32 vidtv_pes_write_into(struct pes_write_args args);
-+u32 vidtv_pes_write_into(struct pes_write_args *args);
- 
- #endif // VIDTV_PES_H
+Otherwise the patch looks good.
+
+								Honza
+
+> diff --git a/drivers/block/drbd/drbd_nl.c b/drivers/block/drbd/drbd_nl.c
+> index aaff5bde391506..f8fb1c9b1bb6c1 100644
+> --- a/drivers/block/drbd/drbd_nl.c
+> +++ b/drivers/block/drbd/drbd_nl.c
+> @@ -1360,18 +1360,8 @@ static void drbd_setup_queue_param(struct drbd_device *device, struct drbd_backi
+>  	decide_on_discard_support(device, q, b, discard_zeroes_if_aligned);
+>  	decide_on_write_same_support(device, q, b, o, disable_write_same);
+>  
+> -	if (b) {
+> +	if (b)
+>  		blk_stack_limits(&q->limits, &b->limits, 0);
+> -
+> -		if (q->backing_dev_info->ra_pages !=
+> -		    b->backing_dev_info->ra_pages) {
+> -			drbd_info(device, "Adjusting my ra_pages to backing device's (%lu -> %lu)\n",
+> -				 q->backing_dev_info->ra_pages,
+> -				 b->backing_dev_info->ra_pages);
+> -			q->backing_dev_info->ra_pages =
+> -						b->backing_dev_info->ra_pages;
+> -		}
+> -	}
+>  	fixup_discard_if_not_supported(q);
+>  	fixup_write_zeroes(device, q);
+>  }
 -- 
-2.26.2
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
