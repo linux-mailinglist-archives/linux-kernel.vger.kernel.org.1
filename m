@@ -2,99 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 146F027416E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:49:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E14827417A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726964AbgIVLtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 07:49:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24570 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726640AbgIVLsy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 07:48:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600775333;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xQ6xAU5ZnYayBNRYBEJtPnFAgdA/Gx4Gks29IeOF6vc=;
-        b=hQHYz1cuNxGSo0pv0u1abUwaW69z1LUbfOSudju20/Q3d5I87ZQEB56ZUZEeVUlO0iWsib
-        JFyJ+WcQ/1tI8ATnUxrBFdEwVeYYthWu532Oguk7qYJcSUHqfyCaZswsmhuPMyyCfnuqVu
-        Nhhj0gfgWsvMKEwUkJgR3oV6ZiiXHp0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-559-IQMQgRZPNNOtLsI3btQlVg-1; Tue, 22 Sep 2020 07:48:51 -0400
-X-MC-Unique: IQMQgRZPNNOtLsI3btQlVg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726981AbgIVLtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 07:49:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50922 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726531AbgIVLth (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 07:49:37 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 317ED57001;
-        Tue, 22 Sep 2020 11:48:48 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.146])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 4FBB57366B;
-        Tue, 22 Sep 2020 11:48:41 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Tue, 22 Sep 2020 13:48:47 +0200 (CEST)
-Date:   Tue, 22 Sep 2020 13:48:40 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Jann Horn <jannh@google.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Hugh Dickins <hughd@google.com>,
-        Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [PATCH 4/5] mm: Do early cow for pinned pages during fork() for
- ptes
-Message-ID: <20200922114839.GC11679@redhat.com>
-References: <20200921211744.24758-1-peterx@redhat.com>
- <20200921212028.25184-1-peterx@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200921212028.25184-1-peterx@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        by mail.kernel.org (Postfix) with ESMTPSA id BC07A221EB;
+        Tue, 22 Sep 2020 11:49:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600775377;
+        bh=Q4KDNQJE+iH1DnDYsmw0dPu90gd1omWDNMB3ZeVjjGg=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=Q0kzW0fqgH/ZynkmIIsZ+Sk3TIZn1d1t5vPwcPmXgKloPcyO+FEfgbJPD2ON45Hz8
+         OOhutiHnFCkdlS2Oq5dnBkZlt3W7mf2vS5wJL9kS7AQvzZ8+wJETBuTKgGLs+1yuJc
+         NnwNw6eHuWv6vW9+hMhEnlq2sqh22UhUiTpgzLzI=
+Date:   Tue, 22 Sep 2020 12:48:44 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Cheng-Yi Chiang <cychiang@chromium.org>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Tzung-Bi Shih <tzungbi@google.com>, tzungbi@chromium.org,
+        Srinivasa Rao <srivasam@codeaurora.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-mediatek@lists.infradead.org, alsa-devel@alsa-project.org,
+        Takashi Iwai <tiwai@suse.com>,
+        Rob Herring <robh+dt@kernel.org>, dianders@chromium.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-rockchip@lists.infradead.org, dgreid@chromium.org
+In-Reply-To: <20200922062316.1172935-1-cychiang@chromium.org>
+References: <20200922062316.1172935-1-cychiang@chromium.org>
+Subject: Re: [PATCH] ASoC: hdmi-codec: Use set_jack ops to set jack
+Message-Id: <160077532459.10007.8996932486569302078.b4-ty@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/21, Peter Xu wrote:
->
-> @@ -859,6 +989,25 @@ static int copy_pte_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
->  			    spin_needbreak(src_ptl) || spin_needbreak(dst_ptl))
->  				break;
->  		}
-> +
-> +		if (unlikely(data.cow_new_page)) {
-> +			/*
-> +			 * If cow_new_page set, we must be at the 2nd round of
-> +			 * a previous COPY_MM_BREAK_COW.  Try to arm the new
-> +			 * page now.  Note that in all cases page_break_cow()
-> +			 * will properly release the objects in copy_mm_data.
-> +			 */
-> +			WARN_ON_ONCE(copy_ret != COPY_MM_BREAK_COW);
-> +			if (pte_install_copied_page(dst_mm, new, src_pte,
-> +						    dst_pte, addr, rss,
-> +						    &data)) {
-> +				/* We installed the pte successfully; move on */
-> +				progress++;
-> +				continue;
+On Tue, 22 Sep 2020 14:23:16 +0800, Cheng-Yi Chiang wrote:
+> Use set_jack ops to set jack so machine drivers do not need to include
+> hdmi-codec.h explicitly.
 
-I'm afraid I misread this patch too ;)
+Applied to
 
-But it seems to me in this case the main loop can really "leak"
-COPY_MM_BREAK_COW. Suppose the the next 31 pte's are pte_none() and
-need_resched() is true.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-No?
+Thanks!
 
-Oleg.
+[1/1] ASoC: hdmi-codec: Use set_jack ops to set jack
+      commit: 55c5cc63ab3277aa20637dc20f6528987ac23743
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
