@@ -2,98 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79E9D2747B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 19:49:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 917C02747B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 19:49:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726674AbgIVRto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 13:49:44 -0400
-Received: from verein.lst.de ([213.95.11.211]:45712 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726573AbgIVRto (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 13:49:44 -0400
-Received: by verein.lst.de (Postfix, from userid 107)
-        id 8B2AD68AFE; Tue, 22 Sep 2020 19:49:41 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.3.1 (2010-03-16) on verein.lst.de
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=5.0 tests=ALL_TRUSTED,BAYES_50
-        autolearn=disabled version=3.3.1
-Received: from blackhole.lan (p5b33f9ec.dip0.t-ipconnect.de [91.51.249.236])
-        by verein.lst.de (Postfix) with ESMTPSA id AD5CC67357;
-        Tue, 22 Sep 2020 19:48:56 +0200 (CEST)
-Date:   Tue, 22 Sep 2020 19:48:49 +0200
-From:   Torsten Duwe <duwe@lst.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Stephan Mueller <smueller@chronox.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Nicolai Stange <nstange@suse.de>, linux-crypto@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Willy Tarreau <w@1wt.eu>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andy Lavr <andy.lavr@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Petr Tesarik <ptesarik@suse.cz>
-Subject: Re: [DISCUSSION PATCH 00/41] random: possible ways towards NIST
- SP800-90B compliance
-Message-ID: <20200922194849.12d2c8ae@blackhole.lan>
-In-Reply-To: <20200922162152.GB2299429@kroah.com>
-References: <20200921075857.4424-1-nstange@suse.de>
-        <8618155.4vTCxPXJkl@tauon.chronox.de>
-        <20200922132344.GA2728@lst.de>
-        <20200922162152.GB2299429@kroah.com>
-Organization: LST e.V.
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
+        id S1726713AbgIVRtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 13:49:50 -0400
+Received: from conuserg-10.nifty.com ([210.131.2.77]:41481 "EHLO
+        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726573AbgIVRtt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 13:49:49 -0400
+Received: from oscar.flets-west.jp (softbank126090211135.bbtec.net [126.90.211.135]) (authenticated)
+        by conuserg-10.nifty.com with ESMTP id 08MHn0Nm019599;
+        Wed, 23 Sep 2020 02:49:00 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 08MHn0Nm019599
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1600796940;
+        bh=7r+QVIfUJ3sIljVKmpOn/byhmJJPSCK7+h4sbICb0vM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=YvuOzGATOytrS/3cxAJUelQ5Iz0Ou2Ff502Ghp8v/LeqMpxsf4Zbxlyt71OUi3fn7
+         8IBaTO+kQsgCHD/J0a8SiRyCDnwYZKE5A6C5M/l8JwnWAHirUJtrTHDL7WIISU+C0C
+         XYdZ8Cn9oHExl2VAP+a7vioGtqBFb25XF2pmB+Qo9IYvnNO93p7JcYl0PYNnBEL9b0
+         lpADxx8FyJqxqvXb9mnXzJOx0zhZo55vy3/Roqy4sHv22K+N7Y31xB/71wW0nC+GsJ
+         VjsNwG4gyNI3AG1F3I5GQkbYhkobV1yvT/fkF1ZVc/NiVDARLzzQwYNT8dkVNK/TH/
+         UFxpNmM1ID/Rw==
+X-Nifty-SrcIP: [126.90.211.135]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] scripts/kallsyms: skip ppc compiler stub *.long_branch.* / *.plt_branch.*
+Date:   Wed, 23 Sep 2020 02:48:56 +0900
+Message-Id: <20200922174856.2001167-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Sep 2020 18:21:52 +0200
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+PowerPC allmodconfig often fails to build as follows:
 
-> On Tue, Sep 22, 2020 at 03:23:44PM +0200, Torsten Duwe wrote:
-> > On Mon, Sep 21, 2020 at 10:40:37AM +0200, Stephan Mueller wrote:
-> > > Am Montag, 21. September 2020, 09:58:16 CEST schrieb Nicolai
-> > > Stange:
-> > > 
-> > > > - people dislike the approach of having two competing
-> > > > implementations for what is basically the same functionality in
-> > > > the kernel.
-> > > 
-> > > Is this really so bad considering the security implications on
-> > > this topic? We also have multiple file systems, multiple memory
-> > > allocators, etc...
-> > 
-> > Exactly. I thought Linux was about the freedom of choice.
-> 
-> http://www.islinuxaboutchoice.com/
-> 
-> :)
+    LD      .tmp_vmlinux.kallsyms1
+    KSYM    .tmp_vmlinux.kallsyms1.o
+    LD      .tmp_vmlinux.kallsyms2
+    KSYM    .tmp_vmlinux.kallsyms2.o
+    LD      .tmp_vmlinux.kallsyms3
+    KSYM    .tmp_vmlinux.kallsyms3.o
+    LD      vmlinux
+    SORTTAB vmlinux
+    SYSMAP  System.map
+  Inconsistent kallsyms data
+  Try make KALLSYMS_EXTRA_PASS=1 as a workaround
+  make[2]: *** [../Makefile:1162: vmlinux] Error 1
 
-Talk is cheap.
+Setting KALLSYMS_EXTRA_PASS=1 does not help.
 
-gzip -dc /proc/config.gz | wc -l
-9789
+This is caused by the compiler inserting stubs such as *.long_branch.*
+and *.plt_branch.*
 
-:-P
-	Torsten
+  $ powerpc-linux-nm -n .tmp_vmlinux.kallsyms2
+   [ snip ]
+  c00000000210c000 T __init_begin
+  c00000000210c000 T _sinittext
+  c00000000210c010 t 00000075.plt_branch.da9:19
+  c00000000210c020 t 00000075.plt_branch.1677:5
+  c00000000210c030 t 00000075.long_branch.memmove
+  c00000000210c034 t 00000075.plt_branch.9e0:5
+  c00000000210c044 t 00000075.plt_branch.free_initrd_mem
+    ...
+
+Actually, the problem mentioned in scripts/link-vmlinux.sh comments;
+"In theory it's possible this results in even more stubs, but unlikely"
+is happening here, and ends up with another kallsyms step required.
+
+scripts/kallsyms.c already ignores various compiler stubs. Let's do
+similar to make kallsysms for PowerPC always succeed in 2 steps.
+
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ scripts/kallsyms.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/scripts/kallsyms.c b/scripts/kallsyms.c
+index 0096cd965332..306b9b38150f 100644
+--- a/scripts/kallsyms.c
++++ b/scripts/kallsyms.c
+@@ -120,17 +120,25 @@ static bool is_ignored_symbol(const char *name, char type)
+ 		NULL
+ 	};
+ 
++	static const char * const ignored_matches[] = {
++		".long_branch.",	/* ppc stub */
++		".plt_branch.",		/* ppc stub */
++		NULL
++	};
++
+ 	const char * const *p;
+ 
+-	/* Exclude symbols which vary between passes. */
++	/* ignore symbol names that exactly match to a particular string. */
+ 	for (p = ignored_symbols; *p; p++)
+ 		if (!strcmp(name, *p))
+ 			return true;
+ 
++	/* ignore symbol names that start with a particular string. */
+ 	for (p = ignored_prefixes; *p; p++)
+ 		if (!strncmp(name, *p, strlen(*p)))
+ 			return true;
+ 
++	/* ignore symbol names that end with a particular string. */
+ 	for (p = ignored_suffixes; *p; p++) {
+ 		int l = strlen(name) - strlen(*p);
+ 
+@@ -138,6 +146,12 @@ static bool is_ignored_symbol(const char *name, char type)
+ 			return true;
+ 	}
+ 
++	/* ignore symbol names that contain a particular string. */
++	for (p = ignored_matches; *p; p++) {
++		if (strstr(name, *p))
++			return true;
++	}
++
+ 	if (type == 'U' || type == 'u')
+ 		return true;
+ 	/* exclude debugging symbols */
+-- 
+2.25.1
+
