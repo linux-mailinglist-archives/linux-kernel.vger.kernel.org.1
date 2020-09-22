@@ -2,158 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F90C273CE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 10:03:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 445EC273CE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 10:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726522AbgIVIDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 04:03:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45154 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726422AbgIVIDK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 04:03:10 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600761787;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2FvWG7tC3kKNI3D6q7QNexOS+dy5AJm0QHRE89VaQpY=;
-        b=rFPGEtfOB48pYzUWyAcKcwutF4tjK6MGFMST8WT/FaYU0Sy1hfpZz8F0ueMohfL1P8BnRe
-        JTIFVi04+w/D3IEcEjQkflh09iEKuP5Zj5Fp3qxPLf6Qj16BIzDXDY3/PRczaE/8MzdrBZ
-        1WTQZhMYbotweBatf5ALz2mgXgvY4AI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 28398AF98;
-        Tue, 22 Sep 2020 08:03:44 +0000 (UTC)
-Date:   Tue, 22 Sep 2020 10:03:06 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20200922080306.GV12990@dhcp22.suse.cz>
-References: <20200918194817.48921-1-urezki@gmail.com>
- <20200918194817.48921-3-urezki@gmail.com>
- <20200921074716.GC12990@dhcp22.suse.cz>
- <20200921154558.GD29330@paulmck-ThinkPad-P72>
- <20200921160318.GO12990@dhcp22.suse.cz>
- <20200922033553.GU29330@paulmck-ThinkPad-P72>
+        id S1726549AbgIVIE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 04:04:28 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:58834 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726422AbgIVIE1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 04:04:27 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200922080426euoutp01cbdf22e1f7113fcf1afa63a24e7f7456~3DG_xPqST3141531415euoutp01g
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 08:04:26 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200922080426euoutp01cbdf22e1f7113fcf1afa63a24e7f7456~3DG_xPqST3141531415euoutp01g
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1600761866;
+        bh=vMZZdD6CU4Tq8VLs7D3b0T5e/AAfjtVgzf6Xc6Ok4E0=;
+        h=Subject:To:From:Date:In-Reply-To:References:From;
+        b=j1bxxd/r4p1rnR3l0CngqeJ5TUEfIJAZEqCQOFKrfq7K2iu8+d/Hp4DgOxZLVEsPw
+         Y7xlYzZJtd1+UeBvyVLBpZnFo9zxu0r1H7itRsMDaD3i0NykBUSegZD9SydHK3n9Gn
+         SyjkbA+578LhjFLZE0UZtwGMFTU4f3kv+OqoWOv0=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200922080426eucas1p1cf421a684b96be9c16c4cecf2d37f10f~3DG_hfbOO0725507255eucas1p1d;
+        Tue, 22 Sep 2020 08:04:26 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id DE.1D.06456.A00B96F5; Tue, 22
+        Sep 2020 09:04:26 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200922080425eucas1p11ccdb959d694d6de86a249bf9c4d1f0e~3DG_JTXxu0946509465eucas1p1F;
+        Tue, 22 Sep 2020 08:04:25 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200922080425eusmtrp19c07c4d48061b191b09503859c967b2e~3DG_IrTJV1174311743eusmtrp1z;
+        Tue, 22 Sep 2020 08:04:25 +0000 (GMT)
+X-AuditID: cbfec7f2-809ff70000001938-d6-5f69b00a37bf
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 76.71.06314.900B96F5; Tue, 22
+        Sep 2020 09:04:25 +0100 (BST)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200922080425eusmtip1316409021e73d1389aa52f1baed72a13~3DG9xDjyF0959909599eusmtip1b;
+        Tue, 22 Sep 2020 08:04:25 +0000 (GMT)
+Subject: Re: [PATCH] mfd: sec: initialize driver via module_platform_driver
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Sangbeom Kim <sbkim73@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <ca74d48f-f611-19ca-87ce-24944535c135@samsung.com>
+Date:   Tue, 22 Sep 2020 10:04:25 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922033553.GU29330@paulmck-ThinkPad-P72>
+In-Reply-To: <20200921203421.19456-1-krzk@kernel.org>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0hTcRTH+e3e3d2tJtdpeLKHNSkqcCoVDAzTCBn0T1SURGrXvEzLbbbr
+        sweJRqmJiEO0OTGD0malLlkiIamoU2szRZsPyjekjcIH5SDJ+evhf59zzvf8zvkefjQhqxb6
+        00naVE6vZZPllIS0dq06giQNSXEhrQuUsrG8Xqh0OBpEys8rnUg52GKilOWOVoHyQ+2yIIJS
+        Wcz5lGp8+A2lKmoyI9WSZfdp8qLkWAKXnJTO6YPDL0sSbU43Smnfkjk0YULZyCYuQGIamCPw
+        qjefKEASWsbUIlh4PCPEwTKCzolfJA6WELzrGVmv0Bstlc2xOF+DoM5kR56nZMw3BJPPbnvY
+        hzkFltkxyiPyZb4i+PhkUuApUEwoFLgKKA9LmXDIvmsSephk9kFbjX2DtzGx0NU7RWKNN/Q8
+        nNlgMXMUOtxVG70EEwCvXSYCsx+MzlQJPMOAMYhgIMdGYnMn4VNjiwizD8x3N/3hndBnKCRx
+        Q+761vYXIhwUIhjMKUdYFQbjdjfl8UwwB6G+JRinI2FqyILwKbzA6fLGS3hBibWMwGkp5N2T
+        YfV+MHa//De2rX+AwKyC2pxCqhjtNW6yadxkzbjJmvH/Do8QaUZ+XBqvUXN8qJbLUPCshk/T
+        qhVXdBoLWv84fWvdi81oZSC+HTE0km+Vvi1NjJMJ2XQ+S9OOgCbkvtIT7/tiZdIENusGp9fF
+        6dOSOb4d7aBJuZ/08OMvMTJGzaZy1zguhdP/rQposX82Ks7MuBVjbTy7fPX6z+eG+Lyimok9
+        Lp5U/xjZhYYkXLRiOifQ5vV90ZluzR2fVtlRUOABRVRrQNXY3Pxqx/D94/1P2WbeeIaVPaic
+        HnWURWfrquvnZi9UNIQ7Kkotd7i1SxQzFWkICxG3mXN12+sUS94lkO4+73fTGQXnIuQkn8iG
+        HiL0PPsb5JaftjQDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrBIsWRmVeSWpSXmKPExsVy+t/xu7qcGzLjDT7s1bbYOGM9q8X58xvY
+        Le5/PcpocXnXHDaLGef3MVlcXPGFyYHNY9OqTjaPO9f2sHn0bVnF6PF5k1wAS5SeTVF+aUmq
+        QkZ+cYmtUrShhZGeoaWFnpGJpZ6hsXmslZGpkr6dTUpqTmZZapG+XYJexokbvxgLDnFXXH0w
+        h7GB8QRnFyMHh4SAicTcHXFdjFwcQgJLGSU2XWhi7GLkBIrLSJyc1sAKYQtL/LnWxQZR9Bao
+        6OwBsISwgLfEpqe3wRIiAm8YJT49PssCUdXBKHH1fh87SBWbgKFE11uQdk4OXgE7iYaWOWDd
+        LAKqEgeXnwOzRQXiJM70vICqEZQ4OfMJC4jNKWAqcfjXfLA4s4CZxLzND5khbHmJ7W/nQNni
+        EreezGeawCg4C0n7LCQts5C0zELSsoCRZRWjSGppcW56brGhXnFibnFpXrpecn7uJkZgLG07
+        9nPzDsZLG4MPMQpwMCrx8B6YmhEvxJpYVlyZe4hRgoNZSYTX6ezpOCHelMTKqtSi/Pii0pzU
+        4kOMpkDPTWSWEk3OB8Z5Xkm8oamhuYWlobmxubGZhZI4b4fAwRghgfTEktTs1NSC1CKYPiYO
+        TqkGxv4++XIuW95Ae4XNSZnO8or8i2TEeCQem3itfn9Pu6YzNMffYcsmicuba5pmFUqZ2wfc
+        NntW+rkpJXbW5BjVn4/YzViaJSuPL9hVWhZW7GcTtNT5lVT3LOZoA4E3vK9fZDdKHA23uqD/
+        YFVZcaiz6bwwA633P9b4JTEdFdK4IHRMu7BqwVIlluKMREMt5qLiRADhrNZmuwIAAA==
+X-CMS-MailID: 20200922080425eucas1p11ccdb959d694d6de86a249bf9c4d1f0e
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200921203605eucas1p2cd3ab81a750ccbe8dda839ad9f0e98e4
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200921203605eucas1p2cd3ab81a750ccbe8dda839ad9f0e98e4
+References: <CGME20200921203605eucas1p2cd3ab81a750ccbe8dda839ad9f0e98e4@eucas1p2.samsung.com>
+        <20200921203421.19456-1-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 21-09-20 20:35:53, Paul E. McKenney wrote:
-> On Mon, Sep 21, 2020 at 06:03:18PM +0200, Michal Hocko wrote:
-> > On Mon 21-09-20 08:45:58, Paul E. McKenney wrote:
-> > > On Mon, Sep 21, 2020 at 09:47:16AM +0200, Michal Hocko wrote:
-> > > > On Fri 18-09-20 21:48:15, Uladzislau Rezki (Sony) wrote:
-> > > > [...]
-> > > > > Proposal
-> > > > > ========
-> > > > > Introduce a lock-free function that obtain a page from the per-cpu-lists
-> > > > > on current CPU. It returns NULL rather than acquiring any non-raw spinlock.
-> > > > 
-> > > > I was not happy about this solution when we have discussed this
-> > > > last time and I have to say I am still not happy. This is exposing
-> > > > an internal allocator optimization and allows a hard to estimate
-> > > > consumption of pcp free pages. IIUC this run on pcp cache can be
-> > > > controled directly from userspace (close(open) loop IIRC) which makes it
-> > > > even bigger no-no.
-> > > 
-> > > Yes, I do well remember that you are unhappy with this approach.
-> > > Unfortunately, thus far, there is no solution that makes all developers
-> > > happy.  You might be glad to hear that we are also looking into other
-> > > solutions, each of which makes some other developers unhappy.  So we
-> > > are at least not picking on you alone.  :-/
-> > 
-> > No worries I do not feel like a whipping boy here. But do expect me to
-> > argue against the approach. I would also appreciate it if there was some
-> > more information on other attempts, why they have failed. E.g. why
-> > pre-allocation is not an option that works well enough in most
-> > reasonable workloads. I would also appreciate some more thoughts why we
-> > need to optimize for heavy abusers of RCU (like close(open) extremes).
-> 
-> Not optimizing for them, but rather defending against them.  Uladzislau
-> gave the example of low-memory phones.  And we have quite the array
-> of defenses against other userspace bugs including MMUs, the "limit"
-> command, and so on.
-> 
-> There have been quite a few successful attempts, starting from the
-> introduction of blimit and RCU-bh more than 15 years ago, continuing
-> through making call_rcu() jump-start grace periods, IPIing reluctant
-> CPUs, tuning RCU callback offloading, and many others.  But these prior
-> approaches have only taken us so far.
+Hi Krzysztof,
 
-Thank you this is useful. It gives me some idea about the problem but I
-still cannot picture how serious the problem really is. Is this a DoS
-like scenario where an unprivileged task is able to monopolize the
-system/CPU to do all the RCU heavy lifting? Are other RCU users deprived
-from doing their portion? How much expediting helps? Does it really
-solve the problem or it merely shifts it around as you will have hard
-time to keep up with more and more tasks to hit the same path and the
-pre-allocated memory is a very finite resource.
+On 21.09.2020 22:34, Krzysztof Kozlowski wrote:
+> The driver was using subsys_initcall() because in old times deferred
+> probe was not supported everywhere and specific ordering was needed.
+> Since probe deferral works fine and specific ordering is discouraged
+> (hides dependencies between drivers and couples their boot order), the
+> driver can be converted to regular module_platform_driver.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> ---
+>   drivers/mfd/sec-core.c | 14 +-------------
+>   1 file changed, 1 insertion(+), 13 deletions(-)
+>
+> diff --git a/drivers/mfd/sec-core.c b/drivers/mfd/sec-core.c
+> index 95473ff9bb4b..8d55992da19e 100644
+> --- a/drivers/mfd/sec-core.c
+> +++ b/drivers/mfd/sec-core.c
+> @@ -549,19 +549,7 @@ static struct i2c_driver sec_pmic_driver = {
+>   	.shutdown = sec_pmic_shutdown,
+>   	.id_table = sec_pmic_id,
+>   };
+> -
+> -static int __init sec_pmic_init(void)
+> -{
+> -	return i2c_add_driver(&sec_pmic_driver);
+> -}
+> -
+> -subsys_initcall(sec_pmic_init);
+> -
+> -static void __exit sec_pmic_exit(void)
+> -{
+> -	i2c_del_driver(&sec_pmic_driver);
+> -}
+> -module_exit(sec_pmic_exit);
+> +module_i2c_driver(sec_pmic_driver);
+>   
+>   MODULE_AUTHOR("Sangbeom Kim <sbkim73@samsung.com>");
+>   MODULE_DESCRIPTION("Core support for the S5M MFD");
 
-> Other approaches under consideration include making CONFIG_PREEMPT_COUNT
-> unconditional and thus allowing call_rcu() and kvfree_rcu() to determine
-> whether direct calls to the allocator are safe (some guy named Linus
-> doesn't like this one),
-
-I assume that the primary argument is the overhead, right? Do you happen
-to have any reference?
-
-> preallocation (Uladzislau covered this, and
-> the amount that would need to be preallocated is excessive), deferring
-> allocation to RCU_SOFTIRQ (this would also need CONFIG_PREEMPT_COUNT),
-> and deferring to some clean context (which is the best we can do within
-> the confines of RCU, but which can have issues with delay).
-
-I have already replied to that so let's not split the discussion into
-several fronts.
-
-> So it is not the need to address this general problem that is new.
-> Far from it!  What is new is the need for changes outside of RCU.
-> 
-> > > > I strongly agree with Thomas http://lkml.kernel.org/r/87tux4kefm.fsf@nanos.tec.linutronix.de
-> > > > that this optimization is not aiming at reasonable workloads. Really, go
-> > > > with pre-allocated buffer and fallback to whatever slow path you have
-> > > > already. Exposing more internals of the allocator is not going to do any
-> > > > good for long term maintainability.
-> > > 
-> > > I suggest that you carefully re-read the thread following that email.
-> > 
-> > I clearly remember Thomas not being particularly happy that you optimize
-> > for a corner case. I do not remember there being a consensus that this
-> > is the right approach. There was some consensus that this is better than
-> > a gfp flag. Still quite bad though if you ask me.
-> 
-> Again, this "optimization" is for robustness more than raw speed.
-> 
-> > > Given a choice between making users unhappy and making developers
-> > > unhappy, I will side with the users each and every time.
-> > 
-> > Well, let me rephrase. It is not only about me (as a developer) being
-> > unhappy but also all the side effects this would have for users when
-> > performance of their favorite workload declines for no apparent reason
-> > just because pcp caches are depleted by an unrelated process.
-> 
-> But in the close(open()) case, wouldn't the allocations on the open()
-> side refill those caches?
-
-Yes pcp lists will eventually get replenished. This is not a correctness
-problem I am pointing out. It is the fact that any user of this new
-interface can monopolize the _global_ pool which would affect all other
-users of the pool.
+Best regards
 -- 
-Michal Hocko
-SUSE Labs
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
+
