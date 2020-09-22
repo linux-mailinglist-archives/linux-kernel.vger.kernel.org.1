@@ -2,275 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A23F8274253
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 034A5274258
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726688AbgIVMpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 08:45:31 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:33490 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726641AbgIVMpa (ORCPT
+        id S1726633AbgIVMqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 08:46:51 -0400
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:20978 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726563AbgIVMqu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 08:45:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600778727;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=+Jv1Wo3uUQSIMwzegggWKyycsTQOaza4eSXUljZNlQE=;
-        b=IPvSkLfyd+BKlmBhjnmwJ80oV/jWNTMLPTac4fVpAfJnSGUFXU0VmDpNPe74+s7k0DvpwE
-        +UfIBH2uTcFinQ69KXwfHd5ZpNIvlP6jmlTtdmKXbfyV8fudXEaRlGFfo6Ughg+AqGkQDF
-        KtbwrC3quexfbp0Bzr6VeFUGe9aGEug=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-344-URCr8RkoMr6xq3tfDwsmQA-1; Tue, 22 Sep 2020 08:45:25 -0400
-X-MC-Unique: URCr8RkoMr6xq3tfDwsmQA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6E217809ACE;
-        Tue, 22 Sep 2020 12:45:24 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B5E4B19C4F;
-        Tue, 22 Sep 2020 12:45:16 +0000 (UTC)
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>
-Cc:     Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>,
-        Richard Guy Briggs <rgb@redhat.com>
-Subject: [PATCH ghak120 V5] audit: trigger accompanying records when no rules present
-Date:   Tue, 22 Sep 2020 08:44:50 -0400
-Message-Id: <7081a5b9c7d2e8085c49cec2fa72fcbb0b25e0d7.1600778472.git.rgb@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        Tue, 22 Sep 2020 08:46:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1600778810; x=1632314810;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=nziyF0gCHf+QbUZWkcNumlIIbcw7LDkmtCIhMVokIFM=;
+  b=TfEOQVNe2a5SEJoigXV06ZCR+NEP1ZuUl27rQCymWfl8DCwejcAq4FJ8
+   5bc57ErZ70/WjpfAJxPpRepwHb3ogep+EODSbgn9NJ+VJ39yw58T8+CL0
+   s3e5hFLbBYgfNQVtfxRNe9D3kSdT70BOzmUNYMYR/j8AsFDjNXlL/POsK
+   I=;
+X-IronPort-AV: E=Sophos;i="5.77,290,1596499200"; 
+   d="scan'208";a="56952007"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-a70de69e.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 22 Sep 2020 12:46:48 +0000
+Received: from EX13D19EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1e-a70de69e.us-east-1.amazon.com (Postfix) with ESMTPS id E7FC8A1869;
+        Tue, 22 Sep 2020 12:46:43 +0000 (UTC)
+Received: from 8c85908914bf.ant.amazon.com (10.43.161.237) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 22 Sep 2020 12:46:34 +0000
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Oded Gabbay <oded.gabbay@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <izur@habana.ai>, Jakub Kicinski <kuba@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, SW_Drivers <SW_Drivers@habana.ai>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        <linux-rdma@vger.kernel.org>, Olof Johansson <olof@lixom.net>
+References: <20200918132645.GS8409@ziepe.ca>
+ <CAFCwf109t5=GuNvqTqLUCiYbjLC6o2xVoLY5C-SBqbN66f6wxg@mail.gmail.com>
+ <20200918135915.GT8409@ziepe.ca>
+ <CAFCwf13rJgb4=as7yW-2ZHvSnUd2NK1GP0UKKjyMfkB3vsnE5w@mail.gmail.com>
+ <20200918141909.GU8409@ziepe.ca>
+ <CAFCwf121_UNivhfPfO6uFoHbF+2Odeb1c3+482bOXeOZUsEnug@mail.gmail.com>
+ <20200918150735.GV8409@ziepe.ca>
+ <CAFCwf13y1VVy90zAoBPC-Gfj6mwMVbefh3fxKDVneuscp4esqA@mail.gmail.com>
+ <20200918152852.GW8409@ziepe.ca>
+ <b0721756-d323-b95e-b2d2-ca3ce8d4a660@amazon.com>
+ <20200922114101.GE8409@ziepe.ca>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <a16802a2-4a36-e03d-a927-c5cb7c766b99@amazon.com>
+Date:   Tue, 22 Sep 2020 15:46:29 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.2.2
+MIME-Version: 1.0
+In-Reply-To: <20200922114101.GE8409@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.161.237]
+X-ClientProxiedBy: EX13D17UWB004.ant.amazon.com (10.43.161.132) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When there are no audit rules registered, mandatory records (config,
-etc.) are missing their accompanying records (syscall, proctitle, etc.).
+On 22/09/2020 14:41, Jason Gunthorpe wrote:
+> On Mon, Sep 21, 2020 at 02:22:02PM +0300, Gal Pressman wrote:
+> 
+>> What is considered a RoCE port in this case if it's not compliant with RoCE?
+>> Sounds like it's an implementation of RDMA over ethernet, not RoCE.
+>> Does GAUDI support UD/RC/.. QPs? Is it using a proprietary wire protocol?
+>> (BTW, Oded claims it's similar to nvlink, how is nvlink's implementation
+>> exposed? Or is it closed source?)
+> 
+> I think Oded was drawing a parallel to how nvlink is integral with the
+> compute element. From Oded's descriptions I don't think it is much
+> like nvlink at all.
+> 
+>> Jason, how do you imagine GAUDI in the RDMA subsystem? Userspace control path
+>> verbs (used by hl-thunk?) and all data path verbs exposed as kverbs (used by
+>> habanalabs driver)?
+>> So neither any userspace verbs apps could use it nor kernel ULPs?
+> 
+> Based on what Oded described it seems like a reasonable RDMA device
+> with some limitations around MR IOVA.
+> 
+> Looks like the desire is to create a RDMA WR and CQ ring in userspace,
+> and then co-mingle that with the compute side of the device.
+> 
+> So instead of doing the special IOCTL and mmap against the compute FD
+> it would create a RDMA QP and RDMA CQ, use dv to access the raw
+> internals, and the propritary stack would have exactly the same stuff
+> it would have had with the misc ioctl.
+> 
+> But, completely separately, they'd also have to implement some of
+> verbs which serves as the open source userspace showing how this HW
+> works. What that is depends largely on what their HW can do, and if
+> they want to connect to UCX/mpi/libfabric/etc
+> 
+> A bunch of ioctl stubs or a few tests is far below our standard in
+> RDMA.
+> 
+> There may have been some argument that the compute side of this device
+> has no industry standards so should be a drivers/misc, but HPC
+> networking *does* have extensive standards and extensive open source
+> software stacks. It is very hard for me to see how a device in this
+> market could be competitive without integrating with that stuff.
 
-This is due to audit context dummy set on syscall entry based on absence
-of rules that signals that no other records are to be printed.  Clear the dummy
-bit if any record is generated, open coding this in audit_log_start().
+I agree, that makes sense.
+But assuming Oded actually goes and implements all the needed verbs to get a
+basic functional libibverbs provider (assuming their HW can do it somehow), is
+it really useful if no one is going to use it?
+It doesn't sound like habanalabs want people to use GAUDI as an RDMA adapter,
+and I'm assuming the only real world use case is going to be using the hl stack,
+which means we're left with a lot of dead code that's not used/tested by anyone.
 
-The proctitle context and dummy checks are pointless since the
-proctitle record will not be printed if no syscall records are printed.
-
-The fds array is reset to -1 after the first syscall to indicate it
-isn't valid any more, but was never set to -1 when the context was
-allocated to indicate it wasn't yet valid.
-
-Check ctx->pwd in audit_log_name().
-
-The audit_inode* functions can be called without going through
-getname_flags() or getname_kernel() that sets audit_names and cwd, so
-set the cwd in audit_alloc_name() if it has not already been done so due to
-audit_names being valid and purge all other audit_getcwd() calls.
-
-Revert the LSM dump_common_audit_data() LSM_AUDIT_DATA_* cases from the
-ghak96 patch since they are no longer necessary due to cwd coverage in
-audit_alloc_name().
-
-Thanks to bauen1 <j2468h@googlemail.com> for reporting LSM situations in
-which context->cwd is not valid, inadvertantly fixed by the ghak96 patch.
-
-Please see upstream github issue
-https://github.com/linux-audit/audit-kernel/issues/120
-This is also related to upstream github issue
-https://github.com/linux-audit/audit-kernel/issues/96
-
-Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
----
-Chagelog:
-v5:
-- open code audit_clear_dummy() in audit_log_start()
-- fix check for ctx->pwd in audit_log_name()
-- open code _audit_getcwd() contents in audit_alloc_name()
-- ditch all *audit_getcwd() calls
-
-v4:
-- resubmit after revert
-
-v3:
-- initialize fds[0] to -1
-- init cwd for ghak96 LSM_AUDIT_DATA_NET:AF_UNIX case
-- init cwd for audit_inode{,_child}
-
-v2:
-- unconditionally clear dummy
-- create audit_clear_dummy accessor function
-- remove proctitle context and dummy checks
-
- include/linux/audit.h |  8 --------
- kernel/audit.c        |  3 +++
- kernel/auditsc.c      | 27 +++++++--------------------
- security/lsm_audit.c  |  5 -----
- 4 files changed, 10 insertions(+), 33 deletions(-)
-
-diff --git a/include/linux/audit.h b/include/linux/audit.h
-index b3d859831a31..82b7c1116a85 100644
---- a/include/linux/audit.h
-+++ b/include/linux/audit.h
-@@ -292,7 +292,6 @@ extern void __audit_syscall_entry(int major, unsigned long a0, unsigned long a1,
- extern void __audit_syscall_exit(int ret_success, long ret_value);
- extern struct filename *__audit_reusename(const __user char *uptr);
- extern void __audit_getname(struct filename *name);
--extern void __audit_getcwd(void);
- extern void __audit_inode(struct filename *name, const struct dentry *dentry,
- 				unsigned int flags);
- extern void __audit_file(const struct file *);
-@@ -351,11 +350,6 @@ static inline void audit_getname(struct filename *name)
- 	if (unlikely(!audit_dummy_context()))
- 		__audit_getname(name);
- }
--static inline void audit_getcwd(void)
--{
--	if (unlikely(audit_context()))
--		__audit_getcwd();
--}
- static inline void audit_inode(struct filename *name,
- 				const struct dentry *dentry,
- 				unsigned int aflags) {
-@@ -584,8 +578,6 @@ static inline struct filename *audit_reusename(const __user char *name)
- }
- static inline void audit_getname(struct filename *name)
- { }
--static inline void audit_getcwd(void)
--{ }
- static inline void audit_inode(struct filename *name,
- 				const struct dentry *dentry,
- 				unsigned int aflags)
-diff --git a/kernel/audit.c b/kernel/audit.c
-index 68cee3bc8cfe..dd9d22ba4fd2 100644
---- a/kernel/audit.c
-+++ b/kernel/audit.c
-@@ -1865,6 +1865,9 @@ struct audit_buffer *audit_log_start(struct audit_context *ctx, gfp_t gfp_mask,
- 	}
- 
- 	audit_get_stamp(ab->ctx, &t, &serial);
-+	/* cancel dummy context to enable supporting records */
-+	if (ctx)
-+		ctx->dummy = 0;
- 	audit_log_format(ab, "audit(%llu.%03lu:%u): ",
- 			 (unsigned long long)t.tv_sec, t.tv_nsec/1000000, serial);
- 
-diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-index 8dba8f0983b5..183d79cc2e12 100644
---- a/kernel/auditsc.c
-+++ b/kernel/auditsc.c
-@@ -929,6 +929,7 @@ static inline struct audit_context *audit_alloc_context(enum audit_state state)
- 	context->prio = state == AUDIT_RECORD_CONTEXT ? ~0ULL : 0;
- 	INIT_LIST_HEAD(&context->killed_trees);
- 	INIT_LIST_HEAD(&context->names_list);
-+	context->fds[0] = -1;
- 	return context;
- }
- 
-@@ -1367,7 +1368,10 @@ static void audit_log_name(struct audit_context *context, struct audit_names *n,
- 			/* name was specified as a relative path and the
- 			 * directory component is the cwd
- 			 */
--			audit_log_d_path(ab, " name=", &context->pwd);
-+			if (context->pwd.dentry && context->pwd.mnt)
-+				audit_log_d_path(ab, " name=", &context->pwd);
-+			else
-+				audit_log_format(ab, " name=(null)");
- 			break;
- 		default:
- 			/* log the name's directory component */
-@@ -1435,9 +1439,6 @@ static void audit_log_proctitle(void)
- 	struct audit_context *context = audit_context();
- 	struct audit_buffer *ab;
- 
--	if (!context || context->dummy)
--		return;
--
- 	ab = audit_log_start(context, GFP_KERNEL, AUDIT_PROCTITLE);
- 	if (!ab)
- 		return;	/* audit_panic or being filtered */
-@@ -1866,6 +1867,8 @@ static struct audit_names *audit_alloc_name(struct audit_context *context,
- 	list_add_tail(&aname->list, &context->names_list);
- 
- 	context->name_count++;
-+	if (!context->pwd.dentry)
-+		get_fs_pwd(current->fs, &context->pwd);
- 	return aname;
- }
- 
-@@ -1894,20 +1897,6 @@ __audit_reusename(const __user char *uptr)
- 	return NULL;
- }
- 
--inline void _audit_getcwd(struct audit_context *context)
--{
--	if (!context->pwd.dentry)
--		get_fs_pwd(current->fs, &context->pwd);
--}
--
--void __audit_getcwd(void)
--{
--	struct audit_context *context = audit_context();
--
--	if (context->in_syscall)
--		_audit_getcwd(context);
--}
--
- /**
-  * __audit_getname - add a name to the list
-  * @name: name to add
-@@ -1931,8 +1920,6 @@ void __audit_getname(struct filename *name)
- 	n->name_len = AUDIT_NAME_FULL;
- 	name->aname = n;
- 	name->refcnt++;
--
--	_audit_getcwd(context);
- }
- 
- static inline int audit_copy_fcaps(struct audit_names *name,
-diff --git a/security/lsm_audit.c b/security/lsm_audit.c
-index 53d0d183db8f..221370794d14 100644
---- a/security/lsm_audit.c
-+++ b/security/lsm_audit.c
-@@ -241,7 +241,6 @@ static void dump_common_audit_data(struct audit_buffer *ab,
- 			audit_log_untrustedstring(ab, inode->i_sb->s_id);
- 			audit_log_format(ab, " ino=%lu", inode->i_ino);
- 		}
--		audit_getcwd();
- 		break;
- 	}
- 	case LSM_AUDIT_DATA_FILE: {
-@@ -255,7 +254,6 @@ static void dump_common_audit_data(struct audit_buffer *ab,
- 			audit_log_untrustedstring(ab, inode->i_sb->s_id);
- 			audit_log_format(ab, " ino=%lu", inode->i_ino);
- 		}
--		audit_getcwd();
- 		break;
- 	}
- 	case LSM_AUDIT_DATA_IOCTL_OP: {
-@@ -271,7 +269,6 @@ static void dump_common_audit_data(struct audit_buffer *ab,
- 		}
- 
- 		audit_log_format(ab, " ioctlcmd=0x%hx", a->u.op->cmd);
--		audit_getcwd();
- 		break;
- 	}
- 	case LSM_AUDIT_DATA_DENTRY: {
-@@ -286,7 +283,6 @@ static void dump_common_audit_data(struct audit_buffer *ab,
- 			audit_log_untrustedstring(ab, inode->i_sb->s_id);
- 			audit_log_format(ab, " ino=%lu", inode->i_ino);
- 		}
--		audit_getcwd();
- 		break;
- 	}
- 	case LSM_AUDIT_DATA_INODE: {
-@@ -304,7 +300,6 @@ static void dump_common_audit_data(struct audit_buffer *ab,
- 		audit_log_format(ab, " dev=");
- 		audit_log_untrustedstring(ab, inode->i_sb->s_id);
- 		audit_log_format(ab, " ino=%lu", inode->i_ino);
--		audit_getcwd();
- 		break;
- 	}
- 	case LSM_AUDIT_DATA_TASK: {
--- 
-2.18.4
-
+Genuine question, wouldn't it be better if they only implement what's actually
+going to be used and tested by their customers?
