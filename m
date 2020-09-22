@@ -2,69 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 864BC274773
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 19:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D080C274749
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 19:12:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726686AbgIVR2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 13:28:00 -0400
-Received: from m12-14.163.com ([220.181.12.14]:53116 "EHLO m12-14.163.com"
+        id S1726635AbgIVRMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 13:12:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726563AbgIVR2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 13:28:00 -0400
-X-Greylist: delayed 909 seconds by postgrey-1.27 at vger.kernel.org; Tue, 22 Sep 2020 13:27:59 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=L2/Uu
-        dvyM2p1C8zBPshjVLH+yWc3nDVZtuzaWQJI5jA=; b=Drs9fP2+FfG3UV5hn7FFr
-        5uHHZ2nUIeVFsHGu0k8U9whlHCLlW7voj3BeleoGqiegM7ycs9WGkMAsaREM8DtW
-        DsxWF1a7LY4XRkUuw7Lzuwd5fNO7EDcYH2tNXQn99KI1lhRBho0nA5b3RyzYC3eg
-        vRfvIWGeVyRLhcV9nVwILY=
-Received: from localhost (unknown [101.86.214.224])
-        by smtp10 (Coremail) with SMTP id DsCowACndbR_MGpfWQCsMQ--.9315S2;
-        Wed, 23 Sep 2020 01:12:32 +0800 (CST)
-Date:   Wed, 23 Sep 2020 01:12:31 +0800
-From:   Hui Su <sh_def@163.com>
-To:     tytso@mit.edu, jack@suse.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] FIX the comment of struct jbd2_journal_handle
-Message-ID: <20200922171231.GA53120@rlk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-CM-TRANSID: DsCowACndbR_MGpfWQCsMQ--.9315S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKw17Kr4kAr48KFWxKF43Awb_yoWfWFc_Zw
-        s2qr43GF1fXFnxAr4fCrnrXFn3Cr1kJr1q9rn3twsFkF98Za9xW3WkJF9rGryUWan5Cr98
-        ZF1kWryIqr1ktjkaLaAFLSUrUUUUbb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnaZX5UUUUU==
-X-Originating-IP: [101.86.214.224]
-X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbiMQCnX1UMVpNM+wAAsi
+        id S1726526AbgIVRMw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 13:12:52 -0400
+Received: from X1 (unknown [216.241.194.61])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4B8112084C;
+        Tue, 22 Sep 2020 17:12:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600794771;
+        bh=eZGm04xbBcFoJWyknH6yEKYWUp0W5WKKh0BhzYdfN0s=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ujHrSPNvT6frdqxXRUSFbCDbEYWHSgeXd4mZCrAJvOCqgPy/ok+gMbPdYsEjcfUGs
+         AR9vOobIPlXSLaoqmovvp/dzRoLVkrf2N+YcCn2NzjzI2ikqYOc5ZqZHdnRrnn4d4A
+         oU6P2HWdSHPr2a8GIdPHU37i5rnOgDvSqZQvT8Q8=
+Date:   Tue, 22 Sep 2020 10:12:50 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Rik van Riel <riel@surriel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kernel-team@fb.com, niketa@fb.com, sjenning@redhat.com,
+        ddstreet@ieee.org, konrad.wilk@oracle.com, hannes@cmpxchg.org
+Subject: Re: [PATCH 0/2] mm,swap: skip swap readahead for instant IO (like
+ zswap)
+Message-Id: <20200922101250.527d9e676fefbb4c8d0cd5b9@linux-foundation.org>
+In-Reply-To: <20200922020148.3261797-1-riel@surriel.com>
+References: <20200922020148.3261797-1-riel@surriel.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-the struct name was modified long ago, but the comment still
-use struct handle_s.
+On Mon, 21 Sep 2020 22:01:46 -0400 Rik van Riel <riel@surriel.com> wrote:
 
-Signed-off-by: Hui Su <sh_def@163.com>
----
- include/linux/jbd2.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> Both with frontswap/zswap, and with some extremely fast IO devices,
+> swap IO will be done before the "asynchronous" swap_readpage() call
+> has returned.
+> 
+> In that case, doing swap readahead only wastes memory, increases
+> latency, and increases the chances of needing to evict something more
+> useful from memory. In that case, just skip swap readahead.
 
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 08f904943ab2..a1ef05412acf 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -452,8 +452,8 @@ struct jbd2_inode {
- struct jbd2_revoke_table_s;
- 
- /**
-- * struct handle_s - The handle_s type is the concrete type associated with
-- *     handle_t.
-+ * struct jbd2_journal_handle - The jbd2_journal_handle type is the concrete
-+ *     type associated with handle_t.
-  * @h_transaction: Which compound transaction is this update a part of?
-  * @h_journal: Which journal handle belongs to - used iff h_reserved set.
-  * @h_rsv_handle: Handle reserved for finishing the logical operation.
--- 
-2.25.1
-
-
+Any quantitative testing results?
