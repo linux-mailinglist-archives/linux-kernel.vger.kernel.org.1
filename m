@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32C6A273BD0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E9F273BD1
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:27:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730002AbgIVH1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 03:27:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57032 "EHLO
+        id S1730011AbgIVH1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 03:27:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729748AbgIVH1r (ORCPT
+        with ESMTP id S1729748AbgIVH1x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 03:27:47 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A85AC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 00:27:47 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id n14so11626207pff.6
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 00:27:47 -0700 (PDT)
+        Tue, 22 Sep 2020 03:27:53 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E928C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 00:27:53 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id a9so1060023pjg.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 00:27:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=PohIKHFK8kNViEgt/D+xrQCt40xHvnwTaUyMochPjiM=;
-        b=Euve4fXlh9cyeH4Ff9DCJxOOPH9F63SIu0bUv82qLKMoyBBGD69x/Kn0F44dBBUH7o
-         bQPRQy82rd6xOsHN778t+ENhRZPEsZ2kE7T4h4TGyuPJnSjGxGniHM0VRAZk4R9yB/ct
-         jPs42Un//+VKA5Ic7nAybVWTmLyx0q6O/X9Dvmxk6dT7U/eeX338/9RnkbMnkz74MhYi
-         uOqhDXosBo1/ctyr86FplhOXLnyQLcC4T22Q1PFwMWaPh1I9cuWWfZq1cjy0gMI5MWYJ
-         e+rDvR0Rj+Lm6lPqpsYiRtRGmLL4rL/AUko4BmYd71j/PamVkpvnsFTb6v6g3jG8n+rG
-         QOeg==
+        bh=xCA247ShbpRZ1a1b45l38fFZLtGfn793+mZHctzrR2s=;
+        b=pevB0rJqRxFzG5mcV3HwhUpMG9k8wYCHBZSbVEhbk67cwbAeU2Jk1AYyRATEs/FBQi
+         SHHK7z8n5tdoYgdfeHsoy2ZymuZ47kJXf5ylxzROmJ1Ia5l1nZTo5oOSddjxRJ5z0/Dd
+         lvwOyEdt/BRnRBQhQp6lhycwYPSgPt+3w6zLZbQerMM/As7xVhPCozU6ni/UtALry6ya
+         mnDirJVGr07uIUimK+gldhMG5CSrfKlhlHmQXTsqqaXm82hCNW9DD1HSEbjnZjBjqu/8
+         cC6YA+gOVeomsKyj8ej8qHyh3nbjtFODv2D2zskTw04rar7CQbF0QmpipcJih9Lum96S
+         hBTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=PohIKHFK8kNViEgt/D+xrQCt40xHvnwTaUyMochPjiM=;
-        b=p1upWEbBBNJD1oUjMf038g9bXRG4r3me50BPYi1yLwNHyxLqVlifcCYnl2PduyPBM2
-         +RCDxcI+Eo/aDvwLBgT/cjAgt5vTOTM2TkEos0kW5Wd/IOdkVZyyShOX7AwKucUyFtTe
-         YusCB6J+oPVANmtsa1UL2hCTJ9xhn+VhaMgdYopXA2GIUvd7EuYepsbZ4JirqgFChAkI
-         OmC5XWBv3OThjWdg3D4SdUKvS1XCQYew7Y8a9htS7t6iIFATp5qpRXoxtEs60Z3jaUfK
-         pzMuD2fuC49+taNgGGD9YMMphtOlbOLiDAEMpfFrGsPBsg85lGtb3eB/LWCZWjRPXjlD
-         Ws4A==
-X-Gm-Message-State: AOAM5317agbhctVm0ecHGSqjN1s0kXR9eUs3K7uOvQJSJKBNagCW9ZpV
-        0au8DjY++fSqyn0e+RBzVM8=
-X-Google-Smtp-Source: ABdhPJwkZuIjLkHxAB9H6R1apOtg0S0HDLm4nUz7zGVbohLhQNp+Jq7Dt3br7y0CvdRfrwij6ryrvw==
-X-Received: by 2002:a63:b44f:: with SMTP id n15mr2564965pgu.282.1600759666612;
-        Tue, 22 Sep 2020 00:27:46 -0700 (PDT)
+        bh=xCA247ShbpRZ1a1b45l38fFZLtGfn793+mZHctzrR2s=;
+        b=nVvNtGoDV8wjBddev2WW+e6Um5KK2Aiw5gE2/Nb7mgonUklMdvYqpZRTANG0a7TedS
+         KzQRY0KLM+9CBOpi1Dl11o9bISC1kcAJa3QOlt91rgwSe8N1phBqhXnW2Xli4kzEITLj
+         Uh0v9WQc4v9T3mFhKdAuXXbLSlGyuurrxtkvA5MfHrC55a627Xgy+6EwwhJoZnW15OZ5
+         wgoJYoQL64zfvKOZ4bov688Ta2yv83+mn1v/j0QfSKkFWnR0Gx55m/9nSTnpJy9whyXf
+         smQ9z5ewpvuaca7zzFYFPLCJ8JhI9+xFYxzW6Xdt3V42HvCbjsyguET1tcXC8o/saVdQ
+         xBbA==
+X-Gm-Message-State: AOAM530W8KvSezT0JGUJN0Am4YOUNX+7VJx2jX6LGbMV+hJudDcxPIWc
+        ksGN2zWNv6vPMaGfLOFzbic=
+X-Google-Smtp-Source: ABdhPJwwogNbojzybdhoPYW4owwtmCDx/oXe375OKk7BBYv9zNzzPan3N5yovp469BSPE9PgGKAsVw==
+X-Received: by 2002:a17:90b:8a:: with SMTP id bb10mr2687470pjb.108.1600759672854;
+        Tue, 22 Sep 2020 00:27:52 -0700 (PDT)
 Received: from localhost ([2409:4050:2e9a:cd41:aceb:49c:d6fb:ea72])
-        by smtp.gmail.com with ESMTPSA id ih12sm1428926pjb.24.2020.09.22.00.27.44
+        by smtp.gmail.com with ESMTPSA id e17sm13690983pff.6.2020.09.22.00.27.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 00:27:45 -0700 (PDT)
+        Tue, 22 Sep 2020 00:27:52 -0700 (PDT)
 From:   Piyush Goyal <piyushgoyaliit@gmail.com>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
@@ -55,9 +55,9 @@ To:     Liam Girdwood <lgirdwood@gmail.com>,
         linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org
 Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] stress-shm-sysv: exercise shmat with all possible flags
-Date:   Tue, 22 Sep 2020 12:57:29 +0530
-Message-Id: <20200922072730.68911-2-piyushgoyaliit@gmail.com>
+Subject: [PATCH 3/3] stress-shmsysv: exercise shmat with SHM_REMAP flag on NULL address
+Date:   Tue, 22 Sep 2020 12:57:30 +0530
+Message-Id: <20200922072730.68911-3-piyushgoyaliit@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200922072730.68911-1-piyushgoyaliit@gmail.com>
 References: <20200922072730.68911-1-piyushgoyaliit@gmail.com>
@@ -67,31 +67,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Exercise shmat syscall with all possible flags resulting in more kernel
-coverage.
+Exercise shmat syscall with SHM_REMAP flag on NULL address resulting
+in EINVAL error and more kernel coverage.
 
 Signed-off-by: Piyush Goyal <piyushgoyaliit@gmail.com>
 ---
- stress-shm-sysv.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ stress-shm-sysv.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/stress-shm-sysv.c b/stress-shm-sysv.c
-index 5a3e0cc1..9efaa091 100644
+index 9efaa091..e2aff788 100644
 --- a/stress-shm-sysv.c
 +++ b/stress-shm-sysv.c
-@@ -139,6 +139,16 @@ static void exercise_shmat(int shm_id)
- 	/* Exercise shmat syscall with invalid flags */
- 	addr = shmat(shm_id, NULL, ~0);
+@@ -149,6 +149,10 @@ static void exercise_shmat(int shm_id)
+ 
+ 	addr = shmat(shm_id, NULL, SHM_RND);
  	(void)addr;
 +
-+	/* Exercise shmat with all possible values of flags */
-+	addr = shmat(shm_id, NULL, SHM_RDONLY);
-+	(void)addr;
-+
-+	addr = shmat(shm_id, NULL, SHM_EXEC);
-+	(void)addr;
-+
-+	addr = shmat(shm_id, NULL, SHM_RND);
++	/* Exercise shmat with SHM_REMAP flag on NULL address */
++	addr = shmat(shm_id, NULL, SHM_REMAP);
 +	(void)addr;
  }
  
