@@ -2,84 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB34273B38
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 08:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A59273B3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 08:53:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729491AbgIVGwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 02:52:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50668 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727710AbgIVGwA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 02:52:00 -0400
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 42AF723A1D;
-        Tue, 22 Sep 2020 06:51:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600757520;
-        bh=JnaH/Lzy9XWhZv0oVsAhoE9/bIpHFaDYdQurdsgJI1s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vaQd9HZpp45uT0Zt7mQ8lqxa4O+g9jT9vl3xJgGKGgIzbNzvamhf9KjeIh+J6sOs3
-         o4G/ukVBR5eq68ty6mWdhZrxsO8weMlE1tF6zF29HtCh7FTxGkcGNIdhww3vGBzkW5
-         eCunpTLfu1Mz2UbSXqTZ3RIyKgmdGdpqn2YpTBBs=
-Date:   Tue, 22 Sep 2020 14:51:55 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Martin Kepplinger <martink@posteo.de>,
-        "Angus Ainslie (Purism)" <angus@akkea.ca>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] arm64: dts: imx8mq-librem5: align GPIO hog names
- with dtschema
-Message-ID: <20200922065154.GH25109@dragon>
-References: <20200920195749.26952-1-krzk@kernel.org>
- <20200920195749.26952-2-krzk@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200920195749.26952-2-krzk@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1729529AbgIVGxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 02:53:20 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:57291 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727710AbgIVGxT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 02:53:19 -0400
+Received: from mail-pf1-f199.google.com ([209.85.210.199])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <koba.ko@canonical.com>)
+        id 1kKcAv-0003zg-Ho
+        for linux-kernel@vger.kernel.org; Tue, 22 Sep 2020 06:53:17 +0000
+Received: by mail-pf1-f199.google.com with SMTP id k13so10548515pfh.4
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 23:53:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=w9iqaz4NmjNGwlYOvyMuR9M9SYy/rnYZVpOGW5l2Yx8=;
+        b=b5cXLXZalNMTOQl61Qu/00+r8U8GC8Oc01YCOar4DTn5jKWzaeP7wE/oGxFYzsSWkE
+         qxwSd6iGLS/xRbyyVKxjUtbtG7CnLOblm42x/Fo9a8U6xWqc1DrgbJ2bun9TERYjbeI9
+         7nvpun6yhjiKx9sr1GoFv6tRBwn9u7oBj4zS2wBakmyjQT7jHA/ae5kJH3JfIxYa69by
+         aVsEBgkCt0uRptfmA+1XOCw7I9UtckFNQQ2rriag1XDyimiEwBt6v0pcmLvu5Vh7DIU+
+         MflFh/ufs/vrMgBaE9MsYsnEI6DuA5VFfPtin9fmO8N0Fjoj1Ll1BhQjCE8YyC3j2Bt2
+         Yo0A==
+X-Gm-Message-State: AOAM530xzueh39qvscN0DEWy7VpPrmGeTBGWLdE4bGvSZUQjULRgjc9d
+        tvUB5rVTbyUQe/KEz7UgGfdO9WNppM60MZPGoLG+OLVH69ingJ/GJiP+UWtDdjNiFKsHcZVVAvK
+        Ezf0Yls+DfR6xkL14HwY5bWF6cP5gvS0m/2eho/NVTA==
+X-Received: by 2002:aa7:93a2:0:b029:142:2501:39f4 with SMTP id x2-20020aa793a20000b0290142250139f4mr2866563pff.67.1600757596151;
+        Mon, 21 Sep 2020 23:53:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzNg1FrNUOYNUMcUorUSwdMpymWxJcD36ivwwRqyApLFMfCl7hC/L7diiu9Fxoog4xeBBrkfw==
+X-Received: by 2002:aa7:93a2:0:b029:142:2501:39f4 with SMTP id x2-20020aa793a20000b0290142250139f4mr2866542pff.67.1600757595700;
+        Mon, 21 Sep 2020 23:53:15 -0700 (PDT)
+Received: from canonical.com (61-220-137-37.HINET-IP.hinet.net. [61.220.137.37])
+        by smtp.gmail.com with ESMTPSA id y12sm7046142pga.53.2020.09.21.23.53.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 21 Sep 2020 23:53:15 -0700 (PDT)
+From:   Koba Ko <koba.ko@canonical.com>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Lyude Paul <lyude@redhat.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     anthony.wong@canonical.com
+Subject: [PATCH V4] drm/dp_mst: Retrieve extended DPCD caps for topology manager
+Date:   Tue, 22 Sep 2020 14:53:13 +0800
+Message-Id: <20200922065313.4794-1-koba.ko@canonical.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 20, 2020 at 09:57:48PM +0200, Krzysztof Kozlowski wrote:
-> dtschema expects GPIO hogs to end with 'hog' suffix.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+As per DP-1.3, First check DP_EXTENDED_RECEIVER_CAP_FIELD_PRESENT.
+If DP_EXTENDED_RECEIVER_CAP_FIELD_PRESENT is 1,read the DP_DP13_DPCD_REV to
+get the faster capability.
+If DP_EXTENDED_RECEIVER_CAP_FIELD_PRESENT is 0,read DP_DPCD_REV.
 
-Ping me after dtschema gets accepted.
+Signed-off-by: Koba Ko <koba.ko@canonical.com>
+Reviewed-by: Lyude Paul <lyude@redhat.com>
+---
+ drivers/gpu/drm/drm_dp_mst_topology.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Shawn
+diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+index e87542533640..63f8809b9aa4 100644
+--- a/drivers/gpu/drm/drm_dp_mst_topology.c
++++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+@@ -3686,9 +3686,9 @@ int drm_dp_mst_topology_mgr_set_mst(struct drm_dp_mst_topology_mgr *mgr, bool ms
+ 		WARN_ON(mgr->mst_primary);
+ 
+ 		/* get dpcd info */
+-		ret = drm_dp_dpcd_read(mgr->aux, DP_DPCD_REV, mgr->dpcd, DP_RECEIVER_CAP_SIZE);
+-		if (ret != DP_RECEIVER_CAP_SIZE) {
+-			DRM_DEBUG_KMS("failed to read DPCD\n");
++		ret = drm_dp_read_dpcd_caps(mgr->aux, mgr->dpcd);
++		if (ret < 0) {
++			drm_dbg_kms(mgr->dev, "failed to read DPCD, ret %d\n", ret);
+ 			goto out_unlock;
+ 		}
+ 
+-- 
+2.17.1
 
-> 
-> ---
-> 
-> Changes since v2:
-> 1. None, split from previous patchset using common GPIO schema
-> ---
->  arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-> index e4dedcb58f76..6cbcee2fb938 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-> @@ -249,7 +249,7 @@
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&pinctrl_pmic_5v>;
->  
-> -	pmic-5v {
-> +	pmic-5v-hog {
->  		gpio-hog;
->  		gpios = <&gpio1 1 GPIO_ACTIVE_HIGH>;
->  		input;
-> -- 
-> 2.17.1
-> 
