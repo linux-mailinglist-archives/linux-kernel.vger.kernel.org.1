@@ -2,181 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9BC273C6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCB84273C2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 09:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730188AbgIVHsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 03:48:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729751AbgIVHsG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 03:48:06 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C55C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 00:48:05 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id g4so15899663wrs.5
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 00:48:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q1gQqWOf8efX9sJ/D/OIGJtauHg2OW2WzxS92JQ9fUE=;
-        b=SaYeIC5H1bZZrAM9cTd8lgo4ssxkGmovpX/F7UooYhJY5se0onVq7DcsZWbIEA7P0G
-         vh6ACScYRo58pGOAVob/93wUzZlpzmSqHUQ/vdULPkYQf/Q4douhr+MNNofETAPKutxF
-         BrOnZPs/AJlRF3td8lsmCuI8WCUBiu0d3iULvvf8koDIdQl7BaSR8ObXIR0mJdjYj3pU
-         qducdvrUrXgYbN+dTe2IT/NdrlHAdftvvhJhdq+enO4jVvxE0nvVY3JhradQW6o0n1xW
-         DdTHcekuqGwi4PRoZfDxytwawSu3zG9mj7oAXHyuNSJjv8VJV7OoOckgXCw/KB+P32NF
-         kokA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q1gQqWOf8efX9sJ/D/OIGJtauHg2OW2WzxS92JQ9fUE=;
-        b=ZIB89wKpEc7Q33TEfR/7BWWFe6Bxf2rXlGgnTPLILSe4BjOIa5yT6sRSV1Kzx+NEzC
-         UVQGudfro+oGV96fSPbDA3hmBVe9EgfbLzVGyCaLGvylKgxjVzquf6wIgyLFcm7nONTr
-         17+bMgyrvAK7DzXk7VcR04mz6SwPLVYQvnZkjUn5t60vfb+SFkJ1RcIyjcea0IFR+QMT
-         sqqoKC6RQplHCiC0CIZ8MjG/kM3vg97i9lx66iFulZWECnf2ry+sGEhX797jO0/SMGNk
-         tZyR9LSD9bqkq5GFKczbyb8ikCPuQrx6vN59l5GAHa9cuurBOiVhPF5ZKNLzr8BhQBXd
-         qOjA==
-X-Gm-Message-State: AOAM532iL/ArPA4OgjeIUwA92sy1bipx12NUP41TxFgLbFmm3gWoETOi
-        XMzABx2TtvRTr+/svGqviDsHb/uJu5DKFPDrsSgn8A==
-X-Google-Smtp-Source: ABdhPJxIFcifPYTJgkB/1B0+MTkMJ8QpqxtS1lOV0sAjIFDXfiY1b5BBtBuYd8Oy1YlH+O1VByBdp+Wk+CK7bzpq3A4=
-X-Received: by 2002:adf:dcc3:: with SMTP id x3mr3778468wrm.120.1600760884252;
- Tue, 22 Sep 2020 00:48:04 -0700 (PDT)
+        id S1730030AbgIVHlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 03:41:16 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13818 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729751AbgIVHlQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 03:41:16 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 1D7E5767AB46DA20738D;
+        Tue, 22 Sep 2020 15:41:11 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 22 Sep 2020 15:41:00 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <robert.moore@intel.com>, <erik.kaneda@intel.com>,
+        <rafael.j.wysocki@intel.com>, <lenb@kernel.org>
+CC:     <linux-acpi@vger.kernel.org>, <devel@acpica.org>,
+        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] ACPICA: Remove unneeded semicolon
+Date:   Tue, 22 Sep 2020 15:48:49 +0800
+Message-ID: <1600760929-102547-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-References: <20200921155004.v2.1.I67a8b8cd4def8166970ca37109db46d731b62bb6@changeid>
- <CABBYNZLTZbwyL0ykmFezWrkNVnHoZt2KPtz+aQwo7TvhdC7TiQ@mail.gmail.com>
-In-Reply-To: <CABBYNZLTZbwyL0ykmFezWrkNVnHoZt2KPtz+aQwo7TvhdC7TiQ@mail.gmail.com>
-From:   Archie Pusaka <apusaka@google.com>
-Date:   Tue, 22 Sep 2020 15:47:53 +0800
-Message-ID: <CAJQfnxFjL6RicwHyFgYzNp7WPrMePEOa2fgOX9TMju-z5AWsPg@mail.gmail.com>
-Subject: Re: [PATCH v2] Bluetooth: Check for encryption key size on connect
-To:     Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Alain Michaud <alainm@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Luiz,
+Fixes coccicheck warning:
 
-On Tue, 22 Sep 2020 at 01:15, Luiz Augusto von Dentz
-<luiz.dentz@gmail.com> wrote:
->
-> Hi Archie,
->
->
-> On Mon, Sep 21, 2020 at 12:56 AM Archie Pusaka <apusaka@google.com> wrote:
-> >
-> > From: Archie Pusaka <apusaka@chromium.org>
-> >
-> > When receiving connection, we only check whether the link has been
-> > encrypted, but not the encryption key size of the link.
-> >
-> > This patch adds check for encryption key size, and reject L2CAP
-> > connection which size is below the specified threshold (default 7)
-> > with security block.
-> >
-> > Here is some btmon trace.
-> > @ MGMT Event: New Link Key (0x0009) plen 26    {0x0001} [hci0] 5.847722
-> >         Store hint: No (0x00)
-> >         BR/EDR Address: 38:00:25:F7:F1:B0 (OUI 38-00-25)
-> >         Key type: Unauthenticated Combination key from P-192 (0x04)
-> >         Link key: 7bf2f68c81305d63a6b0ee2c5a7a34bc
-> >         PIN length: 0
-> > > HCI Event: Encryption Change (0x08) plen 4        #29 [hci0] 5.871537
-> >         Status: Success (0x00)
-> >         Handle: 256
-> >         Encryption: Enabled with E0 (0x01)
-> > < HCI Command: Read Encryp... (0x05|0x0008) plen 2  #30 [hci0] 5.871609
-> >         Handle: 256
-> > > HCI Event: Command Complete (0x0e) plen 7         #31 [hci0] 5.872524
-> >       Read Encryption Key Size (0x05|0x0008) ncmd 1
-> >         Status: Success (0x00)
-> >         Handle: 256
-> >         Key size: 3
-> >
-> > ////// WITHOUT PATCH //////
-> > > ACL Data RX: Handle 256 flags 0x02 dlen 12        #42 [hci0] 5.895023
-> >       L2CAP: Connection Request (0x02) ident 3 len 4
-> >         PSM: 4097 (0x1001)
-> >         Source CID: 64
-> > < ACL Data TX: Handle 256 flags 0x00 dlen 16        #43 [hci0] 5.895213
-> >       L2CAP: Connection Response (0x03) ident 3 len 8
-> >         Destination CID: 64
-> >         Source CID: 64
-> >         Result: Connection successful (0x0000)
-> >         Status: No further information available (0x0000)
-> >
-> > ////// WITH PATCH //////
-> > > ACL Data RX: Handle 256 flags 0x02 dlen 12        #42 [hci0] 4.887024
-> >       L2CAP: Connection Request (0x02) ident 3 len 4
-> >         PSM: 4097 (0x1001)
-> >         Source CID: 64
-> > < ACL Data TX: Handle 256 flags 0x00 dlen 16        #43 [hci0] 4.887127
-> >       L2CAP: Connection Response (0x03) ident 3 len 8
-> >         Destination CID: 0
-> >         Source CID: 64
-> >         Result: Connection refused - security block (0x0003)
-> >         Status: No further information available (0x0000)
-> >
-> > Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-> > Reviewed-by: Alain Michaud <alainm@chromium.org>
-> >
-> > ---
-> > Btw, it looks like the patch sent by Alex Lu with the title
-> > [PATCH] Bluetooth: Fix the vulnerable issue on enc key size
-> > also solves the exact same issue.
-> >
-> > Changes in v2:
-> > * Add btmon trace to the commit message
-> >
-> >  net/bluetooth/l2cap_core.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
-> > index ade83e224567..b4fc0ad38aaa 100644
-> > --- a/net/bluetooth/l2cap_core.c
-> > +++ b/net/bluetooth/l2cap_core.c
-> > @@ -4101,7 +4101,8 @@ static struct l2cap_chan *l2cap_connect(struct l2cap_conn *conn,
-> >
-> >         /* Check if the ACL is secure enough (if not SDP) */
-> >         if (psm != cpu_to_le16(L2CAP_PSM_SDP) &&
-> > -           !hci_conn_check_link_mode(conn->hcon)) {
-> > +           (!hci_conn_check_link_mode(conn->hcon) ||
-> > +           !l2cap_check_enc_key_size(conn->hcon))) {
->
-> I wonder if we couldn't incorporate the check of key size into
-> hci_conn_check_link_mode, like I said in the first patch checking the
-> enc key size should not be specific to L2CAP.
+./drivers/acpi/acpica/nsalloc.c:297:2-3: Unneeded semicolon
 
-Yes, I could move the check into hci_conn_check_link_mode.
-At first look, this function is also called by AMP which I am not
-familiar with. In addition, I found this patch which moves this check
-outside hci_conn, so I have my doubts there.
-https://git.kernel.org/pub/scm/linux/kernel/git/bluetooth/bluetooth-next.git/commit/?id=693cd8ce3f882524a5d06f7800dd8492411877b3
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ drivers/acpi/acpica/nsalloc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->
-> >                 conn->disc_reason = HCI_ERROR_AUTH_FAILURE;
-> >                 result = L2CAP_CR_SEC_BLOCK;
-> >                 goto response;
-> > --
-> > 2.28.0.681.g6f77f65b4e-goog
-> >
->
->
-> --
-> Luiz Augusto von Dentz
+diff --git a/drivers/acpi/acpica/nsalloc.c b/drivers/acpi/acpica/nsalloc.c
+index fe9b363..83d26ab 100644
+--- a/drivers/acpi/acpica/nsalloc.c
++++ b/drivers/acpi/acpica/nsalloc.c
+@@ -294,7 +294,7 @@ void acpi_ns_delete_children(struct acpi_namespace_node *parent_node)
+ 		node_to_delete = next_node;
+ 		next_node = next_node->peer;
+ 		acpi_ns_delete_node(node_to_delete);
+-	};
++	}
+ 
+ 	/* Clear the parent's child pointer */
+ 
+-- 
+2.6.2
 
-Thanks,
-Archie
