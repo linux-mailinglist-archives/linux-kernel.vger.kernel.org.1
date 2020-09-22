@@ -2,138 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71414274C78
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCB34274CD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:54:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726861AbgIVWvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 18:51:46 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:35587 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726548AbgIVWvp (ORCPT
+        id S1727248AbgIVWyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 18:54:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726934AbgIVWwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 18:51:45 -0400
-Received: by mail-wm1-f66.google.com with SMTP id y15so5000047wmi.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 15:51:44 -0700 (PDT)
+        Tue, 22 Sep 2020 18:52:41 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15595C061755;
+        Tue, 22 Sep 2020 15:52:41 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id z17so19809902lfi.12;
+        Tue, 22 Sep 2020 15:52:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=quaU3N237ENuYY+8BHHumQYpoI+fueLQHJXbKb71IlA=;
+        b=RoasUXapie8yCfGzhzSrBYFgAaByktjPfFLrElNKr6tnUS6cbKkuopDMOx2Ng5Edwz
+         cckCbR2iVeslYJJVAw4/9VzyTRV6aYKXjoh+sL0m9Eoh2TUsjOtuesjMVUqLHXfK4KfX
+         pGXnbCjHL3HBJVOL6NjOIz4jokmuH7JjCFL3wRMq/GKd+xgu1cRStECBKa4u9xEDQLD5
+         Q6eidGcfqEWBTs6zyVTTCnqw3r23ZAfFmJYHVR5jC0BXSxu4S9KznC1fEsCBGNVabzLN
+         nh/QGEhjTQz5DJEjWXaxtKkTMWhJtt/Y6U5qRda12s5R469dZzhXkuIQL2zkyB4stlsR
+         dBUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bM4FuUUThgGr/nHgvLB12fnWHlJG+spkwb3OFZY6Qa0=;
-        b=oUi0ZLJNHyQxQI9tA2ZYqBD831EATmC8AU7JBlhFY2E+1RJTxGT4xaPHpXDrxS0x5K
-         rFHXOqL9JjhOTX/Kkx12ht8UjvQ35kqeZB6nkhCPouo/k9ZO8GcRIJCLSs+F38vd8z26
-         6K3aRIOg1BicBeaajVa8I+n2Oi0MpjDMejNtNJNI3+JVwh2Ja+gRqqQQ3DnLn8LHV57F
-         CS3TUT3TW67rO0P3pwo1MK9WVVjonQGQfTBywm45cpTaMXUqpDGWoCi6NuKgFeHw+yqT
-         iNaZ8MZjxF6akWmoLcQNbEb7CDoUXpsj06REv6+5MQQRWJ1Fud5sSQWcHoWrZeffBHMO
-         rABg==
-X-Gm-Message-State: AOAM531rHDEUjuQ9vl7dmEsEXJ+tDvZeEzx+5snTvQfuPbi/vmpW1Pmd
-        8KvRwmJSSoLEWRoWo3eNIwNWQuciU2kHtTlu+is=
-X-Google-Smtp-Source: ABdhPJyudrv5/Mhq8Ed18r1aqmKDvGf3tRaOR0WUlvXswyDhqG5r2+bMjbR9hPp9oOSOKkjxDCjP8LYNsJ7p/ywr3Tg=
-X-Received: by 2002:a1c:6341:: with SMTP id x62mr3282156wmb.70.1600815104011;
- Tue, 22 Sep 2020 15:51:44 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=quaU3N237ENuYY+8BHHumQYpoI+fueLQHJXbKb71IlA=;
+        b=rU1QjFw1UFAzfU1IL6hnY/hJSWDXombgNK9pa1k3lmvX+BnckgfE6ex1odXpQXca0Y
+         46RKpuMi+EoT60ypGGQnnlYF09swawlad5cNuQoEOeWie3iLCqmHtSZnxgNkRR436oWf
+         uhOhwnWSCklfHk45hdbiH6v6FQ+nL5iqLvlsdOAnEq9Yse9eq878bka2zFbrgggm4PjC
+         WItsvzVL3ymW0KddJYn4XZRLw4/iozRWekl5rMfeofun7Rw0OazQSEi3w4yeJMrwm5Rb
+         Jiyy+YOuBI+QeMKsqvqOYOkyzq3uJrgBapVuglkfx5zpDIgFAWmRpCCXwHVXENHH22sI
+         dSEg==
+X-Gm-Message-State: AOAM533DVV1b303kzAhGDMAsm2DoQwxABLYuhU4wLZCusQGWTnQD25dh
+        nTBAtcdn1IKPr2JP17EkbAY=
+X-Google-Smtp-Source: ABdhPJw/w/81yoDE8D7td2UIZtXA8J9MRVaoA2XjQqbKTlAYXi2qEd+l3WsY3Kq9phQuJHmBfy+RMg==
+X-Received: by 2002:a19:c152:: with SMTP id r79mr2188932lff.601.1600815159529;
+        Tue, 22 Sep 2020 15:52:39 -0700 (PDT)
+Received: from localhost.localdomain (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.gmail.com with ESMTPSA id l15sm3977588lfk.71.2020.09.22.15.52.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 15:52:39 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v8 10/32] i2c: tegra: Use devm_platform_get_and_ioremap_resource()
+Date:   Wed, 23 Sep 2020 01:51:33 +0300
+Message-Id: <20200922225155.10798-11-digetx@gmail.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200922225155.10798-1-digetx@gmail.com>
+References: <20200922225155.10798-1-digetx@gmail.com>
 MIME-Version: 1.0
-References: <20200921094610.83736-1-namhyung@kernel.org> <20200921094610.83736-3-namhyung@kernel.org>
- <20200922214033.GD2893484@krava>
-In-Reply-To: <20200922214033.GD2893484@krava>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 23 Sep 2020 07:51:33 +0900
-Message-ID: <CAM9d7ciL7LmpFyxxD20q+6JM4pE1T9hsMKvOtv-s1r+EamCDpQ@mail.gmail.com>
-Subject: Re: [PATCH 2/5] perf stat: Add --for-each-cgroup option
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 6:40 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Mon, Sep 21, 2020 at 06:46:07PM +0900, Namhyung Kim wrote:
->
-> SNIP
->
-> > +int evlist__expand_cgroup(struct evlist *evlist, const char *str)
-> > +{
-> > +     struct evlist *orig_list, *tmp_list;
-> > +     struct evsel *pos, *evsel, *leader;
-> > +     struct cgroup *cgrp = NULL;
-> > +     const char *p, *e, *eos = str + strlen(str);
-> > +     int ret = -1;
-> > +
-> > +     if (evlist->core.nr_entries == 0) {
-> > +             fprintf(stderr, "must define events before cgroups\n");
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     orig_list = evlist__new();
-> > +     tmp_list = evlist__new();
-> > +     if (orig_list == NULL || tmp_list == NULL) {
-> > +             fprintf(stderr, "memory allocation failed\n");
-> > +             return -ENOMEM;
-> > +     }
-> > +
-> > +     /* save original events and init evlist */
-> > +     perf_evlist__splice_list_tail(orig_list, &evlist->core.entries);
-> > +     evlist->core.nr_entries = 0;
-> > +
-> > +     for (;;) {
-> > +             p = strchr(str, ',');
-> > +             e = p ? p : eos;
-> > +
-> > +             /* allow empty cgroups, i.e., skip */
-> > +             if (e - str) {
-> > +                     /* termination added */
-> > +                     char *name = strndup(str, e - str);
-> > +                     if (!name)
-> > +                             goto out_err;
-> > +
-> > +                     cgrp = cgroup__new(name);
-> > +                     free(name);
-> > +                     if (cgrp == NULL)
-> > +                             goto out_err;
-> > +             } else {
-> > +                     cgrp = NULL;
-> > +             }
-> > +
-> > +             leader = NULL;
-> > +             evlist__for_each_entry(orig_list, pos) {
-> > +                     evsel = evsel__clone(pos);
-> > +                     if (evsel == NULL)
-> > +                             goto out_err;
-> > +
-> > +                     cgroup__put(evsel->cgrp);
-> > +                     evsel->cgrp = cgroup__get(cgrp);
-> > +
-> > +                     if (evsel__is_group_leader(pos))
-> > +                             leader = evsel;
-> > +                     evsel->leader = leader;
->
-> hum, will this work if there's standalone event after group? like:
->
->   {cycles,instructions},cache-misses
->
-> cache-misses will get cycles as group leader no?
+Driver now uses devm_platform_get_and_ioremap_resource() which replaces
+the typical boilerplate code and makes code cleaner.
 
-AFAIK non-group events are treated as a leader of its own group.
-So evsel__is_group_leader() will return true for cache-misses.
+Reviewed-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+Acked-by: Thierry Reding <treding@nvidia.com>
+Tested-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ drivers/i2c/busses/i2c-tegra.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Thanks
-Namhyung
+diff --git a/drivers/i2c/busses/i2c-tegra.c b/drivers/i2c/busses/i2c-tegra.c
+index 90ba2f5327c5..c2bbdf92b11f 100644
+--- a/drivers/i2c/busses/i2c-tegra.c
++++ b/drivers/i2c/busses/i2c-tegra.c
+@@ -1678,12 +1678,12 @@ static int tegra_i2c_probe(struct platform_device *pdev)
+ 	int irq;
+ 	int ret;
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	base_phys = res->start;
+-	base = devm_ioremap_resource(&pdev->dev, res);
++	base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+ 	if (IS_ERR(base))
+ 		return PTR_ERR(base);
+ 
++	base_phys = res->start;
++
+ 	res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+ 	if (!res) {
+ 		dev_err(&pdev->dev, "no irq resource\n");
+-- 
+2.27.0
 
->
-> > +
-> > +                     evlist__add(tmp_list, evsel);
-> > +             }
-> > +             /* cgroup__new() has a refcount, release it here */
-> > +             cgroup__put(cgrp);
-> > +             nr_cgroups++;
->
-> SNIP
->
