@@ -2,116 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C146D273806
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 03:26:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 820172737FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 03:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729557AbgIVBYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1729568AbgIVBYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 21 Sep 2020 21:24:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56480 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:56484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729471AbgIVBYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729094AbgIVBYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 21 Sep 2020 21:24:52 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4C83923A79;
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D3AD23A7B;
         Tue, 22 Sep 2020 01:24:51 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1kKX33-001sGC-UD; Mon, 21 Sep 2020 21:24:49 -0400
-Message-ID: <20200922012414.115238201@goodmis.org>
+        id 1kKX34-001sGp-35; Mon, 21 Sep 2020 21:24:50 -0400
+Message-ID: <20200922012449.957719149@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Mon, 21 Sep 2020 21:24:14 -0400
+Date:   Mon, 21 Sep 2020 21:24:15 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [for-next][PATCH 00/26] tracing: Updates for 5.10
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [for-next][PATCH 01/26] tools/bootconfig: Show bootconfig compact tree from bootconfig file
+References: <20200922012414.115238201@goodmis.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-for-next
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-Head SHA1: fd264ce96c382bc2e36eb1f49ac45c5980650244
+Show the bootconfig compact tree from the bootconfig file
+instead of an initrd if the given file has no magic number
+and is smaller than 32KB.
+
+User can use this for checking the syntax error or output
+checking before applying the bootconfig to initrd.
+
+Link: https://lkml.kernel.org/r/159704848156.175360.6621139371000789360.stgit@devnote2
+
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ tools/bootconfig/main.c | 81 +++++++++++++++++++++++++++++------------
+ 1 file changed, 58 insertions(+), 23 deletions(-)
+
+diff --git a/tools/bootconfig/main.c b/tools/bootconfig/main.c
+index e0878f5f74b1..d165e63b5d5a 100644
+--- a/tools/bootconfig/main.c
++++ b/tools/bootconfig/main.c
+@@ -195,10 +195,55 @@ int load_xbc_from_initrd(int fd, char **buf)
+ 	return size;
+ }
+ 
++static void show_xbc_error(const char *data, const char *msg, int pos)
++{
++	int lin = 1, col, i;
++
++	if (pos < 0) {
++		pr_err("Error: %s.\n", msg);
++		return;
++	}
++
++	/* Note that pos starts from 0 but lin and col should start from 1. */
++	col = pos + 1;
++	for (i = 0; i < pos; i++) {
++		if (data[i] == '\n') {
++			lin++;
++			col = pos - i;
++		}
++	}
++	pr_err("Parse Error: %s at %d:%d\n", msg, lin, col);
++
++}
++
++static int init_xbc_with_error(char *buf, int len)
++{
++	char *copy = strdup(buf);
++	const char *msg;
++	int ret, pos;
++
++	if (!copy)
++		return -ENOMEM;
++
++	ret = xbc_init(buf, &msg, &pos);
++	if (ret < 0)
++		show_xbc_error(copy, msg, pos);
++	free(copy);
++
++	return ret;
++}
++
+ int show_xbc(const char *path)
+ {
+ 	int ret, fd;
+ 	char *buf = NULL;
++	struct stat st;
++
++	ret = stat(path, &st);
++	if (ret < 0) {
++		pr_err("Failed to stat %s: %d\n", path, -errno);
++		return -errno;
++	}
+ 
+ 	fd = open(path, O_RDONLY);
+ 	if (fd < 0) {
+@@ -207,14 +252,24 @@ int show_xbc(const char *path)
+ 	}
+ 
+ 	ret = load_xbc_from_initrd(fd, &buf);
++	close(fd);
+ 	if (ret < 0) {
+ 		pr_err("Failed to load a boot config from initrd: %d\n", ret);
+ 		goto out;
+ 	}
++	/* Assume a bootconfig file if it is enough small */
++	if (ret == 0 && st.st_size <= XBC_DATA_MAX) {
++		ret = load_xbc_file(path, &buf);
++		if (ret < 0) {
++			pr_err("Failed to load a boot config: %d\n", ret);
++			goto out;
++		}
++		if (init_xbc_with_error(buf, ret) < 0)
++			goto out;
++	}
+ 	xbc_show_compact_tree();
+ 	ret = 0;
+ out:
+-	close(fd);
+ 	free(buf);
+ 
+ 	return ret;
+@@ -251,27 +306,6 @@ int delete_xbc(const char *path)
+ 	return ret;
+ }
+ 
+-static void show_xbc_error(const char *data, const char *msg, int pos)
+-{
+-	int lin = 1, col, i;
+-
+-	if (pos < 0) {
+-		pr_err("Error: %s.\n", msg);
+-		return;
+-	}
+-
+-	/* Note that pos starts from 0 but lin and col should start from 1. */
+-	col = pos + 1;
+-	for (i = 0; i < pos; i++) {
+-		if (data[i] == '\n') {
+-			lin++;
+-			col = pos - i;
+-		}
+-	}
+-	pr_err("Parse Error: %s at %d:%d\n", msg, lin, col);
+-
+-}
+-
+ int apply_xbc(const char *path, const char *xbc_path)
+ {
+ 	u32 size, csum;
+@@ -352,11 +386,12 @@ int apply_xbc(const char *path, const char *xbc_path)
+ int usage(void)
+ {
+ 	printf("Usage: bootconfig [OPTIONS] <INITRD>\n"
++		"Or     bootconfig <CONFIG>\n"
+ 		" Apply, delete or show boot config to initrd.\n"
+ 		" Options:\n"
+ 		"		-a <config>: Apply boot config to initrd\n"
+ 		"		-d : Delete boot config file from initrd\n\n"
+-		" If no option is given, show current applied boot config.\n");
++		" If no option is given, show the bootconfig in the given file.\n");
+ 	return -1;
+ }
+ 
+-- 
+2.28.0
 
 
-Dan Carpenter (1):
-      tracing: remove a pointless assignment
-
-Davidlohr Bueso (1):
-      fgraph: Convert ret_stack tasklist scanning to rcu
-
-Jarkko Sakkinen (1):
-      kprobes: Use module_name() macro
-
-Masami Hiramatsu (19):
-      tools/bootconfig: Show bootconfig compact tree from bootconfig file
-      tools/bootconfig: Add list option
-      tools/bootconfig: Make all functions static
-      tools/bootconfig: Add a script to generate ftrace shell-command from bootconfig
-      tools/bootconfig: Add a script to generates bootconfig from ftrace
-      tools/bootconfig: Add --init option for bconf2ftrace.sh
-      tracing/boot: Add per-instance tracing_on option support
-      Documentation: tracing: Add tracing_on option to boot-time tracer
-      tracing/kprobes: Support perf-style return probe
-      tracing/uprobes: Support perf-style return probe
-      Documentation: tracing: Add %return suffix description
-      Documentation: tracing: boot: Add an example of tracing function-calls
-      selftests/ftrace: Add %return suffix tests
-      kprobes: Init kprobes in early_initcall
-      tracing: Define event fields early stage
-      tracing: Enable adding dynamic events early stage
-      tracing: Enable creating new instance early boot
-      tracing/boot, kprobe, synth: Initialize boot-time tracing earlier
-      Documentation: tracing: Add the startup timing of boot-time tracing
-
-Randy Dunlap (1):
-      tracing: Delete repeated words in comments
-
-Wei Yang (2):
-      tracing: toplevel d_entry already initialized
-      tracing: make tracing_init_dentry() returns an integer instead of a d_entry pointer
-
-Xianting Tian (1):
-      tracing: Use __this_cpu_read() in trace_buffered_event_enable()
-
-----
- Documentation/trace/boottime-trace.rst             |  38 ++++
- Documentation/trace/kprobetrace.rst                |   2 +
- Documentation/trace/uprobetracer.rst               |   2 +
- MAINTAINERS                                        |   1 +
- kernel/kprobes.c                                   |   2 +-
- kernel/trace/fgraph.c                              |   8 +-
- kernel/trace/ftrace.c                              |   2 +-
- kernel/trace/trace.c                               |  98 ++++++---
- kernel/trace/trace.h                               |   9 +-
- kernel/trace/trace_boot.c                          |  17 +-
- kernel/trace/trace_dynevent.c                      |  10 +-
- kernel/trace/trace_events.c                        | 110 ++++++----
- kernel/trace/trace_events_synth.c                  |  30 ++-
- kernel/trace/trace_functions.c                     |  22 +-
- kernel/trace/trace_functions_graph.c               |   8 +-
- kernel/trace/trace_hwlat.c                         |   8 +-
- kernel/trace/trace_kprobe.c                        |  41 +++-
- kernel/trace/trace_printk.c                        |   8 +-
- kernel/trace/trace_probe.h                         |   1 +
- kernel/trace/trace_stack.c                         |  12 +-
- kernel/trace/trace_stat.c                          |   8 +-
- kernel/trace/trace_uprobe.c                        |  24 +-
- kernel/trace/tracing_map.c                         |   2 +-
- tools/bootconfig/main.c                            | 147 +++++++++----
- tools/bootconfig/scripts/bconf2ftrace.sh           | 199 +++++++++++++++++
- tools/bootconfig/scripts/ftrace.sh                 | 109 +++++++++
- tools/bootconfig/scripts/ftrace2bconf.sh           | 244 +++++++++++++++++++++
- tools/bootconfig/scripts/xbc.sh                    |  56 +++++
- .../ftrace/test.d/kprobe/kprobe_syntax_errors.tc   |   6 +
- .../test.d/kprobe/kretprobe_return_suffix.tc       |  21 ++
- .../ftrace/test.d/kprobe/uprobe_syntax_errors.tc   |   6 +
- 31 files changed, 1055 insertions(+), 196 deletions(-)
- create mode 100755 tools/bootconfig/scripts/bconf2ftrace.sh
- create mode 100644 tools/bootconfig/scripts/ftrace.sh
- create mode 100755 tools/bootconfig/scripts/ftrace2bconf.sh
- create mode 100644 tools/bootconfig/scripts/xbc.sh
- create mode 100644 tools/testing/selftests/ftrace/test.d/kprobe/kretprobe_return_suffix.tc
