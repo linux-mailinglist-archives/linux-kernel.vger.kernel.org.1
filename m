@@ -2,301 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FF1427464B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 705D4274653
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:14:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgIVQN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 12:13:59 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:2079 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726508AbgIVQN6 (ORCPT
+        id S1726558AbgIVQOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 12:14:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726631AbgIVQOb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 12:13:58 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f6a22980001>; Tue, 22 Sep 2020 09:13:12 -0700
-Received: from [10.2.161.222] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 22 Sep
- 2020 16:13:57 +0000
-Subject: Re: [PATCH v6 3/3] media: i2c: imx274: Add IMX274 power on and off
- sequence
-To:     Thierry Reding <thierry.reding@gmail.com>
-CC:     <jonathanh@nvidia.com>, <sakari.ailus@iki.fi>,
-        <hverkuil@xs4all.nl>, <jacopo+renesas@jmondi.org>,
-        <luca@lucaceresoli.net>, <leonl@leopardimaging.com>,
-        <robh+dt@kernel.org>, <lgirdwood@gmail.com>, <broonie@kernel.org>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1600724379-7324-1-git-send-email-skomatineni@nvidia.com>
- <1600724379-7324-4-git-send-email-skomatineni@nvidia.com>
- <20200922075501.GB3994831@ulmo>
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-Message-ID: <c79b6253-8476-c51b-ba32-10d464cfa4cb@nvidia.com>
-Date:   Tue, 22 Sep 2020 09:13:57 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 22 Sep 2020 12:14:31 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D0B6C0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 09:14:31 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id di5so9792093qvb.13
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 09:14:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zWPzhPXud6VNhoCoKGqUlfr5qEum5vqp/NMsQDoLUC4=;
+        b=RRTG2t9njyMOevdlLC86wlJd8D+yLCyG9Mq/1GV3EqYWmcoFhCpIJCaqyD5hMjWHrm
+         ASqRwBQZhe7tZdDG4NpyUvtKqravrSvdY63jU91WxlMbKC6k2KqS+9JJg1hVxH2hUYJW
+         hRHVszuAnEfbFs+5BjttohWpXBv8jHWSsEnHn5ol0dVtpWBfbCtFir4O0FU2wwD/Xk6x
+         RnXv40YGeTdbI9b35RLql3k3eznGKLEVtGReKnVFFYy0MPZHpIt2b4PkM5Byv6f5bZSi
+         reykqmJQ67hPUeYRgwNtq67GR+xgJscw2aaO0BPzulVjXiFnubqwnIc/DPIeoNCo0uAb
+         Rp0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zWPzhPXud6VNhoCoKGqUlfr5qEum5vqp/NMsQDoLUC4=;
+        b=GGR+Y3lDXWTcOfl7wnU0sc7us/YuIkze+sK1nxuKYb6Q+lbQxQPJmIwW6ULuzOTcpS
+         aOkSF7u0UqyB2SusQfkFjnsIop6CNGB6yrWcrKyOLGZSHnJSFHqsRGXXXBqmU28Sn/wm
+         N9RcGCE1V+WP6EuHo4xFCquNF/RD+WmkPO/OVLzcEQtgNM9hQUy38QZHvX6m+MGq7HMH
+         KOeU9F87JxHeC7wSSPrHwCNNQev1so50HnE6bOMRIPxTqaSoFLKPm4aVrGs1egjzs23q
+         wkZPkgZG7/pd7PJKml6ghV+hGdjIXWfgucK96tEkFI9LN3rr/+YEInnAZCGnxJwG+un1
+         ZzuQ==
+X-Gm-Message-State: AOAM531aQcUVoDeUvE/sUKx9cXmp3i2usoE6iTgiHDEesyuWBwiRC+6H
+        d4yN65eiUHs/3Nrj7PXDXOXpeuYsTaO6+D3r
+X-Google-Smtp-Source: ABdhPJw5me7Js3130zPe33NMl4wTjhVJqXvfKdaP/dBlNq6WGqmASS+7NuMfwF30JNVJVNBJuzrpMw==
+X-Received: by 2002:a0c:9c09:: with SMTP id v9mr6773362qve.57.1600791270713;
+        Tue, 22 Sep 2020 09:14:30 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id t1sm13140036qtj.12.2020.09.22.09.14.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 09:14:29 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kKkw1-0034kp-8i; Tue, 22 Sep 2020 13:14:29 -0300
+Date:   Tue, 22 Sep 2020 13:14:29 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Gal Pressman <galpress@amazon.com>
+Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        izur@habana.ai, Jakub Kicinski <kuba@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-rdma@vger.kernel.org, Olof Johansson <olof@lixom.net>
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+Message-ID: <20200922161429.GI8409@ziepe.ca>
+References: <20200918135915.GT8409@ziepe.ca>
+ <CAFCwf13rJgb4=as7yW-2ZHvSnUd2NK1GP0UKKjyMfkB3vsnE5w@mail.gmail.com>
+ <20200918141909.GU8409@ziepe.ca>
+ <CAFCwf121_UNivhfPfO6uFoHbF+2Odeb1c3+482bOXeOZUsEnug@mail.gmail.com>
+ <20200918150735.GV8409@ziepe.ca>
+ <CAFCwf13y1VVy90zAoBPC-Gfj6mwMVbefh3fxKDVneuscp4esqA@mail.gmail.com>
+ <20200918152852.GW8409@ziepe.ca>
+ <b0721756-d323-b95e-b2d2-ca3ce8d4a660@amazon.com>
+ <20200922114101.GE8409@ziepe.ca>
+ <a16802a2-4a36-e03d-a927-c5cb7c766b99@amazon.com>
 MIME-Version: 1.0
-In-Reply-To: <20200922075501.GB3994831@ulmo>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600791192; bh=IJR+Q/vM8xX1U/gfMgaRcmarscwyB+VzRw0hYZ8DO0w=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=dH5Er+IISnTn6bdCW5Gc/Dxm2scLrwktMjIhtf4tNq87uAlxC2epyFfnctGN9LTOA
-         oQCs8h8r2Ts/3fgfFdWYOqk53IGMBzFB6wDlheZZ8tbSOexTAMsfdrrVwSoliy28rb
-         6n02WWi17ThfU0b9E7pJurFqroyqQYHTsbDYnblSftTh9TLo+JuQQlKY7NrAHvfp9p
-         LN1h6O9MM1InsNZU1b0gk7RSrLJhkDFgPNDw6w+8YldD6+Es79YKCY8mib3dqdCYR9
-         fn0yOyD+80rwixLeoi2PQEXtCsFEoCqjNzMz5xdWqQsSBp43CWo3rBGQ8Um8GfK9d1
-         +Uqxhs+loPMdw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a16802a2-4a36-e03d-a927-c5cb7c766b99@amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 22, 2020 at 03:46:29PM +0300, Gal Pressman wrote:
 
-On 9/22/20 12:55 AM, Thierry Reding wrote:
-> On Mon, Sep 21, 2020 at 02:39:39PM -0700, Sowjanya Komatineni wrote:
->> IMX274 has analog 2.8V supply, digital core 1.8V supply, and vddl digital
->> io 1.2V supply which are optional based on camera module design.
->>
->> IMX274 also need external 24Mhz clock and is optional based on
->> camera module design.
->>
->> This patch adds support for IMX274 power on and off to enable and
->> disable these supplies and external clock.
->>
->> Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
->> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
->> ---
->>   drivers/media/i2c/imx274.c | 184 +++++++++++++++++++++++++++++++++------------
->>   1 file changed, 134 insertions(+), 50 deletions(-)
->>
->> diff --git a/drivers/media/i2c/imx274.c b/drivers/media/i2c/imx274.c
->> index 5e515f0..b3057a5 100644
->> --- a/drivers/media/i2c/imx274.c
->> +++ b/drivers/media/i2c/imx274.c
->> @@ -18,7 +18,9 @@
->>   #include <linux/kernel.h>
->>   #include <linux/module.h>
->>   #include <linux/of_gpio.h>
->> +#include <linux/pm_runtime.h>
->>   #include <linux/regmap.h>
->> +#include <linux/regulator/consumer.h>
->>   #include <linux/slab.h>
->>   #include <linux/v4l2-mediabus.h>
->>   #include <linux/videodev2.h>
->> @@ -131,6 +133,15 @@
->>   #define IMX274_TABLE_WAIT_MS			0
->>   #define IMX274_TABLE_END			1
->>   
->> +/* regulator supplies */
->> +static const char * const imx274_supply_names[] = {
->> +	"vddl",  /* IF (1.2V) supply */
->> +	"vdig",  /* Digital Core (1.8V) supply */
->> +	"vana",  /* Analog (2.8V) supply */
-> According to the device tree bindings these should be uppercase. Did I
-> miss a patch that updates the bindings?
->
-> I think the preference is for supply names to be lowercase and given
-> that there are no users of this binding yet we could update it without
-> breaking any existing device trees.
->
->> +};
->> +
->> +#define IMX274_NUM_SUPPLIES ARRAY_SIZE(imx274_supply_names)
->> +
->>   /*
->>    * imx274 I2C operation related structure
->>    */
->> @@ -501,6 +512,8 @@ struct imx274_ctrls {
->>    * @frame_rate: V4L2 frame rate structure
->>    * @regmap: Pointer to regmap structure
->>    * @reset_gpio: Pointer to reset gpio
->> + * @supplies: List of analog and digital supply regulators
->> + * @inck: Pointer to sensor input clock
->>    * @lock: Mutex structure
->>    * @mode: Parameters for the selected readout mode
->>    */
->> @@ -514,6 +527,8 @@ struct stimx274 {
->>   	struct v4l2_fract frame_interval;
->>   	struct regmap *regmap;
->>   	struct gpio_desc *reset_gpio;
->> +	struct regulator_bulk_data supplies[IMX274_NUM_SUPPLIES];
->> +	struct clk *inck;
->>   	struct mutex lock; /* mutex lock for operations */
->>   	const struct imx274_mode *mode;
->>   };
->> @@ -726,6 +741,12 @@ static int imx274_start_stream(struct stimx274 *priv)
->>   {
->>   	int err = 0;
->>   
->> +	err = __v4l2_ctrl_handler_setup(&priv->ctrls.handler);
->> +	if (err) {
->> +		dev_err(&priv->client->dev, "Error %d setup controls\n", err);
->> +		return err;
->> +	}
->> +
->>   	/*
->>   	 * Refer to "Standby Cancel Sequence when using CSI-2" in
->>   	 * imx274 datasheet, it should wait 10ms or more here.
->> @@ -767,6 +788,66 @@ static void imx274_reset(struct stimx274 *priv, int rst)
->>   	usleep_range(IMX274_RESET_DELAY1, IMX274_RESET_DELAY2);
->>   }
->>   
->> +static int imx274_power_on(struct device *dev)
->> +{
->> +	struct i2c_client *client = to_i2c_client(dev);
->> +	struct v4l2_subdev *sd = i2c_get_clientdata(client);
->> +	struct stimx274 *imx274 = to_imx274(sd);
->> +	int ret;
->> +
->> +	/* keep sensor in reset before power on */
->> +	imx274_reset(imx274, 0);
->> +
->> +	ret = clk_prepare_enable(imx274->inck);
->> +	if (ret) {
->> +		dev_err(&imx274->client->dev,
->> +			"Failed to enable input clock: %d\n", ret);
->> +		return ret;
->> +	}
->> +
->> +	ret = regulator_bulk_enable(IMX274_NUM_SUPPLIES, imx274->supplies);
->> +	if (ret) {
->> +		dev_err(&imx274->client->dev,
->> +			"Failed to enable regulators: %d\n", ret);
->> +		goto fail_reg;
->> +	}
->> +
->> +	udelay(2);
-> This looks like some sort of extra delay to make sure all the supply
-> voltages have settled. Should this perhaps be encoded as part of the
-> regulator ramp-up times? Or is this really an IC-specific delay that
-> is needed for some internal timing?
-This is IC-specific delay after power on regulators before releasing reset.
->
->> +	imx274_reset(imx274, 1);
->> +
->> +	return 0;
->> +
->> +fail_reg:
->> +	clk_disable_unprepare(imx274->inck);
->> +	return ret;
->> +}
->> +
->> +static int imx274_power_off(struct device *dev)
->> +{
->> +	struct i2c_client *client = to_i2c_client(dev);
->> +	struct v4l2_subdev *sd = i2c_get_clientdata(client);
->> +	struct stimx274 *imx274 = to_imx274(sd);
->> +
->> +	imx274_reset(imx274, 0);
->> +
->> +	regulator_bulk_disable(IMX274_NUM_SUPPLIES, imx274->supplies);
->> +
->> +	clk_disable_unprepare(imx274->inck);
->> +
->> +	return 0;
->> +}
->> +
->> +static int imx274_regulators_get(struct device *dev, struct stimx274 *imx274)
->> +{
->> +	unsigned int i;
->> +
->> +	for (i = 0; i < IMX274_NUM_SUPPLIES; i++)
->> +		imx274->supplies[i].supply = imx274_supply_names[i];
->> +
->> +	return devm_regulator_bulk_get(dev, IMX274_NUM_SUPPLIES,
->> +					imx274->supplies);
->> +}
->> +
->>   /**
->>    * imx274_s_ctrl - This is used to set the imx274 V4L2 controls
->>    * @ctrl: V4L2 control to be set
->> @@ -781,6 +862,9 @@ static int imx274_s_ctrl(struct v4l2_ctrl *ctrl)
->>   	struct stimx274 *imx274 = to_imx274(sd);
->>   	int ret = -EINVAL;
->>   
->> +	if (!pm_runtime_get_if_in_use(&imx274->client->dev))
->> +		return 0;
-> I'm not sure I understand this, and sorry if this has been discussed
-> earlier. Aren't there any other mechanisms in place to ensure that a
-> control can only be configured when in use? If so, then is this even
-> necessary?
->
-> If not, silently ignoring at this point seems like it could cause subtle
-> failures by ignoring some control settings and applying others if the
-> timing is right.
+> I agree, that makes sense.
+> But assuming Oded actually goes and implements all the needed verbs to get a
+> basic functional libibverbs provider (assuming their HW can do it somehow), is
+> it really useful if no one is going to use it?
+> It doesn't sound like habanalabs want people to use GAUDI as an RDMA adapter,
+> and I'm assuming the only real world use case is going to be using the hl stack,
+> which means we're left with a lot of dead code that's not used/tested by anyone.
+> 
+> Genuine question, wouldn't it be better if they only implement what's actually
+> going to be used and tested by their customers?
 
-With this patch, v4l2_ctrl setup is moved to start stream so all the 
-control values selected gets programmed during stream start. So s_ctrl 
-callback execution happens during that time after sensor rpm resume and 
-I don't think we need here either but I see all sensor drivers with RPM 
-enabled checking for this. So added just to make sure sensor programming 
-don't happen when power is off.
+The general standard for this 'accel' hardware, both in DRM and RDMA
+is to present an open source userspace. Companies are encouraged to
+use that as their main interface but I suppose are free to carry the
+cost of dual APIs, and the community's wrath if they want.
 
-Sakari/Jacob,
+At least for RDMA this is guided by the founding event of Linux RDMA
+where all customers demanded the madness of every supplier having a
+unique software stack from the kernel down stop. Since then the low
+level stack has been cross vendor and uniform.
 
-Can you please clarify if we can remove check pm_runtime_get_if_in_use() 
-in s_ctrl callback as v4l2_ctrl handler setup happens during stream 
-start where power is already on by then?
-
->> +
->>   	dev_dbg(&imx274->client->dev,
->>   		"%s : s_ctrl: %s, value: %d\n", __func__,
->>   		ctrl->name, ctrl->val);
->> @@ -811,6 +895,8 @@ static int imx274_s_ctrl(struct v4l2_ctrl *ctrl)
->>   		break;
->>   	}
->>   
->> +	pm_runtime_put(&imx274->client->dev);
->> +
->>   	return ret;
->>   }
->>   
->> @@ -1269,10 +1355,8 @@ static int imx274_s_frame_interval(struct v4l2_subdev *sd,
->>    *
->>    * Return: 0 on success, errors otherwise
->>    */
->> -static int imx274_load_default(struct stimx274 *priv)
->> +static void imx274_load_default(struct stimx274 *priv)
->>   {
->> -	int ret;
->> -
->>   	/* load default control values */
->>   	priv->frame_interval.numerator = 1;
->>   	priv->frame_interval.denominator = IMX274_DEF_FRAME_RATE;
->> @@ -1280,29 +1364,6 @@ static int imx274_load_default(struct stimx274 *priv)
->>   	priv->ctrls.gain->val = IMX274_DEF_GAIN;
->>   	priv->ctrls.vflip->val = 0;
->>   	priv->ctrls.test_pattern->val = TEST_PATTERN_DISABLED;
->> -
->> -	/* update frame rate */
->> -	ret = imx274_set_frame_interval(priv,
->> -					priv->frame_interval);
->> -	if (ret)
->> -		return ret;
->> -
->> -	/* update exposure time */
->> -	ret = v4l2_ctrl_s_ctrl(priv->ctrls.exposure, priv->ctrls.exposure->val);
->> -	if (ret)
->> -		return ret;
->> -
->> -	/* update gain */
->> -	ret = v4l2_ctrl_s_ctrl(priv->ctrls.gain, priv->ctrls.gain->val);
->> -	if (ret)
->> -		return ret;
->> -
->> -	/* update vflip */
->> -	ret = v4l2_ctrl_s_ctrl(priv->ctrls.vflip, priv->ctrls.vflip->val);
->> -	if (ret)
->> -		return ret;
-> This is not moved to somewhere else, so I assume the equivalent will
-> happen somewhere higher up in the stack? Might be worth mentioning in
-> the commit message why this can be dropped.
-OK. Will add in commit message.
->
-> Thierry
+Jason
