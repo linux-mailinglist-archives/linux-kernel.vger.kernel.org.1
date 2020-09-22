@@ -2,103 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D56842739A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 06:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E722739DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 06:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728449AbgIVEVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 00:21:37 -0400
-Received: from mga18.intel.com ([134.134.136.126]:51222 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726790AbgIVEVf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 00:21:35 -0400
-IronPort-SDR: K6TEJh7RtMb86KxJ4/qzQvUTvJ7VFUkyueumbIcLtPexDJB0zur4nKX1FUX/r2AEDGG8VkD8a/
- WrjT6rCU9t6Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="148282267"
-X-IronPort-AV: E=Sophos;i="5.77,289,1596524400"; 
-   d="scan'208";a="148282267"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 21:21:34 -0700
-IronPort-SDR: iGxqjyRDLUS1y98vuXY8eB3HROqQQ4TcOPMlcRFeWQUSzH3Sc5k0/f4+pxVJaWvaOtF3W41RWe
- v5S0VYXI3NBw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,289,1596524400"; 
-   d="scan'208";a="348343830"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga007.jf.intel.com with ESMTP; 21 Sep 2020 21:21:35 -0700
-Received: from [10.213.147.65] (vramuthx-MOBL1.gar.corp.intel.com [10.213.147.65])
-        by linux.intel.com (Postfix) with ESMTP id 644AD580812;
-        Mon, 21 Sep 2020 21:21:32 -0700 (PDT)
-Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
-Subject: Re: [PATCH -next] phy: fix USB_LGM_PHY warning & build errors
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>
-Cc:     Li Yin <yin1.li@intel.com>, Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <d1dd0ddd-3143-5777-1c63-195e1a32f237@infradead.org>
- <cb3b277e-109d-82c5-9dec-153b4e035c2a@infradead.org>
-From:   "Ramuthevar, Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Message-ID: <7a0129e7-b023-29ad-963f-345bb762b35e@linux.intel.com>
-Date:   Tue, 22 Sep 2020 12:21:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726763AbgIVE2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 00:28:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726492AbgIVE2n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 00:28:43 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 323DEC061755;
+        Mon, 21 Sep 2020 21:28:43 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id e16so15499913wrm.2;
+        Mon, 21 Sep 2020 21:28:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=O/SAKpEChXy3CT9sJ0R5MO0RuMAcSDnDJ1mWKr2Nu7Y=;
+        b=Jd5lf3rMucFwtzA/d7nG2Vou9f2ChiQQ08ncHTDmnB55EOHMnTQMl3jWEis4Pu837m
+         WmP5GZ5JWOxXgdRuOJR987jDax4hNZDBjXAkJDSTQlztRW2GMmjPRqB9w7UjMF2h3TA2
+         vNnfcMdZJBA5R6JYbpO4K0PUbqLyMrJ65wqvsNc13DdixOnw9rHIYQU1tZQxqOjaWlQU
+         fvk//vcNkNX32IPKxhtzi9XcCFvBMuKsU0pDiYepGxa91M4xiF4YOAG2kYi5/6+JIm2j
+         R1FQQq1Zle+3xQXGL+xW1R1Z25cmNgdzabViTE2r8hMLO/2Nij8k5cvNY/1ffPDEKVsp
+         pqKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=O/SAKpEChXy3CT9sJ0R5MO0RuMAcSDnDJ1mWKr2Nu7Y=;
+        b=JeLFVJ6LtT2cw1T3frvYrdTVInj2N/lW/6tezpiPV47M2vpPQlG2O2CsK2/4YnEiGN
+         dhWoXBnp4KK6yURnL5Ds9uaeG+13NZkeRQVDOQJUc+44947VFqggHfONFK/6bNqxI2Gk
+         8GOr1F/ud1JgwQDmzp4RR68H/3m83Tz/9sh5270OuczpjJPDm0bFPnYG9uvSHdqMIzHD
+         u2x2cJRsX0VeI/h7MrdUBCwyiPv8r6E03gbEo/AVvPPeJMOKDilhRlm2s8GTKLiSpFMQ
+         qw6LrCeuSxsQPsF5RZta5qmCfiyNCYQW5iqc9fKUv/NKCoxFZ91uZA/cWOnMhMjCdo9T
+         K1YQ==
+X-Gm-Message-State: AOAM532Jzli4G5AgBesRQpYSsjvRDJGfzU3qpS/F3RAVlIAQVbLnGu5+
+        iBfIH/5q69dMsmz2ORmWI4g=
+X-Google-Smtp-Source: ABdhPJwVJVbFgz5EpNoeoSB9SR/nTQ8dxCWh+onWVCRwph4Sqvodsh5Fp9DUiOFmRqfiOAa6zdikAg==
+X-Received: by 2002:adf:fd01:: with SMTP id e1mr2898250wrr.44.1600748921729;
+        Mon, 21 Sep 2020 21:28:41 -0700 (PDT)
+Received: from mamamia.internal (a89-183-78-237.net-htp.de. [89.183.78.237])
+        by smtp.gmail.com with ESMTPSA id x2sm24616397wrl.13.2020.09.21.21.28.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 21:28:41 -0700 (PDT)
+From:   Andre Heider <a.heider@gmail.com>
+To:     Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] arm64: dts: marvell: espressobin: Get rid of duplicate serial aliases
+Date:   Tue, 22 Sep 2020 06:28:39 +0200
+Message-Id: <20200922042839.1138546-1-a.heider@gmail.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200921164830.499548-1-a.heider@gmail.com>
+References: <20200921164830.499548-1-a.heider@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <cb3b277e-109d-82c5-9dec-153b4e035c2a@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
+The included armada-3xxx.dtsi already defines these two aliases.
 
-   Thank you for the report, surely will fix it.
+Signed-off-by: Andre Heider <a.heider@gmail.com>
+Reviewed-by: Pali Rohár <pali@kernel.org>
+---
+v2: fix filename in commit message
 
-Regards
-Vadivel
+This goes on top of Pali's patch:
+"arm64: dts: marvell: espressobin: Add ethernet switch aliases"
 
-On 21/9/2020 11:45 pm, Randy Dunlap wrote:
-> Ping.  Still seeing this in linux-next.
-> 
-> On 9/17/20 10:51 AM, Randy Dunlap wrote:
->> From: Randy Dunlap <rdunlap@infradead.org>
->>
->> Fix a Kconfig warning that is causing lots of build errors
->> when USB_SUPPORT is not set.
->>
->> USB_PHY depends on USB_SUPPORT but "select" doesn't care about
->> dependencies, so this driver should also depend on USB_SUPPORT.
->> It should not select USB_SUPPORT.
->>
->> WARNING: unmet direct dependencies detected for USB_PHY
->>    Depends on [n]: USB_SUPPORT [=n]
->>    Selected by [m]:
->>    - USB_LGM_PHY [=m]
->>
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Cc: Li Yin <yin1.li@intel.com>
->> Cc: Vadivel Murugan R <vadivel.muruganx.ramuthevar@linux.intel.com>
->> Cc: Kishon Vijay Abraham I <kishon@ti.com>
->> Cc: Vinod Koul <vkoul@kernel.org>
->> ---
->>   drivers/phy/Kconfig |    1 +
->>   1 file changed, 1 insertion(+)
->>
->> --- linux-next-20200917.orig/drivers/phy/Kconfig
->> +++ linux-next-20200917/drivers/phy/Kconfig
->> @@ -51,6 +51,7 @@ config PHY_XGENE
->>   
->>   config USB_LGM_PHY
->>   	tristate "INTEL Lightning Mountain USB PHY Driver"
->> +	depends on USB_SUPPORT
->>   	select USB_PHY
->>   	select REGULATOR
->>   	select REGULATOR_FIXED_VOLTAGE
->>
-> 
-> 
+The resulting .dtb files are the same.
+
+ arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
+index 0775c16e0ec8..3169a820558f 100644
+--- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
++++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
+@@ -17,8 +17,6 @@ aliases {
+ 		ethernet1 = &switch0port1;
+ 		ethernet2 = &switch0port2;
+ 		ethernet3 = &switch0port3;
+-		serial0 = &uart0;
+-		serial1 = &uart1;
+ 	};
+ 
+ 	chosen {
+-- 
+2.28.0
+
