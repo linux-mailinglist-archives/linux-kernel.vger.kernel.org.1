@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 094BF274919
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:27:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27C81274914
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:27:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726782AbgIVT1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 15:27:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55228 "EHLO
+        id S1726713AbgIVT1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 15:27:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726629AbgIVT1L (ORCPT
+        with ESMTP id S1726631AbgIVT1N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 15:27:11 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42A32C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 12:27:11 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id y11so19315305lfl.5
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 12:27:11 -0700 (PDT)
+        Tue, 22 Sep 2020 15:27:13 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 889A0C061755;
+        Tue, 22 Sep 2020 12:27:12 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id z17so19267139lfi.12;
+        Tue, 22 Sep 2020 12:27:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=zg6ilJOJPijk+82aRAFHt7wNQSPk2Nri12CuIZN1pbI=;
-        b=qryF1qeVUWrQeTcTH3EEwVlwDoJGpvp5Y0gz9QhWYXj6eSKMSbdvrcZkuHt/JBSl34
-         HMgXo87bp0vgZg5cW5bCcHjSujwhVAOtulhMesO+Hs4GH389nIFQkdGxTBeGDY/ahR5w
-         /V75nrmmCfVHGO5Wk8iC5pxKWRj1nH23O1uS+0s7MvQv/lLL7WwQd+PhtqhioKtebvwr
-         08mewC6v9x8Ln0+8CSPh7d8TaJdvxSWiMuPZF3okM6SJXkOfS/y/yk+d0EFIev8RSvIS
-         aPSdwUlKuq/KHw7azPa1cOg0MK0x0vO5wCtXeNPy8B7u6HfjuCNNHUGrkVaJCdRARAKW
-         imXA==
+        bh=NbcGmvqhnphoPmR7CaniRcqoPJY6GHjvr9+YPIOk8PY=;
+        b=briIm7ams8JEYWcKhFZF6BbdX6SluBpcE6wdfJB7P5oTI08s3ZlKFhPePPKkrK4vkv
+         xnb8Y+VIkV6/Z6V4zLPtm4t4LxAVqKWLYn+9Q9Pxxs7e/JCQo8ffLR23luoHO0glJzZO
+         9ki/6omZUHPpzoxk7HvpIq6S9eG6bMwxuG2i4olsLXFKY9kUXLC1x5uHXBjGwQTd5fHD
+         cEmXEnhCo4Rf/t3h9zphbbho/BN5XS8QnLtgUBLHd+c/nGS7eKv1wIqh18m6Ttf9yjDT
+         X4+hek4KRpfPUvNHDVzMkQ3NS8jwzF82BSxMbGd21/fHB7pFwEX/263rHG77bIoefw0a
+         YPjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=zg6ilJOJPijk+82aRAFHt7wNQSPk2Nri12CuIZN1pbI=;
-        b=tY1hBTx2us2/uYPXjo2PMplt+y5jig5cUwoyMv/P2t9jmv65uq0NGeODgHThiKEwBU
-         YKG96LNxxmDCRAI1tvnzNBadJOEkV7tcrN4gJMYN4oVeFyC77l1IYQzoPPrCUoTN+ElE
-         yg5DrdnHIV1QTMxCeIFFQ/d+c28cCBas/YkKbpaN1WFOU/96AblNTNfexfxkJW+1AYQH
-         ldb+FE1s0E8Y1kGWCfKvV2OEV8NRde4UgeqZ2knMNFRLDfirZN/+MOIfIHlKYdyGiCzG
-         84CcnSBibNBI0pKVV2Q/S2OXquLWPX5nyZF/6mo5dK9aoHvWUL7CN4BzC1j73/K8+Dqp
-         ZLTA==
-X-Gm-Message-State: AOAM530AZGx8H+6ycYPb+9S6jdYXmN/smD3NbhIrYxtnHRLD4j7Mu2jK
-        3qPwvaEQ6oi15rpi5qWXH1s=
-X-Google-Smtp-Source: ABdhPJxQBSI8aDCLTDagNGHnc3s/M4o+M388lEFb2d9oBJl0jRRi+kv+CSFx53B/iJDzEpbG1zEaDQ==
-X-Received: by 2002:a19:ac49:: with SMTP id r9mr2030828lfc.582.1600802829605;
-        Tue, 22 Sep 2020 12:27:09 -0700 (PDT)
+        bh=NbcGmvqhnphoPmR7CaniRcqoPJY6GHjvr9+YPIOk8PY=;
+        b=gZzWlMywuWZzF7miAazQBY5Ak3mwVUzgRPGQlFZgxKA4N0XV4A5Rs7ol+RfzV1o8sS
+         KoGDqTRrZr0Gp1O1czRuZ+YctQTby9/MmkASFjw0wwxSc6/WWygYsahOx9PabDUyz6HC
+         atdOwgM5f8Kk+Eao1pQ7j/KYC8lUJyaU9v8e8pRUUCbaC+vSBV5d9ESD01qMavXBxD7T
+         KhnSQ8p3CFMV8TiuqIKOnfklbFOTFBwL4ga4A/atzgs37113RDPtu1JLYaOEkyWasMDX
+         JI0OB+fli6rGOLvCir0nd5KA1YZv3xnsvercsmPELZ8xk9RpprUF3YvfqaQ/psjhxAU0
+         QN5w==
+X-Gm-Message-State: AOAM533kn5zPeslFJ+K7Px7ENZC0RlhWLk1rZiHuDIIrvHl5EtWozUiZ
+        KKWBo6UEXvHoKHV2oMBdHWo=
+X-Google-Smtp-Source: ABdhPJyrLNQKicoq9YMzcwFoTg4/l6hDQQtNG+zyha3uMjomg3CvCJ6n8lvvnx/v0NTha5c4GGLUog==
+X-Received: by 2002:a19:c147:: with SMTP id r68mr2009041lff.381.1600802830972;
+        Tue, 22 Sep 2020 12:27:10 -0700 (PDT)
 Received: from localhost.localdomain (h-82-196-111-59.NA.cust.bahnhof.se. [82.196.111.59])
-        by smtp.gmail.com with ESMTPSA id r132sm3770013lff.167.2020.09.22.12.27.08
+        by smtp.gmail.com with ESMTPSA id r132sm3770013lff.167.2020.09.22.12.27.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 12:27:08 -0700 (PDT)
+        Tue, 22 Sep 2020 12:27:09 -0700 (PDT)
 From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     linux-kernel@vger.kernel.org,
         Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH 2/8] mfd: intel: Constify static struct resource
-Date:   Tue, 22 Sep 2020 21:26:53 +0200
-Message-Id: <20200922192659.14535-3-rikard.falkeborn@gmail.com>
+        Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org
+Subject: [PATCH 3/8] mfd: Constify static struct resource in OMAP2+ drivers
+Date:   Tue, 22 Sep 2020 21:26:54 +0200
+Message-Id: <20200922192659.14535-4-rikard.falkeborn@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200922192659.14535-1-rikard.falkeborn@gmail.com>
 References: <20200922192659.14535-1-rikard.falkeborn@gmail.com>
@@ -72,198 +72,42 @@ memory. Done with the help of Coccinelle.
 
 Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 ---
- drivers/mfd/intel_msic.c              | 18 +++++++++---------
- drivers/mfd/intel_soc_pmic_bxtwc.c    | 14 +++++++-------
- drivers/mfd/intel_soc_pmic_chtdc_ti.c | 10 +++++-----
- drivers/mfd/intel_soc_pmic_chtwc.c    |  4 ++--
- drivers/mfd/intel_soc_pmic_crc.c      | 10 +++++-----
- 5 files changed, 28 insertions(+), 28 deletions(-)
+ drivers/mfd/tps65217.c | 4 ++--
+ drivers/mfd/tps65910.c | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mfd/intel_msic.c b/drivers/mfd/intel_msic.c
-index bb24c2a07900..daa772f8146b 100644
---- a/drivers/mfd/intel_msic.c
-+++ b/drivers/mfd/intel_msic.c
-@@ -50,23 +50,23 @@ struct intel_msic {
- 	void __iomem			*irq_base;
- };
- 
--static struct resource msic_touch_resources[] = {
-+static const struct resource msic_touch_resources[] = {
- 	DEFINE_RES_IRQ(0),
- };
- 
--static struct resource msic_adc_resources[] = {
-+static const struct resource msic_adc_resources[] = {
- 	DEFINE_RES_IRQ(0),
- };
- 
--static struct resource msic_battery_resources[] = {
-+static const struct resource msic_battery_resources[] = {
- 	DEFINE_RES_IRQ(0),
- };
- 
--static struct resource msic_gpio_resources[] = {
-+static const struct resource msic_gpio_resources[] = {
- 	DEFINE_RES_IRQ(0),
- };
- 
--static struct resource msic_audio_resources[] = {
-+static const struct resource msic_audio_resources[] = {
- 	DEFINE_RES_IRQ_NAMED(0, "IRQ"),
- 	/*
- 	 * We will pass IRQ_BASE to the driver now but this can be removed
-@@ -75,19 +75,19 @@ static struct resource msic_audio_resources[] = {
- 	DEFINE_RES_MEM_NAMED(MSIC_IRQ_STATUS_ACCDET, 1, "IRQ_BASE"),
- };
- 
--static struct resource msic_hdmi_resources[] = {
-+static const struct resource msic_hdmi_resources[] = {
- 	DEFINE_RES_IRQ(0),
- };
- 
--static struct resource msic_thermal_resources[] = {
-+static const struct resource msic_thermal_resources[] = {
- 	DEFINE_RES_IRQ(0),
- };
- 
--static struct resource msic_power_btn_resources[] = {
-+static const struct resource msic_power_btn_resources[] = {
- 	DEFINE_RES_IRQ(0),
- };
- 
--static struct resource msic_ocd_resources[] = {
-+static const struct resource msic_ocd_resources[] = {
- 	DEFINE_RES_IRQ(0),
- };
- 
-diff --git a/drivers/mfd/intel_soc_pmic_bxtwc.c b/drivers/mfd/intel_soc_pmic_bxtwc.c
-index eba89780dbe7..47d0d3a69a58 100644
---- a/drivers/mfd/intel_soc_pmic_bxtwc.c
-+++ b/drivers/mfd/intel_soc_pmic_bxtwc.c
-@@ -200,32 +200,32 @@ static struct regmap_irq_chip bxtwc_regmap_irq_chip_crit = {
- 	.num_regs = 1,
- };
- 
--static struct resource gpio_resources[] = {
-+static const struct resource gpio_resources[] = {
- 	DEFINE_RES_IRQ_NAMED(BXTWC_GPIO_LVL1_IRQ, "GPIO"),
- };
- 
--static struct resource adc_resources[] = {
-+static const struct resource adc_resources[] = {
- 	DEFINE_RES_IRQ_NAMED(BXTWC_ADC_IRQ, "ADC"),
- };
- 
--static struct resource usbc_resources[] = {
-+static const struct resource usbc_resources[] = {
- 	DEFINE_RES_IRQ(BXTWC_USBC_IRQ),
- };
+diff --git a/drivers/mfd/tps65217.c b/drivers/mfd/tps65217.c
+index 2d9c282ec917..8027b0a9e14f 100644
+--- a/drivers/mfd/tps65217.c
++++ b/drivers/mfd/tps65217.c
+@@ -33,12 +33,12 @@
+ #include <linux/mfd/core.h>
+ #include <linux/mfd/tps65217.h>
  
 -static struct resource charger_resources[] = {
 +static const struct resource charger_resources[] = {
- 	DEFINE_RES_IRQ_NAMED(BXTWC_CHGR0_IRQ, "CHARGER"),
- 	DEFINE_RES_IRQ_NAMED(BXTWC_CHGR1_IRQ, "CHARGER1"),
+ 	DEFINE_RES_IRQ_NAMED(TPS65217_IRQ_AC, "AC"),
+ 	DEFINE_RES_IRQ_NAMED(TPS65217_IRQ_USB, "USB"),
  };
  
--static struct resource thermal_resources[] = {
-+static const struct resource thermal_resources[] = {
- 	DEFINE_RES_IRQ(BXTWC_THRM_LVL1_IRQ),
+-static struct resource pb_resources[] = {
++static const struct resource pb_resources[] = {
+ 	DEFINE_RES_IRQ_NAMED(TPS65217_IRQ_PB, "PB"),
  };
  
--static struct resource bcu_resources[] = {
-+static const struct resource bcu_resources[] = {
- 	DEFINE_RES_IRQ_NAMED(BXTWC_BCU_IRQ, "BCU"),
- };
+diff --git a/drivers/mfd/tps65910.c b/drivers/mfd/tps65910.c
+index 11959021b50a..a6c28df7aa38 100644
+--- a/drivers/mfd/tps65910.c
++++ b/drivers/mfd/tps65910.c
+@@ -21,7 +21,7 @@
+ #include <linux/of.h>
+ #include <linux/of_device.h>
  
--static struct resource tmu_resources[] = {
-+static const struct resource tmu_resources[] = {
- 	DEFINE_RES_IRQ_NAMED(BXTWC_TMU_IRQ, "TMU"),
- };
- 
-diff --git a/drivers/mfd/intel_soc_pmic_chtdc_ti.c b/drivers/mfd/intel_soc_pmic_chtdc_ti.c
-index 64b5c3cc30e7..1c7577b881ff 100644
---- a/drivers/mfd/intel_soc_pmic_chtdc_ti.c
-+++ b/drivers/mfd/intel_soc_pmic_chtdc_ti.c
-@@ -32,23 +32,23 @@ enum {
- 	CHTDC_TI_CCEOCAL = 7,	/* battery */
- };
- 
--static struct resource power_button_resources[] = {
-+static const struct resource power_button_resources[] = {
- 	DEFINE_RES_IRQ(CHTDC_TI_PWRBTN),
- };
- 
--static struct resource thermal_resources[] = {
-+static const struct resource thermal_resources[] = {
- 	DEFINE_RES_IRQ(CHTDC_TI_DIETMPWARN),
- };
- 
--static struct resource adc_resources[] = {
-+static const struct resource adc_resources[] = {
- 	DEFINE_RES_IRQ(CHTDC_TI_ADCCMPL),
- };
- 
--static struct resource pwrsrc_resources[] = {
-+static const struct resource pwrsrc_resources[] = {
- 	DEFINE_RES_IRQ(CHTDC_TI_VBUSDET),
- };
- 
--static struct resource battery_resources[] = {
-+static const struct resource battery_resources[] = {
- 	DEFINE_RES_IRQ(CHTDC_TI_VBATLOW),
- 	DEFINE_RES_IRQ(CHTDC_TI_CCEOCAL),
- };
-diff --git a/drivers/mfd/intel_soc_pmic_chtwc.c b/drivers/mfd/intel_soc_pmic_chtwc.c
-index be84bb2aa837..49c5f71664bc 100644
---- a/drivers/mfd/intel_soc_pmic_chtwc.c
-+++ b/drivers/mfd/intel_soc_pmic_chtwc.c
-@@ -41,11 +41,11 @@ enum {
- 	CHT_WC_CRIT_IRQ = 7,
- };
- 
--static struct resource cht_wc_pwrsrc_resources[] = {
-+static const struct resource cht_wc_pwrsrc_resources[] = {
- 	DEFINE_RES_IRQ(CHT_WC_PWRSRC_IRQ),
- };
- 
--static struct resource cht_wc_ext_charger_resources[] = {
-+static const struct resource cht_wc_ext_charger_resources[] = {
- 	DEFINE_RES_IRQ(CHT_WC_EXT_CHGR_IRQ),
- };
- 
-diff --git a/drivers/mfd/intel_soc_pmic_crc.c b/drivers/mfd/intel_soc_pmic_crc.c
-index 429efa1f8e55..38acb20e2d60 100644
---- a/drivers/mfd/intel_soc_pmic_crc.c
-+++ b/drivers/mfd/intel_soc_pmic_crc.c
-@@ -28,23 +28,23 @@
- #define CRYSTAL_COVE_IRQ_GPIO		5
- #define CRYSTAL_COVE_IRQ_VHDMIOCP	6
- 
--static struct resource gpio_resources[] = {
-+static const struct resource gpio_resources[] = {
- 	DEFINE_RES_IRQ_NAMED(CRYSTAL_COVE_IRQ_GPIO, "GPIO"),
- };
- 
--static struct resource pwrsrc_resources[] = {
-+static const struct resource pwrsrc_resources[] = {
- 	DEFINE_RES_IRQ_NAMED(CRYSTAL_COVE_IRQ_PWRSRC, "PWRSRC"),
- };
- 
--static struct resource adc_resources[] = {
-+static const struct resource adc_resources[] = {
- 	DEFINE_RES_IRQ_NAMED(CRYSTAL_COVE_IRQ_ADC, "ADC"),
- };
- 
--static struct resource thermal_resources[] = {
-+static const struct resource thermal_resources[] = {
- 	DEFINE_RES_IRQ_NAMED(CRYSTAL_COVE_IRQ_THRM, "THERMAL"),
- };
- 
--static struct resource bcu_resources[] = {
-+static const struct resource bcu_resources[] = {
- 	DEFINE_RES_IRQ_NAMED(CRYSTAL_COVE_IRQ_BCU, "BCU"),
- };
- 
+-static struct resource rtc_resources[] = {
++static const struct resource rtc_resources[] = {
+ 	{
+ 		.start  = TPS65910_IRQ_RTC_ALARM,
+ 		.end    = TPS65910_IRQ_RTC_ALARM,
 -- 
 2.28.0
 
