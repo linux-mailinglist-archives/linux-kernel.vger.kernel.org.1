@@ -2,72 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7236A274428
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 16:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C453727442A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 16:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726694AbgIVOYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 10:24:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58574 "EHLO mail.kernel.org"
+        id S1726706AbgIVOZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 10:25:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58782 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726579AbgIVOYx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 10:24:53 -0400
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726579AbgIVOZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 10:25:16 -0400
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 63F5323A1D;
-        Tue, 22 Sep 2020 14:24:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4659220C09;
+        Tue, 22 Sep 2020 14:25:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600784692;
-        bh=VH0jM+A8P5sFG/bKWMqp/z6QPkFgM7VMiqVFFHF/OLA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=W4rY78hm5XDVexazBMATM/BiRb0z27jzC/vRN5xE9xgcCJY9MOjEo0XJUMwF5iGiY
-         7DBzTFkmqCan30A0d1IwOSHSB1LFxCa3M1x12h71/E6qHMSvaIWd3/l0QmAC6EKDj2
-         CWtFrXRF8bqvw3GhdxqO16GSz7UePw8Uin+cg7/8=
-Received: by mail-ed1-f43.google.com with SMTP id n13so16296072edo.10;
-        Tue, 22 Sep 2020 07:24:52 -0700 (PDT)
-X-Gm-Message-State: AOAM530iauyFwkjPKZZERAXAO0R3ZGXPY2qWiTn/rv1OqmD9tlG9cwJ/
-        q7BtDNm8U55et5763T3JcCCOzLrEf0ru1eyfNuU=
-X-Google-Smtp-Source: ABdhPJxZ2CrqnrJLb1T6VBVOBSunR4FrEAjor/RNBGpBRboAOMh20/Svsx+Y1Q0FoTRmqeOWKEl8LD1QHAzIXKbyk7U=
-X-Received: by 2002:a05:6402:ca7:: with SMTP id cn7mr4049681edb.143.1600784690888;
- Tue, 22 Sep 2020 07:24:50 -0700 (PDT)
+        s=default; t=1600784716;
+        bh=BjcEs/cyjGNFH4+Iv6NV3gAcUsMvzMLKmIq/2ekfuaQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b+zh2DI3qvzE0CrDPaxWv1J4MDNlht5urMzZMCMsvYshQYFJf+FQXsNH27lu4xRcB
+         f3cuz90yMYI+GgorDpgyxeX5rvT478Fr5iw2La3MMmh253JrUav8jT6zDe5gU1jQMV
+         aU3Ffy4uZW/7goLBmKO7llVuQZEKM9l17TLr9pJY=
+Date:   Tue, 22 Sep 2020 10:25:15 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        patches@opensource.cirrus.com, alsa-devel@alsa-project.org
+Subject: Re: [PATCH AUTOSEL 5.8 03/20] ASoC: wm8994: Skip setting of the
+ WM8994_MICBIAS register for WM1811
+Message-ID: <20200922142515.GN2431@sasha-vm>
+References: <20200921144027.2135390-1-sashal@kernel.org>
+ <20200921144027.2135390-3-sashal@kernel.org>
+ <20200921150701.GA12231@sirena.org.uk>
 MIME-Version: 1.0
-References: <20200920195749.26952-1-krzk@kernel.org> <20200920195749.26952-2-krzk@kernel.org>
- <20200922065154.GH25109@dragon>
-In-Reply-To: <20200922065154.GH25109@dragon>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Tue, 22 Sep 2020 16:24:39 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPemE-mHdp-OAOMi5xQvTcW4k-f1aMcmX10zFLFFTRMv2Q@mail.gmail.com>
-Message-ID: <CAJKOXPemE-mHdp-OAOMi5xQvTcW4k-f1aMcmX10zFLFFTRMv2Q@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] arm64: dts: imx8mq-librem5: align GPIO hog names
- with dtschema
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Martin Kepplinger <martink@posteo.de>,
-        "Angus Ainslie (Purism)" <angus@akkea.ca>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200921150701.GA12231@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Sep 2020 at 08:52, Shawn Guo <shawnguo@kernel.org> wrote:
+On Mon, Sep 21, 2020 at 04:07:01PM +0100, Mark Brown wrote:
+>On Mon, Sep 21, 2020 at 10:40:10AM -0400, Sasha Levin wrote:
 >
-> On Sun, Sep 20, 2020 at 09:57:48PM +0200, Krzysztof Kozlowski wrote:
-> > dtschema expects GPIO hogs to end with 'hog' suffix.
-> >
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+>> The WM8994_MICBIAS register is not available in the WM1811 CODEC so skip
+>> initialization of that register for that device.
+>> This suppresses an error during boot:
+>> "wm8994-codec: ASoC: error at snd_soc_component_update_bits on wm8994-codec"
 >
-> Ping me after dtschema gets accepted.
+>This is pretty much a cosmetic change - previously we were silently not
+>reading the register, this just removes the attempt to read it since we
+>added an error message in the core.
 
-Hi Shawn,
+Right, the only reason I took it is that error message - I find that
+bogus error messages have almost the same (bad) impact as real kernel
+bugs.
 
-Happened just now, in dt-schema repo:
-https://github.com/devicetree-org/dt-schema/pull/47
+I can drop it if you'd prefer.
 
-Best regards,
-Krzysztof
+-- 
+Thanks,
+Sasha
