@@ -2,100 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 496EB27404E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:02:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0FB1274053
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:02:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726563AbgIVLCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 07:02:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34134 "EHLO
+        id S1726582AbgIVLCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 07:02:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726340AbgIVLCj (ORCPT
+        with ESMTP id S1726340AbgIVLCs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 07:02:39 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D08C061755;
-        Tue, 22 Sep 2020 04:02:38 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id z9so2894370wmk.1;
-        Tue, 22 Sep 2020 04:02:38 -0700 (PDT)
+        Tue, 22 Sep 2020 07:02:48 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79B45C061755;
+        Tue, 22 Sep 2020 04:02:48 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id m13so10718977otl.9;
+        Tue, 22 Sep 2020 04:02:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=QP7D4zsS7srJZeKE4h7PMo3PEFbsrs5XuKLoWtHlLfQ=;
-        b=Umn46go7btEmLeJcyiwsP02dYQUWvorQNa1lYDjJe5hLI8gBjUXG99anKJIZ8KW1oO
-         aWnS2IwBNxRgDc4BdFsb/2bzZxWIaDPdYHe+YEhjSVZdBOCpqyxoVj5BQSwbKIHZ/0E+
-         Fg/bG5+dMDlnqMiui80vfu6VAYwn8rlfvTnmganxFWap07IU5RqfIrTYneIe0ybsaJib
-         TJ/gUnPvxeHP7oFVD5NhWxX0YZI8arEDT5jCtmKbw0sUUkSF7E73qgspyakaSXtNQvRk
-         KUSCd/VJelPux235gIzr9NJbR5LMuf7fWrTqH9IE0cZH1BY6e/hal929kqGCd89sRJRo
-         Htjw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LrvS5KIZ2nQwGS4d7z8Xaz8559QAzBmEAKS76SNI7ac=;
+        b=PwMqQKXxEGR6+8YaAKDnmjPdm4BYptaFCDjFiJYH/NbqUGi3Q4DujTLWhcSyo6WzEe
+         QYGhzvIidRxqdzrOXaf2YU85I/h7o+vi2mxHbW88huIR+HE6dZlaQDdHmQUYwptZLtJv
+         xHezAvtdMsOBlPdKsB9r1gVDMtHs2FFH+2NrLanz52NVUvieqaGRvoeNmpefi6MV2+cy
+         QBTDerzX2vLb8OEOkg9AeVVZPYnuJK8wQAY/qI4/tJbc4Vmx23GFEsGRIdhw/gsW4dzs
+         jdZNaKhKnC/Gj0kW4wwn363HIM0ZyshfkCdTPMLkdNq+m9eZqMCNdsywIVaI9aP+6k1/
+         I7jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=QP7D4zsS7srJZeKE4h7PMo3PEFbsrs5XuKLoWtHlLfQ=;
-        b=QgcUHWpGfvqeaJj4ihcVLhZYUxPaM/FOJ0aFtFcE9kMi03fVxZV1paG/FImrMfnkPF
-         J1BpttkGIBdL4GyCsG9n0HMNqAJQFLKjOF7SQoy9WiBWceOyUYQ75BXsfLd+siTiWyCv
-         drj0F+kr/qUwR7t/N/xqrwKyTuGDmoAEMfltiYb9SJrn0s+g95gIkx6xZatuYo+6zEtU
-         vzHTq+wTT2ao01eucNK2PQ0zOQdJ5yz865sHPCJuFJOqYoQk6kNakPmArvAE++5CQ6bt
-         /wyXkBwHL1ENrOa9cTR1X8Ehe5c9Ehb3qNthh6G764WO9bG8ZnGLQzrojMrGArRRk6b4
-         172w==
-X-Gm-Message-State: AOAM533+XMuV+mYmxZ86hjpDdX223A2WSJxTvIs/vkue7z+X40znlNmI
-        rNekBvvJM2Jy3JHdHAipgOKfvBVQvRRQUpKg
-X-Google-Smtp-Source: ABdhPJxbDGZ7wRBP0AB2A1GN813fNw8J3KclOaZ5ZRBtp53WAU1Vt4G/tAmks/ybFJcR4iJO8U0C5w==
-X-Received: by 2002:a1c:b388:: with SMTP id c130mr356538wmf.175.1600772557222;
-        Tue, 22 Sep 2020 04:02:37 -0700 (PDT)
-Received: from [192.168.0.64] (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id a83sm4085301wmh.48.2020.09.22.04.02.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Sep 2020 04:02:36 -0700 (PDT)
-Subject: Re: [PATCH REBASE 0/3] atomisp: Rebased fixes
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Alan Cox <alan@linux.intel.com>, linux-media@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-References: <21f18dc2-a1bc-0a37-0336-fc35170a40e9@gmail.com>
- <20200922090914.20702-1-alex.dewar90@gmail.com>
- <20200922112729.313d454d@coco.lan>
-From:   Alex Dewar <alex.dewar90@gmail.com>
-Message-ID: <f14fac45-d713-a6ee-f0be-906a6d971b43@gmail.com>
-Date:   Tue, 22 Sep 2020 12:02:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LrvS5KIZ2nQwGS4d7z8Xaz8559QAzBmEAKS76SNI7ac=;
+        b=A1PbbeHBx3dOvIB45e0mj/nDdAAsgTwkoo9m3cU5ik5clqoxYrgZdJMnTBwtnMBpET
+         UMvKkaHa5Xb3E/kMCS2TFDrPvA9ICW4GzFMXt+VV3/pZy1G87DarZLFW8ljiymQsIYWA
+         aXAiL2kIrpijUckQnZO7kts0eYFGZ5Nxd8fEBQrZjR1Kk0UZnPlJaduGiVs0uAGTKaTI
+         q+CWdj9Sg7bTN0B/zVvXRAx5btvpbjKvx4HlT5jQXtdOoJt0KmL9rUZbNnmcZNIy3PeP
+         1ry1GegE3aq//rjS4EY68A86tabd/fsYcmuI1EMuPWxhZonOCuph6wHYXPdgJlwpp9NW
+         RnZg==
+X-Gm-Message-State: AOAM532ZzWIF5oeb61z6me73ZMMZLYVdDhvKmmI7UoGY30GkTFemnO1S
+        V8lBFzsPNEpb8+t/PIHibs7GSzokrr4MkiG7zbJYSQk4qNWqGA==
+X-Google-Smtp-Source: ABdhPJxLIRaSE1BxLtYMbvjeKEuHdtLQvB+vyDR0w9aZXPUAx1vdDZHjpNA0LteuLrYLQ10Scg3E8vtIgv5EiXtPCzQ=
+X-Received: by 2002:a9d:50a:: with SMTP id 10mr2300865otw.207.1600772567766;
+ Tue, 22 Sep 2020 04:02:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200922112729.313d454d@coco.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20200921102850.192224-1-alexandru.ardelean@analog.com>
+In-Reply-To: <20200921102850.192224-1-alexandru.ardelean@analog.com>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Tue, 22 Sep 2020 14:02:36 +0300
+Message-ID: <CA+U=DspC_W=j-eET38q1v+ytbntUXQwvUCBKx0DJ9hDGVtV-OA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] iio: adc ad9467: add support for AD9434 high-speed ADC
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     linux-iio <linux-iio@vger.kernel.org>, devicetree@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Hennerich <michael.hennerich@analog.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/09/2020 10:27, Mauro Carvalho Chehab wrote:
-> Em Tue, 22 Sep 2020 10:09:07 +0100
-> Alex Dewar <alex.dewar90@gmail.com> escreveu:
+On Mon, Sep 21, 2020 at 1:29 PM Alexandru Ardelean
+<alexandru.ardelean@analog.com> wrote:
 >
->> Hi Mauro,
->>
->> I've rebased the patches now, but there is a slight hiccup. For patches 2
->> and 3 of this series there will now be a conflict with commit 9289cdf39992
->> ("staging: media: atomisp: Convert to GPIO descriptors") in Greg's tree.
->>
->> I'm not sure what the best way to handle this is? The merge conflicts
->> will be trivial (due to a conversion between the gpio_* and gpiod_*
->> APIs), but I could alternatively send these last two patches in via
->> Greg's tree if that's easier for people. Let me know what works.
-> Maybe the best would be to re-send those after the merge window, when
-> both patches will arrive upstream.
+> From: Michael Hennerich <michael.hennerich@analog.com>
 >
-> Thanks,
-> Mauro
-That sounds more sensible. I've also just noticed that I introduced a 
-bug in the first patch when rebasing it :-/, so let's hold off on the 
-whole series and I'll do a proper tidy and resend after the next merge 
-window.
+> The AD9434 is a 12-bit monolithic sampling analog-to-digital converter
+> (ADC) optimized for high performance, low power, and ease of use. The part
+> operates at up to a 500 MSPS conversion rate and is optimized for
+> outstanding dynamic performance in wideband carrier and broadband systems.
+>
+> All necessary functions, including a sample-and-hold and voltage reference,
+> are included on the chip to provide a complete signal conversion solution.
+> The VREF pin can be used to monitor the internal reference or provide an
+> external voltage reference (external reference mode must be enabled through
+> the SPI port).
+>
+> The ADC requires a 1.8 V analog voltage supply and a differential clock
+> for full performance operation. The digital outputs are LVDS (ANSI-644)
+> compatible and support twos complement, offset binary format, or Gray code.
+> A data clock output is available for proper output data timing.
+>
+> Link: https://www.analog.com/media/en/technical-documentation/data-sheets/AD9434.pdf
+>
+> The driver supports the same register set as the AD9467, so the support for
+> this chip is added to the 'ad9467' driver.
 
-Best,
-Alex
+I'll probably do a V2 here.
+I'd like to change a few things.
+
+>
+> Signed-off-by: Michael Hennerich <michael.hennerich@analog.com>
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> ---
+>  drivers/iio/adc/ad9467.c | 37 +++++++++++++++++++++++++++++++++++--
+>  1 file changed, 35 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/iio/adc/ad9467.c b/drivers/iio/adc/ad9467.c
+> index f068256cfca9..aee3007ea3f2 100644
+> --- a/drivers/iio/adc/ad9467.c
+> +++ b/drivers/iio/adc/ad9467.c
+> @@ -76,6 +76,14 @@
+>  /* AN877_ADC_REG_OUTPUT_DELAY */
+>  #define AN877_ADC_DCO_DELAY_ENABLE             0x80
+>
+> +/*
+> + * Analog Devices AD9434 12-Bit, 370/500 MSPS ADC
+> + */
+> +
+> +#define CHIPID_AD9434                  0x6A
+> +#define AD9434_DEF_OUTPUT_MODE         0x00
+> +#define AD9434_REG_VREF_MASK           0xC0
+> +
+>  /*
+>   * Analog Devices AD9467 16-Bit, 200/250 MSPS ADC
+>   */
+> @@ -85,6 +93,7 @@
+>  #define AD9467_REG_VREF_MASK           0x0F
+>
+>  enum {
+> +       ID_AD9434,
+>         ID_AD9467,
+>  };
+>
+> @@ -154,6 +163,13 @@ static const unsigned int ad9467_scale_table[][2] = {
+>         {2300, 8}, {2400, 9}, {2500, 10},
+>  };
+>
+> +static const unsigned int ad9434_scale_table[][2] = {
+> +       {1600, 0x1C}, {1580, 0x1D}, {1550, 0x1E}, {1520, 0x1F}, {1500, 0x00},
+> +       {1470, 0x01}, {1440, 0x02}, {1420, 0x03}, {1390, 0x04}, {1360, 0x05},
+> +       {1340, 0x06}, {1310, 0x07}, {1280, 0x08}, {1260, 0x09}, {1230, 0x0A},
+> +       {1200, 0x0B}, {1180, 0x0C},
+> +};
+> +
+>  static void __ad9467_get_scale(struct adi_axi_adc_conv *conv, int index,
+>                                unsigned int *val, unsigned int *val2)
+>  {
+> @@ -182,11 +198,23 @@ static void __ad9467_get_scale(struct adi_axi_adc_conv *conv, int index,
+>         },                                                              \
+>  }
+>
+> +static const struct iio_chan_spec ad9434_channels[] = {
+> +       AD9467_CHAN(0, 0, 12, 'S'),
+> +};
+> +
+>  static const struct iio_chan_spec ad9467_channels[] = {
+>         AD9467_CHAN(0, 0, 16, 'S'),
+>  };
+>
+>  static const struct adi_axi_adc_chip_info ad9467_chip_tbl[] = {
+> +       [ID_AD9434] = {
+> +               .id = CHIPID_AD9434,
+> +               .max_rate = 500000000UL,
+> +               .scale_table = ad9434_scale_table,
+> +               .num_scales = ARRAY_SIZE(ad9434_scale_table),
+> +               .channels = ad9434_channels,
+> +               .num_channels = ARRAY_SIZE(ad9434_channels),
+> +       },
+>         [ID_AD9467] = {
+>                 .id = CHIPID_AD9467,
+>                 .max_rate = 250000000UL,
+> @@ -318,10 +346,14 @@ static int ad9467_preenable_setup(struct adi_axi_adc_conv *conv)
+>
+>  static int ad9467_setup(struct ad9467_state *st, unsigned int chip_id)
+>  {
+> +       st->output_mode = AN877_ADC_OUTPUT_MODE_TWOS_COMPLEMENT;
+> +
+>         switch (chip_id) {
+> +       case CHIPID_AD9434:
+> +               st->output_mode |= AD9434_DEF_OUTPUT_MODE;
+> +               return 0;
+>         case CHIPID_AD9467:
+> -               st->output_mode = AD9467_DEF_OUTPUT_MODE |
+> -                                 AN877_ADC_OUTPUT_MODE_TWOS_COMPLEMENT;
+> +               st->output_mode |= AD9467_DEF_OUTPUT_MODE;
+>                 return 0;
+>         default:
+>                 return -ENODEV;
+> @@ -404,6 +436,7 @@ static int ad9467_probe(struct spi_device *spi)
+>  }
+>
+>  static const struct of_device_id ad9467_of_match[] = {
+> +       { .compatible = "adi,ad9434", .data = &ad9467_chip_tbl[ID_AD9434], },
+>         { .compatible = "adi,ad9467", .data = &ad9467_chip_tbl[ID_AD9467], },
+>         {}
+>  };
+> --
+> 2.25.1
+>
