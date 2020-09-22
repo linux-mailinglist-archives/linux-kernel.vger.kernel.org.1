@@ -2,95 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6686B27488F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 20:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB6EC27488E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 20:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726789AbgIVStP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 14:49:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726563AbgIVStP (ORCPT
+        id S1726722AbgIVStM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 14:49:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24867 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726563AbgIVStL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 14:49:15 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9993C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 11:49:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=bXCprHXJBlm7ATmV5LwzCeuOoM7fLlfLlA/R7WtLeV4=; b=wkmMsamsgLxTuF8Zky11YWQ8Xj
-        R/YlmMt11KdJWhuUnFGazpgZr74YYcHK0c8D6/ClSgh6TznP8KVsFDykxLGQV0IbbIhdmSKlPCEay
-        76gIgZJCtWR2uO2RsOgQGBDu82WGG2LXtOIIfC5HTmRSeRB91u7oTvW+mZVAF5rg1kImUTeoFpyXc
-        tf9Nw/P0ubHaKux/n0bEPHByXvFvI/VM/d9R1JpB5GxsmptJYL0pTzwuKsy/ct+VGqA9Dy4saO90Y
-        AN+YJ5rf7qLrdKHK7uiYyMjjkpXOSWRvTSI1H7p/P8yvDi3IK7xVwKnMWW27ld3pP3J70iro9r8Nd
-        jHM5Bpvw==;
-Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kKnLf-0006nP-Uh; Tue, 22 Sep 2020 18:49:08 +0000
-Subject: Re: [PATCH] scripts: increase error-prone spell checking
-To:     Joe Perches <joe@perches.com>, Wang Qing <wangqing@vivo.com>,
+        Tue, 22 Sep 2020 14:49:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600800550;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pvVMl2lXhY9qW3FKBTGyVnidFcK9anz/x/7S1UyT+hU=;
+        b=WnUY5IxVnVDbAAQzJdpvzpl82RvIJNmdvLFqUw756PVMmTLAVnKtjUfZssXIyDrkOCAxnM
+        oZVMxesFbwd5staL0OoxVhJaNToOaz7YErdCi9uZnn9PtZkKGVyY+wSbWiU0mbjDZGeCXN
+        6A8eBdbXURhxeDk11+TnnRHS6TIM3tI=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-323-V5n66mLzMNunSipTf-CNPw-1; Tue, 22 Sep 2020 14:49:08 -0400
+X-MC-Unique: V5n66mLzMNunSipTf-CNPw-1
+Received: by mail-qt1-f199.google.com with SMTP id b18so16953734qto.4
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 11:49:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pvVMl2lXhY9qW3FKBTGyVnidFcK9anz/x/7S1UyT+hU=;
+        b=S9RFvICGGkl3HXhPCSrVqjMNE+XQNsxRLSqsv8lKHpf8etGaEAE9h6EUVxBZ7XIa+O
+         RVHvfNNLjXmFqABR0SwY+n/USOz6kcttrPxGsoC+KmnFQuqHWM6rPkyq3qtdtoxV0bjP
+         M2W6psgLewlZ7NiIQ53ZpNvdL5WMpoahzvsDysH8xMT4dHkzNlODvXHPb/BwHWMTYFRv
+         sYKoM9OYBymdDUj8d1KsoPIKuOsnUlQ6BGvSmHs98iNIDtj7SNaphfrTkmhGT7YOOEZd
+         VQQoJkxg2Mwe63O408HHerX2bbFpq+NGbq/m3HPrfXVI9tin2qOQ8VQe92bD07QuW1J5
+         dNgg==
+X-Gm-Message-State: AOAM5335+KbT6cHa+3xDCajIa/fyWMsA1XV0ZuFCwMndfrvOQklWlAjg
+        yUFDy3UdwFLEOqsmLlkUba3lS2HtaU8rIvDRWxKhzr+ZLkfCGH1IWaqt7zM3Dv7J62+swZXS7r0
+        A5d8P2mQN1noTJlADew/ZLtbn
+X-Received: by 2002:a37:9a93:: with SMTP id c141mr6216706qke.203.1600800548031;
+        Tue, 22 Sep 2020 11:49:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx+gvROI+XaSQiJOWbbyz+qOZbSbM01T/V529JXEp4D7KxFRuzpRATaThLsuFBVPun4ezpFww==
+X-Received: by 2002:a37:9a93:: with SMTP id c141mr6216680qke.203.1600800547794;
+        Tue, 22 Sep 2020 11:49:07 -0700 (PDT)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
+        by smtp.gmail.com with ESMTPSA id f76sm11725245qke.19.2020.09.22.11.49.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 11:49:07 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 14:49:05 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Jason Gunthorpe <jgg@ziepe.ca>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>,
-        David Hildenbrand <david@redhat.com>,
-        SeongJae Park <sjpark@amazon.de>, Xiong <xndchn@gmail.com>,
-        linux-kernel@vger.kernel.org
-References: <1600773524-3158-1-git-send-email-wangqing@vivo.com>
- <ff5dbd13-86c1-89f6-2741-19dd49fdadcf@infradead.org>
- <5c108605003d8ee48665ce616ec31c599c7f0c39.camel@perches.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <9e872477-4fb2-bf37-df76-bc6fd3f2972b@infradead.org>
-Date:   Tue, 22 Sep 2020 11:49:02 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jann Horn <jannh@google.com>
+Subject: Re: [PATCH 3/5] mm: Rework return value for copy_one_pte()
+Message-ID: <20200922184905.GM19098@xz-x1>
+References: <20200921211744.24758-1-peterx@redhat.com>
+ <20200921211744.24758-4-peterx@redhat.com>
+ <20200922100840.GA11679@redhat.com>
+ <20200922101815.GB11679@redhat.com>
+ <20200922153612.GF19098@xz-x1>
+ <20200922154845.GE11679@redhat.com>
+ <20200922160330.GH19098@xz-x1>
+ <20200922165354.GG11679@redhat.com>
+ <20200922181306.GJ19098@xz-x1>
+ <20200922182317.GH11679@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <5c108605003d8ee48665ce616ec31c599c7f0c39.camel@perches.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200922182317.GH11679@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/22/20 9:00 AM, Joe Perches wrote:
-> On Tue, 2020-09-22 at 07:37 -0700, Randy Dunlap wrote:
->> On 9/22/20 4:18 AM, Wang Qing wrote:
->>> Increase direcly,ununsed,manger spelling error check
->>>
->>> Signed-off-by: Wang Qing <wangqing@vivo.com>
->>> ---
->>>  scripts/spelling.txt | 3 +++
->>>  1 file changed, 3 insertions(+)
->>>
->>> diff --git a/scripts/spelling.txt b/scripts/spelling.txt
->>> index f253681..91ab82b
->>> --- a/scripts/spelling.txt
->>> +++ b/scripts/spelling.txt
->>> @@ -1534,3 +1534,6 @@ writting||writing
->>>  wtih||with
->>>  zombe||zombie
->>>  zomebie||zombie
->>> +direcly||directly
->>> +ununsed||unused
->>> +manger||manager
->>> \ No newline at end of file
->>>
->>
->> Uh, that file was in alphabetical order. Please try to keep it that way.
+On Tue, Sep 22, 2020 at 08:23:18PM +0200, Oleg Nesterov wrote:
+> On 09/22, Peter Xu wrote:
+> >
+> > On Tue, Sep 22, 2020 at 06:53:55PM +0200, Oleg Nesterov wrote:
+> > > On 09/22, Peter Xu wrote:
+> > > >
+> > > > On Tue, Sep 22, 2020 at 05:48:46PM +0200, Oleg Nesterov wrote:
+> > > > > > However since I didn't change this logic in this patch, it probably means this
+> > > > > > bug is also in the original code before this series...  I'm thinking maybe I
+> > > > > > should prepare a standalone patch to clear the swp_entry_t and cc stable.
+> > > > >
+> > > > > Well, if copy_one_pte(src_pte) hits a swap entry and returns entry.val != 0, then
+> > > > > pte_none(*src_pte) is not possible after restart? This means that copy_one_pte()
+> > > > > will be called at least once.
+> > > >
+> > > > Note that we've released the page table locks, so afaict the old swp entry can
+> > > > be gone under us when we go back to the "do" loop... :)
+> > >
+> > > But how?
+> > >
+> > > I am just curious, I don't understand this code enough.
+> >
+> > Me neither.
+> >
+> > The point is I think we can't assume *src_pte will read the same if we have
+> > released the src_ptl in copy_pte_range(),
 > 
-> More or less, but not completely.
-> It's somewhat grouped by desired correction,
-> but it's also somewhat random.
+> This is clear.
+> 
+> But I still think that !pte_none() -> pte_none() transition is not possible
+> under mmap_write_lock()...
+> 
+> OK, let me repeat I don't understans these code paths enough, let me reword:
+> I don't see how this transition is possible.
 
-OK. Thanks for that.
+Though I guess I'll keep my wording, because I still think it's accurate to
+me. :)
 
-> Here's a sorted diff:
-> ---
->  scripts/spelling.txt | 204 +++++++++++++++++++++++++--------------------------
->  1 file changed, 102 insertions(+), 102 deletions(-)
-
+Can we e.g. punch a page hole without changing vmas?
 
 -- 
-~Randy
+Peter Xu
 
