@@ -2,152 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAF60274A87
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A12274AE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:12:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726685AbgIVVCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 17:02:10 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:14602 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726550AbgIVVCJ (ORCPT
+        id S1726795AbgIVVMT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Sep 2020 17:12:19 -0400
+Received: from 203.196.19.25.static.zoot.jp ([203.196.19.25]:57777 "EHLO
+        h21.daiwa-hotcom.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726589AbgIVVMS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 17:02:09 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 08MKYnaV016640
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 13:37:27 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=OWbgJScCJjF4/NDWKw0S32FO6Lo1EgQ3Xsl+NSkPRIo=;
- b=SxjqcTLZqfEwQjEkJs1vmv07QIDmijGLUukfXm6S3ebLowY9/p8zh6P3u1jgjOcChTrQ
- j7Nx8Icpc8dXrqp84FnQtw/OUcBPDOD8UlcJS5xbExDlKw8Bb5QghKpcl8lEav3ZOgd5
- o5VAziIpDIQHjpQjeR5Airn6nz7B2/QHglg= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net with ESMTP id 33qn0as92x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 13:37:27 -0700
-Received: from intmgw002.41.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 22 Sep 2020 13:37:26 -0700
-Received: by devvm1755.vll0.facebook.com (Postfix, from userid 111017)
-        id D5FB2864B5E; Tue, 22 Sep 2020 13:37:21 -0700 (PDT)
-From:   Roman Gushchin <guro@fb.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <kernel-team@fb.com>, Roman Gushchin <guro@fb.com>
-Subject: [PATCH v1 3/4] mm: introduce page memcg flags
-Date:   Tue, 22 Sep 2020 13:36:59 -0700
-Message-ID: <20200922203700.2879671-4-guro@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200922203700.2879671-1-guro@fb.com>
-References: <20200922203700.2879671-1-guro@fb.com>
+        Tue, 22 Sep 2020 17:12:18 -0400
+X-Greylist: delayed 1576 seconds by postgrey-1.27 at vger.kernel.org; Tue, 22 Sep 2020 17:12:17 EDT
+Received: from h21.daiwa-hotcom.com (unknown [197.234.221.50])
+        by h21.daiwa-hotcom.com (Postfix) with ESMTP id 1F49A170191F
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 05:36:29 +0900 (JST)
+Reply-To: tolarokanse@gmail.com
+From:   Mr Tolar OKANSE <viola@h21.daiwa-hotcom.com>
+To:     linux-kernel@vger.kernel.org
+Subject: =?UTF-8?B?SU5WRVNUTUVOVCBPRkZFUiAvIE9GRlJFIETigJlJTlZFU1RJU1NFTUVOVA==?=
+Date:   22 Sep 2020 21:45:47 +0100
+Message-ID: <20200922214547.2839EBD5C77BFE34@h21.daiwa-hotcom.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-22_18:2020-09-21,2020-09-22 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 adultscore=0
- bulkscore=0 lowpriorityscore=0 malwarescore=0 suspectscore=0 mlxscore=0
- mlxlogscore=266 clxscore=1015 priorityscore=1501 impostorscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009220161
-X-FB-Internal: deliver
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The lowest bit in page->memcg_data is used to distinguish between
-struct memory_cgroup pointer and a pointer to a objcgs array.
-All checks and modifications of this bit are open-coded.
+INVESTMENT OFFER
 
-Let's formalize it using page memcg flags, defined in page_memcg_flags
-enum and replace all open-coded accesses with test_bit()/__set_bit().
+I am Mr Tolar OKANSE, financial advisor, property and private 
+assets. I found your contact through a search through the 
+Internet and I apologize for this unexpected intrusion on my part 
+and the surprised effect it may cause given everything that is 
+currently happening on the Internet.
 
-Few additional flags might be added later. Flags are intended to be
-mutually exclusive.
+Indeed, I am in direct contact with a Libyan community 
+(Politicians, Traders, Businessmen and Military) resident in 
+Ghana. The latter have significant funds and would like to make 
+investments and investments with their funds in all profitable 
+areas and they are looking for a serious manager to whom to 
+entrust all management.
 
-Signed-off-by: Roman Gushchin <guro@fb.com>
----
- include/linux/memcontrol.h | 29 +++++++++++++++++++----------
- 1 file changed, 19 insertions(+), 10 deletions(-)
+If you are interested in my offer, I will put you in contact with 
+their representative on site for more details and information.
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index ab3ea3e90583..9a49f1e1c0c7 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -343,6 +343,11 @@ struct mem_cgroup {
-=20
- extern struct mem_cgroup *root_mem_cgroup;
-=20
-+enum page_memcg_flags {
-+	/* page->memcg_data is a pointer to an objcgs vector */
-+	PG_MEMCG_OBJ_CGROUPS,
-+};
-+
- /*
-  * page_mem_cgroup - get the memory cgroup associated with a page
-  * @page: a pointer to the page struct
-@@ -371,13 +376,7 @@ static inline struct mem_cgroup *page_mem_cgroup_che=
-ck(struct page *page)
- {
- 	unsigned long memcg_data =3D page->memcg_data;
-=20
--	/*
--	 * The lowest bit set means that memcg isn't a valid
--	 * memcg pointer, but a obj_cgroups pointer.
--	 * In this case the page is shared and doesn't belong
--	 * to any specific memory cgroup.
--	 */
--	if (memcg_data & 0x1UL)
-+	if (test_bit(PG_MEMCG_OBJ_CGROUPS, &memcg_data))
- 		return NULL;
-=20
- 	return (struct mem_cgroup *)memcg_data;
-@@ -422,7 +421,13 @@ static inline void clear_page_mem_cgroup(struct page=
- *page)
-  */
- static inline struct obj_cgroup **page_obj_cgroups(struct page *page)
- {
--	return (struct obj_cgroup **)(page->memcg_data & ~0x1UL);
-+	unsigned long memcg_data =3D page->memcg_data;
-+
-+	VM_BUG_ON_PAGE(memcg_data && !test_bit(PG_MEMCG_OBJ_CGROUPS,
-+					       &memcg_data), page);
-+	__clear_bit(PG_MEMCG_OBJ_CGROUPS, &memcg_data);
-+
-+	return (struct obj_cgroup **)memcg_data;
- }
-=20
- /*
-@@ -437,7 +442,7 @@ static inline struct obj_cgroup **page_obj_cgroups_ch=
-eck(struct page *page)
- {
- 	unsigned long memcg_data =3D page->memcg_data;
-=20
--	if (memcg_data && (memcg_data & 0x1UL))
-+	if (memcg_data && test_bit(PG_MEMCG_OBJ_CGROUPS, &memcg_data))
- 		return (struct obj_cgroup **)memcg_data;
-=20
- 	return NULL;
-@@ -453,7 +458,11 @@ static inline struct obj_cgroup **page_obj_cgroups_c=
-heck(struct page *page)
- static inline bool set_page_obj_cgroups(struct page *page,
- 					struct obj_cgroup **objcgs)
- {
--	return !cmpxchg(&page->memcg_data, 0, (unsigned long)objcgs | 0x1UL);
-+	unsigned long memcg_data =3D (unsigned long)objcgs;
-+
-+	__set_bit(PG_MEMCG_OBJ_CGROUPS, &memcg_data);
-+
-+	return !cmpxchg(&page->memcg_data, 0, memcg_data);
- }
-=20
- /*
---=20
-2.26.2
+
+Please contact me directly at my email address: 
+tolarokanse@gmail.com
+
+Cordially...
+Mr T. Okanse
+
+……………………………………………………………………………….
+
+OFFRE D’INVESTISSEMENT
+
+Je suis Mr Tolar OKANSE, conseiller financier, des biens et de 
+patrimoines privés. J'ai trouvé votre contact suite à une 
+recherche via l'Internet et je vous prie de m'excuser pour cette 
+intrusion inattendue de ma part et l'effet surpris que cela peut 
+causer vu tout ce qui se passe actuellement sur l'Internet.
+
+En effet, je suis en contact direct avec une communauté libyenne 
+(Politiciens, Commerçants, Hommes d’affaire et Militaires) 
+résidents au Ghana.  Ces derniers disposent d’importants fonds et 
+souhaiteraient faire des placements et investissement avec ses 
+fonds dans tous les domaines rentables et  ils sont à la 
+recherche de manager sérieux à qui confier  toute la gérance.
+
+Dans le cas où vous serez intéressés par mon offre, je vous 
+mettrai en contact avec leur représentant sur place pour plus 
+amples détails et informations.
+
+
+Veuillez bien vouloir me contacter directement à mon adresse e-
+mail : tolarokanse@gmail.com
+
+Cordialement...
+Mr T. Okanse
 
