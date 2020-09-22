@@ -2,175 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 525A2273DCE
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 10:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB461273DD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 10:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726515AbgIVIyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 04:54:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726430AbgIVIyi (ORCPT
+        id S1726503AbgIVI5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 04:57:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54837 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726366AbgIVI5l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 04:54:38 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 507BEC061755;
-        Tue, 22 Sep 2020 01:54:38 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BwZqt217Wz9sS8;
-        Tue, 22 Sep 2020 18:54:34 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1600764875;
-        bh=pqiHuE+/p5e1RTN5422hw1dR9KckX9+PEcZG+c5Jg8c=;
-        h=Date:From:To:Cc:Subject:From;
-        b=I3okOOaYXLzG/toNL6q+TYe/57n0afqYGZYQ+vTY78wu0+7LpEGkxek2hnKZUme5c
-         gbN7THtkQjK4S+IfixtWaBWDqd5wOX8bReI88Gylcw2iOm7o9NmFNF/sJtD3DNz8wr
-         UmhtMPdzyQ9Jo912+hcIXiowtXU/rIR+hwtAGXPEShC4Z6Zrq7zokQZHK5FUrC2swN
-         1zAa0szwE3ReGTN1Bw23oQVGAaodCn8xIX9mNMIm/x1b4aRl4kftheiYzSBvbNvxQT
-         xKdVa8cqYXtTMqI5pBdncI38Kkm1oFyOqxZC/5vHvxWaW/j5dEjJ/5/txioOD5uTn+
-         Jc3zvWzpWdVFg==
-Date:   Tue, 22 Sep 2020 18:54:33 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian@brauner.io>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Rientjes <rientjes@google.com>
-Subject: linux-next: manual merge of the akpm-current tree with the pidfd
- tree
-Message-ID: <20200922185433.62eafe4c@canb.auug.org.au>
+        Tue, 22 Sep 2020 04:57:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600765059;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0oVV0fojO69JgJ5jRZtGVqDd85RbY/OL+2VLqFLwOgg=;
+        b=CcC3UVCV2pv9qRg1/Yw+DoTM9BJqjr//HfvyXcUMMNnkJsV3d1jXDa5nAE/aAgS38weI1R
+        XauxwJpfKSL+OULBE5psZiB6VY4O3t4KAZTwZ3fMCON1k74atWZRTEXa+3kba4Ge1wdjOD
+        Ph6q2tv1KbCEgEVSnhZukmW8T6mYKZI=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-451-u-ZpzqgoNLi8kbjgcy8jaQ-1; Tue, 22 Sep 2020 04:57:37 -0400
+X-MC-Unique: u-ZpzqgoNLi8kbjgcy8jaQ-1
+Received: by mail-ej1-f70.google.com with SMTP id j2so5937242ejm.18
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 01:57:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0oVV0fojO69JgJ5jRZtGVqDd85RbY/OL+2VLqFLwOgg=;
+        b=FTErw97nGIbipndL17LBjBU+X87dZ3fIEYz4GNNmgl87MOR3V/6ESTGhWl3FvlXmzW
+         +FU6bdqv9gLElGoSVbPASPAFVccL0iBEG/AYZb5Cb3mt3j5Kb6C89rQqraicre3qhx8a
+         +F+flauKHTUDTRlLJ+u3jCw0b7KXz3X7fd408gKTiD5NoitU8uvL/0KsQ06LxQ2wJyJs
+         wOAmQClgoEQL8HCuuKNkY38mio5Fhalz+WonGmB/YLO4l0cW6zrvpptyRGVcm+lWNNmc
+         QBiR0cOOcAWcnTA30oYdv1pa8KuOYWDABjN8kDlR92Rnr1bySPMTgezrWItlDHGmy/J+
+         iGDQ==
+X-Gm-Message-State: AOAM533TKUYLRq+2eJgDQBLvrOQK+jg6KESyaTWE1h+FJm3VOJbnDjT2
+        Y/KzG1THJo4TbCKElAv8AurhWeROjm0RMu2lghqfI6xz2+eI4wOif7Xu/Ihjyx3VQKHq0CWyeFW
+        rEN8ayglXwCIZia2RquejHWsx
+X-Received: by 2002:aa7:d648:: with SMTP id v8mr2894643edr.159.1600765055947;
+        Tue, 22 Sep 2020 01:57:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyuxQXjI9QlbRwMjIZdysB07FPwhUX4B5mTN4FFl5kOQFFOiWTxYH9zzy+6YvjGrinto7sYSg==
+X-Received: by 2002:aa7:d648:: with SMTP id v8mr2894628edr.159.1600765055721;
+        Tue, 22 Sep 2020 01:57:35 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id r10sm7407795ejb.99.2020.09.22.01.57.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Sep 2020 01:57:34 -0700 (PDT)
+Subject: Re: [PATCH] Introduce support for Systems Management Driver over WMI
+ for Dell Systems
+To:     "Limonciello, Mario" <Mario.Limonciello@dell.com>,
+        Divya Bharathi <divya27392@gmail.com>,
+        "dvhart@infradead.org" <dvhart@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "Bharathi, Divya" <Divya.Bharathi@Dell.com>,
+        "Ksr, Prasanth" <Prasanth.Ksr@dell.com>,
+        Richard Hughes <rhughes@redhat.com>,
+        Jared Dominguez <jaredz@redhat.com>
+References: <20200730143122.10237-1-divya_bharathi@dell.com>
+ <d3de1d27-25ac-be43-54d8-dcbfffa31e1d@redhat.com>
+ <DM6PR19MB26364970D0981212E811E1B0FA2E0@DM6PR19MB2636.namprd19.prod.outlook.com>
+ <67ca316a-227f-80f6-ad22-7d08112b2584@redhat.com>
+ <DM6PR19MB26368BB2B8C4D7CE58DF7C31FA230@DM6PR19MB2636.namprd19.prod.outlook.com>
+ <5847917c-2c34-5d74-b5db-f33bb8fc9e13@redhat.com>
+ <DM6PR19MB2636626A94385EDC7C0CACF9FA3E0@DM6PR19MB2636.namprd19.prod.outlook.com>
+ <33666ec6-be47-2c33-d4c5-6b23b53f6185@redhat.com>
+ <DM6PR19MB263615C1060108E5661AE615FA3A0@DM6PR19MB2636.namprd19.prod.outlook.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <52fb287e-e683-63bc-3641-90abd78c605a@redhat.com>
+Date:   Tue, 22 Sep 2020 10:57:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/lE.8lsnWgmtAeriroXtV+XH";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <DM6PR19MB263615C1060108E5661AE615FA3A0@DM6PR19MB2636.namprd19.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/lE.8lsnWgmtAeriroXtV+XH
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-Hi all,
+On 9/21/20 5:26 PM, Limonciello, Mario wrote:
 
-Today's linux-next merge of the akpm-current tree got a conflict in:
+<snip>
 
-  kernel/exit.c
+I will do another more detailed reply in another email, but I would like to focus
+at the main pain point here, which is the using a generic sysfs-ABI/class vs using
+a Dell specific sysfs-ABI.
 
-between commit:
+>> I guess a could way to look at the generic sysfs firmware attributes
+>> class I'm proposing is looking at it as a lowest common denominator
+>> solution. With the addition of vendor specific extensions so that
+>> vendors (e.g. Dell) are not limited to only offering functionality
+>> offered by the generic, shared ABI. Does that make sense ?
+>>
+>> Regards,
+>>
+> 
+> I really think that trying to fit all the vendors into the same interface is going
+> to stifle areas for innovation in the firmware and kernel space in the name of
+> "simplicity" which really only goes as far as the kernel side.  Userspace has
+> to carry delta between vendors no matter what, so why introduce a LCD then?
+> 
+> Just as easily we could have:
+> /sys/devices/platform/dell-wmi-sysman/attributes/
+> 
+> Which works 90% the same as:
+> /sys/devices/platform/lenovo-wmi-sysman/attributes/
 
-  ba7d25f3dff6 ("exit: support non-blocking pidfds")
+So the reason why I want a class interface for this is to allow say
+FleetCommander to have a generic plugin implementing that 90%, so
+no deps, only support plain admin-password authentication.
 
-from the pidfd tree and patch:
+Allowing such a generic plugin requires 2 things:
 
-  "pid: move pidfd_get_pid() to pid.c"
+1) Ensuring that the 90% overlapping functionality offers a 100%
+identical userspace ABI, thus a shared sysfs ABI definition
 
-from the akpm-current tree.
+2) That userspace has a generic way to enumerate devices/drivers
+implementing this shared sysfs ABI, and we have a standard
+mechanism for enumerating drivers which implement a standard ABI,
+that is we make them register class devices under /sys/class/<abi-name>.
 
-I fixed it up (I made the changes from the former to kernel/pid.c - see
-below) and can carry the fix as necessary. This is now fixed as far as
-linux-next is concerned, but any non trivial conflicts should be mentioned
-to your upstream maintainer when your tree is submitted for merging.
-You may also want to consider cooperating with the maintainer of the
-conflicting tree to minimise any particularly complex conflicts.
+I have not heard any convincing arguments against why would
+should not or can not have these 2 things. All I'm hearing is
+a vague fear that this may "stifle areas for innovation in the firmware
+and kernel space".
 
-I also had to add the following fix patch after
+Honestly I have the feeling we are going in circles in this discussion
+and I really do not understand why you are so dead set against having
+a common sysfs ABI/class for this?
 
-  "mm/madvise: introduce process_madvise() syscall: an external memory hint=
-ing API"
+In part of the snipped text you write "Having to de-feature the sysfs
+interface", but I have not asked you to remove any features anywhere in
+this thread!
 
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Tue, 22 Sep 2020 18:36:35 +1000
-Subject: [PATCH] fix up for pidfd_get_pid() API change
+So I really do not understand where this fear of not being able to
+implement certain, possibly Dell specific, features comes from?
 
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- mm/madvise.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+You mentioned that the way the dependencies are expressed are
+highly Dell specific, so I suggested allowing having vendor
+extensions like dell-modifiers and dell-value_modifiers. The whole
+idea behind allowing vendor-extensions is actually the exact
+opposite of de-featuring the sysfs interface.
 
-diff --git a/mm/madvise.c b/mm/madvise.c
-index a0ebeb5e2411..51317bd3c69d 100644
---- a/mm/madvise.c
-+++ b/mm/madvise.c
-@@ -1189,11 +1189,12 @@ static ssize_t do_process_madvise(int pidfd, struct=
- iov_iter *iter,
- 	struct task_struct *task;
- 	struct mm_struct *mm;
- 	size_t total_len =3D iov_iter_count(iter);
-+	unsigned int pidfd_flags;
-=20
- 	if (flags !=3D 0)
- 		return -EINVAL;
-=20
--	pid =3D pidfd_get_pid(pidfd);
-+	pid =3D pidfd_get_pid(pidfd, &pidfd_flags);
- 	if (IS_ERR(pid))
- 		return PTR_ERR(pid);
-=20
---=20
-2.28.0
+Regards,
 
---=20
-Cheers,
-Stephen Rothwell
+Hans
 
-diff --git a/include/linux/pid.h b/include/linux/pid.h
-index 176d6cf80e7c..fa10acb8d6a4 100644
---- a/include/linux/pid.h
-+++ b/include/linux/pid.h
-@@ -77,7 +77,7 @@ extern const struct file_operations pidfd_fops;
- struct file;
-=20
- extern struct pid *pidfd_pid(const struct file *file);
--struct pid *pidfd_get_pid(unsigned int fd);
-+struct pid *pidfd_get_pid(unsigned int fd, unsigned int *flags);
-=20
- static inline struct pid *get_pid(struct pid *pid)
- {
-diff --git a/kernel/pid.c b/kernel/pid.c
-index c791fe63fa36..47466d0bbc5b 100644
---- a/kernel/pid.c
-+++ b/kernel/pid.c
-@@ -520,7 +520,7 @@ struct pid *find_ge_pid(int nr, struct pid_namespace *n=
-s)
- 	return idr_get_next(&ns->idr, &nr);
- }
-=20
--struct pid *pidfd_get_pid(unsigned int fd)
-+struct pid *pidfd_get_pid(unsigned int fd, unsigned int *flags)
- {
- 	struct fd f;
- 	struct pid *pid;
-@@ -530,8 +530,10 @@ struct pid *pidfd_get_pid(unsigned int fd)
- 		return ERR_PTR(-EBADF);
-=20
- 	pid =3D pidfd_pid(f.file);
--	if (!IS_ERR(pid))
-+	if (!IS_ERR(pid)) {
- 		get_pid(pid);
-+		*flags =3D f.file->f_flags;
-+	}
-=20
- 	fdput(f);
- 	return pid;
-
---Sig_/lE.8lsnWgmtAeriroXtV+XH
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9pu8kACgkQAVBC80lX
-0Gx4sQf+NFW8HcJdvvomweVUMeacS0KZw2s9GONociNxULMqeuTK08rJ+wd2eN6T
-VNCSt9fDFR03W7Udkux/WuTGb96KQLQhLRVAjdx74LjIohlJCI6xfUvF/+eNT4NS
-rKVsvajRCdeYCnqoDiRBSGWE2Tf7lSb5yBSTeIgAHY7h8yAIE6F12wzxSmbsbUSK
-dS7P7gXAva6AKV0dGANFk3I+OQhCdWGN0F/oXBA0ixDNs6f9864MQXx+9Dm6F588
-4pOVr/mmsmgF42FDqdImv7wWHni5OM/1MOe8CYvW/HI7vq4iU315OnNKVV1ABuHN
-iMGN5ooqpduoLWh32xVXSFhmDFp1Ig==
-=grFY
------END PGP SIGNATURE-----
-
---Sig_/lE.8lsnWgmtAeriroXtV+XH--
