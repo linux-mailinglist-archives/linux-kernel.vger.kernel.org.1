@@ -2,187 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AD812745AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B0572745AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:46:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726749AbgIVPob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 11:44:31 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:45438 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726566AbgIVPob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 11:44:31 -0400
-Received: from zn.tnic (p200300ec2f0bfb00281bee649a1894f0.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:fb00:281b:ee64:9a18:94f0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AB6641EC00EC;
-        Tue, 22 Sep 2020 17:44:29 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600789469;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=ofmUrseAbycCQWoSGsPSBEr7sPcQODqh36PCqwBgOQE=;
-        b=ot2mqXZ8ahJI5pqNoMHX56jTHjhYaeu3jczmnUSz7PsVyifLgzuVMFY0/aPFwYQAevE0NF
-        9OPHMeuCl227HhPaIdM9Uy0g/9tNSlMM+oadQBgE/9f4/8ycLpwpoNUc7DaEyOuRRGbDjp
-        vN5YXLlyCyVVspH2kmvDVKR+oWCnT94=
-Date:   Tue, 22 Sep 2020 17:44:24 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jethro Beekman <jethro@fortanix.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, sean.j.christopherson@intel.com,
-        tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v38 17/24] x86/sgx: ptrace() support for the SGX driver
-Message-ID: <20200922154424.GL22660@zn.tnic>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-18-jarkko.sakkinen@linux.intel.com>
+        id S1726682AbgIVPqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 11:46:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726566AbgIVPqI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 11:46:08 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB58FC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 08:46:07 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id b124so12797323pfg.13
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 08:46:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=9AQrDvOJ4B882Sq7uQ4Kp3Mhc6ZZV9HLHcMLFE6TOhI=;
+        b=Jhw9NoPhISjFnb2iyTpxw6h+RYVNiIfyIRhkX8YbMIZ9JUlIwbdADjHuei8PTMc8/4
+         o7qJ2esrUt0uK60odGA6j87/5evujlQU3jLhrLXuT3LMK8CV6VbFHzMYr3K3PEq5LNkU
+         vQhDg4EXVsK9vbUG4dZfwGp/Yn3qZjjaENRAHyXuKY/cDDLfXbMoYLPpA0G8jXoUEF8N
+         l3kuOQ/RmOAWo59vgRpHHhwDUWAWCeuxesm3e/f09wCj6rBfeG0MHJmLhwxdy+7AO48R
+         e8PUWOJEmTjqHOFJGWB5+7qCKHJE77bDIhNPWKChZbspvdayn6C03yz07pA7CjoGqaHQ
+         SOWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=9AQrDvOJ4B882Sq7uQ4Kp3Mhc6ZZV9HLHcMLFE6TOhI=;
+        b=ctxz/42yD8QrbA++hDb6ENNHxb6Om44/P0KhdRaweJaqyw4xQ7qP/4ZZq1YvIQq7S5
+         YdnhImq55R0c7i1b0Pc8pvFllrJbXIxqw0OaBWkdETFXi+chvZwCd8hIwx/x1t6WehTS
+         FY66NNUJVvrCKXgITWpAy8l5PElxi6ujFDCEeLDvOmnUD+L4LvCqkk+0A/EV2Ozit9IC
+         1lRI1PYJe0iJOwdjr3KltOfb5DHBjMxC3GEMFSp/7Q8sJOpo47U0BM5+ohTGB7F24qzq
+         fkyb/3VOBAtYG5DUFHOohh9u1GdFQyACg/Ohd1AAJKhdtDGAfhb92jznmpMvqWFM3yfl
+         dSAw==
+X-Gm-Message-State: AOAM531xTKIphF1QPNFkXR7W/J8wiMjFkhnpHCsspK/sFLVVUg8vpJyK
+        24qjtNFSBJGXUFcB6Lm4Cw==
+X-Google-Smtp-Source: ABdhPJypkqDqkgeFFBXubtAf7952MvxcTfvzT0LhQl5JNUIgU2hJ7zgsdZIPQXmZ5GbuiVCSjyvMew==
+X-Received: by 2002:a63:2ca:: with SMTP id 193mr3929260pgc.336.1600789567483;
+        Tue, 22 Sep 2020 08:46:07 -0700 (PDT)
+Received: from localhost.localdomain (n11212042027.netvigator.com. [112.120.42.27])
+        by smtp.gmail.com with ESMTPSA id f10sm15731901pfk.195.2020.09.22.08.46.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 08:46:06 -0700 (PDT)
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Jan Kara <jack@suse.com>
+Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: [Linux-kernel-mentees] [PATCH] udf: Fix memory leak in udf_process_sequence()
+Date:   Tue, 22 Sep 2020 11:45:31 -0400
+Message-Id: <20200922154531.153922-1-yepeilin.cs@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <0000000000004c1f4d05afcff2f4@google.com>
+References: <0000000000004c1f4d05afcff2f4@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200915112842.897265-18-jarkko.sakkinen@linux.intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+udf_process_sequence() is leaking memory. Free `data.part_descs_loc`
+before returning.
 
-> Subject: Re: [PATCH v38 17/24] x86/sgx: ptrace() support for the SGX driver
-			     ... x86/sgx: Add ptrace() support...
+Cc: stable@vger.kernel.org
+Fixes: 7b78fd02fb19 ("udf: Fix handling of Partition Descriptors")
+Reported-and-tested-by: syzbot+128f4dd6e796c98b3760@syzkaller.appspotmail.com
+Link: https://syzkaller.appspot.com/bug?id=c5ec4e6f5d818f3c4afd4d59342468eec08a38da
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+---
+ fs/udf/super.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
-subject needs a verb.
-
-On Tue, Sep 15, 2020 at 02:28:35PM +0300, Jarkko Sakkinen wrote:
-> Add VMA callbacks for ptrace() that can be used with debug enclaves.
-> With debug enclaves data can be read and write the memory word at a time
-
-I think you wanna say here
-
-"... data can be read and/or written a memory word at a time by using..."
-
-> by using ENCLS(EDBGRD) and ENCLS(EDBGWR) leaf instructions.
-> 
-> Acked-by: Jethro Beekman <jethro@fortanix.com>
-> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> ---
->  arch/x86/kernel/cpu/sgx/encl.c | 87 ++++++++++++++++++++++++++++++++++
->  1 file changed, 87 insertions(+)
-> 
-> diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
-> index 11ec2df59b54..7f8df2c8ef35 100644
-> --- a/arch/x86/kernel/cpu/sgx/encl.c
-> +++ b/arch/x86/kernel/cpu/sgx/encl.c
-> @@ -333,10 +333,97 @@ static int sgx_vma_mprotect(struct vm_area_struct *vma,
->  	return mprotect_fixup(vma, pprev, start, end, newflags);
->  }
->  
-> +static int sgx_edbgrd(struct sgx_encl *encl, struct sgx_encl_page *page,
-> +		      unsigned long addr, void *data)
-> +{
-> +	unsigned long offset = addr & ~PAGE_MASK;
-> +	int ret;
-> +
-> +
-> +	ret = __edbgrd(sgx_get_epc_addr(page->epc_page) + offset, data);
-> +	if (ret)
-> +		return -EIO;
-> +
-> +	return 0;
-> +}
-> +
-> +static int sgx_edbgwr(struct sgx_encl *encl, struct sgx_encl_page *page,
-> +		      unsigned long addr, void *data)
-> +{
-> +	unsigned long offset = addr & ~PAGE_MASK;
-> +	int ret;
-> +
-> +	ret = __edbgwr(sgx_get_epc_addr(page->epc_page) + offset, data);
-> +	if (ret)
-> +		return -EIO;
-> +
-> +	return 0;
-> +}
-
-I know those are supposed to correspond to the ENCLS leafs but the
-function names are totally unreadable. I guess you could name them
-
-sgx_encl_dbg_read
-sgx_encl_dbg_write
-
-and leave the lowlevel helpers like the insn names.
-
-> +static int sgx_vma_access(struct vm_area_struct *vma, unsigned long addr,
-> +			  void *buf, int len, int write)
-> +{
-> +	struct sgx_encl *encl = vma->vm_private_data;
-> +	struct sgx_encl_page *entry = NULL;
-> +	char data[sizeof(unsigned long)];
-> +	unsigned long align;
-> +	unsigned int flags;
-> +	int offset;
-> +	int cnt;
-> +	int ret = 0;
-> +	int i;
-> +
-> +	/* If process was forked, VMA is still there but vm_private_data is set
-> +	 * to NULL.
-> +	 */
-
-Kernel comments style is:
-
-	/*
-	 * A sentence ending with a full-stop.
-	 * Another sentence. ...
-	 * More sentences. ...
-	 */
-
-> +	if (!encl)
-> +		return -EFAULT;
-> +
-> +	flags = atomic_read(&encl->flags);
-> +
-> +	if (!(flags & SGX_ENCL_DEBUG) || !(flags & SGX_ENCL_INITIALIZED) ||
-> +	    (flags & SGX_ENCL_DEAD))
-> +		return -EFAULT;
-> +
-> +	for (i = 0; i < len; i += cnt) {
-> +		entry = sgx_encl_reserve_page(encl, (addr + i) & PAGE_MASK);
-> +		if (IS_ERR(entry)) {
-> +			ret = PTR_ERR(entry);
-> +			break;
-> +		}
-> +
-> +		align = ALIGN_DOWN(addr + i, sizeof(unsigned long));
-> +		offset = (addr + i) & (sizeof(unsigned long) - 1);
-> +		cnt = sizeof(unsigned long) - offset;
-> +		cnt = min(cnt, len - i);
-> +
-> +		ret = sgx_edbgrd(encl, entry, align, data);
-> +		if (ret)
-> +			goto out;
-> +
-> +		if (write) {
-> +			memcpy(data + offset, buf + i, cnt);
-> +			ret = sgx_edbgwr(encl, entry, align, data);
-> +			if (ret)
-> +				goto out;
-> +		} else
-
-		} else {
-
-> +			memcpy(buf + i, data + offset, cnt);
-
-		}
-
-Put the else branch in {} too.
-
+diff --git a/fs/udf/super.c b/fs/udf/super.c
+index 1c42f544096d..b0d862ab3024 100644
+--- a/fs/udf/super.c
++++ b/fs/udf/super.c
+@@ -1698,7 +1698,8 @@ static noinline int udf_process_sequence(
+ 					"Pointers (max %u supported)\n",
+ 					UDF_MAX_TD_NESTING);
+ 				brelse(bh);
+-				return -EIO;
++				ret = -EIO;
++				goto out;
+ 			}
+ 
+ 			vdp = (struct volDescPtr *)bh->b_data;
+@@ -1718,7 +1719,8 @@ static noinline int udf_process_sequence(
+ 			curr = get_volume_descriptor_record(ident, bh, &data);
+ 			if (IS_ERR(curr)) {
+ 				brelse(bh);
+-				return PTR_ERR(curr);
++				ret = PTR_ERR(curr);
++				goto out;
+ 			}
+ 			/* Descriptor we don't care about? */
+ 			if (!curr)
+@@ -1740,28 +1742,32 @@ static noinline int udf_process_sequence(
+ 	 */
+ 	if (!data.vds[VDS_POS_PRIMARY_VOL_DESC].block) {
+ 		udf_err(sb, "Primary Volume Descriptor not found!\n");
+-		return -EAGAIN;
++		ret = -EAGAIN;
++		goto out;
+ 	}
+ 	ret = udf_load_pvoldesc(sb, data.vds[VDS_POS_PRIMARY_VOL_DESC].block);
+ 	if (ret < 0)
+-		return ret;
++		goto out;
+ 
+ 	if (data.vds[VDS_POS_LOGICAL_VOL_DESC].block) {
+ 		ret = udf_load_logicalvol(sb,
+ 				data.vds[VDS_POS_LOGICAL_VOL_DESC].block,
+ 				fileset);
+ 		if (ret < 0)
+-			return ret;
++			goto out;
+ 	}
+ 
+ 	/* Now handle prevailing Partition Descriptors */
+ 	for (i = 0; i < data.num_part_descs; i++) {
+ 		ret = udf_load_partdesc(sb, data.part_descs_loc[i].rec.block);
+ 		if (ret < 0)
+-			return ret;
++			goto out;
+ 	}
+ 
+-	return 0;
++	ret = 0;
++out:
++	kfree(data.part_descs_loc);
++	return ret;
+ }
+ 
+ /*
 -- 
-Regards/Gruss,
-    Boris.
+2.25.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
