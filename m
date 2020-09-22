@@ -2,127 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E44B12742AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 15:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B23D92742AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 15:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726728AbgIVNIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 09:08:11 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:14032 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726573AbgIVNIK (ORCPT
+        id S1726591AbgIVNJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 09:09:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726566AbgIVNJr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 09:08:10 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08MD6TQB021917;
-        Tue, 22 Sep 2020 06:08:06 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=pfpt0220;
- bh=6wa6TQnds4To/blqpDE4MQd5qZXhirQSwikJ/CZLN/I=;
- b=YTOGnmoDrOi+D1K/jlBxpIJYvGdZLER6jJsqZWYkoAlfc8xQiPEffwDrZl1wjvBiH+1G
- u6RnM/FTht/ttgaSDDqp+rKOVd7XkhajXqEDh8ltntQBvx5uLLDKLJOytWXRlfqBGMy6
- iBcTxmfeNWqbOODTx7ES1AfdfGBayWpIE8utHjunftu0kvOT0uxz8JM83uJJA9CwWvVh
- 1Iwp61qg5wWty8DFn0Oi5UYN2Gv3oeing4QifsieFmENs+Fz2Q7aY8gea8omJ6ufuMwo
- HcajW/qxsRwfY9fcMCweWSxX8hKMQkSQWW/WUS9Yo5fjNxachf61pzO/XvzlskCWCVoP iA== 
-Received: from sc-exch03.marvell.com ([199.233.58.183])
-        by mx0b-0016f401.pphosted.com with ESMTP id 33nhgna5es-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 22 Sep 2020 06:08:06 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH03.marvell.com
- (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 22 Sep
- 2020 06:08:05 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 22 Sep
- 2020 06:08:04 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 22 Sep 2020 06:08:04 -0700
-Received: from hyd1584.caveonetworks.com (unknown [10.29.37.82])
-        by maili.marvell.com (Postfix) with ESMTP id 0E1EB3F703F;
-        Tue, 22 Sep 2020 06:07:59 -0700 (PDT)
-From:   George Cherian <george.cherian@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     George Cherian <george.cherian@marvell.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Sunil Kovvuri Goutham" <Sunil.Goutham@cavium.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        "Tomasz Duszynski" <tduszynski@cavium.com>,
-        Aleksey Makarov <amakarov@marvell.com>,
-        Christina Jacob <cjacob@marvell.com>,
-        Hariprasad Kelam <hkelam@marvell.com>,
-        Felix Manlunas <fmanlunas@marvell.com>,
-        hariprasad <hari1219@gmail.com>
-Subject: [net-next PATCH 2/2] octeontx2-pf: Support to change VLAN based RSS hash options via ethtool
-Date:   Tue, 22 Sep 2020 18:37:27 +0530
-Message-ID: <20200922130727.2350661-3-george.cherian@marvell.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200922130727.2350661-1-george.cherian@marvell.com>
-References: <20200922130727.2350661-1-george.cherian@marvell.com>
+        Tue, 22 Sep 2020 09:09:47 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E62AAC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 06:09:46 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id c18so15439530qtw.5
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 06:09:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vqr0QIjgGnH/md+DPTcLiUrZQZNCzuz2rR04td1JWzk=;
+        b=V1HdYFqGhmFRrJHKvVMc3CAktzjlY3N1JGJZ2JYQ8Cq3yBKTnwNSPXOnY295wGg75m
+         lIGUE86UooaRU7H/Apt9lsgCHF7DU1M74zOR39rv069AR+F09F/H3t7ntyLe23mQATp2
+         jl6O9+wZKOjM3nuZQGiZd9D1ZxWq7nmpINElJyd3W3g6UAko2LA5vkH+4yKH7HHL7ZXg
+         jLX/kwydBgQMRh8ldSgrpiuV7UmCmo3PPMg5n6+JpBBffqDxRE+06odZymudNgfsV3UY
+         WtnmKfGAA0W9bNFdVVxQoPnz/vsnQKsKk1Q4QiqUzoPQwP8STP+foeBuqxMk1haA4aCa
+         5j9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vqr0QIjgGnH/md+DPTcLiUrZQZNCzuz2rR04td1JWzk=;
+        b=Y40T+BpoO3aoiJAdHo5s7mmJjvjNfF478IjWzyzCHjV9jCaJ1QMsFNV06SnNoUEBUP
+         JBYarnLUrsepHC7qrzmV8kMtIC2bGF5gL7T9csJbSfpxDCTWN6W7u2jhYZSmhNyCYLwX
+         WAy7T8IGOuPkOMCAoBIWEilWR0tO9qoYmtHta63caQGt+ZYheF/Y6jidJVaOfTTtcPn6
+         ICj7MsknJlwAhpcLStPBurLzob0KrlkZTMWlV/jjZ4B2r17SndHHub2eiGazICgEDWdX
+         rUgMxVOhDCGPTzS6B1Cq035nVbdTZOx2pjseu/qM9G12OZNpf28iahlkJ/XWYUWP0Ih1
+         5/2w==
+X-Gm-Message-State: AOAM530Fg8TQYD7KowCIYaqpswuVYRiArRj+2K7fXTJj/MA9IaTiTI9H
+        R4z8XVAyguXhhYW8ExrhJ5ovOw==
+X-Google-Smtp-Source: ABdhPJxutOyD10vxZzsERtUGc6Z0D7vku2dw2ShiwRJkrPN6iz/xx6aboIdik1N8k3xfdA2uen4/kQ==
+X-Received: by 2002:ac8:3630:: with SMTP id m45mr4510478qtb.358.1600780186027;
+        Tue, 22 Sep 2020 06:09:46 -0700 (PDT)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id 145sm11653102qkf.18.2020.09.22.06.09.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Sep 2020 06:09:45 -0700 (PDT)
+Subject: Re: [PATCH] btrfs: fix memdup.cocci warnings
+To:     Julia Lawall <julia.lawall@inria.fr>,
+        Filipe Manana <fdmanana@suse.com>
+Cc:     Chris Mason <chris.mason@fusionio.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org
+References: <alpine.DEB.2.22.394.2009221219560.2659@hadrien>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <a2a5af65-40f6-b163-6f55-9098c5e05404@toxicpanda.com>
+Date:   Tue, 22 Sep 2020 09:09:43 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-22_12:2020-09-21,2020-09-22 signatures=0
+In-Reply-To: <alpine.DEB.2.22.394.2009221219560.2659@hadrien>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support to control rx-flow-hash based on VLAN.
-By default VLAN plus 4-tuple based hashing is enabled.
-Changes can be done runtime using ethtool
+On 9/22/20 6:21 AM, Julia Lawall wrote:
+> From: kernel test robot <lkp@intel.com>
+> 
+> fs/btrfs/send.c:3854:8-15: WARNING opportunity for kmemdup
+> 
+>   Use kmemdup rather than duplicating its implementation
+> 
+> Generated by: scripts/coccinelle/api/memdup.cocci
+> 
+> Fixes: 28314eb24e6c ("btrfs: send, recompute reference path after orphanization of a directory")
+> Signed-off-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
 
-To enable 2-tuple plus VLAN based flow distribution
-  # ethtool -N <intf> rx-flow-hash <prot> sdv
-To enable 4-tuple plus VLAN based flow distribution
-  # ethtool -N <intf> rx-flow-hash <prot> sdfnv
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-Signed-off-by: George Cherian <george.cherian@marvell.com>
-Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
----
- drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c  | 2 +-
- drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c | 7 +++++++
- 2 files changed, 8 insertions(+), 1 deletion(-)
+Thanks,
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-index 820fc660de66..d2581090f9a4 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-@@ -355,7 +355,7 @@ int otx2_rss_init(struct otx2_nic *pfvf)
- 	rss->flowkey_cfg = rss->enable ? rss->flowkey_cfg :
- 			   NIX_FLOW_KEY_TYPE_IPV4 | NIX_FLOW_KEY_TYPE_IPV6 |
- 			   NIX_FLOW_KEY_TYPE_TCP | NIX_FLOW_KEY_TYPE_UDP |
--			   NIX_FLOW_KEY_TYPE_SCTP;
-+			   NIX_FLOW_KEY_TYPE_SCTP | NIX_FLOW_KEY_TYPE_VLAN;
- 
- 	ret = otx2_set_flowkey_cfg(pfvf);
- 	if (ret)
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-index 0341d9694e8b..662fb80dbb9d 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-@@ -428,6 +428,8 @@ static int otx2_get_rss_hash_opts(struct otx2_nic *pfvf,
- 
- 	/* Mimimum is IPv4 and IPv6, SIP/DIP */
- 	nfc->data = RXH_IP_SRC | RXH_IP_DST;
-+	if (rss->flowkey_cfg & NIX_FLOW_KEY_TYPE_VLAN)
-+		nfc->data |= RXH_VLAN;
- 
- 	switch (nfc->flow_type) {
- 	case TCP_V4_FLOW:
-@@ -477,6 +479,11 @@ static int otx2_set_rss_hash_opts(struct otx2_nic *pfvf,
- 	if (!(nfc->data & RXH_IP_SRC) || !(nfc->data & RXH_IP_DST))
- 		return -EINVAL;
- 
-+	if (nfc->data & RXH_VLAN)
-+		rss_cfg |=  NIX_FLOW_KEY_TYPE_VLAN;
-+	else
-+		rss_cfg &= ~NIX_FLOW_KEY_TYPE_VLAN;
-+
- 	switch (nfc->flow_type) {
- 	case TCP_V4_FLOW:
- 	case TCP_V6_FLOW:
--- 
-2.25.1
+Josef
 
