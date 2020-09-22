@@ -2,70 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 691D62737C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 02:59:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A87D92737CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 03:04:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729446AbgIVA7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 20:59:19 -0400
-Received: from out28-169.mail.aliyun.com ([115.124.28.169]:34359 "EHLO
-        out28-169.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728728AbgIVA7S (ORCPT
+        id S1729449AbgIVBEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 21:04:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728518AbgIVBET (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 20:59:18 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1250662|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.581776-0.00187243-0.416352;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03275;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=15;RT=15;SR=0;TI=SMTPD_---.IaRkK6t_1600736353;
-Received: from 192.168.10.195(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.IaRkK6t_1600736353)
-          by smtp.aliyun-inc.com(10.147.42.253);
-          Tue, 22 Sep 2020 08:59:15 +0800
-Subject: Re: [PATCH v2 1/2] MIPS: Ingenic: Add system type for new Ingenic
- SoCs.
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     paul@crapouillou.net, paulburton@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        jiaxun.yang@flygoat.com, Sergey.Semin@baikalelectronics.ru,
-        akpm@linux-foundation.org, rppt@kernel.org,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-References: <20200921174522.33866-1-zhouyanjie@wanyeetech.com>
- <20200921174522.33866-2-zhouyanjie@wanyeetech.com>
- <20200921201329.GA29269@alpha.franken.de>
-From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Message-ID: <d0e662dd-f9aa-db41-7f74-6ced95e0fbc1@wanyeetech.com>
-Date:   Tue, 22 Sep 2020 08:59:09 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.3.0
+        Mon, 21 Sep 2020 21:04:19 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71919C061755;
+        Mon, 21 Sep 2020 18:04:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=m8E8Vf5qksBX37a4kASi4E/iaS+WWUnkAWa42nHAhjg=; b=qiS7ovRSDJLAlLlHxV8YScSA/D
+        ADYpxv41falafRgnGRUfs95YRpjVnTMh/me+7fWgiWuwphbH+xkqtQATwDX+1AsL130ahDXvu1aTG
+        QBZvocvQjkSgnt78eqsOiHoP6SyNIs5ckBxnzEsIPBuvIiLDOFan4mIFq3VH0rUSGRBR/W8ZAsmlE
+        XgFb4CMnINWDpFB1CagNZ+fqhivG8Bdwwyf6ttEKg5z1+98W37Se7NAYxxo93bw21hrxn9ny43Bmw
+        dhMtbytyrQuWEec9D2pvXQTRNcM5WaLpBQB6O3kpKWgdOPq9XzKTd4ztQJ/stzoa4eekv5tAl3t3+
+        AxamSgRw==;
+Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kKWj7-0004eS-Db; Tue, 22 Sep 2020 01:04:13 +0000
+Subject: Re: [RFC Patch 1/2] KVM: SVM: Create SEV cgroup controller.
+To:     Vipin Sharma <vipinsh@google.com>, thomas.lendacky@amd.com,
+        pbonzini@redhat.com, sean.j.christopherson@intel.com,
+        tj@kernel.org, lizefan@huawei.com
+Cc:     joro@8bytes.org, corbet@lwn.net, brijesh.singh@amd.com,
+        jon.grimm@amd.com, eric.vantassell@amd.com, gingell@google.com,
+        rientjes@google.com, kvm@vger.kernel.org, x86@kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Erdem Aktas <erdemaktas@google.com>
+References: <20200922004024.3699923-1-vipinsh@google.com>
+ <20200922004024.3699923-2-vipinsh@google.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <94c3407d-07ca-8eaf-4073-4a5e2a3fb7b8@infradead.org>
+Date:   Mon, 21 Sep 2020 18:04:04 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200921201329.GA29269@alpha.franken.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200922004024.3699923-2-vipinsh@google.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Thomas,
+Hi,
 
-在 2020/9/22 上午4:13, Thomas Bogendoerfer 写道:
-> On Tue, Sep 22, 2020 at 01:45:21AM +0800, 周琰杰 (Zhou Yanjie) wrote:
->> @@ -56,9 +64,13 @@ static const struct of_device_id ingenic_of_match[] __initconst = {
->>   	{ .compatible = "ingenic,jz4740", .data = (void *)MACH_INGENIC_JZ4740 },
->>   	{ .compatible = "ingenic,jz4725b", .data = (void *)MACH_INGENIC_JZ4725B },
->>   	{ .compatible = "ingenic,jz4770", .data = (void *)MACH_INGENIC_JZ4770 },
->> +	{ .compatible = "ingenic,jz4775", .data = (void *)MACH_INGENIC_JZ4775 },
->>   	{ .compatible = "ingenic,jz4780", .data = (void *)MACH_INGENIC_JZ4780 },
->>   	{ .compatible = "ingenic,x1000", .data = (void *)MACH_INGENIC_X1000 },
->> +	{ .compatible = "ingenic,x1000e", .data = (void *)MACH_INGENIC_X1000E },
->>   	{ .compatible = "ingenic,x1830", .data = (void *)MACH_INGENIC_X1830 },
->> +	{ .compatible = "ingenic,x2000", .data = (void *)MACH_INGENIC_X2000 },
->> +	{ .compatible = "ingenic,x2000e", .data = (void *)MACH_INGENIC_X2000E },
-> I get a warning from checkpatch:
->
-> WARNING: DT compatible string "ingenic,x2000e" appears un-documented -- check ./Documentation/devicetree/bindings/
+On 9/21/20 5:40 PM, Vipin Sharma wrote:
+> diff --git a/init/Kconfig b/init/Kconfig
+> index d6a0b31b13dc..1a57c362b803 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -1101,6 +1101,20 @@ config CGROUP_BPF
+>  	  BPF_CGROUP_INET_INGRESS will be executed on the ingress path of
+>  	  inet sockets.
+>  
+> +config CGROUP_SEV
+> +	bool "SEV ASID controller"
+> +	depends on KVM_AMD_SEV
+> +	default n
+> +	help
+> +	  Provides a controller for AMD SEV ASIDs. This controller limits and
+> +	  shows the total usage of SEV ASIDs used in encrypted VMs on AMD
+> +	  processors. Whenever a new encrypted VM is created using SEV on an
+> +	  AMD processor, this controller will check the current limit in the
+> +	  cgroup to which the task belongs and will deny the SEV ASID if the
+> +	  cgroup has already reached its limit.
+> +
+> +	  Say N if unsure.
 
+Something here (either in the bool prompt string or the help text) should
+let a reader know w.t.h. SEV means.
 
-My fault, I will fix this in the next version.
+Without having to look in other places...
 
-Thanks and best regards!
+thanks.
+-- 
+~Randy
 
-> Thomas.
->
