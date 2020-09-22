@@ -2,119 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 467EA27468E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:24:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A9A274695
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726640AbgIVQYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 12:24:43 -0400
-Received: from mga11.intel.com ([192.55.52.93]:37808 "EHLO mga11.intel.com"
+        id S1726716AbgIVQZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 12:25:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726563AbgIVQYn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 12:24:43 -0400
-IronPort-SDR: 7hTIauPfYvYv5uYEyD8OPqvEnLlWxm+mz4R/bfQe8tFBYFw0Fpyeb79PTS9Isw53jubTfugVFd
- lj7X7STKK+bg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9752"; a="158024839"
-X-IronPort-AV: E=Sophos;i="5.77,291,1596524400"; 
-   d="scan'208";a="158024839"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 09:24:40 -0700
-IronPort-SDR: wuqh49QQJio1BVTpfU/c7hE0z70Jgl7uxuSoosblsld/K3Pa7LM/WNKsClx4w1yR5Mktgys9zW
- BQH7r5068EnA==
-X-IronPort-AV: E=Sophos;i="5.77,291,1596524400"; 
-   d="scan'208";a="335081762"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 09:24:39 -0700
-Date:   Tue, 22 Sep 2020 09:24:38 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Jethro Beekman <jethro@fortanix.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Seth Moore <sethmo@google.com>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v38 16/24] x86/sgx: Add a page reclaimer
-Message-ID: <20200922162437.GA30827@linux.intel.com>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-17-jarkko.sakkinen@linux.intel.com>
- <20200922104538.GE22660@zn.tnic>
+        id S1726566AbgIVQZq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 12:25:46 -0400
+Received: from sol.attlocal.net (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0173A23A1B;
+        Tue, 22 Sep 2020 16:25:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600791946;
+        bh=TYZYFsETxKQokJa5RQ1ZT+XnfW77zUGnkWfO/996T6c=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=N6DyX9BvrTxWtntNUaLSrdcUAqIFDIgsKU0dDH2YUBI6/tUe1klJvijggIGn+R6ZV
+         5DAddRWtDHwZbZY5fRAWkMjfWPUL+19EutKm/M4cYj+ll0P7spobZpu+IgikKPbmrZ
+         XP6/Y4Rbt/ahLXyf2uulWDAOMPSITmkAU+qYq8S0=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>
+Cc:     syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org,
+        syzbot+9f864abad79fae7c17e1@syzkaller.appspotmail.com
+Subject: [PATCH] ext4: fix leaking sysfs kobject after failed mount
+Date:   Tue, 22 Sep 2020 09:24:56 -0700
+Message-Id: <20200922162456.93657-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <000000000000443d8a05afcff2b5@google.com>
+References: <000000000000443d8a05afcff2b5@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922104538.GE22660@zn.tnic>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 12:45:38PM +0200, Borislav Petkov wrote:
-> On Tue, Sep 15, 2020 at 02:28:34PM +0300, Jarkko Sakkinen wrote:
-> > + * %SGX_ENCL_PAGE_VA_OFFSET_MASK:	Holds the offset in the Version Array
-> > + *					(VA) page for a swapped page.
-> >   * %SGX_ENCL_PAGE_ADDR_MASK:		Holds the virtual address of the page.
-> >   *
-> >   * The page address for SECS is zero and is used by the subsystem to recognize
-> 
-> ...
-> 
-> > @@ -86,24 +123,34 @@ static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
-> >  {
-> >  	unsigned long encl_size = secs->size + PAGE_SIZE;
-> >  	struct sgx_epc_page *secs_epc;
-> > +	struct sgx_va_page *va_page;
-> >  	struct sgx_pageinfo pginfo;
-> >  	struct sgx_secinfo secinfo;
-> >  	struct file *backing;
-> >  	long ret;
-> >  
-> > +	va_page = sgx_encl_grow(encl);
-> > +	if (IS_ERR(va_page))
-> > +		return PTR_ERR(va_page);
-> > +	else if (va_page)
-> 
-> Not "else" simply?
-> 
-> AFAICT, sgx_encl_grow() would either return an ERR_PTR or the actual
-> page...
-> 
+From: Eric Biggers <ebiggers@google.com>
 
-The "else if" is correct.  Version Array (VA) pages have 512 slots that hold
-metadata for evicted EPC pages, i.e. swapping a page out of the EPC requires
-a VA slot.  For simplicity (LOL), the approach we are taking for initial
-support is to reserve a VA slot when adding a page to the enclave[*].  In most
-cases, reserving a slot does not require allocating a new VA page, e.g. to
-reserve slots 1-511 of the "current" VA page.   The if-elif is handling the
-case where the current VA page is fully reserved and a new one needs to be
-allocated. The if handles the error, the elif handles success, i.e.
+ext4_unregister_sysfs() only deletes the kobject.  The reference to it
+needs to be put separately, like ext4_put_super() does.
 
-	if (IS_ERR(va_page)) <- needed a new VA page, allocation failed
-		return PTR_ERR(va_page);
-	else if (va_page)    <- needed a new VA page, allocation succeeded
-		list_add(&va_page->list, &encl->va_pages);
-	else
-		             <- reused the current VA page
+This addresses the syzbot report
+"memory leak in kobject_set_name_vargs (3)"
+(https://syzkaller.appspot.com/bug?extid=9f864abad79fae7c17e1).
 
-When reusing a VA page, we obviously don't want to readd the page to the list
-of va_pages, and the error handling path also shouldn't free the VA page.
+Reported-by: syzbot+9f864abad79fae7c17e1@syzkaller.appspotmail.com
+Fixes: 72ba74508b28 ("ext4: release sysfs kobject when failing to enable quotas on mount")
+Cc: stable@vger.kernel.org
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ fs/ext4/super.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> Also, should the growing happen *after* the SECS validation?
-> 
-> > +		list_add(&va_page->list, &encl->va_pages);
-> > +
-> >  	if (sgx_validate_secs(secs)) {
-> >  		pr_debug("invalid SECS\n");
-> > -		return -EINVAL;
-> > +		ret = -EINVAL;
-> > +		goto err_out_shrink;
-> >  	}
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index ea425b49b345..41953b86ffe3 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -4872,6 +4872,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 
+ failed_mount8:
+ 	ext4_unregister_sysfs(sb);
++	kobject_put(&sbi->s_kobj);
+ failed_mount7:
+ 	ext4_unregister_li_request(sb);
+ failed_mount6:
+
+base-commit: ba4f184e126b751d1bffad5897f263108befc780
+-- 
+2.28.0
+
