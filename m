@@ -2,99 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA4D27458E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:40:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE107274591
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:41:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726854AbgIVPkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 11:40:45 -0400
-Received: from mail-il1-f196.google.com ([209.85.166.196]:40787 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726632AbgIVPko (ORCPT
+        id S1726860AbgIVPlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 11:41:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726566AbgIVPlI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 11:40:44 -0400
-Received: by mail-il1-f196.google.com with SMTP id x18so15285067ila.7;
-        Tue, 22 Sep 2020 08:40:44 -0700 (PDT)
+        Tue, 22 Sep 2020 11:41:08 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF0DCC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 08:41:08 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id q4so17725308ils.4
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 08:41:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PICW45X2iQWdtbXa7gacJOqYVJoHuDx6Nq+BthDfr08=;
+        b=cUWkNllNiT01w6KswNUIrMY0Ct2ce+aDlWti5eWIA0GThp85hQmKbgPojFrqQVoF7X
+         qrlLif2XyP0gCtEhA+weYIx7wDPiX7wpEuggUdNyPHPFg4zjyS/ICP1p8vo+5UawBDRv
+         vZXp2VYviRupP+rze4FG74KuBSzlDK+e1fqID+LmtlXapwhZv3TVcjau5VUyeO06oGw6
+         ltKr/rn6ZTvhpMWANx3G0iDJ59c/EDoj+gIcntoDiRuN67odfu/1fjtqD5kFAz7hzgMX
+         f1aYnYmPG4kDMnH3HrJsKMapMTmpkXUwsspyaK464J9eW2AXhGMR36Myv86RCmBjydeG
+         BFtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CjP3FaqB3xLlWdr6WInpgaxgqbiPdi3G8u/3sWsh5ow=;
-        b=ZG5bj2zJF3+AR3v6Ma8+SFCljc8+kVL+K/DxOUX4tEgVnxaR4jVVQelHGYog0nB7F8
-         SUmxc3s7JZIkPxzxZ4oDre73e9L8FVOke3txjHgAGzXDpiyXaFNiLzAl2aTjFYigpvqy
-         iT7LYMgoLpHoQpbNsi7JhrTeShuK2nRwgOj0EcTNbdtrIdXvxBt67EYogD5d8K2d7gPz
-         YY/O4Aw9DWu51WibKXv11LOVTXdpnxH9Kzg23loXux5zXJIaf2Lr3Enhi5KmCOhaZxNt
-         8JfaF5SEmQHLWGsN/7WJij1PYUavGFHzsF4e0CHempXbi12mdAfKjMlnhr4n9A6fi1hl
-         I9Vg==
-X-Gm-Message-State: AOAM5326HzR3jR1wGVNYm4Id1w+n+QF3xo/4jFsFIaXS2G5E0HGgkA8q
-        30K1Q0nNpdRSBPNbJb3xWg==
-X-Google-Smtp-Source: ABdhPJwQoEwM/M3ijOW1oWfyfZVRyxlGnhJRQmLBrTBNtjoQCGXIHE0IkmbOCWPcPfO5+I2VpOjP9Q==
-X-Received: by 2002:a92:405d:: with SMTP id n90mr4659530ila.58.1600789243916;
-        Tue, 22 Sep 2020 08:40:43 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id l6sm1265375ils.6.2020.09.22.08.40.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 08:40:42 -0700 (PDT)
-Received: (nullmailer pid 2730811 invoked by uid 1000);
-        Tue, 22 Sep 2020 15:40:41 -0000
-Date:   Tue, 22 Sep 2020 09:40:41 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-media@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 2/3] media: dt-bindings: media: i2c: Add bindings for
- TW9900
-Message-ID: <20200922154041.GA2730544@bogus>
-References: <20200918142422.1086555-1-maxime.chevallier@bootlin.com>
- <20200918142422.1086555-3-maxime.chevallier@bootlin.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PICW45X2iQWdtbXa7gacJOqYVJoHuDx6Nq+BthDfr08=;
+        b=aDuzTbV3Jq46d5IFwoUTV7+mG7Bb+s+pZC3V3jm2OPJVQoeCW0FTyLyb+3xyb2eX8R
+         l+kXSlzFMuyNpLcWHSfYtIxUookUmsPa6z7j7rq9iCznuxX6LhN1f+G7bbn7AqlIUEbQ
+         4dCa/wJcwCEs2oak4E+jDpnH8tESfPOL1UwVaYOr3v7plcCcpZOLUNNKY0JKhVRUNmPn
+         wqX5k9kU0+rmobnTysqWH9K/5VUf+LHEpm1xIS2yhbTZb7pNA2Fh4piUl15N0qMojCgz
+         aP7MKfL4GhqiQ6Ls3h4B7xSfvbM2kCAhknxtm1+tshJs0nanW7BR59Q8VAWDZ3sYe+x+
+         a02A==
+X-Gm-Message-State: AOAM533oUjDUuHHxJaWhyVJ9pvnhMtFHG/V1Uzp2wipcfIdDduw9obBc
+        MWvinZlIDqQkZJvD8vGq7lI38p1SY4bgtBrZBvU=
+X-Google-Smtp-Source: ABdhPJw6NV2OLpOjxnlDuvVs4PRyGAuozfr94GsaYzpcXqGEVxRWzcos8yTKxdBFVCriWw5f9l0B1WN9LxK4cXGgNp4=
+X-Received: by 2002:a92:aa01:: with SMTP id j1mr5068011ili.301.1600789267967;
+ Tue, 22 Sep 2020 08:41:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918142422.1086555-3-maxime.chevallier@bootlin.com>
+References: <20200916153605.5253-1-ztong0001@gmail.com> <20200922135956.GA23437@lst.de>
+In-Reply-To: <20200922135956.GA23437@lst.de>
+From:   Tong Zhang <ztong0001@gmail.com>
+Date:   Tue, 22 Sep 2020 11:40:56 -0400
+Message-ID: <CAA5qM4DvFdQ_yvkGERyNjar7EJkcRmR5ry9BiuPaZkEzzO=Mug@mail.gmail.com>
+Subject: Re: [PATCH] nvme: fix use-after-free during booting
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Sep 2020 16:24:21 +0200, Maxime Chevallier wrote:
-> The Techwell TW9900 is a video decoder supporting multiple input
-> standards, such as PAL, NTSC and SECAM, and outputs a BT.656 video
-> signal.
-> 
-> It's designed to be low-power, posesses some features such as a
-> programmable comb-filter, and automatic input standard detection.
-> 
-> Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
-> ---
->  .../devicetree/bindings/media/i2c/tw9900.yaml | 59 +++++++++++++++++++
->  1 file changed, 59 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/i2c/tw9900.yaml
-> 
+Thank you Christoph.
+I will do some testing with my setup and let you know.
+- Tong
 
-
-My bot found errors running 'make dt_binding_check' on your patch:
-
-Error: Documentation/devicetree/bindings/media/i2c/tw9900.example.dts:28.46-47 syntax error
-FATAL ERROR: Unable to parse input tree
-make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/media/i2c/tw9900.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1366: dt_binding_check] Error 2
-
-
-See https://patchwork.ozlabs.org/patch/1367017
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
-
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.
-
+On Tue, Sep 22, 2020 at 9:59 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> Hi Tong,
+>
+> can you test this patch?
+>
+> diff --git a/block/genhd.c b/block/genhd.c
+> index 99c64641c3148c..6473ae703789e4 100644
+> --- a/block/genhd.c
+> +++ b/block/genhd.c
+> @@ -836,6 +836,7 @@ static void __device_add_disk(struct device *parent, struct gendisk *disk,
+>          * so that it sticks around as long as @disk is there.
+>          */
+>         WARN_ON_ONCE(!blk_get_queue(disk->queue));
+> +       disk->flags |= GENHD_FL_QUEUE_REF;
+>
+>         disk_add_events(disk);
+>         blk_integrity_add(disk);
+> @@ -1567,7 +1568,7 @@ static void disk_release(struct device *dev)
+>         kfree(disk->random);
+>         disk_replace_part_tbl(disk, NULL);
+>         hd_free_part(&disk->part0);
+> -       if (disk->queue)
+> +       if (disk->flags & GENHD_FL_QUEUE_REF)
+>                 blk_put_queue(disk->queue);
+>         kfree(disk);
+>  }
+> diff --git a/include/linux/genhd.h b/include/linux/genhd.h
+> index 4ab853461dff25..9441077ee10329 100644
+> --- a/include/linux/genhd.h
+> +++ b/include/linux/genhd.h
+> @@ -135,6 +135,7 @@ struct hd_struct {
+>  #define GENHD_FL_BLOCK_EVENTS_ON_EXCL_WRITE    0x0100
+>  #define GENHD_FL_NO_PART_SCAN                  0x0200
+>  #define GENHD_FL_HIDDEN                                0x0400
+> +#define GENHD_FL_QUEUE_REF                     0x0800
+>
+>  enum {
+>         DISK_EVENT_MEDIA_CHANGE                 = 1 << 0, /* media changed */
