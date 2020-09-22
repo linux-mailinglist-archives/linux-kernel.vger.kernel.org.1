@@ -2,67 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12F07273F23
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 12:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4645F273F29
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 12:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726586AbgIVKC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 06:02:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37936 "EHLO mx2.suse.de"
+        id S1726508AbgIVKEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 06:04:04 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:42081 "EHLO 1wt.eu"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726494AbgIVKC1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 06:02:27 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600768946;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RThaCP/K7i2WlK+tnesoAZh0Ej0QWixxsXP5VJ9Q2fo=;
-        b=KXresjSEQ1RLkxjO/7vUtKt0PgDzifAtxmqIDGJ1OSaY6w1WvLlsqE8Tjgkpl/S6EypJzH
-        ByKLv7vSmxOw1HnKzYSiNRTs8AoIjlsvShVS3UsyNNuQm/XMKJ6T9LHwtm+We2CJVuz/Pw
-        pXrg0SJ5aOaiJzeexljXbOiccBaAIrk=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 068A0B1AD;
-        Tue, 22 Sep 2020 10:03:03 +0000 (UTC)
-Date:   Tue, 22 Sep 2020 12:02:25 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk v2 0/3] printk: move dictionaries to meta data
-Message-ID: <20200922100225.GK14605@alley>
-References: <20200918223421.21621-1-john.ogness@linutronix.de>
+        id S1726341AbgIVKEE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 06:04:04 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 08MA40iu016503;
+        Tue, 22 Sep 2020 12:04:00 +0200
+Date:   Tue, 22 Sep 2020 12:04:00 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Lars Poeschel <poeschel@lemonage.de>
+Cc:     Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 31/32] auxdisplay: charlcd: Do not print chars at end
+ of line
+Message-ID: <20200922100400.GH16421@1wt.eu>
+References: <20191016082430.5955-1-poeschel@lemonage.de>
+ <20200921144645.2061313-1-poeschel@lemonage.de>
+ <20200921144645.2061313-32-poeschel@lemonage.de>
+ <20200922052701.GB16386@1wt.eu>
+ <20200922094422.ucj24ohtervhcetv@lem-wkst-02.lemonage>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200918223421.21621-1-john.ogness@linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200922094422.ucj24ohtervhcetv@lem-wkst-02.lemonage>
+User-Agent: Mutt/1.6.1 (2016-04-27)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 2020-09-19 00:40:18, John Ogness wrote:
-> Hello,
+On Tue, Sep 22, 2020 at 11:44:22AM +0200, Lars Poeschel wrote:
+> On Tue, Sep 22, 2020 at 07:27:01AM +0200, Willy Tarreau wrote:
+> > On Mon, Sep 21, 2020 at 04:46:43PM +0200, poeschel@lemonage.de wrote:
+> > > From: Lars Poeschel <poeschel@lemonage.de>
+> > > 
+> > > Skip printing characters at the end of a display line. This fits to the
+> > > behaviour we already had, that the cursor is nailed to last position of
+> > > a line.
+> > 
+> > Just very old memories, but wasn't this used with the ability to shift
+> > the display ? IIRC the HD44780 has a 2x64 chars buffer and you can make
+> > the buffered characters appear when you shift the display. That's akin
+> > to seeing the display as an adjustable window over the buffer. I don't
+> > remember having used that feature, so if it didn't previously work, please
+> > disregard my comment, I just want to be sure we don't break a feature
+> > others might be relying on.
 > 
-> Here is v2 for a series to move all existing dictionary
-> properties (SUBSYSTEM and DEVICE) into the meta data of a
-> record, thus eliminating the need for the dict ring. This
-> change affects how the dictionaries are stored, but does not
-> affect how they are presented to userspace. (v1 is here [0]).
-> 
-> John Ogness (3):
->   printk: move printk_info into separate array
->   printk: move dictionary keys to dev_printk_info
->   printk: remove dict ring
+> Yes, indeed. But this is a point, where this was inconsistent. The
+> feature you described worked only for displays with 2 lines or less. On
+> displays with 4 lines there simply is no buffer that is not visible and
+> in this case it sticks to the end of the line already.
 
-The patchset is committed in printk/linux.git, branch printk-rework.
+OK.
 
-The 4th version of the 2nd patch is used.
+> To make this work for all displays this would require a whole lot of
+> work. We would need a fallback implementation that emulates this in
+> software and then redraws the whole display from that software
+> (linux-side) buffer when shifting.
 
-Best Regards,
-Petr
+I don't think that's worth it at all, really!
+
+> Currently my patchset cuts this feature for displays with one or two
+> lines. I don't see clean an easy way to leave that in. Any ideas ?
+
+The points you mention are good enough indicators that it's extremely
+unlikely anyone has ever used that feature with these drivers. So I
+think it's best to keep your changes and wait to see if anyone pops
+up with an obscure use case, in which case their explanation might
+help figure another approach.
+
+Willy
