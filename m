@@ -2,137 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3824A274981
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E0C274984
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:53:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726641AbgIVTwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 15:52:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726448AbgIVTwS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 15:52:18 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9045C061755;
-        Tue, 22 Sep 2020 12:52:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=j56FVuNXjzy/9sJhXmMO7Ke2n5f1vQAjUjGFHAMk4xI=; b=dzZsEC/7pRBqkLI+PuKRhZrwPr
-        lHt3XUm8WJyMFd0D4oVCjXujTYohCKx+6xFZH5KSAemU3BzJaUW2SUj/Z8JRANsL4VkU11ii42pUa
-        6d7+dghUmqfqMk9q09x3fQbs5S9uF7AVL9F7nZczS90yB0Hxk58p/1zvCIL4Ha1cuDlZJGDqHncpE
-        OcRL+hE0tv4wBnSwb6TWE1Y8RyzuLFxa/SmfewHueBDBTumC6SiSSYkeupkEBd46EcTXtXAmN2WKX
-        4LzSn3WIL8LLgMG6aumpRPKPiqtv/Y23CmDpEioSeHQqNaQM0bLGBTP0yUFBuB/89Tk4fcNuphaNz
-        XMU7S4Uw==;
-Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kKoKl-0007E7-BA; Tue, 22 Sep 2020 19:52:15 +0000
-Subject: Re: [PATCH 0/1] Add explicit error for missing CONFIG_ASN1
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        linux-kbuild@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>
-References: <20200922155341.17906-1-James.Bottomley@HansenPartnership.com>
- <dfae4d4f-aa96-674d-93b1-d4c097e720e4@infradead.org>
- <260b4b85d714df822da259554ef8cc2873f3096f.camel@HansenPartnership.com>
- <36232f66-58b1-77a8-91a3-f9d3428fffb5@infradead.org>
- <15cc1edce12357799ae3caea3b89a3aad3a3bd07.camel@HansenPartnership.com>
- <8a346ff9-21a4-db8b-1636-b9b2472b5b87@infradead.org>
- <7704adabb275b652a998ab01c626bbbc99ec6afc.camel@HansenPartnership.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <8dc900a4-018d-4be7-2644-81114146a0c9@infradead.org>
-Date:   Tue, 22 Sep 2020 12:52:11 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726672AbgIVTxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 15:53:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40150 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726448AbgIVTxD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 15:53:03 -0400
+Received: from lt-jalone-7480.mtl.com (c-24-6-56-119.hsd1.ca.comcast.net [24.6.56.119])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD60220888;
+        Tue, 22 Sep 2020 19:53:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600804383;
+        bh=KTKxnoveergkTChE6viM1YPJ7yfsKyu4FKqg2/mwRas=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=xYoFUJmql1F/LccYOgW18yJFLLKW9WNZ5U24FVwaIwKrWeYkNjaMIkWdO9QYJcp0c
+         N3YKjdxq/6KXYXiChHvx+3kFWiHOCi/0WTCEWoHRVkiWn9/6NDYmyrbuzYpJbpF0Mp
+         vaMPIianyZB31LTfGe6HbwRCnJfdLqY0hfrkQECs=
+Message-ID: <d6a509a9340c3840f4cfc9db2883e02bb7a60e9f.camel@kernel.org>
+Subject: Re: [PATCH -next] net/mlx5: simplify the return expression of
+ mlx5_ec_init()
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Qinglang Miao <miaoqinglang@huawei.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 22 Sep 2020 12:53:01 -0700
+In-Reply-To: <20200922080426.164e5af1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20200921131044.92430-1-miaoqinglang@huawei.com>
+         <ae06288c3c4d5d8ad59202ff7967d479af1152a5.camel@kernel.org>
+         <20200922080426.164e5af1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <7704adabb275b652a998ab01c626bbbc99ec6afc.camel@HansenPartnership.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/22/20 12:48 PM, James Bottomley wrote:
-> On Tue, 2020-09-22 at 12:46 -0700, Randy Dunlap wrote:
->> On 9/22/20 12:44 PM, James Bottomley wrote:
->>> On Tue, 2020-09-22 at 12:38 -0700, Randy Dunlap wrote:
->>>> On 9/22/20 12:19 PM, James Bottomley wrote:
->>>>> On Tue, 2020-09-22 at 11:54 -0700, Randy Dunlap wrote:
->>>>>> On 9/22/20 8:53 AM, James Bottomley wrote:
->>>>>>> I recently ran into this as an error from 0day.  On x86
->>>>>>> it's
->>>>>>> pretty
->>>>>>> much impossible to build a configuration where CONFIG_ASN1
->>>>>>> isn't
->>>>>>> set, so you rarely notice a problem using the ASN.1
->>>>>>> compiler
->>>>>>> because something else has selected it.  However, this
->>>>>>> compiler
->>>>>>> is
->>>>>>> never built if CONFIG_ASN1 isn't set and the error you get
->>>>>>> from
->>>>>>> kbuild is particularly unhelpful:
->>>>>>>
->>>>>>>    make[4]: *** No rule to make target
->>>>>>> 'security/keys/trusted-
->>>>>>> keys/tpm2key.asn1.o', needed by 'security/keys/trusted-
->>>>>>> keys/built-
->>>>>>> in.a'.
->>>>>>>    make[4]: *** [scripts/Makefile.build:283:
->>>>>>> security/keys/trusted-
->>>>>>> keys/trusted_tpm2.o] Error 1
->>>>>>>    make[4]: Target '__build' not remade because of errors.
->>>>>>>
->>>>>>> This patch changes the above error to the much easier to
->>>>>>> diagnose:
->>>>>>>
->>>>>>>    scripts/Makefile.build:387: *** CONFIG_ASN1 must be
->>>>>>> defined
->>>>>>> for
->>>>>>> the asn1_compiler.  Stop.
->>>>>>>    make[3]: *** [scripts/Makefile.build:505:
->>>>>>> security/keys/trusted-
->>>>>>> keys] Error 2
->>>>>>>
->>>>>>> James
->>>>>>>
->>>>>>> ---
->>>>>>>
->>>>>>> James Bottomley (1):
->>>>>>>   Makefile.build: Add an explicit error for missing ASN.1
->>>>>>> compiler
->>>>>>>
->>>>>>>  scripts/Makefile.build | 5 +++++
->>>>>>>  1 file changed, 5 insertions(+)
->>>>>>
->>>>>> Is there a missing
->>>>>> 	select ASN1
->>>>>> somewhere?
->>>>>
->>>>> You mean in the build used to produce the errors above?  Yes,
->>>>> so the patch is to make the problem more explicit.
->>>>
->>>> I appreciate that the message can be improved, but it seems
->>>> possible that some Kconfig could also be improved.
->>>
->>> I don't really see how.  To find the problem you have to identify a
->>> conditional build in the Makefile that requires the asn1 compiler
->>> but for which the config option doesn't have a select ASN1.  We
->>> don't currently preserve the "what selected this symbol"
->>> information in kconfig, which is what we'd need.
->>
->> Well, if you have a failing .config file, I would be glad to take a
->> look at it...
+On Tue, 2020-09-22 at 08:04 -0700, Jakub Kicinski wrote:
+> On Mon, 21 Sep 2020 22:52:30 -0700 Saeed Mahameed wrote:
+> > On Mon, 2020-09-21 at 21:10 +0800, Qinglang Miao wrote:
+> > > Simplify the return expression.
+> > > 
+> > > Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> > > ---
+> > >  drivers/net/ethernet/mellanox/mlx5/core/ecpf.c | 6 +-----
+> > >  1 file changed, 1 insertion(+), 5 deletions(-)
+> > > 
+> > >   
+> > 
+> > Applied to net-next-mlx5.
 > 
-> The original problem is already fixed.  The point of this patch is to
-> make 0day explicitly identify it if it ever occurs again.
+> Beware:
+> 
+> drivers/net/ethernet/mellanox/mlx5/core/ecpf.c: In function
+> ‘mlx5_ec_init’:
+> drivers/net/ethernet/mellanox/mlx5/core/ecpf.c:46:6: warning: unused
+> variable ‘err’ [-Wunused-variable]
+>   46 |  int err = 0;
+>      |      ^~~
 
-Got it. That's helpful info IMO.
+Thanks Jakub
 
-thanks.
-
--- 
-~Randy
+Yes, Saw this in my CI as well, 
+will resolve this one myself.
+and for next time I will wait for the CI result before replying ;)
 
