@@ -2,87 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AF862745B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:48:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8868B2745B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 17:49:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726706AbgIVPsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 11:48:38 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:39777 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726589AbgIVPsi (ORCPT
+        id S1726716AbgIVPs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 11:48:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59032 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726589AbgIVPs7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 11:48:38 -0400
-Received: by mail-oi1-f195.google.com with SMTP id c13so21529823oiy.6;
-        Tue, 22 Sep 2020 08:48:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8Lkyw6K4mV5Y9N5eOKNLOPXKcrnx+bU2Daos8PJksvo=;
-        b=j2u7v2FbnwDflMk6eSaIuNv3FRyqOt2pFUwoOzNvQsKXGojEOwdQ6GEbZhLwFH1C9h
-         lsw+jwc4OWDLlrZ4CjfBodLfL26HD4xQ4BHyem8VUQueGMIO+KGdUEm0rcdt6imdK/Hu
-         TO/rV6L5OH3jVVArkC96xdGD2fdYCSWeGWL+H3kjSeQ0bfiJJ7AINqkGn2YNBthooXkM
-         z5LxEp9uMU1CYRKNfPPCSaXOlSQm4k0NAgD4EwBFfV253AZRejlNYToFxP4LMiiIYC8N
-         O3XJ+ZrYrO8X0Ge+Z7FJDQRCqmFJjBez9PfryoVHLs8zt1NJtTSxCoVEw8YqtoUCtGK8
-         W8Xw==
-X-Gm-Message-State: AOAM533JrJkAVNhy3cjMsRGEGrxADsaUA3Fy58KCheQZvRVOJl4sQaDf
-        w4wWCAUjL2J//dDKTeRMphP6tLM/3BIfW8V7GAQ=
-X-Google-Smtp-Source: ABdhPJyyb74MqXqM/L4v+TsjroaR502YIu9Saxz+evAEAqRpZ7pN8+e2GMKQNv6/ALjD0JqyAUXKJsdF1IWhtplVmi0=
-X-Received: by 2002:aca:df84:: with SMTP id w126mr3170800oig.103.1600789717353;
- Tue, 22 Sep 2020 08:48:37 -0700 (PDT)
+        Tue, 22 Sep 2020 11:48:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600789738;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5WSEXBgGTOxpyvYjGWGStBPmhuahuiY9FhGyjHnpfvI=;
+        b=CUeeEnbi6mVUD7vC3zZiO/s42ZHAbgFhRw1hy6btzKa+E68GUf+FMkuBwrrgUykjt+iBWh
+        QerUQyepbDKx87LkOrHacIG/jn5KVKz16AiHuqViIkUm4BkkYTRRcmE6NwSXnIj2Fc8unz
+        b4ytNcDwcsIWaE6x8wE09g6bjZM7FCU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-358-i7QyB6gzMpGIsuboqX56xg-1; Tue, 22 Sep 2020 11:48:54 -0400
+X-MC-Unique: i7QyB6gzMpGIsuboqX56xg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 556A88064BA;
+        Tue, 22 Sep 2020 15:48:52 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.146])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 4DA6981C41;
+        Tue, 22 Sep 2020 15:48:47 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Tue, 22 Sep 2020 17:48:52 +0200 (CEST)
+Date:   Tue, 22 Sep 2020 17:48:46 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jann Horn <jannh@google.com>
+Subject: Re: [PATCH 3/5] mm: Rework return value for copy_one_pte()
+Message-ID: <20200922154845.GE11679@redhat.com>
+References: <20200921211744.24758-1-peterx@redhat.com>
+ <20200921211744.24758-4-peterx@redhat.com>
+ <20200922100840.GA11679@redhat.com>
+ <20200922101815.GB11679@redhat.com>
+ <20200922153612.GF19098@xz-x1>
 MIME-Version: 1.0
-References: <20200817224109.11040-1-kim.phillips@amd.com>
-In-Reply-To: <20200817224109.11040-1-kim.phillips@amd.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 22 Sep 2020 17:48:26 +0200
-Message-ID: <CAJZ5v0iwuSQ9RadMTVTdcbN8ecRzLT_vmfwsEMh0jZKpE+8v2Q@mail.gmail.com>
-Subject: Re: [PATCH] powercap: Add AMD Fam19h RAPL support
-To:     Kim Phillips <kim.phillips@amd.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Victor Ding <victording@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922153612.GF19098@xz-x1>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 12:41 AM Kim Phillips <kim.phillips@amd.com> wrote:
+On 09/22, Peter Xu wrote:
 >
-> AMD Family 19h's RAPL MSRs are identical to Family 17h's.  Extend
-> Family 17h's support to Family 19h.
+> On Tue, Sep 22, 2020 at 12:18:16PM +0200, Oleg Nesterov wrote:
+> > On 09/22, Oleg Nesterov wrote:
+> > >
+> > > On 09/21, Peter Xu wrote:
+> > > >
+> > > > @@ -866,13 +877,18 @@ static int copy_pte_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+> > > >  	pte_unmap_unlock(orig_dst_pte, dst_ptl);
+> > > >  	cond_resched();
+> > > >
+> > > > -	if (entry.val) {
+> > > > -		if (add_swap_count_continuation(entry, GFP_KERNEL) < 0)
+> > > > +	switch (copy_ret) {
+> > > > +	case COPY_MM_SWAP_CONT:
+> > > > +		if (add_swap_count_continuation(data.entry, GFP_KERNEL) < 0)
+> > > >  			return -ENOMEM;
+> > > > -		progress = 0;
+> > > > +		break;
+> > >
+> > > Note that you didn't clear copy_ret, it is still COPY_MM_SWAP_CONT,
+> > >
+> > > > +	default:
+> > > > +		break;
+> > > >  	}
+> > > > +
+> > > >  	if (addr != end)
+> > > >  		goto again;
+> > >
+> > > After that the main loop can stop again because of need_resched(), and
+> > > in this case add_swap_count_continuation(data.entry) will be called again?
+> >
+> > No, this is not possible, copy_one_pte() should be called at least once,
+> > progress = 0 before restart. Sorry for noise.
 >
-> Signed-off-by: Kim Phillips <kim.phillips@amd.com>
-> Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-> Cc: Victor Ding <victording@google.com>
-> Cc: LKML <linux-kernel@vger.kernel.org>
-> Cc: linux-pm@vger.kernel.org
-> Cc: x86@kernel.org
-> ---
-> Depends on Victor Ding's "powercap: Enable RAPL for AMD Fam17h"
-> series, submitted here:
->
-> https://lore.kernel.org/lkml/20200729105206.2991064-1-victording@google.com/
+> Oh wait, I think you're right... when we get a COPY_MM_SWAP_CONT, goto "again",
+> then if there're 32 pte_none() ptes _plus_ an need_resched(), then we might
+> reach again at the same add_swap_count_continuation() with the same swp entry.
 
-So I'm deferring this one, because the submitter of the above was
-requested to resend the series.
+Yes, please see my reply to 4/5 ;)
 
->  drivers/powercap/intel_rapl_common.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/powercap/intel_rapl_common.c b/drivers/powercap/intel_rapl_common.c
-> index 2e311f9c0d85..1bc0e67cd7a4 100644
-> --- a/drivers/powercap/intel_rapl_common.c
-> +++ b/drivers/powercap/intel_rapl_common.c
-> @@ -1052,6 +1052,7 @@ static const struct x86_cpu_id rapl_ids[] __initconst = {
->         X86_MATCH_INTEL_FAM6_MODEL(XEON_PHI_KNM,        &rapl_defaults_hsw_server),
->
->         X86_MATCH_VENDOR_FAM(AMD, 0x17, &rapl_defaults_core),
-> +       X86_MATCH_VENDOR_FAM(AMD, 0x19, &rapl_defaults_core),
->         {}
->  };
->  MODULE_DEVICE_TABLE(x86cpu, rapl_ids);
-> --
-> 2.27.0
->
+> However since I didn't change this logic in this patch, it probably means this
+> bug is also in the original code before this series...  I'm thinking maybe I
+> should prepare a standalone patch to clear the swp_entry_t and cc stable.
+
+Well, if copy_one_pte(src_pte) hits a swap entry and returns entry.val != 0, then
+pte_none(*src_pte) is not possible after restart? This means that copy_one_pte()
+will be called at least once.
+
+So _think_ that the current code is fine, but I can be easily wrong and I agree
+this doesn't look clean.
+
+Oleg.
+
