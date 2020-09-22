@@ -2,220 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CFDA2742B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 15:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 977862742C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 15:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726614AbgIVNNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 09:13:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54180 "EHLO
+        id S1726597AbgIVNSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 09:18:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726566AbgIVNNC (ORCPT
+        with ESMTP id S1726563AbgIVNSS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 09:13:02 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03FEFC061755;
-        Tue, 22 Sep 2020 06:13:02 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id a15so14099473ljk.2;
-        Tue, 22 Sep 2020 06:13:01 -0700 (PDT)
+        Tue, 22 Sep 2020 09:18:18 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C01CEC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 06:18:17 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id e16so17065743wrm.2
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 06:18:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=2z8KLYcV2WyIOYkugsYC62B54jH3ZqWmai+zjoiHURM=;
-        b=g/uufrCp4Tieb1/bP3Sk+L6niHHhoLetIn719xh8g8W3aR+ShzNF+eI0YiqyuwjztJ
-         lxyPlfmXWIUwg7FR8tFYeiyWvGtJ/G85fUPGe9y4AuTlcLO+Hj+xTmzEr0K5zEDipXbg
-         v6TlSBvwk3T7CCc7GECiGJ0V/WgZGWIgr7FejBbqX9kiQG65CcX3obzHIvZYFIt88IwX
-         /VuONgmxdlA+9utpKa6wzIjyJnEBeWMe3jgpnI3lzbNS2lcHNJjQEALgj9zD2KdoGVoy
-         v8JKrvSiMWWC1EPk0Clq2i9Unfxpe39ZItLJ/TIMywKgXbLTY9HH9I6/NF9uR75pckYW
-         KOYw==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ulDXZe62cg9q0pWHvj25dMr9OefSQ2Lms8zz3fQsI8U=;
+        b=U/9Qx3fjuwOeRopvo8mwBcOn7Uh9HK8xQz4PXypyHS9JILaivkcnO4MpfbR6TJOsEz
+         irSTrtlfFtn1qfheG02tf6JKQ0RPzluPHYpGVP2xPpsq/q6tmxJXo6BCcL1yyGzm6RyT
+         iuyO5dXyp/CMyWaRVDK/2LxiZ635Vkru4nHM0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=2z8KLYcV2WyIOYkugsYC62B54jH3ZqWmai+zjoiHURM=;
-        b=Btst4UYG+Un+9vwGZVboWWWBzUaPk3WDj4MTAib9FdtoR6MSWSLqQnFCE8sqc8VAnL
-         tFWqvbhg3HHPFqitx6FrP4keFdIFVgwhOExZGSzCqnWwAN+9aQapVoR0dcSP/RoTTsmS
-         gnBve1EuhhgNSWjJK6datuowQNjt+a3RIKhaIKKFeI+ZS/SvVktl49S/EJWfZtthmA5L
-         o42TeSAPfYG9+ibUAwNlnuDJb49MtFIM0TNpJIEIk4QRAKkUXsypYwohZcCtGZnKQ9kn
-         0f4iakHTShgKueRKayMVs2Hka5dU8EhN7tbUGjGCI/odRyHEoq3fgWdp1KmyN4mt5yJC
-         Mx8A==
-X-Gm-Message-State: AOAM533rOyKVozSo1gjIT2ZsefQwLyFutzBs8eYxdVb9SuOsabjP6UDZ
-        2eHgR6Z7lZjSdNfWwTTabt0=
-X-Google-Smtp-Source: ABdhPJynL2GGAC64a28puyBSgBYDy+TPN8QQij3z4tz/mhOyog30o8cnGg8b25izSCXatkCgDS7C7w==
-X-Received: by 2002:a2e:964e:: with SMTP id z14mr1450241ljh.86.1600780380316;
-        Tue, 22 Sep 2020 06:13:00 -0700 (PDT)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id y10sm3472646lfj.271.2020.09.22.06.12.59
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=ulDXZe62cg9q0pWHvj25dMr9OefSQ2Lms8zz3fQsI8U=;
+        b=XZ3teLEMyH2A7xO7SB+WKRqpjpvCLbqxQiQPlviN0d9IVXep92o73qEeqFyA6awlVz
+         qmUdov8tkl7gmG1a45rlJFzbj3N27ZFLYZumC1huByVYKExHEAeano0yMxGCyXAL3WIx
+         EDcfkOx1E7X4OlNDa12ryHIVwJQ592L164nW8pj+2OrpwNkL2UlWrM6Ah1le2uB2jVpb
+         MFZnbYHmd5FNMF2gERlFgzukKR8tOo5ivjAEv4sdZ5AJ+VjX3EOSqjp3/BdOJxl/ytNm
+         0jgp0G5mGdhpTboIz7SrlaSg+8ow8wABIRldsVkVCYyaNserkQldKM4kRQxbUmYoiwp8
+         ZvYg==
+X-Gm-Message-State: AOAM533obipX/UyNsPkwxb3tdGQyzTKbyHyXmSS+rPdLMJPUenaLVXTh
+        uqcS4AATCvF1Wqp9UCFj9+QusQ==
+X-Google-Smtp-Source: ABdhPJzLA0IJMNKNnPSjgdq+u8OKkX1pYrMrE0tYnSM5AzqPX9ycb4zFPC1OTcILhTxqMXMPMcgFhA==
+X-Received: by 2002:adf:e7ce:: with SMTP id e14mr5188236wrn.43.1600780696311;
+        Tue, 22 Sep 2020 06:18:16 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id c205sm4688134wmd.33.2020.09.22.06.18.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 06:12:59 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Tue, 22 Sep 2020 15:12:57 +0200
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Tue, 22 Sep 2020 06:18:15 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 15:18:13 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Mel Gorman <mgorman@suse.de>
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20200922131257.GA29241@pc636>
-References: <20200918194817.48921-1-urezki@gmail.com>
- <20200918194817.48921-3-urezki@gmail.com>
- <20200921074716.GC12990@dhcp22.suse.cz>
- <20200921154558.GD29330@paulmck-ThinkPad-P72>
- <20200921160318.GO12990@dhcp22.suse.cz>
- <20200921194819.GA24236@pc636>
- <20200922075002.GU12990@dhcp22.suse.cz>
+        Tejun Heo <tj@kernel.org>, timmurray@google.com,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH 2/3] drm/atomic: Use kthread worker for nonblocking
+ commits
+Message-ID: <20200922131813.GL438822@phenom.ffwll.local>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Peter Zijlstra <peterz@infradead.org>, Tejun Heo <tj@kernel.org>,
+        timmurray@google.com, linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200919193727.2093945-1-robdclark@gmail.com>
+ <20200919193727.2093945-3-robdclark@gmail.com>
+ <20200921092322.GK438822@phenom.ffwll.local>
+ <CAF6AEGu9b_6NOk-PcZnpv3UCi_muYdrayCaA83me1RTGoU+jHw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200922075002.GU12990@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAF6AEGu9b_6NOk-PcZnpv3UCi_muYdrayCaA83me1RTGoU+jHw@mail.gmail.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > > Yes, I do well remember that you are unhappy with this approach.
-> > > > Unfortunately, thus far, there is no solution that makes all developers
-> > > > happy.  You might be glad to hear that we are also looking into other
-> > > > solutions, each of which makes some other developers unhappy.  So we
-> > > > are at least not picking on you alone.  :-/
-> > > 
-> > > No worries I do not feel like a whipping boy here. But do expect me to
-> > > argue against the approach. I would also appreciate it if there was some
-> > > more information on other attempts, why they have failed. E.g. why
-> > > pre-allocation is not an option that works well enough in most
-> > > reasonable workloads.
-> > Pre-allocating has some drawbacks:
-> > 
-> > a) It is impossible to predict how many pages will be required to
-> >    cover a demand that is controlled by different workloads on
-> >    various systems.
-> 
-> Yes, this is not trivial but not a rocket science either. Remember that
-> you are relying on a very dumb watermark based pcp pool from the
-> allocator.
->
-We rely on it, indeed. If the pcp-cache is depleted our special work is
-triggered to charge our local cache(few pages) such way will also initiate
-the process of pre-featching pages from the buddy allocator populating
-the depleted pcp-cache. I do not have any concern here.
-
->
-> Mimicing a similar implementation shouldn't be all that hard
-> and you will get your own pool which doesn't affect other page allocator
-> users as much as a bonus.
-> 
-I see your point Michal. As i mentioned before, it is important to avoid of
-having such own pools, because the aim is not to waste memory resources. A
-page will be returned back to "page allocator" as soon as a scheduler place  
-our reclaim thread on a CPU and grace period is passed. So, the resource
-can be used for other needs. What is important.
-
-Otherwise a memory footprint is increased what is bad for low memory
-conditions when OOM is involved. Just in case, it is a big issue for
-mobile devices.
-
-> > b) Memory overhead since we do not know how much pages should be
-> >    preloaded: 100, 200 or 300
-> 
-> Does anybody who really needs this optimization actually cares about 300
-> pages?
-> 
-It might be an issue for embedded devices when such devices run into a
-low memory condition resulting in OOM or slow allocations due to mentioned
-condition. For servers and big system it will not be visible.
-
-> > As for memory overhead, it is important to reduce it because of
-> > embedded devices like phones, where a low memory condition is a
-> > big issue. In that sense pre-allocating is something that we strongly
-> > would like to avoid.
-> 
-> How big "machines" are we talking about here? I would expect that really
-> tiny machines would have hard times to really fill up thousands of pages
-> with pointers to free...
-> 
-I mentioned above. We can not rely on static model. We would like to
-have a mechanism that gives back ASAP used pages to page allocator
-for other needs.
-
->
-> Would a similar scaling as the page allocator feasible. Really I mostly
-> do care about shared nature of the pcp allocator list that one user can
-> easily monopolize with this API.
-> 
-I see your concern. pcplist can be monopolized by already existing API:
-
-    while (i < 100)
-        __get_free_page(GFP_NOWAIT | __GFP_NOWARN);
-
-> > > I would also appreciate some more thoughts why we
-> > > need to optimize for heavy abusers of RCU (like close(open) extremes).
-> > > 
-> > I think here is a small misunderstanding. Please note, that is not only
-> > about performance and corner cases. There is a single argument support
-> > of the kvfree_rcu(ptr), where maintaining an array in time is needed.
-> > The fallback of the single argument case is extrimely slow.
-> 
-> This should be part of the changelog.
->
-Hmm.. I think it is. Sorry if i missed that but i hope i mentioned about it.
-
-> > 
-> > Single-argument details is here: https://lkml.org/lkml/2020/4/28/1626
-> 
-> Error 501
-> 
-Could you please elaborate? Do not want to speculate :)
-
-> > > > > I strongly agree with Thomas http://lkml.kernel.org/r/87tux4kefm.fsf@nanos.tec.linutronix.de
-> > > > > that this optimization is not aiming at reasonable workloads. Really, go
-> > > > > with pre-allocated buffer and fallback to whatever slow path you have
-> > > > > already. Exposing more internals of the allocator is not going to do any
-> > > > > good for long term maintainability.
-> > > > 
-> > > > I suggest that you carefully re-read the thread following that email.
-> > > 
-> > > I clearly remember Thomas not being particularly happy that you optimize
-> > > for a corner case. I do not remember there being a consensus that this
-> > > is the right approach. There was some consensus that this is better than
-> > > a gfp flag. Still quite bad though if you ask me.
-> > > 
-> > > > Given a choice between making users unhappy and making developers
-> > > > unhappy, I will side with the users each and every time.
-> > > 
-> > > Well, let me rephrase. It is not only about me (as a developer) being
-> > > unhappy but also all the side effects this would have for users when
-> > > performance of their favorite workload declines for no apparent reason
-> > > just because pcp caches are depleted by an unrelated process.
+On Mon, Sep 21, 2020 at 07:55:42AM -0700, Rob Clark wrote:
+> On Mon, Sep 21, 2020 at 2:23 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> >
+> > On Sat, Sep 19, 2020 at 12:37:25PM -0700, Rob Clark wrote:
+> > > From: Rob Clark <robdclark@chromium.org>
 > > >
-> > If depleted, we have a special worker that charge it. From the other hand,
-> > the pcplist can be depleted by its nature, what _is_ not wrong. But just
-> > in case we secure it since you had a concern about it.
+> > > This will allow us to more easily switch scheduling rules based on what
+> > > userspace wants.
+> > >
+> > > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> >
+> > I still think switching to the highpriority systemwq as a start (like i915
+> > already does) would be a good first step no matter what we end up doing
+> > for the android thing.
 > 
-> pcp free lists should ever get empty when we run out of memory and need
-> to reclaim. Otherwise they are constantly refilled/rebalanced on demand.
-> The fact that you are refilling them from outside just suggest that you
-> are operating on a wrong layer. Really, create your own pool of pages
-> and rebalance them based on the workload.
+> highpri wq is probably better than the current state, but it doesn't
+> really address the problem.  You'll still end up with surfaceflinger
+> preempting commit_work..
 > 
-I covered it above.
+> And with non-RT priority, you'll still occasionally get lower priority
+> threads which haven't had a chance to run for a while preempting you.
 
-> > Could you please specify a real test case or workload you are talking about?
-> 
-> I am not a performance expert but essentially any memory allocator heavy
-> workload might notice. I am pretty sure Mel would tell you more.
-> 
-OK.
+Sure the priority inversion is still there and needs a different fix. But
+maybe it'll make everyone else at least a bit happier.
 
-Thank you for your comments, Michal!
+Plus it's really hard to make kms drivers rt, it's not really been part of
+the design (nor are gpus really rt friendly, if they even can preempt it
+generally takes forever compared to the deadline you might want for some
+present work).
+-Daniel
+> 
+> BR,
+> -R
+> 
+> 
+> > -Daniel
+> >
+> > > ---
+> > >  drivers/gpu/drm/drm_atomic_helper.c | 13 ++++++++----
+> > >  include/drm/drm_atomic.h            | 31 +++++++++++++++++++++++++++++
+> > >  2 files changed, 40 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
+> > > index 9e1ad493e689..75eeec5e7b10 100644
+> > > --- a/drivers/gpu/drm/drm_atomic_helper.c
+> > > +++ b/drivers/gpu/drm/drm_atomic_helper.c
+> > > @@ -1659,11 +1659,11 @@ static void commit_tail(struct drm_atomic_state *old_state)
+> > >       drm_atomic_state_put(old_state);
+> > >  }
+> > >
+> > > -static void commit_work(struct work_struct *work)
+> > > +static void commit_work(struct kthread_work *work)
+> > >  {
+> > >       struct drm_atomic_state *state = container_of(work,
+> > >                                                     struct drm_atomic_state,
+> > > -                                                   commit_work);
+> > > +                                                   commit_kwork);
+> > >       commit_tail(state);
+> > >  }
+> > >
+> > > @@ -1797,6 +1797,7 @@ int drm_atomic_helper_commit(struct drm_device *dev,
+> > >                            struct drm_atomic_state *state,
+> > >                            bool nonblock)
+> > >  {
+> > > +     struct kthread_worker *worker = NULL;
+> > >       int ret;
+> > >
+> > >       if (state->async_update) {
+> > > @@ -1814,7 +1815,7 @@ int drm_atomic_helper_commit(struct drm_device *dev,
+> > >       if (ret)
+> > >               return ret;
+> > >
+> > > -     INIT_WORK(&state->commit_work, commit_work);
+> > > +     kthread_init_work(&state->commit_kwork, commit_work);
+> > >
+> > >       ret = drm_atomic_helper_prepare_planes(dev, state);
+> > >       if (ret)
+> > > @@ -1857,8 +1858,12 @@ int drm_atomic_helper_commit(struct drm_device *dev,
+> > >        */
+> > >
+> > >       drm_atomic_state_get(state);
+> > > +
+> > >       if (nonblock)
+> > > -             queue_work(system_unbound_wq, &state->commit_work);
+> > > +             worker = drm_atomic_pick_worker(state);
+> > > +
+> > > +     if (worker)
+> > > +             kthread_queue_work(worker, &state->commit_kwork);
+> > >       else
+> > >               commit_tail(state);
+> > >
+> > > diff --git a/include/drm/drm_atomic.h b/include/drm/drm_atomic.h
+> > > index d07c851d255b..8d0ee19953df 100644
+> > > --- a/include/drm/drm_atomic.h
+> > > +++ b/include/drm/drm_atomic.h
+> > > @@ -373,8 +373,18 @@ struct drm_atomic_state {
+> > >        *
+> > >        * Work item which can be used by the driver or helpers to execute the
+> > >        * commit without blocking.
+> > > +      *
+> > > +      * This is deprecated, use commit_kwork.
+> > >        */
+> > >       struct work_struct commit_work;
+> > > +
+> > > +     /**
+> > > +      * @commit_kwork:
+> > > +      *
+> > > +      * Work item which can be used by the driver or helpers to execute the
+> > > +      * commit without blocking.
+> > > +      */
+> > > +     struct kthread_work commit_kwork;
+> > >  };
+> > >
+> > >  void __drm_crtc_commit_free(struct kref *kref);
+> > > @@ -954,6 +964,27 @@ void drm_state_dump(struct drm_device *dev, struct drm_printer *p);
+> > >                     (new_obj_state) = (__state)->private_objs[__i].new_state, 1); \
+> > >            (__i)++)
+> > >
+> > > +/**
+> > > + * drm_atomic_pick_worker - helper to get kworker to use for nonblocking commit
+> > > + * @state: the &drm_atomic_state for the commit
+> > > + *
+> > > + * Pick an appropriate worker for a given atomic update.  The first CRTC
+> > > + * invovled in the atomic update is used to pick the worker, to prevent
+> > > + * serializing multiple pageflips / atomic-updates on indenpendent CRTCs.
+> > > + */
+> > > +static inline struct kthread_worker *
+> > > +drm_atomic_pick_worker(const struct drm_atomic_state *state)
+> > > +{
+> > > +     struct drm_crtc_state *crtc_state;
+> > > +     struct drm_crtc *crtc;
+> > > +     unsigned i;
+> > > +
+> > > +     for_each_new_crtc_in_state(state, crtc, crtc_state, i)
+> > > +             return crtc->worker;
+> > > +
+> > > +     return NULL;
+> > > +}
+> > > +
+> > >  /**
+> > >   * drm_atomic_crtc_needs_modeset - compute combined modeset need
+> > >   * @state: &drm_crtc_state for the CRTC
+> > > --
+> > > 2.26.2
+> > >
+> >
+> > --
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > http://blog.ffwll.ch
 
---
-Vlad Rezki
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
