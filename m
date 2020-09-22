@@ -2,48 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 734C9273708
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 02:06:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6761E273709
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 02:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729046AbgIVAGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 20:06:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40486 "EHLO mail.kernel.org"
+        id S1729059AbgIVAHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 20:07:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726537AbgIVAGy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 20:06:54 -0400
+        id S1726537AbgIVAHA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 20:07:00 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8CBE521789;
-        Tue, 22 Sep 2020 00:06:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 707A2207C4;
+        Tue, 22 Sep 2020 00:06:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600733214;
-        bh=pcuZbv7wIKPsCmBBLhS3eTcZBiFjhoPECq+gUU7NHio=;
+        s=default; t=1600733220;
+        bh=90gCaWC1kc0PD8Hy2UX++BGa6s7lujDgPwSt6K5iqws=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=cb4cMFhqG9PWBR9bzmyuqF2ulW5TPAFi7ZP94b3mxQTe807Dhl0d2sNfJr3ZWd+0y
-         s2rINmYzw2d1jrt8fSZV/fPpy+A1D2J5b8Vgfm2U0pJ0yhW/RAXVadjGSJ0igZUMdp
-         ma/sO8e6mpgdTbkuAvP8g1hbUYcb5qkKt+EC0TJs=
-Date:   Tue, 22 Sep 2020 01:06:01 +0100
+        b=ySiwoydH41o8/zzdnIZjAP/A9UcFb7bgGTgTq4bv/WOlfoFLcKBUVMs+aucTL+Qqq
+         HQhhWHER92iJCMhFDyEUmjUBZHL5OGjOmnsDFWT5ZJmaVFUd9M2dSSX3WCSouY9S6g
+         msXlXJkI0/56mY7ZzbyZTjkdWwk3ztd2ye0+XPwI=
+Date:   Tue, 22 Sep 2020 01:06:06 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Sangbeom Kim <sbkim73@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org
-In-Reply-To: <20200921203616.19623-1-krzk@kernel.org>
-References: <20200921203616.19623-1-krzk@kernel.org>
-Subject: Re: [RFT] regulator: s5m8767: initialize driver via module_platform_driver
-Message-Id: <160073316153.6369.11503371469666905357.b4-ty@kernel.org>
+To:     Colin King <colin.king@canonical.com>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+In-Reply-To: <20200920142454.33352-1-colin.king@canonical.com>
+References: <20200920142454.33352-1-colin.king@canonical.com>
+Subject: Re: [PATCH] regulator: fix indentation issue
+Message-Id: <160073316153.6369.11968491435935833807.b4-ty@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Sep 2020 22:36:16 +0200, Krzysztof Kozlowski wrote:
-> The driver was using subsys_initcall() because in old times deferred
-> probe was not supported everywhere and specific ordering was needed.
-> Since probe deferral works fine and specific ordering is discouraged
-> (hides dependencies between drivers and couples their boot order), the
-> driver can be converted to regular module_platform_driver.
+On Sun, 20 Sep 2020 15:24:54 +0100, Colin King wrote:
+> There is a return statement that is indented with an extra
+> space, fix this by removing it.
 
 Applied to
 
@@ -51,8 +46,8 @@ Applied to
 
 Thanks!
 
-[1/1] regulator: s5m8767: initialize driver via module_platform_driver
-      commit: 8d23b0b8fc950cba2046840c46b21db9b5c0573c
+[1/1] regulator: fix indentation issue
+      commit: be35cc4695aa1b26d00b30bfd1d8408eddd357ec
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
