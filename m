@@ -2,96 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F01274382
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 15:51:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A2662743BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 16:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726655AbgIVNve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 09:51:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726593AbgIVNvd (ORCPT
+        id S1726751AbgIVOAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 10:00:12 -0400
+Received: from mail.efficios.com ([167.114.26.124]:56690 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726579AbgIVOAH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 09:51:33 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B073C061755;
-        Tue, 22 Sep 2020 06:51:33 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id y15so3447013wmi.0;
-        Tue, 22 Sep 2020 06:51:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Ysqz6GyyNFAHuc6XNq36xYUlncxXozuNxpnDdtcRHI4=;
-        b=WXFdwlqUUNEI/1EwlxVKHGNQJgea/QOvczBrlAL3LVIZxU0EHzFZ3dFNp7as2Hjlyq
-         Uw2VC09xn3mh92riN9pPqj9Rfq4BFz+FchDRoVilKepcdpTfzMsY+LJ5j4tdhkiQg+Tr
-         uer1db60wLEbMcDlNJlEaad80Oi1Hql5rXHEadRAGPGGxgr5kQMYC4FsBUJiKXZeiK95
-         iTM45RjqpguYkU+ZNatnajENvxS8xoUy75WPJL8DHkE98KkZ9gEtsu6UbpPbmhEiWrAZ
-         Pp3KkhGa/4jS7fgVIP1wPUL9aBU6dK29/mpvPqLaouKaX69JzNYMibXSqzYqLs/raAuW
-         KsLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ysqz6GyyNFAHuc6XNq36xYUlncxXozuNxpnDdtcRHI4=;
-        b=uUyvoOYrRmVYMexgf27sf9/3fkejjGUMjtfnaz3qVmViHYY9ot/CFoRpBlTjhr1m46
-         fRSIBcNjn/kvw9cXjgREpC9AcfofPB3mkirr+WiBnTxyrVko79rXbQDUPTrpVCQrDd6U
-         kgy+/Vbmq5I4HhQGBkF6uDrw3YX6J70dskxGuOj/HbvJ3XD17PSo9VfGPaOeWCP0mZcu
-         1Aljho8E/VOKBiY1xkUfcWNeqN2FfhV4vkGB9hDHbmAisHmivPDN2ksbkc2+jMxSdvXl
-         IbPZxT1zY68L5PcCOXDvDQbJbngCTcNKlqvx9FdaEF8yYa7E498SFoaMpj/vlzyRM/9r
-         LiRQ==
-X-Gm-Message-State: AOAM530BauCyL0GSScSdVL1ch4guCtNzFgMvQ524IMQFE7cU435iQet0
-        VoOCDNRMoQckIHeSiFPdF88=
-X-Google-Smtp-Source: ABdhPJyaXlYNr/My6wmvyG7+TvO3d2qoj25uGwR0xvS4xN6bjft3EN5lwy5xfsv2s+GJmPV/+Wub5Q==
-X-Received: by 2002:a1c:7907:: with SMTP id l7mr1128137wme.89.1600782692118;
-        Tue, 22 Sep 2020 06:51:32 -0700 (PDT)
-Received: from lenovo-laptop ([176.12.107.132])
-        by smtp.gmail.com with ESMTPSA id m23sm4452000wmi.19.2020.09.22.06.51.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 06:51:31 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-X-Google-Original-From: Alex Dewar <alex.dewar@gmx.co.uk>
-Date:   Tue, 22 Sep 2020 14:51:28 +0100
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Alex Dewar <alex.dewar90@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        devel@driverdev.osuosl.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Alan Cox <alan@linux.intel.com>, linux-media@vger.kernel.org
-Subject: Re: [PATCH REBASE 0/3] atomisp: Rebased fixes
-Message-ID: <20200922135128.f2yuf7cixb3hfwba@lenovo-laptop>
-References: <21f18dc2-a1bc-0a37-0336-fc35170a40e9@gmail.com>
- <20200922090914.20702-1-alex.dewar90@gmail.com>
- <20200922112729.313d454d@coco.lan>
- <f14fac45-d713-a6ee-f0be-906a6d971b43@gmail.com>
- <20200922132727.GG4282@kadam>
+        Tue, 22 Sep 2020 10:00:07 -0400
+X-Greylist: delayed 474 seconds by postgrey-1.27 at vger.kernel.org; Tue, 22 Sep 2020 10:00:06 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 029972D509D;
+        Tue, 22 Sep 2020 09:52:11 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id AwVJoNRsyjJx; Tue, 22 Sep 2020 09:52:10 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 9ED9D2D509C;
+        Tue, 22 Sep 2020 09:52:10 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 9ED9D2D509C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1600782730;
+        bh=NYe9knDYdf+nCbdU2QXt7sFbgkE5gewFJ9aj/0JSbgE=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=nowhkNUfcgvo/yqQ9T7fsxzOz2EzfZw9cn1OjOCvWSCReypP7EQjNZmsDIblpaLFu
+         iL8lV3ompwHBux9OWBxJm95c7fxKBsz/q/dRI+90tiZsE6Lu3CDvArbe5oYwP8DpVb
+         3R3tl0eFCRRuNaojV90UY8nTUtsuU7csQ1NRMq9dcGzYdxK+M+w7e4AQKuWh0g0QCE
+         sqXw8uSZTUBEsR+LWv2LP5ziQ7EqEIMnXuBiVb4M1PQevf8PPgQWZ6rJbUaNURknb4
+         1m1XND2yhW7S3j5AbsYN9sZ+8wfZGDXuBVxetXiMshyjJ6DzxZfeliHR+o41QBR7vv
+         e8WLwWEZf/NDQ==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id C5WBBT9oHi4x; Tue, 22 Sep 2020 09:52:10 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 9174F2D4DD2;
+        Tue, 22 Sep 2020 09:52:10 -0400 (EDT)
+Date:   Tue, 22 Sep 2020 09:52:10 -0400 (EDT)
+From:   Michael Jeanson <mjeanson@efficios.com>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        David Ahern <dsahern@gmail.com>
+Cc:     David <davem@davemloft.net>, netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <1135414696.37989.1600782730509.JavaMail.zimbra@efficios.com>
+In-Reply-To: <1383129694.37216.1600716821449.JavaMail.zimbra@efficios.com>
+References: <20200918181801.2571-1-mathieu.desnoyers@efficios.com> <390b230b-629b-7f96-e7c9-b28f8b592102@gmail.com> <1453768496.36855.1600713879236.JavaMail.zimbra@efficios.com> <dd1caf15-2ef0-f557-b9a8-26c46739f20b@gmail.com> <1383129694.37216.1600716821449.JavaMail.zimbra@efficios.com>
+Subject: Re: [RFC PATCH v2 0/3] l3mdev icmp error route lookup fixes
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922132727.GG4282@kadam>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3965 (ZimbraWebClient - GC84 (Linux)/8.8.15_GA_3963)
+Thread-Topic: l3mdev icmp error route lookup fixes
+Thread-Index: oGKu+N8sth3SnnZ9IlBxnz5gbNJQTgU0d63x
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[snip]
-> > That sounds more sensible. I've also just noticed that I introduced a bug in
-> > the first patch when rebasing it :-/, so let's hold off on the whole series
-> > and I'll do a proper tidy and resend after the next merge window.
-> 
-> Is the bug the memory leak if lm3554_platform_data_func() fails?
-> 
-> regards,
-> dan carpenter
-> 
+----- On 21 Sep, 2020, at 15:33, Mathieu Desnoyers mathieu.desnoyers@efficios.com wrote:
 
->  
-Nope. I put a "return ret" for the last check instead of "goto err_del_timer"...
+> ----- On Sep 21, 2020, at 3:11 PM, David Ahern dsahern@gmail.com wrote:
+> 
+>> On 9/21/20 12:44 PM, Mathieu Desnoyers wrote:
+>>> ----- On Sep 21, 2020, at 2:36 PM, David Ahern dsahern@gmail.com wrote:
+>>> 
+>>>> On 9/18/20 12:17 PM, Mathieu Desnoyers wrote:
+>>>>> Hi,
+>>>>>
+>>>>> Here is an updated series of fixes for ipv4 and ipv6 which which ensure
+>>>>> the route lookup is performed on the right routing table in VRF
+>>>>> configurations when sending TTL expired icmp errors (useful for
+>>>>> traceroute).
+>>>>>
+>>>>> It includes tests for both ipv4 and ipv6.
+>>>>>
+>>>>> These fixes address specifically address the code paths involved in
+>>>>> sending TTL expired icmp errors. As detailed in the individual commit
+>>>>> messages, those fixes do not address similar issues related to network
+>>>>> namespaces and unreachable / fragmentation needed messages, which appear
+>>>>> to use different code paths.
+>>>>>
+>>>>
+>>>> New selftests are failing:
+>>>> TEST: Ping received ICMP frag needed                       [FAIL]
+>>>>
+>>>> Both IPv4 and IPv6 versions are failing.
+>>> 
+>>> Indeed, this situation is discussed in each patch commit message:
+>>> 
+>>> ipv4:
+>>> 
+>>> [ It has also been pointed out that a similar issue exists with
+>>>   unreachable / fragmentation needed messages, which can be triggered by
+>>>   changing the MTU of eth1 in r1 to 1400 and running:
+>>> 
+>>>   ip netns exec h1 ping -s 1450 -Mdo -c1 172.16.2.2
+>>> 
+>>>   Some investigation points to raw_icmp_error() and raw_err() as being
+>>>   involved in this last scenario. The focus of this patch is TTL expired
+>>>   ICMP messages, which go through icmp_route_lookup.
+>>>   Investigation of failure modes related to raw_icmp_error() is beyond
+>>>   this investigation's scope. ]
+>>> 
+>>> ipv6:
+>>> 
+>>> [ Testing shows that similar issues exist with ipv6 unreachable /
+>>>   fragmentation needed messages.  However, investigation of this
+>>>   additional failure mode is beyond this investigation's scope. ]
+>>> 
+>>> I do not have the time to investigate further unfortunately, so I
+>>> thought it best to post what I have.
+>>> 
+>> 
+>> the test setup is bad. You have r1 dropping the MTU in VRF red, but not
+>> telling VRF red how to send back the ICMP. e.g., for IPv4 add:
+>> 
+>>    ip -netns r1 ro add vrf red 172.16.1.0/24 dev blue
+>> 
+>> do the same for v6.
+>> 
+>> Also, I do not see a reason for r2; I suggest dropping it. What you are
+>> testing is icmp crossing VRF with route leaking, so there should not be
+>> a need for r2 which leads to asymmetrical routing (172.16.1.0 via r1 and
+>> the return via r2).
 
-The version of this code in linux-next does the correct "if (PTR_ERR(...))"
-check after calling lm3554_platform_data_func(), but this patch doesn't
-seem to have made its way into linux-media yet. All the more reason to
-resend my patches after the merge window, I suppose.
+The objective of the test was to replicate a clients environment where
+packets are crossing from a VRF which has a route back to the source to
+one which doesn't while reaching a ttl of 0. If the route lookup for the
+icmp error is done on the interface in the first VRF, it can be routed to
+the source but not on the interface in the second VRF which is the
+current behaviour for icmp errors generated while crossing between VRFs.
 
-Best,
-Alex
+There may be a better test case that doesn't involve asymmetric routing
+to test this but it's the only way I found to replicate this.
