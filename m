@@ -2,126 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC3B5274795
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 19:38:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD44727479B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 19:39:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgIVRiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 13:38:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42768 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726526AbgIVRiF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 13:38:05 -0400
-Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B15B22206;
-        Tue, 22 Sep 2020 17:38:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600796284;
-        bh=8KJSUWQ23WNDIuEAXrq8uOmC1A6VoeXegOzbLw8mHrE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=o1lsm5dOfOmgTpb7Ua+B3eFSm/rxPAXz+mpsYMilZSjyQntBLuUwPjpcKIwwM96ne
-         UfJagjMbQWIZqO+J7UW36XNNP20NnY4LeVQNzS5lbxx8Dzpwx6KPINavgfVgjCmmyZ
-         H0Xvph2RyUk22143V30helsBMNwG1KlscINTDX5w=
-Received: by mail-oi1-f182.google.com with SMTP id 185so21905436oie.11;
-        Tue, 22 Sep 2020 10:38:04 -0700 (PDT)
-X-Gm-Message-State: AOAM5329cLwWo0PkhiI/4LlXoZMycOxM2PD3x3t4Ig/Df7C7tGSy0ULW
-        5XMpRoUOuKr+WnsIfp0A28TI1rPH4QprxzIdnA==
-X-Google-Smtp-Source: ABdhPJyOpI4lih1uwLxz5TQ/FgdTIG0T0C/BbyJzcHEc4sdhT+cy/DdsdZAXNI8DpX0wHe/8B1ZJyGRP3VyEHusuL3s=
-X-Received: by 2002:aca:1711:: with SMTP id j17mr3449230oii.152.1600796283991;
- Tue, 22 Sep 2020 10:38:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200918103429.4769-1-nadeem@cadence.com>
-In-Reply-To: <20200918103429.4769-1-nadeem@cadence.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 22 Sep 2020 11:37:52 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJhpPCpkfrENtbc7zfgiEqPB7ssEt1H5BpjiPPPWSPEwA@mail.gmail.com>
-Message-ID: <CAL_JsqJhpPCpkfrENtbc7zfgiEqPB7ssEt1H5BpjiPPPWSPEwA@mail.gmail.com>
-Subject: Re: [PATCH] PCI: Cadence: Add quirk for Gen2 controller to do
- autonomous speed change.
-To:     Nadeem Athani <nadeem@cadence.com>
-Cc:     Tom Joseph <tjoseph@cadence.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Milind Parab <mparab@cadence.com>,
-        Swapnil Kashinath Jakhade <sjakhade@cadence.com>
+        id S1726650AbgIVRjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 13:39:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23928 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726566AbgIVRjw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 13:39:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600796391;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EOvZa58bQwSg9zZxQrzzDfDSI+YPZEHlTilezlciasI=;
+        b=aY/+HSJKQc1ASmuxWRmrlCWXktVI0Klb+G3T1DICRSOk50WhcdXOeCwhvBBsgjONrBlRC4
+        08A4VznFXF78HYvG4SpHGnsHouFPCTwqr/IL+UXqSQG3U2TYLGwUDeekZv8C4i7yjtlkOI
+        S2rr1ycLm2/BAZeP4C0jReb6feG3b1M=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-268-fIi_Wtd-O-WfcfvSmWIqPQ-1; Tue, 22 Sep 2020 13:39:44 -0400
+X-MC-Unique: fIi_Wtd-O-WfcfvSmWIqPQ-1
+Received: by mail-qv1-f70.google.com with SMTP id y2so12421853qvs.14
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 10:39:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=EOvZa58bQwSg9zZxQrzzDfDSI+YPZEHlTilezlciasI=;
+        b=ErUozt1YidWxMcMX2EVMOwWq8sPhQyGvPYSdsS2Tw9D3Yh/SIxJ5T9MVCnr7DeF9di
+         iJpmZL3WvBGjqx5pz5Ev9ctzKG/DKYiiwWDmsPKBXaQfsKHK/90Z73E2X2GDDRAINmv2
+         Xy5MljRSN7V5elqEVs9+F4AsyBNF2SL640siOtfKU7t+VG6IXRoVcj8JC879iLgh/C5E
+         UY9sIQ5HvWgLPLs4ZHsc3w3OMX7WK1anwmIO/0g2wyA+Uo31kpXwCdJVgEyCKNZ5uAes
+         6eMFIekF/OXMsKh9ZcnbnvdHj6lk9BBf7R+fqpYDrajRdtbX4ZgDC6cnugjdSVU8B2Q8
+         js8w==
+X-Gm-Message-State: AOAM532JfGJYHKePAPO07+872rIr8OLaZHr8B00rJ58fqqqD6K/Cwho9
+        YErxWQBpNF7iU3M6dMJweC19u12Y+xIZ27dLrVsKBpJgqA8i/HQqLgiMIJd4DxGD+rneWzR+5Xy
+        TefVvk8oaPz0SUliK0b1YF/1V
+X-Received: by 2002:ac8:37bb:: with SMTP id d56mr5776234qtc.222.1600796383808;
+        Tue, 22 Sep 2020 10:39:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwZKmhFVNxcmIKWH3PdQ/839r2qc0cP5cXBSbUPc3Oje/ERMJ7b6/wgKScyuW5Qim8DezYHrQ==
+X-Received: by 2002:ac8:37bb:: with SMTP id d56mr5776210qtc.222.1600796383565;
+        Tue, 22 Sep 2020 10:39:43 -0700 (PDT)
+Received: from Ruby.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
+        by smtp.gmail.com with ESMTPSA id v30sm13285520qtj.52.2020.09.22.10.39.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 10:39:42 -0700 (PDT)
+Message-ID: <a2c0d1ac02fb4bef142196d837323bcde41e9427.camel@redhat.com>
+Subject: Re: [PATCH 0/3] Fix Kernel-doc warnings introduced on next-20200921
+From:   Lyude Paul <lyude@redhat.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ville =?ISO-8859-1?Q?Syrj=E4l=E4?= 
+        <ville.syrjala@linux.intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Eric Dumazet <edumazet@google.com>,
+        Francesco Ruggeri <fruggeri@arista.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org, netdev@vger.kernel.org
+Date:   Tue, 22 Sep 2020 13:39:41 -0400
+In-Reply-To: <cover.1600773619.git.mchehab+huawei@kernel.org>
+References: <cover.1600773619.git.mchehab+huawei@kernel.org>
+Organization: Red Hat
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 4:34 AM Nadeem Athani <nadeem@cadence.com> wrote:
->
-> Cadence controller will not initiate autonomous speed change if
-> strapped as Gen2. The Retrain bit is set as a quirk to trigger
-> this speed change.
->
-> Signed-off-by: Nadeem Athani <nadeem@cadence.com>
-> ---
->  drivers/pci/controller/cadence/pcie-cadence-host.c |   13 +++++++++++++
->  drivers/pci/controller/cadence/pcie-cadence.h      |    6 ++++++
->  2 files changed, 19 insertions(+), 0 deletions(-)
->
-> diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c b/drivers/pci/controller/cadence/pcie-cadence-host.c
-> index 4550e0d..4cb7f29 100644
-> --- a/drivers/pci/controller/cadence/pcie-cadence-host.c
-> +++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
-> @@ -83,6 +83,8 @@ static int cdns_pcie_host_init_root_port(struct cdns_pcie_rc *rc)
->         struct cdns_pcie *pcie = &rc->pcie;
->         u32 value, ctrl;
->         u32 id;
-> +       u32 link_cap = CDNS_PCIE_LINK_CAP_OFFSET;
-> +       u8 sls, lnk_ctl;
->
->         /*
->          * Set the root complex BAR configuration register:
-> @@ -111,6 +113,17 @@ static int cdns_pcie_host_init_root_port(struct cdns_pcie_rc *rc)
->         if (rc->device_id != 0xffff)
->                 cdns_pcie_rp_writew(pcie, PCI_DEVICE_ID, rc->device_id);
->
-> +       /* Quirk to enable autonomous speed change for GEN2 controller */
-> +       /* Reading Supported Link Speed value */
-> +       sls = PCI_EXP_LNKCAP_SLS &
-> +               cdns_pcie_rp_readb(pcie, link_cap + PCI_EXP_LNKCAP);
-> +       if (sls == PCI_EXP_LNKCAP_SLS_5_0GB) {
-> +               /* Since this a Gen2 controller, set Retrain Link(RL) bit */
-> +               lnk_ctl = cdns_pcie_rp_readb(pcie, link_cap + PCI_EXP_LNKCTL);
-> +               lnk_ctl |= PCI_EXP_LNKCTL_RL;
-> +               cdns_pcie_rp_writeb(pcie, link_cap + PCI_EXP_LNKCTL, lnk_ctl);
+For patches 2 and 3:
 
-Why the byte accesses? This is a 16-bit register.
+Reviewed-by: Lyude Paul <lyude@redhat.com>
 
-> +       }
-> +
->         cdns_pcie_rp_writeb(pcie, PCI_CLASS_REVISION, 0);
->         cdns_pcie_rp_writeb(pcie, PCI_CLASS_PROG, 0);
->         cdns_pcie_rp_writew(pcie, PCI_CLASS_DEVICE, PCI_CLASS_BRIDGE_PCI);
-> diff --git a/drivers/pci/controller/cadence/pcie-cadence.h b/drivers/pci/controller/cadence/pcie-cadence.h
-> index feed1e3..075c263 100644
-> --- a/drivers/pci/controller/cadence/pcie-cadence.h
-> +++ b/drivers/pci/controller/cadence/pcie-cadence.h
-> @@ -120,6 +120,7 @@
->   */
->  #define CDNS_PCIE_RP_BASE      0x00200000
->
-> +#define CDNS_PCIE_LINK_CAP_OFFSET 0xC0
->
->  /*
->   * Address Translation Registers
-> @@ -413,6 +414,11 @@ static inline void cdns_pcie_rp_writew(struct cdns_pcie *pcie,
->         cdns_pcie_write_sz(addr, 0x2, value);
->  }
->
-> +static inline u8 cdns_pcie_rp_readb(struct cdns_pcie *pcie, u32 reg)
-> +{
-> +       return readb(pcie->reg_base + CDNS_PCIE_RP_BASE + reg);
-> +}
-> +
->  /* Endpoint Function register access */
->  static inline void cdns_pcie_ep_fn_writeb(struct cdns_pcie *pcie, u8 fn,
->                                           u32 reg, u8 value)
-> --
-> 1.7.1
->
+I'll go ahead and push these to drm-intel-next-queued (since drm-misc-next
+doesn't have these patches in yet, and the commits these fix were originally
+merged through drm-intel-next-queued anyway). thanks!
+
+On Tue, 2020-09-22 at 13:22 +0200, Mauro Carvalho Chehab wrote:
+> A few new warnings were added at linux-next. Address them, in order for us
+> to keep zero warnings at the docs.
+> 
+> The entire patchset fixing all kernel-doc warnings is at:
+> 	https://git.linuxtv.org/mchehab/experimental.git/log/?h=doc-fixes
+> 
+> Mauro Carvalho Chehab (3):
+>   net: fix a new kernel-doc warning at dev.c
+>   drm/dp: fix kernel-doc warnings at drm_dp_helper.c
+>   drm/dp: fix a kernel-doc issue at drm_edid.c
+> 
+>  drivers/gpu/drm/drm_dp_helper.c | 5 +++++
+>  drivers/gpu/drm/drm_edid.c      | 2 +-
+>  net/core/dev.c                  | 4 ++--
+>  3 files changed, 8 insertions(+), 3 deletions(-)
+> 
+-- 
+Cheers,
+	Lyude Paul (she/her)
+	Software Engineer at Red Hat
+
