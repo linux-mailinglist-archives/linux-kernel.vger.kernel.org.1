@@ -2,112 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35002273D0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 10:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E61D273D11
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 10:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726661AbgIVIOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 04:14:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36048 "EHLO
+        id S1726677AbgIVIQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 04:16:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726614AbgIVIOo (ORCPT
+        with ESMTP id S1726483AbgIVIQS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 04:14:44 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 504B0C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 01:14:44 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id l71so11331898pge.4
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 01:14:44 -0700 (PDT)
+        Tue, 22 Sep 2020 04:16:18 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6367C061755;
+        Tue, 22 Sep 2020 01:16:17 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id s12so15993065wrw.11;
+        Tue, 22 Sep 2020 01:16:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=VvRTHWq9atT0M2ZBSCyp6rDibMZAJDzlcA9mNUPSa1Q=;
-        b=UIsiyD65QwMGiOab0ykzjaRHAo1ydlbju+cn5iZoBvahS1pS6vUlqWCapZgjLSeHaN
-         PdB9uj3WYuSdOPKVH1nwPcYDHA4EXJU36mVbBnBAAxrSytNZ/81cgPdZdDLOQc6hjVus
-         rDX5iZP8/rYc5sX7xUIxbJfIx34Zba5RDrwM3V7zvnTH4z1p3CuJf5sklEocne0UScwE
-         Wnug7L2foNRamyKS1UdgsVG8yhMYE2F8yrojPsAOACTpqHxpv9x1VZKO2NjB/H5ocwvI
-         7LHCvg0yy/5qXNjHtwtBhzZIG/WI8WpqRDQwvRxepxofyb/4T/44DOpZwkMEukcDfwal
-         9FKg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=aKRxZL4FGN5j/4WkJ9pynD3NUqlurooCForAs/j+ntg=;
+        b=dmDw9QZtzmevLAins9hFvEC4NiX8Xs22crn3GDX855fYgxS+DwvN15/80NgKOmLAdv
+         o30HhP+xH6uizb79qkXdUrkVRmuvgBH93Hknh3dBGT2IG2AVrDH/Oqb1OzY2g8WhhL/o
+         X4r04M4SUNb9SoMJznOcJtkp1CRsQlQG+SFFdRCAd9sQbW9KbFkRKR9jgr6v3pUA+8R3
+         lsZmOP230jBbi+gHRI1xP5RtBEn0mlEHwoNxNqwZTWL0RRtsMFZYphVQ+qX47K4kf4to
+         BsBhOYdjiaV6bxdXcGuX56cv0322/21x2fhtpc2EOuVRsm6HoO7VtwUrEL1W/EMDs5Zj
+         6/Cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=VvRTHWq9atT0M2ZBSCyp6rDibMZAJDzlcA9mNUPSa1Q=;
-        b=ftDkYl/Ydf0ZMmCM82tPs7go8mTnsD1SDSEo9eVBkL4CpHme+4dK7jV8pRA6FKUlbB
-         MASJTuJmfCaWT0zH3w9HvhAjMTCkC+UwuN9pzhbLr0xBr2rUyCyMgwzrbePnpkbV58oG
-         iuwlsoUeT8L7R/HSrroIKpqvESmTZcARTvYMkh0L4bFUlc0OmyH5z04TQJiAso4EgHKv
-         /VS37+DDEQ/qDvGaoiFpePVG/PU0VHD05ZvVnJtAlo5WS6KfH0HPn0Zn8ZucuE1oyhz8
-         uxsP9ZnkIlCpcDFIrCXciEVB9WoQO3i7isafGG8U5xrzyr9c6QUVL/L3o7FGZPZOB+sD
-         mY5g==
-X-Gm-Message-State: AOAM531ljLEMjV0Q32qr11agkcmLW8DF/9zoKnAkOPY4wdxErNqUfgJR
-        KA+Q/EqyI3JmdMV9dnaVuxm+
-X-Google-Smtp-Source: ABdhPJxXMg3Nn0XGG3SBhoXi4mamnDNcOX3VjcS+UMVk72R8qDISYWh3+KAXOZRb+pZ58Ei82a9m6A==
-X-Received: by 2002:a63:d918:: with SMTP id r24mr2597057pgg.158.1600762483807;
-        Tue, 22 Sep 2020 01:14:43 -0700 (PDT)
-Received: from Mani-XPS-13-9360 ([2409:4072:6e1c:c062:1004:2ccf:6900:b97])
-        by smtp.gmail.com with ESMTPSA id m25sm13846459pfa.32.2020.09.22.01.14.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 22 Sep 2020 01:14:43 -0700 (PDT)
-Date:   Tue, 22 Sep 2020 13:44:32 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Matheus Castello <matheus@castello.eng.br>
-Cc:     afaerber@suse.de, mark.rutland@arm.com, robh+dt@kernel.org,
-        edgar.righi@lsitec.org.br, igor.lima@lsitec.org.br,
-        helen.koike@collabora.com, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-actions@lists.infradead.org, Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v7 1/4] dt-bindings: Add vendor prefix for Caninos Loucos
-Message-ID: <20200922081432.GK29035@Mani-XPS-13-9360>
-References: <20200922024302.205062-1-matheus@castello.eng.br>
- <20200922024302.205062-2-matheus@castello.eng.br>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=aKRxZL4FGN5j/4WkJ9pynD3NUqlurooCForAs/j+ntg=;
+        b=WHfoRUnH/WTavmgAIRh0rPFzMzaqUlEoxUcFBbjlnPu94D2hkfkDwX9mYEhNrCFRJB
+         f5CuP4zwcE/I6vsF7AcTHlImZ9eE7n3KBlHRWneaV+q8FdCv8rqTMZTGV4A/al4bJZ9k
+         jWIt4t96jYjHZ5iDNa5Em8OQ08vAhaqSgAI7it3KDpnZfsEBW1DCqMqPjaYOlJ4Md3pH
+         bIqOQPdBHbIoCuqQEvyYMXu9sCr9hiPrJ7kZ+aNoINhA6cyxw9aNw7oPy0MooQkauPXX
+         QofqC5R9HhxWU0GUt6DF+4FhL60yNdVdifK3Vox1gkc39P2yh8hbwYk7e3sWfNsmQkjV
+         EWEA==
+X-Gm-Message-State: AOAM5324TAkenZULTC4xPHh9+hFrhHM1Vji1czfiQHD3DBoQHZKJ/J+r
+        31yq0Aj7npl4C6jRrRy+11es9ZRQFUvtPmqC
+X-Google-Smtp-Source: ABdhPJxRolYELjQplUMesH1+RAkghTXRZcshi7uZA4CNsT8JzclYHqmvQmiEn/M9dR8aCWrWQmvlgw==
+X-Received: by 2002:a5d:680b:: with SMTP id w11mr4182872wru.73.1600762576158;
+        Tue, 22 Sep 2020 01:16:16 -0700 (PDT)
+Received: from [192.168.0.64] (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id j14sm25702629wrr.66.2020.09.22.01.16.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Sep 2020 01:16:15 -0700 (PDT)
+Subject: Re: [PATCH RESEND 0/5] atomisp: Fixes and cleanups
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alan Cox <alan@linux.intel.com>, linux-media@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+References: <20200921215359.45003-1-alex.dewar90@gmail.com>
+ <20200922101143.28779711@coco.lan>
+From:   Alex Dewar <alex.dewar90@gmail.com>
+Message-ID: <21f18dc2-a1bc-0a37-0336-fc35170a40e9@gmail.com>
+Date:   Tue, 22 Sep 2020 09:16:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200922024302.205062-2-matheus@castello.eng.br>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200922101143.28779711@coco.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 11:42:59PM -0300, Matheus Castello wrote:
-> The Caninos Loucos Program develops Single Board Computers with an open
-> structure. The Program wants to form a community of developers to use
-> IoT technologies and disseminate the learning of embedded systems in
-> Brazil.
-> 
-> It is an initiative of the Technological Integrated Systems Laboratory
-> (LSI-TEC) with the support of Polytechnic School of the University of
-> São Paulo (Poli-USP) and Jon "Maddog" Hall.
-> 
-> Signed-off-by: Matheus Castello <matheus@castello.eng.br>
-> Acked-by: Rob Herring <robh@kernel.org>
-> Reviewed-by: Andreas Färber <afaerber@suse.de>
+On 22/09/2020 09:11, Mauro Carvalho Chehab wrote:
+> Em Mon, 21 Sep 2020 22:53:49 +0100
+> Alex Dewar <alex.dewar90@gmail.com> escreveu:
+>
+>> Hi Mauro,
+>>
+>> Over the last month I've sent a few scattered patches to fix various
+>> warnings from static analysers, but they seem to have fallen through the
+>> cracks? I'm reposting them here as a series to make them easier to
+>> review. If you do have any feedback that'd be great :)
+> Usually, there's no need to re-send the patches, as we pick them
+> from a patchwork queue.
+>
+> However, only one of the patches actually applied against the
+> linux-media tree.
+>
+> So, please rebased the remaining patches on the top of it.
+>
+> Thanks,
+> Mauro
+That's weird. They applied cleanly against yesterday's linux-next for 
+me... I'll rebase on linux-media and resend.
 
-Applied for v5.10!
-
-Thanks,
-Mani
-
-> ---
->  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> index 63996ab03521..aac0dc3caf3b 100644
-> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> @@ -179,6 +179,8 @@ patternProperties:
->      description: CALAO Systems SAS
->    "^calxeda,.*":
->      description: Calxeda
-> +  "^caninos,.*":
-> +    description: Caninos Loucos Program
->    "^capella,.*":
->      description: Capella Microsystems, Inc
->    "^cascoda,.*":
-> --
-> 2.28.0
-> 
+Best,
+Alex
