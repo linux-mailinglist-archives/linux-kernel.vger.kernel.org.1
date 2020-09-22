@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 329E2274A78
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 22:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C4B274A74
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 22:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726727AbgIVU5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 16:57:55 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:35664 "EHLO
+        id S1726643AbgIVU47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 16:56:59 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:9168 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726448AbgIVU5z (ORCPT
+        by vger.kernel.org with ESMTP id S1726448AbgIVU46 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 16:57:55 -0400
+        Tue, 22 Sep 2020 16:56:58 -0400
+X-Greylist: delayed 1171 seconds by postgrey-1.27 at vger.kernel.org; Tue, 22 Sep 2020 16:56:57 EDT
 Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 08MKYnAH016666
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 13:37:25 -0700
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 08MKYnAV016666
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 13:37:31 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=AAkdjBcAxBHKbswa8X2vEsUdPUEX0CWuOZMOWVgmND0=;
- b=reYeuHPIrhXu/WR5jdMuv/mJUG/6Ywj8K/QMa7i9KH2Bh9zx0VePL3eUFht4dUk6dBQN
- iLESLzIiKVOEomflUSiXQj1bPOKh3dqs1dMYZnzXdnZBLbzYpASJ261plFnPoHL4QNAv
- 3tGtjA1LjE20YoDRpOQQFYaJBCPljYZszyY= 
+ bh=TypEATBWbpt53XcoP91sJwuxbGktC5GF4Gd45XiUxGA=;
+ b=ZAHx4psjUHQKUy08Ja3T8bZ41pABf78i5/TqDw2OCMQlmFntdsRfYLYEODY4IQ1gCLgT
+ pIN70pvgpHqOg3kzjH4PwnjeMYJIG7H32hmYkyTwHu0Nc4WkSb8CuZInylXSR7CP0lt0
+ Sx6GexiL5wFlk/6RO9g5gUC7y/eeHp6tcOM= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 33qn0as92p-3
+        by m0089730.ppops.net with ESMTP id 33qn0as92p-17
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 13:37:24 -0700
-Received: from intmgw001.06.prn3.facebook.com (2620:10d:c085:108::8) by
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 13:37:31 -0700
+Received: from intmgw001.41.prn1.facebook.com (2620:10d:c085:208::f) by
  mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 22 Sep 2020 13:37:23 -0700
+ 15.1.1979.3; Tue, 22 Sep 2020 13:37:25 -0700
 Received: by devvm1755.vll0.facebook.com (Postfix, from userid 111017)
-        id CD35C864B5C; Tue, 22 Sep 2020 13:37:21 -0700 (PDT)
+        id DE5AF864B60; Tue, 22 Sep 2020 13:37:21 -0700 (PDT)
 From:   Roman Gushchin <guro@fb.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 CC:     Shakeel Butt <shakeelb@google.com>,
@@ -39,9 +40,9 @@ CC:     Shakeel Butt <shakeelb@google.com>,
         Michal Hocko <mhocko@kernel.org>,
         <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
         <kernel-team@fb.com>, Roman Gushchin <guro@fb.com>
-Subject: [PATCH v1 2/4] mm: memcontrol/slab: use helpers to access slab page's memcg_data
-Date:   Tue, 22 Sep 2020 13:36:58 -0700
-Message-ID: <20200922203700.2879671-3-guro@fb.com>
+Subject: [PATCH v1 4/4] mm: convert page kmemcg type to a page memcg flag
+Date:   Tue, 22 Sep 2020 13:37:00 -0700
+Message-ID: <20200922203700.2879671-5-guro@fb.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200922203700.2879671-1-guro@fb.com>
 References: <20200922203700.2879671-1-guro@fb.com>
@@ -53,7 +54,7 @@ X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-09-22_18:2020-09-21,2020-09-22 signatures=0
 X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 adultscore=0
  bulkscore=0 lowpriorityscore=0 malwarescore=0 suspectscore=2 mlxscore=0
- mlxlogscore=810 clxscore=1015 priorityscore=1501 impostorscore=0
+ mlxlogscore=916 clxscore=1015 priorityscore=1501 impostorscore=0
  spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2006250000 definitions=main-2009220161
 X-FB-Internal: deliver
@@ -61,219 +62,253 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To gather all direct accesses to struct page's memcg_data field
-in one place, let's introduce 4 new helper functions to use in
-the slab accounting code:
-  struct obj_cgroup **page_obj_cgroups(struct page *page);
-  struct obj_cgroup **page_obj_cgroups_check(struct page *page);
-  bool set_page_obj_cgroups(struct page *page, struct obj_cgroup **objcgs=
-);
-  void clear_page_obj_cgroups(struct page *page);
+PageKmemcg flag is currently defined as a page type (like buddy,
+offline, table and guard). Semantically it means that the page
+was accounted as a kernel memory by the page allocator and has
+to be uncharged on the release.
 
-They are similar to the corresponding API for generic pages, except
-that the setter can return false, indicating that the value has been
-already set from a different thread.
+As a side effect of defining the flag as a page type, the accounted
+page can't be mapped to userspace (look at page_has_type() and
+comments above). In particular, this blocks the accounting of
+vmalloc-backed memory used by some bpf maps, because these maps
+do map the memory to userspace.
+
+One option is to fix it by complicating the access to page->mapcount,
+which provides some free bits for page->page_type.
+
+But it's way better to move this flag into page->memcg_data flags.
+Indeed, the flag makes no sense without enabled memory cgroups
+and memory cgroup pointer set in particular.
+
+This commit replaces PageKmemcg() and __SetPageKmemcg() with
+PageMemcgKmem() and SetPageMemcgKmem(). __ClearPageKmemcg()
+can be simple deleted because clear_page_mem_cgroup() already
+does the job.
+
+As a bonus, on !CONFIG_MEMCG build the PageMemcgKmem() check will
+be compiled out.
 
 Signed-off-by: Roman Gushchin <guro@fb.com>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
 ---
- include/linux/memcontrol.h | 80 ++++++++++++++++++++++++++++++++++++++
- mm/memcontrol.c            |  4 +-
- mm/slab.h                  | 27 ++-----------
- 3 files changed, 85 insertions(+), 26 deletions(-)
+ include/linux/memcontrol.h | 58 ++++++++++++++++++++++++++++++++++++--
+ include/linux/page-flags.h | 11 ++------
+ mm/memcontrol.c            | 14 +++------
+ mm/page_alloc.c            |  2 +-
+ 4 files changed, 62 insertions(+), 23 deletions(-)
 
 diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 3313e7c21534..ab3ea3e90583 100644
+index 9a49f1e1c0c7..390db58500d5 100644
 --- a/include/linux/memcontrol.h
 +++ b/include/linux/memcontrol.h
-@@ -409,6 +409,86 @@ static inline void clear_page_mem_cgroup(struct page=
+@@ -346,8 +346,14 @@ extern struct mem_cgroup *root_mem_cgroup;
+ enum page_memcg_flags {
+ 	/* page->memcg_data is a pointer to an objcgs vector */
+ 	PG_MEMCG_OBJ_CGROUPS,
++	/* page has been accounted as a non-slab kernel page */
++	PG_MEMCG_KMEM,
++	/* the next bit after the last actual flag */
++	PG_MEMCG_LAST_FLAG,
+ };
+=20
++#define MEMCG_FLAGS_MASK ((1UL << PG_MEMCG_LAST_FLAG) - 1)
++
+ /*
+  * page_mem_cgroup - get the memory cgroup associated with a page
+  * @page: a pointer to the page struct
+@@ -359,8 +365,12 @@ enum page_memcg_flags {
+  */
+ static inline struct mem_cgroup *page_mem_cgroup(struct page *page)
+ {
++	unsigned long memcg_data =3D page->memcg_data;
++
+ 	VM_BUG_ON_PAGE(PageSlab(page), page);
+-	return (struct mem_cgroup *)page->memcg_data;
++	VM_BUG_ON_PAGE(test_bit(PG_MEMCG_OBJ_CGROUPS, &memcg_data), page);
++
++	return (struct mem_cgroup *)(memcg_data & ~MEMCG_FLAGS_MASK);
+ }
+=20
+ /*
+@@ -379,7 +389,7 @@ static inline struct mem_cgroup *page_mem_cgroup_chec=
+k(struct page *page)
+ 	if (test_bit(PG_MEMCG_OBJ_CGROUPS, &memcg_data))
+ 		return NULL;
+=20
+-	return (struct mem_cgroup *)memcg_data;
++	return (struct mem_cgroup *)(memcg_data & ~MEMCG_FLAGS_MASK);
+ }
+=20
+ /*
+@@ -408,6 +418,36 @@ static inline void clear_page_mem_cgroup(struct page=
  *page)
  	page->memcg_data =3D 0;
  }
 =20
-+#ifdef CONFIG_MEMCG_KMEM
 +/*
-+ * page_obj_cgroups - get the object cgroups vector associated with a pa=
++ * PageMemcgKmem - check if the page has MemcgKmem flag set
++ * @page: a pointer to the page struct
++ *
++ * Checks if the page has MemcgKmem flag set. The caller must ensure tha=
+t
++ * the page has an associated memory cgroup. It's not safe to call this =
+function
++ * against some types of pages, e.g. slab pages.
++ */
++static inline bool PageMemcgKmem(struct page *page)
++{
++	VM_BUG_ON_PAGE(test_bit(PG_MEMCG_OBJ_CGROUPS, &page->memcg_data), page)=
+;
++	return test_bit(PG_MEMCG_KMEM, &page->memcg_data);
++}
++
++/*
++ * SetPageMemcgKmem - set the page's MemcgKmem flag
++ * @page: a pointer to the page struct
++ *
++ * Set the page's MemcgKmem flag. The caller must ensure that the page h=
+as
++ * an associated memory cgroup. It's not safe to call this function
++ * against some types of pages, e.g. slab pages.
++ */
++static inline void SetPageMemcgKmem(struct page *page)
++{
++	VM_BUG_ON_PAGE(!page->memcg_data, page);
++	VM_BUG_ON_PAGE(test_bit(PG_MEMCG_OBJ_CGROUPS, &page->memcg_data), page)=
+;
++	__set_bit(PG_MEMCG_KMEM, &page->memcg_data);
++}
++
++
+ #ifdef CONFIG_MEMCG_KMEM
+ /*
+  * page_obj_cgroups - get the object cgroups vector associated with a pa=
 ge
-+ * @page: a pointer to the page struct
-+ *
-+ * Returns a pointer to the object cgroups vector associated with the pa=
-ge,
-+ * or NULL. This function assumes that the page is known to have an
-+ * associated object cgroups vector. It's not safe to call this function
-+ * against pages, which might have an associated memory cgroup: e.g.
-+ * kernel stack pages.
-+ */
-+static inline struct obj_cgroup **page_obj_cgroups(struct page *page)
-+{
-+	return (struct obj_cgroup **)(page->memcg_data & ~0x1UL);
-+}
-+
-+/*
-+ * page_obj_cgroups_check - get the object cgroups vector associated wit=
-h a page
-+ * @page: a pointer to the page struct
-+ *
-+ * Returns a pointer to the object cgroups vector associated with the pa=
-ge,
-+ * or NULL. This function is safe to use if the page can be directly ass=
-ociated
-+ * with a memory cgroup.
-+ */
-+static inline struct obj_cgroup **page_obj_cgroups_check(struct page *pa=
-ge)
-+{
-+	unsigned long memcg_data =3D page->memcg_data;
-+
-+	if (memcg_data && (memcg_data & 0x1UL))
-+		return (struct obj_cgroup **)memcg_data;
-+
-+	return NULL;
-+}
-+
-+/*
-+ * set_page_obj_cgroups - associate a page with a object cgroups vector
-+ * @page: a pointer to the page struct
-+ * @objcgs: a pointer to the object cgroups vector
-+ *
-+ * Atomically associates a page with a vector of object cgroups.
-+ */
-+static inline bool set_page_obj_cgroups(struct page *page,
-+					struct obj_cgroup **objcgs)
-+{
-+	return !cmpxchg(&page->memcg_data, 0, (unsigned long)objcgs | 0x1UL);
-+}
-+
-+/*
-+ * clear_page_obj_cgroups - clear an association of a page with an
-+ *                          object cgroups vector
-+ * @page: a pointer to the page struct
-+ *
-+ * Clears an association of a page with an object cgroups vector
-+ */
-+static inline void clear_page_obj_cgroups(struct page *page)
-+{
-+	page->memcg_data =3D 0;
-+}
-+#else
-+static inline struct obj_cgroup **page_obj_cgroups(struct page *page)
-+{
-+	return NULL;
-+}
-+
-+static inline struct obj_cgroup **page_obj_cgroups_check(struct page *pa=
-ge)
-+{
-+	return NULL;
-+}
-+
-+static inline bool set_page_obj_cgroups(struct page *page,
-+					struct obj_cgroup **objcgs)
-+{
-+	return true;
-+}
-+
-+static inline void clear_page_obj_cgroups(struct page *page)
-+{
-+}
-+#endif
-+
- static __always_inline bool memcg_stat_item_in_bytes(int idx)
+@@ -426,6 +466,7 @@ static inline struct obj_cgroup **page_obj_cgroups(st=
+ruct page *page)
+ 	VM_BUG_ON_PAGE(memcg_data && !test_bit(PG_MEMCG_OBJ_CGROUPS,
+ 					       &memcg_data), page);
+ 	__clear_bit(PG_MEMCG_OBJ_CGROUPS, &memcg_data);
++	VM_BUG_ON_PAGE(test_bit(PG_MEMCG_KMEM, &memcg_data), page);
+=20
+ 	return (struct obj_cgroup **)memcg_data;
+ }
+@@ -442,8 +483,10 @@ static inline struct obj_cgroup **page_obj_cgroups_c=
+heck(struct page *page)
  {
- 	if (idx =3D=3D MEMCG_PERCPU_B)
+ 	unsigned long memcg_data =3D page->memcg_data;
+=20
+-	if (memcg_data && test_bit(PG_MEMCG_OBJ_CGROUPS, &memcg_data))
++	if (memcg_data && test_bit(PG_MEMCG_OBJ_CGROUPS, &memcg_data)) {
++		VM_BUG_ON_PAGE(test_bit(PG_MEMCG_KMEM, &memcg_data), page);
+ 		return (struct obj_cgroup **)memcg_data;
++	}
+=20
+ 	return NULL;
+ }
+@@ -1115,6 +1158,15 @@ static inline void clear_page_mem_cgroup(struct pa=
+ge *page)
+ {
+ }
+=20
++static inline bool PageMemcgKmem(struct page *page)
++{
++	return false;
++}
++
++static inline void SetPageMemcgKmem(struct page *page)
++{
++}
++
+ static inline bool mem_cgroup_is_root(struct mem_cgroup *memcg)
+ {
+ 	return true;
+diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+index fbbb841a9346..a7ca01ae78d9 100644
+--- a/include/linux/page-flags.h
++++ b/include/linux/page-flags.h
+@@ -712,9 +712,8 @@ PAGEFLAG_FALSE(DoubleMap)
+ #define PAGE_MAPCOUNT_RESERVE	-128
+ #define PG_buddy	0x00000080
+ #define PG_offline	0x00000100
+-#define PG_kmemcg	0x00000200
+-#define PG_table	0x00000400
+-#define PG_guard	0x00000800
++#define PG_table	0x00000200
++#define PG_guard	0x00000400
+=20
+ #define PageType(page, flag)						\
+ 	((page->page_type & (PAGE_TYPE_BASE | flag)) =3D=3D PAGE_TYPE_BASE)
+@@ -765,12 +764,6 @@ PAGE_TYPE_OPS(Buddy, buddy)
+  */
+ PAGE_TYPE_OPS(Offline, offline)
+=20
+-/*
+- * If kmemcg is enabled, the buddy allocator will set PageKmemcg() on
+- * pages allocated with __GFP_ACCOUNT. It gets cleared on page free.
+- */
+-PAGE_TYPE_OPS(Kmemcg, kmemcg)
+-
+ /*
+  * Marks pages in use as page tables.
+  */
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 40220b7bf96d..69e3dbb3d2cf 100644
+index 69e3dbb3d2cf..1d22fa4c4a88 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -2895,7 +2895,7 @@ int memcg_alloc_page_obj_cgroups(struct page *page,=
- struct kmem_cache *s,
- 	if (!vec)
- 		return -ENOMEM;
-=20
--	if (cmpxchg(&page->memcg_data, 0, (unsigned long)vec | 0x1UL))
-+	if (!set_page_obj_cgroups(page, vec))
- 		kfree(vec);
- 	else
- 		kmemleak_not_leak(vec);
-@@ -2923,7 +2923,7 @@ struct mem_cgroup *mem_cgroup_from_obj(void *p)
- 	 * Memcg membership data for each individual object is saved in
- 	 * the page->obj_cgroups.
- 	 */
--	if (page_has_obj_cgroups(page)) {
-+	if (page_obj_cgroups_check(page)) {
- 		struct obj_cgroup *objcg;
- 		unsigned int off;
-=20
-diff --git a/mm/slab.h b/mm/slab.h
-index 5ac89260f329..9a46ab76cb61 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -239,29 +239,13 @@ static inline bool kmem_cache_debug_flags(struct km=
-em_cache *s, slab_flags_t fla
+@@ -3081,7 +3081,7 @@ int __memcg_kmem_charge_page(struct page *page, gfp=
+_t gfp, int order)
+ 		ret =3D __memcg_kmem_charge(memcg, gfp, 1 << order);
+ 		if (!ret) {
+ 			set_page_mem_cgroup(page, memcg);
+-			__SetPageKmemcg(page);
++			SetPageMemcgKmem(page);
+ 			return 0;
+ 		}
+ 		css_put(&memcg->css);
+@@ -3106,10 +3106,6 @@ void __memcg_kmem_uncharge_page(struct page *page,=
+ int order)
+ 	__memcg_kmem_uncharge(memcg, nr_pages);
+ 	clear_page_mem_cgroup(page);
+ 	css_put(&memcg->css);
+-
+-	/* slab pages do not have PageKmemcg flag set */
+-	if (PageKmemcg(page))
+-		__ClearPageKmemcg(page);
  }
 =20
- #ifdef CONFIG_MEMCG_KMEM
--static inline struct obj_cgroup **page_obj_cgroups(struct page *page)
--{
--	/*
--	 * Page's memory cgroup and obj_cgroups vector are sharing the same
--	 * space. To distinguish between them in case we don't know for sure
--	 * that the page is a slab page (e.g. page_cgroup_ino()), let's
--	 * always set the lowest bit of obj_cgroups.
--	 */
--	return (struct obj_cgroup **)(page->memcg_data & ~0x1UL);
--}
--
--static inline bool page_has_obj_cgroups(struct page *page)
--{
--	return page->memcg_data & 0x1UL;
--}
--
- int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s=
-,
- 				 gfp_t gfp);
+ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_=
+bytes)
+@@ -6890,12 +6886,10 @@ static void uncharge_page(struct page *page, stru=
+ct uncharge_gather *ug)
+ 	nr_pages =3D compound_nr(page);
+ 	ug->nr_pages +=3D nr_pages;
 =20
- static inline void memcg_free_page_obj_cgroups(struct page *page)
- {
- 	kfree(page_obj_cgroups(page));
--	page->memcg_data =3D 0;
-+	clear_page_obj_cgroups(page);
- }
+-	if (!PageKmemcg(page)) {
+-		ug->pgpgout++;
+-	} else {
++	if (PageMemcgKmem(page))
+ 		ug->nr_kmem +=3D nr_pages;
+-		__ClearPageKmemcg(page);
+-	}
++	else
++		ug->pgpgout++;
 =20
- static inline size_t obj_full_size(struct kmem_cache *s)
-@@ -322,7 +306,7 @@ static inline void memcg_slab_post_alloc_hook(struct =
-kmem_cache *s,
- 		if (likely(p[i])) {
- 			page =3D virt_to_head_page(p[i]);
-=20
--			if (!page_has_obj_cgroups(page) &&
-+			if (!page_obj_cgroups(page) &&
- 			    memcg_alloc_page_obj_cgroups(page, s, flags)) {
- 				obj_cgroup_uncharge(objcg, obj_full_size(s));
- 				continue;
-@@ -349,7 +333,7 @@ static inline void memcg_slab_free_hook(struct kmem_c=
-ache *s, struct page *page,
- 	if (!memcg_kmem_enabled())
- 		return;
-=20
--	if (!page_has_obj_cgroups(page))
-+	if (!page_obj_cgroups(page))
- 		return;
-=20
- 	off =3D obj_to_index(s, page, p);
-@@ -367,11 +351,6 @@ static inline void memcg_slab_free_hook(struct kmem_=
-cache *s, struct page *page,
- }
-=20
- #else /* CONFIG_MEMCG_KMEM */
--static inline bool page_has_obj_cgroups(struct page *page)
--{
--	return false;
--}
--
- static inline struct mem_cgroup *memcg_from_slab_obj(void *ptr)
- {
- 	return NULL;
+ 	ug->dummy_page =3D page;
+ 	clear_page_mem_cgroup(page);
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index d4d181e15e7c..6807e37d78ba 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -1197,7 +1197,7 @@ static __always_inline bool free_pages_prepare(stru=
+ct page *page,
+ 	}
+ 	if (PageMappingFlags(page))
+ 		page->mapping =3D NULL;
+-	if (memcg_kmem_enabled() && PageKmemcg(page))
++	if (memcg_kmem_enabled() && PageMemcgKmem(page))
+ 		__memcg_kmem_uncharge_page(page, order);
+ 	if (check_free)
+ 		bad +=3D check_free_page(page);
 --=20
 2.26.2
 
