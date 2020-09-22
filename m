@@ -2,55 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D112748C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:07:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C64F62748CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 21:09:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726650AbgIVTHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 15:07:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47460 "EHLO mail.kernel.org"
+        id S1726714AbgIVTJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 15:09:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35184 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726563AbgIVTHb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 15:07:31 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 656622311C;
-        Tue, 22 Sep 2020 19:07:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600801651;
-        bh=k3AY4xiVKzdMo94OTDSd61+F+ugh2rG2QE3WMwuqBZ4=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=B0KLkGRkwJ/hH7sCjBG6h2GkT62TVOrlsmL7+K1CkJYbp+vOZhb4/QSU4A68K/7I+
-         9t5fFjrhYOcYVh8NU76XtYf+v79qRgs/4hGHJeTeBZImfMLFdx3hbBB1m2K3FC0iWL
-         8gq1Hxryll2Bm8vRQ9gxtCSCv8Xv6+IIgknUua08=
-Content-Type: text/plain; charset="utf-8"
+        id S1726563AbgIVTJC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 15:09:02 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1600801740;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CW9QWqJ7q2Kodf4xbjqeZQdYjMsmJi312d4fCh2gG6g=;
+        b=am3UrXxd1MkIUqFBP8aN0slqcWO/Bw63BGSak3pgn1ZPDR8+wNqHKX9srRcZzat4AJ+akz
+        SCCnb2Z4J5dh68Go3WrUZxK/OxrQkwsnTsPrRVAYgMYIFcV2MEkhUwEVgvF23+89DXxAHS
+        Q9tXE/PSUecByYAItejjA5fw1Q82EHg=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B568AADB3;
+        Tue, 22 Sep 2020 19:09:37 +0000 (UTC)
+Date:   Tue, 22 Sep 2020 21:08:59 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Minchan Kim <minchan@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Greg Thelen <gthelen@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Yang Shi <shy828301@gmail.com>
+Subject: Re: [PATCH] memcg: introduce per-memcg reclaim interface
+Message-ID: <20200922190859.GH12990@dhcp22.suse.cz>
+References: <20200909215752.1725525-1-shakeelb@google.com>
+ <20200921163055.GQ12990@dhcp22.suse.cz>
+ <CALvZod43VXKZ3StaGXK_EZG_fKcW3v3=cEYOWFwp4HNJpOOf8g@mail.gmail.com>
+ <20200922114908.GZ12990@dhcp22.suse.cz>
+ <CALvZod4FvE12o53BpeH5WB_McTdCkFTFXgc9gcT1CEHXzQLy_A@mail.gmail.com>
+ <20200922165527.GD12990@dhcp22.suse.cz>
+ <CALvZod7K9g9mi599c5+ayLeC4__kckv155QQGVMVy2rXXOY1Rw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAMS8qEUNGV5YgAc1D054JToe2ybPX8o4kPC8zgDc1=O0cqY0_A@mail.gmail.com>
-References: <20200922120909.97203-1-konradybcio@gmail.com> <160079963957.310579.17971187414769458107@swboyd.mtv.corp.google.com> <CAMS8qEUNGV5YgAc1D054JToe2ybPX8o4kPC8zgDc1=O0cqY0_A@mail.gmail.com>
-Subject: Re: [PATCH] clk: qcom: gcc-sdm660: Fix wrong parent_map
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-clk@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-To:     Konrad Dybcio <konradybcio@gmail.com>
-Date:   Tue, 22 Sep 2020 12:07:30 -0700
-Message-ID: <160080165013.310579.5646553601425176923@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod7K9g9mi599c5+ayLeC4__kckv155QQGVMVy2rXXOY1Rw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Konrad Dybcio (2020-09-22 11:35:14)
-> Sheesh, I cannot stop forgetting these...
->=20
-> Fixes: f2a76a2955c0 (clk: qcom: Add Global Clock controller (GCC)
-> driver for SDM660)
->=20
+On Tue 22-09-20 11:10:17, Shakeel Butt wrote:
+> On Tue, Sep 22, 2020 at 9:55 AM Michal Hocko <mhocko@suse.com> wrote:
+[...]
+> > Last but not least the memcg
+> > background reclaim is something that should be possible without a new
+> > interface.
+> 
+> So, it comes down to adding more functionality/semantics to
+> memory.high or introducing a new simple interface. I am fine with
+> either of one but IMO convoluted memory.high might have a higher
+> maintenance cost.
 
-Ok. Applied to clk-next.
+One idea would be to schedule a background worker (which work on behalf
+on the memcg) to do the high limit reclaim with high limit target as
+soon as the high limit is reached. There would be one work item for each
+memcg. Userspace would recheck the high limit on return to the userspace
+and do the reclaim if the excess is larger than a threshold, and sleep
+as the fallback.
+
+Excessive consumers would get throttled if the background work cannot
+keep up with the charge pace and most of them would return without doing
+any reclaim because there is somebody working on their behalf - and is
+accounted for that.
+
+The semantic of high limit would be preserved IMHO because high limit is
+actively throttled. Where that work is done shouldn't matter as long as
+it is accounted properly and memcg cannot outsource all the work to the
+rest of the system.
+
+Would something like that (with many details to be sorted out of course)
+be feasible?
+
+If we do not want to change the existing semantic of high and want a new
+api then I think having another limit for the background reclaim then
+that would make more sense to me. It would resemble the global reclaim
+and kswapd model and something that would be easier to reason about.
+Comparing to echo $N > reclaim which might mean to reclaim any number
+pages around N.
+-- 
+Michal Hocko
+SUSE Labs
