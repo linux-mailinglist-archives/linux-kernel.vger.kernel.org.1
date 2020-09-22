@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA9FC2743A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 15:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B200F2743A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 15:57:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726784AbgIVN5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 09:57:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33742 "EHLO mx2.suse.de"
+        id S1726775AbgIVN53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 09:57:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33494 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726731AbgIVN5M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 09:57:12 -0400
+        id S1726732AbgIVN5S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 09:57:18 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A2FBBAFED;
-        Tue, 22 Sep 2020 13:57:48 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 39B4BAFBC;
+        Tue, 22 Sep 2020 13:57:49 +0000 (UTC)
 From:   Oscar Salvador <osalvador@suse.de>
 To:     akpm@linux-foundation.org
 Cc:     aris@ruivo.org, naoya.horiguchi@nec.com, mhocko@kernel.org,
         tony.luck@intel.com, cai@lca.pw, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH v7 13/14] mm,hwpoison: double-check page count in __get_any_page()
-Date:   Tue, 22 Sep 2020 15:56:49 +0200
-Message-Id: <20200922135650.1634-14-osalvador@suse.de>
+        linux-mm@kvack.org, Oscar Salvador <osalvador@suse.de>
+Subject: [PATCH v7 14/14] mm,hwpoison: Try to narrow window race for free pages
+Date:   Tue, 22 Sep 2020 15:56:50 +0200
+Message-Id: <20200922135650.1634-15-osalvador@suse.de>
 X-Mailer: git-send-email 2.13.7
 In-Reply-To: <20200922135650.1634-1-osalvador@suse.de>
 References: <20200922135650.1634-1-osalvador@suse.de>
@@ -30,47 +30,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Aristeu Rozanski reported that a customer test case started
+to report -EBUSY after the hwpoison rework patchset.
 
-Soft offlining could fail with EIO due to the race condition with hugepage
-migration.  This issuse became visible due to the change by previous patch
-that makes soft offline handler take page refcount by its own.  We have no
-way to directly pin zero refcount page, and the page considered as a zero
-refcount page could be allocated just after the first check.
+There is a race window between spotting a free page and taking it off
+its buddy freelist, so it might be that by the time we try to take it off,
+the page has been already allocated.
 
-This patch adds the second check to find the race and gives us chance to
-handle it more reliably.
+This patch tries to handle such race window by trying to handle the new
+type of page again if the page was allocated under us.
 
-Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-Reported-by: Qian Cai <cai@lca.pw>
+Signed-off-by: Oscar Salvador <osalvador@suse.de>
+Reported-by: Aristeu Rozanski <aris@ruivo.org>
+Tested-by: Aristeu Rozanski <aris@ruivo.org>
 ---
- mm/memory-failure.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ mm/memory-failure.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index 963fd9af23ab..46b1821d2817 100644
+index 46b1821d2817..8f23d3c7a0a2 100644
 --- a/mm/memory-failure.c
 +++ b/mm/memory-failure.c
-@@ -1707,6 +1707,9 @@ static int __get_any_page(struct page *p, unsigned long pfn, int flags)
- 		} else if (is_free_buddy_page(p)) {
- 			pr_info("%s: %#lx free buddy page\n", __func__, pfn);
- 			ret = 0;
-+		} else if (page_count(p)) {
-+			/* raced with allocation */
-+			ret = -EBUSY;
- 		} else {
- 			pr_info("%s: %#lx: unknown zero refcount page type %lx\n",
- 				__func__, pfn, p->flags);
-@@ -1723,6 +1726,9 @@ static int get_any_page(struct page *page, unsigned long pfn, int flags)
+@@ -1903,6 +1903,7 @@ int soft_offline_page(unsigned long pfn, int flags)
  {
- 	int ret = __get_any_page(page, pfn, flags);
+ 	int ret;
+ 	struct page *page;
++	bool try_again = true;
  
-+	if (ret == -EBUSY)
-+		ret = __get_any_page(page, pfn, flags);
-+
- 	if (ret == 1 && !PageHuge(page) &&
- 	    !PageLRU(page) && !__PageMovable(page)) {
- 		/*
+ 	if (!pfn_valid(pfn))
+ 		return -ENXIO;
+@@ -1918,6 +1919,7 @@ int soft_offline_page(unsigned long pfn, int flags)
+ 		return 0;
+ 	}
+ 
++retry:
+ 	get_online_mems();
+ 	ret = get_any_page(page, pfn, flags);
+ 	put_online_mems();
+@@ -1925,7 +1927,10 @@ int soft_offline_page(unsigned long pfn, int flags)
+ 	if (ret > 0)
+ 		ret = soft_offline_in_use_page(page);
+ 	else if (ret == 0)
+-		ret = soft_offline_free_page(page);
++		if (soft_offline_free_page(page) && try_again) {
++			try_again = false;
++			goto retry;
++		}
+ 
+ 	return ret;
+ }
 -- 
 2.26.2
 
