@@ -2,93 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76DB0274A7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 22:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21693274AD1
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726753AbgIVU6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 16:58:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38428 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726448AbgIVU6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 16:58:09 -0400
-Received: from localhost (lfbn-ncy-1-588-162.w81-51.abo.wanadoo.fr [81.51.203.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6503623600;
-        Tue, 22 Sep 2020 20:58:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600808288;
-        bh=TAvOwxdUSSf8dMLys+bd/PzI7Tqp/e7DVoXkrTOUAiI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qj13ocgnkXJAez0TGZR3gQzFaRpUp8hb6SZtLcZ+PxAr+4PzcI5QwU8Jjf5wbgjzl
-         7Tr7hS5Muy52iGsanhGHHpU6A2UWkmI7QeZwOU0nH6M7qHcoOC539vS+i2dZF2eHxi
-         q4bZ5SoYnZ3KPN/P13yJbNL5RRWMHMysML8FKMYc=
-Date:   Tue, 22 Sep 2020 22:58:06 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Nitesh Narayan Lal <nitesh@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, mtosatti@redhat.com,
-        sassmann@redhat.com, jeffrey.t.kirsher@intel.com,
-        jacob.e.keller@intel.com, jlelli@redhat.com, hch@infradead.org,
-        bhelgaas@google.com, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
-        jerinj@marvell.com, mathias.nyman@intel.com, jiri@nvidia.com
-Subject: Re: [RFC][Patch v1 1/3] sched/isolation: API to get num of
- hosekeeping CPUs
-Message-ID: <20200922205805.GD5217@lenoir>
-References: <20200909150818.313699-1-nitesh@redhat.com>
- <20200909150818.313699-2-nitesh@redhat.com>
- <20200921234044.GA31047@lenoir>
- <fd48e554-6a19-f799-b273-e814e5389db9@redhat.com>
- <20200922100817.GB5217@lenoir>
- <b0608566-21c6-8fc9-4615-aa00099f6d04@redhat.com>
+        id S1726709AbgIVVJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 17:09:08 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:51378 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726550AbgIVVJI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 17:09:08 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08MKZ0SH026677
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 13:37:26 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=QljWG4BanVKQ0V2dBu1N9GH2r7RFb4sjQmm/Vb841Uo=;
+ b=WsGyqtPbJAIr7AJooDZ3CXBsgMdJ2Ph1m5snxMdPAygiYkieZRkNLl14KQqobBnPf3IY
+ V6nB3F2BzBj12r+sQoGVCBP6Xc/uQ7Ablv9t54PmIrkjkiPgaJeyVpHTzr0/JNuPL02r
+ ai/8dHhuW4Cr95zohiKpY5gdgIgqp1oluK8= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 33nfqu7th3-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 13:37:25 -0700
+Received: from intmgw004.06.prn3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 22 Sep 2020 13:37:24 -0700
+Received: by devvm1755.vll0.facebook.com (Postfix, from userid 111017)
+        id BB794864B57; Tue, 22 Sep 2020 13:37:21 -0700 (PDT)
+From:   Roman Gushchin <guro@fb.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <kernel-team@fb.com>, Roman Gushchin <guro@fb.com>
+Subject: [PATCH v1 0/4] mm: allow mapping accounted kernel pages to userspace
+Date:   Tue, 22 Sep 2020 13:36:56 -0700
+Message-ID: <20200922203700.2879671-1-guro@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b0608566-21c6-8fc9-4615-aa00099f6d04@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-22_18:2020-09-21,2020-09-22 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 clxscore=1015
+ impostorscore=0 priorityscore=1501 adultscore=0 mlxlogscore=465 mlxscore=0
+ phishscore=0 lowpriorityscore=0 suspectscore=0 spamscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009220161
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 09:50:55AM -0400, Nitesh Narayan Lal wrote:
-> On 9/22/20 6:08 AM, Frederic Weisbecker wrote:
-> TBH I don't have a very strong case here at the moment.
-> But still, IMHO, this will force the user to have both managed irqs and
-> nohz_full in their environments to avoid these kinds of issues. Is that how
-> we would like to proceed?
+Currently a non-slab kernel page which has been charged to a memory
+cgroup can't be mapped to userspace. The underlying reason is simple:
+PageKmemcg flag is defined as a page type (like buddy, offline, etc),
+so it takes a bit from a page->mapped counter. Pages with a type set
+can't be mapped to userspace.
 
-Yep that sounds good to me. I never know how much we want to split each and any
-of the isolation features but I'd rather stay cautious to separate HK_FLAG_TICK
-from the rest, just in case running in nohz_full mode ever becomes interesting
-alone for performance and not just latency/isolation.
+But in general the kmemcg flag has nothing to do with mapping to
+userspace. It only means that the page has been accounted by the page
+allocator, so it has to be properly uncharged on release.
 
-But look what you can do as well:
+Some bpf maps are mapping the vmalloc-based memory to userspace, and
+their memory can't be accounted because of this implementation detail.
 
-diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-index 5a6ea03f9882..9df9598a9e39 100644
---- a/kernel/sched/isolation.c
-+++ b/kernel/sched/isolation.c
-@@ -141,7 +141,7 @@ static int __init housekeeping_nohz_full_setup(char *str)
- 	unsigned int flags;
- 
- 	flags = HK_FLAG_TICK | HK_FLAG_WQ | HK_FLAG_TIMER | HK_FLAG_RCU |
--		HK_FLAG_MISC | HK_FLAG_KTHREAD;
-+		HK_FLAG_MISC | HK_FLAG_KTHREAD | HK_FLAG_MANAGED_IRQ;
- 
- 	return housekeeping_setup(str, flags);
- }
+This patchset removes this limitation by moving the PageKmemcg flag
+into one of the free bits of the page->mem_cgroup pointer. Also it
+formalizes all accesses to the page->mem_cgroup and page->obj_cgroups
+using new helpers, adds several checks and removes a couple of obsolete
+functions. As the result the code became more robust with fewer
+open-coded bits tricks.
+
+v1:
+  - added and fixed comments, by Shakeel
+  - added some VM_BUG_ON() checks
+  - fixed the debug output format of page->memcg_data
 
 
-"nohz_full=" has historically gathered most wanted isolation features. It can
-as well isolate managed irqs.
+Roman Gushchin (4):
+  mm: memcontrol: use helpers to access page's memcg data
+  mm: memcontrol/slab: use helpers to access slab page's memcg_data
+  mm: introduce page memcg flags
+  mm: convert page kmemcg type to a page memcg flag
 
+ fs/buffer.c                      |   2 +-
+ fs/iomap/buffered-io.c           |   2 +-
+ include/linux/memcontrol.h       | 244 +++++++++++++++++++++++++++++--
+ include/linux/mm.h               |  22 ---
+ include/linux/mm_types.h         |   5 +-
+ include/linux/page-flags.h       |  11 +-
+ include/trace/events/writeback.h |   2 +-
+ kernel/fork.c                    |   7 +-
+ mm/debug.c                       |   4 +-
+ mm/huge_memory.c                 |   4 +-
+ mm/memcontrol.c                  | 135 ++++++++---------
+ mm/migrate.c                     |   2 +-
+ mm/page_alloc.c                  |   6 +-
+ mm/page_io.c                     |   4 +-
+ mm/slab.h                        |  28 +---
+ mm/workingset.c                  |   6 +-
+ 16 files changed, 318 insertions(+), 166 deletions(-)
 
-> > And then can we rename it to housekeeping_num_online()?
-> 
-> It could be just me, but does something like hk_num_online_cpus() makes more
-> sense here?
+--=20
+2.26.2
 
-Sure, that works as well.
-
-Thanks.
