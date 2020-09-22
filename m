@@ -2,95 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9DC2739F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 06:47:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8FDD2739F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 06:50:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728561AbgIVEru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 00:47:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728516AbgIVEru (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 00:47:50 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DCA7C061755;
-        Mon, 21 Sep 2020 21:47:50 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id t14so10921148pgl.10;
-        Mon, 21 Sep 2020 21:47:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vumKbUqbxeyCIUVMv4z41zxEKfPfEFtt2lD6WR2MEgA=;
-        b=fgM0ZfFfBOhWcLSesS82sbpszfxep2FMFz2Xf19cXKVt5tzzZwaCsHiq4WnXmPEB3S
-         yck4egyQNqA3onxAFLpDezvKOSsmzLxd8blMdeeJugrvwbRmjPxYhmS0eN2Xi5Fd5r64
-         8Q5sqYzcrb1lFEwnMGyCvbmywiFMIZWlMQORgWwTGdQniO5suy7uUWfNGObUFuj3NZFu
-         m4PwzwNEogiqGadn+8xiIOxMa8mgYpBDLC7UI/WcphpjXTrwnWx+aOO+ESiS1/oyepzI
-         8jilvlIwP8tHVOHw2nm3Emj9X+9J6cprnyZ3oY8knUMfQvOqPw6disO/UbBjrVma6zmo
-         E6ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vumKbUqbxeyCIUVMv4z41zxEKfPfEFtt2lD6WR2MEgA=;
-        b=YTTIvwUZwzKNzWX5sOImqH2M2AwdR2L9cQr/NBJ6m1CYEraYuhyrKO48jaP4vOYRV8
-         ZWaNsIaLj+kc22NiNwfZ31ClWheGQnG+mv4tTNAVT5sH9jC0kXtH9n/pl86rKqBLC3Dx
-         RrfKi7h7Omuhab1b4ne47c03FpQIY9zIeyuLBQHXrGaQn0VHZjXTuvCN/SbCths40x7M
-         FWsFteXhvwkB5w6bCRxrbtCuQBUWRqZJnxZpwzUZHkW667ilwN7s0LGT3I37gTD+yzw5
-         ZTiJbXQVWVB15s0T22pBPoe7u8Eaw+nag+U9A12u0Ng6BEP2QVi+qIUMyvs+6KEAX/iZ
-         y7bw==
-X-Gm-Message-State: AOAM530U7LEzjVDK3WFFkwVSR3YHe17kEIUh81r3QQSSMPkMxYXDEF6S
-        QS+rjqTb04QuqwRDspLQmA==
-X-Google-Smtp-Source: ABdhPJz6uvBTYf5HoG/lQc1314IOxqm1wKikddE/wWGMVpq/b28kQE2IHr/aR4yXCH0jqsD/PyD4/g==
-X-Received: by 2002:aa7:8b4f:0:b029:142:2501:35e9 with SMTP id i15-20020aa78b4f0000b0290142250135e9mr2724502pfd.73.1600750069976;
-        Mon, 21 Sep 2020 21:47:49 -0700 (PDT)
-Received: from localhost.localdomain ([47.242.131.39])
-        by smtp.gmail.com with ESMTPSA id k28sm13077424pfh.196.2020.09.21.21.47.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 21:47:49 -0700 (PDT)
-From:   Pujin Shi <shipujin.t@gmail.com>
-To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Herrington <hankinsea@gmail.com>, shipujin.t@gmail.com,
-        Pujin Shi <shipj@lemote.com>
-Subject: [PATCH v4] powercap: include header to fix -Wmissing-prototypes
-Date:   Tue, 22 Sep 2020 12:46:52 +0800
-Message-Id: <20200922044652.3393-1-shipujin.t@gmail.com>
-X-Mailer: git-send-email 2.18.4
+        id S1728593AbgIVEt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 00:49:59 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:32774 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726533AbgIVEt7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 00:49:59 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600750198; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=R4faDtMAAlvcimRCoxb6A2gPBHPAB4+jpEJWGiQPGgE=; b=RiTS5V2I6sRBSL85DVnIRrkAF++aXqCXBUSAr6q24046yatvjogvvg8wtEREtuAMldX8mpDw
+ N/u7/ULx9XI9AfI+pz+Ze5sMj6oPlo4XzwwjQrQKwb2Y07xRD62QrznHiE/MQubkY1d8pRGF
+ VpcdE3XuAnbz/M2DtGGLwU2IVDU=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5f6982760915d30357491bf2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Sep 2020 04:49:58
+ GMT
+Sender: akashast=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9607FC433C8; Tue, 22 Sep 2020 04:49:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.101] (unknown [47.8.232.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akashast)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 88CB1C433C8;
+        Tue, 22 Sep 2020 04:49:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 88CB1C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akashast@codeaurora.org
+Subject: Re: [PATCH v3 2/2] arm64: dts: qcom: Switch sc7180-trogdor to control
+ SPI CS via GPIO
+To:     Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, swboyd@chromium.org,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200921142655.v3.1.I997a428f58ef9d48b37a27a028360f34e66c00ec@changeid>
+ <20200921142655.v3.2.I3c57d8b6d83d5bdad73a413eea1e249a98d11973@changeid>
+From:   Akash Asthana <akashast@codeaurora.org>
+Message-ID: <8942f1b9-9ebf-992b-1e43-45fe9adedce9@codeaurora.org>
+Date:   Tue, 22 Sep 2020 10:19:40 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200921142655.v3.2.I3c57d8b6d83d5bdad73a413eea1e249a98d11973@changeid>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Include the linux/idle_inject.h header to fix W=1 build warning:
 
-    drivers/powercap/idle_inject.c:152:6: warning: no previous prototype for ‘idle_inject_set_duration’ [-Wmissing-prototypes]
-    drivers/powercap/idle_inject.c:167:6: warning: no previous prototype for ‘idle_inject_get_duration’ [-Wmissing-prototypes]
-    drivers/powercap/idle_inject.c:179:6: warning: no previous prototype for ‘idle_inject_set_latency’ [-Wmissing-prototypes]
-    drivers/powercap/idle_inject.c:195:5: warning: no previous prototype for ‘idle_inject_start’ [-Wmissing-prototypes]
-    drivers/powercap/idle_inject.c:227:6: warning: no previous prototype for ‘idle_inject_stop’ [-Wmissing-prototypes]
-    drivers/powercap/idle_inject.c:299:28: warning: no previous prototype for ‘idle_inject_register’ [-Wmissing-prototypes]
-    drivers/powercap/idle_inject.c:345:6: warning: no previous prototype for ‘idle_inject_unregister’ [-Wmissing-prototypes]
+On 9/22/2020 2:57 AM, Douglas Anderson wrote:
+> As talked about in the patch ("arm64: dts: qcom: sc7180: Provide
+> pinconf for SPI to use GPIO for CS"), on some boards it makes much
+> more sense (and is much more efficient) to think of the SPI Chip
+> Select as a GPIO.  Trogdor is one such board where the SPI parts don't
+> run in GSI mode and we do a lot of SPI traffic.
+>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Reviewed-by: Akash Asthana <akashast@codeaurora.org>
 
-Signed-off-by: Pujin Shi <shipj@lemote.com>
----
- drivers/powercap/idle_inject.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/powercap/idle_inject.c b/drivers/powercap/idle_inject.c
-index 4310901a074e..6e1a0043c411 100644
---- a/drivers/powercap/idle_inject.c
-+++ b/drivers/powercap/idle_inject.c
-@@ -43,6 +43,7 @@
- #include <linux/sched.h>
- #include <linux/slab.h>
- #include <linux/smpboot.h>
-+#include <linux/idle_inject.h>
- 
- #include <uapi/linux/sched/types.h>
- 
 -- 
-2.25.4
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,\na Linux Foundation Collaborative Project
 
