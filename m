@@ -2,113 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6FB273EFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 11:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A742273F01
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 11:56:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726582AbgIVJyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 05:54:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45802 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726353AbgIVJyp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 05:54:45 -0400
-Received: from localhost (lfbn-ncy-1-588-162.w81-51.abo.wanadoo.fr [81.51.203.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 379F22388B;
-        Tue, 22 Sep 2020 09:54:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600768484;
-        bh=wVsuNscc6uO1wPqCG+l9fv4OFQ2ZNZAjEW/5B3rgRLw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cglr/Y6QgsCnfxxoYaxARk5NUazh3bvXU7+VXVr5xkaJVyKgewoev6uEEaZW6rNOD
-         nhVcDXt0qjUWUdWd4n2OuBHvAxf1kiaW9BpVPkOcBAqcYE1VZUz981BpJ1kUcDFrLD
-         bbk0oZfvCh/WzemWd9QF0N+5nwOS/zyRibOK7ZpQ=
-Date:   Tue, 22 Sep 2020 11:54:41 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Nitesh Narayan Lal <nitesh@redhat.com>
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, mtosatti@redhat.com,
-        sassmann@redhat.com, jeffrey.t.kirsher@intel.com,
-        jacob.e.keller@intel.com, jlelli@redhat.com, hch@infradead.org,
-        bhelgaas@google.com, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
-        jerinj@marvell.com, mathias.nyman@intel.com, jiri@nvidia.com
-Subject: Re: [RFC][Patch v1 2/3] i40e: limit msix vectors based on
- housekeeping CPUs
-Message-ID: <20200922095440.GA5217@lenoir>
-References: <20200909150818.313699-1-nitesh@redhat.com>
- <20200909150818.313699-3-nitesh@redhat.com>
- <20200917112359.00006e10@intel.com>
- <20200921225834.GA30521@lenoir>
- <65513ee8-4678-1f96-1850-0e13dbf1810c@redhat.com>
+        id S1726419AbgIVJ4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 05:56:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726353AbgIVJ4k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 05:56:40 -0400
+Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6915C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 02:56:39 -0700 (PDT)
+Received: by mail-oo1-xc42.google.com with SMTP id w25so211445oos.10
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 02:56:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eVKPH13bJ8Pw64uEwVW7kgXl7zM95RCC9p4HQ/Nmkxc=;
+        b=Js+n82cxs9o4HmRZr9CSN2h8XlIXga5zCjRQQqMjoMjBNYDb9Zk1jyZ/cWAe9CjE6T
+         wtxq2Eg6Yuo97NcCeFMioAuTWhT5+Vn7v1Iky4fQzsqDx/VwqbybIZT2ofCISFETGzSF
+         ysY/mG8RLF+R81492AgLpvFlPxr5OSr8vPEeR8W7MXuxpJAWHVmYJQzldLfS0R7qo0rS
+         5cZu+Bun3id+qqZurrj34eezcYweU4EgKGbOwAiAotGHH02K20iOkWoX186rRX+a+p+g
+         cdljiEoHs66HEloUBJQnjppqiT6zv7DKeo07APPIzhwfxtBW+mF1MNo3tWRlcFHka7KJ
+         Lang==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eVKPH13bJ8Pw64uEwVW7kgXl7zM95RCC9p4HQ/Nmkxc=;
+        b=kX3bbxZNOugvh2fu7PvZ3bHSxsvkj1YUBEbUzP9aaMKVEsmxVjU6nm/pshEG0SkA1K
+         7CjvF7ZtGRn/SP2/Wdc022uaQK1s3I1J/ZyIsYeQThuR9He8U/W6RWQ8ADeIjmKlnRTw
+         YTcVgEAEcOfF5hlDa7oOew8aGfYVUK+coD2Tb9zFODClULNEf+h5yT566p8fNYidP6Ey
+         LzGxR2dpR9qtrJ1/lqe7Zo7N5J+KNPyk71cwOtuZWirIPFqrrwynq3NhZ/p881/GU2jp
+         4Pp31L5K4aegbtvSBKM7vskQjANGYBdqyA4XJfok6LIl9wWQr0XIZHb64PeLhZ5J/hzn
+         zqlA==
+X-Gm-Message-State: AOAM5327avUqW62FUBWnnkqsf3QmfQ/SxU2bzEI4JxiiXEGfVSujdyrv
+        CNT2PPRRAwl1hFhLO4bKmwFNsv26fsvjAtdmfoV6zQ==
+X-Google-Smtp-Source: ABdhPJwyNa5JtDrCrL0QwPn23WFV/NR0ScwfP8QbZgi9Zt8Jb/woYIWrdbvxRI7qVPb4gUafwyyuYw+LMdkuNVRKTIU=
+X-Received: by 2002:a4a:751a:: with SMTP id j26mr2423028ooc.14.1600768599083;
+ Tue, 22 Sep 2020 02:56:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <65513ee8-4678-1f96-1850-0e13dbf1810c@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200921132611.1700350-1-elver@google.com> <20200921132611.1700350-4-elver@google.com>
+ <20200921143059.GO2139@willie-the-truck> <CAG_fn=WKaY9MVmbpkgoN4vaJYD_T_A3z2Lgqn+2o8-irmCKywg@mail.gmail.com>
+ <CAG_fn=XV7JfJDK+t1X6bnV6gRoiogNXsHfww0jvcEtJ2WZpR7Q@mail.gmail.com> <20200921174357.GB3141@willie-the-truck>
+In-Reply-To: <20200921174357.GB3141@willie-the-truck>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 22 Sep 2020 11:56:26 +0200
+Message-ID: <CANpmjNNdGWoY_FcqUDUZ2vXy840H2+LGzN3WWrK8iERTKntSTw@mail.gmail.com>
+Subject: Re: [PATCH v3 03/10] arm64, kfence: enable KFENCE for ARM64
+To:     Will Deacon <will@kernel.org>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dmitriy Vyukov <dvyukov@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        SeongJae Park <sjpark@amazon.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 11:08:20PM -0400, Nitesh Narayan Lal wrote:
-> 
-> On 9/21/20 6:58 PM, Frederic Weisbecker wrote:
-> > On Thu, Sep 17, 2020 at 11:23:59AM -0700, Jesse Brandeburg wrote:
-> >> Nitesh Narayan Lal wrote:
-> >>
-> >>> In a realtime environment, it is essential to isolate unwanted IRQs from
-> >>> isolated CPUs to prevent latency overheads. Creating MSIX vectors only
-> >>> based on the online CPUs could lead to a potential issue on an RT setup
-> >>> that has several isolated CPUs but a very few housekeeping CPUs. This is
-> >>> because in these kinds of setups an attempt to move the IRQs to the
-> >>> limited housekeeping CPUs from isolated CPUs might fail due to the per
-> >>> CPU vector limit. This could eventually result in latency spikes because
-> >>> of the IRQ threads that we fail to move from isolated CPUs.
-> >>>
-> >>> This patch prevents i40e to add vectors only based on available
-> >>> housekeeping CPUs by using num_housekeeping_cpus().
-> >>>
-> >>> Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
-> >> The driver changes are straightforward, but this isn't the only driver
-> >> with this issue, right?  I'm sure ixgbe and ice both have this problem
-> >> too, you should fix them as well, at a minimum, and probably other
-> >> vendors drivers:
-> >>
-> >> $ rg -c --stats num_online_cpus drivers/net/ethernet
-> >> ...
-> >> 50 files contained matches
-> > Ouch, I was indeed surprised that these MSI vector allocations were done
-> > at the driver level and not at some $SUBSYSTEM level.
+On Mon, 21 Sep 2020 at 19:44, Will Deacon <will@kernel.org> wrote:
+[...]
+> > > > > For ARM64, we would like to solicit feedback on what the best option is
+> > > > > to obtain a constant address for __kfence_pool. One option is to declare
+> > > > > a memory range in the memory layout to be dedicated to KFENCE (like is
+> > > > > done for KASAN), however, it is unclear if this is the best available
+> > > > > option. We would like to avoid touching the memory layout.
+> > > >
+> > > > Sorry for the delay on this.
+> > >
+> > > NP, thanks for looking!
+> > >
+> > > > Given that the pool is relatively small (i.e. when compared with our virtual
+> > > > address space), dedicating an area of virtual space sounds like it makes
+> > > > the most sense here. How early do you need it to be available?
+> > >
+> > > Yes, having a dedicated address sounds good.
+> > > We're inserting kfence_init() into start_kernel() after timekeeping_init().
+> > > So way after mm_init(), if that matters.
 > >
-> > The logic is already there in the driver so I wouldn't oppose to this very patch
-> > but would a shared infrastructure make sense for this? Something that would
-> > also handle hotplug operations?
-> >
-> > Does it possibly go even beyond networking drivers?
-> 
-> From a generic solution perspective, I think it makes sense to come up with a
-> shared infrastructure.
-> Something that can be consumed by all the drivers and maybe hotplug operations
-> as well (I will have to further explore the hotplug part).
+> > The question is though, how big should that dedicated area be?
+> > Right now KFENCE_NUM_OBJECTS can be up to 16383 (which makes the pool
+> > size 64MB), but this number actually comes from the limitation on
+> > static objects, so we might want to increase that number on arm64.
+>
+> What happens on x86 and why would we do something different?
 
-That would be great. I'm completely clueless about those MSI things and the
-actual needs of those drivers. Now it seems to me that if several CPUs become
-offline, or as is planned in the future, CPU isolation gets enabled/disabled
-through cpuset, then the vectors may need some reorganization.
+On x86 we just do `char __kfence_pool[KFENCE_POOL_SIZE] ...;` to
+statically allocate the pool. On arm64 this doesn't seem to work
+because static memory doesn't have struct pages?
 
-But I don't also want to push toward a complicated solution to handle CPU hotplug
-if there is no actual problem to solve there. So I let you guys judge.
-
-> However, there are RT workloads that are getting affected because of this
-> issue, so does it make sense to go ahead with this per-driver basis approach
-> for now?
-
-Yep that sounds good.
-
-> 
-> Since a generic solution will require a fair amount of testing and
-> understanding of different drivers. Having said that, I can definetly start
-> looking in that direction.
-
-Thanks a lot!
+Thanks,
+-- Marco
