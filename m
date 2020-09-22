@@ -2,79 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 792E0273FF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 12:52:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6368C274000
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 12:54:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726590AbgIVKw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 06:52:57 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:30357 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726483AbgIVKw5 (ORCPT
+        id S1726613AbgIVKyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 06:54:25 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:59159 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726513AbgIVKyX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 06:52:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1600771977; x=1632307977;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=o7irTIbRXOJQafppIl9QY5dF6CNyW4qaMo6zKmMJeVI=;
-  b=OEKlQRT7CVLleMg6gHeMvBDjQrPE0UIqMsYk4NcwpE6Fv2iAZvKYOnS9
-   qiBsTdZcitYWZemVaJG1tIfoqjNGH6bkMFlUZ4nFZr6rnuRUoT1PprQGz
-   J7vfpfFvU2nNJmx8hgpgMieLuwkizmOtaxnkfWGNOocODBDjg57dyxiDe
-   k=;
-X-IronPort-AV: E=Sophos;i="5.77,290,1596499200"; 
-   d="scan'208";a="70055190"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-a70de69e.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 22 Sep 2020 10:52:55 +0000
-Received: from EX13D31EUA004.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1e-a70de69e.us-east-1.amazon.com (Postfix) with ESMTPS id 99DC9A1F35;
-        Tue, 22 Sep 2020 10:52:52 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.162.35) by
- EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 22 Sep 2020 10:52:46 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <konrad.wilk@oracle.com>, <roger.pau@citrix.com>, <jgross@suse.com>
-CC:     SeongJae Park <sjpark@amazon.de>, <axboe@kernel.dk>,
-        <aliguori@amazon.com>, <amit@kernel.org>, <mheyne@amazon.de>,
-        <pdurrant@amazon.co.uk>, <linux-block@vger.kernel.org>,
-        <xen-devel@lists.xenproject.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 3/3] xen-blkfront: Apply changed parameter name to the document
-Date:   Tue, 22 Sep 2020 12:52:09 +0200
-Message-ID: <20200922105209.5284-4-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200922105209.5284-1-sjpark@amazon.com>
-References: <20200922105209.5284-1-sjpark@amazon.com>
+        Tue, 22 Sep 2020 06:54:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600772060;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dpEhdICvzGe/Q7jOr7ZqeEuz8h6Dl2ELME+BxUXl1pc=;
+        b=VeAg/MO+BplqZl3pYsmT/140Cmk/WJoQVJPwA2vzNiuTxNnSI1I+dsoOK6gXKAIiHiR5Yp
+        mdRqaVHE0Mlap211o/kDQU0adTOTd1v+kHin3nPO2rkvXXY8yWq8LTeYPaRAHDAq3sPuUB
+        4xIou9B9vFgYXI5OYS5PFDIaPWrtpCQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-335-aCb-NBV0PgezXXKXYSHEhw-1; Tue, 22 Sep 2020 06:54:18 -0400
+X-MC-Unique: aCb-NBV0PgezXXKXYSHEhw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4CF601007479;
+        Tue, 22 Sep 2020 10:54:17 +0000 (UTC)
+Received: from gondolin (ovpn-112-114.ams2.redhat.com [10.36.112.114])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1B91A78803;
+        Tue, 22 Sep 2020 10:54:11 +0000 (UTC)
+Date:   Tue, 22 Sep 2020 12:54:09 +0200
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Matthew Rosato <mjrosato@linux.ibm.com>
+Cc:     alex.williamson@redhat.com, schnelle@linux.ibm.com,
+        pmorel@linux.ibm.com, borntraeger@de.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, gerald.schaefer@linux.ibm.com,
+        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/4] vfio-pci/zdev: define the vfio_zdev header
+Message-ID: <20200922125409.4127797c.cohuck@redhat.com>
+In-Reply-To: <1600529318-8996-4-git-send-email-mjrosato@linux.ibm.com>
+References: <1600529318-8996-1-git-send-email-mjrosato@linux.ibm.com>
+        <1600529318-8996-4-git-send-email-mjrosato@linux.ibm.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.162.35]
-X-ClientProxiedBy: EX13D14UWB003.ant.amazon.com (10.43.161.162) To
- EX13D31EUA004.ant.amazon.com (10.43.165.161)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+On Sat, 19 Sep 2020 11:28:37 -0400
+Matthew Rosato <mjrosato@linux.ibm.com> wrote:
 
-Commit 14e710fe7897 ("xen-blkfront: rename indirect descriptor
-parameter") changed the name of the module parameter for the maximum
-amount of segments in indirect requests but missed updating the
-document.  This commit updates the document.
+> We define a new device region in vfio.h to be able to get the ZPCI CLP
+> information by reading this region from userspace.
+> 
+> We create a new file, vfio_zdev.h to define the structure of the new
+> region defined in vfio.h
+> 
+> Signed-off-by: Matthew Rosato <mjrosato@linux.ibm.com>
+> ---
+>  include/uapi/linux/vfio.h      |   5 ++
+>  include/uapi/linux/vfio_zdev.h | 116 +++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 121 insertions(+)
+>  create mode 100644 include/uapi/linux/vfio_zdev.h
+> 
+> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
+> index 9204705..65eb367 100644
+> --- a/include/uapi/linux/vfio.h
+> +++ b/include/uapi/linux/vfio.h
+> @@ -326,6 +326,11 @@ struct vfio_region_info_cap_type {
+>   * to do TLB invalidation on a GPU.
+>   */
+>  #define VFIO_REGION_SUBTYPE_IBM_NVLINK2_ATSD	(1)
+> +/*
+> + * IBM zPCI specific hardware feature information for a devcie.  The contents
+> + * of this region are mapped by struct vfio_region_zpci_info.
+> + */
+> +#define VFIO_REGION_SUBTYPE_IBM_ZPCI_CLP	(2)
 
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
- Documentation/ABI/testing/sysfs-driver-xen-blkfront | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This is not really for a 10de vendor, but for all pci devices accessed
+via zpci, isn't it?
 
-diff --git a/Documentation/ABI/testing/sysfs-driver-xen-blkfront b/Documentation/ABI/testing/sysfs-driver-xen-blkfront
-index 9c31334cb2e6..28008905615f 100644
---- a/Documentation/ABI/testing/sysfs-driver-xen-blkfront
-+++ b/Documentation/ABI/testing/sysfs-driver-xen-blkfront
-@@ -1,4 +1,4 @@
--What:           /sys/module/xen_blkfront/parameters/max
-+What:           /sys/module/xen_blkfront/parameters/max_indirect_segments
- Date:           June 2013
- KernelVersion:  3.11
- Contact:        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
--- 
-2.17.1
+We obviously want to avoid collisions here; not really sure how to
+cover all possible vendors. Maybe just pick a high number?
+
+>  
+>  /* sub-types for VFIO_REGION_TYPE_GFX */
+>  #define VFIO_REGION_SUBTYPE_GFX_EDID            (1)
+> diff --git a/include/uapi/linux/vfio_zdev.h b/include/uapi/linux/vfio_zdev.h
+> new file mode 100644
+> index 0000000..c9e4891
+> --- /dev/null
+> +++ b/include/uapi/linux/vfio_zdev.h
+> @@ -0,0 +1,116 @@
+> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> +/*
+> + * Region definition for ZPCI devices
+> + *
+> + * Copyright IBM Corp. 2020
+> + *
+> + * Author(s): Pierre Morel <pmorel@linux.ibm.com>
+> + *            Matthew Rosato <mjrosato@linux.ibm.com>
+> + */
+> +
+> +#ifndef _VFIO_ZDEV_H_
+> +#define _VFIO_ZDEV_H_
+> +
+> +#include <linux/types.h>
+> +
+> +/**
+> + * struct vfio_region_zpci_info - ZPCI information
+> + *
+> + * This region provides zPCI specific hardware feature information for a
+> + * device.
+> + *
+> + * The ZPCI information structure is presented as a chain of CLP features
+
+"CLP features" == "features returned by the CLP instruction", I guess?
+Maybe mention that explicitly?
+
+> + * defined below. argsz provides the size of the entire region, and offset
+> + * provides the location of the first CLP feature in the chain.
+> + *
+> + */
+> +struct vfio_region_zpci_info {
+> +	__u32 argsz;		/* Size of entire payload */
+> +	__u32 offset;		/* Location of first entry */
+> +} __packed;
+
+This '__packed' annotation seems redundant. I think that all of these
+structures should be defined in a way that packing is unneeded (which
+seems to be the case on a quick browse.)
+
+> +
+> +/**
+> + * struct vfio_region_zpci_info_hdr - ZPCI header information
+> + *
+> + * This structure is included at the top of each CLP feature to define what
+> + * type of CLP feature is presented / the structure version. The next value
+> + * defines the offset of the next CLP feature, and is an offset from the very
+> + * beginning of the region (vfio_region_zpci_info).
+> + *
+> + * Each CLP feature must have it's own unique 'id'.
+
+s/it's/its/
+
+Is the 'id' something that is already provided by the CLP instruction?
+
+> + */
+> +struct vfio_region_zpci_info_hdr {
+> +	__u16 id;		/* Identifies the CLP type */
+> +	__u16	version;	/* version of the CLP data */
+> +	__u32 next;		/* Offset of next entry */
+> +} __packed;
+> +
+> +/**
+> + * struct vfio_region_zpci_info_qpci - Initial Query PCI information
+> + *
+> + * This region provides an initial set of data from the Query PCI Function
+
+What does 'initial' mean in this context? Information you get for a
+freshly initialized function?
+
+> + * CLP.
+> + */
+> +#define VFIO_REGION_ZPCI_INFO_QPCI	1
+> +
+> +struct vfio_region_zpci_info_qpci {
+> +	struct vfio_region_zpci_info_hdr hdr;
+> +	__u64 start_dma;	/* Start of available DMA addresses */
+> +	__u64 end_dma;		/* End of available DMA addresses */
+> +	__u16 pchid;		/* Physical Channel ID */
+> +	__u16 vfn;		/* Virtual function number */
+> +	__u16 fmb_length;	/* Measurement Block Length (in bytes) */
+> +	__u8 pft;		/* PCI Function Type */
+> +	__u8 gid;		/* PCI function group ID */
+> +} __packed;
+> +
+> +
+> +/**
+> + * struct vfio_region_zpci_info_qpcifg - Initial Query PCI Function Group info
+> + *
+> + * This region provides an initial set of data from the Query PCI Function
+> + * Group CLP.
+> + */
+> +#define VFIO_REGION_ZPCI_INFO_QPCIFG	2
+> +
+> +struct vfio_region_zpci_info_qpcifg {
+> +	struct vfio_region_zpci_info_hdr hdr;
+> +	__u64 dasm;		/* DMA Address space mask */
+> +	__u64 msi_addr;		/* MSI address */
+> +	__u64 flags;
+> +#define VFIO_PCI_ZDEV_FLAGS_REFRESH 1 /* Use program-specified TLB refresh */
+> +	__u16 mui;		/* Measurement Block Update Interval */
+> +	__u16 noi;		/* Maximum number of MSIs */
+> +	__u16 maxstbl;		/* Maximum Store Block Length */
+> +	__u8 version;		/* Supported PCI Version */
+> +} __packed;
+> +
+> +/**
+> + * struct vfio_region_zpci_info_util - Utility String
+> + *
+> + * This region provides the utility string for the associated device, which is
+> + * a device identifier string.
+
+Is there an upper boundary for this string?
+
+Is this a classic NUL-terminated string, or a list of EBCDIC characters?
+
+> + */
+> +#define VFIO_REGION_ZPCI_INFO_UTIL	3
+> +
+> +struct vfio_region_zpci_info_util {
+> +	struct vfio_region_zpci_info_hdr hdr;
+> +	__u32 size;
+> +	__u8 util_str[];
+> +} __packed;
+> +
+> +/**
+> + * struct vfio_region_zpci_info_pfip - PCI Function Path
+> + *
+> + * This region provides the PCI function path string, which is an identifier
+> + * that describes the internal hardware path of the device.
+
+Same question here.
+
+> + */
+> +#define VFIO_REGION_ZPCI_INFO_PFIP	4
+> +
+> +struct vfio_region_zpci_info_pfip {
+> +struct vfio_region_zpci_info_hdr hdr;
+> +	__u32 size;
+> +	__u8 pfip[];
+> +} __packed;
+> +
+> +#endif
 
