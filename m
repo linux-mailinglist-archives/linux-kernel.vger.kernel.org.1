@@ -2,161 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD89274D37
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 01:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AD54274D3C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 01:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726832AbgIVXVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 19:21:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34876 "EHLO
+        id S1726863AbgIVXVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 19:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726448AbgIVXVT (ORCPT
+        with ESMTP id S1726448AbgIVXVx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 19:21:19 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 323FAC061755;
-        Tue, 22 Sep 2020 16:21:19 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id b19so15564824lji.11;
-        Tue, 22 Sep 2020 16:21:19 -0700 (PDT)
+        Tue, 22 Sep 2020 19:21:53 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D6D7C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 16:21:53 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id b3so17637177ybg.23
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 16:21:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wto1lfSHBTmfREetyWLDZnc6AY7l78uuUDVKMqaUTyE=;
-        b=ID8iAlY4ls9D/QjT0mUgVU9OdN2PG9hI9yj5d/6o0kdBfSGxQl19P7WCagqvhDm9K0
-         JjwwlnEQM73tlCtBEsV1bO7votjB6wEFN+wSw0d5GA/cl3kRE9e7pQMEPep7k6g1z9mM
-         OiPGa+ZridNOyQPlReXoSkAcZxpBdy8COxWgdhaU+7RqRCpX3XmTcO2pcHfzgfVIi8cR
-         de3H4evSX5N9wwiWEesfYeE3LKLUsUa2hDJ4X/JeH/Zk9GNNHUT/tctvG2VzDjbRqLWi
-         QeGjxz5A0YRTegUQuD3/lc/h6KhwQ4FVcAY21DNzobRBWy0KVnhbW0X7OvfGz6ROFk+5
-         gMdA==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=tGcXn3sDm57uE3gVQiqH/xFvLNTI0/uhdj25yBP9OJM=;
+        b=cAARJB9tQz4JFwu+kbKkxA+YQXekK4ONh76aUVGk60ANDFmn3LzczEkxUmIX4dGUqE
+         5+GexyhewVbiCnAS31iStuersWlZoY0hTROpLlnUSlfVGrQHCJ2YtjP4qsvuUxs3VDh7
+         0LVX4wegpTtuYdKicQnFOMYiwk5PNRomalJTdjJ5fYR0jNP2Vw9EjgKuYUk0iI+OGons
+         5gnMGnR6RFuE7FhM0OmkQ375mP8hPvNt8oJ+AXJdM0lKaRwJ7H7wmg4i61m2rzjx4Aw1
+         yT7rcgrxPn1Wd2aPKjHIaDsFP4mx6wTg/AFk910wUEuvevcrWly6ccaxezXXXi5tE90G
+         ZlUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wto1lfSHBTmfREetyWLDZnc6AY7l78uuUDVKMqaUTyE=;
-        b=lGBaiHIuj5mDwSMEIo4FAa8Zg0FfSSrNrbD7nG3/TcNRml+g5m9eB+Cm3tU8W3YTK7
-         EVY1mwBDyWxJrw8vW0zRnNipDwbIrJM9xqYGGubt4xWaAtCtWFy8nqh0qYQZuViX/7az
-         U1Mx+s9q6sO/YbBkBagJjIZaL17AXvWky6d4lW/razmWIgz3KsPi+g9HeGR5Y2kISbiJ
-         YdjbHBKNHr1zzTOYrcqwk/w0qFcGGuCpMrWjbqQf+94p4y0f/lrM5+UJcuPPbEL58FZs
-         XhwhwqIP94GzHkYYqlHhrzrtj9RXVWC9VlDGbY2SEmDqVHCxtHGcoYa+Q6ScLSmH9skP
-         J6xw==
-X-Gm-Message-State: AOAM531QXwUuZxPUYzTPtXBNZqOW0LPXa+69AnuvZCCdXFP4ARENOcKT
-        u9bZSEqLcbJx2vGAEXpp2zo=
-X-Google-Smtp-Source: ABdhPJwCwb0txemQccr9IvfcvZNgCRr0ozV2cVM5l12Fx+BFOlmogtc32aMjAJCgPKiG0X49BZ/ddA==
-X-Received: by 2002:a2e:a411:: with SMTP id p17mr753838ljn.282.1600816877662;
-        Tue, 22 Sep 2020 16:21:17 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id 13sm3933886lfn.239.2020.09.22.16.21.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Sep 2020 16:21:17 -0700 (PDT)
-Subject: Re: [PATCH v1 2/3] Input: atmel_mxt_ts - implement I2C retries for
- mXT1368
-To:     Jiada Wang <jiada_wang@mentor.com>, dmitry.torokhov@gmail.com,
-        robh+dt@kernel.org, thierry.reding@gmail.com, jonathanh@nvidia.com
-Cc:     nick@shmanahar.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        erosca@de.adit-jv.com, Andrew_Gabbasov@mentor.com
-References: <20200921140054.2389-1-jiada_wang@mentor.com>
- <20200921140054.2389-2-jiada_wang@mentor.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <e8c700b5-93f3-4069-1b9e-a85934a52515@gmail.com>
-Date:   Wed, 23 Sep 2020 02:21:16 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200921140054.2389-2-jiada_wang@mentor.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=tGcXn3sDm57uE3gVQiqH/xFvLNTI0/uhdj25yBP9OJM=;
+        b=ks9kmPcEy5Epumxdk/kWywIXhbJMFJIUJ8/jE5KT6oqRsadV3lp57dRP3oNx08JCUO
+         hMiwXVSbKWvFRHH3+948n2vs6gaVmBLhYLSO50seXe6pR/stVmvkl+t6nE9woFQFsigq
+         0YzE6hU0LW+5tTGbJgLeZhQf9MZTQRV5ot1djsB9waB1cmWYVTDYxYAlainwiMCCRwU2
+         H9jEh+SuUkIQUTM5WGDKSIoxWl9lfF01dnwdvacPpi2oo5N3BXuorFjVOaAZNVM7P4Wl
+         CtLGHy2T042bj7uGDakOUEFVOpv4bG0YpMV5/0OpICWW2C/diZTJBeG8FNfg56/FBK+Q
+         cOVQ==
+X-Gm-Message-State: AOAM532SKckWMjdCW8TIT8eSI8EMy+CWHI48UMgZc3EHCy5VQPRElnFk
+        0RmjcVGXGwxtlw3tyHuLzgeSc+ZK
+X-Google-Smtp-Source: ABdhPJxUgxwW4VA+vB29eR+veCkKgDowzHp+nyf81WrQ9ev1/t+X3X9+s1UrsuH08x6IBr4JM162UcMNug==
+Sender: "morbo via sendgmr" <morbo@fawn.svl.corp.google.com>
+X-Received: from fawn.svl.corp.google.com ([2620:15c:2cd:202:7220:84ff:fe0f:9f6a])
+ (user=morbo job=sendgmr) by 2002:a25:3453:: with SMTP id b80mr10708338yba.237.1600816912562;
+ Tue, 22 Sep 2020 16:21:52 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 16:21:40 -0700
+Message-Id: <20200922232140.1994390-1-morbo@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
+Subject: [PATCH] kbuild: explicitly specify the build id style
+From:   Bill Wendling <morbo@google.com>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Will Deacon <will@kernel.org>,
+        "H . Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Bill Wendling <morbo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-21.09.2020 17:00, Jiada Wang пишет:
-> According to datasheet, mXT1386 chip has a WAKE line, it is used
-> to wake the chip up from deep sleep mode before communicating with
-> it via the I2C-compatible interface.
-> 
-> if the WAKE line is connected to a GPIO line, the line must be
-> asserted 25 ms before the host attempts to communicate with the mXT1386.
-> If the WAKE line is connected to the SCL pin, the mXT1386 will send a
-> NACK on the first attempt to address it, the host must then retry 25 ms
-> later.
-> 
-> This patch adds compatible string "atmel,mXT1386" for mXT1386 controller,
-> when I2C transfer on mXT1386 fails, retry the transfer once after a 25 ms
-> sleep.
-> 
-> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
-> ---
->  drivers/input/touchscreen/atmel_mxt_ts.c | 44 +++++++++++++++++-------
->  1 file changed, 32 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/input/touchscreen/atmel_mxt_ts.c b/drivers/input/touchscreen/atmel_mxt_ts.c
-> index 98f17fa3a892..96d5f4d64cb0 100644
-> --- a/drivers/input/touchscreen/atmel_mxt_ts.c
-> +++ b/drivers/input/touchscreen/atmel_mxt_ts.c
-> @@ -198,6 +198,7 @@ enum t100_type {
->  #define MXT_CRC_TIMEOUT		1000	/* msec */
->  #define MXT_FW_RESET_TIME	3000	/* msec */
->  #define MXT_FW_CHG_TIMEOUT	300	/* msec */
-> +#define MXT_WAKEUP_TIME		25	/* msec */
->  
->  /* Command to unlock bootloader */
->  #define MXT_UNLOCK_CMD_MSB	0xaa
-> @@ -627,7 +628,9 @@ static int mxt_send_bootloader_cmd(struct mxt_data *data, bool unlock)
->  static int __mxt_read_reg(struct i2c_client *client,
->  			       u16 reg, u16 len, void *val)
->  {
-> +	struct device_node *np = client->dev.of_node;
->  	struct i2c_msg xfer[2];
-> +	bool retried = false;
->  	u8 buf[2];
->  	int ret;
->  
-> @@ -646,22 +649,30 @@ static int __mxt_read_reg(struct i2c_client *client,
->  	xfer[1].len = len;
->  	xfer[1].buf = val;
->  
-> -	ret = i2c_transfer(client->adapter, xfer, 2);
-> -	if (ret == 2) {
-> -		ret = 0;
-> -	} else {
-> -		if (ret >= 0)
-> -			ret = -EIO;
-> +retry_read:
-> +	ret = i2c_transfer(client->adapter, xfer, ARRAY_SIZE(xfer));
-> +	if (ret != ARRAY_SIZE(xfer)) {
-> +		if (of_device_is_compatible(np, "atmel,mXT1386") && !retried) {
+ld's --build-id defaults to "sha1" style, while lld defaults to "fast".
+The build IDs are very different between the two, which may confuse
+programs that reference them.
 
-Hello, Jiada!
+Signed-off-by: Bill Wendling <morbo@google.com>
+---
+ Makefile                             | 4 ++--
+ arch/arm/vdso/Makefile               | 2 +-
+ arch/arm64/kernel/vdso/Makefile      | 2 +-
+ arch/arm64/kernel/vdso32/Makefile    | 2 +-
+ arch/mips/vdso/Makefile              | 2 +-
+ arch/riscv/kernel/vdso/Makefile      | 2 +-
+ arch/s390/kernel/vdso64/Makefile     | 2 +-
+ arch/sparc/vdso/Makefile             | 2 +-
+ arch/x86/entry/vdso/Makefile         | 2 +-
+ tools/testing/selftests/bpf/Makefile | 2 +-
+ 10 files changed, 11 insertions(+), 11 deletions(-)
 
-This looks almost good to me! But I think we should add "bool
-retry_i2c_transfers" to the struct mxt_data and then set it to true for
-atmel,mXT1386 because of_device_is_compatible() looks a bit too bulky
-and this is usually discouraged to have in the code.
+diff --git a/Makefile b/Makefile
+index 2b66d3398878..7e6f41c9803a 100644
+--- a/Makefile
++++ b/Makefile
+@@ -973,8 +973,8 @@ KBUILD_CPPFLAGS += $(KCPPFLAGS)
+ KBUILD_AFLAGS   += $(KAFLAGS)
+ KBUILD_CFLAGS   += $(KCFLAGS)
+ 
+-KBUILD_LDFLAGS_MODULE += --build-id
+-LDFLAGS_vmlinux += --build-id
++KBUILD_LDFLAGS_MODULE += --build-id=sha1
++LDFLAGS_vmlinux += --build-id=sha1
+ 
+ ifeq ($(CONFIG_STRIP_ASM_SYMS),y)
+ LDFLAGS_vmlinux	+= $(call ld-option, -X,)
+diff --git a/arch/arm/vdso/Makefile b/arch/arm/vdso/Makefile
+index a54f70731d9f..150ce6e6a5d3 100644
+--- a/arch/arm/vdso/Makefile
++++ b/arch/arm/vdso/Makefile
+@@ -19,7 +19,7 @@ ccflags-y += -DDISABLE_BRANCH_PROFILING -DBUILD_VDSO32
+ ldflags-$(CONFIG_CPU_ENDIAN_BE8) := --be8
+ ldflags-y := -Bsymbolic --no-undefined -soname=linux-vdso.so.1 \
+ 	    -z max-page-size=4096 -nostdlib -shared $(ldflags-y) \
+-	    --hash-style=sysv --build-id \
++	    --hash-style=sysv --build-id=sha1 \
+ 	    -T
+ 
+ obj-$(CONFIG_VDSO) += vdso.o
+diff --git a/arch/arm64/kernel/vdso/Makefile b/arch/arm64/kernel/vdso/Makefile
+index 45d5cfe46429..871915097f9d 100644
+--- a/arch/arm64/kernel/vdso/Makefile
++++ b/arch/arm64/kernel/vdso/Makefile
+@@ -24,7 +24,7 @@ btildflags-$(CONFIG_ARM64_BTI_KERNEL) += -z force-bti
+ # routines, as x86 does (see 6f121e548f83 ("x86, vdso: Reimplement vdso.so
+ # preparation in build-time C")).
+ ldflags-y := -shared -nostdlib -soname=linux-vdso.so.1 --hash-style=sysv	\
+-	     -Bsymbolic $(call ld-option, --no-eh-frame-hdr) --build-id -n	\
++	     -Bsymbolic $(call ld-option, --no-eh-frame-hdr) --build-id=sha1 -n	\
+ 	     $(btildflags-y) -T
+ 
+ ccflags-y := -fno-common -fno-builtin -fno-stack-protector -ffixed-x18
+diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
+index d6adb4677c25..4fa4b3fe8efb 100644
+--- a/arch/arm64/kernel/vdso32/Makefile
++++ b/arch/arm64/kernel/vdso32/Makefile
+@@ -128,7 +128,7 @@ VDSO_LDFLAGS += -Wl,-Bsymbolic -Wl,--no-undefined -Wl,-soname=linux-vdso.so.1
+ VDSO_LDFLAGS += -Wl,-z,max-page-size=4096 -Wl,-z,common-page-size=4096
+ VDSO_LDFLAGS += -nostdlib -shared -mfloat-abi=soft
+ VDSO_LDFLAGS += -Wl,--hash-style=sysv
+-VDSO_LDFLAGS += -Wl,--build-id
++VDSO_LDFLAGS += -Wl,--build-id=sha1
+ VDSO_LDFLAGS += $(call cc32-ldoption,-fuse-ld=bfd)
+ 
+ 
+diff --git a/arch/mips/vdso/Makefile b/arch/mips/vdso/Makefile
+index 57fe83235281..5810cc12bc1d 100644
+--- a/arch/mips/vdso/Makefile
++++ b/arch/mips/vdso/Makefile
+@@ -61,7 +61,7 @@ endif
+ # VDSO linker flags.
+ ldflags-y := -Bsymbolic --no-undefined -soname=linux-vdso.so.1 \
+ 	$(filter -E%,$(KBUILD_CFLAGS)) -nostdlib -shared \
+-	-G 0 --eh-frame-hdr --hash-style=sysv --build-id -T
++	-G 0 --eh-frame-hdr --hash-style=sysv --build-id=sha1 -T
+ 
+ CFLAGS_REMOVE_vdso.o = -pg
+ 
+diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
+index 478e7338ddc1..7d6a94d45ec9 100644
+--- a/arch/riscv/kernel/vdso/Makefile
++++ b/arch/riscv/kernel/vdso/Makefile
+@@ -49,7 +49,7 @@ $(obj)/vdso.so.dbg: $(src)/vdso.lds $(obj-vdso) FORCE
+ # refer to these symbols in the kernel code rather than hand-coded addresses.
+ 
+ SYSCFLAGS_vdso.so.dbg = -shared -s -Wl,-soname=linux-vdso.so.1 \
+-	-Wl,--build-id -Wl,--hash-style=both
++	-Wl,--build-id=sha1 -Wl,--hash-style=both
+ $(obj)/vdso-dummy.o: $(src)/vdso.lds $(obj)/rt_sigreturn.o FORCE
+ 	$(call if_changed,vdsold)
+ 
+diff --git a/arch/s390/kernel/vdso64/Makefile b/arch/s390/kernel/vdso64/Makefile
+index 4a66a1cb919b..edc473b32e42 100644
+--- a/arch/s390/kernel/vdso64/Makefile
++++ b/arch/s390/kernel/vdso64/Makefile
+@@ -19,7 +19,7 @@ KBUILD_AFLAGS_64 += -m64 -s
+ KBUILD_CFLAGS_64 := $(filter-out -m64,$(KBUILD_CFLAGS))
+ KBUILD_CFLAGS_64 += -m64 -fPIC -shared -fno-common -fno-builtin
+ ldflags-y := -fPIC -shared -nostdlib -soname=linux-vdso64.so.1 \
+-	     --hash-style=both --build-id -T
++	     --hash-style=both --build-id=sha1 -T
+ 
+ $(targets:%=$(obj)/%.dbg): KBUILD_CFLAGS = $(KBUILD_CFLAGS_64)
+ $(targets:%=$(obj)/%.dbg): KBUILD_AFLAGS = $(KBUILD_AFLAGS_64)
+diff --git a/arch/sparc/vdso/Makefile b/arch/sparc/vdso/Makefile
+index f44355e46f31..469dd23887ab 100644
+--- a/arch/sparc/vdso/Makefile
++++ b/arch/sparc/vdso/Makefile
+@@ -115,7 +115,7 @@ quiet_cmd_vdso = VDSO    $@
+ 		       -T $(filter %.lds,$^) $(filter %.o,$^) && \
+ 		sh $(srctree)/$(src)/checkundef.sh '$(OBJDUMP)' '$@'
+ 
+-VDSO_LDFLAGS = -shared --hash-style=both --build-id -Bsymbolic
++VDSO_LDFLAGS = -shared --hash-style=both --build-id=sha1 -Bsymbolic
+ GCOV_PROFILE := n
+ 
+ #
+diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
+index 215376d975a2..ebba25ed9a38 100644
+--- a/arch/x86/entry/vdso/Makefile
++++ b/arch/x86/entry/vdso/Makefile
+@@ -176,7 +176,7 @@ quiet_cmd_vdso = VDSO    $@
+ 		       -T $(filter %.lds,$^) $(filter %.o,$^) && \
+ 		 sh $(srctree)/$(src)/checkundef.sh '$(NM)' '$@'
+ 
+-VDSO_LDFLAGS = -shared --hash-style=both --build-id \
++VDSO_LDFLAGS = -shared --hash-style=both --build-id=sha1 \
+ 	$(call ld-option, --eh-frame-hdr) -Bsymbolic
+ GCOV_PROFILE := n
+ 
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index fc946b7ac288..daf186f88a63 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -133,7 +133,7 @@ $(OUTPUT)/%:%.c
+ 
+ $(OUTPUT)/urandom_read: urandom_read.c
+ 	$(call msg,BINARY,,$@)
+-	$(Q)$(CC) $(LDFLAGS) -o $@ $< $(LDLIBS) -Wl,--build-id
++	$(Q)$(CC) $(LDFLAGS) -o $@ $< $(LDLIBS) -Wl,--build-id=sha1
+ 
+ $(OUTPUT)/test_stub.o: test_stub.c $(BPFOBJ)
+ 	$(call msg,CC,,$@)
+-- 
+2.28.0.681.g6f77f65b4e-goog
 
-Secondly, we should also add a clarifying comment to the code, telling
-why retries are needed for 1386, something like this:
-
-static int mxt_probe(struct i2c_client *client, const struct
-i2c_device_id *id)
-{
-...
-
-/*
- * The mXT1386 has a dedicated WAKE-line that could be connected to a
- * dedicated GPIO, or to the I2C SCL pin, or permanently asserted LOW.
- * It's used for waking controller from a deep-sleep and it needs to be
- * asserted LOW for 25 milliseconds before issuing I2C transfer if
-controller
- * was in a deep-sleep mode. If WAKE-line is connected to I2C SCL pin, then
- * the first I2C transfer will get an instant NAK and transfer needs to be
- * retried after 25ms. There are too many places in the code where the
-wake-up
- * needs to be inserted, hence it's much easier to add a retry to the common
- * I2C accessors, also given that the WAKE-GPIO is unsupported by the
-driver.
- */
-if (of_device_is_compatible(np, "atmel,mXT1386")
-	data->retry_i2c_transfers = true;
