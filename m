@@ -2,121 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E52D62746FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF822746FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726634AbgIVQwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 12:52:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726632AbgIVQwL (ORCPT
+        id S1726710AbgIVQwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 12:52:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20600 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726632AbgIVQwd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 12:52:11 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A29FCC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 09:52:11 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id v123so19695260qkd.9
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 09:52:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UW8UQhISUFkiKSe3z9186mRXQeii/XHHTh3pl00bIbE=;
-        b=S4S1yu+0DdwteB1gK8Vw7Sirfx6bWa/xLWIPsdLuX1Bps9wYPzDFiWdNH0kTjgN29M
-         TMvFXWvwsuK4mQntUtTNmNPqHcUp2Bt0UyAhSjDoR0w7I+1zs5PnGDwSjtvodQnfNSgu
-         Fi3MyXpKQBsUyQvcqnEnnVuMHA7RhVsOiRzzvzuoN7XkXcdZBi0WwhS6kHB+yw1YZ5hm
-         tL5kKLQRoVrbbjQRQu4OZ38NWMlSubrVENywqwisJ9uCPX4HoQYFXwV5wqv0PGaukqxI
-         WjfJYMlX8PWi2A5M23siDPT67CovWFKOTdrEvHKEqln4v3lFsvC1XgcqsIHiMfxvB67K
-         BX8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UW8UQhISUFkiKSe3z9186mRXQeii/XHHTh3pl00bIbE=;
-        b=CIaG8cp1AeiXM4zKD5FnfZCkB9brss03gv9TBZPb2HF00jx3Qik4Ll0ALPmJ0l/t14
-         1a/BEAozWBSfJRpS9Xw4rBrcmpL8hjkXhfFZoMbOORSwUq5eoXIH6dObf2jtxWGGuz3I
-         ECygfl/0n+Uuxc7E3nq1BGEyOhRyyq/ND9XvjxQwX3mmrj2eNoGa7Y+HvUQiC0GUP+Ms
-         fTAwzpgjYap+/qaudh5HDIBFmI/M2hGY5/FbZRh9Z7tbVUolJsKifiArnZOwz0gC49PV
-         rWpNFrOgQNzwwC2KdqbDeLql0r3iLpPEwT2VSHhFcZGadKGMypcXADOoeURrxJfxUeo0
-         sVaQ==
-X-Gm-Message-State: AOAM533haRK+diNXn9mPvOL0S8pvkeMpZN9WF3ogou8uSTY5bHm9NHhX
-        FHAzxjUgBg9JMtgg5w1azR9O2w==
-X-Google-Smtp-Source: ABdhPJxmh2ODYVAVV5V1OHM0DbPqOPp70bzHRBRnt4lz3LGXVWYYfZGjCS0zSBO5X1zbygWZYdhOJA==
-X-Received: by 2002:a37:a2d2:: with SMTP id l201mr5772720qke.454.1600793530818;
-        Tue, 22 Sep 2020 09:52:10 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id k52sm13437898qtc.56.2020.09.22.09.52.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 09:52:10 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kKlWT-003CDZ-Jn; Tue, 22 Sep 2020 13:52:09 -0300
-Date:   Tue, 22 Sep 2020 13:52:09 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        izur@habana.ai, Jakub Kicinski <kuba@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-rdma@vger.kernel.org, Olof Johansson <olof@lixom.net>
-Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
-Message-ID: <20200922165209.GJ8409@ziepe.ca>
-References: <20200918141909.GU8409@ziepe.ca>
- <CAFCwf121_UNivhfPfO6uFoHbF+2Odeb1c3+482bOXeOZUsEnug@mail.gmail.com>
- <20200918150735.GV8409@ziepe.ca>
- <CAFCwf13y1VVy90zAoBPC-Gfj6mwMVbefh3fxKDVneuscp4esqA@mail.gmail.com>
- <20200918152852.GW8409@ziepe.ca>
- <b0721756-d323-b95e-b2d2-ca3ce8d4a660@amazon.com>
- <20200922114101.GE8409@ziepe.ca>
- <a16802a2-4a36-e03d-a927-c5cb7c766b99@amazon.com>
- <20200922161429.GI8409@ziepe.ca>
- <e06c573a-99a7-906c-8197-847a61fba44a@amazon.com>
+        Tue, 22 Sep 2020 12:52:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600793551;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QghsFN8I1DkvHVyY0c6ycpuSeL/z8MexSX8KO76bC/Y=;
+        b=OFOgPldjSW3YUWIw4EJmI2wspl5Pi6K+MLtyxHMLx0WLuL5pseDdbOaFqAPKYJHYz6txqF
+        GbPxJnBs5Lc3bbpeyVRdqaV0duwTynzyEBkC4yayTBT8mNwwfZffDlkMvJEdwPfmZcLJeq
+        HEW6WUg2AAXaypskxpIbI11t8E80CtE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-594-gSImXLNdNja_xc6MYWpZZQ-1; Tue, 22 Sep 2020 12:52:27 -0400
+X-MC-Unique: gSImXLNdNja_xc6MYWpZZQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6B4801006706;
+        Tue, 22 Sep 2020 16:52:25 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.146])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 7058119D61;
+        Tue, 22 Sep 2020 16:52:18 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Tue, 22 Sep 2020 18:52:25 +0200 (CEST)
+Date:   Tue, 22 Sep 2020 18:52:17 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Jann Horn <jannh@google.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Hugh Dickins <hughd@google.com>,
+        Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Subject: Re: [PATCH 4/5] mm: Do early cow for pinned pages during fork() for
+ ptes
+Message-ID: <20200922165216.GF11679@redhat.com>
+References: <20200921211744.24758-1-peterx@redhat.com>
+ <20200921212028.25184-1-peterx@redhat.com>
+ <20200922114839.GC11679@redhat.com>
+ <20200922124013.GD11679@redhat.com>
+ <20200922155842.GG19098@xz-x1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e06c573a-99a7-906c-8197-847a61fba44a@amazon.com>
+In-Reply-To: <20200922155842.GG19098@xz-x1>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 07:30:32PM +0300, Gal Pressman wrote:
-> On 22/09/2020 19:14, Jason Gunthorpe wrote:
-> > On Tue, Sep 22, 2020 at 03:46:29PM +0300, Gal Pressman wrote:
-> > 
-> >> I agree, that makes sense.
-> >> But assuming Oded actually goes and implements all the needed verbs to get a
-> >> basic functional libibverbs provider (assuming their HW can do it somehow), is
-> >> it really useful if no one is going to use it?
-> >> It doesn't sound like habanalabs want people to use GAUDI as an RDMA adapter,
-> >> and I'm assuming the only real world use case is going to be using the hl stack,
-> >> which means we're left with a lot of dead code that's not used/tested by anyone.
-> >>
-> >> Genuine question, wouldn't it be better if they only implement what's actually
-> >> going to be used and tested by their customers?
-> > 
-> > The general standard for this 'accel' hardware, both in DRM and RDMA
-> > is to present an open source userspace. Companies are encouraged to
-> > use that as their main interface but I suppose are free to carry the
-> > cost of dual APIs, and the community's wrath if they want.
-> 
-> I didn't mean they should maintain two interfaces.
-> The question is whether they should implement libibverbs support that covers the
-> cases used by their stack, or should they implement all "mandatory" verbs so
-> they could be able to run libibverbs' examples/perftest/pyverbs as well, even
-> though these will likely be the only apps covering these verbs.
+On 09/22, Peter Xu wrote:
+>
+> On Tue, Sep 22, 2020 at 02:40:14PM +0200, Oleg Nesterov wrote:
+> > On 09/22, Oleg Nesterov wrote:
+> > >
+> > > On 09/21, Peter Xu wrote:
+> > > >
+> > > > @@ -859,6 +989,25 @@ static int copy_pte_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+> > > >  			    spin_needbreak(src_ptl) || spin_needbreak(dst_ptl))
+> > > >  				break;
+> > > >  		}
+> > > > +
+> > > > +		if (unlikely(data.cow_new_page)) {
+> > > > +			/*
+> > > > +			 * If cow_new_page set, we must be at the 2nd round of
+> > > > +			 * a previous COPY_MM_BREAK_COW.  Try to arm the new
+> > > > +			 * page now.  Note that in all cases page_break_cow()
+> > > > +			 * will properly release the objects in copy_mm_data.
+> > > > +			 */
+> > > > +			WARN_ON_ONCE(copy_ret != COPY_MM_BREAK_COW);
+> > > > +			if (pte_install_copied_page(dst_mm, new, src_pte,
+> > > > +						    dst_pte, addr, rss,
+> > > > +						    &data)) {
+> > > > +				/* We installed the pte successfully; move on */
+> > > > +				progress++;
+> > > > +				continue;
+> > >
+> > > I'm afraid I misread this patch too ;)
+> > >
+> > > But it seems to me in this case the main loop can really "leak"
+> > > COPY_MM_BREAK_COW. Suppose the the next 31 pte's are pte_none() and
+> > > need_resched() is true.
+> > >
+> > > No?
+>
+> I still think it's a no...
+>
+> Note that now we'll reset "progress" every time before the do loop, so we'll
+> never reach need_resched() (since progress<32) before pte_install_copied_page()
+> when needed.
 
-As I said, the minimum standard is an open source user space that will
-operate the NIC. For EFA we decided that was ibv_ud_pingpong, and now
-parts of pyverbs. A similar decision would be needed here too. It is a
-conversation that should start with a propsal from Oded.
+Yes. But copy_ret is still COPY_MM_BREAK_COW after pte_install_copied_page().
+Now suppose that the next 31 pte's are pte_none(), progress will be incremented
+every time.
 
-The *point* is to have the open userspace, so I really don't care what
-their proprietary universe does, and shrinking the opensource side
-becuase it is "redundant" is completely backwards to what we want to
-see.
+> I explicitly put the pte_install_copied_page() into the loop just...
+...
+> >  	progress = 0;
+> > +	if (unlikely(copy_ret == COPY_MM_BREAK_COW)) {
+> > +		/*
+> > +		 * Note that in all cases pte_install_copied_page()
+> > +		 * will properly release the objects in copy_mm_data.
+> > +		 */
+> > +		copy_ret = COPY_MM_DONE;
+> > +		if (pte_install_copied_page(dst_mm, new, src_pte,
+> > +					    dst_pte, addr, rss,
+> > +					    &data)) {
+> > +			/* We installed the pte successfully; move on */
+> > +			progress++;
+> > +			goto next;
+>
+> ... to avoid jumps like this because I think it's really tricky. :)
 
-Jason
+To me it looks better before the main loop because we know that
+data.cow_new_page != NULL is only possible at the 1st iterattion after
+restart ;)
+
+But I agree, this is subjective, please ignore. However, I still think
+it is better to rely on the copy_ret == COPY_MM_BREAK_COW check rather
+than data.cow_new_page != NULL.
+
+> >  	case COPY_MM_SWAP_CONT:
+> >  		if (add_swap_count_continuation(data.entry, GFP_KERNEL) < 0)
+> >  			return -ENOMEM;
+> > -		break;
+> > +		copy_ret = COPY_MM_DONE;
+>
+> Kind of a continuation of the discussion from previous patch - I think we'd
+> better reset copy_ret not only for this case, but move it after the switch
+> (just in case there'll be new ones).  The new BREAK_COW uses goto so it's quite
+> special.
+>
+> > +		goto again;
+>
+> I feel like this could go wrong without the "addr != end" check later, when
+> this is the last pte to check.
+
+How? We know that copy_one_pte() failed and returned COPY_MM_SWAP_CONT
+before addr = end.
+
+And this matters "case COPY_MM_BREAK_COW" below which does "goto again"
+without the "addr != end" check.
+
+Oleg.
+
