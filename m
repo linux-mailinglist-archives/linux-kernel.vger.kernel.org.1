@@ -2,382 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F3D273AD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 08:27:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B4FC273A8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 08:13:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729426AbgIVG06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 02:26:58 -0400
-Received: from mga12.intel.com ([192.55.52.136]:45992 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728603AbgIVG05 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 02:26:57 -0400
-IronPort-SDR: s9NSJ3VZsGxYOvLDdfoW5QfEoWv5RskMtEZj7/LgN7DakZOaEeESqtc6m3BZp04Wf89U4jERfF
- lLtwAVEm6HEg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="140023331"
-X-IronPort-AV: E=Sophos;i="5.77,289,1596524400"; 
-   d="scan'208";a="140023331"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 23:17:10 -0700
-IronPort-SDR: vx0uJLVWEl95aHT1KuxIUA+fg3G/YT09cw/01+8KQGLzGppvXrxrY/Kp+kJQsXKDfbyxXO5VKx
- kdm7kFHcV2Rw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,289,1596524400"; 
-   d="scan'208";a="334877518"
-Received: from allen-box.sh.intel.com ([10.239.159.139])
-  by fmsmga004.fm.intel.com with ESMTP; 21 Sep 2020 23:17:06 -0700
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Liu Yi L <yi.l.liu@intel.com>, Zeng Xin <xin.zeng@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH v5 5/5] iommu/vt-d: Add is_aux_domain support
-Date:   Tue, 22 Sep 2020 14:10:42 +0800
-Message-Id: <20200922061042.31633-6-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200922061042.31633-1-baolu.lu@linux.intel.com>
-References: <20200922061042.31633-1-baolu.lu@linux.intel.com>
+        id S1729156AbgIVGNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 02:13:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729094AbgIVGNX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 02:13:23 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED48C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 23:13:23 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id o8so14602519otl.4
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 23:13:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=WBUjk5sa2qSjZc05mc4Eihluz20Uyb3yXZp0vXYSAao=;
+        b=WB/3I6zQHZvM8TfVLEJMlPFQrTIpfsU1zdOf1VurZPu72ZMZEaoo7SH356HOoSJJOw
+         EKwBCy7d/TyKnNeXXKOUW5zk+bqIOjLHCJ6ZiSFyYEnC+Euj4h8fo14+jrnzeu2jgIBF
+         53xrD3/b4xTaGC/iTpL/ulzQHeY26XpyZ/b+299hSLzBpDXltk+x+4eBjq7eYELQzz1x
+         gKXJ+0lEUiZNnjiD6gENrAppDXE/pvR++XVaVbjUnX2tjQsXzoGS6TdcYZ0EtsVe4Bw3
+         JcV/h1yIyD756SHiiB2UFeko7C0okLxWUaCBg6mcoEecwVx0KqJHQp0ZLszZ9HV/C8F7
+         8bpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=WBUjk5sa2qSjZc05mc4Eihluz20Uyb3yXZp0vXYSAao=;
+        b=KPemcY4xyQICWDe4RIgBFFXVRv4lBRb3FZ5qVq3bTwjXjWlLiMr7O21aw/6qUCHVEh
+         PE6KMBfw6zHRTAwItIhrMiyByhvYOCIrA9K+1Je1ns08sYY60gC88QDgPHtrCpNSYgGp
+         Ipgv4/b/aCw9/PbbW66h75VvvS+dxnXgbvMw5MdiBrVmDxr8/kFkkxsuWetG/1CXKieg
+         jE4b/q2mbqKoVxy7AN5sHpxVC180XjeLGhRyLUeCCCPCDJ8UUacYdEYGVJiHKy1gPd+g
+         99ktrjiKHQtjyhVPzN7u230teEidXxUJ1pX8g5K+NbkD1PcOt4LA4O7DozucpAXdTyGk
+         hXnw==
+X-Gm-Message-State: AOAM532LSpdEVZ/YA8fsKH2G12UI9RC+Gd65klmLBDgorv1rCcbvtQuH
+        B5rk+Bz5fYVQJ8DVZfb6+AO7NQ==
+X-Google-Smtp-Source: ABdhPJxHTfoPta25AJAE5KGLMyigkV+kpo5kxM+XL4/T/LV9u02+BIX4BSvwURmGDy4M5Ox0xceunw==
+X-Received: by 2002:a9d:2925:: with SMTP id d34mr1879677otb.140.1600755202300;
+        Mon, 21 Sep 2020 23:13:22 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id h135sm7396281oib.50.2020.09.21.23.13.19
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Mon, 21 Sep 2020 23:13:21 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 23:13:17 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, willy@infradead.org,
+        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        shakeelb@google.com, iamjoonsoo.kim@lge.com,
+        richard.weiyang@gmail.com, kirill@shutemov.name,
+        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
+        vdavydov.dev@gmail.com, shy828301@gmail.com,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v18 25/32] mm/mlock: remove lru_lock on TestClearPageMlocked
+ in munlock_vma_page
+In-Reply-To: <1598273705-69124-26-git-send-email-alex.shi@linux.alibaba.com>
+Message-ID: <alpine.LSU.2.11.2009212253320.6434@eggly.anvils>
+References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com> <1598273705-69124-26-git-send-email-alex.shi@linux.alibaba.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With subdevice information opt-in through iommu_ops.aux_at(de)tach_dev()
-interfaces, the vendor iommu driver is able to learn the knowledge about
-the relationships between the subdevices and the aux-domains. Implement
-is_aux_domain() support based on the relationship knowledges.
+On Mon, 24 Aug 2020, Alex Shi wrote:
 
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- drivers/iommu/intel/iommu.c | 129 ++++++++++++++++++++++++++----------
- include/linux/intel-iommu.h |  17 +++--
- 2 files changed, 105 insertions(+), 41 deletions(-)
+> In the func munlock_vma_page, the page must be PageLocked as well as
+> pages in split_huge_page series funcs. Thus the PageLocked is enough
+> to serialize both funcs.
+> 
+> So we could relief the TestClearPageMlocked/hpage_nr_pages which are not
+> necessary under lru lock.
+> 
+> As to another munlock func __munlock_pagevec, which no PageLocked
+> protection and should remain lru protecting.
+> 
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
 
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 86142ce32f21..9ba314e2872f 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -334,6 +334,8 @@ static int intel_iommu_attach_device(struct iommu_domain *domain,
- 				     struct device *dev);
- static phys_addr_t intel_iommu_iova_to_phys(struct iommu_domain *domain,
- 					    dma_addr_t iova);
-+static bool intel_iommu_dev_feat_enabled(struct device *dev,
-+					 enum iommu_dev_features feat);
- 
- #ifdef CONFIG_INTEL_IOMMU_DEFAULT_ON
- int dmar_disabled = 0;
-@@ -1881,6 +1883,7 @@ static struct dmar_domain *alloc_domain(int flags)
- 		domain->flags |= DOMAIN_FLAG_USE_FIRST_LEVEL;
- 	domain->has_iotlb_device = false;
- 	INIT_LIST_HEAD(&domain->devices);
-+	INIT_LIST_HEAD(&domain->subdevices);
- 
- 	return domain;
- }
-@@ -2629,7 +2632,7 @@ static struct dmar_domain *dmar_insert_one_dev_info(struct intel_iommu *iommu,
- 	info->iommu = iommu;
- 	info->pasid_table = NULL;
- 	info->auxd_enabled = 0;
--	INIT_LIST_HEAD(&info->auxiliary_domains);
-+	INIT_LIST_HEAD(&info->subdevices);
- 
- 	if (dev && dev_is_pci(dev)) {
- 		struct pci_dev *pdev = to_pci_dev(info->dev);
-@@ -5152,21 +5155,28 @@ static void intel_iommu_domain_free(struct iommu_domain *domain)
- 		domain_exit(to_dmar_domain(domain));
- }
- 
--/*
-- * Check whether a @domain could be attached to the @dev through the
-- * aux-domain attach/detach APIs.
-- */
--static inline bool
--is_aux_domain(struct device *dev, struct iommu_domain *domain)
-+/* Lookup subdev_info in the domain's subdevice siblings. */
-+static struct subdev_info *
-+subdev_lookup_domain(struct dmar_domain *domain, struct device *dev,
-+		     struct device *subdev)
- {
--	struct device_domain_info *info = get_domain_info(dev);
-+	struct subdev_info *sinfo = NULL, *tmp;
-+
-+	assert_spin_locked(&device_domain_lock);
-+
-+	list_for_each_entry(tmp, &domain->subdevices, link_domain) {
-+		if ((!dev || tmp->pdev == dev) && tmp->dev == subdev) {
-+			sinfo = tmp;
-+			break;
-+		}
-+	}
- 
--	return info && info->auxd_enabled &&
--			domain->type == IOMMU_DOMAIN_UNMANAGED;
-+	return sinfo;
- }
- 
--static void auxiliary_link_device(struct dmar_domain *domain,
--				  struct device *dev)
-+static void
-+subdev_link_device(struct dmar_domain *domain, struct device *dev,
-+		   struct subdev_info *sinfo)
- {
- 	struct device_domain_info *info = get_domain_info(dev);
- 
-@@ -5174,12 +5184,13 @@ static void auxiliary_link_device(struct dmar_domain *domain,
- 	if (WARN_ON(!info))
- 		return;
- 
--	domain->auxd_refcnt++;
--	list_add(&domain->auxd, &info->auxiliary_domains);
-+	list_add(&sinfo->link_phys, &info->subdevices);
-+	list_add(&sinfo->link_domain, &domain->subdevices);
- }
- 
--static void auxiliary_unlink_device(struct dmar_domain *domain,
--				    struct device *dev)
-+static void
-+subdev_unlink_device(struct dmar_domain *domain, struct device *dev,
-+		     struct subdev_info *sinfo)
- {
- 	struct device_domain_info *info = get_domain_info(dev);
- 
-@@ -5187,24 +5198,26 @@ static void auxiliary_unlink_device(struct dmar_domain *domain,
- 	if (WARN_ON(!info))
- 		return;
- 
--	list_del(&domain->auxd);
--	domain->auxd_refcnt--;
--
--	if (!domain->auxd_refcnt && domain->default_pasid > 0)
--		ioasid_free(domain->default_pasid);
-+	list_del(&sinfo->link_phys);
-+	list_del(&sinfo->link_domain);
- }
- 
--static int aux_domain_add_dev(struct dmar_domain *domain,
--			      struct device *dev)
-+static int aux_domain_add_dev(struct dmar_domain *domain, struct device *dev,
-+			      struct device *subdev)
- {
- 	int ret;
- 	unsigned long flags;
- 	struct intel_iommu *iommu;
-+	struct subdev_info *sinfo;
- 
- 	iommu = device_to_iommu(dev, NULL, NULL);
- 	if (!iommu)
- 		return -ENODEV;
- 
-+	sinfo = kzalloc(sizeof(*sinfo), GFP_KERNEL);
-+	if (!sinfo)
-+		return -ENOMEM;
-+
- 	if (domain->default_pasid <= 0) {
- 		int pasid;
- 
-@@ -5214,7 +5227,8 @@ static int aux_domain_add_dev(struct dmar_domain *domain,
- 				     NULL);
- 		if (pasid == INVALID_IOASID) {
- 			pr_err("Can't allocate default pasid\n");
--			return -ENODEV;
-+			ret = -ENODEV;
-+			goto pasid_failed;
- 		}
- 		domain->default_pasid = pasid;
- 	}
-@@ -5240,7 +5254,10 @@ static int aux_domain_add_dev(struct dmar_domain *domain,
- 		goto table_failed;
- 	spin_unlock(&iommu->lock);
- 
--	auxiliary_link_device(domain, dev);
-+	sinfo->dev = subdev;
-+	sinfo->domain = domain;
-+	sinfo->pdev = dev;
-+	subdev_link_device(domain, dev, sinfo);
- 
- 	spin_unlock_irqrestore(&device_domain_lock, flags);
- 
-@@ -5251,27 +5268,36 @@ static int aux_domain_add_dev(struct dmar_domain *domain,
- attach_failed:
- 	spin_unlock(&iommu->lock);
- 	spin_unlock_irqrestore(&device_domain_lock, flags);
--	if (!domain->auxd_refcnt && domain->default_pasid > 0)
-+	if (list_empty(&domain->subdevices) && domain->default_pasid > 0)
- 		ioasid_free(domain->default_pasid);
-+pasid_failed:
-+	kfree(sinfo);
- 
- 	return ret;
- }
- 
--static void aux_domain_remove_dev(struct dmar_domain *domain,
--				  struct device *dev)
-+static void
-+aux_domain_remove_dev(struct dmar_domain *domain, struct device *dev,
-+		      struct device *subdev)
- {
- 	struct device_domain_info *info;
- 	struct intel_iommu *iommu;
-+	struct subdev_info *sinfo;
- 	unsigned long flags;
- 
--	if (!is_aux_domain(dev, &domain->domain))
-+	if (!intel_iommu_dev_feat_enabled(dev, IOMMU_DEV_FEAT_AUX) ||
-+	    domain->domain.type != IOMMU_DOMAIN_UNMANAGED)
- 		return;
- 
- 	spin_lock_irqsave(&device_domain_lock, flags);
- 	info = get_domain_info(dev);
- 	iommu = info->iommu;
--
--	auxiliary_unlink_device(domain, dev);
-+	sinfo = subdev_lookup_domain(domain, dev, subdev);
-+	if (!sinfo) {
-+		spin_unlock_irqrestore(&device_domain_lock, flags);
-+		return;
-+	}
-+	subdev_unlink_device(domain, dev, sinfo);
- 
- 	spin_lock(&iommu->lock);
- 	intel_pasid_tear_down_entry(iommu, dev, domain->default_pasid, false);
-@@ -5279,6 +5305,10 @@ static void aux_domain_remove_dev(struct dmar_domain *domain,
- 	spin_unlock(&iommu->lock);
- 
- 	spin_unlock_irqrestore(&device_domain_lock, flags);
-+
-+	if (list_empty(&domain->subdevices) && domain->default_pasid > 0)
-+		ioasid_free(domain->default_pasid);
-+	kfree(sinfo);
- }
- 
- static int prepare_domain_attach_device(struct iommu_domain *domain,
-@@ -5334,7 +5364,8 @@ static int intel_iommu_attach_device(struct iommu_domain *domain,
- 		return -EPERM;
- 	}
- 
--	if (is_aux_domain(dev, domain))
-+	if (intel_iommu_dev_feat_enabled(dev, IOMMU_DEV_FEAT_AUX) &&
-+	    domain->type == IOMMU_DOMAIN_UNMANAGED)
- 		return -EPERM;
- 
- 	/* normally dev is not mapped */
-@@ -5359,14 +5390,15 @@ intel_iommu_aux_attach_device(struct iommu_domain *domain,
- {
- 	int ret;
- 
--	if (!is_aux_domain(dev, domain))
-+	if (!intel_iommu_dev_feat_enabled(dev, IOMMU_DEV_FEAT_AUX) ||
-+	    domain->type != IOMMU_DOMAIN_UNMANAGED)
- 		return -EPERM;
- 
- 	ret = prepare_domain_attach_device(domain, dev);
- 	if (ret)
- 		return ret;
- 
--	return aux_domain_add_dev(to_dmar_domain(domain), dev);
-+	return aux_domain_add_dev(to_dmar_domain(domain), dev, subdev);
- }
- 
- static void intel_iommu_detach_device(struct iommu_domain *domain,
-@@ -5379,7 +5411,7 @@ static void
- intel_iommu_aux_detach_device(struct iommu_domain *domain, struct device *dev,
- 			      struct device *subdev)
- {
--	aux_domain_remove_dev(to_dmar_domain(domain), dev);
-+	aux_domain_remove_dev(to_dmar_domain(domain), dev, subdev);
- }
- 
- /*
-@@ -6035,6 +6067,32 @@ static bool intel_iommu_is_attach_deferred(struct iommu_domain *domain,
- 	return attach_deferred(dev);
- }
- 
-+static int
-+intel_iommu_domain_get_attr(struct iommu_domain *domain,
-+			    enum iommu_attr attr, void *data)
-+{
-+	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
-+	unsigned long flags;
-+	int ret;
-+
-+	if (domain->type != IOMMU_DOMAIN_UNMANAGED)
-+		return -EINVAL;
-+
-+	switch (attr) {
-+	case DOMAIN_ATTR_IS_AUX:
-+		spin_lock_irqsave(&device_domain_lock, flags);
-+		ret = !IS_ERR_OR_NULL(subdev_lookup_domain(dmar_domain,
-+							   NULL, data));
-+		spin_unlock_irqrestore(&device_domain_lock, flags);
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
- static int
- intel_iommu_domain_set_attr(struct iommu_domain *domain,
- 			    enum iommu_attr attr, void *data)
-@@ -6088,6 +6146,7 @@ const struct iommu_ops intel_iommu_ops = {
- 	.domain_alloc		= intel_iommu_domain_alloc,
- 	.domain_free		= intel_iommu_domain_free,
- 	.domain_set_attr	= intel_iommu_domain_set_attr,
-+	.domain_get_attr	= intel_iommu_domain_get_attr,
- 	.attach_dev		= intel_iommu_attach_device,
- 	.detach_dev		= intel_iommu_detach_device,
- 	.aux_attach_dev		= intel_iommu_aux_attach_device,
-diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
-index 6a3ddaabf3f5..3b112356c6ea 100644
---- a/include/linux/intel-iommu.h
-+++ b/include/linux/intel-iommu.h
-@@ -526,11 +526,9 @@ struct dmar_domain {
- 					/* Domain ids per IOMMU. Use u16 since
- 					 * domain ids are 16 bit wide according
- 					 * to VT-d spec, section 9.3 */
--	unsigned int	auxd_refcnt;	/* Refcount of auxiliary attaching */
--
- 	bool has_iotlb_device;
- 	struct list_head devices;	/* all devices' list */
--	struct list_head auxd;		/* link to device's auxiliary list */
-+	struct list_head subdevices;	/* all subdevices' list */
- 	struct iova_domain iovad;	/* iova's that belong to this domain */
- 
- 	struct dma_pte	*pgd;		/* virtual address */
-@@ -603,14 +601,21 @@ struct intel_iommu {
- 	struct dmar_drhd_unit *drhd;
- };
- 
-+/* Per subdevice private data */
-+struct subdev_info {
-+	struct list_head link_phys;	/* link to phys device siblings */
-+	struct list_head link_domain;	/* link to domain siblings */
-+	struct device *pdev;		/* physical device derived from */
-+	struct device *dev;		/* subdevice node */
-+	struct dmar_domain *domain;	/* aux-domain */
-+};
-+
- /* PCI domain-device relationship */
- struct device_domain_info {
- 	struct list_head link;	/* link to domain siblings */
- 	struct list_head global; /* link to global list */
- 	struct list_head table;	/* link to pasid table */
--	struct list_head auxiliary_domains; /* auxiliary domains
--					     * attached to this device
--					     */
-+	struct list_head subdevices; /* subdevices sibling */
- 	u32 segment;		/* PCI segment number */
- 	u8 bus;			/* PCI bus number */
- 	u8 devfn;		/* PCI devfn number */
--- 
-2.17.1
+I made some comments on the mlock+munlock situation last week:
+I won't review this 24/32 and 25/32 now, but will take a look
+at your github tree tomorrow instead.  Perhaps I'll find you have
+already done the fixes, perhaps I'll find you have merged these back
+into earlier patches.  And I won't be reviewing beyond this point:
+this is enough for now, I think.
 
+Hugh
+
+> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  mm/mlock.c | 41 +++++++++++++++--------------------------
+>  1 file changed, 15 insertions(+), 26 deletions(-)
+> 
+> diff --git a/mm/mlock.c b/mm/mlock.c
+> index 0448409184e3..46a05e6ec5ba 100644
+> --- a/mm/mlock.c
+> +++ b/mm/mlock.c
+> @@ -69,9 +69,9 @@ void clear_page_mlock(struct page *page)
+>  	 *
+>  	 * See __pagevec_lru_add_fn for more explanation.
+>  	 */
+> -	if (!isolate_lru_page(page)) {
+> +	if (!isolate_lru_page(page))
+>  		putback_lru_page(page);
+> -	} else {
+> +	else {
+>  		/*
+>  		 * We lost the race. the page already moved to evictable list.
+>  		 */
+> @@ -178,7 +178,6 @@ static void __munlock_isolation_failed(struct page *page)
+>  unsigned int munlock_vma_page(struct page *page)
+>  {
+>  	int nr_pages;
+> -	struct lruvec *lruvec;
+>  
+>  	/* For try_to_munlock() and to serialize with page migration */
+>  	BUG_ON(!PageLocked(page));
+> @@ -186,37 +185,22 @@ unsigned int munlock_vma_page(struct page *page)
+>  	VM_BUG_ON_PAGE(PageTail(page), page);
+>  
+>  	/*
+> -	 * Serialize split tail pages in __split_huge_page_tail() which
+> -	 * might otherwise copy PageMlocked to part of the tail pages before
+> -	 * we clear it in the head page. It also stabilizes thp_nr_pages().
+> -	 * TestClearPageLRU can't be used here to block page isolation, since
+> -	 * out of lock clear_page_mlock may interfer PageLRU/PageMlocked
+> -	 * sequence, same as __pagevec_lru_add_fn, and lead the page place to
+> -	 * wrong lru list here. So relay on PageLocked to stop lruvec change
+> -	 * in mem_cgroup_move_account().
+> +	 * Serialize split tail pages in __split_huge_page_tail() by
+> +	 * lock_page(); Do TestClearPageMlocked/PageLRU sequence like
+> +	 * clear_page_mlock().
+>  	 */
+> -	lruvec = lock_page_lruvec_irq(page);
+> -
+> -	if (!TestClearPageMlocked(page)) {
+> +	if (!TestClearPageMlocked(page))
+>  		/* Potentially, PTE-mapped THP: do not skip the rest PTEs */
+> -		nr_pages = 1;
+> -		goto unlock_out;
+> -	}
+> +		return 0;
+>  
+>  	nr_pages = thp_nr_pages(page);
+>  	__mod_zone_page_state(page_zone(page), NR_MLOCK, -nr_pages);
+>  
+> -	if (__munlock_isolate_lru_page(page, lruvec, true)) {
+> -		unlock_page_lruvec_irq(lruvec);
+> +	if (!isolate_lru_page(page))
+>  		__munlock_isolated_page(page);
+> -		goto out;
+> -	}
+> -	__munlock_isolation_failed(page);
+> -
+> -unlock_out:
+> -	unlock_page_lruvec_irq(lruvec);
+> +	else
+> +		__munlock_isolation_failed(page);
+>  
+> -out:
+>  	return nr_pages - 1;
+>  }
+>  
+> @@ -305,6 +289,11 @@ static void __munlock_pagevec(struct pagevec *pvec, struct zone *zone)
+>  
+>  		/* block memcg change in mem_cgroup_move_account */
+>  		lock_page_memcg(page);
+> +		/*
+> +		 * Serialize split tail pages in __split_huge_page_tail() which
+> +		 * might otherwise copy PageMlocked to part of the tail pages
+> +		 * before we clear it in the head page.
+> +		 */
+>  		lruvec = relock_page_lruvec_irq(page, lruvec);
+>  		if (TestClearPageMlocked(page)) {
+>  			/*
+> -- 
+> 1.8.3.1
+> 
+> 
