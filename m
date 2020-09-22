@@ -2,84 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A526273991
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 05:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14792273983
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 05:57:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728423AbgIVD7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 23:59:55 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:42800 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726738AbgIVD7z (ORCPT
+        id S1728921AbgIVD5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 23:57:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728897AbgIVD5u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 23:59:55 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08M3xRBU159649;
-        Tue, 22 Sep 2020 03:59:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=71zvkSYXJ+il36NVw8yR0dE4/qSKaW5N+i3lvo/bvzw=;
- b=0RRPl4CnVLiLVeqMYp7wfi8Wt+oIk9ySzNMhXeaRBsguBEU/HS92IN9z+bGlMjfElI8J
- lIpP2VKS4yduB2/HJfHllMHe74Ub2NdDb3HyKep6glg2J9934JhqAAiTeWgo+XA9/abr
- rGyvOIWgMrU3WkK2V06R0JpV/jTFSzD2MmG0X9sxqhmXGqfgmdRpdVGC0oPz1CGYfHCH
- 6RrWWCwd+DCZDVyq3H12gW9xJ71UXLlLS8ry+/b2wEhdNwJ+VZL75U3eVLdL7LVdzaO6
- IiEp2SNVyL8ikbh+MMx5Ns1SMSNiW8PC0ggdgfZ0MTXJXtsr0+GBKHaTYS8E2nDSDC7M fg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 33n7gad602-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 22 Sep 2020 03:59:47 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08M3uMAI073630;
-        Tue, 22 Sep 2020 03:57:46 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 33nurs31q2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 22 Sep 2020 03:57:46 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08M3vjdf000369;
-        Tue, 22 Sep 2020 03:57:45 GMT
-Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 21 Sep 2020 20:57:45 -0700
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     hare@suse.de, jejb@linux.ibm.com,
-        YueHaibing <yuehaibing@huawei.com>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] scsi: libfc: Fix passing zero to 'PTR_ERR' warning
-Date:   Mon, 21 Sep 2020 23:57:09 -0400
-Message-Id: <160074695008.411.12945752939427447705.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200909135432.36772-1-yuehaibing@huawei.com>
-References: <20200818114235.51052-1-yuehaibing@huawei.com> <20200909135432.36772-1-yuehaibing@huawei.com>
+        Mon, 21 Sep 2020 23:57:50 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19438C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 20:57:50 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id p24so4516246vsf.8
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 20:57:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=EkUjUieCb6XRK6uMlDV2dbwExrL7ULDE403JBTQMbwM=;
+        b=dPC6uIvpOEmGqHW4WivurYxYCFSJHZfgFJDFtzIWLMhx4cIEIxkN/KxiBhD5WJaVz2
+         aifgipxlkEm0y9WvPjFzVOZIfyBxc5IyvAKjZt/3hAYP5Lk4E4O8uOgNLin3Htyr+np8
+         sjtOgr918HNnA067xHasLX5RdXcQSi7kyAQw9wkrtx1bVAfAPEeFb3+mLXHgeLE+K3kg
+         RBSUvRiojkRrFyfZV0/TeqgoH4JRDbg4mQBUEplTB/iTdeDnQQBLx8V8Sdsq6ttEvOsp
+         Z0ze6VZks1W+IFccjmfAk2nEw+Fpfk/yeeqhhBAIBuRUDW6akbnLG8wwYlshF0Tx/SEe
+         I8TQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=EkUjUieCb6XRK6uMlDV2dbwExrL7ULDE403JBTQMbwM=;
+        b=jBlPsJl4tWAI6t9rfvD7joO4gHGk19NxuFqV6OpzPHlIIlaVP1jtfel7+SJpsa7tXc
+         75WPkiQoIQR9RsbmgrFCB/dhGaofCz8lGIApNNGLpdVcgsnB+2Jn5kMrkbUMdl5xVO6L
+         FNc/H+iPmaWE42NpAKE0V77Ub9jWEuan59WWuwiwO3vwbLsqng5VlZQpbbtMerwiBWjA
+         HFT1kdbD9tN0ndYeKL8haJ2wgxpxZdbVG/cH3tkPi/Ik6mViqRHzdcu4LZRHeSuW0pKd
+         PGLwj4UNjbpea7n/w4rTOtbYmoR16fVAjfUdhVHXfkzFAR5UTyOv2o01hiKEsVJH6+Sw
+         JxYw==
+X-Gm-Message-State: AOAM530+Lx9UrrGExU2Oo/oy8vcW9B07cirov0hAhaNAvyl3kIKNoM6U
+        w/hyycfpGD+zJwsGI8MVNSYuubFJuQcnYMA/+SNAGQ5STRaaoA==
+X-Google-Smtp-Source: ABdhPJyU2TYRB3f91Xk/UVfh76QqpMtsFxWcw8JGgLpVKKxUbUBGXpHljYCrgcFxuCyBxzOU5dPUe49CKZb7xGPo2Os=
+X-Received: by 2002:a67:f90d:: with SMTP id t13mr2207494vsq.60.1600747069091;
+ Mon, 21 Sep 2020 20:57:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9751 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
- phishscore=0 mlxlogscore=855 bulkscore=0 mlxscore=0 suspectscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009220031
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9751 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 bulkscore=0
- mlxscore=0 suspectscore=0 impostorscore=0 malwarescore=0 spamscore=0
- phishscore=0 mlxlogscore=887 clxscore=1015 adultscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009220031
+References: <20200921190433.1149521-1-jim.cromie@gmail.com>
+ <20200921190433.1149521-2-jim.cromie@gmail.com> <88110ffe6b08a2b403f30f4ea7463d5dad50b80b.camel@perches.com>
+In-Reply-To: <88110ffe6b08a2b403f30f4ea7463d5dad50b80b.camel@perches.com>
+From:   jim.cromie@gmail.com
+Date:   Mon, 21 Sep 2020 21:57:22 -0600
+Message-ID: <CAJfuBxz1Qt6xXky7hT2NM6G0XRQ5SEQii7ydNJRMFZmV15o4Yw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dyndbg: dont panic over bad input
+To:     Joe Perches <joe@perches.com>
+Cc:     Jason Baron <jbaron@akamai.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Petr Mladek <pmladek@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Sep 2020 21:54:32 +0800, YueHaibing wrote:
+On Mon, Sep 21, 2020 at 1:29 PM Joe Perches <joe@perches.com> wrote:
+>
+> On Mon, 2020-09-21 at 13:04 -0600, Jim Cromie wrote:
+> > This BUG_ON, from 2009, caught the impossible case of a word-char both
+> > starting and ending a string (loosely speaking).  A bad (reverted)
+> > patch finally hit this case, but even "impossibly bad input" is no
+> > reason to panic the kernel.  Instead pr_err and return -EINVAL.
+> []
+> > diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+> []
+> > @@ -259,7 +259,10 @@ static int ddebug_tokenize(char *buf, char *words[=
+], int maxwords)
+> >               } else {
+> >                       for (end =3D buf; *end && !isspace(*end); end++)
+> >                               ;
+> > -                     BUG_ON(end =3D=3D buf);
+> > +                     if (end =3D=3D buf) {
+> > +                             pr_err("expected non-empty bareword");
+>
+> missing newline
+>
+> This message is also unintelligible.
+> What is a non-empty bareword?
+>
+>
 
-> drivers/scsi/libfc/fc_disc.c:304
->  fc_disc_error() warn: passing zero to 'PTR_ERR'
-> 
-> fp maybe NULL in fc_disc_error(), use PTR_ERR_OR_ZERO to handle this.
+hmm, I borrowed the term from perl
 
-Applied to 5.10/scsi-queue, thanks!
+en.wiktionary.org =E2=80=BA wiki =E2=80=BA bareword
+(programming, chiefly Perl) A sequence of text characters in source
+code that do not form a keyword nor part of a quoted string, and may
+potentially be interpreted ...
 
-[1/1] scsi: libfc: Fix passing zero to 'PTR_ERR' warning
-      https://git.kernel.org/mkp/scsi/c/a9e81c2922bf
+basically, a not-quoted word, a keyword or not-quoted-value
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+Im open that there might be better terminology.
+have any suggestions ?
