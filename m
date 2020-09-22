@@ -2,85 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 566FF273F6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 12:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04EF2273F76
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 12:19:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726518AbgIVKRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 06:17:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726562AbgIVKRf (ORCPT
+        id S1726657AbgIVKSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 06:18:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55917 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726509AbgIVKS3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 06:17:35 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B03C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 03:17:35 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id h17so15133359otr.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 03:17:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C4wv3gq4jH4kXiqr9HoaHT5g3RKprwq2Zsckomw6Mug=;
-        b=xAunoLiwJSD85u4GcMCZTb0HaWVBYP1IeHYBuva/rKcEz3d3wWA/5kTAsufc1NslLJ
-         o7v06wwMgFZU9BgjZwgixvTaDaw9cX9CyfyGqAMEYtKoPek2D/naJuGpywMav20paRna
-         fXavgDKykj++zR90Bp6tRmje1Iv/FELpQnO1VX5w+ePKHG/Qi6UDt7hUoVDgiOXpNlWo
-         DAdiDPtHMRRefQQCEfG3iUyJBYzQ9+tDT2CwXKj8sSAVujd+T420gzKE/JaLa6z6Clf4
-         tMl4MEImzwiBK9+P9oR+lZtfn8OH8oqsRAjTMqJ64nU1O26++/5dVg8BP2M7dHnevOXF
-         Xcqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C4wv3gq4jH4kXiqr9HoaHT5g3RKprwq2Zsckomw6Mug=;
-        b=I1uJPwpY8xNhMlxJEnzHEZE4lN5clmjqSy39JvSbEgkp2OCGM2fFEMBm+0FfR3ltOR
-         cerGzRy2v+02rQzrWXxXtGUeXR/UyvvpmwLE3iCZTMwWfU0EZlY41T5JXgPGAdVKDSWK
-         GGNlo/VlmGKS2Y93vU4cLcAj5Y5nd7IzGHJI9scmvBWLXDhaObjk7G+QWe1uc3p2b0kU
-         cywrpsANUBffibA9QWnNguPpz78n5F4n/m0aE2/1yRbPAbEqD3rwRbKYjLbJTrYj9Ijh
-         boy3qP1uWPsdnGOhl7TJjCdogiFOeRi9txcwyhT62/Y5ShnE07CzZLKsjMqwoX2CCUC+
-         RroA==
-X-Gm-Message-State: AOAM530lNsI9Q9N+tX5Hh+F637OVvaPtzm5sUdlT+1oAVbhnkU/ZdZfN
-        ihd5uhrMJ11nvA1KDTLS4pbHwQII5NclvekF06cjuw==
-X-Google-Smtp-Source: ABdhPJxbwFx7g1eBM13nl+6wdUDexN4d6NL/JJklai3ilHkBZyhnBiqx8SgS8+AYox+Ug4Xo6oK5X3hqXwdsPr3reDM=
-X-Received: by 2002:a9d:ecc:: with SMTP id 70mr2347123otj.66.1600769854529;
- Tue, 22 Sep 2020 03:17:34 -0700 (PDT)
+        Tue, 22 Sep 2020 06:18:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600769908;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Yig2CHMy1DCWUocmah5PYJd5rjJ2nX0sDMIw4Q0i9ks=;
+        b=XhFZZoOdknpLtqciEytVFvsDEI/jEOzmLt1wkhKo5Ujl3kTuNJ+CnjiwcwYDPj9HzOD8aZ
+        AlR869KBRn1JdoeyC0ucGem9gmjul8HV3bPNMG7yA1u3niqOwxsGniSftVQ5UizbGUkGSw
+        79I8O50WrzyfcT9kd2wuojPjrtU8EXg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-121-H8zRloPhPZurR0Hfnt0nmg-1; Tue, 22 Sep 2020 06:18:26 -0400
+X-MC-Unique: H8zRloPhPZurR0Hfnt0nmg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 588C0801AE1;
+        Tue, 22 Sep 2020 10:18:24 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.146])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 5F05B9CBA;
+        Tue, 22 Sep 2020 10:18:17 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Tue, 22 Sep 2020 12:18:24 +0200 (CEST)
+Date:   Tue, 22 Sep 2020 12:18:16 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jann Horn <jannh@google.com>
+Subject: Re: [PATCH 3/5] mm: Rework return value for copy_one_pte()
+Message-ID: <20200922101815.GB11679@redhat.com>
+References: <20200921211744.24758-1-peterx@redhat.com>
+ <20200921211744.24758-4-peterx@redhat.com>
+ <20200922100840.GA11679@redhat.com>
 MIME-Version: 1.0
-References: <20200920141653.357493-1-robert.marko@sartura.hr> <20200921.144841.1356454980970038338.davem@davemloft.net>
-In-Reply-To: <20200921.144841.1356454980970038338.davem@davemloft.net>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Tue, 22 Sep 2020 12:17:23 +0200
-Message-ID: <CA+HBbNFdPkkL-gtAsTFww7bWjLADbXQuEfaTa-YGT6cbzN3btw@mail.gmail.com>
-Subject: Re: [PATCH v4 0/2] net: mdio-ipq4019: add Clause 45 support
-To:     David Miller <davem@davemloft.net>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922100840.GA11679@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 11:48 PM David Miller <davem@davemloft.net> wrote:
+On 09/22, Oleg Nesterov wrote:
 >
-> From: Robert Marko <robert.marko@sartura.hr>
-> Date: Sun, 20 Sep 2020 16:16:51 +0200
->
-> > This patch series adds support for Clause 45 to the driver.
+> On 09/21, Peter Xu wrote:
 > >
-> > While at it also change some defines to upper case to match rest of the driver.
+> > @@ -866,13 +877,18 @@ static int copy_pte_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+> >  	pte_unmap_unlock(orig_dst_pte, dst_ptl);
+> >  	cond_resched();
 > >
-> > Changes since v1:
-> > * Drop clock patches, these need further investigation and
-> > no user for non default configuration has been found
+> > -	if (entry.val) {
+> > -		if (add_swap_count_continuation(entry, GFP_KERNEL) < 0)
+> > +	switch (copy_ret) {
+> > +	case COPY_MM_SWAP_CONT:
+> > +		if (add_swap_count_continuation(data.entry, GFP_KERNEL) < 0)
+> >  			return -ENOMEM;
+> > -		progress = 0;
+> > +		break;
 >
-> Please respin, in the net-next tree the MDIO drivers have been moved
-> into their own directory.
+> Note that you didn't clear copy_ret, it is still COPY_MM_SWAP_CONT,
+>
+> > +	default:
+> > +		break;
+> >  	}
+> > +
+> >  	if (addr != end)
+> >  		goto again;
+>
+> After that the main loop can stop again because of need_resched(), and
+> in this case add_swap_count_continuation(data.entry) will be called again?
 
-Done,
-I completely missed the commit moving them to MDIO subdirectory.
+No, this is not possible, copy_one_pte() should be called at least once,
+progress = 0 before restart. Sorry for noise.
 
-Regards
-Robert
+Oleg.
+
