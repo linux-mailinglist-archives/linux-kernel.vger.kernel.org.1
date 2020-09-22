@@ -2,135 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB76273963
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 05:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EADF1273946
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 05:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728032AbgIVDsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Sep 2020 23:48:15 -0400
-Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:15498 "EHLO
-        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726818AbgIVDsP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Sep 2020 23:48:15 -0400
-X-Greylist: delayed 4950 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Sep 2020 23:48:14 EDT
-Received: from pps.filterd (m0134425.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08M2NwcI024796;
-        Tue, 22 Sep 2020 02:25:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pps0720; bh=YhlXw8QcjdddmawFlgsEQRqTwEMEyQzgIm4huUErdIc=;
- b=bnOaR2j9kDgMQs06jkwuTkSCw1fc+B1zMs1RKDrC8ByV+4+QA4UaoXR/G5Lb8ASRQNlc
- t1fnUw5ZT0ZXorWmUz4EYEMmSsv6tl78Zi3ie2JCaM30/vqDxRA0hTPbzpAulzF3CUR0
- 4cl8DuA3DzyBOI6o2BY3+s6RX37ITkyktd9QZJ3DD3H+oLgU8WG/vxLc0ynzkncmjuOp
- opCSUfSRACYGYOkdkkowWgAcgJF3dsPmHVUqoO5S4C9frKa6nIVXP8S3pB83I4OTfYUQ
- LlGKo/N1/EnTL43I30XEtJC59qf5W+CrU/YwRsf2qQJ+5LHkyQ5PEpejzZUxPUgkdEel fA== 
-Received: from g4t3426.houston.hpe.com (g4t3426.houston.hpe.com [15.241.140.75])
-        by mx0b-002e3701.pphosted.com with ESMTP id 33q53yh0va-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Sep 2020 02:25:08 +0000
-Received: from g4t3433.houston.hpecorp.net (g4t3433.houston.hpecorp.net [16.208.49.245])
-        by g4t3426.houston.hpe.com (Postfix) with ESMTP id BC36759;
-        Tue, 22 Sep 2020 02:25:06 +0000 (UTC)
-Received: from hpe.com (ben.americas.hpqcorp.net [10.33.153.7])
-        by g4t3433.houston.hpecorp.net (Postfix) with ESMTP id E3C8548;
-        Tue, 22 Sep 2020 02:25:04 +0000 (UTC)
-Date:   Mon, 21 Sep 2020 21:25:04 -0500
-From:   Russ Anderson <rja@hpe.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Mike Travis <mike.travis@hpe.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Steve Wahl <steve.wahl@hpe.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Jian Cai <caij2003@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH v2 13/13] x86/platform/uv: Update Copyrights to conform
- to HPE standards
-Message-ID: <20200922022504.unsi33w4njahh6pv@hpe.com>
-Reply-To: Russ Anderson <rja@hpe.com>
-References: <20200916192039.162934-1-mike.travis@hpe.com>
- <20200916192039.162934-14-mike.travis@hpe.com>
- <20200917075429.GB3333802@kroah.com>
+        id S1728726AbgIVDbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Sep 2020 23:31:34 -0400
+Received: from mail-eopbgr20082.outbound.protection.outlook.com ([40.107.2.82]:50151
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728384AbgIVDbd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Sep 2020 23:31:33 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Kwx+3gRieft31bl2bgicmnv2HNRuLEgojwD63aZUq0oqKJ0r+CyGGqIH7fR+hyPEJIk2BTUFeWSPthgI+IZNLhfhZUIBpEVjmjnwpy6lnfxNh4r/5cfai/jYHjcg3KaCz1negVWhs599LtgFHAoDXZsYzif4tPsqbT7JjGdPzcjz22Ce/mCISZ/dm5wLv5g4W1f85qof0HA2xnS/QkK/nRYzH84ZFU+ynVXVItw+XO06IAWE7twRttYG1B7zu05uSSQ9AiiwWC/fdeSCx0SFmpkW04H4S9ky2F/ZGyxXvjLheQo6/+Rj9iGXT9lcFMj+NM1o82Dg+hqs9NIO9XUj8A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GU1k64oEQvch76CeoUFEPwYtawiceG0vqtkUm69rgzQ=;
+ b=G8jU34kbA0h8VdUAYqY9HeP25QrX0G0HP4hRPPHFCurACtUBRap8nBz2aQ79gPw4KaSyFy9THxBj2beW1/Yp8h4BiHgDgFQyTGKxPfsAvGw6DtwJRg0CWHwi9NF5pIccZXRdMOoCiUJ4QwPLZzXK/ftpVgGdoYRmkzPyt6jsgkt4mj5+iEL9xzlU2+QXKSH+S7xTEHtaJ75DsEO85zK6t8R5ylwqOFS87Gj+iC8Ix/Vslfz3fpix1JJXJh4yz6ANIo5pAeS+mAkLlwsqDzrmGyRELK5VkT1+8fr6gi3s+KxtUZN4ZfCOtQZvJTZZdmwm0RUFsM5j8empjHG/KBOlmA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GU1k64oEQvch76CeoUFEPwYtawiceG0vqtkUm69rgzQ=;
+ b=B/gcyapd35y537e39FB59NXXgkslcUQ2HOsGBqJAlvJD0P9+8oRnVF5sofi8Mp8hkwc/2r+GSjRRtohzwZkvBsaUebCeLuGhrbKE7A9bxikRW9e/ZFCneR7CCG/t8Sq0ZKIysLpcv7vtXf1rj5Qit5bAnHSxIYYAc4MbSK3krRg=
+Received: from DB6PR0401MB2438.eurprd04.prod.outlook.com (2603:10a6:4:33::14)
+ by DB6PR04MB3237.eurprd04.prod.outlook.com (2603:10a6:6:c::33) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3391.17; Tue, 22 Sep 2020 03:31:28 +0000
+Received: from DB6PR0401MB2438.eurprd04.prod.outlook.com
+ ([fe80::c8a:a759:d4ba:181e]) by DB6PR0401MB2438.eurprd04.prod.outlook.com
+ ([fe80::c8a:a759:d4ba:181e%7]) with mapi id 15.20.3391.025; Tue, 22 Sep 2020
+ 03:31:28 +0000
+From:   Biwen Li <biwen.li@nxp.com>
+To:     Leo Li <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
+        "Biwen Li (OSS)" <biwen.li@oss.nxp.com>
+CC:     "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jiafei Pan <jiafei.pan@nxp.com>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>
+Subject: RE: [EXT] Re: [PATCH 2/5] arm64: dts: lx2160a-rdb: remove useless
+ property of rtc
+Thread-Topic: [EXT] Re: [PATCH 2/5] arm64: dts: lx2160a-rdb: remove useless
+ property of rtc
+Thread-Index: AQHWizOOGLxVV6x4KkO7cstIkfxRIKl0Ax6AgAAAVACAAAcQAIAAADuw
+Date:   Tue, 22 Sep 2020 03:31:28 +0000
+Message-ID: <DB6PR0401MB243883AEA75F615A0768D03E8F3B0@DB6PR0401MB2438.eurprd04.prod.outlook.com>
+References: <20200915073213.12779-1-biwen.li@oss.nxp.com>
+ <20200915073213.12779-2-biwen.li@oss.nxp.com> <20200922030208.GY25109@dragon>
+ <DB6PR0401MB2438ABB1DFE785F9EAADB69E8F3B0@DB6PR0401MB2438.eurprd04.prod.outlook.com>
+ <VE1PR04MB6687237BD5D137C4B9EC6DBD8F3B0@VE1PR04MB6687.eurprd04.prod.outlook.com>
+In-Reply-To: <VE1PR04MB6687237BD5D137C4B9EC6DBD8F3B0@VE1PR04MB6687.eurprd04.prod.outlook.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.73]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 8505f182-78de-4b85-2026-08d85ea7fe17
+x-ms-traffictypediagnostic: DB6PR04MB3237:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB6PR04MB3237D857B43882786C597E988F3B0@DB6PR04MB3237.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: FCEldsIuUEB1260hsEib7as+fOhEkA3q24E7ZwTNmDhzZsQa6UXOb4Wv9QAmQ8sLdDDWXAYquqnOBERV9E64PciswENihCi76eIb9rs3an9j8S2YFWVlcPOqP0SGdQzfGrWt1thrc1/Pvz8XdZG9S9cLI5lJUfEB4UdcNpLmf4S0BwuzrUxhBDsHnlStBIZHPbRDzvlnjP8yFICAiMF6mhAXIVT4QRwE9kh89Wn6FLy2XqJhRwbzGaL5Ctirk47JtYA2hoS0b/m2lUtKWV/7Ky91sztqdWOyC/kJTAlEcBMvRxDELRfEszVK5/T+F7F4mSc7wTlXggolIycFUM/+Lw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0401MB2438.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(376002)(346002)(396003)(136003)(110136005)(2906002)(4326008)(86362001)(83380400001)(71200400001)(186003)(26005)(7696005)(54906003)(33656002)(6506007)(53546011)(44832011)(8676002)(8936002)(55016002)(76116006)(64756008)(5660300002)(66476007)(66946007)(9686003)(66556008)(66446008)(52536014)(478600001)(316002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: 9eHXwu2jcvlt6ac5eEO6DiC/dyNdzsBgJMl9nGFQ33D9U8MIef7h+BmJunVVL9EZ7n7rwdY54kqWkdjiISBaLyX/7o5EfKwLTmSRFfmP80fzPXjIAoou+o0ZDWW+7y74TnKR8BpD+IpNjLtt1OI7VuUzPnN5CBEQvw+GmGq6C67sNh5d4zla2IKFZetHR71V1NuAATaiwVzrQnQRZ9AyOiRXhwI2Y31vuG7juXV+x1wOyoWvOW59BrXmM7X726+i6P0YgvqBLan2KGIRIKmfdMmNNmUoxOGZggD7EYrvH3L6oXls15NPacEqLMimIUYhtZZsmgU3jMUiH7xW2PHqHULDDmuhp2WdfKp6IovN9LTdPYWN6Z6SsE1jnqM/I/LVy5hslMaV43jQzvdc5kaFfDOtgoanDK2wjmq2zSxSFqnrSDIQ1mzZh5iclafYLBoruJrub+prS2JmpS4N2mQqO9KtgyYWu/n0nD+VSQ1BiO0cc00FAHV8eI9AD3JAFp8rn6Qf/l/q7bnVq9LXNGeIvvh6O77sFNqrZ6l35d1kE7yNaf7qRSM4XrqK59PJQ0OcPjUGwG0dwDnu1wwN1+v2Tbrnq0b771W5NnnQBRt/xsSETvbjiQXgrStHwduwKuoZopVJId/Vv9NwrrmuU0qyVA==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917075429.GB3333802@kroah.com>
-User-Agent: NeoMutt/20170421 (1.8.2)
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-22_03:2020-09-21,2020-09-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=778
- malwarescore=0 priorityscore=1501 phishscore=0 impostorscore=0
- clxscore=1011 suspectscore=2 bulkscore=0 adultscore=0 spamscore=0
- mlxscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2009220018
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0401MB2438.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8505f182-78de-4b85-2026-08d85ea7fe17
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Sep 2020 03:31:28.7513
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: PD/NxpMqlnJ82PrMcZoYEEf/dM5b4Y1H2dCFwNUaLtqVNQgKUgIL5Gs8JHrvSY2abfhD5sPFZd7TzCwB1kwCpA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR04MB3237
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 09:54:29AM +0200, Greg Kroah-Hartman wrote:
-> On Wed, Sep 16, 2020 at 02:20:39PM -0500, Mike Travis wrote:
-> > Add Copyrights to those files that have been updated for UV5 changes.
-> > 
-> > Signed-off-by: Mike Travis <mike.travis@hpe.com>
-> > ---
-> >  arch/x86/include/asm/uv/bios.h      | 1 +
-> >  arch/x86/include/asm/uv/uv_hub.h    | 1 +
-> >  arch/x86/include/asm/uv/uv_mmrs.h   | 1 +
-> >  arch/x86/kernel/apic/x2apic_uv_x.c  | 1 +
-> >  arch/x86/platform/uv/bios_uv.c      | 1 +
-> >  arch/x86/platform/uv/uv_nmi.c       | 1 +
-> >  arch/x86/platform/uv/uv_time.c      | 1 +
-> >  drivers/misc/sgi-gru/grufile.c      | 1 +
-> >  drivers/misc/sgi-xp/xp.h            | 1 +
-> >  drivers/misc/sgi-xp/xp_main.c       | 1 +
-> >  drivers/misc/sgi-xp/xp_uv.c         | 1 +
-> >  drivers/misc/sgi-xp/xpc_main.c      | 1 +
-> >  drivers/misc/sgi-xp/xpc_partition.c | 1 +
-> >  drivers/misc/sgi-xp/xpnet.c         | 1 +
-> >  14 files changed, 14 insertions(+)
-> > 
-> > diff --git a/arch/x86/include/asm/uv/bios.h b/arch/x86/include/asm/uv/bios.h
-> > index 97ac595ebc6a..08b3d810dfba 100644
-> > --- a/arch/x86/include/asm/uv/bios.h
-> > +++ b/arch/x86/include/asm/uv/bios.h
-> > @@ -5,6 +5,7 @@
-> >  /*
-> >   * UV BIOS layer definitions.
-> >   *
-> > + * (C) Copyright 2020 Hewlett Packard Enterprise Development LP
-> >   * Copyright (C) 2007-2017 Silicon Graphics, Inc. All rights reserved.
-> >   * Copyright (c) Russ Anderson <rja@sgi.com>
-> 
-> Gotta love the different ways of text here :(
-> 
-> Anyway, much better than before, thanks.
+>=20
+>=20
+>=20
+> > -----Original Message-----
+> > From: Biwen Li <biwen.li@nxp.com>
+> > Sent: Monday, September 21, 2020 10:13 PM
+> > To: Shawn Guo <shawnguo@kernel.org>; Biwen Li (OSS)
+> > <biwen.li@oss.nxp.com>
+> > Cc: alexandre.belloni@bootlin.com; Leo Li <leoyang.li@nxp.com>;
+> > robh+dt@kernel.org; mark.rutland@arm.com; devicetree@vger.kernel.org;
+> > linux-kernel@vger.kernel.org; Jiafei Pan <jiafei.pan@nxp.com>; linux-
+> > rtc@vger.kernel.org
+> > Subject: RE: [EXT] Re: [PATCH 2/5] arm64: dts: lx2160a-rdb: remove
+> > useless property of rtc
+> >
+> > >
+> > > Caution: EXT Email
+> > >
+> > > On Tue, Sep 15, 2020 at 03:32:10PM +0800, Biwen Li wrote:
+> > > > From: Biwen Li <biwen.li@nxp.com>
+> > > >
+> > > > Remove useless property interrupts of rtc
+> > > >
+> > > > Signed-off-by: Biwen Li <biwen.li@nxp.com>
+> > > > ---
+> > > >  arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts | 2 --
+> > > >  1 file changed, 2 deletions(-)
+> > > >
+> > > > diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
+> > > > b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
+> > > > index dce79018d397..e9e982176e07 100644
+> > > > --- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
+> > > > +++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
+> > > > @@ -171,8 +171,6 @@
+> > > >       rtc@51 {
+> > > >               compatible =3D "nxp,pcf2129";
+> > > >               reg =3D <0x51>;
+> > > > -             // IRQ10_B
+> > > > -             interrupts =3D <0 150 0x4>;
+> > >
+> > > If it's a correct description of hardware, I do not see why we would
+> > > need to remove it.
+> > Hi Shawn,
+> >
+> > Don't need use the interrupt, only read time from rtc.
+>=20
+> User probably will choose to use the alarm feature of the RTC and need th=
+e
+> interrupt property.  Is there any issue when the interrupt property is pr=
+esent?
+Generic interrupt controller on layerscape only support  IRQ_TYPE_LEVEL_HIG=
+H and  IRQ_TYPE_EDGE_RISING(except SoC LS1043A, LS1046A),
+Not support IRQ_TYPE_LEVEL_LOW,
+In drivers/rtc/rtc-pcf2127.c
+ret =3D devm_request_threaded_irq(dev, alarm_irq, NULL,
+pcf2127_rtc_irq,
+IRQF_TRIGGER_LOW | IRQF_ONESHOT,
+dev_name(dev), dev);
 
-The HPE copyright text is different than the old SGI copyright text.
-We could update the SGI copyright line to be consistent, change
-"Copyright (C)" to "(C) Copyright", if that is desired.
-
-The HPE lawyers said the old SGI copyrights do not need to be
-updated as far as they are concerned, because HPE owns the SGI
-copyrights, but they can.  So the two lines could be combined to 
-
-  * (C) Copyright 2007-2017, 2020 Hewlett Packard Enterprise Development LP
-
-I will do whatever the lawyers and community want as far as format.
-
-For what it's worth, the rja@sgi.com email still works, as does rja@hpe.com.
-
-Thanks.
--- 
-Russ Anderson,  SuperDome Flex Linux Kernel Group Manager
-HPE - Hewlett Packard Enterprise (formerly SGI)  rja@hpe.com
+>=20
+> >
+> > Best Regards,
+> > Biwen Li
+> > >
+> > > Shawn
+> > >
+> > > >       };
+> > > >  };
+> > > >
+> > > > --
+> > > > 2.17.1
+> > > >
