@@ -2,47 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D189D2740B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:23:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF35A2740B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:23:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726686AbgIVLXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 07:23:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42108 "EHLO mail.kernel.org"
+        id S1726664AbgIVLXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 07:23:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726610AbgIVLW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726606AbgIVLW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 22 Sep 2020 07:22:59 -0400
 Received: from mail.kernel.org (ip5f5ad5bc.dynamic.kabel-deutschland.de [95.90.213.188])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4504A238A1;
+        by mail.kernel.org (Postfix) with ESMTPSA id 29EA2221EB;
         Tue, 22 Sep 2020 11:22:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1600773778;
-        bh=g4d13BGuduKPDFBeIc0TlyYXYMgjU5xW76V6a9jLQR8=;
+        bh=7ZXF3P5p4MjWkObrbAOtTL+8XlJ9hHimuQqgAGSiEFc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qFAC4RZfT24s/PKljc7ePg9CEg6N48QFIfbVuvW7LSEciDZtp1roeIHpygS8F0xlk
-         0ACjF6eT9NgVwfNvgrOQdqYrAFMeCbUbnUHQViLke/7l05Cu+6EkKpgVTGyA/srih5
-         QPlW0Dyz0vLtinRbxAxNYsUbY9iAQiSCje7BZi+8=
+        b=q1ofZb5ASH33joYWlbHBuDEUjnlTJvpB7fbcoYfC/QqYaQ8TszcWO/wVcYAlGxdga
+         jA4d+kOVzftGKBpESkX9oiv0Anyz0DdxPgtt5U/t9zrBnEZo+676ctRzrsOMvjNknu
+         EsiuxKsNv3n1oY3t2X3nwFCw0jRbWvTfmOr/V7UA=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kKgNr-0010Kg-Lx; Tue, 22 Sep 2020 13:22:55 +0200
+        id 1kKgNr-0010Ki-Ms; Tue, 22 Sep 2020 13:22:55 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Francesco Ruggeri <fruggeri@arista.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Taehee Yoo <ap420073@gmail.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH 1/3] net: fix a new kernel-doc warning at dev.c
-Date:   Tue, 22 Sep 2020 13:22:52 +0200
-Message-Id: <dbe62eb5e9dda5a5ee145f866a24c4cfddbd754f.1600773619.git.mchehab+huawei@kernel.org>
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>, Lyude Paul <lyude@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 2/3] drm/dp: fix kernel-doc warnings at drm_dp_helper.c
+Date:   Tue, 22 Sep 2020 13:22:53 +0200
+Message-Id: <df69c8404398af4487050a97534a134529e9ba56.1600773619.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1600773619.git.mchehab+huawei@kernel.org>
 References: <cover.1600773619.git.mchehab+huawei@kernel.org>
@@ -53,39 +50,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernel-doc expects the function prototype to be just after
-the kernel-doc markup, as otherwise it will get it all wrong:
+As warned by kernel-doc:
 
-	./net/core/dev.c:10036: warning: Excess function parameter 'dev' description in 'WAIT_REFS_MIN_MSECS'
+	./drivers/gpu/drm/drm_dp_helper.c:385: warning: Function parameter or member 'type' not described in 'drm_dp_downstream_is_type'
+	./drivers/gpu/drm/drm_dp_helper.c:886: warning: Function parameter or member 'dev' not described in 'drm_dp_downstream_mode'
 
-Fixes: 0e4be9e57e8c ("net: use exponential backoff in netdev_wait_allrefs")
+Some function parameters weren't documented.
+
+Fixes: 38784f6f8805 ("drm/dp: Add helpers to identify downstream facing port types")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- net/core/dev.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/drm_dp_helper.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index a268ff35ad38..873b50ac9668 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -10021,6 +10021,8 @@ int netdev_refcnt_read(const struct net_device *dev)
- }
- EXPORT_SYMBOL(netdev_refcnt_read);
+diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
+index b1c71af88579..deeed73f4ed6 100644
+--- a/drivers/gpu/drm/drm_dp_helper.c
++++ b/drivers/gpu/drm/drm_dp_helper.c
+@@ -374,6 +374,10 @@ static bool is_edid_digital_input_dp(const struct edid *edid)
+  * drm_dp_downstream_is_type() - is the downstream facing port of certain type?
+  * @dpcd: DisplayPort configuration data
+  * @port_cap: port capabilities
++ * @type: port type to be checked. Can be:
++ * 	  %DP_DS_PORT_TYPE_DP, %DP_DS_PORT_TYPE_VGA, %DP_DS_PORT_TYPE_DVI,
++ * 	  %DP_DS_PORT_TYPE_HDMI, %DP_DS_PORT_TYPE_NON_EDID,
++ *	  %DP_DS_PORT_TYPE_DP_DUALMODE or %DP_DS_PORT_TYPE_WIRELESS.
+  *
+  * Caveat: Only works with DPCD 1.1+ port caps.
+  *
+@@ -870,6 +874,7 @@ EXPORT_SYMBOL(drm_dp_downstream_444_to_420_conversion);
  
-+#define WAIT_REFS_MIN_MSECS 1
-+#define WAIT_REFS_MAX_MSECS 250
  /**
-  * netdev_wait_allrefs - wait until all references are gone.
-  * @dev: target net_device
-@@ -10033,8 +10035,6 @@ EXPORT_SYMBOL(netdev_refcnt_read);
-  * We can get stuck here if buggy protocols don't correctly
-  * call dev_put.
-  */
--#define WAIT_REFS_MIN_MSECS 1
--#define WAIT_REFS_MAX_MSECS 250
- static void netdev_wait_allrefs(struct net_device *dev)
- {
- 	unsigned long rebroadcast_time, warning_time;
+  * drm_dp_downstream_mode() - return a mode for downstream facing port
++ * @dev: DRM device
+  * @dpcd: DisplayPort configuration data
+  * @port_cap: port capabilities
+  *
 -- 
 2.26.2
 
