@@ -2,137 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5F7273A9D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 08:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D588273AAC
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 08:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729223AbgIVGS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 02:18:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728316AbgIVGS2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 02:18:28 -0400
-Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D318BC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 23:18:28 -0700 (PDT)
-Received: by mail-oo1-xc44.google.com with SMTP id t3so3861373ook.8
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Sep 2020 23:18:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=THG6vXPDgMK2k7M4yyjWTbzR9oGicsRPw9gT2Zgg6Sk=;
-        b=Qd4Tdn1whmgSMaYeHJVAjI8lu/OUqAsaY6nMEildJ5Wcz+HOxT7jXMUD03tm9yR8G/
-         vDzyb+d1lGxQNLYIXQnFVhKqaG73yC0TaoNUjzC++ozwpShucs6pqMzhnsZxjr1Nzb4h
-         K1wCeilU3Fa+351ZL8SHv8tnUER/5ayy20tGJ+Jy3mcBP4iSlxPb6pgoN1jPd4Q3Eeam
-         ayKBIA93D2dJaa8PMAJ4fCf08YI7Tow7I09AS1hKl6PGi/YEqKRGKJf0D0x+YgzKHRdo
-         /qbO9M29ylVanv5qWiyLs/g4pHmvhvUZPxJXOAOkBlwa6w0235QHuMaIfR4oJF8EDJME
-         vaJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=THG6vXPDgMK2k7M4yyjWTbzR9oGicsRPw9gT2Zgg6Sk=;
-        b=nnwq6NFuqL5H/23SUNGEOMY6eA0COWUIjEnF75XxeX+RrAe0GXsgOQJs8xgNfLMGJX
-         QLcMg5qs1+qgbObBVhOmpuNuK20EuHUxQPYgAMr0wrH+gxtUiPsgSPENStaE/9PtS7Dj
-         yp+d7b8J3kGs3v/snB5lCj3AaOC6yuKy1nclOKBQ+lJ50+LMhvz0CqVLGZdQRV2TDb0w
-         wZWr+viUrf36vI6REC+JllIcHzea3A0CaoHirWIfZxR9MLm7/lEx2KbnMGZn4X9K5iMF
-         C9g05NbnVSpjrtpaHA+qzOMHOUMt7WyuSqbC/tieDfbfrFQs93rCQf/cUzQqNvFIZnqo
-         eD4Q==
-X-Gm-Message-State: AOAM530SQUmyMmHIXg8cEc33vYkqre9p37y119i3B8c/FyPuQZQbnXGn
-        kF1bHpTpBvaUrO/XYYJsMWv7CoX8K8fM91We0Cv3F3YEsu2CFVJB
-X-Google-Smtp-Source: ABdhPJwiYGOeLvLhGoogpy5gPNwnvC+JJiMwI4f1hoq32kpb9NOx05Ev2dELtbD9Mb/3dVl5K4CX6bx+/hBa8I6MKSY=
-X-Received: by 2002:a4a:5258:: with SMTP id d85mr1950472oob.72.1600755507994;
- Mon, 21 Sep 2020 23:18:27 -0700 (PDT)
+        id S1729312AbgIVGTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 02:19:03 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:49962 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729297AbgIVGTD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 02:19:03 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600755541; h=Content-Transfer-Encoding: MIME-Version:
+ References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=ZGT4hGBi2gOLwnKOdKJlmV1t2zrPvEfEFYQwmkrZSLg=; b=q+ChLXgLNTAzTeDFlX0kJCjD13nuHZLo0xNnWYHmF10KmfuacDQMbyZ6F9sTT9Lxm5h+l8Ai
+ oj6E2+9HYRDtBYvROluOA9mPbK8+Uq+y9kQ2a+QaLykxkWffGWiEPtmp1q9ujaf0x1oq6ehW
+ 92jKY4MBk14lTiOK5sdyQvLw+AQ=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5f6997556fe64d5a7f97b5bf (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Sep 2020 06:19:00
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2825DC43382; Tue, 22 Sep 2020 06:19:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 84150C43442;
+        Tue, 22 Sep 2020 06:18:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 84150C43442
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>
+Cc:     iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        freedreno@lists.freedesktop.org,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        dri-devel@lists.freedesktop.org,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: [PATCHv5 4/6] drm/msm/a6xx: Add support for using system cache(LLC)
+Date:   Tue, 22 Sep 2020 11:48:17 +0530
+Message-Id: <889a32458cec92ed110b94f393aa1c2f0d64dca5.1600754909.git.saiprakash.ranjan@codeaurora.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <cover.1600754909.git.saiprakash.ranjan@codeaurora.org>
+References: <cover.1600754909.git.saiprakash.ranjan@codeaurora.org>
 MIME-Version: 1.0
-References: <20200708091237.3922153-1-drosen@google.com> <20200708091237.3922153-5-drosen@google.com>
- <87lfh4djdq.fsf@collabora.com> <20200921182948.GA885472@gmail.com>
-In-Reply-To: <20200921182948.GA885472@gmail.com>
-From:   Daniel Rosenberg <drosen@google.com>
-Date:   Mon, 21 Sep 2020 23:18:17 -0700
-Message-ID: <CA+PiJmQU-bupmSTHbW2MPzDxfO+3f2bu+7aKzBL1VF2D8mvqZQ@mail.gmail.com>
-Subject: Re: [PATCH v12 4/4] ext4: Use generic casefolding support
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
-        "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fscrypt@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 11:29 AM Eric Biggers <ebiggers@kernel.org> wrote:
->
-> On Sun, Sep 20, 2020 at 09:10:57PM -0400, Gabriel Krisman Bertazi wrote:
-> > Daniel Rosenberg <drosen@google.com> writes:
-> >
-> > > This switches ext4 over to the generic support provided in
-> > > the previous patch.
-> > >
-> > > Since casefolded dentries behave the same in ext4 and f2fs, we decrease
-> > > the maintenance burden by unifying them, and any optimizations will
-> > > immediately apply to both.
-> > >
-> > > Signed-off-by: Daniel Rosenberg <drosen@google.com>
-> > > Reviewed-by: Eric Biggers <ebiggers@google.com>
-> > >
-> > >  #ifdef CONFIG_UNICODE
-> > > -   if (EXT4_SB(parent->i_sb)->s_encoding && IS_CASEFOLDED(parent)) {
-> > > +   if (parent->i_sb->s_encoding && IS_CASEFOLDED(parent)) {
-> > >             if (fname->cf_name.name) {
-> > >                     struct qstr cf = {.name = fname->cf_name.name,
-> > >                                       .len = fname->cf_name.len};
-> > > @@ -2171,9 +2171,6 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
-> > >     struct buffer_head *bh = NULL;
-> > >     struct ext4_dir_entry_2 *de;
-> > >     struct super_block *sb;
-> > > -#ifdef CONFIG_UNICODE
-> > > -   struct ext4_sb_info *sbi;
-> > > -#endif
-> > >     struct ext4_filename fname;
-> > >     int     retval;
-> > >     int     dx_fallback=0;
-> > > @@ -2190,9 +2187,8 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
-> > >             return -EINVAL;
-> > >
-> > >  #ifdef CONFIG_UNICODE
-> > > -   sbi = EXT4_SB(sb);
-> > > -   if (ext4_has_strict_mode(sbi) && IS_CASEFOLDED(dir) &&
-> > > -       sbi->s_encoding && utf8_validate(sbi->s_encoding, &dentry->d_name))
-> > > +   if (sb_has_strict_encoding(sb) && IS_CASEFOLDED(dir) &&
-> > > +       sb->s_encoding && utf8_validate(sb->s_encoding, &dentry->d_name))
-> > >             return -EINVAL;
-> >
-> > hm, just noticed the sb->s_encoding check here is superfluous, since the
-> > has_strict_mode() cannot be true if !s_encoding.  Not related to this
-> > patch though.
-> >
-> > Daniel, are you still working on getting this upstream?  The fscrypt
-> > support would be very useful for us. :)
-> >
-> > In the hope this will get upstream, as its been flying for a while and
-> > looks correct.
-> >
-> > Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
->
-> We couldn't get a response from Ted, so instead Jaegeuk has applied patches 1-3
-> to f2fs/dev for 5.10.  Hopefully Ted will take the ext4 patch for 5.11.
->
-> I believe that Daniel is planning to resend the actual encryption+casefolding
-> support soon, but initially only for f2fs since that will be ready first.
->
-> - Eric
+From: Sharat Masetty <smasetty@codeaurora.org>
 
-Yes, planning to send them shortly. Just checking that I've not missed
-anything. For the sb_has_strict_encoding, I don't think that's
-actually checking s_encoding, though it does check s_encoding_flags.
-I'm planning to resend this one with that set, since it's not queued
-in the f2fs tree.
+The last level system cache can be partitioned to 32 different
+slices of which GPU has two slices preallocated. One slice is
+used for caching GPU buffers and the other slice is used for
+caching the GPU SMMU pagetables. This talks to the core system
+cache driver to acquire the slice handles, configure the SCID's
+to those slices and activates and deactivates the slices upon
+GPU power collapse and restore.
 
--Daniel
+Some support from the IOMMU driver is also needed to make use
+of the system cache to set the right TCR attributes. GPU then
+has the ability to override a few cacheability parameters which
+it does to override write-allocate to write-no-allocate as the
+GPU hardware does not benefit much from it.
+
+DOMAIN_ATTR_SYS_CACHE is another domain level attribute used by the
+IOMMU driver to set the right attributes to cache the hardware
+pagetables into the system cache.
+
+Signed-off-by: Sharat Masetty <smasetty@codeaurora.org>
+[saiprakash.ranjan: fix to set attr before device attach to iommu and rebase]
+Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+---
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c   | 83 +++++++++++++++++++++++++
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.h   |  4 ++
+ drivers/gpu/drm/msm/adreno/adreno_gpu.c | 17 +++++
+ 3 files changed, 104 insertions(+)
+
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+index 8915882e4444..151190ff62f7 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+@@ -8,7 +8,9 @@
+ #include "a6xx_gpu.h"
+ #include "a6xx_gmu.xml.h"
+ 
++#include <linux/bitfield.h>
+ #include <linux/devfreq.h>
++#include <linux/soc/qcom/llcc-qcom.h>
+ 
+ #define GPU_PAS_ID 13
+ 
+@@ -1022,6 +1024,79 @@ static irqreturn_t a6xx_irq(struct msm_gpu *gpu)
+ 	return IRQ_HANDLED;
+ }
+ 
++static void a6xx_llc_rmw(struct a6xx_gpu *a6xx_gpu, u32 reg, u32 mask, u32 or)
++{
++	return msm_rmw(a6xx_gpu->llc_mmio + (reg << 2), mask, or);
++}
++
++static void a6xx_llc_write(struct a6xx_gpu *a6xx_gpu, u32 reg, u32 value)
++{
++	return msm_writel(value, a6xx_gpu->llc_mmio + (reg << 2));
++}
++
++static void a6xx_llc_deactivate(struct a6xx_gpu *a6xx_gpu)
++{
++	llcc_slice_deactivate(a6xx_gpu->llc_slice);
++	llcc_slice_deactivate(a6xx_gpu->htw_llc_slice);
++}
++
++static void a6xx_llc_activate(struct a6xx_gpu *a6xx_gpu)
++{
++	u32 cntl1_regval = 0;
++
++	if (IS_ERR(a6xx_gpu->llc_mmio))
++		return;
++
++	if (!llcc_slice_activate(a6xx_gpu->llc_slice)) {
++		u32 gpu_scid = llcc_get_slice_id(a6xx_gpu->llc_slice);
++
++		gpu_scid &= 0x1f;
++		cntl1_regval = (gpu_scid << 0) | (gpu_scid << 5) | (gpu_scid << 10) |
++			       (gpu_scid << 15) | (gpu_scid << 20);
++	}
++
++	if (!llcc_slice_activate(a6xx_gpu->htw_llc_slice)) {
++		u32 gpuhtw_scid = llcc_get_slice_id(a6xx_gpu->htw_llc_slice);
++
++		gpuhtw_scid &= 0x1f;
++		cntl1_regval |= FIELD_PREP(GENMASK(29, 25), gpuhtw_scid);
++	}
++
++	if (cntl1_regval) {
++		/*
++		 * Program the slice IDs for the various GPU blocks and GPU MMU
++		 * pagetables
++		 */
++		a6xx_llc_write(a6xx_gpu, REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_1, cntl1_regval);
++
++		/*
++		 * Program cacheability overrides to not allocate cache lines on
++		 * a write miss
++		 */
++		a6xx_llc_rmw(a6xx_gpu, REG_A6XX_CX_MISC_SYSTEM_CACHE_CNTL_0, 0xF, 0x03);
++	}
++}
++
++static void a6xx_llc_slices_destroy(struct a6xx_gpu *a6xx_gpu)
++{
++	llcc_slice_putd(a6xx_gpu->llc_slice);
++	llcc_slice_putd(a6xx_gpu->htw_llc_slice);
++}
++
++static void a6xx_llc_slices_init(struct platform_device *pdev,
++		struct a6xx_gpu *a6xx_gpu)
++{
++	a6xx_gpu->llc_mmio = msm_ioremap(pdev, "cx_mem", "gpu_cx");
++	if (IS_ERR(a6xx_gpu->llc_mmio))
++		return;
++
++	a6xx_gpu->llc_slice = llcc_slice_getd(LLCC_GPU);
++	a6xx_gpu->htw_llc_slice = llcc_slice_getd(LLCC_GPUHTW);
++
++	if (IS_ERR(a6xx_gpu->llc_slice) && IS_ERR(a6xx_gpu->htw_llc_slice))
++		a6xx_gpu->llc_mmio = ERR_PTR(-EINVAL);
++}
++
+ static int a6xx_pm_resume(struct msm_gpu *gpu)
+ {
+ 	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
+@@ -1038,6 +1113,8 @@ static int a6xx_pm_resume(struct msm_gpu *gpu)
+ 
+ 	msm_gpu_resume_devfreq(gpu);
+ 
++	a6xx_llc_activate(a6xx_gpu);
++
+ 	return 0;
+ }
+ 
+@@ -1048,6 +1125,8 @@ static int a6xx_pm_suspend(struct msm_gpu *gpu)
+ 
+ 	trace_msm_gpu_suspend(0);
+ 
++	a6xx_llc_deactivate(a6xx_gpu);
++
+ 	devfreq_suspend_device(gpu->devfreq.devfreq);
+ 
+ 	return a6xx_gmu_stop(a6xx_gpu);
+@@ -1091,6 +1170,8 @@ static void a6xx_destroy(struct msm_gpu *gpu)
+ 		drm_gem_object_put(a6xx_gpu->shadow_bo);
+ 	}
+ 
++	a6xx_llc_slices_destroy(a6xx_gpu);
++
+ 	a6xx_gmu_remove(a6xx_gpu);
+ 
+ 	adreno_gpu_cleanup(adreno_gpu);
+@@ -1209,6 +1290,8 @@ struct msm_gpu *a6xx_gpu_init(struct drm_device *dev)
+ 	if (info && info->revn == 650)
+ 		adreno_gpu->base.hw_apriv = true;
+ 
++	a6xx_llc_slices_init(pdev, a6xx_gpu);
++
+ 	ret = adreno_gpu_init(dev, pdev, adreno_gpu, &funcs, 1);
+ 	if (ret) {
+ 		a6xx_destroy(&(a6xx_gpu->base.base));
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
+index 3eeebf6a754b..9e6079af679c 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
+@@ -28,6 +28,10 @@ struct a6xx_gpu {
+ 	uint32_t *shadow;
+ 
+ 	bool has_whereami;
++
++	void __iomem *llc_mmio;
++	void *llc_slice;
++	void *htw_llc_slice;
+ };
+ 
+ #define to_a6xx_gpu(x) container_of(x, struct a6xx_gpu, base)
+diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+index fd8f491f2e48..86c4fe667225 100644
+--- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+@@ -16,6 +16,7 @@
+ #include <linux/soc/qcom/mdt_loader.h>
+ #include <soc/qcom/ocmem.h>
+ #include "adreno_gpu.h"
++#include "a6xx_gpu.h"
+ #include "msm_gem.h"
+ #include "msm_mmu.h"
+ 
+@@ -189,6 +190,8 @@ struct msm_gem_address_space *
+ adreno_iommu_create_address_space(struct msm_gpu *gpu,
+ 		struct platform_device *pdev)
+ {
++	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
++	struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
+ 	struct iommu_domain *iommu;
+ 	struct msm_mmu *mmu;
+ 	struct msm_gem_address_space *aspace;
+@@ -198,7 +201,21 @@ adreno_iommu_create_address_space(struct msm_gpu *gpu,
+ 	if (!iommu)
+ 		return NULL;
+ 
++	/*
++	 * This allows GPU to set the bus attributes required to use system
++	 * cache on behalf of the iommu page table walker.
++	 */
++	if (!IS_ERR(a6xx_gpu->htw_llc_slice)) {
++		int gpu_htw_llc = 1;
++
++		iommu_domain_set_attr(iommu, DOMAIN_ATTR_SYS_CACHE, &gpu_htw_llc);
++	}
++
+ 	mmu = msm_iommu_new(&pdev->dev, iommu);
++	if (IS_ERR(mmu)) {
++		iommu_domain_free(iommu);
++		return ERR_CAST(mmu);
++	}
+ 
+ 	/*
+ 	 * Use the aperture start or SZ_16M, whichever is greater. This will
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
