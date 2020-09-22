@@ -2,101 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB57274BC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 23:56:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1AE4274BE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:14:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726774AbgIVV4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 17:56:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50916 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726652AbgIVV4w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 17:56:52 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C4775206B5;
-        Tue, 22 Sep 2020 21:56:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600811811;
-        bh=epmdI03GzdPJyvBUJoWE5xkKMsy+FzGOjThMWoZGLHA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=AQmLVEvyK5W3qCMjjgQaB/KSEoXoNb/bog9KAtom4un7Bu33v9UVlndX30fI00GLP
-         2EpnE8etwO5k0vT9SEJTFjs1eCnnjBLg9zorON/vBYJn2u8qQF5YeuVjU5L1HurEQm
-         nJvOlJWgQHs3TvHEhM/67msA24dR14mOrrPYPNyY=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 8A6E035227BD; Tue, 22 Sep 2020 14:56:51 -0700 (PDT)
-Date:   Tue, 22 Sep 2020 14:56:51 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        linux-acpi@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH] RCU: export rcu_idle_enter/_exit for loadable modules
-Message-ID: <20200922215651.GE29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200922214331.26608-1-rdunlap@infradead.org>
+        id S1726640AbgIVWO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 18:14:58 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:37842 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726179AbgIVWO5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 18:14:57 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08MKQAhe042415;
+        Tue, 22 Sep 2020 15:26:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600806371;
+        bh=kIqH1V5ealEVC5EO+6vAJW+B9sEXlZ5Fpg3hzaZaIWU=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=ikwtlh5/gSnu+ZQbloMTppJU2t6nrvxg1KhvJ1e0nSfoNQqfhIu/Hr110QSiZBe6t
+         eYMkEIryEsfQoq5vl28jW+KI3qqAa249dMB1RhkHO3IL5ups+XxTSy0EZHAtuFXJ98
+         NoUGWSPHHCovssPbAAvIXARf03NRXzPssZiTx/rk=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08MKQAvA008719
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 22 Sep 2020 15:26:10 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 22
+ Sep 2020 15:26:10 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 22 Sep 2020 15:26:10 -0500
+Received: from [10.250.36.109] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08MKQAJV061179;
+        Tue, 22 Sep 2020 15:26:10 -0500
+Subject: Re: [PATCH v4 0/4] TI K3 R5F remoteproc support
+To:     Rob Herring <robh@kernel.org>
+CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200908174556.21277-1-s-anna@ti.com>
+ <20200922194753.GA3105316@bogus>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <f5c8b7f1-1ac6-2134-89da-d1b91d4643bf@ti.com>
+Date:   Tue, 22 Sep 2020 15:26:05 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922214331.26608-1-rdunlap@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200922194753.GA3105316@bogus>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 02:43:30PM -0700, Randy Dunlap wrote:
-> drivers/acpi/processor.ko uses rcu_idle_enter()/_exit() but
-> they are not exported. This causes build errors on IA64,
-> so export those 2 functions.
+Hi Rob,
+
+On 9/22/20 2:47 PM, Rob Herring wrote:
+> On Tue, Sep 08, 2020 at 12:45:52PM -0500, Suman Anna wrote:
+>> Hi All,
+>>
+>> The following is v4 of the TI K3 R5F remoteproc driver series supporting all
+>> the R5F processor clusters/subsystems on TI AM65x and J721E SoCs. Please
+>> see the v1 cover-letter [1] for the features supported on these R5F processors.
+>>
+>> This series is a rebased version on top of the latest v5.9-rc baseline and
+>> includes very minor fixes w.r.t v3. The previous K3 DSP dependencies are now
+>> available in mainline kernel. Please see the individual patches for the delta
+>> differences (Only patches 1 and 2 updated).
+>>
+>> Bjorn,
+>> This series is only waiting on bindings ack and the conclusion on the bindings
+>> discussion from v2 [4] on which I haven't seen any forward progress on this 
+>> despite all the clarifications. I do not expect any changes even w.r.t System DT,
+>> and we can't really have a common binding between TI and Xilinx R5Fs. 
+>
+
+First of all, thank you for reviewing this and your response.
+
+> Why not? I'm pretty sure lockstep or not is a thing for both and TCMs 
+> seem to be a common thing.
+
+The cluster mode is a common theme, and if you have a preference for a common
+property-name, both I and Ben can use that. The values though might vary between
+different vendor SoCs.
+
+I have given out all the differences and reasons on a v2 thread, the SoC and
+clock and reset integration aspects make it look very different.
+Please see the discussion here,
+https://patchwork.kernel.org/comment/23560321/
+
+There was only one open comment/question I had regarding Core identification
+w.r.t my binding. Do you prefer a node-name index difference or a separate
+core-id/cpu-id property identifying which is Core0 and Core1.
+
 > 
-> ERROR: modpost: "rcu_idle_enter" [drivers/acpi/processor.ko] undefined!
-> ERROR: modpost: "rcu_idle_exit" [drivers/acpi/processor.ko] undefined!
+> And I don't really think System DT will not impact it. Though it's not 
+> well enough defined to say either way IMO.
+
+Yeah agreed. But the current architecture in System DT does allow you to add
+plugins to generate the proper compliant dts node.
+
+In anycase, I doubt TI will ever be using it in general, because we do not have
+a concept of DT on our firmwares. I have given all these inputs again on v2, but
+haven't seen any responses on it. So, I do appreciate your feedback.
+
 > 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
-> Cc: linux-acpi@vger.kernel.org
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Tony Luck <tony.luck@intel.com>
-> Cc: Fenghua Yu <fenghua.yu@intel.com>
-> Cc: linux-ia64@vger.kernel.org
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Josh Triplett <josh@joshtriplett.org>
-> Cc: rcu@vger.kernel.org
-> ---
-> Is there a problem with exporting these functions for use by
-> loadable modules?  If so, this driver should be modified not
-> to use rcu_idle_enter/exit.
+> But if Bjorn wants to take this, fine. I'm not acking it though nor 
+> worrying about it for any compatibility with system DT.
 
-Good catch, but Borislav Petkov beat you to it:
+Any specific reasons? For the most part, I am using all standard properties.
 
-https://lore.kernel.org/lkml/20200921103741.GC5901@zn.tnic/
-
-Rafael has applied Borislav's patch to his cpuidle tree for v5.9-rc7.
-
-							Thanx, Paul
-
->  kernel/rcu/tree.c |    2 ++
->  1 file changed, 2 insertions(+)
-> 
-> --- lnx-59-rc6.orig/kernel/rcu/tree.c
-> +++ lnx-59-rc6/kernel/rcu/tree.c
-> @@ -673,6 +673,7 @@ void rcu_idle_enter(void)
->  	lockdep_assert_irqs_disabled();
->  	rcu_eqs_enter(false);
->  }
-> +EXPORT_SYMBOL_GPL(rcu_idle_enter);
->  
->  #ifdef CONFIG_NO_HZ_FULL
->  /**
-> @@ -886,6 +887,7 @@ void rcu_idle_exit(void)
->  	rcu_eqs_exit(false);
->  	local_irq_restore(flags);
->  }
-> +EXPORT_SYMBOL_GPL(rcu_idle_exit);
->  
->  #ifdef CONFIG_NO_HZ_FULL
->  /**
+regards
+Suman
