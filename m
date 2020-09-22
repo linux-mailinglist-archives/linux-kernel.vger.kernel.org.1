@@ -2,94 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 273412747ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 20:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27ADD2747EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 20:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726686AbgIVSCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 14:02:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726526AbgIVSCS (ORCPT
+        id S1726662AbgIVSCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 14:02:05 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:18391 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726526AbgIVSCF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 14:02:18 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7677C061755;
-        Tue, 22 Sep 2020 11:02:17 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0bfb00105f6dfc0f2f9e65.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:fb00:105f:6dfc:f2f:9e65])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C0E051EC027B;
-        Tue, 22 Sep 2020 20:02:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600797735;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=9wsNfmarJ+ZwBMwKOM+TIGDi/giemsqRt1pXRwMjD/8=;
-        b=UgM9Rpk2W4r30U2yLEgZ1N7PL8I3ft8uk2H/04npg38QSFeWxbPJUz6CfcFF9pB5ieaL2s
-        NmnNGLh0M4uC9Rso5gHnoS37S13/RcJEmFF3rseBErfi9QlowUApB386aZZcpJYR/r15Ii
-        qDwNj5pRJRzLAUH08TsmAfeSFxQISdA=
-Date:   Tue, 22 Sep 2020 20:02:03 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Jethro Beekman <jethro@fortanix.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Seth Moore <sethmo@google.com>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v38 16/24] x86/sgx: Add a page reclaimer
-Message-ID: <20200922180203.GQ22660@zn.tnic>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-17-jarkko.sakkinen@linux.intel.com>
- <20200922104538.GE22660@zn.tnic>
- <20200922162437.GA30827@linux.intel.com>
+        Tue, 22 Sep 2020 14:02:05 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f6a3bee0002>; Tue, 22 Sep 2020 11:01:18 -0700
+Received: from [10.2.52.174] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 22 Sep
+ 2020 18:02:04 +0000
+Subject: Re: [PATCH 1/5] mm: Introduce mm_struct.has_pinned
+To:     Peter Xu <peterx@redhat.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Jann Horn" <jannh@google.com>
+References: <20200921211744.24758-1-peterx@redhat.com>
+ <20200921211744.24758-2-peterx@redhat.com>
+ <224908c1-5d0f-8e01-baa9-94ec2374971f@nvidia.com>
+ <20200922151736.GD19098@xz-x1>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <3d17619c-36b4-b080-08ff-26b3e9acb616@nvidia.com>
+Date:   Tue, 22 Sep 2020 11:02:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200922162437.GA30827@linux.intel.com>
+In-Reply-To: <20200922151736.GD19098@xz-x1>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600797678; bh=f5HBlmgjNz3J2e1EmpuzWn7tl8jPNjkQlDmEc1IEB1Y=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=groaZUA+qmBF2rUoWrmkRYVpMU0YkBRICplXas67ZSE9T/rX3VSAXlXyWFxX0NfYl
+         Hd8EJrp6xfKWCRpGgcXOic5poE0nXuCtiCB+CAQKOVzfHx1hoIGzeVRwFqbAmTfZ54
+         JzzM5cSw83VGErCbXpgLmdCqDCJFeiSfwPx5UbfMseX9yfG0PzokPxQ1nUsX2hVfKg
+         SWXGaKi1rVmQZ7lvKuZ1jQQOWOPFvySWH+km/nYy0h/HDfLJT6l9EcxkmKavbTjiW4
+         8nz+7HPoKQsFO1oCykWfJugPI90CXkfzAsu8wS/qXT65twuVMP5/RAS+ZpiOkFbAoX
+         AFBIwS/wbBBxQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 09:24:38AM -0700, Sean Christopherson wrote:
-> The "else if" is correct.  Version Array (VA) pages have 512 slots that hold
-> metadata for evicted EPC pages, i.e. swapping a page out of the EPC requires
-> a VA slot.  For simplicity (LOL),
-
-I'll say.
-
-> the approach we are taking for initial support is to reserve a VA slot
-> when adding a page to the enclave[*]. In most cases, reserving a slot
-> does not require allocating a new VA page, e.g. to reserve slots 1-511
-> of the "current" VA page. The if-elif is handling the case where the
-> current VA page is fully reserved and a new one needs to be allocated.
-> The if handles the error, the elif handles success, i.e.
+On 9/22/20 8:17 AM, Peter Xu wrote:
+> On Mon, Sep 21, 2020 at 04:53:38PM -0700, John Hubbard wrote:
+>> On 9/21/20 2:17 PM, Peter Xu wrote:
+>>> (Commit message collected from Jason Gunthorpe)
+>>>
+>>> Reduce the chance of false positive from page_maybe_dma_pinned() by keeping
+>>
+>> Not yet, it doesn't. :)  More:
+>>
+>>> track if the mm_struct has ever been used with pin_user_pages(). mm_structs
+>>> that have never been passed to pin_user_pages() cannot have a positive
+>>> page_maybe_dma_pinned() by definition. This allows cases that might drive up
+>>> the page ref_count to avoid any penalty from handling dma_pinned pages.
+>>>
+>>> Due to complexities with unpining this trivial version is a permanent sticky
+>>> bit, future work will be needed to make this a counter.
+>>
+>> How about this instead:
+>>
+>> Subsequent patches intend to reduce the chance of false positives from
+>> page_maybe_dma_pinned(), by also considering whether or not a page has
+>> even been part of an mm struct that has ever had pin_user_pages*()
+>> applied to any of its pages.
+>>
+>> In order to allow that, provide a boolean value (even though it's not
+>> implemented exactly as a boolean type) within the mm struct, that is
+>> simply set once and never cleared. This will suffice for an early, rough
+>> implementation that fixes a few problems.
+>>
+>> Future work is planned, to provide a more sophisticated solution, likely
+>> involving a counter, and *not* involving something that is set and never
+>> cleared.
 > 
-> 	if (IS_ERR(va_page)) <- needed a new VA page, allocation failed
-> 		return PTR_ERR(va_page);
-> 	else if (va_page)    <- needed a new VA page, allocation succeeded
-> 		list_add(&va_page->list, &encl->va_pages);
-> 	else
-> 		             <- reused the current VA page
+> This looks good, thanks.  Though I think Jason's version is good too (as long
+> as we remove the confusing sentence, that's the one starting with "mm_structs
+> that have never been passed... ").  Before I drop Jason's version, I think I'd
+> better figure out what's the major thing we missed so that maybe we can add
+> another paragraph.  E.g., "future work will be needed to make this a counter"
+> already means "involving a counter, and *not* involving something that is set
+> and never cleared" to me... Because otherwise it won't be called a counter..
+> 
 
-Aha, in that case va_page will be NULL but you're not using it in that
-function later and that current VA page is on encl->va_pages which
-others can get from there. Ok, gotcha.
+That's just a bit of harmless redundancy, intended to help clarify where this
+is going. But if the redundancy isn't actually helping, you could simply
+truncate it to the first half of the sentence, like this:
 
-Thx.
+"Future work is planned, to provide a more sophisticated solution, likely
+involving a counter."
 
+
+thanks,
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+John Hubbard
+NVIDIA
