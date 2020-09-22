@@ -2,109 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60AF32749B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 22:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56C7A2749BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 22:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726706AbgIVUBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 16:01:15 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:15118 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726563AbgIVUBO (ORCPT
+        id S1726620AbgIVUDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 16:03:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726550AbgIVUDC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 16:01:14 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f6a57ac0000>; Tue, 22 Sep 2020 12:59:40 -0700
-Received: from [10.2.52.174] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 22 Sep
- 2020 20:01:14 +0000
-Subject: Re: [PATCH 5/5] mm/thp: Split huge pmds/puds if they're pinned when
- fork()
-To:     Jan Kara <jack@suse.cz>
-CC:     Peter Xu <peterx@redhat.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Kirill Shutemov" <kirill@shutemov.name>,
-        Jann Horn <jannh@google.com>, Oleg Nesterov <oleg@redhat.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Hugh Dickins <hughd@google.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Andrea Arcangeli <aarcange@redhat.com>
-References: <20200921211744.24758-1-peterx@redhat.com>
- <20200921212031.25233-1-peterx@redhat.com>
- <5e594e71-537f-3e9f-85b6-034b7f5fedbe@nvidia.com>
- <20200922103315.GD15112@quack2.suse.cz>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <4a65586e-9282-beb0-1880-1ef8da03727c@nvidia.com>
-Date:   Tue, 22 Sep 2020 13:01:13 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 22 Sep 2020 16:03:02 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D004C061755;
+        Tue, 22 Sep 2020 13:03:02 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id o8so24607139ejb.10;
+        Tue, 22 Sep 2020 13:03:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ux/FWhUKlfKba4R9gSVXh2d9U57fEhQO969QMh4dk+k=;
+        b=gQf7T+W348/cUa7xWPDW9mvfpBriiULeP1ZiFwI/jDSAJXi3GsqBEJgVzaZkuZ3KCN
+         DAYlg61fYR1XNjaNGtmQGHh+hKXwEWxOJ2n9Ghee/kUzRlnQLH4Zeu/fTNenx15m6XXp
+         FX71AJvEK80xn0Xkbrrlt/6VoGll00mpOfki/B1Ag5oQTK/iMuyJLByVfKQai4xyvfj0
+         6cq+Fp5kLtWHQ1iy4C4sDrTPsNplpHsgHhuCGhzzQTpVKI0kxMIqTs4NYwGmwWMehVua
+         LE3pRNdZ19xyq6AwCiTwJBamQsck+Xhems9XXbzyJSxo7b4G4hWnCHQ+KzCpyQTnyven
+         0LKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ux/FWhUKlfKba4R9gSVXh2d9U57fEhQO969QMh4dk+k=;
+        b=N+2KpZLN+5mB2r2CVLvgX29NKSq4cFmCKw3En9MlLy2gVt79c5YBCRXfmeFnCwMTQz
+         SK/I3EK3fhChS2ounQCBU0V8PqwtV0I5qJc7MF9luUwIvuAsTAoknDMQdVDUAMK9Arym
+         mBvicK9DTvGjxykBddhOAecy+lethJrVZzFIs6hp0bJSOcXd2O5OBON20+iIFnUVU8tG
+         PUxkSLJAQLE3DtyVgtyXd5iAX7nxt3hfRdH+pza9uiRcqgUSkSVebGH6IrLJty7X5uEU
+         QdF85RqYnFS/eWA+axAL+Gv68QgX1cCJ4kAEkXOLIYIbRv4ANJzzE+FW/tNvxYnvyItp
+         XAVQ==
+X-Gm-Message-State: AOAM530eYeqcujeIgTuo38XUxtdDlZlcf4qf1sG/h0fUv5hkQJgHE1mM
+        xW/p+dbpI9RULXPr+3JD0wc9Yw+DHh9HKudM1xo=
+X-Google-Smtp-Source: ABdhPJzrukxcqBwmPMNwZEfjF9bZU4xr+6NJgA7Fjwt063EvqbKJpTcRE4M8HENKWwjen25q8n7in1Ofle1X8HiQuYQ=
+X-Received: by 2002:a17:906:fb8f:: with SMTP id lr15mr6669776ejb.25.1600804980354;
+ Tue, 22 Sep 2020 13:03:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200922103315.GD15112@quack2.suse.cz>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600804780; bh=YRzr4MXKIVqdNO7ktu5glQ0JCVg8EzQ8Vf8cqhDwAPQ=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=Tde9CBw9i4FTYZdoQ+BZOyvSSyyK9tfAUY6tej1s7YdKStE5rjEv2ZbcpO3mWq8og
-         6G4oyPTK3tDtwaUmke4V/h1xPiyKzeoa/sCr9IzKhnUnbv1rUe5hxEnJIqJyRt0Bp5
-         SBHW4exjcXhLgSLey6guHt0tb+QoFNS1zm2ZFcwHz40DAWTeKM7t7XfI4lSQWX02Jv
-         G7S3Tw8swWSWRqSbDjsEYlNsRRevJfQyz+HnfeuHk1Fv98R+mlUQMBq3lJJIgkFToR
-         +OOJ4Tc5lHycHJ7sJpi0Cpt8x8a6LtUm6G97vw9aBuPFBgdE2v9J4JOKaCg67SWI5N
-         lqCJqEZy+wcfQ==
+References: <20200909215752.1725525-1-shakeelb@google.com> <20200921163055.GQ12990@dhcp22.suse.cz>
+ <CALvZod43VXKZ3StaGXK_EZG_fKcW3v3=cEYOWFwp4HNJpOOf8g@mail.gmail.com>
+ <20200922114908.GZ12990@dhcp22.suse.cz> <CALvZod4FvE12o53BpeH5WB_McTdCkFTFXgc9gcT1CEHXzQLy_A@mail.gmail.com>
+ <20200922165527.GD12990@dhcp22.suse.cz> <CALvZod7K9g9mi599c5+ayLeC4__kckv155QQGVMVy2rXXOY1Rw@mail.gmail.com>
+ <20200922190859.GH12990@dhcp22.suse.cz>
+In-Reply-To: <20200922190859.GH12990@dhcp22.suse.cz>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 22 Sep 2020 13:02:47 -0700
+Message-ID: <CAHbLzkoBRAEWeDAh8Hd+3kNUMVUr-L79m4fpXoeez0wkBqUYxw@mail.gmail.com>
+Subject: Re: [PATCH] memcg: introduce per-memcg reclaim interface
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Greg Thelen <gthelen@google.com>,
+        David Rientjes <rientjes@google.com>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/22/20 3:33 AM, Jan Kara wrote:
-> On Mon 21-09-20 23:41:16, John Hubbard wrote:
->> On 9/21/20 2:20 PM, Peter Xu wrote:
->> ...
->>> +	if (unlikely(READ_ONCE(src_mm->has_pinned) &&
->>> +		     page_maybe_dma_pinned(src_page))) {
->>
->> This condition would make a good static inline function. It's used in 3
->> places, and the condition is quite special and worth documenting, and
->> having a separate function helps with that, because the function name
->> adds to the story. I'd suggest approximately:
->>
->>      page_likely_dma_pinned()
->>
->> for the name.
-> 
-> Well, but we should also capture that this really only works for anonymous
-> pages. For file pages mm->has_pinned does not work because the page may be
-> still pinned by completely unrelated process as Jann already properly
-> pointed out earlier in the thread. So maybe anon_page_likely_pinned()?
-> Possibly also assert PageAnon(page) in it if we want to be paranoid...
-> 
-> 								Honza
+On Tue, Sep 22, 2020 at 12:09 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Tue 22-09-20 11:10:17, Shakeel Butt wrote:
+> > On Tue, Sep 22, 2020 at 9:55 AM Michal Hocko <mhocko@suse.com> wrote:
+> [...]
+> > > Last but not least the memcg
+> > > background reclaim is something that should be possible without a new
+> > > interface.
+> >
+> > So, it comes down to adding more functionality/semantics to
+> > memory.high or introducing a new simple interface. I am fine with
+> > either of one but IMO convoluted memory.high might have a higher
+> > maintenance cost.
+>
+> One idea would be to schedule a background worker (which work on behalf
+> on the memcg) to do the high limit reclaim with high limit target as
+> soon as the high limit is reached. There would be one work item for each
+> memcg. Userspace would recheck the high limit on return to the userspace
+> and do the reclaim if the excess is larger than a threshold, and sleep
+> as the fallback.
+>
+> Excessive consumers would get throttled if the background work cannot
+> keep up with the charge pace and most of them would return without doing
+> any reclaim because there is somebody working on their behalf - and is
+> accounted for that.
+>
+> The semantic of high limit would be preserved IMHO because high limit is
+> actively throttled. Where that work is done shouldn't matter as long as
+> it is accounted properly and memcg cannot outsource all the work to the
+> rest of the system.
+>
+> Would something like that (with many details to be sorted out of course)
+> be feasible?
 
-The file-backed case doesn't really change anything, though:
-page_maybe_dma_pinned() is already a "fuzzy yes" in the same sense: you
-can get a false positive. Just like here, with an mm->has_pinned that
-could be a false positive for a process.
+This is exactly how our "per-memcg kswapd" works. The missing piece is
+how to account the background worker (it is a kernel work thread)
+properly as what we discussed before. You mentioned such work is WIP
+in earlier email of this thread, I think once this is done the
+per-memcg background worker could be supported easily.
 
-And for that reason, I'm also not sure an "assert PageAnon(page)" is
-desirable. That assertion would prevent file-backed callers from being
-able to call a function that provides a fuzzy answer, but I don't see
-why you'd want or need to do that. The goal here is to make the fuzzy
-answer a little bit more definite, but it's not "broken" just because
-the result is still fuzzy, right?
-
-Apologies if I'm missing a huge point here... :)
-
-
-thanks,
--- 
-John Hubbard
-NVIDIA
+>
+> If we do not want to change the existing semantic of high and want a new
+> api then I think having another limit for the background reclaim then
+> that would make more sense to me. It would resemble the global reclaim
+> and kswapd model and something that would be easier to reason about.
+> Comparing to echo $N > reclaim which might mean to reclaim any number
+> pages around N.
+> --
+> Michal Hocko
+> SUSE Labs
