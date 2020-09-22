@@ -2,102 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 312EE2740BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:26:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A99B2740CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 13:28:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726578AbgIVLZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 07:25:29 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13822 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726454AbgIVLZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 07:25:27 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id A3E57DF062D1CF9B7B66;
-        Tue, 22 Sep 2020 19:25:24 +0800 (CST)
-Received: from localhost.localdomain (10.175.118.36) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 22 Sep 2020 19:25:15 +0800
-From:   Luo bin <luobin9@huawei.com>
-To:     <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <yin.yinshi@huawei.com>, <cloud.wangxiaoyun@huawei.com>,
-        <chiqijun@huawei.com>, <zengweiliang.zengweiliang@huawei.com>
-Subject: [PATCH net] hinic: fix wrong return value of mac-set cmd
-Date:   Tue, 22 Sep 2020 19:26:43 +0800
-Message-ID: <20200922112643.15726-1-luobin9@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726562AbgIVL2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 07:28:30 -0400
+Received: from mail-m17613.qiye.163.com ([59.111.176.13]:12066 "EHLO
+        mail-m17613.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726454AbgIVL2a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 07:28:30 -0400
+Received: from ubuntu.localdomain (unknown [157.0.31.124])
+        by mail-m17613.qiye.163.com (Hmail) with ESMTPA id 15BAC481928;
+        Tue, 22 Sep 2020 19:28:28 +0800 (CST)
+From:   Bernard Zhao <bernard@vivo.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Bernard Zhao <bernard@vivo.com>, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com
+Subject: [PATCH] mtd/map: fix typoes for struct memcard
+Date:   Tue, 22 Sep 2020 04:28:02 -0700
+Message-Id: <20200922112814.26761-1-bernard@vivo.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.118.36]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZSUhCGUtNGU1OQhkdVkpNS0tMTE9KS0NJTkpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PAg6EDo4Kz8hGg5CC08WMUsC
+        Mk8wCh1VSlVKTUtLTExPSktDTUhOVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlKTkxV
+        S1VISlVKSU9ZV1kIAVlBSkJLTzcG
+X-HM-Tid: 0a74b592741c93bakuws15bac481928
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It should also be regarded as an error when hw return status=4 for PF's
-setting mac cmd. Only if PF return status=4 to VF should this cmd be
-taken special treatment.
+Change struct memcard`s element "removeable" -> "removable".
 
-Signed-off-by: Luo bin <luobin9@huawei.com>
+Signed-off-by: Bernard Zhao <bernard@vivo.com>
 ---
- drivers/net/ethernet/huawei/hinic/hinic_port.c  |  6 +++---
- drivers/net/ethernet/huawei/hinic/hinic_sriov.c | 12 ++----------
- 2 files changed, 5 insertions(+), 13 deletions(-)
+ drivers/mtd/maps/vmu-flash.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_port.c b/drivers/net/ethernet/huawei/hinic/hinic_port.c
-index 02cd635d6914..eb97f2d6b1ad 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_port.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_port.c
-@@ -58,9 +58,9 @@ static int change_mac(struct hinic_dev *nic_dev, const u8 *addr,
- 				 sizeof(port_mac_cmd),
- 				 &port_mac_cmd, &out_size);
- 	if (err || out_size != sizeof(port_mac_cmd) ||
--	    (port_mac_cmd.status  &&
--	    port_mac_cmd.status != HINIC_PF_SET_VF_ALREADY &&
--	    port_mac_cmd.status != HINIC_MGMT_STATUS_EXIST)) {
-+	    (port_mac_cmd.status &&
-+	     (port_mac_cmd.status != HINIC_PF_SET_VF_ALREADY || !HINIC_IS_VF(hwif)) &&
-+	     port_mac_cmd.status != HINIC_MGMT_STATUS_EXIST)) {
- 		dev_err(&pdev->dev, "Failed to change MAC, err: %d, status: 0x%x, out size: 0x%x\n",
- 			err, port_mac_cmd.status, out_size);
- 		return -EFAULT;
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_sriov.c b/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
-index 4d63680f2143..f8a26459ff65 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
-@@ -38,8 +38,7 @@ static int hinic_set_mac(struct hinic_hwdev *hwdev, const u8 *mac_addr,
- 	err = hinic_port_msg_cmd(hwdev, HINIC_PORT_CMD_SET_MAC, &mac_info,
- 				 sizeof(mac_info), &mac_info, &out_size);
- 	if (err || out_size != sizeof(mac_info) ||
--	    (mac_info.status && mac_info.status != HINIC_PF_SET_VF_ALREADY &&
--	    mac_info.status != HINIC_MGMT_STATUS_EXIST)) {
-+	    (mac_info.status && mac_info.status != HINIC_MGMT_STATUS_EXIST)) {
- 		dev_err(&hwdev->func_to_io.hwif->pdev->dev, "Failed to set MAC, err: %d, status: 0x%x, out size: 0x%x\n",
- 			err, mac_info.status, out_size);
- 		return -EIO;
-@@ -503,8 +502,7 @@ struct hinic_sriov_info *hinic_get_sriov_info_by_pcidev(struct pci_dev *pdev)
+diff --git a/drivers/mtd/maps/vmu-flash.c b/drivers/mtd/maps/vmu-flash.c
+index 177bf134e189..d48ecbdb007a 100644
+--- a/drivers/mtd/maps/vmu-flash.c
++++ b/drivers/mtd/maps/vmu-flash.c
+@@ -40,7 +40,7 @@ struct memcard {
+ 	u32 blocklen;
+ 	u32 writecnt;
+ 	u32 readcnt;
+-	u32 removeable;
++	u32 removable;
+ 	int partition;
+ 	int read;
+ 	unsigned char *blockread;
+@@ -619,7 +619,7 @@ static int vmu_connect(struct maple_device *mdev)
+ 	card->blocklen = ((basic_flash_data >> 16 & 0xFF) + 1) << 5;
+ 	card->writecnt = basic_flash_data >> 12 & 0xF;
+ 	card->readcnt = basic_flash_data >> 8 & 0xF;
+-	card->removeable = basic_flash_data >> 7 & 1;
++	card->removable = basic_flash_data >> 7 & 1;
  
- static int hinic_check_mac_info(u8 status, u16 vlan_id)
- {
--	if ((status && status != HINIC_MGMT_STATUS_EXIST &&
--	     status != HINIC_PF_SET_VF_ALREADY) ||
-+	if ((status && status != HINIC_MGMT_STATUS_EXIST) ||
- 	    (vlan_id & CHECK_IPSU_15BIT &&
- 	     status == HINIC_MGMT_STATUS_EXIST))
- 		return -EINVAL;
-@@ -546,12 +544,6 @@ static int hinic_update_mac(struct hinic_hwdev *hwdev, u8 *old_mac,
- 		return -EINVAL;
- 	}
- 
--	if (mac_info.status == HINIC_PF_SET_VF_ALREADY) {
--		dev_warn(&hwdev->hwif->pdev->dev,
--			 "PF has already set VF MAC. Ignore update operation\n");
--		return HINIC_PF_SET_VF_ALREADY;
--	}
--
- 	if (mac_info.status == HINIC_MGMT_STATUS_EXIST)
- 		dev_warn(&hwdev->hwif->pdev->dev, "MAC is repeated. Ignore update operation\n");
+ 	card->partition = 0;
  
 -- 
-2.17.1
+2.28.0
 
