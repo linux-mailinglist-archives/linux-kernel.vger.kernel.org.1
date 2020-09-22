@@ -2,93 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C8B92741B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C41B82741B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726578AbgIVMBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 08:01:42 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14211 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726543AbgIVMBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 08:01:41 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id B35FCAF25208706C1759;
-        Tue, 22 Sep 2020 20:01:39 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 22 Sep 2020 20:01:33 +0800
-From:   Xiaofei Tan <tanxiaofei@huawei.com>
-To:     <jikos@kernel.org>, <benjamin.tissoires@redhat.com>,
-        <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <linuxarm@huawei.com>, Xiaofei Tan <tanxiaofei@huawei.com>
-Subject: [PATCH] HID: core: fix some doc warnings in hid-core.c
-Date:   Tue, 22 Sep 2020 20:00:12 +0800
-Message-ID: <1600776012-7663-1-git-send-email-tanxiaofei@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S1726591AbgIVMCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 08:02:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57902 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726518AbgIVMCG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 08:02:06 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 91C522388B;
+        Tue, 22 Sep 2020 12:02:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600776126;
+        bh=FAzNl294QE+Pk73zfSc9ZCv/wnXSmsx7fdUvZBqsPkA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=z/CS/EUQtbALVxt0bK/NwPbg97VA7K5YiObhrk1yCFZspmS+jATXU7zk/JlF8KJZQ
+         uxPalyL5qTaIS3iWzAI9pO4WLXv6a11PcYS2co94SNa/D0RFI/4B5GTliRdGercVqW
+         OK9EstzqZczOoskaRxx15jOdmWiE4SlKDgGfNESw=
+Date:   Tue, 22 Sep 2020 13:01:12 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Chuanhong Guo <gch981213@gmail.com>
+Cc:     linux-spi@vger.kernel.org, bayi.cheng@mediatek.com,
+        stable@vger.kernel.org, Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] spi: spi-mtk-nor: fix timeout calculation overflow
+Message-ID: <20200922120112.GS4792@sirena.org.uk>
+References: <20200922114905.2942859-1-gch981213@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7gQyIpR7q4QSXYu+"
+Content-Disposition: inline
+In-Reply-To: <20200922114905.2942859-1-gch981213@gmail.com>
+X-Cookie: Love thy neighbor, tune thy piano.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix following warnings caused by mismatch bewteen function parameters
-and comments.
-drivers/hid/hid-core.c:931: warning: Function parameter or member 'hid' not described in 'hid_parse_report'
-drivers/hid/hid-core.c:931: warning: Excess function parameter 'device' description in 'hid_parse_report'
-drivers/hid/hid-core.c:961: warning: Function parameter or member 'hid' not described in 'hid_validate_values'
-drivers/hid/hid-core.c:961: warning: Excess function parameter 'device' description in 'hid_validate_values'
-drivers/hid/hid-core.c:1452: warning: Function parameter or member 'report' not described in 'hid_match_report'
-drivers/hid/hid-core.c:1452: warning: Excess function parameter 'report_type' description in 'hid_match_report'
-drivers/hid/hid-core.c:2132: warning: Function parameter or member 'drv' not described in 'new_id_store'
-drivers/hid/hid-core.c:2132: warning: Excess function parameter 'driver' description in 'new_id_store'
 
-Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
----
- drivers/hid/hid-core.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+--7gQyIpR7q4QSXYu+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
-index d2ecc9c..727d042 100644
---- a/drivers/hid/hid-core.c
-+++ b/drivers/hid/hid-core.c
-@@ -920,7 +920,7 @@ static int hid_scan_report(struct hid_device *hid)
- /**
-  * hid_parse_report - parse device report
-  *
-- * @device: hid device
-+ * @hid: hid device
-  * @start: report start
-  * @size: report size
-  *
-@@ -945,7 +945,7 @@ static const char * const hid_report_names[] = {
- /**
-  * hid_validate_values - validate existing device report's value indexes
-  *
-- * @device: hid device
-+ * @hid: hid device
-  * @type: which report type to examine
-  * @id: which report ID to examine (0 for first)
-  * @field_index: which report field to examine
-@@ -1444,7 +1444,7 @@ static int search(__s32 *array, __s32 value, unsigned n)
-  * hid_match_report - check if driver's raw_event should be called
-  *
-  * @hid: hid device
-- * @report_type: type to match against
-+ * @report: hid report to match against
-  *
-  * compare hid->driver->report_table->report_type to report->type
-  */
-@@ -2120,7 +2120,7 @@ struct hid_dynid {
- 
- /**
-  * store_new_id - add a new HID device ID to this driver and re-probe devices
-- * @driver: target device driver
-+ * @drv: target device driver
-  * @buf: buffer for scanning device ID data
-  * @count: input size
-  *
--- 
-2.8.1
+On Tue, Sep 22, 2020 at 07:49:02PM +0800, Chuanhong Guo wrote:
 
+>  		if ((op->data.dir == SPI_MEM_DATA_IN) &&
+>  		    mtk_nor_match_read(op)) {
+> +			// limit size to prevent timeout calculation overflow
+> +			if (op->data.nbytes > 0x400000)
+> +				op->data.nbytes = 0x400000;
+
+If there's a limit on transfer sizes there should also be a
+max_transfer_size or max_message_size set (which we should pay attention
+to in the core for flash stuff but IIRC we didn't do that yet).
+
+--7gQyIpR7q4QSXYu+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9p54gACgkQJNaLcl1U
+h9Bj1Af/YXCUW+7r4wFHXnbDYWGLaIDSH1EBxg+osM3SkN/IcE2rowTsLliZ4VUD
+84kMrP5KqglN2081XuEx0PFtMWLgc5VXrFmxqS3E0t5oi7jqIgzDnT9jIXYITtHQ
+UO8ZR6IGZ4nVVW+vHUc1vLBakKXOatjJkAwESGGzANYeMLEaDQTn6fDwVx2btYG9
+Vo1wl6L5FYFTshq8Q/aC65qjdG52YCRC/3a/uhgIHIlWJ42mORi5lSXOGsbzmaNv
+fyT9UXy0BdjXRTPIiNRbEZIioba0dAOFLEg43KZQZilNdgQmnX9ELA9QeCbMbnFu
+lq4QZDUVpDhBxcrF/+gCVPINe5wyeg==
+=Z/HV
+-----END PGP SIGNATURE-----
+
+--7gQyIpR7q4QSXYu+--
