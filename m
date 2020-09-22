@@ -2,242 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B8CE2741D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 633532741CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:09:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726650AbgIVMJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 08:09:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44434 "EHLO
+        id S1726637AbgIVMJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 08:09:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726589AbgIVMJT (ORCPT
+        with ESMTP id S1726531AbgIVMJQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 08:09:19 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91BA8C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 05:09:19 -0700 (PDT)
-Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <pza@pengutronix.de>)
-        id 1kKh6P-0007EV-MR; Tue, 22 Sep 2020 14:08:57 +0200
-Received: from pza by dude02.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <pza@pengutronix.de>)
-        id 1kKh6M-0003wj-DL; Tue, 22 Sep 2020 14:08:54 +0200
-Date:   Tue, 22 Sep 2020 14:08:54 +0200
-From:   Philipp Zabel <pza@pengutronix.de>
-To:     "Viorel Suman (OSS)" <viorel.suman@oss.nxp.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Timur Tabi <timur@kernel.org>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Viorel Suman <viorel.suman@nxp.com>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Viorel Suman <viorel.suman@gmail.com>
-Subject: Re: [PATCH v2 1/2] ASoC: fsl_xcvr: Add XCVR ASoC CPU DAI driver
-Message-ID: <20200922120854.GA15104@pengutronix.de>
-References: <1600715292-28529-1-git-send-email-viorel.suman@oss.nxp.com>
- <1600715292-28529-2-git-send-email-viorel.suman@oss.nxp.com>
+        Tue, 22 Sep 2020 08:09:16 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B449DC061755;
+        Tue, 22 Sep 2020 05:09:15 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id r7so22451405ejs.11;
+        Tue, 22 Sep 2020 05:09:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=steyxlT4LVPBsfe8IJH2NOc1f2Mr0MYY3HiC50X/c/0=;
+        b=PqcBVJ7UteV28rSmL9CuvhOhID/Uowd4Vi5TEe7GA2bzJUzqbTmmZm7SWjiPB2GWLl
+         Zl8QrP2PohhWHRpBtKC0fYkFrUo2P40E0n0SjX/zq5YKu7gSpNmgKTPEGxMy5yEeu8dB
+         m1C4jOnOFn9Kdc1XxkKDBXNa+VCReqLMFADIZjD/gyAGo/I+3Ees8nlVC+00UJ+9KGi7
+         6eVmzJV6g5GaH2rmaFYxhC56lyJt//9Ct3th439Vw0eY6AIwMrEVnCIHORO9e6pRPAvF
+         2m6xbPbL8r35BI85U4lbUH9Z1LGOsHYHeWBQ/FOi1FopTp+Nlj8hqPSnDaAQHPLKN6SO
+         HZBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=steyxlT4LVPBsfe8IJH2NOc1f2Mr0MYY3HiC50X/c/0=;
+        b=fTkiT/GVD5Z311TMhJZp3EbFLYyTuRlExLNsjRTQ0uh016p+ftRHcuUC04v0vKuV7r
+         f9SvRMnBf00qMRuG0X6sS/06yaVUAtnZxtJIo6oQJi8jGf02fRUCCtx+VJOH0LbBVi5l
+         mi+VBF7m4WLrSvOMJcjLB+2o6K310igUoBnnnU871k2pU7ohaTjNcl5Oqifx3y+NJCyv
+         qNxlcchFwiPvQqpg05xOCj9SfrxiVYXye+FJkz2clYcnl9RcEGKC4GB7jOXYOLUGYoXJ
+         23G2EONnPWchq1e4O60FEnwhtktXHY91acnAI4abrvDF5UXOJd/4/cJV1k0Nss7S2ivx
+         aPKQ==
+X-Gm-Message-State: AOAM533cDZq3TZsOfGbpE/fgEuubLV4+5bj8ZBSlpBoTAaEnJHOOt9t9
+        +xkZ3zkjROwmoAkaE6V9A4Q=
+X-Google-Smtp-Source: ABdhPJzlCM3Uyjl7gfhzf06ug/kOBwEhcs+oi+eQu3ZTZlZOD1QO+qA+foqWGCToItKWcrF5S8Bsgg==
+X-Received: by 2002:a17:906:474f:: with SMTP id j15mr4786337ejs.468.1600776554474;
+        Tue, 22 Sep 2020 05:09:14 -0700 (PDT)
+Received: from localhost.localdomain (abab42.neoplus.adsl.tpnet.pl. [83.6.165.42])
+        by smtp.googlemail.com with ESMTPSA id c25sm3575013ejd.88.2020.09.22.05.09.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 05:09:13 -0700 (PDT)
+From:   Konrad Dybcio <konradybcio@gmail.com>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] clk: qcom: gcc-sdm660: Fix wrong parent_map
+Date:   Tue, 22 Sep 2020 14:09:09 +0200
+Message-Id: <20200922120909.97203-1-konradybcio@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1600715292-28529-2-git-send-email-viorel.suman@oss.nxp.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 14:07:31 up 213 days, 23:24, 242 users,  load average: 0.15, 0.91,
- 2.62
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::28
-X-SA-Exim-Mail-From: pza@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 10:08:11PM +0300, Viorel Suman (OSS) wrote:
-> From: Viorel Suman <viorel.suman@nxp.com>
-> 
-> XCVR (Audio Transceiver) is a on-chip functional module found
-> on i.MX8MP. It support HDMI2.1 eARC, HDMI1.4 ARC and SPDIF.
-> 
-> Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
-> ---
->  sound/soc/fsl/Kconfig    |   10 +
->  sound/soc/fsl/Makefile   |    2 +
->  sound/soc/fsl/fsl_xcvr.c | 1343 ++++++++++++++++++++++++++++++++++++++++++++++
->  sound/soc/fsl/fsl_xcvr.h |  266 +++++++++
->  4 files changed, 1621 insertions(+)
->  create mode 100644 sound/soc/fsl/fsl_xcvr.c
->  create mode 100644 sound/soc/fsl/fsl_xcvr.h
-> 
-> diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-> index 3f76ff7..d04b64d 100644
-> --- a/sound/soc/fsl/Kconfig
-> +++ b/sound/soc/fsl/Kconfig
-> @@ -95,6 +95,16 @@ config SND_SOC_FSL_EASRC
->  	  destination sample rate. It is a new design module compare with the
->  	  old ASRC.
->  
-> +config SND_SOC_FSL_XCVR
-> +	tristate "NXP Audio Transceiver (XCVR) module support"
-> +	select REGMAP_MMIO
-> +	select SND_SOC_IMX_PCM_DMA if SND_IMX_SOC != n
-> +	select SND_SOC_GENERIC_DMAENGINE_PCM
-> +	help
-> +	  Say Y if you want to add Audio Transceiver (XCVR) support for NXP
-> +	  iMX CPUs. XCVR is a digital module that supports HDMI2.1 eARC,
-> +	  HDMI1.4 ARC and SPDIF.
-> +
->  config SND_SOC_FSL_UTILS
->  	tristate
->  
-> diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
-> index b835eeb..1d2231f 100644
-> --- a/sound/soc/fsl/Makefile
-> +++ b/sound/soc/fsl/Makefile
-> @@ -25,6 +25,7 @@ snd-soc-fsl-utils-objs := fsl_utils.o
->  snd-soc-fsl-dma-objs := fsl_dma.o
->  snd-soc-fsl-mqs-objs := fsl_mqs.o
->  snd-soc-fsl-easrc-objs := fsl_easrc.o
-> +snd-soc-fsl-xcvr-objs := fsl_xcvr.o
->  
->  obj-$(CONFIG_SND_SOC_FSL_AUDMIX) += snd-soc-fsl-audmix.o
->  obj-$(CONFIG_SND_SOC_FSL_ASOC_CARD) += snd-soc-fsl-asoc-card.o
-> @@ -38,6 +39,7 @@ obj-$(CONFIG_SND_SOC_FSL_UTILS) += snd-soc-fsl-utils.o
->  obj-$(CONFIG_SND_SOC_FSL_MQS) += snd-soc-fsl-mqs.o
->  obj-$(CONFIG_SND_SOC_FSL_EASRC) += snd-soc-fsl-easrc.o
->  obj-$(CONFIG_SND_SOC_POWERPC_DMA) += snd-soc-fsl-dma.o
-> +obj-$(CONFIG_SND_SOC_FSL_XCVR) += snd-soc-fsl-xcvr.o
->  
->  # MPC5200 Platform Support
->  obj-$(CONFIG_SND_MPC52xx_DMA) += mpc5200_dma.o
-> diff --git a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c
-> new file mode 100644
-> index 00000000..7391bca
-> --- /dev/null
-> +++ b/sound/soc/fsl/fsl_xcvr.c
-> @@ -0,0 +1,1343 @@
-[...]
-> +static int fsl_xcvr_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct device_node *np = dev->of_node;
-> +	const struct of_device_id *of_id;
-> +	struct fsl_xcvr *xcvr;
-> +	struct resource *ram_res, *regs_res, *rx_res, *tx_res;
-> +	void __iomem *regs;
-> +	int ret, irq;
-> +
-> +	of_id = of_match_device(fsl_xcvr_dt_ids, dev);
-> +	if (!of_id)
-> +		return -EINVAL;
-> +
-> +	xcvr = devm_kzalloc(dev, sizeof(*xcvr), GFP_KERNEL);
-> +	if (!xcvr)
-> +		return -ENOMEM;
-> +
-> +	xcvr->pdev = pdev;
-> +	xcvr->ipg_clk = devm_clk_get(dev, "ipg");
-> +	if (IS_ERR(xcvr->ipg_clk)) {
-> +		dev_err(dev, "failed to get ipg clock\n");
-> +		return PTR_ERR(xcvr->ipg_clk);
-> +	}
-> +
-> +	xcvr->phy_clk = devm_clk_get(dev, "phy");
-> +	if (IS_ERR(xcvr->phy_clk)) {
-> +		dev_err(dev, "failed to get phy clock\n");
-> +		return PTR_ERR(xcvr->phy_clk);
-> +	}
-> +
-> +	xcvr->spba_clk = devm_clk_get(dev, "spba");
-> +	if (IS_ERR(xcvr->spba_clk)) {
-> +		dev_err(dev, "failed to get spba clock\n");
-> +		return PTR_ERR(xcvr->spba_clk);
-> +	}
-> +
-> +	xcvr->pll_ipg_clk = devm_clk_get(dev, "pll_ipg");
-> +	if (IS_ERR(xcvr->pll_ipg_clk)) {
-> +		dev_err(dev, "failed to get pll_ipg clock\n");
-> +		return PTR_ERR(xcvr->pll_ipg_clk);
-> +	}
-> +
-> +	ram_res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ram");
-> +	xcvr->ram_addr = devm_ioremap_resource(dev, ram_res);
-> +	if (IS_ERR(xcvr->ram_addr))
-> +		return PTR_ERR(xcvr->ram_addr);
-> +
-> +	regs_res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "regs");
-> +	regs = devm_ioremap_resource(dev, regs_res);
-> +	if (IS_ERR(regs))
-> +		return PTR_ERR(regs);
-> +
-> +	xcvr->regmap = devm_regmap_init_mmio_clk(dev, NULL, regs,
-> +						 &fsl_xcvr_regmap_cfg);
-> +	if (IS_ERR(xcvr->regmap)) {
-> +		dev_err(dev, "failed to init XCVR regmap: %ld\n",
-> +			PTR_ERR(xcvr->regmap));
-> +		return PTR_ERR(xcvr->regmap);
-> +	}
-> +
-> +	xcvr->reset = of_reset_control_get(np, NULL);
+This was likely overlooked while porting the driver upstream.
 
-Please use devm_reset_control_get_exclusive().
+Reported-by: Pavel Dubrova <pashadubrova@gmail.com>
+Signed-off-by: Konrad Dybcio <konradybcio@gmail.com>
+---
+ drivers/clk/qcom/gcc-sdm660.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[...]
-> +static __maybe_unused int fsl_xcvr_runtime_resume(struct device *dev)
-> +{
-> +	struct fsl_xcvr *xcvr = dev_get_drvdata(dev);
-> +	int ret;
-> +
-> +	ret = clk_prepare_enable(xcvr->ipg_clk);
-> +	if (ret) {
-> +		dev_err(dev, "failed to start IPG clock.\n");
-> +		return ret;
-> +	}
-> +
-> +	ret = clk_prepare_enable(xcvr->pll_ipg_clk);
-> +	if (ret) {
-> +		dev_err(dev, "failed to start PLL IPG clock.\n");
-> +		goto stop_ipg_clk;
-> +	}
-> +
-> +	ret = clk_prepare_enable(xcvr->phy_clk);
-> +	if (ret) {
-> +		dev_err(dev, "failed to start PHY clock: %d\n", ret);
-> +		goto stop_pll_ipg_clk;
-> +	}
-> +
-> +	ret = clk_prepare_enable(xcvr->spba_clk);
-> +	if (ret) {
-> +		dev_err(dev, "failed to start SPBA clock.\n");
-> +		goto stop_phy_clk;
-> +	}
-> +
-> +	regcache_cache_only(xcvr->regmap, false);
-> +	regcache_mark_dirty(xcvr->regmap);
-> +	ret = regcache_sync(xcvr->regmap);
-> +
-> +	if (ret) {
-> +		dev_err(dev, "failed to sync regcache.\n");
-> +		goto stop_spba_clk;
-> +	}
-> +
-> +	reset_control_assert(xcvr->reset);
-> +	reset_control_deassert(xcvr->reset);
+diff --git a/drivers/clk/qcom/gcc-sdm660.c b/drivers/clk/qcom/gcc-sdm660.c
+index 3cffadc77bce..1a5e98e5c965 100644
+--- a/drivers/clk/qcom/gcc-sdm660.c
++++ b/drivers/clk/qcom/gcc-sdm660.c
+@@ -666,7 +666,7 @@ static struct clk_rcg2 hmss_rbcpr_clk_src = {
+ 	.cmd_rcgr = 0x48044,
+ 	.mnd_width = 0,
+ 	.hid_width = 5,
+-	.parent_map = gcc_parent_map_xo_gpll0_gpll0_early_div,
++	.parent_map = gcc_parent_map_xo_gpll0,
+ 	.freq_tbl = ftbl_hmss_rbcpr_clk_src,
+ 	.clkr.hw.init = &(struct clk_init_data){
+ 		.name = "hmss_rbcpr_clk_src",
+-- 
+2.28.0
 
-No delay required between the two?
-
-regards
-Philipp
