@@ -2,96 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC37D2746E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D42F72746E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:43:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726666AbgIVQmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 12:42:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726629AbgIVQmn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 12:42:43 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8610EC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 09:42:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Vlr5FEPRYDwFV5ct9yCcWf5tJnCkp0O4U+nuEZGp9d4=; b=m7mnIyy7qRuXOkvZYdRzuhCjLL
-        5CP0P5pePR+nA4qXJuGUuCMF4nabRXEq5u2TF6jhV5jVEgg0ehZykpXhmRWMwHZdSdvcjAv7iom0K
-        PeV22OPv46gXU1rgFWGx2rGMQ6vOfB3Qx3eo+gXOKuJT4Agfi8/ZB1GsYjVlBaLiCsqjIaf2J2qDM
-        F87PvcYOL+w25iSCY/HB7xqTlEI417SQIx6YUuvypsenY73zLxkyy98Y8QwM0pP+EZSmEYe1RD9aG
-        ObWSHPwDQUnlxB5jUdG5u5BnSknBUGwY1eeRqq3/GoV8Efc5F/+VI42AnMf2jFLXzKVPf3EM7A3em
-        VEMa452Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kKlNI-0000ll-EO; Tue, 22 Sep 2020 16:42:40 +0000
-Date:   Tue, 22 Sep 2020 17:42:40 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Uladzislau Rezki <urezki@gmail.com>
-Subject: Re: [PATCH 2/2] vfree: Update documentation
-Message-ID: <20200922164240.GJ32101@casper.infradead.org>
-References: <20200921224628.20704-1-willy@infradead.org>
- <20200921224628.20704-2-willy@infradead.org>
- <20200922143506.GA26664@lst.de>
- <20200922150603.GH32101@casper.infradead.org>
- <20200922150910.GA29302@lst.de>
- <20200922152240.GI32101@casper.infradead.org>
- <20200922153136.GA30766@lst.de>
+        id S1726719AbgIVQnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 12:43:05 -0400
+Received: from mga06.intel.com ([134.134.136.31]:25876 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726614AbgIVQnF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 12:43:05 -0400
+IronPort-SDR: rj0xtPbnqH98QrdCs9e4A3S8Z/anJl/palp08sBuNk5N1eBjTtCOGOZjC0cHBFWiPfUf6FHa7s
+ /Z4FFDn37uJA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9752"; a="222246218"
+X-IronPort-AV: E=Sophos;i="5.77,291,1596524400"; 
+   d="scan'208";a="222246218"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 09:43:04 -0700
+IronPort-SDR: 4oSWxbAXMAdIjFSfeAITRunkFUGcGO10gjSXJM/fC/GptPlBIhLFx0AbArKAFk2jKBb8H5RNPl
+ +Q7JSufRXtkw==
+X-IronPort-AV: E=Sophos;i="5.77,291,1596524400"; 
+   d="scan'208";a="342086235"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 09:43:04 -0700
+Date:   Tue, 22 Sep 2020 09:43:02 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
+        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        asapek@google.com, Borislav Petkov <bp@alien8.de>,
+        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
+        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Huang, Haitao" <haitao.huang@intel.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
+        Christian Ludloff <ludloff@google.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Patrick Uiterwijk <puiterwijk@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
+Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
+Message-ID: <20200922164301.GB30874@linux.intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-11-jarkko.sakkinen@linux.intel.com>
+ <CALCETrX9T1ZUug=M5ba9g4H5B7kV=yL5RzuTaeAEdy3uAieN_A@mail.gmail.com>
+ <20200918235337.GA21189@sjchrist-ice>
+ <20200921124946.GF6038@linux.intel.com>
+ <20200921165758.GA24156@linux.intel.com>
+ <20200921210736.GB58176@linux.intel.com>
+ <20200921211849.GA25403@linux.intel.com>
+ <20200922052957.GA97272@linux.intel.com>
+ <20200922053515.GA97687@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200922153136.GA30766@lst.de>
+In-Reply-To: <20200922053515.GA97687@linux.intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 05:31:36PM +0200, Christoph Hellwig wrote:
-> On Tue, Sep 22, 2020 at 04:22:40PM +0100, Matthew Wilcox wrote:
-> > On Tue, Sep 22, 2020 at 05:09:10PM +0200, Christoph Hellwig wrote:
-> > > On Tue, Sep 22, 2020 at 04:06:03PM +0100, Matthew Wilcox wrote:
-> > > > I don't think it makes sense to list all vmalloc-style allocators here.
-> > > > It won't be updated by people who add new variations.  How about this?
-> > > > 
-> > > >  * Free the virtually continuous memory area starting at @addr, as
-> > > >  * obtained from one of the vmalloc() family of APIs.  This will
-> > > >  * usually also free the physical memory underlying the virtual
-> > > >  * allocation, but that memory is reference counted, so it will not
-> > > >  * be freed until the last user goes away.
-> > > >  *
-> > > >  * If @addr is NULL, no operation is performed.
-> > > > 
-> > > > I'm trying to strike a balance between being accurate and not requiring
-> > > > device driver authors to learn all about struct page.  I may be too
-> > > > close to the implementation to write good documentation for it.
-> > > 
-> > > I think the above is sensible, but not enough.  vmap really needs to
-> > > be treated special, as by default area->pages for vmap is NULL.  So
-> > > for vfree to be useful on a vmap mapping, the callers needs to
-> > > manually set it up by poking into the internals.  Actually, I think
-> > > we really want another API rather than vmap for that.  Let me respin
-> > > my series to include that.
+On Tue, Sep 22, 2020 at 08:35:15AM +0300, Jarkko Sakkinen wrote:
+> On Tue, Sep 22, 2020 at 08:30:06AM +0300, Jarkko Sakkinen wrote:
+> > On Mon, Sep 21, 2020 at 02:18:49PM -0700, Sean Christopherson wrote:
+> > > Userspace can add the page without EXEC permissions in the EPCM, and thus
+> > > avoid the noexec/VM_MAYEXEC check.  The enclave can then do EMODPE to gain
+> > > EXEC permissions in the EPMC.  Without the ->mprotect() hook, we wouldn't
+> > > be able to detect/prevent such shenanigans.
 > > 
-> > I've been thinking about somethng like:
+> > Right, the VM_MAYEXEC in the code is nested under VM_EXEC check.
 > > 
-> > void *vmap_mapping(struct address_space *mapping, pgoff_t start,
-> > 		unsigned long len);
-> > 
-> > but it doesn't quite work for the shmem cases because they need to use
-> > shmem_read_mapping_page_gfp() instead of ->readpage.  I'd also want it
-> > to work for DAX, but I don't have a user for that yet so it's hard to
-> > justify adding it.
+> > I'm only wondering why not block noexec completely with any permissions,
+> > i.e. why not just have unconditional VM_MAYEXEC check?
 > 
-> That seems a little too special cased to me.
+> I.e. why not this:
+> 
+> static int __sgx_encl_add_page(struct sgx_encl *encl,
+> 			       struct sgx_encl_page *encl_page,
+> 			       struct sgx_epc_page *epc_page,
+> 			       struct sgx_secinfo *secinfo, unsigned long src)
+> {
+> 	struct sgx_pageinfo pginfo;
+> 	struct vm_area_struct *vma;
+> 	struct page *src_page;
+> 	int ret;
+> 
+> 	vma = find_vma(current->mm, src);
+> 	if (!vma)
+> 		return -EFAULT;
+> 
+> 	if (!(vma->vm_flags & VM_MAYEXEC))
+> 		return -EACCES;
+> 
+> I'm not seeing the reason for "partial support" for noexec partitions.
+> 
+> If there is a good reason, fine, let's just then document it.
 
-It's for filesystems that currently use map_bh or kmap_atomic() to
-get at their metadata (directories, superblocks, etc).
+There are scenarios I can contrive, e.g. loading an enclave from a noexec
+filesystem without having to copy the entire enclave to anon memory, or
+loading a data payload from a noexec FS.
 
-> FYI, if you are fine with it I'll pick your two patches with the
-> updates from this thread up for my series.  It has be now morphed into
-> a general vmalloc.c cleanup series.
-
-Yes, that's absolutely fine.  Thanks!
+They're definitely contrived scenarios, but given that we also want the
+->mprotect() hook/behavior for potential LSM interaction, supporting said
+contrived scenarios costs is "free".
