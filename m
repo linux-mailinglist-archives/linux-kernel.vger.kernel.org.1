@@ -2,105 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6C02746FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E52D62746FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 18:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726631AbgIVQvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 12:51:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59722 "EHLO
+        id S1726634AbgIVQwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 12:52:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726558AbgIVQvo (ORCPT
+        with ESMTP id S1726632AbgIVQwL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 12:51:44 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 002CBC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 09:51:43 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id w11so18820292lfn.2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 09:51:43 -0700 (PDT)
+        Tue, 22 Sep 2020 12:52:11 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A29FCC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 09:52:11 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id v123so19695260qkd.9
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 09:52:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cmG4gWH7mH9Yym3rTKQITk7kl2T0JyBGiXJV3JhogtU=;
-        b=h56pNQpbRuJmaQ/iAcYPzBagq4xzwkoUCflfi5oHkyEYg384lzsM5puRFSYQp/cDMM
-         gkGXZHco6Ta+r9ZyRpfSANfZt6lPGnUpBS7EsqjfVfv3fq1FxSeN9AxmzvTpvjnHyx7f
-         whsvt3IbKszYKHDDbFElCrd9VzT+bYOPHi+V67DwZihVNZpsRjT6vk35cXi9obP9NHjo
-         L3Th6YqkI3RTL40MGp78aB3igMsn7xn7MDpA3JDGXlV3SUJFezdPKVML7DJWWvBWpDkf
-         JjfEMnKmowbd9TZ5QHtoHjxn6WUvgZGTSuMSEg/hA4lQcA4D6uEUaa2zcxXPLh/ChE69
-         MlJQ==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UW8UQhISUFkiKSe3z9186mRXQeii/XHHTh3pl00bIbE=;
+        b=S4S1yu+0DdwteB1gK8Vw7Sirfx6bWa/xLWIPsdLuX1Bps9wYPzDFiWdNH0kTjgN29M
+         TMvFXWvwsuK4mQntUtTNmNPqHcUp2Bt0UyAhSjDoR0w7I+1zs5PnGDwSjtvodQnfNSgu
+         Fi3MyXpKQBsUyQvcqnEnnVuMHA7RhVsOiRzzvzuoN7XkXcdZBi0WwhS6kHB+yw1YZ5hm
+         tL5kKLQRoVrbbjQRQu4OZ38NWMlSubrVENywqwisJ9uCPX4HoQYFXwV5wqv0PGaukqxI
+         WjfJYMlX8PWi2A5M23siDPT67CovWFKOTdrEvHKEqln4v3lFsvC1XgcqsIHiMfxvB67K
+         BX8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cmG4gWH7mH9Yym3rTKQITk7kl2T0JyBGiXJV3JhogtU=;
-        b=PSffeQh8l+q+aDtuhMqa/1qOPEPsuUnvhIuHQbBujRNr8jFlMjL9prisZIymzC5EjM
-         ovJUEy/mHxcX9neNPV5hP/EiJeQCisltH9gt6PIY9TlyIYIWocRjX/ImZNMNq6itqrLy
-         a8Tc0NL5ea/Pmj1KKTFPScsAU4mWYII2WnnFtG4tOfVN+mFkOkKBXcF3lmyUosFATIoU
-         QiWx9ZW5NIsAwrix3zgf4Dz2rslwjsm3StnLkP1f1TN6HMK/9TjF2LEgtNoR0oNfF71+
-         ip0jKrewg4v0uWHBifeYGyouqe3uZTDKmIzlh8zTvSVGHSwKZiLXXjZiJw+R8lN9oZdC
-         H8ww==
-X-Gm-Message-State: AOAM531JlPHx3E4rRMyStfwyXCmW3JdWQqkRMSqmEbP4IxZ2GJfgH9GW
-        IoBulWrykc21NOods94mN497odj4uySnBZoEnSW4Iw==
-X-Google-Smtp-Source: ABdhPJzvdN6z6GZ+Y9LPlyAqmPBcusa4j8dDsWFrAOqj1gGESHXbahMf1uaByCLmMISg8t0LDsEJJqDdE1v+MBFxVJc=
-X-Received: by 2002:ac2:59da:: with SMTP id x26mr2122036lfn.346.1600793502076;
- Tue, 22 Sep 2020 09:51:42 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UW8UQhISUFkiKSe3z9186mRXQeii/XHHTh3pl00bIbE=;
+        b=CIaG8cp1AeiXM4zKD5FnfZCkB9brss03gv9TBZPb2HF00jx3Qik4Ll0ALPmJ0l/t14
+         1a/BEAozWBSfJRpS9Xw4rBrcmpL8hjkXhfFZoMbOORSwUq5eoXIH6dObf2jtxWGGuz3I
+         ECygfl/0n+Uuxc7E3nq1BGEyOhRyyq/ND9XvjxQwX3mmrj2eNoGa7Y+HvUQiC0GUP+Ms
+         fTAwzpgjYap+/qaudh5HDIBFmI/M2hGY5/FbZRh9Z7tbVUolJsKifiArnZOwz0gC49PV
+         rWpNFrOgQNzwwC2KdqbDeLql0r3iLpPEwT2VSHhFcZGadKGMypcXADOoeURrxJfxUeo0
+         sVaQ==
+X-Gm-Message-State: AOAM533haRK+diNXn9mPvOL0S8pvkeMpZN9WF3ogou8uSTY5bHm9NHhX
+        FHAzxjUgBg9JMtgg5w1azR9O2w==
+X-Google-Smtp-Source: ABdhPJxmh2ODYVAVV5V1OHM0DbPqOPp70bzHRBRnt4lz3LGXVWYYfZGjCS0zSBO5X1zbygWZYdhOJA==
+X-Received: by 2002:a37:a2d2:: with SMTP id l201mr5772720qke.454.1600793530818;
+        Tue, 22 Sep 2020 09:52:10 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id k52sm13437898qtc.56.2020.09.22.09.52.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 09:52:10 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kKlWT-003CDZ-Jn; Tue, 22 Sep 2020 13:52:09 -0300
+Date:   Tue, 22 Sep 2020 13:52:09 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Gal Pressman <galpress@amazon.com>
+Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        izur@habana.ai, Jakub Kicinski <kuba@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-rdma@vger.kernel.org, Olof Johansson <olof@lixom.net>
+Subject: Re: [PATCH v3 00/14] Adding GAUDI NIC code to habanalabs driver
+Message-ID: <20200922165209.GJ8409@ziepe.ca>
+References: <20200918141909.GU8409@ziepe.ca>
+ <CAFCwf121_UNivhfPfO6uFoHbF+2Odeb1c3+482bOXeOZUsEnug@mail.gmail.com>
+ <20200918150735.GV8409@ziepe.ca>
+ <CAFCwf13y1VVy90zAoBPC-Gfj6mwMVbefh3fxKDVneuscp4esqA@mail.gmail.com>
+ <20200918152852.GW8409@ziepe.ca>
+ <b0721756-d323-b95e-b2d2-ca3ce8d4a660@amazon.com>
+ <20200922114101.GE8409@ziepe.ca>
+ <a16802a2-4a36-e03d-a927-c5cb7c766b99@amazon.com>
+ <20200922161429.GI8409@ziepe.ca>
+ <e06c573a-99a7-906c-8197-847a61fba44a@amazon.com>
 MIME-Version: 1.0
-References: <CALvZod4FWLsV9byrKQojeus7tMDhHjQHFF5J_JpNsyB0HkaERA@mail.gmail.com>
- <20200922111202.GY12990@dhcp22.suse.cz> <CALvZod6=VwQduoG3GiW-=csAQja4vCsXAhKH_tSuA4JYx0dEiA@mail.gmail.com>
- <20200922151654.GA12990@dhcp22.suse.cz> <CALvZod7jvxEdbMzrmmt6Vrse=Ui4yhhVYyxPkPmmzWC5Z_6rtw@mail.gmail.com>
- <20200922163401.GC12990@dhcp22.suse.cz>
-In-Reply-To: <20200922163401.GC12990@dhcp22.suse.cz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 22 Sep 2020 09:51:30 -0700
-Message-ID: <CALvZod753Peyyg6aHUaFoiv3uXEPHqsyrSiariV8bF-vhH6iRA@mail.gmail.com>
-Subject: Re: Machine lockups on extreme memory pressure
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Thelen <gthelen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e06c573a-99a7-906c-8197-847a61fba44a@amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 9:34 AM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Tue 22-09-20 09:29:48, Shakeel Butt wrote:
-> > On Tue, Sep 22, 2020 at 8:16 AM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Tue 22-09-20 06:37:02, Shakeel Butt wrote:
-> [...]
-> > > > I talked about this problem with Johannes at LPC 2019 and I think we
-> > > > talked about two potential solutions. First was to somehow give memory
-> > > > reserves to oomd and second was in-kernel PSI based oom-killer. I am
-> > > > not sure the first one will work in this situation but the second one
-> > > > might help.
-> > >
-> > > Why does your oomd depend on memory allocation?
-> > >
-> >
-> > It does not but I think my concern was the potential allocations
-> > during syscalls.
->
-> So what is the problem then? Why your oomd cannot kill anything?
->
+On Tue, Sep 22, 2020 at 07:30:32PM +0300, Gal Pressman wrote:
+> On 22/09/2020 19:14, Jason Gunthorpe wrote:
+> > On Tue, Sep 22, 2020 at 03:46:29PM +0300, Gal Pressman wrote:
+> > 
+> >> I agree, that makes sense.
+> >> But assuming Oded actually goes and implements all the needed verbs to get a
+> >> basic functional libibverbs provider (assuming their HW can do it somehow), is
+> >> it really useful if no one is going to use it?
+> >> It doesn't sound like habanalabs want people to use GAUDI as an RDMA adapter,
+> >> and I'm assuming the only real world use case is going to be using the hl stack,
+> >> which means we're left with a lot of dead code that's not used/tested by anyone.
+> >>
+> >> Genuine question, wouldn't it be better if they only implement what's actually
+> >> going to be used and tested by their customers?
+> > 
+> > The general standard for this 'accel' hardware, both in DRM and RDMA
+> > is to present an open source userspace. Companies are encouraged to
+> > use that as their main interface but I suppose are free to carry the
+> > cost of dual APIs, and the community's wrath if they want.
+> 
+> I didn't mean they should maintain two interfaces.
+> The question is whether they should implement libibverbs support that covers the
+> cases used by their stack, or should they implement all "mandatory" verbs so
+> they could be able to run libibverbs' examples/perftest/pyverbs as well, even
+> though these will likely be the only apps covering these verbs.
 
-From the dump, it seems like it is not able to get the CPU. I am still
-trying to extract the reason though.
+As I said, the minimum standard is an open source user space that will
+operate the NIC. For EFA we decided that was ibv_ud_pingpong, and now
+parts of pyverbs. A similar decision would be needed here too. It is a
+conversation that should start with a propsal from Oded.
 
-> > Anyways, what do you think of the in-kernel PSI based
-> > oom-kill trigger. I think Johannes had a prototype as well.
->
-> We have talked about something like that in the past and established
-> that auto tuning for oom killer based on PSI is almost impossible to get
-> right for all potential workloads and that so this belongs to userspace.
-> The kernel's oom killer is there as a last resort when system gets close
-> to meltdown.
+The *point* is to have the open userspace, so I really don't care what
+their proprietary universe does, and shrinking the opensource side
+becuase it is "redundant" is completely backwards to what we want to
+see.
 
-The system is already in meltdown state from the users perspective. I
-still think allowing the users to optionally set the oom-kill trigger
-based on PSI makes sense. Something like 'if all processes on the
-system are stuck for 60 sec, trigger oom-killer'.
+Jason
