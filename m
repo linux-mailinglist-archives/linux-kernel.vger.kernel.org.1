@@ -2,134 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 309F0274C58
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4270E274C59
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 00:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726703AbgIVWmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 18:42:55 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:38017 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726448AbgIVWmy (ORCPT
+        id S1726739AbgIVWnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 18:43:06 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:34515 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726448AbgIVWnG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 18:42:54 -0400
-Received: by mail-wr1-f66.google.com with SMTP id g4so18807298wrs.5
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 15:42:53 -0700 (PDT)
+        Tue, 22 Sep 2020 18:43:06 -0400
+Received: by mail-ot1-f68.google.com with SMTP id h17so17200388otr.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 15:43:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=4GfM0AmWvMrKQ34w2mxE57N9tsR3pe7jAxX567tM6XE=;
-        b=RSYpg6SkH0nhkdZr1xFIA6w5ezUtngnDHCLyd5v3j1/ER8pnHin3S30IuP2fM7RXii
-         R1+API6XRLBtrFZ6lsUdAseZfvZSBpXkYMKHfHQSCY5SUSHpkqesuEL0yMv7dFwfI3/G
-         GlTLs4oR0zqB+Si274OODLVfudov/Urj1g8Ht9Zv+LAWShdeZzZa+N5upMbKCZtRSjUt
-         ZkWopnJPdHwe0L3TBpYuiKtcqOOvn2WNuoOwERalpcZXPPdwvrpFllFyh8LtcgQf1D+Q
-         1PABBO6q0huoFJckYrwl8MVtbOBMAiRWoBHJC3/tdXxMUB2hEPwwl2/yDdZhYjFWj083
-         CKCQ==
-X-Gm-Message-State: AOAM531jDQ3fjgXJO6S9rgP1iK6ntJJssiPrZE6lVd0wxq19zdeMbkEs
-        mvKt+XpXdLP6jeyMLKZ6LfWduEL8hIHz/+h58rbm5i9O
-X-Google-Smtp-Source: ABdhPJxM63lGLRBnkp5vgVGjXYvahaiGj8s7joRX6a/JP2PsUsAquyglpr7Qj1Mf8uGPdAGz208DVTuBGBRlXnrB8nE=
-X-Received: by 2002:adf:e481:: with SMTP id i1mr7638174wrm.391.1600814572800;
- Tue, 22 Sep 2020 15:42:52 -0700 (PDT)
+        bh=ujRFzrNNNsh5z7M9S1n/AHFDhC/eiAX1cUWK4oCO5/o=;
+        b=itI6g8zWCZTkO+JjsMcWsAYUaZmNWPUWn6O4CFjeADe36d4RU5gpbGQ91IEUdqFMCD
+         NjVUGAJpQ+rYGFbLBAekl05/D8DPkMlpwSewg3mHBgZakVnR0O7aU2fzIWZkcaudL/pk
+         109sXYZsRkvvNV3ojms52AclMUIPftdPL4ir6P+ZbM8feYZ+eqD2YMDj1Hdavgza3xu/
+         KGj058nSrgo/+9wqumkXyA3l5qArLmD9xXkgvrnn7j1LzGrFz4hKwOFx81AkU7WxUarb
+         06/k2FPrxLzKbbMT1sTUxAtDuSFmY5dvnXessSo2aT/0kSZ6gFW4ozQPijiSBzdpvlfU
+         OYgA==
+X-Gm-Message-State: AOAM530MnLpkY5EIvtDFH7LAWOz+LvpTBNmH+gWC7oC9pFRS5tTqTI4C
+        aYSACrsb74nmbGNUzftW/8Ug3TQsXVI=
+X-Google-Smtp-Source: ABdhPJzCTxS9liazLcqg3hK3HNoARI0ZUmby4pOiSznV8usi6uzS8sMpFs9L1LoPhWfRXiWu+EAV4A==
+X-Received: by 2002:a9d:2009:: with SMTP id n9mr3988585ota.41.1600814585328;
+        Tue, 22 Sep 2020 15:43:05 -0700 (PDT)
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com. [209.85.210.46])
+        by smtp.gmail.com with ESMTPSA id j26sm8173148oor.21.2020.09.22.15.43.04
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Sep 2020 15:43:04 -0700 (PDT)
+Received: by mail-ot1-f46.google.com with SMTP id 60so17183787otw.3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 15:43:04 -0700 (PDT)
+X-Received: by 2002:a05:6830:196:: with SMTP id q22mr4056424ota.221.1600814584178;
+ Tue, 22 Sep 2020 15:43:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200909055849.469612-1-namhyung@kernel.org> <20200909055849.469612-3-namhyung@kernel.org>
- <20200922204240.GB2893484@krava>
-In-Reply-To: <20200922204240.GB2893484@krava>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 23 Sep 2020 07:42:41 +0900
-Message-ID: <CAM9d7cjbaijYvMJRZbhiiuK6hxx2NQpicM_82wetVsOuWOQXew@mail.gmail.com>
-Subject: Re: [PATCH 3/3] perf list: Add 'pfm' to list libpfm4 events
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ian Rogers <irogers@google.com>
+References: <20200920202625.11377-1-krzk@kernel.org>
+In-Reply-To: <20200920202625.11377-1-krzk@kernel.org>
+From:   Li Yang <leoyang.li@nxp.com>
+Date:   Tue, 22 Sep 2020 17:42:52 -0500
+X-Gmail-Original-Message-ID: <CADRPPNTJ0GfZX6Ms43o1oP8hpA-jbZLJuM7gp8_XY97TtX+mog@mail.gmail.com>
+Message-ID: <CADRPPNTJ0GfZX6Ms43o1oP8hpA-jbZLJuM7gp8_XY97TtX+mog@mail.gmail.com>
+Subject: Re: [PATCH] soc: fsl: qbman: Fix return value on success
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Roy Pledge <roy.pledge@nxp.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+On Sun, Sep 20, 2020 at 3:27 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> On error the function was meant to return -ERRNO.  This also fixes
+> compile warning:
+>
+>   drivers/soc/fsl/qbman/bman.c:640:6: warning: variable 'err' set but not used [-Wunused-but-set-variable]
+>
+> Fixes: 0505d00c8dba ("soc/fsl/qbman: Cleanup buffer pools if BMan was initialized prior to bootup")
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-On Wed, Sep 23, 2020 at 5:42 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Wed, Sep 09, 2020 at 02:58:49PM +0900, Namhyung Kim wrote:
->
-> SNIP
->
-> >  int parse_events__is_hardcoded_term(struct parse_events_term *term)
-> > diff --git a/tools/perf/util/pfm.c b/tools/perf/util/pfm.c
-> > index d735acb6c29c..26ae2c8c0932 100644
-> > --- a/tools/perf/util/pfm.c
-> > +++ b/tools/perf/util/pfm.c
-> > @@ -12,6 +12,7 @@
-> >  #include "util/parse-events.h"
-> >  #include "util/pmu.h"
-> >  #include "util/pfm.h"
-> > +#include "util/string2.h"
-> >
-> >  #include <string.h>
-> >  #include <linux/kernel.h>
-> > @@ -227,7 +228,7 @@ print_libpfm_events_raw(pfm_pmu_info_t *pinfo, pfm_event_info_t *info)
-> >               printf("%s::%s\n", pinfo->name, info->name);
-> >  }
-> >
-> > -void print_libpfm_events(bool name_only, bool long_desc)
-> > +void print_libpfm_events(const char *event_glob, bool name_only, bool long_desc)
-> >  {
-> >       pfm_event_info_t info;
-> >       pfm_pmu_info_t pinfo;
-> > @@ -265,6 +266,9 @@ void print_libpfm_events(bool name_only, bool long_desc)
-> >                       if (ret != PFM_SUCCESS)
-> >                               continue;
-> >
-> > +                     if (event_glob && !strglobmatch_nocase(info.name, event_glob))
-> > +                             continue;
->
-> you could mentioned in changelog that it also enables glob
-> matching for pfm events.. but other than then looks ok
+Applied for next.  Thanks.
 
-Well, I have mentioned it in the changelog.. :)
-Do you want an example?
-
+> ---
+>  drivers/soc/fsl/qbman/bman.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> Acked/Tested-by: Jiri Olsa <jolsa@kernel.org>
-
-Thanks
-Namhyung
-
+> diff --git a/drivers/soc/fsl/qbman/bman.c b/drivers/soc/fsl/qbman/bman.c
+> index f4fb527d8301..c5dd026fe889 100644
+> --- a/drivers/soc/fsl/qbman/bman.c
+> +++ b/drivers/soc/fsl/qbman/bman.c
+> @@ -660,7 +660,7 @@ int bm_shutdown_pool(u32 bpid)
+>         }
+>  done:
+>         put_affine_portal();
+> -       return 0;
+> +       return err;
+>  }
 >
-> > +
-> >                       if (!name_only && !printed_pmu) {
-> >                               printf("%s:\n", pinfo.name);
-> >                               printed_pmu = true;
-> > diff --git a/tools/perf/util/pfm.h b/tools/perf/util/pfm.h
-> > index 7d70dda87012..036e2d97b260 100644
-> > --- a/tools/perf/util/pfm.h
-> > +++ b/tools/perf/util/pfm.h
-> > @@ -13,7 +13,7 @@
-> >  int parse_libpfm_events_option(const struct option *opt, const char *str,
-> >                       int unset);
-> >
-> > -void print_libpfm_events(bool name_only, bool long_desc);
-> > +void print_libpfm_events(const char *event_glob, bool name_only, bool long_desc);
-> >
-> >  #else
-> >  #include <linux/compiler.h>
-> > @@ -26,7 +26,8 @@ static inline int parse_libpfm_events_option(
-> >       return 0;
-> >  }
-> >
-> > -static inline void print_libpfm_events(bool name_only __maybe_unused,
-> > +static inline void print_libpfm_events(const char *event_glob __maybe_unused,
-> > +                                    bool name_only __maybe_unused,
-> >                                      bool long_desc __maybe_unused)
-> >  {
-> >  }
-> > --
-> > 2.28.0.526.ge36021eeef-goog
-> >
+>  struct gen_pool *bm_bpalloc;
+> --
+> 2.17.1
 >
