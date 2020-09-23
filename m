@@ -2,126 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD334275509
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DF1927550B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726415AbgIWKEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 06:04:07 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56774 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgIWKEH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 06:04:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C3226B207;
-        Wed, 23 Sep 2020 10:04:42 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 3BB141E12E3; Wed, 23 Sep 2020 12:04:05 +0200 (CEST)
-Date:   Wed, 23 Sep 2020 12:04:05 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Peilin Ye <yepeilin.cs@gmail.com>
-Cc:     Jan Kara <jack@suse.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: Re: [Linux-kernel-mentees] [PATCH] udf: Fix memory leak in
- udf_process_sequence()
-Message-ID: <20200923100405.GD6719@quack2.suse.cz>
-References: <0000000000004c1f4d05afcff2f4@google.com>
- <20200922154531.153922-1-yepeilin.cs@gmail.com>
+        id S1726497AbgIWKE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 06:04:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgIWKEY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 06:04:24 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96A8FC0613CE;
+        Wed, 23 Sep 2020 03:04:23 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id d19so6592896pld.0;
+        Wed, 23 Sep 2020 03:04:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FkYqYStFxJ6DfYL7hPfSU7rflihsJBrQX0AyZVatfFk=;
+        b=l1n9DduT2uuNOi3NnJ/np3LCh2KISCWfsVqK4YeE4xvHgleGz7Icp94jp0BBFlY+0P
+         nmrFMLrFU1eiT5xR+gHH9E7tcPQ8GiKF+j/qcFIhHn83p7nexC0ojDZmAVQD9YeVOsgU
+         vpr6bKHM8xPOqZCKO42GJgu6afnuHhrxV9oz71i9CGPyWRyoop9SyVw04JpNQUCK9l/W
+         R2m/xwkrlc0nQqU9J7KOKmWHgK0jPe5PZjXa++muK1uUBZtxdcLLGsx7NuyL4jTVdImW
+         /swZxkvrnBugHbbe7A4LAOYwHi+H/BtFtqvUZwHsAfpQjMDbqMVMlxJXrrhZcWKjthpx
+         9Gag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FkYqYStFxJ6DfYL7hPfSU7rflihsJBrQX0AyZVatfFk=;
+        b=ABvI7lo2VUWlJDDdF+H1YpGWRWEdBoMWJSwv3alxazmuJZa7yD3sTg/STirfJn+cXp
+         /c61IgAunpmb0NotXVwcgbYjGTCTe4ExhP/eaIj1gwTNY5oLCjr92flIMMVpIcolvE1O
+         4WYT2VA++7ZrC0R30H4wIr9LJ4Wu1Pj4qPuHLfsyEa6NIPletDzNB4gOAhwN0WJKo8Ii
+         /r7hzr98GrN0mYyBCu+/k6Q8pIfQf77vC/rWSM7enSDcaSHALuxUBGlnx5Iq0jXmWpt+
+         C0lnbGIJ1By2jOLtWY7A8OLh9qCJeCSEE28s4hvP7MZjqO5+ebolE8GtrU6iv0KD7NvS
+         3J4Q==
+X-Gm-Message-State: AOAM532T+JY+m0PMCSvUxkmMJe/vxb/frXwb5cRiNxCPD/P2Rcyxk5J8
+        xZT6qhkJoSbQTDu4uvM7IaOwbA2F/KIuXZMTvdc=
+X-Google-Smtp-Source: ABdhPJzzMGQiuxp/3TSZv7QWahdtf/4iY8MfvuRnGTeHcbjylmnREeYP8v4JNMcluPmchu4UFhYExVaVsC1buXKjL+E=
+X-Received: by 2002:a17:90a:b387:: with SMTP id e7mr7840420pjr.228.1600855463097;
+ Wed, 23 Sep 2020 03:04:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922154531.153922-1-yepeilin.cs@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200922023151.387447-1-warthog618@gmail.com> <20200922023151.387447-5-warthog618@gmail.com>
+In-Reply-To: <20200922023151.387447-5-warthog618@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 23 Sep 2020 13:04:05 +0300
+Message-ID: <CAHp75VewJYDQ1Moi4jw=wbBMLNpaUGPgz+AsPjNdZqtHCgkjwA@mail.gmail.com>
+Subject: Re: [PATCH v9 04/20] gpio: uapi: define uAPI v2
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 22-09-20 11:45:31, Peilin Ye wrote:
-> udf_process_sequence() is leaking memory. Free `data.part_descs_loc`
-> before returning.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 7b78fd02fb19 ("udf: Fix handling of Partition Descriptors")
-> Reported-and-tested-by: syzbot+128f4dd6e796c98b3760@syzkaller.appspotmail.com
-> Link: https://syzkaller.appspot.com/bug?id=c5ec4e6f5d818f3c4afd4d59342468eec08a38da
-> Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+On Tue, Sep 22, 2020 at 5:34 AM Kent Gibson <warthog618@gmail.com> wrote:
+>
+> Add a new version of the uAPI to address existing 32/64-bit alignment
+> issues, add support for debounce and event sequence numbers, allow
+> requested lines with different configurations, and provide some future
+> proofing by adding padding reserved for future use.
+>
+> The alignment issue relates to the gpioevent_data, which packs to different
+> sizes on 32-bit and 64-bit platforms. That creates problems for 32-bit apps
+> running on 64-bit kernels.  uAPI v2 addresses that particular issue, and
+> the problem more generally, by adding pad fields that explicitly pad
+> structs out to 64-bit boundaries, so they will pack to the same size now,
+> and even if some of the reserved padding is used for __u64 fields in the
+> future.
+>
+> The new structs have been analysed with pahole to ensure that they
+> are sized as expected and contain no implicit padding.
+>
+> The lack of future proofing in v1 makes it impossible to, for example,
+> add the debounce feature that is included in v2.
+> The future proofing is addressed by providing configurable attributes in
+> line config and reserved padding in all structs for future features.
+> Specifically, the line request, config, info, info_changed and event
+> structs receive updated versions and new ioctls.
+>
+> As the majority of the structs and ioctls were being replaced, it is
+> opportune to rework some of the other aspects of the uAPI:
+>
+> v1 has three different flags fields, each with their own separate
+> bit definitions.  In v2 that is collapsed to one - gpio_v2_line_flag.
+>
+> The handle and event requests are merged into a single request, the line
+> request, as the two requests were mostly the same other than the edge
+> detection provided by event requests.  As a byproduct, the v2 uAPI allows
+> for multiple lines producing edge events on the same line handle.
+> This is a new capability as v1 only supports a single line in an event
+> request.
+>
+> As a consequence, there are now only two types of file handle to be
+> concerned with, the chip and the line, and it is clearer which ioctls
+> apply to which type of handle.
+>
+> There is also some minor renaming of fields for consistency compared to
+> their v1 counterparts, e.g. offset rather than lineoffset or line_offset,
+> and consumer rather than consumer_label.
+>
+> Additionally, v1 GPIOHANDLES_MAX becomes GPIO_V2_LINES_MAX in v2 for
+> clarity, and the gpiohandle_data __u8 array becomes a bitmap in
+> gpio_v2_line_values.
+>
+> The v2 uAPI is mostly a reorganisation and extension of v1, so userspace
+> code, particularly libgpiod, should readily port to it.
 
-Thanks for the patch but I've just yesterday written exactly the same patch
-and merged it to my tree...
+...
 
-								Honza
+> +struct gpio_v2_line_config {
+> +       __aligned_u64 flags;
+> +       __u32 num_attrs;
 
-> ---
->  fs/udf/super.c | 20 +++++++++++++-------
->  1 file changed, 13 insertions(+), 7 deletions(-)
-> 
-> diff --git a/fs/udf/super.c b/fs/udf/super.c
-> index 1c42f544096d..b0d862ab3024 100644
-> --- a/fs/udf/super.c
-> +++ b/fs/udf/super.c
-> @@ -1698,7 +1698,8 @@ static noinline int udf_process_sequence(
->  					"Pointers (max %u supported)\n",
->  					UDF_MAX_TD_NESTING);
->  				brelse(bh);
-> -				return -EIO;
-> +				ret = -EIO;
-> +				goto out;
->  			}
->  
->  			vdp = (struct volDescPtr *)bh->b_data;
-> @@ -1718,7 +1719,8 @@ static noinline int udf_process_sequence(
->  			curr = get_volume_descriptor_record(ident, bh, &data);
->  			if (IS_ERR(curr)) {
->  				brelse(bh);
-> -				return PTR_ERR(curr);
-> +				ret = PTR_ERR(curr);
-> +				goto out;
->  			}
->  			/* Descriptor we don't care about? */
->  			if (!curr)
-> @@ -1740,28 +1742,32 @@ static noinline int udf_process_sequence(
->  	 */
->  	if (!data.vds[VDS_POS_PRIMARY_VOL_DESC].block) {
->  		udf_err(sb, "Primary Volume Descriptor not found!\n");
-> -		return -EAGAIN;
-> +		ret = -EAGAIN;
-> +		goto out;
->  	}
->  	ret = udf_load_pvoldesc(sb, data.vds[VDS_POS_PRIMARY_VOL_DESC].block);
->  	if (ret < 0)
-> -		return ret;
-> +		goto out;
->  
->  	if (data.vds[VDS_POS_LOGICAL_VOL_DESC].block) {
->  		ret = udf_load_logicalvol(sb,
->  				data.vds[VDS_POS_LOGICAL_VOL_DESC].block,
->  				fileset);
->  		if (ret < 0)
-> -			return ret;
-> +			goto out;
->  	}
->  
->  	/* Now handle prevailing Partition Descriptors */
->  	for (i = 0; i < data.num_part_descs; i++) {
->  		ret = udf_load_partdesc(sb, data.part_descs_loc[i].rec.block);
->  		if (ret < 0)
-> -			return ret;
-> +			goto out;
->  	}
->  
-> -	return 0;
-> +	ret = 0;
-> +out:
-> +	kfree(data.part_descs_loc);
-> +	return ret;
->  }
->  
->  /*
-> -- 
-> 2.25.1
-> 
+> +       /* Pad to fill implicit padding and reserve space for future use. */
+> +       __u32 padding[5];
+
+Probably I somehow missed the answer, but why do we need 5 here and not 1?
+
+> +       struct gpio_v2_line_config_attribute attrs[GPIO_V2_LINE_NUM_ATTRS_MAX];
+> +};
+
+...
+
+> +struct gpio_v2_line_request {
+> +       __u32 offsets[GPIO_V2_LINES_MAX];
+> +       char consumer[GPIO_MAX_NAME_SIZE];
+> +       struct gpio_v2_line_config config;
+> +       __u32 num_lines;
+> +       __u32 event_buffer_size;
+
+> +       /* Pad to fill implicit padding and reserve space for future use. */
+> +       __u32 padding[5];
+
+Ditto.
+
+> +       __s32 fd;
+> +};
+
+...
+
+> +struct gpio_v2_line_info {
+> +       char name[GPIO_MAX_NAME_SIZE];
+> +       char consumer[GPIO_MAX_NAME_SIZE];
+> +       __u32 offset;
+> +       __u32 num_attrs;
+> +       __aligned_u64 flags;
+> +       struct gpio_v2_line_attribute attrs[GPIO_V2_LINE_NUM_ATTRS_MAX];
+
+> +       /* Space reserved for future use. */
+> +       __u32 padding[4];
+
+Here two comments as in previous patches, why this went after
+attribute structures and why 2 is not enough?
+
+> +};
+
+...
+
+> +struct gpio_v2_line_info_changed {
+> +       struct gpio_v2_line_info info;
+> +       __aligned_u64 timestamp_ns;
+> +       __u32 event_type;
+> +       /* Pad struct to 64-bit boundary and reserve space for future use. */
+> +       __u32 padding[5];
+
+Again, why 5 and not 1?
+
+> +};
+
+...
+
+> +struct gpio_v2_line_event {
+> +       __aligned_u64 timestamp_ns;
+> +       __u32 id;
+> +       __u32 offset;
+> +       __u32 seqno;
+> +       __u32 line_seqno;
+
+> +       /* Space reserved for future use. */
+> +       __u32 padding[6];
+
+Why 6 and not 2?
+
+And here actually sizeof() can be a version.
+So, I still see possible versioning issues with ABI.
+
+> +};
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+With Best Regards,
+Andy Shevchenko
