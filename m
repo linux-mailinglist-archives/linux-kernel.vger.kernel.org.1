@@ -2,872 +2,617 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F1C275D16
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC9BD275D0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726900AbgIWQPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 12:15:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42188 "EHLO mail.kernel.org"
+        id S1726595AbgIWQN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 12:13:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726829AbgIWQPM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 12:15:12 -0400
-Received: from e123331-lin.nice.arm.com (lfbn-nic-1-188-42.w2-15.abo.wanadoo.fr [2.15.37.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726130AbgIWQN7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 12:13:59 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 869F721D92;
-        Wed, 23 Sep 2020 16:15:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C72C7208E4;
+        Wed, 23 Sep 2020 16:13:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600877711;
-        bh=HLUV5aGznfDhUCFhdzMz8R+EKO/xLvwQOuXUkqXnmxU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tKYbr3Ze1ZZJykh3TeZoisD+t1hBGPCrKN0aOGa2wvUJGvRvhGJhWOSt8UjpzXkaM
-         ZwJ7oD6jGKLXDfKGwSfq/IooneJ42ImWUBZk9FfIfGh7aOoQr46RHxof0gxGZc9pk5
-         DGBO2eOIPXLZFh8t3KIMsa17X7JxP+RcrKxgVLgg=
-From:   Ard Biesheuvel <ardb@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-efi@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Matthew Garrett <mjg59@google.com>,
-        Peter Jones <pjones@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>
-Subject: [PATCH 7/7] efi: efivars: remove deprecated sysfs interface
-Date:   Wed, 23 Sep 2020 18:14:04 +0200
-Message-Id: <20200923161404.17811-8-ardb@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200923161404.17811-1-ardb@kernel.org>
-References: <20200923161404.17811-1-ardb@kernel.org>
+        s=default; t=1600877638;
+        bh=dd0+QGUw7FYHGc2K0i1e3+Rp3pgyf5G2i5dUaqW9I7A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Djr6D68kbgJ0nt+MBoJ2APEdkjvQKgSawR/DZ7ynvSBiu0P5KgYkieLFflb2CoTAD
+         RLD+7nP6U8gx+njAc4NuwoNJiOCt8/Cqm6VOiquxngi9iJCwUAvgFpBKu+Hmw9re6e
+         jbVx+Qh2IU5vtPqPDazQairLsoIFLHNMR80ebHWQ=
+Date:   Wed, 23 Sep 2020 18:14:16 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        =?utf-8?B?Qmxhxb4=?= Hrastnik <blaz@mxxn.io>,
+        Dorian Stoll <dorian.stoll@tmsp.io>
+Subject: Re: [RFC PATCH 8/9] surface_aggregator: Add DebugFS interface
+Message-ID: <20200923161416.GA3723109@kroah.com>
+References: <20200923151511.3842150-1-luzmaximilian@gmail.com>
+ <20200923151511.3842150-9-luzmaximilian@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200923151511.3842150-9-luzmaximilian@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
-Note: for reference only - please read cover letter before replying.
+On Wed, Sep 23, 2020 at 05:15:10PM +0200, Maximilian Luz wrote:
+> Add a DebugFS device-file providing user-space access to the Surface
+> Aggregator EC, intended for debugging, testing, and reverse-engineering.
+> Specifically, this interface gives user-space applications the ability
+> to send requests to the EC and receive the corresponding responses.
 
- Documentation/ABI/stable/sysfs-firmware-efi-vars |  75 ---
- drivers/firmware/efi/Kconfig                     |  12 -
- drivers/firmware/efi/Makefile                    |   1 -
- drivers/firmware/efi/efivars.c                   | 671 --------------------
- include/linux/efi.h                              |   7 -
- 5 files changed, 766 deletions(-)
+Did you just add an ioctl to a debugfs file?  Wow...
 
-diff --git a/Documentation/ABI/stable/sysfs-firmware-efi-vars b/Documentation/ABI/stable/sysfs-firmware-efi-vars
-deleted file mode 100644
-index 5def20b9019e..000000000000
---- a/Documentation/ABI/stable/sysfs-firmware-efi-vars
-+++ /dev/null
-@@ -1,75 +0,0 @@
--What:		/sys/firmware/efi/vars
--Date:		April 2004
--Contact:	Matt Domsch <Matt_Domsch@dell.com>
--Description:
--		This directory exposes interfaces for interactive with
--		EFI variables.  For more information on EFI variables,
--		see 'Variable Services' in the UEFI specification
--		(section 7.2 in specification version 2.3 Errata D).
--
--		In summary, EFI variables are named, and are classified
--		into separate namespaces through the use of a vendor
--		GUID.  They also have an arbitrary binary value
--		associated with them.
--
--		The efivars module enumerates these variables and
--		creates a separate directory for each one found.  Each
--		directory has a name of the form "<key>-<vendor guid>"
--		and contains the following files:
--
--		attributes:	A read-only text file enumerating the
--				EFI variable flags.  Potential values
--				include:
--
--				EFI_VARIABLE_NON_VOLATILE
--				EFI_VARIABLE_BOOTSERVICE_ACCESS
--				EFI_VARIABLE_RUNTIME_ACCESS
--				EFI_VARIABLE_HARDWARE_ERROR_RECORD
--				EFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS
--
--				See the EFI documentation for an
--				explanation of each of these variables.
--
--		data:		A read-only binary file that can be read
--				to attain the value of the EFI variable
--
--		guid:		The vendor GUID of the variable.  This
--				should always match the GUID in the
--				variable's name.
--
--		raw_var:	A binary file that can be read to obtain
--				a structure that contains everything
--				there is to know about the variable.
--				For structure definition see "struct
--				efi_variable" in the kernel sources.
--
--				This file can also be written to in
--				order to update the value of a variable.
--				For this to work however, all fields of
--				the "struct efi_variable" passed must
--				match byte for byte with the structure
--				read out of the file, save for the value
--				portion.
--
--				**Note** the efi_variable structure
--				read/written with this file contains a
--				'long' type that may change widths
--				depending on your underlying
--				architecture.
--
--		size:		As ASCII representation of the size of
--				the variable's value.
--
--
--		In addition, two other magic binary files are provided
--		in the top-level directory and are used for adding and
--		removing variables:
--
--		new_var:	Takes a "struct efi_variable" and
--				instructs the EFI firmware to create a
--				new variable.
--
--		del_var:	Takes a "struct efi_variable" and
--				instructs the EFI firmware to remove any
--				variable that has a matching vendor GUID
--				and variable key name.
-diff --git a/drivers/firmware/efi/Kconfig b/drivers/firmware/efi/Kconfig
-index da1887f72a51..42731b4e335c 100644
---- a/drivers/firmware/efi/Kconfig
-+++ b/drivers/firmware/efi/Kconfig
-@@ -2,18 +2,6 @@
- menu "EFI (Extensible Firmware Interface) Support"
- 	depends on EFI
- 
--config EFI_VARS
--	tristate "EFI Variable Support via sysfs"
--	depends on EFI && (X86 || IA64)
--	default n
--	help
--	  If you say Y here, you are able to get EFI (Extensible Firmware
--	  Interface) variable information via sysfs.  You may read,
--	  write, create, and destroy EFI variables through this interface.
--	  Note that this driver is only retained for compatibility with
--	  legacy users: new users should use the efivarfs filesystem
--	  instead.
--
- config EFI_ESRT
- 	bool
- 	depends on EFI && !IA64
-diff --git a/drivers/firmware/efi/Makefile b/drivers/firmware/efi/Makefile
-index 7a216984552b..00fbc1b80c84 100644
---- a/drivers/firmware/efi/Makefile
-+++ b/drivers/firmware/efi/Makefile
-@@ -14,7 +14,6 @@ obj-$(CONFIG_ACPI_BGRT) 		+= efi-bgrt.o
- obj-$(CONFIG_EFI)			+= efi.o vars.o reboot.o memattr.o tpm.o
- obj-$(CONFIG_EFI)			+= capsule.o memmap.o
- obj-$(CONFIG_EFI_PARAMS_FROM_FDT)	+= fdtparams.o
--obj-$(CONFIG_EFI_VARS)			+= efivars.o
- obj-$(CONFIG_EFI_ESRT)			+= esrt.o
- obj-$(CONFIG_EFI_VARS_PSTORE)		+= efi-pstore.o
- obj-$(CONFIG_UEFI_CPER)			+= cper.o
-diff --git a/drivers/firmware/efi/efivars.c b/drivers/firmware/efi/efivars.c
-deleted file mode 100644
-index a76f50e15e6d..000000000000
---- a/drivers/firmware/efi/efivars.c
-+++ /dev/null
-@@ -1,671 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0+
--/*
-- * Originally from efivars.c,
-- *
-- * Copyright (C) 2001,2003,2004 Dell <Matt_Domsch@dell.com>
-- * Copyright (C) 2004 Intel Corporation <matthew.e.tolentino@intel.com>
-- *
-- * This code takes all variables accessible from EFI runtime and
-- *  exports them via sysfs
-- */
--
--#include <linux/efi.h>
--#include <linux/module.h>
--#include <linux/slab.h>
--#include <linux/ucs2_string.h>
--#include <linux/compat.h>
--
--#define EFIVARS_VERSION "0.08"
--#define EFIVARS_DATE "2004-May-17"
--
--MODULE_AUTHOR("Matt Domsch <Matt_Domsch@Dell.com>");
--MODULE_DESCRIPTION("sysfs interface to EFI Variables");
--MODULE_LICENSE("GPL");
--MODULE_VERSION(EFIVARS_VERSION);
--MODULE_ALIAS("platform:efivars");
--
--static LIST_HEAD(efivar_sysfs_list);
--
--static struct kset *efivars_kset;
--
--static struct bin_attribute *efivars_new_var;
--static struct bin_attribute *efivars_del_var;
--
--struct compat_efi_variable {
--	efi_char16_t  VariableName[EFI_VAR_NAME_LEN/sizeof(efi_char16_t)];
--	efi_guid_t    VendorGuid;
--	__u32         DataSize;
--	__u8          Data[1024];
--	__u32         Status;
--	__u32         Attributes;
--} __packed;
--
--struct efivar_attribute {
--	struct attribute attr;
--	ssize_t (*show) (struct efivar_entry *entry, char *buf);
--	ssize_t (*store)(struct efivar_entry *entry, const char *buf, size_t count);
--};
--
--#define EFIVAR_ATTR(_name, _mode, _show, _store) \
--struct efivar_attribute efivar_attr_##_name = { \
--	.attr = {.name = __stringify(_name), .mode = _mode}, \
--	.show = _show, \
--	.store = _store, \
--};
--
--#define to_efivar_attr(_attr) container_of(_attr, struct efivar_attribute, attr)
--#define to_efivar_entry(obj)  container_of(obj, struct efivar_entry, kobj)
--
--/*
-- * Prototype for sysfs creation function
-- */
--static int
--efivar_create_sysfs_entry(struct efivar_entry *new_var);
--
--static ssize_t
--efivar_guid_read(struct efivar_entry *entry, char *buf)
--{
--	struct efi_variable *var = &entry->var;
--	char *str = buf;
--
--	if (!entry || !buf)
--		return 0;
--
--	efi_guid_to_str(&var->VendorGuid, str);
--	str += strlen(str);
--	str += sprintf(str, "\n");
--
--	return str - buf;
--}
--
--static ssize_t
--efivar_attr_read(struct efivar_entry *entry, char *buf)
--{
--	struct efi_variable *var = &entry->var;
--	unsigned long size = sizeof(var->Data);
--	char *str = buf;
--	int ret;
--
--	if (!entry || !buf)
--		return -EINVAL;
--
--	ret = efivar_entry_get(entry, &var->Attributes, &size, var->Data);
--	var->DataSize = size;
--	if (ret)
--		return -EIO;
--
--	if (var->Attributes & EFI_VARIABLE_NON_VOLATILE)
--		str += sprintf(str, "EFI_VARIABLE_NON_VOLATILE\n");
--	if (var->Attributes & EFI_VARIABLE_BOOTSERVICE_ACCESS)
--		str += sprintf(str, "EFI_VARIABLE_BOOTSERVICE_ACCESS\n");
--	if (var->Attributes & EFI_VARIABLE_RUNTIME_ACCESS)
--		str += sprintf(str, "EFI_VARIABLE_RUNTIME_ACCESS\n");
--	if (var->Attributes & EFI_VARIABLE_HARDWARE_ERROR_RECORD)
--		str += sprintf(str, "EFI_VARIABLE_HARDWARE_ERROR_RECORD\n");
--	if (var->Attributes & EFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS)
--		str += sprintf(str,
--			"EFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS\n");
--	if (var->Attributes &
--			EFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS)
--		str += sprintf(str,
--			"EFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS\n");
--	if (var->Attributes & EFI_VARIABLE_APPEND_WRITE)
--		str += sprintf(str, "EFI_VARIABLE_APPEND_WRITE\n");
--	return str - buf;
--}
--
--static ssize_t
--efivar_size_read(struct efivar_entry *entry, char *buf)
--{
--	struct efi_variable *var = &entry->var;
--	unsigned long size = sizeof(var->Data);
--	char *str = buf;
--	int ret;
--
--	if (!entry || !buf)
--		return -EINVAL;
--
--	ret = efivar_entry_get(entry, &var->Attributes, &size, var->Data);
--	var->DataSize = size;
--	if (ret)
--		return -EIO;
--
--	str += sprintf(str, "0x%lx\n", var->DataSize);
--	return str - buf;
--}
--
--static ssize_t
--efivar_data_read(struct efivar_entry *entry, char *buf)
--{
--	struct efi_variable *var = &entry->var;
--	unsigned long size = sizeof(var->Data);
--	int ret;
--
--	if (!entry || !buf)
--		return -EINVAL;
--
--	ret = efivar_entry_get(entry, &var->Attributes, &size, var->Data);
--	var->DataSize = size;
--	if (ret)
--		return -EIO;
--
--	memcpy(buf, var->Data, var->DataSize);
--	return var->DataSize;
--}
--
--static inline int
--sanity_check(struct efi_variable *var, efi_char16_t *name, efi_guid_t vendor,
--	     unsigned long size, u32 attributes, u8 *data)
--{
--	/*
--	 * If only updating the variable data, then the name
--	 * and guid should remain the same
--	 */
--	if (memcmp(name, var->VariableName, sizeof(var->VariableName)) ||
--		efi_guidcmp(vendor, var->VendorGuid)) {
--		printk(KERN_ERR "efivars: Cannot edit the wrong variable!\n");
--		return -EINVAL;
--	}
--
--	if ((size <= 0) || (attributes == 0)){
--		printk(KERN_ERR "efivars: DataSize & Attributes must be valid!\n");
--		return -EINVAL;
--	}
--
--	if ((attributes & ~EFI_VARIABLE_MASK) != 0 ||
--	    efivar_validate(vendor, name, data, size) == false) {
--		printk(KERN_ERR "efivars: Malformed variable content\n");
--		return -EINVAL;
--	}
--
--	return 0;
--}
--
--static void
--copy_out_compat(struct efi_variable *dst, struct compat_efi_variable *src)
--{
--	memcpy(dst->VariableName, src->VariableName, EFI_VAR_NAME_LEN);
--	memcpy(dst->Data, src->Data, sizeof(src->Data));
--
--	dst->VendorGuid = src->VendorGuid;
--	dst->DataSize = src->DataSize;
--	dst->Attributes = src->Attributes;
--}
--
--/*
-- * We allow each variable to be edited via rewriting the
-- * entire efi variable structure.
-- */
--static ssize_t
--efivar_store_raw(struct efivar_entry *entry, const char *buf, size_t count)
--{
--	struct efi_variable *new_var, *var = &entry->var;
--	efi_char16_t *name;
--	unsigned long size;
--	efi_guid_t vendor;
--	u32 attributes;
--	u8 *data;
--	int err;
--
--	if (!entry || !buf)
--		return -EINVAL;
--
--	if (in_compat_syscall()) {
--		struct compat_efi_variable *compat;
--
--		if (count != sizeof(*compat))
--			return -EINVAL;
--
--		compat = (struct compat_efi_variable *)buf;
--		attributes = compat->Attributes;
--		vendor = compat->VendorGuid;
--		name = compat->VariableName;
--		size = compat->DataSize;
--		data = compat->Data;
--
--		err = sanity_check(var, name, vendor, size, attributes, data);
--		if (err)
--			return err;
--
--		copy_out_compat(&entry->var, compat);
--	} else {
--		if (count != sizeof(struct efi_variable))
--			return -EINVAL;
--
--		new_var = (struct efi_variable *)buf;
--
--		attributes = new_var->Attributes;
--		vendor = new_var->VendorGuid;
--		name = new_var->VariableName;
--		size = new_var->DataSize;
--		data = new_var->Data;
--
--		err = sanity_check(var, name, vendor, size, attributes, data);
--		if (err)
--			return err;
--
--		memcpy(&entry->var, new_var, count);
--	}
--
--	err = efivar_entry_set(entry, attributes, size, data, NULL);
--	if (err) {
--		printk(KERN_WARNING "efivars: set_variable() failed: status=%d\n", err);
--		return -EIO;
--	}
--
--	return count;
--}
--
--static ssize_t
--efivar_show_raw(struct efivar_entry *entry, char *buf)
--{
--	struct efi_variable *var = &entry->var;
--	struct compat_efi_variable *compat;
--	unsigned long datasize = sizeof(var->Data);
--	size_t size;
--	int ret;
--
--	if (!entry || !buf)
--		return 0;
--
--	ret = efivar_entry_get(entry, &var->Attributes, &datasize, var->Data);
--	var->DataSize = datasize;
--	if (ret)
--		return -EIO;
--
--	if (in_compat_syscall()) {
--		compat = (struct compat_efi_variable *)buf;
--
--		size = sizeof(*compat);
--		memcpy(compat->VariableName, var->VariableName,
--			EFI_VAR_NAME_LEN);
--		memcpy(compat->Data, var->Data, sizeof(compat->Data));
--
--		compat->VendorGuid = var->VendorGuid;
--		compat->DataSize = var->DataSize;
--		compat->Attributes = var->Attributes;
--	} else {
--		size = sizeof(*var);
--		memcpy(buf, var, size);
--	}
--
--	return size;
--}
--
--/*
-- * Generic read/write functions that call the specific functions of
-- * the attributes...
-- */
--static ssize_t efivar_attr_show(struct kobject *kobj, struct attribute *attr,
--				char *buf)
--{
--	struct efivar_entry *var = to_efivar_entry(kobj);
--	struct efivar_attribute *efivar_attr = to_efivar_attr(attr);
--	ssize_t ret = -EIO;
--
--	if (!capable(CAP_SYS_ADMIN))
--		return -EACCES;
--
--	if (efivar_attr->show) {
--		ret = efivar_attr->show(var, buf);
--	}
--	return ret;
--}
--
--static ssize_t efivar_attr_store(struct kobject *kobj, struct attribute *attr,
--				const char *buf, size_t count)
--{
--	struct efivar_entry *var = to_efivar_entry(kobj);
--	struct efivar_attribute *efivar_attr = to_efivar_attr(attr);
--	ssize_t ret = -EIO;
--
--	if (!capable(CAP_SYS_ADMIN))
--		return -EACCES;
--
--	if (efivar_attr->store)
--		ret = efivar_attr->store(var, buf, count);
--
--	return ret;
--}
--
--static const struct sysfs_ops efivar_attr_ops = {
--	.show = efivar_attr_show,
--	.store = efivar_attr_store,
--};
--
--static void efivar_release(struct kobject *kobj)
--{
--	struct efivar_entry *var = to_efivar_entry(kobj);
--	kfree(var);
--}
--
--static EFIVAR_ATTR(guid, 0400, efivar_guid_read, NULL);
--static EFIVAR_ATTR(attributes, 0400, efivar_attr_read, NULL);
--static EFIVAR_ATTR(size, 0400, efivar_size_read, NULL);
--static EFIVAR_ATTR(data, 0400, efivar_data_read, NULL);
--static EFIVAR_ATTR(raw_var, 0600, efivar_show_raw, efivar_store_raw);
--
--static struct attribute *def_attrs[] = {
--	&efivar_attr_guid.attr,
--	&efivar_attr_size.attr,
--	&efivar_attr_attributes.attr,
--	&efivar_attr_data.attr,
--	&efivar_attr_raw_var.attr,
--	NULL,
--};
--
--static struct kobj_type efivar_ktype = {
--	.release = efivar_release,
--	.sysfs_ops = &efivar_attr_ops,
--	.default_attrs = def_attrs,
--};
--
--static ssize_t efivar_create(struct file *filp, struct kobject *kobj,
--			     struct bin_attribute *bin_attr,
--			     char *buf, loff_t pos, size_t count)
--{
--	struct compat_efi_variable *compat = (struct compat_efi_variable *)buf;
--	struct efi_variable *new_var = (struct efi_variable *)buf;
--	struct efivar_entry *new_entry;
--	bool need_compat = in_compat_syscall();
--	efi_char16_t *name;
--	unsigned long size;
--	u32 attributes;
--	u8 *data;
--	int err;
--
--	if (!capable(CAP_SYS_ADMIN))
--		return -EACCES;
--
--	if (need_compat) {
--		if (count != sizeof(*compat))
--			return -EINVAL;
--
--		attributes = compat->Attributes;
--		name = compat->VariableName;
--		size = compat->DataSize;
--		data = compat->Data;
--	} else {
--		if (count != sizeof(*new_var))
--			return -EINVAL;
--
--		attributes = new_var->Attributes;
--		name = new_var->VariableName;
--		size = new_var->DataSize;
--		data = new_var->Data;
--	}
--
--	if ((attributes & ~EFI_VARIABLE_MASK) != 0 ||
--	    efivar_validate(new_var->VendorGuid, name, data,
--			    size) == false) {
--		printk(KERN_ERR "efivars: Malformed variable content\n");
--		return -EINVAL;
--	}
--
--	new_entry = kzalloc(sizeof(*new_entry), GFP_KERNEL);
--	if (!new_entry)
--		return -ENOMEM;
--
--	if (need_compat)
--		copy_out_compat(&new_entry->var, compat);
--	else
--		memcpy(&new_entry->var, new_var, sizeof(*new_var));
--
--	err = efivar_entry_set(new_entry, attributes, size,
--			       data, &efivar_sysfs_list);
--	if (err) {
--		if (err == -EEXIST)
--			err = -EINVAL;
--		goto out;
--	}
--
--	if (efivar_create_sysfs_entry(new_entry)) {
--		printk(KERN_WARNING "efivars: failed to create sysfs entry.\n");
--		kfree(new_entry);
--	}
--	return count;
--
--out:
--	kfree(new_entry);
--	return err;
--}
--
--static ssize_t efivar_delete(struct file *filp, struct kobject *kobj,
--			     struct bin_attribute *bin_attr,
--			     char *buf, loff_t pos, size_t count)
--{
--	struct efi_variable *del_var = (struct efi_variable *)buf;
--	struct compat_efi_variable *compat;
--	struct efivar_entry *entry;
--	efi_char16_t *name;
--	efi_guid_t vendor;
--	int err = 0;
--
--	if (!capable(CAP_SYS_ADMIN))
--		return -EACCES;
--
--	if (in_compat_syscall()) {
--		if (count != sizeof(*compat))
--			return -EINVAL;
--
--		compat = (struct compat_efi_variable *)buf;
--		name = compat->VariableName;
--		vendor = compat->VendorGuid;
--	} else {
--		if (count != sizeof(*del_var))
--			return -EINVAL;
--
--		name = del_var->VariableName;
--		vendor = del_var->VendorGuid;
--	}
--
--	if (efivar_entry_iter_begin())
--		return -EINTR;
--	entry = efivar_entry_find(name, vendor, &efivar_sysfs_list, true);
--	if (!entry)
--		err = -EINVAL;
--	else if (__efivar_entry_delete(entry))
--		err = -EIO;
--
--	if (err) {
--		efivar_entry_iter_end();
--		return err;
--	}
--
--	if (!entry->scanning) {
--		efivar_entry_iter_end();
--		efivar_unregister(entry);
--	} else
--		efivar_entry_iter_end();
--
--	/* It's dead Jim.... */
--	return count;
--}
--
--/**
-- * efivar_create_sysfs_entry - create a new entry in sysfs
-- * @new_var: efivar entry to create
-- *
-- * Returns 0 on success, negative error code on failure
-- */
--static int
--efivar_create_sysfs_entry(struct efivar_entry *new_var)
--{
--	int short_name_size;
--	char *short_name;
--	unsigned long utf8_name_size;
--	efi_char16_t *variable_name = new_var->var.VariableName;
--	int ret;
--
--	/*
--	 * Length of the variable bytes in UTF8, plus the '-' separator,
--	 * plus the GUID, plus trailing NUL
--	 */
--	utf8_name_size = ucs2_utf8size(variable_name);
--	short_name_size = utf8_name_size + 1 + EFI_VARIABLE_GUID_LEN + 1;
--
--	short_name = kmalloc(short_name_size, GFP_KERNEL);
--	if (!short_name)
--		return -ENOMEM;
--
--	ucs2_as_utf8(short_name, variable_name, short_name_size);
--
--	/* This is ugly, but necessary to separate one vendor's
--	   private variables from another's.         */
--	short_name[utf8_name_size] = '-';
--	efi_guid_to_str(&new_var->var.VendorGuid,
--			 short_name + utf8_name_size + 1);
--
--	new_var->kobj.kset = efivars_kset;
--
--	ret = kobject_init_and_add(&new_var->kobj, &efivar_ktype,
--				   NULL, "%s", short_name);
--	kfree(short_name);
--	if (ret) {
--		kobject_put(&new_var->kobj);
--		return ret;
--	}
--
--	kobject_uevent(&new_var->kobj, KOBJ_ADD);
--	if (efivar_entry_add(new_var, &efivar_sysfs_list)) {
--		efivar_unregister(new_var);
--		return -EINTR;
--	}
--
--	return 0;
--}
--
--static int
--create_efivars_bin_attributes(void)
--{
--	struct bin_attribute *attr;
--	int error;
--
--	/* new_var */
--	attr = kzalloc(sizeof(*attr), GFP_KERNEL);
--	if (!attr)
--		return -ENOMEM;
--
--	attr->attr.name = "new_var";
--	attr->attr.mode = 0200;
--	attr->write = efivar_create;
--	efivars_new_var = attr;
--
--	/* del_var */
--	attr = kzalloc(sizeof(*attr), GFP_KERNEL);
--	if (!attr) {
--		error = -ENOMEM;
--		goto out_free;
--	}
--	attr->attr.name = "del_var";
--	attr->attr.mode = 0200;
--	attr->write = efivar_delete;
--	efivars_del_var = attr;
--
--	sysfs_bin_attr_init(efivars_new_var);
--	sysfs_bin_attr_init(efivars_del_var);
--
--	/* Register */
--	error = sysfs_create_bin_file(&efivars_kset->kobj, efivars_new_var);
--	if (error) {
--		printk(KERN_ERR "efivars: unable to create new_var sysfs file"
--			" due to error %d\n", error);
--		goto out_free;
--	}
--
--	error = sysfs_create_bin_file(&efivars_kset->kobj, efivars_del_var);
--	if (error) {
--		printk(KERN_ERR "efivars: unable to create del_var sysfs file"
--			" due to error %d\n", error);
--		sysfs_remove_bin_file(&efivars_kset->kobj, efivars_new_var);
--		goto out_free;
--	}
--
--	return 0;
--out_free:
--	kfree(efivars_del_var);
--	efivars_del_var = NULL;
--	kfree(efivars_new_var);
--	efivars_new_var = NULL;
--	return error;
--}
--
--static int efivars_sysfs_callback(efi_char16_t *name, efi_guid_t vendor,
--				  unsigned long name_size, void *data)
--{
--	struct efivar_entry *entry;
--
--	entry = kzalloc(sizeof(*entry), GFP_KERNEL);
--	if (!entry)
--		return -ENOMEM;
--
--	memcpy(entry->var.VariableName, name, name_size);
--	memcpy(&(entry->var.VendorGuid), &vendor, sizeof(efi_guid_t));
--
--	efivar_create_sysfs_entry(entry);
--
--	return 0;
--}
--
--static int efivar_sysfs_destroy(struct efivar_entry *entry, void *data)
--{
--	int err = efivar_entry_remove(entry);
--
--	if (err)
--		return err;
--	efivar_unregister(entry);
--	return 0;
--}
--
--static void efivars_sysfs_exit(void)
--{
--	/* Remove all entries and destroy */
--	int err;
--
--	err = __efivar_entry_iter(efivar_sysfs_destroy, &efivar_sysfs_list,
--				  NULL, NULL);
--	if (err) {
--		pr_err("efivars: Failed to destroy sysfs entries\n");
--		return;
--	}
--
--	if (efivars_new_var)
--		sysfs_remove_bin_file(&efivars_kset->kobj, efivars_new_var);
--	if (efivars_del_var)
--		sysfs_remove_bin_file(&efivars_kset->kobj, efivars_del_var);
--	kfree(efivars_new_var);
--	kfree(efivars_del_var);
--	kset_unregister(efivars_kset);
--}
--
--static int efivars_sysfs_init(void)
--{
--	struct kobject *parent_kobj = efivars_kobject();
--	int error = 0;
--
--	/* No efivars has been registered yet */
--	if (!parent_kobj || !efivar_supports_writes())
--		return 0;
--
--	printk(KERN_INFO "EFI Variables Facility v%s %s\n", EFIVARS_VERSION,
--	       EFIVARS_DATE);
--
--	efivars_kset = kset_create_and_add("vars", NULL, parent_kobj);
--	if (!efivars_kset) {
--		printk(KERN_ERR "efivars: Subsystem registration failed.\n");
--		return -ENOMEM;
--	}
--
--	efivar_init(efivars_sysfs_callback, NULL, true, &efivar_sysfs_list);
--
--	error = create_efivars_bin_attributes();
--	if (error) {
--		efivars_sysfs_exit();
--		return error;
--	}
--
--	return 0;
--}
--
--module_init(efivars_sysfs_init);
--module_exit(efivars_sysfs_exit);
-diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 7defdc456dc0..6f9dc44d6d8e 100644
---- a/include/linux/efi.h
-+++ b/include/linux/efi.h
-@@ -979,17 +979,10 @@ struct efi_variable {
- struct efivar_entry {
- 	struct efi_variable var;
- 	struct list_head list;
--	struct kobject kobj;
- 	bool scanning;
- 	bool deleting;
- };
- 
--static inline void
--efivar_unregister(struct efivar_entry *var)
--{
--	kobject_put(&var->kobj);
--}
--
- int efivars_register(struct efivars *efivars,
- 		     const struct efivar_operations *ops,
- 		     struct kobject *kobject);
--- 
-2.17.1
+> The device-file is managed by a pseudo platform-device and corresponding
+> driver to avoid dependence on the dedicated bus, allowing it to be
+> loaded in a minimal configuration.
+> 
+> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+> ---
+>  .../surface_aggregator/clients/dbgdev.rst     | 130 ++++++++
+>  .../surface_aggregator/clients/index.rst      |  12 +-
+>  drivers/misc/surface_aggregator/Kconfig       |   2 +
+>  drivers/misc/surface_aggregator/Makefile      |   1 +
+>  .../misc/surface_aggregator/clients/Kconfig   |  18 ++
+>  .../misc/surface_aggregator/clients/Makefile  |   3 +
+>  .../clients/surface_aggregator_debugfs.c      | 281 ++++++++++++++++++
+>  7 files changed, 446 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/driver-api/surface_aggregator/clients/dbgdev.rst
+>  create mode 100644 drivers/misc/surface_aggregator/clients/Kconfig
+>  create mode 100644 drivers/misc/surface_aggregator/clients/Makefile
+>  create mode 100644 drivers/misc/surface_aggregator/clients/surface_aggregator_debugfs.c
+> 
+> diff --git a/Documentation/driver-api/surface_aggregator/clients/dbgdev.rst b/Documentation/driver-api/surface_aggregator/clients/dbgdev.rst
+> new file mode 100644
+> index 000000000000..e45d7e7fd13f
+> --- /dev/null
+> +++ b/Documentation/driver-api/surface_aggregator/clients/dbgdev.rst
+> @@ -0,0 +1,130 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +.. |u8| replace:: :c:type:`u8 <u8>`
+> +.. |u16| replace:: :c:type:`u16 <u16>`
+> +.. |ssam_dbg_request| replace:: :c:type:`struct ssam_dbg_request <ssam_dbg_request>`
+> +.. |ssam_request_flags| replace:: :c:type:`enum ssam_request_flags <ssam_request_flags>`
+> +
+> +=======================================
+> +SSAM Debug Device and DebugFS Interface
+> +=======================================
+> +
+> +The ``surface_aggregator_debugfs`` module provides a DebugFS interface for
+> +the SSAM controller to allow for a (more or less) direct connection from
+> +userspace to the SAM EC. It is intended to be used for development and
+> +debugging, and therefore should not be used or relied upon in any other way.
+> +Note that this module is not loaded automatically, but instead must be
+> +loaded manually.
+> +
+> +The provided interface is accessible through the
+> +``surface_aggregator/controller`` device-file in debugfs, so, if the
+> +conventional mount path is being used,
+> +``/sys/kernel/debug/surface_aggregator/controller``. All functionality of
+> +this interface is provided via IOCTLs.
+> +
+> +
+> +Controller IOCTLs
+> +=================
+> +
+> +The following IOCTLs are provided:
+> +
+> +.. flat-table:: Controller IOCTLs
+> +   :widths: 1 1 1 1 4
+> +   :header-rows: 1
+> +
+> +   * - Type
+> +     - Number
+> +     - Direction
+> +     - Name
+> +     - Description
+> +
+> +   * - ``0xA5``
+> +     - ``0``
+> +     - ``R``
+> +     - ``GETVERSION``
+> +     - Get DebugFS controller interface version.
+> +
+> +   * - ``0xA5``
+> +     - ``1``
+> +     - ``WR``
+> +     - ``REQUEST``
+> +     - Perform synchronous SAM request.
+> +
+> +
+> +``GETVERSION``
+> +--------------
+> +
+> +Defined as ``_IOR(0xA5, 0, __u32)``.
+> +
+> +Gets the current interface version. This should be used to check for changes
+> +in the interface and determine if certain functionality is available. While
+> +the interface should under normal circumstances kept backward compatible, as
+> +this is a debug interface, backwards compatibility is not guaranteed.
+> +
+> +The version number follows the semantic versioning scheme, roughly meaning
+> +that an increment in the highest non-zero version number signals a breaking
+> +change. It can be decomposed as follows:
+> +
+> +.. flat-table:: Version Number Format
+> +   :widths: 2 1 3
+> +   :header-rows: 1
+> +
+> +   * - Offset (bytes)
+> +     - Type
+> +     - Description
+> +
+> +   * - ``0``
+> +     - |u8|
+> +     - Major
+> +
+> +   * - ``1``
+> +     - |u8|
+> +     - Minor
+> +
+> +   * - ``2``
+> +     - |u16|
+> +     - Patch
+> +
+> +The interface version is currently ``0.1.0``, i.e. ``0x00010000``.
+> +
+> +
+> +``REQUEST``
+> +-----------
+> +
+> +Defined as ``_IOWR(0xA5, 1, struct ssam_dbg_request)``.
+> +
+> +Executes a synchronous SAM request. The request specification is passed in
+> +as argument of type |ssam_dbg_request|, which is then written to/modified
+> +by the IOCTL to return status and result of the request.
+> +
+> +Request payload data must be allocated separately and is passed in via the
+> +``payload.data`` and ``payload.length`` members. If a response is required,
+> +the response buffer must be allocated by the caller and passed in via the
+> +``response.data`` member. The ``response.length`` member must be set to the
+> +capacity of this buffer, or if no response is required, zero. Upon
+> +completion of the request, the call will write the response to the response
+> +buffer (if its capacity allows it) and overwrite the length field with the
+> +actual size of the response, in bytes.
+> +
+> +Additionally, if the request has a response, this should be indicated via
+> +the request flags, as is done with in-kernel requests. Request flags can be
+> +set via the ``flags`` member and the values correspond to the values found
+> +in |ssam_request_flags|.
+> +
+> +Finally, the status of the request itself is returned in the ``status``
+> +member (a negative value indicating failure). Note that failure indication
+> +of the IOCTL is separated from failure indication of the request: The IOCTL
+> +returns a negative status code if anything failed during setup of the
+> +request (``-EFAULT``) or if the provided argument or any of its fields are
+> +invalid (``-EINVAL``). In this case, the status value of the request
+> +argument may be set, providing more detail on what went wrong (e.g.
+> +``-ENOMEM`` for out-of-memory), but this value may also be zero. The IOCTL
+> +will return with a zero status code in case the request has been set up,
+> +submitted, and completed (i.e. handed back to user-space) successfully from
+> +inside the IOCTL, but the request ``status`` member may still be negative in
+> +case the actual execution of the request failed after it has been submitted.
+> +
+> +A full definition of the argument struct is provided below:
+> +
+> +.. kernel-doc:: drivers/misc/surface_aggregator/clients/surface_aggregator_debugfs.c
+> +   :functions: ssam_dbg_request
+> diff --git a/Documentation/driver-api/surface_aggregator/clients/index.rst b/Documentation/driver-api/surface_aggregator/clients/index.rst
+> index 680fa621dc9f..e47b752f298c 100644
+> --- a/Documentation/driver-api/surface_aggregator/clients/index.rst
+> +++ b/Documentation/driver-api/surface_aggregator/clients/index.rst
+> @@ -7,4 +7,14 @@ Client Driver Documentation
+>  This is the documentation for client drivers themselves. Refer to
+>  :doc:`../client` for documentation on how to write client drivers.
+>  
+> -.. Place documentation for individual client drivers here.
+> +.. toctree::
+> +   :maxdepth: 1
+> +
+> +   dbgdev
+> +
+> +.. only::  subproject and html
+> +
+> +   Indices
+> +   =======
+> +
+> +   * :ref:`genindex`
+> diff --git a/drivers/misc/surface_aggregator/Kconfig b/drivers/misc/surface_aggregator/Kconfig
+> index 4d6fc3cd18aa..e0a9bb37d178 100644
+> --- a/drivers/misc/surface_aggregator/Kconfig
+> +++ b/drivers/misc/surface_aggregator/Kconfig
+> @@ -61,3 +61,5 @@ config SURFACE_AGGREGATOR_ERROR_INJECTION
+>  	  transport and communication problems, such as invalid data sent to or
+>  	  received from the EC, dropped data, and communication timeouts.
+>  	  Intended for development and debugging.
+> +
+> +source "drivers/misc/surface_aggregator/clients/Kconfig"
+> diff --git a/drivers/misc/surface_aggregator/Makefile b/drivers/misc/surface_aggregator/Makefile
+> index 59041511c04b..acf42597e6bb 100644
+> --- a/drivers/misc/surface_aggregator/Makefile
+> +++ b/drivers/misc/surface_aggregator/Makefile
+> @@ -4,6 +4,7 @@
+>  CFLAGS_core.o = -I$(src)
+>  
+>  obj-$(CONFIG_SURFACE_AGGREGATOR) += surface_aggregator.o
+> +obj-$(CONFIG_SURFACE_AGGREGATOR) += clients/
+>  
+>  surface_aggregator-objs := core.o
+>  surface_aggregator-objs += ssh_parser.o
+> diff --git a/drivers/misc/surface_aggregator/clients/Kconfig b/drivers/misc/surface_aggregator/clients/Kconfig
+> new file mode 100644
+> index 000000000000..dcaa0706074e
+> --- /dev/null
+> +++ b/drivers/misc/surface_aggregator/clients/Kconfig
+> @@ -0,0 +1,18 @@
+> +config SURFACE_AGGREGATOR_DEBUGFS
+> +	tristate "Surface System Aggregator Module DebugFS interface"
+> +	depends on SURFACE_AGGREGATOR
+> +	depends on DEBUG_FS
+> +	default n
 
+default is n, no need to add it.
+
+> +	help
+> +	  Provides a DebugFS interface to the Surface System Aggregator Module
+> +	  (SSAM) controller.
+> +
+> +	  This option provides a module (called surface_aggregator_debugfs),
+> +	  that, when loaded, will add a client device (and its respective
+> +	  driver) to the SSAM controller. Said client device manages a DebugFS
+> +	  interface (/sys/kernel/debug/surface_aggregator/controller), which can
+> +	  be used by user-space tools to directly communicate with the SSAM EC
+> +	  by sending requests and receiving the correspondign responses.
+> +
+> +	  The provided interface is intended for debugging and development only,
+> +	  and should not be used otherwise.
+> diff --git a/drivers/misc/surface_aggregator/clients/Makefile b/drivers/misc/surface_aggregator/clients/Makefile
+> new file mode 100644
+> index 000000000000..c49b2a183d3d
+> --- /dev/null
+> +++ b/drivers/misc/surface_aggregator/clients/Makefile
+> @@ -0,0 +1,3 @@
+> +# SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +obj-$(CONFIG_SURFACE_AGGREGATOR_DEBUGFS)	+= surface_aggregator_debugfs.o
+> diff --git a/drivers/misc/surface_aggregator/clients/surface_aggregator_debugfs.c b/drivers/misc/surface_aggregator/clients/surface_aggregator_debugfs.c
+> new file mode 100644
+> index 000000000000..b96ecb7c153a
+> --- /dev/null
+> +++ b/drivers/misc/surface_aggregator/clients/surface_aggregator_debugfs.c
+> @@ -0,0 +1,281 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+
+Are you sure about -or-later?  I have to ask.
+
+And no copyright line?
+
+> +/*
+> + * DebugFS interface for Surface System Aggregator Module (SSAM) controller
+> + * access from user-space. Intended for debugging and development.
+> + */
+> +
+> +#include <linux/debugfs.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/slab.h>
+> +#include <linux/uaccess.h>
+> +
+> +#include <linux/surface_aggregator/controller.h>
+> +
+> +#define SSAM_DBG_DEVICE_NAME		"surface_aggregator_dbg"
+> +#define SSAM_DBG_IF_VERSION		0x010000
+
+kernel files/apis are not versioned, drop this please.
+
+> +
+> +/**
+> + * struct ssam_debug_request - Controller request IOCTL argument.
+> + * @target_category: Target category of the SAM request.
+> + * @target_id:       Target ID of the SAM request.
+> + * @command_id:      Command ID of the SAM request.
+> + * @instance_id:     Instance ID of the SAM request.
+> + * @flags:           SAM Request flags.
+> + * @status:          Request status (output).
+> + * @payload:         Request payload (input data).
+> + * @payload.data:    Pointer to request payload data.
+> + * @payload.length:  Length of request payload data (in bytes).
+> + * @response:        Request response (output data).
+> + * @response.data:   Pointer to response buffer.
+> + * @response.length: On input: Capacity of response buffer (in bytes).
+> + *                   On output: Length of request response (number of bytes
+> + *                   in the buffer that are actually used).
+> + */
+> +struct ssam_dbg_request {
+> +	__u8 target_category;
+> +	__u8 target_id;
+> +	__u8 command_id;
+> +	__u8 instance_id;
+> +	__u16 flags;
+> +	__s16 status;
+> +
+> +	struct {
+> +		const __u8 __user *data;
+> +		__u16 length;
+> +		__u8 __pad[6];
+> +	} payload;
+> +
+> +	struct {
+> +		__u8 __user *data;
+> +		__u16 length;
+> +		__u8 __pad[6];
+> +	} response;
+> +};
+> +
+> +#define SSAM_DBG_IOCTL_GETVERSION  _IOR(0xA5, 0, __u32)
+> +#define SSAM_DBG_IOCTL_REQUEST     _IOWR(0xA5, 1, struct ssam_dbg_request)
+> +
+> +struct ssam_dbg_data {
+> +	struct ssam_controller *ctrl;
+> +	struct dentry *dentry_dir;
+> +	struct dentry *dentry_dev;
+> +};
+> +
+> +static int ssam_dbg_device_open(struct inode *inode, struct file *filp)
+> +{
+> +	filp->private_data = inode->i_private;
+> +	return nonseekable_open(inode, filp);
+> +}
+> +
+> +static long ssam_dbg_if_request(struct file *file, unsigned long arg)
+> +{
+> +	struct ssam_dbg_data *data = file->private_data;
+> +	struct ssam_dbg_request __user *r;
+> +	struct ssam_dbg_request rqst;
+> +	struct ssam_request spec;
+> +	struct ssam_response rsp;
+> +	int status = 0, ret = 0, tmp;
+> +
+> +	r = (struct ssam_dbg_request __user *)arg;
+> +	ret = copy_struct_from_user(&rqst, sizeof(rqst), r, sizeof(*r));
+> +	if (ret)
+> +		goto out;
+> +
+> +	// setup basic request fields
+> +	spec.target_category = rqst.target_category;
+> +	spec.target_id = rqst.target_id;
+> +	spec.command_id = rqst.command_id;
+> +	spec.instance_id = rqst.instance_id;
+> +	spec.flags = rqst.flags;
+> +	spec.length = rqst.payload.length;
+> +	spec.payload = NULL;
+> +
+> +	rsp.capacity = rqst.response.length;
+> +	rsp.length = 0;
+> +	rsp.pointer = NULL;
+> +
+> +	// get request payload from user-space
+> +	if (spec.length) {
+> +		if (!rqst.payload.data) {
+> +			ret = -EINVAL;
+> +			goto out;
+> +		}
+> +
+> +		spec.payload = kzalloc(spec.length, GFP_KERNEL);
+> +		if (!spec.payload) {
+> +			status = -ENOMEM;
+> +			ret = -EFAULT;
+> +			goto out;
+> +		}
+> +
+> +		if (copy_from_user((void *)spec.payload, rqst.payload.data,
+> +				   spec.length)) {
+> +			ret = -EFAULT;
+> +			goto out;
+> +		}
+> +	}
+> +
+> +	// allocate response buffer
+> +	if (rsp.capacity) {
+> +		if (!rqst.response.data) {
+> +			ret = -EINVAL;
+> +			goto out;
+> +		}
+> +
+> +		rsp.pointer = kzalloc(rsp.capacity, GFP_KERNEL);
+> +		if (!rsp.pointer) {
+> +			status = -ENOMEM;
+> +			ret = -EFAULT;
+> +			goto out;
+> +		}
+> +	}
+> +
+> +	// perform request
+> +	status = ssam_request_sync(data->ctrl, &spec, &rsp);
+> +	if (status)
+> +		goto out;
+> +
+> +	// copy response to user-space
+> +	if (rsp.length) {
+> +		if (copy_to_user(rqst.response.data, rsp.pointer, rsp.length)) {
+> +			ret = -EFAULT;
+> +			goto out;
+> +		}
+> +	}
+> +
+> +out:
+> +	// always try to set response-length and status
+> +	tmp = put_user(rsp.length, &r->response.length);
+> +	if (!ret)
+> +		ret = tmp;
+
+Is that the correct error to return if put_user() fails?  Hint, I don't
+think so...
+
+> +
+> +	tmp = put_user(status, &r->status);
+> +	if (!ret)
+> +		ret = tmp;
+> +
+> +	// cleanup
+> +	kfree(spec.payload);
+> +	kfree(rsp.pointer);
+> +
+> +	return ret;
+> +}
+> +
+> +static long ssam_dbg_if_getversion(struct file *file, unsigned long arg)
+> +{
+> +	put_user(SSAM_DBG_IF_VERSION, (u32 __user *)arg);
+> +	return 0;
+> +}
+> +
+> +static long ssam_dbg_device_ioctl(struct file *file, unsigned int cmd,
+> +				    unsigned long arg)
+> +{
+> +	switch (cmd) {
+> +	case SSAM_DBG_IOCTL_GETVERSION:
+> +		return ssam_dbg_if_getversion(file, arg);
+
+Not needed, please drop.
+
+> +
+> +	case SSAM_DBG_IOCTL_REQUEST:
+> +		return ssam_dbg_if_request(file, arg);
+> +
+> +	default:
+> +		return -ENOIOCTLCMD;
+
+Wrong error value.
+
+> +	}
+> +}
+> +
+> +const struct file_operations ssam_dbg_device_fops = {
+> +	.owner          = THIS_MODULE,
+> +	.open           = ssam_dbg_device_open,
+> +	.unlocked_ioctl = ssam_dbg_device_ioctl,
+> +	.compat_ioctl   = ssam_dbg_device_ioctl,
+> +	.llseek         = noop_llseek,
+> +};
+> +
+> +static int ssam_dbg_device_probe(struct platform_device *pdev)
+> +{
+> +	struct ssam_dbg_data *data;
+> +	struct ssam_controller *ctrl;
+> +	int status;
+> +
+> +	status = ssam_client_bind(&pdev->dev, &ctrl);
+> +	if (status)
+> +		return status == -ENXIO ? -EPROBE_DEFER : status;
+> +
+> +	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
+> +	if (!data)
+> +		return -ENOMEM;
+> +
+> +	data->ctrl = ctrl;
+> +
+> +	data->dentry_dir = debugfs_create_dir("surface_aggregator", NULL);
+> +	if (IS_ERR(data->dentry_dir))
+> +		return PTR_ERR(data->dentry_dir);
+
+No need to check this, just keep moving.
+
+> +
+> +	data->dentry_dev = debugfs_create_file("controller", 0600,
+> +					       data->dentry_dir, data,
+> +					       &ssam_dbg_device_fops);
+
+Why save this value at all?  No need to check it.
+
+> +	if (IS_ERR(data->dentry_dev)) {
+> +		debugfs_remove(data->dentry_dir);
+> +		return PTR_ERR(data->dentry_dev);
+> +	}
+
+Listen, I'm all for doing whatever you want in debugfs, but why are you
+doing random ioctls here?  Why not just read/write a file to do what you
+need/want to do here instead?
+
+And again, no versioning, that is never needed.
+
+> +
+> +	platform_set_drvdata(pdev, data);
+> +	return 0;
+> +}
+> +
+> +static int ssam_dbg_device_remove(struct platform_device *pdev)
+> +{
+> +	struct ssam_dbg_data *data = platform_get_drvdata(pdev);
+> +
+> +	debugfs_remove(data->dentry_dev);
+> +	debugfs_remove(data->dentry_dir);
+
+debugfs_remove_recursive() on the directory is all that is needed
+
+> +
+> +	return 0;
+> +}
+> +
+> +static void ssam_dbg_device_release(struct device *dev)
+> +{
+> +	// nothing to do
+
+That's a lie, and the old documentation would allow me to make fun of
+you for trying to work around the kernel's error messages here.
+
+But I'll be nice and just ask, why do you think it is ok to work around
+a message that someone has spent a lot of time and energy to provide to
+you, saying that you are doing something wrong, by ignoring that and
+providing an empty function?  Not kind...
+
+> +}
+> +
+> +static struct platform_device ssam_dbg_device = {
+> +	.name = SSAM_DBG_DEVICE_NAME,
+> +	.id = PLATFORM_DEVID_NONE,
+> +	.dev.release = ssam_dbg_device_release,
+> +};
+
+Dynamic structures that are static are, well, wrong :)
+
+
+
+> +
+> +static struct platform_driver ssam_dbg_driver = {
+> +	.probe = ssam_dbg_device_probe,
+> +	.remove = ssam_dbg_device_remove,
+> +	.driver = {
+> +		.name = SSAM_DBG_DEVICE_NAME,
+> +		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
+> +	},
+> +};
+> +
+> +static int __init ssam_debug_init(void)
+> +{
+> +	int status;
+> +
+> +	status = platform_device_register(&ssam_dbg_device);
+> +	if (status)
+> +		return status;
+> +
+> +	status = platform_driver_register(&ssam_dbg_driver);
+> +	if (status)
+> +		platform_device_unregister(&ssam_dbg_device);
+> +
+> +	return status;
+> +}
+> +module_init(ssam_debug_init);
+
+I appreciate the initiative by creating a fake platform device and
+driver to bind to that device.  But I don't think any of it is needed at
+all, you have made your work a lot harder than you needed to here.  This
+whole file can be _much_ smaller and simpler and not abuse the kernel
+apis so badly :)
+
+thanks,
+
+greg k-h
