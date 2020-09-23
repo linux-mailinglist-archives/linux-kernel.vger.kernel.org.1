@@ -2,169 +2,417 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E298D275475
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 11:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF22275478
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 11:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726381AbgIWJZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 05:25:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726244AbgIWJZB (ORCPT
+        id S1726518AbgIWJZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 05:25:18 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:41493 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726102AbgIWJZR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 05:25:01 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD45EC0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 02:25:00 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id 16so22120326qkf.4
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 02:25:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=elg0wH+6sMQCekNWlDCJHXKeUDnzoRr2E8YDp7Z6TBY=;
-        b=FSw7j7LMuIMumMry8IHTk67bV7xlIBLO63QFS3h3Ny0QdqhDS4+3UPmkUZhS3o6x2u
-         d9RbtHOCV11fclnkZV60uadtuzWQ2GpsWuPQdsIvnL6Ah2MZu/jNIGqwdo8myOaEGluq
-         7tVEKQhjlrwDHQkDxM1wb89TXEBmGcMb63KEuXrWVFANeF7WfNSHVLlqLbPRx1+SheZ3
-         QafG4iOsE+RC3y8CvI228r6KVHYubg6S2lOsZ0c8MBjEe/rYqUhQdbQp4edhxwyZQ36k
-         iDjj1lOL6vAIiCqry5X9ixu/ukWyVjeWniH3qZta79ltGDJ1WTQ1iFLrzpS2E+exJqul
-         EMPA==
+        Wed, 23 Sep 2020 05:25:17 -0400
+Received: by mail-lj1-f193.google.com with SMTP id y4so16612635ljk.8;
+        Wed, 23 Sep 2020 02:25:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=elg0wH+6sMQCekNWlDCJHXKeUDnzoRr2E8YDp7Z6TBY=;
-        b=EOIwob3FHIztODW7A5I/YwJhViqkbOq+Qi+9x5UV32dAMgMjnCFBB7AIZ8/lx1jC+Y
-         Di8dg+lATVZFlB6bA04B7/GUrgGDUP/EVSszFYxlBeeIXmj8k32HDTRlNHv1ln6zuIi1
-         EBDD9fORZd4DHNV9uLshWUGuhZKEFqR+cD/WnrexEPZ8JrL4NKo5JLRFR9nPM6Bz7QtF
-         Ayidss7EUatsZN4DtLT66HttqVOMgF6IlTtBqpi6oCG0lK1XXEEN9otW6AwPab0kK4EG
-         d38XuoL3XeQi2ygmcf3JsW+HQOymXuL33t3LmYceOKcNe+7ndPuQymwln82DteeK845l
-         UMNA==
-X-Gm-Message-State: AOAM530mnH7MgINLqxUHPETKK+x5cHvXS5OqjnZj/OJpThZwWEwXBC6u
-        SsvbWIBEebWnxnzrxApCHym3BQQCOMbdehaXcw7KMg==
-X-Google-Smtp-Source: ABdhPJz4XvVM2iguquzjpe0KfCxvbY4E4m/J7Ivq1psqXwziKKLzijNXsIBRrryXo11h7vm+R9mdwM2CYtgRnsCOUOU=
-X-Received: by 2002:a37:54a:: with SMTP id 71mr8199361qkf.407.1600853099325;
- Wed, 23 Sep 2020 02:24:59 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=k8Kfyehth2WG6E0exvGAjXEpLUhHN58IsH6PFqzcNEM=;
+        b=W9zoNR3H1urcZeiDa0VUdJV+BZRFHdTj6TaZOi8zM3yJl5ANgwPqQw1C4+c4aFkKZO
+         1oiRZKTqe8Mu+UkeRIvIMQQBQ8b+iraZchKcIGZkUNNwvNzr++5qhKRb6sYMf6CF7uXO
+         MbIsYSkyGhu5QwSoqc3KjPksmUfIovf5+vKIy+bodOJ2phIrPxOrBSVVyS1nHBaCrOXe
+         fjbuPVzLHk7uAkEZjvKuYbz6GSzsY095QP9+mgMWfsF9xcclsQJQJ7DqOnAqB+2u1+QN
+         y2v81ZjhGL6wdNtpgamKyLrt19EUt+eDoH+cKWLmq4IUnIHTHK7QYqE4lPB/w4o64oRQ
+         EviA==
+X-Gm-Message-State: AOAM531JhpwANlBUykh1Is/Ok2RnT9fzoEiPgd+UsLbycpSsPZu7v34j
+        QnOeXMhj6VEkA8g5p2I7Udg=
+X-Google-Smtp-Source: ABdhPJy7nhPzKKB7VOzayeHVV9U8oFk4RbZdQUDH897FXsg1fZplQ9BbN1tOUSSbLO+xECAe2buSDQ==
+X-Received: by 2002:a2e:7c09:: with SMTP id x9mr2724745ljc.192.1600853113659;
+        Wed, 23 Sep 2020 02:25:13 -0700 (PDT)
+Received: from localhost.localdomain ([213.255.186.46])
+        by smtp.gmail.com with ESMTPSA id d1sm4515010lfe.182.2020.09.23.02.25.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2020 02:25:13 -0700 (PDT)
+Date:   Wed, 23 Sep 2020 12:25:01 +0300
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     mazziesaccount@gmail.com, matti.vaittinen@fi.rohmeurope.com
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com,
+        linux-watchdog@vger.kernel.org
+Subject: [PATCH v2 3/4] wdt: Support wdt on ROHM BD9576MUF and BD9573MUF
+Message-ID: <7d3372a74ef6fd8ea216d1da3a2beb1d77f5cf64.1600852339.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1600852339.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-References: <00000000000052569205afa67426@google.com> <20200919110831.GD7462@zn.tnic>
- <CACT4Y+ZhofJhNjfav22YNVpxtH4_+3Qaut6rOiqv4MLNU5mcEg@mail.gmail.com>
- <CACT4Y+b9ZCKJkOmwbEC6sZxEQ-9g2g=-v4+X0aWv7AsrZo7utA@mail.gmail.com>
- <CAKwvOdmKcn=FNzwtBZ8z0evLz4BXgWtsoz9+QTC6GLqtNp1bXg@mail.gmail.com>
- <20200921221336.GN5901@zn.tnic> <CAKwvOd=E11KriNqeVv2-Tvq5sQy=4vyBzDEH22D5h5LgBeFsVw@mail.gmail.com>
- <20200923090336.GD28545@zn.tnic>
-In-Reply-To: <20200923090336.GD28545@zn.tnic>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 23 Sep 2020 11:24:48 +0200
-Message-ID: <CACT4Y+Y4-vqdv01ebyzhUoggUCUyvbhjut7Wvj=r4dBfyxLeng@mail.gmail.com>
-Subject: Re: general protection fault in perf_misc_flags
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        syzbot <syzbot+ce179bc99e64377c24bc@syzkaller.appspotmail.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1600852339.git.matti.vaittinen@fi.rohmeurope.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 11:03 AM Borislav Petkov <bp@alien8.de> wrote:
->
-> On Tue, Sep 22, 2020 at 11:56:04AM -0700, Nick Desaulniers wrote:
-> > So I think there's an issue with "deterministically reproducible."
-> > The syzcaller report has:
-> > > > Unfortunately, I don't have any reproducer for this issue yet.
->
-> Yeah, Dmitry gave two other links of similar reports, the first one
-> works for me:
->
-> https://syzkaller.appspot.com/bug?extid=1dccfcb049726389379c
->
-> and that one doesn't have a reproducer either. The bytes look familiar
-> though:
->
-> Code: c1 e8 03 42 80 3c 20 00 74 05 e8 79 7a a7 00 49 8b 47 10 48 89 05 f6 d8 ef 09 49 8d 7f 08 48 89 f8 48 c1 e8 03 42 80 3c 00 00 <00> 00 e8 57 7a a7 00 49 8b 47 08 48 89 05 dc d8 ef 09 49 8d 7f 18
-> All code
-> ========
->    0:   c1 e8 03                shr    $0x3,%eax
->    3:   42 80 3c 20 00          cmpb   $0x0,(%rax,%r12,1)
->    8:   74 05                   je     0xf
->    a:   e8 79 7a a7 00          callq  0xa77a88
->    f:   49 8b 47 10             mov    0x10(%r15),%rax
->   13:   48 89 05 f6 d8 ef 09    mov    %rax,0x9efd8f6(%rip)        # 0x9efd910
->   1a:   49 8d 7f 08             lea    0x8(%r15),%rdi
->   1e:   48 89 f8                mov    %rdi,%rax
->   21:   48 c1 e8 03             shr    $0x3,%rax
->   25:   42 80 3c 00 00          cmpb   $0x0,(%rax,%r8,1)
->   2a:*  00 00                   add    %al,(%rax)               <-- trapping instruction
->   2c:   e8 57 7a a7 00          callq  0xa77a88
->   31:   49 8b 47 08             mov    0x8(%r15),%rax
->   35:   48 89 05 dc d8 ef 09    mov    %rax,0x9efd8dc(%rip)        # 0x9efd918
->   3c:   49 8d 7f 18             lea    0x18(%r15),%rdi
->
-> 4 zero bytes again. And that .config has kasan stuff enabled too so
-> could the failure be related to having kasan stuff enabled and it
-> messing up offsets?
->
-> That is, provided this is the mechanism how it would happen. We still
-> don't know what and when wrote those zeroes in there. Not having a
-> reproducer is nasty but looking at those reports above and if I'm
-> reading this correctly, rIP points to
->
-> RIP: 0010:update_pvclock_gtod arch/x86/kvm/x86.c:1743 [inline]
->
-> each time and the URL says they're 9 crashes total. And each have
-> happened at that rIP. So all we'd need is set a watchpoint when that
-> address is being written and dump stuff.
->
-> Dmitry, can the syzkaller do debugging stuff like that?
+Add Watchdog support for ROHM BD9576MUF and BD9573MUF PMICs which are
+mainly used to power the R-Car series processors. The watchdog is
+pinged using a GPIO and enabled using another GPIO. Additionally
+watchdog time-out can be configured to HW prior starting the watchdog.
+Watchdog timeout can be configured to detect only delayed ping or in
+a window mode where also too fast pings are detected.
 
-syzbot does not have direct support for such things.
-It uses CONFIG_DEBUG_AID_FOR_SYZBOT=y:
-https://github.com/google/syzkaller/blob/master/docs/syzbot.md#no-custom-patches
-But that's generally useful for linux-next only and the clang build is
-on the upstream tree...
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+---
+Changes since v1:
+ - removed unnecessary include
+ - ordered includes alphabetically
+ - unified error checks in probe
 
-Options I see:
-1. Add stricter debug checks for code that overwrites code. Then maybe
-we can catch it red handed.
-2. Setup clang instance on linux-next
-3. Run syzkaller locally with custom patches.
+ drivers/watchdog/Kconfig      |  13 ++
+ drivers/watchdog/Makefile     |   1 +
+ drivers/watchdog/bd9576_wdt.c | 284 ++++++++++++++++++++++++++++++++++
+ 3 files changed, 298 insertions(+)
+ create mode 100644 drivers/watchdog/bd9576_wdt.c
+
+diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+index ab7aad5a1e69..d042a517a946 100644
+--- a/drivers/watchdog/Kconfig
++++ b/drivers/watchdog/Kconfig
+@@ -172,6 +172,19 @@ config BD70528_WATCHDOG
+ 	  Alternatively say M to compile the driver as a module,
+ 	  which will be called bd70528_wdt.
+ 
++config BD957XMUF_WATCHDOG
++	tristate "ROHM BD9576MUF and BD9573MUF PMIC Watchdog"
++	depends on MFD_ROHM_BD957XMUF
++	select WATCHDOG_CORE
++	help
++	  Support for the watchdog in the ROHM BD9576 and BD9573 PMICs.
++	  These PMIC ICs contain watchdog block which can be configured
++	  to toggle reset line if SoC fails to ping watchdog via GPIO.
++
++	  Say Y here to include support for the ROHM BD9576 or BD9573
++	  watchdog. Alternatively say M to compile the driver as a module,
++	  which will be called bd9576_wdt.
++
+ config DA9052_WATCHDOG
+ 	tristate "Dialog DA9052 Watchdog"
+ 	depends on PMIC_DA9052 || COMPILE_TEST
+diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
+index 97bed1d3d97c..14d75f98e3df 100644
+--- a/drivers/watchdog/Makefile
++++ b/drivers/watchdog/Makefile
+@@ -208,6 +208,7 @@ obj-$(CONFIG_XEN_WDT) += xen_wdt.o
+ 
+ # Architecture Independent
+ obj-$(CONFIG_BD70528_WATCHDOG) += bd70528_wdt.o
++obj-$(CONFIG_BD957XMUF_WATCHDOG) += bd9576_wdt.o
+ obj-$(CONFIG_DA9052_WATCHDOG) += da9052_wdt.o
+ obj-$(CONFIG_DA9055_WATCHDOG) += da9055_wdt.o
+ obj-$(CONFIG_DA9062_WATCHDOG) += da9062_wdt.o
+diff --git a/drivers/watchdog/bd9576_wdt.c b/drivers/watchdog/bd9576_wdt.c
+new file mode 100644
+index 000000000000..bd70a392e56a
+--- /dev/null
++++ b/drivers/watchdog/bd9576_wdt.c
+@@ -0,0 +1,284 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2020 ROHM Semiconductors
++ *
++ * ROHM BD9576MUF and BD9573MUF Watchdog driver
++ */
++
++#include <linux/err.h>
++#include <linux/gpio/consumer.h>
++#include <linux/mfd/rohm-bd957x.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
++#include <linux/regmap.h>
++#include <linux/watchdog.h>
++
++static bool nowayout;
++module_param(nowayout, bool, 0);
++MODULE_PARM_DESC(nowayout,
++		"Watchdog cannot be stopped once started (default=\"false\")");
++
++#define HW_MARGIN_MIN 2
++#define HW_MARGIN_MAX 4416
++#define BD957X_WDT_DEFAULT_MARGIN 4416
++
++struct bd9576_wdt_priv {
++	struct gpio_desc	*gpiod_ping;
++	struct gpio_desc	*gpiod_en;
++	struct device		*dev;
++	struct regmap		*regmap;
++	bool			always_running;
++	struct watchdog_device	wdd;
++};
++
++static void bd9576_wdt_disable(struct bd9576_wdt_priv *priv)
++{
++	gpiod_set_value_cansleep(priv->gpiod_en, 0);
++}
++
++static int bd9576_wdt_ping(struct watchdog_device *wdd)
++{
++	struct bd9576_wdt_priv *priv = watchdog_get_drvdata(wdd);
++
++	/* Pulse */
++	gpiod_set_value_cansleep(priv->gpiod_ping, 1);
++	gpiod_set_value_cansleep(priv->gpiod_ping, 0);
++
++	return 0;
++}
++
++static int bd9576_wdt_start(struct watchdog_device *wdd)
++{
++	struct bd9576_wdt_priv *priv = watchdog_get_drvdata(wdd);
++
++	gpiod_set_value_cansleep(priv->gpiod_en, 1);
++
++	return bd9576_wdt_ping(wdd);
++}
++
++static int bd9576_wdt_stop(struct watchdog_device *wdd)
++{
++	struct bd9576_wdt_priv *priv = watchdog_get_drvdata(wdd);
++
++	if (!priv->always_running)
++		bd9576_wdt_disable(priv);
++	else
++		set_bit(WDOG_HW_RUNNING, &wdd->status);
++
++	return 0;
++}
++
++static const struct watchdog_info bd957x_wdt_ident = {
++	.options	= WDIOF_MAGICCLOSE | WDIOF_KEEPALIVEPING |
++			  WDIOF_SETTIMEOUT,
++	.identity	= "BD957x Watchdog",
++};
++
++static const struct watchdog_ops bd957x_wdt_ops = {
++	.owner		= THIS_MODULE,
++	.start		= bd9576_wdt_start,
++	.stop		= bd9576_wdt_stop,
++	.ping		= bd9576_wdt_ping,
++};
++
++/* Unit is hundreds of uS */
++#define FASTNG_MIN 23
++
++static int find_closest_fast(int target, int *sel, int *val)
++{
++	int i;
++	int window = FASTNG_MIN;
++
++	for (i = 0; i < 8 && window < target; i++)
++		window <<= 1;
++
++	*val = window;
++	*sel = i;
++
++	if (i == 8)
++		return -EINVAL;
++
++	return 0;
++
++}
++
++static int find_closest_slow_by_fast(int fast_val, int target, int *slowsel)
++{
++	int sel;
++	static const int multipliers[] = {2, 3, 7, 15};
++
++	for (sel = 0; sel < ARRAY_SIZE(multipliers) &&
++	     multipliers[sel] * fast_val < target; sel++)
++		;
++
++	if (sel == ARRAY_SIZE(multipliers))
++		return -EINVAL;
++
++	*slowsel = sel;
++
++	return 0;
++}
++
++static int find_closest_slow(int target, int *slow_sel, int *fast_sel)
++{
++	static const int multipliers[] = {2, 3, 7, 15};
++	int i, j;
++	int val = 0;
++	int window = FASTNG_MIN;
++
++	for (i = 0; i < 8; i++) {
++		for (j = 0; j < ARRAY_SIZE(multipliers); j++) {
++			int slow;
++
++			slow = window * multipliers[j];
++			if (slow >= target && (!val || slow < val)) {
++				val = slow;
++				*fast_sel = i;
++				*slow_sel = j;
++			}
++		}
++		window <<= 1;
++	}
++	if (!val)
++		return -EINVAL;
++
++	return 0;
++}
++
++#define BD957X_WDG_TYPE_WINDOW BIT(5)
++#define BD957X_WDG_TYPE_SLOW 0
++#define BD957X_WDG_TYPE_MASK BIT(5)
++#define BD957X_WDG_NG_RATIO_MASK 0x18
++#define BD957X_WDG_FASTNG_MASK 0x7
++
++static int bd957x_set_wdt_mode(struct bd9576_wdt_priv *priv, int hw_margin,
++			       int hw_margin_min)
++{
++	int ret, fastng, slowng, type, reg, mask;
++	struct device *dev = priv->dev;
++
++	/* convert to 100uS */
++	hw_margin *= 10;
++	hw_margin_min *= 10;
++	if (hw_margin_min) {
++		int min;
++
++		type = BD957X_WDG_TYPE_WINDOW;
++		dev_dbg(dev, "Setting type WINDOW 0x%x\n", type);
++		ret = find_closest_fast(hw_margin_min, &fastng, &min);
++		if (ret) {
++			dev_err(dev, "bad WDT window for fast timeout\n");
++			return ret;
++		}
++
++		ret = find_closest_slow_by_fast(min, hw_margin, &slowng);
++		if (ret) {
++			dev_err(dev, "bad WDT window\n");
++			return ret;
++		}
++
++	} else {
++		type = BD957X_WDG_TYPE_SLOW;
++		dev_dbg(dev, "Setting type SLOW 0x%x\n", type);
++		ret = find_closest_slow(hw_margin, &slowng, &fastng);
++		if (ret) {
++			dev_err(dev, "bad WDT window\n");
++			return ret;
++		}
++	}
++
++	slowng <<= ffs(BD957X_WDG_NG_RATIO_MASK) - 1;
++	reg = type | slowng | fastng;
++	mask = BD957X_WDG_TYPE_MASK | BD957X_WDG_NG_RATIO_MASK |
++	       BD957X_WDG_FASTNG_MASK;
++	ret = regmap_update_bits(priv->regmap, BD957X_REG_WDT_CONF,
++				 mask, reg);
++
++	return ret;
++}
++
++static int bd9576_wdt_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct device_node *np = dev->parent->of_node;
++	struct bd9576_wdt_priv *priv;
++	u32 hw_margin = BD957X_WDT_DEFAULT_MARGIN, hw_margin_min = 0;
++	int ret;
++
++	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	platform_set_drvdata(pdev, priv);
++
++	priv->dev = dev;
++	priv->regmap = dev_get_regmap(dev->parent, NULL);
++	if (!priv->regmap) {
++		dev_err(dev, "No regmap found\n");
++		return -ENODEV;
++	}
++
++	priv->gpiod_en = devm_gpiod_get_from_of_node(dev, dev->parent->of_node,
++						     "rohm,watchdog-enable-gpios",
++						     0, GPIOD_OUT_LOW,
++						     "watchdog-enable");
++	if (IS_ERR(priv->gpiod_en))
++		return dev_err_probe(dev, PTR_ERR(priv->gpiod_en),
++			      "getting watchdog-enable GPIO failed\n");
++
++	priv->gpiod_ping = devm_gpiod_get_from_of_node(dev, dev->parent->of_node,
++						     "rohm,watchdog-ping-gpios",
++						     0, GPIOD_OUT_LOW,
++						     "watchdog-ping");
++	if (IS_ERR(priv->gpiod_ping))
++		return dev_err_probe(dev, PTR_ERR(priv->gpiod_ping),
++				     "getting watchdog-ping GPIO failed\n");
++
++	ret = of_property_read_u32(np, "hw_margin_ms", &hw_margin);
++	if (ret && ret != -EINVAL)
++		return ret;
++
++	ret = of_property_read_u32(np, "rohm,hw-margin-min-ms", &hw_margin_min);
++	if (ret && ret != -EINVAL)
++		return ret;
++
++	ret = bd957x_set_wdt_mode(priv, hw_margin, hw_margin_min);
++	if (ret)
++		return ret;
++
++	priv->always_running = of_property_read_bool(np, "always-running");
++
++	watchdog_set_drvdata(&priv->wdd, priv);
++
++	priv->wdd.info			= &bd957x_wdt_ident;
++	priv->wdd.ops			= &bd957x_wdt_ops;
++	priv->wdd.min_hw_heartbeat_ms	= hw_margin_min;
++	priv->wdd.max_hw_heartbeat_ms	= hw_margin;
++	priv->wdd.parent		= dev;
++	priv->wdd.timeout		= (hw_margin / 2) * 1000;
++
++	watchdog_init_timeout(&priv->wdd, 0, dev);
++	watchdog_set_nowayout(&priv->wdd, nowayout);
++
++	watchdog_stop_on_reboot(&priv->wdd);
++
++	if (priv->always_running)
++		bd9576_wdt_start(&priv->wdd);
++
++	return devm_watchdog_register_device(dev, &priv->wdd);
++}
++
++static struct platform_driver bd9576_wdt_driver = {
++	.driver	= {
++		.name = "bd9576-wdt",
++	},
++	.probe	= bd9576_wdt_probe,
++};
++
++module_platform_driver(bd9576_wdt_driver);
++
++MODULE_AUTHOR("Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>");
++MODULE_DESCRIPTION("ROHM BD9576/BD9573 Watchdog driver");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:bd9576-wdt");
+-- 
+2.21.0
 
 
-> > Following my hypothesis about having a bad address calculation; the
-> > tricky part is I'd need to look through the relocations and try to see
-> > if any could resolve to the address that was accidentally modified.  I
-> > suspect objtool could be leveraged for that;
->
-> If you can find this at compile time...
->
-> > maybe it could check whether each `struct jump_entry`'s `target`
-> > member referred to either a NOP or a CMP, and error otherwise? (Do we
-> > have other non-NOP or CMP targets? IDK)
->
-> Follow jump_label_transform() - it does verify what it is going to
-> patch. And while I'm looking at this, I realize that the jump labels
-> patch 5 bytes but the above zeroes are 4 bytes. In the other opcode
-> bytes I decoded it is 4 bytes too. So this might not be caused by the
-> jump labels patching...
->
-> > This hypothesis might also be incorrect, and thus would be chasing a
-> > red herring...not really sure how else to pursue debugging this.
->
-> Yeah, this one is tricky to debug.
->
-> --
-> Regards/Gruss,
->     Boris.
->
-> https://people.kernel.org/tglx/notes-about-netiquette
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
