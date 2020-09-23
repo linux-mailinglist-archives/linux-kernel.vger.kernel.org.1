@@ -2,203 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57FB8275026
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 07:00:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D25B927502A
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 07:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726970AbgIWFAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 01:00:53 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:52380 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726817AbgIWFAx (ORCPT
+        id S1726989AbgIWFCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 01:02:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726817AbgIWFC3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 01:00:53 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08N50B5Y102299;
-        Wed, 23 Sep 2020 05:00:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=y7KcEv0cH2wcXQfqZi8DVT/Kis2ijpSFtePEekaqdn0=;
- b=ovwcldhHfVKucVYCJd2vN1Fbfe6WoW53QXU879Cu1Rgu573PEqJgipAl/U7jJpVFGrQ4
- MEng3+DWWWBWvC7BzRxicAFVBzkV6EWjcc/F/GMfskogXQHOLLdAK/6rOSoah3m1GfEB
- mWrigoUD0c6eVmMJeqWXfIxmJihpPkWKcijjv+aOuBKTC3PmWNmn2KAmzuKmBF/0AzFU
- Mq9Y4P7GyJlKppJ0Yvd92IzepZ0DQN0ZVRRwmUKYirYJx4+/6jxgWFlNXBL8paqf6qo3
- f+DRI5KpvnxyngyBTg91o3TXO4OVDGN8TvzWkTYkrNyvj0lZhgL04TT+kFaRRrrfiR8u HQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 33qcptw4yj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 23 Sep 2020 05:00:11 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08N4uOxi070114;
-        Wed, 23 Sep 2020 05:00:10 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 33nuru241f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 23 Sep 2020 05:00:10 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08N503p5025876;
-        Wed, 23 Sep 2020 05:00:03 GMT
-Received: from localhost (/10.159.235.171)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 22 Sep 2020 22:00:03 -0700
-Date:   Tue, 22 Sep 2020 22:00:01 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Qian Cai <cai@redhat.com>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org,
-        Dave Kleikamp <shaggy@kernel.org>,
-        jfs-discussion@lists.sourceforge.net,
-        Dave Chinner <dchinner@redhat.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-next@vger.kernel.org
-Subject: Re: [PATCH v2 5/9] iomap: Support arbitrarily many blocks per page
-Message-ID: <20200923050001.GE7949@magnolia>
-References: <20200910234707.5504-1-willy@infradead.org>
- <20200910234707.5504-6-willy@infradead.org>
- <163f852ba12fd9de5dec7c4a2d6b6c7cdb379ebc.camel@redhat.com>
- <20200922170526.GK32101@casper.infradead.org>
- <95bd1230f2fcf01f690770eb77696862b8fb607b.camel@redhat.com>
- <20200923024859.GM32101@casper.infradead.org>
+        Wed, 23 Sep 2020 01:02:29 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9DA0C061755;
+        Tue, 22 Sep 2020 22:02:29 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id u24so2818505pgi.1;
+        Tue, 22 Sep 2020 22:02:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=pCg8OII21fM9qftK3YuQLgHrdBxiyeL+P1pf3mbhjTQ=;
+        b=VEZOYcmAJ53idShJbXFl6a9HCCcv3n5EWI9bUImw9J+mTDyDhddT9pnkzHTIS9M7PL
+         U0yVzK0xF/AMNFLpHz1AbX5tzRPaCyLDwV+a6cUCm1cgDBFRXLNeeHWQEA6es70hh3Z+
+         eGLjHWS0RpilNPVaaiPmQ9ySxt+Q+bYcINDX4+0reXiGfx4Dt1bCMfFqWKkeckCmTrtr
+         jI2in1hdinm5VfWRR8MvqOZMI1Ja0q2K4vh7D8CWS6+Du/x4bx7ZcIGFoR0dzUbvss9D
+         NS+gTD0PL9yResD5G8DyjdHqgBCbweOwLgbP8zUinsiek0rxJe7iwsOGuHpNYnQeRkNM
+         /kCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pCg8OII21fM9qftK3YuQLgHrdBxiyeL+P1pf3mbhjTQ=;
+        b=qMeSu/uUOf7AVLhA8YNtWgCdV/Szxe8ixidJmXsco1yE+Exhah7VbWlzDZyLMuMh/F
+         lvXTcq4a7/Ye9pNb6FA4lnGZ0sMMUcW30bJbC2/lLLzdDtw4TPwHhOte+xVG7Ojq1NdW
+         odxc36ThFmQM02O//sklZmWsEeLqWOBmqB2rzFZFoiQf66hOTtrd1x+jkoxFi/gSAQOs
+         d9Ttb7gGo9d9nosPfZHU50PG19K3ddsgpK231kYn4G3NLsUhmjuLAx1jDirqJeaOnftR
+         pJQsbyRpsx2cWwVsnXipZQYTLOc0aHLBVrTiKLZyNmF5th021rUiB/n5SNo79YR2oNNL
+         M9Gg==
+X-Gm-Message-State: AOAM531ZQpDRidoh9R3POLSNwy/La31D5D9elvlMglqbhSwAlKm+LjFW
+        mD9sQHXjp6o4dhp3/uqwjQ==
+X-Google-Smtp-Source: ABdhPJwCv/KxBqpu94zRq4IhcahiAW3XOfSyNO9qIZ5rb3W4V8S1vqp6jBHJRPQcfXCaJpgLPqpbbw==
+X-Received: by 2002:a63:d604:: with SMTP id q4mr4666582pgg.238.1600837349371;
+        Tue, 22 Sep 2020 22:02:29 -0700 (PDT)
+Received: from [127.0.0.1] ([103.7.29.9])
+        by smtp.gmail.com with ESMTPSA id 25sm10543579pgo.34.2020.09.22.22.02.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Sep 2020 22:02:28 -0700 (PDT)
+Subject: Re: [PATCH 1/2] KVM: Fix the build error
+To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, x86@kernel.org
+Cc:     sean.j.christopherson@intel.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        lihaiwei@tencent.com, kernel test robot <lkp@intel.com>
+References: <20200914091148.95654-1-lihaiwei.kernel@gmail.com>
+ <20200914091148.95654-2-lihaiwei.kernel@gmail.com>
+ <1810e3e5-8286-29e0-ff10-636d6c32df6d@redhat.com>
+From:   Haiwei Li <lihaiwei.kernel@gmail.com>
+Message-ID: <d5ff32e8-1dec-da50-0499-20db08e492fe@gmail.com>
+Date:   Wed, 23 Sep 2020 13:02:17 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200923024859.GM32101@casper.infradead.org>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9752 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
- phishscore=0 mlxlogscore=999 bulkscore=0 mlxscore=0 suspectscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009230037
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9752 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
- adultscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0 priorityscore=1501
- phishscore=0 spamscore=0 malwarescore=0 clxscore=1011 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009230038
+In-Reply-To: <1810e3e5-8286-29e0-ff10-636d6c32df6d@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 03:48:59AM +0100, Matthew Wilcox wrote:
-> On Tue, Sep 22, 2020 at 09:06:03PM -0400, Qian Cai wrote:
-> > On Tue, 2020-09-22 at 18:05 +0100, Matthew Wilcox wrote:
-> > > On Tue, Sep 22, 2020 at 12:23:45PM -0400, Qian Cai wrote:
-> > > > On Fri, 2020-09-11 at 00:47 +0100, Matthew Wilcox (Oracle) wrote:
-> > > > > Size the uptodate array dynamically to support larger pages in the
-> > > > > page cache.  With a 64kB page, we're only saving 8 bytes per page today,
-> > > > > but with a 2MB maximum page size, we'd have to allocate more than 4kB
-> > > > > per page.  Add a few debugging assertions.
-> > > > > 
-> > > > > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> > > > > Reviewed-by: Dave Chinner <dchinner@redhat.com>
-> > > > 
-> > > > Some syscall fuzzing will trigger this on powerpc:
-> > > > 
-> > > > .config: https://gitlab.com/cailca/linux-mm/-/blob/master/powerpc.config
-> > > > 
-> > > > [ 8805.895344][T445431] WARNING: CPU: 61 PID: 445431 at fs/iomap/buffered-
-> > > > io.c:78 iomap_page_release+0x250/0x270
-> > > 
-> > > Well, I'm glad it triggered.  That warning is:
-> > >         WARN_ON_ONCE(bitmap_full(iop->uptodate, nr_blocks) !=
-> > >                         PageUptodate(page));
-> > > so there was definitely a problem of some kind.
-> > > 
-> > > truncate_cleanup_page() calls
-> > > do_invalidatepage() calls
-> > > iomap_invalidatepage() calls
-> > > iomap_page_release()
-> > > 
-> > > Is this the first warning?  I'm wondering if maybe there was an I/O error
-> > > earlier which caused PageUptodate to get cleared again.  If it's easy to
-> > > reproduce, perhaps you could try something like this?
-> > > 
-> > > +void dump_iomap_page(struct page *page, const char *reason)
-> > > +{
-> > > +       struct iomap_page *iop = to_iomap_page(page);
-> > > +       unsigned int nr_blocks = i_blocks_per_page(page->mapping->host, page);
-> > > +
-> > > +       dump_page(page, reason);
-> > > +       if (iop)
-> > > +               printk("iop:reads %d writes %d uptodate %*pb\n",
-> > > +                               atomic_read(&iop->read_bytes_pending),
-> > > +                               atomic_read(&iop->write_bytes_pending),
-> > > +                               nr_blocks, iop->uptodate);
-> > > +       else
-> > > +               printk("iop:none\n");
-> > > +}
-> > > 
-> > > and then do something like:
-> > > 
-> > > 	if (bitmap_full(iop->uptodate, nr_blocks) != PageUptodate(page))
-> > > 		dump_iomap_page(page, NULL);
-> > 
-> > This:
-> > 
-> > [ 1683.158254][T164965] page:000000004a6c16cd refcount:2 mapcount:0 mapping:00000000ea017dc5 index:0x2 pfn:0xc365c
-> > [ 1683.158311][T164965] aops:xfs_address_space_operations ino:417b7e7 dentry name:"trinity-testfile2"
-> > [ 1683.158354][T164965] flags: 0x7fff8000000015(locked|uptodate|lru)
-> > [ 1683.158392][T164965] raw: 007fff8000000015 c00c0000019c4b08 c00c0000019a53c8 c000201c8362c1e8
-> > [ 1683.158430][T164965] raw: 0000000000000002 0000000000000000 00000002ffffffff c000201c54db4000
-> > [ 1683.158470][T164965] page->mem_cgroup:c000201c54db4000
-> > [ 1683.158506][T164965] iop:none
+On 20/9/20 21:09, Paolo Bonzini wrote:
+> On 14/09/20 11:11, lihaiwei.kernel@gmail.com wrote:
+>> From: Haiwei Li <lihaiwei@tencent.com>
+>>
+>> When CONFIG_SMP is not set, an build error occurs with message "error:
+>> use of undeclared identifier 'kvm_send_ipi_mask_allbutself'"
+>>
+>> Fixes: 0f990222108d ("KVM: Check the allocation of pv cpu mask", 2020-09-01)
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Signed-off-by: Haiwei Li <lihaiwei@tencent.com>
+>> ---
+>>   arch/x86/kernel/kvm.c | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+>> index 1b51b727b140..7e8be0421720 100644
+>> --- a/arch/x86/kernel/kvm.c
+>> +++ b/arch/x86/kernel/kvm.c
+>> @@ -797,7 +797,9 @@ static __init int kvm_alloc_cpumask(void)
+>>   			}
+>>   		}
+>>   
+>> +#if defined(CONFIG_SMP)
+>>   	apic->send_IPI_mask_allbutself = kvm_send_ipi_mask_allbutself;
+>> +#endif
+>>   	pv_ops.mmu.flush_tlb_others = kvm_flush_tlb_others;
+>>   	return 0;
+>>   
+>>
 > 
-> Oh, I'm a fool.  This is after the call to detach_page_private() so
-> page->private is NULL and we don't get the iop dumped.
-> 
-> Nevertheless, this is interesting.  Somehow, the page is marked Uptodate,
-> but the bitmap is deemed not full.  There are three places where we set
-> an iomap page Uptodate:
-> 
-> 1.      if (bitmap_full(iop->uptodate, i_blocks_per_page(inode, page)))
->                 SetPageUptodate(page);
-> 
-> 2.      if (page_has_private(page))
->                 iomap_iop_set_range_uptodate(page, off, len);
->         else
->                 SetPageUptodate(page);
-> 
-> 3.      BUG_ON(page->index);
-> ...
->         SetPageUptodate(page);
-> 
-> It can't be #2 because the page has an iop.  It can't be #3 because the
-> page->index is not 0.  So at some point in the past, the bitmap was full.
-> 
-> I don't think it's possible for inode->i_blksize to change, and you
-> aren't running with THPs, so it's definitely not possible for thp_size()
-> to change.  So i_blocks_per_page() isn't going to change.
-> 
-> We seem to have allocated enough memory for ->iop because that's also
-> based on i_blocks_per_page().
-> 
-> I'm out of ideas.  Maybe I'll wake up with a better idea in the morning.
-> I've been trying to reproduce this on x86 with a 1kB block size
-> filesystem, and haven't been able to yet.  Maybe I'll try to setup a
-> powerpc cross-compilation environment tomorrow.
+> If CONFIG_SMP is not set you don't need kvm_alloc_cpumask or
+> pv_ops.mmu.flush_tlb_others at all.  Can you squash these two into the
+> original patch and re-submit for 5.10?
 
-FWIW I managed to reproduce it with the following fstests configuration
-on a 1k block size fs on a x86 machinE:
+Hi, Paolo
 
-SECTION      -- -no-sections-
-FSTYP        -- xfs
-MKFS_OPTIONS --  -m reflink=1,rmapbt=1 -i sparse=1 -b size=1024
-MOUNT_OPTIONS --  -o usrquota,grpquota,prjquota
-HOST_OPTIONS -- local.config
-CHECK_OPTIONS -- -g auto
-XFS_MKFS_OPTIONS -- -bsize=4096
-TIME_FACTOR  -- 1
-LOAD_FACTOR  -- 1
-TEST_DIR     -- /mnt
-TEST_DEV     -- /dev/sde
-SCRATCH_DEV  -- /dev/sdd
-SCRATCH_MNT  -- /opt
-OVL_UPPER    -- ovl-upper
-OVL_LOWER    -- ovl-lower
-OVL_WORK     -- ovl-work
-KERNEL       -- 5.9.0-rc4-djw
+I'm a little confused. Function kvm_flush_tlb_others doesn't seem to be 
+related to CONFIG_SMP.
 
-The kernel is more or less iomap-for-next.
+And my patch like:
 
---D
+---
+  arch/x86/kernel/kvm.c | 27 ++++++++++++++++++++++++---
+  1 file changed, 24 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+index 9663ba31347c..1e5da6db519c 100644
+--- a/arch/x86/kernel/kvm.c
++++ b/arch/x86/kernel/kvm.c
+@@ -553,7 +553,6 @@ static void kvm_send_ipi_mask_allbutself(const 
+struct cpumask *mask, int vector)
+  static void kvm_setup_pv_ipi(void)
+  {
+  	apic->send_IPI_mask = kvm_send_ipi_mask;
+-	apic->send_IPI_mask_allbutself = kvm_send_ipi_mask_allbutself;
+  	pr_info("setup PV IPIs\n");
+  }
+
+@@ -619,6 +618,11 @@ static void kvm_flush_tlb_others(const struct 
+cpumask *cpumask,
+  	struct kvm_steal_time *src;
+  	struct cpumask *flushmask = this_cpu_cpumask_var_ptr(__pv_cpu_mask);
+
++	if (unlikely(!flushmask)) {
++		native_flush_tlb_others(cpumask, info);
++		return;
++	}
++
+  	cpumask_copy(flushmask, cpumask);
+  	/*
+  	 * We have to call flush only on online vCPUs. And
+@@ -765,6 +769,14 @@ static __init int activate_jump_labels(void)
+  }
+  arch_initcall(activate_jump_labels);
+
++static void kvm_free_cpumask(void)
++{
++	unsigned int cpu;
++
++	for_each_possible_cpu(cpu)
++		free_cpumask_var(per_cpu(__pv_cpu_mask, cpu));
++}
++
+  static __init int kvm_alloc_cpumask(void)
+  {
+  	int cpu;
+@@ -783,11 +795,20 @@ static __init int kvm_alloc_cpumask(void)
+
+  	if (alloc)
+  		for_each_possible_cpu(cpu) {
+-			zalloc_cpumask_var_node(per_cpu_ptr(&__pv_cpu_mask, cpu),
+-				GFP_KERNEL, cpu_to_node(cpu));
++			if (!zalloc_cpumask_var_node(
++				per_cpu_ptr(&__pv_cpu_mask, cpu),
++				GFP_KERNEL, cpu_to_node(cpu)))
++				goto zalloc_cpumask_fail;
+  		}
+
++#if defined(CONFIG_SMP)
++	apic->send_IPI_mask_allbutself = kvm_send_ipi_mask_allbutself;
++#endif
+  	return 0;
++
++zalloc_cpumask_fail:
++	kvm_free_cpumask();
++	return -ENOMEM;
+  }
+  arch_initcall(kvm_alloc_cpumask);
+
+--
+2.18.4
+
+Do you have any suggestion? Thanks.
+
+     Haiwei
