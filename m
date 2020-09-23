@@ -2,88 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1287C274F86
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 05:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 729A9274F8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 05:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726801AbgIWDZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 23:25:39 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14263 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726703AbgIWDZi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 23:25:38 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 68C6DBC5F24D1962E43F;
-        Wed, 23 Sep 2020 11:25:36 +0800 (CST)
-Received: from huawei.com (10.175.104.57) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Wed, 23 Sep 2020
- 11:25:31 +0800
-From:   Li Heng <liheng40@huawei.com>
-To:     <ath9k-devel@qca.qualcomm.com>, <kvalo@codeaurora.org>,
-        <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next v2] ath9k: Remove set but not used variable
-Date:   Wed, 23 Sep 2020 11:25:31 +0800
-Message-ID: <1600831531-8573-1-git-send-email-liheng40@huawei.com>
-X-Mailer: git-send-email 2.7.4
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.104.57]
-X-CFilter-Loop: Reflected
+        id S1726817AbgIWD1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 23:27:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726448AbgIWD1q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 23:27:46 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E48C061755;
+        Tue, 22 Sep 2020 20:27:46 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id y1so13505958pgk.8;
+        Tue, 22 Sep 2020 20:27:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=N7U/rz7S29JZC5xmfTqQaexMO/Auh04+P82WcqlBJeo=;
+        b=I+kMP/B5eYkW9/tgTGBW0PHEB0Mf7xFPH+bUirN06DW1gqHexWM+qwFtVYEuGR8+OA
+         vgrz+r904D3VKgRIT/cXoNV1/vlJbjozSFlZZA7VGF+6KRhJsPXDFHZl1TAudeu4TVnx
+         XRwDedx4g/nZpFK0T9OiotfXSEaV1BKtowrGIvBJlQvV358WecQdtTJ3gLVNO2WqiuqO
+         eKPWGldqf1uIzTiNIMgdADDC6bJnHtT+j2pbssUclq6phd7r2uTcRYjRLlQdu3BWREoE
+         ITBb4KktvmZ0Zf/5UxhD1l8mSxKlElMeDorZnAWXot6ibQSzWHl0hparxkpJk8vSYAw5
+         aPdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=N7U/rz7S29JZC5xmfTqQaexMO/Auh04+P82WcqlBJeo=;
+        b=bm6eGof+SHqv+3yjucdf9jD53xpoKnrv6Sbq12/gwcsCSCvVTOM9FkD22WL3WYIz9u
+         2H7JdBBmgmGskTBOPXVgnShdKpTMmtWhtSdr1C7BF7x7kXbHETnyUgkNMMnOnc9vvcib
+         06TbMWNYSo35HyNhSLvygL2KoZ3rda2T5SnqfJkPzTwXBWPJ39o4ZG9vzXNvmTrjG5el
+         xxF8FAtJnqDwcN8Cll8hAPecwXz97yrMbdurtIBXXad8AjVUyQnNlM7ipF0XOdgOLnTC
+         o3XdxKCS+iWiQ2L41dan5K+MAegMubNCIJMWjfeIOFhZxuQ57+/u7El+jvlkWkRBRLZm
+         YNKA==
+X-Gm-Message-State: AOAM533RkU9OD2+UhVfZno4+eLF1oCSQpD7hiAX0pQWu9o2/+SyF7oLr
+        jS86x8rOSvxSktptKEt1RSQfZEbf5mth
+X-Google-Smtp-Source: ABdhPJxzQhXsh0QnyrWga/69Pgpz4CB9jRSpU/E3goQlS+gCHdPw7NOzq4DqtvCm7VVPqL4pdMH3Jg==
+X-Received: by 2002:a63:170d:: with SMTP id x13mr5864856pgl.195.1600831666043;
+        Tue, 22 Sep 2020 20:27:46 -0700 (PDT)
+Received: from localhost.localdomain ([47.242.131.39])
+        by smtp.gmail.com with ESMTPSA id u14sm16216681pfm.80.2020.09.22.20.27.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 20:27:45 -0700 (PDT)
+From:   Pujin Shi <shipujin.t@gmail.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shipujin.t@gmail.com
+Subject: [PATCH] MIPS: irq: Add missing prototypes for init_IRQ()
+Date:   Wed, 23 Sep 2020 11:26:50 +0800
+Message-Id: <20200923032650.1546-1-shipujin.t@gmail.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This addresses the following gcc warning with "make W=1":
+init_IRQ() have no prototype, add one in irq.h
 
-drivers/net/wireless/ath/ath9k/ar9580_1p0_initvals.h:1331:18: warning:
-‘ar9580_1p0_pcie_phy_clkreq_enable_L1’ defined but not used [-Wunused-const-variable=]
+Fix the following warnings (treated as error in W=1):
+arch/mips/kernel/irq.c:52:13: error: no previous prototype for 'init_IRQ' [-Werror=missing-prototypes]
 
-drivers/net/wireless/ath/ath9k/ar9580_1p0_initvals.h:1338:18: warning:
-‘ar9580_1p0_pcie_phy_clkreq_disable_L1’ defined but not used [-Wunused-const-variable=]
-
-drivers/net/wireless/ath/ath9k/ar9580_1p0_initvals.h:1345:18: warning:
-‘ar9580_1p0_pcie_phy_pll_on_clkreq’ defined but not used [-Wunused-const-variable=]
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Li Heng <liheng40@huawei.com>
+Signed-off-by: Pujin Shi <shipujin.t@gmail.com>
 ---
- .../net/wireless/ath/ath9k/ar9580_1p0_initvals.h    | 21 ---------------------
- 1 file changed, 21 deletions(-)
+ arch/mips/include/asm/irq.h | 1 +
+ arch/mips/kernel/irq.c      | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath9k/ar9580_1p0_initvals.h b/drivers/net/wireless/ath/ath9k/ar9580_1p0_initvals.h
-index f4c9bef..fab14e0 100644
---- a/drivers/net/wireless/ath/ath9k/ar9580_1p0_initvals.h
-+++ b/drivers/net/wireless/ath/ath9k/ar9580_1p0_initvals.h
-@@ -1328,27 +1328,6 @@ static const u32 ar9580_1p0_baseband_postamble[][5] = {
- 	{0x0000c284, 0x00000000, 0x00000000, 0x00000150, 0x00000150},
- };
-
--static const u32 ar9580_1p0_pcie_phy_clkreq_enable_L1[][2] = {
--	/* Addr      allmodes  */
--	{0x00004040, 0x0835365e},
--	{0x00004040, 0x0008003b},
--	{0x00004044, 0x00000000},
--};
--
--static const u32 ar9580_1p0_pcie_phy_clkreq_disable_L1[][2] = {
--	/* Addr      allmodes  */
--	{0x00004040, 0x0831365e},
--	{0x00004040, 0x0008003b},
--	{0x00004044, 0x00000000},
--};
--
--static const u32 ar9580_1p0_pcie_phy_pll_on_clkreq[][2] = {
--	/* Addr      allmodes  */
--	{0x00004040, 0x0831265e},
--	{0x00004040, 0x0008003b},
--	{0x00004044, 0x00000000},
--};
--
- static const u32 ar9580_1p0_baseband_postamble_dfs_channel[][3] = {
- 	/* Addr      5G          2G        */
- 	{0x00009814, 0x3400c00f, 0x3400c00f},
---
-2.7.4
+diff --git a/arch/mips/include/asm/irq.h b/arch/mips/include/asm/irq.h
+index c5d351786416..992f8040d3d9 100644
+--- a/arch/mips/include/asm/irq.h
++++ b/arch/mips/include/asm/irq.h
+@@ -21,6 +21,7 @@
+ #define IRQ_STACK_START			(IRQ_STACK_SIZE - 16)
+ 
+ extern void *irq_stack[NR_CPUS];
++void init_IRQ(void);
+ 
+ /*
+  * The highest address on the IRQ stack contains a dummy frame put down in
+diff --git a/arch/mips/kernel/irq.c b/arch/mips/kernel/irq.c
+index 85b6c60f285d..07d2c86e7ff5 100644
+--- a/arch/mips/kernel/irq.c
++++ b/arch/mips/kernel/irq.c
+@@ -21,6 +21,7 @@
+ #include <linux/kallsyms.h>
+ #include <linux/kgdb.h>
+ #include <linux/ftrace.h>
++#include <asm/irq.h>
+ 
+ #include <linux/atomic.h>
+ #include <linux/uaccess.h>
+-- 
+2.18.1
 
