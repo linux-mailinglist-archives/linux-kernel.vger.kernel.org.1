@@ -2,133 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A58C275A40
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:36:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6459D275A3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726678AbgIWOgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 10:36:42 -0400
-Received: from mga04.intel.com ([192.55.52.120]:62116 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726156AbgIWOgm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 10:36:42 -0400
-IronPort-SDR: 64u1a8RyjwUKaHGIx8RYJN2QU4hoN4Ay5bq6gd33nX0NS9UphxEUO6Dbf268CIVhnDs1s6Ph4r
- GguDppYwx1Eg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9752"; a="158279608"
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="158279608"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 07:36:41 -0700
-IronPort-SDR: FO+61Hh590GzrUe0zCAwY0ZJk9w6UCPAdtRxizdK5L4cfEylc2hy4ExB0evAN3qT+6yNv2xIKH
- DMwYWRFLwhWQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="454935904"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.190]) ([10.237.72.190])
-  by orsmga004.jf.intel.com with ESMTP; 23 Sep 2020 07:36:36 -0700
-Subject: Re: [PATCH 7/7] perf inject: Remove stale build-id processing
-To:     Namhyung Kim <namhyung@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-References: <20200923080537.155264-1-namhyung@kernel.org>
- <20200923080537.155264-8-namhyung@kernel.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <91de4a5d-2646-0522-92a6-6c0de69ed007@intel.com>
-Date:   Wed, 23 Sep 2020 17:36:07 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726656AbgIWOg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 10:36:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726156AbgIWOg0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 10:36:26 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE07AC0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 07:36:25 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600871784;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ui7hpnIyys5luJxbofLseLzGkNTuHdJO8ux+tEPyvJU=;
+        b=yOyV2uWsIg9LUUjzUTl8eu5WA+0E5YuR9NvSp/L/orUvArKuUK4t7MWZ18I015rqWpXCpu
+        Mex4GpXHKlZO74/FEmY5Zy8+FfermPCNUt6ox3rQNzmkY/3djLcsiPiPc2nRbz5IFFRdjD
+        wla9M7WWfDpzj0LDSiA1r5jJ6B4mXh7Gm61QdKCltSlbN8XrA2j6XzJHXBo10ZxHkxQCle
+        3xGPUeZ+4MyHB/G8VjaXfsTUe5H7zXA6yq4oWEOWuL8MOXBsmVA+S4SSCvniEJzokIecDG
+        0Da9kwgPcGr68S5ct9bs2zRDviWeY61XtyKoHjXqPqhUOnd3392iMlJisn4Msg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600871784;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ui7hpnIyys5luJxbofLseLzGkNTuHdJO8ux+tEPyvJU=;
+        b=kwk7s2XbtBU8ItKHtNn5xC2hVF5Fbgm/Y51llw0Wj6+oONG0HOIYNUQ2lu6eLPOywh2VMz
+        LcTk3Y7sQh5AQICg==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk 1/5] printk: get new seq before enabling interrupts
+In-Reply-To: <20200923141723.GA6442@alley>
+References: <20200922153816.5883-1-john.ogness@linutronix.de> <20200922153816.5883-2-john.ogness@linutronix.de> <20200923141723.GA6442@alley>
+Date:   Wed, 23 Sep 2020 16:42:23 +0206
+Message-ID: <87r1qszhjs.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20200923080537.155264-8-namhyung@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/09/20 11:05 am, Namhyung Kim wrote:
-> I think we don't need to call build_id__mark_dso_hit() in the
-> perf_event__repipe_sample() as it's not used by -b option.  In case of
-> the -b option is used, it uses perf_event__inject_buildid() instead.
-> This can remove unnecessary overhead of finding thread/map for each
-> sample event.
-> 
-> Also I suspect HEADER_BUILD_ID feature bit setting since we already
-> generated/injected BUILD_ID event into the output stream.  So this
-> header information seems redundant.  I'm not 100% sure about the
-> auxtrace usage, but it looks like not related to this directly.
-> 
-> And we now have --buildid-all so users can get the same behavior if
-> they want.
+On 2020-09-23, Petr Mladek <pmladek@suse.com> wrote:
+>> After copying all records to the dynamic ringbuffer, setup_log_buf()
+>> checks to see if any records were dropped during the switch. However,
+>> it needs to check before enabling interrupts since new records could
+>> arrive in an interrupt, thus causing setup_log_buf() to erroneously
+>> think that it had dropped messages.
+>
+> Have you seen the problem, please?
+>
+>> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+>> ---
+>>  kernel/printk/printk.c | 8 ++++----
+>>  1 file changed, 4 insertions(+), 4 deletions(-)
+>> 
+>> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+>> index 1fe3d0cb2fe0..00bc1fce3299 100644
+>> --- a/kernel/printk/printk.c
+>> +++ b/kernel/printk/printk.c
+>> @@ -1181,12 +1181,12 @@ void __init setup_log_buf(int early)
+>>  	 */
+>>  	prb = &printk_rb_dynamic;
+>>  
+>> +	seq = prb_next_seq(&printk_rb_static) - seq;
+>> +
+>>  	logbuf_unlock_irqrestore(flags);
+>>  
+>> -	if (seq != prb_next_seq(&printk_rb_static)) {
+>
+> I can't see how these two values could get modified after enabling interrupts.
+>
+>   + @seq is set in the for-cycle before the interrupts are enabled.
+>
+>   + @prb is updated before the interrupts are  enabled. So that
+>     the static buffer should not longer be used after that.
 
-For a perf.data file, don't buildids get written to the HEADER_BUILD_ID
-feature section by perf_session__write_header() if the feature flag is set
-and if they are hit?
+You are correct. This patch should be disregarded.
 
-So, unless -b is used, anything you don't hit you lose i.e. a buildid in the
-HEADER_BUILD_ID feature section of the input file, will not be written to
-the output file.
-
-> 
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/perf/builtin-inject.c | 12 ------------
->  1 file changed, 12 deletions(-)
-> 
-> diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
-> index 500428aaa576..0191d72be7c4 100644
-> --- a/tools/perf/builtin-inject.c
-> +++ b/tools/perf/builtin-inject.c
-> @@ -277,8 +277,6 @@ static int perf_event__repipe_sample(struct perf_tool *tool,
->  		return f(tool, event, sample, evsel, machine);
->  	}
->  
-> -	build_id__mark_dso_hit(tool, event, sample, evsel, machine);
-> -
-
-I guess that chunk would prevent losing a buildid in a perf.data file?
-
->  	if (inject->itrace_synth_opts.set && sample->aux_sample.size)
->  		event = perf_inject__cut_auxtrace_sample(inject, event, sample);
->  
-> @@ -767,16 +765,6 @@ static int __cmd_inject(struct perf_inject *inject)
->  		return ret;
->  
->  	if (!data_out->is_pipe) {
-> -		if (inject->build_ids)
-> -			perf_header__set_feat(&session->header,
-> -					      HEADER_BUILD_ID);
-
-That could be due to confusion with 'perf buildid-list' which will not show
-any buildids from synthesized buildid events unless "with hits" is selected,
-so then it looks like there are no buildids.
-
-It could be an advantage to have the buildids also in the HEADER_BUILD_ID
-feature section, because then then build-list can list them quickly.
-
-> -		/*
-> -		 * Keep all buildids when there is unprocessed AUX data because
-> -		 * it is not known which ones the AUX trace hits.
-> -		 */
-> -		if (perf_header__has_feat(&session->header, HEADER_BUILD_ID) &&
-> -		    inject->have_auxtrace && !inject->itrace_synth_opts.set)
-> -			dsos__hit_all(session);
-
-I expect that is definitely needed.
-
->  		/*
->  		 * The AUX areas have been removed and replaced with
->  		 * synthesized hardware events, so clear the feature flag and
-> 
-
+John Ogness
