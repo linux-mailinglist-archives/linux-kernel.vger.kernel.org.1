@@ -2,72 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52DCA275BC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:25:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FB88275BC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726788AbgIWPZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 11:25:13 -0400
-Received: from mga07.intel.com ([134.134.136.100]:58923 "EHLO mga07.intel.com"
+        id S1726851AbgIWPZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 11:25:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726620AbgIWPZM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 11:25:12 -0400
-IronPort-SDR: OTeINvi3nzndS+8v76fJOomgwfUiueNM1VmM1xJ6BrUWB8cGYXdym97hYNGmnCRc/umXCFToGo
- 15eWgXCoARxQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="225055673"
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="225055673"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 08:25:11 -0700
-IronPort-SDR: YmR1SxFUzCMegOE29Z7WY8yRAbVnYEa0ijOOqMw2+EsFkZLLsa1UpifzHWDqWDrLKKEVl1TI3o
- RR2e/1UqSUyA==
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="486478167"
-Received: from linortne-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.49.223])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 08:25:04 -0700
-Date:   Wed, 23 Sep 2020 18:25:02 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Jethro Beekman <jethro@fortanix.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Seth Moore <sethmo@google.com>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v38 16/24] x86/sgx: Add a page reclaimer
-Message-ID: <20200923152502.GI5160@linux.intel.com>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-17-jarkko.sakkinen@linux.intel.com>
- <20200922104538.GE22660@zn.tnic>
- <20200922162437.GA30827@linux.intel.com>
+        id S1726620AbgIWPZN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 11:25:13 -0400
+Received: from localhost (lfbn-ncy-1-588-162.w81-51.abo.wanadoo.fr [81.51.203.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C0EAD2220D;
+        Wed, 23 Sep 2020 15:25:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600874713;
+        bh=GtUNi2xC/DgdAUMktjvo6czLNTJ9nms3Adqfe/jg1gE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qj/4Jc+mZHzRendLHQgw1OaMaRrMJwD/fRy0JEQ3j1lErl5LUWQo2ALwEYZ2p8Sec
+         Layj50SVJrhV7oqIJe84DqBizv6cdoS1+gahgPKRshtIz+KAPn4uejW08IJ9IcoKam
+         eq366HchbHDi0vTyU8Vzdb8IUnfuurDOcDMq2UKU=
+Date:   Wed, 23 Sep 2020 17:25:10 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>
+Subject: Re: [RFC PATCH 01/12] rcu: Implement rcu_segcblist_is_offloaded()
+ config dependent
+Message-ID: <20200923152509.GA31465@lenoir>
+References: <20200921124351.24035-1-frederic@kernel.org>
+ <20200921124351.24035-2-frederic@kernel.org>
+ <20200922002732.GT29330@paulmck-ThinkPad-P72>
+ <20200922214326.GF5217@lenoir>
+ <20200922231150.GK29330@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200922162437.GA30827@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200922231150.GK29330@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> 	if (IS_ERR(va_page)) <- needed a new VA page, allocation failed
-> 		return PTR_ERR(va_page);
-> 	else if (va_page)    <- needed a new VA page, allocation succeeded
-> 		list_add(&va_page->list, &encl->va_pages);
-> 	else
-> 		             <- reused the current VA page
+On Tue, Sep 22, 2020 at 04:11:50PM -0700, Paul E. McKenney wrote:
+> On Tue, Sep 22, 2020 at 11:43:26PM +0200, Frederic Weisbecker wrote:
+> > On Mon, Sep 21, 2020 at 05:27:32PM -0700, Paul E. McKenney wrote:
+> > > On Mon, Sep 21, 2020 at 02:43:40PM +0200, Frederic Weisbecker wrote:
+> > > > This simplify the usage of this API and avoid checking the kernel
+> > > > config from the callers.
+> > > > 
+> > > > Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > > > Cc: Paul E. McKenney <paulmck@kernel.org>
+> > > > Cc: Josh Triplett <josh@joshtriplett.org>
+> > > > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > > > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> > > > Cc: Joel Fernandes <joel@joelfernandes.org>
+> > > 
+> > > Nice cleanup!  I clearly should have done it this way to start with.
+> > > 
+> > > Any reason I shouldn't pull this into -rcu right now?
+> > 
+> > I think that very one can be applied indeed.
+> 
+> Very well!  I had to hand-apply it due to recent -rcu thrash, and as
+> usual I could not resist wordsmithing the commit log.  Please let
+> me know if I messed anything up.
 
-/* else the tail page of the VA page list had free slots. */
-
-I added this comment as "the missing branch".
-
-/Jarkko
+Looks very good, thanks!
