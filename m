@@ -2,100 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D11EC275D53
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12742275CA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726744AbgIWQZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 12:25:40 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:26912 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726178AbgIWQZk (ORCPT
+        id S1726595AbgIWQAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 12:00:50 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:21868 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726178AbgIWQAu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 12:25:40 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08NFQbAc023439;
-        Wed, 23 Sep 2020 17:32:17 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=lixnU98BcH//BmD0t62aZsBAXQJMii/2t70pRirg8Uc=;
- b=rQ8q8CcU2Gl0hd27bL9BHykNeFB8GtZhy0q7f4xFP6uRAbpP8sMzBLarzGkf3d2E2JoM
- 0N7dfjbjSjUmwJURECXZqz7+PmIrOoYcPCKw1gz0eD30XeOTr27z6/96SkSd38qCcdua
- hO3Zs3yXyYKXUdJCnfd3xauvdJFk1Iyo1R+On/2Mei3mbxN2crxjGiL5ATsgXTGxRj+W
- kZMEMFUsVdCh1W2oUmxheHVO9ZeeyfJrYQDJFrXTYZm8NHqcVmhvB1nah6wYmXREXgmM
- v3YmgR83J6/YiDOH1hwOxvyWXvwemTYUakt9FgnYqDNcqEaQmI8burUtU3RAIetvXIWI sQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 33n7rvwwk8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Sep 2020 17:32:16 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6A84F10002A;
-        Wed, 23 Sep 2020 17:32:15 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E273721FEA1;
-        Wed, 23 Sep 2020 17:32:14 +0200 (CEST)
-Received: from lmecxl0912.lme.st.com (10.75.127.50) by SFHDAG3NODE2.st.com
- (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 23 Sep
- 2020 17:31:34 +0200
-Subject: Re: [PATCH] ARM: dts: stm32: lxa-mc1: enable DDR50 mode on eMMC
-To:     Holger Assmann <h.assmann@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-CC:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200828130002.1701-1-h.assmann@pengutronix.de>
-From:   Alexandre Torgue <alexandre.torgue@st.com>
-Message-ID: <685b9dcf-2139-9641-e1e4-6a1a74673077@st.com>
-Date:   Wed, 23 Sep 2020 17:31:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 23 Sep 2020 12:00:50 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-114-3SPCxjhGNz6_8Sdv3LtuFg-1; Wed, 23 Sep 2020 17:00:46 +0100
+X-MC-Unique: 3SPCxjhGNz6_8Sdv3LtuFg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 23 Sep 2020 17:00:45 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 23 Sep 2020 17:00:45 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Dave Jiang' <dave.jiang@intel.com>, Borislav Petkov <bp@alien8.de>
+CC:     "vkoul@kernel.org" <vkoul@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "jing.lin@intel.com" <jing.lin@intel.com>,
+        "ashok.raj@intel.com" <ashok.raj@intel.com>,
+        "sanjay.k.kumar@intel.com" <sanjay.k.kumar@intel.com>,
+        "fenghua.yu@intel.com" <fenghua.yu@intel.com>,
+        "kevin.tian@intel.com" <kevin.tian@intel.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v4 1/5] x86/asm: move the raw asm in iosubmit_cmds512() to
+ special_insns.h
+Thread-Topic: [PATCH v4 1/5] x86/asm: move the raw asm in iosubmit_cmds512()
+ to special_insns.h
+Thread-Index: AQHWkcBDYYZeKoT2o0iUR23vst8hAql2Xrlg
+Date:   Wed, 23 Sep 2020 16:00:45 +0000
+Message-ID: <da596c9c5a4c4368b887ac171db952eb@AcuMS.aculab.com>
+References: <160037680630.3777.16356270178889649944.stgit@djiang5-desk3.ch.intel.com>
+ <160037731654.3777.18071122574577972463.stgit@djiang5-desk3.ch.intel.com>
+ <20200923104158.GG28545@zn.tnic>
+ <c38406b7-f1d1-35d8-8015-bacce7a52226@intel.com>
+In-Reply-To: <c38406b7-f1d1-35d8-8015-bacce7a52226@intel.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <20200828130002.1701-1-h.assmann@pengutronix.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG8NODE1.st.com (10.75.127.22) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-23_12:2020-09-23,2020-09-23 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+RnJvbTogRGF2ZSBKaWFuZw0KPiBTZW50OiAyMyBTZXB0ZW1iZXIgMjAyMCAxNjo0Mw0KLi4uDQo+
+ID4NCj4gPiBPbiBUaHUsIFNlcCAxNywgMjAyMCBhdCAwMjoxNToxNlBNIC0wNzAwLCBEYXZlIEpp
+YW5nIHdyb3RlOg0KPiA+PiBkaWZmIC0tZ2l0IGEvYXJjaC94ODYvaW5jbHVkZS9hc20vc3BlY2lh
+bF9pbnNucy5oIGIvYXJjaC94ODYvaW5jbHVkZS9hc20vc3BlY2lhbF9pbnNucy5oDQo+ID4+IGlu
+ZGV4IDU5YTNlMTMyMDRjMy4uN2JjOGU3MTRmMzdlIDEwMDY0NA0KPiA+PiAtLS0gYS9hcmNoL3g4
+Ni9pbmNsdWRlL2FzbS9zcGVjaWFsX2luc25zLmgNCj4gPj4gKysrIGIvYXJjaC94ODYvaW5jbHVk
+ZS9hc20vc3BlY2lhbF9pbnNucy5oDQo+ID4+IEBAIC0yMzQsNiArMjM0LDIzIEBAIHN0YXRpYyBp
+bmxpbmUgdm9pZCBjbHdiKHZvbGF0aWxlIHZvaWQgKl9fcCkNCj4gPj4NCj4gPj4gICAjZGVmaW5l
+IG5vcCgpIGFzbSB2b2xhdGlsZSAoIm5vcCIpDQo+ID4+DQo+ID4+ICtzdGF0aWMgaW5saW5lIHZv
+aWQgbW92ZGlyNjRiKHZvaWQgKl9fZHN0LCBjb25zdCB2b2lkICpzcmMpDQo+ID4NCj4gPiBNYWtl
+IF9fZHN0IGJlIHRoZSBmdW5jdGlvbiBsb2NhbCB2YXJpYWJsZSBuYW1lIGFuZCBrZWVwICJkc3Qi
+LCBpLmUuLA0KPiA+IHdpdGhvdXQgdGhlIHVuZGVyc2NvcmVzLCB0aGUgZnVuY3Rpb24gcGFyYW1l
+dGVyIG5hbWUuDQo+IA0KPiBPayB3aWxsIGZpeA0KPiANCj4gPg0KPiA+PiArCS8qDQo+ID4+ICsJ
+ICogTm90ZSB0aGF0IHRoaXMgaXNuJ3QgYW4gIm9uLXN0YWNrIGNvcHkiLCBqdXN0IGRlZmluaXRp
+b24gb2YgImRzdCINCj4gPj4gKwkgKiBhcyBhIHBvaW50ZXIgdG8gNjQtYnl0ZXMgb2Ygc3R1ZmYg
+dGhhdCBpcyBnb2luZyB0byBiZSBvdmVyd3JpdHRlbi4NCj4gPj4gKwkgKiBJbiB0aGUgTU9WRElS
+NjRCIGNhc2UgdGhhdCBtYXkgYmUgbmVlZGVkIGFzIHlvdSBjYW4gdXNlIHRoZQ0KPiA+PiArCSAq
+IE1PVkRJUjY0QiBpbnN0cnVjdGlvbiB0byBjb3B5IGFyYml0cmFyeSBtZW1vcnkgYXJvdW5kLiBU
+aGlzIHRyaWNrDQo+ID4+ICsJICogbGV0cyB0aGUgY29tcGlsZXIga25vdyBob3cgbXVjaCBnZXRz
+IGNsb2JiZXJlZC4NCj4gPj4gKwkgKi8NCj4gPj4gKwl2b2xhdGlsZSBzdHJ1Y3QgeyBjaGFyIF9b
+NjRdOyB9ICpkc3QgPSBfX2RzdDsNCj4gPj4gKw0KPiA+PiArCS8qIE1PVkRJUjY0QiBbcmR4XSwg
+cmF4ICovDQo+ID4+ICsJYXNtIHZvbGF0aWxlKCIuYnl0ZSAweDY2LCAweDBmLCAweDM4LCAweGY4
+LCAweDAyIg0KPiA+PiArCQkgICAgIDogIj1tIiAoZHN0KQ0KPiA+PiArCQkgICAgIDogImQiIChz
+cmMpLCAiYSIgKGRzdCkpOw0KPiA+PiArfQ0KDQpTaW5jZSAnZHN0JyBuZWVkcyB0byBiZSA2NGJ5
+dGUgYWxpZ25lZCBpdCBpc24ndCBjbGVhciB0aGF0ICd2b2lkIConDQppcyB0aGUgcmlnaHQgdHlw
+ZSBmb3IgJ2RzdCcuDQpBdCBsZWFzdCBhZGQgYSBjb21tZW50Lg0KDQpZb3VyIGFzbSBjb25zdHJh
+aW50cyBhcmUgYWxzbyBqdXN0IHdyb25nLg0KDQpUaGVyZSBpcyBubyByZWFsIHBvaW50IHNwZWNp
+ZnlpbmcgIj1tIiAoZHN0KSBhcyBhbiBvdXRwdXQuDQpUaGUgd3JpdGUgcmF0aGVyIGJ5cGFzc2Vz
+IHRoZSBjYWNoZSBhbmQgdGhlIGNhbGxlciBiZXR0ZXINCmtub3cgd2hhdCB0aGV5IGFyZSBkb2lu
+Zy4NCg0KT1RPSCB5b3UnZCBiZXR0ZXIgYWRkICJtIiAoKHN0cnVjdCB7IGNoYXIgX1s2NF07fSAq
+KXNyYykgYXMNCmFuIGlucHV0IGNvbnN0cmFpbnQuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVk
+IEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5l
+cywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
-On 8/28/20 3:00 PM, Holger Assmann wrote:
-> From: Ahmad Fatoum <a.fatoum@pengutronix.de>
-> 
-> The "eMMC high-speed DDR mode (3.3V I/O)" at 50MHz is supported on
-> the eMMC-interface of the lxa-mc1. Set it in the device tree to
-> benefit from the speed improvement.
-> 
-> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-> Signed-off-by: Holger Assmann <h.assmann@pengutronix.de>
-> ---
->   arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts b/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts
-> index b85025d00943..1e5333fd437f 100644
-> --- a/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts
-> +++ b/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts
-> @@ -212,6 +212,7 @@
->   	pinctrl-1 = <&sdmmc2_b4_od_pins_a &sdmmc2_d47_pins_b>;
->   	pinctrl-2 = <&sdmmc2_b4_sleep_pins_a &sdmmc2_d47_sleep_pins_b>;
->   	bus-width = <8>;
-> +	mmc-ddr-3_3v;
->   	no-1-8-v;
->   	no-sd;
->   	no-sdio;
-> 
-
-Applied on stm32-next.
-
-Thanks.
-Alex
