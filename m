@@ -2,123 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70FDD2754A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 11:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C21872754AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 11:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726497AbgIWJjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 05:39:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726253AbgIWJjU (ORCPT
+        id S1726381AbgIWJoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 05:44:54 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:42259 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726102AbgIWJox (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 05:39:20 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A51C0613CE;
-        Wed, 23 Sep 2020 02:39:19 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id z4so20251574wrr.4;
-        Wed, 23 Sep 2020 02:39:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=D1hykoJlnCEeW9Ghu+9NT8UmdNa8KDWJIzw0nB++G+o=;
-        b=aNZZ3zh3dXHZq+DEvmi7EBk7MW0F6CK2wfzsWMJi/8ksphUU3JgVFvXpnudNyt3YSG
-         mVFenqW5r0JRO70qWqa9wmqnlwxBHrH+NqiadFbxeE/lGAhjtpBAAXmzUBs+sCJq+qn1
-         DZbT59o/7j6ma2DJmPzo1nwjUeEWimkKNrYifnXRU03vECyGHTW4b/Ox0VaqAXSj0HGW
-         wmiVetpwyPlDi7l/KCJxBHL6YFLEKUSPikWDm2BBLQ/wa+LE09UxwChRaIyGq5TZqxFm
-         bosvRPYRrRPojzUcd6XrPsDwxGeOayfFDwAy1XF7p4b2iVwLkxQl3m3aTvlHu4l7QGS8
-         IYYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=D1hykoJlnCEeW9Ghu+9NT8UmdNa8KDWJIzw0nB++G+o=;
-        b=W3uAn563S9JHHf9decIHERQdKF/K0XS1OJ7jiNiiuPYSdd9BNpbt2iuHC4Ec1ihtTp
-         qaT+i4rP67uP7tYNN9dsTMWZW2RqZBV3cd1Y8MYrAEAPJL3qFyWFluX+2fRWim5TPLqa
-         iWbBrflmU6HKf7/bAEr4Y6tvZdpTYACS6aFDRUacyIa3CwXKJOqo1eC19nXNU+IU04jd
-         aSWY47xvyDqTi0dHF8ivoJYG/OsOBNysPfsaZYbJnHAQsKgxTLewT0Ua6tIcehN/VewI
-         Bi/5zewMw4wtyIu3duCM4FhO+1FHHhjvTQpc38/myyKqQN1viPTFxAsY2k/sAWJd163j
-         x56g==
-X-Gm-Message-State: AOAM5323h8ofNCApCTIg/X3UAQgb97yFaK6SXTSOjiB+Jqn3dWJpdm0W
-        H09v5jXqwUtXGxgqlQ6G+DI=
-X-Google-Smtp-Source: ABdhPJza60wC4/rfImEEWz0r/cdUr/7aJlKJeSHoy/5KQ0fM/QJ0m+D6tCiwl/7pIL0vXx6Sonergw==
-X-Received: by 2002:a5d:60d0:: with SMTP id x16mr9981993wrt.196.1600853957992;
-        Wed, 23 Sep 2020 02:39:17 -0700 (PDT)
-Received: from [192.168.1.211] ([95.144.134.217])
-        by smtp.gmail.com with ESMTPSA id c205sm7680655wmd.33.2020.09.23.02.39.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Sep 2020 02:39:17 -0700 (PDT)
-Subject: Re: [RFC PATCH] Add bridge driver to connect sensors to CIO2 device
- via software nodes on ACPI platforms
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     yong.zhi@intel.com, bingbu.cao@intel.com, tian.shu.qiu@intel.com,
-        mchehab@kernel.org, gregkh@linuxfoundation.org,
-        davem@davemloft.net, robh@kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        kieran.bingham@ideasonboard.com, andriy.shevchenko@linux.intel.com
-References: <20200916213618.8003-1-djrscally@gmail.com>
- <20200917103343.GW26842@paasikivi.fi.intel.com>
-From:   Dan Scally <djrscally@gmail.com>
-Message-ID: <c2bb9d22-6914-ed59-6c77-a0020e2faed5@gmail.com>
-Date:   Wed, 23 Sep 2020 10:39:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 23 Sep 2020 05:44:53 -0400
+X-Greylist: delayed 145630 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Sep 2020 05:44:52 EDT
+X-Originating-IP: 90.65.88.165
+Received: from localhost (lfbn-lyo-1-1908-165.w90-65.abo.wanadoo.fr [90.65.88.165])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 35EDA20011;
+        Wed, 23 Sep 2020 09:44:50 +0000 (UTC)
+Date:   Wed, 23 Sep 2020 11:44:49 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Qiang Zhao <qiang.zhao@nxp.com>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-watchdog@vger.kernel.org, a.zummo@towertech.it,
+        robh+dt@kernel.org, linux-rtc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Subject: Re: [Patch v2 1/3] dt-bindings: rtc: pcf2127: Add bindings for
+ nxp,pcf2127
+Message-ID: <20200923094449.GP9675@piout.net>
+References: <20200921054821.26071-1-qiang.zhao@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <20200917103343.GW26842@paasikivi.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921054821.26071-1-qiang.zhao@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari
+Hi,
 
-On 17/09/2020 11:33, Sakari Ailus wrote:
->> +		ret = software_node_register_nodes(nodes);
->> +		if (ret) {
->> +			dev_err(dev,
->> +				"Failed to register software nodes for %s\n",
->> +				supported_devices[i]);
->> +			return ret;
->> +		}
->> +
->> +		fwnode = software_node_fwnode(&nodes[SWNODE_SENSOR_HID]);
->> +		if (!fwnode) {
->> +			dev_err(dev,
->> +				"Failed to get software node for %s\n",
->> +				supported_devices[i]);
->> +			return ret;
->> +		}
->> +
->> +		fwnode->secondary = ERR_PTR(-ENODEV);
->> +		dev->fwnode = fwnode;
->> +
->> +		/*
->> +		 * The device should by this point has driver_data set to an
->> +		 * instance of struct v4l2_subdev; set the fwnode for that too.
->> +		 */
->> +
->> +		sd = dev_get_drvdata(dev);
->> +		sd->fwnode = fwnode;
-> I'm a bit lost here. Isn't it enough to have the sensor device's fwnode,
-> and to use that for V4L2 async fwnode matching (as usual)?
+You forgot to copy the watchdog maintainers, I think such a property
+should be discussed with them.
 
-Just working through the changes everyone's suggested for the v2. For
-this one the reason it had to be this way is that
-v4l2_async_register_subdev() just picks up the fwnode from the device.
-If we wanted to just rely on that call as part of the sensor driver's
-probe() then we need to reprobe() the sensor in case it already probed
-before this code has managed to run, and reprobing after assigning the
-software_nodes as fwnode to the sensor no longer works - the long and
-short of that is that the ACPI matching portion of i2c_device_match()
-calls ACPI_COMPANION(dev), and that macro relies on dev->fwnode->ops
-being acpi_device_fwnode_ops which they no longer are. This is also the
-reason I was storing the original fwnode's of the sensor device and cio2
-device in the cio2-bridge; so that they could be restored if the module
-was removed.
+Note that I'm still convinced this is not a complete solution, see:
+https://lore.kernel.org/linux-rtc/20200716181816.GF3428@piout.net/
 
+On 21/09/2020 13:48:19+0800, Qiang Zhao wrote:
+> From: Zhao Qiang <qiang.zhao@nxp.com>
+> 
+> Add bindings for nxp,pcf2127
+> 
+> Signed-off-by: Zhao Qiang <qiang.zhao@nxp.com>
+> ---
+> Changes for v2:
+>  - modify the format to yaml
+>  - add compitable "nxp,pca2129"
+> 
+>  .../devicetree/bindings/rtc/nxp,pcf2127.yaml       | 41 ++++++++++++++++++++++
+>  1 file changed, 41 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/rtc/nxp,pcf2127.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/rtc/nxp,pcf2127.yaml b/Documentation/devicetree/bindings/rtc/nxp,pcf2127.yaml
+> new file mode 100644
+> index 0000000..226a0b2
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/rtc/nxp,pcf2127.yaml
+> @@ -0,0 +1,41 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/rtc/nxp,pcf2127.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: PCF RTCs
+> +
+> +maintainers:
+> +  - Qiang Zhao <qiang.zhao@nxp.com>
+> +
+> +allOf:
+> +  - $ref: "rtc.yaml#"
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - nxp,pcf2127
+> +      - nxp,pcf2129
+> +      - nxp,pca2129
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  no-watchdog:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description:
+> +      With this property, the device will not registered as a watchdog device.
+> +
+> +  start-year: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +...
+> -- 
+> 2.7.4
+> 
 
-
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
