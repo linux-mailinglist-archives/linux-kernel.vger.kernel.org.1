@@ -2,76 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 619A927622E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C8D4276230
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726766AbgIWUcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 16:32:54 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:37718 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726199AbgIWUcy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 16:32:54 -0400
-Received: by mail-il1-f195.google.com with SMTP id q4so923198ils.4;
-        Wed, 23 Sep 2020 13:32:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=l38fUYlJKpk/9OHd8y2HNij7IP3dpcOLc/B2f1OuyZ8=;
-        b=co1B9gXv9fiCIbHtb7gOwX3vgbQ4vU6/a3q2pd1C9uszsOY0nm2WRjGGri5017jf21
-         NE+fWuecUbmfe7VN7RzuGAr/CyAirCTHIybOjnHHbbuFzzfIcbUKP1jtTyV4sfvlOvvC
-         voHJXkUyw5BSQvSGFlBD0GSVRTOW/yxh3KK4zwk7KdAowKFYOgmBVdyoDqxoHAQa7c0y
-         TWxJSoWK7kzPpHRhiURSWksgiIPaYlPnRpovgkmZkUabzC0EdZf6o026eHKfRlBY/nVB
-         qiVNe0CNXO2ik904B7G5J/hQpKtPhzr82T2AOWpttXfcRXpfK0afR1kz1Pj8VYN9p/tj
-         gjfw==
-X-Gm-Message-State: AOAM533tzceYV9StXhdFG/qdPZt6/oGRpo6PPBGbfDmFQ8kUr8UIVdDT
-        jvrRfL/aohov/wKhPVXBFw==
-X-Google-Smtp-Source: ABdhPJwN8CdqdU2e1412/M0XJ8hCqZkNOAvpcALfwSyCtBluit3xw9UfNl0bSICZUVIxbIJ0AtqP4w==
-X-Received: by 2002:a92:a194:: with SMTP id b20mr1297741ill.53.1600893173000;
-        Wed, 23 Sep 2020 13:32:53 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id l10sm352957ilm.75.2020.09.23.13.32.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 13:32:52 -0700 (PDT)
-Received: (nullmailer pid 1255351 invoked by uid 1000);
-        Wed, 23 Sep 2020 20:32:51 -0000
-Date:   Wed, 23 Sep 2020 14:32:51 -0600
-From:   Rob Herring <robh@kernel.org>
+        id S1726784AbgIWUc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 16:32:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34870 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726199AbgIWUc7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 16:32:59 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 20E1520725;
+        Wed, 23 Sep 2020 20:32:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600893178;
+        bh=gHFFV1w4lxx7eARZ0yLaTND7KFsxROCfFvF55wymmLw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=X+Ybo+3XYqXGu3uiY17LzDkONnr+sDU/8kab3LLidVSnW6eCCBAJX1X8d4OGa45US
+         DYiS1Ew4CcEZN/8u7kj7iyklZyzW7n2O3YwgVIYk9TRDCqG+6D0MEz19mBLVrZaIj9
+         z0IFowtZojuUmu2A8HRpAV7m35iIwR4SZUQEttro=
+Date:   Wed, 23 Sep 2020 21:32:52 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
 To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     devicetree@vger.kernel.org,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v2] dt-bindings: mfd: rohm,bd71837-pmic: Add common
- properties
-Message-ID: <20200923203251.GA1255317@bogus>
-References: <20200917193754.542-1-krzk@kernel.org>
+Cc:     Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iio: ssp: use PLATFORM_DEVID_NONE
+Message-ID: <20200923213252.25e19944@archlinux>
+In-Reply-To: <20200921204939.20341-1-krzk@kernel.org>
+References: <20200921204939.20341-1-krzk@kernel.org>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917193754.542-1-krzk@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Sep 2020 21:37:54 +0200, Krzysztof Kozlowski wrote:
-> Add common properties appearing in DTSes (clock-names,
-> clock-output-names) with the common values (actually used in DTSes) to
-> fix dtbs_check warnings like:
-> 
->   arch/arm64/boot/dts/freescale/imx8mq-librem5-r2.dt.yaml:
->     pmic@4b: 'clock-names', 'clock-output-names', do not match any of the regexes: 'pinctrl-[0-9]+'
+On Mon, 21 Sep 2020 22:49:39 +0200
+Krzysztof Kozlowski <krzk@kernel.org> wrote:
+
+> Use PLATFORM_DEVID_NONE define instead of "-1" value because:
+>  - it brings some meaning,
+>  - it might point attention why auto device ID was not used.
 > 
 > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> 
-> ---
-> 
-> Changes since v1:
-> 1. Define the names, as used in existing DTS files.
-> ---
->  .../devicetree/bindings/mfd/rohm,bd71837-pmic.yaml          | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
+Applied to the togreg branch of iio.git.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Thanks,
+
+Jonathan
+
+> ---
+>  drivers/iio/common/ssp_sensors/ssp_dev.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iio/common/ssp_sensors/ssp_dev.c b/drivers/iio/common/ssp_sensors/ssp_dev.c
+> index a94dbcf491ce..1aee87100038 100644
+> --- a/drivers/iio/common/ssp_sensors/ssp_dev.c
+> +++ b/drivers/iio/common/ssp_sensors/ssp_dev.c
+> @@ -503,7 +503,8 @@ static int ssp_probe(struct spi_device *spi)
+>  		return -ENODEV;
+>  	}
+>  
+> -	ret = mfd_add_devices(&spi->dev, -1, sensorhub_sensor_devs,
+> +	ret = mfd_add_devices(&spi->dev, PLATFORM_DEVID_NONE,
+> +			      sensorhub_sensor_devs,
+>  			      ARRAY_SIZE(sensorhub_sensor_devs), NULL, 0, NULL);
+>  	if (ret < 0) {
+>  		dev_err(&spi->dev, "mfd add devices fail\n");
+
