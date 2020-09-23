@@ -2,121 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22427275CBA
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D8F275CBF
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726788AbgIWQEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 12:04:30 -0400
-Received: from mail.efficios.com ([167.114.26.124]:35626 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726332AbgIWQE3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 12:04:29 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id EEAFA2CB55D;
-        Wed, 23 Sep 2020 12:04:27 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 8lXWDWbGLAAe; Wed, 23 Sep 2020 12:04:27 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 9287D2CBBAB;
-        Wed, 23 Sep 2020 12:04:27 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 9287D2CBBAB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1600877067;
-        bh=ilJP4P+b5zd06K+09mhQTiXAXrwBtZ+Qj36UF8Qgz7U=;
-        h=To:From:Message-ID:Date:MIME-Version;
-        b=mvlAVO287lXGhlqxOYNMvbiTMRkZpQRx3P6vvlaMOlXRnLBNS6qT+NVGjDqgjAbOw
-         Y/qxt5WhuhX5+21U/W/Esf+uvBoYrl/QIaBhIfAhmFHdcCu4ZsFfpdhd6PK2iHc2ov
-         /5HVa9Y2tA4EHUMagYSeq/XusPO3jk2KYjjQqgQphSaqBSbujSror1hSDtshLdJ+os
-         xvJwm1zxFyWdWQOfbsjrejrnGE73Ukphp+/3JwTiQcKV9Tz4pJKpfV6jfyJcF4KY2q
-         qj8tsJF25EjUF0pxzzrdobBNovEeOWvdH1F3Jwzr8pegQJkyw5V8IL3vS+TMTiB1/u
-         cXRCk7v9Zz/lA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id hiXAN2-NHCbA; Wed, 23 Sep 2020 12:04:27 -0400 (EDT)
-Received: from [10.10.0.55] (96-127-212-112.qc.cable.ebox.net [96.127.212.112])
-        by mail.efficios.com (Postfix) with ESMTPSA id 669042CB676;
-        Wed, 23 Sep 2020 12:04:27 -0400 (EDT)
-Subject: Re: [RFC PATCH v2 0/3] l3mdev icmp error route lookup fixes
-To:     David Ahern <dsahern@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     David <davem@davemloft.net>, netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20200918181801.2571-1-mathieu.desnoyers@efficios.com>
- <390b230b-629b-7f96-e7c9-b28f8b592102@gmail.com>
- <1453768496.36855.1600713879236.JavaMail.zimbra@efficios.com>
- <dd1caf15-2ef0-f557-b9a8-26c46739f20b@gmail.com>
- <1383129694.37216.1600716821449.JavaMail.zimbra@efficios.com>
- <1135414696.37989.1600782730509.JavaMail.zimbra@efficios.com>
- <4456259a-979a-7821-ef3d-aed5d330ed2b@gmail.com>
-From:   Michael Jeanson <mjeanson@efficios.com>
-Message-ID: <730d8a09-7d3b-1033-4131-520dc42e8855@efficios.com>
-Date:   Wed, 23 Sep 2020 12:04:27 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.1
+        id S1726656AbgIWQF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 12:05:28 -0400
+Received: from mail-eopbgr680087.outbound.protection.outlook.com ([40.107.68.87]:42304
+        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726156AbgIWQF2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 12:05:28 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hEBsFWBiLTOHE1nmhI2OF6SPyspfrteXqWk5jZsDzrX7FmkMq0Cm/gebxz59utzjiVTg2rGK1y4NWiLb/Qe8qs3qw2kB8krfFUNCGcCu4oRN+sUycvVcWT+sNYZaeTgdigagNqNK0K2IC+JnoOLczhasTfA/aL/njmBS+IDf6ubTtz+Sf2YXAW9W7zW3+dX93YTeXvF2/jlgT0nKvLh+c/V086AaEaY6IoduqdeS0+znqcqMMOEBSz922S2pNd44Y1/yTjwJaSwqRckWpiaLmNnkp7SyarI23QmN2mcsiSc0XGKj3fIProW4PgvxxhgtNIJwKkqYW3WinCTpDheGrg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sdjyIRLfuZGd0LUng7Wj5V26iVr4CVpRgUQYoHWeMKM=;
+ b=IuCCCA3M2ADaaQniEHAApTXUyn1XTu2lhHv2UG15osGDWPLK8XOKdBHbmdG9zCbexChMOPB9agBXAYY+d4MXSSKlzZmvjqz7azqMd5cYT1bHTN3UVPFQiyxLRcWlVCXwKKwDvv6XdnrdxUwfw31yFkRQsPviMWowhfHSsC35oYEuuJkUE2Lqrx3dHqFVMJmHIILCQWJcevIjXz0jX33YYj9UdP8eW78Rm7FcMU5A8pvXfqR518IUNJwsS8aY0EPxnmE4WheLntePEBtahEqFbDLFq60xUoOlWzQXt6VMQe3RRx0EY5Dxh2K01RnpcPflQxn1LZF+2yeM2+UIB/rklg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sdjyIRLfuZGd0LUng7Wj5V26iVr4CVpRgUQYoHWeMKM=;
+ b=nZywFwJ9L2cSWa/zbwm8GoBCteZ5f2VEd7+hOZCSmx/cjBGU4r3DV8Fm2CKCR7mSc6S3YtRMWgq8nTwHSyWckTKzFxKXLZfypKbP2Ij7/5W/WVjosecpyQK7CAoYaigVvBkFKGp2yoZc+HUp/m5YKs/LCjteZ4ws5vB3Cz35C2s=
+Authentication-Results: alien8.de; dkim=none (message not signed)
+ header.d=none;alien8.de; dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
+ by BN7PR12MB2835.namprd12.prod.outlook.com (2603:10b6:408:30::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22; Wed, 23 Sep
+ 2020 16:05:23 +0000
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::15c4:832:a4eb:2f1f]) by BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::15c4:832:a4eb:2f1f%6]) with mapi id 15.20.3391.027; Wed, 23 Sep 2020
+ 16:05:23 +0000
+Date:   Wed, 23 Sep 2020 11:05:05 -0500
+From:   Yazen Ghannam <yazen.ghannam@amd.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tony.luck@intel.com, x86@kernel.org,
+        Smita.KoralahalliChannabasappa@amd.com
+Subject: Re: [PATCH v2 6/8] x86/MCE/AMD: Drop tmp variable in translation code
+Message-ID: <20200923160505.GA1684790@yaz-nikka.amd.com>
+References: <20200903200144.310991-1-Yazen.Ghannam@amd.com>
+ <20200903200144.310991-7-Yazen.Ghannam@amd.com>
+ <20200923080556.GA28545@zn.tnic>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200923080556.GA28545@zn.tnic>
+X-ClientProxiedBy: SA9PR03CA0003.namprd03.prod.outlook.com
+ (2603:10b6:806:20::8) To BN8PR12MB3108.namprd12.prod.outlook.com
+ (2603:10b6:408:40::20)
 MIME-Version: 1.0
-In-Reply-To: <4456259a-979a-7821-ef3d-aed5d330ed2b@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from yaz-nikka.amd.com (165.204.78.2) by SA9PR03CA0003.namprd03.prod.outlook.com (2603:10b6:806:20::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Wed, 23 Sep 2020 16:05:22 +0000
+X-Originating-IP: [165.204.78.2]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 68a48b1a-57d1-444a-7ce4-08d85fda7a63
+X-MS-TrafficTypeDiagnostic: BN7PR12MB2835:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN7PR12MB2835D39494F48F8851E05E49F8380@BN7PR12MB2835.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:849;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qgCwv3DxA8VP2b/xcRNmmKZ5cFWRgFYQMSbCVYfs3l8tpbtMkOwpTouLycRVt4+OoxhONGssscaIUJSuKMSzY82y+F4hZbzLwz7lG78KgPFqrhiCsa5XBomQ48dGOuh8MzsvUWZyutAzGZC1XxJRpNBQe3ko/AoXMG/MB29kieklRfbXYlcl3vmG2TXs6unwrC3VLgKYoK0gOZlx1KZar0I4TuElUMpwQMZnLGNzL8ScVWNAaPXpJceTiffR/4a5rfrwb7X9aeg6mgpMpBgN7mXVmt+4FdfdyTd+iTbbamVDj8blo0KFuiHTZ1jKRCv+MFzMUTSo1jSFgClmFXn1xXc7arvkq9dPOH/gl94le4DJhEgRaeY/TgV6nXfAweQm
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(39860400002)(396003)(366004)(186003)(4744005)(55016002)(86362001)(66556008)(66476007)(26005)(4326008)(83380400001)(6666004)(33656002)(5660300002)(1076003)(66946007)(44832011)(2906002)(478600001)(8936002)(8676002)(52116002)(6916009)(7696005)(956004)(316002)(16526019);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 6+/mJ3FZkSLXrbZlNWmefvvoFtAI69KOjLOlfOLKd2YfQTrAG/wScSW6SsTsXRM8ZHOfNWxmN9/M411lYW/sQ8RBFg2OJebaf21m2TCySycv+wV7I81T5e4IWhkPheeen0rcFfGhXFaE8zDbmTZSTC/e58l/8F4u0luGXNJ4DdUExd61HjrC3CtpK27ZFJFoDBdk9f/pHccKwRg/ti/gWM+u74NcE7CqCdpIyIT5RX7t1ZVe3KhKVWRxkP6Kmb7l8swrCAO0Temhm8XNG5HJNCOD0ZGGYhMMsnONZqBop+2DjaF6ZbBb5p+5DQVwX7DYs9+vdkaXjmSUhj9/8FmmUn1toddhQe30hWlZm6pAKUVWF6locYPyhl/I5WSJM21c4jsGKYVzY8lH/vgQFw+7kghFGuChAPqCO0xMna9jQHwjkFjdE7nM3AkZOV4+wtxIxS5UAtz40Ggd3Teg0+y+EwswNYuVboyRYkaNJR7pRA7IpeJ1vE+j0WQ58zsz1t9xLwryCTWuO1yZvmhRAxyKRM2FbqhJzc3JeBNEhpGWALSYhN1um+HGpXCbmEssjifAUIAMRNtdNgIpx5TIoPOXbu9ezze5THJZzl1cu9qfvaCbgbBb6xKn18qjMeqTw6E8RiKqYVOlJ7upRw7xwc4i5A==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 68a48b1a-57d1-444a-7ce4-08d85fda7a63
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2020 16:05:23.5993
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dvw/C1QA5kLbO3AsOQyqiJ4tkM5oMOElT0ts92LkfywsIB6eIzNcai6eiiJE4pR8Mbpp5WDk9uOkF0H++BHD7w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR12MB2835
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-22 21 h 59, David Ahern wrote:
-> On 9/22/20 7:52 AM, Michael Jeanson wrote:
->>>>
->>>> the test setup is bad. You have r1 dropping the MTU in VRF red, but not
->>>> telling VRF red how to send back the ICMP. e.g., for IPv4 add:
->>>>
->>>>     ip -netns r1 ro add vrf red 172.16.1.0/24 dev blue
->>>>
->>>> do the same for v6.
->>>>
->>>> Also, I do not see a reason for r2; I suggest dropping it. What you are
->>>> testing is icmp crossing VRF with route leaking, so there should not be
->>>> a need for r2 which leads to asymmetrical routing (172.16.1.0 via r1 and
->>>> the return via r2).
->>
->> The objective of the test was to replicate a clients environment where
->> packets are crossing from a VRF which has a route back to the source to
->> one which doesn't while reaching a ttl of 0. If the route lookup for the
->> icmp error is done on the interface in the first VRF, it can be routed to
->> the source but not on the interface in the second VRF which is the
->> current behaviour for icmp errors generated while crossing between VRFs.
->>
->> There may be a better test case that doesn't involve asymmetric routing
->> to test this but it's the only way I found to replicate this.
->>
+On Wed, Sep 23, 2020 at 10:05:56AM +0200, Borislav Petkov wrote:
+> On Thu, Sep 03, 2020 at 08:01:42PM +0000, Yazen Ghannam wrote:
+> > From: Yazen Ghannam <yazen.ghannam@amd.com>
+> > 
+> > Remove the "tmp" variable used to save register values. Save the values
+> > in existing variables, if possible.
+> > 
+> > The register values are 32 bits. Use separate "reg_" variables to hold
+> > the register values if the existing variable sizes doesn't match, or if
+> > no bitfields in a register share the same name as the register.
 > 
-> It should work without asymmetric routing; adding the return route to
-> the second vrf as I mentioned above fixes the FRAG_NEEDED problem. It
-> should work for TTL as well.
+> So I'm missing the "why" in the commit message. Why are you doing this?
 > 
-> Adding a second pass on the tests with the return through r2 is fine,
-> but add a first pass for the more typical case.
+> Is there some reason which I'll find out later? If not, then this is
+> just unnecessary churn.
+>
 
-Hi,
+I don't have a strong reason other than trying to address a comment in
+the first version. I can drop this patch if you prefer.
 
-Before writing new tests I just want to make sure we are trying to fix 
-the same issue. If I add a return route to the red VRF then we don't
-need this patchset because whether the ICMP error are routed using the
-table from the source or destination interface they will reach the 
-source host.
-
-The issue for which this patchset was sent only happens when the 
-destination interface's VRF doesn't have a route back to the source 
-host. I guess we might question if this is actually a bug or not.
-
-So the question really is, when a packet is forwarded between VRFs 
-through route leaking and an icmp error is generated, which table should 
-be used for the route lookup? And does it depend on the type of icmp 
-error? (e.g. TTL=1 happens before forwarding, but fragmentation needed 
-happens after when on the destination interface)
-
-Cheers,
-
-Michael
-
+Thanks,
+Yazen
