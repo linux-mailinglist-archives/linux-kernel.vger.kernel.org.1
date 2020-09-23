@@ -2,76 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8E7275995
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF768275999
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726735AbgIWONA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 10:13:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgIWONA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 10:13:00 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D422C0613CE;
-        Wed, 23 Sep 2020 07:13:00 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id n13so19955342edo.10;
-        Wed, 23 Sep 2020 07:13:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mdUO4rdr50MnV1BrXIxomFi8tZf9S0Tgpb4dKKT+L6M=;
-        b=qlSdUE8aJwkzEyqt8pukPEy+fB5tlgAI1XHvSUkYNRGQisCEteg2hs4Iepm4PZeiwU
-         8m+mkoyE/1pOHPh7PVzJqGr+Uc1dzry7NtHAWfhCmKGc8hHQvDurueKu923retm890hN
-         iUUkliEUdO2O5eisL4i1tikUqshX4h/nMgTvoWuolVnOFfGW8F0JUSLH22XSeOpWX95M
-         C8ZtUMOk0VeCYdodJ1WZg/Qrargt6j7qhP9nm/UP1x+GoINIVXFNyhYpknpqt62ZHT1c
-         +faQbRuldVK+eF113zrmX2nsDbtI2JB3eISYl3NeOdrw2tFtrzz9WcAsVTLKRSpCiJb/
-         jV6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mdUO4rdr50MnV1BrXIxomFi8tZf9S0Tgpb4dKKT+L6M=;
-        b=jaba29vkYl8M9IUMDDPoCrfWr11lT2qjmxQ/Vm7SNO0IHqarPJWKyo/GiLGDyHCzGO
-         Blel+nZZAw+IONG/JiKpAQ5LWH63Jy7Nsac+NRsFjSAdkMMrJbFnR4iqmJZfa0v7zejL
-         ujLLupt+EjRBfbyuFmvsredRLDJyI1ZR1+VIK6ouddu1SmuXlzGH/bveY5I4BNT2Hdh3
-         1H8Z2AWZhF4GBJ3BoN9KobSzNBCqwqmSTD9ueqmdeVP4Izy0uSQothTZu4hzuTA1KQPn
-         74otT6gj3NPRl/xABuOMBzrTSYUO2J9dNwkx51UxK55UeRUgezmKvXgCb37DdWHrdYLM
-         iyqQ==
-X-Gm-Message-State: AOAM533+ND1A9qtaMrGU3KBH2DKazXmEhukZSEXiafql6aMflXKEvFQW
-        479NEpc60zxrEXt7uFAEppiUD02pLNNY7ySsKVK76JbvJSk=
-X-Google-Smtp-Source: ABdhPJz60qOETLJanuZwtWyp2XoZ9fAx9QVXf7xhJCsy78hkEewN3uePBgTaDz3zT33MlvorJbD0T0a+uFA3r34Egmw=
-X-Received: by 2002:aa7:da42:: with SMTP id w2mr9728548eds.287.1600870378866;
- Wed, 23 Sep 2020 07:12:58 -0700 (PDT)
+        id S1726749AbgIWONe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 10:13:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55612 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726130AbgIWONd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 10:13:33 -0400
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 22F992311E;
+        Wed, 23 Sep 2020 14:13:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600870413;
+        bh=yv+RoZDYBssuphUZwP6qf0aKTRxXjqXk0/M68ze7WGo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=tNVit1gbjFlSj+ASKcGIiY3iOGBKuBEKc2LsKPuurQW0pzU6ehFkfxQSJC3J4mk1r
+         sJilohmEbSoLhVpoP7V/EubRByxBlPJDaLEGIgwsbAn9z+1WLXq0ONszHbS14didY7
+         HyZufOMUpCXQ/OMEw5H8jCcq+lUUuaWUNbQ8p1n4=
+Received: by mail-ot1-f47.google.com with SMTP id o8so19078935otl.4;
+        Wed, 23 Sep 2020 07:13:33 -0700 (PDT)
+X-Gm-Message-State: AOAM532jT5ZlhmH1Op2WSnue17sm59EtYqmfyvibU+0WWOPHCi509G9D
+        6k3qgHZf92Xg74LIvDA6Jw6SlMV3IqVOxrR2VA==
+X-Google-Smtp-Source: ABdhPJwjFwEPebE7Prpf3mCinszs7+RZb1xeI45n6g5EL9zoUG6r88MBFilHFclxhIzt64aOe7Sms8AYh12Fqz3sLQM=
+X-Received: by 2002:a05:6830:1008:: with SMTP id a8mr5858259otp.107.1600870412399;
+ Wed, 23 Sep 2020 07:13:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200917065949.3476-1-narmstrong@baylibre.com> <20200917065949.3476-4-narmstrong@baylibre.com>
-In-Reply-To: <20200917065949.3476-4-narmstrong@baylibre.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Wed, 23 Sep 2020 16:12:47 +0200
-Message-ID: <CAFBinCCqqT_pNurE0Lj5Md0gdi+PU7NwnspsmFkag5y9cw7bqA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] usb: dwc-meson-g12a: Add support for USB on AXG SoCs
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     khilman@baylibre.com, balbi@kernel.org,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
+References: <20200918103429.4769-1-nadeem@cadence.com> <CAL_JsqJhpPCpkfrENtbc7zfgiEqPB7ssEt1H5BpjiPPPWSPEwA@mail.gmail.com>
+ <SN2PR07MB2557BD3FF1959A113303C741D8380@SN2PR07MB2557.namprd07.prod.outlook.com>
+In-Reply-To: <SN2PR07MB2557BD3FF1959A113303C741D8380@SN2PR07MB2557.namprd07.prod.outlook.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 23 Sep 2020 08:13:20 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKjzuhLL1UipOVimVb7pt-0KTk3vZ2kX3PssCtRKqhoHw@mail.gmail.com>
+Message-ID: <CAL_JsqKjzuhLL1UipOVimVb7pt-0KTk3vZ2kX3PssCtRKqhoHw@mail.gmail.com>
+Subject: Re: [PATCH] PCI: Cadence: Add quirk for Gen2 controller to do
+ autonomous speed change.
+To:     Athani Nadeem Ladkhan <nadeem@cadence.com>
+Cc:     Tom Joseph <tjoseph@cadence.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Milind Parab <mparab@cadence.com>,
+        Swapnil Kashinath Jakhade <sjakhade@cadence.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Neil,
+On Wed, Sep 23, 2020 at 1:54 AM Athani Nadeem Ladkhan
+<nadeem@cadence.com> wrote:
+>
+> Hi Rob,
+>
+> > -----Original Message-----
+> > From: Rob Herring <robh@kernel.org>
+> > Sent: Tuesday, September 22, 2020 11:08 PM
+> > To: Athani Nadeem Ladkhan <nadeem@cadence.com>
+> > Cc: Tom Joseph <tjoseph@cadence.com>; Lorenzo Pieralisi
+> > <lorenzo.pieralisi@arm.com>; Bjorn Helgaas <bhelgaas@google.com>; PCI
+> > <linux-pci@vger.kernel.org>; linux-kernel@vger.kernel.org; Milind Parab
+> > <mparab@cadence.com>; Swapnil Kashinath Jakhade
+> > <sjakhade@cadence.com>
+> > Subject: Re: [PATCH] PCI: Cadence: Add quirk for Gen2 controller to do
+> > autonomous speed change.
+> >
+> > EXTERNAL MAIL
+> >
+> >
+> > On Fri, Sep 18, 2020 at 4:34 AM Nadeem Athani <nadeem@cadence.com>
+> > wrote:
+> > >
+> > > Cadence controller will not initiate autonomous speed change if
+> > > strapped as Gen2. The Retrain bit is set as a quirk to trigger this
+> > > speed change.
+> > >
+> > > Signed-off-by: Nadeem Athani <nadeem@cadence.com>
+> > > ---
+> > >  drivers/pci/controller/cadence/pcie-cadence-host.c |   13 +++++++++++++
+> > >  drivers/pci/controller/cadence/pcie-cadence.h      |    6 ++++++
+> > >  2 files changed, 19 insertions(+), 0 deletions(-)
+> > >
+> > > diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c
+> > > b/drivers/pci/controller/cadence/pcie-cadence-host.c
+> > > index 4550e0d..4cb7f29 100644
+> > > --- a/drivers/pci/controller/cadence/pcie-cadence-host.c
+> > > +++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
+> > > @@ -83,6 +83,8 @@ static int cdns_pcie_host_init_root_port(struct
+> > cdns_pcie_rc *rc)
+> > >         struct cdns_pcie *pcie = &rc->pcie;
+> > >         u32 value, ctrl;
+> > >         u32 id;
+> > > +       u32 link_cap = CDNS_PCIE_LINK_CAP_OFFSET;
+> > > +       u8 sls, lnk_ctl;
+> > >
+> > >         /*
+> > >          * Set the root complex BAR configuration register:
+> > > @@ -111,6 +113,17 @@ static int cdns_pcie_host_init_root_port(struct
+> > cdns_pcie_rc *rc)
+> > >         if (rc->device_id != 0xffff)
+> > >                 cdns_pcie_rp_writew(pcie, PCI_DEVICE_ID,
+> > > rc->device_id);
+> > >
+> > > +       /* Quirk to enable autonomous speed change for GEN2 controller */
+> > > +       /* Reading Supported Link Speed value */
+> > > +       sls = PCI_EXP_LNKCAP_SLS &
+> > > +               cdns_pcie_rp_readb(pcie, link_cap + PCI_EXP_LNKCAP);
+> > > +       if (sls == PCI_EXP_LNKCAP_SLS_5_0GB) {
+> > > +               /* Since this a Gen2 controller, set Retrain Link(RL) bit */
+> > > +               lnk_ctl = cdns_pcie_rp_readb(pcie, link_cap + PCI_EXP_LNKCTL);
+> > > +               lnk_ctl |= PCI_EXP_LNKCTL_RL;
+> > > +               cdns_pcie_rp_writeb(pcie, link_cap + PCI_EXP_LNKCTL,
+> > > + lnk_ctl);
+> >
+> > Why the byte accesses? This is a 16-bit register.
+> This is a 32bit register. But the register field require is at first byte only. Hence the byte access.
 
-thanks for updating this patch!
+No, it's a 16-bit register as Link Status is at the next half word:
 
-On Thu, Sep 17, 2020 at 9:00 AM Neil Armstrong <narmstrong@baylibre.com> wrote:
->
-> The Amlogic AXG is close to the GXL Glue but with a single OTG PHY.
->
-> It needs the same init sequence as GXL & GXM, but it seems it doesn't need
-> the host disconnect bit.
->
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-> Reviewed-by: Kevin Hilman <khilman@baylibre.com>
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+#define PCI_EXP_LNKCTL 16 /* Link Control */
+#define PCI_EXP_LNKSTA 18 /* Link Status */
+
+Use accesses that match the register size.
+
+Rob
