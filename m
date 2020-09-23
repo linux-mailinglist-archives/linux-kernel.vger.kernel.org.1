@@ -2,530 +2,463 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD88275D62
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:26:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E45E9275D66
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726817AbgIWQ0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 12:26:50 -0400
-Received: from out28-97.mail.aliyun.com ([115.124.28.97]:51855 "EHLO
-        out28-97.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgIWQ0p (ORCPT
+        id S1726668AbgIWQ14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 12:27:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgIWQ14 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 12:26:45 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436282|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.00662546-0.00284587-0.990529;FP=0|0|0|0|0|-1|-1|-1;HT=e01l10434;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.IbH0qkb_1600878388;
-Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.IbH0qkb_1600878388)
-          by smtp.aliyun-inc.com(10.147.41.187);
-          Thu, 24 Sep 2020 00:26:37 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     vkoul@kernel.org, kishon@ti.com, gregkh@linuxfoundation.org,
-        balbi@kernel.org, paul@crapouillou.net
-Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-Subject: [PATCH v6 2/2] PHY: Ingenic: Add USB PHY driver using generic PHY framework.
-Date:   Thu, 24 Sep 2020 00:26:00 +0800
-Message-Id: <20200923162600.44105-3-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200923162600.44105-1-zhouyanjie@wanyeetech.com>
-References: <20200923162600.44105-1-zhouyanjie@wanyeetech.com>
+        Wed, 23 Sep 2020 12:27:56 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDFA2C0613CE;
+        Wed, 23 Sep 2020 09:27:55 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id y6so7123950plt.9;
+        Wed, 23 Sep 2020 09:27:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nC+x4Uq1t9dUrNUozhMC55aUGxmHKwhvoonxjgbKkQI=;
+        b=mIcfprYbV0+il/0DY852qHf/ix9HsLmmnde5R7OvuAg/npgsFbBk3LW2jJtJf4wd5/
+         ymcbOWFD8iEo53hUa2UOWUmNN+DPHdrgC14koPnESx++eweAawlwTWG3ErsZdM6Ay/kL
+         66B96VH+x8MRKHsN+HhYmnNKXsHFttQY69vA4rnUTFN2PHWyaOYCY6uZa4xF4hSQYsRP
+         pV7B9nm7b7GSulbqPTrBuyIz8zMvSVLEQt1FjgC7SEOK700l2ZgohbAg8h09qWq7aFo0
+         9D1mPcd26WRrUJ6mtvcHEbrO2ddaMbVzgPyUppo5n4O2IXYnJsyjLBZoEYFohaWbzy9H
+         yVFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nC+x4Uq1t9dUrNUozhMC55aUGxmHKwhvoonxjgbKkQI=;
+        b=gjAdO+BDX1SvzHvkg3aVLNnu6j9ynsDOA0bX2X84v2jejhGwHXeHxBe8f6xqIL74hW
+         66QOYkE2bdO+0GGjfypWNcpBzQvbu+r6dpIJdaORJsY2ehjMICffYfcw5uMkOzNNuS4k
+         kvFTgG1RaffuXIRMN6VFaP2PWstJNysmWCt6iBpJtIIZTuB8njsy9zqsLJ2SpMM9Kxrb
+         QxlOlQeesrCdE4ppUBYS1PteTB62H8zHCzZSF1/6DC+iBW76pAFeMwDTe2LhuB0zk0ya
+         HielcDc0BhHtE4C4qFL82cPUHM/85adYNsJf4MWi/Yc7pcJrY7+x9J7WrYXFC5loMI14
+         qVMQ==
+X-Gm-Message-State: AOAM530GhG8T+Qu7axfME76+gbkasaOBwxnHaP5VFCeGkRwA0Y5rs0S5
+        OGzihHqPAgBLp1VhcwAmU6OMab8nhMyk6HY56Ao=
+X-Google-Smtp-Source: ABdhPJz6+qQ8UP2S7CDehxadbxAI6wmIJLNcBx5SBJl4xMzPLASyHVZtRWAPzq4cCvZ2KfqncwArQ8YK+a6prfNaOAs=
+X-Received: by 2002:a17:90b:fc4:: with SMTP id gd4mr182500pjb.129.1600878475235;
+ Wed, 23 Sep 2020 09:27:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20200922023151.387447-1-warthog618@gmail.com> <20200922023151.387447-13-warthog618@gmail.com>
+In-Reply-To: <20200922023151.387447-13-warthog618@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 23 Sep 2020 19:27:37 +0300
+Message-ID: <CAHp75VchWpH0tH_RoewFwqk0vGfasArYTnf1dbeCiOdyqT-9MA@mail.gmail.com>
+Subject: Re: [PATCH v9 12/20] gpiolib: cdev: support setting debounce
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Used the generic PHY framework API to create the PHY, this driver
-supoorts USB OTG PHY used in JZ4770 SoC, JZ4780 SoC, X1000 SoC,
-and X1830 SoC.
+On Tue, Sep 22, 2020 at 5:36 AM Kent Gibson <warthog618@gmail.com> wrote:
+>
+> Add support for setting debounce on a line via the GPIO uAPI.
+> Where debounce is not supported by hardware, a software debounce is
+> provided.
+>
+> The implementation of the software debouncer waits for the line to be
+> stable for the debounce period before determining if a level change,
+> and a corresponding edge event, has occurred.  This provides maximum
+> protection against glitches, but also introduces a debounce_period
+> latency to edge events.
+>
+> The software debouncer is integrated with the edge detection as it
+> utilises the line interrupt, and integration is simpler than getting
+> the two to interwork.  Where software debounce AND edge detection is
+> required, the debouncer provides both.
 
-Tested-by: 周正 (Zhou Zheng) <sernia.zhou@foxmail.com>
-Tested-by: H. Nikolaus Schaller <hns@goldelico.com>
-Co-developed-by: 漆鹏振 (Qi Pengzhen) <aric.pzqi@ingenic.com>
-Signed-off-by: 漆鹏振 (Qi Pengzhen) <aric.pzqi@ingenic.com>
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-Reviewed-by: Paul Cercueil <paul@crapouillou.net>
----
 
-Notes:
-    v1->v2:
-    Fix bug, ".of_match_table = of_match_ptr(ingenic_usb_phy_of_matches)" is wrong
-    and should be replaced with ".of_match_table = ingenic_usb_phy_of_matches".
-    
-    v2->v3:
-    1.Change "depends on (MACH_INGENIC && MIPS) || COMPILE_TEST" to
-      "depends on MIPS || COMPILE_TEST".
-    2.Keep the adjustments of "ingenic_usb_phy_init()" and "ingenic_usb_phu_exit()"
-      positions in v2 to make them consistent with the order in "ingenic_usb_phy_ops",
-      keep the adjustments to the positions of "ingenic_usb_phy_of_matches[]" in v2
-      to keep them consistent with the styles of other USB PHY drivers. And remove
-      some unnecessary changes to reduce the diff size, from the original 256 lines
-      change to the current 209 lines.
-    
-    v3->v4:
-    Only add new generic-PHY driver, without removing the old one. Because the
-    jz4740-musb driver is not ready to use the generic PHY framework. When the
-    jz4740-musb driver is modified to use the generic PHY framework, the old
-    jz4770-phy driver can be "retired".
-    
-    v4->v5:
-    1.Add an extra blank line between "devm_of_phy_provider_register" and "return".
-    2.Remove unnecessary "phy_set_drvdata".
-    3.Add Paul Cercueil's Reviewed-by.
-    
-    v5->v6:
-    1.Revert the removal of "phy_set_drvdata" in v5, removing "phy_set_drvdata" will
-      cause a kernel panic on CI20.
-      Reported-by: H. Nikolaus Schaller <hns@goldelico.com>
-    2.Rewrite the macro definitions, replace the original code with "FIELD_PREP()"
-      and "u32p_replace_bits()" according to Vinod Koul's suggestion.
+> +static unsigned int debounced_value(struct line *line)
+> +{
+> +       unsigned int value;
+> +
+> +       /*
+> +        * minor race - debouncer may be stopped here, so edge_detector_stop
 
- drivers/phy/Kconfig                   |   1 +
- drivers/phy/Makefile                  |   1 +
- drivers/phy/ingenic/Kconfig           |  12 ++
- drivers/phy/ingenic/Makefile          |   2 +
- drivers/phy/ingenic/phy-ingenic-usb.c | 378 ++++++++++++++++++++++++++++++++++
- 5 files changed, 394 insertions(+)
- create mode 100644 drivers/phy/ingenic/Kconfig
- create mode 100644 drivers/phy/ingenic/Makefile
- create mode 100644 drivers/phy/ingenic/phy-ingenic-usb.c
+() ?
 
-diff --git a/drivers/phy/Kconfig b/drivers/phy/Kconfig
-index de9362c25c07..0534b0fdd057 100644
---- a/drivers/phy/Kconfig
-+++ b/drivers/phy/Kconfig
-@@ -55,6 +55,7 @@ source "drivers/phy/broadcom/Kconfig"
- source "drivers/phy/cadence/Kconfig"
- source "drivers/phy/freescale/Kconfig"
- source "drivers/phy/hisilicon/Kconfig"
-+source "drivers/phy/ingenic/Kconfig"
- source "drivers/phy/lantiq/Kconfig"
- source "drivers/phy/marvell/Kconfig"
- source "drivers/phy/mediatek/Kconfig"
-diff --git a/drivers/phy/Makefile b/drivers/phy/Makefile
-index c27408e4daae..ab24f0d20763 100644
---- a/drivers/phy/Makefile
-+++ b/drivers/phy/Makefile
-@@ -14,6 +14,7 @@ obj-y					+= allwinner/	\
- 					   cadence/	\
- 					   freescale/	\
- 					   hisilicon/	\
-+					   ingenic/	\
- 					   intel/	\
- 					   lantiq/	\
- 					   marvell/	\
-diff --git a/drivers/phy/ingenic/Kconfig b/drivers/phy/ingenic/Kconfig
-new file mode 100644
-index 000000000000..912b14e512cb
---- /dev/null
-+++ b/drivers/phy/ingenic/Kconfig
-@@ -0,0 +1,12 @@
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Phy drivers for Ingenic platforms
-+#
-+config PHY_INGENIC_USB
-+	tristate "Ingenic SoCs USB PHY Driver"
-+	depends on MIPS || COMPILE_TEST
-+	depends on USB_SUPPORT
-+	select GENERIC_PHY
-+	help
-+	  This driver provides USB PHY support for the USB controller found
-+	  on the JZ-series and X-series SoCs from Ingenic.
-diff --git a/drivers/phy/ingenic/Makefile b/drivers/phy/ingenic/Makefile
-new file mode 100644
-index 000000000000..65d5ea00fc9d
---- /dev/null
-+++ b/drivers/phy/ingenic/Makefile
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0
-+obj-y		+= phy-ingenic-usb.o
-diff --git a/drivers/phy/ingenic/phy-ingenic-usb.c b/drivers/phy/ingenic/phy-ingenic-usb.c
-new file mode 100644
-index 000000000000..55da6ca8faf7
---- /dev/null
-+++ b/drivers/phy/ingenic/phy-ingenic-usb.c
-@@ -0,0 +1,378 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Ingenic SoCs USB PHY driver
-+ * Copyright (c) Paul Cercueil <paul@crapouillou.net>
-+ * Copyright (c) 漆鹏振 (Qi Pengzhen) <aric.pzqi@ingenic.com>
-+ * Copyright (c) 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-+ */
-+
-+#include <linux/bitfield.h>
-+#include <linux/clk.h>
-+#include <linux/delay.h>
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/phy/phy.h>
-+#include <linux/platform_device.h>
-+#include <linux/regulator/consumer.h>
-+
-+/* OTGPHY register offsets */
-+#define REG_USBPCR_OFFSET			0x00
-+#define REG_USBRDT_OFFSET			0x04
-+#define REG_USBVBFIL_OFFSET			0x08
-+#define REG_USBPCR1_OFFSET			0x0c
-+
-+/* bits within the USBPCR register */
-+#define USBPCR_USB_MODE				BIT(31)
-+#define USBPCR_AVLD_REG				BIT(30)
-+#define USBPCR_COMMONONN			BIT(25)
-+#define USBPCR_VBUSVLDEXT			BIT(24)
-+#define USBPCR_VBUSVLDEXTSEL		BIT(23)
-+#define USBPCR_POR					BIT(22)
-+#define USBPCR_SIDDQ				BIT(21)
-+#define USBPCR_OTG_DISABLE			BIT(20)
-+#define USBPCR_TXPREEMPHTUNE		BIT(6)
-+
-+#define USBPCR_IDPULLUP_MASK		GENMASK(29, 28)
-+#define USBPCR_IDPULLUP_ALWAYS		0x2
-+#define USBPCR_IDPULLUP_SUSPEND		0x1
-+#define USBPCR_IDPULLUP_OTG			0x0
-+
-+#define USBPCR_COMPDISTUNE_MASK		GENMASK(19, 17)
-+#define USBPCR_COMPDISTUNE_DFT		0x4
-+
-+#define USBPCR_OTGTUNE_MASK			GENMASK(16, 14)
-+#define USBPCR_OTGTUNE_DFT			0x4
-+
-+#define USBPCR_SQRXTUNE_MASK		GENMASK(13, 11)
-+#define USBPCR_SQRXTUNE_DCR_20PCT	0x7
-+#define USBPCR_SQRXTUNE_DFT			0x3
-+
-+#define USBPCR_TXFSLSTUNE_MASK		GENMASK(10, 7)
-+#define USBPCR_TXFSLSTUNE_DCR_50PPT	0xf
-+#define USBPCR_TXFSLSTUNE_DCR_25PPT	0x7
-+#define USBPCR_TXFSLSTUNE_DFT		0x3
-+#define USBPCR_TXFSLSTUNE_INC_25PPT	0x1
-+#define USBPCR_TXFSLSTUNE_INC_50PPT	0x0
-+
-+#define USBPCR_TXHSXVTUNE_MASK		GENMASK(5, 4)
-+#define USBPCR_TXHSXVTUNE_DFT		0x3
-+#define USBPCR_TXHSXVTUNE_DCR_15MV	0x1
-+
-+#define USBPCR_TXRISETUNE_MASK		GENMASK(5, 4)
-+#define USBPCR_TXRISETUNE_DFT		0x3
-+
-+#define USBPCR_TXVREFTUNE_MASK		GENMASK(3, 0)
-+#define USBPCR_TXVREFTUNE_INC_25PPT	0x7
-+#define USBPCR_TXVREFTUNE_DFT		0x5
-+
-+/* bits within the USBRDTR register */
-+#define USBRDT_UTMI_RST				BIT(27)
-+#define USBRDT_HB_MASK				BIT(26)
-+#define USBRDT_VBFIL_LD_EN			BIT(25)
-+#define USBRDT_IDDIG_EN				BIT(24)
-+#define USBRDT_IDDIG_REG			BIT(23)
-+#define USBRDT_VBFIL_EN				BIT(2)
-+
-+/* bits within the USBPCR1 register */
-+#define USBPCR1_BVLD_REG			BIT(31)
-+#define USBPCR1_DPPD				BIT(29)
-+#define USBPCR1_DMPD				BIT(28)
-+#define USBPCR1_USB_SEL				BIT(28)
-+#define USBPCR1_WORD_IF_16BIT		BIT(19)
-+
-+enum ingenic_usb_phy_version {
-+	ID_JZ4770,
-+	ID_JZ4780,
-+	ID_X1000,
-+	ID_X1830,
-+};
-+
-+struct ingenic_soc_info {
-+	enum ingenic_usb_phy_version version;
-+
-+	void (*usb_phy_init)(struct phy *phy);
-+};
-+
-+struct ingenic_usb_phy {
-+	const struct ingenic_soc_info *soc_info;
-+
-+	struct phy *phy;
-+	struct device *dev;
-+	void __iomem *base;
-+	struct clk *clk;
-+	struct regulator *vcc_supply;
-+};
-+
-+static int ingenic_usb_phy_init(struct phy *phy)
-+{
-+	struct ingenic_usb_phy *priv = phy_get_drvdata(phy);
-+	int err;
-+	u32 reg;
-+
-+	err = clk_prepare_enable(priv->clk);
-+	if (err) {
-+		dev_err(priv->dev, "Unable to start clock: %d\n", err);
-+		return err;
-+	}
-+
-+	priv->soc_info->usb_phy_init(phy);
-+
-+	/* Wait for PHY to reset */
-+	usleep_range(30, 300);
-+	reg = readl(priv->base + REG_USBPCR_OFFSET);
-+	writel(reg & ~USBPCR_POR, priv->base + REG_USBPCR_OFFSET);
-+	usleep_range(300, 1000);
-+
-+	return 0;
-+}
-+
-+static int ingenic_usb_phy_exit(struct phy *phy)
-+{
-+	struct ingenic_usb_phy *priv = phy_get_drvdata(phy);
-+
-+	clk_disable_unprepare(priv->clk);
-+	regulator_disable(priv->vcc_supply);
-+
-+	return 0;
-+}
-+
-+static int ingenic_usb_phy_power_on(struct phy *phy)
-+{
-+	struct ingenic_usb_phy *priv = phy_get_drvdata(phy);
-+	int err;
-+
-+	err = regulator_enable(priv->vcc_supply);
-+	if (err) {
-+		dev_err(priv->dev, "Unable to enable VCC: %d\n", err);
-+		return err;
-+	}
-+
-+	return 0;
-+}
-+
-+static int ingenic_usb_phy_power_off(struct phy *phy)
-+{
-+	struct ingenic_usb_phy *priv = phy_get_drvdata(phy);
-+
-+	regulator_disable(priv->vcc_supply);
-+
-+	return 0;
-+}
-+
-+static int ingenic_usb_phy_set_mode(struct phy *phy,
-+				  enum phy_mode mode, int submode)
-+{
-+	struct ingenic_usb_phy *priv = phy_get_drvdata(phy);
-+	u32 reg;
-+
-+	switch (mode) {
-+	case PHY_MODE_USB_HOST:
-+		reg = readl(priv->base + REG_USBPCR_OFFSET);
-+		u32p_replace_bits(&reg, 1, USBPCR_USB_MODE);
-+		u32p_replace_bits(&reg, 0, USBPCR_VBUSVLDEXT);
-+		u32p_replace_bits(&reg, 0, USBPCR_VBUSVLDEXTSEL);
-+		u32p_replace_bits(&reg, 0, USBPCR_OTG_DISABLE);
-+		writel(reg, priv->base + REG_USBPCR_OFFSET);
-+
-+		break;
-+	case PHY_MODE_USB_DEVICE:
-+		if (priv->soc_info->version >= ID_X1000) {
-+			reg = readl(priv->base + REG_USBPCR1_OFFSET);
-+			u32p_replace_bits(&reg, 1, USBPCR1_BVLD_REG);
-+			writel(reg, priv->base + REG_USBPCR1_OFFSET);
-+		}
-+
-+		reg = readl(priv->base + REG_USBPCR_OFFSET);
-+		u32p_replace_bits(&reg, 0, USBPCR_USB_MODE);
-+		u32p_replace_bits(&reg, 1, USBPCR_VBUSVLDEXT);
-+		u32p_replace_bits(&reg, 1, USBPCR_VBUSVLDEXTSEL);
-+		u32p_replace_bits(&reg, 1, USBPCR_OTG_DISABLE);
-+		writel(reg, priv->base + REG_USBPCR_OFFSET);
-+
-+		break;
-+	case PHY_MODE_USB_OTG:
-+		reg = readl(priv->base + REG_USBPCR_OFFSET);
-+		u32p_replace_bits(&reg, 1, USBPCR_USB_MODE);
-+		u32p_replace_bits(&reg, 1, USBPCR_VBUSVLDEXT);
-+		u32p_replace_bits(&reg, 1, USBPCR_VBUSVLDEXTSEL);
-+		u32p_replace_bits(&reg, 0, USBPCR_OTG_DISABLE);
-+		writel(reg, priv->base + REG_USBPCR_OFFSET);
-+
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct phy_ops ingenic_usb_phy_ops = {
-+	.init		= ingenic_usb_phy_init,
-+	.exit		= ingenic_usb_phy_exit,
-+	.power_on	= ingenic_usb_phy_power_on,
-+	.power_off	= ingenic_usb_phy_power_off,
-+	.set_mode	= ingenic_usb_phy_set_mode,
-+	.owner		= THIS_MODULE,
-+};
-+
-+static void jz4770_usb_phy_init(struct phy *phy)
-+{
-+	struct ingenic_usb_phy *priv = phy_get_drvdata(phy);
-+	u32 reg;
-+
-+	reg = USBPCR_AVLD_REG | USBPCR_COMMONONN | USBPCR_POR |
-+		FIELD_PREP(USBPCR_IDPULLUP_MASK, USBPCR_IDPULLUP_ALWAYS) |
-+		FIELD_PREP(USBPCR_COMPDISTUNE_MASK, USBPCR_COMPDISTUNE_DFT) |
-+		FIELD_PREP(USBPCR_OTGTUNE_MASK, USBPCR_OTGTUNE_DFT) |
-+		FIELD_PREP(USBPCR_SQRXTUNE_MASK, USBPCR_SQRXTUNE_DFT) |
-+		FIELD_PREP(USBPCR_TXFSLSTUNE_MASK, USBPCR_TXFSLSTUNE_DFT) |
-+		FIELD_PREP(USBPCR_TXRISETUNE_MASK, USBPCR_TXRISETUNE_DFT) |
-+		FIELD_PREP(USBPCR_TXVREFTUNE_MASK, USBPCR_TXVREFTUNE_DFT);
-+	writel(reg, priv->base + REG_USBPCR_OFFSET);
-+}
-+
-+static void jz4780_usb_phy_init(struct phy *phy)
-+{
-+	struct ingenic_usb_phy *priv = phy_get_drvdata(phy);
-+	u32 reg;
-+
-+	reg = readl(priv->base + REG_USBPCR1_OFFSET) | USBPCR1_USB_SEL |
-+		USBPCR1_WORD_IF_16BIT;
-+	writel(reg, priv->base + REG_USBPCR1_OFFSET);
-+
-+	reg = USBPCR_TXPREEMPHTUNE | USBPCR_COMMONONN | USBPCR_POR;
-+	writel(reg, priv->base + REG_USBPCR_OFFSET);
-+}
-+
-+static void x1000_usb_phy_init(struct phy *phy)
-+{
-+	struct ingenic_usb_phy *priv = phy_get_drvdata(phy);
-+	u32 reg;
-+
-+	reg = readl(priv->base + REG_USBPCR1_OFFSET) | USBPCR1_WORD_IF_16BIT;
-+	writel(reg, priv->base + REG_USBPCR1_OFFSET);
-+
-+	reg = USBPCR_TXPREEMPHTUNE | USBPCR_COMMONONN | USBPCR_POR |
-+		FIELD_PREP(USBPCR_SQRXTUNE_MASK, USBPCR_SQRXTUNE_DCR_20PCT) |
-+		FIELD_PREP(USBPCR_TXHSXVTUNE_MASK, USBPCR_TXHSXVTUNE_DCR_15MV) |
-+		FIELD_PREP(USBPCR_TXVREFTUNE_MASK, USBPCR_TXVREFTUNE_INC_25PPT);
-+	writel(reg, priv->base + REG_USBPCR_OFFSET);
-+}
-+
-+static void x1830_usb_phy_init(struct phy *phy)
-+{
-+	struct ingenic_usb_phy *priv = phy_get_drvdata(phy);
-+	u32 reg;
-+
-+	/* rdt */
-+	writel(USBRDT_VBFIL_EN | USBRDT_UTMI_RST, priv->base + REG_USBRDT_OFFSET);
-+
-+	reg = readl(priv->base + REG_USBPCR1_OFFSET) | USBPCR1_WORD_IF_16BIT |
-+		USBPCR1_DMPD | USBPCR1_DPPD;
-+	writel(reg, priv->base + REG_USBPCR1_OFFSET);
-+
-+	reg = USBPCR_VBUSVLDEXT |	USBPCR_TXPREEMPHTUNE | USBPCR_COMMONONN | USBPCR_POR |
-+		FIELD_PREP(USBPCR_IDPULLUP_MASK, USBPCR_IDPULLUP_OTG);
-+	writel(reg, priv->base + REG_USBPCR_OFFSET);
-+}
-+
-+static const struct ingenic_soc_info jz4770_soc_info = {
-+	.version = ID_JZ4770,
-+
-+	.usb_phy_init = jz4770_usb_phy_init,
-+};
-+
-+static const struct ingenic_soc_info jz4780_soc_info = {
-+	.version = ID_JZ4780,
-+
-+	.usb_phy_init = jz4780_usb_phy_init,
-+};
-+
-+static const struct ingenic_soc_info x1000_soc_info = {
-+	.version = ID_X1000,
-+
-+	.usb_phy_init = x1000_usb_phy_init,
-+};
-+
-+static const struct ingenic_soc_info x1830_soc_info = {
-+	.version = ID_X1830,
-+
-+	.usb_phy_init = x1830_usb_phy_init,
-+};
-+
-+static int ingenic_usb_phy_probe(struct platform_device *pdev)
-+{
-+	struct ingenic_usb_phy *priv;
-+	struct phy_provider *provider;
-+	struct device *dev = &pdev->dev;
-+	int err;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->soc_info = device_get_match_data(dev);
-+	if (!priv->soc_info) {
-+		dev_err(dev, "Error: No device match found\n");
-+		return -ENODEV;
-+	}
-+
-+	platform_set_drvdata(pdev, priv);
-+	priv->dev = dev;
-+
-+	priv->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(priv->base)) {
-+		dev_err(dev, "Failed to map registers\n");
-+		return PTR_ERR(priv->base);
-+	}
-+
-+	priv->clk = devm_clk_get(dev, NULL);
-+	if (IS_ERR(priv->clk)) {
-+		err = PTR_ERR(priv->clk);
-+		if (err != -EPROBE_DEFER)
-+			dev_err(dev, "Failed to get clock\n");
-+		return err;
-+	}
-+
-+	priv->vcc_supply = devm_regulator_get(dev, "vcc");
-+	if (IS_ERR(priv->vcc_supply)) {
-+		err = PTR_ERR(priv->vcc_supply);
-+		if (err != -EPROBE_DEFER)
-+			dev_err(dev, "Failed to get regulator\n");
-+		return err;
-+	}
-+
-+	priv->phy = devm_phy_create(dev, NULL, &ingenic_usb_phy_ops);
-+	if (IS_ERR(priv))
-+		return PTR_ERR(priv);
-+
-+	phy_set_drvdata(priv->phy, priv);
-+
-+	provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
-+
-+	return PTR_ERR_OR_ZERO(provider);
-+}
-+
-+static const struct of_device_id ingenic_usb_phy_of_matches[] = {
-+	{ .compatible = "ingenic,jz4770-phy", .data = &jz4770_soc_info },
-+	{ .compatible = "ingenic,jz4780-phy", .data = &jz4780_soc_info },
-+	{ .compatible = "ingenic,x1000-phy", .data = &x1000_soc_info },
-+	{ .compatible = "ingenic,x1830-phy", .data = &x1830_soc_info },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, ingenic_usb_phy_of_matches);
-+
-+static struct platform_driver ingenic_usb_phy_driver = {
-+	.probe		= ingenic_usb_phy_probe,
-+	.driver		= {
-+		.name	= "ingenic-usb-phy",
-+		.of_match_table = ingenic_usb_phy_of_matches,
-+	},
-+};
-+module_platform_driver(ingenic_usb_phy_driver);
-+
-+MODULE_AUTHOR("周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>");
-+MODULE_AUTHOR("漆鹏振 (Qi Pengzhen) <aric.pzqi@ingenic.com>");
-+MODULE_AUTHOR("Paul Cercueil <paul@crapouillou.net>");
-+MODULE_DESCRIPTION("Ingenic SoCs USB PHY driver");
-+MODULE_LICENSE("GPL");
+> +        * must leave the value unchanged so the following will read the level
+> +        * from when the debouncer was last running.
+> +        */
+> +       value = READ_ONCE(line->level);
+> +
+
+> +       if (test_bit(FLAG_ACTIVE_LOW, &line->desc->flags))
+> +               value = !value;
+
+I'm not sure what this means in terms of unsingned int to be returned.
+
+> +       return value;
+
+Shouldn't we rather return 0/1 guaranteed?
+
+Perhaps
+
+ if (active_low)
+  return !value;
+
+return !!value;
+
+?
+
+> +}
+> +
+> +static irqreturn_t debounce_irq_handler(int irq, void *p)
+> +{
+> +       struct line *line = p;
+> +
+> +       mod_delayed_work(system_wq, &line->work,
+> +               usecs_to_jiffies(READ_ONCE(line->desc->debounce_period_us)));
+> +
+> +       return IRQ_HANDLED;
+> +}
+> +
+> +static void debounce_work_func(struct work_struct *work)
+> +{
+> +       struct gpio_v2_line_event le;
+> +       struct line *line = container_of(work, struct line, work.work);
+> +       struct linereq *lr;
+> +       int level;
+> +
+> +       level = gpiod_get_raw_value_cansleep(line->desc);
+> +       if (level < 0) {
+> +               pr_debug_ratelimited("debouncer failed to read line value\n");
+> +               return;
+> +       }
+> +
+> +       if (READ_ONCE(line->level) == level)
+> +               return;
+> +
+> +       WRITE_ONCE(line->level, level);
+> +
+> +       /* -- edge detection -- */
+> +       if (!line->eflags)
+> +               return;
+
+> +       /* switch from physical level to logical - if they differ */
+> +       if (test_bit(FLAG_ACTIVE_LOW, &line->desc->flags))
+> +               level = !level;
+
+Seems to me a good candidate to have
+
+static inline bool convert_with_active_low_respected(desc, value)
+{
+  if (active_low)
+   return !value;
+ return !!value;
+}
+
+> +       /* ignore edges that are not being monitored */
+> +       if (((line->eflags == GPIO_V2_LINE_FLAG_EDGE_RISING) && !level) ||
+> +           ((line->eflags == GPIO_V2_LINE_FLAG_EDGE_FALLING) && level))
+> +               return;
+> +
+> +       /* Do not leak kernel stack to userspace */
+> +       memset(&le, 0, sizeof(le));
+> +
+> +       lr = line->req;
+> +       le.timestamp_ns = ktime_get_ns();
+> +       le.offset = gpio_chip_hwgpio(line->desc);
+> +       line->line_seqno++;
+> +       le.line_seqno = line->line_seqno;
+> +       le.seqno = (lr->num_lines == 1) ?
+> +               le.line_seqno : atomic_inc_return(&lr->seqno);
+> +
+> +       if (level)
+> +               /* Emit low-to-high event */
+> +               le.id = GPIO_V2_LINE_EVENT_RISING_EDGE;
+> +       else
+> +               /* Emit high-to-low event */
+> +               le.id = GPIO_V2_LINE_EVENT_FALLING_EDGE;
+> +
+> +       linereq_put_event(lr, &le);
+> +}
+> +
+> +static int debounce_setup(struct line *line,
+> +                         unsigned int debounce_period_us)
+> +{
+> +       unsigned long irqflags;
+> +       int ret, level, irq;
+> +
+> +       /* try hardware */
+> +       ret = gpiod_set_debounce(line->desc, debounce_period_us);
+> +       if (!ret) {
+> +               WRITE_ONCE(line->desc->debounce_period_us, debounce_period_us);
+> +               return ret;
+> +       }
+> +       if (ret != -ENOTSUPP)
+> +               return ret;
+> +
+> +       if (debounce_period_us) {
+> +               /* setup software debounce */
+> +               level = gpiod_get_raw_value_cansleep(line->desc);
+> +               if (level < 0)
+> +                       return level;
+> +
+> +               irq = gpiod_to_irq(line->desc);
+> +               if (irq <= 0)
+
+Same question about return code...
+
+> +                       return -ENODEV;
+> +
+> +               WRITE_ONCE(line->level, level);
+> +               irqflags = IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING;
+> +               ret = request_irq(irq, debounce_irq_handler, irqflags,
+> +                                 line->req->label, line);
+> +               if (ret)
+> +                       return ret;
+> +
+> +               WRITE_ONCE(line->sw_debounced, 1);
+> +               line->irq = irq;
+> +       }
+> +       return 0;
+> +}
+> +
+> +static bool gpio_v2_line_config_debounced(struct gpio_v2_line_config *lc,
+> +                                         unsigned int line_idx)
+> +{
+> +       unsigned int i;
+> +       u64 mask = BIT_ULL(line_idx);
+> +
+> +       for (i = 0; i < lc->num_attrs; i++) {
+> +               if ((lc->attrs[i].attr.id == GPIO_V2_LINE_ATTR_ID_DEBOUNCE) &&
+> +                   (lc->attrs[i].mask & mask))
+> +                       return true;
+> +       }
+> +       return false;
+> +}
+> +
+> +static u32 gpio_v2_line_config_debounce_period(struct gpio_v2_line_config *lc,
+> +                                              unsigned int line_idx)
+> +{
+> +       unsigned int i;
+> +       u64 mask = BIT_ULL(line_idx);
+> +
+> +       for (i = 0; i < lc->num_attrs; i++) {
+> +               if ((lc->attrs[i].attr.id == GPIO_V2_LINE_ATTR_ID_DEBOUNCE) &&
+> +                   (lc->attrs[i].mask & mask))
+> +                       return lc->attrs[i].attr.debounce_period_us;
+> +       }
+> +       return 0;
+> +}
+> +
+>  static void edge_detector_stop(struct line *line)
+>  {
+>         if (line->irq) {
+> @@ -578,12 +752,18 @@ static void edge_detector_stop(struct line *line)
+>                 line->irq = 0;
+>         }
+>
+> +       cancel_delayed_work_sync(&line->work);
+> +       WRITE_ONCE(line->sw_debounced, 0);
+>         line->eflags = 0;
+> +       /* do not change line->level - see comment in debounced_value */
+>  }
+>
+>  static int edge_detector_setup(struct line *line,
+> +                              struct gpio_v2_line_config *lc,
+> +                              unsigned int line_idx,
+>                                u64 eflags)
+>  {
+> +       u32 debounce_period_us;
+>         unsigned long irqflags = 0;
+>         int irq, ret;
+>
+> @@ -594,8 +774,16 @@ static int edge_detector_setup(struct line *line,
+>                         return ret;
+>         }
+>         line->eflags = eflags;
+> +       if (gpio_v2_line_config_debounced(lc, line_idx)) {
+> +               debounce_period_us = gpio_v2_line_config_debounce_period(lc, line_idx);
+> +               ret = debounce_setup(line, debounce_period_us);
+> +               if (ret)
+> +                       return ret;
+> +               WRITE_ONCE(line->desc->debounce_period_us, debounce_period_us);
+> +       }
+>
+> -       if (!eflags)
+> +       /* detection disabled or sw debouncer will provide edge detection */
+> +       if (!eflags || READ_ONCE(line->sw_debounced))
+>                 return 0;
+>
+>         irq = gpiod_to_irq(line->desc);
+> @@ -620,15 +808,31 @@ static int edge_detector_setup(struct line *line,
+>         return 0;
+>  }
+>
+> -static int edge_detector_update(struct line *line, u64 eflags,
+> -                               bool polarity_change)
+> +static int edge_detector_update(struct line *line,
+> +                               struct gpio_v2_line_config *lc,
+> +                               unsigned int line_idx,
+> +                               u64 eflags, bool polarity_change)
+>  {
+> -       if ((line->eflags == eflags) && !polarity_change)
+> +       unsigned int debounce_period_us =
+> +               gpio_v2_line_config_debounce_period(lc, line_idx);
+> +
+> +       if ((line->eflags == eflags) && !polarity_change &&
+> +           (READ_ONCE(line->desc->debounce_period_us) == debounce_period_us))
+>                 return 0;
+>
+> -       edge_detector_stop(line);
+> +       /* sw debounced and still will be...*/
+
+> +       if ((debounce_period_us != 0) && READ_ONCE(line->sw_debounced)) {
+
+'(  != 0)' are redundant. But I think you want to show that it's not
+boolean and we compare to 0...
+
+> +               line->eflags = eflags;
+> +               WRITE_ONCE(line->desc->debounce_period_us, debounce_period_us);
+> +               return 0;
+> +       }
+> +
+> +       /* reconfiguring edge detection or sw debounce being disabled */
+> +       if ((line->irq && !READ_ONCE(line->sw_debounced)) ||
+> +           (!debounce_period_us && READ_ONCE(line->sw_debounced)))
+> +               edge_detector_stop(line);
+>
+> -       return edge_detector_setup(line, eflags);
+> +       return edge_detector_setup(line, lc, line_idx, eflags);
+>  }
+>
+>  static u64 gpio_v2_line_config_flags(struct gpio_v2_line_config *lc,
+> @@ -726,6 +930,11 @@ static int gpio_v2_line_config_validate(struct gpio_v2_line_config *lc,
+>                 ret = gpio_v2_line_flags_validate(flags);
+>                 if (ret)
+>                         return ret;
+> +
+> +               /* debounce requires explicit input */
+> +               if (gpio_v2_line_config_debounced(lc, i) &&
+> +                   !(flags & GPIO_V2_LINE_FLAG_INPUT))
+> +                       return -EINVAL;
+>         }
+>         return 0;
+>  }
+> @@ -762,7 +971,7 @@ static long linereq_get_values(struct linereq *lr, void __user *ip)
+>         struct gpio_v2_line_values lv;
+>         DECLARE_BITMAP(vals, GPIO_V2_LINES_MAX);
+>         struct gpio_desc **descs;
+> -       unsigned int i, didx, num_get;
+> +       unsigned int i, val, didx, num_get;
+>         int ret;
+>
+>         /* NOTE: It's ok to read values of output lines. */
+> @@ -801,7 +1010,11 @@ static long linereq_get_values(struct linereq *lr, void __user *ip)
+>         lv.bits = 0;
+>         for (didx = 0, i = 0; i < lr->num_lines; i++) {
+>                 if (lv.mask & BIT_ULL(i)) {
+> -                       if (test_bit(didx, vals))
+> +                       if (lr->lines[i].sw_debounced)
+> +                               val = debounced_value(&lr->lines[i]);
+> +                       else
+> +                               val = test_bit(didx, vals);
+> +                       if (val)
+>                                 lv.bits |= BIT_ULL(i);
+>                         didx++;
+>                 }
+> @@ -905,7 +1118,7 @@ static long linereq_set_config_unlocked(struct linereq *lr,
+>                         if (ret)
+>                                 return ret;
+>
+> -                       ret = edge_detector_update(&lr->lines[i],
+> +                       ret = edge_detector_update(&lr->lines[i], lc, i,
+>                                         flags & GPIO_V2_LINE_EDGE_FLAGS,
+>                                         polarity_change);
+>                         if (ret)
+> @@ -1099,8 +1312,11 @@ static int linereq_create(struct gpio_device *gdev, void __user *ip)
+>         lr->gdev = gdev;
+>         get_device(&gdev->dev);
+>
+> -       for (i = 0; i < ulr.num_lines; i++)
+> +       for (i = 0; i < ulr.num_lines; i++) {
+>                 lr->lines[i].req = lr;
+> +               WRITE_ONCE(lr->lines[i].sw_debounced, 0);
+> +               INIT_DELAYED_WORK(&lr->lines[i].work, debounce_work_func);
+> +       }
+>
+>         /* Make sure this is terminated */
+>         ulr.consumer[sizeof(ulr.consumer)-1] = '\0';
+> @@ -1160,7 +1376,7 @@ static int linereq_create(struct gpio_device *gdev, void __user *ip)
+>                         if (ret)
+>                                 goto out_free_linereq;
+>
+> -                       ret = edge_detector_setup(&lr->lines[i],
+> +                       ret = edge_detector_setup(&lr->lines[i], lc, i,
+>                                         flags & GPIO_V2_LINE_EDGE_FLAGS);
+>                         if (ret)
+>                                 goto out_free_linereq;
+> @@ -1631,6 +1847,8 @@ static void gpio_desc_to_lineinfo(struct gpio_desc *desc,
+>         struct gpio_chip *gc = desc->gdev->chip;
+>         bool ok_for_pinctrl;
+>         unsigned long flags;
+> +       u32 debounce_period_us;
+> +       unsigned int num_attrs = 0;
+>
+>         memset(info, 0, sizeof(*info));
+>         info->offset = gpio_chip_hwgpio(desc);
+> @@ -1691,6 +1909,14 @@ static void gpio_desc_to_lineinfo(struct gpio_desc *desc,
+>         if (test_bit(FLAG_EDGE_FALLING, &desc->flags))
+>                 info->flags |= GPIO_V2_LINE_FLAG_EDGE_FALLING;
+>
+> +       debounce_period_us = READ_ONCE(desc->debounce_period_us);
+> +       if (debounce_period_us) {
+> +               info->attrs[num_attrs].id = GPIO_V2_LINE_ATTR_ID_DEBOUNCE;
+> +               info->attrs[num_attrs].debounce_period_us = debounce_period_us;
+> +               num_attrs++;
+> +       }
+> +       info->num_attrs = num_attrs;
+> +
+>         spin_unlock_irqrestore(&gpio_lock, flags);
+>  }
+>
+> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+> index aa20481e9452..3cdf9effc13a 100644
+> --- a/drivers/gpio/gpiolib.c
+> +++ b/drivers/gpio/gpiolib.c
+> @@ -2097,6 +2097,9 @@ static bool gpiod_free_commit(struct gpio_desc *desc)
+>                 clear_bit(FLAG_IS_HOGGED, &desc->flags);
+>  #ifdef CONFIG_OF_DYNAMIC
+>                 desc->hog = NULL;
+> +#endif
+> +#ifdef CONFIG_GPIO_CDEV
+> +               WRITE_ONCE(desc->de> --
+> 2.28.0
+>
+bounce_period_us, 0);
+>  #endif
+>                 ret = true;
+>         }
+> diff --git a/drivers/gpio/gpiolib.h b/drivers/gpio/gpiolib.h
+> index 39b356160937..b674b5bb980e 100644
+> --- a/drivers/gpio/gpiolib.h
+> +++ b/drivers/gpio/gpiolib.h
+> @@ -124,6 +124,10 @@ struct gpio_desc {
+>  #ifdef CONFIG_OF_DYNAMIC
+>         struct device_node      *hog;
+>  #endif
+> +#ifdef CONFIG_GPIO_CDEV
+> +       /* debounce period in microseconds */
+> +       unsigned int            debounce_period_us;
+> +#endif
+>  };
+>
+>  int gpiod_request(struct gpio_desc *desc, const char *label);
+
 -- 
-2.11.0
-
+With Best Regards,
+Andy Shevchenko
