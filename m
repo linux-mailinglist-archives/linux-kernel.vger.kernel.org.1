@@ -2,92 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72366274EC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 03:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ADC2274EC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 03:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727049AbgIWB5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 21:57:05 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:45385 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726847AbgIWB5F (ORCPT
+        id S1726893AbgIWB7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 21:59:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726548AbgIWB7U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 21:57:05 -0400
-Received: by mail-il1-f195.google.com with SMTP id h2so19285152ilo.12;
-        Tue, 22 Sep 2020 18:57:04 -0700 (PDT)
+        Tue, 22 Sep 2020 21:59:20 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B934C061755;
+        Tue, 22 Sep 2020 18:59:20 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id w16so23277258oia.2;
+        Tue, 22 Sep 2020 18:59:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7P8Z5oLsyCerSIKlM6E32eue5tyujrExNojN0rVKp4c=;
+        b=SIca7xw3I2B5Ygs0Wl3SSHMG7Ax13OlBQSO6xP3YFeorOBjUPSTMTt3tDBWLI4kH5e
+         bAs4xcAjF3eDbmpVTscI5MFsy/aD92NcmiOMUcJYRfemSpGJhCDPr9PxWarh0PtCJ4ID
+         iQuHQL8fPvF4WmVhzXvpswsVhKQyHzCjeuAdhdp3frqlqazEAzlpTjX01LRg2wc8Uh/a
+         ITavhGTy4XsvZNDzhUBF062jPLXK8KGQ9aT5nlFyViGoKdE4e5JEml+FirLxGL9hgZox
+         1hVRISrmgcxk78QDJjPAOkXtG3ttQcCEn2hSiKTJTgv48Mh0TXsWT9ZrZkWkR1h7z6B9
+         qtRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=34pMhFQ28SHC3mzxbMUDtsJGYufWbe2RlD1uSSeVBbQ=;
-        b=ngMgJreq97y7VSnZSbgLuwuw8XXk9scYsIiN/FDI/FpB+Uh9Jm2ggdhPKP1PGGSOdd
-         1Yq1LcelwojMnbwmBZ1m7WA9fBgWSI7jU3q9VV9XrbqAf9/2BGSMkpriLJQukqD15FJi
-         aQiAT9JARR4dgHue/eO3oHbhX+TAewFmPSZMJ5U2XiYtnKWvOgKVlR4QH9JdH3tbSrla
-         lpb7uatxq+R4z7yPqkf8hrXMOFUGSFL2Byp5ca4Pbn50YQRq0dz2fGFzOLImUeeDRe6W
-         hKgT6lyCyfRbKPgsw5dBdA+cFI7yKVnwyuDKIo8+LNMKnQvI/AkCzGyw6jb5Ta0qE8fO
-         SSYA==
-X-Gm-Message-State: AOAM533Q+bOanVzc1sV/xf3sQ0eeePcO05pzg597y9ZafSOA8Fsz+KN9
-        f7vB0+ALzTmJw+Z86+gTqg==
-X-Google-Smtp-Source: ABdhPJw/o4PwxGTeqWV+adBWTIEGsOkRpZod6MJ/eFAMyAZXrL7UJ3MpPMRsbXfGwT/zjEc/YHa5jQ==
-X-Received: by 2002:a92:c7b0:: with SMTP id f16mr6998290ilk.137.1600826224427;
-        Tue, 22 Sep 2020 18:57:04 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id j77sm10254679ili.31.2020.09.22.18.57.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 18:57:03 -0700 (PDT)
-Received: (nullmailer pid 3701896 invoked by uid 1000);
-        Wed, 23 Sep 2020 01:57:02 -0000
-Date:   Tue, 22 Sep 2020 19:57:02 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Gilad Ben-Yossef <gilad@benyossef.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ofir Drang <ofir.drang@arm.com>, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: crypto: update ccree optional params
-Message-ID: <20200923015702.GA3676455@bogus>
-References: <20200916071950.1493-1-gilad@benyossef.com>
- <20200916071950.1493-2-gilad@benyossef.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7P8Z5oLsyCerSIKlM6E32eue5tyujrExNojN0rVKp4c=;
+        b=awzJFMwjqy82Ju5AYCfudOCGradbEAvlasC9SaPOd/FQmDzAs31ClXraoS032hPj6w
+         hmKXW4qNpSVOsDw3vUaVGj0L5sXB/a3R/uNz3gMbI+7iCUNx/y4BCyjJAVjTtpklTfIr
+         tWKB0cBf+tp8gOPHJP5NqJLPax/BDHCQDcGlM3mItK/ZACy1cIFo//A2Inq9zKM0fRKp
+         qD4Maq+sZ4Oxq8BlkWWOBz6Rl4gT7Efi1X6uRpBOqHBByS6Dnkv3o/1jy5S6uH4cYf5V
+         igfNHviB6fexyoKtM9aP9FQlNrwyPKdIsWKKAethFWcAcC/ZtkqazCfd2QL3fq9A1rbO
+         3kCg==
+X-Gm-Message-State: AOAM532SUDYGnQgSUnjtkNMuO+v0BphhrE9zojhGDZXyK1hpR3VC2peg
+        h1mjyXh2gxns2e6JMBPWwQ/Co/MQXYLleg==
+X-Google-Smtp-Source: ABdhPJwFgBU3Bqd0Qz23sLfSX/ck5Sct4I0//xmj62Ks9s6EaY8F4dWijhshu0sKY6gDeDI2o00dDQ==
+X-Received: by 2002:a54:411a:: with SMTP id l26mr4090990oic.12.1600826359482;
+        Tue, 22 Sep 2020 18:59:19 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([2601:282:803:7700:9c91:44fa:d629:96cc])
+        by smtp.googlemail.com with ESMTPSA id n186sm8883429oob.11.2020.09.22.18.59.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Sep 2020 18:59:18 -0700 (PDT)
+Subject: Re: [RFC PATCH v2 0/3] l3mdev icmp error route lookup fixes
+To:     Michael Jeanson <mjeanson@efficios.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     David <davem@davemloft.net>, netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20200918181801.2571-1-mathieu.desnoyers@efficios.com>
+ <390b230b-629b-7f96-e7c9-b28f8b592102@gmail.com>
+ <1453768496.36855.1600713879236.JavaMail.zimbra@efficios.com>
+ <dd1caf15-2ef0-f557-b9a8-26c46739f20b@gmail.com>
+ <1383129694.37216.1600716821449.JavaMail.zimbra@efficios.com>
+ <1135414696.37989.1600782730509.JavaMail.zimbra@efficios.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <4456259a-979a-7821-ef3d-aed5d330ed2b@gmail.com>
+Date:   Tue, 22 Sep 2020 19:59:16 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916071950.1493-2-gilad@benyossef.com>
+In-Reply-To: <1135414696.37989.1600782730509.JavaMail.zimbra@efficios.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 10:19:49AM +0300, Gilad Ben-Yossef wrote:
-> Document ccree driver supporting new optional parameters allowing to
-> customize the DMA transactions cache parameters and ACE bus sharability
-> properties.
+On 9/22/20 7:52 AM, Michael Jeanson wrote:
+>>>
+>>> the test setup is bad. You have r1 dropping the MTU in VRF red, but not
+>>> telling VRF red how to send back the ICMP. e.g., for IPv4 add:
+>>>
+>>>    ip -netns r1 ro add vrf red 172.16.1.0/24 dev blue
+>>>
+>>> do the same for v6.
+>>>
+>>> Also, I do not see a reason for r2; I suggest dropping it. What you are
+>>> testing is icmp crossing VRF with route leaking, so there should not be
+>>> a need for r2 which leads to asymmetrical routing (172.16.1.0 via r1 and
+>>> the return via r2).
 > 
-> Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
-> ---
->  Documentation/devicetree/bindings/crypto/arm-cryptocell.txt | 4 ++++
->  1 file changed, 4 insertions(+)
+> The objective of the test was to replicate a clients environment where
+> packets are crossing from a VRF which has a route back to the source to
+> one which doesn't while reaching a ttl of 0. If the route lookup for the
+> icmp error is done on the interface in the first VRF, it can be routed to
+> the source but not on the interface in the second VRF which is the
+> current behaviour for icmp errors generated while crossing between VRFs.
 > 
-> diff --git a/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt b/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
-> index 6130e6eb4af8..1a1603e457a8 100644
-> --- a/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
-> +++ b/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
-> @@ -13,6 +13,10 @@ Required properties:
->  Optional properties:
->  - clocks: Reference to the crypto engine clock.
->  - dma-coherent: Present if dma operations are coherent.
-> +- awcache: Set write transactions cache attributes
-> +- arcache: Set read transactions cache attributes
+> There may be a better test case that doesn't involve asymmetric routing
+> to test this but it's the only way I found to replicate this.
+> 
 
-dma-coherent already implies these are 011x, 101x or 111x. In my limited 
-experience configuring these (Calxeda SATA and ethernet), writeback, 
-write-allocate was pretty much always optimal. 
+It should work without asymmetric routing; adding the return route to
+the second vrf as I mentioned above fixes the FRAG_NEEDED problem. It
+should work for TTL as well.
 
-> +- awdomain: Set write transactions ACE sharability domain (712, 703, 713 only)
-> +- ardomain: Set read transactions ACE sharability domain (712, 703, 713 only)
-
-This probably needs something common. We may need something for Mali, 
-too. I don't think different settings for read and write makes much 
-sense nor does anything beyond IS or OS. 
-
-These could also just be implied by the compatible string (and requiring 
-an SoC specific one).
-
-Rob
+Adding a second pass on the tests with the return through r2 is fine,
+but add a first pass for the more typical case.
