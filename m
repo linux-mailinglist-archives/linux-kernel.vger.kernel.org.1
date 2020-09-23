@@ -2,127 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EBB32757BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 14:14:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3E832757C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 14:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726524AbgIWMOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 08:14:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40832 "EHLO
+        id S1726565AbgIWMO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 08:14:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726476AbgIWMOB (ORCPT
+        with ESMTP id S1726476AbgIWMO4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 08:14:01 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF81C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 05:14:01 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id y11so21819028lfl.5
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 05:14:01 -0700 (PDT)
+        Wed, 23 Sep 2020 08:14:56 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97CA8C0613CE;
+        Wed, 23 Sep 2020 05:14:56 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id z4so20786333wrr.4;
+        Wed, 23 Sep 2020 05:14:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gu4sashNSj+VH6cRzrQqHqohCiePOYZ2b0ZQyk6s8S8=;
-        b=efBEwPlCOEckuBHmgMtHsoL/fnc89D+RwIxdTXkNsIWcKYxF4MHDRa/XbiNq8w8roF
-         RLPyKGNAnickTWWDrsiDm3Xsq/te01jOqjie7RowPoLes3REaHJ+v3trKHKIgkW5sFQF
-         QGFWs1eFaehk+bu5r1FtlgQmeDf63cT2acVsTat7GVNM7eoHZTdfr9LgS8sVuL0dZILm
-         Azba0pHV5L9CD///TbiMU1n780XsJxWcIA8MmzbOl2BSUYX62sYHXw8u1tO71tV26M8X
-         9SjzEzcxQ1IlXz0HyjS4Bn1MnD41irUv4QhC9AoDRblTXLlYhV9LWWMniJJNVQ8wgZxc
-         YgkQ==
+         :content-disposition:in-reply-to:user-agent;
+        bh=xH/OJNOXpFoUO1DQr8ioFXfkNwPG54GEfbB6/p814zo=;
+        b=otqa5hJX0+4DxOPqsg9wxGESc/L6ngEhkS0LRhx6I1WnfWdYhsqVCslQllHDzfz9U+
+         +Bd3MQ91qJNGYe84xuMHs/AyVyL4hd3Rmk9nAkCnZQleltS4h6cUh4sphaVysSKFjW6O
+         q6tC6NFwBU3EmjjkciQQWTgMc2MxlW53WhnREF0rZrDxOFYoJ+MPDoGSSJAeH9ruTFYG
+         mgIeHOPenFuBMOiFsATGN8JOjBfcpRSyhfP1L0oKKY16SUPNBGN4haYVctgrG0Ub0DQR
+         dxl3aki29Yd/bIDh5iTRsKgyABAPMjiQX+rXYs3PhAiqEX4bYuoaNvfShnyQE5oQkMBO
+         KZHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gu4sashNSj+VH6cRzrQqHqohCiePOYZ2b0ZQyk6s8S8=;
-        b=etaB+IP3NS0wd8RjtoD8gDGWxBTbjyejKnX9d0sstiapSUF2S14JPVyqYZVS9umCU9
-         dQAf8vSIcA9QZh0gw6LEHLA35t5O3mqrlBXb4qUaFtg1huvc69T9+iAkTyoiT9HeL3n3
-         e6BDojoaUeEwhN+QB6oYSc2UTyQw5ER1wmYNdHcfU9zClW7/WfxP7naF/WC+1G47xrjH
-         dwqhXgngJaarWneJDde94+kh6YAwnBCu6M43eSzATixswyhKi6YyLEn+VTAOA0HSI7q9
-         pM6sY1Yp/qGVYaVTUXz5wG8gbqcDH8ztq78BhNcHl+V0G3gSn72+QKZoeh7w6FtzHcns
-         wWyg==
-X-Gm-Message-State: AOAM533ZW1uN9s/5uJQtSq4Nj7B9iNM+iwvf0ohtLunXe6SgpdM85V62
-        WCV27jBUz5BhLbegFYqarsT4DchXQSuIzg==
-X-Google-Smtp-Source: ABdhPJxsVf6A6ijcCACsYuxmwLAW2/C9483xfi7pscoEyxfoWWCkgWXDk/OslRudnBpalDKqORY7FQ==
-X-Received: by 2002:a19:404e:: with SMTP id n75mr3133593lfa.172.1600863239608;
-        Wed, 23 Sep 2020 05:13:59 -0700 (PDT)
-Received: from jade (h-249-223.A175.priv.bahnhof.se. [98.128.249.223])
-        by smtp.gmail.com with ESMTPSA id t2sm4723809lff.150.2020.09.23.05.13.58
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xH/OJNOXpFoUO1DQr8ioFXfkNwPG54GEfbB6/p814zo=;
+        b=NZSwc3ZOYK0FI2JBjOMenLMWiwiqkg4CY1mExttF95dnvq8HWSHdtJ5QRh8wzvbZnq
+         HB2DzRnd5h+Oa+qh0MSwL5GUil6hz45bcrItVBRk/vFoJlnENE7gflDn1lVOqeVN52ox
+         28Hxm2JOXCDhQSkzzOMi4Xwtfwsu3035esAIIOYtPuS77d6N3F1x/W1/oVz9D+MwzVXy
+         0tL16gHhHmd38+MdQaFQlqzQv/CqcN3q46Y1zlpK9yBQl5scMm7NLdhOiRWSF2UhgWJ7
+         9327zEQDQ6hLDoJtO3GlbkAp5lIgoQQNuWBM7nKj9nG1VWzsqmoGH1OEwq6O3Z9+RW3c
+         rVQA==
+X-Gm-Message-State: AOAM531P7N9VtZMlvsBcNf+N8UcCksIxff/k8V4536UALmcwC1bb1/oT
+        PJdOQ2+gFutrxsX5vL/Ajkw=
+X-Google-Smtp-Source: ABdhPJwtgDgmZEfiq2/zyLvu9i2tC//svTGYQeAz6M/bWhTQFEXGXQwyDV9fSLyOs/qWz11uSy3uPg==
+X-Received: by 2002:a5d:414b:: with SMTP id c11mr484211wrq.181.1600863295328;
+        Wed, 23 Sep 2020 05:14:55 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id t202sm8584077wmt.14.2020.09.23.05.14.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 05:13:58 -0700 (PDT)
-Date:   Wed, 23 Sep 2020 14:13:56 +0200
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-To:     "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
-Cc:     sumit.garg@linaro.org, ricardo@foundries.io, mike@foundries.io,
-        tee-dev@lists.linaro.org, linux-kernel@vger.kernel.org,
-        op-tee@lists.trustedfirmware.org
-Subject: Re: [PATCH] drivers: optee: i2c: add bus retry configuration
-Message-ID: <20200923121356.GA1659958@jade>
-References: <20200916152732.23604-1-jorge@foundries.io>
- <20200922163859.GA1518183@jade>
- <20200923111813.GA30271@trex>
- <20200923112631.GB30271@trex>
+        Wed, 23 Sep 2020 05:14:53 -0700 (PDT)
+Date:   Wed, 23 Sep 2020 14:14:52 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Linux PWM List <linux-pwm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: Re: [PATCH 2/2] arm64: dts: renesas: r8a774e1: Add PWM device nodes
+Message-ID: <20200923121452.GD1848911@ulmo>
+References: <20200825104455.18000-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200825104455.18000-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <CAMuHMdWmvcA8x-t=FgNOuMnAtw6j3OAgo8irmD5e2wrB+LfhHg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="fOHHtNG4YXGJ0yqR"
 Content-Disposition: inline
-In-Reply-To: <20200923112631.GB30271@trex>
+In-Reply-To: <CAMuHMdWmvcA8x-t=FgNOuMnAtw6j3OAgo8irmD5e2wrB+LfhHg@mail.gmail.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 01:26:31PM +0200, Jorge Ramirez-Ortiz, Foundries wrote:
-> On 23/09/20, Jorge Ramirez-Ortiz, Foundries wrote:
-> > On 22/09/20, Jens Wiklander wrote:
-> > > On Wed, Sep 16, 2020 at 05:27:32PM +0200, Jorge Ramirez-Ortiz wrote:
-> > > > Allow OP-TEE to specify the number of retries in the adaptor.
-> > > > 
-> > > > Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
-> > > > ---
-> > > >  drivers/tee/optee/rpc.c | 7 +++++++
-> > > >  1 file changed, 7 insertions(+)
-> > > > 
-> > > > diff --git a/drivers/tee/optee/rpc.c b/drivers/tee/optee/rpc.c
-> > > > index 1e3614e4798f..2d46a9ecb1de 100644
-> > > > --- a/drivers/tee/optee/rpc.c
-> > > > +++ b/drivers/tee/optee/rpc.c
-> > > > @@ -58,6 +58,7 @@ static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
-> > > >  	struct tee_param *params;
-> > > >  	size_t i;
-> > > >  	int ret = -EOPNOTSUPP;
-> > > > +	int retries = 0;
-> > > >  	u8 attr[] = {
-> > > >  		TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT,
-> > > >  		TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT,
-> > > > @@ -102,12 +103,17 @@ static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
-> > > >  	client.addr = params[0].u.value.c;
-> > > >  	snprintf(client.name, I2C_NAME_SIZE, "i2c%d", client.adapter->nr);
-> > > >  
-> > > > +	/* cache the current value */
-> > > > +	retries = client.adapter->retries;
-> > > > +
-> > > >  	switch (params[0].u.value.a) {
-> > > >  	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_RD:
-> > > > +		client.adapter->retries = params[1].u.value.b;
-> > > Do we need to take any locks befor this?
-> > 
-> > no I dont think so: there is no need for bus locks when requesting a
-> > transfer via i2c_master_recv/send; the lock for the bus segment gets
-> > taken later on, when the actual transfer hppens ( __i2c_transfer())
-> > 
-> > the functionality implemented in this function pretty much mimicks
-> > what is done in the normal world via /dev/i2c-X
-> > (drivers/i2c/i2c_dev.c)
+
+--fOHHtNG4YXGJ0yqR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Aug 25, 2020 at 03:32:08PM +0200, Geert Uytterhoeven wrote:
+> On Tue, Aug 25, 2020 at 12:45 PM Lad Prabhakar
+> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > From: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.co=
+m>
 > >
-> 
-> correction (of course)
->   - i2cdev_read --> i2c_master_recv
->   - i2cdev->write -->i2c_master_send
-> > 
-> > and now the retry count setup on the adaptor with this commit.
-> > 
-> >  - i2cdev_ioctl I2C_RETRIES
+> > This patch adds PWM[0123456] device nodes to the RZ/G2H (a.k.a R8A774E1)
+> > device tree.
+> >
+> > Signed-off-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.r=
+enesas.com>
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>=20
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> i.e. will queue in renesas-devel for v5.10.
 
-I don't understand. Do you mean that client.adapter->retries doesn't
-need to be protected from concurrent updates? Or is it already protected
-by some other mechanism?
+Hi Geert,
 
-Cheers,
-Jens
+did you also pick up patch 1/2 in this series?
+
+Thierry
+
+--fOHHtNG4YXGJ0yqR
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9rPDwACgkQ3SOs138+
+s6GEEA/+OS2RvDAz9EakePA6Chnz0XpAeBSsxGTqHTrAx87FYKl4cj5AOOOYba49
+l207hajjcTqMnWEsNYxQpVkRaASzdBlq3Hy7zLV1HC/yvgsUCusUZfwwvlH5dQzN
+kW0+Ak2iUcwOfqW5Zieu6mCmOna6RjgMEuL4EQM1nmlfgokgSNjKLQwiQORtD8ki
+DV/3IdB8VuuMMvtiv5YsWHefLVoP5DuifHHSN873knbb8dqH4cWGdqNhWPA9SzAJ
+KR9gkxXNJbPWoEZhQO8uyoYImFytsQNsTF5WWSSXPKA3R5/F+UN7QU7uHn2JOHKx
+WdB+1nQ7n/o2yXWX9A8a5gtvCkVcyKM27n9Rtm/vME2hzosyyIxZ/cDcl0pk0jaG
+cKHyZnI555O/2TCkHDO++CrPPs1+y3b9+pHfVy8mftKDIr5JbA7OT7PGH9/9Q2QO
+Zu3qpPaLD+TzgCY+47h7b6hV21MBg6iD2WwI6T/WKUYxzK2i+L7Hz55IpqJsLDUu
+al278xEIgVjecuYhMzcw0bzlP2ZTPk1jvXdLn3w5ygx7D7IfOHsAMQKN2KckPbVk
+AEeCtmjWCtrq750tpyZs52CXwYlmODLg5kfiRe7EDJn+j3o9ZOHllAfztmKYjXIG
+kG0s2XdEYkLsQJE1V4qyk6HM356vwIT7MdWfCvyBnvEMv4ZtLXg=
+=JMkN
+-----END PGP SIGNATURE-----
+
+--fOHHtNG4YXGJ0yqR--
