@@ -2,171 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C49322764AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:38:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88BE32764AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726832AbgIWXiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 19:38:22 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:51996 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726706AbgIWXiW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 19:38:22 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600904302; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=HcFRdBntZxDMQ9D3JZcncRFn0laX1xSNIWgKqLKU/qw=; b=TLX09YYmZXHGjYOEAYFHcO5ug0z8ZR5jVB1WL3Owat/PShNwchuJIeTvKVC0Y9uYO0hKHvE0
- kfuGcHrFUqrKq321U1Nxur1HAZpjn3Ejx7xtkvfyblCtN8DG21toT2nbLW1Jvgz3ZgwtVfvd
- c7NgdKjazGzI3HyMHw5QOEj0tUA=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5f6bdc5f588e0a98880049e3 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 23 Sep 2020 23:38:07
- GMT
-Sender: psodagud=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 248ECC433FE; Wed, 23 Sep 2020 23:38:07 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from th-lint-038.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: psodagud)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 97B89C433FE;
-        Wed, 23 Sep 2020 23:38:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 97B89C433FE
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=psodagud@codeaurora.org
-From:   Prasad Sodagudi <psodagud@codeaurora.org>
-To:     rostedt@goodmis.org, tglx@linutronix.de, qais.yousef@arm.com,
-        peterz@infradead.org, mingo@kernel.org, cai@lca.pw,
-        tyhicks@canonical.com, arnd@arndb.de
-Cc:     rameezmustafa@codeaurora.org, linux-kernel@vger.kernel.org,
-        Prasad Sodagudi <psodagud@codeaurora.org>
-Subject: [PATCH 2/2] cpu-hotplug: Always use real time scheduling when hotplugging a CPU
-Date:   Wed, 23 Sep 2020 16:37:46 -0700
-Message-Id: <1600904266-102397-3-git-send-email-psodagud@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1600904266-102397-1-git-send-email-psodagud@codeaurora.org>
-References: <1600904266-102397-1-git-send-email-psodagud@codeaurora.org>
+        id S1726599AbgIWXnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 19:43:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726265AbgIWXnM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 19:43:12 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C8E2C0613CE;
+        Wed, 23 Sep 2020 16:43:12 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id nw23so1961656ejb.4;
+        Wed, 23 Sep 2020 16:43:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gTCQ6FmbtqXr2lWYi2SA92VBSqB0+yg7rI8urwU4EPQ=;
+        b=GIuAB5Gf+EQXOBC+oUffPLM/u/Ny+yaZHgdkRxzMUIYycsGcIRBgEz6S6H32yT5SG/
+         3y0daOEPOh0ZdPkEYg+qpA5IJ2AzUPaMl2kJabgSid7hPCi04pb/fTIa/RNHyjOX8N/B
+         zTPujNrL3fYTeJ6Pyl+J3PpyDRWs0J7r/wPG2NwARq4hHV1D8S6QcSzc19at3t04ubZe
+         ZysCzDVzvPMbFSwHZ6kUFDVzWVkNRjzPxe72i8xDynUG2OL4fqS2gXCkrU4uUPy5x03z
+         YOranh+9jwvCWccxq354q/SJiFub/8j3DwYgLXFA2FbAKFW/Un9VA6O6LMYR45pgDDZE
+         u7Qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gTCQ6FmbtqXr2lWYi2SA92VBSqB0+yg7rI8urwU4EPQ=;
+        b=bU0NChSPDeOQL/yQY4NLu4/kDVF94vM6Y+1eghb8HQjZ2bYoDXIt9GUt6Frdygb0/J
+         XXp2DXVXCRKdzc95brtxYynafv/KxiAUn5/dunv/nm2Ov4qCghEym+VBASeGZbOQyK2w
+         1RSdCnqz0XwcRNl/VXo3+WnNPpV5kU1gTqOgKYPcBDUMZtavmeeEacZjyWXPdKRFQoDe
+         NZIT2L9hPNUrmVF6nSK6wXG8fgh44mf7/1WMUPuXoFLsk0fk6l4OZ3xcoYv4rtgzYmbJ
+         iEJ/PTdxYaoqOMAmKJ6wPq173dFyx4hnlYuUmLK5202UWy60UEc57CeC8/a8EET/kZ+x
+         yA7A==
+X-Gm-Message-State: AOAM532dM78A8kLuHeACvXyuldUUHGPQ9Mm3P4jSyV6ohQIrd6MZjSaF
+        d++hKjoLyO5Eo5Ou7poa71E=
+X-Google-Smtp-Source: ABdhPJyBcZOwL1UAV6einIScXJQW7Azt3W1QKVNAZG3ADffqAfkH8MNFxJpP7x/4rn3kD2KFZPAoDg==
+X-Received: by 2002:a17:906:7fcc:: with SMTP id r12mr2022196ejs.360.1600904590831;
+        Wed, 23 Sep 2020 16:43:10 -0700 (PDT)
+Received: from [192.168.2.202] (pd9e5a9df.dip0.t-ipconnect.de. [217.229.169.223])
+        by smtp.gmail.com with ESMTPSA id e25sm999772edj.43.2020.09.23.16.43.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Sep 2020 16:43:10 -0700 (PDT)
+Subject: Re: [RFC PATCH 4/9] surface_aggregator: Add trace points
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
+        Dorian Stoll <dorian.stoll@tmsp.io>
+References: <20200923151511.3842150-1-luzmaximilian@gmail.com>
+ <20200923151511.3842150-5-luzmaximilian@gmail.com>
+ <20200923160757.51e773a0@oasis.local.home>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <dad57e7f-7f3c-7fea-0fbf-a32006da52b6@gmail.com>
+Date:   Thu, 24 Sep 2020 01:43:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <20200923160757.51e773a0@oasis.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Syed Rameez Mustafa <rameezmustafa@codeaurora.org>
+On 9/23/20 10:07 PM, Steven Rostedt wrote:
+> On Wed, 23 Sep 2020 17:15:06 +0200
+> Maximilian Luz <luzmaximilian@gmail.com> wrote:
+> 
+>> Add trace points to the Surface Aggregator subsystem core. These trace
+>> points can be used to track packets, requests, and allocations. They are
+>> further intended for debugging and testing/validation, specifically in
+>> combination with the error injection capabilities introduced in the
+>> subsequent commit.
+> 
+> I'm impressed! This uses some of the advanced features of the tracing
+> infrastructure. But I still have some comments to make about the layout
+> of the TP_STRUCT__entry() fields.
 
-CPU hotplug operations take place in preemptible context. This leaves
-the hotplugging thread at the mercy of overall system load and CPU
-availability. If the hotplugging thread does not get an opportunity
-to execute after it has already begun a hotplug operation, CPUs can
-end up being stuck in a quasi online state. In the worst case a CPU
-can be stuck in a state where the migration thread is parked while
-another task is executing and changing affinity in a loop. This
-combination can result in unbounded execution time for the running
-task until the hotplugging thread gets the chance to run to complete
-the hotplug operation.
+Thanks!
 
-Fix the said problem by ensuring that hotplug can only occur from
-threads belonging to the RT sched class. This allows the hotplugging
-thread priority on the CPU no matter what the system load or the
-number of available CPUs are. If a SCHED_NORMAL task attempts to
-hotplug a CPU, we temporarily elevate it's scheduling policy to RT.
-Furthermore, we disallow hotplugging operations to begin if the
-calling task belongs to the idle and deadline classes or those that
-use the SCHED_BATCH policy.
+[...]
 
-Signed-off-by: Syed Rameez Mustafa <rameezmustafa@codeaurora.org>
-Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
----
- kernel/cpu.c | 41 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
+>> +DECLARE_EVENT_CLASS(ssam_packet_class,
+>> +	TP_PROTO(const struct ssh_packet *packet),
+>> +
+>> +	TP_ARGS(packet),
+>> +
+>> +	TP_STRUCT__entry(
+>> +		__array(char, uid, SSAM_PTR_UID_LEN)
+>> +		__field(u8, priority)
+>> +		__field(u16, length)
+>> +		__field(unsigned long, state)
+>> +		__field(u16, seq)
+> 
+> 
+> Order matters above to keep the events as compact as possible. The more
+> compact they are, the more events you can store without loss.
+> 
+> Now with SSAM_PTR_UID_LEN = 9, the above is (on a 64 bit system);
+> 
+> 	9 bytes;
+> 	1 byte;
+> 	2 bytes;
+> 	8 bytes;
+> 	2 bytes;
+> 
+> The ftrace ring buffer is 4 byte aligned. As words and long words are
+> also 4 byte aligned, there's not much different to change. But it is
+> possible that the compiler might add 4 byte padding between the long
+> word "length" and "priority". Note, these are not packed structures.
+> 
+> Testing this out with the following code:
+> 
+>   $ cat << EOF > test.c
+> struct test {
+> 	unsigned char array[9];
+> 	unsigned char priority;
+> 	unsigned short length;
+> 	unsigned long state;
+> 	unsigned short seq;
+> };
+> 
+> static struct test x;
+> 
+> void receive_x(struct test *p)
+> {
+> 	p = &x;
+> }
+> EOF
+> 
+>   $ gcc -g -c -o test.o test.c
+>   $ pahole test.o
+> struct test {
+> 	unsigned char              array[9];             /*     0     9 */
+> 	unsigned char              priority;             /*     9     1 */
+> 	short unsigned int         length;               /*    10     2 */
+> 
+> 	/* XXX 4 bytes hole, try to pack */
+> 
+> 	long unsigned int          state;                /*    16     8 */
+> 	short unsigned int         seq;                  /*    24     2 */
+> 
+> 	/* size: 32, cachelines: 1, members: 5 */
+> 	/* sum members: 22, holes: 1, sum holes: 4 */
+> 	/* padding: 6 */
+> 	/* last cacheline: 32 bytes */
+> };
+> 
+> You do see a hole between length and state. Now if we were to move this
+> around a little.
+> 
+>   $ cat <<EOF > test2.c
+> struct test {
+> 	unsigned long state;
+> 	unsigned char array[9];
+> 	unsigned char priority;
+> 	unsigned short length;
+> 	unsigned short seq;
+> };
+> 
+> static struct test x;
+> 
+> void receive_x(struct test *p)
+> {
+> 	p = &x;
+> }
+> EOF
+> 
+>   $ gcc -g -c -o test2 test2.c
+>   $ pahole test2.o
+> struct test {
+> 	long unsigned int          state;                /*     0     8 */
+> 	unsigned char              array[9];             /*     8     9 */
+> 	unsigned char              priority;             /*    17     1 */
+> 	short unsigned int         length;               /*    18     2 */
+> 	short unsigned int         seq;                  /*    20     2 */
+> 
+> 	/* size: 24, cachelines: 1, members: 5 */
+> 	/* padding: 2 */
+> 	/* last cacheline: 24 bytes */
+> };
+> 
+> 
+> We get a more compact structure with:
+> 
+> 	TP_STRUCT__entry(
+> 		__field(unsigned long, state)
+> 		__array(char, uid, SSAM_PTR_UID_LEN)
+> 		__field(u8, priority)
+> 		__field(u16, length)
+> 		__field(u16, seq)
+> 	),
+> 
+> 
+> Note, you can find pahole here:
+> 
+>     https://git.kernel.org/pub/scm/devel/pahole/pahole.git
+> 
+> 
+>> +	),
 
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 68b3740..aea4ce2 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -32,6 +32,7 @@
- #include <linux/relay.h>
- #include <linux/slab.h>
- #include <linux/percpu-rwsem.h>
-+#include <uapi/linux/sched/types.h>
- 
- #include <trace/events/power.h>
- #define CREATE_TRACE_POINTS
-@@ -1191,6 +1192,33 @@ void cpuhp_online_idle(enum cpuhp_state state)
- 	complete_ap_thread(st, true);
- }
- 
-+static int switch_to_rt_policy(void)
-+{
-+	struct sched_param param = { .sched_priority = MAX_RT_PRIO - 1 };
-+	unsigned int policy = current->policy;
-+	int err;
-+
-+	/* Nobody should be attempting hotplug from these policy contexts. */
-+	if (policy == SCHED_BATCH || policy == SCHED_IDLE ||
-+					policy == SCHED_DEADLINE)
-+		return -EPERM;
-+
-+	if (policy == SCHED_FIFO || policy == SCHED_RR)
-+		return 1;
-+
-+	/* Only SCHED_NORMAL left. */
-+	err = sched_setscheduler_nocheck(current, SCHED_FIFO, &param);
-+	return err;
-+
-+}
-+
-+static int switch_to_fair_policy(void)
-+{
-+	struct sched_param param = { .sched_priority = 0 };
-+
-+	return sched_setscheduler_nocheck(current, SCHED_NORMAL, &param);
-+}
-+
- /* Requires cpu_add_remove_lock to be held */
- static int _cpu_up(unsigned int cpu, int tasks_frozen, enum cpuhp_state target)
- {
-@@ -1258,6 +1286,7 @@ static int _cpu_up(unsigned int cpu, int tasks_frozen, enum cpuhp_state target)
- static int cpu_up(unsigned int cpu, enum cpuhp_state target)
- {
- 	int err = 0;
-+	int switch_err = 0;
- 
- 	if (!cpu_possible(cpu)) {
- 		pr_err("can't online cpu %d because it is not configured as may-hotadd at boot time\n",
-@@ -1268,6 +1297,10 @@ static int cpu_up(unsigned int cpu, enum cpuhp_state target)
- 		return -EINVAL;
- 	}
- 
-+	switch_err = switch_to_rt_policy();
-+	if (switch_err < 0)
-+		return switch_err;
-+
- 	err = try_online_node(cpu_to_node(cpu));
- 	if (err)
- 		return err;
-@@ -1286,6 +1319,14 @@ static int cpu_up(unsigned int cpu, enum cpuhp_state target)
- 	err = _cpu_up(cpu, 0, target);
- out:
- 	cpu_maps_update_done();
-+
-+	if (!switch_err) {
-+		switch_err = switch_to_fair_policy();
-+		if (switch_err)
-+			pr_err("Hotplug policy switch err=%d Task %s pid=%d\n",
-+				switch_err, current->comm, current->pid);
-+	}
-+
- 	return err;
- }
- 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Thank you for that detailed write-up! As you have clearly noticed, I
+have not really looked at the struct layouts. I will fix this for v2,
+include your changes, and have a look at pahole.
 
+[...]
+
+Thanks,
+Max
