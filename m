@@ -2,135 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78AD8275857
+	by mail.lfdr.de (Postfix) with ESMTP id EF96E275858
 	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726562AbgIWNBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 09:01:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33955 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726130AbgIWNBu (ORCPT
+        id S1726516AbgIWNCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 09:02:40 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:52286 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726130AbgIWNCk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 09:01:50 -0400
+        Wed, 23 Sep 2020 09:02:40 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600866108;
+        s=mimecast20190719; t=1600866157;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9YBlT3EvuezrkgbgwTKtVPkbq/M4DSApbdGRGuPKZmU=;
-        b=HOZSFkLeOF6ZSnS/CzrWazQGoCiV5RW7ViFccrC2/yW0BPr5xqLIirozKX9VZAORzDD1CH
-        DhYhipVRgvUonRcb9oJxrEpqoNOxYcIPYgGn9+/rUNmj0T/3GfQechzEb9vzbnN2bpfURn
-        ZESg9CYC3BtKvnX6ZkMiCbooXXajb9E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-19-HceP2J3VOyyV9JZAKQWjLQ-1; Wed, 23 Sep 2020 09:01:45 -0400
-X-MC-Unique: HceP2J3VOyyV9JZAKQWjLQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5CE711882FBC;
-        Wed, 23 Sep 2020 13:01:43 +0000 (UTC)
-Received: from optiplex-lnx (unknown [10.3.128.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0F96E75120;
-        Wed, 23 Sep 2020 13:01:41 +0000 (UTC)
-Date:   Wed, 23 Sep 2020 09:01:38 -0400
-From:   Rafael Aquini <aquini@redhat.com>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org
-Subject: Re: [PATCH] mm: swapfile: avoid split_swap_cluster() NULL pointer
- dereference
-Message-ID: <20200923130138.GM795820@optiplex-lnx>
-References: <20200922184838.978540-1-aquini@redhat.com>
- <878sd1qllb.fsf@yhuang-dev.intel.com>
- <20200923043459.GL795820@optiplex-lnx>
- <87sgb9oz1u.fsf@yhuang-dev.intel.com>
+        bh=QCJYlGYOYZlshQeHXl+UspzurULpVNwd1ROqVV4YhEY=;
+        b=AzBWktyGObhFHtDNlDJNliVBW11szu74VKasABGsRU1TsqMOVP+eJhqiupfyKN4SJUFXiC
+        mf8tz8DJn5HU4KLTQdutmmqQWyqC8tJaOUArhtop1cErGEwe/KL12xpIl0udfL7tGrdAls
+        eJiENszurnNmZcaGBcSu4y+8Fui3Zdk=
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
+ [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-188-oOgO43OIODeXM21bGG4KMA-1; Wed, 23 Sep 2020 09:02:35 -0400
+X-MC-Unique: oOgO43OIODeXM21bGG4KMA-1
+Received: by mail-oo1-f72.google.com with SMTP id e9so10263251oos.3
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 06:02:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=QCJYlGYOYZlshQeHXl+UspzurULpVNwd1ROqVV4YhEY=;
+        b=jWdf333+TCWyhvJuSQN9+AqXEYYH+VsK2gB8eTgBrrZrKxXVDzs3DWhOHZtvjHzPw8
+         YC/2qy9Zp5LceAU//rkDdUT0eTc4Q63gjDJFuz5yppKL4DePq+29pgcDEW+85K0KYvnB
+         IWQJiwzGtN5eaRtNbuGEREYzrXop7Uo+p1CVC2bj6jUTlETXPJFNepKiFIGe/pw9AVE/
+         ab3gQty2K1MbiRghxuFa6MIJWzm/SwNwbJaJAD/LT1fB258nQGILq1mLs1ZBHsb0erWc
+         5AhaBnJyC8wMfRA9Df8Sl0EZ+1LoqpLsWKW+ph9RThFopseY3s7q7EjRTRtMHIm8eNM9
+         9GMw==
+X-Gm-Message-State: AOAM531A1x2WJsi2NrHvry07/8Ofd5tnpS8aKuJA50jj+swTvzsAJqet
+        54KqXqc9UgLqPEOce4i9ieyRnp15hIzu8Fv2mHHetdinBzE+ewHH5te60i2dtH5c+zeGiAFWL/B
+        L5HpVzZTguG6vWYRWFMSsD8fj
+X-Received: by 2002:aca:3012:: with SMTP id w18mr5428578oiw.44.1600866154843;
+        Wed, 23 Sep 2020 06:02:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzVyh+sbSdr/1KOGlHduiTD/o2bXxxFYYV+kAaj66Cf8V+9lrwFFiG0Dh91hm0jnAuH3XEJAw==
+X-Received: by 2002:aca:3012:: with SMTP id w18mr5428554oiw.44.1600866154492;
+        Wed, 23 Sep 2020 06:02:34 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id d1sm7589077otb.80.2020.09.23.06.02.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Sep 2020 06:02:33 -0700 (PDT)
+Subject: Re: [PATCH v1 10/12] fpga: enable sec-mgr update cancel
+To:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
+        lee.jones@linaro.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
+        matthew.gerlach@intel.com
+References: <20200904235305.6254-1-russell.h.weight@intel.com>
+ <20200904235305.6254-11-russell.h.weight@intel.com>
+ <bfcdc249-1cc7-e755-1030-cf1fed2416fa@redhat.com>
+ <678f8d39-a244-42d0-4c56-91eb859b43f0@intel.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <8044594c-675d-40b9-ab12-e3dde50de399@redhat.com>
+Date:   Wed, 23 Sep 2020 06:02:32 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87sgb9oz1u.fsf@yhuang-dev.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <678f8d39-a244-42d0-4c56-91eb859b43f0@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 01:13:49PM +0800, Huang, Ying wrote:
-> Rafael Aquini <aquini@redhat.com> writes:
-> 
-> > On Wed, Sep 23, 2020 at 10:21:36AM +0800, Huang, Ying wrote:
-> >> Hi, Rafael,
-> >> 
-> >> Rafael Aquini <aquini@redhat.com> writes:
-> >> 
-> >> > The swap area descriptor only gets struct swap_cluster_info *cluster_info
-> >> > allocated if the swapfile is backed by non-rotational storage.
-> >> > When the swap area is laid on top of ordinary disk spindles, lock_cluster()
-> >> > will naturally return NULL.
-> >> 
-> >> Thanks for reporting.  But the bug looks strange.  Because in a system
-> >> with only HDD swap devices, during THP swap out, the swap cluster
-> >> shouldn't be allocated, as in
-> >> 
-> >> shrink_page_list()
-> >>   add_to_swap()
-> >>     get_swap_page()
-> >>       get_swap_pages()
-> >>         swap_alloc_cluster()
-> >>
-> >
-> > The underlying problem is that swap_info_struct.cluster_info is always NULL 
-> > on the rotational storage case.
-> 
-> Yes.
-> 
-> > So, it's very easy to follow that constructions 
-> > like this one, in split_swap_cluster 
-> >
-> > ...
-> >         ci = lock_cluster(si, offset);
-> >         cluster_clear_huge(ci);
-> > ...
-> >
-> > will go for a NULL pointer dereference, in that case, given that lock_cluster 
-> > reads:
-> >
-> > ...
-> > 	struct swap_cluster_info *ci;
-> >         ci = si->cluster_info;
-> >         if (ci) {
-> >                 ci += offset / SWAPFILE_CLUSTER;
-> >                 spin_lock(&ci->lock);
-> >         }
-> >         return ci;
-> > ...
-> 
-> But on HDD, we shouldn't call split_swap_cluster() at all, because we
-> will not allocate swap cluster firstly.  So, if we run into this,
-> there should be some other bug, we need to figure it out.
+
+On 9/22/20 5:55 PM, Russ Weight wrote:
 >
+> On 9/6/20 10:00 AM, Tom Rix wrote:
+>> On 9/4/20 4:53 PM, Russ Weight wrote:
+>>> Extend the Intel Security Manager class driver to include
+>>> an update/cancel sysfs file that can be written to request
+>>> that an update be canceled. The write may return EBUSY if
+>>> the update has progressed to the point that it cannot be
+>>> canceled by software or ENODEV if there is no update in
+>>> progress.
+>>>
+>>> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+>>> ---
+>>>  .../ABI/testing/sysfs-class-ifpga-sec-mgr     | 10 ++++
+>>>  drivers/fpga/ifpga-sec-mgr.c                  | 59 +++++++++++++++++--
+>>>  include/linux/fpga/ifpga-sec-mgr.h            |  1 +
+>>>  3 files changed, 66 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr b/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
+>>> index cf1967f1b3e3..762a7dee9453 100644
+>>> --- a/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
+>>> +++ b/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
+>>> @@ -87,6 +87,16 @@ Description:	Write only. Write the filename of an Intel image
+>>>  		and Root Entry Hashes, and to cancel Code Signing
+>>>  		Keys (CSK).
+>>>  
+>>> +What: 		/sys/class/ifpga_sec_mgr/ifpga_secX/update/cancel
+>>> +Date:		Sep 2020
+>>> +KernelVersion:  5.10
+>>> +Contact:	Russ Weight <russell.h.weight@intel.com>
+>>> +Description:	Write-only. Write a "1" to this file to request
+>>> +		that a current update be canceled. This request
+>>> +		will be rejected (EBUSY) if the programming phase
+>>> +		has already started or (ENODEV) if there is no
+>>> +		update in progress.
+>>> +
+>>>  What: 		/sys/class/ifpga_sec_mgr/ifpga_secX/update/status
+>>>  Date:		Sep 2020
+>>>  KernelVersion:  5.10
+>>> diff --git a/drivers/fpga/ifpga-sec-mgr.c b/drivers/fpga/ifpga-sec-mgr.c
+>>> index 4ca5d13e5656..afd97c135ebe 100644
+>>> --- a/drivers/fpga/ifpga-sec-mgr.c
+>>> +++ b/drivers/fpga/ifpga-sec-mgr.c
+>>> @@ -159,6 +159,23 @@ static void ifpga_sec_dev_error(struct ifpga_sec_mgr *imgr,
+>>>  	imgr->iops->cancel(imgr);
+>>>  }
+>>>  
+>>> +static int progress_transition(struct ifpga_sec_mgr *imgr,
+>>> +			       enum ifpga_sec_prog new_progress)
+>>> +{
+>>> +	int ret = 0;
+>>> +
+>>> +	mutex_lock(&imgr->lock);
+>>> +	if (imgr->request_cancel) {
+>>> +		set_error(imgr, IFPGA_SEC_ERR_CANCELED);
+>>> +		imgr->iops->cancel(imgr);
+>> check cancel() for double error ?
+> Meaning - what if the cancel function returns an error? I have been of the opinion that the first event (in this case, the cancel) is the most important one to report. In the unlikely event that an error occurred during the cancel, if it was a persistent error, it would be reported on the next secure update. Do you think this is a problem? Do you think it would be worth adding logic to report both errors? One thought would be to add a flag to the ifpga_sec_mgr structure to indicate that the error being reported occurred while canceling. And then the error_show() logic could append two error strings (something like: "user-abort+read-write-error"). In this case we could also enable hw_errinfo. What do you think? Would it be better to make this change?
+Ok, we will let the next secure update catch the problem.
+>> should request_cancel be cleared ?
+> I don't think it needs to be cleared here, as we are exiting on error/abort and
+> we initialize request_cancel at the beginning of a new secure update.
+ok
+>>> +		ret = -ECANCELED;
+>>> +	} else {
+>>> +		update_progress(imgr, new_progress);
+>>> +	}
+>>> +	mutex_unlock(&imgr->lock);
+>>> +	return ret;
+>>> +}
+>>> +
+>>>  static void progress_complete(struct ifpga_sec_mgr *imgr)
+>>>  {
+>>>  	mutex_lock(&imgr->lock);
+>>> @@ -190,16 +207,20 @@ static void ifpga_sec_mgr_update(struct work_struct *work)
+>>>  		goto release_fw_exit;
+>>>  	}
+>>>  
+>>> -	update_progress(imgr, IFPGA_SEC_PROG_PREPARING);
+>>> +	if (progress_transition(imgr, IFPGA_SEC_PROG_PREPARING))
+>>> +		goto modput_exit;
+>>> +
+>>>  	ret = imgr->iops->prepare(imgr);
+>>>  	if (ret) {
+>>>  		ifpga_sec_dev_error(imgr, ret);
+>>>  		goto modput_exit;
+>>>  	}
+>>>  
+>>> -	update_progress(imgr, IFPGA_SEC_PROG_WRITING);
+>>> +	if (progress_transition(imgr, IFPGA_SEC_PROG_WRITING))
+>>> +		goto done;
+>>> +
+>>>  	size = imgr->remaining_size;
+>>> -	while (size) {
+>>> +	while (size && !imgr->request_cancel) {
+>>>  		blk_size = min_t(u32, size, WRITE_BLOCK_SIZE);
+>>>  		size -= blk_size;
+>>>  		ret = imgr->iops->write_blk(imgr, offset, blk_size);
+>>> @@ -212,7 +233,9 @@ static void ifpga_sec_mgr_update(struct work_struct *work)
+>>>  		offset += blk_size;
+>>>  	}
+>>>  
+>>> -	update_progress(imgr, IFPGA_SEC_PROG_PROGRAMMING);
+>>> +	if (progress_transition(imgr, IFPGA_SEC_PROG_PROGRAMMING))
+>>> +		goto done;
+>>> +
+>>>  	ret = imgr->iops->poll_complete(imgr);
+>>>  	if (ret) {
+>>>  		ifpga_sec_dev_error(imgr, ret);
+>>> @@ -359,6 +382,7 @@ static ssize_t filename_store(struct device *dev, struct device_attribute *attr,
+>>>  		imgr->filename[strlen(imgr->filename) - 1] = '\0';
+>>>  
+>>>  	imgr->err_code = IFPGA_SEC_ERR_NONE;
+>>> +	imgr->request_cancel = false;
+>>>  	imgr->progress = IFPGA_SEC_PROG_READ_FILE;
+>>>  	reinit_completion(&imgr->update_done);
+>>>  	schedule_work(&imgr->work);
+>>> @@ -369,8 +393,32 @@ static ssize_t filename_store(struct device *dev, struct device_attribute *attr,
+>>>  }
+>>>  static DEVICE_ATTR_WO(filename);
+>>>  
+>>> +static ssize_t cancel_store(struct device *dev, struct device_attribute *attr,
+>>> +			    const char *buf, size_t count)
+>>> +{
+>>> +	struct ifpga_sec_mgr *imgr = to_sec_mgr(dev);
+>>> +	bool cancel;
+>>> +	int ret = 0;
+>> int ret = count;
+> OK
+>>> +
+>>> +	if (kstrtobool(buf, &cancel) || !cancel)
+>> This does not match your description in the testing section.
+>>
+>> kstrtobool has many other valid inputs.
+>>
+>> maybe check if count is 1 and buf[0] == '1'
+> The documentation is not really incorrect though, is it? I see several other instances
+> of *_store() functions that use krstrtobool for input and document that a 1 or a 0
+> should be written as input.
+>
+> However, I'm willing to change it if you think it needs to be changed.
 
-split_swap_cluster() gets called by split_huge_page_to_list(),
-if the page happens to be in the swapcache, and it will always
-go that way, regardless the backing storage type:
+I am being pedantic.
 
-...
-            __split_huge_page(page, list, end, flags);
-            if (PageSwapCache(head)) {
-                    swp_entry_t entry = { .val = page_private(head) };
+This is ok as-is, testing would work.
 
-                    ret = split_swap_cluster(entry);
-            } else
-                    ret = 0;
-...
+Tom
 
-The problem is not about allocating the swap_cluster -- it's obviously
-not allocated in these cases. The problem is that on rotational
-storage you don't even have the base structure that allows you to
-keep the swap clusters (cluster_info does not get allocated, at all,
-so si->cluster_info is always NULL)
-
-You can argue about other bugs all you want, it doesn't change
-the fact that this code is incomplete as it sits, because it 
-misses checking for a real case where lock_cluster() will return NULL.
-
+>
+>>> +		return -EINVAL;
+>>> +
+>>> +	mutex_lock(&imgr->lock);
+>>> +	if (imgr->progress == IFPGA_SEC_PROG_PROGRAMMING)
+>>> +		ret = -EBUSY;
+>>> +	else if (imgr->progress == IFPGA_SEC_PROG_IDLE)
+>>> +		ret = -ENODEV;
+>>> +	else
+>>> +		imgr->request_cancel = true;
+>>> +	mutex_unlock(&imgr->lock);
+>>> +
+>>> +	return ret ? : count;
+>> return ret;
+> Yes - I'll change this.
+>> Tom
+>>
+>>> +}
+>>> +static DEVICE_ATTR_WO(cancel);
+>>> +
+>>>  static struct attribute *sec_mgr_update_attrs[] = {
+>>>  	&dev_attr_filename.attr,
+>>> +	&dev_attr_cancel.attr,
+>>>  	&dev_attr_status.attr,
+>>>  	&dev_attr_error.attr,
+>>>  	&dev_attr_remaining_size.attr,
+>>> @@ -536,6 +584,9 @@ void ifpga_sec_mgr_unregister(struct ifpga_sec_mgr *imgr)
+>>>  		goto unregister;
+>>>  	}
+>>>  
+>>> +	if (imgr->progress != IFPGA_SEC_PROG_PROGRAMMING)
+>>> +		imgr->request_cancel = true;
+>>> +
+>>>  	mutex_unlock(&imgr->lock);
+>>>  	wait_for_completion(&imgr->update_done);
+>>>  
+>>> diff --git a/include/linux/fpga/ifpga-sec-mgr.h b/include/linux/fpga/ifpga-sec-mgr.h
+>>> index f04bf9e30c67..f51ed663a723 100644
+>>> --- a/include/linux/fpga/ifpga-sec-mgr.h
+>>> +++ b/include/linux/fpga/ifpga-sec-mgr.h
+>>> @@ -183,6 +183,7 @@ struct ifpga_sec_mgr {
+>>>  	enum ifpga_sec_prog progress;
+>>>  	enum ifpga_sec_prog err_state;	/* progress state at time of failure */
+>>>  	enum ifpga_sec_err err_code;	/* security manager error code */
+>>> +	bool request_cancel;
+>>>  	bool driver_unload;
+>>>  	void *priv;
+>>>  };
 
