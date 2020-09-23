@@ -2,136 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C09DD2757A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 13:59:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77FA02757A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 14:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726610AbgIWL7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 07:59:55 -0400
-Received: from mail-eopbgr80044.outbound.protection.outlook.com ([40.107.8.44]:59366
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726472AbgIWL7y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 07:59:54 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ey63/CkgtCfUFnzF/x3NNlN4uUHaDU8gHe5pMWO078RbUIpnIGU+AoBbgqmwJ0zeQ1SIocLXTRQ6wJkNjHoH6tydLica1L7qK9D1mxWMoYTx7LrDRqoMrnkyhLQ4k2v1oEt11OVKXD334ZOWBNfhudq4ro8RjfYJEB1kfFjwlbKOJbBsgicjGERA5tXS3clfLT/GkMu5x/PNk9whCUqxbsfHgWOMll/rFDcJL/hKWi18YJi04Fcm68MvqlofZcIKDV+zAWvafu4uQeUYXeNYYU6+H2gqhV9RHTsjmhWBac75/Zkj6O2L1IZD4YQgM/YR2z36E7v1G29KVTQp39AeEA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XuPUhO0nCg+2NkjXYoqCwM9KMgKCBOedyMkursRSX3A=;
- b=UJNAFZIrM0BxTgau/pB9rvhLmgslHezmd426/f0Ajd/UxdMsDPisjpECHPvS2Gb7sqidgQJZc8mfXGIyeJ1e15vWry0GyUBIp3sm0zneiQRJYxIKbAUYrpda5IkMVZYDRyrhlWXlhhQpAOiXSMxpNb/FKtwaEIyd2KOvuYwf0AUi29J3x5liSyexabNHpb1vrcCkLQp784yhYQP7DL+YGn6xRfrNkviJKtnbHjknRxxwds337H867xzoUob6KQk8YN40CvVlXzpycLTwfzhsNpfFsaNqPY9/uH42HCX6AJqW9LouWw2fVRYgYiqC2ZZKpzt/Df8CzfScp4issh79TQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XuPUhO0nCg+2NkjXYoqCwM9KMgKCBOedyMkursRSX3A=;
- b=RFaM3pzgQLuIEp+HoTTQMmv7LxAL+a4IpyblmaLTeEDubwAbh1JxP+HmW2BW5Y0ui/XCLc62o/FAhV5pYiyxh0LLOaGHjXFBuWBJgGhO1doYjvYdYt08OQ+JplogDfOoJdkzG2r+JvuX5OptEzbf7toUXvBRwEtq2JMtYWUBuRo=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB4046.eurprd04.prod.outlook.com (2603:10a6:803:4d::29)
- by VI1PR04MB3982.eurprd04.prod.outlook.com (2603:10a6:803:49::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Wed, 23 Sep
- 2020 11:59:51 +0000
-Received: from VI1PR04MB4046.eurprd04.prod.outlook.com
- ([fe80::847a:fcdb:3b92:7a7d]) by VI1PR04MB4046.eurprd04.prod.outlook.com
- ([fe80::847a:fcdb:3b92:7a7d%5]) with mapi id 15.20.3391.026; Wed, 23 Sep 2020
- 11:59:51 +0000
-Subject: Re: [PATCH v3 00/10] crypto: caam - xts(aes) updates
-To:     "Andrei Botila (OSS)" <andrei.botila@oss.nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20200922160328.28926-1-andrei.botila@oss.nxp.com>
-From:   =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>
-Message-ID: <70fa9fb9-d785-1928-e761-2332c305948e@nxp.com>
-Date:   Wed, 23 Sep 2020 14:59:48 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-In-Reply-To: <20200922160328.28926-1-andrei.botila@oss.nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: AM0PR01CA0148.eurprd01.prod.exchangelabs.com
- (2603:10a6:208:aa::17) To VI1PR04MB4046.eurprd04.prod.outlook.com
- (2603:10a6:803:4d::29)
+        id S1726526AbgIWMDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 08:03:50 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:37934 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726498AbgIWMDu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 08:03:50 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 49DEA1C0BB1; Wed, 23 Sep 2020 14:03:48 +0200 (CEST)
+Date:   Wed, 23 Sep 2020 14:03:47 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: fbcon scrollback broken was Re: Linux 5.9-rc6
+Message-ID: <20200923120347.GA23810@duo.ucw.cz>
+References: <CAHk-=wjSWKpiNbcMpzQ9fBUA5s11sU-STLztzQkHhCHtYvLP5A@mail.gmail.com>
+ <20200923113914.GA18149@duo.ucw.cz>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.0.129] (78.97.206.147) by AM0PR01CA0148.eurprd01.prod.exchangelabs.com (2603:10a6:208:aa::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Wed, 23 Sep 2020 11:59:50 +0000
-X-Originating-IP: [78.97.206.147]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: cda6ee45-eee9-400b-71f8-08d85fb82d2f
-X-MS-TrafficTypeDiagnostic: VI1PR04MB3982:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB398265A23EB51FD46A7EF28C98380@VI1PR04MB3982.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zjOQ0cngpwsWuiaRayboEO2RuqLq67H/SbZMI2ySOkmmo3SzHmBDVuic8AEyrv8PduFIlgBmaCHDHl5HRAwgrk/qPFJ2z1fPzcg3yYGI0q13JcEh1VicvhNKya6dQu3fDwV6SnWDnBtzpY02QlGrlm404DDiHA4a9+94csGKi22bpCwX/U2euTHV87fqRWGJH9HWiQFKoIvj6E1jm3dtgzNCw6Iw/TwYW9Mpx+fIn9vj6NJtbZ2TMHcg4pWW6HveliVS7JiqtyYWxTfXbpG1dBkeFipAjjQ19JxZdlkxmAoyJFarV8zmNG7OXymcaaYvKsQk/6SKK/54YIhKTz3pSDW2x6MD4TEQ1FNZHSlMvc03I4yzJTWx3XGHG61MIeHG
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4046.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(366004)(396003)(39850400004)(16576012)(86362001)(26005)(110136005)(36756003)(83380400001)(316002)(31686004)(53546011)(186003)(5660300002)(16526019)(31696002)(8936002)(2616005)(956004)(2906002)(54906003)(52116002)(8676002)(6486002)(66946007)(66476007)(66556008)(4326008)(478600001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: Om3Q9zDeZG+OlJuKUtS+IendRLSiuQ3SayH6WQxtjngjVgpo7FSFR+AuO3fkzniknXBXYngq0fdwc03i3KNWlW31TVyWsgN4cRVlXWh8NfieqcFZmRxFIsOOFPZhwaLUF5/cOTTKsAsE8S5Z976kK4UpWm6UJtkFOzbCmNEG8xNX4Rg+ZjLvC0jZsJmAYZAwWxD8DA6Lm4SdSJNREhgpzM8mJ5hlV43poDIpqhGd7ZiHe1NqCc+sbz98SITGUbuoL6w/XsvbiWnCSS24UVN00W4thz484HFRRR69WT8edLHjmpWL2fby3kbQim00srXiRgkmMoEqrxRx+pGhBOAVaXRMPyJoy/r+JksqUzF143mR35g/HJ32sNwsABJIVreIo4S12YRazaZh5zzLJbP46PcD/xxLo3UFc3/HixDHIgsVr5jmN0MjXRVSdyrSOrhVq2E2sv4l62dYLldUXfVts/QEi4/yIjSPamjTCBnjHE1kvD2eQ2nMW476Y3ITzxVzaN66Ix3Lj6RVC+m+ORuRSv6QYKnjPhY4lw9XMwiJ8nIwdoD+CMc15R5SRuc+7Gwzl9pVCGXuyjMlsHM3Dt0vPMaaeCekbwqAOQEbBwH+X2N2rszG6RrB4FBDHBvBP4hNRQ5ZF1WBr6WEvMHLRltdsQ==
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cda6ee45-eee9-400b-71f8-08d85fb82d2f
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4046.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2020 11:59:51.2428
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: irKE93dPr5Pbye4KuSyVnCcSmku1t8RB0uWEgHBqh4m9Z+cUBOn7cV0/WqaihM6CVuGmldbHNK1JYSdWfH6JWQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB3982
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="3V7upXqbjpZ4EhLz"
+Content-Disposition: inline
+In-Reply-To: <20200923113914.GA18149@duo.ucw.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/22/2020 7:03 PM, Andrei Botila (OSS) wrote:
-> From: Andrei Botila <andrei.botila@nxp.com>
-> 
-> This patch series fixes some problems in CAAM's implementation of xts(aes):
->  - CAAM until Era 9 can't process XTS with 16B IV
->  - CAAM can only process in hardware XTS key lengths of 16B and 32B
->  - These hardware limitations are resolved through a fallback
->  - CAAM used to return 0 for XTS block length equal to zero
-> 
-> This patch series also adds a new feature in CAAM's xts(aes):
->  - CAAM is now able to process XTS with 16B IV in HW
-> 
-> Changes since v2:
-> - modified xts_skcipher_ivsize() based on comments
-> - squashed the previous 7-9/12 commits
-> 
-> Changes since v1:
-> - use only get_unaligned() for calculating XTS IV size
-> - fixed the double calling of crypto_skcipher_set_reqsize() in case of XTS
-> - added a patch which modifies the return value for XTS when block length
->   is equal to zero
-> 
-> Andrei Botila (10):
->   crypto: caam/jr - add fallback for XTS with more than 8B IV
->   crypto: caam/qi - add fallback for XTS with more than 8B IV
->   crypto: caam/qi2 - add fallback for XTS with more than 8B IV
->   crypto: caam/jr - add support for more XTS key lengths
->   crypto: caam/qi - add support for more XTS key lengths
->   crypto: caam/qi2 - add support for more XTS key lengths
->   crypto: caam - add xts check for block length equal to zero
->   crypto: caam/jr - add support for XTS with 16B IV
->   crypto: caam/qi - add support for XTS with 16B IV
->   crypto: caam/qi2 - add support for XTS with 16B IV
-> 
->  drivers/crypto/caam/Kconfig        |   3 +
->  drivers/crypto/caam/caamalg.c      |  94 +++++++++++++++++++++---
->  drivers/crypto/caam/caamalg_desc.c |  27 ++++---
->  drivers/crypto/caam/caamalg_qi.c   |  94 +++++++++++++++++++++---
->  drivers/crypto/caam/caamalg_qi2.c  | 111 ++++++++++++++++++++++++++---
->  drivers/crypto/caam/caamalg_qi2.h  |   2 +
->  6 files changed, 293 insertions(+), 38 deletions(-)
-> 
-For the series:
-Reviewed-by: Horia Geantă <horia.geanta@nxp.com>
 
-Thanks,
-Horia
+--3V7upXqbjpZ4EhLz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> > The one thing that does show up in the diffstat is the softscroll
+> > removal (both fbcon and vgacon), and there are people who want to save
+> > that, but we'll see if some maintainer steps up. I'm not willing to
+> > resurrect it in the broken form it was in, so I doubt that will happen
+> > in 5.9, but we'll see what happens.
+>=20
+> Could you... like try not to make the job harder by merging miriad of
+> "let's kill the documentation" patches?
+>=20
+> I needed the feature twice already this month, once during fsck, and
+> then five minutes ago, when oops scrolled by me during system
+> shutdown. Unfortunately, shift-pageup was not available to take a look
+> what is going on there.
+>=20
+> Unfortunately, Greg backported your "fix" to all the stable releases,
+> so resulting damage will not be easy to repair.
+>=20
+> For the record, making the security problem unexploitable should be as
+> simple as patch below.
+>=20
+> Unfortunately, Linus' changelog does not exactly tell me what all the
+> known problems are. Willy Tarreau pointed me to
+> https://www.openwall.com/lists/oss-security/2020/09/15/2 , which has
+> some information, but all I can reproduce are transient screen
+> artefacts. If someone has more detailed information, that would be
+> helpful.
+
+I can now reproduce it. C code from
+https://www.openwall.com/lists/oss-security/2020/09/15/2 + this patch
+makes the issue easy to see.
+
+Best regards,
+								Pavel
+
+diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
+index 5f1183b0b89d..5a8a43c0b546 100644
+--- a/drivers/tty/vt/vt.c
++++ b/drivers/tty/vt/vt.c
+@@ -1209,6 +1209,7 @@ static int vc_do_resize(struct tty_struct *tty, struc=
+t vc_data *vc,
+ 	rlth =3D min(old_row_size, new_row_size);
+ 	rrem =3D new_row_size - rlth;
+ 	old_origin =3D vc->vc_origin;
++	vc->vc_origin =3D NULL;
+ 	new_origin =3D (long) newscreen;
+ 	new_scr_end =3D new_origin + new_screen_size;
+=20
+diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fb=
+con.c
+index 75ebbbf0a1fb..6ceae7ea1ccc 100644
+--- a/drivers/video/fbdev/core/fbcon.c
++++ b/drivers/video/fbdev/core/fbcon.c
+@@ -2818,6 +2818,11 @@ static void fbcon_scrolldelta(struct vc_data *vc, in=
+t lines)
+ 	struct display *disp =3D &fb_display[fg_console];
+ 	int offset, limit, scrollback_old;
+=20
++	if (!vc->vc_origin) {
++		printk("scrolldelta races with resize?!\n");
++		return;
++	}
++
+ 	if (softback_top) {
+ 		if (vc->vc_num !=3D fg_console)
+ 			return;
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--3V7upXqbjpZ4EhLz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX2s5owAKCRAw5/Bqldv6
+8p3ZAJ9gGwUfB5alUaJ/JY3soU+5Iazg8gCfXlLUkd1hoNIgg4KxhtNkQ0affyU=
+=uKEW
+-----END PGP SIGNATURE-----
+
+--3V7upXqbjpZ4EhLz--
