@@ -2,99 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF61E2762CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 23:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75AB72762CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 23:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726787AbgIWVEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 17:04:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38040 "EHLO
+        id S1726817AbgIWVE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 17:04:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726515AbgIWVES (ORCPT
+        with ESMTP id S1726515AbgIWVEZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 17:04:18 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE47FC0613CE;
-        Wed, 23 Sep 2020 14:04:17 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id t138so1230702qka.0;
-        Wed, 23 Sep 2020 14:04:17 -0700 (PDT)
+        Wed, 23 Sep 2020 17:04:25 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F5EC0613CE;
+        Wed, 23 Sep 2020 14:04:25 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id b79so1437136wmb.4;
+        Wed, 23 Sep 2020 14:04:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GdMuyxsbVZIjvN8C24RgnButiYoPlCvAUwNgP4R+JK4=;
-        b=q5T6yFbpjcpV7r6GXzWLiKIeSRx0kyCFrwX+P10a9jxYPYr4nTAjxO/Mr8LocQmF9k
-         U2cpAV2u2Hq4Jd2i5HLtHmijXnNnaksaT1SXZSzHviivUl7Wycy1yqQsKY5aakAih2S2
-         MbCxaHGfCexM2KsHgUxEAugPvYfDrd6v4blBUN1rb8/nmRHDSuCvAFsRHF4AI4B1w5F4
-         +aXlVTi+AGq0H393PBaMw5X9N60CaslJliwTfaR5AKKr58mJ1aLO8SAaus5k+JDxQ7TM
-         UDz+tQkNH89otm26CeSepY4sMm50ymDpr55E2eBA07RcH3nrT/ZTZBEKeEW191CE4gn0
-         NO9g==
+        h=from:to:cc:references:in-reply-to:subject:date:message-id
+         :mime-version:content-transfer-encoding:content-language
+         :thread-index;
+        bh=Cwsd6her1f525yiWhkcoGWgzKup5DnYJEVjSpYNiosQ=;
+        b=I22w5349tDL/91cg3dlPigSanrcqoe3ZFWDo5dJ8hEheB4GawRg09zou8o/NwpfG3F
+         eWMFwYbZEoCGTffezgkfmngro0y9jfqMvSHg73a7Spb3DssefsXQORUNr1lTPRW0Ysrg
+         q37KVNtYbwlVet1sJBBV7GWs6PgjTnXEnP8pzMggpDDYwFUnj7RLAo8lDTImGgG9Bd9q
+         xwJCg0gzsZLAlOLzQCI35eFJChlNFnkwGJKVwzwFzOJwn1XUgr6MctBJniQj/zvlE1Ym
+         pi2jzPnyCAPhJsVnBwSlPeitDBADceLs8Mo/kn73wsxb1JteavBU6uSEbDhvCQjCLCIN
+         /P4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GdMuyxsbVZIjvN8C24RgnButiYoPlCvAUwNgP4R+JK4=;
-        b=JIeYAAC0P7SqkGa83Gi1IS3dzVYuu8WSblMx1mPtMQBubxzMBSFHBqFniOUNZMg58L
-         3nnodlV5LM/9kxRMGy4TzuA+THGitmXOk4QjUnpu4Pv/qGztVqmO3S4PYPIPamIbMaqZ
-         rBB01NNoc7EE4wZYYtKPxogJ6C0PxitUGs4FrBul+KyRCweDyOczD5QzUz9IVBLUq182
-         ySwozIEaGtuEsX2BJwPJOPaBMCBcfyxrROmlHvg70lxS8VWtMvQHcvazz37wnmwkFYoG
-         OqSzYKxvw7gvH6b4a7tXpXLeQoZa1r6brIrZwc0fE5KOSr+qCQpKHpTCJum9GjhSbXkm
-         4Mcg==
-X-Gm-Message-State: AOAM5318mKa3Jb/M/lQkgAzuxJhlSRxpv+DPkxyacgOW8PxPuk/wJUKP
-        xIXH+BoFI7MZhEYDXT+jtcA=
-X-Google-Smtp-Source: ABdhPJxPs4GSf8jYHnAAqVy/PBBA277u6YjKaVWGJGiDUljVXLQX82EQ2x+Nbe/rvXjsJT9xGOZefw==
-X-Received: by 2002:a37:a347:: with SMTP id m68mr1802170qke.81.1600895057055;
-        Wed, 23 Sep 2020 14:04:17 -0700 (PDT)
-Received: from rockpro64.hsd1.md.comcast.net ([2601:153:900:7730::20])
-        by smtp.gmail.com with ESMTPSA id h18sm753419qkl.12.2020.09.23.14.04.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 14:04:16 -0700 (PDT)
-From:   Peter Geis <pgwipeout@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Stephen Warren <swarren@wwwdotorg.org>,
-        Bob Ham <rah@settrans.net>,
-        Leonardo Bras <leobras.c@gmail.com>,
-        Michael Brougham <jusplainmike@gmail.com>
-Cc:     linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peter Geis <pgwipeout@gmail.com>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v2 3/3] dt-bindings: ARM: tegra: Add Ouya game console
-Date:   Wed, 23 Sep 2020 21:03:52 +0000
-Message-Id: <20200923210352.1176386-4-pgwipeout@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200923210352.1176386-1-pgwipeout@gmail.com>
-References: <20200923210352.1176386-1-pgwipeout@gmail.com>
+        h=x-gm-message-state:from:to:cc:references:in-reply-to:subject:date
+         :message-id:mime-version:content-transfer-encoding:content-language
+         :thread-index;
+        bh=Cwsd6her1f525yiWhkcoGWgzKup5DnYJEVjSpYNiosQ=;
+        b=r/i5lXXoKPErHfTkkuK/UTBqVp4Z35KLvFxAugymrbDxW1AAzbBTC5QV28Uch1Kxjb
+         wOOZ2UoieI+8whW7MdIyuDs5AfKzXIbEd3Glh3xzLD/gUIiZp076ClFMk1TdZwrBMWu+
+         sw8FOPh6TIEgR0g/nMkDDG8TESnHkruLMMalVA/irr3PnuF5q53Mm9Z1Jt0D3ZebJZS4
+         ZIMvVzVQVMHCDoeWG2nOlLPBwxdHxnnHir6pBZT8FV0pH7ZeAs256PGYf2Q2TIz1vf4Q
+         v9schOA/64nszrQf4fC9GD1gJCZIFWzpzbelrd3MFUJZpDIHJt33iS+j/OtQ8NhPw4ic
+         aJdg==
+X-Gm-Message-State: AOAM532Cq4nVghVC5mPvNYhe/4ab5rGqtua5e5RzWZ15lhsnNhreOGs7
+        Q7ciFdz1ocq1bmv/v1NjLqk=
+X-Google-Smtp-Source: ABdhPJynn45TaPmkXDi+yvz8LZCHR31hOdHMKqCvqYWpmPNtjSgxWbcuWxWnrcBjzrZC8KwmPTBOhA==
+X-Received: by 2002:a1c:9a57:: with SMTP id c84mr1377989wme.136.1600895063600;
+        Wed, 23 Sep 2020 14:04:23 -0700 (PDT)
+Received: from AnsuelXPS (93-39-149-95.ip76.fastwebnet.it. [93.39.149.95])
+        by smtp.gmail.com with ESMTPSA id d23sm930906wmb.6.2020.09.23.14.04.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 23 Sep 2020 14:04:22 -0700 (PDT)
+From:   <ansuelsmth@gmail.com>
+To:     "'Rob Herring'" <robh@kernel.org>
+Cc:     "'Kalle Valo'" <kvalo@codeaurora.org>,
+        "'David S. Miller'" <davem@davemloft.net>,
+        "'Jakub Kicinski'" <kuba@kernel.org>,
+        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <ath10k@lists.infradead.org>
+References: <20200918181104.98-1-ansuelsmth@gmail.com> <20200918181104.98-2-ansuelsmth@gmail.com> <20200923205824.GA1290651@bogus>
+In-Reply-To: <20200923205824.GA1290651@bogus>
+Subject: RE: [PATCH v2 2/2] dt: bindings: ath10k: Document qcom,ath10k-pre-calibration-data-mtd
+Date:   Wed, 23 Sep 2020 23:04:20 +0200
+Message-ID: <019801d691ed$1bc26650$534732f0$@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: it
+Thread-Index: AQMJH5wF5tFRrUdsk5f5BXXZ8/xBtQJaPmHMAl7msnGm69B+EA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a binding for the Tegra30-based Ouya game console.
 
-Signed-off-by: Peter Geis <pgwipeout@gmail.com>
-Acked-by: Rob Herring <robh@kernel.org>
----
- Documentation/devicetree/bindings/arm/tegra.yaml | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/arm/tegra.yaml b/Documentation/devicetree/bindings/arm/tegra.yaml
-index e0b3debaee9e..a8bafe68315f 100644
---- a/Documentation/devicetree/bindings/arm/tegra.yaml
-+++ b/Documentation/devicetree/bindings/arm/tegra.yaml
-@@ -69,6 +69,9 @@ properties:
-           - const: asus,tilapia
-           - const: asus,grouper
-           - const: nvidia,tegra30
-+      - items:
-+          - const: ouya,ouya
-+          - const: nvidia,tegra30
-       - items:
-           - enum:
-               - nvidia,dalmore
--- 
-2.25.1
+> -----Original Message-----
+> From: Rob Herring <robh@kernel.org>
+> Sent: Wednesday, September 23, 2020 10:58 PM
+> To: Ansuel Smith <ansuelsmth@gmail.com>
+> Cc: Kalle Valo <kvalo@codeaurora.org>; David S. Miller
+> <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>; linux-
+> wireless@vger.kernel.org; netdev@vger.kernel.org;
+> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org;
+> ath10k@lists.infradead.org
+> Subject: Re: [PATCH v2 2/2] dt: bindings: ath10k: Document qcom,ath10k-
+> pre-calibration-data-mtd
+> 
+> On Fri, Sep 18, 2020 at 08:11:03PM +0200, Ansuel Smith wrote:
+> > Document use of qcom,ath10k-pre-calibration-data-mtd bindings used to
+> > define from where the driver will load the pre-cal data in the defined
+> > mtd partition.
+> >
+> > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> > ---
+> >  .../devicetree/bindings/net/wireless/qcom,ath10k.txt | 12 +++++++++---
+> >  1 file changed, 9 insertions(+), 3 deletions(-)
+> >
+> > diff --git
+> a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> > index b61c2d5a0..568364243 100644
+> > --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> > +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> > @@ -15,9 +15,9 @@ and also uses most of the properties defined in this
+> doc (except
+> >  "qcom,ath10k-calibration-data"). It uses "qcom,ath10k-pre-calibration-
+> data"
+> >  to carry pre calibration data.
+> >
+> > -In general, entry "qcom,ath10k-pre-calibration-data" and
+> > -"qcom,ath10k-calibration-data" conflict with each other and only one
+> > -can be provided per device.
+> > +In general, entry "qcom,ath10k-pre-calibration-data",
+> > +"qcom,ath10k-calibration-data-mtd" and "qcom,ath10k-calibration-
+> data" conflict with
+> > +each other and only one can be provided per device.
+> >
+> >  SNOC based devices (i.e. wcn3990) uses compatible string
+> "qcom,wcn3990-wifi".
+> >
+> > @@ -63,6 +63,12 @@ Optional properties:
+> >  				 hw versions.
+> >  - qcom,ath10k-pre-calibration-data : pre calibration data as an array,
+> >  				     the length can vary between hw
+versions.
+> > +- qcom,ath10k-pre-calibration-data-mtd :
+> 
+> mtd is a Linuxism.
+> 
+> > +	Usage: optional
+> > +	Value type: <phandle offset size>
+> > +	Definition: pre calibration data read from mtd partition. Take 3
+> value, the
+> > +		    mtd to read data from, the offset in the mtd partition
+and
+> the
+> 
+> The phandle is the mtd or partition?
+> 
+> Maybe you should be using nvmem binding here.
+> 
+
+The phandle is to the mtd.
+You are right about nvmem... Problem is that nvmem for mtd is still not
+supported. I already sent a patch to fix this in the mtd mailing list but
+I'm waiting for review...
+If that will be accepted, I can convert this patch to use nvmem api.
+
+> > +		    size of data to read.
+> >  - <supply-name>-supply: handle to the regulator device tree node
+> >  			   optional "supply-name" are "vdd-0.8-cx-mx",
+> >  			   "vdd-1.8-xo", "vdd-1.3-rfa", "vdd-3.3-ch0",
+> > --
+> > 2.27.0
+> >
 
