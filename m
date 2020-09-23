@@ -2,135 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EC1E2759F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:30:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DDE0275A02
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726676AbgIWO36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 10:29:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726156AbgIWO3y (ORCPT
+        id S1726735AbgIWOaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 10:30:25 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:45017 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726621AbgIWOaY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 10:29:54 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDB05C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 07:29:53 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id gr14so28117261ejb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 07:29:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BvWaZAOmCSJi5EjRj+9rGgqiUccGff1Wvin8E59j7sU=;
-        b=xcSixdr2ga+Acx/jNRq3SciNJm/k6+0O76py84OD8DfGApvaqZaQlYynrd/DMYINvD
-         w6AM3RwHPUJxID/5ETNaJsTfv75T1xOGBSSw/SO0W3/mJtxFd2IcLb2W6h7JymFMiEtg
-         GM+PJKEGwJAGFkTM5rHfYOWNVWgyF1p9kEjLe8wA6FhYBGdeHvR31/W0Hj5LvnJUP5ft
-         M6t4IedE1LKk6fTaDwqLmqK9cv6Cz9HQSdwUgk3sCPM94ZJ96Q172m6xA+lM3smf+TzW
-         4IKqJQeqjAlLtIsemGF910S2HOlzV0lY6Ef9609bDIxRkKoOg8Xhv9OQSlis+D/3l7yN
-         oz7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BvWaZAOmCSJi5EjRj+9rGgqiUccGff1Wvin8E59j7sU=;
-        b=Yjw/FR9uGXNDZXQHOKNoTKUNcpXlLQH3/sA7vhBMvbOwdlzjmnHNYnNrxLbadtAlfA
-         AZ7kq6cg9mDxeLZUh7B9pVGrlbUvFiCtvSSVWNyWK4/+AAqqGwF39jJPSzveXFcL9Ct9
-         q+o9oUNK3nX9nNnegs00ui7zQEu887TeqB2ljQ/JcALBUgEHWung3ucACE67IJP7c7hE
-         N9vj/rwoJ5+UK0RABsYGUwQ//QVBOX7xhez+0Y6cT5H+ZI1zMzNqleAW0BjLEYZ9gbvp
-         nydDGtOkBZxGTvyv+OY+XhwwW+iJpnSvhtMT5vbbzDbMzsP+IOYw693WGtEsGVazkVMC
-         pJ0A==
-X-Gm-Message-State: AOAM531p2M9LMUycMQZbSKWkg92EzNHAYhY7pk0Z0hyTR3k8087v+vg2
-        Ugc47cId6L+Kq7PWjpvrJqhBpyQvOtyNiJeztSP2
-X-Google-Smtp-Source: ABdhPJxGSIKF2KiIFwdCnNZD5Z23c3TbbdA9P88SF9tmr7khUww94uVt7KXHwj5PRDeMEki4gV+UN/8Hw3VdJKdHg3k=
-X-Received: by 2002:a17:906:2301:: with SMTP id l1mr10188672eja.488.1600871392179;
- Wed, 23 Sep 2020 07:29:52 -0700 (PDT)
+        Wed, 23 Sep 2020 10:30:24 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08NEQi6J014390;
+        Wed, 23 Sep 2020 16:30:12 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : from : to : cc
+ : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=SjaY/w1nDEoWhikxQtwnd327tYOK3VZ51wdSZT/aEUk=;
+ b=YS9RI+MCv/dZTSiRI2HLeGCC4O9EKyJdfd2K8y3fnqmxyNsMerNCRxjA4tmzEoOcNf3c
+ pmusSpiiYsbySmOb8Xhmymgq0qY0fRWqTSv3cmcv/lpqBf4syKo1oWtV4q9A1rkBqd/I
+ VXrlOXhhAeSs3W8dEE7hKyr5hnEQwsIofTwf2S04rjSTFRUJdazfb2TAbtSLh22wmMsf
+ nlt6MZlZjtAQ4FYMmcW1pnA3gB1YuhgoYxqFiVVPt/rQbA9YerPpg26SUP5o0XGp+4lz
+ SPnohXRTu0k27RoeX3aD+W40HUtGSji01pRamdaw2TkKBmCWmcFJbPK2wyMINWrnF24r Hg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 33n7eywne2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Sep 2020 16:30:12 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8E69410002A;
+        Wed, 23 Sep 2020 16:30:11 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 154C12B8A2E;
+        Wed, 23 Sep 2020 16:30:11 +0200 (CEST)
+Received: from lmecxl0889.tpe.st.com (10.75.127.49) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 23 Sep
+ 2020 16:30:09 +0200
+Subject: Re: [PATCH 2/3] dt-bindings: remoteproc: stm32_rproc: update for
+ firmware synchronization
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     Alexandre TORGUE <alexandre.torgue@st.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Fabien DESSENNE <fabien.dessenne@st.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+References: <20200827072101.26588-1-arnaud.pouliquen@st.com>
+ <20200827072101.26588-3-arnaud.pouliquen@st.com>
+ <20200909202251.GA2975092@bogus>
+ <c9d45617-6de9-7e49-0c82-151e67fff61d@st.com>
+Message-ID: <cb39ab93-93db-1c2e-4e95-6ec767071549@st.com>
+Date:   Wed, 23 Sep 2020 16:30:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <7081a5b9c7d2e8085c49cec2fa72fcbb0b25e0d7.1600778472.git.rgb@redhat.com>
-In-Reply-To: <7081a5b9c7d2e8085c49cec2fa72fcbb0b25e0d7.1600778472.git.rgb@redhat.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 23 Sep 2020 10:29:41 -0400
-Message-ID: <CAHC9VhSPk2RiMsnjTKw02_+_1Kagm06m+-r=ooNruT+fuuixYQ@mail.gmail.com>
-Subject: Re: [PATCH ghak120 V5] audit: trigger accompanying records when no
- rules present
-To:     Richard Guy Briggs <rgb@redhat.com>
-Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        Eric Paris <eparis@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <c9d45617-6de9-7e49-0c82-151e67fff61d@st.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG6NODE3.st.com (10.75.127.18) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-23_10:2020-09-23,2020-09-23 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 8:45 AM Richard Guy Briggs <rgb@redhat.com> wrote:
->
-> When there are no audit rules registered, mandatory records (config,
-> etc.) are missing their accompanying records (syscall, proctitle, etc.).
->
-> This is due to audit context dummy set on syscall entry based on absence
-> of rules that signals that no other records are to be printed.  Clear the dummy
-> bit if any record is generated, open coding this in audit_log_start().
->
-> The proctitle context and dummy checks are pointless since the
-> proctitle record will not be printed if no syscall records are printed.
->
-> The fds array is reset to -1 after the first syscall to indicate it
-> isn't valid any more, but was never set to -1 when the context was
-> allocated to indicate it wasn't yet valid.
->
-> Check ctx->pwd in audit_log_name().
->
-> The audit_inode* functions can be called without going through
-> getname_flags() or getname_kernel() that sets audit_names and cwd, so
-> set the cwd in audit_alloc_name() if it has not already been done so due to
-> audit_names being valid and purge all other audit_getcwd() calls.
->
-> Revert the LSM dump_common_audit_data() LSM_AUDIT_DATA_* cases from the
-> ghak96 patch since they are no longer necessary due to cwd coverage in
-> audit_alloc_name().
->
-> Thanks to bauen1 <j2468h@googlemail.com> for reporting LSM situations in
-> which context->cwd is not valid, inadvertantly fixed by the ghak96 patch.
->
-> Please see upstream github issue
-> https://github.com/linux-audit/audit-kernel/issues/120
-> This is also related to upstream github issue
-> https://github.com/linux-audit/audit-kernel/issues/96
->
-> Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
-> ---
-> Chagelog:
-> v5:
-> - open code audit_clear_dummy() in audit_log_start()
-> - fix check for ctx->pwd in audit_log_name()
-> - open code _audit_getcwd() contents in audit_alloc_name()
-> - ditch all *audit_getcwd() calls
->
-> v4:
-> - resubmit after revert
->
-> v3:
-> - initialize fds[0] to -1
-> - init cwd for ghak96 LSM_AUDIT_DATA_NET:AF_UNIX case
-> - init cwd for audit_inode{,_child}
->
-> v2:
-> - unconditionally clear dummy
-> - create audit_clear_dummy accessor function
-> - remove proctitle context and dummy checks
->
->  include/linux/audit.h |  8 --------
->  kernel/audit.c        |  3 +++
->  kernel/auditsc.c      | 27 +++++++--------------------
->  security/lsm_audit.c  |  5 -----
->  4 files changed, 10 insertions(+), 33 deletions(-)
+Hi Rob,
 
-I've gone over this revision a couple of times now and it looks okay,
-but past experience is whispering in my ear that perhaps this is
-better to wait on this for the next cycle so it gets a full set of
--rcX releases.  Thoughts?
+Gentle reminder.
+As I'm not sure to well understand your comment I would appreciate if you could
+confirm your expectation before I sent a v2.
 
--- 
-paul moore
-www.paul-moore.com
+Thanks in advance,
+Arnaud 
+
+On 9/11/20 3:49 PM, Arnaud POULIQUEN wrote:
+> Hi Rob,
+> 
+> On 9/9/20 10:22 PM, Rob Herring wrote:
+>> On Thu, Aug 27, 2020 at 09:21:00AM +0200, Arnaud Pouliquen wrote:
+>>> Add new properties description used to attach to a pre-loaded
+>>> firmware according to the commit 9276536f455b3
+>>> ("remoteproc: stm32: Parse syscon that will manage M4 synchronisation")
+>>> which updates the driver part.
+>>>
+>>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+>>> ---
+>>>  .../bindings/remoteproc/st,stm32-rproc.yaml   | 19 +++++++++++++++++++
+>>>  1 file changed, 19 insertions(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
+>>> index 4ffa25268fcc..e50957d86b1c 100644
+>>> --- a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
+>>> +++ b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
+>>> @@ -96,6 +96,25 @@ properties:
+>>>          3rd cell: register bitmask for the deep sleep bit
+>>>      maxItems: 1
+>>>  
+>>> +  st,syscfg-m4-state:
+>>> +    $ref: "/schemas/types.yaml#/definitions/phandle-array"
+>>> +    description: |
+>>> +      Reference to the tamp register which exposes the Cortex-M4 state.
+>>> +        1st cell: phandle to syscon block
+>>> +        2nd cell: register offset containing the Cortex-M4 state
+>>> +        3rd cell: register bitmask for the Cortex-M4 state
+>>> +    maxItems: 1
+>>> +
+>>> +  st,syscfg-rsc-tbl:
+>>> +    $ref: "/schemas/types.yaml#/definitions/phandle-array"
+>>> +    description: |
+>>> +      Reference to the tamp register which references the Cortex-M4
+>>> +      resource table address.
+>>> +        1st cell: phandle to syscon block
+>>> +        2nd cell: register offset containing the resource table address
+>>> +        3rd cell: register bitmask for the resource table address
+>>> +    maxItems: 1
+>>
+>> Why can't these be implied? You can lookup the tamp syscon by 
+>> compatible.
+> 
+> I just made a copy/past of the  "st,syscfg-pdds" syscon description available in the same file [1]
+>   
+> I can provide a shorter descriptions, something like this:
+> 
+>    description: |
+>      Reference to the tamp syscon register and bitmask which contains the Cortex-M4
+>       resource table address.
+>    maxItems: 1
+> 
+> Would this meet your expectations? If yes, I will also add in next version an extra patch to fix [1]
+> 
+> [1] https://elixir.bootlin.com/linux/v5.9-rc3/source/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml#L90
+> 
+>>
+>> Please add these to the example.
+> 
+> I will extend the example with these properties
+> 
+> Thanks,
+> Arnaud
+> 
+>>
+>>> +
+>>>    st,auto-boot:
+>>>      $ref: /schemas/types.yaml#/definitions/flag
+>>>      description:
+>>> -- 
+>>> 2.17.1
+>>>
