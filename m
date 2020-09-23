@@ -2,99 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A07862760E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 21:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE5062760E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 21:20:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726332AbgIWTUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 15:20:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726199AbgIWTUA (ORCPT
+        id S1726723AbgIWTUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 15:20:20 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:47346 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726613AbgIWTUU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 15:20:00 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA6EC0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 12:20:00 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id y17so227264plb.6
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 12:20:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kKqcvuGlQ6LG4FDQ95wmTDMpeFrWbr+yPkxJgd66iJ4=;
-        b=Ainj+HfyS0rs0jjsdB5fQstwTvarA1MaDFpak3lfGeLgis8DIG/SpaenHTpJlZSiB6
-         ztZ104XSE2HIsklsFbly+ee0ReD+HnbehvvRLOQi0yeml0gQY7Dxp+LwlR8W+mmLlN/a
-         1mf09IrmGcWorWXFn0A5Ygc54qew0fC0zuMr8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kKqcvuGlQ6LG4FDQ95wmTDMpeFrWbr+yPkxJgd66iJ4=;
-        b=bAZPgLwPHvzusNJLtby71OEStWO/G7koGyucK2ksLpV55Yjv+je5jwg4XTr/d4qqfr
-         2WwplIqROt5qruW1noUIuebSgVZRZLfSo6ftlwpwMJWZ2y/P9hDIEGK1tdREQzWVl9dM
-         Jzu5ssdR9batyPt5DemaIqyT8VC1a91jCa5HVRWLTswGlQ2w97lBNS2YhgyuNTfgCICy
-         Mz3iepACbgfKYFL0TKF9Aozjs8dmb0DHpWW/gQkjuiyOBpRjwhLEnmhynve3aiHRyxPq
-         uHILxEPxPC3kv1zqKKa6VjiojPIc37nhH3qbkKGlHxidqBUDM7wOWGVE83Z7P1irS7JT
-         nGhw==
-X-Gm-Message-State: AOAM530OLf78HFfl3FELSElRyoyVT3SRzkC8DAxCvIUrcE6YvAnOpn0N
-        frpwwCn4lgw00glrIdgIZmJ47A==
-X-Google-Smtp-Source: ABdhPJxMMPaWoC/wKDISJh44gp4TXRj4T+eHJyURPfFTVKYla8QGGmwQPKFn6Wv5PTSFvigOuex4vQ==
-X-Received: by 2002:a17:902:fe10:b029:d2:b7b:be42 with SMTP id g16-20020a170902fe10b02900d20b7bbe42mr1240590plj.69.1600888799613;
-        Wed, 23 Sep 2020 12:19:59 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d8sm258492pjs.47.2020.09.23.12.19.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 12:19:58 -0700 (PDT)
-Date:   Wed, 23 Sep 2020 12:19:57 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Jann Horn <jannh@google.com>
-Subject: Re: x86/irq: Make run_on_irqstack_cond() typesafe
-Message-ID: <202009231209.F5F3999D@keescook>
-References: <87pn6eb5tv.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87pn6eb5tv.fsf@nanos.tec.linutronix.de>
+        Wed, 23 Sep 2020 15:20:20 -0400
+Received: from tusharsu-Ubuntu.lan (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
+        by linux.microsoft.com (Postfix) with ESMTPSA id B023520B7179;
+        Wed, 23 Sep 2020 12:20:18 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B023520B7179
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1600888819;
+        bh=R6rtlwYSLTn3XJr2MjHNNQ7fwXEqS/pbLD3EewSk0QM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Ewsv64sJvwVeKq7RrxP7q1/c4ez0XN0Zndk2P22OObEO57z8YoVA+m8iSCo3X16L2
+         BLvcVSpgCE94uNzb1Fr8DfPDIy2q1RNeF7Aq53W0c0WoIwLjIgNU0roIqSJQWd2UOR
+         +kIFuxXS3W12SBNkL+EoxxRL9FRixkkdje4DtQ1w=
+From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
+To:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Subject: [PATCH v4 0/6] IMA: Infrastructure for measurement of critical kernel data
+Date:   Wed, 23 Sep 2020 12:20:05 -0700
+Message-Id: <20200923192011.5293-1-tusharsu@linux.microsoft.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 09:58:52AM +0200, Thomas Gleixner wrote:
-> -void asm_call_on_stack(void *sp, void *func, void *arg);
-> +void asm_call_on_stack(void *sp, void (*func)(void), void *arg);
-> +void asm_call_sysvec_on_stack(void *sp, void (*func)(struct pt_regs *regs),
-> +			      struct pt_regs *regs);
-> +void asm_call_irq_on_stack(void *sp, void (*func)(struct irq_desc *desc),
-> +			   struct irq_desc *desc);
+There are several kernel components that contain critical data which if
+accidentally or maliciously altered, can compromise the security of the
+kernel. Example of such components would include LSMs like SELinux, or
+AppArmor; or device-mapper targets like dm-crypt, dm-verity etc.
 
-Eeeh, err. So, this is nice for the CFI case, but can we instead just
-inline asm_call_on_stack() instead? Having any of these as distinct
-functions in the kernel is really not safe: it provides a trivial
-global stack-pivot[1] function for use in ROP attacks, which is one
-of the central requirements for mounting such attacks. This allows a
-completely arbitrary sp argument, function, and first argument. :(
+Many of these components do not use the capabilities provided by kernel
+integrity subsystem (IMA), and thus they don't use the benefits of
+extended TPM PCR quotes and ultimately the benefits of remote attestation.
 
-Much better would be to keep asm_call_on_stack() as an inline so the
-stack pointer is always coming from percpu variables, and to have the
-irq_count actually checked (i.e. freak out if it falls below zero to
-catch jumps into the middle of a function when an attempt to bypass the
-load from the percpu area happens). I would expect this form to be much
-robust:
+This series bridges this gap, so that potential kernel components that
+contain data critical to the security of the kernel could take advantage
+of IMA's measuring and quoting abilities - thus ultimately enabling
+remote attestation for their specific data.
 
-inc
-load sp from per-cpu
-pivot sp
-make call
-restore sp
-WARN(dec_and_test)
+System administrators may want to pick and choose which kernel
+components they would want to enable for measurements, quoting, and
+remote attestation. To enable that, a new IMA policy is introduced.
+
+And lastly, the functionality is exposed through a function
+ima_measure_critical_data(). The functionality is generic enough to
+measure the data of any kernel component at run-time. To ensure that
+only data from supported sources are measured, the kernel component
+needs to be added to a compile-time list of supported sources (an
+"allowed list of components"). IMA validates the source passed to
+ima_measure_critical_data() against this allowed list at run-time.
+
+This series is based on the following repo/branch:
+
+ repo: https://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git
+ branch: next-integrity
+ commit aa662fc04f5b ("ima: Fix NULL pointer dereference in ima_file_hash")
+        
+Change Log v4:
+Incorporated feedback from Mimi on v3.
+ - Split patch #1 into two patches to move introduction of bool
+   allow_empty_opt_list into the 2nd patch.
+ - Reverted return type of process_buffer_measurement() from int to void
+   which got rid of patch #2 from the v3 of the series.
+ - Renamed the policy "critical_kernel_data_sources" to "data_sources".
+ - Updated process_buffer_measurement() to avoid code and variable
+   duplication in the if(measure_buf_hash) block.
+ - Changed return type of ima_measure_critical_data() from int to void.
+ - Updated patch description for patch #3 and #4 as per Mimi's feedback.
+
+Change Log v3:
+Incorporated feedback from Mimi on v2.
+ - Renamed the policy "data_sources" to
+   "critical_kernel_data_sources".
+ - Added "critical_kernel_data_sources" description in
+   Documentation/ima-policy.
+ - Split CRITICAL_DATA + critical_kernel_data_sources into two separate
+   patches.
+ - Merged hook ima_measure_critical_data() + CRITICAL_DATA into a single
+   patch.
+ - Added functionality to validate data sources before measurement.
+
+Change Log v2:
+ - Reverted the unnecessary indentations in existing #define.
+ - Updated the description to replace the word 'enlightened' with
+   'supported'.
+ - Reverted the unnecessary rename of attribute size to buf_len.
+ - Introduced a boolean parameter measure_buf_hash as per community
+   feedback to support measuring hash of the buffer, instead of the
+   buffer itself.
 
 
--Kees
+Tushar Sugandhi (6):
+  IMA: generalize keyring specific measurement constructs
+  IMA: conditionally allow empty rule data
+  IMA: update process_buffer_measurement to measure buffer hash
+  IMA: add policy to measure critical data from kernel components
+  IMA: add hook to measure critical data from kernel components
+  IMA: validate supported kernel data sources before measurement
 
-[1] https://security.stackexchange.com/questions/44418/return-oriented-programming-how-to-find-a-stack-pivot
+ Documentation/ABI/testing/ima_policy         |  11 +-
+ include/linux/ima.h                          |   8 ++
+ security/integrity/ima/ima.h                 |  37 ++++++-
+ security/integrity/ima/ima_api.c             |   8 +-
+ security/integrity/ima/ima_appraise.c        |   2 +-
+ security/integrity/ima/ima_asymmetric_keys.c |   2 +-
+ security/integrity/ima/ima_main.c            |  61 ++++++++++-
+ security/integrity/ima/ima_policy.c          | 101 +++++++++++++++----
+ security/integrity/ima/ima_queue_keys.c      |   3 +-
+ 9 files changed, 196 insertions(+), 37 deletions(-)
 
 -- 
-Kees Cook
+2.17.1
+
