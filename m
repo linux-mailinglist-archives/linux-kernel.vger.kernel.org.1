@@ -2,65 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C61C275B69
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62625275B6B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726897AbgIWPR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 11:17:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726504AbgIWPRX (ORCPT
+        id S1726901AbgIWPRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 11:17:54 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:39466 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726504AbgIWPRy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 11:17:23 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C84F2C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 08:17:22 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id g3so124097qtq.10
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 08:17:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=eEF5r/i7VHgeA0QOvqGHJBsTug+/1CkRFivhbcgsqHM=;
-        b=NBJyAGFEtBRVatQ4/ZyYrNyT57keJc0358u5EOWGCzE9lDLymmn6kbrrywI7HveHKC
-         6JmqZCpmyZP1P7oi64maSl3YpjZwMVVT79LyjExlCWTRVfBYOj91QzVxQDrOAVZgris3
-         rYtOPzCBj0Dv/Ehes7T3VKzrSnnOmcnr4cumKpU09JZRDNwbL5Dx1NgryK/md11f2IuT
-         JRq5KrycnxA01MWUfdRodWbg5JW/VddsJ4jOhL4i4GvUoAhST21iCKYO6CzSH/c3KUZv
-         +IOa6+uILQanEU0MhDZhe/zlLsdn/ikaLsGa8g4bMu+1S4DAXzYnwU2RMW5xZu2z/OcR
-         TVEg==
+        Wed, 23 Sep 2020 11:17:54 -0400
+Received: by mail-ot1-f68.google.com with SMTP id u25so65000otq.6;
+        Wed, 23 Sep 2020 08:17:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=eEF5r/i7VHgeA0QOvqGHJBsTug+/1CkRFivhbcgsqHM=;
-        b=CldXu/hBaysc25ZdvygMPAK7ZrL2WQ43FVRVDxHpYeF5o1K6y+KTLwK9tq5NphGxmS
-         u7U9PWN0ps1HUxoXksDaS0S2ypsOfYY4oUm229+bfD3nLTUK9rYMUzy6wHhJHMxiLMvo
-         Cf6AvuY3+zrTOUZfHZGEk3jHWotoCONwm0wolqo2J0x/m//KX1demvPu35rMFb+gO9gf
-         gMqzn1VQ9pxDo+0wXMBZzCwkJ7A0/fjuaulWZZhX9Oh0FYtOCtP38wkBrGVbm0lDeC9h
-         P7Lk8cb6jJNdR+Z2bLqlMZoqhYFOr4O9zFIosul5J9gZfNzi7dDkpsVpRPNv2iLdwrna
-         KXOA==
-X-Gm-Message-State: AOAM531kVKDTJCCWL9yzJIwpC3mOIMQCea/slqSD3y1a4w4Qpvjx6Xp1
-        un7XP126Uy6amet3VNHJY7l9MZHzm81+fFbYESw=
-X-Google-Smtp-Source: ABdhPJyegTP/pq/JEQKQ6gP6n+Ew5V1TwR5kBROMg8PCbpUu6+SPktRoVT+Y5gNJHGOys+KP6/RCSgYZfzZ3flUPL6o=
-X-Received: by 2002:ac8:7251:: with SMTP id l17mr548231qtp.364.1600874242054;
- Wed, 23 Sep 2020 08:17:22 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AKkObmW9WFZRFIJQwwPvMt/KAyiqqGXD9pYl1RmYb7o=;
+        b=BPTv0wwBUN6ts8ozS3UYwj1V/7ljmA9c6T1efrnX+aY1Oyd6nsmDRNwdadIrYZuwuE
+         ofHCzgrZB1CxyZAqJxERpeU3qYjfjBqO+gr9e7fS8qy72Ik1Kyd1XkhKh/bNuM4H+1nK
+         owAhbQAtf6pP32rdKT0m9OH7Bt4+t85svWr3fzBf2FreUSYxnkbHz5H8FhCo0So1+MJ1
+         t9xClzCpz3DeujMQwRuq7a+1TjjNPgajZHnF9NgP4CzaChYaukCYzSU3nAx9TDU5e96P
+         6aTijNV6tZFTyo9bKGAYgqg0bJPNzw9bEq4JX1DQZdED9AIh7BaHA0iKn5wIyipcvOXV
+         eP0g==
+X-Gm-Message-State: AOAM532MrwKqFpvGElII/4EIRkxMYevPjIrh6OvYYO6wpoSB6EwDuXZ/
+        iEMFIn4xrpZtoJ6RzvMD0HGIewq7HenQWCQKIic=
+X-Google-Smtp-Source: ABdhPJy2x6F/RAnpzP7PW0wXYvjb9iX6IdZ+A80YTufFP/u6VzmeP8+bzJRAeu++/FSjDMsOn61n1sMH/9/i4D1bdNM=
+X-Received: by 2002:a9d:6010:: with SMTP id h16mr124765otj.262.1600874273426;
+ Wed, 23 Sep 2020 08:17:53 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:ac8:1ab9:0:0:0:0:0 with HTTP; Wed, 23 Sep 2020 08:17:21
- -0700 (PDT)
-Reply-To: insanglee888@gmail.com
-From:   InSang Lee <insanglee18@gmail.com>
-Date:   Wed, 23 Sep 2020 16:17:21 +0100
-Message-ID: <CAAPk2BcA23-kpjXSk6KNkjaP_v8xkA2RHw4jJdscFC5xH2NZSA@mail.gmail.com>
-Subject: Introducing an investment project in your country
-To:     undisclosed-recipients:;
+References: <cover.1600238586.git.viresh.kumar@linaro.org> <c9dc39f9956ad9851511d6710e8f8a5cb142789e.1600238586.git.viresh.kumar@linaro.org>
+ <CAJZ5v0hpT9CAb1hxKcQVA-OJP3UYja=Kqvgh-Ed4N8Ln+=2b5A@mail.gmail.com>
+In-Reply-To: <CAJZ5v0hpT9CAb1hxKcQVA-OJP3UYja=Kqvgh-Ed4N8Ln+=2b5A@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 23 Sep 2020 17:17:42 +0200
+Message-ID: <CAJZ5v0gvEZx+o8SRmZ6S9bCetVz0n3Fr4uDdAYvhj3rNdHVwHw@mail.gmail.com>
+Subject: Re: [PATCH V2 3/4] cpufreq: stats: Enable stats for fast-switch as well
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Lukasz Luba <lukasz.luba@arm.com>, cristian.marussi@arm.com,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dear,
-Can I work successfully with you regarding my plan to introduce an
-investment project in your country which I believed you have good
-knowledge about and can assist me with some valid information on and
-if possible may be my sole partner there in your country?
-Thanks,
-Mr. Lee
+On Wed, Sep 23, 2020 at 5:14 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Wed, Sep 16, 2020 at 8:46 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> >
+> > Now that all the blockers are gone for enabling stats in fast-switching
+> > case, enable it.
+> >
+> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> > ---
+> >  drivers/cpufreq/cpufreq.c       | 6 +++++-
+> >  drivers/cpufreq/cpufreq_stats.c | 6 ------
+> >  2 files changed, 5 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> > index 47aa90f9a7c2..d5fe64e96be9 100644
+> > --- a/drivers/cpufreq/cpufreq.c
+> > +++ b/drivers/cpufreq/cpufreq.c
+> > @@ -2057,8 +2057,12 @@ unsigned int cpufreq_driver_fast_switch(struct cpufreq_policy *policy,
+> >                                         unsigned int target_freq)
+> >  {
+> >         target_freq = clamp_val(target_freq, policy->min, policy->max);
+> > +       target_freq = cpufreq_driver->fast_switch(policy, target_freq);
+> >
+> > -       return cpufreq_driver->fast_switch(policy, target_freq);
+> > +       if (target_freq)
+> > +               cpufreq_stats_record_transition(policy, target_freq);
+>
+> So this adds two extra branches in the scheduler path for the cases
+> when the stats are not used at all which seems avoidable to some
+> extent.
+>
+> Can we check policy->stats upfront here and bail out right away if it
+> is not set, for example?
+
+Well, scratch this, the next patch fixes it up.
+
+Cheers!
