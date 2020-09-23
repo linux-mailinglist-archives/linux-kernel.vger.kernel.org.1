@@ -2,135 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7DF2276099
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 20:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD5F427609D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 20:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726805AbgIWS5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 14:57:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726703AbgIWS5v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 14:57:51 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44F11C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 11:57:51 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id w16so977641oia.2
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 11:57:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=icR61wv8najvIJn/WSZgKJba4OzzEQXiPErbuwb/qS8=;
-        b=DyCI6+hPpN6dphJ1otPEEqJqI/uF8FhWbNzRsIuWHrHXZijve5LbQS8oMtaWPYrXhk
-         9GlQ/0SsGMP+mOoKrJ281PRl8iOBt0fyLbVAr0jXBMteDS79GzM1ZnZPvmgRbg1VZngQ
-         la0tUNxNU2Ls4YC3idOBoAWKd6I7m2SXZfPVY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=icR61wv8najvIJn/WSZgKJba4OzzEQXiPErbuwb/qS8=;
-        b=g82nBCJxILXZGBy9fLyitKD1Q8jL0I04F75VrcIajtB0TXKCN/uFANCc5eaPHcm3O+
-         S/Lb22IU3AMmPk6RkHKiteF696HUp/1jS13PQuI+tvWiDUiojLi9rC0XC3L5dBlYzJfb
-         CrriW5N9qlA0dUBlUr209dfZTC0/yBpe6ynpOFeCMibytWOJKL37UEuZMrtxzRJE2j7K
-         YGprPtDseforXmaxYTudN6d5rxHISCv233s1MXADQm+iAofu8Vk3Pd16sO5RBFRWxY0V
-         dibgLmdmOQSG8S4WA5VUt0dXflTVD31vl7Y0T+xD2Drs6s6raOlg80y1Eu+XlvRMBoqn
-         LzWQ==
-X-Gm-Message-State: AOAM531CL0I0cT34u96IdQEGnaNupBfDkPDvQBl+cy4XSMtVd/7IVZVX
-        +l8VMoA/IHwUtFK+EiX96G/jfqB7mzKTgVMID8fSKg==
-X-Google-Smtp-Source: ABdhPJx02yK5DwEW5VWbECGWbbXCa5yslayGzi16db83bHRWul4VKzYaTXD2I6gxffNWjtU2Dowlwy0PrIrCoUc6D6E=
-X-Received: by 2002:aca:6083:: with SMTP id u125mr553915oib.14.1600887469415;
- Wed, 23 Sep 2020 11:57:49 -0700 (PDT)
+        id S1726824AbgIWS6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 14:58:04 -0400
+Received: from mga03.intel.com ([134.134.136.65]:49884 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726703AbgIWS6D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 14:58:03 -0400
+IronPort-SDR: rmoKL4TAEmrTdEmJfp7uNXhbdy0Fk4yTAu6sdqA0tsRz1StnLsxi6hhA9vE/r/PERcPAcKvQ0j
+ i1QvBR5AOL6g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="161072561"
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
+   d="scan'208";a="161072561"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 11:58:02 -0700
+IronPort-SDR: kz7/UhdqfQR7kPq/UutKfm67dCkSO0dRSAPU6xHrzv6Gh4iZ9RoV4ILoENHljI/FS+ll6XOVeH
+ kxkn4Ig0AyyQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
+   d="scan'208";a="338759550"
+Received: from sjchrist-coffee.jf.intel.com ([10.54.74.160])
+  by orsmga008.jf.intel.com with ESMTP; 23 Sep 2020 11:58:02 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Huacai Chen <chenhc@lemote.com>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        linux-mips@vger.kernel.org, Paul Mackerras <paulus@ozlabs.org>,
+        kvm-ppc@vger.kernel.org,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: [PATCH] KVM: Enable hardware before doing arch VM initialization
+Date:   Wed, 23 Sep 2020 11:57:57 -0700
+Message-Id: <20200923185757.1806-1-sean.j.christopherson@intel.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20200915140633.552502750@linuxfoundation.org> <20200915140636.861676717@linuxfoundation.org>
- <20200916075759.GC32537@duo.ucw.cz> <20200916082510.GB509119@kroah.com>
- <20200916090723.GA4151@duo.ucw.cz> <20200916091420.GF13670@1wt.eu>
- <20200923084427.GA32110@amd> <CAHk-=whe4ZdTdCebneWqC4gSQZwsVJ5-Emg0BucOGCwPhOAJpw@mail.gmail.com>
-In-Reply-To: <CAHk-=whe4ZdTdCebneWqC4gSQZwsVJ5-Emg0BucOGCwPhOAJpw@mail.gmail.com>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Wed, 23 Sep 2020 20:57:38 +0200
-Message-ID: <CAKMK7uEy-b_nPmoh9WYA4NCsK8AL_Jk+-+FRZsrk6NOqqrvriA@mail.gmail.com>
-Subject: Re: [PATCH 4.19 66/78] fbcon: remove soft scrollback code
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Pavel Machek <pavel@denx.de>, Willy Tarreau <w@1wt.eu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>, jikos@suse.cz,
-        vojtech@suse.cz,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        Yuan Ming <yuanmingbuaa@gmail.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 8:19 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Wed, Sep 23, 2020 at 1:44 AM Pavel Machek <pavel@denx.de> wrote:
-> >
-> > >
-> > >   https://www.openwall.com/lists/oss-security/2020/09/15/2
-> >
-> > Thank you for the pointer!
->
-> Note that for me to be willing to take the softscollback code back, it
-> really would have to be more than just a revert and a trivial fix.
->
-> It would have to be more along the lines of "this is simplified and
-> verified". For example, at a minimum all the VT_RESIZE etc stuff would
-> have to clearly and obviously reset the soft-scrollback, so that we
-> simply can't have those kinds of issues.
->
-> If you look at that commit 50145474f6ef ("fbcon: remove soft
-> scrollback code") that removes the code, most of that code really
-> doesn't make much sense.
->
-> I dare anybody looking at that removed fbcon_redraw_softback()
-> function (or the different cases in fbcon_scrolldelta(), for that
-> matter) to claim they understand what it is doing. It's very odd code,
-> and it handles a lot of odd special cases.
->
-> So I wouldn't mind re-introducing the scrollback code, but the
-> reintroduced version needs to be simple and fairly _obvious_.  It
-> would need to not have all those odd special cases, and it would need
-> to clearly not have any subtle issues with things like font or screen
-> resizing.
->
-> I'd also suggest that it not even try to handle the multiple virtual
-> console case.
->
-> And yes, some of it may involve also clarifying the code in the VT
-> code itself, so that the interactions with the cursor and VT switching
-> is more obvious. Maybe instead of trying to deal with a SW cursor when
-> scrollback is active, just hide the cursor entirely before doing
-> scrollback. And make change_console (and all the resizing) explicitly
-> reset scrollback etc.
->
-> So the reason the code got removed was that it was just very grotty
-> and hasn't really been maintained for over a decade.
->
-> In order to resurrect it we'd not just have to have a maintainer, the
-> whole "it's grotty and incomprehensible and has these nasty
-> interactions with random other things" would need to be addressed too.
+Swap the order of hardware_enable_all() and kvm_arch_init_vm() to
+accommodate Intel's Trust Domain Extension (TDX), which needs VMX to be
+fully enabled during VM init in order to make SEAMCALLs.
 
-fbcon has the additional issue that the locking is completely busted,
-because fbcon is both accessed through vt, protected by console_lock,
-and through the fbdev chardev, protected by the fb_info lock. Ofc both
-sides call into the other side, so atm a few operations are just not
-protected by locks to avoid deadlock issues. I ripped out the notifier
-in the middle that was angering lockdep completely, so not it's at
-least fixable. But this still needs someone to sit down and come up
-with something that works.
+This also provides consistent ordering between kvm_create_vm() and
+kvm_destroy_vm() with respect to calling kvm_arch_destroy_vm() and
+hardware_disable_all().
 
-Locking is one, but in general there's all kinds of resizing fun when
-you switch modes through the fbdev chardev. Not looking forward to
-when syzbot figures out how to race fbcon/vt against fbdev. It's all a
-rather big mess.
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: James Morse <james.morse@arm.com>
+Cc: Julien Thierry <julien.thierry.kdev@gmail.com>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: Huacai Chen <chenhc@lemote.com>
+Cc: Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>
+Cc: linux-mips@vger.kernel.org
+Cc: Paul Mackerras <paulus@ozlabs.org>
+Cc: kvm-ppc@vger.kernel.org
+Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: Janosch Frank <frankja@linux.ibm.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Cornelia Huck <cohuck@redhat.com>
+Cc: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc: Wanpeng Li <wanpengli@tencent.com>
+Cc: Jim Mattson <jmattson@google.com>
+Cc: Joerg Roedel <joro@8bytes.org>
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+---
 
-Oh and add in hotunplug for additional fun.
--Daniel
+Obviously not required until the TDX series comes along, but IMO KVM
+should be consistent with respect to enabling and disabling virt support
+in hardware.
+
+Tested only on Intel hardware.  Unless I missed something, this only
+affects x86, Arm and MIPS as hardware enabling is a nop for s390 and PPC.
+Arm looks safe (based on my mostly clueless reading of the code), but I
+have no idea if this will cause problem for MIPS, which is doing all kinds
+of things in hardware_enable() that I don't pretend to fully understand.
+
+ virt/kvm/kvm_main.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index cf88233b819a..58fa19bcfc90 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -766,7 +766,7 @@ static struct kvm *kvm_create_vm(unsigned long type)
+ 		struct kvm_memslots *slots = kvm_alloc_memslots();
+ 
+ 		if (!slots)
+-			goto out_err_no_arch_destroy_vm;
++			goto out_err_no_disable;
+ 		/* Generations must be different for each address space. */
+ 		slots->generation = i;
+ 		rcu_assign_pointer(kvm->memslots[i], slots);
+@@ -776,19 +776,19 @@ static struct kvm *kvm_create_vm(unsigned long type)
+ 		rcu_assign_pointer(kvm->buses[i],
+ 			kzalloc(sizeof(struct kvm_io_bus), GFP_KERNEL_ACCOUNT));
+ 		if (!kvm->buses[i])
+-			goto out_err_no_arch_destroy_vm;
++			goto out_err_no_disable;
+ 	}
+ 
+ 	kvm->max_halt_poll_ns = halt_poll_ns;
+ 
+-	r = kvm_arch_init_vm(kvm, type);
+-	if (r)
+-		goto out_err_no_arch_destroy_vm;
+-
+ 	r = hardware_enable_all();
+ 	if (r)
+ 		goto out_err_no_disable;
+ 
++	r = kvm_arch_init_vm(kvm, type);
++	if (r)
++		goto out_err_no_arch_destroy_vm;
++
+ #ifdef CONFIG_HAVE_KVM_IRQFD
+ 	INIT_HLIST_HEAD(&kvm->irq_ack_notifier_list);
+ #endif
+@@ -815,10 +815,10 @@ static struct kvm *kvm_create_vm(unsigned long type)
+ 		mmu_notifier_unregister(&kvm->mmu_notifier, current->mm);
+ #endif
+ out_err_no_mmu_notifier:
+-	hardware_disable_all();
+-out_err_no_disable:
+ 	kvm_arch_destroy_vm(kvm);
+ out_err_no_arch_destroy_vm:
++	hardware_disable_all();
++out_err_no_disable:
+ 	WARN_ON_ONCE(!refcount_dec_and_test(&kvm->users_count));
+ 	for (i = 0; i < KVM_NR_BUSES; i++)
+ 		kfree(kvm_get_bus(kvm, i));
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.28.0
+
