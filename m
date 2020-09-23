@@ -2,119 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A01275B07
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61776275B0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726621AbgIWPAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 11:00:54 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:15590 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgIWPAy (ORCPT
+        id S1726656AbgIWPCB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 23 Sep 2020 11:02:01 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:59109 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgIWPCB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 11:00:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1600873253; x=1632409253;
-  h=to:cc:from:subject:message-id:date:mime-version:
-   content-transfer-encoding;
-  bh=ncTiycxbLLLABb828Z5CFC0O0VQndKnHSZDh9Pb2FUA=;
-  b=rTmFAlorAGGAk+ILKIy10Y1JeVgXeMpaEnaYjejtXbzJCtfUxxXkp2hR
-   IeF+b4vChQD82MagQ0hvshtJ9I+nuXv/ltJUhXltE5V6SdBu0BZSYiSUi
-   wosUIlLQ7vIjmm795DSWyY2r1TmCBiqj6lBD7o6REiPBpcTRrrPaZohlX
-   Q=;
-X-IronPort-AV: E=Sophos;i="5.77,293,1596499200"; 
-   d="scan'208";a="55868833"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-859fe132.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 23 Sep 2020 15:00:49 +0000
-Received: from EX13MTAUWC002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2b-859fe132.us-west-2.amazon.com (Postfix) with ESMTPS id 63C8F222BE2;
-        Wed, 23 Sep 2020 15:00:45 +0000 (UTC)
-Received: from EX13D12UWC002.ant.amazon.com (10.43.162.253) by
- EX13MTAUWC002.ant.amazon.com (10.43.162.240) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 23 Sep 2020 15:00:45 +0000
-Received: from [10.95.178.71] (10.43.161.71) by EX13D12UWC002.ant.amazon.com
- (10.43.162.253) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 23 Sep
- 2020 15:00:43 +0000
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Xu <peterx@redhat.com>,
-        Kaitao Cheng <pilgrimtao@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>
-From:   George Prekas <prekageo@amazon.com>
-Subject: [PATCH] latency improvement in __smp_call_single_queue
-Message-ID: <281da382-4511-e1df-6917-154a5914dd43@amazon.com>
-Date:   Wed, 23 Sep 2020 10:00:41 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Wed, 23 Sep 2020 11:02:01 -0400
+X-Greylist: delayed 1434 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Sep 2020 11:02:00 EDT
+X-Originating-IP: 90.65.92.90
+Received: from localhost (lfbn-lyo-1-1913-90.w90-65.abo.wanadoo.fr [90.65.92.90])
+        (Authenticated sender: gregory.clement@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 7F8CC60023;
+        Wed, 23 Sep 2020 15:01:54 +0000 (UTC)
+From:   Gregory CLEMENT <gregory.clement@bootlin.com>
+To:     Pali =?utf-8?Q?Roh=C3=A1r?= <pali@kernel.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        Andre Heider <a.heider@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: marvell: espressobin: Add ethernet switch aliases
+In-Reply-To: <20200907112718.5994-1-pali@kernel.org>
+References: <20200907112718.5994-1-pali@kernel.org>
+Date:   Wed, 23 Sep 2020 17:01:54 +0200
+Message-ID: <875z84iljx.fsf@BL-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.43.161.71]
-X-ClientProxiedBy: EX13D48UWB004.ant.amazon.com (10.43.163.74) To
- EX13D12UWC002.ant.amazon.com (10.43.162.253)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If an interrupt arrives between llist_add and
-send_call_function_single_ipi in the following code snippet, then the
-remote CPU will not receive the IPI in a timely manner and subsequent
-SMP calls even from other CPUs for other functions will be delayed:
+Hello Pali,
 
-     if (llist_add(node, &per_cpu(call_single_queue, cpu)))
-         send_call_function_single_ipi(cpu);
+> Espressobin boards have 3 ethernet ports and some of them got assigned more
+> then one MAC address. MAC addresses are stored in U-Boot environment.
+>
+> Since commit a2c7023f7075c ("net: dsa: read mac address from DT for slave
+> device") kernel can use MAC addresses from DT for particular DSA port.
+>
+> Currently Espressobin DTS file contains alias just for ethernet0.
+>
+> This patch defines additional ethernet aliases in Espressobin DTS files, so
+> bootloader can fill correct MAC address for DSA switch ports if more MAC
+> addresses were specified.
+>
+> DT alias ethernet1 is used for wan port, DT aliases ethernet2 and ethernet3
+> are used for lan ports for both Espressobin revisions (V5 and V7).
+>
+> Fixes: 5253cb8c00a6f ("arm64: dts: marvell: espressobin: add ethernet alias")
+> Signed-off-by: Pali Rohár <pali@kernel.org>
 
-Note: llist_add returns 1 if it was empty before the operation.
 
-CPU 0                           | CPU 1                     | CPU 2
-__smp_call_single_q(2,f1)       | __smp_call_single_q(2,f2) |
-   llist_add returns 1           |                           |
-   interrupted                   |   llist_add returns 0     |
-       ...                       |   branch not taken        |
-       ...                       |                           |
-   resumed                       |                           |
-   send_call_function_single_ipi |                           |
-                                 |                           | f1
-                                 |                           | f2
+Applied on mvebu/fixes
 
-The call from CPU 1 for function f2 will be delayed because CPU 0 was
-interrupted.
+Thanks,
 
-Signed-off-by: George Prekas <prekageo@amazon.com>
----
-  kernel/smp.c | 4 ++++
-  1 file changed, 4 insertions(+)
+Gregory
 
-diff --git a/kernel/smp.c b/kernel/smp.c
-index aa17eedff5be..9dc679466cf0 100644
---- a/kernel/smp.c
-+++ b/kernel/smp.c
-@@ -135,6 +135,8 @@ static 
-DEFINE_PER_CPU_SHARED_ALIGNED(call_single_data_t, csd_data);
+> ---
+>  .../dts/marvell/armada-3720-espressobin-v7-emmc.dts  | 10 ++++++++--
+>  .../boot/dts/marvell/armada-3720-espressobin-v7.dts  | 10 ++++++++--
+>  .../boot/dts/marvell/armada-3720-espressobin.dtsi    | 12 ++++++++----
+>  3 files changed, 24 insertions(+), 8 deletions(-)
+>
+> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
+> index 03733fd92732..215d2f702623 100644
+> --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
+> +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
+> @@ -20,17 +20,23 @@
+>  	compatible = "globalscale,espressobin-v7-emmc", "globalscale,espressobin-v7",
+>  		     "globalscale,espressobin", "marvell,armada3720",
+>  		     "marvell,armada3710";
+> +
+> +	aliases {
+> +		/* ethernet1 is wan port */
+> +		ethernet1 = &switch0port3;
+> +		ethernet3 = &switch0port1;
+> +	};
+>  };
+>  
+>  &switch0 {
+>  	ports {
+> -		port@1 {
+> +		switch0port1: port@1 {
+>  			reg = <1>;
+>  			label = "lan1";
+>  			phy-handle = <&switch0phy0>;
+>  		};
+>  
+> -		port@3 {
+> +		switch0port3: port@3 {
+>  			reg = <3>;
+>  			label = "wan";
+>  			phy-handle = <&switch0phy2>;
+> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
+> index 8570c5f47d7d..b6f4af8ebafb 100644
+> --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
+> +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
+> @@ -19,17 +19,23 @@
+>  	model = "Globalscale Marvell ESPRESSOBin Board V7";
+>  	compatible = "globalscale,espressobin-v7", "globalscale,espressobin",
+>  		     "marvell,armada3720", "marvell,armada3710";
+> +
+> +	aliases {
+> +		/* ethernet1 is wan port */
+> +		ethernet1 = &switch0port3;
+> +		ethernet3 = &switch0port1;
+> +	};
+>  };
+>  
+>  &switch0 {
+>  	ports {
+> -		port@1 {
+> +		switch0port1: port@1 {
+>  			reg = <1>;
+>  			label = "lan1";
+>  			phy-handle = <&switch0phy0>;
+>  		};
+>  
+> -		port@3 {
+> +		switch0port3: port@3 {
+>  			reg = <3>;
+>  			label = "wan";
+>  			phy-handle = <&switch0phy2>;
+> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
+> index b97218c72727..0775c16e0ec8 100644
+> --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
+> +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
+> @@ -13,6 +13,10 @@
+>  / {
+>  	aliases {
+>  		ethernet0 = &eth0;
+> +		/* for dsa slave device */
+> +		ethernet1 = &switch0port1;
+> +		ethernet2 = &switch0port2;
+> +		ethernet3 = &switch0port3;
+>  		serial0 = &uart0;
+>  		serial1 = &uart1;
+>  	};
+> @@ -120,7 +124,7 @@
+>  			#address-cells = <1>;
+>  			#size-cells = <0>;
+>  
+> -			port@0 {
+> +			switch0port0: port@0 {
+>  				reg = <0>;
+>  				label = "cpu";
+>  				ethernet = <&eth0>;
+> @@ -131,19 +135,19 @@
+>  				};
+>  			};
+>  
+> -			port@1 {
+> +			switch0port1: port@1 {
+>  				reg = <1>;
+>  				label = "wan";
+>  				phy-handle = <&switch0phy0>;
+>  			};
+>  
+> -			port@2 {
+> +			switch0port2: port@2 {
+>  				reg = <2>;
+>  				label = "lan0";
+>  				phy-handle = <&switch0phy1>;
+>  			};
+>  
+> -			port@3 {
+> +			switch0port3: port@3 {
+>  				reg = <3>;
+>  				label = "lan1";
+>  				phy-handle = <&switch0phy2>;
+> -- 
+> 2.20.1
+>
 
-  void __smp_call_single_queue(int cpu, struct llist_node *node)
-  {
-+    unsigned long flags;
-+
-      /*
-       * The list addition should be visible before sending the IPI
-       * handler locks the list to pull the entry off it because of
-@@ -146,8 +148,10 @@ void __smp_call_single_queue(int cpu, struct 
-llist_node *node)
-       * locking and barrier primitives. Generic code isn't really
-       * equipped to do the right thing...
-       */
-+    local_irq_save(flags);
-      if (llist_add(node, &per_cpu(call_single_queue, cpu)))
-          send_call_function_single_ipi(cpu);
-+    local_irq_restore(flags);
-  }
-
-  /*
 -- 
-2.16.6
-
-
+Gregory Clement, Bootlin
+Embedded Linux and Kernel engineering
+http://bootlin.com
