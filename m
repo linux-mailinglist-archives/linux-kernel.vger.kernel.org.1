@@ -2,336 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78FC3275471
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 11:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E298D275475
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 11:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726820AbgIWJYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 05:24:01 -0400
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:40048 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726359AbgIWJYB (ORCPT
+        id S1726381AbgIWJZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 05:25:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726244AbgIWJZB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 05:24:01 -0400
-Received: by mail-lf1-f67.google.com with SMTP id m5so21291123lfp.7;
-        Wed, 23 Sep 2020 02:23:57 -0700 (PDT)
+        Wed, 23 Sep 2020 05:25:01 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD45EC0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 02:25:00 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id 16so22120326qkf.4
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 02:25:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=elg0wH+6sMQCekNWlDCJHXKeUDnzoRr2E8YDp7Z6TBY=;
+        b=FSw7j7LMuIMumMry8IHTk67bV7xlIBLO63QFS3h3Ny0QdqhDS4+3UPmkUZhS3o6x2u
+         d9RbtHOCV11fclnkZV60uadtuzWQ2GpsWuPQdsIvnL6Ah2MZu/jNIGqwdo8myOaEGluq
+         7tVEKQhjlrwDHQkDxM1wb89TXEBmGcMb63KEuXrWVFANeF7WfNSHVLlqLbPRx1+SheZ3
+         QafG4iOsE+RC3y8CvI228r6KVHYubg6S2lOsZ0c8MBjEe/rYqUhQdbQp4edhxwyZQ36k
+         iDjj1lOL6vAIiCqry5X9ixu/ukWyVjeWniH3qZta79ltGDJ1WTQ1iFLrzpS2E+exJqul
+         EMPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=r2FKB+9xdFAcOhBu9h6JvwseUSqjM1Mjj8+/B3Y56B4=;
-        b=lGYZB+61OI3xmp4QqhHHY/dgBjY8vbMu0LRCf4CKXCV5Z3O3hpON1XZUYvxRfqrrNH
-         StOwHCzhe2/3Z9lz3qsbpSSvrdUd+i5t4J/CXb6WT/lSiComhoNIr/D0j7OJ4giK7wdU
-         R5y/6Whhn5ZrM3+kqppvpPoai9Zs9m8gb2Jj7bb0ahdwoohffHqL0tYZX665OE1ajbBn
-         3RW3+vGJH7Uv/m5Xm4bhmzcBTKXzuCR0Hs5531aIM8ms2yApnjkgwaXehjx/Wwdg8bfo
-         1Jb8l87pUJyLFntaeeW4aA+CzD8fJuizIT9LaXJUlVG5MEq5dR918jLWVWTPEsJy8q+D
-         l6fg==
-X-Gm-Message-State: AOAM531SUI2/1gIwEktM/jkDcOSz8dfaqAJNF0Nd2NVN8P8wYcD+n/v3
-        9bGUjJMvzL6BSFIdzFsOr74=
-X-Google-Smtp-Source: ABdhPJzijbQbYHEkoXHS3o4tGuDLoyA48HhJbSng+FWC0XobVEUA6NmQp0NM4qJeEJ+Mcay0mrjXcg==
-X-Received: by 2002:ac2:46fa:: with SMTP id q26mr2922932lfo.155.1600853037132;
-        Wed, 23 Sep 2020 02:23:57 -0700 (PDT)
-Received: from localhost.localdomain ([213.255.186.46])
-        by smtp.gmail.com with ESMTPSA id 5sm4498522lfr.289.2020.09.23.02.23.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 02:23:56 -0700 (PDT)
-Date:   Wed, 23 Sep 2020 12:23:45 +0300
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     mazziesaccount@gmail.com, matti.vaittinen@fi.rohmeurope.com
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com,
-        linux-watchdog@vger.kernel.org
-Subject: [PATCH v2 2/4] mfd: Support ROHM BD9576MUF and BD9573MUF
-Message-ID: <a76373e58837f36d328968bf5a3476f9ef071d2d.1600852339.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1600852339.git.matti.vaittinen@fi.rohmeurope.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=elg0wH+6sMQCekNWlDCJHXKeUDnzoRr2E8YDp7Z6TBY=;
+        b=EOIwob3FHIztODW7A5I/YwJhViqkbOq+Qi+9x5UV32dAMgMjnCFBB7AIZ8/lx1jC+Y
+         Di8dg+lATVZFlB6bA04B7/GUrgGDUP/EVSszFYxlBeeIXmj8k32HDTRlNHv1ln6zuIi1
+         EBDD9fORZd4DHNV9uLshWUGuhZKEFqR+cD/WnrexEPZ8JrL4NKo5JLRFR9nPM6Bz7QtF
+         Ayidss7EUatsZN4DtLT66HttqVOMgF6IlTtBqpi6oCG0lK1XXEEN9otW6AwPab0kK4EG
+         d38XuoL3XeQi2ygmcf3JsW+HQOymXuL33t3LmYceOKcNe+7ndPuQymwln82DteeK845l
+         UMNA==
+X-Gm-Message-State: AOAM530mnH7MgINLqxUHPETKK+x5cHvXS5OqjnZj/OJpThZwWEwXBC6u
+        SsvbWIBEebWnxnzrxApCHym3BQQCOMbdehaXcw7KMg==
+X-Google-Smtp-Source: ABdhPJz4XvVM2iguquzjpe0KfCxvbY4E4m/J7Ivq1psqXwziKKLzijNXsIBRrryXo11h7vm+R9mdwM2CYtgRnsCOUOU=
+X-Received: by 2002:a37:54a:: with SMTP id 71mr8199361qkf.407.1600853099325;
+ Wed, 23 Sep 2020 02:24:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1600852339.git.matti.vaittinen@fi.rohmeurope.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+References: <00000000000052569205afa67426@google.com> <20200919110831.GD7462@zn.tnic>
+ <CACT4Y+ZhofJhNjfav22YNVpxtH4_+3Qaut6rOiqv4MLNU5mcEg@mail.gmail.com>
+ <CACT4Y+b9ZCKJkOmwbEC6sZxEQ-9g2g=-v4+X0aWv7AsrZo7utA@mail.gmail.com>
+ <CAKwvOdmKcn=FNzwtBZ8z0evLz4BXgWtsoz9+QTC6GLqtNp1bXg@mail.gmail.com>
+ <20200921221336.GN5901@zn.tnic> <CAKwvOd=E11KriNqeVv2-Tvq5sQy=4vyBzDEH22D5h5LgBeFsVw@mail.gmail.com>
+ <20200923090336.GD28545@zn.tnic>
+In-Reply-To: <20200923090336.GD28545@zn.tnic>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 23 Sep 2020 11:24:48 +0200
+Message-ID: <CACT4Y+Y4-vqdv01ebyzhUoggUCUyvbhjut7Wvj=r4dBfyxLeng@mail.gmail.com>
+Subject: Re: general protection fault in perf_misc_flags
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        syzbot <syzbot+ce179bc99e64377c24bc@syzkaller.appspotmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add core support for ROHM BD9576MUF and BD9573MUF PMICs which are
-mainly used to power the R-Car series processors.
+On Wed, Sep 23, 2020 at 11:03 AM Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Tue, Sep 22, 2020 at 11:56:04AM -0700, Nick Desaulniers wrote:
+> > So I think there's an issue with "deterministically reproducible."
+> > The syzcaller report has:
+> > > > Unfortunately, I don't have any reproducer for this issue yet.
+>
+> Yeah, Dmitry gave two other links of similar reports, the first one
+> works for me:
+>
+> https://syzkaller.appspot.com/bug?extid=1dccfcb049726389379c
+>
+> and that one doesn't have a reproducer either. The bytes look familiar
+> though:
+>
+> Code: c1 e8 03 42 80 3c 20 00 74 05 e8 79 7a a7 00 49 8b 47 10 48 89 05 f6 d8 ef 09 49 8d 7f 08 48 89 f8 48 c1 e8 03 42 80 3c 00 00 <00> 00 e8 57 7a a7 00 49 8b 47 08 48 89 05 dc d8 ef 09 49 8d 7f 18
+> All code
+> ========
+>    0:   c1 e8 03                shr    $0x3,%eax
+>    3:   42 80 3c 20 00          cmpb   $0x0,(%rax,%r12,1)
+>    8:   74 05                   je     0xf
+>    a:   e8 79 7a a7 00          callq  0xa77a88
+>    f:   49 8b 47 10             mov    0x10(%r15),%rax
+>   13:   48 89 05 f6 d8 ef 09    mov    %rax,0x9efd8f6(%rip)        # 0x9efd910
+>   1a:   49 8d 7f 08             lea    0x8(%r15),%rdi
+>   1e:   48 89 f8                mov    %rdi,%rax
+>   21:   48 c1 e8 03             shr    $0x3,%rax
+>   25:   42 80 3c 00 00          cmpb   $0x0,(%rax,%r8,1)
+>   2a:*  00 00                   add    %al,(%rax)               <-- trapping instruction
+>   2c:   e8 57 7a a7 00          callq  0xa77a88
+>   31:   49 8b 47 08             mov    0x8(%r15),%rax
+>   35:   48 89 05 dc d8 ef 09    mov    %rax,0x9efd8dc(%rip)        # 0x9efd918
+>   3c:   49 8d 7f 18             lea    0x18(%r15),%rdi
+>
+> 4 zero bytes again. And that .config has kasan stuff enabled too so
+> could the failure be related to having kasan stuff enabled and it
+> messing up offsets?
+>
+> That is, provided this is the mechanism how it would happen. We still
+> don't know what and when wrote those zeroes in there. Not having a
+> reproducer is nasty but looking at those reports above and if I'm
+> reading this correctly, rIP points to
+>
+> RIP: 0010:update_pvclock_gtod arch/x86/kvm/x86.c:1743 [inline]
+>
+> each time and the URL says they're 9 crashes total. And each have
+> happened at that rIP. So all we'd need is set a watchpoint when that
+> address is being written and dump stuff.
+>
+> Dmitry, can the syzkaller do debugging stuff like that?
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
-Changelog since v1:
-- Removed extra newlines from header
+syzbot does not have direct support for such things.
+It uses CONFIG_DEBUG_AID_FOR_SYZBOT=y:
+https://github.com/google/syzkaller/blob/master/docs/syzbot.md#no-custom-patches
+But that's generally useful for linux-next only and the clang build is
+on the upstream tree...
 
- drivers/mfd/Kconfig              |  11 +++
- drivers/mfd/Makefile             |   1 +
- drivers/mfd/rohm-bd9576.c        | 130 +++++++++++++++++++++++++++++++
- include/linux/mfd/rohm-bd957x.h  |  59 ++++++++++++++
- include/linux/mfd/rohm-generic.h |   2 +
- 5 files changed, 203 insertions(+)
- create mode 100644 drivers/mfd/rohm-bd9576.c
- create mode 100644 include/linux/mfd/rohm-bd957x.h
-
-diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index 33df0837ab41..e8275526818a 100644
---- a/drivers/mfd/Kconfig
-+++ b/drivers/mfd/Kconfig
-@@ -1975,6 +1975,17 @@ config MFD_ROHM_BD71828
- 	  Also included is a Coulomb counter, a real-time clock (RTC), and
- 	  a 32.768 kHz clock gate.
- 
-+config MFD_ROHM_BD957XMUF
-+	tristate "ROHM BD9576MUF and BD9573MUF Power Management ICs"
-+	depends on I2C=y
-+	depends on OF
-+	select REGMAP_I2C
-+	select MFD_CORE
-+	help
-+	  Select this option to get support for the ROHM BD9576MUF and
-+	  BD9573MUF Power Management ICs. BD9576 and BD9573 are primarily
-+	  designed to be used to power R-Car series processors.
-+
- config MFD_STM32_LPTIMER
- 	tristate "Support for STM32 Low-Power Timer"
- 	depends on (ARCH_STM32 && OF) || COMPILE_TEST
-diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-index a60e5f835283..6ad33ccb35f0 100644
---- a/drivers/mfd/Makefile
-+++ b/drivers/mfd/Makefile
-@@ -260,6 +260,7 @@ obj-$(CONFIG_RAVE_SP_CORE)	+= rave-sp.o
- obj-$(CONFIG_MFD_ROHM_BD70528)	+= rohm-bd70528.o
- obj-$(CONFIG_MFD_ROHM_BD71828)	+= rohm-bd71828.o
- obj-$(CONFIG_MFD_ROHM_BD718XX)	+= rohm-bd718x7.o
-+obj-$(CONFIG_MFD_ROHM_BD957XMUF)	+= rohm-bd9576.o
- obj-$(CONFIG_MFD_STMFX) 	+= stmfx.o
- obj-$(CONFIG_MFD_KHADAS_MCU) 	+= khadas-mcu.o
- 
-diff --git a/drivers/mfd/rohm-bd9576.c b/drivers/mfd/rohm-bd9576.c
-new file mode 100644
-index 000000000000..a23ded510209
---- /dev/null
-+++ b/drivers/mfd/rohm-bd9576.c
-@@ -0,0 +1,130 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+//
-+// Copyright (C) 2020 ROHM Semiconductors
-+//
-+// ROHM BD9576MUF and BD9573MUF PMIC driver
-+
-+#include <linux/i2c.h>
-+#include <linux/interrupt.h>
-+#include <linux/ioport.h>
-+#include <linux/irq.h>
-+#include <linux/mfd/core.h>
-+#include <linux/mfd/rohm-bd957x.h>
-+#include <linux/mfd/rohm-generic.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+#include <linux/regmap.h>
-+#include <linux/types.h>
-+
-+static struct mfd_cell bd9573_mfd_cells[] = {
-+	{ .name = "bd9573-pmic", },
-+	{ .name = "bd9576-wdt", },
-+};
-+
-+
-+static struct mfd_cell bd9576_mfd_cells[] = {
-+	{ .name = "bd9576-pmic", },
-+	{ .name = "bd9576-wdt", },
-+};
-+
-+static const struct regmap_range volatile_ranges[] = {
-+	{
-+		.range_min = BD957X_REG_SMRB_ASSERT,
-+		.range_max = BD957X_REG_SMRB_ASSERT,
-+	},
-+	{
-+		.range_min = BD957X_REG_PMIC_INTERNAL_STAT,
-+		.range_max = BD957X_REG_PMIC_INTERNAL_STAT,
-+	},
-+	{
-+		.range_min = BD957X_REG_INT_THERM_STAT,
-+		.range_max = BD957X_REG_INT_THERM_STAT,
-+	},
-+	{
-+		.range_min = BD957X_REG_INT_OVP_STAT,
-+		.range_max = BD957X_REG_INT_SYS_STAT,
-+	}, {
-+		.range_min = BD957X_REG_INT_MAIN_STAT,
-+		.range_max = BD957X_REG_INT_MAIN_STAT,
-+	},
-+};
-+
-+static const struct regmap_access_table volatile_regs = {
-+	.yes_ranges = &volatile_ranges[0],
-+	.n_yes_ranges = ARRAY_SIZE(volatile_ranges),
-+};
-+
-+static struct regmap_config bd957x_regmap = {
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+	.volatile_table = &volatile_regs,
-+	.max_register = BD957X_MAX_REGISTER,
-+	.cache_type = REGCACHE_RBTREE,
-+};
-+
-+static int bd957x_i2c_probe(struct i2c_client *i2c,
-+			     const struct i2c_device_id *id)
-+{
-+	int ret;
-+	struct regmap *regmap;
-+	struct mfd_cell *mfd;
-+	int cells;
-+	unsigned int chip_type;
-+
-+	chip_type = (unsigned int)(uintptr_t)
-+		    of_device_get_match_data(&i2c->dev);
-+
-+	switch (chip_type) {
-+	case ROHM_CHIP_TYPE_BD9576:
-+		mfd = bd9576_mfd_cells;
-+		cells = ARRAY_SIZE(bd9576_mfd_cells);
-+		break;
-+	case ROHM_CHIP_TYPE_BD9573:
-+		mfd = bd9573_mfd_cells;
-+		cells = ARRAY_SIZE(bd9573_mfd_cells);
-+		break;
-+	default:
-+		dev_err(&i2c->dev, "Unknown device type");
-+		return -EINVAL;
-+	}
-+
-+	regmap = devm_regmap_init_i2c(i2c, &bd957x_regmap);
-+	if (IS_ERR(regmap)) {
-+		dev_err(&i2c->dev, "Failed to initialize Regmap\n");
-+		return PTR_ERR(regmap);
-+	}
-+
-+	ret = devm_mfd_add_devices(&i2c->dev, PLATFORM_DEVID_AUTO, mfd, cells,
-+				   NULL, 0, NULL);
-+	if (ret)
-+		dev_err(&i2c->dev, "Failed to create subdevices\n");
-+
-+	return ret;
-+}
-+
-+static const struct of_device_id bd957x_of_match[] = {
-+	{
-+		.compatible = "rohm,bd9576",
-+		.data = (void *)ROHM_CHIP_TYPE_BD9576,
-+	},
-+	{
-+		.compatible = "rohm,bd9573",
-+		.data = (void *)ROHM_CHIP_TYPE_BD9573,
-+	},
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, bd957x_of_match);
-+
-+static struct i2c_driver bd957x_drv = {
-+	.driver = {
-+		.name = "rohm-bd957x",
-+		.of_match_table = bd957x_of_match,
-+	},
-+	.probe = &bd957x_i2c_probe,
-+};
-+
-+module_i2c_driver(bd957x_drv);
-+
-+MODULE_AUTHOR("Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>");
-+MODULE_DESCRIPTION("ROHM BD9576MUF and BD9573MUF Power Management IC driver");
-+MODULE_LICENSE("GPL");
-diff --git a/include/linux/mfd/rohm-bd957x.h b/include/linux/mfd/rohm-bd957x.h
-new file mode 100644
-index 000000000000..3e7ca6fe5d4f
---- /dev/null
-+++ b/include/linux/mfd/rohm-bd957x.h
-@@ -0,0 +1,59 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/* Copyright (C) 2020 ROHM Semiconductors */
-+
-+#ifndef __LINUX_MFD_BD957X_H__
-+#define __LINUX_MFD_BD957X_H__
-+
-+enum {
-+	BD957X_VD50,
-+	BD957X_VD18,
-+	BD957X_VDDDR,
-+	BD957X_VD10,
-+	BD957X_VOUTL1,
-+	BD957X_VOUTS1,
-+};
-+
-+#define BD957X_REG_SMRB_ASSERT		0x15
-+#define BD957X_REG_PMIC_INTERNAL_STAT	0x20
-+#define BD957X_REG_INT_THERM_STAT	0x23
-+#define BD957X_REG_INT_THERM_MASK 0x24
-+#define BD957X_REG_INT_OVP_STAT 0x25
-+#define BD957X_REG_INT_SCP_STAT 0x26
-+#define BD957X_REG_INT_OCP_STAT 0x27
-+#define BD957X_REG_INT_OVD_STAT 0x28
-+#define BD957X_REG_INT_UVD_STAT 0x29
-+#define BD957X_REG_INT_UVP_STAT 0x2a
-+#define BD957X_REG_INT_SYS_STAT 0x2b
-+#define BD957X_REG_INT_SYS_MASK 0x2c
-+#define BD957X_REG_INT_MAIN_STAT 0x30
-+#define BD957X_REG_INT_MAIN_MASK 0x31
-+
-+#define BD957X_REG_WDT_CONF 0x16
-+
-+#define BD957X_REG_POW_TRIGGER1 0x41
-+#define BD957X_REG_POW_TRIGGER2 0x42
-+#define BD957X_REG_POW_TRIGGER3 0x43
-+#define BD957X_REG_POW_TRIGGER4 0x44
-+#define BD957X_REG_POW_TRIGGERL1 0x45
-+#define BD957X_REG_POW_TRIGGERS1 0x46
-+
-+#define BD957X_REGULATOR_EN_MASK 0xff
-+#define BD957X_REGULATOR_DIS_VAL 0xff
-+
-+#define BD957X_VSEL_REG_MASK	0xff
-+
-+#define BD957X_MASK_VOUT1_TUNE	0x87
-+#define BD957X_MASK_VOUT2_TUNE	0x87
-+#define BD957X_MASK_VOUT3_TUNE	0x1f
-+#define BD957X_MASK_VOUT4_TUNE	0x1f
-+#define BD957X_MASK_VOUTL1_TUNE	0x87
-+
-+#define BD957X_REG_VOUT1_TUNE	0x50
-+#define BD957X_REG_VOUT2_TUNE	0x53
-+#define BD957X_REG_VOUT3_TUNE	0x56
-+#define BD957X_REG_VOUT4_TUNE	0x59
-+#define BD957X_REG_VOUTL1_TUNE	0x5c
-+
-+#define BD957X_MAX_REGISTER 0x61
-+
-+#endif
-diff --git a/include/linux/mfd/rohm-generic.h b/include/linux/mfd/rohm-generic.h
-index 4283b5b33e04..58b4f1a0f4af 100644
---- a/include/linux/mfd/rohm-generic.h
-+++ b/include/linux/mfd/rohm-generic.h
-@@ -12,6 +12,8 @@ enum rohm_chip_type {
- 	ROHM_CHIP_TYPE_BD71847,
- 	ROHM_CHIP_TYPE_BD70528,
- 	ROHM_CHIP_TYPE_BD71828,
-+	ROHM_CHIP_TYPE_BD9576,
-+	ROHM_CHIP_TYPE_BD9573,
- 	ROHM_CHIP_TYPE_AMOUNT
- };
- 
--- 
-2.21.0
+Options I see:
+1. Add stricter debug checks for code that overwrites code. Then maybe
+we can catch it red handed.
+2. Setup clang instance on linux-next
+3. Run syzkaller locally with custom patches.
 
 
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+> > Following my hypothesis about having a bad address calculation; the
+> > tricky part is I'd need to look through the relocations and try to see
+> > if any could resolve to the address that was accidentally modified.  I
+> > suspect objtool could be leveraged for that;
+>
+> If you can find this at compile time...
+>
+> > maybe it could check whether each `struct jump_entry`'s `target`
+> > member referred to either a NOP or a CMP, and error otherwise? (Do we
+> > have other non-NOP or CMP targets? IDK)
+>
+> Follow jump_label_transform() - it does verify what it is going to
+> patch. And while I'm looking at this, I realize that the jump labels
+> patch 5 bytes but the above zeroes are 4 bytes. In the other opcode
+> bytes I decoded it is 4 bytes too. So this might not be caused by the
+> jump labels patching...
+>
+> > This hypothesis might also be incorrect, and thus would be chasing a
+> > red herring...not really sure how else to pursue debugging this.
+>
+> Yeah, this one is tricky to debug.
+>
+> --
+> Regards/Gruss,
+>     Boris.
+>
+> https://people.kernel.org/tglx/notes-about-netiquette
