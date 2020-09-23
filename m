@@ -2,100 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABE04275D89
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE385275D92
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726638AbgIWQgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 12:36:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgIWQgN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 12:36:13 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 798FDC0613CE;
-        Wed, 23 Sep 2020 09:36:13 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id h2so170319ilo.12;
-        Wed, 23 Sep 2020 09:36:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7kxcMzSJOu9MRUeXMXsPNJHKsz/cSDIqf1ztUHh+hbg=;
-        b=hupGvrAW1PU1XHVqgGlDPNjfWAM6aiQKfO2db0dqqhjlxJIRcm8Qy89a5csCD5aiRZ
-         zRKBSZNSqaOfuQV6rIcv25EqxsRxGo400sWROPMxq92k91eJWUrzPyW40mUjaDlpbC5m
-         vXteF6iQYnDyQCKrzcF3SD3xYpfZ1RrrYI4+B0Ty9d5TPL/fxEERRP8XZ157vSlCidgo
-         lZz8DvkCUmD6EC6x/0kuykVsGPhBx3tHtwVl8v390oAmFai+kQvEL8ZJi9VFHzMvt5md
-         OvH30JveLpQ5/bExiAdX9qC9Z1hp11vSj0ekH5R6owmZyaLD+uvlRp1jtSNflr5nAOgo
-         kUQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7kxcMzSJOu9MRUeXMXsPNJHKsz/cSDIqf1ztUHh+hbg=;
-        b=NNjmLFmdzAfMnQq4KXxx/V2LYwXc9fE4Vm92orZblx9Sv6skkiR0ENKnEaILgp89Yz
-         QxaEntSWYYQVc2VK8y1ccECTHroRv8oymiHr20YKbjuJ3WIeYRu2pRehofvNnwUy3Bex
-         aCfFZtGU9jth7V3GmQGjQQhXDtytmMc1+LfSdr6xZCkx30RgD1umW9V6zyT6ojP9KTfK
-         WgIRtsFWqRv6pRIHEqeAAfYtWO+aComRnBWh0Y39Ekx5VPdero85FoIcVM9Zu0QJE6FQ
-         9sxHuW092+HDgQ6a6tPn0SbohPNU7nDiTL4zbZMoDBpprbzxtkuCyqmCjZmfb04AhJCz
-         IXfA==
-X-Gm-Message-State: AOAM5325e8XF4xUMcK2EKbIvM31wGQEZA/LYJuH8+s63BrRz/UNQ19D1
-        pdaZlQ5oLXnKHBk7smzAaGrksO28UPLqC1OjB7w=
-X-Google-Smtp-Source: ABdhPJzS4BrlNB2C19arwtVi2wp4blqZny3A+tjNFQw+wk3ylhNsull61eeG7KeQpz0HQ6JeMd1TI9/zsv7EpBMRk4w=
-X-Received: by 2002:a92:8b41:: with SMTP id i62mr564007ild.9.1600878972555;
- Wed, 23 Sep 2020 09:36:12 -0700 (PDT)
+        id S1726671AbgIWQgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 12:36:31 -0400
+Received: from mga17.intel.com ([192.55.52.151]:7062 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726130AbgIWQgb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 12:36:31 -0400
+IronPort-SDR: L8DtY5LCNaOPNeUnKpsF0dBrJNloeWGZisLM80oHK3UriqIeRZFLNZVClMpCBVqJ41mX41/Tv0
+ 7Jip7UOipKjg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="140962211"
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
+   d="scan'208";a="140962211"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 09:36:30 -0700
+IronPort-SDR: kIzfA+tB1ndtmTmCzFbm3LjYtRwl5niqcSqxJ8ZH/n/LdAc/i3dDBSmue/9GW4gQIacswOI26w
+ EMWcaBOIIUAw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
+   d="scan'208";a="454981819"
+Received: from sjchrist-coffee.jf.intel.com ([10.54.74.160])
+  by orsmga004.jf.intel.com with ESMTP; 23 Sep 2020 09:36:30 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] KVM: VMX: Clean up RTIT MAXPHYADDR usage
+Date:   Wed, 23 Sep 2020 09:36:26 -0700
+Message-Id: <20200923163629.20168-1-sean.j.christopherson@intel.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20200923152308.3389-1-ptikhomirov@virtuozzo.com> <CAOQ4uxjxYjRkkB3tFqdZiOwj=2_+Ghzf5AvmptVLQM22K5DWfg@mail.gmail.com>
-In-Reply-To: <CAOQ4uxjxYjRkkB3tFqdZiOwj=2_+Ghzf5AvmptVLQM22K5DWfg@mail.gmail.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Wed, 23 Sep 2020 19:36:01 +0300
-Message-ID: <CAOQ4uxhjWsK1dfQu4K8uvRyGeGnFrM6opq32RxMOT4pWdqm+3A@mail.gmail.com>
-Subject: Re: [PATCH v2] ovl: introduce new "index=nouuid" option for inodes
- index feature
-To:     Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > @@ -414,7 +415,7 @@ static int ovl_check_origin(struct ovl_fs *ofs, struct dentry *upperdentry,
-> >   * Return 0 on match, -ESTALE on mismatch, < 0 on error.
-> >   */
-> >  static int ovl_verify_fh(struct dentry *dentry, const char *name,
-> > -                        const struct ovl_fh *fh)
-> > +                        const struct ovl_fh *fh, bool nouuid)
-> >  {
-> >         struct ovl_fh *ofh = ovl_get_fh(dentry, name);
-> >         int err = 0;
-> > @@ -425,8 +426,14 @@ static int ovl_verify_fh(struct dentry *dentry, const char *name,
-> >         if (IS_ERR(ofh))
-> >                 return PTR_ERR(ofh);
-> >
-> > -       if (fh->fb.len != ofh->fb.len || memcmp(&fh->fb, &ofh->fb, fh->fb.len))
-> > +       if (fh->fb.len != ofh->fb.len) {
-> >                 err = -ESTALE;
-> > +       } else {
-> > +               if (nouuid && !uuid_equal(&fh->fb.uuid, &ofh->fb.uuid))
-> > +                       ofh->fb.uuid = fh->fb.uuid;
-> > +               if (memcmp(&fh->fb, &ofh->fb, fh->fb.len))
-> > +                       err = -ESTALE;
-> > +       }
-> >
+Stop using cpuid_query_maxphyaddr() for a random RTIT MSR check and
+unexport said function to discourage future use.
 
-On second thought I am wondering if we should do that differently.
-If users want to work with index=nouuid, they need to work with it from day 1.
-index=nouuid should export null uuid in NFS handles and write null uuid
-in trusted.overlay.origin xattr.
+v2:
+  - Rebased to kvm/queue, commit e1ba1a15af73 ("KVM: SVM: Enable INVPCID
+    feature on AMD").
 
-So in ovl_encode_real_fh() you set null uuid and
-instead of relaxing uuid_equal() in ovl_decode_real_fh()
-you change it to uuid_is_null().
+Sean Christopherson (3):
+  KVM: VMX: Use precomputed MAXPHYADDR for RTIT base MSR check
+  KVM: VMX: Replace MSR_IA32_RTIT_OUTPUT_BASE_MASK with helper function
+  KVM: x86: Unexport cpuid_query_maxphyaddr()
 
-Do you have a problem with that for Virtuozzo use case?
+ arch/x86/kvm/cpuid.c   |  1 -
+ arch/x86/kvm/vmx/vmx.c | 11 +++++++----
+ 2 files changed, 7 insertions(+), 5 deletions(-)
 
-Thanks,
-Amir.
+-- 
+2.28.0
+
