@@ -2,76 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20F18275D49
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:24:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F859275D55
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbgIWQYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 12:24:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:50312 "EHLO foss.arm.com"
+        id S1726762AbgIWQZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 12:25:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726184AbgIWQYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 12:24:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 736E630E;
-        Wed, 23 Sep 2020 09:24:53 -0700 (PDT)
-Received: from [10.57.48.76] (unknown [10.57.48.76])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B2D263F718;
-        Wed, 23 Sep 2020 09:24:52 -0700 (PDT)
-Subject: Re: [PATCH] iommu: of: skip iommu_device_list traversal in
- of_iommu_xlate()
-To:     Charan Teja Reddy <charante@codeaurora.org>, joro@8bytes.org,
-        iommu@lists.linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org
-References: <1600872826-2254-1-git-send-email-charante@codeaurora.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <8722e4bc-efe0-27c4-2b7d-626188da5bfb@arm.com>
-Date:   Wed, 23 Sep 2020 17:24:51 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        id S1726178AbgIWQZx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 12:25:53 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5F816206D9;
+        Wed, 23 Sep 2020 16:25:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600878352;
+        bh=PQYW/Ldo+sSZu9IaAFbupZBqQiivjpdGo9B0LIr5t9Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EZNSI23epCglEhUvEjBMb/94LIn60XKVxEbfxT8eNVWXtsZwRfw4gqnKhkdLH3Utd
+         XFXL6/OATz0UZ+F75lQql/cQhwFHr/jt99cRRN0mT+UHIyVB/EWrlN4bk+DSnjd3Rs
+         9S/tN0/u3gZ+M1JGYW513NoUv92jPLx4LYDC/V3E=
+Date:   Wed, 23 Sep 2020 17:24:58 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        srv_heupstream@mediatek.com, Wen Su <wen.su@mediatek.com>
+Subject: Re: [PATCH v2 3/8] dt-bindings: regulator: Add document for MT6359
+ regulator
+Message-ID: <20200923162458.GE5707@sirena.org.uk>
+References: <1600688895-9238-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+ <1600688895-9238-4-git-send-email-hsin-hsiung.wang@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <1600872826-2254-1-git-send-email-charante@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="bi5JUZtvcfApsciF"
+Content-Disposition: inline
+In-Reply-To: <1600688895-9238-4-git-send-email-hsin-hsiung.wang@mediatek.com>
+X-Cookie: This report is filled with omissions.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-23 15:53, Charan Teja Reddy wrote:
-> In of_iommu_xlate(), check if iommu device is enabled before traversing
-> the iommu_device_list through iommu_ops_from_fwnode(). It is of no use
-> in traversing the iommu_device_list only to return NO_IOMMU because of
-> iommu device node is disabled.
 
-Well, the "use" is that it keeps the code that much smaller and simpler 
-to have a single path for returning this condition. This whole callstack 
-isn't exactly a high-performance code path to begin with, and we've 
-always assumed that IOMMUs present but disabled in DT would be a pretty 
-rare exception. Do you have a system that challenges those assumptions 
-and shows any benefit from this change?
+--bi5JUZtvcfApsciF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Robin.
+On Mon, Sep 21, 2020 at 07:48:10PM +0800, Hsin-Hsiung Wang wrote:
 
-> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
-> ---
->   drivers/iommu/of_iommu.c | 5 +++--
->   1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
-> index e505b91..225598c 100644
-> --- a/drivers/iommu/of_iommu.c
-> +++ b/drivers/iommu/of_iommu.c
-> @@ -94,9 +94,10 @@ static int of_iommu_xlate(struct device *dev,
->   	struct fwnode_handle *fwnode = &iommu_spec->np->fwnode;
->   	int ret;
->   
-> +	if (!of_device_is_available(iommu_spec->np))
-> +		return NO_IOMMU;
->   	ops = iommu_ops_from_fwnode(fwnode);
-> -	if ((ops && !ops->of_xlate) ||
-> -	    !of_device_is_available(iommu_spec->np))
-> +	if (ops && !ops->of_xlate)
->   		return NO_IOMMU;
->   
->   	ret = iommu_fwspec_init(dev, &iommu_spec->np->fwnode, ops);
-> 
+> +Required properties:
+> +- compatible: "mediatek,mt6359-regulator"
+
+The compatible isn't used by the driver (which is good!) so should be
+dropped from the binding document.
+
+--bi5JUZtvcfApsciF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9rdtkACgkQJNaLcl1U
+h9AxPwf8CAx/q4PAO9Rp6eYMDBKZmthTsSTtBUgfSC6WahEzOPQypNZI524yMERv
+Ds+F2wmVAhQj5GLOi2zLn0TM0oVqF5u9uXewMUjlRR8l56/GBa0ZDNL4LXQlGIKZ
+27QHt2czssMevBM3gdGslcDtAGTR7u3PgW8tvUjV3wSab4foD7M1zrgli0P87yEN
+QVi0vDcKSybmpC4kCElZo+x5jwF+PXq+rvklMjCNE/o47c1kOSPFsrZAVWBfg09P
+1f/0bFbV8XWzrmMSnYiTXn32R5xWQkdD9qdGS+UotFPgtTqpsczXtNB/L0IviDTm
+Qr36BUnHbcUoxSc+rLq7PUM7Q7CUYg==
+=9PNJ
+-----END PGP SIGNATURE-----
+
+--bi5JUZtvcfApsciF--
