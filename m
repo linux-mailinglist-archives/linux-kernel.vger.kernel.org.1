@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2842A274ECB
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 04:00:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0600A274ECD
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 04:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727036AbgIWB75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 21:59:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59228 "EHLO
+        id S1727088AbgIWCAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 22:00:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726548AbgIWB74 (ORCPT
+        with ESMTP id S1726548AbgIWCAA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 21:59:56 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B41C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 18:59:56 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id m15so6001791pls.8
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 18:59:56 -0700 (PDT)
+        Tue, 22 Sep 2020 22:00:00 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE3AC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 19:00:00 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id x123so14074266pfc.7
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 19:00:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1WaOSyW42WKt5VX+wz2NlJkyrwbmYzHwbUQJTeg1wEs=;
-        b=WDPy9taiEFTzzwPyJpgMy7P5cNKK2GaVlNK3NBbBN9joc1u5finPO9KgSDee9Eh74L
-         dSa1/gJnK0rkq3E+4jfQQ6JI+ldw2fkGO24jGbjkygXtpHZEjXGlITWJUtyVXwhZezbe
-         K1iM1pEKYpOTcZCLDjzLiQq9zLkO1ACWtsABFBNZymFBPyqNBuj/UpDg+7AaA0Fv8s+E
-         d8MDsXJ3jqYZ3q7973M5Nf1vgilZm6F7d7Y4hwV3fxCpFuYIJ3C0fQHMMFDITa8BaUt7
-         XWVEu/roUvy45zc0KEcnepCpt1MUlkUkxFuiAldWmjjzyclwP2e1PuBqrH41axtX6qrF
-         tj+w==
+        bh=8Ol86q2LjiXtOW5navEAqNtxkyMNcnsoEEblaa/ZxqE=;
+        b=XXgFqe9SECZdwnVNlCvT8oC7tVHLEpn0GElycEPYNjVK8+tcb/RIEnzkWjkDHu5+dq
+         vYGFn+uI72GYO7lJRMB2VAfGFh7QofzJA0i9eUqkwcxX2PR3sEBcsHnUbO+PFatSnZAc
+         qbFZmFzKyPwjFa0C63n5fjenrRAN5eBK0y6iGf02+zt3cigKM6mtPkCbLf2R3Y5xHn4x
+         a8/6LxHhRHnmo1R4OmjYzW77Td54WgD1fcruFfqtzRdKF5iyyXESXD8xsSt/5ZMN6GwF
+         pP7zaIwa3zRXHjWhjYB1LY2x7BE+ltl7l6gih8CA0v7yYhANa0T2Q2gTVYKeFTzPiMv8
+         rMhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=1WaOSyW42WKt5VX+wz2NlJkyrwbmYzHwbUQJTeg1wEs=;
-        b=qU7+TwULF72QVPHAooxQ5qL3O3gIXCr2Fd5UCwdzHBJeQZayqbtEKC428z5jZcUah+
-         ewQ2xYAmWSEwMJpmF8Pdp9PdKZ92jYiSiKDrbgXL1DORQniBLg0IWPqPmCswB5ShHsv7
-         Z2BUJr8o4+BpqoL+JySiqL6K9u8w51DdbpRlv54or0uS/jvlOxvI12TdDE6i9KeAoOh7
-         ZYgkV3ppq4sTbYX93gbsz9FQd6CB31EhV8zWD8vVhiuIQ6GLPM0/+FhEzp0ZFimLfbN9
-         nCoY5UvCBYWwNaQLkpUAm/NP5jgZL6tKQA9UXoWAUluFs9VB5q5jnpgHJYXtbaBpnlLB
-         9jgA==
-X-Gm-Message-State: AOAM531m//TRv8ZE4Q45cRlwdRD8yZrgnJhVKy/m7cGhcYqhFHBU0VD6
-        enCtXFQoCagv0mlSEtVo1HyOQUxoxcU=
-X-Google-Smtp-Source: ABdhPJxX0qWxye+CAgVrlpzbcFbH/woaxNh7jJsDng3AQwlKjDRDjY4emnN63zSLpKDHd5Q04BphQA==
-X-Received: by 2002:a17:90a:e017:: with SMTP id u23mr6024520pjy.3.1600826395843;
-        Tue, 22 Sep 2020 18:59:55 -0700 (PDT)
+        bh=8Ol86q2LjiXtOW5navEAqNtxkyMNcnsoEEblaa/ZxqE=;
+        b=DZM+H3hWnhEKzi8jSyG2U6af42M/YA1mJ0RGKCVHqTWNKsrA9tNWW8loZnJzlsCgDJ
+         Cwiglqb7oWWKzF9eci68OAGF8NV2J9Rga0vAn90fdpUhTuqSdAJuxIMCE9rltQW+OK19
+         qIDjQZkkg9QoGyMQO8aOD4V7B6Gpdfapsc2cf4vcy37g9OBr7/pANm5c+rS7yLaBA1i2
+         fvoLJCpsddEUS73LvEHK6mL8Lblr0GUrzH+CKpD+gGZKTh+BWfGogVhwooo+aYIZLuEY
+         ZoyyVK2rVBpzA6RhGltd/4/WuO0lvpPeH69PvE8/hDBEeapW16/RTxaGrFUUGgXLgX0c
+         l88Q==
+X-Gm-Message-State: AOAM533oFvpt8WmXdQ6OsA7pUJzHD78c4oXvdE+G92cjMp9um5ka10mj
+        OVM6vuvKHYXu6/J0WlRAL84=
+X-Google-Smtp-Source: ABdhPJyEo77Ar8W8TfXKqXVrZnIC53i4AtyyvCdY9u7KJZ+fGV4cEzaxERFGHVxsaspfZM/e/HNb/w==
+X-Received: by 2002:a63:c74a:: with SMTP id v10mr5655433pgg.240.1600826399470;
+        Tue, 22 Sep 2020 18:59:59 -0700 (PDT)
 Received: from balhae.roam.corp.google.com ([101.235.31.111])
-        by smtp.gmail.com with ESMTPSA id v13sm3367741pjr.12.2020.09.22.18.59.52
+        by smtp.gmail.com with ESMTPSA id v13sm3367741pjr.12.2020.09.22.18.59.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 18:59:55 -0700 (PDT)
+        Tue, 22 Sep 2020 18:59:58 -0700 (PDT)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -60,9 +60,9 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Stephane Eranian <eranian@google.com>,
         Andi Kleen <ak@linux.intel.com>,
         Ian Rogers <irogers@google.com>
-Subject: [PATCH 1/5] perf evsel: Add evsel__clone() function
-Date:   Wed, 23 Sep 2020 10:59:41 +0900
-Message-Id: <20200923015945.47535-2-namhyung@kernel.org>
+Subject: [PATCH 2/5] perf stat: Add --for-each-cgroup option
+Date:   Wed, 23 Sep 2020 10:59:42 +0900
+Message-Id: <20200923015945.47535-3-namhyung@kernel.org>
 X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
 In-Reply-To: <20200923015945.47535-1-namhyung@kernel.org>
 References: <20200923015945.47535-1-namhyung@kernel.org>
@@ -72,267 +72,225 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The evsel__clone() is to create an exactly same evsel from same
-attributes.  The function assumes the given evsel is not configured
-yet so it cares fields set during event parsing.  Those fields are now
-moved together as Jiri suggested.  Note that metric events will be
-handled by later patch.
+The --for-each-cgroup option is a syntax sugar to monitor large number
+of cgroups easily.  Current command line requires to list all the
+events and cgroups even if users want to monitor same events for each
+cgroup.  This patch addresses that usage by copying given events for
+each cgroup on user's behalf.
 
-It will be used by perf stat to generate separate events for each
-cgroup.
+For instance, if they want to monitor 6 events for 200 cgroups each
+they should write 1200 event names (with -e) AND 1200 cgroup names
+(with -G) on the command line.  But with this change, they can just
+specify 6 events and 200 cgroups with a new option.
+
+A simpler example below: It wants to measure 3 events for 2 cgroups
+('A' and 'B').  The result is that total 6 events are counted like
+below.
+
+  $ ./perf stat -a -e cpu-clock,cycles,instructions --for-each-cgroup A,B sleep 1
+
+   Performance counter stats for 'system wide':
+
+              988.18 msec cpu-clock                 A #    0.987 CPUs utilized
+       3,153,761,702      cycles                    A #    3.200 GHz                      (100.00%)
+       8,067,769,847      instructions              A #    2.57  insn per cycle           (100.00%)
+              982.71 msec cpu-clock                 B #    0.982 CPUs utilized
+       3,136,093,298      cycles                    B #    3.182 GHz                      (99.99%)
+       8,109,619,327      instructions              B #    2.58  insn per cycle           (99.99%)
+
+         1.001228054 seconds time elapsed
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/evsel.c | 104 ++++++++++++++++++++++++++++++++++++++++
- tools/perf/util/evsel.h |  93 ++++++++++++++++++++---------------
- 2 files changed, 158 insertions(+), 39 deletions(-)
+ tools/perf/Documentation/perf-stat.txt |  5 ++
+ tools/perf/builtin-stat.c              | 27 ++++++++-
+ tools/perf/util/cgroup.c               | 79 ++++++++++++++++++++++++++
+ tools/perf/util/cgroup.h               |  1 +
+ tools/perf/util/stat.h                 |  1 +
+ 5 files changed, 112 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index fd865002cbbd..c63dd9f7e9fe 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -331,6 +331,110 @@ struct evsel *evsel__new_cycles(bool precise)
- 	goto out;
+diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
+index 7d18694e592a..bb17c9caec78 100644
+--- a/tools/perf/Documentation/perf-stat.txt
++++ b/tools/perf/Documentation/perf-stat.txt
+@@ -166,6 +166,11 @@ use '-e e1 -e e2 -G foo,foo' or just use '-e e1 -e e2 -G foo'.
+ If wanting to monitor, say, 'cycles' for a cgroup and also for system wide, this
+ command line can be used: 'perf stat -e cycles -G cgroup_name -a -e cycles'.
+ 
++--for-each-cgroup name::
++Expand event list for each cgroup in "name" (allow multiple cgroups separated
++by comma).  This has same effect that repeating -e option and -G option for
++each event x name.  This option cannot be used with -G/--cgroup option.
++
+ -o file::
+ --output file::
+ Print the output into the designated file.
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index 7f8d756d9408..23abf14b6e16 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -1051,6 +1051,17 @@ static int parse_control_option(const struct option *opt,
+ 	return evlist__parse_control(str, &config->ctl_fd, &config->ctl_fd_ack, &config->ctl_fd_close);
  }
  
-+static int evsel__copy_config_terms(struct evsel *dst, struct evsel *src)
++static int parse_stat_cgroups(const struct option *opt,
++			      const char *str, int unset)
 +{
-+	struct evsel_config_term *pos, *tmp;
-+
-+	list_for_each_entry(pos, &src->config_terms, list) {
-+		tmp = malloc(sizeof(*tmp));
-+		if (tmp == NULL)
-+			return -ENOMEM;
-+
-+		*tmp = *pos;
-+		if (tmp->free_str) {
-+			tmp->val.str = strdup(pos->val.str);
-+			if (tmp->val.str == NULL) {
-+				free(tmp);
-+				return -ENOMEM;
-+			}
-+		}
-+		list_add_tail(&tmp->list, &dst->config_terms);
++	if (stat_config.cgroup_list) {
++		pr_err("--cgroup and --for-each-cgroup cannot be used together\n");
++		return -1;
 +	}
-+	return 0;
++
++	return parse_cgroups(opt, str, unset);
 +}
 +
-+/**
-+ * evsel__clone - create a new evsel copied from @orig
-+ * @orig: original evsel
-+ *
-+ * The assumption is that @orig is not configured nor opened yet.
-+ * So we only care about the attributes that can be set while it's parsed.
-+ */
-+struct evsel *evsel__clone(struct evsel *orig)
+ static struct option stat_options[] = {
+ 	OPT_BOOLEAN('T', "transaction", &transaction_run,
+ 		    "hardware transaction statistics"),
+@@ -1094,7 +1105,9 @@ static struct option stat_options[] = {
+ 	OPT_STRING('x', "field-separator", &stat_config.csv_sep, "separator",
+ 		   "print counts with custom separator"),
+ 	OPT_CALLBACK('G', "cgroup", &evsel_list, "name",
+-		     "monitor event in cgroup name only", parse_cgroups),
++		     "monitor event in cgroup name only", parse_stat_cgroups),
++	OPT_STRING(0, "for-each-cgroup", &stat_config.cgroup_list, "name",
++		    "expand events for each cgroup"),
+ 	OPT_STRING('o', "output", &output_name, "file", "output file name"),
+ 	OPT_BOOLEAN(0, "append", &append_file, "append to the output file"),
+ 	OPT_INTEGER(0, "log-fd", &output_fd,
+@@ -2234,6 +2247,18 @@ int cmd_stat(int argc, const char **argv)
+ 	if (add_default_attributes())
+ 		goto out;
+ 
++	if (stat_config.cgroup_list) {
++		if (nr_cgroups > 0) {
++			pr_err("--cgroup and --for-each-cgroup cannot be used together\n");
++			parse_options_usage(stat_usage, stat_options, "G", 1);
++			parse_options_usage(NULL, stat_options, "for-each-cgroup", 0);
++			goto out;
++		}
++
++		if (evlist__expand_cgroup(evsel_list, stat_config.cgroup_list) < 0)
++			goto out;
++	}
++
+ 	target__validate(&target);
+ 
+ 	if ((stat_config.aggr_mode == AGGR_THREAD) && (target.system_wide))
+diff --git a/tools/perf/util/cgroup.c b/tools/perf/util/cgroup.c
+index 050dea9f1e88..8b6a4fa49082 100644
+--- a/tools/perf/util/cgroup.c
++++ b/tools/perf/util/cgroup.c
+@@ -193,6 +193,85 @@ int parse_cgroups(const struct option *opt, const char *str,
+ 	return 0;
+ }
+ 
++int evlist__expand_cgroup(struct evlist *evlist, const char *str)
 +{
-+	struct evsel *evsel;
++	struct evlist *orig_list, *tmp_list;
++	struct evsel *pos, *evsel, *leader;
++	struct cgroup *cgrp = NULL;
++	const char *p, *e, *eos = str + strlen(str);
++	int ret = -1;
 +
-+	BUG_ON(orig->core.fd);
-+	BUG_ON(orig->counts);
-+	BUG_ON(orig->priv);
-+	BUG_ON(orig->per_pkg_mask);
-+
-+	/* cannot handle BPF objects for now */
-+	if (orig->bpf_obj)
-+		return NULL;
-+
-+	evsel = evsel__new(&orig->core.attr);
-+	if (evsel == NULL)
-+		return NULL;
-+
-+	evsel->core.cpus = perf_cpu_map__get(orig->core.cpus);
-+	evsel->core.own_cpus = perf_cpu_map__get(orig->core.own_cpus);
-+	evsel->core.threads = perf_thread_map__get(orig->core.threads);
-+	evsel->core.nr_members = orig->core.nr_members;
-+	evsel->core.system_wide = orig->core.system_wide;
-+
-+	if (orig->name) {
-+		evsel->name = strdup(orig->name);
-+		if (evsel->name == NULL)
-+			goto out_err;
++	if (evlist->core.nr_entries == 0) {
++		fprintf(stderr, "must define events before cgroups\n");
++		return -EINVAL;
 +	}
-+	if (orig->group_name) {
-+		evsel->group_name = strdup(orig->group_name);
-+		if (evsel->group_name == NULL)
-+			goto out_err;
++
++	orig_list = evlist__new();
++	tmp_list = evlist__new();
++	if (orig_list == NULL || tmp_list == NULL) {
++		fprintf(stderr, "memory allocation failed\n");
++		return -ENOMEM;
 +	}
-+	if (orig->pmu_name) {
-+		evsel->pmu_name = strdup(orig->pmu_name);
-+		if (evsel->pmu_name == NULL)
-+			goto out_err;
++
++	/* save original events and init evlist */
++	perf_evlist__splice_list_tail(orig_list, &evlist->core.entries);
++	evlist->core.nr_entries = 0;
++
++	for (;;) {
++		p = strchr(str, ',');
++		e = p ? p : eos;
++
++		/* allow empty cgroups, i.e., skip */
++		if (e - str) {
++			/* termination added */
++			char *name = strndup(str, e - str);
++			if (!name)
++				goto out_err;
++
++			cgrp = cgroup__new(name);
++			free(name);
++			if (cgrp == NULL)
++				goto out_err;
++		} else {
++			cgrp = NULL;
++		}
++
++		leader = NULL;
++		evlist__for_each_entry(orig_list, pos) {
++			evsel = evsel__clone(pos);
++			if (evsel == NULL)
++				goto out_err;
++
++			cgroup__put(evsel->cgrp);
++			evsel->cgrp = cgroup__get(cgrp);
++
++			if (evsel__is_group_leader(pos))
++				leader = evsel;
++			evsel->leader = leader;
++
++			evlist__add(tmp_list, evsel);
++		}
++		/* cgroup__new() has a refcount, release it here */
++		cgroup__put(cgrp);
++		nr_cgroups++;
++
++		perf_evlist__splice_list_tail(evlist, &tmp_list->core.entries);
++		tmp_list->core.nr_entries = 0;
++
++		if (!p) {
++			ret = 0;
++			break;
++		}
++		str = p+1;
 +	}
-+	if (orig->filter) {
-+		evsel->filter = strdup(orig->filter);
-+		if (evsel->filter == NULL)
-+			goto out_err;
-+	}
-+	evsel->cgrp = cgroup__get(orig->cgrp);
-+	evsel->tp_format = orig->tp_format;
-+	evsel->handler = orig->handler;
-+	evsel->leader = orig->leader;
-+
-+	evsel->max_events = orig->max_events;
-+	evsel->tool_event = orig->tool_event;
-+	evsel->unit = orig->unit;
-+	evsel->scale = orig->scale;
-+	evsel->snapshot = orig->snapshot;
-+	evsel->per_pkg = orig->per_pkg;
-+	evsel->percore = orig->percore;
-+	evsel->precise_max = orig->precise_max;
-+	evsel->use_uncore_alias = orig->use_uncore_alias;
-+	evsel->is_libpfm_event = orig->is_libpfm_event;
-+
-+	evsel->exclude_GH = orig->exclude_GH;
-+	evsel->sample_read = orig->sample_read;
-+	evsel->auto_merge_stats = orig->auto_merge_stats;
-+	evsel->collect_stat = orig->collect_stat;
-+	evsel->weak_group = orig->weak_group;
-+
-+	if (evsel__copy_config_terms(evsel, orig) < 0)
-+		goto out_err;
-+
-+	return evsel;
 +
 +out_err:
-+	evsel__delete(evsel);
-+	return NULL;
++	evlist__delete(orig_list);
++	evlist__delete(tmp_list);
++
++	return ret;
 +}
 +
- /*
-  * Returns pointer with encoded error via <linux/err.h> interface.
-  */
-diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-index 35e3f6d66085..79a860d8e3ee 100644
---- a/tools/perf/util/evsel.h
-+++ b/tools/perf/util/evsel.h
-@@ -42,65 +42,79 @@ enum perf_tool_event {
-  */
- struct evsel {
- 	struct perf_evsel	core;
--	struct evlist	*evlist;
--	char			*filter;
-+	struct evlist		*evlist;
-+	off_t			id_offset;
-+	int			idx;
-+	int			id_pos;
-+	int			is_pos;
-+	unsigned int		sample_size;
-+
-+	/*
-+	 * These fields can be set in the parse-events code or similar.
-+	 * Please check evsel__clone() to copy them properly so that
-+	 * they can be released properly.
-+	 */
-+	struct {
-+		char			*name;
-+		char			*group_name;
-+		const char		*pmu_name;
-+		struct tep_event	*tp_format;
-+		char			*filter;
-+		unsigned long		max_events;
-+		double			scale;
-+		const char		*unit;
-+		struct cgroup		*cgrp;
-+		enum perf_tool_event	tool_event;
-+		/* parse modifier helper */
-+		int			exclude_GH;
-+		int			sample_read;
-+		bool			snapshot;
-+		bool			per_pkg;
-+		bool			percore;
-+		bool			precise_max;
-+		bool			use_uncore_alias;
-+		bool			is_libpfm_event;
-+		bool			auto_merge_stats;
-+		bool			collect_stat;
-+		bool			weak_group;
-+		int			bpf_fd;
-+		struct bpf_object	*bpf_obj;
-+	};
-+
-+	/*
-+	 * metric fields are similar, but needs more care as they can have
-+	 * references to other metric (evsel).
-+	 */
-+	const char *		metric_expr;
-+	const char *		metric_name;
-+	struct evsel		**metric_events;
-+	struct evsel		*metric_leader;
-+
-+	void			*handler;
- 	struct perf_counts	*counts;
- 	struct perf_counts	*prev_raw_counts;
--	int			idx;
--	unsigned long		max_events;
- 	unsigned long		nr_events_printed;
--	char			*name;
--	double			scale;
--	const char		*unit;
--	struct tep_event	*tp_format;
--	off_t			id_offset;
- 	struct perf_stat_evsel  *stats;
- 	void			*priv;
- 	u64			db_id;
--	struct cgroup		*cgrp;
--	void			*handler;
--	unsigned int		sample_size;
--	int			id_pos;
--	int			is_pos;
--	enum perf_tool_event	tool_event;
- 	bool			uniquified_name;
--	bool			snapshot;
- 	bool 			supported;
- 	bool 			needs_swap;
- 	bool 			disabled;
- 	bool			no_aux_samples;
- 	bool			immediate;
- 	bool			tracking;
--	bool			per_pkg;
--	bool			precise_max;
- 	bool			ignore_missing_thread;
- 	bool			forced_leader;
--	bool			use_uncore_alias;
--	bool			is_libpfm_event;
--	/* parse modifier helper */
--	int			exclude_GH;
--	int			sample_read;
--	unsigned long		*per_pkg_mask;
--	struct evsel		*leader;
--	char			*group_name;
- 	bool			cmdline_group_boundary;
--	struct list_head	config_terms;
--	struct bpf_object	*bpf_obj;
--	int			bpf_fd;
--	int			err;
--	bool			auto_merge_stats;
- 	bool			merged_stat;
--	const char *		metric_expr;
--	const char *		metric_name;
--	struct evsel		**metric_events;
--	struct evsel		*metric_leader;
--	bool			collect_stat;
--	bool			weak_group;
- 	bool			reset_group;
- 	bool			errored;
--	bool			percore;
-+	unsigned long		*per_pkg_mask;
-+	struct evsel		*leader;
-+	struct list_head	config_terms;
-+	int			err;
- 	int			cpu_iter;
--	const char		*pmu_name;
- 	struct {
- 		evsel__sb_cb_t	*cb;
- 		void		*data;
-@@ -169,6 +183,7 @@ static inline struct evsel *evsel__new(struct perf_event_attr *attr)
- 	return evsel__new_idx(attr, 0);
- }
+ static struct cgroup *__cgroup__findnew(struct rb_root *root, uint64_t id,
+ 					bool create, const char *path)
+ {
+diff --git a/tools/perf/util/cgroup.h b/tools/perf/util/cgroup.h
+index e98d5975fe55..32893018296f 100644
+--- a/tools/perf/util/cgroup.h
++++ b/tools/perf/util/cgroup.h
+@@ -24,6 +24,7 @@ void cgroup__put(struct cgroup *cgroup);
+ struct evlist;
  
-+struct evsel *evsel__clone(struct evsel *orig);
- struct evsel *evsel__newtp_idx(const char *sys, const char *name, int idx);
+ struct cgroup *evlist__findnew_cgroup(struct evlist *evlist, const char *name);
++int evlist__expand_cgroup(struct evlist *evlist, const char *cgroups);
  
- /*
+ void evlist__set_default_cgroup(struct evlist *evlist, struct cgroup *cgroup);
+ 
+diff --git a/tools/perf/util/stat.h b/tools/perf/util/stat.h
+index 9911fc6adbfd..7325de5bf2a6 100644
+--- a/tools/perf/util/stat.h
++++ b/tools/perf/util/stat.h
+@@ -137,6 +137,7 @@ struct perf_stat_config {
+ 	int			 ctl_fd;
+ 	int			 ctl_fd_ack;
+ 	bool			 ctl_fd_close;
++	const char		*cgroup_list;
+ };
+ 
+ void perf_stat__set_big_num(int set);
 -- 
 2.28.0.681.g6f77f65b4e-goog
 
