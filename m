@@ -2,160 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 534192763C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 00:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED24C2763C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 00:25:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726643AbgIWWZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 18:25:28 -0400
-Received: from mail-eopbgr60044.outbound.protection.outlook.com ([40.107.6.44]:36446
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726199AbgIWWZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 18:25:27 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gt4uhlqfnTTkwu6/rScxAThsYfL65/tnDLQNGsAxgVl71Rlx9+c5YARIPuMw25pZZJQYrjIcTtVZFepIyTLypXf62v/lrVFwg8q0ULNfvBZYubNwdDpBYAnt9A9L2LNZ1HzdyiHfkIS2tLLycur6lfJ456I9O4VF02taWv3L2Iyc/JCF2cq9z2RwzCSFxKqvIc+PLKCDKp07PwykYpuHupvrZ+KuAZaPi9nkmSAkbt39qE0L0ytN2kC21dfzLiLLhxkU/obEXikV9RFp2qrx/aNvnVyO/eJuaev7BEtdIJMVe98dUCqwrO0UV+2lbzcLP7jmrdPLSgI7aYJm5dgZ/Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=79pQKJGV/SIXBKe3WafaWDxLcVSF+kIjKuJnFto37Cw=;
- b=FqIioU/qWr/XVkPn6Kwqc5smA3HXOhAtgX2aR4x+UtGT9yPXRnqA/nnLtTLEFw/oPcc71x0p+Y+QTLqzHaLkRWaMgFQA5wUDs+rSulUYQRyJtTSWkNHtqr1nYR43j9K3YHyTm2795xmftn36WPA6jiBzhnPQpKrK+XLwUhjEzaP69sWFCYNjphb0nJdYkUfUwI05BLlXerATWoI66Hn8RLZsxYLVbd3t+XynyEgX8A3ADaYQ9tlkHTn5JxorH7qFu5DcPUp0GKSgRIM9y86N+xXERgb94Ov22MWwK8WosEbrhoozeoNxNlhalcbQ/RAhiHK3yAaXnNKukrlUiMOhRA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=79pQKJGV/SIXBKe3WafaWDxLcVSF+kIjKuJnFto37Cw=;
- b=Ucakm3CrR2zCS1FZWHElkpmTQFRaJAHEUlpXmKv0pcCKcI5tBAnaWbQ1zWiAUrxm+9geaS7wkuEr9LiQToT7hJPLdbN4oKOWTS/QKHydPPB3A3CWArZ8iGTbXMA0/edqxtvoSotMWHRf2hSfXhSoFYIK0VUDSvGmafmoKeKpmTc=
-Received: from VI1PR04MB5696.eurprd04.prod.outlook.com (2603:10a6:803:e7::13)
- by VE1PR04MB6638.eurprd04.prod.outlook.com (2603:10a6:803:119::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Wed, 23 Sep
- 2020 22:25:23 +0000
-Received: from VI1PR04MB5696.eurprd04.prod.outlook.com
- ([fe80::983b:73a7:cc93:e63d]) by VI1PR04MB5696.eurprd04.prod.outlook.com
- ([fe80::983b:73a7:cc93:e63d%3]) with mapi id 15.20.3412.020; Wed, 23 Sep 2020
- 22:25:23 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "olteanv@gmail.com" <olteanv@gmail.com>,
-        "nikolay@nvidia.com" <nikolay@nvidia.com>
-Subject: Re: [PATCH net-next v3 1/2] net: dsa: untag the bridge pvid from rx
- skbs
-Thread-Topic: [PATCH net-next v3 1/2] net: dsa: untag the bridge pvid from rx
- skbs
-Thread-Index: AQHWkfI49n/dW6yWhUaSsyNzEyjVval2wsIAgAAApICAAALZgIAAAXSAgAAAooCAAASgAA==
-Date:   Wed, 23 Sep 2020 22:25:22 +0000
-Message-ID: <20200923222522.suhyowo4ii3qvvpm@skbuf>
-References: <20200923214038.3671566-1-f.fainelli@gmail.com>
- <20200923214038.3671566-2-f.fainelli@gmail.com>
- <20200923214852.x2z5gb6pzaphpfvv@skbuf>
- <7fce7ddd-14a3-8301-d927-1dd4b4431ffb@gmail.com>
- <20200923220121.phnctzovjkiw2qiz@skbuf>
- <c8ca2861-44b2-4333-d63e-638dfe2f06a0@gmail.com>
- <2601834a-2cf2-f0f4-3775-2a5ebccad40a@gmail.com>
-In-Reply-To: <2601834a-2cf2-f0f4-3775-2a5ebccad40a@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [188.25.217.212]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 4ad19ea2-a503-43c4-e381-08d8600f901e
-x-ms-traffictypediagnostic: VE1PR04MB6638:
-x-microsoft-antispam-prvs: <VE1PR04MB66387EC676D8D1F39F977296E0380@VE1PR04MB6638.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 6rNkJjjpomFW2vG+4lK5cuDXtK5pJ61+sgI0YF983EEFWjKBZo78UqMhbZjO1MRR6zxG7CEqZ84UELDX3ZA/xGdU6ySwv9AsUcR2dG+jbNe+bvsvA3SYSwLtia8BqMQhf3K8Sj/nwht4QZtMv1T2cyMAoKH5KaJZ2+W36tMIjxbZc0Z74eLFe4IgACvFZfMJoX7HZ4b5kGhBqmQ7D+QU98DT8K1DxpKiFKTvOajT84BmO5oLUg+82XFqRtaJA2OD+mcJ/o1p3vKbD598EZg0A6J1wW/lecqQG3taaS00WaKH7juwB5yYdhDfTiVi7Bk1Y08YOQHsVCq8YVPy3WoQ0L9F6jI5Ds4FWff/BEorHLFDlTy9ZcbzVcqWEA735LWv
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5696.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(136003)(39860400002)(366004)(376002)(346002)(396003)(86362001)(66946007)(44832011)(6916009)(478600001)(5660300002)(6486002)(8676002)(1076003)(9686003)(91956017)(83380400001)(4326008)(54906003)(76116006)(2906002)(6506007)(186003)(64756008)(66476007)(6512007)(66446008)(26005)(71200400001)(316002)(66556008)(8936002)(53546011)(33716001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: CnyiY+FBJ9SIXMxW2sFPoiQpOfLM2zj5o6EFGQBZs2LC79r2sKmv3fSLWIZ0dsoOuXHTUHrFZd1rJJO1XhXxQLynru3nTaQDVq/VLLftf0nvSDD3MAC+RXGR7kEwo8GSHeyRbInHekMPVJYCSY2RcxAG0XNvBukayRXze4fYnBGcvKGkol4eLhQK3hoZyDQ2mWwbQ04oteWBEv/Am46+tkbNjnAJqrYQl/xjS4bT7tE49TEShfcmRH5c9GHc6nYJCLF4bzg58sTHmLP+JoVrro3nkXKhXrjkYkqkhgQ9AkVzg2/HbPjIGCCHjbrNf0dh1uvLhF/O9LAHrlbDSUP/Cq7R5zSVLKrkaApP5ndjFg2nYw45k4i+SQH1JmfTfQPzUOuba/itkvxcmbZkRzRmT2ONg/sM3CuaNuH/rbHPpgVtNEsLcgBOIxudS4H9WnLcRDWRhTqavZWuBC9F2pJDa6kR2wCgUY5hjfEcOitcWH3pmoyiLZ/QoZVajsFkgn5rzRmk25z+YcrCZUjZjzWW9t3UP7cDMN7BZGk1HcEjcJFTX3Ie2ib3t9uN7GlePZTO2IA2kaQPtI7lH8cmabturHFkaGu6N+7vCGz1t6sXgYz58rJp0LqfTnJ9RtWGKtIFlRVURgDDYXlk0ODFhtk7sw==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <CA72B6FA2AA1B749966DC82B2D757BC1@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1726693AbgIWWZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 18:25:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726199AbgIWWZs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 18:25:48 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29BD5C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 15:25:48 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id b124so517873pfg.13
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 15:25:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Xg7mlsflqOZjaUBEnBA79UQEVkg0iaM4XozGdbwIH2I=;
+        b=JWGSMPriiXoOPSN59UxJawZOsymif1IRnpFmcUeFVLrk+16iLXZo23rz7sV0MTgLjc
+         AkhhMecLtxb4XWCibtF10nTqcbQ1PQqt2tOioWG6HfxhavA+JNejFotwMCa7tMO/A96V
+         J4cgU4LAGTDhGiusLrU0xSKksix+A0oZbEevA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Xg7mlsflqOZjaUBEnBA79UQEVkg0iaM4XozGdbwIH2I=;
+        b=Ur+YWzi3NGXOD/F5tfa4N9lxnWKClwliCm+AhyCicvZ1RKVSrCsZ7Psj6mJ6C4MTFA
+         NWQU/6LzI+99UktEzr1LN7181/fy8JglvIlnaPy2pXS8ZoIinsnSs0GEA2vkVbBDHTa4
+         cjMXDpwjFAWC713GF/mrcmrplPAYRGPiDhQ2W1eZYKYwNg8ic5rggeNYacFELs9ns+Af
+         u6DuxQB1jyKbzn2O7faGnSkv3h9rT9XuIDIk1lwrx6plUeiZ39necbtrF4LvNkmEBXDg
+         i7lYmLXKC1+zL++SVH53FhmfNRIprBNiMBkbXtHc2fO7pMS3S4VKhhce0ogBOrVX59GB
+         8Tlg==
+X-Gm-Message-State: AOAM530/RqxqwszOL+ovzlaG/9UZ2eDefx9OXWLZ8/AxRBdq1Q1v9kDO
+        EG4b9E/4H1gSll2voieqDnbI7g==
+X-Google-Smtp-Source: ABdhPJxP5OrfctcuRCfs6dIC6macZBnv6XWCLbPOIVye/T+0apkyTU21z8xiaysegw+hW5e6aSN1qg==
+X-Received: by 2002:a63:160b:: with SMTP id w11mr1522159pgl.110.1600899947689;
+        Wed, 23 Sep 2020 15:25:47 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
+        by smtp.gmail.com with ESMTPSA id ca6sm402786pjb.53.2020.09.23.15.25.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Sep 2020 15:25:47 -0700 (PDT)
+Date:   Wed, 23 Sep 2020 15:25:45 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        linux-usb@vger.kernel.org, Bastien Nocera <hadess@hadess.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        devicetree@vger.kernel.org,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Peter Chen <peter.chen@nxp.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH v2 2/2] USB: misc: Add onboard_usb_hub driver
+Message-ID: <20200923222545.GB2105328@google.com>
+References: <20200917114600.v2.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
+ <20200917114600.v2.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
+ <20200920141720.GD2915460@kroah.com>
+ <20200922011837.GE21107@google.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5696.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4ad19ea2-a503-43c4-e381-08d8600f901e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2020 22:25:22.9605
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ++0Ywm/fNV6HbvF9JhycfTmUd1Sn66zsZTIvx4YkBNxYp55A9A2+Qgf8WX9J5KZ++t00hJj90AURRT/7WiHoUg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6638
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200922011837.GE21107@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 03:08:49PM -0700, Florian Fainelli wrote:
-> On 9/23/20 3:06 PM, Florian Fainelli wrote:
-> > On 9/23/20 3:01 PM, Vladimir Oltean wrote:
-> >> On Wed, Sep 23, 2020 at 02:51:09PM -0700, Florian Fainelli wrote:
-> >>> Speaking of that part of the code, I was also wondering whether you
-> >>> wanted this to be netdev_for_each_upper_dev_rcu(br, upper_dev, iter) =
-and
-> >>> catch a bridge device upper as opposed to a switch port upper? Either
-> >>> way is fine and there are possibly use cases for either.
-> >>
-> >> So, yeah, both use cases are valid, and I did in fact mean uppers of t=
-he
-> >> bridge, but now that you're raising the point, do we actually support
-> >> properly the use case with an 8021q upper of a bridged port? My
-> >> understanding is that this VLAN-tagged traffic should not be switched =
-on
-> >> RX. So without some ACL rule on ingress that the driver must install, =
-I
-> >> don't see how that can work properly.
-> >
-> > Is not this a problem only if the DSA master does VLAN receive filterin=
-g
-> > though?
+On Mon, Sep 21, 2020 at 06:18:37PM -0700, Matthias Kaehlcke wrote:
+> On Sun, Sep 20, 2020 at 04:17:20PM +0200, Greg Kroah-Hartman wrote:
+> > On Thu, Sep 17, 2020 at 11:46:22AM -0700, Matthias Kaehlcke wrote:
+> > >
+> > > ...
+> > >
+> > > +static int __init onboard_hub_init(void)
+> > > +{
+> > > +	int rc;
+> > > +
+> > > +	rc = platform_driver_register(&onboard_hub_driver);
+> > > +	if (rc)
+> > > +		return rc;
+> > > +
+> > > +	return usb_register_device_driver(&onboard_hub_usbdev_driver, THIS_MODULE);
+> > 
+> > No unwinding of the platform driver register if this fails?
+> 
+> Right, will add unwinding.
+> 
+> > And THIS_MODULE should not be needed, did we get the api wrong here?
+> 
+> It seems you suggest to use usb_register() instead, SGTM
 
-I don't understand how the DSA master is involved here, sorry.
-
-> > In a bridge with vlan_filtering=3D0 the switch port is supposed to
-> > accept any VLAN tagged frames because it does not do ingress VLAN ID
-> > checking.
-> >
-> > Prior to your patch, I would always install a br0.1 upper to pop the
-> > default_pvid and that would work fine because the underlying DSA master
-> > does not do VLAN filtering.
-
-Yes, but on both your Broadcom tags, the VLAN header is shifted to the
-right, so the master's hardware parser shouldn't figure out it's looking
-at VLAN (unless your master is DSA-aware). So again, I don't see how
-that makes a difference.
-
->
-> This is kind of a bad example, because the switch port has been added to
-> the default_pvid VLAN entry, but I believe the rest to be correct though.
-
-I don't think it's a bad example, and I think that we should try to keep
-br0.1 working.
-
-Given the fact that all skbs are received as VLAN-tagged, the
-dsa_untag_bridge_pvid function tries to guess what is the intention of
-the user, in order to figure out when it should strip that tag and when
-it shouldn't. When there is a swp0.1 upper, it is clear (to me, at
-least) that the intention of the user is to terminate some traffic on
-it, so the VLAN tag should be kept. Same should apply to br0.1. The only
-difference is that swp0.1 might not work correctly today due to other,
-unrelated reasons (like I said, the 8021q upper should 'steal' traffic
-from the bridge inside the actual hardware datapath, but without
-explicit configuration, which we don't have, it isn't really doing
-that). Lastly, in absence of any 8021q upper, the function should untag
-the skb to allow VLAN-unaware networking to be performed through the
-bridge, because, presumably, that VLAN was added only as a side effect
-of driver internal configuration, and is not desirable to any upper
-layer.=
+Actually usb_register() is for registering a struct usb_driver, however
+this is a struct usb_device_driver, there doesn't seem to be a
+registration function/macro that doesn't require THIS_MODULE. Please
+provide a pointer if I'm wrong.
