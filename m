@@ -2,92 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2AD4276291
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:54:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F5B276294
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726638AbgIWUyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 16:54:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41812 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726265AbgIWUyR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 16:54:17 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0FEFE214F1;
-        Wed, 23 Sep 2020 20:54:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600894456;
-        bh=4W8tkVEnVbxByODEUPomYSterl2xwqTlOxfLZTbwLt0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=bpKhHnhjyQreXsGYfaJ5ArX8UDxNgxTCpzvBIGlT6fcSULxC+13epxTa19yMiz7dk
-         KoTinHrYH2aztpNLmskjxsSYucKSLpvVRmGbw9HXCOhoyq35Pr1kgGa2eMPtIzpIgn
-         LpoX4sLVR15oFiAlxSdXYzEQ8OVgc7xarT8UHqD8=
-Date:   Wed, 23 Sep 2020 21:54:12 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Wang ShaoBo <bobo.shaobowang@huawei.com>
-Cc:     <cj.chengjian@huawei.com>, <huawei.libin@huawei.com>,
-        <Jonathan.Cameron@huawei.com>, <fabrice.gasnier@st.com>,
-        <linux-iio@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH -next] iio: adc: stm32-dfsdm: Use
- devm_platform_get_and_ioremap_resource()
-Message-ID: <20200923215357.26f8959d@archlinux>
-In-Reply-To: <20200918083142.32816-1-bobo.shaobowang@huawei.com>
-References: <20200918083142.32816-1-bobo.shaobowang@huawei.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726703AbgIWUyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 16:54:36 -0400
+Received: from mail-il1-f195.google.com ([209.85.166.195]:45959 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726668AbgIWUyf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 16:54:35 -0400
+Received: by mail-il1-f195.google.com with SMTP id h2so921200ilo.12;
+        Wed, 23 Sep 2020 13:54:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=d+sz3hgQEAMMDOvG0RAlSgcLLpJYw3j9zk3rcGcy++0=;
+        b=cBYtCVl3rM9hLYsPAP1vvHrPFqq0IMMjEtefLSqa9RR/vXAQGz23cVeHtvqZxGfaj0
+         UgVXjXL2ephRIKVc28emvbVO9/YGo+NbdkWgHZybuGyQYFoxBRcds0SWdKnnTOheOHqP
+         G/XWBfocCyeG6caDML2yk+diFEussh+vThXn+S+10k+U8ZHM+BlFpzevBsj7+YqzC5CQ
+         4tfwnBZlmmCYNZgjRgbCMVHdMFTDibzTaWb+Gx0NT5L3Asru1XaKBz3WWfUCrf4NwotR
+         0YGTBWj51AQX5Mv6peg4BS6vkeUWew88A59IwA3ljvb3gZdidyNKU3MnFkB88Lzbvv0M
+         1Wjw==
+X-Gm-Message-State: AOAM5323OGdOAjdbEuO8cXtkA81wbWvMD2mpqa8XIsO0AbiUw7O3IsdC
+        ZreUT3//49JFSxZhu2kkIA==
+X-Google-Smtp-Source: ABdhPJwhB3U+7nGpX1fOCxLfZQPy0Ana+7kdT7ZxdZzgBNG61Fg1tLqg9BV4if/p+1kRC6H1Is5gRQ==
+X-Received: by 2002:a05:6e02:f48:: with SMTP id y8mr1415364ilj.103.1600894474882;
+        Wed, 23 Sep 2020 13:54:34 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id x1sm386462ilo.50.2020.09.23.13.54.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2020 13:54:34 -0700 (PDT)
+Received: (nullmailer pid 1290212 invoked by uid 1000);
+        Wed, 23 Sep 2020 20:54:33 -0000
+Date:   Wed, 23 Sep 2020 14:54:33 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Peter Hilber <peter.hilber@opensynergy.com>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        virtio-dev@lists.oasis-open.org, linux-kernel@vger.kernel.org,
+        sudeep.holla@arm.com, souvik.chakravarty@arm.com,
+        alex.bennee@linaro.org, jean-philippe@linaro.org,
+        igor.skalkin@opensynergy.com, mikhail.golubev@opensynergy.com,
+        anton.yakovlev@opensynergy.com,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>
+Subject: Re: [RFC PATCH 6/7] dt-bindings: arm: Add virtio transport for SCMI
+Message-ID: <20200923205433.GB1285024@bogus>
+References: <20200918162311.254564-1-peter.hilber@opensynergy.com>
+ <20200918165558.257086-1-peter.hilber@opensynergy.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200918165558.257086-1-peter.hilber@opensynergy.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Sep 2020 16:31:42 +0800
-Wang ShaoBo <bobo.shaobowang@huawei.com> wrote:
-
-> Make use of devm_platform_get_and_ioremap_resource() provided by
-> driver core platform instead of duplicated analogue, dev_err() is
-> removed because it has been done in devm_ioremap_resource().
+On Fri, Sep 18, 2020 at 06:55:58PM +0200, Peter Hilber wrote:
+> From: Igor Skalkin <igor.skalkin@opensynergy.com>
 > 
-> Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
-
-Applied to the togreg branch of iio.git and pushed out as testing for
-the autobuilders to see if they can find any problems.
-
-Thanks,
-
-Jonathan
-
+> Document the properties for arm,scmi-virtio compatible nodes. The
+> backing virtio SCMI device is described in patch [1].
+> 
+> [1] https://lists.oasis-open.org/archives/virtio-comment/202005/msg00096.html
+> 
+> Co-developed-by: Peter Hilber <peter.hilber@opensynergy.com>
+> Signed-off-by: Peter Hilber <peter.hilber@opensynergy.com>
+> Signed-off-by: Igor Skalkin <igor.skalkin@opensynergy.com>
 > ---
->  drivers/iio/adc/stm32-dfsdm-core.c | 11 ++++-------
->  1 file changed, 4 insertions(+), 7 deletions(-)
+>  .../devicetree/bindings/arm/arm,scmi.txt      | 38 ++++++++++++++++++-
+>  1 file changed, 36 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/iio/adc/stm32-dfsdm-core.c b/drivers/iio/adc/stm32-dfsdm-core.c
-> index 0b8bea88b011..42a7377704a4 100644
-> --- a/drivers/iio/adc/stm32-dfsdm-core.c
-> +++ b/drivers/iio/adc/stm32-dfsdm-core.c
-> @@ -226,16 +226,13 @@ static int stm32_dfsdm_parse_of(struct platform_device *pdev,
->  	if (!node)
->  		return -EINVAL;
+> diff --git a/Documentation/devicetree/bindings/arm/arm,scmi.txt b/Documentation/devicetree/bindings/arm/arm,scmi.txt
+> index 55deb68230eb..844ff3c40a49 100644
+> --- a/Documentation/devicetree/bindings/arm/arm,scmi.txt
+> +++ b/Documentation/devicetree/bindings/arm/arm,scmi.txt
+> @@ -13,6 +13,9 @@ the device tree.
+>  Required properties:
 >  
-> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -	if (!res) {
-> -		dev_err(&pdev->dev, "Failed to get memory resource\n");
-> -		return -ENODEV;
-> -	}
-> -	priv->dfsdm.phys_base = res->start;
-> -	priv->dfsdm.base = devm_ioremap_resource(&pdev->dev, res);
-> +	priv->dfsdm.base = devm_platform_get_and_ioremap_resource(pdev, 0,
-> +							&res);
->  	if (IS_ERR(priv->dfsdm.base))
->  		return PTR_ERR(priv->dfsdm.base);
->  
-> +	priv->dfsdm.phys_base = res->start;
+>  The scmi node with the following properties shall be under the /firmware/ node.
+> +Some properties are specific to a transport type.
 > +
->  	/*
->  	 * "dfsdm" clock is mandatory for DFSDM peripheral clocking.
->  	 * "dfsdm" or "audio" clocks can be used as source clock for
+> +shmem-based transports (mailbox, smc/hvc):
+>  
+>  - compatible : shall be "arm,scmi" or "arm,scmi-smc" for smc/hvc transports
+>  - mboxes: List of phandle and mailbox channel specifiers. It should contain
+> @@ -21,6 +24,17 @@ The scmi node with the following properties shall be under the /firmware/ node.
+>  	  supported.
+>  - shmem : List of phandle pointing to the shared memory(SHM) area as per
+>  	  generic mailbox client binding.
+> +
+> +Virtio transport:
+> +
+> +- compatible : shall be "arm,scmi-virtio".
+> +- virtio_transport : phandle of the virtio device. This device must support one
+> +                     virtqueue for transmitting commands ("tx", cmdq), and,
+> +		     optionally, one more virtqueue for receiving notifications
+> +		     and delayed responses ("rx", eventq).
 
+Isn't what the virtio device provides discoverable? We don't have virtio 
+protocols in DT for anything else. Why is SCMI special?
+
+Rob
