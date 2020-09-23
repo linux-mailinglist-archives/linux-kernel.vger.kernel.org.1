@@ -2,157 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B99E276443
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 00:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82690276462
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:18:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726718AbgIWW7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 18:59:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726199AbgIWW7y (ORCPT
+        id S1726605AbgIWXR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 19:17:56 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:44068 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726419AbgIWXR4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 18:59:54 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57A5EC0613CE;
-        Wed, 23 Sep 2020 15:59:54 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id y6so529438plt.9;
-        Wed, 23 Sep 2020 15:59:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=5YXui6hT59nygvMjkrAXBFJJ9bUJzuOryzSWvxUFmoc=;
-        b=EeUCc2DdJQfUWABl4whjTHBlnAhQXmd1R12X8FR6Iyat2aEgVqxKp68UVlj7ASqIN6
-         nEDyFyk0slYxndG9PlF2P5SDiAjzgiMc1+CewJ9mzYr3mlJk+WFneEJIiWHf1dv84rP6
-         7xXQPIr6AClxw+Jj3FEHqNrmZjx8UZnlq2cpZzw+CFTJtSyw0wVrySEbaZIFxSPru+G3
-         LRY7GaEEPVwYQU90f4wlLY3F9CHpLfaDqkBbIMEk8U+WfxFGdbyUW1MZHglY3mc1DwpV
-         IisiA4xsc4aGeFbCrdDnQwt3Fh6QE4A4ZqA5C61r4jW+HKEXSfMqbDhOKZZZwJi4CzoS
-         Jv6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=5YXui6hT59nygvMjkrAXBFJJ9bUJzuOryzSWvxUFmoc=;
-        b=qIxEj2tAk2ePeLhA46Kng271sHLwcLG2dR9cPRyLgQazMVeSIcQPyORzy0nDzFp2qU
-         Olvmj9lEKVj7daWYZlqHygmmxanUuSdmV9pReCDgKoOxGjDuDzQ84Y10EgAV+MoQHMlq
-         HA9JQnYF4TW3BtQmJZ0YLvvmvsYdmu0GegYpElWWhmvGTJoiTYex67uq7l3lce+kcnZt
-         RtJyW0SgBHpZHAcuaBna1OHtZ+vFUU1Fcw0FsK4UJyc1A7mBidJCT8GwBCkweosrYWKo
-         9wPAdlW/qChMyWzWjD4SCrxZWb07XLF4RYYmL6gt+IBS1ZQa1vE9rcglx6xKaiviTkov
-         AZzg==
-X-Gm-Message-State: AOAM531f98wMHd/WYLEu6npDSMQKZZdiJKQhKMIjfMGG0PI2fENeSwS6
-        sxKdqLZ6OBY9YLml1NkansMsRjoSgyMRUw==
-X-Google-Smtp-Source: ABdhPJyb0asfDbRXtQUZ3hf6fdwg+aJgsCFqypNmrw0Lh+wVA+Du7DUCXXlIgzZKPt3+vaPQ2CGwvg==
-X-Received: by 2002:a17:90a:2ecb:: with SMTP id h11mr1274492pjs.195.1600901993920;
-        Wed, 23 Sep 2020 15:59:53 -0700 (PDT)
-Received: from [10.67.49.188] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id i2sm648673pfq.89.2020.09.23.15.59.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Sep 2020 15:59:52 -0700 (PDT)
-Subject: Re: [PATCH net-next v3 1/2] net: dsa: untag the bridge pvid from rx
- skbs
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "olteanv@gmail.com" <olteanv@gmail.com>,
-        "nikolay@nvidia.com" <nikolay@nvidia.com>
-References: <20200923214038.3671566-1-f.fainelli@gmail.com>
- <20200923214038.3671566-2-f.fainelli@gmail.com>
- <20200923214852.x2z5gb6pzaphpfvv@skbuf>
- <e5f1d482-1b4f-20da-a55b-a953bf52ce8c@gmail.com>
- <20200923225802.vjwwjmw7mh2ru3so@skbuf>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
- mQGiBEjPuBIRBACW9MxSJU9fvEOCTnRNqG/13rAGsj+vJqontvoDSNxRgmafP8d3nesnqPyR
- xGlkaOSDuu09rxuW+69Y2f1TzjFuGpBk4ysWOR85O2Nx8AJ6fYGCoeTbovrNlGT1M9obSFGQ
- X3IzRnWoqlfudjTO5TKoqkbOgpYqIo5n1QbEjCCwCwCg3DOH/4ug2AUUlcIT9/l3pGvoRJ0E
- AICDzi3l7pmC5IWn2n1mvP5247urtHFs/uusE827DDj3K8Upn2vYiOFMBhGsxAk6YKV6IP0d
- ZdWX6fqkJJlu9cSDvWtO1hXeHIfQIE/xcqvlRH783KrihLcsmnBqOiS6rJDO2x1eAgC8meAX
- SAgsrBhcgGl2Rl5gh/jkeA5ykwbxA/9u1eEuL70Qzt5APJmqVXR+kWvrqdBVPoUNy/tQ8mYc
- nzJJ63ng3tHhnwHXZOu8hL4nqwlYHRa9eeglXYhBqja4ZvIvCEqSmEukfivk+DlIgVoOAJbh
- qIWgvr3SIEuR6ayY3f5j0f2ejUMYlYYnKdiHXFlF9uXm1ELrb0YX4GMHz7QnRmxvcmlhbiBG
- YWluZWxsaSA8Zi5mYWluZWxsaUBnbWFpbC5jb20+iGYEExECACYCGyMGCwkIBwMCBBUCCAME
- FgIDAQIeAQIXgAUCVF/S8QUJHlwd3wAKCRBhV5kVtWN2DvCVAJ4u4/bPF4P3jxb4qEY8I2gS
- 6hG0gACffNWlqJ2T4wSSn+3o7CCZNd7SLSC5BA0ESM+4EhAQAL/o09boR9D3Vk1Tt7+gpYr3
- WQ6hgYVON905q2ndEoA2J0dQxJNRw3snabHDDzQBAcqOvdi7YidfBVdKi0wxHhSuRBfuOppu
- pdXkb7zxuPQuSveCLqqZWRQ+Cc2QgF7SBqgznbe6Ngout5qXY5Dcagk9LqFNGhJQzUGHAsIs
- hap1f0B1PoUyUNeEInV98D8Xd/edM3mhO9nRpUXRK9Bvt4iEZUXGuVtZLT52nK6Wv2EZ1TiT
- OiqZlf1P+vxYLBx9eKmabPdm3yjalhY8yr1S1vL0gSA/C6W1o/TowdieF1rWN/MYHlkpyj9c
- Rpc281gAO0AP3V1G00YzBEdYyi0gaJbCEQnq8Vz1vDXFxHzyhgGz7umBsVKmYwZgA8DrrB0M
- oaP35wuGR3RJcaG30AnJpEDkBYHznI2apxdcuTPOHZyEilIRrBGzDwGtAhldzlBoBwE3Z3MY
- 31TOpACu1ZpNOMysZ6xiE35pWkwc0KYm4hJA5GFfmWSN6DniimW3pmdDIiw4Ifcx8b3mFrRO
- BbDIW13E51j9RjbO/nAaK9ndZ5LRO1B/8Fwat7bLzmsCiEXOJY7NNpIEpkoNoEUfCcZwmLrU
- +eOTPzaF6drw6ayewEi5yzPg3TAT6FV3oBsNg3xlwU0gPK3v6gYPX5w9+ovPZ1/qqNfOrbsE
- FRuiSVsZQ5s3AAMFD/9XjlnnVDh9GX/r/6hjmr4U9tEsM+VQXaVXqZuHKaSmojOLUCP/YVQo
- 7IiYaNssCS4FCPe4yrL4FJJfJAsbeyDykMN7wAnBcOkbZ9BPJPNCbqU6dowLOiy8AuTYQ48m
- vIyQ4Ijnb6GTrtxIUDQeOBNuQC/gyyx3nbL/lVlHbxr4tb6YkhkO6shjXhQh7nQb33FjGO4P
- WU11Nr9i/qoV8QCo12MQEo244RRA6VMud06y/E449rWZFSTwGqb0FS0seTcYNvxt8PB2izX+
- HZA8SL54j479ubxhfuoTu5nXdtFYFj5Lj5x34LKPx7MpgAmj0H7SDhpFWF2FzcC1bjiW9mjW
- HaKaX23Awt97AqQZXegbfkJwX2Y53ufq8Np3e1542lh3/mpiGSilCsaTahEGrHK+lIusl6mz
- Joil+u3k01ofvJMK0ZdzGUZ/aPMZ16LofjFA+MNxWrZFrkYmiGdv+LG45zSlZyIvzSiG2lKy
- kuVag+IijCIom78P9jRtB1q1Q5lwZp2TLAJlz92DmFwBg1hyFzwDADjZ2nrDxKUiybXIgZp9
- aU2d++ptEGCVJOfEW4qpWCCLPbOT7XBr+g/4H3qWbs3j/cDDq7LuVYIe+wchy/iXEJaQVeTC
- y5arMQorqTFWlEOgRA8OP47L9knl9i4xuR0euV6DChDrguup2aJVU4hPBBgRAgAPAhsMBQJU
- X9LxBQkeXB3fAAoJEGFXmRW1Y3YOj4UAn3nrFLPZekMeqX5aD/aq/dsbXSfyAKC45Go0YyxV
- HGuUuzv+GKZ6nsysJ7kCDQRXG8fwARAA6q/pqBi5PjHcOAUgk2/2LR5LjjesK50bCaD4JuNc
- YDhFR7Vs108diBtsho3w8WRd9viOqDrhLJTroVckkk74OY8r+3t1E0Dd4wHWHQZsAeUvOwDM
- PQMqTUBFuMi6ydzTZpFA2wBR9x6ofl8Ax+zaGBcFrRlQnhsuXLnM1uuvS39+pmzIjasZBP2H
- UPk5ifigXcpelKmj6iskP3c8QN6x6GjUSmYx+xUfs/GNVSU1XOZn61wgPDbgINJd/THGdqiO
- iJxCLuTMqlSsmh1+E1dSdfYkCb93R/0ZHvMKWlAx7MnaFgBfsG8FqNtZu3PCLfizyVYYjXbV
- WO1A23riZKqwrSJAATo5iTS65BuYxrFsFNPrf7TitM8E76BEBZk0OZBvZxMuOs6Z1qI8YKVK
- UrHVGFq3NbuPWCdRul9SX3VfOunr9Gv0GABnJ0ET+K7nspax0xqq7zgnM71QEaiaH17IFYGS
- sG34V7Wo3vyQzsk7qLf9Ajno0DhJ+VX43g8+AjxOMNVrGCt9RNXSBVpyv2AMTlWCdJ5KI6V4
- KEzWM4HJm7QlNKE6RPoBxJVbSQLPd9St3h7mxLcne4l7NK9eNgNnneT7QZL8fL//s9K8Ns1W
- t60uQNYvbhKDG7+/yLcmJgjF74XkGvxCmTA1rW2bsUriM533nG9gAOUFQjURkwI8jvMAEQEA
- AYkCaAQYEQIACQUCVxvH8AIbAgIpCRBhV5kVtWN2DsFdIAQZAQIABgUCVxvH8AAKCRCH0Jac
- RAcHBIkHD/9nmfog7X2ZXMzL9ktT++7x+W/QBrSTCTmq8PK+69+INN1ZDOrY8uz6htfTLV9+
- e2W6G8/7zIvODuHk7r+yQ585XbplgP0V5Xc8iBHdBgXbqnY5zBrcH+Q/oQ2STalEvaGHqNoD
- UGyLQ/fiKoLZTPMur57Fy1c9rTuKiSdMgnT0FPfWVDfpR2Ds0gpqWePlRuRGOoCln5GnREA/
- 2MW2rWf+CO9kbIR+66j8b4RUJqIK3dWn9xbENh/aqxfonGTCZQ2zC4sLd25DQA4w1itPo+f5
- V/SQxuhnlQkTOCdJ7b/mby/pNRz1lsLkjnXueLILj7gNjwTabZXYtL16z24qkDTI1x3g98R/
- xunb3/fQwR8FY5/zRvXJq5us/nLvIvOmVwZFkwXc+AF+LSIajqQz9XbXeIP/BDjlBNXRZNdo
- dVuSU51ENcMcilPr2EUnqEAqeczsCGpnvRCLfVQeSZr2L9N4svNhhfPOEscYhhpHTh0VPyxI
- pPBNKq+byuYPMyk3nj814NKhImK0O4gTyCK9b+gZAVvQcYAXvSouCnTZeJRrNHJFTgTgu6E0
- caxTGgc5zzQHeX67eMzrGomG3ZnIxmd1sAbgvJUDaD2GrYlulfwGWwWyTNbWRvMighVdPkSF
- 6XFgQaosWxkV0OELLy2N485YrTr2Uq64VKyxpncLh50e2RnyAJ9Za0Dx0yyp44iD1OvHtkEI
- M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
-Message-ID: <a573b81e-d4cc-98ad-31a8-beb37eade1f3@gmail.com>
-Date:   Wed, 23 Sep 2020 15:59:46 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200923225802.vjwwjmw7mh2ru3so@skbuf>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Wed, 23 Sep 2020 19:17:56 -0400
+Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
+        id C827229F72; Wed, 23 Sep 2020 19:17:53 -0400 (EDT)
+To:     "David S. Miller" <davem@davemloft.net>
+Cc:     "Bartlomiej Zolnierkiewicz" <b.zolnierkie@samsung.com>,
+        "Geert Uytterhoeven" <geert@linux-m68k.org>,
+        "Joshua Thompson" <funaho@jurai.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        linux-ide@vger.kernel.org
+Message-Id: <edd106dad1bbea32500601c6071f37a9f02a8004.1600901284.git.fthain@telegraphics.com.au>
+From:   Finn Thain <fthain@telegraphics.com.au>
+Subject: [PATCH v4] ide/macide: Convert Mac IDE driver to platform driver
+Date:   Thu, 24 Sep 2020 08:48:04 +1000
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/23/20 3:58 PM, Vladimir Oltean wrote:
-> On Wed, Sep 23, 2020 at 03:54:59PM -0700, Florian Fainelli wrote:
->> Not having much luck with using  __vlan_find_dev_deep_rcu() for a reason
->> I don't understand we trip over the proto value being neither of the two
->> support Ethertype and hit the BUG().
->>
->> +       upper_dev = __vlan_find_dev_deep_rcu(br, htons(proto), vid);
->> +       if (upper_dev)
->> +               return skb;
->>
->> Any ideas?
-> 
-> Damn...
-> Yes, of course, the skb->protocol is still ETH_P_XDSA which is where
-> eth_type_trans() on the master left it.
+Add platform devices for the Mac IDE controller variants. Convert the
+macide module into a platform driver to support two of those variants.
+For the third, use a generic "pata_platform" driver instead.
+This enables automatic loading of the appropriate module and begins
+the process of replacing the driver with libata alternatives.
 
-proto was obtained from br_vlan_get_proto() a few lines above, and
-br_vlan_get_proto() just returns br->vlan_proto which defaults to
-htons(ETH_P_8021Q) from br_vlan_init().
+Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Joshua Thompson <funaho@jurai.org>
+References: commit 5ed0794cde593 ("m68k/atari: Convert Falcon IDE drivers to platform drivers")
+References: commit 7ad19a99ad431 ("ide: officially deprecated the legacy IDE driver")
+Tested-by: Stan Johnson <userm57@yahoo.com>
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+---
+This patch was tested successfully on a Powerbook 190 (MAC_IDE_BABOON)
+using both pata_platform and ide_platform drivers.
+The next step will be to try using these generic drivers with the other
+IDE controller variants (MAC_IDE_QUADRA or MAC_IDE_PB) so that the macide
+driver can be entirely replaced with libata drivers.
 
-This is not skb->protocol that we are looking at AFAICT.
+Changed since v3:
+ - Updated Kconfig help text.
+
+Changed since v2:
+ - Enabled CONFIG_BLK_DEV_PLATFORM in multi_defconfig.
+ - Replaced dev_get_drvdata() with platform_get_drvdata().
+
+Changed since v1:
+ - Adopted DEFINE_RES_MEM and DEFINE_RES_IRQ macros.
+ - Dropped IORESOURCE_IRQ_SHAREABLE flag as it is ignored by pata_platform.c
+   and IRQF_SHARED makes no difference in this case.
+ - Removed redundant release_mem_region() call.
+ - Enabled CONFIG_BLK_DEV_PLATFORM in mac_defconfig. We might also enable
+   CONFIG_PATA_PLATFORM but IMO migration to libata should be a separate
+   patch (as this patch has some unrelated benefits).
+---
+ arch/m68k/configs/mac_defconfig   |  1 +
+ arch/m68k/configs/multi_defconfig |  1 +
+ arch/m68k/mac/config.c            | 41 +++++++++++++++++++
+ drivers/ide/Kconfig               |  7 ++--
+ drivers/ide/macide.c              | 66 ++++++++++++++++++++-----------
+ 5 files changed, 90 insertions(+), 26 deletions(-)
+
+diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
+index 6087798662601..f770970fe4e99 100644
+--- a/arch/m68k/configs/mac_defconfig
++++ b/arch/m68k/configs/mac_defconfig
+@@ -317,6 +317,7 @@ CONFIG_DUMMY_IRQ=m
+ CONFIG_IDE=y
+ CONFIG_IDE_GD_ATAPI=y
+ CONFIG_BLK_DEV_IDECD=y
++CONFIG_BLK_DEV_PLATFORM=y
+ CONFIG_BLK_DEV_MAC_IDE=y
+ CONFIG_RAID_ATTRS=m
+ CONFIG_SCSI=y
+diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
+index 0abb53c38c20d..f93c3021f20d4 100644
+--- a/arch/m68k/configs/multi_defconfig
++++ b/arch/m68k/configs/multi_defconfig
+@@ -346,6 +346,7 @@ CONFIG_DUMMY_IRQ=m
+ CONFIG_IDE=y
+ CONFIG_IDE_GD_ATAPI=y
+ CONFIG_BLK_DEV_IDECD=y
++CONFIG_BLK_DEV_PLATFORM=y
+ CONFIG_BLK_DEV_GAYLE=y
+ CONFIG_BLK_DEV_BUDDHA=y
+ CONFIG_BLK_DEV_FALCON_IDE=y
+diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
+index 5c9f3a2d65388..43fc29180cb58 100644
+--- a/arch/m68k/mac/config.c
++++ b/arch/m68k/mac/config.c
+@@ -24,6 +24,7 @@
+ #include <linux/init.h>
+ #include <linux/vt_kern.h>
+ #include <linux/platform_device.h>
++#include <linux/ata_platform.h>
+ #include <linux/adb.h>
+ #include <linux/cuda.h>
+ #include <linux/pmu.h>
+@@ -940,6 +941,26 @@ static const struct resource mac_scsi_ccl_rsrc[] __initconst = {
+ 	},
+ };
+ 
++static const struct resource mac_ide_quadra_rsrc[] __initconst = {
++	DEFINE_RES_MEM(0x50F1A000, 0x104),
++	DEFINE_RES_IRQ(IRQ_NUBUS_F),
++};
++
++static const struct resource mac_ide_pb_rsrc[] __initconst = {
++	DEFINE_RES_MEM(0x50F1A000, 0x104),
++	DEFINE_RES_IRQ(IRQ_NUBUS_C),
++};
++
++static const struct resource mac_pata_baboon_rsrc[] __initconst = {
++	DEFINE_RES_MEM(0x50F1A000, 0x38),
++	DEFINE_RES_MEM(0x50F1A038, 0x04),
++	DEFINE_RES_IRQ(IRQ_BABOON_1),
++};
++
++static const struct pata_platform_info mac_pata_baboon_data __initconst = {
++	.ioport_shift = 2,
++};
++
+ int __init mac_platform_init(void)
+ {
+ 	phys_addr_t swim_base = 0;
+@@ -1048,6 +1069,26 @@ int __init mac_platform_init(void)
+ 		break;
+ 	}
+ 
++	/*
++	 * IDE device
++	 */
++
++	switch (macintosh_config->ide_type) {
++	case MAC_IDE_QUADRA:
++		platform_device_register_simple("mac_ide", -1,
++			mac_ide_quadra_rsrc, ARRAY_SIZE(mac_ide_quadra_rsrc));
++		break;
++	case MAC_IDE_PB:
++		platform_device_register_simple("mac_ide", -1,
++			mac_ide_pb_rsrc, ARRAY_SIZE(mac_ide_pb_rsrc));
++		break;
++	case MAC_IDE_BABOON:
++		platform_device_register_resndata(NULL, "pata_platform", -1,
++			mac_pata_baboon_rsrc, ARRAY_SIZE(mac_pata_baboon_rsrc),
++			&mac_pata_baboon_data, sizeof(mac_pata_baboon_data));
++		break;
++	}
++
+ 	/*
+ 	 * Ethernet device
+ 	 */
+diff --git a/drivers/ide/Kconfig b/drivers/ide/Kconfig
+index 973ed4b684cec..19abf11c84c8a 100644
+--- a/drivers/ide/Kconfig
++++ b/drivers/ide/Kconfig
+@@ -744,9 +744,10 @@ config BLK_DEV_MAC_IDE
+ 	depends on MAC
+ 	help
+ 	  This is the IDE driver for the on-board IDE interface on some m68k
+-	  Macintosh models. It supports both the `Quadra style' (used in
+-	  Quadra/ Centris 630 and Performa 588 models) and `Powerbook style'
+-	  (used in the Powerbook 150 and 190 models) IDE interface.
++	  Macintosh models, namely Quadra/Centris 630, Performa 588 and
++	  Powerbook 150. The IDE interface on the Powerbook 190 is not
++	  supported by this driver and requires BLK_DEV_PLATFORM or
++	  PATA_PLATFORM.
+ 
+ 	  Say Y if you have such an Macintosh model and want to use IDE
+ 	  devices (hard disks, CD-ROM drives, etc.) that are connected to the
+diff --git a/drivers/ide/macide.c b/drivers/ide/macide.c
+index 3c6bb8599303b..8a201a467886b 100644
+--- a/drivers/ide/macide.c
++++ b/drivers/ide/macide.c
+@@ -18,10 +18,11 @@
+ #include <linux/delay.h>
+ #include <linux/ide.h>
+ #include <linux/module.h>
++#include <linux/platform_device.h>
+ 
+ #include <asm/macintosh.h>
+-#include <asm/macints.h>
+-#include <asm/mac_baboon.h>
++
++#define DRV_NAME "mac_ide"
+ 
+ #define IDE_BASE 0x50F1A000	/* Base address of IDE controller */
+ 
+@@ -109,42 +110,61 @@ static const char *mac_ide_name[] =
+  * Probe for a Macintosh IDE interface
+  */
+ 
+-static int __init macide_init(void)
++static int mac_ide_probe(struct platform_device *pdev)
+ {
+-	unsigned long base;
+-	int irq;
++	struct resource *mem, *irq;
+ 	struct ide_hw hw, *hws[] = { &hw };
+ 	struct ide_port_info d = macide_port_info;
++	struct ide_host *host;
++	int rc;
+ 
+ 	if (!MACH_IS_MAC)
+ 		return -ENODEV;
+ 
+-	switch (macintosh_config->ide_type) {
+-	case MAC_IDE_QUADRA:
+-		base = IDE_BASE;
+-		irq = IRQ_NUBUS_F;
+-		break;
+-	case MAC_IDE_PB:
+-		base = IDE_BASE;
+-		irq = IRQ_NUBUS_C;
+-		break;
+-	case MAC_IDE_BABOON:
+-		base = BABOON_BASE;
+-		d.port_ops = NULL;
+-		irq = IRQ_BABOON_1;
+-		break;
+-	default:
++	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!mem)
++		return -ENODEV;
++
++	irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
++	if (!irq)
+ 		return -ENODEV;
++
++	if (!devm_request_mem_region(&pdev->dev, mem->start,
++				     resource_size(mem), DRV_NAME)) {
++		dev_err(&pdev->dev, "resources busy\n");
++		return -EBUSY;
+ 	}
+ 
+ 	printk(KERN_INFO "ide: Macintosh %s IDE controller\n",
+ 			 mac_ide_name[macintosh_config->ide_type - 1]);
+ 
+-	macide_setup_ports(&hw, base, irq);
++	macide_setup_ports(&hw, mem->start, irq->start);
+ 
+-	return ide_host_add(&d, hws, 1, NULL);
++	rc = ide_host_add(&d, hws, 1, &host);
++	if (rc)
++		return rc;
++
++	platform_set_drvdata(pdev, host);
++	return 0;
+ }
+ 
+-module_init(macide_init);
++static int mac_ide_remove(struct platform_device *pdev)
++{
++	struct ide_host *host = platform_get_drvdata(pdev);
++
++	ide_host_remove(host);
++	return 0;
++}
++
++static struct platform_driver mac_ide_driver = {
++	.driver = {
++		.name = DRV_NAME,
++	},
++	.probe  = mac_ide_probe,
++	.remove = mac_ide_remove,
++};
++
++module_platform_driver(mac_ide_driver);
+ 
++MODULE_ALIAS("platform:" DRV_NAME);
+ MODULE_LICENSE("GPL");
 -- 
-Florian
+2.26.2
+
