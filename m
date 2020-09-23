@@ -2,212 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F1A1275325
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 10:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD61127532D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 10:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726548AbgIWIWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 04:22:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33688 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726178AbgIWIWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 04:22:05 -0400
-Received: from mail.kernel.org (ip5f5ad5c8.dynamic.kabel-deutschland.de [95.90.213.200])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0406E235FC;
-        Wed, 23 Sep 2020 08:22:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600849324;
-        bh=jLE0auYGkt+7QEDu1/gRGx9UABSeW0dI/eNeyaaSz88=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g3jvSufxvkEVJHt2kCMIYZ8ZFbP+NR8TpIuCsdUaI5rTHLLiJRyEVEFfNXvCjWk07
-         tMuz5h+5LNMYi1p2vwFPQE0M34dFZeruUMyIOH6C1H6262Df7SO2iTjoVjSfYh5cX2
-         YCGC0gcWRj1sHLPpSlDRYMyRu0Tg/h5koCNetC+I=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1kL02L-001F22-92; Wed, 23 Sep 2020 10:22:01 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Media Mailing List <linux-media@vger.kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] media: atomisp: cleanup __printf() atributes on printk messages
-Date:   Wed, 23 Sep 2020 10:22:00 +0200
-Message-Id: <01cc2ec6ea044731e939e5e47f7e115b86f49465.1600849288.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <8e3d5d4baf0781974a224e284e837665c0d26f92.1600849288.git.mchehab+huawei@kernel.org>
-References: <8e3d5d4baf0781974a224e284e837665c0d26f92.1600849288.git.mchehab+huawei@kernel.org>
+        id S1726342AbgIWIXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 04:23:54 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:2339 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgIWIXy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 04:23:54 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f6b05eb0001>; Wed, 23 Sep 2020 01:23:07 -0700
+Received: from localhost (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 23 Sep
+ 2020 08:23:53 +0000
+Date:   Wed, 23 Sep 2020 10:23:50 +0200
+From:   Thierry Reding <treding@nvidia.com>
+To:     Stephen Boyd <sboyd@kernel.org>
+CC:     Michael Turquette <mturquette@baylibre.com>,
+        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        Joseph Lo <josephl@nvidia.com>
+Subject: Re: [PATCH] clk: tegra: Drop !provider check in
+ tegra210_clk_emc_set_rate()
+Message-ID: <20200923082350.GA1203543@ulmo>
+References: <20200922191641.2305144-1-sboyd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="r5Pyd7+fXNt84Ff3"
+Content-Disposition: inline
+In-Reply-To: <20200922191641.2305144-1-sboyd@kernel.org>
+X-NVConfidentiality: public
+User-Agent: Mutt/1.14.7 (2020-08-29)
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600849387; bh=rw6XyC6D0Wn/tIYkzkI1BvwS8429JZzAsGLs0aTeYn8=;
+        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+         Content-Type:Content-Disposition:In-Reply-To:X-NVConfidentiality:
+         User-Agent:X-Originating-IP:X-ClientProxiedBy;
+        b=ahesYUWYSFiid8Exz4lMCERtcxoH/fU5PGE3AVzFpjhRN2wVIGvu0Z2NIw05VPls0
+         J8x8GOQ1P1+lQpwsZHttz2T+PD3lajtZQIaY57XwF7825N1D617712cOKR+Wn8Gvpq
+         JLJOAiCvbd32IH+UcUysAj8Is8C65inheJieZ6M7OZpZKuTOd9D40QssZ14DUaG2yd
+         P+9gj1SFmd9fiTQLaRaOH9+wMdZQ2nXm6LAFhneGAZRpbrV6x8avaI290O88xvBX1A
+         MWRkTZnX0WSt7YKD8xBIt0do5odX3CwZFHQdye/iK+/kByTBxzOZstIBgoMVUpxpqt
+         Oh2md+BeNFxVQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are still some warnings produced by -Wsuggest-attribute=format,
-like this one:
+--r5Pyd7+fXNt84Ff3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-	drivers/staging/media/atomisp/pci/runtime/debug/src/ia_css_debug.c: In function ‘dtrace_dot’:
-	drivers/staging/media/atomisp/pci/runtime/debug/src/ia_css_debug.c:2466:2: warning: function ‘dtrace_dot’ might be a candidate for ‘gnu_printf’ format attribute [-Wsuggest-attribute=format]
-	 2466 |  ia_css_debug_vdtrace(IA_CSS_DEBUG_INFO, fmt, ap);
-	      |  ^~~~~~~~~~~~~~~~~~~~
+On Tue, Sep 22, 2020 at 12:16:41PM -0700, Stephen Boyd wrote:
+> The provider variable is already dereferenced earlier in this function.
+> Drop the check for NULL as it is impossible.
+>=20
+> Found with smatch
+>=20
+> drivers/clk/tegra/clk-tegra210-emc.c:131 tegra210_clk_emc_set_rate() warn=
+: variable dereferenced before check 'provider' (see line 124)
+>=20
+> Cc: Joseph Lo <josephl@nvidia.com>
+> Cc: Thierry Reding <treding@nvidia.com>
+> Fixes: 0ac65fc946d3 ("clk: tegra: Implement Tegra210 EMC clock")
+> Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+> ---
+>  drivers/clk/tegra/clk-tegra210-emc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Also, on some places, is is using __atribute, while on others it
-is using the __printf() macro.
+Acked-by: Thierry Reding <treding@nvidia.com>
 
-Uniform those to always use the __printf() macro, placing it
-before the function, and fix the logic in order to cleanup
-all such warnings.
+--r5Pyd7+fXNt84Ff3
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/staging/media/atomisp/pci/atomisp_compat_css20.c | 7 +++----
- .../atomisp/pci/hive_isp_css_include/print_support.h     | 3 +--
- drivers/staging/media/atomisp/pci/ia_css_env.h           | 4 ++--
- .../atomisp/pci/runtime/debug/interface/ia_css_debug.h   | 9 +++++----
- .../media/atomisp/pci/runtime/debug/src/ia_css_debug.c   | 3 +--
- drivers/staging/media/atomisp/pci/sh_css.c               | 2 +-
- drivers/staging/media/atomisp/pci/sh_css_internal.h      | 8 +++-----
- 7 files changed, 16 insertions(+), 20 deletions(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c b/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
-index 85b39de7bc28..faa0935e536a 100644
---- a/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
-+++ b/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
-@@ -159,15 +159,14 @@ static void atomisp_css2_hw_load(hrt_address addr, void *to, uint32_t n)
- 	spin_unlock_irqrestore(&mmio_lock, flags);
- }
- 
--static int  __attribute__((format (printf, 1, 0)))
--atomisp_css2_dbg_ftrace_print(const char *fmt, va_list args)
-+static int  __printf(1, 0) atomisp_css2_dbg_ftrace_print(const char *fmt,
-+							 va_list args)
- {
- 	ftrace_vprintk(fmt, args);
- 	return 0;
- }
- 
--static int  __attribute__((format (printf, 1, 0)))
--atomisp_vprintk(const char *fmt, va_list args)
-+static int  __printf(1, 0) atomisp_vprintk(const char *fmt, va_list args)
- {
- 	vprintk(fmt, args);
- 	return 0;
-diff --git a/drivers/staging/media/atomisp/pci/hive_isp_css_include/print_support.h b/drivers/staging/media/atomisp/pci/hive_isp_css_include/print_support.h
-index 749f5c3725bd..540b405cc0f7 100644
---- a/drivers/staging/media/atomisp/pci/hive_isp_css_include/print_support.h
-+++ b/drivers/staging/media/atomisp/pci/hive_isp_css_include/print_support.h
-@@ -20,8 +20,7 @@
- 
- extern int (*sh_css_printf)(const char *fmt, va_list args);
- /* depends on host supplied print function in ia_css_init() */
--static inline  __attribute__((format (printf, 1, 0)))
--void ia_css_print(const char *fmt, ...)
-+static inline  __printf(1, 2) void ia_css_print(const char *fmt, ...)
- {
- 	va_list ap;
- 
-diff --git a/drivers/staging/media/atomisp/pci/ia_css_env.h b/drivers/staging/media/atomisp/pci/ia_css_env.h
-index 9808ff9e0492..6b38723b27cd 100644
---- a/drivers/staging/media/atomisp/pci/ia_css_env.h
-+++ b/drivers/staging/media/atomisp/pci/ia_css_env.h
-@@ -75,9 +75,9 @@ struct ia_css_hw_access_env {
- /* Environment with function pointers to print error and debug messages.
-  */
- struct ia_css_print_env {
--	int (*debug_print)(const char *fmt, va_list args) __attribute__((format (printf, 1, 0)));
-+	int  __printf(1, 0) (*debug_print)(const char *fmt, va_list args);
- 	/** Print a debug message. */
--	int (*error_print)(const char *fmt, va_list args) __attribute__((format (printf, 1, 0)));
-+	int  __printf(1, 0) (*error_print)(const char *fmt, va_list args);
- 	/** Print an error message.*/
- };
- 
-diff --git a/drivers/staging/media/atomisp/pci/runtime/debug/interface/ia_css_debug.h b/drivers/staging/media/atomisp/pci/runtime/debug/interface/ia_css_debug.h
-index 0f9b7eb17647..5e6e7447ae00 100644
---- a/drivers/staging/media/atomisp/pci/runtime/debug/interface/ia_css_debug.h
-+++ b/drivers/staging/media/atomisp/pci/runtime/debug/interface/ia_css_debug.h
-@@ -129,15 +129,16 @@ enum ia_css_debug_enable_param_dump {
-  * @param[in]	fmt		printf like format string
-  * @param[in]	args		arguments for the format string
-  */
--static inline void
--ia_css_debug_vdtrace(unsigned int level, const char *fmt, va_list args)
-+static inline void __printf(2, 0) ia_css_debug_vdtrace(unsigned int level,
-+						       const char *fmt,
-+						       va_list args)
- {
- 	if (dbg_level >= level)
- 		sh_css_vprint(fmt, args);
- }
- 
--__printf(2, 3)
--void ia_css_debug_dtrace(unsigned int level, const char *fmt, ...);
-+__printf(2, 3) void ia_css_debug_dtrace(unsigned int level,
-+					const char *fmt, ...);
- 
- /*! @brief Dump sp thread's stack contents
-  * SP thread's stack contents are set to 0xcafecafe. This function dumps the
-diff --git a/drivers/staging/media/atomisp/pci/runtime/debug/src/ia_css_debug.c b/drivers/staging/media/atomisp/pci/runtime/debug/src/ia_css_debug.c
-index 4f637e7219a6..05ce0f73f5ae 100644
---- a/drivers/staging/media/atomisp/pci/runtime/debug/src/ia_css_debug.c
-+++ b/drivers/staging/media/atomisp/pci/runtime/debug/src/ia_css_debug.c
-@@ -2454,8 +2454,7 @@ ia_css_debug_mode_enable_dma_channel(int dma_id,
- 	return rc;
- }
- 
--static
--void dtrace_dot(const char *fmt, ...)
-+static void __printf(1, 2) dtrace_dot(const char *fmt, ...)
- {
- 	va_list ap;
- 
-diff --git a/drivers/staging/media/atomisp/pci/sh_css.c b/drivers/staging/media/atomisp/pci/sh_css.c
-index c50b5fba7b86..e8c5caf3dfe6 100644
---- a/drivers/staging/media/atomisp/pci/sh_css.c
-+++ b/drivers/staging/media/atomisp/pci/sh_css.c
-@@ -111,7 +111,7 @@ static int thread_alive;
- 
- struct sh_css my_css;
- 
--int (*sh_css_printf)(const char *fmt, va_list args) = NULL;
-+int  __printf(1, 0) (*sh_css_printf)(const char *fmt, va_list args) = NULL;
- 
- /* modes of work: stream_create and stream_destroy will update the save/restore data
-    only when in working mode, not suspend/resume
-diff --git a/drivers/staging/media/atomisp/pci/sh_css_internal.h b/drivers/staging/media/atomisp/pci/sh_css_internal.h
-index 415353ceb7f6..3c669ec79b68 100644
---- a/drivers/staging/media/atomisp/pci/sh_css_internal.h
-+++ b/drivers/staging/media/atomisp/pci/sh_css_internal.h
-@@ -907,10 +907,9 @@ struct host_sp_queues {
- #define SIZE_OF_HOST_SP_QUEUES_STRUCT		\
- 	(SIZE_OF_QUEUES_ELEMS + SIZE_OF_QUEUES_DESC)
- 
--extern int (*sh_css_printf)(const char *fmt, va_list args);
-+extern int  __printf(1, 0) (*sh_css_printf)(const char *fmt, va_list args);
- 
--static inline void
--sh_css_print(const char *fmt, ...)
-+static inline void  __printf(1, 2) sh_css_print(const char *fmt, ...)
- {
- 	va_list ap;
- 
-@@ -921,8 +920,7 @@ sh_css_print(const char *fmt, ...)
- 	}
- }
- 
--static inline void
--sh_css_vprint(const char *fmt, va_list args)
-+static inline void  __printf(1, 0) sh_css_vprint(const char *fmt, va_list args)
- {
- 	if (sh_css_printf)
- 		sh_css_printf(fmt, args);
--- 
-2.26.2
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9rBhYACgkQ3SOs138+
+s6EaAA//Y5DplW5lffkHg6ZLa50L/fr/LxCD6tJax+aU2QFvKGVFzPx6JLU7/My9
+LR2zhjV4Q0VceG+FYZuVVoIoFMbrDvlyPEwYWWjlyJLMkp9t/rwZEo9jdpdE9Icc
++QhbseF1SV4fVCQLHnynUnQqGieZt0zyOMNDw6h8kqiGqfGs9B2pqedK1XcfmfBd
+qM7juy+MpaOWS6rVg9hbM0ZKscbLUgPYJyrejbaMMDuBTYP7sVjW5vPhFHmBKyPl
+2AgwpYIsrmZB234KxjeoToibt5hL2fJwNJ8folMA2WYfBVyoQfIwbmUUyihy0269
+OOauVdb5zv6qn7Axsim5mZxQAfsVT4ILgyqFHhdKwg2HWjZeGC9CQp1ykK9x7p0C
+mRJmnZLpsB8251vrXRp0GV07EQjOmzUKmJPb7Wv+LYjjwsFAIzfK2iw3NE38bDlk
+GNcNORN+EQM3jP6WvGgWLDKN/HB4GrhqXCwYTB4PoJzF6gjcls80j4w6xM6TMxoQ
+9UpeG1hptfusU+zc8k2lLpbnK/sg71n/nWUcLLHZLg9QXtOtyg+I7DZB1bIL4z3X
+C3m88zLMZnl1nmdZoOXiv3ixYEC1Rn2jJrN6oFDuH7pWZGfFp7og7Csttdk0k1rs
+3V35PwJ6yNosa5NbPy3uVMt57sirjnSY+Ufpf820/hCBpfTEQlw=
+=OQhr
+-----END PGP SIGNATURE-----
 
+--r5Pyd7+fXNt84Ff3--
