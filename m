@@ -2,69 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32D5B275133
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 08:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92AB427513A
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 08:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726722AbgIWGJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 02:09:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49678 "EHLO mail.kernel.org"
+        id S1726674AbgIWGLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 02:11:07 -0400
+Received: from verein.lst.de ([213.95.11.211]:47372 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726550AbgIWGJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 02:09:35 -0400
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7F30F20739;
-        Wed, 23 Sep 2020 06:09:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600841374;
-        bh=rjWKuYvC72TU64CYHQyAAX1xM5QOixLenvyV0KeM5yg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Fc7Cr1TWw1F2Gy7YQ+eg4Uql7gHXrzuWWK7Gmm1QnZl4nQc2qIxuRa5x17FtV//kK
-         Gv7IlZwRiDUYRuyL5wbNG13Rd4FQfR+8pNAW2s/lLo1dKAIgcBsOSY1maq7fKr4ahl
-         9NIfE+GlWzOJjeZRBvT8MLy1WsoerMqdur6RkwhA=
-Date:   Tue, 22 Sep 2020 23:09:33 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Daniel Rosenberg <drosen@google.com>
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chao Yu <chao@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Richard Weinberger <richard@nod.at>,
-        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mtd@lists.infradead.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH 4/5] fscrypt: Have filesystems handle their d_ops
-Message-ID: <20200923060933.GE9538@sol.localdomain>
-References: <20200923010151.69506-1-drosen@google.com>
- <20200923010151.69506-5-drosen@google.com>
+        id S1726550AbgIWGLH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 02:11:07 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id DCEC767373; Wed, 23 Sep 2020 08:11:02 +0200 (CEST)
+Date:   Wed, 23 Sep 2020 08:11:02 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        linux-mm@kvack.org, Peter Zijlstra <peterz@infradead.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Minchan Kim <minchan@kernel.org>,
+        dri-devel@lists.freedesktop.org, xen-devel@lists.xenproject.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        intel-gfx@lists.freedesktop.org, Nitin Gupta <ngupta@vflare.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>
+Subject: Re: [Intel-gfx] [PATCH 3/6] drm/i915: use vmap in shmem_pin_map
+Message-ID: <20200923061102.GA15762@lst.de>
+References: <20200918163724.2511-1-hch@lst.de> <20200918163724.2511-4-hch@lst.de> <20200921191157.GX32101@casper.infradead.org> <20200922062249.GA30831@lst.de> <43d10588-2033-038b-14e4-9f41cd622d7b@linux.intel.com> <20200922143141.GA26637@lst.de> <e429c3e6-2143-f51a-4c1c-c1470076ad3e@linux.intel.com> <20200922163346.GA1701@lst.de> <1b05b9d6-a14c-85cd-0728-d0d40c9ff84b@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200923010151.69506-5-drosen@google.com>
+In-Reply-To: <1b05b9d6-a14c-85cd-0728-d0d40c9ff84b@linux.intel.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 01:01:50AM +0000, Daniel Rosenberg wrote:
-> This shifts the responsibility of setting up dentry operations from
-> fscrypt to the individual filesystems, allowing them to have their own
-> operations while still setting fscrypt's d_revalidate as appropriate.
-> 
-> Most filesystems can just use generic_set_encrypted_ci_d_ops, unless
-> they have their own specific dentry operations as well. That operation
-> will set the minimal d_ops required under the circumstances.
-> 
-> Since the fscrypt d_ops are set later on, we must set all d_ops there,
-> since we cannot adjust those later on. This should not result in any
-> change in behavior.
-> 
-> Signed-off-by: Daniel Rosenberg <drosen@google.com>
+On Tue, Sep 22, 2020 at 06:04:37PM +0100, Tvrtko Ursulin wrote:
+> Only reason I can come up with now is if mapping side is on a latency 
+> sensitive path, while un-mapping is lazy/delayed so can be more costly. 
+> Then fast map and extra cost on unmap may make sense.
 
-Looks good,
+In general yes.  But compared to the overall operations a small kmalloc
+is in the noise, so I'd really like to see numbers.
 
-Reviewed-by: Eric Biggers <ebiggers@google.com>
+> It more applies to the other i915 patch, which implements a much more used 
+> API, but whether or not we can demonstrate any difference in the perf 
+> profiles I couldn't tell you without trying to collect some.
+
+The other patch keeps the stack, as avoiding it would not simplify the
+code as significantly.  I still doubt it is all that useful, though.
+
+
+>> We could do vmalloc_to_page, but that is fairly expensive (not as bad
+>> as reading from the page cache..).  Are you really worried about the
+>> allocation?
+>
+> Not so much given how we don't even use shmem_pin_map outside selftests.
+>
+> If we start using it I expect it will be for tiny objects anyway. Only if 
+> they end up being pinned for the lifetime of the driver, it may be a 
+> pointless waste of memory compared to the downsides of vmalloc_to_page. But 
+> we can revisit this particular edge case optimization if the need arises.
+
+For tiny object we could either look into using kmap, or in fact
+ensure the shmem files aren't in highmem, in which case you could
+always use single-page mappings without any extra mapping.
