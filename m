@@ -2,67 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36A02275965
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3480D275966
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726671AbgIWOHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 10:07:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51294 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgIWOHi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 10:07:38 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E565821D92;
-        Wed, 23 Sep 2020 14:07:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600870058;
-        bh=s7f+06avqlIZH5laQfpv/IFSlWthi5o7RtJN/jEa6zw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Zh0iNHh8w5lG80MNqVefUEub9Nbxqrg3sdnJmOVEJaBpGs+AtV+OztWOWY83deYMv
-         WrkUxYo1csTkfiftO+c0FUm6czaxSRuyHCX4A7yNmuh11sK9Ed7yJmFxAjTA34g7Cc
-         u6LgYrMiY+Pz2eXbB0vENKqvlqixWU2ycZKKn2rI=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id E8F59400E9; Wed, 23 Sep 2020 11:07:34 -0300 (-03)
-Date:   Wed, 23 Sep 2020 11:07:34 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Hagen Paul Pfeifer <hagen@jauu.net>
-Cc:     linux-kernel@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [PATCH v2] perf script: add min, max to futex-contention
-Message-ID: <20200923140734.GA2517482@kernel.org>
-References: <20200921201928.799498-2-hagen@jauu.net>
- <20200922200922.1306034-1-hagen@jauu.net>
- <20200923123155.GA2516911@kernel.org>
- <137056436.64108.1600864811088@office.mailbox.org>
+        id S1726692AbgIWOHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 10:07:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgIWOHn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 10:07:43 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6709DC0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 07:07:43 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600870061;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7QRDlukRA7yINm4qIoOt4IW4nSKnDDsIjzp9cyHmjnk=;
+        b=WAEvpikMQawF612x9tBsCcPS7TDrSMJaBbL4j/EFWojoDpXaPgwlPu/uJcdD1NQXp7REXD
+        eKz8lPwnymM+OizwY276XbxMzW4/ZMP0/uhGpkTDVDRtPlxECJrfGU8mVI2hcfOLxVG9Hi
+        J0UfLrFsKOXsbe6nOMvuTMEkERasQtD4gQvrT99PwVWZ4cJebfvyrsGrz8OySVdQV+pIlt
+        iLdRSrP8HRJ0dDyMSBJm+v2ehrAF/vLMqTROsYLhSVttOXLcCx3P8PPZilop9AHimj3J4m
+        Oi1w8L5McJwHmD8k/7XaskFvonmdmT+7z4bQEL1AhK/quarkq9SjLBs3Dw945Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600870061;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7QRDlukRA7yINm4qIoOt4IW4nSKnDDsIjzp9cyHmjnk=;
+        b=JZB4H91oOiCSzxk6JKiBaLLoZhkH4Zu5uIfao4CkdUhnQ8idbUPNaAlCWXQamBvPkFEST5
+        GX2jb1KuOEhUCdCA==
+To:     Peter Zijlstra <peterz@infradead.org>, mingo@kernel.org
+Cc:     linux-kernel@vger.kernel.org, bigeasy@linutronix.de,
+        qais.yousef@arm.com, swood@redhat.com, peterz@infradead.org,
+        valentin.schneider@arm.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vincent.donnefort@arm.com
+Subject: Re: [PATCH 6/9] sched: Massage set_cpus_allowed
+In-Reply-To: <20200921163845.706308927@infradead.org>
+References: <20200921163557.234036895@infradead.org> <20200921163845.706308927@infradead.org>
+Date:   Wed, 23 Sep 2020 16:07:40 +0200
+Message-ID: <87ft78a8nn.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <137056436.64108.1600864811088@office.mailbox.org>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Sep 23, 2020 at 02:40:10PM +0200, Hagen Paul Pfeifer escreveu:
-> > On 09/23/2020 2:31 PM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> > 
-> > Didn't apply here, I did it by hand, please check, probably some
-> > indentation artifact.
-> 
-> Probably you missed patch one of the patchset - the autopep8 formatting
-> one for the lock contention script?
+On Mon, Sep 21 2020 at 18:36, Peter Zijlstra wrote:
+> @@ -1899,7 +1900,9 @@ extern void update_group_capacity(struct
+>  
+>  extern void trigger_load_balance(struct rq *rq);
+>  
+> -extern void set_cpus_allowed_common(struct task_struct *p, const struct cpumask *new_mask);
+> +#define SCA_CHECK		0x01
+> +
 
-Right, I missed that, I'm removing my "fix", autopep'in and then
-reapplying your verbatin 2/2 patch.
- 
-> > Thanks for the patch!
-> 
-> You are welcome Arnaldo!
-> 
-> Hagen
+needs to move out of the CONFIG_SMP ifdef as it's used even on UP.
 
--- 
+Thanks,
 
-- Arnaldo
+        tglx
