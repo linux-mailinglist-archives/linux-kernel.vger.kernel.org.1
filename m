@@ -2,138 +2,454 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0343C275230
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 09:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90F5D27523C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 09:22:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726721AbgIWHPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 03:15:49 -0400
-Received: from mail-db8eur05on2098.outbound.protection.outlook.com ([40.107.20.98]:42017
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726550AbgIWHPs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 03:15:48 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H5bxy027U93W91/AE+sFU9o3bnaJPjHGpe1fTtikSC4IlDyheJjDPd7yRAo16cPKGSjGvz8NqDiNIRcgVPGjLN9hZLfHLfgKkyR+5qawnPGpB8U6Avd4b0dZ8IzGOxXVVDEW9vIM0gGlBhOKvtGyAX4aEYnKjc2M6hPl48dQ8dP5zTg/wUYM1V6e2t2ubXXWYopjrR2T9KnvaYUuoQWEr0dx2PBLz+COnnV+3dYdPXlw/VUBV6tK2aXB8Izlzd50FNREMyeSLzjNB2489757no8uYBn5zpttKyN04qs5A00EGV9ooF5xpbInpLXxqoRmfgWXUhm8LLF54dwt2ErDGg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r6K45rPfLgIJzPNlI5TytWUI7Q0niMhILy99zhww9uU=;
- b=FIOeZdgrdRyMT5Oj6RgGWzNae1SdQU5QmdJL+uqqBlWcFATwXAmq6N4m8HY9692XGJ9n8dnl80galuRVE53hImizViP+hdABg77e/sziQ9pg10Rm/PF2mVwByHcaLYADDFJbYiFg+QVI3IuyXM53KwOlleIlkgWI5nIb28J8RhyosSn9IbRaGoxzWGQbWWrIhvKxCoAcSWsAowlMZq2APBB2UIQaPRuBF+ii1pLNuMcqjRByRWJcb/fpxuAylnjwhprglwq1M713wiYlOxMhxjGBypmmnFodeu6zTEBGPgMz3xZYoXswqCdCdhOS9wgltZd9vUaBHl1B2nNKw/PiwQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
- dkim=pass header.d=plvision.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r6K45rPfLgIJzPNlI5TytWUI7Q0niMhILy99zhww9uU=;
- b=oxXNw3lenrzHzRNlexkoq/RN6/rMupHNbtmoMnZSZpCoDQ3in9Gpnj3uI5yWeS6nUlAY+iKpBt4cW9MDEn3cH5EevB4naNmbcmp0CC6o4QJW9GXEZb24NIvUdmzDM90ZED7Ro0CXgpNEBvLfKft7V2+mUPw7MCIIM1GYgfLabrI=
-Authentication-Results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=plvision.eu;
-Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:56::28) by
- HE1P190MB0122.EURP190.PROD.OUTLOOK.COM (2603:10a6:3:ca::19) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3412.20; Wed, 23 Sep 2020 07:15:42 +0000
-Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- ([fe80::c1ab:71de:6bc2:89fe]) by HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- ([fe80::c1ab:71de:6bc2:89fe%6]) with mapi id 15.20.3391.027; Wed, 23 Sep 2020
- 07:15:42 +0000
-Date:   Wed, 23 Sep 2020 10:15:36 +0300
-From:   Vadym Kochan <vadym.kochan@plvision.eu>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        id S1726656AbgIWHWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 03:22:51 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:18240 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726617AbgIWHWv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 03:22:51 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600845769; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=pFUg1O6TaPa2Sz1vngsUvigj6ljyzP1o52zJXZpUic8=; b=rwl7rzsm/Lb9xl5wNxHhQHdJYOvIe505nXLnsvLqBySD6dPi345qbUYSFtCk0J9J4M/Cdmsa
+ e2DZAb/TzR+cuVA/id7qFRQGKDgfTapBhhwvzfSCJ6nKtpAT6ur2rPlwT2kcZlyYsKQ25GZn
+ SQJUj1aiuA1bjeN7iGL5+R3SaVM=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5f6af7bd588e0a9888f1d6f6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 23 Sep 2020 07:22:37
+ GMT
+Sender: neeraju=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0613BC433F1; Wed, 23 Sep 2020 07:22:37 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.0.103] (unknown [124.123.174.40])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: neeraju)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BC35AC433CB;
+        Wed, 23 Sep 2020 07:22:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BC35AC433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
+Subject: Re: [PATCH] rcu/tree: Correctly handle single cpu check in
+ rcu_blocking_is_gp
+To:     paulmck@kernel.org
+Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] nvmem: core: fix possibly memleak when use
- nvmem_cell_info_to_nvmem_cell()
-Message-ID: <20200923071536.GA25173@plvision.eu>
-References: <20200922235005.24371-1-vadym.kochan@plvision.eu>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922235005.24371-1-vadym.kochan@plvision.eu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: AM6PR05CA0009.eurprd05.prod.outlook.com
- (2603:10a6:20b:2e::22) To HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:7:56::28)
+References: <1600717557-19880-1-git-send-email-neeraju@codeaurora.org>
+ <20200922202917.GB29330@paulmck-ThinkPad-P72>
+From:   Neeraj Upadhyay <neeraju@codeaurora.org>
+Message-ID: <bb919430-a81f-daae-b3a9-8581ae334ac5@codeaurora.org>
+Date:   Wed, 23 Sep 2020 12:52:30 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from plvision.eu (217.20.186.93) by AM6PR05CA0009.eurprd05.prod.outlook.com (2603:10a6:20b:2e::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Wed, 23 Sep 2020 07:15:42 +0000
-X-Originating-IP: [217.20.186.93]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 471cd31b-02cd-4637-d2be-08d85f907b87
-X-MS-TrafficTypeDiagnostic: HE1P190MB0122:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <HE1P190MB012222365264E5395235110395380@HE1P190MB0122.EURP190.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2043;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XAqha3J7kVl4NPut82s6lw85wMltPmZG3BEU4I+F6UCzKRu2Hg8hHDhYrgUiHP1qK/lDdomW/TLTstIAuABicfWSU200lFqjvzha/q2oQ6tZ4ZXjN+lNDjKsv6tfQPp2wfa/3MF/XsUEB9SaXCHyTBIkPKpTtbRu9MUoM0qU8t8CnfURES/OPLVRYzKZ/63i69FSXVFVF7rA1gtShTA5pH0tiVDZBA5DjzThAWxBaLLp5//epWzz6fcTQVB0dvxgjBY9Ev+ab1kIyA74Arrfoc/FTIpVtZTmewhNC+j+NrWyibIcveG1ZJGfw1fYThDsph91HsYMuYJnw0SKsDLtWA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1P190MB0539.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(346002)(136003)(376002)(39830400003)(396003)(366004)(52116002)(110136005)(7696005)(26005)(478600001)(6666004)(8676002)(86362001)(44832011)(55016002)(5660300002)(33656002)(956004)(36756003)(316002)(1076003)(8886007)(8936002)(186003)(2906002)(2616005)(66946007)(66476007)(16526019)(66556008);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: 5P7dMh2eqcP88RFWQNg5GtwXN7fKPkwwnb+rW0JJMjSpfKyszNt2jehY29Yy/HWWY/xUhMv5ic8PSKYFk9uybnmk7lG46WnrCE1Ib2MOAw+acBlW4KAJ0EPFngr79BFlbdh+Fu/0n84pidYD1rLL8/zGU9Lb2maPo3SeTdSG2UHtYQuiT4Asa7wq81aE/M4e7bXoOmrioCZJh+RU1Y+C3b25gzJEsyyR9bP64cQymEygKKB9dP9euVSi6Saq5AX4STbj1/OM1zdpzervgqXkIC0UrB+AefvXW/tfMVYhfGJdlCF11TWv170IsDakd8OEI8TmjSeK5w8xvt3A/3JA4znVHG/Ye9KZ2Dsasdyfnr6lXWnC+CzBE6kWPbrtOjyUSBaUvN6VClai78bZbjQv3G3k4vnnAWjnBD1z95sHW2HXv8vOHCoPRs8HaisAAl6P7zPL//oqHOn0Y5vq3wJbCDcQ93xipdQ9F3yCklDKnc6eD4+aInqqjSuEhpUMPm74jTFjNfuS4p/qmwg3zsAmjrWFX8dZNYn/FN2qHkEDffdLg67fUz/ZBD+NbFOtMmXJhVpA7eSRE60xOtQTzfvN122dI25nvA1mOFsUD0w9jpC8dWhdEQh1jCBy43vyG2B9XvenKiSpM3nXuNzh3IqjQQ==
-X-OriginatorOrg: plvision.eu
-X-MS-Exchange-CrossTenant-Network-Message-Id: 471cd31b-02cd-4637-d2be-08d85f907b87
-X-MS-Exchange-CrossTenant-AuthSource: HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2020 07:15:42.6432
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UqHzYa7583FZa+P1qLdz3JkCJcPhOoaqdr2NKZ2PpU370pMGiFbu48Jj20cXSZxkEu2ODBb4bPT0BN6/0tPeM7xDsupYnOSIBFoJHdkZFmA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1P190MB0122
+In-Reply-To: <20200922202917.GB29330@paulmck-ThinkPad-P72>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 02:50:05AM +0300, Vadym Kochan wrote:
-[CUT]
->  
-> +static int nvmem_cell_info_to_nvmem_cell(struct nvmem_device *nvmem,
-> +				   const struct nvmem_cell_info *info,
-> +				   struct nvmem_cell *cell)
-> +{
-> +	int err;
-> +
-> +	err = __nvmem_cell_info_to_nvmem_cell(nvmem, info, cell);
-> +	if (err)
-> +		return err;
-> +
-> +	cell->name = kstrdup_const(info->name, GFP_KERNEL);
-> +	if (!cell->name)
-> +		return -ENOMEM;
-> +
-> +	return 0;
-> +}
-> +
->  /**
->   * nvmem_add_cells() - Add cell information to an nvmem device
->   *
-> @@ -418,6 +434,7 @@ static int nvmem_add_cells(struct nvmem_device *nvmem,
->  
->  		rval = nvmem_cell_info_to_nvmem_cell(nvmem, &info[i], cells[i]);
->  		if (rval) {
-> +			kfree_const(cells[i]->name);
-Sorry, looks like this should not happen with new changes.
+Hi Paul,
 
->  			kfree(cells[i]);
->  			goto err;
->  		}
-> @@ -1460,7 +1477,7 @@ ssize_t nvmem_device_cell_read(struct nvmem_device *nvmem,
->  	if (!nvmem)
->  		return -EINVAL;
->  
-> -	rc = nvmem_cell_info_to_nvmem_cell(nvmem, info, &cell);
-> +	rc = __nvmem_cell_info_to_nvmem_cell(nvmem, info, &cell);
->  	if (rc)
->  		return rc;
->  
-> @@ -1490,7 +1507,7 @@ int nvmem_device_cell_write(struct nvmem_device *nvmem,
->  	if (!nvmem)
->  		return -EINVAL;
->  
-> -	rc = nvmem_cell_info_to_nvmem_cell(nvmem, info, &cell);
-> +	rc = __nvmem_cell_info_to_nvmem_cell(nvmem, info, &cell);
->  	if (rc)
->  		return rc;
->  
-> -- 
-> 2.17.1
+On 9/23/2020 1:59 AM, Paul E. McKenney wrote:
+> On Tue, Sep 22, 2020 at 01:15:57AM +0530, Neeraj Upadhyay wrote:
+>> Currently, for non-preempt kernels (with CONFIG_PREEMPTION=n),
+>> rcu_blocking_is_gp() checks (with preemption disabled), whether
+>> there is only one cpu online. It uses num_online_cpus() to
+>> decide whether only one cpu is online. If there is only single
+>> cpu online, synchronize_rcu() is optimized to return without
+>> doing all the work to wait for grace period. However, there are
+>> few issues with the num_online_cpus() check used:
 > 
+> Great catch!!!
+> 
+> I do have some questions about your suggested fix, though.
+> 
+>> 1. num_online_cpus() does a atomic_read(&__num_online_cpus). As
+>>     hotplug locks are not held, this does not ensure that
+>>     new incoming cpus update of the count is visible. This can
+>>     result in read side section on new incoming cpu, observe
+>>     updates which should not be visible beyond the grace period
+>>     corresponding to synchronize_rcu().
+>>
+>>     For e.g. below litmus test, where P0 process corresponds to
+>>     synchronize_rcu() and P1 corresponds to new online cpu,  has
+>>     positive witnesses; confirming the possibility of read side
+>>     section to extend before and after the grace period, thereby
+>>     breaking guarantees provided by synchronize_rcu().
+>>
+>>     {
+>>       int x = 0;
+>>       atomic_t numonline = ATOMIC_INIT(1);
+>>     }
+>>
+>>     P0(int *x, atomic_t *numonline)
+>>     {
+>>       int r0;
+>>       WRITE_ONCE(*x, 1);
+>>       r0 = atomic_read(numonline);
+>>       if (r0 == 1) {
+>>         smp_mb();
+>>       } else {
+>>         synchronize_rcu();
+>>       }
+>>       WRITE_ONCE(*x, 2);
+>>     }
+>>
+>>     P1(int *x, atomic_t *numonline)
+>>     {
+>>       int r0; int r1;
+>>
+>>       atomic_inc(numonline);
+>>       smp_mb();
+>>       rcu_read_lock();
+>>       r0 = READ_ONCE(*x);
+>>       smp_rmb();
+>>       r1 = READ_ONCE(*x);
+>>       rcu_read_unlock();
+>>     }
+>>
+>>     locations [x;numonline;]
+>>
+>>     exists (1:r0=0 /\ 1:r1=2)
+>>
+>> 2. Second problem is, the same early exit, from synchronize_rcu()
+>>     does not provide full ordering, memory barrier, w.r.t. memory
+>>     accesses after synchronize_rcu() call.
+>>
+>> 3. Third, more important issue is related to outgoing cpu. Checking
+>>     only for __num_online_cpus with preemotion disabled isn't sufficient
+>>     for RCU, as, on completion of CPUHP_TEARDOWN_CPU stop machine (which
+>>     clears outgoing cpu from __num_online_cpus, the CPU switches to idle
+>>     task. So, checking only for __num_online_cpus does not consider
+>>     RCU read side sections in scheduler code (before switching to idle
+>>     task) and any potential read side sections in idle task, before final
+>>     RCU-quiesce entry into cpuhp_report_idle_dead() -> rcu_report_dead().
+>>
+>> To handle these issues, add a new rcu_state member n_online_cpus, to
+>> keep account of the current number of online cpus. The atomic updates
+>> to this counter from rcu_report_dead() and rcu_cpu_starting() and
+>> the added read/write memory ordering semantics ensure that
+>> synchronize_rcu() fast path waits for all read side sections, where
+>> incoming/outgoing cpus are considered online, for RCU i.e. after
+>> rcu_cpu_starting() and before rcu_report_dead().
+>>
+>> Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+>> ---
+>>
+>> Below is the reproducer for issue described in point 3; this snippet
+>> is based on klitmus generated test, which is modified to sample reads
+>> from idle thread:
+>>
+>> static void code0(int* x) {
+>> WRITE_ONCE(*x, 1);
+>>    idle_ctr = 0;
+>>    smp_mb();
+>>    mdelay(10);
+>>    WRITE_ONCE(*x, 1);
+>>    idle_ctr = 1;
+>>    synchronize_rcu();
+>>    WRITE_ONCE(*x, 2);
+>>    idle_ctr = 2;
+>>
+>> }
+>>
+>> static int thread0(void *_p) {
+>>    int _j, _i;
+>>    ctx_t *_a = (ctx_t *)_p;
+>>
+>>    smp_mb();
+>>    for (_j = 0 ; _j < stride ; _j++) {
+>>      for (_i = _j ; _i < size ; _i += stride) {
+>>        while (idle_wait1) {
+>>            cpu_relax();
+>>            cond_resched();
+>>          }
+>>        code0(&_a->x[_i]);
+>>        smp_mb();
+>>        get_online_cpus();
+>>        idle_wait1 = true;
+>>        put_online_cpus();
+>>      }
+>>    }
+>>    atomic_inc(&done);
+>>    smp_mb();
+>>    wake_up(wq);
+>>    smp_mb();
+>>    do_exit(0);
+>> }
+>>
+>>
+>> static void code1(int* x,int* out_1_r1,int* out_1_r0) {
+>>
+>>    int r0; int r1;
+>>
+>>    r0 = READ_ONCE(idle_ctr_snap1);
+>>    r1 = READ_ONCE(idle_ctr_snap2);
+>>
+>>    *out_1_r1 = (int)r1;
+>>    *out_1_r0 = (int)r0;
+>> }
+>>
+>> static int thread1(void *_p) {
+>>    ctx_t *_a = (ctx_t *)_p;
+>>    int _j, _i;
+>>
+>>    smp_mb();
+>>    for (_j = 0 ; _j < stride ; _j++) {
+>>      for (_i = _j ; _i < size ; _i += stride) {
+>>        while (idle_wait2) {
+>>            cpu_relax();
+>>            cond_resched();
+>>        }
+>>        get_online_cpus();
+>>        code1(&_a->x[_i],&_a->out_1_r1[_i],&_a->out_1_r0[_i]);
+>>        smp_mb();
+>>        idle_wait2 = true;
+>>        put_online_cpus();
+>>      }
+>>    }
+>>    atomic_inc(&done);
+>>    smp_mb();
+>>    wake_up(wq);
+>>    smp_mb();
+>>    do_exit(0);
+>> }
+>>
+>> Idle thread snippet:
+>>
+>> if (cpu_is_offline(cpu)) {
+>>          smp_mb();
+>>          idle_wait1 = false;
+>>          mdelay(8);
+>>          smp_mb();
+>>          rcu_read_lock();
+>>          idle_ctr_snap1 = idle_ctr;
+>>          mdelay(40);
+>>          smp_rmb();
+>>          idle_ctr_snap2 = idle_ctr;
+>>          rcu_read_unlock();
+>>          smp_mb();
+>>          idle_wait2 = false;
+>>          tick_nohz_idle_stop_tick();
+>>          cpuhp_report_idle_dead();
+>>          arch_cpu_idle_dead();
+>>
+>>   kernel/rcu/tree.c | 65 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>>   kernel/rcu/tree.h |  1 +
+>>   2 files changed, 66 insertions(+)
+>>
+>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+>> index 2424e2a..33493f0 100644
+>> --- a/kernel/rcu/tree.c
+>> +++ b/kernel/rcu/tree.c
+>> @@ -3609,9 +3609,59 @@ static int rcu_blocking_is_gp(void)
+>>   	if (IS_ENABLED(CONFIG_PREEMPTION))
+>>   		return rcu_scheduler_active == RCU_SCHEDULER_INACTIVE;
+>>   	might_sleep();  /* Check for RCU read-side critical section. */
+>> +	/*
+>> +	 * a = p
+>> +	 * a = NULL
+>> +	 * synchronize_rcu()
+>> +	 *   rcu_blocking_is_gp()
+>> +	 *     num_online_cpus()
+>> +	 *       atomic_read(&__num_online_cpus)
+>> +	 * kfree(p);
+>> +	 *
+>> +	 *      - VS -
+>> +	 *
+>> +	 *              __cpu_up()
+>> +	 *                set_cpu_online(cpu)
+>> +	 *                  atomic_inc(&__num_online_cpus)
+>> +	 *              rcu_read_lock()
+>> +	 *              rcu_dereference(a) (a == p)
+>> +	 *              rcu_read_unlock()
+>> +	 *
+>> +	 * rcu_blocking_is_gp() must observe atomic_inc(&__num_online_cpus),
+>> +	 * in order to ensure that, RCU read side critical section on new
+>> +	 * online cpu, either start after synchronize_rcu()'s GP starts or
+>> +	 * it completes before synchronize_rcu() returns.
+>> +	 *
+>> +	 * However, atomic_read(&__num_online_cpus) does not ensure that.
+>> +	 *
+>> +	 * Essentially, below condition exist:
+>> +	 *
+>> +	 * {
+>> +	 *   int x = 0;
+>> +	 *   atomic_t numonline = ATOMIC_INIT(1);
+>> +	 * }
+>> +	 *
+>> +	 * P0(int *x, atomic_t *numonline)     P1(int *x, atomic_t *numonline)
+>> +	 * {                                   {
+>> +	 *   int r0;                             int r0; int r1;
+>> +	 *   WRITE_ONCE(*x, 1);                  atomic_inc(numonline);
+>> +	 *   r0 = atomic_read(numonline);        rcu_read_lock();
+>> +	 *   if (r0 == 2) {                      r0 = READ_ONCE(*x);
+>> +	 *     synchronize_rcu();                smp_rmb();
+>> +	 *   }                                   r1 = READ_ONCE(*x);
+>> +	 *   WRITE_ONCE(*x, 2);                  rcu_read_unlock();
+>> +	 * }                                   }
+>> +	 *
+>> +	 * exists (1:r0=0 /\ 1:r1=2)
+>> +	 *
+>> +	 * atomic_add_return(0, &rcu_state.n_online_cpus) and corresponding
+>> +	 * atomic_inc(&rcu_state.n_online_cpus) in rcu_cpu_starting() corrects
+>> +	 * this ordering issue.
+>> +	 */
+>>   	preempt_disable();
+>>   	ret = num_online_cpus() <= 1;
+> 
+> Here I assume that rcu_state.n_online_cpus is incremented early in
+> the CPU-hotplug CPU-online process, that is, on one of the CPUs that
+> was running prior to the new CPU coming online.  (The problem with the
+> existing code is not the lack of ordering, but rather that the changes
+> to the number of online CPUs happen in places that are not helpful to
+> synchronize_rcu().)
+> 
+> If rcu_state.n_online_cpus is equal to one at any point in this region of
+> code, there is only one CPU, and that CPU sees all prior accesses made
+> by any CPU that was online at the time of its access.  Furthermore, if
+> rcu_state.n_online_cpus is equal to one, its value cannot change until
+> after the preempt_enable() below.
+> 
+> Furthermore, if n_online_cpus is equal to one here, all later CPUs
+> (both this one and any that come online later on) are guaranteed to see
+> all accesses by any CPU prior to this point in the code, and without
+> added memory barriers.  Those memory barriers have to be present in the
+> CPU-hotplug code or lots of things would break.
+> 
+> On the other hand, if n_online_cpus is greater than one, then we
+> will be using the heavyweight call to synchronize_rcu(), which will
+> guarantee all the ordering we need.  (Please refer to the rather
+> lengthy header comment for synchronize_rcu().)
+> 
+> So if you access rcu_state.n_online_cpus with preemption disabled,
+> READ_ONCE() suffices and no memory barriers are required.
+> 
+>>   	preempt_enable();
+> 
+> And we only get to this point in the code when CONFIG_PREEMPT_NONE=y,
+> so the preempt_disable() and preempt_enable() are optional.  Though they
+> can be argued to be useful documentation.  Or maybe not...
+> 
+
+I also noticed it. For CONFIG_PREEMPTION=n, preempt_disable() and 
+preempt_enable() adds barrier(); I thought that was required for the
+case where num online cpus <= 1?
+
+>> +	ret = ret && (atomic_add_return(0, &rcu_state.n_online_cpus) <= 1);
+>>   	return ret;
+>>   }
+>>   
+>> @@ -3655,6 +3705,11 @@ void synchronize_rcu(void)
+>>   			 lock_is_held(&rcu_sched_lock_map),
+>>   			 "Illegal synchronize_rcu() in RCU read-side critical section");
+>>   	if (rcu_blocking_is_gp())
+>> +		/*
+>> +		 * atomic_add_return() in rcu_blocking_is_gp () provides
+>> +		 * full memory barrier ordering with any rcu section after
+>> +		 * synchronize_rcu() call.
+>> +		 */
+> 
+> Given your fix of having RCU keep its own count of the number of online
+> CPUs, no additional ordering is required.  Either synchronize_rcu()
+> provides what is required or we are in single-CPU state, meaning we
+> don't need any ordering.
+> 
+>>   		return;
+>>   	if (rcu_gp_is_expedited())
+>>   		synchronize_rcu_expedited();
+>> @@ -4086,6 +4141,10 @@ void rcu_cpu_starting(unsigned int cpu)
+>>   	mask = rdp->grpmask;
+>>   	raw_spin_lock_irqsave_rcu_node(rnp, flags);
+>>   	WRITE_ONCE(rnp->qsmaskinitnext, rnp->qsmaskinitnext | mask);
+>> +	/* Order with access of n_online_cpus in rcu_blocking_is_gp */
+>> +	atomic_inc(&rcu_state.n_online_cpus);
+>> +	/* Order with rcu-side usages after this */
+>> +	smp_mb__after_atomic();
+> 
+> Ah, here is the problem.  Please instead put the increment in
+> rcutree_prepare_cpu(), which in the one-to-two transition will be running
+> on the single CPU in the system, thus avoiding the need for ordering.
+> Yes, this will result in unnecessary calls to synchronize_rcu() during
+> the CPU-online process, but who cares?  ;-)
+> 
+>>   	newcpu = !(rnp->expmaskinitnext & mask);
+>>   	rnp->expmaskinitnext |= mask;
+>>   	/* Allow lockless access for expedited grace periods. */
+>> @@ -4138,6 +4197,12 @@ void rcu_report_dead(unsigned int cpu)
+>>   		raw_spin_lock_irqsave_rcu_node(rnp, flags);
+>>   	}
+>>   	WRITE_ONCE(rnp->qsmaskinitnext, rnp->qsmaskinitnext & ~mask);
+>> +	/*
+>> +	 * Order with access of n_online_cpus in rcu_blocking_is_gp().
+>> +	 * Release semantics ensures that RCU read sections before it
+>> +	 * are observed by rcu_blocking_is_gp().
+>> +	 */
+>> +	atomic_dec_return_release(&rcu_state.n_online_cpus);
+> 
+> Similarly, please put this decrement into rcutree_dead_cpu(), which
+> runs on one of the remaining CPUs after the outgoing CPU is long gone.
+> In the two-to-one transition, this will run on the single remaining
+> CPU in the system, thus avoiding the need for ordering.  Again, yes,
+> this will result in unnecessary calls to synchronize_rcu() during the
+> CPU-online process, but again who cares?
+> 
+>>   	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+>>   	raw_spin_unlock(&rcu_state.ofl_lock);
+>>   
+>> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+>> index e4f66b8..4d9a9c0 100644
+>> --- a/kernel/rcu/tree.h
+>> +++ b/kernel/rcu/tree.h
+>> @@ -298,6 +298,7 @@ struct rcu_state {
+>>   						/* Hierarchy levels (+1 to */
+>>   						/*  shut bogus gcc warning) */
+>>   	int ncpus;				/* # CPUs seen so far. */
+>> +	atomic_t n_online_cpus;			/* # CPUs online for RCU. */
+> 
+> With those changes in place, this can be just an int.  The increments
+> and decrements can use normal C-language loads and WRITE_ONCE() for the
+> stores.  The trick is that this value will only change from one to two
+> (and vice versa) when there is only one online CPU.
+> 
+> And the num_online_cpus() can be replaced with a READ_ONCE().
+> 
+> Does this make sense, or am I missing something?
+> 
+> 							Thanx, Paul
+> 
+
+Yes, this makes sense; thanks for the details! Will post v2.
+
+
+Thanks
+Neeraj
+
+>>   	/* The following fields are guarded by the root rcu_node's lock. */
+>>   
+>> -- 
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+>> a Linux Foundation Collaborative Project
+>>
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member of the Code Aurora Forum, hosted by The Linux Foundation
