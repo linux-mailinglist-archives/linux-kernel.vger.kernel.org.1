@@ -2,156 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5407275D2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:18:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A5A5275D30
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:19:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726596AbgIWQS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 12:18:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgIWQS1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 12:18:27 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34977C0613CE;
-        Wed, 23 Sep 2020 09:18:27 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id k133so9930390pgc.7;
-        Wed, 23 Sep 2020 09:18:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ppUCNhLmOopuimPTANSvO30QCF1CC2nP4YDFFJTQF2w=;
-        b=FusmfOx/YO6EPSrv5/bO4uoPq0+JLceZT58dKLsNT7DaXT2MLAFkLulIkjimQFOK3p
-         sQZh7DFa5gphpwuW3jakn7iPOKNWMfH0g9iFxPrKAYWy08tc02lG+eG3JQ/k2IKDkEE4
-         W6c66n9v93lLZ1uHiFwAjV9hpbNvpBsUe1oD83p95RKpi38taTH7/0z+SaBe52nHcyJc
-         t+U0ftW7IeK7CCmUz30i134cAUq6CEpJNg1lJe5KWWqqichj0rFGMHrSkkyVlgxcvePW
-         kbWGw3UeFIaCGrV1l3hbLqVWPx/afYrubDcXY39hkaN1ALAnOcI4PkxAhL+j/njAI8f/
-         nYcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ppUCNhLmOopuimPTANSvO30QCF1CC2nP4YDFFJTQF2w=;
-        b=cV/wuWdCHk2Dv9+1JqEVLSBJCQ+2FOb7Vn1gBzq+wIDTyF3wkv3hTQ9Cq/hcitfWE0
-         HMrri6pytLQbaZfhZS0fUn4GE1/mVNpBRarwlKEUKQ1OhJtEXkAZeD5U9ayrnKuzeAk0
-         wQYyxf4e4ja5DP7LJU239qvl+E1CzG1AcAV/RJ8ziYp4GBJ6inecWFblZ1Ae+oIG5rHQ
-         tNuvUkPuUshvHh8VpUqfQ6f6VktZ1HO61TSNpTGwlp8eL9RC9+EW5TRzm/Z1yAwVwqoO
-         WEss5cJkEwNk1fdqH2DqBHYF+UC5KRiv7ucQI6SlF5d5d9oUoReh5uJ0+M0P21CmoCrR
-         8MYw==
-X-Gm-Message-State: AOAM532hl/PlttyU4GIQWbOxPpAWdPUzgYiZTmhdpsOfPL1iWA3+hGjz
-        +qQAasCUHFm++0RCMUEfIcCGXN9MpqL1BZh6YSsHfLqQACSVJ1rv
-X-Google-Smtp-Source: ABdhPJw64boQLBfmrOjrKgUJNkKCKaQfT2HQljqrpN1xDENoqeyiOr1/MyyXs/y6lfZ+Xvs4d8E9CT9fLQT1xZeeGq4=
-X-Received: by 2002:a63:d648:: with SMTP id d8mr462372pgj.4.1600877906782;
- Wed, 23 Sep 2020 09:18:26 -0700 (PDT)
+        id S1726656AbgIWQTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 12:19:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43436 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726130AbgIWQTd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 12:19:33 -0400
+Received: from pali.im (pali.im [31.31.79.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 366F520719;
+        Wed, 23 Sep 2020 16:19:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600877972;
+        bh=TZLW6wHGCKieqihCO7hlRfnrIi0AXUV6iu39Wm/82bw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1AYq7PaX3t9xhMD2CVFqcMTSOMNmJnEIfoXDBvCmRZRWw/estSl1pqpwlK0fWOoBF
+         jvq5qJe4Q/wkYORAGIwUwtJjTjphxnTN2bQktgFCoaPvYEHA31daTk2TXpa5eJR3CI
+         B5MvgyeRDc1b57GzTp+iZ1Ch7V+XdTx7Mq/5+p4I=
+Received: by pali.im (Postfix)
+        id 8192DD0F; Wed, 23 Sep 2020 18:19:29 +0200 (CEST)
+Date:   Wed, 23 Sep 2020 18:19:29 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Gregory Clement <gregory.clement@bootlin.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        Andre Heider <a.heider@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: marvell: espressobin: Add ethernet switch
+ aliases
+Message-ID: <20200923161929.2qiqvlnxoj45jzjg@pali>
+References: <20200907112718.5994-1-pali@kernel.org>
+ <20200907144228.GV3112546@lunn.ch>
+ <20200907145213.fwlyz4k6scible7x@pali>
+ <20200907154353.GW3112546@lunn.ch>
+ <20200907161316.xd5svvahi5xusdlw@pali>
+ <20200907172345.GB3254313@lunn.ch>
+ <20200908074733.f33pwtreojzobivq@pali>
 MIME-Version: 1.0
-References: <20200922023151.387447-1-warthog618@gmail.com> <20200922023151.387447-12-warthog618@gmail.com>
-In-Reply-To: <20200922023151.387447-12-warthog618@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 23 Sep 2020 19:18:08 +0300
-Message-ID: <CAHp75Vd6tb09n+okJmoPse992DeoPkJQHReNBo20FQNz1V2c5w@mail.gmail.com>
-Subject: Re: [PATCH v9 11/20] gpiolib: cdev: support GPIO_V2_LINE_SET_VALUES_IOCTL
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200908074733.f33pwtreojzobivq@pali>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 5:36 AM Kent Gibson <warthog618@gmail.com> wrote:
->
-> Add support for the GPIO_V2_LINE_SET_VALUES_IOCTL.
+On Tuesday 08 September 2020 09:47:33 Pali Rohár wrote:
+> On Monday 07 September 2020 19:23:45 Andrew Lunn wrote:
+> > On Mon, Sep 07, 2020 at 06:13:16PM +0200, Pali Rohár wrote:
+> > > On Monday 07 September 2020 17:43:53 Andrew Lunn wrote:
+> > > > > I would not say it is a "new feature". But rather that patch in this
+> > > > > email fixes issue that Linux kernel did not set correct MAC address for
+> > > > > DSA slave ports. I think it is something which could be backported also
+> > > > > to stable releases as "ignoring" vendor/factory MAC address is not
+> > > > > correct behavior.
+> > > > 
+> > > > Hi Pali
+> > > > 
+> > > > The rules for stable are here:
+> > > > 
+> > > > https://www.kernel.org/doc/html/v5.8/process/stable-kernel-rules.html
+> > > > 
+> > > > Do you think it fits?
+> > > > 
+> > > >    Andrew
+> > > 
+> > > Hello Andrew! I think it fits into those rules. As I wrote it fixes real
+> > > bug that Linux kernel does not use correct MAC address for particular
+> > > DSA slaves / ethernet ports.
+> > 
+> > O.K, then:
+> > 
+> > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> > 
+> >     Andrew
+> 
+> Ok! Andrew, I would like to ask another question, how to correctly
+> define that this patch depends on a2c7023f7075c? I specified it in
+> human-readable part of commit description, but for backporting it would
+> also need some machine-readable format. So patch would not be
+> occasionally backported to older/stable kernel where a2c7023f7075c is
+> not available.
 
-> +static long linereq_set_values_unlocked(struct linereq *lr,
-> +                                       struct gpio_v2_line_values *lv)
-> +{
-> +       DECLARE_BITMAP(vals, GPIO_V2_LINES_MAX);
-> +       struct gpio_desc **descs;
-> +       unsigned int i, didx, num_set;
-> +       int ret;
-> +
-> +       bitmap_zero(vals, GPIO_V2_LINES_MAX);
-> +       for (num_set = 0, i = 0; i < lr->num_lines; i++) {
-> +               if (lv->mask & BIT_ULL(i)) {
+Based on stable-kernel-rules.html document I think that following line
+should define this dependency in machine readable format:
 
-Similar idea
+Cc: <stable@vger.kernel.org> # a2c7023f7075c: dsa: read mac address
 
-DECLARE_BITMAP(mask, 64) = BITMAP_FROM_U64(lv->mask);
-
-num_set = bitmap_weight();
-
-for_each_set_bit(i, mask, lr->num_lines)
-
-
-> +                       if (!test_bit(FLAG_IS_OUT, &lr->lines[i].desc->flags))
-> +                               return -EPERM;
-> +                       if (lv->bits & BIT_ULL(i))
-> +                               __set_bit(num_set, vals);
-> +                       num_set++;
-> +                       descs = &lr->lines[i].desc;
-> +               }
-> +       }
-> +       if (num_set == 0)
-> +               return -EINVAL;
-> +
-> +       if (num_set != 1) {
-> +               /* build compacted desc array and values */
-> +               descs = kmalloc_array(num_set, sizeof(*descs), GFP_KERNEL);
-> +               if (!descs)
-> +                       return -ENOMEM;
-> +               for (didx = 0, i = 0; i < lr->num_lines; i++) {
-> +                       if (lv->mask & BIT_ULL(i)) {
-> +                               descs[didx] = lr->lines[i].desc;
-> +                               didx++;
-> +                       }
-> +               }
-> +       }
-> +       ret = gpiod_set_array_value_complex(false, true, num_set,
-> +                                           descs, NULL, vals);
-> +
-> +       if (num_set != 1)
-> +               kfree(descs);
-> +       return ret;
-> +}
-> +
-> +static long linereq_set_values(struct linereq *lr, void __user *ip)
-> +{
-> +       struct gpio_v2_line_values lv;
-> +       int ret;
-> +
-> +       if (copy_from_user(&lv, ip, sizeof(lv)))
-> +               return -EFAULT;
-> +
-> +       mutex_lock(&lr->config_mutex);
-> +
-> +       ret = linereq_set_values_unlocked(lr, &lv);
-> +
-> +       mutex_unlock(&lr->config_mutex);
-> +
-> +       return ret;
-> +}
-> +
->  static long linereq_set_config_unlocked(struct linereq *lr,
->                                         struct gpio_v2_line_config *lc)
->  {
-> @@ -889,6 +948,8 @@ static long linereq_ioctl(struct file *file, unsigned int cmd,
->
->         if (cmd == GPIO_V2_LINE_GET_VALUES_IOCTL)
->                 return linereq_get_values(lr, ip);
-> +       else if (cmd == GPIO_V2_LINE_SET_VALUES_IOCTL)
-> +               return linereq_set_values(lr, ip);
->         else if (cmd == GPIO_V2_LINE_SET_CONFIG_IOCTL)
->                 return linereq_set_config(lr, ip);
->
-> --
-> 2.28.0
->
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+Gregory, if it is correct, would you add that line into commit sign-off
+area where is existing Fixes: line?
