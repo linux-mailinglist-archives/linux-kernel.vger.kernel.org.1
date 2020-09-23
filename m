@@ -2,113 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5091C274EE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 04:16:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DE61274EEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 04:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727031AbgIWCQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 22:16:48 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:34176 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726548AbgIWCQs (ORCPT
+        id S1727136AbgIWCTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 22:19:05 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:52232 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727032AbgIWCTF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 22:16:48 -0400
-Received: from mail-oi1-f198.google.com ([209.85.167.198])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <koba.ko@canonical.com>)
-        id 1kKuKr-0007Ju-UE
-        for linux-kernel@vger.kernel.org; Wed, 23 Sep 2020 02:16:46 +0000
-Received: by mail-oi1-f198.google.com with SMTP id w200so8572206oie.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 19:16:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y8KnY5LD0NHhoP43zjX0d7M1I3RNfGZr68FzzWqbIXA=;
-        b=VSL17r3xTQI+xk4pu68B5TR776sTw2gD+e9w/vsi/IvBGaAFNEg2jvut2Bk/6RiyOW
-         eK4XrPbbL/VubezJ6J4Hhh33lb3wYCqet3/cy+B2lz31QpZ8VO26T24kCAIqrr66Z+zG
-         4OeRiIczRsu4v4ZVPoRc9yQB9l2cwTxP0ir8cikQqjfqVLmoFJUqNqLAv4MiRKK0JXFO
-         6DY2mJuWQQcVnwdxkO3847xyJBZh+qijWHWievC9Z+Sk3OuXt1+KWaIgUk7O5bDofwNI
-         8PySQ8feTxykPyGgpkSl2ZEUl9n4J+4QwWt0g8YBT/g/8BhBvWSbe3G77k2uS8ijgmt3
-         em/w==
-X-Gm-Message-State: AOAM531IKg61k9RIot783uXE8f6pTLCSZGgteftdOiaFulSn/ygboM+B
-        uhtfhONAu1SsIWwxMkZQzNEZR7WyuLgmLTdhmVsYLuf1aCEpy5MSU61j2pW/rM6dAC7YrYt/35x
-        IHwbONjuOAN2NwC7IxKeL8vBpGV3wBsn59LSzI1EbpKqqcB1AiAJksYEMyQ==
-X-Received: by 2002:a9d:6491:: with SMTP id g17mr4419892otl.326.1600827404800;
-        Tue, 22 Sep 2020 19:16:44 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzNu3+Q2WaRNqHQicrUqSqPPGJLJGS/Wbrczh0WSxJi0/l5DO7fl633zoEHsWNGUXegasqKvoowP0DcxiurA40=
-X-Received: by 2002:a9d:6491:: with SMTP id g17mr4419879otl.326.1600827404471;
- Tue, 22 Sep 2020 19:16:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200922065313.4794-1-koba.ko@canonical.com> <7231e2199a19aa6c8ecbecf5e80725e2a1aded73.camel@redhat.com>
-In-Reply-To: <7231e2199a19aa6c8ecbecf5e80725e2a1aded73.camel@redhat.com>
-From:   Koba Ko <koba.ko@canonical.com>
-Date:   Wed, 23 Sep 2020 10:16:33 +0800
-Message-ID: <CAJB-X+U0M1YXUyAX2nDxddwwxnPygfkk47PFrFnvERh4fUBxiw@mail.gmail.com>
-Subject: Re: [PATCH V4] drm/dp_mst: Retrieve extended DPCD caps for topology manager
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Anthony Wong <anthony.wong@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 22 Sep 2020 22:19:05 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08N21QIv141657;
+        Tue, 22 Sep 2020 22:18:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to; s=pp1;
+ bh=R2pKAg/axVd/E/0hSB/v+MTIdnTq6p/mXulo9Rktldc=;
+ b=n10/zlOXEzLx08aoP308cJGillji3l817oM5jxAGUnltZEZ7O0H6t9xrHRDoyT9x5oCE
+ 04zZSe/LRcZryuF7c0vBaeCvkgOtrl+bQonDVccxlpqzDIVtmEAcsi5biOVtZqb3n3K4
+ b9vxxgy8gAgtY/gfFETNY0aOIn4xsOz2HPO80o6Vh8SrPLJEvWoEfAxwAlfiddPAuCAw
+ NR517WHVHnislaYXL2kUqyoupjUYijKp9jT7UrtJDbeqWZUTJxMRmV5eOq9uSkQUiqvn
+ EecuxrDWewla9PnFVjOchrkCanTad6vB0KewznnqAW93TmtBZqkJg6wWNfLMgMxjkFzb uQ== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33qw0wrkkb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Sep 2020 22:18:32 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08N2IURh002069;
+        Wed, 23 Sep 2020 02:18:30 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03fra.de.ibm.com with ESMTP id 33p1f3sec9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Sep 2020 02:18:30 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08N2GqTD32506208
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 23 Sep 2020 02:16:52 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9C1664203F;
+        Wed, 23 Sep 2020 02:18:27 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2EC1442041;
+        Wed, 23 Sep 2020 02:18:25 +0000 (GMT)
+Received: from [9.79.221.51] (unknown [9.79.221.51])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed, 23 Sep 2020 02:18:24 +0000 (GMT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
+Subject: Re: [PATCH -next] powerpc/perf: Fix symbol undeclared warning
+From:   Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+In-Reply-To: <20200921112557.85471-1-wangwensheng4@huawei.com>
+Date:   Wed, 23 Sep 2020 07:48:22 +0530
+Cc:     Michael Ellerman <mpe@ellerman.id.au>, benh@kernel.crashing.org,
+        paulus@samba.org, Madhavan Srinivasan <maddy@linux.ibm.com>,
+        kajoljain <kjain@linux.ibm.com>,
+        "anju@linux.vnet.ibm.com" <anju@linux.vnet.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <931F16F9-CE90-40B8-A69D-B75E80BF5DE5@linux.vnet.ibm.com>
+References: <20200921112557.85471-1-wangwensheng4@huawei.com>
+To:     Wang Wensheng <wangwensheng4@huawei.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.1)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-23_02:2020-09-21,2020-09-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 mlxscore=0
+ bulkscore=0 adultscore=0 clxscore=1011 priorityscore=1501 spamscore=0
+ suspectscore=0 lowpriorityscore=0 impostorscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009230007
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the review.
-Sorry for that I thought the review tag should be appended by myself.
-One thing to confirm with you, will you or I push this patch to drm-misc-next ?
 
-Thanks a lot.
 
-On Wed, Sep 23, 2020 at 2:01 AM Lyude Paul <lyude@redhat.com> wrote:
->
-> One last change I realized we should do is print the name of the AUX adapter
-> in question. I don't mind just adding that myself before I push it though so
-> you don't need to send a respin.
->
-> Going to go push this to drm-misc-next, thanks!
->
-> On Tue, 2020-09-22 at 14:53 +0800, Koba Ko wrote:
-> > As per DP-1.3, First check DP_EXTENDED_RECEIVER_CAP_FIELD_PRESENT.
-> > If DP_EXTENDED_RECEIVER_CAP_FIELD_PRESENT is 1,read the DP_DP13_DPCD_REV to
-> > get the faster capability.
-> > If DP_EXTENDED_RECEIVER_CAP_FIELD_PRESENT is 0,read DP_DPCD_REV.
-> >
-> > Signed-off-by: Koba Ko <koba.ko@canonical.com>
-> > Reviewed-by: Lyude Paul <lyude@redhat.com>
-> > ---
-> >  drivers/gpu/drm/drm_dp_mst_topology.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c
-> > b/drivers/gpu/drm/drm_dp_mst_topology.c
-> > index e87542533640..63f8809b9aa4 100644
-> > --- a/drivers/gpu/drm/drm_dp_mst_topology.c
-> > +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-> > @@ -3686,9 +3686,9 @@ int drm_dp_mst_topology_mgr_set_mst(struct
-> > drm_dp_mst_topology_mgr *mgr, bool ms
-> >               WARN_ON(mgr->mst_primary);
-> >
-> >               /* get dpcd info */
-> > -             ret = drm_dp_dpcd_read(mgr->aux, DP_DPCD_REV, mgr->dpcd,
-> > DP_RECEIVER_CAP_SIZE);
-> > -             if (ret != DP_RECEIVER_CAP_SIZE) {
-> > -                     DRM_DEBUG_KMS("failed to read DPCD\n");
-> > +             ret = drm_dp_read_dpcd_caps(mgr->aux, mgr->dpcd);
-> > +             if (ret < 0) {
-> > +                     drm_dbg_kms(mgr->dev, "failed to read DPCD, ret %d\n",
-> > ret);
-> >                       goto out_unlock;
-> >               }
-> >
-> --
-> Cheers,
->         Lyude Paul (she/her)
->         Software Engineer at Red Hat
->
+> On 21-Sep-2020, at 4:55 PM, Wang Wensheng <wangwensheng4@huawei.com> =
+wrote:
+>=20
+> Build kernel with `C=3D2`:
+> arch/powerpc/perf/isa207-common.c:24:18: warning: symbol
+> 'isa207_pmu_format_attr' was not declared. Should it be static?
+> arch/powerpc/perf/power9-pmu.c:101:5: warning: symbol 'p9_dd21_bl_ev'
+> was not declared. Should it be static?
+> arch/powerpc/perf/power9-pmu.c:115:5: warning: symbol 'p9_dd22_bl_ev'
+> was not declared. Should it be static?
+
+Hi,=20
+
+It will be good to include a comment in the commit message saying what =
+is the fix here.=20
+ex, declare p9_dd21_bl_ev/p9_dd22_bl_ev as static variable.
+
+Thanks
+Athira
+>=20
+> Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
+> ---
+> arch/powerpc/perf/isa207-common.c | 2 +-
+> arch/powerpc/perf/power9-pmu.c    | 4 ++--
+> 2 files changed, 3 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/arch/powerpc/perf/isa207-common.c =
+b/arch/powerpc/perf/isa207-common.c
+> index 964437adec18..85dc860b265b 100644
+> --- a/arch/powerpc/perf/isa207-common.c
+> +++ b/arch/powerpc/perf/isa207-common.c
+> @@ -21,7 +21,7 @@ PMU_FORMAT_ATTR(thresh_stop,	"config:32-35");
+> PMU_FORMAT_ATTR(thresh_start,	"config:36-39");
+> PMU_FORMAT_ATTR(thresh_cmp,	"config:40-49");
+>=20
+> -struct attribute *isa207_pmu_format_attr[] =3D {
+> +static struct attribute *isa207_pmu_format_attr[] =3D {
+> 	&format_attr_event.attr,
+> 	&format_attr_pmcxsel.attr,
+> 	&format_attr_mark.attr,
+> diff --git a/arch/powerpc/perf/power9-pmu.c =
+b/arch/powerpc/perf/power9-pmu.c
+> index 2a57e93a79dc..4a315fad1f99 100644
+> --- a/arch/powerpc/perf/power9-pmu.c
+> +++ b/arch/powerpc/perf/power9-pmu.c
+> @@ -98,7 +98,7 @@ extern u64 PERF_REG_EXTENDED_MASK;
+> /* PowerISA v2.07 format attribute structure*/
+> extern struct attribute_group isa207_pmu_format_group;
+>=20
+> -int p9_dd21_bl_ev[] =3D {
+> +static int p9_dd21_bl_ev[] =3D {
+> 	PM_MRK_ST_DONE_L2,
+> 	PM_RADIX_PWC_L1_HIT,
+> 	PM_FLOP_CMPL,
+> @@ -112,7 +112,7 @@ int p9_dd21_bl_ev[] =3D {
+> 	PM_DISP_HELD_SYNC_HOLD,
+> };
+>=20
+> -int p9_dd22_bl_ev[] =3D {
+> +static int p9_dd22_bl_ev[] =3D {
+> 	PM_DTLB_MISS_16G,
+> 	PM_DERAT_MISS_2M,
+> 	PM_DTLB_MISS_2M,
+> --=20
+> 2.25.0
+>=20
+
