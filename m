@@ -2,221 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25962275465
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 11:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F48275468
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 11:23:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726783AbgIWJXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 05:23:07 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:36319 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726314AbgIWJXA (ORCPT
+        id S1726789AbgIWJX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 05:23:29 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:13240 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726178AbgIWJX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 05:23:00 -0400
-Received: by mail-lj1-f196.google.com with SMTP id r24so16622379ljm.3;
-        Wed, 23 Sep 2020 02:22:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=wAiiRdUD5PoxRNEJ68GQ4WItPJQxb6/445NDc6SLCCw=;
-        b=eY4AJrylhQBbSpK/KMfIVsTlx8xir4FPKyATo8OcsA/+k1JcO3ZiAI9L9zNc8p67ft
-         PBIsYv7o/wc0kZF+XDUBaKyZCQCgA7jZcHSxActOjtM85I3+lxfhEgEdGbVTOvNb0w5S
-         zBewORsW76wgEJnO/IWqoovtHbIfzXpLwjNGJoWW15Rr5k+OBUazFFZ+cSuxRDVZTlrz
-         UB1neoytH6mt+E9iaCAJ/FeROCupeVnKpMEIqb924zVW/eUGowD8GeF2EydXQo4KUYEJ
-         kaE+lwQV9fel+x5E+CtuizItWYT2xUZ85eONYYezQyKQXgeWSBUqNdcBwu0Bmqd2hGoA
-         VIjw==
-X-Gm-Message-State: AOAM532mN5Wt7mY5xfHiLMzzhiK0zGxfMcS+p6L9TIylGR9Dbfmjou2a
-        TTjBG4t7XwNXnWTx1DvvrEw=
-X-Google-Smtp-Source: ABdhPJxB3Qzq3vj3rVF+lItDkQbHv0sfLO8Qo2D42dPY1HYtQiXLa5LsHX0OCmVG4IuFocwPEOkYvQ==
-X-Received: by 2002:a2e:b8d6:: with SMTP id s22mr3119798ljp.284.1600852976011;
-        Wed, 23 Sep 2020 02:22:56 -0700 (PDT)
-Received: from localhost.localdomain ([213.255.186.46])
-        by smtp.gmail.com with ESMTPSA id n204sm4511674lfa.207.2020.09.23.02.22.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 02:22:55 -0700 (PDT)
-Date:   Wed, 23 Sep 2020 12:22:43 +0300
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     mazziesaccount@gmail.com, matti.vaittinen@fi.rohmeurope.com
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com,
-        linux-watchdog@vger.kernel.org
-Subject: [PATCH v2 1/4] dt_bindings: mfd: Add ROHM BD9576MUF and BD9573MUF
- PMICs
-Message-ID: <7308c9d047d8533650cdbd17e328958da28182bf.1600852339.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1600852339.git.matti.vaittinen@fi.rohmeurope.com>
+        Wed, 23 Sep 2020 05:23:28 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f6b13b10002>; Wed, 23 Sep 2020 02:21:53 -0700
+Received: from [10.26.74.254] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 23 Sep
+ 2020 09:23:26 +0000
+Subject: Re: [PATCH V2 0/5] Add support for custom names for AT24 EEPROMs
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Thierry Reding <thierry.reding@gmail.com>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>
+References: <20200916094952.458003-1-jonathanh@nvidia.com>
+ <CAMpxmJX6OxS-dxcK8whCm-Ups6Uts1iYE8bux_wAGeBPXihYBA@mail.gmail.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <c8bd52a5-2f80-2183-11bf-f7f531be2a56@nvidia.com>
+Date:   Wed, 23 Sep 2020 10:23:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1600852339.git.matti.vaittinen@fi.rohmeurope.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <CAMpxmJX6OxS-dxcK8whCm-Ups6Uts1iYE8bux_wAGeBPXihYBA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600852913; bh=9tn65bkkY70YMWVjeAuBAkcP9eGmaq3E0Ud6x7JNbDM=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=irajoaE9RYbmc3jeKLDjjG8BGENVRqAuONIPqXagWEZ0uWKthZmbwR9DuLJFWXet2
+         5OXWRvJxpAcs2WgqKNkLp5dcNRlRsAB2TMi8SrnRXf95OXWjwUMVdNGMgK8FY5gDNR
+         3sMzFD/PJdAzsgk6DG7ZaBgqDKdf0pq3syQ40PtCTIDNtVou6Ht4hTpGy3LyIiVtla
+         JV+d0oufRc4HoLfs0QSFyXebxK0RfH0ZJjV3r1RUV2yinQM7KkfMHSSqL2VkyxlD4b
+         e9IPUMTnIf4N/UtO+MUGeIyCStYmX/dUacGjhJ7bKEv/5wsaeRNq2PJc+5GcNqOjm5
+         b98eIajGZvJoQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add bindings for ROHM BD9576MUF and BD9573MUF PMICs. These
-PMICs are primarily intended to be used to power the R-Car series
-processors. They provide 6 power outputs, safety features and a
-watchdog with two functional modes.
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
-Changes since v1:
-  - Fixed case for few regulator-names in the example
+On 23/09/2020 10:15, Bartosz Golaszewski wrote:
+> On Wed, Sep 16, 2020 at 11:50 AM Jon Hunter <jonathanh@nvidia.com> wrote:
+>>
+>> For platforms that have multiple boards and hence have multiple EEPROMs
+>> for identifying the different boards, it is useful to label the EEPROMs
+>> in device-tree so that they can be easily identified. For example, MAC
+>> address information is stored in the EEPROM on the processor module for
+>> some Jetson platforms which is not only required by the kernel but the
+>> bootloader as well. So having a simple way to identify the EEPROM is
+>> needed.
+>>
+>> Changes since V1:
+>> - By default initialise the nvmem_config.id as NVMEM_DEVID_AUTO and not
+>>   NVMEM_DEVID_NONE
+>> - Dropped the 'maxItems' from the dt-binding doc.
+>>
+>> Jon Hunter (5):
+>>   misc: eeprom: at24: Initialise AT24 NVMEM ID field
+>>   dt-bindings: eeprom: at24: Add label property for AT24
+>>   misc: eeprom: at24: Support custom device names for AT24 EEPROMs
+>>   arm64: tegra: Add label properties for EEPROMs
+>>   arm64: tegra: Populate EEPROMs for Jetson Xavier NX
+>>
+>>  .../devicetree/bindings/eeprom/at24.yaml      |  3 +++
+>>  .../boot/dts/nvidia/tegra186-p2771-0000.dts   |  1 +
+>>  .../arm64/boot/dts/nvidia/tegra186-p3310.dtsi |  1 +
+>>  .../arm64/boot/dts/nvidia/tegra194-p2888.dtsi |  1 +
+>>  .../boot/dts/nvidia/tegra194-p2972-0000.dts   |  1 +
+>>  .../nvidia/tegra194-p3509-0000+p3668-0000.dts | 14 ++++++++++++
+>>  .../boot/dts/nvidia/tegra194-p3668-0000.dtsi  | 16 ++++++++++++++
+>>  .../arm64/boot/dts/nvidia/tegra210-p2180.dtsi |  1 +
+>>  .../boot/dts/nvidia/tegra210-p2371-2180.dts   |  1 +
+>>  .../boot/dts/nvidia/tegra210-p3450-0000.dts   |  2 ++
+>>  drivers/misc/eeprom/at24.c                    | 22 ++++++++++++++++++-
+>>  11 files changed, 62 insertions(+), 1 deletion(-)
+>>
+>> --
+>> 2.25.1
+>>
+> 
+> Just FYI: I'm fine with the at24 part. I can take them through my tree
+> for v5.10. Who is taking the DTS patches for tegra? Thierry? I can
+> provide you with an immutable branch if that's fine. I can't just ack
+> the at24 patches because they conflict with what I already have in my
+> tree for v5.10.
 
- .../bindings/mfd/rohm,bd9576-pmic.yaml        | 129 ++++++++++++++++++
- 1 file changed, 129 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mfd/rohm,bd9576-pmic.yaml
+Thanks. Yes Thierry is picking up the DTS patches.
 
-diff --git a/Documentation/devicetree/bindings/mfd/rohm,bd9576-pmic.yaml b/Documentation/devicetree/bindings/mfd/rohm,bd9576-pmic.yaml
-new file mode 100644
-index 000000000000..99d11ae76b1b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mfd/rohm,bd9576-pmic.yaml
-@@ -0,0 +1,129 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mfd/rohm,bd9576-pmic.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: ROHM BD9576MUF and BD9573MUF Power Management Integrated Circuit bindings
-+
-+maintainers:
-+  - Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-+
-+description: |
-+  BD9576MUF and BD9573MUF are power management ICs primarily intended for
-+  powering the R-Car series processors.
-+  The IC provides 6 power outputs with configurable sequencing and safety
-+  monitoring. A watchdog logic with slow ping/windowed modes is also included.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - rohm,bd9576
-+      - rohm,bd9573
-+
-+  reg:
-+    description:
-+      I2C slave address.
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  rohm,vout1-en-low:
-+    description:
-+      BD9576 and BD9573 VOUT1 regulator enable state can be individually
-+      controlled by a GPIO. This is dictated by state of vout1-en pin during
-+      the PMIC startup. If vout1-en is LOW during PMIC startup then the VOUT1
-+      enable sate is controlled via this pin. Set this property if vout1-en
-+      is wired to be down at PMIC start-up.
-+    type: boolean
-+
-+  rohm,vout1-en-gpios:
-+    description:
-+      GPIO specifier to specify the GPIO connected to vout1-en for vout1 ON/OFF
-+      state control.
-+    maxItems: 1
-+
-+  rohm,ddr-sel-low:
-+    description:
-+      The BD9576 and BD9573 output voltage for DDR can be selected by setting
-+      the ddr-sel pin low or high. Set this property if ddr-sel is grounded.
-+    type: boolean
-+
-+  rohm,watchdog-enable-gpios:
-+    description: The GPIO line used to enable the watchdog.
-+    maxItems: 1
-+
-+  rohm,watchdog-ping-gpios:
-+    description: The GPIO line used to ping the watchdog.
-+    maxItems: 1
-+
-+  hw_margin_ms:
-+    minimum: 4
-+    maximum: 4416
-+    description: Watchog timeout in milliseconds
-+
-+  rohm,hw-margin-min-ms:
-+    minimum: 2
-+    maximum: 220
-+    description:
-+      Watchdog on these ICs can be configured in a window mode where the ping
-+      must come within certain time-window. Eg. too quick pinging will also
-+      trigger timeout. Specify the minimum delay between pings if you wish to
-+      use the window mode. Note, the maximum delay is internally configured as
-+      a certain multiple of this value so maximum delay can be only up to 15
-+      times this value. For example for 73 ms short ping value the maximum
-+      timeout will be close to 1 sec.
-+
-+  regulators:
-+    $ref: ../regulator/rohm,bd9576-regulator.yaml
-+    description:
-+      List of child nodes that specify the regulators.
-+
-+required:
-+  - compatible
-+  - reg
-+  - regulators
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    #include <dt-bindings/leds/common.h>
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        pmic: pmic@30 {
-+            compatible = "rohm,bd9576";
-+            reg = <0x30>;
-+            rohm,vout1-en-low;
-+            rohm,vout1-en-gpios = <&gpio2 6 GPIO_ACTIVE_HIGH>;
-+            rohm,ddr-sel-low;
-+            rohm,watchdog-enable-gpios = <&gpio2 6 GPIO_ACTIVE_HIGH>;
-+            rohm,watchdog-ping-gpios = <&gpio2 7 GPIO_ACTIVE_HIGH>;
-+            hw_margin_ms = <30>;
-+            rohm,hw-margin-min-ms = <4>;
-+
-+            regulators {
-+                boost1: regulator-vd50 {
-+                    regulator-name = "VD50";
-+                };
-+                buck1: regulator-vd18 {
-+                    regulator-name = "VD18";
-+                };
-+                buck2: regulator-vdddr {
-+                    regulator-name = "VDDDR";
-+                };
-+                buck3: regulator-vd10 {
-+                    regulator-name = "VD10";
-+                };
-+                ldo: regulator-voutl1 {
-+                    regulator-name = "VOUTL1";
-+                };
-+                sw: regulator-vouts1 {
-+                    regulator-name = "VOUTS1";
-+                };
-+            };
-+        };
-+    };
--- 
-2.21.0
-
+Cheers
+Jon
 
 -- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+nvpublic
