@@ -2,254 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F3F2762BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 23:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B30CB2762BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 23:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726709AbgIWVDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 17:03:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46612 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726466AbgIWVDO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 17:03:14 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9694320888;
-        Wed, 23 Sep 2020 21:03:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600894993;
-        bh=bcl9B3aiM59ZItVr3Jp9XQUxtRE7/ZJkDPBZSxzguo4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=uMJhlZDQqB9qaz1Zfch92QLYnPO2rCjxZpPaez9vpWMzC8+AnzvmGOuRbsly3dx9v
-         I4WHoG354rx2uZ5Net0/bZ9OErduVd++VS+BN29DWLYR1i0OUo4Jf+YQvyEOsA0PyH
-         OD+2d49uUMKmIinJEr1NAWjto06kJ+sRl94Qf9aQ=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 531B635226CB; Wed, 23 Sep 2020 14:03:13 -0700 (PDT)
-Date:   Wed, 23 Sep 2020 14:03:13 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2] rcu/tree: Correctly handle single cpu check in
- rcu_blocking_is_gp
-Message-ID: <20200923210313.GS29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <1600846173-26085-1-git-send-email-neeraju@codeaurora.org>
+        id S1726721AbgIWVEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 17:04:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726515AbgIWVEE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 17:04:04 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE33EC0613CE;
+        Wed, 23 Sep 2020 14:04:04 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id n10so1175705qtv.3;
+        Wed, 23 Sep 2020 14:04:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0b3Ah5jR3V8S45p6WTAE0m50plZGQTU7otZXtYapwwU=;
+        b=prQOurGkY8ekNZq9Cg40Nvf6/kH2j+rC0ilMYS3++/Hb3tloc1SoHCUv3U+mY6r2OE
+         7iAlGSbINz9XLfuDx5qxHfCtCofLb/qw9fr8IA2ZgzmQTiOIeaXHZU+W/Yzwg2ZTAJlF
+         0f5YAf0gVdy8t2HdVEta5ZzZsoJvv9DZavugeCD0HioKFlt+/3+2lt3veJda08bRxvo3
+         XYT9hScbWWKmFVCFy/SmEFp3yG+b6q2FsN3PPTKCUEpBndXCQdP5e1JWoFTuex+H5Y9j
+         iEuu5yX+PMPYKM02VMmfNZXMBAFoo7EZndeLVRCYi1d98fkMmBfpFkBW8dZO80KJRhrr
+         vRqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0b3Ah5jR3V8S45p6WTAE0m50plZGQTU7otZXtYapwwU=;
+        b=fTbLCoiNvcC9RjCHfYAB94K/8lD7JMNLvvYBODEdO2NJvXp5VMYeoB97S/EoRKSy5Z
+         ZkUViuFa9nNVObCOrcq9pWIHPZ+Y5hS+BL2Br2TW22PauF1z2VFrip9TbH/8au3cRT9I
+         IQ0c0FEDaxTnMRGorJWoCraQ4HjYc7/q5g0lKdu+bfzwod6xt8ImhdoEcmBOtGf+KUNg
+         Tau1d6s+gNMBF8zPMJI+Hsk1qkvGjw5Be5M8H2EEumgEuku3GXlgkVVqrrEgaUmgjTpM
+         jU+SXNNLX+z5/920zmV5ZKIgNZ1Vo3RQ+EXhODj9UQI43QPNiJZT3/0xsU80Y+oFmszZ
+         Vb2A==
+X-Gm-Message-State: AOAM532iBLIPIh//MCHHqX9KeUR47gLgYF/z8r/tD3ZmgG2YH52+9VuW
+        wwmlczIRETrT8ld5ee2PcQg=
+X-Google-Smtp-Source: ABdhPJz16efVt6evdG++qI1k3Y4iqquztSF+4kOaXZePGjDlzMIl8kQdhfBZf98UMtxJVclkQuADVQ==
+X-Received: by 2002:aed:24c9:: with SMTP id u9mr2108596qtc.292.1600895043768;
+        Wed, 23 Sep 2020 14:04:03 -0700 (PDT)
+Received: from rockpro64.hsd1.md.comcast.net ([2601:153:900:7730::20])
+        by smtp.gmail.com with ESMTPSA id h18sm753419qkl.12.2020.09.23.14.04.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2020 14:04:03 -0700 (PDT)
+From:   Peter Geis <pgwipeout@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Stephen Warren <swarren@wwwdotorg.org>,
+        Bob Ham <rah@settrans.net>,
+        Leonardo Bras <leobras.c@gmail.com>,
+        Michael Brougham <jusplainmike@gmail.com>
+Cc:     linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peter Geis <pgwipeout@gmail.com>
+Subject: [PATCH v2 0/3] Support NVIDIA Tegra-based Ouya game console
+Date:   Wed, 23 Sep 2020 21:03:49 +0000
+Message-Id: <20200923210352.1176386-1-pgwipeout@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1600846173-26085-1-git-send-email-neeraju@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 12:59:33PM +0530, Neeraj Upadhyay wrote:
-> Currently, for non-preempt kernels (with CONFIG_PREEMPTION=n),
-> rcu_blocking_is_gp() checks (with preemption disabled), whether
-> there is only one cpu online. It uses num_online_cpus() to
-> decide whether only one cpu is online. If there is only single
-> cpu online, synchronize_rcu() is optimized to return without
-> doing all the work to wait for grace period. However, there are
-> few issues with the num_online_cpus() check used, for transition
-> of __num_online_cpus from 2 -> 1 for cpu down path and 1 -> 2
-> for cpu up path.
+Good Day,
 
-Again, good catch!
+This series introduces upstream kernel support for the Ouya game console device. Please review and apply. Thank you in advance.
 
-As usual, I could not resist editing the commit log and comments, so
-could you please look the following over to make sure that I did not
-mess anything up?
+Changelog:
 
-							Thanx, Paul
+v2: - Update pmic and clock handles per Rob Herring's review.
+    - Add acks from Rob Herring to patch 2 and 3.
 
-------------------------------------------------------------------------
+Peter Geis (3):
+  ARM: tegra: Add device-tree for Ouya
+  dt-bindings: Add vendor prefix for Ouya Inc.
+  dt-bindings: ARM: tegra: Add Ouya game console
 
-commit 7af8c1c8d13c6c9c7013fbfef77f843dbc430c4b
-Author: Neeraj Upadhyay <neeraju@codeaurora.org>
-Date:   Wed Sep 23 12:59:33 2020 +0530
+ .../devicetree/bindings/arm/tegra.yaml        |    3 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
+ arch/arm/boot/dts/Makefile                    |    3 +-
+ arch/arm/boot/dts/tegra30-ouya.dts            | 4498 +++++++++++++++++
+ 4 files changed, 4505 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm/boot/dts/tegra30-ouya.dts
 
-    rcu: Fix single-CPU check in rcu_blocking_is_gp()
-    
-    Currently, for CONFIG_PREEMPTION=n kernels, rcu_blocking_is_gp() uses
-    num_online_cpus() to determine whether there is only one CPU online.  When
-    there is only single CPU online, the simple fact that synchronize_rcu()
-    could be legally called implies that a full grace period has elapsed.
-    Therefore, in the single-CPU case, synchronize_rcu() simply returns
-    immediately.  Unfortunately, num_online_cpus() is unreliable while a
-    CPU-hotplug operation is transitioning to or from single-CPU operation
-    because:
-    
-    1.      num_online_cpus() uses atomic_read(&__num_online_cpus) to
-            locklessly sample the number of online CPUs.  The hotplug locks
-            are not held, which means that an incoming CPU can concurrently
-            update this count.  This in turn means that an RCU read-side
-            critical section on the incoming CPU might observe updates
-            prior to the grace period, but also that this critical section
-            might extend beyond the end of the optimized synchronize_rcu().
-            This breaks RCU's fundamental guarantee.
-    
-    2.      In addition, num_online_cpus() does no ordering, thus providing
-            another way that RCU's fundamental guarantee can be broken by
-            the current code.
-    
-    3.      The most probable failure mode happens on outgoing CPUs.
-            The outgoing CPU updates the count of online CPUs in the
-            CPUHP_TEARDOWN_CPU stop-machine handler, which is fine in
-            and of itself due to preemption being disabled at the call
-            to num_online_cpus().  Unfortunately, after that stop-machine
-            handler returns, the CPU takes one last trip through the
-            scheduler (which has RCU readers) and, after the resulting
-            context switch, one final dive into the idle loop.  During this
-            time, RCU needs to keep track of two CPUs, but num_online_cpus()
-            will say that there is only one, which in turn means that the
-            surviving CPU will incorrectly ignore the outgoing CPU's RCU
-            read-side critical sections.
-    
-    This problem is illustrated by the following litmus test in which P0()
-    corresponds to synchronize_rcu() and P1() corresponds to the incoming CPU.
-    The herd7 tool confirms that the "exists" clause can be satisfied,
-    thus demonstrating that this breakage can happen according to the Linux
-    kernel memory model.
-    
-       {
-         int x = 0;
-         atomic_t numonline = ATOMIC_INIT(1);
-       }
-    
-       P0(int *x, atomic_t *numonline)
-       {
-         int r0;
-         WRITE_ONCE(*x, 1);
-         r0 = atomic_read(numonline);
-         if (r0 == 1) {
-           smp_mb();
-         } else {
-           synchronize_rcu();
-         }
-         WRITE_ONCE(*x, 2);
-       }
-    
-       P1(int *x, atomic_t *numonline)
-       {
-         int r0; int r1;
-    
-         atomic_inc(numonline);
-         smp_mb();
-         rcu_read_lock();
-         r0 = READ_ONCE(*x);
-         smp_rmb();
-         r1 = READ_ONCE(*x);
-         rcu_read_unlock();
-       }
-    
-       locations [x;numonline;]
-    
-       exists (1:r0=0 /\ 1:r1=2)
-    
-    It is important to note that these problems arise only when the system
-    is transitioning to or from single-CPU operation.
-    
-    One solution would be to hold the CPU-hotplug locks while sampling
-    num_online_cpus(), which was in fact the intent of the (redundant)
-    preempt_disable() and preempt_enable() surrounding this call to
-    num_online_cpus().  Actually blocking CPU hotplug would not only result
-    in excessive overhead, but would also unnecessarily impede CPU-hotplug
-    operations.
-    
-    This commit therefore follows long-standing RCU tradition by maintaining
-    a separate RCU-specific set of CPU-hotplug books.
-    
-    This separate set of books is implemented by a new ->n_online_cpus field
-    in the rcu_state structure that maintains RCU's count of the online CPUs.
-    This count is incremented early in the CPU-online process, so that
-    the critical transition away from single-CPU operation will occur when
-    there is only a single CPU.  Similarly for the critical transition to
-    single-CPU operation, the counter is decremented late in the CPU-offline
-    process, again while there is only a single CPU.  Because there is only
-    ever a single CPU when the ->n_online_cpus field undergoes the critical
-    1->2 and 2->1 transitions, full memory ordering and mutual exclusion is
-    provided implicitly and, better yet, for free.
-    
-    In the case where the CPU is coming online, nothing will happen until
-    the current CPU helps it come online.  Therefore, the new CPU will see
-    all accesses prior to the optimized grace period, which means that RCU
-    does not need to further delay this new CPU.  In the case where the CPU
-    is going offline, the outgoing CPU is totally out of the picture before
-    the optimized grace period starts, which means that this outgoing CPU
-    cannot see any of the accesses following that grace period.  Again,
-    RCU needs no further interaction with the outgoing CPU.
-    
-    This does mean that synchronize_rcu() will unnecessarily do a few grace
-    periods the hard way just before the second CPU comes online and just
-    after the second-to-last CPU goes offline, but it is not worth optimizing
-    this uncommon case.
-    
-    Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+-- 
+2.25.1
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 6d9ec8e..9c56b63 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2402,6 +2402,7 @@ int rcutree_dead_cpu(unsigned int cpu)
- 	if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
- 		return 0;
- 
-+	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus - 1);
- 	/* Adjust any no-longer-needed kthreads. */
- 	rcu_boost_kthread_setaffinity(rnp, -1);
- 	/* Do any needed no-CB deferred wakeups from this CPU. */
-@@ -3604,7 +3605,20 @@ static int rcu_blocking_is_gp(void)
- 		return rcu_scheduler_active == RCU_SCHEDULER_INACTIVE;
- 	might_sleep();  /* Check for RCU read-side critical section. */
- 	preempt_disable();
--	ret = num_online_cpus() <= 1;
-+	/*
-+	 * If the rcu_state.n_online_cpus counter is equal to one,
-+	 * there is only one CPU, and that CPU sees all prior accesses
-+	 * made by any CPU that was online at the time of its access.
-+	 * Furthermore, if this counter is equal to one, its value cannot
-+	 * change until after the preempt_enable() below.
-+	 *
-+	 * Furthermore, if rcu_state.n_online_cpus is equal to one here,
-+	 * all later CPUs (both this one and any that come online later
-+	 * on) are guaranteed to see all accesses prior to this point
-+	 * in the code, without the need for additional memory barriers.
-+	 * Those memory barriers are provided by CPU-hotplug code.
-+	 */
-+	ret = READ_ONCE(rcu_state.n_online_cpus) <= 1;
- 	preempt_enable();
- 	return ret;
- }
-@@ -3649,7 +3663,7 @@ void synchronize_rcu(void)
- 			 lock_is_held(&rcu_sched_lock_map),
- 			 "Illegal synchronize_rcu() in RCU read-side critical section");
- 	if (rcu_blocking_is_gp())
--		return;
-+		return;  // Context allows vacuous grace periods.
- 	if (rcu_gp_is_expedited())
- 		synchronize_rcu_expedited();
- 	else
-@@ -3989,6 +4003,7 @@ int rcutree_prepare_cpu(unsigned int cpu)
- 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 	rcu_prepare_kthreads(cpu);
- 	rcu_spawn_cpu_nocb_kthread(cpu);
-+	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus + 1);
- 
- 	return 0;
- }
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index e4f66b8..805c9eb 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -298,6 +298,7 @@ struct rcu_state {
- 						/* Hierarchy levels (+1 to */
- 						/*  shut bogus gcc warning) */
- 	int ncpus;				/* # CPUs seen so far. */
-+	int n_online_cpus;			/* # CPUs online for RCU. */
- 
- 	/* The following fields are guarded by the root rcu_node's lock. */
- 
