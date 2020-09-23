@@ -2,108 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEDBC276074
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 20:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A261B27607B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 20:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726896AbgIWStf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 14:49:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726460AbgIWSte (ORCPT
+        id S1726925AbgIWSuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 14:50:01 -0400
+Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:22240 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726460AbgIWSuB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 14:49:34 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3841CC0613CE;
-        Wed, 23 Sep 2020 11:49:34 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id y11so779462qtn.9;
-        Wed, 23 Sep 2020 11:49:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RkpPiL5sLMoQ72Z4SVPCyIzaZVEUsKD6IONs26Z9oQ4=;
-        b=j6zFoRR/TNHPnYOJYg/v6yC5mOjqz6GhBvNdUdw/ZZY3Z659h4thQrXUvmYYNs/dMc
-         9AtbSQc1r9/KTQ+OdnHEMcrYOKmjexHp+zLAowzXW60xVUgp32upPori8ocBAUEa2r3r
-         RBgGigmHJn+mG8rh+rrSfDqq2SdthMmzakAE8uf56Ks1STHFgtkyEvVJSTmUDeKd4JlH
-         Cx+3SJd1aI9By0RJ0GJTBMtFDnsq45jEHay9VWPh2LaXhf87zwX1sup1iq4GFW7bYwHN
-         wYZuJxH556l/n/M+2V+a2YdPh4IkzEbo9S36Kf5zviplDX4eWHJkLL/e8sUM7P5GbZLv
-         8Ccw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=RkpPiL5sLMoQ72Z4SVPCyIzaZVEUsKD6IONs26Z9oQ4=;
-        b=dUYeTO293gYaaqNb5QY1CAxzysue013cNtGWDEbX/qPCgeAuN8dX5ow7pR/MBc2qyN
-         Fvlsha7nrvoddkJIVG/VQIFJWB3layfykHnz8wTsTT9xZza0zIg6BFISjdN9R0Yuh+13
-         t5XilUwLTqq4NSK0jl1isZctxhr6xrHaOGzpXZPMXKFqWAAu7lF9UJMWtwwWrg3rDC6q
-         IyVflyHaInlZdYFZIZ0BjEELl3UQy8pf6+lVJ227a8Cj2p81TL7jtvlFY+HoE5grPZaZ
-         tTd6tlsrgSr2C3Z62MFmI6lGRVulvElWrsUmDzQija7gQfl5Rp4ZUB9tBiwmDY2yVV/7
-         oePg==
-X-Gm-Message-State: AOAM531c8/RUS3QgJnipt9vrddG/HBzvwgqbUD5Fq6kMG0a8QN+Yox69
-        6rLqmahsS0W6uU9jpD2jRMSNTLsmOPw=
-X-Google-Smtp-Source: ABdhPJwkH8cFnD08Pdj7anSenqn2tvNw6QetwTg2I4xIrVuO/X572JBB17yMeOLN0zGx1aVaPRH8zA==
-X-Received: by 2002:aed:3203:: with SMTP id y3mr1556830qtd.278.1600886973396;
-        Wed, 23 Sep 2020 11:49:33 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id r187sm518764qkc.63.2020.09.23.11.49.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 11:49:32 -0700 (PDT)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Wed, 23 Sep 2020 14:49:30 -0400
-To:     Solar Designer <solar@openwall.com>
-Cc:     Florian Weimer <fweimer@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        madvenka@linux.microsoft.com, kernel-hardening@lists.openwall.com,
-        linux-api@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, oleg@redhat.com,
-        x86@kernel.org, luto@kernel.org, David.Laight@ACULAB.COM,
-        mark.rutland@arm.com, mic@digikod.net,
-        Rich Felker <dalias@libc.org>
-Subject: Re: [PATCH v2 0/4] [RFC] Implement Trampoline File Descriptor
-Message-ID: <20200923184930.GA1352963@rani.riverdale.lan>
-References: <20200922215326.4603-1-madvenka@linux.microsoft.com>
- <20200923081426.GA30279@amd>
- <20200923091456.GA6177@openwall.com>
- <87wo0ko8v0.fsf@oldenburg2.str.redhat.com>
- <20200923181136.GA8846@openwall.com>
+        Wed, 23 Sep 2020 14:50:01 -0400
+Received: from [192.168.42.210] ([93.23.14.114])
+        by mwinf5d03 with ME
+        id XWpw230062Tev1p03Wpw2y; Wed, 23 Sep 2020 20:49:58 +0200
+X-ME-Helo: [192.168.42.210]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 23 Sep 2020 20:49:58 +0200
+X-ME-IP: 93.23.14.114
+Subject: Re: [PATCH] leds: lp50xx: Fix an error handling path in
+ 'lp50xx_probe_dt()'
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     pavel@ucw.cz, dmurphy@ti.com, jacek.anaszewski@gmail.com,
+        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <20200922210515.385099-1-christophe.jaillet@wanadoo.fr>
+ <20200923133510.GJ4282@kadam>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <faa49efc-5ba5-b6bd-b486-2f7c4611219b@wanadoo.fr>
+Date:   Wed, 23 Sep 2020 20:49:56 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200923181136.GA8846@openwall.com>
+In-Reply-To: <20200923133510.GJ4282@kadam>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 08:11:36PM +0200, Solar Designer wrote:
-> On Wed, Sep 23, 2020 at 04:39:31PM +0200, Florian Weimer wrote:
-> > * Solar Designer:
-> > 
-> > > While I share my opinion here, I don't mean that to block Madhavan's
-> > > work.  I'd rather defer to people more knowledgeable in current userland
-> > > and ABI issues/limitations and plans on dealing with those, especially
-> > > to Florian Weimer.  I haven't seen Florian say anything specific for or
-> > > against Madhavan's proposal, and I'd like to.  (Have I missed that?)
+Le 23/09/2020 à 15:35, Dan Carpenter a écrit :
+> I've added Heikki Krogerus to the CC list because my question is mostly
+> about commit 59abd83672f7 ("drivers: base: Introducing software nodes to
+> the firmware node framework").
 > 
-> [...]
-> > I think it's unnecessary for the libffi use case.
-> [...]
+> I have been trying to teach Smatch to understand reference counting so
+> it can discover these kinds of bugs automatically.
 > 
-> > I don't know if kernel support could
-> > make sense in this context, but it would be a completely different
-> > patch.
+> I don't know how software_node_get_next_child() can work when it doesn't
+> call kobject_get().  This sort of bug would have been caught in testing
+> because it affects the success path so I must be reading the code wrong.
 > 
-> Thanks.  Are there currently relevant use cases where the proposed
-> trampfd would be useful and likely actually made use of by userland -
-> e.g., specific userland project developers saying they'd use it, or
-> Madhavan intending to develop and contribute userland patches?
-> 
-> Alexander
 
-The trampoline it provides in this version can be implemented completely
-in userspace. The kernel part of it is essentially just providing a way
-to do text relocations without needing a WX mapping, but the text
-relocations would be unnecessary in the first place if the trampoline
-was position-independent code.
+I had the same reading of the code and thought that I was missing 
+something somewhere.
+
+There is the same question about 'acpi_get_next_subnode' which is also a 
+'.get_next_child_node' function, without any ref counting, if I'm correct.
+
+CJ
