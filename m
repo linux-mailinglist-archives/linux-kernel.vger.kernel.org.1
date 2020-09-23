@@ -2,75 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 681D2275C3A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46577275C3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726684AbgIWPnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 11:43:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgIWPnK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 11:43:10 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7B43C0613CE;
-        Wed, 23 Sep 2020 08:43:09 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id ay8so243298edb.8;
-        Wed, 23 Sep 2020 08:43:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=h51vtV3NZEeXo1YiXhByNRW7T2TYwgDS1SZDvdq1otA=;
-        b=MDMp6Q4oSdK2i7FvfdR4sMPI5L9H2/tI0U9WMoGwwxPeEREU0wNNBa2Vaq4Zq95yKB
-         YpW1BOPT7sS3QTrgkqYln/VKS6uODibJCcP2jCMyB/4pq1oQKY3Oc9L/2QFbsLKzwc9P
-         4lZK234a6r5+CNFNLsFe0IAj6P3iKSiBXvJs63IpqemwR5ajoLp3lvZ2T+Vf3Q7LkMBy
-         DZQOmIbd+sA/0jNlZWqV5du22KvGLGH5TTOOqyfSPkOjZuRSLc8yJfoG1nEqpWH60dqV
-         r0+MrCWP9kBmeiCqIiywNWFuAMVdu6IjQg/pyivtmQpOoiTXaT7O83GVp/We4n5812gu
-         Luzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=h51vtV3NZEeXo1YiXhByNRW7T2TYwgDS1SZDvdq1otA=;
-        b=P20/Naz1E2LS7gnKzVlu9q8tPwbRaP8uU1Udsg4bK19dVUDDfZIYLBx+y43xD5xRm7
-         IUR20N+is0WUtDCPJZ9mPQllVZIiC+fzrwyvkjtnHlhu9flAyF1i1sYkYDFqtFz7lYWJ
-         76Qo9E4zaY3vUDWxqL/i4TRBoqkpkyKbd8kqulGD9UW3uhiO1G+23SqJ+awK4SDUNFto
-         zdKFyvIbKDosVVK9kIxQlOE+bR5+KCf8Sf+S2GQqCnenJRs5rCWiACn+1igWYSe0emTO
-         ZBj3lLuetBMAO1jUFqoVg7ELw+XZEox9AFtoJsBXbR1EMk00eMastzPhE+wHU3j1uriT
-         QfDg==
-X-Gm-Message-State: AOAM530adMV75KTiTjiy1sWdpU6Cu0Y9y6eRRQyCm4O3lSJeQ0wX84gz
-        vcZd+j4teaFpJwHUU4pda+A=
-X-Google-Smtp-Source: ABdhPJzOrCKFjysaNLgtM/thsyjaPWYAbx9CyDzI5oOvOi8J6cf41WxyMN8duCgVRmZ+epU8RmhZoA==
-X-Received: by 2002:aa7:d1ce:: with SMTP id g14mr10374050edp.153.1600875788496;
-        Wed, 23 Sep 2020 08:43:08 -0700 (PDT)
-Received: from [192.168.2.202] (pd9e5a9df.dip0.t-ipconnect.de. [217.229.169.223])
-        by smtp.gmail.com with ESMTPSA id d25sm243435edq.52.2020.09.23.08.43.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Sep 2020 08:43:07 -0700 (PDT)
-Subject: Re: [RFC PATCH 0/9] Add support for Microsoft Surface System
- Aggregator Module
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-serial@vger.kernel.org,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
-        Dorian Stoll <dorian.stoll@tmsp.io>
-References: <20200923151511.3842150-1-luzmaximilian@gmail.com>
- <CAK8P3a3Qie_CP1dA-ERqyDv=EnaQQPnNbFYrGr3ySiY4mO0=Uw@mail.gmail.com>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <dad42dce-15d0-245a-4d91-4733e54883a0@gmail.com>
-Date:   Wed, 23 Sep 2020 17:43:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+        id S1726788AbgIWPnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 11:43:16 -0400
+Received: from mga02.intel.com ([134.134.136.20]:1063 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726156AbgIWPnN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 11:43:13 -0400
+IronPort-SDR: Dt5xNlbbQCH4XqrBZziEIPiHRifNNRg9bZwDqXVp9AUPg9joRUBK71fYiWpuz4y6AxXnke+1qf
+ JGj8jzOqp3rQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="148579461"
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
+   d="scan'208";a="148579461"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 08:43:13 -0700
+IronPort-SDR: 2AZ0m9Y2dPtWynb9Gm8YNyv4Ff5NKf4Ice95TNKKFoyEmiLaf1Xakefnk5FaCt2nZ19EOCjGdU
+ K3HQV1dscf3A==
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
+   d="scan'208";a="486484542"
+Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.212.218.1]) ([10.212.218.1])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 08:43:12 -0700
+Subject: Re: [PATCH v4 1/5] x86/asm: move the raw asm in iosubmit_cmds512() to
+ special_insns.h
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     vkoul@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        dan.j.williams@intel.com, tony.luck@intel.com, jing.lin@intel.com,
+        ashok.raj@intel.com, sanjay.k.kumar@intel.com,
+        fenghua.yu@intel.com, kevin.tian@intel.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <160037680630.3777.16356270178889649944.stgit@djiang5-desk3.ch.intel.com>
+ <160037731654.3777.18071122574577972463.stgit@djiang5-desk3.ch.intel.com>
+ <20200923104158.GG28545@zn.tnic>
+From:   Dave Jiang <dave.jiang@intel.com>
+Message-ID: <c38406b7-f1d1-35d8-8015-bacce7a52226@intel.com>
+Date:   Wed, 23 Sep 2020 08:43:11 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a3Qie_CP1dA-ERqyDv=EnaQQPnNbFYrGr3ySiY4mO0=Uw@mail.gmail.com>
+In-Reply-To: <20200923104158.GG28545@zn.tnic>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -78,38 +51,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/23/20 5:30 PM, Arnd Bergmann wrote:
-> On Wed, Sep 23, 2020 at 5:15 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
->>
->> Hello,
->>
->> The Surface System Aggregator Module (we'll refer to it as Surface
->> Aggregator or SAM below) is an embedded controller (EC) found on various
->> Microsoft Surface devices. Specifically, all 4th and later generation
->> Surface devices, i.e. Surface Pro 4, Surface Book 1 and later, with the
->> exception of the Surface Go series and the Surface Duo. Notably, it
->> seems like this EC can also be found on the ARM-based Surface Pro X [1].
+
+
+On 9/23/2020 3:41 AM, Borislav Petkov wrote:
+>> Subject: Re: [PATCH v4 1/5] x86/asm: move the raw asm in iosubmit_cmds512() to special_insns.h
 > 
-> I think this should go to drivers/platform/x86 or drivers/platform/surface/
-> along with other laptop vendor specific code rather than drivers/misc/.
+> Start patch name with a capital letter: "Move the asm definition.."
+> 
+> Also, calling stuff "raw" and "core" is misleading in the kernel context
+> - you wanna say simply: "Carve out a generic movdir64b() helper... "
 
-I initially had this under drivers/platform/x86. There are two main
-reasons I changed that: First, I think it's a bit too big for
-platform/x86 given that it basically introduces a new subsystem. At this
-point it's really less of "a couple of odd devices here and there" and
-more of a bus-type thing. Second, with the possibility of future support
-for ARM devices (Pro X, Pro X 2 which is rumored to come out soon), I
-thought that platform/x86 would not be a good fit.
+Ok I will update
 
-I'd be happy to move this to platform/surface though, if that's
-considered a better fit and you're okay with me adding that. Would make
-sense given that there's already a platform/chrome, which, as far as I
-can tell, also seems to be mainly focused on EC support.
+> 
+> On Thu, Sep 17, 2020 at 02:15:16PM -0700, Dave Jiang wrote:
+>> diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
+>> index 59a3e13204c3..7bc8e714f37e 100644
+>> --- a/arch/x86/include/asm/special_insns.h
+>> +++ b/arch/x86/include/asm/special_insns.h
+>> @@ -234,6 +234,23 @@ static inline void clwb(volatile void *__p)
+>>   
+>>   #define nop() asm volatile ("nop")
+>>   
+>> +static inline void movdir64b(void *__dst, const void *src)
+> 
+> Make __dst be the function local variable name and keep "dst", i.e.,
+> without the underscores, the function parameter name.
 
-> I'll have a look at the code myself, but I'd prefer to have the maintainers
-> for the other laptop drivers review this properly.
+Ok will fix
 
-Thanks! I'll CC them for the next version.
-
-Regards,
-Max
+> 
+>> +	/*
+>> +	 * Note that this isn't an "on-stack copy", just definition of "dst"
+>> +	 * as a pointer to 64-bytes of stuff that is going to be overwritten.
+>> +	 * In the MOVDIR64B case that may be needed as you can use the
+>> +	 * MOVDIR64B instruction to copy arbitrary memory around. This trick
+>> +	 * lets the compiler know how much gets clobbered.
+>> +	 */
+>> +	volatile struct { char _[64]; } *dst = __dst;
+>> +
+>> +	/* MOVDIR64B [rdx], rax */
+>> +	asm volatile(".byte 0x66, 0x0f, 0x38, 0xf8, 0x02"
+>> +		     : "=m" (dst)
+>> +		     : "d" (src), "a" (dst));
+>> +}
+>> +
+>>   #endif /* __KERNEL__ */
+>>   
+>>   #endif /* _ASM_X86_SPECIAL_INSNS_H */
+>>
+> 
