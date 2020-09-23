@@ -2,152 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 582BB275902
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC8D0275909
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:45:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726620AbgIWNob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 09:44:31 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:19255 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726641AbgIWNoT (ORCPT
+        id S1726715AbgIWNpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 09:45:19 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:40410 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726636AbgIWNpT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 09:44:19 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f6b51260002>; Wed, 23 Sep 2020 06:44:06 -0700
-Received: from [10.21.180.144] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 23 Sep
- 2020 13:44:11 +0000
-Subject: Re: [PATCH net-next RFC v5 00/15] Add devlink reload action and limit
- level options
-To:     Moshe Shemesh <moshe@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <1600445211-31078-1-git-send-email-moshe@mellanox.com>
-From:   Moshe Shemesh <moshe@nvidia.com>
-Message-ID: <be630005-f2ab-1632-db6f-c40486325f27@nvidia.com>
-Date:   Wed, 23 Sep 2020 16:44:07 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Wed, 23 Sep 2020 09:45:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600868716;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QG/XpftCpbOncz4MqVk/ddxYXgT+Lw6rTWS+CEJwsqw=;
+        b=ReEgkbugASa+6SobL6eqkznxF5lT2rg/URIBOqcw5Ufy3qCvjs4mdsfdfumBeLLohupLhi
+        eKiEH/rFnmofpYhz3XrDAW7KQNDnBQ4d5Au2l9bp+K9pBLtzDdWvkWUQvOWuF3ZSS9FZ8G
+        iE9nqw0ZV8VPt0SiV3rcNKuZ4YFn88M=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-250-KqIyla3VMuqmTLn_sF1zYw-1; Wed, 23 Sep 2020 09:45:13 -0400
+X-MC-Unique: KqIyla3VMuqmTLn_sF1zYw-1
+Received: by mail-wr1-f69.google.com with SMTP id a12so8847659wrg.13
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 06:45:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QG/XpftCpbOncz4MqVk/ddxYXgT+Lw6rTWS+CEJwsqw=;
+        b=q7tLBEdQgwPk2nGFOAjdACR4/SnkRPvesM+g/HMyIOfgxAB/iX74FP9mWX02G2XYrv
+         MAJPxk3wWQ3Hmw/17TvU53K1T+HEJX+WrCqBJtCb3v7RXT+xTdbWgtfVy7NcalCKfOxY
+         vv5DZOQ2JylOyZBwugd6SHE/F3zHb4Zm3qumqK+b1Dan5vFR7jTY24HFRl0WThIlunT+
+         9fGo9HL0rQURbpjuiu/lqc5DyrNudekcDJkK2wQfxyM75TjhiWzJLhQqNeaYBSPR7xwP
+         bPIMdMmSJZOcdJ8BS0u3hzU5x4/X/WAk2fhutAXquzX17qDsEoaC7LHe9Ng7hzUewW+2
+         bVRw==
+X-Gm-Message-State: AOAM533XJ9PjnXkduip/rWP5DBobCBauu8PMGTREgH82xS8wZUXFewAf
+        eRIkNQnW2bZPcDpf7dNh8X+uXbOUzZsYkvDRH7hqtdx5Tm4ruLzWUAgixAP4RwAmZ68oL1N8tDw
+        QKI0d55RS7DKhDBsb8mlFyCon
+X-Received: by 2002:a5d:4f12:: with SMTP id c18mr894640wru.33.1600868712235;
+        Wed, 23 Sep 2020 06:45:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyb3cleun1Mcb1EtEe3QbBYzLOy6zExpHXgfTHp4hlVL/wCgtWG6/xhTdTSb3C3JjWrxKZ/Hw==
+X-Received: by 2002:a5d:4f12:: with SMTP id c18mr894615wru.33.1600868711914;
+        Wed, 23 Sep 2020 06:45:11 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:15f1:648d:7de6:bad9? ([2001:b07:6468:f312:15f1:648d:7de6:bad9])
+        by smtp.gmail.com with ESMTPSA id 97sm32423184wrm.15.2020.09.23.06.45.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Sep 2020 06:45:10 -0700 (PDT)
+Subject: Re: [PATCH] KVM: x86: VMX: Make smaller physical guest address space
+ support user-configurable
+To:     Mohammed Gamal <mgamal@redhat.com>, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, sean.j.christopherson@intel.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org
+References: <20200903141122.72908-1-mgamal@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <8c7ce8ff-a212-a974-3829-c45eb5335651@redhat.com>
+Date:   Wed, 23 Sep 2020 15:45:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <1600445211-31078-1-git-send-email-moshe@mellanox.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200903141122.72908-1-mgamal@redhat.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600868646; bh=ztM+dxNwC5iNzN7clw8B9GKxUG4Nljlrim7J50F26Tk=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=NNCjJ+Bh0Du8t3VnF6bzeNSuGz3eEm80IYtyv0z79eGN6zKLYuKW9tQQmC9H5CZ2b
-         nQM2fOHKpDIxeQR3ZkYxqr6Igdilmpzi/tH2eXPU7PqPqp+2tskdJnclVCVygZ/x+7
-         k43iLEXEen/Eql6qMEg9WB4zvAM97zeisRuphmeeFIvUluucpYmcVKsJ97BWvw+VB+
-         oZB3H8GYGpHj6tvA83znbik2Yu1HY3wucUkIzWXYZcPEaaMa1WBr8haI4XzP6OARxR
-         djxlYoqn8AWPwwo/N1fRwNwXSamNgzAChRIV4d5pXLY3WhleOHdbj6zo5SfIdPLAXr
-         g5BmqZ77yrHxg==
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 03/09/20 16:11, Mohammed Gamal wrote:
+> This patch exposes allow_smaller_maxphyaddr to the user as a module parameter.
+> 
+> Since smaller physical address spaces are only supported on VMX, the parameter
+> is only exposed in the kvm_intel module.
+> Modifications to VMX page fault and EPT violation handling will depend on whether
+> that parameter is enabled.
+> 
+> Also disable support by default, and let the user decide if they want to enable
+> it.
+> 
+> Signed-off-by: Mohammed Gamal <mgamal@redhat.com>
+> ---
+>  arch/x86/kvm/vmx/vmx.c | 15 ++++++---------
+>  arch/x86/kvm/vmx/vmx.h |  3 +++
+>  arch/x86/kvm/x86.c     |  2 +-
+>  3 files changed, 10 insertions(+), 10 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 819c185adf09..dc778c7b5a06 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -129,6 +129,9 @@ static bool __read_mostly enable_preemption_timer = 1;
+>  module_param_named(preemption_timer, enable_preemption_timer, bool, S_IRUGO);
+>  #endif
+>  
+> +extern bool __read_mostly allow_smaller_maxphyaddr;
+> +module_param(allow_smaller_maxphyaddr, bool, S_IRUGO | S_IWUSR);
+> +
+>  #define KVM_VM_CR0_ALWAYS_OFF (X86_CR0_NW | X86_CR0_CD)
+>  #define KVM_VM_CR0_ALWAYS_ON_UNRESTRICTED_GUEST X86_CR0_NE
+>  #define KVM_VM_CR0_ALWAYS_ON				\
+> @@ -4798,7 +4801,8 @@ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
+>  
+>  	if (is_page_fault(intr_info)) {
+>  		cr2 = vmx_get_exit_qual(vcpu);
+> -		if (enable_ept && !vcpu->arch.apf.host_apf_flags) {
+> +		if (enable_ept && !vcpu->arch.apf.host_apf_flags
+> +			&& allow_smaller_maxphyaddr) {
+>  			/*
+>  			 * EPT will cause page fault only if we need to
+>  			 * detect illegal GPAs.
+> @@ -5331,7 +5335,7 @@ static int handle_ept_violation(struct kvm_vcpu *vcpu)
+>  	 * would also use advanced VM-exit information for EPT violations to
+>  	 * reconstruct the page fault error code.
+>  	 */
+> -	if (unlikely(kvm_mmu_is_illegal_gpa(vcpu, gpa)))
+> +	if (unlikely(kvm_mmu_is_illegal_gpa(vcpu, gpa)) && allow_smaller_maxphyaddr)
+>  		return kvm_emulate_instruction(vcpu, 0);
+>  
+>  	return kvm_mmu_page_fault(vcpu, gpa, error_code, NULL, 0);
+> @@ -8303,13 +8307,6 @@ static int __init vmx_init(void)
+>  #endif
+>  	vmx_check_vmcs12_offsets();
+>  
+> -	/*
+> -	 * Intel processors don't have problems with
+> -	 * GUEST_MAXPHYADDR < HOST_MAXPHYADDR so enable
+> -	 * it for VMX by default
+> -	 */
+> -	allow_smaller_maxphyaddr = true;
+> -
+>  	return 0;
+>  }
+>  module_init(vmx_init);
+> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+> index 26175a4759fa..b859435efa2e 100644
+> --- a/arch/x86/kvm/vmx/vmx.h
+> +++ b/arch/x86/kvm/vmx/vmx.h
+> @@ -551,6 +551,9 @@ static inline bool vmx_has_waitpkg(struct vcpu_vmx *vmx)
+>  
+>  static inline bool vmx_need_pf_intercept(struct kvm_vcpu *vcpu)
+>  {
+> +	if (!allow_smaller_maxphyaddr)
+> +		return false;
+> +
+>  	return !enable_ept || cpuid_maxphyaddr(vcpu) < boot_cpu_data.x86_phys_bits;
 
-I see no more comments, we reached consensus on API.
+This needs to return true if !enable_ept.
 
-I will finalize my work and re-send as a feature to net-next.
+	if (!enable_ept)
+		return true;
 
+	return allow_smaller_maxphyaddr &&
+		 cpuid_maxphyaddr(vcpu) < boot_cpu_data.x86_phys_bits;
 
-Thanks,
+Fixed and queued, thanks.
 
-Moshe.
+Paolo
 
-On 9/18/2020 7:06 PM, Moshe Shemesh wrote:
-> Introduce new options on devlink reload API to enable the user to select
-> the reload action required and contrains limits on these actions that he
-> may want to ensure. Complete support for reload actions in mlx5.
-> The following reload actions are supported:
->    driver_reinit: driver entities re-initialization, applying devlink-param
->                   and devlink-resource values.
->    fw_activate: firmware activate.
->
-> The uAPI is backward compatible, if the reload action option is omitted
-> from the reload command, the driver reinit action will be used.
-> Note that when required to do firmware activation some drivers may need
-> to reload the driver. On the other hand some drivers may need to reset
-> the firmware to reinitialize the driver entities. Therefore, the devlink
-> reload command returns the actions which were actually performed.
->
-> By default reload actions are not limited and driver implementation may
-> include reset or downtime as needed to perform the actions.
-> However, if limit_level is selected, the driver should perform only if
-> it can do it while keeping the limit level constrains.
-> Reload action limit level added:
->    no_reset: No reset allowed, no down time allowed, no link flap and no
->              configuration is lost.
->
-> Each driver which supports devlink reload command should expose the
-> reload actions and limit levels supported.
->
-> Add reload action stats to hold the history per reload action per limit
-> level. For example, the number of times fw_activate has been done on
-> this device since the driver module was added or if the firmware
-> activation was done with or without reset.
->
-> Patch 1-2 add the new API reload action and reload action limit level
->            option to devlink reload.
-> Patch 3 adds reload actions stats.
-> Patch 4 exposes the reload actions stats on devlink dev get.
-> Patches 5-10 add support on mlx5 for devlink reload action fw_activate
->              and handle the firmware reset events.
-> Patches 11-12 add devlink enable remote dev reset parameter and use it
->               in mlx5.
-> Patches 13-14 mlx5 add devlink reload action limit level no_reset
->                support for fw_activate reload action.
-> Patch 15 adds documentation file devlink-reload.rst
->
->
-> Moshe Shemesh (15):
->    devlink: Add reload action option to devlink reload command
->    devlink: Add reload action limit level
->    devlink: Add reload action stats
->    devlink: Add reload actions stats to dev get
->    net/mlx5: Add functions to set/query MFRL register
->    net/mlx5: Set cap for pci sync for fw update event
->    net/mlx5: Handle sync reset request event
->    net/mlx5: Handle sync reset now event
->    net/mlx5: Handle sync reset abort event
->    net/mlx5: Add support for devlink reload action fw activate
->    devlink: Add enable_remote_dev_reset generic parameter
->    net/mlx5: Add devlink param enable_remote_dev_reset support
->    net/mlx5: Add support for fw live patch event
->    net/mlx5: Add support for devlink reload action limit level no reset
->    devlink: Add Documentation/networking/devlink/devlink-reload.rst
->
->   .../networking/devlink/devlink-params.rst     |   6 +
->   .../networking/devlink/devlink-reload.rst     |  79 +++
->   Documentation/networking/devlink/index.rst    |   1 +
->   drivers/net/ethernet/mellanox/mlx4/main.c     |  16 +-
->   .../net/ethernet/mellanox/mlx5/core/Makefile  |   2 +-
->   .../net/ethernet/mellanox/mlx5/core/devlink.c | 122 ++++-
->   .../mellanox/mlx5/core/diag/fw_tracer.c       |  31 ++
->   .../mellanox/mlx5/core/diag/fw_tracer.h       |   1 +
->   .../ethernet/mellanox/mlx5/core/fw_reset.c    | 454 ++++++++++++++++++
->   .../ethernet/mellanox/mlx5/core/fw_reset.h    |  19 +
->   .../net/ethernet/mellanox/mlx5/core/health.c  |  35 +-
->   .../net/ethernet/mellanox/mlx5/core/main.c    |  13 +
->   .../ethernet/mellanox/mlx5/core/mlx5_core.h   |   2 +
->   drivers/net/ethernet/mellanox/mlxsw/core.c    |  27 +-
->   drivers/net/netdevsim/dev.c                   |  17 +-
->   include/linux/mlx5/device.h                   |   1 +
->   include/linux/mlx5/driver.h                   |   4 +
->   include/net/devlink.h                         |  21 +-
->   include/uapi/linux/devlink.h                  |  41 ++
->   net/core/devlink.c                            | 339 ++++++++++++-
->   20 files changed, 1179 insertions(+), 52 deletions(-)
->   create mode 100644 Documentation/networking/devlink/devlink-reload.rst
->   create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
->   create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/fw_reset.h
->
+>  }
+>  
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index d39d6cf1d473..982f1d73a884 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -188,7 +188,7 @@ static struct kvm_shared_msrs __percpu *shared_msrs;
+>  u64 __read_mostly host_efer;
+>  EXPORT_SYMBOL_GPL(host_efer);
+>  
+> -bool __read_mostly allow_smaller_maxphyaddr;
+> +bool __read_mostly allow_smaller_maxphyaddr = 0;
+>  EXPORT_SYMBOL_GPL(allow_smaller_maxphyaddr);
+>  
+>  static u64 __read_mostly host_xss;
+> 
+
