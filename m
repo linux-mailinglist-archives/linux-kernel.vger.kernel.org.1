@@ -2,93 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D004F275669
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:33:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66B02275670
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726498AbgIWKdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 06:33:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55222 "EHLO mail.kernel.org"
+        id S1726548AbgIWKeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 06:34:36 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:59630 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgIWKdL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 06:33:11 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        id S1726332AbgIWKef (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 06:34:35 -0400
+Received: from zn.tnic (p200300ec2f0d1300e5068c8a3292d31d.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:1300:e506:8c8a:3292:d31d])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 354C620C56;
-        Wed, 23 Sep 2020 10:33:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600857190;
-        bh=tDu/bueQEIu8tUkwU3KcerqhoftSCSirOxnPwcMZzG8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SMRde1F137DH11+D8mhy08ZcwtrqUBXgcmMejLqTUr20+F36bTVnHC3e1rp45oyIU
-         w8IpMw9B7HgwhDkEFUWOfR2MOpBwRh6/me5zl4i9+Kj9RAi9GUXSEACKySBT49sZWf
-         ofOVcNbkMBFxl7/VXcRTVk3bstKATPLCMijcKziY=
-Date:   Wed, 23 Sep 2020 12:33:29 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     rafael@kernel.org, keescook@chromium.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 08/11] drivers/base/test/test_async_driver_probe:
- convert to use counter_atomic
-Message-ID: <20200923103329.GI3154647@kroah.com>
-References: <cover.1600816121.git.skhan@linuxfoundation.org>
- <19fcc4c395c022e07ae7ce7c48fec2b09188f391.1600816121.git.skhan@linuxfoundation.org>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B67AE1EC0409;
+        Wed, 23 Sep 2020 12:34:33 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600857273;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=FZsrac/HmInXoXIXxRGxQJzsoj2KcH5XhZgh7SJHhMg=;
+        b=FC1HJZM5zluJYAblwWMILTtAWbJarN/DVYpUvGXnhxCpMkNmE+o84Df1/dAjtgzJJILLfQ
+        QVm6ycc1b3BM9WAQc9n6/xGnwiIM9efk6Y2W2XvyarhYw25/ti6xrYaX32Ok25RVy/0daL
+        csbcbDCyozkIPUz0gzZXr+euC2nY3vw=
+Date:   Wed, 23 Sep 2020 12:34:31 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        syzbot <syzbot+ce179bc99e64377c24bc@syzkaller.appspotmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: general protection fault in perf_misc_flags
+Message-ID: <20200923103431.GF28545@zn.tnic>
+References: <00000000000052569205afa67426@google.com>
+ <20200919110831.GD7462@zn.tnic>
+ <CACT4Y+ZhofJhNjfav22YNVpxtH4_+3Qaut6rOiqv4MLNU5mcEg@mail.gmail.com>
+ <CACT4Y+b9ZCKJkOmwbEC6sZxEQ-9g2g=-v4+X0aWv7AsrZo7utA@mail.gmail.com>
+ <CAKwvOdmKcn=FNzwtBZ8z0evLz4BXgWtsoz9+QTC6GLqtNp1bXg@mail.gmail.com>
+ <20200921221336.GN5901@zn.tnic>
+ <CAKwvOd=E11KriNqeVv2-Tvq5sQy=4vyBzDEH22D5h5LgBeFsVw@mail.gmail.com>
+ <20200923090336.GD28545@zn.tnic>
+ <CACT4Y+Y4-vqdv01ebyzhUoggUCUyvbhjut7Wvj=r4dBfyxLeng@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <19fcc4c395c022e07ae7ce7c48fec2b09188f391.1600816121.git.skhan@linuxfoundation.org>
+In-Reply-To: <CACT4Y+Y4-vqdv01ebyzhUoggUCUyvbhjut7Wvj=r4dBfyxLeng@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 07:43:37PM -0600, Shuah Khan wrote:
-> counter_atomic is introduced to be used when a variable is used as
-> a simple counter and doesn't guard object lifetimes. This clearly
-> differentiates atomic_t usages that guard object lifetimes.
-> 
-> counter_atomic variables will wrap around to 0 when it overflows and
-> should not be used to guard resource lifetimes, device usage and
-> open counts that control state changes, and pm states.
-> 
-> atomic_t variables used to count errors, warns, keep track of timeout,
-> and async completion are counters.
-> 
-> Unsure overflow is a concern for timeout and async completion, and there
-> are no checks for overflow to hold them to upper bounds. Overflow and
-> wrap around doesn't impact errors, and warns.
-> 
-> Convert them to use counter_atomic.
-> 
-> This conversion doesn't change the oveflow wrap around behavior.
-> 
-> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-> ---
->  drivers/base/test/test_async_driver_probe.c | 23 ++++++++++++---------
->  1 file changed, 13 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/base/test/test_async_driver_probe.c b/drivers/base/test/test_async_driver_probe.c
-> index 3bb7beb127a9..def08cd03eb5 100644
-> --- a/drivers/base/test/test_async_driver_probe.c
-> +++ b/drivers/base/test/test_async_driver_probe.c
-> @@ -14,11 +14,12 @@
->  #include <linux/numa.h>
->  #include <linux/nodemask.h>
->  #include <linux/topology.h>
-> +#include <linux/counters.h>
->  
->  #define TEST_PROBE_DELAY	(5 * 1000)	/* 5 sec */
->  #define TEST_PROBE_THRESHOLD	(TEST_PROBE_DELAY / 2)
->  
-> -static atomic_t warnings, errors, timeout, async_completed;
-> +static struct counter_atomic warnings, errors, timeout, async_completed;
+On Wed, Sep 23, 2020 at 11:24:48AM +0200, Dmitry Vyukov wrote:
+> 3. Run syzkaller locally with custom patches.
 
-Having 3 atomic variables here feels like something is not right and we
-should switch the code over to using a single lock, and 3 variables.
+Let's say I wanna build the kernel with clang-10 using your .config and
+run it in a vm locally. What are the steps in order to reproduce the
+same workload syzkaller runs in the guest on the GCE so that I can at
+least try get as close as possible to reproducing locally?
 
-But that's not the fault of your conversion, it looks fine.
+Thx.
 
-It is interesting that this is digging up all sorts of "odd, why is this
-code written like that???" issues with the conversion, which means it's
-a good thing to do :)
+-- 
+Regards/Gruss,
+    Boris.
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+https://people.kernel.org/tglx/notes-about-netiquette
