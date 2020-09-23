@@ -2,116 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED401275F54
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 20:04:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D869A275F6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 20:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726851AbgIWSEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 14:04:36 -0400
-Received: from mga05.intel.com ([192.55.52.43]:39927 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726832AbgIWSEe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 14:04:34 -0400
-IronPort-SDR: tYl8cTGgLEnImr5YawWd/WXI3IlEVseEfSwFAi0fkENbZ9U+3bcNLG+BIQRTzdU39xptNFEsYi
- ZlCt1SSzwHSQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="245808975"
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="245808975"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 11:04:13 -0700
-IronPort-SDR: AJXo4vYtrHlrOudj8GEG+jRGipD6V+1/HMF2ch1JIKMI1NJkDV4U/z2JPg5FPYrxpCQ1wuBEWe
- DAduaFp3RpUQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="322670311"
-Received: from sjchrist-coffee.jf.intel.com ([10.54.74.160])
-  by orsmga002.jf.intel.com with ESMTP; 23 Sep 2020 11:04:11 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 15/15] KVM: VMX: Rename vmx_uret_msr's "index" to "slot"
-Date:   Wed, 23 Sep 2020 11:04:09 -0700
-Message-Id: <20200923180409.32255-16-sean.j.christopherson@intel.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200923180409.32255-1-sean.j.christopherson@intel.com>
-References: <20200923180409.32255-1-sean.j.christopherson@intel.com>
+        id S1726955AbgIWSGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 14:06:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726537AbgIWSGN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 14:06:13 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F56DC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 11:06:13 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id d4so934093wmd.5
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 11:06:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rBQqEcNI4qmQoA7TvV4cKxPn9VpIANl2GdIqii9bNbU=;
+        b=ueL9XXI+GUUtrlNnir3mOL/bIGZr6jNjX0YvFnEppBB+t7oi2t723yNVDI4ZUdLeJt
+         pPeQBRbm2R0RiKsD9uUrcCUGcW/svCrTyfuR2+8cWGmx7WXu0lfuJDGbNB/lE+P7CcE6
+         vrDbP5b1klSs3fbRQAFv4SBuSTZp66AhBw/NCzFv1EOtSvTHJx00A/+aZ1Ho0qh3Fs8+
+         MBrmy2t4ZKhOqI2P8MDOI78ActrU+Q9nRQ8C0TNaiBw/BkMPj6LdX7ZSRP1wADeQ4OUy
+         aRAJ3r2mgYe4Lno0nLsE0KMOSNfN9asYiR+2Y0tqt0e9fKSMoXl9aGOk2U6h6OkOE70D
+         RsNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rBQqEcNI4qmQoA7TvV4cKxPn9VpIANl2GdIqii9bNbU=;
+        b=kTBIZdiuLJAdRDzdU1dBJUyBYmlrElF6l2KA0XcG7TMCyMx0JSrivC2+zyYbYWxmC9
+         KPgTKcFjPucwq4SBeuDx+LJY0LzHj+tk+L+8Rjuu5xvwpJBruQCd2n4x4avoOHC9c6Qc
+         U0d3c40hRKcd+94HZ3by+WrSgM0ZpBXO3AZpOhrW0eFhGDeDIwHfFzSbpfyX4mfkRMb1
+         hTCEk2wkNKHtW0gb5Lq09cy8SUzUphzxhhQZdqo6ShDhIRgIIHrTX4Yl0db3+KXPbK5c
+         LvtSKtdv/9ylNfVV5sxhhuHp/n8g7qvyyQDTMS9yuq+vf0sILvrhh6D5F9VIUTAwjSqG
+         DKmg==
+X-Gm-Message-State: AOAM533KupTju8HR68EkXJyrBFF7Hx/QBCMwHrpW4s7frVZpLxmI8Jwv
+        6oogC199RI9hHfXmvJetsZhZlw==
+X-Google-Smtp-Source: ABdhPJytV9q3vh1dokw73NDu8zEDyQey80TL3qbLRsyGW990BMBCXndofi3MAqXrMN/rc9rF3zxoNA==
+X-Received: by 2002:a1c:152:: with SMTP id 79mr800490wmb.90.1600884371787;
+        Wed, 23 Sep 2020 11:06:11 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id o16sm541123wrp.52.2020.09.23.11.06.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2020 11:06:10 -0700 (PDT)
+Date:   Wed, 23 Sep 2020 20:06:08 +0200
+From:   LABBE Corentin <clabbe@baylibre.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     David Miller <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>,
+        "# 3.4.x" <stable@vger.kernel.org>
+Subject: Re: [PATCH v2 4/7] crypto: sun4i-ss: handle BigEndian for cipher
+Message-ID: <20200923180608.GA26666@Red>
+References: <1600627038-40000-1-git-send-email-clabbe@baylibre.com>
+ <1600627038-40000-5-git-send-email-clabbe@baylibre.com>
+ <CAK8P3a34V16PUoVJjoUOVCik_rdb6vAy=54qRzWdO+aJcwUwsg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a34V16PUoVJjoUOVCik_rdb6vAy=54qRzWdO+aJcwUwsg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename "index" to "slot" in struct vmx_uret_msr to align with the
-terminology used by common x86's kvm_user_return_msrs, and to avoid
-conflating "MSR's ECX index" with "MSR's index into an array".
+On Wed, Sep 23, 2020 at 04:00:32PM +0200, Arnd Bergmann wrote:
+> On Sun, Sep 20, 2020 at 8:37 PM Corentin Labbe <clabbe@baylibre.com> wrote:
+> >
+> > Ciphers produce invalid results on BE.
+> > Key and IV need to be written in LE.
+> >
+> > Fixes: 6298e948215f2 ("crypto: sunxi-ss - Add Allwinner Security System crypto accelerator")
+> > Cc: <stable@vger.kernel.org>
+> > Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+> > ---
+> >  drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c | 12 ++++++------
+> >  1 file changed, 6 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
+> > index c6c25204780d..a05889745097 100644
+> > --- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
+> > +++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
+> > @@ -52,13 +52,13 @@ static int noinline_for_stack sun4i_ss_opti_poll(struct skcipher_request *areq)
+> >
+> >         spin_lock_irqsave(&ss->slock, flags);
+> >
+> > -       for (i = 0; i < op->keylen; i += 4)
+> > -               writel(*(op->key + i / 4), ss->base + SS_KEY0 + i);
+> > +       for (i = 0; i < op->keylen / 4; i++)
+> > +               writel(cpu_to_le32(op->key[i]), ss->base + SS_KEY0 + i * 4);
+> 
+> I suspect what you actually want here is writesl() in place of the
+> loop. This skips the byteswap on big-endian, rather than swapping
+> each word twice.
+> 
+> The point is that this register seems to act as a FIFO for a byte-stream
+> rather than a 32-bit fixed-endian register.
+> 
+>      Arnd
 
-No functional change intended.
-
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
----
- arch/x86/kvm/vmx/vmx.c | 8 ++++----
- arch/x86/kvm/vmx/vmx.h | 2 +-
- 2 files changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 82dde6f77524..d05b8b194b1e 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -628,7 +628,7 @@ static inline int __vmx_find_uret_msr(struct vcpu_vmx *vmx, u32 msr)
- 	int i;
- 
- 	for (i = 0; i < vmx->nr_uret_msrs; ++i)
--		if (vmx_uret_msrs_list[vmx->guest_uret_msrs[i].index] == msr)
-+		if (vmx_uret_msrs_list[vmx->guest_uret_msrs[i].slot] == msr)
- 			return i;
- 	return -1;
- }
-@@ -652,7 +652,7 @@ static int vmx_set_guest_uret_msr(struct vcpu_vmx *vmx,
- 	msr->data = data;
- 	if (msr - vmx->guest_uret_msrs < vmx->nr_active_uret_msrs) {
- 		preempt_disable();
--		ret = kvm_set_user_return_msr(msr->index, msr->data, msr->mask);
-+		ret = kvm_set_user_return_msr(msr->slot, msr->data, msr->mask);
- 		preempt_enable();
- 		if (ret)
- 			msr->data = old_msr_data;
-@@ -1149,7 +1149,7 @@ void vmx_prepare_switch_to_guest(struct kvm_vcpu *vcpu)
- 	if (!vmx->guest_uret_msrs_loaded) {
- 		vmx->guest_uret_msrs_loaded = true;
- 		for (i = 0; i < vmx->nr_active_uret_msrs; ++i)
--			kvm_set_user_return_msr(vmx->guest_uret_msrs[i].index,
-+			kvm_set_user_return_msr(vmx->guest_uret_msrs[i].slot,
- 						vmx->guest_uret_msrs[i].data,
- 						vmx->guest_uret_msrs[i].mask);
- 
-@@ -6859,7 +6859,7 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
- 		if (wrmsr_safe(index, data_low, data_high) < 0)
- 			continue;
- 
--		vmx->guest_uret_msrs[j].index = i;
-+		vmx->guest_uret_msrs[j].slot = i;
- 		vmx->guest_uret_msrs[j].data = 0;
- 		switch (index) {
- 		case MSR_IA32_TSX_CTRL:
-diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-index 05c81fcd184e..7b7f7f38c362 100644
---- a/arch/x86/kvm/vmx/vmx.h
-+++ b/arch/x86/kvm/vmx/vmx.h
-@@ -35,7 +35,7 @@ struct vmx_msrs {
- };
- 
- struct vmx_uret_msr {
--	unsigned index;
-+	unsigned int slot; /* The MSR's slot in kvm_user_return_msrs. */
- 	u64 data;
- 	u64 mask;
- };
--- 
-2.28.0
-
+Thanks, using writesl() fixes the warning, but I need to keep the loop since the register is different each time.
+Or does it is better to use directly __raw_writel() ?
