@@ -2,307 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68838274E3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 03:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2904E274E18
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 03:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726960AbgIWBJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 21:09:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726891AbgIWBJc (ORCPT
+        id S1726826AbgIWBFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 21:05:00 -0400
+Received: from relay5.mymailcheap.com ([159.100.248.207]:49532 "EHLO
+        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726615AbgIWBE6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 21:09:32 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 373D8C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 18:09:32 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id r22so17915819qtc.9
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 18:09:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=5NzLmrfIvFl4vmHDsUrqH66sakxn3yn+5FHfj9CLrSk=;
-        b=r+SN94ExEtQMPsSJHIerdOB77MAXWzmZwyFneNmoAk49k6roAYOafIpq6/bVGJgknf
-         xDip3oHkpH42R6dI4QewUZcaBwPMVq6ODAPkayZv/4kxo++i/JjDTb3jmigDwMuponz+
-         gQ9QBOprkNqmFdjMbG30Ik+3nu+B4dlxFOozhLEhJ3zcb+ZEZZvMqS+YJqw3NXZh5XV1
-         0heENiRe5ihlsoHmsFVz0rx4o9ZBU50Y8OfhTNND68hRdv8PQG6Xc8x4mjB7eVbYcjUM
-         VtMkXdZn29qoBgfIzG9ScD8gQ4rFVM+uiAHi8/TfBcqqF7Bd0GlNAEsmqAT+bUm9nkRm
-         sIeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=5NzLmrfIvFl4vmHDsUrqH66sakxn3yn+5FHfj9CLrSk=;
-        b=d9LQnwfF0siStmJdDXeO5ny4oQZRONBFP5nZzOwwiyGl35ol0uipymNorQIkN/z1Am
-         y/S3dNUE2OArKvPtemY7rNd5p1zGuQwH3F0Sy+JNjFBrsq8a8UVJb2b3G7lbM+z5/ieo
-         ewxrUh6CxwmNyhfw2c9GzGoFVRlYuc7fX/q1RnKsLadSs/pV9Ma4tlNm4FFthwg/D/XE
-         dlz1dAmtcVYmIMxDmpx3PstWeguQaK4lEkrEGR7nVS8ObZYpaiKZvp2Pk2Lac4jjqh85
-         95GLcUK6tLihM7trqPhLLhtpAKfWAA3Hh9Sej2fHe/EtCK4cZ9fwEPg9hEoL7E/hSavc
-         jbBg==
-X-Gm-Message-State: AOAM531p1HrirSGWigvtiqbce6SO2blRzOMuWcQZTAtkUAVbeLqwP/Kf
-        DRZsYFq6yOlqBIzbbLeFEnpN490L+yE=
-X-Google-Smtp-Source: ABdhPJxv1Hdlfj8ugCdnaEAvvXDxMVYKo8a2NyX+Ru6k+x2fIYfIZAKDUuzPfngdOaYjfUIXgJFf9ofvshM=
-Sender: "drosen via sendgmr" <drosen@drosen.c.googlers.com>
-X-Received: from drosen.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:4e6f])
- (user=drosen job=sendgmr) by 2002:a0c:b29e:: with SMTP id r30mr9102695qve.38.1600823371337;
- Tue, 22 Sep 2020 18:09:31 -0700 (PDT)
-Date:   Wed, 23 Sep 2020 01:01:51 +0000
-In-Reply-To: <20200923010151.69506-1-drosen@google.com>
-Message-Id: <20200923010151.69506-6-drosen@google.com>
-Mime-Version: 1.0
-References: <20200923010151.69506-1-drosen@google.com>
-X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
-Subject: [PATCH 5/5] f2fs: Handle casefolding with Encryption
-From:   Daniel Rosenberg <drosen@google.com>
-To:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chao Yu <chao@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Richard Weinberger <richard@nod.at>,
-        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mtd@lists.infradead.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com, Daniel Rosenberg <drosen@google.com>,
-        Eric Biggers <ebiggers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 22 Sep 2020 21:04:58 -0400
+Received: from relay3.mymailcheap.com (relay3.mymailcheap.com [217.182.66.161])
+        by relay5.mymailcheap.com (Postfix) with ESMTPS id 22FBD260EE;
+        Wed, 23 Sep 2020 01:04:56 +0000 (UTC)
+Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
+        by relay3.mymailcheap.com (Postfix) with ESMTPS id DAAAD3ECDF;
+        Wed, 23 Sep 2020 03:04:53 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by filter1.mymailcheap.com (Postfix) with ESMTP id 14FBF2A3A6;
+        Tue, 22 Sep 2020 21:04:53 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1600823093;
+        bh=3+sZb5fdj+79IZyWCI/Jc31aCW7LFYT5uOrGyFW8p8Y=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=yQQ/7+L7UxF9An6MH3LWvk1snE0Cf2ebT0WKD6oN40uPjFpa9dwZiPMTmVjfj1BuM
+         4vjhvnPChyvN5Rfnf66TapoHejnkkgm57Bt5Ten77wAB5zsvUxM4SaIuPJIa7ehPfu
+         UCq6fwSde5LXchC9OvpB/5USCLMdKwCmD2br3QkM=
+X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
+Received: from filter1.mymailcheap.com ([127.0.0.1])
+        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id KfaW6rXfyDZ6; Tue, 22 Sep 2020 21:04:52 -0400 (EDT)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter1.mymailcheap.com (Postfix) with ESMTPS;
+        Tue, 22 Sep 2020 21:04:52 -0400 (EDT)
+Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id 2A4DE41024;
+        Wed, 23 Sep 2020 01:04:51 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="yBZGOdMM";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from ice-e5v2.lan (unknown [59.41.160.155])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id DEAC041009;
+        Wed, 23 Sep 2020 01:02:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
+        t=1600822948; bh=3+sZb5fdj+79IZyWCI/Jc31aCW7LFYT5uOrGyFW8p8Y=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=yBZGOdMMF6TckvcZj1bv1lbMFXWoFtBO1LTDHFbZUn9by7EK0qFfP9M8RBRREgqxU
+         a8EYr3hDv2bErwNdJNvZuKLKNMJIUvT0XxjxJCW2hWepSgl7BVWaFPwoGeXJD2/cmu
+         scu6ooIjTHweP15UMlBUJQf7XTwirnlw/zU2OkSM=
+From:   Icenowy Zheng <icenowy@aosc.io>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
+        Icenowy Zheng <icenowy@aosc.io>
+Subject: [PATCH 6/7] dt-bindings: arm: sunxi: add Pine64 PineCube binding
+Date:   Wed, 23 Sep 2020 09:02:14 +0800
+Message-Id: <20200923010215.148819-1-icenowy@aosc.io>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200923005709.147966-1-icenowy@aosc.io>
+References: <20200923005709.147966-1-icenowy@aosc.io>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 2A4DE41024
+X-Spamd-Result: default: False [6.40 / 20.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
+         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.160.155:received];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         R_MISSING_CHARSET(2.50)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[dt];
+         MIME_GOOD(-0.10)[text/plain];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         R_SPF_SOFTFAIL(0.00)[~all:c];
+         DMARC_NA(0.00)[aosc.io];
+         ML_SERVERS(-3.10)[213.133.102.83];
+         DKIM_TRACE(0.00)[aosc.io:+];
+         RCPT_COUNT_SEVEN(0.00)[8];
+         MID_CONTAINS_FROM(1.00)[];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         SUSPICIOUS_RECIPS(1.50)[];
+         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
+X-Rspamd-Server: mail20.mymailcheap.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Expand f2fs's casefolding support to include encrypted directories.  To
-index casefolded+encrypted directories, we use the SipHash of the
-casefolded name, keyed by a key derived from the directory's fscrypt
-master key.  This ensures that the dirhash doesn't leak information
-about the plaintext filenames.
+Document board compatible names for Pine64 PineCube IP camera.
 
-Encryption keys are unavailable during roll-forward recovery, so we
-can't compute the dirhash when recovering a new dentry in an encrypted +
-casefolded directory.  To avoid having to force a checkpoint when a new
-file is fsync'ed, store the dirhash on-disk appended to i_name.
-
-This patch incorporates work by Eric Biggers <ebiggers@google.com>
-and Jaegeuk Kim <jaegeuk@kernel.org>.
-
-Co-developed-by: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Daniel Rosenberg <drosen@google.com>
+Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
 ---
- fs/f2fs/dir.c      | 57 +++++++++++++++++++++++++++++++++++++++-------
- fs/f2fs/f2fs.h     |  8 ++++---
- fs/f2fs/hash.c     | 11 ++++++++-
- fs/f2fs/recovery.c | 12 +++++++++-
- fs/f2fs/super.c    |  6 -----
- 5 files changed, 75 insertions(+), 19 deletions(-)
+ Documentation/devicetree/bindings/arm/sunxi.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-index 0766e6250a88..07004eb6edf8 100644
---- a/fs/f2fs/dir.c
-+++ b/fs/f2fs/dir.c
-@@ -5,6 +5,7 @@
-  * Copyright (c) 2012 Samsung Electronics Co., Ltd.
-  *             http://www.samsung.com/
-  */
-+#include <asm/unaligned.h>
- #include <linux/fs.h>
- #include <linux/f2fs_fs.h>
- #include <linux/sched/signal.h>
-@@ -218,9 +219,28 @@ static bool f2fs_match_ci_name(const struct inode *dir, const struct qstr *name,
- {
- 	const struct super_block *sb = dir->i_sb;
- 	const struct unicode_map *um = sb->s_encoding;
-+	struct fscrypt_str decrypted_name = FSTR_INIT(NULL, de_name_len);
- 	struct qstr entry = QSTR_INIT(de_name, de_name_len);
- 	int res;
+diff --git a/Documentation/devicetree/bindings/arm/sunxi.yaml b/Documentation/devicetree/bindings/arm/sunxi.yaml
+index 5957a22c2e95..584b3fbf6e08 100644
+--- a/Documentation/devicetree/bindings/arm/sunxi.yaml
++++ b/Documentation/devicetree/bindings/arm/sunxi.yaml
+@@ -631,6 +631,11 @@ properties:
+           - const: pine64,pine64-plus
+           - const: allwinner,sun50i-a64
  
-+	if (IS_ENCRYPTED(dir)) {
-+		const struct fscrypt_str encrypted_name =
-+			FSTR_INIT((u8 *)de_name, de_name_len);
++      - description: Pine64 PineCube
++        items:
++          - const: pine64,pinecube
++          - const: allwinner,sun8i-v3
 +
-+		if (WARN_ON_ONCE(!fscrypt_has_encryption_key(dir)))
-+			return false;
-+
-+		decrypted_name.name = kmalloc(de_name_len, GFP_KERNEL);
-+		if (!decrypted_name.name)
-+			return false;
-+		res = fscrypt_fname_disk_to_usr(dir, 0, 0, &encrypted_name,
-+						&decrypted_name);
-+		if (res < 0)
-+			goto out;
-+		entry.name = decrypted_name.name;
-+		entry.len = decrypted_name.len;
-+	}
-+
- 	res = utf8_strncasecmp_folded(um, name, &entry);
- 	if (res < 0) {
- 		/*
-@@ -228,9 +248,12 @@ static bool f2fs_match_ci_name(const struct inode *dir, const struct qstr *name,
- 		 * fall back to treating them as opaque byte sequences.
- 		 */
- 		if (sb_has_strict_encoding(sb) || name->len != entry.len)
--			return false;
--		return !memcmp(name->name, entry.name, name->len);
-+			res = 1;
-+		else
-+			res = memcmp(name->name, entry.name, name->len);
- 	}
-+out:
-+	kfree(decrypted_name.name);
- 	return res == 0;
- }
- #endif /* CONFIG_UNICODE */
-@@ -455,17 +478,39 @@ void f2fs_set_link(struct inode *dir, struct f2fs_dir_entry *de,
- 	f2fs_put_page(page, 1);
- }
- 
--static void init_dent_inode(const struct f2fs_filename *fname,
-+static void init_dent_inode(struct inode *dir, struct inode *inode,
-+			    const struct f2fs_filename *fname,
- 			    struct page *ipage)
- {
- 	struct f2fs_inode *ri;
- 
-+	if (!fname) /* tmpfile case? */
-+		return;
-+
- 	f2fs_wait_on_page_writeback(ipage, NODE, true, true);
- 
- 	/* copy name info. to this inode page */
- 	ri = F2FS_INODE(ipage);
- 	ri->i_namelen = cpu_to_le32(fname->disk_name.len);
- 	memcpy(ri->i_name, fname->disk_name.name, fname->disk_name.len);
-+	if (IS_ENCRYPTED(dir)) {
-+		file_set_enc_name(inode);
-+		/*
-+		 * Roll-forward recovery doesn't have encryption keys available,
-+		 * so it can't compute the dirhash for encrypted+casefolded
-+		 * filenames.  Append it to i_name if possible.  Else, disable
-+		 * roll-forward recovery of the dentry (i.e., make fsync'ing the
-+		 * file force a checkpoint) by setting LOST_PINO.
-+		 */
-+		if (IS_CASEFOLDED(dir)) {
-+			if (fname->disk_name.len + sizeof(f2fs_hash_t) <=
-+			    F2FS_NAME_LEN)
-+				put_unaligned(fname->hash, (f2fs_hash_t *)
-+					&ri->i_name[fname->disk_name.len]);
-+			else
-+				file_lost_pino(inode);
-+		}
-+	}
- 	set_page_dirty(ipage);
- }
- 
-@@ -548,11 +593,7 @@ struct page *f2fs_init_inode_metadata(struct inode *inode, struct inode *dir,
- 			return page;
- 	}
- 
--	if (fname) {
--		init_dent_inode(fname, page);
--		if (IS_ENCRYPTED(dir))
--			file_set_enc_name(inode);
--	}
-+	init_dent_inode(dir, inode, fname, page);
- 
- 	/*
- 	 * This file should be checkpointed during fsync.
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index af1d469e8c1e..9d58fd5dae13 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -533,9 +533,11 @@ struct f2fs_filename {
- #ifdef CONFIG_UNICODE
- 	/*
- 	 * For casefolded directories: the casefolded name, but it's left NULL
--	 * if the original name is not valid Unicode or if the filesystem is
--	 * doing an internal operation where usr_fname is also NULL.  In these
--	 * cases we fall back to treating the name as an opaque byte sequence.
-+	 * if the original name is not valid Unicode, if the directory is both
-+	 * casefolded and encrypted and its encryption key is unavailable, or if
-+	 * the filesystem is doing an internal operation where usr_fname is also
-+	 * NULL.  In all these cases we fall back to treating the name as an
-+	 * opaque byte sequence.
- 	 */
- 	struct fscrypt_str cf_name;
- #endif
-diff --git a/fs/f2fs/hash.c b/fs/f2fs/hash.c
-index de841aaf3c43..e3beac546c63 100644
---- a/fs/f2fs/hash.c
-+++ b/fs/f2fs/hash.c
-@@ -111,7 +111,9 @@ void f2fs_hash_filename(const struct inode *dir, struct f2fs_filename *fname)
- 		 * If the casefolded name is provided, hash it instead of the
- 		 * on-disk name.  If the casefolded name is *not* provided, that
- 		 * should only be because the name wasn't valid Unicode, so fall
--		 * back to treating the name as an opaque byte sequence.
-+		 * back to treating the name as an opaque byte sequence.  Note
-+		 * that to handle encrypted directories, the fallback must use
-+		 * usr_fname (plaintext) rather than disk_name (ciphertext).
- 		 */
- 		WARN_ON_ONCE(!fname->usr_fname->name);
- 		if (fname->cf_name.name) {
-@@ -121,6 +123,13 @@ void f2fs_hash_filename(const struct inode *dir, struct f2fs_filename *fname)
- 			name = fname->usr_fname->name;
- 			len = fname->usr_fname->len;
- 		}
-+		if (IS_ENCRYPTED(dir)) {
-+			struct qstr tmp = QSTR_INIT(name, len);
-+
-+			fname->hash =
-+				cpu_to_le32(fscrypt_fname_siphash(dir, &tmp));
-+			return;
-+		}
- 	}
- #endif
- 	fname->hash = cpu_to_le32(TEA_hash_name(name, len));
-diff --git a/fs/f2fs/recovery.c b/fs/f2fs/recovery.c
-index 4f12ade6410a..0947d36af1a8 100644
---- a/fs/f2fs/recovery.c
-+++ b/fs/f2fs/recovery.c
-@@ -5,6 +5,7 @@
-  * Copyright (c) 2012 Samsung Electronics Co., Ltd.
-  *             http://www.samsung.com/
-  */
-+#include <asm/unaligned.h>
- #include <linux/fs.h>
- #include <linux/f2fs_fs.h>
- #include "f2fs.h"
-@@ -128,7 +129,16 @@ static int init_recovered_filename(const struct inode *dir,
- 	}
- 
- 	/* Compute the hash of the filename */
--	if (IS_CASEFOLDED(dir)) {
-+	if (IS_ENCRYPTED(dir) && IS_CASEFOLDED(dir)) {
-+		/*
-+		 * In this case the hash isn't computable without the key, so it
-+		 * was saved on-disk.
-+		 */
-+		if (fname->disk_name.len + sizeof(f2fs_hash_t) > F2FS_NAME_LEN)
-+			return -EINVAL;
-+		fname->hash = get_unaligned((f2fs_hash_t *)
-+				&raw_inode->i_name[fname->disk_name.len]);
-+	} else if (IS_CASEFOLDED(dir)) {
- 		err = f2fs_init_casefolded_name(dir, fname);
- 		if (err)
- 			return err;
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 63c744c6aeff..c2e441b256a7 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -3382,12 +3382,6 @@ static int f2fs_setup_casefold(struct f2fs_sb_info *sbi)
- 		struct unicode_map *encoding;
- 		__u16 encoding_flags;
- 
--		if (f2fs_sb_has_encrypt(sbi)) {
--			f2fs_err(sbi,
--				"Can't mount with encoding and encryption");
--			return -EINVAL;
--		}
--
- 		if (f2fs_sb_read_encoding(sbi->raw_super, &encoding_info,
- 					  &encoding_flags)) {
- 			f2fs_err(sbi,
+       - description: Pine64 PineH64 model A
+         items:
+           - const: pine64,pine-h64
 -- 
-2.28.0.681.g6f77f65b4e-goog
-
+2.27.0
