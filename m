@@ -2,60 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93442274FA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 05:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51615274FAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 05:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726820AbgIWDpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 23:45:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726448AbgIWDpY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 23:45:24 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D12DAC061755;
-        Tue, 22 Sep 2020 20:45:23 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kKviT-004Gtp-DG; Wed, 23 Sep 2020 03:45:13 +0000
-Date:   Wed, 23 Sep 2020 04:45:13 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Anna Schumaker <anna.schumaker@netapp.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
-Subject: Re: [PATCH 2/5] fs,nfs: lift compat nfs4 mount data handling into
- the nfs code
-Message-ID: <20200923034513.GF3421308@ZenIV.linux.org.uk>
-References: <20200917082236.2518236-1-hch@lst.de>
- <20200917082236.2518236-3-hch@lst.de>
- <20200917171604.GW3421308@ZenIV.linux.org.uk>
- <20200917171826.GA8198@lst.de>
- <20200921064813.GB18559@lst.de>
- <CAFX2Jfks7QTS5crWa43mp4TQ3LoquvRxjuEeCpsZr1aees00eA@mail.gmail.com>
- <20200921181123.GA1776@lst.de>
+        id S1726817AbgIWDvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 23:51:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56920 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726448AbgIWDvi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 23:51:38 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 280FB2076E;
+        Wed, 23 Sep 2020 03:51:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600833098;
+        bh=IRvofdC9p6whOD7WsodxEGJiMATxLVmtshgV275e4jQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=vsogR3ZO3YdR45MojtUn/yl2z1OajglLzDtS59i67WXtAm7r/tuH0OTivNzJzlvau
+         3tQpIbd9PAjFEZKL24QfpbEJpRq5lnC3G9snj80ai/7JIj1PUDVe91nQcd+HXkr8WM
+         zpk8dNHt8t94i+WvLW5pqJ9TZGRcmUmQdgZ2k9mA=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id E22F535231BA; Tue, 22 Sep 2020 20:51:37 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 20:51:37 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Hou Tao <houtao1@huawei.com>
+Cc:     Davidlohr Bueso <dave@stgolabs.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [PATCH 2/2] locktorture: call percpu_free_rwsem() to do
+ percpu-rwsem cleanup
+Message-ID: <20200923035137.GN29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200917135910.137389-1-houtao1@huawei.com>
+ <20200917135910.137389-3-houtao1@huawei.com>
+ <20200922232426.GL29330@paulmck-ThinkPad-P72>
+ <fe8c274e-efa4-04ec-0d95-d7c49ec4dd83@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200921181123.GA1776@lst.de>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <fe8c274e-efa4-04ec-0d95-d7c49ec4dd83@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 08:11:23PM +0200, Christoph Hellwig wrote:
-> On Mon, Sep 21, 2020 at 12:05:52PM -0400, Anna Schumaker wrote:
-> > This is for the binary mount stuff? That was already legacy code when
-> > I first started, and mount uses text options now. My preference is for
-> > keeping it as close to the original code as possible.
+On Wed, Sep 23, 2020 at 10:24:20AM +0800, Hou Tao wrote:
+> Hi Paul,
 > 
-> Ok.  Al, are you fine with the series as-is then?
+> > On 2020/9/23 7:24, Paul E. McKenney wrote:
+> snip
+> 
+> >> Fix it by adding an exit hook in lock_torture_ops and
+> >> use it to call percpu_free_rwsem() for percpu rwsem torture
+> >> before the module is removed, so we can ensure rcu_sync_func()
+> >> completes before module exits.
+> >>
+> >> Also needs to call exit hook if lock_torture_init() fails half-way,
+> >> so use ctx->cur_ops != NULL to signal that init hook has been called.
+> > 
+> > Good catch, but please see below for comments and questions.
+> > 
+> >> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> >> ---
+> >>  kernel/locking/locktorture.c | 28 ++++++++++++++++++++++------
+> >>  1 file changed, 22 insertions(+), 6 deletions(-)
+> >>
+> >> diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
+> >> index bebdf98e6cd78..e91033e9b6f95 100644
+> >> --- a/kernel/locking/locktorture.c
+> >> +++ b/kernel/locking/locktorture.c
+> >> @@ -74,6 +74,7 @@ static void lock_torture_cleanup(void);
+> >>   */
+> >>  struct lock_torture_ops {
+> >>  	void (*init)(void);
+> >> +	void (*exit)(void);
+> > 
+> > This is fine, but why not also add a flag to the lock_torture_cxt
+> > structure that is set when the ->init() function is called?  Perhaps
+> > something like this in lock_torture_init():
+> > 
+> > 	if (cxt.cur_ops->init) {
+> > 		cxt.cur_ops->init();
+> > 		cxt.initcalled = true;
+> > 	}
+> > 
+> 
+> You are right. Add a new field to indicate the init hook has been
+> called is much better than reusing ctx->cur_ops != NULL to do that.
+> 
+> >>  	int (*writelock)(void);
+> >>  	void (*write_delay)(struct torture_random_state *trsp);
+> >>  	void (*task_boost)(struct torture_random_state *trsp);
+> >> @@ -571,6 +572,11 @@ void torture_percpu_rwsem_init(void)
+> >>  	BUG_ON(percpu_init_rwsem(&pcpu_rwsem));
+> >>  }
+> >>  
+> >> +static void torture_percpu_rwsem_exit(void)
+> >> +{
+> >> +	percpu_free_rwsem(&pcpu_rwsem);
+> >> +}
+> >> +
+> snip
+> 
+> >> @@ -828,6 +836,12 @@ static void lock_torture_cleanup(void)
+> >>  	cxt.lrsa = NULL;
+> >>  
+> >>  end:
+> >> +	/* If init() has been called, then do exit() accordingly */
+> >> +	if (cxt.cur_ops) {
+> >> +		if (cxt.cur_ops->exit)
+> >> +			cxt.cur_ops->exit();
+> >> +		cxt.cur_ops = NULL;
+> >> +	}
+> > 
+> > The above can then be:
+> > 
+> > 	if (cxt.initcalled && cxt.cur_ops->exit)
+> > 		cxt.cur_ops->exit();
+> > 
+> > Maybe you also need to clear cxt.initcalled at this point, but I don't
+> > immediately see why that would be needed.
+> > 
+> Because we are doing cleanup, so I think reset initcalled to false is OK
+> after the cleanup is done.
 
-I can live with that.  I'm not fond of in_compat_syscall() proliferation,
-but in this case it's reasonably sane...
+Maybe best to try it both ways and see how each really works?
 
-OK, applied.
+We might each have our opinions, but the computer's opinion is the one
+that really counts.  ;-)
+
+> >>  	torture_cleanup_end();
+> >>  }
+> >>  
+> >> @@ -835,6 +849,7 @@ static int __init lock_torture_init(void)
+> >>  {
+> >>  	int i, j;
+> >>  	int firsterr = 0;
+> >> +	struct lock_torture_ops *cur_ops;
+> > 
+> > And then you don't need this extra pointer.  Not that this pointer is bad
+> > in and of itself, but using (!cxt.cur_ops) to indicate that the ->init()
+> > function has not been called is an accident waiting to happen.
+> > 
+> > And the changes below are no longer needed.
+> > 
+> > Or am I missing something subtle?
+> > 
+> Thanks for your suggestion. Will send v2.
+
+Looking forward to seeing it!
+
+							Thanx, Paul
