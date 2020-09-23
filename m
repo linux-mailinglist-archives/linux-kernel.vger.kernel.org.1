@@ -2,103 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08E47276251
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:42:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE67B276254
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726735AbgIWUmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 16:42:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726419AbgIWUmK (ORCPT
+        id S1726762AbgIWUmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 16:42:21 -0400
+Received: from mail-il1-f195.google.com ([209.85.166.195]:36659 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726419AbgIWUmU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 16:42:10 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88F2BC0613CE;
-        Wed, 23 Sep 2020 13:42:10 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id f18so373338pfa.10;
-        Wed, 23 Sep 2020 13:42:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YTqMKJ2r9lJvoz5eaRhmClYptdjVPN0cfBkpHCFpZIY=;
-        b=q4GZzSi+KRrJZowwN18dJwrui7xW5qEWqe4+gnz8T95t47d9fUojDy3a6MRidGtPVJ
-         bhehuf04pA6jWBSCmeJR0Gbs52BMbpnOt4PjVXPN5KGXvRNE87BcANbwIa9l9prfEiYW
-         vQmGbf2fzIgLbnOxNNDugHu9KSbpzTu46lzagCg0Ta+ccTSpDl7jL90BIoXMYrmbOM0e
-         dmxe3w9FzlE9KkircotdV/F0bs9MQpUjSsieo67VYpWISr0Lcg65eZyoJTZmPHmWPSJp
-         dQHD9xsYVIRRHBybQeUUu2S9aziJaLxaRk6Z4jJlHU3Ub0C5m0rvUibvhAOFO+rcpF5Z
-         SbCg==
+        Wed, 23 Sep 2020 16:42:20 -0400
+Received: by mail-il1-f195.google.com with SMTP id t12so959164ilh.3;
+        Wed, 23 Sep 2020 13:42:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=YTqMKJ2r9lJvoz5eaRhmClYptdjVPN0cfBkpHCFpZIY=;
-        b=uVRpxTn2ppTs7NjuwP7xT5jLrO3ByrB4L39j8/6E/EOPXS5wYBOVnwftcLXKX8fXkh
-         7QzUUY2baFJveif8QmavWZbLMkHD8yeRBO/VXaJCNVE9/P1wS7Py6X+bgHC/I3clPA+J
-         SFjYWMrbQ7Dq+ZSgmB+loZzKSovz6TtACxSO+gu1MzFMea+VhGHxD9Pk+zza+zZSK0o/
-         rWRQ0k/WB0+MP5rNlkKE5i+WwM7B1LRYiOEwHGEQ4SLPX70dPgj9MeA5zM6c9dYtG0an
-         38Vf1FZzALNezH+rwkM/syjwpz+vFkiMN0ETzRcBPvXfFUZDGJXCi/WOAjev/AAhQWaT
-         mgLg==
-X-Gm-Message-State: AOAM532+9qZw7MZyoF951JtPCT0b7eZoyvekvk5LZqPOZdlVxwxZggJg
-        zDUdmHORh7p91j+eUDyhbqQ=
-X-Google-Smtp-Source: ABdhPJylVlBnSEBRjtVUI/3ECfLXMd7+wI/L2Scyeh9x+sImzwiYpOS7niZGC5P1GAkPH+SzRA95fA==
-X-Received: by 2002:a63:457:: with SMTP id 84mr1253837pge.191.1600893729932;
-        Wed, 23 Sep 2020 13:42:09 -0700 (PDT)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id e10sm693437pgb.45.2020.09.23.13.42.08
+        bh=fS6oQh2hrP6bIAjUY49Vx0h9Xj6F6+mhuU4YtCGAcxA=;
+        b=NUNMPKkAgrvSjHJEM52OguqsssOK5r3d6prgfUXOnOtWZ7tAkbRpDIqr9y2vMPwQIW
+         pJ9g33OCY48mUEwtTeBGlx/X45GaqEr24IH8D2cDgIjDiNC3EJa6OiRtMLGfpiV0rkHR
+         WnwX2KPRHqH6IZrBXGmxrXQhhKF5b2U3kpnUIlxB8eAXJ0ym9AV4zj6d19SPQwiFGH3P
+         SYuTbWK9vbeQOSllWG0P7n/n0ft/eCOQJUT7edPbQkMRZNwCmRK7KejFbjlAH66gy2n8
+         DZtpothlcprRWVGYT5FCvWdjAzxG0HA7BKNrZCoA+SG2TJsqYLlv3L1cdwQJ4AGjWvy/
+         W4NA==
+X-Gm-Message-State: AOAM531CzQNtgKOBOki5rPsLFUZ/P9DkWHUrMvpX/ep514jNwADzQgAR
+        t4HUTZHyqlOxBjpWuGHXtw==
+X-Google-Smtp-Source: ABdhPJyqTnaRXnDMPUpPR6Jh9uxMucw+SSn9Nb8IY7jUVy+XQm0dh3Alxg5sLL+gSWhdC7dFeM+uzA==
+X-Received: by 2002:a05:6e02:787:: with SMTP id q7mr1321057ils.298.1600893739786;
+        Wed, 23 Sep 2020 13:42:19 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id a11sm392698ilk.19.2020.09.23.13.42.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 13:42:08 -0700 (PDT)
-Date:   Wed, 23 Sep 2020 13:42:06 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Vincent Huang <vincent.huang@tw.synaptics.com>
-Subject: Re: [PATCH 4.19 43/49] Input: trackpoint - add new trackpoint
- variant IDs
-Message-ID: <20200923204206.GN1681290@dtor-ws>
-References: <20200921162034.660953761@linuxfoundation.org>
- <20200921162036.567357303@linuxfoundation.org>
- <20200922153957.GB18907@duo.ucw.cz>
- <20200922161642.GA2283857@kroah.com>
- <20200922202403.GA10773@duo.ucw.cz>
+        Wed, 23 Sep 2020 13:42:19 -0700 (PDT)
+Received: (nullmailer pid 1270392 invoked by uid 1000);
+        Wed, 23 Sep 2020 20:42:16 -0000
+Date:   Wed, 23 Sep 2020 14:42:16 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Ikjoon Jang <ikjn@chromium.org>
+Cc:     Bayi Cheng <bayi.cheng@mediatek.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        Chuanhong Guo <gch981213@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v2 1/5] dt-bindings: spi: add mt8192-nor compatible string
+Message-ID: <20200923204216.GA1270362@bogus>
+References: <20200918083124.3921207-1-ikjn@chromium.org>
+ <20200918162834.v2.1.I4cd089ef1fe576535c6b6e4f1778eaab1c4441cf@changeid>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200922202403.GA10773@duo.ucw.cz>
+In-Reply-To: <20200918162834.v2.1.I4cd089ef1fe576535c6b6e4f1778eaab1c4441cf@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 10:24:03PM +0200, Pavel Machek wrote:
-> On Tue 2020-09-22 18:16:42, Greg Kroah-Hartman wrote:
-> > On Tue, Sep 22, 2020 at 05:39:57PM +0200, Pavel Machek wrote:
-> > > Hi!
-> > > 
-> > > > From: Vincent Huang <vincent.huang@tw.synaptics.com>
-> > > > 
-> > > > commit 6c77545af100a72bf5e28142b510ba042a17648d upstream.
-> > > > 
-> > > > Add trackpoint variant IDs to allow supported control on Synaptics
-> > > > trackpoints.
-> > > 
-> > > This just adds unused definitions. I don't think it is needed in
-> > > stable.
-> > 
-> > It add support for a new device.
+On Fri, 18 Sep 2020 16:31:19 +0800, Ikjoon Jang wrote:
+> Add compatible string for mt8192 SoC.
 > 
-> No, it does not. Maybe in mainline there's followup patch that adds
-> such support, but that's not in 4.19.
+> Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+> ---
+> 
+> (no changes since v1)
+> 
+>  Documentation/devicetree/bindings/spi/mediatek,spi-mtk-nor.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-es, indeed, there is a chunk missing, so this patch is incomplete. It
-will not cause any issues if applied, so I'll leave it to Greg to decide
-what to do with this.
-
-Vincent, there needs to be a change in trackpoint_start_protocol() to
-mark these new IDs as valid. Was it s3ent in a separate patch and I
-missed it?
-
-Thanks.
-
--- 
-Dmitry
+Acked-by: Rob Herring <robh@kernel.org>
