@@ -2,202 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DD06275F48
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 20:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56CE8275F4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 20:04:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726498AbgIWSDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 14:03:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726228AbgIWSDm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 14:03:42 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E62F7C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 11:03:41 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id n13so673530edo.10
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 11:03:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LEzQpkXPLqdJoK2l/i3Yr1Vc4AJIq+Q7kFLBAXmNj+0=;
-        b=UawtYeudxTjT09+Xacop62iOvaf12lE0hNJMbS0lhEdcazN1GWZeVw0X95Y5Bd3tdS
-         gdo765KZ+Adr8TVfajpKiVtxZUIZME8VfyF8Q7XNO7vAGJZuCVhTohjMBv8XWjTqTRUg
-         JWUAWSlC+fuvUKTlmQv0TDv7IECWS7by228u4xB72vRvBcT4wui+npz+mLJrDSnPQgiJ
-         kW1pb115cwpOe6pymGsHF4bNxZtfXCdKzBLLtuz6GuQAsiG2/l3kVTENxoMBrm8KdLrr
-         wYs/7Kyv/4pMySFdcKrfVhnGQRC+Xs6uUn8hTVMCNlGqbhSDUMw6Oim7Jv4VGKmOlYkG
-         Q6NA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LEzQpkXPLqdJoK2l/i3Yr1Vc4AJIq+Q7kFLBAXmNj+0=;
-        b=Hi47Li1w7l1XwI/o95gLcOgJOmzw2s3tbmcIhQ+s7ENVW+nksSH7/yGVPSeowdA4Ia
-         qPssPWrsBsQAwgbZeSueWUtwH6y4hVFXEW+AWnO90Os2v9QzU6aTA5zmlxV+QCenF5fB
-         Cm0g/ArqOT1L7VOWadTSxNVVXX7WGMAmVrBkzuAKRJo2E4kSOhHIA8cG9WFZ0vniTkbp
-         hIo71uV9gA8KRGBtqr9RDXV/NRxjtckcEIWrwOLE9kLyqMWZj/QoS0jq7paybw60c/uj
-         6d4XUYfq1xlFUM+CgQ1/TLmrXbFwEUM5wPyIUcGucqSx8/OkfkzuxQAKQ/i1XY7C7zaa
-         EnLQ==
-X-Gm-Message-State: AOAM531KDnhbzBeZEIwOKT89WEH7kM9W6ma4VJ1RXyhuJDzR+gvM1wCQ
-        T4CxZ6lfDNC5gh8bKqP+rGjPHmBUOxs=
-X-Google-Smtp-Source: ABdhPJwtg52AGv6WiwEsgh+K3J5ZBy4UXzUshoIfkvJtbDPk7EG2b+31UC+ZN0eS2owcHO1HwM3Q3A==
-X-Received: by 2002:a05:6402:1773:: with SMTP id da19mr529879edb.171.1600884220471;
-        Wed, 23 Sep 2020 11:03:40 -0700 (PDT)
-Received: from [192.168.2.202] (pd9e5a9df.dip0.t-ipconnect.de. [217.229.169.223])
-        by smtp.gmail.com with ESMTPSA id s19sm547958eja.54.2020.09.23.11.03.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Sep 2020 11:03:39 -0700 (PDT)
-Subject: Re: [RFC PATCH 8/9] surface_aggregator: Add DebugFS interface
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
-        Dorian Stoll <dorian.stoll@tmsp.io>
-References: <20200923151511.3842150-1-luzmaximilian@gmail.com>
- <20200923151511.3842150-9-luzmaximilian@gmail.com>
- <20200923161416.GA3723109@kroah.com>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <7d571ed4-862e-cfbd-44d4-0fda25f03294@gmail.com>
-Date:   Wed, 23 Sep 2020 20:03:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726780AbgIWSEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 14:04:22 -0400
+Received: from mga05.intel.com ([192.55.52.43]:39920 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726515AbgIWSEV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 14:04:21 -0400
+IronPort-SDR: Vs5B0MXa0Oo1UaAYS1v20plHBXk9Xtds1fBMM7+MNalEBNjrjsfoqA7ULONvMZrS4yJmbRC1Ot
+ gItbTncnq5+A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="245808953"
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
+   d="scan'208";a="245808953"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 11:04:11 -0700
+IronPort-SDR: 2viIkAbMaqgxezyhz3M8YAUjBhe6d1JCM8KNzKI9D5/T0YHugyB2geqRkrwbi/iqse+frU5+uZ
+ gZaApIISwT3Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
+   d="scan'208";a="322670253"
+Received: from sjchrist-coffee.jf.intel.com ([10.54.74.160])
+  by orsmga002.jf.intel.com with ESMTP; 23 Sep 2020 11:04:10 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 00/15] KVM: x86: VMX: Fix MSR namespacing
+Date:   Wed, 23 Sep 2020 11:03:54 -0700
+Message-Id: <20200923180409.32255-1-sean.j.christopherson@intel.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20200923161416.GA3723109@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/23/20 6:14 PM, Greg Kroah-Hartman wrote:
-> On Wed, Sep 23, 2020 at 05:15:10PM +0200, Maximilian Luz wrote:
-[...]
+This series attempts to clean up VMX's MSR namespacing, which is in
+unimitigated disaster (keeping things PG).
 
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->
-> Are you sure about -or-later?  I have to ask.
+There are a variety of ways VMX saves and restores guest MSRs, all with
+unique properties and mechanisms, but with haphazard namespacing (assuming
+there is any namespacing at all).  Some fun collisions:
 
-Fairly, unless there are any complications with integration of this code
-that I'm not aware of.
+  __find_msr_index(), find_msr_entry() and vmx_find_msr_index()
 
-> And no copyright line?
+  vmx_set_guest_msr() and vmx_set_msr()
 
-Forgot to add that, sorry. Will add it for the next version. That's also
-the case for all other files.
+  structs vmx_msrs, vmx_msr_entry, shared_msr_entry, kvm_shared_msrs and
+  kvm_shared_msrs_values
 
-[...]
+  vcpu_vmx fields guest_msrs, msr_autoload.guest and msr_autostore.guest
 
->> +
->> +out:
->> +	// always try to set response-length and status
->> +	tmp = put_user(rsp.length, &r->response.length);
->> +	if (!ret)
->> +		ret = tmp;
-> 
-> Is that the correct error to return if put_user() fails?  Hint, I don't
-> think so...
+Probably the most infurating/confusing nomenclature is "index", which can
+mean MSR's ECX index, index into one of several VMX arrays, or index into
+a common x86 array.  __find_msr_index() even manages to mix at least three
+different meanings in about as many lines of code.
 
-So the -EFAULT returned by put_user should have precedence? I was aiming
-for "in case it fails, return with the first error".
+The biggest change is to rename the "shared MSRs" mechanism to "user
+return MSRs" (details in patch 1), most everything else is either derived
+from that rename or is fairly straightforward cleanup.
 
-[...]
+No true functional changes, although the update_transition_efer() change
+in patch 10 dances pretty close to being a functional change.
 
->> +static long ssam_dbg_device_ioctl(struct file *file, unsigned int cmd,
->> +				    unsigned long arg)
->> +{
->> +	switch (cmd) {
->> +	case SSAM_DBG_IOCTL_GETVERSION:
->> +		return ssam_dbg_if_getversion(file, arg);
-> 
-> Not needed, please drop.
-> 
->> +
->> +	case SSAM_DBG_IOCTL_REQUEST:
->> +		return ssam_dbg_if_request(file, arg);
->> +
->> +	default:
->> +		return -ENOIOCTLCMD;
-> 
-> Wrong error value.
+v2:
+  - Rebased to kvm/queue, commit e1ba1a15af73 ("KVM: SVM: Enable INVPCID
+    feature on AMD").
 
-I assume -ENOTTY would be correct/preferred then? Kernel doc suggests
-that either one of the two would be correct and essentially result in
-the same behavior.
+Sean Christopherson (15):
+  KVM: x86: Rename "shared_msrs" to "user_return_msrs"
+  KVM: VMX: Prepend "MAX_" to MSR array size defines
+  KVM: VMX: Rename "vmx_find_msr_index" to "vmx_find_loadstore_msr_slot"
+  KVM: VMX: Rename the "shared_msr_entry" struct to "vmx_uret_msr"
+  KVM: VMX: Rename vcpu_vmx's "nmsrs" to "nr_uret_msrs"
+  KVM: VMX: Rename vcpu_vmx's "save_nmsrs" to "nr_active_uret_msrs"
+  KVM: VMX: Rename vcpu_vmx's "guest_msrs_ready" to
+    "guest_uret_msrs_loaded"
+  KVM: VMX: Rename "__find_msr_index" to "__vmx_find_uret_msr"
+  KVM: VMX: Check guest support for RDTSCP before processing MSR_TSC_AUX
+  KVM: VMX: Move uret MSR lookup into update_transition_efer()
+  KVM: VMX: Add vmx_setup_uret_msr() to handle lookup and swap
+  KVM: VMX: Rename "find_msr_entry" to "vmx_find_uret_msr"
+  KVM: VMX: Rename "vmx_set_guest_msr" to "vmx_set_guest_uret_msr"
+  KVM: VMX: Rename "vmx_msr_index" to "vmx_uret_msrs_list"
+  KVM: VMX: Rename vmx_uret_msr's "index" to "slot"
 
-[...]
+ arch/x86/include/asm/kvm_host.h |   4 +-
+ arch/x86/kvm/vmx/nested.c       |  22 ++--
+ arch/x86/kvm/vmx/vmx.c          | 184 ++++++++++++++++----------------
+ arch/x86/kvm/vmx/vmx.h          |  24 ++---
+ arch/x86/kvm/x86.c              | 101 +++++++++---------
+ 5 files changed, 168 insertions(+), 167 deletions(-)
 
-> Listen, I'm all for doing whatever you want in debugfs, but why are you
-> doing random ioctls here?  Why not just read/write a file to do what you
-> need/want to do here instead?
+-- 
+2.28.0
 
-Two reasons, mostly: First, the IOCTL allows me to execute requests in
-parallel with just one open file descriptor and not having to maintain
-some sort of back-buffer to wait around until the reader gets to reading
-the thing. I've used that for stress-testing the EC communication in the
-past, which had some issues (dropping bytes, invalid CRCs, ...) under
-heavy(-ish) load. Second, I'm considering adding support for events to
-this device in the future by having user-space receive events by reading
-from the device. Events would also be enabled or disabled via an IOCTL.
-That could be implemented in a second device though. Events were also my
-main reason for adding a version to this interface: Discerning between
-one that has event support and one that has not.
-
-> 
-> And again, no versioning, that is never needed.
-> 
-
-Got it, will drop that.
-
-[...]
-
->> +static void ssam_dbg_device_release(struct device *dev)
->> +{
->> +	// nothing to do
-> 
-> That's a lie, and the old documentation would allow me to make fun of
-> you for trying to work around the kernel's error messages here.
-> 
-> But I'll be nice and just ask, why do you think it is ok to work around
-> a message that someone has spent a lot of time and energy to provide to
-> you, saying that you are doing something wrong, by ignoring that and
-> providing an empty function?  Not kind...
-
-Sorry about that, but may get a pointer to that particular message? This
-setup has been pretty much copied from existing kernel drivers (see
-/drivers/platform/x86/intel_pmc_core_pltdrv.c for one) and I thought
-that I can get around having to dynamically allocate a platform device
-since it's guaranteed to be only there once.
-
-There was no workaround or unkindness of any sorts intended.
-
->> +}
->> +
->> +static struct platform_device ssam_dbg_device = {
->> +	.name = SSAM_DBG_DEVICE_NAME,
->> +	.id = PLATFORM_DEVID_NONE,
->> +	.dev.release = ssam_dbg_device_release,
->> +};
-> 
-> Dynamic structures that are static are, well, wrong :)
-
-I assume the correct way would be to allocate the device dynamically and
-this holds for all devices?
-
-Sorry if I'm asking such basic questions, but I have not found anything
-regarding this in the documentation, although I have to confess that I
-only skimmed over a larger part, so that's very likely my fault.
-
-> I appreciate the initiative by creating a fake platform device and
-> driver to bind to that device.  But I don't think any of it is needed at
-> all, you have made your work a lot harder than you needed to here.  This
-> whole file can be _much_ smaller and simpler and not abuse the kernel
-> apis so badly :)
-
-So just tack it onto the core driver? My intention was to keep it a bit
-more separate from the core, but adding it directly would indeed reduce
-the amount of code.
-
-Thanks,
-Max
