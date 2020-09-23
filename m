@@ -2,79 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CA83274ED2
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 04:01:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6B41274ED6
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 04:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727182AbgIWCBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 22:01:09 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:48751 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727045AbgIWCBJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 22:01:09 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R331e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=23;SR=0;TI=SMTPD_---0U9oxvFx_1600826462;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U9oxvFx_1600826462)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 23 Sep 2020 10:01:04 +0800
-Subject: Re: [PATCH v18 25/32] mm/mlock: remove lru_lock on
- TestClearPageMlocked in munlock_vma_page
-To:     Hugh Dickins <hughd@google.com>
-Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, willy@infradead.org,
-        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        shakeelb@google.com, iamjoonsoo.kim@lge.com,
-        richard.weiyang@gmail.com, kirill@shutemov.name,
-        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
-        vdavydov.dev@gmail.com, shy828301@gmail.com,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
- <1598273705-69124-26-git-send-email-alex.shi@linux.alibaba.com>
- <alpine.LSU.2.11.2009212253320.6434@eggly.anvils>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <289ad388-d91a-92f5-b29c-030b666a74ee@linux.alibaba.com>
-Date:   Wed, 23 Sep 2020 09:58:52 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        id S1726984AbgIWCGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 22:06:02 -0400
+Received: from mga07.intel.com ([134.134.136.100]:49987 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726743AbgIWCGC (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 22:06:02 -0400
+IronPort-SDR: WNdGJq55YN8QU6aywQvoqRZ5rV621POHolcXwdXIOOHeYtZe4917hm1A4cQh4ji7k3Oh6xEN9X
+ TlP0zgfWHpeA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9752"; a="224911042"
+X-IronPort-AV: E=Sophos;i="5.77,292,1596524400"; 
+   d="scan'208";a="224911042"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 19:06:01 -0700
+IronPort-SDR: AxWHI+bf0w/s56LN2ioeMS3GOXSoy9kr4iqCHYaYYsu9dRKswVDiNEY9m9E9sukd3LfLHoTMYT
+ xze0h+g/4uYA==
+X-IronPort-AV: E=Sophos;i="5.77,292,1596524400"; 
+   d="scan'208";a="486227068"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.5.239]) ([10.238.5.239])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 19:05:59 -0700
+Subject: Re: [PATCH] perf stat: Skip duration_time in setup_system_wide
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
+References: <20200922015004.30114-1-yao.jin@linux.intel.com>
+ <20200922175630.GB2248446@kernel.org> <20200922180218.GC2248446@kernel.org>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <8b4e9938-2d15-8320-85e9-e14ddd51c743@linux.intel.com>
+Date:   Wed, 23 Sep 2020 10:05:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <alpine.LSU.2.11.2009212253320.6434@eggly.anvils>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200922180218.GC2248446@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Arnaldo,
 
-
-ÔÚ 2020/9/22 ÏÂÎç2:13, Hugh Dickins Ð´µÀ:
-> On Mon, 24 Aug 2020, Alex Shi wrote:
+On 9/23/2020 2:02 AM, Arnaldo Carvalho de Melo wrote:
+> Em Tue, Sep 22, 2020 at 02:56:30PM -0300, Arnaldo Carvalho de Melo escreveu:
+>> Em Tue, Sep 22, 2020 at 09:50:04AM +0800, Jin Yao escreveu:
+>>> Some metrics (such as DRAM_BW_Use) consists of uncore events and
+>>> duration_time. For uncore events, counter->core.system_wide is
+>>> true. But for duration_time, counter->core.system_wide is false
+>>> so target.system_wide is set to false.
+>>>
+>>> Then 'enable_on_exec' is set in perf_event_attr of uncore event.
+>>> Kernel will return error when trying to open the uncore event.
+>>>
+>>> This patch skips the duration_time in setup_system_wide then
+>>> target.system_wide will be set to true for the evlist of uncore
+>>> events + duration_time.
+>>>
+>>> Before (tested on skylake desktop):
+>>>
+>>>   # perf stat -M DRAM_BW_Use -- sleep 1
+>>>   Error:
+>>>   The sys_perf_event_open() syscall returned with 22 (Invalid argument) for event (arb/event=0x84,umask=0x1/).
+>>>   /bin/dmesg | grep -i perf may provide additional information.
+>>>
+>>> After:
+>>>
+>>>   # perf stat -M DRAM_BW_Use -- sleep 1
+>>>
+>>>    Performance counter stats for 'system wide':
+>>>
+>>>                  169      arb/event=0x84,umask=0x1/ #     0.00 DRAM_BW_Use
+>>>               40,427      arb/event=0x81,umask=0x1/
+>>>        1,000,902,197 ns   duration_time
+>>>
+>>>          1.000902197 seconds time elapsed
+>>>
+>>> Fixes: 648b5af3f3ae ("libperf: Move 'system_wide' from 'struct evsel' to 'struct perf_evsel'")
+>>
+>> Humm, what makes you think that this cset was the one introducing this
+>> problem? It just moves evsel->system_wide to evsel->core.system_wide.
 > 
->> In the func munlock_vma_page, the page must be PageLocked as well as
->> pages in split_huge_page series funcs. Thus the PageLocked is enough
->> to serialize both funcs.
->>
->> So we could relief the TestClearPageMlocked/hpage_nr_pages which are not
->> necessary under lru lock.
->>
->> As to another munlock func __munlock_pagevec, which no PageLocked
->> protection and should remain lru protecting.
->>
->> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> I made some comments on the mlock+munlock situation last week:
-> I won't review this 24/32 and 25/32 now, but will take a look
-> at your github tree tomorrow instead.  Perhaps I'll find you have
-> already done the fixes, perhaps I'll find you have merged these back
-> into earlier patches.  And I won't be reviewing beyond this point:
-> this is enough for now, I think.
+> Apart from that I reproduced the problem and after applying your patch
+> it seems cured:
+> 
+>    [acme@quaco perf]$ grep 'model name' -m1 /proc/cpuinfo
+>    model name	: Intel(R) Core(TM) i7-8650U CPU @ 1.90GHz
+> 
+> Before (with -v to see details):
+> 
+>    [root@quaco ~]# perf stat -v -M DRAM_BW_Use -- sleep 1
+>    Using CPUID GenuineIntel-6-8E-A
+>    metric expr 64 * ( arb@event\=0x81\,umask\=0x1@ + arb@event\=0x84\,umask\=0x1@ ) / 1000000 / duration_time / 1000 for DRAM_BW_Use
+>    found event duration_time
+>    found event arb/event=0x84,umask=0x1/
+>    found event arb/event=0x81,umask=0x1/
+>    adding {arb/event=0x84,umask=0x1/,arb/event=0x81,umask=0x1/}:W,duration_time
+>    Control descriptor is not initialized
+>    Warning:
+>    arb/event=0x84,umask=0x1/ event is not supported by the kernel.
+>    Error:
+>    The sys_perf_event_open() syscall returned with 22 (Invalid argument) for event (arb/event=0x84,umask=0x1/).
+>    /bin/dmesg | grep -i perf may provide additional information.
+>    
+>    [root@quaco ~]#
+> 
+> After:
+> 
+>    [root@quaco ~]# perf stat -M DRAM_BW_Use -- sleep 1
+>    
+>     Performance counter stats for 'system wide':
+>    
+>                 2,806      arb/event=0x84,umask=0x1/ #     0.63 DRAM_BW_Use
+>            10,001,820      arb/event=0x81,umask=0x1/
+>         1,016,875,686 ns   duration_time
+>    
+>           1.016875686 seconds time elapsed
+>    
+>    [root@quaco ~]#
+> 
+> So I'm removing that fixes and adding this one, that I think is where
+> "duration_time" was being considered...
+> 
+> Fixes: e3ba76deef23064f ("perf tools: Force uncore events to system wide monitoring")
 > 
 
-Yes, these 2 patches was fixed as your suggested on 
-https://github.com/alexshi/linux.git lruv19.5 
+Yes, this fixes is much better, thanks.
 
-83f8582dcd5a mm/mlock: remove lru_lock on TestClearPageMlocked
-20836d10f0ed mm/mlock: remove __munlock_isolate_lru_page
+> Also, wouldn't it be better to have the duration_time event with its
+> evsel->core.system_wide set to true?
+> 
 
-Thanks!
-Alex
+That looks to be another solution, should be OK too I think. :)
+
+But anyway we need a test.
+
+Thanks
+Jin Yao
+
+> - Arnaldo
+> 
