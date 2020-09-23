@@ -2,49 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 783112758A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:26:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AAA72758A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:26:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbgIWN02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 09:26:28 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:42300 "EHLO
+        id S1726665AbgIWN0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 09:26:33 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:42320 "EHLO
         fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726332AbgIWN0Z (ORCPT
+        with ESMTP id S1726130AbgIWN03 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 09:26:25 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08NDQHHe079425;
-        Wed, 23 Sep 2020 08:26:17 -0500
+        Wed, 23 Sep 2020 09:26:29 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08NDQMFv079481;
+        Wed, 23 Sep 2020 08:26:22 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600867577;
-        bh=6SSvm9G2P56pxI7wpDWCpaQ8Vvxx3pHTwKWjp8JbjVc=;
+        s=ti-com-17Q1; t=1600867582;
+        bh=81kGTLc1vgVCrhqq703vkVJAQFdfg0BDtXbekIJ/3Hw=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=y55UDMmkESUghVpJ4vZoD8XHFu4ZJN9FLY2rvwgzniKoHUelgrAtV4EVwuhbbUjpi
-         OSQasSXFxEkq1nHH5lDMFoyTCTc+ts+uUZl/vkf6HEZk72anGt/IzuJzqg0qglW8GM
-         PA/JDIKVwY3ZAj02AV/Om+v+NUCHL866g3Hr4hpE=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08NDQHqE045501
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 23 Sep 2020 08:26:17 -0500
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+        b=CnnqaoOJ1ORcNZ96Wn5astvBXd0XTfQKHx7FYncXkMq6/l+Ex0cN46V03oyhQpCtA
+         tAI2fx4q9QRlggqdVFNj4AkP8UNgNZzMfrwi5Q3vUPyqVJoZRN3pFFM76q7Ph4kOPe
+         6GKbeAL0fFFohcdldzl7lLkwPJYSEQAT2BLLrjJo=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08NDQMWG053909;
+        Wed, 23 Sep 2020 08:26:22 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 23
- Sep 2020 08:26:17 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ Sep 2020 08:26:22 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 23 Sep 2020 08:26:16 -0500
+ Frontend Transport; Wed, 23 Sep 2020 08:26:21 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08NDQGsR049836;
-        Wed, 23 Sep 2020 08:26:16 -0500
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08NDQMRR051080;
+        Wed, 23 Sep 2020 08:26:22 -0500
 From:   Dan Murphy <dmurphy@ti.com>
 To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <tiwai@suse.com>,
         <robh+dt@kernel.org>
 CC:     <devicetree@vger.kernel.org>, <alsa-devel@alsa-project.org>,
         <linux-kernel@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH 3/6] ASoC: tas2770: Set regcache when shutting down and waking device
-Date:   Wed, 23 Sep 2020 08:25:57 -0500
-Message-ID: <20200923132600.10652-3-dmurphy@ti.com>
+Subject: [PATCH 4/6] dt-bindings: tas2770: Remove ti,asi-format property
+Date:   Wed, 23 Sep 2020 08:25:58 -0500
+Message-ID: <20200923132600.10652-4-dmurphy@ti.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200923132600.10652-1-dmurphy@ti.com>
 References: <20200923132600.10652-1-dmurphy@ti.com>
@@ -56,56 +55,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set the regcache to cache data and mark cache as dirty when the device
-is shutdown when suspend is called. When the device is woken up then
-sync the cache and set to not caching the data.
+Remove the property ti,asi-format as the driver only reads this property
+and performs no action against it.
 
 Signed-off-by: Dan Murphy <dmurphy@ti.com>
 ---
- sound/soc/codecs/tas2770.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ Documentation/devicetree/bindings/sound/tas2770.yaml | 7 -------
+ 1 file changed, 7 deletions(-)
 
-diff --git a/sound/soc/codecs/tas2770.c b/sound/soc/codecs/tas2770.c
-index 9f7363927c50..c42e653cd653 100644
---- a/sound/soc/codecs/tas2770.c
-+++ b/sound/soc/codecs/tas2770.c
-@@ -82,14 +82,20 @@ static int tas2770_codec_suspend(struct snd_soc_component *component)
- 	struct tas2770_priv *tas2770 = snd_soc_component_get_drvdata(component);
- 	int ret = 0;
+diff --git a/Documentation/devicetree/bindings/sound/tas2770.yaml b/Documentation/devicetree/bindings/sound/tas2770.yaml
+index 9fdf614add55..aa8c74575ac9 100644
+--- a/Documentation/devicetree/bindings/sound/tas2770.yaml
++++ b/Documentation/devicetree/bindings/sound/tas2770.yaml
+@@ -43,13 +43,6 @@ properties:
+     $ref: /schemas/types.yaml#/definitions/uint32
+     description: TDM TX voltage sense time slot.
  
-+	regcache_cache_only(tas2770->regmap, true);
-+	regcache_mark_dirty(tas2770->regmap);
-+
- 	if (tas2770->sdz_gpio) {
- 		gpiod_set_value_cansleep(tas2770->sdz_gpio, 0);
- 	} else {
- 		ret = snd_soc_component_update_bits(component, TAS2770_PWR_CTRL,
- 						    TAS2770_PWR_CTRL_MASK,
- 						    TAS2770_PWR_CTRL_SHUTDOWN);
--		if (ret < 0)
-+		if (ret < 0) {
-+			regcache_cache_only(tas2770->regmap, false);
-+			regcache_sync(tas2770->regmap);
- 			return ret;
-+		}
- 
- 		ret = 0;
- 	}
-@@ -110,11 +116,11 @@ static int tas2770_codec_resume(struct snd_soc_component *component)
- 						    TAS2770_PWR_CTRL_ACTIVE);
- 		if (ret < 0)
- 			return ret;
+-  ti,asi-format:
+-    $ref: /schemas/types.yaml#/definitions/uint32
+-    description: Sets TDM RX capture edge.
+-    enum:
+-      - 0 # Rising edge
+-      - 1 # Falling edge
 -
--		ret = 0;
- 	}
+   '#sound-dai-cells':
+     const: 1
  
--	return ret;
-+	regcache_cache_only(tas2770->regmap, false);
-+
-+	return regcache_sync(tas2770->regmap);
- }
- #else
- #define tas2770_codec_suspend NULL
 -- 
 2.28.0
 
