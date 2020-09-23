@@ -2,347 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6827274EE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 04:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5091C274EE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 04:16:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727180AbgIWCOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 22:14:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726548AbgIWCOc (ORCPT
+        id S1727031AbgIWCQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 22:16:48 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:34176 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726548AbgIWCQs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 22:14:32 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E683C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 19:14:32 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id k133so8653857pgc.7
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 19:14:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=y5JoffFpe5uav+d7gkZPgcNgC9xi0/l9KONDUMRkaCY=;
-        b=YRBOzLDjeWxBNn9KFmDSoLENEBlpUDS//nPsHd4dNaE96fs/WQpXMO5t1SnJfpUC3K
-         qxFeOeiZce9PE7UPdROP10YynHyTn6Z9SPTXa8mhty/vYO/PqdXFEESkbeSBN/jeblmT
-         cKnwAxpJh6JvRcHqsjDGZtYGEKb9mt2USlHpA=
+        Tue, 22 Sep 2020 22:16:48 -0400
+Received: from mail-oi1-f198.google.com ([209.85.167.198])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <koba.ko@canonical.com>)
+        id 1kKuKr-0007Ju-UE
+        for linux-kernel@vger.kernel.org; Wed, 23 Sep 2020 02:16:46 +0000
+Received: by mail-oi1-f198.google.com with SMTP id w200so8572206oie.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 19:16:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=y5JoffFpe5uav+d7gkZPgcNgC9xi0/l9KONDUMRkaCY=;
-        b=VG/W+JYgXouI0tYSABTfw4KAErAi8B97Qp4Lgz/6Yr+DG26od8dxZ3T5XYsca3PjyL
-         T28tOoXGF4923L9Q9hKJiv2Pi5KmV31yEdZ3oVxyOvcsspKY8UDaN36llIe9DC/6jWt7
-         gpcQj5nHAJ7dB2/SDlVGuCUgGQjUTBYkbX6NusCS+0XJ7jW8SF6cPTx/GLk+c0ea9V2G
-         kmhVr/4eNQAgZaZBpaILJF24QiqR3k9fVooKcfHm/BwwLG34SEYFP0BqlRMfyiNGBVwN
-         JMZYhNT5vSkNUS71iKi7Fn52rTi9dF8Gv3TGJBviWJKiH0Yk/g8PphcX+orL4jyWpEgt
-         atBQ==
-X-Gm-Message-State: AOAM532Wj70s+YMv2d4R3BbosKYGmR79MUu4jCfX2u2z8LLC/Io7QEyL
-        cwfNEgvYzmBdYOaZACThNoQYgf+ZBkh6Wg==
-X-Google-Smtp-Source: ABdhPJzefJHpa/mx25ZSzW9hJ66JiDcQKlpjolYG4X30mW3qV3RfoEptUwdKfqvAIx1GGeo3H8l4UQ==
-X-Received: by 2002:a05:6a00:2387:b029:142:2501:3970 with SMTP id f7-20020a056a002387b029014225013970mr6597325pfc.53.1600827271588;
-        Tue, 22 Sep 2020 19:14:31 -0700 (PDT)
-Received: from localhost ([2401:fa00:9:15:7220:84ff:fe09:cabc])
-        by smtp.gmail.com with ESMTPSA id fs24sm3371383pjb.8.2020.09.22.19.14.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Sep 2020 19:14:31 -0700 (PDT)
-From:   Sam McNally <sammc@chromium.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
-        Sam McNally <sammc@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=y8KnY5LD0NHhoP43zjX0d7M1I3RNfGZr68FzzWqbIXA=;
+        b=VSL17r3xTQI+xk4pu68B5TR776sTw2gD+e9w/vsi/IvBGaAFNEg2jvut2Bk/6RiyOW
+         eK4XrPbbL/VubezJ6J4Hhh33lb3wYCqet3/cy+B2lz31QpZ8VO26T24kCAIqrr66Z+zG
+         4OeRiIczRsu4v4ZVPoRc9yQB9l2cwTxP0ir8cikQqjfqVLmoFJUqNqLAv4MiRKK0JXFO
+         6DY2mJuWQQcVnwdxkO3847xyJBZh+qijWHWievC9Z+Sk3OuXt1+KWaIgUk7O5bDofwNI
+         8PySQ8feTxykPyGgpkSl2ZEUl9n4J+4QwWt0g8YBT/g/8BhBvWSbe3G77k2uS8ijgmt3
+         em/w==
+X-Gm-Message-State: AOAM531IKg61k9RIot783uXE8f6pTLCSZGgteftdOiaFulSn/ygboM+B
+        uhtfhONAu1SsIWwxMkZQzNEZR7WyuLgmLTdhmVsYLuf1aCEpy5MSU61j2pW/rM6dAC7YrYt/35x
+        IHwbONjuOAN2NwC7IxKeL8vBpGV3wBsn59LSzI1EbpKqqcB1AiAJksYEMyQ==
+X-Received: by 2002:a9d:6491:: with SMTP id g17mr4419892otl.326.1600827404800;
+        Tue, 22 Sep 2020 19:16:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzNu3+Q2WaRNqHQicrUqSqPPGJLJGS/Wbrczh0WSxJi0/l5DO7fl633zoEHsWNGUXegasqKvoowP0DcxiurA40=
+X-Received: by 2002:a9d:6491:: with SMTP id g17mr4419879otl.326.1600827404471;
+ Tue, 22 Sep 2020 19:16:44 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200922065313.4794-1-koba.ko@canonical.com> <7231e2199a19aa6c8ecbecf5e80725e2a1aded73.camel@redhat.com>
+In-Reply-To: <7231e2199a19aa6c8ecbecf5e80725e2a1aded73.camel@redhat.com>
+From:   Koba Ko <koba.ko@canonical.com>
+Date:   Wed, 23 Sep 2020 10:16:33 +0800
+Message-ID: <CAJB-X+U0M1YXUyAX2nDxddwwxnPygfkk47PFrFnvERh4fUBxiw@mail.gmail.com>
+Subject: Re: [PATCH V4] drm/dp_mst: Retrieve extended DPCD caps for topology manager
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Maxime Ripard <mripard@kernel.org>,
         Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH v3 4/4] drm_dp_cec: add MST support
-Date:   Wed, 23 Sep 2020 12:13:55 +1000
-Message-Id: <20200923121320.v3.4.If7fc06fd679af0665ada9ff0524291c61dd35d24@changeid>
-X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
-In-Reply-To: <20200923121320.v3.1.I8693156f555875e5c8342e86ab37ce968dfdd277@changeid>
-References: <20200923121320.v3.1.I8693156f555875e5c8342e86ab37ce968dfdd277@changeid>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Anthony Wong <anthony.wong@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With DP v2.0 errata E5, CEC tunneling can be supported through an MST
-topology.
+Thanks for the review.
+Sorry for that I thought the review tag should be appended by myself.
+One thing to confirm with you, will you or I push this patch to drm-misc-next ?
 
-There are some minor differences for CEC tunneling through an MST
-topology compared to CEC tunneling to an SST port:
-- CEC IRQs are delivered via a sink event notify message
-- CEC-related DPCD registers are accessed via remote DPCD reads and
-  writes.
+Thanks a lot.
 
-This results in the MST implementation diverging from the existing SST
-implementation:
-- sink event notify messages with CEC_IRQ ID set indicate CEC IRQ rather
-  than ESI1
-- setting edid and handling CEC IRQs, which can be triggered from
-  contexts where locks held preclude HPD handling, are deferred to avoid
-  remote DPCD access which would block until HPD handling is performed
-  or a timeout
-
-Register and unregister for all MST connectors, ensuring their
-drm_dp_aux_cec struct won't be accessed uninitialized.
-
-Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Sam McNally <sammc@chromium.org>
----
-
-Changes in v3:
-- Fixed whitespace in drm_dp_cec_mst_irq_work()
-- Moved drm_dp_cec_mst_set_edid_work() with the other set_edid functions
-
-Changes in v2:
-- Used aux->is_remote instead of aux->cec.is_mst, removing the need for
-  the previous patch in the series
-- Added a defensive check for null edid in the deferred set_edid work,
-  in case the edid is no longer valid at that point
-
- drivers/gpu/drm/drm_dp_cec.c          | 68 +++++++++++++++++++++++++--
- drivers/gpu/drm/drm_dp_mst_topology.c | 24 ++++++++++
- include/drm/drm_dp_helper.h           |  4 ++
- 3 files changed, 91 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/gpu/drm/drm_dp_cec.c b/drivers/gpu/drm/drm_dp_cec.c
-index 3ab2609f9ec7..1020b2cffdf0 100644
---- a/drivers/gpu/drm/drm_dp_cec.c
-+++ b/drivers/gpu/drm/drm_dp_cec.c
-@@ -14,6 +14,7 @@
- #include <drm/drm_connector.h>
- #include <drm/drm_device.h>
- #include <drm/drm_dp_helper.h>
-+#include <drm/drm_dp_mst_helper.h>
- 
- /*
-  * Unfortunately it turns out that we have a chicken-and-egg situation
-@@ -248,6 +249,10 @@ void drm_dp_cec_irq(struct drm_dp_aux *aux)
- 	if (!aux->transfer)
- 		return;
- 
-+	if (aux->is_remote) {
-+		schedule_work(&aux->cec.mst_irq_work);
-+		return;
-+	}
- 	mutex_lock(&aux->cec.lock);
- 	if (!aux->cec.adap)
- 		goto unlock;
-@@ -276,6 +281,23 @@ static bool drm_dp_cec_cap(struct drm_dp_aux *aux, u8 *cec_cap)
- 	return true;
- }
- 
-+static void drm_dp_cec_mst_irq_work(struct work_struct *work)
-+{
-+	struct drm_dp_aux *aux = container_of(work, struct drm_dp_aux,
-+					      cec.mst_irq_work);
-+	struct drm_dp_mst_port *port =
-+		container_of(aux, struct drm_dp_mst_port, aux);
-+
-+	port = drm_dp_mst_topology_get_port_validated(port->mgr, port);
-+	if (!port)
-+		return;
-+	mutex_lock(&aux->cec.lock);
-+	if (aux->cec.adap)
-+		drm_dp_cec_handle_irq(aux);
-+	mutex_unlock(&aux->cec.lock);
-+	drm_dp_mst_topology_put_port(port);
-+}
-+
- /*
-  * Called if the HPD was low for more than drm_dp_cec_unregister_delay
-  * seconds. This unregisters the CEC adapter.
-@@ -297,7 +319,8 @@ static void drm_dp_cec_unregister_work(struct work_struct *work)
-  * were unchanged and just update the CEC physical address. Otherwise
-  * unregister the old CEC adapter and create a new one.
-  */
--void drm_dp_cec_set_edid(struct drm_dp_aux *aux, const struct edid *edid)
-+static void drm_dp_cec_handle_set_edid(struct drm_dp_aux *aux,
-+				       const struct edid *edid)
- {
- 	struct drm_connector *connector = aux->cec.connector;
- 	u32 cec_caps = CEC_CAP_DEFAULTS | CEC_CAP_NEEDS_HPD |
-@@ -306,10 +329,6 @@ void drm_dp_cec_set_edid(struct drm_dp_aux *aux, const struct edid *edid)
- 	unsigned int num_las = 1;
- 	u8 cap;
- 
--	/* No transfer function was set, so not a DP connector */
--	if (!aux->transfer)
--		return;
--
- #ifndef CONFIG_MEDIA_CEC_RC
- 	/*
- 	 * CEC_CAP_RC is part of CEC_CAP_DEFAULTS, but it is stripped by
-@@ -320,6 +339,7 @@ void drm_dp_cec_set_edid(struct drm_dp_aux *aux, const struct edid *edid)
- 	 */
- 	cec_caps &= ~CEC_CAP_RC;
- #endif
-+	cancel_work_sync(&aux->cec.mst_irq_work);
- 	cancel_delayed_work_sync(&aux->cec.unregister_work);
- 
- 	mutex_lock(&aux->cec.lock);
-@@ -375,8 +395,40 @@ void drm_dp_cec_set_edid(struct drm_dp_aux *aux, const struct edid *edid)
- unlock:
- 	mutex_unlock(&aux->cec.lock);
- }
-+
-+void drm_dp_cec_set_edid(struct drm_dp_aux *aux, const struct edid *edid)
-+{
-+	/* No transfer function was set, so not a DP connector */
-+	if (!aux->transfer)
-+		return;
-+
-+	if (aux->is_remote)
-+		schedule_work(&aux->cec.mst_set_edid_work);
-+	else
-+		drm_dp_cec_handle_set_edid(aux, edid);
-+}
- EXPORT_SYMBOL(drm_dp_cec_set_edid);
- 
-+static void drm_dp_cec_mst_set_edid_work(struct work_struct *work)
-+{
-+	struct drm_dp_aux *aux =
-+		container_of(work, struct drm_dp_aux, cec.mst_set_edid_work);
-+	struct drm_dp_mst_port *port =
-+		container_of(aux, struct drm_dp_mst_port, aux);
-+	struct edid *edid = NULL;
-+
-+	port = drm_dp_mst_topology_get_port_validated(port->mgr, port);
-+	if (!port)
-+		return;
-+
-+	edid = drm_get_edid(port->connector, &port->aux.ddc);
-+
-+	if (edid)
-+		drm_dp_cec_handle_set_edid(aux, edid);
-+
-+	drm_dp_mst_topology_put_port(port);
-+}
-+
- /*
-  * The EDID disappeared (likely because of the HPD going down).
-  */
-@@ -393,6 +445,8 @@ void drm_dp_cec_unset_edid(struct drm_dp_aux *aux)
- 		goto unlock;
- 
- 	cec_phys_addr_invalidate(aux->cec.adap);
-+	cancel_work_sync(&aux->cec.mst_irq_work);
-+
- 	/*
- 	 * We're done if we want to keep the CEC device
- 	 * (drm_dp_cec_unregister_delay is >= NEVER_UNREG_DELAY) or if the
-@@ -433,6 +487,8 @@ void drm_dp_cec_register_connector(struct drm_dp_aux *aux,
- 	aux->cec.connector = connector;
- 	INIT_DELAYED_WORK(&aux->cec.unregister_work,
- 			  drm_dp_cec_unregister_work);
-+	INIT_WORK(&aux->cec.mst_irq_work, drm_dp_cec_mst_irq_work);
-+	INIT_WORK(&aux->cec.mst_set_edid_work, drm_dp_cec_mst_set_edid_work);
- }
- EXPORT_SYMBOL(drm_dp_cec_register_connector);
- 
-@@ -442,6 +498,8 @@ EXPORT_SYMBOL(drm_dp_cec_register_connector);
-  */
- void drm_dp_cec_unregister_connector(struct drm_dp_aux *aux)
- {
-+	cancel_work_sync(&aux->cec.mst_irq_work);
-+	cancel_work_sync(&aux->cec.mst_set_edid_work);
- 	if (!aux->cec.adap)
- 		return;
- 	cancel_delayed_work_sync(&aux->cec.unregister_work);
-diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
-index c783a2a1c114..221c30133739 100644
---- a/drivers/gpu/drm/drm_dp_mst_topology.c
-+++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-@@ -2183,6 +2183,8 @@ static void build_mst_prop_path(const struct drm_dp_mst_branch *mstb,
- int drm_dp_mst_connector_late_register(struct drm_connector *connector,
- 				       struct drm_dp_mst_port *port)
- {
-+	drm_dp_cec_register_connector(&port->aux, connector);
-+
- 	DRM_DEBUG_KMS("registering %s remote bus for %s\n",
- 		      port->aux.name, connector->kdev->kobj.name);
- 
-@@ -2206,6 +2208,8 @@ void drm_dp_mst_connector_early_unregister(struct drm_connector *connector,
- 	DRM_DEBUG_KMS("unregistering %s remote bus for %s\n",
- 		      port->aux.name, connector->kdev->kobj.name);
- 	drm_dp_aux_unregister_devnode(&port->aux);
-+
-+	drm_dp_cec_unregister_connector(&port->aux);
- }
- EXPORT_SYMBOL(drm_dp_mst_connector_early_unregister);
- 
-@@ -2515,6 +2519,21 @@ drm_dp_mst_handle_conn_stat(struct drm_dp_mst_branch *mstb,
- 		queue_work(system_long_wq, &mstb->mgr->work);
- }
- 
-+static void
-+drm_dp_mst_handle_sink_event(struct drm_dp_mst_branch *mstb,
-+			    struct drm_dp_sink_event_notify *sink_event)
-+{
-+	struct drm_dp_mst_port *port;
-+
-+	if (sink_event->event_id & DP_SINK_EVENT_CEC_IRQ_EVENT) {
-+		port = drm_dp_get_port(mstb, sink_event->port_number);
-+		if (port) {
-+			drm_dp_cec_irq(&port->aux);
-+			drm_dp_mst_topology_put_port(port);
-+		}
-+	}
-+}
-+
- static struct drm_dp_mst_branch *drm_dp_get_mst_branch_device(struct drm_dp_mst_topology_mgr *mgr,
- 							       u8 lct, u8 *rad)
- {
-@@ -3954,6 +3973,8 @@ drm_dp_mst_process_up_req(struct drm_dp_mst_topology_mgr *mgr,
- 	if (msg->req_type == DP_CONNECTION_STATUS_NOTIFY) {
- 		drm_dp_mst_handle_conn_stat(mstb, &msg->u.conn_stat);
- 		hotplug = true;
-+	} else if (msg->req_type == DP_SINK_EVENT_NOTIFY) {
-+		drm_dp_mst_handle_sink_event(mstb, &msg->u.sink_event);
- 	}
- 
- 	drm_dp_mst_topology_put_mstb(mstb);
-@@ -4147,6 +4168,8 @@ drm_dp_mst_detect_port(struct drm_connector *connector,
- 		break;
- 	}
- out:
-+	if (ret != connector_status_connected)
-+		drm_dp_cec_unset_edid(&port->aux);
- 	drm_dp_mst_topology_put_port(port);
- 	return ret;
- }
-@@ -4177,6 +4200,7 @@ struct edid *drm_dp_mst_get_edid(struct drm_connector *connector, struct drm_dp_
- 		edid = drm_get_edid(connector, &port->aux.ddc);
- 	}
- 	port->has_audio = drm_detect_monitor_audio(edid);
-+	drm_dp_cec_set_edid(&port->aux, edid);
- 	drm_dp_mst_topology_put_port(port);
- 	return edid;
- }
-diff --git a/include/drm/drm_dp_helper.h b/include/drm/drm_dp_helper.h
-index 85513eeb2196..d8ee24a6319c 100644
---- a/include/drm/drm_dp_helper.h
-+++ b/include/drm/drm_dp_helper.h
-@@ -1496,12 +1496,16 @@ struct drm_connector;
-  * @adap: the CEC adapter for CEC-Tunneling-over-AUX support.
-  * @connector: the connector this CEC adapter is associated with
-  * @unregister_work: unregister the CEC adapter
-+ * @mst_irq_work: IRQ for CEC events on an MST branch
-+ * @mst_set_edid_work: set the EDID for an MST branch
-  */
- struct drm_dp_aux_cec {
- 	struct mutex lock;
- 	struct cec_adapter *adap;
- 	struct drm_connector *connector;
- 	struct delayed_work unregister_work;
-+	struct work_struct mst_irq_work;
-+	struct work_struct mst_set_edid_work;
- };
- 
- /**
--- 
-2.28.0.681.g6f77f65b4e-goog
-
+On Wed, Sep 23, 2020 at 2:01 AM Lyude Paul <lyude@redhat.com> wrote:
+>
+> One last change I realized we should do is print the name of the AUX adapter
+> in question. I don't mind just adding that myself before I push it though so
+> you don't need to send a respin.
+>
+> Going to go push this to drm-misc-next, thanks!
+>
+> On Tue, 2020-09-22 at 14:53 +0800, Koba Ko wrote:
+> > As per DP-1.3, First check DP_EXTENDED_RECEIVER_CAP_FIELD_PRESENT.
+> > If DP_EXTENDED_RECEIVER_CAP_FIELD_PRESENT is 1,read the DP_DP13_DPCD_REV to
+> > get the faster capability.
+> > If DP_EXTENDED_RECEIVER_CAP_FIELD_PRESENT is 0,read DP_DPCD_REV.
+> >
+> > Signed-off-by: Koba Ko <koba.ko@canonical.com>
+> > Reviewed-by: Lyude Paul <lyude@redhat.com>
+> > ---
+> >  drivers/gpu/drm/drm_dp_mst_topology.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c
+> > b/drivers/gpu/drm/drm_dp_mst_topology.c
+> > index e87542533640..63f8809b9aa4 100644
+> > --- a/drivers/gpu/drm/drm_dp_mst_topology.c
+> > +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+> > @@ -3686,9 +3686,9 @@ int drm_dp_mst_topology_mgr_set_mst(struct
+> > drm_dp_mst_topology_mgr *mgr, bool ms
+> >               WARN_ON(mgr->mst_primary);
+> >
+> >               /* get dpcd info */
+> > -             ret = drm_dp_dpcd_read(mgr->aux, DP_DPCD_REV, mgr->dpcd,
+> > DP_RECEIVER_CAP_SIZE);
+> > -             if (ret != DP_RECEIVER_CAP_SIZE) {
+> > -                     DRM_DEBUG_KMS("failed to read DPCD\n");
+> > +             ret = drm_dp_read_dpcd_caps(mgr->aux, mgr->dpcd);
+> > +             if (ret < 0) {
+> > +                     drm_dbg_kms(mgr->dev, "failed to read DPCD, ret %d\n",
+> > ret);
+> >                       goto out_unlock;
+> >               }
+> >
+> --
+> Cheers,
+>         Lyude Paul (she/her)
+>         Software Engineer at Red Hat
+>
