@@ -2,146 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC5682764B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE582764B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726537AbgIWXsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 19:48:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34980 "EHLO
+        id S1726689AbgIWXsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 19:48:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726265AbgIWXsQ (ORCPT
+        with ESMTP id S1726265AbgIWXsh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 19:48:16 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A740EC0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:48:15 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id p9so1960782ejf.6
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:48:15 -0700 (PDT)
+        Wed, 23 Sep 2020 19:48:37 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81FA8C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:48:37 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id q4so601641pjh.5
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:48:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=39UUQGQGuW0pJ99c+3XIOwje30cjhE1B1JoOVCrOppE=;
-        b=HDDz0mvq7a3RG21pW1YeQt8LuyT+FQycHVtfHpuOxU6Biqeaq27Gw7cP0U+Spr7uTp
-         Nfq1GselwDFRfr9FK3059LriMRW5TYJYcX4A3//RneCtrNUpPDWnkxJMQiwtFIpc+xw1
-         TrsSkUpUgbQzzNtMrHzq4TS+NTY69w1m+cz1jSf5lzvMoJsoiRFI4xUrHsuNE58iigSY
-         dsycOzIWKTJ/5jb7J3PeM5sJ+YXGWe5SKxbRup2+kxQQThT5O52j2q8aOVj3NI/LcdsV
-         4K4MJstPwqmiwhW2iAm2V8jx4jj4lNPMoabpg7l5YPdv92Pf0rDC2GeoWWIt7WxkjGvU
-         abwg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Ovt4pQ3gKFpnFw1VSWElm9ADFfenrPcCrTS18tiMWV8=;
+        b=lFfBnXlNe/bBAY/d5UMogRnM/WSZNv937yUmlXL5I1khfv87rU+tfcXQtoZuu9OxRw
+         +QYqEn7Q+ubneCF7hRPrGYbtyen2dQySHoysXGQr/DaMgJwQqqoF4w1lWLb/+hNZEgix
+         ccUJ5FcmrROdGr9C18HozmYPEJXfkPT9CsU+fn0WVclJihCcVwDLq3mHdlmo8XZZR3Tp
+         6uYf0/44pLiS3PT6mQSiNPmj8zJrlMyU3oHQMwS8jkX4Zj4OwIat8bLAC1msgLuNePyu
+         j2duA2hPjqbKFgIf847i83G0TkQJlLmqB6u6qYWUCoJAbbEeKeIUz7ViknLJXOrAQ2PZ
+         acpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=39UUQGQGuW0pJ99c+3XIOwje30cjhE1B1JoOVCrOppE=;
-        b=hNguDGW8H+Hn7B/YGz4GhBDH8vMfL50BPYDV+h5q9wxQZISw2pAwFJTYGzgrlTHjo0
-         6vH6WeKymf3GP0MYoiiXnxAcGT05b3RxJRx+dR9lRvoh0S6vNDY9WwByrTpl2oRkBmga
-         +yjnmnhitsdxQC/wV1Wy5Dd6Y1PUj1CfWvWkQSwjIXOTwpAovu0LUy4lMDVAMRyhuxz+
-         5NFIVxO/s5qJ7ID6gaOxaIHSldy6myJbihKKfxdOxVq8RFp//ROXdHpsmzrpIL04Fjfk
-         EhAHHQxlY6ZsuPcEaqzyjOY8/WYykTN2DC7geSqnONg+JrVyZlSAAg6TQbNvi/C/RRpG
-         hrqQ==
-X-Gm-Message-State: AOAM531Ql5sm+rtGZi30qYLDBW1NTmpKX46HGz0iFVGWDO/dSEMCnpAl
-        IE0dXtovjcRWSkHj8HuJ25vKSrCpHpU13y2/Df/BFA==
-X-Google-Smtp-Source: ABdhPJztAHF67qXzKrzzYSP3nT64vv5jq7HwOELGrmAfvL52R7Pr4wN/V46V4Apb43rLzuJU3SZ/sIdez/zch09EI8g=
-X-Received: by 2002:a17:907:64d:: with SMTP id wq13mr1931271ejb.513.1600904893980;
- Wed, 23 Sep 2020 16:48:13 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Ovt4pQ3gKFpnFw1VSWElm9ADFfenrPcCrTS18tiMWV8=;
+        b=t8jQcjSko4C12hBdtvGwFhG0y2hjaIm08y/Fl+jVL9wvG42gouZ1fdlCMt4oYF1E5l
+         Mfju7t/ONnqe9fqfAsYgpMp8xsGBGmDpAaTIy29kxwx43WHw7mtgdQ+Cr60vcLd3ietX
+         ouFnBoUfUhKoVnoe+UbOi2bxcsrO/aeXm6KRglzxkuUEH977dB1tL1qJ5VRoFvl7WBE/
+         bTZ0VLk2clJ+6ltYeXuyVoNa5DjCKHfqc12nqqJ+7GeFEsUp0++g2x/0lRU66CLf5wot
+         Jg2TEXqPSFbHPxrXgFNpZ8L8NMy9WoSasnmls7fFmfRwqaIn7bC3Y5v3HbcWcON+wca9
+         fhWw==
+X-Gm-Message-State: AOAM532DEYU7jqSeHoSIU3HWbztTi9ASfoN3PMcj6SdLGuSXkHhz27BF
+        SR3cuHXMXu9YewkEN4Do7tjWfw==
+X-Google-Smtp-Source: ABdhPJz05WPlT6L5effD79aDv96rajwiyHjGm/OitXz4ZewYgNJc7BO5eaRW1A/TPS+rPmP0mc/YrA==
+X-Received: by 2002:a17:902:d3d4:b029:d1:e598:3ff3 with SMTP id w20-20020a170902d3d4b02900d1e5983ff3mr1950655plb.45.1600904916977;
+        Wed, 23 Sep 2020 16:48:36 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([2600:3c01::f03c:91ff:fe8a:bb03])
+        by smtp.gmail.com with ESMTPSA id a9sm478301pjm.40.2020.09.23.16.48.32
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 23 Sep 2020 16:48:36 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 07:48:28 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kemeng Shi <shikemeng@huawei.com>,
+        Ian Rogers <irogers@google.com>,
+        Remi Bernon <rbernon@codeweavers.com>,
+        Nick Gasson <nick.gasson@arm.com>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Steve MacLean <Steve.MacLean@microsoft.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Zou Wei <zou_wei@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 0/6] Perf tool: Support TSC for Arm64
+Message-ID: <20200923234828.GA10346@leoy-ThinkPad-X240s>
+References: <20200914115311.2201-1-leo.yan@linaro.org>
+ <20200922120732.GB15124@leoy-ThinkPad-X240s>
+ <20200922164906.GA2248446@kernel.org>
+ <20200923152753.GC2517482@kernel.org>
+ <20200923155557.GD2517482@kernel.org>
 MIME-Version: 1.0
-References: <20200923232923.3142503-1-keescook@chromium.org> <20200923232923.3142503-5-keescook@chromium.org>
-In-Reply-To: <20200923232923.3142503-5-keescook@chromium.org>
-From:   Jann Horn <jannh@google.com>
-Date:   Thu, 24 Sep 2020 01:47:47 +0200
-Message-ID: <CAG48ez251v19U60GYH4aWE6+C-3PYw5mr_Ax_kxnebqDOBn_+Q@mail.gmail.com>
-Subject: Re: [PATCH 4/6] seccomp: Emulate basic filters for constant action results
-To:     Kees Cook <keescook@chromium.org>
-Cc:     YiFei Zhu <yifeifz2@illinois.edu>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200923155557.GD2517482@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 1:29 AM Kees Cook <keescook@chromium.org> wrote:
-> This emulates absolutely the most basic seccomp filters to figure out
-> if they will always give the same results for a given arch/nr combo.
->
-> Nearly all seccomp filters are built from the following ops:
->
-> BPF_LD  | BPF_W    | BPF_ABS
-> BPF_JMP | BPF_JEQ  | BPF_K
-> BPF_JMP | BPF_JGE  | BPF_K
-> BPF_JMP | BPF_JGT  | BPF_K
-> BPF_JMP | BPF_JSET | BPF_K
-> BPF_JMP | BPF_JA
-> BPF_RET | BPF_K
->
-> These are now emulated to check for accesses beyond seccomp_data::arch
-> or unknown instructions.
->
-> Not yet implemented are:
->
-> BPF_ALU | BPF_AND (generated by libseccomp and Chrome)
+Hi Arnaldo,
 
-BPF_AND is normally only used on syscall arguments, not on the syscall
-number or the architecture, right? And when a syscall argument is
-loaded, we abort execution anyway. So I think there is no need to
-implement those?
+On Wed, Sep 23, 2020 at 12:55:57PM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Wed, Sep 23, 2020 at 12:27:53PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > Em Tue, Sep 22, 2020 at 01:49:06PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > > Em Tue, Sep 22, 2020 at 08:07:32PM +0800, Leo Yan escreveu:
+> > > > Hi Arnaldo,
+> > > > 
+> > > > On Mon, Sep 14, 2020 at 07:53:05PM +0800, Leo Yan wrote:
+> > > > > This patch set is to refactor TSC implementation and move TSC code from
+> > > > > x86 folder to util/tsc.c, this allows all archs to reuse the code.  And
+> > > > > alse move the TSC testing from x86 folder to tests so can work as a
+> > > > > common testing.
+> > > > > 
+> > > > > So far, for x86 it needs to support cap_user_time_zero and for Arm64
+> > > > > it needs to support cap_user_time_short.  For architecture specific
+> > > > > code, every arch only needs to implement its own rdtsc() to read out
+> > > > > timer's counter.
+> > > > > 
+> > > > > This patch set has been rebased on the perf/core branch with latest
+> > > > > commit b1f815c479c1 ("perf vendor events power9: Add hv_24x7 core level
+> > > > > metric events") and tested on Arm64 DB410c.
+> > > > 
+> > > > Could you pick up this patch set?  Thanks!
+> > > 
+> > > Yeah, I picked it up now, its a pity nobody provided Acks :-\
+> > > 
+> > > Or have a missed them somehow?
+> > 
+> > Also:
+> 
+> So, this is the first:
+> 
+> commit 0ab58c405dd7c143a1482cb9414eb0eb9b31d42a (HEAD)
+> Author: Leo Yan <leo.yan@linaro.org>
+> Date:   Mon Sep 14 19:53:10 2020 +0800
+> 
+>     perf tests tsc: Make tsc testing as a common testing
+> 
+> I'll remove it and the ones after that, so the main feature is kept.
+> 
+> I'll retest, and then push to perf/core you can then continue from
+> there.
 
-> Suggested-by: Jann Horn <jannh@google.com>
-> Link: https://lore.kernel.org/lkml/CAG48ez1p=dR_2ikKq=xVxkoGg0fYpTBpkhJSv1w-6BG=76PAvw@mail.gmail.com/
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  kernel/seccomp.c  | 82 ++++++++++++++++++++++++++++++++++++++++++++---
->  net/core/filter.c |  3 +-
->  2 files changed, 79 insertions(+), 6 deletions(-)
->
-> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-> index 111a238bc532..9921f6f39d12 100644
-> --- a/kernel/seccomp.c
-> +++ b/kernel/seccomp.c
-> @@ -610,7 +610,12 @@ static struct seccomp_filter *seccomp_prepare_filter(struct sock_fprog *fprog)
->  {
->         struct seccomp_filter *sfilter;
->         int ret;
-> -       const bool save_orig = IS_ENABLED(CONFIG_CHECKPOINT_RESTORE);
-> +       const bool save_orig =
-> +#if defined(CONFIG_CHECKPOINT_RESTORE) || defined(SECCOMP_ARCH)
-> +               true;
-> +#else
-> +               false;
-> +#endif
+Will monitor perf/core branch and after you push onto it, I will fix
+the issue ASAP.   Sorry for inconvenience.
 
-You could probably write this as something like:
-
-const bool save_orig = IS_ENABLED(CONFIG_CHECKPOINT_RESTORE) ||
-__is_defined(SECCOMP_ARCH);
-
-[...]
-> diff --git a/net/core/filter.c b/net/core/filter.c
-[...]
-> -static void bpf_release_orig_filter(struct bpf_prog *fp)
-> +void bpf_release_orig_filter(struct bpf_prog *fp)
->  {
->         struct sock_fprog_kern *fprog = fp->orig_prog;
->
-> @@ -1154,6 +1154,7 @@ static void bpf_release_orig_filter(struct bpf_prog *fp)
->                 kfree(fprog);
->         }
->  }
-> +EXPORT_SYMBOL_GPL(bpf_release_orig_filter);
-
-If this change really belongs into this patch (which I don't think it
-does), please describe why in the commit message.
+Thanks,
+Leo
