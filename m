@@ -2,91 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F51D2761BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFF3C2761C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726752AbgIWUNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 16:13:54 -0400
-Received: from mga17.intel.com ([192.55.52.151]:27768 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726687AbgIWUNv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 16:13:51 -0400
-IronPort-SDR: p+TXUlaKsndBTPniUCquuBFiyLrYjZ3Y236qyxFkWSdItuWXhd+mtMH39fksnUjd5X0X+Tui2P
- DlCL+o1mibeQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="141018739"
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="141018739"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 13:13:51 -0700
-IronPort-SDR: itQnvj8DiFtRSDGe6OrdD3HXv/HF/aTqM/mnVxhxJhIo1ER+sFwxqlZlM2eLu7WB1OJxJ9+10l
- 1VsM3kYVCK3Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="349004954"
-Received: from sjchrist-coffee.jf.intel.com ([10.54.74.160])
-  by orsmga007.jf.intel.com with ESMTP; 23 Sep 2020 13:13:50 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 7/7] KVM: nVMX: Read EXIT_QUAL and INTR_INFO only when needed for nested exit
-Date:   Wed, 23 Sep 2020 13:13:49 -0700
-Message-Id: <20200923201349.16097-8-sean.j.christopherson@intel.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200923201349.16097-1-sean.j.christopherson@intel.com>
-References: <20200923201349.16097-1-sean.j.christopherson@intel.com>
+        id S1726749AbgIWUPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 16:15:20 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:41579 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726498AbgIWUPU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 16:15:20 -0400
+Received: by mail-il1-f193.google.com with SMTP id f82so845953ilh.8;
+        Wed, 23 Sep 2020 13:15:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=deoXjiCPJcgqhdsTvaj4st28nR1WxDgki8dvwLYWvok=;
+        b=ZJNWYrXtiUa9RTsnn3p81NyBtaOJ3l/73/oiQoMs8a5zshDM0aUXTPeQBjFdY8bqN1
+         G+S/3HNWQmb4JpCsdrJLEhowbDa20S/1GuqLil9tPZVoYMTOKDX4aniNMJGz8oN8ONwA
+         wZoRwmWvBRyPtxn+k4aZ/z9Fsvgdhr9yFLdXJrJXHDoKrBrHz7tN4/sqzXZA/yMSdJrG
+         LDMPZX/hRPeoz1Q+qGPxzDFgjNFIToZsIJVL3hXcQflSkRHP3RmluU/SdW/uGtILxdP1
+         i7x/2/XNr1qmynDkskZZQcLnUNITcQKybNMF1dPcLjIZHPiDInSv3Zz4EjGISsNE05rK
+         Zw5w==
+X-Gm-Message-State: AOAM531V4+QRYnMNNLAkWrwTy4F3tQrBqt4+TXQBOR9eG4B4NPpP9bxK
+        3fXyarmsdyjEOgGgvRd5Rg==
+X-Google-Smtp-Source: ABdhPJwaDK+zaodGN8kVQe2lXZuX+7m1JOY8bAoUaOFpvDMwzBbr0i3tjfuCtDUP871BlwHOy+AaKQ==
+X-Received: by 2002:a92:bb0c:: with SMTP id w12mr1270941ili.199.1600892119215;
+        Wed, 23 Sep 2020 13:15:19 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id t14sm361989ilj.45.2020.09.23.13.15.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2020 13:15:18 -0700 (PDT)
+Received: (nullmailer pid 1227032 invoked by uid 1000);
+        Wed, 23 Sep 2020 20:15:17 -0000
+Date:   Wed, 23 Sep 2020 14:15:17 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Jitao Shi <jitao.shi@mediatek.com>
+Cc:     yingjoe.chen@mediatek.com, Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        eddie.huang@mediatek.com, Rob Herring <robh+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org, huijuan.xie@mediatek.com,
+        devicetree@vger.kernel.org, srv_heupstream@mediatek.com,
+        linux-kernel@vger.kernel.org, stonea168@163.com,
+        linux-arm-kernel@lists.infradead.org,
+        David Airlie <airlied@linux.ie>,
+        linux-mediatek@lists.infradead.org, cawa.cheng@mediatek.com,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [v2 PATCH] dt-bindings: display: mediatek: convert the dpi
+ bindings to yaml
+Message-ID: <20200923201517.GA1226945@bogus>
+References: <20200917073305.25738-1-jitao.shi@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200917073305.25738-1-jitao.shi@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Read vmcs.EXIT_QUALIFICATION and vmcs.VM_EXIT_INTR_INFO only if the
-VM-Exit is being reflected to L1 now that they are no longer passed
-directly to the kvm_nested_vmexit tracepoint.
+On Thu, 17 Sep 2020 15:33:05 +0800, Jitao Shi wrote:
+> Convert display/mediatek/mediatek,dpi.txt to display/mediatek/mediatek,dpi.yaml
+> and remove the old text bindings.
+> 
+> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
+> ---
+>  .../bindings/display/mediatek/mediatek,dpi.txt     | 42 ----------
+>  .../bindings/display/mediatek/mediatek,dpi.yaml    | 97 ++++++++++++++++++++++
+>  2 files changed, 97 insertions(+), 42 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/display/mediatek/mediatek,dpi.txt
+>  create mode 100644 Documentation/devicetree/bindings/display/mediatek/mediatek,dpi.yaml
+> 
 
-No functional change intended.
-
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
----
- arch/x86/kvm/vmx/nested.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index 39828823adfe..4c4cac48e432 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -5918,9 +5918,6 @@ bool nested_vmx_reflect_vmexit(struct kvm_vcpu *vcpu)
- 		goto reflect_vmexit;
- 	}
- 
--	exit_intr_info = vmx_get_intr_info(vcpu);
--	exit_qual = vmx_get_exit_qual(vcpu);
--
- 	trace_kvm_nested_vmexit(exit_reason, vcpu, KVM_ISA_VMX);
- 
- 	/* If L0 (KVM) wants the exit, it trumps L1's desires. */
-@@ -5937,12 +5934,14 @@ bool nested_vmx_reflect_vmexit(struct kvm_vcpu *vcpu)
- 	 * need to be synthesized by querying the in-kernel LAPIC, but external
- 	 * interrupts are never reflected to L1 so it's a non-issue.
- 	 */
-+	exit_intr_info = vmx_get_intr_info(vcpu);
- 	if (is_exception_with_error_code(exit_intr_info)) {
- 		struct vmcs12 *vmcs12 = get_vmcs12(vcpu);
- 
- 		vmcs12->vm_exit_intr_error_code =
- 			vmcs_read32(VM_EXIT_INTR_ERROR_CODE);
- 	}
-+	exit_qual = vmx_get_exit_qual(vcpu);
- 
- reflect_vmexit:
- 	nested_vmx_vmexit(vcpu, exit_reason, exit_intr_info, exit_qual);
--- 
-2.28.0
-
+Reviewed-by: Rob Herring <robh@kernel.org>
