@@ -2,212 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 535562763AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 00:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A9CE2763B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 00:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726672AbgIWWRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 18:17:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726381AbgIWWRm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 18:17:42 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA9CFC0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 15:17:41 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id a17so1636481wrn.6
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 15:17:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7QjKb+NIxrhaQhZlArpiH32NaIx0RUuiSkRqKzlULDk=;
-        b=Fa52V43J86nsC54rwsi6ml3+AMy2VHqzNJNGTSMxDOY3A2En+rFZ4vrVI46GQ6BYit
-         /TH9UbEwP+Fl7Aj0gIq+6nAnSI+uYIZ0a8CotCtd7xvER+fnc3mtxFLQh4oV+vm2JOHb
-         ya9jBbZvVNpOf9nfgf6EQAG+NwaraGUH8p5cOLi/X4Fv3slPjsNgmQeHocnnMgkWrfT/
-         B6Vu+vkjI0tv8kJQRmR872Zo0W3vn5Nqw7PyAbK/Zi+YbqRvPcFt+xmXW9yw8CigPIqC
-         t91Zbu5oPRiqM2YBc7aulM5sEtxsMbErz3A+1PiEYOljh70fhQnp7OH25gYAxWRPxD0Q
-         tpuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7QjKb+NIxrhaQhZlArpiH32NaIx0RUuiSkRqKzlULDk=;
-        b=KFumI8IO5QNWCir+Q4E9kZs3Dr8W0GTiLW0+LifZoNaV8hsD9snv3DNsFByppt9m9E
-         vsHwjR5fk9PgeJHVGvL4wW7KzPoVhDY4xn0NAyqYcEwc2NjG/Mrr3nd2o+XAmN6SPu4D
-         3EVtfR6SCZOLM9t3Pvai38PsX9HbL+cD2cP8SUBEgQ9aWGoxDNWJNr/uKXelgXBu9/5V
-         7sGB5qEjfky6TvbksoJJnYrbNyqvcLyLKP7F7vk/D+t0YQ1FSYg8pMTkMyafAg3n3jM5
-         GzopINABAQ+Owo0NChvQ2TNh7KUCDhcu4dOcklNGoLbVZdlOX9pvqpF4vSZQJMOjecHP
-         S6qA==
-X-Gm-Message-State: AOAM532nOo6TU3SS3/UQ79GNu3e7Dpd6RmVn/phlOLOLMAtREgwHT7sd
-        AMWsw+ztFWsXGt31HED91OUfRO0HjAn9V/FVpl2CqA==
-X-Google-Smtp-Source: ABdhPJz4aNKw/aMEjrB3o9D1a3BMe07hCXFbJselOZv/SmH6niUouM9MsxLcx+t/xe7qidoTJIof+2TrJH5qja1x4ug=
-X-Received: by 2002:adf:f88b:: with SMTP id u11mr1707224wrp.376.1600899460360;
- Wed, 23 Sep 2020 15:17:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200923080537.155264-1-namhyung@kernel.org> <20200923080537.155264-7-namhyung@kernel.org>
-In-Reply-To: <20200923080537.155264-7-namhyung@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 23 Sep 2020 15:17:29 -0700
-Message-ID: <CAP-5=fUqkcKS-THxNEz1K4irb-h9qsF09eLbTWfNKkV5StEuRw@mail.gmail.com>
-Subject: Re: [PATCH 6/7] perf bench: Run inject-build-id with --buildid-all
- option too
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        id S1726600AbgIWWUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 18:20:30 -0400
+Received: from mga03.intel.com ([134.134.136.65]:2461 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726199AbgIWWUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 18:20:30 -0400
+IronPort-SDR: MXjZ7ih5XjcnBx22cjXAPtPUXVkoohlskbLyYrXia0ajFSBq327c2NAnGlduzp09GLuDUyxBGs
+ NEWAtlyQoTbg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="161106788"
+X-IronPort-AV: E=Sophos;i="5.77,295,1596524400"; 
+   d="scan'208";a="161106788"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 15:20:29 -0700
+IronPort-SDR: ScFqCtUOmw+US+wUw1TR2Z6hwSEliItctbEeWf89Xg2rYaWSpCjEukSkSDwzJ7MseNxfDHqHyW
+ zclkQixcybzg==
+X-IronPort-AV: E=Sophos;i="5.77,295,1596524400"; 
+   d="scan'208";a="455091297"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.121.128]) ([10.212.121.128])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 15:20:28 -0700
+Subject: Re: [PATCH v12 8/8] x86: Disallow vsyscall emulation when CET is
+ enabled
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+References: <20200918192312.25978-1-yu-cheng.yu@intel.com>
+ <20200918192312.25978-9-yu-cheng.yu@intel.com>
+ <CALCETrXfixDGJhf0yPw-OckjEdeF2SbYjWFm8VbLriiP0Krhrg@mail.gmail.com>
+ <c96c98ec-d72a-81a3-06e2-2040f3ece33a@intel.com>
+ <24718de58ab7bc6d7288c58d3567ad802eeb6542.camel@intel.com>
+ <CALCETrWssUxxfhPPJZgPOmpaQcf4o9qCe1j-P7yiPyZVV+O8ZQ@mail.gmail.com>
+ <20200923212925.GC15101@linux.intel.com>
+ <a2e872ef-5539-c7c1-49ca-95d590f3b92a@intel.com>
+ <e7c20f4c-23a0-4a34-3895-c4f60993ec41@intel.com>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <a862be68-dc81-6db5-c79b-5bbd87ccddaf@intel.com>
+Date:   Wed, 23 Sep 2020 15:20:27 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <e7c20f4c-23a0-4a34-3895-c4f60993ec41@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 1:06 AM Namhyung Kim <namhyung@kernel.org> wrote:
->
-> For comparison, it now runs the benchmark twice - one if regular -b
-> and another for --buildid-all.
->
->   $ perf bench internals inject-build-id
->   # Running 'internals/inject-build-id' benchmark:
->     Average build-id injection took: 18.441 msec (+- 0.106 msec)
->     Average time per event: 1.808 usec (+- 0.010 usec)
->     Average build-id-all injection took: 13.451 msec (+- 0.132 msec)
->     Average time per event: 1.319 usec (+- 0.013 usec)
->
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+On 9/23/2020 3:08 PM, Dave Hansen wrote:
+> On 9/23/20 3:06 PM, Yu, Yu-cheng wrote:
+>> I think I'll add a check here for (r + 8) >= TASK_SIZE_MAX.  It is
+>> better than getting a fault.
+> 
+> There's also wrmsr_safe().
+> 
+Yes, thanks.
 
-Acked-by: Ian Rogers <irogers@google.com>
+Since I am going to change this to:
 
-Thanks,
-Ian
+fpu__prepare_write(), then write to the XSAVES area.
 
-> ---
->  tools/perf/bench/inject-buildid.c | 47 ++++++++++++++++++++-----------
->  1 file changed, 31 insertions(+), 16 deletions(-)
->
-> diff --git a/tools/perf/bench/inject-buildid.c b/tools/perf/bench/inject-buildid.c
-> index e5144a85d689..7c9f2baecef2 100644
-> --- a/tools/perf/bench/inject-buildid.c
-> +++ b/tools/perf/bench/inject-buildid.c
-> @@ -220,7 +220,7 @@ static void sigpipe_handler(int sig __maybe_unused)
->         /* child exited */
->  }
->
-> -static int setup_injection(struct bench_data *data)
-> +static int setup_injection(struct bench_data *data, bool build_id_all)
->  {
->         int ready_pipe[2];
->         int dev_null_fd;
-> @@ -241,6 +241,7 @@ static int setup_injection(struct bench_data *data)
->
->         if (data->pid == 0) {
->                 const char **inject_argv;
-> +               int inject_argc = 2;
->
->                 close(data->input_pipe[1]);
->                 close(data->output_pipe[0]);
-> @@ -257,17 +258,22 @@ static int setup_injection(struct bench_data *data)
->
->                 dup2(dev_null_fd, STDERR_FILENO);
->
-> -               inject_argv = calloc(3, sizeof(*inject_argv));
-> +               if (build_id_all)
-> +                       inject_argc++;
-> +
-> +               inject_argv = calloc(inject_argc + 1, sizeof(*inject_argv));
->                 if (inject_argv == NULL)
->                         exit(1);
->
->                 inject_argv[0] = strdup("inject");
->                 inject_argv[1] = strdup("-b");
-> +               if (build_id_all)
-> +                       inject_argv[2] = strdup("--buildid-all");
->
->                 /* signal that we're ready to go */
->                 close(ready_pipe[1]);
->
-> -               cmd_inject(2, inject_argv);
-> +               cmd_inject(inject_argc, inject_argv);
->
->                 exit(0);
->         }
-> @@ -348,21 +354,14 @@ static int inject_build_id(struct bench_data *data)
->         return 0;
->  }
->
-> -static int do_inject_loop(struct bench_data *data)
-> +static void do_inject_loop(struct bench_data *data, bool build_id_all)
->  {
->         unsigned int i;
->         struct stats time_stats;
->         double time_average, time_stddev;
->
-> -       srand(time(NULL));
->         init_stats(&time_stats);
-> -       symbol__init(NULL);
-> -
-> -       collect_dso();
-> -       if (nr_dsos == 0) {
-> -               printf("  Cannot collect DSOs for injection\n");
-> -               return -1;
-> -       }
-> +       pr_debug("  Build-id%s injection benchmark\n", build_id_all ? "-all" : "");
->
->         for (i = 0; i < iterations; i++) {
->                 struct timeval start, end, diff;
-> @@ -370,7 +369,7 @@ static int do_inject_loop(struct bench_data *data)
->
->                 pr_debug("  Iteration #%d\n", i+1);
->
-> -               if (setup_injection(data) < 0) {
-> +               if (setup_injection(data, build_id_all) < 0) {
->                         printf("  Build-id injection setup failed\n");
->                         break;
->                 }
-> @@ -389,14 +388,30 @@ static int do_inject_loop(struct bench_data *data)
->
->         time_average = avg_stats(&time_stats) / USEC_PER_MSEC;
->         time_stddev = stddev_stats(&time_stats) / USEC_PER_MSEC;
-> -       printf("  Average build-id injection took: %.3f msec (+- %.3f msec)\n",
-> -               time_average, time_stddev);
-> +       printf("  Average build-id%s injection took: %.3f msec (+- %.3f msec)\n",
-> +              build_id_all ? "-all" : "", time_average, time_stddev);
->
->         /* each iteration, it processes MMAP2 + BUILD_ID + nr_samples * SAMPLE */
->         time_average = avg_stats(&time_stats) / (nr_mmaps * (nr_samples + 2));
->         time_stddev = stddev_stats(&time_stats) / (nr_mmaps * (nr_samples + 2));
->         printf("  Average time per event: %.3f usec (+- %.3f usec)\n",
->                 time_average, time_stddev);
-> +}
-> +
-> +static int do_inject_loops(struct bench_data *data)
-> +{
-> +
-> +       srand(time(NULL));
-> +       symbol__init(NULL);
-> +
-> +       collect_dso();
-> +       if (nr_dsos == 0) {
-> +               printf("  Cannot collect DSOs for injection\n");
-> +               return -1;
-> +       }
-> +
-> +       do_inject_loop(data, false);
-> +       do_inject_loop(data, true);
->
->         release_dso();
->         return 0;
-> @@ -412,6 +427,6 @@ int bench_inject_build_id(int argc, const char **argv)
->                 exit(EXIT_FAILURE);
->         }
->
-> -       return do_inject_loop(&data);
-> +       return do_inject_loops(&data);
->  }
->
-> --
-> 2.28.0.681.g6f77f65b4e-goog
->
+The kernel does not expect XRSTORS to fail ("Bad FPU state detected..." 
+message).  So maybe still check the address first.
