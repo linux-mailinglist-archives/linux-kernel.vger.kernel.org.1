@@ -2,108 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E86C275CC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDB90275CC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:06:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726667AbgIWQFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 12:05:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48210 "EHLO
+        id S1726801AbgIWQGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 12:06:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726156AbgIWQFu (ORCPT
+        with ESMTP id S1726156AbgIWQGS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 12:05:50 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54943C0613CE;
-        Wed, 23 Sep 2020 09:05:50 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id h9so165524ybm.4;
-        Wed, 23 Sep 2020 09:05:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=E41XMWZCyk157fAUcngXrYCkdtxC8XoEP2uzIyD60V0=;
-        b=KfXzm0cU0SR0OTLaMOeP8vx6n0pF5kOFGKxb9ltYsf9yibrrg3bbiguA5Hzkt5zdrO
-         NvLo3bljzH4fMQylbntazlSXJr27F+OEa+TEeDWQF53SH1co0JQyUCpVkdyZxpcflBQm
-         DoUoPiEX7CKGlPmhBxzAduxqtg4sfW7nD7jl8cukfwRVo02uwv55AWt++JLlEYHERBep
-         yiVLTf+ZoICYP37HjroOGiesoB3gcn2xReIiHNgReYkntS8d0YZk6tTeiS1wiuuzn1su
-         XNw/cIa5v20noeN1+PyfsYfrfm6f8avZqKsYsKVs8krqC2UnCeIJTzwdWnLhTvwGFb0w
-         u21g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E41XMWZCyk157fAUcngXrYCkdtxC8XoEP2uzIyD60V0=;
-        b=DXJYtirL5hX7RbpGinXABp2z+RQG3e9SF60ZNfW7Iq+K22COSlFclAG9XFDl3u6JN8
-         BXxes+8w57Hmu8IyNUXry5twCp24F0qyigy9NdHsYygV1+CK7J285dsmz5uwZhb338hg
-         2DG8n+ZawTiKZZGRYNRvFJGkzeiQ9mkNqzJSCCLd7jc4B5HJFOJUm2P0oz685Yu362h+
-         RnDuCuIqi1bsrcwLQ95mnfLjp35ZRSOo/S6xswyY5iymSJpvkyn+qQnBynrVBu/ypf9K
-         /PjLTdwqO0MBe94SNfqIVAlGTqV0aO0076NmRk34/0beRsb1uE3wNwLuZ96rqp5HqrkD
-         Zyug==
-X-Gm-Message-State: AOAM530+vkccn9jfrwukOipAJjXejZlJsztLsOeHux60ZtsaKaOio1zj
-        KkqFhPr8usZXLcbVnYqvoRRjjc3eVOjQBsPCdMo=
-X-Google-Smtp-Source: ABdhPJwu1pcne+ABMS5bp6qeTMixQEwwVPNS2BbreASfuOzLieRjm9a/GBCC0Zm8O6ljrXiNHWyPEZB6QPk16b4rbCs=
-X-Received: by 2002:a25:33c4:: with SMTP id z187mr976613ybz.27.1600877149599;
- Wed, 23 Sep 2020 09:05:49 -0700 (PDT)
+        Wed, 23 Sep 2020 12:06:18 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AE47C0613CE;
+        Wed, 23 Sep 2020 09:06:18 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0d130017aaf728a0fb4ec3.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:1300:17aa:f728:a0fb:4ec3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E1F481EC02F2;
+        Wed, 23 Sep 2020 18:06:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600877176;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=343RpSxaPLwXKOF6olutaSZsdcv4UEsmZkrtNn2OpcY=;
+        b=VLIuwTxoVNU1goesTkQIAtnSRmkFhM9Q6J3Hc6/77DLuSaIZ1lKbkazp8DbC/sQPzViAKb
+        NIUDFuJczQy3px7or/+ld3gN8KOvCrkWguBAbZ1b1odrnjRbuuo6Sa09UrsGJO2274mty9
+        BKt497sLS7pMn2fozfJMvCtnNeK+m2c=
+Date:   Wed, 23 Sep 2020 18:06:09 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     linux-mm@kvack.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, x86@kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        rafael@kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        linuxarm@huawei.com, Dan Williams <dan.j.williams@intel.com>,
+        Brice Goglin <Brice.Goglin@inria.fr>,
+        Sean V Kelley <sean.v.kelley@linux.intel.com>,
+        linux-api@vger.kernel.org, Hanjun Guo <guohanjun@huawei.com>
+Subject: Re: [PATCH v10 2/6] x86: Support Generic Initiator only proximity
+ domains
+Message-ID: <20200923160609.GO28545@zn.tnic>
+References: <20200907140307.571932-1-Jonathan.Cameron@huawei.com>
+ <20200907140307.571932-3-Jonathan.Cameron@huawei.com>
 MIME-Version: 1.0
-References: <20200923160156.80814-1-lmb@cloudflare.com>
-In-Reply-To: <20200923160156.80814-1-lmb@cloudflare.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 23 Sep 2020 09:05:38 -0700
-Message-ID: <CAEf4BzZJQBdW72TRCuW7q0c3kke1Qan59fDzV0DKN_EOAgXGaw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: explicitly size compatible_reg_types
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200907140307.571932-3-Jonathan.Cameron@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 9:03 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
->
-> Arrays with designated initializers have an implicit length of the highest
-> initialized value plus one. I used this to ensure that newly added entries
-> in enum bpf_reg_type get a NULL entry in compatible_reg_types.
->
-> This is difficult to understand since it requires knowledge of the
-> peculiarities of designated initializers. Use __BPF_ARG_TYPE_MAX to size
-> the array instead.
->
-> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-> Suggested-by: Alexei Starovoitov <ast@kernel.org>
+On Mon, Sep 07, 2020 at 10:03:03PM +0800, Jonathan Cameron wrote:
+> In common with memoryless domains we only register GI domains
+> if the proximity node is not online. If a domain is already
+> a memory containing domain, or a memoryless domain there is
+> nothing to do just because it also contains a Generic Initiator.
+> 
+> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 > ---
+>  arch/x86/include/asm/numa.h |  2 ++
+>  arch/x86/kernel/setup.c     |  1 +
+>  arch/x86/mm/numa.c          | 14 ++++++++++++++
+>  3 files changed, 17 insertions(+)
+> 
+> diff --git a/arch/x86/include/asm/numa.h b/arch/x86/include/asm/numa.h
+> index bbfde3d2662f..f631467272a3 100644
+> --- a/arch/x86/include/asm/numa.h
+> +++ b/arch/x86/include/asm/numa.h
+> @@ -62,12 +62,14 @@ extern void numa_clear_node(int cpu);
+>  extern void __init init_cpu_to_node(void);
+>  extern void numa_add_cpu(int cpu);
+>  extern void numa_remove_cpu(int cpu);
+> +extern void init_gi_nodes(void);
+>  #else	/* CONFIG_NUMA */
+>  static inline void numa_set_node(int cpu, int node)	{ }
+>  static inline void numa_clear_node(int cpu)		{ }
+>  static inline void init_cpu_to_node(void)		{ }
+>  static inline void numa_add_cpu(int cpu)		{ }
+>  static inline void numa_remove_cpu(int cpu)		{ }
+> +static inline void init_gi_nodes(void)			{ }
+>  #endif	/* CONFIG_NUMA */
+>  
+>  #ifdef CONFIG_DEBUG_PER_CPU_MAPS
+> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+> index 3511736fbc74..9062c146f03a 100644
+> --- a/arch/x86/kernel/setup.c
+> +++ b/arch/x86/kernel/setup.c
+> @@ -1218,6 +1218,7 @@ void __init setup_arch(char **cmdline_p)
+>  	prefill_possible_map();
+>  
+>  	init_cpu_to_node();
+> +	init_gi_nodes();
 
-I like this more as well.
+Can this function be an early_initcall() or so instead which you can
+call in numa.c directly instead of exporting it and calling it here?
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+>  	io_apic_init_mappings();
+>  
+> diff --git a/arch/x86/mm/numa.c b/arch/x86/mm/numa.c
+> index aa76ec2d359b..fc630dc6764e 100644
+> --- a/arch/x86/mm/numa.c
+> +++ b/arch/x86/mm/numa.c
+> @@ -747,6 +747,20 @@ static void __init init_memory_less_node(int nid)
+>  	 */
+>  }
+>  
+> +/*
+> + * Generic Initiator Nodes may have neither CPU nor Memory.
+> + * At this stage if either of the others were present we would
 
->  kernel/bpf/verifier.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 15ab889b0a3f..d7c993ded26a 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -4002,7 +4002,7 @@ static const struct bpf_reg_types const_map_ptr_types = { .types = { CONST_PTR_T
->  static const struct bpf_reg_types btf_ptr_types = { .types = { PTR_TO_BTF_ID } };
->  static const struct bpf_reg_types spin_lock_types = { .types = { PTR_TO_MAP_VALUE } };
->
-> -static const struct bpf_reg_types *compatible_reg_types[] = {
-> +static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
->         [ARG_PTR_TO_MAP_KEY]            = &map_key_value_types,
->         [ARG_PTR_TO_MAP_VALUE]          = &map_key_value_types,
->         [ARG_PTR_TO_UNINIT_MAP_VALUE]   = &map_key_value_types,
-> @@ -4025,7 +4025,6 @@ static const struct bpf_reg_types *compatible_reg_types[] = {
->         [ARG_PTR_TO_ALLOC_MEM_OR_NULL]  = &alloc_mem_types,
->         [ARG_PTR_TO_INT]                = &int_ptr_types,
->         [ARG_PTR_TO_LONG]               = &int_ptr_types,
-> -       [__BPF_ARG_TYPE_MAX]            = NULL,
->  };
->
->  static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
-> --
-> 2.25.1
->
+Who's "we"? And what is "either of the others"? The other nodes?
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
