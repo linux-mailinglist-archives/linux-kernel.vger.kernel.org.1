@@ -2,172 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3F3D275718
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 13:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD03F275719
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 13:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbgIWL10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 07:27:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726332AbgIWL1Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 07:27:25 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6990CC0613CE;
-        Wed, 23 Sep 2020 04:27:25 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id w3so16903457ljo.5;
-        Wed, 23 Sep 2020 04:27:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=PF60as8MpIwsxJIqqAOINxwtnO5aupgejkBPp4saGRI=;
-        b=kPbMa256EDIOx6B5ZH/I6P8OuhTR0akW/H9eJ7j4yFwMH9vATN3TGA9nPT1oLbicn9
-         9wZ8Kzh23ymfDthKlHUqKejeXwDhmzBUiCJrfrk/ONnzdvxqFP+W2a91PTP+GVw9hkbK
-         pAGvI0PTupNyEXsPZWhK8OAX8B3gGR2gy7Qs+O1Io+Y6gKDu2OZPsMpmIPdSmt1aU8hW
-         wVAGSylLZ396/vgp60qJzCH5WFXiC2PtAG+SOtZrRFUTLqtbXayZDv3Jl7wVig5Gp526
-         dSqbZi1V9DxjWfM2Z5oDfrbgpILRRCb2+RoXIvBYYIZKG3ctB7+n3LN/MzE5WqklTMnn
-         uiCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=PF60as8MpIwsxJIqqAOINxwtnO5aupgejkBPp4saGRI=;
-        b=KWp+foSDBtDzLx8nM3zDJ40vWLSstKjNXwW3NJ9J6Uii8GOkcbcc+lEIRE+ZD6Efzw
-         3UHt0ptAQXP+PkIDscWbe+/edxvzXX2Ss2PPu0U8D1i7dl3Anr2baLFkyvFWlh7Ey1pJ
-         dCmnv1PtqPX2V1J0mp+C14x0uWuIfp0QBNzd5uJaW5A+gB+a3oW/mj8JdHZCXaDUiRlm
-         NloG8FYNFSSw9p900KSjx/lvE/5DrOblW8hEKznXQRC4pKfbx+iC/XHbJ24EQfKKBsrm
-         prJAm/b/utKJAEu0K8PPyTvsOaUlQ/G9U6ZC2Gt3Y35SCpmrBamU12lTRtaXXIdFY67E
-         6dJA==
-X-Gm-Message-State: AOAM531DWoSsB1JCdYnphA26ebsc/WYzUESrT95BmD3S9m/70JkpX7iG
-        HuW/JdvVV6FxBSEvaHNCdsw=
-X-Google-Smtp-Source: ABdhPJyjJ7gCM2EyR1iq96O3NkMTgpN2WZZdCb3tyuAX//K2341e1123fZlk9VT2Gj64jWc3o5ySnA==
-X-Received: by 2002:a2e:99c4:: with SMTP id l4mr3211132ljj.428.1600860443667;
-        Wed, 23 Sep 2020 04:27:23 -0700 (PDT)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id g26sm371781ljl.116.2020.09.23.04.27.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 04:27:22 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Wed, 23 Sep 2020 13:27:19 +0200
-To:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20200923112719.GA6796@pc636>
-References: <20200918194817.48921-1-urezki@gmail.com>
- <20200918194817.48921-3-urezki@gmail.com>
- <20200921074716.GC12990@dhcp22.suse.cz>
- <20200921154558.GD29330@paulmck-ThinkPad-P72>
- <20200921160318.GO12990@dhcp22.suse.cz>
- <20200922033553.GU29330@paulmck-ThinkPad-P72>
- <20200922080306.GV12990@dhcp22.suse.cz>
- <20200922154621.GW29330@paulmck-ThinkPad-P72>
+        id S1726590AbgIWL2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 07:28:00 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:59998 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726332AbgIWL2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 07:28:00 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id E9297626864E5F774AE4;
+        Wed, 23 Sep 2020 19:27:55 +0800 (CST)
+Received: from [10.174.185.226] (10.174.185.226) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 23 Sep 2020 19:27:47 +0800
+Subject: Re: [PATCH v10 01/11] vfio: VFIO_IOMMU_SET_PASID_TABLE
+To:     Eric Auger <eric.auger@redhat.com>, <eric.auger.pro@gmail.com>,
+        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <kvm@vger.kernel.org>, <kvmarm@lists.cs.columbia.edu>,
+        <joro@8bytes.org>, <alex.williamson@redhat.com>,
+        <jacob.jun.pan@linux.intel.com>, <yi.l.liu@intel.com>,
+        <robin.murphy@arm.com>
+References: <20200320161911.27494-1-eric.auger@redhat.com>
+ <20200320161911.27494-2-eric.auger@redhat.com>
+From:   Zenghui Yu <yuzenghui@huawei.com>
+Message-ID: <2fba23af-9cd7-147d-6202-01c13fff92e5@huawei.com>
+Date:   Wed, 23 Sep 2020 19:27:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922154621.GW29330@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200320161911.27494-2-eric.auger@redhat.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.185.226]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > Other approaches under consideration include making CONFIG_PREEMPT_COUNT
-> > > unconditional and thus allowing call_rcu() and kvfree_rcu() to determine
-> > > whether direct calls to the allocator are safe (some guy named Linus
-> > > doesn't like this one),
-> > 
-> > I assume that the primary argument is the overhead, right? Do you happen
-> > to have any reference?
+Hi Eric,
+
+On 2020/3/21 0:19, Eric Auger wrote:
+> From: "Liu, Yi L" <yi.l.liu@linux.intel.com>
 > 
-> Jon Corbet wrote a very nice article summarizing the current situation:
-> https://lwn.net/Articles/831678/.  Thomas's measurements show no visible
-> system-level performance impact.  I will let Uladzislau present his more
-> microbenchmarky performance work.
+> This patch adds an VFIO_IOMMU_SET_PASID_TABLE ioctl
+> which aims to pass the virtual iommu guest configuration
+> to the host. This latter takes the form of the so-called
+> PASID table.
 > 
-I have done some analysis of the !PREEMPT kernel with and without PREEMPT_COUNT
-configuration. The aim is to show a performance impact if the PREEMPT_COUNT is
-unconditionally enabled.
+> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> Signed-off-by: Liu, Yi L <yi.l.liu@linux.intel.com>
+> Signed-off-by: Eric Auger <eric.auger@redhat.com>
 
-As for the test i used the refscale kernel module, that does:
+[...]
 
-<snip>
-static void ref_rcu_read_section(const int nloops)
-{
- int i;
+> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+> index a177bf2c6683..bfacbd876ee1 100644
+> --- a/drivers/vfio/vfio_iommu_type1.c
+> +++ b/drivers/vfio/vfio_iommu_type1.c
+> @@ -2172,6 +2172,43 @@ static int vfio_iommu_iova_build_caps(struct vfio_iommu *iommu,
+>   	return ret;
+>   }
+>   
+> +static void
+> +vfio_detach_pasid_table(struct vfio_iommu *iommu)
+> +{
+> +	struct vfio_domain *d;
+> +
+> +	mutex_lock(&iommu->lock);
+> +
+> +	list_for_each_entry(d, &iommu->domain_list, next) {
+> +		iommu_detach_pasid_table(d->domain);
+> +	}
+> +	mutex_unlock(&iommu->lock);
+> +}
+> +
+> +static int
+> +vfio_attach_pasid_table(struct vfio_iommu *iommu,
+> +			struct vfio_iommu_type1_set_pasid_table *ustruct)
+> +{
+> +	struct vfio_domain *d;
+> +	int ret = 0;
+> +
+> +	mutex_lock(&iommu->lock);
+> +
+> +	list_for_each_entry(d, &iommu->domain_list, next) {
+> +		ret = iommu_attach_pasid_table(d->domain, &ustruct->config);
+> +		if (ret)
+> +			goto unwind;
+> +	}
+> +	goto unlock;
+> +unwind:
+> +	list_for_each_entry_continue_reverse(d, &iommu->domain_list, next) {
+> +		iommu_detach_pasid_table(d->domain);
+> +	}
+> +unlock:
+> +	mutex_unlock(&iommu->lock);
+> +	return ret;
+> +}
+> +
+>   static long vfio_iommu_type1_ioctl(void *iommu_data,
+>   				   unsigned int cmd, unsigned long arg)
+>   {
+> @@ -2276,6 +2313,25 @@ static long vfio_iommu_type1_ioctl(void *iommu_data,
+>   
+>   		return copy_to_user((void __user *)arg, &unmap, minsz) ?
+>   			-EFAULT : 0;
+> +	} else if (cmd == VFIO_IOMMU_SET_PASID_TABLE) {
+> +		struct vfio_iommu_type1_set_pasid_table ustruct;
+> +
+> +		minsz = offsetofend(struct vfio_iommu_type1_set_pasid_table,
+> +				    config);
+> +
+> +		if (copy_from_user(&ustruct, (void __user *)arg, minsz))
+> +			return -EFAULT;
+> +
+> +		if (ustruct.argsz < minsz)
+> +			return -EINVAL;
+> +
+> +		if (ustruct.flags & VFIO_PASID_TABLE_FLAG_SET)
+> +			return vfio_attach_pasid_table(iommu, &ustruct);
+> +		else if (ustruct.flags & VFIO_PASID_TABLE_FLAG_UNSET) {
+> +			vfio_detach_pasid_table(iommu);
+> +			return 0;
+> +		} else
+> +			return -EINVAL;
 
- for (i = nloops; i >= 0; i--) {
-  rcu_read_lock();
-  rcu_read_unlock();
- }
-}
-<snip>
+Nit:
 
-How to run the microbenchmark:
+What if user-space blindly set both flags? Should we check that only one
+flag is allowed to be set at this stage, and return error otherwise?
 
-<snip>
-urezki@pc638:~$ sudo modprobe refscale
-<snip>
+Besides, before going through the whole series [1][2], I'd like to know
+if this is the latest version of your Nested-Stage-Setup work in case I
+had missed something.
 
-The below is an average duration per loop (nanoseconds):
+[1] https://lore.kernel.org/r/20200320161911.27494-1-eric.auger@redhat.com
+[2] https://lore.kernel.org/r/20200414150607.28488-1-eric.auger@redhat.com
 
-  !PREEMPT_COUNT            PREEMPT_COUNT
- Runs     Time(ns)         Runc     Time(ns)
- 1        109.640          1        99.915
- 2        102.303          2        111.106
- 3        90.520           3        98.713
- 4        106.347          4        111.239
- 5        108.374          5        111.797
- 6        108.012          6        111.558
- 7        103.989          7        113.122
- 8        106.194          8        111.515
- 9        107.330          9        107.559
- 10       105.877          10       105.965
- 11       104.860          11       104.835
- 12       104.299          12       106.342
- 13       104.794          13       106.664
- 14       104.916          14       104.914
- 15       105.485          15       104.280
- 16       104.610          16       105.642
- 17       104.981          17       105.646
- 18       103.089          18       106.370
- 19       105.251          19       105.284
- 20       104.133          20       105.973
- 21       105.589          21       105.271
- 22       104.154          22       106.063
- 23       104.963          23       106.248
- 24       102.431          24       105.568
- 25       102.610          25       105.556
- 26       103.474          26       105.655
- 27       100.194          27       102.887
- 28       102.340          28       104.347
- 29       102.075          29       102.389
- 30       102.808          30       103.123
 
-The difference is ~1.8% in average. The maximum value is 109.640 vs 113.122
-The minimum value is 90.520 vs 98.713.
-
-Tested on:
-    processor       : 63
-    vendor_id       : AuthenticAMD
-    cpu family      : 6
-    model           : 6
-    model name      : QEMU Virtual CPU version 2.5+
-    cpu MHz         : 3700.204
-
-I also can do more detailed testing using "perf" tool.
-
---
-Vlad Rezki
+Thanks,
+Zenghui
