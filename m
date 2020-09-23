@@ -2,287 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D11FF27586C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF8AB275875
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgIWNKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 09:10:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42711 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726476AbgIWNKw (ORCPT
+        id S1726632AbgIWNNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 09:13:24 -0400
+Received: from relay2.mymailcheap.com ([217.182.66.162]:57660 "EHLO
+        relay2.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726332AbgIWNNV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 09:10:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600866649;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=W5rV3Uet75F/qzjENYEH62H02or+L/mJaAH6PnzXKX8=;
-        b=G2p3F7JwCOwj9q4Vx59QJ9tTHqH1mLjtjUmn6rhJ24HEvg8esBiOkvgnWDWGXOWhd1dc+g
-        srOF8FsOB4CGlRcxIh9ytLKRrfeENcn0F9kes2eepyFVcGfVlnV16r4mYXY4ShwMjBRrhh
-        YJXmjq1xCvZqliLPfipUmsVeNVxMi4M=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-1-IdnjhaTAMt29taxXeWUCpQ-1; Wed, 23 Sep 2020 09:10:47 -0400
-X-MC-Unique: IdnjhaTAMt29taxXeWUCpQ-1
-Received: by mail-qk1-f199.google.com with SMTP id y17so16653216qky.0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 06:10:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=W5rV3Uet75F/qzjENYEH62H02or+L/mJaAH6PnzXKX8=;
-        b=bV8saTu5ggTbJJI5oHbsTN/lu+zJtb4ltHzbjs6/av9m2Dv1XwGa05QC3lVwkuWYcL
-         icl421dKIxNVm+oz7WgGlCx5FkJOEDbnyHIg34czdHLSUjVelW5e/mbroGyUIA86cmlv
-         gw7T5k4R5HjzcloeTEFQ8inhmwFDo4rDn02j7Kjcqcwv/14FqIvZtj6nXalW4VsvHc3g
-         yHu5h1dcJMQStAHIO36PjdRJxGw3guVsJq1Wsvjg4fkPGPSOGQFqYJCEJLy8kiq5BuDu
-         tSeWDDZPUGp5OSUY8FjGgr82hlxIOV6zT5KLFuL2l4Lvim7BTiw7h9fQ/BlwBqWQ9pED
-         /mpA==
-X-Gm-Message-State: AOAM531w+vlXBKSy7iwDCnfGb7l+c0Mr5yctCXIATvMi5PeceFE8pJxH
-        u/+FQMxIMzneC2xYpnVjH3lt2zX2tIrJjT6J2Yo24d0Jb4UtOsUqZzUcJsN7crHHKP7jYroJmAJ
-        fzHJ4yfda8DbiNDac1i5B/wyP
-X-Received: by 2002:ac8:3f23:: with SMTP id c32mr9778669qtk.102.1600866646953;
-        Wed, 23 Sep 2020 06:10:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxERnC1XgxlM4YhveNHIg2JOcQXKyxlQXpCDyWKQ1MGMLIuBozPcP450B4H8SSbwdChMVRZzg==
-X-Received: by 2002:ac8:3f23:: with SMTP id c32mr9778624qtk.102.1600866646437;
-        Wed, 23 Sep 2020 06:10:46 -0700 (PDT)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
-        by smtp.gmail.com with ESMTPSA id v30sm15091090qtj.52.2020.09.23.06.10.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 06:10:45 -0700 (PDT)
-Date:   Wed, 23 Sep 2020 09:10:43 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     John Hubbard <jhubbard@nvidia.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jann Horn <jannh@google.com>
-Subject: Re: [PATCH 1/5] mm: Introduce mm_struct.has_pinned
-Message-ID: <20200923131043.GA59978@xz-x1>
-References: <20200921211744.24758-1-peterx@redhat.com>
- <20200921211744.24758-2-peterx@redhat.com>
- <224908c1-5d0f-8e01-baa9-94ec2374971f@nvidia.com>
- <20200922151736.GD19098@xz-x1>
- <20200922161046.GB731578@ziepe.ca>
- <20200922175415.GI19098@xz-x1>
- <20200922191116.GK8409@ziepe.ca>
- <20200923002735.GN19098@xz-x1>
+        Wed, 23 Sep 2020 09:13:21 -0400
+Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
+        by relay2.mymailcheap.com (Postfix) with ESMTPS id 1BAEC3ECD9;
+        Wed, 23 Sep 2020 15:13:18 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by filter2.mymailcheap.com (Postfix) with ESMTP id EBD922A510;
+        Wed, 23 Sep 2020 15:13:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1600866798;
+        bh=ARx23wj2vqf+60Qb4aU9aeJMsazyIuMC8wBBqRBo8CE=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=0BUcpMEeVjvgEllRg+g5xyMYVbAR7iR7TN3J4v82/C12PHECVyEa4H0fn3jCaP7WC
+         8NuQg+jZ916YekQxgJxwSwAw+bm84HwUiH2/L+SfIBAP3J5LeUyftr3GcFnPbukArn
+         PbFGiyWLsIgCGFCLsmTotgn8TBYu38CzjDV2hCO8=
+X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
+Received: from filter2.mymailcheap.com ([127.0.0.1])
+        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id TyE-jPGoeJ5q; Wed, 23 Sep 2020 15:13:15 +0200 (CEST)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter2.mymailcheap.com (Postfix) with ESMTPS;
+        Wed, 23 Sep 2020 15:13:15 +0200 (CEST)
+Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id 74DDF40FE5;
+        Wed, 23 Sep 2020 13:13:14 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="f4QackNg";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from [0.0.0.0] (li1197-90.members.linode.com [45.79.98.90])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 65E6D40FE5;
+        Wed, 23 Sep 2020 13:11:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
+        s=default; t=1600866672;
+        bh=ARx23wj2vqf+60Qb4aU9aeJMsazyIuMC8wBBqRBo8CE=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=f4QackNgGsWdGq0Ko5Lm39l7gu9dFiIVrKJmXHrYZGn5R/rnJY/NhHHrKkeolJ4rN
+         wJ+WHgWhQ4oI2UmiNYKe6XVIsl5QyaPa7JooggrSpuG2y/wwA0oWl4hiIbFjwmvWlM
+         hpZoueOpmNuSgm+fv0Y9Pua2QSEwAdwpfFCh62cg=
+Subject: Re: [PATCH] perf annotate mips: Add perf arch instructions annotate
+ handlers
+To:     Peng Fan <fanpeng@loongson.cn>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Dengcheng Zhu <dzhu@wavecomp.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+References: <1600858584-6161-1-git-send-email-fanpeng@loongson.cn>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <0753902c-07c9-4390-7ffe-ff02cd1c87e1@flygoat.com>
+Date:   Wed, 23 Sep 2020 21:11:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200923002735.GN19098@xz-x1>
+In-Reply-To: <1600858584-6161-1-git-send-email-fanpeng@loongson.cn>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 74DDF40FE5
+X-Spamd-Result: default: False [-0.10 / 10.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         ML_SERVERS(-3.10)[213.133.102.83];
+         DKIM_TRACE(0.00)[flygoat.com:+];
+         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
+         RCPT_COUNT_TWELVE(0.00)[14];
+         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         MID_RHS_MATCH_FROM(0.00)[];
+         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
+X-Rspamd-Server: mail20.mymailcheap.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 08:27:35PM -0400, Peter Xu wrote:
-> On Tue, Sep 22, 2020 at 04:11:16PM -0300, Jason Gunthorpe wrote:
-> > On Tue, Sep 22, 2020 at 01:54:15PM -0400, Peter Xu wrote:
-> > > diff --git a/mm/memory.c b/mm/memory.c
-> > > index 8f3521be80ca..6591f3f33299 100644
-> > > +++ b/mm/memory.c
-> > > @@ -888,8 +888,8 @@ copy_one_pte(struct mm_struct *dst_mm, struct mm_struct *src_mm,
-> > >                  * Because we'll need to release the locks before doing cow,
-> > >                  * pass this work to upper layer.
-> > >                  */
-> > > -               if (READ_ONCE(src_mm->has_pinned) && wp &&
-> > > -                   page_maybe_dma_pinned(page)) {
-> > > +               if (wp && page_maybe_dma_pinned(page) &&
-> > > +                   READ_ONCE(src_mm->has_pinned)) {
-> > >                         /* We've got the page already; we're safe */
-> > >                         data->cow_old_page = page;
-> > >                         data->cow_oldpte = *src_pte;
-> > > 
-> > > I can also add some more comment to emphasize this.
-> > 
-> > It is not just that, but the ptep_set_wrprotect() has to be done
-> > earlier.
-> 
-> Now I understand your point, I think..  So I guess it's not only about
-> has_pinned, but it should be a race between the fast-gup and the fork() code,
-> even if has_pinned is always set.
-> 
-> > 
-> > Otherwise it races like:
-> > 
-> >    pin_user_pages_fast()                   fork()
-> >     atomic_set(has_pinned, 1);
-> >     [..]
-> >                                            atomic_read(page->_refcount) //false
-> >                                            // skipped atomic_read(has_pinned)
-> >     atomic_add(page->_refcount)
-> >     ordered check write protect()
-> >                                            ordered set write protect()
-> > 
-> > And now have a write protect on a DMA pinned page, which is the
-> > invarient we are trying to create.
-> > 
-> > The best algorithm I've thought of is something like:
-> > 
-> >  pte_map_lock()
-> >   if (page) {
-> >       if (wp) {
-> > 	  ptep_set_wrprotect()
-> > 	  /* Order with try_grab_compound_head(), either we see
-> > 	   * page_maybe_dma_pinned(), or they see the wrprotect */
-> > 	  get_page();
-> 
-> Is this get_page() a must to be after ptep_set_wrprotect() explicitly?  IIUC
-> what we need is to order ptep_set_wrprotect() and page_maybe_dma_pinned() here.
-> E.g., would a "mb()" work?
-> 
-> Another thing is, do we need similar thing for e.g. gup_pte_range(), so that
-> to guarantee ordering of try_grab_compound_head() and the pte change check?
-> 
-> > 
-> > 	  if (page_maybe_dma_pinned() && READ_ONCE(src_mm->has_pinned)) {
-> > 	       put_page();
-> > 	       ptep_clear_wrprotect()
-> > 
-> > 	       // do copy
-> > 	       return
-> > 	  }
-> >       } else {
-> > 	  get_page();
-> >       }
-> >       page_dup_rmap()
-> >  pte_unmap_lock()
-> > 
-> > Then the do_wp_page() path would have to detect that the page is not
-> > write protected under the pte lock inside the fault handler and just
-> > do nothing.
-> 
-> Yes, iiuc do_wp_page() should be able to handle spurious write page faults like
-> this already, as below:
-> 
-> 	vmf->ptl = pte_lockptr(vmf->vma->vm_mm, vmf->pmd);
-> 	spin_lock(vmf->ptl);
->         ...
-> 	if (vmf->flags & FAULT_FLAG_WRITE) {
-> 		if (!pte_write(entry))
-> 			return do_wp_page(vmf);
-> 		entry = pte_mkdirty(entry);
-> 	}
-> 
-> So when spin_lock() returns:
-> 
->   - When it's a real cow (not pinned pages; we write-protected it and it keeps
->     write-protected), we should do cow here as usual.
-> 
->   - When it's a fake cow (pinned pages), the write bit should have been
->     recovered before the page table lock released, and we'll skip do_wp_page()
->     and retry the page fault immediately.
-> 
-> > Ie the set/clear could be visible to the CPU and trigger a
-> > spurious fault, but never trigger a COW.
-> > 
-> > Thus 'wp' becomes a 'lock' that prevents GUP from returning this page.
-> 
-> Another question is, how about read fast-gup for pinning?  Because we can't use
-> the write-protect mechanism to block a read gup.  I remember we've discussed
-> similar things and iirc your point is "pinned pages should always be with
-> WRITE".  However now I still doubt it...  Because I feel like read gup is still
-> legal (as I mentioned previously - when device purely writes to the page and
-> the processor only reads from it).
-> 
-> > 
-> > Very tricky, deserves a huge comment near the ptep_clear_wrprotect()
-> > 
-> > Consider the above algorithm beside the gup_fast() algorithm:
-> > 
-> > 		if (!pte_access_permitted(pte, flags & FOLL_WRITE))
-> > 			goto pte_unmap;
-> >                 [..]
-> > 		head = try_grab_compound_head(page, 1, flags);
-> > 		if (!head)
-> > 			goto pte_unmap;
-> > 		if (unlikely(pte_val(pte) != pte_val(*ptep))) {
-> > 			put_compound_head(head, 1, flags);
-> > 			goto pte_unmap;
-> > 
-> > That last *ptep will check that the WP is not set after making
-> > page_maybe_dma_pinned() true.
-> > 
-> > It still looks reasonable, the extra work is still just the additional
-> > atomic in page_maybe_dma_pinned(), just everything else has to be very
-> > carefully sequenced due to unlocked page table accessors.
-> 
-> Tricky!  I'm still thinking about some easier way but no much clue so far.
-> Hopefully we'll figure out something solid soon.
 
-Hmm, how about something like below?  Would this be acceptable?
 
-------8<--------
-diff --git a/mm/gup.c b/mm/gup.c
-index 2d9019bf1773..698bc2b520ac 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -2136,6 +2136,18 @@ static int gup_pte_range(pmd_t pmd, unsigned long addr, unsigned long end,
-        struct dev_pagemap *pgmap = NULL;
-        int nr_start = *nr, ret = 0;
-        pte_t *ptep, *ptem;
-+       spinlock_t *ptl = NULL;
-+
-+       /*
-+        * More strict with FOLL_PIN, otherwise it could race with fork().  The
-+        * page table lock guarantees that fork() will capture all the pinned
-+        * pages when dup_mm() and do proper page copy on them.
-+        */
-+       if (flags & FOLL_PIN) {
-+               ptl = pte_lockptr(mm, pmd);
-+               if (!spin_trylock(ptl))
-+                       return 0;
-+       }
- 
-        ptem = ptep = pte_offset_map(&pmd, addr);
-        do {
-@@ -2200,6 +2212,8 @@ static int gup_pte_range(pmd_t pmd, unsigned long addr, unsigned long end,
-        ret = 1;
- 
- pte_unmap:
-+       if (ptl)
-+               spin_unlock(ptl);
-        if (pgmap)
-                put_dev_pagemap(pgmap);
-        pte_unmap(ptem);
-------8<--------
+ÔÚ 2020/9/23 18:56, Peng Fan Ð´µÀ:
+> From: Dengcheng Zhu <dzhu@wavecomp.com>
+>
+> Support the MIPS architecture using the ins_ops association
+> method. With this patch, perf-annotate can work well on MIPS.
+>
+> Testing it with a perf.data file collected on a mips machine:
+> $./perf annotate -i perf.data
+>
+>           :           Disassembly of section .text:
+>           :
+>           :           00000000000be6a0 <get_next_seq>:
+>           :           get_next_seq():
+>      0.00 :   be6a0:       lw      v0,0(a0)
+>      0.00 :   be6a4:       daddiu  sp,sp,-128
+>      0.00 :   be6a8:       ld      a7,72(a0)
+>      0.00 :   be6ac:       gssq    s5,s4,80(sp)
+>      0.00 :   be6b0:       gssq    s1,s0,48(sp)
+>      0.00 :   be6b4:       gssq    s8,gp,112(sp)
+>      0.00 :   be6b8:       gssq    s7,s6,96(sp)
+>      0.00 :   be6bc:       gssq    s3,s2,64(sp)
+>      0.00 :   be6c0:       sd      a3,0(sp)
+>      0.00 :   be6c4:       move    s0,a0
+>      0.00 :   be6c8:       sd      v0,32(sp)
+>      0.00 :   be6cc:       sd      a5,8(sp)
+>      0.00 :   be6d0:       sd      zero,8(a0)
+>      0.00 :   be6d4:       sd      a6,16(sp)
+>      0.00 :   be6d8:       ld      s2,48(a0)
+>      8.53 :   be6dc:       ld      s1,40(a0)
+>      9.42 :   be6e0:       ld      v1,32(a0)
+>      0.00 :   be6e4:       nop
+>      0.00 :   be6e8:       ld      s4,24(a0)
+>      0.00 :   be6ec:       ld      s5,16(a0)
+>      0.00 :   be6f0:       sd      a7,40(sp)
+>     10.11 :   be6f4:       ld      s6,64(a0)
+> ...
+>
+> The original patch link is:
+> https://lore.kernel.org/patchwork/patch/1180480/
+>
+> Signed-off-by: Dengcheng Zhu <dzhu@wavecomp.com>
+> Signed-off-by: Peng Fan <fanpeng@loongson.cn>
+> ---
+>
+> Add "bgtzl", "bltzl", "bgezl", "blezl", "beql"
+> and "bnel", remove "bgtzal", "blezal", "beqzal",
+> "bnezal" and "jialc". Because these five can not
+> be found in the instruction manual.
 
-Both of the solution would fail some fast-gups that might have succeeded in the
-past.  The latter solution might even fail more (because pmd lock should be
-definitely bigger than a single pte wrprotect), however afaict it's still a
-very, very corner case as it's fast-gup+FOLL_PIN+lockfail (and not to mention
-fast-gup should be allowed to fail).
+Hi Peng Fan,
 
-To confirm it can fail, I also checked up that we have only one caller of
-pin_user_pages_fast_only(), which is i915_gem_userptr_get_pages().  While it's:
+These instructions do exist in MIPS Release 6.
+Please see MD00086-2B-MIPS32BIS-AFP-6.06[1].
 
-	if (mm == current->mm) {
-		pvec = kvmalloc_array(num_pages, sizeof(struct page *),
-				      GFP_KERNEL |
-				      __GFP_NORETRY |
-				      __GFP_NOWARN);
-		if (pvec) {
-			/* defer to worker if malloc fails */
-			if (!i915_gem_object_is_readonly(obj))
-				gup_flags |= FOLL_WRITE;
-			pinned = pin_user_pages_fast_only(obj->userptr.ptr,
-							  num_pages, gup_flags,
-							  pvec);
-		}
-	}
+Also I'd sugguest you to note your changes in commit
+message instead of comments, Like:
 
-So looks like it can fallback to something slow too even if purely unlucky.  So
-looks safe so far for either solution above.
+```
+Signed-off-by: Dengcheng Zhu <dzhu@wavecomp.com>
+Signed-off-by: Peng Fan <fanpeng@loongson.cn>
+[fanpeng@loongson.cn: Add missing "bgtzl", "bltzl",
+"bgezl", "blezl", "beql" and "bnel" for pre-R6 processors]
+```
 
--- 
-Peter Xu
+Thanks.
 
+[1]: 
+https://s3-eu-west-1.amazonaws.com/downloads-mips/documents/MD00086-2B-MIPS32BIS-AFP-6.06.pdf
+
+- Jiaxun
+>
+>   tools/perf/arch/mips/Build                   |  2 +-
+>   tools/perf/arch/mips/annotate/instructions.c | 41 ++++++++++++++++++++++++++++
+>   tools/perf/util/annotate.c                   |  8 ++++++
+>   3 files changed, 50 insertions(+), 1 deletion(-)
+>   create mode 100644 tools/perf/arch/mips/annotate/instructions.c
+>
+> diff --git a/tools/perf/arch/mips/Build b/tools/perf/arch/mips/Build
+> index 1bb8bf6..e4e5f33 100644
+> --- a/tools/perf/arch/mips/Build
+> +++ b/tools/perf/arch/mips/Build
+> @@ -1 +1 @@
+> -# empty
+> +perf-y += util/
+> diff --git a/tools/perf/arch/mips/annotate/instructions.c b/tools/perf/arch/mips/annotate/instructions.c
+> new file mode 100644
+> index 0000000..8fae8a1
+> --- /dev/null
+> +++ b/tools/perf/arch/mips/annotate/instructions.c
+> @@ -0,0 +1,41 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +static
+> +struct ins_ops *mips__associate_ins_ops(struct arch *arch, const char *name)
+> +{
+> +	struct ins_ops *ops = NULL;
+> +
+> +	if (!strncmp(name, "bal", 3) ||
+> +	    !strncmp(name, "bgezal", 6) ||
+> +	    !strncmp(name, "bltzal", 6) ||
+> +	    !strncmp(name, "bgtzl", 5) ||
+> +	    !strncmp(name, "bltzl", 5) ||
+> +	    !strncmp(name, "bgezl", 5) ||
+> +	    !strncmp(name, "blezl", 5) ||
+> +	    !strncmp(name, "beql", 4) ||
+> +	    !strncmp(name, "bnel", 4) ||
+> +	    !strncmp(name, "jal", 3))
+> +		ops = &call_ops;
+> +	else if (!strncmp(name, "jr", 2))
+> +		ops = &ret_ops;
+> +	else if (name[0] == 'j' || name[0] == 'b')
+> +		ops = &jump_ops;
+> +	else
+> +		return NULL;
+> +
+> +	arch__associate_ins_ops(arch, name, ops);
+> +
+> +	return ops;
+> +}
+> +
+> +static
+> +int mips__annotate_init(struct arch *arch, char *cpuid __maybe_unused)
+> +{
+> +	if (!arch->initialized) {
+> +		arch->associate_instruction_ops = mips__associate_ins_ops;
+> +		arch->initialized = true;
+> +		arch->objdump.comment_char = '#';
+> +	}
+> +
+> +	return 0;
+> +}
+> diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+> index 0a1fcf7..80a4a3d 100644
+> --- a/tools/perf/util/annotate.c
+> +++ b/tools/perf/util/annotate.c
+> @@ -152,6 +152,7 @@ static int arch__associate_ins_ops(struct arch* arch, const char *name, struct i
+>   #include "arch/arm/annotate/instructions.c"
+>   #include "arch/arm64/annotate/instructions.c"
+>   #include "arch/csky/annotate/instructions.c"
+> +#include "arch/mips/annotate/instructions.c"
+>   #include "arch/x86/annotate/instructions.c"
+>   #include "arch/powerpc/annotate/instructions.c"
+>   #include "arch/s390/annotate/instructions.c"
+> @@ -175,6 +176,13 @@ static struct arch architectures[] = {
+>   		.init = csky__annotate_init,
+>   	},
+>   	{
+> +		.name = "mips",
+> +		.init = mips__annotate_init,
+> +		.objdump = {
+> +			.comment_char = '#',
+> +		},
+> +	},
+> +	{
+>   		.name = "x86",
+>   		.init = x86__annotate_init,
+>   		.instructions = x86__instructions,
