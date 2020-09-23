@@ -2,109 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82E85275F6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 20:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F36F4275F75
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 20:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726720AbgIWSGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 14:06:33 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:36338 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726413AbgIWSGd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 14:06:33 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08NI6O6R113435;
-        Wed, 23 Sep 2020 13:06:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600884384;
-        bh=Hhjy9v9VdpkwlFFrSW6d6ZyqmVJVZU9tfSurVGCzSB4=;
-        h=Subject:From:To:CC:References:Date:In-Reply-To;
-        b=s+6PqfFjG0MNL6W/W8+cClGYxgmEWFEVyTgaHT0A4s7guxjPY3763XHhx1BY7FaBy
-         M4pCd8wmMOW6Lp8N/SNrGKEM/ERu7Xt0IcGXwuXOvW2vGhGd0N7S4OXvlKCaQpygdd
-         UAo4J3+XDpwhqCO/yhNy6pfgEIebuJwFCfxp8dLY=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08NI6OJ8113098
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 23 Sep 2020 13:06:24 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 23
- Sep 2020 13:06:24 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 23 Sep 2020 13:06:24 -0500
-Received: from [10.250.71.177] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08NI6Nb6007743;
-        Wed, 23 Sep 2020 13:06:23 -0500
-Subject: Re: [RESEND PATCH can-next 1/2] can: tcan4x5x: Rename parse_config
- function
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <mkl@pengutronix.de>, <wg@grandegger.com>
-CC:     <linux-can@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200227183829.21854-1-dmurphy@ti.com>
- <057bc43f-7db5-de7e-dbf5-8bfe324a973e@ti.com>
-Message-ID: <b61b1a65-90c6-5380-d4ba-d8efcdb42094@ti.com>
-Date:   Wed, 23 Sep 2020 13:06:23 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726627AbgIWSJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 14:09:30 -0400
+Received: from mga11.intel.com ([192.55.52.93]:39818 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726515AbgIWSJ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 14:09:29 -0400
+IronPort-SDR: xpyLsANDwsiMRm8dvOM6TkfLgFAoq1fFhp0nYTqDIu4x8Lhrz4bd8OPRO68C9r7KSVzg3GORQG
+ 92bGH1ivXktQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="158332283"
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
+   d="scan'208";a="158332283"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 11:08:04 -0700
+IronPort-SDR: QJkMPzOfLNIkiYOMN9rZ2xZnXypTQJCtopq1wGF+R3syPkY/kr7SQEkzK7cu8sqSTlrg2fxY9W
+ m8xXgH+H51dA==
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
+   d="scan'208";a="305478192"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 11:08:04 -0700
+Date:   Wed, 23 Sep 2020 11:08:03 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH] KVM: SEV: shorten comments around sev_clflush_pages
+Message-ID: <20200923180803.GC32044@linux.intel.com>
+References: <20200923173401.1632172-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <057bc43f-7db5-de7e-dbf5-8bfe324a973e@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200923173401.1632172-1-pbonzini@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mark and Wolfgang
+On Wed, Sep 23, 2020 at 01:34:01PM -0400, Paolo Bonzini wrote:
+> Very similar content is present in four comments in sev.c.  Unfortunately
+> there are small differences that make it harder to place the comment
+> in sev_clflush_pages itself, but at least we can make it more concise.
+> 
+> Suggested-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
 
-On 4/28/20 2:48 PM, Dan Murphy wrote:
-> Marc
->
-> On 2/27/20 12:38 PM, Dan Murphy wrote:
->> Rename the tcan4x5x_parse_config function to tcan4x5x_get_gpios since
->> the function retrieves the gpio configurations from the firmware.
->>
->> Signed-off-by: Dan Murphy <dmurphy@ti.com>
->> ---
->>   drivers/net/can/m_can/tcan4x5x.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/net/can/m_can/tcan4x5x.c 
->> b/drivers/net/can/m_can/tcan4x5x.c
->> index 9821babef55e..37d53ecc560b 100644
->> --- a/drivers/net/can/m_can/tcan4x5x.c
->> +++ b/drivers/net/can/m_can/tcan4x5x.c
->> @@ -381,7 +381,7 @@ static int tcan4x5x_disable_state(struct 
->> m_can_classdev *cdev)
->>                     TCAN4X5X_DISABLE_INH_MSK, 0x01);
->>   }
->>   -static int tcan4x5x_parse_config(struct m_can_classdev *cdev)
->> +static int tcan4x5x_get_gpios(struct m_can_classdev *cdev)
->>   {
->>       struct tcan4x5x_priv *tcan4x5x = cdev->device_data;
->>       int ret;
->> @@ -507,7 +507,7 @@ static int tcan4x5x_can_probe(struct spi_device 
->> *spi)
->>       if (ret)
->>           return ret;
->>   -    ret = tcan4x5x_parse_config(mcan_class);
->> +    ret = tcan4x5x_get_gpios(mcan_class);
->>       if (ret)
->>           goto out_power;
->
-> I noticed this series never was reviewed and applied.  They are still 
-> applicable and were requested changes.
->
-Did you need me to combine all the patches on a m_can-next branch and 
-submit a PR after test?
-
-There are quite a few patches out there and they all seem relevant.
-
-Dan
-
-
-> Dan
->
+Reviewed-by: Sean Christopherson <sean.j.christopherson@intel.com>
