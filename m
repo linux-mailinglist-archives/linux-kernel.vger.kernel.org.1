@@ -2,146 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66C6B274F20
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 04:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FA45274F21
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 04:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727266AbgIWCnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 22:43:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23052 "EHLO
+        id S1727295AbgIWCn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 22:43:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25971 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726862AbgIWCnp (ORCPT
+        by vger.kernel.org with ESMTP id S1727287AbgIWCn4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 22:43:45 -0400
+        Tue, 22 Sep 2020 22:43:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600829023;
+        s=mimecast20190719; t=1600829035;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/3hHB/CEPSXmG4ARGQaB71EdY5egWAxtcNh/vDG4KOs=;
-        b=eB0wsEuv9AcI0CV43n1tKtLdzF2f5hUo9hICLv1daUZmiTBTQDYnkdSAQ5Oa3oCwW0PS1D
-        ij+FeRp2U+GDRYoiCgNVYL6P5axb6aDPQx6oMr/1Z4zuSufTT9GrzBX84FoICLQpSXILd2
-        AbT8R7ahIaiMEOoPcKjRDi8LsABpIjU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-167-M98clFEDMdmyaQmWlc20vQ-1; Tue, 22 Sep 2020 22:43:39 -0400
-X-MC-Unique: M98clFEDMdmyaQmWlc20vQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 86BD1186DD28;
-        Wed, 23 Sep 2020 02:43:37 +0000 (UTC)
-Received: from dhcp-128-65.nay.redhat.com (ovpn-13-77.pek2.redhat.com [10.72.13.77])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C348B5C1D0;
-        Wed, 23 Sep 2020 02:43:32 +0000 (UTC)
-Date:   Wed, 23 Sep 2020 10:43:29 +0800
-From:   Dave Young <dyoung@redhat.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>, bhe@redhat.com,
-        linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
-        Eric DeVolder <eric.devolder@oracle.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Tianyu Lani <Tianyu.Lan@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Masami Hiramatsu <masami.hiramatsu.pt@hitachi.com>,
-        HATAYAMA Daisuke <d.hatayama@jp.fujitsu.com>
-Subject: Re: [PATCH] Only allow to set crash_kexec_post_notifiers on boot time
-Message-ID: <20200923024329.GB3642@dhcp-128-65.nay.redhat.com>
-References: <20200918032546.GA4180@dhcp-128-65.nay.redhat.com>
- <20200918174743.0994c59f058451948837dcb6@linux-foundation.org>
- <20200921201811.GB3437@char.us.oracle.com>
- <87v9g6fuub.fsf@x220.int.ebiederm.org>
+        bh=L5Iph86XmuhHCGapZ7ui2au4oqLldEp1TWYtO710rHU=;
+        b=AuEiNKhL32mIuP7Xj28ttIrADaF0cOAEYbXTAC4LyK57duVTwMnH9ff53vApiXyKVomW4R
+        2e44tvMeSyrBsAOLjxIkUv1uGYU+wAEeLyZQlURcGRsrERxf2yKv8i3TqwuvfsqV3jUwzQ
+        C8rz2312K/gKwDF8I+kb+ren5jxuzA8=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-183-dumeZ1ljNIiJCzFkh7izCw-1; Tue, 22 Sep 2020 22:43:53 -0400
+X-MC-Unique: dumeZ1ljNIiJCzFkh7izCw-1
+Received: by mail-wr1-f69.google.com with SMTP id j7so8253263wro.14
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 19:43:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=L5Iph86XmuhHCGapZ7ui2au4oqLldEp1TWYtO710rHU=;
+        b=SObLcrBjAAiJfHQ3HA05EDvMGD1Q2h5mguPPjtBB2LRzqDWhWYnRcpfaY7tTnHuM+c
+         CjRqWRVne9atLzTbix5wu8Vkc5L4QCfq9lWfutF2vYpjgTEjejDEyUqkKX2xNEzIPcfm
+         LHPlulXD3O75qZIBeuL2lNHHJHVGbg9llps3bt6Bg4PAOsm2rt6fJWgHjra2eDU1DvmS
+         EK+ZZwMX5yNXvZwI+6M63T23r33IznoUKvKTxH1Y7kyHZ/yOVA4ygg5+O8c7Z282eH0l
+         fHTHWR4ZoKTyldsXRNwUU4sRsKZlaI8hcwqnXQYnK9jfnHF5UMJ9ySLa+k6kT+UZHFec
+         Fl5w==
+X-Gm-Message-State: AOAM531K2vApmEzpPWVP6CW+PxELEwwF1XDeuYyf9ZHL0FCbD8uBZB3p
+        P9DPZMOogWZU7XS8JKqaKrYw/J8/Ci+oM6TBChaXL3UScGP60MY45/D1/avxCin1Uwmre0QWtRz
+        rGPeZYnC1kqllS7QAaqOFPM50
+X-Received: by 2002:adf:f986:: with SMTP id f6mr8040332wrr.270.1600829032470;
+        Tue, 22 Sep 2020 19:43:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxujNV1OhkUe3ta9YvVqeawpCFmGsJIC6lIUnrWxeIHRF2Kv6kHIxIuUPBV+nuf//TFgzpi9A==
+X-Received: by 2002:adf:f986:: with SMTP id f6mr8040312wrr.270.1600829032236;
+        Tue, 22 Sep 2020 19:43:52 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:2eaa:3549:74e8:ad2b? ([2001:b07:6468:f312:2eaa:3549:74e8:ad2b])
+        by smtp.gmail.com with ESMTPSA id s11sm27588526wrt.43.2020.09.22.19.43.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Sep 2020 19:43:51 -0700 (PDT)
+Subject: Re: [PATCH v6 04/12] KVM: SVM: Modify intercept_exceptions to generic
+ intercepts
+To:     Babu Moger <babu.moger@amd.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "jmattson@google.com" <jmattson@google.com>,
+        "wanpengli@tencent.com" <wanpengli@tencent.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>
+References: <159985237526.11252.1516487214307300610.stgit@bmoger-ubuntu>
+ <159985250037.11252.1361972528657052410.stgit@bmoger-ubuntu>
+ <1654dd89-2f15-62b6-d3a7-53f3ec422dd0@redhat.com>
+ <20200914150627.GB6855@sjchrist-ice>
+ <e74fd79c-c3d0-5f9d-c01d-5d6f2c660927@redhat.com>
+ <408c7b65-11a5-29af-9b9f-ca8ccfcc0126@amd.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <4fea8c91-8991-2449-b8b7-180cdc8786ca@redhat.com>
+Date:   Wed, 23 Sep 2020 04:43:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87v9g6fuub.fsf@x220.int.ebiederm.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <408c7b65-11a5-29af-9b9f-ca8ccfcc0126@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ more people who may care about this param 
-On 09/21/20 at 08:45pm, Eric W. Biederman wrote:
-> Konrad Rzeszutek Wilk <konrad.wilk@oracle.com> writes:
+On 22/09/20 21:11, Babu Moger wrote:
 > 
-> > On Fri, Sep 18, 2020 at 05:47:43PM -0700, Andrew Morton wrote:
-> >> On Fri, 18 Sep 2020 11:25:46 +0800 Dave Young <dyoung@redhat.com> wrote:
-> >> 
-> >> > crash_kexec_post_notifiers enables running various panic notifier
-> >> > before kdump kernel booting. This increases risks of kdump failure.
-> >> > It is well documented in kernel-parameters.txt. We do not suggest
-> >> > people to enable it together with kdump unless he/she is really sure.
-> >> > This is also not suggested to be enabled by default when users are
-> >> > not aware in distributions.
-> >> > 
-> >> > But unfortunately it is enabled by default in systemd, see below
-> >> > discussions in a systemd report, we can not convince systemd to change
-> >> > it:
-> >> > https://github.com/systemd/systemd/issues/16661
-> >> > 
-> >> > Actually we have got reports about kdump kernel hangs in both s390x
-> >> > and powerpcle cases caused by the systemd change,  also some x86 cases
-> >> > could also be caused by the same (although that is in Hyper-V code
-> >> > instead of systemd, that need to be addressed separately).
-> >
-> > Perhaps it may be better to fix the issus on s390x and PowerPC as well?
-> >
-> >> > 
-> >> > Thus to avoid the auto enablement here just disable the param writable
-> >> > permission in sysfs.
-> >> > 
-> >> 
-> >> Well.  I don't think this is at all a desirable way of resolving a
-> >> disagreement with the systemd developers
-> >> 
-> >> At the above github address I'm seeing "ryncsn added a commit to
-> >> ryncsn/systemd that referenced this issue 9 days ago", "pstore: don't
-> >> enable crash_kexec_post_notifiers by default".  So didn't that address
-> >> the issue?
-> >
-> > It does in systemd, but there is a strong interest in making this on
-> > by default.
 > 
-> There is also a strong interest in removing this code entirely from the
-> kernel.
+>> -----Original Message-----
+>> From: Paolo Bonzini <pbonzini@redhat.com>
+>> Sent: Tuesday, September 22, 2020 8:39 AM
+>> To: Sean Christopherson <sean.j.christopherson@intel.com>
+>> Cc: Moger, Babu <Babu.Moger@amd.com>; vkuznets@redhat.com;
+>> jmattson@google.com; wanpengli@tencent.com; kvm@vger.kernel.org;
+>> joro@8bytes.org; x86@kernel.org; linux-kernel@vger.kernel.org;
+>> mingo@redhat.com; bp@alien8.de; hpa@zytor.com; tglx@linutronix.de
+>> Subject: Re: [PATCH v6 04/12] KVM: SVM: Modify intercept_exceptions to
+>> generic intercepts
+>>
+>> On 14/09/20 17:06, Sean Christopherson wrote:
+>>>> I think these should take a vector instead, and add 64 in the functions.
+>>>
+>>> And "s/int bit/u32 vector" + BUILD_BUG_ON(vector > 32)?
+>>
+>> Not sure if we can assume it to be constant, but WARN_ON_ONCE is good
+>> enough as far as performance is concerned.  The same int->u32 +
+>> WARN_ON_ONCE should be done in patch 1.
+> 
+> Paolo, Ok sure. Will change "int bit" to "u32 vector". I will send a new
+> patch to address this. This needs to be addressed in all these functions,
+> vmcb_set_intercept, vmcb_clr_intercept, vmcb_is_intercept,
+> set_exception_intercept, clr_exception_intercept, svm_set_intercept,
+> svm_clr_intercept, svm_is_intercept.
+> 
+> Also will add WARN_ON_ONCE(vector > 32); on set_exception_intercept,
+> clr_exception_intercept.  Does that sound good?
 
-Added Hyper-V people and people who created the param, it is below
-commit, I also want to remove it if possible, let's see how people
-think, but the least way should be to disable the auto setting in both systemd
-and kernel:
+I can do the fixes myself, no worries.  It should get to kvm/next this week.
 
-    commit f06e5153f4ae2e2f3b0300f0e260e40cb7fefd45
-    Author: Masami Hiramatsu <masami.hiramatsu.pt@hitachi.com>
-    Date:   Fri Jun 6 14:37:07 2014 -0700
-    
-        kernel/panic.c: add "crash_kexec_post_notifiers" option for kdump after panic_notifers
-    
-        Add a "crash_kexec_post_notifiers" boot option to run kdump after
-        running panic_notifiers and dump kmsg.  This can help rare situations
-        where kdump fails because of unstable crashed kernel or hardware failure
-        (memory corruption on critical data/code), or the 2nd kernel is already
-        broken by the 1st kernel (it's a broken behavior, but who can guarantee
-        that the "crashed" kernel works correctly?).
-    
-        Usage: add "crash_kexec_post_notifiers" to kernel boot option.
-    
-        Note that this actually increases risks of the failure of kdump.  This
-        option should be set only if you worry about the rare case of kdump
-        failure rather than increasing the chance of success.
-
-> 
-> This failure is a case in point.
-> 
-> I think I am at my I told you so point.  This is what all of the testing
-> over all the years has said.  Leaving functionality to the peculiarities
-> of firmware when you don't have to, and can actually control what is
-> going on doesn't work.
-> 
-> Eric
-> 
-> 
-
-Thanks
-Dave
+Paolo
 
