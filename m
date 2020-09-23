@@ -2,58 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48AF5274EC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 03:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72366274EC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 03:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727102AbgIWB6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 21:58:06 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:45817 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726548AbgIWB6G (ORCPT
+        id S1727049AbgIWB5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 21:57:05 -0400
+Received: from mail-il1-f195.google.com ([209.85.166.195]:45385 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726847AbgIWB5F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 21:58:06 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0U9oxump_1600826281;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U9oxump_1600826281)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 23 Sep 2020 09:58:02 +0800
-Subject: Re: [PATCH v18 24/32] mm/pgdat: remove pgdat lru_lock
-To:     Hugh Dickins <hughd@google.com>
-Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, willy@infradead.org,
-        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        shakeelb@google.com, iamjoonsoo.kim@lge.com,
-        richard.weiyang@gmail.com, kirill@shutemov.name,
-        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
-        vdavydov.dev@gmail.com, shy828301@gmail.com
-References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
- <1598273705-69124-25-git-send-email-alex.shi@linux.alibaba.com>
- <alpine.LSU.2.11.2009212248350.6434@eggly.anvils>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <8b6af431-b910-c06f-a4a7-1c383af1eceb@linux.alibaba.com>
-Date:   Wed, 23 Sep 2020 09:55:52 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        Tue, 22 Sep 2020 21:57:05 -0400
+Received: by mail-il1-f195.google.com with SMTP id h2so19285152ilo.12;
+        Tue, 22 Sep 2020 18:57:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=34pMhFQ28SHC3mzxbMUDtsJGYufWbe2RlD1uSSeVBbQ=;
+        b=ngMgJreq97y7VSnZSbgLuwuw8XXk9scYsIiN/FDI/FpB+Uh9Jm2ggdhPKP1PGGSOdd
+         1Yq1LcelwojMnbwmBZ1m7WA9fBgWSI7jU3q9VV9XrbqAf9/2BGSMkpriLJQukqD15FJi
+         aQiAT9JARR4dgHue/eO3oHbhX+TAewFmPSZMJ5U2XiYtnKWvOgKVlR4QH9JdH3tbSrla
+         lpb7uatxq+R4z7yPqkf8hrXMOFUGSFL2Byp5ca4Pbn50YQRq0dz2fGFzOLImUeeDRe6W
+         hKgT6lyCyfRbKPgsw5dBdA+cFI7yKVnwyuDKIo8+LNMKnQvI/AkCzGyw6jb5Ta0qE8fO
+         SSYA==
+X-Gm-Message-State: AOAM533Q+bOanVzc1sV/xf3sQ0eeePcO05pzg597y9ZafSOA8Fsz+KN9
+        f7vB0+ALzTmJw+Z86+gTqg==
+X-Google-Smtp-Source: ABdhPJw/o4PwxGTeqWV+adBWTIEGsOkRpZod6MJ/eFAMyAZXrL7UJ3MpPMRsbXfGwT/zjEc/YHa5jQ==
+X-Received: by 2002:a92:c7b0:: with SMTP id f16mr6998290ilk.137.1600826224427;
+        Tue, 22 Sep 2020 18:57:04 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id j77sm10254679ili.31.2020.09.22.18.57.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 18:57:03 -0700 (PDT)
+Received: (nullmailer pid 3701896 invoked by uid 1000);
+        Wed, 23 Sep 2020 01:57:02 -0000
+Date:   Tue, 22 Sep 2020 19:57:02 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Gilad Ben-Yossef <gilad@benyossef.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ofir Drang <ofir.drang@arm.com>, linux-crypto@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: crypto: update ccree optional params
+Message-ID: <20200923015702.GA3676455@bogus>
+References: <20200916071950.1493-1-gilad@benyossef.com>
+ <20200916071950.1493-2-gilad@benyossef.com>
 MIME-Version: 1.0
-In-Reply-To: <alpine.LSU.2.11.2009212248350.6434@eggly.anvils>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916071950.1493-2-gilad@benyossef.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-ÔÚ 2020/9/22 ÏÂÎç1:53, Hugh Dickins Ð´µÀ:
->> Now pgdat.lru_lock was replaced by lruvec lock. It's not used anymore.
->>
->> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
->> Reviewed-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> I don't take pleasure in spoiling your celebrations and ceremonies,
-> but I strongly agree with AlexD that this should simply be merged
-> into the big one, 20/32.  That can be ceremony enough.
+On Wed, Sep 16, 2020 at 10:19:49AM +0300, Gilad Ben-Yossef wrote:
+> Document ccree driver supporting new optional parameters allowing to
+> customize the DMA transactions cache parameters and ACE bus sharability
+> properties.
 > 
+> Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
+> ---
+>  Documentation/devicetree/bindings/crypto/arm-cryptocell.txt | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt b/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
+> index 6130e6eb4af8..1a1603e457a8 100644
+> --- a/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
+> +++ b/Documentation/devicetree/bindings/crypto/arm-cryptocell.txt
+> @@ -13,6 +13,10 @@ Required properties:
+>  Optional properties:
+>  - clocks: Reference to the crypto engine clock.
+>  - dma-coherent: Present if dma operations are coherent.
+> +- awcache: Set write transactions cache attributes
+> +- arcache: Set read transactions cache attributes
 
-folded into that patch.
-Thanks!
+dma-coherent already implies these are 011x, 101x or 111x. In my limited 
+experience configuring these (Calxeda SATA and ethernet), writeback, 
+write-allocate was pretty much always optimal. 
+
+> +- awdomain: Set write transactions ACE sharability domain (712, 703, 713 only)
+> +- ardomain: Set read transactions ACE sharability domain (712, 703, 713 only)
+
+This probably needs something common. We may need something for Mali, 
+too. I don't think different settings for read and write makes much 
+sense nor does anything beyond IS or OS. 
+
+These could also just be implied by the compatible string (and requiring 
+an SoC specific one).
+
+Rob
