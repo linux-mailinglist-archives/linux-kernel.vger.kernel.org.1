@@ -2,127 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67514276066
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 20:47:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D306276071
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 20:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726769AbgIWSrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 14:47:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40844 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726422AbgIWSrv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 14:47:51 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 36E7C20637;
-        Wed, 23 Sep 2020 18:47:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600886870;
-        bh=lITuSNDF8g6ohhE2JO6SxXuIW45a/6sOfc0+p3we/Z0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=m0VyAyBwqMaGh00o9GFG69Lur1gU7A7ZaVQvrVeKa3mAJgCwhOB6x2OvByUm5IVu4
-         ioMv2LRn6+NRMz+4WpqRAEAAg+uhiPhlBjs9gKjEQMnUerWBSvVQp0svk6subYgGwE
-         ixZ/+t1ongVuuzNsJDpJUaeTlDtcel0GEm9PFvMI=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     rajneesh.bhardwaj@intel.com, vishwanath.somayaji@intel.com
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Rajat Jain <rajatja@google.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>
-Subject: [PATCH] platform/x86: intel_pmc_core: do not create a static struct device
-Date:   Wed, 23 Sep 2020 20:48:03 +0200
-Message-Id: <20200923184803.192265-1-gregkh@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
+        id S1726852AbgIWStX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 14:49:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726460AbgIWStX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 14:49:23 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF128C0613CE;
+        Wed, 23 Sep 2020 11:49:22 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id u4so501396ljd.10;
+        Wed, 23 Sep 2020 11:49:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FbK+j42dWRK2s1x0oaQhi9+BRDAcyqnHMQWrUaVkakI=;
+        b=pxc702TVV231b7p2aL4oSu3UqURyE2IucXBJdE0cFp1S9cLk62cjI12AtE9FGhF+xY
+         dAM5vm5GIwLBZZafN/Capt0djv9hzrrfyBv4an1mIowfTj0YNNyBM3DGgqFZWyAJqJu8
+         L8gC9SKYsWuyf1iXkE58PO9qVl0DMP/A3MdP3dV4JMIet8VRwrTupmDJGnZ9D3+7aB/6
+         65kFdhFikXHJiJM3OgLDQ7at/xQ3njRllnV0vKj9vV9FfRDgkrjj71X59owhG5XuvNO5
+         ny4Pf+/WlM4dVRDmwqD6kl9s2SAQGXfJ7BnFxjBRBa5Wt/6F/35YzSw6xJ5kd4LELfE6
+         e8jQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FbK+j42dWRK2s1x0oaQhi9+BRDAcyqnHMQWrUaVkakI=;
+        b=pYLhDvcQg8h+t19XRaGPwnMB+Rq9HYITG6FNQk6s/80CgJdUG7VBuyjocKrR3TBOux
+         mSEP9apNwGxKI+dUAIPU9g1AHlJf6WwzNQhY5doTxIS0UVTXj55nfwQCv9kaY/GZzd7N
+         oWTMRfDSxFWoWkUtpO1yNnbFQ8SZfaP+nCpDKCQMWAT8LgGkvzCTcyGm2675LfCveGGq
+         wTFESPTRCOAwFHi20WEuDstvUqqTeZh4dYshjzKJVs/p6/W4Q7UhRZMWe3Q8VpLpxrSc
+         f9uL4k0gi68pXMW6jwaXHyKrxgTCadFjXsxveVcHGXKmLg+cFPrK5OYP5z2E2cDr5t/+
+         lg2Q==
+X-Gm-Message-State: AOAM532IsT4rOfseFqXg7G3u2o4DBePINZ0L+8VhpucUAAcJTAY01QQg
+        rMTNAiScPQy7TFzxF8cp8y7mPJr9nyo1O3biQik=
+X-Google-Smtp-Source: ABdhPJx9ba2vvV0ptXmwQCajVB185yIhjs+5/IVdOR63X4tOvdDDL/i4APGlb0Hyd7AuhWu3FqfAVP4Ofcm7Xsn3bks=
+X-Received: by 2002:a05:651c:cb:: with SMTP id 11mr419441ljr.2.1600886961295;
+ Wed, 23 Sep 2020 11:49:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200923160156.80814-1-lmb@cloudflare.com> <CAEf4BzZJQBdW72TRCuW7q0c3kke1Qan59fDzV0DKN_EOAgXGaw@mail.gmail.com>
+In-Reply-To: <CAEf4BzZJQBdW72TRCuW7q0c3kke1Qan59fDzV0DKN_EOAgXGaw@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 23 Sep 2020 11:49:09 -0700
+Message-ID: <CAADnVQ+m+b5GKxk+sw-R+374vQRbQn59MP4g1uKPghnSWt6pVw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: explicitly size compatible_reg_types
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Lorenz Bauer <lmb@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A struct device is a dynamic structure, with reference counting.
-"Tricking" the kernel to make a dynamic structure static, by working
-around the driver core release detection logic, is not nice.
+On Wed, Sep 23, 2020 at 9:05 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Sep 23, 2020 at 9:03 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+> >
+> > Arrays with designated initializers have an implicit length of the highest
+> > initialized value plus one. I used this to ensure that newly added entries
+> > in enum bpf_reg_type get a NULL entry in compatible_reg_types.
+> >
+> > This is difficult to understand since it requires knowledge of the
+> > peculiarities of designated initializers. Use __BPF_ARG_TYPE_MAX to size
+> > the array instead.
+> >
+> > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> > Suggested-by: Alexei Starovoitov <ast@kernel.org>
+> > ---
+>
+> I like this more as well.
+>
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-Because of this, this code has been used as an example for others on
-"how to do things", which is just about the worst thing possible to have
-happen.
-
-Fix this all up by making the platform device dynamic and providing a
-real release function.
-
-Cc: Rajneesh Bhardwaj <rajneesh.bhardwaj@intel.com>
-Cc: Vishwanath Somayaji <vishwanath.somayaji@intel.com>
-Cc: Darren Hart <dvhart@infradead.org>
-Cc: Andy Shevchenko <andy@infradead.org>
-Cc: Rajat Jain <rajatja@google.com>
-Cc: platform-driver-x86@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Reported-by: Maximilian Luz <luzmaximilian@gmail.com>
-Fixes: b02f6a2ef0a1 ("platform/x86: intel_pmc_core: Attach using APCI HID "INT33A1"")
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/platform/x86/intel_pmc_core_pltdrv.c | 26 +++++++++++++-------
- 1 file changed, 17 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/platform/x86/intel_pmc_core_pltdrv.c b/drivers/platform/x86/intel_pmc_core_pltdrv.c
-index 731281855cc8..73797680b895 100644
---- a/drivers/platform/x86/intel_pmc_core_pltdrv.c
-+++ b/drivers/platform/x86/intel_pmc_core_pltdrv.c
-@@ -20,15 +20,10 @@
- 
- static void intel_pmc_core_release(struct device *dev)
- {
--	/* Nothing to do. */
-+	kfree(dev);
- }
- 
--static struct platform_device pmc_core_device = {
--	.name = "intel_pmc_core",
--	.dev  = {
--		.release = intel_pmc_core_release,
--	},
--};
-+static struct platform_device *pmc_core_device;
- 
- /*
-  * intel_pmc_core_platform_ids is the list of platforms where we want to
-@@ -52,6 +47,8 @@ MODULE_DEVICE_TABLE(x86cpu, intel_pmc_core_platform_ids);
- 
- static int __init pmc_core_platform_init(void)
- {
-+	int retval;
-+
- 	/* Skip creating the platform device if ACPI already has a device */
- 	if (acpi_dev_present("INT33A1", NULL, -1))
- 		return -ENODEV;
-@@ -59,12 +56,23 @@ static int __init pmc_core_platform_init(void)
- 	if (!x86_match_cpu(intel_pmc_core_platform_ids))
- 		return -ENODEV;
- 
--	return platform_device_register(&pmc_core_device);
-+	pmc_core_device = kzalloc(sizeof(*pmc_core_device), GFP_KERNEL);
-+	if (!pmc_core_device)
-+		return -ENOMEM;
-+
-+	pmc_core_device->name = "intel_pmc_core";
-+	pmc_core_device->dev.release = intel_pmc_core_release;
-+
-+	retval = platform_device_register(pmc_core_device);
-+	if (retval)
-+		kfree(pmc_core_device);
-+
-+	return retval;
- }
- 
- static void __exit pmc_core_platform_exit(void)
- {
--	platform_device_unregister(&pmc_core_device);
-+	platform_device_unregister(pmc_core_device);
- }
- 
- module_init(pmc_core_platform_init);
--- 
-2.28.0
-
+Applied. Thanks
