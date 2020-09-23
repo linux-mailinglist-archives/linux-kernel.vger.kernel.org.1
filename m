@@ -2,175 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B154F275E2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 19:05:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A918F275E32
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 19:05:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726732AbgIWRFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 13:05:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57410 "EHLO
+        id S1726773AbgIWRFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 13:05:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726537AbgIWRFL (ORCPT
+        with ESMTP id S1726466AbgIWRFn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 13:05:11 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F14A8C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 10:05:10 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id z17so645946lfi.12
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 10:05:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e4dEeErX3fsJf6YfVdhDLGuUkUQWGltXcsACjrY/uUI=;
-        b=m+5t6/WReDb3eJGSXP+SUuLUwfRUdODd/gkzMeTwF+vQXEDdtXpZ8z0pgCktidjkqk
-         dex5yOo+KZyYZt/RngNJ03vEPmDiKY3E6Rs4mxpYyUot6d8Pb2RWyI1hI3bhHzEwjIXC
-         FbODuVFocd5UQvROdQS52y2Q5RL+//IYAHs9u9nL2lxRY/vSWnKlPmCaC8N4iirqRmrP
-         1RPzrLASW/3/fZQQEHL3ngFIxi/nWH0rIyY+RwDL7FZDsrQs8f1zsXwnhT2eoVSBZjL+
-         6b8hFmiVlFaDmmzvZerKvOJ8l/WtRB1yCuow/q7JzeskhwQo2zn64WHaob2SmO5I0GdU
-         NI6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e4dEeErX3fsJf6YfVdhDLGuUkUQWGltXcsACjrY/uUI=;
-        b=N+BBErYORa+vL39ct0nvHQi4pUFLxhPv+g8D2UQ8N/ViZZpKUnGu+tPv3z6rxII8vP
-         yhSyA/ZVxgQqY7CPOWuWla/0glmN9r7LbG/sBP2UJyoHofi1ZCftdzTz99d2ebmnD51X
-         eiE6YhgTYLGAxTijk1mZGuwSoVUiiew4a2vDN4iIO07/AdPyaLhOvu21pbNYoGaZrLno
-         KWtonI//n0zXfa9VqYyv00mSHf3rUQRbigX2bz9hyoG6d+HloFiyXfGSA/YDrPPj4Kni
-         uAYVIl33QemGG9IPjEeOanOeYV7EpOGHaNun1SHYu59sQFVR3MYI7/LBvtPSCi+Cx+GK
-         9aWQ==
-X-Gm-Message-State: AOAM5310ZTEamhU/WyQF8azg/8t0asEsW+4U+KPm23nGJ2mue1nXXE8h
-        /YqME6BZT3K1hU3I9Y/TiWepJH4dbhYfU/gTUjeBwg==
-X-Google-Smtp-Source: ABdhPJxyVSTU6OwDrnwBr27zTvXQW3Cc+Jmn5hKL9YGv53XywBc2KXEux75LUE51dxjMmNkE1Wk1wlrvd7lleGb/XqQ=
-X-Received: by 2002:a05:6512:304a:: with SMTP id b10mr229017lfb.475.1600880708833;
- Wed, 23 Sep 2020 10:05:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200817105137.19296-1-sjpark@amazon.com>
-In-Reply-To: <20200817105137.19296-1-sjpark@amazon.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 23 Sep 2020 10:04:57 -0700
-Message-ID: <CALvZod7nA+_hupDrtp-G886XrgmBVf7izs5VH+1mEj6SNnyWJw@mail.gmail.com>
-Subject: Re: [PATCH v20 00/15] Introduce Data Access MONitor (DAMON)
-To:     SeongJae Park <sjpark@amazon.com>
+        Wed, 23 Sep 2020 13:05:43 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE806C0613CE;
+        Wed, 23 Sep 2020 10:05:42 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kL8Ct-004fq0-Js; Wed, 23 Sep 2020 17:05:27 +0000
+Date:   Wed, 23 Sep 2020 18:05:27 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Christoph Hellwig <hch@lst.de>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@huawei.com,
-        Andrea Arcangeli <aarcange@redhat.com>, acme@kernel.org,
-        alexander.shishkin@linux.intel.com, amit@kernel.org,
-        benh@kernel.crashing.org, brendan.d.gregg@gmail.com,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Qian Cai <cai@lca.pw>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Hildenbrand <david@redhat.com>, dwmw@amazon.com,
-        "Du, Fan" <fan.du@intel.com>, foersleo@amazon.de,
-        Greg Thelen <gthelen@google.com>,
-        Ian Rogers <irogers@google.com>, jolsa@redhat.com,
-        "Kirill A. Shutemov" <kirill@shutemov.name>, mark.rutland@arm.com,
-        Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, namhyung@kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Rik van Riel <riel@surriel.com>,
-        David Rientjes <rientjes@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>, rppt@kernel.org,
-        sblbir@amazon.com, shuah@kernel.org, sj38.park@gmail.com,
-        snu@amazon.de, Vlastimil Babka <vbabka@suse.cz>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Huang Ying <ying.huang@intel.com>, zgf574564920@gmail.com,
-        linux-damon@amazon.com, Linux MM <linux-mm@kvack.org>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
+        David Laight <David.Laight@aculab.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-aio@kvack.org, io-uring@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        netdev@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH 5/9] fs: remove various compat readv/writev helpers
+Message-ID: <20200923170527.GQ3421308@ZenIV.linux.org.uk>
+References: <20200923060547.16903-1-hch@lst.de>
+ <20200923060547.16903-6-hch@lst.de>
+ <20200923142549.GK3421308@ZenIV.linux.org.uk>
+ <20200923143251.GA14062@lst.de>
+ <20200923145901.GN3421308@ZenIV.linux.org.uk>
+ <20200923163831.GO3421308@ZenIV.linux.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200923163831.GO3421308@ZenIV.linux.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 3:52 AM SeongJae Park <sjpark@amazon.com> wrote:
->
-> From: SeongJae Park <sjpark@amazon.de>
->
-> Changes from Previous Version
-> =============================
->
-> - Place 'CREATE_TRACE_POINTS' after '#include' statements (Steven Rostedt)
-> - Support large record file (Alkaid)
-> - Place 'put_pid()' of virtual monitoring targets in 'cleanup' callback
-> - Avoid conflict between concurrent DAMON users
-> - Update evaluation result document
->
-> Introduction
-> ============
->
-> DAMON is a data access monitoring framework subsystem for the Linux kernel.
-> The core mechanisms of DAMON called 'region based sampling' and 'adaptive
-> regions adjustment' (refer to 'mechanisms.rst' in the 11th patch of this
-> patchset for the detail) make it
->
->  - accurate (The monitored information is useful for DRAM level memory
->    management. It might not appropriate for Cache-level accuracy, though.),
->  - light-weight (The monitoring overhead is low enough to be applied online
->    while making no impact on the performance of the target workloads.), and
->  - scalable (the upper-bound of the instrumentation overhead is controllable
->    regardless of the size of target workloads.).
->
-> Using this framework, therefore, the kernel's core memory management mechanisms
-> such as reclamation and THP can be optimized for better memory management.  The
-> experimental memory management optimization works that incurring high
-> instrumentation overhead will be able to have another try.  In user space,
-> meanwhile, users who have some special workloads will be able to write
-> personalized tools or applications for deeper understanding and specialized
-> optimizations of their systems.
->
-> Evaluations
-> ===========
->
-> We evaluated DAMON's overhead, monitoring quality and usefulness using 25
-> realistic workloads on my QEMU/KVM based virtual machine running a kernel that
-> v20 DAMON patchset is applied.
->
-> DAMON is lightweight.  It increases system memory usage by 0.12% and slows
-> target workloads down by 1.39%.
->
-> DAMON is accurate and useful for memory management optimizations.  An
-> experimental DAMON-based operation scheme for THP, 'ethp', removes 88.16% of
-> THP memory overheads while preserving 88.73% of THP speedup.  Another
-> experimental DAMON-based 'proactive reclamation' implementation, 'prcl',
-> reduces 91.34% of residential sets and 25.59% of system memory footprint while
-> incurring only 1.58% runtime overhead in the best case (parsec3/freqmine).
->
-> NOTE that the experimentail THP optimization and proactive reclamation are not
-> for production but just only for proof of concepts.
->
-> Please refer to the official document[1] or "Documentation/admin-guide/mm: Add
-> a document for DAMON" patch in this patchset for detailed evaluation setup and
-> results.
->
-> [1] https://damonitor.github.io/doc/html/latest-damon/admin-guide/mm/damon/eval.html
->
+On Wed, Sep 23, 2020 at 05:38:31PM +0100, Al Viro wrote:
+> On Wed, Sep 23, 2020 at 03:59:01PM +0100, Al Viro wrote:
+> 
+> > > That's a very good question.  But it does not just compile but actually
+> > > works.  Probably because all the syscall wrappers mean that we don't
+> > > actually generate the normal names.  I just tried this:
+> > > 
+> > > --- a/include/linux/syscalls.h
+> > > +++ b/include/linux/syscalls.h
+> > > @@ -468,7 +468,7 @@ asmlinkage long sys_lseek(unsigned int fd, off_t offset,
+> > >  asmlinkage long sys_read(unsigned int fd, char __user *buf, size_t count);
+> > >  asmlinkage long sys_write(unsigned int fd, const char __user *buf,
+> > >                             size_t count);
+> > > -asmlinkage long sys_readv(unsigned long fd,
+> > > +asmlinkage long sys_readv(void *fd,
+> > > 
+> > > for fun, and the compiler doesn't care either..
+> > 
+> > Try to build it for sparc or ppc...
+> 
+> FWIW, declarations in syscalls.h used to serve 4 purposes:
+> 	1) syscall table initializers needed symbols declared
+> 	2) direct calls needed the same
+> 	3) catching mismatches between the declarations and definitions
+> 	4) centralized list of all syscalls
+> 
+> (2) has been (thankfully) reduced for some time; in any case, ksys_... is
+> used for the remaining ones.
+> 
+> (1) and (3) are served by syscalls.h in architectures other than x86, arm64
+> and s390.  On those 3 (1) is done otherwise (near the syscall table initializer)
+> and (3) is not done at all.
+> 
+> I wonder if we should do something like
+> 
+> SYSCALL_DECLARE3(readv, unsigned long, fd, const struct iovec __user *, vec,
+> 		 unsigned long, vlen);
+> in syscalls.h instead, and not under that ifdef.
+> 
+> Let it expand to declaration of sys_...() in generic case and, on x86, into
+> __do_sys_...() and __ia32_sys_...()/__x64_sys_...(), with types matching
+> what SYSCALL_DEFINE ends up using.
+> 
+> Similar macro would cover compat_sys_...() declarations.  That would
+> restore mismatch checking for x86 and friends.  AFAICS, the cost wouldn't
+> be terribly high - cpp would have more to chew through in syscalls.h,
+> but it shouldn't be all that costly.  Famous last words, of course...
+> 
+> Does anybody see fundamental problems with that?
 
-
-Hi SeongJae,
-
-Sorry for the late response. I will start looking at this series in
-more detail in the next couple of weeks. I have a couple of high level
-comments for now.
-
-1) Please explain in the cover letter why someone should prefer to use
-DAMON instead of Page Idle Tracking.
-
-2) Also add what features Page Idle Tracking provides which the first
-version of DAMON does not provide (like page level tracking, physical
-or unmapped memory tracking e.t.c) and tell if you plan to add such
-features to DAMON in future. Basically giving reasons to not block the
-current version of DAMON until it is feature-rich.
-
-3) I think in the first mergeable version of DAMON, I would prefer to
-have support to control (create/delete/account) the DAMON context. You
-already have a RFC series on it. I would like to have that series part
-of this one.
-
-I will go through individual patches to provide more detailed
-feedback, so, you don't need to post the next version until then.
-
-thanks,
-Shakeel
+Just to make it clear - I do not propose to fold that into this series;
+there we just need to keep those declarations in sync with fs/read_write.c
