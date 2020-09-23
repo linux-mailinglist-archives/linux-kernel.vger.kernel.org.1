@@ -2,118 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89333275877
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:13:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17181275879
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726652AbgIWNNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 09:13:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49900 "EHLO
+        id S1726600AbgIWNOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 09:14:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726332AbgIWNN1 (ORCPT
+        with ESMTP id S1726130AbgIWNOq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 09:13:27 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D77E9C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 06:13:26 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id s13so7111806wmh.4
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 06:13:26 -0700 (PDT)
+        Wed, 23 Sep 2020 09:14:46 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D700C0613CE;
+        Wed, 23 Sep 2020 06:14:46 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id g29so14387897pgl.2;
+        Wed, 23 Sep 2020 06:14:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=6IqVkNIHaeQrr2W7CSnbF5wual+dyS7CT61lBn9svUs=;
-        b=AJXtHSRlktbbO2b6KQ6ldIzMmeUtPlde1afiP85l0pc4RgEEZfMEYbe+UC5GEz8gqT
-         Fzt6HEaxrR762K+h5Me89di3TQZLNJy1Tm6jQODhQVMlrzVt1n6N/OGlcr7d4MrNcEq9
-         7LJrMSUZQ57ZFkWFFATgYP8TDyyxvEtXiqrijifTGJBY6hkKTerm2Zxpc5tuYV8hOBo1
-         x59jlRh5Rd/cErcPZp4mq7zvJoe51K9hPGnaC9dEZ0sYGK/NseQn3thj0GDB2IPg5z87
-         qheQAZDe9NVk6y41hsoQHQrJPrN90aNxa6Vim9k6+8Yj06F2VeabvrPaa5IfZQWbY4dU
-         FwaA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lq7P4em5oOEEGsVeTMXTgpUywtWAmtx3DAz7/cgxfa0=;
+        b=iLCxQBHPziNEon+vxShYYozSGipdEybIhqYoFr1ku1zCaZYrhLXItCNbLn09vVo5am
+         PNcmssnR1Ud5EPHf9vOzxI7V3GnLL0PwpYuOUnE8lsdVXE/++/j+ik1EsVGXnTAOeOgx
+         pWd4JSSAKJ0YEq65fO+5a8XxRcB09T1V/hMvE0qMZS5EZW1JpNRa9wLxyV4IjuLAprp8
+         cwsB0cT4OoVpZYh3qhaD5RlP5nRJ10nnus3c7oazmIXONm3DQBx/LrPvpq3jHqjFLOrw
+         FyIkirf/cABRnjApD7sJdqsYtlqPQppo+DBaFPd1P4QmVC2KxO1K5ydWokjIIxxmdFzK
+         TZxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=6IqVkNIHaeQrr2W7CSnbF5wual+dyS7CT61lBn9svUs=;
-        b=b1l35Ru5sJiqsFLhby9CXSImMFsRc6RooJs72SYPwCRT2hx4o2t75FGc6uJMnGxOr5
-         0/ijClgec0Z0wmhKAC7gEAFr1nO2xftHNDGTrrwBhltNBwQesl2KruWbMWB+PlNUMrIg
-         AyLzLzeiTe3dQxQJWEAhS0UJFWX5yRT3ql/5OjQFJ+qFIXz84IPrAepLWW+vpkRQs2ZF
-         GdI7bSlbmdpV1VxDCtZSLtVsm2oLoifN/zZ7MhiJFpSCxaNpR8r4HrVn5R5Ek9l/ENWm
-         U58VypHWdaWoYzR2rfsWmWery3M4JVcSmC5lX/ZxTxmUrIX1Dk7S7XeM6cplM/GogEsH
-         IMvQ==
-X-Gm-Message-State: AOAM532ZGMH0BTxMitzcGVJBjRsBo4bSYr396xU9LEmTbNvq60S9PdM/
-        Dbfrl2TcTr5tzLaRwO3x+MGN0p1E9acI7gD8N1GT4g==
-X-Google-Smtp-Source: ABdhPJyJF0t/rtDU7WOxjawXwvOPvE8EaBqSOUoW4aN3E9Lyo3zvndxSVjWXB6hPgTLtg17jFdU3KkFRL3KMW7jVQ9Y=
-X-Received: by 2002:a7b:cd05:: with SMTP id f5mr6394174wmj.116.1600866805441;
- Wed, 23 Sep 2020 06:13:25 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lq7P4em5oOEEGsVeTMXTgpUywtWAmtx3DAz7/cgxfa0=;
+        b=j9keX8sbX9v65jmyqguVU8fYDuopPbDzHE9QxPkTu/+GL1zmWvBynyDAO4sQoqeG2W
+         c9Xd2FFBWyOWiRrP5bljEa/7RqLhzl4a6JrMQJDZLlM7GsD73op8/weQDG/vhbKlNRDx
+         NLCOvHkshkc/LYXJEtiLNZCEoOzKr7MmI1Yl5JTchoy3KKHzHvfCp/yLxSr2mr1KUeyn
+         pYEIQXxOoZLE2TXyetnuCD3xfRO63jcR0ARoh345luM7AeSIkhOb2dUkvN4Tnya4Iiqc
+         VP5Jre1C9SfiRoc7QwZbdAYlTEtE6ev5LQjSuoWRjKiUZFhOJas0HcE8oAQWDldjAg/C
+         QmMg==
+X-Gm-Message-State: AOAM532oOj+Ud6BvFH219tcPC2Y9ZCow+33XSYEDFR8X90VbJHSp2QJG
+        BEYEIkxYBzKmjpoD1GRknM1qkMzXAqOVplWP
+X-Google-Smtp-Source: ABdhPJwxSj40aOAyVrAEW2cP5r7qN6duwoQwF3+6PrLsvfRUpyhdnN2Lk3WxofEYh48o/mOC++4E+Q==
+X-Received: by 2002:a05:6a00:7ce:b029:142:2501:35ea with SMTP id n14-20020a056a0007ceb0290142250135eamr9028775pfu.74.1600866885869;
+        Wed, 23 Sep 2020 06:14:45 -0700 (PDT)
+Received: from universe.lan (80.251.221.29.16clouds.com. [80.251.221.29])
+        by smtp.gmail.com with ESMTPSA id kf10sm5045280pjb.2.2020.09.23.06.14.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2020 06:14:45 -0700 (PDT)
+From:   Artem Lapkin <email2tema@gmail.com>
+X-Google-Original-From: Artem Lapkin <art@khadas.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     robh+dt@kernel.org, art@khadas.com, jbx6244@gmail.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nick@khadas.com, gouwa@khadas.com
+Subject: [PATCH v2 0/2] arm64: dts: rockchip: add spiflash and  ir-receiver nodes to rk3399-khadas-edge
+Date:   Wed, 23 Sep 2020 21:14:22 +0800
+Message-Id: <20200923131424.1612960-1-art@khadas.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <1600774764-50332-1-git-send-email-liheng40@huawei.com>
-In-Reply-To: <1600774764-50332-1-git-send-email-liheng40@huawei.com>
-From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
-Date:   Wed, 23 Sep 2020 14:13:07 +0100
-Message-ID: <CAPY8ntCnsD=LfqxSG-HrkY1ZjUPSaXbGKC=nc4Xkc7a+a7jF3w@mail.gmail.com>
-Subject: Re: [PATCH -next] drm/v3d: Remove set but not used variable
-To:     Li Heng <liheng40@huawei.com>
-Cc:     Eric Anholt <eric@anholt.net>, airlied@linux.ie, daniel@ffwll.ch,
-        LKML <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+add missed spiflash and ir-receiver dts nodes to Khadas Edge Board
 
-On Wed, 23 Sep 2020 at 08:53, Li Heng <liheng40@huawei.com> wrote:
->
-> This addresses the following gcc warning with "make W=3D1":
->
-> drivers/gpu/drm/v3d/v3d_drv.c:73:32: warning:
-> =E2=80=98v3d_v3d_pm_ops=E2=80=99 defined but not used [-Wunused-const-var=
-iable=3D]
->
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Li Heng <liheng40@huawei.com>
-> ---
->  drivers/gpu/drm/v3d/v3d_drv.c | 4 ----
->  1 file changed, 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/v3d/v3d_drv.c b/drivers/gpu/drm/v3d/v3d_drv.=
-c
-> index 9f7c261..05140db 100644
-> --- a/drivers/gpu/drm/v3d/v3d_drv.c
-> +++ b/drivers/gpu/drm/v3d/v3d_drv.c
-> @@ -70,10 +70,6 @@ static int v3d_runtime_resume(struct device *dev)
->  }
->  #endif
->
-> -static const struct dev_pm_ops v3d_v3d_pm_ops =3D {
-> -       SET_RUNTIME_PM_OPS(v3d_runtime_suspend, v3d_runtime_resume, NULL)
-> -};
-> -
+Artem Lapkin (2):
+  arm64: dts: rockchip: add spiflash node to rk3399-khadas-edge
+  arm64: dts: rockchip: add ir-receiver node to rk3399-khadas-edge
 
-This looks to be the wrong approach, and I think a patch has got
-dropped somewhere.
+ .../boot/dts/rockchip/rk3399-khadas-edge.dtsi | 24 +++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-On our Raspberry Pi downstream vendor tree we have a patch [1] from
-Eric that renames v3d_v3d_pm_ops to v3d_pm_ops (don't need the
-duplicated suffix), and adds it to v3d_platform_driver. Why that never
-made it through the mainline trees I don't know.
+-- 
+2.25.1
 
-Eric: How good's your memory on this one?
-
-Thanks
-  Dave
-
-[1] https://github.com/raspberrypi/linux/commit/fddfb26f6503835a3c6f7ca0175=
-ce2260f60f67c
-
->  static int v3d_get_param_ioctl(struct drm_device *dev, void *data,
->                                struct drm_file *file_priv)
->  {
-> --
-> 2.7.4
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
