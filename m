@@ -2,150 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B382276465
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:19:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74235276467
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:23:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726702AbgIWXT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 19:19:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726419AbgIWXT2 (ORCPT
+        id S1726638AbgIWXW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 19:22:57 -0400
+Received: from outbound-smtp33.blacknight.com ([81.17.249.66]:47549 "EHLO
+        outbound-smtp33.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726265AbgIWXW5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 19:19:28 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39A20C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:19:28 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id q4so1337390iop.5
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:19:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iZOApGC20HnhhJiLh+fQ5O3fgDHPiGbwUwpUBeQPkwI=;
-        b=hmTl02N9oaSnCdbp3B9syLLDD4VuLhaBuXkhB5WOWMpHR7b9ZnhC5mvkT/TSH2UN6r
-         el8RTasDbtfFRWEMxhJHv4MRGcv4wrw4Snb5rHDWZHzr34CTWW31F13iuiyeNGQ43o31
-         Z0dtQs4SonnQU3g77d6uU6tO5xyEr4gypmze1MIM+FR4VrnKRnX8zKIDkCdj7BKfR6tS
-         EBclxE+Rd6VD4IgvF1WuhkcV7Cs6byEAbJF3UgqIN7icRmHbSiKTSLJ0TnxLbBe0eJmN
-         eMBvbm5tYjrjCZFfpec+aXv1Lf1GMwnZr3yq9e8bwKemM9XvOt8fM+y76sFn+3e4Cq6K
-         v94Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iZOApGC20HnhhJiLh+fQ5O3fgDHPiGbwUwpUBeQPkwI=;
-        b=b38DKEaI6Oj5t2dN8NlaNAF9eywuvB84Sw7muengIUfMlJ0bMQdoUU4r9dPboiVsMx
-         8SJ2FniMxyR4jUuIFOApRJqeixVx4yyzaS4yRmNVDYXT0xhA73Z0Nj7Er+74ycyestLO
-         dpIWYI2iGlwW/7NKbUuSaErpLGWb5jHoXux4bDb4V3wVEf8b/kYasuv5QaRdJS/FaxFP
-         pyQqNBJnitMRIpd+RNpXnIy08u0FIp+YqGyIs1pQ8JmoJvqbB6UfZGiLZTRAShl0w+NV
-         s6s1+Sh7bd74GKHmEbTXMVZWbl88f8v6Peersr6Q0qK9gmzlVTbRejlQeryJkhk13e/6
-         TSig==
-X-Gm-Message-State: AOAM530vsUlrdPDiC7/9rIJvxcUIOiN17Aw9rIfos7EJRDfh22akkVtm
-        C9zxR+J8JPqcU8+2j/v6lmt/MQnfMaOf0d7PPMoy9A==
-X-Google-Smtp-Source: ABdhPJyywv0N4Sq5HyrTKpf0BLx0dTf1f8TFMfzwSd2vInPWcEQ9MrdKCg8lPTlShY6kT8gRRslHqFCB7XozbyzyvFM=
-X-Received: by 2002:a05:6638:611:: with SMTP id g17mr1452858jar.40.1600903167128;
- Wed, 23 Sep 2020 16:19:27 -0700 (PDT)
+        Wed, 23 Sep 2020 19:22:57 -0400
+Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
+        by outbound-smtp33.blacknight.com (Postfix) with ESMTPS id A4A42BAA93
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 00:22:54 +0100 (IST)
+Received: (qmail 15211 invoked from network); 23 Sep 2020 23:22:54 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 23 Sep 2020 23:22:54 -0000
+Date:   Thu, 24 Sep 2020 00:22:51 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Michal Hocko <mhocko@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Mel Gorman <mgorman@suse.de>
+Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
+Message-ID: <20200923232251.GK3179@techsingularity.net>
+References: <20200918194817.48921-1-urezki@gmail.com>
+ <20200918194817.48921-3-urezki@gmail.com>
+ <20200921074716.GC12990@dhcp22.suse.cz>
+ <20200921154558.GD29330@paulmck-ThinkPad-P72>
+ <20200921160318.GO12990@dhcp22.suse.cz>
+ <20200921194819.GA24236@pc636>
+ <20200922075002.GU12990@dhcp22.suse.cz>
+ <20200922131257.GA29241@pc636>
+ <20200923103706.GJ3179@techsingularity.net>
+ <20200923154105.GO29330@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-References: <20200923221406.16297-1-sean.j.christopherson@intel.com> <20200923221406.16297-2-sean.j.christopherson@intel.com>
-In-Reply-To: <20200923221406.16297-2-sean.j.christopherson@intel.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Wed, 23 Sep 2020 16:19:15 -0700
-Message-ID: <CANgfPd_POgKeMNa+PbtGvCMyzNi0YY=4E9w8LzgWhLwGSqX-OQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] KVM: x86/mmu: Move flush logic from
- mmu_page_zap_pte() to FNAME(invlpg)
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peter Shier <pshier@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20200923154105.GO29330@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 3:14 PM Sean Christopherson
-<sean.j.christopherson@intel.com> wrote:
->
-> Move the logic that controls whether or not FNAME(invlpg) needs to flush
-> fully into FNAME(invlpg) so that mmu_page_zap_pte() doesn't return a
-> value.  This allows a future patch to redefine the return semantics for
-> mmu_page_zap_pte() so that it can recursively zap orphaned child shadow
-> pages for nested TDP MMUs.
->
-> No functional change intended.
->
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+On Wed, Sep 23, 2020 at 08:41:05AM -0700, Paul E. McKenney wrote:
+> > Fundamentally, this is simply shifting the problem from RCU to the page
+> > allocator because of the locking arrangements and hazard of acquiring zone
+> > lock is a raw spinlock is held on RT. It does not even make the timing
+> > predictable as an empty PCU list (for example, a full drain in low memory
+> > situations) may mean the emergency path is hit anyway. About all it changes
+> > is the timing of when the emergency path is hit in some circumstances --
+> > it's not fixing the problem, it's simply changing the shape.
+> 
+> All good points!
+> 
+> On the other hand, duplicating a portion of the allocator functionality
+> within RCU increases the amount of reserved memory, and needlessly most
+> of the time.
+> 
 
-Reviewed-by: Ben Gardon <bgardon@google.com>
+But it's very similar to what mempools are for.
 
->
-> ---
->  arch/x86/kvm/mmu/mmu.c         | 10 +++-------
->  arch/x86/kvm/mmu/paging_tmpl.h |  7 +++++--
->  2 files changed, 8 insertions(+), 9 deletions(-)
->
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 76c5826e29a2..a91e8601594d 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -2615,7 +2615,7 @@ static void validate_direct_spte(struct kvm_vcpu *vcpu, u64 *sptep,
->         }
->  }
->
-> -static bool mmu_page_zap_pte(struct kvm *kvm, struct kvm_mmu_page *sp,
-> +static void mmu_page_zap_pte(struct kvm *kvm, struct kvm_mmu_page *sp,
->                              u64 *spte)
->  {
->         u64 pte;
-> @@ -2631,13 +2631,9 @@ static bool mmu_page_zap_pte(struct kvm *kvm, struct kvm_mmu_page *sp,
->                         child = to_shadow_page(pte & PT64_BASE_ADDR_MASK);
->                         drop_parent_pte(child, spte);
->                 }
-> -               return true;
-> -       }
-> -
-> -       if (is_mmio_spte(pte))
-> +       } else if (is_mmio_spte(pte)) {
->                 mmu_spte_clear_no_track(spte);
-> -
-> -       return false;
-> +       }
->  }
->
->  static void kvm_mmu_page_unlink_children(struct kvm *kvm,
-> diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
-> index 4dd6b1e5b8cf..3bb624a3dda9 100644
-> --- a/arch/x86/kvm/mmu/paging_tmpl.h
-> +++ b/arch/x86/kvm/mmu/paging_tmpl.h
-> @@ -895,6 +895,7 @@ static void FNAME(invlpg)(struct kvm_vcpu *vcpu, gva_t gva, hpa_t root_hpa)
->  {
->         struct kvm_shadow_walk_iterator iterator;
->         struct kvm_mmu_page *sp;
-> +       u64 old_spte;
->         int level;
->         u64 *sptep;
->
-> @@ -917,7 +918,8 @@ static void FNAME(invlpg)(struct kvm_vcpu *vcpu, gva_t gva, hpa_t root_hpa)
->                 sptep = iterator.sptep;
->
->                 sp = sptep_to_sp(sptep);
-> -               if (is_last_spte(*sptep, level)) {
-> +               old_spte = *sptep;
-> +               if (is_last_spte(old_spte, level)) {
->                         pt_element_t gpte;
->                         gpa_t pte_gpa;
->
-> @@ -927,7 +929,8 @@ static void FNAME(invlpg)(struct kvm_vcpu *vcpu, gva_t gva, hpa_t root_hpa)
->                         pte_gpa = FNAME(get_level1_sp_gpa)(sp);
->                         pte_gpa += (sptep - sp->spt) * sizeof(pt_element_t);
->
-> -                       if (mmu_page_zap_pte(vcpu->kvm, sp, sptep))
-> +                       mmu_page_zap_pte(vcpu->kvm, sp, sptep);
-> +                       if (is_shadow_present_pte(old_spte))
->                                 kvm_flush_remote_tlbs_with_address(vcpu->kvm,
->                                         sp->gfn, KVM_PAGES_PER_HPAGE(sp->role.level));
->
-> --
-> 2.28.0
->
+> Is there some way that we can locklessly allocate memory, but return
+> failure instead of running down the emergency pool? A change to the loop
+> that iterates over the migration types?  Or to the loop that iterates
+> over the zones?  Something else?
+> 
+
+Only by duplicating some of the logic in get_page_from_freelist would
+protect the reserves. Even if you had that, the contents of the pcp
+pools can easily be zero for the local CPU and you still get stuck.
+
+> > > > Mimicing a similar implementation shouldn't be all that hard
+> > > > and you will get your own pool which doesn't affect other page allocator
+> > > > users as much as a bonus.
+> > > > 
+> > > I see your point Michal. As i mentioned before, it is important to avoid of
+> > > having such own pools, because the aim is not to waste memory resources. A
+> > > page will be returned back to "page allocator" as soon as a scheduler place  
+> > > our reclaim thread on a CPU and grace period is passed. So, the resource
+> > > can be used for other needs. What is important.
+> > 
+> > As the emergency path and synchronising can be hit no matter what, why
+> > not increase the pool temporarily after the emergency path is hit and
+> > shrink it again later if necessary?
+> 
+> If I understand what you are suggesting, this is in fact what Uladzislau's
+> prototyped commit 8c0a1269709d ("rcu/tree: Add a work to allocate
+> pages from regular context") on the -rcu "dev" branch is intended to do.
+> The issue, as Uladislau noted above, is that scheduler delays can prevent
+> these pool-increase actions until the point at which there is no memory.
+> 
+
+Scheduler latency would be a problem. You would have to keep an emergency
+"rescue" pool that is enough to make slow progress even if no other memory
+is available until the worker takes action. The worker that allocates
+pages from regular context would be to increase the pool size enough so
+the emergency reserve does not have to be used again in the near future.
+
+> > > Otherwise a memory footprint is increased what is bad for low memory
+> > > conditions when OOM is involved.
+> > 
+> > OOM would only be a major factor if the size of the pools meant the
+> > machine could not even operate or at least was severely degraded. However,
+> > depleting the PCPU lists for RCU may slow kswapd making reclaim progress
+> > and cause an OOM in itself, or at least an intervention by a userspace
+> > monitor that kills non-critical applications in the background when memory
+> > pressure exists.
+> 
+> When under emergency conditions, we have one page allocated per 500
+> objects passed to kvfree_rcu().  So the increase in total allocated
+> memory load due to this emergency path is quite small.
+> 
+
+Fair enough but any solution that depends on the PCP having even one
+page available is going to need a fallback option of some sort.
+
+> > > > > As for memory overhead, it is important to reduce it because of
+> > > > > embedded devices like phones, where a low memory condition is a
+> > > > > big issue. In that sense pre-allocating is something that we strongly
+> > > > > would like to avoid.
+> > > > 
+> > > > How big "machines" are we talking about here? I would expect that really
+> > > > tiny machines would have hard times to really fill up thousands of pages
+> > > > with pointers to free...
+> > > > 
+> > > I mentioned above. We can not rely on static model. We would like to
+> > > have a mechanism that gives back ASAP used pages to page allocator
+> > > for other needs.
+> > 
+> > After an emergency, temporarily increase the size of the pool to avoid
+> > hitting the emergency path again in the near future.
+> 
+> By which time we might well already be in OOM territory.  The emergency
+> situations can ramp up very quickly.
+> 
+
+And if the pcp lists are empty, this problem still exists -- pretty much
+anything that depends on the pcp lists always having pages is going to
+have a failure case.
+
+> > > > Would a similar scaling as the page allocator feasible. Really I mostly
+> > > > do care about shared nature of the pcp allocator list that one user can
+> > > > easily monopolize with this API.
+> > > > 
+> > > I see your concern. pcplist can be monopolized by already existing API:
+> > > 
+> > >     while (i < 100)
+> > >         __get_free_page(GFP_NOWAIT | __GFP_NOWARN);
+> > 
+> > That's not the same class of abuse as it can go to the buddy lists to
+> > refill the correct PCP lists, avoid fragmentation issues, obeys watermarks
+> > and wakes kswapd if it's not awake already.
+> 
+> Good point, and we did try doing it this way.  Unfortunately, in current
+> !PREEMPT kernels, this approach can deadlock on one of the allocator
+> locks via call_rcu().  This experience caused us to look at lockless
+> allocator access.  It also inspired the unconditional PREEMPT_COUNT
+> approach, but that has its own detractors.  (Yes, we are of course still
+> persuing it as well.)
+> 
+
+I didn't keep up to date unfortunately but pretty much anything that
+needs guaranteed access to pages has to maintain a mempool of some sort.
+Even if the page allocator had a common pool for emergency use, it would
+be subject to abuse because all it would take is one driver or subsystem
+deciding that it was special enough to deplete it. For example, the ml4
+driver decided that it should declare itself to be a "memory allocator"
+like kswapd for iSCSI (it claims swap-over-nfs, but swap-over-nfs was
+only meant to apply when a swapfile was backed by a network fs).
+
+-- 
+Mel Gorman
+SUSE Labs
