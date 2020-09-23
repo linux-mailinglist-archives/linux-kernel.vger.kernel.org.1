@@ -2,108 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 151EF27547D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 11:26:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3030275491
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 11:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726548AbgIWJ0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 05:26:06 -0400
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:37186 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726102AbgIWJ0G (ORCPT
+        id S1726332AbgIWJav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 05:30:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48115 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726178AbgIWJav (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 05:26:06 -0400
-Received: by mail-lf1-f67.google.com with SMTP id z19so21313712lfr.4;
-        Wed, 23 Sep 2020 02:26:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=6pHAOlrytH0z268HKYZDl6MkqXmmiB3ChIA/oCJbIvA=;
-        b=W04t2AYgpPJXX/rlzh39bwXNxc5Bu83XGkLdh02i8YbveBTbudD3pJHpyNvRZdJc8f
-         OUWUgbGadF/AmJsztXY7b+wa86+S+db5G5oEDN2hIPzHco6nqnJrVzOLgERrIzYh+6oX
-         q4ttBykBV3vMQjTMArD9+C1mPWXvenqKHjQxTKiRC6tIjqgpniYLOX3YOw2ya0/VpA47
-         sfFj+FW+5FiCSMZRNnHZrqf2gKD5ZYpo4U6VSAJJpwp3Szogufhf9iLQsGrr3vvGTHUj
-         EaHotRotdHeCQFUAigf9pOZR80BI6FXDJyq4Tj5flQKP9YOrxPoT2t0fpiDWHgcI+tLO
-         6jyg==
-X-Gm-Message-State: AOAM5311JobbFpn06JlwHIVLJVKKRqvhDIgkXXO8Qp0f6L4Z10Kt45jz
-        nBJqa0RsNQreI+8onO8TUgc=
-X-Google-Smtp-Source: ABdhPJwLca6aGl4b2YfKHlq/xD+0MprqpO4Ybg4j6S24/T2sb4D+fjmDHnaE+2kz42OckSHCh8/WEw==
-X-Received: by 2002:a19:7e8d:: with SMTP id z135mr3323752lfc.158.1600853163748;
-        Wed, 23 Sep 2020 02:26:03 -0700 (PDT)
-Received: from localhost.localdomain ([213.255.186.46])
-        by smtp.gmail.com with ESMTPSA id 73sm4518236lfi.229.2020.09.23.02.26.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 02:26:03 -0700 (PDT)
-Date:   Wed, 23 Sep 2020 12:25:50 +0300
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     mazziesaccount@gmail.com, matti.vaittinen@fi.rohmeurope.com
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com,
-        linux-watchdog@vger.kernel.org
-Subject: [PATCH v2 4/4] MAINTAINERS: Add ROHM BD9576MUF and BD9573MUF drivers
-Message-ID: <e5684cde5ee50506527b4cd4548d4710ff92cb78.1600852339.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1600852339.git.matti.vaittinen@fi.rohmeurope.com>
+        Wed, 23 Sep 2020 05:30:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600853449;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=r5p+daryNxkyz0OgmKt+SUjejQfASxt16NwrXrf4GS0=;
+        b=buVDudNiN/vITafD+6U9stkfqAjaIifdVZKNnYRrsiuVd73+0ZV6VULFRS+6mcLmorZLZf
+        S6zohj7Z140V1gZPI8h6t+Gp+R50U4tchkMBZtbHZYLMP9EY1KD4elW0lvJ0m7Ih+ugtMr
+        v3pyTS7xAJxflzXtWXlm13VzsSZs43c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-493-Br6rjbgmM8itU4ga_0vkuA-1; Wed, 23 Sep 2020 05:30:47 -0400
+X-MC-Unique: Br6rjbgmM8itU4ga_0vkuA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 00133188C126;
+        Wed, 23 Sep 2020 09:30:44 +0000 (UTC)
+Received: from krava (unknown [10.40.192.120])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 9FE245577B;
+        Wed, 23 Sep 2020 09:30:42 +0000 (UTC)
+Date:   Wed, 23 Sep 2020 11:30:41 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH 2/5] perf stat: Add --for-each-cgroup option
+Message-ID: <20200923093041.GH2893484@krava>
+References: <20200921094610.83736-1-namhyung@kernel.org>
+ <20200921094610.83736-3-namhyung@kernel.org>
+ <20200922214033.GD2893484@krava>
+ <CAM9d7ciL7LmpFyxxD20q+6JM4pE1T9hsMKvOtv-s1r+EamCDpQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1600852339.git.matti.vaittinen@fi.rohmeurope.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <CAM9d7ciL7LmpFyxxD20q+6JM4pE1T9hsMKvOtv-s1r+EamCDpQ@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add maintainer entries for ROHM BD9576MUF and ROHM BD9573MUF drivers.
-MFD, regulator and watchdog drivers were introduced for these PMICs.
+On Wed, Sep 23, 2020 at 07:51:33AM +0900, Namhyung Kim wrote:
+> On Wed, Sep 23, 2020 at 6:40 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Mon, Sep 21, 2020 at 06:46:07PM +0900, Namhyung Kim wrote:
+> >
+> > SNIP
+> >
+> > > +int evlist__expand_cgroup(struct evlist *evlist, const char *str)
+> > > +{
+> > > +     struct evlist *orig_list, *tmp_list;
+> > > +     struct evsel *pos, *evsel, *leader;
+> > > +     struct cgroup *cgrp = NULL;
+> > > +     const char *p, *e, *eos = str + strlen(str);
+> > > +     int ret = -1;
+> > > +
+> > > +     if (evlist->core.nr_entries == 0) {
+> > > +             fprintf(stderr, "must define events before cgroups\n");
+> > > +             return -EINVAL;
+> > > +     }
+> > > +
+> > > +     orig_list = evlist__new();
+> > > +     tmp_list = evlist__new();
+> > > +     if (orig_list == NULL || tmp_list == NULL) {
+> > > +             fprintf(stderr, "memory allocation failed\n");
+> > > +             return -ENOMEM;
+> > > +     }
+> > > +
+> > > +     /* save original events and init evlist */
+> > > +     perf_evlist__splice_list_tail(orig_list, &evlist->core.entries);
+> > > +     evlist->core.nr_entries = 0;
+> > > +
+> > > +     for (;;) {
+> > > +             p = strchr(str, ',');
+> > > +             e = p ? p : eos;
+> > > +
+> > > +             /* allow empty cgroups, i.e., skip */
+> > > +             if (e - str) {
+> > > +                     /* termination added */
+> > > +                     char *name = strndup(str, e - str);
+> > > +                     if (!name)
+> > > +                             goto out_err;
+> > > +
+> > > +                     cgrp = cgroup__new(name);
+> > > +                     free(name);
+> > > +                     if (cgrp == NULL)
+> > > +                             goto out_err;
+> > > +             } else {
+> > > +                     cgrp = NULL;
+> > > +             }
+> > > +
+> > > +             leader = NULL;
+> > > +             evlist__for_each_entry(orig_list, pos) {
+> > > +                     evsel = evsel__clone(pos);
+> > > +                     if (evsel == NULL)
+> > > +                             goto out_err;
+> > > +
+> > > +                     cgroup__put(evsel->cgrp);
+> > > +                     evsel->cgrp = cgroup__get(cgrp);
+> > > +
+> > > +                     if (evsel__is_group_leader(pos))
+> > > +                             leader = evsel;
+> > > +                     evsel->leader = leader;
+> >
+> > hum, will this work if there's standalone event after group? like:
+> >
+> >   {cycles,instructions},cache-misses
+> >
+> > cache-misses will get cycles as group leader no?
+> 
+> AFAIK non-group events are treated as a leader of its own group.
+> So evsel__is_group_leader() will return true for cache-misses.
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
-No changes from v1.
+right, then it's fine
 
- MAINTAINERS | 4 ++++
- 1 file changed, 4 insertions(+)
+thanks,
+jirka
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b5cfab015bd6..630a23fc84f0 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14956,16 +14956,20 @@ F:	drivers/gpio/gpio-bd71828.c
- F:	drivers/mfd/rohm-bd70528.c
- F:	drivers/mfd/rohm-bd71828.c
- F:	drivers/mfd/rohm-bd718x7.c
-+F:	drivers/mfd/rohm-bd9576.c
- F:	drivers/power/supply/bd70528-charger.c
- F:	drivers/regulator/bd70528-regulator.c
- F:	drivers/regulator/bd71828-regulator.c
- F:	drivers/regulator/bd718x7-regulator.c
-+F:	drivers/regulator/bd9576-regulator.c
- F:	drivers/regulator/rohm-regulator.c
- F:	drivers/rtc/rtc-bd70528.c
- F:	drivers/watchdog/bd70528_wdt.c
-+F:	drivers/watchdog/bd9576_wdt.c
- F:	include/linux/mfd/rohm-bd70528.h
- F:	include/linux/mfd/rohm-bd71828.h
- F:	include/linux/mfd/rohm-bd718x7.h
-+F:	include/linux/mfd/rohm-bd957x.h
- F:	include/linux/mfd/rohm-generic.h
- F:	include/linux/mfd/rohm-shared.h
- 
--- 
-2.21.0
-
-
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
