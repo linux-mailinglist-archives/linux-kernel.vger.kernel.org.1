@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEDBB275757
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 13:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C4DE27575D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 13:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726645AbgIWLpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 07:45:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36312 "EHLO
+        id S1726734AbgIWLpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 07:45:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726661AbgIWLo5 (ORCPT
+        with ESMTP id S1726709AbgIWLpA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 07:44:57 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17F1C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 04:44:56 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id y6so6692485plt.9
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 04:44:56 -0700 (PDT)
+        Wed, 23 Sep 2020 07:45:00 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC308C0613D2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 04:45:00 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id kk9so3027606pjb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 04:45:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+WN/2aVaL/WoH1KRLeXq71c9eCEQAH6H70sGmLsN6lU=;
-        b=01ysSC8hFBY3eDCc/RpgxJQX9B/h7CFkxAz+3QPQEB4/2blFaWo2etOmLBAfgEwCLF
-         htkynXCLOqwtDLHb2P3xVS18HiakMBmVeSRYcvK483uOAbvMjgMV6ab1RH2p2VenTUAE
-         D1J+/xyjSO+CWX+W5w1pdGifoy4pgPF0pA1vk9YXf2q72kxNKoPCH1vDImG7PBQrUC7x
-         z7SmInT0MpIX9IQXDKiIeHRxD9Sg6pBo5W/eIil3EFGoS8QltH3XIJNTHoT7/n55nTce
-         7pFHLCULrR+wMCma+pUNV2X+ZtwQ56keEc+2DBmf/BiAIpgh5vmrlvniWAzxnFBPmzog
-         iSHA==
+        bh=nPkmLEjjOLqKd/lOoAyA8z7n9dUCjwGzd+W0L3DZgSM=;
+        b=jUElUNR/aCuC47FTFhG+ItffqFmwJg58kuZUnBmtNmUSCv3QmjsuHGiNubphfVCWwo
+         f5WVv+EXIx5PHxtWQ5Cqy4gRLqc8pAx6KV4ryb3N5QIky0xU8+dpfa9TZXTpzsopQtNH
+         NojmKG9IHrIQbClrFWFgmUAb2cJg5x3l3EfYOGaHLnQ0fYSGZ3kF5EaCe59e0l7SUBY9
+         O80XINHl/CvqKhEnwJ4SqQp/hX2tuJMg5gW3bto/N+744BSwhaZg9fWIPZtEKPydO3D0
+         N9EXzRXiEVHTEF2BfD5A7SJjfZn9I6fJt0E60wHquNb0j/Uj5imwTOzJcOu1FCUADHe1
+         qsAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+WN/2aVaL/WoH1KRLeXq71c9eCEQAH6H70sGmLsN6lU=;
-        b=pOCT5ONNkqWqVjEYFZPW5gi3JBE2++jdlznCIFWekLRbtskm3ktqT/mBzNy1bZkle+
-         9LuLxUAVjXvwsN/LIKiouE1KUuGdhCdTJhRbKF+lswRg8wENCzSUD/kpvEyCECh9SALG
-         7KqJX+zpA5qwDCQF2rsl2/FD3bQ4Er1GilY+Fdqn6G6j7yymMnpsNDCOP+pakUZZNh20
-         WVd9AUl49IG8TYmu/SZYnrC1+EhdcUoNYHZuI27g3vHg6yCSF7rquCN5ogmmdRQgRofo
-         OL1KqjaQFK+ObbBPYWfZ5MVm/4Ele5iAFT8CuOxM8rqhiAZqcdCqMgPahseTWdHxVS/0
-         RoPg==
-X-Gm-Message-State: AOAM530GkaS17LWPdAdS3iRv9/yWcepPUhxQHbrX4vIyfw+ovIXVAU4K
-        3tS24hi3BCz6kBeyKcJU76kUZg==
-X-Google-Smtp-Source: ABdhPJwdxYXVAqCqvVIAa3BXdJbmtpQ0JBjfJ1hB7+Gji0Vv4dxpIc7rUeJaGhMul6qvv9McfULcPg==
-X-Received: by 2002:a17:90a:d304:: with SMTP id p4mr8215672pju.138.1600861496349;
-        Wed, 23 Sep 2020 04:44:56 -0700 (PDT)
+        bh=nPkmLEjjOLqKd/lOoAyA8z7n9dUCjwGzd+W0L3DZgSM=;
+        b=kZSJwJGGSApv0Ap9ZT5MSe/IfDDtZNv158+6T+AOm+drBPaPgnbebfDIVkFwWa+jyh
+         hyCi4xeZK5nMkChXUTFciNRcxywlEvGO+xE77lw5OMrSb7plv60h1T8o/UdW3NEVQb6o
+         9WR5oykocl0kbPvY/cxO+KyH1iA4FEvO+S7xyze8Loj+jnaYgX45kG65aXkVgvwQ/1uB
+         5TPJHuJPg8wqenO5K0daMftZodjMKVkHTCVAMux4jTCKfL7fkf1Ucvi2rm081fKhAKA9
+         SgC6XTeXHQw9M0hFaGZDzjADLFwDKsYykmjJuDBFGWNhPUWrWW0DJBWT3vY8/bqvSlxK
+         4wKw==
+X-Gm-Message-State: AOAM533QRukeQgA+pV+OhDUzQIXFmHmt/KBrEaexSWSCF1NubLaNDkP3
+        H7egSgTwmWheLgr6vvx968AgWA==
+X-Google-Smtp-Source: ABdhPJynCqLc4R0uR3z+mm+2RmWHC4eyIwG+zcF5oGEc0p73c69eYffchw07KnbDQyeAvZgLntwxfQ==
+X-Received: by 2002:a17:90b:3c1:: with SMTP id go1mr7987568pjb.192.1600861500197;
+        Wed, 23 Sep 2020 04:45:00 -0700 (PDT)
 Received: from Smcdef-MBP.local.net ([103.136.220.72])
-        by smtp.gmail.com with ESMTPSA id a13sm17632155pfl.184.2020.09.23.04.44.53
+        by smtp.gmail.com with ESMTPSA id a13sm17632155pfl.184.2020.09.23.04.44.56
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 23 Sep 2020 04:44:55 -0700 (PDT)
+        Wed, 23 Sep 2020 04:44:59 -0700 (PDT)
 From:   Muchun Song <songmuchun@bytedance.com>
 To:     axboe@kernel.dk, viro@zeniv.linux.org.uk
 Cc:     linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org, zhuyinyin@bytedance.com,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v2 4/5] io_uring: Fix missing save the current thread files
-Date:   Wed, 23 Sep 2020 19:44:18 +0800
-Message-Id: <20200923114419.71218-5-songmuchun@bytedance.com>
+        Muchun Song <songmuchun@bytedance.com>,
+        Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>
+Subject: [PATCH v2 5/5] io_uring: Fix double list add in io_queue_async_work()
+Date:   Wed, 23 Sep 2020 19:44:19 +0800
+Message-Id: <20200923114419.71218-6-songmuchun@bytedance.com>
 X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 In-Reply-To: <20200923114419.71218-1-songmuchun@bytedance.com>
 References: <20200923114419.71218-1-songmuchun@bytedance.com>
@@ -65,28 +66,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We forget to save the current thread files, in this case, we can not
-send SIGINT signal to the kworker because the files is not equal.
+If we queue work in io_poll_wake(), it will leads to list double
+add. So we should add the list when the callback func is the
+io_sq_wq_submit_work.
 
-Fixes: 54ee77961e79 ("io_uring: Fix NULL pointer dereference in io_sq_wq_submit_work()")
+The following oops was seen:
+
+    list_add double add: new=ffff9ca6a8f1b0e0, prev=ffff9ca62001cee8,
+    next=ffff9ca6a8f1b0e0.
+    ------------[ cut here ]------------
+    kernel BUG at lib/list_debug.c:31!
+    Call Trace:
+     <IRQ>
+     io_poll_wake+0xf3/0x230
+     __wake_up_common+0x91/0x170
+     __wake_up_common_lock+0x7a/0xc0
+     io_commit_cqring+0xea/0x280
+     ? blkcg_iolatency_done_bio+0x2b/0x610
+     io_cqring_add_event+0x3e/0x60
+     io_complete_rw+0x58/0x80
+     dio_complete+0x106/0x250
+     blk_update_request+0xa0/0x3b0
+     blk_mq_end_request+0x1a/0x110
+     blk_mq_complete_request+0xd0/0xe0
+     nvme_irq+0x129/0x270 [nvme]
+     __handle_irq_event_percpu+0x7b/0x190
+     handle_irq_event_percpu+0x30/0x80
+     handle_irq_event+0x3c/0x60
+     handle_edge_irq+0x91/0x1e0
+     do_IRQ+0x4d/0xd0
+     common_interrupt+0xf/0xf
+
+Fixes: 1c4404efcf2c ("io_uring: make sure async workqueue is canceled on exit")
+Reported-by: Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 ---
- fs/io_uring.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/io_uring.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
 diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 12e68ea00a543..c65f78f395655 100644
+index c65f78f395655..a7cfe976480d8 100644
 --- a/fs/io_uring.c
 +++ b/fs/io_uring.c
-@@ -2391,6 +2391,8 @@ static bool io_add_to_prev_work(struct async_list *list, struct io_kiocb *req)
- 	if (ret) {
- 		struct io_ring_ctx *ctx = req->ctx;
+@@ -513,12 +513,14 @@ static inline void io_queue_async_work(struct io_ring_ctx *ctx,
+ 		}
+ 	}
  
+-	req->files = current->files;
++	if (req->work.func == io_sq_wq_submit_work) {
 +		req->files = current->files;
-+
- 		spin_lock_irq(&ctx->task_lock);
- 		list_add(&req->task_list, &ctx->task_list);
- 		req->work_task = NULL;
+ 
+-	spin_lock_irqsave(&ctx->task_lock, flags);
+-	list_add(&req->task_list, &ctx->task_list);
+-	req->work_task = NULL;
+-	spin_unlock_irqrestore(&ctx->task_lock, flags);
++		spin_lock_irqsave(&ctx->task_lock, flags);
++		list_add(&req->task_list, &ctx->task_list);
++		req->work_task = NULL;
++		spin_unlock_irqrestore(&ctx->task_lock, flags);
++	}
+ 
+ 	queue_work(ctx->sqo_wq[rw], &req->work);
+ }
+@@ -667,6 +669,7 @@ static struct io_kiocb *io_get_req(struct io_ring_ctx *ctx,
+ 		state->cur_req++;
+ 	}
+ 
++	INIT_LIST_HEAD(&req->task_list);
+ 	req->file = NULL;
+ 	req->ctx = ctx;
+ 	req->flags = 0;
 -- 
 2.11.0
 
