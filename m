@@ -2,64 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A73D4275DB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FFC9275E10
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726460AbgIWQn2 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 23 Sep 2020 12:43:28 -0400
-Received: from [103.10.105.61] ([103.10.105.61]:53256 "EHLO ipb.c.id"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726130AbgIWQn2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 12:43:28 -0400
-Received: from mail.ipb.ac.id (unknown [172.17.5.31])
-        by ipb.c.id (Postfix) with ESMTPS id 606DB1C4D09;
-        Wed, 23 Sep 2020 23:41:44 +0700 (WIB)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.ipb.ac.id (Postfix) with ESMTP id 2584BAF6476B;
-        Wed, 23 Sep 2020 23:41:44 +0700 (WIB)
-Received: from mail.ipb.ac.id ([127.0.0.1])
-        by localhost (mail.ipb.ac.id [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id Ne6zDtcivZC1; Wed, 23 Sep 2020 23:41:43 +0700 (WIB)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.ipb.ac.id (Postfix) with ESMTP id A6903AF6476C;
-        Wed, 23 Sep 2020 23:41:43 +0700 (WIB)
-X-Virus-Scanned: amavisd-new at ipb.ac.id
-Received: from mail.ipb.ac.id ([127.0.0.1])
-        by localhost (mail.ipb.ac.id [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id fLfcBY-PcoOx; Wed, 23 Sep 2020 23:41:43 +0700 (WIB)
-Received: from [100.76.167.191] (unknown [106.198.218.192])
-        by mail.ipb.ac.id (Postfix) with ESMTPSA id 90310AF6476B;
-        Wed, 23 Sep 2020 23:41:21 +0700 (WIB)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1726697AbgIWQ7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 12:59:49 -0400
+Received: from mga04.intel.com ([192.55.52.120]:12857 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726667AbgIWQ7s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 12:59:48 -0400
+IronPort-SDR: txJ/YYDS6ouwuY3uQgkkdYWP26pi7gtg+SeHMPaPpc0y5O/Ax+4X+00i6d15q7bMFGkoTVTUQZ
+ 0d8YdzXOiluA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="158346693"
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
+   d="scan'208";a="158346693"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 09:59:47 -0700
+IronPort-SDR: Uk3FpZWtjC6MxaY2DpATud/gCLigyWCbeA2NfdUXbwu2fTZl13//C7v+skd5M53i4aVDYwi05+
+ R65xu4Hv6T4Q==
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
+   d="scan'208";a="511067966"
+Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.16])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 09:59:47 -0700
+Subject: [PATCH v9 0/2] Renovate memcpy_mcsafe with copy_mc_to_{user, kernel}
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     mingo@redhat.com
+Cc:     Tony Luck <tony.luck@intel.com>, Vivek Goyal <vgoyal@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Borislav Petkov <bp@alien8.de>, stable@vger.kernel.org,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Erwin Tsaur <erwin.tsaur@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        0day robot <lkp@intel.com>, tglx@linutronix.de, x86@kernel.org,
+        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org,
+        jack@suse.cz
+Date:   Wed, 23 Sep 2020 09:41:26 -0700
+Message-ID: <160087928642.3520.17063139768910633998.stgit@dwillia2-desk3.amr.corp.intel.com>
+User-Agent: StGit/0.18-3-g996c
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: =?utf-8?b?QVRFTkNJw5NO?=
-To:     Recipients <jakaria@ipb.ac.id>
-From:   Sistemas administrador <jakaria@ipb.ac.id>
-Date:   Wed, 23 Sep 2020 22:10:57 +0530
-Reply-To: mailupgrade@mail2engineer.com
-Message-Id: <20200923164121.90310AF6476B@mail.ipb.ac.id>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ATENCIÓN;
+Changes since v8 [1]:
+- Rebase on v5.9-rc6
 
-Su buzón ha superado el límite de almacenamiento, que es de 5 GB definidos por el administrador, quien actualmente está ejecutando en 10.9GB, no puede ser capaz de enviar o recibir correo nuevo hasta que vuelva a validar su buzón de correo electrónico. Para revalidar su buzón de correo, envíe la siguiente información a continuación:
+- Fix a performance regression in the x86 copy_mc_to_user()
+  implementation that was duplicating copies in the "fragile" case.
 
-nombre:
-Nombre de usuario:
-contraseña:
-Confirmar contraseña:
-E-mail:
-teléfono:
+- Refreshed the cover letter.
 
-Si usted no puede revalidar su buzón, el buzón se deshabilitará!
+[1]: http://lore.kernel.org/r/159630255616.3143511.18110575960499749012.stgit@dwillia2-desk3.amr.corp.intel.com
 
-Disculpa las molestias.
-Código de verificación:666690opp4r56 es: 006524
-Correo Soporte Técnico © 2020
+---
 
-¡gracias
-Sistemas administrador
+The motivations to go rework memcpy_mcsafe() are that the benefit of
+doing slow and careful copies is obviated on newer CPUs, and that the
+current opt-in list of cpus to instrument recovery is broken relative to
+those cpus.  There is no need to keep an opt-in list up to date on an
+ongoing basis if pmem/dax operations are instrumented for recovery by
+default. With recovery enabled by default the old "mcsafe_key" opt-in to
+careful copying can be made a "fragile" opt-out. Where the "fragile"
+list takes steps to not consume poison across cachelines.
+
+The discussion with Linus made clear that the current "_mcsafe" suffix
+was imprecise to a fault. The operations that are needed by pmem/dax are
+to copy from a source address that might throw #MC to a destination that
+may write-fault, if it is a user page. So copy_to_user_mcsafe() becomes
+copy_mc_to_user() to indicate the separate precautions taken on source
+and destination. copy_mc_to_kernel() is introduced as a version that
+does not expect write-faults on the destination, but is still prepared
+to abort with an error code upon taking #MC.
+
+These patches have received a kbuild-robot build success notification
+across 114 configs, the rebase to v5.9-rc6 did not encounter any
+conflicts, and the merge with tip/master is conflict-free.
+
+---
+
+Dan Williams (2):
+      x86, powerpc: Rename memcpy_mcsafe() to copy_mc_to_{user,kernel}()
+      x86/copy_mc: Introduce copy_mc_generic()
+
+
+ arch/powerpc/Kconfig                               |    2 
+ arch/powerpc/include/asm/string.h                  |    2 
+ arch/powerpc/include/asm/uaccess.h                 |   40 +++--
+ arch/powerpc/lib/Makefile                          |    2 
+ arch/powerpc/lib/copy_mc_64.S                      |    4 
+ arch/x86/Kconfig                                   |    2 
+ arch/x86/Kconfig.debug                             |    2 
+ arch/x86/include/asm/copy_mc_test.h                |   75 +++++++++
+ arch/x86/include/asm/mcsafe_test.h                 |   75 ---------
+ arch/x86/include/asm/string_64.h                   |   32 ----
+ arch/x86/include/asm/uaccess.h                     |   21 +++
+ arch/x86/include/asm/uaccess_64.h                  |   20 --
+ arch/x86/kernel/cpu/mce/core.c                     |    8 -
+ arch/x86/kernel/quirks.c                           |    9 -
+ arch/x86/lib/Makefile                              |    1 
+ arch/x86/lib/copy_mc.c                             |   65 ++++++++
+ arch/x86/lib/copy_mc_64.S                          |  165 ++++++++++++++++++++
+ arch/x86/lib/memcpy_64.S                           |  115 --------------
+ arch/x86/lib/usercopy_64.c                         |   21 ---
+ drivers/md/dm-writecache.c                         |   15 +-
+ drivers/nvdimm/claim.c                             |    2 
+ drivers/nvdimm/pmem.c                              |    6 -
+ include/linux/string.h                             |    9 -
+ include/linux/uaccess.h                            |    9 +
+ include/linux/uio.h                                |   10 +
+ lib/Kconfig                                        |    7 +
+ lib/iov_iter.c                                     |   43 +++--
+ tools/arch/x86/include/asm/mcsafe_test.h           |   13 --
+ tools/arch/x86/lib/memcpy_64.S                     |  115 --------------
+ tools/objtool/check.c                              |    5 -
+ tools/perf/bench/Build                             |    1 
+ tools/perf/bench/mem-memcpy-x86-64-lib.c           |   24 ---
+ tools/testing/nvdimm/test/nfit.c                   |   48 +++---
+ .../testing/selftests/powerpc/copyloops/.gitignore |    2 
+ tools/testing/selftests/powerpc/copyloops/Makefile |    6 -
+ .../selftests/powerpc/copyloops/copy_mc_64.S       |    1 
+ .../selftests/powerpc/copyloops/memcpy_mcsafe_64.S |    1 
+ 37 files changed, 452 insertions(+), 526 deletions(-)
+ rename arch/powerpc/lib/{memcpy_mcsafe_64.S => copy_mc_64.S} (98%)
+ create mode 100644 arch/x86/include/asm/copy_mc_test.h
+ delete mode 100644 arch/x86/include/asm/mcsafe_test.h
+ create mode 100644 arch/x86/lib/copy_mc.c
+ create mode 100644 arch/x86/lib/copy_mc_64.S
+ delete mode 100644 tools/arch/x86/include/asm/mcsafe_test.h
+ delete mode 100644 tools/perf/bench/mem-memcpy-x86-64-lib.c
+ create mode 120000 tools/testing/selftests/powerpc/copyloops/copy_mc_64.S
+ delete mode 120000 tools/testing/selftests/powerpc/copyloops/memcpy_mcsafe_64.S
+
+base-commit: ba4f184e126b751d1bffad5897f263108befc780
