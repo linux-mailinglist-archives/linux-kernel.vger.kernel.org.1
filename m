@@ -2,84 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02FF1276418
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 00:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3CF276419
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 00:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726760AbgIWWrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 18:47:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55836 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726199AbgIWWrU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 18:47:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600901239;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aH9LeP2g6hfwvoldu17IhkbITvXvGtTCNmXxEdiTZI4=;
-        b=YIxI3Yt/zIcpsQEW2DMBFnVe4611iTgftbXBp5aMwo53DlUCceVy8tX1VrCt8QZVFnCxVW
-        CMZrV27A/MBPBrr8UFwmYfTTIp4fLiojGNmk9yPflr9oNn4OvwHp5zvc1bSN2sEBcTLIAA
-        dlREEoLqVQGqrFigW4fSDNotbVDNlGw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-194-XWtntuIIOsW-2ajFPIagdg-1; Wed, 23 Sep 2020 18:47:17 -0400
-X-MC-Unique: XWtntuIIOsW-2ajFPIagdg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726806AbgIWWr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 18:47:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45110 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726638AbgIWWr1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 18:47:27 -0400
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EB673100748A;
-        Wed, 23 Sep 2020 22:47:15 +0000 (UTC)
-Received: from [10.64.54.94] (vpn2-54-94.bne.redhat.com [10.64.54.94])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C287978823;
-        Wed, 23 Sep 2020 22:47:13 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: [PATCH v2 0/2] arm64/mm: Enable color zero pages
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, anshuman.khandual@arm.com,
-        robin.murphy@arm.com, will@kernel.org, shan.gavin@gmail.com
-References: <20200923053721.28873-1-gshan@redhat.com>
- <20200923084317.GA13434@gaia>
-From:   Gavin Shan <gshan@redhat.com>
-Message-ID: <2047fb91-da03-7774-ef5e-d194b92813c3@redhat.com>
-Date:   Thu, 24 Sep 2020 08:47:09 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        by mail.kernel.org (Postfix) with ESMTPSA id 37B4C2395A
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 22:47:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600901246;
+        bh=fachxeCcYA+Y90j0C9rYXFx72OerjMkaO4HvTjYJ2tY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IN8aBvC/1EKciqow+5mvDPBVaiMxXr2kvZOtd9FK4AOlggJnubcxsynWLu+lnSOtw
+         t7nVO8a3yDP5Q1V6fMpHUM7w8o7/JOux2FpGemmv/1XTEtOOmz1oSxGN/xTAMGyefh
+         RETXNdEl4ENCvikuBOgw02aPpoKqIBEYpo/ZcWsM=
+Received: by mail-wr1-f46.google.com with SMTP id x14so1643500wrl.12
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 15:47:26 -0700 (PDT)
+X-Gm-Message-State: AOAM53150lsguBy9pKUu950ge9GTjSYF8PwLkKDa4jH+Vh8KkvO/eEqq
+        sz+SKg+cefMGN24Gu2cb6pvw04qPMfLkzqL6MKHH3A==
+X-Google-Smtp-Source: ABdhPJznuGEAn+IE5naOUy2EKE9CmQqUCZfv/keFlAGHq/G5ZZoiY59PyHaVeILzvhJdrECN9qqb9xgF+CH2UbMI0MA=
+X-Received: by 2002:a5d:5281:: with SMTP id c1mr1854602wrv.184.1600901244569;
+ Wed, 23 Sep 2020 15:47:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200923084317.GA13434@gaia>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <20200918192312.25978-1-yu-cheng.yu@intel.com> <20200918192312.25978-9-yu-cheng.yu@intel.com>
+ <CALCETrXfixDGJhf0yPw-OckjEdeF2SbYjWFm8VbLriiP0Krhrg@mail.gmail.com>
+ <c96c98ec-d72a-81a3-06e2-2040f3ece33a@intel.com> <24718de58ab7bc6d7288c58d3567ad802eeb6542.camel@intel.com>
+ <CALCETrWssUxxfhPPJZgPOmpaQcf4o9qCe1j-P7yiPyZVV+O8ZQ@mail.gmail.com>
+ <20200923212925.GC15101@linux.intel.com> <a2e872ef-5539-c7c1-49ca-95d590f3b92a@intel.com>
+ <e7c20f4c-23a0-4a34-3895-c4f60993ec41@intel.com> <a862be68-dc81-6db5-c79b-5bbd87ccddaf@intel.com>
+In-Reply-To: <a862be68-dc81-6db5-c79b-5bbd87ccddaf@intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Wed, 23 Sep 2020 15:47:12 -0700
+X-Gmail-Original-Message-ID: <CALCETrW7o-j01aWCFjmy2TRm7X75Vd5EW_gAfOSP0nQfekkEmA@mail.gmail.com>
+Message-ID: <CALCETrW7o-j01aWCFjmy2TRm7X75Vd5EW_gAfOSP0nQfekkEmA@mail.gmail.com>
+Subject: Re: [PATCH v12 8/8] x86: Disallow vsyscall emulation when CET is enabled
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Catalin,
+On Wed, Sep 23, 2020 at 3:20 PM Yu, Yu-cheng <yu-cheng.yu@intel.com> wrote:
+>
+> On 9/23/2020 3:08 PM, Dave Hansen wrote:
+> > On 9/23/20 3:06 PM, Yu, Yu-cheng wrote:
+> >> I think I'll add a check here for (r + 8) >= TASK_SIZE_MAX.  It is
+> >> better than getting a fault.
+> >
+> > There's also wrmsr_safe().
+> >
+> Yes, thanks.
+>
+> Since I am going to change this to:
+>
+> fpu__prepare_write(), then write to the XSAVES area.
+>
+> The kernel does not expect XRSTORS to fail ("Bad FPU state detected..."
+> message).  So maybe still check the address first.
 
-On 9/23/20 6:43 PM, Catalin Marinas wrote:
-> On Wed, Sep 23, 2020 at 03:37:19PM +1000, Gavin Shan wrote:
->> The feature of color zero pages isn't enabled on arm64, meaning all
->> read-only (anonymous) VM areas are backed up by same zero page. It
->> leads pressure to L1 (data) cache on reading data from them. This
->> tries to enable color zero pages.
->>
->> PATCH[1/2] decouples the zero PGD table from zero page
->> PATCH[2/2] allocates the needed zero pages according to L1 cache size
-> 
-> To save you (and potential reviewers) some time, please include in the
-> cover letter details of a realistic workload/benchmark that is improved
-> by this patchset, backed by numbers. Just because it's doable and the
-> patches aren't too complex is not a good enough reason for merging.
-> 
-
-Sure, Please ignore this (v2) series for now. I'll try to provide
-performance data in v3 even I'm not positive about that because
-it depends on CPU's L1 dCache size :)
-
-Cheers,
-Gavin
-
+Surely there are plenty of ways to use ptrace() to poke garbage into
+the FPU state.  We should be able to handle this type of failure
+somewhat gracefully.
