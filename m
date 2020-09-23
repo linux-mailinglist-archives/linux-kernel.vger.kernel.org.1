@@ -2,110 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C085C2762A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BABD2762A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:58:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726691AbgIWU63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 16:58:29 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:33846 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726460AbgIWU61 (ORCPT
+        id S1726714AbgIWU6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 16:58:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726697AbgIWU6g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 16:58:27 -0400
-Received: by mail-io1-f66.google.com with SMTP id m17so1042228ioo.1;
-        Wed, 23 Sep 2020 13:58:26 -0700 (PDT)
+        Wed, 23 Sep 2020 16:58:36 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 422F2C0613D2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 13:58:36 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id u24so485187pgi.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 13:58:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HTWiHb6gAj8Z8llT/G3EhR3u0c6leg5SleJXuet+BB8=;
+        b=kkJi2xE9F6GNVPSdOt/CDrDavOwemWgU8pgHsYleCWQ9ay7rAZwnIjKoU2qKUlVpgz
+         eFdUMRympKM8I0L49ut8Q/ioCijl1kSTPIz+hRTFEjtUtdo1ctsv5rwKE++2QBRgTHYW
+         CvK2KaUAe1N5R6jzztmvnt7PLRCfqDX6fRFus=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=DBI7yAxzhMeYdJxsj8BjmnEz5KxHDzBoWiYPr4XLc0w=;
-        b=ABz2SOJH7/U8SbtaA7wiD4ncqTsIWpfDI+LkHLY2mAonVWTQPgtIe9UjVmR5rvlGuh
-         hOyTfJB3QgJZCJQfKQhId7wvUw/2oz/UIdBn2kmmRgczITzIkbVG92Ydd06JlCEwV0HH
-         p5TIl4q0Ha17gJ3+9oVIUrbWK2AGFn2l4tSEVkHQJwSFp1bPW/5xWLITqD7c8RPBhU3K
-         oXqY5VAe1vpggtGZ4sv4tPmHeLpRVQB6l2KN3t/AS1DMa0TOU0PrESqBgnXqim8FY8Pi
-         pX3H0nU9TX7wsudEX445JI23r+bHgkafXituGBbdjU0Nx157bAzFCRP0l36x5u53R+V6
-         ahAQ==
-X-Gm-Message-State: AOAM530pXv+/eP3iiPNy9hl902cHh3LbpkpR5F0rXY6NSdigh6PxqKWt
-        jdX0T/kMeoBDocj0ZXynIA==
-X-Google-Smtp-Source: ABdhPJy0JbRbialOqZQgmgY+YuO73Raga2r31TBjNVrQd2QbuB7XuHqV35G5uICkoCqoeC4Y+1hpww==
-X-Received: by 2002:a02:a816:: with SMTP id f22mr1079416jaj.118.1600894706126;
-        Wed, 23 Sep 2020 13:58:26 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id v89sm435886ili.26.2020.09.23.13.58.25
+        bh=HTWiHb6gAj8Z8llT/G3EhR3u0c6leg5SleJXuet+BB8=;
+        b=dPEaHDfCsd3tBMtZTBpeq1YoBk2ziGaAsGfvkJlflUf/VX9PKsFfXYZl2T3LJgzYYg
+         96L0konS4QJCVY2afwTg/QWGdH1sMa8SviBEZt1sEAlJh1qBcK4lQbD1vgvfXDGZi9W0
+         zLJgJYFNax0HkWscY0rjq72aoXmywDcZehRN/6eEFv2TY4wCBq8VGQtE8hnfUbAnvE5H
+         mlhWGS6YkOwfSP2J2T/ed5lJehid98aJpuxvjPZuXIxUgKhsU3xVQVCxca4LF8odzzJY
+         u9jB7Nbjm3zmZQHqTvDvK+HdcPNG41pvN3ngpA5bJQ+DOGCq36+ND+Kx3o/0rOeyhUm4
+         gp0g==
+X-Gm-Message-State: AOAM532ie22MLi26DIk4KoRQ5wh5dev79fMOa4HtEpg/EyaAa5IIhbGQ
+        TO5WyOEuU/2i1kY9EXDfNupCWA==
+X-Google-Smtp-Source: ABdhPJyhYRkdhdAP+zcAthdKp5UM/HYFmn/Q1GmM+HLMtobEh6R/yGHM3nomGFFs2mIjEEFjiu+sRw==
+X-Received: by 2002:a63:d242:: with SMTP id t2mr1339749pgi.47.1600894715692;
+        Wed, 23 Sep 2020 13:58:35 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id i2sm532018pfq.89.2020.09.23.13.58.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 13:58:25 -0700 (PDT)
-Received: (nullmailer pid 1296317 invoked by uid 1000);
-        Wed, 23 Sep 2020 20:58:24 -0000
-Date:   Wed, 23 Sep 2020 14:58:24 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ath10k@lists.infradead.org
-Subject: Re: [PATCH v2 2/2] dt: bindings: ath10k: Document
- qcom,ath10k-pre-calibration-data-mtd
-Message-ID: <20200923205824.GA1290651@bogus>
-References: <20200918181104.98-1-ansuelsmth@gmail.com>
- <20200918181104.98-2-ansuelsmth@gmail.com>
+        Wed, 23 Sep 2020 13:58:34 -0700 (PDT)
+Date:   Wed, 23 Sep 2020 13:58:34 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     corbet@lwn.net, gregkh@linuxfoundation.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 01/11] counters: Introduce counter and counter_atomic
+Message-ID: <202009231354.3456CB141@keescook>
+References: <cover.1600816121.git.skhan@linuxfoundation.org>
+ <e57eb89132000b255b5a7952cb82725ec2f3e4e0.1600816121.git.skhan@linuxfoundation.org>
+ <202009231152.5023C4656F@keescook>
+ <599e3faa-4228-f867-46f1-66566297256b@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200918181104.98-2-ansuelsmth@gmail.com>
+In-Reply-To: <599e3faa-4228-f867-46f1-66566297256b@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 08:11:03PM +0200, Ansuel Smith wrote:
-> Document use of qcom,ath10k-pre-calibration-data-mtd bindings used to
-> define from where the driver will load the pre-cal data in the defined
-> mtd partition.
+On Wed, Sep 23, 2020 at 02:48:22PM -0600, Shuah Khan wrote:
+> On 9/23/20 1:04 PM, Kees Cook wrote:
+> > On Tue, Sep 22, 2020 at 07:43:30PM -0600, Shuah Khan wrote:
+> > I would really like these APIs to be _impossible_ to use for object
+> > lifetime management. To that end, I would like to have all of the
+> > *_return() functions removed. It should be strictly init, inc, dec,
+> > read.
+> > 
 > 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> ---
->  .../devicetree/bindings/net/wireless/qcom,ath10k.txt | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
+> Yes. I am with you on making this API as small as possible so it won't
+> be used for lifetime mgmt. That means no support for:
 > 
-> diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> index b61c2d5a0..568364243 100644
-> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-> @@ -15,9 +15,9 @@ and also uses most of the properties defined in this doc (except
->  "qcom,ath10k-calibration-data"). It uses "qcom,ath10k-pre-calibration-data"
->  to carry pre calibration data.
->  
-> -In general, entry "qcom,ath10k-pre-calibration-data" and
-> -"qcom,ath10k-calibration-data" conflict with each other and only one
-> -can be provided per device.
-> +In general, entry "qcom,ath10k-pre-calibration-data",
-> +"qcom,ath10k-calibration-data-mtd" and "qcom,ath10k-calibration-data" conflict with
-> +each other and only one can be provided per device.
->  
->  SNOC based devices (i.e. wcn3990) uses compatible string "qcom,wcn3990-wifi".
->  
-> @@ -63,6 +63,12 @@ Optional properties:
->  				 hw versions.
->  - qcom,ath10k-pre-calibration-data : pre calibration data as an array,
->  				     the length can vary between hw versions.
-> +- qcom,ath10k-pre-calibration-data-mtd :
-
-mtd is a Linuxism.
-
-> +	Usage: optional
-> +	Value type: <phandle offset size>
-> +	Definition: pre calibration data read from mtd partition. Take 3 value, the
-> +		    mtd to read data from, the offset in the mtd partition and the
-
-The phandle is the mtd or partition?
-
-Maybe you should be using nvmem binding here.
-
-> +		    size of data to read.
->  - <supply-name>-supply: handle to the regulator device tree node
->  			   optional "supply-name" are "vdd-0.8-cx-mx",
->  			   "vdd-1.8-xo", "vdd-1.3-rfa", "vdd-3.3-ch0",
-> -- 
-> 2.27.0
+> *_test, add_negative etc.
 > 
+> I started out with just init, inc, dec, read. As I started looking
+> for candidates that can be converted to counters, I found inc_return()
+> usages. I think we need inc_return() for sure. I haven't come across
+> atomic_dec_return() yet.
+
+What are the inc_return() cases? If they're not "safe" to use inc() and
+then read(), then those likely need a closer look at what they're doing.
+
+> > > +There are a number of atomic_t usages in the kernel where atomic_t api
+> > > +is used strictly for counting and not for managing object lifetime. In
+> > > +some cases, atomic_t might not even be needed.
+> > 
+> > Why even force the distinction? I think all the counters should be
+> > atomic and then there is no chance they will get accidentally used in
+> > places where someone *thinks* it's safe to use a non-atomic. So,
+> > "_atomic" can be removed from the name and the non-atomic implementation
+> > can get removed. Anyone already using non-atomic counters is just using
+> > "int" and "long" anyway. Let's please only create APIs that are always
+> > safe to use, and provide some benefit over a native time.
+> > 
+> 
+> I am with Greg on this. I think we will find several atomic_t usages
+> that don't need atomicity.
+
+If you want to distinguish from atomic and create a wrapping "int", how
+about making "counter" be the atomic and name the other "counter_unsafe"
+(or "counter_best_effort", "counter_simple", ...) etc?
+
+> > > +	end_val = counter_long_dec_return(&acnt);
+> > > +	pr_info("Test read decrement and return: %ld to %ld - %s\n",
+> > > +		start_val, end_val,
+> > > +		((start_val-1 == end_val) ? "PASS" : "FAIL"));
+> > 
+> > I also see a lot of copy/paste patterns here. These should all use a
+> > common helper.
+> 
+> I knew you would ask for helpers. :)
+
+Heh. inlines for everyone! ;)
+
+> Yeah will do.
+
+Awesome!
+
+-- 
+Kees Cook
