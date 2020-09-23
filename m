@@ -2,134 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E1E7275CB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77C16275CB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726755AbgIWQDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 12:03:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24325 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726332AbgIWQDT (ORCPT
+        id S1726779AbgIWQD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 12:03:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726681AbgIWQD3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 12:03:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600876997;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=B4k05A7gj+uoHnM+KMGYBlW8EKoINucj1vNX3PIFnaE=;
-        b=UnSN3WkxnUkgB90X+4aC/tx+ioZkP0LgILBnZEwmCAg9G14QqcMYUDPfIL/FtID4+Y+Qfz
-        /Mah4pz1ovhSCJPedFe2qvOGk6rz6VOW1j3gwvL+pWV8uX+7kFsNJZQ3FGmODa/VEe95jL
-        52NKpGV+7DQuFeutdVP76pkQn4RpgiQ=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-466-VaH0AG6LPxGMMASAjP2yVg-1; Wed, 23 Sep 2020 12:03:15 -0400
-X-MC-Unique: VaH0AG6LPxGMMASAjP2yVg-1
-Received: by mail-wm1-f71.google.com with SMTP id a7so99839wmc.2
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 09:03:15 -0700 (PDT)
+        Wed, 23 Sep 2020 12:03:29 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DFB6C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 09:03:29 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id e17so589912wme.0
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 09:03:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=bYY4v0xUKW+V9VzHQGgAzoUDOD/hbVajXOB7n6FQAF0=;
+        b=jiSXCwcC/9mz3F5aJuG19Xy21Yj23ok0rmXkRUdtSckcplQkLcHXm7ioPtobwvys2c
+         /Phb0cg/ShfIOKKhYVjO/GhZHQUDBAHTgo5AggnE0heNoNE8JAdK0KtBtaEJkb538j0m
+         vC2VE/HdKzP23D1eb9gngPxlC3s3RYgjxYbVm/WXtwdJmvlR5OOSnDUU8DVeCSjFilwA
+         yZkzmbGBmz0Z1eshATp9Zp3hOI7Ci6frBzkrB1eUO8X9AbO0CLVTFws8xAWXhFL5Wrvn
+         EpOHtOA9DNkh3hNOvdTR/WSu8vHGSBQ4jxEDTNgFH+MwtB7v9pQJrwY+8lqy0RjPdxVh
+         jsgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=B4k05A7gj+uoHnM+KMGYBlW8EKoINucj1vNX3PIFnaE=;
-        b=sUY+5LPmJ3i7fXshZ9ZBqzJW5SblZpgA/dzmi50/TemwhxL3Jo22Q0p7KaB2ZMc57t
-         Sr2Y+dNTMj5tsmGC+iCOZ/vmcStx5zvLbipWod87IMxPp8iO3orCrsF8E9q5PFQzMAZm
-         ePazn8eibpxv9s6z80RXa/2W/L2HhwbdV/kyrY3YfMqwV5iHqHByLeNKyYpQs+LfzHHI
-         3zPqjcFGEJ/AzUA4GNYa17/Ooumk71HLdVbmzqB7thu33h5Hx1Lim82fOMjQYk9NZWKR
-         4zT32DF2UM+mRIcMTgUVYrJ+caDmYEzdaQ33aymjiBBTyIo1vCPrHHhw3bgvOFAIBc2+
-         ullw==
-X-Gm-Message-State: AOAM530SBlt3qdPep83l9cZbLjHH5kZGS2MTjklrtCTMIjbvWZXcl2hH
-        9sjG8w+lnp/SHd8/lCSPZxNhP6hivAIS1ssYJArvYBszxPneZCLCslI4dXHnRMN6ha2sd+yjloh
-        BZWJVVerZH2kT5w2hNuUJvuRE
-X-Received: by 2002:a7b:c090:: with SMTP id r16mr305310wmh.56.1600876993315;
-        Wed, 23 Sep 2020 09:03:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx53k+H6RDWGsRDS/9X0hVju1Y6R9gCy5OLglPnvsnHXFnkTIjh1Gycp0Yoxiy5ddFylG97Cw==
-X-Received: by 2002:a7b:c090:: with SMTP id r16mr305280wmh.56.1600876993088;
-        Wed, 23 Sep 2020 09:03:13 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:15f1:648d:7de6:bad9? ([2001:b07:6468:f312:15f1:648d:7de6:bad9])
-        by smtp.gmail.com with ESMTPSA id t15sm265051wrp.20.2020.09.23.09.03.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Sep 2020 09:03:12 -0700 (PDT)
-Subject: Re: [PATCH] KVM: nVMX: Add VM-Enter failed tracepoints for super
- early checks
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        bh=bYY4v0xUKW+V9VzHQGgAzoUDOD/hbVajXOB7n6FQAF0=;
+        b=U6NjMETeHlkBP/msV4aapVOuLYTK9ef89mKeuvOnW5QCpmKgerOv3Do0W3wupLZtph
+         s+Wt5a3niA5nBQLX2xMWZ/VIqklT0AhgXEwvpPvZfcyVSd2nDmPWIK9ZML4PslAWqVTY
+         qTgzCPTovUWkuqkyoMEzHngIcjlD9SVsqSdn6FBWeVdofX6bXeE0GzVAV0MFNXmSvS9m
+         QGqWKkmMZJqScpgV6F7SO9TzsX0OH9tayLRxnjWIt58o5m695OzAIdIC04yjOuCeHiQ7
+         cjpAPaFzDIkbEZNaPHuiF7seOt/GBVi2FT2tO3zIsQkQLc7+rMYiM5zYgrLdqNID9BNb
+         EGAQ==
+X-Gm-Message-State: AOAM532QNZI1OwFgUCN12cq56gGAL9FBBCYWElwOqq4wprwkMsn91CDm
+        Odp1RAuGZU4k8+YoAte0mGS3t77Hszq2uQ==
+X-Google-Smtp-Source: ABdhPJw0EElZfNnvTIjIt4ari6nXnOwsimbGPoQwje5oJli7J1WfG5v8Q/oZhnfn7J4307aQbosRzg==
+X-Received: by 2002:a05:600c:4108:: with SMTP id j8mr284278wmi.116.1600877007537;
+        Wed, 23 Sep 2020 09:03:27 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id a11sm250764wmm.18.2020.09.23.09.03.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 23 Sep 2020 09:03:26 -0700 (PDT)
+Subject: Re: [PATCH v2] nvmem: core: fix possibly memleak when use
+ nvmem_cell_info_to_nvmem_cell()
+To:     Vadym Kochan <vadym.kochan@plvision.eu>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
-References: <20200812180615.22372-1-sean.j.christopherson@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <5fc9972c-a4d4-81da-3605-90d8c7c8a029@redhat.com>
-Date:   Wed, 23 Sep 2020 18:03:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+References: <20200923135343.16565-1-vadym.kochan@plvision.eu>
+ <7a072204-a4b8-e5ef-9ce2-4db176f70366@linaro.org>
+ <20200923141334.GA16798@plvision.eu>
+ <1f65dc6a-50f3-d4e5-f1ce-7a68fddde287@linaro.org>
+ <20200923145107.GB16798@plvision.eu>
+ <19c5fa23-41c9-f5c7-beaf-aeb9655bfefd@linaro.org>
+ <20200923160226.GC16798@plvision.eu>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <60233595-b47b-8b1b-013b-51b4c0c7ef13@linaro.org>
+Date:   Wed, 23 Sep 2020 17:03:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200812180615.22372-1-sean.j.christopherson@intel.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200923160226.GC16798@plvision.eu>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/08/20 20:06, Sean Christopherson wrote:
-> Add tracepoints for the early consistency checks in nested_vmx_run().
-> The "VMLAUNCH vs. VMRESUME" check in particular is useful to trace, as
-> there is no architectural way to check VMCS.LAUNCH_STATE, and subtle
-> bugs such as VMCLEAR on the wrong HPA can lead to confusing errors in
-> the L1 VMM.
-> 
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> ---
->  arch/x86/kvm/vmx/nested.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index 23b58c28a1c92..fb37f0972e78a 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -3468,11 +3468,11 @@ static int nested_vmx_run(struct kvm_vcpu *vcpu, bool launch)
->  	if (evmptrld_status == EVMPTRLD_ERROR) {
->  		kvm_queue_exception(vcpu, UD_VECTOR);
->  		return 1;
-> -	} else if (evmptrld_status == EVMPTRLD_VMFAIL) {
-> +	} else if (CC(evmptrld_status == EVMPTRLD_VMFAIL)) {
->  		return nested_vmx_failInvalid(vcpu);
->  	}
->  
-> -	if (!vmx->nested.hv_evmcs && vmx->nested.current_vmptr == -1ull)
-> +	if (CC(!vmx->nested.hv_evmcs && vmx->nested.current_vmptr == -1ull))
->  		return nested_vmx_failInvalid(vcpu);
->  
->  	vmcs12 = get_vmcs12(vcpu);
-> @@ -3483,7 +3483,7 @@ static int nested_vmx_run(struct kvm_vcpu *vcpu, bool launch)
->  	 * rather than RFLAGS.ZF, and no error number is stored to the
->  	 * VM-instruction error field.
->  	 */
-> -	if (vmcs12->hdr.shadow_vmcs)
-> +	if (CC(vmcs12->hdr.shadow_vmcs))
->  		return nested_vmx_failInvalid(vcpu);
->  
->  	if (vmx->nested.hv_evmcs) {
-> @@ -3504,10 +3504,10 @@ static int nested_vmx_run(struct kvm_vcpu *vcpu, bool launch)
->  	 * for misconfigurations which will anyway be caught by the processor
->  	 * when using the merged vmcs02.
->  	 */
-> -	if (interrupt_shadow & KVM_X86_SHADOW_INT_MOV_SS)
-> +	if (CC(interrupt_shadow & KVM_X86_SHADOW_INT_MOV_SS))
->  		return nested_vmx_fail(vcpu, VMXERR_ENTRY_EVENTS_BLOCKED_BY_MOV_SS);
->  
-> -	if (vmcs12->launch_state == launch)
-> +	if (CC(vmcs12->launch_state == launch))
->  		return nested_vmx_fail(vcpu,
->  			launch ? VMXERR_VMLAUNCH_NONCLEAR_VMCS
->  			       : VMXERR_VMRESUME_NONLAUNCHED_VMCS);
-> 
 
-Queued, thanks.
 
-Paolo
+On 23/09/2020 17:02, Vadym Kochan wrote:
+> You mean do not do such func attributes breaking as I did (moved them
+> line upper) ?
+yes, for consistency reasons!
 
+--srini
+> 
