@@ -2,232 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C6F27619D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 116DB276199
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:04:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726650AbgIWUEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 16:04:39 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:53764 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726199AbgIWUEj (ORCPT
+        id S1726600AbgIWUEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 16:04:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726199AbgIWUEb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 16:04:39 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08NK2BWK013668;
-        Wed, 23 Sep 2020 16:03:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=Ljy02159OZxWl2db8KxekGtDxFn+FrRkst2rG7nzEC4=;
- b=G5NSr1RQTTO1ZgVL4nuzY8BIJfmj+DLZ4U7PNM4fbE4RvUrFJFD9Q45xLCGNR8VeAmce
- 2FSfMzzeatnLRoQqvDQ6SgLkOEnnk7AUt7tWgg4uhTYK13ZHPUCeTEJIJqECkb2nMgV9
- 140MLIVVTlc7sZujwNa3QxqVjcP/HVjZi4yfsc4zjpkCVj5qk28fviadQ3wAmBDywv68
- P2yiDJCm6SfTfaT4rZBS8bJqS6JvvDV+nEozDaye8FElVnw40q9oaZOQ3sum2484t8nT
- /o2vE1+C8GXejAA6SiTEKa3hG6K0/wj9/OxMbNPxwQcXUf3BuNLRK1VzZdVquGDZwnIV xA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33rck5gqd2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Sep 2020 16:03:34 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08NK2fkp015746;
-        Wed, 23 Sep 2020 16:03:33 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33rck5gqbq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Sep 2020 16:03:33 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08NK3DGi024629;
-        Wed, 23 Sep 2020 20:03:31 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma05fra.de.ibm.com with ESMTP id 33n9m7tayt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Sep 2020 20:03:31 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08NK3Q6J24576380
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 23 Sep 2020 20:03:27 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B776311C050;
-        Wed, 23 Sep 2020 20:03:28 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A665711C04A;
-        Wed, 23 Sep 2020 20:03:21 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.10.187])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 23 Sep 2020 20:03:21 +0000 (GMT)
-Message-ID: <1fd254a926ce8c477d28adae4fe900d3f1619c52.camel@linux.ibm.com>
-Subject: Re: [PATCH v6 0/3] Carry forward IMA measurement log on kexec on
- ARM64
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        bauerman@linux.ibm.com, robh@kernel.org,
-        gregkh@linuxfoundation.org, james.morse@arm.com,
-        catalin.marinas@arm.com, sashal@kernel.org, will@kernel.org,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        robh+dt@kernel.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
-        tglx@linutronix.de, masahiroy@kernel.org, bhsharma@redhat.com,
-        mbrugger@suse.com, hsinyi@chromium.org, tao.li@vivo.com,
-        christophe.leroy@c-s.fr
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, prsriva@linux.microsoft.com,
-        balajib@linux.microsoft.com, linuxppc-dev@lists.ozlabs.org,
-        Nayna Jain <nayna@linux.ibm.com>
-Date:   Wed, 23 Sep 2020 16:03:20 -0400
-In-Reply-To: <20200908230856.9799-1-nramas@linux.microsoft.com>
-References: <20200908230856.9799-1-nramas@linux.microsoft.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
+        Wed, 23 Sep 2020 16:04:31 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83D1CC0613CE;
+        Wed, 23 Sep 2020 13:04:31 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id m12so981026otr.0;
+        Wed, 23 Sep 2020 13:04:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tWFTRPGRADrzoMZdwPoL2+bgLbryjFmfVhl1CEqG3MI=;
+        b=H/Kl2zus7FVSswFF53vmCD0QsrSzotKuokB1wNksbnvnH9og8cB2HCuJz8XX9GJ0DO
+         YlZTY2X+m1qigAvdFeZg6d2b7mTzJXG8rH0cygMRtWpkj7YjGL9aPxoTZrTYl5fFmri0
+         Wgzhwv9IqwgoHQvF+RBL9GCxPeLL5187VqUSDtCt6bsySbzwWlIqGBllG0ZOsVkPUWI4
+         F5+u4XBB6yvR8OO03diFOuahXMoAIqSbndttN9H/XaTwQiO0IuUyuX8B9DJLIbQ5E0VE
+         ofvC5FgO7CdzUs2k2hCRLjOB3l1dv1OAFfLIIl22M4hoD8ILrJUr+SDYNDts6cne+5Le
+         JkBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tWFTRPGRADrzoMZdwPoL2+bgLbryjFmfVhl1CEqG3MI=;
+        b=tkN78hTbPsZoAD5/c2+L3DTYTUV/BrTMGEfkCMD/y9FgL3BIifQKgP1N6GpywspcbN
+         jat20HkjamrhP5qQrBihKWhZsUMVrvMW3rbCuL8Y2WSEBl7D7Cq58CQfIahaNW883Vpi
+         oTE08wznm8ZvE9vxtNTMIc9f8JiQlw9lNY6Coa2Br6iNoG4gcbPiIyep40/yfS4nIJHp
+         BCSbllz/aMrfl429XzIXiuQAlfgyRXhB7qpz8GMiINoCBOA+zGgKtS/yD8sOhVNATYtO
+         3P8YjHEix229JFmqYy+5aAEVE7VNwiZ+WfwkpHZxAT+iWEuYa1KctKkTkJdfCQADUES3
+         wpCg==
+X-Gm-Message-State: AOAM530EmWcB/HLUfO7I0aaVbH/Kclwa4sWUkUK6QINQkTN/XmHNuPtM
+        yi+u6/bkLLF8Uz/Z2IUO4LS08NDwk0HZCA==
+X-Google-Smtp-Source: ABdhPJyNyKJp1mAVP9Yn6o6gUWNZ9z4u1VU2dKLdLQSr2IgPEmEg3hifpRA5CCAUZhh8bErBcbw44w==
+X-Received: by 2002:a9d:787:: with SMTP id 7mr882320oto.202.1600891470706;
+        Wed, 23 Sep 2020 13:04:30 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([2601:282:803:7700:1068:a73e:c386:fe1d])
+        by smtp.googlemail.com with ESMTPSA id b4sm169670oic.8.2020.09.23.13.04.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Sep 2020 13:04:30 -0700 (PDT)
+Subject: Re: [RFC PATCH v2 0/3] l3mdev icmp error route lookup fixes
+To:     Michael Jeanson <mjeanson@efficios.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     David <davem@davemloft.net>, netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20200918181801.2571-1-mathieu.desnoyers@efficios.com>
+ <390b230b-629b-7f96-e7c9-b28f8b592102@gmail.com>
+ <1453768496.36855.1600713879236.JavaMail.zimbra@efficios.com>
+ <dd1caf15-2ef0-f557-b9a8-26c46739f20b@gmail.com>
+ <1383129694.37216.1600716821449.JavaMail.zimbra@efficios.com>
+ <1135414696.37989.1600782730509.JavaMail.zimbra@efficios.com>
+ <4456259a-979a-7821-ef3d-aed5d330ed2b@gmail.com>
+ <730d8a09-7d3b-1033-4131-520dc42e8855@efficios.com>
+ <47175ae8-e7e8-473c-5103-90bf444db16c@efficios.com>
+ <cfdc41d9-cca1-7166-1a2e-778ac4bf8b73@gmail.com>
+ <b86a635d-774e-9e9b-a8bd-7abe3eb9a26d@efficios.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <ab8b09ef-fab1-5b2b-fdb3-67e6788bc7c7@gmail.com>
+Date:   Wed, 23 Sep 2020 14:04:28 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <b86a635d-774e-9e9b-a8bd-7abe3eb9a26d@efficios.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-23_16:2020-09-23,2020-09-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
- suspectscore=0 malwarescore=0 phishscore=0 mlxscore=0 mlxlogscore=999
- bulkscore=0 clxscore=1011 impostorscore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009230145
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Cc'ing Nayna Jain, linuxppc-dev@lists.ozlabs.org]
+On 9/23/20 1:12 PM, Michael Jeanson wrote:
+> 
+> Just a final clarification, the asymmetric setup would have no return
+> route in VRF 2 and only test the TTL case since the others would fail?
 
-Hi Lakshmi,
-
-On Tue, 2020-09-08 at 16:08 -0700, Lakshmi Ramasubramanian wrote:
-> On kexec file load Integrity Measurement Architecture(IMA) subsystem
-> may verify the IMA signature of the kernel and initramfs, and measure
-> it. The command line parameters passed to the kernel in the kexec call
-> may also be measured by IMA. A remote attestation service can verify
-> the measurement through the IMA log and the TPM PCR data. This can be
-> achieved only if the IMA measurement log is carried over from
-> the current kernel to the next kernel across the kexec call.
-> However in the current implementation the IMA measurement logs are not
-> carried over on ARM64 platforms. Therefore a remote attestation service
-> cannot verify the authenticity of the running kernel on ARM64 platforms
-> when the kernel is updated through the kexec system call.
-> 
-> This patch series adds support for carrying forward the IMA measurement
-> log on kexec on ARM64. powerpc already supports carrying forward
-> the IMA measurement log on kexec.
-> 
-> This series refactors the platform independent code defined for powerpc
-> such that it can be reused for ARM64 as well. A chosen node namely
-> "linux,ima-kexec-buffer" is added to the DTB for ARM64 to hold
-> the address and the size of the memory reserved to carry
-> the IMA measurement log.
-> 
-> This patch series has been tested for ARM64 platform using QEMU.
-> I would like help from the community for testing this change on powerpc.
-> Thanks.
-
-Getting access to and upgrading our group's Power system firmware took
-time due to limited employee site access.  Confirmed, with these
-patches applied, ima-evm-utils still properly verifies carrying the IMA
-measurement list across kexec.
-
-I plan on reviewing this patch set shortly.
-
-thanks,
-
-Mimi
-
-> 
-> This series is based on commit f4d51dffc6c0 ("Linux 5.9-rc4") in
-> https://github.com/torvalds/linux "master" branch.
-> 
-> Changelog:
-> 
-> v6:
->   - Remove any existing FDT_PROP_IMA_KEXEC_BUFFER property in the device
->     tree and also its corresponding memory reservation in the currently
->     running kernel.
->   - Moved the function remove_ima_buffer() defined for powerpc to IMA
->     and renamed the function to ima_remove_kexec_buffer(). Also, moved
->     delete_fdt_mem_rsv() from powerpc to IMA.
-> 
-> v5:
->   - Merged get_addr_size_cells() and do_get_kexec_buffer() into a single
->     function when moving the arch independent code from powerpc to IMA
->   - Reverted the change to use FDT functions in powerpc code and added
->     back the original code in get_addr_size_cells() and
->     do_get_kexec_buffer() for powerpc.
->   - Added fdt_add_mem_rsv() for ARM64 to reserve the memory for
->     the IMA log buffer during kexec.
->   - Fixed the warning reported by kernel test bot for ARM64
->     arch_ima_add_kexec_buffer() - moved this function to a new file
->     namely arch/arm64/kernel/ima_kexec.c
-> 
-> v4:
->   - Submitting the patch series on behalf of the original author
->     Prakhar Srivastava <prsriva@linux.microsoft.com>
->   - Moved FDT_PROP_IMA_KEXEC_BUFFER ("linux,ima-kexec-buffer") to
->     libfdt.h so that it can be shared by multiple platforms.
-> 
-> v3:
-> Breakup patches further into separate patches.
->   - Refactoring non architecture specific code out of powerpc
->   - Update powerpc related code to use fdt functions
->   - Update IMA buffer read related code to use of functions
->   - Add support to store the memory information of the IMA
->     measurement logs to be carried forward.
->   - Update the property strings to align with documented nodes
->     https://github.com/devicetree-org/dt-schema/pull/46
-> 
-> v2:
->   Break patches into separate patches.
->   - Powerpc related Refactoring
->   - Updating the docuemntation for chosen node
->   - Updating arm64 to support IMA buffer pass
-> 
-> v1:
->   Refactoring carrying over IMA measuremnet logs over Kexec. This patch
->     moves the non-architecture specific code out of powerpc and adds to
->     security/ima.(Suggested by Thiago)
->   Add Documentation regarding the ima-kexec-buffer node in the chosen
->     node documentation
-> 
-> v0:
->   Add a layer of abstraction to use the memory reserved by device tree
->     for ima buffer pass.
->   Add support for ima buffer pass using reserved memory for arm64 kexec.
->     Update the arch sepcific code path in kexec file load to store the
->     ima buffer in the reserved memory. The same reserved memory is read
->     on kexec or cold boot.
-> 
-> Lakshmi Ramasubramanian (3):
->   powerpc: Refactor kexec functions to move arch independent code to IMA
->   arm64: Store IMA log information in kimage used for kexec
->   arm64: Add IMA kexec buffer to DTB
-> 
->  arch/arm64/Kconfig                      |   1 +
->  arch/arm64/include/asm/ima.h            |  18 ++++
->  arch/arm64/include/asm/kexec.h          |   3 +
->  arch/arm64/kernel/Makefile              |   1 +
->  arch/arm64/kernel/ima_kexec.c           |  34 ++++++++
->  arch/arm64/kernel/machine_kexec_file.c  |  18 ++++
->  arch/powerpc/include/asm/ima.h          |  11 +--
->  arch/powerpc/include/asm/kexec.h        |   1 -
->  arch/powerpc/kexec/file_load.c          |  33 +-------
->  arch/powerpc/kexec/ima.c                | 104 +-----------------------
->  include/linux/ima.h                     |   2 +
->  include/linux/kexec.h                   |  11 +++
->  include/linux/libfdt.h                  |   3 +
->  security/integrity/ima/Makefile         |   3 +-
->  security/integrity/ima/ima.h            |   2 +
->  security/integrity/ima/ima_fdt.c        |  80 ++++++++++++++++++
->  security/integrity/ima/ima_kexec.c      |  58 +++++++++++++
->  security/integrity/ima/ima_kexec_file.c |  51 ++++++++++++
->  18 files changed, 289 insertions(+), 145 deletions(-)
->  create mode 100644 arch/arm64/include/asm/ima.h
->  create mode 100644 arch/arm64/kernel/ima_kexec.c
->  create mode 100644 security/integrity/ima/ima_fdt.c
->  create mode 100644 security/integrity/ima/ima_kexec_file.c
-> 
-
-
+correct. add a statement about it representing a customer setup so it is
+clear such a config is a 1-off
