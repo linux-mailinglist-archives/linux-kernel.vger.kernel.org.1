@@ -2,107 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEE3A27622B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:32:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 619A927622E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726735AbgIWUcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 16:32:43 -0400
-Received: from mga02.intel.com ([134.134.136.20]:29989 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726199AbgIWUcn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 16:32:43 -0400
-IronPort-SDR: 9e2y1rgsCX8jCW7Na5+RcQr51AIIejnc8gZNR+ea6Jt1HfbGlDMxsKHlrB6y1OJy7x0/QRxmnW
- W+iwdGhmuAnw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="148671925"
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="148671925"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 13:32:42 -0700
-IronPort-SDR: fxOz/CIz2/QbwXtGn/prqnou9Y8Rak3zk58kOA1JAX1tCFC73+wy3UHL0WhFU83zgOqaLviSgr
- YpwoC4tuUNNw==
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="486593724"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 13:32:42 -0700
-Date:   Wed, 23 Sep 2020 13:32:41 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH] KVM: SVM: Add a dedicated INVD intercept routine
-Message-ID: <20200923203241.GB15101@linux.intel.com>
-References: <16f36f9a51608758211c54564cd17c8b909372f1.1600892859.git.thomas.lendacky@amd.com>
+        id S1726766AbgIWUcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 16:32:54 -0400
+Received: from mail-il1-f195.google.com ([209.85.166.195]:37718 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726199AbgIWUcy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 16:32:54 -0400
+Received: by mail-il1-f195.google.com with SMTP id q4so923198ils.4;
+        Wed, 23 Sep 2020 13:32:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=l38fUYlJKpk/9OHd8y2HNij7IP3dpcOLc/B2f1OuyZ8=;
+        b=co1B9gXv9fiCIbHtb7gOwX3vgbQ4vU6/a3q2pd1C9uszsOY0nm2WRjGGri5017jf21
+         NE+fWuecUbmfe7VN7RzuGAr/CyAirCTHIybOjnHHbbuFzzfIcbUKP1jtTyV4sfvlOvvC
+         voHJXkUyw5BSQvSGFlBD0GSVRTOW/yxh3KK4zwk7KdAowKFYOgmBVdyoDqxoHAQa7c0y
+         TWxJSoWK7kzPpHRhiURSWksgiIPaYlPnRpovgkmZkUabzC0EdZf6o026eHKfRlBY/nVB
+         qiVNe0CNXO2ik904B7G5J/hQpKtPhzr82T2AOWpttXfcRXpfK0afR1kz1Pj8VYN9p/tj
+         gjfw==
+X-Gm-Message-State: AOAM533tzceYV9StXhdFG/qdPZt6/oGRpo6PPBGbfDmFQ8kUr8UIVdDT
+        jvrRfL/aohov/wKhPVXBFw==
+X-Google-Smtp-Source: ABdhPJwN8CdqdU2e1412/M0XJ8hCqZkNOAvpcALfwSyCtBluit3xw9UfNl0bSICZUVIxbIJ0AtqP4w==
+X-Received: by 2002:a92:a194:: with SMTP id b20mr1297741ill.53.1600893173000;
+        Wed, 23 Sep 2020 13:32:53 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id l10sm352957ilm.75.2020.09.23.13.32.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2020 13:32:52 -0700 (PDT)
+Received: (nullmailer pid 1255351 invoked by uid 1000);
+        Wed, 23 Sep 2020 20:32:51 -0000
+Date:   Wed, 23 Sep 2020 14:32:51 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     devicetree@vger.kernel.org,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v2] dt-bindings: mfd: rohm,bd71837-pmic: Add common
+ properties
+Message-ID: <20200923203251.GA1255317@bogus>
+References: <20200917193754.542-1-krzk@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <16f36f9a51608758211c54564cd17c8b909372f1.1600892859.git.thomas.lendacky@amd.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200917193754.542-1-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 03:27:39PM -0500, Tom Lendacky wrote:
-> From: Tom Lendacky <thomas.lendacky@amd.com>
+On Thu, 17 Sep 2020 21:37:54 +0200, Krzysztof Kozlowski wrote:
+> Add common properties appearing in DTSes (clock-names,
+> clock-output-names) with the common values (actually used in DTSes) to
+> fix dtbs_check warnings like:
 > 
-> The INVD instruction intercept performs emulation. Emulation can't be done
-> on an SEV guest because the guest memory is encrypted.
+>   arch/arm64/boot/dts/freescale/imx8mq-librem5-r2.dt.yaml:
+>     pmic@4b: 'clock-names', 'clock-output-names', do not match any of the regexes: 'pinctrl-[0-9]+'
 > 
-> Provide a dedicated intercept routine for the INVD intercept. Within this
-> intercept routine just skip the instruction for an SEV guest, since it is
-> emulated as a NOP anyway.
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 > 
-> Fixes: 1654efcbc431 ("KVM: SVM: Add KVM_SEV_INIT command")
-> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
 > ---
->  arch/x86/kvm/svm/svm.c | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
 > 
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index c91acabf18d0..332ec4425d89 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -2183,6 +2183,17 @@ static int iret_interception(struct vcpu_svm *svm)
->  	return 1;
->  }
->  
-> +static int invd_interception(struct vcpu_svm *svm)
-> +{
-> +	/*
-> +	 * Can't do emulation on an SEV guest and INVD is emulated
-> +	 * as a NOP, so just skip the instruction.
-> +	 */
-> +	return (sev_guest(svm->vcpu.kvm))
-> +		? kvm_skip_emulated_instruction(&svm->vcpu)
-> +		: kvm_emulate_instruction(&svm->vcpu, 0);
-
-Is there any reason not to do kvm_skip_emulated_instruction() for both SEV
-and legacy?  VMX has the same odd kvm_emulate_instruction() call, but AFAICT
-that's completely unecessary, i.e. VMX can also convert to a straight skip.
-
-> +}
-> +
->  static int invlpg_interception(struct vcpu_svm *svm)
->  {
->  	if (!static_cpu_has(X86_FEATURE_DECODEASSISTS))
-> @@ -2774,7 +2785,7 @@ static int (*const svm_exit_handlers[])(struct vcpu_svm *svm) = {
->  	[SVM_EXIT_RDPMC]			= rdpmc_interception,
->  	[SVM_EXIT_CPUID]			= cpuid_interception,
->  	[SVM_EXIT_IRET]                         = iret_interception,
-> -	[SVM_EXIT_INVD]                         = emulate_on_interception,
-> +	[SVM_EXIT_INVD]                         = invd_interception,
->  	[SVM_EXIT_PAUSE]			= pause_interception,
->  	[SVM_EXIT_HLT]				= halt_interception,
->  	[SVM_EXIT_INVLPG]			= invlpg_interception,
-> -- 
-> 2.28.0
+> Changes since v1:
+> 1. Define the names, as used in existing DTS files.
+> ---
+>  .../devicetree/bindings/mfd/rohm,bd71837-pmic.yaml          | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
+
+Reviewed-by: Rob Herring <robh@kernel.org>
