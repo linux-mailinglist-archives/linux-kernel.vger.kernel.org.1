@@ -2,100 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12742275CA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11145275CA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726595AbgIWQAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 12:00:50 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:21868 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726178AbgIWQAu (ORCPT
+        id S1726656AbgIWQBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 12:01:48 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:37320 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726156AbgIWQBs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 12:00:50 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-114-3SPCxjhGNz6_8Sdv3LtuFg-1; Wed, 23 Sep 2020 17:00:46 +0100
-X-MC-Unique: 3SPCxjhGNz6_8Sdv3LtuFg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Wed, 23 Sep 2020 17:00:45 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Wed, 23 Sep 2020 17:00:45 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Dave Jiang' <dave.jiang@intel.com>, Borislav Petkov <bp@alien8.de>
-CC:     "vkoul@kernel.org" <vkoul@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "jing.lin@intel.com" <jing.lin@intel.com>,
-        "ashok.raj@intel.com" <ashok.raj@intel.com>,
-        "sanjay.k.kumar@intel.com" <sanjay.k.kumar@intel.com>,
-        "fenghua.yu@intel.com" <fenghua.yu@intel.com>,
-        "kevin.tian@intel.com" <kevin.tian@intel.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v4 1/5] x86/asm: move the raw asm in iosubmit_cmds512() to
- special_insns.h
-Thread-Topic: [PATCH v4 1/5] x86/asm: move the raw asm in iosubmit_cmds512()
- to special_insns.h
-Thread-Index: AQHWkcBDYYZeKoT2o0iUR23vst8hAql2Xrlg
-Date:   Wed, 23 Sep 2020 16:00:45 +0000
-Message-ID: <da596c9c5a4c4368b887ac171db952eb@AcuMS.aculab.com>
-References: <160037680630.3777.16356270178889649944.stgit@djiang5-desk3.ch.intel.com>
- <160037731654.3777.18071122574577972463.stgit@djiang5-desk3.ch.intel.com>
- <20200923104158.GG28545@zn.tnic>
- <c38406b7-f1d1-35d8-8015-bacce7a52226@intel.com>
-In-Reply-To: <c38406b7-f1d1-35d8-8015-bacce7a52226@intel.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 23 Sep 2020 12:01:48 -0400
+Received: by mail-io1-f65.google.com with SMTP id y13so24304900iow.4;
+        Wed, 23 Sep 2020 09:01:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UUMntkLcXXSXvxzYo5HR63zxDJ+TazuPkjC8x62Vk3Q=;
+        b=AsrkXgMWJbkNA8I+fvG6KM9yFIDaEoHPgCDZ6tcXc1YcNwJwnNR6fMqemQx/kX5lYT
+         TJqS73hIBMOC2sUQyjW8dr0c+3a5rhT9EACi0Y/eVl3QUjFujEzbR6mc5oNHeXh7w2LL
+         nU+NG1XtV9t4RgDeOR29DZ0TuOpT8cOS3tS7+ICkAkLcJzrsZ6djt9CYoCvwG0YC48Zv
+         qnmrSizzpur5qpJKp2WiNhQRwQlWVRbDvWrzB9DDcLasNV10F+CCSOhE3ekK7FcSIDmi
+         h9dsMHn/JazfpRhnjT1BBQBBVFMhdhrJb3/yIMfl0Sbz4rRP8IcEUu5dI86nEdnk2Iwk
+         pvcQ==
+X-Gm-Message-State: AOAM53318NIsMpj0gOyjfbozZzi6TagNSHluqZIblePp7diSxvBH3GSl
+        I11TcDOFz3PVPnSnR8YAWFYNrqLjQT7+PGI=
+X-Google-Smtp-Source: ABdhPJwardiZv7RYG1M5Ig/Up4odNfjH9iGWEOf+kukVwX94Q8LfgdZb4+jj9YPn4aGnAjUBb/TRug==
+X-Received: by 2002:a05:6602:2f8a:: with SMTP id u10mr198995iow.72.1600876907051;
+        Wed, 23 Sep 2020 09:01:47 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id m18sm29587ila.27.2020.09.23.09.01.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2020 09:01:46 -0700 (PDT)
+Received: (nullmailer pid 833599 invoked by uid 1000);
+        Wed, 23 Sep 2020 16:01:44 -0000
+Date:   Wed, 23 Sep 2020 10:01:44 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Vara Reddy <varar@codeaurora.org>,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Jeykumar Sankaran <jsanka@codeaurora.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Sean Paul <seanpaul@chromium.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Chandan Uddaraju <chandanu@codeaurora.org>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v4 01/10] dt-bindings: phy: qcom,qmp-usb3-dp: Add DP phy
+ information
+Message-ID: <20200923160144.GA833543@bogus>
+References: <20200916231202.3637932-1-swboyd@chromium.org>
+ <20200916231202.3637932-2-swboyd@chromium.org>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916231202.3637932-2-swboyd@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogRGF2ZSBKaWFuZw0KPiBTZW50OiAyMyBTZXB0ZW1iZXIgMjAyMCAxNjo0Mw0KLi4uDQo+
-ID4NCj4gPiBPbiBUaHUsIFNlcCAxNywgMjAyMCBhdCAwMjoxNToxNlBNIC0wNzAwLCBEYXZlIEpp
-YW5nIHdyb3RlOg0KPiA+PiBkaWZmIC0tZ2l0IGEvYXJjaC94ODYvaW5jbHVkZS9hc20vc3BlY2lh
-bF9pbnNucy5oIGIvYXJjaC94ODYvaW5jbHVkZS9hc20vc3BlY2lhbF9pbnNucy5oDQo+ID4+IGlu
-ZGV4IDU5YTNlMTMyMDRjMy4uN2JjOGU3MTRmMzdlIDEwMDY0NA0KPiA+PiAtLS0gYS9hcmNoL3g4
-Ni9pbmNsdWRlL2FzbS9zcGVjaWFsX2luc25zLmgNCj4gPj4gKysrIGIvYXJjaC94ODYvaW5jbHVk
-ZS9hc20vc3BlY2lhbF9pbnNucy5oDQo+ID4+IEBAIC0yMzQsNiArMjM0LDIzIEBAIHN0YXRpYyBp
-bmxpbmUgdm9pZCBjbHdiKHZvbGF0aWxlIHZvaWQgKl9fcCkNCj4gPj4NCj4gPj4gICAjZGVmaW5l
-IG5vcCgpIGFzbSB2b2xhdGlsZSAoIm5vcCIpDQo+ID4+DQo+ID4+ICtzdGF0aWMgaW5saW5lIHZv
-aWQgbW92ZGlyNjRiKHZvaWQgKl9fZHN0LCBjb25zdCB2b2lkICpzcmMpDQo+ID4NCj4gPiBNYWtl
-IF9fZHN0IGJlIHRoZSBmdW5jdGlvbiBsb2NhbCB2YXJpYWJsZSBuYW1lIGFuZCBrZWVwICJkc3Qi
-LCBpLmUuLA0KPiA+IHdpdGhvdXQgdGhlIHVuZGVyc2NvcmVzLCB0aGUgZnVuY3Rpb24gcGFyYW1l
-dGVyIG5hbWUuDQo+IA0KPiBPayB3aWxsIGZpeA0KPiANCj4gPg0KPiA+PiArCS8qDQo+ID4+ICsJ
-ICogTm90ZSB0aGF0IHRoaXMgaXNuJ3QgYW4gIm9uLXN0YWNrIGNvcHkiLCBqdXN0IGRlZmluaXRp
-b24gb2YgImRzdCINCj4gPj4gKwkgKiBhcyBhIHBvaW50ZXIgdG8gNjQtYnl0ZXMgb2Ygc3R1ZmYg
-dGhhdCBpcyBnb2luZyB0byBiZSBvdmVyd3JpdHRlbi4NCj4gPj4gKwkgKiBJbiB0aGUgTU9WRElS
-NjRCIGNhc2UgdGhhdCBtYXkgYmUgbmVlZGVkIGFzIHlvdSBjYW4gdXNlIHRoZQ0KPiA+PiArCSAq
-IE1PVkRJUjY0QiBpbnN0cnVjdGlvbiB0byBjb3B5IGFyYml0cmFyeSBtZW1vcnkgYXJvdW5kLiBU
-aGlzIHRyaWNrDQo+ID4+ICsJICogbGV0cyB0aGUgY29tcGlsZXIga25vdyBob3cgbXVjaCBnZXRz
-IGNsb2JiZXJlZC4NCj4gPj4gKwkgKi8NCj4gPj4gKwl2b2xhdGlsZSBzdHJ1Y3QgeyBjaGFyIF9b
-NjRdOyB9ICpkc3QgPSBfX2RzdDsNCj4gPj4gKw0KPiA+PiArCS8qIE1PVkRJUjY0QiBbcmR4XSwg
-cmF4ICovDQo+ID4+ICsJYXNtIHZvbGF0aWxlKCIuYnl0ZSAweDY2LCAweDBmLCAweDM4LCAweGY4
-LCAweDAyIg0KPiA+PiArCQkgICAgIDogIj1tIiAoZHN0KQ0KPiA+PiArCQkgICAgIDogImQiIChz
-cmMpLCAiYSIgKGRzdCkpOw0KPiA+PiArfQ0KDQpTaW5jZSAnZHN0JyBuZWVkcyB0byBiZSA2NGJ5
-dGUgYWxpZ25lZCBpdCBpc24ndCBjbGVhciB0aGF0ICd2b2lkIConDQppcyB0aGUgcmlnaHQgdHlw
-ZSBmb3IgJ2RzdCcuDQpBdCBsZWFzdCBhZGQgYSBjb21tZW50Lg0KDQpZb3VyIGFzbSBjb25zdHJh
-aW50cyBhcmUgYWxzbyBqdXN0IHdyb25nLg0KDQpUaGVyZSBpcyBubyByZWFsIHBvaW50IHNwZWNp
-ZnlpbmcgIj1tIiAoZHN0KSBhcyBhbiBvdXRwdXQuDQpUaGUgd3JpdGUgcmF0aGVyIGJ5cGFzc2Vz
-IHRoZSBjYWNoZSBhbmQgdGhlIGNhbGxlciBiZXR0ZXINCmtub3cgd2hhdCB0aGV5IGFyZSBkb2lu
-Zy4NCg0KT1RPSCB5b3UnZCBiZXR0ZXIgYWRkICJtIiAoKHN0cnVjdCB7IGNoYXIgX1s2NF07fSAq
-KXNyYykgYXMNCmFuIGlucHV0IGNvbnN0cmFpbnQuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVk
-IEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5l
-cywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+On Wed, 16 Sep 2020 16:11:53 -0700, Stephen Boyd wrote:
+> This binding only describes the USB phy inside the USB3 + DP "combo"
+> phy. Add information for the DP phy and describe the sub-nodes that
+> represent the DP and USB3 phys that exist inside the combo wrapper.
+> Remove reg-names from required properties because it isn't required nor
+> used by the kernel driver.
+> 
+> Cc: Jeykumar Sankaran <jsanka@codeaurora.org>
+> Cc: Chandan Uddaraju <chandanu@codeaurora.org>
+> Cc: Vara Reddy <varar@codeaurora.org>
+> Cc: Tanmay Shah <tanmay@codeaurora.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Manu Gautam <mgautam@codeaurora.org>
+> Cc: Sandeep Maheswaram <sanm@codeaurora.org>
+> Cc: Douglas Anderson <dianders@chromium.org>
+> Cc: Sean Paul <seanpaul@chromium.org>
+> Cc: Jonathan Marek <jonathan@marek.ca>
+> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Cc: <devicetree@vger.kernel.org>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Rob Clark <robdclark@chromium.org>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>  .../bindings/phy/qcom,qmp-usb3-dp-phy.yaml    | 95 ++++++++++++++++---
+>  1 file changed, 84 insertions(+), 11 deletions(-)
+> 
 
+Reviewed-by: Rob Herring <robh@kernel.org>
