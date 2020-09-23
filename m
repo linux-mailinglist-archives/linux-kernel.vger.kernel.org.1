@@ -2,122 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F2812759D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:24:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9F92759DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726610AbgIWOYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 10:24:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48554 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726514AbgIWOYU (ORCPT
+        id S1726676AbgIWOZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 10:25:45 -0400
+Received: from mickerik.phytec.de ([195.145.39.210]:60186 "EHLO
+        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726550AbgIWOZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 10:24:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600871058;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=S3+XlwGZbFIsIgBY1zyuOCGqClTJDRCCN2cgr0snetc=;
-        b=VvbyZASBrdU0zXGlVjc7eYboyoSpfj1EUUVncxpH0n/mVNc0wfvr8s6OQTUm4jsqsHEZTw
-        5eJ1Fgjl6XLbMHFwERnIVyePMjQdQz0s1OYt3XivohoQ83NvYUikTi1FIJ2DNsEqdaF7Sn
-        YpjefhGyqk7HPSwU+RGgPABkPIsazL8=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-455-UoFZMRGvPjWPvg-d_RilFQ-1; Wed, 23 Sep 2020 10:24:17 -0400
-X-MC-Unique: UoFZMRGvPjWPvg-d_RilFQ-1
-Received: by mail-wr1-f71.google.com with SMTP id f18so8894084wrv.19
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 07:24:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=S3+XlwGZbFIsIgBY1zyuOCGqClTJDRCCN2cgr0snetc=;
-        b=H9I4Q8lr7MPSVqPPaulrnVE77oCOPbGnhdBteFuFk/XKn1mJVwxgP/qm/mbLFq13gn
-         mngibI7QAaaLEd2RudxjxbtbJKYUTYZAmxOCxeNVU2FMl5WDJtJ5lyhKH1JX1kqTYDQ7
-         szWWny/B/tisH/OfT4oyo48BerWmvdujAH2NdEwSnmXOnjbtBHF/0ZzU+jM9eputkYqs
-         iIDvSIHX3IrD0q+HdiAGevBJkj8m1qYoEh7BpUqZLAyp5im7QSFXIPCHXl85HTknk/Gu
-         MGBWVD7th0KdozhsXdKCJlpxjJwN9MV1gPKYRJtYB1xZiRBZb3NCDPhJWY4UsRwoRgiD
-         yYuA==
-X-Gm-Message-State: AOAM531Db6u9FJx7MbUjwjkT9ccrCDRR0ZnBTomdahHPt5gpk3ehbgo0
-        Qa91isGm4ZZ1IReKCTLtq3EtTNsYLUnz8YVrYYtZKi6gRZ4TGLHoyHLosGabUG8975QkN9bufmC
-        9kFS3VJGiip0O5ry7//UVfE68
-X-Received: by 2002:a5d:4fcc:: with SMTP id h12mr1133782wrw.199.1600871055309;
-        Wed, 23 Sep 2020 07:24:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzn1rVI+lklZm2YsGtnUhjFXMRZPm38QxJE5ctn6MZ7p3x1GP6nA/zN8TZuSUC3R6UedL5kCg==
-X-Received: by 2002:a5d:4fcc:: with SMTP id h12mr1133757wrw.199.1600871055067;
-        Wed, 23 Sep 2020 07:24:15 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:15f1:648d:7de6:bad9? ([2001:b07:6468:f312:15f1:648d:7de6:bad9])
-        by smtp.gmail.com with ESMTPSA id x2sm31221286wrl.13.2020.09.23.07.24.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Sep 2020 07:24:14 -0700 (PDT)
-Subject: Re: [PATCH] selftests: kvm: Fix assert failure in single-step test
-To:     Yang Weijiang <weijiang.yang@intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sean.j.christopherson@intel.com
-References: <20200826015524.13251-1-weijiang.yang@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <076c24ae-948a-48ed-99ec-c7d43753c802@redhat.com>
-Date:   Wed, 23 Sep 2020 16:24:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Wed, 23 Sep 2020 10:25:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a1; c=relaxed/simple;
+        q=dns/txt; i=@phytec.de; t=1600871142; x=1603463142;
+        h=From:Sender:Reply-To:Subject:Date:Message-Id:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=eZrZq7b5jE9lfQbUpANiarfQVMj5BBuPkcCgqdnooCc=;
+        b=LROs7Ibzmbx2FI5DRgLM0a9y9sL3wTQwp80WxeNPnHloX6Xe8ht0X0Byy9C3zqnx
+        A7pRtVZFPkZMT7n1BVSVKYAzRKucTEQ7gB235IprvBOLQ/yaDmxHIJCcY79C/Kap
+        zUtAN7BxathykxwLA+jFcO2npP2kj8q40OBQCyJiA3s=;
+X-AuditID: c39127d2-269ff70000001c25-66-5f6b5ae69c10
+Received: from idefix.phytec.de (Unknown_Domain [172.16.0.10])
+        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 43.2E.07205.6EA5B6F5; Wed, 23 Sep 2020 16:25:42 +0200 (CEST)
+Received: from lws-riedmueller.phytec.de ([172.16.23.108])
+          by idefix.phytec.de (IBM Domino Release 9.0.1FP7)
+          with ESMTP id 2020092316254234-484320 ;
+          Wed, 23 Sep 2020 16:25:42 +0200 
+From:   Stefan Riedmueller <s.riedmueller@phytec.de>
+To:     Fugang Duan <fugang.duan@nxp.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Christian Hemp <c.hemp@phytec.de>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>
+Subject: [PATCH] net: fec: Keep device numbering consistent with datasheet
+Date:   Wed, 23 Sep 2020 16:25:28 +0200
+Message-Id: <20200923142528.303730-1-s.riedmueller@phytec.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200826015524.13251-1-weijiang.yang@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MIMETrack: Itemize by SMTP Server on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 23.09.2020 16:25:42,
+        Serialize by Router on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 23.09.2020 16:25:42
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: quoted-printable
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrILMWRmVeSWpSXmKPExsWyRoCBS/dZVHa8wbqD2hZzzrewWKx8fpfd
+        4sK2PlaLTY+vsVpc3jWHzeLYAjEHNo8tK28yeWxa1cnmsXlJvcfGdzuYPD5vkgtgjeKySUnN
+        ySxLLdK3S+DKuHluPVPBOa6KFfu2sTYwtnN2MXJySAiYSHRtXsXUxcjFISSwjVHi56Qv7BDO
+        NUaJ+ScOsIJUsQkYSSyY1sgEYosIqErs/LcDzGYW+M0o8f4X2CRhAS+JR09/MYLYLEA190/P
+        YgexeQVsJfZc+sAEsU1eYual71BxQYmTM5+wgCyTELjCKDFh1WVWiCIhidOLzzJDLNCWWLbw
+        NfMERr5ZSHpmIUktYGRaxSiUm5mcnVqUma1XkFFZkpqsl5K6iREYjIcnql/awdg3x+MQIxMH
+        4yFGCQ5mJRHeG2rZ8UK8KYmVValF+fFFpTmpxYcYpTlYlMR5N/CWhAkJpCeWpGanphakFsFk
+        mTg4pRoYc77e2dEnJfvz9eyJFi9Db8jPEVzk8bHh9pPJlW/8/WOUhaKFw2ad6LmmNqdV9cmp
+        +ZX5NrfXa+yPX3qp39S1b8oK1aUVrkHedbWLNyTN7Hh14H/LYm+v4vKP24/M1J5dK3u1YgPj
+        YYVX265+3LCkaVNJOYdw0vkP/9U7+24X1cdNXp0gn14lqcRSnJFoqMVcVJwIAPDFtXc0AgAA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/08/20 03:55, Yang Weijiang wrote:
-> This is a follow-up patch to fix an issue left in commit:
-> 98b0bf02738004829d7e26d6cb47b2e469aaba86
-> selftests: kvm: Use a shorter encoding to clear RAX
-> 
-> With the change in the commit, we also need to modify "xor" instruction
-> length from 3 to 2 in array ss_size accordingly to pass below check:
-> 
-> for (i = 0; i < (sizeof(ss_size) / sizeof(ss_size[0])); i++) {
->         target_rip += ss_size[i];
->         CLEAR_DEBUG();
->         debug.control = KVM_GUESTDBG_ENABLE | KVM_GUESTDBG_SINGLESTEP;
->         debug.arch.debugreg[7] = 0x00000400;
->         APPLY_DEBUG();
->         vcpu_run(vm, VCPU_ID);
->         TEST_ASSERT(run->exit_reason == KVM_EXIT_DEBUG &&
->                     run->debug.arch.exception == DB_VECTOR &&
->                     run->debug.arch.pc == target_rip &&
->                     run->debug.arch.dr6 == target_dr6,
->                     "SINGLE_STEP[%d]: exit %d exception %d rip 0x%llx "
->                     "(should be 0x%llx) dr6 0x%llx (should be 0x%llx)",
->                     i, run->exit_reason, run->debug.arch.exception,
->                     run->debug.arch.pc, target_rip, run->debug.arch.dr6,
->                     target_dr6);
-> }
-> 
-> Reported-by: kernel test robot <rong.a.chen@intel.com>
-> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
-> ---
->  tools/testing/selftests/kvm/x86_64/debug_regs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/kvm/x86_64/debug_regs.c b/tools/testing/selftests/kvm/x86_64/debug_regs.c
-> index b8d14f9db5f9..2fc6b3af81a1 100644
-> --- a/tools/testing/selftests/kvm/x86_64/debug_regs.c
-> +++ b/tools/testing/selftests/kvm/x86_64/debug_regs.c
-> @@ -73,7 +73,7 @@ int main(void)
->  	int i;
->  	/* Instruction lengths starting at ss_start */
->  	int ss_size[4] = {
-> -		3,		/* xor */
-> +		2,		/* xor */
->  		2,		/* cpuid */
->  		5,		/* mov */
->  		2,		/* rdmsr */
-> 
+From: Christian Hemp <c.hemp@phytec.de>
 
-Queued, thanks.
+Make use of device tree alias for device enumeration to keep the device
+order consistent with the naming in the datasheet.
 
-Paolo
+Otherwise for the i.MX 6UL/ULL the ENET1 interface is enumerated as eth1
+and ENET2 as eth0.
+
+Signed-off-by: Christian Hemp <c.hemp@phytec.de>
+Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
+---
+ drivers/net/ethernet/freescale/fec=5Fmain.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/net/ethernet/freescale/fec=5Fmain.c b/drivers/net/ethe=
+rnet/freescale/fec=5Fmain.c
+index fb37816a74db..97dd41bed70a 100644
+--- a/drivers/net/ethernet/freescale/fec=5Fmain.c
++++ b/drivers/net/ethernet/freescale/fec=5Fmain.c
+@@ -3504,6 +3504,7 @@ fec=5Fprobe(struct platform=5Fdevice *pdev)
+ 	char irq=5Fname[8];
+ 	int irq=5Fcnt;
+ 	struct fec=5Fdevinfo *dev=5Finfo;
++	int eth=5Fid;
+=20
+ 	fec=5Fenet=5Fget=5Fqueue=5Fnum(pdev, &num=5Ftx=5Fqs, &num=5Frx=5Fqs);
+=20
+@@ -3691,6 +3692,10 @@ fec=5Fprobe(struct platform=5Fdevice *pdev)
+=20
+ 	ndev->max=5Fmtu =3D PKT=5FMAXBUF=5FSIZE - ETH=5FHLEN - ETH=5FFCS=5FLEN;
+=20
++	eth=5Fid =3D of=5Falias=5Fget=5Fid(pdev->dev.of=5Fnode, "ethernet");
++	if (eth=5Fid >=3D 0)
++		sprintf(ndev->name, "eth%d", eth=5Fid);
++
+ 	ret =3D register=5Fnetdev(ndev);
+ 	if (ret)
+ 		goto failed=5Fregister;
+--=20
+2.25.1
 
