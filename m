@@ -2,115 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38224275032
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 07:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41CC6275033
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 07:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726980AbgIWFNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 01:13:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726834AbgIWFNq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 01:13:46 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46FE7C061755;
-        Tue, 22 Sep 2020 22:13:46 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bx5tW2xn6z9sSn;
-        Wed, 23 Sep 2020 15:13:37 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1600838022;
-        bh=nJlbpMzEQF4xf7OqJ7aJ4/0mJPbl37gN6YXTPWnzUPA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Nx5VNkbFAG9Vwdj9F1d8lptV9Avi3FfIWlOG+w4V+wa+AGEABwd6V0ZAu9GRcMa5Q
-         hzpi9z2iZzYf6zaTRMPITi2WICU1Ke77KfiLrsDcQVRb3mH7nE05RrbPE91ubZ2fxQ
-         byc12GGs9YU8KbcGmafG9AoJJbRXuo+4E7O4xZk8fnr4K8XaAGx/bKw12VWLVasAfp
-         FT63QynCckr/US75ZkP+PqTQ3ucwH0R3UmT2E0J+8jZz6Wr4xqN4Q8IIJhXZMHY4+6
-         dJqmrxUaMtC21lxEfmJInJOCWgH8NOYr0TIX7Z7ENv4+3HakhEFrgfp/i83StgWtpP
-         8b1NrvO5wujOQ==
-Date:   Wed, 23 Sep 2020 15:13:36 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alex Deucher <alexdeucher@gmail.com>
-Cc:     Mukul Joshi <mukul.joshi@amd.com>, Borislav Petkov <bp@suse.de>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: manual merge of the tip tree with the amdgpu tree
-Message-ID: <20200923151336.1664ad72@canb.auug.org.au>
+        id S1727007AbgIWFNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 01:13:52 -0400
+Received: from mga18.intel.com ([134.134.136.126]:43015 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726834AbgIWFNv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 01:13:51 -0400
+IronPort-SDR: 7rKLNpeg5Dyww1fNIImmEYY/cQPR+Z/Yh5gyZDw5xsuLAXTD2joJ1LtbXTiXgx9SnmOMhSyFWa
+ n93ugt2SWmOw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9752"; a="148536163"
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
+   d="scan'208";a="148536163"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 22:13:51 -0700
+IronPort-SDR: fWVFHrh3jdQi9TBRy84Y2llMI6nY6Ouqo+qrEMKnJVDKK5/C8PJ0+HcIEsi4HKK1fndVeJmvts
+ K9Ux9TLOeDzg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
+   d="scan'208";a="305232785"
+Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.164])
+  by orsmga003.jf.intel.com with ESMTP; 22 Sep 2020 22:13:50 -0700
+From:   "Huang\, Ying" <ying.huang@intel.com>
+To:     Rafael Aquini <aquini@redhat.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org
+Subject: Re: [PATCH] mm: swapfile: avoid split_swap_cluster() NULL pointer dereference
+References: <20200922184838.978540-1-aquini@redhat.com>
+        <878sd1qllb.fsf@yhuang-dev.intel.com>
+        <20200923043459.GL795820@optiplex-lnx>
+Date:   Wed, 23 Sep 2020 13:13:49 +0800
+In-Reply-To: <20200923043459.GL795820@optiplex-lnx> (Rafael Aquini's message
+        of "Wed, 23 Sep 2020 00:34:59 -0400")
+Message-ID: <87sgb9oz1u.fsf@yhuang-dev.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/moEZf_plPNC2PYvhNyfr4rM";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/moEZf_plPNC2PYvhNyfr4rM
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Rafael Aquini <aquini@redhat.com> writes:
 
-Hi all,
+> On Wed, Sep 23, 2020 at 10:21:36AM +0800, Huang, Ying wrote:
+>> Hi, Rafael,
+>> 
+>> Rafael Aquini <aquini@redhat.com> writes:
+>> 
+>> > The swap area descriptor only gets struct swap_cluster_info *cluster_info
+>> > allocated if the swapfile is backed by non-rotational storage.
+>> > When the swap area is laid on top of ordinary disk spindles, lock_cluster()
+>> > will naturally return NULL.
+>> 
+>> Thanks for reporting.  But the bug looks strange.  Because in a system
+>> with only HDD swap devices, during THP swap out, the swap cluster
+>> shouldn't be allocated, as in
+>> 
+>> shrink_page_list()
+>>   add_to_swap()
+>>     get_swap_page()
+>>       get_swap_pages()
+>>         swap_alloc_cluster()
+>>
+>
+> The underlying problem is that swap_info_struct.cluster_info is always NULL 
+> on the rotational storage case.
 
-Today's linux-next merge of the tip tree got a conflict in:
+Yes.
 
-  drivers/gpu/drm/amd/amdkfd/kfd_priv.h
+> So, it's very easy to follow that constructions 
+> like this one, in split_swap_cluster 
+>
+> ...
+>         ci = lock_cluster(si, offset);
+>         cluster_clear_huge(ci);
+> ...
+>
+> will go for a NULL pointer dereference, in that case, given that lock_cluster 
+> reads:
+>
+> ...
+> 	struct swap_cluster_info *ci;
+>         ci = si->cluster_info;
+>         if (ci) {
+>                 ci += offset / SWAPFILE_CLUSTER;
+>                 spin_lock(&ci->lock);
+>         }
+>         return ci;
+> ...
 
-between commit:
+But on HDD, we shouldn't call split_swap_cluster() at all, because we
+will not allocate swap cluster firstly.  So, if we run into this,
+there should be some other bug, we need to figure it out.
 
-  59d7115dae02 ("drm/amdkfd: Move process doorbell allocation into kfd devi=
-ce")
-
-from the amdgpu tree and commit:
-
-  c7b6bac9c72c ("drm, iommu: Change type of pasid to u32")
-
-from the tip tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/gpu/drm/amd/amdkfd/kfd_priv.h
-index 739db04080d0,922ae138ab85..000000000000
---- a/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_priv.h
-@@@ -739,7 -723,8 +739,7 @@@ struct kfd_process=20
-  	/* We want to receive a notification when the mm_struct is destroyed */
-  	struct mmu_notifier mmu_notifier;
- =20
-- 	uint16_t pasid;
-+ 	u32 pasid;
- -	unsigned int doorbell_index;
- =20
-  	/*
-  	 * List of kfd_process_device structures,
-
---Sig_/moEZf_plPNC2PYvhNyfr4rM
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9q2YAACgkQAVBC80lX
-0GwoDAgAnvKhZVCL8HwtYXvZSsE3BhOCHSjGq74qOoKTx0V1oqgdhtHs726o/e/Q
-XvqBAIv09sWITdL99FpFZw/j8V2Wsqcvvua7RN38pkGMpyDOXYiYRkei/Gn1mOUE
-ZokQkYrZ0vDAlMmV+wWXgsddwbLhDCLKw/V156i5qTgzR/YUZbSJDBcJv+oAnGGe
-IKfZhogZ8B2k0oYAlxHJOc3ZXWaezYfNfW0F/hcW0X2J1cH4xrGam34GXkLcpkU+
-njYDsrF4EHRoCQ1aUhFoqhwpqowM7HCmIX86mVO4D8hZVU7Hhl/WH6ffTqpS0dsQ
-xxrxi2oY6NFQiXmlp4QqNRLnK3E/Eg==
-=E7U6
------END PGP SIGNATURE-----
-
---Sig_/moEZf_plPNC2PYvhNyfr4rM--
+Best Regards,
+Huang, Ying
