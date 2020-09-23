@@ -2,121 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C744275001
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 06:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E87BF275002
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 06:35:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726861AbgIWEeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 00:34:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726802AbgIWEeZ (ORCPT
+        id S1726882AbgIWEfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 00:35:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27231 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726802AbgIWEfI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 00:34:25 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D0DBC061755;
-        Tue, 22 Sep 2020 21:34:25 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Wed, 23 Sep 2020 00:35:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600835707;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FvFGx3rWCRs2m52pGzHi8mNBwRLDuVFOSz8HGbgXm5Y=;
+        b=Oy3TV/3iNFGOuUspRM6EvsrWfeWCPqN1Wd0HwF/lHJabWGeWU/EVlzKJb3trAa7iqmumhB
+        FzIyMhgVKr9NtKnvIAPjaLgW2HcnRZpCp44tIO3te7YE8fqVYBCjxRbSgMqBtkqeVCQMyr
+        4ZNT3PRXCvxMYhF6LWlI5Qw+sTkSsU0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-590-THBCtSVMNrKph0Y5ketjig-1; Wed, 23 Sep 2020 00:35:04 -0400
+X-MC-Unique: THBCtSVMNrKph0Y5ketjig-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bx51C1K0Zz9sS8;
-        Wed, 23 Sep 2020 14:34:23 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1600835663;
-        bh=rWyXm4FwJi84iyOR3I5pzw6zG34ItOmSSYW1HqrboOI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Nr9X3j4zzYMHgAkCtdCCdl2b7r4RGlm1w+8KtU7iA1Dgi7lt7b1rhcJJaZ9Zbudl8
-         RwEu951rM8bH7KH4ZaF8FGbMG1rW5LNwxlHc3HbK5niYoEwutQXYHU/dey+ViLPgLV
-         VcPLwRs6EJv8IsmF4K248OKWadDGN19PRNKMf7cpikIyNq+WTkBty3dqwvLcAPfKee
-         SRleWX+gwo6xeU6ZMnyY+hD1m5hv9W+CdDV/USGkDvxMn1LLT2M1QSU4vwneMxHdwd
-         IfILx9urRTbajHCvpFG+PCV8W3TIfo20Q9eWUxUzB5jaFM9qySkg3sU4xkerqJgxMt
-         r/k4aiunVZvgw==
-Date:   Wed, 23 Sep 2020 14:34:22 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: build failure after merge of the block tree
-Message-ID: <20200923143422.413c3e97@canb.auug.org.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 82DB41007468;
+        Wed, 23 Sep 2020 04:35:03 +0000 (UTC)
+Received: from optiplex-lnx (unknown [10.3.128.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 779D010027A5;
+        Wed, 23 Sep 2020 04:35:02 +0000 (UTC)
+Date:   Wed, 23 Sep 2020 00:34:59 -0400
+From:   Rafael Aquini <aquini@redhat.com>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org
+Subject: Re: [PATCH] mm: swapfile: avoid split_swap_cluster() NULL pointer
+ dereference
+Message-ID: <20200923043459.GL795820@optiplex-lnx>
+References: <20200922184838.978540-1-aquini@redhat.com>
+ <878sd1qllb.fsf@yhuang-dev.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/e7FLB01PJw=LROj=WPavc7E";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <878sd1qllb.fsf@yhuang-dev.intel.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/e7FLB01PJw=LROj=WPavc7E
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Sep 23, 2020 at 10:21:36AM +0800, Huang, Ying wrote:
+> Hi, Rafael,
+> 
+> Rafael Aquini <aquini@redhat.com> writes:
+> 
+> > The swap area descriptor only gets struct swap_cluster_info *cluster_info
+> > allocated if the swapfile is backed by non-rotational storage.
+> > When the swap area is laid on top of ordinary disk spindles, lock_cluster()
+> > will naturally return NULL.
+> 
+> Thanks for reporting.  But the bug looks strange.  Because in a system
+> with only HDD swap devices, during THP swap out, the swap cluster
+> shouldn't be allocated, as in
+> 
+> shrink_page_list()
+>   add_to_swap()
+>     get_swap_page()
+>       get_swap_pages()
+>         swap_alloc_cluster()
+>
 
-Hi all,
+The underlying problem is that swap_info_struct.cluster_info is always NULL 
+on the rotational storage case. So, it's very easy to follow that constructions 
+like this one, in split_swap_cluster 
 
-After merging the block tree, today's linux-next build (powerpc
-ppc64_defconfig) failed like this:
+...
+        ci = lock_cluster(si, offset);
+        cluster_clear_huge(ci);
+...
 
-fs/io_uring.c: In function 'io_resubmit_prep':
-fs/io_uring.c:2357:10: error: 'struct io_kiocb' has no member named 'io'
- 2357 |  if (!req->io) {
-      |          ^~
+will go for a NULL pointer dereference, in that case, given that lock_cluster 
+reads:
 
-Caused by commit
+...
+	struct swap_cluster_info *ci;
+        ci = si->cluster_info;
+        if (ci) {
+                ci += offset / SWAPFILE_CLUSTER;
+                spin_lock(&ci->lock);
+        }
+        return ci;
+...
 
-  8f3d749685e4 ("io_uring: don't re-setup vecs/iter in io_resumit_prep() is=
- already there")
 
-from Linus' tree interacting with commit
-
-  76c917267129 ("io_uring: get rid of req->io/io_async_ctx union")
-
-from the block tree.
-
-I added the following merge resolution:
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Wed, 23 Sep 2020 14:30:01 +1000
-Subject: [PATCH] fix up for "io_uring: get rid of req->io/io_async_ctx unio=
-n"
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- fs/io_uring.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 5aefea5bb383..0a72f4eed845 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -2354,7 +2354,7 @@ static bool io_resubmit_prep(struct io_kiocb *req, in=
-t error)
- 		goto end_req;
- 	}
-=20
--	if (!req->io) {
-+	if (!req->async_data) {
- 		ret =3D io_import_iovec(rw, req, &iovec, &iter, false);
- 		if (ret < 0)
- 			goto end_req;
---=20
-2.28.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/e7FLB01PJw=LROj=WPavc7E
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9q0E4ACgkQAVBC80lX
-0GxMjAf8DZJ/ntWgK+7IARJ50yQps7SaOovSbmqCYqrGSBOFdDn8z9qYehWZrBJR
-ZbAUoAjAU1VHybVi/BYVtnW9h17ra04zJDTCNIwPEnZ/0CVQcuVwA8n30DPvaOXz
-z07YqRLcTE1mTmvCRHNOaoA55dVj/4rlSiqh/tK4WuBDXpT/05JPW4SCcRGpFVr4
-S9jsia3OCxRHxKB0rNKUhO6E0S98f6ReSSIqHhjdGdgVlh4W+/+KQn/wXjorM5aT
-1yx47hUUru6clxmSkykPNfuSPtQeewpxS59tYJGxwdO32GKzG7/3m5K1BmHUHhBI
-dog420o9lkycazAoKLV0s0TLfjlQ9A==
-=8uyx
------END PGP SIGNATURE-----
-
---Sig_/e7FLB01PJw=LROj=WPavc7E--
