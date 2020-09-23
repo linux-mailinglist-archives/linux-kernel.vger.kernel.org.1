@@ -2,129 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E35E2762F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 23:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86E1C276306
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 23:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726638AbgIWVTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 17:19:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726265AbgIWVTq (ORCPT
+        id S1726668AbgIWVYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 17:24:14 -0400
+Received: from 212.199.177.27.static.012.net.il ([212.199.177.27]:55839 "EHLO
+        herzl.nuvoton.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726476AbgIWVYN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 17:19:46 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 842E7C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 14:19:46 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id u6so950865qte.8
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 14:19:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=TH7NITt1/yHWLLqIMcLUH9XOOzYm0k8mnM3wRK4YRh8=;
-        b=WgG8VKS18X+Z+jXJohpNfVgAhGpTnwAYZbGIWi+8sGilAcec/NVcKG5BlYbMnM8Qxo
-         QaAc4E3ThgHPxOZx+QeuMvr4ynnOTly5AHb11TJcpRvcycNfW+CU07vyXZTYaI4pTPNv
-         bOuaL8pokxQSWjwCaAbtkVyXrLnyfX+Udjpi4uwfMmg1Lda7d31f/Dfn4MfpbO9k6Koe
-         acj8k8k1BRIYBtX7hzST5Qxk1xBtt+to87EAliTUqE5H2lDFM9MGUQGcN28+kEmeLK8u
-         BV6956ogKNdVDwfmwOzK8UsCcgFWc8vdOFfHLV1lRdlB9jmCWVr4MVXWqZQpHeethTLS
-         I60Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=TH7NITt1/yHWLLqIMcLUH9XOOzYm0k8mnM3wRK4YRh8=;
-        b=HoznuCcWIL/N2CuRhAYiKSTnfxBAxfrj1KGqLFilCsOiLlJKQzK2zhKg2xU56x+8EQ
-         4MqfcSxAe3qYlN6u2R0q6NySsWKNhDGdK5bHJWPszrUI7cbUH9xeNmOBMSu6d5pNF9g2
-         MNrLUzQWG081zpljqLCsVtUcqwwfNxq3FqGmXqWvMxBlPHoUcE23poadDFuERg2+Ah/G
-         /d//rtqy9Hp7hqfHCXUhKvqpzvB5JoD/aouwK4XbS8gSnISDvtcE3UN/+42LpNYSS7hQ
-         rZ+8LKNNeIrZ8m2phGkPhv8VSjtvnTBJBEW+ik5q4e0p7R/XVFNvwQNl2POu/oJl0A0X
-         S0hQ==
-X-Gm-Message-State: AOAM532pcRzpjkVeLyEaZkh8lRyidCAiedkl2pma4MSUiM4ak8H/vVNH
-        s3ARu5qjpxK50gBJ91Xinrrs1ukqBEWK07FRbR8bSw==
-X-Google-Smtp-Source: ABdhPJw43+sjSUo7FKERKf2xCxxc8JPOYcaeJHrxsWgON3azJYYkTt6PQXCKR9w1wBB51KBkOXp8oqPSBu6aZD1+dNNVJQ==
-Sender: "brendanhiggins via sendgmr" 
-        <brendanhiggins@mactruck.svl.corp.google.com>
-X-Received: from mactruck.svl.corp.google.com ([2620:15c:2cb:1:c634:6bff:fe71:d8d1])
- (user=brendanhiggins job=sendgmr) by 2002:a0c:eac5:: with SMTP id
- y5mr2205279qvp.2.1600895985596; Wed, 23 Sep 2020 14:19:45 -0700 (PDT)
-Date:   Wed, 23 Sep 2020 14:19:38 -0700
-Message-Id: <20200923211938.3727976-1-brendanhiggins@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
-Subject: [PATCH v1] kunit: tool: fix --alltests flag
-From:   Brendan Higgins <brendanhiggins@google.com>
-To:     shuah@kernel.org, davidgow@google.com
-Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org,
-        Brendan Higgins <brendanhiggins@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 23 Sep 2020 17:24:13 -0400
+Received: from taln60.nuvoton.co.il (ntil-fw [212.199.177.25])
+        by herzl.nuvoton.co.il (8.13.8/8.13.8) with ESMTP id 08NLN8mr026845;
+        Thu, 24 Sep 2020 00:23:08 +0300
+Received: by taln60.nuvoton.co.il (Postfix, from userid 10070)
+        id EBDB3639D6; Thu, 24 Sep 2020 00:23:07 +0300 (IDT)
+From:   Tomer Maimon <tmaimon77@gmail.com>
+To:     mpm@selenic.com, herbert@gondor.apana.org.au, arnd@arndb.de,
+        gregkh@linuxfoundation.org, avifishman70@gmail.com,
+        tali.perry1@gmail.com, venture@google.com, yuenn@google.com,
+        benjaminfair@google.com, joel@jms.id.au
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org, tmaimon77@gmail.com
+Subject: [PATCH v1] hw_random: npcm: modify readl to readb
+Date:   Thu, 24 Sep 2020 00:23:05 +0300
+Message-Id: <20200923212305.198485-1-tmaimon77@gmail.com>
+X-Mailer: git-send-email 2.22.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alltests flag evidently stopped working when run from outside of the
-root of the source tree, so fix that. Also add an additional broken
-config to the broken_on_uml config.
+Modify the read size to the correct HW random
+registers size, 8bit.
+The incorrect read size caused and faulty
+HW random value.
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
 ---
- tools/testing/kunit/configs/broken_on_uml.config |  1 +
- tools/testing/kunit/kunit_kernel.py              | 15 ++++++++++-----
- 2 files changed, 11 insertions(+), 5 deletions(-)
+ drivers/char/hw_random/npcm-rng.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/tools/testing/kunit/configs/broken_on_uml.config b/tools/testing/kunit/configs/broken_on_uml.config
-index 239b9f03da2c..a7f0603d33f6 100644
---- a/tools/testing/kunit/configs/broken_on_uml.config
-+++ b/tools/testing/kunit/configs/broken_on_uml.config
-@@ -39,3 +39,4 @@
- # CONFIG_QCOM_CPR is not set
- # CONFIG_RESET_BRCMSTB_RESCAL is not set
- # CONFIG_RESET_INTEL_GW is not set
-+# CONFIG_ADI_AXI_ADC is not set
-diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-index e20e2056cb38..1b1826500f61 100644
---- a/tools/testing/kunit/kunit_kernel.py
-+++ b/tools/testing/kunit/kunit_kernel.py
-@@ -53,18 +53,23 @@ class LinuxSourceTreeOperations(object):
- 		except subprocess.CalledProcessError as e:
- 			raise ConfigError(e.output)
+diff --git a/drivers/char/hw_random/npcm-rng.c b/drivers/char/hw_random/npcm-rng.c
+index 5d0d13f891b7..1ec5f267a656 100644
+--- a/drivers/char/hw_random/npcm-rng.c
++++ b/drivers/char/hw_random/npcm-rng.c
+@@ -58,24 +58,24 @@ static int npcm_rng_read(struct hwrng *rng, void *buf, size_t max, bool wait)
  
--	def make_allyesconfig(self):
-+	def make_allyesconfig(self, build_dir, make_options):
- 		kunit_parser.print_with_timestamp(
- 			'Enabling all CONFIGs for UML...')
-+		command = ['make', 'ARCH=um', 'allyesconfig']
-+		if make_options:
-+			command.extend(make_options)
-+		if build_dir:
-+			command += ['O=' + build_dir]
- 		process = subprocess.Popen(
--			['make', 'ARCH=um', 'allyesconfig'],
-+			command,
- 			stdout=subprocess.DEVNULL,
- 			stderr=subprocess.STDOUT)
- 		process.wait()
- 		kunit_parser.print_with_timestamp(
- 			'Disabling broken configs to run KUnit tests...')
- 		with ExitStack() as es:
--			config = open(KCONFIG_PATH, 'a')
-+			config = open(get_kconfig_path(build_dir), 'a')
- 			disable = open(BROKEN_ALLCONFIG_PATH, 'r').read()
- 			config.write(disable)
- 		kunit_parser.print_with_timestamp(
-@@ -161,9 +166,9 @@ class LinuxSourceTree(object):
- 			return self.build_config(build_dir, make_options)
+ 	pm_runtime_get_sync((struct device *)priv->rng.priv);
  
- 	def build_um_kernel(self, alltests, jobs, build_dir, make_options):
--		if alltests:
--			self._ops.make_allyesconfig()
- 		try:
-+			if alltests:
-+				self._ops.make_allyesconfig(build_dir, make_options)
- 			self._ops.make_olddefconfig(build_dir, make_options)
- 			self._ops.make(jobs, build_dir, make_options)
- 		except (ConfigError, BuildError) as e:
-
-base-commit: 92a2b470086f68bf35eb9f94b6cb5ebdfac41b25
+-	while (max >= sizeof(u32)) {
++	while (max) {
+ 		if (wait) {
+-			if (readl_poll_timeout(priv->base + NPCM_RNGCS_REG,
++			if (readb_poll_timeout(priv->base + NPCM_RNGCS_REG,
+ 					       ready,
+ 					       ready & NPCM_RNG_DATA_VALID,
+ 					       NPCM_RNG_POLL_USEC,
+ 					       NPCM_RNG_TIMEOUT_USEC))
+ 				break;
+ 		} else {
+-			if ((readl(priv->base + NPCM_RNGCS_REG) &
++			if ((readb(priv->base + NPCM_RNGCS_REG) &
+ 			    NPCM_RNG_DATA_VALID) == 0)
+ 				break;
+ 		}
+ 
+-		*(u32 *)buf = readl(priv->base + NPCM_RNGD_REG);
+-		retval += sizeof(u32);
+-		buf += sizeof(u32);
+-		max -= sizeof(u32);
++		*(u8 *)buf = readb(priv->base + NPCM_RNGD_REG);
++		retval++;
++		buf++;
++		max--;
+ 	}
+ 
+ 	pm_runtime_mark_last_busy((struct device *)priv->rng.priv);
 -- 
-2.28.0.681.g6f77f65b4e-goog
+2.22.0
 
