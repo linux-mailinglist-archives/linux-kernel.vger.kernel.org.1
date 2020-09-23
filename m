@@ -2,71 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D63A275BE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F300275BFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:36:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726746AbgIWPcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 11:32:51 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:38078 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726265AbgIWPcv (ORCPT
+        id S1726532AbgIWPg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 11:36:57 -0400
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:44181 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726156AbgIWPg5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 11:32:51 -0400
-Received: by mail-il1-f193.google.com with SMTP id t18so2445ilp.5;
-        Wed, 23 Sep 2020 08:32:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DtoDYlIgkJM6C+Ai6LhWBQbNLvk60GPVee6qi+q1BVA=;
-        b=WKy8TeQmAneDalsPGyG8D0I+sOlPitd7OiCYqdNMheiC1x4MEyXbRLnmaWmiESAhGN
-         o72HVNYCkyRnL+g1j+KoEeGa8zQPPkrRjxY8QVQllYlwxomocPunPbFZlANqhVzQkjwK
-         XfQ6ORjMLlu7tSH00kVNk8C1KHRYYHpD7sbz+4NynqVdJk/wEK3nE2Lo4xe53IIyx+Bw
-         JW+2EcAo+43znMi5ExygBxhkz35rMe4a99n+XTPDMGc4tzMYZnhR9a4VCBMfUY+nov0b
-         FJKzPDeyxw8Xk5jJ86Y52PTm7KvVwEPGWqP0jfDKLivzPOBHqr9S1PsLjGj8ah7f77Mi
-         aFbQ==
-X-Gm-Message-State: AOAM531CxpLYMBsE0Xm9BigRK/Hrod08G/DGCLR672JsdLHKUZsCCguV
-        4zyC359CLo/O/SyiLwLjZ4MkFPYdteMvgTA=
-X-Google-Smtp-Source: ABdhPJzoWPKxdJIWJBysTOwFw0i31FN6iTt9hOPtV7z+rEba3hOi6SYuHEcViMiAy4vfbjm5FYdeEQ==
-X-Received: by 2002:a92:b602:: with SMTP id s2mr266105ili.299.1600875169920;
-        Wed, 23 Sep 2020 08:32:49 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id l6sm8046160ilo.21.2020.09.23.08.32.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 08:32:49 -0700 (PDT)
-Received: (nullmailer pid 787283 invoked by uid 1000);
-        Wed, 23 Sep 2020 15:32:48 -0000
-Date:   Wed, 23 Sep 2020 09:32:48 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     devicetree@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-i2c@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH V2 2/5] dt-bindings: eeprom: at24: Add label property for
- AT24
-Message-ID: <20200923153248.GA787205@bogus>
-References: <20200916094952.458003-1-jonathanh@nvidia.com>
- <20200916094952.458003-3-jonathanh@nvidia.com>
+        Wed, 23 Sep 2020 11:36:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1600875416; x=1632411416;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=d7cW78cRcUoe0lcVnraOQZxIvx7qYL7x5nzIJpwTCig=;
+  b=UNXkKr0DWHpL2A3cZMbwTMVF5VPXGriQLBNdBNeoUVlCrvDshrcEfmPc
+   AnrHPMiw6WcXZYhnTsx2rLmvCcsc9hmbxNvDr+3ft5ZwvwquCu8ienC28
+   JsxTks8lPELyCRdcGLMzGSLw4dmFnjpn6uR3jREkAeLvyNGS0jLJc88Xv
+   U=;
+X-IronPort-AV: E=Sophos;i="5.77,293,1596499200"; 
+   d="scan'208";a="57257477"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-5bdc5131.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 23 Sep 2020 15:36:54 +0000
+Received: from EX13D31EUA004.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2b-5bdc5131.us-west-2.amazon.com (Postfix) with ESMTPS id 2682BA1C8A;
+        Wed, 23 Sep 2020 15:36:53 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.237) by
+ EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 23 Sep 2020 15:36:48 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     <akpm@linux-foundation.org>
+CC:     SeongJae Park <sjpark@amazon.de>, <shakeelb@google.com>,
+        <vdavydov@parallels.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [RFC PATCH] mm/page_idle: Avoid interferences from concurrent users
+Date:   Wed, 23 Sep 2020 17:36:33 +0200
+Message-ID: <20200923153633.21258-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916094952.458003-3-jonathanh@nvidia.com>
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.237]
+X-ClientProxiedBy: EX13D42UWB004.ant.amazon.com (10.43.161.99) To
+ EX13D31EUA004.ant.amazon.com (10.43.165.161)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Sep 2020 10:49:49 +0100, Jon Hunter wrote:
-> Add a label property for the AT24 EEPROM to allow a custom name to be
-> used for identifying the EEPROM on a board. This is useful when there
-> is more than one EEPROM present.
-> 
-> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
-> ---
->  Documentation/devicetree/bindings/eeprom/at24.yaml | 3 +++
->  1 file changed, 3 insertions(+)
-> 
+From: SeongJae Park <sjpark@amazon.de>
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+The flexible interface of Idle Page Tracking can allow concurrent users
+interfere each other.  They could implement their own use user space
+synchronization, but applications developed by different users would not
+know how to synchronize with other application.  To help this situation,
+this commit introduces a centralized synchronization infrastructure for
+Idle Page Tracking.
+
+In detail, this commit introduces a mutex for Idle Page Tracking, which
+exposed to user space via a new sysfs file, 'lock'.  By writing to and
+reading from the file, users can acquire/release and read status of the
+mutex.  While reads of the Idle Page Tracking 'bitmap' file can be done
+regardless of the mutex status, writes to the file fails if the lock is
+not held.
+
+Note that users could still interfere each other if they do not respect
+the locking rule.  Nevertheless, this will help them noticing the rule.
+
+Signed-off-by: SeongJae Park <sjpark@amazon.de>
+---
+ mm/page_idle.c | 40 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
+
+diff --git a/mm/page_idle.c b/mm/page_idle.c
+index 144fb4ed961d..0aa45f848570 100644
+--- a/mm/page_idle.c
++++ b/mm/page_idle.c
+@@ -16,6 +16,8 @@
+ #define BITMAP_CHUNK_SIZE	sizeof(u64)
+ #define BITMAP_CHUNK_BITS	(BITMAP_CHUNK_SIZE * BITS_PER_BYTE)
+ 
++static DEFINE_MUTEX(page_idle_lock);
++
+ /*
+  * Idle page tracking only considers user memory pages, for other types of
+  * pages the idle flag is always unset and an attempt to set it is silently
+@@ -169,6 +171,9 @@ static ssize_t page_idle_bitmap_write(struct file *file, struct kobject *kobj,
+ 	unsigned long pfn, end_pfn;
+ 	int bit;
+ 
++	if (!mutex_is_locked(&page_idle_lock))
++		return -EPERM;
++
+ 	if (pos % BITMAP_CHUNK_SIZE || count % BITMAP_CHUNK_SIZE)
+ 		return -EINVAL;
+ 
+@@ -197,17 +202,52 @@ static ssize_t page_idle_bitmap_write(struct file *file, struct kobject *kobj,
+ 	return (char *)in - buf;
+ }
+ 
++static ssize_t page_idle_lock_show(struct kobject *kobj,
++		struct kobj_attribute *attr, char *buf)
++{
++	return sprintf(buf, "%d\n", mutex_is_locked(&page_idle_lock));
++}
++
++static ssize_t page_idle_lock_store(struct kobject *kobj,
++		struct kobj_attribute *attr, const char *buf, size_t count)
++{
++	bool do_lock;
++	int ret;
++
++	ret = kstrtobool(buf, &do_lock);
++	if (ret < 0)
++		return ret;
++
++	if (do_lock) {
++		if (!mutex_trylock(&page_idle_lock))
++			return -EBUSY;
++	} else {
++		mutex_unlock(&page_idle_lock);
++	}
++
++	return count;
++}
++
+ static struct bin_attribute page_idle_bitmap_attr =
+ 		__BIN_ATTR(bitmap, 0600,
+ 			   page_idle_bitmap_read, page_idle_bitmap_write, 0);
+ 
++static struct kobj_attribute page_idle_lock_attr =
++		__ATTR(lock, 0600, page_idle_lock_show, page_idle_lock_store);
++
+ static struct bin_attribute *page_idle_bin_attrs[] = {
+ 	&page_idle_bitmap_attr,
+ 	NULL,
+ };
+ 
++static struct attribute *page_idle_lock_attrs[] = {
++	&page_idle_lock_attr.attr,
++	NULL,
++};
++
+ static const struct attribute_group page_idle_attr_group = {
+ 	.bin_attrs = page_idle_bin_attrs,
++	.attrs = page_idle_lock_attrs,
+ 	.name = "page_idle",
+ };
+ 
+-- 
+2.17.1
+
