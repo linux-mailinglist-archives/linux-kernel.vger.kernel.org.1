@@ -2,97 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85F632758AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:28:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE242758B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726703AbgIWN2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 09:28:07 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:42808 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgIWN2H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 09:28:07 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08NDS2nt080673;
-        Wed, 23 Sep 2020 08:28:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600867682;
-        bh=YDcX9TebS2FrWc3wBgOvGYyc6y7XELEPtQyYtPUmREs=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=O6zkBacv95QbPq8neRbzKQQC2Z9nBO9YQxC+UzWRlCCe6oGsxxhk3av+kyPJlIRIc
-         7fRwomP3a6PO1wT1qqyKvKla/BPJ0m9KEIjp7itRa68pN+R7Bfo5I/uIciSxFvloT8
-         dHXEUe33L307mVlR4XO7cYsxweML+FdziDndTH4w=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08NDS23o073685
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 23 Sep 2020 08:28:02 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 23
- Sep 2020 08:28:02 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 23 Sep 2020 08:28:01 -0500
-Received: from [10.250.36.88] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08NDS1GO010489;
-        Wed, 23 Sep 2020 08:28:01 -0500
-Subject: Re: [PATCH] leds: lp50xx: Fix an error handling path in
- 'lp50xx_probe_dt()'
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>, <pavel@ucw.cz>,
-        <jacek.anaszewski@gmail.com>
-CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>
-References: <20200922210515.385099-1-christophe.jaillet@wanadoo.fr>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <68c3f0c2-4a29-9f59-164c-d8f7fd06d3fd@ti.com>
-Date:   Wed, 23 Sep 2020 08:27:56 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726534AbgIWN3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 09:29:32 -0400
+Received: from lobo.ruivo.org ([173.14.175.98]:53606 "EHLO lobo.ruivo.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726130AbgIWN3c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 09:29:32 -0400
+Received: by lobo.ruivo.org (Postfix, from userid 1011)
+        id 4154453126; Wed, 23 Sep 2020 09:29:31 -0400 (EDT)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on tate.lan.ruivo
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=3.5 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.2
+Received: from jake.ruivo.org (bob.qemu.ruivo [192.168.72.19])
+        by lobo.ruivo.org (Postfix) with ESMTPA id 3633A52A65;
+        Wed, 23 Sep 2020 09:29:12 -0400 (EDT)
+Received: by jake.ruivo.org (Postfix, from userid 1000)
+        id 0870A1A06DB; Wed, 23 Sep 2020 09:29:12 -0400 (EDT)
+Date:   Wed, 23 Sep 2020 09:29:12 -0400
+From:   Aristeu Rozanski <aris@ruivo.org>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     akpm@linux-foundation.org, naoya.horiguchi@nec.com,
+        mhocko@kernel.org, tony.luck@intel.com, cai@lca.pw,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v7 00/14] HWPOISON: soft offline rework
+Message-ID: <20200923132911.GF17169@cathedrallabs.org>
+References: <20200922135650.1634-1-osalvador@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <20200922210515.385099-1-christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922135650.1634-1-osalvador@suse.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe
+Hi Oscar,
 
-On 9/22/20 4:05 PM, Christophe JAILLET wrote:
-> In case of memory allocation failure, we must release some resources as
-> done in all other error handling paths of the function.
->
-> 'goto child_out' instead of a direct return so that 'fwnode_handle_put()'
-> is called when we break out of a 'device_for_each_child_node' loop.
->
-> Fixes: 242b81170fb8 ("leds: lp50xx: Add the LP50XX family of the RGB LED driver")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->   drivers/leds/leds-lp50xx.c | 6 ++++--
->   1 file changed, 4 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/leds/leds-lp50xx.c b/drivers/leds/leds-lp50xx.c
-> index 47144a37cb94..8178782f2a8a 100644
-> --- a/drivers/leds/leds-lp50xx.c
-> +++ b/drivers/leds/leds-lp50xx.c
-> @@ -487,8 +487,10 @@ static int lp50xx_probe_dt(struct lp50xx *priv)
->   		 */
->   		mc_led_info = devm_kcalloc(priv->dev, LP50XX_LEDS_PER_MODULE,
->   					   sizeof(*mc_led_info), GFP_KERNEL);
-> -		if (!mc_led_info)
-> -			return -ENOMEM;
-> +		if (!mc_led_info) {
-> +			ret = -ENOMEM;
-> +			goto child_out;
-> +		}
->   
->   		fwnode_for_each_child_node(child, led_node) {
->   			ret = fwnode_property_read_u32(led_node, "color",
+On Tue, Sep 22, 2020 at 03:56:36PM +0200, Oscar Salvador wrote:
+> This patchset is the latest version of soft offline rework patchset
+> targetted for v5.9.
+> 
+> This patchset fixes a couple of issues that the patchset Naoya
+> sent [1] contained due to rebasing problems and a misunterdansting.
+> 
+> Main focus of this series is to stabilize soft offline.  Historically soft
+> offlined pages have suffered from racy conditions because PageHWPoison is
+> used to a little too aggressively, which (directly or indirectly) invades
+> other mm code which cares little about hwpoison.  This results in unexpected
+> behavior or kernel panic, which is very far from soft offline's "do not
+> disturb userspace or other kernel component" policy.
+> An example of this can be found here [2].
+> 
+> Along with several cleanups, this code refactors and changes the way soft
+> offline work.
+> Main point of this change set is to contain target page "via buddy allocator"
+> or in migrating path.
+> For ther former we first free the target page as we do for normal pages, and
+> once it has reached buddy and it has been taken off the freelists, we flag it
+> as HWpoison.
+> For the latter we never get to release the page in unmap_and_move, so
+> the page is under our control and we can handle it in hwpoison code.
+> 
+> [1] https://patchwork.kernel.org/cover/11704083/
+> [2] https://lore.kernel.org/linux-mm/20190826104144.GA7849@linux/T/#u
 
-Thanks for the patch
+FWIW, tested again with these patches in the ppc64 box and they work.
+I see that you added my Tested-by in the last patch but in any case:
 
-Acked-by: Dan Murphy <dmurphy@ti.com>
+Tested-by: Aristeu Rozanski <aris@ruivo.org>
+
+-- 
+Aristeu
 
