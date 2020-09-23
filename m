@@ -2,89 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 678E5275EE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 19:41:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20381275EEF
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 19:44:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726694AbgIWRlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 13:41:21 -0400
-Received: from mga02.intel.com ([134.134.136.20]:14096 "EHLO mga02.intel.com"
+        id S1726587AbgIWRoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 13:44:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726581AbgIWRlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 13:41:21 -0400
-IronPort-SDR: qowO+FkTDejT+9Ubivziaf2Jmx6aEAMfgUNkzWAUA7FWjEi/68qbBWm/tqFXIEhC0hgb/qnPGC
- 5Fs9QhgsnKJg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="148629805"
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="148629805"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 10:41:20 -0700
-IronPort-SDR: GZk1FRtVMnmSVB61ksssWSFNFU+xjc7kddUpaUMFeMzOTmuJTaNnLCO4Kbb4lhQ2TY/3WZNv/0
- FyFrdXKqoIKw==
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="309993326"
-Received: from kcaccard-mobl.amr.corp.intel.com (HELO kcaccard-mobl1.jf.intel.com) ([10.212.14.213])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 10:41:15 -0700
-From:   Kristen Carlson Accardi <kristen@linux.intel.com>
-To:     keescook@chromium.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>
-Cc:     arjan@linux.intel.com, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kernel-hardening@lists.openwall.com,
-        rick.p.edgecombe@intel.com,
-        Kristen Carlson Accardi <kristen@linux.intel.com>,
-        live-patching@vger.kernel.org
-Subject: [PATCH v5 10/10] livepatch: only match unique symbols when using fgkaslr
-Date:   Wed, 23 Sep 2020 10:39:04 -0700
-Message-Id: <20200923173905.11219-11-kristen@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200923173905.11219-1-kristen@linux.intel.com>
-References: <20200923173905.11219-1-kristen@linux.intel.com>
+        id S1726234AbgIWRoB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 13:44:01 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2606D2223E;
+        Wed, 23 Sep 2020 17:44:00 +0000 (UTC)
+Date:   Wed, 23 Sep 2020 13:43:58 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, lkft-triage@lists.linaro.org,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: BUG: kernel NULL pointer dereference, address:
+ trace_event_raw_event_sched_switch
+Message-ID: <20200923134358.11a83a5a@oasis.local.home>
+In-Reply-To: <CA+G9fYsT+MREZ=yPb3t=Rh+MCxz6q7p_tSJ_oeh92Sd3ro+PRw@mail.gmail.com>
+References: <CA+G9fYsT+MREZ=yPb3t=Rh+MCxz6q7p_tSJ_oeh92Sd3ro+PRw@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If any type of function granular randomization is enabled, the sympos
-algorithm will fail, as it will be impossible to resolve symbols when
-there are duplicates using the previous symbol position.
+On Wed, 23 Sep 2020 22:21:32 +0530
+Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
 
-Override the value of sympos to always be zero if fgkaslr is enabled for
-either the core kernel or modules, forcing the algorithm
-to require that only unique symbols are allowed to be patched.
+> While running kselftest ftracetest on i386 the kernel crash reported
+> on linux next tag
+> 5.9.0-rc5-next-20200921.
+> Good news is that this crash is not seen on today's linux next tag 20200923.
 
-Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
----
- kernel/livepatch/core.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Since it appears that the 20200921 tag no longer exists (at least not
+where I can see it), I can simply ignore this?
 
-diff --git a/kernel/livepatch/core.c b/kernel/livepatch/core.c
-index f76fdb925532..da08e40f2da2 100644
---- a/kernel/livepatch/core.c
-+++ b/kernel/livepatch/core.c
-@@ -170,6 +170,17 @@ static int klp_find_object_symbol(const char *objname, const char *name,
- 		kallsyms_on_each_symbol(klp_find_callback, &args);
- 	mutex_unlock(&module_mutex);
- 
-+	/*
-+	 * If any type of function granular randomization is enabled, it
-+	 * will be impossible to resolve symbols when there are duplicates
-+	 * using the previous symbol position (i.e. sympos != 0). Override
-+	 * the value of sympos to always be zero in this case. This will
-+	 * force the algorithm to require that only unique symbols are
-+	 * allowed to be patched.
-+	 */
-+	if (IS_ENABLED(CONFIG_FG_KASLR) || IS_ENABLED(CONFIG_MODULE_FG_KASLR))
-+		sympos = 0;
-+
- 	/*
- 	 * Ensure an address was found. If sympos is 0, ensure symbol is unique;
- 	 * otherwise ensure the symbol position count matches sympos.
--- 
-2.20.1
-
+-- Steve
