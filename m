@@ -2,81 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDF442759B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:17:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DDAC2759BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726703AbgIWORG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 10:17:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgIWORF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 10:17:05 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E07F8C0613CE;
-        Wed, 23 Sep 2020 07:17:04 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kL5Zm-004aBB-Mq; Wed, 23 Sep 2020 14:16:54 +0000
-Date:   Wed, 23 Sep 2020 15:16:54 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        David Laight <David.Laight@aculab.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-aio@kvack.org, io-uring@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        netdev@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 3/9] iov_iter: refactor rw_copy_check_uvector and
- import_iovec
-Message-ID: <20200923141654.GJ3421308@ZenIV.linux.org.uk>
-References: <20200923060547.16903-1-hch@lst.de>
- <20200923060547.16903-4-hch@lst.de>
+        id S1726715AbgIWOR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 10:17:26 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49836 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726130AbgIWORZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 10:17:25 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1600870644;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=O0OVhQPNL/lRHEob24DJ/83f5alIqhGthtJlH+2DfDo=;
+        b=c1Bg5peZ7S3MvWN3v3ypExI6QIHqmSH50IDBZmW+ffkDXwz+LInIR8n882qaYDCZov+ehc
+        L3fC7m/Bu8UWgmc26adGQiyshOQVyZQVJB4QjfqwDz2Nje11GJdlkKfcgjZpEE+lY3QfH1
+        8DnPoUENLJXqojG9L1kNH4GaONOH7+Q=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A7BA3AD57;
+        Wed, 23 Sep 2020 14:18:01 +0000 (UTC)
+Date:   Wed, 23 Sep 2020 16:17:23 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk 1/5] printk: get new seq before enabling interrupts
+Message-ID: <20200923141723.GA6442@alley>
+References: <20200922153816.5883-1-john.ogness@linutronix.de>
+ <20200922153816.5883-2-john.ogness@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200923060547.16903-4-hch@lst.de>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20200922153816.5883-2-john.ogness@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 08:05:41AM +0200, Christoph Hellwig wrote:
+On Tue 2020-09-22 17:44:12, John Ogness wrote:
+> After copying all records to the dynamic ringbuffer, setup_log_buf()
+> checks to see if any records were dropped during the switch. However,
+> it needs to check before enabling interrupts since new records could
+> arrive in an interrupt, thus causing setup_log_buf() to erroneously
+> think that it had dropped messages.
 
-> +struct iovec *iovec_from_user(const struct iovec __user *uvec,
-> +		unsigned long nr_segs, unsigned long fast_segs,
+Have you seen the problem, please?
 
-Hmm...  For fast_segs unsigned long had always been ridiculous
-(4G struct iovec on caller stack frame?), but that got me wondering about
-nr_segs and I wish I'd thought of that when introducing import_iovec().
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+> ---
+>  kernel/printk/printk.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index 1fe3d0cb2fe0..00bc1fce3299 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -1181,12 +1181,12 @@ void __init setup_log_buf(int early)
+>  	 */
+>  	prb = &printk_rb_dynamic;
+>  
+> +	seq = prb_next_seq(&printk_rb_static) - seq;
+> +
+>  	logbuf_unlock_irqrestore(flags);
+>  
+> -	if (seq != prb_next_seq(&printk_rb_static)) {
 
-The thing is, import_iovec() takes unsigned int there.  Which is fine
-(hell, the maximal value that can be accepted in 1024), except that
-we do pass unsigned long syscall argument to it in some places.
+I can't see how these two values could get modified after enabling interrupts.
 
-E.g. vfs_readv() quietly truncates vlen to 32 bits, and vlen can
-come unchanged through sys_readv() -> do_readv() -> vfs_readv().
-With unsigned long passed by syscall glue.
+  + @seq is set in the for-cycle before the interrupts are enabled.
 
-AFAICS, passing 4G+1 as the third argument to readv(2) on 64bit box
-will be quietly treated as 1 these days.  Which would be fine, except
-that before "switch {compat_,}do_readv_writev() to {compat_,}import_iovec()"
-it used to fail with -EINVAL.
+  + @prb is updated before the interrupts are  enabled. So that
+    the static buffer should not longer be used after that.
 
-Userland, BTW, describes readv(2) iovcnt as int; process_vm_readv(),
-OTOH, has these counts unsigned long from the userland POV...
+> -		pr_err("dropped %llu messages\n",
+> -		       prb_next_seq(&printk_rb_static) - seq);
+> -	}
+> +	if (seq)
+> +		pr_err("dropped %llu messages\n", seq);
+>  
+>  	pr_info("log_buf_len: %u bytes\n", log_buf_len);
+>  	pr_info("early log buf free: %u(%u%%)\n",
 
-I suppose we ought to switch import_iovec() to unsigned long for nr_segs ;-/
-Strictly speaking that had been a userland ABI change, even though nothing
-except regression tests checking for expected errors would've been likely
-to notice.  And it looks like no regression tests covered that one...
-
-Linus, does that qualify for your "if no userland has noticed the change,
-it's not a breakage"?
+Best Regards,
+Petr
