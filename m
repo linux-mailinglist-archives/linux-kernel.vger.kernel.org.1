@@ -2,83 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65DA0275C16
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C171C275C1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726794AbgIWPjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 11:39:13 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:60015 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726184AbgIWPjN (ORCPT
+        id S1726808AbgIWPj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 11:39:26 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:38706 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726504AbgIWPj0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 11:39:13 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08NFQnIP031488;
-        Wed, 23 Sep 2020 17:38:57 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=7HKGO3zCoMWYyI4iU86SgeX3rOp+UHEyIpuERuB++hA=;
- b=dED3XeJEjoJeKty4oJ6s8NhE4KSiyCWqeaBrR1zv8V4ZRqpD47qB83Q86MXO5hl12dyo
- kMp65B1FELamVIQjQ+cW7RUiuGKOc6LAtnQwLHEibW59z2834LI1fszFYMQYNQFMZv9j
- WLm966WRrAYl+8UJype/WdEyTk1o2QWWsihY+FSOIqgQKikmB5HE7VthrPwdolBcoMTA
- RG0tj0qSOZWpwJgANzBdMbacVWsbezMXuq9MTDw1gb/sk2FUxzkgzwgZJtCcYsiTn4yj
- el+4ANrSmIf/O0bsGiSfpeOBIRFIeqDGwVBx/8W3haJrodXRDmZTxBJCPp9QFdjnwBzA 9A== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 33n7eyx2gt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Sep 2020 17:38:57 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 42531100039;
-        Wed, 23 Sep 2020 17:38:57 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 326CE2BE221;
-        Wed, 23 Sep 2020 17:38:57 +0200 (CEST)
-Received: from lmecxl0912.lme.st.com (10.75.127.50) by SFHDAG3NODE2.st.com
- (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 23 Sep
- 2020 17:38:56 +0200
-Subject: Re: [PATCH 0/2] add FMC2 EBI controller support
-To:     Christophe Kerello <christophe.kerello@st.com>,
-        <robh+dt@kernel.org>, <linux@armlinux.org.uk>
-CC:     <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <1599225643-5558-1-git-send-email-christophe.kerello@st.com>
-From:   Alexandre Torgue <alexandre.torgue@st.com>
-Message-ID: <f2aa40b2-6868-9f8d-ed9d-1283b230c367@st.com>
-Date:   Wed, 23 Sep 2020 17:38:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 23 Sep 2020 11:39:26 -0400
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600875564;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8P5nh1hHFJMcXSIFglTL/dkQO46cDnS5dRP0Pby4DDU=;
+        b=cILKIfjdX4VZRqjlygmnlMUPZ8ZCV4Y5zWGH+qGPKVGMJlwuFrRMH6JMfwAkvs0eiZhBPR
+        mf0U2OblZ4Y0OHb6tf+gr9RY7wtq0ejgkN9RLf6/Jq89v8kWXCMWVK+r1k+hU4j34ZGrTD
+        Mg9p1pDdRSH/8Ahzq6rwiUjp3lJ8TZU9++Ui+g/Kwo9mS/sU1ycQ9PVF0d2dHA0OcxAWW+
+        rMWJxV4ffSrmybd+2vA/tk675bMMMftunHOE1RWhzXmv4cNgl27bMakApggyFS72A4V4ff
+        ibI25jRtovWBlib/4b7wu2P39/qgIZoGczz/bmjpJASUcMg2qsq8VhMYFVKejw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600875564;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8P5nh1hHFJMcXSIFglTL/dkQO46cDnS5dRP0Pby4DDU=;
+        b=1fIvXz/LPCrYRROHh5IdMsr6ODDrDu9eQ8HAqBvbkJZ6/qSyw5l/EcsrDy5OupTBr5f3vA
+        3v45/GoEQY0o6YBw==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk 2/5] printk: kmsg_dump_rewind_nolock: start from first record
+In-Reply-To: <20200923145208.GB6442@alley>
+References: <20200922153816.5883-1-john.ogness@linutronix.de> <20200922153816.5883-3-john.ogness@linutronix.de> <20200923145208.GB6442@alley>
+Date:   Wed, 23 Sep 2020 17:45:23 +0206
+Message-ID: <87lfh0zems.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <1599225643-5558-1-git-send-email-christophe.kerello@st.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-23_10:2020-09-23,2020-09-23 signatures=0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
+On 2020-09-23, Petr Mladek <pmladek@suse.com> wrote:
+>> kmsg_dump_rewind_nolock() accesses @clear_seq without any locking.
+>> However, accessing this global variable requires holding
+>> @logbuf_lock. For the _nolock() variant, start from the first record
+>> in the ringbuffer rather than the @clear_seq record.
+>
+>> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+>> ---
+>>  kernel/printk/printk.c | 8 +++++---
+>>  1 file changed, 5 insertions(+), 3 deletions(-)
+>> 
+>> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+>> index 00bc1fce3299..cff13b33e926 100644
+>> --- a/kernel/printk/printk.c
+>> +++ b/kernel/printk/printk.c
+>> @@ -3410,11 +3410,12 @@ EXPORT_SYMBOL_GPL(kmsg_dump_get_buffer);
+>>   * kmsg_dump_get_buffer() can be called again and used multiple
+>>   * times within the same dumper.dump() callback.
+>>   *
+>> - * The function is similar to kmsg_dump_rewind(), but grabs no locks.
+>> + * The function is similar to kmsg_dump_rewind(), but grabs no locks
+>> + * and starts from the oldest record rather than from @clear_seq.
+>>   */
+>>  void kmsg_dump_rewind_nolock(struct kmsg_dumper *dumper)
+>>  {
+>> -	dumper->cur_seq = clear_seq;
+>> +	dumper->cur_seq = 0;
+>
+> Just to understand it. Is the problem that the value might be in
+> an inconsistent state?
+>
+> I mean that it might be modified by more instructions, for example,
+> because of compiler optimizations or on 32-bit system by definition.
 
-On 9/4/20 3:20 PM, Christophe Kerello wrote:
-> This patchset enables FMC2 EBI support on STM32MP1 SOCs.
-> 
-> Christophe Kerello (2):
->    ARM: multi_v7_defconfig: add FMC2 EBI controller support
->    ARM: dts: stm32: add FMC2 EBI support for stm32mp157c
-> 
->   arch/arm/boot/dts/stm32mp151.dtsi     | 43 +++++++++++++++++++++++------------
->   arch/arm/boot/dts/stm32mp157c-ev1.dts | 16 +++++++------
->   arch/arm/configs/multi_v7_defconfig   |  1 +
->   3 files changed, 39 insertions(+), 21 deletions(-)
-> 
+Correct.
 
-Series applied on stm32-next.
+> I still have to look at the later patches. But it seems that
+> the new syslog_lock is taken mostly only around reading or
+> writing the global @clear_seq variable. Atomic variable might
+> do the same job.
 
-Regards
-Alex
+Until now I have avoided using atomic64 types. Perhaps my reluctance to
+use this type is unfounded. Using an atomic64 for @clear_seq would free
+it from needing to be protected by @syslog_lock.
+
+John Ogness
