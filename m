@@ -2,64 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 165302761C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EE922761CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726794AbgIWUPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 16:15:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726476AbgIWUPc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 16:15:32 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3691C0613CE;
-        Wed, 23 Sep 2020 13:15:32 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 209A111E3E4CA;
-        Wed, 23 Sep 2020 12:58:43 -0700 (PDT)
-Date:   Wed, 23 Sep 2020 13:15:29 -0700 (PDT)
-Message-Id: <20200923.131529.637266321442993059.davem@davemloft.net>
-To:     hkallweit1@gmail.com
-Cc:     saeed@kernel.org, geert+renesas@glider.be, f.fainelli@gmail.com,
-        andrew@lunn.ch, kuba@kernel.org, gaku.inami.xh@renesas.com,
-        yoshihiro.shimoda.uh@renesas.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Revert "net: linkwatch: add check for netdevice being
- present to linkwatch_do_dev"
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <14f41724-ce45-c2c0-a49c-1e379dba0cb5@gmail.com>
-References: <3d9176a6-c93e-481c-5877-786f5e6aaef8@gmail.com>
-        <28da797abe486e783547c60a25db44be0c030d86.camel@kernel.org>
-        <14f41724-ce45-c2c0-a49c-1e379dba0cb5@gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+        id S1726802AbgIWUP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 16:15:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54428 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726594AbgIWUP5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 16:15:57 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B668C206D9;
+        Wed, 23 Sep 2020 20:15:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600892157;
+        bh=EyZ7FjlIHAC2uyOBzx9xK5z0GL/fC6e1KhF56KcZT1I=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Y2SvaeTSeOcNiWC7Mc+QgHTOHCkboYmeb1fcFLSnNim9IJnlj+SUko6c+OHVb/YRO
+         tpF/RzHbk87okaWsXM/vtGXsSlIWrx4PXDNvax/5/rpxScdSl+Ex17JlOhE3vJSRDO
+         pJAjHpSLd3qqTzYvi37XevEmkn8hAjpQiEBAhOt8=
+Date:   Wed, 23 Sep 2020 21:15:52 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Michael Auchter <michael.auchter@ni.com>
+Cc:     Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] dt-bindings: iio: dac: ad5686: add binding
+Message-ID: <20200923211552.3532afdb@archlinux>
+In-Reply-To: <20200922184012.557622-3-michael.auchter@ni.com>
+References: <20200922184012.557622-1-michael.auchter@ni.com>
+        <20200922184012.557622-3-michael.auchter@ni.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Wed, 23 Sep 2020 12:58:43 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiner Kallweit <hkallweit1@gmail.com>
-Date: Wed, 23 Sep 2020 21:58:59 +0200
+On Tue, 22 Sep 2020 13:40:12 -0500
+Michael Auchter <michael.auchter@ni.com> wrote:
 
-> On 23.09.2020 20:35, Saeed Mahameed wrote:
->> Why would a driver detach the device on ndo_stop() ?
->> seems like this is the bug you need to be chasing ..
->> which driver is doing this ? 
->> 
-> Some drivers set the device to PCI D3hot at the end of ndo_stop()
-> to save power (using e.g. Runtime PM). Marking the device as detached
-> makes clear to to the net core that the device isn't accessible any
-> longer.
+> Add a binding for AD5686
+> 
+> Signed-off-by: Michael Auchter <michael.auchter@ni.com>
+Hi Michael,
 
-That being the case, the problem is that IFF_UP+!present is not a
-valid netdev state.
+Thanks for this.
+A few comments inline.
 
-Is it simply the issue that, upon resume, IFF_UP is marked true before
-the device is brought out from D3hot state and thus marked as present
-again?
+Thanks,
+
+Jonathan
+
+> ---
+> Changes since v1:
+> - Keep supported device sorted
+> - fix adc -> dac type in schema path
+> 
+>  .../bindings/iio/dac/adi,ad5686.yaml          | 61 +++++++++++++++++++
+>  1 file changed, 61 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml b/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
+> new file mode 100644
+> index 000000000000..9ce76d75f31b
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
+> @@ -0,0 +1,61 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/dac/adi,ad5686.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Analog Devices AD5686 and similar multi-channel DACs
+> +
+> +maintainers:
+> +  - Michael Auchter <michael.auchter@ni.com>
+> +
+> +description: |
+> +  Binding for Analog Devices AD5686 and similar multi-channel DACs
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - adi,ad5311r
+> +      - adi,ad5338r
+> +      - adi,ad5671r
+> +      - adi,ad5675r
+> +      - adi,ad5691r
+> +      - adi,ad5692r
+> +      - adi,ad5693
+> +      - adi,ad5693r
+> +      - adi,ad5694
+> +      - adi,ad5694r
+> +      - adi,ad5695r
+> +      - adi,ad5696
+> +      - adi,ad5696r
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  vcc-supply:
+> +    description: |
+> +      The regulator supply for DAC reference voltage.
+> +
+> +  '#address-cells':
+> +    const: 1
+> +
+> +  '#size-cells':
+> +    const: 0
+
+Why address-cells and size-cells?  Properties we are giving
+are for the dac, not the i2c bus.
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+
+
+additionalProperties: false
+
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      ad5686: dac@0 {
+> +        compatible = "adi,ad5686";
+> +        reg = <0>;
+> +        vcc-supply = <&dac_vref>;
+> +      };
+> +    };
+> +
+
