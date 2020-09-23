@@ -2,173 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF4A275065
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 07:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B7DC275069
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 07:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727011AbgIWFoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 01:44:19 -0400
-Received: from mga03.intel.com ([134.134.136.65]:42422 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726883AbgIWFoT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 01:44:19 -0400
-IronPort-SDR: nHBUuQEVn+REe69ix/w6Y+RgMnAPAbaKWe9WX8iCsDzGziJLFhKKv3iEfSlil+0nxkxfWJCLiZ
- UBw4J3U9S0qA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9752"; a="160869434"
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="160869434"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 22:44:16 -0700
-IronPort-SDR: ecSZn7beoVqP/TqvZcl1OzTC3kykreZ5ip1xx5+wWc0Jw2P8qE+3tzgCOSM0m0R26e/CQZhdM9
- SEdPvw7ke0+g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="347216154"
-Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.164])
-  by FMSMGA003.fm.intel.com with ESMTP; 22 Sep 2020 22:44:12 -0700
-From:   "Huang\, Ying" <ying.huang@intel.com>
-To:     Phil Auld <pauld@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Mel Gorman <mgorman@suse.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Matthew Wilcox \(Oracle\)" <willy@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>,
+        id S1727070AbgIWFol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 01:44:41 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:47592 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726883AbgIWFok (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 01:44:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600839878;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=O2qXsZKd/vU/MWqzDTpOj4DQMbDJw22PgzhR9McWPMQ=;
+        b=fgM9hLrTKr0LpBSerEMQeHIsC0eXkGncNPz70rlveJBjp75T6DsB3W/sTIeRqz7jjQOyYx
+        WKQFn4cQBYn8ZWfqu1ZZKxodPvUwTP4/cpPhR/u2de10m2uLd83JN1wOpFf5GZ2T6/tiI8
+        pC9OAPBIKYqyuQGL8YcTnn8IcXEAv2o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-585-6PLyP5rtOqikfpmET_x8CA-1; Wed, 23 Sep 2020 01:44:33 -0400
+X-MC-Unique: 6PLyP5rtOqikfpmET_x8CA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 51DA31091061;
+        Wed, 23 Sep 2020 05:44:31 +0000 (UTC)
+Received: from krava (unknown [10.40.192.120])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 2C81C702E7;
+        Wed, 23 Sep 2020 05:44:27 +0000 (UTC)
+Date:   Wed, 23 Sep 2020 07:44:26 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Wei Li <liwei391@huawei.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
         Andi Kleen <ak@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>
-Subject: Re: [RFC -V2] autonuma: Migrate on fault among multiple bound nodes
-References: <20200922065401.376348-1-ying.huang@intel.com>
-        <20200922125049.GA10420@lorien.usersys.redhat.com>
-Date:   Wed, 23 Sep 2020 13:44:12 +0800
-In-Reply-To: <20200922125049.GA10420@lorien.usersys.redhat.com> (Phil Auld's
-        message of "Tue, 22 Sep 2020 08:51:53 -0400")
-Message-ID: <87o8lxoxn7.fsf@yhuang-dev.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, huawei.libin@huawei.com
+Subject: Re: [PATCH 1/2] perf stat: Fix segfault when counting armv8_pmu
+ events
+Message-ID: <20200923054426.GG2893484@krava>
+References: <20200922031346.15051-1-liwei391@huawei.com>
+ <20200922031346.15051-2-liwei391@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922031346.15051-2-liwei391@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Phil Auld <pauld@redhat.com> writes:
+On Tue, Sep 22, 2020 at 11:13:45AM +0800, Wei Li wrote:
+> When executing perf stat with armv8_pmu events with a workload, it will
+> report a segfault as result.
 
-> Hi,
->
-> On Tue, Sep 22, 2020 at 02:54:01PM +0800 Huang Ying wrote:
->> Now, AutoNUMA can only optimize the page placement among the NUMA nodes if the
->> default memory policy is used.  Because the memory policy specified explicitly
->> should take precedence.  But this seems too strict in some situations.  For
->> example, on a system with 4 NUMA nodes, if the memory of an application is bound
->> to the node 0 and 1, AutoNUMA can potentially migrate the pages between the node
->> 0 and 1 to reduce cross-node accessing without breaking the explicit memory
->> binding policy.
->> 
->> So in this patch, if mbind(.mode=MPOL_BIND, .flags=MPOL_MF_LAZY) is used to bind
->> the memory of the application to multiple nodes, and in the hint page fault
->> handler both the faulting page node and the accessing node are in the policy
->> nodemask, the page will be tried to be migrated to the accessing node to reduce
->> the cross-node accessing.
->>
->
-> Do you have any performance numbers that show the effects of this on
-> a workload?
+please share the perf stat command line you see that segfault for
 
-I have done some simple test to confirm that NUMA balancing works in the
-target configuration.
+thanks,
+jirka
 
-As for performance numbers, it's exactly same as that of the original
-NUMA balancing in a different configuration.  Between without memory
-binding and with memory bound to all NUMA nodes.
+> 
+> (gdb) bt
+> #0  0x0000000000603fc8 in perf_evsel__close_fd_cpu (evsel=<optimized out>,
+>     cpu=<optimized out>) at evsel.c:122
+> #1  perf_evsel__close_cpu (evsel=evsel@entry=0x716e950, cpu=7) at evsel.c:156
+> #2  0x00000000004d4718 in evlist__close (evlist=0x70a7cb0) at util/evlist.c:1242
+> #3  0x0000000000453404 in __run_perf_stat (argc=3, argc@entry=1, argv=0x30,
+>     argv@entry=0xfffffaea2f90, run_idx=119, run_idx@entry=1701998435)
+>     at builtin-stat.c:929
+> #4  0x0000000000455058 in run_perf_stat (run_idx=1701998435, argv=0xfffffaea2f90,
+>     argc=1) at builtin-stat.c:947
+> #5  cmd_stat (argc=1, argv=0xfffffaea2f90) at builtin-stat.c:2357
+> #6  0x00000000004bb888 in run_builtin (p=p@entry=0x9764b8 <commands+288>,
+>     argc=argc@entry=4, argv=argv@entry=0xfffffaea2f90) at perf.c:312
+> #7  0x00000000004bbb54 in handle_internal_command (argc=argc@entry=4,
+>     argv=argv@entry=0xfffffaea2f90) at perf.c:364
+> #8  0x0000000000435378 in run_argv (argcp=<synthetic pointer>,
+>     argv=<synthetic pointer>) at perf.c:408
+> #9  main (argc=4, argv=0xfffffaea2f90) at perf.c:538
+> 
+> After debugging, i found the root reason is that the xyarray fd is created
+> by evsel__open_per_thread() ignoring the cpu passed in
+> create_perf_stat_counter(), while the evsel' cpumap is assigned as the
+> corresponding PMU's cpumap in __add_event(). Thus, the xyarray fd is created
+> with ncpus of dummy cpumap and an out of bounds 'cpu' index will be used in
+> perf_evsel__close_fd_cpu().
+> 
+> To address this, add a flag to mark this situation and avoid using the
+> affinity technique when closing/enabling/disabling events.
+> 
+> Fixes: 7736627b865d ("perf stat: Use affinity for closing file descriptors")
+> Fixes: 704e2f5b700d ("perf stat: Use affinity for enabling/disabling events")
+> Signed-off-by: Wei Li <liwei391@huawei.com>
+> ---
+>  tools/lib/perf/include/internal/evlist.h |  1 +
+>  tools/perf/builtin-stat.c                |  3 +++
+>  tools/perf/util/evlist.c                 | 23 ++++++++++++++++++++++-
+>  3 files changed, 26 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/lib/perf/include/internal/evlist.h b/tools/lib/perf/include/internal/evlist.h
+> index 2d0fa02b036f..c02d7e583846 100644
+> --- a/tools/lib/perf/include/internal/evlist.h
+> +++ b/tools/lib/perf/include/internal/evlist.h
+> @@ -17,6 +17,7 @@ struct perf_evlist {
+>  	struct list_head	 entries;
+>  	int			 nr_entries;
+>  	bool			 has_user_cpus;
+> +	bool			 open_per_thread;
+>  	struct perf_cpu_map	*cpus;
+>  	struct perf_cpu_map	*all_cpus;
+>  	struct perf_thread_map	*threads;
+> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+> index fddc97cac984..6e6ceacce634 100644
+> --- a/tools/perf/builtin-stat.c
+> +++ b/tools/perf/builtin-stat.c
+> @@ -725,6 +725,9 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
+>  	if (group)
+>  		perf_evlist__set_leader(evsel_list);
+>  
+> +	if (!(target__has_cpu(&target) && !target__has_per_thread(&target)))
+> +		evsel_list->core.open_per_thread = true;
+> +
+>  	if (affinity__setup(&affinity) < 0)
+>  		return -1;
+>  
+> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+> index e3fa3bf7498a..bf8a3ccc599f 100644
+> --- a/tools/perf/util/evlist.c
+> +++ b/tools/perf/util/evlist.c
+> @@ -383,6 +383,15 @@ void evlist__disable(struct evlist *evlist)
+>  	int cpu, i, imm = 0;
+>  	bool has_imm = false;
+>  
+> +	if (evlist->core.open_per_thread) {
+> +		evlist__for_each_entry(evlist, pos) {
+> +			if (pos->disabled || !evsel__is_group_leader(pos) || !pos->core.fd)
+> +				continue;
+> +			evsel__disable(pos);
+> +		}
+> +		goto out;
+> +	}
+> +
+>  	if (affinity__setup(&affinity) < 0)
+>  		return;
+>  
+> @@ -414,6 +423,7 @@ void evlist__disable(struct evlist *evlist)
+>  		pos->disabled = true;
+>  	}
+>  
+> +out:
+>  	evlist->enabled = false;
+>  }
+>  
+> @@ -423,6 +433,15 @@ void evlist__enable(struct evlist *evlist)
+>  	struct affinity affinity;
+>  	int cpu, i;
+>  
+> +	if (evlist->core.open_per_thread) {
+> +		evlist__for_each_entry(evlist, pos) {
+> +			if (!evsel__is_group_leader(pos) || !pos->core.fd)
+> +				continue;
+> +			evsel__enable(pos);
+> +		}
+> +		goto out;
+> +	}
+> +
+>  	if (affinity__setup(&affinity) < 0)
+>  		return;
+>  
+> @@ -444,6 +463,7 @@ void evlist__enable(struct evlist *evlist)
+>  		pos->disabled = false;
+>  	}
+>  
+> +out:
+>  	evlist->enabled = true;
+>  }
+>  
+> @@ -1223,9 +1243,10 @@ void evlist__close(struct evlist *evlist)
+>  
+>  	/*
+>  	 * With perf record core.cpus is usually NULL.
+> +	 * Or perf stat may open events per-thread.
+>  	 * Use the old method to handle this for now.
+>  	 */
+> -	if (!evlist->core.cpus) {
+> +	if (evlist->core.open_per_thread || !evlist->core.cpus) {
+>  		evlist__for_each_entry_reverse(evlist, evsel)
+>  			evsel__close(evsel);
+>  		return;
+> -- 
+> 2.17.1
+> 
 
->
->> [Peter Zijlstra: provided the simplified implementation method.]
->> 
->> Questions:
->> 
->> Sysctl knob kernel.numa_balancing can enable/disable AutoNUMA optimizing
->> globally.  But for the memory areas that are bound to multiple NUMA nodes, even
->> if the AutoNUMA is enabled globally via the sysctl knob, we still need to enable
->> AutoNUMA again with a special flag.  Why not just optimize the page placement if
->> possible as long as AutoNUMA is enabled globally?  The interface would look
->> simpler with that.
->
->
-> I agree. I think it should try to do this if globally enabled.
-
-Thanks!
-
->> 
->> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> Cc: Ingo Molnar <mingo@redhat.com>
->> Cc: Mel Gorman <mgorman@suse.de>
->> Cc: Rik van Riel <riel@redhat.com>
->> Cc: Johannes Weiner <hannes@cmpxchg.org>
->> Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
->> Cc: Dave Hansen <dave.hansen@intel.com>
->> Cc: Andi Kleen <ak@linux.intel.com>
->> Cc: Michal Hocko <mhocko@suse.com>
->> Cc: David Rientjes <rientjes@google.com>
->> ---
->>  mm/mempolicy.c | 17 +++++++++++------
->>  1 file changed, 11 insertions(+), 6 deletions(-)
->> 
->> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
->> index eddbe4e56c73..273969204732 100644
->> --- a/mm/mempolicy.c
->> +++ b/mm/mempolicy.c
->> @@ -2494,15 +2494,19 @@ int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long
->>  		break;
->>  
->>  	case MPOL_BIND:
->> -
->>  		/*
->> -		 * allows binding to multiple nodes.
->> -		 * use current page if in policy nodemask,
->> -		 * else select nearest allowed node, if any.
->> -		 * If no allowed nodes, use current [!misplaced].
->> +		 * Allows binding to multiple nodes.  If both current and
->> +		 * accessing nodes are in policy nodemask, migrate to
->> +		 * accessing node to optimize page placement. Otherwise,
->> +		 * use current page if in policy nodemask, else select
->> +		 * nearest allowed node, if any.  If no allowed nodes, use
->> +		 * current [!misplaced].
->>  		 */
->> -		if (node_isset(curnid, pol->v.nodes))
->> +		if (node_isset(curnid, pol->v.nodes)) {
->> +			if (node_isset(thisnid, pol->v.nodes))
->> +				goto moron;
->
-> Nice label :)
-
-OK.  Because quite some people pay attention to this.  I will rename all
-"moron" to "mopron" as suggested by Matthew.  Although MPOL_F_MORON is
-defined in include/uapi/linux/mempolicy.h, it is explicitly marked as
-internal flags.
-
-Best Regards,
-Huang, Ying
-
->>  			goto out;
->> +		}
->>  		z = first_zones_zonelist(
->>  				node_zonelist(numa_node_id(), GFP_HIGHUSER),
->>  				gfp_zone(GFP_HIGHUSER),
->> @@ -2516,6 +2520,7 @@ int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long
->>  
->>  	/* Migrate the page towards the node whose CPU is referencing it */
->>  	if (pol->flags & MPOL_F_MORON) {
->> +moron:
->>  		polnid = thisnid;
->>  
->>  		if (!should_numa_migrate_memory(current, page, curnid, thiscpu))
->> -- 
->> 2.28.0
->> 
->
->
-> Cheers,
-> Phil
