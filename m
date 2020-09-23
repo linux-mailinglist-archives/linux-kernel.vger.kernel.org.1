@@ -2,98 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E30275BBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52DCA275BC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726824AbgIWPY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 11:24:58 -0400
-Received: from foss.arm.com ([217.140.110.172]:48892 "EHLO foss.arm.com"
+        id S1726788AbgIWPZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 11:25:13 -0400
+Received: from mga07.intel.com ([134.134.136.100]:58923 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726670AbgIWPY6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 11:24:58 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 75450113E;
-        Wed, 23 Sep 2020 08:24:57 -0700 (PDT)
-Received: from [10.57.48.76] (unknown [10.57.48.76])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 739473F718;
-        Wed, 23 Sep 2020 08:24:55 -0700 (PDT)
-Subject: Re: [PATCHv5 5/6] iommu: arm-smmu-impl: Use table to list QCOM
- implementations
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>
-Cc:     iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        freedreno@lists.freedesktop.org,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        dri-devel@lists.freedesktop.org
-References: <cover.1600754909.git.saiprakash.ranjan@codeaurora.org>
- <f2d079d46cee22f09f6eb7e6f874a9eaa786ec2a.1600754909.git.saiprakash.ranjan@codeaurora.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <d9b46e48-afa5-ceff-aee8-a75a95a3e459@arm.com>
-Date:   Wed, 23 Sep 2020 16:24:53 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        id S1726620AbgIWPZM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 11:25:12 -0400
+IronPort-SDR: OTeINvi3nzndS+8v76fJOomgwfUiueNM1VmM1xJ6BrUWB8cGYXdym97hYNGmnCRc/umXCFToGo
+ 15eWgXCoARxQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="225055673"
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
+   d="scan'208";a="225055673"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 08:25:11 -0700
+IronPort-SDR: YmR1SxFUzCMegOE29Z7WY8yRAbVnYEa0ijOOqMw2+EsFkZLLsa1UpifzHWDqWDrLKKEVl1TI3o
+ RR2e/1UqSUyA==
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
+   d="scan'208";a="486478167"
+Received: from linortne-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.49.223])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 08:25:04 -0700
+Date:   Wed, 23 Sep 2020 18:25:02 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Jethro Beekman <jethro@fortanix.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Seth Moore <sethmo@google.com>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 16/24] x86/sgx: Add a page reclaimer
+Message-ID: <20200923152502.GI5160@linux.intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-17-jarkko.sakkinen@linux.intel.com>
+ <20200922104538.GE22660@zn.tnic>
+ <20200922162437.GA30827@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <f2d079d46cee22f09f6eb7e6f874a9eaa786ec2a.1600754909.git.saiprakash.ranjan@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922162437.GA30827@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-22 07:18, Sai Prakash Ranjan wrote:
-> Use table and of_match_node() to match qcom implementation
-> instead of multiple of_device_compatible() calls for each
-> QCOM SMMU implementation.
-> 
-> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> ---
->   drivers/iommu/arm/arm-smmu/arm-smmu-impl.c | 12 ++++++++----
->   1 file changed, 8 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c b/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
-> index d199b4bff15d..ce78295cfa78 100644
-> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
-> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
-> @@ -9,6 +9,13 @@
->   
->   #include "arm-smmu.h"
->   
-> +static const struct of_device_id __maybe_unused qcom_smmu_impl_of_match[] = {
-> +	{ .compatible = "qcom,sc7180-smmu-500" },
-> +	{ .compatible = "qcom,sdm845-smmu-500" },
-> +	{ .compatible = "qcom,sm8150-smmu-500" },
-> +	{ .compatible = "qcom,sm8250-smmu-500" },
-> +	{ }
-> +};
+> 	if (IS_ERR(va_page)) <- needed a new VA page, allocation failed
+> 		return PTR_ERR(va_page);
+> 	else if (va_page)    <- needed a new VA page, allocation succeeded
+> 		list_add(&va_page->list, &encl->va_pages);
+> 	else
+> 		             <- reused the current VA page
 
-Can you push the table itself into arm-smmu-qcom? That way you'll be 
-free to add new SoCs willy-nilly without any possibility of conflicting 
-with anything else.
+/* else the tail page of the VA page list had free slots. */
 
-Bonus points if you can fold in the Adreno variant and keep everything 
-together ;)
+I added this comment as "the missing branch".
 
-Robin.
-
->   static int arm_smmu_gr0_ns(int offset)
->   {
-> @@ -217,10 +224,7 @@ struct arm_smmu_device *arm_smmu_impl_init(struct arm_smmu_device *smmu)
->   	if (of_device_is_compatible(np, "nvidia,tegra194-smmu"))
->   		return nvidia_smmu_impl_init(smmu);
->   
-> -	if (of_device_is_compatible(np, "qcom,sdm845-smmu-500") ||
-> -	    of_device_is_compatible(np, "qcom,sc7180-smmu-500") ||
-> -	    of_device_is_compatible(np, "qcom,sm8150-smmu-500") ||
-> -	    of_device_is_compatible(np, "qcom,sm8250-smmu-500"))
-> +	if (of_match_node(qcom_smmu_impl_of_match, np))
->   		return qcom_smmu_impl_init(smmu);
->   
->   	if (of_device_is_compatible(smmu->dev->of_node, "qcom,adreno-smmu"))
-> 
+/Jarkko
