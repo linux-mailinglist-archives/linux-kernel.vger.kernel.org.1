@@ -2,178 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6050275DB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64687275E18
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 19:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726738AbgIWQl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 12:41:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57004 "EHLO mail.kernel.org"
+        id S1726743AbgIWRAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 13:00:33 -0400
+Received: from mga01.intel.com ([192.55.52.88]:53062 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgIWQl7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 12:41:59 -0400
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 460B6212CC;
-        Wed, 23 Sep 2020 16:41:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600879318;
-        bh=H/X54/9jjWgX70+wPfPiiKTHZeodTG5ZIAFYl/owpiY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=xyw8QgUlBVbDnDx66/3JJe7kWGDnxv+A6AZroC4M6/hjmR4QXH2I6G1HvF/v/oQcj
-         E09cUFRtjQ7bQHXaVTY3vGDQ/UUhzN+oTE975DvARbiGg7eeVVNoJZjL4Q+D1ujwy5
-         Z/R7wxqrRzaJVmELmFNdNHaQw1Jz4HwjWSrzqRQ0=
-Received: by mail-ot1-f49.google.com with SMTP id n61so318856ota.10;
-        Wed, 23 Sep 2020 09:41:58 -0700 (PDT)
-X-Gm-Message-State: AOAM531vz+1zE0w44jYDP7cqTe4irqcFVknoBghEZ9qoDj6Vxfl0U2Hb
-        koQG0UdqGxY6DegB6e1aS+8WmL/idK4KG4qCzA==
-X-Google-Smtp-Source: ABdhPJwLbfDZiK9Pm9S8+Ij5u6rYx0WjoXRoutVyMdSeHNE/MwsRZePtNTTSEW871CePVnni7eI/l+9oJjB3GKIsTiE=
-X-Received: by 2002:a05:6830:1008:: with SMTP id a8mr345792otp.107.1600879317500;
- Wed, 23 Sep 2020 09:41:57 -0700 (PDT)
+        id S1726342AbgIWRAd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 13:00:33 -0400
+IronPort-SDR: gdsSle//WznQkkUjb3H+CmyOd7kIIkBhUDYZ+8Xs+J+zvpQGnhbPAkGUQs6Njd2H/kHZvE0jpJ
+ lBb7txvvVsiw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="179039892"
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
+   d="scan'208";a="179039892"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 10:00:32 -0700
+IronPort-SDR: jnHAKwgf8h4PajpgTsZPB6zIhrdKJGUsVrBsIVLBdmuexYjdqgi5B04gncq89JRYdUDRJRG3Vk
+ 1CuXEALuFCUg==
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
+   d="scan'208";a="342495812"
+Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.16])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 10:00:32 -0700
+Subject: [PATCH v9 2/2] x86/copy_mc: Introduce copy_mc_generic()
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     mingo@redhat.com
+Cc:     x86@kernel.org, stable@vger.kernel.org,
+        Borislav Petkov <bp@alien8.de>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Erwin Tsaur <erwin.tsaur@intel.com>,
+        Erwin Tsaur <erwin.tsaur@intel.com>,
+        0day robot <lkp@intel.com>, tglx@linutronix.de, x86@kernel.org,
+        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org,
+        jack@suse.cz
+Date:   Wed, 23 Sep 2020 09:42:09 -0700
+Message-ID: <160087932379.3520.599786267031023589.stgit@dwillia2-desk3.amr.corp.intel.com>
+In-Reply-To: <160087928642.3520.17063139768910633998.stgit@dwillia2-desk3.amr.corp.intel.com>
+References: <160087928642.3520.17063139768910633998.stgit@dwillia2-desk3.amr.corp.intel.com>
+User-Agent: StGit/0.18-3-g996c
 MIME-Version: 1.0
-References: <20200923142607.10c89bd2@xhacker.debian>
-In-Reply-To: <20200923142607.10c89bd2@xhacker.debian>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 23 Sep 2020 10:41:45 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJV_8sCVB2fAi6kk19ZLbO+nKbk-kYsBNEbN+jR84LUgg@mail.gmail.com>
-Message-ID: <CAL_JsqJV_8sCVB2fAi6kk19ZLbO+nKbk-kYsBNEbN+jR84LUgg@mail.gmail.com>
-Subject: Re: [PATCH] PCI: dwc: Move allocate and map page for msi out of dw_pcie_msi_init()
-To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Vidya Sagar <vidyas@nvidia.com>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 12:27 AM Jisheng Zhang
-<Jisheng.Zhang@synaptics.com> wrote:
->
-> Currently, dw_pcie_msi_init() allocates and maps page for msi, then
-> program the PCIE_MSI_ADDR_LO and PCIE_MSI_ADDR_HI. The Root Complex
-> may lose power during suspend-to-RAM, so when we resume, we want to
-> redo the latter but not the former. If designware based driver (for
-> example, pcie-tegra194.c) calls dw_pcie_msi_init() in resume path, the
-> previous msi page will be leaked.
+The original copy_mc_fragile() implementation had negative performance
+implications since it did not use the fast-string instruction sequence
+to perform copies. For this reason copy_mc_to_kernel() fell back to
+plain memcpy() to preserve performance on platform that did not indicate
+the capability to recover from machine check exceptions. However, that
+capability detection was not architectural and now that some platforms
+can recover from fast-string consumption of memory errors the memcpy()
+fallback now causes these more capable platforms to fail.
 
-It's worse than this. I think there's also error paths too leaking the
-page. Also, there's never a dma_unmap_page call which should happen
-before freeing.
+Introduce copy_mc_generic() as the fast default implementation of
+copy_mc_to_kernel() and finalize the transition of copy_mc_fragile() to
+be a platform quirk to indicate 'fragility'. With this in place
+copy_mc_to_kernel() is fast and recovery-ready by default regardless of
+hardware capability.
 
-> Move the allocate and map msi page from dw_pcie_msi_init() to
-> dw_pcie_host_init() to fix this problem.
->
-> Fixes: 56e15a238d92 ("PCI: tegra: Add Tegra194 PCIe support")
-> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-> ---
->  drivers/pci/controller/dwc/pci-dra7xx.c       | 18 ++++++++++++-
->  .../pci/controller/dwc/pcie-designware-host.c | 27 +++++++++----------
->  2 files changed, 30 insertions(+), 15 deletions(-)
->
-> diff --git a/drivers/pci/controller/dwc/pci-dra7xx.c b/drivers/pci/controller/dwc/pci-dra7xx.c
-> index dc387724cf08..4301cf844a4c 100644
-> --- a/drivers/pci/controller/dwc/pci-dra7xx.c
-> +++ b/drivers/pci/controller/dwc/pci-dra7xx.c
-> @@ -490,7 +490,9 @@ static struct irq_chip dra7xx_pci_msi_bottom_irq_chip = {
->  static int dra7xx_pcie_msi_host_init(struct pcie_port *pp)
->  {
->         struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> +       struct device *dev = pci->dev;
->         u32 ctrl, num_ctrls;
-> +       int ret;
->
->         pp->msi_irq_chip = &dra7xx_pci_msi_bottom_irq_chip;
->
-> @@ -506,7 +508,21 @@ static int dra7xx_pcie_msi_host_init(struct pcie_port *pp)
->                                     ~0);
->         }
->
-> -       return dw_pcie_allocate_domains(pp);
-> +       ret = dw_pcie_allocate_domains(pp);
-> +       if (ret)
-> +               return ret;
-> +
-> +       pp->msi_page = alloc_page(GFP_KERNEL);
-> +       pp->msi_data = dma_map_page(dev, pp->msi_page, 0, PAGE_SIZE,
-> +                                   DMA_FROM_DEVICE);
-> +       ret = dma_mapping_error(dev, pp->msi_data);
-> +       if (ret) {
-> +               dev_err(dev, "Failed to map MSI data\n");
-> +               __free_page(pp->msi_page);
-> +               pp->msi_page = NULL;
-> +               dw_pcie_free_msi(pp);
-> +       }
+Thanks to Vivek for identifying that copy_user_generic() is not suitable
+as the copy_mc_to_user() backend since the #MC handler explicitly checks
+ex_has_fault_handler(). Thanks to the 0day robot for catching a
+performance bug in the x86/copy_mc_to_user implementation.
 
-I don't like having 2 copies of the same thing. Also, doesn't keystone
-need this too?
+Cc: x86@kernel.org
+Cc: <stable@vger.kernel.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Vivek Goyal <vgoyal@redhat.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Reported-by: Erwin Tsaur <erwin.tsaur@intel.com>
+Tested-by: Erwin Tsaur <erwin.tsaur@intel.com>
+Reported-by: 0day robot <lkp@intel.com>
+Fixes: 92b0729c34ca ("x86/mm, x86/mce: Add memcpy_mcsafe()")
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+---
+ arch/x86/include/asm/uaccess.h |    3 +++
+ arch/x86/lib/copy_mc.c         |   13 ++++++-------
+ arch/x86/lib/copy_mc_64.S      |   40 ++++++++++++++++++++++++++++++++++++++++
+ tools/objtool/check.c          |    1 +
+ 4 files changed, 50 insertions(+), 7 deletions(-)
 
-The other thing is .msi_host_init() is abused by having an empty
-function to disable MSI support. We should have a flag instead to
-enable/disable MSI support and then we can key off of that in the
-common code.
+diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
+index 9bed6471c7f3..4935833cc891 100644
+--- a/arch/x86/include/asm/uaccess.h
++++ b/arch/x86/include/asm/uaccess.h
+@@ -467,6 +467,9 @@ copy_mc_to_user(void *to, const void *from, unsigned len);
+ 
+ unsigned long __must_check
+ copy_mc_fragile(void *dst, const void *src, unsigned cnt);
++
++unsigned long __must_check
++copy_mc_generic(void *dst, const void *src, unsigned cnt);
+ #else
+ static inline void enable_copy_mc_fragile(void)
+ {
+diff --git a/arch/x86/lib/copy_mc.c b/arch/x86/lib/copy_mc.c
+index cdb8f5dc403d..afac844c8f45 100644
+--- a/arch/x86/lib/copy_mc.c
++++ b/arch/x86/lib/copy_mc.c
+@@ -23,7 +23,7 @@ void enable_copy_mc_fragile(void)
+  *
+  * Call into the 'fragile' version on systems that have trouble
+  * actually do machine check recovery. Everyone else can just
+- * use memcpy().
++ * use copy_mc_generic().
+  *
+  * Return 0 for success, or number of bytes not copied if there was an
+  * exception.
+@@ -33,8 +33,7 @@ copy_mc_to_kernel(void *dst, const void *src, unsigned cnt)
+ {
+ 	if (static_branch_unlikely(&copy_mc_fragile_key))
+ 		return copy_mc_fragile(dst, src, cnt);
+-	memcpy(dst, src, cnt);
+-	return 0;
++	return copy_mc_generic(dst, src, cnt);
+ }
+ EXPORT_SYMBOL_GPL(copy_mc_to_kernel);
+ 
+@@ -56,11 +55,11 @@ copy_mc_to_user(void *to, const void *from, unsigned len)
+ {
+ 	unsigned long ret;
+ 
+-	if (!static_branch_unlikely(&copy_mc_fragile_key))
+-		return copy_user_generic(to, from, len);
+-
+ 	__uaccess_begin();
+-	ret = copy_mc_fragile(to, from, len);
++	if (static_branch_unlikely(&copy_mc_fragile_key))
++		ret = copy_mc_fragile(to, from, len);
++	else
++		ret = copy_mc_generic(to, from, len);
+ 	__uaccess_end();
+ 	return ret;
+ }
+diff --git a/arch/x86/lib/copy_mc_64.S b/arch/x86/lib/copy_mc_64.S
+index 35a67c50890b..a08e7a4d9e28 100644
+--- a/arch/x86/lib/copy_mc_64.S
++++ b/arch/x86/lib/copy_mc_64.S
+@@ -2,7 +2,9 @@
+ /* Copyright(c) 2016-2020 Intel Corporation. All rights reserved. */
+ 
+ #include <linux/linkage.h>
++#include <asm/alternative-asm.h>
+ #include <asm/copy_mc_test.h>
++#include <asm/cpufeatures.h>
+ #include <asm/export.h>
+ #include <asm/asm.h>
+ 
+@@ -122,4 +124,42 @@ EXPORT_SYMBOL_GPL(copy_mc_fragile)
+ 	_ASM_EXTABLE(.L_write_leading_bytes, .E_leading_bytes)
+ 	_ASM_EXTABLE(.L_write_words, .E_write_words)
+ 	_ASM_EXTABLE(.L_write_trailing_bytes, .E_trailing_bytes)
++
++/*
++ * copy_mc_generic - memory copy with exception handling
++ *
++ * Fast string copy + fault / exception handling. If the CPU does
++ * support machine check exception recovery, but does not support
++ * recovering from fast-string exceptions then this CPU needs to be
++ * added to the copy_mc_fragile_key set of quirks. Otherwise, absent any
++ * machine check recovery support this version should be no slower than
++ * standard memcpy.
++ */
++SYM_FUNC_START(copy_mc_generic)
++	ALTERNATIVE "jmp copy_mc_fragile", "", X86_FEATURE_ERMS
++	movq %rdi, %rax
++	movq %rdx, %rcx
++.L_copy:
++	rep movsb
++	/* Copy successful. Return zero */
++	xorl %eax, %eax
++	ret
++SYM_FUNC_END(copy_mc_generic)
++EXPORT_SYMBOL_GPL(copy_mc_generic)
++
++	.section .fixup, "ax"
++.E_copy:
++	/*
++	 * On fault %rcx is updated such that the copy instruction could
++	 * optionally be restarted at the fault position, i.e. it
++	 * contains 'bytes remaining'. A non-zero return indicates error
++	 * to copy_mc_generic() users, or indicate short transfers to
++	 * user-copy routines.
++	 */
++	movq %rcx, %rax
++	ret
++
++	.previous
++
++	_ASM_EXTABLE_FAULT(.L_copy, .E_copy)
+ #endif
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index cf2d076f6ba5..9677dfa0f983 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -548,6 +548,7 @@ static const char *uaccess_safe_builtin[] = {
+ 	"__ubsan_handle_shift_out_of_bounds",
+ 	/* misc */
+ 	"csum_partial_copy_generic",
++	"copy_mc_generic",
+ 	"copy_mc_fragile",
+ 	"copy_mc_fragile_handle_tail",
+ 	"ftrace_likely_update", /* CONFIG_TRACE_BRANCH_PROFILING */
 
-> +       return ret;
->  }
->
->  static const struct dw_pcie_host_ops dra7xx_pcie_host_ops = {
-> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-> index 9dafecba347f..c23ba64f64fe 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-> @@ -294,20 +294,7 @@ void dw_pcie_free_msi(struct pcie_port *pp)
->
->  void dw_pcie_msi_init(struct pcie_port *pp)
-
-Might be good to rename this function with exactly what it does.
-There's too many 'init' and 'setup' functions...
-
->  {
-> -       struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> -       struct device *dev = pci->dev;
-> -       u64 msi_target;
-> -
-> -       pp->msi_page = alloc_page(GFP_KERNEL);
-> -       pp->msi_data = dma_map_page(dev, pp->msi_page, 0, PAGE_SIZE,
-> -                                   DMA_FROM_DEVICE);
-> -       if (dma_mapping_error(dev, pp->msi_data)) {
-> -               dev_err(dev, "Failed to map MSI data\n");
-> -               __free_page(pp->msi_page);
-> -               pp->msi_page = NULL;
-> -               return;
-> -       }
-> -       msi_target = (u64)pp->msi_data;
-> +       u64 msi_target = (u64)pp->msi_data;
->
->         /* Program the msi_data */
->         dw_pcie_wr_own_conf(pp, PCIE_MSI_ADDR_LO, 4,
-> @@ -440,6 +427,18 @@ int dw_pcie_host_init(struct pcie_port *pp)
->                                 irq_set_chained_handler_and_data(pp->msi_irq,
->                                                             dw_chained_msi_isr,
->                                                             pp);
-> +
-> +                       pp->msi_page = alloc_page(GFP_KERNEL);
-> +                       pp->msi_data = dma_map_page(pci->dev, pp->msi_page,
-> +                                                   0, PAGE_SIZE,
-> +                                                   DMA_FROM_DEVICE);
-> +                       ret = dma_mapping_error(pci->dev, pp->msi_data);
-> +                       if (ret) {
-> +                               dev_err(pci->dev, "Failed to map MSI data\n");
-> +                               __free_page(pp->msi_page);
-> +                               pp->msi_page = NULL;
-> +                               goto err_free_msi;
-> +                       }
->                 } else {
->                         ret = pp->ops->msi_host_init(pp);
->                         if (ret < 0)
-> --
-> 2.28.0
->
