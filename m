@@ -2,76 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 385382751F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 08:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B702751FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 08:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726746AbgIWG4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 02:56:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726179AbgIWG4E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 02:56:04 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E05DAC061755;
-        Tue, 22 Sep 2020 23:56:03 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id k2so14673787ybp.7;
-        Tue, 22 Sep 2020 23:56:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=A1rC8148NbtE7cAa6JwGIJx/jujejruTMtLlxy4dSdc=;
-        b=sMKRsVFFfyj/ktHuInnipw3t4xnoKKefK9Dc20KJhpa7HKSB1enncV/C+TmSfBR4gq
-         dXIqoD8y17hMCaQe8YQ/WlFlcrf/INOmr070uTqrRGU5TwI9PeKOA8xTAK5wQ+AeN84y
-         tLU5t+Hx1vFn5iIGy8Zlx2ItM6hnPAMuiRnW0TjzaBVSMIJlcoPS6CHs3KfyqDaMzBvg
-         5Y56U/2pP1pGufflSF/Ho6kFWk5v5GNnzVCDHPxtFgJ2TTZtJoiZpzLCVO0blgak5gFT
-         lnEoZw4ddK7FN/umMEcL34+Dw9rzMorb7/illyuuvuGxV37rbDZbNqYKOdS6HRpx04+f
-         xv9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=A1rC8148NbtE7cAa6JwGIJx/jujejruTMtLlxy4dSdc=;
-        b=k7NwSb20x74/JRB1wmEuSlwzuG77PbzX3NQmDYQeYyEyr/018PKu3YZFUTbnwlQxRg
-         rfM7gP+N+O9TXpbDBWewR2VuwLHsO80MEtlzF7UGgRP3AAsSmID9HT905erkybg0GS4N
-         +afBCroZb2wqFrsUCNiHeJMAxK8VfWuULahNDF579XtzssKJV5sjSICsZAK4rhEQMaFx
-         HAgyfAjnVO83uC1xN2kZ2XjAQF/8+dgdHBXvx9R4Ouxnc59RhwJ9hrfw4ZK3pq7QE6/v
-         2nc/6lv8nfW32HUFu3/8xD7Nkvv6+2e5ubKBuHj/mJCkROTEHibY1Hl7zxl3r/P3+TuJ
-         VCAg==
-X-Gm-Message-State: AOAM531L/plObpBCfiYqZdNYUCBkmJEGz+WvprkhJ33J2ybUqEFtBhE6
-        msFMo93ilRWTugAkEQWJJkDU7mRYQqVRCXTA8/ZVjHvCAek=
-X-Google-Smtp-Source: ABdhPJz3/hDbaCBIzBn/O4OjEfK7uaKkf06n5MTt5m3W8qX/62oxWN/RFIPh0hzjk8zIvbONy3ns+C0kI7unDxK/jVM=
-X-Received: by 2002:a25:2bc2:: with SMTP id r185mr13084615ybr.71.1600844163159;
- Tue, 22 Sep 2020 23:56:03 -0700 (PDT)
+        id S1726727AbgIWG5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 02:57:02 -0400
+Received: from muru.com ([72.249.23.125]:45148 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726179AbgIWG5B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 02:57:01 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id A008580A0;
+        Wed, 23 Sep 2020 06:57:01 +0000 (UTC)
+Date:   Wed, 23 Sep 2020 09:57:55 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     Trent Piepho <tpiepho@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@gmail.com>,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        Christina Quast <cquast@hanoverdisplays.com>
+Subject: Re: [PATCH] ARM: dts: document pinctrl-single,pins when
+ #pinctrl-cells = 2
+Message-ID: <20200923065755.GR7101@atomide.com>
+References: <20200914104352.2165818-1-drew@beagleboard.org>
+ <CA+7tXii8rwBexgAHeqYsvBywhWLmk-Hf5_VWUU5bQkBREeFcSA@mail.gmail.com>
+ <20200917092004.GA2468349@x1>
+ <CA+7tXihwHbcuxZ10jGZrQkET9+Dbs31SfsYDt_6XB+-JM99gqA@mail.gmail.com>
+ <20200917103942.GA2477958@x1>
 MIME-Version: 1.0
-References: <20200923065326.44898-1-liwei391@huawei.com>
-In-Reply-To: <20200923065326.44898-1-liwei391@huawei.com>
-From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Date:   Wed, 23 Sep 2020 08:55:51 +0200
-Message-ID: <CACna6rwOxyUjsE8yyvZ1y2KvL+1YQf5QP-ioi2oi+G+ZPOSSBw@mail.gmail.com>
-Subject: Re: [PATCH] MIPS: BCM47XX: Remove the needless check with the 1074K
-To:     Wei Li <liwei391@huawei.com>
-Cc:     Hauke Mehrtens <hauke@hauke-m.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>,
-        "Steven J. Hill" <Steven.Hill@imgtec.com>,
-        linux-mips@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        guohanjun@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200917103942.GA2477958@x1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Sep 2020 at 08:54, Wei Li <liwei391@huawei.com> wrote:
-> As there is no known soc powered by mips 1074K in bcm47xx series,
-> the check with 1074K is needless. So just remove it.
->
-> Link: https://wireless.wiki.kernel.org/en/users/Drivers/b43/soc
-> Fixes: 442e14a2c55e ("MIPS: Add 1074K CPU support explicitly.")
-> Signed-off-by: Wei Li <liwei391@huawei.com>
+* Drew Fustini <drew@beagleboard.org> [200917 10:39]:
+> On Thu, Sep 17, 2020 at 03:00:36AM -0700, Trent Piepho wrote:
+> > On Thu, Sep 17, 2020 at 2:20 AM Drew Fustini <drew@beagleboard.org> wrote:
+> > >
+> > > On Thu, Sep 17, 2020 at 02:03:46AM -0700, Trent Piepho wrote:
+> > > > On Mon, Sep 14, 2020 at 3:44 AM Drew Fustini <drew@beagleboard.org> wrote:
+> > > > >
+> > > > > +
+> > > > > +When #pinctrl-cells = 2, then setting a pin for a device could be done with:
+> > > > > +
+> > > > > +       pinctrl-single,pins = <0xdc 0x30 0x07>;
+> > > > > +
+> > > > > +Where 0x30 is the pin configuration value and 0x07 is the pin mux mode value.
+> > > > > +See the device example and static board pins example below for more information.
+> > > >
+> > > > Pin configuration and mux mode don't mean anything in pinctrl-single.
+> > > > On another machine, mux mode might not be programmed this way or even
+> > > > exist.  Or the location of bits would probably be different, and this
+> > > > would seem to imply the 0x07 would get shifted to the correct location
+> > > > for where the pin mux setting was on that machine's pinctrl registers.
+> > > >
+> > > > It seems like it would be better to explain the values are ORed together.
+> > >
+> > > I descirbed it as seoerate values as I did not want to prescribe what
+> > > the pcs driver would do with those values.  But, yes, it is a just an OR
+> > > operation, so I could change the language to reflect tat.
+> > 
+> > If you don't say what the pinctrl-single driver does with the values,
+> > how would anyone know how to use it?
+> > 
+> > > > What is the purpose of this change anyway?  It seems like in the end
+> > > > it just does what it did before.  The data is now split into two cells
+> > > > in the device tree, but why?
+> > >
+> > > These changes were a result of desire to seperate pinconf and pinmux.
+> > > Tony raised the idea in a thread at the end of May [1].
+> > >
+> > > Tony wrote:
+> > > > Only slightly related, but we should really eventually move omaps to use
+> > > > #pinctrl-cells = <2> (or 3) instead of 1, and pass the pinconf seprately
+> > > > from the mux mode. We already treat them separately with the new
+> > > > AM33XX_PADCONF macro, so we'd only have to change one SoC at a time to
+> > > > use updated #pinctrl-cells. But I think pinctrl-single might need some
+> > > > changes before we can do that.
+> > 
+> > I still don't see what the goal is here.  Support generic pinconf?
+> 
+> My interest is came out of my desire to turn on generic pinconf for AM3358
+> and I had to fix a bug that was breaking compatible "pinconf,single":
+> f46fe79ff1b6 ("pinctrl-single: fix pcs_parse_pinconf() return value")
+> 
+> > Also note that while AM33XX_PADCONF() is changed, there is an in tree
+> > board that doesn't use it, so it's broken now.  I found this change
+> > when it broke my out of tree board, due to the dtsi change not being
+> > reflected in my board's pinctrl values.
+> 
+> Thanks, that is a good point that arch/arm/boot/dts/am335x-guardian.dts
+> needs to be converted from AM33XX_IOPAD to AM33XX_PADCONF.  I'll submit
+> a patch for that.
+> 
+> Regarding AM33XX_PADCONF() restructuring, the change to have seperate
+> arguments for direction and mux in AM33XX_PADCONF() predates my
+> invovlement, so I've CC'd Christina Quast.
+> 
+>     commit f1ff9be7652b716c7eea67c9ca795027d911f148
+>     Author: Christina Quast <cquast@hanoverdisplays.com>
+>     Date:   Mon Apr 8 10:01:51 2019 -0700
+> 
+>     ARM: dts: am33xx: Added AM33XX_PADCONF macro
+>     
+>     AM33XX_PADCONF takes three instead of two parameters, to make
+>     future changes to #pinctrl-cells easier.
+>     
+>     For old boards which are not mainlined, we left the AM33XX_IOPAD
+>     macro.
+>     
+>     Signed-off-by: Christina Quast <cquast@hanoverdisplays.com>
+>     Reviewed-by: Rob Herring <robh@kernel.org>
+>     Signed-off-by: Tony Lindgren <tony@atomide.com>
+> 
+> Hopefully, Tony can also chime in.
 
-Acked-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+Also FYI, folks have also complained for a long time that the pinctrl-single
+binding mixes mux and conf values while they should be handled separately.
+
+Regards,
+
+Tony
