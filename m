@@ -2,195 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D55C127647F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87B33276488
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:32:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726810AbgIWXaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 19:30:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60412 "EHLO
+        id S1726823AbgIWXby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 19:31:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726662AbgIWXaA (ORCPT
+        with ESMTP id S1726727AbgIWX33 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 19:30:00 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CA6EC0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:30:00 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id z5so672844ilq.5
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:30:00 -0700 (PDT)
+        Wed, 23 Sep 2020 19:29:29 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3960CC0613D2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:29:29 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id kk9so543777pjb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:29:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kyIVOaqB/Lo9xi5CTeoxW5aB69SRY2R3s7cddxat0oc=;
-        b=eiMaJKLhRPOz7y39+m5bj9Z9vmD9Cy3R58ohCFmzGcAHkWC5huS508cTpcNxhjbQcw
-         uFi5yYNoQosq5zNa+emGVOTqH+K70WpCrvtk9h1dnsoE3+qFh5fB/j2QsxFymAovjiJb
-         G3tu+CUA8OYkLt/Fd6nrVCIqPS9xQRTbdriar5DkpJuKL/DXmyDLPVWd00NjSgegnBUO
-         sQlkkhy1bhbiCQcwBBKzN54DYiqpQBajLzwq6hHMb4Tk6cfpBOm0oWxx8rRzlG54ThE0
-         NpQ+cuZpPaXtWvb/1gMiEoRK992Fa3rW1Vk11RIbuvd3Tx/EM+b5FxZVc5+td4V37ZIt
-         qYkg==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KnYowXpX9ek9m66e/Htp70CeCYZxw6hk1IiAy6Kl5rQ=;
+        b=d23i7lGk81zKYyusnqeg3ju3nwOqSpKeXXqEXfHcMkudEXxh6GYe4vsSAUdXG2Kmda
+         6xUIDq6pAnsBhq4Uwb61Qv+JVTAqLdlu5ggSiDwArbU7/fQlOyXMiVKgIeSUdEW9+pdY
+         Yl9rNSLOlhuM/5SpwR5+gAAFa1s7kNPrF+Xkg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kyIVOaqB/Lo9xi5CTeoxW5aB69SRY2R3s7cddxat0oc=;
-        b=ObsHdxgaY1cNrfAWuG+ruwERn5nHwWbZiWVFC5KkYS8VWODAoAWXxbQHjvmHvvmJjD
-         Xnn10LxDlVn5y5x3xH6ykAF84j0F2sCQBT3cw31uD4nR5Dy4rpCOWXABDxnM8d19Mj8L
-         uGjTz6wrHPCyDv4qXPADHplmuzqemVFmBA3TOqVneIfzoAoxiRaF59tjA+/3F1QZr7F5
-         YpRAPpQcGgkzCmdVCa7mX6ZWTTfN7igGqNVha++2Br3EokPCDGcfQLslKwcFsRH6rRnd
-         qKgRIGctrtSjciML2jgbSOBw6XH4dx6gMV8964rHfeO59AwZ4qv7XeEbUvjw3yguifz5
-         z8Jg==
-X-Gm-Message-State: AOAM533yGPGYKMYHWO3I3QLv2AdAyMPakXuMmk7M/owzhdcDNbL80jCi
-        nTcytMcoL1eDh/9T4oqfxUHl21cGBqjjBLHktvNULQ==
-X-Google-Smtp-Source: ABdhPJyNMV4JjS6sPOq0BgXWVMEzgGdgwLi15ybld1wrptIfEEfCxYfy5l0O1O+J/bAOLFeKz/xPU0zQ+8W/y9EcXxI=
-X-Received: by 2002:a92:1e07:: with SMTP id e7mr1647650ile.154.1600903799587;
- Wed, 23 Sep 2020 16:29:59 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KnYowXpX9ek9m66e/Htp70CeCYZxw6hk1IiAy6Kl5rQ=;
+        b=b61tsa6N52IXUC+5vY9ee1JEk6Xxj0kEGUKd6RbhjjUmE3lvvYOShg3hgJEQ8gaf/K
+         mFQI+Ovi9j23YCVnMXdTwgOOMyIFB9Z/7qCycedtSl5ZGe6kPUe74F9P3kyHJBPA4qzQ
+         MRxdXh7DVIfHBmDZDXJ+mN1e7/c73mSfiMjkFOiSdXu0UsqGkDSJHcTO63LavGXWccCz
+         QhhX5Zd4mC0YaJRB5jVNiz9Elp5G4H66AqWcv+5PnS5MMRu4y6Ys2fU1sT/eiIj/Cy3S
+         P+YliJkEtWeK/h3FQ6G/XdJRVYNCAFmo0msCWWsYHhSuQuPSCZ/MkoG7zx02QpgFmKdV
+         nntA==
+X-Gm-Message-State: AOAM530CZa/Tp1LBGHViraIhfpZtMUgU5WPngG6GSlqQYTltcMjEjTyX
+        VyAaauPDuS/pgT6Z+EHijYYNLA==
+X-Google-Smtp-Source: ABdhPJyayNyPvuS62S2fNWA1VUxrMaI1OAUF1FMKlIQFQYU1vC9AcNWm/orb6K3zoxr7u7I4hLjRvQ==
+X-Received: by 2002:a17:902:8689:b029:d1:9bf7:230a with SMTP id g9-20020a1709028689b02900d19bf7230amr2038591plo.22.1600903768727;
+        Wed, 23 Sep 2020 16:29:28 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id y1sm836499pgy.0.2020.09.23.16.29.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2020 16:29:26 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     YiFei Zhu <yifeifz2@illinois.edu>
+Cc:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>, bpf@vger.kernel.org,
+        containers@lists.linux-foundation.org, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1 0/6] seccomp: Implement constant action bitmaps
+Date:   Wed, 23 Sep 2020 16:29:17 -0700
+Message-Id: <20200923232923.3142503-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20200923221406.16297-1-sean.j.christopherson@intel.com> <20200923221406.16297-3-sean.j.christopherson@intel.com>
-In-Reply-To: <20200923221406.16297-3-sean.j.christopherson@intel.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Wed, 23 Sep 2020 16:29:48 -0700
-Message-ID: <CANgfPd9LLhLMsOHtMS1begL_J676Szve5y-qruY85WAu5MpYVw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] KVM: x86/MMU: Recursively zap nested TDP SPs when
- zapping last/only parent
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peter Shier <pshier@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 3:14 PM Sean Christopherson
-<sean.j.christopherson@intel.com> wrote:
->
-> From: Ben Gardon <bgardon@google.com>
->
-> Recursively zap all to-be-orphaned children, unsynced or otherwise, when
-> zapping a shadow page for a nested TDP MMU.  KVM currently only zaps the
-> unsynced child pages, but not the synced ones.  This can create problems
-> over time when running many nested guests because it leaves unlinked
-> pages which will not be freed until the page quota is hit. With the
-> default page quota of 20 shadow pages per 1000 guest pages, this looks
-> like a memory leak and can degrade MMU performance.
->
-> In a recent benchmark, substantial performance degradation was observed:
-> An L1 guest was booted with 64G memory.
-> 2G nested Windows guests were booted, 10 at a time for 20
-> iterations. (200 total boots)
-> Windows was used in this benchmark because they touch all of their
-> memory on startup.
-> By the end of the benchmark, the nested guests were taking ~10% longer
-> to boot. With this patch there is no degradation in boot time.
-> Without this patch the benchmark ends with hundreds of thousands of
-> stale EPT02 pages cluttering up rmaps and the page hash map. As a
-> result, VM shutdown is also much slower: deleting memslot 0 was
-> observed to take over a minute. With this patch it takes just a
-> few miliseconds.
->
-> Cc: Peter Shier <pshier@google.com>
-> Signed-off-by: Ben Gardon <bgardon@google.com>
-> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+rfc: https://lore.kernel.org/lkml/20200616074934.1600036-1-keescook@chromium.org/
+alternative: https://lore.kernel.org/containers/cover.1600661418.git.yifeifz2@illinois.edu/
+v1:
+- rebase to for-next/seccomp
+- finish X86_X32 support for both pinning and bitmaps
+- replace TLB magic with Jann's emulator
+- add JSET insn
 
-Reviewed-by: Ben Gardon <bgardon@google.com>
-(I don't know if my review is useful here, but the rebase of this
-patch looks correct! Thank you for preventing these from becoming
-undead, Sean.)
+TODO:
+- add ALU|AND insn
+- significantly more testing
 
-> ---
->  arch/x86/kvm/mmu/mmu.c         | 30 +++++++++++++++++++++++-------
->  arch/x86/kvm/mmu/paging_tmpl.h |  2 +-
->  2 files changed, 24 insertions(+), 8 deletions(-)
->
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index a91e8601594d..e993d5cd4bc8 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -2615,8 +2615,9 @@ static void validate_direct_spte(struct kvm_vcpu *vcpu, u64 *sptep,
->         }
->  }
->
-> -static void mmu_page_zap_pte(struct kvm *kvm, struct kvm_mmu_page *sp,
-> -                            u64 *spte)
-> +/* Returns the number of zapped non-leaf child shadow pages. */
-> +static int mmu_page_zap_pte(struct kvm *kvm, struct kvm_mmu_page *sp,
-> +                           u64 *spte, struct list_head *invalid_list)
->  {
->         u64 pte;
->         struct kvm_mmu_page *child;
-> @@ -2630,19 +2631,34 @@ static void mmu_page_zap_pte(struct kvm *kvm, struct kvm_mmu_page *sp,
->                 } else {
->                         child = to_shadow_page(pte & PT64_BASE_ADDR_MASK);
->                         drop_parent_pte(child, spte);
-> +
-> +                       /*
-> +                        * Recursively zap nested TDP SPs, parentless SPs are
-> +                        * unlikely to be used again in the near future.  This
-> +                        * avoids retaining a large number of stale nested SPs.
-> +                        */
-> +                       if (tdp_enabled && invalid_list &&
-> +                           child->role.guest_mode && !child->parent_ptes.val)
-> +                               return kvm_mmu_prepare_zap_page(kvm, child,
-> +                                                               invalid_list);
->                 }
->         } else if (is_mmio_spte(pte)) {
->                 mmu_spte_clear_no_track(spte);
->         }
-> +       return 0;
->  }
->
-> -static void kvm_mmu_page_unlink_children(struct kvm *kvm,
-> -                                        struct kvm_mmu_page *sp)
-> +static int kvm_mmu_page_unlink_children(struct kvm *kvm,
-> +                                       struct kvm_mmu_page *sp,
-> +                                       struct list_head *invalid_list)
->  {
-> +       int zapped = 0;
->         unsigned i;
->
->         for (i = 0; i < PT64_ENT_PER_PAGE; ++i)
-> -               mmu_page_zap_pte(kvm, sp, sp->spt + i);
-> +               zapped += mmu_page_zap_pte(kvm, sp, sp->spt + i, invalid_list);
-> +
-> +       return zapped;
->  }
->
->  static void kvm_mmu_unlink_parents(struct kvm *kvm, struct kvm_mmu_page *sp)
-> @@ -2688,7 +2704,7 @@ static bool __kvm_mmu_prepare_zap_page(struct kvm *kvm,
->         trace_kvm_mmu_prepare_zap_page(sp);
->         ++kvm->stat.mmu_shadow_zapped;
->         *nr_zapped = mmu_zap_unsync_children(kvm, sp, invalid_list);
-> -       kvm_mmu_page_unlink_children(kvm, sp);
-> +       *nr_zapped += kvm_mmu_page_unlink_children(kvm, sp, invalid_list);
->         kvm_mmu_unlink_parents(kvm, sp);
->
->         /* Zapping children means active_mmu_pages has become unstable. */
-> @@ -5396,7 +5412,7 @@ static void kvm_mmu_pte_write(struct kvm_vcpu *vcpu, gpa_t gpa,
->                         u32 base_role = vcpu->arch.mmu->mmu_role.base.word;
->
->                         entry = *spte;
-> -                       mmu_page_zap_pte(vcpu->kvm, sp, spte);
-> +                       mmu_page_zap_pte(vcpu->kvm, sp, spte, NULL);
->                         if (gentry &&
->                             !((sp->role.word ^ base_role) & ~role_ign.word) &&
->                             rmap_can_add(vcpu))
-> diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
-> index 3bb624a3dda9..e1066226b8f0 100644
-> --- a/arch/x86/kvm/mmu/paging_tmpl.h
-> +++ b/arch/x86/kvm/mmu/paging_tmpl.h
-> @@ -929,7 +929,7 @@ static void FNAME(invlpg)(struct kvm_vcpu *vcpu, gva_t gva, hpa_t root_hpa)
->                         pte_gpa = FNAME(get_level1_sp_gpa)(sp);
->                         pte_gpa += (sptep - sp->spt) * sizeof(pt_element_t);
->
-> -                       mmu_page_zap_pte(vcpu->kvm, sp, sptep);
-> +                       mmu_page_zap_pte(vcpu->kvm, sp, sptep, NULL);
->                         if (is_shadow_present_pte(old_spte))
->                                 kvm_flush_remote_tlbs_with_address(vcpu->kvm,
->                                         sp->gfn, KVM_PAGES_PER_HPAGE(sp->role.level));
-> --
-> 2.28.0
->
+Hi,
+
+This is a refresh of my earlier constant action bitmap series. It looks
+like the RFC was missed on the container list, so I've CCed it now. :)
+I'd like to work from this series, as it handles the multi-architecture
+stuff.
+
+Repeating the commit log from patch 3:
+
+    seccomp: Implement constant action bitmaps
+    
+    One of the most common pain points with seccomp filters has been dealing
+    with the overhead of processing the filters, especially for "always allow"
+    or "always reject" cases. While BPF is extremely fast[1], it will always
+    have overhead associated with it. Additionally, due to seccomp's design,
+    filters are layered, which means processing time goes up as the number
+    of filters attached goes up.
+    
+    In the past, efforts have been focused on making filter execution complete
+    in a shorter amount of time. For example, filters were rewritten from
+    using linear if/then/else syscall search to using balanced binary trees,
+    or moving tests for syscalls common to the process's workload to the
+    front of the filter. However, there are limits to this, especially when
+    some processes are dealing with tens of filters[2], or when some
+    architectures have a less efficient BPF engine[3].
+    
+    The most common use of seccomp, constructing syscall block/allow-lists,
+    where syscalls that are always allowed or always rejected (without regard
+    to any arguments), also tends to produce the most pathological runtime
+    problems, in that a large number of syscall checks in the filter need
+    to be performed to come to a determination.
+    
+    In order to optimize these cases from O(n) to O(1), seccomp can
+    use bitmaps to immediately determine the desired action. A critical
+    observation in the prior paragraph bears repeating: the common case for
+    syscall tests do not check arguments. For any given filter, there is a
+    constant mapping from the combination of architecture and syscall to the
+    seccomp action result. (For kernels/architectures without CONFIG_COMPAT,
+    there is a single architecture.). As such, it is possible to construct
+    a mapping of arch/syscall to action, which can be updated as new filters
+    are attached to a process.
+    
+    In order to build this mapping at filter attach time, each filter is
+    executed for every syscall (under each possible architecture), and
+    checked for any accesses of struct seccomp_data that are not the "arch"
+    nor "nr" (syscall) members. If only "arch" and "nr" are examined, then
+    there is a constant mapping for that syscall, and bitmaps can be updated
+    accordingly. If any accesses happen outside of those struct members,
+    seccomp must not bypass filter execution for that syscall, since program
+    state will be used to determine filter action result. (This logic comes
+    in the next patch.)
+    
+    [1] https://lore.kernel.org/bpf/20200531171915.wsxvdjeetmhpsdv2@ast-mbp.dhcp.thefacebook.com/
+    [2] https://lore.kernel.org/bpf/20200601101137.GA121847@gardel-login/
+    [3] https://lore.kernel.org/bpf/717a06e7f35740ccb4c70470ec70fb2f@huawei.com/
+
+
+Thanks!
+
+-Kees
+
+
+Kees Cook (6):
+  seccomp: Introduce SECCOMP_PIN_ARCHITECTURE
+  x86: Enable seccomp architecture tracking
+  seccomp: Implement constant action bitmaps
+  seccomp: Emulate basic filters for constant action results
+  selftests/seccomp: Compare bitmap vs filter overhead
+  [DEBUG] seccomp: Report bitmap coverage ranges
+
+ arch/x86/include/asm/seccomp.h                |  14 +
+ include/linux/seccomp.h                       |  27 +
+ include/uapi/linux/seccomp.h                  |   1 +
+ kernel/seccomp.c                              | 473 +++++++++++++++++-
+ net/core/filter.c                             |   3 +-
+ .../selftests/seccomp/seccomp_benchmark.c     | 151 +++++-
+ tools/testing/selftests/seccomp/seccomp_bpf.c |  33 ++
+ tools/testing/selftests/seccomp/settings      |   2 +-
+ 8 files changed, 674 insertions(+), 30 deletions(-)
+
+-- 
+2.25.1
+
