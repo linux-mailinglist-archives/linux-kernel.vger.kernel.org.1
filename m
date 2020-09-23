@@ -2,114 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5EF227591C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D005B27591E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726574AbgIWNuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 09:50:06 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:51140 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726234AbgIWNuF (ORCPT
+        id S1726629AbgIWNuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 09:50:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49489 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726587AbgIWNuL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 09:50:05 -0400
-Received: by mail-wm1-f65.google.com with SMTP id e17so120142wme.0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 06:50:04 -0700 (PDT)
+        Wed, 23 Sep 2020 09:50:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600869009;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cBbOOKO0ucHd2rpc+S+Efks0E+NiERhRTxqZGrwQ8go=;
+        b=Y84tj9eMXVqD8i/T3YD6zogW8lSVfCs1AohTHclVZOO/M0/Vyt/1nsdGZJJg6d7TzBTBDw
+        VtQxMiQB5SPPxss2SiclLigq4jEPUwFPhnYlAx4GiI78WOkJEW642ctsO7OrKR2CChAya7
+        JTMiUWtHVb3YDQekZbeBCY4lyIC5rn8=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-395--1tXGpdyMEyBuGaO7FQVuw-1; Wed, 23 Sep 2020 09:50:07 -0400
+X-MC-Unique: -1tXGpdyMEyBuGaO7FQVuw-1
+Received: by mail-qt1-f197.google.com with SMTP id b54so19295797qtk.17
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 06:50:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/j8gE98Lnx80ytn5eWpBHMVhOo7wOL6OTe60FsoJGZ8=;
-        b=bAh7zi4LvmxJQz0aU/b/IMpTEFaVb3zxx9LMXM/BS5I65CcW6QiFsdlZo5iR9Z0qE3
-         nmskrG823vsMI3gD2xvEE247at3hfvGLm3n/SDETJ+niGAGVO++SD2FWovJDAUAx4BZF
-         M3wc1XlsGV+g1fxZT2uxCAwLr+mHTgOBDW0u02TTP7E/x0i2qlkZ+zRiKmr4eV0UkBBb
-         uFBuV62NxhpcBjV44snDQBbixhQ62z77w/yBrSQeecQL/kCMgFjki0xOpF4g+7qHNaXx
-         MHKgRJX7o6WASYXIC/0/Tg539sLXFfr98OQfFBwoCjpQnfnHPhvWq7Np8BsK/du29oqv
-         sBhw==
-X-Gm-Message-State: AOAM530V1p8PDXVdayOu5BXfc+G6TZuLLrGx+8O3RdMU8x6CYL2ts798
-        5h8OE/3nEwD/4PfeAGOEqqOqMZap8uzuIGJ4pDY=
-X-Google-Smtp-Source: ABdhPJz5H5bwW3C7+pb6qcmjrh5dnDmWi67THx2mSecqmY9wWp0dzJL4G+l1uqs/xfjZ2wfxEZE+IZTSdZPLvgaCHGc=
-X-Received: by 2002:a1c:7215:: with SMTP id n21mr7023115wmc.154.1600869003674;
- Wed, 23 Sep 2020 06:50:03 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cBbOOKO0ucHd2rpc+S+Efks0E+NiERhRTxqZGrwQ8go=;
+        b=WsAmRcHZA8G0ufS379z58f7lzWEmscRR/CXGywyS1Ddz4ZgqUAQowxsHsEB2jfKFi6
+         9yo/H+kNqRK5GVVYf4yqAxbWAwiih7Oo5vTc/GmSiDF/VIaRmx+MJziyYioJ1Mb8Bc90
+         iYb2gRMms4p4+8FwazxOna1sW4R1+nf+7eQBzy7to5QFyejhzhoO4FYcruK19/x50ua3
+         hj2iRtN9eeonM4SPJOdS4mvSDSVCzD6ZqG85BBiAiCcHCwPc57nwtvxuFXU7/yuoEBmj
+         syA+MFr/MUzVvb416JxURiZN2D41qZJCu0MgH5XWbJbzPj84WNzHh6FKQvup/YZapEnE
+         /CZg==
+X-Gm-Message-State: AOAM5329W++vPCLxqZNnOdizlka1kpLzkoOHSsMfEo4pvN6pqBsfAITi
+        5lJpgqmBgTyL9iM3+snM3rtWKfVrZgnLVGaBgnQXI7LRyjWjnf2jgdsWQnZaGkfwoh4cTvL3a1g
+        1i7iC7vXac7ljOtHCUBiCFAB0
+X-Received: by 2002:ac8:4784:: with SMTP id k4mr94266qtq.266.1600869007127;
+        Wed, 23 Sep 2020 06:50:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJymluAocXlZKNKvjSQP1X70AcJPuQ7HzHich5liwak0L/3clODl36dmZDmKsXiVxH3joTCAnw==
+X-Received: by 2002:ac8:4784:: with SMTP id k4mr94229qtq.266.1600869006828;
+        Wed, 23 Sep 2020 06:50:06 -0700 (PDT)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
+        by smtp.gmail.com with ESMTPSA id z2sm11400qkg.40.2020.09.23.06.50.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2020 06:50:06 -0700 (PDT)
+Date:   Wed, 23 Sep 2020 09:50:04 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     John Hubbard <jhubbard@nvidia.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Jann Horn <jannh@google.com>, Oleg Nesterov <oleg@redhat.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Hugh Dickins <hughd@google.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Subject: Re: [PATCH 5/5] mm/thp: Split huge pmds/puds if they're pinned when
+ fork()
+Message-ID: <20200923135004.GB59978@xz-x1>
+References: <20200921211744.24758-1-peterx@redhat.com>
+ <20200921212031.25233-1-peterx@redhat.com>
+ <5e594e71-537f-3e9f-85b6-034b7f5fedbe@nvidia.com>
+ <20200922103315.GD15112@quack2.suse.cz>
+ <4a65586e-9282-beb0-1880-1ef8da03727c@nvidia.com>
+ <20200923092205.GA6719@quack2.suse.cz>
 MIME-Version: 1.0
-References: <20200922031346.15051-1-liwei391@huawei.com> <20200922031346.15051-2-liwei391@huawei.com>
- <20200923054426.GG2893484@krava>
-In-Reply-To: <20200923054426.GG2893484@krava>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 23 Sep 2020 22:49:52 +0900
-Message-ID: <CAM9d7cjLKosv97fEUCATVTr0mkZL_W5oDzBSxde70RhOeZ=6fg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] perf stat: Fix segfault when counting armv8_pmu events
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Wei Li <liwei391@huawei.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Li Bin <huawei.libin@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200923092205.GA6719@quack2.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 2:44 PM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Tue, Sep 22, 2020 at 11:13:45AM +0800, Wei Li wrote:
-> > When executing perf stat with armv8_pmu events with a workload, it will
-> > report a segfault as result.
->
-> please share the perf stat command line you see that segfault for
+On Wed, Sep 23, 2020 at 11:22:05AM +0200, Jan Kara wrote:
+> On Tue 22-09-20 13:01:13, John Hubbard wrote:
+> > On 9/22/20 3:33 AM, Jan Kara wrote:
+> > > On Mon 21-09-20 23:41:16, John Hubbard wrote:
+> > > > On 9/21/20 2:20 PM, Peter Xu wrote:
+> > > > ...
+> > > > > +	if (unlikely(READ_ONCE(src_mm->has_pinned) &&
+> > > > > +		     page_maybe_dma_pinned(src_page))) {
+> > > > 
+> > > > This condition would make a good static inline function. It's used in 3
+> > > > places, and the condition is quite special and worth documenting, and
+> > > > having a separate function helps with that, because the function name
+> > > > adds to the story. I'd suggest approximately:
+> > > > 
+> > > >      page_likely_dma_pinned()
+> > > > 
+> > > > for the name.
+> > > 
+> > > Well, but we should also capture that this really only works for anonymous
+> > > pages. For file pages mm->has_pinned does not work because the page may be
+> > > still pinned by completely unrelated process as Jann already properly
+> > > pointed out earlier in the thread. So maybe anon_page_likely_pinned()?
+> > > Possibly also assert PageAnon(page) in it if we want to be paranoid...
+> > > 
+> > > 								Honza
+> > 
+> > The file-backed case doesn't really change anything, though:
+> > page_maybe_dma_pinned() is already a "fuzzy yes" in the same sense: you
+> > can get a false positive. Just like here, with an mm->has_pinned that
+> > could be a false positive for a process.
+> > 
+> > And for that reason, I'm also not sure an "assert PageAnon(page)" is
+> > desirable. That assertion would prevent file-backed callers from being
+> > able to call a function that provides a fuzzy answer, but I don't see
+> > why you'd want or need to do that. The goal here is to make the fuzzy
+> > answer a little bit more definite, but it's not "broken" just because
+> > the result is still fuzzy, right?
+> > 
+> > Apologies if I'm missing a huge point here... :)
+> 
+> But the problem is that if you apply mm->has_pinned check on file pages,
+> you can get false negatives now. And that's not acceptable...
 
-It seems the description in the patch 0/2 already has it:
+Do you mean the case where proc A pinned page P from a file, then proc B mapped
+the same page P on the file, then fork() on proc B?
 
-  [root@localhost hulk]# tools/perf/perf stat  -e
-armv8_pmuv3_0/ll_cache_rd/,armv8_pmuv3_0/ll_cache_miss_rd/ ls >
-/dev/null
-  Segmentation fault
+If proc B didn't explicitly pinned page P in B's address space too, shouldn't
+we return "false" for page_likely_dma_pinned(P)?  Because if proc B didn't pin
+the page in its own address space, I'd think it's ok to get the page replaced
+at any time as long as the content keeps the same.  Or couldn't we?
 
-Thanks
-Namhyun
+Thanks,
 
+-- 
+Peter Xu
 
->
-> thanks,
-> jirka
->
-> >
-> > (gdb) bt
-> > #0  0x0000000000603fc8 in perf_evsel__close_fd_cpu (evsel=<optimized out>,
-> >     cpu=<optimized out>) at evsel.c:122
-> > #1  perf_evsel__close_cpu (evsel=evsel@entry=0x716e950, cpu=7) at evsel.c:156
-> > #2  0x00000000004d4718 in evlist__close (evlist=0x70a7cb0) at util/evlist.c:1242
-> > #3  0x0000000000453404 in __run_perf_stat (argc=3, argc@entry=1, argv=0x30,
-> >     argv@entry=0xfffffaea2f90, run_idx=119, run_idx@entry=1701998435)
-> >     at builtin-stat.c:929
-> > #4  0x0000000000455058 in run_perf_stat (run_idx=1701998435, argv=0xfffffaea2f90,
-> >     argc=1) at builtin-stat.c:947
-> > #5  cmd_stat (argc=1, argv=0xfffffaea2f90) at builtin-stat.c:2357
-> > #6  0x00000000004bb888 in run_builtin (p=p@entry=0x9764b8 <commands+288>,
-> >     argc=argc@entry=4, argv=argv@entry=0xfffffaea2f90) at perf.c:312
-> > #7  0x00000000004bbb54 in handle_internal_command (argc=argc@entry=4,
-> >     argv=argv@entry=0xfffffaea2f90) at perf.c:364
-> > #8  0x0000000000435378 in run_argv (argcp=<synthetic pointer>,
-> >     argv=<synthetic pointer>) at perf.c:408
-> > #9  main (argc=4, argv=0xfffffaea2f90) at perf.c:538
-> >
-> > After debugging, i found the root reason is that the xyarray fd is created
-> > by evsel__open_per_thread() ignoring the cpu passed in
-> > create_perf_stat_counter(), while the evsel' cpumap is assigned as the
-> > corresponding PMU's cpumap in __add_event(). Thus, the xyarray fd is created
-> > with ncpus of dummy cpumap and an out of bounds 'cpu' index will be used in
-> > perf_evsel__close_fd_cpu().
-> >
-> > To address this, add a flag to mark this situation and avoid using the
-> > affinity technique when closing/enabling/disabling events.
-> >
-> > Fixes: 7736627b865d ("perf stat: Use affinity for closing file descriptors")
-> > Fixes: 704e2f5b700d ("perf stat: Use affinity for enabling/disabling events")
-> > Signed-off-by: Wei Li <liwei391@huawei.com>
-> > ---
