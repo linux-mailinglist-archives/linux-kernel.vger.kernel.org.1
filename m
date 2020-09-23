@@ -2,233 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A46BF275DEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D112E275DF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726744AbgIWQvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 12:51:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726617AbgIWQvq (ORCPT
+        id S1726674AbgIWQxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 12:53:46 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:37638 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726381AbgIWQxq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 12:51:46 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D3F0C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 09:51:46 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id a16so370286vsp.12
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 09:51:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=qnH/IpGBOgvAVXQTuDw2bqYhHdHC09C72JJjikHyR2o=;
-        b=L7XB9rQlCac4xFnNlxadc3BUSRbCpKTKYIA1+PQeRbnrGy3BRD73gzz5g7rM0aJJU8
-         JRYqRmMZrCaxw5z1rxbyMtXOWn+LCRPrRT/TqVNAZl6QsUIQ1IF7N9OtU1JgdXV7EEMG
-         tNCSeGCMjUH0rrYyXZ38yPLhkUVJtf4bt6uqIMR54p9eb7Dk8sMPYytHFlrvRHw6+t3p
-         K9jgpS4Smqcq9KkQokl7k5xl9ZS//MzfSVpkpyjdDayc3dAS2s8H/QSNhhEITMPNSe09
-         yvwrwYUmUf98IwLNzwHD/9tLN/pTMfEdrN4AAyMc6nwSSSUoEHlx/xRkhN56a1ChAe84
-         IZCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=qnH/IpGBOgvAVXQTuDw2bqYhHdHC09C72JJjikHyR2o=;
-        b=ShiDJgV3ucCMWk16WPyhYj3kJVgdmmzb+iG0gImfl3cL5Dhz4Hj2DIklB1Wcw/F0R3
-         B0m/WPkXstKsTEFCfyCzRJJCNeaaJgYf3saHdMaRea/+jabMsxxEryYy1U8bcZX98d+m
-         0I2mYEVbs24n8oy9a4plXm/xEFUz5hgFWBV6I9p03Qz/OK7iQoasx7yLOPP2ckqqBv9a
-         0qZO5QXYgSm4Tuij4IJCBiGseg6ZYae6M25PjMm2spd8dLBCt7YjIPdwDHprPciEy//z
-         3quP7jdoJLIRMofqw9EZzlzHMK+YX/tBpyCXPmSREPlJpSzOLoO4x4S5aAkQgp7tK+9y
-         pgmg==
-X-Gm-Message-State: AOAM5338f5BxcJQ+36xKSILmrQI8f3fLyfBsfR3GLK9hSaqYYnah0Mpb
-        VSQhxGAwirnMYvBilxaa+Yj/Halv/yp0d0I8RkiWYw==
-X-Google-Smtp-Source: ABdhPJzJFKBMH3sLAH452/VAa92lJmJo///tI6mJFnGfzrVnGsARg9aE7e7YhV58UMfbqYkxcF8lyweNpTesuOuMo3c=
-X-Received: by 2002:a05:6102:2085:: with SMTP id h5mr954881vsr.26.1600879904000;
- Wed, 23 Sep 2020 09:51:44 -0700 (PDT)
+        Wed, 23 Sep 2020 12:53:46 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08NGrYUc073873;
+        Wed, 23 Sep 2020 11:53:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600880014;
+        bh=v/OdQtLrwg8yFHMiXDvciypEO6WxHuaqhFeT3aUYHVk=;
+        h=Subject:To:References:From:Date:In-Reply-To;
+        b=bPXmP2CUn6HstssqRQAJHuvz8dGAJpgOb44WcJiChOvDH5JjqhtpWwfpiqSfRM3Pw
+         pa0uVcKlGFPxYYoMhQMmlLsSOiqovFxNpf+k/wp06OeNuSt03GhjMTxwMOle+5eVV3
+         CTu99N+bQ8HczmerxJF38khSQ3FO4mQuVekEsCmI=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08NGrYso032957
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 23 Sep 2020 11:53:34 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 23
+ Sep 2020 11:53:34 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 23 Sep 2020 11:53:34 -0500
+Received: from [10.250.36.88] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08NGrXwg008341;
+        Wed, 23 Sep 2020 11:53:33 -0500
+Subject: Re: [PATCH v2] MAINTAINERS: add Dan Murphy as TP LP8xxx drivers
+ maintainer
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        <linux-leds@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <linux-fbdev@vger.kernel.org>,
+        <linux-pwm@vger.kernel.org>
+References: <20200922152839.2744-1-krzk@kernel.org>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <fe4609b5-5aab-46ed-5280-9a4742b97fe5@ti.com>
+Date:   Wed, 23 Sep 2020 11:53:33 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 23 Sep 2020 22:21:32 +0530
-Message-ID: <CA+G9fYsT+MREZ=yPb3t=Rh+MCxz6q7p_tSJ_oeh92Sd3ro+PRw@mail.gmail.com>
-Subject: BUG: kernel NULL pointer dereference, address: trace_event_raw_event_sched_switch
-To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, lkft-triage@lists.linaro.org
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200922152839.2744-1-krzk@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While running kselftest ftracetest on i386 the kernel crash reported
-on linux next tag
-5.9.0-rc5-next-20200921.
-Good news is that this crash is not seen on today's linux next tag 20200923.
+Hello
 
-metadata:
-  git branch: master
-  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-  git describe: next-20200921
-  make_kernelversion: 5.9.0-rc5
-  kernel-config:
-http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/intel-core2-32/lkft/linux-next/864/config
+On 9/22/20 10:28 AM, Krzysztof Kozlowski wrote:
+> Milo Kim's email in TI bounces with permanent error (550: Invalid
+> recipient).  Last email from him on LKML was in 2017.  Move Milo Kim to
+> credits and add Dan Murphy from TI to look after:
+>   - TI LP855x backlight driver,
+>   - TI LP8727 charger driver,
+>   - TI LP8788 MFD (ADC, LEDs, charger and regulator) drivers.
+>
+> Cc: Dan Murphy <dmurphy@ti.com>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Reproduce steps:
-          - cd /opt/kselftests/default-in-kernel/ftrace
-          - ./ftracetest
+Acked-by: Dan Murphy <dmurphy@ti.com>
 
-crash log,
---------------
-[  366.934246] BUG: kernel NULL pointer dereference, address: 00000024
-[  366.940528] #PF: supervisor read access in kernel mode
-[  366.945683] #PF: error_code(0x0000) - not-present page
-[  366.950828] *pde = 00000000
-[  366.953717] Oops: 0000 [#1] SMP
-[  366.956862] CPU: 2 PID: 0 Comm: swapper/2 Tainted: G        W
-  5.9.0-rc5-next-20200921 #1
-[  366.965639] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-2.0b 07/27/2017
-[  366.973119] EIP: trace_event_raw_event_sched_switch+0x10/0x180
-[  366.978950] Code: 08 5b 5e 5f 5d c3 8d 74 26 00 31 c0 eb e4 e8 07
-42 dd 00 8d b4 26 00 00 00 00 55 89 e5 57 56 53 89 c6 89 cf 83 ec 28
-8b 45 08 <8b> 5e 24 89 55 cc 89 45 d0 65 a1 14 00 00 00 89 45 f0 31 c0
-f6 c7
-[  366.997687] EAX: f5582480 EBX: f5582480 ECX: f5585b40 EDX: 00000000
-[  367.003945] ESI: 00000000 EDI: f5585b40 EBP: f5593f20 ESP: f5593eec
-[  367.010203] DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS: 00210092
-[  367.016978] CR0: 80050033 CR2: 00000024 CR3: 0bfbc000 CR4: 003506d0
-[  367.023236] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
-[  367.029495] DR6: fffe0ff0 DR7: 00000400
-[  367.033323] Call Trace:
-[  367.035771]  ? cpu_cgroup_can_attach+0x90/0x90
-[  367.040215]  ? exc_general_protection+0x280/0x280
-[  367.044922]  __schedule+0x4dc/0xa90
-[  367.048415]  schedule_idle+0x1c/0x40
-[  367.051993]  do_idle+0x185/0x2a0
-[  367.055226]  cpu_startup_entry+0x25/0x30
-[  367.059142]  start_secondary+0x106/0x140
-[  367.063061]  startup_32_smp+0x164/0x168
-[  367.066902] Modules linked in: sch_fq 8021q iptable_filter xt_mark
-ip_tables cls_bpf veth algif_hash x86_pkg_temp_thermal fuse [last
-unloaded: test_bpf]
-[  367.080550] CR2: 0000000000000024
-[  367.083871] ---[ end trace 41a54e0211ae9de1 ]---
-[  367.083872] BUG: kernel NULL pointer dereference, address: 00000024
-[  367.083873] #PF: supervisor read access in kernel mode
-[  367.088489] EIP: trace_event_raw_event_sched_switch+0x10/0x180
-[  367.094743] #PF: error_code(0x0000) - not-present page
-[  367.094744] *pde = 00000000
-[  367.099877] Code: 08 5b 5e 5f 5d c3 8d 74 26 00 31 c0 eb e4 e8 07
-42 dd 00 8d b4 26 00 00 00 00 55 89 e5 57 56 53 89 c6 89 cf 83 ec 28
-8b 45 08 <8b> 5e 24 89 55 cc 89 45 d0 65 a1 14 00 00 00 89 45 f0 31 c0
-f6 c7
-[  367.099878] EAX: f5582480 EBX: f5582480 ECX: f5585b40 EDX: 00000000
-[  367.105709]
-[  367.105710] Oops: 0000 [#2] SMP
-[  367.110846] ESI: 00000000 EDI: f5585b40 EBP: f5593f20 ESP: f5593eec
-[  367.110847] DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS: 00210092
-[  367.113725] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G      D W
-  5.9.0-rc5-next-20200921 #1
-[  367.132462] CR0: 80050033 CR2: 00000024 CR3: 0bfbc000 CR4: 003506d0
-[  367.132463] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
-[  367.138718] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-2.0b 07/27/2017
-[  367.138720] EIP: trace_event_raw_event_sched_switch+0x10/0x180
-[  367.140210] DR6: fffe0ff0 DR7: 00000400
-[  367.140211] Kernel panic - not syncing: Attempted to kill the idle task!
-[  367.143348] Code: 08 5b 5e 5f 5d c3 8d 74 26 00 31 c0 eb e4 e8 07
-42 dd 00 8d b4 26 00 00 00 00 55 89 e5 57 56 53 89 c6 89 cf 83 ec 28
-8b 45 08 <8b> 5e 24 89 55 cc 89 45 d0 65 a1 14 00 00 00 89 45 f0 31 c0
-f6 c7
-[  367.220218] EAX: d5ebb6c0 EBX: d5ebb6c0 ECX: cbca0700 EDX: 00000000
-[  367.226476] ESI: 00000000 EDI: cbca0700 EBP: cbc8bef0 ESP: cbc8bebc
-[  367.232733] DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS: 00210092
-[  367.239512] CR0: 80050033 CR2: 00000024 CR3: 0bfbc000 CR4: 003506d0
-[  367.245767] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
-[  367.252025] DR6: fffe0ff0 DR7: 00000400
-[  367.255855] Call Trace:
-[  367.258302]  ? pick_next_task_fair+0x154/0x3a0
-[  367.262748]  __schedule+0x4dc/0xa90
-[  367.266240]  schedule_idle+0x1c/0x40
-[  367.269819]  do_idle+0x185/0x2a0
-[  367.273053]  cpu_startup_entry+0x25/0x30
-[  367.276978]  rest_init+0x166/0x230
-[  367.280375]  arch_call_rest_init+0xd/0x19
-[  367.284380]  start_kernel+0x481/0x4a0
-[  367.288045]  i386_start_kernel+0x48/0x4a
-[  367.291970]  startup_32_smp+0x164/0x168
-[  367.295803] Modules linked in: sch_fq 8021q iptable_filter xt_mark
-ip_tables cls_bpf veth algif_hash x86_pkg_temp_thermal fuse [last
-unloaded: test_bpf]
-[  367.309450] CR2: 0000000000000024
-[  367.312762] ---[ end trace 41a54e0211ae9de2 ]---
-[  367.312763] BUG: kernel NULL pointer dereference, address: 00000024
-[  367.312764] #PF: supervisor read access in kernel mode
-[  367.317381] EIP: trace_event_raw_event_sched_switch+0x10/0x180
-[  367.323637] #PF: error_code(0x0000) - not-present page
-[  367.323638] *pde = 00000000
-[  367.328769] Code: 08 5b 5e 5f 5d c3 8d 74 26 00 31 c0 eb e4 e8 07
-42 dd 00 8d b4 26 00 00 00 00 55 89 e5 57 56 53 89 c6 89 cf 83 ec 28
-8b 45 08 <8b> 5e 24 89 55 cc 89 45 d0 65 a1 14 00 00 00 89 45 f0 31 c0
-f6 c7
-[  367.328770] EAX: f5582480 EBX: f5582480 ECX: f5585b40 EDX: 00000000
-[  367.334600]
-[  367.334601] Oops: 0000 [#3] SMP
-[  367.339731] ESI: 00000000 EDI: f5585b40 EBP: f5593f20 ESP: f5593eec
-[  367.339732] DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS: 00210092
-[  367.342611] CPU: 1 PID: 0 Comm: swapper/1 Tainted: G      D W
-  5.9.0-rc5-next-20200921 #1
-[  367.361346] CR0: 80050033 CR2: 00000024 CR3: 0bfbc000 CR4: 003506d0
-[  367.361347] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
-[  367.367602] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-2.0b 07/27/2017
-[  367.367604] EIP: trace_event_raw_event_sched_switch+0x10/0x180
-[  367.369095] DR6: fffe0ff0 DR7: 00000400
-[  367.423685] Code: 08 5b 5e 5f 5d c3 8d 74 26 00 31 c0 eb e4 e8 07
-42 dd 00 8d b4 26 00 00 00 00 55 89 e5 57 56 53 89 c6 89 cf 83 ec 28
-8b 45 08 <8b> 5e 24 89 55 cc 89 45 d0 65 a1 14 00 00 00 89 45 f0 31 c0
-f6 c7
-[  367.442431] EAX: f2dca480 EBX: f2dca480 ECX: f5584900 EDX: 00000000
-[  367.448687] ESI: 00000000 EDI: f5584900 EBP: f5591f20 ESP: f5591eec
-[  367.454945] DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS: 00210092
-[  367.461722] CR0: 80050033 CR2: 00000024 CR3: 0bfbc000 CR4: 003506d0
-[  367.467980] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
-[  367.474236] DR6: fffe0ff0 DR7: 00000400
-[  367.478067] Call Trace:
-[  367.480514]  ? pick_next_task_fair+0x154/0x3a0
-[  367.484961]  __schedule+0x4dc/0xa90
-[  367.488453]  ? inet_rtm_getroute+0x214/0x990
-[  367.492724]  schedule_idle+0x1c/0x40
-[  367.496302]  do_idle+0x185/0x2a0
-[  367.499526]  ? inet_rtm_getroute+0x214/0x990
-[  367.503792]  cpu_startup_entry+0x25/0x30
-[  367.507715]  start_secondary+0x106/0x140
-[  367.511633]  ? inet_rtm_getroute+0x214/0x990
-[  367.515898]  startup_32_smp+0x164/0x168
-[  367.519738] Modules linked in: sch_fq 8021q iptable_filter xt_mark
-ip_tables cls_bpf veth algif_hash x86_pkg_temp_thermal fuse [last
-unloaded: test_bpf]
-[  367.533385] CR2: 0000000000000024
-[  367.536698] ---[ end trace 41a54e0211ae9de3 ]---
-[  367.541316] EIP: trace_event_raw_event_sched_switch+0x10/0x180
-[  367.547140] Code: 08 5b 5e 5f 5d c3 8d 74 26 00 31 c0 eb e4 e8 07
-42 dd 00 8d b4 26 00 00 00 00 55 89 e5 57 56 53 89 c6 89 cf 83 ec 28
-8b 45 08 <8b> 5e 24 89 55 cc 89 45 d0 65 a1 14 00 00 00 89 45 f0 31 c0
-f6 c7
-[  367.565877] EAX: f5582480 EBX: f5582480 ECX: f5585b40 EDX: 00000000
-[  367.572135] ESI: 00000000 EDI: f5585b40 EBP: f5593f20 ESP: f5593eec
-[  367.578391] DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS: 00210092
-[  367.585170] CR0: 80050033 CR2: 00000024 CR3: 0bfbc000 CR4: 003506d0
-[  367.591433] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
-[  367.597691] DR6: fffe0ff0 DR7: 00000400
-[  368.219291] Shutting down cpus with NMI
-[  368.223134] Kernel Offset: disabled
-[  368.226617] ---[ end Kernel panic - not syncing: Attempted to kill
-the idle task! ]---
-
-full test log,
-https://lkft.validation.linaro.org/scheduler/job/1784011
-https://lkft.validation.linaro.org/scheduler/job/1776849#L9308
-
--- 
-Linaro LKFT
-https://lkft.linaro.org
