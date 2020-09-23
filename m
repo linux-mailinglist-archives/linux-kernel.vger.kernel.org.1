@@ -2,138 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32C44274F0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 04:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C94274F0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 04:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727208AbgIWCcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 22:32:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55268 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726548AbgIWCcy (ORCPT
+        id S1727244AbgIWCfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 22:35:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727038AbgIWCfm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 22:32:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600828372;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2MO7lymMp9srQF8kov4JxrV28TWE85qvWXzbFlo1Ctk=;
-        b=b8KdMM/ZsAlXaV1hoIS+Q1Rgk60NAoxaer2Ip8ZwhyPlGnhbI1b3XXYBwBve5h+e/o6jQ9
-        lLe1K3HbNmbv35u64xJGWk/tc2LWbFneU4Rwahwh5eAk6H4gfdjU90gD7uOesE+g0R96/K
-        5azZBPAC1b4epOcXB2174sXXYY2Xgr8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-557-VUP15onONwOwCZEB1an0-A-1; Tue, 22 Sep 2020 22:32:48 -0400
-X-MC-Unique: VUP15onONwOwCZEB1an0-A-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2BA6D1074641;
-        Wed, 23 Sep 2020 02:32:47 +0000 (UTC)
-Received: from localhost (ovpn-12-42.pek2.redhat.com [10.72.12.42])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8796F5D9CC;
-        Wed, 23 Sep 2020 02:32:46 +0000 (UTC)
-Date:   Wed, 23 Sep 2020 10:32:44 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     joro@8bytes.org, ahuang12@lenovo.com
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        jsnitsel@redhat.com
-Subject: Re: [PATCH] Revert "iommu/amd: Treat per-device exclusion ranges as
- r/w unity-mapped regions"
-Message-ID: <20200923023244.GK25604@MiWiFi-R3L-srv>
-References: <20200923022655.750-1-bhe@redhat.com>
+        Tue, 22 Sep 2020 22:35:42 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7AAFC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 19:35:41 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id u8so20321366lff.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 19:35:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HNLILPO9KGBr2EiE7fPnteeqqVFqeTm0/utbd5V0UfM=;
+        b=gpENJad7aIY/S5kBL5o8YVttNP6P373hhEXKz6ErBwsU/D+zf22imm1nkW4ERBaSHD
+         zpAbAVk6UoSZYDLYJDZkFGLPhDVWGMO30j0pUcW7h49Tryqf3NzJu4RZcL1iD02GoqA6
+         MG4REMrV1LplGXzEGHcMfLHjAQZ1DpNK4aAMFIQctSZ6kzBGbm0dg2ZTVSIvvckdxqRX
+         A8p1DU39WBmIgc/L4nnjM4X9tMLRq8LvlGdaeOQbqxSz6Ff+SemO4COh6UTnhUpLf6VS
+         txktKu+z0qVosUhE2kp0VE8x0/fTRFl8/cXeYa/Z0ziyNv7xI9D9QFTcZQvRCBscssRC
+         /Uug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HNLILPO9KGBr2EiE7fPnteeqqVFqeTm0/utbd5V0UfM=;
+        b=Mtgu7/b2UqYfdKCgOFnrVK96yYb8hAeQ9nQtnQ6vXXlrfHWZ0rT/67Ny4SvU88eFQU
+         qCUaNoxpd/NT4Q7EHnAC6yl+PjrgkMTudnIOCCKsepHjfHlJk+lsLxAkMpZ5Nv3RJ2hF
+         0wD8TDArdE4VNYzR53fbLiA3/LaGvM9KVabirW7DPmsRlfz/o7AX4YS+dKMExrkseRmc
+         nngSdHk5cT1BUh7X2j9ypnbHNMNsbxSiaL6v7zKvhfly0acDV5WzF9vt80O5LNMDPzQa
+         qOmHGgaHpAlqEpK6+kwCu70RcV+nTgBmPE6CD9b+FGQEfKsipC9ByF2hDffNNPM21oPU
+         0x3w==
+X-Gm-Message-State: AOAM533/zprMCsw81XT60cp2narj9V74/gOEE3uUl+VOThaqh1z6uG6Y
+        5oVqFGfn5Z2/6pQTfGCbdNgz1mGzjIV2wuRKifleqA==
+X-Google-Smtp-Source: ABdhPJxyzcM22PrIegi03Dy1GMhdk2CcQ8TxOfp4CD5IlwC/YoSTAHHbEzvDZ3zvZGe7TGoUuOqs4yQ/LKXQgaUQgH8=
+X-Received: by 2002:a19:8789:: with SMTP id j131mr2439699lfd.90.1600828540307;
+ Tue, 22 Sep 2020 19:35:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200923022655.750-1-bhe@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20200921080255.15505-1-zangchunxin@bytedance.com>
+ <20200921081200.GE12990@dhcp22.suse.cz> <CALOAHbDKvT58UFjxy770VDxO0VWABRYb7GVwgw+NiJp62mB06w@mail.gmail.com>
+ <20200921110505.GH12990@dhcp22.suse.cz> <CAKRVAeN5U6S78jF1n8nCs5ioAdqvVn5f6GGTAnA93g_J0daOLw@mail.gmail.com>
+ <20200922095136.GA9682@chrisdown.name> <CAKRVAePisoOg8QBz11gPqzEoUdwPiJ-9Z9MyFE2LHzR-r+PseQ@mail.gmail.com>
+ <20200922104252.GB9682@chrisdown.name> <CAKRVAeOjST1vJsSXMgj91=tMf1MQTeNp_dz34z=DwL7Weh0bmg@mail.gmail.com>
+ <20200922124344.GA34296@chrisdown.name>
+In-Reply-To: <20200922124344.GA34296@chrisdown.name>
+From:   Chunxin Zang <zangchunxin@bytedance.com>
+Date:   Wed, 23 Sep 2020 10:35:29 +0800
+Message-ID: <CAKRVAeNCAVN4qOc57AU_-2dJ8sOT7p6JSO578aD0Seveuv0Rog@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm/memcontrol: Add the drop_cache
+ interface for cgroup v2
+To:     Chris Down <chris@chrisdown.name>
+Cc:     Michal Hocko <mhocko@suse.com>, Yafang Shao <laoar.shao@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, lizefan@huawei.com,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kafai@fb.com,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        andriin@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
+        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Forgot CC-ing Jerry, add him.
+On Tue, Sep 22, 2020 at 8:43 PM Chris Down <chris@chrisdown.name> wrote:
+>
+> Chunxin Zang writes:
+> >Please forgive me for not being able to understand why setting
+> >memory.low for Type_A can solve the problem.
+> >In my scene, Type_A is the most important, so I will set 100G to memory.low.
+> >But 'memory.low' only takes effect passively when the kernel is
+> >reclaiming memory. It means that reclaim Type_B's memory only when
+> >Type_A  in alloc memory slow path. This will affect Type_A's
+> >performance.
+> >We want to reclaim Type_B's memory in advance when A is expected to be busy.
+>
+> That's what kswapd reclaim is for, so this distinction is meaningless without
+> measurements :-)
 
-On 09/23/20 at 10:26am, Baoquan He wrote:
-> A regression failure of kdump kernel boot was reported on a HPE system.
-> Bisect points at commit 387caf0b759ac43 ("iommu/amd: Treat per-device
-> exclusion ranges as r/w unity-mapped regions") as criminal. Reverting it
-> fix the failure.
-> 
-> With the commit, kdump kernel will always print below error message, then
-> naturally AMD iommu can't function normally during kdump kernel bootup.
-> 
->   ~~~~~~~~~
->   AMD-Vi: [Firmware Bug]: IVRS invalid checksum
-> 
-> Why commit 387caf0b759ac43 causing it haven't been made clear.
+Thanks for these suggestions, I will give it a try.
 
-Hi Joerg, Adrian
-
-We only have one machine which can reproduce the issue, it's a gen10-01
-of HPE. If any log or info are needed, please let me know, I can attach
-here.
-
-Thanks
-Baoquan
-
-> 
-> From the commit log, a discussion thread link is pasted. In that discussion
-> thread, Adrian told the fix is for a system with already broken BIOS, and
-> Joerg suggested two options. Finally option 2) is taken. Maybe option 1)
-> should be the right approach?
-> 
->   1) Bail out and disable the IOMMU as the BIOS screwed up
->   2) Treat per-device exclusion ranges just as r/w unity-mapped
->      regions.
-> 
-> https://lists.linuxfoundation.org/pipermail/iommu/2019-November/040117.html
-> Signed-off-by: Baoquan He <bhe@redhat.com>
-> ---
->  drivers/iommu/amd/init.c | 21 +++++++++++++--------
->  1 file changed, 13 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
-> index 9aa1eae26634..bbe7ceae5949 100644
-> --- a/drivers/iommu/amd/init.c
-> +++ b/drivers/iommu/amd/init.c
-> @@ -1109,17 +1109,22 @@ static int __init add_early_maps(void)
->   */
->  static void __init set_device_exclusion_range(u16 devid, struct ivmd_header *m)
->  {
-> +	struct amd_iommu *iommu = amd_iommu_rlookup_table[devid];
-> +
->  	if (!(m->flags & IVMD_FLAG_EXCL_RANGE))
->  		return;
->  
-> -	/*
-> -	 * Treat per-device exclusion ranges as r/w unity-mapped regions
-> -	 * since some buggy BIOSes might lead to the overwritten exclusion
-> -	 * range (exclusion_start and exclusion_length members). This
-> -	 * happens when there are multiple exclusion ranges (IVMD entries)
-> -	 * defined in ACPI table.
-> -	 */
-> -	m->flags = (IVMD_FLAG_IW | IVMD_FLAG_IR | IVMD_FLAG_UNITY_MAP);
-> +	if (iommu) {
-> +		/*
-> +		 * We only can configure exclusion ranges per IOMMU, not
-> +		 * per device. But we can enable the exclusion range per
-> +		 * device. This is done here
-> +		 */
-> +		set_dev_entry_bit(devid, DEV_ENTRY_EX);
-> +		iommu->exclusion_start = m->range_start;
-> +		iommu->exclusion_length = m->range_length;
-> +	}
-> +
->  }
->  
->  /*
-> -- 
-> 2.17.2
-> 
-> _______________________________________________
-> iommu mailing list
-> iommu@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/iommu
-> 
-
+Best wishes
+Chunxin
