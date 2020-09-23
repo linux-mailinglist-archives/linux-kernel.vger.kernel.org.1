@@ -2,166 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0AAE276259
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D455F27625D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726610AbgIWUof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 16:44:35 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:47686 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726199AbgIWUof (ORCPT
+        id S1726766AbgIWUon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 16:44:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726199AbgIWUok (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 16:44:35 -0400
-X-Greylist: delayed 1561 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Sep 2020 16:44:34 EDT
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 0338129C28A
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Daniel Rosenberg <drosen@google.com>
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chao Yu <chao@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Richard Weinberger <richard@nod.at>,
-        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, kernel-team@android.com
-Subject: Re: [PATCH 3/5] libfs: Add generic function for setting dentry_ops
-Organization: Collabora
-References: <20200923010151.69506-1-drosen@google.com>
-        <20200923010151.69506-4-drosen@google.com>
-Date:   Wed, 23 Sep 2020 16:44:28 -0400
-In-Reply-To: <20200923010151.69506-4-drosen@google.com> (Daniel Rosenberg's
-        message of "Wed, 23 Sep 2020 01:01:49 +0000")
-Message-ID: <87ft785ikz.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        Wed, 23 Sep 2020 16:44:40 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 917BFC0613CE;
+        Wed, 23 Sep 2020 13:44:40 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id q13so1433020ejo.9;
+        Wed, 23 Sep 2020 13:44:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qpn8hjDvutcn1e+jBw6zUBymSgTIjijJ+0ANxSPq2AE=;
+        b=rOWaJv7B0Ln3TAEdcdZIZ1pZdSImREhUSCwQflW+ixAsTMSp2sNK/JslQx/MxbTCTy
+         OJoQkjGeoXX5809rJ7K8z1RGCei/fimQYg72M8KX9Qc/+xMhZcG10zhHSezxTB1mSV/z
+         g95arGTyMAH9oBIZtzanrB1xNpt0W20yvz8k4q14Pixwpd44jUD4iRu7m5LLTfYtwuZ1
+         hwnyjw+ulikLqVtJYEWmQkaw29XDpl844B1q8x214h1VKlJ4TABiaNnVdxaOMs+GF0UO
+         ZmQbJ5KgG3QnAWARjEekopYMCefXLoo3DmZ6aDmaJP4ijzE6GMRx7Vm0jMgTc+bYO/1t
+         Q4oQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qpn8hjDvutcn1e+jBw6zUBymSgTIjijJ+0ANxSPq2AE=;
+        b=MDv1Crexdx9U5ZTukN1+W1VUgStgjXjpsZwhqN4OMyfes4iSh3+n7NEhG8mOStKsJC
+         1FBkN2dCaOBl5P7rqFqA/z8XwLo0Dc7onNC12/u0oupGaFzXPocEf/a0KDxnBJsrWiP1
+         T8Bvhxac2fJMFVX514j+S1tdNlEDOZA1kc2EsY+7b6thd8VYJC6N1Api8aqDOdnpB8t/
+         ZApFAwSVkWBsnydLUKt/wdWrii5bhXnPJdC/cmTK7sJV9EhKtX2ITUv3fO7x6gRvW6S9
+         jMkfrxe5Om/PmwhzbPBSmyytuigNTbYTx56kGydyOTcKehkWL79K5OspJ463nxR4dw6g
+         JYSQ==
+X-Gm-Message-State: AOAM532mTNmrARQVzDeSKXZOPVZ9Z++y6CeRYxs2sGJwAzcPXW1WvDMN
+        zEN5xhat0vxCQdxOv0Nzi9KWmAvOQ34=
+X-Google-Smtp-Source: ABdhPJzOeV+5YIBD2oIqxQPECrAqPdT8HrHYmUmBrM51MbNKwQJeXLgTedTfnnxaxI4HY6Mp3KwtTw==
+X-Received: by 2002:a17:906:6a54:: with SMTP id n20mr1433973ejs.401.1600893878898;
+        Wed, 23 Sep 2020 13:44:38 -0700 (PDT)
+Received: from ?IPv6:2003:ea:8f23:5700:9dd1:2d79:8cda:7fd2? (p200300ea8f2357009dd12d798cda7fd2.dip0.t-ipconnect.de. [2003:ea:8f23:5700:9dd1:2d79:8cda:7fd2])
+        by smtp.googlemail.com with ESMTPSA id z16sm730519edr.56.2020.09.23.13.44.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Sep 2020 13:44:38 -0700 (PDT)
+Subject: Re: [PATCH] Revert "net: linkwatch: add check for netdevice being
+ present to linkwatch_do_dev"
+To:     David Miller <davem@davemloft.net>
+Cc:     saeed@kernel.org, geert+renesas@glider.be, f.fainelli@gmail.com,
+        andrew@lunn.ch, kuba@kernel.org, gaku.inami.xh@renesas.com,
+        yoshihiro.shimoda.uh@renesas.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <3d9176a6-c93e-481c-5877-786f5e6aaef8@gmail.com>
+ <28da797abe486e783547c60a25db44be0c030d86.camel@kernel.org>
+ <14f41724-ce45-c2c0-a49c-1e379dba0cb5@gmail.com>
+ <20200923.131529.637266321442993059.davem@davemloft.net>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <e6f50a85-aa25-5fb7-7fd2-158668d55378@gmail.com>
+Date:   Wed, 23 Sep 2020 22:44:30 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20200923.131529.637266321442993059.davem@davemloft.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Daniel Rosenberg <drosen@google.com> writes:
+On 23.09.2020 22:15, David Miller wrote:
+> From: Heiner Kallweit <hkallweit1@gmail.com>
+> Date: Wed, 23 Sep 2020 21:58:59 +0200
+> 
+>> On 23.09.2020 20:35, Saeed Mahameed wrote:
+>>> Why would a driver detach the device on ndo_stop() ?
+>>> seems like this is the bug you need to be chasing ..
+>>> which driver is doing this ? 
+>>>
+>> Some drivers set the device to PCI D3hot at the end of ndo_stop()
+>> to save power (using e.g. Runtime PM). Marking the device as detached
+>> makes clear to to the net core that the device isn't accessible any
+>> longer.
+> 
+> That being the case, the problem is that IFF_UP+!present is not a
+> valid netdev state.
+> 
+If this combination is invalid, then netif_device_detach() should
+clear IFF_UP? At a first glance this should be sufficient to avoid
+the issue I was dealing with.
 
-> This adds a function to set dentry operations at lookup time that will
-> work for both encrypted files and casefolded filenames.
->
-> A filesystem that supports both features simultaneously can use this
-> function during lookup preperations to set up its dentry operations once
-> fscrypt no longer does that itself.
->
-> Currently the casefolding dentry operation are always set because the
-> feature is toggleable on empty directories. Since we don't know what
-> set of functions we'll eventually need, and cannot change them later,
-> we add just add them.
->
-> Signed-off-by: Daniel Rosenberg <drosen@google.com>
-> ---
->  fs/libfs.c         | 49 ++++++++++++++++++++++++++++++++++++++++++++++
->  include/linux/fs.h |  1 +
->  2 files changed, 50 insertions(+)
->
-> diff --git a/fs/libfs.c b/fs/libfs.c
-> index fc34361c1489..83303858f1fe 100644
-> --- a/fs/libfs.c
-> +++ b/fs/libfs.c
-> @@ -1449,4 +1449,53 @@ int generic_ci_d_hash(const struct dentry *dentry, struct qstr *str)
->  	return 0;
->  }
->  EXPORT_SYMBOL(generic_ci_d_hash);
-> +
-> +static const struct dentry_operations generic_ci_dentry_ops = {
-> +	.d_hash = generic_ci_d_hash,
-> +	.d_compare = generic_ci_d_compare,
-> +};
-> +#endif
-> +
-> +#ifdef CONFIG_FS_ENCRYPTION
-> +static const struct dentry_operations generic_encrypted_dentry_ops = {
-> +	.d_revalidate = fscrypt_d_revalidate,
-> +};
-> +#endif
-> +
-> +#if IS_ENABLED(CONFIG_UNICODE) && IS_ENABLED(CONFIG_FS_ENCRYPTION)
-> +static const struct dentry_operations generic_encrypted_ci_dentry_ops = {
-> +	.d_hash = generic_ci_d_hash,
-> +	.d_compare = generic_ci_d_compare,
-> +	.d_revalidate = fscrypt_d_revalidate,
-> +};
-> +#endif
-> +
-> +/**
-> + * generic_set_encrypted_ci_d_ops - helper for setting d_ops for given dentry
-> + * @dentry:	dentry to set ops on
-> + *
-> + * This function sets the dentry ops for the given dentry to handle both
-> + * casefolding and encryption of the dentry name.
-> + */
-> +void generic_set_encrypted_ci_d_ops(struct dentry *dentry)
-> +{
-> +#ifdef CONFIG_FS_ENCRYPTION
-> +	if (dentry->d_flags & DCACHE_ENCRYPTED_NAME) {
-> +#ifdef CONFIG_UNICODE
-> +		if (dentry->d_sb->s_encoding) {
-> +			d_set_d_op(dentry, &generic_encrypted_ci_dentry_ops);
-> +			return;
-> +		}
->  #endif
-> +		d_set_d_op(dentry, &generic_encrypted_dentry_ops);
-> +		return;
-> +	}
-> +#endif
-> +#ifdef CONFIG_UNICODE
-> +	if (dentry->d_sb->s_encoding) {
-> +		d_set_d_op(dentry, &generic_ci_dentry_ops);
-> +		return;
-> +	}
-> +#endif
-> +}
-
-I think this is harder to read than necessary.  What do you think about
-just splitting the three cases like the following:
-
-void generic_set_encrypted_ci_d_ops(struct dentry *dentry) {
-
-#if defined(CONFIG_FS_ENCRYPTION) && defined(CONFIG_UNICODE)
-    if (encoding && encryption) {
-    	d_set_d_op(dentry, &generic_encrypted_ci_dentry_ops);
-            return;
-    }
-#endif
-
-#if defined (CONFIG_FS_ENCRYPTION)
-    if (encryption) {
-    	d_set_d_op(dentry, &generic_encrypted_dentry_ops);
-        return;
-    }
-#endif
-
-#if defined (CONFIG_UNICODE)
-    if (encoding) {
-    	d_set_d_op(dentry, &generic_ci_dentry_ops);
-        return;
-    }
-#endif
-}
-
-> +EXPORT_SYMBOL(generic_set_encrypted_ci_d_ops);
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index bc5417c61e12..6627896db835 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -3277,6 +3277,7 @@ extern int generic_ci_d_hash(const struct dentry *dentry, struct qstr *str);
->  extern int generic_ci_d_compare(const struct dentry *dentry, unsigned int len,
->  				const char *str, const struct qstr *name);
->  #endif
-> +extern void generic_set_encrypted_ci_d_ops(struct dentry *dentry);
->  
->  #ifdef CONFIG_MIGRATION
->  extern int buffer_migrate_page(struct address_space *,
-
--- 
-Gabriel Krisman Bertazi
+> Is it simply the issue that, upon resume, IFF_UP is marked true before
+> the device is brought out from D3hot state and thus marked as present
+> again?
+> 
+I can't really comment on that. The issue I was dealing with at the
+time I submitted this change was about an async linkwatch event
+(caused by powering down the PHY in ndo_stop) trying to access the
+device when it was powered down already.
