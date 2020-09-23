@@ -2,192 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42886275179
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 08:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49DAD27517C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 08:28:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726666AbgIWG1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 02:27:30 -0400
-Received: from mail-dm6nam10on2047.outbound.protection.outlook.com ([40.107.93.47]:64438
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726448AbgIWG13 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 02:27:29 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A0kSs2FycmMcV13/lJYFSPFtny5FZ7lTB3miueAskn2Q2Hi8BEiZdUtGrxOEO2oCOZnhWo7S1W1J7u/UdfdGAO6wD73wLM5CH9pNPQBrTNq3T7rTzo/DbeeqTKTLbcnAQ3oY9Iyg9wSe+phQ4dWcV5nzaL9/o2BK9t7GLaEBIOFn11nHQgSJjXXf9+mj2YpmR8GK5nlxnTw88uFd6AHeZX3exQ/WnDm52woIkJztYulrtk3Ok10bG7KWyIpTmpmt1U1V3GgOud4bLgb/qcR2uNgJ8D9fkci/bkH76rRTGvbN/268Py244ZvsfVYbzPLJP5i+Ty11m4o96ey6/WXfwA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6g2NAP3+8asfVz5TnwA65boSew3P9cr7EnSkkE+UHTY=;
- b=Q8MiRLM15YBQAeeLDE8DNTlyYt32kGwu9Bo2uLHK/t4IJb/fLVLhT7vMTUx+CnJMdgT4honpwMJnrPvlXzWlvysw/t8+l0VGAUoes6DI21qbxbqr/hdi9QekJU8Q+IqDqNRwXo1yyCVbIZLl4+eR5cVCgD/W9sbqa/t05BcYlisrIfLggIJLUBqZ/ZSLHYTnR1IQlHM1HETEgYwW1/rOEGD9lsCw3HWluKUU8a/NMIS3LEVNHHv9jaMP2q9U17FNj8CMrNnbDBWPTzPTODDVG+g2dOWQ2DExuazIQm/TQYIqJg7DHVLoOqxnG6yikAJbzueqztBl3QBFAHpkxU7/RQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6g2NAP3+8asfVz5TnwA65boSew3P9cr7EnSkkE+UHTY=;
- b=i6Va3w+flapu5hNu6aUt6zJx1WTkCg4ZrxmEiJr5tdKmVFl4OIBzKawLibp9GrBS/mdwC6qAqVUWuuVtSTUDBZfa0x+sWpP+e3cQ9UuV2hSabGJLEVZqfDTI5JehF2Mgx2VwIJM0L1YAhxvNrFDe0FCjxVkWSXS/CDaKDWbWwN0=
-Authentication-Results: ti.com; dkim=none (message not signed)
- header.d=none;ti.com; dmarc=none action=none header.from=synaptics.com;
-Received: from DM6PR03MB4555.namprd03.prod.outlook.com (2603:10b6:5:102::17)
- by DM6PR03MB5177.namprd03.prod.outlook.com (2603:10b6:5:22b::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.21; Wed, 23 Sep
- 2020 06:27:26 +0000
-Received: from DM6PR03MB4555.namprd03.prod.outlook.com
- ([fe80::e494:740f:155:4a38]) by DM6PR03MB4555.namprd03.prod.outlook.com
- ([fe80::e494:740f:155:4a38%7]) with mapi id 15.20.3391.027; Wed, 23 Sep 2020
- 06:27:26 +0000
-Date:   Wed, 23 Sep 2020 14:26:07 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Vidya Sagar <vidyas@nvidia.com>
-Cc:     linux-omap@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] PCI: dwc: Move allocate and map page for msi out of
- dw_pcie_msi_init()
-Message-ID: <20200923142607.10c89bd2@xhacker.debian>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: TY2PR02CA0002.apcprd02.prod.outlook.com
- (2603:1096:404:56::14) To DM6PR03MB4555.namprd03.prod.outlook.com
- (2603:10b6:5:102::17)
+        id S1726686AbgIWG2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 02:28:08 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:37954 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726448AbgIWG2I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 02:28:08 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08N6Rub1108395;
+        Wed, 23 Sep 2020 01:27:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600842476;
+        bh=J43iLKNMWm0OCcoOCQ2lfQNIz3v7B4TM6gJmz2s5NN8=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=xlbDUH03WEAizpY9xQ4JssbH3UlBBoVgmSXx2+12ohgr15LkjoUCUrxSV0wcqzw8V
+         lT8x2Lf1q1d90HpVt3hyWa2XPBgd9ddKO/WEkY/SaYBq+FJp0pbD6nXR9jAxNpIzap
+         dnYkb3YcPKNOy6SsOgTkAUBUrriZpQGt06Br2zII=
+Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08N6RuFO119638
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 23 Sep 2020 01:27:56 -0500
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 23
+ Sep 2020 01:27:56 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 23 Sep 2020 01:27:56 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08N6Rr7k076442;
+        Wed, 23 Sep 2020 01:27:54 -0500
+Subject: Re: linux-next: build warning after merge of the drm tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>
+CC:     Swapnil Jakhade <sjakhade@cadence.com>, Jyri Sarha <jsarha@ti.com>,
+        Quentin Schulz <quentin.schulz@free-electrons.com>,
+        Yuti Amonkar <yamonkar@cadence.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200923133601.293b4fe6@canb.auug.org.au>
+From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
+Message-ID: <f4581178-77b1-758b-84e5-4810ed0f46d1@ti.com>
+Date:   Wed, 23 Sep 2020 09:27:53 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (124.74.246.114) by TY2PR02CA0002.apcprd02.prod.outlook.com (2603:1096:404:56::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Wed, 23 Sep 2020 06:27:22 +0000
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-X-Originating-IP: [124.74.246.114]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a3b13486-19b8-45ce-3ad9-08d85f89bd23
-X-MS-TrafficTypeDiagnostic: DM6PR03MB5177:
-X-Microsoft-Antispam-PRVS: <DM6PR03MB51774770A19707EEFD3B90C7ED380@DM6PR03MB5177.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PJbmB6CgJ+ZmxBmazII9ZcpYOh36Yr00ZKjRw3WDmc7FPk8P6B1V7+b+h2v3mk+20p11Z39i1yB0o8GHZ7pYtqfjBztv9nh5BUVd5cH56lkvHrXvFIVBuUiV5x8RMJFmLlRYDKzjA1ISZQ+BkljbM7qK4fqxUPyEBYV120PsUaJ/3eQKn6tcK01LHj92Rm5r2OW4Dy6Q2IWSFJN0bJ2jkmdw0kvB0VET/rVFff8/TZTc1fLOQbu6NOjkQl4UUskIkd5pWnKgza4MAzaHsNbXREau+7Q3URGgMmc92Y4uI2Uz5rvWzGm9hWWhscFvMe6MaM20g81T5PbHkzAXYk7Qeg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB4555.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(366004)(39850400004)(136003)(396003)(9686003)(66556008)(66946007)(8936002)(16526019)(186003)(86362001)(2906002)(55016002)(83380400001)(66476007)(5660300002)(110136005)(1076003)(7416002)(316002)(6666004)(8676002)(4326008)(956004)(26005)(52116002)(7696005)(6506007)(478600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: WB4NM5eXdSP1/kgX5jflJXTPj67rRQjlpcXBQ9JaHxBW5u4siKIOqnDsJ9ZV3IZ9pw8ln7yW/dVOzVh00SV9Ofdj8wFLOa9bof2bnFBkBA5rpvd3XFB6JA73ZOh30LKjiW3swdO+5deeZmfG3N4wHGalLLcmFF+uz892+DJpz7XVKXvXl6kP12ZW1CiwIZeiIh+Qp/4oBzhIfCKvnQIEaZxpLd6EJR2u7S8U7ZBLGAnxyTc7T/TpoR/7o8jazMFUFzIhSk3vcKHpO2gLWiwobXdpbrx3s1Ecw9Tzz7x4v04cA4B0HAR3vo7yu6NnLH1NqI4LTmw93JlT/iN2GrWQuC3yHqeOAmbKGoHqDeakcgALinyH0xePX2r7GfpgQvDjx7rfu97llycojeamfXdA3ZIJ5GJby+PYcbsYqzP/J0hAbpcBoPMkrPxUBBf4+kE0xHPptYrmQRr9PXoFvaGZrbbhzX/OSqnyk639CEaUBPph4+vraWQvN6cWBjj5LNC73N45x6dnqm1ctrU0BDtw0qOShfV6aWWjQRB3fN7lkj4ip9MnlZh1jxXs7pMrFxRV8HWvJW6ItfqK9kfQLrbmbxK8gVQoWk2uxIXcOTXUKyXOn5ofgiL2a5OdNVyq6ENchJ2Y1lcRDv3eIfKRIjMLuA==
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a3b13486-19b8-45ce-3ad9-08d85f89bd23
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR03MB4555.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2020 06:27:26.5443
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cseE0HNz6h+rvsg8S4m060FhJPs7T5kj1vwhyt7o44AiPCUfxgpad2y/j+GA/buBT/8HC+Kcg4ERIU7OhqI+Zw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR03MB5177
+In-Reply-To: <20200923133601.293b4fe6@canb.auug.org.au>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, dw_pcie_msi_init() allocates and maps page for msi, then
-program the PCIE_MSI_ADDR_LO and PCIE_MSI_ADDR_HI. The Root Complex
-may lose power during suspend-to-RAM, so when we resume, we want to
-redo the latter but not the former. If designware based driver (for
-example, pcie-tegra194.c) calls dw_pcie_msi_init() in resume path, the
-previous msi page will be leaked.
+Hi Stephen,
 
-Move the allocate and map msi page from dw_pcie_msi_init() to
-dw_pcie_host_init() to fix this problem.
+On 23/09/2020 06:36, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the drm tree, today's linux-next build (x86_64 allmodconfig)
+> produced this warning:
+> 
+> drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c: In function 'cdns_mhdp_fw_activate':
+> drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c:751:10: warning: conversion from 'long unsigned int' to 'unsigned int' changes value from '18446744073709551613' to '4294967293' [-Woverflow]
+>   751 |   writel(~CDNS_APB_INT_MASK_SW_EVENT_INT,
+> drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c: In function 'cdns_mhdp_attach':
+> drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c:1692:10: warning: conversion from 'long unsigned int' to 'unsigned int' changes value from '18446744073709551613' to '4294967293' [-Woverflow]
+>  1692 |   writel(~CDNS_APB_INT_MASK_SW_EVENT_INT,
+> drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c: In function 'cdns_mhdp_bridge_hpd_enable':
+> drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c:2125:10: warning: conversion from 'long unsigned int' to 'unsigned int' changes value from '18446744073709551613' to '4294967293' [-Woverflow]
+>  2125 |   writel(~CDNS_APB_INT_MASK_SW_EVENT_INT,
+> 
+> Introduced by commit
+> 
+>   fb43aa0acdfd ("drm: bridge: Add support for Cadence MHDP8546 DPI/DP bridge")
+> 
 
-Fixes: 56e15a238d92 ("PCI: tegra: Add Tegra194 PCIe support")
-Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
----
- drivers/pci/controller/dwc/pci-dra7xx.c       | 18 ++++++++++++-
- .../pci/controller/dwc/pcie-designware-host.c | 27 +++++++++----------
- 2 files changed, 30 insertions(+), 15 deletions(-)
+Thanks. I think we can just do:
 
-diff --git a/drivers/pci/controller/dwc/pci-dra7xx.c b/drivers/pci/controller/dwc/pci-dra7xx.c
-index dc387724cf08..4301cf844a4c 100644
---- a/drivers/pci/controller/dwc/pci-dra7xx.c
-+++ b/drivers/pci/controller/dwc/pci-dra7xx.c
-@@ -490,7 +490,9 @@ static struct irq_chip dra7xx_pci_msi_bottom_irq_chip = {
- static int dra7xx_pcie_msi_host_init(struct pcie_port *pp)
- {
- 	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-+	struct device *dev = pci->dev;
- 	u32 ctrl, num_ctrls;
-+	int ret;
+diff --git a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
+index 621ebdbff8a3..d0c65610ebb5 100644
+--- a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
++++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
+@@ -748,7 +748,7 @@ static int cdns_mhdp_fw_activate(const struct firmware *fw,
+ 	 * bridge should already be detached.
+ 	 */
+ 	if (mhdp->bridge_attached)
+-		writel(~CDNS_APB_INT_MASK_SW_EVENT_INT,
++		writel(~(u32)CDNS_APB_INT_MASK_SW_EVENT_INT,
+ 		       mhdp->regs + CDNS_APB_INT_MASK);
  
- 	pp->msi_irq_chip = &dra7xx_pci_msi_bottom_irq_chip;
+ 	spin_unlock(&mhdp->start_lock);
+@@ -1689,7 +1689,7 @@ static int cdns_mhdp_attach(struct drm_bridge *bridge,
  
-@@ -506,7 +508,21 @@ static int dra7xx_pcie_msi_host_init(struct pcie_port *pp)
- 				    ~0);
- 	}
+ 	/* Enable SW event interrupts */
+ 	if (hw_ready)
+-		writel(~CDNS_APB_INT_MASK_SW_EVENT_INT,
++		writel(~(u32)CDNS_APB_INT_MASK_SW_EVENT_INT,
+ 		       mhdp->regs + CDNS_APB_INT_MASK);
  
--	return dw_pcie_allocate_domains(pp);
-+	ret = dw_pcie_allocate_domains(pp);
-+	if (ret)
-+		return ret;
-+
-+	pp->msi_page = alloc_page(GFP_KERNEL);
-+	pp->msi_data = dma_map_page(dev, pp->msi_page, 0, PAGE_SIZE,
-+				    DMA_FROM_DEVICE);
-+	ret = dma_mapping_error(dev, pp->msi_data);
-+	if (ret) {
-+		dev_err(dev, "Failed to map MSI data\n");
-+		__free_page(pp->msi_page);
-+		pp->msi_page = NULL;
-+		dw_pcie_free_msi(pp);
-+	}
-+	return ret;
+ 	return 0;
+@@ -2122,7 +2122,7 @@ static void cdns_mhdp_bridge_hpd_enable(struct drm_bridge *bridge)
+ 
+ 	/* Enable SW event interrupts */
+ 	if (mhdp->bridge_attached)
+-		writel(~CDNS_APB_INT_MASK_SW_EVENT_INT,
++		writel(~(u32)CDNS_APB_INT_MASK_SW_EVENT_INT,
+ 		       mhdp->regs + CDNS_APB_INT_MASK);
  }
- 
- static const struct dw_pcie_host_ops dra7xx_pcie_host_ops = {
-diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-index 9dafecba347f..c23ba64f64fe 100644
---- a/drivers/pci/controller/dwc/pcie-designware-host.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-@@ -294,20 +294,7 @@ void dw_pcie_free_msi(struct pcie_port *pp)
- 
- void dw_pcie_msi_init(struct pcie_port *pp)
- {
--	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
--	struct device *dev = pci->dev;
--	u64 msi_target;
--
--	pp->msi_page = alloc_page(GFP_KERNEL);
--	pp->msi_data = dma_map_page(dev, pp->msi_page, 0, PAGE_SIZE,
--				    DMA_FROM_DEVICE);
--	if (dma_mapping_error(dev, pp->msi_data)) {
--		dev_err(dev, "Failed to map MSI data\n");
--		__free_page(pp->msi_page);
--		pp->msi_page = NULL;
--		return;
--	}
--	msi_target = (u64)pp->msi_data;
-+	u64 msi_target = (u64)pp->msi_data;
- 
- 	/* Program the msi_data */
- 	dw_pcie_wr_own_conf(pp, PCIE_MSI_ADDR_LO, 4,
-@@ -440,6 +427,18 @@ int dw_pcie_host_init(struct pcie_port *pp)
- 				irq_set_chained_handler_and_data(pp->msi_irq,
- 							    dw_chained_msi_isr,
- 							    pp);
-+
-+			pp->msi_page = alloc_page(GFP_KERNEL);
-+			pp->msi_data = dma_map_page(pci->dev, pp->msi_page,
-+						    0, PAGE_SIZE,
-+						    DMA_FROM_DEVICE);
-+			ret = dma_mapping_error(pci->dev, pp->msi_data);
-+			if (ret) {
-+				dev_err(pci->dev, "Failed to map MSI data\n");
-+				__free_page(pp->msi_page);
-+				pp->msi_page = NULL;
-+				goto err_free_msi;
-+			}
- 		} else {
- 			ret = pp->ops->msi_host_init(pp);
- 			if (ret < 0)
--- 
-2.28.0
 
+I'll send a patch.
+
+ Tomi
+
+-- 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
