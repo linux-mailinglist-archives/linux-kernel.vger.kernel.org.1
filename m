@@ -2,98 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A60A276129
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 21:37:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27C1227612C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 21:37:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726600AbgIWThF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 15:37:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52814 "EHLO
+        id S1726632AbgIWThu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 15:37:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726156AbgIWThE (ORCPT
+        with ESMTP id S1726265AbgIWThu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 15:37:04 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61536C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 12:37:04 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id c8so970777edv.5
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 12:37:04 -0700 (PDT)
+        Wed, 23 Sep 2020 15:37:50 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCAAFC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 12:37:49 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id 77so1233811lfj.0
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 12:37:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ZhTN/zF31S3H73HPCKb3e4Pv+khCuz2VHHdotx6ZYSw=;
-        b=iFiGFu8pbys6JAjMMTxyy3sCwG8u9tjCXd6yHSAr/BFnm4SczX1ZtKNU8EpLTnclh+
-         qtBVU0EzenOZeE38AMHXxsn8wueskp6zXjl6DOQRIB+TbJWVgrFZ34NHwKGdYZQRo9gW
-         /M1YXAcnj9s10s5JbQEH7tYpOS4DpS2BwWtSOGY5A7mbqFIJKHlw8tzmy6H12Czqta/O
-         KfOqcY2lWd1PeGX2MMYNXsArcrreL/VPpr7UfyPRUFChSleQICkD8BPE9FJVE6l6lxoM
-         h4pbj7N5ppKI4VmUiwMiPHz3iUWFY/rDz+jRqRoVMUuZfYEvBHhOSmNaagAZelJZgksQ
-         CAUQ==
+        bh=hcIspOz/xBFrhTBGUdPvbW8fyFPh/S83Nv87zjRg0X4=;
+        b=HiOf6Frb3msBXibmsvCbJwZbkQY7kDjQTspDr8g6tOESvCgg0fWnhSjB3U8Y5f5qQq
+         REG4i0JcYRqtw9yn+QnSOHyMw8weTSZl8IccFH5UZsP4MDZLjvFximMh3JefbS8B7HCX
+         IiBULzVd4XBWT6ddpbh/gfOj15yege25LYJmKvjEEVaioYYiTXQehedcp3WBQOJG4nMe
+         wB9DFza2VrdxRn/00+LULSkiVNiQWAQu8JTuu3ueiNXqV24GetRRKuqw4KKCsWXqNTsL
+         TSEwqYCjcwNUSEeUYexd3bBy3ihCNOMILCshsTwsV4GMH0cSDisTbJdCfWXDPR0u1Qs+
+         phDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ZhTN/zF31S3H73HPCKb3e4Pv+khCuz2VHHdotx6ZYSw=;
-        b=Vzu3VDk13RkTeW/mcR2ViQDeVl/RdLa9gJUMPPk2OaYDpqmFA56jnF6/00Pj8WELH4
-         wDk/VhHZBRlTqjuaUa+836MIDhjUAT3YWyAJVBSOB4Nh57lXzYodjmpd7ymfPo3aa0Ys
-         taoQnTh3k/1TJ3MXLGj+e5N2e4edF43JgjJS/QqEoOeGWTtUZj4dlgKVxdKcsWF1uCuw
-         ehaR5vMC/9SecyHwLzzmeThx+1AalARTNjS2B0PK43z84gR9JwmxF/MBZbhrYoftRFva
-         1Dlw7bcPsGMbH2eWCrv6u2CvQQj0cVplod9JrH5dbLs7RLoHcOqOiKz4oTSfU1+Ohkxn
-         ScGQ==
-X-Gm-Message-State: AOAM531s1KqnMFRcXfiIOF2TNpBYAMdBOZ77R9nbQRGJPSr9W5euQEJW
-        ip9AtpSHRx/DrOjoBHQuwy6NUCdp3m+hzFj/5ae0BA==
-X-Google-Smtp-Source: ABdhPJwxL8t/f0IlrUIgV2vLNSjsEAdBJedhsaj4BZRksV352WWXQOg4cG9Xbvn9QloFbST5xfIyt+EYDNLvM/9Hrko=
-X-Received: by 2002:a05:6402:cba:: with SMTP id cn26mr951357edb.230.1600889822817;
- Wed, 23 Sep 2020 12:37:02 -0700 (PDT)
+        bh=hcIspOz/xBFrhTBGUdPvbW8fyFPh/S83Nv87zjRg0X4=;
+        b=kWijOy/0IPJVvmKjSldKu5owGOXDCEZ8ZB0OULSg97g1SyAQw9u+KlKooIMKgdmdLS
+         sKHzPjgOqL5ifhdQUIX0dXjuGD0MOUsb+ddgXXUyLkkQvxIMquVXhMyEhC0arfFlZko/
+         P+DVzC6x4CT2YTtxH6ME8jrUH/LwhGnJ3RnsTxKOLsYz6vX/pPe77kYoWPhqkYqGmscg
+         Hz+JgwPbi921x5N5l48k4Nrqg0WmfR+Zx4IXM+shDlZjvc7yQgK48vVazlpUbAsM716Q
+         fHT2OjBxec5ffMbuzMKoFed5g2b9ujVDR6HeTRrwRuJsOcn2calcDbsBq9yPGygnqaYs
+         douw==
+X-Gm-Message-State: AOAM5324xv3FEOm71RzapBDrHxSyPk8i1uKPlUTJH6+NlFcBdgvaCCMD
+        qt5Vd74KGq8gxdBtLwDTEtbQFcsbWxErmVUVo819iA==
+X-Google-Smtp-Source: ABdhPJwlkgQ9rjroTywAXtYnjoLLwDs82fzdzYgJhTnxhUz5cih/2XEnx+yR6xzh87LjbyI/IPZ6wagvb27yEMBkCR8=
+X-Received: by 2002:a19:8906:: with SMTP id l6mr496502lfd.136.1600889867707;
+ Wed, 23 Sep 2020 12:37:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <87pn6eb5tv.fsf@nanos.tec.linutronix.de> <202009231209.F5F3999D@keescook>
-In-Reply-To: <202009231209.F5F3999D@keescook>
-From:   Jann Horn <jannh@google.com>
-Date:   Wed, 23 Sep 2020 21:36:36 +0200
-Message-ID: <CAG48ez0mvWm0TZbeSuXhcST-0HR8=psG_Bk0HeOtxF-RQnEGPg@mail.gmail.com>
-Subject: Re: x86/irq: Make run_on_irqstack_cond() typesafe
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>
+References: <20200923184803.192265-1-gregkh@linuxfoundation.org>
+In-Reply-To: <20200923184803.192265-1-gregkh@linuxfoundation.org>
+From:   Rajat Jain <rajatja@google.com>
+Date:   Wed, 23 Sep 2020 12:37:10 -0700
+Message-ID: <CACK8Z6FKgtFQU+0j1PMGqEwSi_9x9v-jJFFB4k5Ok-FCjpqVMw@mail.gmail.com>
+Subject: Re: [PATCH] platform/x86: intel_pmc_core: do not create a static
+ struct device
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Bhardwaj, Rajneesh" <rajneesh.bhardwaj@intel.com>,
+        Vishwanath Somayaji <vishwanath.somayaji@intel.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 9:20 PM Kees Cook <keescook@chromium.org> wrote:
-> On Tue, Sep 22, 2020 at 09:58:52AM +0200, Thomas Gleixner wrote:
-> > -void asm_call_on_stack(void *sp, void *func, void *arg);
-> > +void asm_call_on_stack(void *sp, void (*func)(void), void *arg);
-> > +void asm_call_sysvec_on_stack(void *sp, void (*func)(struct pt_regs *regs),
-> > +                           struct pt_regs *regs);
-> > +void asm_call_irq_on_stack(void *sp, void (*func)(struct irq_desc *desc),
-> > +                        struct irq_desc *desc);
+On Wed, Sep 23, 2020 at 11:47 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> Eeeh, err. So, this is nice for the CFI case, but can we instead just
-> inline asm_call_on_stack() instead? Having any of these as distinct
-> functions in the kernel is really not safe: it provides a trivial
-> global stack-pivot[1] function for use in ROP attacks, which is one
-> of the central requirements for mounting such attacks. This allows a
-> completely arbitrary sp argument, function, and first argument. :(
+> A struct device is a dynamic structure, with reference counting.
+> "Tricking" the kernel to make a dynamic structure static, by working
+> around the driver core release detection logic, is not nice.
 >
-> Much better would be to keep asm_call_on_stack() as an inline so the
-> stack pointer is always coming from percpu variables, and to have the
-> irq_count actually checked (i.e. freak out if it falls below zero to
-> catch jumps into the middle of a function when an attempt to bypass the
-> load from the percpu area happens). I would expect this form to be much
-> robust:
+> Because of this, this code has been used as an example for others on
+> "how to do things", which is just about the worst thing possible to have
+> happen.
 >
-> inc
-> load sp from per-cpu
-> pivot sp
-> make call
-> restore sp
-> WARN(dec_and_test)
+> Fix this all up by making the platform device dynamic and providing a
+> real release function.
+>
+> Cc: Rajneesh Bhardwaj <rajneesh.bhardwaj@intel.com>
+> Cc: Vishwanath Somayaji <vishwanath.somayaji@intel.com>
+> Cc: Darren Hart <dvhart@infradead.org>
+> Cc: Andy Shevchenko <andy@infradead.org>
+> Cc: Rajat Jain <rajatja@google.com>
+> Cc: platform-driver-x86@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Reported-by: Maximilian Luz <luzmaximilian@gmail.com>
+> Fixes: b02f6a2ef0a1 ("platform/x86: intel_pmc_core: Attach using APCI HID "INT33A1"")
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-I don't see the point. If you can already jump to arbitrary kernel
-instructions, I would be extremely surprised if you could't find some
-other way to get full kernel read/write. Even just jumping to the
-epilogue of some function that increments the stack pointer and then
-tries to return (maybe even after loading RBP from that spot on the
-stack) will probably get you quite far.
+Acked-by: Rajat Jain <rajatja@google.com>
+
+> ---
+>  drivers/platform/x86/intel_pmc_core_pltdrv.c | 26 +++++++++++++-------
+>  1 file changed, 17 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/platform/x86/intel_pmc_core_pltdrv.c b/drivers/platform/x86/intel_pmc_core_pltdrv.c
+> index 731281855cc8..73797680b895 100644
+> --- a/drivers/platform/x86/intel_pmc_core_pltdrv.c
+> +++ b/drivers/platform/x86/intel_pmc_core_pltdrv.c
+> @@ -20,15 +20,10 @@
+>
+>  static void intel_pmc_core_release(struct device *dev)
+>  {
+> -       /* Nothing to do. */
+> +       kfree(dev);
+>  }
+>
+> -static struct platform_device pmc_core_device = {
+> -       .name = "intel_pmc_core",
+> -       .dev  = {
+> -               .release = intel_pmc_core_release,
+> -       },
+> -};
+> +static struct platform_device *pmc_core_device;
+>
+>  /*
+>   * intel_pmc_core_platform_ids is the list of platforms where we want to
+> @@ -52,6 +47,8 @@ MODULE_DEVICE_TABLE(x86cpu, intel_pmc_core_platform_ids);
+>
+>  static int __init pmc_core_platform_init(void)
+>  {
+> +       int retval;
+> +
+>         /* Skip creating the platform device if ACPI already has a device */
+>         if (acpi_dev_present("INT33A1", NULL, -1))
+>                 return -ENODEV;
+> @@ -59,12 +56,23 @@ static int __init pmc_core_platform_init(void)
+>         if (!x86_match_cpu(intel_pmc_core_platform_ids))
+>                 return -ENODEV;
+>
+> -       return platform_device_register(&pmc_core_device);
+> +       pmc_core_device = kzalloc(sizeof(*pmc_core_device), GFP_KERNEL);
+> +       if (!pmc_core_device)
+> +               return -ENOMEM;
+> +
+> +       pmc_core_device->name = "intel_pmc_core";
+> +       pmc_core_device->dev.release = intel_pmc_core_release;
+> +
+> +       retval = platform_device_register(pmc_core_device);
+> +       if (retval)
+> +               kfree(pmc_core_device);
+> +
+> +       return retval;
+>  }
+>
+>  static void __exit pmc_core_platform_exit(void)
+>  {
+> -       platform_device_unregister(&pmc_core_device);
+> +       platform_device_unregister(pmc_core_device);
+>  }
+>
+>  module_init(pmc_core_platform_init);
+> --
+> 2.28.0
+>
