@@ -2,96 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 353A7275E91
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 19:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A98B275E98
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 19:27:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726723AbgIWR0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 13:26:48 -0400
-Received: from mga14.intel.com ([192.55.52.115]:2454 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726413AbgIWR0s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 13:26:48 -0400
-IronPort-SDR: VH9o6JVYXgLsEneQCkF8j1STLfjAz9xDIjfwFHV4QbB/pm9erjKyXWO5lQG6Wvisqfb6pt0DoC
- 8GfkS8qieCNw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="160251105"
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="160251105"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 10:26:47 -0700
-IronPort-SDR: ey9SEz/jSNaz0OtMzWULGxth9YBvWEynGLnavUxHtQq2r16MsoeDfOaVHdAf9zM8fjL9NTqBRV
- uvqiUNKNCA6g==
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="486522044"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 10:26:47 -0700
-Date:   Wed, 23 Sep 2020 10:26:46 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Cfir Cohen <cfir@google.com>,
-        "kvm @ vger . kernel . org" <kvm@vger.kernel.org>,
-        Lendacky Thomas <thomas.lendacky@amd.com>,
-        Singh Brijesh <brijesh.singh@amd.com>,
-        Grimm Jon <Jon.Grimm@amd.com>,
-        David Rientjes <rientjes@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: SVM: Mark SEV launch secret pages as dirty.
-Message-ID: <20200923172646.GB32044@linux.intel.com>
-References: <20200807012303.3769170-1-cfir@google.com>
- <20200919045505.GC21189@sjchrist-ice>
- <5ac77c46-88b4-df45-4f02-72adfb096262@redhat.com>
- <20200923170444.GA20076@linux.intel.com>
- <548b7b73-7a13-8267-414e-2b9e1569c7f7@redhat.com>
+        id S1726748AbgIWR1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 13:27:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726422AbgIWR1m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 13:27:42 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92609C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 10:27:41 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id t16so586533edw.7
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 10:27:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=anholt-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=d6g3455a1ScXUcd3tlYPR8Jrde6qF+MAZeft9+wDWRA=;
+        b=hu1UKjWI/j63BvQfyfhnjAt2MIGqGjhgOYGhUlIK/c5GtE/t6U0bB63jEklyVsiEVK
+         QvYvmlIZ8R7ZUEW5yefPR5rCmjnDrJ3PRjQq3rGKBAhEgOiMQ2lnFxBKH+DJOEJeU5TY
+         86AhQykHhXwNxla1e7leyKsS/K/+yyzpKR782c6UWn3RmAsnjglghfsKOgYT+pO7pY1u
+         XSW/8h4gG6vxtRgg6xoGr0i2GyPHWzQFzkAVqBmdLJMfaxhrKUJ5FfzqyHPKXiRD5hrw
+         +TFnK7HvyPmaLgDg0YIpah+LgYEwf7X5VSWvWKcEA+6IkAaIM+8rDPdfS12WT1j+biQC
+         MxeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=d6g3455a1ScXUcd3tlYPR8Jrde6qF+MAZeft9+wDWRA=;
+        b=A6neJB9744rZTbb9fdoxmT5NMgeHus/i+2uWuKzCGnsFoKMT+fWGmfC9dpIQ/2wGvU
+         LjLd7qGv8Iult9niEcApDsSFQyrJISMFZoLARBTLfh/87HkFYGSTwOi3+RtU15VqePSR
+         8inOitA8c9mEavJaiqYotLhHhnvkwjUQlnS2qs59oGAxXf7n9UkwXYZ7So5pE3QdVs+/
+         hzwQ1TuE2TK0q0COkX7dxtyB0guICXxWXw81kTAkud5tXrdQPixMC+8mdIjas2t2UikH
+         RpA6AsUE6G2486ZrZNiFcJ1/1hyec4m3GBjQHq4F5/gTzLjMwnhx9mHmiHhv5Lq+7upg
+         zBlw==
+X-Gm-Message-State: AOAM5303qHZq1Nys5Zf9iADp3Y6yoYh281PFBZfBzgqjq1EyAech1dtc
+        j9kY8tiabupVTxgaN+9GS6JrhaqgnBHEE8sViYMn0Q==
+X-Google-Smtp-Source: ABdhPJwOTvYnWv6mTh5YpDJfYxsxrb5ts1bwRu37E6frcI1J1gT5JzJQ1OeOxJYtayHtad2amfiBfqNoPXP6jSiHTiA=
+X-Received: by 2002:aa7:db47:: with SMTP id n7mr362463edt.315.1600882060116;
+ Wed, 23 Sep 2020 10:27:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <548b7b73-7a13-8267-414e-2b9e1569c7f7@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <1600774764-50332-1-git-send-email-liheng40@huawei.com> <CAPY8ntCnsD=LfqxSG-HrkY1ZjUPSaXbGKC=nc4Xkc7a+a7jF3w@mail.gmail.com>
+In-Reply-To: <CAPY8ntCnsD=LfqxSG-HrkY1ZjUPSaXbGKC=nc4Xkc7a+a7jF3w@mail.gmail.com>
+From:   Eric Anholt <eric@anholt.net>
+Date:   Wed, 23 Sep 2020 10:27:29 -0700
+Message-ID: <CADaigPWBgjRPq54_swpEmvHxPB0mY-FdzJpbeWO+1O23BV_zwg@mail.gmail.com>
+Subject: Re: [PATCH -next] drm/v3d: Remove set but not used variable
+To:     Dave Stevenson <dave.stevenson@raspberrypi.com>
+Cc:     Li Heng <liheng40@huawei.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 07:16:08PM +0200, Paolo Bonzini wrote:
-> On 23/09/20 19:04, Sean Christopherson wrote:
-> >> Two of the three instances are a bit different though.  What about this
-> >> which at least shortens the comment to 2 fewer lines:
-> > Any objection to changing those to "Flush (on non-coherent CPUs)"?  I agree
-> > it would be helpful to call out the details, especially for DBG_*, but I
-> > don't like that it reads as if the flush is unconditional.
-> 
-> Hmm... It's already fairly long lines so that would wrap to 3 lines, and
+On Wed, Sep 23, 2020 at 6:13 AM Dave Stevenson
+<dave.stevenson@raspberrypi.com> wrote:
+>
+> Hi
+>
+> On Wed, 23 Sep 2020 at 08:53, Li Heng <liheng40@huawei.com> wrote:
+> >
+> > This addresses the following gcc warning with "make W=3D1":
+> >
+> > drivers/gpu/drm/v3d/v3d_drv.c:73:32: warning:
+> > =E2=80=98v3d_v3d_pm_ops=E2=80=99 defined but not used [-Wunused-const-v=
+ariable=3D]
+> >
+> > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > Signed-off-by: Li Heng <liheng40@huawei.com>
+> > ---
+> >  drivers/gpu/drm/v3d/v3d_drv.c | 4 ----
+> >  1 file changed, 4 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/v3d/v3d_drv.c b/drivers/gpu/drm/v3d/v3d_dr=
+v.c
+> > index 9f7c261..05140db 100644
+> > --- a/drivers/gpu/drm/v3d/v3d_drv.c
+> > +++ b/drivers/gpu/drm/v3d/v3d_drv.c
+> > @@ -70,10 +70,6 @@ static int v3d_runtime_resume(struct device *dev)
+> >  }
+> >  #endif
+> >
+> > -static const struct dev_pm_ops v3d_v3d_pm_ops =3D {
+> > -       SET_RUNTIME_PM_OPS(v3d_runtime_suspend, v3d_runtime_resume, NUL=
+L)
+> > -};
+> > -
+>
+> This looks to be the wrong approach, and I think a patch has got
+> dropped somewhere.
+>
+> On our Raspberry Pi downstream vendor tree we have a patch [1] from
+> Eric that renames v3d_v3d_pm_ops to v3d_pm_ops (don't need the
+> duplicated suffix), and adds it to v3d_platform_driver. Why that never
+> made it through the mainline trees I don't know.
+>
+> Eric: How good's your memory on this one?
 
-Dang, I was hoping it would squeeze into 2.
-
-> the reference to the conditional flush wasn't there before either.
-
-Well, the flush wasn't conditional before (ignoring the NULL check).
- 
-> sev_clflush_pages could be a better place to mention that (or perhaps
-> it's self-explanatory).
-
-I agree, but with
-
-	/*
-	 * Flush before LAUNCH_UPDATE encrypts pages in place, in case the cache
-	 * contains the data that was written unencrypted.
- 	 */
- 	sev_clflush_pages(inpages, npages);
-
-there's nothing in the comment or code that even suggests sev_clflush_pages() is
-conditional, i.e. no reason for the reader to peek at the implemenation.
-
-What about:
-
-	/*
-	 * Flush (on non-coherent CPUs) before LAUNCH_UPDATE encrypts pages in
-	 * place, the cache may contain data that was written unencrypted.
-	 */
+The RPM stuff ended up abandoned because I didn't have any support in
+debugging the power domain driver and I punted for a downstream hack.
+We should at least be using these ops, though.
