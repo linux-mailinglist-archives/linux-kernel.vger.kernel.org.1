@@ -2,87 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37F0927617B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 21:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D06276180
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 21:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726515AbgIWT4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 15:56:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43586 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726199AbgIWT4T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 15:56:19 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AA4292193E;
-        Wed, 23 Sep 2020 19:56:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600890979;
-        bh=mxvUIgxbMdOtM98Zj0ZF4L5vRovN1v+avpv1s/xqETk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=0Hg7LsU8BJaPaTkZjRyO168stZhxPxy5L+BIuGGKVpPqKebCgwK35jGTbQ/fFiZpj
-         lnQqnysuvnqBYqfeu84vA9XijGkgbLex6ar7JAkqJ1NvPisVPQ8OpaWJSow79mtI+J
-         FnYrp6EVr8WRm7CbIzbkuru4hwgQNPSkO5/KFaHU=
-Date:   Wed, 23 Sep 2020 20:56:13 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Kamel Bouhara <kamel.bouhara@bootlin.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] counter: microchip-tcb-capture: Constify mchp_tc_ops
-Message-ID: <20200923205613.74061332@archlinux>
-In-Reply-To: <20200923014838.GA3267@shinobu>
-References: <20200922201941.41328-1-rikard.falkeborn@gmail.com>
-        <20200923014838.GA3267@shinobu>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726613AbgIWT7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 15:59:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726199AbgIWT7K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 15:59:10 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C673C0613CE;
+        Wed, 23 Sep 2020 12:59:10 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id x14so1275926wrl.12;
+        Wed, 23 Sep 2020 12:59:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wmckwTRXRvwQPVN9iH8EtFcdLmuwcKJsSJQfHvWc6QA=;
+        b=o84bTiU0vqCk8XXCH5L4VxLBL1T+vJsaC4axNiyRlTtxnhGFoJ6Zn6OW9PJpWWkVMM
+         /7KCWAkro1wKfRJtBI9RuTvp1vjAJ9v3Ov1/DZTqhlqaJa4l2OXpXy2B/zTwcYHalCGb
+         ACCiOmXDpXRZEbpdWtjJxtfHLYP0mCg/FJRlFvbG4zLKJCKqbX8JSY3G38ZVQ4KchUNw
+         KfYuwgMb1G7yd4Rp0q1KjPjD3LWn/jz7MYZbmx9FPwDiCISI1aPceUn0XbBr/yMwXnLK
+         TgihhXGO8OX/KUDlspz4F8n5aobr2BbGgCf+IgaM2kwTLYza1CJoOcclOLcLUlvD7d8L
+         MEGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wmckwTRXRvwQPVN9iH8EtFcdLmuwcKJsSJQfHvWc6QA=;
+        b=oIqQsVmrYxPWRLvsfLkTaMKeQqNcoaHIeiMzitp9WzqneGDKjCksGJX8keQzgSRSb5
+         1U+mJOLR3e+eE4ot8iyq123+SQ5bwTaVLtKEaQVQujbvmmBI2lADO50Y/ffndPeCuvu+
+         NRyigNKgZYhYXmB5+cNDq9Q+iyDKxBbzI84afH6pILxsS5rs2N5QiAxicrql2FbHoRq8
+         uZyI6tlmHgZRouPEqnPm9qTwscN6PrTCgqQhyKzWYVRmZLS/823tFTNqLDbpcQ9TsmL2
+         K+GuM2RsUXqXWex+rO02R3/PPKj/xJhRkeV2Ea4YuMc585j7CSSuJXK8honuDNVL4FvL
+         uZQg==
+X-Gm-Message-State: AOAM532W5Ave3/IwtHCnz5RwVoGAQ/O4WzklrgXkQ0iaSP32OMt9zr0U
+        ctsTFLFQrwzoZuNQP6Wj5vTMuh6RgWU=
+X-Google-Smtp-Source: ABdhPJy2z/Hrts/zKxyRH/xTHeWNyCPxMQZw5ecoJ/QD4Prcgxb8eBJLN8/cP/vkQSC9Z3I6ycjNAw==
+X-Received: by 2002:adf:fa52:: with SMTP id y18mr1339142wrr.264.1600891147751;
+        Wed, 23 Sep 2020 12:59:07 -0700 (PDT)
+Received: from ?IPv6:2003:ea:8f23:5700:9dd1:2d79:8cda:7fd2? (p200300ea8f2357009dd12d798cda7fd2.dip0.t-ipconnect.de. [2003:ea:8f23:5700:9dd1:2d79:8cda:7fd2])
+        by smtp.googlemail.com with ESMTPSA id v17sm1044439wrc.23.2020.09.23.12.59.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Sep 2020 12:59:07 -0700 (PDT)
+Subject: Re: [PATCH] Revert "net: linkwatch: add check for netdevice being
+ present to linkwatch_do_dev"
+To:     Saeed Mahameed <saeed@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Gaku Inami <gaku.inami.xh@renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200901150237.15302-1-geert+renesas@glider.be>
+ <7bfebfdc0d7345c4612124ff00e20eebb0ff6cd9.camel@kernel.org>
+ <3d9176a6-c93e-481c-5877-786f5e6aaef8@gmail.com>
+ <28da797abe486e783547c60a25db44be0c030d86.camel@kernel.org>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <14f41724-ce45-c2c0-a49c-1e379dba0cb5@gmail.com>
+Date:   Wed, 23 Sep 2020 21:58:59 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <28da797abe486e783547c60a25db44be0c030d86.camel@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Sep 2020 21:48:38 -0400
-William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
-
-> On Tue, Sep 22, 2020 at 10:19:41PM +0200, Rikard Falkeborn wrote:
-> > The only usage of mchp_tc_ops is to assign its address to the ops field
-> > in the counter_device struct which is a const pointer. Make it const to
-> > allow the compiler to put it in read-only memory.
-> > 
-> > Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>  
+On 23.09.2020 20:35, Saeed Mahameed wrote:
+> On Wed, 2020-09-23 at 13:49 +0200, Heiner Kallweit wrote:
+>> On 18.09.2020 19:58, Saeed Mahameed wrote:
+>>> On Tue, 2020-09-01 at 17:02 +0200, Geert Uytterhoeven wrote:
+>>>> This reverts commit 124eee3f6955f7aa19b9e6ff5c9b6d37cb3d1e2c.
+>>>>
+>>>> Inami-san reported that this commit breaks bridge support in a
+>>>> Xen
+>>>> environment, and that reverting it fixes this.
+>>>>
+>>>> During system resume, bridge ports are no longer enabled, as that
+>>>> relies
+>>>> on the receipt of the NETDEV_CHANGE notification.  This
+>>>> notification
+>>>> is
+>>>> not sent, as netdev_state_change() is no longer called.
+>>>>
+>>>> Note that the condition this commit intended to fix never existed
+>>>> upstream, as the patch triggering it and referenced in the commit
+>>>> was
+>>>> never applied upstream.  Hence I can confirm s2ram on
+>>>> r8a73a4/ape6evm
+>>>> and sh73a0/kzm9g works fine before/after this revert.
+>>>>
+>>>> Reported-by Gaku Inami <gaku.inami.xh@renesas.com>
+>>>> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>>>> ---
+>>>>  net/core/link_watch.c | 2 +-
+>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/net/core/link_watch.c b/net/core/link_watch.c
+>>>> index 75431ca9300fb9c4..c24574493ecf95e6 100644
+>>>> --- a/net/core/link_watch.c
+>>>> +++ b/net/core/link_watch.c
+>>>> @@ -158,7 +158,7 @@ static void linkwatch_do_dev(struct
+>>>> net_device
+>>>> *dev)
+>>>>  	clear_bit(__LINK_STATE_LINKWATCH_PENDING, &dev->state);
+>>>>  
+>>>>  	rfc2863_policy(dev);
+>>>> -	if (dev->flags & IFF_UP && netif_device_present(dev)) {
+>>>> +	if (dev->flags & IFF_UP) {
+>>>
+>>> So with your issue the devices is both IFF_UP and !present ? how so
+>>> ?
+>>> I think you should look into that.
+>>>
+>>> I am ok with removing the "dev present" check from here just
+>>> because we
+>>> shouldn't  be expecting IFF_UP && !present .. such thing must be a
+>>> bug
+>>> somewhere else.
+>>>
+>>>>  		if (netif_carrier_ok(dev))
+>>>>  			dev_activate(dev);
+>>>>  		else
+>>
+>> In __dev_close_many() we call ndo_stop() whilst IFF_UP is still set.
+>> ndo_stop() may detach the device and bring down the PHY, resulting in
+>> an
 > 
-> Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-Applied to the togreg branch of iio.git and pushed out as testing for
-the autobuilders to poke at it.
-
-I'm not sure if I'll get another pull request out this cycle, so it
-may have to wait for 5.11.
-
-Thanks,
-
-Jonathan
-
+> Why would a driver detach the device on ndo_stop() ?
+> seems like this is the bug you need to be chasing ..
+> which driver is doing this ? 
 > 
-> > ---
-> >  drivers/counter/microchip-tcb-capture.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/counter/microchip-tcb-capture.c b/drivers/counter/microchip-tcb-capture.c
-> > index b7b252c5addf..039c54a78aa5 100644
-> > --- a/drivers/counter/microchip-tcb-capture.c
-> > +++ b/drivers/counter/microchip-tcb-capture.c
-> > @@ -253,7 +253,7 @@ static struct counter_count mchp_tc_counts[] = {
-> >  	},
-> >  };
-> >  
-> > -static struct counter_ops mchp_tc_ops = {
-> > +static const struct counter_ops mchp_tc_ops = {
-> >  	.signal_read  = mchp_tc_count_signal_read,
-> >  	.count_read   = mchp_tc_count_read,
-> >  	.function_get = mchp_tc_count_function_get,
-> > -- 
-> > 2.28.0
-> >   
+Some drivers set the device to PCI D3hot at the end of ndo_stop()
+to save power (using e.g. Runtime PM). Marking the device as detached
+makes clear to to the net core that the device isn't accessible any
+longer.
+
+>> async link change event that calls dev_get_stats(). The latter call
+>> may
+>> have a problem if the device is detached. In a first place I'd
+>> consider
+>> such a case a network driver bug (ndo_get_stats/64 should check for
+>> device presence if depending on it).
+> 
+> Device drivers should avoid presence check as much as possible
+> especially in ndo, this check must be performed by the stack.
+> 
+That's a question I also stumbled across. For the ethtool ops
+dev_ethtool() checks whether device is present.
+But for ndo that's not always the case, e.g. dev_get_stats()
+doesn't check for device presence before calling ndo_get_stats()
+or ndo_get_stats64().
+To a certain extent I can understand this behavior, because drivers
+may just use internal data structures in ndo ops instead of accessing
+the device.
+
+>> The additional check in linkwatch_do_dev() was meant to protect from
+>> such
+>> driver issues.
+> 
 
