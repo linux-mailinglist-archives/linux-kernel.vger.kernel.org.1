@@ -2,87 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F7E275212
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 09:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE3F727521A
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 09:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726676AbgIWHCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 03:02:00 -0400
-Received: from sauhun.de ([88.99.104.3]:46058 "EHLO pokefinder.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726557AbgIWHCA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 03:02:00 -0400
-Received: from localhost (p54b330c5.dip0.t-ipconnect.de [84.179.48.197])
-        by pokefinder.org (Postfix) with ESMTPSA id E1ED82C08C5;
-        Wed, 23 Sep 2020 09:01:57 +0200 (CEST)
-Date:   Wed, 23 Sep 2020 09:01:53 +0200
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 00/32] Improvements for Tegra I2C driver
-Message-ID: <20200923070153.GA2548@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200922225155.10798-1-digetx@gmail.com>
- <aee6c548-241d-2cc5-415e-9f0b60177d67@gmail.com>
+        id S1726666AbgIWHGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 03:06:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726550AbgIWHGN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 03:06:13 -0400
+X-Greylist: delayed 77048 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 23 Sep 2020 00:06:13 PDT
+Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CEBCC061755;
+        Wed, 23 Sep 2020 00:06:13 -0700 (PDT)
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id 37A9111A002; Wed, 23 Sep 2020 08:06:11 +0100 (BST)
+Date:   Wed, 23 Sep 2020 08:06:11 +0100
+From:   Sean Young <sean@mess.org>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc:     mchehab@kernel.org, robh+dt@kernel.org,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-imx@nxp.com
+Subject: Re: [PATCH V3 0/2] Add QoS support for cpuidle system.
+Message-ID: <20200923070611.GA30617@gofer.mess.org>
+References: <20200922190807.6830-1-qiangqing.zhang@nxp.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="BXVAT5kNtrzKuDFl"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aee6c548-241d-2cc5-415e-9f0b60177d67@gmail.com>
+In-Reply-To: <20200922190807.6830-1-qiangqing.zhang@nxp.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 23, 2020 at 03:08:05AM +0800, Joakim Zhang wrote:
+> Add QoS support for cpuidle system.
 
---BXVAT5kNtrzKuDFl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Sean Young <sean@mess.org>
 
+Rob, would you be able to review the device tree bindings please?
 
-> Ahh, I missed to add Andy's r-b to all patches.
->=20
-> Hope it's okay if I'll add it here like this:
->=20
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Thanks,
 
-Yes, it is. So, I ideally we get an ack on patch 12 and are good to go,
-I'd think?
-
-Thanks again, everyone!
+Sean
 
 
---BXVAT5kNtrzKuDFl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9q8t0ACgkQFA3kzBSg
-KbZsfBAAm6Gyo2KOrDJeVmhK3iKRJRfceus8uSx0IKSS3+BiYoUIROhLQRHmvt0N
-sNrN1kxdCiciTSW7B9O7Aj/6hr+VRHoMqyUacadY5JVcfy1174KzDRBgnLoGxiVG
-AVXcirk4fRCHK8Shmde7K4xbKwu3yXfUXBb68qQUkaE+7MidCbgx6tEKNXB7vLqC
-YDX9IUa623QRn6mD7LztGkCMcpTYnO2t0b/LUrRnD+FuZicLHVuPjvzVwBS7Xnm6
-R3YQ3oV9DoCGR5rktSTiuAWFXbNe36Ez7IIt33ojFoVnNSDv2VbNIG9ZNQ2TXfyX
-PiSL6qcdb1YijHGj8LFkK/+s17Y/SWj36QjK1km3NhV9vPFyNF4p4oWaWP9LhQQ6
-zao6kNj381eB+AoKLPCTNAaB4CGQYqsnHfdVg/MV6lrkpo4j7XI2mkQkGZrwaYsE
-bh/xjvGdzJvEES9NQsBDMLmAs0VgVi/i+YREWJQ+yCeMqlY9zdUHIIUYi22Rp2Iz
-vg2R7JQROVL/aoJY9FZoc+6zy1qF52mBJQ1rqLu/p2g2dT3s8F5Zkx1badEMl99t
-9DxV40E4fQM8Bd7JvwBKz9wxyqnqQyuAE81gpdqbcq2Wa+1S5oMBQxRp0JsGNX20
-gU/glltdHk3icHUvhdkuAU71SOantTTOxPMruBMwreUXN3xrmTg=
-=FeEV
------END PGP SIGNATURE-----
-
---BXVAT5kNtrzKuDFl--
+> 
+> Joakim Zhang (2):
+>   bindings: media: gpio-ir-receiver: add linux,autosuspend-period
+>     property
+>   media: rc: gpio-ir-recv: add QoS support for cpuidle system
+> 
+>  .../bindings/media/gpio-ir-receiver.txt       |  3 ++
+>  drivers/media/rc/gpio-ir-recv.c               | 53 +++++++++++++++++++
+>  2 files changed, 56 insertions(+)
+> 
+> -- 
+> 2.17.1
