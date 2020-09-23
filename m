@@ -2,99 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0AB0275442
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 11:21:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82663275447
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 11:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726495AbgIWJVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 05:21:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58232 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726315AbgIWJVG (ORCPT
+        id S1726516AbgIWJV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 05:21:57 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:34986 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726308AbgIWJV4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 05:21:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600852864;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ib5eaN3zwZBJ0n0g+vmHq1Fy0ncjCr6a75WconyvknE=;
-        b=H9oFPP6nmmeklASSrsIL/rx8BabXvaHohGp2R2IcEcR3viJnS4v6O0EIBQpP+5WCyE1iAw
-        6eK7/A/PlXSHGM5Y4uDE1PrF/qQbDnsyca1mHYWi3WhzuwhHcUy2DRUlTepH4ZcWdbb/jJ
-        X2ihveTbkfFI1iEQScV5njiYCUJjxGk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-346-T1Ze7lAYNH6_6JQQvmG5RA-1; Wed, 23 Sep 2020 05:21:00 -0400
-X-MC-Unique: T1Ze7lAYNH6_6JQQvmG5RA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6BA791084D73;
-        Wed, 23 Sep 2020 09:20:58 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id DD3F419D61;
-        Wed, 23 Sep 2020 09:20:57 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 08N9Kv19004020;
-        Wed, 23 Sep 2020 05:20:57 -0400
-Received: from localhost (mpatocka@localhost)
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 08N9KtEI004016;
-        Wed, 23 Sep 2020 05:20:55 -0400
-X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
-Date:   Wed, 23 Sep 2020 05:20:55 -0400 (EDT)
-From:   Mikulas Patocka <mpatocka@redhat.com>
-X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
-To:     "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org
-cc:     Dan Williams <dan.j.williams@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Eric Sandeen <esandeen@redhat.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: A bug in ext4 with big directories (was: NVFS XFS metadata)
-In-Reply-To: <20200923024528.GD12096@dread.disaster.area>
-Message-ID: <alpine.LRH.2.02.2009230459450.1800@file01.intranet.prod.int.rdu2.redhat.com>
-References: <alpine.LRH.2.02.2009151216050.16057@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2009151332280.3851@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2009160649560.20720@file01.intranet.prod.int.rdu2.redhat.com>
- <CAPcyv4gW6AvR+RaShHdQzOaEPv9nrq5myXDmywuoCTYDZxk-hw@mail.gmail.com> <alpine.LRH.2.02.2009161254400.745@file01.intranet.prod.int.rdu2.redhat.com> <CAPcyv4gD0ZFkfajKTDnJhEEjf+5Av-GH+cHRFoyhzGe8bNEgAA@mail.gmail.com> <alpine.LRH.2.02.2009161359540.20710@file01.intranet.prod.int.rdu2.redhat.com>
- <alpine.LRH.2.02.2009191336380.3478@file01.intranet.prod.int.rdu2.redhat.com> <20200922050314.GB12096@dread.disaster.area> <alpine.LRH.2.02.2009220815420.16480@file01.intranet.prod.int.rdu2.redhat.com> <20200923024528.GD12096@dread.disaster.area>
-User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
+        Wed, 23 Sep 2020 05:21:56 -0400
+Received: by mail-lj1-f196.google.com with SMTP id a15so16627496ljk.2;
+        Wed, 23 Sep 2020 02:21:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=K/+FlzwEfC9DE2Ou4H87NcviiAaFeLbsoHSsi8TXT0o=;
+        b=WJHdpHMnkb+aiV3J8Edtpp5aGlQwHb3xDgjPIkwWxoaGHP+RKyQLfGoZbZrVg4pF99
+         YL5BqXpX6o3dIteItnCaW5WwiE+pHwGOhaFgY+CfV6RMRXNhJU3eVlFeRh+jd1gkOJcU
+         Yxia3s2FOnBfPDa7Mno2YA2Z4kaqKP1+iDkg6lGBljIS8Yvvg0rSMagXL4PNuREl09n+
+         /dhS57ptFq+QyOldz+AgB+RNIfNdxJ4Gq31uvnZQPf2kRtQaGXV6NJrO3mAAbseTwvOG
+         TwJaeXJw7mA+5j8nYzhllDxGzGPvzdNNXhw5FTbGedHJi7hfcgAseCn1eboItWZ5BomB
+         wpjA==
+X-Gm-Message-State: AOAM531O5tLy4kuoAoAeqWBMsHHw4Cwn37z0EiTzdoZyqj8OFT12su89
+        2L49H5cvH7+61VsoaWTuBjQ=
+X-Google-Smtp-Source: ABdhPJxBhW7LZwpMiDnTUvVfVWPs06ohlAYCCU5FLZVtFMKxxu+bRGTOwn/+G+dNbGCqfB0iz9JACg==
+X-Received: by 2002:a2e:b52c:: with SMTP id z12mr2682595ljm.437.1600852913571;
+        Wed, 23 Sep 2020 02:21:53 -0700 (PDT)
+Received: from localhost.localdomain ([213.255.186.46])
+        by smtp.gmail.com with ESMTPSA id f22sm4548442lfc.240.2020.09.23.02.21.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2020 02:21:52 -0700 (PDT)
+Date:   Wed, 23 Sep 2020 12:21:41 +0300
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     mazziesaccount@gmail.com, matti.vaittinen@fi.rohmeurope.com
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com,
+        linux-watchdog@vger.kernel.org
+Subject: [PATCH v2 0/4] Support ROHM BD9576MUF and BD9573MUF PMICs
+Message-ID: <cover.1600852339.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+Initial support for ROHM BD9576MUF and BD9573MUF PMICs.
 
-There seems to be a bug in ext4 - when I create very large directory, ext4 
-fails with -ENOSPC despite the fact that there is plenty of free space and 
-free inodes on the filesystem.
+These PMICs are primarily intended to be used to power the R-Car family
+processors. BD9576MUF includes some additional safety features the
+BD9573MUF does not have. This initial version of drivers does not
+utilize these features and for now the SW behaviour is identical.
 
-How to reproduce:
-download the program dir-test: 
-http://people.redhat.com/~mpatocka/benchmarks/dir-test.c
+Please note that this version of drivers is only tested on BD9576MUF
+but according to the data-sheets the relevant parts of registers should
+be same so drivers should also work on BD9573MUF.
 
-# modprobe brd rd_size=67108864
-# mkfs.ext4 /dev/ram0
-# mount -t ext4 /dev/ram0 /mnt/test
-# dir-test /mnt/test/ 8000000 8000000
-deleting: 7999000
-2540000
-file 2515327 can't be created: No space left on device
-# df /mnt/test
-/dev/ram0        65531436 633752 61525860   2% /mnt/test
-# df -i /mnt/test
-/dev/ram0        4194304 1881547 2312757   45% /mnt/test
+This patch series includes MFD and watchdog drivers. Regulator part was
+already applied.
 
-(I tried to increase journal size, but it has no effect on this bug)
+- Enabling and pinging the watchdog
+- configuring watchog timeout / window from device-tree
 
-Mikulas
+This patch series does not bring interrupt support. BD9576MUF and BD9573MUF
+are designed to keep the IRQ line low for whole duration of error
+condition. IRQ can't be 'acked'. So proper IRQ support would require
+some IRQ limiter implementation (delayed unmask?) in order to not hog
+the CPU.
 
+Changelog v2:
+  - dropped already applied regulator part
+  - dt_bindings: Fixed case for regulator-names in the example
+  - watchdog: unified probe error check and revised includes
+  - mfd: removed extra linefeeds from header
+
+---
+
+Matti Vaittinen (4):
+  dt_bindings: mfd: Add ROHM BD9576MUF and BD9573MUF PMICs
+  mfd: Support ROHM BD9576MUF and BD9573MUF
+  wdt: Support wdt on ROHM BD9576MUF and BD9573MUF
+  MAINTAINERS: Add ROHM BD9576MUF and BD9573MUF drivers
+
+ .../bindings/mfd/rohm,bd9576-pmic.yaml        | 129 ++++++++
+ MAINTAINERS                                   |   4 +
+ drivers/mfd/Kconfig                           |  11 +
+ drivers/mfd/Makefile                          |   1 +
+ drivers/mfd/rohm-bd9576.c                     | 130 ++++++++
+ drivers/watchdog/Kconfig                      |  13 +
+ drivers/watchdog/Makefile                     |   1 +
+ drivers/watchdog/bd9576_wdt.c                 | 284 ++++++++++++++++++
+ include/linux/mfd/rohm-bd957x.h               |  59 ++++
+ include/linux/mfd/rohm-generic.h              |   2 +
+ 10 files changed, 634 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mfd/rohm,bd9576-pmic.yaml
+ create mode 100644 drivers/mfd/rohm-bd9576.c
+ create mode 100644 drivers/watchdog/bd9576_wdt.c
+ create mode 100644 include/linux/mfd/rohm-bd957x.h
+
+
+base-commit: f4d51dffc6c01a9e94650d95ce0104964f8ae822
+-- 
+2.21.0
+
+
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
