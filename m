@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B285275248
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 09:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6560275249
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 09:27:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726650AbgIWH0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 03:26:50 -0400
-Received: from mail-eopbgr1410043.outbound.protection.outlook.com ([40.107.141.43]:47677
-        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
+        id S1726710AbgIWH1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 03:27:38 -0400
+Received: from mail-eopbgr1320059.outbound.protection.outlook.com ([40.107.132.59]:34386
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726557AbgIWH0u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 03:26:50 -0400
+        id S1726557AbgIWH1i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 03:27:38 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jr8f0/xQHJB2GIWAfxRQ0Lmu4BPiPHJ6QUKZ5Gz4PtN/zq1XnP8T/3cH2KY73F057TnBwhPwdfedgGH7W/iunQX89Jll4lsOTOMIrcyrgAZFPL9In50YvGckwH5pNSWCLLnwbPfAH3bPHg6Ie2817DDl1YjOs0Sieu8GI8WQ1BQTbyklkFItJJ1vLddqqNC7g8Y1RxmJMtq70VsnH2M/dNAP3B1yYSKbFSXTX+wQtSl+0vrgalMOi16j4WYmAbe2k+0uQ+JUjiHu8hIojcXQgDu/t4ndTzuS7EFZ8LdsGzmyVMQCBCnZXeFByoW8t6aW3Z+e9BDjUUW4RjZUn2VUgQ==
+ b=ayIwr107CGA5POczTTR1RamQzKsHBep8Q1Up/TYxX64RL2//7Y+qhQARi0OW5+eRzFYSPg5j6r7g2cyszwj7FIUdB8si/pSvRAMOFSxgyHLe6M5L2fGjMtVes+XKNdUp0L4oozzJaIMX7lSuGlO9tnvHhzMgNDhx/Hp0ikMIWqqaadijQ21/YtcL4WarktjSzpU9sNp2fx4cjfb32d72xoW6UZ61pRiimk7iZXYaxCP7NhfabadhxQzDg6N0fIbrBgPZulOe8qtvKDUheSuMK2ShWWfj7NwptHFHKHwtYI84LerzixyXUjn4lpZT2NwC1FhERcUmVZZUHXfuIHpxQw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Gb0aeT7eRqyBxLS5tTfdb+a/9Aby2fkDVyGNry0Yccs=;
- b=QoAlhETQ0Tmr1bLcpHAHlkuxM1H8DA4bk3I326B57izQRZktqFIFiu8Aehe1gGdWNNShl1+rwGXigtyQfcDHJDSeEdkbR90kAiMnfSl5rob1Plxyzx5xaiZKGWqpPyAv2N0xLCO+oP3r96P2ISQdhrOkBBfia5A1HFme+s6ifToMGoqLatG7v1QazyNWX1FHYSsTlQU8+iLOi3Y/q8QiCZ3tLVHVuqN9DtK7KtTooRPsKsojvVYm+AJwesi32Ef4iiOC2/Yqi7KqMeiZ5oaNKT8r1Ao7xpWUoPN9BqTkQllpifPYbV7Y/26BqvIwyKE3AQpeY/6xHC1ZmPVLuMNW1w==
+ bh=hc9t4CelhZfGin+5SadsslC9u6ayFXXfFASxQ9iJkRU=;
+ b=mNZw1W9xi1zbNve5CckIIGW4DmqUiYAu6RlnRjnjNvEJDqZBFL8yUtqcLVh1c0crh7gs+OiWj5yGbqr24muWUhbiGkxIcH2E9iNfOn2BTYpzY3Hwekh58bCKELa8kW4jXj6uXpsLhtywJQqnTsji+E+USyU87FEUWjc/kCwXHIhcU5KVlbgmAHgDDiDSqUKvpXxDYAbkQKfxexKEqsgoN61x2h7mhteJ5QbUhSngEvfsphc9nuaHUBnU8WK9HK1Bo6r3jYX4Zbbr3FhSTvnE5JWMhfRap69uSvDy8aRXk6utkFUJpVT33p6I44d5NnnQ4lVln34904UHxtTVq0dFFQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nec.com; dmarc=pass action=none header.from=nec.com; dkim=pass
  header.d=nec.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=necglobal.onmicrosoft.com; s=selector1-necglobal-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Gb0aeT7eRqyBxLS5tTfdb+a/9Aby2fkDVyGNry0Yccs=;
- b=mdZi+xaGJuqlrxszMPmP3M/VZtLwl2VDfmc1NaNof8JNLT69g2gaxRl3QKI20NnVEPIWB8m4oZhEv8U7fn5sqI7cKpZIZYEc+6rOphs1X1wqYCtIbik0QOy0LlER5cJGGZb5AlM5TQ/3Enno2orP+4lKMcD5snuYKpEDBvQ93tc=
+ bh=hc9t4CelhZfGin+5SadsslC9u6ayFXXfFASxQ9iJkRU=;
+ b=ZBMTVclHtZCeTVkr2BWHq33OPY7TSDfPFnSVSrhk+OvnK7urV1H9kjXQ943yKxw6wr5OhAoi+xJKWDb+tjX3fYbAY0heZDvhwW7eAS25cyWL/TPIuZEJUyCLP6DxBxhsIKVZQvRRQCYZ8lCQyoP8ZfzSOkwQD8bUu2Z4+3rsikU=
 Received: from TY2PR01MB3210.jpnprd01.prod.outlook.com (2603:1096:404:74::14)
- by TYBPR01MB5357.jpnprd01.prod.outlook.com (2603:1096:404:801f::14) with
+ by TY2PR01MB1961.jpnprd01.prod.outlook.com (2603:1096:404:b::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.19; Wed, 23 Sep
- 2020 07:26:48 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Wed, 23 Sep
+ 2020 07:27:34 +0000
 Received: from TY2PR01MB3210.jpnprd01.prod.outlook.com
  ([fe80::108f:629c:d934:9206]) by TY2PR01MB3210.jpnprd01.prod.outlook.com
  ([fe80::108f:629c:d934:9206%7]) with mapi id 15.20.3412.020; Wed, 23 Sep 2020
- 07:26:48 +0000
+ 07:27:34 +0000
 From:   =?iso-2022-jp?B?SE9SSUdVQ0hJIE5BT1lBKBskQktZOH0hIUQ+TGkbKEIp?= 
         <naoya.horiguchi@nec.com>
 To:     Oscar Salvador <osalvador@suse.de>
@@ -46,16 +46,14 @@ CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
         "cai@lca.pw" <cai@lca.pw>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: Re: [PATCH v7 07/14] mm,hwpoison: unify THP handling for hard and
- soft offline
-Thread-Topic: [PATCH v7 07/14] mm,hwpoison: unify THP handling for hard and
- soft offline
-Thread-Index: AQHWkOhLmC0WeoJf90Kq3kCU/3n09al10/mA
-Date:   Wed, 23 Sep 2020 07:26:48 +0000
-Message-ID: <20200923072647.GA15126@hori.linux.bs1.fc.nec.co.jp>
+Subject: Re: [PATCH v7 08/14] mm,hwpoison: rework soft offline for free pages
+Thread-Topic: [PATCH v7 08/14] mm,hwpoison: rework soft offline for free pages
+Thread-Index: AQHWkOhHhPSks/uu9Em9rYoCckvXQal11DCA
+Date:   Wed, 23 Sep 2020 07:27:33 +0000
+Message-ID: <20200923072733.GA15221@hori.linux.bs1.fc.nec.co.jp>
 References: <20200922135650.1634-1-osalvador@suse.de>
- <20200922135650.1634-8-osalvador@suse.de>
-In-Reply-To: <20200922135650.1634-8-osalvador@suse.de>
+ <20200922135650.1634-9-osalvador@suse.de>
+In-Reply-To: <20200922135650.1634-9-osalvador@suse.de>
 Accept-Language: ja-JP, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -64,38 +62,46 @@ authentication-results: suse.de; dkim=none (message not signed)
  header.d=none;suse.de; dmarc=none action=none header.from=nec.com;
 x-originating-ip: [165.225.110.205]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 9e244d19-e215-420e-4f67-08d85f920841
-x-ms-traffictypediagnostic: TYBPR01MB5357:
+x-ms-office365-filtering-correlation-id: 7bbad6db-5589-4011-fffe-08d85f9223a3
+x-ms-traffictypediagnostic: TY2PR01MB1961:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <TYBPR01MB535760A999CFA913D3C5CD43E7380@TYBPR01MB5357.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5236;
+x-microsoft-antispam-prvs: <TY2PR01MB1961A48A266D4BF6EDBDB2B0E7380@TY2PR01MB1961.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: yzwON2KOxmqQATHovorSfCDuJvtmgRrQlcPP+7+N51GdMVtsJbXmmLpA+HIRQ4PFMcAD15FBnYn58n0KjEhBXqyTQItOle+Q9s3DDVovQiTxHk9PsMmRDPfNM3gUv4Gng+53Av74MxesWJH8Ie7/jD8xjUMdBQ7AZoVjRvuCqq4XahAhpGNRyBlGVNEiFoo/y7c5IZk+SCosDEufMMmUMhaNkio4JGxprSijPj3oqweiKHKNYKrgsRQ2XVLQ7myj4cNoRviNfTnX5ZMF4ANZWhmbSeZLkibV1vsAO9hiOTE6rv4cWjmkHXMjOpIDknHzH5+o1JZ6guaAcRaIt8dm43rICYcOjEvzOpf0zgl3X1BWosojBQwovYtp7JhmdfI1dkNcTjoCTqvY7hjA4V8kyn930Iwz2c8qwxSj4B9JrBE=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB3210.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(136003)(366004)(396003)(346002)(66556008)(316002)(6486002)(1076003)(54906003)(55236004)(478600001)(26005)(33656002)(66446008)(6506007)(86362001)(2906002)(76116006)(4326008)(66946007)(64756008)(71200400001)(6916009)(8936002)(6512007)(85182001)(8676002)(5660300002)(558084003)(9686003)(66476007)(186003)(142933001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: ZbY+VM5XCe6W6bym8ZSuGKDpi8jInIleO+k8yhstycLwa/2BF0n8+VuEIg08sIPF4FSeSmTESaSUa20B+ubPXr4N3zzfDWe/agat78ukx0qHoPpqseZ9gYc9dlEzg7W+qQVFa6Zqs25SLZNWguzx6xXLFSIdIcC7QCAeB+tD41LLnSZ78cIsmeYI9/PpsVRw84T1p12ELCQwTuhRNJgijqS+d/oOBMW4UkUPS1agOXfX+bmxqcj4QHK0EdN9GAlEm3hHc3M3qP37PIgJZFRMBYd9yk9FCoPUK/SPSOt/pfY8JC67XOIcaRKctWVEfp00Q4eOLl/Q5E9lPcFyKth8TaLJ0rmOav0dP0vitPXYmwX/5wmCvjTEWbenbf3dS9hP67N2fR+hzEVvJAcixZZRdTaO9cu8S/bPof6D1oFii7oe91b8o43Ik8CCrNQbqfzkSyO1UK4l0PZQwqNM4gqTR2JG7WSQXEnCVVoLvLbzXm5cXrZg+ILQqRHfD33ILv1NtJnKZx2Ky4F5lUjImvNoQ3P9oW/mw2G90yYZOEW4qsvviL5vVEHHNjlNOULhDph+Tu9bF5a25j2CAEvQANSQISmEA0r5BwCv9ZBO2s4VWtfOp6uEbitCIeD4cw9HWea7m7KLZ3lbKqUE5prF+ALyCg==
+x-microsoft-antispam-message-info: bJYASbeNhAtdDqw+avwC6R5Y7wCSf5i+76PdeDLC+7RuIudpnqmpDCkxfz559/5Mk0tZtmkfK0wxar7583e0APOo7ldG4aZToAU3xFGmoruJGsG3ZgFL2LDXcHa4VQM4TUr+d0UyO0zmHps9ce2KHhhk2QOhmr90c0aRxuRO/zWv+NnP8HV6L834x4tRc/EFOfoVar/9QKW94lcnHIQqKyvKSGENb/jtVIR1WwzUcegb9yqLrdQZnHGVQBuesF2B1j2WrsFggXHpxRGRMgxtErq5aJUrsBk876TPhxcysY/v2xh4i3b4v+qUa6Ea9obdGzicmMasaYSXhPKTIN2slbOKaGVRPYvzTMizWf7ZcT5PCTMe4HDvLaFzJJIiNaQ3wOkYbZs9LaFozeTBZTSLnA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB3210.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(39860400002)(396003)(366004)(6486002)(26005)(2906002)(6506007)(55236004)(186003)(83380400001)(8676002)(54906003)(5660300002)(8936002)(66556008)(64756008)(66446008)(66476007)(66946007)(76116006)(71200400001)(85182001)(316002)(478600001)(86362001)(33656002)(6916009)(4326008)(1076003)(9686003)(6512007)(4744005)(142933001)(4533004);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: Fo/omSQoAXq5qCmESqMT0mdzPi3ZmnkUHoZ//cwzo6KZLktLEZ1Koqpv9yHIB4DelUEZKiU5jYTN7hHB9a1lMx9abgv4ND+FmaSFEAYg449khyGsY8aIWuOtkJzqYUa99FwFVh2e1r5kwCzm7Xv8Cu6r3PV+z3Qaqoo9j9X+/Zp2WbbN0A2Tm7QbzsjD1xm8ci9XO4AV+r0Y4S4T+yJ0vuGViHkgjmBLdVIVUQa4tEw87bBYJcceMury56JoWGLMEHbc14GOFf/XkAHFcP68Ygd0Ea1xOciaPJzQJ3OwHVhW48MIgVXxwiu3L9/TCeFeKc4qM13a48t4tlnN6rxSkIiHjlzIM/0Dr0tjzYFraDLzN/RB6deUnWfhs96SAca6eM7H9YETZgcz0p149gQ6VA0Ec9ndLT6O3fV4OiCWxkAa+1IK1AVyzwX2f/DOZS6+PflnbGT3yzCFcC9NdcB8ri1tD6CKgoa7KdEsSyzV63FwTgN+L5S1Ppx9nG3suIK5GRim/g6YqyMLZ3062nBzf5Qc4+jMoy+FpQDFXgz989o1idvmehvEmPnrHqSSEM8zRHJt3fteKw6wSWp5yYAiO5uOKxhAZ2DJgmPOP7/xkNI1dYQ+QbdR7bzblWxhhG26ZYuAkW387b/qIJ9aojtBjw==
 Content-Type: text/plain; charset="iso-2022-jp"
-Content-ID: <21E9689F2FE3884CA5E6F6FEDC40B121@jpnprd01.prod.outlook.com>
+Content-ID: <AC008C71D459A94AAD31CF9F33CFCD02@jpnprd01.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: nec.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB3210.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9e244d19-e215-420e-4f67-08d85f920841
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2020 07:26:48.0367
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7bbad6db-5589-4011-fffe-08d85f9223a3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2020 07:27:34.0039
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: e67df547-9d0d-4f4d-9161-51c6ed1f7d11
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: YPCeBVCtPquRjFAzCXa3jRK4sbR2yYy90jnLy29hNfIK7MlVo6s2PWNzQc2osofXCLK4a614g9AiXqsWAcfkvQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYBPR01MB5357
+X-MS-Exchange-CrossTenant-userprincipalname: +Jm7kKGpxKJw2C1TDkNgqdy/8R4hEl24gjCcoGF7OZ6naad5FuFPIpzWxtsgYvkB52Mp1dhy/spSoAM/0AwOdg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB1961
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 03:56:43PM +0200, Oscar Salvador wrote:
-> Place the THP's page handling in a helper and use it from both hard and
-> soft-offline machinery, so we get rid of some duplicated code.
+On Tue, Sep 22, 2020 at 03:56:44PM +0200, Oscar Salvador wrote:
+> When trying to soft-offline a free page, we need to first take it off the
+> buddy allocator.
+> Once we know is out of reach, we can safely flag it as poisoned.
+>=20
+> take_page_off_buddy will be used to take a page meant to be poisoned off
+> the buddy allocator. take_page_off_buddy calls break_down_buddy_pages,
+> which splits a higher-order page in case our page belongs to one.
+>=20
+> Once the page is under our control, we call page_handle_poison to set it
+> as poisoned and grab a refcount on it.
 >=20
 > Signed-off-by: Oscar Salvador <osalvador@suse.de>
 
