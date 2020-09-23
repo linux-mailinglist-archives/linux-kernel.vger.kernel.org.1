@@ -2,156 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAA6E276464
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:18:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B382276465
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:19:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726681AbgIWXSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 19:18:50 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:34489 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726419AbgIWXSu (ORCPT
+        id S1726702AbgIWXT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 19:19:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726419AbgIWXT2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 19:18:50 -0400
-Received: by mail-io1-f67.google.com with SMTP id m17so1372209ioo.1;
-        Wed, 23 Sep 2020 16:18:49 -0700 (PDT)
+        Wed, 23 Sep 2020 19:19:28 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39A20C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:19:28 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id q4so1337390iop.5
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:19:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iZOApGC20HnhhJiLh+fQ5O3fgDHPiGbwUwpUBeQPkwI=;
+        b=hmTl02N9oaSnCdbp3B9syLLDD4VuLhaBuXkhB5WOWMpHR7b9ZnhC5mvkT/TSH2UN6r
+         el8RTasDbtfFRWEMxhJHv4MRGcv4wrw4Snb5rHDWZHzr34CTWW31F13iuiyeNGQ43o31
+         Z0dtQs4SonnQU3g77d6uU6tO5xyEr4gypmze1MIM+FR4VrnKRnX8zKIDkCdj7BKfR6tS
+         EBclxE+Rd6VD4IgvF1WuhkcV7Cs6byEAbJF3UgqIN7icRmHbSiKTSLJ0TnxLbBe0eJmN
+         eMBvbm5tYjrjCZFfpec+aXv1Lf1GMwnZr3yq9e8bwKemM9XvOt8fM+y76sFn+3e4Cq6K
+         v94Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BHsD3SLJmcx9KOWGYcQYUc0v4uSy8LxJrJDo7E9k6nU=;
-        b=FO+S6HHGww9f9jIL0cCqGDH/mMKnml3C4A+uwsp7xHjxc1esYqcJWwU6qEQngWaFUk
-         6XLZi/8yoChngG8akxn0MRFngZ76TMkPC3VWrB5EcDInn15y9vh3rePeEh5gGp8qUVBu
-         t0RY9vOC4AvaekAPy3J5Ut0z0N4Y4os8L3dbPbPBdn8Ms59FanEwFFY0lxuY4dEMcJaD
-         47QjuGagYU/zQD21uQ0mhsr5SciXWfc76XG8Kfg+NdfUFsyGuGFwNxQIyux6N9H+Nvc0
-         5jN+T5Pv+y3CAYa3MZhkwmyFEp0LkSb92ngDQsVbdusm0l98EdsxQcMEnAsIkGg3jq2X
-         DQyg==
-X-Gm-Message-State: AOAM531CQbJqZ+no5OuKXws73LuxTP2w9Ckfvaw2Lqyn3oqtEVSTEUMi
-        9r4GcnrwZNbR7Ohm1mxcrw==
-X-Google-Smtp-Source: ABdhPJxSJk9gVxVd4DzgOoBg2o/2cl0dNWV5EfDhP0rogbALgaKqDWWJZiSGxIx7hwclwNEtFTtnNg==
-X-Received: by 2002:a05:6638:1448:: with SMTP id l8mr1411528jad.83.1600903128864;
-        Wed, 23 Sep 2020 16:18:48 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id z10sm621736ioi.13.2020.09.23.16.18.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 16:18:48 -0700 (PDT)
-Received: (nullmailer pid 1517051 invoked by uid 1000);
-        Wed, 23 Sep 2020 23:18:46 -0000
-Date:   Wed, 23 Sep 2020 17:18:46 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Niklas Cassel <niklas.cassel@axis.com>
-Cc:     Jingoo Han <jingoohan1@gmail.com>,
-        Joao Pinto <Joao.Pinto@synopsys.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Niklas Cassel <niklass@axis.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 01/18] PCI: dwc: Use the DMA-API to get the MSI address
-Message-ID: <20200923231846.GA1499246@bogus>
-References: <20171219232940.659-1-niklas.cassel@axis.com>
- <20171219232940.659-2-niklas.cassel@axis.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iZOApGC20HnhhJiLh+fQ5O3fgDHPiGbwUwpUBeQPkwI=;
+        b=b38DKEaI6Oj5t2dN8NlaNAF9eywuvB84Sw7muengIUfMlJ0bMQdoUU4r9dPboiVsMx
+         8SJ2FniMxyR4jUuIFOApRJqeixVx4yyzaS4yRmNVDYXT0xhA73Z0Nj7Er+74ycyestLO
+         dpIWYI2iGlwW/7NKbUuSaErpLGWb5jHoXux4bDb4V3wVEf8b/kYasuv5QaRdJS/FaxFP
+         pyQqNBJnitMRIpd+RNpXnIy08u0FIp+YqGyIs1pQ8JmoJvqbB6UfZGiLZTRAShl0w+NV
+         s6s1+Sh7bd74GKHmEbTXMVZWbl88f8v6Peersr6Q0qK9gmzlVTbRejlQeryJkhk13e/6
+         TSig==
+X-Gm-Message-State: AOAM530vsUlrdPDiC7/9rIJvxcUIOiN17Aw9rIfos7EJRDfh22akkVtm
+        C9zxR+J8JPqcU8+2j/v6lmt/MQnfMaOf0d7PPMoy9A==
+X-Google-Smtp-Source: ABdhPJyywv0N4Sq5HyrTKpf0BLx0dTf1f8TFMfzwSd2vInPWcEQ9MrdKCg8lPTlShY6kT8gRRslHqFCB7XozbyzyvFM=
+X-Received: by 2002:a05:6638:611:: with SMTP id g17mr1452858jar.40.1600903167128;
+ Wed, 23 Sep 2020 16:19:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20171219232940.659-2-niklas.cassel@axis.com>
+References: <20200923221406.16297-1-sean.j.christopherson@intel.com> <20200923221406.16297-2-sean.j.christopherson@intel.com>
+In-Reply-To: <20200923221406.16297-2-sean.j.christopherson@intel.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Wed, 23 Sep 2020 16:19:15 -0700
+Message-ID: <CANgfPd_POgKeMNa+PbtGvCMyzNi0YY=4E9w8LzgWhLwGSqX-OQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] KVM: x86/mmu: Move flush logic from
+ mmu_page_zap_pte() to FNAME(invlpg)
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peter Shier <pshier@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 20, 2017 at 12:29:22AM +0100, Niklas Cassel wrote:
-> Use the DMA-API to get the MSI address. This address will be written to
-> our PCI config space and to the register which determines which AXI
-> address the DWC IP will spoof for incoming MSI irqs.
-> 
-> Since it is a PCIe endpoint device, rather than the CPU, that is supposed
-> to write to the MSI address, the proper way to get the MSI address is by
-> using the DMA API, not by using virt_to_phys().
-> 
-> Using virt_to_phys() might work on some systems, but using the DMA API
-> should work on all systems.
-> 
-> This is essentially the same thing as allocating a buffer in a driver
-> to which the endpoint will write to. To do this, we use the DMA API.
-> 
-> Signed-off-by: Niklas Cassel <niklas.cassel@axis.com>
+On Wed, Sep 23, 2020 at 3:14 PM Sean Christopherson
+<sean.j.christopherson@intel.com> wrote:
+>
+> Move the logic that controls whether or not FNAME(invlpg) needs to flush
+> fully into FNAME(invlpg) so that mmu_page_zap_pte() doesn't return a
+> value.  This allows a future patch to redefine the return semantics for
+> mmu_page_zap_pte() so that it can recursively zap orphaned child shadow
+> pages for nested TDP MMUs.
+>
+> No functional change intended.
+>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+
+Reviewed-by: Ben Gardon <bgardon@google.com>
+
+>
 > ---
->  drivers/pci/dwc/pcie-designware-host.c | 15 ++++++++++++---
->  drivers/pci/dwc/pcie-designware.h      |  3 ++-
->  2 files changed, 14 insertions(+), 4 deletions(-)
-
-Resurrecting an old thread...
-
-Did this fix any actual problem for you? I'm asking because this 
-introduces a bug that an unmap is never done in the error path and 
-there's an issue with suspend/resume[1].
-
-I'd like to simplify all this. The whole thing including the existing 
-alloc_page() seems pointless. AIUI, the DWC MSI controller just needs a 
-single address which is never forwarded out of the RC. So we could use 
-any address that an EP would never write to. Some drivers just take the 
-address of a field in their driver data. Perhaps even just the DBI base 
-would work or the address of PCIE_MSI_ADDR_LO. 
-
-Rob
-
-[1] https://lore.kernel.org/r/20200923142607.10c89bd2@xhacker.debian
-
-
-> 
-> diff --git a/drivers/pci/dwc/pcie-designware-host.c b/drivers/pci/dwc/pcie-designware-host.c
-> index 81e2157a7cfb..bf558df5b7b3 100644
-> --- a/drivers/pci/dwc/pcie-designware-host.c
-> +++ b/drivers/pci/dwc/pcie-designware-host.c
-> @@ -83,10 +83,19 @@ irqreturn_t dw_handle_msi_irq(struct pcie_port *pp)
->  
->  void dw_pcie_msi_init(struct pcie_port *pp)
+>  arch/x86/kvm/mmu/mmu.c         | 10 +++-------
+>  arch/x86/kvm/mmu/paging_tmpl.h |  7 +++++--
+>  2 files changed, 8 insertions(+), 9 deletions(-)
+>
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 76c5826e29a2..a91e8601594d 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -2615,7 +2615,7 @@ static void validate_direct_spte(struct kvm_vcpu *vcpu, u64 *sptep,
+>         }
+>  }
+>
+> -static bool mmu_page_zap_pte(struct kvm *kvm, struct kvm_mmu_page *sp,
+> +static void mmu_page_zap_pte(struct kvm *kvm, struct kvm_mmu_page *sp,
+>                              u64 *spte)
 >  {
-> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> +	struct device *dev = pci->dev;
-> +	struct page *page;
->  	u64 msi_target;
->  
-> -	pp->msi_data = __get_free_pages(GFP_KERNEL, 0);
-> -	msi_target = virt_to_phys((void *)pp->msi_data);
-> +	page = alloc_page(GFP_KERNEL);
-> +	pp->msi_data = dma_map_page(dev, page, 0, PAGE_SIZE, DMA_FROM_DEVICE);
-> +	if (dma_mapping_error(dev, pp->msi_data)) {
-> +		dev_err(dev, "failed to map MSI data\n");
-> +		__free_page(page);
-> +		return;
-> +	}
-> +	msi_target = (u64)pp->msi_data;
->  
->  	/* program the msi_data */
->  	dw_pcie_wr_own_conf(pp, PCIE_MSI_ADDR_LO, 4,
-> @@ -187,7 +196,7 @@ static void dw_msi_setup_msg(struct pcie_port *pp, unsigned int irq, u32 pos)
->  	if (pp->ops->get_msi_addr)
->  		msi_target = pp->ops->get_msi_addr(pp);
->  	else
-> -		msi_target = virt_to_phys((void *)pp->msi_data);
-> +		msi_target = (u64)pp->msi_data;
->  
->  	msg.address_lo = (u32)(msi_target & 0xffffffff);
->  	msg.address_hi = (u32)(msi_target >> 32 & 0xffffffff);
-> diff --git a/drivers/pci/dwc/pcie-designware.h b/drivers/pci/dwc/pcie-designware.h
-> index e5d9d77b778e..ecdede68522a 100644
-> --- a/drivers/pci/dwc/pcie-designware.h
-> +++ b/drivers/pci/dwc/pcie-designware.h
-> @@ -14,6 +14,7 @@
->  #ifndef _PCIE_DESIGNWARE_H
->  #define _PCIE_DESIGNWARE_H
->  
-> +#include <linux/dma-mapping.h>
->  #include <linux/irq.h>
->  #include <linux/msi.h>
->  #include <linux/pci.h>
-> @@ -168,7 +169,7 @@ struct pcie_port {
->  	const struct dw_pcie_host_ops *ops;
->  	int			msi_irq;
->  	struct irq_domain	*irq_domain;
-> -	unsigned long		msi_data;
-> +	dma_addr_t		msi_data;
->  	DECLARE_BITMAP(msi_irq_in_use, MAX_MSI_IRQS);
->  };
->  
-> -- 
-> 2.14.2
+>         u64 pte;
+> @@ -2631,13 +2631,9 @@ static bool mmu_page_zap_pte(struct kvm *kvm, struct kvm_mmu_page *sp,
+>                         child = to_shadow_page(pte & PT64_BASE_ADDR_MASK);
+>                         drop_parent_pte(child, spte);
+>                 }
+> -               return true;
+> -       }
+> -
+> -       if (is_mmio_spte(pte))
+> +       } else if (is_mmio_spte(pte)) {
+>                 mmu_spte_clear_no_track(spte);
+> -
+> -       return false;
+> +       }
+>  }
+>
+>  static void kvm_mmu_page_unlink_children(struct kvm *kvm,
+> diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
+> index 4dd6b1e5b8cf..3bb624a3dda9 100644
+> --- a/arch/x86/kvm/mmu/paging_tmpl.h
+> +++ b/arch/x86/kvm/mmu/paging_tmpl.h
+> @@ -895,6 +895,7 @@ static void FNAME(invlpg)(struct kvm_vcpu *vcpu, gva_t gva, hpa_t root_hpa)
+>  {
+>         struct kvm_shadow_walk_iterator iterator;
+>         struct kvm_mmu_page *sp;
+> +       u64 old_spte;
+>         int level;
+>         u64 *sptep;
+>
+> @@ -917,7 +918,8 @@ static void FNAME(invlpg)(struct kvm_vcpu *vcpu, gva_t gva, hpa_t root_hpa)
+>                 sptep = iterator.sptep;
+>
+>                 sp = sptep_to_sp(sptep);
+> -               if (is_last_spte(*sptep, level)) {
+> +               old_spte = *sptep;
+> +               if (is_last_spte(old_spte, level)) {
+>                         pt_element_t gpte;
+>                         gpa_t pte_gpa;
+>
+> @@ -927,7 +929,8 @@ static void FNAME(invlpg)(struct kvm_vcpu *vcpu, gva_t gva, hpa_t root_hpa)
+>                         pte_gpa = FNAME(get_level1_sp_gpa)(sp);
+>                         pte_gpa += (sptep - sp->spt) * sizeof(pt_element_t);
+>
+> -                       if (mmu_page_zap_pte(vcpu->kvm, sp, sptep))
+> +                       mmu_page_zap_pte(vcpu->kvm, sp, sptep);
+> +                       if (is_shadow_present_pte(old_spte))
+>                                 kvm_flush_remote_tlbs_with_address(vcpu->kvm,
+>                                         sp->gfn, KVM_PAGES_PER_HPAGE(sp->role.level));
+>
+> --
+> 2.28.0
+>
