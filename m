@@ -2,177 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45C16275A6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E36F275A56
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726806AbgIWOkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 10:40:47 -0400
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:39268 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726760AbgIWOkm (ORCPT
+        id S1726670AbgIWOjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 10:39:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26299 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726156AbgIWOjt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 10:40:42 -0400
-Received: from relay9-d.mail.gandi.net (unknown [217.70.183.199])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id 0D6AF3B2800;
-        Wed, 23 Sep 2020 14:39:27 +0000 (UTC)
-X-Originating-IP: 90.65.92.90
-Received: from localhost (lfbn-lyo-1-1913-90.w90-65.abo.wanadoo.fr [90.65.92.90])
-        (Authenticated sender: gregory.clement@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id DB6D0FF80F;
-        Wed, 23 Sep 2020 14:39:02 +0000 (UTC)
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        Wed, 23 Sep 2020 10:39:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600871988;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XtUNJYHV2J1JZ6JLBA0jisxCSujCzEq2vD80O/D6hKQ=;
+        b=G+dmkEqPJBi3f5i7FcUcaVulmRYMAH2y73HVTLnvN6Mb3DmCloP3XKtaNvgoBj2RDKbHwA
+        2MWENmDITUuUSD8/OUY1HqonbmMY3rVqddRf32kXbvH+xrq0lAzmXKun8FRQVr+oNDgv5a
+        8Zj2hNFefaykwdvpC11DhMr7gX9oNk0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-497-Ai1jqBmFMUa4zYresSj0Pg-1; Wed, 23 Sep 2020 10:39:44 -0400
+X-MC-Unique: Ai1jqBmFMUa4zYresSj0Pg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CBF2018A2249;
+        Wed, 23 Sep 2020 14:39:40 +0000 (UTC)
+Received: from oldenburg2.str.redhat.com (ovpn-114-108.ams2.redhat.com [10.36.114.108])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 147BA7882D;
+        Wed, 23 Sep 2020 14:39:32 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Solar Designer <solar@openwall.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, madvenka@linux.microsoft.com,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-mediatek@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH v3 14/15] ARM: dts: armada: align GPIO hog names with dtschema
-In-Reply-To: <20200916155715.21009-15-krzk@kernel.org>
-References: <20200916155715.21009-1-krzk@kernel.org> <20200916155715.21009-15-krzk@kernel.org>
-Date:   Wed, 23 Sep 2020 16:39:02 +0200
-Message-ID: <87a6xgimm1.fsf@BL-laptop>
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, oleg@redhat.com,
+        x86@kernel.org, luto@kernel.org, David.Laight@ACULAB.COM,
+        mark.rutland@arm.com, mic@digikod.net,
+        Rich Felker <dalias@libc.org>
+Subject: Re: [PATCH v2 0/4] [RFC] Implement Trampoline File Descriptor
+References: <20200922215326.4603-1-madvenka@linux.microsoft.com>
+        <20200923081426.GA30279@amd> <20200923091456.GA6177@openwall.com>
+Date:   Wed, 23 Sep 2020 16:39:31 +0200
+In-Reply-To: <20200923091456.GA6177@openwall.com> (Solar Designer's message of
+        "Wed, 23 Sep 2020 11:14:57 +0200")
+Message-ID: <87wo0ko8v0.fsf@oldenburg2.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+* Solar Designer:
 
-> The convention for node names is to use hyphens, not underscores.
-> dtschema for pca95xx expects GPIO hogs to end with 'hog' prefix.
+> While I share my opinion here, I don't mean that to block Madhavan's
+> work.  I'd rather defer to people more knowledgeable in current userland
+> and ABI issues/limitations and plans on dealing with those, especially
+> to Florian Weimer.  I haven't seen Florian say anything specific for or
+> against Madhavan's proposal, and I'd like to.  (Have I missed that?)
 
+There was a previous discussion, where I provided feedback (not much
+different from the feedback here, given that the mechanism is mostly the
+same).
 
-Applied on mvebu/dt
+I think it's unnecessary for the libffi use case.  Precompiled code can
+be loaded from disk because the libffi trampolines are so regular.  On
+most architectures, it's not even the code that's patched, but some of
+the data driving it, which happens to be located on the same page due to
+a libffi quirk.
+
+The libffi use case is a bit strange anyway: its trampolines are
+type-generic, and the per-call adjustment is data-driven.  This means
+that once you have libffi in the process, you have a generic
+data-to-function-call mechanism available that can be abused (it's even
+fully CET compatible in recent versions).  And then you need to look at
+the processes that use libffi.  A lot of them contain bytecode
+interpreters, and those enable data-driven arbitrary code execution as
+well.  I know that there are efforts under way to harden Python, but
+it's going to be tough to get to the point where things are still
+difficult for an attacker once they have the ability to make mprotect
+calls.
+
+It was pointed out to me that libffi is doing things wrong, and the
+trampolines should not be type-generic, but generated so that they match
+the function being called.  That is, the marshal/unmarshal code would be
+open-coded in the trampoline, rather than using some generic mechanism
+plus run-time dispatch on data tables describing the function type.
+That is a very different design (and typically used by compilers (JIT or
+not JIT) to implement native calls).  Mapping some code page with a
+repeating pattern would no longer work to defeat anti-JIT measures
+because it's closer to real JIT.  I don't know if kernel support could
+make sense in this context, but it would be a completely different
+patch.
 
 Thanks,
-
-Gregory
-
->
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  arch/arm/boot/dts/armada-388-clearfog.dts  |  4 ++--
->  arch/arm/boot/dts/armada-388-clearfog.dtsi | 10 +++++-----
->  arch/arm/boot/dts/armada-388-helios4.dts   |  6 +++---
->  3 files changed, 10 insertions(+), 10 deletions(-)
->
-> diff --git a/arch/arm/boot/dts/armada-388-clearfog.dts b/arch/arm/boot/dts/armada-388-clearfog.dts
-> index 20f8d4667753..4140a5303b48 100644
-> --- a/arch/arm/boot/dts/armada-388-clearfog.dts
-> +++ b/arch/arm/boot/dts/armada-388-clearfog.dts
-> @@ -73,13 +73,13 @@
->  	 * 14-SFP_TX_DISABLE
->  	 * 15-SFP_MOD_DEF0
->  	 */
-> -	pcie2_0_clkreq {
-> +	pcie2-0-clkreq-hog {
->  		gpio-hog;
->  		gpios = <4 GPIO_ACTIVE_LOW>;
->  		input;
->  		line-name = "pcie2.0-clkreq";
->  	};
-> -	pcie2_0_w_disable {
-> +	pcie2-0-w-disable-hog {
->  		gpio-hog;
->  		gpios = <7 GPIO_ACTIVE_LOW>;
->  		output-low;
-> diff --git a/arch/arm/boot/dts/armada-388-clearfog.dtsi b/arch/arm/boot/dts/armada-388-clearfog.dtsi
-> index a0aa1d188f0c..f8a06ae4a3c9 100644
-> --- a/arch/arm/boot/dts/armada-388-clearfog.dtsi
-> +++ b/arch/arm/boot/dts/armada-388-clearfog.dtsi
-> @@ -141,31 +141,31 @@
->  		#gpio-cells = <2>;
->  		reg = <0x20>;
->  
-> -		pcie1_0_clkreq {
-> +		pcie1-0-clkreq-hog {
->  			gpio-hog;
->  			gpios = <0 GPIO_ACTIVE_LOW>;
->  			input;
->  			line-name = "pcie1.0-clkreq";
->  		};
-> -		pcie1_0_w_disable {
-> +		pcie1-0-w-disable-hog {
->  			gpio-hog;
->  			gpios = <3 GPIO_ACTIVE_LOW>;
->  			output-low;
->  			line-name = "pcie1.0-w-disable";
->  		};
-> -		usb3_ilimit {
-> +		usb3-ilimit-hog {
->  			gpio-hog;
->  			gpios = <5 GPIO_ACTIVE_LOW>;
->  			input;
->  			line-name = "usb3-current-limit";
->  		};
-> -		usb3_power {
-> +		usb3-power-hog {
->  			gpio-hog;
->  			gpios = <6 GPIO_ACTIVE_HIGH>;
->  			output-high;
->  			line-name = "usb3-power";
->  		};
-> -		m2_devslp {
-> +		m2-devslp-hog {
->  			gpio-hog;
->  			gpios = <11 GPIO_ACTIVE_HIGH>;
->  			output-low;
-> diff --git a/arch/arm/boot/dts/armada-388-helios4.dts b/arch/arm/boot/dts/armada-388-helios4.dts
-> index fb49df2a3bce..b3728de3bd3f 100644
-> --- a/arch/arm/boot/dts/armada-388-helios4.dts
-> +++ b/arch/arm/boot/dts/armada-388-helios4.dts
-> @@ -166,19 +166,19 @@
->  					interrupt-controller;
->  					#interrupt-cells = <2>;
->  
-> -					board_rev_bit_0 {
-> +					board-rev-bit-0-hog {
->  						gpio-hog;
->  						gpios = <0 GPIO_ACTIVE_LOW>;
->  						input;
->  						line-name = "board-rev-0";
->  					};
-> -					board_rev_bit_1 {
-> +					board-rev-bit-1-hog {
->  						gpio-hog;
->  						gpios = <1 GPIO_ACTIVE_LOW>;
->  						input;
->  						line-name = "board-rev-1";
->  					};
-> -					usb3_ilimit {
-> +					usb3-ilimit-hog {
->  						gpio-hog;
->  						gpios = <5 GPIO_ACTIVE_HIGH>;
->  						input;
-> -- 
-> 2.17.1
->
-
+Florian
 -- 
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
+Commercial register: Amtsgericht Muenchen, HRB 153243,
+Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'Neill
+
