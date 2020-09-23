@@ -2,92 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96DDB275A60
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:40:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D72CB275A82
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726751AbgIWOkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 10:40:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726156AbgIWOkc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 10:40:32 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C34AC0613CE;
-        Wed, 23 Sep 2020 07:40:32 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kL5wX-004avv-5G; Wed, 23 Sep 2020 14:40:25 +0000
-Date:   Wed, 23 Sep 2020 15:40:25 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        David Laight <David.Laight@aculab.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-aio@kvack.org, io-uring@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        netdev@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 3/9] iov_iter: refactor rw_copy_check_uvector and
- import_iovec
-Message-ID: <20200923144025.GL3421308@ZenIV.linux.org.uk>
-References: <20200923060547.16903-1-hch@lst.de>
- <20200923060547.16903-4-hch@lst.de>
- <20200923141654.GJ3421308@ZenIV.linux.org.uk>
+        id S1726656AbgIWOnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 10:43:43 -0400
+Received: from foss.arm.com ([217.140.110.172]:47924 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726130AbgIWOnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 10:43:43 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 08860113E;
+        Wed, 23 Sep 2020 07:43:43 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 90BA93F73B;
+        Wed, 23 Sep 2020 07:43:41 -0700 (PDT)
+References: <20200921072424.14813-1-vincent.guittot@linaro.org> <20200921072424.14813-2-vincent.guittot@linaro.org>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, linux-kernel@vger.kernel.org, pauld@redhat.com,
+        hdanton@sina.com
+Subject: Re: [PATCH 1/4 v2] sched/fair: relax constraint on task's load during load balance
+In-reply-to: <20200921072424.14813-2-vincent.guittot@linaro.org>
+Date:   Wed, 23 Sep 2020 15:43:19 +0100
+Message-ID: <jhjeemsmu48.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200923141654.GJ3421308@ZenIV.linux.org.uk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 03:16:54PM +0100, Al Viro wrote:
-> On Wed, Sep 23, 2020 at 08:05:41AM +0200, Christoph Hellwig wrote:
-> 
-> > +struct iovec *iovec_from_user(const struct iovec __user *uvec,
-> > +		unsigned long nr_segs, unsigned long fast_segs,
-> 
-> Hmm...  For fast_segs unsigned long had always been ridiculous
-> (4G struct iovec on caller stack frame?), but that got me wondering about
-> nr_segs and I wish I'd thought of that when introducing import_iovec().
-> 
-> The thing is, import_iovec() takes unsigned int there.  Which is fine
-> (hell, the maximal value that can be accepted in 1024), except that
-> we do pass unsigned long syscall argument to it in some places.
-> 
-> E.g. vfs_readv() quietly truncates vlen to 32 bits, and vlen can
-> come unchanged through sys_readv() -> do_readv() -> vfs_readv().
-> With unsigned long passed by syscall glue.
-> 
-> AFAICS, passing 4G+1 as the third argument to readv(2) on 64bit box
-> will be quietly treated as 1 these days.  Which would be fine, except
-> that before "switch {compat_,}do_readv_writev() to {compat_,}import_iovec()"
-> it used to fail with -EINVAL.
-> 
-> Userland, BTW, describes readv(2) iovcnt as int; process_vm_readv(),
-> OTOH, has these counts unsigned long from the userland POV...
-> 
-> I suppose we ought to switch import_iovec() to unsigned long for nr_segs ;-/
-> Strictly speaking that had been a userland ABI change, even though nothing
-> except regression tests checking for expected errors would've been likely
-> to notice.  And it looks like no regression tests covered that one...
-> 
-> Linus, does that qualify for your "if no userland has noticed the change,
-> it's not a breakage"?
 
-Egads...  We have sys_readv() with unsigned long for file descriptor, since
-1.3.31 when it had been introduced.  And originally it did comparison with
-NR_OPEN right in sys_readv().  Then in 2.1.60 it had been switched to
-fget(), which used to take unsigned long at that point.  And in 2.1.90pre1
-it went unsigned int, so non-zero upper 32 bits in readv(2) first argument
-ceased to cause EBADF...
+On 21/09/20 08:24, Vincent Guittot wrote:
+> Some UCs like 9 always running tasks on 8 CPUs can't be balanced and the
+> load balancer currently migrates the waiting task between the CPUs in an
+> almost random manner. The success of a rq pulling a task depends of the
+> value of nr_balance_failed of its domains and its ability to be faster
+> than others to detach it. This behavior results in an unfair distribution
+> of the running time between tasks because some CPUs will run most of the
+> time, if not always, the same task whereas others will share their time
+> between several tasks.
+>
+> Instead of using nr_balance_failed as a boolean to relax the condition
+> for detaching task, the LB will use nr_balanced_failed to relax the
+> threshold between the tasks'load and the imbalance. This mecanism
+> prevents the same rq or domain to always win the load balance fight.
+>
+> Reviewed-by: Phil Auld <pauld@redhat.com>
+> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
 
-Of course, libc had it as int fd all along.
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
