@@ -2,247 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E6B12756E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 13:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2EC82756F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 13:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726545AbgIWLMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 07:12:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726332AbgIWLMN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 07:12:13 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E91C0613CE;
-        Wed, 23 Sep 2020 04:12:13 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id p16so54775pgi.9;
-        Wed, 23 Sep 2020 04:12:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YbTLMhc/PFHCK+c6yLpmglBDEktYs2KKCRMTusR0Uuo=;
-        b=qjsl47zWuZ8A9LusIvWB2t5aq8UuJYUZ/4nQ5MWVvTBHX5U3JhkfTBO9ndLdQTaVoI
-         L0OyvW0qXCUhNNhv6MgAJsGijQV/N66pe4h20Ap6TdD7Xt5GqYqJaZeOqDtKYDWjhEuf
-         WZ/hr8kXvbA57mNKadi6gkHqHyeG95QRkoU2whCiNP3ckd/reOPJEbXNsKXdsYfgr9P5
-         32Eie5fLVg61s+X1g0dfLd3Ey65cm/E8y78WS5XpmXWKqzaSnI7ZOQM7/dm82h1L2+Eb
-         wQqegTxqEN8dDK1QTzJkFel2YMcgcXQnOQp05JnC0rpWw8QaXy1agGcaQ2GjqgpElXm4
-         jYtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YbTLMhc/PFHCK+c6yLpmglBDEktYs2KKCRMTusR0Uuo=;
-        b=ZcU8C+dE5hsvt6RlwSXnWt48D8nLebWAgPSud1nShLPBX3WEzgri94+s4w8EJj2WsJ
-         RTlCP40WqQ/hIXFwu/krh2r7hA0OTY59js4h6S3BYjJo0s95PEcRNN+6j0FyxEzDIHN4
-         5MytHQ6QLKKXSi5qD7id87jOKADJEgMRdZPHv+b5rHnqEFD5nPCgkcPwZ2XGg4i9avRk
-         hBhQzhdk01brjXl5usSklwRWjhP5F/LdLkapfV7Sxk+oDNAKusbXctIgN6ELTxPD4EOV
-         7vu7eoea5HplxCNl2E/OjBe5pMY2J7RDjsSKlkkC6ZaCS83sIRVD78hmsO1qKvMFKQDQ
-         iZHQ==
-X-Gm-Message-State: AOAM533grOUQQ15YMcKFX5TmNDFdc99mJTtEyVycdXC2QGT/0YC+yq0c
-        tf3m/b/ofDPr1AqkoUgQNed02GcAggXSqz3EW0ERgE2TlWtzcp+o
-X-Google-Smtp-Source: ABdhPJxz+vdpMeti/A6nwnMsCbDcNvbBGq6ovPO6ZcefaPgQt0USEHoCVgflk07sfhlEiSisswAluvFwnBx/EfMEcxU=
-X-Received: by 2002:a62:7b55:0:b029:13e:7367:2b2e with SMTP id
- w82-20020a627b550000b029013e73672b2emr1270724pfc.7.1600859533117; Wed, 23 Sep
- 2020 04:12:13 -0700 (PDT)
+        id S1726515AbgIWLPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 07:15:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56360 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726332AbgIWLPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 07:15:16 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1600859714;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=xImd+wFwDMX8qvp6xhPX9o2IoUz+xNALCxlBBFOOpV4=;
+        b=Hfoiu4aRyBYcXTeM8n/vFfPR+32XVoQHoQlARnP0oHDHgFZpRj0I56MmVGpZ7VPf1jZ/gg
+        b96wM2PByPjt7MHRGlKjgHDRhPG6QedKbqnDzbXTScmQdzG/eUVllwpiWi7LSGj+FmFlwq
+        dnJApm40PB/zahynOmHu2PbEO0UUTU8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D39D5ACB8;
+        Wed, 23 Sep 2020 11:15:51 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: Fix missing close devices
+To:     qiang.zhang@windriver.com, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200921072926.24639-1-qiang.zhang@windriver.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <e0ba2e26-c336-a9e4-1377-78e8d9507052@suse.com>
+Date:   Wed, 23 Sep 2020 14:15:13 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200922023151.387447-1-warthog618@gmail.com> <20200922023151.387447-8-warthog618@gmail.com>
-In-Reply-To: <20200922023151.387447-8-warthog618@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 23 Sep 2020 14:11:54 +0300
-Message-ID: <CAHp75VdQUbDnjQEr5X5q6WdU6rD=uBNznNn5=Vy=pvdwVj_hEA@mail.gmail.com>
-Subject: Re: [PATCH v9 07/20] gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL
- and GPIO_V2_LINE_GET_VALUES_IOCTL
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200921072926.24639-1-qiang.zhang@windriver.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 5:35 AM Kent Gibson <warthog618@gmail.com> wrote:
->
-> Add support for requesting lines using the GPIO_V2_GET_LINE_IOCTL, and
-> returning their current values using GPIO_V2_LINE_GET_VALUES_IOCTL.
->
-> The struct linereq implementation is based on the v1 struct linehandle
-> implementation.
 
-...
 
-> +       /*
-> +        * Do not allow OPEN_SOURCE & OPEN_DRAIN flags in a single request. If
+On 21.09.20 г. 10:29 ч., qiang.zhang@windriver.com wrote:
+> From: Zqiang <qiang.zhang@windriver.com>
+> 
+> When the btrfs fill super error, we should first close devices and
+> then call deactivate_locked_super func to free fs_info.
+> 
+> Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+> ---
+>  fs/btrfs/super.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> index 8840a4fa81eb..3bfd54e8f388 100644
+> --- a/fs/btrfs/super.c
+> +++ b/fs/btrfs/super.c
+> @@ -1675,6 +1675,7 @@ static struct dentry *btrfs_mount_root(struct file_system_type *fs_type,
+>  		error = security_sb_set_mnt_opts(s, new_sec_opts, 0, NULL);
+>  	security_free_mnt_opts(&new_sec_opts);
+>  	if (error) {
+> +		btrfs_close_devices(fs_devices);
+>  		deactivate_locked_super(s);
+>  		return ERR_PTR(error);
+>  	}
+> 
 
-You see, in some cases you are using "OR:ed" as understandable for
-programmers, and here & which should be and in plain English and
-really confusing from a programmer's perspective. That's why I prefer
-to see plain English rather than something which is full of encoded
-meanings.
+NAK,
 
-> +        * the hardware actually supports enabling both at the same time the
-> +        * electrical result would be disastrous.
-> +        */
+Devices are properly closed via:
 
-...
 
-> +       /* Bias requires explicit direction. */
-> +       if ((flags & GPIO_V2_LINE_BIAS_FLAGS) &&
-> +           !(flags & GPIO_V2_LINE_DIRECTION_FLAGS))
-> +               return -EINVAL;
+deactivate_locked_super
+  kill_sb (btrfs_kill_super)
+    kill_anon_super
+      generic_shutdown_super
+       put_super (btrfs_put_super)
+         close_ctree
 
-Okay, since this is strict we probably may relax it in the future if
-it will be a use case.
-...
 
-> +       /* Only one bias flag can be set. */
-
-Ditto. (Some controllers allow to set both simultaneously, though I
-can't imagine good use case for that)
-
-> +       if (((flags & GPIO_V2_LINE_FLAG_BIAS_DISABLED) &&
-> +            (flags & (GPIO_V2_LINE_FLAG_BIAS_PULL_DOWN |
-> +                      GPIO_V2_LINE_FLAG_BIAS_PULL_UP))) ||
-> +           ((flags & GPIO_V2_LINE_FLAG_BIAS_PULL_DOWN) &&
-> +            (flags & GPIO_V2_LINE_FLAG_BIAS_PULL_UP)))
-> +               return -EINVAL;
-
-...
-
-> +static void gpio_v2_line_config_flags_to_desc_flags(u64 flags,
-> +                                                   unsigned long *flagsp)
-> +{
-
-> +       assign_bit(FLAG_ACTIVE_LOW, flagsp,
-> +                  flags & GPIO_V2_LINE_FLAG_ACTIVE_LOW);
-
-What I meant is to attach also this to the other assign_bit():s below.
-And just in case a question: why not __asign_bit() do we really need atomicity?
-
-> +       if (flags & GPIO_V2_LINE_FLAG_OUTPUT)
-> +               set_bit(FLAG_IS_OUT, flagsp);
-> +       else if (flags & GPIO_V2_LINE_FLAG_INPUT)
-> +               clear_bit(FLAG_IS_OUT, flagsp);
-> +
-> +       assign_bit(FLAG_OPEN_DRAIN, flagsp,
-> +                  flags & GPIO_V2_LINE_FLAG_OPEN_DRAIN);
-> +       assign_bit(FLAG_OPEN_SOURCE, flagsp,
-> +                  flags & GPIO_V2_LINE_FLAG_OPEN_SOURCE);
-> +       assign_bit(FLAG_PULL_UP, flagsp,
-> +                  flags & GPIO_V2_LINE_FLAG_BIAS_PULL_UP);
-> +       assign_bit(FLAG_PULL_DOWN, flagsp,
-> +                  flags & GPIO_V2_LINE_FLAG_BIAS_PULL_DOWN);
-> +       assign_bit(FLAG_BIAS_DISABLE, flagsp,
-> +                  flags & GPIO_V2_LINE_FLAG_BIAS_DISABLED);
-> +}
-
-...
-
-> +static long linereq_get_values(struct linereq *lr, void __user *ip)
-> +{
-> +       struct gpio_v2_line_values lv;
-> +       DECLARE_BITMAP(vals, GPIO_V2_LINES_MAX);
-> +       struct gpio_desc **descs;
-> +       unsigned int i, didx, num_get;
-> +       int ret;
-
-> +       /* NOTE: It's ok to read values of output lines. */
-> +       if (copy_from_user(&lv, ip, sizeof(lv)))
-> +               return -EFAULT;
-> +
-> +       for (num_get = 0, i = 0; i < lr->num_lines; i++) {
-> +               if (lv.mask & BIT_ULL(i)) {
-> +                       num_get++;
-> +                       descs = &lr->lines[i].desc;
-> +               }
-> +       }
-
-So what you can do here is something like
-
-DECLARE_BITMAP(mask, u64);
-
-...
-
-bitmap_from_u64(mask, lv.mask);
-num_get = bitmap_weight(mask, lr->num_lines);
-if (num_get == 0)
-  return -EINVAL;
-
-for_each_set_bit(i, mask, lr->num_lines)
-      descs = &lr->lines[i].desc;
-// I'm not sure I understood a purpose of the above
-// ah, looks like malloc() avoidance, but you may move it below...
-
-> +       if (num_get == 0)
-> +               return -EINVAL;
-> +
-
-> +       if (num_get != 1) {
-
-...something like
-
-if (num_get == 1)
-  descs = ...[find_first_bit(mask, lr->num_lines)];
-else {
- ...
- for_each_set_bit() {
-  ...
- }
-}
-
-> +               descs = kmalloc_array(num_get, sizeof(*descs), GFP_KERNEL);
-> +               if (!descs)
-> +                       return -ENOMEM;
-> +               for (didx = 0, i = 0; i < lr->num_lines; i++) {
-> +                       if (lv.mask & BIT_ULL(i)) {
-> +                               descs[didx] = lr->lines[i].desc;
-> +                               didx++;
-> +                       }
-> +               }
-> +       }
-> +       ret = gpiod_get_array_value_complex(false, true, num_get,
-> +                                           descs, NULL, vals);
-> +
-> +       if (num_get != 1)
-> +               kfree(descs);
-> +       if (ret)
-> +               return ret;
-> +
-
-> +       lv.bits = 0;
-> +       for (didx = 0, i = 0; i < lr->num_lines; i++) {
-> +               if (lv.mask & BIT_ULL(i)) {
-> +                       if (test_bit(didx, vals))
-> +                               lv.bits |= BIT_ULL(i);
-> +                       didx++;
-> +               }
-> +       }
-
-So here...
-
-> +       if (copy_to_user(ip, &lv, sizeof(lv)))
-> +               return -EFAULT;
-> +
-> +       return 0;
-> +}
-
-...
-
-> +       /* Make sure this is terminated */
-> +       ulr.consumer[sizeof(ulr.consumer)-1] = '\0';
-> +       if (strlen(ulr.consumer)) {
-> +               lr->label = kstrdup(ulr.consumer, GFP_KERNEL);
-> +               if (!lr->label) {
-> +                       ret = -ENOMEM;
-> +                       goto out_free_linereq;
-> +               }
-> +       }
-
-Still don't get why we can\t use kstrndup() here...
-
--- 
-With Best Regards,
-Andy Shevchenko
+It seems you haven't done deep enough analysis of the involved call chains.
