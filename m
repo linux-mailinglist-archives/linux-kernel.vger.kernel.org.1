@@ -2,48 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98563275D79
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:32:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97438275D7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726706AbgIWQcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 12:32:07 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:58882 "EHLO
+        id S1726738AbgIWQcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 12:32:11 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:58930 "EHLO
         fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgIWQcG (ORCPT
+        with ESMTP id S1726710AbgIWQcJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 12:32:06 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08NGW3TR062919;
-        Wed, 23 Sep 2020 11:32:03 -0500
+        Wed, 23 Sep 2020 12:32:09 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08NGW5Gn062943;
+        Wed, 23 Sep 2020 11:32:05 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600878723;
-        bh=FaPOHCZ660d3W7GeeWfOLvfIqGvvaoUZniUzdCIKfpQ=;
+        s=ti-com-17Q1; t=1600878725;
+        bh=OO3JF5ndowKahtDEP41dXGZcFcG7VIMJgjO783W72yM=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=fscOXTYUx2/UXQnVgi3ZkPaP4CH8yI8IpOD4VUHmFrulexZFfpDNNC9M3F/E3Ms2j
-         oSSt7rIIxImt6KoBECCWs5kC5YSl14QORM3lC6cm5zEf7ZTYzHnsm6OQ/uBF2qZ779
-         GxTlz2Qqi2PoQlHmZ8jz14yfSCicks7dsA7u5EE0=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08NGW2fg079903;
-        Wed, 23 Sep 2020 11:32:02 -0500
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+        b=HkQlYmxpjB0F6PVjQY+zf1DVPT85hoqRe8tTdxzreOMT841WsimhDuxEMWSazGT5y
+         kSuj52FGDLui+2rJZ4JwwtfazOsjDtj2SwrUqscsjCfmeWRINZ830X6FKr79zaicNA
+         jJnNEgiJkJMXTfzZKuiceeCkTjM63l1iLTLmWQKo=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08NGW5lS072573
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 23 Sep 2020 11:32:05 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 23
- Sep 2020 11:32:02 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ Sep 2020 11:32:04 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 23 Sep 2020 11:32:02 -0500
+ Frontend Transport; Wed, 23 Sep 2020 11:32:04 -0500
 Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08NGVudf099701;
-        Wed, 23 Sep 2020 11:32:00 -0500
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08NGVudg099701;
+        Wed, 23 Sep 2020 11:32:02 -0500
 From:   Vignesh Raghavendra <vigneshr@ti.com>
 To:     Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>
 CC:     Rob Herring <robh+dt@kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 1/2] arm64: dts: ti: k3-j7200-mcu-wakeup: Add HyperBus node
-Date:   Wed, 23 Sep 2020 22:01:49 +0530
-Message-ID: <20200923163150.16973-2-vigneshr@ti.com>
+Subject: [PATCH v2 2/2] arm64: dts: ti: k3-j7200-som-p0: Add HyperFlash node
+Date:   Wed, 23 Sep 2020 22:01:50 +0530
+Message-ID: <20200923163150.16973-3-vigneshr@ti.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200923163150.16973-1-vigneshr@ti.com>
 References: <20200923163150.16973-1-vigneshr@ti.com>
@@ -55,50 +56,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-J7200 has a Flash SubSystem that has one OSPI and one HyperBus.. Add
-DT nodes for HyperBus controller for now.
+J7200 SoM has a HyperFlash connected to HyperBus memory controller. But
+HyperBus is muxed with OSPI, therefore keep HyperBus node disabled.
+Bootloader will detect the mux and enable the node as required.
 
 Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
 ---
- .../boot/dts/ti/k3-j7200-mcu-wakeup.dtsi      | 27 +++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi | 36 +++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-index a43385d8feca..ab22b02c0da5 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-@@ -125,4 +125,31 @@ wkup_i2c0: i2c@42120000 {
- 		clocks = <&k3_clks 197 1>;
- 		power-domains = <&k3_pds 197 TI_SCI_PD_SHARED>;
+diff --git a/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
+index f7e271c442a0..6a98ba499bc2 100644
+--- a/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
+@@ -27,3 +27,39 @@ secure_ddr: optee@9e800000 {
+ 		};
  	};
-+
-+	fss: syscon@47000000 {
-+		compatible = "syscon", "simple-mfd";
-+		reg = <0x00 0x47000000 0x00 0x100>;
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+
-+		hbmc_mux: hbmc-mux {
-+			compatible = "mmio-mux";
-+			#mux-control-cells = <1>;
-+			mux-reg-masks = <0x4 0x2>; /* HBMC select */
-+		};
-+
-+		hbmc: hyperbus@47034000 {
-+			compatible = "ti,am654-hbmc";
-+			reg = <0x00 0x47034000 0x00 0x100>,
-+				<0x05 0x00000000 0x01 0x0000000>;
-+			power-domains = <&k3_pds 102 TI_SCI_PD_EXCLUSIVE>;
-+			clocks = <&k3_clks 102 0>;
-+			assigned-clocks = <&k3_clks 102 5>;
-+			assigned-clock-rates = <333333333>;
-+			#address-cells = <2>;
-+			#size-cells = <1>;
-+			mux-controls = <&hbmc_mux 0>;
-+		};
-+	};
  };
++
++&wkup_pmx0 {
++	mcu_fss0_hpb0_pins_default: mcu-fss0-hpb0-pins-default {
++		pinctrl-single,pins = <
++			J721E_WKUP_IOPAD(0x0, PIN_OUTPUT, 1) /* (B6) MCU_OSPI0_CLK.MCU_HYPERBUS0_CK */
++			J721E_WKUP_IOPAD(0x4, PIN_OUTPUT, 1) /* (C8) MCU_OSPI0_LBCLKO.MCU_HYPERBUS0_CKn */
++			J721E_WKUP_IOPAD(0x2c, PIN_OUTPUT, 1) /* (D6) MCU_OSPI0_CSn0.MCU_HYPERBUS0_CSn0 */
++			J721E_WKUP_IOPAD(0x30, PIN_OUTPUT, 1) /* (D7) MCU_OSPI0_CSn1.MCU_HYPERBUS0_RESETn */
++			J721E_WKUP_IOPAD(0x8, PIN_INPUT, 1) /* (B7) MCU_OSPI0_DQS.MCU_HYPERBUS0_RWDS */
++			J721E_WKUP_IOPAD(0xc, PIN_INPUT, 1) /* (D8) MCU_OSPI0_D0.MCU_HYPERBUS0_DQ0 */
++			J721E_WKUP_IOPAD(0x10, PIN_INPUT, 1) /* (C7) MCU_OSPI0_D1.MCU_HYPERBUS0_DQ1 */
++			J721E_WKUP_IOPAD(0x14, PIN_INPUT, 1) /* (C5) MCU_OSPI0_D2.MCU_HYPERBUS0_DQ2 */
++			J721E_WKUP_IOPAD(0x18, PIN_INPUT, 1) /* (A5) MCU_OSPI0_D3.MCU_HYPERBUS0_DQ3 */
++			J721E_WKUP_IOPAD(0x1c, PIN_INPUT, 1) /* (A6) MCU_OSPI0_D4.MCU_HYPERBUS0_DQ4 */
++			J721E_WKUP_IOPAD(0x20, PIN_INPUT, 1) /* (B8) MCU_OSPI0_D5.MCU_HYPERBUS0_DQ5 */
++			J721E_WKUP_IOPAD(0x24, PIN_INPUT, 1) /* (A8) MCU_OSPI0_D6.MCU_HYPERBUS0_DQ6 */
++			J721E_WKUP_IOPAD(0x28, PIN_INPUT, 1) /* (A7) MCU_OSPI0_D7.MCU_HYPERBUS0_DQ7 */
++		>;
++	};
++};
++
++&hbmc {
++	/* OSPI and HBMC are muxed inside FSS, Bootloader will enable
++	 * appropriate node based on board detection
++	 */
++	status = "disabled";
++	pinctrl-names = "default";
++	pinctrl-0 = <&mcu_fss0_hpb0_pins_default>;
++	ranges = <0x00 0x00 0x05 0x00000000 0x4000000>, /* 64MB Flash on CS0 */
++		 <0x01 0x00 0x05 0x04000000 0x800000>; /* 8MB RAM on CS1 */
++
++	flash@0,0 {
++		compatible = "cypress,hyperflash", "cfi-flash";
++		reg = <0x00 0x00 0x4000000>;
++	};
++};
 -- 
 2.28.0
 
