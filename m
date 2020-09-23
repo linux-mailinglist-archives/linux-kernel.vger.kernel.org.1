@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF3A6275C29
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:40:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8E6B275C2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726638AbgIWPkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 11:40:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44334 "EHLO
+        id S1726706AbgIWPkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 11:40:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726184AbgIWPkg (ORCPT
+        with ESMTP id S1726184AbgIWPkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 11:40:36 -0400
+        Wed, 23 Sep 2020 11:40:43 -0400
 Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08502C0613CE;
-        Wed, 23 Sep 2020 08:40:36 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id t10so570739wrv.1;
-        Wed, 23 Sep 2020 08:40:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC17AC0613D1;
+        Wed, 23 Sep 2020 08:40:42 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id e16so561326wrm.2;
+        Wed, 23 Sep 2020 08:40:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rdNOZjxmYZxY4grrZxCVN6KJEz1EtluGEmYNEZcTomY=;
-        b=ACM2YoaV28iao016ZPZqyMNhH8sFRSFoXu8tqP1vn2JpZRzf7Gh58nzQ8AdzT2a9M4
-         p8qm3lXOAhgR4fxWeW11e8qdSB1PoOtBHzDX5n+f8MZt4QTYlsnuxUADeGk+CQIoD+ez
-         kFx1TDOWdYBq4wx8W3rID5Rp4Epk2LZSldeDSwEVUdfonB0rz4iL0Sf5k0+igT/EtXBR
-         vmJoxEeoo9IoFcqVErdsUB8ShzS50xSrlNsLuRzFy2MgRR8+/mO/jtxWr88+oXye0f2T
-         szKPi/DuYQNjH7jPjCrecyQkE0DKbg7zHxyPJg5dRA3VfcTa5lqrcpWlUA5uwyijaMf+
-         Uidg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Y7ozmhUW/j3damyaavxIulLLFXD4DoYlMcnJy4GaQrw=;
+        b=VcxnZrauLJKCgnvgeTcJPd7uysl5U66d78XCDgMRuDJgdYbnFrVMFR24QLtJYq3nHC
+         wndJLnPt7+320EQN1LYoIcDxz8bmrjpdvi1EKOhIjYqX2yUBaYvpe5Fq3E+jWc/mRD16
+         MdYyBa+PB8oifUZg4sTET+TITV0pEQsHLyLFgOkJ9o8Jo2pmmqLLR6Z2W8dx769vkSPI
+         gi39eG/126sWaiQEt/MPjuJ+GuwLjxeTGn84xIMj/zDPmmVTV6Vyo8s3EKydUHwgjZSH
+         SSm+ss2WILVpAFvvOkhf2vPrhC4VQ+WIte2lmWaBYi9EVjmQOv01EPhr2TOzMrhR5qAX
+         nmOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rdNOZjxmYZxY4grrZxCVN6KJEz1EtluGEmYNEZcTomY=;
-        b=Co1IEkOHme836nEOFTwwQd25LfqfaAiV7cP6i8YwNS9JmG/uT6Vyyc2Jn7YPb7TDMD
-         mDT0K+RtTFk6tq8tv9TwmBIm/P35VkLnIlHBYwtRJ4ioq0TsKiMo8ocodZzNXoMr83RM
-         dOf1JlMQdsIFb6uLdQ6O/9WR1YtEs0392H+kiGG0YmsTof8xM/dmkVfBzIuaU1vpysWO
-         1ZVNHDyCo9kon5JldshkMK/MXkIde//+VgmAloF89gSsemuHCSCj/6w3kph1Lcg6RejG
-         OGcQvA46GTlqsQdsXO1iAPmFGmZuxU62kufHrEysMqHTZfFRr+0HUH+S/MxSdpiu5Zj2
-         VYAA==
-X-Gm-Message-State: AOAM53193jMNnobGD67Q9T/jJXUNs2HIipp3KjTaqRQZiaaYuu44vqPt
-        FU6MUPv6pTSmZzHh0/4I/qmVN2eSXoBPjg==
-X-Google-Smtp-Source: ABdhPJwxr8n19OjjBxhQM01RXeYxIjDZt23i0Lb42cMeHGuMzXHUcNwIMRbp+6GsqdSHG+nbSp3gvw==
-X-Received: by 2002:adf:9e06:: with SMTP id u6mr284224wre.208.1600875634451;
-        Wed, 23 Sep 2020 08:40:34 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Y7ozmhUW/j3damyaavxIulLLFXD4DoYlMcnJy4GaQrw=;
+        b=HepkJb0mEJR6I8mskOWOiEWRECYlc9ySVu6/FlI4NJptMsoCBb1qR52/pcGCS/nM1Z
+         G1KMEGlmOWGrF8voEt2Z58+PkE+SaMTF9jXG5sYivy6qBdqEmMg1lmifeEYc4N6eyj8E
+         1wPtBvOFDAtoFnNOpsRPNkiuCJgMGL2p+Y61YwN9GmnsvKevDHzs/UMMgecURQcXkL89
+         QuYXfjYT6su5MivhSlVYKRMqPqUpXmNQkSHFSCxNZ6aUbLJFO0XkPeACytTHrxbdKNZS
+         lBtpdMYLbNL82P+bMG+O+Od0g/6IZzsCIw7KI56aRMseq4uBz349gHEFQS03OsWYrIfX
+         2lZw==
+X-Gm-Message-State: AOAM530EinyQtGx05qxKZX5Ub8TOdvWlzALAQa1isORX5Y7wDEd33pyK
+        b7bmUrahN5kVfwrfe6/nO2jLK9/mPsQD9w==
+X-Google-Smtp-Source: ABdhPJwC/0+MYYaW2qjv08oukQhPXcxn4d4wu9ocIlwePBwXBfT13l7aylAjNejyjHh1vJ5gNzh04w==
+X-Received: by 2002:adf:828f:: with SMTP id 15mr246663wrc.49.1600875640850;
+        Wed, 23 Sep 2020 08:40:40 -0700 (PDT)
 Received: from xps13.lan (3e6b1cc1.rev.stofanet.dk. [62.107.28.193])
-        by smtp.googlemail.com with ESMTPSA id t203sm160066wmg.43.2020.09.23.08.40.33
+        by smtp.googlemail.com with ESMTPSA id t203sm160066wmg.43.2020.09.23.08.40.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 08:40:33 -0700 (PDT)
+        Wed, 23 Sep 2020 08:40:40 -0700 (PDT)
 From:   Bruno Thomsen <bruno.thomsen@gmail.com>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         devicetree@vger.kernel.org
@@ -55,49 +55,419 @@ Cc:     Shawn Guo <shawnguo@kernel.org>,
         Pengutronix Kernel Team <kernel@pengutronix.de>,
         Fabio Estevam <festevam@gmail.com>,
         NXP Linux Team <linux-imx@nxp.com>, bth@kamstrup.com,
-        Bruno Thomsen <bruno.thomsen@gmail.com>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v3 1/2] dt-bindings: fsl: add kamstrup flex concentrator to schema
-Date:   Wed, 23 Sep 2020 17:40:23 +0200
-Message-Id: <20200923154024.11417-1-bruno.thomsen@gmail.com>
+        Bruno Thomsen <bruno.thomsen@gmail.com>
+Subject: [PATCH v3 2/2] ARM: dts: imx7: add support for kamstrup flex concentrator
+Date:   Wed, 23 Sep 2020 17:40:24 +0200
+Message-Id: <20200923154024.11417-2-bruno.thomsen@gmail.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200923154024.11417-1-bruno.thomsen@gmail.com>
+References: <20200923154024.11417-1-bruno.thomsen@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Kamstrup OMNIA Flex Concentrator compatibles to the schema
-so we can make use of them for the validation.
+This adds support for the OMNIA Flex Concentrator product
+from Kamstrup A/S. It's providing radio mesh communication
+infrastructure for smart electricity meters.
+
+Kamstrup OMNIA is a modular and scalable smart grid platform.
 
 Signed-off-by: Bruno Thomsen <bruno.thomsen@gmail.com>
-Acked-by: Rob Herring <robh@kernel.org>
 ---
-No changes since version 2.
+Changes since version 2:
+- Found root cause of Ethernet PHY auto detect issue and created
+  a mdio patch series that resolves the issue.
+  https://lore.kernel.org/netdev/20200730195749.4922-1-bruno.thomsen@gmail.com/
+- Ethernet PHY reset is using new MDIO bus reset.
+- Ethernet PHY interrupt added.
+- Removed SION from a few GPIOs used for Ethernet PHY.
 
 Changes since version 1:
-- Patch prefix renamed to "dt-bindings: fsl:"
-- Added acked-by from Rob Herring.
-- Fixed typo in commit message.
+- Sorted labeling nodes.
+- Sorted pinctrl entries.
+- Removed deprecated fec phy reset properties.
+- Added mdio phy reset properties.
+- Disabled phy type auto detection and added note to commit message.
+- Fixed two comment typos.
 
- Documentation/devicetree/bindings/arm/fsl.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm/boot/dts/Makefile                    |   2 +
+ .../boot/dts/imx7d-flex-concentrator-mfg.dts  |  25 ++
+ arch/arm/boot/dts/imx7d-flex-concentrator.dts | 319 ++++++++++++++++++
+ 3 files changed, 346 insertions(+)
+ create mode 100644 arch/arm/boot/dts/imx7d-flex-concentrator-mfg.dts
+ create mode 100644 arch/arm/boot/dts/imx7d-flex-concentrator.dts
 
-diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-index 6da9d734cdb7..8e9be78f3d68 100644
---- a/Documentation/devicetree/bindings/arm/fsl.yaml
-+++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-@@ -304,6 +304,8 @@ properties:
-           - enum:
-               - fsl,imx7d-sdb             # i.MX7 SabreSD Board
-               - fsl,imx7d-sdb-reva        # i.MX7 SabreSD Rev-A Board
-+              - kam,imx7d-flex-concentrator       # Kamstrup OMNIA Flex Concentrator
-+              - kam,imx7d-flex-concentrator-mfg   # Kamstrup OMNIA Flex Concentrator in manufacturing mode
-               - novtech,imx7d-meerkat96   # i.MX7 Meerkat96 Board
-               - technexion,imx7d-pico-dwarf   # TechNexion i.MX7D Pico-Dwarf
-               - technexion,imx7d-pico-hobbit  # TechNexion i.MX7D Pico-Hobbit
-
-base-commit: 805c6d3c19210c90c109107d189744e960eae025
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index 4572db3fa5ae..15be5a2fe831 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -634,6 +634,8 @@ dtb-$(CONFIG_SOC_IMX7D) += \
+ 	imx7d-colibri-emmc-aster.dtb \
+ 	imx7d-colibri-emmc-eval-v3.dtb \
+ 	imx7d-colibri-eval-v3.dtb \
++	imx7d-flex-concentrator.dtb \
++	imx7d-flex-concentrator-mfg.dtb \
+ 	imx7d-mba7.dtb \
+ 	imx7d-meerkat96.dtb \
+ 	imx7d-nitrogen7.dtb \
+diff --git a/arch/arm/boot/dts/imx7d-flex-concentrator-mfg.dts b/arch/arm/boot/dts/imx7d-flex-concentrator-mfg.dts
+new file mode 100644
+index 000000000000..789f0837058f
+--- /dev/null
++++ b/arch/arm/boot/dts/imx7d-flex-concentrator-mfg.dts
+@@ -0,0 +1,25 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Device Tree Source for Kamstrup OMNIA Flex Concentrator in
++ * manufacturing/debugging mode.
++ *
++ * Copyright (C) 2020 Kamstrup A/S
++ * Author: Bruno Thomsen <bruno.thomsen@gmail.com>
++ */
++
++/dts-v1/;
++
++#include "imx7d-flex-concentrator.dts"
++
++/ {
++	model = "Kamstrup OMNIA Flex Concentrator - Manufacturing";
++	compatible = "kam,imx7d-flex-concentrator-mfg", "kam,imx7d-flex-concentrator", "fsl,imx7d";
++
++	chosen {
++		stdout-path = &uart4;
++	};
++};
++
++&uart4 {
++	status = "okay";
++};
+diff --git a/arch/arm/boot/dts/imx7d-flex-concentrator.dts b/arch/arm/boot/dts/imx7d-flex-concentrator.dts
+new file mode 100644
+index 000000000000..9f73c79253cb
+--- /dev/null
++++ b/arch/arm/boot/dts/imx7d-flex-concentrator.dts
+@@ -0,0 +1,319 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Device Tree Source for Kamstrup OMNIA Flex Concentrator.
++ *
++ * Copyright (C) 2020 Kamstrup A/S
++ * Author: Bruno Thomsen <bruno.thomsen@gmail.com>
++ */
++
++/dts-v1/;
++
++#include "imx7d-tqma7.dtsi"
++
++/* Some I2C devices on TQMa7 SoM are not mounted */
++/delete-node/ &m24c64;
++/delete-node/ &ds1339;
++
++/ {
++	model = "Kamstrup OMNIA Flex Concentrator";
++	compatible = "kam,imx7d-flex-concentrator", "fsl,imx7d";
++
++	memory@80000000 {
++		device_type = "memory";
++		/* 1024 MB - TQMa7D board configuration */
++		reg = <0x80000000 0x40000000>;
++	};
++
++	reg_usb_otg2_vbus: regulator-usb-otg2-vbus {
++		compatible = "regulator-fixed";
++		regulator-name = "VBUS_USBOTG2";
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++		gpio = <&gpio1 7 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++
++	reg_vref_1v8: regulator-vref-1v8 {
++		compatible = "regulator-fixed";
++		regulator-name = "VCC1V8_REF";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		regulator-always-on;
++		vin-supply = <&sw2_reg>;
++	};
++
++	/*
++	 * Human Machine Interface consists of 4 dual red/green LEDs.
++	 * hmi-a-green is controlled directly by the switch-mode power supply.
++	 * hmi-a-red is not used.
++	 */
++	gpio-leds {
++		compatible = "gpio-leds";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_leds>;
++
++		hmi-b-red {
++			label = "hmi-b:red:provisioning";
++			gpios = <&gpio3 6 GPIO_ACTIVE_HIGH>;
++			default-state = "off";
++		};
++
++		hmi-b-green {
++			label = "hmi-b:green:operation";
++			gpios = <&gpio2 28 GPIO_ACTIVE_HIGH>;
++			default-state = "off";
++		};
++
++		hmi-c-red {
++			label = "hmi-c:red:mesh-error";
++			gpios = <&gpio2 29 GPIO_ACTIVE_HIGH>;
++			default-state = "off";
++		};
++
++		hmi-c-green {
++			label = "hmi-c:green:mesh-activity";
++			gpios = <&gpio2 30 GPIO_ACTIVE_HIGH>;
++			default-state = "off";
++		};
++
++		hmi-d-red {
++			label = "hmi-d:red:wan-down";
++			gpios = <&gpio2 31 GPIO_ACTIVE_HIGH>;
++			default-state = "off";
++		};
++
++		hmi-d-green {
++			label = "hmi-d:green:ipsec-up";
++			gpios = <&gpio4 3 GPIO_ACTIVE_HIGH>;
++			default-state = "off";
++		};
++	};
++
++	/*
++	 * Errata e10574 board restart workaround.
++	 */
++	gpio-restart {
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_restart>;
++		compatible = "gpio-restart";
++		gpios = <&gpio7 12 GPIO_ACTIVE_LOW>;
++		priority = <200>;
++	};
++};
++
++/*
++ * Analog signals
++ * ADC1_IN0: SMPS - 5V output monitor (voltage divider: 1/0.2806)
++ */
++&adc1 {
++	vref-supply = <&reg_vref_1v8>;
++	status = "okay";
++};
++
++&ecspi2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_ecspi2>;
++	num-chipselects = <1>;
++	cs-gpios = <&gpio4 23 GPIO_ACTIVE_LOW>;
++	status = "okay";
++
++	pcf2127: rtc@0 {
++		compatible = "nxp,pcf2127";
++		reg = <0>;
++		spi-max-frequency = <2000000>;
++	};
++};
++
++&ecspi4 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_ecspi4>;
++	num-chipselects = <1>;
++	cs-gpios = <&gpio3 3 GPIO_ACTIVE_LOW>;
++	status = "okay";
++
++	/*
++	 * ST chip maximum SPI clock frequency is 33 MHz.
++	 *
++	 * TCG specification - Section 6.4.1 Clocking:
++	 * TPM shall support a SPI clock frequency range of 10-24 MHz.
++	 */
++	st33htph: tpm-tis@0 {
++		compatible = "st,st33htpm-spi", "tcg,tpm_tis-spi";
++		reg = <0>;
++		spi-max-frequency = <24000000>;
++	};
++};
++
++&fec1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_enet1>;
++	phy-mode = "rmii";
++	phy-handle = <&ethphy>;
++	status = "okay";
++
++	/*
++	 * MDIO bus reset is used to generate PHY device reset before
++	 * Ethernet PHY type ID auto-detection. Otherwise this communication
++	 * fails as device does not answer when recommended reset circuit
++	 * is used.
++	 */
++	mdio {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		reset-delay-us = <100000>;
++		reset-post-delay-us = <500000>;
++		reset-gpios = <&gpio7 15 GPIO_ACTIVE_LOW>;
++
++		/* Microchip/Micrel KSZ8081RNB */
++		ethphy: ethernet-phy@1 {
++			compatible = "ethernet-phy-ieee802.3-c22";
++			interrupt-parent = <&gpio1>;
++			interrupts = <9 IRQ_TYPE_LEVEL_LOW>;
++			reg = <1>;
++		};
++	};
++};
++
++/*
++ * Detection signals for internal USB modules.
++ * Used for robust USB plug and play handling such as USB downstream port
++ * power-cycle and USB hub reset in case of misbehaving or crashed modules.
++ *
++ * SMPS - AC input monitor based on zero crossing.
++ * Used for last gasp notification.
++ */
++&gpio3 {
++	gpio-line-names = "", "", "", "", "", "", "", "",
++	"", "", "", "", "smps-ac-monitor", "", "usb-hub-reset", "",
++	"", "", "", "", "", "", "", "",
++	"", "module-b-detection", "", "module-a-detection", "", "", "", "";
++};
++
++/*
++ * Tamper IRQ trigger timestamp reading.
++ * Used for sealed cover opened/closed notification.
++ */
++&gpio5 {
++	gpio-line-names = "", "", "", "", "", "", "", "",
++	"", "", "", "", "rtc-tamper-irq", "", "", "",
++	"", "", "", "", "", "", "", "",
++	"", "", "", "", "", "", "", "";
++};
++
++&iomuxc {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_misc>;
++
++	pinctrl_ecspi2: ecspi2grp {
++		fsl,pins = <
++			MX7D_PAD_ECSPI2_MISO__ECSPI2_MISO		0x7c /* X2-15 */
++			MX7D_PAD_ECSPI2_MOSI__ECSPI2_MOSI		0x74 /* X2-18 */
++			MX7D_PAD_ECSPI2_SCLK__ECSPI2_SCLK		0x74 /* X2-13 */
++			MX7D_PAD_ECSPI2_SS0__GPIO4_IO23			0x74 /* X2-20 */
++			/* RTC - Tamper IRQ */
++			MX7D_PAD_SD2_CLK__GPIO5_IO12			0x3c /* X1-92 */
++		>;
++	};
++
++	pinctrl_ecspi4: ecspi4grp {
++		fsl,pins = <
++			MX7D_PAD_LCD_CLK__ECSPI4_MISO			0x7c /* X2-72 */
++			MX7D_PAD_LCD_ENABLE__ECSPI4_MOSI		0x74 /* X2-68 */
++			MX7D_PAD_LCD_HSYNC__ECSPI4_SCLK			0x74 /* X2-76 */
++			MX7D_PAD_LCD_VSYNC__GPIO3_IO3			0x74 /* X2-78 */
++		>;
++	};
++
++	pinctrl_enet1: enet1grp {
++		fsl,pins = <
++			MX7D_PAD_GPIO1_IO10__ENET1_MDIO			0x03 /* X2-48 */
++			MX7D_PAD_GPIO1_IO11__ENET1_MDC			0x03 /* X2-46 */
++			MX7D_PAD_ENET1_RGMII_TD0__ENET1_RGMII_TD0	0x71 /* X2-53 */
++			MX7D_PAD_ENET1_RGMII_TD1__ENET1_RGMII_TD1	0x71 /* X2-55 */
++			MX7D_PAD_ENET1_RGMII_TX_CTL__ENET1_RGMII_TX_CTL	0x71 /* X2-61 */
++			MX7D_PAD_ENET1_RGMII_RD0__ENET1_RGMII_RD0	0x79 /* X2-56 */
++			MX7D_PAD_ENET1_RGMII_RD1__ENET1_RGMII_RD1	0x79 /* X2-58 */
++			MX7D_PAD_ENET1_RGMII_RX_CTL__ENET1_RGMII_RX_CTL	0x79 /* X2-64 */
++			MX7D_PAD_ENET1_RGMII_RXC__ENET1_RX_ER		0x73 /* X2-52 */
++			/* PHY reset: SRE_FAST, DSE_X1 */
++			MX7D_PAD_ENET1_COL__GPIO7_IO15			0x00 /* X1-96 */
++			/* Clock from PHY to MAC: 100kPU */
++			MX7D_PAD_GPIO1_IO12__CCM_ENET_REF_CLK1		0x70 /* X3-4 */
++			/* PHY interrupt: 100kPU, HYS */
++			MX7D_PAD_GPIO1_IO09__GPIO1_IO9			0x78 /* X1-80 */
++		>;
++	};
++
++	pinctrl_leds: ledsgrp {
++		fsl,pins = <
++			MX7D_PAD_LCD_DATA01__GPIO3_IO6			0x14 /* X2-82 */
++			MX7D_PAD_EPDC_BDR0__GPIO2_IO28			0x14 /* X1-82 */
++			MX7D_PAD_EPDC_BDR1__GPIO2_IO29			0x14 /* X1-84 */
++			MX7D_PAD_EPDC_PWR_COM__GPIO2_IO30		0x14 /* X1-86 */
++			MX7D_PAD_EPDC_PWR_STAT__GPIO2_IO31		0x14 /* X1-88 */
++			MX7D_PAD_UART2_TX_DATA__GPIO4_IO3		0x14 /* X1-90 */
++		>;
++	};
++
++	pinctrl_misc: miscgrp {
++		fsl,pins = <
++			/* Module A detection (low = present) */
++			MX7D_PAD_LCD_DATA22__GPIO3_IO27			0x7c /* X2-105 */
++			/* Module B detection (low = present) */
++			MX7D_PAD_LCD_DATA20__GPIO3_IO25			0x7c /* X2-103 */
++			/* SMPS - AC input monitor (high = failure) */
++			MX7D_PAD_LCD_DATA07__GPIO3_IO12			0x7c /* X2-88 */
++			/* USB - Hub reset */
++			MX7D_PAD_LCD_DATA09__GPIO3_IO14			0x74 /* X2-92 */
++		>;
++	};
++
++	pinctrl_restart: restartgrp {
++		fsl,pins = <
++			MX7D_PAD_ENET1_TX_CLK__GPIO7_IO12	0x74 /* X1-94 */
++		>;
++	};
++
++	pinctrl_uart4: uart4grp {
++		fsl,pins = <
++			MX7D_PAD_SAI2_TX_SYNC__UART4_DCE_RX	0x7e /* X3-14 */
++			MX7D_PAD_SAI2_TX_BCLK__UART4_DCE_TX	0x76 /* X3-16 */
++		>;
++	};
++};
++
++&iomuxc_lpsr {
++	pinctrl_usbotg2: usbotg2grp {
++		fsl,pins = <
++			MX7D_PAD_LPSR_GPIO1_IO06__USB_OTG2_OC	0x5c /* X3-11 */
++			MX7D_PAD_LPSR_GPIO1_IO07__GPIO1_IO7	0x59 /* X3-9 */
++		>;
++	};
++
++};
++
++&uart4 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart4>;
++	assigned-clocks = <&clks IMX7D_UART4_ROOT_SRC>;
++	assigned-clock-parents = <&clks IMX7D_OSC_24M_CLK>;
++};
++
++&usbotg2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_usbotg2>;
++	vbus-supply = <&reg_usb_otg2_vbus>;
++	srp-disable;
++	hnp-disable;
++	adp-disable;
++	dr_mode = "host";
++	status = "okay";
++};
++
++/*
++ * External watchdog feature provided by pcf2127.
++ */
++&wdog1 {
++	status = "disabled";
++};
 -- 
 2.26.2
 
