@@ -2,151 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8C16275E72
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 19:18:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4AA2275E7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 19:19:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726537AbgIWRR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 13:17:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgIWRR7 (ORCPT
+        id S1726634AbgIWRTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 13:19:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23227 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726130AbgIWRTw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 13:17:59 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35AAAC0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 10:17:59 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id d20so443031qka.5
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 10:17:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Wl0emuuFRwoMzXPU5qqXsiLAXTaoY16tfftIB0J40yc=;
-        b=Ys6gPy1Opv7AG5/OZGbTnnJ4aTIMUptrJ823f9T2F0WoCv9W8/JCX+id1o3hVRzwpC
-         gjc1Zz8Mb2st11gJuWOjOv3XpS3MP6aine2VKPdv56KIHPaxpgGedieMqguS6p5lphQP
-         +7m1GFiHq7pJaN0Oio5vWW+QdOcxZ+7XJEu766Kc1lwYQRH/b2xLdQSkaXjoD6+dV6bo
-         vCC5v9HFcbzjHQZeFxQAYugNp6d1GmouVdMuaKvFMvfX8NobD9tMbCsbUmUEZ5pTJ7Cp
-         nlqa+aA5Ayy9SE/N1DqOc/Nzzv44UWtrfKjcE1zYdMgsLwTdjh9Jp3FhJe+X4xTPjQVJ
-         gkdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Wl0emuuFRwoMzXPU5qqXsiLAXTaoY16tfftIB0J40yc=;
-        b=jpONkVAtvTCtpinhH1eCuIQwtKvvAhcFJs+040ow/1RFOl5slrxIS+bCcMUCDJaGl6
-         xHutf0QpWbRJ0czUBhe/QwsLzUQWSV+/OS8xWcpL74Nou1sHwxwSINZ1U9PP0ZZNKW+7
-         rpf8O93hS8wnmUpxQyaME3KBoSKhDY6s6rwJ6mQ5OQDTU2nFe/XQBwGAfL9OVo2TF1wp
-         KT9lZdpUfMpP1mP6D0vbOxa9PSarZcIziQ8fPbeqmMzemduQh3pk1jD/Bpgts7qQD8G7
-         JlfOK0HpXL8qikKPyRE8sHFPNot9B5W+kBCmS1Q5n2/Imla7swtyysog0KDZTEHhpnFu
-         DliQ==
-X-Gm-Message-State: AOAM5338BtXXgXx8LI309G3O5ypEsrigPOBIBnwP2nhptFbLd1bbB4F6
-        0PKbP8UGT1b46UCJNB64llP/Bw==
-X-Google-Smtp-Source: ABdhPJyI1/lwDDielu1D4kgmt6C4Q19oPeKwKlpkm8/fdeNQjqvcEC8zn1HFA9gxbcoYMabTg/mRTg==
-X-Received: by 2002:a37:4711:: with SMTP id u17mr885282qka.54.1600881478432;
-        Wed, 23 Sep 2020 10:17:58 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id k20sm290184qtb.34.2020.09.23.10.17.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 10:17:57 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kL8Oy-0006Rh-T9; Wed, 23 Sep 2020 14:17:56 -0300
-Date:   Wed, 23 Sep 2020 14:17:56 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Wed, 23 Sep 2020 13:19:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600881590;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZAwjKYHLvX7CV9LXjpmU9CFTSk3gBA0Z/UIj2jnpmK8=;
+        b=E030EmGjseoFJIcszE8z3Ir3T1/59TEvN9aMXbuj/pfxuS2inxRQBMQNAzbguIAlXubvnd
+        AsLfQZOTMOiD4IS4K8RaajAVlkj3B9XKBwCFloQq/GoTQ17PqJ9bSr84ayFA41xFAV78Al
+        djvPWo2Ddn3TRZPtRBm1RcsAKEJFcTA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-124-1LsOWFgnOlmg5st1mkkATQ-1; Wed, 23 Sep 2020 13:19:46 -0400
+X-MC-Unique: 1LsOWFgnOlmg5st1mkkATQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 60228107464E;
+        Wed, 23 Sep 2020 17:19:44 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1F1241972B;
+        Wed, 23 Sep 2020 17:19:44 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 08NHJhRP016496;
+        Wed, 23 Sep 2020 13:19:43 -0400
+Received: from localhost (mpatocka@localhost)
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 08NHJgdZ016492;
+        Wed, 23 Sep 2020 13:19:42 -0400
+X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
+Date:   Wed, 23 Sep 2020 13:19:42 -0400 (EDT)
+From:   Mikulas Patocka <mpatocka@redhat.com>
+X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
+To:     Dave Chinner <david@fromorbit.com>
+cc:     Dan Williams <dan.j.williams@intel.com>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Jann Horn <jannh@google.com>, Oleg Nesterov <oleg@redhat.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Hugh Dickins <hughd@google.com>,
-        Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [PATCH 5/5] mm/thp: Split huge pmds/puds if they're pinned when
- fork()
-Message-ID: <20200923171756.GC9916@ziepe.ca>
-References: <20200921211744.24758-1-peterx@redhat.com>
- <20200921212031.25233-1-peterx@redhat.com>
- <20200922120505.GH8409@ziepe.ca>
- <20200923152409.GC59978@xz-x1>
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Eric Sandeen <esandeen@redhat.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        "Kani, Toshi" <toshi.kani@hpe.com>,
+        "Norton, Scott J" <scott.norton@hpe.com>,
+        "Tadakamadla, Rajesh (DCIG/CDI/HPS Perf)" 
+        <rajesh.tadakamadla@hpe.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>
+Subject: Re: NVFS XFS metadata (was: [PATCH] pmem: export the symbols
+ __copy_user_flushcache and __copy_from_user_flushcache)
+In-Reply-To: <20200923024528.GD12096@dread.disaster.area>
+Message-ID: <alpine.LRH.2.02.2009230445030.1800@file01.intranet.prod.int.rdu2.redhat.com>
+References: <alpine.LRH.2.02.2009151216050.16057@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2009151332280.3851@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2009160649560.20720@file01.intranet.prod.int.rdu2.redhat.com>
+ <CAPcyv4gW6AvR+RaShHdQzOaEPv9nrq5myXDmywuoCTYDZxk-hw@mail.gmail.com> <alpine.LRH.2.02.2009161254400.745@file01.intranet.prod.int.rdu2.redhat.com> <CAPcyv4gD0ZFkfajKTDnJhEEjf+5Av-GH+cHRFoyhzGe8bNEgAA@mail.gmail.com> <alpine.LRH.2.02.2009161359540.20710@file01.intranet.prod.int.rdu2.redhat.com>
+ <alpine.LRH.2.02.2009191336380.3478@file01.intranet.prod.int.rdu2.redhat.com> <20200922050314.GB12096@dread.disaster.area> <alpine.LRH.2.02.2009220815420.16480@file01.intranet.prod.int.rdu2.redhat.com> <20200923024528.GD12096@dread.disaster.area>
+User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200923152409.GC59978@xz-x1>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 11:24:09AM -0400, Peter Xu wrote:
-> On Tue, Sep 22, 2020 at 09:05:05AM -0300, Jason Gunthorpe wrote:
-> > On Mon, Sep 21, 2020 at 05:20:31PM -0400, Peter Xu wrote:
-> > > Pinned pages shouldn't be write-protected when fork() happens, because follow
-> > > up copy-on-write on these pages could cause the pinned pages to be replaced by
-> > > random newly allocated pages.
+
+
+On Wed, 23 Sep 2020, Dave Chinner wrote:
+
+> > > dir-test /mnt/test/linux-2.6 63000 1048576
+> > > nvfs		6.6s
+> > > ext4 dax	8.4s
+> > > xfs dax		12.2s
 > > > 
-> > > For huge PMDs, we split the huge pmd if pinning is detected.  So that future
-> > > handling will be done by the PTE level (with our latest changes, each of the
-> > > small pages will be copied).  We can achieve this by let copy_huge_pmd() return
-> > > -EAGAIN for pinned pages, so that we'll fallthrough in copy_pmd_range() and
-> > > finally land the next copy_pte_range() call.
 > > > 
-> > > Huge PUDs will be even more special - so far it does not support anonymous
-> > > pages.  But it can actually be done the same as the huge PMDs even if the split
-> > > huge PUDs means to erase the PUD entries.  It'll guarantee the follow up fault
-> > > ins will remap the same pages in either parent/child later.
+> > > dir-test /mnt/test/linux-2.6 63000 1048576 link
+> > > nvfs		4.7s
+> > > ext4 dax	5.6s
+> > > xfs dax		7.8s
 > > > 
-> > > This might not be the most efficient way, but it should be easy and clean
-> > > enough.  It should be fine, since we're tackling with a very rare case just to
-> > > make sure userspaces that pinned some thps will still work even without
-> > > MADV_DONTFORK and after they fork()ed.
+> > > dir-test /mnt/test/linux-2.6 63000 1048576 dir
+> > > nvfs		8.2s
+> > > ext4 dax	15.1s
+> > > xfs dax		11.8s
 > > > 
-> > > Signed-off-by: Peter Xu <peterx@redhat.com>
-> > >  mm/huge_memory.c | 26 ++++++++++++++++++++++++++
-> > >  1 file changed, 26 insertions(+)
-> > > 
-> > > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> > > index 7ff29cc3d55c..c40aac0ad87e 100644
-> > > +++ b/mm/huge_memory.c
-> > > @@ -1074,6 +1074,23 @@ int copy_huge_pmd(struct mm_struct *dst_mm, struct mm_struct *src_mm,
-> > >  
-> > >  	src_page = pmd_page(pmd);
-> > >  	VM_BUG_ON_PAGE(!PageHead(src_page), src_page);
-> > > +
-> > > +	/*
-> > > +	 * If this page is a potentially pinned page, split and retry the fault
-> > > +	 * with smaller page size.  Normally this should not happen because the
-> > > +	 * userspace should use MADV_DONTFORK upon pinned regions.  This is a
-> > > +	 * best effort that the pinned pages won't be replaced by another
-> > > +	 * random page during the coming copy-on-write.
-> > > +	 */
-> > > +	if (unlikely(READ_ONCE(src_mm->has_pinned) &&
-> > > +		     page_maybe_dma_pinned(src_page))) {
-> > > +		pte_free(dst_mm, pgtable);
-> > > +		spin_unlock(src_ptl);
-> > > +		spin_unlock(dst_ptl);
-> > > +		__split_huge_pmd(vma, src_pmd, addr, false, NULL);
-> > > +		return -EAGAIN;
-> > > +	}
+> > > Yes, nvfs is faster than both ext4 and XFS on DAX, but it's  not a
+> > > huge difference - it's not orders of magnitude faster.
 > > 
-> > Not sure why, but the PMD stuff here is not calling is_cow_mapping()
-> > before doing the write protect. Seems like it might be an existing
-> > bug?
+> > If I increase the size of the test directory, NVFS is order of magnitude 
+> > faster:
+> > 
+> > time dir-test /mnt/test/ 2000000 2000000
+> > NVFS: 0m29,395s
+> > XFS:  1m59,523s
+> > EXT4: 1m14,176s
 > 
-> IMHO it's not a bug, because splitting a huge pmd should always be safe.
+> What happened to NVFS there? The runtime went up by a factor of 5,
+> even though the number of ops performed only doubled.
 
-Sur splitting is safe, but testing has_pinned without checking COW is
-not, for what Jann explained.
+This test is from a different machine (K10 Opteron) than the above test 
+(Skylake Xeon). I borrowed the Xeon for a short time and I no longer have 
+access to it.
 
-The 'maybe' in page_maybe_dma_pinned() means it can return true when
-the correct answer is false. It can never return false when the
-correct answer is true.
+> > time dir-test /mnt/test/ 8000000 8000000
+> > NVFS: 2m13,507s
+> > XFS: 14m31,261s
+> > EXT4: reports "file 1976882 can't be created: No space left on device", 
+> > 	(although there are free blocks and inodes)
+> > 	Is it a bug or expected behavior?
+> 
+> Exponential increase in runtime for a workload like this indicates
+> the XFS journal is too small to run large scale operations. I'm
+> guessing you're just testing on a small device?
 
-It is the same when has_pinned is involved, the combined expression
-must never return false when true is correct. Which means it can only
-be applied for COW cases.
+In this test, the pmem device had 64GiB.
 
-Jason
+I've created 1TiB ramdisk, formatted it with XFS and ran dir-test 8000000 
+on it, however it wasn't much better - it took 14m8,824s.
+
+> In which case, you'd get a 16MB log for XFS, which is tiny and most
+> definitely will limit performance of any large scale metadta
+> operation. Performance should improve significantly for large scale
+> operations with a much larger log, and that should bring the XFS
+> runtimes down significantly.
+
+Is there some mkfs.xfs option that can increase log size?
+
+> > If you think that the lack of journaling is show-stopper, I can implement 
+> > it.
+> 
+> I did not say that. My comments are about the requirement for
+> atomicity of object changes, not journalling. Journalling is an
+> -implementation that can provide change atomicity-, it is not a
+> design constraint for metadata modification algorithms.
+> 
+> Really, you can chose how to do object update however you want. What
+> I want to review is the design documentation and a correctness proof
+> for whatever mechanism you choose to use. Without that information,
+> we have absolutely no chance of reviewing the filesystem
+> implementation for correctness. We don't need a proof for something
+> that uses journalling (because we all know how that works), but for
+> something that uses soft updates we most definitely need the proof
+> of correctness for the update algorithm before we can determine if
+> the implementation is good...
+> 
+> Cheers,
+> 
+> Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
+
+I am thinking about this: I can implement lightweight journaling that will 
+journal just a few writes - I'll allocate some small per-cpu intent log 
+for that.
+
+For example, in nvfs_rename, we call nvfs_delete_de and nvfs_finish_add - 
+these functions are very simple, both of them write just one word - so we 
+can add these two words to the intent log. The same for setattr requesting 
+simultaneous uid/gid/mode change - they are small, so they'll fit into the 
+intent log well.
+
+Regarding verifiability, I can do this - the writes to pmem are wrapped in 
+a macro nv_store. So, I can modify this macro so that it logs all 
+modifications. Then I take the log, cut it at random time, reorder the 
+entries (to simulate reordering in the CPU write-combining buffers), 
+replay it, run nvfsck on it and mount it. This way, we can verify that no 
+matter where the crash happened, either an old file or a new file is 
+present in a directory.
+
+Do you agree with that?
+
+Mikulas
+
