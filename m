@@ -2,136 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87CBD2761E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA8BD2761F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726752AbgIWUTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 16:19:10 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:5127 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726498AbgIWUTJ (ORCPT
+        id S1726610AbgIWUW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 16:22:28 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:44475 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726419AbgIWUW2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 16:19:09 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f6bad8e0000>; Wed, 23 Sep 2020 13:18:22 -0700
-Received: from [10.2.55.40] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 23 Sep
- 2020 20:19:08 +0000
-Subject: Re: [PATCH 5/5] mm/thp: Split huge pmds/puds if they're pinned when
- fork()
-To:     Peter Xu <peterx@redhat.com>, Jan Kara <jack@suse.cz>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Kirill Shutemov" <kirill@shutemov.name>,
-        Jann Horn <jannh@google.com>, Oleg Nesterov <oleg@redhat.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Hugh Dickins <hughd@google.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Andrea Arcangeli <aarcange@redhat.com>
-References: <20200921211744.24758-1-peterx@redhat.com>
- <20200921212031.25233-1-peterx@redhat.com>
- <5e594e71-537f-3e9f-85b6-034b7f5fedbe@nvidia.com>
- <20200922103315.GD15112@quack2.suse.cz>
- <4a65586e-9282-beb0-1880-1ef8da03727c@nvidia.com>
- <20200923092205.GA6719@quack2.suse.cz> <20200923135004.GB59978@xz-x1>
- <20200923140114.GA15875@quack2.suse.cz> <20200923154418.GE59978@xz-x1>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <c77a99e6-c13d-a881-eb70-e0d12083dab9@nvidia.com>
-Date:   Wed, 23 Sep 2020 13:19:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Wed, 23 Sep 2020 16:22:28 -0400
+Received: by mail-io1-f65.google.com with SMTP id g128so850524iof.11;
+        Wed, 23 Sep 2020 13:22:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Cz+zFoKWLDaE+9iIi+TVpdzgCdv9jCrJPLC86d2DUb8=;
+        b=gjwnN4fqhMigXypznLk1VJDFUJpEmvP1eQoNnq1In0BZ4sLOFBVlMDwYCd8FCbsoF6
+         d2MoSgG/Se65nWoFhV/87IyV8VaQKX7O0rB1tl9M1lxSBsJm+e609epacsdzQrJYRYJ8
+         Ee9vHhRer4qGnODszbf9/LC6snsAodGqOd5FBs38IdFL78sxVS5F8YK2zZVbZDYGTtvx
+         g2jEN1QlDbQwTXLBcKDvjSlpBDQaJZ7TmSwNETjBiNGAtrfGEAvBKL2NtF4fwd25oRUB
+         gDNLxfmOX6ajK1HNEL1mcf+1ZIQAHNJdYyZ/wus3fULiLYjw3qaoPVyGMPcrOVa3JiAG
+         5m2A==
+X-Gm-Message-State: AOAM530DN5QK4jdGR9GzNffTV/32CCmLe/4yry3LeqdU+4Uj9h8ZCaJA
+        mMAs/3M/U2zlQlqXPJ1egQ==
+X-Google-Smtp-Source: ABdhPJyvVcr7IHf5wgJNYptsN9XO77Bkci1w2/cpZWcjIgF7JLbsFD0t0XMaijYN7BJL5Y6jTKPASQ==
+X-Received: by 2002:a05:6638:25d0:: with SMTP id u16mr1013274jat.0.1600892547474;
+        Wed, 23 Sep 2020 13:22:27 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id f4sm350567ils.51.2020.09.23.13.22.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2020 13:22:26 -0700 (PDT)
+Received: (nullmailer pid 1238341 invoked by uid 1000);
+        Wed, 23 Sep 2020 20:22:25 -0000
+Date:   Wed, 23 Sep 2020 14:22:25 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Eugen Hristev <eugen.hristev@microchip.com>
+Cc:     devicetree@vger.kernel.org, linus.walleij@linaro.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        robh+dt@kernel.org, linux-gpio@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: at91-pio4: add
+ microchip,sama7g5
+Message-ID: <20200923202225.GA1238284@bogus>
+References: <20200917131257.273882-1-eugen.hristev@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <20200923154418.GE59978@xz-x1>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600892302; bh=r5vR4RQQYYxj0hqrOK7ZHOkTc2Yiu8s3wqtDVwwvNL4=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=aINlxSKQL25fqxpGaypjwiVEleTXGmWDHe4uaqSx5Zhy9Eza52rh/BxF2pdMFfSo9
-         IwhmwtKexbNgraIGKpehrR0Deck4v1nqyllHbwSEvt4NaNCf5rxTOwyi9saA/Y/wRs
-         WdmV6DAxtgVZKIi9Wd7FRleB3QV9xp1ICnJY8EFstOKUO4h1ws8kL9sACBwVPu3vcx
-         295WTE/EnHfA3mrqxDGpVhnMboS3mISrkRDJAw4t38MQrc1M77hLkurruikHXifw78
-         HOm4DShuOKh4vvjxsqptSU0YliDL60qgFHxril23S8wuZb5jNNDlfiODHmN0sW6qY7
-         HmOIDTddktiGw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200917131257.273882-1-eugen.hristev@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/23/20 8:44 AM, Peter Xu wrote:
-> On Wed, Sep 23, 2020 at 04:01:14PM +0200, Jan Kara wrote:
->> On Wed 23-09-20 09:50:04, Peter Xu wrote:
-...
->>>> But the problem is that if you apply mm->has_pinned check on file pages,
->>>> you can get false negatives now. And that's not acceptable...
->>>
->>> Do you mean the case where proc A pinned page P from a file, then proc B
->>> mapped the same page P on the file, then fork() on proc B?
->>
->> Yes.
-
-aha, thanks for spelling out the false negative problem.
-
->>
->>> If proc B didn't explicitly pinned page P in B's address space too,
->>> shouldn't we return "false" for page_likely_dma_pinned(P)?  Because if
->>> proc B didn't pin the page in its own address space, I'd think it's ok to
->>> get the page replaced at any time as long as the content keeps the same.
->>> Or couldn't we?
->>
->> So it depends on the reason why you call page_likely_dma_pinned(). For your
->> COW purposes the check is correct but e.g. for "can filesystem safely
->> writeback this page" the page_likely_dma_pinned() would be wrong. So I'm
->> not objecting to the mechanism as such. I'm mainly objecting to the generic
->> function name which suggests something else than what it really checks and
->> thus it could be used in wrong places in the future... That's why I'd
->> prefer to restrict the function to PageAnon pages where there's no risk of
->> confusion what the check actually does.
+On Thu, 17 Sep 2020 16:12:56 +0300, Eugen Hristev wrote:
+> Add compatible string for microchip sama7g5 SoC.
 > 
-> How about I introduce the helper as John suggested, but rename it to
-> 
->    page_maybe_dma_pinned_by_mm()
-> 
-> ?
-> 
-> Then we also don't need to judge on which is more likely to happen (between
-> "maybe" and "likely", since that will confuse me if I only read these words..).
->
-
-You're right, it is too subtle of a distinction after all. I agree that sticking
-with "_maybe_" avoids that confusion.
-
-
-> I didn't use any extra suffix like "cow" because I think it might be useful for
-> things besides cow.  Fundamentally the new helper will be mm-based, so "by_mm"
-> seems to suite better to me.
-> 
-> Does that sound ok?
+> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+> ---
+>  .../devicetree/bindings/pinctrl/atmel,at91-pio4-pinctrl.txt   | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
 
-Actually, Jan nailed it. I just wasn't understanding his scenario, but now that
-I do, and considering your other point about wording, I think we end up with:
-
-     anon_page_maybe_pinned()
-
-as a pretty good name for a helper function. (We don't want "_mm" because that
-refers more to the mechanism used internally, rather than the behavior of the
-function. "anon_" adds more meaning.)
-
-...now I better go and try to grok what Jason is recommending for the new
-meaning of FOLL_PIN, in another tributary of this thread. I don't *think* it affects
-this naming point, though. :)
-
-thanks,
--- 
-John Hubbard
-NVIDIA
+Acked-by: Rob Herring <robh@kernel.org>
