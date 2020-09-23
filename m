@@ -2,99 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0311275243
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 09:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66241275246
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 09:25:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726751AbgIWHYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 03:24:42 -0400
-Received: from mail-eopbgr1410079.outbound.protection.outlook.com ([40.107.141.79]:5595
-        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726557AbgIWHYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 03:24:42 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gE/DdnLGl8mm/61juuUDzpgs9eJgSthSSmnqtGn7gaozli3nAGDR5iSgSsV+4DP6C3+CMwcXsrLUSC6EpVOIigBV77xOTDrjStG54WSUwgw6YLDo5uP8MmH5qS/+ACFq04bcSD1ZolJoTX80+xYHYHjrdOV2reXTxhvG3F6n3rDxOdkKiHNAwJRi2hH4Nic+BRzPfOvfXMqoIB5pM883CGOUJVFT/9fBuLbDzmVBzJN32ucA9Z0QKy8raD+1nYGzoCeu0VHhKL4JOwUtJqUeAn8diaNuaeU/2AeW9409xXPYtU4G0/zjQjHHgpMIFqgph66w2KiGMzhv556ov2ycJg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GV/v9W4dI/Y0SX3JYKe55p1wd27JJ2HnGrZ3peNNtGg=;
- b=cnSweaDAT9ic1QKteFBO6X26pwVIoDJ12+5AeJcD0kNE+5KuSiXdMi3kd9AIXJfiWFvOQM9HMGqVq6MKjZ8fqYu315rdUAKAIVaj2Bv8bIgLRPYuHhUGt7/WWooxLWCvBW68fS8bH4uro93n/tC7m7Y7LCDtkTu7P0gvn7Ex/h8h+Q6quOj+GuKNd4l8fSy7/PMUGJKh8qGzh2Z0TkDQBt/r7DmPlDXO0EmlsDLKx15NcuOXDvayuLJpOTF0lrzzRl4wbPmXOmtlCkP3OXUIbpySneweqN0GDjG/V8V+4R6XztpixmMS6NEsjEGRKICHLNF3iZrhghDcBtl2A3KrBg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nec.com; dmarc=pass action=none header.from=nec.com; dkim=pass
- header.d=nec.com; arc=none
+        id S1726769AbgIWHZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 03:25:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726557AbgIWHZF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 03:25:05 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A40C061755;
+        Wed, 23 Sep 2020 00:25:05 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id a9so5927793wmm.2;
+        Wed, 23 Sep 2020 00:25:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=necglobal.onmicrosoft.com; s=selector1-necglobal-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GV/v9W4dI/Y0SX3JYKe55p1wd27JJ2HnGrZ3peNNtGg=;
- b=nwOaWGjToYJrGsyLgzBtJwlW1mYWqWX2zq77d1yUmTrM+l4cpK60tdp5BIY2to6+k2tMUQ7dPbDDSA8/zPVY5qq3MK2fLJv6JuceMEGmYLgP9AENRHYixGwX+5Qwv+jLH/JiLTGgqlVIgtfxKoptQl0Wy0S9GTiR41R+wI+95MU=
-Received: from TY2PR01MB3210.jpnprd01.prod.outlook.com (2603:1096:404:74::14)
- by TYAPR01MB5484.jpnprd01.prod.outlook.com (2603:1096:404:8033::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Wed, 23 Sep
- 2020 07:24:39 +0000
-Received: from TY2PR01MB3210.jpnprd01.prod.outlook.com
- ([fe80::108f:629c:d934:9206]) by TY2PR01MB3210.jpnprd01.prod.outlook.com
- ([fe80::108f:629c:d934:9206%7]) with mapi id 15.20.3412.020; Wed, 23 Sep 2020
- 07:24:39 +0000
-From:   =?iso-2022-jp?B?SE9SSUdVQ0hJIE5BT1lBKBskQktZOH0hIUQ+TGkbKEIp?= 
-        <naoya.horiguchi@nec.com>
-To:     Oscar Salvador <osalvador@suse.de>
-CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "aris@ruivo.org" <aris@ruivo.org>,
-        "mhocko@kernel.org" <mhocko@kernel.org>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "cai@lca.pw" <cai@lca.pw>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: Re: [PATCH v7 05/14] mm,hwpoison: refactor madvise_inject_error
-Thread-Topic: [PATCH v7 05/14] mm,hwpoison: refactor madvise_inject_error
-Thread-Index: AQHWkOhLEh0JOw6tEEWKLIXa75NMVal1018A
-Date:   Wed, 23 Sep 2020 07:24:39 +0000
-Message-ID: <20200923072438.GB14664@hori.linux.bs1.fc.nec.co.jp>
-References: <20200922135650.1634-1-osalvador@suse.de>
- <20200922135650.1634-6-osalvador@suse.de>
-In-Reply-To: <20200922135650.1634-6-osalvador@suse.de>
-Accept-Language: ja-JP, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.de; dkim=none (message not signed)
- header.d=none;suse.de; dmarc=none action=none header.from=nec.com;
-x-originating-ip: [165.225.110.205]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 41490ebc-d0bd-4ac3-81bb-08d85f91bb84
-x-ms-traffictypediagnostic: TYAPR01MB5484:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <TYAPR01MB5484A342EA90968512A50515E7380@TYAPR01MB5484.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2512;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: PuqpQkgPtWSvCx6BJBzjive2juA91WVYL4asNjZf1NjabXxubeQlbvhduxdq8Rim56GHxw9YkZW31k216oqaGPK/bm6F+yf2q55sGQT4WY9bPQCddP7mRUG8H67+Em/fHqKSEvr3JenqgGmvKwytvkFaHzeMybK1LVuqoxA6Ewpnm4zokSIuIcRmCjs21QBL+eWX4udWsx6cy7JAvjKADJ+EGoOtCcgy5g02iYjoZwOfo/y2JpXDCNpWCouLQ7bzjwLkSj8oZHkiecMo0b92Sy76QYu1KGnKm9ONYXEZQ12Z4+oBi2CLeS3bzNZkmH1KCZPw0MrrbVJVhgFENtJLgsdWEH4W7/ygQn0GeIUdYFkUQfVKRivPS6jVnxyddqua
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB3210.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66556008)(71200400001)(498600001)(64756008)(6486002)(66446008)(2906002)(1076003)(8676002)(66476007)(85182001)(33656002)(76116006)(66946007)(54906003)(26005)(558084003)(86362001)(8936002)(6506007)(4326008)(186003)(9686003)(6512007)(5660300002)(55236004)(6916009)(142933001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: lugGFTnikX5ksxRPzqYYiAQKLvixaKE0OdZ71g4UjfcoPE4tmxEO43dv68y1+rfsnI3WCz/ojwSGzDGkQ8Ufsd+9MlafsV//oTA8JVzNi7QA4LpTJ514HJNiJsXEiMaF7oB5lH610Au8/MGeNFTSTWK3sdfWRixpCl6TlncqFnOnv4QeoyuLa4Cw8vfDMUVmmCC4lwftRodvXxvJee7whXQccuQqCZ3yRG7Y/AulcU7F6E2pm0wQOcX//V1SaAFim4CfhurZu8SzOe2TH3bQ9zBFzvpzM7w8lghWBvvr2aZEg0ogH5qVvAE0t2kwl1OmiMVxdcX749oaBNqOvHm8Skvqc68bHV+id8x76jnBcpoBa6TyAKM6hjIuT5kY5JRwMcIfU1UwZOWkugsJfGCb9zkTbAbWBr90j8b5Ounvlm9Iyvhsg4B6t0gP4MpAanq6DjAvqxp9zhbYGxV0b12qZ8tgJvEC0St9/8ll4ZmAx1Dd9bX7tUc8CzEIQOztTnakEltjij3pt19cl0FFTGcL2jtrDq8E/tDtbGDf9CH/xbICYoGin+ad4/xpIE3SUnkLXZBb/EEBH4WjG0W8etlTaPuymcNVK0dTEhF9JVsIRTM9WxF6ib0rLgU6pf7p+irO3UJ9rJcJtfwR4cMNMcFKmw==
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-ID: <D23BE73185959343871EB277A258EB94@jpnprd01.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=63bE4w/V+85rYMI6Z+GuGmdQ20QRZeJUTe66Kkw6BBg=;
+        b=lT/sPrDZKA100GJ4e8naAN7q0DddHWKJK7fkVQHKzZCwhbLcP+8KQogNTik8DMJhJe
+         1hWxT6GwYUKRmFif0MhrajQzR2S7UDhyXr4VxmxQXJF8EuBN+2wmPRPX6wLwWsiAyx8z
+         fART+ppKnUOIxBHplH5F1J9i5g7wyQl8E5uAd7z4nahixb7aJJsFOMGIRRuTJIGlTg+e
+         RucIM7agw+pN6N2gVmjBst5tLkEljRdZih5yjQr1DhalbbQ1ruVvOvdS1/gyg52IzgNs
+         b/KqBvWTfCuK0jc3QfSqcT/8z29wYoh3xA3xB6h1t7IsvRzZeK1xZYVjbyj66gD6mauO
+         kTKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=63bE4w/V+85rYMI6Z+GuGmdQ20QRZeJUTe66Kkw6BBg=;
+        b=PfRO8PGGfmCGLmsLlVlRXHe57r0h9HGSB9moBL+XKdHWyh0xg/v0KYlDrE8e1iredK
+         JFWxm/lSHveAFELFWOC1n0yXg7xyVBEGt1o02nCHnWvVYCEjeJ56jBPduRlJw3pkotNP
+         Qi/SLELKCsyrloEJ7lZeBCSRju7WlfkFpcejAqsWq5wC0pv7s5KXKgj5zD7lLc9voB1Z
+         QvYgCbUI6OFi7eUblSrH9xDJFX76aqcFCGHe2ViCWfIyXzGouZYt1z1Yjz2TDKfINa+R
+         OdtFCJB0TqHk68pSJtWZsWVqU66VA9olrxh4DmLNplP/mbDax/Da3yn+m5VtEtmObRNx
+         Zj/A==
+X-Gm-Message-State: AOAM532SUSJZOS30Iq3PxEI3t/N58jiHQ3IMFHEwU5TaIFuS4JW3htf6
+        qp9xlhDMwJExD4oNqSo1cUI=
+X-Google-Smtp-Source: ABdhPJzm9uAd6IV6nXmsv18oqTyueTrQD+GQ6AEGUTF0vrwASDMXrCrEhOcXy8YC7rhSePx+2EhuXw==
+X-Received: by 2002:a05:600c:2257:: with SMTP id a23mr5147626wmm.102.1600845904146;
+        Wed, 23 Sep 2020 00:25:04 -0700 (PDT)
+Received: from BV030612LT (oi48z9.static.otenet.gr. [79.129.51.141])
+        by smtp.gmail.com with ESMTPSA id j10sm30422790wrn.2.2020.09.23.00.24.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2020 00:25:03 -0700 (PDT)
+Date:   Wed, 23 Sep 2020 10:24:49 +0300
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        devicetree@vger.kernel.org,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        linux-actions@lists.infradead.org, Marc Zyngier <maz@kernel.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        linux-arm-kernel@lists.infradead.org, parthiban@linumiz.com,
+        Saravanan Sekar <sravanhome@gmail.com>
+Subject: Re: [PATCH v7 1/3] dt-bindings: interrupt-controller: Add Actions
+ SIRQ controller binding
+Message-ID: <20200923072449.GA31426@BV030612LT>
+References: <cover.1600114378.git.cristian.ciocaltea@gmail.com>
+ <c2046b747574ea56c1cf05c05b402c7f01d5e4fc.1600114378.git.cristian.ciocaltea@gmail.com>
+ <20200922234207.GA3490335@bogus>
 MIME-Version: 1.0
-X-OriginatorOrg: nec.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB3210.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 41490ebc-d0bd-4ac3-81bb-08d85f91bb84
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2020 07:24:39.3285
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: e67df547-9d0d-4f4d-9161-51c6ed1f7d11
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 0ibqd8tkUqTLi97QJcIXFE2GN+7xlUYaHtOmCKLQnzMALQ6jHIUYkvLVOvqnRK5aIK2qp29s8UhTlP3g+A0s5A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB5484
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922234207.GA3490335@bogus>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 03:56:41PM +0200, Oscar Salvador wrote:
-> Make a proper if-else condition for {hard,soft}-offline.
->=20
-> [akpm: refactor comment]
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+On Tue, Sep 22, 2020 at 05:42:07PM -0600, Rob Herring wrote:
+> On Mon, 14 Sep 2020 23:27:17 +0300, Cristian Ciocaltea wrote:
+> > Actions Semi Owl SoCs SIRQ interrupt controller is found in S500, S700
+> > and S900 SoCs and provides support for handling up to 3 external
+> > interrupt lines.
+> > 
+> > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> > ---
+> > Changes in v7:
+> >  - None
+> > 
+> > Changes in v6:
+> >  - Got rid of the 'actions,owl-sirq' compatible, per Robs's feedback
+> >  - Replaced 'actions,ext-interrupts' with 'interrupts', as agreed with
+> >    Rob and Marc
+> > 
+> > Changes in v5:
+> >  - Updated controller description statements both in the commit message
+> >    and the binding doc
+> > 
+> >  .../actions,owl-sirq.yaml                     | 65 +++++++++++++++++++
+> >  1 file changed, 65 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/actions,owl-sirq.yaml
+> > 
+> 
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>=
+Thanks,
+Cristi
