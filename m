@@ -2,101 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFBB9275D8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6145D275D9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:38:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726773AbgIWQgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 12:36:39 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57348 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726743AbgIWQgi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 12:36:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600878996;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XfK4qkocWkT369sQkGo1FXbrIPTkvdIkrivHJ0OU0U4=;
-        b=SqkYsATK3djIR4O+BKElvHh4MDMChDShXUAf3e1vma0yd4i9Z8jVuRqpDrtO8tDTw0XXyE
-        u5Uajv95I/l7V2zQiyIrFfjqoaDbe/g6bmI5clGQ4M72ET2bMS/SGR2no975hEU0CkL1Wx
-        RTsPTE2yV08EObUWA2wABhkB6jsHZVs=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6F6F4AAC7;
-        Wed, 23 Sep 2020 16:37:13 +0000 (UTC)
-Date:   Wed, 23 Sep 2020 18:36:35 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk 5/5] printk: remove nmi safe buffers
-Message-ID: <20200923163635.GE6442@alley>
-References: <20200922153816.5883-1-john.ogness@linutronix.de>
- <20200922153816.5883-6-john.ogness@linutronix.de>
+        id S1726798AbgIWQio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 12:38:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726419AbgIWQin (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 12:38:43 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C33F6C0613CE;
+        Wed, 23 Sep 2020 09:38:42 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kL7mp-004f4D-Mx; Wed, 23 Sep 2020 16:38:31 +0000
+Date:   Wed, 23 Sep 2020 17:38:31 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
+        David Laight <David.Laight@aculab.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-aio@kvack.org, io-uring@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        netdev@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH 5/9] fs: remove various compat readv/writev helpers
+Message-ID: <20200923163831.GO3421308@ZenIV.linux.org.uk>
+References: <20200923060547.16903-1-hch@lst.de>
+ <20200923060547.16903-6-hch@lst.de>
+ <20200923142549.GK3421308@ZenIV.linux.org.uk>
+ <20200923143251.GA14062@lst.de>
+ <20200923145901.GN3421308@ZenIV.linux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200922153816.5883-6-john.ogness@linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200923145901.GN3421308@ZenIV.linux.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2020-09-22 17:44:16, John Ogness wrote:
-> Since the ringbuffer is now lockless, new records can be inserted
-> directly from NMI context. There is no need for the NMI safe
-> buffers. Handle all NMI printk() calls using defer_console_output()
-> to avoid calling console drivers that might have their own locks.
+On Wed, Sep 23, 2020 at 03:59:01PM +0100, Al Viro wrote:
+
+> > That's a very good question.  But it does not just compile but actually
+> > works.  Probably because all the syscall wrappers mean that we don't
+> > actually generate the normal names.  I just tried this:
+> > 
+> > --- a/include/linux/syscalls.h
+> > +++ b/include/linux/syscalls.h
+> > @@ -468,7 +468,7 @@ asmlinkage long sys_lseek(unsigned int fd, off_t offset,
+> >  asmlinkage long sys_read(unsigned int fd, char __user *buf, size_t count);
+> >  asmlinkage long sys_write(unsigned int fd, const char __user *buf,
+> >                             size_t count);
+> > -asmlinkage long sys_readv(unsigned long fd,
+> > +asmlinkage long sys_readv(void *fd,
+> > 
+> > for fun, and the compiler doesn't care either..
 > 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
-> ---
->  kernel/printk/printk_safe.c | 47 ++++---------------------------------
->  1 file changed, 4 insertions(+), 43 deletions(-)
-> 
-> diff --git a/kernel/printk/printk_safe.c b/kernel/printk/printk_safe.c
-> index 7c186cefdb50..720935d19a3e 100644
-> --- a/kernel/printk/printk_safe.c
-> +++ b/kernel/printk/printk_safe.c
-> @@ -355,10 +324,11 @@ __printf(1, 0) int vprintk_func(const char *fmt, va_list args)
->  #endif
->  
->  	/*
-> -	 * Try to use the main logbuf even in NMI. But avoid calling console
-> +	 * Use the main ringbuffer in NMI. But avoid calling console
->  	 * drivers that might have their own locks.
->  	 */
-> -	if ((this_cpu_read(printk_context) & PRINTK_NMI_DIRECT_CONTEXT_MASK)) {
-> +	if ((this_cpu_read(printk_context) &
-> +	     (PRINTK_NMI_CONTEXT_MASK | PRINTK_NMI_DIRECT_CONTEXT_MASK))) {
->  		int len;
->  
->  		len = vprintk_store(0, LOGLEVEL_DEFAULT, NULL, fmt, args);
-> @@ -366,10 +336,6 @@ __printf(1, 0) int vprintk_func(const char *fmt, va_list args)
->  		return len;
->  	}
->  
-> -	/* Use extra buffer in NMI. */
-> -	if (this_cpu_read(printk_context) & PRINTK_NMI_CONTEXT_MASK)
-> -		return vprintk_nmi(fmt, args);
-> -
->  	/* Use extra buffer to prevent a recursion deadlock in safe mode. */
->  	if (this_cpu_read(printk_context) & PRINTK_SAFE_CONTEXT_MASK)
->  		return vprintk_safe(fmt, args);
+> Try to build it for sparc or ppc...
 
-I still hope that we will be able to get rid of printk_safe completely.
+FWIW, declarations in syscalls.h used to serve 4 purposes:
+	1) syscall table initializers needed symbols declared
+	2) direct calls needed the same
+	3) catching mismatches between the declarations and definitions
+	4) centralized list of all syscalls
 
-I would expect that only two situations would need special handling
-with the lockless ringbuffer:
+(2) has been (thankfully) reduced for some time; in any case, ksys_... is
+used for the remaining ones.
 
-   + call vkdb_printf() in kdb context
-   + defer console in NMI context
+(1) and (3) are served by syscalls.h in architectures other than x86, arm64
+and s390.  On those 3 (1) is done otherwise (near the syscall table initializer)
+and (3) is not done at all.
 
-Eventually we should prevent too big level of recursion.
+I wonder if we should do something like
 
-Best Regards,
-Petr
+SYSCALL_DECLARE3(readv, unsigned long, fd, const struct iovec __user *, vec,
+		 unsigned long, vlen);
+in syscalls.h instead, and not under that ifdef.
+
+Let it expand to declaration of sys_...() in generic case and, on x86, into
+__do_sys_...() and __ia32_sys_...()/__x64_sys_...(), with types matching
+what SYSCALL_DEFINE ends up using.
+
+Similar macro would cover compat_sys_...() declarations.  That would
+restore mismatch checking for x86 and friends.  AFAICS, the cost wouldn't
+be terribly high - cpp would have more to chew through in syscalls.h,
+but it shouldn't be all that costly.  Famous last words, of course...
+
+Does anybody see fundamental problems with that?
