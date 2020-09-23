@@ -2,208 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3FD0275953
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5859027595A
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726595AbgIWOEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 10:04:47 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:37524 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726234AbgIWOEq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 10:04:46 -0400
-Received: by mail-io1-f67.google.com with SMTP id y13so23812277iow.4;
-        Wed, 23 Sep 2020 07:04:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/2YIbGPyeDVPWPtl7cPgfN2lbTkXGFerVZnaUBAltaA=;
-        b=lj/u2bxYSUABC/FcqNSJwNRXtJ4TCCsRZNr12+oKTFeP0HuRfg0tWAb49ZZ/TCBkGr
-         68GP+E33mbgazj6cyg69N/mTaSxHo1dEliRyKl4LRfa8OI1GiKhAKLIP5UzLJybBNElK
-         +tY++BC5aCyPfEWiWBQo1EClLKKXKnfEoq2VLcl6Mu5KokBr21ZEFr9UnqduVUPwKFgq
-         TqsTJTrpAip23U+PokXQhnJBRjz/GFnuZh2w1MPBpDcwYHEvieYZWGmxz/Iqs70iXcZl
-         FfyvJLTu4kochBZ8adhSTbOj4DfDCvCkiNtrHX0j4rUNEn9WKkyqHGbqCxFXCCwr6Hrw
-         b2Pw==
-X-Gm-Message-State: AOAM533Tf+frFlofEzzMxIs8za/cNBKAAJI6COkGRVU81zIQBGoDYtDU
-        8BKqg7kORgqPUWn3n/4p3g==
-X-Google-Smtp-Source: ABdhPJxstAEhgQaXKaAuFPlgyAyzZjgHKa6/lnHgGk0H6MXAN1HOfoHNKgPecNsaSTpPJLkpHpfD2A==
-X-Received: by 2002:a6b:be46:: with SMTP id o67mr7181697iof.133.1600869885401;
-        Wed, 23 Sep 2020 07:04:45 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id l6sm10864315ilt.34.2020.09.23.07.04.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 07:04:44 -0700 (PDT)
-Received: (nullmailer pid 644635 invoked by uid 1000);
-        Wed, 23 Sep 2020 14:04:43 -0000
-Date:   Wed, 23 Sep 2020 08:04:43 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Helen Koike <helen.koike@collabora.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Subject: Re: [PATCH v3 1/3] media: dt-bindings: media: Document Rockchip VIP
- bindings
-Message-ID: <20200923140443.GA639013@bogus>
-References: <20200922165535.1356622-1-maxime.chevallier@bootlin.com>
- <20200922165535.1356622-2-maxime.chevallier@bootlin.com>
+        id S1726662AbgIWOFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 10:05:21 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:33768 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726572AbgIWOFV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 10:05:21 -0400
+Received: from zn.tnic (p200300ec2f0d13003cb05fb00c1da4a2.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:1300:3cb0:5fb0:c1d:a4a2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 46B171EC0409;
+        Wed, 23 Sep 2020 16:05:19 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600869919;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=6HuhANw8kbWERcNW/iYnFeMlMcA2HBN5jS0VRKC6GY0=;
+        b=BNmI2iEv7W8wMHaxMaIsoNNrU2ow8f9CCZwlYDC4adBakZBU8UcRXV8R7oTeLatu2gHkFi
+        XTfrEyMzKDNc3ZfWwjLHwKEIm5KYhCoMrwXDTFJa/W6ErpvFgYVRkZAGqCAfkXBLpvJrjV
+        UyMOQmGfjVvmsUWt81zcy9qHqKndi5Y=
+Date:   Wed, 23 Sep 2020 16:05:12 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Punit Agrawal <punit1.agrawal@toshiba.co.jp>
+Cc:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-efi@vger.kernel.org, linux-acpi@vger.kernel.org,
+        devel@acpica.org, Tony Luck <tony.luck@intel.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Yazen Ghannam <yazen.ghannam@amd.com>
+Subject: Re: [PATCH v4] cper, apei, mce: Pass x86 CPER through the MCA
+ handling chain
+Message-ID: <20200923140512.GJ28545@zn.tnic>
+References: <20200904140444.161291-1-Smita.KoralahalliChannabasappa@amd.com>
+ <87wo0kiz6y.fsf@kokedama.swc.toshiba.co.jp>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200922165535.1356622-2-maxime.chevallier@bootlin.com>
+In-Reply-To: <87wo0kiz6y.fsf@kokedama.swc.toshiba.co.jp>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 06:55:33PM +0200, Maxime Chevallier wrote:
-> Add a documentation for the Rockchip Camera Interface controller
-> binding.
+Smita,
+
+pls sync the time of the box where you create the patch:
+
+ Date: Fri,  4 Sep 2020 09:04:44 -0500
+
+but your mail headers have:
+
+ Received: from ... with mapi id 15.20.3370.019; Fri, 18 Sep 2020 14:49:12 +0000
+ 						^^^^^^^^^^^^^^^^^^
+
+On Wed, Sep 23, 2020 at 07:07:17PM +0900, Punit Agrawal wrote:
+> I know Boris asked you to add the reason for the Reported-by, but
+> usually we don't track version differences in the committed patch.
 > 
-> This controller can be found on platforms such as the PX30 or the
-> RK3288, the PX30 being the only platform supported so far.
+> Boris, can you confirm if you want the Reported-by to be retained?
+
+How else would you explain what the Reported-by: tag is for on a patch
+which adds a feature?
+
+> > + * The first expected register in the register layout of MCAX address space.
+> > + * The address defined must match with the first MSR address extracted from
+> > + * BERT which in SMCA systems is the bank's MCA_STATUS register.
+> > + *
+> > + * Note that the decoding of the raw MSR values in BERT is implementation
+> > + * specific and follows register offset order of MCAX address space.
+> > + */
+> > +#define MASK_MCA_STATUS 0xC0002001
 > 
-> Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
-> ---
-> V3 :
->  - renamed the controller
+> The macro value is already defined in mce.h as
+> MSR_AMD64_SMCA_MC0_STATUS.  Is there any reason to not use it?
+
+Good point.
+
+> You can move the comment to where you check the status register.
+
+No need if he really wants to use the first MCi_STATUS address.
+
+> > +	m.apicid = lapic_id;
+> > +	m.bank = (ctx_info->msr_addr >> 4) & 0xFF;
+> > +	m.status = *i_mce;
+> > +	m.addr = *(i_mce + 1);
+> > +	m.misc = *(i_mce + 2);
+> > +	/* Skipping MCA_CONFIG */
+> > +	m.ipid = *(i_mce + 4);
+> > +	m.synd = *(i_mce + 5);
 > 
->  .../bindings/media/rockchip-vip.yaml          | 100 ++++++++++++++++++
->  1 file changed, 100 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/rockchip-vip.yaml
+> Instead of using the raw pointer arithmetic, it is better to define a
+> structure for the MCA registers? Something like -
 > 
-> diff --git a/Documentation/devicetree/bindings/media/rockchip-vip.yaml b/Documentation/devicetree/bindings/media/rockchip-vip.yaml
-> new file mode 100644
-> index 000000000000..652c46053b29
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/rockchip-vip.yaml
-> @@ -0,0 +1,100 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/rockchip-vip.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Rockchip VIP Camera Interface
-> +
-> +maintainers:
-> +  - Maxime Chevallier <maxime.chevallier@bootlin.com>
-> +
-> +description: |-
-> +  Camera Interface for Rockcip platforms
-> +
-> +properties:
-> +  compatible:
-> +    const: rockchip,px30-vip
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: ACLK
-> +      - description: HCLK
-> +      - description: PCLK IN
-> +
-> +  clock-names:
-> +    items:
-> +      - const: aclk
-> +      - const: hclkf
-> +      - const: pclkin
-> +
-> +  resets:
-> +    items:
-> +      - description: AXI
-> +      - description: AHB
-> +      - description: PCLK IN
-> +
-> +  reset-names:
-> +    items:
-> +      - const: axi
-> +      - const: ahb
-> +      - const: pclkin
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +    description: phandle to the associated power domain
-
-Drop description.
-
-> +
-> +  # See ./video-interfaces.txt for details
-> +  port:
-> +    type: object
-> +    additionalProperties: false
-
-Need a description of the data the port represents.
-
-> +
-> +    properties:
-> +      endpoint:
-
-You can drop 'endpoint' since you don't have any other endpoint 
-properties. 
-
-> +        type: object
-> +
-> +        properties:
-> +          remote-endpoint: true
-> +
-> +        required:
-> +          - remote-endpoint
-> +
-> +    required:
-> +      - endpoint
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-
-port should be required.
-
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/clock/px30-cru.h>
-> +    #include <dt-bindings/power/px30-power.h>
-> +
-> +    vip: vip@ff490000 {
-> +    	compatible = "rockchip,px30-vip";
-> +    	reg = <0x0 0xff490000 0x0 0x200>;
-> +    	interrupts = <GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>;
-> +    	clocks = <&cru ACLK_CIF>, <&cru HCLK_CIF>, <&cru PCLK_CIF>, <&cru SCLK_CIF_OUT>;
-> +    	clock-names = "aclk", "hclk", "pclkin";
-> +    	resets = <&cru SRST_CIF_A>, <&cru SRST_CIF_H>, <&cru SRST_CIF_PCLKIN>;
-> +    	reset-names = "axi", "ahb", "pclkin";
-> +    	power-domains = <&power PX30_PD_VI>;
-> +            port {
-
-Some indentation problems here.
-
-> +                    vip_in: endpoint {
-> +                            remote-endpoint = <&tw9900_out>;
-> +                    };
-> +            };
-> +    };
-> +...
-> -- 
-> 2.25.4
+>     struct {
+>         u64 addr;
+>         u64 misc;
+>         u64 config;
+>         u64 ipid;
+>         ...
+>     }
 > 
+> Checking back, this was mentioned in the previous review comments as
+> well. Please address all comments before posting a new version - either
+> by following the suggestion or explaining why it is not a good idea.
+
+Well, that was addressed in his reply last time:
+
+https://lkml.kernel.org/r/a28aa613-8353-0052-31f6-34bc733abf59@amd.com
+
+You might've missed it because you weren't CCed directly.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
