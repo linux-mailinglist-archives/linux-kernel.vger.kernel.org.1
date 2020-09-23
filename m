@@ -2,445 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD45C275798
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 13:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A577275792
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 13:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726540AbgIWL63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 07:58:29 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2913 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726472AbgIWL62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 07:58:28 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id D0C0AEB5D77E86CC8281;
-        Wed, 23 Sep 2020 12:58:26 +0100 (IST)
-Received: from localhost (10.52.124.240) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 23 Sep
- 2020 12:58:25 +0100
-Date:   Wed, 23 Sep 2020 12:56:45 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Mateusz Holenko <mholenko@antmicro.com>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>, <devicetree@vger.kernel.org>,
-        <linux-serial@vger.kernel.org>, Stafford Horne <shorne@gmail.com>,
-        "Karol Gugala" <kgugala@antmicro.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Filip Kokosinski <fkokosinski@antmicro.com>,
-        Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Maxime Ripard <mripard@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        "Heiko Stuebner" <heiko@sntech.de>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        <linux-kernel@vger.kernel.org>,
-        "Gabriel L. Somlo" <gsomlo@gmail.com>
-Subject: Re: [PATCH v11 3/5] drivers/soc/litex: add LiteX SoC Controller
- driver
-Message-ID: <20200923125645.00004846@Huawei.com>
-In-Reply-To: <20200923120817.1667149-3-mholenko@antmicro.com>
-References: <20200923120817.1667149-0-mholenko@antmicro.com>
-        <20200923120817.1667149-3-mholenko@antmicro.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1726593AbgIWL4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 07:56:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726472AbgIWL4x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 07:56:53 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CD00C0613CE;
+        Wed, 23 Sep 2020 04:56:52 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id v12so4990274wmh.3;
+        Wed, 23 Sep 2020 04:56:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=tOBth0D09Q2ohz0j2wZZGcWNbpN/CnOM5eGjkWWAsLQ=;
+        b=SE3i7wQW4V4/wRrHpTRwp84+3pPsubU6E/fbdEBGRPyuke24HhlsPiJyeeDbhgTxPw
+         brervCVt/e7d22HemQeXw02nPPkwSDJelDjbMuMsLvRSbxToFZ+jT6h1xFyr4j9wdjCg
+         Jci/YbyGG+o2EYBTK3s7//0lxwSpnpOrCSDi+6zyqZy3g+8m727odWctK5NbbqhNm/Mx
+         yFvq01oL9gex+f2iiT+outzxzs1Fn99N4bRxr1t0Qhmg7by2YNF/vGn2iJFd+cMSefqF
+         VDw9h6qI7nt5KLPxH/4+5z4hrg8x1SC8nK/FXDe3atKixfaJYT5cR6HG8csfJE4TUqa6
+         S66w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tOBth0D09Q2ohz0j2wZZGcWNbpN/CnOM5eGjkWWAsLQ=;
+        b=rjWba7LZNg667LcToZDBXNAu756rVth8+tvp86LLMGToF31kgVdLqpBjKfTnqpsCRF
+         KIcns7yDdeAmo+r0jo+Co6vqg0VPXMmk7yfY+ZAPeTllSQtsOCTnvSfjZn8RXFyAE++v
+         Yetc747cg0jqW6j3oGTLstcYBx7EXbr5SmzBmXw9dqIpAbr+negcFniFe1P4mhzFNN3C
+         3g67Hi5SYC8keaBrlcX3af3BJG1D76bE6ottv7BFTxf2xBp0wZMTV9Y0eVIOSrNXOKkw
+         rFOOsnmHvGO/3WqGXFnm3zuVQVRTMcsqr4zOXYLUiKaVC7mInte+sy+/B4czBQ6AzBg6
+         BZkg==
+X-Gm-Message-State: AOAM531kLKFeZtIGA0dowXnbNz0G0+MiglzIUxocHvl1ILGAl2GjCVtY
+        y+8+P98pSMTITayJt23I7pc=
+X-Google-Smtp-Source: ABdhPJwzQEEhuY5BhaMurNBo25j/Q6GtAS0fHVF1YvSa002dHdLEA7XSd0jDKiFDhCMVXUckv/5egg==
+X-Received: by 2002:a1c:23c9:: with SMTP id j192mr6318419wmj.6.1600862210715;
+        Wed, 23 Sep 2020 04:56:50 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id v128sm8066512wme.2.2020.09.23.04.56.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2020 04:56:49 -0700 (PDT)
+Date:   Wed, 23 Sep 2020 13:56:47 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Liu Shixin <liushixin2@huawei.com>
+Cc:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] pwm: convert to use DEFINE_SEQ_ATTRIBUTE macro
+Message-ID: <20200923115647.GE1846003@ulmo>
+References: <20200916025028.3992887-1-liushixin2@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.124.240]
-X-ClientProxiedBy: lhreml751-chm.china.huawei.com (10.201.108.201) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="OZkY3AIuv2LYvjdk"
+Content-Disposition: inline
+In-Reply-To: <20200916025028.3992887-1-liushixin2@huawei.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Sep 2020 12:09:06 +0200
-Mateusz Holenko <mholenko@antmicro.com> wrote:
 
-> From: Pawel Czarnecki <pczarnecki@internships.antmicro.com>
-> 
-> This commit adds driver for the FPGA-based LiteX SoC
-> Controller from LiteX SoC builder.
-> 
-> Co-developed-by: Mateusz Holenko <mholenko@antmicro.com>
-> Signed-off-by: Mateusz Holenko <mholenko@antmicro.com>
-> Signed-off-by: Pawel Czarnecki <pczarnecki@internships.antmicro.com>
+--OZkY3AIuv2LYvjdk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-A few little things inline, but looks fine in general to me.
-
-Main request is for more formal documentation of parameters to the read
-and write functions.
-
-Jonathan
- 
+On Wed, Sep 16, 2020 at 10:50:28AM +0800, Liu Shixin wrote:
+> Use DEFINE_SEQ_ATTRIBUTE macro to simplify the code.
+>=20
+> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
 > ---
-> 
-> Notes:
->     Changes in v11:
->     - removed an unnecessary comment left over from previous version
->     - changed a multi-line comment to comply with the formatting rules
->     - use WARN instad of BUG on a failed CSR validation
-> 
->     Changes in v10:
->     - added casting to avoid sparse warnings in the SoC Controller's driver
->     
->     Changes in v9:
->     - added exporting of the `litex_set_reg`/`litex_get_reg` symbols
-> 
->     Changes in v8:
->     - removed `litex_check_accessors()` helper function
->     - added crashing (BUG) on the failed LiteX CSR access test
-> 
->     No changes in v7.
-> 
->     Changes in v6:
->     - added dependency on OF || COMPILE_TEST
->     - used le32_to_cpu(readl(addr)) instead of __raw_readl
->       and writel(cpu_to_le32(value), addr) instead of __raw_writel
->       to take advantage of memory barriers provided by readl/writel
-> 
->     Changes in v5:
->     - removed helper accessors and used __raw_readl/__raw_writel instead
->     - fixed checking for errors in litex_soc_ctrl_probe
-> 
->     Changes in v4:
->     - fixed indent in Kconfig's help section
->     - fixed copyright header
->     - changed compatible to "litex,soc-controller"
->     - simplified litex_soc_ctrl_probe
->     - removed unnecessary litex_soc_ctrl_remove
->    
->     This commit has been introduced in v3 of the patchset.
->     
->     It includes a simplified version of common 'litex.h'
->     header introduced in v2 of the patchset.
-> 
->  MAINTAINERS                        |   2 +
->  drivers/soc/Kconfig                |   1 +
->  drivers/soc/Makefile               |   1 +
->  drivers/soc/litex/Kconfig          |  15 +++
->  drivers/soc/litex/Makefile         |   3 +
->  drivers/soc/litex/litex_soc_ctrl.c | 194 +++++++++++++++++++++++++++++
->  include/linux/litex.h              |  24 ++++
->  7 files changed, 240 insertions(+)
->  create mode 100644 drivers/soc/litex/Kconfig
->  create mode 100644 drivers/soc/litex/Makefile
->  create mode 100644 drivers/soc/litex/litex_soc_ctrl.c
->  create mode 100644 include/linux/litex.h
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 39be98db7418..4d70a1b22a87 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -9840,6 +9840,8 @@ M:	Karol Gugala <kgugala@antmicro.com>
->  M:	Mateusz Holenko <mholenko@antmicro.com>
->  S:	Maintained
->  F:	Documentation/devicetree/bindings/*/litex,*.yaml
-> +F:	drivers/soc/litex/litex_soc_ctrl.c
-> +F:	include/linux/litex.h
->  
->  LIVE PATCHING
->  M:	Josh Poimboeuf <jpoimboe@redhat.com>
-> diff --git a/drivers/soc/Kconfig b/drivers/soc/Kconfig
-> index 425ab6f7e375..d097d070f579 100644
-> --- a/drivers/soc/Kconfig
-> +++ b/drivers/soc/Kconfig
-> @@ -9,6 +9,7 @@ source "drivers/soc/bcm/Kconfig"
->  source "drivers/soc/fsl/Kconfig"
->  source "drivers/soc/imx/Kconfig"
->  source "drivers/soc/ixp4xx/Kconfig"
-> +source "drivers/soc/litex/Kconfig"
->  source "drivers/soc/mediatek/Kconfig"
->  source "drivers/soc/qcom/Kconfig"
->  source "drivers/soc/renesas/Kconfig"
-> diff --git a/drivers/soc/Makefile b/drivers/soc/Makefile
-> index 36452bed86ef..0b16108823ef 100644
-> --- a/drivers/soc/Makefile
-> +++ b/drivers/soc/Makefile
-> @@ -14,6 +14,7 @@ obj-$(CONFIG_ARCH_GEMINI)	+= gemini/
->  obj-y				+= imx/
->  obj-$(CONFIG_ARCH_IXP4XX)	+= ixp4xx/
->  obj-$(CONFIG_SOC_XWAY)		+= lantiq/
-> +obj-$(CONFIG_LITEX_SOC_CONTROLLER) += litex/
->  obj-y				+= mediatek/
->  obj-y				+= amlogic/
->  obj-y				+= qcom/
-> diff --git a/drivers/soc/litex/Kconfig b/drivers/soc/litex/Kconfig
-> new file mode 100644
-> index 000000000000..c974ec3846bc
-> --- /dev/null
-> +++ b/drivers/soc/litex/Kconfig
-> @@ -0,0 +1,15 @@
-> +# SPDX-License_Identifier: GPL-2.0
-> +
-> +menu "Enable LiteX SoC Builder specific drivers"
-> +
-> +config LITEX_SOC_CONTROLLER
-> +	tristate "Enable LiteX SoC Controller driver"
-> +	depends on OF || COMPILE_TEST
-> +	help
-> +	  This option enables the SoC Controller Driver which verifies
-> +	  LiteX CSR access and provides common litex_get_reg/litex_set_reg
-> +	  accessors.
-> +	  All drivers that use functions from litex.h must depend on
-> +	  LITEX_SOC_CONTROLLER.
-> +
-> +endmenu
-> diff --git a/drivers/soc/litex/Makefile b/drivers/soc/litex/Makefile
-> new file mode 100644
-> index 000000000000..98ff7325b1c0
-> --- /dev/null
-> +++ b/drivers/soc/litex/Makefile
-> @@ -0,0 +1,3 @@
-> +# SPDX-License_Identifier: GPL-2.0
-> +
-> +obj-$(CONFIG_LITEX_SOC_CONTROLLER)	+= litex_soc_ctrl.o
-> diff --git a/drivers/soc/litex/litex_soc_ctrl.c b/drivers/soc/litex/litex_soc_ctrl.c
-> new file mode 100644
-> index 000000000000..08330c9872b0
-> --- /dev/null
-> +++ b/drivers/soc/litex/litex_soc_ctrl.c
-> @@ -0,0 +1,194 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * LiteX SoC Controller Driver
-> + *
-> + * Copyright (C) 2020 Antmicro <www.antmicro.com>
-> + *
-> + */
-> +
-> +#include <linux/litex.h>
-> +#include <linux/device.h>
-> +#include <linux/errno.h>
-> +#include <linux/of.h>
-> +#include <linux/of_platform.h>
+>  drivers/pwm/core.c | 17 +++--------------
+>  1 file changed, 3 insertions(+), 14 deletions(-)
 
-I'm not seeing anything from this header in use in here yet.
+Applied, thanks.
 
-> +#include <linux/platform_device.h>
-> +#include <linux/printk.h>
-> +#include <linux/module.h>
-> +#include <linux/errno.h>
-> +#include <linux/io.h>
-> +
-> +/*
-> + * The parameters below are true for LiteX SoC
-> + * configured for 8-bit CSR Bus, 32-bit aligned.
-> + *
-> + * Supporting other configurations will require
-> + * extending the logic in this header.
-> + */
-> +#define LITEX_REG_SIZE             0x4
-> +#define LITEX_SUBREG_SIZE          0x1
-> +#define LITEX_SUBREG_SIZE_BIT      (LITEX_SUBREG_SIZE * 8)
-> +
-> +static DEFINE_SPINLOCK(csr_lock);
-> +
-> +/*
-> + * LiteX SoC Generator, depending on the configuration,
-> + * can split a single logical CSR (Control & Status Register)
-> + * into a series of consecutive physical registers.
-> + *
-> + * For example, in the configuration with 8-bit CSR Bus,
-> + * 32-bit aligned (the default one for 32-bit CPUs) a 32-bit
-> + * logical CSR will be generated as four 32-bit physical registers,
-> + * each one containing one byte of meaningful data.
-> + *
-> + * For details see: https://github.com/enjoy-digital/litex/wiki/CSR-Bus
-> + *
-> + * The purpose of `litex_set_reg`/`litex_get_reg` is to implement
-> + * the logic of writing to/reading from the LiteX CSR in a single
-> + * place that can be then reused by all LiteX drivers.
-> + */
+Thierry
 
-I would argue in favor of formal kernel-doc for these.
-Even with this explanation the exact meaning of parameters
-isn't particularly clear.
+--OZkY3AIuv2LYvjdk
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> +void litex_set_reg(void __iomem *reg, unsigned long reg_size,
-> +		    unsigned long val)
-> +{
-> +	unsigned long shifted_data, shift, i;
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&csr_lock, flags);
-> +
-> +	for (i = 0; i < reg_size; ++i) {
-> +		shift = ((reg_size - i - 1) * LITEX_SUBREG_SIZE_BIT);
-> +		shifted_data = val >> shift;
-> +
-> +		writel((u32 __force)cpu_to_le32(shifted_data), reg + (LITEX_REG_SIZE * i));
-> +	}
-> +
-> +	spin_unlock_irqrestore(&csr_lock, flags);
-> +}
-> +EXPORT_SYMBOL_GPL(litex_set_reg);
-> +
-> +unsigned long litex_get_reg(void __iomem *reg, unsigned long reg_size)
-> +{
-> +	unsigned long shifted_data, shift, i;
-> +	unsigned long result = 0;
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&csr_lock, flags);
-> +
-> +	for (i = 0; i < reg_size; ++i) {
-> +		shifted_data = le32_to_cpu((__le32 __force)readl(reg + (LITEX_REG_SIZE * i)));
-> +
-> +		shift = ((reg_size - i - 1) * LITEX_SUBREG_SIZE_BIT);
-> +		result |= (shifted_data << shift);
-> +	}
-> +
-> +	spin_unlock_irqrestore(&csr_lock, flags);
-> +
-> +	return result;
-> +}
-> +EXPORT_SYMBOL_GPL(litex_get_reg);
-> +
-> +#define SCRATCH_REG_OFF         0x04
-> +#define SCRATCH_REG_SIZE        4
-> +#define SCRATCH_REG_VALUE       0x12345678
-> +#define SCRATCH_TEST_VALUE      0xdeadbeef
-> +
-> +/*
-> + * Check LiteX CSR read/write access
-> + *
-> + * This function reads and writes a scratch register in order
-> + * to verify if CSR access works.
-> + *
-> + * In case any problems are detected, the driver should panic.
-> + *
-> + * Access to the LiteX CSR is, by design, done in CPU native
-> + * endianness. The driver should not dynamically configure
-> + * access functions when the endianness mismatch is detected.
-> + * Such situation indicates problems in the soft SoC design
-> + * and should be solved at the LiteX generator level,
-> + * not in the software.
-> + */
-> +static int litex_check_csr_access(void __iomem *reg_addr)
-> +{
-> +	unsigned long reg;
-> +
-> +	reg = litex_get_reg(reg_addr + SCRATCH_REG_OFF, SCRATCH_REG_SIZE);
-> +
-> +	if (reg != SCRATCH_REG_VALUE) {
-> +		panic("Scratch register read error! Expected: 0x%x but got: 0x%lx",
-> +			SCRATCH_REG_VALUE, reg);
-> +		return -EINVAL;
-> +	}
-> +
-> +	litex_set_reg(reg_addr + SCRATCH_REG_OFF,
-> +		SCRATCH_REG_SIZE, SCRATCH_TEST_VALUE);
-> +	reg = litex_get_reg(reg_addr + SCRATCH_REG_OFF, SCRATCH_REG_SIZE);
-> +
-> +	if (reg != SCRATCH_TEST_VALUE) {
-> +		panic("Scratch register write error! Expected: 0x%x but got: 0x%lx",
-> +			SCRATCH_TEST_VALUE, reg);
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* restore original value of the SCRATCH register */
-> +	litex_set_reg(reg_addr + SCRATCH_REG_OFF,
-> +		SCRATCH_REG_SIZE, SCRATCH_REG_VALUE);
-> +
-> +	pr_info("LiteX SoC Controller driver initialized");
-> +
-> +	return 0;
-> +}
-> +
-> +struct litex_soc_ctrl_device {
-> +	void __iomem *base;
-> +};
-> +
-> +static const struct of_device_id litex_soc_ctrl_of_match[] = {
-> +	{.compatible = "litex,soc-controller"},
-> +	{},
-> +};
-> +
-> +MODULE_DEVICE_TABLE(of, litex_soc_ctrl_of_match);
-> +
-> +static int litex_soc_ctrl_probe(struct platform_device *pdev)
-> +{
-> +	int result;
-> +	struct device *dev;
-> +	struct device_node *node;
-> +	struct litex_soc_ctrl_device *soc_ctrl_dev;
-> +
-> +	dev = &pdev->dev;
-> +	node = dev->of_node;
-> +	if (!node)
-> +		return -ENODEV;
-> +
-> +	soc_ctrl_dev = devm_kzalloc(dev, sizeof(*soc_ctrl_dev), GFP_KERNEL);
-> +	if (!soc_ctrl_dev)
-> +		return -ENOMEM;
-> +
-> +	soc_ctrl_dev->base = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(soc_ctrl_dev->base))
-> +		return PTR_ERR(soc_ctrl_dev->base);
-> +
-> +	result = litex_check_csr_access(soc_ctrl_dev->base);
-> +	if (result) {
-> +		/* LiteX CSRs access is broken which means that
-> +		 * none of LiteX drivers will most probably
-> +		 * operate correctly
-> +		 */
-> +		WARN(1, "Failed to validate CSR registers, the system is probably broken.\n");
-> +	}
-> +
-> +	return result;
-> +}
-> +
-> +static struct platform_driver litex_soc_ctrl_driver = {
-> +	.driver = {
-> +		.name = "litex-soc-controller",
-> +		.of_match_table = of_match_ptr(litex_soc_ctrl_of_match)
-> +	},
-> +	.probe = litex_soc_ctrl_probe,
-> +};
-> +
-> +module_platform_driver(litex_soc_ctrl_driver);
-> +MODULE_DESCRIPTION("LiteX SoC Controller driver");
-> +MODULE_AUTHOR("Antmicro <www.antmicro.com>");
-> +MODULE_LICENSE("GPL v2");
-> diff --git a/include/linux/litex.h b/include/linux/litex.h
-> new file mode 100644
-> index 000000000000..72061018c172
-> --- /dev/null
-> +++ b/include/linux/litex.h
-> @@ -0,0 +1,24 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Common LiteX header providing
-> + * helper functions for accessing CSRs.
-> + *
-> + * Implementation of the functions is provided by
-> + * the LiteX SoC Controller driver.
-> + *
-> + * Copyright (C) 2019-2020 Antmicro <www.antmicro.com>
-> + */
-> +
-> +#ifndef _LINUX_LITEX_H
-> +#define _LINUX_LITEX_H
-> +
-> +#include <linux/io.h>
-> +#include <linux/types.h>
-> +#include <linux/compiler_types.h>
-> +
-> +void litex_set_reg(void __iomem *reg, unsigned long reg_sz, unsigned long val);
-> +
-> +unsigned long litex_get_reg(void __iomem *reg, unsigned long reg_sz);
-> +
+-----BEGIN PGP SIGNATURE-----
 
-Nitpick. One blank line is almost always enough!
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9rN/8ACgkQ3SOs138+
+s6FdMg/+PpxSMiUTcNeuag9gJv4t0Bjl/50J0WI4uX2d0/0pF3I+ol4azq/W0OOL
+/T6qiWDL4o7caBPvG5td4wB7zPe0EZ+w+0JshyPOqIVGEAEe6fZC2X+oqR9ezE+0
+VkP+U0i2Egw6Q8i8MmssGKQqLnQoe8vDD062fMZxq9Uq2zCX+tZSlBvXocMloHgE
+UsGSg7GDyT7yoylvYI0aWxJ9IlbOHZn17dNWVkmqDVYnyZlqPsveaUDm+uTAJA3R
+nrm9OzJxq2SarPyqvr8v1acKm+OXtvsogQFNob5Qxi0mdYcPB8VHEIxlfKyTLT+l
+CjywKWhpkQdfucWx3erDy4TzSLuvmDVebCqTnvFMIt1HYzA8d8CnOeJYqVLgsMeF
+WzTDmR1sbnJoHE1sqMGKsOGWnOJJf400Y1g0tmRwLP6MvDa0SKY3uVTxZgvFLf+6
+/KBH/PqL1ct9tutDP3Bxa3HGNOjj8hGRIT/w+AdWDTV94aRTwQhelBnCQ4BlbYJ7
+p2VhE4cxyyqC5Jm1MZTGnQ+GA4+yyD+7ybqHHPDIw3sCKOPCbZUrs5GtzLO7p3Zv
+4uLJIC/yvh5VAM8bPb220i8CwiGMjcZ2h5Rwl3flvPx+YHWilErsnIbAH8YkY6vg
+CYRC4xpoqbgOQjTmijD8mASvyNVd8B/TgI4bLs+Cdo4IoSdWwxY=
+=habK
+-----END PGP SIGNATURE-----
 
-> +
-> +#endif /* _LINUX_LITEX_H */
-
-
+--OZkY3AIuv2LYvjdk--
