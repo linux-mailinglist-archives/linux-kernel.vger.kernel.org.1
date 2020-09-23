@@ -2,74 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99BA0276142
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 21:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F478276125
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 21:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgIWToV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 15:44:21 -0400
-Received: from mga06.intel.com ([134.134.136.31]:34824 "EHLO mga06.intel.com"
+        id S1726680AbgIWTec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 15:34:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726265AbgIWToV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 15:44:21 -0400
-IronPort-SDR: q9wxlg4uMxNEvm/9rJTpwV5E2z1A4tnLRLURLu8WUNMIowmm7HOP31iMXCJjXKAU+K1eih9Lgj
- 4hvjoOVCHnxQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="222586564"
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="222586564"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 12:44:20 -0700
-IronPort-SDR: VGl03i4oOocVHNVaTF+XIl4Ki9i05XDbi/antbjsLNodX3vydQnKKh1kkPoMdkHVwJyw5Q1rOW
- XTRyC5T4wj4g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="511116597"
-Received: from viggo.jf.intel.com (HELO localhost.localdomain) ([10.54.77.144])
-  by fmsmga006.fm.intel.com with ESMTP; 23 Sep 2020 12:44:20 -0700
-Subject: [PATCH] media: fix Omnivision Intel MAINTAINERS entry
-To:     linux-kernel@vger.kernel.org
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>, tian.shu.qiu@intel.com,
-        shawnx.tu@intel.com, bingbu.cao@intel.com,
-        linux-media@vger.kernel.org, mchehab@kernel.org
-From:   Dave Hansen <dave.hansen@linux.intel.com>
-Date:   Wed, 23 Sep 2020 12:33:56 -0700
-Message-Id: <20200923193356.188D717D@viggo.jf.intel.com>
+        id S1726156AbgIWTeb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 15:34:31 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 51DD5221EF;
+        Wed, 23 Sep 2020 19:34:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600889670;
+        bh=kJqftQF/c7SQ9CYWHHfmqrJPffe81/yqALfWPTEdaOY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zfvHrfnpNrNgC4lRJRDmhq5Fr4Dx8rPDkp6f2/tFM2bkycJhI2P3pGcU17dUFz0t0
+         xUWDTFUMUwo3d61cnslmhg8bpBTVSDqMkgnMPG6o1dJTquGiwKhyreukpTf9HgUrCX
+         QIpkrCghZ8IbektRTQPFuBrC+lGqIHbP4eKt/mW4=
+Date:   Wed, 23 Sep 2020 21:34:48 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>, corbet@lwn.net,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 01/11] counters: Introduce counter and counter_atomic
+Message-ID: <20200923193448.GE199068@kroah.com>
+References: <cover.1600816121.git.skhan@linuxfoundation.org>
+ <e57eb89132000b255b5a7952cb82725ec2f3e4e0.1600816121.git.skhan@linuxfoundation.org>
+ <202009231152.5023C4656F@keescook>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202009231152.5023C4656F@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 23, 2020 at 12:04:08PM -0700, Kees Cook wrote:
+> On Tue, Sep 22, 2020 at 07:43:30PM -0600, Shuah Khan wrote:
+> > Introduce Simple atomic and non-atomic counters.
+> > 
+> > There are a number of atomic_t usages in the kernel where atomic_t api
+> > is used strictly for counting and not for managing object lifetime. In
+> > some cases, atomic_t might not even be needed.
+> 
+> Thank you for working on a counter API! I'm glad to see work here,
+> though I have some pretty significant changes to request; see below...
+> 
+> > 
+> > The purpose of these counters is twofold: 1. clearly differentiate
+> > atomic_t counters from atomic_t usages that guard object lifetimes,
+> > hence prone to overflow and underflow errors. It allows tools that scan
+> > for underflow and overflow on atomic_t usages to detect overflow and
+> > underflows to scan just the cases that are prone to errors. 2. provides
+> > non-atomic counters for cases where atomic isn't necessary.
+> > 
+> > Simple atomic and non-atomic counters api provides interfaces for simple
+> > atomic and non-atomic counters that just count, and don't guard resource
+> > lifetimes. Counters will wrap around to 0 when it overflows and should
+> > not be used to guard resource lifetimes, device usage and open counts
+> > that control state changes, and pm states.
+> > 
+> > Using counter_atomic to guard lifetimes could lead to use-after free
+> > when it overflows and undefined behavior when used to manage state
+> > changes and device usage/open states.
+> > 
+> > Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> 
+> I would really like these APIs to be _impossible_ to use for object
+> lifetime management. To that end, I would like to have all of the
+> *_return() functions removed. It should be strictly init, inc, dec,
+> read.
+> 
+> > +There are a number of atomic_t usages in the kernel where atomic_t api
+> > +is used strictly for counting and not for managing object lifetime. In
+> > +some cases, atomic_t might not even be needed.
+> 
+> Why even force the distinction? I think all the counters should be
+> atomic and then there is no chance they will get accidentally used in
+> places where someone *thinks* it's safe to use a non-atomic. So,
+> "_atomic" can be removed from the name and the non-atomic implementation
+> can get removed. Anyone already using non-atomic counters is just using
+> "int" and "long" anyway. Let's please only create APIs that are always
+> safe to use, and provide some benefit over a native time.
 
-From: Dave Hansen <dave.hansen@linux.intel.com>
+For "statistics", why take the extra overhead for an atomic variable
+just to be able to show to a debugging file the number of USB packets
+have been sent through the system (a current use of an atomic variable
+for some odd reason...)
 
-Tianshu Qiu has three MAINTAINERS entries, and one typo.  After being
-notified if the typo a few months ago, they didn't act, so here's a
-patch.
+And really, a "int" should be pretty safe to write from multiple places,
+you aren't going to get "tearing" on any processors that run Linux,
+worst case you get a stale value when reading them.
 
-Tianshu, an ack would be appreciated.
+So I would argue that the default for a counter be just an int, not
+atomic, as odds are, most atomics are not really needed for this type of
+thing at all.
 
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Tianshu Qiu <tian.shu.qiu@intel.com>
-Cc: Shawn Tu <shawnx.tu@intel.com>
-Cc: Bingbu Cao <bingbu.cao@intel.com>
-Cc: linux-media@vger.kernel.org
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: linux-kernel@vger.kernel.org
----
+thanks,
 
- b/MAINTAINERS |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff -puN MAINTAINERS~bad-intel-maintainers MAINTAINERS
---- a/MAINTAINERS~bad-intel-maintainers	2020-09-23 12:24:01.585676846 -0700
-+++ b/MAINTAINERS	2020-09-23 12:25:02.959676693 -0700
-@@ -12766,7 +12766,7 @@ T:	git git://linuxtv.org/media_tree.git
- F:	drivers/media/i2c/ov2685.c
- 
- OMNIVISION OV2740 SENSOR DRIVER
--M:	Tianshu Qiu <tian.shu.qiua@intel.com>
-+M:	Tianshu Qiu <tian.shu.qiu@intel.com>
- R:	Shawn Tu <shawnx.tu@intel.com>
- R:	Bingbu Cao <bingbu.cao@intel.com>
- L:	linux-media@vger.kernel.org
-_
+greg k-h
