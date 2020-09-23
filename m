@@ -2,78 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08ACB275183
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 08:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D25F275184
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 08:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726666AbgIWGcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 02:32:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726179AbgIWGct (ORCPT
+        id S1726686AbgIWGcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 02:32:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36674 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726179AbgIWGcz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 02:32:49 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A161DC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 23:32:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=khxS5mQDeFNSNFUvOu/ymTe0n2kgpx0Wdrm7P5zQ3gI=; b=lhtezNXQM5oQFMi2wL9ITtCadn
-        1Rmbye50ROQD+LWV/jsSHCR+MyAQCUn8NmEQjgozH7yPRknu813GD7xL9v1Fek6v2wuG+b+JOZcgC
-        FfQ+ZKsCHp9FS2gq6DprY1tdspEChk5QNKGq4WVYhJypLtXixoaLIjJPMrbgTUKS+Bx7oOw26leDu
-        nDMDocuq7Ch7weJs4o6BXPdawmT1wbPEsc1iN7TAIs676XuImQjYCm6goW17MydcGM3xoR/jJhnf4
-        5WJX/JBQz0YhifKLxHQfFaQLbPSqV2OUA2WotD8CVPJhkAAAkkAuKYRgecOh2JYUZb6ADFUpV7Ze+
-        v0I/y7TQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kKyKa-0005Ok-0I; Wed, 23 Sep 2020 06:32:44 +0000
-Date:   Wed, 23 Sep 2020 07:32:43 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Rik van Riel <riel@surriel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kernel-team@fb.com, niketa@fb.com, akpm@linux-foundation.org,
-        sjenning@redhat.com, ddstreet@ieee.org, konrad.wilk@oracle.com,
-        hannes@cmpxchg.org
-Subject: Re: [PATCH 1/2] mm,swap: extract swap single page readahead into its
- own function
-Message-ID: <20200923063243.GA17027@infradead.org>
-References: <20200922020148.3261797-1-riel@surriel.com>
- <20200922020148.3261797-2-riel@surriel.com>
+        Wed, 23 Sep 2020 02:32:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600842774;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KNYXvNzELYq54wu7W3RCN3nmnlEFmyGx388a6Bc/HMA=;
+        b=ZCQbjFVvQLI5Rjr75v+L+cJbGMNprnFc6Kmv9o9n1NYwxPe+Kp39tuXEJCp1cRJFiCR4jf
+        6Bm6gPmhnzXH5j7fvYhk8cOzDCugTSyjAaHchLJlMlCwUXYTMPeUUG+gm7UTUFdJ4iMzYU
+        vQbBr1hk2qSyIu+S4DowishcqvaZtMg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-447-OsAsDADyNyWgWEaMZInWBA-1; Wed, 23 Sep 2020 02:32:49 -0400
+X-MC-Unique: OsAsDADyNyWgWEaMZInWBA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BD408807100;
+        Wed, 23 Sep 2020 06:32:47 +0000 (UTC)
+Received: from [10.36.112.29] (ovpn-112-29.ams2.redhat.com [10.36.112.29])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4694B78822;
+        Wed, 23 Sep 2020 06:32:45 +0000 (UTC)
+Subject: Re: [PATCH v2] iommu/arm: Add module parameter to set msi iova
+ address
+To:     Will Deacon <will@kernel.org>,
+        Vennila Megavannan <vemegava@linux.microsoft.com>
+Cc:     jean-philippe@linaro.org, joro@8bytes.org,
+        linux-kernel@vger.kernel.org, shameerali.kolothum.thodi@huawei.com,
+        iommu@lists.linux-foundation.org, tyhicks@linux.microsoft.com,
+        srinath.mannam@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
+        robin.murphy@arm.com, linux-arm-kernel@lists.infradead.org
+References: <20200914181307.117792-1-vemegava@linux.microsoft.com>
+ <20200921204545.GA3811@willie-the-truck>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <85f7d1ae-71a9-4e95-8a30-03cc699d4794@redhat.com>
+Date:   Wed, 23 Sep 2020 08:32:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922020148.3261797-2-riel@surriel.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200921204545.GA3811@willie-the-truck>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 10:01:47PM -0400, Rik van Riel wrote:
-> +static struct page *swap_cluster_read_one(swp_entry_t entry,
-> +		unsigned long offset, gfp_t gfp_mask,
-> +		struct vm_area_struct *vma, unsigned long addr, bool readahead)
-> +{
-> +	bool page_allocated;
-> +	struct page *page;
-> +
-> +	page =__read_swap_cache_async(swp_entry(swp_type(entry), offset),
-> +				      gfp_mask, vma, addr, &page_allocated);
+Hi Will,
 
-Missing whitespace after the "=".
+On 9/21/20 10:45 PM, Will Deacon wrote:
+> On Mon, Sep 14, 2020 at 11:13:07AM -0700, Vennila Megavannan wrote:
+>> From: Srinath Mannam <srinath.mannam@broadcom.com>
+>>
+>> Add provision to change default value of MSI IOVA base to platform's
+>> suitable IOVA using module parameter. The present hardcoded MSI IOVA base
+>> may not be the accessible IOVA ranges of platform.
+>>
+>> If any platform has the limitaion to access default MSI IOVA, then it can
+>> be changed using "arm-smmu.msi_iova_base=0xa0000000" command line argument.
+>>
+>> Signed-off-by: Srinath Mannam <srinath.mannam@broadcom.com>
+>> Co-developed-by: Vennila Megavannan <vemegava@linux.microsoft.com>
+>> Signed-off-by: Vennila Megavannan <vemegava@linux.microsoft.com>
+>> ---
+>>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 5 ++++-
+>>  drivers/iommu/arm/arm-smmu/arm-smmu.c       | 5 ++++-
+>>  2 files changed, 8 insertions(+), 2 deletions(-)
+> 
+> This feels pretty fragile. Wouldn't it be better to realise that there's
+> a region conflict with iommu_dma_get_resv_regions() and move the MSI window
+> accordingly at runtime?
 
-> +	if (!page)
-> +		return NULL;
-> +	if (page_allocated) {
-> +		swap_readpage(page, false);
-> +		if (readahead) {
-> +			SetPageReadahead(page);
-> +			count_vm_event(SWAP_RA);
-> +		}
-> +	}
-> +	put_page(page);
-> +	return page;
-> +}
+Since cd2c9fcf5c66 ("iommu/dma: Move PCI window region reservation back
+into dma specific path"), the PCI host bridge windows are not exposed by
+iommu_dma_get_resv_regions() anymore. If I understood correctly, what is
+attempted here is to avoid the collision between such PCI host bridge
+window and the MSI IOVA range.
 
-I think swap_vma_readahead can be switched to your new helper
-pretty trivially as well, as could many of the users of
-read_swap_cache_async.
+Thanks
+
+Eric
+> 
+> Will
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
+
