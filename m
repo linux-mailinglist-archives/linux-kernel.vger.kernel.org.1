@@ -2,76 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C8D4276230
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:33:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CF32276232
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726784AbgIWUc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 16:32:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34870 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726199AbgIWUc7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 16:32:59 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 20E1520725;
-        Wed, 23 Sep 2020 20:32:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600893178;
-        bh=gHFFV1w4lxx7eARZ0yLaTND7KFsxROCfFvF55wymmLw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=X+Ybo+3XYqXGu3uiY17LzDkONnr+sDU/8kab3LLidVSnW6eCCBAJX1X8d4OGa45US
-         DYiS1Ew4CcEZN/8u7kj7iyklZyzW7n2O3YwgVIYk9TRDCqG+6D0MEz19mBLVrZaIj9
-         z0IFowtZojuUmu2A8HRpAV7m35iIwR4SZUQEttro=
-Date:   Wed, 23 Sep 2020 21:32:52 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
+        id S1726702AbgIWUdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 16:33:49 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:37786 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726199AbgIWUdt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 16:33:49 -0400
+Received: by mail-io1-f68.google.com with SMTP id y13so944751iow.4;
+        Wed, 23 Sep 2020 13:33:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=neWOG4pv89A97ekum6IfY1Bb+Z9Ero6Ah89dyX6YB0Q=;
+        b=rV7QQmEaTy+h/weNnTGlnup7A/5JkXQ6FfGCci4+jg50aCXgdDSH6rgNZq5VmA5yvb
+         RiMp5o1xh3ouhmc1x29PdSSwsFTYtylvBeccxoMR0cFAm4DzmkV417FqrndPySajDrTV
+         wQKx3GJoANHdVkHfXdGeMW6Iepm1x2znv2+9CYO85gW/Gqpl0i6DHjk2ImWPuEC91Del
+         4x16ohNhG3qH/Qy+t4Kt1NxEr1LGT6ckMh7Esgkp3tT1id0ZoBG9wAh4X6hJbsp+MD4I
+         E2f56RQ4qCqQpwRu+WEbrfKaLO4MPoLKRnskdKWgy69jRhqS/igEot/CwyJpFzwp8AKg
+         3pCg==
+X-Gm-Message-State: AOAM532jyx4rFjLZN+IQgoo0rKj0ce862Psnt8LtU+p99Zc2BTRmhkhq
+        d5L8dWw87jytAEL9XhR0gQ==
+X-Google-Smtp-Source: ABdhPJxciS0lhZSweEmVgd9GV/LNqyZ6RFbZsZEupepGGJmBjcBHFqTkDErRe5VEA1djn1ujUVfJ0A==
+X-Received: by 2002:a6b:6a18:: with SMTP id x24mr974577iog.92.1600893228173;
+        Wed, 23 Sep 2020 13:33:48 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id q191sm435138iod.30.2020.09.23.13.33.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2020 13:33:47 -0700 (PDT)
+Received: (nullmailer pid 1256862 invoked by uid 1000);
+        Wed, 23 Sep 2020 20:33:46 -0000
+Date:   Wed, 23 Sep 2020 14:33:46 -0600
+From:   Rob Herring <robh@kernel.org>
 To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iio: ssp: use PLATFORM_DEVID_NONE
-Message-ID: <20200923213252.25e19944@archlinux>
-In-Reply-To: <20200921204939.20341-1-krzk@kernel.org>
-References: <20200921204939.20341-1-krzk@kernel.org>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Cc:     Dong Aisheng <aisheng.dong@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v3] dt-bindings: mailbox: fsl,mu: Add missing
+ power-domains
+Message-ID: <20200923203346.GA1256809@bogus>
+References: <20200917194220.6625-1-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200917194220.6625-1-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Sep 2020 22:49:39 +0200
-Krzysztof Kozlowski <krzk@kernel.org> wrote:
-
-> Use PLATFORM_DEVID_NONE define instead of "-1" value because:
->  - it brings some meaning,
->  - it might point attention why auto device ID was not used.
+On Thu, 17 Sep 2020 21:42:20 +0200, Krzysztof Kozlowski wrote:
+> Add quite common property - power-domains - to fix dtbs_check warnings
+> like:
+> 
+>   arch/arm64/boot/dts/freescale/imx8qxp-mek.dt.yaml:
+>     mailbox@5d280000: 'power-domains' does not match any of the regexes: 'pinctrl-[0-9]+'
 > 
 > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Applied to the togreg branch of iio.git.
-
-Thanks,
-
-Jonathan
-
-> ---
->  drivers/iio/common/ssp_sensors/ssp_dev.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/iio/common/ssp_sensors/ssp_dev.c b/drivers/iio/common/ssp_sensors/ssp_dev.c
-> index a94dbcf491ce..1aee87100038 100644
-> --- a/drivers/iio/common/ssp_sensors/ssp_dev.c
-> +++ b/drivers/iio/common/ssp_sensors/ssp_dev.c
-> @@ -503,7 +503,8 @@ static int ssp_probe(struct spi_device *spi)
->  		return -ENODEV;
->  	}
->  
-> -	ret = mfd_add_devices(&spi->dev, -1, sensorhub_sensor_devs,
-> +	ret = mfd_add_devices(&spi->dev, PLATFORM_DEVID_NONE,
-> +			      sensorhub_sensor_devs,
->  			      ARRAY_SIZE(sensorhub_sensor_devs), NULL, 0, NULL);
->  	if (ret < 0) {
->  		dev_err(&spi->dev, "mfd add devices fail\n");
+> ---
+> 
+> Changes since v2:
+> 1. Set maxItems to power domains to 1
+> 
+> Changes since v1:
+> 1. Add missing properties instead of unevaluatedProperties
+> ---
+>  Documentation/devicetree/bindings/mailbox/fsl,mu.yaml | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
 
+Reviewed-by: Rob Herring <robh@kernel.org>
