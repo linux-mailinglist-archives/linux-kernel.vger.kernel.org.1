@@ -2,144 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DD98274EFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 04:24:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 691E1274EFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 04:26:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727231AbgIWCY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 22:24:26 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:36328 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727201AbgIWCY0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 22:24:26 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id E49F98152EDEF6D69D05;
-        Wed, 23 Sep 2020 10:24:23 +0800 (CST)
-Received: from [10.174.177.167] (10.174.177.167) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 23 Sep 2020 10:24:20 +0800
-Subject: Re: [PATCH 2/2] locktorture: call percpu_free_rwsem() to do
- percpu-rwsem cleanup
-To:     <paulmck@kernel.org>
-CC:     Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        <linux-kernel@vger.kernel.org>, <rcu@vger.kernel.org>
-References: <20200917135910.137389-1-houtao1@huawei.com>
- <20200917135910.137389-3-houtao1@huawei.com>
- <20200922232426.GL29330@paulmck-ThinkPad-P72>
-From:   Hou Tao <houtao1@huawei.com>
-Message-ID: <fe8c274e-efa4-04ec-0d95-d7c49ec4dd83@huawei.com>
-Date:   Wed, 23 Sep 2020 10:24:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727241AbgIWC0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 22:26:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44687 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726893AbgIWC0A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 22:26:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600827959;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IaOuvH8yFcLP2XPWL4s+SHZG/coSY9ya51DgWC/DIGU=;
+        b=PxAUyObV0vRZ0stkMFTIx5Qs806HzcPafSaQemCdJrRwJLXBqIV/Ongi/j5cjQaGzhxZ1p
+        Vl68E0i9366LwtXpa5Fqq5XnPVFbX/pBC6ynadqNnxycEKv2tXPTBbuldbu5+tFLJalKYP
+        0AbhZu3hosCYvMEQhQsTLD0tc9aQBq4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-547-RGscsW6kPv6qxTolwEEfYA-1; Tue, 22 Sep 2020 22:25:55 -0400
+X-MC-Unique: RGscsW6kPv6qxTolwEEfYA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DA7871006704;
+        Wed, 23 Sep 2020 02:25:53 +0000 (UTC)
+Received: from dhcp-128-65.nay.redhat.com (ovpn-13-77.pek2.redhat.com [10.72.13.77])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 99C1C5C1D0;
+        Wed, 23 Sep 2020 02:25:50 +0000 (UTC)
+Date:   Wed, 23 Sep 2020 10:25:47 +0800
+From:   Dave Young <dyoung@redhat.com>
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, bhe@redhat.com,
+        Eric Biederman <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+        Eric DeVolder <eric.devolder@oracle.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Subject: Re: [PATCH] Only allow to set crash_kexec_post_notifiers on boot time
+Message-ID: <20200923022547.GA3642@dhcp-128-65.nay.redhat.com>
+References: <20200918032546.GA4180@dhcp-128-65.nay.redhat.com>
+ <20200918174743.0994c59f058451948837dcb6@linux-foundation.org>
+ <20200921201811.GB3437@char.us.oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <20200922232426.GL29330@paulmck-ThinkPad-P72>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.167]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921201811.GB3437@char.us.oracle.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+On 09/21/20 at 04:18pm, Konrad Rzeszutek Wilk wrote:
+> On Fri, Sep 18, 2020 at 05:47:43PM -0700, Andrew Morton wrote:
+> > On Fri, 18 Sep 2020 11:25:46 +0800 Dave Young <dyoung@redhat.com> wrote:
+> > 
+> > > crash_kexec_post_notifiers enables running various panic notifier
+> > > before kdump kernel booting. This increases risks of kdump failure.
+> > > It is well documented in kernel-parameters.txt. We do not suggest
+> > > people to enable it together with kdump unless he/she is really sure.
+> > > This is also not suggested to be enabled by default when users are
+> > > not aware in distributions.
+> > > 
+> > > But unfortunately it is enabled by default in systemd, see below
+> > > discussions in a systemd report, we can not convince systemd to change
+> > > it:
+> > > https://github.com/systemd/systemd/issues/16661
+> > > 
+> > > Actually we have got reports about kdump kernel hangs in both s390x
+> > > and powerpcle cases caused by the systemd change,  also some x86 cases
+> > > could also be caused by the same (although that is in Hyper-V code
+> > > instead of systemd, that need to be addressed separately).
+> 
+> Perhaps it may be better to fix the issus on s390x and PowerPC as well?
+> 
+> > > 
+> > > Thus to avoid the auto enablement here just disable the param writable
+> > > permission in sysfs.
+> > > 
+> > 
+> > Well.  I don't think this is at all a desirable way of resolving a
+> > disagreement with the systemd developers
+> > 
+> > At the above github address I'm seeing "ryncsn added a commit to
+> > ryncsn/systemd that referenced this issue 9 days ago", "pstore: don't
+> > enable crash_kexec_post_notifiers by default".  So didn't that address
+> > the issue?
+> 
+> It does in systemd, but there is a strong interest in making this on by default.
 
-> On 2020/9/23 7:24, Paul E. McKenney wrote:
-snip
+I understand there could be such interest, but we have to keep in mind
+that any extra things after a system crash can cause kdump unreliable.
 
->> Fix it by adding an exit hook in lock_torture_ops and
->> use it to call percpu_free_rwsem() for percpu rwsem torture
->> before the module is removed, so we can ensure rcu_sync_func()
->> completes before module exits.
->>
->> Also needs to call exit hook if lock_torture_init() fails half-way,
->> so use ctx->cur_ops != NULL to signal that init hook has been called.
-> 
-> Good catch, but please see below for comments and questions.
-> 
->> Signed-off-by: Hou Tao <houtao1@huawei.com>
->> ---
->>  kernel/locking/locktorture.c | 28 ++++++++++++++++++++++------
->>  1 file changed, 22 insertions(+), 6 deletions(-)
->>
->> diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
->> index bebdf98e6cd78..e91033e9b6f95 100644
->> --- a/kernel/locking/locktorture.c
->> +++ b/kernel/locking/locktorture.c
->> @@ -74,6 +74,7 @@ static void lock_torture_cleanup(void);
->>   */
->>  struct lock_torture_ops {
->>  	void (*init)(void);
->> +	void (*exit)(void);
-> 
-> This is fine, but why not also add a flag to the lock_torture_cxt
-> structure that is set when the ->init() function is called?  Perhaps
-> something like this in lock_torture_init():
-> 
-> 	if (cxt.cur_ops->init) {
-> 		cxt.cur_ops->init();
-> 		cxt.initcalled = true;
-> 	}
-> 
+I do not object people to use pstore, but I do object to enable the
+notifiers by default.
 
-You are right. Add a new field to indicate the init hook has been
-called is much better than reusing ctx->cur_ops != NULL to do that.
+BTW, crash notifiers are not limited to pstore, there are quite a log of
+other pieces like led trigger etc.
 
->>  	int (*writelock)(void);
->>  	void (*write_delay)(struct torture_random_state *trsp);
->>  	void (*task_boost)(struct torture_random_state *trsp);
->> @@ -571,6 +572,11 @@ void torture_percpu_rwsem_init(void)
->>  	BUG_ON(percpu_init_rwsem(&pcpu_rwsem));
->>  }
->>  
->> +static void torture_percpu_rwsem_exit(void)
->> +{
->> +	percpu_free_rwsem(&pcpu_rwsem);
->> +}
->> +
-snip
-
->> @@ -828,6 +836,12 @@ static void lock_torture_cleanup(void)
->>  	cxt.lrsa = NULL;
->>  
->>  end:
->> +	/* If init() has been called, then do exit() accordingly */
->> +	if (cxt.cur_ops) {
->> +		if (cxt.cur_ops->exit)
->> +			cxt.cur_ops->exit();
->> +		cxt.cur_ops = NULL;
->> +	}
-> 
-> The above can then be:
-> 
-> 	if (cxt.initcalled && cxt.cur_ops->exit)
-> 		cxt.cur_ops->exit();
-> 
-> Maybe you also need to clear cxt.initcalled at this point, but I don't
-> immediately see why that would be needed.
-> 
-Because we are doing cleanup, so I think reset initcalled to false is OK
-after the cleanup is done.
-
->>  	torture_cleanup_end();
->>  }
->>  
->> @@ -835,6 +849,7 @@ static int __init lock_torture_init(void)
->>  {
->>  	int i, j;
->>  	int firsterr = 0;
->> +	struct lock_torture_ops *cur_ops;
-> 
-> And then you don't need this extra pointer.  Not that this pointer is bad
-> in and of itself, but using (!cxt.cur_ops) to indicate that the ->init()
-> function has not been called is an accident waiting to happen.
-> 
-> And the changes below are no longer needed.
-> 
-> Or am I missing something subtle?
-> 
-Thanks for your suggestion. Will send v2.
-
-Thanks.
-
+Thanks
+Dave
 
