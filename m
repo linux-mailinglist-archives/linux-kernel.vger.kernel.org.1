@@ -2,169 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E85932761B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42D672761C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726518AbgIWUMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 16:12:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52090 "EHLO mail.kernel.org"
+        id S1726621AbgIWUNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 16:13:51 -0400
+Received: from mga12.intel.com ([192.55.52.136]:49295 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726265AbgIWUMy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 16:12:54 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9FC462376F;
-        Wed, 23 Sep 2020 20:12:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600891973;
-        bh=VJzs768qwtne0ag6eBSnLTLairbiPmRxCP3NJf33P38=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Muw91GTHz4jKR1dgKCs7wW12xT6J4ZUBo4KFsulNSSJADll542/uGLu/+bIU2bbC6
-         lTNtqZ++0F4DghhlN6gM7epQ9CEYQdVfuApJeDyTx3I2euP0mX9u4h3C6lsV7OV0cG
-         aJ/RqGYAs8+xQQt7O0Na5fa+437aD+EBvitS6XwQ=
-Date:   Wed, 23 Sep 2020 21:12:49 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2 v2] iio: event: use short-hand variable in
- iio_device_{un}register_eventset functions
-Message-ID: <20200923211249.164241d0@archlinux>
-In-Reply-To: <20200921103156.194748-1-alexandru.ardelean@analog.com>
-References: <20200921103156.194748-1-alexandru.ardelean@analog.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726381AbgIWUNu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 16:13:50 -0400
+IronPort-SDR: wCdSiOs0vQx+K6ecUit0n5dkoIZWUio1IRk5CkYXWQeUe645YCqLRVc53YOq6Yae2BS853GBq3
+ 1ubL57nGuteA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="140472231"
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
+   d="scan'208";a="140472231"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 13:13:50 -0700
+IronPort-SDR: JfVoEbr6rZsBOcmB4MbTv8wPbPNLewwFXo5cbufAx/Tcpkxlz7F6ztJku6Df5R/rIAvnGXEJGg
+ maqhCJcxx9Sg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
+   d="scan'208";a="349004933"
+Received: from sjchrist-coffee.jf.intel.com ([10.54.74.160])
+  by orsmga007.jf.intel.com with ESMTP; 23 Sep 2020 13:13:50 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/7] KVM: x86: Tracepoint improvements and fixes
+Date:   Wed, 23 Sep 2020 13:13:42 -0700
+Message-Id: <20200923201349.16097-1-sean.j.christopherson@intel.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Sep 2020 13:31:55 +0300
-Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+Various improvements and fixes for the kvm_entry, kvm_exit and
+kvm_nested_vmexit tracepoints.
 
-> With the recent 'iio_dev_opaque' variable name, these two functions are
-> looking a bit ugly.
-> 
-> This change uses an 'ev_int' variable for the
-> iio_device_{un}register_eventset functions to make the code a little easier
-> to read.
-> 
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+  1. Capture the guest's RIP during kvm_entry for obvious reasons.
 
-Seems sensible.  Series applied to the togreg branch of iio.git and pushed out as
-testing.  Not sure if this will make it into a final pull request for this
-cycle or not. Kind of depends what Linus says on Sunday about whether we are
-going to see an rc8.
+  2. Extend kvm_exit to report the same info as kvm_nested_vmexit, and
+     macrofy its definition to reuse it verbatim for nested exits.
 
-Thanks,
+  3. Stop passing in params to kvm_nested_vmexit, and instead use the
+     same approach (and now code) as kvm_exit where the tracepoint uses a
+     dedicated kvm_x86_ops hook to retrieve the info.
 
-Jonathan
+  4. Stop reading GUEST_RIP, EXIT_QUAL, INTR_INFO, and ERROR_CODE on
+     every VM-Exit from L2 (some of this comes in #3).  This saves ~100
+     cycles (150+ with retpolines) on VM-Exits from L2 that are handled
+     by L0, e.g. hardware interrupts.
 
-> ---
-> 
-> Changelog v1 -> v2:
-> * move 'iio_dev_opaque->event_interface = ev_int;' assigment right after
->   allocation to avoid crash; 'iio_dev_opaque->event_interface' is accessed
->   after init
-> 
->  drivers/iio/industrialio-event.c | 50 +++++++++++++++-----------------
->  1 file changed, 24 insertions(+), 26 deletions(-)
-> 
-> diff --git a/drivers/iio/industrialio-event.c b/drivers/iio/industrialio-event.c
-> index 2ab4d4c44427..a85919eb7c4a 100644
-> --- a/drivers/iio/industrialio-event.c
-> +++ b/drivers/iio/industrialio-event.c
-> @@ -477,6 +477,7 @@ static const char *iio_event_group_name = "events";
->  int iio_device_register_eventset(struct iio_dev *indio_dev)
->  {
->  	struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
-> +	struct iio_event_interface *ev_int;
->  	struct iio_dev_attr *p;
->  	int ret = 0, attrcount_orig = 0, attrcount, attrn;
->  	struct attribute **attr;
-> @@ -485,14 +486,15 @@ int iio_device_register_eventset(struct iio_dev *indio_dev)
->  	      iio_check_for_dynamic_events(indio_dev)))
->  		return 0;
->  
-> -	iio_dev_opaque->event_interface =
-> -		kzalloc(sizeof(struct iio_event_interface), GFP_KERNEL);
-> -	if (iio_dev_opaque->event_interface == NULL)
-> +	ev_int = kzalloc(sizeof(struct iio_event_interface), GFP_KERNEL);
-> +	if (ev_int == NULL)
->  		return -ENOMEM;
->  
-> -	INIT_LIST_HEAD(&iio_dev_opaque->event_interface->dev_attr_list);
-> +	iio_dev_opaque->event_interface = ev_int;
-> +
-> +	INIT_LIST_HEAD(&ev_int->dev_attr_list);
->  
-> -	iio_setup_ev_int(iio_dev_opaque->event_interface);
-> +	iio_setup_ev_int(ev_int);
->  	if (indio_dev->info->event_attrs != NULL) {
->  		attr = indio_dev->info->event_attrs->attrs;
->  		while (*attr++ != NULL)
-> @@ -506,34 +508,29 @@ int iio_device_register_eventset(struct iio_dev *indio_dev)
->  		attrcount += ret;
->  	}
->  
-> -	iio_dev_opaque->event_interface->group.name = iio_event_group_name;
-> -	iio_dev_opaque->event_interface->group.attrs = kcalloc(attrcount + 1,
-> -							  sizeof(iio_dev_opaque->event_interface->group.attrs[0]),
-> -							  GFP_KERNEL);
-> -	if (iio_dev_opaque->event_interface->group.attrs == NULL) {
-> +	ev_int->group.name = iio_event_group_name;
-> +	ev_int->group.attrs = kcalloc(attrcount + 1,
-> +				      sizeof(ev_int->group.attrs[0]),
-> +				      GFP_KERNEL);
-> +	if (ev_int->group.attrs == NULL) {
->  		ret = -ENOMEM;
->  		goto error_free_setup_event_lines;
->  	}
->  	if (indio_dev->info->event_attrs)
-> -		memcpy(iio_dev_opaque->event_interface->group.attrs,
-> +		memcpy(ev_int->group.attrs,
->  		       indio_dev->info->event_attrs->attrs,
-> -		       sizeof(iio_dev_opaque->event_interface->group.attrs[0])
-> -		       *attrcount_orig);
-> +		       sizeof(ev_int->group.attrs[0]) * attrcount_orig);
->  	attrn = attrcount_orig;
->  	/* Add all elements from the list. */
-> -	list_for_each_entry(p,
-> -			    &iio_dev_opaque->event_interface->dev_attr_list,
-> -			    l)
-> -		iio_dev_opaque->event_interface->group.attrs[attrn++] =
-> -			&p->dev_attr.attr;
-> -	indio_dev->groups[indio_dev->groupcounter++] =
-> -		&iio_dev_opaque->event_interface->group;
-> +	list_for_each_entry(p, &ev_int->dev_attr_list, l)
-> +		ev_int->group.attrs[attrn++] = &p->dev_attr.attr;
-> +	indio_dev->groups[indio_dev->groupcounter++] = &ev_int->group;
->  
->  	return 0;
->  
->  error_free_setup_event_lines:
-> -	iio_free_chan_devattr_list(&iio_dev_opaque->event_interface->dev_attr_list);
-> -	kfree(iio_dev_opaque->event_interface);
-> +	iio_free_chan_devattr_list(&ev_int->dev_attr_list);
-> +	kfree(ev_int);
->  	iio_dev_opaque->event_interface = NULL;
->  	return ret;
->  }
-> @@ -557,10 +554,11 @@ void iio_device_wakeup_eventset(struct iio_dev *indio_dev)
->  void iio_device_unregister_eventset(struct iio_dev *indio_dev)
->  {
->  	struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
-> +	struct iio_event_interface *ev_int = iio_dev_opaque->event_interface;
->  
-> -	if (iio_dev_opaque->event_interface == NULL)
-> +	if (ev_int == NULL)
->  		return;
-> -	iio_free_chan_devattr_list(&iio_dev_opaque->event_interface->dev_attr_list);
-> -	kfree(iio_dev_opaque->event_interface->group.attrs);
-> -	kfree(iio_dev_opaque->event_interface);
-> +	iio_free_chan_devattr_list(&ev_int->dev_attr_list);
-> +	kfree(ev_int->group.attrs);
-> +	kfree(ev_int);
->  }
+As noted by Vitaly, these changes break trace-cmd[*].  I hereby pinky
+swear that, if this series is merged, I will send patches to update
+trace-cmd.
+
+[*] git://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git
+
+v2:
+  - Fixed some goofs in the changelogs.
+  - Rebased to kvm/queue, commit e1ba1a15af73 ("KVM: SVM: Enable INVPCID
+    feature on AMD").
+
+Sean Christopherson (7):
+  KVM: x86: Add RIP to the kvm_entry, i.e. VM-Enter, tracepoint
+  KVM: x86: Read guest RIP from within the kvm_nested_vmexit tracepoint
+  KVM: VMX: Add a helper to test for a valid error code given an intr
+    info
+  KVM: x86: Add intr/vectoring info and error code to kvm_exit
+    tracepoint
+  KVM: x86: Add macro wrapper for defining kvm_exit tracepoint
+  KVM: x86: Use common definition for kvm_nested_vmexit tracepoint
+  KVM: nVMX: Read EXIT_QUAL and INTR_INFO only when needed for nested
+    exit
+
+ arch/x86/include/asm/kvm_host.h |   7 ++-
+ arch/x86/kvm/svm/svm.c          |  16 ++---
+ arch/x86/kvm/trace.h            | 107 +++++++++++++-------------------
+ arch/x86/kvm/vmx/nested.c       |  14 ++---
+ arch/x86/kvm/vmx/vmcs.h         |   7 +++
+ arch/x86/kvm/vmx/vmx.c          |  18 +++++-
+ arch/x86/kvm/x86.c              |   2 +-
+ 7 files changed, 86 insertions(+), 85 deletions(-)
+
+-- 
+2.28.0
 
