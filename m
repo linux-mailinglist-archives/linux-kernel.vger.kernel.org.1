@@ -2,234 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6EF827647D
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D55C127647F
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:30:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726788AbgIWX3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 19:29:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60328 "EHLO
+        id S1726810AbgIWXaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 19:30:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726746AbgIWX3b (ORCPT
+        with ESMTP id S1726662AbgIWXaA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 19:29:31 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 810EEC0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:29:31 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id t7so583710pjd.3
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:29:31 -0700 (PDT)
+        Wed, 23 Sep 2020 19:30:00 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CA6EC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:30:00 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id z5so672844ilq.5
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:30:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ZE/79qG6H6lRxtOX3Wkl7bfi0pnZJM8pQYKGylI4ASw=;
-        b=bfAu8zmgfDT6BYa5AFuGjf5HULT1RoGX5U1MHYBaJnsDPZIqHGceGVjIq0QrWYsXIN
-         1nBIJcYwVXI/M/1TjzCxBqSwMVufR5fhXA7ESw3zg0MsBcR9YmbOnfl/dmqa5ZQdhGUH
-         ueFBHPnxoz7qOSdPu1rvnb8vHu9CQAEMJn3Nk=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kyIVOaqB/Lo9xi5CTeoxW5aB69SRY2R3s7cddxat0oc=;
+        b=eiMaJKLhRPOz7y39+m5bj9Z9vmD9Cy3R58ohCFmzGcAHkWC5huS508cTpcNxhjbQcw
+         uFi5yYNoQosq5zNa+emGVOTqH+K70WpCrvtk9h1dnsoE3+qFh5fB/j2QsxFymAovjiJb
+         G3tu+CUA8OYkLt/Fd6nrVCIqPS9xQRTbdriar5DkpJuKL/DXmyDLPVWd00NjSgegnBUO
+         sQlkkhy1bhbiCQcwBBKzN54DYiqpQBajLzwq6hHMb4Tk6cfpBOm0oWxx8rRzlG54ThE0
+         NpQ+cuZpPaXtWvb/1gMiEoRK992Fa3rW1Vk11RIbuvd3Tx/EM+b5FxZVc5+td4V37ZIt
+         qYkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ZE/79qG6H6lRxtOX3Wkl7bfi0pnZJM8pQYKGylI4ASw=;
-        b=BnzMGMC9yFOi3sSlvQXUyGxVLijxiL0sx66ACFqEKKf5iFP5PRYbqWjpeAppoVjAJY
-         Zuwk6C6teZeeU5JOvaic41xpxXR6ZQLD5sWsmuvF1WXbqy1DRVOfnDK4BUw2AvCrBnek
-         +0cKuzvTEWI6w0v3eHYGDfbWhkQpoG1twlzxFsJsLQlJE+tSOW1rpDdLx8yePlGXHxJx
-         ityfrwsl7PekdVZEcEEYpUHFeZF6WFZ9fI199PZZZonUXNkia0Meup9M3DbR/gBQKJJu
-         jNnutf9f2mtGT5h3ZR7Db+i4s8G7Plssxx9+6AiYgFAo33L0TYy59x7Iyog95Fd4Hm92
-         4biQ==
-X-Gm-Message-State: AOAM532SaHYdDHBt1PPI/DbLeXHE6q0SLO6dtSDtNmHV8rjLxf72ML2c
-        lX+AxoGiqlGpdlXdiYAt7+9dPg==
-X-Google-Smtp-Source: ABdhPJwhKgUZq608+q5NwYON4+CAPcXtEBNdHupkMvWVr63aqwYCkQW/0sNAogHldmRsrQqXgPaIjA==
-X-Received: by 2002:a17:902:c692:b029:d0:90a3:24f4 with SMTP id r18-20020a170902c692b02900d090a324f4mr1951226plx.12.1600903771027;
-        Wed, 23 Sep 2020 16:29:31 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id z1sm669570pfj.113.2020.09.23.16.29.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 16:29:30 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     YiFei Zhu <yifeifz2@illinois.edu>
-Cc:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>, bpf@vger.kernel.org,
-        containers@lists.linux-foundation.org, linux-api@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 6/6] [DEBUG] seccomp: Report bitmap coverage ranges
-Date:   Wed, 23 Sep 2020 16:29:23 -0700
-Message-Id: <20200923232923.3142503-7-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200923232923.3142503-1-keescook@chromium.org>
-References: <20200923232923.3142503-1-keescook@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kyIVOaqB/Lo9xi5CTeoxW5aB69SRY2R3s7cddxat0oc=;
+        b=ObsHdxgaY1cNrfAWuG+ruwERn5nHwWbZiWVFC5KkYS8VWODAoAWXxbQHjvmHvvmJjD
+         Xnn10LxDlVn5y5x3xH6ykAF84j0F2sCQBT3cw31uD4nR5Dy4rpCOWXABDxnM8d19Mj8L
+         uGjTz6wrHPCyDv4qXPADHplmuzqemVFmBA3TOqVneIfzoAoxiRaF59tjA+/3F1QZr7F5
+         YpRAPpQcGgkzCmdVCa7mX6ZWTTfN7igGqNVha++2Br3EokPCDGcfQLslKwcFsRH6rRnd
+         qKgRIGctrtSjciML2jgbSOBw6XH4dx6gMV8964rHfeO59AwZ4qv7XeEbUvjw3yguifz5
+         z8Jg==
+X-Gm-Message-State: AOAM533yGPGYKMYHWO3I3QLv2AdAyMPakXuMmk7M/owzhdcDNbL80jCi
+        nTcytMcoL1eDh/9T4oqfxUHl21cGBqjjBLHktvNULQ==
+X-Google-Smtp-Source: ABdhPJyNMV4JjS6sPOq0BgXWVMEzgGdgwLi15ybld1wrptIfEEfCxYfy5l0O1O+J/bAOLFeKz/xPU0zQ+8W/y9EcXxI=
+X-Received: by 2002:a92:1e07:: with SMTP id e7mr1647650ile.154.1600903799587;
+ Wed, 23 Sep 2020 16:29:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200923221406.16297-1-sean.j.christopherson@intel.com> <20200923221406.16297-3-sean.j.christopherson@intel.com>
+In-Reply-To: <20200923221406.16297-3-sean.j.christopherson@intel.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Wed, 23 Sep 2020 16:29:48 -0700
+Message-ID: <CANgfPd9LLhLMsOHtMS1begL_J676Szve5y-qruY85WAu5MpYVw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] KVM: x86/MMU: Recursively zap nested TDP SPs when
+ zapping last/only parent
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peter Shier <pshier@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is what I've been using to explore actual bitmap results for
-real-world filters...
+On Wed, Sep 23, 2020 at 3:14 PM Sean Christopherson
+<sean.j.christopherson@intel.com> wrote:
+>
+> From: Ben Gardon <bgardon@google.com>
+>
+> Recursively zap all to-be-orphaned children, unsynced or otherwise, when
+> zapping a shadow page for a nested TDP MMU.  KVM currently only zaps the
+> unsynced child pages, but not the synced ones.  This can create problems
+> over time when running many nested guests because it leaves unlinked
+> pages which will not be freed until the page quota is hit. With the
+> default page quota of 20 shadow pages per 1000 guest pages, this looks
+> like a memory leak and can degrade MMU performance.
+>
+> In a recent benchmark, substantial performance degradation was observed:
+> An L1 guest was booted with 64G memory.
+> 2G nested Windows guests were booted, 10 at a time for 20
+> iterations. (200 total boots)
+> Windows was used in this benchmark because they touch all of their
+> memory on startup.
+> By the end of the benchmark, the nested guests were taking ~10% longer
+> to boot. With this patch there is no degradation in boot time.
+> Without this patch the benchmark ends with hundreds of thousands of
+> stale EPT02 pages cluttering up rmaps and the page hash map. As a
+> result, VM shutdown is also much slower: deleting memslot 0 was
+> observed to take over a minute. With this patch it takes just a
+> few miliseconds.
+>
+> Cc: Peter Shier <pshier@google.com>
+> Signed-off-by: Ben Gardon <bgardon@google.com>
+> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- kernel/seccomp.c | 115 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 115 insertions(+)
+Reviewed-by: Ben Gardon <bgardon@google.com>
+(I don't know if my review is useful here, but the rebase of this
+patch looks correct! Thank you for preventing these from becoming
+undead, Sean.)
 
-diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index 9921f6f39d12..1a0595d7f8ef 100644
---- a/kernel/seccomp.c
-+++ b/kernel/seccomp.c
-@@ -835,6 +835,85 @@ static void seccomp_update_bitmap(struct seccomp_filter *filter,
- 	}
- }
- 
-+static void __report_bitmap(const char *arch, u32 ret, int start, int finish)
-+{
-+	int gap;
-+	char *name;
-+
-+	if (finish == -1)
-+		return;
-+
-+	switch (ret) {
-+	case UINT_MAX:
-+		name = "filter";
-+		break;
-+	case SECCOMP_RET_ALLOW:
-+		name = "SECCOMP_RET_ALLOW";
-+		break;
-+	case SECCOMP_RET_KILL_PROCESS:
-+		name = "SECCOMP_RET_KILL_PROCESS";
-+		break;
-+	case SECCOMP_RET_KILL_THREAD:
-+		name = "SECCOMP_RET_KILL_THREAD";
-+		break;
-+	default:
-+		WARN_ON_ONCE(1);
-+		name = "unknown";
-+		break;
-+	}
-+
-+	gap = 0;
-+	if (start < 100)
-+		gap++;
-+	if (start < 10)
-+		gap++;
-+	if (finish < 100)
-+		gap++;
-+	if (finish < 10)
-+		gap++;
-+
-+	if (start == finish)
-+		pr_info("%s     %3d: %s\n", arch, start, name);
-+	else if (start + 1 == finish)
-+		pr_info("%s %*s%d,%d: %s\n", arch, gap, "", start, finish, name);
-+	else
-+		pr_info("%s %*s%d-%d: %s\n", arch, gap, "", start, finish, name);
-+}
-+
-+static void report_bitmap(struct seccomp_bitmaps *bitmaps, const char *arch)
-+{
-+	u32 nr;
-+	int start = 0, finish = -1;
-+	u32 ret = UINT_MAX;
-+	struct report_states {
-+		unsigned long *bitmap;
-+		u32 ret;
-+	} states[] = {
-+		{ .bitmap = bitmaps->allow,	   .ret = SECCOMP_RET_ALLOW, },
-+		{ .bitmap = bitmaps->kill_process, .ret = SECCOMP_RET_KILL_PROCESS, },
-+		{ .bitmap = bitmaps->kill_thread,  .ret = SECCOMP_RET_KILL_THREAD, },
-+		{ .bitmap = NULL,		   .ret = UINT_MAX, },
-+	};
-+
-+	for (nr = 0; nr < NR_syscalls; nr++) {
-+		int i;
-+
-+		for (i = 0; i < ARRAY_SIZE(states); i++) {
-+			if (!states[i].bitmap || test_bit(nr, states[i].bitmap)) {
-+				if (ret != states[i].ret) {
-+					__report_bitmap(arch, ret, start, finish);
-+					ret = states[i].ret;
-+					start = nr;
-+				}
-+				finish = nr;
-+				break;
-+			}
-+		}
-+	}
-+	if (start != nr)
-+		__report_bitmap(arch, ret, start, finish);
-+}
-+
- static void seccomp_update_bitmaps(struct seccomp_filter *filter,
- 				   void *pagepair)
- {
-@@ -849,6 +928,23 @@ static void seccomp_update_bitmaps(struct seccomp_filter *filter,
- 			      SECCOMP_MULTIPLEXED_SYSCALL_TABLE_MASK,
- 			      &current->seccomp.multiplex);
- #endif
-+	if (strncmp(current->comm, "test-", 5) == 0 ||
-+	    strcmp(current->comm, "seccomp_bpf") == 0 ||
-+	    /*
-+	     * Why are systemd's process names head-truncated to 8 bytes
-+	     * and wrapped in parens!?
-+	     */
-+	    (current->comm[0] == '(' && strrchr(current->comm, ')') != NULL)) {
-+		pr_info("reporting syscall bitmap usage for %d (%s):\n",
-+			task_pid_nr(current), current->comm);
-+		report_bitmap(&current->seccomp.native, "native");
-+#ifdef CONFIG_COMPAT
-+		report_bitmap(&current->seccomp.compat, "compat");
-+#endif
-+#ifdef SECCOMP_MULTIPLEXED_SYSCALL_TABLE_ARCH
-+		report_bitmap(&current->seccomp.multiplex, "multiplex");
-+#endif
-+	}
- }
- #else
- static void seccomp_update_bitmaps(struct seccomp_filter *filter,
-@@ -908,6 +1004,10 @@ static long seccomp_attach_filter(unsigned int flags,
- 	filter->prev = current->seccomp.filter;
- 	current->seccomp.filter = filter;
- 	atomic_inc(&current->seccomp.filter_count);
-+	if (atomic_read(&current->seccomp.filter_count) > 10)
-+		pr_info("%d filters: %d (%s)\n",
-+			atomic_read(&current->seccomp.filter_count),
-+			task_pid_nr(current), current->comm);
- 
- 	/* Evaluate filter for new known-outcome syscalls */
- 	seccomp_update_bitmaps(filter, pagepair);
-@@ -2419,6 +2519,21 @@ static int __init seccomp_sysctl_init(void)
- 		pr_warn("sysctl registration failed\n");
- 	else
- 		kmemleak_not_leak(hdr);
-+#ifndef SECCOMP_ARCH
-+	pr_info("arch lacks support for constant action bitmaps\n");
-+#else
-+	pr_info("NR_syscalls: %d\n", NR_syscalls);
-+	pr_info("arch: 0x%x\n", SECCOMP_ARCH);
-+#ifdef CONFIG_COMPAT
-+	pr_info("compat arch: 0x%x\n", SECCOMP_ARCH_COMPAT);
-+#endif
-+#ifdef SECCOMP_MULTIPLEXED_SYSCALL_TABLE_ARCH
-+	pr_info("multiplex arch: 0x%x (mask: 0x%x)\n",
-+		SECCOMP_MULTIPLEXED_SYSCALL_TABLE_ARCH,
-+		SECCOMP_MULTIPLEXED_SYSCALL_TABLE_MASK);
-+#endif
-+#endif
-+	pr_info("sizeof(struct seccomp_bitmaps): %zu\n", sizeof(struct seccomp_bitmaps));
- 
- 	return 0;
- }
--- 
-2.25.1
-
+> ---
+>  arch/x86/kvm/mmu/mmu.c         | 30 +++++++++++++++++++++++-------
+>  arch/x86/kvm/mmu/paging_tmpl.h |  2 +-
+>  2 files changed, 24 insertions(+), 8 deletions(-)
+>
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index a91e8601594d..e993d5cd4bc8 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -2615,8 +2615,9 @@ static void validate_direct_spte(struct kvm_vcpu *vcpu, u64 *sptep,
+>         }
+>  }
+>
+> -static void mmu_page_zap_pte(struct kvm *kvm, struct kvm_mmu_page *sp,
+> -                            u64 *spte)
+> +/* Returns the number of zapped non-leaf child shadow pages. */
+> +static int mmu_page_zap_pte(struct kvm *kvm, struct kvm_mmu_page *sp,
+> +                           u64 *spte, struct list_head *invalid_list)
+>  {
+>         u64 pte;
+>         struct kvm_mmu_page *child;
+> @@ -2630,19 +2631,34 @@ static void mmu_page_zap_pte(struct kvm *kvm, struct kvm_mmu_page *sp,
+>                 } else {
+>                         child = to_shadow_page(pte & PT64_BASE_ADDR_MASK);
+>                         drop_parent_pte(child, spte);
+> +
+> +                       /*
+> +                        * Recursively zap nested TDP SPs, parentless SPs are
+> +                        * unlikely to be used again in the near future.  This
+> +                        * avoids retaining a large number of stale nested SPs.
+> +                        */
+> +                       if (tdp_enabled && invalid_list &&
+> +                           child->role.guest_mode && !child->parent_ptes.val)
+> +                               return kvm_mmu_prepare_zap_page(kvm, child,
+> +                                                               invalid_list);
+>                 }
+>         } else if (is_mmio_spte(pte)) {
+>                 mmu_spte_clear_no_track(spte);
+>         }
+> +       return 0;
+>  }
+>
+> -static void kvm_mmu_page_unlink_children(struct kvm *kvm,
+> -                                        struct kvm_mmu_page *sp)
+> +static int kvm_mmu_page_unlink_children(struct kvm *kvm,
+> +                                       struct kvm_mmu_page *sp,
+> +                                       struct list_head *invalid_list)
+>  {
+> +       int zapped = 0;
+>         unsigned i;
+>
+>         for (i = 0; i < PT64_ENT_PER_PAGE; ++i)
+> -               mmu_page_zap_pte(kvm, sp, sp->spt + i);
+> +               zapped += mmu_page_zap_pte(kvm, sp, sp->spt + i, invalid_list);
+> +
+> +       return zapped;
+>  }
+>
+>  static void kvm_mmu_unlink_parents(struct kvm *kvm, struct kvm_mmu_page *sp)
+> @@ -2688,7 +2704,7 @@ static bool __kvm_mmu_prepare_zap_page(struct kvm *kvm,
+>         trace_kvm_mmu_prepare_zap_page(sp);
+>         ++kvm->stat.mmu_shadow_zapped;
+>         *nr_zapped = mmu_zap_unsync_children(kvm, sp, invalid_list);
+> -       kvm_mmu_page_unlink_children(kvm, sp);
+> +       *nr_zapped += kvm_mmu_page_unlink_children(kvm, sp, invalid_list);
+>         kvm_mmu_unlink_parents(kvm, sp);
+>
+>         /* Zapping children means active_mmu_pages has become unstable. */
+> @@ -5396,7 +5412,7 @@ static void kvm_mmu_pte_write(struct kvm_vcpu *vcpu, gpa_t gpa,
+>                         u32 base_role = vcpu->arch.mmu->mmu_role.base.word;
+>
+>                         entry = *spte;
+> -                       mmu_page_zap_pte(vcpu->kvm, sp, spte);
+> +                       mmu_page_zap_pte(vcpu->kvm, sp, spte, NULL);
+>                         if (gentry &&
+>                             !((sp->role.word ^ base_role) & ~role_ign.word) &&
+>                             rmap_can_add(vcpu))
+> diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
+> index 3bb624a3dda9..e1066226b8f0 100644
+> --- a/arch/x86/kvm/mmu/paging_tmpl.h
+> +++ b/arch/x86/kvm/mmu/paging_tmpl.h
+> @@ -929,7 +929,7 @@ static void FNAME(invlpg)(struct kvm_vcpu *vcpu, gva_t gva, hpa_t root_hpa)
+>                         pte_gpa = FNAME(get_level1_sp_gpa)(sp);
+>                         pte_gpa += (sptep - sp->spt) * sizeof(pt_element_t);
+>
+> -                       mmu_page_zap_pte(vcpu->kvm, sp, sptep);
+> +                       mmu_page_zap_pte(vcpu->kvm, sp, sptep, NULL);
+>                         if (is_shadow_present_pte(old_spte))
+>                                 kvm_flush_remote_tlbs_with_address(vcpu->kvm,
+>                                         sp->gfn, KVM_PAGES_PER_HPAGE(sp->role.level));
+> --
+> 2.28.0
+>
