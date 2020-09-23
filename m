@@ -2,86 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09C812758DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:37:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB6082758DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:36:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726691AbgIWNg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 09:36:59 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:38393 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726498AbgIWNgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 09:36:55 -0400
-X-Greylist: delayed 531 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Sep 2020 09:36:54 EDT
-Received: from [141.14.220.45] (g45.guest.molgen.mpg.de [141.14.220.45])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id CE1B220646235;
-        Wed, 23 Sep 2020 15:28:01 +0200 (CEST)
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Subject: Re: [Intel-wired-lan] [PATCH] e1000e: Power cycle phy on PM resume
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-References: <20200923074751.10527-1-kai.heng.feng@canonical.com>
-Message-ID: <17092088-86ff-2d31-b3de-2469419136a3@molgen.mpg.de>
-Date:   Wed, 23 Sep 2020 15:28:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726671AbgIWNgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 09:36:54 -0400
+Received: from smtp.h3c.com ([60.191.123.56]:34822 "EHLO h3cspam01-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726130AbgIWNgy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 09:36:54 -0400
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
+        by h3cspam01-ex.h3c.com with ESMTPS id 08NDaZ4n036800
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 23 Sep 2020 21:36:35 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from localhost.localdomain (10.99.212.201) by
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 23 Sep 2020 21:36:39 +0800
+From:   Xianting Tian <tian.xianting@h3c.com>
+To:     <mingo@redhat.com>, <peterz@infradead.org>,
+        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
+        <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>,
+        <bsegall@google.com>, <mgorman@suse.de>
+CC:     <linux-kernel@vger.kernel.org>,
+        Xianting Tian <tian.xianting@h3c.com>
+Subject: [PATCH] sched/fair: Use bool parameter for update_tg_load_avg()
+Date:   Wed, 23 Sep 2020 21:29:35 +0800
+Message-ID: <20200923132935.20778-1-tian.xianting@h3c.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20200923074751.10527-1-kai.heng.feng@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.99.212.201]
+X-ClientProxiedBy: BJSMTP01-EX.srv.huawei-3com.com (10.63.20.132) To
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
+X-DNSRBL: 
+X-MAIL: h3cspam01-ex.h3c.com 08NDaZ4n036800
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Kai-Heng,
+In the file fair.c, sometims update_tg_load_avg(cfs_rq, 0) is used,
+sometimes update_tg_load_avg(cfs_rq, false) is used. So change it
+to use bool parameter.
 
+Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+---
+ kernel/sched/fair.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Am 23.09.20 um 09:47 schrieb Kai-Heng Feng:
-> We are seeing the following error after S3 resume:
-> [  704.746874] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
-> [  704.844232] e1000e 0000:00:1f.6 eno1: MDI Write did not complete
-> [  704.902817] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
-> [  704.903075] e1000e 0000:00:1f.6 eno1: reading PHY page 769 (or 0x6020 shifted) reg 0x17
-> [  704.903281] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
-> [  704.903486] e1000e 0000:00:1f.6 eno1: writing PHY page 769 (or 0x6020 shifted) reg 0x17
-> [  704.943155] e1000e 0000:00:1f.6 eno1: MDI Error
-> ...
-> [  705.108161] e1000e 0000:00:1f.6 eno1: Hardware Error
-> 
-> Since we don't know what platform firmware may do to the phy, so let's
-> power cycle the phy upon system resume to resolve the issue.
-
-Is there a bug report or list thread for this issue?
-
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> ---
->   drivers/net/ethernet/intel/e1000e/netdev.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
-> index 664e8ccc88d2..c2a87a408102 100644
-> --- a/drivers/net/ethernet/intel/e1000e/netdev.c
-> +++ b/drivers/net/ethernet/intel/e1000e/netdev.c
-> @@ -6968,6 +6968,8 @@ static __maybe_unused int e1000e_pm_resume(struct device *dev)
->   	    !e1000e_check_me(hw->adapter->pdev->device))
->   		e1000e_s0ix_exit_flow(adapter);
->   
-> +	e1000_power_down_phy(adapter);
-> +
->   	rc = __e1000_resume(pdev);
->   	if (rc)
->   		return rc;
-
-How much does this increase the resume time?
-
-
-Kind regards,
-
-Paul
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 1a68a0536..61dac1c58 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -831,7 +831,7 @@ void init_entity_runnable_average(struct sched_entity *se)
+ void post_init_entity_util_avg(struct task_struct *p)
+ {
+ }
+-static void update_tg_load_avg(struct cfs_rq *cfs_rq, int force)
++static void update_tg_load_avg(struct cfs_rq *cfs_rq, bool force)
+ {
+ }
+ #endif /* CONFIG_SMP */
+@@ -3300,7 +3300,7 @@ static inline void cfs_rq_util_change(struct cfs_rq *cfs_rq, int flags)
+  *
+  * Updating tg's load_avg is necessary before update_cfs_share().
+  */
+-static inline void update_tg_load_avg(struct cfs_rq *cfs_rq, int force)
++static inline void update_tg_load_avg(struct cfs_rq *cfs_rq, bool force)
+ {
+ 	long delta = cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_contrib;
+ 
+@@ -3612,7 +3612,7 @@ static inline bool skip_blocked_update(struct sched_entity *se)
+ 
+ #else /* CONFIG_FAIR_GROUP_SCHED */
+ 
+-static inline void update_tg_load_avg(struct cfs_rq *cfs_rq, int force) {}
++static inline void update_tg_load_avg(struct cfs_rq *cfs_rq, bool force) {}
+ 
+ static inline int propagate_entity_load_avg(struct sched_entity *se)
+ {
+@@ -3800,13 +3800,13 @@ static inline void update_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
+ 		 * IOW we're enqueueing a task on a new CPU.
+ 		 */
+ 		attach_entity_load_avg(cfs_rq, se);
+-		update_tg_load_avg(cfs_rq, 0);
++		update_tg_load_avg(cfs_rq, false);
+ 
+ 	} else if (decayed) {
+ 		cfs_rq_util_change(cfs_rq, 0);
+ 
+ 		if (flags & UPDATE_TG)
+-			update_tg_load_avg(cfs_rq, 0);
++			update_tg_load_avg(cfs_rq, false);
+ 	}
+ }
+ 
+@@ -7887,7 +7887,7 @@ static bool __update_blocked_fair(struct rq *rq, bool *done)
+ 		struct sched_entity *se;
+ 
+ 		if (update_cfs_rq_load_avg(cfs_rq_clock_pelt(cfs_rq), cfs_rq)) {
+-			update_tg_load_avg(cfs_rq, 0);
++			update_tg_load_avg(cfs_rq, false);
+ 
+ 			if (cfs_rq == &rq->cfs)
+ 				decayed = true;
+-- 
+2.17.1
 
