@@ -2,61 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FF01274ED8
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 04:08:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B135274EDA
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 04:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727031AbgIWCH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 22:07:57 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14262 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726743AbgIWCH5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 22:07:57 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id ED42D5D3707A01EE135B;
-        Wed, 23 Sep 2020 10:07:54 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 23 Sep 2020 10:07:46 +0800
-From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
-To:     <miklos@szeredi.hu>
-CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <jingxiangfeng@huawei.com>
-Subject: [PATCH -next] virtiofs: Move the assignment to ret outside the loop
-Date:   Wed, 23 Sep 2020 10:07:55 +0800
-Message-ID: <20200923020755.187255-1-jingxiangfeng@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1727048AbgIWCKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 22:10:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26311 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726743AbgIWCKC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 22:10:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600827001;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=B8GcEVeOS7v7gEW8EEmjGvOVzfnPTOFo568Fr9tVaI8=;
+        b=M+XB/cbvO273SXsFM/gHrslbep7spG8drEdWObHaQNiDOcjyF2sAjYlF7yVDrlD8hV/Ik7
+        jTaHBz60/rNFf4yAtBj5p1m+5U+7e4smy07rlQqBXMgMUloWPV3M81n2xe5XA2Kgey26sI
+        Gd/TABDekiNhTG0UL131CCKuznabe+w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-501-HSCSr3HpMXaLZxSxWpXXjw-1; Tue, 22 Sep 2020 22:09:45 -0400
+X-MC-Unique: HSCSr3HpMXaLZxSxWpXXjw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 49CEF87309E;
+        Wed, 23 Sep 2020 02:09:44 +0000 (UTC)
+Received: from localhost.localdomain (ovpn-12-50.pek2.redhat.com [10.72.12.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 047415576A;
+        Wed, 23 Sep 2020 02:09:41 +0000 (UTC)
+Subject: Re: [PATCH] docs: admin-guide: update kdump documentation due to
+ change of crash URL
+From:   lijiang <lijiang@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     bhe@redhat.com, corbet@lwn.net, kexec@lists.infradead.org,
+        linux-doc@vger.kernel.org, vgoyal@redhat.com
+References: <20200918080958.19841-1-lijiang@redhat.com>
+Message-ID: <e07a5f8a-0f9c-c1c3-61fc-3fc0602e6e37@redhat.com>
+Date:   Wed, 23 Sep 2020 10:09:39 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200918080958.19841-1-lijiang@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no need to do the assignment each time. So move the assignment
-to ret outside the loop.
+在 2020年09月18日 16:09, Lianbo Jiang 写道:
+> Since crash utility has moved to github, the original URL is no longer
+                       ^
+                      has been moved to github
 
-Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
----
- fs/fuse/dax.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Because of the above mistake, I'd like to correct it and reply it with the v2.
 
-diff --git a/fs/fuse/dax.c b/fs/fuse/dax.c
-index e394dba08cc4..f18cd7b53ec7 100644
---- a/fs/fuse/dax.c
-+++ b/fs/fuse/dax.c
-@@ -1259,9 +1259,9 @@ static int fuse_dax_mem_range_init(struct fuse_conn_dax *fcd)
- 	pr_debug("%s: dax mapped %ld pages. nr_ranges=%ld\n",
- 		__func__, nr_pages, nr_ranges);
- 
-+	ret = -ENOMEM;
- 	for (i = 0; i < nr_ranges; i++) {
- 		range = kzalloc(sizeof(struct fuse_dax_mapping), GFP_KERNEL);
--		ret = -ENOMEM;
- 		if (!range)
- 			goto out_err;
- 
--- 
-2.26.0.106.g9fadedd
+Thanks.
+
+> available. Let's update it accordingly.
+> 
+> Suggested-by: Dave Young <dyoung@redhat.com>
+> Signed-off-by: Lianbo Jiang <lijiang@redhat.com>
+> ---
+>  Documentation/admin-guide/kdump/kdump.rst | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
+> index 2da65fef2a1c..75a9dd98e76e 100644
+> --- a/Documentation/admin-guide/kdump/kdump.rst
+> +++ b/Documentation/admin-guide/kdump/kdump.rst
+> @@ -509,9 +509,12 @@ ELF32-format headers using the --elf32-core-headers kernel option on the
+>  dump kernel.
+>  
+>  You can also use the Crash utility to analyze dump files in Kdump
+> -format. Crash is available on Dave Anderson's site at the following URL:
+> +format. Crash is available at the following URL:
+>  
+> -   http://people.redhat.com/~anderson/
+> +   https://github.com/crash-utility/crash
+> +
+> +Crash document can be found at:
+> +   https://crash-utility.github.io/
+>  
+>  Trigger Kdump on WARN()
+>  =======================
+> 
 
