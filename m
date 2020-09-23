@@ -2,124 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5859027595A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:05:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09BAC275961
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:06:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgIWOFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 10:05:21 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:33768 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726572AbgIWOFV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 10:05:21 -0400
-Received: from zn.tnic (p200300ec2f0d13003cb05fb00c1da4a2.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:1300:3cb0:5fb0:c1d:a4a2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 46B171EC0409;
-        Wed, 23 Sep 2020 16:05:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600869919;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=6HuhANw8kbWERcNW/iYnFeMlMcA2HBN5jS0VRKC6GY0=;
-        b=BNmI2iEv7W8wMHaxMaIsoNNrU2ow8f9CCZwlYDC4adBakZBU8UcRXV8R7oTeLatu2gHkFi
-        XTfrEyMzKDNc3ZfWwjLHwKEIm5KYhCoMrwXDTFJa/W6ErpvFgYVRkZAGqCAfkXBLpvJrjV
-        UyMOQmGfjVvmsUWt81zcy9qHqKndi5Y=
-Date:   Wed, 23 Sep 2020 16:05:12 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Punit Agrawal <punit1.agrawal@toshiba.co.jp>
-Cc:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-efi@vger.kernel.org, linux-acpi@vger.kernel.org,
-        devel@acpica.org, Tony Luck <tony.luck@intel.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Yazen Ghannam <yazen.ghannam@amd.com>
-Subject: Re: [PATCH v4] cper, apei, mce: Pass x86 CPER through the MCA
- handling chain
-Message-ID: <20200923140512.GJ28545@zn.tnic>
-References: <20200904140444.161291-1-Smita.KoralahalliChannabasappa@amd.com>
- <87wo0kiz6y.fsf@kokedama.swc.toshiba.co.jp>
+        id S1726684AbgIWOGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 10:06:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgIWOGX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 10:06:23 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A61F8C0613CE;
+        Wed, 23 Sep 2020 07:06:23 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id g4so167331wrs.5;
+        Wed, 23 Sep 2020 07:06:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TwbdsbNQ01qQwqOKbFf8TNuPGrR4dQ5NlUzkmbce0+o=;
+        b=OoYYRY91DkAWgnnrlsYtddRWauvcC6OJ5YzJtW14Fojl7S4eZu1wwPYvSc1xRvOEMv
+         NjV30C9vrMMoW8M8VbZL6SYmtTfdm6l8PF3MV1MPl/O5bP1cPPtTNLMzN07U4AaGgrQD
+         1iQ6DgdL6L/1+296uCalBUseH+C2U6RrgSxZFNZ9m16wZ0G62sAK9zfLarzt+aPJfm9o
+         6Vl5sVJOYSPYUWhIPgbLUqapDKdAiyL+8hp8lm85XhycIHqGinZ032dKeMCkKiT0EZwI
+         UVKtL2IHxKhQbmx5Zw28U1jBOiJPv0NdtE1x2+1cNl972ttnYEXMS48Tg8J+P/LVblZw
+         xNdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TwbdsbNQ01qQwqOKbFf8TNuPGrR4dQ5NlUzkmbce0+o=;
+        b=YqoH5Go27ARbRqHwbYtxelVz0f7G1ZF5qC4ufjEoM+iWVL9yAG2AJ+Y8i2g4XbWDnP
+         zqlpY4ijfLJixGNLKsMMUWB6GsYv7SF1gMm25w3m3lRuZYtdvTBS0La2s7BTk47D+BWZ
+         sWbVtV0Lw1V+3YdIY+6WIiZF2HwJ4rSzT5Q69aa4NGzpGoaCmT+yM+j07es7FH2GL01U
+         Dbe8Cd4tdO9Zo7mvg36qYQXxhyCiErnnAlic4EouoHNkA1XE+rg/G0ZhduVtO5menAaP
+         h3am2jCk7zespTNHiVCmMwVWFvdlSuNA56yemhXKttxXhQne7B++qLa77Ir5grDSGNZH
+         qICQ==
+X-Gm-Message-State: AOAM533qB4CxOVBViod7lvPpsJ072BJs60UWFoJhiwir1rIfZqLFWgpD
+        FcEilTEO+Hln+S3Bf0cqnXF4QY7zkxVDiiPP8Deq7MBIdw/fmw==
+X-Google-Smtp-Source: ABdhPJyRnzCExgkJl9cfP16TzWgw3924AwBQWxefA0lv/y8yZPq6g1F4ltEIa2eo/BbQ02YGvNKwscalgdDEGS6Awlk=
+X-Received: by 2002:adf:9b8b:: with SMTP id d11mr1131300wrc.71.1600869982290;
+ Wed, 23 Sep 2020 07:06:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87wo0kiz6y.fsf@kokedama.swc.toshiba.co.jp>
+References: <20200923090519.361-1-himadrispandya@gmail.com>
+ <20200923090519.361-4-himadrispandya@gmail.com> <1600856557.26851.6.camel@suse.com>
+In-Reply-To: <1600856557.26851.6.camel@suse.com>
+From:   Himadri Pandya <himadrispandya@gmail.com>
+Date:   Wed, 23 Sep 2020 19:36:10 +0530
+Message-ID: <CAOY-YVkHycXqem_Xr6nQLgKEunk3MNc7dBtZ=5Aym4Y06vs9xQ@mail.gmail.com>
+Subject: Re: [PATCH 3/4] net: usb: rtl8150: use usb_control_msg_recv() and usb_control_msg_send()
+To:     Oliver Neukum <oneukum@suse.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        pankaj.laxminarayan.bharadiya@intel.com,
+        Kees Cook <keescook@chromium.org>, yuehaibing@huawei.com,
+        petkan@nucleusys.com, ogiannou@gmail.com,
+        USB list <linux-usb@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Greg KH <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Smita,
+On Wed, Sep 23, 2020 at 3:52 PM Oliver Neukum <oneukum@suse.com> wrote:
+>
+> Am Mittwoch, den 23.09.2020, 14:35 +0530 schrieb Himadri Pandya:
+>
+> Hi,
+>
+> > Many usage of usb_control_msg() do not have proper error check on return
+> > value leaving scope for bugs on short reads. New usb_control_msg_recv()
+> > and usb_control_msg_send() nicely wraps usb_control_msg() with proper
+> > error check. Hence use the wrappers instead of calling usb_control_msg()
+> > directly.
+> >
+> > Signed-off-by: Himadri Pandya <himadrispandya@gmail.com>
+> Nacked-by: Oliver Neukum <oneukum@suse.com>
+>
+> > ---
+> >  drivers/net/usb/rtl8150.c | 32 ++++++--------------------------
+> >  1 file changed, 6 insertions(+), 26 deletions(-)
+> >
+> > diff --git a/drivers/net/usb/rtl8150.c b/drivers/net/usb/rtl8150.c
+> > index 733f120c852b..e3002b675921 100644
+> > --- a/drivers/net/usb/rtl8150.c
+> > +++ b/drivers/net/usb/rtl8150.c
+> > @@ -152,36 +152,16 @@ static const char driver_name [] = "rtl8150";
+> >  */
+> >  static int get_registers(rtl8150_t * dev, u16 indx, u16 size, void *data)
+> >  {
+> > -     void *buf;
+> > -     int ret;
+> > -
+> > -     buf = kmalloc(size, GFP_NOIO);
+>
+> GFP_NOIO is used here for a reason. You need to use this helper
+> while in contexts of error recovery and runtime PM.
+>
 
-pls sync the time of the box where you create the patch:
+Understood. Apologies for proposing such a stupid change.
 
- Date: Fri,  4 Sep 2020 09:04:44 -0500
+> > -     if (!buf)
+> > -             return -ENOMEM;
+> > -
+> > -     ret = usb_control_msg(dev->udev, usb_rcvctrlpipe(dev->udev, 0),
+> > -                           RTL8150_REQ_GET_REGS, RTL8150_REQT_READ,
+> > -                           indx, 0, buf, size, 500);
+> > -     if (ret > 0 && ret <= size)
+> > -             memcpy(data, buf, ret);
+> > -     kfree(buf);
+> > -     return ret;
+> > +     return usb_control_msg_recv(dev->udev, 0, RTL8150_REQ_GET_REGS,
+> > +                                 RTL8150_REQT_READ, indx, 0, data,
+> > +                                 size, 500);
+>
+> This internally uses kmemdup() with GFP_KERNEL.
+> You cannot make this change. The API does not support it.
+> I am afraid we will have to change the API first, before more
+> such changes are done.
+>
+> I would suggest dropping the whole series for now.
 
-but your mail headers have:
+Okay. Thanks for the review.
 
- Received: from ... with mapi id 15.20.3370.019; Fri, 18 Sep 2020 14:49:12 +0000
- 						^^^^^^^^^^^^^^^^^^
+Regards,
+Himadri
 
-On Wed, Sep 23, 2020 at 07:07:17PM +0900, Punit Agrawal wrote:
-> I know Boris asked you to add the reason for the Reported-by, but
-> usually we don't track version differences in the committed patch.
-> 
-> Boris, can you confirm if you want the Reported-by to be retained?
-
-How else would you explain what the Reported-by: tag is for on a patch
-which adds a feature?
-
-> > + * The first expected register in the register layout of MCAX address space.
-> > + * The address defined must match with the first MSR address extracted from
-> > + * BERT which in SMCA systems is the bank's MCA_STATUS register.
-> > + *
-> > + * Note that the decoding of the raw MSR values in BERT is implementation
-> > + * specific and follows register offset order of MCAX address space.
-> > + */
-> > +#define MASK_MCA_STATUS 0xC0002001
-> 
-> The macro value is already defined in mce.h as
-> MSR_AMD64_SMCA_MC0_STATUS.  Is there any reason to not use it?
-
-Good point.
-
-> You can move the comment to where you check the status register.
-
-No need if he really wants to use the first MCi_STATUS address.
-
-> > +	m.apicid = lapic_id;
-> > +	m.bank = (ctx_info->msr_addr >> 4) & 0xFF;
-> > +	m.status = *i_mce;
-> > +	m.addr = *(i_mce + 1);
-> > +	m.misc = *(i_mce + 2);
-> > +	/* Skipping MCA_CONFIG */
-> > +	m.ipid = *(i_mce + 4);
-> > +	m.synd = *(i_mce + 5);
-> 
-> Instead of using the raw pointer arithmetic, it is better to define a
-> structure for the MCA registers? Something like -
-> 
->     struct {
->         u64 addr;
->         u64 misc;
->         u64 config;
->         u64 ipid;
->         ...
->     }
-> 
-> Checking back, this was mentioned in the previous review comments as
-> well. Please address all comments before posting a new version - either
-> by following the suggestion or explaining why it is not a good idea.
-
-Well, that was addressed in his reply last time:
-
-https://lkml.kernel.org/r/a28aa613-8353-0052-31f6-34bc733abf59@amd.com
-
-You might've missed it because you weren't CCed directly.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+>
+>         Regards
+>                 Oliver
+>
