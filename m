@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBAAB275242
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 09:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0311275243
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 09:24:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726727AbgIWHYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 03:24:30 -0400
-Received: from mail-eopbgr1400070.outbound.protection.outlook.com ([40.107.140.70]:30302
-        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
+        id S1726751AbgIWHYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 03:24:42 -0400
+Received: from mail-eopbgr1410079.outbound.protection.outlook.com ([40.107.141.79]:5595
+        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726557AbgIWHYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 03:24:30 -0400
+        id S1726557AbgIWHYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 03:24:42 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WFfhiG4wvcfOjLNGM87VA3e5PY4n5IdrYsxhWtOO0UomxlIPd44TgbNhdhhK3KvJpoIFd/2lbNv9eD/FJ7EnWc6yi3/FJ7YJ799v5NmhIAciyxHcbPukZmn3GCQQw2Uoyw1WaDjAJXWTOL9co5pxMxsAKo/tBHbXzOoPPV8gEljKKwud9WOG8cxMLVJ8U/DEynBNqTStn7kIbTwH5ycej8Wpi70fGfcwaM1kRh2GDz9Q8IKNzF1UjmHqoPOVRrCdnSfVFEnXEgDoKLT6WZb4JU+muw1eZ8G/BbqjjAkFio22eLI/nNBSV5NG7FwqJyS04dab5AEiPNc3IDJKLX2/5A==
+ b=gE/DdnLGl8mm/61juuUDzpgs9eJgSthSSmnqtGn7gaozli3nAGDR5iSgSsV+4DP6C3+CMwcXsrLUSC6EpVOIigBV77xOTDrjStG54WSUwgw6YLDo5uP8MmH5qS/+ACFq04bcSD1ZolJoTX80+xYHYHjrdOV2reXTxhvG3F6n3rDxOdkKiHNAwJRi2hH4Nic+BRzPfOvfXMqoIB5pM883CGOUJVFT/9fBuLbDzmVBzJN32ucA9Z0QKy8raD+1nYGzoCeu0VHhKL4JOwUtJqUeAn8diaNuaeU/2AeW9409xXPYtU4G0/zjQjHHgpMIFqgph66w2KiGMzhv556ov2ycJg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Fae5y8CztG+/NlnQnn5IPLfxiRoWrokaZ2I3tKKtZAk=;
- b=lj5jVaHAyYyoEFWbPCXbssxkA14REeia7PSxJ/0ojvMffFVSCPJ8ramHsXz8X7NnefXDBn44UxHJ24pfUMOfUuMZoi0MZpWJRVN+JRaFX8EeFaXqoswHjBcOK3xe5yDWnrrq5K+xcYNSER+/kiYg0NHaK23HTpw/3zbSzNZnpcozBq72+Kye95fQ/jSMTdtK52xdv5VASIV0knScqICnPo0D5NFhJgST7dzLRCbw0KbGVgy4A1q39UGZ+rlalEIfkJe5pcyQEB0rgAIGhQsZ2f8ZY0DiX9b5ywvppRa+QzB6PLfUS5dx27N3kWFc9bGM5xLTt7Y4FL3+PfGLhSvHpA==
+ bh=GV/v9W4dI/Y0SX3JYKe55p1wd27JJ2HnGrZ3peNNtGg=;
+ b=cnSweaDAT9ic1QKteFBO6X26pwVIoDJ12+5AeJcD0kNE+5KuSiXdMi3kd9AIXJfiWFvOQM9HMGqVq6MKjZ8fqYu315rdUAKAIVaj2Bv8bIgLRPYuHhUGt7/WWooxLWCvBW68fS8bH4uro93n/tC7m7Y7LCDtkTu7P0gvn7Ex/h8h+Q6quOj+GuKNd4l8fSy7/PMUGJKh8qGzh2Z0TkDQBt/r7DmPlDXO0EmlsDLKx15NcuOXDvayuLJpOTF0lrzzRl4wbPmXOmtlCkP3OXUIbpySneweqN0GDjG/V8V+4R6XztpixmMS6NEsjEGRKICHLNF3iZrhghDcBtl2A3KrBg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nec.com; dmarc=pass action=none header.from=nec.com; dkim=pass
  header.d=nec.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=necglobal.onmicrosoft.com; s=selector1-necglobal-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Fae5y8CztG+/NlnQnn5IPLfxiRoWrokaZ2I3tKKtZAk=;
- b=sx6iKZD2DlIJl2iGQ7DQ8y2ev5W0RlpjkJdkFjslDlXwkenDcrVJYpN097xwNVLOMkAabcdlFu/yFVqjEd7lg/1NH4AHw3/Y2mALI7zJMZHjV2Y8BbFCHcM6p1nGy2ZcrqBMMuRSn9ldxX/ytxwN8/iKnm2JiMf/oZsQryBVwBo=
+ bh=GV/v9W4dI/Y0SX3JYKe55p1wd27JJ2HnGrZ3peNNtGg=;
+ b=nwOaWGjToYJrGsyLgzBtJwlW1mYWqWX2zq77d1yUmTrM+l4cpK60tdp5BIY2to6+k2tMUQ7dPbDDSA8/zPVY5qq3MK2fLJv6JuceMEGmYLgP9AENRHYixGwX+5Qwv+jLH/JiLTGgqlVIgtfxKoptQl0Wy0S9GTiR41R+wI+95MU=
 Received: from TY2PR01MB3210.jpnprd01.prod.outlook.com (2603:1096:404:74::14)
  by TYAPR01MB5484.jpnprd01.prod.outlook.com (2603:1096:404:8033::13) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Wed, 23 Sep
- 2020 07:24:27 +0000
+ 2020 07:24:39 +0000
 Received: from TY2PR01MB3210.jpnprd01.prod.outlook.com
  ([fe80::108f:629c:d934:9206]) by TY2PR01MB3210.jpnprd01.prod.outlook.com
  ([fe80::108f:629c:d934:9206%7]) with mapi id 15.20.3412.020; Wed, 23 Sep 2020
- 07:24:27 +0000
+ 07:24:39 +0000
 From:   =?iso-2022-jp?B?SE9SSUdVQ0hJIE5BT1lBKBskQktZOH0hIUQ+TGkbKEIp?= 
         <naoya.horiguchi@nec.com>
 To:     Oscar Salvador <osalvador@suse.de>
@@ -46,16 +46,14 @@ CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
         "cai@lca.pw" <cai@lca.pw>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: Re: [PATCH v7 04/14] mm,hwpoison: unexport get_hwpoison_page and make
- it static
-Thread-Topic: [PATCH v7 04/14] mm,hwpoison: unexport get_hwpoison_page and
- make it static
-Thread-Index: AQHWkOhECxR7xesw+0qv0uU/neSYZal101EA
-Date:   Wed, 23 Sep 2020 07:24:27 +0000
-Message-ID: <20200923072426.GA14664@hori.linux.bs1.fc.nec.co.jp>
+Subject: Re: [PATCH v7 05/14] mm,hwpoison: refactor madvise_inject_error
+Thread-Topic: [PATCH v7 05/14] mm,hwpoison: refactor madvise_inject_error
+Thread-Index: AQHWkOhLEh0JOw6tEEWKLIXa75NMVal1018A
+Date:   Wed, 23 Sep 2020 07:24:39 +0000
+Message-ID: <20200923072438.GB14664@hori.linux.bs1.fc.nec.co.jp>
 References: <20200922135650.1634-1-osalvador@suse.de>
- <20200922135650.1634-5-osalvador@suse.de>
-In-Reply-To: <20200922135650.1634-5-osalvador@suse.de>
+ <20200922135650.1634-6-osalvador@suse.de>
+In-Reply-To: <20200922135650.1634-6-osalvador@suse.de>
 Accept-Language: ja-JP, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -64,39 +62,39 @@ authentication-results: suse.de; dkim=none (message not signed)
  header.d=none;suse.de; dmarc=none action=none header.from=nec.com;
 x-originating-ip: [165.225.110.205]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: aa3bac21-7f4b-4669-bdf3-08d85f91b496
+x-ms-office365-filtering-correlation-id: 41490ebc-d0bd-4ac3-81bb-08d85f91bb84
 x-ms-traffictypediagnostic: TYAPR01MB5484:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <TYAPR01MB5484982B62A0FE218397D4A7E7380@TYAPR01MB5484.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3173;
+x-microsoft-antispam-prvs: <TYAPR01MB5484A342EA90968512A50515E7380@TYAPR01MB5484.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2512;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: EpLnFM1SGD0LtvlTdQ2l+9z6x6it+ucMZB3BkrB4k8+X6Ai+qHbFJEAKPS+siCe7/eFwV4CMwDwAgZXgSUvqVg32rB3RC/Ztgz0Rvk5ROYN0FBYaMnVANEizOwuXWi5/jUgH/k3y7MoulPEbujg4Dd/EI2wDogSZ2auKzQShUtawDH5s4trACyYKnDtnuJNzlm9CQna5SKGL8+ChcWUtPONuy4P0qx9NDswa3iWQvnTJGgidLrS+NC2QePHsf3jPTrElA8Or7AY0MYF2Jw0OMYFe0KVLN1B8bwYWXTtYO7IngK6KZAAY8SKuV0u7v1LOHFK0RTRSDPKcR1/du9cvGcYPbCVby/gNvJK4uTjlg7hdXrB7hZYwswwMgot6QUHT
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB3210.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(136003)(376002)(366004)(346002)(66556008)(71200400001)(64756008)(6486002)(66446008)(2906002)(1076003)(8676002)(66476007)(85182001)(33656002)(76116006)(66946007)(316002)(54906003)(26005)(558084003)(86362001)(8936002)(6506007)(4326008)(478600001)(186003)(83380400001)(9686003)(6512007)(5660300002)(55236004)(6916009)(142933001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: VR7k0weUXstkWDZlNT7el+dJT7iJDwHO+X0JlebcQWhYGzDahpqKEWXv8gk7hyKCPTGNxwzT9vCwFCiZQci5xbU7acL1p4FV4wNnc2iYdjBK22qe1EqIYKdpMaSiv8gQeaGp5OTe9yqKI0j5q4Ry+3p4liy2idSd/U4CJYGG9N1VBMUVOuzRGVo5lrziaF4+aeuHc1yTiepZe/DGaAzcNPe+ysN72JMWi4FqTCSBHKbhDVbw0ibRCwdze9/j1TPK/lQcgiSZSKI0oG7SV5pbrZL6z8Gq2E1ouDGR5Lt6p2owgjUZhCr2YZAFfdNhPoQUstuDFjqTCV4DA1oZiJgttsNtfkkqTHR+/7/O3Rw2d1CNLAZVVNo31rYqiu8kr73Uoai2CGpjUTmRAHy/jpDhpdBKz/8iiY4xnM6ME4Web84of9XJ/VPgElUF+jrccusenKPnCS13pbpE6x6q3wWZNEU74WALF0Z5xF22WpysJeHv/Xj6ZdRE4dJn2Ie9d9QJRf7KFYOOlYf8SD9iwLZe481Rai1wo9+zXevDgFgE3umap9H8ieKir2vIXOYXA5QI/p1YlxUqNj0Ehr3HRNHwC7/V8OhxKCPVjjbj5yh2JZLXPBo88nwbcFdqZfvTsR/9Uc/IJtHipa46Ht5FvUjKrw==
+x-microsoft-antispam-message-info: PuqpQkgPtWSvCx6BJBzjive2juA91WVYL4asNjZf1NjabXxubeQlbvhduxdq8Rim56GHxw9YkZW31k216oqaGPK/bm6F+yf2q55sGQT4WY9bPQCddP7mRUG8H67+Em/fHqKSEvr3JenqgGmvKwytvkFaHzeMybK1LVuqoxA6Ewpnm4zokSIuIcRmCjs21QBL+eWX4udWsx6cy7JAvjKADJ+EGoOtCcgy5g02iYjoZwOfo/y2JpXDCNpWCouLQ7bzjwLkSj8oZHkiecMo0b92Sy76QYu1KGnKm9ONYXEZQ12Z4+oBi2CLeS3bzNZkmH1KCZPw0MrrbVJVhgFENtJLgsdWEH4W7/ygQn0GeIUdYFkUQfVKRivPS6jVnxyddqua
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB3210.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66556008)(71200400001)(498600001)(64756008)(6486002)(66446008)(2906002)(1076003)(8676002)(66476007)(85182001)(33656002)(76116006)(66946007)(54906003)(26005)(558084003)(86362001)(8936002)(6506007)(4326008)(186003)(9686003)(6512007)(5660300002)(55236004)(6916009)(142933001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: lugGFTnikX5ksxRPzqYYiAQKLvixaKE0OdZ71g4UjfcoPE4tmxEO43dv68y1+rfsnI3WCz/ojwSGzDGkQ8Ufsd+9MlafsV//oTA8JVzNi7QA4LpTJ514HJNiJsXEiMaF7oB5lH610Au8/MGeNFTSTWK3sdfWRixpCl6TlncqFnOnv4QeoyuLa4Cw8vfDMUVmmCC4lwftRodvXxvJee7whXQccuQqCZ3yRG7Y/AulcU7F6E2pm0wQOcX//V1SaAFim4CfhurZu8SzOe2TH3bQ9zBFzvpzM7w8lghWBvvr2aZEg0ogH5qVvAE0t2kwl1OmiMVxdcX749oaBNqOvHm8Skvqc68bHV+id8x76jnBcpoBa6TyAKM6hjIuT5kY5JRwMcIfU1UwZOWkugsJfGCb9zkTbAbWBr90j8b5Ounvlm9Iyvhsg4B6t0gP4MpAanq6DjAvqxp9zhbYGxV0b12qZ8tgJvEC0St9/8ll4ZmAx1Dd9bX7tUc8CzEIQOztTnakEltjij3pt19cl0FFTGcL2jtrDq8E/tDtbGDf9CH/xbICYoGin+ad4/xpIE3SUnkLXZBb/EEBH4WjG0W8etlTaPuymcNVK0dTEhF9JVsIRTM9WxF6ib0rLgU6pf7p+irO3UJ9rJcJtfwR4cMNMcFKmw==
 Content-Type: text/plain; charset="iso-2022-jp"
-Content-ID: <05417238B542DF40845999A67F8E7C09@jpnprd01.prod.outlook.com>
+Content-ID: <D23BE73185959343871EB277A258EB94@jpnprd01.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: nec.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB3210.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: aa3bac21-7f4b-4669-bdf3-08d85f91b496
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2020 07:24:27.6730
+X-MS-Exchange-CrossTenant-Network-Message-Id: 41490ebc-d0bd-4ac3-81bb-08d85f91bb84
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2020 07:24:39.3285
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: e67df547-9d0d-4f4d-9161-51c6ed1f7d11
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /8YHTVfmwLnCnv1+DgV6raI3JoodsEpXmz1Ll0Fk58mmwZ9UyqHHQ0aEKn+2+IwnkhUU1kGFIlCj5BjgVD2E4g==
+X-MS-Exchange-CrossTenant-userprincipalname: 0ibqd8tkUqTLi97QJcIXFE2GN+7xlUYaHtOmCKLQnzMALQ6jHIUYkvLVOvqnRK5aIK2qp29s8UhTlP3g+A0s5A==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB5484
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 03:56:40PM +0200, Oscar Salvador wrote:
-> Since get_hwpoison_page is only used in memory-failure code now, let us
-> un-export it and make it private to that code.
+On Tue, Sep 22, 2020 at 03:56:41PM +0200, Oscar Salvador wrote:
+> Make a proper if-else condition for {hard,soft}-offline.
 >=20
+> [akpm: refactor comment]
 > Signed-off-by: Oscar Salvador <osalvador@suse.de>
 
 Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>=
