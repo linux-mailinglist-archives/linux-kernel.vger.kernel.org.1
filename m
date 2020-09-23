@@ -2,68 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69476275C58
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F39F7275C5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:47:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726783AbgIWPrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 11:47:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51708 "EHLO mail.kernel.org"
+        id S1726814AbgIWPrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 11:47:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46002 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgIWPrl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 11:47:41 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 214AE2223E;
-        Wed, 23 Sep 2020 15:47:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600876061;
-        bh=HmLgHeuN3iqK1yowHO5d7riEdrMBcF2EKeYaKbNiQpo=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=e3bKQJ0Z7Ilg8f57bV1gcAj+wyjp5sJ7tMqp6sSQgu5ABMqGZ1UErEKxPAj2HB0Za
-         //cpTfj+NDAS1BD9wtjfLu+qZay5EXQSrsTlCojnmO+XaZa6QR/7Wy10uYKkfdIG+C
-         4ISDfp4E3KWWlJwO/uDb0YOth5MW3GNKMJ+kBmoY=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id C5A3735226CB; Wed, 23 Sep 2020 08:47:40 -0700 (PDT)
-Date:   Wed, 23 Sep 2020 08:47:40 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>
-Subject: Re: [RFC PATCH 07/12] rcu: Shutdown nocb timer on de-offloading
-Message-ID: <20200923154740.GQ29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200921124351.24035-1-frederic@kernel.org>
- <20200921124351.24035-8-frederic@kernel.org>
- <20200922001756.GP29330@paulmck-ThinkPad-P72>
- <20200923152951.GC31465@lenoir>
+        id S1726130AbgIWPrt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 11:47:49 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id F393FABC1;
+        Wed, 23 Sep 2020 15:48:25 +0000 (UTC)
+Date:   Wed, 23 Sep 2020 16:47:44 +0100
+From:   Mel Gorman <mgorman@suse.de>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        linux-kernel@vger.kernel.org, valentin.schneider@arm.com,
+        pauld@redhat.com, hdanton@sina.com
+Subject: Re: [PATCH 0/4 v2] sched/fair: Improve fairness between cfs tasks
+Message-ID: <20200923154744.GL3117@suse.de>
+References: <20200921072424.14813-1-vincent.guittot@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <20200923152951.GC31465@lenoir>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200921072424.14813-1-vincent.guittot@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 05:29:52PM +0200, Frederic Weisbecker wrote:
-> On Mon, Sep 21, 2020 at 05:17:56PM -0700, Paul E. McKenney wrote:
-> > On Mon, Sep 21, 2020 at 02:43:46PM +0200, Frederic Weisbecker wrote:
-> > > Make sure the nocb timer can't fire anymore before we reach the final
-> > > de-offload state. Spuriously waking up the GP kthread is no big deal but
-> > > we must prevent from executing the timer callback without nocb locking.
-> > 
-> > If we had just the previous patch and not this patch, would things break?
-> > Or are you relying on the fact that there is not yet a connection to
-> > userspace controls for this functionality?
+On Mon, Sep 21, 2020 at 09:24:20AM +0200, Vincent Guittot wrote:
+> When the system doesn't have enough cycles for all tasks, the scheduler
+> must ensure a fair split of those CPUs cycles between CFS tasks. The
+> fairness of some use cases can't be solved with a static distribution of
+> the tasks on the system and requires a periodic rebalancing of the system
+> but this dynamic behavior is not always optimal and the fair distribution
+> of the CPU's time is not always ensured.
 > 
-> Exactly it shouldn't break because only the last patch makes the code
-> eventually used.
 
-That works, thank you!
+FWIW, nothing bad fell out of the series from a battery of scheduler
+tests across various machines. Headline-wise, EPYC 1 looked very bad for
+hackbench but a detailed look showed that it was great until the very
+highest group count when it looked bad. Otherwise EPYC 1 looked good
+as-did EPYC 2. Various generation of Intel boxes showed marginal gains
+or losses, nothing dramatic.  will-it-scale for various test loads looks
+looked fractionally worse across some machines which may how up in the
+0-day bot but it probably will be marginal.
 
-							Thanx, Paul
+As the patches are partially magic numbers which you could reason about
+either way, I'm not going to say that it's universally better. However
+it's slightly better in normal cases, your tests indicate its good for
+a specific corner case and it does not look like anything obvious falls
+apart.
+
+-- 
+Mel Gorman
+SUSE Labs
