@@ -2,243 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E8327585D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3075827585F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726574AbgIWND6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 09:03:58 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:58410 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726332AbgIWND6 (ORCPT
+        id S1726609AbgIWNEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 09:04:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726332AbgIWNEX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 09:03:58 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08ND0Ow0025056;
-        Wed, 23 Sep 2020 09:03:54 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 33r5u987vc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Sep 2020 09:03:54 -0400
-Received: from SCSQMBX10.ad.analog.com (scsqmbx10.ad.analog.com [10.77.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 08ND3qNl019865
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Wed, 23 Sep 2020 09:03:53 -0400
-Received: from SCSQCASHYB6.ad.analog.com (10.77.17.132) by
- SCSQMBX10.ad.analog.com (10.77.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Wed, 23 Sep 2020 06:03:51 -0700
-Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by
- SCSQCASHYB6.ad.analog.com (10.77.17.132) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Wed, 23 Sep 2020 06:03:24 -0700
-Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX10.ad.analog.com
- (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Wed, 23 Sep 2020 06:03:50 -0700
-Received: from saturn.ad.analog.com ([10.48.65.107])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 08ND3kDO011773;
-        Wed, 23 Sep 2020 09:03:47 -0400
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <bleung@chromium.org>, <gwendal@chromium.org>,
-        <enric.balletbo@collabora.com>, <groeck@chromium.org>,
-        <jic23@kernel.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH] iio: cros_ec: unify hw fifo attributes into the core file
-Date:   Wed, 23 Sep 2020 16:03:39 +0300
-Message-ID: <20200923130339.997902-1-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 23 Sep 2020 09:04:23 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 105C1C0613CE;
+        Wed, 23 Sep 2020 06:04:23 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id u3so3134578pjr.3;
+        Wed, 23 Sep 2020 06:04:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:from:cc:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=7E+MYfBlV9Majnt8yvu7cDkaRWAr8/bGpIJBzwX7WYw=;
+        b=mKMuc6O8gjCmz2Kc66iuSpeA0HohDxNJR9EJta0vlbQBvxj4zqYabTrWXkafBfHCEo
+         YToSCYgVByZXT+NOfChF2RiZhHoFjCOmFDSXmSIwYdCLCaQSSdwde/1w+56X1HvwfD2/
+         KLeCUAzL33U1ABgJQRhC4/AWNCTYXq6kE8dD1pl5ib6nN4+lRFtqu2c2Mx8brBHaSqu4
+         affvSU/DTNks8dO+r8JYZW0lEUldSY/usuVUqiwrbRYASbt/1F4zp7YQM+9Ov/exjtML
+         KdHqyTrjQqerce/1/vLIYMtmghj+tzW8pIbiNFOSDkXSRZ4k4kHFGFQM747vQS4OHJDW
+         0Wlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:from:cc:subject:message-id:date:user-agent
+         :mime-version:content-transfer-encoding:content-language;
+        bh=7E+MYfBlV9Majnt8yvu7cDkaRWAr8/bGpIJBzwX7WYw=;
+        b=o0QHuv6oUMnHarD9R66xUpInxVgjM1jk/tdrShtYQ5n4ijGj4GtrPRCN28sNUqWSCS
+         H3WdP0h1eRxC/H7cpPWyimbYbSQ999Z8c5vMi9QeB1wxc7N3xhMzWOkHZ3+NHSkZ30Az
+         Uwfc7IYrXrtHtfrK7QmfKnowXD33n54DdIN0Rg/l7o4eK8o2PJB3/FJ7wYuYo8oSGEi4
+         UFoPsJSeJ9DgWGDqKCAZH0pHD5htCSPvALCzVmMseSy7Rt8p6uXpmKGNCCxL8vw4hHCq
+         Xa+1AA4WHMaNx1xlLv+H8CrQHSy4NSx+h/pDCx4m0nLliaXuz9GBpHrS4SYWrI0WyrnG
+         vJ8Q==
+X-Gm-Message-State: AOAM533UaOEBxqqFD7W/xNIEOS7Fa7uogyAmqXZEPKuoH/QgsCZ6M25o
+        c1WznOz9Yxa3nmvkt+V1K3c=
+X-Google-Smtp-Source: ABdhPJyXE9GR7fNWyB9zmWzWOpjev0FYltYlM1N0FAkvxD4rC4b7N9BuI14xkSaFqjbhiGIaCzGahA==
+X-Received: by 2002:a17:90b:f83:: with SMTP id ft3mr8090904pjb.234.1600866262366;
+        Wed, 23 Sep 2020 06:04:22 -0700 (PDT)
+Received: from ?IPv6:2402:b801:2840:8200:e4f7:baaa:ff2a:bf24? ([2402:b801:2840:8200:e4f7:baaa:ff2a:bf24])
+        by smtp.gmail.com with ESMTPSA id e2sm17777231pgl.38.2020.09.23.06.04.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Sep 2020 06:04:21 -0700 (PDT)
+To:     linux-amlogic@lists.infradead.org, linux-mmc@vger.kernel.org
+From:   Brad Harper <bjharper@gmail.com>
+Cc:     linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] mmc: host: meson-gx-mmc: fix possible deadlock condition for
+ preempt_rt
+Message-ID: <24a844c3-c2e0-c735-ccb7-83736218b548@gmail.com>
+Date:   Wed, 23 Sep 2020 23:04:15 +1000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-23_09:2020-09-23,2020-09-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
- impostorscore=0 mlxlogscore=999 suspectscore=0 clxscore=1011
- malwarescore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009230102
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The intent here is to minimize the use of iio_buffer_set_attrs(). Since we
-are planning to add support for multiple IIO buffers per IIO device, the
-issue has to do with:
-1. Accessing 'indio_dev->buffer' directly (as is done with
-   'iio_buffer_set_attrs(indio_dev->buffer, <attrs>)').
-2. The way that the buffer attributes would get handled or expanded when
-   there are more buffers per IIO device. Current a sysfs kobj_type expands
-   into a 'device' object that expands into an 'iio_dev' object.
-   We will need to change this, so that the sysfs attributes for IIO
-   buffers expand into IIO buffers at some point.
+Force threaded interrupts for meson_mmc_irq to prevent possible deadlock 
+condition
+during mmc operations when using preempt_rt with 5.9.0-rc3-rt3 patches 
+on arm64.
 
-Right now, the current IIO framework works fine for the
-'1 IIO device == 1 IIO buffer' case (that is now).
+Using meson-gx-mmc with an emmc device on Hardkernel Odroid N2+ 
+configured with
+preempt_rt resulted in the soc becoming unresponsive.  With lock 
+checking enabled
+the below inconsistent lock state was observed during boot.
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+After some discussions with tglx in IRC #linux-rt the attached patch was 
+suggested
+to remove IRQF_ONESHOT from request_threaded_irq.
+This has been tested and confirmed by me to resolve both the 
+unresponsive soc and
+the inconsistent lock state warning when using 5.9.0-rc3-rt3 on arm64 
+Odroid N2+.
+
+Further review and testing is required to ensure there are no adverse 
+impacts or
+concerns and that is the correct method to resolve the problem.  I will 
+continue
+to test on various amlogic devices with both standard mainline low 
+latency kernel
+and preempt_rt kernel with -rt patches.
+
+[ 7.858446] ================================
+[ 7.858448] WARNING: inconsistent lock state
+[ 7.858450] 5.9.0-rc3-rt3+ #33 Not tainted
+[ 7.858453] --------------------------------
+[ 7.858456] inconsistent {IN-HARDIRQ-R} -> {HARDIRQ-ON-W} usage.
+[ 7.858459] swapper/0/1 [HC0[0]:SC0[0]:HE1:SE1] takes:
+[ 7.858465] ffff80001219f4d8 (&trig->leddev_list_lock){+?.+}-{0:0}, at: 
+led_trigger_set+0x104/0x270
+[ 7.858482] {IN-HARDIRQ-R} state was registered at:
+[ 7.858484] lock_acquire+0xec/0x468
+[ 7.858491] rt_read_lock+0xb0/0x108
+[ 7.858497] led_trigger_event+0x34/0x88
+[ 7.858501] mmc_request_done+0x3f0/0x450
+[ 7.858505] meson_mmc_irq+0x284/0x378
+[ 7.858511] __handle_irq_event_percpu+0xcc/0x4a8
+[ 7.858515] handle_irq_event_percpu+0x60/0xb0
+[ 7.858519] handle_irq_event+0x50/0x108
+[ 7.858522] handle_fasteoi_irq+0xd0/0x180
+[ 7.858527] generic_handle_irq+0x38/0x50
+[ 7.858530] __handle_domain_irq+0x6c/0xc8
+[ 7.858533] gic_handle_irq+0x5c/0xb8
+[ 7.858537] el1_irq+0xbc/0x180
+[ 7.858540] arch_cpu_idle+0x28/0x38
+[ 7.858544] default_idle_call+0x90/0x3f0
+[ 7.858547] do_idle+0x250/0x268
+[ 7.858551] cpu_startup_entry+0x2c/0x78
+[ 7.858554] rest_init+0x1b0/0x284
+[ 7.858559] arch_call_rest_init+0x18/0x24
+[ 7.858565] start_kernel+0x550/0x588
+[ 7.858569] irq event stamp: 1925495
+[ 7.858571] hardirqs last enabled at (1925495): [<ffff8000111e3ba4>] 
+_raw_spin_unlock_irqrestore+0xa4/0xb0
+[ 7.858576] hardirqs last disabled at (1925494): [<ffff8000111e3c58>] 
+_raw_spin_lock_irqsave+0xa8/0xb8
+[ 7.858580] softirqs last enabled at (1857856): [<ffff80001024705c>] 
+bdi_register_va+0x114/0x368
+[ 7.858586] softirqs last disabled at (1857849): [<ffff80001024705c>] 
+bdi_register_va+0x114/0x368
+[ 7.858590]
+other info that might help us debug this:
+[ 7.858592] Possible unsafe locking scenario:
+[ 7.858594] CPU0
+[ 7.858595] ----
+[ 7.858597] lock(&trig->leddev_list_lock);
+[ 7.858600] <Interrupt>
+[ 7.858602] lock(&trig->leddev_list_lock);
+[ 7.858604]
+*** DEADLOCK ***
+[ 7.858606] 3 locks held by swapper/0/1:
+[ 7.858609] #0: ffff80001219eb30 (leds_list_lock){++++}-{0:0}, at: 
+led_trigger_register+0xf4/0x1c0
+[ 7.858619] #1: ffff0000b0696a70 (&led_cdev->trigger_lock){+.+.}-{0:0}, 
+at: led_trigger_register+0x134/0x1c0
+[ 7.858629] #2: ffff800011fb83d0 (rcu_read_lock){....}-{1:2}, at: 
+rt_write_lock+0x8/0x108
+[ 7.858637]
+stack backtrace:
+[ 7.858640] CPU: 5 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc3-rt3+ #33
+[ 7.858643] Hardware name: Hardkernel ODROID-N2Plus (DT)
+[ 7.858646] Call trace:
+[ 7.858647] dump_backtrace+0x0/0x1e8
+[ 7.858650] show_stack+0x20/0x30
+[ 7.858653] dump_stack+0xf0/0x164
+[ 7.858659] print_usage_bug+0x2b4/0x2c0
+[ 7.858662] mark_lock+0x2e8/0x360
+[ 7.858665] __lock_acquire+0x238/0x1858
+[ 7.858669] lock_acquire+0xec/0x468
+[ 7.858672] rt_write_lock+0xb0/0x108
+[ 7.858675] led_trigger_set+0x104/0x270
+[ 7.858678] led_trigger_register+0x180/0x1c0
+[ 7.858681] heartbeat_trig_init+0x28/0x5c
+[ 7.858686] do_one_initcall+0x90/0x4bc
+[ 7.858690] kernel_init_freeable+0x2cc/0x338
+[ 7.858694] kernel_init+0x1c/0x11c
+[ 7.858697] ret_from_fork+0x10/0x34
+
+Signed-off-by: Brad Harper <bjharper@gmail.com>
 ---
- drivers/iio/accel/cros_ec_accel_legacy.c              |  2 +-
- .../iio/common/cros_ec_sensors/cros_ec_lid_angle.c    |  3 ++-
- drivers/iio/common/cros_ec_sensors/cros_ec_sensors.c  |  5 ++---
- .../iio/common/cros_ec_sensors/cros_ec_sensors_core.c | 11 ++++++++---
- drivers/iio/light/cros_ec_light_prox.c                |  5 ++---
- drivers/iio/pressure/cros_ec_baro.c                   |  5 ++---
- include/linux/iio/common/cros_ec_sensors_core.h       |  4 ++--
- 7 files changed, 19 insertions(+), 16 deletions(-)
+  drivers/mmc/host/meson-gx-mmc.c | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/iio/accel/cros_ec_accel_legacy.c b/drivers/iio/accel/cros_ec_accel_legacy.c
-index b6f3471b62dc..8f1232c38e0d 100644
---- a/drivers/iio/accel/cros_ec_accel_legacy.c
-+++ b/drivers/iio/accel/cros_ec_accel_legacy.c
-@@ -215,7 +215,7 @@ static int cros_ec_accel_legacy_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	ret = cros_ec_sensors_core_init(pdev, indio_dev, true,
--					cros_ec_sensors_capture, NULL);
-+					cros_ec_sensors_capture, NULL, false);
- 	if (ret)
- 		return ret;
- 
-diff --git a/drivers/iio/common/cros_ec_sensors/cros_ec_lid_angle.c b/drivers/iio/common/cros_ec_sensors/cros_ec_lid_angle.c
-index af801e203623..752f59037715 100644
---- a/drivers/iio/common/cros_ec_sensors/cros_ec_lid_angle.c
-+++ b/drivers/iio/common/cros_ec_sensors/cros_ec_lid_angle.c
-@@ -97,7 +97,8 @@ static int cros_ec_lid_angle_probe(struct platform_device *pdev)
- 	if (!indio_dev)
- 		return -ENOMEM;
- 
--	ret = cros_ec_sensors_core_init(pdev, indio_dev, false, NULL, NULL);
-+	ret = cros_ec_sensors_core_init(pdev, indio_dev, false, NULL,
-+					NULL, false);
- 	if (ret)
- 		return ret;
- 
-diff --git a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors.c b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors.c
-index 130ab8ce0269..57038ca48d93 100644
---- a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors.c
-+++ b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors.c
-@@ -236,12 +236,11 @@ static int cros_ec_sensors_probe(struct platform_device *pdev)
- 
- 	ret = cros_ec_sensors_core_init(pdev, indio_dev, true,
- 					cros_ec_sensors_capture,
--					cros_ec_sensors_push_data);
-+					cros_ec_sensors_push_data,
-+					true);
- 	if (ret)
- 		return ret;
- 
--	iio_buffer_set_attrs(indio_dev->buffer, cros_ec_sensor_fifo_attributes);
--
- 	indio_dev->info = &ec_sensors_info;
- 	state = iio_priv(indio_dev);
- 	for (channel = state->channels, i = CROS_EC_SENSOR_X;
-diff --git a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-index ea480c1d4349..0de800d41978 100644
---- a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-+++ b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-@@ -174,12 +174,11 @@ static ssize_t hwfifo_watermark_max_show(struct device *dev,
- 
- static IIO_DEVICE_ATTR_RO(hwfifo_watermark_max, 0);
- 
--const struct attribute *cros_ec_sensor_fifo_attributes[] = {
-+static const struct attribute *cros_ec_sensor_fifo_attributes[] = {
- 	&iio_dev_attr_hwfifo_timeout.dev_attr.attr,
- 	&iio_dev_attr_hwfifo_watermark_max.dev_attr.attr,
- 	NULL,
- };
--EXPORT_SYMBOL_GPL(cros_ec_sensor_fifo_attributes);
- 
- int cros_ec_sensors_push_data(struct iio_dev *indio_dev,
- 			      s16 *data,
-@@ -238,6 +237,7 @@ static void cros_ec_sensors_core_clean(void *arg)
-  *    for backward compatibility.
-  * @push_data:          function to call when cros_ec_sensorhub receives
-  *    a sample for that sensor.
-+ * @has_hw_fifo:	Set true if this device has/uses a HW FIFO
-  *
-  * Return: 0 on success, -errno on failure.
-  */
-@@ -245,7 +245,8 @@ int cros_ec_sensors_core_init(struct platform_device *pdev,
- 			      struct iio_dev *indio_dev,
- 			      bool physical_device,
- 			      cros_ec_sensors_capture_t trigger_capture,
--			      cros_ec_sensorhub_push_data_cb_t push_data)
-+			      cros_ec_sensorhub_push_data_cb_t push_data,
-+			      bool has_hw_fifo)
- {
- 	struct device *dev = &pdev->dev;
- 	struct cros_ec_sensors_core_state *state = iio_priv(indio_dev);
-@@ -358,6 +359,10 @@ int cros_ec_sensors_core_init(struct platform_device *pdev,
- 					NULL);
- 			if (ret)
- 				return ret;
-+
-+			if (has_hw_fifo)
-+				iio_buffer_set_attrs(indio_dev->buffer,
-+						     cros_ec_sensor_fifo_attributes);
- 		}
- 	}
- 
-diff --git a/drivers/iio/light/cros_ec_light_prox.c b/drivers/iio/light/cros_ec_light_prox.c
-index fed79ba27fda..75d6b5fcf2cc 100644
---- a/drivers/iio/light/cros_ec_light_prox.c
-+++ b/drivers/iio/light/cros_ec_light_prox.c
-@@ -182,12 +182,11 @@ static int cros_ec_light_prox_probe(struct platform_device *pdev)
- 
- 	ret = cros_ec_sensors_core_init(pdev, indio_dev, true,
- 					cros_ec_sensors_capture,
--					cros_ec_sensors_push_data);
-+					cros_ec_sensors_push_data,
-+					true);
- 	if (ret)
- 		return ret;
- 
--	iio_buffer_set_attrs(indio_dev->buffer, cros_ec_sensor_fifo_attributes);
--
- 	indio_dev->info = &cros_ec_light_prox_info;
- 	state = iio_priv(indio_dev);
- 	state->core.type = state->core.resp->info.type;
-diff --git a/drivers/iio/pressure/cros_ec_baro.c b/drivers/iio/pressure/cros_ec_baro.c
-index f0938b6fbba0..aa043cb9ac42 100644
---- a/drivers/iio/pressure/cros_ec_baro.c
-+++ b/drivers/iio/pressure/cros_ec_baro.c
-@@ -139,12 +139,11 @@ static int cros_ec_baro_probe(struct platform_device *pdev)
- 
- 	ret = cros_ec_sensors_core_init(pdev, indio_dev, true,
- 					cros_ec_sensors_capture,
--					cros_ec_sensors_push_data);
-+					cros_ec_sensors_push_data,
-+					true);
- 	if (ret)
- 		return ret;
- 
--	iio_buffer_set_attrs(indio_dev->buffer, cros_ec_sensor_fifo_attributes);
--
- 	indio_dev->info = &cros_ec_baro_info;
- 	state = iio_priv(indio_dev);
- 	state->core.type = state->core.resp->info.type;
-diff --git a/include/linux/iio/common/cros_ec_sensors_core.h b/include/linux/iio/common/cros_ec_sensors_core.h
-index caa8bb279a34..c9b80be82440 100644
---- a/include/linux/iio/common/cros_ec_sensors_core.h
-+++ b/include/linux/iio/common/cros_ec_sensors_core.h
-@@ -96,7 +96,8 @@ struct platform_device;
- int cros_ec_sensors_core_init(struct platform_device *pdev,
- 			      struct iio_dev *indio_dev, bool physical_device,
- 			      cros_ec_sensors_capture_t trigger_capture,
--			      cros_ec_sensorhub_push_data_cb_t push_data);
-+			      cros_ec_sensorhub_push_data_cb_t push_data,
-+			      bool has_hw_fifo);
- 
- irqreturn_t cros_ec_sensors_capture(int irq, void *p);
- int cros_ec_sensors_push_data(struct iio_dev *indio_dev,
-@@ -125,6 +126,5 @@ extern const struct dev_pm_ops cros_ec_sensors_pm_ops;
- 
- /* List of extended channel specification for all sensors. */
- extern const struct iio_chan_spec_ext_info cros_ec_sensors_ext_info[];
--extern const struct attribute *cros_ec_sensor_fifo_attributes[];
- 
- #endif  /* __CROS_EC_SENSORS_CORE_H */
--- 
-2.25.1
+diff --git a/drivers/mmc/host/meson-gx-mmc.c 
+b/drivers/mmc/host/meson-gx-mmc.c
+index 08a3b1c05..130ac134d 100644
+--- a/drivers/mmc/host/meson-gx-mmc.c
++++ b/drivers/mmc/host/meson-gx-mmc.c
+@@ -1139,7 +1139,7 @@ static int meson_mmc_probe(struct platform_device 
+*pdev)
+                host->regs + SD_EMMC_IRQ_EN);
+
+         ret = request_threaded_irq(host->irq, meson_mmc_irq,
+-                                  meson_mmc_irq_thread, IRQF_ONESHOT,
++                                  meson_mmc_irq_thread, 0,
+                                    dev_name(&pdev->dev), host);
+         if (ret)
+                 goto err_init_clk;
+--
+2.20.1
 
