@@ -2,115 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10AF6276322
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 23:31:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B62B527632A
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 23:33:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726734AbgIWVbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 17:31:00 -0400
-Received: from mail-vi1eur05on2059.outbound.protection.outlook.com ([40.107.21.59]:10899
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726265AbgIWVbA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 17:31:00 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=D5GGv8B/drcVxWNPdpO70YUOb01VZPBSoZghMXjgTwhjsWKszQGesjw4O6meWoww/uIEexShYdokhFXjsUAC5ZbU6mzpFo85ff7zCAjHs705rNHg2tDnvv0SEqARUg8Du57G466N4Y/NlkPaU6NS3BcDxqA0n31oLnXegaIiCpDCaaAZWlabLbZ+ge2gOyV9gZ81lqH0izrVUc5h0Oig9lpRLiCTy5TqqCx2COWRVHEvQDbw/fMPCTQRA+U6g1L0m/p1Lr5nc/sLyFeBm4IewnTe/DJKtpB++z9bKje94wyXWp+6dDjsyLcUXo8plkvGl5f+gHm7CLhQHFAb+t+qZw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9it4fm6CSD9TxNDfH1tP9yektMtF7v03zJsLwicBDjY=;
- b=ViHPGvs7pymrfPy3YiztAliovtZSfoRSdC13kpTj+y6BiIFyVo6J4dQqtofhkxroe5lhMrlbma5dzqSnpWS9a2but1A+K+iftlLIbSg28/S42d+Qhd2SOAbOfrpFek38RsUNST6zXE3odonDE3JzfeoogTpYRLeZcY9rNxXqI59GpMe1W6UDYUeHxLAB7e4+DST9roaNZIWAWKi+evmK8lWeJvBC7xlgbGOXDtufa8mnmMz1JPawyAyec1ZxOCV9+1Mp9eJc1YrhV+fcTDboUartsOluOLd5HoJhxnqJEBq6r/3SOdu03+o6Uk+TPd1SFrdVBSDhNJQF5uE7RFrbnQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9it4fm6CSD9TxNDfH1tP9yektMtF7v03zJsLwicBDjY=;
- b=rQYViituggRXG9mLBHBasz/gRmlN09NtUm4VqnvKdna5siIcc7YDakL0lH+OUJirvMurmZP3FEW8lGVqnAIv1BVY1RAx7c9777/Ouqs7Eh05D2uNhcBaVgeXSsW/Gbf9o4MFoNTMejFU8vwZQ0FUc18TxRpsWIZkb2CrjotCcus=
-Received: from VI1PR04MB5696.eurprd04.prod.outlook.com (2603:10a6:803:e7::13)
- by VE1PR04MB6703.eurprd04.prod.outlook.com (2603:10a6:803:129::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.21; Wed, 23 Sep
- 2020 21:30:56 +0000
-Received: from VI1PR04MB5696.eurprd04.prod.outlook.com
- ([fe80::983b:73a7:cc93:e63d]) by VI1PR04MB5696.eurprd04.prod.outlook.com
- ([fe80::983b:73a7:cc93:e63d%3]) with mapi id 15.20.3412.020; Wed, 23 Sep 2020
- 21:30:56 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "olteanv@gmail.com" <olteanv@gmail.com>,
-        "nikolay@nvidia.com" <nikolay@nvidia.com>
-Subject: Re: [PATCH net-next v2 0/2] net: dsa: b53: Configure VLANs while not
- filtering
-Thread-Topic: [PATCH net-next v2 0/2] net: dsa: b53: Configure VLANs while not
- filtering
-Thread-Index: AQHWkep9slBbVOU5dkCcJWZHJ5RCvKl2slgAgAAAiACAAArugA==
-Date:   Wed, 23 Sep 2020 21:30:56 +0000
-Message-ID: <20200923213055.t7hqzuar2nivatzz@skbuf>
-References: <20200923204514.3663635-1-f.fainelli@gmail.com>
- <bfccb4fd-0768-79e8-0085-df63ecc0d376@gmail.com>
- <20200923205148.guukg3k7wanuua3c@skbuf>
-In-Reply-To: <20200923205148.guukg3k7wanuua3c@skbuf>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [188.25.217.212]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: edc0e7dc-e23f-47f3-cc29-08d86007f4e1
-x-ms-traffictypediagnostic: VE1PR04MB6703:
-x-microsoft-antispam-prvs: <VE1PR04MB67038C607E0A797DC61AE43DE0380@VE1PR04MB6703.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3968;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: bn0VqY4yYCMij/zcnZNsX3Iaf2I4LUiOnwVLnp+r4qt5AjEskmLCL9/LWf/ZpHCgjVYlyfrUzPlsNaqO7ELYfjEOCz2Z8hqNz+557FNRxSzI66FauMSI4KnKrvudoM4dbMxeiUmkv1nwy/lC1qjTbR9M0Y9BC486r0zQ6/GoD0TIxrIc1wDdLI42UkFUSYs6Llmwpc6pLtitkC1Y00z0byUFHw+LZEnhJYbh6mBjRAsRD2xDPQKVrJTvStOgXiwijfn+Xpk6WkI+deSy9ZjUNcjeBjWHlHStbN33i+/2yTSUvWlcrxU5W1VxyHP+J52i
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5696.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(396003)(39860400002)(376002)(366004)(136003)(346002)(316002)(66446008)(54906003)(76116006)(66556008)(71200400001)(91956017)(86362001)(8936002)(8676002)(5660300002)(66946007)(478600001)(66476007)(6916009)(1076003)(64756008)(83380400001)(4744005)(26005)(2906002)(33716001)(53546011)(4326008)(44832011)(6506007)(9686003)(6512007)(6486002)(186003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: ecSHvBKWgPd9Z8pcDOZPr1AGYDGiioPw3xhwHsUWUcDK7rICthJM9xStk+j24PpLDtbIx2irtgKZ8kVVgw+7mfJ27oLYlkhSV0Oq5ZHNUHCcKALtdmr4Rpc0IMy63njzuBspliGDu1H3J7/93sV5WHMtWeNSoSUwwpMCqQGx1Fqy2YvxwxB03Se1MXhkkpxi3Jws3EhJ6nbj4BewN85iGEdYapF9gGhK5p/lUPp/aqAkqolmh83KBl98OFKlkVocI0pZ5xhxUc5JzFxNWtrDnWgZzqFb453VoWqaiwJp9zgf+4XLO/q9BDJBcOS0ttjjfNExpXm1q/qc7F0vgHXLFAzQIq8jbgRai8iiY0cvJ49YWce2uv5iWifrLqX2jrVSK8gQcXs0npH/7Z1iWxzAdL2oC7BJGNB7xywPDgNaKjUhCNR7yc/nlzsMoEmX3Zh6UohuccgI7ESbdw3PhlxSuiIgC9MPQ9piVIcirLrRQxlxU79uGBQwnRZOKBO3h1MlLrtFpRudySO/XChW3U3vULeMu7mfAaIvdqP6t8wZ/P5MzfzPzyN2+tZd9EkW1vd71UHrbLW+ckfk5cdfl+TzawY+YulgDxoQkX0JpV7g9oXhNTbOn2PKdJ65CEo40QwjcRCT+ZeOkC7WOmMaUAqLcA==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <C21CE00FE4129E4F88C75C4C00C127C1@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1726562AbgIWVdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 17:33:22 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:25618 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726265AbgIWVdW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 17:33:22 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08NLWBAS088224;
+        Wed, 23 Sep 2020 17:33:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=sNGc7AEYpsb6fMt12GzlIzOFIEfRHZcBQwY48KatS7U=;
+ b=gRTEdHLSxmzfoCawjo9nevxXfnbXIytxlKzwBSDINeeJVtxsWqlmIuwHTpLgod6b6xS9
+ kM6lxb0BIqgkaf6Is40tdrQg4Q5IUXLoH5viY7kKR2QnZx00Rf0hoaemx5pYKbcMbExL
+ 9D/Rp+0OpHgn/GUXt8xluk6SRIxLHJzOsmdAaZo2QaAU3U/A0J/DnJXc5HTxjF+7fDxP
+ SQSAi20mPZ3kYnwqxLnPHlpk5leS5fEVyNfu+N4LWjo5fV/k8ogePUSIQarNBoUm8in7
+ c2WRae/e4Tjl5rJqN3QFBF98x2oW68HNQd6gnDovIDViB8ZZCvW79mE4dM8ra7nVuE+i 4g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33reber116-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Sep 2020 17:33:19 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08NLXIxa090930;
+        Wed, 23 Sep 2020 17:33:18 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33reber10p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Sep 2020 17:33:18 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08NLTVdC008568;
+        Wed, 23 Sep 2020 21:33:17 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06ams.nl.ibm.com with ESMTP id 33n98gvkbc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Sep 2020 21:33:17 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08NLXECr20447518
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 23 Sep 2020 21:33:14 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 250B742042;
+        Wed, 23 Sep 2020 21:33:14 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B366542041;
+        Wed, 23 Sep 2020 21:33:13 +0000 (GMT)
+Received: from thinkpad (unknown [9.171.62.28])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Wed, 23 Sep 2020 21:33:13 +0000 (GMT)
+Date:   Wed, 23 Sep 2020 23:33:06 +0200
+From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Peter Xu <peterx@redhat.com>, Heiko Carstens <hca@linux.ibm.com>,
+        Qian Cai <cai@redhat.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: BUG: Bad page state in process dirtyc0w_child
+Message-ID: <20200923233306.7c5666de@thinkpad>
+In-Reply-To: <CAHk-=wiMJu0_sLO78+nLoe=pxC-p=sSpC3moq0p5RyJc9KXC4Q@mail.gmail.com>
+References: <a46e9bbef2ed4e17778f5615e818526ef848d791.camel@redhat.com>
+        <20200916142806.GD7076@osiris>
+        <20200922190350.7a0e0ca5@thinkpad>
+        <20200923153938.5be5dd2c@thinkpad>
+        <CAHk-=wiMJu0_sLO78+nLoe=pxC-p=sSpC3moq0p5RyJc9KXC4Q@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5696.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: edc0e7dc-e23f-47f3-cc29-08d86007f4e1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2020 21:30:56.1491
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: JNQbBiKDtNTcn12VPyAFznim3zKMryrEsfuW1vcuBze/I1jAvIJLdK/YvHXW89HD89msMZCZh3dFiinNucj/3g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6703
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-23_16:2020-09-23,2020-09-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=779
+ impostorscore=0 priorityscore=1501 spamscore=0 phishscore=0
+ lowpriorityscore=0 malwarescore=0 mlxscore=0 clxscore=1015 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009230160
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 11:51:48PM +0300, Vladimir Oltean wrote:
-> On Wed, Sep 23, 2020 at 01:49:54PM -0700, Florian Fainelli wrote:
-> > On 9/23/20 1:45 PM, Florian Fainelli wrote:
-> >
-> > David, Jakub, there is an unnecessary header inclusion in
-> > net/dsa/tag_brcm.c in the second patch and the description at the end o=
-f
-> > the commit was not updated, let me send a v3 right away.
-> > --
-> > Florian
->
-> Wait a few minutes, I don't think anybody has had a chance to look at it.=
-.
+On Wed, 23 Sep 2020 13:00:45 -0700
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-So I studied a little bit the situation with the MAC header pointer in
-the second patch, especially since there are 2 call paths, but it's ok,
-since at that point the skb->data points to its final position already,
-then the MAC header is naturally 14 bytes behind.
-I've been testing with the ocelot driver which resets the MAC header
-manually, that explains why I missed that. Anyway, if there are no other
-comments I think you can resend.=
+[...]
+> 
+> Ooh. One thing that is *very* different about s390 is that it frees
+> the page directly, and doesn't batch things up to happen after the TLB
+> flush.
+> 
+> Maybe THAT is the difference? Not that I can tell why it should
+> matter, for all the reasons outlines above. But on x86-64, the
+> __tlb_remove_page() function just adds the page to the "free this
+> later" TLB flush structure, and if it fills up it does the TLB flush
+> and then does the actual batched page freeing outside the page table
+> lock.
+> 
+> And that *has* been one of the things that the fast-gup code depended
+> on. We even have a big comment about it:
+> 
+>         /*
+>          * Disable interrupts. The nested form is used, in order to allow
+>          * full, general purpose use of this routine.
+>          *
+>          * With interrupts disabled, we block page table pages from being
+>          * freed from under us. See struct mmu_table_batch comments in
+>          * include/asm-generic/tlb.h for more details.
+>          *
+>          * We do not adopt an rcu_read_lock(.) here as we also want to
+>          * block IPIs that come from THPs splitting.
+>          */
+> 
+> and maybe that whole thing doesn't hold true for s390 at all.
+
+Thanks, very nice walk-through, need some time to digest this. The TLB
+aspect is interesting, and we do have our own __tlb_remove_page_size(),
+which directly calls free_page_and_swap_cache() instead of the generic
+batched approach.
+
+I faintly remember that we also did have some batched and rcu_sched based
+approach. It seems there was some rework with commit 9de7d833e370
+("s390/tlb: Convert to generic mmu_gather") and discussion in
+https://lore.kernel.org/linux-arch/20180918125151.31744-1-schwidefsky@de.ibm.com/
+
+Given the comment you mentioned and also this one from mm/gup.c:
+
+/*
+ * Fast GUP
+ *
+ * get_user_pages_fast attempts to pin user pages by walking the page
+ * tables directly and avoids taking locks. Thus the walker needs to be
+ * protected from page table pages being freed from under it, and should
+ * block any THP splits.
+ *
+ * One way to achieve this is to have the walker disable interrupts, and
+ * rely on IPIs from the TLB flushing code blocking before the page table
+ * pages are freed. This is unsuitable for architectures that do not need
+ * to broadcast an IPI when invalidating TLBs.
+ *
+ * Another way to achieve this is to batch up page table containing pages
+ * belonging to more than one mm_user, then rcu_sched a callback to free those
+ * pages. Disabling interrupts will allow the fast_gup walker to both block
+ * the rcu_sched callback, and an IPI that we broadcast for splitting THPs
+ * (which is a relatively rare event). The code below adopts this strategy.
+
+It really sounds like we might have yet another issue with (common code)
+gup_fast, and non-batched freeing of pagetable pages, though I wonder how
+that would have worked with the s390-specific version of gup_fast before.
+
+Certainly worth investigating, thanks a lot for the hint!
+
+Meanwhile, out of curiosity, while I still fail to comprehend commit
+09854ba94c6a ("mm: do_wp_page() simplification") in its entirety, there
+is one detail that I find most confusing: the unlock_page() has moved
+behind the wp_page_reuse(), while it was the other way round before.
+
+Does it simply not really matter, or was it done on purpose, possibly
+related to the "get rid of the nasty serialization on the page lock"
+description?
