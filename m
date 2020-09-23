@@ -2,222 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 685F92759FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC1E2759F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:30:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726709AbgIWOaM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 23 Sep 2020 10:30:12 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:51525 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726688AbgIWOaM (ORCPT
+        id S1726676AbgIWO36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 10:29:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726156AbgIWO3y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 10:30:12 -0400
-Received: from mail-pg1-f200.google.com ([209.85.215.200])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kL5ma-0007Cy-Af
-        for linux-kernel@vger.kernel.org; Wed, 23 Sep 2020 14:30:08 +0000
-Received: by mail-pg1-f200.google.com with SMTP id g18so130165pgl.10
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 07:30:08 -0700 (PDT)
+        Wed, 23 Sep 2020 10:29:54 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDB05C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 07:29:53 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id gr14so28117261ejb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 07:29:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BvWaZAOmCSJi5EjRj+9rGgqiUccGff1Wvin8E59j7sU=;
+        b=xcSixdr2ga+Acx/jNRq3SciNJm/k6+0O76py84OD8DfGApvaqZaQlYynrd/DMYINvD
+         w6AM3RwHPUJxID/5ETNaJsTfv75T1xOGBSSw/SO0W3/mJtxFd2IcLb2W6h7JymFMiEtg
+         GM+PJKEGwJAGFkTM5rHfYOWNVWgyF1p9kEjLe8wA6FhYBGdeHvR31/W0Hj5LvnJUP5ft
+         M6t4IedE1LKk6fTaDwqLmqK9cv6Cz9HQSdwUgk3sCPM94ZJ96Q172m6xA+lM3smf+TzW
+         4IKqJQeqjAlLtIsemGF910S2HOlzV0lY6Ef9609bDIxRkKoOg8Xhv9OQSlis+D/3l7yN
+         oz7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=bTfab3UbFmb3i36HEK+E15jbAlsnpbbsPCZOXGV2m7Y=;
-        b=WcErysuT4BTZkHGqh2SaH5Nri15uItpqFI0ENdnhh2ZVbf0YhpP2NUj263RaJiJp5w
-         3En0OiOQuUUBRZSWtPXrfgevdlha1KEd5gHRBaAyDJyWENlJE78yV0uzAeS/OGYMIQo1
-         YZpqpla4FB0sqCs39OlP+WW4vil1x7M39K+nJnLl/Xu+bG3iXUXP+LuVBekcZTwBw8h2
-         e28DIN6U2XIqmS+m0Jz+CG0rwz9ciGkui4qgwJPWb3kUpwv1nCDsRcLaSz13E7/4FlOT
-         K97OW8R36WBomtE6QXxrSqbsWBRPTfIOOdj6btQq9IMRi1qGyUu9Zf/aO4gUJL+EtUU2
-         03XQ==
-X-Gm-Message-State: AOAM530hwNLAl1tvwTVBPW4HVN31Oc6pq+fYGxwZNMOGWSLRDPmKpvFJ
-        YRJ2LUXHqwBtbLYWVD/6Wt7DhRgvw9nrrmz0hys7yVfVvnkQM+oLPkCfpHZeGNvAhO6IMbnBnvX
-        z1akSjIOEx2DXt7cSYtr93wYWsNjZR7a3ugwNcE5lEQ==
-X-Received: by 2002:a62:7743:0:b029:13c:1611:658e with SMTP id s64-20020a6277430000b029013c1611658emr209623pfc.11.1600871406810;
-        Wed, 23 Sep 2020 07:30:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyuF3wBMfqqTypFQALOKXjOzXHiWXaErIQvPGZx7JS6B0eLRg6hqfUAcaLput8HyMdvUO1QYg==
-X-Received: by 2002:a62:7743:0:b029:13c:1611:658e with SMTP id s64-20020a6277430000b029013c1611658emr209583pfc.11.1600871406315;
-        Wed, 23 Sep 2020 07:30:06 -0700 (PDT)
-Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
-        by smtp.gmail.com with ESMTPSA id 72sm18172040pfx.79.2020.09.23.07.30.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 23 Sep 2020 07:30:05 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
-Subject: Re: [PATCH] PCI/ASPM: Enable ASPM for links under VMD domain
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <20200917172010.GA1710481@bjorn-Precision-5520>
-Date:   Wed, 23 Sep 2020 22:29:39 +0800
-Cc:     "Derrick, Jonathan" <jonathan.derrick@intel.com>,
-        "wangxiongfeng2@huawei.com" <wangxiongfeng2@huawei.com>,
-        "kw@linux.com" <kw@linux.com>,
-        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
-        "refactormyself@gmail.com" <refactormyself@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>,
-        "Mario.Limonciello@dell.com" <Mario.Limonciello@dell.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <49A36179-D336-4A5E-8B7A-A632833AE6B2@canonical.com>
-References: <20200917172010.GA1710481@bjorn-Precision-5520>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-X-Mailer: Apple Mail (2.3608.120.23.2.1)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BvWaZAOmCSJi5EjRj+9rGgqiUccGff1Wvin8E59j7sU=;
+        b=Yjw/FR9uGXNDZXQHOKNoTKUNcpXlLQH3/sA7vhBMvbOwdlzjmnHNYnNrxLbadtAlfA
+         AZ7kq6cg9mDxeLZUh7B9pVGrlbUvFiCtvSSVWNyWK4/+AAqqGwF39jJPSzveXFcL9Ct9
+         q+o9oUNK3nX9nNnegs00ui7zQEu887TeqB2ljQ/JcALBUgEHWung3ucACE67IJP7c7hE
+         N9vj/rwoJ5+UK0RABsYGUwQ//QVBOX7xhez+0Y6cT5H+ZI1zMzNqleAW0BjLEYZ9gbvp
+         nydDGtOkBZxGTvyv+OY+XhwwW+iJpnSvhtMT5vbbzDbMzsP+IOYw693WGtEsGVazkVMC
+         pJ0A==
+X-Gm-Message-State: AOAM531p2M9LMUycMQZbSKWkg92EzNHAYhY7pk0Z0hyTR3k8087v+vg2
+        Ugc47cId6L+Kq7PWjpvrJqhBpyQvOtyNiJeztSP2
+X-Google-Smtp-Source: ABdhPJxGSIKF2KiIFwdCnNZD5Z23c3TbbdA9P88SF9tmr7khUww94uVt7KXHwj5PRDeMEki4gV+UN/8Hw3VdJKdHg3k=
+X-Received: by 2002:a17:906:2301:: with SMTP id l1mr10188672eja.488.1600871392179;
+ Wed, 23 Sep 2020 07:29:52 -0700 (PDT)
+MIME-Version: 1.0
+References: <7081a5b9c7d2e8085c49cec2fa72fcbb0b25e0d7.1600778472.git.rgb@redhat.com>
+In-Reply-To: <7081a5b9c7d2e8085c49cec2fa72fcbb0b25e0d7.1600778472.git.rgb@redhat.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 23 Sep 2020 10:29:41 -0400
+Message-ID: <CAHC9VhSPk2RiMsnjTKw02_+_1Kagm06m+-r=ooNruT+fuuixYQ@mail.gmail.com>
+Subject: Re: [PATCH ghak120 V5] audit: trigger accompanying records when no
+ rules present
+To:     Richard Guy Briggs <rgb@redhat.com>
+Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        Eric Paris <eparis@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 22, 2020 at 8:45 AM Richard Guy Briggs <rgb@redhat.com> wrote:
+>
+> When there are no audit rules registered, mandatory records (config,
+> etc.) are missing their accompanying records (syscall, proctitle, etc.).
+>
+> This is due to audit context dummy set on syscall entry based on absence
+> of rules that signals that no other records are to be printed.  Clear the dummy
+> bit if any record is generated, open coding this in audit_log_start().
+>
+> The proctitle context and dummy checks are pointless since the
+> proctitle record will not be printed if no syscall records are printed.
+>
+> The fds array is reset to -1 after the first syscall to indicate it
+> isn't valid any more, but was never set to -1 when the context was
+> allocated to indicate it wasn't yet valid.
+>
+> Check ctx->pwd in audit_log_name().
+>
+> The audit_inode* functions can be called without going through
+> getname_flags() or getname_kernel() that sets audit_names and cwd, so
+> set the cwd in audit_alloc_name() if it has not already been done so due to
+> audit_names being valid and purge all other audit_getcwd() calls.
+>
+> Revert the LSM dump_common_audit_data() LSM_AUDIT_DATA_* cases from the
+> ghak96 patch since they are no longer necessary due to cwd coverage in
+> audit_alloc_name().
+>
+> Thanks to bauen1 <j2468h@googlemail.com> for reporting LSM situations in
+> which context->cwd is not valid, inadvertantly fixed by the ghak96 patch.
+>
+> Please see upstream github issue
+> https://github.com/linux-audit/audit-kernel/issues/120
+> This is also related to upstream github issue
+> https://github.com/linux-audit/audit-kernel/issues/96
+>
+> Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+> ---
+> Chagelog:
+> v5:
+> - open code audit_clear_dummy() in audit_log_start()
+> - fix check for ctx->pwd in audit_log_name()
+> - open code _audit_getcwd() contents in audit_alloc_name()
+> - ditch all *audit_getcwd() calls
+>
+> v4:
+> - resubmit after revert
+>
+> v3:
+> - initialize fds[0] to -1
+> - init cwd for ghak96 LSM_AUDIT_DATA_NET:AF_UNIX case
+> - init cwd for audit_inode{,_child}
+>
+> v2:
+> - unconditionally clear dummy
+> - create audit_clear_dummy accessor function
+> - remove proctitle context and dummy checks
+>
+>  include/linux/audit.h |  8 --------
+>  kernel/audit.c        |  3 +++
+>  kernel/auditsc.c      | 27 +++++++--------------------
+>  security/lsm_audit.c  |  5 -----
+>  4 files changed, 10 insertions(+), 33 deletions(-)
 
+I've gone over this revision a couple of times now and it looks okay,
+but past experience is whispering in my ear that perhaps this is
+better to wait on this for the next cycle so it gets a full set of
+-rcX releases.  Thoughts?
 
-> On Sep 18, 2020, at 01:20, Bjorn Helgaas <helgaas@kernel.org> wrote:
-> 
-> On Thu, Sep 10, 2020 at 07:51:05PM +0000, Derrick, Jonathan wrote:
->> On Thu, 2020-09-10 at 14:17 -0500, Bjorn Helgaas wrote:
->>> On Thu, Sep 10, 2020 at 06:52:48PM +0000, Derrick, Jonathan wrote:
->>>> On Thu, 2020-09-10 at 12:38 -0500, Bjorn Helgaas wrote:
->>>>> On Thu, Sep 10, 2020 at 04:33:39PM +0000, Derrick, Jonathan wrote:
->>>>>> On Wed, 2020-09-09 at 20:55 -0500, Bjorn Helgaas wrote:
->>>>>>> On Fri, Aug 21, 2020 at 08:32:20PM +0800, Kai-Heng Feng wrote:
->>>>>>>> New Intel laptops with VMD cannot reach deeper power saving state,
->>>>>>>> renders very short battery time.
->>>>>>>> 
->>>>>>>> As BIOS may not be able to program the config space for devices under
->>>>>>>> VMD domain, ASPM needs to be programmed manually by software. This is
->>>>>>>> also the case under Windows.
->>>>>>>> 
->>>>>>>> The VMD controller itself is a root complex integrated endpoint that
->>>>>>>> doesn't have ASPM capability, so we can't propagate the ASPM settings to
->>>>>>>> devices under it. Hence, simply apply ASPM_STATE_ALL to the links under
->>>>>>>> VMD domain, unsupported states will be cleared out anyway.
->>>>>>>> 
->>>>>>>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
->>>>>>>> ---
->>>>>>>> drivers/pci/pcie/aspm.c |  3 ++-
->>>>>>>> drivers/pci/quirks.c    | 11 +++++++++++
->>>>>>>> include/linux/pci.h     |  2 ++
->>>>>>>> 3 files changed, 15 insertions(+), 1 deletion(-)
->>>>>>>> 
->>>>>>>> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
->>>>>>>> index 253c30cc1967..dcc002dbca19 100644
->>>>>>>> --- a/drivers/pci/pcie/aspm.c
->>>>>>>> +++ b/drivers/pci/pcie/aspm.c
->>>>>>>> @@ -624,7 +624,8 @@ static void pcie_aspm_cap_init(struct pcie_link_state *link, int blacklist)
->>>>>>>> 		aspm_calc_l1ss_info(link, &upreg, &dwreg);
->>>>>>>> 
->>>>>>>> 	/* Save default state */
->>>>>>>> -	link->aspm_default = link->aspm_enabled;
->>>>>>>> +	link->aspm_default = parent->dev_flags & PCI_DEV_FLAGS_ENABLE_ASPM ?
->>>>>>>> +			     ASPM_STATE_ALL : link->aspm_enabled;
->>>>>>> 
->>>>>>> This function is ridiculously complicated already, and I really don't
->>>>>>> want to make it worse.
->>>>>>> 
->>>>>>> What exactly is the PCIe topology here?  Apparently the VMD controller
->>>>>>> is a Root Complex Integrated Endpoint, so it's a Type 0 (non-bridge)
->>>>>>> device.  And it has no Link, hence no Link Capabilities or Control and
->>>>>>> hence no ASPM-related bits.  Right?
->>>>>> 
->>>>>> That's correct. VMD is the Type 0 device providing config/mmio
->>>>>> apertures to another segment and MSI/X remapping. No link and no ASPM
->>>>>> related bits.
->>>>>> 
->>>>>> Hierarchy is usually something like:
->>>>>> 
->>>>>> Segment 0           | VMD segment
->>>>>> Root Complex -> VMD | Type 0 (RP/Bridge; physical slot) - Type 1
->>>>>>                    | Type 0 (RP/Bridge; physical slot) - Type 1
->>>>>> 
->>>>>>> And the devices under the VMD controller?  I guess they are regular
->>>>>>> PCIe Endpoints, Switch Ports, etc?  Obviously there's a Link involved
->>>>>>> somewhere.  Does the VMD controller have some magic, non-architected
->>>>>>> Port on the downstream side?
->>>>>> 
->>>>>> Correct: Type 0 and Type 1 devices, and any number of Switch ports as
->>>>>> it's usually pinned out to physical slot.
->>>>>> 
->>>>>>> Does this patch enable ASPM on this magic Link between VMD and the
->>>>>>> next device?  Configuring ASPM correctly requires knowledge and knobs
->>>>>>> from both ends of the Link, and apparently we don't have those for the
->>>>>>> VMD end.
->>>>>> 
->>>>>> VMD itself doesn't have the link to it's domain. It's really just the
->>>>>> config/mmio aperture and MSI/X remapper. The PCIe link is between the
->>>>>> Type 0 and Type 1 devices on the VMD domain. So fortunately the VMD
->>>>>> itself is not the upstream part of the link.
->>>>>> 
->>>>>>> Or is it for Links deeper in the hierarchy?  I assume those should
->>>>>>> just work already, although there might be issues with latency
->>>>>>> computation, etc., because we may not be able to account for the part
->>>>>>> of the path above VMD.
->>>>>> 
->>>>>> That's correct. This is for the links within the domain itself, such as
->>>>>> between a type 0 and NVMe device.
->>>>> 
->>>>> OK, great.  So IIUC, below the VMD, there is a Root Port, and the Root
->>>>> Port has a link to some Endpoint or Switch, e.g., an NVMe device.  And
->>>>> we just want to enable ASPM on that link.
->>>>> 
->>>>> That should not be a special case; we should be able to make this so
->>>>> it Just Works.  Based on this patch, I guess the reason it doesn't
->>>>> work is because link->aspm_enabled for that link isn't set correctly.
->>>>> 
->>>>> So is this just a consequence of us depending on the initial Link
->>>>> Control value from BIOS?  That seems like something we shouldn't
->>>>> really depend on.
->> Seems like a good idea, that it should instead be quirked if ASPM is
->> found unusable on a link. Though I'm not aware of how many platforms
->> would require a quirk..
->> 
->>>>> 
->>>> That's the crux. There's always pcie_aspm=force.
->>>> Something I've wondered is if there is a way we could 'discover' if the
->>>> link is ASPM safe?
->>> 
->>> Sure.  Link Capabilities is supposed to tell us that.  If aspm.c
->>> depends on the BIOS settings, I think that's a design mistake.
->>> 
->>> But what CONFIG_PCIEASPM_* setting are you using?  The default
->>> is CONFIG_PCIEASPM_DEFAULT, which literally means "Use the BIOS
->>> defaults".  If you're using that, and BIOS doesn't enable ASPM below
->>> VMD, I guess aspm.c will leave it disabled, and that seems like it
->>> would be the expected behavior.
->>> 
->>> Does "pcie_aspm=force" really help you?  I don't see any uses of it
->>> that should apply to your situation.
->>> 
->>> Bjorn
->> 
->> No you're right. I don't think we need pcie_aspm=force, just the policy
->> configuration.
-> 
-> I'm not sure where we're at here.
-> 
-> If the kernel is built with CONFIG_PCIEASPM_DEFAULT=y (which means
-> "use the BIOS defaults"), and the BIOS doesn't enable ASPM on these
-> links below VMD, then Linux will leave things alone.  I think that's
-> working as intended.
-
-Yes and that's the problem here. BIOS doesn't enable ASPM for links behind VMD.
-The ASPM is enabled by VMD driver under Windows.
-
-> 
-> If desired, we should be able to enable ASPM using sysfs in that case.
-
-I hope to keep everything inside kernel. Of course we can use udev rules to change sysfs value, if anyone prefers that approach.
-
-> 
-> We have a pci_disable_link_state() kernel interface that drivers can
-> use to *disable* ASPM for their device.  But I don't think there's any
-> corresponding interface for drivers to *enable* ASPM.  Maybe that's an
-> avenue to explore?
-
-Okay, I will work on pci_enable_link_state() helper and let VMD driver as its first user.
-
-Kai-Heng
-
-> 
-> Bjorn
-
+-- 
+paul moore
+www.paul-moore.com
