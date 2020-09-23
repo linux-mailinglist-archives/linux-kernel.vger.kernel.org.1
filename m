@@ -2,81 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D08512750C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 08:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B0D275096
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 08:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726897AbgIWGGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 02:06:36 -0400
-Received: from mail-m973.mail.163.com ([123.126.97.3]:53688 "EHLO
-        mail-m973.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726871AbgIWGGV (ORCPT
+        id S1726647AbgIWGCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 02:02:34 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:40394 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726179AbgIWGCe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 02:06:21 -0400
-X-Greylist: delayed 916 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Sep 2020 02:06:19 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=ldeUR
-        Yewu2fM70h0EcU97t98Qm0u/6Ht4u3dUu5od6Y=; b=MLF42AACz3rkP1GNgHZK/
-        srL2AkQcuHuQxZjKikGuEcoZjhrqQhtHdAxLmncCzw8tMv5QeDLh6njaM67t5S33
-        XlAgSIraM/OdUnHgWYWIuXJ8U1bv3Foj6OKs/EvVwHfERJNT08p14bpOZo7xGQ3r
-        l0wJ/C1vQtH5wRyDKQpW0I=
-Received: from localhost.localdomain (unknown [111.202.93.98])
-        by smtp3 (Coremail) with SMTP id G9xpCgC37aAO4mpfz4khDw--.2743S2;
-        Wed, 23 Sep 2020 13:50:06 +0800 (CST)
-From:   "longguang.yue" <bigclouds@163.com>
-Cc:     ylg <bigclouds@163.com>, Wensong Zhang <wensong@linux-vs.org>,
-        Simon Horman <horms@verge.net.au>,
-        Julian Anastasov <ja@ssi.bg>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ipvs: adjust the debug order of src and dst
-Date:   Wed, 23 Sep 2020 13:49:59 +0800
-Message-Id: <20200923055000.82748-1-bigclouds@163.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
+        Wed, 23 Sep 2020 02:02:34 -0400
+Received: by mail-pg1-f193.google.com with SMTP id k133so8958808pgc.7;
+        Tue, 22 Sep 2020 23:02:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ha3VgyENu2LPnU4f1A3oqsIg+lYCf7TaXiKbXhQt3Ik=;
+        b=UqF0vpz1a6rAGHjVbwwfK8DiJwKxd/fKlaWgRASaWmCrwfvH4jKLYd32wiJsCOHEcx
+         XHJn9SCyfzq5bLXu1l5ET4W8twVx2bOYKnrN42krP7J/OEfaPn0TR+cjCzamjGZzt0DD
+         AsV8Bq/4rzj3ykHOj6bkwcRa3O5SUWAqvQRmHw9emhR/0h4haRQoSu9R5jYJQV4kTdOO
+         mmeg70l38c0JMo2R+c+GEymdd/WL/zBF6/1XUCuZ9V60bPTMrkyIcBuezd8THs2lCVnW
+         JvoUTN1SkSuQIS14O6ijztX9P7arem2H2257JANlk3JwkPmI0knhy9BN/iqydXuWZ8wC
+         xaUg==
+X-Gm-Message-State: AOAM5328U+uHDStouCwQY3SdP36DTjnt6T9hlTnXSqlBZ5HVGlK2qiWW
+        qXCJE+4lblbus/vc6oP9Asc=
+X-Google-Smtp-Source: ABdhPJzdVWj4XNg5O2lI84ywNTWglHvxl/eykGJ8JHab6N1wy7LLoGa28Sw3gOkGY/BztnBQugk+tw==
+X-Received: by 2002:a63:4e0a:: with SMTP id c10mr6306841pgb.369.1600840953864;
+        Tue, 22 Sep 2020 23:02:33 -0700 (PDT)
+Received: from sultan-box.localdomain ([104.200.129.212])
+        by smtp.gmail.com with ESMTPSA id w6sm17114601pgf.72.2020.09.22.23.02.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 23:02:32 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 23:02:28 -0700
+From:   Sultan Alsawaf <sultan@kerneltoast.com>
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        aaron.ma@canonical.com, admin@kryma.net,
+        andriy.shevchenko@linux.intel.com, benjamin.tissoires@redhat.com,
+        hdegoede@redhat.com, hn.chen@weidahitech.com,
+        jarkko.nikula@linux.intel.com, kai.heng.feng@canonical.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mika.westerberg@linux.intel.com, vicamo.yang@canonical.com
+Subject: Re: [PATCH v2 0/4] i2c-hid: Save power by reducing i2c xfers with
+ block reads
+Message-ID: <20200923060228.GA1515@sultan-box.localdomain>
+References: <20200917052256.5770-1-sultan@kerneltoast.com>
+ <nycvar.YFH.7.76.2009221118150.3336@cbobk.fhfr.pm>
+ <20200922113646.GA6731@ninjato>
+ <nycvar.YFH.7.76.2009222159170.3336@cbobk.fhfr.pm>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: G9xpCgC37aAO4mpfz4khDw--.2743S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrurWUGFWUXr1kZF47Zr1fWFg_yoWftwcEya
-        92vF95WF1UX3WUAa1UGr48X34xGrW7Ja1FvryvqFyjv345C3y0y3yv9rnavr43Wan0gF1r
-        tr92gry2k3ZrKjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUUZjjPUUUUU==
-X-Originating-IP: [111.202.93.98]
-X-CM-SenderInfo: peljuzprxg2qqrwthudrp/xtbBZA6oQ1QHKz5e-QAAsk
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <nycvar.YFH.7.76.2009222159170.3336@cbobk.fhfr.pm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ylg <bigclouds@163.com>
+On Tue, Sep 22, 2020 at 09:59:44PM +0200, Jiri Kosina wrote:
+> On Tue, 22 Sep 2020, Wolfram Sang wrote:
+> 
+> > > Hans, Benjamin, could you please give this patchset some smoke-testing? It 
+> > > looks good to me, but I'd like it to get some testing from your testing 
+> > > machinery before merging.
+> > 
+> > Please give me some more days. I am not fully convinced yet that this
+> > use of I2C_M_RECV_LEN is not broken on some controllers.
+> > 
+> > Plus, I'd favor if this could go via I2C tree. It is within I2C where
+> > the non-trivial changes are. The HID part is just the final bit. Can we
+> > agree on that?
+> 
+> Absolutely no problem with that. But I'd like to have this ran through 
+> Benjamin/Hans first too.
+> 
+> Thanks,
+> 
+> -- 
+> Jiri Kosina
+> SUSE Labs
+> 
 
-adjust the debug order of src and dst when tcp state changes
+I suppose the HID part does need to be held off until all the adapters are
+updated with functional I2C_M_RECV_LEN bits.
 
-Signed-off-by: ylg <bigclouds@163.com>
----
- net/netfilter/ipvs/ip_vs_proto_tcp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I just got a Ryzen laptop which panics when using I2C_M_RECV_LEN.
 
-diff --git a/net/netfilter/ipvs/ip_vs_proto_tcp.c b/net/netfilter/ipvs/ip_vs_proto_tcp.c
-index dc2e7da2742a..6567eb45a234 100644
---- a/net/netfilter/ipvs/ip_vs_proto_tcp.c
-+++ b/net/netfilter/ipvs/ip_vs_proto_tcp.c
-@@ -548,10 +548,10 @@ set_tcp_state(struct ip_vs_proto_data *pd, struct ip_vs_conn *cp,
- 			      th->fin ? 'F' : '.',
- 			      th->ack ? 'A' : '.',
- 			      th->rst ? 'R' : '.',
--			      IP_VS_DBG_ADDR(cp->daf, &cp->daddr),
--			      ntohs(cp->dport),
- 			      IP_VS_DBG_ADDR(cp->af, &cp->caddr),
- 			      ntohs(cp->cport),
-+			      IP_VS_DBG_ADDR(cp->daf, &cp->daddr),
-+			      ntohs(cp->dport),
- 			      tcp_state_name(cp->state),
- 			      tcp_state_name(new_state),
- 			      refcount_read(&cp->refcnt));
--- 
-2.20.1 (Apple Git-117)
+So it looks like only the designware changes can be considered for merging now.
 
+Sultan
