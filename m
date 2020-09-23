@@ -2,77 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4757D276048
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 20:45:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ED4D276057
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 20:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726962AbgIWSpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 14:45:09 -0400
-Received: from mga07.intel.com ([134.134.136.100]:14513 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726674AbgIWSpG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 14:45:06 -0400
-IronPort-SDR: oAnOQPo+fGVnoEnZ1VDWJmPmPGWYGsc6dKeDHgOR2xC2Q9yDG4kpLIXK8gVa3xkAnHroqP66dR
- zsL2C6aWj96g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="225124487"
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="225124487"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 11:44:56 -0700
-IronPort-SDR: ipvuSnANJBxVJaIKiu7lfImqITPAsyeQbfSTm8wv0FKyqCo7QM5RGpGzPBHHrNx2kvb6l8rLFr
- w5lMmwPllLDA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="347457677"
-Received: from sjchrist-coffee.jf.intel.com ([10.54.74.160])
-  by FMSMGA003.fm.intel.com with ESMTP; 23 Sep 2020 11:44:56 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Dan Cross <dcross@google.com>,
-        Peter Shier <pshier@google.com>
-Subject: [PATCH v2 7/7] KVM: nVMX: WARN on attempt to switch the currently loaded VMCS
-Date:   Wed, 23 Sep 2020 11:44:52 -0700
-Message-Id: <20200923184452.980-8-sean.j.christopherson@intel.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200923184452.980-1-sean.j.christopherson@intel.com>
-References: <20200923184452.980-1-sean.j.christopherson@intel.com>
+        id S1727034AbgIWSqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 14:46:15 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:35555 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726665AbgIWSqO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 14:46:14 -0400
+Received: from mail-qt1-f182.google.com ([209.85.160.182]) by
+ mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1M89P1-1kOi931zbn-005Hlb; Wed, 23 Sep 2020 20:46:10 +0200
+Received: by mail-qt1-f182.google.com with SMTP id a4so831862qth.0;
+        Wed, 23 Sep 2020 11:46:09 -0700 (PDT)
+X-Gm-Message-State: AOAM531B6RKNkGQC/NDN1KVy6L7ZJDh/eTh8x/vyn/fCGays+viehdTH
+        kYMDsdGq5j5wMlrpbikXGrM/muVRkR5VaFZOmUo=
+X-Google-Smtp-Source: ABdhPJwsvaOBWtaZA0D/OVEHB/gCWu247kr3QZZFrdP10NBc4wqx9Hcp+T5ZYDolhQMYUd20W7JjEkRUKsdbgp0ivyQ=
+X-Received: by 2002:ac8:64a:: with SMTP id e10mr1527617qth.142.1600886767946;
+ Wed, 23 Sep 2020 11:46:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200923060547.16903-1-hch@lst.de> <20200923060547.16903-6-hch@lst.de>
+ <20200923142549.GK3421308@ZenIV.linux.org.uk> <20200923143251.GA14062@lst.de>
+ <20200923145901.GN3421308@ZenIV.linux.org.uk> <20200923163831.GO3421308@ZenIV.linux.org.uk>
+In-Reply-To: <20200923163831.GO3421308@ZenIV.linux.org.uk>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 23 Sep 2020 20:45:51 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3nkLUOkR+jwz2_2LcYTUTqdVf8JOtZqKWbtEDotNhFZA@mail.gmail.com>
+Message-ID: <CAK8P3a3nkLUOkR+jwz2_2LcYTUTqdVf8JOtZqKWbtEDotNhFZA@mail.gmail.com>
+Subject: Re: [PATCH 5/9] fs: remove various compat readv/writev helpers
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        David Howells <dhowells@redhat.com>,
+        David Laight <David.Laight@aculab.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        linux-aio <linux-aio@kvack.org>, io-uring@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Networking <netdev@vger.kernel.org>, keyrings@vger.kernel.org,
+        LSM List <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:mMkQRAJUWfdk4a4PEkmTkMjSEPbcbr4OqrN3fUr4LQ2AQqlPl0n
+ bOWryggRLru9T6JJoTMuOGI9kvl/I6BtMLB/VbJVDYLH2lraHpn3UOgXAQiZMVZJ9Wt6/3q
+ dgtI834LPxJGojFQwlbq6VqcE61sUtAzG9Asu4SnN3A1f/GYReptJqFvli47ZUGxJu1McD6
+ wXqFv/2sZdtXtrzvqb6Gw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ARXrn3BJvHg=:OaZDrHRji4s3F+Z4R525Bn
+ agD8Hjw3INq7irUQDHIrs31n4HiItPG1qRH9sCOQsBDzKfQ2GBPxOe8cQiCUK6etjcRZgS5uz
+ ltu+yxAg8SdJB7S6UrMx8x4gZIRJZNx/h1Pd359G8hRQEWUkB77c3Uu7iX6+oWPogrXiRLcyE
+ Ay+LH2roCsVe74rsugu9p8r/jxgEYoo6ke7HkJiyLsrJx77n+/GWpX9PQTbGXJGYCmPKo03Dx
+ 7rZxQHvz4lzlsQGvZ22Lw1H85lBROKXGp/T1YCWt7CkiGs0Y/R3V3UonSnBX41Bf98v3feicD
+ RYBnkyjEcAUUQRR5u9cw067xVVV2JdvUKInxkNdutFVn0CM66u/fDJxueg1uLRW9RPYp7DjVs
+ Mx/HRUmO0wQonj6taqWhVCgSUthPIg1jpw3qykbSoDJ96MDdaz8DcUt+7qpkA5t/+tGOD+rWW
+ Bn0ajxwLkORS0R61/JXIJExhw4SvyLBTVKDr7LI7QuYFV9tfgKH3fZzLZmBkdPEqiGd2kyAMe
+ 0agELAyDb5Rehyc/3jcYzTGZyQ9nlXuD/YYv4vEmC1CRzjxWF4KIZFY6D3HWoeuUMlzvMCijI
+ ue6FAYnnAerqxzrTow74a1x9I80VfvnWRTz0xYpnoiGRegiq0P5uWv1YSyriRyFortckburp8
+ xW1/xnziTC/+/JUjrApbsItKfFZpj/Vffo23zPwOLXvOArj8zkutkvZ9h8hGYgo934l9OKJGu
+ P5NJw1LlqSAdgmNcPhTbFVxjnCSs1G9+5tq34fiY8XA66+2tLlwvaAnYp+zv5HOWn5OOwlMar
+ YndfSM38x1BkZ1kFiYikEr51lnNKUep3VIupblSMr1ljcWZWbNW0XzKu+xNzfuUJBnp9WMfFy
+ 7T3ELZ0Iq8IWSMYb0u7TCVmN4B9t5+iKBzUQ+0CqaqKkDuOmWY7NnBHAU/IZ6fceZMEkzvN4O
+ Id5+SP2sVY8Io6R5XqdC6M9inrRybKQ1OIWUL/7Bpv8x4eU8nqVGM
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-WARN if KVM attempts to switch to the currently loaded VMCS.  Now that
-nested_vmx_free_vcpu() doesn't blindly call vmx_switch_vmcs(), all paths
-that lead to vmx_switch_vmcs() are implicitly guarded by guest vs. host
-mode, e.g. KVM should never emulate VMX instructions when guest mode is
-active, and nested_vmx_vmexit() should never be called when host mode is
-active.
+On Wed, Sep 23, 2020 at 6:38 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> I wonder if we should do something like
+>
+> SYSCALL_DECLARE3(readv, unsigned long, fd, const struct iovec __user *, vec,
+>                  unsigned long, vlen);
+> in syscalls.h instead, and not under that ifdef.
+>
+> Let it expand to declaration of sys_...() in generic case and, on x86, into
+> __do_sys_...() and __ia32_sys_...()/__x64_sys_...(), with types matching
+> what SYSCALL_DEFINE ends up using.
+>
+> Similar macro would cover compat_sys_...() declarations.  That would
+> restore mismatch checking for x86 and friends.  AFAICS, the cost wouldn't
+> be terribly high - cpp would have more to chew through in syscalls.h,
+> but it shouldn't be all that costly.  Famous last words, of course...
+>
+> Does anybody see fundamental problems with that?
 
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
----
- arch/x86/kvm/vmx/nested.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I've had some ideas along those lines in the past and I think it should work.
 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index 63550dcf6b9f..4bddda078370 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -258,7 +258,7 @@ static void vmx_switch_vmcs(struct kvm_vcpu *vcpu, struct loaded_vmcs *vmcs)
- 	struct loaded_vmcs *prev;
- 	int cpu;
- 
--	if (vmx->loaded_vmcs == vmcs)
-+	if (WARN_ON_ONCE(vmx->loaded_vmcs == vmcs))
- 		return;
- 
- 	cpu = get_cpu();
--- 
-2.28.0
+As a variation of this, the SYSCALL_DEFINEx() macros could go away
+entirely, leaving only the macro instantiations from the header to
+require that syntax. It would require first changing the remaining
+architectures to build the syscall table from C code instead of
+assembler though.
 
+Regardless of that, another advantage of having the SYSCALL_DECLAREx()
+would be the ability to include that header file from elsewhere with a different
+macro definition to create a machine-readable version of the interface when
+combined with the syscall.tbl files. This could be used to create a user
+space stub for calling into the low-level syscall regardless of the
+libc interfaces,
+or for synchronizing the interfaces with strace, qemu-user, or anything that
+needs to deal with the low-level interface.
+
+      Arnd
