@@ -2,2318 +2,754 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B929A27572D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 13:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5247827572B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 13:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726638AbgIWLbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 07:31:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34172 "EHLO
+        id S1726565AbgIWLar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 07:30:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726476AbgIWLbG (ORCPT
+        with ESMTP id S1726516AbgIWLar (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 07:31:06 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 716C3C0613CE;
-        Wed, 23 Sep 2020 04:31:06 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d6so14850568pfn.9;
-        Wed, 23 Sep 2020 04:31:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xE5UVoolHMF/EyFqOtCP1j3BFZPryUNdwbX8T78e+kw=;
-        b=opjWZovrl/DvXAMip/dL931vnjedXnc9O54aNG+3bSl5qR+P0KTwLrAor9z4UNx2Bl
-         c4AcNP0A7ZiG5YefinMnUHPm/g3g/N1ZHOhY+5hBKXt58NmDoz9clmCXUH7KDaj0kJbA
-         cgZaYE1IO9Q0XCNKsz5IuXOh14nuSGgoXBIzcmdqxxK65UXXeWwQoy+3PvHrhzW13yDu
-         kLUuIeip4ms04malxYYuqeKKB2+2Cg9jT24lGGUjQl1W2FlElvixZ2bxNAHl52OGI2mE
-         O6EVewjsGy1tfmcQzHTYN5XFCZM652/XL8LdjFiAby/x3Q3SBdK+mdWM7rX8WmfNkCy8
-         0sYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xE5UVoolHMF/EyFqOtCP1j3BFZPryUNdwbX8T78e+kw=;
-        b=QqrXCVQKvd1h/XIK9vZVLOrxMnHkw7PtjYXWIPxEI10CYk48AZudZhjRnJE9ueT+xK
-         yCVkO3h2m6gN5xvdXATAznKSUitSZaeU5aPtXICRn8aPxQ3yW6GthKhkIF4+tfR5Sbi4
-         Qogu5VZkWzfj0OambqrkxFFzRSXkf8TQtEY4yhOretiBvJp/DgTXbDb5XR4/g2GXe7sT
-         KMSUypm2vk5ZEMtC0P4tQzXUUkKK+5FHY1vNV9IqXa/wLEgxCiSK1xnNlmwskliqN29h
-         L0Bc7M7leKKILL3TXAnnyAhvu5eNJ4zxZtfLG27BL/zeg3PZaxXHLko/1fKyrpkk0RVm
-         oqNQ==
-X-Gm-Message-State: AOAM531PJWrSFtXe7UGzsCvNEjp70kR0LpxlEuqDL+HfaKLSks8wrer6
-        nZLOm0TeX1QmvqjjrrVBYJn1OFQA8DrsvA==
-X-Google-Smtp-Source: ABdhPJwf5TVBwK8E5miwgoMRFA4b8FpnbL+d3OGDdmIUMNwKwjd7mekR0kY7FGOyTKKs/J9bYeYKsw==
-X-Received: by 2002:a63:1365:: with SMTP id 37mr7184309pgt.214.1600860665454;
-        Wed, 23 Sep 2020 04:31:05 -0700 (PDT)
-Received: from localhost.localdomain ([223.226.90.60])
-        by smtp.gmail.com with ESMTPSA id 203sm17856727pfz.131.2020.09.23.04.31.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 04:31:04 -0700 (PDT)
-From:   Divya Bharathi <divya27392@gmail.com>
-X-Google-Original-From: Divya Bharathi <divya.bharathi@dell.com>
-To:     dvhart@infradead.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        Divya Bharathi <divya.bharathi@dell.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        mark gross <mgross@linux.intel.com>,
-        Mario Limonciello <mario.limonciello@dell.com>,
-        Prasanth KSR <prasanth.ksr@dell.com>
-Subject: [PATCH v4] Introduce support for Systems Management Driver over WMI for Dell Systems
-Date:   Wed, 23 Sep 2020 17:00:15 +0530
-Message-Id: <20200923113015.110980-1-divya.bharathi@dell.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 23 Sep 2020 07:30:47 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72BA3C0613CE;
+        Wed, 23 Sep 2020 04:30:46 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BxGFb3zmRz9sSn;
+        Wed, 23 Sep 2020 21:30:43 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1600860643;
+        bh=AKfa5gZwl6nu7m9ePQNFQJdQBvpi/M1t7D2FCMh7hpY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=IM3WYx0gk7GgKrgk64Z/okl6zPvet+cFSV3Fi1EO2EoIBGTwy6/QHnmnLffai2QTp
+         2wO3ejSz7j8QVG7zzi6OasWUhUKUbrIulE6kc4ZItsC9P0TP6t17xMMUuVyAa9mTzQ
+         la4Q/Sx9JXgp4U6LQWGBMU1R0C9SA0K2meyEHNIGX3ELjfty72rT+O+F+ZeQSRbhE+
+         nQ2n5jAHLGO7AVqujK99l9sxCHKLSqcprSz382m7bDy62DL1pghvJ+OeULxTmsCJp9
+         JTrczqfjaYOtjWfxHZqPZ6gYNHz2nMK0ZCwtvLVk434pwD5NWpB0Xf+qZyixUhTvlF
+         wmKK76VF+PBHg==
+Date:   Wed, 23 Sep 2020 21:30:39 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: Tree for Sep 23
+Message-ID: <20200923213039.39feb5c2@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/EXMwOJ_q.wohHcAT9WZVnU=";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Dell WMI Systems Management Driver provides a sysfs
-interface for systems management to enable BIOS configuration
-capability on certain Dell Systems.
+--Sig_/EXMwOJ_q.wohHcAT9WZVnU=
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This driver allows user to configure Dell systems with a
-uniform common interface. To facilitate this, the patch
-introduces a generic way for driver to be able to create
-configurable BIOS Attributes available in Setup (F2) screen.
+Hi all,
 
-Cc: Hans de Goede <hdegoede@redhat.com>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: mark gross <mgross@linux.intel.com>
+Changes since 20200922:
 
-Co-developed-by: Mario Limonciello <mario.limonciello@dell.com>
-Signed-off-by: Mario Limonciello <mario.limonciello@dell.com>
-Co-developed-by: Prasanth KSR <prasanth.ksr@dell.com>
-Signed-off-by: Prasanth KSR <prasanth.ksr@dell.com>
-Signed-off-by: Divya Bharathi <divya.bharathi@dell.com>
----
+The block tree gained a conflict and a semantic conflict against Linus'
+tree.
 
-Changes from v3 to v4:
- - Create a firmware-attributes class and tie ksets to a virtual device in it
- - Make modifier and value_modifier "dell only" attributes.
- - Correct some errors caught by kernel build bot around missing prototypes
- - Remove mutexes from populate_* functions and put in init_dell_bios_attrib_wmi instead
- - Move all code into a subdirectory drivers/platform/x86/dell-wmi-sysman and remove dell-wmi-*
-   prefix on files
- - Move all data structures into shared struct
- - In alloc functions instead of kzalloc use kcalloc and check that there is no overflow
-   + Same check for other alloc_foo-data functions
- -  populate_*: Move sysfs_create_group to end of the function to prevent race conditions
- - Save kernel object into each data instance and only remove that rather than sysfs_remove_group
- - Document in sysfs file what causes change uevents to come through
- - Only notify with change uevent one time on multiple settings modifications
- - Adjust lots of string handling
- - Make more objects static
- - Various whitespace corrections
- - Document map_wmi_error properly
- - Bump version to 5.11 (February 2021)
+The tip tree gained a conflict against the amdgpu tree.
 
-Changes from v2 to v3:
- - Fix a possible NULL pointer error in init
- - Add missing newlines to all dev_err/dev_dbg/pr_err/pr_debug statements
- - Correct updating passwords when both Admin and System password are set
- - Correct the WMI driver name
- - Correct some namespace clashing when compiled into the kernel (Reported by Mark Gross)
- - Correct some comment typos
- - Adopt suggestions made by Hans:
-   + Use single global mutex
-   + Clarify reason for uevents with a comment
-   + Remove functions for set and get current password
-   + Rename lower_bound to min_value and upper_bound to max_value
-   + Rename possible_value to possible_values
-   + Remove references to float
-   + Build a separate passwords directory again since it behaves differently from the other
-     attributes
-   + Move more calls from pr_err -> dev_err
- - Documentation cleanups (see v2 patch feedback)
-   + Grouping types
-   + Syntax of `modifier` output
+Non-merge commits (relative to Linus' tree): 9036
+ 9654 files changed, 330232 insertions(+), 169511 deletions(-)
 
-Changes from v1 to v2:
- - use pr_fmt instead of pr_err(DRIVER_NAME
- - re-order variables reverse xmas tree order
- - correct returns of -1 to error codes
- - correct usage of {} on some split line statements
- - Refine all documentation deficiencies suggested by Hans
- - Merge all attributes to a single directory
- - Overhaul WMI interface interaction as suggested by Hans
-   * Move WMI driver registration to start of module
-   * Remove usage of lists that only use first entry for WMI interfaces
-   * Create a global structure shared across interface source files
-   * Make get_current_password function static
-   * Remove get_pending changes function, shared across global structure now.
-- Overhaul use of mutexes
-   * Make kset list mutex shared across source files
-   * Remove unneeded dell-wmi-sysman call_mutex
-   * Keep remaining call_mutexes in WMI functions
-- Move security area calculation into a function
-- Use NLS helper for utf8->utf16 conversion
+----------------------------------------------------------------------------
 
- .../testing/sysfs-class-firmware-attributes   | 199 ++++++
- MAINTAINERS                                   |   8 +
- drivers/platform/x86/Kconfig                  |  12 +
- drivers/platform/x86/Makefile                 |   1 +
- drivers/platform/x86/dell-wmi-sysman/Makefile |   8 +
- .../x86/dell-wmi-sysman/biosattr-interface.c  | 199 ++++++
- .../x86/dell-wmi-sysman/dell-wmi-sysman.h     | 196 ++++++
- .../x86/dell-wmi-sysman/enum-attributes.c     | 188 ++++++
- .../x86/dell-wmi-sysman/int-attributes.c      | 169 +++++
- .../x86/dell-wmi-sysman/passobj-attributes.c  | 153 +++++
- .../dell-wmi-sysman/passwordattr-interface.c  | 167 +++++
- .../x86/dell-wmi-sysman/string-attributes.c   | 156 +++++
- drivers/platform/x86/dell-wmi-sysman/sysman.c | 589 ++++++++++++++++++
- 13 files changed, 2045 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-class-firmware-attributes
- create mode 100644 drivers/platform/x86/dell-wmi-sysman/Makefile
- create mode 100644 drivers/platform/x86/dell-wmi-sysman/biosattr-interface.c
- create mode 100644 drivers/platform/x86/dell-wmi-sysman/dell-wmi-sysman.h
- create mode 100644 drivers/platform/x86/dell-wmi-sysman/enum-attributes.c
- create mode 100644 drivers/platform/x86/dell-wmi-sysman/int-attributes.c
- create mode 100644 drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c
- create mode 100644 drivers/platform/x86/dell-wmi-sysman/passwordattr-interface.c
- create mode 100644 drivers/platform/x86/dell-wmi-sysman/string-attributes.c
- create mode 100644 drivers/platform/x86/dell-wmi-sysman/sysman.c
+I have created today's linux-next tree at
+git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+(patches at http://www.kernel.org/pub/linux/kernel/next/ ).  If you
+are tracking the linux-next tree using git, you should not use "git pull"
+to do so as that will try to merge the new linux-next release with the
+old one.  You should use "git fetch" and checkout or reset to the new
+master.
 
-diff --git a/Documentation/ABI/testing/sysfs-class-firmware-attributes b/Documentation/ABI/testing/sysfs-class-firmware-attributes
-new file mode 100644
-index 000000000000..ad45d5717071
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-class-firmware-attributes
-@@ -0,0 +1,199 @@
-+What:		/sys/class/firmware-attributes/*/attributes/*/
-+Date:		February 2021
-+KernelVersion:	5.11
-+Contact:	Divya Bharathi <Divya.Bharathi@Dell.com>,
-+		Mario Limonciello <mario.limonciello@dell.com>,
-+		Prasanth KSR <prasanth.ksr@dell.com>
-+Description:
-+		A sysfs interface for systems management software to enable
-+		configuration capability on supported systems.  This directory
-+		exposes interfaces for interacting with configuration options.
-+
-+		Attributes can accept:
-+		- a set of pre-defined valid values (enumeration)
-+		- a range of numerical values (integer)
-+		- a string
-+
-+		All attribute types support the following values:
-+
-+		current_value:	A file that can be read to obtain the current
-+		value of the <attr>
-+
-+		This file can also be written to in order to update
-+		the value of a <attr>
-+
-+		default_value:	A file that can be read to obtain the default
-+		value of the <attr>
-+
-+		display_name:	A file that can be read to obtain a user friendly
-+		description of the at <attr>
-+
-+		display_name_language_code:	A file that can be read to obtain
-+		the IETF language tag corresponding to the "display_name" of the <attr>
-+
-+		"enumeration"-type specific properties:
-+
-+		possible_values: A file that can be read to obtain the possible
-+		values of the <attr>. Values are separated using semi-colon.
-+
-+		"integer"-type specific properties:
-+
-+		min_value:	A file that can be read to obtain the lower
-+		bound value of the <attr>
-+
-+		max_value:	A file that can be read to obtain the upper
-+		bound value of the <attr>
-+
-+		scalar_increment:	A file that can be read to obtain the
-+		resolution of the incremental value this attribute accepts.
-+
-+		"string"-type specific properties:
-+
-+		max_length:	A file that can be read to obtain the maximum
-+		length value of the <attr>
-+
-+		min_length:	A file that can be read to obtain the minimum
-+		length value of the <attr>
-+
-+		Dell specific class extensions
-+		--------------------------
-+
-+		On Dell systems the following additional attributes are available:
-+
-+		dell_modifier: A file that can be read to obtain attribute-level
-+		dependency rule. It says an attribute X will become read-only or
-+		suppressed, if/if-not attribute Y is configured.
-+
-+		modifier rules can be in following format,
-+		[ReadOnlyIf:<attribute>=<value>]
-+		[ReadOnlyIfNot:<attribute>=<value>]
-+		[SuppressIf:<attribute>=<value>]
-+		[SuppressIfNot:<attribute>=<value>]
-+
-+		For example:
-+		AutoOnFri/dell_modifier has value,
-+			[SuppressIfNot:AutoOn=SelectDays]
-+		This means AutoOnFri will be suppressed in BIOS setup if AutoOn
-+		attribute is not "SelectDays" and its value will not be effective
-+		through sysfs until this rule is met.
-+
-+		Enumeration attributes also support the following:
-+
-+		dell_value_modifier:	A file that can be read to obtain value-level
-+		dependency. This file is similar to dell_modifier but here, an
-+		attribute's current value will be forcefully changed based dependent
-+		attributes value.
-+
-+		dell_value_modifier rules can be in following format,
-+		<value>[ForceIf:<attribute>=<value>]
-+		<value>[ForceIfNot:<attribute>=<value>]
-+
-+		For example,
-+		LegacyOrom/dell_value_modifier has value,
-+			Disabled[ForceIf:SecureBoot=Enabled]
-+		This means LegacyOrom's current value will be forced to "Disabled"
-+		in BIOS setup if SecureBoot is Enabled and its value will not be
-+		effective through sysfs until this rule is met.
-+
-+What:		/sys/class/firmware-attributes/*/authentication/
-+Date:		February 2021
-+KernelVersion:	5.11
-+Contact:	Divya Bharathi <Divya.Bharathi@Dell.com>,
-+		Mario Limonciello <mario.limonciello@dell.com>,
-+		Prasanth KSR <prasanth.ksr@dell.com>
-+
-+		Devices support various authentication mechanisms which can be exposed
-+		as a separate configuration object.
-+
-+		For example a "BIOS Admin" password and "System" Password can be set,
-+		reset or cleared using these attributes.
-+		- An "Admin" password is used for preventing modification to the BIOS
-+		  settings.
-+		- A "System" password is required to boot a machine.
-+
-+		Change in any of these two authentication methods will also generate an
-+		uevent KOBJ_CHANGE.
-+
-+		is_authentication_set:	A file that can be read
-+		to obtain flag to see if a password is set on <attr>
-+
-+		max_password_length:	A file that can be read to obtain the
-+		maximum length of the Password
-+
-+		min_password_length:	A file that can be read to obtain the
-+		minimum length of the Password
-+
-+		current_password: A write only value used for privileged access
-+		such as setting attributes when a system or admin password is set
-+		or resetting to a new password
-+
-+		new_password: A write only value that when used in tandem with
-+		current_password will reset a system or admin password.
-+
-+		Note, password management is session specific. If Admin password is set,
-+		same password must be written into current_password file (required for
-+		password-validation) and must be cleared once the session is over.
-+		For example:
-+			echo "password" > current_password
-+			echo "disabled" > TouchScreen/current_value
-+			echo "" > current_password
-+
-+		Drivers may emit a CHANGE uevent when a password is set or unset
-+		userspace may check it again.
-+
-+		On Dell systems, if Admin password is set, then all BIOS attributes
-+		require password validation.
-+
-+What:		/sys/class/firmware-attributes/*/attributes/pending_reboot
-+Date:		February 2021
-+KernelVersion:	5.11
-+Contact:	Divya Bharathi <Divya.Bharathi@Dell.com>,
-+		Mario Limonciello <mario.limonciello@dell.com>,
-+		Prasanth KSR <prasanth.ksr@dell.com>
-+Description:
-+		A read-only attribute reads 1 if a reboot is necessary to apply
-+		pending BIOS attribute changes. Also, an uevent_KOBJ_CHANGE is
-+		generated when it changes to 1.
-+
-+			0:	All BIOS attributes setting are current
-+			1:	A reboot is necessary to get pending BIOS attribute changes
-+				applied
-+
-+		Note, userspace applications need to follow below steps for efficient
-+		BIOS management,
-+		1.	Check if admin password is set. If yes, follow session method for
-+			password management as briefed under authentication section above.
-+		2.	Before setting any attribute, check if it has any modifiers
-+			or value_modifiers. If yes, incorporate them and then modify
-+			attribute.
-+
-+		Drivers may emit a CHANGE uevent when this value changes and userspace
-+		may check it again.
-+
-+What:		/sys/class/firmware-attributes/*/attributes/reset_bios
-+Date:		February 2021
-+KernelVersion:	5.11
-+Contact:	Divya Bharathi <Divya.Bharathi@Dell.com>,
-+		Mario Limonciello <mario.limonciello@dell.com>,
-+		Prasanth KSR <prasanth.ksr@dell.com>
-+Description:
-+		This attribute can be used to reset the BIOS Configuration.
-+		Specifically, it tells which type of reset BIOS configuration is being
-+		requested on the host.
-+
-+		Reading from it returns a list of supported options encoded as:
-+
-+			'builtinsafe' (Built in safe configuration profile)
-+			'lastknowngood' (Last known good saved configuration profile)
-+			'factory' (Default factory settings configuration profile)
-+			'custom' (Custom saved configuration profile)
-+
-+		The currently selected option is printed in square brackets as
-+		shown below:
-+
-+		# echo "factory" > /sys/class/firmware-attributes/*/device/attributes/reset_bios
-+		# cat /sys/class/firmware-attributes/*/device/attributes/reset_bios
-+		# builtinsafe lastknowngood [factory] custom
-+
-+		Note that any changes to this attribute requires a reboot
-+		for changes to take effect.
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9350506a1127..adc57e0f3d60 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4951,6 +4951,14 @@ M:	Mario Limonciello <mario.limonciello@dell.com>
- S:	Maintained
- F:	drivers/platform/x86/dell-wmi-descriptor.c
- 
-+DELL WMI SYSMAN DRIVER
-+M:	Divya Bharathi <divya.bharathi@dell.com>
-+M:	Mario Limonciello <mario.limonciello@dell.com>
-+M:	Prasanth Ksr <prasanth.ksr@dell.com>
-+L:	platform-driver-x86@vger.kernel.org
-+S:	Maintained
-+F:	drivers/platform/x86/dell-wmi-syman/*
-+
- DELL WMI NOTIFICATIONS DRIVER
- M:	Matthew Garrett <mjg59@srcf.ucam.org>
- M:	Pali Rohár <pali@kernel.org>
-diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-index 40219bba6801..4fd7a3f0a904 100644
---- a/drivers/platform/x86/Kconfig
-+++ b/drivers/platform/x86/Kconfig
-@@ -430,6 +430,18 @@ config DELL_WMI
- 	  To compile this driver as a module, choose M here: the module will
- 	  be called dell-wmi.
- 
-+config DELL_WMI_SYSMAN
-+	tristate "Dell WMI Systems management WMI driver"
-+	depends on ACPI_WMI
-+	depends on DMI
-+	select NLS
-+	help
-+	  This driver allows changing BIOS settings on many Dell machines from
-+	  2018 and newer without the use of any additional software.
-+
-+	  To compile this driver as a module, choose M here: the module will
-+	  be called dell-wmi-sysman.
-+
- config DELL_WMI_DESCRIPTOR
- 	tristate
- 	depends on ACPI_WMI
-diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-index 5f823f7eff45..36ce38e80c8f 100644
---- a/drivers/platform/x86/Makefile
-+++ b/drivers/platform/x86/Makefile
-@@ -47,6 +47,7 @@ obj-$(CONFIG_DELL_WMI)			+= dell-wmi.o
- obj-$(CONFIG_DELL_WMI_DESCRIPTOR)	+= dell-wmi-descriptor.o
- obj-$(CONFIG_DELL_WMI_AIO)		+= dell-wmi-aio.o
- obj-$(CONFIG_DELL_WMI_LED)		+= dell-wmi-led.o
-+obj-$(CONFIG_DELL_WMI_SYSMAN)		+= dell-wmi-sysman/
- 
- # Fujitsu
- obj-$(CONFIG_AMILO_RFKILL)	+= amilo-rfkill.o
-diff --git a/drivers/platform/x86/dell-wmi-sysman/Makefile b/drivers/platform/x86/dell-wmi-sysman/Makefile
-new file mode 100644
-index 000000000000..825fb2fbeea8
---- /dev/null
-+++ b/drivers/platform/x86/dell-wmi-sysman/Makefile
-@@ -0,0 +1,8 @@
-+obj-$(CONFIG_DELL_WMI_SYSMAN)  += dell-wmi-sysman.o
-+dell-wmi-sysman-objs := 	sysman.o		\
-+				enum-attributes.o	\
-+				int-attributes.o	\
-+				string-attributes.o	\
-+				passobj-attributes.o	\
-+				biosattr-interface.o	\
-+				passwordattr-interface.o
-diff --git a/drivers/platform/x86/dell-wmi-sysman/biosattr-interface.c b/drivers/platform/x86/dell-wmi-sysman/biosattr-interface.c
-new file mode 100644
-index 000000000000..820c05d0fb8c
---- /dev/null
-+++ b/drivers/platform/x86/dell-wmi-sysman/biosattr-interface.c
-@@ -0,0 +1,199 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Functions corresponding to SET methods under BIOS attributes interface GUID for use
-+ * with dell-wmi-sysman
-+ *
-+ *  Copyright (c) 2020 Dell Inc.
-+ */
-+
-+#include <linux/nls.h>
-+#include <linux/wmi.h>
-+#include "dell-wmi-sysman.h"
-+
-+#define SETDEFAULTVALUES_METHOD_ID					0x02
-+#define SETBIOSDEFAULTS_METHOD_ID					0x03
-+#define SETATTRIBUTE_METHOD_ID						0x04
-+
-+static int call_biosattributes_interface(struct wmi_device *wdev, char *in_args, size_t size,
-+					int method_id)
-+{
-+	struct acpi_buffer output = {ACPI_ALLOCATE_BUFFER, NULL};
-+	struct acpi_buffer input;
-+	union acpi_object *obj;
-+	acpi_status status;
-+	int ret = -EIO;
-+
-+	input.length =  (acpi_size) size;
-+	input.pointer = in_args;
-+	status = wmidev_evaluate_method(wdev, 0, method_id, &input, &output);
-+	if (ACPI_FAILURE(status))
-+		return -EIO;
-+	obj = (union acpi_object *)output.pointer;
-+	if (obj->type == ACPI_TYPE_INTEGER)
-+		ret = obj->integer.value;
-+
-+	if (wmi_priv.pending_changes == 0) {
-+		wmi_priv.pending_changes = 1;
-+		/* let userland know it may need to check reboot pending again */
-+		kobject_uevent(&wdev->dev.kobj, KOBJ_CHANGE);
-+	}
-+	kfree(output.pointer);
-+	return map_wmi_error(ret);
-+}
-+
-+/**
-+ * set_attribute() - Update an attribute value
-+ * @a_name: The attribute name
-+ * @a_value: The attribute value
-+ *
-+ * Sets an attribute to new value
-+ **/
-+int set_attribute(const char *a_name, const char *a_value)
-+{
-+	size_t security_area_size, string_area_size, buffer_size;
-+	char *attribute_name, *attribute_value;
-+	u8 *name_len, *value_len;
-+	char *buffer = NULL;
-+	int ret;
-+
-+	mutex_lock(&wmi_priv.mutex);
-+	if (!wmi_priv.bios_attr_wdev) {
-+		ret = -ENODEV;
-+		goto out;
-+	}
-+
-+	/* build/calculate buffer */
-+	security_area_size = calculate_security_buffer();
-+	string_area_size = (strlen(a_name) + strlen(a_value))*2;
-+	buffer_size = security_area_size + string_area_size + sizeof(u16) * 2;
-+	buffer = kzalloc(buffer_size, GFP_KERNEL);
-+	if (!buffer) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	/* build security area */
-+	if (strlen(wmi_priv.current_admin_password) > 0)
-+		populate_security_buffer(buffer, wmi_priv.current_admin_password);
-+
-+	/* build variables to set */
-+	name_len = buffer + security_area_size;
-+	attribute_name = name_len + sizeof(u16);
-+	*name_len = utf8s_to_utf16s(a_name, strlen(a_name), UTF16_HOST_ENDIAN,
-+				    (wchar_t *) attribute_name, MAX_BUFF) * 2;
-+	if (*name_len < 0) {
-+		ret = -EINVAL;
-+		dev_err(&wmi_priv.password_attr_wdev->dev, "UTF16 conversion failed\n");
-+		goto out;
-+	}
-+
-+	value_len = (u8 *) attribute_name + *name_len;
-+	attribute_value = value_len + sizeof(u16);
-+	*value_len = utf8s_to_utf16s(a_value, strlen(a_value), UTF16_HOST_ENDIAN,
-+				    (wchar_t *) attribute_value, MAX_BUFF) * 2;
-+	if (*value_len < 0) {
-+		ret = -EINVAL;
-+		dev_err(&wmi_priv.password_attr_wdev->dev, "UTF16 conversion failed\n");
-+		goto out;
-+	}
-+
-+	ret = call_biosattributes_interface(wmi_priv.bios_attr_wdev,
-+					    buffer, buffer_size,
-+					    SETATTRIBUTE_METHOD_ID);
-+	if (ret == -EOPNOTSUPP)
-+		dev_err(&wmi_priv.password_attr_wdev->dev, "admin password must be configured\n");
-+	else if (ret == -EACCES)
-+		dev_err(&wmi_priv.password_attr_wdev->dev, "invalid password\n");
-+
-+out:
-+	kfree(buffer);
-+	mutex_unlock(&wmi_priv.mutex);
-+
-+	return ret;
-+}
-+
-+/**
-+ * set_bios_defaults() - Resets BIOS defaults
-+ * @deftype: the type of BIOS value reset to issue.
-+ *
-+ * Resets BIOS defaults
-+ **/
-+int set_bios_defaults(u8 deftype)
-+{
-+	size_t security_area_size, buffer_size;
-+	size_t integer_area_size = sizeof(u8);
-+	char *buffer = NULL;
-+	u8 *defaultType;
-+	int ret;
-+
-+	mutex_lock(&wmi_priv.mutex);
-+	if (!wmi_priv.bios_attr_wdev) {
-+		ret = -ENODEV;
-+		goto out;
-+	}
-+
-+	security_area_size = calculate_security_buffer();
-+	buffer_size = security_area_size + integer_area_size;
-+	buffer = kzalloc(buffer_size, GFP_KERNEL);
-+	if (!buffer)
-+		return -ENOMEM;
-+
-+	/* build security area */
-+	if (strlen(wmi_priv.current_admin_password) > 0)
-+		populate_security_buffer(buffer, wmi_priv.current_admin_password);
-+
-+	defaultType = buffer + security_area_size;
-+	*defaultType = deftype;
-+
-+	ret = call_biosattributes_interface(wmi_priv.bios_attr_wdev, buffer, buffer_size,
-+					    SETBIOSDEFAULTS_METHOD_ID);
-+	if (ret)
-+		dev_err(&wmi_priv.bios_attr_wdev->dev, "reset BIOS defaults failed: %d\n", ret);
-+
-+out:
-+	kfree(buffer);
-+	mutex_unlock(&wmi_priv.mutex);
-+
-+	return ret;
-+}
-+
-+static int bios_attr_set_interface_probe(struct wmi_device *wdev, const void *context)
-+{
-+	mutex_lock(&wmi_priv.mutex);
-+	wmi_priv.bios_attr_wdev = wdev;
-+	mutex_unlock(&wmi_priv.mutex);
-+	return 0;
-+}
-+
-+static int bios_attr_set_interface_remove(struct wmi_device *wdev)
-+{
-+	mutex_lock(&wmi_priv.mutex);
-+	wmi_priv.bios_attr_wdev = NULL;
-+	mutex_unlock(&wmi_priv.mutex);
-+	return 0;
-+}
-+
-+static const struct wmi_device_id bios_attr_set_interface_id_table[] = {
-+	{ .guid_string = DELL_WMI_BIOS_ATTRIBUTES_INTERFACE_GUID },
-+	{ },
-+};
-+static struct wmi_driver bios_attr_set_interface_driver = {
-+	.driver = {
-+		.name = DRIVER_NAME
-+	},
-+	.probe = bios_attr_set_interface_probe,
-+	.remove = bios_attr_set_interface_remove,
-+	.id_table = bios_attr_set_interface_id_table,
-+};
-+
-+int init_bios_attr_set_interface(void)
-+{
-+	return wmi_driver_register(&bios_attr_set_interface_driver);
-+}
-+
-+void exit_bios_attr_set_interface(void)
-+{
-+	wmi_driver_unregister(&bios_attr_set_interface_driver);
-+}
-+
-+MODULE_DEVICE_TABLE(wmi, bios_attr_set_interface_id_table);
-diff --git a/drivers/platform/x86/dell-wmi-sysman/dell-wmi-sysman.h b/drivers/platform/x86/dell-wmi-sysman/dell-wmi-sysman.h
-new file mode 100644
-index 000000000000..03e5299cf9b8
---- /dev/null
-+++ b/drivers/platform/x86/dell-wmi-sysman/dell-wmi-sysman.h
-@@ -0,0 +1,196 @@
-+/* SPDX-License-Identifier: GPL-2.0
-+ * Definitions for kernel modules using Dell WMI System Management Driver
-+ *
-+ *  Copyright (c) 2020 Dell Inc.
-+ */
-+
-+#ifndef _DELL_WMI_BIOS_ATTR_H_
-+#define _DELL_WMI_BIOS_ATTR_H_
-+
-+#include <linux/wmi.h>
-+#include <linux/device.h>
-+#include <linux/module.h>
-+#include <linux/kernel.h>
-+#include <linux/capability.h>
-+
-+#define DRIVER_NAME					"dell-wmi-sysman"
-+#define MAX_BUFF  512
-+
-+#define DELL_WMI_BIOS_ENUMERATION_ATTRIBUTE_GUID	"F1DDEE52-063C-4784-A11E-8A06684B9BF5"
-+#define DELL_WMI_BIOS_INTEGER_ATTRIBUTE_GUID		"F1DDEE52-063C-4784-A11E-8A06684B9BFA"
-+#define DELL_WMI_BIOS_STRING_ATTRIBUTE_GUID		"F1DDEE52-063C-4784-A11E-8A06684B9BF9"
-+#define DELL_WMI_BIOS_PASSOBJ_ATTRIBUTE_GUID		"0894B8D6-44A6-4719-97D7-6AD24108BFD4"
-+#define DELL_WMI_BIOS_ATTRIBUTES_INTERFACE_GUID		"F1DDEE52-063C-4784-A11E-8A06684B9BF4"
-+#define DELL_WMI_BIOS_PASSWORD_INTERFACE_GUID		"70FE8229-D03B-4214-A1C6-1F884B1A892A"
-+
-+struct enumeration_data {
-+	struct kobject *attr_name_kobj;
-+	char display_name_language_code[MAX_BUFF];
-+	char attribute_name[MAX_BUFF];
-+	char display_name[MAX_BUFF];
-+	char default_value[MAX_BUFF];
-+	char current_value[MAX_BUFF];
-+	char dell_modifier[MAX_BUFF];
-+	int value_modifier_count;
-+	char dell_value_modifier[MAX_BUFF];
-+	int possible_values_count;
-+	char possible_values[MAX_BUFF];
-+	char type[MAX_BUFF];
-+};
-+
-+struct integer_data {
-+	struct kobject *attr_name_kobj;
-+	char display_name_language_code[MAX_BUFF];
-+	char attribute_name[MAX_BUFF];
-+	char display_name[MAX_BUFF];
-+	int default_value;
-+	int current_value;
-+	char dell_modifier[MAX_BUFF];
-+	int min_value;
-+	int max_value;
-+	int scalar_increment;
-+	char type[MAX_BUFF];
-+};
-+
-+struct str_data {
-+	struct kobject *attr_name_kobj;
-+	char display_name_language_code[MAX_BUFF];
-+	char attribute_name[MAX_BUFF];
-+	char display_name[MAX_BUFF];
-+	char default_value[MAX_BUFF];
-+	char current_value[MAX_BUFF];
-+	char dell_modifier[MAX_BUFF];
-+	int min_length;
-+	int max_length;
-+	char type[MAX_BUFF];
-+};
-+
-+struct po_data {
-+	struct kobject *attr_name_kobj;
-+	char attribute_name[MAX_BUFF];
-+	int is_authentication_set;
-+	int min_password_length;
-+	int max_password_length;
-+	char type[MAX_BUFF];
-+};
-+
-+struct wmi_sysman_priv {
-+	char current_admin_password[MAX_BUFF];
-+	char current_system_password[MAX_BUFF];
-+	struct wmi_device *password_attr_wdev;
-+	struct wmi_device *bios_attr_wdev;
-+	struct kset *authentication_dir_kset;
-+	struct kset *main_dir_kset;
-+	struct enumeration_data *enumeration_data;
-+	int enumeration_instances_count;
-+	struct integer_data *integer_data;
-+	int integer_instances_count;
-+	struct str_data *str_data;
-+	int str_instances_count;
-+	struct po_data *po_data;
-+	int po_instances_count;
-+	bool pending_changes;
-+	struct mutex mutex;
-+};
-+
-+/* global structure used by multiple WMI interfaces */
-+extern struct wmi_sysman_priv wmi_priv;
-+
-+enum { ENUM, INT, STR, PO };
-+
-+enum {
-+	ATTR_NAME,
-+	DISPL_NAME_LANG_CODE,
-+	DISPLAY_NAME,
-+	DEFAULT_VAL,
-+	CURRENT_VAL,
-+	MODIFIER
-+};
-+
-+#define get_instance_id(type)							\
-+int get_##type##_instance_id(struct kobject *kobj);				\
-+int get_##type##_instance_id(struct kobject *kobj)				\
-+{										\
-+	int i;									\
-+	for (i = 0; i <= wmi_priv.type##_instances_count; i++) {		\
-+		if (!(strcmp(kobj->name, wmi_priv.type##_data[i].attribute_name)))\
-+			return i;						\
-+	}									\
-+	return -EIO;								\
-+}
-+
-+#define attribute_s_property_show(name, type)					\
-+static ssize_t name##_show(struct kobject *kobj, struct kobj_attribute *attr,	\
-+			   char *buf)						\
-+{										\
-+	int i = get_##type##_instance_id(kobj);					\
-+	if (i >= 0)								\
-+		return sprintf(buf, "%s\n", wmi_priv.type##_data[i].name);	\
-+	return 0;								\
-+}
-+
-+#define attribute_n_property_show(name, type)					\
-+static ssize_t name##_show(struct kobject *kobj, struct kobj_attribute *attr,	\
-+			   char *buf)						\
-+{										\
-+	int i = get_##type##_instance_id(kobj);					\
-+	if (i >= 0)								\
-+		return sprintf(buf, "%d\n", wmi_priv.type##_data[i].name);	\
-+	return 0;								\
-+}
-+
-+#define attribute_property_store(curr_val, type)				\
-+static ssize_t curr_val##_store(struct kobject *kobj,				\
-+				struct kobj_attribute *attr,			\
-+				const char *buf, size_t count)			\
-+{										\
-+	char *p = memchr(buf, '\n', count);					\
-+	int ret = -EIO;								\
-+	int i;									\
-+										\
-+	if (p != NULL)								\
-+		*p = '\0';							\
-+	i = get_##type##_instance_id(kobj);					\
-+	if (i >= 0)								\
-+		ret = validate_##type##_input(i, buf);				\
-+	if (!ret)								\
-+		ret = set_attribute(kobj->name, buf);				\
-+	return ret ? ret : count;						\
-+}
-+
-+union acpi_object *get_wmiobj_pointer(int instance_id, const char *guid_string);
-+int get_instance_count(const char *guid_string);
-+void strlcpy_attr(char *dest, char *src);
-+
-+int populate_enum_data(union acpi_object *enumeration_obj, int instance_id,
-+			struct kobject *attr_name_kobj);
-+int alloc_enum_data(void);
-+void exit_enum_attributes(void);
-+
-+int populate_int_data(union acpi_object *integer_obj, int instance_id,
-+			struct kobject *attr_name_kobj);
-+int alloc_int_data(void);
-+void exit_int_attributes(void);
-+
-+int populate_str_data(union acpi_object *str_obj, int instance_id, struct kobject *attr_name_kobj);
-+int alloc_str_data(void);
-+void exit_str_attributes(void);
-+
-+int populate_po_data(union acpi_object *po_obj, int instance_id, struct kobject *attr_name_kobj);
-+int alloc_po_data(void);
-+void exit_po_attributes(void);
-+
-+int set_attribute(const char *a_name, const char *a_value);
-+int set_bios_defaults(u8 defType);
-+
-+void exit_bios_attr_set_interface(void);
-+int init_bios_attr_set_interface(void);
-+int map_wmi_error(int error_code);
-+size_t calculate_security_buffer(void);
-+void populate_security_buffer(char *buffer, char *authentication);
-+
-+int set_new_password(const char *password_type, const char *new);
-+int init_bios_attr_pass_interface(void);
-+void exit_bios_attr_pass_interface(void);
-+
-+#endif
-diff --git a/drivers/platform/x86/dell-wmi-sysman/enum-attributes.c b/drivers/platform/x86/dell-wmi-sysman/enum-attributes.c
-new file mode 100644
-index 000000000000..cfcb226db634
---- /dev/null
-+++ b/drivers/platform/x86/dell-wmi-sysman/enum-attributes.c
-@@ -0,0 +1,188 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Functions corresponding to enumeration type attributes under BIOS Enumeration GUID for use
-+ * with dell-wmi-sysman
-+ *
-+ *  Copyright (c) 2020 Dell Inc.
-+ */
-+
-+#include "dell-wmi-sysman.h"
-+
-+get_instance_id(enumeration);
-+
-+static ssize_t current_value_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
-+{
-+	int instance_id;
-+
-+	if (!capable(CAP_SYS_ADMIN))
-+		return -EPERM;
-+	instance_id = get_enumeration_instance_id(kobj);
-+	if (instance_id >= 0) {
-+		union acpi_object *obj;
-+
-+		/* need to use specific instance_id and guid combination to get right data */
-+		obj = get_wmiobj_pointer(instance_id, DELL_WMI_BIOS_ENUMERATION_ATTRIBUTE_GUID);
-+		if (!obj)
-+			return -AE_ERROR;
-+		strlcpy_attr(wmi_priv.enumeration_data[instance_id].current_value,
-+		       obj->package.elements[CURRENT_VAL].string.pointer);
-+		kfree(obj);
-+		return sprintf(buf, "%s\n", wmi_priv.enumeration_data[instance_id].current_value);
-+	}
-+	return -EIO;
-+}
-+
-+/**
-+ * validate_enumeration_input() - Validate input of current_value against possible values
-+ * @instance_id: The instance on which input is validated
-+ * @buf: Input value
-+ **/
-+static int validate_enumeration_input(int instance_id, const char *buf)
-+{
-+	char *options, *tmp, *p;
-+	int ret = -EINVAL;
-+
-+	options = tmp = kstrdup(wmi_priv.enumeration_data[instance_id].possible_values,
-+				 GFP_KERNEL);
-+	if (!options)
-+		return -ENOMEM;
-+
-+	while ((p = strsep(&options, ";")) != NULL) {
-+		if (!*p)
-+			continue;
-+		if (!strncasecmp(p, buf, strlen(p))) {
-+			ret = 0;
-+			break;
-+		}
-+	}
-+
-+	kfree(tmp);
-+	return ret;
-+}
-+
-+attribute_s_property_show(display_name_language_code, enumeration);
-+static struct kobj_attribute displ_langcode =
-+		__ATTR_RO(display_name_language_code);
-+
-+attribute_s_property_show(display_name, enumeration);
-+static struct kobj_attribute displ_name =
-+		__ATTR_RO(display_name);
-+
-+attribute_s_property_show(default_value, enumeration);
-+static struct kobj_attribute default_val =
-+		__ATTR_RO(default_value);
-+
-+attribute_property_store(current_value, enumeration);
-+static struct kobj_attribute current_val =
-+		__ATTR_RW(current_value);
-+
-+attribute_s_property_show(dell_modifier, enumeration);
-+static struct kobj_attribute modifier =
-+		__ATTR_RO(dell_modifier);
-+
-+attribute_s_property_show(dell_value_modifier, enumeration);
-+static struct kobj_attribute value_modfr =
-+		__ATTR_RO(dell_value_modifier);
-+
-+attribute_s_property_show(possible_values, enumeration);
-+static struct kobj_attribute poss_val =
-+		__ATTR_RO(possible_values);
-+
-+attribute_s_property_show(type, enumeration);
-+static struct kobj_attribute type =
-+		__ATTR_RO(type);
-+
-+static struct attribute *enumeration_attrs[] = {
-+	&displ_langcode.attr,
-+	&displ_name.attr,
-+	&default_val.attr,
-+	&current_val.attr,
-+	&modifier.attr,
-+	&value_modfr.attr,
-+	&poss_val.attr,
-+	&type.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group enumeration_attr_group = {
-+	.attrs = enumeration_attrs,
-+};
-+
-+int alloc_enum_data(void)
-+{
-+	int ret = 0;
-+
-+	wmi_priv.enumeration_instances_count =
-+		get_instance_count(DELL_WMI_BIOS_ENUMERATION_ATTRIBUTE_GUID);
-+	wmi_priv.enumeration_data = kcalloc(wmi_priv.enumeration_instances_count,
-+					sizeof(struct enumeration_data), GFP_KERNEL);
-+	if (!wmi_priv.enumeration_data)
-+		ret = -ENOMEM;
-+	return ret;
-+}
-+
-+/**
-+ * populate_enum_data() - Populate all properties of an instance under enumeration attribute
-+ * @enumeration_obj: ACPI object with enumeration data
-+ * @instance_id: The instance to enumerate
-+ * @attr_name_kobj: The parent kernel object
-+ **/
-+int populate_enum_data(union acpi_object *enumeration_obj, int instance_id,
-+			struct kobject *attr_name_kobj)
-+{
-+	int i, next_obj;
-+
-+	wmi_priv.enumeration_data[instance_id].attr_name_kobj = attr_name_kobj;
-+	strlcpy_attr(wmi_priv.enumeration_data[instance_id].attribute_name,
-+		enumeration_obj[ATTR_NAME].string.pointer);
-+	strlcpy_attr(wmi_priv.enumeration_data[instance_id].display_name_language_code,
-+		enumeration_obj[DISPL_NAME_LANG_CODE].string.pointer);
-+	strlcpy_attr(wmi_priv.enumeration_data[instance_id].display_name,
-+		enumeration_obj[DISPLAY_NAME].string.pointer);
-+	strlcpy_attr(wmi_priv.enumeration_data[instance_id].default_value,
-+		enumeration_obj[DEFAULT_VAL].string.pointer);
-+	strlcpy_attr(wmi_priv.enumeration_data[instance_id].current_value,
-+		enumeration_obj[CURRENT_VAL].string.pointer);
-+	strlcpy_attr(wmi_priv.enumeration_data[instance_id].dell_modifier,
-+		enumeration_obj[MODIFIER].string.pointer);
-+
-+	next_obj = MODIFIER + 1;
-+
-+	wmi_priv.enumeration_data[instance_id].value_modifier_count =
-+		(uintptr_t)enumeration_obj[next_obj].string.pointer;
-+
-+	for (i = 0; i < wmi_priv.enumeration_data[instance_id].value_modifier_count; i++) {
-+		strcat(wmi_priv.enumeration_data[instance_id].dell_value_modifier,
-+			enumeration_obj[++next_obj].string.pointer);
-+		strcat(wmi_priv.enumeration_data[instance_id].dell_value_modifier, ";");
-+	}
-+
-+	wmi_priv.enumeration_data[instance_id].possible_values_count =
-+		(uintptr_t) enumeration_obj[++next_obj].string.pointer;
-+
-+	for (i = 0; i < wmi_priv.enumeration_data[instance_id].possible_values_count; i++) {
-+		strcat(wmi_priv.enumeration_data[instance_id].possible_values,
-+			enumeration_obj[++next_obj].string.pointer);
-+		strcat(wmi_priv.enumeration_data[instance_id].possible_values, ";");
-+	}
-+	strlcpy_attr(wmi_priv.enumeration_data[instance_id].type, "enumeration");
-+
-+	return sysfs_create_group(attr_name_kobj, &enumeration_attr_group);
-+}
-+
-+/**
-+ * exit_enum_attributes() - Clear all attribute data
-+ *
-+ * Clears all data allocated for this group of attributes
-+ **/
-+void exit_enum_attributes(void)
-+{
-+	int instance_id;
-+
-+	for (instance_id = 0; instance_id < wmi_priv.enumeration_instances_count; instance_id++) {
-+		if (wmi_priv.enumeration_data[instance_id].attr_name_kobj)
-+			sysfs_remove_group(wmi_priv.enumeration_data[instance_id].attr_name_kobj,
-+								&enumeration_attr_group);
-+	}
-+	kfree(wmi_priv.enumeration_data);
-+}
-diff --git a/drivers/platform/x86/dell-wmi-sysman/int-attributes.c b/drivers/platform/x86/dell-wmi-sysman/int-attributes.c
-new file mode 100644
-index 000000000000..f668d69eaf09
---- /dev/null
-+++ b/drivers/platform/x86/dell-wmi-sysman/int-attributes.c
-@@ -0,0 +1,169 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Functions corresponding to integer type attributes under BIOS Integer GUID for use with
-+ * dell-wmi-sysman
-+ *
-+ *  Copyright (c) 2020 Dell Inc.
-+ */
-+
-+#include "dell-wmi-sysman.h"
-+
-+enum int_properties {MIN_VALUE = 6, MAX_VALUE, SCALAR_INCR};
-+
-+get_instance_id(integer);
-+
-+static ssize_t current_value_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
-+{
-+	int instance_id;
-+
-+	if (!capable(CAP_SYS_ADMIN))
-+		return -EPERM;
-+	instance_id = get_integer_instance_id(kobj);
-+	if (instance_id >= 0) {
-+		union acpi_object *obj;
-+
-+		/* need to use specific instance_id and guid combination to get right data */
-+		obj = get_wmiobj_pointer(instance_id, DELL_WMI_BIOS_INTEGER_ATTRIBUTE_GUID);
-+		if (!obj)
-+			return -AE_ERROR;
-+		wmi_priv.integer_data[instance_id].current_value =
-+			(uintptr_t)obj->package.elements[CURRENT_VAL].string.pointer;
-+		kfree(obj);
-+		return sprintf(buf, "%d\n", wmi_priv.integer_data[instance_id].current_value);
-+	}
-+	return -EIO;
-+}
-+
-+/**
-+ * validate_integer_input() - Validate input of current_value against lower and upper bound
-+ * @instance_id: The instance on which input is validated
-+ * @buf: Input value
-+ **/
-+static int validate_integer_input(int instance_id, const char *buf)
-+{
-+	int ret = -EINVAL;
-+	int in_val;
-+
-+	if (kstrtoint(buf, 0, &in_val))
-+		return ret;
-+	if ((in_val >= wmi_priv.integer_data[instance_id].min_value) &&
-+	(in_val <= wmi_priv.integer_data[instance_id].max_value))
-+		ret = 0;
-+
-+	return ret;
-+}
-+
-+attribute_s_property_show(display_name_language_code, integer);
-+static struct kobj_attribute integer_displ_langcode =
-+	__ATTR_RO(display_name_language_code);
-+
-+attribute_s_property_show(display_name, integer);
-+static struct kobj_attribute integer_displ_name =
-+	__ATTR_RO(display_name);
-+
-+attribute_n_property_show(default_value, integer);
-+static struct kobj_attribute integer_default_val =
-+	__ATTR_RO(default_value);
-+
-+attribute_property_store(current_value, integer);
-+static struct kobj_attribute integer_current_val =
-+	__ATTR_RW(current_value);
-+
-+attribute_s_property_show(dell_modifier, integer);
-+static struct kobj_attribute integer_modifier =
-+	__ATTR_RO(dell_modifier);
-+
-+attribute_n_property_show(min_value, integer);
-+static struct kobj_attribute integer_lower_bound =
-+	__ATTR_RO(min_value);
-+
-+attribute_n_property_show(max_value, integer);
-+static struct kobj_attribute integer_upper_bound =
-+	__ATTR_RO(max_value);
-+
-+attribute_n_property_show(scalar_increment, integer);
-+static struct kobj_attribute integer_scalar_increment =
-+	__ATTR_RO(scalar_increment);
-+
-+attribute_s_property_show(type, integer);
-+static struct kobj_attribute integer_type =
-+	__ATTR_RO(type);
-+
-+static struct attribute *integer_attrs[] = {
-+	&integer_displ_langcode.attr,
-+	&integer_displ_name.attr,
-+	&integer_default_val.attr,
-+	&integer_current_val.attr,
-+	&integer_modifier.attr,
-+	&integer_lower_bound.attr,
-+	&integer_upper_bound.attr,
-+	&integer_scalar_increment.attr,
-+	&integer_type.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group integer_attr_group = {
-+	.attrs = integer_attrs,
-+};
-+
-+int alloc_int_data(void)
-+{
-+	int ret = 0;
-+
-+	wmi_priv.integer_instances_count = get_instance_count(DELL_WMI_BIOS_INTEGER_ATTRIBUTE_GUID);
-+	wmi_priv.integer_data = kcalloc(wmi_priv.integer_instances_count,
-+					sizeof(struct integer_data), GFP_KERNEL);
-+	if (!wmi_priv.integer_data)
-+		ret = -ENOMEM;
-+	return ret;
-+}
-+
-+/**
-+ * populate_int_data() - Populate all properties of an instance under integer attribute
-+ * @integer_obj: ACPI object with integer data
-+ * @instance_id: The instance to enumerate
-+ * @attr_name_kobj: The parent kernel object
-+ **/
-+int populate_int_data(union acpi_object *integer_obj, int instance_id,
-+			struct kobject *attr_name_kobj)
-+{
-+	wmi_priv.integer_data[instance_id].attr_name_kobj = attr_name_kobj;
-+	strlcpy_attr(wmi_priv.integer_data[instance_id].attribute_name,
-+		integer_obj[ATTR_NAME].string.pointer);
-+	strlcpy_attr(wmi_priv.integer_data[instance_id].display_name_language_code,
-+		integer_obj[DISPL_NAME_LANG_CODE].string.pointer);
-+	strlcpy_attr(wmi_priv.integer_data[instance_id].display_name,
-+		integer_obj[DISPLAY_NAME].string.pointer);
-+	wmi_priv.integer_data[instance_id].default_value =
-+		(uintptr_t)integer_obj[DEFAULT_VAL].string.pointer;
-+	wmi_priv.integer_data[instance_id].current_value =
-+		(uintptr_t)integer_obj[CURRENT_VAL].string.pointer;
-+	strlcpy_attr(wmi_priv.integer_data[instance_id].dell_modifier,
-+		integer_obj[MODIFIER].string.pointer);
-+	wmi_priv.integer_data[instance_id].min_value =
-+		(uintptr_t)integer_obj[MIN_VALUE].string.pointer;
-+	wmi_priv.integer_data[instance_id].max_value =
-+		(uintptr_t)integer_obj[MAX_VALUE].string.pointer;
-+	wmi_priv.integer_data[instance_id].scalar_increment =
-+		(uintptr_t)integer_obj[SCALAR_INCR].string.pointer;
-+	strlcpy_attr(wmi_priv.integer_data[instance_id].type, "integer");
-+
-+	return sysfs_create_group(attr_name_kobj, &integer_attr_group);
-+}
-+
-+/**
-+ * exit_int_attributes() - Clear all attribute data
-+ *
-+ * Clears all data allocated for this group of attributes
-+ **/
-+void exit_int_attributes(void)
-+{
-+	int instance_id;
-+
-+	for (instance_id = 0; instance_id < wmi_priv.integer_instances_count; instance_id++) {
-+		if (wmi_priv.integer_data[instance_id].attr_name_kobj)
-+			sysfs_remove_group(wmi_priv.integer_data[instance_id].attr_name_kobj,
-+								&integer_attr_group);
-+	}
-+	kfree(wmi_priv.integer_data);
-+}
-diff --git a/drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c b/drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c
-new file mode 100644
-index 000000000000..d02c123c0ab1
---- /dev/null
-+++ b/drivers/platform/x86/dell-wmi-sysman/passobj-attributes.c
-@@ -0,0 +1,153 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Functions corresponding to password object type attributes under BIOS Password Object GUID for
-+ * use with dell-wmi-sysman
-+ *
-+ *  Copyright (c) 2020 Dell Inc.
-+ */
-+
-+#include "dell-wmi-sysman.h"
-+
-+enum po_properties {IS_PASS_SET = 1, MIN_PASS_LEN, MAX_PASS_LEN};
-+
-+get_instance_id(po);
-+
-+static ssize_t is_authentication_set_show(struct kobject *kobj, struct kobj_attribute *attr,
-+					  char *buf)
-+{
-+	int instance_id = get_po_instance_id(kobj);
-+
-+	if (instance_id >= 0) {
-+		union acpi_object *obj;
-+
-+		/* need to use specific instance_id and guid combination to get right data */
-+		obj = get_wmiobj_pointer(instance_id, DELL_WMI_BIOS_PASSOBJ_ATTRIBUTE_GUID);
-+		if (!obj)
-+			return -AE_ERROR;
-+		wmi_priv.po_data[instance_id].is_authentication_set =
-+			(uintptr_t)obj->package.elements[IS_PASS_SET].string.pointer;
-+		kfree(obj);
-+		return sprintf(buf, "%d\n", wmi_priv.po_data[instance_id].is_authentication_set);
-+	}
-+	return -EIO;
-+}
-+
-+struct kobj_attribute po_is_pass_set =
-+		__ATTR_RO(is_authentication_set);
-+
-+static ssize_t current_password_store(struct kobject *kobj,
-+				      struct kobj_attribute *attr,
-+				      const char *buf, size_t count)
-+{
-+	char *p = memchr(buf, '\n', count);
-+	int ret;
-+
-+	if (p != NULL)
-+		*p = '\0';
-+	if (strlen(buf) >= MAX_BUFF)
-+		return -EINVAL;
-+
-+	if (strcmp(kobj->name, "Admin") == 0)
-+		memcpy(wmi_priv.current_admin_password, buf, (strlen(buf) + 1));
-+	if (strcmp(kobj->name, "System") == 0)
-+		memcpy(wmi_priv.current_system_password, buf, (strlen(buf) + 1));
-+	return ret ? ret : count;
-+}
-+
-+struct kobj_attribute po_current_password =
-+		__ATTR_WO(current_password);
-+
-+static ssize_t new_password_store(struct kobject *kobj,
-+				  struct kobj_attribute *attr,
-+				  const char *buf, size_t count)
-+{
-+	char *p = memchr(buf, '\n', count);
-+	int ret;
-+
-+	if (p != NULL)
-+		*p = '\0';
-+	if (strlen(buf) > MAX_BUFF)
-+		return -EINVAL;
-+
-+	ret = set_new_password(kobj->name, buf);
-+	return ret ? ret : count;
-+}
-+
-+struct kobj_attribute po_new_password =
-+		__ATTR_WO(new_password);
-+
-+attribute_n_property_show(min_password_length, po);
-+struct kobj_attribute po_min_pass_length =
-+		__ATTR_RO(min_password_length);
-+
-+attribute_n_property_show(max_password_length, po);
-+struct kobj_attribute po_max_pass_length =
-+		__ATTR_RO(max_password_length);
-+
-+attribute_s_property_show(type, po);
-+struct kobj_attribute po_type =
-+	__ATTR_RO(type);
-+
-+static struct attribute *po_attrs[] = {
-+	&po_is_pass_set.attr,
-+	&po_min_pass_length.attr,
-+	&po_max_pass_length.attr,
-+	&po_current_password.attr,
-+	&po_new_password.attr,
-+	&po_type.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group po_attr_group = {
-+	.attrs = po_attrs,
-+};
-+
-+int alloc_po_data(void)
-+{
-+	int ret = 0;
-+
-+	wmi_priv.po_instances_count = get_instance_count(DELL_WMI_BIOS_PASSOBJ_ATTRIBUTE_GUID);
-+	wmi_priv.po_data = kcalloc(wmi_priv.po_instances_count, sizeof(struct po_data), GFP_KERNEL);
-+	if (!wmi_priv.po_data)
-+		ret = -ENOMEM;
-+	return ret;
-+}
-+
-+/**
-+ * populate_po_data() - Populate all properties of an instance under password object attribute
-+ * @po_obj: ACPI object with password object data
-+ * @instance_id: The instance to enumerate
-+ * @attr_name_kobj: The parent kernel object
-+ **/
-+int populate_po_data(union acpi_object *po_obj, int instance_id, struct kobject *attr_name_kobj)
-+{
-+	wmi_priv.po_data[instance_id].attr_name_kobj = attr_name_kobj;
-+	strlcpy_attr(wmi_priv.po_data[instance_id].attribute_name,
-+		     po_obj[ATTR_NAME].string.pointer);
-+	wmi_priv.po_data[instance_id].is_authentication_set =
-+		(uintptr_t)po_obj[IS_PASS_SET].string.pointer;
-+	wmi_priv.po_data[instance_id].min_password_length =
-+		(uintptr_t)po_obj[MIN_PASS_LEN].string.pointer;
-+	wmi_priv.po_data[instance_id].max_password_length =
-+		(uintptr_t) po_obj[MAX_PASS_LEN].string.pointer;
-+	strlcpy_attr(wmi_priv.po_data[instance_id].type, "password_object");
-+
-+	return sysfs_create_group(attr_name_kobj, &po_attr_group);
-+}
-+
-+/**
-+ * exit_po_attributes() - Clear all attribute data
-+ *
-+ * Clears all data allocated for this group of attributes
-+ **/
-+void exit_po_attributes(void)
-+{
-+	int instance_id;
-+
-+	for (instance_id = 0; instance_id < wmi_priv.po_instances_count; instance_id++) {
-+		if (wmi_priv.po_data[instance_id].attr_name_kobj)
-+			sysfs_remove_group(wmi_priv.po_data[instance_id].attr_name_kobj,
-+								&po_attr_group);
-+	}
-+	kfree(wmi_priv.po_data);
-+}
-diff --git a/drivers/platform/x86/dell-wmi-sysman/passwordattr-interface.c b/drivers/platform/x86/dell-wmi-sysman/passwordattr-interface.c
-new file mode 100644
-index 000000000000..40854a2c09a8
---- /dev/null
-+++ b/drivers/platform/x86/dell-wmi-sysman/passwordattr-interface.c
-@@ -0,0 +1,167 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Functions corresponding to SET password methods under BIOS attributes interface GUID
-+ *
-+ *  Copyright (c) 2020 Dell Inc.
-+ */
-+
-+#include <linux/nls.h>
-+#include <linux/wmi.h>
-+#include "dell-wmi-sysman.h"
-+
-+static int call_password_interface(struct wmi_device *wdev, char *in_args, size_t size)
-+{
-+	struct acpi_buffer output = {ACPI_ALLOCATE_BUFFER, NULL};
-+	struct acpi_buffer input;
-+	union acpi_object *obj;
-+	acpi_status status;
-+	int ret = -EIO;
-+
-+	input.length =  (acpi_size) size;
-+	input.pointer = in_args;
-+	status = wmidev_evaluate_method(wdev, 0, 1, &input, &output);
-+	if (ACPI_FAILURE(status))
-+		return -EIO;
-+	obj = (union acpi_object *)output.pointer;
-+	if (obj->type == ACPI_TYPE_INTEGER)
-+		ret = obj->integer.value;
-+
-+	kfree(output.pointer);
-+	/* let userland know it may need to check is_password_set again */
-+	kobject_uevent(&wdev->dev.kobj, KOBJ_CHANGE);
-+	return map_wmi_error(ret);
-+}
-+
-+/**
-+ * set_new_password() - Sets a system admin password
-+ * @password_type: The type of password to set
-+ * @new: The new password
-+ *
-+ * Sets the password using plaintext interface
-+ **/
-+int set_new_password(const char *password_type, const char *new)
-+{
-+	char *current_password, *type_value, *old_value, *new_value;
-+	size_t security_area_size, string_area_size, buffer_size;
-+	u8 *type_len, *old_len, *new_len;
-+	char *buffer = NULL;
-+	int ret;
-+
-+	mutex_lock(&wmi_priv.mutex);
-+	if (!wmi_priv.password_attr_wdev) {
-+		ret = -ENODEV;
-+		goto out;
-+	}
-+	if (strcmp(password_type, "Admin") == 0) {
-+		current_password = wmi_priv.current_admin_password;
-+	} else if (strcmp(password_type, "System") == 0) {
-+		current_password = wmi_priv.current_system_password;
-+	} else {
-+		ret = -EINVAL;
-+		dev_err(&wmi_priv.password_attr_wdev->dev, "unknown password type %s\n",
-+			password_type);
-+		goto out;
-+	}
-+
-+	/* build/calculate buffer */
-+	security_area_size = calculate_security_buffer();
-+	string_area_size = (strlen(password_type) + strlen(current_password) + strlen(new))*2;
-+	buffer_size = security_area_size + string_area_size + sizeof(u16) * 3;
-+	buffer = kzalloc(buffer_size, GFP_KERNEL);
-+	if (!buffer) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	/* build security area */
-+	if (strlen(wmi_priv.current_admin_password) > 0)
-+		populate_security_buffer(buffer, wmi_priv.current_admin_password);
-+
-+	/* build variables to set */
-+	type_len = buffer + security_area_size;
-+	type_value = type_len + sizeof(u16);
-+	*type_len = utf8s_to_utf16s(password_type, strlen(password_type), UTF16_HOST_ENDIAN,
-+				    (wchar_t *) type_value, MAX_BUFF) * 2;
-+	if (*type_len < 0) {
-+		ret = -EINVAL;
-+		dev_err(&wmi_priv.password_attr_wdev->dev, "UTF16 conversion failed\n");
-+		goto out;
-+	}
-+
-+	old_len = type_value + *type_len;
-+	old_value = old_len + sizeof(u16);
-+	*old_len = utf8s_to_utf16s(current_password, strlen(current_password), UTF16_HOST_ENDIAN,
-+				   (wchar_t *) old_value, MAX_BUFF) * 2;
-+	if (*old_len < 0) {
-+		ret = -EINVAL;
-+		dev_err(&wmi_priv.password_attr_wdev->dev, "UTF16 conversion failed\n");
-+		goto out;
-+	}
-+
-+	new_len = old_value + *old_len;
-+	new_value = new_len + sizeof(u16);
-+	*new_len = utf8s_to_utf16s(new, strlen(new), UTF16_HOST_ENDIAN,
-+				   (wchar_t *) new_value, MAX_BUFF) * 2;
-+	if (*new_len < 0) {
-+		ret = -EINVAL;
-+		dev_err(&wmi_priv.password_attr_wdev->dev, "UTF16 conversion failed\n");
-+		goto out;
-+	}
-+
-+	ret = call_password_interface(wmi_priv.password_attr_wdev, buffer, buffer_size);
-+	/* clear current_password here and use user input from wmi_priv.current_password */
-+	if (!ret)
-+		current_password = "";
-+	/* explain to user the detailed failure reason */
-+	else if (ret == -EOPNOTSUPP)
-+		dev_err(&wmi_priv.password_attr_wdev->dev, "admin password must be configured\n");
-+	else if (ret == -EACCES)
-+		dev_err(&wmi_priv.password_attr_wdev->dev, "invalid password\n");
-+
-+out:
-+	kfree(buffer);
-+	mutex_unlock(&wmi_priv.mutex);
-+
-+	return ret;
-+}
-+
-+static int bios_attr_pass_interface_probe(struct wmi_device *wdev, const void *context)
-+{
-+	mutex_lock(&wmi_priv.mutex);
-+	wmi_priv.password_attr_wdev = wdev;
-+	mutex_unlock(&wmi_priv.mutex);
-+	return 0;
-+}
-+
-+static int bios_attr_pass_interface_remove(struct wmi_device *wdev)
-+{
-+	mutex_lock(&wmi_priv.mutex);
-+	wmi_priv.password_attr_wdev = NULL;
-+	mutex_unlock(&wmi_priv.mutex);
-+	return 0;
-+}
-+
-+static const struct wmi_device_id bios_attr_pass_interface_id_table[] = {
-+	{ .guid_string = DELL_WMI_BIOS_PASSWORD_INTERFACE_GUID },
-+	{ },
-+};
-+static struct wmi_driver bios_attr_pass_interface_driver = {
-+	.driver = {
-+		.name = DRIVER_NAME"-password"
-+	},
-+	.probe = bios_attr_pass_interface_probe,
-+	.remove = bios_attr_pass_interface_remove,
-+	.id_table = bios_attr_pass_interface_id_table,
-+};
-+
-+int init_bios_attr_pass_interface(void)
-+{
-+	return wmi_driver_register(&bios_attr_pass_interface_driver);
-+}
-+
-+void exit_bios_attr_pass_interface(void)
-+{
-+	wmi_driver_unregister(&bios_attr_pass_interface_driver);
-+}
-+
-+MODULE_DEVICE_TABLE(wmi, bios_attr_pass_interface_id_table);
-diff --git a/drivers/platform/x86/dell-wmi-sysman/string-attributes.c b/drivers/platform/x86/dell-wmi-sysman/string-attributes.c
-new file mode 100644
-index 000000000000..6b9948157b8d
---- /dev/null
-+++ b/drivers/platform/x86/dell-wmi-sysman/string-attributes.c
-@@ -0,0 +1,156 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Functions corresponding to string type attributes under BIOS String GUID for use with
-+ * dell-wmi-sysman
-+ *
-+ *  Copyright (c) 2020 Dell Inc.
-+ */
-+
-+#include "dell-wmi-sysman.h"
-+
-+enum string_properties {MIN_LEN = 6, MAX_LEN};
-+
-+get_instance_id(str);
-+
-+static ssize_t current_value_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
-+{
-+	int instance_id;
-+
-+	if (!capable(CAP_SYS_ADMIN))
-+		return -EPERM;
-+	instance_id = get_str_instance_id(kobj);
-+	if (instance_id >= 0) {
-+		union acpi_object *obj;
-+
-+		/* need to use specific instance_id and guid combination to get right data */
-+		obj = get_wmiobj_pointer(instance_id, DELL_WMI_BIOS_STRING_ATTRIBUTE_GUID);
-+		if (!obj)
-+			return -AE_ERROR;
-+		strlcpy_attr(wmi_priv.str_data[instance_id].current_value,
-+			obj->package.elements[CURRENT_VAL].string.pointer);
-+		kfree(obj);
-+		return sprintf(buf, "%s\n", wmi_priv.str_data[instance_id].current_value);
-+	}
-+	return -EIO;
-+}
-+
-+/**
-+ * validate_str_input() - Validate input of current_value against min and max lengths
-+ * @instance_id: The instance on which input is validated
-+ * @buf: Input value
-+ **/
-+static int validate_str_input(int instance_id, const char *buf)
-+{
-+	int in_len = strlen(buf);
-+
-+	if ((in_len >= wmi_priv.str_data[instance_id].min_length) &&
-+	(in_len <= wmi_priv.str_data[instance_id].max_length))
-+		return 0;
-+
-+	return -EINVAL;
-+}
-+
-+attribute_s_property_show(display_name_language_code, str);
-+static struct kobj_attribute str_displ_langcode =
-+		__ATTR_RO(display_name_language_code);
-+
-+attribute_s_property_show(display_name, str);
-+static struct kobj_attribute str_displ_name =
-+		__ATTR_RO(display_name);
-+
-+attribute_s_property_show(default_value, str);
-+static struct kobj_attribute str_default_val =
-+		__ATTR_RO(default_value);
-+
-+attribute_property_store(current_value, str);
-+static struct kobj_attribute str_current_val =
-+		__ATTR_RW(current_value);
-+
-+attribute_s_property_show(dell_modifier, str);
-+static struct kobj_attribute str_modifier =
-+		__ATTR_RO(dell_modifier);
-+
-+attribute_n_property_show(min_length, str);
-+static struct kobj_attribute str_min_length =
-+		__ATTR_RO(min_length);
-+
-+attribute_n_property_show(max_length, str);
-+static struct kobj_attribute str_max_length =
-+		__ATTR_RO(max_length);
-+
-+attribute_s_property_show(type, str);
-+static struct kobj_attribute str_type =
-+	__ATTR_RO(type);
-+
-+static struct attribute *str_attrs[] = {
-+	&str_displ_langcode.attr,
-+	&str_displ_name.attr,
-+	&str_default_val.attr,
-+	&str_current_val.attr,
-+	&str_modifier.attr,
-+	&str_min_length.attr,
-+	&str_max_length.attr,
-+	&str_type.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group str_attr_group = {
-+	.attrs = str_attrs,
-+};
-+
-+int alloc_str_data(void)
-+{
-+	int ret = 0;
-+
-+	wmi_priv.str_instances_count = get_instance_count(DELL_WMI_BIOS_STRING_ATTRIBUTE_GUID);
-+	wmi_priv.str_data = kcalloc(wmi_priv.str_instances_count,
-+					sizeof(struct str_data), GFP_KERNEL);
-+	if (!wmi_priv.str_data)
-+		ret = -ENOMEM;
-+	return ret;
-+}
-+
-+/**
-+ * populate_str_data() - Populate all properties of an instance under string attribute
-+ * @str_obj: ACPI object with integer data
-+ * @instance_id: The instance to enumerate
-+ * @attr_name_kobj: The parent kernel object
-+ **/
-+int populate_str_data(union acpi_object *str_obj, int instance_id, struct kobject *attr_name_kobj)
-+{
-+	wmi_priv.str_data[instance_id].attr_name_kobj = attr_name_kobj;
-+	strlcpy_attr(wmi_priv.str_data[instance_id].attribute_name,
-+		     str_obj[ATTR_NAME].string.pointer);
-+	strlcpy_attr(wmi_priv.str_data[instance_id].display_name_language_code,
-+		     str_obj[DISPL_NAME_LANG_CODE].string.pointer);
-+	strlcpy_attr(wmi_priv.str_data[instance_id].display_name,
-+		     str_obj[DISPLAY_NAME].string.pointer);
-+	strlcpy_attr(wmi_priv.str_data[instance_id].default_value,
-+		     str_obj[DEFAULT_VAL].string.pointer);
-+	strlcpy_attr(wmi_priv.str_data[instance_id].current_value,
-+		     str_obj[CURRENT_VAL].string.pointer);
-+	strlcpy_attr(wmi_priv.str_data[instance_id].dell_modifier,
-+		     str_obj[MODIFIER].string.pointer);
-+	wmi_priv.str_data[instance_id].min_length = (uintptr_t)str_obj[MIN_LEN].string.pointer;
-+	wmi_priv.str_data[instance_id].max_length = (uintptr_t) str_obj[MAX_LEN].string.pointer;
-+	strlcpy_attr(wmi_priv.str_data[instance_id].type, "string");
-+
-+	return sysfs_create_group(attr_name_kobj, &str_attr_group);
-+}
-+
-+/**
-+ * exit_str_attributes() - Clear all attribute data
-+ *
-+ * Clears all data allocated for this group of attributes
-+ **/
-+void exit_str_attributes(void)
-+{
-+	int instance_id;
-+
-+	for (instance_id = 0; instance_id < wmi_priv.str_instances_count; instance_id++) {
-+		if (wmi_priv.str_data[instance_id].attr_name_kobj)
-+			sysfs_remove_group(wmi_priv.str_data[instance_id].attr_name_kobj,
-+								&str_attr_group);
-+	}
-+	kfree(wmi_priv.str_data);
-+}
-diff --git a/drivers/platform/x86/dell-wmi-sysman/sysman.c b/drivers/platform/x86/dell-wmi-sysman/sysman.c
-new file mode 100644
-index 000000000000..df32abe5261e
---- /dev/null
-+++ b/drivers/platform/x86/dell-wmi-sysman/sysman.c
-@@ -0,0 +1,589 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Common methods for use with dell-wmi-sysman
-+ *
-+ *  Copyright (c) 2020 Dell Inc.
-+ */
-+
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
-+#include <linux/fs.h>
-+#include <linux/dmi.h>
-+#include <linux/module.h>
-+#include <linux/kernel.h>
-+#include <linux/wmi.h>
-+#include "dell-wmi-sysman.h"
-+
-+#define MAX_TYPES  4
-+
-+static struct class firmware_attributes_class = {
-+	.name = "firmware-attributes",
-+};
-+
-+struct wmi_sysman_priv wmi_priv = {
-+	.mutex = __MUTEX_INITIALIZER(wmi_priv.mutex),
-+};
-+
-+/* reset bios to defaults */
-+static const char * const reset_types[] = {"builtinsafe", "lastknowngood", "factory", "custom"};
-+static int reset_option = -1;
-+
-+/**
-+ * calculate_security_buffer() - determines size of security buffer for authentication scheme
-+ *
-+ * Currently only supported type is Admin password
-+ **/
-+size_t calculate_security_buffer(void)
-+{
-+	if (strlen(wmi_priv.current_admin_password) > 0) {
-+		return (sizeof(u32) * 2) +
-+			strlen(wmi_priv.current_admin_password) +
-+			strlen(wmi_priv.current_admin_password) % 2;
-+	}
-+	return sizeof(u32) * 2;
-+}
-+
-+/**
-+ * populate_security_buffer() - builds a security buffer for authentication scheme
-+ * @buffer: the buffer to populate
-+ * @authentication: the authentication content
-+ *
-+ * Currently only supported type is PLAIN TEXT
-+ **/
-+void populate_security_buffer(char *buffer, char *authentication)
-+{
-+	char *auth = buffer + sizeof(u32)*2;
-+	u32 *sectype = (u32 *) buffer;
-+	u32 *seclen = sectype + 1;
-+	/* plain text */
-+	*sectype = 1;
-+	*seclen = strlen(authentication);
-+	memcpy(auth, authentication, *seclen);
-+}
-+
-+/**
-+ * map_wmi_error() - map errors from WMI methods to kernel error codes
-+ * @error_code: integer error code returned from Dell's firmware
-+ **/
-+int map_wmi_error(int error_code)
-+{
-+	switch (error_code) {
-+	case 0:
-+		/* success */
-+		return 0;
-+	case 1:
-+		/* failed */
-+		return -EIO;
-+	case 2:
-+		/* invalid parameter */
-+		return -EINVAL;
-+	case 3:
-+		/* access denied */
-+		return -EACCES;
-+	case 4:
-+		/* not supported */
-+		return -EOPNOTSUPP;
-+	case 5:
-+		/* memory error */
-+		return -ENOMEM;
-+	case 6:
-+		/* protocol error */
-+		return -EPROTO;
-+	}
-+	/* unspecified error */
-+	return -EIO;
-+}
-+
-+/**
-+ * reset_bios_show() - sysfs implementaton for read reset_bios
-+ * @kobj: Kernel object for this attribute
-+ * @attr: Kernel object attribute
-+ * @buf: The buffer to display to userspace
-+ **/
-+static ssize_t reset_bios_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
-+{
-+	char *start = buf;
-+	int i;
-+
-+	for (i = 0; i < MAX_TYPES; i++) {
-+		if (i == reset_option)
-+			buf += sprintf(buf, "[%s] ", reset_types[i]);
-+		else
-+			buf += sprintf(buf, "%s ", reset_types[i]);
-+	}
-+	buf += sprintf(buf, "\n");
-+	return buf-start;
-+}
-+
-+/**
-+ * reset_bios_store() - sysfs implementaton for write reset_bios
-+ * @kobj: Kernel object for this attribute
-+ * @attr: Kernel object attribute
-+ * @buf: The buffer from userspace
-+ * @count: the size of the buffer from userspace
-+ **/
-+static ssize_t reset_bios_store(struct kobject *kobj,
-+				struct kobj_attribute *attr, const char *buf, size_t count)
-+{
-+	int len, ret, i;
-+	int type = -1;
-+	char *p;
-+
-+	p = memchr(buf, '\n', count);
-+	if (p != NULL)
-+		*p = '\0';
-+	len = p ? p - buf : count;
-+
-+	for (i = 0; i < MAX_TYPES; i++) {
-+		if (len == strlen(reset_types[i])
-+		    && !strncmp(buf, reset_types[i], len)) {
-+			type = i;
-+			break;
-+		}
-+	}
-+
-+	if (type < 0 || type >= MAX_TYPES) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	ret = set_bios_defaults(type);
-+	pr_debug("reset all attributes request type %d: %d\n", type, ret);
-+	if (ret) {
-+		ret = -EINVAL;
-+	} else {
-+		reset_option = type;
-+		ret = count;
-+	}
-+
-+out:
-+	return ret;
-+}
-+
-+/**
-+ * pending_reboot_show() - sysfs implementaton for read pending_reboot
-+ * @kobj: Kernel object for this attribute
-+ * @attr: Kernel object attribute
-+ * @buf: The buffer to display to userspace
-+ *
-+ * Stores default value as 0
-+ * When current_value is changed this attribute is set to 1 to notify reboot may be required
-+ **/
-+static ssize_t pending_reboot_show(struct kobject *kobj, struct kobj_attribute *attr,
-+				   char *buf)
-+{
-+	return sprintf(buf, "%d\n", wmi_priv.pending_changes);
-+}
-+
-+static struct kobj_attribute reset_bios = __ATTR_RW(reset_bios);
-+static struct kobj_attribute pending_reboot = __ATTR_RO(pending_reboot);
-+
-+
-+/**
-+ * create_reset_bios() - Creates reset_bios and pending_reboot attributes
-+ **/
-+static int create_reset_bios(void)
-+{
-+	int ret = sysfs_create_file(&wmi_priv.main_dir_kset->kobj, &reset_bios.attr);
-+
-+	if (ret) {
-+		pr_debug("could not create reset_bios file\n");
-+		return ret;
-+	}
-+
-+	ret = sysfs_create_file(&wmi_priv.main_dir_kset->kobj, &pending_reboot.attr);
-+	if (ret) {
-+		pr_debug("could not create changing_pending_reboot file\n");
-+		sysfs_remove_file(&wmi_priv.main_dir_kset->kobj, &reset_bios.attr);
-+	}
-+	return ret;
-+}
-+
-+static void release_reset_bios_data(void)
-+{
-+	sysfs_remove_file(&wmi_priv.main_dir_kset->kobj, &reset_bios.attr);
-+	sysfs_remove_file(&wmi_priv.main_dir_kset->kobj, &pending_reboot.attr);
-+}
-+
-+static ssize_t wmi_sysman_attr_show(struct kobject *kobj, struct attribute *attr,
-+				    char *buf)
-+{
-+	struct kobj_attribute *kattr;
-+	ssize_t ret = -EIO;
-+
-+	kattr = container_of(attr, struct kobj_attribute, attr);
-+	if (kattr->show)
-+		ret = kattr->show(kobj, kattr, buf);
-+	return ret;
-+}
-+
-+static ssize_t wmi_sysman_attr_store(struct kobject *kobj, struct attribute *attr,
-+				     const char *buf, size_t count)
-+{
-+	struct kobj_attribute *kattr;
-+	ssize_t ret = -EIO;
-+
-+	kattr = container_of(attr, struct kobj_attribute, attr);
-+	if (kattr->store)
-+		ret = kattr->store(kobj, kattr, buf, count);
-+	return ret;
-+}
-+
-+const struct sysfs_ops wmi_sysman_kobj_sysfs_ops = {
-+	.show	= wmi_sysman_attr_show,
-+	.store	= wmi_sysman_attr_store,
-+};
-+
-+static void attr_name_release(struct kobject *kobj)
-+{
-+	kfree(kobj);
-+}
-+
-+static struct kobj_type attr_name_ktype = {
-+	.release	= attr_name_release,
-+	.sysfs_ops	= &wmi_sysman_kobj_sysfs_ops,
-+};
-+
-+/**
-+ * strlcpy_attr - Copy a length-limited, NULL-terminated string with bound checks
-+ * @dest: Where to copy the string to
-+ * @src: Where to copy the string from
-+ **/
-+void strlcpy_attr(char *dest, char *src)
-+{
-+	size_t len = strlen(src) + 1;
-+
-+	if (len > 1 && len < MAX_BUFF)
-+		strlcpy(dest, src, len);
-+
-+	/*len can be zero because any property not-applicable to attribute can
-+	 * be empty so check only for too long buffers and log error
-+	 */
-+	if (len > MAX_BUFF)
-+		pr_err("Source string returned from BIOS is out of bound!\n");
-+}
-+
-+/**
-+ * get_wmiobj_pointer() - Get Content of WMI block for particular instance
-+ * @instance_id: WMI instance ID
-+ * @guid_string: WMI GUID (in str form)
-+ *
-+ * Fetches the content for WMI block (instance_id) under GUID (guid_string)
-+ * Caller must kfree the return
-+ **/
-+union acpi_object *get_wmiobj_pointer(int instance_id, const char *guid_string)
-+{
-+	struct acpi_buffer out = { ACPI_ALLOCATE_BUFFER, NULL };
-+	acpi_status status;
-+
-+	status = wmi_query_block(guid_string, instance_id, &out);
-+
-+	return ACPI_SUCCESS(status) ? (union acpi_object *)out.pointer : NULL;
-+}
-+
-+/**
-+ * get_instance_count() - Compute total number of instances under guid_string
-+ * @guid_string: WMI GUID (in string form)
-+ **/
-+int get_instance_count(const char *guid_string)
-+{
-+	union acpi_object *wmi_obj = NULL;
-+	int i = 0;
-+
-+	do {
-+		kfree(wmi_obj);
-+		wmi_obj = get_wmiobj_pointer(i, guid_string);
-+		i++;
-+	} while (wmi_obj);
-+
-+	return (i-1);
-+}
-+
-+/**
-+ * alloc_attributes_data() - Allocate attributes data for a particular type
-+ * @attr_type: Attribute type to allocate
-+ **/
-+static int alloc_attributes_data(int attr_type)
-+{
-+	int retval = 0;
-+
-+	switch (attr_type) {
-+	case ENUM:
-+		retval = alloc_enum_data();
-+		break;
-+	case INT:
-+		retval = alloc_int_data();
-+		break;
-+	case STR:
-+		retval = alloc_str_data();
-+		break;
-+	case PO:
-+		retval = alloc_po_data();
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return retval;
-+}
-+
-+/**
-+ * destroy_attribute_objs() - Free a kset of kobjects
-+ * @kset: The kset to destroy
-+ *
-+ * Fress kobjects created for each attribute_name under attribute type kset
-+ **/
-+static void destroy_attribute_objs(struct kset *kset)
-+{
-+	struct kobject *pos, *next;
-+
-+	list_for_each_entry_safe(pos, next, &kset->list, entry) {
-+		kobject_put(pos);
-+	}
-+}
-+
-+/**
-+ * release_attributes_data() - Clean-up all sysfs directories and files created
-+ **/
-+static void release_attributes_data(void)
-+{
-+	release_reset_bios_data();
-+
-+	mutex_lock(&wmi_priv.mutex);
-+	exit_enum_attributes();
-+	exit_int_attributes();
-+	exit_str_attributes();
-+	exit_po_attributes();
-+	destroy_attribute_objs(wmi_priv.main_dir_kset);
-+	destroy_attribute_objs(wmi_priv.authentication_dir_kset);
-+	kset_unregister(wmi_priv.main_dir_kset);
-+	kset_unregister(wmi_priv.authentication_dir_kset);
-+	mutex_unlock(&wmi_priv.mutex);
-+
-+}
-+
-+/**
-+ * init_bios_attributes() - Initialize all attributes for a type
-+ * @attr_type: The attribute type to initialize
-+ * @guid: The WMI GUID associated with this type to initialize
-+ *
-+ * Initialiaze all 4 types of attributes enumeration, integer, string and password object.
-+ * Populates each attrbute typ's respective properties under sysfs files
-+ **/
-+static int init_bios_attributes(int attr_type, const char *guid)
-+{
-+	struct kobject *attr_name_kobj; //individual attribute names
-+	union acpi_object *obj = NULL;
-+	union acpi_object *elements;
-+	struct kset *tmp_set;
-+
-+	/* instance_id needs to be reset for each type GUID
-+	 * also, instance IDs are unique within GUID but not across
-+	 */
-+	int instance_id = 0;
-+	int retval = 0;
-+
-+	retval = alloc_attributes_data(attr_type);
-+	if (retval)
-+		return retval;
-+	/* need to use specific instance_id and guid combination to get right data */
-+	obj = get_wmiobj_pointer(instance_id, guid);
-+	if (!obj)
-+		return -ENODEV;
-+	elements = obj->package.elements;
-+
-+	mutex_lock(&wmi_priv.mutex);
-+	while (elements) {
-+		/* sanity checking */
-+		if (strlen(elements[ATTR_NAME].string.pointer) == 0) {
-+			pr_debug("empty attribute found\n");
-+			goto nextobj;
-+		}
-+		if (attr_type == PO)
-+			tmp_set = wmi_priv.authentication_dir_kset;
-+		else
-+			tmp_set = wmi_priv.main_dir_kset;
-+
-+		if (kset_find_obj(tmp_set, elements[ATTR_NAME].string.pointer)) {
-+			pr_debug("duplicate attribute name found - %s\n",
-+				elements[ATTR_NAME].string.pointer);
-+			goto nextobj;
-+		}
-+
-+		/* build attribute */
-+		attr_name_kobj = kzalloc(sizeof(*attr_name_kobj), GFP_KERNEL);
-+		if (!attr_name_kobj)
-+			goto err_attr_init;
-+
-+		attr_name_kobj->kset = tmp_set;
-+
-+		retval = kobject_init_and_add(attr_name_kobj, &attr_name_ktype, NULL, "%s",
-+						elements[ATTR_NAME].string.pointer);
-+		if (retval) {
-+			kobject_put(attr_name_kobj);
-+			goto err_attr_init;
-+		}
-+
-+		/* enumerate all of this attribute */
-+		switch (attr_type) {
-+		case ENUM:
-+			retval = populate_enum_data(elements, instance_id, attr_name_kobj);
-+			break;
-+		case INT:
-+			retval = populate_int_data(elements, instance_id, attr_name_kobj);
-+			break;
-+		case STR:
-+			retval = populate_str_data(elements, instance_id, attr_name_kobj);
-+			break;
-+		case PO:
-+			retval = populate_po_data(elements, instance_id, attr_name_kobj);
-+			break;
-+		default:
-+			break;
-+		}
-+
-+		if (retval) {
-+			pr_debug("failed to populate %s\n",
-+				elements[ATTR_NAME].string.pointer);
-+			goto err_attr_init;
-+		}
-+
-+nextobj:
-+		kfree(obj);
-+		instance_id++;
-+		obj = get_wmiobj_pointer(instance_id, guid);
-+		elements = obj ? obj->package.elements : NULL;
-+	}
-+
-+	goto out;
-+
-+err_attr_init:
-+	release_attributes_data();
-+	kfree(obj);
-+out:
-+	mutex_unlock(&wmi_priv.mutex);
-+	return retval;
-+}
-+
-+static int __init sysman_init(void)
-+{
-+	int ret = 0;
-+	struct device *class_dev;
-+
-+	if (!dmi_find_device(DMI_DEV_TYPE_OEM_STRING, "Dell System", NULL) &&
-+	    !dmi_find_device(DMI_DEV_TYPE_OEM_STRING, "www.dell.com", NULL)) {
-+		pr_err("Unable to run on non-Dell system\n");
-+		return -ENODEV;
-+	}
-+
-+	ret = init_bios_attr_set_interface();
-+	if (ret || !wmi_priv.bios_attr_wdev) {
-+		pr_debug("failed to initialize set interface\n");
-+		goto fail_set_interface;
-+	}
-+
-+	ret = init_bios_attr_pass_interface();
-+	if (ret || !wmi_priv.password_attr_wdev) {
-+		pr_debug("failed to initialize pass interface\n");
-+		goto fail_pass_interface;
-+	}
-+
-+	ret = class_register(&firmware_attributes_class);
-+	if (ret)
-+		goto fail_class;
-+
-+	class_dev = device_create(&firmware_attributes_class, NULL, MKDEV(0, 0),
-+				  NULL, "%s", DRIVER_NAME);
-+	if (IS_ERR(class_dev)) {
-+		ret = PTR_ERR(class_dev);
-+		goto fail_classdev;
-+	}
-+
-+	wmi_priv.main_dir_kset = kset_create_and_add("attributes", NULL,
-+						     &class_dev->kobj);
-+	if (!wmi_priv.main_dir_kset) {
-+		ret = -ENOMEM;
-+		goto fail_main_kset;
-+	}
-+
-+	wmi_priv.authentication_dir_kset = kset_create_and_add("authentication", NULL,
-+								&class_dev->kobj);
-+	if (!wmi_priv.authentication_dir_kset) {
-+		ret = -ENOMEM;
-+		goto fail_authentication_kset;
-+	}
-+
-+	ret = create_reset_bios();
-+	if (ret) {
-+		pr_debug("could not create reset BIOS attribute\n");
-+		goto fail_reset_bios;
-+	}
-+
-+	ret = init_bios_attributes(ENUM, DELL_WMI_BIOS_ENUMERATION_ATTRIBUTE_GUID);
-+	if (ret) {
-+		pr_debug("failed to populate enumeration type attributes\n");
-+		goto fail_create_group;
-+	}
-+
-+	ret = init_bios_attributes(INT, DELL_WMI_BIOS_INTEGER_ATTRIBUTE_GUID);
-+	if (ret) {
-+		pr_debug("failed to populate integer type attributes\n");
-+		goto fail_create_group;
-+	}
-+
-+	ret = init_bios_attributes(STR, DELL_WMI_BIOS_STRING_ATTRIBUTE_GUID);
-+	if (ret) {
-+		pr_debug("failed to populate string type attributes\n");
-+		goto fail_create_group;
-+	}
-+
-+	ret = init_bios_attributes(PO, DELL_WMI_BIOS_PASSOBJ_ATTRIBUTE_GUID);
-+	if (ret) {
-+		pr_debug("failed to populate pass object type attributes\n");
-+		goto fail_create_group;
-+	}
-+
-+	return 0;
-+
-+fail_create_group:
-+	release_attributes_data();
-+
-+fail_reset_bios:
-+	kset_unregister(wmi_priv.authentication_dir_kset);
-+
-+fail_authentication_kset:
-+	kset_unregister(wmi_priv.main_dir_kset);
-+
-+fail_main_kset:
-+	device_destroy(&firmware_attributes_class, MKDEV(0, 0));
-+
-+fail_classdev:
-+	class_unregister(&firmware_attributes_class);
-+
-+fail_class:
-+	exit_bios_attr_pass_interface();
-+
-+fail_pass_interface:
-+	exit_bios_attr_set_interface();
-+
-+fail_set_interface:
-+	return ret;
-+}
-+
-+static void __exit sysman_exit(void)
-+{
-+	release_attributes_data();
-+	exit_bios_attr_set_interface();
-+	exit_bios_attr_pass_interface();
-+	device_destroy(&firmware_attributes_class, MKDEV(0, 0));
-+	class_unregister(&firmware_attributes_class);
-+}
-+
-+module_init(sysman_init);
-+module_exit(sysman_exit);
-+
-+MODULE_AUTHOR("Mario Limonciello <mario.limonciello@dell.com>");
-+MODULE_AUTHOR("Prasanth Ksr <prasanth.ksr@dell.com>");
-+MODULE_AUTHOR("Divya Bharathi <divya.bharathi@dell.com>");
-+MODULE_DESCRIPTION("Dell platform setting control interface");
-+MODULE_LICENSE("GPL");
--- 
-2.25.1
+You can see which trees have been included by looking in the Next/Trees
+file in the source.  There are also quilt-import.log and merge.log
+files in the Next directory.  Between each merge, the tree was built
+with a ppc64_defconfig for powerpc, an allmodconfig for x86_64, a
+multi_v7_defconfig for arm and a native build of tools/perf. After
+the final fixups (if any), I do an x86_64 modules_install followed by
+builds for x86_64 allnoconfig, powerpc allnoconfig (32 and 64 bit),
+ppc44x_defconfig, allyesconfig and pseries_le_defconfig and i386, sparc
+and sparc64 defconfig and htmldocs. And finally, a simple boot test
+of the powerpc pseries_le_defconfig kernel in qemu (with and without
+kvm enabled).
 
+Below is a summary of the state of the merge.
+
+I am currently merging 328 trees (counting Linus' and 86 trees of bug
+fix patches pending for the current merge release).
+
+Stats about the size of the tree over time can be seen at
+http://neuling.org/linux-next-size.html .
+
+Status of my local build tests will be at
+http://kisskb.ellerman.id.au/linux-next .  If maintainers want to give
+advice about cross compilers/configs that work, we are always open to add
+more builds.
+
+Thanks to Randy Dunlap for doing many randconfig builds.  And to Paul
+Gortmaker for triage and bug fixes.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+$ git checkout master
+$ git reset --hard stable
+Merging origin/master (805c6d3c1921 Merge branch 'fixes' of git://git.kerne=
+l.org/pub/scm/linux/kernel/git/viro/vfs)
+Merging fixes/fixes (9123e3a74ec7 Linux 5.9-rc1)
+Merging kbuild-current/fixes (a46afd114147 kconfig: qconf: revive help mess=
+age in the info view)
+Merging arc-current/for-curr (f4d51dffc6c0 Linux 5.9-rc4)
+Merging arm-current/fixes (9123e3a74ec7 Linux 5.9-rc1)
+Merging arm64-fixes/for-next/fixes (75df529bec91 arm64: paravirt: Initializ=
+e steal time when cpu is online)
+Merging arm-soc-fixes/arm/fixes (a4da411e4189 Merge tag 'arm-soc/for-5.9/de=
+vicetree-fixes' of https://github.com/Broadcom/stblinux into arm/fixes)
+Merging uniphier-fixes/fixes (48778464bb7d Linux 5.8-rc2)
+Merging drivers-memory-fixes/fixes (7ff3a2a626f7 memory: jz4780_nemc: Fix a=
+n error pointer vs NULL check in probe())
+Merging m68k-current/for-linus (382f429bb559 m68k: defconfig: Update defcon=
+figs for v5.8-rc3)
+Merging powerpc-fixes/fixes (0460534b532e powerpc/papr_scm: Limit the reada=
+bility of 'perf_stats' sysfs attribute)
+Merging s390-fixes/fixes (ba4f184e126b Linux 5.9-rc6)
+Merging sparc/master (0a95a6d1a4cd sparc: use for_each_child_of_node() macr=
+o)
+Merging fscrypt-current/for-stable (2b4eae95c736 fscrypt: don't evict dirty=
+ inodes after removing key)
+Merging net/master (b334ec66d455 Merge branch 'Fix-broken-tc-flower-rules-f=
+or-mscc_ocelot-switches')
+Merging bpf/master (1245008122d7 libbpf: Fix native endian assumption when =
+parsing BTF)
+Merging ipsec/master (8366685b2883 xfrm: clone whole liftime_cur structure =
+in xfrm_do_migrate)
+Merging netfilter/master (d30a7d54e848 selftests: netfilter: remove unused =
+cnt and simplify command testing)
+Merging ipvs/master (7c7ab580db49 net: Convert to use the fallthrough macro)
+Merging wireless-drivers/master (1264c1e0cfe5 Revert "wlcore: Adding suppop=
+rt for IGTK key in wlcore driver")
+Merging mac80211/master (b334ec66d455 Merge branch 'Fix-broken-tc-flower-ru=
+les-for-mscc_ocelot-switches')
+Merging rdma-fixes/for-rc (4aa1615268a8 RDMA/core: Fix ordering of CQ pool =
+destruction)
+Merging sound-current/for-linus (c413c3102703 Revert "ALSA: usb-audio: Disa=
+ble Lenovo P620 Rear line-in volume control")
+Merging sound-asoc-fixes/for-linus (995b70eecca2 Merge remote-tracking bran=
+ch 'asoc/for-5.9' into asoc-linus)
+Merging regmap-fixes/for-linus (767cf9fcfeae Merge remote-tracking branch '=
+regmap/for-5.9' into regmap-linus)
+Merging regulator-fixes/for-linus (ba4f184e126b Linux 5.9-rc6)
+Merging spi-fixes/for-linus (2331a94bb012 Merge remote-tracking branch 'spi=
+/for-5.9' into spi-linus)
+Merging pci-current/for-linus (e338eecf3fe7 PCI: rockchip: Fix bus checks i=
+n rockchip_pcie_valid_device())
+Merging driver-core.current/driver-core-linus (856deb866d16 Linux 5.9-rc5)
+Merging tty.current/tty-linus (ba4f184e126b Linux 5.9-rc6)
+Merging usb.current/usb-linus (2b405533c256 USB: gadget: f_ncm: Fix NDP16 d=
+atagram validation)
+Merging usb-gadget-fixes/fixes (51609fba0cca usb: dwc3: simple: add support=
+ for Hikey 970)
+Merging usb-serial-fixes/usb-linus (856deb866d16 Linux 5.9-rc5)
+Merging usb-chipidea-fixes/ci-for-usb-stable (2d79b3360dcc usb: chipidea: c=
+ore: add wakeup support for extcon)
+Merging phy/fixes (850280156f64 phy: ti: am654: Fix a leak in serdes_am654_=
+probe())
+Merging staging.current/staging-linus (52a035235ed5 Merge tag 'iio-fixes-fo=
+r-5.9b-take2' of https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio =
+into staging-linus)
+Merging char-misc.current/char-misc-linus (856deb866d16 Linux 5.9-rc5)
+Merging soundwire-fixes/fixes (3fbbf2148a40 soundwire: fix double free of d=
+angling pointer)
+Merging thunderbolt-fixes/fixes (ba4f184e126b Linux 5.9-rc6)
+Merging input-current/for-linus (6c77545af100 Input: trackpoint - add new t=
+rackpoint variant IDs)
+Merging crypto-current/master (1b0df11fde0f padata: fix possible padata_wor=
+ks_lock deadlock)
+Merging ide/master (6800cd8cbc6e ide-acpi: use %*ph to print small buffer)
+Merging vfio-fixes/for-linus (aae7a75a821a vfio/type1: Add proper error unw=
+ind for vfio_iommu_replay())
+Merging kselftest-fixes/fixes (c8bd596f9388 selftests/harness: Flush stdout=
+ before forking)
+Merging modules-fixes/modules-linus (57baec7b1b04 scripts/nsdeps: make sure=
+ to pass all module source files to spatch)
+Merging dmaengine-fixes/fixes (ce65d55f92a6 dmaengine: dmatest: Prevent to =
+run on misconfigured channel)
+Merging backlight-fixes/for-backlight-fixes (219d54332a09 Linux 5.4)
+Merging mtd-fixes/mtd/fixes (1afc0c89f6a1 Revert "mtd: spi-nor: Add capabil=
+ity to disable flash quad mode")
+Merging mfd-fixes/for-mfd-fixes (22380b65dc70 mfd: mfd-core: Ensure disable=
+d devices are ignored without error)
+Merging v4l-dvb-fixes/fixes (d0254f82d702 media: dt-bindings: media: imx274=
+: Convert to json-schema)
+Merging reset-fixes/reset/fixes (b460e0a9e240 reset: intel: add unspecified=
+ HAS_IOMEM dependency)
+Merging mips-fixes/mips-fixes (01ce6d4d2c81 MIPS: Loongson-3: Fix fp regist=
+er access if MSA enabled)
+Merging at91-fixes/at91-fixes (54ecb8f7028c Linux 5.4-rc1)
+Merging omap-fixes/fixes (6542e2b613c2 ARM: dts: omap5: Fix DSI base addres=
+s and clocks)
+Merging kvm-fixes/master (32251b07d532 Merge tag 'kvm-s390-master-5.9-1' of=
+ git://git.kernel.org/pub/scm/linux/kernel/git/kvms390/linux into kvm-maste=
+r)
+Merging kvms390-fixes/master (f20d4e924b44 docs: kvm: add documentation for=
+ KVM_CAP_S390_DIAG318)
+Merging hwmon-fixes/hwmon (d50e0d750004 hwmon: (sparx5) Fix initial reading=
+ of temperature)
+Merging nvdimm-fixes/libnvdimm-fixes (88b67edd7247 dax: Fix compilation for=
+ CONFIG_DAX && !CONFIG_FS_DAX)
+Merging btrfs-fixes/next-fixes (8dc572e81eec Merge branch 'misc-5.9' into n=
+ext-fixes)
+Merging vfs-fixes/fixes (933a3752babc fuse: fix the ->direct_IO() treatment=
+ of iov_iter)
+Merging dma-mapping-fixes/for-linus (892fc9f6835e dma-pool: Fix an uninitia=
+lized variable bug in atomic_pool_expand())
+Merging i3c-fixes/master (6fbc7275c7a9 Linux 5.2-rc7)
+Merging drivers-x86-fixes/fixes (9123e3a74ec7 Linux 5.9-rc1)
+Merging samsung-krzk-fixes/fixes (9123e3a74ec7 Linux 5.9-rc1)
+Merging pinctrl-samsung-fixes/pinctrl-fixes (9123e3a74ec7 Linux 5.9-rc1)
+Merging devicetree-fixes/dt/linus (e5467b672bd9 dt-bindings: leds: cznic,tu=
+rris-omnia-leds: fix error in binding)
+Merging scsi-fixes/fixes (6c5dee18756b scsi: sd: sd_zbc: Fix ZBC disk initi=
+alization)
+Merging drm-fixes/drm-fixes (1f08fde70075 Merge tag 'mediatek-drm-fixes-5.9=
+' of https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux int=
+o drm-fixes)
+Merging amdgpu-fixes/drm-fixes (2c409ba81be2 drm/radeon: fix si_enable_smc_=
+cac() failed issue)
+Merging drm-intel-fixes/for-linux-next-fixes (e89c8323b3f1 Merge tag 'gvt-f=
+ixes-2020-09-17' of https://github.com/intel/gvt-linux into drm-intel-fixes)
+Merging mmc-fixes/fixes (14801c624066 mmc: mmc_spi: Fix mmc_spi_dma_alloc()=
+ return type for !HAS_DMA)
+Merging rtc-fixes/rtc-fixes (9123e3a74ec7 Linux 5.9-rc1)
+Merging gnss-fixes/gnss-linus (48778464bb7d Linux 5.8-rc2)
+Merging hyperv-fixes/hyperv-fixes (911e1987efc8 Drivers: hv: vmbus: Add tim=
+eout to vmbus_wait_for_unload)
+Merging soc-fsl-fixes/fix (fe8fe7723a3a soc: fsl: dpio: register dpio irq h=
+andlers after dpio create)
+Merging risc-v-fixes/fixes (d5be89a8d118 RISC-V: Resurrect the MMIO timer i=
+mplementation for M-mode systems)
+Merging pidfd-fixes/fixes (bda4c60d02e9 sys: Convert to the new fallthrough=
+ notation)
+Merging fpga-fixes/fixes (8614afd689df fpga: dfl: fix bug in port reset han=
+dshake)
+Merging spdx/spdx-linus (5ec4f0ce4221 net/mlx5: IPsec: make spdxcheck.py ha=
+ppy)
+Merging gpio-intel-fixes/fixes (9123e3a74ec7 Linux 5.9-rc1)
+Merging pinctrl-intel-fixes/fixes (3488737093e7 pinctrl: cherryview: Preser=
+ve CHV_PADCTRL1_INVRXTX_TXDATA flag on GPIOs)
+Merging erofs-fixes/fixes (9ebcfadb0610 Linux 5.8-rc3)
+Merging integrity-fixes/fixes (843385694721 evm: Fix a small race in init_d=
+esc())
+Merging kunit-fixes/kunit-fixes (21a6d1780d5b kunit: tool: allow generating=
+ test results in JSON)
+Merging ubifs-fixes/fixes (121b8fcbf988 ubifs: setflags: Don't show error m=
+essage when vfs_ioc_setflags_prepare() fails)
+Merging memblock-fixes/fixes (5f7b81c18366 ia64: fix min_low_pfn/max_low_pf=
+n build errors)
+Merging drm-misc-fixes/for-linux-next-fixes (19a508bd1ad8 dmabuf: fix NULL =
+pointer dereference in dma_buf_release())
+Merging kspp-gustavo/for-next/kspp (cb0938372de0 Merge branch 'for-next/cla=
+ng' into for-next/kspp)
+Merging kbuild/for-next (26bde0ed700d Merge branch 'kbuild' (early part) in=
+to for-next)
+Merging compiler-attributes/compiler-attributes (e5fc436f06ee sparse: use s=
+tatic inline for __chk_{user,io}_ptr())
+Merging dma-mapping/for-next (b9bb694b9f62 iommu/io-pgtable-arm: Clean up f=
+aulty sanity check)
+Merging asm-generic/master (060dc911501f nds32: fix build failure caused by=
+ page table folding updates)
+Merging arc/for-next (def9d2780727 Linux 5.5-rc7)
+Merging arm/for-next (adc5f7029376 ARM: add malloc size to decompressor kex=
+ec size structure)
+Merging arm64/for-next/core (1a59d9ff29a0 Merge branch 'for-next/mte' into =
+for-next/core)
+Merging arm-perf/for-next/perf (688494a407d1 drivers/perf: thunderx2_pmu: F=
+ix memory resource error handling)
+Merging arm-soc/for-next (97b66548a7cc ARM: Document merges)
+Merging amlogic/for-next (c4d7625bb116 Merge branch 'v5.10/drivers' into tm=
+p/aml-rebuild)
+Merging aspeed/for-next (315d4a38c4b6 ARM: config: aspeed_g5: Enable IBM OP=
+ Panel driver)
+Merging at91/at91-next (d1f170f8447d Merge branches 'at91-soc' and 'at91-dt=
+' into at91-next)
+Merging drivers-memory/for-next (94ca85733699 memory: emif: Convert to DEFI=
+NE_SHOW_ATTRIBUTE)
+Merging imx-mxs/for-next (bc421f7da477 Merge branch 'imx/defconfig' into fo=
+r-next)
+Merging keystone/next (703dff8cb900 Merge branch 'for_5.10/drivers-soc' int=
+o next)
+Merging mediatek/for-next (b05dfbba9c46 Merge branch 'v5.9-next/soc' into f=
+or-next)
+Merging mvebu/for-next (29bd9d8c2ac1 Merge branch 'mvebu/dt64' into mvebu/f=
+or-next)
+Merging omap/for-next (34766a7d60e9 Merge branch 'omap-for-v5.10/defconfig'=
+ into for-next)
+Merging qcom/for-next (2530038dcf06 Merge branches 'arm64-for-5.10', 'arm64=
+-defconfig-for-5.10' and 'drivers-for-5.10' into for-next)
+CONFLICT (content): Merge conflict in arch/arm64/configs/defconfig
+Merging raspberrypi/for-next (4564363351e2 ARM: dts: bcm2711: Enable the di=
+splay pipeline)
+Merging realtek/for-next (486f29df6941 Merge branch 'v5.8/dt' into next)
+Merging renesas/next (e2c59836e646 Merge branches 'renesas-arm-dt-for-v5.10=
+' and 'renesas-drivers-for-v5.10' into renesas-next)
+Merging reset/reset/next (2983e2385ff6 reset: imx7: add the cm4 reset for i=
+.MX8MQ)
+CONFLICT (content): Merge conflict in drivers/reset/reset-imx7.c
+Merging rockchip/for-next (06d012031f1e Merge branch 'v5.10-armsoc/dts64' i=
+nto for-next)
+Merging samsung-krzk/for-next (9cce89dffafa Merge branch 'next/dt' into for=
+-next)
+Merging scmi/for-linux-next (0d5e4b9b1bac Merge tag 'scmi-updates-5.10' of =
+git://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux into for-l=
+inux-next)
+Merging sunxi/sunxi/for-next (b9ee7997d4cc Merge branches 'sunxi/clk-for-5.=
+10', 'sunxi/dt-for-5.10', 'sunxi/fixes-for-5.9' and 'sunxi/drivers-for-5.10=
+' into sunxi/for-next)
+Merging tegra/for-next (9ea55312ba10 Merge branch for-5.10/arm64/defconfig =
+into for-next)
+Merging ti-k3/ti-k3-next (1e3d655fe7b4 Merge branch 'ti-k3-config-next' int=
+o ti-k3-next)
+Merging ti-k3-new/ti-k3-next (284fb3c666f0 Merge branch 'ti-k3-dts-stage' i=
+nto ti-k3-next)
+Merging uniphier/for-next (4f8fb65af529 Merge branch 'dt64' into for-next)
+Merging clk/clk-next (2d0cc1cd35f2 Merge branch 'clk-fixes' into clk-next)
+Merging clk-samsung/for-next (ff8e0ff9b996 clk: samsung: Use cached clk_hws=
+ instead of __clk_lookup() calls)
+Merging csky/linux-next (bdcd93ef9afb csky: Add context tracking support)
+Merging h8300/h8300-next (8808515be0ed h8300: Replace <linux/clk-provider.h=
+> by <linux/of_clk.h>)
+Merging ia64/next (c331649e6371 ia64: Use libata instead of the legacy ide =
+driver in defconfigs)
+Merging m68k/for-next (352e04291115 m68k: Replace HTTP links with HTTPS one=
+s)
+Merging m68knommu/for-next (497a534b9e90 m68knommu: include SDHC support on=
+ly when hardware has it)
+CONFLICT (content): Merge conflict in arch/m68k/Kconfig
+Merging microblaze/next (4a17e8513376 microblaze: fix kbuild redundant file=
+ warning)
+Merging mips/mips-next (262623961478 MIPS: kexec: Add crashkernel=3DYM hand=
+ling)
+Merging nds32/next (54bde873682b nds32: Fix bogus reference to <asm/procinf=
+o.h>)
+Merging nios2/for-next (6b57fa4d374b nios2: signal: Mark expected switch fa=
+ll-through)
+Merging openrisc/for-next (55b2662ec665 openrisc: uaccess: Add user address=
+ space check to access_ok)
+Merging parisc-hd/for-next (c71fcd3c4fcf parisc: disable CONFIG_IDE in defc=
+onfigs)
+Merging powerpc/next (b5c8a2934eec Merge coregroup support into next)
+Merging fsl/next (a76bea0287ce powerpc/kmcent2: add ranges to the pci bridg=
+es)
+Merging soc-fsl/next (d97b957e32b1 soc: fsl: qe: Remove unnessesary check i=
+n ucc_set_tdm_rxtx_clk)
+Merging risc-v/for-next (54701a0d12e2 RISC-V: Fix duplicate included thread=
+_info.h)
+Merging s390/for-next (1d255ab43369 Merge branch 'features' into for-next)
+Merging sh/for-next (b0cfc315ff38 sh: fix syscall tracing)
+Merging sparc-next/master (dd0d718152e4 Merge tag 'spi-fix-v5.8-rc2' of git=
+://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi)
+Merging uml/linux-next (f6e8c474390b um: virtio: Replace zero-length array =
+with flexible-array)
+Merging xtensa/xtensa-for-next (4ca4c562efb6 xtensa: uaccess: Add missing _=
+_user to strncpy_from_user() prototype)
+Merging fscrypt/master (0c6a113b2446 fscrypt: use sha256() instead of open =
+coding)
+Merging afs/afs-next (8409f67b6437 afs: Adjust the fileserver rotation algo=
+rithm to reprobe/retry more quickly)
+Merging btrfs/for-next (15d7ad0d0d54 Merge branch 'for-next-next-v5.9-20200=
+918' into for-next-20200918)
+CONFLICT (content): Merge conflict in fs/btrfs/sysfs.c
+CONFLICT (content): Merge conflict in fs/btrfs/disk-io.c
+CONFLICT (content): Merge conflict in fs/btrfs/dev-replace.c
+Merging ceph/master (f44d04e696fe rbd: require global CAP_SYS_ADMIN for map=
+ping and unmapping)
+Merging cifs/for-next (ba4f184e126b Linux 5.9-rc6)
+Merging configfs/for-next (059ccbfff8a8 configfs: use flush file op to comm=
+it writes to a binary file)
+Merging ecryptfs/next (8b614cb8f1dc Merge tag '5.6-rc4-smb3-fixes' of git:/=
+/git.samba.org/sfrench/cifs-2.6)
+Merging erofs/dev (6ea5aad32dd8 erofs: add REQ_RAHEAD flag to readahead req=
+uests)
+Merging exfat/dev (55576e827330 exfat: replace memcpy with structure assign=
+ment)
+Merging ext3/for_next (4443390e08d3 reiserfs: Initialize inode keys properl=
+y)
+Merging ext4/dev (27bc446e2def ext4: limit the length of per-inode prealloc=
+ list)
+Merging f2fs/dev (0d352b6c1426 f2fs: compress: fix to disallow enabling com=
+press on non-empty file)
+Merging fsverity/fsverity (f3db0bed4583 fs-verity: use smp_load_acquire() f=
+or ->i_verity_info)
+Merging fuse/for-next (d78092e4937d fuse: fix page dereference after free)
+Merging jfs/jfs-next (7aba5dcc2346 jfs: Replace zero-length array with flex=
+ible-array member)
+Merging nfs/linux-next (b9df46d08a8d pNFS/flexfiles: Be consistent about mi=
+rror index types)
+Merging nfs-anna/linux-next (d9f06ef2682c nfs: fix spellint typo in pnfs.c)
+Merging nfsd/nfsd-next (9123e3a74ec7 Linux 5.9-rc1)
+Merging cel/cel-next (13a9a9d74d4d SUNRPC: Fix svc_flush_dcache())
+Merging orangefs/for-next (e848643b524b orangefs: remove unnecessary assign=
+ment to variable ret)
+Merging overlayfs/overlayfs-next (8f6ee74c2786 ovl: rearrange ovl_can_list(=
+))
+Merging ubifs/next (b30e2238b7ff ubifs: Fix some kernel-doc warnings in tnc=
+.c)
+Merging v9fs/9p-next (2ed0b7578170 9p: Remove unneeded cast from memory all=
+ocation)
+Merging xfs/for-next (fe341eb151ec xfs: ensure that fpunch, fcollapse, and =
+finsert operations are aligned to rt extent size)
+Merging zonefs/for-next (48bfd5c6fac1 zonefs: document the explicit-open mo=
+unt option)
+Merging iomap/iomap-for-next (81ee8e52a71c iomap: Change calling convention=
+ for zeroing)
+Merging djw-vfs/vfs-for-next (e4f9ba20d3b8 fs/xfs: Update xfs_ioctl_setattr=
+_dax_invalidate())
+Merging file-locks/locks-next (1ad5f100e3ba locks: Remove extra "0x" in tra=
+cepoint format specifier)
+Merging vfs/for-next (e197b30fd05f Merge branches 'fixes' and 'work.misc', =
+remote-tracking branch 'vfs/work.epoll' into for-next)
+CONFLICT (content): Merge conflict in arch/s390/include/asm/checksum.h
+CONFLICT (content): Merge conflict in arch/m68k/Kconfig
+Merging printk/for-next (6579e79e7a8a Merge branch 'printk-rework' into for=
+-next)
+Merging pci/next (9f7e8e935525 Merge branch 'remotes/lorenzo/pci/xilinx')
+CONFLICT (content): Merge conflict in drivers/pci/controller/dwc/pci-imx6.c
+Merging pstore/for-next/pstore (137c6236aeec mailmap: Add WeiXiong Liao)
+CONFLICT (content): Merge conflict in .mailmap
+Merging hid/for-next (fe6f6c38ed1d Merge branch 'for-5.9/upstream-fixes' in=
+to for-next)
+Merging i2c/i2c/for-next (16284bb069ef Merge branch 'i2c/for-current' into =
+i2c/for-next)
+Merging i3c/i3c/next (cc3a392d69b6 i3c: master: fix for SETDASA and DAA pro=
+cess)
+Merging dmi/dmi-for-next (a3d13a0a23ea Replace HTTP links with HTTPS ones: =
+DMI/SMBIOS SUPPORT)
+Merging hwmon-staging/hwmon-next (2835d860d3fc hwmon: (k10temp) Add support=
+ for Zen3 CPUs)
+Merging jc_docs/docs-next (9f35cf8bd7e3 docs: rewrite admin-guide/sysctl/ab=
+i.rst)
+CONFLICT (content): Merge conflict in MAINTAINERS
+Merging v4l-dvb/master (8d526001bab3 media: ipu3-imgu: Fixed some coding st=
+yle issues in ipu3-css.c)
+Merging v4l-dvb-next/master (0d6db85131e0 Revert "media: atomisp: keep the =
+ISP powered on when setting it")
+Merging fbdev/fbdev-for-next (732146a3f1dc video: fbdev: imxfb: fix a typo =
+in imxfb_probe())
+Merging pm/linux-next (bc13abdb9140 Merge branch 'pm-cpuidle' into linux-ne=
+xt)
+Merging cpufreq-arm/cpufreq/arm/linux-next (bc9b9c5ab9d8 cpufreq: qcom: Don=
+'t add frequencies without an OPP)
+Merging cpupower/cpupower (527b7779e5ec cpupower: speed up generating git v=
+ersion string)
+Merging devfreq/devfreq-next (d283fdeb22aa PM / devfreq: event: Change prot=
+otype of devfreq_event_get_edev_by_phandle function)
+Merging opp/opp/linux-next (a5663c9b1e31 opp: Allow opp-level to be set to =
+0)
+Merging thermal/thermal/linux-next (6f55be9fd5ee Merge branch 'thermal/fixe=
+s' into thermal/linux-next)
+Merging thermal-rzhang/next (54ecb8f7028c Linux 5.4-rc1)
+Merging thermal-soc/next (6c375eccded4 thermal: db8500: Rewrite to be a pur=
+e OF sensor)
+Merging ieee1394/for-next (67f8e65e4fc1 firewire: net: remove set but not u=
+sed variable 'guid')
+Merging dlm/next (7ae0451e2e6c fs: dlm: use free_con to free connection)
+Merging swiotlb/linux-next (b51e627158cb swiotlb: Mark max_segment with sta=
+tic keyword)
+Merging rdma/for-next (f5449e74802c RDMA/ucma: Rework ucma_migrate_id() to =
+avoid races with destroy)
+Merging net-next/master (748d1c8a425e Merge branch 'devlink-Use-nla_policy-=
+to-validate-range')
+Merging bpf-next/master (a8a717963fe5 selftests/bpf: Fix stat probe in d_pa=
+th test)
+Merging ipsec-next/master (02a20d4fef3d enic: switch from 'pci_' to 'dma_' =
+API)
+Merging mlx5-next/mlx5-next (9d8feb460adb RDMA/mlx5: Add sw_owner_v2 bit ca=
+pability)
+Merging netfilter-next/master (18cd9b00fffe ipvs: Remove unused macros)
+Merging ipvs-next/master (bfdd5aaa54b0 Merge tag 'Smack-for-5.9' of git://g=
+ithub.com/cschaufler/smack-next)
+Merging wireless-drivers-next/master (dd7a3a331f5d rtlwifi: rtl8723be: use =
+true,false for bool variable large_cfo_hit)
+Merging bluetooth/master (a46b7ed4d52d Bluetooth: Fix auto-creation of hci_=
+conn at Conn Complete event)
+Merging mac80211-next/master (92ec804f3dbf net: phy: bcm7xxx: Add an entry =
+for BCM72113)
+Merging gfs2/for-next (4d53c8279a20 gfs2: call truncate_inode_pages_final f=
+or address space glocks)
+Merging mtd/mtd/next (670c898cee31 mtd: spear_smi: use for_each_child_of_no=
+de() macro)
+Merging nand/nand/next (3d0489c87b9a mtd: rawnand: atmel: Check return valu=
+es for nand_read_data_op)
+Merging spi-nor/spi-nor/next (e93a977367b2 mtd: revert "spi-nor: intel: pro=
+vide a range for poll_timout")
+Merging crypto/master (1674aea5f080 crypto: Kconfig - mark unused ciphers a=
+s obsolete)
+CONFLICT (content): Merge conflict in drivers/crypto/Kconfig
+Merging drm/drm-next (6ea6be77086f Merge tag 'drm-misc-next-2020-09-21' of =
+git://anongit.freedesktop.org/drm/drm-misc into drm-next)
+CONFLICT (content): Merge conflict in drivers/gpu/drm/i915/gem/i915_gem_con=
+text.c
+Merging amdgpu/drm-next (f4a336053725 drm/amdgpu/display: fix CFLAGS setup =
+for DCN30)
+Merging drm-intel/for-linux-next (94a4fb8a316e drm/dp: fix a kernel-doc iss=
+ue at drm_edid.c)
+Merging drm-tegra/drm/tegra/for-next (d9f980ebcd01 drm/tegra: output: rgb: =
+Wrap directly-connected panel into DRM bridge)
+Merging drm-misc/for-linux-next (ad44c03208e4 drm/dp_mst: Retrieve extended=
+ DPCD caps for topology manager)
+Merging drm-msm/msm-next (3c0f462da069 drm/msm/dpu: remove unused variables=
+ new_cnt and old_cnt in dpu_encoder_phys_vid_vblank_irq())
+CONFLICT (content): Merge conflict in drivers/gpu/drm/msm/msm_iommu.c
+CONFLICT (content): Merge conflict in drivers/gpu/drm/msm/msm_gem.c
+CONFLICT (content): Merge conflict in drivers/gpu/drm/msm/adreno/adreno_gpu=
+.c
+Merging mali-dp/for-upstream/mali-dp (f634c6a80287 dt/bindings: display: Ad=
+d optional property node define for Mali DP500)
+Merging imx-drm/imx-drm/next (efd5a93d2a89 drm/imx: drop explicit drm_mode_=
+config_cleanup)
+Merging etnaviv/etnaviv/next (c5d5a32ead1e drm/etnaviv: fix ref count leak =
+via pm_runtime_get_sync)
+Merging regmap/for-next (55bf414ebf7c Merge remote-tracking branch 'regmap/=
+for-5.10' into regmap-next)
+Merging sound/for-next (6564d0ad67ef ALSA: ctl: Workaround for lockdep warn=
+ing wrt card->ctl_files_rwlock)
+Merging sound-asoc/for-next (ff4f4029225a Merge remote-tracking branch 'aso=
+c/for-5.10' into asoc-next)
+Merging modules/modules-next (14721add58ef module: Add more error message f=
+or failed kernel module loading)
+Merging input/next (cafb3abea613 Input: sun4i-ps2 - fix handling of platfor=
+m_get_irq() error)
+Merging block/for-next (99faa39ec56f Merge branch 'for-5.10/block' into for=
+-next)
+CONFLICT (content): Merge conflict in fs/io_uring.c
+Applying: fix up for "io_uring: get rid of req->io/io_async_ctx union"
+Merging device-mapper/for-next (4c07ae0ad493 dm crypt: document encrypted k=
+eyring key option)
+Merging pcmcia/pcmcia-next (46d079790663 pcmcia: make pccard_loop_tuple() s=
+tatic)
+Merging mmc/next (878dbe426a56 mmc: core: clear 'doing_init_tune' also afte=
+r failures)
+CONFLICT (content): Merge conflict in drivers/mmc/host/Kconfig
+Merging mfd/for-mfd-next (59306d7db654 mfd: sprd: Add wakeup capability for=
+ PMIC IRQ)
+Merging backlight/for-backlight-next (7eb99a39ef76 video: backlight: cr_bll=
+cd: Remove unused variable 'intensity')
+Merging battery/for-next (d8483f31487c dt-bindings: power: supply: Cleanup =
+charger-manager bindings)
+Merging regulator/for-next (abd10883f622 Merge remote-tracking branch 'regu=
+lator/for-5.10' into regulator-next)
+Merging security/next-testing (bc62d68e2a0a device_cgroup: Fix RCU list deb=
+ugging warning)
+Merging apparmor/apparmor-next (e37986097ba6 apparmor: Use true and false f=
+or bool variable)
+Merging integrity/next-integrity (aa662fc04f5b ima: Fix NULL pointer derefe=
+rence in ima_file_hash)
+Merging keys/keys-next (b6f61c314649 keys: Implement update for the big_key=
+ type)
+Merging safesetid/safesetid-next (0476c865ded6 LSM: SafeSetID: Fix warnings=
+ reported by test bot)
+Merging selinux/next (8861d0af642c selinux: Add helper functions to get and=
+ set checkreqprot)
+Merging smack/next (bf0afe673b99 Smack: Fix build when NETWORK_SECMARK is n=
+ot set)
+Merging tomoyo/master (5384d92e4e02 tomoyo: Loosen pathname/domainname vali=
+dation.)
+Merging tpmdd/next (a9922287b359 tpm: use %*ph to print small buffer)
+Merging watchdog/master (18445bf405cb Merge tag 'spi-fix-v5.9-rc1' of git:/=
+/git.kernel.org/pub/scm/linux/kernel/git/broonie/spi)
+Merging iommu/next (5e11a44ddcc2 Merge branches 'iommu/fixes', 'arm/allwinn=
+er', 'arm/mediatek', 'arm/renesas', 'arm/tegra', 'arm/qcom', 'ppc/pamu', 'x=
+86/amd', 'x86/vt-d' and 'core' into next)
+Applying: merge fix upt for iommu_flush_iotlb_all() rename
+Merging vfio/next (ccd59dce1a21 vfio/type1: Refactor vfio_iommu_type1_ioctl=
+())
+Merging audit/next (c07203516439 audit: Remove redundant null check)
+Merging devicetree/for-next (73f76a41c4ed dt-bindings: example: Extend base=
+d on practice)
+Merging mailbox/mailbox-for-next (884996986347 mailbox: mediatek: cmdq: cle=
+ar task in channel before shutdown)
+Merging spi/for-next (8c67ef16ace6 Merge remote-tracking branch 'spi/for-5.=
+10' into spi-next)
+Merging tip/auto-latest (45c1c667ec05 Merge branch 'efi/core')
+CONFLICT (content): Merge conflict in drivers/gpu/drm/amd/amdkfd/kfd_priv.h
+Merging clockevents/timers/drivers/next (f087e452f27e clocksource: sp804: e=
+nable Hisilicon sp804 timer 64bit mode)
+Merging edac/edac-for-next (34e06e4faf3f Merge branch 'edac-misc' into edac=
+-for-next)
+Merging irqchip/irq/irqchip-next (5fbffc0050aa Merge branch 'irq/ipi-as-irq=
+' into irq/irqchip-next)
+Merging ftrace/for-next (38ce2a9e33db tracing: Add trace_array_init_printk(=
+) to initialize instance trace_printk() buffers)
+Merging rcu/rcu/next (99a2a9b00b1f rcu: Implement rcu_segcblist_is_offloade=
+d() config dependent)
+Merging kvm/linux-next (e792415c5d3e KVM: MIPS/VZ: Fix build error caused b=
+y 'kvm_run' cleanup)
+Merging kvm-arm/next (41fa0f597150 Merge branch 'kvm-arm64/misc-5.10' into =
+kvmarm-master/next)
+Merging kvm-ppc/kvm-ppc-next (cf59eb13e151 KVM: PPC: Book3S: Fix symbol und=
+eclared warnings)
+Merging kvms390/next (23a60f834406 s390/kvm: diagnose 0x318 sync and reset)
+Merging xen-tip/linux-next (9e2369c06c8a xen: add helpers to allocate unpop=
+ulated memory)
+Merging percpu/for-next (eff623d602db Merge branch 'for-5.9-fixes' into for=
+-next)
+Merging workqueues/for-next (10cdb1575954 workqueue: use BUILD_BUG_ON() for=
+ compile time test instead of WARN_ON())
+Merging drivers-x86/for-next (9123e3a74ec7 Linux 5.9-rc1)
+Merging chrome-platform/for-next (6b194ee98646 platform/chrome: cros_ec_pro=
+to: Drop cros_ec_cmd_xfer())
+Merging hsi/for-next (bb6d3fb354c5 Linux 5.6-rc1)
+Merging leds/for-next (90e1f8978109 leds: pca9532 - simplify the return exp=
+ression of pca9532_remove)
+Merging ipmi/for-next (42d8a346c5c0 ipmi: add retry in try_get_dev_id())
+Merging driver-core/driver-core-next (b85300173d02 driver core: force NOIO =
+allocations during unplug)
+Merging usb/usb-next (0d12658dc179 dt-bindings: usb: renesas,usbhs: Add r8a=
+774e1 support)
+CONFLICT (content): Merge conflict in drivers/pci/controller/pcie-brcmstb.c
+Merging usb-gadget/next (f5e46aa4a124 usb: dwc3: gadget: when the started l=
+ist is empty stop the active xfer)
+Merging usb-serial/usb-next (856deb866d16 Linux 5.9-rc5)
+Merging usb-chipidea-next/ci-for-usb-next (71ac680e6339 usb: chipidea: ci_h=
+drc_imx: restore pinctrl)
+Merging phy-next/next (488e3f52a827 phy: rockchip-dphy-rx0: Include linux/d=
+elay.h)
+Merging tty/tty-next (79d924e92fb0 Merge ba31128384dfd ("Merge tag 'libnvdi=
+mm-fixes-5.9-rc7' of git://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/n=
+vdimm") into tty-next)
+Merging char-misc/char-misc-next (8fd0e2a6df26 uio: free uio id after uio f=
+ile node is freed)
+Merging extcon/extcon-next (e12334b989bc extcon: axp288: Use module_platfor=
+m_driver to simplify the code)
+CONFLICT (content): Merge conflict in MAINTAINERS
+Merging soundwire/next (f067c9251797 soundwire: intel: use {u32|u16}p_repla=
+ce_bits)
+Merging thunderbolt/next (810278da901c thunderbolt: Capitalize comment on t=
+op of QUIRK_FORCE_POWER_LINK_CONTROLLER)
+Merging staging/staging-next (69fea2b4e59c staging: r8188eu: replace WIFI_R=
+EASON_CODE enum with native ieee80211_reasoncode)
+Merging mux/for-next (05f19f7f8944 mux: adgs1408: Add mod_devicetable.h and=
+ remove of_match_ptr)
+Merging icc/icc-next (86d6e5793e0f interconnect: imx: simplify the return e=
+xpression of imx_icc_unregister)
+Merging dmaengine/next (da75ba248265 dmaengine: dmatest: Return boolean res=
+ult directly in filter())
+Merging cgroup/for-next (936f2a70f207 cgroup: add cpu.stat file to root cgr=
+oup)
+Merging scsi/for-next (70a37a90f9d8 Merge branch 'fixes' into for-next)
+CONFLICT (content): Merge conflict in drivers/scsi/aacraid/aachba.c
+Merging scsi-mkp/for-next (c1a3bf99d76e scsi: ufs-mediatek: dt-bindings: Ad=
+d mt8192-ufshci compatible string)
+Merging vhost/linux-next (8a7c3213db06 vdpa/mlx5: fix up endian-ness for mt=
+u)
+Merging rpmsg/for-next (62180d7eae2f Merge branches 'hwspinlock-next', 'rpm=
+sg-next' and 'rproc-next' into for-next)
+Merging gpio/for-next (764e64fcda54 Merge branch 'devel' into for-next)
+Merging gpio-brgl/gpio/for-next (587823d39f85 gpiolib: check for parent dev=
+ice in devprop_gpiochip_set_names())
+Merging gpio-intel/for-next (9123e3a74ec7 Linux 5.9-rc1)
+Merging pinctrl/for-next (abcef6a24347 Merge branch 'devel' into for-next)
+Merging pinctrl-intel/for-next (a0bf06dc51db pinctrl: cherryview: Preserve =
+CHV_PADCTRL1_INVRXTX_TXDATA flag on GPIOs)
+Merging pinctrl-samsung/for-next (9123e3a74ec7 Linux 5.9-rc1)
+Merging pwm/for-next (6ced5ff0be8e pwm: bcm-iproc: handle clk_get_rate() re=
+turn)
+Merging userns/for-next (7fce69dff8db Implement kernel_execve)
+Merging ktest/for-next (ff131efff141 ktest.pl: Fix spelling mistake "Cant" =
+-> "Can't")
+Merging random/dev (ab9a7e27044b random: avoid warnings for !CONFIG_NUMA bu=
+ilds)
+Merging kselftest/next (f69237e1e954 selftests: more general make nesting s=
+upport)
+Merging y2038/y2038 (c4e71212a245 Revert "drm/etnaviv: reject timeouts with=
+ tv_nsec >=3D NSEC_PER_SEC")
+Merging livepatching/for-next (59fc1e476962 Merge branch 'for-5.10/flive-pa=
+tching' into for-next)
+Merging coresight/next (e209e73bee25 coresight: core: Allow the coresight c=
+ore driver to be built as a module)
+Merging rtc/rtc-next (35425bafc772 rtc: pcf2127: fix a bug when not specify=
+ interrupts property)
+Merging nvdimm/libnvdimm-for-next (03b68d5d7d4b Merge branch 'for-5.9/copy_=
+mc' into libnvdimm-for-next)
+Merging at24/at24/for-next (774b9f43716d eeprom: at24: set type id as EEPRO=
+M)
+Merging ntb/ntb-next (b8e2c8bbdf77 NTB: Use struct_size() helper in devm_kz=
+alloc())
+Merging seccomp/for-next/seccomp (a8778b790db6 selftests/clone3: Avoid OS-d=
+efined clone_args)
+Merging kspp/for-next/kspp (55dde35fdb7f overflow: Add __must_check attribu=
+te to check_*() helpers)
+Merging gnss/gnss-next (48778464bb7d Linux 5.8-rc2)
+Merging fsi/next (4a851d714ead fsi: aspeed: Support CFAM reset GPIO)
+Merging slimbus/for-next (9123e3a74ec7 Linux 5.9-rc1)
+Merging nvmem/for-next (02200a863b9a nvmem: core: fix missing of_node_put()=
+ in of_nvmem_device_get())
+Merging xarray/xarray (27586ca786a7 XArray: Handle retry entries within xas=
+_find_marked)
+Merging hyperv/hyperv-next (49971e6bad2d drivers: hv: remove cast from hype=
+rv_die_event)
+Merging auxdisplay/auxdisplay (46d4a403a04c auxdisplay: Replace HTTP links =
+with HTTPS ones)
+Merging kgdb/kgdb/for-next (e16c33e29079 kernel/debug: Fix spelling mistake=
+ in debug_core.c)
+Merging pidfd/for-next (e06ce5515b74 Merge branch 'pidfd_o_nonblock' into f=
+or-next)
+Merging hmm/hmm (9123e3a74ec7 Linux 5.9-rc1)
+Merging fpga/for-next (9ba3a0aa09fe fpga: dfl: create a dfl bus type to sup=
+port DFL devices)
+Merging kunit/test (9123e3a74ec7 Linux 5.9-rc1)
+Merging generic-ioremap/for-next (4bdc0d676a64 remove ioremap_nocache and d=
+evm_ioremap_nocache)
+Merging cfi/cfi/next (11399346ac39 mtd: Replace zero-length array with flex=
+ible-array)
+Merging kunit-next/kunit (9123e3a74ec7 Linux 5.9-rc1)
+Merging trivial/for-next (2a9b29b28983 xtensa: fix Kconfig typo)
+Merging zx2c4/for-next (16fbf79b0f83 Linux 5.6-rc7)
+Merging mhi/mhi-next (efe19067fb72 bus: mhi: core: Fix the building of MHI =
+module)
+Merging notifications/notifications-pipe-core (841a0dfa5113 watch_queue: sa=
+mple: Display mount tree change notifications)
+Merging memblock/for-next (762d4d1a174c arch/ia64: Restore arch-specific pg=
+d_offset_k implementation)
+Merging init/init-user-pointers (38b082236e77 initramfs: use vfs_utimes in =
+do_copy)
+Merging akpm-current/current (07ba5cabb7db x86: add failure injection to ge=
+t/put/clear_user)
+CONFLICT (content): Merge conflict in mm/filemap.c
+CONFLICT (content): Merge conflict in arch/powerpc/platforms/pseries/hotplu=
+g-memory.c
+CONFLICT (content): Merge conflict in arch/powerpc/mm/kasan/kasan_init_32.c
+CONFLICT (content): Merge conflict in arch/arm64/mm/mmu.c
+Applying: merge fix up for "mm/memremap_pages: convert to 'struct range'"
+$ git checkout -b akpm remotes/origin/akpm/master
+$ git rebase --onto master remotes/origin/akpm/master-base
+Merging akpm/master (8ded79fdf97c mm: secretmem: use PMD-size pages to amor=
+tize direct map fragmentation)
+
+--Sig_/EXMwOJ_q.wohHcAT9WZVnU=
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9rMd8ACgkQAVBC80lX
+0GwkWwf/YGojrI24TyUY0D3407kSI4ciRzd1K8bKzsSYX3MXo4e1wv178jUL4ocG
+fThcH6SzzN09hAnaTTICOibA/TWV21TnjiF7Wok2x03mz7W3q+yaPRkOoE5euQNb
+9FXz/REg3MxgZuuTdAtMi60TiqIKz6wFML1wCq6km+rcaLQO6VZKOhUTvjJtVLIH
+bcCE1yny0pkQ/WPiKjw0yb5Cd24bPQOZyYSS5ZBjesM5OpyvrJ6Mz/H/uwik5WIl
+6sFGfK4uTFPyw9g6UeWlKhs0E0aVnc3RrsP0moUfeEf+LcM4WvkA8QIseE7TTDKd
+0ebvztiq7mer01esoobjdQ5mQWLrUA==
+=cRU+
+-----END PGP SIGNATURE-----
+
+--Sig_/EXMwOJ_q.wohHcAT9WZVnU=--
