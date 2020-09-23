@@ -2,83 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2977C275B1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:04:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D93DF275B26
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726735AbgIWPEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 11:04:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726516AbgIWPEo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 11:04:44 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4AC5C0613CE;
-        Wed, 23 Sep 2020 08:04:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Ose8ctZCTv8oUOd9k3tTT76nITLXgVZlsCte1r4Sf9c=; b=MkYEExTq1+wkaz83zMuspp5RjA
-        Ql+JlgSLUtPgJQMk5ZRNIO+I2UvxTYWBAkIXlCxSLKN0kKXI86QBoGjW7A+yKUpkqMuuehrinsPuf
-        iwX4oT+QNjApAyJGa8cH3EwMkixriTNBrfTFPhwDoOaCloAwyeLBZpcBeXr6ULKd7x6mz/VU1mrTF
-        rjgPBXE/KVXkfXpLPhqrWyo99AM+ADFVOdaGRg6A3iJrv8o6ovKyridoI1mwkForkyoK8bF8rFGrw
-        fd8w+PRxzla1bKvhyrYdLqm3AOmAqwCzB8te5Y2Zk6g0lBF64zMFMDuAmKdoz1JjyoTd9K7oNNJHv
-        KnkoQvSQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kL6Jn-0005Kf-EE; Wed, 23 Sep 2020 15:04:27 +0000
-Date:   Wed, 23 Sep 2020 16:04:27 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mikulas Patocka <mpatocka@redhat.com>
-Cc:     Jan Kara <jack@suse.cz>, Dave Chinner <david@fromorbit.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Eric Sandeen <esandeen@redhat.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        "Kani, Toshi" <toshi.kani@hpe.com>,
-        "Norton, Scott J" <scott.norton@hpe.com>,
-        "Tadakamadla, Rajesh (DCIG/CDI/HPS Perf)" 
-        <rajesh.tadakamadla@hpe.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>
-Subject: Re: NVFS XFS metadata (was: [PATCH] pmem: export the symbols
- __copy_user_flushcache and __copy_from_user_flushcache)
-Message-ID: <20200923150427.GP32101@casper.infradead.org>
-References: <alpine.LRH.2.02.2009160649560.20720@file01.intranet.prod.int.rdu2.redhat.com>
- <CAPcyv4gW6AvR+RaShHdQzOaEPv9nrq5myXDmywuoCTYDZxk-hw@mail.gmail.com>
- <alpine.LRH.2.02.2009161254400.745@file01.intranet.prod.int.rdu2.redhat.com>
- <CAPcyv4gD0ZFkfajKTDnJhEEjf+5Av-GH+cHRFoyhzGe8bNEgAA@mail.gmail.com>
- <alpine.LRH.2.02.2009161359540.20710@file01.intranet.prod.int.rdu2.redhat.com>
- <alpine.LRH.2.02.2009191336380.3478@file01.intranet.prod.int.rdu2.redhat.com>
- <20200922050314.GB12096@dread.disaster.area>
- <alpine.LRH.2.02.2009220815420.16480@file01.intranet.prod.int.rdu2.redhat.com>
- <20200923095739.GC6719@quack2.suse.cz>
- <alpine.LRH.2.02.2009230841110.1800@file01.intranet.prod.int.rdu2.redhat.com>
+        id S1726629AbgIWPGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 11:06:41 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:47234 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726156AbgIWPGk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 11:06:40 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600873600; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=IaimSPUJbwscieRTas1qOVe4R5tD4hrlB8skTNUaUyU=; b=t9LG8jfPI55Ogvr76oLpR8UHiPsHdvUSrA6BTs1rnRxAH576CvT+RT8Sncu8jxsXNaiYY9Q1
+ fCazWmClwQcnk3oTmp3zZBtH2mqZhDEtDxxaJ7N5jw7k1XG36c87Zf2zfmoYScrfXKvrcJWK
+ cbL1VI0fMV0ewVKPO2pnivPvBfQ=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5f6b6470429250c1dd98e7fe (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 23 Sep 2020 15:06:24
+ GMT
+Sender: jcrouse=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 26293C43382; Wed, 23 Sep 2020 15:06:24 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3AD2AC433C8;
+        Wed, 23 Sep 2020 15:06:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3AD2AC433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
+Date:   Wed, 23 Sep 2020 09:06:19 -0600
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     Zhenzhong Duan <zhenzhong.duan@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, robdclark@gmail.com, sean@poorly.run,
+        airlied@linux.ie, daniel@ffwll.ch, smasetty@codeaurora.org,
+        jonathan@marek.ca, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        Markus.Elfring@web.de
+Subject: Re: [PATCH v2] drm/msm/a6xx: Fix a size determination in
+ a6xx_get_indexed_registers()
+Message-ID: <20200923150618.GE31425@jcrouse1-lnx.qualcomm.com>
+Mail-Followup-To: Zhenzhong Duan <zhenzhong.duan@gmail.com>,
+        linux-kernel@vger.kernel.org, robdclark@gmail.com, sean@poorly.run,
+        airlied@linux.ie, daniel@ffwll.ch, smasetty@codeaurora.org,
+        jonathan@marek.ca, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        Markus.Elfring@web.de
+References: <20200914022949.129-1-zhenzhong.duan@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.LRH.2.02.2009230841110.1800@file01.intranet.prod.int.rdu2.redhat.com>
+In-Reply-To: <20200914022949.129-1-zhenzhong.duan@gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 09:11:43AM -0400, Mikulas Patocka wrote:
-> I also don't know how to implement journling on persistent memory :) On 
-> EXT4 or XFS you can pin dirty buffers in memory until the journal is 
-> flushed. This is obviously impossible on persistent memory. So, I'm 
-> considering implementing only some lightweight journaling that will 
-> guarantee atomicity between just a few writes.
+On Mon, Sep 14, 2020 at 10:29:49AM +0800, Zhenzhong Duan wrote:
+> It's allocating an array of a6xx_gpu_state_obj structure rather than
+> its pointers.
+> 
+> Fixes: d6852b4b2d01 ("drm/msm/a6xx: Track and manage a6xx state memory")
+> Signed-off-by: Zhenzhong Duan <zhenzhong.duan@gmail.com>
 
-That's a bit disappointing considering people have been publishing
-papers on how to do umpteen different variations on persistent memory
-journalling for the last five years.
+Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
+> ---
+> v2: Update commit message per Markus, thanks
+> 
+>  drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
+> index b12f5b4..e9ede19 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
+> @@ -875,7 +875,7 @@ static void a6xx_get_indexed_registers(struct msm_gpu *gpu,
+>  	int i;
+>  
+>  	a6xx_state->indexed_regs = state_kcalloc(a6xx_state, count,
+> -		sizeof(a6xx_state->indexed_regs));
+> +		sizeof(*a6xx_state->indexed_regs));
+>  	if (!a6xx_state->indexed_regs)
+>  		return;
+>  
+> -- 
+> 1.8.3.1
+> 
 
-https://www.google.com/search?q=intel+persistent+memory+atomic+updates
-
-for example
+-- 
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
