@@ -2,83 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C488A275EF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 19:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0F16275EFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 19:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726696AbgIWRp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 13:45:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45272 "EHLO mail.kernel.org"
+        id S1726744AbgIWRqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 13:46:16 -0400
+Received: from verein.lst.de ([213.95.11.211]:49388 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgIWRpZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 13:45:25 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A866C20665;
-        Wed, 23 Sep 2020 17:45:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600883125;
-        bh=w57gLA/9GdadrUmtXx3y4slqkrBIQ4xrA6PFRXb3JHE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q5+c02wj9CcexOQDZEP1wD1mXA2n0wV6XuQdMVJ2WCZbm1bBA9VcHtPe+vh4jRQrh
-         0LJxvGIJINVFVIq2l7AfuZ6RDHd/vKY4JSM+FT04CPV6Lb4ajrs9pmH3U1vewfOsGW
-         kQBnxuvVB9ob9Ml5OtNyMNr8RWkgiwwhabKYLcJI=
-Date:   Wed, 23 Sep 2020 19:45:43 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        =?utf-8?B?Qmxhxb4=?= Hrastnik <blaz@mxxn.io>,
-        Dorian Stoll <dorian.stoll@tmsp.io>
-Subject: Re: [RFC PATCH 5/9] surface_aggregator: Add error injection
- capabilities
-Message-ID: <20200923174543.GA102853@kroah.com>
-References: <20200923151511.3842150-1-luzmaximilian@gmail.com>
- <20200923151511.3842150-6-luzmaximilian@gmail.com>
+        id S1726130AbgIWRqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 13:46:15 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 5EA266736F; Wed, 23 Sep 2020 19:46:09 +0200 (CEST)
+Date:   Wed, 23 Sep 2020 19:46:09 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
+        David Laight <David.Laight@aculab.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-aio@kvack.org, io-uring@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        netdev@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH 5/9] fs: remove various compat readv/writev helpers
+Message-ID: <20200923174609.GA24379@lst.de>
+References: <20200923060547.16903-1-hch@lst.de> <20200923060547.16903-6-hch@lst.de> <20200923142549.GK3421308@ZenIV.linux.org.uk> <20200923143251.GA14062@lst.de> <20200923145901.GN3421308@ZenIV.linux.org.uk> <20200923163831.GO3421308@ZenIV.linux.org.uk> <20200923170527.GQ3421308@ZenIV.linux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200923151511.3842150-6-luzmaximilian@gmail.com>
+In-Reply-To: <20200923170527.GQ3421308@ZenIV.linux.org.uk>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 05:15:07PM +0200, Maximilian Luz wrote:
-> This commit adds error injection hooks to the Surface Serial Hub
-> communication protocol implementation, to:
+On Wed, Sep 23, 2020 at 06:05:27PM +0100, Al Viro wrote:
+> On Wed, Sep 23, 2020 at 05:38:31PM +0100, Al Viro wrote:
+> > On Wed, Sep 23, 2020 at 03:59:01PM +0100, Al Viro wrote:
+> > 
+> > > > That's a very good question.  But it does not just compile but actually
+> > > > works.  Probably because all the syscall wrappers mean that we don't
+> > > > actually generate the normal names.  I just tried this:
+> > > > 
+> > > > --- a/include/linux/syscalls.h
+> > > > +++ b/include/linux/syscalls.h
+> > > > @@ -468,7 +468,7 @@ asmlinkage long sys_lseek(unsigned int fd, off_t offset,
+> > > >  asmlinkage long sys_read(unsigned int fd, char __user *buf, size_t count);
+> > > >  asmlinkage long sys_write(unsigned int fd, const char __user *buf,
+> > > >                             size_t count);
+> > > > -asmlinkage long sys_readv(unsigned long fd,
+> > > > +asmlinkage long sys_readv(void *fd,
+> > > > 
+> > > > for fun, and the compiler doesn't care either..
+> > > 
+> > > Try to build it for sparc or ppc...
+> > 
+> > FWIW, declarations in syscalls.h used to serve 4 purposes:
+> > 	1) syscall table initializers needed symbols declared
+> > 	2) direct calls needed the same
+> > 	3) catching mismatches between the declarations and definitions
+> > 	4) centralized list of all syscalls
+> > 
+> > (2) has been (thankfully) reduced for some time; in any case, ksys_... is
+> > used for the remaining ones.
+> > 
+> > (1) and (3) are served by syscalls.h in architectures other than x86, arm64
+> > and s390.  On those 3 (1) is done otherwise (near the syscall table initializer)
+> > and (3) is not done at all.
+> > 
+> > I wonder if we should do something like
+> > 
+> > SYSCALL_DECLARE3(readv, unsigned long, fd, const struct iovec __user *, vec,
+> > 		 unsigned long, vlen);
+> > in syscalls.h instead, and not under that ifdef.
+> > 
+> > Let it expand to declaration of sys_...() in generic case and, on x86, into
+> > __do_sys_...() and __ia32_sys_...()/__x64_sys_...(), with types matching
+> > what SYSCALL_DEFINE ends up using.
+> > 
+> > Similar macro would cover compat_sys_...() declarations.  That would
+> > restore mismatch checking for x86 and friends.  AFAICS, the cost wouldn't
+> > be terribly high - cpp would have more to chew through in syscalls.h,
+> > but it shouldn't be all that costly.  Famous last words, of course...
+> > 
+> > Does anybody see fundamental problems with that?
 > 
->  - simulate simple serial transmission errors,
-> 
->  - drop packets, requests, and responses, simulating communication
->    failures and potentially trigger retransmission timeouts, as well as
-> 
->  - inject invalid data into submitted and received packets.
-> 
-> Together with the trace points introduced in the previous commit, these
-> facilities are intended to aid in testing, validation, and debugging of
-> the Surface Aggregator communication layer.
-> 
-> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+> Just to make it clear - I do not propose to fold that into this series;
+> there we just need to keep those declarations in sync with fs/read_write.c
 
-Ok, this is ridiculous.
-
-You are dropping a whole new subsystem on us, with full documentation,
-correct driver model integration, crazy debugfs interactions (I made fun
-of the patch, but the code did work, you just did more work than was
-needed), proper auto-loading of modules, tracing, documentation for more
-things than is ever expected, and now you are adding error injection
-support?
-
-You just made all other code submissions of new subsystems I have gotten
-in the past 2 months look like total crud.  Which, to be fair, they
-probably were, but wow, you just stepped up the level of professionalism
-to a whole new height.
-
-I can only dream that "real Linux companies" take note and try to follow
-this example.  I think I will point them all at this in the future and
-say, "go do it like this one."
-
-very very very nice work, we owe you the beverage of your choice.
-
-greg k-h
+Agreed.  The above idea generally sounds sane to me.
