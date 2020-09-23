@@ -2,108 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4667275155
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 08:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5131427515D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 08:24:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726643AbgIWGWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 02:22:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43342 "EHLO
+        id S1726727AbgIWGYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 02:24:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726448AbgIWGWp (ORCPT
+        with ESMTP id S1726179AbgIWGYe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 02:22:45 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86D8EC061755;
-        Tue, 22 Sep 2020 23:22:45 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id m7so23899020oie.0;
-        Tue, 22 Sep 2020 23:22:45 -0700 (PDT)
+        Wed, 23 Sep 2020 02:24:34 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C6DEC061755;
+        Tue, 22 Sep 2020 23:24:34 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id f2so13749644pgd.3;
+        Tue, 22 Sep 2020 23:24:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y1PEerqJBDKeVBRTs0AFfG0uBufIRHhe7sa6qP1v9O8=;
-        b=YS/aemuJmv/c98UY/vzAb87zvn86VHm7Ri3vNiPv8JzhSK8AaATSbok0ic2zQLyt+u
-         kFkFnE+BNTgaLhipZnw2rZyCJ6QPbjCt6QX9vMSkksp3Oxe1YpEgKG7WCabf5I8QBC3+
-         Th3BYcf+C4bgheq+FcoGXu7hDDZlOnf2QGQL0xQwPKlP6dYoM1neskoXuuibwd2LGG87
-         P5OM0bx5UTVpukbmf5UQVnMPkP18gPGcpqpwK/3EmUtZJ/BgGgqEPIkNpibm2dABO2r7
-         fV0WNcujZueluOJaLTFljW8JpGs8BDvAx7Gc/QPLA7McpJuFED0oWVusKZijXj45zi7B
-         dXow==
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ySPedNslPG3dkY7v4dApthW0w3KPGs63C9M/zo9R+Gg=;
+        b=cMkYbqeTFzEMfQlDQXxvdNhcgkd+x2MJ+ysNycqzI1PMJysbspC3q+zJb/7Z+i6B4L
+         s0PIYj2/GyTeYM71Y3PZs73TIhK2W0QWB+4J0Fa7IVXgj9TyIhPIJ1k6lSQV2Bsyg/7f
+         JcDXFglrhj3SvaHcTE53p0CtjZI6f1SjuGGbogPoYWwWRFx3AiiUxTuhr383f/u+P2t1
+         8v2jtIYx/fLi4S/Yd0X+0R9Hy3vpwzzEv+jYabvXSEeviWcNNyKfjPhMjFW8faJ7iPIL
+         IDzyKdVxfcznpe2ScISBSPb/yxW2NS3N7uf7TXEIrRy1V+DbaKExFYNRgpjOIs8NEOaa
+         vbOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y1PEerqJBDKeVBRTs0AFfG0uBufIRHhe7sa6qP1v9O8=;
-        b=AKEyNWeJu/Wq7HYcU5niGQZ3gfQWa5UeUlrJMZ/BEpzPwLtHUhCrv7TwvILx6KX5dN
-         oH6VHNOOjwn8rB2+1nmXSFlpj6Ye00bfQerKDjwgYHGrHyQZwIPyx0HXcKQYIae1ygh1
-         Wb4nvou/X1stG+N0UTvsSv5X+xx4kqzCp8PS8BIbkumCp4gzZjwxmayk2UsRXCbZrxV6
-         ckogoM8ZJwkOmjeH6H5NPnJzJYsnsCpBpCTvR0Qodf5HSBu4EILGF3ZkughEd1og5JP8
-         irhUK6cIbVCtQbBO7cQJOo/EhMEwEOTl7qzolrFxNdB4kzLUjC2sfu3RS6FNcS5SvJHT
-         MVhA==
-X-Gm-Message-State: AOAM530RTbrQ88f5jPlOli4sxIaJxVXVjE/a+kvO38Cc5QpVBA63a8Kn
-        WBTO6BnXlajaXo5CPAInZHSZcQpTmQkAk7Zn8r0=
-X-Google-Smtp-Source: ABdhPJzBfZX320BL45BvcOhOnTnM/7E23YnE6sTcmqXS2fzz6pc8bMuZV+vlMXfm2TGf+eV4hjTGE3sl2sdSX5C7fJ8=
-X-Received: by 2002:aca:72ca:: with SMTP id p193mr4684049oic.124.1600842164940;
- Tue, 22 Sep 2020 23:22:44 -0700 (PDT)
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ySPedNslPG3dkY7v4dApthW0w3KPGs63C9M/zo9R+Gg=;
+        b=Fm4/a1M/pRh+Mkk/AWapIiH6HuLGKLQLA0arehUWgZT2PzMq3/imJnufE+JYpZ8EVQ
+         Pqv0AZ2gLtHVmfxrTGhruE58zrFBOGfgcyqWDsndRMqIJ1R7k53MApfjFd9IuIiH0/IX
+         dgu3glOHD5eP7He+asPQPZto2c4HkGy+a3pYQJpjUnpveES289NHiyTooA6M1EV4kd+3
+         33SBHi9LPNLmIxfa1xT+Rz/iPFu7xyP92VzA/uY9Di6tCHOWk5HuSkgNQeLa7fKmFdWi
+         sbsFXdAXfZh14n8E2qnXAiwM1rvN7XmKd0+viwot0Bx/Ps57KV1PzBpXp5zY1HuvjcwJ
+         mKZQ==
+X-Gm-Message-State: AOAM532N2Ct28Pq77BtaOuip9IZxYCKtQ0TdHjiFs7aOJSL3ZA8MBWJL
+        W7NPS70NCrbvue0/GKGHaQ==
+X-Google-Smtp-Source: ABdhPJxwlOdBatq9xkyrZVcqcasAWQbfLaVBMs6AIDYLsAP4MYhJLyl1ZuEtYlOTuK6OTIv5KnqXrQ==
+X-Received: by 2002:a62:7c43:0:b029:139:858b:8033 with SMTP id x64-20020a627c430000b0290139858b8033mr7320759pfc.3.1600842274006;
+        Tue, 22 Sep 2020 23:24:34 -0700 (PDT)
+Received: from [127.0.0.1] ([103.7.29.6])
+        by smtp.gmail.com with ESMTPSA id h31sm14846698pgh.71.2020.09.22.23.24.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Sep 2020 23:24:33 -0700 (PDT)
+Subject: Re: [PATCH] KVM: SVM: Add tracepoint for cr_interception
+From:   Haiwei Li <lihaiwei.kernel@gmail.com>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>
+Cc:     "hpa@zytor.com" <hpa@zytor.com>, "bp@alien8.de" <bp@alien8.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>, joro@8bytes.org,
+        "jmattson@google.com" <jmattson@google.com>,
+        "wanpengli@tencent.com" <wanpengli@tencent.com>,
+        vkuznets@redhat.com, sean.j.christopherson@intel.com,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>
+References: <f3031602-db3b-c4fe-b719-d402663b0a2b@gmail.com>
+Message-ID: <040bf07b-dcc5-df99-d720-a2ed2298a2e3@gmail.com>
+Date:   Wed, 23 Sep 2020 14:24:23 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.2.2
 MIME-Version: 1.0
-References: <20200810134252.68614-1-alexandru.ardelean@analog.com>
- <20200810134252.68614-8-alexandru.ardelean@analog.com> <CA+U=Dsr41kKGXmgE1KjdTzAso3rwtNXAEoSy+Li=uym7G=D=Jw@mail.gmail.com>
- <20200915024138.GA1827@epycbox.lan> <160080374459.310579.14438590389388419207@swboyd.mtv.corp.google.com>
-In-Reply-To: <160080374459.310579.14438590389388419207@swboyd.mtv.corp.google.com>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Wed, 23 Sep 2020 09:22:33 +0300
-Message-ID: <CA+U=DsrRo0t0Zit8ay5jytmCd5n=BcMHHbXpJMW90oAiur32+w@mail.gmail.com>
-Subject: Re: [PATCH v2 0/6] clk: axi-clk-gen: misc updates to the driver
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Moritz Fischer <mdf@kernel.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-clk@vger.kernel.org, linux-fpga@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Mircea Caprioru <mircea.caprioru@analog.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <f3031602-db3b-c4fe-b719-d402663b0a2b@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 10:42 PM Stephen Boyd <sboyd@kernel.org> wrote:
->
-> Quoting Moritz Fischer (2020-09-14 19:41:38)
-> > On Mon, Sep 14, 2020 at 11:11:05AM +0300, Alexandru Ardelean wrote:
-> > > On Mon, Aug 10, 2020 at 4:41 PM Alexandru Ardelean
-> > > <alexandru.ardelean@analog.com> wrote:
-> > > >
-> > > > These patches synchronize the driver with the current state in the
-> > > > Analog Devices Linux tree:
-> > > >   https://github.com/analogdevicesinc/linux/
-> > > >
-> > > > They have been in the tree for about 2-3, so they did receive some
-> > > > testing.
-> > >
-> > > Ping on this series.
-> > > Do I need to do a re-send?
->
-> I got this patch series twice. Not sure why.
-
-My fault here.
-Some Ctrl + R usage and not being attentive with the arguments.
-I think I added "*.patch" twice on the send-mail command.
-I did something similar [by accident] for some DMA patches.
-Apologies.
-
-I can do a re-send for this, if it helps.
-
->
-> >
-> > I've applied the FPGA one, the other ones should go through the clock
-> > tree I think?
->
-> Doesn't patch 6 rely on the FPGA patch? How can that driver build
-> without the header file?
-
-Yes it does depend on the FPGA patch.
-We can drop patch 6 for now, pending a merge to Linus' tree and then
-wait for the trickle-down.
-I don't mind waiting for these patches.
-I have plenty of backlog that I want to run through, and cleanup and
-then upstream.
-So, there is no hurry.
+Kindly ping. :)
+On 20/9/4 19:25, Haiwei Li wrote:
+> From: Haiwei Li <lihaiwei@tencent.com>
+> 
+> Add trace_kvm_cr_write and trace_kvm_cr_read for svm.
+> 
+> Signed-off-by: Haiwei Li <lihaiwei@tencent.com>
+> ---
+>   arch/x86/kvm/svm/svm.c | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 03dd7bac8034..2c6dea48ba62 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -2261,6 +2261,7 @@ static int cr_interception(struct vcpu_svm *svm)
+>       if (cr >= 16) { /* mov to cr */
+>           cr -= 16;
+>           val = kvm_register_read(&svm->vcpu, reg);
+> +        trace_kvm_cr_write(cr, val);
+>           switch (cr) {
+>           case 0:
+>               if (!check_selective_cr0_intercepted(svm, val))
+> @@ -2306,6 +2307,7 @@ static int cr_interception(struct vcpu_svm *svm)
+>               return 1;
+>           }
+>           kvm_register_write(&svm->vcpu, reg, val);
+> +        trace_kvm_cr_read(cr, val);
+>       }
+>       return kvm_complete_insn_gp(&svm->vcpu, err);
+>   }
+> -- 
+> 2.18.4
