@@ -2,209 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E964A27576F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 13:49:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66617275771
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 13:49:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726582AbgIWLtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 07:49:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36980 "EHLO
+        id S1726604AbgIWLtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 07:49:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726498AbgIWLtI (ORCPT
+        with ESMTP id S1726472AbgIWLtn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 07:49:08 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32773C0613CE;
-        Wed, 23 Sep 2020 04:49:08 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id c18so20689493wrm.9;
-        Wed, 23 Sep 2020 04:49:08 -0700 (PDT)
+        Wed, 23 Sep 2020 07:49:43 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A00C0613CE;
+        Wed, 23 Sep 2020 04:49:42 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id y15so6801332wmi.0;
+        Wed, 23 Sep 2020 04:49:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xcpSQylZVass3NdVUR+fUKGWCQtuxHSPEZvRki2sRWM=;
-        b=UmrEKcsUIoC/OWk6yWtL7XQ/OjCjvHMd6s/gXJ0XywmLQbQLv9Uyq35hxNrEyRAkIU
-         CkOiWdH6UD9M63TW5UiU4kK4uRIujsDR+B22GeD/djtK+2gcAfFBTV4VArAtQ3avw7jB
-         zdA054vthAjIZ0Lyx5ZtOWAVJkNulRzDVO7BdVjfC7lGQlgFllYcyrMcE4d2f8QJQFrE
-         7/sL4am7jRtpeDElgB+qCGnkiXAOo+jI39LdqmaG9thn5kTkc9YAZlpKAFj0ECGWeuXz
-         L0C4pBPOcUN9RIxN7jH2r3b4EGGQiAHy5lQH5OAyRN/3vgdG6EzPi/ged1YUYauLiotF
-         oxSg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=p4sMBWzXBxVz4HvD3n4l2QIDm0SxypO/fE8nCP81NYo=;
+        b=hVurwq/6/XhFXJ6RoPXK1EGdTYQ6vzFdgejDABeebl0RtKDkmGFD+KdNAxd8/A9JjX
+         ir1KTle+zPq8HVtGgHOCF1NbP340ypt9arNONJOVxUYZquWaqnxmcQ3gb8StBWVA8Dfx
+         v+Lh4dW0ZkzbMTMKpV1Ge813iSjzUYfYJkEl+r1GXJUIWNZxkwLL+CBWP8VYSRtATc/B
+         5aFvcuMf4SiOPuuhVdVTkUtv7Psy3nn1U3MarmiWquAVZX2jGZcyJ5wMdcqiRck5Yaqx
+         j9tHaigvMiCHJ2lEK5xbq4EFENaf/BSnFna2XopimZ0iURvIzc/UaOIbxIZrLsgIJLPJ
+         U06g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xcpSQylZVass3NdVUR+fUKGWCQtuxHSPEZvRki2sRWM=;
-        b=CjrA3MvgDI7x1+LNO4tzhIzqKGCiTBEzMX+58upY9FWJLOVGtyttx3Iqdg5H7tubye
-         ihCGp2oI3maqWMR4P5085wbaObjNvNcWsGn6NjMqloGm1CrTLdpZB8RowuLNEx8b6END
-         9gelxDqxp8aIkPAsHjCpkbfAmKGesqAQMJ6IVaaKvj3BiZL11MCQJWM6kqwX2wVEzArr
-         ZV7zbvHMXVsUBdG/D2rdo+/mqBmX1RrVYUNdz4zwcseqg+eBYdtAC2WMZPO3iqHkMxD8
-         nCa65DGPqOdrVFRcwiSdO2JR3iAV3jru8VSn02lO08XKYCo5WrzdTc6G0FSiH1m8kN0q
-         F5lA==
-X-Gm-Message-State: AOAM531OaUonlqbPTm6pFVl6aU3OIC6VX46fMyKx8g7UrcA1Y+xRK4sk
-        /3HkYaVi75LvbbTu6JD7a7Y=
-X-Google-Smtp-Source: ABdhPJxAcT+rNYyHT9mJRhCm5uS6bNC9paqnXdtFgAcN/tQYQb9+TtoasN/Gfb9gOPC1LONT+cwvWA==
-X-Received: by 2002:adf:ec87:: with SMTP id z7mr425752wrn.57.1600861746822;
-        Wed, 23 Sep 2020 04:49:06 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id r21sm6701283wrc.70.2020.09.23.04.49.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 04:49:05 -0700 (PDT)
-Date:   Wed, 23 Sep 2020 13:49:04 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Rahul Tanwar <rahul.tanwar@linux.intel.com>
-Cc:     u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
-        lee.jones@linaro.org, p.zabel@pengutronix.de, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        andriy.shevchenko@intel.com, songjun.Wu@intel.com,
-        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
-        rahul.tanwar.linux@gmail.com, rtanwar@maxlinear.com
-Subject: Re: [PATCH v13 0/2] pwm: intel: Add PWM driver for a new SoC
-Message-ID: <20200923114904.GC1846003@ulmo>
-References: <cover.1600158087.git.rahul.tanwar@linux.intel.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=p4sMBWzXBxVz4HvD3n4l2QIDm0SxypO/fE8nCP81NYo=;
+        b=I29Xphixsqtqa74TJL7gYYcJUlrpMsqKdGaGn4dPZbJUF9agfGbYsFJJ6snMU4cJHG
+         vXxnR7SNKjv4xuq5SA4w/KHto0MgG6+/FXuNDHSdVdVdssZRD9G8dwY06/0ETuGx2QCT
+         fjYY6gHbUGckREVu2PnasFyjxhbiae45Cchgb+OFaE5YtV+hYLO7M8LPZmayZH4Kg+Do
+         O5nLXH8vH+frQnDCdrF53NWjgy1J8eJ2F4YJKjUK+0KdZ55Ffjs9zqBbf9V8l4mAav47
+         YsDkLJ5cZt+ISkj/ogcYA4hjtqVYKuGL/Id3kMnjiwWGtyhQf+M+oFAJ+NRjj6fLyHmZ
+         DVCA==
+X-Gm-Message-State: AOAM531LbAa31uo288aFm+KKxM08G8WZb7/4T7wwlkQ2FgfrfC+WS7j2
+        ijiG0XTZM9es8N32G+1r3D8gpKZN2Js=
+X-Google-Smtp-Source: ABdhPJwSy8djRzattquH/FjML2gk62PklGKieE8AHEPIh5I6VIm/LdLDkYCYpQ99B8eNnnr/FZ2mRA==
+X-Received: by 2002:a7b:c4d9:: with SMTP id g25mr6072703wmk.15.1600861781360;
+        Wed, 23 Sep 2020 04:49:41 -0700 (PDT)
+Received: from ?IPv6:2003:ea:8f23:5700:c43a:de91:4527:c1ba? (p200300ea8f235700c43ade914527c1ba.dip0.t-ipconnect.de. [2003:ea:8f23:5700:c43a:de91:4527:c1ba])
+        by smtp.googlemail.com with ESMTPSA id i14sm241690wml.24.2020.09.23.04.49.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Sep 2020 04:49:40 -0700 (PDT)
+Subject: Re: [PATCH] Revert "net: linkwatch: add check for netdevice being
+ present to linkwatch_do_dev"
+To:     Saeed Mahameed <saeed@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Gaku Inami <gaku.inami.xh@renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200901150237.15302-1-geert+renesas@glider.be>
+ <7bfebfdc0d7345c4612124ff00e20eebb0ff6cd9.camel@kernel.org>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <3d9176a6-c93e-481c-5877-786f5e6aaef8@gmail.com>
+Date:   Wed, 23 Sep 2020 13:49:35 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ALfTUftag+2gvp1h"
-Content-Disposition: inline
-In-Reply-To: <cover.1600158087.git.rahul.tanwar@linux.intel.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+In-Reply-To: <7bfebfdc0d7345c4612124ff00e20eebb0ff6cd9.camel@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 18.09.2020 19:58, Saeed Mahameed wrote:
+> On Tue, 2020-09-01 at 17:02 +0200, Geert Uytterhoeven wrote:
+>> This reverts commit 124eee3f6955f7aa19b9e6ff5c9b6d37cb3d1e2c.
+>>
+>> Inami-san reported that this commit breaks bridge support in a Xen
+>> environment, and that reverting it fixes this.
+>>
+>> During system resume, bridge ports are no longer enabled, as that
+>> relies
+>> on the receipt of the NETDEV_CHANGE notification.  This notification
+>> is
+>> not sent, as netdev_state_change() is no longer called.
+>>
+>> Note that the condition this commit intended to fix never existed
+>> upstream, as the patch triggering it and referenced in the commit was
+>> never applied upstream.  Hence I can confirm s2ram on r8a73a4/ape6evm
+>> and sh73a0/kzm9g works fine before/after this revert.
+>>
+>> Reported-by Gaku Inami <gaku.inami.xh@renesas.com>
+>> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>> ---
+>>  net/core/link_watch.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/net/core/link_watch.c b/net/core/link_watch.c
+>> index 75431ca9300fb9c4..c24574493ecf95e6 100644
+>> --- a/net/core/link_watch.c
+>> +++ b/net/core/link_watch.c
+>> @@ -158,7 +158,7 @@ static void linkwatch_do_dev(struct net_device
+>> *dev)
+>>  	clear_bit(__LINK_STATE_LINKWATCH_PENDING, &dev->state);
+>>  
+>>  	rfc2863_policy(dev);
+>> -	if (dev->flags & IFF_UP && netif_device_present(dev)) {
+>> +	if (dev->flags & IFF_UP) {
+> 
+> So with your issue the devices is both IFF_UP and !present ? how so ?
+> I think you should look into that.
+> 
+> I am ok with removing the "dev present" check from here just because we
+> shouldn't  be expecting IFF_UP && !present .. such thing must be a bug
+> somewhere else.
+> 
+>>  		if (netif_carrier_ok(dev))
+>>  			dev_activate(dev);
+>>  		else
+> 
 
---ALfTUftag+2gvp1h
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 15, 2020 at 04:23:35PM +0800, Rahul Tanwar wrote:
-> Patch 1 adds dt binding document in YAML format.
-> Patch 2 add PWM fan controller driver for LGM SoC.
->=20
-> v13:
-> - Address below review concerns (Philipp Zabel)
->  * Make unnecessary 2 line comment as 1 line comment.
->  * Move reset_deassert at the last after clk_enable.
->  * Remove unnecessary return ret statement from .remove()
-> - Move platform_set_drvdata() at the top of probe.=20
->=20
-> v12:
-> - Rebase to linux 5.9-rc4
-> - Add Reviewed-by tags from Andy Shevchenko & Rob Herring.
->=20
-> v11:
-> - Address below review concerns (Andy Shevchenko)
->   * Fix a issue with dev_err_probe() usage & improve the usage.
->   * Fix & improve a ordering issue with clk_enable/disable &
->     reset_control assert/deassert.
->=20
-> v10:
-> - Removed unused of_device.h and added platform_device.h
->   & mod_devicetable.h
->=20
-> v9:
-> - Address code quality related review concerns (Andy Shevchenko)
-> - Use devm_add_action_or_reset() instead of explicit unwind calls.
->=20
-> v8:
-> - Remove fan related optional properties usage, keep
->   them as default. If needed, change pwm-fan driver
->   separately in future to add them as generic properties.
->=20
-> v7:
-> - Address code quality related review concerns.
-> - Rename fan related property to pwm-*.
-> - Fix one make dt_binding_check reported error.
->=20
-> v6:
-> - Readjust .apply op as per review feedback.
-> - Add back pwm-cells property to resolve make dt_binding_check error.
->   pwm-cells is a required property for PWM driver.
-> - Add back fan related optional properties.
->=20
-> v5:
-> - Address below review concerns from Uwe Kleine-K?nig.
->   * Improve comments about Limitations.
->   * Use return value of regmap_update_bits if container function returns
->     error code.
->   * Modify .apply op to have strict checking for fixed period supported
->     by PWM HW.
->   * Use u64 as type when use min_t for duty_cycle.
->   * Add reset_control_assert() in failure case in probe where it was miss=
-ing
->     earlier.
-> - Remove fan specific optional properties from pwm dt binding document (R=
-ob Herring)
->=20
-> v4:
-> - Address below review concerns from Uwe Kleine-K?nig.
->   * Improve notes and limitations comments.
->   * Add common prefixes for all #defines.
->   * Modify/Improve logic in .apply & .get_state ops as advised.
->   * Skip error messages in probe when error is -EPROBE_DEFER.
->   * Add dependencies in Kconfig (OF & HAS_IOMEM) and add select REGMAP_MM=
-IO.
->   * Address other code quality related review concerns.
-> - Fix make dt_binding_check reported error in YAML file.
->=20
-> v3:
-> - Address below review concerns from Uwe Kleine-K?nig.
->   * Remove fan rpm calibration task from the driver.
->   * Modify apply op as per the review feedback.
->   * Add roundup & round down where necessary.
->   * Address other misc code quality related review concerns.
->   * Use devm_reset_control_get_exclusive(). (Philipp Zabel)
->   * Improve dt binding document.
->=20
-> v2:
-> - Address below review concerns from Uwe Kleine-K?nig.
->   * Add notes and limitations about PWM HW.
->   * Rename all functions and structure to lgm_pwm_*=20
->   * Readjust space aligninment in structure fields to single space.
->   * Switch to using apply instead of config/enable/disable.
->   * Address other code quality related concerns.
->   * Rebase to 5.8-rc1.
-> - Address review concerns in dt binding YAML from Rob Herring.
->=20
-> v1:
-> - Initial version.
->=20
->=20
-> Rahul Tanwar (2):
->   Add DT bindings YAML schema for PWM fan controller of LGM SoC
->   Add PWM fan controller driver for LGM SoC
->=20
->  .../devicetree/bindings/pwm/intel,lgm-pwm.yaml     |  44 ++++
->  drivers/pwm/Kconfig                                |  11 +
->  drivers/pwm/Makefile                               |   1 +
->  drivers/pwm/pwm-intel-lgm.c                        | 246 +++++++++++++++=
-++++++
->  4 files changed, 302 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pwm/intel,lgm-pwm.y=
-aml
->  create mode 100644 drivers/pwm/pwm-intel-lgm.c
-
-Applied, thanks.
-
-Thierry
-
---ALfTUftag+2gvp1h
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9rNi8ACgkQ3SOs138+
-s6HwnBAArskR0yz5OMZXvQIsOf0DPZ7o/wKJQj0e4TK8j2KVw10EKOC39xjiZKDj
-CYMbbE2ww6eBsFs4ddv+dJXoGA3Ht6qrtqB28rbOzVfffLAHFQKtu/FkDeV0ZVKV
-+fqtL3Er+hmfasFgUDBgvINzgnqPfV3zDrLZYRbOBo5OaqBW06KZhi4w3FqJSOp9
-jrLzCWGdB2bPZorBWk56J2s8oBe4tlZ0EvecG9iMiPeovY64vQFqAEYDIcO+BXhy
-hoHmLyMJ94Q2wJk9uxAStZMpoYEtY4I7Yr2owHCxm88ENUytaVHCWjkEN+oRLbxG
-B2Qh0Ci5kXzFK3yFVeBm+X18ucy1yhGR1xG1YCl7Tv8YR23vjFigCAFRBqktjkW1
-2nsUtb2vSUstvrnydO3/WCubsVLwZvw8ICTckkOwudXjAiwAZkbl65Sc1IRWUBPz
-0aQHAC5fZfRcXPUbpw53tdOit7Vpg6DrvEKUxhHa7rLwD09TQn+TLpDgAXnJOoiX
-WjMlBhKzpT/RulJ8Tf3cbVv6TFNqAx/lx4I3+E6kMxOXsdXm7kGSvbKWsJ220uLv
-QYu+6DiFsbK1I2tfli866E8038+ExBXbPTQ3Q8NVdLjwDUxOgkcaEqPG+3cGDM6Q
-/e/TZsBTCZwz/Qeo/AsJg3oerPgdelVtra1RYseBQAC5OFu4NnI=
-=Ifnt
------END PGP SIGNATURE-----
-
---ALfTUftag+2gvp1h--
+In __dev_close_many() we call ndo_stop() whilst IFF_UP is still set.
+ndo_stop() may detach the device and bring down the PHY, resulting in an
+async link change event that calls dev_get_stats(). The latter call may
+have a problem if the device is detached. In a first place I'd consider
+such a case a network driver bug (ndo_get_stats/64 should check for
+device presence if depending on it).
+The additional check in linkwatch_do_dev() was meant to protect from such
+driver issues.
