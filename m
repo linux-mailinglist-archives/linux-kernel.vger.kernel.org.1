@@ -2,78 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66B02275670
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:34:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BC9B275673
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726548AbgIWKeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 06:34:36 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:59630 "EHLO mail.skyhub.de"
+        id S1726590AbgIWKe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 06:34:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726332AbgIWKef (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 06:34:35 -0400
-Received: from zn.tnic (p200300ec2f0d1300e5068c8a3292d31d.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:1300:e506:8c8a:3292:d31d])
+        id S1726130AbgIWKe6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 06:34:58 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B67AE1EC0409;
-        Wed, 23 Sep 2020 12:34:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600857273;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=FZsrac/HmInXoXIXxRGxQJzsoj2KcH5XhZgh7SJHhMg=;
-        b=FC1HJZM5zluJYAblwWMILTtAWbJarN/DVYpUvGXnhxCpMkNmE+o84Df1/dAjtgzJJILLfQ
-        QVm6ycc1b3BM9WAQc9n6/xGnwiIM9efk6Y2W2XvyarhYw25/ti6xrYaX32Ok25RVy/0daL
-        csbcbDCyozkIPUz0gzZXr+euC2nY3vw=
-Date:   Wed, 23 Sep 2020 12:34:31 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        syzbot <syzbot+ce179bc99e64377c24bc@syzkaller.appspotmail.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: general protection fault in perf_misc_flags
-Message-ID: <20200923103431.GF28545@zn.tnic>
-References: <00000000000052569205afa67426@google.com>
- <20200919110831.GD7462@zn.tnic>
- <CACT4Y+ZhofJhNjfav22YNVpxtH4_+3Qaut6rOiqv4MLNU5mcEg@mail.gmail.com>
- <CACT4Y+b9ZCKJkOmwbEC6sZxEQ-9g2g=-v4+X0aWv7AsrZo7utA@mail.gmail.com>
- <CAKwvOdmKcn=FNzwtBZ8z0evLz4BXgWtsoz9+QTC6GLqtNp1bXg@mail.gmail.com>
- <20200921221336.GN5901@zn.tnic>
- <CAKwvOd=E11KriNqeVv2-Tvq5sQy=4vyBzDEH22D5h5LgBeFsVw@mail.gmail.com>
- <20200923090336.GD28545@zn.tnic>
- <CACT4Y+Y4-vqdv01ebyzhUoggUCUyvbhjut7Wvj=r4dBfyxLeng@mail.gmail.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B35C20C56;
+        Wed, 23 Sep 2020 10:34:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600857298;
+        bh=kwj+MhVObNQUm9nV5n/DvTgTBurF6if/3blRrCazPoM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xdbg6wKNVEGs6d04CD1hC1IfvkMepKP+DMKIX387XT1DMnoXcFNRJlaeqj0RCrsEq
+         tEIjC6R/w8+zoNksdbIH7KuC6CuyueTi9JU6LXp7UJB4F21/kzZj2vbNehcU8LdpHT
+         IRvvZkD6zLKLrYhNuPphGjbr0R9hJmWf+7oopgdA=
+Date:   Wed, 23 Sep 2020 12:35:17 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     corbet@lwn.net, keescook@chromium.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 01/11] counters: Introduce counter and counter_atomic
+Message-ID: <20200923103517.GJ3154647@kroah.com>
+References: <cover.1600816121.git.skhan@linuxfoundation.org>
+ <e57eb89132000b255b5a7952cb82725ec2f3e4e0.1600816121.git.skhan@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACT4Y+Y4-vqdv01ebyzhUoggUCUyvbhjut7Wvj=r4dBfyxLeng@mail.gmail.com>
+In-Reply-To: <e57eb89132000b255b5a7952cb82725ec2f3e4e0.1600816121.git.skhan@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 11:24:48AM +0200, Dmitry Vyukov wrote:
-> 3. Run syzkaller locally with custom patches.
+On Tue, Sep 22, 2020 at 07:43:30PM -0600, Shuah Khan wrote:
+> Introduce Simple atomic and non-atomic counters.
+> 
+> There are a number of atomic_t usages in the kernel where atomic_t api
+> is used strictly for counting and not for managing object lifetime. In
+> some cases, atomic_t might not even be needed.
+> 
+> The purpose of these counters is twofold: 1. clearly differentiate
+> atomic_t counters from atomic_t usages that guard object lifetimes,
+> hence prone to overflow and underflow errors. It allows tools that scan
+> for underflow and overflow on atomic_t usages to detect overflow and
+> underflows to scan just the cases that are prone to errors. 2. provides
+> non-atomic counters for cases where atomic isn't necessary.
+> 
+> Simple atomic and non-atomic counters api provides interfaces for simple
+> atomic and non-atomic counters that just count, and don't guard resource
+> lifetimes. Counters will wrap around to 0 when it overflows and should
+> not be used to guard resource lifetimes, device usage and open counts
+> that control state changes, and pm states.
+> 
+> Using counter_atomic to guard lifetimes could lead to use-after free
+> when it overflows and undefined behavior when used to manage state
+> changes and device usage/open states.
+> 
+> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> ---
+>  Documentation/core-api/counters.rst | 158 +++++++++++++
+>  MAINTAINERS                         |   7 +
+>  include/linux/counters.h            | 343 ++++++++++++++++++++++++++++
+>  lib/Kconfig                         |  10 +
+>  lib/Makefile                        |   1 +
+>  lib/test_counters.c                 | 283 +++++++++++++++++++++++
 
-Let's say I wanna build the kernel with clang-10 using your .config and
-run it in a vm locally. What are the steps in order to reproduce the
-same workload syzkaller runs in the guest on the GCE so that I can at
-least try get as close as possible to reproducing locally?
+Tests for new apis, nice!
 
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
