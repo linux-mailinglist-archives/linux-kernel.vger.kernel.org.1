@@ -2,90 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B7027538C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 10:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D05C627539A
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 10:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726445AbgIWIoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 04:44:30 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:46174 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgIWIo3 (ORCPT
+        id S1726485AbgIWIrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 04:47:21 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:44372 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726342AbgIWIrV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 04:44:29 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 3ACE61C0BB3; Wed, 23 Sep 2020 10:44:28 +0200 (CEST)
-Date:   Wed, 23 Sep 2020 10:44:27 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>, jikos@suse.cz,
-        vojtech@suse.cz, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Yuan Ming <yuanmingbuaa@gmail.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 4.19 66/78] fbcon: remove soft scrollback code
-Message-ID: <20200923084427.GA32110@amd>
-References: <20200915140633.552502750@linuxfoundation.org>
- <20200915140636.861676717@linuxfoundation.org>
- <20200916075759.GC32537@duo.ucw.cz>
- <20200916082510.GB509119@kroah.com>
- <20200916090723.GA4151@duo.ucw.cz>
- <20200916091420.GF13670@1wt.eu>
+        Wed, 23 Sep 2020 04:47:21 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08N8jCsD039100;
+        Wed, 23 Sep 2020 08:47:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=/f+a55Jrpg5z5UfOHn1FeTNLOR0tV1R5oqqDEthK3mY=;
+ b=FXldwzRsBkugKughA56CsdL+tLdDRxLYXiFf5Y9TcqsMi7NPyGCWIIuPofkPyD1+Otpy
+ kq4Q/gzM/6UzQBvgxwq+2rtqHuBd1FQRI9BaJy9TIirFeNly9GD1mlIJnSUWKUc24AWu
+ xVoGxncszBButrBPTpxmFtKR+VtN+8Pr02gSVDu1in/bk6Hy7+FerL+xzKPGe7/NBO1g
+ Qo8RrQpzOuo5763eZlaTcBPs5jbh1GHVnKwaY/xgjGqTQVaINSPrY7zlQzLyqbXppxKz
+ qCUiOOE96zG6nUTRoIWHt3xjjoUT+t+upYDdiA+IlCSufn9MM01hlA0c2SPG9QKfv1BQ EA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 33q5rgfj3p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 23 Sep 2020 08:47:09 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08N8a6o2032690;
+        Wed, 23 Sep 2020 08:45:08 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 33r28uuqs9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 23 Sep 2020 08:45:08 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08N8j5lp006939;
+        Wed, 23 Sep 2020 08:45:07 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 23 Sep 2020 01:45:04 -0700
+Date:   Wed, 23 Sep 2020 11:44:58 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Simon Horman <horms+renesas@verge.net.au>,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] soc: renesas: rmobile-sysc: Fix some leaks in
+ rmobile_init_pm_domains()
+Message-ID: <20200923084458.GD1454948@mwanda>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="HcAYCG3uE/tztfnV"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200916091420.GF13670@1wt.eu>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9752 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999
+ suspectscore=0 adultscore=0 bulkscore=0 malwarescore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009230070
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9752 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 impostorscore=0
+ clxscore=1011 suspectscore=0 phishscore=0 malwarescore=0
+ priorityscore=1501 mlxlogscore=999 adultscore=0 bulkscore=0 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009230071
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This code needs to call iounmap() on the error paths.
 
---HcAYCG3uE/tztfnV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes: 2ed29e15e4b2 ("ARM: shmobile: R-Mobile: Move pm-rmobile to drivers/soc/renesas/")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ drivers/soc/renesas/rmobile-sysc.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Hi!
+diff --git a/drivers/soc/renesas/rmobile-sysc.c b/drivers/soc/renesas/rmobile-sysc.c
+index 54b616ad4a62..d8e6dc650939 100644
+--- a/drivers/soc/renesas/rmobile-sysc.c
++++ b/drivers/soc/renesas/rmobile-sysc.c
+@@ -328,6 +328,7 @@ static int __init rmobile_init_pm_domains(void)
+ 		pmd = of_get_child_by_name(np, "pm-domains");
+ 		if (!pmd) {
+ 			pr_warn("%pOF lacks pm-domains node\n", np);
++			iounmap(base);
+ 			continue;
+ 		}
+ 
+@@ -341,6 +342,7 @@ static int __init rmobile_init_pm_domains(void)
+ 		of_node_put(pmd);
+ 		if (ret) {
+ 			of_node_put(np);
++			iounmap(base);
+ 			break;
+ 		}
+ 	}
+-- 
+2.28.0
 
-> > I believe it will need to be reverted in Linus' tree, too. In fact,
-> > the patch seems to be a way for Linus to find a maintainer for the
-> > code, and I already stated I can do it. Patch is so new it was not
-> > even in -rc released by Linus.
->=20
-> I can honestly see how it can be missed from fbcon, but using vgacon
-> myself for cases like you described, I still benefit from the hw scroll
-> buffer which is OK.
->=20
-> > > See the email recently on oss-devel for one such reason why this was
-> > > removed...
-> >=20
-> > Would you have a link for that?
->=20
-> Here it is:
->=20
->   https://www.openwall.com/lists/oss-security/2020/09/15/2
-
-Thank you for the pointer!
-
-Best regards,
-								Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---HcAYCG3uE/tztfnV
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl9rCusACgkQMOfwapXb+vJD9QCgq8uPa3CErsd9aG+WeyQHw58W
-5rkAn1hcOezryPDv6NTJS4D5olmgVTPF
-=Eekr
------END PGP SIGNATURE-----
-
---HcAYCG3uE/tztfnV--
