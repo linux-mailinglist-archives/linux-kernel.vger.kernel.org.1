@@ -2,122 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76EFB275DAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C38A275DAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726515AbgIWQlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 12:41:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53672 "EHLO
+        id S1726693AbgIWQlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 12:41:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgIWQlA (ORCPT
+        with ESMTP id S1726130AbgIWQlG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 12:41:00 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04AE2C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 09:40:59 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id b124so15345487pfg.13
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 09:40:59 -0700 (PDT)
+        Wed, 23 Sep 2020 12:41:06 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98134C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 09:41:06 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id d190so169383iof.3
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 09:41:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=u26ETgHdMj6kI9HjFylSBAFJfoyLr2qc9o6DaGmIgsM=;
-        b=GCCpqjt+xCbzlLZm3di8051exilcDeoMNjhg6RzrzuYxfdNlVC4DPmq2osvs2nhbLg
-         AVRWcnVKfcl3Eye/39tHmojENyd1FmiUCjKmndh9bpgXv3htMg7P8L7aA9sA7CC65tRo
-         IN7Np/U5aImgIeLco+W+JBJluAsjacIk3aitKdLycM3M7MmutRZQniczFhRcbOeTpzTJ
-         Ew6PPkr5IDicU5nhpFFZt0BPsn+OkCPo4NU4foVMPTCCWV3rRr87fg+ctwjw1s3w18z2
-         ki5Oflv/oO/zrwiHCZgDVCukeIXRMYee45HZJhZstbJScUiboCOOXKJfayY6Gdv1ZgKm
-         lkrA==
+        bh=Dsh5kVcL0Zz/uaeUu7RBOwQv289afFMLyYlaCd/5qzg=;
+        b=OC6bVAwXdTVVp2Ujo5E2D27IUKBduif4l7gS+lm8rNKZ23HhFjma0l3k6LTHvc05LD
+         wu4wlocPR8bXhJbP5kcs/5Jb0861sIHTD1zzrHmwyVMGkJTg5xdlP1JHoyAluRqMwDSq
+         PMZqHfzEdnP6ZYcLzcmeL6S5MBW983kb7H7Dqf/HxAgrDXYF3Xc+9WM/iOkl/mpRa2ii
+         4W9hAL2LGD/O5XOSRybSP7auxmHuZT9MX6UrWyKzOK/gJhF3S2zcD6dcKS8NXbvzYhlu
+         UABwVR4RQD/hWU5OCt/AbiNEjwCr5pmhM0QHVprhJtXa8A1Mtmf2cvcURrDCVzDu21yT
+         XIjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=u26ETgHdMj6kI9HjFylSBAFJfoyLr2qc9o6DaGmIgsM=;
-        b=ln82oYi5/SzrcuCdG9yKIF08TH8REBs7ZdyAJ3UxyoOMktDww14F5eiSTbOxY6no0t
-         JnAtU8GDLoiZyyBGrU5ez3JRoZIg4ejgcgqfqIY92N/JYi7HG6JBATv8d/rENgU1Y0Wa
-         1PBbmysrAjCdTYwadCJYjbiMwf/s4ZhYZZREEMiRbIFXyQ2vqd8vgfjAxQn/yu5bfLGp
-         dCELhNddewdZ09qCbQyEFdqV66afD0NAaaWIQMRU+J8jTM0Y4mVyhdX2tItLvQkpm93Z
-         RMJHSWIVDOU1M8tpFHgNgXQkHcEXv6NjEH03FB1v0EAPdxNBbnEEAlFR3Po5T5RoErl5
-         9XrQ==
-X-Gm-Message-State: AOAM530H3+AVjD7lIX0ek3WSaVDE9s/N2JwnHjKU5fzQud7rfZHzdDsd
-        fCW5n+AxeAk7qFdElcg+xGPMJVKCSJVkP/NxopdizQ==
-X-Google-Smtp-Source: ABdhPJyifYPt6VI6ck9zLGf+I19aMcVsmGBwJEnK5WAIIs8oiQmwI9vuLma09GDug/1Ia9XnhvlJ7Jtw2DDqRwyUAX8=
-X-Received: by 2002:a62:2985:0:b029:142:2501:34d6 with SMTP id
- p127-20020a6229850000b0290142250134d6mr581517pfp.47.1600879259125; Wed, 23
- Sep 2020 09:40:59 -0700 (PDT)
+        bh=Dsh5kVcL0Zz/uaeUu7RBOwQv289afFMLyYlaCd/5qzg=;
+        b=PsrlHm4Ntq3cuEsbMR2de5JfnRBzeE7RYfzOry8Eq9O7qM/6oIWvRa3zXdCD5ygq7i
+         YFKsXNaCxgrseK0zIez7sERGp8tCnQxg3Ub5AOq4Cui1GyMOfcW85TeIo//KKxZihdpP
+         ptN3hv1N1b1BPRc3QnELO24/h6eB6dDACeTzHTvKp6fKNg5kt9mpKNOrgHKA/y5qOGFn
+         A5BDXuOtmwKSlrNQ8o40YGecS4LKKM06xLXgQ9DcGkxMfE0nWNbZAyEseNt2tT4jGIMr
+         cr2SO38DxmaoocLODhNw2NeM2piq+38uV8HX/NohUfYu4MGypHAY7RgkBQPukqZi1mRd
+         tkKA==
+X-Gm-Message-State: AOAM532vN/yuGFuRCW9hOc7hMUmnbRtHELjpCraKf6o8GvxGsM1th7xq
+        jTV8zFtEpjBHj8sd4/WQGYPFRWZ5gmeaSO1YYo0=
+X-Google-Smtp-Source: ABdhPJwDDwo+YLGCIxjT3ydOvfjQ8egO8Z64SUNEUKOYFAs4VOAUXFLtQ2WDzgWOnzI1D+2yl7GUoWKyTWEisdb9NY0=
+X-Received: by 2002:a6b:908:: with SMTP id t8mr320427ioi.124.1600879265871;
+ Wed, 23 Sep 2020 09:41:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200917181347.1359365-1-axelrasmussen@google.com>
- <CALOAHbDSHGeXjJN3E5mTOAFTVsXAvQL9+nSYTqht5Lz8HRNv0A@mail.gmail.com>
- <CAJHvVcg6eY0vVtfi8D6D9aus7=5zeP2H7Yc0mY5ofXztSzOFqQ@mail.gmail.com>
- <CALOAHbBr=ASfvHw1ZscWBE=CY-e7sBrLV0F5Ow=g1UGxmQsWcw@mail.gmail.com>
- <20200922125113.12ef1e03@gandalf.local.home> <CALOAHbD2qgvd7CHy6ZFJ_h8drtRWEU=E-hPofY-TuGTNfxyQbw@mail.gmail.com>
- <20200923120924.49638d90@oasis.local.home>
-In-Reply-To: <20200923120924.49638d90@oasis.local.home>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Wed, 23 Sep 2020 09:40:23 -0700
-Message-ID: <CAJHvVcgmJYZS=+g2_V7Bkx3fVGVZEytdpQDQgxu2nEe3qJh2OQ@mail.gmail.com>
-Subject: Re: [PATCH] mmap_lock: add tracepoints around lock acquisition
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Yafang Shao <laoar.shao@gmail.com>, Ingo Molnar <mingo@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michel Lespinasse <walken@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
+References: <20200916153605.5253-1-ztong0001@gmail.com> <20200922135956.GA23437@lst.de>
+ <CAA5qM4BPKZaqH0SHS3zCO7oz=f3Ow_zB2fqtJYUrbbFBNbWsNQ@mail.gmail.com>
+ <20200922164154.GA1894@lst.de> <61E8905E-E3FE-46EB-8283-9B35B4F069E1@gmail.com>
+ <20200923050641.GA14878@lst.de>
+In-Reply-To: <20200923050641.GA14878@lst.de>
+From:   Tong Zhang <ztong0001@gmail.com>
+Date:   Wed, 23 Sep 2020 12:40:55 -0400
+Message-ID: <CAA5qM4AuYn4XEHWv5TcHpr77-4yd5os3ykC0FY-JGE-i1McR8Q@mail.gmail.com>
+Subject: Re: [PATCH] nvme: fix use-after-free during booting
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 9:09 AM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Wed, 23 Sep 2020 18:04:17 +0800
-> Yafang Shao <laoar.shao@gmail.com> wrote:
->
-> > > What you can do, and what we have done is the following:
-> > >
-> > > (see include/linux/page_ref.h)
-> > >
-> > >
-> > > #ifdef CONFIG_TRACING
-> > > extern struct tracepoint __tracepoint_mmap_lock_start_locking;
-> > > extern struct tracepoint __tracepoint_mmap_lock_acquire_returned;
-> > >
-> > > #define mmap_lock_tracepoint_active(t) static_key_false(&(__tracepoint_mmap_lock_##t).key)
-> > >
-> > > #else
-> > > #define mmap_lock_tracepoint_active(t) false
-> > > #endif
-> > >
-> > > static inline void mmap_write_lock(struct mm_struct *mm)
-> > > {
-> > >         if (mmap_lock_tracepoint_active(start_locking))
-> > >                 mmap_lock_start_trace_wrapper();
-> > >         down_write(&mm->mmap_lock);
-> > >         if (mmap_lock_tracepoint_active(acquire_returned))
-> > >                 mmap_lock_acquire_trace_wrapper();
-> > > }
-> > >
-> > >
-> > > -- Steve
-> >
-> >
-> > Great!
-> >
-> > Thanks Steve.
->
-> If the above becomes useful, I may just add helper functions into a
-> header file that you can include. Perhaps call it: tracepoint_active()
-> and you need to pass in as an argument the name of the tracepoint.
+IMHO, WARN_ON_ONCE() looks ok to me. as long as it won't crash the
+system or lead to any memory corruption issue.
+We can talk about the reproducer offline if you are interested.
+- Tong
 
-Thanks for this suggestion Steven, it's working quite well.
-
-I also have a very short patch to the tracing which allows plumbing
-the string values through to "just work".
-
-I plan to send out a v2 before the end of the week.
-
+On Wed, Sep 23, 2020 at 1:06 AM Christoph Hellwig <hch@lst.de> wrote:
 >
-> -- Steve
+> On Tue, Sep 22, 2020 at 04:34:45PM -0400, Tong Zhang wrote:
+> > Hi Christoph,
+> > I modified the patch a bit and now it works.
+>
+> So you're still hitting the WARN_ON_ONCE?  I think we need to fix that
+> as well, but all the ideas I have will turn into a bigger project,
+> so I think I'll submit this one to Jens, and then do things
+> incrementally.
+>
+> Can you share your reproducer?
