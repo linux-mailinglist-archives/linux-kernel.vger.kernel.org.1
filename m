@@ -2,71 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B99A276480
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:30:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E80276494
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:35:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726819AbgIWXan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 19:30:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36240 "EHLO mail.kernel.org"
+        id S1726694AbgIWXfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 19:35:13 -0400
+Received: from mga07.intel.com ([134.134.136.100]:39739 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726638AbgIWXaf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 19:30:35 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D5D732065E;
-        Wed, 23 Sep 2020 23:30:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600903835;
-        bh=YEekD48/CVeQDATxhCdijxDkNgGZL+EL076GbjZ49R0=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=trOkXhbUhaazwz6ah1vmvfC5SPgR51xx5YprUD7cw4+Ma3SxBqp1zJg9A5X/OVfos
-         fmpVC1eMHZ+PXBD/fJw+uT4eLLQCChsApsYgGqoG1/Rbm+vg/Lfhpk4qmMqQ3A/Oi2
-         E4Z0LPl2HDlyxrJ9SYkRYq4KLTl9o/WGdtXOEcos=
-Content-Type: text/plain; charset="utf-8"
+        id S1726596AbgIWXfI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 19:35:08 -0400
+IronPort-SDR: KHijUnqgKh9lvn53wnozlDKTlLLGxBTsuJ7968XBj8HFwjmu5kS2F8zuOCuFGJFq5LNVQBdL8m
+ D80RZ8aExEfQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="225177341"
+X-IronPort-AV: E=Sophos;i="5.77,295,1596524400"; 
+   d="scan'208";a="225177341"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 16:35:07 -0700
+IronPort-SDR: ffVCwNLmC2oSbtMtzbpABS1Qk/BUxEgESw51hL4TBoDmq6yth3JMuliujOyhR6XwLyY07dC7tf
+ zXs6ZpTkZn7Q==
+X-IronPort-AV: E=Sophos;i="5.77,295,1596524400"; 
+   d="scan'208";a="335696642"
+Received: from djiang5-desk3.ch.intel.com ([143.182.136.137])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 16:35:07 -0700
+Subject: [PATCH resend v5 1/5] x86/asm: Carve out a generic movdir64b()
+ helper for general usage
+From:   Dave Jiang <dave.jiang@intel.com>
+To:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 23 Sep 2020 16:35:06 -0700
+Message-ID: <160090410685.45290.18178329260065780041.stgit@djiang5-desk3.ch.intel.com>
+In-Reply-To: <160090402526.45290.468202328615149643.stgit@djiang5-desk3.ch.intel.com>
+References: <160090402526.45290.468202328615149643.stgit@djiang5-desk3.ch.intel.com>
+User-Agent: StGit/unknown-version
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <0ce9fdb6-e224-ced7-ec32-fe67b2ca6127@marek.ca>
-References: <20200904030958.13325-1-jonathan@marek.ca> <20200904030958.13325-6-jonathan@marek.ca> <160080040123.310579.8471841951357841843@swboyd.mtv.corp.google.com> <0ce9fdb6-e224-ced7-ec32-fe67b2ca6127@marek.ca>
-Subject: Re: [PATCH v2 5/5] clk: qcom: add video clock controller driver for SM8250
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-To:     Jonathan Marek <jonathan@marek.ca>, linux-arm-msm@vger.kernel.org
-Date:   Wed, 23 Sep 2020 16:30:33 -0700
-Message-ID: <160090383364.310579.1979253418505275623@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Jonathan Marek (2020-09-23 09:07:16)
-> On 9/22/20 2:46 PM, Stephen Boyd wrote:
-> > Quoting Jonathan Marek (2020-09-03 20:09:54)
-> >=20
-> >> +                       .ops =3D &clk_branch2_ops,
-> >> +               },
-> >> +       },
-> >> +};
-> >> +
-> >> +static struct clk_branch video_cc_mvs0_clk =3D {
-> >> +       .halt_reg =3D 0xd34,
-> >> +       .halt_check =3D BRANCH_HALT_SKIP, /* TODO: hw gated ? */
-> >=20
-> > Is this resolved?
-> >=20
->=20
-> Downstream has this clock as BRANCH_HALT_VOTED, but with the upstream=20
-> venus driver (with patches to enable sm8250), that results in a=20
-> "video_cc_mvs0_clk status stuck at 'off" error. AFAIK venus=20
-> enables/disables this clock on its own (venus still works without=20
-> touching this clock), but I didn't want to remove this in case it might=20
-> be needed. I removed these clocks in the v3 I just sent.
->=20
+The MOVDIR64B instruction can be used by other wrapper instructions. Move
+the asm code to special_insns.h and have iosubmit_cmds512() call the
+asm function.
 
-Hmm. Does downstream use these clks? There have been some clk stuck
-problems with venus recently that were attributed to improperly enabling
-clks before enabling interconnects and power domains. Maybe it's the
-same problem.
+Signed-off-by: Dave Jiang <dave.jiang@intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+---
+ arch/x86/include/asm/io.h            |   17 +++--------------
+ arch/x86/include/asm/special_insns.h |   19 +++++++++++++++++++
+ 2 files changed, 22 insertions(+), 14 deletions(-)
+
+diff --git a/arch/x86/include/asm/io.h b/arch/x86/include/asm/io.h
+index e1aa17a468a8..d726459d08e5 100644
+--- a/arch/x86/include/asm/io.h
++++ b/arch/x86/include/asm/io.h
+@@ -401,7 +401,7 @@ extern bool phys_mem_access_encrypted(unsigned long phys_addr,
+ 
+ /**
+  * iosubmit_cmds512 - copy data to single MMIO location, in 512-bit units
+- * @__dst: destination, in MMIO space (must be 512-bit aligned)
++ * @dst: destination, in MMIO space (must be 512-bit aligned)
+  * @src: source
+  * @count: number of 512 bits quantities to submit
+  *
+@@ -412,25 +412,14 @@ extern bool phys_mem_access_encrypted(unsigned long phys_addr,
+  * Warning: Do not use this helper unless your driver has checked that the CPU
+  * instruction is supported on the platform.
+  */
+-static inline void iosubmit_cmds512(void __iomem *__dst, const void *src,
++static inline void iosubmit_cmds512(void __iomem *dst, const void *src,
+ 				    size_t count)
+ {
+-	/*
+-	 * Note that this isn't an "on-stack copy", just definition of "dst"
+-	 * as a pointer to 64-bytes of stuff that is going to be overwritten.
+-	 * In the MOVDIR64B case that may be needed as you can use the
+-	 * MOVDIR64B instruction to copy arbitrary memory around. This trick
+-	 * lets the compiler know how much gets clobbered.
+-	 */
+-	volatile struct { char _[64]; } *dst = __dst;
+ 	const u8 *from = src;
+ 	const u8 *end = from + count * 64;
+ 
+ 	while (from < end) {
+-		/* MOVDIR64B [rdx], rax */
+-		asm volatile(".byte 0x66, 0x0f, 0x38, 0xf8, 0x02"
+-			     : "=m" (dst)
+-			     : "d" (from), "a" (dst));
++		movdir64b(dst, from);
+ 		from += 64;
+ 	}
+ }
+diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
+index 59a3e13204c3..2a5abd27bb86 100644
+--- a/arch/x86/include/asm/special_insns.h
++++ b/arch/x86/include/asm/special_insns.h
+@@ -234,6 +234,25 @@ static inline void clwb(volatile void *__p)
+ 
+ #define nop() asm volatile ("nop")
+ 
++/* The dst parameter must be 64-bytes aligned */
++static inline void movdir64b(void *dst, const void *src)
++{
++	/*
++	 * Note that this isn't an "on-stack copy", just definition of "dst"
++	 * as a pointer to 64-bytes of stuff that is going to be overwritten.
++	 * In the MOVDIR64B case that may be needed as you can use the
++	 * MOVDIR64B instruction to copy arbitrary memory around. This trick
++	 * lets the compiler know how much gets clobbered.
++	 */
++	volatile struct { char _[64]; } *__dst = dst;
++
++	/* MOVDIR64B [rdx], rax */
++	asm volatile(".byte 0x66, 0x0f, 0x38, 0xf8, 0x02"
++		     :
++		     : "m" (*(struct { char _[64];} **)src), "a" (__dst)
++		     : "memory");
++}
++
+ #endif /* __KERNEL__ */
+ 
+ #endif /* _ASM_X86_SPECIAL_INSNS_H */
+
