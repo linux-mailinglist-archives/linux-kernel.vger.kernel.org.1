@@ -2,179 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1CEF2759F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:29:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 685F92759FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:30:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726638AbgIWO3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 10:29:23 -0400
-Received: from mail1.bemta24.messagelabs.com ([67.219.250.3]:34812 "EHLO
-        mail1.bemta24.messagelabs.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726130AbgIWO3X (ORCPT
+        id S1726709AbgIWOaM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 23 Sep 2020 10:30:12 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:51525 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726688AbgIWOaM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 10:29:23 -0400
-Received: from [100.112.129.197] (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256 bits))
-        by server-3.bemta.az-a.us-west-2.aws.symcld.net id 1D/04-20041-FBB5B6F5; Wed, 23 Sep 2020 14:29:19 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA1WSa0xTZxjHeXtODwekcCwVXjrLki4Y060NhS2
-  0uiUmXSa7RWP2YaKxnkLhNLSl6SUtJFtAhovtjGhjIhdHbVaLKILMbGMwHEg0FAGtlzVTRzuK
-  4baV0ESkQl3bU9327fc8//9zSx4cYXswLq60GJV6LanmY+koNRfYJLx2oFpe6HmMSab8EUziu
-  LZTcqytN1Uy425DJHd/bsd2MUuDw98ySu0+NygNDd3HSsN9+XvRMqZKq6ixHGZSc/fvpuqub7
-  IM3mtB68FYmhWk42yingEf+qzACtJiwQKAfY4sWmhgwO7jv6XSwXMAfd0nsbgLEC4Ejq+r4wI
-  gbqBw6OjXgA56AbRFwokAJQYQWD9wikk37mDAB85aulcAwFBwISbgOEYI4EQfGfdwiPfh7dlu
-  RpwR4kcAf/DK4pxNmGHT9C2E9ljg9IqTSXMRdA+vpcYZJQrg7J8TifVYxGF452pj8qAyOBTsT
-  uTTiLdhV9Mokz4hB656LiVn5cLfgx0JhgQBvxucQmjeAudnokn/NwA+b8fo/E7oWz8CaOZBb4
-  ctyZ/CF1FXslYApyJdKM3V8MyTP5L5bXDw6Wgynw+7jgfQZlDU+p81aH4LOgZWMJrfhOfPLSK
-  tidM2w7GWIOoAaBcoUehVVZRRQ6rUQnFhoVAsLhKKi8VCqVhE1glJkckgNCsNRmGRiDQbRIZa
-  Tbm6QqRVGvtA7KEqdI0HfgKji8uiEZCHM/hbWOOfVcvZmYqailqKNFByvUmtNIyArTjOh6ym/
-  TFts15ZpbRUqtSxt3wpQzyDz2HllcVklkFHagyqKlrygGK8ef6sE8G/P+tyImxUW6NVcnNZq/
-  FORNxKmbSvGr18cS/gcbNZICUlhZ2hU+o1KuP/9QWQiwN+NmtvfGCGSmt8NS/2t7ErOKx3wlR
-  8FSP5r8StZ+y/mtsj7XyW5VvNM6F73ms5tCTTyLycS0bf6507OLc0y3X3GHZyz4lwwLR7vvgD
-  20ez1vHykejl6fbOyKS2IHQ9M/yLrrXq9pXQmfKTX3xesb61J1p3U6AIif/ut/svTx672PZIb
-  hP0u3Oo0xHmYm16qGHbxRxLs3ntAuXgNbkrd3ikvBm7TfiuPXvuK0X+0gRj2Nrf+9ruQb+fG+
-  Ud4pUEqkuWD7qO7Br7q+PKE8vkxj73nUdrlXJkYZgxNKL80PNiA7khfXb6EyE30/vxqZv7lvI
-  fyAoaXP6Dj098OXVuOyZvlL0xIVgXVUKnTCrY4GUVPuw5usIs2/70V3O5no8aKFIsQPQG8h+B
-  JtSZXQQAAA==
-X-Env-Sender: ahuang12@lenovo.com
-X-Msg-Ref: server-29.tower-326.messagelabs.com!1600871357!6136!1
-X-Originating-IP: [104.232.225.11]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.60.3; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 24009 invoked from network); 23 Sep 2020 14:29:18 -0000
-Received: from unknown (HELO lenovo.com) (104.232.225.11)
-  by server-29.tower-326.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 23 Sep 2020 14:29:18 -0000
-Received: from HKGWPEMAIL02.lenovo.com (unknown [10.128.3.70])
-        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by Forcepoint Email with ESMTPS id 2989397888831422E7CD;
-        Wed, 23 Sep 2020 10:29:15 -0400 (EDT)
-Received: from HKGWPEMAIL03.lenovo.com (10.128.3.71) by
- HKGWPEMAIL02.lenovo.com (10.128.3.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2044.4; Wed, 23 Sep 2020 22:29:17 +0800
-Received: from HKGWPEXCH02.lenovo.com (10.128.62.31) by
- HKGWPEMAIL03.lenovo.com (10.128.3.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2044.4
- via Frontend Transport; Wed, 23 Sep 2020 22:29:17 +0800
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (104.47.125.56)
- by mail.lenovo.com (10.128.62.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2044.4; Wed, 23 Sep
- 2020 22:29:17 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=i71ytEpB/CXbrrmOum1CP0KVk3dPRbedWYXzW9/tXaZoyagfIPEVB/2h+Jh+vQCh7edc6MBXdB/hw27hZM/F3Hb9tuqGR9b6YKNSJzaYSa8xxPk3uZ6rFc911WM/wP2Qt3LQw8Aw9ZzBd14wekWthQXg36+BBXNgVrgp2BReLFenbeG5l9sg2URJi9WaKl1S2mPnD15AbCQVm6mTx0ITgjdccSBpmApiTw5fLGmy3vDzLgN186rngmSLcAsdU9KKO3PaegsnBMcd05044ivSeAM7WWKzRsfllEeUA63TwsJ/mC5Q6TVfIq/oBQ/FpsYrG+6Nz/WNm53Ak+Y5ZoRyoQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1Vaq6LBW7o4JIMHVWJ6ujhddt9YoyIJS+47y/Jxy7uY=;
- b=QGqAJubXMUZMflprTCL1QS+Imta1AH/GO+zS3PyoQ9om/rKv5kGLSLjGy/FI7C9xzAlD34icZi7unKsMCCr+Me5XCvsd/nN0avWArM0xGOE0VjwJdxR1K3cFllNeQXdHh4csViqNSbMcYKFBARtLm6uGpvrexWbfUDgNhE6BwJpsA9DVKz7Uds2I5++NHmTTKYXXTuwg9BNAZrk0OvRFzB7TH7g4zwy7SDzDg9ZWLJOCdm7wuZo+ITo17vf7XgGLz5oC+f6GHE5+7wJMt5zjYXEgyFZVnoNZ5i7ALMsahoeFR40lGzJGHnNPjXnWevkHN+ig1/vnKA6jYcu+BD4Niw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=lenovo.com; dmarc=pass action=none header.from=lenovo.com;
- dkim=pass header.d=lenovo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=LenovoBeijing.onmicrosoft.com; s=selector2-LenovoBeijing-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1Vaq6LBW7o4JIMHVWJ6ujhddt9YoyIJS+47y/Jxy7uY=;
- b=a4+cTo98P/pTdDWBiyRz+dN5MXyPmFOu67mvjGG2nIIefidDUCN6imCpzji3piud35d6HB4VpazdY4t/cK+CCPy2elOvxqHLJ37KAT29yIu3D88sfO0erzrdona0Occws9/Z3SWQhqyNOgjxY+M704AfpKMuXhFzdk01rr2nI9E=
-Received: from HK2PR0302MB2594.apcprd03.prod.outlook.com (2603:1096:202:c::8)
- by HK0PR03MB4067.apcprd03.prod.outlook.com (2603:1096:203:9b::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.13; Wed, 23 Sep
- 2020 14:29:13 +0000
-Received: from HK2PR0302MB2594.apcprd03.prod.outlook.com
- ([fe80::cf3:6e67:e2c8:4cb0]) by HK2PR0302MB2594.apcprd03.prod.outlook.com
- ([fe80::cf3:6e67:e2c8:4cb0%6]) with mapi id 15.20.3412.020; Wed, 23 Sep 2020
- 14:29:13 +0000
-From:   Adrian Huang12 <ahuang12@lenovo.com>
-To:     Baoquan He <bhe@redhat.com>, "joro@8bytes.org" <joro@8bytes.org>
-CC:     "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Wed, 23 Sep 2020 10:30:12 -0400
+Received: from mail-pg1-f200.google.com ([209.85.215.200])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1kL5ma-0007Cy-Af
+        for linux-kernel@vger.kernel.org; Wed, 23 Sep 2020 14:30:08 +0000
+Received: by mail-pg1-f200.google.com with SMTP id g18so130165pgl.10
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 07:30:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=bTfab3UbFmb3i36HEK+E15jbAlsnpbbsPCZOXGV2m7Y=;
+        b=WcErysuT4BTZkHGqh2SaH5Nri15uItpqFI0ENdnhh2ZVbf0YhpP2NUj263RaJiJp5w
+         3En0OiOQuUUBRZSWtPXrfgevdlha1KEd5gHRBaAyDJyWENlJE78yV0uzAeS/OGYMIQo1
+         YZpqpla4FB0sqCs39OlP+WW4vil1x7M39K+nJnLl/Xu+bG3iXUXP+LuVBekcZTwBw8h2
+         e28DIN6U2XIqmS+m0Jz+CG0rwz9ciGkui4qgwJPWb3kUpwv1nCDsRcLaSz13E7/4FlOT
+         K97OW8R36WBomtE6QXxrSqbsWBRPTfIOOdj6btQq9IMRi1qGyUu9Zf/aO4gUJL+EtUU2
+         03XQ==
+X-Gm-Message-State: AOAM530hwNLAl1tvwTVBPW4HVN31Oc6pq+fYGxwZNMOGWSLRDPmKpvFJ
+        YRJ2LUXHqwBtbLYWVD/6Wt7DhRgvw9nrrmz0hys7yVfVvnkQM+oLPkCfpHZeGNvAhO6IMbnBnvX
+        z1akSjIOEx2DXt7cSYtr93wYWsNjZR7a3ugwNcE5lEQ==
+X-Received: by 2002:a62:7743:0:b029:13c:1611:658e with SMTP id s64-20020a6277430000b029013c1611658emr209623pfc.11.1600871406810;
+        Wed, 23 Sep 2020 07:30:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyuF3wBMfqqTypFQALOKXjOzXHiWXaErIQvPGZx7JS6B0eLRg6hqfUAcaLput8HyMdvUO1QYg==
+X-Received: by 2002:a62:7743:0:b029:13c:1611:658e with SMTP id s64-20020a6277430000b029013c1611658emr209583pfc.11.1600871406315;
+        Wed, 23 Sep 2020 07:30:06 -0700 (PDT)
+Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
+        by smtp.gmail.com with ESMTPSA id 72sm18172040pfx.79.2020.09.23.07.30.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 23 Sep 2020 07:30:05 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
+Subject: Re: [PATCH] PCI/ASPM: Enable ASPM for links under VMD domain
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+In-Reply-To: <20200917172010.GA1710481@bjorn-Precision-5520>
+Date:   Wed, 23 Sep 2020 22:29:39 +0800
+Cc:     "Derrick, Jonathan" <jonathan.derrick@intel.com>,
+        "wangxiongfeng2@huawei.com" <wangxiongfeng2@huawei.com>,
+        "kw@linux.com" <kw@linux.com>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+        "refactormyself@gmail.com" <refactormyself@gmail.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jsnitsel@redhat.com" <jsnitsel@redhat.com>
-Subject: RE: [External]  Re: [PATCH] Revert "iommu/amd: Treat per-device
- exclusion ranges as r/w unity-mapped regions"
-Thread-Topic: [External]  Re: [PATCH] Revert "iommu/amd: Treat per-device
- exclusion ranges as r/w unity-mapped regions"
-Thread-Index: AQHWkVHq0K7SmrxgEESssWwoSA9vZql2Ra7g
-Date:   Wed, 23 Sep 2020 14:29:13 +0000
-Message-ID: <HK2PR0302MB259469A987E70869F5E7809EB3380@HK2PR0302MB2594.apcprd03.prod.outlook.com>
-References: <20200923022655.750-1-bhe@redhat.com>
- <20200923023244.GK25604@MiWiFi-R3L-srv>
-In-Reply-To: <20200923023244.GK25604@MiWiFi-R3L-srv>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [2001:b011:e002:1525:8075:eff5:54cb:a51c]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 56c16a34-9586-4f38-f59e-08d85fcd0b2e
-x-ms-traffictypediagnostic: HK0PR03MB4067:
-x-microsoft-antispam-prvs: <HK0PR03MB40672DEDC347BAFCA41897F1B3380@HK0PR03MB4067.apcprd03.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: qYaYt2fPoV+IhvHcfq+gw6x4B/+QQGOwBWwFBtquUHYnw+RAuWDJ7lQ0u5JtgPqv9nv/nNlgvKfvaXUPGM9Ae9E+D+vJhJ4BOb1LiFoEVVhVF44wH6c1rpYgZu84d+DqpMy1b9NnssUmj/ZSs90nW3r+YMcex8l0SqhPqGvv9RBMdX9OTJfc2m/YV8xt++Ax5OpB2sFp3YhZyZkZsMOOJzmN0IiCaF+dSFm8juPEtUWMjj4JSKM6XcoXA16kRnrTi1OIetIsnLIoDGyWvIMwne3/rtmD2vatdCDjzu5PwoTsYJ6R68Px3QUvTCMc3tPV6xg+xufg5PRFcw8eXYp7L8dRnANo06zg0GfOQKTvm/kMWsYm6V2HC1LEqw2gxeso
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK2PR0302MB2594.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(39860400002)(376002)(346002)(396003)(66476007)(4326008)(66446008)(66946007)(64756008)(71200400001)(5660300002)(54906003)(52536014)(76116006)(86362001)(478600001)(66556008)(7696005)(55016002)(83380400001)(53546011)(110136005)(2906002)(316002)(8676002)(186003)(9686003)(8936002)(33656002)(6506007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: zyP+WQmqlEzkMgTxk281/lwzyvCxdpFq6jB+ZZyCYvFyUsDvS0OrvyCktyY0r69KrEmCqu1nx3lzabTEu0Vood15VnfsmdrXEHd8Pz0qbA9kuwC5YUqWfFDvRFaF5DKoPVaDVVV+5QE7jwbJZn1WFLVIrux+fDlL3DO12p5+7grLttYEK6M1nh2MnqwMqDQAzf+CxKXqFhvCZCEBw3nq1uRDn6JfGPw0T1joOqLO8+CtsqRqsaQP6S4wuAE3mdHKhSKeBs7x/PjwMoiTYEkWJioQgpccG6uhG1vl6ZpvDqePOoHf79MNcGhFL1U0YlRnJcngoZMn4GuBVHvhfK4HuCz1y48EfFmOvwOweFAP7Tx3g6aJxDL8X+Al/hPtOkVfmWR4Ec9tNgfX5Pj2kQJN2cvoaa0Ek9RfoxeCEJhGnH94j5uT1a5FSUTwAsT851zykTy7SmPk0T6cMc6Zm7gypiL1tLWO127rzRk/RV+tcc1ZcjDzRwx2bC+hff2ImcAj+MsxJmYTzuQGTFu6dsA9sTkY/WSd/65+Vip4YY5HjyiQBYwuVamFRhP5iAMGO+lbUiH15GW6iS+S5ffKPZdUhFcbKOyY8wtvKH1jAm0aJW0D80NKs0PcKiuoVDQ9DpvD3cDLvN9sc/VSdjjXd4jCl2wXZfFC8rTsUpiUO8tbih5y7VjXhGMjhBvSvt/FxU4vT06ECO8XV7EeKhJ1a4Xr7Q==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HK2PR0302MB2594.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 56c16a34-9586-4f38-f59e-08d85fcd0b2e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2020 14:29:13.2896
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 5c7d0b28-bdf8-410c-aa93-4df372b16203
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fTERKvaNx0st40RA1LoXcjM2dXkgpx/f3GZbTdhsOD9+xto/WR22/xrj8F9oQpihg5kBme5uTPkDAZbDPPv0zg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR03MB4067
-X-OriginatorOrg: lenovo.com
+        "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>,
+        "Mario.Limonciello@dell.com" <Mario.Limonciello@dell.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <49A36179-D336-4A5E-8B7A-A632833AE6B2@canonical.com>
+References: <20200917172010.GA1710481@bjorn-Precision-5520>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+X-Mailer: Apple Mail (2.3608.120.23.2.1)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Baoquan,
 
-> -----Original Message-----
-> From: Baoquan He <bhe@redhat.com>
-> Sent: Wednesday, September 23, 2020 10:33 AM
-> To: joro@8bytes.org; Adrian Huang12 <ahuang12@lenovo.com>
-> Cc: iommu@lists.linux-foundation.org; linux-kernel@vger.kernel.org;
-> jsnitsel@redhat.com
-> Subject: [External] Re: [PATCH] Revert "iommu/amd: Treat per-device exclu=
-sion
-> ranges as r/w unity-mapped regions"
->=20
-> Forgot CC-ing Jerry, add him.
->=20
-> On 09/23/20 at 10:26am, Baoquan He wrote:
-> > A regression failure of kdump kernel boot was reported on a HPE system.
-> > Bisect points at commit 387caf0b759ac43 ("iommu/amd: Treat per-device
-> > exclusion ranges as r/w unity-mapped regions") as criminal. Reverting
-> > it fix the failure.
-> >
-> > With the commit, kdump kernel will always print below error message,
-> > then naturally AMD iommu can't function normally during kdump kernel
-> bootup.
-> >
-> >   ~~~~~~~~~
-> >   AMD-Vi: [Firmware Bug]: IVRS invalid checksum
-> >
-> > Why commit 387caf0b759ac43 causing it haven't been made clear.
->=20
-> Hi Joerg, Adrian
->=20
-> We only have one machine which can reproduce the issue, it's a gen10-01 o=
-f
-> HPE. If any log or info are needed, please let me know, I can attach here=
-.
 
-Could you please provide the following info?
-1. The booting log for both system kernel and kdump kernel by appending the=
- kernel parameter 'amd_iommu_dump'
-2. ACPI table (# acpidump > acpi-table) -> Send out the file 'acpi-table'.=
-=20
+> On Sep 18, 2020, at 01:20, Bjorn Helgaas <helgaas@kernel.org> wrote:
+> 
+> On Thu, Sep 10, 2020 at 07:51:05PM +0000, Derrick, Jonathan wrote:
+>> On Thu, 2020-09-10 at 14:17 -0500, Bjorn Helgaas wrote:
+>>> On Thu, Sep 10, 2020 at 06:52:48PM +0000, Derrick, Jonathan wrote:
+>>>> On Thu, 2020-09-10 at 12:38 -0500, Bjorn Helgaas wrote:
+>>>>> On Thu, Sep 10, 2020 at 04:33:39PM +0000, Derrick, Jonathan wrote:
+>>>>>> On Wed, 2020-09-09 at 20:55 -0500, Bjorn Helgaas wrote:
+>>>>>>> On Fri, Aug 21, 2020 at 08:32:20PM +0800, Kai-Heng Feng wrote:
+>>>>>>>> New Intel laptops with VMD cannot reach deeper power saving state,
+>>>>>>>> renders very short battery time.
+>>>>>>>> 
+>>>>>>>> As BIOS may not be able to program the config space for devices under
+>>>>>>>> VMD domain, ASPM needs to be programmed manually by software. This is
+>>>>>>>> also the case under Windows.
+>>>>>>>> 
+>>>>>>>> The VMD controller itself is a root complex integrated endpoint that
+>>>>>>>> doesn't have ASPM capability, so we can't propagate the ASPM settings to
+>>>>>>>> devices under it. Hence, simply apply ASPM_STATE_ALL to the links under
+>>>>>>>> VMD domain, unsupported states will be cleared out anyway.
+>>>>>>>> 
+>>>>>>>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>>>>>>>> ---
+>>>>>>>> drivers/pci/pcie/aspm.c |  3 ++-
+>>>>>>>> drivers/pci/quirks.c    | 11 +++++++++++
+>>>>>>>> include/linux/pci.h     |  2 ++
+>>>>>>>> 3 files changed, 15 insertions(+), 1 deletion(-)
+>>>>>>>> 
+>>>>>>>> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+>>>>>>>> index 253c30cc1967..dcc002dbca19 100644
+>>>>>>>> --- a/drivers/pci/pcie/aspm.c
+>>>>>>>> +++ b/drivers/pci/pcie/aspm.c
+>>>>>>>> @@ -624,7 +624,8 @@ static void pcie_aspm_cap_init(struct pcie_link_state *link, int blacklist)
+>>>>>>>> 		aspm_calc_l1ss_info(link, &upreg, &dwreg);
+>>>>>>>> 
+>>>>>>>> 	/* Save default state */
+>>>>>>>> -	link->aspm_default = link->aspm_enabled;
+>>>>>>>> +	link->aspm_default = parent->dev_flags & PCI_DEV_FLAGS_ENABLE_ASPM ?
+>>>>>>>> +			     ASPM_STATE_ALL : link->aspm_enabled;
+>>>>>>> 
+>>>>>>> This function is ridiculously complicated already, and I really don't
+>>>>>>> want to make it worse.
+>>>>>>> 
+>>>>>>> What exactly is the PCIe topology here?  Apparently the VMD controller
+>>>>>>> is a Root Complex Integrated Endpoint, so it's a Type 0 (non-bridge)
+>>>>>>> device.  And it has no Link, hence no Link Capabilities or Control and
+>>>>>>> hence no ASPM-related bits.  Right?
+>>>>>> 
+>>>>>> That's correct. VMD is the Type 0 device providing config/mmio
+>>>>>> apertures to another segment and MSI/X remapping. No link and no ASPM
+>>>>>> related bits.
+>>>>>> 
+>>>>>> Hierarchy is usually something like:
+>>>>>> 
+>>>>>> Segment 0           | VMD segment
+>>>>>> Root Complex -> VMD | Type 0 (RP/Bridge; physical slot) - Type 1
+>>>>>>                    | Type 0 (RP/Bridge; physical slot) - Type 1
+>>>>>> 
+>>>>>>> And the devices under the VMD controller?  I guess they are regular
+>>>>>>> PCIe Endpoints, Switch Ports, etc?  Obviously there's a Link involved
+>>>>>>> somewhere.  Does the VMD controller have some magic, non-architected
+>>>>>>> Port on the downstream side?
+>>>>>> 
+>>>>>> Correct: Type 0 and Type 1 devices, and any number of Switch ports as
+>>>>>> it's usually pinned out to physical slot.
+>>>>>> 
+>>>>>>> Does this patch enable ASPM on this magic Link between VMD and the
+>>>>>>> next device?  Configuring ASPM correctly requires knowledge and knobs
+>>>>>>> from both ends of the Link, and apparently we don't have those for the
+>>>>>>> VMD end.
+>>>>>> 
+>>>>>> VMD itself doesn't have the link to it's domain. It's really just the
+>>>>>> config/mmio aperture and MSI/X remapper. The PCIe link is between the
+>>>>>> Type 0 and Type 1 devices on the VMD domain. So fortunately the VMD
+>>>>>> itself is not the upstream part of the link.
+>>>>>> 
+>>>>>>> Or is it for Links deeper in the hierarchy?  I assume those should
+>>>>>>> just work already, although there might be issues with latency
+>>>>>>> computation, etc., because we may not be able to account for the part
+>>>>>>> of the path above VMD.
+>>>>>> 
+>>>>>> That's correct. This is for the links within the domain itself, such as
+>>>>>> between a type 0 and NVMe device.
+>>>>> 
+>>>>> OK, great.  So IIUC, below the VMD, there is a Root Port, and the Root
+>>>>> Port has a link to some Endpoint or Switch, e.g., an NVMe device.  And
+>>>>> we just want to enable ASPM on that link.
+>>>>> 
+>>>>> That should not be a special case; we should be able to make this so
+>>>>> it Just Works.  Based on this patch, I guess the reason it doesn't
+>>>>> work is because link->aspm_enabled for that link isn't set correctly.
+>>>>> 
+>>>>> So is this just a consequence of us depending on the initial Link
+>>>>> Control value from BIOS?  That seems like something we shouldn't
+>>>>> really depend on.
+>> Seems like a good idea, that it should instead be quirked if ASPM is
+>> found unusable on a link. Though I'm not aware of how many platforms
+>> would require a quirk..
+>> 
+>>>>> 
+>>>> That's the crux. There's always pcie_aspm=force.
+>>>> Something I've wondered is if there is a way we could 'discover' if the
+>>>> link is ASPM safe?
+>>> 
+>>> Sure.  Link Capabilities is supposed to tell us that.  If aspm.c
+>>> depends on the BIOS settings, I think that's a design mistake.
+>>> 
+>>> But what CONFIG_PCIEASPM_* setting are you using?  The default
+>>> is CONFIG_PCIEASPM_DEFAULT, which literally means "Use the BIOS
+>>> defaults".  If you're using that, and BIOS doesn't enable ASPM below
+>>> VMD, I guess aspm.c will leave it disabled, and that seems like it
+>>> would be the expected behavior.
+>>> 
+>>> Does "pcie_aspm=force" really help you?  I don't see any uses of it
+>>> that should apply to your situation.
+>>> 
+>>> Bjorn
+>> 
+>> No you're right. I don't think we need pcie_aspm=force, just the policy
+>> configuration.
+> 
+> I'm not sure where we're at here.
+> 
+> If the kernel is built with CONFIG_PCIEASPM_DEFAULT=y (which means
+> "use the BIOS defaults"), and the BIOS doesn't enable ASPM on these
+> links below VMD, then Linux will leave things alone.  I think that's
+> working as intended.
 
--- Adrian
-=20
+Yes and that's the problem here. BIOS doesn't enable ASPM for links behind VMD.
+The ASPM is enabled by VMD driver under Windows.
+
+> 
+> If desired, we should be able to enable ASPM using sysfs in that case.
+
+I hope to keep everything inside kernel. Of course we can use udev rules to change sysfs value, if anyone prefers that approach.
+
+> 
+> We have a pci_disable_link_state() kernel interface that drivers can
+> use to *disable* ASPM for their device.  But I don't think there's any
+> corresponding interface for drivers to *enable* ASPM.  Maybe that's an
+> avenue to explore?
+
+Okay, I will work on pci_enable_link_state() helper and let VMD driver as its first user.
+
+Kai-Heng
+
+> 
+> Bjorn
 
