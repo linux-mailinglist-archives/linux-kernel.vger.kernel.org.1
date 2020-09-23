@@ -2,259 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37E6D275A97
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D20D275AB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726746AbgIWOrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 10:47:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726156AbgIWOrS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 10:47:18 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDF7FC0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 07:47:17 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id z4so337252wrr.4
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 07:47:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RNjkhiM1FCbGUrDGCeRB32FSp0tmCPTFU6QyULJjsI8=;
-        b=iGP4diqgXbxiGsiWrdpTwYspUMIcOmfdUmidyf4ku7VMe48ulyc+YL+37JWHz4kxbU
-         PMAffnzWV95HJs4W47VoVMgjtsFPZzzfW33AbaLc/als7NQCyGqwo8O6vZqzWKvPabKI
-         tJLmn+nQTX3hiRqDEuz3tSDkAYLriOx8rmm6WLP7e9DIb2DSCNED74LLJcPJjgML5O3t
-         B4d5/yAadXKSeaPeC6iYePpX2t/AXN+tOFJhqXjT3blBFoKUyWP8Hh3I+GMdfRReQeuC
-         vlfO7UADXEb4rcP1S0S5RNLx909I2z2yJ+cJBI2dWi8BtJ28eIOpIJLeYsBwVrDKl75U
-         MLaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RNjkhiM1FCbGUrDGCeRB32FSp0tmCPTFU6QyULJjsI8=;
-        b=Q1p/s8D19eTQWU3TKc2Gsjx8oEp+12N0tNQG7BDujT/7iLyUcSOUXQ4MCBa7dp+HDY
-         B1hrbINfT+zJ7eXE5FLMA+8ApN26NpvdSsAhunTWZ4Az+shtp9iT7DaauACH4Arm+MnQ
-         zg+IIHyL4c8q1WfxNTp6Vq4UWtHdguVSCfovAx/iRrVGXMZ9pPNNgNkKZ+vKGiPJCfmM
-         DZJSUa737Lhcrrc5G6PJzUG9CmfCAi83QUt1k2BSmPnvYlpet9NUATG/LWjqEdis9fvL
-         v2nSQk/8ZCF/sDljRdGbpEGbZuGJ84sUKxczj+pulStqqdAM9nXnMNBRqPe6/jl8ZkLo
-         sqAg==
-X-Gm-Message-State: AOAM530oEYrkzM7EDcmohcgd3cHRyVOjADMPzD81YQlakbG8UD9GEvH2
-        3VtIuavDU+zR9eh6riwYzMjIIf9VZ1CFYg==
-X-Google-Smtp-Source: ABdhPJyaTECKp7w3xVuhksXZYgacwP9oq2RNCnqcyI1givi2XEsKHV5iuf1zT2L5+9eKhfaWDgWktg==
-X-Received: by 2002:a5d:444e:: with SMTP id x14mr1198240wrr.235.1600872436091;
-        Wed, 23 Sep 2020 07:47:16 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id s17sm35870wrr.40.2020.09.23.07.47.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 23 Sep 2020 07:47:15 -0700 (PDT)
-Subject: Re: [PATCH v2] nvmem: core: fix possibly memleak when use
- nvmem_cell_info_to_nvmem_cell()
-To:     Vadym Kochan <vadym.kochan@plvision.eu>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-References: <20200923135343.16565-1-vadym.kochan@plvision.eu>
- <7a072204-a4b8-e5ef-9ce2-4db176f70366@linaro.org>
- <20200923141334.GA16798@plvision.eu>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <1f65dc6a-50f3-d4e5-f1ce-7a68fddde287@linaro.org>
-Date:   Wed, 23 Sep 2020 15:47:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726820AbgIWOuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 10:50:12 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2914 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726668AbgIWOuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 10:50:11 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id E82B372EE1393A03E283;
+        Wed, 23 Sep 2020 15:50:09 +0100 (IST)
+Received: from [127.0.0.1] (10.47.2.162) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 23 Sep
+ 2020 15:50:09 +0100
+From:   John Garry <john.garry@huawei.com>
+Subject: Re: [PATCH v2 0/2] iommu/arm-smmu-v3: Improve cmdq lock efficiency
+To:     Will Deacon <will@kernel.org>
+CC:     <maz@kernel.org>, <joro@8bytes.org>, <linuxarm@huawei.com>,
+        <linux-kernel@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
+        <robin.murphy@arm.com>, <linux-arm-kernel@lists.infradead.org>
+References: <1598018062-175608-1-git-send-email-john.garry@huawei.com>
+ <20200921134324.GK2139@willie-the-truck>
+ <b13d0858-e164-4670-a5c6-ab84e81724b7@huawei.com>
+Message-ID: <37734fe9-8b67-3cf3-2925-2fee549cb45a@huawei.com>
+Date:   Wed, 23 Sep 2020 15:47:17 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-In-Reply-To: <20200923141334.GA16798@plvision.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <b13d0858-e164-4670-a5c6-ab84e81724b7@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.2.162]
+X-ClientProxiedBy: lhreml735-chm.china.huawei.com (10.201.108.86) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 23/09/2020 15:13, Vadym Kochan wrote:
-> On Wed, Sep 23, 2020 at 03:10:36PM +0100, Srinivas Kandagatla wrote:
->>
->>
->> On 23/09/2020 14:53, Vadym Kochan wrote:
->>> Fix missing 'kfree_const(cell->name)' when call to
->>> nvmem_cell_info_to_nvmem_cell() in several places:
->>>
->>>        * after nvmem_cell_info_to_nvmem_cell() failed during
->>>          nvmem_add_cells()
->>>
->>>        * during nvmem_device_cell_{read,write}. This is fixed by simply
->>>          re-using info->name instead of duplicating it:
->>>
->>>              cell->name = info->name
->>>
->>> Because cell->name is not used except for error message printing in case
->>> of un-aligned access, the new __nvmem_cell_info_to_nvmem_cell() helper
->>> was introduced.
->>>
->>> Fixes: e2a5402ec7c6 ("nvmem: Add nvmem_device based consumer apis.")
->>> Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
->>> ---
->>> v2:
->>>       * remove not needed 'kfree_const(cell->name)' after nvmem_cell_info_to_nvmem_cell()
->>>         failed.
->>>
->>>    drivers/nvmem/core.c | 35 ++++++++++++++++++++++++++---------
->>>    1 file changed, 26 insertions(+), 9 deletions(-)
->>
->>
->>
->> Really :-)
->>
-> But what about nvmem_device_cell_{read,write} case ?
-> In my understanding the cell is allocated on the stack but kstrdup() is
-You are right!
-
-That is the second issue where the caller outside would fail after 
-successful call to nvmem_cell_info_to_nvmem_cell() .
-
-Probably we cam free it in failure cases!
-something like:
-
------------------------->cut<---------------------------
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 6cd3edb2eaf6..fb1e756adcee 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -383,6 +383,7 @@ static int nvmem_cell_info_to_nvmem_cell(struct 
-nvmem_device *nvmem,
-                 dev_err(&nvmem->dev,
-                         "cell %s unaligned to nvmem stride %d\n",
-                         cell->name, nvmem->stride);
-+               kfree_const(cell->name);
-                 return -EINVAL;
-         }
-
-@@ -1465,8 +1466,10 @@ ssize_t nvmem_device_cell_read(struct 
-nvmem_device *nvmem,
-                 return rc;
-
-         rc = __nvmem_cell_read(nvmem, &cell, buf, &len);
--       if (rc)
-+       if (rc) {
-+               kfree_const(cell->name);
-                 return rc;
-+       }
-
-         return len;
-  }
-@@ -1494,7 +1497,11 @@ int nvmem_device_cell_write(struct nvmem_device 
-*nvmem,
-         if (rc)
-                 return rc;
-
--       return nvmem_cell_write(&cell, buf, cell.bytes);
-+       rc = nvmem_cell_write(&cell, buf, cell.bytes);
-+       if (rc)
-+               kfree_const(cell->name);
-+
-+       return rc;
-  }
-  EXPORT_SYMBOL_GPL(nvmem_device_cell_write);
-  ------------------------>cut<---------------------------
-
---srini
-
-> not freed in the end, or I missed something ?
+On 21/09/2020 14:58, John Garry wrote:
 > 
->>
->> Below change should just fix this the reported issue!
->> ------------------------>cut<---------------------------
->>
->> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
->> index 6cd3edb2eaf6..9fb9112fe75d 100644
->> --- a/drivers/nvmem/core.c
->> +++ b/drivers/nvmem/core.c
->> @@ -383,6 +383,7 @@ static int nvmem_cell_info_to_nvmem_cell(struct
->> nvmem_device *nvmem,
->>                  dev_err(&nvmem->dev,
->>                          "cell %s unaligned to nvmem stride %d\n",
->>                          cell->name, nvmem->stride);
->> +               kfree_const(cell->name);
->>                  return -EINVAL;
->>          }
->>
->> ------------------------>cut<---------------------------
->>
->> I don't see a point in the way your patch try to fix this!!
->>
->>
->> --srini
->>
->>>
->>> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
->>> index 6cd3edb2eaf6..e6d1bc414faf 100644
->>> --- a/drivers/nvmem/core.c
->>> +++ b/drivers/nvmem/core.c
->>> @@ -361,16 +361,15 @@ static void nvmem_cell_add(struct nvmem_cell *cell)
->>>    	blocking_notifier_call_chain(&nvmem_notifier, NVMEM_CELL_ADD, cell);
->>>    }
->>> -static int nvmem_cell_info_to_nvmem_cell(struct nvmem_device *nvmem,
->>> -				   const struct nvmem_cell_info *info,
->>> -				   struct nvmem_cell *cell)
->>> +static int
->>> +__nvmem_cell_info_to_nvmem_cell(struct nvmem_device *nvmem,
->>> +				const struct nvmem_cell_info *info,
->>> +				struct nvmem_cell *cell)
->>>    {
->>>    	cell->nvmem = nvmem;
->>>    	cell->offset = info->offset;
->>>    	cell->bytes = info->bytes;
->>> -	cell->name = kstrdup_const(info->name, GFP_KERNEL);
->>> -	if (!cell->name)
->>> -		return -ENOMEM;
->>> +	cell->name = info->name;
->>>    	cell->bit_offset = info->bit_offset;
->>>    	cell->nbits = info->nbits;
->>> @@ -382,13 +381,31 @@ static int nvmem_cell_info_to_nvmem_cell(struct nvmem_device *nvmem,
->>>    	if (!IS_ALIGNED(cell->offset, nvmem->stride)) {
->>>    		dev_err(&nvmem->dev,
->>>    			"cell %s unaligned to nvmem stride %d\n",
->>> -			cell->name, nvmem->stride);
->>> +			cell->name ?: "<unknown>", nvmem->stride);
->>>    		return -EINVAL;
->>>    	}
->>>    	return 0;
->>>    }
->>> +static int
->>> +nvmem_cell_info_to_nvmem_cell(struct nvmem_device *nvmem,
->>> +			      const struct nvmem_cell_info *info,
->>> +			      struct nvmem_cell *cell)
->>> +{
->>> +	int err;
->>> +
->>> +	err = __nvmem_cell_info_to_nvmem_cell(nvmem, info, cell);
->>> +	if (err)
->>> +		return err;
->>> +
->>> +	cell->name = kstrdup_const(info->name, GFP_KERNEL);
->>> +	if (!cell->name)
->>> +		return -ENOMEM;
->>> +
->>> +	return 0;
->>> +}
->>> +
->>>    /**
->>>     * nvmem_add_cells() - Add cell information to an nvmem device
->>>     *
->>> @@ -1460,7 +1477,7 @@ ssize_t nvmem_device_cell_read(struct nvmem_device *nvmem,
->>>    	if (!nvmem)
->>>    		return -EINVAL;
->>> -	rc = nvmem_cell_info_to_nvmem_cell(nvmem, info, &cell);
->>> +	rc = __nvmem_cell_info_to_nvmem_cell(nvmem, info, &cell);
->>>    	if (rc)
->>>    		return rc;
->>> @@ -1490,7 +1507,7 @@ int nvmem_device_cell_write(struct nvmem_device *nvmem,
->>>    	if (!nvmem)
->>>    		return -EINVAL;
->>> -	rc = nvmem_cell_info_to_nvmem_cell(nvmem, info, &cell);
->>> +	rc = __nvmem_cell_info_to_nvmem_cell(nvmem, info, &cell);
->>>    	if (rc)
->>>    		return rc;
->>>
+>> Could you try to adapt the hacks I sent before,
+>> please? I know they weren't quite right (I have no hardware to test 
+>> on
+
+Could the ARM Rev C FVP be used to at least functionally test? Can't 
+seem to access myself, even though it's gratis...
+
+), but
+>> the basic idea is to fall back to a spinlock if the cmpxchg() fails. The
+>> queueing in the spinlock implementation should avoid the contention.
+> 
+
+So I modified that suggested change to get it functioning, and it looks 
+like this:
+
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c 
+b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+index 7196207be7ea..f907b7c233a2 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+@@ -560,6 +560,7 @@ struct arm_smmu_cmdq {
+  	atomic_long_t			*valid_map;
+  	atomic_t			owner_prod;
+  	atomic_t			lock;
++	spinlock_t			slock;
+  };
+
+  struct arm_smmu_cmdq_batch {
+@@ -1378,7 +1379,7 @@ static int arm_smmu_cmdq_issue_cmdlist(struct 
+arm_smmu_device *smmu,
+  	u64 cmd_sync[CMDQ_ENT_DWORDS];
+  	u32 prod;
+  	unsigned long flags;
+-	bool owner;
++	bool owner, locked = false;
+  	struct arm_smmu_cmdq *cmdq = &smmu->cmdq;
+  	struct arm_smmu_ll_queue llq = {
+  		.max_n_shift = cmdq->q.llq.max_n_shift,
+@@ -1387,26 +1388,42 @@ static int arm_smmu_cmdq_issue_cmdlist(struct 
+arm_smmu_device *smmu,
+
+  	/* 1. Allocate some space in the queue */
+  	local_irq_save(flags);
+-	llq.val = READ_ONCE(cmdq->q.llq.val);
+  	do {
+  		u64 old;
+
+-		while (!queue_has_space(&llq, n + sync)) {
++		llq.val = READ_ONCE(cmdq->q.llq.val);
++
++		if (queue_has_space(&llq, n + sync))
++			goto try_cas;
++
++		if (locked) {
++			spin_unlock(&cmdq->slock);
++			locked = 0; // added
++		}
++
++		do {
+  			local_irq_restore(flags);
+  			if (arm_smmu_cmdq_poll_until_not_full(smmu, &llq))
+  				dev_err_ratelimited(smmu->dev, "CMDQ timeout\n");
+  			local_irq_save(flags);
+-		}
++		} while (!queue_has_space(&llq, n + sync));
+
++try_cas:
+  		head.cons = llq.cons;
+  		head.prod = queue_inc_prod_n(&llq, n + sync) |
+  					     CMDQ_PROD_OWNED_FLAG;
+
+  		old = cmpxchg_relaxed(&cmdq->q.llq.val, llq.val, head.val);
+-		if (old == llq.val)
++		if (old == llq.val) { // was if (old != llq.val)
++			if (locked)   //           break;
++				spin_unlock(&cmdq->slock);//
+  			break;//
++		}//
+
+-		llq.val = old;
++		if (!locked) {
++			spin_lock(&cmdq->slock);
++			locked = true;
++		}
+  	} while (1);
+  	owner = !(llq.prod & CMDQ_PROD_OWNED_FLAG);
+  	head.prod &= ~CMDQ_PROD_OWNED_FLAG;
+@@ -3192,6 +3209,7 @@ static int arm_smmu_cmdq_init(struct 
+arm_smmu_device *smmu)
+
+  	atomic_set(&cmdq->owner_prod, 0);
+  	atomic_set(&cmdq->lock, 0);
++	spin_lock_init(&cmdq->slock);
+
+  	bitmap = (atomic_long_t *)bitmap_zalloc(nents, GFP_KERNEL);
+  	if (!bitmap) {
+-- 
+2.26.2
+
+I annotated my mods with comments. Maybe those mods would not be as you 
+intend.
+
+So I'm not sure that we solve the problem of a new CPU coming along and 
+trying the cmpxchg immediately, while another CPU has the slock and will 
+try the cmpxchg also.
+
+Anyway, the results are a bit mixed depending on the CPU count, but 
+generally positive compared to mainline:
+
+CPUs		2	4	8	16	32	64	96
+v5.9-rc1	453K	409K	295K	157K	33.6K	9.5K	5.2K
+Will's change	459K	414K	281K	131K	44K	15.5K	8.6K
+$subject change	481K	406K	305K	190K	81K	30K	18.7K
+
+(Unit is DMA map+unmap per CPU per second, using test harness. Higher is 
+better.)
+
+Please let me know of any way to progress.
+
+Thanks,
+John
