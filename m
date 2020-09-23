@@ -2,85 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C16275CB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B386B275CB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726779AbgIWQD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 12:03:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726681AbgIWQD3 (ORCPT
+        id S1726796AbgIWQDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 12:03:33 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:41526 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726761AbgIWQDb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 12:03:29 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DFB6C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 09:03:29 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id e17so589912wme.0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 09:03:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bYY4v0xUKW+V9VzHQGgAzoUDOD/hbVajXOB7n6FQAF0=;
-        b=jiSXCwcC/9mz3F5aJuG19Xy21Yj23ok0rmXkRUdtSckcplQkLcHXm7ioPtobwvys2c
-         /Phb0cg/ShfIOKKhYVjO/GhZHQUDBAHTgo5AggnE0heNoNE8JAdK0KtBtaEJkb538j0m
-         vC2VE/HdKzP23D1eb9gngPxlC3s3RYgjxYbVm/WXtwdJmvlR5OOSnDUU8DVeCSjFilwA
-         yZkzmbGBmz0Z1eshATp9Zp3hOI7Ci6frBzkrB1eUO8X9AbO0CLVTFws8xAWXhFL5Wrvn
-         EpOHtOA9DNkh3hNOvdTR/WSu8vHGSBQ4jxEDTNgFH+MwtB7v9pQJrwY+8lqy0RjPdxVh
-         jsgQ==
+        Wed, 23 Sep 2020 12:03:31 -0400
+Received: by mail-il1-f194.google.com with SMTP id f82so87460ilh.8;
+        Wed, 23 Sep 2020 09:03:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bYY4v0xUKW+V9VzHQGgAzoUDOD/hbVajXOB7n6FQAF0=;
-        b=U6NjMETeHlkBP/msV4aapVOuLYTK9ef89mKeuvOnW5QCpmKgerOv3Do0W3wupLZtph
-         s+Wt5a3niA5nBQLX2xMWZ/VIqklT0AhgXEwvpPvZfcyVSd2nDmPWIK9ZML4PslAWqVTY
-         qTgzCPTovUWkuqkyoMEzHngIcjlD9SVsqSdn6FBWeVdofX6bXeE0GzVAV0MFNXmSvS9m
-         QGqWKkmMZJqScpgV6F7SO9TzsX0OH9tayLRxnjWIt58o5m695OzAIdIC04yjOuCeHiQ7
-         cjpAPaFzDIkbEZNaPHuiF7seOt/GBVi2FT2tO3zIsQkQLc7+rMYiM5zYgrLdqNID9BNb
-         EGAQ==
-X-Gm-Message-State: AOAM532QNZI1OwFgUCN12cq56gGAL9FBBCYWElwOqq4wprwkMsn91CDm
-        Odp1RAuGZU4k8+YoAte0mGS3t77Hszq2uQ==
-X-Google-Smtp-Source: ABdhPJw0EElZfNnvTIjIt4ari6nXnOwsimbGPoQwje5oJli7J1WfG5v8Q/oZhnfn7J4307aQbosRzg==
-X-Received: by 2002:a05:600c:4108:: with SMTP id j8mr284278wmi.116.1600877007537;
-        Wed, 23 Sep 2020 09:03:27 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id a11sm250764wmm.18.2020.09.23.09.03.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 23 Sep 2020 09:03:26 -0700 (PDT)
-Subject: Re: [PATCH v2] nvmem: core: fix possibly memleak when use
- nvmem_cell_info_to_nvmem_cell()
-To:     Vadym Kochan <vadym.kochan@plvision.eu>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-References: <20200923135343.16565-1-vadym.kochan@plvision.eu>
- <7a072204-a4b8-e5ef-9ce2-4db176f70366@linaro.org>
- <20200923141334.GA16798@plvision.eu>
- <1f65dc6a-50f3-d4e5-f1ce-7a68fddde287@linaro.org>
- <20200923145107.GB16798@plvision.eu>
- <19c5fa23-41c9-f5c7-beaf-aeb9655bfefd@linaro.org>
- <20200923160226.GC16798@plvision.eu>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <60233595-b47b-8b1b-013b-51b4c0c7ef13@linaro.org>
-Date:   Wed, 23 Sep 2020 17:03:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=f7oNf2n/2S4LdD+hJ5wvJbkdup7gyW0tYobtVU4/lCo=;
+        b=LJxua3tbHd2IGS7253Qjbw6lZg6qeXG1jQn/HsZinU323Ehay5oRodKmTGClYHstgl
+         lEuIXhDet/nt4yQjx4fd4QGoElccOnJ7DXI2w/IJwXrAwDkrhNuMZGY9OKIMuqxtKjS2
+         rc9eX4STQkTYRceH4zTR+Yr1ddzNu6pnIadQcTCGbLma1vmXR2dRIZzxkLjCOEVaOGgo
+         LdXkd9UpBQXCZg5nxS/0u3ybqrNAeMZ9oxTFhkY7F8jlxuKLaNMj17LT1D23xb0hdFGI
+         DSwwohR52Ubp0XEJwAYplruwZc8C9srqRg+TWk0xk1P0Th7wzpqM9wYfQtvFT0ktx8iq
+         BUyA==
+X-Gm-Message-State: AOAM532hLT+wTZhwgfso4u4dmfww7avgJ4aCSQr5aPmByL+cCzNuRZVK
+        gLLsa/EvjrYcHJCqiiogVw==
+X-Google-Smtp-Source: ABdhPJx8Jk2Cu+4knjIJI93h2RDm8Bp12YNWlPvaSS83rCXADkAPJBrKwucmpTFhKApUGVNahPjd0A==
+X-Received: by 2002:a92:bb57:: with SMTP id w84mr421072ili.41.1600877010279;
+        Wed, 23 Sep 2020 09:03:30 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id v24sm129353ioh.21.2020.09.23.09.03.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2020 09:03:29 -0700 (PDT)
+Received: (nullmailer pid 836373 invoked by uid 1000);
+        Wed, 23 Sep 2020 16:03:28 -0000
+Date:   Wed, 23 Sep 2020 10:03:28 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     rui.zhang@intel.com, daniel.lezcano@linaro.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, lukasz.luba@arm.com,
+        amitk@kernel.org
+Subject: Re: [PATCH RFC 1/8] dt-bindings: thermal: Introduce monitor-falling
+ parameter to thermal trip point binding
+Message-ID: <20200923160328.GA833754@bogus>
+References: <20200917032226.820371-1-thara.gopinath@linaro.org>
+ <20200917032226.820371-2-thara.gopinath@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20200923160226.GC16798@plvision.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200917032226.820371-2-thara.gopinath@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 16, 2020 at 11:22:19PM -0400, Thara Gopinath wrote:
+> Introduce a new binding parameter to thermal trip point description
+> to indicate whether the temperature level specified by the trip point
+> is monitored for a rise or fall in temperature.
+> 
+> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+> ---
+>  .../devicetree/bindings/thermal/thermal-zones.yaml         | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/thermal/thermal-zones.yaml b/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
+> index 3ec9cc87ec50..cc1332ad6c16 100644
+> --- a/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
+> +++ b/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
+> @@ -161,6 +161,13 @@ patternProperties:
+>                    The active trip type can be used to control other HW to
+>                    help in cooling e.g. fans can be sped up or slowed down
+>  
+> +              monitor-falling:
+> +                description: |
+> +                  boolean, If true, the trip point is being monitored for
+> +                  falling temperature. If false/absent/default, the trip
+> +                  point is being monitored for rising temperature.
+> +                type: boolean
 
+What if you wanted to monitor for both?
 
-On 23/09/2020 17:02, Vadym Kochan wrote:
-> You mean do not do such func attributes breaking as I did (moved them
-> line upper) ?
-yes, for consistency reasons!
-
---srini
+> +
+>              required:
+>                - temperature
+>                - hysteresis
+> -- 
+> 2.25.1
 > 
