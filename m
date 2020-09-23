@@ -2,205 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFAD827597D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD251275984
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726574AbgIWOKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 10:10:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726156AbgIWOKk (ORCPT
+        id S1726696AbgIWOLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 10:11:17 -0400
+Received: from mother.openwall.net ([195.42.179.200]:55687 "HELO
+        mother.openwall.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1726652AbgIWOLO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 10:10:40 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 708F8C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 07:10:40 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id k15so145379wrn.10
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 07:10:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=PXrVfoz6J9yJ729BkbuwwAQsxmKu+ESUe/VkCqCFUSw=;
-        b=ZxgXc+kYibkka9JAXO8m3UZLbBScd+FQocVi+m8V+BxpYQUgAlHC/TFN0ReGyC3ZHe
-         8U2ByyFYaWpKHZU7NDDoEVqq69uM6UahF1m7R88ZuyGuQQ2DsPCURbuUxnd/8+CR9ZRm
-         ElFK7JIm9CdPF5KG/vJ2sRyQ+YP0surZf917a3bp/ZFL/iLGhzNslX+lfSSVwn2JGkCu
-         Zzi0ZOyLFbeKDNbaqUGIFQNrnzhtYLAW0DV8N5kdUv2LTzEI9MfB17FXeElAYMpg8+Uo
-         YNEWJrlvQU/lKmDZgCZU33R/w7YnY/SNjdhF/mkaRdkUe+DaM4nfE4zb2LqrEtWhvjXV
-         hMtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PXrVfoz6J9yJ729BkbuwwAQsxmKu+ESUe/VkCqCFUSw=;
-        b=tI2N6sqSfP6L7AFS1uEVjbGBHIjyU6adseCbsLhHFH3VI5WVGdQy5aJ4pU+R9h+oJR
-         dw0fOR6r1HOcRgTrnyRwyg7Qn+FvHbUUg5qZWQYhSTrld42OyqtOrGPh46AG9Pb2Lf+V
-         rTrT+0LMeh3q/A6FtvxCP1Wc/CJfOa54NAsF4CUQCHUd2t5AnMVSyD+yYG0RqAce1s2n
-         LRzJJ+U08jk14uuMBF/OM//kuB1tq2lJV2iBrrackSDIq9g86pcbVmD/hgqqCqqQDMXE
-         KA4qYxiTyoVD3v1/+7lVUqLfKxhSuUzDXdwAFEsm6dNqo71lmLJxyc0h6uGlS3zLTJUb
-         TwGA==
-X-Gm-Message-State: AOAM533TQJwpbko185N5AC2Fp9tFIlxjeb3V3jQlS7u7Bq5eOmnhtrsX
-        mSh7gS+8I9WRhotqJxkNWMaaW5KlmnpwMg==
-X-Google-Smtp-Source: ABdhPJwcgAjT+ekIPeUKgmmnO4Mp3EnX+peuKXIw69hs7YpQPRB8X7Un0rQWUcp1fFVIu4PmXBbIFA==
-X-Received: by 2002:a5d:67d0:: with SMTP id n16mr1203963wrw.198.1600870238430;
-        Wed, 23 Sep 2020 07:10:38 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id l3sm8351769wmh.27.2020.09.23.07.10.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 23 Sep 2020 07:10:37 -0700 (PDT)
-Subject: Re: [PATCH v2] nvmem: core: fix possibly memleak when use
- nvmem_cell_info_to_nvmem_cell()
-To:     Vadym Kochan <vadym.kochan@plvision.eu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-References: <20200923135343.16565-1-vadym.kochan@plvision.eu>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <7a072204-a4b8-e5ef-9ce2-4db176f70366@linaro.org>
-Date:   Wed, 23 Sep 2020 15:10:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200923135343.16565-1-vadym.kochan@plvision.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Wed, 23 Sep 2020 10:11:14 -0400
+Received: (qmail 30262 invoked from network); 23 Sep 2020 14:11:11 -0000
+Received: from localhost (HELO pvt.openwall.com) (127.0.0.1)
+  by localhost with SMTP; 23 Sep 2020 14:11:11 -0000
+Received: by pvt.openwall.com (Postfix, from userid 503)
+        id C2648AB844; Wed, 23 Sep 2020 16:11:02 +0200 (CEST)
+Date:   Wed, 23 Sep 2020 16:11:02 +0200
+From:   Solar Designer <solar@openwall.com>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     madvenka@linux.microsoft.com, kernel-hardening@lists.openwall.com,
+        linux-api@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, oleg@redhat.com,
+        x86@kernel.org, luto@kernel.org, David.Laight@ACULAB.COM,
+        fweimer@redhat.com, mark.rutland@arm.com, mic@digikod.net,
+        Rich Felker <dalias@libc.org>
+Subject: Re: [PATCH v2 0/4] [RFC] Implement Trampoline File Descriptor
+Message-ID: <20200923141102.GA7142@openwall.com>
+References: <20200922215326.4603-1-madvenka@linux.microsoft.com> <20200923081426.GA30279@amd> <20200923091456.GA6177@openwall.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200923091456.GA6177@openwall.com>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 23/09/2020 14:53, Vadym Kochan wrote:
-> Fix missing 'kfree_const(cell->name)' when call to
-> nvmem_cell_info_to_nvmem_cell() in several places:
+On Wed, Sep 23, 2020 at 11:14:56AM +0200, Solar Designer wrote:
+> On Wed, Sep 23, 2020 at 10:14:26AM +0200, Pavel Machek wrote:
+> > > Introduction
+> > > ============
+> > > 
+> > > Dynamic code is used in many different user applications. Dynamic code is
+> > > often generated at runtime. Dynamic code can also just be a pre-defined
+> > > sequence of machine instructions in a data buffer. Examples of dynamic
+> > > code are trampolines, JIT code, DBT code, etc.
+> > > 
+> > > Dynamic code is placed either in a data page or in a stack page. In order
+> > > to execute dynamic code, the page it resides in needs to be mapped with
+> > > execute permissions. Writable pages with execute permissions provide an
+> > > attack surface for hackers. Attackers can use this to inject malicious
+> > > code, modify existing code or do other harm.
+> > > 
+> > > To mitigate this, LSMs such as SELinux implement W^X. That is, they may not
+> > > allow pages to have both write and execute permissions. This prevents
+> > > dynamic code from executing and blocks applications that use it. To allow
+> > > genuine applications to run, exceptions have to be made for them (by setting
+> > > execmem, etc) which opens the door to security issues.
+> > > 
+> > > The W^X implementation today is not complete. There exist many user level
+> > > tricks that can be used to load and execute dynamic code. E.g.,
+> > > 
+> > > - Load the code into a file and map the file with R-X.
+> > > 
+> > > - Load the code in an RW- page. Change the permissions to R--. Then,
+> > >   change the permissions to R-X.
+> > > 
+> > > - Load the code in an RW- page. Remap the page with R-X to get a separate
+> > >   mapping to the same underlying physical page.
+> > > 
+> > > IMO, these are all security holes as an attacker can exploit them to inject
+> > > his own code.
+> > 
+> > IMO, you are smoking crack^H^H very seriously misunderstanding what
+> > W^X is supposed to protect from.
+> > 
+> > W^X is not supposed to protect you from attackers that can already do
+> > system calls. So loading code into a file then mapping the file as R-X
+> > is in no way security hole in W^X.
+> > 
+> > If you want to provide protection from attackers that _can_ do system
+> > calls, fine, but please don't talk about W^X and please specify what
+> > types of attacks you want to prevent and why that's good thing.
 > 
->       * after nvmem_cell_info_to_nvmem_cell() failed during
->         nvmem_add_cells()
+> On one hand, Pavel is absolutely right.  It is ridiculous to say that
+> "these are all security holes as an attacker can exploit them to inject
+> his own code."
+
+I stand corrected, due to Brad's tweet and follow-ups here:
+
+https://twitter.com/spendergrsec/status/1308728284390318082
+
+It sure does make sense to combine ret2libc/ROP to mprotect() with one's
+own injected shellcode.  Compared to doing everything from ROP, this is
+easier and more reliable across versions/builds if the desired payload
+is non-trivial.  My own example: invoking a shell in a local attack on
+Linux is trivial enough to do via ret2libc only, but a connect-back
+shell in a remote attack might be easier and more reliably done via
+mprotect() + shellcode.
+
+Per the follow-ups, this was an established technique on Windows and iOS
+until further hardening prevented it.  So it does make sense for Linux
+to do the same (as an option because of it breaking existing stuff), and
+not so much as policy enforcement for the sake of it and ease of
+reasoning, but mostly to force real-world exploits to be more complex
+and less reliable.
+
+> On the other hand, "what W^X is supposed to protect from" depends on how
+> the term W^X is defined (historically, by PaX and OpenBSD).  It may be
+> that W^X is partially not a feature to defeat attacks per se, but also a
+> policy enforcement feature preventing use of dangerous techniques (JIT).
 > 
->       * during nvmem_device_cell_{read,write}. This is fixed by simply
->         re-using info->name instead of duplicating it:
+> Such policy might or might not make sense.  It might make sense for ease
+> of reasoning, e.g. "I've flipped this setting, and now I'm certain the
+> system doesn't have JIT within a process (can still have it through
+> dynamically creating and invoking an entire new program), so there are
+> no opportunities for an attacker to inject code nor generate previously
+> non-existing ROP gadgets into an executable mapping within a process."
 > 
->             cell->name = info->name
+> I do find it questionable whether such policy and such reasoning make
+> sense beyond academia.
+
+I was wrong in the above, focusing on the wrong thing.
+
+> Then, there might be even more ways in which W^X is not perfect enough
+> to enable such reasoning.  What about using ptrace(2) to inject code?
+> Should enabling W^X also disable ability to debug programs by non-root?
+> We already have Yama ptrace_scope, which can achieve that at the highest
+> setting, although that's rather inconvenient and is probably unexpected
+> by most to be a requirement for having (ridiculously?) full W^X allowing
+> for the academic reasoning.
+
+Thinking out loud:
+
+Technically, ptrace() is also usable from a ROP chain.  It might be too
+cumbersome to bother using to get a shellcode going, but OTOH it's just
+one function to be invoked in a similar fashion multiple times, so might
+be more reliable than having a ROP chain depend on multiple actually
+needed functions directly (moving that dependency into the shellcode).
+
+> Personally, I am for policies that make more practical sense.  For
+> example, years ago I advocated here on kernel-hardening that we should
+> have a mode where ELF flags enabling/disabling executable stack are
+> ignored, and non-executable stack is always enforced.  This should also
+> be extended to default (at program startup) permissions on more than
+> just stack (but also on .bss, typical libcs' heap allocations, etc.)
+> However, I am not convinced there's enough value in extending the policy
+> to restricting explicit uses of mprotect(2).
 > 
-> Because cell->name is not used except for error message printing in case
-> of un-aligned access, the new __nvmem_cell_info_to_nvmem_cell() helper
-> was introduced.
+> Yes, PaX did that, and its emutramp.txt said "runtime code generation is
+> by its nature incompatible with PaX's PAGEEXEC/SEGMEXEC and MPROTECT
+> features, therefore the real solution is not in emulation but by
+> designing a kernel API for runtime code generation and modifying
+> userland to make use of it."  However, not being convinced in the
+> MPROTECT feature having enough practical value,
+
+I am convinced now, however:
+
+> I am also not convinced
+> "a kernel API for runtime code generation and modifying userland to make
+> use of it" is the way to go.
+
+doesn't automatically follow from the above, because:
+
+> Having static instead of dynamically-generated trampolines in userland
+> code where possible (and making other userland/ABI changes to make that
+> possible in more/all cases) is an obvious improvement, and IMO should be
+> a priority over the above.
 > 
-> Fixes: e2a5402ec7c6 ("nvmem: Add nvmem_device based consumer apis.")
-> Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
-> ---
-> v2:
->      * remove not needed 'kfree_const(cell->name)' after nvmem_cell_info_to_nvmem_cell()
->        failed.
+> While I share my opinion here, I don't mean that to block Madhavan's
+> work.  I'd rather defer to people more knowledgeable in current userland
+> and ABI issues/limitations and plans on dealing with those, especially
+> to Florian Weimer.  I haven't seen Florian say anything specific for or
+> against Madhavan's proposal, and I'd like to.  (Have I missed that?)
+> It'd be wrong to introduce a kernel API that userland doesn't need, and
+> it'd be right to introduce one that userland actually intends to use.
 > 
->   drivers/nvmem/core.c | 35 ++++++++++++++++++++++++++---------
->   1 file changed, 26 insertions(+), 9 deletions(-)
+> I've also added Rich Felker to CC here, for musl libc and its possible
+> intent to use the proposed API.  (My guess is there's no such need, and
+> thus no intent, but Rich might want to confirm that or correct me.)
 
+So need to hear more from the userland folks, I guess.
 
-
-Really :-)
-
-
-Below change should just fix this the reported issue!
------------------------->cut<---------------------------
-
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 6cd3edb2eaf6..9fb9112fe75d 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -383,6 +383,7 @@ static int nvmem_cell_info_to_nvmem_cell(struct 
-nvmem_device *nvmem,
-                 dev_err(&nvmem->dev,
-                         "cell %s unaligned to nvmem stride %d\n",
-                         cell->name, nvmem->stride);
-+               kfree_const(cell->name);
-                 return -EINVAL;
-         }
-
------------------------->cut<---------------------------
-
-I don't see a point in the way your patch try to fix this!!
-
-
---srini
-
-> 
-> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-> index 6cd3edb2eaf6..e6d1bc414faf 100644
-> --- a/drivers/nvmem/core.c
-> +++ b/drivers/nvmem/core.c
-> @@ -361,16 +361,15 @@ static void nvmem_cell_add(struct nvmem_cell *cell)
->   	blocking_notifier_call_chain(&nvmem_notifier, NVMEM_CELL_ADD, cell);
->   }
->   
-> -static int nvmem_cell_info_to_nvmem_cell(struct nvmem_device *nvmem,
-> -				   const struct nvmem_cell_info *info,
-> -				   struct nvmem_cell *cell)
-> +static int
-> +__nvmem_cell_info_to_nvmem_cell(struct nvmem_device *nvmem,
-> +				const struct nvmem_cell_info *info,
-> +				struct nvmem_cell *cell)
->   {
->   	cell->nvmem = nvmem;
->   	cell->offset = info->offset;
->   	cell->bytes = info->bytes;
-> -	cell->name = kstrdup_const(info->name, GFP_KERNEL);
-> -	if (!cell->name)
-> -		return -ENOMEM;
-> +	cell->name = info->name;
->   
->   	cell->bit_offset = info->bit_offset;
->   	cell->nbits = info->nbits;
-> @@ -382,13 +381,31 @@ static int nvmem_cell_info_to_nvmem_cell(struct nvmem_device *nvmem,
->   	if (!IS_ALIGNED(cell->offset, nvmem->stride)) {
->   		dev_err(&nvmem->dev,
->   			"cell %s unaligned to nvmem stride %d\n",
-> -			cell->name, nvmem->stride);
-> +			cell->name ?: "<unknown>", nvmem->stride);
->   		return -EINVAL;
->   	}
->   
->   	return 0;
->   }
->   
-> +static int
-> +nvmem_cell_info_to_nvmem_cell(struct nvmem_device *nvmem,
-> +			      const struct nvmem_cell_info *info,
-> +			      struct nvmem_cell *cell)
-> +{
-> +	int err;
-> +
-> +	err = __nvmem_cell_info_to_nvmem_cell(nvmem, info, cell);
-> +	if (err)
-> +		return err;
-> +
-> +	cell->name = kstrdup_const(info->name, GFP_KERNEL);
-> +	if (!cell->name)
-> +		return -ENOMEM;
-> +
-> +	return 0;
-> +}
-> +
->   /**
->    * nvmem_add_cells() - Add cell information to an nvmem device
->    *
-> @@ -1460,7 +1477,7 @@ ssize_t nvmem_device_cell_read(struct nvmem_device *nvmem,
->   	if (!nvmem)
->   		return -EINVAL;
->   
-> -	rc = nvmem_cell_info_to_nvmem_cell(nvmem, info, &cell);
-> +	rc = __nvmem_cell_info_to_nvmem_cell(nvmem, info, &cell);
->   	if (rc)
->   		return rc;
->   
-> @@ -1490,7 +1507,7 @@ int nvmem_device_cell_write(struct nvmem_device *nvmem,
->   	if (!nvmem)
->   		return -EINVAL;
->   
-> -	rc = nvmem_cell_info_to_nvmem_cell(nvmem, info, &cell);
-> +	rc = __nvmem_cell_info_to_nvmem_cell(nvmem, info, &cell);
->   	if (rc)
->   		return rc;
->   
-> 
+Alexander
