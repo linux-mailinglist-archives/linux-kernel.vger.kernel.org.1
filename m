@@ -2,65 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA8BD2761F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B098F2761F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726610AbgIWUW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 16:22:28 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:44475 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726419AbgIWUW2 (ORCPT
+        id S1726668AbgIWUXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 16:23:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726460AbgIWUXe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 16:22:28 -0400
-Received: by mail-io1-f65.google.com with SMTP id g128so850524iof.11;
-        Wed, 23 Sep 2020 13:22:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Cz+zFoKWLDaE+9iIi+TVpdzgCdv9jCrJPLC86d2DUb8=;
-        b=gjwnN4fqhMigXypznLk1VJDFUJpEmvP1eQoNnq1In0BZ4sLOFBVlMDwYCd8FCbsoF6
-         d2MoSgG/Se65nWoFhV/87IyV8VaQKX7O0rB1tl9M1lxSBsJm+e609epacsdzQrJYRYJ8
-         Ee9vHhRer4qGnODszbf9/LC6snsAodGqOd5FBs38IdFL78sxVS5F8YK2zZVbZDYGTtvx
-         g2jEN1QlDbQwTXLBcKDvjSlpBDQaJZ7TmSwNETjBiNGAtrfGEAvBKL2NtF4fwd25oRUB
-         gDNLxfmOX6ajK1HNEL1mcf+1ZIQAHNJdYyZ/wus3fULiLYjw3qaoPVyGMPcrOVa3JiAG
-         5m2A==
-X-Gm-Message-State: AOAM530DN5QK4jdGR9GzNffTV/32CCmLe/4yry3LeqdU+4Uj9h8ZCaJA
-        mMAs/3M/U2zlQlqXPJ1egQ==
-X-Google-Smtp-Source: ABdhPJyvVcr7IHf5wgJNYptsN9XO77Bkci1w2/cpZWcjIgF7JLbsFD0t0XMaijYN7BJL5Y6jTKPASQ==
-X-Received: by 2002:a05:6638:25d0:: with SMTP id u16mr1013274jat.0.1600892547474;
-        Wed, 23 Sep 2020 13:22:27 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id f4sm350567ils.51.2020.09.23.13.22.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 13:22:26 -0700 (PDT)
-Received: (nullmailer pid 1238341 invoked by uid 1000);
-        Wed, 23 Sep 2020 20:22:25 -0000
-Date:   Wed, 23 Sep 2020 14:22:25 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Eugen Hristev <eugen.hristev@microchip.com>
-Cc:     devicetree@vger.kernel.org, linus.walleij@linaro.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        robh+dt@kernel.org, linux-gpio@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: at91-pio4: add
- microchip,sama7g5
-Message-ID: <20200923202225.GA1238284@bogus>
-References: <20200917131257.273882-1-eugen.hristev@microchip.com>
+        Wed, 23 Sep 2020 16:23:34 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C666C0613CE;
+        Wed, 23 Sep 2020 13:23:34 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id E869829C1E8
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     luto@kernel.org, tglx@linutronix.de, x86@kernel.org,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        willy@infradead.org, linux-kselftest@vger.kernel.org,
+        shuah@kernel.org, kernel@collabora.com
+Subject: Re: [PATCH v6 7/9] x86: Enable Syscall User Dispatch
+Organization: Collabora
+References: <20200904203147.2908430-1-krisman@collabora.com>
+        <20200904203147.2908430-8-krisman@collabora.com>
+        <202009221236.04AA334C2@keescook>
+Date:   Wed, 23 Sep 2020 16:23:26 -0400
+In-Reply-To: <202009221236.04AA334C2@keescook> (Kees Cook's message of "Tue,
+        22 Sep 2020 12:37:02 -0700")
+Message-ID: <87zh5g5jk1.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917131257.273882-1-eugen.hristev@microchip.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Sep 2020 16:12:56 +0300, Eugen Hristev wrote:
-> Add compatible string for microchip sama7g5 SoC.
-> 
-> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
-> ---
->  .../devicetree/bindings/pinctrl/atmel,at91-pio4-pinctrl.txt   | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
+Kees Cook <keescook@chromium.org> writes:
 
-Acked-by: Rob Herring <robh@kernel.org>
+> On Fri, Sep 04, 2020 at 04:31:45PM -0400, Gabriel Krisman Bertazi wrote:
+>> Syscall User Dispatch requirements are fully supported in x86. This
+>> patch flips the switch, marking it as supported.  This was tested
+>> against Syscall User Dispatch selftest.
+>> 
+>> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+>> ---
+>>  arch/x86/Kconfig | 1 +
+>>  1 file changed, 1 insertion(+)
+>> 
+>> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+>> index 7101ac64bb20..56ac8de99021 100644
+>> --- a/arch/x86/Kconfig
+>> +++ b/arch/x86/Kconfig
+>> @@ -150,6 +150,7 @@ config X86
+>>  	select HAVE_ARCH_COMPAT_MMAP_BASES	if MMU && COMPAT
+>>  	select HAVE_ARCH_PREL32_RELOCATIONS
+>>  	select HAVE_ARCH_SECCOMP_FILTER
+>> +	select HAVE_ARCH_SYSCALL_USER_DISPATCH
+>
+> Is this needed at all? I think simply "the architecture uses the generic
+> entry code" is sufficient to enable it. (Especially since there's a top
+> level config for SYSCALL_USER_DISPATCH, it feels like overkill).
+
+Maybe it is not necessary.  The reason I have this is to prevent
+architectures migrating to the generic entry code from inadvertently
+starting to support this feature, without thinking in advance whether
+arch_syscall_is_vdso_sigreturn is needed.  If that is not a good reason,
+I'm happy to drop it.
+
+-- 
+Gabriel Krisman Bertazi
