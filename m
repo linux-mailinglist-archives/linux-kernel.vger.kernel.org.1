@@ -2,73 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F5A275083
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 07:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A922F275088
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 07:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726667AbgIWF5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 01:57:30 -0400
-Received: from verein.lst.de ([213.95.11.211]:47272 "EHLO verein.lst.de"
+        id S1726686AbgIWF7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 01:59:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726179AbgIWF53 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 01:57:29 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id E41F668AFE; Wed, 23 Sep 2020 07:57:25 +0200 (CEST)
-Date:   Wed, 23 Sep 2020 07:57:25 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Tong Zhang <ztong0001@gmail.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>,
-        Jens Axboe <axboe@fb.com>, Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] nvme: fix use-after-free during booting
-Message-ID: <20200923055725.GA15442@lst.de>
-References: <20200916153605.5253-1-ztong0001@gmail.com> <20200922135956.GA23437@lst.de> <CAA5qM4BPKZaqH0SHS3zCO7oz=f3Ow_zB2fqtJYUrbbFBNbWsNQ@mail.gmail.com> <20200922164154.GA1894@lst.de> <61E8905E-E3FE-46EB-8283-9B35B4F069E1@gmail.com>
+        id S1726179AbgIWF7x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 01:59:53 -0400
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 73F0123444;
+        Wed, 23 Sep 2020 05:59:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600840792;
+        bh=I/8XzISzbBcCgYVmxLepZyG9w1CITHS3v+J9bySyNa0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ma7PADmZA95LLBo9KrXphWNWVsOVp+R73XlXBBcLHitEY4X5VwCFJSVq7vuCYgC3V
+         HIT9jQdNXpRYH0Rkj3vSz4V7G9BGteBdDqsxV/pAjN1mmz6khsLf9uFQEZlx+JA+bt
+         9uHpKQjziJ+IY+pVDK+nuHCnTz8A3CoT7WQ/HOGU=
+Date:   Tue, 22 Sep 2020 22:59:50 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Daniel Rosenberg <drosen@google.com>
+Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chao Yu <chao@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Richard Weinberger <richard@nod.at>,
+        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mtd@lists.infradead.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH 2/5] fscrypt: Export fscrypt_d_revalidate
+Message-ID: <20200923055950.GC9538@sol.localdomain>
+References: <20200923010151.69506-1-drosen@google.com>
+ <20200923010151.69506-3-drosen@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <61E8905E-E3FE-46EB-8283-9B35B4F069E1@gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200923010151.69506-3-drosen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I suspect the patch below might be better.  Can you send me a full dmesg
-with this one applied?  Preferably on top of Jens' for-next branch?
+On Wed, Sep 23, 2020 at 01:01:48AM +0000, Daniel Rosenberg wrote:
+> This is in preparation for shifting the responsibility of setting the
+> dentry_operations to the filesystem, allowing it to maintain its own
+> operations.
+> 
+> Signed-off-by: Daniel Rosenberg <drosen@google.com>
+> ---
+>  fs/crypto/fname.c       | 3 ++-
+>  include/linux/fscrypt.h | 1 +
+>  2 files changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
+> index 011830f84d8d..d45db23ff6c4 100644
+> --- a/fs/crypto/fname.c
+> +++ b/fs/crypto/fname.c
+> @@ -541,7 +541,7 @@ EXPORT_SYMBOL_GPL(fscrypt_fname_siphash);
+>   * Validate dentries in encrypted directories to make sure we aren't potentially
+>   * caching stale dentries after a key has been added.
+>   */
+> -static int fscrypt_d_revalidate(struct dentry *dentry, unsigned int flags)
+> +int fscrypt_d_revalidate(struct dentry *dentry, unsigned int flags)
+>  {
+>  	struct dentry *dir;
+>  	int err;
+> @@ -580,6 +580,7 @@ static int fscrypt_d_revalidate(struct dentry *dentry, unsigned int flags)
+>  
+>  	return valid;
+>  }
+> +EXPORT_SYMBOL_GPL(fscrypt_d_revalidate);
+>  
+>  const struct dentry_operations fscrypt_d_ops = {
+>  	.d_revalidate = fscrypt_d_revalidate,
+> diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+> index 991ff8575d0e..265b1e9119dc 100644
+> --- a/include/linux/fscrypt.h
+> +++ b/include/linux/fscrypt.h
+> @@ -207,6 +207,7 @@ int fscrypt_fname_disk_to_usr(const struct inode *inode,
+>  bool fscrypt_match_name(const struct fscrypt_name *fname,
+>  			const u8 *de_name, u32 de_name_len);
+>  u64 fscrypt_fname_siphash(const struct inode *dir, const struct qstr *name);
+> +extern int fscrypt_d_revalidate(struct dentry *dentry, unsigned int flags);
 
+Please don't use 'extern' here.
 
-diff --git a/block/genhd.c b/block/genhd.c
-index 9d060e79eb31d8..ef2784c69d59ee 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -832,7 +832,9 @@ static void __device_add_disk(struct device *parent, struct gendisk *disk,
- 	 * Take an extra ref on queue which will be put on disk_release()
- 	 * so that it sticks around as long as @disk is there.
- 	 */
--	WARN_ON_ONCE(!blk_get_queue(disk->queue));
-+	WARN_ON_ONCE(blk_queue_dying(disk->queue));
-+	__blk_get_queue(disk->queue);
-+	disk->flags |= GENHD_FL_QUEUE_REF;
- 
- 	disk_add_events(disk);
- 	blk_integrity_add(disk);
-@@ -1564,7 +1566,7 @@ static void disk_release(struct device *dev)
- 	kfree(disk->random);
- 	disk_replace_part_tbl(disk, NULL);
- 	hd_free_part(&disk->part0);
--	if (disk->queue)
-+	if (disk->flags & GENHD_FL_QUEUE_REF)
- 		blk_put_queue(disk->queue);
- 	kfree(disk);
- }
-diff --git a/include/linux/genhd.h b/include/linux/genhd.h
-index 1c97cf84f011a7..822a619924e3b5 100644
---- a/include/linux/genhd.h
-+++ b/include/linux/genhd.h
-@@ -133,6 +133,7 @@ struct hd_struct {
- #define GENHD_FL_BLOCK_EVENTS_ON_EXCL_WRITE	0x0100
- #define GENHD_FL_NO_PART_SCAN			0x0200
- #define GENHD_FL_HIDDEN				0x0400
-+#define GENHD_FL_QUEUE_REF			0x0800
- 
- enum {
- 	DISK_EVENT_MEDIA_CHANGE			= 1 << 0, /* media changed */
+Also FYI, Jeff Layton has sent this same patch as part of the ceph support for
+fscrypt: https://lkml.kernel.org/linux-fscrypt/20200914191707.380444-4-jlayton@kernel.org
 
+I'd like to apply one of them for 5.10 to get it out of the way for both
+patchsets, but I'd like for the commit message to mention both users.
+
+- Eric
