@@ -2,320 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E6F52753A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 10:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 182802753A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 10:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726387AbgIWIst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 04:48:49 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14265 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726244AbgIWIst (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 04:48:49 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 99245D33C459C597CA47;
-        Wed, 23 Sep 2020 16:48:42 +0800 (CST)
-Received: from [10.174.179.35] (10.174.179.35) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 23 Sep 2020 16:48:32 +0800
-Subject: Re: [Openipmi-developer] [PATCH] x86: Fix MCE error handing when
- kdump is enabled
-To:     <minyard@acm.org>
-CC:     Corey Minyard <cminyard@mvista.com>, <arnd@arndb.de>,
-        <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>,
-        <linfeilong@huawei.com>, <hidehiro.kawai.ez@hitachi.com>,
-        <openipmi-developer@lists.sourceforge.net>,
-        <liuzhiqiang26@huawei.com>
-References: <20200922161311.GQ3674@minyard.net>
- <20200922182940.31843-1-minyard@acm.org> <20200922184332.GT3674@minyard.net>
-From:   Wu Bo <wubo40@huawei.com>
-Message-ID: <29448f27-12f7-82a1-7483-80471c36d48c@huawei.com>
-Date:   Wed, 23 Sep 2020 16:48:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        id S1726460AbgIWItf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 04:49:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58056 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726242AbgIWIte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 04:49:34 -0400
+Received: from gaia (unknown [31.124.44.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2694B206BE;
+        Wed, 23 Sep 2020 08:49:32 +0000 (UTC)
+Date:   Wed, 23 Sep 2020 09:49:30 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Amit Kachhap <amit.kachhap@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <shuah@kernel.org>, Will Deacon <will@kernel.org>,
+        Vincenzo Frascino <Vincenzo.Frascino@arm.com>
+Subject: Re: [PATCH 6/6] kselftest/arm64: Check mte tagged user address in
+ kernel
+Message-ID: <20200923084930.GB13434@gaia>
+References: <20200901092719.9918-1-amit.kachhap@arm.com>
+ <20200901092719.9918-7-amit.kachhap@arm.com>
+ <20200922104123.GF15643@gaia>
+ <d390f84d-8cd9-8646-3dab-19f62512ee21@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20200922184332.GT3674@minyard.net>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.35]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d390f84d-8cd9-8646-3dab-19f62512ee21@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/9/23 2:43, Corey Minyard wrote:
-> On Tue, Sep 22, 2020 at 01:29:40PM -0500, minyard@acm.org wrote:
->> From: Corey Minyard <cminyard@mvista.com>
->>
->> If kdump is enabled, the handling of shooting down CPUs does not use the
->> RESET_VECTOR irq before trying to use NMIs to shoot down the CPUs.
->>
->> For normal errors that is fine.  MCEs, however, are already running in
->> an NMI, so sending them an NMI won't do anything.  The MCE code is set
->> up to receive the RESET_VECTOR because it disables CPUs, but it won't
->                                              ^ should be "enables irqs"
->> work on the NMI-only case.
->>
->> There is already code in place to scan for the NMI callback being ready,
->> simply call that from the MCE's wait_for_panic() code so it will pick up
->> and handle it if an NMI shootdown is requested.  This required
->> propagating the registers down to wait_for_panic().
->>
->> Signed-off-by: Corey Minyard <cminyard@mvista.com>
->> ---
->> After looking at it a bit, I think this is the proper way to fix the
->> issue, though I'm not an expert on this code so I'm not sure.
->>
->> I have not even tested this patch, I have only compiled it.  But from
->> what I can tell, things waiting in NMIs for a shootdown should call
->> run_crash_ipi_callback() in their wait loop.
-
-Hi,
-
-In my VM (using qemu-kvm), Kump is enabled, used mce-inject injects an 
-uncorrectable error. I has an issue with the IPMI driver's panic 
-handling running while the other CPUs are sitting in "wait_for_panic()" 
-with interrupt on, and IPMI interrupts interfering with the panic 
-handling, As a result, IPMI panic hangs for more than 3000 seconds.
-
-After I has patched and tested this patch, the problem of IPMI hangs has 
-disappeared. It should be a solution to the problem.
-
-
-Thanks,
-
-Wu Bo
-
->>
->>   arch/x86/kernel/cpu/mce/core.c | 67 ++++++++++++++++++++++------------
->>   1 file changed, 44 insertions(+), 23 deletions(-)
->>
->> diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
->> index f43a78bde670..3a842b3773b3 100644
->> --- a/arch/x86/kernel/cpu/mce/core.c
->> +++ b/arch/x86/kernel/cpu/mce/core.c
->> @@ -282,20 +282,35 @@ static int fake_panic;
->>   static atomic_t mce_fake_panicked;
->>   
->>   /* Panic in progress. Enable interrupts and wait for final IPI */
->> -static void wait_for_panic(void)
->> +static void wait_for_panic(struct pt_regs *regs)
->>   {
->>   	long timeout = PANIC_TIMEOUT*USEC_PER_SEC;
->>   
->>   	preempt_disable();
->>   	local_irq_enable();
->> -	while (timeout-- > 0)
->> +	while (timeout-- > 0) {
->> +		/*
->> +		 * We are in an NMI waiting to be stopped by the
->> +		 * handing processor.  For kdump handling, we need to
->> +		 * be monitoring crash_ipi_issued since that is what
->> +		 * is used for an NMI stop used by kdump.  But we also
->> +		 * need to have interrupts enabled some so that
->> +		 * RESET_VECTOR will interrupt us on a normal
->> +		 * shutdown.
->> +		 */
->> +		local_irq_disable();
->> +		run_crash_ipi_callback(regs);
->> +		local_irq_enable();
->> +
->>   		udelay(1);
->> +	}
->>   	if (panic_timeout == 0)
->>   		panic_timeout = mca_cfg.panic_timeout;
->>   	panic("Panicing machine check CPU died");
->>   }
->>   
->> -static void mce_panic(const char *msg, struct mce *final, char *exp)
->> +static void mce_panic(const char *msg, struct mce *final, char *exp,
->> +		      struct pt_regs *regs)
->>   {
->>   	int apei_err = 0;
->>   	struct llist_node *pending;
->> @@ -306,7 +321,7 @@ static void mce_panic(const char *msg, struct mce *final, char *exp)
->>   		 * Make sure only one CPU runs in machine check panic
->>   		 */
->>   		if (atomic_inc_return(&mce_panicked) > 1)
->> -			wait_for_panic();
->> +			wait_for_panic(regs);
->>   		barrier();
->>   
->>   		bust_spinlocks(1);
->> @@ -817,7 +832,7 @@ static atomic_t mce_callin;
->>   /*
->>    * Check if a timeout waiting for other CPUs happened.
->>    */
->> -static int mce_timed_out(u64 *t, const char *msg)
->> +static int mce_timed_out(u64 *t, const char *msg, struct pt_regs *regs)
->>   {
->>   	/*
->>   	 * The others already did panic for some reason.
->> @@ -827,12 +842,12 @@ static int mce_timed_out(u64 *t, const char *msg)
->>   	 */
->>   	rmb();
->>   	if (atomic_read(&mce_panicked))
->> -		wait_for_panic();
->> +		wait_for_panic(regs);
->>   	if (!mca_cfg.monarch_timeout)
->>   		goto out;
->>   	if ((s64)*t < SPINUNIT) {
->>   		if (mca_cfg.tolerant <= 1)
->> -			mce_panic(msg, NULL, NULL);
->> +			mce_panic(msg, NULL, NULL, regs);
->>   		cpu_missing = 1;
->>   		return 1;
->>   	}
->> @@ -866,7 +881,7 @@ static int mce_timed_out(u64 *t, const char *msg)
->>    * All the spin loops have timeouts; when a timeout happens a CPU
->>    * typically elects itself to be Monarch.
->>    */
->> -static void mce_reign(void)
->> +static void mce_reign(struct pt_regs *regs)
->>   {
->>   	int cpu;
->>   	struct mce *m = NULL;
->> @@ -896,7 +911,7 @@ static void mce_reign(void)
->>   	 * other CPUs.
->>   	 */
->>   	if (m && global_worst >= MCE_PANIC_SEVERITY && mca_cfg.tolerant < 3)
->> -		mce_panic("Fatal machine check", m, msg);
->> +		mce_panic("Fatal machine check", m, msg, regs);
->>   
->>   	/*
->>   	 * For UC somewhere we let the CPU who detects it handle it.
->> @@ -909,7 +924,8 @@ static void mce_reign(void)
->>   	 * source or one CPU is hung. Panic.
->>   	 */
->>   	if (global_worst <= MCE_KEEP_SEVERITY && mca_cfg.tolerant < 3)
->> -		mce_panic("Fatal machine check from unknown source", NULL, NULL);
->> +		mce_panic("Fatal machine check from unknown source", NULL, NULL,
->> +			  regs);
->>   
->>   	/*
->>   	 * Now clear all the mces_seen so that they don't reappear on
->> @@ -928,7 +944,7 @@ static atomic_t global_nwo;
->>    * in the entry order.
->>    * TBD double check parallel CPU hotunplug
->>    */
->> -static int mce_start(int *no_way_out)
->> +static int mce_start(int *no_way_out, struct pt_regs *regs)
->>   {
->>   	int order;
->>   	int cpus = num_online_cpus();
->> @@ -949,7 +965,8 @@ static int mce_start(int *no_way_out)
->>   	 */
->>   	while (atomic_read(&mce_callin) != cpus) {
->>   		if (mce_timed_out(&timeout,
->> -				  "Timeout: Not all CPUs entered broadcast exception handler")) {
->> +				  "Timeout: Not all CPUs entered broadcast exception handler",
->> +				  regs)) {
->>   			atomic_set(&global_nwo, 0);
->>   			return -1;
->>   		}
->> @@ -975,7 +992,8 @@ static int mce_start(int *no_way_out)
->>   		 */
->>   		while (atomic_read(&mce_executing) < order) {
->>   			if (mce_timed_out(&timeout,
->> -					  "Timeout: Subject CPUs unable to finish machine check processing")) {
->> +					  "Timeout: Subject CPUs unable to finish machine check processing",
->> +					  regs)) {
->>   				atomic_set(&global_nwo, 0);
->>   				return -1;
->>   			}
->> @@ -995,7 +1013,7 @@ static int mce_start(int *no_way_out)
->>    * Synchronize between CPUs after main scanning loop.
->>    * This invokes the bulk of the Monarch processing.
->>    */
->> -static int mce_end(int order)
->> +static int mce_end(int order, struct pt_regs *regs)
->>   {
->>   	int ret = -1;
->>   	u64 timeout = (u64)mca_cfg.monarch_timeout * NSEC_PER_USEC;
->> @@ -1020,12 +1038,13 @@ static int mce_end(int order)
->>   		 */
->>   		while (atomic_read(&mce_executing) <= cpus) {
->>   			if (mce_timed_out(&timeout,
->> -					  "Timeout: Monarch CPU unable to finish machine check processing"))
->> +					  "Timeout: Monarch CPU unable to finish machine check processing",
->> +					  regs))
->>   				goto reset;
->>   			ndelay(SPINUNIT);
->>   		}
->>   
->> -		mce_reign();
->> +		mce_reign(regs);
->>   		barrier();
->>   		ret = 0;
->>   	} else {
->> @@ -1034,7 +1053,8 @@ static int mce_end(int order)
->>   		 */
->>   		while (atomic_read(&mce_executing) != 0) {
->>   			if (mce_timed_out(&timeout,
->> -					  "Timeout: Monarch CPU did not finish machine check processing"))
->> +					  "Timeout: Monarch CPU did not finish machine check processing",
->> +					  regs))
->>   				goto reset;
->>   			ndelay(SPINUNIT);
->>   		}
->> @@ -1286,9 +1306,9 @@ noinstr void do_machine_check(struct pt_regs *regs)
->>   	 */
->>   	if (lmce) {
->>   		if (no_way_out)
->> -			mce_panic("Fatal local machine check", &m, msg);
->> +			mce_panic("Fatal local machine check", &m, msg, regs);
->>   	} else {
->> -		order = mce_start(&no_way_out);
->> +		order = mce_start(&no_way_out, regs);
->>   	}
->>   
->>   	__mc_scan_banks(&m, final, toclear, valid_banks, no_way_out, &worst);
->> @@ -1301,7 +1321,7 @@ noinstr void do_machine_check(struct pt_regs *regs)
->>   	 * When there's any problem use only local no_way_out state.
->>   	 */
->>   	if (!lmce) {
->> -		if (mce_end(order) < 0)
->> +		if (mce_end(order, regs) < 0)
->>   			no_way_out = worst >= MCE_PANIC_SEVERITY;
->>   	} else {
->>   		/*
->> @@ -1314,7 +1334,7 @@ noinstr void do_machine_check(struct pt_regs *regs)
->>   		 */
->>   		if (worst >= MCE_PANIC_SEVERITY && mca_cfg.tolerant < 3) {
->>   			mce_severity(&m, cfg->tolerant, &msg, true);
->> -			mce_panic("Local fatal machine check!", &m, msg);
->> +			mce_panic("Local fatal machine check!", &m, msg, regs);
->>   		}
->>   	}
->>   
->> @@ -1325,7 +1345,7 @@ noinstr void do_machine_check(struct pt_regs *regs)
->>   	if (cfg->tolerant == 3)
->>   		kill_it = 0;
->>   	else if (no_way_out)
->> -		mce_panic("Fatal machine check on current CPU", &m, msg);
->> +		mce_panic("Fatal machine check on current CPU", &m, msg, regs);
->>   
->>   	if (worst > 0)
->>   		irq_work_queue(&mce_irq_work);
->> @@ -1361,7 +1381,8 @@ noinstr void do_machine_check(struct pt_regs *regs)
->>   		 */
->>   		if (m.kflags & MCE_IN_KERNEL_RECOV) {
->>   			if (!fixup_exception(regs, X86_TRAP_MC, 0, 0))
->> -				mce_panic("Failed kernel mode recovery", &m, msg);
->> +				mce_panic("Failed kernel mode recovery", &m,
->> +					  msg, regs);
->>   		}
->>   	}
->>   }
->> -- 
->> 2.17.1
->>
->>
->>
->> _______________________________________________
->> Openipmi-developer mailing list
->> Openipmi-developer@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/openipmi-developer
-> .
+On Wed, Sep 23, 2020 at 12:36:59PM +0530, Amit Kachhap wrote:
+> On 9/22/20 4:11 PM, Catalin Marinas wrote:
+> > On Tue, Sep 01, 2020 at 02:57:19PM +0530, Amit Daniel Kachhap wrote:
+> > > +static int check_usermem_access_fault(int mem_type, int mode, int mapping)
+> > > +{
+> > > +	int fd, ret, i, err;
+> > > +	char val = 'A';
+> > > +	size_t len, read_len;
+> > > +	void *ptr, *ptr_next;
+> > > +	bool fault;
+> > > +
+> > > +	len = 2 * page_sz;
+> > > +	err = KSFT_FAIL;
+> > > +	/*
+> > > +	 * Accessing user memory in kernel with invalid tag should fault in sync
+> > > +	 * mode but may not fault in async mode as per the implemented MTE
+> > > +	 * support in Arm64 kernel.
+> > > +	 */
+> > > +	if (mode == MTE_ASYNC_ERR)
+> > > +		fault = false;
+> > > +	else
+> > > +		fault = true;
+> > > +	mte_switch_mode(mode, MTE_ALLOW_NON_ZERO_TAG);
+> > > +	fd = create_temp_file();
+> > > +	if (fd == -1)
+> > > +		return KSFT_FAIL;
+> > > +	for (i = 0; i < len; i++)
+> > > +		write(fd, &val, sizeof(val));
+> > > +	lseek(fd, 0, 0);
+> > > +	ptr = mte_allocate_memory(len, mem_type, mapping, true);
+> > > +	if (check_allocated_memory(ptr, len, mem_type, true) != KSFT_PASS) {
+> > > +		close(fd);
+> > > +		return KSFT_FAIL;
+> > > +	}
+> > > +	mte_initialize_current_context(mode, (uintptr_t)ptr, len);
+> > > +	/* Copy from file into buffer with valid tag */
+> > > +	read_len = read(fd, ptr, len);
+> > > +	ret = errno;
+> > 
+> > My reading of the man page is that errno is set only if read() returns
+> > -1.
 > 
+> Yes. The checks should be optimized here.
 
+It's not about optimisation but correctness. The errno man page states
+that errno is only relevant if the syscall returns -1. So it may
+potentially hold a stale value (e.g. EFAULT) in case of read() success
+but the check below fails anyway:
+
+> > > +	mte_wait_after_trig();
+> > > +	if ((cur_mte_cxt.fault_valid == true) || ret == EFAULT || read_len < len)
+> > > +		goto usermem_acc_err;
+
+-- 
+Catalin
