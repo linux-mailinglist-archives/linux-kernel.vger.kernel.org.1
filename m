@@ -2,188 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E7027638C
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 00:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C64027638E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 00:07:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726781AbgIWWHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 18:07:38 -0400
-Received: from mga09.intel.com ([134.134.136.24]:4747 "EHLO mga09.intel.com"
+        id S1726788AbgIWWHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 18:07:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726599AbgIWWHi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 18:07:38 -0400
-IronPort-SDR: 3KLQLjmwtefAohujkxfcPErNhpmdhR37arjuGNrf/rHzf5nTHG30Pf2uUuXGRY/JRqKqIQeKoD
- x0Vjk0FIzidg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="161957687"
-X-IronPort-AV: E=Sophos;i="5.77,295,1596524400"; 
-   d="scan'208";a="161957687"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 15:07:37 -0700
-IronPort-SDR: 8/nCNdvR1Yu+v3Mm6u3D2OpVY2JEFnr7Z+ho3MLY1KMtk3aBCEv1l+R7At79+gzntTR2rKuS+i
- K87HxPIy+6Sw==
-X-IronPort-AV: E=Sophos;i="5.77,295,1596524400"; 
-   d="scan'208";a="455088682"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.121.128]) ([10.212.121.128])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 15:07:34 -0700
-Subject: Re: [PATCH v12 8/8] x86: Disallow vsyscall emulation when CET is
- enabled
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
+        id S1726665AbgIWWHs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 18:07:48 -0400
+Received: from tzanussi-mobl (c-73-211-240-131.hsd1.il.comcast.net [73.211.240.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 36DF52311A;
+        Wed, 23 Sep 2020 22:07:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600898867;
+        bh=0fg/tb6x79NpfaENSuZB9fy5mCBrCQVJCLJcpSvFpiI=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=LesMBUzt5w6X01kIdhbbunu2wqZKZ38mrkV+KD6mevo2h2vwmPjKVo2v/liuQ7wBZ
+         ud6IY8Ja9ayPiAAypw/o6dD7I8TeFvYoDbV/dB+9M1zDi4o7Kwonbjti3gy9wNBBIP
+         TfOHMAWN9htukuhtJc5flkOzZFiBZ3LlbBL6zbp4=
+Message-ID: <59a36732a8c09ecf31b6bc2bf6fe1629b9625b7c.camel@kernel.org>
+Subject: Re: [PATCH] mmap_lock: add tracepoints around lock acquisition
+From:   Tom Zanussi <zanussi@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michel Lespinasse <walken@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        Yafang Shao <laoar.shao@gmail.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>
-References: <20200918192312.25978-1-yu-cheng.yu@intel.com>
- <20200918192312.25978-9-yu-cheng.yu@intel.com>
- <CALCETrXfixDGJhf0yPw-OckjEdeF2SbYjWFm8VbLriiP0Krhrg@mail.gmail.com>
- <c96c98ec-d72a-81a3-06e2-2040f3ece33a@intel.com>
- <24718de58ab7bc6d7288c58d3567ad802eeb6542.camel@intel.com>
- <CALCETrWssUxxfhPPJZgPOmpaQcf4o9qCe1j-P7yiPyZVV+O8ZQ@mail.gmail.com>
- <b3defc91-1e8e-d0d5-2ac3-3861a7e3355c@intel.com>
- <CALCETrUVUqK6_bjFNSmOjnWVNscwfWmMa6Bt9fQrpFa5m3xNwA@mail.gmail.com>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <3747f6f2-4eb0-0e70-68e5-4e8f161bcb6e@intel.com>
-Date:   Wed, 23 Sep 2020 15:07:33 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <CALCETrUVUqK6_bjFNSmOjnWVNscwfWmMa6Bt9fQrpFa5m3xNwA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        Linux MM <linux-mm@kvack.org>
+Date:   Wed, 23 Sep 2020 17:07:44 -0500
+In-Reply-To: <20200918164150.5a34de1b@gandalf.local.home>
+References: <20200917181347.1359365-1-axelrasmussen@google.com>
+         <20200917154258.1a364cdf@gandalf.local.home>
+         <CAJHvVcjvhGJ-hPokv+dWSDybetEcDHTme0JAM5Rac4hXVYAagg@mail.gmail.com>
+         <20200918164150.5a34de1b@gandalf.local.home>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/23/2020 2:34 PM, Andy Lutomirski wrote:
-> On Tue, Sep 22, 2020 at 10:46 AM Yu, Yu-cheng <yu-cheng.yu@intel.com> wrote:
->>
->> On 9/21/2020 4:48 PM, Andy Lutomirski wrote:
->>> On Mon, Sep 21, 2020 at 3:37 PM Yu-cheng Yu <yu-cheng.yu@intel.com> wrote:
->>>>
->>>> On Mon, 2020-09-21 at 09:22 -0700, Yu, Yu-cheng wrote:
->>
->> [...]
->>
->>>>
->>>> Here is the patch:
->>>>
->>>> ------
->>>>
->>>>   From dfdee39c795ee5dcee2c77f6ba344a61f4d8124b Mon Sep 17 00:00:00 2001
->>>> From: Yu-cheng Yu <yu-cheng.yu@intel.com>
->>>> Date: Thu, 29 Nov 2018 14:15:38 -0800
->>>> Subject: [PATCH 34/43] x86/vsyscall/64: Fixup Shadow Stack and Indirect Branch
->>>>    Tracking for vsyscall emulation
->>>>
->>>> Vsyscall entry points are effectively branch targets.  Mark them with
->>>> ENDBR64 opcodes.  When emulating the RET instruction, unwind the shadow
->>>> stack and reset IBT state machine.
->>>>
->>>> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
->>>> ---
->>>>    arch/x86/entry/vsyscall/vsyscall_64.c     | 29 +++++++++++++++++++++++
->>>>    arch/x86/entry/vsyscall/vsyscall_emu_64.S |  9 +++++++
->>>>    arch/x86/entry/vsyscall/vsyscall_trace.h  |  1 +
->>>>    3 files changed, 39 insertions(+)
->>>>
->>>> diff --git a/arch/x86/entry/vsyscall/vsyscall_64.c
->>>> b/arch/x86/entry/vsyscall/vsyscall_64.c
->>>> index 44c33103a955..0131c9f7f9c5 100644
->>>> --- a/arch/x86/entry/vsyscall/vsyscall_64.c
->>>> +++ b/arch/x86/entry/vsyscall/vsyscall_64.c
->>>> @@ -38,6 +38,9 @@
->>>>    #include <asm/fixmap.h>
->>>>    #include <asm/traps.h>
->>>>    #include <asm/paravirt.h>
->>>> +#include <asm/fpu/xstate.h>
->>>> +#include <asm/fpu/types.h>
->>>> +#include <asm/fpu/internal.h>
->>>>
->>>>    #define CREATE_TRACE_POINTS
->>>>    #include "vsyscall_trace.h"
->>>> @@ -286,6 +289,32 @@ bool emulate_vsyscall(unsigned long error_code,
->>>>           /* Emulate a ret instruction. */
->>>>           regs->ip = caller;
->>>>           regs->sp += 8;
->>>> +
->>>> +       if (current->thread.cet.shstk_size ||
->>>> +           current->thread.cet.ibt_enabled) {
->>>> +               u64 r;
->>>> +
->>>> +               fpregs_lock();
->>>> +               if (test_thread_flag(TIF_NEED_FPU_LOAD))
->>>> +                       __fpregs_load_activate();
->>>
->>> Wouldn't this be nicer if you operated on the memory image, not the registers?
->>
->> Do you mean writing to the XSAVES area?
+Hi Steve, Axel,
+
+On Fri, 2020-09-18 at 16:41 -0400, Steven Rostedt wrote:
+> On Fri, 18 Sep 2020 13:26:37 -0700
+> Axel Rasmussen <axelrasmussen@google.com> wrote:
 > 
-> Yes.
+> > On Thu, Sep 17, 2020 at 12:43 PM Steven Rostedt <
+> > rostedt@goodmis.org> wrote:
+> > > 
+> > > On Thu, 17 Sep 2020 11:13:47 -0700
+> > > Axel Rasmussen <axelrasmussen@google.com> wrote:
+> > >  
+> > > > +/*
+> > > > + * Trace calls must be in a separate file, as otherwise
+> > > > there's a circuclar
+> > > > + * dependency between linux/mmap_lock.h and
+> > > > trace/events/mmap_lock.h.
+> > > > + */
+> > > > +
+> > > > +static void trace_start_locking(struct mm_struct *mm, bool
+> > > > write)  
+> > > 
+> > > Please don't use "trace_" for functions, as that should be
+> > > reserved for the
+> > > actual tracepoint functions. Please use "do_trace_" or whatever
+> > > so there's
+> > > no confusion about this being a tracepoint, even if it's just a
+> > > function
+> > > that calls the tracepoint.  
+> > 
+> > Done; I'll send a v2 with this change.
+> > 
+> > >  
+> > > > +{
+> > > > +     TRACE_MMAP_LOCK_EVENT(start_locking, mm, 0, write, true);
+> > > > +}
+> > > > +
+> > > > +static void trace_acquire_returned(struct mm_struct *mm, u64
+> > > > start_time_ns,
+> > > > +                                bool write, bool success)
+> > > > +{
+> > > > +     TRACE_MMAP_LOCK_EVENT(acquire_returned, mm,
+> > > > +                           sched_clock() - start_time_ns,
+> > > > write, success);
+> > > > +}
+> > > > +
+> > > > +static void trace_released(struct mm_struct *mm, bool write)
+> > > > +{
+> > > > +     TRACE_MMAP_LOCK_EVENT(released, mm, 0, write, true);
+> > > > +}
+> > > > +  
+> > > 
+> > >  
+> > > > +static inline void lock_impl(struct mm_struct *mm,
+> > > > +                          void (*lock)(struct rw_semaphore *),
+> > > > bool write)
+> > > > +{
+> > > > +     u64 start_time_ns;
+> > > > +
+> > > > +     trace_start_locking(mm, write);
+> > > > +     start_time_ns = sched_clock();
+> > > > +     lock(&mm->mmap_lock);
+> > > > +     trace_acquire_returned(mm, start_time_ns, write, true);
+> > > > +}
+> > > > +  
+> > > 
+> > > Why record the start time and pass it in for return, when this
+> > > can be done
+> > > by simply recording the start and return and then using the
+> > > timestamps of
+> > > the trace events to calculate the duration, offline or as
+> > > synthetic events:  
+> > 
+> > First, thanks for the detailed feedback! As a newbie this is very
+> > helpful. :)
+> > 
+> > I agree in principle, and I almost have a working version as you
+> > suggest, but I can't see a way to get string fields working.
+> > 
+> > I believe in trace event headers the typical way to define a string
+> > field  is as a "const char *", with the __string, __assign_str, and
+> > __get_str helpers. But, from reading trace_events_synth.c, this
+> > isn't
+> > really supported, in that it only supports "char []". But, the hist
+> > trigger code just does a strcmp() of the type string, it doesn't do
+> > any type conversion, so it considers these types incompatible:
+> > 
+> > After this:
+> > # echo 'mmap_lock_latency u64 time; char memcg_path[256]' >
+> > /sys/kernel/tracing/synthetic_events
+> > 
+> > Trying to setup the hist trigger gives (the ^ points to the
+> > beginning
+> > of keys=>m<emcg_path ... not sure the formatting will be preserved
+> > properly in e-mail):
+> > # cat /sys/kernel/tracing/error_log
+> > [   15.823725] hist:mmap_lock:mmap_lock_acquire_returned: error:
+> > Param
+> > type doesn't match synthetic event field type
+> >   Command: hist:keys=memcg_path:latency=common_timestamp.usecs-
+> > $ts0:onmatch(mmap_lock.mmap_lock_start_locking).mmap_lock_latency($
+> > latency,memcg_path)
+> >                      ^
+> > 
+> > I tried grepping "char [^\[]+\[" in include/trace/events/, and it
+> > seems nobody is defining fixed-length string fields like that, so I
+> > think that's the wrong solution. I checked the docs about defining
+> > variables (
+> > https://www.kernel.org/doc/html/v5.2/trace/histogram.html)
+> > and it doesn't support anything complex like a cast, just - and +.
+> > 
+> > Any advice?
 > 
->>
->>>
->>>> +
->>>> +#ifdef CONFIG_X86_INTEL_BRANCH_TRACKING_USER
->>>> +               /* Fixup branch tracking */
->>>> +               if (current->thread.cet.ibt_enabled) {
->>>> +                       rdmsrl(MSR_IA32_U_CET, r);
->>>> +                       wrmsrl(MSR_IA32_U_CET, r & ~CET_WAIT_ENDBR);
->>>> +               }
->>>> +#endif
->>>
->>> Seems reasonable on first glance.
->>>
->>>> +
->>>> +#ifdef CONFIG_X86_INTEL_SHADOW_STACK_USER
->>>> +               /* Unwind shadow stack. */
->>>> +               if (current->thread.cet.shstk_size) {
->>>> +                       rdmsrl(MSR_IA32_PL3_SSP, r);
->>>> +                       wrmsrl(MSR_IA32_PL3_SSP, r + 8);
->>>> +               }
->>>> +#endif
->>>
->>> What happens if the result is noncanonical?  A quick skim of the SDM
->>> didn't find anything.  This latter issue goes away if you operate on
->>> the memory image, though -- writing a bogus value is just fine, since
->>> the FP restore will handle it.
->>>
->>
->> At this point, the MSR's value can still be valid or is already saved to
->> memory.  If we are going to write to memory, then the MSR must be saved
->> first.  So I chose to do __fpregs_load_activate() and write the MSR.
->>
->> Maybe we can check the address before writing it to the MSR?
+> Tom,
 > 
-> Performance is almost irrelevant here, and the writing-to-XSAVES-area
-> approach should have the benefit that the exception handling and
-> signaling happens for free.
+> Do you think we could make histograms support the above somehow?
 > 
 
-Ok, I will change it.
+Sorry for the delayed reply - was out on vacation.
 
-Thanks,
-Yu-cheng
+Yeah, currently the synthetic events only support constant-length
+strings, which should match with __array()s in the tracepoints, but I
+think they should also be made to support variable-length arrays that
+would match __string() etc.
+
+I'm thinking an array field without length specifier could be used to
+in the synthetic event specification for that e.g.:
+
+  # echo 'mmap_lock_latency u64 time; char memcg_path[]' > /sys/kernel/tracing/synthetic_events
+
+I'll work on adding that over the next couple days or so...
+
+Tom
+
+> -- Steve
+> 
+> > 
+> > 
+> > 
+> > > 
+> > > 
+> > >  # cd /sys/kernel/tracing/
+> > >  # echo 'duration u64 time' > synthetic_events
+> > >  # echo 'hist:keys=common_pid:ts0=common_timestamp.usecs" >
+> > > events/mmap_lock/mmap_lock_start_locking/trigger
+> > >  # echo 'hist:keys=common_pid:dur=common_timestamp.usecs-
+> > > $ts0:onmatch(mmap_lock.mmap_lock_start_locking).trace(duration,$d
+> > > ur)" > events/mmap_lock/mmap_lock_acquire_returned/trigger
+> > >  # echo 1 > events/synthetic/duration/enable
+> > >  # cat trace
+> > > # tracer: nop
+> > > #
+> > > # entries-in-buffer/entries-written: 148/148   #P:8
+> > > #
+> > > #                              _-----=> irqs-off
+> > > #                             / _----=> need-resched
+> > > #                            | / _---=> hardirq/softirq
+> > > #                            || / _--=> preempt-depth
+> > > #                            ||| /     delay
+> > > #           TASK-PID   CPU#  ||||    TIMESTAMP  FUNCTION
+> > > #              | |       |   ||||       |         |
+> > >             bash-1613  [007] ...3  3186.431687: duration: time=3
+> > >             bash-1613  [007] ...3  3186.431722: duration: time=2
+> > >             bash-1613  [007] ...3  3186.431772: duration: time=2
+> > >             bash-1613  [001] ...3  3188.372001: duration: time=6
+> > >             bash-1613  [001] ...3  3188.372324: duration: time=6
+> > >             bash-1613  [001] ...3  3188.372332: duration: time=4
+> > >             bash-1613  [001] ...3  3188.373557: duration: time=5
+> > >             bash-1613  [001] ...3  3188.373595: duration: time=3
+> > >              cat-1868  [002] ...3  3188.373608: duration: time=8
+> > >             bash-1613  [001] ...3  3188.373613: duration: time=4
+> > >             bash-1613  [001] ...3  3188.373635: duration: time=3
+> > >              cat-1868  [002] ...3  3188.373646: duration: time=4
+> > >             bash-1613  [001] ...3  3188.373652: duration: time=3
+> > >             bash-1613  [001] ...3  3188.373669: duration: time=3
+> > > 
+> > >  # echo 'hist:keys=time' > events/synthetic/duration/trigger
+> > >  # cat events/synthetic/duration/hist
+> > > # event histogram
+> > > #
+> > > # trigger info:
+> > > hist:keys=time:vals=hitcount:sort=hitcount:size=2048 [active]
+> > > #
+> > > 
+> > > { time:        114 } hitcount:          1
+> > > { time:         15 } hitcount:          1
+> > > { time:         11 } hitcount:          1
+> > > { time:         21 } hitcount:          1
+> > > { time:         10 } hitcount:          1
+> > > { time:         46 } hitcount:          1
+> > > { time:         29 } hitcount:          1
+> > > { time:         13 } hitcount:          2
+> > > { time:         16 } hitcount:          3
+> > > { time:          9 } hitcount:          3
+> > > { time:          8 } hitcount:          3
+> > > { time:          7 } hitcount:          8
+> > > { time:          6 } hitcount:         10
+> > > { time:          5 } hitcount:         28
+> > > { time:          4 } hitcount:        121
+> > > { time:          1 } hitcount:        523
+> > > { time:          3 } hitcount:        581
+> > > { time:          2 } hitcount:        882
+> > > 
+> > > Totals:
+> > >     Hits: 2171
+> > >     Entries: 18
+> > >     Dropped: 0
+> > > 
+> > > And with this I could do a bunch of things like stack trace on
+> > > max hits and
+> > > other features that the tracing histograms give us.
+> > > 
+> > > -- Steve  
+> 
+> 
+
