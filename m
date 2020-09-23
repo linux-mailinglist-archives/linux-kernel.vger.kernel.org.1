@@ -2,98 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C171C275C1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC48275C1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:39:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726808AbgIWPj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 11:39:26 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:38706 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726504AbgIWPj0 (ORCPT
+        id S1726820AbgIWPjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 11:39:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726504AbgIWPjv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 11:39:26 -0400
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600875564;
+        Wed, 23 Sep 2020 11:39:51 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 143DFC0613CE;
+        Wed, 23 Sep 2020 08:39:51 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0d130017aaf728a0fb4ec3.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:1300:17aa:f728:a0fb:4ec3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AE2171EC0409;
+        Wed, 23 Sep 2020 17:39:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600875587;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8P5nh1hHFJMcXSIFglTL/dkQO46cDnS5dRP0Pby4DDU=;
-        b=cILKIfjdX4VZRqjlygmnlMUPZ8ZCV4Y5zWGH+qGPKVGMJlwuFrRMH6JMfwAkvs0eiZhBPR
-        mf0U2OblZ4Y0OHb6tf+gr9RY7wtq0ejgkN9RLf6/Jq89v8kWXCMWVK+r1k+hU4j34ZGrTD
-        Mg9p1pDdRSH/8Ahzq6rwiUjp3lJ8TZU9++Ui+g/Kwo9mS/sU1ycQ9PVF0d2dHA0OcxAWW+
-        rMWJxV4ffSrmybd+2vA/tk675bMMMftunHOE1RWhzXmv4cNgl27bMakApggyFS72A4V4ff
-        ibI25jRtovWBlib/4b7wu2P39/qgIZoGczz/bmjpJASUcMg2qsq8VhMYFVKejw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600875564;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8P5nh1hHFJMcXSIFglTL/dkQO46cDnS5dRP0Pby4DDU=;
-        b=1fIvXz/LPCrYRROHh5IdMsr6ODDrDu9eQ8HAqBvbkJZ6/qSyw5l/EcsrDy5OupTBr5f3vA
-        3v45/GoEQY0o6YBw==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk 2/5] printk: kmsg_dump_rewind_nolock: start from first record
-In-Reply-To: <20200923145208.GB6442@alley>
-References: <20200922153816.5883-1-john.ogness@linutronix.de> <20200922153816.5883-3-john.ogness@linutronix.de> <20200923145208.GB6442@alley>
-Date:   Wed, 23 Sep 2020 17:45:23 +0206
-Message-ID: <87lfh0zems.fsf@jogness.linutronix.de>
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=w4olCSb8jT2RNv8xHUN26fhLNxYdkyB61t9MEo7mTLE=;
+        b=bq4WYVndAySAoDrcXMKE2j/v4xOD2eIjmidsATkH23MZkCe6wd2xyNQlmxzWR5LCLSl9D2
+        7+gK6lYDLVIOlVELUR2Kx24fmSYSDQkLBiJhOWpiel/I6b7WF2aS4IakPs4v0eqXCO8eRf
+        nTXxR4HWsYWYb1zVhkQi2nKk2Pw4EfY=
+Date:   Wed, 23 Sep 2020 17:39:41 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Punit Agrawal <punit1.agrawal@toshiba.co.jp>,
+        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pm@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-efi <linux-efi@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        devel@acpica.org, Tony Luck <tony.luck@intel.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>
+Subject: Re: [PATCH v4] cper, apei, mce: Pass x86 CPER through the MCA
+ handling chain
+Message-ID: <20200923153941.GK28545@zn.tnic>
+References: <20200904140444.161291-1-Smita.KoralahalliChannabasappa@amd.com>
+ <87wo0kiz6y.fsf@kokedama.swc.toshiba.co.jp>
+ <20200923140512.GJ28545@zn.tnic>
+ <CAMj1kXH2uWEfAxTf_+6YN-Sp2VNKtaGhqAx4jyvhW3xR=0Jaug@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXH2uWEfAxTf_+6YN-Sp2VNKtaGhqAx4jyvhW3xR=0Jaug@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-23, Petr Mladek <pmladek@suse.com> wrote:
->> kmsg_dump_rewind_nolock() accesses @clear_seq without any locking.
->> However, accessing this global variable requires holding
->> @logbuf_lock. For the _nolock() variant, start from the first record
->> in the ringbuffer rather than the @clear_seq record.
->
->> Signed-off-by: John Ogness <john.ogness@linutronix.de>
->> ---
->>  kernel/printk/printk.c | 8 +++++---
->>  1 file changed, 5 insertions(+), 3 deletions(-)
->> 
->> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
->> index 00bc1fce3299..cff13b33e926 100644
->> --- a/kernel/printk/printk.c
->> +++ b/kernel/printk/printk.c
->> @@ -3410,11 +3410,12 @@ EXPORT_SYMBOL_GPL(kmsg_dump_get_buffer);
->>   * kmsg_dump_get_buffer() can be called again and used multiple
->>   * times within the same dumper.dump() callback.
->>   *
->> - * The function is similar to kmsg_dump_rewind(), but grabs no locks.
->> + * The function is similar to kmsg_dump_rewind(), but grabs no locks
->> + * and starts from the oldest record rather than from @clear_seq.
->>   */
->>  void kmsg_dump_rewind_nolock(struct kmsg_dumper *dumper)
->>  {
->> -	dumper->cur_seq = clear_seq;
->> +	dumper->cur_seq = 0;
->
-> Just to understand it. Is the problem that the value might be in
-> an inconsistent state?
->
-> I mean that it might be modified by more instructions, for example,
-> because of compiler optimizations or on 32-bit system by definition.
+On Wed, Sep 23, 2020 at 04:52:18PM +0200, Ard Biesheuvel wrote:
+> I think the question is why we are retaining this Reported-by header
+> to begin with. Even though the early feedback is appreciated,
+> crediting the bot for eternity for a version of the patch that never
+> got merged seems a bit excessive. Also, it may suggest that the bot
+> was involved in reporting an issue that the patch aims to fix but that
+> is not the case.
 
-Correct.
+That is supposed to be explained in [] properly so that there's no
+misreading of why that tag's there.
 
-> I still have to look at the later patches. But it seems that
-> the new syslog_lock is taken mostly only around reading or
-> writing the global @clear_seq variable. Atomic variable might
-> do the same job.
+> The last thing we want is Sasha's bot to jump on patches adding new
+> functionality just because it has a reported-by line.
 
-Until now I have avoided using atomic64 types. Perhaps my reluctance to
-use this type is unfounded. Using an atomic64 for @clear_seq would free
-it from needing to be protected by @syslog_lock.
+It should jump on patches which have Fixes: tags. But Sasha's bot is
+nuts regardless. :-)
 
-John Ogness
+> So I suggest dropping the Reported-by credit as well as the [] context
+> regarding v1
+
+So I don't mind having a Reported-by: tag with an explanation of what
+it reported. We slap all kinds of tags so having some attribution for
+the work the 0day bot does to catch such errors is reasonable. I presume
+they track this way how "useful" it is, by counting the Reported-by's or
+so, as they suggest one should add a Reported-by in their reports.
+
+And without any attribution what the 0day bot reported, it might decide
+not to report anything next time, I'd venture a guess.
+
+And the same argument can be had for Suggested-by: tags: one could
+decide not to add that tag and the person who's doing the suggesting
+might decide not to suggest anymore.
+
+So I think something like:
+
+ [ Fix a build breakage in an earlier version. ]
+Reported-by: 0day bot
+
+is fine as long as it makes it perfectly clear what Reported-by tag
+is for and as long as ts purpose for being present there is clear, I
+don't see an issue...
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
