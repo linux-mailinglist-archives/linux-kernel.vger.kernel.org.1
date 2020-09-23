@@ -2,259 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B67C627533D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 10:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F64275339
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 10:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726420AbgIWIbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 04:31:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726253AbgIWIbt (ORCPT
+        id S1726381AbgIWIbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 04:31:13 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:36054 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726228AbgIWIbN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 04:31:49 -0400
-Received: from hillosipuli.retiisi.eu (hillosipuli.retiisi.org.uk [IPv6:2a01:4f9:c010:4572::81:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81BE7C061755;
-        Wed, 23 Sep 2020 01:31:49 -0700 (PDT)
-Received: from valkosipuli.localdomain (valkosipuli.retiisi.org.uk [IPv6:2a01:4f9:c010:4572::80:2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 663A9634C87;
-        Wed, 23 Sep 2020 11:30:36 +0300 (EEST)
-Received: from sailus by valkosipuli.localdomain with local (Exim 4.92)
-        (envelope-from <sakari.ailus@retiisi.org.uk>)
-        id 1kL0Ae-0002pE-Iu; Wed, 23 Sep 2020 11:30:36 +0300
-Date:   Wed, 23 Sep 2020 11:30:36 +0300
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Sowjanya Komatineni <skomatineni@nvidia.com>, jonathanh@nvidia.com,
-        hverkuil@xs4all.nl, jacopo+renesas@jmondi.org,
-        luca@lucaceresoli.net, leonl@leopardimaging.com,
-        robh+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 3/3] media: i2c: imx274: Add IMX274 power on and off
- sequence
-Message-ID: <20200923083036.GF8644@valkosipuli.retiisi.org.uk>
-References: <1600724379-7324-1-git-send-email-skomatineni@nvidia.com>
- <1600724379-7324-4-git-send-email-skomatineni@nvidia.com>
- <20200922075501.GB3994831@ulmo>
- <c79b6253-8476-c51b-ba32-10d464cfa4cb@nvidia.com>
- <20200922162025.GB8644@valkosipuli.retiisi.org.uk>
- <20200923080705.GA1110498@ulmo>
+        Wed, 23 Sep 2020 04:31:13 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600849870;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jp4jXfL6J+X4mp9KCIDFRHVsN9W3ceV+mfRTxAue2PI=;
+        b=Xgq+B/l19RFNsrRVlZHrAx/6Z5CDNNboa+X54OjjKaZ1Dk9PwUlJjluFDHxEJiRrAl64iU
+        ii3ZfICIUjyG1YgqWvf3YtfsMpBB7+21QVAfsdXMZHjvhNPeBG1nelwg83Q4M/qPfv22RT
+        AFFSbre9WYyKCjnyGDn2xARUC+YGyyJBa+cGtmbU5VzkV/jJuLEfXi77u3g6qzAK+C3vcr
+        6i850FnwkBka1gj5luWxwWVaxHPpj8fz7pZm4zQlwIrUbVQsNmdSPJ4HkIjpLUn4PewQ9A
+        rk7pnTf62+9HgY4vAcvv9liJQwJgx4WpX/bhyYeo8X6APGBablfwikX3CHSsIQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600849870;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jp4jXfL6J+X4mp9KCIDFRHVsN9W3ceV+mfRTxAue2PI=;
+        b=piPxlyJGDgkpALJH0ruTFc9v3I/f6Dnc9gylN6no46EkFK/ZcHKV/fVTLNgYlpIyqUhxoM
+        udTJKho4QVZ1DKBg==
+To:     Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>, mingo@kernel.org
+Cc:     linux-kernel@vger.kernel.org, bigeasy@linutronix.de,
+        qais.yousef@arm.com, swood@redhat.com, valentin.schneider@arm.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, vincent.donnefort@arm.com
+Subject: Re: [PATCH 7/9] sched: Add migrate_disable()
+In-Reply-To: <86929eee-36da-93a5-5280-00e6df1ef496@redhat.com>
+References: <20200921163557.234036895@infradead.org> <20200921163845.769861942@infradead.org> <87v9g7aqjd.fsf@nanos.tec.linutronix.de> <86929eee-36da-93a5-5280-00e6df1ef496@redhat.com>
+Date:   Wed, 23 Sep 2020 10:31:10 +0200
+Message-ID: <87v9g4ao8h.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200923080705.GA1110498@ulmo>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 10:07:05AM +0200, Thierry Reding wrote:
-> On Tue, Sep 22, 2020 at 07:20:25PM +0300, Sakari Ailus wrote:
-> > Hi Sowjanya,
-> > 
-> > On Tue, Sep 22, 2020 at 09:13:57AM -0700, Sowjanya Komatineni wrote:
-> > > 
-> > > On 9/22/20 12:55 AM, Thierry Reding wrote:
-> > > > On Mon, Sep 21, 2020 at 02:39:39PM -0700, Sowjanya Komatineni wrote:
-> > > > > IMX274 has analog 2.8V supply, digital core 1.8V supply, and vddl digital
-> > > > > io 1.2V supply which are optional based on camera module design.
-> > > > > 
-> > > > > IMX274 also need external 24Mhz clock and is optional based on
-> > > > > camera module design.
-> > > > > 
-> > > > > This patch adds support for IMX274 power on and off to enable and
-> > > > > disable these supplies and external clock.
-> > > > > 
-> > > > > Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
-> > > > > Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
-> > > > > ---
-> > > > >   drivers/media/i2c/imx274.c | 184 +++++++++++++++++++++++++++++++++------------
-> > > > >   1 file changed, 134 insertions(+), 50 deletions(-)
-> > > > > 
-> > > > > diff --git a/drivers/media/i2c/imx274.c b/drivers/media/i2c/imx274.c
-> > > > > index 5e515f0..b3057a5 100644
-> > > > > --- a/drivers/media/i2c/imx274.c
-> > > > > +++ b/drivers/media/i2c/imx274.c
-> > > > > @@ -18,7 +18,9 @@
-> > > > >   #include <linux/kernel.h>
-> > > > >   #include <linux/module.h>
-> > > > >   #include <linux/of_gpio.h>
-> > > > > +#include <linux/pm_runtime.h>
-> > > > >   #include <linux/regmap.h>
-> > > > > +#include <linux/regulator/consumer.h>
-> > > > >   #include <linux/slab.h>
-> > > > >   #include <linux/v4l2-mediabus.h>
-> > > > >   #include <linux/videodev2.h>
-> > > > > @@ -131,6 +133,15 @@
-> > > > >   #define IMX274_TABLE_WAIT_MS			0
-> > > > >   #define IMX274_TABLE_END			1
-> > > > > +/* regulator supplies */
-> > > > > +static const char * const imx274_supply_names[] = {
-> > > > > +	"vddl",  /* IF (1.2V) supply */
-> > > > > +	"vdig",  /* Digital Core (1.8V) supply */
-> > > > > +	"vana",  /* Analog (2.8V) supply */
-> > > > According to the device tree bindings these should be uppercase. Did I
-> > > > miss a patch that updates the bindings?
-> > > > 
-> > > > I think the preference is for supply names to be lowercase and given
-> > > > that there are no users of this binding yet we could update it without
-> > > > breaking any existing device trees.
-> > > > 
-> > > > > +};
-> > > > > +
-> > > > > +#define IMX274_NUM_SUPPLIES ARRAY_SIZE(imx274_supply_names)
-> > > > > +
-> > > > >   /*
-> > > > >    * imx274 I2C operation related structure
-> > > > >    */
-> > > > > @@ -501,6 +512,8 @@ struct imx274_ctrls {
-> > > > >    * @frame_rate: V4L2 frame rate structure
-> > > > >    * @regmap: Pointer to regmap structure
-> > > > >    * @reset_gpio: Pointer to reset gpio
-> > > > > + * @supplies: List of analog and digital supply regulators
-> > > > > + * @inck: Pointer to sensor input clock
-> > > > >    * @lock: Mutex structure
-> > > > >    * @mode: Parameters for the selected readout mode
-> > > > >    */
-> > > > > @@ -514,6 +527,8 @@ struct stimx274 {
-> > > > >   	struct v4l2_fract frame_interval;
-> > > > >   	struct regmap *regmap;
-> > > > >   	struct gpio_desc *reset_gpio;
-> > > > > +	struct regulator_bulk_data supplies[IMX274_NUM_SUPPLIES];
-> > > > > +	struct clk *inck;
-> > > > >   	struct mutex lock; /* mutex lock for operations */
-> > > > >   	const struct imx274_mode *mode;
-> > > > >   };
-> > > > > @@ -726,6 +741,12 @@ static int imx274_start_stream(struct stimx274 *priv)
-> > > > >   {
-> > > > >   	int err = 0;
-> > > > > +	err = __v4l2_ctrl_handler_setup(&priv->ctrls.handler);
-> > > > > +	if (err) {
-> > > > > +		dev_err(&priv->client->dev, "Error %d setup controls\n", err);
-> > > > > +		return err;
-> > > > > +	}
-> > > > > +
-> > > > >   	/*
-> > > > >   	 * Refer to "Standby Cancel Sequence when using CSI-2" in
-> > > > >   	 * imx274 datasheet, it should wait 10ms or more here.
-> > > > > @@ -767,6 +788,66 @@ static void imx274_reset(struct stimx274 *priv, int rst)
-> > > > >   	usleep_range(IMX274_RESET_DELAY1, IMX274_RESET_DELAY2);
-> > > > >   }
-> > > > > +static int imx274_power_on(struct device *dev)
-> > > > > +{
-> > > > > +	struct i2c_client *client = to_i2c_client(dev);
-> > > > > +	struct v4l2_subdev *sd = i2c_get_clientdata(client);
-> > > > > +	struct stimx274 *imx274 = to_imx274(sd);
-> > > > > +	int ret;
-> > > > > +
-> > > > > +	/* keep sensor in reset before power on */
-> > > > > +	imx274_reset(imx274, 0);
-> > > > > +
-> > > > > +	ret = clk_prepare_enable(imx274->inck);
-> > > > > +	if (ret) {
-> > > > > +		dev_err(&imx274->client->dev,
-> > > > > +			"Failed to enable input clock: %d\n", ret);
-> > > > > +		return ret;
-> > > > > +	}
-> > > > > +
-> > > > > +	ret = regulator_bulk_enable(IMX274_NUM_SUPPLIES, imx274->supplies);
-> > > > > +	if (ret) {
-> > > > > +		dev_err(&imx274->client->dev,
-> > > > > +			"Failed to enable regulators: %d\n", ret);
-> > > > > +		goto fail_reg;
-> > > > > +	}
-> > > > > +
-> > > > > +	udelay(2);
-> > > > This looks like some sort of extra delay to make sure all the supply
-> > > > voltages have settled. Should this perhaps be encoded as part of the
-> > > > regulator ramp-up times? Or is this really an IC-specific delay that
-> > > > is needed for some internal timing?
-> > > This is IC-specific delay after power on regulators before releasing reset.
-> > > > 
-> > > > > +	imx274_reset(imx274, 1);
-> > > > > +
-> > > > > +	return 0;
-> > > > > +
-> > > > > +fail_reg:
-> > > > > +	clk_disable_unprepare(imx274->inck);
-> > > > > +	return ret;
-> > > > > +}
-> > > > > +
-> > > > > +static int imx274_power_off(struct device *dev)
-> > > > > +{
-> > > > > +	struct i2c_client *client = to_i2c_client(dev);
-> > > > > +	struct v4l2_subdev *sd = i2c_get_clientdata(client);
-> > > > > +	struct stimx274 *imx274 = to_imx274(sd);
-> > > > > +
-> > > > > +	imx274_reset(imx274, 0);
-> > > > > +
-> > > > > +	regulator_bulk_disable(IMX274_NUM_SUPPLIES, imx274->supplies);
-> > > > > +
-> > > > > +	clk_disable_unprepare(imx274->inck);
-> > > > > +
-> > > > > +	return 0;
-> > > > > +}
-> > > > > +
-> > > > > +static int imx274_regulators_get(struct device *dev, struct stimx274 *imx274)
-> > > > > +{
-> > > > > +	unsigned int i;
-> > > > > +
-> > > > > +	for (i = 0; i < IMX274_NUM_SUPPLIES; i++)
-> > > > > +		imx274->supplies[i].supply = imx274_supply_names[i];
-> > > > > +
-> > > > > +	return devm_regulator_bulk_get(dev, IMX274_NUM_SUPPLIES,
-> > > > > +					imx274->supplies);
-> > > > > +}
-> > > > > +
-> > > > >   /**
-> > > > >    * imx274_s_ctrl - This is used to set the imx274 V4L2 controls
-> > > > >    * @ctrl: V4L2 control to be set
-> > > > > @@ -781,6 +862,9 @@ static int imx274_s_ctrl(struct v4l2_ctrl *ctrl)
-> > > > >   	struct stimx274 *imx274 = to_imx274(sd);
-> > > > >   	int ret = -EINVAL;
-> > > > > +	if (!pm_runtime_get_if_in_use(&imx274->client->dev))
-> > > > > +		return 0;
-> > > > I'm not sure I understand this, and sorry if this has been discussed
-> > > > earlier. Aren't there any other mechanisms in place to ensure that a
-> > > > control can only be configured when in use? If so, then is this even
-> > > > necessary?
-> > > > 
-> > > > If not, silently ignoring at this point seems like it could cause subtle
-> > > > failures by ignoring some control settings and applying others if the
-> > > > timing is right.
-> > > 
-> > > With this patch, v4l2_ctrl setup is moved to start stream so all the control
-> > > values selected gets programmed during stream start. So s_ctrl callback
-> > > execution happens during that time after sensor rpm resume and I don't think
-> > > we need here either but I see all sensor drivers with RPM enabled checking
-> > > for this. So added just to make sure sensor programming don't happen when
-> > > power is off.
-> > > 
-> > > Sakari/Jacob,
-> > > 
-> > > Can you please clarify if we can remove check pm_runtime_get_if_in_use() in
-> > > s_ctrl callback as v4l2_ctrl handler setup happens during stream start where
-> > > power is already on by then?
-> > 
-> > The controls are accessible also when streaming is disabled. So you may end
-> > up here without the device being powered on. Therefore the check is needed.
-> 
-> In that case shouldn't this return an error rather than silently
-> ignoring the request? From my reading of the code this current
-> implementation would allow someone to configure a control while
-> streaming is disabled, and that configuration will then succeed
-> without doing anything.
-> 
-> Or am I missing something and all controls will be reapplied when
-> streaming resumes and this is actually safe to ignore?
+On Mon, Sep 21 2020 at 22:42, Daniel Bristot de Oliveira wrote:
+> On 9/21/20 9:16 PM, Thomas Gleixner wrote:
+>> On Mon, Sep 21 2020 at 18:36, Peter Zijlstra wrote:
+>> But seriously, I completely understand your concern vs. schedulability
+>> theories, but those theories can neither deal well with preemption
+>> disable simply because you can create other trainwrecks when enough low
+>> priority tasks run long enough in preempt disabled regions in
+>> parallel. The scheduler simply does not know ahead how long these
+>> sections will take and how many of them will run in parallel.
+>> 
+>> The theories make some assumptions about preempt disable and consider it
+>> as temporary priority ceiling, but that's all assumptions as the bounds
+>> of these operations simply unknown.
+>
+> Limited preemption is something that is more explored/well known than
+> limited/arbitrary affinity - I even know a dude that convinced academics about
+> the effects/properties of preempt disable on the PREEMPT_RT!
 
-The value of V4L2 controls is not tied to the power state of the device.
-The driver is responsible for ensuring the value set by the user is applied
-to the hardware when needed. That does not happen immediately if the device
-is powered off but it's not an issue.
+I'm sure I never met that guy.
 
--- 
-Sakari Ailus
+> But I think that the message here is that: ok, migrate disable is better for the
+> "scheduling latency" than preempt disable (preempt rt goal). But the
+> indiscriminate usage of migrate disable has some undesired effects for "response
+> time" of real-time threads (scheduler goal), so we should use it with caution -
+> as much as we have with preempt disable. In the end, both are critical for
+> real-time workloads, and we need more work and analysis on them both.
+...
+>> But as the kmap discussion has shown, the current situation of enforcing
+>> preempt disable even on a !RT kernel is not pretty either. I looked at
+>> quite some of the kmap_atomic() usage sites and the resulting
+>> workarounds for non-preemptability are pretty horrible especially if
+>> they do copy_from/to_user() or such in those regions. There is tons of
+>> other code which really only requires migrate disable
+>
+> (not having an explicit declaration of the reason to disable preemption make
+> these all hard to rework... and we will have the same with migrate disable.
+> Anyways, I agree that disabling only migration helps -rt now [and I like
+> that]... but I also fear/care for scheduler metrics on the long term... well,
+> there is still a long way until retirement.)
+
+Lets have a look at theory and practice once more:
+
+1) Preempt disable
+
+   Theories take that into account by adding a SHC ('Sh*t Happens
+   Coefficient') into their formulas, but the practical effects cannot
+   ever be reflected in theories accurately.
+
+   In practice, preempt disable can cause unbound latencies and while we
+   all agree that long preempt/interrupt disabled sections are bad, it's
+   not really trivial to break these up without rewriting stuff from
+   scratch. The recent discussion about unbound latencies in the page
+   allocator is a prime example for that.
+
+   The ever growing usage of per CPU storage is not making anything
+   better and right now preempt disable is the only tool we have at the
+   moment in mainline to deal with that.
+
+   That forces people to come up with code constructs which are more
+   than suboptimal both in terms of code quality and in terms of
+   schedulability/latency. We've seen mutexes converted to spinlocks
+   just because of that, conditionals depending on execution context
+   which turns out to be broken and inconsistent, massive error handling
+   trainwrecks, etc.
+
+2) Migrate disable
+
+   Theories do not know anything about it, but in the very end it's
+   going to be yet another variant of SHC to be defined.
+
+   In practice migrate disable could be taken into account on placement
+   decisions, but yes we don't have anything like that at the moment.
+
+   The theoretical worst case which forces all and everything on a
+   single CPU is an understandable concern, but the practical relevance
+   is questionable. I surely stared at a lot of traces on heavily loaded
+   RT systems, but too many prempted migrate disabled tasks was truly
+   never a practical problem. I'm sure you can create a workload
+   scenario which triggers that, but then you always can create
+   workloads which are running into the corner cases of any given
+   system.
+
+   The charm of migrate disable even on !RT is that it allows for
+   simpler code and breaking up preempt disabled sections, which is IMO
+   a clear win given that per CPU ness is not going away -unless the
+   chip industry comes to senses and goes back to the good old UP
+   systems which have natural per CPU ness :)
+
+That said, let me paraphrase that dude you mentioned above:
+
+ Theories are great and useful, but pragmatism has proven to produce
+ working solutions even if they cannot work according to theory.
+
+Thanks,
+
+        tglx
+
+        
