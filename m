@@ -2,351 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FAA927583F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 14:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05247275841
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 14:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726600AbgIWMwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 08:52:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726513AbgIWMwj (ORCPT
+        id S1726636AbgIWMxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 08:53:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23635 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726513AbgIWMxC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 08:52:39 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D596C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 05:52:39 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id a2so18801078otr.11
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 05:52:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:reply-to:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=31e/9hnjGjBaSvfSzNB5mOVLnVWAb9RUd/BaxDGfT4A=;
-        b=GuzQy8gx7X7/aMG7eKdOZ5pwehmrMc1CRrR17t6PRaddpPd4AlqfMLE65PiQRFzJ65
-         o2gsOF60wTXCyIOunmfujQXGdMa90OeDcem0LhMBXBFJLDUSJ3Fa45ocfp2gwgMYib4o
-         YC5oLTPAF0arnm8fUZ8jaJltuwAdlqlyigTB841FtCVBHk2O1c/fLAjh0YcEShRDfMIn
-         sQvlbLHVBy+Yf8r1irsgknqLSzZ7RwR52BSztciZTa+eINd91bizh4sr/69rmTpoaYSg
-         mS18P3Qg2FYCtQDFbW14pchoxOxso+9VnuekHa3kmvd4BuxqDDzDOLBvCxZs/Ryj0jUR
-         UY5Q==
+        Wed, 23 Sep 2020 08:53:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600865580;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/g1tYT9pMTr2ngmzRF/xBW6JmkEzc5xr2sKzll0rdNE=;
+        b=TebylBm05NHksi/chRWhsL5ny0fTKJiLguVowKBtP2GH0lm1B3N1yht/fOLQJu4GGLa6nb
+        1oYJRUb7HtSkkC3oT8ZnVYx94CJy9EdDjNzJtpkT9IfY+aREkvne9RFaqiDMxG1tko1WCb
+        Maep2bkT9tSzpktncr7M9Vk5YzWDxdA=
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
+ [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-362-ORyQrwXZNq6x74NN81XEWQ-1; Wed, 23 Sep 2020 08:52:58 -0400
+X-MC-Unique: ORyQrwXZNq6x74NN81XEWQ-1
+Received: by mail-oo1-f71.google.com with SMTP id h20so10249851oou.8
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 05:52:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :reply-to:references:mime-version:content-disposition:in-reply-to
-         :user-agent;
-        bh=31e/9hnjGjBaSvfSzNB5mOVLnVWAb9RUd/BaxDGfT4A=;
-        b=EwunccfpG6n2cAW/5kV17UbdL8XcWpF3lZeG8YMLAqp12C/V1ir45FvPgOhb6pw2Gn
-         UpfgJr0GDKpVPdRf2dE0SUHPtp5p3pQBEN/esRafHYekL++cqyat/w8F6aj0NsbNJwJ6
-         o0mjimazpsMP3WF3cCJPkhcszgWt8dzylCoowmCltp0HxJcixE9J3c/uiOLAVLVsyChx
-         YNNRUtkmC+gpVvg7z1+OC0wnnf9Nf1SAZ8sQWudMkLQ9WtbtfILZqpSmocsrMwsyLvdB
-         qzY486Pm9hUP97vRTMcLgSDxbEwdxOHjP2e57kyEiFEJmNN0+1B3nsMviZPiVxPfhW3d
-         jzzg==
-X-Gm-Message-State: AOAM5308PDUbMenx5ghXSIOazlCqOCWilKkNtmnuHvsa3clyJNLbRPYD
-        H6nrwpNCuzhiiznL96K42w==
-X-Google-Smtp-Source: ABdhPJw3Hctr5mIKcQTNl9GNloqwfp/z9+4P/frBZE47RURn1QspopM9HgN8KvDTd2HH59Sfo/CE7Q==
-X-Received: by 2002:a9d:7b48:: with SMTP id f8mr6085167oto.297.1600865558751;
-        Wed, 23 Sep 2020 05:52:38 -0700 (PDT)
-Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
-        by smtp.gmail.com with ESMTPSA id k51sm7607386otc.46.2020.09.23.05.52.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 05:52:37 -0700 (PDT)
-Sender: Corey Minyard <tcminyard@gmail.com>
-Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:bda8:cea9:424f:cdc4])
-        by serve.minyard.net (Postfix) with ESMTPSA id A7332182239;
-        Wed, 23 Sep 2020 12:52:36 +0000 (UTC)
-Date:   Wed, 23 Sep 2020 07:52:35 -0500
-From:   Corey Minyard <minyard@acm.org>
-To:     Wu Bo <wubo40@huawei.com>
-Cc:     Corey Minyard <cminyard@mvista.com>, arnd@arndb.de,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linfeilong@huawei.com, hidehiro.kawai.ez@hitachi.com,
-        openipmi-developer@lists.sourceforge.net, liuzhiqiang26@huawei.com
-Subject: Re: [Openipmi-developer] [PATCH] x86: Fix MCE error handing when
- kdump is enabled
-Message-ID: <20200923125235.GW3674@minyard.net>
-Reply-To: minyard@acm.org
-References: <20200922161311.GQ3674@minyard.net>
- <20200922182940.31843-1-minyard@acm.org>
- <20200922184332.GT3674@minyard.net>
- <29448f27-12f7-82a1-7483-80471c36d48c@huawei.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=/g1tYT9pMTr2ngmzRF/xBW6JmkEzc5xr2sKzll0rdNE=;
+        b=sXRBqJ3S9moIk+h8R62pypq+9dbUTNxgfX31Ky+121MbqJ2ptCwMhfbleoEYPSMQGo
+         z7tW5x5SMv72wafgn8E0Vxr5e/tO46DXAerMhEx9Kxc83PU0Aih/ihZEWZw2wp5J+BTN
+         bx3Wb6vNIjTHoFrLLrNKqmbFQQg2AcQ6MRhJslt9X0Rl8XJmA2bwl00x8Ft0fGr001be
+         OnbHKjaNQ2cau5ihphyicVNbS3YfYJE570VPQDVmkt/zPwV+VenadQzO6Q0FHJmraUZp
+         WOH/1gFQzdsZ79qLpJxR0C8zYe9+76PpNyJo/cQvICzCV6QbGSt7tlSSVstKqtCNrCOq
+         WegA==
+X-Gm-Message-State: AOAM531qvOYje/vNYclMxxPECNsdf+t2oMsbZum7FD07qG6//kc/g+Ns
+        Lv2ugx6KX7fut/4H+jZ0nYfnI9MharrL9oXN3dIUF5UHI1pLw7A2KrPiwZZR50XNowbjgXGZQ+Z
+        FsMW0eJWGGxg+9F4dTQRirdvh
+X-Received: by 2002:a05:6830:1d96:: with SMTP id y22mr5970838oti.243.1600865577689;
+        Wed, 23 Sep 2020 05:52:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxj1fnOWsn6weBjbgU91ROnyK3cBQtj+KHENpBSVntT/XWQ0FthpviuTMZnwBKijHxMnvclZA==
+X-Received: by 2002:a05:6830:1d96:: with SMTP id y22mr5970819oti.243.1600865577322;
+        Wed, 23 Sep 2020 05:52:57 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id z10sm8950663ooz.14.2020.09.23.05.52.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Sep 2020 05:52:56 -0700 (PDT)
+Subject: Re: [PATCH v1 08/12] fpga: expose sec-mgr update errors
+To:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
+        lee.jones@linaro.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
+        matthew.gerlach@intel.com
+References: <20200904235305.6254-1-russell.h.weight@intel.com>
+ <20200904235305.6254-9-russell.h.weight@intel.com>
+ <448b27a2-0724-77c1-20e8-1c3ff9287034@redhat.com>
+ <62e8f79b-32aa-041e-8b12-4b8570b085f6@intel.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <16738b0c-0e8a-8f39-4f4c-325bc74f1e3e@redhat.com>
+Date:   Wed, 23 Sep 2020 05:52:55 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <29448f27-12f7-82a1-7483-80471c36d48c@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <62e8f79b-32aa-041e-8b12-4b8570b085f6@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 04:48:31PM +0800, Wu Bo wrote:
-> On 2020/9/23 2:43, Corey Minyard wrote:
-> > On Tue, Sep 22, 2020 at 01:29:40PM -0500, minyard@acm.org wrote:
-> > > From: Corey Minyard <cminyard@mvista.com>
-> > > 
-> > > If kdump is enabled, the handling of shooting down CPUs does not use the
-> > > RESET_VECTOR irq before trying to use NMIs to shoot down the CPUs.
-> > > 
-> > > For normal errors that is fine.  MCEs, however, are already running in
-> > > an NMI, so sending them an NMI won't do anything.  The MCE code is set
-> > > up to receive the RESET_VECTOR because it disables CPUs, but it won't
-> >                                              ^ should be "enables irqs"
-> > > work on the NMI-only case.
-> > > 
-> > > There is already code in place to scan for the NMI callback being ready,
-> > > simply call that from the MCE's wait_for_panic() code so it will pick up
-> > > and handle it if an NMI shootdown is requested.  This required
-> > > propagating the registers down to wait_for_panic().
-> > > 
-> > > Signed-off-by: Corey Minyard <cminyard@mvista.com>
-> > > ---
-> > > After looking at it a bit, I think this is the proper way to fix the
-> > > issue, though I'm not an expert on this code so I'm not sure.
-> > > 
-> > > I have not even tested this patch, I have only compiled it.  But from
-> > > what I can tell, things waiting in NMIs for a shootdown should call
-> > > run_crash_ipi_callback() in their wait loop.
-> 
-> Hi,
-> 
-> In my VM (using qemu-kvm), Kump is enabled, used mce-inject injects an
-> uncorrectable error. I has an issue with the IPMI driver's panic handling
-> running while the other CPUs are sitting in "wait_for_panic()" with
-> interrupt on, and IPMI interrupts interfering with the panic handling, As a
-> result, IPMI panic hangs for more than 3000 seconds.
-> 
-> After I has patched and tested this patch, the problem of IPMI hangs has
-> disappeared. It should be a solution to the problem.
 
-Thanks for testing this.  I have submitted the patch to the MCE
-maintainers.
+On 9/22/20 4:42 PM, Russ Weight wrote:
+>
+> On 9/6/20 9:27 AM, Tom Rix wrote:
+>> On 9/4/20 4:53 PM, Russ Weight wrote:
+>>> Extend Intel Security Manager class driver to include
+>>> an update/error sysfs node that can be read for error
+>>> information when a secure update fails.
+>>>
+>>> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+>>> Reviewed-by: Wu Hao <hao.wu@intel.com>
+>>> ---
+>>>  .../ABI/testing/sysfs-class-ifpga-sec-mgr     | 17 ++++++
+>>>  drivers/fpga/ifpga-sec-mgr.c                  | 60 +++++++++++++++++--
+>>>  include/linux/fpga/ifpga-sec-mgr.h            |  1 +
+>>>  3 files changed, 73 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr b/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
+>>> index 849ccb2802f8..e7b1b02bf7ee 100644
+>>> --- a/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
+>>> +++ b/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
+>>> @@ -97,3 +97,20 @@ Description:	Read-only. Returns a string describing the current
+>>>  		programming. Userspace code can poll on this file,
+>>>  		as it will be signaled by sysfs_notify() on each
+>>>  		state change.
+>>> +
+>>> +What: 		/sys/class/ifpga_sec_mgr/ifpga_secX/update/error
+>>> +Date:		Sep 2020
+>>> +KernelVersion:  5.10
+>>> +Contact:	Russ Weight <russell.h.weight@intel.com>
+>>> +Description:	Read-only. Returns a string describing the failure
+>>> +		of a secure update. This string will be in the form
+>>> +		of <STATUS>:<ERROR>, where <STATUS> will be one of
+>>> +		the status strings described for the status sysfs
+>>> +		file and <ERROR> will be one of the following:
+>>> +		hw-error, timeout, user-abort, device-busy,
+>>> +		invalid-file-size, read-write-error, flash-wearout,
+>>> +		file-read-error.  The error sysfs file is only
+>>> +		meaningful when the secure update engine is in the
+>>> +		idle state. If this file is read while a secure
+>>> +		update is in progress, then the read will fail with
+>>> +		EBUSY.
+>>> diff --git a/drivers/fpga/ifpga-sec-mgr.c b/drivers/fpga/ifpga-sec-mgr.c
+>>> index 5fe3d85e2963..a7718bd8ee61 100644
+>>> --- a/drivers/fpga/ifpga-sec-mgr.c
+>>> +++ b/drivers/fpga/ifpga-sec-mgr.c
+>>> @@ -146,10 +146,16 @@ static void update_progress(struct ifpga_sec_mgr *imgr,
+>>>  	sysfs_notify(&imgr->dev.kobj, "update", "status");
+>>>  }
+>>>  
+>>> +static void set_error(struct ifpga_sec_mgr *imgr, enum ifpga_sec_err err_code)
+>>> +{
+>>> +	imgr->err_state = imgr->progress;
+>>> +	imgr->err_code = err_code;
+>>> +}
+>>> +
+>>>  static void ifpga_sec_dev_error(struct ifpga_sec_mgr *imgr,
+>>>  				enum ifpga_sec_err err_code)
+>>>  {
+>>> -	imgr->err_code = err_code;
+>>> +	set_error(imgr, err_code);
+>>>  	imgr->iops->cancel(imgr);
+>>>  }
+>>>  
+>>> @@ -172,7 +178,7 @@ static void ifpga_sec_mgr_update(struct work_struct *work)
+>>>  
+>>>  	get_device(&imgr->dev);
+>>>  	if (request_firmware(&fw, imgr->filename, &imgr->dev)) {
+>>> -		imgr->err_code = IFPGA_SEC_ERR_FILE_READ;
+>>> +		set_error(imgr, IFPGA_SEC_ERR_FILE_READ);
+>>>  		goto idle_exit;
+>>>  	}
+>>>  
+>>> @@ -180,7 +186,7 @@ static void ifpga_sec_mgr_update(struct work_struct *work)
+>>>  	imgr->remaining_size = fw->size;
+>>>  
+>>>  	if (!try_module_get(imgr->dev.parent->driver->owner)) {
+>>> -		imgr->err_code = IFPGA_SEC_ERR_BUSY;
+>>> +		set_error(imgr, IFPGA_SEC_ERR_BUSY);
+>>>  		goto release_fw_exit;
+>>>  	}
+>>>  
+>>> @@ -266,16 +272,59 @@ static const char * const sec_mgr_prog_str[] = {
+>>>  	"programming"		/* IFPGA_SEC_PROG_PROGRAMMING */
+>>>  };
+>>>  
+>>> +static const char * const sec_mgr_err_str[] = {
+>>> +	"none",			/* IFPGA_SEC_ERR_NONE */
+>>> +	"hw-error",		/* IFPGA_SEC_ERR_HW_ERROR */
+>>> +	"timeout",		/* IFPGA_SEC_ERR_TIMEOUT */
+>>> +	"user-abort",		/* IFPGA_SEC_ERR_CANCELED */
+>>> +	"device-busy",		/* IFPGA_SEC_ERR_BUSY */
+>>> +	"invalid-file-size",	/* IFPGA_SEC_ERR_INVALID_SIZE */
+>>> +	"read-write-error",	/* IFPGA_SEC_ERR_RW_ERROR */
+>>> +	"flash-wearout",	/* IFPGA_SEC_ERR_WEAROUT */
+>>> +	"file-read-error"	/* IFPGA_SEC_ERR_FILE_READ */
+>>> +};
+>>> +
+>>> +static const char *sec_progress(enum ifpga_sec_prog prog)
+>>> +{
+>> A consistent api would have imgr as the parameter.
+> There are two calls to this function: one passes imgr->progress, and one
+> passes imgr->err_status. For this function, passing imgr alone would be
+> insufficient.
 
--corey
+ok.
 
-> 
-> 
-> Thanks,
-> 
-> Wu Bo
-> 
-> > > 
-> > >   arch/x86/kernel/cpu/mce/core.c | 67 ++++++++++++++++++++++------------
-> > >   1 file changed, 44 insertions(+), 23 deletions(-)
-> > > 
-> > > diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-> > > index f43a78bde670..3a842b3773b3 100644
-> > > --- a/arch/x86/kernel/cpu/mce/core.c
-> > > +++ b/arch/x86/kernel/cpu/mce/core.c
-> > > @@ -282,20 +282,35 @@ static int fake_panic;
-> > >   static atomic_t mce_fake_panicked;
-> > >   /* Panic in progress. Enable interrupts and wait for final IPI */
-> > > -static void wait_for_panic(void)
-> > > +static void wait_for_panic(struct pt_regs *regs)
-> > >   {
-> > >   	long timeout = PANIC_TIMEOUT*USEC_PER_SEC;
-> > >   	preempt_disable();
-> > >   	local_irq_enable();
-> > > -	while (timeout-- > 0)
-> > > +	while (timeout-- > 0) {
-> > > +		/*
-> > > +		 * We are in an NMI waiting to be stopped by the
-> > > +		 * handing processor.  For kdump handling, we need to
-> > > +		 * be monitoring crash_ipi_issued since that is what
-> > > +		 * is used for an NMI stop used by kdump.  But we also
-> > > +		 * need to have interrupts enabled some so that
-> > > +		 * RESET_VECTOR will interrupt us on a normal
-> > > +		 * shutdown.
-> > > +		 */
-> > > +		local_irq_disable();
-> > > +		run_crash_ipi_callback(regs);
-> > > +		local_irq_enable();
-> > > +
-> > >   		udelay(1);
-> > > +	}
-> > >   	if (panic_timeout == 0)
-> > >   		panic_timeout = mca_cfg.panic_timeout;
-> > >   	panic("Panicing machine check CPU died");
-> > >   }
-> > > -static void mce_panic(const char *msg, struct mce *final, char *exp)
-> > > +static void mce_panic(const char *msg, struct mce *final, char *exp,
-> > > +		      struct pt_regs *regs)
-> > >   {
-> > >   	int apei_err = 0;
-> > >   	struct llist_node *pending;
-> > > @@ -306,7 +321,7 @@ static void mce_panic(const char *msg, struct mce *final, char *exp)
-> > >   		 * Make sure only one CPU runs in machine check panic
-> > >   		 */
-> > >   		if (atomic_inc_return(&mce_panicked) > 1)
-> > > -			wait_for_panic();
-> > > +			wait_for_panic(regs);
-> > >   		barrier();
-> > >   		bust_spinlocks(1);
-> > > @@ -817,7 +832,7 @@ static atomic_t mce_callin;
-> > >   /*
-> > >    * Check if a timeout waiting for other CPUs happened.
-> > >    */
-> > > -static int mce_timed_out(u64 *t, const char *msg)
-> > > +static int mce_timed_out(u64 *t, const char *msg, struct pt_regs *regs)
-> > >   {
-> > >   	/*
-> > >   	 * The others already did panic for some reason.
-> > > @@ -827,12 +842,12 @@ static int mce_timed_out(u64 *t, const char *msg)
-> > >   	 */
-> > >   	rmb();
-> > >   	if (atomic_read(&mce_panicked))
-> > > -		wait_for_panic();
-> > > +		wait_for_panic(regs);
-> > >   	if (!mca_cfg.monarch_timeout)
-> > >   		goto out;
-> > >   	if ((s64)*t < SPINUNIT) {
-> > >   		if (mca_cfg.tolerant <= 1)
-> > > -			mce_panic(msg, NULL, NULL);
-> > > +			mce_panic(msg, NULL, NULL, regs);
-> > >   		cpu_missing = 1;
-> > >   		return 1;
-> > >   	}
-> > > @@ -866,7 +881,7 @@ static int mce_timed_out(u64 *t, const char *msg)
-> > >    * All the spin loops have timeouts; when a timeout happens a CPU
-> > >    * typically elects itself to be Monarch.
-> > >    */
-> > > -static void mce_reign(void)
-> > > +static void mce_reign(struct pt_regs *regs)
-> > >   {
-> > >   	int cpu;
-> > >   	struct mce *m = NULL;
-> > > @@ -896,7 +911,7 @@ static void mce_reign(void)
-> > >   	 * other CPUs.
-> > >   	 */
-> > >   	if (m && global_worst >= MCE_PANIC_SEVERITY && mca_cfg.tolerant < 3)
-> > > -		mce_panic("Fatal machine check", m, msg);
-> > > +		mce_panic("Fatal machine check", m, msg, regs);
-> > >   	/*
-> > >   	 * For UC somewhere we let the CPU who detects it handle it.
-> > > @@ -909,7 +924,8 @@ static void mce_reign(void)
-> > >   	 * source or one CPU is hung. Panic.
-> > >   	 */
-> > >   	if (global_worst <= MCE_KEEP_SEVERITY && mca_cfg.tolerant < 3)
-> > > -		mce_panic("Fatal machine check from unknown source", NULL, NULL);
-> > > +		mce_panic("Fatal machine check from unknown source", NULL, NULL,
-> > > +			  regs);
-> > >   	/*
-> > >   	 * Now clear all the mces_seen so that they don't reappear on
-> > > @@ -928,7 +944,7 @@ static atomic_t global_nwo;
-> > >    * in the entry order.
-> > >    * TBD double check parallel CPU hotunplug
-> > >    */
-> > > -static int mce_start(int *no_way_out)
-> > > +static int mce_start(int *no_way_out, struct pt_regs *regs)
-> > >   {
-> > >   	int order;
-> > >   	int cpus = num_online_cpus();
-> > > @@ -949,7 +965,8 @@ static int mce_start(int *no_way_out)
-> > >   	 */
-> > >   	while (atomic_read(&mce_callin) != cpus) {
-> > >   		if (mce_timed_out(&timeout,
-> > > -				  "Timeout: Not all CPUs entered broadcast exception handler")) {
-> > > +				  "Timeout: Not all CPUs entered broadcast exception handler",
-> > > +				  regs)) {
-> > >   			atomic_set(&global_nwo, 0);
-> > >   			return -1;
-> > >   		}
-> > > @@ -975,7 +992,8 @@ static int mce_start(int *no_way_out)
-> > >   		 */
-> > >   		while (atomic_read(&mce_executing) < order) {
-> > >   			if (mce_timed_out(&timeout,
-> > > -					  "Timeout: Subject CPUs unable to finish machine check processing")) {
-> > > +					  "Timeout: Subject CPUs unable to finish machine check processing",
-> > > +					  regs)) {
-> > >   				atomic_set(&global_nwo, 0);
-> > >   				return -1;
-> > >   			}
-> > > @@ -995,7 +1013,7 @@ static int mce_start(int *no_way_out)
-> > >    * Synchronize between CPUs after main scanning loop.
-> > >    * This invokes the bulk of the Monarch processing.
-> > >    */
-> > > -static int mce_end(int order)
-> > > +static int mce_end(int order, struct pt_regs *regs)
-> > >   {
-> > >   	int ret = -1;
-> > >   	u64 timeout = (u64)mca_cfg.monarch_timeout * NSEC_PER_USEC;
-> > > @@ -1020,12 +1038,13 @@ static int mce_end(int order)
-> > >   		 */
-> > >   		while (atomic_read(&mce_executing) <= cpus) {
-> > >   			if (mce_timed_out(&timeout,
-> > > -					  "Timeout: Monarch CPU unable to finish machine check processing"))
-> > > +					  "Timeout: Monarch CPU unable to finish machine check processing",
-> > > +					  regs))
-> > >   				goto reset;
-> > >   			ndelay(SPINUNIT);
-> > >   		}
-> > > -		mce_reign();
-> > > +		mce_reign(regs);
-> > >   		barrier();
-> > >   		ret = 0;
-> > >   	} else {
-> > > @@ -1034,7 +1053,8 @@ static int mce_end(int order)
-> > >   		 */
-> > >   		while (atomic_read(&mce_executing) != 0) {
-> > >   			if (mce_timed_out(&timeout,
-> > > -					  "Timeout: Monarch CPU did not finish machine check processing"))
-> > > +					  "Timeout: Monarch CPU did not finish machine check processing",
-> > > +					  regs))
-> > >   				goto reset;
-> > >   			ndelay(SPINUNIT);
-> > >   		}
-> > > @@ -1286,9 +1306,9 @@ noinstr void do_machine_check(struct pt_regs *regs)
-> > >   	 */
-> > >   	if (lmce) {
-> > >   		if (no_way_out)
-> > > -			mce_panic("Fatal local machine check", &m, msg);
-> > > +			mce_panic("Fatal local machine check", &m, msg, regs);
-> > >   	} else {
-> > > -		order = mce_start(&no_way_out);
-> > > +		order = mce_start(&no_way_out, regs);
-> > >   	}
-> > >   	__mc_scan_banks(&m, final, toclear, valid_banks, no_way_out, &worst);
-> > > @@ -1301,7 +1321,7 @@ noinstr void do_machine_check(struct pt_regs *regs)
-> > >   	 * When there's any problem use only local no_way_out state.
-> > >   	 */
-> > >   	if (!lmce) {
-> > > -		if (mce_end(order) < 0)
-> > > +		if (mce_end(order, regs) < 0)
-> > >   			no_way_out = worst >= MCE_PANIC_SEVERITY;
-> > >   	} else {
-> > >   		/*
-> > > @@ -1314,7 +1334,7 @@ noinstr void do_machine_check(struct pt_regs *regs)
-> > >   		 */
-> > >   		if (worst >= MCE_PANIC_SEVERITY && mca_cfg.tolerant < 3) {
-> > >   			mce_severity(&m, cfg->tolerant, &msg, true);
-> > > -			mce_panic("Local fatal machine check!", &m, msg);
-> > > +			mce_panic("Local fatal machine check!", &m, msg, regs);
-> > >   		}
-> > >   	}
-> > > @@ -1325,7 +1345,7 @@ noinstr void do_machine_check(struct pt_regs *regs)
-> > >   	if (cfg->tolerant == 3)
-> > >   		kill_it = 0;
-> > >   	else if (no_way_out)
-> > > -		mce_panic("Fatal machine check on current CPU", &m, msg);
-> > > +		mce_panic("Fatal machine check on current CPU", &m, msg, regs);
-> > >   	if (worst > 0)
-> > >   		irq_work_queue(&mce_irq_work);
-> > > @@ -1361,7 +1381,8 @@ noinstr void do_machine_check(struct pt_regs *regs)
-> > >   		 */
-> > >   		if (m.kflags & MCE_IN_KERNEL_RECOV) {
-> > >   			if (!fixup_exception(regs, X86_TRAP_MC, 0, 0))
-> > > -				mce_panic("Failed kernel mode recovery", &m, msg);
-> > > +				mce_panic("Failed kernel mode recovery", &m,
-> > > +					  msg, regs);
-> > >   		}
-> > >   	}
-> > >   }
-> > > -- 
-> > > 2.17.1
-> > > 
-> > > 
-> > > 
-> > > _______________________________________________
-> > > Openipmi-developer mailing list
-> > > Openipmi-developer@lists.sourceforge.net
-> > > https://lists.sourceforge.net/lists/listinfo/openipmi-developer
-> > .
-> > 
-> 
+Tom
+
+>>> +	return (prog < IFPGA_SEC_PROG_MAX) ?
+>>> +		sec_mgr_prog_str[prog] : "unknown-status";
+>>> +}
+>>> +
+>>>  static ssize_t
+>>>  status_show(struct device *dev, struct device_attribute *attr, char *buf)
+>>>  {
+>>>  	struct ifpga_sec_mgr *imgr = to_sec_mgr(dev);
+>>>  
+>>> -	return sprintf(buf, "%s\n", (imgr->progress < IFPGA_SEC_PROG_MAX) ?
+>>> -		       sec_mgr_prog_str[imgr->progress] : "unknown-status");
+>>> +	return sprintf(buf, "%s\n", sec_progress(imgr->progress));
+>>>  }
+>>>  static DEVICE_ATTR_RO(status);
+>>>  
+>>> +static ssize_t
+>>> +error_show(struct device *dev, struct device_attribute *attr, char *buf)
+>>> +{
+>>> +	struct ifpga_sec_mgr *imgr = to_sec_mgr(dev);
+>>> +	enum ifpga_sec_err err_code;
+>>> +	const char *prog_str;
+>>> +	int ret;
+>>> +
+>>> +	mutex_lock(&imgr->lock);
+>>> +	if (imgr->progress != IFPGA_SEC_PROG_IDLE) {
+>>> +		ret = -EBUSY;
+>>> +	} else if (!imgr->err_code) {
+>>> +		ret = 0;
+>>> +	} else {
+>>> +		err_code = imgr->err_code;
+>>> +		prog_str = sec_progress(imgr->err_state);
+>>> +		ret = sprintf(buf, "%s:%s\n", prog_str,
+>>> +			      (err_code < IFPGA_SEC_ERR_MAX) ?
+>>> +			      sec_mgr_err_str[err_code] : "unknown-error");
+>> Should have sec_error() call to match the new sec_progress()
+> OK - I'll add the sec_error() function.
+>> Tom
+>>
+>>> +	}
+>>> +	mutex_unlock(&imgr->lock);
+>>> +
+>>> +	return ret;
+>>> +}
+>>> +static DEVICE_ATTR_RO(error);
+>>> +
+>>>  static ssize_t filename_store(struct device *dev, struct device_attribute *attr,
+>>>  			      const char *buf, size_t count)
+>>>  {
+>>> @@ -314,6 +363,7 @@ static DEVICE_ATTR_WO(filename);
+>>>  static struct attribute *sec_mgr_update_attrs[] = {
+>>>  	&dev_attr_filename.attr,
+>>>  	&dev_attr_status.attr,
+>>> +	&dev_attr_error.attr,
+>>>  	NULL,
+>>>  };
+>>>  
+>>> diff --git a/include/linux/fpga/ifpga-sec-mgr.h b/include/linux/fpga/ifpga-sec-mgr.h
+>>> index 4da2864e251c..f04bf9e30c67 100644
+>>> --- a/include/linux/fpga/ifpga-sec-mgr.h
+>>> +++ b/include/linux/fpga/ifpga-sec-mgr.h
+>>> @@ -181,6 +181,7 @@ struct ifpga_sec_mgr {
+>>>  	const u8 *data;			/* pointer to update data */
+>>>  	u32 remaining_size;		/* size remaining to transfer */
+>>>  	enum ifpga_sec_prog progress;
+>>> +	enum ifpga_sec_prog err_state;	/* progress state at time of failure */
+>>>  	enum ifpga_sec_err err_code;	/* security manager error code */
+>>>  	bool driver_unload;
+>>>  	void *priv;
+
