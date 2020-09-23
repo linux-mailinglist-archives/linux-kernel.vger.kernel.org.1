@@ -2,126 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82663275447
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 11:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3071C27544C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 11:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726516AbgIWJV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 05:21:57 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:34986 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726308AbgIWJV4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 05:21:56 -0400
-Received: by mail-lj1-f196.google.com with SMTP id a15so16627496ljk.2;
-        Wed, 23 Sep 2020 02:21:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=K/+FlzwEfC9DE2Ou4H87NcviiAaFeLbsoHSsi8TXT0o=;
-        b=WJHdpHMnkb+aiV3J8Edtpp5aGlQwHb3xDgjPIkwWxoaGHP+RKyQLfGoZbZrVg4pF99
-         YL5BqXpX6o3dIteItnCaW5WwiE+pHwGOhaFgY+CfV6RMRXNhJU3eVlFeRh+jd1gkOJcU
-         Yxia3s2FOnBfPDa7Mno2YA2Z4kaqKP1+iDkg6lGBljIS8Yvvg0rSMagXL4PNuREl09n+
-         /dhS57ptFq+QyOldz+AgB+RNIfNdxJ4Gq31uvnZQPf2kRtQaGXV6NJrO3mAAbseTwvOG
-         TwJaeXJw7mA+5j8nYzhllDxGzGPvzdNNXhw5FTbGedHJi7hfcgAseCn1eboItWZ5BomB
-         wpjA==
-X-Gm-Message-State: AOAM531O5tLy4kuoAoAeqWBMsHHw4Cwn37z0EiTzdoZyqj8OFT12su89
-        2L49H5cvH7+61VsoaWTuBjQ=
-X-Google-Smtp-Source: ABdhPJxBhW7LZwpMiDnTUvVfVWPs06ohlAYCCU5FLZVtFMKxxu+bRGTOwn/+G+dNbGCqfB0iz9JACg==
-X-Received: by 2002:a2e:b52c:: with SMTP id z12mr2682595ljm.437.1600852913571;
-        Wed, 23 Sep 2020 02:21:53 -0700 (PDT)
-Received: from localhost.localdomain ([213.255.186.46])
-        by smtp.gmail.com with ESMTPSA id f22sm4548442lfc.240.2020.09.23.02.21.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 02:21:52 -0700 (PDT)
-Date:   Wed, 23 Sep 2020 12:21:41 +0300
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     mazziesaccount@gmail.com, matti.vaittinen@fi.rohmeurope.com
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com,
-        linux-watchdog@vger.kernel.org
-Subject: [PATCH v2 0/4] Support ROHM BD9576MUF and BD9573MUF PMICs
-Message-ID: <cover.1600852339.git.matti.vaittinen@fi.rohmeurope.com>
+        id S1726599AbgIWJWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 05:22:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53750 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726566AbgIWJWH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 05:22:07 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5F97DAE93;
+        Wed, 23 Sep 2020 09:22:43 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id A01361E12E3; Wed, 23 Sep 2020 11:22:05 +0200 (CEST)
+Date:   Wed, 23 Sep 2020 11:22:05 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Jan Kara <jack@suse.cz>, Peter Xu <peterx@redhat.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Jann Horn <jannh@google.com>, Oleg Nesterov <oleg@redhat.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Hugh Dickins <hughd@google.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Subject: Re: [PATCH 5/5] mm/thp: Split huge pmds/puds if they're pinned when
+ fork()
+Message-ID: <20200923092205.GA6719@quack2.suse.cz>
+References: <20200921211744.24758-1-peterx@redhat.com>
+ <20200921212031.25233-1-peterx@redhat.com>
+ <5e594e71-537f-3e9f-85b6-034b7f5fedbe@nvidia.com>
+ <20200922103315.GD15112@quack2.suse.cz>
+ <4a65586e-9282-beb0-1880-1ef8da03727c@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <4a65586e-9282-beb0-1880-1ef8da03727c@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Initial support for ROHM BD9576MUF and BD9573MUF PMICs.
+On Tue 22-09-20 13:01:13, John Hubbard wrote:
+> On 9/22/20 3:33 AM, Jan Kara wrote:
+> > On Mon 21-09-20 23:41:16, John Hubbard wrote:
+> > > On 9/21/20 2:20 PM, Peter Xu wrote:
+> > > ...
+> > > > +	if (unlikely(READ_ONCE(src_mm->has_pinned) &&
+> > > > +		     page_maybe_dma_pinned(src_page))) {
+> > > 
+> > > This condition would make a good static inline function. It's used in 3
+> > > places, and the condition is quite special and worth documenting, and
+> > > having a separate function helps with that, because the function name
+> > > adds to the story. I'd suggest approximately:
+> > > 
+> > >      page_likely_dma_pinned()
+> > > 
+> > > for the name.
+> > 
+> > Well, but we should also capture that this really only works for anonymous
+> > pages. For file pages mm->has_pinned does not work because the page may be
+> > still pinned by completely unrelated process as Jann already properly
+> > pointed out earlier in the thread. So maybe anon_page_likely_pinned()?
+> > Possibly also assert PageAnon(page) in it if we want to be paranoid...
+> > 
+> > 								Honza
+> 
+> The file-backed case doesn't really change anything, though:
+> page_maybe_dma_pinned() is already a "fuzzy yes" in the same sense: you
+> can get a false positive. Just like here, with an mm->has_pinned that
+> could be a false positive for a process.
+> 
+> And for that reason, I'm also not sure an "assert PageAnon(page)" is
+> desirable. That assertion would prevent file-backed callers from being
+> able to call a function that provides a fuzzy answer, but I don't see
+> why you'd want or need to do that. The goal here is to make the fuzzy
+> answer a little bit more definite, but it's not "broken" just because
+> the result is still fuzzy, right?
+> 
+> Apologies if I'm missing a huge point here... :)
 
-These PMICs are primarily intended to be used to power the R-Car family
-processors. BD9576MUF includes some additional safety features the
-BD9573MUF does not have. This initial version of drivers does not
-utilize these features and for now the SW behaviour is identical.
+But the problem is that if you apply mm->has_pinned check on file pages,
+you can get false negatives now. And that's not acceptable...
 
-Please note that this version of drivers is only tested on BD9576MUF
-but according to the data-sheets the relevant parts of registers should
-be same so drivers should also work on BD9573MUF.
-
-This patch series includes MFD and watchdog drivers. Regulator part was
-already applied.
-
-- Enabling and pinging the watchdog
-- configuring watchog timeout / window from device-tree
-
-This patch series does not bring interrupt support. BD9576MUF and BD9573MUF
-are designed to keep the IRQ line low for whole duration of error
-condition. IRQ can't be 'acked'. So proper IRQ support would require
-some IRQ limiter implementation (delayed unmask?) in order to not hog
-the CPU.
-
-Changelog v2:
-  - dropped already applied regulator part
-  - dt_bindings: Fixed case for regulator-names in the example
-  - watchdog: unified probe error check and revised includes
-  - mfd: removed extra linefeeds from header
-
----
-
-Matti Vaittinen (4):
-  dt_bindings: mfd: Add ROHM BD9576MUF and BD9573MUF PMICs
-  mfd: Support ROHM BD9576MUF and BD9573MUF
-  wdt: Support wdt on ROHM BD9576MUF and BD9573MUF
-  MAINTAINERS: Add ROHM BD9576MUF and BD9573MUF drivers
-
- .../bindings/mfd/rohm,bd9576-pmic.yaml        | 129 ++++++++
- MAINTAINERS                                   |   4 +
- drivers/mfd/Kconfig                           |  11 +
- drivers/mfd/Makefile                          |   1 +
- drivers/mfd/rohm-bd9576.c                     | 130 ++++++++
- drivers/watchdog/Kconfig                      |  13 +
- drivers/watchdog/Makefile                     |   1 +
- drivers/watchdog/bd9576_wdt.c                 | 284 ++++++++++++++++++
- include/linux/mfd/rohm-bd957x.h               |  59 ++++
- include/linux/mfd/rohm-generic.h              |   2 +
- 10 files changed, 634 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mfd/rohm,bd9576-pmic.yaml
- create mode 100644 drivers/mfd/rohm-bd9576.c
- create mode 100644 drivers/watchdog/bd9576_wdt.c
- create mode 100644 include/linux/mfd/rohm-bd957x.h
-
-
-base-commit: f4d51dffc6c01a9e94650d95ce0104964f8ae822
--- 
-2.21.0
-
+								Honza
 
 -- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
