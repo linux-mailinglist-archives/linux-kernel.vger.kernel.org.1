@@ -2,167 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 522E827620B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:26:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B5527620E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726638AbgIWU0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 16:26:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60356 "EHLO
+        id S1726668AbgIWU1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 16:27:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726265AbgIWU0O (ORCPT
+        with ESMTP id S1726265AbgIWU1m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 16:26:14 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A708BC0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 13:26:13 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id 77so1378426lfj.0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 13:26:13 -0700 (PDT)
+        Wed, 23 Sep 2020 16:27:42 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B694C0613CE;
+        Wed, 23 Sep 2020 13:27:42 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id e22so1110644edq.6;
+        Wed, 23 Sep 2020 13:27:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kLB4DRRXoa8ewsaibQOQoUjg6wFUOgvHUlS6KwrQW+Q=;
-        b=LBRKpKsCN18FhUCT+ybewb3k/YEEHjRtd7HxGQxdBKW2iF5/B/ldqJlEJGGoY3Dvf0
-         BnyxMahBOLtdrW1QsvXec8yhZHZZW3OZ0PhjkAvhJ25wity4VnTPnnHOkub/MCsM8CaF
-         uApDqbydEW7dEB4jVZdAyxGzc9jX6WFZUurAI=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RLmDO0N9ccoJ8u92C25jHjrEVWeg8b6n7yD+xz6k+6Q=;
+        b=R4uunmiDiELoVRTK827oOM2OMeXozrpPuXoZZcSF5pgIdW8NYAxGFzg3nSNbZrx45g
+         pOMecXhBY11U3aILDB0bY+hGPhL13YUWLIaBRmvg9OX0KKgoY+wDsUI0MU+xQ1lFCI6T
+         8+i3FtRwPhBuygoYwV24I/aeVyesVkyx4nOaci7WI/+TDBioBAU2a9HEbif38XHLpwxX
+         uPcl7fsa+BR/7TZW/swADfQ9+JrZF2XFnxZBn57c31JfaWxnQGqdCSTVYTywws23bBap
+         safe//+Lkqq/XJAsUq523v/LZl4HaQosc1H+oUsMhLGGh3Rw4IR7MPn4VymTBxTWvYX1
+         OxOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kLB4DRRXoa8ewsaibQOQoUjg6wFUOgvHUlS6KwrQW+Q=;
-        b=C3FO9bynftz9+WFFbUjaJRnOa8aT5zZRvTA1zegaxoHlUi0MG6d71ZIHuMqBDGAjWf
-         J8P4VXIPRHiDvGbnhMnqlG5E733DV4GGThCzV8QISkstifTOUEEzcwm+zPf1Qwg9Yi7g
-         E5Xqez4FoeVsLJlp6+CrOhceABFywQaRBNOAjRrscj67ZicObTT3IpLvApgDqhcSRS3h
-         ber1EvhBdK7e+R6Da2D3WzxUC5JvdIMa/Gkwn57vslToRq14VqSA6a5hcA/imWW9Pd5+
-         XLeUWs1emsWFBypiRQgRZq2VPaiqb0TCTkkezIw2HVFS1t6xU1+PaLMTgBmOc1+jdKWZ
-         FaJQ==
-X-Gm-Message-State: AOAM530+NLdQ3kYVjpeLWE2axW/yNgIHdIy6M0HipfnJfXti3yHjQjrz
-        O86lIji6w3Rlu1AU6it53/8E3XwlNBxKFg==
-X-Google-Smtp-Source: ABdhPJww4DiagZFlEhSRjdLOAsgNM8uMAslYBmRqXu9JGvW9UXZlHTSUj2dftPS4PaRUCePiWjQz/Q==
-X-Received: by 2002:a19:589:: with SMTP id 131mr480879lff.229.1600892771818;
-        Wed, 23 Sep 2020 13:26:11 -0700 (PDT)
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
-        by smtp.gmail.com with ESMTPSA id l9sm411137lfh.285.2020.09.23.13.26.09
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RLmDO0N9ccoJ8u92C25jHjrEVWeg8b6n7yD+xz6k+6Q=;
+        b=o8XEF7uD8XFhYFld8Vj4Mry2bTUmntHconJuixoAYHStcHAfqwsrTOyjCDQ+FhrvZf
+         YZxTiyBysH5HTxuyuUi38PltF1+TjS59uTkF5eNo0e/OGWx6otJJnoS9KPVVtizKE9/Z
+         QBu8hNYI+jbC8Mp9+KBvuU5xDoiAqHWPhxQU3vlN+VnRBel4PsbKLYoLPq1qPucK8z74
+         E5rCM4AmLTJbhRndVtGQFYFKuGouTDcqHXKcwwwgC7WtiTsrnln2gE0+leIR4k45xzbp
+         kLjBKnZBTc6QWetpgBx2enP1LyoS7oq25Uz5SgH+W7MtBqe3Cza1rVwbRCffHPOl/UYV
+         Y1WQ==
+X-Gm-Message-State: AOAM532saLTy214ViI63eg5+bC2jJHr1U1Lr/0qrcAxaNP0ivgExuPCv
+        uUkt5hP1YKe2+scRdzUj5tUmk2g79qE=
+X-Google-Smtp-Source: ABdhPJzihFfmrxDThRVVULdh2IhBYV10mRR9tpYrkebJinnFPte5DuLo1wiPQv0HxGX0M2zxoLLi0A==
+X-Received: by 2002:aa7:c61a:: with SMTP id h26mr1114145edq.254.1600892861107;
+        Wed, 23 Sep 2020 13:27:41 -0700 (PDT)
+Received: from ?IPv6:2003:ea:8f23:5700:9dd1:2d79:8cda:7fd2? (p200300ea8f2357009dd12d798cda7fd2.dip0.t-ipconnect.de. [2003:ea:8f23:5700:9dd1:2d79:8cda:7fd2])
+        by smtp.googlemail.com with ESMTPSA id r9sm708481ejc.102.2020.09.23.13.27.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Sep 2020 13:26:09 -0700 (PDT)
-Received: by mail-lj1-f177.google.com with SMTP id r24so770148ljm.3
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 13:26:09 -0700 (PDT)
-X-Received: by 2002:a2e:7819:: with SMTP id t25mr459528ljc.371.1600892769057;
- Wed, 23 Sep 2020 13:26:09 -0700 (PDT)
+        Wed, 23 Sep 2020 13:27:40 -0700 (PDT)
+Subject: Re: [PATCH] spi: fsl-espi: Only process interrupts for expected
+ events
+To:     Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        broonie@kernel.org, npiggin@gmail.com
+Cc:     linux-spi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20200904002812.7300-1-chris.packham@alliedtelesis.co.nz>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <ec77cf82-5ef1-c650-3e8a-80be749c2214@gmail.com>
+Date:   Wed, 23 Sep 2020 22:27:33 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200921211744.24758-1-peterx@redhat.com> <20200921212028.25184-1-peterx@redhat.com>
- <20200922114839.GC11679@redhat.com> <20200922124013.GD11679@redhat.com>
- <20200922155842.GG19098@xz-x1> <20200922165216.GF11679@redhat.com>
- <20200922183438.GL19098@xz-x1> <20200922184359.GI11679@redhat.com> <20200923010332.GP19098@xz-x1>
-In-Reply-To: <20200923010332.GP19098@xz-x1>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 23 Sep 2020 13:25:52 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whBth_SpXYCmYLiZTRadAvncCDAmK_Kw1QNTg-HS23aKA@mail.gmail.com>
-Message-ID: <CAHk-=whBth_SpXYCmYLiZTRadAvncCDAmK_Kw1QNTg-HS23aKA@mail.gmail.com>
-Subject: Re: [PATCH 4/5] mm: Do early cow for pinned pages during fork() for ptes
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Oleg Nesterov <oleg@redhat.com>, Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Jann Horn <jannh@google.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Hugh Dickins <hughd@google.com>,
-        Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Content-Type: multipart/mixed; boundary="000000000000d2fa5405b000e481"
+In-Reply-To: <20200904002812.7300-1-chris.packham@alliedtelesis.co.nz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000d2fa5405b000e481
-Content-Type: text/plain; charset="UTF-8"
+On 04.09.2020 02:28, Chris Packham wrote:
+> The SPIE register contains counts for the TX FIFO so any time the irq
+> handler was invoked we would attempt to process the RX/TX fifos. Use the
+> SPIM value to mask the events so that we only process interrupts that
+> were expected.
+> 
+> This was a latent issue exposed by commit 3282a3da25bd ("powerpc/64:
+> Implement soft interrupt replay in C").
+> 
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> Cc: stable@vger.kernel.org
+> ---
+> 
+> Notes:
+>     I've tested this on a T2080RDB and a custom board using the T2081 SoC. With
+>     this change I don't see any spurious instances of the "Transfer done but
+>     SPIE_DON isn't set!" or "Transfer done but rx/tx fifo's aren't empty!" messages
+>     and the updates to spi flash are successful.
+>     
+>     I think this should go into the stable trees that contain 3282a3da25bd but I
+>     haven't added a Fixes: tag because I think 3282a3da25bd exposed the issue as
+>     opposed to causing it.
+> 
+>  drivers/spi/spi-fsl-espi.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/spi/spi-fsl-espi.c b/drivers/spi/spi-fsl-espi.c
+> index 7e7c92cafdbb..cb120b68c0e2 100644
+> --- a/drivers/spi/spi-fsl-espi.c
+> +++ b/drivers/spi/spi-fsl-espi.c
+> @@ -574,13 +574,14 @@ static void fsl_espi_cpu_irq(struct fsl_espi *espi, u32 events)
+>  static irqreturn_t fsl_espi_irq(s32 irq, void *context_data)
+>  {
+>  	struct fsl_espi *espi = context_data;
+> -	u32 events;
+> +	u32 events, mask;
+>  
+>  	spin_lock(&espi->lock);
+>  
+>  	/* Get interrupt events(tx/rx) */
+>  	events = fsl_espi_read_reg(espi, ESPI_SPIE);
+> -	if (!events) {
+> +	mask = fsl_espi_read_reg(espi, ESPI_SPIM);
+> +	if (!(events & mask)) {
+>  		spin_unlock(&espi->lock);
+>  		return IRQ_NONE;
 
-On Tue, Sep 22, 2020 at 6:03 PM Peter Xu <peterx@redhat.com> wrote:
->
-> > If we rely on "copy_ret == COPY_MM_BREAK_COW" we can unify "again" and
-> > "again_break_cow", we don't need to clear ->cow_new_page, this makes the
-> > logic more understandable. To me at least ;)
->
-> I see your point.  I'll definitely try it out.  I think I'll at least use what
-> you preferred above since it's actually the same as before, logically.  Then
-> I'll consider drop the again_break_cow, as long as I'm still as confident after
-> I do the change on not leaking anything :).
+Sorry, I was on vacation and therefore couldn't comment earlier.
+I'm fine with the change, just one thing could be improved IMO.
+If we skip an unneeded interrupt now, then returning IRQ_NONE
+causes reporting this interrupt as spurious. This isn't too nice
+as spurious interrupts typically are seen as a problem indicator.
+Therefore returning IRQ_HANDLED should be more appropriate.
+This would just require a comment in the code explaining why we
+do this, and why it can happen that we receive interrupts
+we're not interested in.
 
-So the two patches I sent out to re-organize copy_one_pte() were
-literally meant to make all this mess go away.
+>  	}
+> 
 
-IOW, the third patch would be something (COMPLETELY UNTESTED) like the attached.
-
-I think the logic for the preallocation is fairly obvious, but it
-might be better to allocate a batch of pages for all I know. That
-said, I can't really make myself care about the performance of a
-fork() after you've pinned pages in it, so..
-
-                 Linus
-
---000000000000d2fa5405b000e481
-Content-Type: application/octet-stream; name=patch
-Content-Disposition: attachment; filename=patch
-Content-Transfer-Encoding: base64
-Content-ID: <f_kffu7k9z0>
-X-Attachment-Id: f_kffu7k9z0
-
-IG1tL21lbW9yeS5jIHwgMzggKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0K
-IDEgZmlsZSBjaGFuZ2VkLCAzMSBpbnNlcnRpb25zKCspLCA3IGRlbGV0aW9ucygtKQoKZGlmZiAt
-LWdpdCBhL21tL21lbW9yeS5jIGIvbW0vbWVtb3J5LmMKaW5kZXggZTMxNWIxZjFlZjA4Li41MjRh
-YTcxODM5NzEgMTAwNjQ0Ci0tLSBhL21tL21lbW9yeS5jCisrKyBiL21tL21lbW9yeS5jCkBAIC03
-NzMsMTAgKzc3MywxNCBAQCBjb3B5X25vbnByZXNlbnRfcHRlKHN0cnVjdCBtbV9zdHJ1Y3QgKmRz
-dF9tbSwgc3RydWN0IG1tX3N0cnVjdCAqc3JjX21tLAogCXJldHVybiAwOwogfQogCi1zdGF0aWMg
-aW5saW5lIHZvaWQKKy8qCisgKiBUaGlzIHJldHVybnMgMCBmb3Igc3VjY2VzcywgPjAgZm9yICJz
-dWNjZXNzLCBhbmQgSSB1c2VkIHRoZSBwcmVhbGxvYyBwYWdlIiwKKyAqIGFuZCA8MCBmb3IgInlv
-dSBuZWVkIHRvIHByZWFsbG9jYXRlIGEgcGFnZSBhbmQgcmV0cnkiLgorICovCitzdGF0aWMgaW5s
-aW5lIGludAogY29weV9wcmVzZW50X3B0ZShzdHJ1Y3QgbW1fc3RydWN0ICpkc3RfbW0sIHN0cnVj
-dCBtbV9zdHJ1Y3QgKnNyY19tbSwKIAkJcHRlX3QgKmRzdF9wdGUsIHB0ZV90ICpzcmNfcHRlLCBz
-dHJ1Y3Qgdm1fYXJlYV9zdHJ1Y3QgKnZtYSwKLQkJdW5zaWduZWQgbG9uZyBhZGRyLCBpbnQgKnJz
-cykKKwkJdW5zaWduZWQgbG9uZyBhZGRyLCBpbnQgKnJzcywgc3RydWN0IHBhZ2UgKnByZWFsbG9j
-KQogewogCXVuc2lnbmVkIGxvbmcgdm1fZmxhZ3MgPSB2bWEtPnZtX2ZsYWdzOwogCXB0ZV90IHB0
-ZSA9ICpzcmNfcHRlOwpAQCAtODE1LDYgKzgxOSw3IEBAIGNvcHlfcHJlc2VudF9wdGUoc3RydWN0
-IG1tX3N0cnVjdCAqZHN0X21tLCBzdHJ1Y3QgbW1fc3RydWN0ICpzcmNfbW0sCiAJfQogCiAJc2V0
-X3B0ZV9hdChkc3RfbW0sIGFkZHIsIGRzdF9wdGUsIHB0ZSk7CisJcmV0dXJuIDA7CiB9CiAKIHN0
-YXRpYyBpbnQgY29weV9wdGVfcmFuZ2Uoc3RydWN0IG1tX3N0cnVjdCAqZHN0X21tLCBzdHJ1Y3Qg
-bW1fc3RydWN0ICpzcmNfbW0sCkBAIC04MjQsMTYgKzgyOSwxOSBAQCBzdGF0aWMgaW50IGNvcHlf
-cHRlX3JhbmdlKHN0cnVjdCBtbV9zdHJ1Y3QgKmRzdF9tbSwgc3RydWN0IG1tX3N0cnVjdCAqc3Jj
-X21tLAogCXB0ZV90ICpvcmlnX3NyY19wdGUsICpvcmlnX2RzdF9wdGU7CiAJcHRlX3QgKnNyY19w
-dGUsICpkc3RfcHRlOwogCXNwaW5sb2NrX3QgKnNyY19wdGwsICpkc3RfcHRsOwotCWludCBwcm9n
-cmVzcyA9IDA7CisJaW50IHByb2dyZXNzLCB1c2VkX3BhZ2U7CiAJaW50IHJzc1tOUl9NTV9DT1VO
-VEVSU107CiAJc3dwX2VudHJ5X3QgZW50cnkgPSAoc3dwX2VudHJ5X3QpezB9OworCXN0cnVjdCBw
-YWdlICpwcmVhbGxvYyA9IE5VTEw7CiAKIGFnYWluOgorCXByb2dyZXNzID0gMDsKKwl1c2VkX3Bh
-Z2UgPSAwOwogCWluaXRfcnNzX3ZlYyhyc3MpOwogCiAJZHN0X3B0ZSA9IHB0ZV9hbGxvY19tYXBf
-bG9jayhkc3RfbW0sIGRzdF9wbWQsIGFkZHIsICZkc3RfcHRsKTsKIAlpZiAoIWRzdF9wdGUpCi0J
-CXJldHVybiAtRU5PTUVNOworCQlnb3RvIG91dF9vZl9tZW1vcnk7CiAJc3JjX3B0ZSA9IHB0ZV9v
-ZmZzZXRfbWFwKHNyY19wbWQsIGFkZHIpOwogCXNyY19wdGwgPSBwdGVfbG9ja3B0cihzcmNfbW0s
-IHNyY19wbWQpOwogCXNwaW5fbG9ja19uZXN0ZWQoc3JjX3B0bCwgU0lOR0xFX0RFUFRIX05FU1RJ
-TkcpOwpAQCAtODY1LDggKzg3MywxMiBAQCBzdGF0aWMgaW50IGNvcHlfcHRlX3JhbmdlKHN0cnVj
-dCBtbV9zdHJ1Y3QgKmRzdF9tbSwgc3RydWN0IG1tX3N0cnVjdCAqc3JjX21tLAogCQkJcHJvZ3Jl
-c3MgKz0gODsKIAkJCWNvbnRpbnVlOwogCQl9Ci0JCWNvcHlfcHJlc2VudF9wdGUoZHN0X21tLCBz
-cmNfbW0sIGRzdF9wdGUsIHNyY19wdGUsCi0JCQkJIHZtYSwgYWRkciwgcnNzKTsKKwkJLyogY29w
-eV9wcmVzZW50X3BhZ2UoKSBtYXkgbmVlZCB0byBoYXZlIGEgcHJlLWFsbG9jYXRlZCB0ZW1wb3Jh
-cnkgcGFnZSAqLworCQl1c2VkX3BhZ2UgPSBjb3B5X3ByZXNlbnRfcHRlKGRzdF9tbSwgc3JjX21t
-LCBkc3RfcHRlLCBzcmNfcHRlLCB2bWEsIGFkZHIsIHJzcywgcHJlYWxsb2MpOworCQlpZiAodXNl
-ZF9wYWdlIDwgMCkKKwkJCWJyZWFrOworCQlpZiAodXNlZF9wYWdlKQorCQkJcHJlYWxsb2MgPSBO
-VUxMOwogCQlwcm9ncmVzcyArPSA4OwogCX0gd2hpbGUgKGRzdF9wdGUrKywgc3JjX3B0ZSsrLCBh
-ZGRyICs9IFBBR0VfU0laRSwgYWRkciAhPSBlbmQpOwogCkBAIC04NzksMTIgKzg5MSwyNCBAQCBz
-dGF0aWMgaW50IGNvcHlfcHRlX3JhbmdlKHN0cnVjdCBtbV9zdHJ1Y3QgKmRzdF9tbSwgc3RydWN0
-IG1tX3N0cnVjdCAqc3JjX21tLAogCiAJaWYgKGVudHJ5LnZhbCkgewogCQlpZiAoYWRkX3N3YXBf
-Y291bnRfY29udGludWF0aW9uKGVudHJ5LCBHRlBfS0VSTkVMKSA8IDApCisJCQlnb3RvIG91dF9v
-Zl9tZW1vcnk7CisJfQorCS8qIERpZCB3ZSBleGl0IGZyb20gdGhlIHB0ZSBsb2NrIGJlY2F1c2Ug
-d2UgbmVlZGVkIGEgbmV3IHBhZ2U/ICovCisJaWYgKHVzZWRfcGFnZSA8IDApIHsKKwkJcHJlYWxs
-b2MgPSBhbGxvY19wYWdlX3ZtYShHRlBfSElHSFVTRVJfTU9WQUJMRSwgdm1hLCBhZGRyKTsKKwkJ
-aWYgKCFwcmVhbGxvYykKIAkJCXJldHVybiAtRU5PTUVNOwotCQlwcm9ncmVzcyA9IDA7CiAJfQog
-CWlmIChhZGRyICE9IGVuZCkKIAkJZ290byBhZ2FpbjsKKwlpZiAocHJlYWxsb2MpCisJCWZyZWVf
-dW5yZWZfcGFnZShwcmVhbGxvYyk7CiAJcmV0dXJuIDA7CisKK291dF9vZl9tZW1vcnk6CisJaWYg
-KHByZWFsbG9jKQorCQlmcmVlX3VucmVmX3BhZ2UocHJlYWxsb2MpOworCXJldHVybiAtRU5PTUVN
-OwogfQogCiBzdGF0aWMgaW5saW5lIGludCBjb3B5X3BtZF9yYW5nZShzdHJ1Y3QgbW1fc3RydWN0
-ICpkc3RfbW0sIHN0cnVjdCBtbV9zdHJ1Y3QgKnNyY19tbSwK
---000000000000d2fa5405b000e481--
