@@ -2,155 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC1CB27623B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 123F7276240
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726599AbgIWUiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 16:38:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36016 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726419AbgIWUiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 16:38:11 -0400
-Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C589220725;
-        Wed, 23 Sep 2020 20:38:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600893491;
-        bh=AskTKIC0gVf9+eudy7V2ZFeIHmr9SERPbmozivXSEaQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=BuDzCXnwneiQEBijijm9OgF/t4EVX12j+56co+NLwWejFSek19RliEPne7vUBU8AV
-         DdU2YzX7tm6v52Y6F6fSdEinqudN3rDVWx7q+Q6Mn9j8mHPIr2b0dtIWooiEHJIy/X
-         IHHdXtaiVkyZvSiz5zAfr2rEsweAw2olm40Hk1Sg=
-Date:   Wed, 23 Sep 2020 15:38:09 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Nadeem Athani <nadeem@cadence.com>
-Cc:     tjoseph@cadence.com, lorenzo.pieralisi@arm.com, robh@kernel.org,
-        bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kishon@ti.com, mparab@cadence.com,
-        sjakhade@cadence.com
-Subject: Re: [PATCH v2] PCI: Cadence: Add quirk for Gen2 controller to do
- autonomous speed change.
-Message-ID: <20200923203809.GA2289779@bjorn-Precision-5520>
+        id S1726650AbgIWUjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 16:39:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726199AbgIWUi7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 16:38:59 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B72E3C0613CE;
+        Wed, 23 Sep 2020 13:38:59 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id k8so395577pfk.2;
+        Wed, 23 Sep 2020 13:38:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wNmA0JRGl31J8c+STmwI6VYnh0fy2q4Z8mVwIN/HTL8=;
+        b=KqySYbcd2ezrAZ1VDE0PmmVGXTLy4dJgN59rrL4XJJclRF5bXCuN3FbZa12JkW9xC7
+         z4leKmzxejlGKpd5I2Do7Ar2FEFFBrazK3St+8hy7cV6MzxeiK2GG98iqdCBOqQjBeHi
+         21oQeYxiFNT1XHaRhgRCcXgUZrYoncxHF/6tj3PCfWN1HlxM4wiWq2UWyULsQeiHrxva
+         Maq3lyV/lj3P2LVo70t951GN2LlnI6ICAXG+C9oEX+JO8Nkmp+5rYn21S15LT/pgM37T
+         0fD1+fLt5oD/VNpf+T8hoJusjzvmhp/CmY2K1LruidodzULeAuTZLtfPGlGd5Y73B3Mr
+         +/DQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=wNmA0JRGl31J8c+STmwI6VYnh0fy2q4Z8mVwIN/HTL8=;
+        b=mWXyi5S1Q3aWRMhBtKK5CkFUCdzDdHimJIIZq3BZWt5ITMNSoQW6jkFq1vZ+tE5sKk
+         OYGkMocjT4Q+Fh4AJCvATkUR2R+9exRNKthlfSbc5u8cxv8Ho8DDL30SvWd8+Pg7bVjp
+         lHkxGzEfUVNuDb1MKwH6VcBqhSDUVgsCe0QypKUqweLAglWO0fVo/pJAJbOSPf+3d/hE
+         kdgWSqH9xqVPoRP4JTL9NhGqkg0HLRmLiEOAJ/XslFNMdLYqoSQTpcTZkLfvzotisHyj
+         ODZgXziqNzrW0hFRMZQgMXMJL8gQhaUG5Qn8iRhp8Jgf3EdxYV/18CbaS2j5+MlGddjx
+         NN/g==
+X-Gm-Message-State: AOAM530P9NknZxlhWiPRzM9ZyWpr//TtaPvqa66wC0PnnAkkVbt4vUWT
+        rj2COw0AlxTmc5dvORIoWFbh/64HlwL+Ww==
+X-Google-Smtp-Source: ABdhPJyjaiJaKTfD15KGdvEIxHYfKO5WgpGS6g6Sp6FjGg18fCG8lm23cdm4UQy6EKkdlyHXfoZOsw==
+X-Received: by 2002:aa7:9592:0:b029:13e:d13d:a054 with SMTP id z18-20020aa795920000b029013ed13da054mr1434302pfj.26.1600893538725;
+        Wed, 23 Sep 2020 13:38:58 -0700 (PDT)
+Received: from [10.67.49.188] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id v1sm5528269pjn.1.2020.09.23.13.38.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Sep 2020 13:38:57 -0700 (PDT)
+Subject: Re: [PATCH 1/4] dt-bindings: spi: Add compatible string for brcmstb
+ SoCs
+To:     Mark Brown <broonie@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        Ray Jui <ray.jui@broadcom.com>
+Cc:     linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org
+References: <20200910152539.45584-1-ray.jui@broadcom.com>
+ <160009511834.5702.10954218363830361529.b4-ty@kernel.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
+ 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
+ M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
+Message-ID: <a1e13626-e87a-8114-74ae-560902ab9551@gmail.com>
+Date:   Wed, 23 Sep 2020 13:38:55 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200923183427.9258-1-nadeem@cadence.com>
+In-Reply-To: <160009511834.5702.10954218363830361529.b4-ty@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Something like:
-
-  PCI: cadence: Retrain Link to work around Gen2 training defect
-
-to match history (see "git log --oneline
-drivers/pci/controller/cadence/pcie-cadence-host.c").
-
-On Wed, Sep 23, 2020 at 08:34:27PM +0200, Nadeem Athani wrote:
-> Cadence controller will not initiate autonomous speed change if
-> strapped as Gen2. The Retrain bit is set as a quirk to trigger
-> this speed change.
-
-To match the spec terminology:
-
-  Set the Retrain Link bit ...
-
-Obviously I don't know the details of your device or even how PCIe
-works at this level.  But IIUC a link always comes up at 2.5 GT/s
-first and then the upstream and downstream components negotiate the
-highest speed they both support.  It sounds like your controller
-doesn't actually do this negotiation unless you set the Retrain Link
-bit?
-
-Is cdns_pcie_host_init_root_port() the only time this needs to be
-done?  We don't have to worry about doing this again after a reset,
-hot-add event, etc?
-
-> Signed-off-by: Nadeem Athani <nadeem@cadence.com>
-> ---
->  drivers/pci/controller/cadence/pcie-cadence-host.c | 14 ++++++++++++++
->  drivers/pci/controller/cadence/pcie-cadence.h      | 15 +++++++++++++++
->  2 files changed, 29 insertions(+)
+On 9/14/20 7:52 AM, Mark Brown wrote:
+> On Thu, 10 Sep 2020 08:25:36 -0700, Ray Jui wrote:
+>> Add compatible string for brcmstb 7445 SoCs.
 > 
-> diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c b/drivers/pci/controller/cadence/pcie-cadence-host.c
-> index 4550e0d469ca..a2317614268d 100644
-> --- a/drivers/pci/controller/cadence/pcie-cadence-host.c
-> +++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
-> @@ -83,6 +83,9 @@ static int cdns_pcie_host_init_root_port(struct cdns_pcie_rc *rc)
->  	struct cdns_pcie *pcie = &rc->pcie;
->  	u32 value, ctrl;
->  	u32 id;
-> +	u32 link_cap = CDNS_PCIE_LINK_CAP_OFFSET;
-
-This is not actually the link cap offset.  Based on the usage, this
-appears to be the offset of the PCIe Capability.
-
-> +	u8 sls;
-> +	u16 lnk_ctl;
->  
->  	/*
->  	 * Set the root complex BAR configuration register:
-> @@ -111,6 +114,17 @@ static int cdns_pcie_host_init_root_port(struct cdns_pcie_rc *rc)
->  	if (rc->device_id != 0xffff)
->  		cdns_pcie_rp_writew(pcie, PCI_DEVICE_ID, rc->device_id);
->  
-> +	/* Quirk to enable autonomous speed change for GEN2 controller */
-> +	/* Reading Supported Link Speed value */
-> +	sls = PCI_EXP_LNKCAP_SLS &
-> +		cdns_pcie_rp_readb(pcie, link_cap + PCI_EXP_LNKCAP);
-
-The conventional way to write this would be
-
-  sls = cdns_pcie_rp_readb(pcie, link_cap + PCI_EXP_LNKCAP) &
-    PCI_EXP_LNKCAP_SLS;
-
-> +	if (sls == PCI_EXP_LNKCAP_SLS_5_0GB) {
-> +		/* Since this a Gen2 controller, set Retrain Link(RL) bit */
-> +		lnk_ctl = cdns_pcie_rp_readw(pcie, link_cap + PCI_EXP_LNKCTL);
-> +		lnk_ctl |= PCI_EXP_LNKCTL_RL;
-> +		cdns_pcie_rp_writew(pcie, link_cap + PCI_EXP_LNKCTL, lnk_ctl);
-> +	}
-> +
->  	cdns_pcie_rp_writeb(pcie, PCI_CLASS_REVISION, 0);
->  	cdns_pcie_rp_writeb(pcie, PCI_CLASS_PROG, 0);
->  	cdns_pcie_rp_writew(pcie, PCI_CLASS_DEVICE, PCI_CLASS_BRIDGE_PCI);
-> diff --git a/drivers/pci/controller/cadence/pcie-cadence.h b/drivers/pci/controller/cadence/pcie-cadence.h
-> index feed1e3038f4..fe560480c573 100644
-> --- a/drivers/pci/controller/cadence/pcie-cadence.h
-> +++ b/drivers/pci/controller/cadence/pcie-cadence.h
-> @@ -120,6 +120,7 @@
->   */
->  #define CDNS_PCIE_RP_BASE	0x00200000
->  
-> +#define CDNS_PCIE_LINK_CAP_OFFSET 0xC0
-
-Use lower-case in hex as the rest of the file does.
-
->  /*
->   * Address Translation Registers
-> @@ -413,6 +414,20 @@ static inline void cdns_pcie_rp_writew(struct cdns_pcie *pcie,
->  	cdns_pcie_write_sz(addr, 0x2, value);
->  }
->  
-> +static inline u8 cdns_pcie_rp_readb(struct cdns_pcie *pcie, u32 reg)
-> +{
-> +	void __iomem *addr = pcie->reg_base + CDNS_PCIE_RP_BASE + reg;
-> +
-> +	return cdns_pcie_read_sz(addr, 0x1);
-> +}
-> +
-> +static inline u16 cdns_pcie_rp_readw(struct cdns_pcie *pcie, u32 reg)
-> +{
-> +	void __iomem *addr = pcie->reg_base + CDNS_PCIE_RP_BASE + reg;
-> +
-> +	return cdns_pcie_read_sz(addr, 0x2);
-> +}
-> +
->  /* Endpoint Function register access */
->  static inline void cdns_pcie_ep_fn_writeb(struct cdns_pcie *pcie, u8 fn,
->  					  u32 reg, u8 value)
-> -- 
-> 2.15.0
+> Applied to
 > 
+>    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+> 
+> Thanks!
+> 
+> [1/4] spi: Add compatible string for brcmstb SoCs
+>       commit: d9f0cf9f1176d36d3824459d5b061f4719fcbb8a
+> [2/4] spi: bcm-qspi: Add compatible string for BRCMSTB 7445 SoCs
+>       commit: e0eeb76b818ad93718f9640b0bdad909b453a3b8
+> [3/4] spi: bcm-qspi: Fix probe regression on iProc platforms
+>       commit: 9a852d44b26f8e60e2ae13df563824c0f8489135
+> [4/4] spi: bcm-qspi: Clean up 7425, 7429, and 7435 settings
+>       commit: 3cf5d198785a6b454e6a97246795b0043aff9ac1
+> 
+> All being well this means that it will be integrated into the linux-next
+> tree (usually sometime in the next 24 hours) and sent to Linus during
+> the next merge window (or sooner if it is a bug fix), however if
+> problems are discovered then the patch may be dropped or reverted.
+> 
+> You may get further e-mails resulting from automated or manual testing
+> and review of the tree, please engage with people reporting problems and
+> send followup patches addressing any issues that are reported if needed.
+> 
+> If any updates are required or you are submitting further changes they
+> should be sent as incremental updates against current git, existing
+> patches will not be replaced.
+> 
+> Please add any relevant lists and maintainers to the CCs when replying
+> to this mail.
+
+Mark, can you also submit "spi: bcm-qspi: Fix probe regression on iProc
+platforms" towards Linus because this is a bug fix that is currently
+affecting the 5.9 kernel.
+
+Thanks
+-- 
+Florian
