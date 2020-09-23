@@ -2,153 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F32C275C57
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69476275C58
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726764AbgIWPre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 11:47:34 -0400
-Received: from mga09.intel.com ([134.134.136.24]:33632 "EHLO mga09.intel.com"
+        id S1726783AbgIWPrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 11:47:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgIWPrd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 11:47:33 -0400
-IronPort-SDR: UyRufnYM5KdWeeQHrppq5jObGE13GiqJr4WwbpZu5D6PuKlb9eFSywfZCLZOS+tc7sEhPmxX3f
- s8DhCOeeAL4A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="161855399"
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="161855399"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 08:47:33 -0700
-IronPort-SDR: HYS3YyIhjzxpL9xNueBLE8HpUGLaaAXCXx5CJaZvZWwSGs7LBujxk5r0KP3kilOKEbmK5xYn84
- 1IiGIj34YQrA==
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="486485705"
-Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.212.218.1]) ([10.212.218.1])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 08:47:32 -0700
-Subject: Re: [PATCH v4 2/5] x86/asm: add enqcmds() to support ENQCMDS
- instruction
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     vkoul@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        dan.j.williams@intel.com, tony.luck@intel.com, jing.lin@intel.com,
-        ashok.raj@intel.com, sanjay.k.kumar@intel.com,
-        fenghua.yu@intel.com, kevin.tian@intel.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <160037680630.3777.16356270178889649944.stgit@djiang5-desk3.ch.intel.com>
- <160037732334.3777.8083106831110728138.stgit@djiang5-desk3.ch.intel.com>
- <20200923110837.GH28545@zn.tnic>
-From:   Dave Jiang <dave.jiang@intel.com>
-Message-ID: <10b6c333-b252-eb9c-db82-91a93232e1a0@intel.com>
-Date:   Wed, 23 Sep 2020 08:47:31 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726130AbgIWPrl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 11:47:41 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 214AE2223E;
+        Wed, 23 Sep 2020 15:47:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600876061;
+        bh=HmLgHeuN3iqK1yowHO5d7riEdrMBcF2EKeYaKbNiQpo=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=e3bKQJ0Z7Ilg8f57bV1gcAj+wyjp5sJ7tMqp6sSQgu5ABMqGZ1UErEKxPAj2HB0Za
+         //cpTfj+NDAS1BD9wtjfLu+qZay5EXQSrsTlCojnmO+XaZa6QR/7Wy10uYKkfdIG+C
+         4ISDfp4E3KWWlJwO/uDb0YOth5MW3GNKMJ+kBmoY=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id C5A3735226CB; Wed, 23 Sep 2020 08:47:40 -0700 (PDT)
+Date:   Wed, 23 Sep 2020 08:47:40 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>
+Subject: Re: [RFC PATCH 07/12] rcu: Shutdown nocb timer on de-offloading
+Message-ID: <20200923154740.GQ29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200921124351.24035-1-frederic@kernel.org>
+ <20200921124351.24035-8-frederic@kernel.org>
+ <20200922001756.GP29330@paulmck-ThinkPad-P72>
+ <20200923152951.GC31465@lenoir>
 MIME-Version: 1.0
-In-Reply-To: <20200923110837.GH28545@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200923152951.GC31465@lenoir>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 23, 2020 at 05:29:52PM +0200, Frederic Weisbecker wrote:
+> On Mon, Sep 21, 2020 at 05:17:56PM -0700, Paul E. McKenney wrote:
+> > On Mon, Sep 21, 2020 at 02:43:46PM +0200, Frederic Weisbecker wrote:
+> > > Make sure the nocb timer can't fire anymore before we reach the final
+> > > de-offload state. Spuriously waking up the GP kthread is no big deal but
+> > > we must prevent from executing the timer callback without nocb locking.
+> > 
+> > If we had just the previous patch and not this patch, would things break?
+> > Or are you relying on the fact that there is not yet a connection to
+> > userspace controls for this functionality?
+> 
+> Exactly it shouldn't break because only the last patch makes the code
+> eventually used.
 
+That works, thank you!
 
-On 9/23/2020 4:08 AM, Borislav Petkov wrote:
-> On Thu, Sep 17, 2020 at 02:15:23PM -0700, Dave Jiang wrote:
->> Add enqcmds() in x86 io.h instead of special_insns.h.
-> 
-> Why? It is an asm wrapper for a special instruction.
-
-Ok will move.
-
-> 
->> MOVDIR64B
->> instruction can be used for other purposes. A wrapper was introduced
->> in io.h for its command submission usage. ENQCMDS has a single
->> purpose of submit 64-byte commands to supported devices and should
->> be called directly.
->>
->> Signed-off-by: Dave Jiang <dave.jiang@intel.com>
->> Reviewed-by: Tony Luck <tony.luck@intel.com>
->> ---
->>   arch/x86/include/asm/io.h |   29 +++++++++++++++++++++++++++++
->>   1 file changed, 29 insertions(+)
->>
->> diff --git a/arch/x86/include/asm/io.h b/arch/x86/include/asm/io.h
->> index d726459d08e5..b7af0bf8a018 100644
->> --- a/arch/x86/include/asm/io.h
->> +++ b/arch/x86/include/asm/io.h
->> @@ -424,4 +424,33 @@ static inline void iosubmit_cmds512(void __iomem *dst, const void *src,
->>   	}
->>   }
->>   
->> +/**
->> + * enqcmds - copy a 512 bits data unit to single MMIO location
-> 
-> Your #319433 doc says
-> 
-> "ENQCMDS — Enqueue Command Supervisor"
-> 
-> Now *how* that enqueueing is done you can explain in the comment below.
-
-Ok will add.
-
-> 
->> + * @dst: destination, in MMIO space (must be 512-bit aligned)
->> + * @src: source
->> + *
->> + * Submit data from kernel space to MMIO space, in a unit of 512 bits.
->> + * Order of data access is not guaranteed, nor is a memory barrier
->> + * performed afterwards. The command returns false (0) on failure, and true (1)
->> + * on success.
-> 
-> The command or the function?
-
-Function. Will fix.
-> 
->  From what I see below, the instruction sets ZF=1 to denote that it needs
-> to be retried and ZF=0 means success, as the doc says. And in good UNIX
-> tradition, 0 means usually success and !0 failure.
-> 
-> So why are you flipping that?
-
-Ok will return 0 for success and -ERETRY for failure.
-
-> 
->> + * Warning: Do not use this helper unless your driver has checked that the CPU
->> + * instruction is supported on the platform.
->> + */
->> +static inline bool enqcmds(void __iomem *dst, const void *src)
->> +{
->> +	bool retry;
->> +
->> +	/* ENQCMDS [rdx], rax */
->> +	asm volatile(".byte 0xf3, 0x0f, 0x38, 0xf8, 0x02, 0x66, 0x90\t\n"
-> 								    ^^^^
-> No need for those last two chars.
-
-Ok will remove.
-
-> 
->> +		     CC_SET(z)
->> +		     : CC_OUT(z) (retry)
->> +		     : "a" (dst), "d" (src));
-> 
-> <---- newline here.
-
-Will fix.
-
-> 
->> +	/* Submission failure is indicated via EFLAGS.ZF=1 */
->> +	if (retry)
->> +		return false;
->> +
->> +	return true;
->> +}
->> +
->>   #endif /* _ASM_X86_IO_H */
-> 
-> Thx.
-> 
-
-Thank you very much for reviewing Boris. Very much appreciated!
+							Thanx, Paul
