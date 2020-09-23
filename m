@@ -2,653 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E22275DC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C56A275DCE
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:48:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726638AbgIWQsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 12:48:18 -0400
-Received: from 212.199.177.27.static.012.net.il ([212.199.177.27]:55780 "EHLO
-        herzl.nuvoton.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726184AbgIWQsR (ORCPT
+        id S1726744AbgIWQs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 12:48:29 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:35305 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726727AbgIWQs0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 12:48:17 -0400
-Received: from taln60.nuvoton.co.il (ntil-fw [212.199.177.25])
-        by herzl.nuvoton.co.il (8.13.8/8.13.8) with ESMTP id 08NGliYV021313;
-        Wed, 23 Sep 2020 19:47:44 +0300
-Received: by taln60.nuvoton.co.il (Postfix, from userid 10070)
-        id 1933C639D6; Wed, 23 Sep 2020 19:47:44 +0300 (IDT)
-From:   Tomer Maimon <tmaimon77@gmail.com>
-To:     robh+dt@kernel.org, mark.rutland@arm.com, avifishman70@gmail.com,
-        tali.perry1@gmail.com, venture@google.com, yuenn@google.com,
-        benjaminfair@google.com, joel@jms.id.au
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        openbmc@lists.ozlabs.org, tmaimon77@gmail.com
-Subject: [PATCH v7 5/5] arm: dts: add new device nodes to NPCM750 device tree EVB
-Date:   Wed, 23 Sep 2020 19:47:30 +0300
-Message-Id: <20200923164730.176881-6-tmaimon77@gmail.com>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20200923164730.176881-1-tmaimon77@gmail.com>
-References: <20200923164730.176881-1-tmaimon77@gmail.com>
+        Wed, 23 Sep 2020 12:48:26 -0400
+Received: from mail-qk1-f169.google.com ([209.85.222.169]) by
+ mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MoNMu-1knnrE3KES-00oqIB for <linux-kernel@vger.kernel.org>; Wed, 23 Sep
+ 2020 18:48:25 +0200
+Received: by mail-qk1-f169.google.com with SMTP id d20so335291qka.5
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 09:48:24 -0700 (PDT)
+X-Gm-Message-State: AOAM530kAfZJ3gPupiaM4AwEVn8ygjat2pneOCx6IhdLUbV+PGj91Fwg
+        OOpK7HIQzkPwD+ZfbD3fA6avZuf1AWHbVXb73zA=
+X-Google-Smtp-Source: ABdhPJxwPE5Wwh+nnLUem9B0IUqYbP4jTGILnxkKfQRyL4o5Z9LHe3qZmwNKQUPSRcKUeo0vvQBam8tKfCiPUd/307w=
+X-Received: by 2002:ae9:c30d:: with SMTP id n13mr776598qkg.138.1600879703666;
+ Wed, 23 Sep 2020 09:48:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200923151511.3842150-1-luzmaximilian@gmail.com> <20200923151511.3842150-9-luzmaximilian@gmail.com>
+In-Reply-To: <20200923151511.3842150-9-luzmaximilian@gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 23 Sep 2020 18:48:07 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0=98pzgWwBKddy7BQ9g90ga8JEx=MtADW+aqTe0AVV6w@mail.gmail.com>
+Message-ID: <CAK8P3a0=98pzgWwBKddy7BQ9g90ga8JEx=MtADW+aqTe0AVV6w@mail.gmail.com>
+Subject: Re: [RFC PATCH 8/9] surface_aggregator: Add DebugFS interface
+To:     Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?Q?Bla=C5=BE_Hrastnik?= <blaz@mxxn.io>,
+        Dorian Stoll <dorian.stoll@tmsp.io>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:LzGlxUzl8O4mPqa9WVmdvTU9NYCh/+7hdI/o6b7FVOhhtclLzud
+ SdFNT5vaMGwbEM9A6Rd9PhI9VC0yKRefEgs8+KHM5j+aXMnazydYZhNuQljjr3AqCCqLDrW
+ 3S7KEJjzSamh2j32sM+6jSp3eZfQw9RPuJxADoYkhak0wt7RiX7mIiVuDSKksRbTg1W63aE
+ KqifZO9wejqczgaPSqTLQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:js0eB8QDwxo=:jt4Aal7awPlrSjIpXr64up
+ PkKTc37/RdN6hh08jd/qspoeazLBKvpcpjW07a0gKRXlGdcTQrNcXBe50aTOZkFN2XTwRA3mc
+ zFzy+U7jI3SHG3M0WAD6o2FeamMZ4wcdg5CgPyQUqOHoew5zY549BX42L96L6AYXwpV347Ad9
+ KgtilV55xfKHAx8elBhz2e5Ss7oa4lKx8AFoYcTmzXexOZtSPzBT44kfmTfVvFT2Vf99FcPoJ
+ 6DP9fhSE6nMIw3rTBEsZ9PeNSS0b4avRng61Ax1gv8fJe71fKBTdmPu6xMbTNtgs92cZ7kEuA
+ 2ddBPosPcxneoGVUpRK3qNBDH9rPzki6iypJRxJrV3PF1HcEmk+ocnYqrzMr1L+3uvQvDrP3Z
+ mQ9KjoyhcAPyVIrG44LDssDRK4hHwHmeCuWXCjLKFSYmpOOwkBL2qlyF0mfdxU80yCvgSOB5Q
+ dc6iwjI566E7fugJzb9ricDceYuk94RflT+h3jbRbnAEaVGLBQ6U5tL0Ff69wnyApJR16lGWU
+ l+Ts0Oc64ravNtpzXIlnKa9cRHCXk6oxEyoxeT1x90d0t9bfB6z/aKSjrEBfqWqUhASnD7fD3
+ GaWJ6nF8xpjz0g13bG1ZiT0MoxGHsRJpUdwZ8I7BVfXXFAbuYd2bjUtj8/7fPfvr9aUTIUXTq
+ Nio/qsJ4aon2z3+Jlcaha41sUHi7gMIhDc9hGgWx5dabqQSF4k3S/4BWqAzAgDX3q8I5mKwai
+ 8N94WiOETLH2FYVvDkJRH8QvFquF1baBAj3vdqBl6JB6uaP3sHLY7wfcmaCVFQhx0o0VUcsjr
+ o3bhKIT4ujgpSZXkCPhBYYK3vyfUOAOLOXV3yCuqPVxFJxFN2wjsWogAR/7GkXyBiPANXTk
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the following new device nodes to
-NPCM750 evolution board device tree:
+On Wed, Sep 23, 2020 at 5:15 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
+>> +   * - ``0xA5``
+> +     - ``1``
+> +     - ``WR``
+> +     - ``REQUEST``
+> +     - Perform synchronous SAM request.
+> +
+> +
+> +``GETVERSION``
+> +--------------
+> +
+> +Defined as ``_IOR(0xA5, 0, __u32)``.
+> +
+> +Gets the current interface version. This should be used to check for changes
+> +in the interface and determine if certain functionality is available. While
+> +the interface should under normal circumstances kept backward compatible, as
+> +this is a debug interface, backwards compatibility is not guaranteed.
+> +
+> +The version number follows the semantic versioning scheme, roughly meaning
+> +that an increment in the highest non-zero version number signals a breaking
+> +change. It can be decomposed as follows:
 
-        - NPCM7xx Pin controller and GPIO
-        - NPCM7xx PWM and FAN.
-        - NPCM7xx EHCI USB.
-        - NPCM7xx KCS.
-        - NPCM Reset.
-        - NPCM Peripheral SPI.
-        - NPCM FIU SPI.
-        - NPCM HWRNG.
-        - NPCM I2C.
-        - STMicro STMMAC.
+Versioned interfaces are basically always a mess, try to avoid them. I'd much
+rather see this done in one of two ways:
 
-Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
----
- arch/arm/boot/dts/nuvoton-npcm750-evb.dts     | 405 +++++++++++++++++-
- .../boot/dts/nuvoton-npcm750-pincfg-evb.dtsi  | 157 +++++++
- 2 files changed, 546 insertions(+), 16 deletions(-)
- create mode 100644 arch/arm/boot/dts/nuvoton-npcm750-pincfg-evb.dtsi
+a) make it a proper documented interface, in this case probably a misc
+character device, and then maintain the interface forever, without
+breaking compatibility with existing users.
 
-diff --git a/arch/arm/boot/dts/nuvoton-npcm750-evb.dts b/arch/arm/boot/dts/nuvoton-npcm750-evb.dts
-index 15f744f1beea..1623a18ac29b 100644
---- a/arch/arm/boot/dts/nuvoton-npcm750-evb.dts
-+++ b/arch/arm/boot/dts/nuvoton-npcm750-evb.dts
-@@ -4,36 +4,409 @@
- 
- /dts-v1/;
- #include "nuvoton-npcm750.dtsi"
-+#include "dt-bindings/gpio/gpio.h"
-+#include "nuvoton-npcm750-pincfg-evb.dtsi"
- 
- / {
- 	model = "Nuvoton npcm750 Development Board (Device Tree)";
- 	compatible = "nuvoton,npcm750";
- 
-+	aliases {
-+		ethernet2 = &gmac0;
-+		ethernet3 = &gmac1;
-+		serial0 = &serial0;
-+		serial1 = &serial1;
-+		serial2 = &serial2;
-+		serial3 = &serial3;
-+		i2c0 = &i2c0;
-+		i2c1 = &i2c1;
-+		i2c2 = &i2c2;
-+		i2c3 = &i2c3;
-+		i2c4 = &i2c4;
-+		i2c5 = &i2c5;
-+		i2c6 = &i2c6;
-+		i2c7 = &i2c7;
-+		i2c8 = &i2c8;
-+		i2c9 = &i2c9;
-+		i2c10 = &i2c10;
-+		i2c11 = &i2c11;
-+		i2c12 = &i2c12;
-+		i2c13 = &i2c13;
-+		i2c14 = &i2c14;
-+		i2c15 = &i2c15;
-+		spi0 = &spi0;
-+		spi1 = &spi1;
-+		fiu0 = &fiu0;
-+		fiu1 = &fiu3;
-+		fiu2 = &fiux;
-+	};
-+
- 	chosen {
- 		stdout-path = &serial3;
- 	};
- 
- 	memory {
--		reg = <0 0x40000000>;
-+		device_type = "memory";
-+		reg = <0x0 0x20000000>;
- 	};
--};
- 
--&watchdog1 {
--	status = "okay";
--};
-+	ahb {
-+		gmac0: eth@f0802000 {
-+			phy-mode = "rgmii-id";
-+			status = "okay";
-+		};
- 
--&serial0 {
--	status = "okay";
--};
-+		gmac1: eth@f0804000 {
-+			phy-mode = "rgmii-id";
-+			status = "okay";
-+		};
- 
--&serial1 {
--	status = "okay";
--};
-+		ehci1: usb@f0806000 {
-+			status = "okay";
-+		};
- 
--&serial2 {
--	status = "okay";
--};
-+		fiu0: spi@fb000000 {
-+			status = "okay";
-+			spi-nor@0 {
-+				compatible = "jedec,spi-nor";
-+				#address-cells = <1>;
-+				#size-cells = <1>;
-+				spi-rx-bus-width = <2>;
-+				reg = <0>;
-+				spi-max-frequency = <5000000>;
-+				partitions@80000000 {
-+					compatible = "fixed-partitions";
-+					#address-cells = <1>;
-+					#size-cells = <1>;
-+					bbuboot1@0 {
-+						label = "bb-uboot-1";
-+						reg = <0x0000000 0x80000>;
-+						read-only;
-+						};
-+					bbuboot2@80000 {
-+						label = "bb-uboot-2";
-+						reg = <0x0080000 0x80000>;
-+						read-only;
-+						};
-+					envparam@100000 {
-+						label = "env-param";
-+						reg = <0x0100000 0x40000>;
-+						read-only;
-+						};
-+					spare@140000 {
-+						label = "spare";
-+						reg = <0x0140000 0xC0000>;
-+						};
-+					kernel@200000 {
-+						label = "kernel";
-+						reg = <0x0200000 0x400000>;
-+						};
-+					rootfs@600000 {
-+						label = "rootfs";
-+						reg = <0x0600000 0x700000>;
-+						};
-+					spare1@D00000 {
-+						label = "spare1";
-+						reg = <0x0D00000 0x200000>;
-+						};
-+					spare2@0F00000 {
-+						label = "spare2";
-+						reg = <0x0F00000 0x200000>;
-+						};
-+					spare3@1100000 {
-+						label = "spare3";
-+						reg = <0x1100000 0x200000>;
-+						};
-+					spare4@1300000 {
-+						label = "spare4";
-+						reg = <0x1300000 0x0>;
-+					};
-+				};
-+			};
-+		};
-+
-+		fiu3: spi@c0000000 {
-+			pinctrl-0 = <&spi3_pins>, <&spi3quad_pins>;
-+			status = "okay";
-+			spi-nor@0 {
-+				compatible = "jedec,spi-nor";
-+				#address-cells = <1>;
-+				#size-cells = <1>;
-+				spi-rx-bus-width = <2>;
-+				reg = <0>;
-+				spi-max-frequency = <5000000>;
-+				partitions@A0000000 {
-+					compatible = "fixed-partitions";
-+					#address-cells = <1>;
-+					#size-cells = <1>;
-+					system1@0 {
-+						label = "spi3-system1";
-+						reg = <0x0 0x0>;
-+					};
-+				};
-+			};
-+		};
-+
-+		fiux: spi@fb001000 {
-+			spix-mode;
-+		};
-+
-+		apb {
-+
-+			watchdog1: watchdog@901C {
-+				status = "okay";
-+			};
-+
-+			rng: rng@b000 {
-+				status = "okay";
-+			};
-+
-+			serial0: serial@1000 {
-+				status = "okay";
-+			};
-+
-+			serial1: serial@2000 {
-+				status = "okay";
-+			};
-+
-+			serial2: serial@3000 {
-+				status = "okay";
-+			};
-+
-+			serial3: serial@4000 {
-+				status = "okay";
-+			};
-+
-+			adc: adc@c000 {
-+				status = "okay";
-+			};
-+
-+			otp:otp@189000 {
-+				status = "okay";
-+			};
-+
-+			lpc_kcs: lpc_kcs@7000 {
-+				kcs1: kcs1@0 {
-+					status = "okay";
-+				};
- 
--&serial3 {
--	status = "okay";
-+				kcs2: kcs2@0 {
-+					status = "okay";
-+				};
-+
-+				kcs3: kcs3@0 {
-+					status = "okay";
-+				};
-+			};
-+
-+			/* lm75 on SVB */
-+			i2c0: i2c@80000 {
-+				clock-frequency = <100000>;
-+				status = "okay";
-+				lm75@48 {
-+					compatible = "lm75";
-+					reg = <0x48>;
-+					status = "okay";
-+				};
-+			};
-+
-+			/* lm75 on EB */
-+			i2c1: i2c@81000 {
-+				clock-frequency = <100000>;
-+				status = "okay";
-+				lm75@48 {
-+					compatible = "lm75";
-+					reg = <0x48>;
-+					status = "okay";
-+				};
-+			};
-+
-+			/* tmp100 on EB */
-+			i2c2: i2c@82000 {
-+				clock-frequency = <100000>;
-+				status = "okay";
-+				tmp100@48 {
-+					compatible = "tmp100";
-+					reg = <0x48>;
-+					status = "okay";
-+				};
-+			};
-+
-+			i2c3: i2c@83000 {
-+				clock-frequency = <100000>;
-+				status = "okay";
-+			};
-+
-+			i2c5: i2c@85000 {
-+				clock-frequency = <100000>;
-+				status = "okay";
-+			};
-+
-+			/* tmp100 on SVB */
-+			i2c6: i2c@86000 {
-+				clock-frequency = <100000>;
-+				status = "okay";
-+				tmp100@48 {
-+					compatible = "tmp100";
-+					reg = <0x48>;
-+					status = "okay";
-+				};
-+			};
-+
-+			i2c7: i2c@87000 {
-+				clock-frequency = <100000>;
-+				status = "okay";
-+			};
-+
-+			i2c8: i2c@88000 {
-+				clock-frequency = <100000>;
-+				status = "okay";
-+			};
-+
-+			i2c9: i2c@89000 {
-+				clock-frequency = <100000>;
-+				status = "okay";
-+			};
-+
-+			i2c10: i2c@8a000 {
-+				clock-frequency = <100000>;
-+				status = "okay";
-+			};
-+
-+			i2c11: i2c@8b000 {
-+				clock-frequency = <100000>;
-+				status = "okay";
-+			};
-+
-+			i2c14: i2c@8e000 {
-+				clock-frequency = <100000>;
-+				status = "okay";
-+			};
-+
-+			pwm_fan:pwm-fan-controller@103000 {
-+				status = "okay";
-+				fan@0 {
-+					reg = <0x00>;
-+					fan-tach-ch = /bits/ 8 <0x00 0x01>;
-+					cooling-levels = <127 255>;
-+				};
-+				fan@1 {
-+					reg = <0x01>;
-+					fan-tach-ch = /bits/ 8 <0x02 0x03>;
-+					cooling-levels = /bits/ 8 <127 255>;
-+				};
-+				fan@2 {
-+					reg = <0x02>;
-+					fan-tach-ch = /bits/ 8 <0x04 0x05>;
-+					cooling-levels = /bits/ 8 <127 255>;
-+				};
-+				fan@3 {
-+					reg = <0x03>;
-+					fan-tach-ch = /bits/ 8 <0x06 0x07>;
-+					cooling-levels = /bits/ 8 <127 255>;
-+				};
-+				fan@4 {
-+					reg = <0x04>;
-+					fan-tach-ch = /bits/ 8 <0x08 0x09>;
-+					cooling-levels = /bits/ 8 <127 255>;
-+				};
-+				fan@5 {
-+					reg = <0x05>;
-+					fan-tach-ch = /bits/ 8 <0x0A 0x0B>;
-+					cooling-levels = /bits/ 8 <127 255>;
-+				};
-+				fan@6 {
-+					reg = <0x06>;
-+					fan-tach-ch = /bits/ 8 <0x0C 0x0D>;
-+					cooling-levels = /bits/ 8 <127 255>;
-+				};
-+				fan@7 {
-+					reg = <0x07>;
-+					fan-tach-ch = /bits/ 8 <0x0E 0x0F>;
-+					cooling-levels = /bits/ 8 <127 255>;
-+				};
-+			};
-+
-+			spi0: spi@200000 {
-+				cs-gpios = <&gpio6 11 GPIO_ACTIVE_LOW>;
-+				status = "okay";
-+				Flash@0 {
-+					compatible = "winbond,w25q128",
-+					"jedec,spi-nor";
-+					reg = <0x0>;
-+					#address-cells = <1>;
-+					#size-cells = <1>;
-+					spi-max-frequency = <5000000>;
-+					partition@0 {
-+						label = "spi0_spare1";
-+						reg = <0x0000000 0x800000>;
-+					};
-+					partition@1 {
-+						label = "spi0_spare2";
-+						reg = <0x800000 0x0>;
-+					};
-+				};
-+			};
-+
-+			spi1: spi@201000 {
-+				cs-gpios = <&gpio0 20 GPIO_ACTIVE_LOW>;
-+				status = "okay";
-+				Flash@0 {
-+					compatible = "winbond,w25q128fw",
-+					"jedec,spi-nor";
-+					reg = <0x0>;
-+					#address-cells = <1>;
-+					#size-cells = <1>;
-+					spi-max-frequency = <5000000>;
-+					partition@0 {
-+						label = "spi1_spare1";
-+						reg = <0x0000000 0x800000>;
-+					};
-+					partition@1 {
-+						label = "spi1_spare2";
-+						reg = <0x800000 0x0>;
-+					};
-+				};
-+			};
-+		};
-+	};
-+
-+	pinctrl: pinctrl@f0800000 {
-+		pinctrl-names = "default";
-+		pinctrl-0 = <	&iox1_pins
-+				&pin8_input
-+				&pin9_output_high
-+				&pin10_input
-+				&pin11_output_high
-+				&pin16_input
-+				&pin24_output_high
-+				&pin25_output_low
-+				&pin32_output_high
-+				&jtag2_pins
-+				&pin61_output_high
-+				&pin62_output_high
-+				&pin63_output_high
-+				&lpc_pins
-+				&pin160_input
-+				&pin162_input
-+				&pin168_input
-+				&pin169_input
-+				&pin170_input
-+				&pin187_output_high
-+				&pin190_input
-+				&pin191_output_high
-+				&pin192_output_high
-+				&pin197_output_low
-+				&ddc_pins
-+				&pin218_input
-+				&pin219_output_low
-+				&pin220_output_low
-+				&pin221_output_high
-+				&pin222_input
-+				&pin223_output_low
-+				&spix_pins
-+				&pin228_output_low
-+				&pin231_output_high
-+				&pin255_input>;
-+	};
- };
-diff --git a/arch/arm/boot/dts/nuvoton-npcm750-pincfg-evb.dtsi b/arch/arm/boot/dts/nuvoton-npcm750-pincfg-evb.dtsi
-new file mode 100644
-index 000000000000..edb4190826e6
---- /dev/null
-+++ b/arch/arm/boot/dts/nuvoton-npcm750-pincfg-evb.dtsi
-@@ -0,0 +1,157 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2018 Nuvoton Technology tomer.maimon@nuvoton.com
-+
-+/ {
-+	pinctrl: pinctrl@f0800000 {
-+		pin8_input: pin8-input {
-+			pins = "GPIO8/LKGPO1";
-+			bias-disable;
-+			input-enable;
-+		};
-+		pin9_output_high: pin9-output-high {
-+			pins = "GPIO9/LKGPO2";
-+			bias-disable;
-+			output-high;
-+		};
-+		pin10_input: pin10-input {
-+			pins = "GPIO10/IOXHLD";
-+			bias-disable;
-+			input-enable;
-+		};
-+		pin11_output_high: pin11-output-high {
-+			pins = "GPIO11/IOXHCK";
-+			bias-disable;
-+			output-high;
-+		};
-+		pin16_input: pin16-input {
-+			pins = "GPIO16/LKGPO0";
-+			bias-disable;
-+			input-enable;
-+		};
-+		pin24_output_high: pin24-output-high {
-+			pins = "GPIO24/IOXHDO";
-+			bias-disable;
-+			output-high;
-+		};
-+		pin25_output_low: pin25-output-low {
-+			pins = "GPIO25/IOXHDI";
-+			bias-disable;
-+			output-low;
-+		};
-+		pin32_output_high: pin32-output-high {
-+			pins = "GPIO32/nSPI0CS1";
-+			bias-disable;
-+			output-high;
-+		};
-+		pin61_output_high: pin61-output-high {
-+			pins = "GPO61/nDTR1_BOUT1/STRAP6";
-+			bias-disable;
-+			output-high;
-+		};
-+		pin62_output_high: pin62-output-high {
-+			pins = "GPO62/nRTST1/STRAP5";
-+			bias-disable;
-+			output-high;
-+		};
-+		pin63_output_high: pin63-output-high {
-+			pins = "GPO63/TXD1/STRAP4";
-+			bias-disable;
-+			output-high;
-+		};
-+		pin160_input: pin160-input {
-+			pins = "GPIO160/CLKOUT/RNGOSCOUT";
-+			bias-disable;
-+			input-enable;
-+		};
-+		pin162_input: pin162-input {
-+			pins = "GPIO162/SERIRQ";
-+			bias-disable;
-+			input-enable;
-+		};
-+		pin168_input: pin168-input {
-+			pins = "GPIO168/nCLKRUN/nESPIALERT";
-+			bias-disable;
-+			input-enable;
-+		};
-+		pin169_input: pin169-input {
-+			pins = "GPIO169/nSCIPME";
-+			bias-disable;
-+			input-enable;
-+		};
-+		pin170_input: pin170-input {
-+			pins = "GPIO170/nSMI";
-+			bias-disable;
-+			input-enable;
-+		};
-+		pin187_output_high: pin187-output-high {
-+			pins = "GPIO187/nSPI3CS1";
-+			bias-disable;
-+			output-high;
-+		};
-+		pin190_input: pin190-input {
-+			pins = "GPIO190/nPRD_SMI";
-+			bias-disable;
-+			input-enable;
-+		};
-+		pin191_output_high: pin191-output-high {
-+			pins = "GPIO191";
-+			bias-disable;
-+			output-high;
-+		};
-+		pin192_output_high: pin192-output-high {
-+			pins = "GPIO192";
-+			bias-disable;
-+			output-high;
-+		};
-+		pin197_output_low: pin197-output-low {
-+			pins = "GPIO197/SMB0DEN";
-+			bias-disable;
-+			output-low;
-+		};
-+		pin218_input: pin218-input {
-+			pins = "GPIO218/nWDO1";
-+			bias-disable;
-+			input-enable;
-+		};
-+		pin219_output_low: pin219-output-low {
-+			pins = "GPIO219/nWDO2";
-+			bias-disable;
-+			output-low;
-+		};
-+		pin220_output_low: pin220-output-low {
-+			pins = "GPIO220/SMB12SCL";
-+			bias-disable;
-+			output-low;
-+		};
-+		pin221_output_high: pin221-output-high {
-+			pins = "GPIO221/SMB12SDA";
-+			bias-disable;
-+			output-high;
-+		};
-+		pin222_input: pin222-input {
-+			pins = "GPIO222/SMB13SCL";
-+			bias-disable;
-+			input-enable;
-+		};
-+		pin223_output_low: pin223-output-low {
-+			pins = "GPIO223/SMB13SDA";
-+			bias-disable;
-+			output-low;
-+		};
-+		pin228_output_low: pin228-output-low {
-+			pins = "GPIO228/nSPIXCS1";
-+			bias-disable;
-+			output-low;
-+		};
-+		pin231_output_high: pin231-output-high {
-+			pins = "GPIO230/SPIXD3";
-+			bias-disable;
-+			output-high;
-+		};
-+		pin255_input: pin255-input {
-+			pins = "GPI255/DACOSEL";
-+			bias-disable;
-+			input-enable;
-+		};
-+	};
-+};
--- 
-2.22.0
+b) keep it as a debugfs file, but don't even pretend for it
+to be a documented interface. Anything using it should know
+what they are doing and have a matching user space.
 
+> +/**
+> + * struct ssam_debug_request - Controller request IOCTL argument.
+> + * @target_category: Target category of the SAM request.
+> + * @target_id:       Target ID of the SAM request.
+> + * @command_id:      Command ID of the SAM request.
+> + * @instance_id:     Instance ID of the SAM request.
+> + * @flags:           SAM Request flags.
+> + * @status:          Request status (output).
+> + * @payload:         Request payload (input data).
+> + * @payload.data:    Pointer to request payload data.
+> + * @payload.length:  Length of request payload data (in bytes).
+> + * @response:        Request response (output data).
+> + * @response.data:   Pointer to response buffer.
+> + * @response.length: On input: Capacity of response buffer (in bytes).
+> + *                   On output: Length of request response (number of bytes
+> + *                   in the buffer that are actually used).
+> + */
+> +struct ssam_dbg_request {
+> +       __u8 target_category;
+> +       __u8 target_id;
+> +       __u8 command_id;
+> +       __u8 instance_id;
+> +       __u16 flags;
+> +       __s16 status;
+> +
+> +       struct {
+> +               const __u8 __user *data;
+> +               __u16 length;
+> +               __u8 __pad[6];
+> +       } payload;
+> +
+> +       struct {
+> +               __u8 __user *data;
+> +               __u16 length;
+> +               __u8 __pad[6];
+> +       } response;
+> +};
+
+Binary interfaces are hard. In this case the indirect pointers mean that
+32-bit user space has an incompatible layout, which you should not do.
+
+Also, having an ioctl on a debugfs file is a bit odd. I wonder if you
+could have this as a transactional file that performs only read/write
+commands, i.e. you pass in a
+
+struct ssam_dbg_request {
+       __u8 target_category;
+       __u8 target_id;
+       __u8 command_id;
+       __u8 instance_id;
+       __u16 flags;
+      __u8 payload[]; /* variable-length */
+};
+
+and you get out a
+
+struct ssam_dbg_response {
+      __s16 status;
+     __u8 payload[];
+};
+
+and keep the rest unchanged. See fs/libfs.c for how this could be done
+with simple_transaction files.
+
+      Arnd
