@@ -2,95 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ACE3276020
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 20:41:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32A32276022
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 20:41:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726702AbgIWSl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 14:41:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44158 "EHLO
+        id S1726723AbgIWSls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 14:41:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726487AbgIWSl0 (ORCPT
+        with ESMTP id S1726424AbgIWSlr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 14:41:26 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A82C5C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 11:41:26 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id o20so184558pfp.11
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 11:41:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rW754kdSeC+5SARwT/M0llY0UwvaZxS5/EZ5bZwwy64=;
-        b=EP/MpImeaOKiy1KnXWYeq4+1sbW01XF8UmUImt5vmYNmZ+n/W8lwax9U/xj4hGOEWV
-         VHkZP1Knhb0448r/9raS5tTfDm3qLDR8/6awDAzmgK5v38mk5VuUgWPorNSk/Mf+lGLF
-         3mtbZM3Yac5M3ZgaxHsn5FcV67MamJIbMqwhw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rW754kdSeC+5SARwT/M0llY0UwvaZxS5/EZ5bZwwy64=;
-        b=fjCMmgMHYZ/AKweLEztuLckIgDJ7j3T5bTKwXbvvJ4XW3OrG71gM1eclqif5+WePxs
-         6Ouda6acW9yOg2O4TYPVBAm8leebYGuBkLI+LyfrREkMkM77XWZ0G2LjaYssL81tBY0j
-         hCChUVrBK4H9ZR1I2dNN9kp8skmcQFIRaxwt1c9KLIFmxgr4j13Nk/chXNhVah7ejWX6
-         YIMHWHzv3msEwgPXSzeXj8NI9KaT0zbu0NIYMu5DK2iHSa04DreZEBrWKZQ2s4vs/SsH
-         srOWZa+zy7n3PYIDUYUHTcCYPHSwohBqq3VmUcP0nAEBzW29pDF/A6I26iueVLc1gQQc
-         Rrjg==
-X-Gm-Message-State: AOAM53064n8CseMlOETzg6muKu02RSiEHDeCtxkPoi/7hhv5JxOCpBrY
-        7Riedq0hXcZgD/uvOPytMl6szJSEfNszLG7I
-X-Google-Smtp-Source: ABdhPJzEChCCcNROo2Z5jNvV4nZ5Td5wLsnZiQaCwuvQqrviw6H9EuQlaEK3o1TA8c+3PYzDPXAzgQ==
-X-Received: by 2002:a63:40e:: with SMTP id 14mr934575pge.85.1600886486183;
-        Wed, 23 Sep 2020 11:41:26 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id gx5sm218629pjb.57.2020.09.23.11.41.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 11:41:25 -0700 (PDT)
-Date:   Wed, 23 Sep 2020 11:41:24 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org,
-        Matthew Garrett <mjg59@google.com>,
-        Peter Jones <pjones@redhat.com>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>
-Subject: Re: [PATCH 1/7] efi: pstore: disentangle from deprecated efivars
- module
-Message-ID: <202009231140.B4648C6@keescook>
-References: <20200923161404.17811-1-ardb@kernel.org>
- <20200923161404.17811-2-ardb@kernel.org>
+        Wed, 23 Sep 2020 14:41:47 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A522AC0613CE;
+        Wed, 23 Sep 2020 11:41:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=iMjlhbOGV5L2ljtLni91GYUVVvFV7DW0WaNEN/WZeiQ=; b=LHWMb6zLD8EZxE3V1b7jJdUa40
+        /HG/CGunxCc24zT9ngmZsgMUYfTOeYRWCHcN89bN6RmcVigzNUp7l28P3ji1CYUP/Eaa0auk/jBDO
+        1/qWkKZMq9Lxy1G8Gz4aKoLxwVDxIp36h7SxVj/rrqm1mD1TalUPnrEAh1LMLbqRydKkplXA7cjym
+        Zr3rxS9UQei517W6eRx6CUoebRRzBgM+uKORR0izJ4WyGnfnIRBMagemUBA1ggLJyPjKwNJstKf3n
+        fmIgoGnFdAhS8JpHrS59HBtdbM+WSqskBqtFNQIXUoETtYiGj8ydXXBzvktQ3lUKkkEb0WJ8A4M9N
+        wjvLZUrA==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kL9hx-0003jd-87; Wed, 23 Sep 2020 18:41:37 +0000
+Subject: Re: [PATCH v4] Introduce support for Systems Management Driver over
+ WMI for Dell Systems
+To:     "Limonciello, Mario" <Mario.Limonciello@dell.com>,
+        Divya Bharathi <divya27392@gmail.com>,
+        "dvhart@infradead.org" <dvhart@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "Bharathi, Divya" <Divya.Bharathi@Dell.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        mark gross <mgross@linux.intel.com>,
+        "Ksr, Prasanth" <Prasanth.Ksr@dell.com>
+References: <20200923113015.110980-1-divya.bharathi@dell.com>
+ <9b015765-de6f-3b2a-8804-e23864eb8806@infradead.org>
+ <DM6PR19MB2636C149F84D46718774E7D2FA380@DM6PR19MB2636.namprd19.prod.outlook.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <23df654d-e7ce-dcc8-df81-1d4cdb62f001@infradead.org>
+Date:   Wed, 23 Sep 2020 11:41:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200923161404.17811-2-ardb@kernel.org>
+In-Reply-To: <DM6PR19MB2636C149F84D46718774E7D2FA380@DM6PR19MB2636.namprd19.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 06:13:58PM +0200, Ard Biesheuvel wrote:
-> The EFI pstore implementation relies on the 'efivars' abstraction,
-> which encapsulates the EFI variable store in a way that can be
-> overridden by other backing stores, like the Google SMI one.
+On 9/23/20 11:39 AM, Limonciello, Mario wrote:
+>> -----Original Message-----
+>> From: Randy Dunlap <rdunlap@infradead.org>
+>> Sent: Wednesday, September 23, 2020 12:12
+>> To: Divya Bharathi; dvhart@infradead.org
+>> Cc: LKML; platform-driver-x86@vger.kernel.org; Bharathi, Divya; Hans de Goede;
+>> Andy Shevchenko; mark gross; Limonciello, Mario; Ksr, Prasanth
+>> Subject: Re: [PATCH v4] Introduce support for Systems Management Driver over
+>> WMI for Dell Systems
+>>
+>>
+>> [EXTERNAL EMAIL]
+>>
+>> Hi,
+>>
+>> On 9/23/20 4:30 AM, Divya Bharathi wrote:
+>>> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+>>> index 40219bba6801..4fd7a3f0a904 100644
+>>> --- a/drivers/platform/x86/Kconfig
+>>> +++ b/drivers/platform/x86/Kconfig
+>>> @@ -430,6 +430,18 @@ config DELL_WMI
+>>>  	  To compile this driver as a module, choose M here: the module will
+>>>  	  be called dell-wmi.
+>>>
+>>> +config DELL_WMI_SYSMAN
+>>> +	tristate "Dell WMI Systems management WMI driver"
+>>
+>> Could you drop one of those "WMI" strings or are both of them needed?
+>>
 > 
-> On top of that, the EFI pstore implementation also relies on the
-> efivars.ko module, which is a separate layer built on top of the
-> 'efivars' abstraction that exposes the [deprecated] sysfs entries
-> for each variable that exists in the backing store.
+> Thanks, that's a good suggestion.  How about instead:
 > 
-> Since the efivars.ko module is deprecated, and all users appear to
-> have moved to the efivarfs file system instead, let's prepare for
-> its removal, by removing EFI pstore's dependency on it.
-> 
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> "Dell WMI based Systems management driver"
 
-With this and the other pstore patch, do the pstore self-tests still
-pass on an EFI system?
+        WMI-based
 
-If so, please consider both:
-
-Acked-by: Kees Cook <keescook@chromium.org>
-
-Thanks!
+OK. Thanks.
 
 -- 
-Kees Cook
+~Randy
+
