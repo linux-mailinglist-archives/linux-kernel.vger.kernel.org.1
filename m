@@ -2,94 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 900C82758B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83448275905
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726609AbgIWN3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 09:29:39 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:40615 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgIWN3i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 09:29:38 -0400
-Received: by mail-oi1-f196.google.com with SMTP id t76so25005527oif.7;
-        Wed, 23 Sep 2020 06:29:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1rMoEuPGDAy971L25OQzzcUwzDymkiOVA4jg4tTeTHI=;
-        b=Lea3InaDNDnXi04N6avkexks0kmaBfLs9johDZqyWZ+UwMdepz6gMikrBF7c7fc4jn
-         bFJj/urKShgXHQFuuVr8uzbVvG+nJ0png9li+AkqfeDkfc9GxonahGMA1Q7VXYJzRapO
-         El+FXFd2mxboXOp3toWcZX0jIX8x6TOgl06b5Ng0yqy5zX6uIYdErBEIcK0EGtvl3uqC
-         g5D9EwOu6qVCnO9YXyIB4Zb4MpwrNQd5uWqUqwkz/ToYuG8sI868SJjpw/fmCLl1MxC3
-         oBsdIOyv7WFQdcPmmfkIaoxNMCiWzXHhvctQ72+7UeH8C82f6QfF3abD0sJMlP/jbcti
-         40zA==
-X-Gm-Message-State: AOAM531EonW/bBhdS3K8QzcM2FgX9QnAsEZX/DTkeUgSbwJF8OIrACQR
-        +bj4/39YTjof4SVk83b+90DBFobJNF5OXmpCxv3T6c1c
-X-Google-Smtp-Source: ABdhPJziefyJq4JP9IubrLkGlZIwmizPmfyZzixhXhqNpkNSciMNfsNrp++kEzyejdd8neZ6NVOcBk24rZGIIwTUkDs=
-X-Received: by 2002:aca:3bc3:: with SMTP id i186mr5442092oia.148.1600867777289;
- Wed, 23 Sep 2020 06:29:37 -0700 (PDT)
+        id S1726703AbgIWNol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 09:44:41 -0400
+Received: from relay.sw.ru ([185.231.240.75]:57826 "EHLO relay3.sw.ru"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726156AbgIWNok (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 09:44:40 -0400
+X-Greylist: delayed 3226 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Sep 2020 09:44:37 EDT
+Received: from [192.168.15.198] (helo=snorch.sw.ru)
+        by relay3.sw.ru with esmtp (Exim 4.94)
+        (envelope-from <ptikhomirov@virtuozzo.com>)
+        id 1kL4Dz-000pYm-D6; Wed, 23 Sep 2020 15:50:19 +0300
+From:   Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Vivek Goyal <vgoyal@redhat.com>, linux-unionfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ovl: introduce new "index=nouuid" option for inodes index feature
+Date:   Wed, 23 Sep 2020 15:50:14 +0300
+Message-Id: <20200923125014.181931-1-ptikhomirov@virtuozzo.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200825104455.18000-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20200825104455.18000-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdWmvcA8x-t=FgNOuMnAtw6j3OAgo8irmD5e2wrB+LfhHg@mail.gmail.com> <20200923121452.GD1848911@ulmo>
-In-Reply-To: <20200923121452.GD1848911@ulmo>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 23 Sep 2020 15:29:25 +0200
-Message-ID: <CAMuHMdX=G0n4MWNUM46OcUzeKUc=i1Sv4J8tnU0=_Nkt=Pf6xA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] arm64: dts: renesas: r8a774e1: Add PWM device nodes
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Linux PWM List <linux-pwm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thierry,
+This relaxes uuid checks for overlay index feature. It is only possible
+in case there is only one filesystem for all the work/upper/lower
+directories and bare file handles from this backing filesystem are uniq.
+In case we have multiple filesystems here just fall back to normal
+"index=on".
 
-On Wed, Sep 23, 2020 at 2:14 PM Thierry Reding <thierry.reding@gmail.com> wrote:
-> On Tue, Aug 25, 2020 at 03:32:08PM +0200, Geert Uytterhoeven wrote:
-> > On Tue, Aug 25, 2020 at 12:45 PM Lad Prabhakar
-> > <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > > From: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
-> > >
-> > > This patch adds PWM[0123456] device nodes to the RZ/G2H (a.k.a R8A774E1)
-> > > device tree.
-> > >
-> > > Signed-off-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
-> > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> >
-> > Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > i.e. will queue in renesas-devel for v5.10.
->
-> Hi Geert,
->
-> did you also pick up patch 1/2 in this series?
+This is needed when overlayfs is/was mounted in a container with
+index enabled (e.g.: to be able to resolve inotify watch file handles on
+it to paths in CRIU), and this container is copied and started alongside
+with the original one. This way the "copy" container can't have the same
+uuid on the superblock and mounting the overlayfs from it later would
+fail.
 
-No, I typically don't take DT binding updates for non-core devices.
-Can you please pick it up?
+That is an example of the problem on top of loop+ext4:
 
-Thanks!
+dd if=/dev/zero of=loopbackfile.img bs=100M count=10
+losetup -fP loopbackfile.img
+losetup -a
+  #/dev/loop0: [64768]:35 (/loop-test/loopbackfile.img)
+mkfs.ext4 /root/loopbackfile.img
+mkdir loop-mp
+mount -o loop /dev/loop0 loop-mp
+mkdir loop-mp/{lower,upper,work,merged}
+mount -t overlay overlay -oindex=on,lowerdir=loop-mp/lower,\
+upperdir=loop-mp/upper,workdir=loop-mp/work loop-mp/merged
+umount loop-mp/merged
+umount loop-mp
+e2fsck -f /dev/loop0
+tune2fs -U random /dev/loop0
 
-Gr{oetje,eeting}s,
+mount -o loop /dev/loop0 loop-mp
+mount -t overlay overlay -oindex=on,lowerdir=loop-mp/lower,\
+upperdir=loop-mp/upper,workdir=loop-mp/work loop-mp/merged
+  #mount: /loop-test/loop-mp/merged:
+  #mount(2) system call failed: Stale file handle.
 
-                        Geert
+If you just change the uuid of the backing filesystem, overlay is not
+mounting any more. In Virtuozzo we copy container disks (ploops) when
+crate the copy of container and we require fs uuid to be uniq for a new
+container.
 
+CC: Amir Goldstein <amir73il@gmail.com>
+CC: Vivek Goyal <vgoyal@redhat.com>
+CC: Miklos Szeredi <miklos@szeredi.hu>
+CC: linux-unionfs@vger.kernel.org
+CC: linux-kernel@vger.kernel.org
+Signed-off-by: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+---
+ fs/overlayfs/Kconfig     | 16 ++++++++++++
+ fs/overlayfs/ovl_entry.h |  2 +-
+ fs/overlayfs/super.c     | 56 ++++++++++++++++++++++++++++++----------
+ 3 files changed, 59 insertions(+), 15 deletions(-)
+
+diff --git a/fs/overlayfs/Kconfig b/fs/overlayfs/Kconfig
+index dd188c7996b3..b00fd44006f9 100644
+--- a/fs/overlayfs/Kconfig
++++ b/fs/overlayfs/Kconfig
+@@ -61,6 +61,22 @@ config OVERLAY_FS_INDEX
+ 
+ 	  If unsure, say N.
+ 
++config OVERLAY_FS_INDEX_NOUUID
++	bool "Overlayfs: relax uuid checks of inodes index feature"
++	depends on OVERLAY_FS
++	depends on OVERLAY_FS_INDEX
++	help
++	  If this config option is enabled then overlay will skip uuid checks
++	  for index lower to upper inode map, this only can be done if all
++	  upper and lower directories are on the same filesystem where basic
++	  fhandles are uniq.
++
++	  It is needed to overcome possible change of uuid on superblock of the
++	  backing filesystem, e.g. when you copied the virtual disk and mount
++	  both the copy of the disk and the original one at the same time.
++
++	  If unsure, say N.
++
+ config OVERLAY_FS_NFS_EXPORT
+ 	bool "Overlayfs: turn on NFS export feature by default"
+ 	depends on OVERLAY_FS
+diff --git a/fs/overlayfs/ovl_entry.h b/fs/overlayfs/ovl_entry.h
+index b429c80879ee..2fd2cc515ad2 100644
+--- a/fs/overlayfs/ovl_entry.h
++++ b/fs/overlayfs/ovl_entry.h
+@@ -13,7 +13,7 @@ struct ovl_config {
+ 	bool redirect_dir;
+ 	bool redirect_follow;
+ 	const char *redirect_mode;
+-	bool index;
++	int index;
+ 	bool nfs_export;
+ 	int xino;
+ 	bool metacopy;
+diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
+index 4b38141c2985..617a5083e659 100644
+--- a/fs/overlayfs/super.c
++++ b/fs/overlayfs/super.c
+@@ -38,10 +38,16 @@ module_param_named(redirect_always_follow, ovl_redirect_always_follow,
+ MODULE_PARM_DESC(redirect_always_follow,
+ 		 "Follow redirects even if redirect_dir feature is turned off");
+ 
+-static bool ovl_index_def = IS_ENABLED(CONFIG_OVERLAY_FS_INDEX);
+-module_param_named(index, ovl_index_def, bool, 0644);
++#define OVL_INDEX_OFF          0
++#define OVL_INDEX_ON           1
++#define OVL_INDEX_NOUUID       2
++
++static int ovl_index_def = IS_ENABLED(CONFIG_OVERLAY_FS_INDEX_NOUUID) ?
++			   OVL_INDEX_NOUUID :
++			   IS_ENABLED(CONFIG_OVERLAY_FS_INDEX);
++module_param_named(index, ovl_index_def, int, 0644);
+ MODULE_PARM_DESC(index,
+-		 "Default to on or off for the inodes index feature");
++		 "Default to on, off or nouuid for the inodes index feature");
+ 
+ static bool ovl_nfs_export_def = IS_ENABLED(CONFIG_OVERLAY_FS_NFS_EXPORT);
+ module_param_named(nfs_export, ovl_nfs_export_def, bool, 0644);
+@@ -352,8 +358,18 @@ static int ovl_show_options(struct seq_file *m, struct dentry *dentry)
+ 		seq_puts(m, ",default_permissions");
+ 	if (strcmp(ofs->config.redirect_mode, ovl_redirect_mode_def()) != 0)
+ 		seq_printf(m, ",redirect_dir=%s", ofs->config.redirect_mode);
+-	if (ofs->config.index != ovl_index_def)
+-		seq_printf(m, ",index=%s", ofs->config.index ? "on" : "off");
++	if (ofs->config.index != ovl_index_def) {
++		switch (ofs->config.index) {
++		case OVL_INDEX_OFF:
++			seq_puts(m, ",index=off");
++			break;
++		case OVL_INDEX_NOUUID:
++			seq_puts(m, ",index=nouuid");
++			break;
++		default:
++			seq_puts(m, ",index=on");
++		}
++	}
+ 	if (ofs->config.nfs_export != ovl_nfs_export_def)
+ 		seq_printf(m, ",nfs_export=%s", ofs->config.nfs_export ?
+ 						"on" : "off");
+@@ -404,6 +420,7 @@ enum {
+ 	OPT_REDIRECT_DIR,
+ 	OPT_INDEX_ON,
+ 	OPT_INDEX_OFF,
++	OPT_INDEX_NOUUID,
+ 	OPT_NFS_EXPORT_ON,
+ 	OPT_NFS_EXPORT_OFF,
+ 	OPT_XINO_ON,
+@@ -422,6 +439,7 @@ static const match_table_t ovl_tokens = {
+ 	{OPT_REDIRECT_DIR,		"redirect_dir=%s"},
+ 	{OPT_INDEX_ON,			"index=on"},
+ 	{OPT_INDEX_OFF,			"index=off"},
++	{OPT_INDEX_NOUUID,		"index=nouuid"},
+ 	{OPT_NFS_EXPORT_ON,		"nfs_export=on"},
+ 	{OPT_NFS_EXPORT_OFF,		"nfs_export=off"},
+ 	{OPT_XINO_ON,			"xino=on"},
+@@ -532,12 +550,17 @@ static int ovl_parse_opt(char *opt, struct ovl_config *config)
+ 			break;
+ 
+ 		case OPT_INDEX_ON:
+-			config->index = true;
++			config->index = OVL_INDEX_ON;
+ 			index_opt = true;
+ 			break;
+ 
+ 		case OPT_INDEX_OFF:
+-			config->index = false;
++			config->index = OVL_INDEX_OFF;
++			index_opt = true;
++			break;
++
++		case OPT_INDEX_NOUUID:
++			config->index = OVL_INDEX_NOUUID;
+ 			index_opt = true;
+ 			break;
+ 
+@@ -592,7 +615,7 @@ static int ovl_parse_opt(char *opt, struct ovl_config *config)
+ 			pr_info("option \"index=on\" is useless in a non-upper mount, ignore\n");
+ 			index_opt = false;
+ 		}
+-		config->index = false;
++		config->index = OVL_INDEX_OFF;
+ 	}
+ 
+ 	err = ovl_parse_redirect_mode(config, config->redirect_mode);
+@@ -644,7 +667,7 @@ static int ovl_parse_opt(char *opt, struct ovl_config *config)
+ 			config->nfs_export = false;
+ 		} else {
+ 			/* Automatically enable index otherwise. */
+-			config->index = true;
++			config->index = OPT_INDEX_ON;
+ 		}
+ 	}
+ 
+@@ -859,7 +882,7 @@ static int ovl_lower_dir(const char *name, struct path *path,
+ 	fh_type = ovl_can_decode_fh(path->dentry->d_sb);
+ 	if ((ofs->config.nfs_export ||
+ 	     (ofs->config.index && ofs->config.upperdir)) && !fh_type) {
+-		ofs->config.index = false;
++		ofs->config.index = OVL_INDEX_OFF;
+ 		ofs->config.nfs_export = false;
+ 		pr_warn("fs on '%s' does not support file handles, falling back to index=off,nfs_export=off.\n",
+ 			name);
+@@ -1259,7 +1282,7 @@ static int ovl_make_workdir(struct super_block *sb, struct ovl_fs *ofs,
+ 	err = ovl_do_setxattr(ofs->workdir, OVL_XATTR_OPAQUE, "0", 1, 0);
+ 	if (err) {
+ 		ofs->noxattr = true;
+-		ofs->config.index = false;
++		ofs->config.index = OPT_INDEX_OFF;
+ 		ofs->config.metacopy = false;
+ 		pr_warn("upper fs does not support xattr, falling back to index=off and metacopy=off.\n");
+ 		err = 0;
+@@ -1282,7 +1305,7 @@ static int ovl_make_workdir(struct super_block *sb, struct ovl_fs *ofs,
+ 	/* Check if upper/work fs supports file handles */
+ 	fh_type = ovl_can_decode_fh(ofs->workdir->d_sb);
+ 	if (ofs->config.index && !fh_type) {
+-		ofs->config.index = false;
++		ofs->config.index = OVL_INDEX_OFF;
+ 		pr_warn("upper fs does not support file handles, falling back to index=off.\n");
+ 	}
+ 
+@@ -1458,7 +1481,7 @@ static int ovl_get_fsid(struct ovl_fs *ofs, const struct path *path)
+ 	if (!ovl_lower_uuid_ok(ofs, &sb->s_uuid)) {
+ 		bad_uuid = true;
+ 		if (ofs->config.index || ofs->config.nfs_export) {
+-			ofs->config.index = false;
++			ofs->config.index = OVL_INDEX_OFF;
+ 			ofs->config.nfs_export = false;
+ 			pr_warn("%s uuid detected in lower fs '%pd2', falling back to index=off,nfs_export=off.\n",
+ 				uuid_is_null(&sb->s_uuid) ? "null" :
+@@ -1889,9 +1912,14 @@ static int ovl_fill_super(struct super_block *sb, void *data, int silent)
+ 	if (err)
+ 		goto out_free_oe;
+ 
++	if (ofs->config.index == OVL_INDEX_NOUUID && ofs->numfs > 1) {
++		pr_warn("The index=nouuid requires a single fs for lower and upper, falling back to index=on.\n");
++		ofs->config.index = OVL_INDEX_ON;
++	}
++
+ 	/* Show index=off in /proc/mounts for forced r/o mount */
+ 	if (!ofs->indexdir) {
+-		ofs->config.index = false;
++		ofs->config.index = OVL_INDEX_OFF;
+ 		if (ovl_upper_mnt(ofs) && ofs->config.nfs_export) {
+ 			pr_warn("NFS export requires an index dir, falling back to nfs_export=off.\n");
+ 			ofs->config.nfs_export = false;
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.26.2
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
