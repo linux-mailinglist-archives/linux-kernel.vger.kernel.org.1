@@ -2,76 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AC7F276275
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:49:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80426276277
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726706AbgIWUtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 16:49:46 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:38677 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726199AbgIWUtp (ORCPT
+        id S1726723AbgIWUt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 16:49:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726634AbgIWUt5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 16:49:45 -0400
-Received: by mail-io1-f65.google.com with SMTP id q4so980364iop.5;
-        Wed, 23 Sep 2020 13:49:45 -0700 (PDT)
+        Wed, 23 Sep 2020 16:49:57 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46EA8C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 13:49:57 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id j7so345788plk.11
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 13:49:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vR/4IIWUNKe15foWwpTS+9b9UDo/Qa9Bzr4DnMS8/ac=;
+        b=cvjPnC0ctMeBB9Bs+hCjmPTbXFlh28AtvRC9s1zm2hw5bXo4ZM3zQP6zMGV/EI6SFo
+         ZCLDgL2ZjoUvZ0VvL5o3QAIC/+pFqbd6cKVOng6IcDOjV9fnoffLoUMEnL06XcnSYhD5
+         +9ECmXqHcYULlG40Fvwx9JHw4WrGQFnblwk/g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=SEZoIRilOUkQgdmz6is7KBsKDMCVx0GX2RscOowq3a4=;
-        b=XCcIQ2SvjJfCegr5BO931EmeKOL6xPiR4JLSVAYvzatmHMdUTCWO4AJ5lPD3lDtN6d
-         iFfo2VtsuXD8lLk8oH1EVWtI6m017trUwGIF9U/awzbMj0VoB1Bq+XMO9XLF6AaT3m3A
-         51U0+ZvMWSzB6wJYGIp88VQpAO+8U947xLm+s1zLaSefhriR41zsjuNiaVvEY6mJINGf
-         ussJWsLiw16HkF7wYYrW4eI8mlqc3RFssE0zeWnJj5Oa1SPRWivZdKCmFeJwWYHLsUBY
-         L66tT1uXbjcFwuPHkFsTuaU0QHvNsae5/ag4ojBve6NepzKRVT3yFr4k8a/kOotTrdLg
-         /9dQ==
-X-Gm-Message-State: AOAM533h83GcmzlkfRmLlri17V/Ivrvx9RYQx/puWqcFo+vcVt5alj1k
-        0PaTull07gxZTplNc07T5Q==
-X-Google-Smtp-Source: ABdhPJx8Y5M8zaHuUXlqoSBgCpTNAFoHkyBHg9VKVE13hTyvmUpG7GOkivebkuvon99ClivInL0BPQ==
-X-Received: by 2002:a6b:f413:: with SMTP id i19mr1059413iog.125.1600894184858;
-        Wed, 23 Sep 2020 13:49:44 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id p8sm418586ilj.36.2020.09.23.13.49.43
+        bh=vR/4IIWUNKe15foWwpTS+9b9UDo/Qa9Bzr4DnMS8/ac=;
+        b=l+QsQ/tMKrP6NfjmiSNP+P3MVp75/UkSpAxGm3IFb0a73scHvxi+LZrkEFtMF2ZFI+
+         KngwbeNMA2ePVTCVLZyw8aASzKyPKtHg7J93mtSPoTKA1/Ig4B705WXPZHgohaF7aT5/
+         wgnmZKFQF9CR5W9fmUmndncpkk0oMbswlWvsPLOEEZb6OnhawSepoeF37vgN9FkUagNU
+         eGo+d9tYYgW+9+8qRafzMzNuzYru2K1jIBx4nGVZBUyceMFMF7Asku+n22ijW8xl8Fcs
+         JXaLRkJhd/KMDKa7k1NU2YlAh+b/PAv1ZEBJ/7EtGL9eizpHGEXqL0lNI0tQn5x5msNI
+         ZuYQ==
+X-Gm-Message-State: AOAM530r0gasPUGZsIY4o8rmy+bI7hbic7vrteHVjHdwazBvE4BUWecm
+        IN1etKz2f3NRZzLmV+z6OGJYVf2heD+Wgjpm
+X-Google-Smtp-Source: ABdhPJzAZbjKC++0LwmLMQfeQPatEJ5NMT1jot2+hrKf5dZand6yk9QurwfKoHW0Dn2mkHpfk4pEKA==
+X-Received: by 2002:a17:90b:3c3:: with SMTP id go3mr1124426pjb.64.1600894196835;
+        Wed, 23 Sep 2020 13:49:56 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id m20sm514433pfa.115.2020.09.23.13.49.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 13:49:44 -0700 (PDT)
-Received: (nullmailer pid 1282310 invoked by uid 1000);
-        Wed, 23 Sep 2020 20:49:42 -0000
-Date:   Wed, 23 Sep 2020 14:49:42 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Libin <huawei.libin@huawei.com>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Alexey Brodkin <abrodkin@synopsys.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Haoyu Lv <lvhaoyu@huawei.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-snps-arc <linux-snps-arc@lists.infradead.org>
-Subject: Re: [PATCH v5 4/6] dt-bindings: dw-apb-ictl: support hierarchy irq
- domain
-Message-ID: <20200923204942.GA1282222@bogus>
-References: <20200918112202.3418-1-thunder.leizhen@huawei.com>
- <20200918112202.3418-5-thunder.leizhen@huawei.com>
+        Wed, 23 Sep 2020 13:49:55 -0700 (PDT)
+Date:   Wed, 23 Sep 2020 13:49:54 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     tglx@linutronix.de, luto@kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        willy@infradead.org, linux-kselftest@vger.kernel.org,
+        shuah@kernel.org, kernel@collabora.com
+Subject: Re: [PATCH v6 1/9] kernel: Support TIF_SYSCALL_INTERCEPT flag
+Message-ID: <202009231349.4A25EAF@keescook>
+References: <20200904203147.2908430-1-krisman@collabora.com>
+ <20200904203147.2908430-2-krisman@collabora.com>
+ <202009221243.6BC5635E@keescook>
+ <874kno6yct.fsf@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200918112202.3418-5-thunder.leizhen@huawei.com>
+In-Reply-To: <874kno6yct.fsf@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Sep 2020 19:22:00 +0800, Zhen Lei wrote:
-> Add support to use dw-apb-ictl as primary interrupt controller.
+On Wed, Sep 23, 2020 at 04:18:26PM -0400, Gabriel Krisman Bertazi wrote:
+> Kees Cook <keescook@chromium.org> writes:
 > 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  .../bindings/interrupt-controller/snps,dw-apb-ictl.txt     | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
+> > On Fri, Sep 04, 2020 at 04:31:39PM -0400, Gabriel Krisman Bertazi wrote:
+> >> Convert TIF_SECCOMP into a generic TI flag for any syscall interception
+> >> work being done by the kernel.  The actual type of work is exposed by a
+> >> new flag field outside of thread_info.  This ensures that the
+> >> syscall_intercept field is only accessed if struct seccomp has to be
+> >> accessed already, such that it doesn't incur in a much higher cost to
+> >> the seccomp path.
+> >> 
+> >> In order to avoid modifying every architecture at once, this patch has a
+> >> transition mechanism, such that architectures that define TIF_SECCOMP
+> >> continue to work by ignoring the syscall_intercept flag, as long as they
+> >> don't support other syscall interception mechanisms like the future
+> >> syscall user dispatch.  When migrating TIF_SECCOMP to
+> >> TIF_SYSCALL_INTERCEPT, they should adopt the semantics of checking the
+> >> syscall_intercept flag, like it is done in the common entry syscall
+> >> code, or even better, migrate to the common syscall entry code.
+> >
+> > Can we "eat" all the other flags like ptrace, audit, etc, too? Doing
+> > this only for seccomp seems strange.
 > 
+> Hi Kees, Thanks again for the review.
+> 
+> Yes, we can, and I'm happy to follow up with that as part of my TIF
+> clean up work, but can we not block the current patchset to be merged
+> waiting for that, as this already grew a lot from the original feature
+> submission?
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+In that case, I'd say just add the new TIF flag. The consolidation can
+come later.
+
+-- 
+Kees Cook
