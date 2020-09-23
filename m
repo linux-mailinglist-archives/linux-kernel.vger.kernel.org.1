@@ -2,63 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5C8275818
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 14:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 351C027582B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 14:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726582AbgIWMkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 08:40:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726524AbgIWMkQ (ORCPT
+        id S1726613AbgIWMrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 08:47:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34318 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726513AbgIWMrH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 08:40:16 -0400
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050::465:201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68B22C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 05:40:16 -0700 (PDT)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:105:465:1:1:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Wed, 23 Sep 2020 08:47:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600865226;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eTJH5fsunyc+8vtxo0cxTOWltBYbQ+uQLkgwLM6exPI=;
+        b=UlnV1UsWDIPgDgPFqxX0G6a3IPA+csLnesS5W9TUaMUsXciAGJWF+VE+6ALwbhB10caIhb
+        2jlzObq/vO990z0h2KkxqDUVmDL9MesNlilCVPov6QOcqKRABI2t2hpkPAMED/HCXkFt5H
+        qo0K4H6R+BStbdBiNj5rVSzy/7FQ1kc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-434-RTPIZN_4P6qOg6GgeD4nRQ-1; Wed, 23 Sep 2020 08:47:02 -0400
+X-MC-Unique: RTPIZN_4P6qOg6GgeD4nRQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4BxHnp47KZzQlWZ;
-        Wed, 23 Sep 2020 14:40:14 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp1.mailbox.org ([80.241.60.240])
-        by gerste.heinlein-support.de (gerste.heinlein-support.de [91.198.250.173]) (amavisd-new, port 10030)
-        with ESMTP id pP0aVxH-6YZz; Wed, 23 Sep 2020 14:40:11 +0200 (CEST)
-Date:   Wed, 23 Sep 2020 14:40:10 +0200 (CEST)
-From:   Hagen Paul Pfeifer <hagen@jauu.net>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Message-ID: <137056436.64108.1600864811088@office.mailbox.org>
-In-Reply-To: <20200923123155.GA2516911@kernel.org>
-References: <20200921201928.799498-2-hagen@jauu.net>
- <20200922200922.1306034-1-hagen@jauu.net>
- <20200923123155.GA2516911@kernel.org>
-Subject: Re: [PATCH v2] perf script: add min, max to futex-contention
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 055D9107464E;
+        Wed, 23 Sep 2020 12:47:00 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8B9B05D98D;
+        Wed, 23 Sep 2020 12:46:59 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 08NCkwt8020916;
+        Wed, 23 Sep 2020 08:46:58 -0400
+Received: from localhost (mpatocka@localhost)
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 08NCkvuo020912;
+        Wed, 23 Sep 2020 08:46:57 -0400
+X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
+Date:   Wed, 23 Sep 2020 08:46:57 -0400 (EDT)
+From:   Mikulas Patocka <mpatocka@redhat.com>
+X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
+To:     Jan Kara <jack@suse.cz>
+cc:     "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Eric Sandeen <esandeen@redhat.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: A bug in ext4 with big directories (was: NVFS XFS metadata)
+In-Reply-To: <20200923094457.GB6719@quack2.suse.cz>
+Message-ID: <alpine.LRH.2.02.2009230846210.1800@file01.intranet.prod.int.rdu2.redhat.com>
+References: <alpine.LRH.2.02.2009160649560.20720@file01.intranet.prod.int.rdu2.redhat.com> <CAPcyv4gW6AvR+RaShHdQzOaEPv9nrq5myXDmywuoCTYDZxk-hw@mail.gmail.com> <alpine.LRH.2.02.2009161254400.745@file01.intranet.prod.int.rdu2.redhat.com>
+ <CAPcyv4gD0ZFkfajKTDnJhEEjf+5Av-GH+cHRFoyhzGe8bNEgAA@mail.gmail.com> <alpine.LRH.2.02.2009161359540.20710@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2009191336380.3478@file01.intranet.prod.int.rdu2.redhat.com> <20200922050314.GB12096@dread.disaster.area>
+ <alpine.LRH.2.02.2009220815420.16480@file01.intranet.prod.int.rdu2.redhat.com> <20200923024528.GD12096@dread.disaster.area> <alpine.LRH.2.02.2009230459450.1800@file01.intranet.prod.int.rdu2.redhat.com> <20200923094457.GB6719@quack2.suse.cz>
+User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -4.61 / 15.00 / 15.00
-X-Rspamd-Queue-Id: 961F617E7
-X-Rspamd-UID: 2483d5
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On 09/23/2020 2:31 PM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+
+
+On Wed, 23 Sep 2020, Jan Kara wrote:
+
+> Hi!
 > 
-> Didn't apply here, I did it by hand, please check, probably some
-> indentation artifact.
+> On Wed 23-09-20 05:20:55, Mikulas Patocka wrote:
+> > There seems to be a bug in ext4 - when I create very large directory, ext4 
+> > fails with -ENOSPC despite the fact that there is plenty of free space and 
+> > free inodes on the filesystem.
+> > 
+> > How to reproduce:
+> > download the program dir-test: 
+> > http://people.redhat.com/~mpatocka/benchmarks/dir-test.c
+> > 
+> > # modprobe brd rd_size=67108864
+> > # mkfs.ext4 /dev/ram0
+> > # mount -t ext4 /dev/ram0 /mnt/test
+> > # dir-test /mnt/test/ 8000000 8000000
+> > deleting: 7999000
+> > 2540000
+> > file 2515327 can't be created: No space left on device
+> > # df /mnt/test
+> > /dev/ram0        65531436 633752 61525860   2% /mnt/test
+> > # df -i /mnt/test
+> > /dev/ram0        4194304 1881547 2312757   45% /mnt/test
+> 
+> Yeah, you likely run out of space in ext4 directory h-tree. You can enable
+> higher depth h-trees with large_dir feature (mkfs.ext4 -O large_dir). Does
+> that help?
 
-Probably you missed patch one of the patchset - the autopep8 formatting
-one for the lock contention script?
+Yes, this helps.
 
-> Thanks for the patch!
+Mikulas
 
-You are welcome Arnaldo!
+> 
+> 								Honza
+> 
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
 
-Hagen
