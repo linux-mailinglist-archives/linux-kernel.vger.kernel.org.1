@@ -2,71 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50FE7276224
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56F0B276229
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726721AbgIWUav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 16:30:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32832 "EHLO
+        id S1726723AbgIWUbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 16:31:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726199AbgIWUau (ORCPT
+        with ESMTP id S1726199AbgIWUbs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 16:30:50 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1739C0613CE;
-        Wed, 23 Sep 2020 13:30:50 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 3695329C66D
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Daniel Rosenberg <drosen@google.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chao Yu <chao@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Richard Weinberger <richard@nod.at>,
-        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, kernel-team@android.com
-Subject: Re: [PATCH 1/5] ext4: Use generic casefolding support
-Organization: Collabora
-References: <20200923010151.69506-1-drosen@google.com>
-        <20200923010151.69506-2-drosen@google.com>
-        <20200923054714.GB9538@sol.localdomain>
-Date:   Wed, 23 Sep 2020 16:30:45 -0400
-In-Reply-To: <20200923054714.GB9538@sol.localdomain> (Eric Biggers's message
-        of "Tue, 22 Sep 2020 22:47:14 -0700")
-Message-ID: <87o8lw5j7u.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
+        Wed, 23 Sep 2020 16:31:48 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0FBCC0613CE;
+        Wed, 23 Sep 2020 13:31:48 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id B69C711D53F8B;
+        Wed, 23 Sep 2020 13:15:00 -0700 (PDT)
+Date:   Wed, 23 Sep 2020 13:31:47 -0700 (PDT)
+Message-Id: <20200923.133147.842604978902817779.davem@davemloft.net>
+To:     s.riedmueller@phytec.de
+Cc:     fugang.duan@nxp.com, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        c.hemp@phytec.de
+Subject: Re: [PATCH] net: fec: Keep device numbering consistent with
+ datasheet
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200923142528.303730-1-s.riedmueller@phytec.de>
+References: <20200923142528.303730-1-s.riedmueller@phytec.de>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Wed, 23 Sep 2020 13:15:01 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eric Biggers <ebiggers@kernel.org> writes:
+From: Stefan Riedmueller <s.riedmueller@phytec.de>
+Date: Wed, 23 Sep 2020 16:25:28 +0200
 
-> On Wed, Sep 23, 2020 at 01:01:47AM +0000, Daniel Rosenberg wrote:
->> This switches ext4 over to the generic support provided in
->> the previous patch.
->> 
->> Since casefolded dentries behave the same in ext4 and f2fs, we decrease
->> the maintenance burden by unifying them, and any optimizations will
->> immediately apply to both.
->> 
->> Signed-off-by: Daniel Rosenberg <drosen@google.com>
->> Reviewed-by: Eric Biggers <ebiggers@google.com>
->
-> You could also add Gabriel's Reviewed-by from last time:
-> https://lkml.kernel.org/linux-fsdevel/87lfh4djdq.fsf@collabora.com/
+> From: Christian Hemp <c.hemp@phytec.de>
+> 
+> Make use of device tree alias for device enumeration to keep the device
+> order consistent with the naming in the datasheet.
+> 
+> Otherwise for the i.MX 6UL/ULL the ENET1 interface is enumerated as eth1
+> and ENET2 as eth0.
+> 
+> Signed-off-by: Christian Hemp <c.hemp@phytec.de>
+> Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
 
-Yep, I was gonna say that. Assuming nothing changed from the last
-submission in the other series.
+Device naming and ordering for networking devices was never, ever,
+guaranteed.
 
-Thanks,
+Use udev or similar.
 
--- 
-Gabriel Krisman Bertazi
+> @@ -3691,6 +3692,10 @@ fec_probe(struct platform_device *pdev)
+>  
+>  	ndev->max_mtu = PKT_MAXBUF_SIZE - ETH_HLEN - ETH_FCS_LEN;
+>  
+> +	eth_id = of_alias_get_id(pdev->dev.of_node, "ethernet");
+> +	if (eth_id >= 0)
+> +		sprintf(ndev->name, "eth%d", eth_id);
+
+You can't ever just write into ndev->name, what if another networking
+device is already using that name?
+
+This change is incorrect on many levels.
