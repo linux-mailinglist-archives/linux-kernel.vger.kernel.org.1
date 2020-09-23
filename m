@@ -2,131 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6928C27538F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 10:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9331027539C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 10:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726495AbgIWIpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 04:45:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48558 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgIWIpP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 04:45:15 -0400
-Received: from localhost (unknown [104.132.1.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F35D8221F0;
-        Wed, 23 Sep 2020 08:45:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600850714;
-        bh=XiMksB5vz2ze+VmO+JGKzgUGIZoRdpPjoIOpgvM1pXk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=h2xwP5DQ0bctD7XTG5Z6nKDVDxbn+URT70n7ElGTtzrGj47WkvlDo5ns9tkht1apq
-         dCFDwDzfuvFBc64PyzX+Y+Uc7IGyzOZnnDbZ1adriwxnzLOzOFAa0LF3t7EBLJIArg
-         VjtTePTWiddXb2CK7kpbY2eiXpzxaP9P/2piwZjk=
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com
-Cc:     Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [PATCH] f2fs: fix slab leak of rpages pointer
-Date:   Wed, 23 Sep 2020 01:45:12 -0700
-Message-Id: <20200923084512.2947439-1-jaegeuk@kernel.org>
-X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
+        id S1726550AbgIWIr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 04:47:26 -0400
+Received: from mail-eopbgr1320095.outbound.protection.outlook.com ([40.107.132.95]:59132
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726342AbgIWIrZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 04:47:25 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZsvDdBdmwj3a7nB0AZM29q1FxauDIrWZ1a8Te9eWaJeDBiG00pAPtfnLteDYJeZ5r0pv50inSIi+eYXVChllSSl2H//e2PXr3Hk8hGZx7wbMTZnVhgJV+IXH/pF305eXqxdr93Yitc0pVEeuLn//TNQe7vicZSQwsKwMwkF2enC5MZ2wW59GDaPXl+PH1/hJR6khChXBkkoa8t1gr/pkqhNkzNfA003+oUi4LE/7P0JdWyZgQf+lhzLPhS60f+6pn+dTLow5R0gVw0ZoSMRyTkKI7QDBHv4Ba27LdvMoCuXQhpP3ZzJGqo59W0Rd1yuvJnJbwKVFBCr8ww1MLcSTGw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8E/4XumCEPkVdnJ2/9Wkdgq+sUFXX/dONAeJdCPrTyM=;
+ b=j1gTS75dV6SYKJELyb4nehsyZv+nQSVy4ADPIpkcLJxZOb2turucNd0Cds88WvsT5EFez3cYzAK7BFqSi5tap9cyI3Nbfzc53Gb1WbSchZOyv2dMdjtXVqjnmch1a0nvrI9H2B7/i6TdKYgQbm52cULBWvR8ka/graukpH/r+RJSlI/x9AyrNuMCv62343aQSaQPtmdl6kknuF0GertEjH7YJmHOcF/rRQB1szmduK+StxUKZXnn++uX6sePnFb8bT792rTCsMvz1fAA98NzoJbAOJsZDii3m1z4nf7Edxb6Chi5yNeFFvb+CLziKt2IyXOMLFKayoqCWC5Vu0X/gg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
+ dkim=pass header.d=renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8E/4XumCEPkVdnJ2/9Wkdgq+sUFXX/dONAeJdCPrTyM=;
+ b=btaS3d69Ma+UF6ZJfBba8CEOdh/jsHiYPSq2SCYsbz0FLUWxPMwRdKsurj19umoc79PuYFwtO0bI8lYDhCokU9TT0ZbqhwV4JIhMlBNITgiB9sTzGyQ0rDIpiRh6eeEk0Zijk5Uq4et5u4qZWXxJsQq4XO8uBKEzB2vgLQR/WNE=
+Received: from TY2PR01MB3692.jpnprd01.prod.outlook.com (2603:1096:404:d5::22)
+ by TY2PR01MB4506.jpnprd01.prod.outlook.com (2603:1096:404:119::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Wed, 23 Sep
+ 2020 08:47:14 +0000
+Received: from TY2PR01MB3692.jpnprd01.prod.outlook.com
+ ([fe80::9055:525d:2d64:b625]) by TY2PR01MB3692.jpnprd01.prod.outlook.com
+ ([fe80::9055:525d:2d64:b625%5]) with mapi id 15.20.3391.027; Wed, 23 Sep 2020
+ 08:47:14 +0000
+From:   Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+CC:     Mathias Nyman <mathias.nyman@intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>, Jann Horn <jannh@google.com>,
+        Jason Yan <yanaijie@huawei.com>, Arnd Bergmann <arnd@arndb.de>,
+        Chuhong Yuan <hslester96@gmail.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        "Ben Dooks (Codethink)" <ben.dooks@codethink.co.uk>,
+        Saurav Girepunje <saurav.girepunje@gmail.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>
+Subject: RE: [PATCH v4 04/11] usb: xhci-rcar: convert to
+ readl_poll_timeout_atomic()
+Thread-Topic: [PATCH v4 04/11] usb: xhci-rcar: convert to
+ readl_poll_timeout_atomic()
+Thread-Index: AQHWj97WeuTEVdT9kUKqeRXYZHMso6l16stw
+Date:   Wed, 23 Sep 2020 08:47:14 +0000
+Message-ID: <TY2PR01MB3692184CBB3C12EE8A02BA48D8380@TY2PR01MB3692.jpnprd01.prod.outlook.com>
+References: <1600668815-12135-1-git-send-email-chunfeng.yun@mediatek.com>
+ <1600668815-12135-4-git-send-email-chunfeng.yun@mediatek.com>
+In-Reply-To: <1600668815-12135-4-git-send-email-chunfeng.yun@mediatek.com>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: mediatek.com; dkim=none (message not signed)
+ header.d=none;mediatek.com; dmarc=none action=none header.from=renesas.com;
+x-originating-ip: [124.210.22.195]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 18b3fa72-7c64-4f94-2254-08d85f9d44f8
+x-ms-traffictypediagnostic: TY2PR01MB4506:
+x-microsoft-antispam-prvs: <TY2PR01MB45066FFE4117BA5D3D747F4FD8380@TY2PR01MB4506.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: wWpdmCbU7vfEl4OwptWsXKwncwUD0XVZ8JPDhwXEvuKofquo0sIT6NvZfb3LsFqwUv9KshOUxs66jJvxZyaj2H8xaeMosMXJmRo0AziziGDctEJwAV0XKx13rDROw+EwJ/MSuNQTwrHFxzRT/EpQXtxmfZ/mndYs1aAJ7jj+un/xZRhpfqKyfxyFo0/3G85HB98JxnKhtLNo1WFnjfnO/Wx1SezKjD0mu6b75b9VUreddoiVMPk+p9qzMv0+z8FLgzecEIrPJGgjKSXnozYurL6ylsJoLQqCx+gQvDe/UvSiuUYcEWYuQSc4zzJABbVYQXQExPV97hkMOtTHdwJzId/QNRbvBIkoDyJz6JHMJI1i+jBaphfCcamUIAMoW2qt
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB3692.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(346002)(376002)(396003)(39860400002)(26005)(52536014)(86362001)(2906002)(6506007)(186003)(7696005)(8936002)(5660300002)(6916009)(8676002)(55236004)(55016002)(9686003)(33656002)(71200400001)(478600001)(54906003)(316002)(7416002)(66556008)(66446008)(4326008)(64756008)(66946007)(76116006)(83380400001)(66476007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: vhCdG7K9t0Jz8grsOxqpQwdcxmZqZ6gTk4qYmKJY2k55L9DoBRfsru6S1DGvKudCGTGkKN/OSp7DaPw4XGgH79/wzOt+Q0yXvULn5CJVNH2paSnErvakn4RyLsTZTeiBqLQxFheZUOfDY6/dsLFHlRsli2mfozWoxuDKXcAlq5sPb4i3ijlUjXRNtzg70kIDsKH1GPYFK4vtyAQN2mCGBmc/hLsfMoP3clX0BnrPn8ez92A8WnqeqkhRHnbSNv4DF934Pm4urM1EQsKZ4lflgtawlBUm/5/kOXN4xVZ1i5F2M6tc0yDTrFTXoouV9q6OEcu9ELP2zKAQrILaIZPUkNHRwTAHzEQNb6UdVjvqwTjllQ+9Oe3AOEC2Ibv0GWAC9NXTbKr7mLuHYlENuNKpSxlyrC8xeOtdtFX634Fu3PV//ERF1/qLAcDJz6pqCebUzqj1dKyuueHRFi2upszjtg0X2mWTEGHqES1MCfJRnkV292JBTOjF2MoEOsbkTFOBEeSIbcgfujguoxSYKVsMxMv0dLEdeQDcbIsjSVzGs6k77K8Hd/V+gEmel7wnO/6ddCviJY2axw6tv+/a6QO7BTsc6ZC7QFyqGsLxe3w78NY9D9iqfO8kfVezEOXUl1bavovn5n9nGPz7sjZFqYdB1w==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB3692.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 18b3fa72-7c64-4f94-2254-08d85f9d44f8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2020 08:47:14.2213
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: n49f2EA9kreUV3Qeb9pOFWVNnsSEgZNg4tncohVzEaW1fn3FHMzyfR/hbzgnsRBNt6FGu1l1xDZ70caTVi/IJ9NPFqY7aQfAF6nyum/KQfYaQSW1U/ublyEbal1TLm0h
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB4506
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fixes the below mem leak.
+Hi Chungeng,
 
-[  130.157600] =============================================================================
-[  130.159662] BUG f2fs_page_array_entry-252:16 (Tainted: G        W  O     ): Objects remaining in f2fs_page_array_entry-252:16 on __kmem_cache_shutdown()
-[  130.162742] -----------------------------------------------------------------------------
-[  130.162742]
-[  130.164979] Disabling lock debugging due to kernel taint
-[  130.166188] INFO: Slab 0x000000009f5a52d2 objects=22 used=4 fp=0x00000000ba72c3e9 flags=0xfffffc0010200
-[  130.168269] CPU: 7 PID: 3560 Comm: umount Tainted: G    B   W  O      5.9.0-rc4+ #35
-[  130.170019] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
-[  130.171941] Call Trace:
-[  130.172528]  dump_stack+0x74/0x9a
-[  130.173298]  slab_err+0xb7/0xdc
-[  130.174044]  ? kernel_poison_pages+0xc0/0xc0
-[  130.175065]  ? on_each_cpu_cond_mask+0x48/0x90
-[  130.176096]  __kmem_cache_shutdown.cold+0x34/0x141
-[  130.177190]  kmem_cache_destroy+0x59/0x100
-[  130.178223]  f2fs_destroy_page_array_cache+0x15/0x20 [f2fs]
-[  130.179527]  f2fs_put_super+0x1bc/0x380 [f2fs]
-[  130.180538]  generic_shutdown_super+0x72/0x110
-[  130.181547]  kill_block_super+0x27/0x50
-[  130.182438]  kill_f2fs_super+0x76/0xe0 [f2fs]
-[  130.183448]  deactivate_locked_super+0x3b/0x80
-[  130.184456]  deactivate_super+0x3e/0x50
-[  130.185363]  cleanup_mnt+0x109/0x160
-[  130.186179]  __cleanup_mnt+0x12/0x20
-[  130.187003]  task_work_run+0x70/0xb0
-[  130.187841]  exit_to_user_mode_prepare+0x18f/0x1b0
-[  130.188917]  syscall_exit_to_user_mode+0x31/0x170
-[  130.189989]  do_syscall_64+0x45/0x90
-[  130.190828]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  130.191986] RIP: 0033:0x7faf868ea2eb
-[  130.192815] Code: 7b 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 90 f3 0f 1e fa 31 f6 e9 05 00 00 00 0f 1f 44 00 00 f3 0f 1e fa b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 75 7b 0c 00 f7 d8 64 89 01
-[  130.196872] RSP: 002b:00007fffb7edb478 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-[  130.198494] RAX: 0000000000000000 RBX: 00007faf86a18204 RCX: 00007faf868ea2eb
-[  130.201021] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 000055971df71c50
-[  130.203415] RBP: 000055971df71a40 R08: 0000000000000000 R09: 00007fffb7eda1f0
-[  130.205772] R10: 00007faf86a04339 R11: 0000000000000246 R12: 000055971df71c50
-[  130.208150] R13: 0000000000000000 R14: 000055971df71b38 R15: 0000000000000000
-[  130.210515] INFO: Object 0x00000000a980843a @offset=744
-[  130.212476] INFO: Allocated in page_array_alloc+0x3d/0xe0 [f2fs] age=1572 cpu=0 pid=3297
-[  130.215030] 	__slab_alloc+0x20/0x40
-[  130.216566] 	kmem_cache_alloc+0x2a0/0x2e0
-[  130.218217] 	page_array_alloc+0x3d/0xe0 [f2fs]
-[  130.219940] 	f2fs_init_compress_ctx+0x1f/0x40 [f2fs]
-[  130.221736] 	f2fs_write_cache_pages+0x3db/0x860 [f2fs]
-[  130.223591] 	f2fs_write_data_pages+0x2c9/0x300 [f2fs]
-[  130.225414] 	do_writepages+0x43/0xd0
-[  130.226907] 	__filemap_fdatawrite_range+0xd5/0x110
-[  130.228632] 	filemap_write_and_wait_range+0x48/0xb0
-[  130.230336] 	__generic_file_write_iter+0x18a/0x1d0
-[  130.232035] 	f2fs_file_write_iter+0x226/0x550 [f2fs]
-[  130.233737] 	new_sync_write+0x113/0x1a0
-[  130.235204] 	vfs_write+0x1a6/0x200
-[  130.236579] 	ksys_write+0x67/0xe0
-[  130.237898] 	__x64_sys_write+0x1a/0x20
-[  130.239309] 	do_syscall_64+0x38/0x90
+Thank you for the patch!
 
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
----
- fs/f2fs/compress.c | 2 +-
- fs/f2fs/data.c     | 2 ++
- 2 files changed, 3 insertions(+), 1 deletion(-)
+> From: Chunfeng Yun, Sent: Monday, September 21, 2020 3:13 PM
+>=20
+> Use readl_poll_timeout_atomic() to simplify code
+>=20
+> Cc: Mathias Nyman <mathias.nyman@linux.intel.com>
+> Cc: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+> v4: changes
+>     1. remove unnecessary parentheses suggested by Yoshihiro
+>     2. fix the wrong return value suggested by Yoshihiro & Daniel
+>=20
+> v2~v3: no changes
+> ---
+>  drivers/usb/host/xhci-rcar.c | 43 ++++++++++++--------------------------=
+-----
+>  1 file changed, 12 insertions(+), 31 deletions(-)
+>=20
+> diff --git a/drivers/usb/host/xhci-rcar.c b/drivers/usb/host/xhci-rcar.c
+> index c1025d3..1bc4fe7 100644
+> --- a/drivers/usb/host/xhci-rcar.c
+> +++ b/drivers/usb/host/xhci-rcar.c
+> @@ -6,6 +6,7 @@
+>   */
+>=20
+>  #include <linux/firmware.h>
+> +#include <linux/iopoll.h>
+>  #include <linux/module.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/of.h>
+> @@ -127,8 +128,7 @@ static int xhci_rcar_download_firmware(struct usb_hcd=
+ *hcd)
+>  	void __iomem *regs =3D hcd->regs;
+>  	struct xhci_plat_priv *priv =3D hcd_to_xhci_priv(hcd);
+>  	const struct firmware *fw;
+> -	int retval, index, j, time;
+> -	int timeout =3D 10000;
+> +	int retval, index, j;
+>  	u32 data, val, temp;
+>  	u32 quirks =3D 0;
+>  	const struct soc_device_attribute *attr;
+> @@ -166,32 +166,19 @@ static int xhci_rcar_download_firmware(struct usb_h=
+cd *hcd)
+>  		temp |=3D RCAR_USB3_DL_CTRL_FW_SET_DATA0;
+>  		writel(temp, regs + RCAR_USB3_DL_CTRL);
+>=20
+> -		for (time =3D 0; time < timeout; time++) {
+> -			val =3D readl(regs + RCAR_USB3_DL_CTRL);
+> -			if ((val & RCAR_USB3_DL_CTRL_FW_SET_DATA0) =3D=3D 0)
+> -				break;
+> -			udelay(1);
+> -		}
+> -		if (time =3D=3D timeout) {
+> -			retval =3D -ETIMEDOUT;
+> +		retval =3D readl_poll_timeout_atomic(regs + RCAR_USB3_DL_CTRL,
+> +				val, !(val & RCAR_USB3_DL_CTRL_FW_SET_DATA0),
+> +				1, 10000);
+> +		if (retval < 0)
+>  			break;
+> -		}
+>  	}
+>=20
+>  	temp =3D readl(regs + RCAR_USB3_DL_CTRL);
+>  	temp &=3D ~RCAR_USB3_DL_CTRL_ENABLE;
+>  	writel(temp, regs + RCAR_USB3_DL_CTRL);
+>=20
+> -	for (time =3D 0; time < timeout; time++) {
+> -		val =3D readl(regs + RCAR_USB3_DL_CTRL);
+> -		if (val & RCAR_USB3_DL_CTRL_FW_SUCCESS) {
+> -			retval =3D 0;
+> -			break;
+> -		}
+> -		udelay(1);
+> -	}
+> -	if (time =3D=3D timeout)
+> -		retval =3D -ETIMEDOUT;
+> +	retval =3D readl_poll_timeout_atomic((regs + RCAR_USB3_DL_CTRL),
 
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index 10a9f39b9d6a2..f086ac43ca825 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -159,7 +159,7 @@ struct page *f2fs_compress_control_page(struct page *page)
- 
- int f2fs_init_compress_ctx(struct compress_ctx *cc)
- {
--	if (cc->nr_rpages)
-+	if (cc->rpages)
- 		return 0;
- 
- 	cc->rpages = page_array_alloc(cc->inode);
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index db020a74fd849..ee87407602fa7 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -3129,6 +3129,8 @@ static int f2fs_write_cache_pages(struct address_space *mapping,
- 			retry = 0;
- 		}
- 	}
-+	if (f2fs_compressed_file(inode))
-+		f2fs_destroy_compress_ctx(&cc);
- #endif
- 	if (retry) {
- 		index = 0;
--- 
-2.28.0.681.g6f77f65b4e-goog
+We can also remove these unnecessary parentheses like below.
+
++	retval =3D readl_poll_timeout_atomic(regs + RCAR_USB3_DL_CTRL,
+
+After fixed this:
+
+Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+
+Best regards,
+Yoshihiro Shimoda
 
