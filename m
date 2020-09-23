@@ -2,284 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82690276462
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:18:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E1FB27644B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:04:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgIWXR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 19:17:56 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:44068 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726419AbgIWXR4 (ORCPT
+        id S1726650AbgIWXEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 19:04:11 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:47754 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726265AbgIWXEK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 19:17:56 -0400
-Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
-        id C827229F72; Wed, 23 Sep 2020 19:17:53 -0400 (EDT)
-To:     "David S. Miller" <davem@davemloft.net>
-Cc:     "Bartlomiej Zolnierkiewicz" <b.zolnierkie@samsung.com>,
-        "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        "Joshua Thompson" <funaho@jurai.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org
-Message-Id: <edd106dad1bbea32500601c6071f37a9f02a8004.1600901284.git.fthain@telegraphics.com.au>
-From:   Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH v4] ide/macide: Convert Mac IDE driver to platform driver
-Date:   Thu, 24 Sep 2020 08:48:04 +1000
+        Wed, 23 Sep 2020 19:04:10 -0400
+Received: from [192.168.254.38] (unknown [47.187.206.220])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 8074320B7179;
+        Wed, 23 Sep 2020 16:04:09 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8074320B7179
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1600902250;
+        bh=HgpNPjY5iVu1CzxgcR4kgt+n2CI09GHM7/xa0p1o1Kk=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=muj4KSg6D89EDGio3heOxHCQwEdt6gWLUvMQcKlmrgOQqUz62EUPYL8kaIGhY51c7
+         BiX3Nbq3xO6O7AV7JtpP/RXJguNQGwEe7nrqG4qvPO8M3K1jLBNuvwOX52gI+DcYSx
+         kyoUN+2J9pxrSBa9emDc+4CJsNIRwh9UwZhyvp0k=
+Subject: Re: [PATCH v2 0/4] [RFC] Implement Trampoline File Descriptor
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, oleg@redhat.com,
+        x86@kernel.org, luto@kernel.org, David.Laight@ACULAB.COM,
+        fweimer@redhat.com, mark.rutland@arm.com, mic@digikod.net
+References: <210d7cd762d5307c2aa1676705b392bd445f1baa>
+ <20200922215326.4603-1-madvenka@linux.microsoft.com>
+ <20200923084232.GB30279@amd>
+ <34257bc9-173d-8ef9-0c97-fb6bd0f69ecb@linux.microsoft.com>
+ <20200923205156.GA12034@duo.ucw.cz>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <fe30c3bc-8bdb-4bf7-328d-84c9d449bc67@linux.microsoft.com>
+Date:   Wed, 23 Sep 2020 18:04:08 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200923205156.GA12034@duo.ucw.cz>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add platform devices for the Mac IDE controller variants. Convert the
-macide module into a platform driver to support two of those variants.
-For the third, use a generic "pata_platform" driver instead.
-This enables automatic loading of the appropriate module and begins
-the process of replacing the driver with libata alternatives.
 
-Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Joshua Thompson <funaho@jurai.org>
-References: commit 5ed0794cde593 ("m68k/atari: Convert Falcon IDE drivers to platform drivers")
-References: commit 7ad19a99ad431 ("ide: officially deprecated the legacy IDE driver")
-Tested-by: Stan Johnson <userm57@yahoo.com>
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
----
-This patch was tested successfully on a Powerbook 190 (MAC_IDE_BABOON)
-using both pata_platform and ide_platform drivers.
-The next step will be to try using these generic drivers with the other
-IDE controller variants (MAC_IDE_QUADRA or MAC_IDE_PB) so that the macide
-driver can be entirely replaced with libata drivers.
 
-Changed since v3:
- - Updated Kconfig help text.
+On 9/23/20 3:51 PM, Pavel Machek wrote:
+> Hi!
+> 
+>>>> Scenario 2
+>>>> ----------
+>>>>
+>>>> We know what code we need in advance. User trampolines are a good example of
+>>>> this. It is possible to define such code statically with some help from the
+>>>> kernel.
+>>>>
+>>>> This RFC addresses (2). (1) needs a general purpose trusted code generator
+>>>> and is out of scope for this RFC.
+>>>
+>>> This is slightly less crazy talk than introduction talking about holes
+>>> in W^X. But it is very, very far from normal Unix system, where you
+>>> have selection of interpretters to run your malware on (sh, python,
+>>> awk, emacs, ...) and often you can even compile malware from sources. 
+>>>
+>>> And as you noted, we don't have "a general purpose trusted code
+>>> generator" for our systems.
+>>>
+>>> I believe you should simply delete confusing "introduction" and
+>>> provide details of super-secure system where your patches would be
+>>> useful, instead.
+>>
+>> This RFC talks about converting dynamic code (which cannot be authenticated)
+>> to static code that can be authenticated using signature verification. That
+>> is the scope of this RFC.
+>>
+>> If I have not been clear before, by dynamic code, I mean machine code that is
+>> dynamic in nature. Scripts are beyond the scope of this RFC.
+>>
+>> Also, malware compiled from sources is not dynamic code. That is orthogonal
+>> to this RFC. If such malware has a valid signature that the kernel permits its
+>> execution, we have a systemic problem.
+>>
+>> I am not saying that script authentication or compiled malware are not problems.
+>> I am just saying that this RFC is not trying to solve all of the security problems.
+>> It is trying to define one way to convert dynamic code to static code to address
+>> one class of problems.
+> 
+> Well, you don't have to solve all problems at once.
+> 
+> But solutions have to exist, and AFAIK in this case they don't. You
+> are armoring doors, but ignoring open windows.
+> 
 
-Changed since v2:
- - Enabled CONFIG_BLK_DEV_PLATFORM in multi_defconfig.
- - Replaced dev_get_drvdata() with platform_get_drvdata().
+I am afraid I don't agree that the other open security issues must be
+addressed for this RFC to make sense. If you think that any of those
+issues actually has a bad interaction/intersection with this RFC,
+let me know how and I will address it.
 
-Changed since v1:
- - Adopted DEFINE_RES_MEM and DEFINE_RES_IRQ macros.
- - Dropped IORESOURCE_IRQ_SHAREABLE flag as it is ignored by pata_platform.c
-   and IRQF_SHARED makes no difference in this case.
- - Removed redundant release_mem_region() call.
- - Enabled CONFIG_BLK_DEV_PLATFORM in mac_defconfig. We might also enable
-   CONFIG_PATA_PLATFORM but IMO migration to libata should be a separate
-   patch (as this patch has some unrelated benefits).
----
- arch/m68k/configs/mac_defconfig   |  1 +
- arch/m68k/configs/multi_defconfig |  1 +
- arch/m68k/mac/config.c            | 41 +++++++++++++++++++
- drivers/ide/Kconfig               |  7 ++--
- drivers/ide/macide.c              | 66 ++++++++++++++++++++-----------
- 5 files changed, 90 insertions(+), 26 deletions(-)
+> Or very probably you are thinking about something different than
+> normal desktop distros (Debian 10). Because on my systems, I have
+> python, gdb and gcc...
+> 
+> It would be nice to specify what other pieces need to be present for
+> this to make sense -- because it makes no sense on Debian 10.
+> 
 
-diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
-index 6087798662601..f770970fe4e99 100644
---- a/arch/m68k/configs/mac_defconfig
-+++ b/arch/m68k/configs/mac_defconfig
-@@ -317,6 +317,7 @@ CONFIG_DUMMY_IRQ=m
- CONFIG_IDE=y
- CONFIG_IDE_GD_ATAPI=y
- CONFIG_BLK_DEV_IDECD=y
-+CONFIG_BLK_DEV_PLATFORM=y
- CONFIG_BLK_DEV_MAC_IDE=y
- CONFIG_RAID_ATTRS=m
- CONFIG_SCSI=y
-diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
-index 0abb53c38c20d..f93c3021f20d4 100644
---- a/arch/m68k/configs/multi_defconfig
-+++ b/arch/m68k/configs/multi_defconfig
-@@ -346,6 +346,7 @@ CONFIG_DUMMY_IRQ=m
- CONFIG_IDE=y
- CONFIG_IDE_GD_ATAPI=y
- CONFIG_BLK_DEV_IDECD=y
-+CONFIG_BLK_DEV_PLATFORM=y
- CONFIG_BLK_DEV_GAYLE=y
- CONFIG_BLK_DEV_BUDDHA=y
- CONFIG_BLK_DEV_FALCON_IDE=y
-diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
-index 5c9f3a2d65388..43fc29180cb58 100644
---- a/arch/m68k/mac/config.c
-+++ b/arch/m68k/mac/config.c
-@@ -24,6 +24,7 @@
- #include <linux/init.h>
- #include <linux/vt_kern.h>
- #include <linux/platform_device.h>
-+#include <linux/ata_platform.h>
- #include <linux/adb.h>
- #include <linux/cuda.h>
- #include <linux/pmu.h>
-@@ -940,6 +941,26 @@ static const struct resource mac_scsi_ccl_rsrc[] __initconst = {
- 	},
- };
- 
-+static const struct resource mac_ide_quadra_rsrc[] __initconst = {
-+	DEFINE_RES_MEM(0x50F1A000, 0x104),
-+	DEFINE_RES_IRQ(IRQ_NUBUS_F),
-+};
-+
-+static const struct resource mac_ide_pb_rsrc[] __initconst = {
-+	DEFINE_RES_MEM(0x50F1A000, 0x104),
-+	DEFINE_RES_IRQ(IRQ_NUBUS_C),
-+};
-+
-+static const struct resource mac_pata_baboon_rsrc[] __initconst = {
-+	DEFINE_RES_MEM(0x50F1A000, 0x38),
-+	DEFINE_RES_MEM(0x50F1A038, 0x04),
-+	DEFINE_RES_IRQ(IRQ_BABOON_1),
-+};
-+
-+static const struct pata_platform_info mac_pata_baboon_data __initconst = {
-+	.ioport_shift = 2,
-+};
-+
- int __init mac_platform_init(void)
- {
- 	phys_addr_t swim_base = 0;
-@@ -1048,6 +1069,26 @@ int __init mac_platform_init(void)
- 		break;
- 	}
- 
-+	/*
-+	 * IDE device
-+	 */
-+
-+	switch (macintosh_config->ide_type) {
-+	case MAC_IDE_QUADRA:
-+		platform_device_register_simple("mac_ide", -1,
-+			mac_ide_quadra_rsrc, ARRAY_SIZE(mac_ide_quadra_rsrc));
-+		break;
-+	case MAC_IDE_PB:
-+		platform_device_register_simple("mac_ide", -1,
-+			mac_ide_pb_rsrc, ARRAY_SIZE(mac_ide_pb_rsrc));
-+		break;
-+	case MAC_IDE_BABOON:
-+		platform_device_register_resndata(NULL, "pata_platform", -1,
-+			mac_pata_baboon_rsrc, ARRAY_SIZE(mac_pata_baboon_rsrc),
-+			&mac_pata_baboon_data, sizeof(mac_pata_baboon_data));
-+		break;
-+	}
-+
- 	/*
- 	 * Ethernet device
- 	 */
-diff --git a/drivers/ide/Kconfig b/drivers/ide/Kconfig
-index 973ed4b684cec..19abf11c84c8a 100644
---- a/drivers/ide/Kconfig
-+++ b/drivers/ide/Kconfig
-@@ -744,9 +744,10 @@ config BLK_DEV_MAC_IDE
- 	depends on MAC
- 	help
- 	  This is the IDE driver for the on-board IDE interface on some m68k
--	  Macintosh models. It supports both the `Quadra style' (used in
--	  Quadra/ Centris 630 and Performa 588 models) and `Powerbook style'
--	  (used in the Powerbook 150 and 190 models) IDE interface.
-+	  Macintosh models, namely Quadra/Centris 630, Performa 588 and
-+	  Powerbook 150. The IDE interface on the Powerbook 190 is not
-+	  supported by this driver and requires BLK_DEV_PLATFORM or
-+	  PATA_PLATFORM.
- 
- 	  Say Y if you have such an Macintosh model and want to use IDE
- 	  devices (hard disks, CD-ROM drives, etc.) that are connected to the
-diff --git a/drivers/ide/macide.c b/drivers/ide/macide.c
-index 3c6bb8599303b..8a201a467886b 100644
---- a/drivers/ide/macide.c
-+++ b/drivers/ide/macide.c
-@@ -18,10 +18,11 @@
- #include <linux/delay.h>
- #include <linux/ide.h>
- #include <linux/module.h>
-+#include <linux/platform_device.h>
- 
- #include <asm/macintosh.h>
--#include <asm/macints.h>
--#include <asm/mac_baboon.h>
-+
-+#define DRV_NAME "mac_ide"
- 
- #define IDE_BASE 0x50F1A000	/* Base address of IDE controller */
- 
-@@ -109,42 +110,61 @@ static const char *mac_ide_name[] =
-  * Probe for a Macintosh IDE interface
-  */
- 
--static int __init macide_init(void)
-+static int mac_ide_probe(struct platform_device *pdev)
- {
--	unsigned long base;
--	int irq;
-+	struct resource *mem, *irq;
- 	struct ide_hw hw, *hws[] = { &hw };
- 	struct ide_port_info d = macide_port_info;
-+	struct ide_host *host;
-+	int rc;
- 
- 	if (!MACH_IS_MAC)
- 		return -ENODEV;
- 
--	switch (macintosh_config->ide_type) {
--	case MAC_IDE_QUADRA:
--		base = IDE_BASE;
--		irq = IRQ_NUBUS_F;
--		break;
--	case MAC_IDE_PB:
--		base = IDE_BASE;
--		irq = IRQ_NUBUS_C;
--		break;
--	case MAC_IDE_BABOON:
--		base = BABOON_BASE;
--		d.port_ops = NULL;
--		irq = IRQ_BABOON_1;
--		break;
--	default:
-+	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!mem)
-+		return -ENODEV;
-+
-+	irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
-+	if (!irq)
- 		return -ENODEV;
-+
-+	if (!devm_request_mem_region(&pdev->dev, mem->start,
-+				     resource_size(mem), DRV_NAME)) {
-+		dev_err(&pdev->dev, "resources busy\n");
-+		return -EBUSY;
- 	}
- 
- 	printk(KERN_INFO "ide: Macintosh %s IDE controller\n",
- 			 mac_ide_name[macintosh_config->ide_type - 1]);
- 
--	macide_setup_ports(&hw, base, irq);
-+	macide_setup_ports(&hw, mem->start, irq->start);
- 
--	return ide_host_add(&d, hws, 1, NULL);
-+	rc = ide_host_add(&d, hws, 1, &host);
-+	if (rc)
-+		return rc;
-+
-+	platform_set_drvdata(pdev, host);
-+	return 0;
- }
- 
--module_init(macide_init);
-+static int mac_ide_remove(struct platform_device *pdev)
-+{
-+	struct ide_host *host = platform_get_drvdata(pdev);
-+
-+	ide_host_remove(host);
-+	return 0;
-+}
-+
-+static struct platform_driver mac_ide_driver = {
-+	.driver = {
-+		.name = DRV_NAME,
-+	},
-+	.probe  = mac_ide_probe,
-+	.remove = mac_ide_remove,
-+};
-+
-+module_platform_driver(mac_ide_driver);
- 
-+MODULE_ALIAS("platform:" DRV_NAME);
- MODULE_LICENSE("GPL");
--- 
-2.26.2
+Since this RFC pertains to converting dynamic machine code to static
+code, it has nothing to do with the other items you have mentioned.
+I am not disagreeing that the other items need to be addressed. But
+they are orthogonal.
 
+Madhavan
