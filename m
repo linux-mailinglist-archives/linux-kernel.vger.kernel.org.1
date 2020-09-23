@@ -2,99 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1C8276476
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6EF827647D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726706AbgIWX22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 19:28:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35798 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726466AbgIWX2Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 19:28:24 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B8F2620BED;
-        Wed, 23 Sep 2020 23:28:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600903703;
-        bh=jD9FzPY9npLBXMykAm0YVS2Sn9WihPKnudR+sOe4IzY=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=F/ThN3TDt9u2tC6CIY6JBC9Ziz663ISP5KiCPLR6bwB5nHubXblTyllGdJFHsSahx
-         /SzDx6/4Nr9hv14n8qhZQTDqha+RgmRzh+mjkiPyTR9udIJgyyxoqFEedgG4Z2AEDa
-         5luFdzuKS6Or7kkTZfT3SpWu5aM08MMna/EiaJfc=
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <a8713637-d240-d22d-02a7-f15080620467@linaro.org>
-References: <20200917132850.7730-1-srinivas.kandagatla@linaro.org> <20200917132850.7730-4-srinivas.kandagatla@linaro.org> <160080010215.310579.4526434246523292987@swboyd.mtv.corp.google.com> <a8713637-d240-d22d-02a7-f15080620467@linaro.org>
-Subject: Re: [PATCH 3/4] clk: qcom: Add support to LPASS AUDIO_CC Glitch Free Mux clocks
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     bjorn.andersson@linaro.org, mturquette@baylibre.com,
-        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        id S1726788AbgIWX3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 19:29:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726746AbgIWX3b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 19:29:31 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 810EEC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:29:31 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id t7so583710pjd.3
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:29:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ZE/79qG6H6lRxtOX3Wkl7bfi0pnZJM8pQYKGylI4ASw=;
+        b=bfAu8zmgfDT6BYa5AFuGjf5HULT1RoGX5U1MHYBaJnsDPZIqHGceGVjIq0QrWYsXIN
+         1nBIJcYwVXI/M/1TjzCxBqSwMVufR5fhXA7ESw3zg0MsBcR9YmbOnfl/dmqa5ZQdhGUH
+         ueFBHPnxoz7qOSdPu1rvnb8vHu9CQAEMJn3Nk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ZE/79qG6H6lRxtOX3Wkl7bfi0pnZJM8pQYKGylI4ASw=;
+        b=BnzMGMC9yFOi3sSlvQXUyGxVLijxiL0sx66ACFqEKKf5iFP5PRYbqWjpeAppoVjAJY
+         Zuwk6C6teZeeU5JOvaic41xpxXR6ZQLD5sWsmuvF1WXbqy1DRVOfnDK4BUw2AvCrBnek
+         +0cKuzvTEWI6w0v3eHYGDfbWhkQpoG1twlzxFsJsLQlJE+tSOW1rpDdLx8yePlGXHxJx
+         ityfrwsl7PekdVZEcEEYpUHFeZF6WFZ9fI199PZZZonUXNkia0Meup9M3DbR/gBQKJJu
+         jNnutf9f2mtGT5h3ZR7Db+i4s8G7Plssxx9+6AiYgFAo33L0TYy59x7Iyog95Fd4Hm92
+         4biQ==
+X-Gm-Message-State: AOAM532SaHYdDHBt1PPI/DbLeXHE6q0SLO6dtSDtNmHV8rjLxf72ML2c
+        lX+AxoGiqlGpdlXdiYAt7+9dPg==
+X-Google-Smtp-Source: ABdhPJwhKgUZq608+q5NwYON4+CAPcXtEBNdHupkMvWVr63aqwYCkQW/0sNAogHldmRsrQqXgPaIjA==
+X-Received: by 2002:a17:902:c692:b029:d0:90a3:24f4 with SMTP id r18-20020a170902c692b02900d090a324f4mr1951226plx.12.1600903771027;
+        Wed, 23 Sep 2020 16:29:31 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id z1sm669570pfj.113.2020.09.23.16.29.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2020 16:29:30 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     YiFei Zhu <yifeifz2@illinois.edu>
+Cc:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>, bpf@vger.kernel.org,
+        containers@lists.linux-foundation.org, linux-api@vger.kernel.org,
         linux-kernel@vger.kernel.org
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org
-Date:   Wed, 23 Sep 2020 16:28:22 -0700
-Message-ID: <160090370240.310579.7670305169509496614@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Subject: [PATCH 6/6] [DEBUG] seccomp: Report bitmap coverage ranges
+Date:   Wed, 23 Sep 2020 16:29:23 -0700
+Message-Id: <20200923232923.3142503-7-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200923232923.3142503-1-keescook@chromium.org>
+References: <20200923232923.3142503-1-keescook@chromium.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Srinivas Kandagatla (2020-09-22 14:45:07)
-> Thanks Stephen for review,
->=20
-> On 22/09/2020 19:41, Stephen Boyd wrote:
-> > Quoting Srinivas Kandagatla (2020-09-17 06:28:49)
-> >> diff --git a/drivers/clk/qcom/lpass-gfm-sm8250.c b/drivers/clk/qcom/lp=
-ass-gfm-sm8250.c
-> >> new file mode 100644
-> >> index 000000000000..2d5c41ae4969
-> >> --- /dev/null
-> >> +++ b/drivers/clk/qcom/lpass-gfm-sm8250.c
-> >> @@ -0,0 +1,235 @@
-[...]
-> >> +};
-> >> +
-> >> +static int lpass_gfm_clk_driver_probe(struct platform_device *pdev)
-> >> +{
-> >> +       const struct lpass_gfm_data *data;
-> >> +       struct device *dev =3D &pdev->dev;
-> >> +       struct resource *res;
-> >> +       struct clk_gfm *gfm;
-> >> +       struct lpass_gfm *cc;
-> >> +       int err, i;
-> >> +
-> >> +       cc =3D devm_kzalloc(dev, sizeof(*cc), GFP_KERNEL);
-> >> +       if (!cc)
-> >> +               return -ENOMEM;
-> >> +
-> >> +       cc->core_vote =3D devm_clk_get(&pdev->dev, "core");
-> >> +       if (IS_ERR(cc->core_vote)) {
-> >> +               dev_dbg(dev, "Failed to get lpass core clk\n");
-> >> +               return PTR_ERR(cc->core_vote);
-> >> +       }
-> >=20
-> > Can this use the pm_clk stuff?
->=20
-> you mean add runtime pm support or something else?
->=20
-> I can give it a go and see!
->=20
+This is what I've been using to explore actual bitmap results for
+real-world filters...
 
-Yes use the runtime PM support and pm_clk APIs. There are some examples
-in this directory already.
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ kernel/seccomp.c | 115 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 115 insertions(+)
 
->=20
-> >=20
-> >> +
-> >> +       data =3D of_device_get_match_data(dev);
-> >=20
-> > What if data is NULL?
-> It should not be here if there is no match of compatible string, so data =
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index 9921f6f39d12..1a0595d7f8ef 100644
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -835,6 +835,85 @@ static void seccomp_update_bitmap(struct seccomp_filter *filter,
+ 	}
+ }
+ 
++static void __report_bitmap(const char *arch, u32 ret, int start, int finish)
++{
++	int gap;
++	char *name;
++
++	if (finish == -1)
++		return;
++
++	switch (ret) {
++	case UINT_MAX:
++		name = "filter";
++		break;
++	case SECCOMP_RET_ALLOW:
++		name = "SECCOMP_RET_ALLOW";
++		break;
++	case SECCOMP_RET_KILL_PROCESS:
++		name = "SECCOMP_RET_KILL_PROCESS";
++		break;
++	case SECCOMP_RET_KILL_THREAD:
++		name = "SECCOMP_RET_KILL_THREAD";
++		break;
++	default:
++		WARN_ON_ONCE(1);
++		name = "unknown";
++		break;
++	}
++
++	gap = 0;
++	if (start < 100)
++		gap++;
++	if (start < 10)
++		gap++;
++	if (finish < 100)
++		gap++;
++	if (finish < 10)
++		gap++;
++
++	if (start == finish)
++		pr_info("%s     %3d: %s\n", arch, start, name);
++	else if (start + 1 == finish)
++		pr_info("%s %*s%d,%d: %s\n", arch, gap, "", start, finish, name);
++	else
++		pr_info("%s %*s%d-%d: %s\n", arch, gap, "", start, finish, name);
++}
++
++static void report_bitmap(struct seccomp_bitmaps *bitmaps, const char *arch)
++{
++	u32 nr;
++	int start = 0, finish = -1;
++	u32 ret = UINT_MAX;
++	struct report_states {
++		unsigned long *bitmap;
++		u32 ret;
++	} states[] = {
++		{ .bitmap = bitmaps->allow,	   .ret = SECCOMP_RET_ALLOW, },
++		{ .bitmap = bitmaps->kill_process, .ret = SECCOMP_RET_KILL_PROCESS, },
++		{ .bitmap = bitmaps->kill_thread,  .ret = SECCOMP_RET_KILL_THREAD, },
++		{ .bitmap = NULL,		   .ret = UINT_MAX, },
++	};
++
++	for (nr = 0; nr < NR_syscalls; nr++) {
++		int i;
++
++		for (i = 0; i < ARRAY_SIZE(states); i++) {
++			if (!states[i].bitmap || test_bit(nr, states[i].bitmap)) {
++				if (ret != states[i].ret) {
++					__report_bitmap(arch, ret, start, finish);
++					ret = states[i].ret;
++					start = nr;
++				}
++				finish = nr;
++				break;
++			}
++		}
++	}
++	if (start != nr)
++		__report_bitmap(arch, ret, start, finish);
++}
++
+ static void seccomp_update_bitmaps(struct seccomp_filter *filter,
+ 				   void *pagepair)
+ {
+@@ -849,6 +928,23 @@ static void seccomp_update_bitmaps(struct seccomp_filter *filter,
+ 			      SECCOMP_MULTIPLEXED_SYSCALL_TABLE_MASK,
+ 			      &current->seccomp.multiplex);
+ #endif
++	if (strncmp(current->comm, "test-", 5) == 0 ||
++	    strcmp(current->comm, "seccomp_bpf") == 0 ||
++	    /*
++	     * Why are systemd's process names head-truncated to 8 bytes
++	     * and wrapped in parens!?
++	     */
++	    (current->comm[0] == '(' && strrchr(current->comm, ')') != NULL)) {
++		pr_info("reporting syscall bitmap usage for %d (%s):\n",
++			task_pid_nr(current), current->comm);
++		report_bitmap(&current->seccomp.native, "native");
++#ifdef CONFIG_COMPAT
++		report_bitmap(&current->seccomp.compat, "compat");
++#endif
++#ifdef SECCOMP_MULTIPLEXED_SYSCALL_TABLE_ARCH
++		report_bitmap(&current->seccomp.multiplex, "multiplex");
++#endif
++	}
+ }
+ #else
+ static void seccomp_update_bitmaps(struct seccomp_filter *filter,
+@@ -908,6 +1004,10 @@ static long seccomp_attach_filter(unsigned int flags,
+ 	filter->prev = current->seccomp.filter;
+ 	current->seccomp.filter = filter;
+ 	atomic_inc(&current->seccomp.filter_count);
++	if (atomic_read(&current->seccomp.filter_count) > 10)
++		pr_info("%d filters: %d (%s)\n",
++			atomic_read(&current->seccomp.filter_count),
++			task_pid_nr(current), current->comm);
+ 
+ 	/* Evaluate filter for new known-outcome syscalls */
+ 	seccomp_update_bitmaps(filter, pagepair);
+@@ -2419,6 +2519,21 @@ static int __init seccomp_sysctl_init(void)
+ 		pr_warn("sysctl registration failed\n");
+ 	else
+ 		kmemleak_not_leak(hdr);
++#ifndef SECCOMP_ARCH
++	pr_info("arch lacks support for constant action bitmaps\n");
++#else
++	pr_info("NR_syscalls: %d\n", NR_syscalls);
++	pr_info("arch: 0x%x\n", SECCOMP_ARCH);
++#ifdef CONFIG_COMPAT
++	pr_info("compat arch: 0x%x\n", SECCOMP_ARCH_COMPAT);
++#endif
++#ifdef SECCOMP_MULTIPLEXED_SYSCALL_TABLE_ARCH
++	pr_info("multiplex arch: 0x%x (mask: 0x%x)\n",
++		SECCOMP_MULTIPLEXED_SYSCALL_TABLE_ARCH,
++		SECCOMP_MULTIPLEXED_SYSCALL_TABLE_MASK);
++#endif
++#endif
++	pr_info("sizeof(struct seccomp_bitmaps): %zu\n", sizeof(struct seccomp_bitmaps));
+ 
+ 	return 0;
+ }
+-- 
+2.25.1
 
-> should not be NULL!
-
-Ok sure but it always makes me feel better if we check for a valid
-pointer with this API.
