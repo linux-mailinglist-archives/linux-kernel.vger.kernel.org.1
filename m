@@ -2,166 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AAA527550E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC118275512
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726524AbgIWKEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 06:04:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49198 "EHLO
+        id S1726590AbgIWKFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 06:05:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgIWKEz (ORCPT
+        with ESMTP id S1726130AbgIWKFu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 06:04:55 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2435C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 03:04:54 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id y13so23019982iow.4
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 03:04:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U3SJLMlf/gmjcb1bIq1gmYKwOwQU6kOmc4/dD7hBTLI=;
-        b=AnF9bkr+Aofx+XR6HFARYdNts9+MCFj6xElg03TL4mbKqwB33/RxxUR1B3JuBGn6Ep
-         lKE+ysLgFx7oo3ZOCViOcEHvaYNSlzitXJTRbSe4rP8BqboWFVVyfQoYiW65+8JMvFv7
-         VQ3Yr1iHP1QGE17uMY81/BtOdLDHWrDH9jGlFyzUwnXxSM61fNUOCHXMIADit8pK09eC
-         VPjY3Sn60haZM8/pIODuSTwT7kva4LPnIYQCO9yY49V3p3fItl1B6KGp1nw4J41W1Kxb
-         CyM8judgx+xv6GXc8AS77zzqWLaSBKmyWTjz7kWNtRZNbf8tMG5QnzQjZz2uVrvzxMhw
-         uGdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U3SJLMlf/gmjcb1bIq1gmYKwOwQU6kOmc4/dD7hBTLI=;
-        b=X5r13VmN2DwKmatUd2DMWpO6ahTf0Dwq18M6MKZfdzEDKMigxTQmfQ4eneqEVBVfEW
-         Q3bN1fQdPQKRoBkIyJuHsmzJsb4kbN6QrmjuE4V7SMkOUm8YYO7Nv9XlOxOL+PSS/KrZ
-         B8eRZIbGg6QzaMnNhu5mrtB0iL6NKmJZoqi0TG+l9NdYg81Khw4rkY+z4j1KC8UFmflP
-         JdrdDOtzFrNQeFZXFcWO+b1CEu3ghg/9dt4lrUcPSymMsiuAHgcNMmU8X7Uxc0CVdbxM
-         1+aU6/IzM2wRKND8eTIUZqQbTg2ruVlG1WscceYMbKNs7UMekTdepUnLYeYk/2zZnrTz
-         cpZg==
-X-Gm-Message-State: AOAM5304+KUIsOU5O5t7vihWLws1kJBqUtvrL//ZqKxRyQ8ZrFSQIxof
-        +eJVJVtuYExNl1xj9luoHuIaElVaMaSN2WlpS/8=
-X-Google-Smtp-Source: ABdhPJxqbN0Ql5FC1qxjeBTn3rLaRsch4PfTVq6Y5dMRz+dkBBngdnkN1RXN+z39qc0QoQMv2mKP5RT5jG1+H2xQhbQ=
-X-Received: by 2002:a6b:7005:: with SMTP id l5mr6728218ioc.10.1600855494306;
- Wed, 23 Sep 2020 03:04:54 -0700 (PDT)
+        Wed, 23 Sep 2020 06:05:50 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE48C0613CE;
+        Wed, 23 Sep 2020 03:05:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=R+6pH9MDXo8iBZE23VD1Qz4m/pWUZJggcrrvmXTMzlM=; b=ExALYf+eJ59NgDjFaLDDQWGEv
+        kB/1C35EtyKiUIkhcLpRwt2PDcrbvVbTxhs5IFERtgqltUk4aum3IZLfl3DHn6oOk9imExkrI/DfF
+        mhzaVNsUaMpkkbLQhXKHTfbSg+y1REpp59J3d6P0iUGuK+hCHce1nXIJLzjTZYeRCszvJQrLToSs/
+        oNJZZEEsiAO8/Qqf+ddRW6OOUdIs6920AV7bpoyEPBvg5E6hV5Dp93UemFxEtQR7f1J/JJ2Wm7pWb
+        MCUqyTvOeTNTsDJry0yRevPBt1739ZZIX6np7q6l66wqe3+7/ZHiM+bdessUmZturVDq2QUPP4Dpl
+        6rGa0uQ7A==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:37216)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kL1eW-0003vf-NC; Wed, 23 Sep 2020 11:05:32 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kL1eQ-0003HJ-Ot; Wed, 23 Sep 2020 11:05:26 +0100
+Date:   Wed, 23 Sep 2020 11:05:26 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Tony Lindgren <tony@atomide.com>,
+        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
+        Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Robin Murphy <robin.murphy@arm.com>,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH 1/4] ARM/omap1: switch to use dma_direct_set_offset for
+ lbus DMA offsets
+Message-ID: <20200923100526.GD1559@shell.armlinux.org.uk>
+References: <20200917173229.3311382-1-hch@lst.de>
+ <20200917173229.3311382-2-hch@lst.de>
+ <20200918054933.GK7101@atomide.com>
+ <2184547.ElGaqSPkdT@z50>
+ <20200921064418.GM7101@atomide.com>
+ <20200921064723.GA18559@lst.de>
 MIME-Version: 1.0
-References: <20200917181347.1359365-1-axelrasmussen@google.com>
- <CALOAHbDSHGeXjJN3E5mTOAFTVsXAvQL9+nSYTqht5Lz8HRNv0A@mail.gmail.com>
- <CAJHvVcg6eY0vVtfi8D6D9aus7=5zeP2H7Yc0mY5ofXztSzOFqQ@mail.gmail.com>
- <CALOAHbBr=ASfvHw1ZscWBE=CY-e7sBrLV0F5Ow=g1UGxmQsWcw@mail.gmail.com> <20200922125113.12ef1e03@gandalf.local.home>
-In-Reply-To: <20200922125113.12ef1e03@gandalf.local.home>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Wed, 23 Sep 2020 18:04:17 +0800
-Message-ID: <CALOAHbD2qgvd7CHy6ZFJ_h8drtRWEU=E-hPofY-TuGTNfxyQbw@mail.gmail.com>
-Subject: Re: [PATCH] mmap_lock: add tracepoints around lock acquisition
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michel Lespinasse <walken@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921064723.GA18559@lst.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 12:51 AM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Tue, 22 Sep 2020 12:09:19 +0800
-> Yafang Shao <laoar.shao@gmail.com> wrote:
->
-> > > > Are there any methods to avoid un-inlining these wrappers ?
-> > > >
-> > > > For example,
-> > > > // include/linux/mmap_lock.h
-> > > >
-> > > > void mmap_lock_start_trace_wrapper();
-> > > > void mmap_lock_acquire_trace_wrapper();
-> > > >
-> > > > static inline void mmap_write_lock(struct mm_struct *mm)
-> > > > {
-> > > >     mmap_lock_start_trace_wrapper();
-> > > >     down_write(&mm->mmap_lock);
-> > > >     mmap_lock_acquire_trace_wrapper();
-> > > > }
-> > > >
-> > > > // mm/mmap_lock.c
-> > > > void mmap_lock_start_trace_wrapper()
-> > > > {
-> > > >     trace_mmap_lock_start();
-> > > > }
-> > > >
-> > > > void mmap_lock_start_trace_wrapper()
-> > > > {
-> > > >     trace_mmap_lock_acquired();
-> > > > }
-> > >
-> > > We can do something like that, but I don't think it would end up being better.
-> > >
-> > > At the end of the day, because the trace stuff cannot be in the
-> > > header, we have to add an extra function call one way or the other.
-> > > This would just move the call one step further down the call stack.
-> > > So, I don't think it would affect performance in the
-> > > CONFIG_MMAP_LOCK_STATS + tracepoints not enabled at runtime case.
-> > >
-> >
-> > Right, it seems we have to add an extra function call.
-> >
-> > > Also the wrappers aren't quite so simple as this, they need some
-> > > parameters to work. (the struct mm_struct, whether it was a read or a
-> > > write lock, and whether or not the lock operation succeeded), so it
-> > > would mean adding more inlined code, which I think adds up to be a
-> > > nontrivial amount since these wrappers are called so often in the
-> > > kernel.
-> > >
-> > > If you feel strongly, let me know and I can send a version as you
-> > > describe and we can compare the two.
-> > >
-> >
-> > These tracepoints will be less useful if we have to turn on the config
-> > to enable it.
-> > I don't mind implementing it that way if we can't optimize it.
-> >
-> > Maybe Steven can give some suggestions, Steven ?
-> >
->
->
-> What you can do, and what we have done is the following:
->
-> (see include/linux/page_ref.h)
->
->
-> #ifdef CONFIG_TRACING
-> extern struct tracepoint __tracepoint_mmap_lock_start_locking;
-> extern struct tracepoint __tracepoint_mmap_lock_acquire_returned;
->
-> #define mmap_lock_tracepoint_active(t) static_key_false(&(__tracepoint_mmap_lock_##t).key)
->
-> #else
-> #define mmap_lock_tracepoint_active(t) false
-> #endif
->
-> static inline void mmap_write_lock(struct mm_struct *mm)
-> {
->         if (mmap_lock_tracepoint_active(start_locking))
->                 mmap_lock_start_trace_wrapper();
->         down_write(&mm->mmap_lock);
->         if (mmap_lock_tracepoint_active(acquire_returned))
->                 mmap_lock_acquire_trace_wrapper();
-> }
->
->
-> -- Steve
+On Mon, Sep 21, 2020 at 08:47:23AM +0200, Christoph Hellwig wrote:
+> On Mon, Sep 21, 2020 at 09:44:18AM +0300, Tony Lindgren wrote:
+> > * Janusz Krzysztofik <jmkrzyszt@gmail.com> [200919 22:29]:
+> > > Hi Tony,
+> > > 
+> > > On Friday, September 18, 2020 7:49:33 A.M. CEST Tony Lindgren wrote:
+> > > > * Christoph Hellwig <hch@lst.de> [200917 17:37]:
+> > > > > Switch the omap1510 platform ohci device to use dma_direct_set_offset
+> > > > > to set the DMA offset instead of using direct hooks into the DMA
+> > > > > mapping code and remove the now unused hooks.
+> > > > 
+> > > > Looks nice to me :) I still can't test this probably for few more weeks
+> > > > though but hopefully Aaro or Janusz (Added to Cc) can test it.
+> > > 
+> > > Works for me on Amstrad Delta (tested with a USB ethernet adapter).
+> > > 
+> > > Tested-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+> > 
+> > Great, good to hear! And thanks for testing it.
+> > 
+> > Christoph, feel free to queue this along with the other patches:
+> > 
+> > Acked-by: Tony Lindgren <tony@atomide.com>
+> > 
+> > Or let me know if you want me to pick it up.
+> 
+> I'd prefer to pick it up through the dma-mapping tree, but preferably
+> I'd pick the whole series up once Russell has tested footwinder.
 
-
-Great!
-
-Thanks Steve.
+I don't think that's going to happen very soon... seems way too much
+effort to pull down the appropriate tree to build and test.  Sorry.
 
 -- 
-Thanks
-Yafang
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
