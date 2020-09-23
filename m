@@ -2,391 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DDEF274ED0
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 04:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B68D8274EEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 04:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727145AbgIWCAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 22:00:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727125AbgIWCAL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 22:00:11 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9578EC0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 19:00:11 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id r19so6019790pls.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 19:00:11 -0700 (PDT)
+        id S1727180AbgIWCT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 22:19:56 -0400
+Received: from mail-vi1eur05on2045.outbound.protection.outlook.com ([40.107.21.45]:10465
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727031AbgIWCT4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 22:19:56 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FEYXrnZbQabeOslYWUsSPJpe2HD46S/Y+wwcqLESDCXQ0cDcuGqQAkfFx5Pw5iZa2LemzX4/CcsIPED6P3M+AoobjWs8Qn3HDX5atn9rxZSlwf8xky2oiQaeWbjmffCguWIHhaxMAhMOSmqm175Mo1uOdyipUBJWXodzQ3PhC7Kk11Nmp60eraoYozTmOKNwTJXt2VOR/vmZBFJl6GFBKx34fmLHzhk0wiielE10g0J5z/1/gz6wk/3JTEGCLZV2Zi1ZqrlKKHVnBOacb+PIrwOY4jRSHGc3JN9plnJRGlqP9Y0JqhPW3DEK8z77ERIxQM2/rcmhA9AVq8isHAU4NA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=66m/OgZDHWwTnlYOUohSUyFcCmk4dbbUNgyPOWNYyZk=;
+ b=AhzgBGtAXJMTzSsGHJdpuLbmlOF5PUx2Kl3ImwleMvHSuyQAItTUMAT5Fg6Tik9lxKvbfOGjKGrRFiCWec3a9XerTcAMcvGm3FSsS07B7tmsiBSfgc+6WwTQMfKcmtH5ts4rDBnG7h98mPjcjReiIE01sQ6o4M3C3qJxnypkbXKycM8mzHoHmiTJoApVkUn4VlqKpjTRqrYj2QuXcBRBHPZYVrQfMyLWj+0N6z1Sp0b9DKckmKu+dKQe2PDKANcPqc8AfFoOwer1y7YMo1M31X7/ZFPl8F8YQnf7fy04I74R3dNq39T3vHjOryFOn/+mMXzQnZc/uE9A1oINCSQuMw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
+ is 193.240.239.45) smtp.rcpttodomain=kernel.org smtp.mailfrom=diasemi.com;
+ dmarc=fail (p=none sp=none pct=100) action=none header.from=diasemi.com;
+ dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0J1GZssblsauExJHfvbe1syeV45yN+2xWBnYdzuIJ3E=;
-        b=cI2uriB/TThzgV6pAOzQorUW9I1CVBbqJ0zbMbQoOC0yyO8OC2WDI2GQvyi64RB+wk
-         P+If2GqU7CLFwYbE7nTWWYhGGfFoYuE8gaOHQLbtn/JjQqxLC42xnCtM6g6yMQ68MA6y
-         r0tJITQRS0hgmPv0NpDw/bi9YNHz2OaQ+dz0k0gFCPzt6Y3DLtw13x5titXcMdYe77UG
-         ZvFrF1RrrYllaTnMr+Hr8hG6xMbV9MkyhLvGtUN9Nns4AusRoMO0JTnCsux0bqCHgSxL
-         yG8auKXeYY2U5nB39IxKYVo80or5oxzLVkzSwY3WKB+A38ZY8rh4SfLxwjAPxT6/kMRX
-         Ij3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=0J1GZssblsauExJHfvbe1syeV45yN+2xWBnYdzuIJ3E=;
-        b=ssLJNgvh+f1cEKzQDuIZxZpoWWQcaEQCPl7H+b+TVTd3DlLX59Sg70XqECqLQxeb34
-         62gGpUI6KqNUV9cslS7RR29MOJQ1Ts6EUuRjp/kJxkssFjRxzd6ftlIAZsxsSdrVHtrq
-         5H3jXC/y/j59nFLG+cjNM66XqsvkfXSOu8NGOnAWgYQwEbKAFYhA08qM9v4shMTqEtXF
-         iSe81xYPftEv/KoKYG7S7vnYPWOZCzcAbxMxMvDnfgFlEJhChODUFn8Z7Jzq1hnGhjbl
-         3ytMrn8RJI+nhQUwtRcFnp66ED3VCoIRrxU6bMdDa9hV0i49wJLYNB3UQIJEoin2KAK0
-         hxWA==
-X-Gm-Message-State: AOAM531iVIrqze8sijjIJa7X0IPygzG2a0EexIcxatPtSbTSYrSdp3UH
-        s/d/ovsmZ8Mu9MqlTaZ0Gq0=
-X-Google-Smtp-Source: ABdhPJxoMPU8H+7OXm7gjNhPcovP5UTZ0b1M2OOaR78DhEAEvCEHYluOZgAjE8fSVQpimhV4wIWL+w==
-X-Received: by 2002:a17:90a:7144:: with SMTP id g4mr5784424pjs.80.1600826411028;
-        Tue, 22 Sep 2020 19:00:11 -0700 (PDT)
-Received: from balhae.roam.corp.google.com ([101.235.31.111])
-        by smtp.gmail.com with ESMTPSA id v13sm3367741pjr.12.2020.09.22.19.00.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 19:00:10 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        John Garry <john.garry@huawei.com>
-Subject: [PATCH 5/5] perf test: Add expand cgroup event test
-Date:   Wed, 23 Sep 2020 10:59:45 +0900
-Message-Id: <20200923015945.47535-6-namhyung@kernel.org>
-X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
-In-Reply-To: <20200923015945.47535-1-namhyung@kernel.org>
-References: <20200923015945.47535-1-namhyung@kernel.org>
+ d=dialogsemiconductor.onmicrosoft.com;
+ s=selector1-dialogsemiconductor-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=66m/OgZDHWwTnlYOUohSUyFcCmk4dbbUNgyPOWNYyZk=;
+ b=nRx/WMeDODxCCW3wNtfTTmUjVZU2EaNjYxxF7ZKyyr+MaCsUjLi43Zs495JirFW4UPwRWO/hIkkc1rVbQkb5GQ/xjpU7qfBZX8RHS4eK95suZi6R8m697NquMzU1mEQYNZ/dx4m+uOaW33q47EvHN+L0LW3XoXfbR+Jgr5fYVYY=
+Received: from FR2P281CA0023.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:14::10)
+ by AM5PR10MB1618.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:206:1e::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Wed, 23 Sep
+ 2020 02:19:52 +0000
+Received: from HE1EUR02FT044.eop-EUR02.prod.protection.outlook.com
+ (2603:10a6:d10:14:cafe::69) by FR2P281CA0023.outlook.office365.com
+ (2603:10a6:d10:14::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.7 via Frontend
+ Transport; Wed, 23 Sep 2020 02:19:52 +0000
+X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is
+ 193.240.239.45) smtp.mailfrom=diasemi.com; kernel.org; dkim=none (message not
+ signed) header.d=none;kernel.org; dmarc=fail action=none
+ header.from=diasemi.com;
+Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
+ diasemi.com discourages use of 193.240.239.45 as permitted sender)
+Received: from mailrelay1.diasemi.com (193.240.239.45) by
+ HE1EUR02FT044.mail.protection.outlook.com (10.152.11.75) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.3412.21 via Frontend Transport; Wed, 23 Sep 2020 02:19:52 +0000
+Received: from krsrvapps-03.diasemi.com (10.93.17.2) by
+ NB-EX-CASHUB01.diasemi.com (10.1.16.140) with Microsoft SMTP Server id
+ 14.3.468.0; Wed, 23 Sep 2020 04:19:50 +0200
+Received: by krsrvapps-03.diasemi.com (Postfix, from userid 22266)      id
+ 902F213F670; Wed, 23 Sep 2020 11:19:49 +0900 (KST)
+Message-ID: <c781c628be6937f78f2b613f11f4ad78522c825c.1600823131.git.Roy.Im@diasemi.com>
+In-Reply-To: <cover.1600823131.git.Roy.Im@diasemi.com>
+References: <cover.1600823131.git.Roy.Im@diasemi.com>
+From:   Roy Im <roy.im.opensource@diasemi.com>
+Date:   Wed, 23 Sep 2020 10:05:30 +0900
+Subject: [PATCH v20 1/3] MAINTAINERS: da7280 updates to the Dialog
+ Semiconductor search terms
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Rob Herring <robh@kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Greg KH <gregkh@linuxfoundation.org>,
+        Support Opensource <support.opensource@diasemi.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: fa38c5fa-5e81-422c-e309-08d85f67279c
+X-MS-TrafficTypeDiagnostic: AM5PR10MB1618:
+X-Microsoft-Antispam-PRVS: <AM5PR10MB161815387A2C88A3CC6AF92EA2380@AM5PR10MB1618.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Lw2jh3uMKT4JY4sOyVm2ROAXajysgE+Ll3HWUQxnCyc2KpPdDCFh+TBRrIVNXDJ2xDwT1Qn8GFoCoa0AMoQMF6ObZ0H1eGXtT8S9gJgaZE7GgU/T+lAnn/t31WguQXynR97dKO5XambRfFYyvNjb7CpSF5Wib59a9rgqogW/DGtvoYM+eoAz2Xkz2BCv0H9/RL4IQr5WCRRA7lJs+eL41HX182xKJd/x4FQc8RItNXRr0DhVwu/MiyEiOJKI4fbqoniTkTCpFqLefxNJiN6s8Y+okSJVRZ8gBiWkii/KQSPqAk6V5DIX2bslmCVfaqd/NLt18EooPvE6aU0extXqAB2iLiXed6RHTloS70/kcP/MRh9Cx6cY4L8Vf0mCxKWacZ62KKQLwUV4yIFx4H04ppDy8ZU5bhTu+7QiDuSfVBeCVtdOzenRR6RJebgondzIrKmpiFyLRlwcNJQqblzIBgTTiux+mFcy0Vxilu7Y6MlVIDe2QHAfg/uDiCAHXEUPAbENrkVNAzODpEwd9jLjRMjHC+/NlglmeeAvX/FOMHeBOAIczy6ALoTN+cHpOjCk
+X-Forefront-Antispam-Report: CIP:193.240.239.45;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mailrelay1.diasemi.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(39860400002)(376002)(46966005)(107886003)(4326008)(426003)(54906003)(336012)(6266002)(966005)(186003)(26005)(86362001)(47076004)(36756003)(356005)(82310400003)(83380400001)(81166007)(33310700002)(478600001)(82740400003)(70206006)(2616005)(316002)(6666004)(110136005)(36906005)(5660300002)(70586007)(42186006)(2906002)(8676002)(8936002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: diasemi.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2020 02:19:52.0839
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: fa38c5fa-5e81-422c-e309-08d85f67279c
+X-MS-Exchange-CrossTenant-Id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=511e3c0e-ee96-486e-a2ec-e272ffa37b7c;Ip=[193.240.239.45];Helo=[mailrelay1.diasemi.com]
+X-MS-Exchange-CrossTenant-AuthSource: HE1EUR02FT044.eop-EUR02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM5PR10MB1618
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It'll expand given events for cgroups A, B and C.
+This patch adds the da7280 bindings doc and driver to the Dialog
+Semiconductor support list.
 
-  $ ./perf test -v expansion
-  69: Event expansion for cgroups                      :
-  --- start ---
-  test child forked, pid 983140
-  metric expr 1 / IPC for CPI
-  metric expr instructions / cycles for IPC
-  found event instructions
-  found event cycles
-  adding {instructions,cycles}:W
-  copying metric event for cgroup 'A': instructions (idx=0)
-  copying metric event for cgroup 'B': instructions (idx=0)
-  copying metric event for cgroup 'C': instructions (idx=0)
-  test child finished with 0
-  ---- end ----
-  Event expansion for cgroups: Ok
+Signed-off-by: Roy Im <roy.im.opensource@diasemi.com>
 
-Cc: John Garry <john.garry@huawei.com>
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/tests/Build           |   1 +
- tools/perf/tests/builtin-test.c  |   4 +
- tools/perf/tests/expand-cgroup.c | 241 +++++++++++++++++++++++++++++++
- tools/perf/tests/tests.h         |   1 +
- 4 files changed, 247 insertions(+)
- create mode 100644 tools/perf/tests/expand-cgroup.c
+v20: No changes.
+v19: No changes.
+v18: No changes.
+v17: No changes.
+v16: No changes.
+v15: No changes.
+v14: No changes.
+v13: No changes.
+v12: Corrected file list order.
+v11: No changes.
+v10: No changes.
+v9: No changes.
+v8: No changes.
+v7: No changes.
+v6: No changes.
+v5: No changes.
+v4: No changes.
+v3: No changes.
+v2: No changes.
 
-diff --git a/tools/perf/tests/Build b/tools/perf/tests/Build
-index 69bea7996f18..4d15bf6041fb 100644
---- a/tools/perf/tests/Build
-+++ b/tools/perf/tests/Build
-@@ -61,6 +61,7 @@ perf-y += demangle-java-test.o
- perf-y += pfm.o
- perf-y += parse-metric.o
- perf-y += pe-file-parsing.o
-+perf-y += expand-cgroup.o
- 
- $(OUTPUT)tests/llvm-src-base.c: tests/bpf-script-example.c tests/Build
- 	$(call rule_mkdir)
-diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-index 651b8ea3354a..132bdb3e6c31 100644
---- a/tools/perf/tests/builtin-test.c
-+++ b/tools/perf/tests/builtin-test.c
-@@ -345,6 +345,10 @@ static struct test generic_tests[] = {
- 		.desc = "PE file support",
- 		.func = test__pe_file_parsing,
- 	},
-+	{
-+		.desc = "Event expansion for cgroups",
-+		.func = test__expand_cgroup_events,
-+	},
- 	{
- 		.func = NULL,
- 	},
-diff --git a/tools/perf/tests/expand-cgroup.c b/tools/perf/tests/expand-cgroup.c
-new file mode 100644
-index 000000000000..d5771e4d094f
---- /dev/null
-+++ b/tools/perf/tests/expand-cgroup.c
-@@ -0,0 +1,241 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "tests.h"
-+#include "debug.h"
-+#include "evlist.h"
-+#include "cgroup.h"
-+#include "rblist.h"
-+#include "metricgroup.h"
-+#include "parse-events.h"
-+#include "pmu-events/pmu-events.h"
-+#include "pfm.h"
-+#include <subcmd/parse-options.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+
-+static int test_expand_events(struct evlist *evlist,
-+			      struct rblist *metric_events)
-+{
-+	int i, ret = TEST_FAIL;
-+	int nr_events;
-+	bool was_group_event;
-+	int nr_members;  /* for the first evsel only */
-+	const char cgrp_str[] = "A,B,C";
-+	const char *cgrp_name[] = { "A", "B", "C" };
-+	int nr_cgrps = ARRAY_SIZE(cgrp_name);
-+	char **ev_name;
-+	struct evsel *evsel;
-+
-+	TEST_ASSERT_VAL("evlist is empty", !perf_evlist__empty(evlist));
-+
-+	nr_events = evlist->core.nr_entries;
-+	ev_name = calloc(nr_events, sizeof(*ev_name));
-+	if (ev_name == NULL) {
-+		pr_debug("memory allocation failure\n");
-+		return TEST_FAIL;
-+	}
-+	i = 0;
-+	evlist__for_each_entry(evlist, evsel) {
-+		ev_name[i] = strdup(evsel->name);
-+		if (ev_name[i] == NULL) {
-+			pr_debug("memory allocation failure\n");
-+			goto out;
-+		}
-+		i++;
-+	}
-+	/* remember grouping info */
-+	was_group_event = evsel__is_group_event(evlist__first(evlist));
-+	nr_members = evlist__first(evlist)->core.nr_members;
-+
-+	ret = evlist__expand_cgroup(evlist, cgrp_str, metric_events, false);
-+	if (ret < 0) {
-+		pr_debug("failed to expand events for cgroups\n");
-+		goto out;
-+	}
-+
-+	ret = TEST_FAIL;
-+	if (evlist->core.nr_entries != nr_events * nr_cgrps) {
-+		pr_debug("event count doesn't match\n");
-+		goto out;
-+	}
-+
-+	i = 0;
-+	evlist__for_each_entry(evlist, evsel) {
-+		if (strcmp(evsel->name, ev_name[i % nr_events])) {
-+			pr_debug("event name doesn't match:\n");
-+			pr_debug("  evsel[%d]: %s\n  expected: %s\n",
-+				 i, evsel->name, ev_name[i % nr_events]);
-+			goto out;
-+		}
-+		if (strcmp(evsel->cgrp->name, cgrp_name[i / nr_events])) {
-+			pr_debug("cgroup name doesn't match:\n");
-+			pr_debug("  evsel[%d]: %s\n  expected: %s\n",
-+				 i, evsel->cgrp->name, cgrp_name[i / nr_events]);
-+			goto out;
-+		}
-+
-+		if ((i % nr_events) == 0) {
-+			if (evsel__is_group_event(evsel) != was_group_event) {
-+				pr_debug("event group doesn't match: got %s, expect %s\n",
-+					 evsel__is_group_event(evsel) ? "true" : "false",
-+					 was_group_event ? "true" : "false");
-+				goto out;
-+			}
-+			if (evsel->core.nr_members != nr_members) {
-+				pr_debug("event group member doesn't match: %d vs %d\n",
-+					 evsel->core.nr_members, nr_members);
-+				goto out;
-+			}
-+		}
-+		i++;
-+	}
-+	ret = TEST_OK;
-+
-+out:	for (i = 0; i < nr_events; i++)
-+		free(ev_name[i]);
-+	free(ev_name);
-+	return ret;
-+}
-+
-+static int expand_default_events(void)
-+{
-+	int ret;
-+	struct evlist *evlist;
-+	struct rblist metric_events;
-+
-+	evlist = perf_evlist__new_default();
-+	TEST_ASSERT_VAL("failed to get evlist", evlist);
-+
-+	rblist__init(&metric_events);
-+	ret = test_expand_events(evlist, &metric_events);
-+	evlist__delete(evlist);
-+	return ret;
-+}
-+
-+static int expand_group_events(void)
-+{
-+	int ret;
-+	struct evlist *evlist;
-+	struct rblist metric_events;
-+	struct parse_events_error err;
-+	const char event_str[] = "{cycles,instructions}";
-+
-+	symbol_conf.event_group = true;
-+
-+	evlist = evlist__new();
-+	TEST_ASSERT_VAL("failed to get evlist", evlist);
-+
-+	ret = parse_events(evlist, event_str, &err);
-+	if (ret < 0) {
-+		pr_debug("failed to parse event '%s', err %d, str '%s'\n",
-+			 event_str, ret, err.str);
-+		parse_events_print_error(&err, event_str);
-+		goto out;
-+	}
-+
-+	rblist__init(&metric_events);
-+	ret = test_expand_events(evlist, &metric_events);
-+out:
-+	evlist__delete(evlist);
-+	return ret;
-+}
-+
-+static int expand_libpfm_events(void)
-+{
-+	int ret;
-+	struct evlist *evlist;
-+	struct rblist metric_events;
-+	const char event_str[] = "UNHALTED_CORE_CYCLES";
-+	struct option opt = {
-+		.value = &evlist,
-+	};
-+
-+	symbol_conf.event_group = true;
-+
-+	evlist = evlist__new();
-+	TEST_ASSERT_VAL("failed to get evlist", evlist);
-+
-+	ret = parse_libpfm_events_option(&opt, event_str, 0);
-+	if (ret < 0) {
-+		pr_debug("failed to parse libpfm event '%s', err %d\n",
-+			 event_str, ret);
-+		goto out;
-+	}
-+	if (perf_evlist__empty(evlist)) {
-+		pr_debug("libpfm was not enabled\n");
-+		goto out;
-+	}
-+
-+	rblist__init(&metric_events);
-+	ret = test_expand_events(evlist, &metric_events);
-+out:
-+	evlist__delete(evlist);
-+	return ret;
-+}
-+
-+static int expand_metric_events(void)
-+{
-+	int ret;
-+	struct evlist *evlist;
-+	struct rblist metric_events;
-+	const char metric_str[] = "CPI";
-+
-+	struct pmu_event pme_test[] = {
-+		{
-+			.metric_expr	= "instructions / cycles",
-+			.metric_name	= "IPC",
-+		},
-+		{
-+			.metric_expr	= "1 / IPC",
-+			.metric_name	= "CPI",
-+		},
-+		{
-+			.metric_expr	= NULL,
-+			.metric_name	= NULL,
-+		},
-+	};
-+	struct pmu_events_map ev_map = {
-+		.cpuid		= "test",
-+		.version	= "1",
-+		.type		= "core",
-+		.table		= pme_test,
-+	};
-+
-+	evlist = evlist__new();
-+	TEST_ASSERT_VAL("failed to get evlist", evlist);
-+
-+	rblist__init(&metric_events);
-+	ret = metricgroup__parse_groups_test(evlist, &ev_map, metric_str,
-+					     false, false, &metric_events);
-+	if (ret < 0) {
-+		pr_debug("failed to parse '%s' metric\n", metric_str);
-+		goto out;
-+	}
-+
-+	ret = test_expand_events(evlist, &metric_events);
-+
-+out:
-+	metricgroup__rblist_exit(&metric_events);
-+	evlist__delete(evlist);
-+	return ret;
-+}
-+
-+int test__expand_cgroup_events(struct test *test __maybe_unused,
-+			       int subtest __maybe_unused)
-+{
-+	int ret;
-+
-+	ret = expand_default_events();
-+	TEST_ASSERT_EQUAL("failed to expand default events", ret, 0);
-+
-+	ret = expand_group_events();
-+	TEST_ASSERT_EQUAL("failed to expand event group", ret, 0);
-+
-+	ret = expand_libpfm_events();
-+	TEST_ASSERT_EQUAL("failed to expand event group", ret, 0);
-+
-+	ret = expand_metric_events();
-+	TEST_ASSERT_EQUAL("failed to expand metric events", ret, 0);
-+
-+	return ret;
-+}
-diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
-index ef0f33c6ba23..c85a2c08e407 100644
---- a/tools/perf/tests/tests.h
-+++ b/tools/perf/tests/tests.h
-@@ -123,6 +123,7 @@ const char *test__pfm_subtest_get_desc(int subtest);
- int test__pfm_subtest_get_nr(void);
- int test__parse_metric(struct test *test, int subtest);
- int test__pe_file_parsing(struct test *test, int subtest);
-+int test__expand_cgroup_events(struct test *test, int subtest);
- 
- bool test__bp_signal_is_supported(void);
- bool test__bp_account_is_supported(void);
+
+ MAINTAINERS | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index d746519..6eff440 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5081,6 +5081,7 @@ M:	Support Opensource <support.opensource@diasemi.com>
+ S:	Supported
+ W:	http://www.dialog-semiconductor.com/products
+ F:	Documentation/devicetree/bindings/input/da90??-onkey.txt
++F:	Documentation/devicetree/bindings/input/dlg,da72??.txt
+ F:	Documentation/devicetree/bindings/mfd/da90*.txt
+ F:	Documentation/devicetree/bindings/regulator/da92*.txt
+ F:	Documentation/devicetree/bindings/regulator/slg51000.txt
+@@ -5091,6 +5092,7 @@ F:	Documentation/hwmon/da90??.rst
+ F:	drivers/gpio/gpio-da90??.c
+ F:	drivers/hwmon/da90??-hwmon.c
+ F:	drivers/iio/adc/da91??-*.c
++F:	drivers/input/misc/da72??.[ch]
+ F:	drivers/input/misc/da90??_onkey.c
+ F:	drivers/input/touchscreen/da9052_tsi.c
+ F:	drivers/leds/leds-da90??.c
 -- 
-2.28.0.681.g6f77f65b4e-goog
+end-of-patch for PATCH v20
 
