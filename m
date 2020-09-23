@@ -2,84 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85C78275BDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C9DB275BE2
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726656AbgIWPae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 11:30:34 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:52483 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgIWPae (ORCPT
+        id S1726709AbgIWPcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 11:32:46 -0400
+Received: from lan.nucleusys.com ([92.247.61.126]:60650 "EHLO
+        zztop.nucleusys.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726265AbgIWPcq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 11:30:34 -0400
-Received: from mail-qt1-f179.google.com ([209.85.160.179]) by
- mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1Ma1D8-1k07xz2jWG-00Vviz; Wed, 23 Sep 2020 17:30:31 +0200
-Received: by mail-qt1-f179.google.com with SMTP id n10so213106qtv.3;
-        Wed, 23 Sep 2020 08:30:31 -0700 (PDT)
-X-Gm-Message-State: AOAM5307kOwsmtZfQPw3FcRZVF6R9vw0L9GcCOy6LgUSOHuw5dyGgvU0
-        MjRygTZVbVOkdKQKjboSOZ6llH1lEfK+GAYpFRQ=
-X-Google-Smtp-Source: ABdhPJyx3khV9ouMU1lDxgVnLoI4g4YiXmj0IB5rW6IHWN5WF61DmY8GCOsbNySmlU3CqZ9ohZGbz8tecEaKsFKwVrg=
-X-Received: by 2002:aed:3825:: with SMTP id j34mr581207qte.7.1600875030304;
- Wed, 23 Sep 2020 08:30:30 -0700 (PDT)
+        Wed, 23 Sep 2020 11:32:46 -0400
+X-Greylist: delayed 2630 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Sep 2020 11:32:45 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=nucleusys.com; s=x; h=In-Reply-To:Content-Type:MIME-Version:References:
+        Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=4DYJKE8l8EdESOXVwsp+gos89esEsmURD8s5B4Bsfec=; b=RSQ+DQS4PaLen4FanX1zUpusmC
+        OHWXejqIFItnVTGDp+b/dg12zVaDRxod2M2lHqBTd1wuU9VdN4tAlPOYuXIbLyW6webaKVGsHb4sU
+        +Zv3/lgtW70dj7YK6MLfjmP/UtcK+EgPmtQCn+YK7eXj64c571iIXke3Ne1v7OP9dCYU=;
+Received: from [94.26.108.4] (helo=karbon)
+        by zztop.nucleusys.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <petkan@nucleusys.com>)
+        id 1kL64P-0005m4-T2; Wed, 23 Sep 2020 17:48:34 +0300
+Date:   Wed, 23 Sep 2020 17:48:32 +0300
+From:   Petko Manolov <petkan@nucleusys.com>
+To:     Oliver Neukum <oneukum@suse.com>
+Cc:     Himadri Pandya <himadrispandya@gmail.com>, davem@davemloft.net,
+        kuba@kernel.org, pankaj.laxminarayan.bharadiya@intel.com,
+        keescook@chromium.org, yuehaibing@huawei.com, ogiannou@gmail.com,
+        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        gregkh@linuxfoundation.org
+Subject: Re: [PATCH 3/4] net: usb: rtl8150: use usb_control_msg_recv() and
+ usb_control_msg_send()
+Message-ID: <20200923144832.GA11151@karbon>
+References: <20200923090519.361-1-himadrispandya@gmail.com>
+ <20200923090519.361-4-himadrispandya@gmail.com>
+ <1600856557.26851.6.camel@suse.com>
 MIME-Version: 1.0
-References: <20200923151511.3842150-1-luzmaximilian@gmail.com>
-In-Reply-To: <20200923151511.3842150-1-luzmaximilian@gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 23 Sep 2020 17:30:14 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3Qie_CP1dA-ERqyDv=EnaQQPnNbFYrGr3ySiY4mO0=Uw@mail.gmail.com>
-Message-ID: <CAK8P3a3Qie_CP1dA-ERqyDv=EnaQQPnNbFYrGr3ySiY4mO0=Uw@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/9] Add support for Microsoft Surface System
- Aggregator Module
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-serial@vger.kernel.org,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        =?UTF-8?Q?Bla=C5=BE_Hrastnik?= <blaz@mxxn.io>,
-        Dorian Stoll <dorian.stoll@tmsp.io>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:8N6geTkfnb188B0H6aGTVMbLl+suW/kEDmJPmYACXe0NZkdkx0T
- 0Iv2eSBTrpLTjcbWGFtPZHXyFUfmrt8b0CJkQJF2lY/YoKl0dQNRDrdi90q9vhoJ27ekbYP
- hnW2az5XXGHgmYbfrY84iNXFQOJz+JzUT0qfZRzG4VUP3VKySlOg44mLtJUbKQosYp1iOGO
- 3TMl/2A6NXe2AN8sMKM5g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:YVhJ5zJKHT8=:ZeaLUegZUQCPe3E9MYfpJH
- hz5hTmAoUvpYeEWZQkx2YTYHp4+UxDeI5pYprvthjKEzOdGdYgUKxWeRCJoUk3XbgdIOWxy9e
- rYkGqpOLfTDgk5tGXfOfM42cf6VglVTYrnVBeiUnuP+uFJ+k0wk8JSU44JVLgg39oVIJp/LbU
- 9vpizFtKTk/HlaiFq+QJ3NRpHpPVaio2WrDd/b33JlhESWinm1LklG7HK75Obq6/+MECsBJNw
- bz8Mnc6v21RErIX9GnfRnqhreeKm/ve5gy14J+Tl+KSNOgEUJ4TTNTo4P1Ns8CPC8RLhYKlE7
- 8Z+DrjdV6fZ9ymexsLynm5cUEFJ+Dl7HmeXDRZ9qFeh6R68kzwUBXttjYjn7TMCywjNdK/Y48
- 398NL2dqysIvGLL/Qhp4BF1zPVIaoKjQZhtNkXCyazB4KtZbMaqSA15OB0xtct5hjGNS8mhuq
- gNk0ZjDuaCzEy/ZehIce3bY3FHQa3wVh4g7nhhR/FcBmYvMnilc0NaXrrxmRIHYWPVsFsSR40
- DQOgdBJHSSY1B/o57PXonLsgeGP31HTCkYjsTDg6OapKtE20RO6HODJE06tT1JGs2G1ZL2HvO
- +yWc0B/WrYPuvo1WwMc5fRLzT3ct5fpxg+Rd2gmg2nWswK1rcH/Y14xN0V2ByUiEHtSW6a7a5
- 86CbGb/FXY8jpWBPn5TIlV0TGjGh8tDqLzWh79E7+x9iRKOURQjyqGUcjY8s45N0BHQlLG4k+
- gcnU4DVUynTJePKazKsjUa1A0u7aqYDLtqPPqwIKusaWzKkly3jCz7QLPRbEGBS1F4YYarI1E
- DpSINoLwG9P4Hy7d3LFHuK0qLBPU+9emDzGe58h+XzSSIuvbkKv7IwPesU8Yqp3bON+nkk7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1600856557.26851.6.camel@suse.com>
+X-Spam-Score: -1.0 (-)
+X-Spam-Report: Spam detection software, running on the system "zztop.nucleusys.com",
+ has NOT identified this incoming email as spam.  The original
+ message has been attached to this so you can view it or label
+ similar future email.  If you have any questions, see
+ the administrator of that system for details.
+ Content preview:  On 20-09-23 12:22:37, Oliver Neukum wrote: > Am Mittwoch,
+   den 23.09.2020, 14:35 +0530 schrieb Himadri Pandya: > > Hi, > > > Many usage
+    of usb_control_msg() do not have proper error check on return > > [...] 
+ Content analysis details:   (-1.0 points, 5.0 required)
+  pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+ -1.0 ALL_TRUSTED            Passed through trusted hosts only via SMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 5:15 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
->
-> Hello,
->
-> The Surface System Aggregator Module (we'll refer to it as Surface
-> Aggregator or SAM below) is an embedded controller (EC) found on various
-> Microsoft Surface devices. Specifically, all 4th and later generation
-> Surface devices, i.e. Surface Pro 4, Surface Book 1 and later, with the
-> exception of the Surface Go series and the Surface Duo. Notably, it
-> seems like this EC can also be found on the ARM-based Surface Pro X [1].
+On 20-09-23 12:22:37, Oliver Neukum wrote:
+> Am Mittwoch, den 23.09.2020, 14:35 +0530 schrieb Himadri Pandya:
+> 
+> Hi,
+> 
+> > Many usage of usb_control_msg() do not have proper error check on return
+> > value leaving scope for bugs on short reads. New usb_control_msg_recv()
+> > and usb_control_msg_send() nicely wraps usb_control_msg() with proper
+> > error check. Hence use the wrappers instead of calling usb_control_msg()
+> > directly.
+> > 
+> > Signed-off-by: Himadri Pandya <himadrispandya@gmail.com>
+> Nacked-by: Oliver Neukum <oneukum@suse.com>
+> 
+> > ---
+> >  drivers/net/usb/rtl8150.c | 32 ++++++--------------------------
+> >  1 file changed, 6 insertions(+), 26 deletions(-)
+> > 
+> > diff --git a/drivers/net/usb/rtl8150.c b/drivers/net/usb/rtl8150.c
+> > index 733f120c852b..e3002b675921 100644
+> > --- a/drivers/net/usb/rtl8150.c
+> > +++ b/drivers/net/usb/rtl8150.c
+> > @@ -152,36 +152,16 @@ static const char driver_name [] = "rtl8150";
+> >  */
+> >  static int get_registers(rtl8150_t * dev, u16 indx, u16 size, void *data)
+> >  {
+> > -	void *buf;
+> > -	int ret;
+> > -
+> > -	buf = kmalloc(size, GFP_NOIO);
+> 
+> GFP_NOIO is used here for a reason. You need to use this helper
+> while in contexts of error recovery and runtime PM.
+> 
+> > -	if (!buf)
+> > -		return -ENOMEM;
+> > -
+> > -	ret = usb_control_msg(dev->udev, usb_rcvctrlpipe(dev->udev, 0),
+> > -			      RTL8150_REQ_GET_REGS, RTL8150_REQT_READ,
+> > -			      indx, 0, buf, size, 500);
+> > -	if (ret > 0 && ret <= size)
+> > -		memcpy(data, buf, ret);
+> > -	kfree(buf);
+> > -	return ret;
+> > +	return usb_control_msg_recv(dev->udev, 0, RTL8150_REQ_GET_REGS,
+> > +				    RTL8150_REQT_READ, indx, 0, data,
+> > +				    size, 500);
+> 
+> This internally uses kmemdup() with GFP_KERNEL.
+> You cannot make this change. The API does not support it.
+> I am afraid we will have to change the API first, before more
+> such changes are done.
 
-I think this should go to drivers/platform/x86 or drivers/platform/surface/
-along with other laptop vendor specific code rather than drivers/misc/.
+One possible fix is to add yet another argument to usb_control_msg_recv(), which 
+would be the GFP_XYZ flag to pass on to kmemdup().  Up to Greg, of course.
 
-I'll have a look at the code myself, but I'd prefer to have the maintainers
-for the other laptop drivers review this properly.
 
-       Arnd
+cheers,
+Petko
