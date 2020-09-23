@@ -2,261 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4E35275CFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D4B0275CF4
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726764AbgIWQLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 12:11:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49140 "EHLO
+        id S1726874AbgIWQKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 12:10:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726332AbgIWQLb (ORCPT
+        with ESMTP id S1726460AbgIWQKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 12:11:31 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACC71C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 09:11:31 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id k25so333238qtu.4
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 09:11:31 -0700 (PDT)
+        Wed, 23 Sep 2020 12:10:17 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3981C0613CE;
+        Wed, 23 Sep 2020 09:10:16 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id c2so72790ljj.12;
+        Wed, 23 Sep 2020 09:10:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IGPu7NNtflAJZK7hHCfFupOylTZME0S//AJZnJbIMo0=;
-        b=mf52FpZBbHbRIkbpYU536jGvNcovroktb/HPnR9sOcrUA+/rPP8gZ3IRv5JcXxhMgH
-         4mp00ovPpt1O9FRgmhkrK5fTkT0Pa0c+QgOqnwCU6KKvtuN+m6/rDfIVEI0P9T5nFeXJ
-         +hkXAYwPnQ3r2Qz6sPLnerIZXNB1qAxeSL+/Ag1KI7iwjtoNyTUNvxtN1xe0MISQ9tmM
-         KHpJg3jRaYXaOTPzvTONWXIWHt6LAfCI57TP++3xUnqgEOYHQ/tNaHWamb6Hy35i3Ppx
-         UmMVLnNhodTToU7M4uYddGscZ7JUXLbqtDhANwfEJwizAi8VxK2KXRnKF9mreq7bPfYt
-         VAAg==
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=fLmbb9U9bqHqilaK4385mcuNv91EOtpVFkgBOfJ5G/o=;
+        b=p2evDSCa2EcEE8ZLWWk1otlE+tmQeKWRhzKOHSeR4RMUh1WzU6ZMTSjwuENScJP6e7
+         d7/O+k7UsRmvszhNWV8bEJsqD+t4J5QFYpFjbD+4NPsGYb5AbEmWNlUYI2gj8InGLjhz
+         ppUPvvkXKBf3p0RGWZG0Hbsn1xHXNoJummU3B0GeW5vvezDasmFy2FefgEyVWxvWvxin
+         nr3OCyWdIJ109nZRH3928LJyg+y9gc+1KoHl5z1hjsDPB4yQIOJ/B6AuFA5xy9klepan
+         fHvdT8Ec0cFLT6OXaZfunoMH6Vt8d+IF73RKXD70/EFTWgX3X35lx58/Jf01hM9mnXDF
+         /sMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=IGPu7NNtflAJZK7hHCfFupOylTZME0S//AJZnJbIMo0=;
-        b=bczKkiN/l+t5LyTKJuUHcS+zemqZPJVuuMKpOVWip8LWP6sQwcbq0cW/zTzn28hc2K
-         hNvu8C36B4eZTD3/cvQztAclvxtMwbfj01/b6tbBLx+TWr9Qhvs/q9aEuVwNze6QMgME
-         C+P4I7tQOOS0gy/O0LjmxiteAuwy93GGJRQoBHoEa43stAygyjaOjyHeIWc4C3S83Mg0
-         4P7eiyvZKhJ+PjLYlaAxfbdXeJESKQQARsbJGUOT6zy6nMXGkHdbz7XmkJ8+AivqUZyI
-         DAnlGhccxRjiba0Gf9MpTLGHozTrnTUTr3CoDl16Nrm2zSh1GoWgJuMQHHiek94P6axF
-         ss+w==
-X-Gm-Message-State: AOAM533ADFi6mOnKBRo1PAqw6C/y69iwJIhjDz0ebqiJ0zybXNEa9UGx
-        HJFo5A/WKVdT+eEGfEOA6ZDGRn5qxbdjKi+Auv0=
-X-Google-Smtp-Source: ABdhPJzjwxhG3t5dQO4Mh3OpZJ32pbgHOsEh4Q4h7qrUqcvJY+8Oaihd7mni0/cqrJLlwhiqrejhvA==
-X-Received: by 2002:ac8:f23:: with SMTP id e32mr823204qtk.168.1600877490919;
-        Wed, 23 Sep 2020 09:11:30 -0700 (PDT)
-Received: from [192.168.0.189] ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id v28sm259305qkv.72.2020.09.23.09.11.29
+        bh=fLmbb9U9bqHqilaK4385mcuNv91EOtpVFkgBOfJ5G/o=;
+        b=E6SgHfr2/SU50R6QZHWMiUGQRFPGOqla0TTpQRkqvVyG/AF+Br77s+B9jrtHCqJF4p
+         +es+KHgcbeSUCDvjeY4f97VjG5hqdkry/f3q27f/TbPSJV3g7kk+wjYTWRm0lm2lLd4I
+         uaC7XZ3/yupXbG18YZd1IfQLxpeikjwGYCVxDYE5cOjCCSwSznJgqoNpMHuySo/rjCc8
+         JbicObXBtQHJCM2z/KwaJu4r161zRgLq3ozbTtzZ66BVvfnhJI7J3BlmhxHIFFqd4eW2
+         y+AKhUnx5Fwu/6u5Lj2nFYn6mgLkS1SbfesZ1D+zTCsKsKRBjvUIr7v74+ZwgKKmzXhM
+         pgHQ==
+X-Gm-Message-State: AOAM533ovi05ffeR2zdz6NybS1BBggz7hUUtxP1389DMyncS1/Z1ukxD
+        PxQFhrwJdS1FKvYdRcVhQXs0UeX2ICk=
+X-Google-Smtp-Source: ABdhPJy6vKnTPgLoiX0HtGkIO62575jsR7MzgOu0CgQRtBKXfWwHlcqdzmyuK6P5D3TqhFGniDjGnA==
+X-Received: by 2002:a2e:8607:: with SMTP id a7mr197615lji.122.1600877414986;
+        Wed, 23 Sep 2020 09:10:14 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id p18sm5357671ljg.26.2020.09.23.09.10.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Sep 2020 09:11:30 -0700 (PDT)
-Subject: Re: [PATCH v3 7/7] clk: qcom: Add display clock controller driver for
- SM8250
-To:     Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-References: <20200911153412.21672-1-jonathan@marek.ca>
- <20200911153412.21672-8-jonathan@marek.ca>
- <160080125949.310579.17354323673790889544@swboyd.mtv.corp.google.com>
-From:   Jonathan Marek <jonathan@marek.ca>
-Message-ID: <2f429321-49c1-98b9-63e6-fd9c885af59c@marek.ca>
-Date:   Wed, 23 Sep 2020 12:10:04 -0400
+        Wed, 23 Sep 2020 09:10:14 -0700 (PDT)
+Subject: Re: [PATCH v8 00/32] Improvements for Tegra I2C driver
+To:     Wolfram Sang <wsa@the-dreams.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200922225155.10798-1-digetx@gmail.com>
+ <aee6c548-241d-2cc5-415e-9f0b60177d67@gmail.com>
+ <20200923070153.GA2548@kunai>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <47220c52-76db-a153-45e2-6c223a2fe56a@gmail.com>
+Date:   Wed, 23 Sep 2020 19:10:13 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <160080125949.310579.17354323673790889544@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20200923070153.GA2548@kunai>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/22/20 3:00 PM, Stephen Boyd wrote:
-> Quoting Jonathan Marek (2020-09-11 08:34:07)
->> diff --git a/drivers/clk/qcom/dispcc-sm8250.c b/drivers/clk/qcom/dispcc-sm8250.c
->> new file mode 100644
->> index 000000000000..7c0f384a3a42
->> --- /dev/null
->> +++ b/drivers/clk/qcom/dispcc-sm8250.c
->> @@ -0,0 +1,1100 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.
->> + */
->> +
-> [...]
->> +
->> +static const struct clk_parent_data disp_cc_parent_data_6[] = {
->> +       { .fw_name = "bi_tcxo" },
->> +       { .fw_name = "dsi0_phy_pll_out_dsiclk" },
->> +       { .fw_name = "dsi1_phy_pll_out_dsiclk" },
+23.09.2020 10:01, Wolfram Sang пишет:
 > 
-> Can we remove clk postfix on these clk names?
+>> Ahh, I missed to add Andy's r-b to all patches.
+>>
+>> Hope it's okay if I'll add it here like this:
+>>
+>> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> 
+> Yes, it is. So, I ideally we get an ack on patch 12 and are good to go,
+> I'd think?
+> 
+> Thanks again, everyone!
 > 
 
-This is consistent with the names used in both sdm845 and sc7180 
-drivers. If this should change then those should be changed too?
-
->> +};
->> +
->> +static const struct freq_tbl ftbl_disp_cc_mdss_ahb_clk_src[] = {
->> +       F(19200000, P_BI_TCXO, 1, 0, 0),
->> +       F(37500000, P_DISP_CC_PLL1_OUT_MAIN, 16, 0, 0),
->> +       F(75000000, P_DISP_CC_PLL1_OUT_MAIN, 8, 0, 0),
->> +       { }
->> +};
->> +
->> +static struct clk_rcg2 disp_cc_mdss_ahb_clk_src = {
->> +       .cmd_rcgr = 0x22bc,
->> +       .mnd_width = 0,
->> +       .hid_width = 5,
->> +       .parent_map = disp_cc_parent_map_3,
->> +       .freq_tbl = ftbl_disp_cc_mdss_ahb_clk_src,
->> +       .clkr.hw.init = &(struct clk_init_data){
->> +               .name = "disp_cc_mdss_ahb_clk_src",
->> +               .parent_data = disp_cc_parent_data_3,
->> +               .num_parents = ARRAY_SIZE(disp_cc_parent_data_3),
->> +               .flags = CLK_SET_RATE_PARENT,
->> +               .ops = &clk_rcg2_shared_ops,
->> +       },
->> +};
->> +
->> +static const struct freq_tbl ftbl_disp_cc_mdss_byte0_clk_src[] = {
->> +       F(19200000, P_BI_TCXO, 1, 0, 0),
->> +       { }
->> +};
->> +
->> +static struct clk_rcg2 disp_cc_mdss_byte0_clk_src = {
->> +       .cmd_rcgr = 0x2110,
->> +       .mnd_width = 0,
->> +       .hid_width = 5,
->> +       .parent_map = disp_cc_parent_map_2,
->> +       .clkr.hw.init = &(struct clk_init_data){
->> +               .name = "disp_cc_mdss_byte0_clk_src",
->> +               .parent_data = disp_cc_parent_data_2,
->> +               .num_parents = ARRAY_SIZE(disp_cc_parent_data_2),
->> +               .flags = CLK_SET_RATE_PARENT | CLK_GET_RATE_NOCACHE,
-> 
-> Why do we need CLK_GET_RATE_NOCACHE? Please remove it.
-> 
->> +               .ops = &clk_byte2_ops,
->> +       },
->> +};
->> +
->> +static struct clk_rcg2 disp_cc_mdss_byte1_clk_src = {
->> +       .cmd_rcgr = 0x212c,
->> +       .mnd_width = 0,
->> +       .hid_width = 5,
->> +       .parent_map = disp_cc_parent_map_2,
->> +       .clkr.hw.init = &(struct clk_init_data){
->> +               .name = "disp_cc_mdss_byte1_clk_src",
->> +               .parent_data = disp_cc_parent_data_2,
->> +               .num_parents = ARRAY_SIZE(disp_cc_parent_data_2),
->> +               .flags = CLK_SET_RATE_PARENT | CLK_GET_RATE_NOCACHE,
->> +               .ops = &clk_byte2_ops,
->> +       },
->> +};
->> +
->> +static struct clk_rcg2 disp_cc_mdss_dp_aux1_clk_src = {
->> +       .cmd_rcgr = 0x2240,
->> +       .mnd_width = 0,
->> +       .hid_width = 5,
->> +       .parent_map = disp_cc_parent_map_1,
->> +       .freq_tbl = ftbl_disp_cc_mdss_byte0_clk_src,
->> +       .clkr.hw.init = &(struct clk_init_data){
->> +               .name = "disp_cc_mdss_dp_aux1_clk_src",
->> +               .parent_data = disp_cc_parent_data_1,
->> +               .num_parents = ARRAY_SIZE(disp_cc_parent_data_1),
->> +               .flags = CLK_SET_RATE_PARENT,
->> +               .ops = &clk_rcg2_ops,
->> +       },
->> +};
->> +
->> +static struct clk_rcg2 disp_cc_mdss_dp_aux_clk_src = {
->> +       .cmd_rcgr = 0x21dc,
->> +       .mnd_width = 0,
->> +       .hid_width = 5,
->> +       .parent_map = disp_cc_parent_map_1,
->> +       .freq_tbl = ftbl_disp_cc_mdss_byte0_clk_src,
->> +       .clkr.hw.init = &(struct clk_init_data){
->> +               .name = "disp_cc_mdss_dp_aux_clk_src",
->> +               .parent_data = disp_cc_parent_data_1,
->> +               .num_parents = ARRAY_SIZE(disp_cc_parent_data_1),
->> +               .flags = CLK_SET_RATE_PARENT,
->> +               .ops = &clk_rcg2_ops,
->> +       },
->> +};
->> +
->> +static const struct freq_tbl ftbl_disp_cc_mdss_dp_link1_clk_src[] = {
->> +       F(162000000, P_DP_PHY_PLL_LINK_CLK, 1, 0, 0),
->> +       F(270000000, P_DP_PHY_PLL_LINK_CLK, 1, 0, 0),
->> +       F(540000000, P_DP_PHY_PLL_LINK_CLK, 1, 0, 0),
->> +       F(810000000, P_DP_PHY_PLL_LINK_CLK, 1, 0, 0),
->> +       { }
->> +};
->> +
->> +static struct clk_rcg2 disp_cc_mdss_dp_link1_clk_src = {
->> +       .cmd_rcgr = 0x220c,
->> +       .mnd_width = 0,
->> +       .hid_width = 5,
->> +       .parent_map = disp_cc_parent_map_0,
->> +       .freq_tbl = ftbl_disp_cc_mdss_dp_link1_clk_src,
->> +       .clkr.hw.init = &(struct clk_init_data){
->> +               .name = "disp_cc_mdss_dp_link1_clk_src",
->> +               .parent_data = disp_cc_parent_data_0,
->> +               .num_parents = ARRAY_SIZE(disp_cc_parent_data_0),
->> +               .flags = CLK_SET_RATE_PARENT | CLK_GET_RATE_NOCACHE,
->> +               .ops = &clk_rcg2_ops,
->> +       },
->> +};
->> +
->> +static struct clk_rcg2 disp_cc_mdss_dp_link_clk_src = {
->> +       .cmd_rcgr = 0x2178,
->> +       .mnd_width = 0,
->> +       .hid_width = 5,
->> +       .parent_map = disp_cc_parent_map_0,
->> +       .freq_tbl = ftbl_disp_cc_mdss_dp_link1_clk_src,
->> +       .clkr.hw.init = &(struct clk_init_data){
->> +               .name = "disp_cc_mdss_dp_link_clk_src",
->> +               .parent_data = disp_cc_parent_data_0,
->> +               .num_parents = ARRAY_SIZE(disp_cc_parent_data_0),
->> +               .flags = CLK_SET_RATE_PARENT | CLK_GET_RATE_NOCACHE,
->> +               .ops = &clk_rcg2_ops,
->> +       },
->> +};
->> +
->> +static struct clk_rcg2 disp_cc_mdss_dp_pixel1_clk_src = {
->> +       .cmd_rcgr = 0x21c4,
->> +       .mnd_width = 16,
->> +       .hid_width = 5,
->> +       .parent_map = disp_cc_parent_map_0,
->> +       .clkr.hw.init = &(struct clk_init_data){
->> +               .name = "disp_cc_mdss_dp_pixel1_clk_src",
->> +               .parent_data = disp_cc_parent_data_0,
->> +               .num_parents = ARRAY_SIZE(disp_cc_parent_data_0),
->> +               .flags = CLK_SET_RATE_PARENT | CLK_GET_RATE_NOCACHE,
->> +               .ops = &clk_dp_ops,
-> 
-> This is affected by the patch I just applied 355a7d754b92 ("clk: qcom:
-> dispcc: Update DP clk ops for phy design"). Please resend.
-> 
->> +       },
->> +};
->> +
->> +static struct clk_rcg2 disp_cc_mdss_dp_pixel2_clk_src = {
->> +       .cmd_rcgr = 0x21f4,
->> +       .mnd_width = 16,
->> +       .hid_width = 5,
->> +       .parent_map = disp_cc_parent_map_0,
->> +       .clkr.hw.init = &(struct clk_init_data){
->> +               .name = "disp_cc_mdss_dp_pixel2_clk_src",
->> +               .parent_data = disp_cc_parent_data_0,
->> +               .num_parents = ARRAY_SIZE(disp_cc_parent_data_0),
->> +               .flags = CLK_SET_RATE_PARENT | CLK_GET_RATE_NOCACHE,
->> +               .ops = &clk_dp_ops,
->> +       },
->> +};
->> +
+Correct, Thierry should give the final ack. Thanks :)
