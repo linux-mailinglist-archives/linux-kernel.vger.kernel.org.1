@@ -2,153 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F7B2751C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 08:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A43952751C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 08:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726715AbgIWGpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 02:45:04 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:27117 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726557AbgIWGpE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 02:45:04 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200923064503epoutp0231fe18139d87b0fa99013967508bbe5d~3Vq8778pi2209922099epoutp02X
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 06:45:03 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200923064503epoutp0231fe18139d87b0fa99013967508bbe5d~3Vq8778pi2209922099epoutp02X
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1600843503;
-        bh=DSnklmNM1iRH6V9fPTu0ChZ9yrpvpym06lWfFNwv+dQ=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=VS5bdBsGOXG5RUWUQoIj+j6aFDTLbOUCB8dQju53l1EaiNIibXY+kZtg57rTGJjY+
-         IQwsCzBK2rVJCDGBi3HUXIS6SNCMNM5PdUYd/P+9OqsAF5qtq2fHS1N3+slwbA2EIp
-         NtgxkL7dE1bwAu9Lt/e9ZqSIgennsPP8qYKCcsy0=
-Received: from epcpadp1 (unknown [182.195.40.11]) by epcas1p3.samsung.com
-        (KnoxPortal) with ESMTP id
-        20200923064502epcas1p397c36261549cb9563d63a46aa0dc3ec4~3Vq8ZrahU1896818968epcas1p3g;
-        Wed, 23 Sep 2020 06:45:02 +0000 (GMT)
-Mime-Version: 1.0
-Subject: [PATCH v12 1/4] scsi: ufs: Add HPB feature related parameters
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Daejun Park <daejun7.park@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        id S1726686AbgIWGoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 02:44:08 -0400
+Received: from mail-eopbgr30045.outbound.protection.outlook.com ([40.107.3.45]:40401
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726550AbgIWGoI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 02:44:08 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ItozPyyo/FH6ZFECJpkJB8Vztc2V4qVhMyku2qcymZzbx334LFZ1ZUJPe9yNGSRzmhPrAA8OdIyAN8se8gT6rsSkbJoMGqzBGa9fP5rPM5ovik11Ke8B40uM41K38aPcm5zlK+8qz0JgypceSyy8hA8UbeoYZrfrT8RpvbkgzGIuvKZku1/Tja2YDQOG/QdseSQMRti7eNhLX7yIoC1AoNZts7os0XGWZsAGslVYie5cVhJWIp8tjySOjMxUkH5rCNuIc7yQmLQ148CHPMMTvAGjnsSHMD4UZb7bCdpVsgB94IXVsTyodO6rZeFD3Qm23qs4gYjMcEMtGsivYJt3LA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yqNiDz3DVqXA44dzIcUquHyHBbYkr1yiBR9LslF9F9s=;
+ b=LplUxbnO/eT92VkfvsZyl77kN56pi/ZUMxv3P6cewNnPEMnBU2dLHKvHmk/neoRqgWC56jd292MNaFM0tr68+lHItww/UBxks+j8joBdg4brpkp8Rfl3I+pJO42y2t89RVjuFQH3PGvt/sfQDFFGFIzMKM/7FqqmzTWjXdOVOA3/vOa8Ndx2U6jpUBHagi4RQ4ZcOHl3LNrykPiu6jV5M9KsRp0UCBopKpUWgra6WEZJ2wBwEiPiBOnpeYtdMN8D7n3PkLHEjlGkslbOo1oxnK7aSDjrMyEiyb7w5GJbUgVgKkOLupkuiqmSsY/Ph1aU43YbEwgsMYWJUUuFOVjVkw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yqNiDz3DVqXA44dzIcUquHyHBbYkr1yiBR9LslF9F9s=;
+ b=mD4svKt9jO29MtlUNwrq4nrH+gMbpurOfA6MWLwzGQhb9nzNd62nfctqjpaYjNCAF+OFMZIklpk872bIZgB0e/aDBXsYDs6xbQJYkrds8NyOuMYjC6WT+9HZaJ12QjX2hlHY1WuxDBtLNIAeOyFFXNaUMdFkSFcYpCK4azuC5xY=
+Received: from AM6PR04MB5413.eurprd04.prod.outlook.com (2603:10a6:20b:96::28)
+ by AM6PR04MB4968.eurprd04.prod.outlook.com (2603:10a6:20b:7::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.24; Wed, 23 Sep
+ 2020 06:44:04 +0000
+Received: from AM6PR04MB5413.eurprd04.prod.outlook.com
+ ([fe80::1953:c81a:cca2:60ec]) by AM6PR04MB5413.eurprd04.prod.outlook.com
+ ([fe80::1953:c81a:cca2:60ec%7]) with mapi id 15.20.3412.020; Wed, 23 Sep 2020
+ 06:44:04 +0000
+From:   Ran Wang <ran.wang_1@nxp.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     Leo Li <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <231786897.01600843382167.JavaMail.epsvc@epcpadp2>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <963815509.21600843502592.JavaMail.epsvc@epcpadp1>
-Date:   Wed, 23 Sep 2020 15:43:56 +0900
-X-CMS-MailID: 20200923064356epcms2p8e0994730cee5ab4acd7b008f750d14ea
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20200923063922epcms2p8ba87e252935bc8cc10f55639c0e2d601
-References: <231786897.01600843382167.JavaMail.epsvc@epcpadp2>
-        <CGME20200923063922epcms2p8ba87e252935bc8cc10f55639c0e2d601@epcms2p8>
+        Biwen Li <biwen.li@nxp.com>
+Subject: RE: [PATCH 1/5] Documentation: dt: binding: fsl: Add
+ 'fsl,ippdexpcr1-alt-addr' property
+Thread-Topic: [PATCH 1/5] Documentation: dt: binding: fsl: Add
+ 'fsl,ippdexpcr1-alt-addr' property
+Thread-Index: AQHWjAMgWpwpgcZEfEity8vaUHwtLKl1i48AgABEr6A=
+Date:   Wed, 23 Sep 2020 06:44:04 +0000
+Message-ID: <AM6PR04MB5413BB2F8D044B2312DAEC4FF1380@AM6PR04MB5413.eurprd04.prod.outlook.com>
+References: <20200916081831.24747-1-ran.wang_1@nxp.com>
+ <20200923023234.GA3751572@bogus>
+In-Reply-To: <20200923023234.GA3751572@bogus>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.73]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: d047ef28-77c1-45b4-9024-08d85f8c101a
+x-ms-traffictypediagnostic: AM6PR04MB4968:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM6PR04MB4968E136B383FE8336405B52F1380@AM6PR04MB4968.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2733;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: SQ7flo1GJ/vPX66/rNYvAesvtohKzmOx+PRGyivP29RY5QpWhLMppKQ4HviL/AfQn66BCrdT+E/l626EKl8uIj4rFGD7hj4Sph7of2LVmIGK5hHcyke/15NTzGzBK0M3NLgjEzNJPmWQWwsR4dVbhwJSb/mP8f6gBqDPWhSAdz8SY6Sk4w90gj4SR8V89jlPF21C9qyrZXmfv3154vMjBYEw8SlIrNlCRxJkIAhRK2MaaEhHYBH2yAhd/XkIkh5gCXi5SXuABibH6xfu17M5Rdukw65n1ssyYqfiwCOgHeofI6TXaaybUyio7y/pNuoXeIgOchGc/s6KVDZU8t5MPXbYcSpGMtEK0VAOIiPXj4AwYYlZoblz5qL9qtsH5crG
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB5413.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(376002)(366004)(136003)(346002)(4326008)(26005)(66946007)(186003)(53546011)(71200400001)(7696005)(83380400001)(316002)(76116006)(6506007)(66446008)(64756008)(86362001)(52536014)(66556008)(66476007)(5660300002)(8676002)(8936002)(9686003)(6916009)(54906003)(2906002)(33656002)(478600001)(55016002)(142933001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: 07LsOgx+OkSyZt7t/+6DAOa05wYt3suI/bgc+dMWYQZACdrWRgY7WulQutZhsr4EE4XDs+wrQIQO234M03IYZVFTBwMnuWNzyiZUy35qb/5paojzVnMZ1sxShUGojHSVG+sbslFSe9X3fm6PDzDYC+cvryfAqUsUNRO9z/DxTPzJAuAH4II7bC55SbiBl4oqM5nU8RuqYbolVcI+4oODaZpjcYQKC3E+tP8hjP5HuPyWDhB2IzOuca9FVDhgY40f0tW2ZMVBiG1K16IKPaYWJH2ut90vvmiZSmMo/+vbEanvchRZfQaSV8bVRDSf8/Sjqwd/0dbCa8T73LAFmb9D5gxCa+dVuOupjuGFlJkejAU+xdENf/+eBQLTs2Y+qwlJmxkOKMEFb4fFY2twx3Zknd+JJaSNiXqcrCOZfH3sxqBGJNvBMeTE7CuGRcYUkx8+icP2M2au/KcUgS0jWFgLQ8FAfC/eUnnpFzEicLjUpYSYMlUSIbCtiPGQJYm8zMlwSGAYHPu3UjgO7h3Si23lzUw25RsqxYO2e9N+zVBBfShcQwh32V2kOEmobRvnh8n68QuxTRhlwSL0/z9BfGdf7ZXEFwvmLBYvClq7iZ6SkFeYJC2az+0z9q3kXCMx2q+msr4GlYBdlbj0OeesVtR+YA==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB5413.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d047ef28-77c1-45b4-9024-08d85f8c101a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2020 06:44:04.1802
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /LMRIRilXFrtWEwKTyodFZ1CXhQW26hTMY4fKYAoxIg1J1gIl4pyFp5EqQIVjHvJU69AorWeC88I7TYNWaTjmw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB4968
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a patch for parameters to be used for HPB feature.
+Hi Rob,
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Reviewed-by: Can Guo <cang@codeaurora.org>
-Acked-by: Avri Altman <Avri.Altman@wdc.com>
-Tested-by: Bean Huo <beanhuo@micron.com>
-Signed-off-by: Daejun Park <daejun7.park@samsung.com>
----
- drivers/scsi/ufs/ufs.h | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+On Wednesday, September 23, 2020 10:33 AM, Rob Herring wrote:
+>=20
+> On Wed, Sep 16, 2020 at 04:18:27PM +0800, Ran Wang wrote:
+> > From: Biwen Li <biwen.li@nxp.com>
+> >
+> > The 'fsl,ippdexpcr1-alt-addr' property is used to handle an errata
+> > A-008646 on LS1021A
+> >
+> > Signed-off-by: Biwen Li <biwen.li@nxp.com>
+> > Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
+> > ---
+> >  Documentation/devicetree/bindings/soc/fsl/rcpm.txt | 19
+> > +++++++++++++++++++
+> >  1 file changed, 19 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/soc/fsl/rcpm.txt
+> > b/Documentation/devicetree/bindings/soc/fsl/rcpm.txt
+> > index 5a33619..1be58a3 100644
+> > --- a/Documentation/devicetree/bindings/soc/fsl/rcpm.txt
+> > +++ b/Documentation/devicetree/bindings/soc/fsl/rcpm.txt
+> > @@ -34,6 +34,11 @@ Chassis Version		Example Chips
+> >  Optional properties:
+> >   - little-endian : RCPM register block is Little Endian. Without it RC=
+PM
+> >     will be Big Endian (default case).
+> > + - fsl,ippdexpcr1-alt-addr : The property is related to a hardware iss=
+ue
+> > +   on SoC LS1021A and only needed on SoC LS1021A.
+> > +   Must include 2 entries:
+> > +   The first entry must be a link to the SCFG device node.
+> > +   The 2nd entry must be offset of register IPPDEXPCR1 in SCFG.
+>=20
+> You don't need a DT change for this. You can find SCFG node by its compat=
+ible
+> string and then the offset should be known given this issue is only on 1 =
+SoC.
 
-diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
-index f8ab16f30fdc..e879ac34c065 100644
---- a/drivers/scsi/ufs/ufs.h
-+++ b/drivers/scsi/ufs/ufs.h
-@@ -122,6 +122,7 @@ enum flag_idn {
- 	QUERY_FLAG_IDN_WB_EN                            = 0x0E,
- 	QUERY_FLAG_IDN_WB_BUFF_FLUSH_EN                 = 0x0F,
- 	QUERY_FLAG_IDN_WB_BUFF_FLUSH_DURING_HIBERN8     = 0x10,
-+	QUERY_FLAG_IDN_HPB_RESET                        = 0x11,
- };
- 
- /* Attribute idn for Query requests */
-@@ -195,6 +196,9 @@ enum unit_desc_param {
- 	UNIT_DESC_PARAM_PHY_MEM_RSRC_CNT	= 0x18,
- 	UNIT_DESC_PARAM_CTX_CAPABILITIES	= 0x20,
- 	UNIT_DESC_PARAM_LARGE_UNIT_SIZE_M1	= 0x22,
-+	UNIT_DESC_HPB_LU_MAX_ACTIVE_REGIONS	= 0x23,
-+	UNIT_DESC_HPB_LU_PIN_REGION_START_OFFSET	= 0x25,
-+	UNIT_DESC_HPB_LU_NUM_PIN_REGIONS	= 0x27,
- 	UNIT_DESC_PARAM_WB_BUF_ALLOC_UNITS	= 0x29,
- };
- 
-@@ -235,6 +239,8 @@ enum device_desc_param {
- 	DEVICE_DESC_PARAM_PSA_MAX_DATA		= 0x25,
- 	DEVICE_DESC_PARAM_PSA_TMT		= 0x29,
- 	DEVICE_DESC_PARAM_PRDCT_REV		= 0x2A,
-+	DEVICE_DESC_PARAM_HPB_VER		= 0x40,
-+	DEVICE_DESC_PARAM_HPB_CONTROL		= 0x42,
- 	DEVICE_DESC_PARAM_EXT_UFS_FEATURE_SUP	= 0x4F,
- 	DEVICE_DESC_PARAM_WB_PRESRV_USRSPC_EN	= 0x53,
- 	DEVICE_DESC_PARAM_WB_TYPE		= 0x54,
-@@ -283,6 +289,10 @@ enum geometry_desc_param {
- 	GEOMETRY_DESC_PARAM_ENM4_MAX_NUM_UNITS	= 0x3E,
- 	GEOMETRY_DESC_PARAM_ENM4_CAP_ADJ_FCTR	= 0x42,
- 	GEOMETRY_DESC_PARAM_OPT_LOG_BLK_SIZE	= 0x44,
-+	GEOMETRY_DESC_PARAM_HPB_REGION_SIZE	= 0x48,
-+	GEOMETRY_DESC_PARAM_HPB_NUMBER_LU	= 0x49,
-+	GEOMETRY_DESC_PARAM_HPB_SUBREGION_SIZE	= 0x4A,
-+	GEOMETRY_DESC_PARAM_HPB_MAX_ACTIVE_REGS	= 0x4B,
- 	GEOMETRY_DESC_PARAM_WB_MAX_ALLOC_UNITS	= 0x4F,
- 	GEOMETRY_DESC_PARAM_WB_MAX_WB_LUNS	= 0x53,
- 	GEOMETRY_DESC_PARAM_WB_BUFF_CAP_ADJ	= 0x54,
-@@ -327,8 +337,10 @@ enum {
- 
- /* Possible values for dExtendedUFSFeaturesSupport */
- enum {
-+	UFS_DEV_HPB_SUPPORT		= BIT(7),
- 	UFS_DEV_WRITE_BOOSTER_SUP	= BIT(8),
- };
-+#define UFS_DEV_HPB_SUPPORT_VERSION		0x310
- 
- #define POWER_DESC_MAX_SIZE			0x62
- #define POWER_DESC_MAX_ACTV_ICC_LVLS		16
-@@ -537,6 +549,7 @@ struct ufs_dev_info {
- 	u8 *model;
- 	u16 wspecversion;
- 	u32 clk_gating_wait_us;
-+	u8 b_ufs_feature_sup;
- 	u32 d_ext_ufs_feature_sup;
- 	u8 b_wb_buffer_type;
- 	u32 d_wb_alloc_units;
--- 
-2.17.1
+Did you mean that RCPM driver just to access IPPDEXPCR1 shadowed register i=
+n SCFG
+directly without fetching it's offset info. from DT?
 
+Regards,
+Ran
 
