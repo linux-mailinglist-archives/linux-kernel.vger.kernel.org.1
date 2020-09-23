@@ -2,120 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91DFF275A0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:31:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA6EC275A22
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:33:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726755AbgIWOb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 10:31:28 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36730 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgIWOb2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 10:31:28 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 190C2B2C7;
-        Wed, 23 Sep 2020 14:32:04 +0000 (UTC)
-Subject: Re: [PATCH RFC 0/4] mm: place pages to the freelist tail when onling
- and undoing isolation
-To:     David Hildenbrand <david@redhat.com>, osalvador@suse.de
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-acpi@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Scott Cheloha <cheloha@linux.ibm.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>
-References: <5c0910c2cd0d9d351e509392a45552fb@suse.de>
- <DAC9E747-BDDF-41B6-A89B-604880DD7543@redhat.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <67928cbd-950a-3279-bf9b-29b04c87728b@suse.cz>
-Date:   Wed, 23 Sep 2020 16:31:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726788AbgIWOdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 10:33:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726587AbgIWOc7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 10:32:59 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 093D0C0613D1;
+        Wed, 23 Sep 2020 07:32:59 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id t10so307559wrv.1;
+        Wed, 23 Sep 2020 07:32:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GGRsimobAk7x9LK53KoArxzuwgLweU0zv4O8HtxU3QU=;
+        b=guhvDUgj7+1dXFzvcpFXADDm35dNnDDQkjJHeoeSzaJ5Jk49QzA0LbQ1uUJMRmIqwc
+         l2SUPj2ZQoOdMOS5hGsHo4H1knkD5sIYGO/VRiaxyRC2jHZ/zKDU9gN47kYPszK4MNXD
+         zvlKfcAjx8BA0+uvZ0StohuB9f8/NbMirKXB/FBEKrIedceDhM5wH7n9/x80ybGTlIor
+         e2m0YG91VSiSjJZNGHO+kHRObIXqJ+Qh9eSEND15zhZMs6dGyFJyh0CDq0NUC7TA+AAu
+         8q0oUJIMwgEcEfPf2rQZNOOH3FzqfBm6iZxLzX5h9hNAQBrvgeK2iHank5P0LsFNSoLD
+         vkqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GGRsimobAk7x9LK53KoArxzuwgLweU0zv4O8HtxU3QU=;
+        b=pgyozQiSLAjks2jLkAgXHCB7RZO+4Mz+8QTzkNOHPB/NQf8mbwwANSiPQstBQIZ6iF
+         vijP8VDPgnAssAB/a8SdLkgbUCm5hi7LZ+TrxCe2ndSq1WSmvHhkDmXVObJk6ANe1wCN
+         lvZmoax2IG8GFZZeEKRh4gZHA3l61rOO9e+vWDJIq+jeSUVbNDKtUB3XfXfYMPdR5gw4
+         XWEGUowTIMkjZidfEzmlLjp66wJIcB3p0gLa4KJ3JuQVOSVfubjOnvRZaUmFWOaYDmxK
+         aZDrfXvpKd3Uap853mzdn83qt3i6eSMX6Pqnv1HJHjKJUSfhTFFVyt8IA1MBkrrQcIkN
+         +FeQ==
+X-Gm-Message-State: AOAM532p/7YEdKPvxl95jp6FJ2PjFjNoPAAgMY195Gb6x7rmjBU9QYIE
+        EOG5nrX57VQOHGO28LYmvjWP+JZgPvxPf3RUQyU=
+X-Google-Smtp-Source: ABdhPJw3bJWXUQEbxcOWG3BwMQnvs4bzdMoNz2+ECyQzSG2TYRvZiHkcRHjLhdvWlUL3SNf4cg5/E1g2Ls1K+PiJxik=
+X-Received: by 2002:adf:9b8b:: with SMTP id d11mr1269065wrc.71.1600871577757;
+ Wed, 23 Sep 2020 07:32:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <DAC9E747-BDDF-41B6-A89B-604880DD7543@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200923090519.361-1-himadrispandya@gmail.com>
+ <20200923090519.361-4-himadrispandya@gmail.com> <1600856557.26851.6.camel@suse.com>
+ <CAOY-YVkHycXqem_Xr6nQLgKEunk3MNc7dBtZ=5Aym4Y06vs9xQ@mail.gmail.com> <1600870858.25088.1.camel@suse.com>
+In-Reply-To: <1600870858.25088.1.camel@suse.com>
+From:   Himadri Pandya <himadrispandya@gmail.com>
+Date:   Wed, 23 Sep 2020 20:02:45 +0530
+Message-ID: <CAOY-YVkciMUgtS7USbBh_Uy_=fVWwMMDeHv=Ub_H3GaY0FKZyQ@mail.gmail.com>
+Subject: Re: [PATCH 3/4] net: usb: rtl8150: use usb_control_msg_recv() and usb_control_msg_send()
+To:     Oliver Neukum <oneukum@suse.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        pankaj.laxminarayan.bharadiya@intel.com,
+        Kees Cook <keescook@chromium.org>, yuehaibing@huawei.com,
+        petkan@nucleusys.com, ogiannou@gmail.com,
+        USB list <linux-usb@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Greg KH <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/16/20 9:31 PM, David Hildenbrand wrote:
-> 
-> 
->> Am 16.09.2020 um 20:50 schrieb osalvador@suse.de:
->> 
->> ﻿On 2020-09-16 20:34, David Hildenbrand wrote:
->>> When adding separate memory blocks via add_memory*() and onlining them
->>> immediately, the metadata (especially the memmap) of the next block will be
->>> placed onto one of the just added+onlined block. This creates a chain
->>> of unmovable allocations: If the last memory block cannot get
->>> offlined+removed() so will all dependant ones. We directly have unmovable
->>> allocations all over the place.
->>> This can be observed quite easily using virtio-mem, however, it can also
->>> be observed when using DIMMs. The freshly onlined pages will usually be
->>> placed to the head of the freelists, meaning they will be allocated next,
->>> turning the just-added memory usually immediately un-removable. The
->>> fresh pages are cold, prefering to allocate others (that might be hot)
->>> also feels to be the natural thing to do.
->>> It also applies to the hyper-v balloon xen-balloon, and ppc64 dlpar: when
->>> adding separate, successive memory blocks, each memory block will have
->>> unmovable allocations on them - for example gigantic pages will fail to
->>> allocate.
->>> While the ZONE_NORMAL doesn't provide any guarantees that memory can get
->>> offlined+removed again (any kind of fragmentation with unmovable
->>> allocations is possible), there are many scenarios (hotplugging a lot of
->>> memory, running workload, hotunplug some memory/as much as possible) where
->>> we can offline+remove quite a lot with this patchset.
->> 
->> Hi David,
->> 
-> 
-> Hi Oscar.
-> 
->> I did not read through the patchset yet, so sorry if the question is nonsense, but is this not trying to fix the same issue the vmemmap patches did? [1]
-> 
-> Not nonesense at all. It only helps to some degree, though. It solves the dependencies due to the memmap. However, it‘s not completely ideal, especially for single memory blocks.
-> 
-> With single memory blocks (virtio-mem, xen-balloon, hv balloon, ppc dlpar) you still have unmovable (vmemmap chunks) all over the physical address space. Consider the gigantic page example after hotplug. You directly fragmented all hotplugged memory.
-> 
-> Of course, there might be (less extreme) dependencies due page tables for the identity mapping, extended struct pages and similar.
-> 
-> Having that said, there are other benefits when preferring other memory over just hotplugged memory. Think about adding+onlining memory during boot (dimms under QEMU, virtio-mem), once the system is up you will have most (all) of that memory completely untouched.
-> 
-> So while vmemmap on hotplugged memory would tackle some part of the issue, there are cases where this approach is better, and there are even benefits when combining both.
+On Wed, Sep 23, 2020 at 7:51 PM Oliver Neukum <oneukum@suse.com> wrote:
+>
+> Am Mittwoch, den 23.09.2020, 19:36 +0530 schrieb Himadri Pandya:
+> > On Wed, Sep 23, 2020 at 3:52 PM Oliver Neukum <oneukum@suse.com> wrote:
+> > >
+> > > Am Mittwoch, den 23.09.2020, 14:35 +0530 schrieb Himadri Pandya:
+>
+> > > GFP_NOIO is used here for a reason. You need to use this helper
+> > > while in contexts of error recovery and runtime PM.
+> > >
+> >
+> > Understood. Apologies for proposing such a stupid change.
+>
+> Hi,
+>
+> sorry if you concluded that the patch was stupid. That was not my
+> intent. It was the best the API allowed for. If an API makes it
+> easy to make a mistake, the problem is with the API, not the developer.
+>
+>         Regards
+>                 Oliver
+>
 
-I see the point, but I don't think the head/tail mechanism is great for this. It
-might sort of work, but with other interfering activity there are no guarantees
-and it relies on a subtle implementation detail. There are better mechanisms
-possible I think, such as preparing a larger MIGRATE_UNMOVABLE area in the
-existing memory before we allocate those long-term management structures. Or
-onlining a bunch of blocks as zone_movable first and only later convert to
-zone_normal in a controlled way when existing normal zone becomes depeted?
+I meant that it was stupid to change it without properly understanding
+the significance of GFP_NOIO in this context.
 
-I guess it's an issue that the e.g. 128M block onlines are so disconnected from
-each other it's hard to employ a strategy that works best for e.g. a whole bunch
-of GB onlined at once. But I noticed some effort towards new API, so maybe that
-will be solved there too?
+So now, do we re-write the wrapper functions with flag passed as a parameter?
 
-> Thanks!
-> 
-> David
-> 
->> 
->> I was about to give it a new respin now that thw hwpoison stuff has been settled.
->> 
->> [1] https://patchwork.kernel.org/cover/11059175/
->> 
-> 
-
+Regards,
+Himadri
