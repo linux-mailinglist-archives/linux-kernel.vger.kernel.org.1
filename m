@@ -2,108 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D955275A43
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B881C275A6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726723AbgIWOia convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 23 Sep 2020 10:38:30 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:41723 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726130AbgIWOi3 (ORCPT
+        id S1726823AbgIWOkv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 23 Sep 2020 10:40:51 -0400
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:39214 "EHLO
+        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726755AbgIWOkj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 10:38:29 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-165-Nw6nj9OTOPCDM2jdlTcJwQ-1; Wed, 23 Sep 2020 15:38:25 +0100
-X-MC-Unique: Nw6nj9OTOPCDM2jdlTcJwQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Wed, 23 Sep 2020 15:38:24 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Wed, 23 Sep 2020 15:38:24 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Al Viro' <viro@zeniv.linux.org.uk>, Christoph Hellwig <hch@lst.de>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-aio@kvack.org" <linux-aio@kvack.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: RE: [PATCH 3/9] iov_iter: refactor rw_copy_check_uvector and
- import_iovec
-Thread-Topic: [PATCH 3/9] iov_iter: refactor rw_copy_check_uvector and
- import_iovec
-Thread-Index: AQHWkbQ2JliFoXXebU2Mp2qBncEZ86l2SGTw
-Date:   Wed, 23 Sep 2020 14:38:24 +0000
-Message-ID: <200cf2b9ce5e408f8838948fda7ce9a0@AcuMS.aculab.com>
-References: <20200923060547.16903-1-hch@lst.de>
- <20200923060547.16903-4-hch@lst.de>
- <20200923141654.GJ3421308@ZenIV.linux.org.uk>
-In-Reply-To: <20200923141654.GJ3421308@ZenIV.linux.org.uk>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 23 Sep 2020 10:40:39 -0400
+Received: from relay7-d.mail.gandi.net (unknown [217.70.183.200])
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id 91C9E3B27C4
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 14:38:52 +0000 (UTC)
+X-Originating-IP: 90.65.92.90
+Received: from localhost (lfbn-lyo-1-1913-90.w90-65.abo.wanadoo.fr [90.65.92.90])
+        (Authenticated sender: gregory.clement@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id C70EB20010;
+        Wed, 23 Sep 2020 14:38:30 +0000 (UTC)
+From:   Gregory CLEMENT <gregory.clement@bootlin.com>
+To:     Luka Kovacic <luka.kovacic@sartura.hr>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     jason@lakedaemon.net, andrew@lunn.ch,
+        sebastian.hesselbarth@gmail.com,
+        Luka Kovacic <luka.kovacic@sartura.hr>
+Subject: Re: [PATCH 0/4] Add support for a series of MikroTik CRS3xx switches
+In-Reply-To: <20200724103840.18994-1-luka.kovacic@sartura.hr>
+References: <20200724103840.18994-1-luka.kovacic@sartura.hr>
+Date:   Wed, 23 Sep 2020 16:38:30 +0200
+Message-ID: <87eemsimmx.fsf@BL-laptop>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8BIT
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro
-> Sent: 23 September 2020 15:17
-> 
-> On Wed, Sep 23, 2020 at 08:05:41AM +0200, Christoph Hellwig wrote:
-> 
-> > +struct iovec *iovec_from_user(const struct iovec __user *uvec,
-> > +		unsigned long nr_segs, unsigned long fast_segs,
-> 
-> Hmm...  For fast_segs unsigned long had always been ridiculous
-> (4G struct iovec on caller stack frame?), but that got me wondering about
-> nr_segs and I wish I'd thought of that when introducing import_iovec().
-> 
-> The thing is, import_iovec() takes unsigned int there.  Which is fine
-> (hell, the maximal value that can be accepted in 1024), except that
-> we do pass unsigned long syscall argument to it in some places.
+Hi Luka,
 
-It will make diddly-squit difference.
-The parameters end up in registers on most calling conventions.
-Plausibly you get an extra 'REX' byte on x86 for the 64bit value.
-What you want to avoid is explicit sign/zero extension and value
-masking after arithmetic.
+> These patches add support for a series of MikroTik CRS3xx switches
+> based on the Marvell Prestera 98DX3236 switch chip.
+>
+> Namely, support is added for:
+>  -  MikroTik CRS305-1G-4S+ (including the Bit variant)
+>  -  MikroTik CRS326-24G-2S+ (including the Bit variant)
+>  -  MikroTik CRS328-4C-20S-4S+ (including the Bit variant)
+>
+> The Bit board variant is added for each of the boards.
+> These boards were modified to use a bigger Macronix flash.
+>
+> Currently only basic board support is added, but the support will
+> be extended in a new patchset.
+>
+> Luka Kovacic (4):
+>   arm: mvebu: dts: Add CRS326-24G-2S board
+>   arm: mvebu: dts: Add CRS305-1G-4S board
+>   arm: mvebu: dts: Add CRS328-4C-20S-4S board
 
-On x86-64 the 'horrid' type is actually 'signed int'.
-It often needs sign extending to 64bits (eg when being
-used as an array subscript).
+These 3 patches have been applied on mvebu/dt
 
-	David
+>   MAINTAINERS: Add an entry for MikroTik CRS3xx 98DX3236 boards
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+and this one on mvebu/arm
 
+Thanks,
+
+Gregory
+>
+>  MAINTAINERS                                   |  11 ++
+>  arch/arm/boot/dts/Makefile                    |   6 +
+>  .../boot/dts/armada-xp-crs305-1g-4s-bit.dts   |  43 ++++++++
+>  arch/arm/boot/dts/armada-xp-crs305-1g-4s.dts  |  17 +++
+>  arch/arm/boot/dts/armada-xp-crs305-1g-4s.dtsi | 104 ++++++++++++++++++
+>  .../boot/dts/armada-xp-crs326-24g-2s-bit.dts  |  43 ++++++++
+>  arch/arm/boot/dts/armada-xp-crs326-24g-2s.dts |  17 +++
+>  .../arm/boot/dts/armada-xp-crs326-24g-2s.dtsi | 104 ++++++++++++++++++
+>  .../dts/armada-xp-crs328-4c-20s-4s-bit.dts    |  43 ++++++++
+>  .../boot/dts/armada-xp-crs328-4c-20s-4s.dts   |  17 +++
+>  .../boot/dts/armada-xp-crs328-4c-20s-4s.dtsi  | 104 ++++++++++++++++++
+>  11 files changed, 509 insertions(+)
+>  create mode 100644 arch/arm/boot/dts/armada-xp-crs305-1g-4s-bit.dts
+>  create mode 100644 arch/arm/boot/dts/armada-xp-crs305-1g-4s.dts
+>  create mode 100644 arch/arm/boot/dts/armada-xp-crs305-1g-4s.dtsi
+>  create mode 100644 arch/arm/boot/dts/armada-xp-crs326-24g-2s-bit.dts
+>  create mode 100644 arch/arm/boot/dts/armada-xp-crs326-24g-2s.dts
+>  create mode 100644 arch/arm/boot/dts/armada-xp-crs326-24g-2s.dtsi
+>  create mode 100644 arch/arm/boot/dts/armada-xp-crs328-4c-20s-4s-bit.dts
+>  create mode 100644 arch/arm/boot/dts/armada-xp-crs328-4c-20s-4s.dts
+>  create mode 100644 arch/arm/boot/dts/armada-xp-crs328-4c-20s-4s.dtsi
+>
+> -- 
+> 2.26.2
+>
+
+-- 
+Gregory Clement, Bootlin
+Embedded Linux and Kernel engineering
+http://bootlin.com
