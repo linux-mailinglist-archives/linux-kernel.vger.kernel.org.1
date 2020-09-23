@@ -2,80 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA14D2751F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 08:54:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 385382751F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 08:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726757AbgIWGyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 02:54:46 -0400
-Received: from muru.com ([72.249.23.125]:45128 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726179AbgIWGyp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 02:54:45 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id B770980A0;
-        Wed, 23 Sep 2020 06:54:45 +0000 (UTC)
-Date:   Wed, 23 Sep 2020 09:55:39 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Haojian Zhuang <haojian.zhuang@linaro.org>,
-        devicetree@vger.kernel.org, bcousson@baylibre.com,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@gmail.com>,
-        Trent Piepho <tpiepho@gmail.com>
-Subject: Re: [PATCH v2] pinctrl: single: check pinctrl_spec.args_count > 3
-Message-ID: <20200923065539.GQ7101@atomide.com>
-References: <20200913231557.2063071-1-drew@beagleboard.org>
+        id S1726746AbgIWG4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 02:56:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726179AbgIWG4E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 02:56:04 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E05DAC061755;
+        Tue, 22 Sep 2020 23:56:03 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id k2so14673787ybp.7;
+        Tue, 22 Sep 2020 23:56:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=A1rC8148NbtE7cAa6JwGIJx/jujejruTMtLlxy4dSdc=;
+        b=sMKRsVFFfyj/ktHuInnipw3t4xnoKKefK9Dc20KJhpa7HKSB1enncV/C+TmSfBR4gq
+         dXIqoD8y17hMCaQe8YQ/WlFlcrf/INOmr070uTqrRGU5TwI9PeKOA8xTAK5wQ+AeN84y
+         tLU5t+Hx1vFn5iIGy8Zlx2ItM6hnPAMuiRnW0TjzaBVSMIJlcoPS6CHs3KfyqDaMzBvg
+         5Y56U/2pP1pGufflSF/Ho6kFWk5v5GNnzVCDHPxtFgJ2TTZtJoiZpzLCVO0blgak5gFT
+         lnEoZw4ddK7FN/umMEcL34+Dw9rzMorb7/illyuuvuGxV37rbDZbNqYKOdS6HRpx04+f
+         xv9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=A1rC8148NbtE7cAa6JwGIJx/jujejruTMtLlxy4dSdc=;
+        b=k7NwSb20x74/JRB1wmEuSlwzuG77PbzX3NQmDYQeYyEyr/018PKu3YZFUTbnwlQxRg
+         rfM7gP+N+O9TXpbDBWewR2VuwLHsO80MEtlzF7UGgRP3AAsSmID9HT905erkybg0GS4N
+         +afBCroZb2wqFrsUCNiHeJMAxK8VfWuULahNDF579XtzssKJV5sjSICsZAK4rhEQMaFx
+         HAgyfAjnVO83uC1xN2kZ2XjAQF/8+dgdHBXvx9R4Ouxnc59RhwJ9hrfw4ZK3pq7QE6/v
+         2nc/6lv8nfW32HUFu3/8xD7Nkvv6+2e5ubKBuHj/mJCkROTEHibY1Hl7zxl3r/P3+TuJ
+         VCAg==
+X-Gm-Message-State: AOAM531L/plObpBCfiYqZdNYUCBkmJEGz+WvprkhJ33J2ybUqEFtBhE6
+        msFMo93ilRWTugAkEQWJJkDU7mRYQqVRCXTA8/ZVjHvCAek=
+X-Google-Smtp-Source: ABdhPJz3/hDbaCBIzBn/O4OjEfK7uaKkf06n5MTt5m3W8qX/62oxWN/RFIPh0hzjk8zIvbONy3ns+C0kI7unDxK/jVM=
+X-Received: by 2002:a25:2bc2:: with SMTP id r185mr13084615ybr.71.1600844163159;
+ Tue, 22 Sep 2020 23:56:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200913231557.2063071-1-drew@beagleboard.org>
+References: <20200923065326.44898-1-liwei391@huawei.com>
+In-Reply-To: <20200923065326.44898-1-liwei391@huawei.com>
+From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Date:   Wed, 23 Sep 2020 08:55:51 +0200
+Message-ID: <CACna6rwOxyUjsE8yyvZ1y2KvL+1YQf5QP-ioi2oi+G+ZPOSSBw@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: BCM47XX: Remove the needless check with the 1074K
+To:     Wei Li <liwei391@huawei.com>
+Cc:     Hauke Mehrtens <hauke@hauke-m.de>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>,
+        "Steven J. Hill" <Steven.Hill@imgtec.com>,
+        linux-mips@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        guohanjun@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Drew Fustini <drew@beagleboard.org> [200913 23:18]:
-> pinctrl_spec.args_count can either be 2 when #pinctrl-cells = 1 or
-> 3 when #pinctrl-cells = 2.
-> 
-> There is currently only a check to make sure that it is 2 or greater.
-> This patch adds a check to make sure it is not greater than 3.
-> 
-> Fixes: a13395418888 ("pinctrl: single: parse #pinctrl-cells = 2")
-> Reported-by: Trent Piepho <tpiepho@gmail.com>
-> Link: https://lore.kernel.org/linux-omap/3139716.CMS8C0sQ7x@zen.local/
-> Signed-off-by: Drew Fustini <drew@beagleboard.org>
-> ---
-> v2 change:
-> - this is a fix to my prior email where I referred to #pinctrl-cells
->   exceeding 3 which is incorrect.  It is pinctrl_spec.args_count which
->   must be greater than 2 (when #pinctrl-cells = 1) and less than 3 (when
->   #pinctrl-cells = 2)
+On Wed, 23 Sep 2020 at 08:54, Wei Li <liwei391@huawei.com> wrote:
+> As there is no known soc powered by mips 1074K in bcm47xx series,
+> the check with 1074K is needless. So just remove it.
+>
+> Link: https://wireless.wiki.kernel.org/en/users/Drivers/b43/soc
+> Fixes: 442e14a2c55e ("MIPS: Add 1074K CPU support explicitly.")
+> Signed-off-by: Wei Li <liwei391@huawei.com>
 
-Acked-by: Tony Lindgren <tony@atomide.com>
-
-> https://lore.kernel.org/linux-omap/20200913210825.2022552-1-drew@beagleboard.org/
-> 
-> 
->  drivers/pinctrl/pinctrl-single.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
-> index efe41abc5d47..5cbf0e55087c 100644
-> --- a/drivers/pinctrl/pinctrl-single.c
-> +++ b/drivers/pinctrl/pinctrl-single.c
-> @@ -1014,7 +1014,7 @@ static int pcs_parse_one_pinctrl_entry(struct pcs_device *pcs,
->  		if (res)
->  			return res;
->  
-> -		if (pinctrl_spec.args_count < 2) {
-> +		if (pinctrl_spec.args_count < 2 || pinctrl_spec.args_count > 3) {
->  			dev_err(pcs->dev, "invalid args_count for spec: %i\n",
->  				pinctrl_spec.args_count);
->  			break;
-> -- 
-> 2.25.1
-> 
+Acked-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
