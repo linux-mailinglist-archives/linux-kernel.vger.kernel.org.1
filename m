@@ -2,75 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63230275052
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 07:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 886E8275056
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 07:35:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726980AbgIWFfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 01:35:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55848 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726883AbgIWFfI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 01:35:08 -0400
-Received: from localhost (unknown [122.171.175.143])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9DCC121941;
-        Wed, 23 Sep 2020 05:35:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600839308;
-        bh=hTSh7qO88VKPRymrehhoxetyDUSrBV1c5QP63btuvjI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t4qWTiTR8GjSbbpNPGNXfZsbwH61S5EfNAA6rFFvVvKtgG5bLR5YaU99RfTKiINkZ
-         0+agSqQ7Bxtz0rY+YC5dtVci8i6zz3jGz3knISpTA2OH6o0BwCStYU6cwA3g6R1eW1
-         uV/qIg1FvmXWMQt7smHta4aFS7WMa5MxkSyj7Obw=
-Date:   Wed, 23 Sep 2020 11:05:00 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>
-Cc:     balbi@kernel.org, gregkh@linuxfoundation.org, kishon@ti.com,
-        paul@crapouillou.net, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, christophe.jaillet@wanadoo.fr,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-Subject: Re: [PATCH v5 2/2] PHY: Ingenic: Add USB PHY driver using generic
- PHY framework.
-Message-ID: <20200923053500.GD2968@vkoul-mobl>
-References: <20200921162417.52004-1-zhouyanjie@wanyeetech.com>
- <20200921162417.52004-3-zhouyanjie@wanyeetech.com>
+        id S1727017AbgIWFfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 01:35:41 -0400
+Received: from esa5.microchip.iphmx.com ([216.71.150.166]:10641 "EHLO
+        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726883AbgIWFfk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 01:35:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1600839341; x=1632375341;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=46H7bsmgCIoU177WvoYyTJNlm7V1J5H4fdbeXVYXX64=;
+  b=M2hYMtd+o/W/b/E54bm8sddDqrqZs//h3f6WG59t/vY/ZXd5Sesy9Fqq
+   oBx0uZRYjEPpmuBIwF8OjY+KCgh7V2zSeF9J7I0OX7yuvJDK83hJWpEM/
+   5RyiwBN6bJQ178cv9x7ssQ3Y5o/ZgjS3MMdPE3QT7NTUtTA1SEQMGlJyR
+   8PUql0MdGxDtJzAGmgW5K0lWI4z3OT/I4mbWyG3OOj4rlIAnX5geNWQmW
+   7XHSGnEZ4G/Ox43wYEDjmAmJWGQowtFrwAC5Prq29Jh5astB8L4nF9KJ+
+   Nfox7p//3bobIpaftT4Wh1qKUDVLukrnxFiVBr9UyYw6M/WutNNhx26Cq
+   w==;
+IronPort-SDR: pMF9EyI9efiswm542twX4Wk7Lh4Mg3pZTf8t5Tj126XL1chg9Yqvhq3oqVdfk5/vUcG1l19w0N
+ gSl+epSe1FjXsqnOM8OZnUYOv8Fc94OG1CUlC8DCU8c+HgU7p4jWqZMQO7N8g5CjVXassCKx9F
+ MBWkFvp5COAIAj4m3NL/DPxJ320wchIMBXjYROtbH0dj/NYB4XoHcKrqTKENHqJKTj7F5B88kT
+ zziksUc2fihtndEsBQYS4A6tzLyiSPoRC+9PJubgsWkOCp7SyF27HFD9EcvrOT0PMwltryOUPw
+ QQ8=
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
+   d="scan'208";a="92025675"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Sep 2020 22:35:40 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 22 Sep 2020 22:35:22 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
+ via Frontend Transport; Tue, 22 Sep 2020 22:35:38 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L9sxXvS6p+lmPUWPnBsWJX0fCoaxTAc/aacN+HOcv+x+4ZvAsr+zc/A9KbO3XJSZTr9VppnF7jbxH4woRqJy8a3Up8shJzwLJpmCHUVi6mivnx2RLfqntUJYPO+/wRmgquily56F9/HTOUNVJ25fE/STXLGOyFV+5lZ2zHDOzFIarBLXNAH/LIxiEF/okz3MwHsMKytGAXeHr+WBVZObGbRoD+jDMZeemeTLUMdyIwK3+BPPNGCKoplO3D8ZRXQ1QiYvLMQSn89/0OT4tOgcs6AYyGqAVvx8VLSyt6jW0OVKhFN3QzXPa9o+kWcNyxKfJrsEksIJlSmzyugJ7EetCg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=46H7bsmgCIoU177WvoYyTJNlm7V1J5H4fdbeXVYXX64=;
+ b=V8tcklx5qGN5oeQqI2c57g1qOR5PYYHwQtNau1z/WRZB+B32uFim0FLD2J2BrA45fM939nZjwANIYKaLS6DdoJ/h5ANjrHNXQ8VaUcj+DTJySU62trATuBGpQCgmUNBKDsbAgAOS1JPLIMqaSAtgwv3rvz0RMx+TlLoqUKRKS2cYTm2VSNmfbuKNGjHS+xKkhoI0giABD2l7QG4ieW5SZvOB2kT6Nl0Nywzf1z4hNw+XqaZqha2CzP9VbOWpysvSDIozY5v/MVwzsQtLk8y2XWp7fnxHhX2OtPRS2KVvMfzw3ybsENH0c8aykvHRw6NPCT8GNb18WNNGJ+cnn4wm+Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=46H7bsmgCIoU177WvoYyTJNlm7V1J5H4fdbeXVYXX64=;
+ b=hSTpkKGekQwILXgOx4S/ggOx1wkAwq5bIPpkgTuMYQ+Ym4kTKPKHg16dBP/VzIQxYi7xHD1/jb/1kFrtc/u3bWPTR0KFR2/o9sP/fcyrr9T4ilLyfLk+Ct5HskriQUS3w9DnkamX0dOFY9Cq00Qp2w5ek+VzZFTVA3YH/w6K/ug=
+Received: from DM5PR11MB1914.namprd11.prod.outlook.com (2603:10b6:3:112::12)
+ by DM6PR11MB4513.namprd11.prod.outlook.com (2603:10b6:5:2a2::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14; Wed, 23 Sep
+ 2020 05:35:35 +0000
+Received: from DM5PR11MB1914.namprd11.prod.outlook.com
+ ([fe80::a8e8:d0bc:8b3c:d385]) by DM5PR11MB1914.namprd11.prod.outlook.com
+ ([fe80::a8e8:d0bc:8b3c:d385%11]) with mapi id 15.20.3391.027; Wed, 23 Sep
+ 2020 05:35:35 +0000
+From:   <Tudor.Ambarus@microchip.com>
+To:     <Eugen.Hristev@microchip.com>, <vkoul@kernel.org>,
+        <robh+dt@kernel.org>, <Ludovic.Desroches@microchip.com>
+CC:     <dmaengine@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <Nicolas.Ferre@microchip.com>
+Subject: Re: [PATCH 4/7] dmaengine: at_xdmac: adapt perid for mem2mem
+ operations
+Thread-Topic: [PATCH 4/7] dmaengine: at_xdmac: adapt perid for mem2mem
+ operations
+Thread-Index: AQHWkWqs0npVjkI8wkK878r6lyc5AKl1s+IA
+Date:   Wed, 23 Sep 2020 05:35:35 +0000
+Message-ID: <cb54743e-5c8a-207b-8a0a-11b9768d0cda@microchip.com>
+References: <20200914140956.221432-1-eugen.hristev@microchip.com>
+ <20200914140956.221432-5-eugen.hristev@microchip.com>
+ <520058c4-00a6-bbe3-2b60-93477be982fa@microchip.com>
+In-Reply-To: <520058c4-00a6-bbe3-2b60-93477be982fa@microchip.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+authentication-results: microchip.com; dkim=none (message not signed)
+ header.d=none;microchip.com; dmarc=none action=none
+ header.from=microchip.com;
+x-originating-ip: [82.77.80.152]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b45b01f1-de6e-40cd-dffb-08d85f827f0c
+x-ms-traffictypediagnostic: DM6PR11MB4513:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR11MB4513ABBD6E7B4AA727CB3313F0380@DM6PR11MB4513.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:586;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: QcH5pDgp/KuxVtaSAd7J3v0n9Ph1rrMEkeLgcsz/0ZkUcxUjJmFn/MUbGTlDpqOndaUaVvgXH3eYTMu5H7keFocfdhGvxuxouRvgqQkTlrPGtIsGEOv1Sjx11g13P7JjV+B/DvJmS+mvyaGhb6BWX/KqS4wd1uV5/yrpE7EK9NsKHDzNcZNVdWAN5ZecoDMfQlXP4vlleafuWqY1P8hEQQjhKJEv1syNn4+FPjfDcqaCSUVp/wPAkT5oyzX1eBsHFZfux9AGlUKfYRwVlVnrIbmEKBfmGiu31qjiYrqYhL1tfbPPFvpCl/XdwvEXj3Ox2ngodUmQEcQstV13NIgNBms1Xz7BLR5WnHX1lDjFX2K6BT2yDbU9mq2zmYtM9onUbFR/Ywnr8o5ndVM7aKtnSr40yqd4bud/dKY7EEb7kCc=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR11MB1914.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(136003)(346002)(39860400002)(396003)(54906003)(2906002)(6512007)(110136005)(5660300002)(107886003)(71200400001)(76116006)(36756003)(186003)(6636002)(91956017)(2616005)(4744005)(83380400001)(26005)(31686004)(478600001)(86362001)(66556008)(6486002)(4326008)(66476007)(64756008)(31696002)(66446008)(316002)(8676002)(53546011)(8936002)(6506007)(66946007)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: cKsT9A9lFgemPkjKHDmM43unZsveOZEgPUGmMsQbufU5JaN8DYXuSxiOcmaGQCuV1tM3DDB1hXIo0mxW5OcveyTxy+52xlkIYUQQT5O01WUEe6Lmz8Zrlw7oqkEYcxyR8Hp3ZlLb4gnUFsssTTVZE+G4j2Zm84tcD35I97HSPwrdsIH+cY5cnq+iJ+orDj2S0TbgcyEUNZjqsACKE4Jzo7Hq/er+7IJ/gkovtTKGvdj4dENS4wRVOzvosC3iLnb7Z0ttIzkiVPg7WcGZXjpDTlDlGEl+NVBWAlWk09LHr3ptokZodXazQ7HSrdfpdUQtRWWcgL6zE5fBvqCvOkOc7m0JfJCb0rf0ZZRuVLnbMnSiQM+pZ+ZpHN4WWXVyuPoZPYgabuZa9zRe2oZPp3IlbhCmnJWn2C9tWwmJSciu3NdXub2f3ehcG1itZx+Q4ke7jo9axDK4tq53FBV9I5m2xd4+Q9bn9fZH4d28ihJdzkJngtVP0yXVAjGYrcwz4TitK2wgPlrV15gK5C4zkTY1Ovbm67ugXiAXgYEBOMZihSHtOGDqNA37FB1eZewcKefaVWsOqAsbwn45lO6Ec+tAURG5YT/Zdb+M5Z7AQfmgr9L8mDMVPprR5O+8VAbIvpOLFwvIbHIldfkoPH3VTV7kBg==
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <99ABE54F5E22BF4684A33DDE31504530@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200921162417.52004-3-zhouyanjie@wanyeetech.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR11MB1914.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b45b01f1-de6e-40cd-dffb-08d85f827f0c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2020 05:35:35.4292
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: bBEFOX5r74ppUtKlyuvIsM39lySmsaHAKekzYVd7caLhKRUyVtnghxxua7U2OfSfAaDb4u9wg6xT1tb7EIdjLlPVEy7OInsogllL0FZl90c=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4513
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22-09-20, 00:24, 周琰杰 (Zhou Yanjie) wrote:
-
-> +#define USBPCR_IDPULLUP_LSB	28
-> +#define USBPCR_IDPULLUP_MASK		GENMASK(29, USBPCR_IDPULLUP_LSB)
-> +#define USBPCR_IDPULLUP_ALWAYS		(0x2 << USBPCR_IDPULLUP_LSB)
-> +#define USBPCR_IDPULLUP_SUSPEND		(0x1 << USBPCR_IDPULLUP_LSB)
-> +#define USBPCR_IDPULLUP_OTG			(0x0 << USBPCR_IDPULLUP_LSB)
-
-why not define these as 0, 1, 2 and then use
-FIELD_PREP(value, USBPCR_IDPULLUP_MASK), please do this for rest as
-well.
-
-> +static int ingenic_usb_phy_set_mode(struct phy *phy,
-> +				  enum phy_mode mode, int submode)
-> +{
-> +	struct ingenic_usb_phy *priv = phy_get_drvdata(phy);
-> +	u32 reg;
-> +
-> +	switch (mode) {
-> +	case PHY_MODE_USB_HOST:
-> +		reg = readl(priv->base + REG_USBPCR_OFFSET);
-> +		reg &= ~(USBPCR_VBUSVLDEXT | USBPCR_VBUSVLDEXTSEL | USBPCR_OTG_DISABLE);
-
-use u32_encode_bits or u32p_replace_bit to program registers using mask
-defined
--- 
-~Vinod
+T24gOS8yMy8yMCA4OjMwIEFNLCBUdWRvciBBbWJhcnVzIC0gTTE4MDY0IHdyb3RlOg0KPiBPbiA5
+LzE0LzIwIDU6MDkgUE0sIEV1Z2VuIEhyaXN0ZXYgd3JvdGU6DQo+PiBUaGUgUEVSSUQgaW4gdGhl
+IENDIHJlZ2lzdGVyIGZvciBtZW0ybWVtIG9wZXJhdGlvbnMgbXVzdCBtYXRjaCBhbiB1bnVzZWQN
+Cj4+IFBFUklELg0KPj4gVGhlIFBFUklEIGZpZWxkIGlzIDcgYml0cywgYnV0IHRoZSBzZWxlY3Rl
+ZCB2YWx1ZSBpcyAweDNmLg0KPj4gT24gbGF0ZXIgcHJvZHVjdHMgd2UgY2FuIGhhdmUgbW9yZSBy
+ZXNlcnZlZCBQRVJJRHMgZm9yIGFjdHVhbCBwZXJpcGhlcmFscywNCj4+IHRodXMgdGhpcyBuZWVk
+cyB0byBiZSBpbmNyZWFzZWQgdG8gbWF4aW11bSBzaXplLg0KPj4gQ2hhbmdpbmcgdGhlIHZhbHVl
+IHRvIDB4N2YsIHdoaWNoIGlzIHRoZSBtYXhpbXVtIGZvciA3IGJpdHMgZmllbGQuDQo+Pg0KPiAN
+Cj4gTWF5YmUgaXQgaXMgd29ydGggdG8gZXhwbGFpbiB0aGF0IGZvciBtZW1vcnktdG8tbWVtb3J5
+IHRyYW5zZmVycywgUEVSSUQNCj4gc2hvdWxkIGJlIHNldCB0byBhbiB1bnVzZWQgcGVyaXBoZXJh
+bCBJRCwgYW5kIHRoZSBtYXhpbXVtIHZhbHVlIHNlZW1zIHRoZQ0KPiBzYWZlc3QuIEFueXdheSB3
+aXRoIG9yIHdpdGhvdXQgdGhpcyBhZGRyZXNzZWQsIG9uZSBjYW4gYWRkOg0KPiANCg0KOikgSSBz
+b21laG93IG1pc3JlYWQgeW91ciBjb21taXQgbWVzc2FnZSwgeW91IGFscmVhZHkgZGVzY3JpYmVk
+IHRoYXQsIGl0J3MgZmluZS4NCg0KPiBSZXZpZXdlZC1ieTogVHVkb3IgQW1iYXJ1cyA8dHVkb3Iu
+YW1iYXJ1c0BtaWNyb2NoaXAuY29tPg0KPiANCj4+IFNpZ25lZC1vZmYtYnk6IEV1Z2VuIEhyaXN0
+ZXYgPGV1Z2VuLmhyaXN0ZXZAbWljcm9jaGlwLmNvbT4NCj4+IC0tLQ0KPj4gIGRyaXZlcnMvZG1h
+L2F0X3hkbWFjLmMgfCA2ICsrKy0tLQ0KPj4gIDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMo
+KyksIDMgZGVsZXRpb25zKC0pDQo+Pg0K
