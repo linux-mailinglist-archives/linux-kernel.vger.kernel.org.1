@@ -2,157 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E8AC27555F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15887275570
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726518AbgIWKPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 06:15:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35978 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726381AbgIWKPJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 06:15:09 -0400
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E38472145D
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 10:15:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600856109;
-        bh=78Wi9zuhU4MDIiFwhcs5urBVnDFgHsmd3gVruFuwOac=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=R1nG/3T3RJgDtO1Bkpws8RIzukkYai1qoBKpZTwDAexr3TrxjH1syv7mISSklr39U
-         gO3NvuZpzzp6x+BzyLc7P9hmiIT1JaZ//AaWb0SXpqneQ3eO8AS+hdGIkKAd67IYH7
-         Ec11qwJP83+YdqoJjMTqGw4Oa2vFsOD8rBerZZ4U=
-Received: by mail-ot1-f49.google.com with SMTP id y5so18434395otg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 03:15:08 -0700 (PDT)
-X-Gm-Message-State: AOAM533lHfQWXImQ34TM0WPrwPraEZFsirAqVXL61laBimtxpu7F3u0k
-        Ti+LFuUJqF7GnWykr6lFpkAvHY3NaAIX+pTf/oc=
-X-Google-Smtp-Source: ABdhPJyjSp5/Spt0IdZZXmghSpOQ+XwGrsDyxPanP4cVdom6we+nl8VFuc3RoJHUDEW8Kdv3zDTb2mWtdzg+p3vKV8s=
-X-Received: by 2002:a9d:6193:: with SMTP id g19mr5508915otk.108.1600856108198;
- Wed, 23 Sep 2020 03:15:08 -0700 (PDT)
+        id S1726475AbgIWKTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 06:19:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50314 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726328AbgIWKTl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 06:19:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600856379;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZfmXFWuGpvjNq6cXHlDm0b2WUaUCEmp6aIcoRmPsQQc=;
+        b=BbAmWtNy7CvX6u+ynwAQMPL5vMmhBaplOyAifeskM1P4o4UnajI7C6yrI0rKLrnBvohqS5
+        0FBHNNc6GfjCwKyQom7HmQGTnJSds5hHZqjITreMJexx+1LLPe4L/YVyNrbX8I2eZ0nRk+
+        DkKSq7GPtCh64lCyXd+foZBXxFgjfDw=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-163-MDL0NGhrMOyvg8siE20C_Q-1; Wed, 23 Sep 2020 06:19:37 -0400
+X-MC-Unique: MDL0NGhrMOyvg8siE20C_Q-1
+Received: by mail-ed1-f71.google.com with SMTP id d27so6995111edj.21
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 03:19:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZfmXFWuGpvjNq6cXHlDm0b2WUaUCEmp6aIcoRmPsQQc=;
+        b=gJ5RyaMlH62TnkyoJL20WMs4oA22ox29lmPNtESeGb7pwjFkiVc5fEF3ZDAZNF7KMO
+         alxv09zvWoJHihAc8ENkMpD97vYLx89/Fjuhj9KMPxVPCGKhc6QVIy9X7zNN4ADyN2RK
+         e3+LU4W16PcbDKzarezKHaoRQn+e5fumIzooRbRc9YmyFVdjUPLraOWwOAXKhgNI4Z2Y
+         GoUjOOUydMJL0XsBo+vven6zoZoieMP884zP8busg0loIASGvxETIky3btCU4is/2y+u
+         35a3XM/3DfThVnTnAKoD6Me5sULCw6D/WZRjGMwEAs6RkcCM51NbE6v3GIpMzuPJ2Gs0
+         Xgkw==
+X-Gm-Message-State: AOAM5310q1jx/8l6W0mrZXb/9GrUWsJp56pZxQ9RYWYxRgZNtguQsqqM
+        3bf0ogMkYMLKKPSQuy3e5mbQwh0UzGK+abCUNHTqr0RzUuyaQIEm3uoO1Atgdi4MRaX3NynOikm
+        ypd0oLaQgpRF2PNeb2pAiuqgh
+X-Received: by 2002:a17:906:9353:: with SMTP id p19mr9413558ejw.403.1600856376402;
+        Wed, 23 Sep 2020 03:19:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxPVx89V1eZbL5cxLXVTc+ANFBUKj6JBoKaRNLXiNnkex3L0pvdHrP2XVqk/yRifa5pnN5u4A==
+X-Received: by 2002:a17:906:9353:: with SMTP id p19mr9413545ejw.403.1600856376072;
+        Wed, 23 Sep 2020 03:19:36 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id cn21sm13784997edb.14.2020.09.23.03.19.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Sep 2020 03:19:35 -0700 (PDT)
+Subject: Re: [PATCH v3] Introduce support for Systems Management Driver over
+ WMI for Dell Systems
+To:     "Limonciello, Mario" <Mario.Limonciello@dell.com>,
+        Divya Bharathi <divya27392@gmail.com>,
+        "dvhart@infradead.org" <dvhart@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "Bharathi, Divya" <Divya.Bharathi@Dell.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        mark gross <mgross@linux.intel.com>,
+        "Ksr, Prasanth" <Prasanth.Ksr@dell.com>
+References: <20200917065550.127400-1-divya_bharathi@dell.com>
+ <2795ca15-59b1-8435-14ef-6e0c1d532b22@redhat.com>
+ <DM6PR19MB26361E423C4430923850E1DCFA3A0@DM6PR19MB2636.namprd19.prod.outlook.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <15cedffb-a0a3-a52a-fb6c-cdb674dc0972@redhat.com>
+Date:   Wed, 23 Sep 2020 12:19:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200921172603.1.Id9450c1d3deef17718bd5368580a3c44895209ee@changeid>
- <ad9108e155ba4245a2005e9212a7d2b5@AcuMS.aculab.com> <CAMj1kXEF9SHnas_Hy=eU+=hHuuyxMb2_UtPtsuU2CCH6BaUPbg@mail.gmail.com>
- <CAD=FV=VG-BzzEJ2jn6hAYjre+BtOu-uyi4OQst=Lg9QQqAtKNw@mail.gmail.com>
-In-Reply-To: <CAD=FV=VG-BzzEJ2jn6hAYjre+BtOu-uyi4OQst=Lg9QQqAtKNw@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 23 Sep 2020 12:14:57 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXH4=b1eSGq+4tQNKsXkzEyWKRvUEcjyez=1yST4kVAMRQ@mail.gmail.com>
-Message-ID: <CAMj1kXH4=b1eSGq+4tQNKsXkzEyWKRvUEcjyez=1yST4kVAMRQ@mail.gmail.com>
-Subject: Re: [PATCH] arm64: crypto: Add an option to assume NEON XOR is the fastest
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jackie Liu <liuyun01@kylinos.cn>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <DM6PR19MB26361E423C4430923850E1DCFA3A0@DM6PR19MB2636.namprd19.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Sep 2020 at 02:39, Doug Anderson <dianders@chromium.org> wrote:
->
-> Hi,
->
-> On Tue, Sep 22, 2020 at 3:30 AM Ard Biesheuvel <ardb@kernel.org> wrote:
-> >
-> > On Tue, 22 Sep 2020 at 10:26, David Laight <David.Laight@aculab.com> wrote:
-> > >
-> > > From: Douglas Anderson
-> > > > Sent: 22 September 2020 01:26
-> > > >
-> > > > On every boot time we see messages like this:
-> > > >
-> > > > [    0.025360] calling  calibrate_xor_blocks+0x0/0x134 @ 1
-> > > > [    0.025363] xor: measuring software checksum speed
-> > > > [    0.035351]    8regs     :  3952.000 MB/sec
-> > > > [    0.045384]    32regs    :  4860.000 MB/sec
-> > > > [    0.055418]    arm64_neon:  5900.000 MB/sec
-> > > > [    0.055423] xor: using function: arm64_neon (5900.000 MB/sec)
-> > > > [    0.055433] initcall calibrate_xor_blocks+0x0/0x134 returned 0 after 29296 usecs
-> > > >
-> > > > As you can see, we spend 30 ms on every boot re-confirming that, yet
-> > > > again, the arm64_neon implementation is the fastest way to do XOR.
-> > > > ...and the above is on a system with HZ=1000.  Due to the way the
-> > > > testing happens, if we have HZ defined to something slower it'll take
-> > > > much longer.  HZ=100 means we spend 300 ms on every boot re-confirming
-> > > > a fact that will be the same for every bootup.
-> > >
-> > > Can't the code use a TSC (or similar high-res counter) to
-> > > see how long it takes to process a short 'hot cache' block?
-> > > That wouldn't take long at all.
-> > >
-> >
-> > This is generic code that runs from an core_initcall() so I am not
-> > sure we can easily implement this in a portable way.
->
-> If it ran later, presumably you could just use ktime?  That seems like
-> it'd be a portable enough way?
->
+Hi,
 
-That should work, I suppose. That should also permit us to simply time
-N iterations of the benchmark instead of running it as many times as
-we can while waiting for a jiffy to elapse.
+On 9/21/20 8:23 PM, Limonciello, Mario wrote:
+>>
+>>> +
+>>> +		"integer"-type specific properties:
+>>> +
+>>> +		min_value:	A file that can be read to obtain the lower
+>>> +		bound value of the <attr>
+>>> +
+>>> +		max_value:	A file that can be read to obtain the upper
+>>> +		bound value of the <attr>
+>>> +
+>>> +		scalar_increment:	A file that can be read to obtain the
+>>> +		resolution of the incremental value this attribute accepts.
+>>> +
+>>> +		"string"-type specific properties:
+>>> +
+>>> +		max_length:	A file that can be read to obtain the maximum
+>>> +		length value of the <attr>
+>>> +
+>>> +		min_length:	A file that can be read to obtain the minimum
+>>> +		length value of the <attr>
+>>> +
+>>> +What:		/sys/devices/platform/dell-wmi-sysman/passwords/
+>>> +Date:		December 2020
+>>> +KernelVersion:	5.10
+>>> +Contact:	Divya Bharathi <Divya.Bharathi@Dell.com>,
+>>> +		Mario Limonciello <mario.limonciello@dell.com>,
+>>> +		Prasanth KSR <prasanth.ksr@dell.com>
+>>> +
+>>> +		A BIOS Admin password and System Password can be set, reset or
+>>> +		cleared using these attributes. An "Admin" password is used for
+>>> +		preventing modification to the BIOS settings. A "System" password
+>> is
+>>> +		required to boot a machine.
+>>> +
+>>> +		is_password_set:	A file that can be read
+>>> +		to obtain flag to see if a password is set on <attr>
+>>> +
+>>> +		max_password_length:	A file that can be read to obtain the
+>>> +		maximum length of the Password
+>>> +
+>>> +		min_password_length:	A file that can be read to obtain the
+>>> +		minimum length of the Password
+>>> +
+>>> +		current_password: A write only value used for privileged access
+>>> +		such as setting attributes when a system or admin password is set
+>>> +		or resetting to a new password
+>>> +
+>>> +		new_password: A write only value that when used in tandem with
+>>> +		current_password will reset a system or admin password.
+>>> +
+>>> +		Note, password management is session specific. If Admin/System
+>>> +		password is set, same password must be writen into current_password
+>>> +		file (requied for pasword-validation) and must be cleared once the
+>>> +		session	is over. For example,
+>>> +			echo "password" > current_password
+>>> +			echo "disabled" > TouchScreen/current_value
+>>> +			echo "" > current_password
+>>
+>> So I know this was mentioned before already but one concern I have here
+>> is that there is a race where other users with write access to say
+>> TouchScreen/current_value
+>> may change it between the setting and the clearing of the current_password
+>> even if
+>> they don't have the password.
+> 
+> I don't think there is much that can be done here other than move to something atomic
+> like sending the password as part of the request.
 
->
-> > Doug: would it help if we deferred this until late_initcall()? We
-> > could take an arbitrary pick from the list at core_initcall() time to
-> > serve early users, and update to the fastest one at a later time.
->
-> Yeah, I think that'd work OK.  One advantage of it being later would
-> be that it could run in parallel to other things that were happening
-> in the system (anyone who enabled async probe on their driver).  Even
-> better would be if your code itself could run async and not block the
-> rest of boot.  ;-)
+Right, I'm not saying this scheme is bad per se I just wanted to make
+sure that this was brought up and discussed.
 
-My code? :-)
+> echo "foobar123|enabled" | sudo tee /sys/devices/platform/dell-wmi-sysman/
+> 
+> That isn't really pretty - and worse you can no longer have a process fetching
+> authentication from escrow that is different from your "setter" process.
 
-> I do like the idea that we could just arbitrarily
-> pick one implementation until we've calibrated.  I guess we'd want to
-> figure out how to do this lockless but it shouldn't be too hard to
-> just check to see if a single pointer is non-NULL and once it becomes
-> non-NULL then you can use it...  ...or a pointer plus a sentinel if
-> writing the pointer can't be done atomically...
->
+Note you will likely need some form of IPC, say dbus to your escrow process
+anyways to ask it to unlock. So you could just change the "unlock" request
+to a "set Camera=Enabled" request and have the process which has access
+to the authentication token make the changes itself.
 
-Surely, any SMP capable architecture that cares about atomicity at
-that level can update a function pointer, which is guaranteed to be
-the native word size, without tearing?
+>> This is esp. relevant with containers. I'm not aware about all the intrinsics
+>> of
+>> sysfs and containers, at a minimum we need to check if it is possible to
+>> disallow
+>> all writes to the attributes when sysfs is mounted inside a container (so
+>> outside of the
+>> main filesystem namespace).
+> 
+> Containers by default mount sysfs as read only unless you use the '--privileged'
+> flag.
+> 
+> https://www.redhat.com/sysadmin/privileged-flag-container-engines
 
-This should do it afaict:
+Thanks that is good to know and does address most of my concerns. What I was
+wondering about is if we can enforce this in the kernel even for --privileged
+containers.  I guess another question would be if we can do that, should we?
 
---- a/crypto/xor.c
-+++ b/crypto/xor.c
-@@ -21,7 +21,7 @@
- #endif
+Regards,
 
- /* The xor routines to use.  */
--static struct xor_block_template *active_template;
-+static struct xor_block_template *active_template = xor_block_8regs;
+Hans
 
- void
- xor_blocks(unsigned int src_count, unsigned int bytes, void *dest, void **srcs)
-@@ -150,6 +150,5 @@ static __exit void xor_exit(void) { }
-
- MODULE_LICENSE("GPL");
-
--/* when built-in xor.o must initialize before drivers/md/md.o */
--core_initcall(calibrate_xor_blocks);
-+late_initcall(calibrate_xor_blocks);
- module_exit(xor_exit);
-
-
-> It also feels like with the large number of big.LITTLE systems out
-> there you'd either want a lookup table per core or you'd want to do
-> calibration per core.
->
-
-I don't think the complexity is worth it, tbh, as there are too many
-parameters to consider, although it would be nice if we could run the
-benchmark on the best performing CPU (as that is where the scheduler
-will run the code if it is on a sufficiently hot path, and if it is
-not, it doesn't really matter)
