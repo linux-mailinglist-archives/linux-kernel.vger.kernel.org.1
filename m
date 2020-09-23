@@ -2,174 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09E30274E1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 03:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF19C274E21
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 03:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726848AbgIWBFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 21:05:17 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:36036 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726654AbgIWBFQ (ORCPT
+        id S1726859AbgIWBGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 21:06:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37438 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726827AbgIWBGM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 21:05:16 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08N15EbD061097;
-        Tue, 22 Sep 2020 20:05:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600823114;
-        bh=xvTPkfpUU8F3RQcYhrx8bOZsL5Wd9WihUneLBbGz/OA=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=kUr8/hrlNwYjcB6XFG6zL9R1c6ri9NQmR4ei3+HKn2AIRHtpMiefTB0LFpqAKpYRf
-         opVQO8aae1EK4y9xT0zA/xq8yhEQ5UpU9ds8Uz68EIUoja8LDxzOWXNJSIst0t8kVf
-         rz8/PeRwDddRUd1ELYGKQkWqWyRmxjnEOicosiNw=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08N15E9J106243
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 22 Sep 2020 20:05:14 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 22
- Sep 2020 20:05:13 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 22 Sep 2020 20:05:13 -0500
-Received: from [10.250.36.88] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08N15DZg010265;
-        Tue, 22 Sep 2020 20:05:13 -0500
-Subject: Re: [EXTERNAL] Re: [PATCH v3 1/2] dt-bindings: power: Add the bq256xx
- dt bindings
-To:     Ricardo Rivera-Matos <r-rivera-matos@ti.com>,
-        Rob Herring <robh@kernel.org>
-CC:     <sre@kernel.org>, <linux-pm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200910164534.16987-1-r-rivera-matos@ti.com>
- <20200910164534.16987-2-r-rivera-matos@ti.com>
- <20200922222203.GA3360459@bogus>
- <db285d10-2c9a-22bc-1853-cf6e24486d27@ti.com>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <4d53d479-94b1-8c34-c4f4-a50e12f08a2b@ti.com>
-Date:   Tue, 22 Sep 2020 20:05:13 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <db285d10-2c9a-22bc-1853-cf6e24486d27@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Tue, 22 Sep 2020 21:06:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600823171;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HWJcac1QdW9dsyQKtkyOkOZ4w1weaZOAZAMFMC95DE4=;
+        b=YAfXPmarN47tMfkgq+2QZiQLJvazI9RADBsvKKXAn4GcKqu8chzRFVYUzcaaaa0rOq9x05
+        T70vKF3+1AJZ4ayMVoeECYQ33+uHvocdnAnXV7dLkTsyMnFkNFJZLUjGfTvFUKLVl9hvxj
+        bUNnlMryhMEGRp5sRl8BaE29bPvRbXA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-321-VnKzYDtLOJ6489vL7AfGag-1; Tue, 22 Sep 2020 21:06:07 -0400
+X-MC-Unique: VnKzYDtLOJ6489vL7AfGag-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4509881CBF1;
+        Wed, 23 Sep 2020 01:06:05 +0000 (UTC)
+Received: from ovpn-66-35.rdu2.redhat.com (unknown [10.10.67.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F2FD17368D;
+        Wed, 23 Sep 2020 01:06:03 +0000 (UTC)
+Message-ID: <95bd1230f2fcf01f690770eb77696862b8fb607b.camel@redhat.com>
+Subject: Re: [PATCH v2 5/9] iomap: Support arbitrarily many blocks per page
+From:   Qian Cai <cai@redhat.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org,
+        Dave Kleikamp <shaggy@kernel.org>,
+        jfs-discussion@lists.sourceforge.net,
+        Dave Chinner <dchinner@redhat.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-next@vger.kernel.org
+Date:   Tue, 22 Sep 2020 21:06:03 -0400
+In-Reply-To: <20200922170526.GK32101@casper.infradead.org>
+References: <20200910234707.5504-1-willy@infradead.org>
+         <20200910234707.5504-6-willy@infradead.org>
+         <163f852ba12fd9de5dec7c4a2d6b6c7cdb379ebc.camel@redhat.com>
+         <20200922170526.GK32101@casper.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RIcardo
+On Tue, 2020-09-22 at 18:05 +0100, Matthew Wilcox wrote:
+> On Tue, Sep 22, 2020 at 12:23:45PM -0400, Qian Cai wrote:
+> > On Fri, 2020-09-11 at 00:47 +0100, Matthew Wilcox (Oracle) wrote:
+> > > Size the uptodate array dynamically to support larger pages in the
+> > > page cache.  With a 64kB page, we're only saving 8 bytes per page today,
+> > > but with a 2MB maximum page size, we'd have to allocate more than 4kB
+> > > per page.  Add a few debugging assertions.
+> > > 
+> > > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> > > Reviewed-by: Dave Chinner <dchinner@redhat.com>
+> > 
+> > Some syscall fuzzing will trigger this on powerpc:
+> > 
+> > .config: https://gitlab.com/cailca/linux-mm/-/blob/master/powerpc.config
+> > 
+> > [ 8805.895344][T445431] WARNING: CPU: 61 PID: 445431 at fs/iomap/buffered-
+> > io.c:78 iomap_page_release+0x250/0x270
+> 
+> Well, I'm glad it triggered.  That warning is:
+>         WARN_ON_ONCE(bitmap_full(iop->uptodate, nr_blocks) !=
+>                         PageUptodate(page));
+> so there was definitely a problem of some kind.
+> 
+> truncate_cleanup_page() calls
+> do_invalidatepage() calls
+> iomap_invalidatepage() calls
+> iomap_page_release()
+> 
+> Is this the first warning?  I'm wondering if maybe there was an I/O error
+> earlier which caused PageUptodate to get cleared again.  If it's easy to
+> reproduce, perhaps you could try something like this?
+> 
+> +void dump_iomap_page(struct page *page, const char *reason)
+> +{
+> +       struct iomap_page *iop = to_iomap_page(page);
+> +       unsigned int nr_blocks = i_blocks_per_page(page->mapping->host, page);
+> +
+> +       dump_page(page, reason);
+> +       if (iop)
+> +               printk("iop:reads %d writes %d uptodate %*pb\n",
+> +                               atomic_read(&iop->read_bytes_pending),
+> +                               atomic_read(&iop->write_bytes_pending),
+> +                               nr_blocks, iop->uptodate);
+> +       else
+> +               printk("iop:none\n");
+> +}
+> 
+> and then do something like:
+> 
+> 	if (bitmap_full(iop->uptodate, nr_blocks) != PageUptodate(page))
+> 		dump_iomap_page(page, NULL);
 
-On 9/22/20 5:56 PM, Ricardo Rivera-Matos wrote:
-> Rob
->
-> On 9/22/20 5:22 PM, Rob Herring wrote:
->> On Thu, Sep 10, 2020 at 11:45:33AM -0500, Ricardo Rivera-Matos wrote:
->>> Add the bindings for the bq256xx series of battery charging ICs.
->>>
->>> Datasheets:
->>> - https://www.ti.com/lit/ds/symlink/bq25600.pdf
->>> - https://www.ti.com/lit/ds/symlink/bq25601.pdf
->>> - https://www.ti.com/lit/ds/symlink/bq25600d.pdf
->>> - https://www.ti.com/lit/ds/symlink/bq25601d.pdf
->>> - https://www.ti.com/lit/ds/symlink/bq25611d.pdf
->>> - https://www.ti.com/lit/ds/symlink/bq25618.pdf
->>> - https://www.ti.com/lit/ds/symlink/bq25619.pdf
->>>
->>> Signed-off-by: Ricardo Rivera-Matos <r-rivera-matos@ti.com>
->>> ---
->>>   .../bindings/power/supply/bq256xx.yaml        | 97 
->>> +++++++++++++++++++
->>>   1 file changed, 97 insertions(+)
->>>   create mode 100644 
->>> Documentation/devicetree/bindings/power/supply/bq256xx.yaml
->>>
->>> diff --git 
->>> a/Documentation/devicetree/bindings/power/supply/bq256xx.yaml 
->>> b/Documentation/devicetree/bindings/power/supply/bq256xx.yaml
->>> new file mode 100644
->>> index 000000000000..8cc2242f7df0
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/power/supply/bq256xx.yaml
->>> @@ -0,0 +1,97 @@
->>> +# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
->>> +# Copyright (C) 2020 Texas Instruments Incorporated
->>> +%YAML 1.2
->>> +---
->>> +$id: "http://devicetree.org/schemas/power/supply/bq256xx.yaml#"
->>> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
->>> +
->>> +title: TI bq256xx Switch Mode Buck Charger
->>> +
->>> +maintainers:
->>> +  - Ricardo Rivera-Matos <r-rivera-matos@ti.com>
->>> +
->>> +description: |
->>> +  The bq256xx devices are a family of highly-integrated battery charge
->>> +  management and system power management ICs for single cell Li-ion 
->>> and Li-
->>> +  polymer batteries.
->>> +
->>> +  Datasheets:
->>> +    - https://www.ti.com/lit/ds/symlink/bq25600.pdf
->>> +    - https://www.ti.com/lit/ds/symlink/bq25601.pdf
->>> +    - https://www.ti.com/lit/ds/symlink/bq25600d.pdf
->>> +    - https://www.ti.com/lit/ds/symlink/bq25601d.pdf
->>> +    - https://www.ti.com/lit/ds/symlink/bq25611d.pdf
->>> +    - https://www.ti.com/lit/ds/symlink/bq25618.pdf
->>> +    - https://www.ti.com/lit/ds/symlink/bq25619.pdf
->>> +
->>> +properties:
->>> +  compatible:
->>> +    enum:
->>> +      - ti,bq25600
->>> +      - ti,bq25601
->>> +      - ti,bq25600d
->>> +      - ti,bq25601d
->>> +      - ti,bq25611d
->>> +      - ti,bq25618
->>> +      - ti,bq25619
->>> +
->>> +  reg:
->>> +    maxItems: 1
->>> +
->>> +  ti,watchdog-timer:
->>> +    $ref: /schemas/types.yaml#/definitions/uint32
->>> +    description: |
->>> +      Watchdog timer in ms. 0 (default) disables the watchdog
->>> +    minimum: 0
->>> +    maximum: 160000
->>> +    enum: [ 0, 40000, 80000, 160000]
->>> +
->>> +  input-voltage-limit-microvolt:
->>> +    description: |
->>> +       Minimum input voltage limit in µV with a 100000 µV step
->>> +    minimum: 3900000
->>> +    maximum: 5400000
->>> +
->>> +  input-current-limit-microamp:
->>> +    description: |
->>> +       Maximum input current limit in µA with a 100000 µA step
->>> +    minimum: 100000
->>> +    maximum: 3200000
->>> +
->>> +required:
->>> +  - compatible
->>> +  - reg
->>> +  - monitored-battery
->> additionalProperties: false
->>
->> And then fix what breaks in the example.
-> ACK. I will document the monitored-battery and interrupts properties 
-> and fix the example. Is ti,watchdog-timer okay as it is currently 
-> documented?
+This:
 
-For TI consistency please use ti,watchdog-timeout-ms
-
-Dan
+[ 1683.158254][T164965] page:000000004a6c16cd refcount:2 mapcount:0 mapping:00000000ea017dc5 index:0x2 pfn:0xc365c
+[ 1683.158311][T164965] aops:xfs_address_space_operations ino:417b7e7 dentry name:"trinity-testfile2"
+[ 1683.158354][T164965] flags: 0x7fff8000000015(locked|uptodate|lru)
+[ 1683.158392][T164965] raw: 007fff8000000015 c00c0000019c4b08 c00c0000019a53c8 c000201c8362c1e8
+[ 1683.158430][T164965] raw: 0000000000000002 0000000000000000 00000002ffffffff c000201c54db4000
+[ 1683.158470][T164965] page->mem_cgroup:c000201c54db4000
+[ 1683.158506][T164965] iop:none
 
 
