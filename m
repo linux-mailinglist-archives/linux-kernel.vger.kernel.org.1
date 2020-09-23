@@ -2,99 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F32F2275C0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:38:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 327C4275C0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:38:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726760AbgIWPiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 11:38:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40472 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726184AbgIWPiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 11:38:04 -0400
-Received: from localhost.localdomain (unknown [194.230.155.191])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1E4AA21D7D;
-        Wed, 23 Sep 2020 15:37:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600875484;
-        bh=l07TPT43InyARN6scqTSWGPtscU6HSFhdJX+X1kj2fE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WQeM+s1HExyF+P5owYL+tElH+HGTWXQomdp6r8SbZv4J0c10DjlBBRtWlmYOar/vE
-         m1clvo+xIgczTmirMXWTjW8OaNr9+s6m4LqZAQH4H4pxfCMGgMsSHm/Er1fEafg0S8
-         9Mj7aQ5Y7a0w1oGXZXLiDjBcfJgvBZPaKzICLwrg=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 2/2] mmc: sdhci: fix indentation mistakes
-Date:   Wed, 23 Sep 2020 17:37:39 +0200
-Message-Id: <20200923153739.30327-2-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200923153739.30327-1-krzk@kernel.org>
-References: <20200923153739.30327-1-krzk@kernel.org>
+        id S1726743AbgIWPiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 11:38:00 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:56377 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726184AbgIWPh6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 11:37:58 -0400
+Received: from [185.56.157.72] (port=49708 helo=[192.168.101.73])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1kL6qA-000GgA-Ab; Wed, 23 Sep 2020 17:37:54 +0200
+Subject: Re: [PATCH v8 0/6] Support running driver's probe for a device
+ powered off
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     linux-i2c@vger.kernel.org, Wolfram Sang <wsa@the-dreams.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rajmohan.mani@intel.com, Tomasz Figa <tfiga@chromium.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
+        Hyungwoo Yang <hyungwoo.yang@intel.com>,
+        linux-media@vger.kernel.org
+References: <20200903081550.6012-1-sakari.ailus@linux.intel.com>
+ <f4b82baa-66b7-464e-fd39-66d2243a05ef@lucaceresoli.net>
+ <20200911130104.GF26842@paasikivi.fi.intel.com>
+ <6dea1206-cfaa-bfc5-d57e-4dcddadc03c7@lucaceresoli.net>
+ <20200914094727.GM26842@paasikivi.fi.intel.com>
+ <de017bfd-8908-f5ba-afa7-469a0059a5a7@lucaceresoli.net>
+ <20200923110856.GP26842@paasikivi.fi.intel.com>
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <f08e9ea3-27d6-019c-6571-58f1a3b76045@lucaceresoli.net>
+Date:   Wed, 23 Sep 2020 17:37:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200923110856.GP26842@paasikivi.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca+lucaceresoli.net/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix inconsistent indenting, reported by Smatch:
+Hi Sakari,
 
-  drivers/mmc/host/sdhci-esdhc-imx.c:1380 sdhci_esdhc_imx_hwinit() warn: inconsistent indenting
-  drivers/mmc/host/sdhci-sprd.c:390 sdhci_sprd_request_done() warn: inconsistent indenting
+On 23/09/20 13:08, Sakari Ailus wrote:
+> Hi Luca,
+> 
+> On Mon, Sep 14, 2020 at 06:49:29PM +0200, Luca Ceresoli wrote:
+>> Hi Sakari,
+>>
+>> On 14/09/20 11:47, Sakari Ailus wrote:
+>>> Hi Luca,
+>>>
+>>> On Mon, Sep 14, 2020 at 09:58:24AM +0200, Luca Ceresoli wrote:
+>>>> Hi Sakari,
+>>>>
+>>>> On 11/09/20 15:01, Sakari Ailus wrote:
+>>>>> Hi Luca,
+>>>>>
+>>>>> On Fri, Sep 11, 2020 at 02:49:26PM +0200, Luca Ceresoli wrote:
+>>>>>> Hi Sakari,
+>>>>>>
+>>>>>> On 03/09/20 10:15, Sakari Ailus wrote:
+>>>>>>>
+>>>>>>> Hi all,
+>>>>>>>
+>>>>>>> These patches enable calling (and finishing) a driver's probe function
+>>>>>>> without powering on the respective device on busses where the practice is
+>>>>>>> to power on the device for probe. While it generally is a driver's job to
+>>>>>>> check the that the device is there, there are cases where it might be
+>>>>>>> undesirable. (In this case it stems from a combination of hardware design
+>>>>>>> and user expectations; see below.) The downside with this change is that
+>>>>>>> if there is something wrong with the device, it will only be found at the
+>>>>>>> time the device is used. In this case (the camera sensors + EEPROM in a
+>>>>>>> sensor) I don't see any tangible harm from that though.
+>>>>>>>
+>>>>>>> An indication both from the driver and the firmware is required to allow
+>>>>>>> the device's power state to remain off during probe (see the first patch).
+>>>>>>>
+>>>>>>>
+>>>>>>> The use case is such that there is a privacy LED next to an integrated
+>>>>>>> user-facing laptop camera, and this LED is there to signal the user that
+>>>>>>> the camera is recording a video or capturing images. That LED also happens
+>>>>>>> to be wired to one of the power supplies of the camera, so whenever you
+>>>>>>> power on the camera, the LED will be lit, whether images are captured from
+>>>>>>> the camera --- or not. There's no way to implement this differently
+>>>>>>> without additional software control (allowing of which is itself a
+>>>>>>> hardware design decision) on most CSI-2-connected camera sensors as they
+>>>>>>> simply have no pin to signal the camera streaming state.
+>>>>>>>
+>>>>>>> This is also what happens during driver probe: the camera will be powered
+>>>>>>> on by the I²C subsystem calling dev_pm_domain_attach() and the device is
+>>>>>>> already powered on when the driver's own probe function is called. To the
+>>>>>>> user this visible during the boot process as a blink of the privacy LED,
+>>>>>>> suggesting that the camera is recording without the user having used an
+>>>>>>> application to do that. From the end user's point of view the behaviour is
+>>>>>>> not expected and for someone unfamiliar with internal workings of a
+>>>>>>> computer surely seems quite suspicious --- even if images are not being
+>>>>>>> actually captured.
+>>>>>>>
+>>>>>>> I've tested these on linux-next master. They also apply to Wolfram's
+>>>>>>> i2c/for-next branch, there's a patch that affects the I²C core changes
+>>>>>>> here (see below). The patches apart from that apply to Bartosz's
+>>>>>>> at24/for-next as well as Mauro's linux-media master branch.
+>>>>>>
+>>>>>> Apologies for having joined this discussion this late.
+>>>>>
+>>>>> No worries. But thanks for the comments.
+>>>>>
+>>>>>>
+>>>>>> This patchset seems a good base to cover a different use case, where I
+>>>>>> also cannot access the physical device at probe time.
+>>>>>>
+>>>>>> I'm going to try these patches, but in my case there are a few
+>>>>>> differences that need a better understanding.
+>>>>>>
+>>>>>> First, I'm using device tree, not ACPI. In addition to adding OF support
+>>>>>> similar to the work you've done for ACPI, I think instead of
+>>>>>> acpi_dev_state_low_power() we should have a function that works for both
+>>>>>> ACPI and DT.
+>>>>>
+>>>>> acpi_dev_state_low_power() is really ACPI specific: it does tell the ACPI
+>>>>> power state of the device during probe or remove. It is not needed on DT
+>>>>> since the power state of the device is controlled directly by the driver.
+>>>>> On I²C ACPI devices, it's the framework that powers them on for probe.
+>>>>
+>>>> I see, thanks for clarifying. I'm not used to ACPI so I didn't get that.
+>>>>
+>>>>> You could have a helper function on DT to tell a driver what to do in
+>>>>> probe, but the functionality in that case is unrelated.
+>>>>
+>>>> So in case of DT we might think of a function that just tells whether
+>>>> the device is marked to allow low-power probe, but it's just an info
+>>>> from DT:
+>>>>
+>>>> int mydriver_probe(struct i2c_client *client)
+>>>> {
+>>>> 	...
+>>>> 	low_power = of_dev_state_low_power(&client->dev);
+>>>> 	if (!low_power) {
+>>>> 		mydriver_initialize(); /* power+clocks, write regs */
+>>>>  	}
+>>>> 	...
+>>>> }
+>>>>
+>>>> ...and, if (low_power), call mydriver_initialize() at first usage.
+>>>>
+>>>> I'm wondering whether this might make sense in mainline.
+>>>
+>>> Quite possibly, if there are drivers that would need it.
+>>>
+>>> The function should probably be called differently though as what it does
+>>> is quite different after all.
+>>>
+>>> Unless... we did the following:
+>>>
+>>> - Redefine the I²C driver flag added by this patchset into what tells the
+>>>   I²C framework whether the driver does its own power management
+>>>   independently of the I²C framework. It could be called e.g.
+>>>   I2C_DRV_FL_FULL_PM, to indicate the driver is responsible for all power
+>>>   management of the device, and the I²C framework would not power on the
+>>>   device for probe or remove.
+>>>
+>>> - Add a firmware function to tell whether the device identification should
+>>>   take place during probe or not. For this is what we're really doing here
+>>>   from driver's point of view: lazy device probing.
+>>
+>> Indeed my needs have nothing to do with power management. What I need is
+>> lazy device probing as the I2C bus may need time before it can be used.
+>> From the driver code point of view it looks similar (there's an if()
+>> around initializations in probe() and init is done later if needed), but
+>> the usage is different.
+>>
+>> Another approach would be to add a new I2C driver operation [say
+>> init_hw()], then move code for lazy init out of probe() into init_hw().
+>> probe() would still allocate resources. init_hw() would be called by the
+>> framework (or the controller driver?) when it knows eveything is ready.
+>> Just wild thoughts while I'm trying to focus the problem...
+> 
+> What makes the controller driver not ready to operate the controller when
+> the client devices are probed?
 
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- drivers/mmc/host/sdhci-esdhc-imx.c | 2 +-
- drivers/mmc/host/sdhci-sprd.c      | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+I'm working with a camera module connected via a serializer/deserializer
+chip pair, and the link can go away and get back at any moment for
+various reasons: mechanical, electromagnetic, cable not connected etc.
+This scenario is not well handled with current kernel structures, so I'm
+handling it partially with some local hacks but I'm always curious about
+any possible kernel improvement that can improve the situation.
 
-diff --git a/drivers/mmc/host/sdhci-esdhc-imx.c b/drivers/mmc/host/sdhci-esdhc-imx.c
-index 62b3d4767916..fce8fa7e6b30 100644
---- a/drivers/mmc/host/sdhci-esdhc-imx.c
-+++ b/drivers/mmc/host/sdhci-esdhc-imx.c
-@@ -1377,7 +1377,7 @@ static void sdhci_esdhc_imx_hwinit(struct sdhci_host *host)
- 			 * response, block the tuning procedure or the first command
- 			 * after the whole tuning procedure always can't get any response.
- 			 */
--			 tmp |= ESDHC_TUNING_CMD_CRC_CHECK_DISABLE;
-+			tmp |= ESDHC_TUNING_CMD_CRC_CHECK_DISABLE;
- 			writel(tmp, host->ioaddr + ESDHC_TUNING_CTRL);
- 		} else if (imx_data->socdata->flags & ESDHC_FLAG_MAN_TUNING) {
- 			/*
-diff --git a/drivers/mmc/host/sdhci-sprd.c b/drivers/mmc/host/sdhci-sprd.c
-index 1efaf602c206..58109c5b53e2 100644
---- a/drivers/mmc/host/sdhci-sprd.c
-+++ b/drivers/mmc/host/sdhci-sprd.c
-@@ -387,7 +387,7 @@ static void sdhci_sprd_request_done(struct sdhci_host *host,
- 	if (mmc_hsq_finalize_request(host->mmc, mrq))
- 		return;
- 
--	 mmc_request_done(host->mmc, mrq);
-+	mmc_request_done(host->mmc, mrq);
- }
- 
- static struct sdhci_ops sdhci_sprd_ops = {
-@@ -433,7 +433,7 @@ static void sdhci_sprd_request(struct mmc_host *mmc, struct mmc_request *mrq)
- }
- 
- static int sdhci_sprd_request_atomic(struct mmc_host *mmc,
--				      struct mmc_request *mrq)
-+				     struct mmc_request *mrq)
- {
- 	sdhci_sprd_check_auto_cmd23(mmc, mrq);
- 
+See these links for some info about my troubles:
+https://lucaceresoli.net/plumbers-i2c-bof/
+https://elinux.org/images/f/fc/Ceresoli-elce2019-video-serdes-linux.pdf
+https://youtu.be/7hLv6fYAW-E?list=PLbzoR-pLrL6pamOj4UifcMJf560Ph6mJp
+
+Your patchset looks very similar to something I need: not communicating
+with the device during probe. Another piece would be to trigger a device
+configuration "in some way" when the link is known to be back.
+
 -- 
-2.17.1
-
+Luca
