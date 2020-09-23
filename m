@@ -2,101 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D0CD27631E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 23:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37169276324
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 23:31:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726699AbgIWVaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 17:30:30 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:60772 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726610AbgIWVa3 (ORCPT
+        id S1726761AbgIWVbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 17:31:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726265AbgIWVbG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 17:30:29 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-222-k0JZSzTkPJOZPjS-rTcoJw-1; Wed, 23 Sep 2020 22:30:26 +0100
-X-MC-Unique: k0JZSzTkPJOZPjS-rTcoJw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Wed, 23 Sep 2020 22:30:25 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Wed, 23 Sep 2020 22:30:25 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Arnd Bergmann' <arnd@arndb.de>, Al Viro <viro@zeniv.linux.org.uk>
-CC:     Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        David Howells <dhowells@redhat.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        linux-aio <linux-aio@kvack.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Networking <netdev@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>
-Subject: RE: [PATCH 5/9] fs: remove various compat readv/writev helpers
-Thread-Topic: [PATCH 5/9] fs: remove various compat readv/writev helpers
-Thread-Index: AQHWkdnPrERbulCBlEyrFz5+sRsKWql2urog
-Date:   Wed, 23 Sep 2020 21:30:25 +0000
-Message-ID: <2e11ea867c644c5d96f8e4930e5c730d@AcuMS.aculab.com>
-References: <20200923060547.16903-1-hch@lst.de>
- <20200923060547.16903-6-hch@lst.de>
- <20200923142549.GK3421308@ZenIV.linux.org.uk> <20200923143251.GA14062@lst.de>
- <20200923145901.GN3421308@ZenIV.linux.org.uk>
- <20200923163831.GO3421308@ZenIV.linux.org.uk>
- <CAK8P3a3nkLUOkR+jwz2_2LcYTUTqdVf8JOtZqKWbtEDotNhFZA@mail.gmail.com>
-In-Reply-To: <CAK8P3a3nkLUOkR+jwz2_2LcYTUTqdVf8JOtZqKWbtEDotNhFZA@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 23 Sep 2020 17:31:06 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 374CBC0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 14:31:06 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id j2so1241065eds.9
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 14:31:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uJHxje/HDno3CeRcQJWrHEYE5vhmzwobhZPN68xAP/4=;
+        b=VA3dwzB/IRvGJdFParHV7gRb8Nf9qVfGzgAS5aUh+UCWZxgapIXJgoorgN5/pxAcl8
+         jsFBTOQFs95M+/KvXGyqYjRvmBYcEgqdEleJ9SmY5uU3Kbr0dG8k3K5eKiVt4phN9HbJ
+         NreO4VAgLH0fnPFmZZyux45tKbfFAadA0SAfI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uJHxje/HDno3CeRcQJWrHEYE5vhmzwobhZPN68xAP/4=;
+        b=n8Q5r4DSpSbq3dXpL0d+2GJSuisiRA4+8iLkIQQWOBhkTszuu4FyCiqkKc/+uAR5K3
+         Rccg1cC6qZDLWf9lWsJIuXzJoPFimbqx9/8B1pud34ODKRG1ydXOlhnXiD18jaImnynu
+         oUlC0OoqOCSsXUpq625/yedcsczK+S3fUR6CGBu95WlsD979z3xS3U4MTuNgnDJssrVN
+         FfUydk1EWKaDHz41U0uQcu9DCzwJ7rGhRsiKigHX1vpqtZisaMRrZleyYD6qg3umNX2L
+         tXQW2b5epfJd5EDtsEsk/h5X8HYjCE4SlrizR9nasnM49ofvUETNIyfA/LgA9oUTzb3j
+         U/lA==
+X-Gm-Message-State: AOAM530h/ADvBH6zfFOFul0hn+/kgZAMIzDf9PKgPFotzSUrEiXvFzmD
+        Xe2vmZSaDf/+BRxULICOToWFaJSGa3wAHg==
+X-Google-Smtp-Source: ABdhPJzBz+UzuJfOScRd/WUOQCCizW6c82SS9LUKvnYHf5kG2fEtymLJAykO8IUR2oosTS1MNvh0xA==
+X-Received: by 2002:a50:fd19:: with SMTP id i25mr1404696eds.142.1600896664726;
+        Wed, 23 Sep 2020 14:31:04 -0700 (PDT)
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com. [209.85.218.45])
+        by smtp.gmail.com with ESMTPSA id q12sm880490edj.19.2020.09.23.14.31.04
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Sep 2020 14:31:04 -0700 (PDT)
+Received: by mail-ej1-f45.google.com with SMTP id p9so1614433ejf.6
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 14:31:04 -0700 (PDT)
+X-Received: by 2002:a05:651c:104c:: with SMTP id x12mr585986ljm.285.1600896257194;
+ Wed, 23 Sep 2020 14:24:17 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-Content-Language: en-US
+References: <20200921211744.24758-1-peterx@redhat.com> <20200921211744.24758-4-peterx@redhat.com>
+ <CAHk-=wh3G+OqehMdybQ++ikPMgd9BcydKJqkd6gRNuVz9TJG+w@mail.gmail.com>
+In-Reply-To: <CAHk-=wh3G+OqehMdybQ++ikPMgd9BcydKJqkd6gRNuVz9TJG+w@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 23 Sep 2020 14:24:00 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjU-k5jDE62_VfWrT7EwiLnBtDOM7kdTQ7ALC2x_HBh3g@mail.gmail.com>
+Message-ID: <CAHk-=wjU-k5jDE62_VfWrT7EwiLnBtDOM7kdTQ7ALC2x_HBh3g@mail.gmail.com>
+Subject: Re: [PATCH 3/5] mm: Rework return value for copy_one_pte()
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jann Horn <jannh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQXJuZCBCZXJnbWFubg0KPiBTZW50OiAyMyBTZXB0ZW1iZXIgMjAyMCAxOTo0Ng0KLi4u
-DQo+IFJlZ2FyZGxlc3Mgb2YgdGhhdCwgYW5vdGhlciBhZHZhbnRhZ2Ugb2YgaGF2aW5nIHRoZSBT
-WVNDQUxMX0RFQ0xBUkV4KCkNCj4gd291bGQgYmUgdGhlIGFiaWxpdHkgdG8gaW5jbHVkZSB0aGF0
-IGhlYWRlciBmaWxlIGZyb20gZWxzZXdoZXJlIHdpdGggYSBkaWZmZXJlbnQNCj4gbWFjcm8gZGVm
-aW5pdGlvbiB0byBjcmVhdGUgYSBtYWNoaW5lLXJlYWRhYmxlIHZlcnNpb24gb2YgdGhlIGludGVy
-ZmFjZSB3aGVuDQo+IGNvbWJpbmVkIHdpdGggdGhlIHN5c2NhbGwudGJsIGZpbGVzLiBUaGlzIGNv
-dWxkIGJlIHVzZWQgdG8gY3JlYXRlIGEgdXNlcg0KPiBzcGFjZSBzdHViIGZvciBjYWxsaW5nIGlu
-dG8gdGhlIGxvdy1sZXZlbCBzeXNjYWxsIHJlZ2FyZGxlc3Mgb2YgdGhlDQo+IGxpYmMgaW50ZXJm
-YWNlcywNCj4gb3IgZm9yIHN5bmNocm9uaXppbmcgdGhlIGludGVyZmFjZXMgd2l0aCBzdHJhY2Us
-IHFlbXUtdXNlciwgb3IgYW55dGhpbmcgdGhhdA0KPiBuZWVkcyB0byBkZWFsIHdpdGggdGhlIGxv
-dy1sZXZlbCBpbnRlcmZhY2UuDQoNCkEgc2ltaWxhciAndHJpY2snICh0aGF0IHByb2JhYmx5IHdv
-bid0IHdvcmsgaGVyZSkgaXMgdG8gcGFzcw0KdGhlIG5hbWUgb2YgYSAjZGVmaW5lIGZ1bmN0aW9u
-IGFzIGEgcGFyYW1ldGVyIHRvIGFub3RoZXIgZGVmaW5lLg0KVXNlZnVsIGZvciBkZWZpbmluZyBj
-b25zdGFudHMgYW5kIGVycm9yIHN0cmluZ3MgdG9nZXRoZXIuIGVnOg0KI2RlZmluZSBUUkFGRklD
-X0xJR0hUUyh4KSBcDQoJeChSRUQsIDAsICJSZWQiKSBcDQoJeChZRUxMT1csIDEsICJZZWxsb3cp
-IFwNCgl4KEdSRUVOLCAyLCAiR1JFRU4pDQoNCllvdSBjYW4gdGhlbiBkbyB0aGluZyBsaWtlOg0K
-I2RlZmluZSB4KHRva2VuLCB2YWx1ZSwgc3RyaW5nKSB0b2tlbiA9IHZhbHVlLA0KZW51bSB7VFJB
-RkZJQ19MSUdIVFMoeCkgTlVNX0xJR0hUU307DQojdW5kZWYgeA0KI2RlZmluZSB4KHRva2VuLCB2
-YWx1ZSwgc3RyaW5nKSBbdmFsdWVdID0gc3RyaW5nLA0KY29uc3QgY2hhciAqY29sb3Vyc1tdID0g
-e1RSQUZGSUNfTElHSFRTKHgpfTsNCiN1bmRlZiB4DQp0byBpbml0aWFsaXNlIGNvbnN0YW50cyBh
-bmQgYSBuYW1lIHRhYmxlIHRoYXQgYXJlIGFsd2F5cyBpbiBzeW5jLg0KDQpJdCBpcyBhbHNvIGEg
-Z29vZCB3YXkgdG8gZ2VuZXJhdGUgc291cmNlIGxpbmVzIHRoYXQgYXJlIG92ZXIgMU1CLg0KDQoJ
-RGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1v
-dW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEz
-OTczODYgKFdhbGVzKQ0K
+On Wed, Sep 23, 2020 at 10:16 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> But these two patches are very intentionally meant to be just "this
+> clearly changes NO semantics at all".
 
+The more I look at these, the more I go "this is a cleanup
+regardless", so I'll just keep thes in my tree as-is.
+
+                 Linus
