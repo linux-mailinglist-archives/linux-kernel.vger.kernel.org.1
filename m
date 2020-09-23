@@ -2,125 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB1EB274EB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 03:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43ABA274EB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 03:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726983AbgIWBtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 21:49:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57566 "EHLO
+        id S1726993AbgIWBwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 21:52:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726548AbgIWBtB (ORCPT
+        with ESMTP id S1726548AbgIWBwp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 21:49:01 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30334C061755;
-        Tue, 22 Sep 2020 18:49:01 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id z2so17375207qtv.12;
-        Tue, 22 Sep 2020 18:49:01 -0700 (PDT)
+        Tue, 22 Sep 2020 21:52:45 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF092C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 18:52:45 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id c62so8156235qke.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 18:52:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=X9uNPzY+kbe4wa6xwtAwYFztuqUdYMBDLfnDNt+LMK4=;
-        b=Iy+cU19p3ID4fWUzJ4+y5RoTaznblfmPAoP2x7nMaeWBjBVug7MB0iwXkCU7sZxkTL
-         4S2TzaIJ1W2LnG12r/Kd8h8qR2FDnlIixibHw8JTS2PfOLZhcOKy+sN/Kz3c9Dc7jft3
-         2gTL9U7TQnSiaJS2kHnzMIXnkNiS+wBiO4gchFzWXOqUQ9yN6uS2ggvUqE7OxLhfuQfb
-         k/4TMg/9NPSZcsxFEY3BKmuIpbUl/pJwK3aPih4wnfbtyUpNqgZrCSCWO/EjNIu3aMn2
-         dfwx1/hMeLq+qXxxksF1ZI8oNP1PwphPafhnohWXPp8QI6I8//inJJCpYo8Jm8lizK11
-         Xoyg==
+        bh=TiMhTitM/Kckj6g33MjfhbkW3q6tpXUyaiKiQ5+I5GY=;
+        b=VvuUIR5ZaPC1iCrOrvxBVYEKcKXqPHB4WbOjaNt3fNglEa4Bt/Nj8P6qCw7ALpnqKm
+         QVh/TLAtreIMNM9skUUnRILK4hz+fC5/F7hZ1s3ww9yH9e0JCatzuK1y4m9TPPJrOfry
+         vEoLJ906+vM5tYaaHlXoCPIC5u7vuPwsrhMgc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=X9uNPzY+kbe4wa6xwtAwYFztuqUdYMBDLfnDNt+LMK4=;
-        b=XmfYShBYNuNzpHea10DLMx/uoFxV/CUIZ7BwuZkRAmD88YNNLIdYInJckWsgNWLYo2
-         a09fDBk5igfAVo02ozogYPwJ4kXSCNieIn/NYe5jPllVi+wzzrdUgmGzVQbS+eK72Sjf
-         A73F6C3Fn56O3SaSyFRBA+WKobN1o/Gb2BML9Lep9MUZEOC/jKppqFtkjut9fEmlri6I
-         TOZXXwDtKj7eRPvYrBHBEF5GBSmBLxBpdnj6iPKlppBqqEUJ0nTYe3/35u26c9EM4mbk
-         L2RMNvwo/GXmwqtFoUtiEs4mO0bWmS9LlR/NZ8eQpwPt4jv9lsGwtSCGBlKGIO/KKWjw
-         rCIQ==
-X-Gm-Message-State: AOAM532ASg/SzNlxqN1RiwHAnQe7a5oQhpTfpE9qZ4habkoiMKaCDkzk
-        WyyaLSOS7zAep0vD8wIazTg=
-X-Google-Smtp-Source: ABdhPJxt1iMhkeV3PFsfjQ9tysdSfHw6UxkFzaXZ88od3R2WdGYz2AgC3VYKnrCqgPigtp77o9G9FA==
-X-Received: by 2002:aed:2963:: with SMTP id s90mr7801958qtd.381.1600825740262;
-        Tue, 22 Sep 2020 18:49:00 -0700 (PDT)
-Received: from shinobu (072-189-064-225.res.spectrum.com. [72.189.64.225])
-        by smtp.gmail.com with ESMTPSA id u13sm13550546qtv.57.2020.09.22.18.48.59
+        bh=TiMhTitM/Kckj6g33MjfhbkW3q6tpXUyaiKiQ5+I5GY=;
+        b=ubLhOB9rNyHxJFjytJkBJXgSW+xwxNVH+yQwn9euOqRl1l9blYi4xPpBdlGnpJxPOu
+         DbLiEdS+r8r7EKYsxXxqIUKxQBqJxU/gc6SKxp+tXkB4IKMPPbvI1wgJW/Eu7CA6Leq8
+         XtlaZB2F5gc/zhghaHFlJ28WP9BbbtoO8NUcgYyPqd97wjHGh6eeM3K/cvw6XiyXFgl4
+         FcR9g9vqWWyUwV9t01T4TCbQDZVK0mHFCTBkPJekfc66WrR4iP7lfPupZpltIwJt7MDH
+         53QY6PnZocKcHjwSU+cb61ASQxp31p8YOm3SRHE8L1x+ZVx8YDdnM6X7ff55/XA4JEpz
+         D77w==
+X-Gm-Message-State: AOAM532nNsGYOjov7X9b6PJrDF1Y/KidPaCwj8p0E2NYsgz6fJWnLcnF
+        4JT0EmZow1MrreIIlnK/n8TzFA==
+X-Google-Smtp-Source: ABdhPJxgKWcg0mc8n85Ep1u/caKCmAyXiog5710ndV0MWbdPjZK/e9jBQ/vJtZQGZaZ8QHtfZVgVDA==
+X-Received: by 2002:a37:a0cf:: with SMTP id j198mr3074886qke.408.1600825964757;
+        Tue, 22 Sep 2020 18:52:44 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id f3sm13569003qtg.71.2020.09.22.18.52.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 18:48:59 -0700 (PDT)
-Date:   Tue, 22 Sep 2020 21:48:38 -0400
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     Kamel Bouhara <kamel.bouhara@bootlin.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] counter: microchip-tcb-capture: Constify mchp_tc_ops
-Message-ID: <20200923014838.GA3267@shinobu>
-References: <20200922201941.41328-1-rikard.falkeborn@gmail.com>
+        Tue, 22 Sep 2020 18:52:44 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 21:52:43 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Julien Desfossez <jdesfossez@digitalocean.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Chris Hyser <chris.hyser@oracle.com>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        mingo@kernel.org, tglx@linutronix.de, pjt@google.com,
+        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        fweisbec@gmail.com, keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        rostedt@goodmis.org, derkling@google.com, benbjiang@tencent.com,
+        Aaron Lu <ziqian.lzq@antfin.com>
+Subject: Re: [RFC PATCH v7 11/23] sched/fair: core wide cfs task priority
+ comparison
+Message-ID: <20200923015243.GA1739137@google.com>
+References: <cover.1598643276.git.jdesfossez@digitalocean.com>
+ <d02923d38df20f1d8c51cf4df6dce66ac0a385ce.1598643276.git.jdesfossez@digitalocean.com>
+ <20200828212927.GE29142@worktop.programming.kicks-ass.net>
+ <20200923014622.GA1733275@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ew6BAiZeqk4r7MaW"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200922201941.41328-1-rikard.falkeborn@gmail.com>
+In-Reply-To: <20200923014622.GA1733275@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 22, 2020 at 09:46:22PM -0400, Joel Fernandes wrote:
+> On Fri, Aug 28, 2020 at 11:29:27PM +0200, Peter Zijlstra wrote:
+> > 
+> > 
+> > This is still a horrible patch..
+> 
+> Hi Peter,
+> I wrote a new patch similar to this one and it fares much better in my tests,
+> it is based on Aaron's idea but I do the sync only during force-idle, and not
+> during enqueue. Also I yanked the whole 'core wide min_vruntime' crap. There
+> is a regressing test which improves quite a bit with my patch (results below):
+> 
+> Aaron, Vineeth, Chris any other thoughts? This patch is based on Google's
+> 4.19 device kernel so will require some massaging to apply to mainline/v7
+> series. I will provide an updated patch later based on v7 series.
+> 
+> (Works only for SMT2, maybe we can generalize it more..)
+> --------8<-----------
+> 
+> From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+> Subject: [PATCH] sched: Sync the min_vruntime of cores when the system enters
+>  force-idle
+> 
+> This patch provides a vruntime based way to compare two cfs task's priority, be
+> it on the same cpu or different threads of the same core.
+> 
+> It is based on Aaron Lu's patch with some important differences. Namely,
+> the vruntime is sync'ed only when the CPU goes into force-idle. Also I removed
+> the notion of core-wide min_vruntime.
+> 
+> Also I don't care how long a cpu in a core is force idled,  I do my sync
+> whenever the force idle starts essentially bringing both SMTs to a common time
+> base. After that point, selection can happen as usual.
+> 
+> When running an Android audio test, with patch the perf sched latency output:
+> 
+> -----------------------------------------------------------------------------------------------------------------
+> Task                  |   Runtime ms  | Switches | Average delay ms | Maximum delay ms | Maximum delay at       |
+> -----------------------------------------------------------------------------------------------------------------
+> FinalizerDaemon:(2)   |     23.969 ms |      969 | avg:    0.504 ms | max:  162.020 ms | max at:   1294.327339 s
+> HeapTaskDaemon:(3)    |   2421.287 ms |     4733 | avg:    0.131 ms | max:   96.229 ms | max at:   1302.343366 s
+> adbd:(3)              |      6.101 ms |       79 | avg:    1.105 ms | max:   84.923 ms | max at:   1294.431284 s
+> 
+> Without this patch and with Aubrey's initial patch (in v5 series), the max delay looks much better:
+> 
+> -----------------------------------------------------------------------------------------------------------------
+> Task                  |   Runtime ms  | Switches | Average delay ms | Maximum delay ms | Maximum delay at       |
+> -----------------------------------------------------------------------------------------------------------------
+> HeapTaskDaemon:(2)    |   2602.109 ms |     4025 | avg:    0.231 ms | max:   19.152 ms | max at:    522.903934 s
+> surfaceflinger:7478   |     18.994 ms |     1206 | avg:    0.189 ms | max:   17.375 ms | max at:    520.523061 s
+> ksoftirqd/3:30        |      0.093 ms |        5 | avg:    3.328 ms | max:   16.567 ms | max at:    522.903871 s
 
---ew6BAiZeqk4r7MaW
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I messed up the change log, just to clarify - the first result is without
+patch (bad) and the second result is with patch (good).
 
-On Tue, Sep 22, 2020 at 10:19:41PM +0200, Rikard Falkeborn wrote:
-> The only usage of mchp_tc_ops is to assign its address to the ops field
-> in the counter_device struct which is a const pointer. Make it const to
-> allow the compiler to put it in read-only memory.
->=20
-> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+thanks,
 
-Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+ - Joel
 
-> ---
->  drivers/counter/microchip-tcb-capture.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/counter/microchip-tcb-capture.c b/drivers/counter/mi=
-crochip-tcb-capture.c
-> index b7b252c5addf..039c54a78aa5 100644
-> --- a/drivers/counter/microchip-tcb-capture.c
-> +++ b/drivers/counter/microchip-tcb-capture.c
-> @@ -253,7 +253,7 @@ static struct counter_count mchp_tc_counts[] =3D {
->  	},
->  };
-> =20
-> -static struct counter_ops mchp_tc_ops =3D {
-> +static const struct counter_ops mchp_tc_ops =3D {
->  	.signal_read  =3D mchp_tc_count_signal_read,
->  	.count_read   =3D mchp_tc_count_read,
->  	.function_get =3D mchp_tc_count_function_get,
-> --=20
-> 2.28.0
->=20
-
---ew6BAiZeqk4r7MaW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAl9qqVQACgkQhvpINdm7
-VJKiUA//RCxl+1lEl3ZD7fgozAxc91BtR5k9Yu6UGBtrLNE+0lxJmpOdGyuN0K6X
-iqXNMEzyJWvydI5+K/2GUvBrzQRIiufVyeTd8aUygFtJh+8Qysa3fmHrVJz/6SSA
-TUKnENMoNKZZi9IzdGRkZN0yXr25RCVT6WXpb21T6Xp3nTAVTDU3GNNB5ytHhArG
-AmT2iiNb5qX1fGfzG9jP9S6pf4bVhP5po4cwAWsLbziJTuNvfnp+ByMn3xx+UUw7
-JN9WEm6/H36DTO0qNpNP6azWPLyZk8vElHY6tKpDKBvhN5k6UaJ6EXpvbba7DntA
-+xgQUAxfE6txDv20uwF/w4CdTdXI0tOBdBhv5Av+naWhu9LFG7n0wveOIF9L0ZXI
-KqYZ+ZSV537vZtvych1izHjm6V+LDmm49K6OhJnBkjYp4N36gmNhUbPV8UKhIh5E
-UlVyf4eqllRqmzkVwuma/kb6BM6XUKue8lp0vZjovcMXHeTQ4YumYnh7E7igqLWz
-V19MlFTEQrzR9h2B0LXbXkzXZm/fAnNQu00YSrOpNJ8Yl9gAIziTWWDxCDsYFORn
-eFxRHF5bvisS6srCGTF2JZuAmH3WC+Dgo33OzGCBVgzOP9ZQ7FoSLf2HpIqT7Dgh
-mysWnBNBXI9E1L+nNWWiYLpykO9Fru8nuG8cMKc9k/2mcnR/ISI=
-=AK/t
------END PGP SIGNATURE-----
-
---ew6BAiZeqk4r7MaW--
