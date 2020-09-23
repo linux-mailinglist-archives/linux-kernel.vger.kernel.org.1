@@ -2,71 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08FA0275679
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:37:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BFF9275662
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726659AbgIWKh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 06:37:26 -0400
-Received: from hermes.cta.br ([161.24.235.5]:40214 "EHLO hermes.cta.br"
+        id S1726636AbgIWKbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 06:31:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgIWKh0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 06:37:26 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by hermes.cta.br (Postfix) with ESMTP id CA4981707816;
-        Wed, 23 Sep 2020 03:05:32 -0300 (-03)
-Received: from hermes.cta.br ([127.0.0.1])
-        by localhost (hermes.cta.br [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id PnTd7I6ZPMc2; Wed, 23 Sep 2020 03:05:32 -0300 (-03)
-Received: from localhost (localhost [127.0.0.1])
-        by hermes.cta.br (Postfix) with ESMTP id 36B1C1564F26;
-        Wed, 23 Sep 2020 01:51:38 -0300 (-03)
-DKIM-Filter: OpenDKIM Filter v2.10.3 hermes.cta.br 36B1C1564F26
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cta.br;
-        s=50824260-A46F-11E8-B5E3-16F5207DEC71; t=1600836698;
-        bh=PEgy+RpcsckcVXxslQn6d+tc//P81+6V7lvSU9dRFp0=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=pM4UVQMRvxhuYy+aoSy5C6dTX22F7yEH7VZVUyHGz6GS4oV0PsgoJE8YP1B8z8XUw
-         1Qi9WtJati830rgGNLCeXO2u6g0d1oCt4Cq5pkxsBA83beZ2lWBuVVa1W8aherjQzF
-         72NjOdu3W+dtZkwC4BHJjN774xMGAiUYhx2Gasn0EKYk9OzjlCPjRPNFEP5rf0dDp0
-         qJ80u5JSIM+dxdSx768Idnmgn1XF/KihtXzjrHp58epL1mSpTwiTIwnyZwbU3SQJfT
-         LqYa6sp4DCe+rJgikuEIlHW+Bo+fCn7xJ6bLN4hL5AoRJ3nkCebxOZSi8hkUEEcJfU
-         RG9zqhMyvuV1w==
-X-Virus-Scanned: amavisd-new at cta.br
-Received: from hermes.cta.br ([127.0.0.1])
-        by localhost (hermes.cta.br [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 4bsXoCChTubC; Wed, 23 Sep 2020 01:51:37 -0300 (-03)
-Received: from [10.120.212.214] (unknown [105.12.3.179])
-        by hermes.cta.br (Postfix) with ESMTPSA id 56C9116E8E1C;
-        Wed, 23 Sep 2020 01:24:53 -0300 (-03)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1726419AbgIWKba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 06:31:30 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA8BA20C56;
+        Wed, 23 Sep 2020 10:31:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600857090;
+        bh=LWSvDR9lFDlLJfxRInCbfAQl5Wyo0uA+EsI/NgHdtew=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PpMb6o+xcCBhOWFuDyndXFsO47dUy4mGoVbD8Uj6Yt2p4SmJAoh0mU2BzEf7kzYCM
+         uPG6a4sBEVmbQDvK7kWRsX0c4NECghaHBjpQx9WhByIyWfxdcGdd28YBlK2E84D4g/
+         3aOgNTu8sJlHmQZV8Ha6ElBkz64izzjG/ZW3zoY8=
+Date:   Wed, 23 Sep 2020 12:31:49 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     johannes@sipsolutions.net, rafael@kernel.org,
+        keescook@chromium.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 04/11] drivers/base/devcoredump: convert devcd_count
+ to counter_atomic
+Message-ID: <20200923103149.GH3154647@kroah.com>
+References: <cover.1600816121.git.skhan@linuxfoundation.org>
+ <651bc1a1e1cbf5e2a1b9f60118d5c163b93eeb43.1600816121.git.skhan@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: spende von 2,000,000 euro
-To:     Recipients <scco@cta.br>
-From:   ''Tayeb souami'' <scco@cta.br>
-Date:   Wed, 23 Sep 2020 06:27:12 +0200
-Reply-To: Tayebsouam.spende@gmail.com
-Message-Id: <20200923042454.56C9116E8E1C@hermes.cta.br>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <651bc1a1e1cbf5e2a1b9f60118d5c163b93eeb43.1600816121.git.skhan@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hallo mein lieber Freund
-                                  Mein Name ist Tayeb Souami aus New Jersey=
- in Amerika und ich habe den America Lottery Jackpot von 315 Millionen Euro=
- gewonnen. Ich habe mich entschlossen, die Summe von 2.000.000 Euro an f=FC=
-nf gl=FCckliche Personen zu spenden, und Sie wurden als einer der Beg=FCnst=
-igten ausgew=E4hlt. Bitte klicken Sie auf diesen Link, um mehr =FCber meine=
-n Gewinn zu erfahren.
+On Tue, Sep 22, 2020 at 07:43:33PM -0600, Shuah Khan wrote:
+> counter_atomic is introduced to be used when a variable is used as
+> a simple counter and doesn't guard object lifetimes. This clearly
+> differentiates atomic_t usages that guard object lifetimes.
+> 
+> counter_atomic variables will wrap around to 0 when it overflows and
+> should not be used to guard resource lifetimes, device usage and
+> open counts that control state changes, and pm states.
+> 
+> devcd_count is used to track dev_coredumpm device count and used in
+> device name string. It doesn't guard object lifetimes, device usage
+> counts, device open counts, and pm states. There is very little chance
+> of this counter overflowing. Convert it to use counter_atomic.
+> 
+> This conversion doesn't change the oveflow wrap around behavior.
+> 
+> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> ---
+>  drivers/base/devcoredump.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/base/devcoredump.c b/drivers/base/devcoredump.c
+> index e42d0b514384..d719424d1e0b 100644
+> --- a/drivers/base/devcoredump.c
+> +++ b/drivers/base/devcoredump.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/fs.h>
+>  #include <linux/workqueue.h>
+> +#include <linux/counters.h>
+>  
+>  static struct class devcd_class;
+>  
+> @@ -255,7 +256,7 @@ void dev_coredumpm(struct device *dev, struct module *owner,
+>  				   void *data, size_t datalen),
+>  		   void (*free)(void *data))
+>  {
+> -	static atomic_t devcd_count = ATOMIC_INIT(0);
+> +	static struct counter_atomic devcd_count = COUNTER_ATOMIC_INIT(0);
+>  	struct devcd_entry *devcd;
+>  	struct device *existing;
+>  
+> @@ -286,7 +287,7 @@ void dev_coredumpm(struct device *dev, struct module *owner,
+>  	device_initialize(&devcd->devcd_dev);
+>  
+>  	dev_set_name(&devcd->devcd_dev, "devcd%d",
+> -		     atomic_inc_return(&devcd_count));
+> +		     counter_atomic_inc_return(&devcd_count));
+>  	devcd->devcd_dev.class = &devcd_class;
+>  
+>  	if (device_add(&devcd->devcd_dev))
+> -- 
+> 2.25.1
+> 
 
-
-UHR MICH HIER: https://www.youtube.com/watch?v=3DZ6ui8ZDQ6Ks
-
-Bitte kontaktieren Sie mich =FCber diese E-Mail: Tayebsouam.spende@gmail.com
-
-
-Ich hoffe, Sie und Ihre Familie gl=FCcklich zu machen.
-
-Gr=FC=DFe
-Herr Tayeb Souami
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
