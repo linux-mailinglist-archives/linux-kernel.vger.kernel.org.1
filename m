@@ -2,88 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6535827593A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B1B275941
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726610AbgIWN6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 09:58:52 -0400
-Received: from mga04.intel.com ([192.55.52.120]:58458 "EHLO mga04.intel.com"
+        id S1726671AbgIWN73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 09:59:29 -0400
+Received: from mga09.intel.com ([134.134.136.24]:22474 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726516AbgIWN6w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 09:58:52 -0400
-IronPort-SDR: DHXEaFJaDvkKleOy7vfHKXSU2Z4dPaLKXtMyNYPve7btdCAHW8naGWSIJQKWG8lUWc9T4q5o0C
- QzlS6zutmLgA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9752"; a="158271541"
+        id S1726460AbgIWN73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 09:59:29 -0400
+IronPort-SDR: HSDgW3bp6augOKhIPrnwomHK7A7XxZWUW8jUGxAtXSoOd3946P1/fOVbPpG6uqmzmbziAyPWg8
+ FhSxkgvxJnzw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9752"; a="161826177"
 X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="158271541"
+   d="scan'208";a="161826177"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 06:58:51 -0700
-IronPort-SDR: DOZNQUTwNmS6CdTEWIoW9qi7Sh22K+ola1js+j+Vn7PmZQGNyFPiXcYUQXMNKslnCfCP8vR0bU
- ku9o4NuN7J+w==
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 06:59:28 -0700
+IronPort-SDR: 8Oy5AgqLUvn41mrOnHSUoULieLzrAnjuAay2f7s2JTlXC+LLeuNY+bsqH3+VOnac40F8u7XiWx
+ I1CPmyJ3ogDA==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="486449272"
-Received: from yymichae-mobl.ger.corp.intel.com (HELO [10.214.208.219]) ([10.214.208.219])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 06:58:46 -0700
-Subject: Re: [Intel-gfx] [PATCH 4/6] drm/i915: use vmap in i915_gem_object_map
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        linux-mm@kvack.org, Peter Zijlstra <peterz@infradead.org>,
-        intel-gfx@lists.freedesktop.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Minchan Kim <minchan@kernel.org>,
-        dri-devel@lists.freedesktop.org, xen-devel@lists.xenproject.org,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Nitin Gupta <ngupta@vflare.org>
-References: <20200918163724.2511-1-hch@lst.de>
- <20200918163724.2511-5-hch@lst.de>
- <9b5d40af-7378-9e68-ca51-73b2148287f3@linux.intel.com>
- <20200923134117.GB9893@lst.de>
-From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Organization: Intel Corporation UK Plc
-Message-ID: <1a421e7f-6255-c534-5403-715c2e809bd0@linux.intel.com>
-Date:   Wed, 23 Sep 2020 14:58:43 +0100
+   d="scan'208";a="309916738"
+Received: from mylly.fi.intel.com (HELO [10.237.72.56]) ([10.237.72.56])
+  by orsmga006.jf.intel.com with ESMTP; 23 Sep 2020 06:59:25 -0700
+Subject: Re: [PATCH v2 0/4] i2c-hid: Save power by reducing i2c xfers with
+ block reads
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Sultan Alsawaf <sultan@kerneltoast.com>
+Cc:     linux-i2c <linux-i2c@vger.kernel.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Aaron Ma <aaron.ma@canonical.com>,
+        Pavel Balan <admin@kryma.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        HungNien Chen <hn.chen@weidahitech.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        linux-input <linux-input@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        You-Sheng Yang <vicamo.yang@canonical.com>,
+        Wolfram Sang <wsa@kernel.org>
+References: <20200917052256.5770-1-sultan@kerneltoast.com>
+ <CAHp75Vea8=WchmWVOGndgarjehv+sYQh7CNUrQYqmG8hGJCzHA@mail.gmail.com>
+From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Message-ID: <86cbe3f2-30c9-615e-6d29-c94c98d6be53@linux.intel.com>
+Date:   Wed, 23 Sep 2020 16:59:24 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200923134117.GB9893@lst.de>
+In-Reply-To: <CAHp75Vea8=WchmWVOGndgarjehv+sYQh7CNUrQYqmG8hGJCzHA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 23/09/2020 14:41, Christoph Hellwig wrote:
-> On Wed, Sep 23, 2020 at 10:52:33AM +0100, Tvrtko Ursulin wrote:
+On 9/17/20 5:02 PM, Andy Shevchenko wrote:
+> On Thu, Sep 17, 2020 at 8:26 AM Sultan Alsawaf <sultan@kerneltoast.com> wrote:
 >>
->> On 18/09/2020 17:37, Christoph Hellwig wrote:
->>> i915_gem_object_map implements fairly low-level vmap functionality in
->>> a driver.  Split it into two helpers, one for remapping kernel memory
->>> which can use vmap, and one for I/O memory that uses vmap_pfn.
->>>
->>> The only practical difference is that alloc_vm_area prefeaults the
->>> vmalloc area PTEs, which doesn't seem to be required here for the
->>> kernel memory case (and could be added to vmap using a flag if actually
->>> required).
+>> From: Sultan Alsawaf <sultan@kerneltoast.com>
 >>
->> Patch looks good to me.
+>> This is a fixed resubmission of "[PATCH 0/2] i2c-hid: Save power by reducing i2c
+>> xfers with block reads". That original patchset did not have enough fixes for
+>> the designware i2c adapter's I2C_M_RECV_LEN feature, which is documented
+>> extensively in the original email thread.
 >>
->> Series did not get a CI run from our side because of a different base so I
->> don't know if you would like to have a run there? If so you would need to
->> rebase against git://anongit.freedesktop.org/drm-tip drm-tip and you could
->> even send a series to intel-gfx-trybot@lists.freedesktop.org, suppressing
->> cc, to check it out without sending a copy to the real mailing list.
+>> Here is the original cover letter, which still applies:
+>> "I noticed on my Dell Precision 15 5540 with an i9-9880H that simply putting my
+>> finger on the touchpad would increase my system's power consumption by 4W, which
+>> is quite considerable. Resting my finger on the touchpad would generate roughly
+>> 4000 i2c irqs per second, or roughly 20 i2c irqs per touchpad irq.
+>>
+>> Upon closer inspection, I noticed that the i2c-hid driver would always transfer
+>> the maximum report size over i2c (which is 60 bytes for my touchpad), but all of
+>> my touchpad's normal touch events are only 32 bytes long according to the length
+>> byte contained in the buffer sequence.
+>>
+>> Therefore, I was able to save about 2W of power by passing the I2C_M_RECV_LEN
+>> flag in i2c-hid, which says to look for the payload length in the first byte of
+>> the transfer buffer and adjust the i2c transaction accordingly. The only problem
+>> though is that my i2c controller's driver allows bytes other than the first one
+>> to be used to retrieve the payload length, which is incorrect according to the
+>> SMBus spec, and would break my i2c-hid change since not *all* of the reports
+>> from my touchpad are conforming SMBus block reads.
+>>
+>> This patchset fixes the I2C_M_RECV_LEN behavior in the designware i2c driver and
+>> modifies i2c-hid to use I2C_M_RECV_LEN to save quite a bit of power. Even if the
+>> peripheral controlled by i2c-hid doesn't support block reads, the i2c controller
+>> drivers should cope with this and proceed with the i2c transfer using the
+>> original requested length."
 > 
-> It doesn't seem like I can post to any freedesktop list, as I always
-> get rejection messages.  But I'll happily prepare a branch if one
-> of you an feed it into your CI.
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> for I²C DesignWare patches.
+> 
+Also for i2c-designware
 
-That's fine, just ping me and I will forward it for testing, thanks!
-
-Regards,
-
-Tvrtko
+Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
