@@ -2,111 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9E7E276110
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 21:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58AE7276115
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 21:33:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726620AbgIWTbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 15:31:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53602 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726156AbgIWTbR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 15:31:17 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8DE1F21D92;
-        Wed, 23 Sep 2020 19:31:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600889477;
-        bh=HofJQBUkXGFQOYGL4lr+EYwXyw/QmcufSV5KnSHysj8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=we/4z+2+4D7WJJ5vgWaOXyOo3grlqL8EUDVNwV9feDwpMAF6WPssdE72scvWNi9Tv
-         u3+DY4/hqATDmcOaw9ULuNmKLkBNVyd0rGeJNIi0j+TG0ga+pED6RmXVPwuaJaLssC
-         rlQRy2ruZ7D3xO3mHb78XTCqPxPaLBzBuV9/oT3Y=
-Date:   Wed, 23 Sep 2020 21:31:34 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     devel@driverdev.osuosl.org, tkjos@android.com, surenb@google.com,
-        linux-kernel@vger.kernel.org, hridya@google.com, arve@android.com,
-        Shuah Khan <skhan@linuxfoundation.org>, joel@joelfernandes.org,
-        maco@android.com, christian@brauner.io
-Subject: Re: [RFC PATCH 07/11] drivers/android/binder: convert stats,
- transaction_log to counter_atomic
-Message-ID: <20200923193134.GD199068@kroah.com>
-References: <cover.1600816121.git.skhan@linuxfoundation.org>
- <4fe28fc5f315657e4af276b8a3c71d80a5eaa379.1600816121.git.skhan@linuxfoundation.org>
- <20200923051027.GA2578443@kroah.com>
- <202009231204.5531FBA23F@keescook>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202009231204.5531FBA23F@keescook>
+        id S1726634AbgIWTda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 15:33:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726424AbgIWTd3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 15:33:29 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48400C0613D2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 12:33:29 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id n2so683231ybg.8
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 12:33:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=WVSvTUrYOLntpcfEv21un6OtJaYezAF3iVaHLu7hkAE=;
+        b=ArKXeABL055dP9UaAHA02G3C5k50VagybqYti7opUKzF6LQsQaVxD/h8N2sNItDgDp
+         OHUaKhz9LSLg+YtA+c+ZTJUIs4uXRIN19skiynV6k3oxFeub8TU9UmYcGOqfR1X46ms/
+         v/XOqLRTnY5rTaEuS9iRqMJu+Y4Bb+j+ejblZdFt8TzjW2i8rwY/nogh8o41FBCauhR9
+         ZRkh5efI5RaAWXVhsEwTjdCNCs4kbCUPg6oGwBFfPFfjasSbiEY1jKM9VAJnyrVNvudF
+         rAmisW6mZUGAbLlCQo/PSlpoR/3N4FPTPOT/oWLnQEpCf/uM4mpee1MTLbWbNSb1T+WQ
+         wKcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=WVSvTUrYOLntpcfEv21un6OtJaYezAF3iVaHLu7hkAE=;
+        b=RINcHkhVVPdrhHUxvk/YE1SMGL7gun3/nXTKxN/AhPmlDnaK9VC4b5L7TXn5Gao5A0
+         VwMr3xyt8lfS7TaBofAOgXF49dF0g1qzZdTDTUdfDFDc11I+d8xRNXP9PWUuFnRJoEqz
+         XjtU9Cs+0hFVeAp9b2pvHstf4zpkjRiw/s1N8kJmFbL+dQ6/73zFxutkiulm0TTHAIyj
+         bAl+2aa4e0l13iQ4iWW28w1EpkwhhNSnh4F56a9OQqATiSX71jwk9aS+ATTple9Pw1V+
+         TitBlRloAZnp8VMPc5cr5INbZSAiO3rzV01kxconb40GDHI838XyU0AKZp5oeVqRuI3F
+         7wnQ==
+X-Gm-Message-State: AOAM530jyzbzGmQqYG2umn/f9NdmgOC/eOFooWFy6opFxFrKTCHhQRTc
+        sqN4wniYIe5/ZYMzZFKS7x2wjcZBI6jEw32xig==
+X-Google-Smtp-Source: ABdhPJxwWhdQE8FL1xGbEa/t7GC9wDt3JQqUARq0x5zA68UzAR5KMkKne7LxCP0in38Ahq4E7JgWQD1GuFZHOd0a3A==
+Sender: "lokeshgidra via sendgmr" <lokeshgidra@lg.mtv.corp.google.com>
+X-Received: from lg.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:29dd])
+ (user=lokeshgidra job=sendgmr) by 2002:a25:ae90:: with SMTP id
+ b16mr2522880ybj.128.1600889608275; Wed, 23 Sep 2020 12:33:28 -0700 (PDT)
+Date:   Wed, 23 Sep 2020 12:33:21 -0700
+Message-Id: <20200923193324.3090160-1-lokeshgidra@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
+Subject: [PATCH v9 0/3] SELinux support for anonymous inodes and UFFD
+From:   Lokesh Gidra <lokeshgidra@google.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        James Morris <jmorris@namei.org>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Daniel Colascione <dancol@dancol.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        KP Singh <kpsingh@google.com>,
+        David Howells <dhowells@redhat.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Matthew Garrett <matthewgarrett@google.com>,
+        Aaron Goidel <acgoide@tycho.nsa.gov>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Adrian Reber <areber@redhat.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        kaleshsingh@google.com, calin@google.com, surenb@google.com,
+        nnk@google.com, jeffv@google.com, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 12:04:58PM -0700, Kees Cook wrote:
-> On Wed, Sep 23, 2020 at 07:10:27AM +0200, Greg KH wrote:
-> > On Tue, Sep 22, 2020 at 07:43:36PM -0600, Shuah Khan wrote:
-> > > counter_atomic is introduced to be used when a variable is used as
-> > > a simple counter and doesn't guard object lifetimes. This clearly
-> > > differentiates atomic_t usages that guard object lifetimes.
-> > > 
-> > > counter_atomic variables will wrap around to 0 when it overflows and
-> > > should not be used to guard resource lifetimes, device usage and
-> > > open counts that control state changes, and pm states.
-> > > 
-> > > stats tracks per-process binder statistics. Unsure if there is a chance
-> > > of this overflowing, other than stats getting reset to 0. Convert it to
-> > > use counter_atomic.
-> > > 
-> > > binder_transaction_log:cur is used to keep track of the current log entry
-> > > location. Overflow is handled in the code. Since it is used as a
-> > > counter, convert it to use counter_atomic.
-> > > 
-> > > This conversion doesn't change the oveflow wrap around behavior.
-> > > 
-> > > Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-> > > ---
-> > >  drivers/android/binder.c          | 41 ++++++++++++++++---------------
-> > >  drivers/android/binder_internal.h |  3 ++-
-> > >  2 files changed, 23 insertions(+), 21 deletions(-)
-> > > 
-> > > diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-> > > index f936530a19b0..11a0407c46df 100644
-> > > --- a/drivers/android/binder.c
-> > > +++ b/drivers/android/binder.c
-> > > @@ -66,6 +66,7 @@
-> > >  #include <linux/syscalls.h>
-> > >  #include <linux/task_work.h>
-> > >  #include <linux/sizes.h>
-> > > +#include <linux/counters.h>
-> > >  
-> > >  #include <uapi/linux/android/binder.h>
-> > >  #include <uapi/linux/android/binderfs.h>
-> > > @@ -172,22 +173,22 @@ enum binder_stat_types {
-> > >  };
-> > >  
-> > >  struct binder_stats {
-> > > -	atomic_t br[_IOC_NR(BR_FAILED_REPLY) + 1];
-> > > -	atomic_t bc[_IOC_NR(BC_REPLY_SG) + 1];
-> > > -	atomic_t obj_created[BINDER_STAT_COUNT];
-> > > -	atomic_t obj_deleted[BINDER_STAT_COUNT];
-> > > +	struct counter_atomic br[_IOC_NR(BR_FAILED_REPLY) + 1];
-> > > +	struct counter_atomic bc[_IOC_NR(BC_REPLY_SG) + 1];
-> > > +	struct counter_atomic obj_created[BINDER_STAT_COUNT];
-> > > +	struct counter_atomic obj_deleted[BINDER_STAT_COUNT];
-> > 
-> > These are just debugging statistics, no reason they have to be atomic
-> > variables at all and they should be able to just be "struct counter"
-> > variables instead.
-> 
-> But there's no reason for them _not_ to be atomic. Please let's keep
-> this API as always safe. Why even provide a new foot-gun here?
+Userfaultfd in unprivileged contexts could be potentially very
+useful. We'd like to harden userfaultfd to make such unprivileged use
+less risky. This patch series allows SELinux to manage userfaultfd
+file descriptors and in the future, other kinds of
+anonymous-inode-based file descriptor.  SELinux policy authors can
+apply policy types to anonymous inodes by providing name-based
+transition rules keyed off the anonymous inode internal name (
+"[userfaultfd]" in the case of userfaultfd(2) file descriptors) and
+applying policy to the new SIDs thus produced.
 
-These are debugging things, how can you shoot yourself in the foot with
-that???
+With SELinux managed userfaultfd, an admin can control creation and
+movement of the file descriptors. In particular, handling of
+a userfaultfd descriptor by a different process is essentially a
+ptrace access into the process, without any of the corresponding
+security_ptrace_access_check() checks. For privacy, the admin may
+want to deny such accesses, which is possible with SELinux support.
 
-thanks,
+Inside the kernel, a new anon_inode interface, anon_inode_getfd_secure,
+allows callers to opt into this SELinux management. In this new "secure"
+mode, anon_inodes create new ephemeral inodes for anonymous file objects
+instead of reusing the normal anon_inodes singleton dummy inode. A new
+LSM hook gives security modules an opportunity to configure and veto
+these ephemeral inodes.
 
-greg k-h
+This patch series is one of two fork of [1] and is an
+alternative to [2].
+
+The primary difference between the two patch series is that this
+partch series creates a unique inode for each "secure" anonymous
+inode, while the other patch series ([2]) continues using the
+singleton dummy anonymous inode and adds a way to attach SELinux
+security information directly to file objects.
+
+I prefer the approach in this patch series because 1) it's a smaller
+patch than [2], and 2) it produces a more regular security
+architecture: in this patch series, secure anonymous inodes aren't
+S_PRIVATE and they maintain the SELinux property that the label for a
+file is in its inode. We do need an additional inode per anonymous
+file, but per-struct-file inode creation doesn't seem to be a problem
+for pipes and sockets.
+
+The previous version of this feature ([1]) created a new SELinux
+security class for userfaultfd file descriptors. This version adopts
+the generic transition-based approach of [2].
+
+This patch series also differs from [2] in that it doesn't affect all
+anonymous inodes right away --- instead requiring anon_inodes callers
+to opt in --- but this difference isn't one of basic approach. The
+important question to resolve is whether we should be creating new
+inodes or enhancing per-file data.
+
+Changes from the first version of the patch:
+
+  - Removed some error checks
+  - Defined a new anon_inode SELinux class to resolve the
+    ambiguity in [3]
+  - Inherit sclass as well as descriptor from context inode
+
+Changes from the second version of the patch:
+
+  - Fixed example policy in the commit message to reflect the use of
+    the new anon_inode class.
+
+Changes from the third version of the patch:
+
+  - Dropped the fops parameter to the LSM hook
+  - Documented hook parameters
+  - Fixed incorrect class used for SELinux transition
+  - Removed stray UFFD changed early in the series
+  - Removed a redundant ERR_PTR(PTR_ERR())
+
+Changes from the fourth version of the patch:
+
+  - Removed an unused parameter from an internal function
+  - Fixed function documentation
+
+Changes from the fifth version of the patch:
+
+  - Fixed function documentation in fs/anon_inodes.c and
+    include/linux/lsm_hooks.h
+  - Used anon_inode_getfd_secure() in userfaultfd() syscall and removed
+    owner from userfaultfd_ctx.
+
+Changes from the sixth version of the patch:
+
+  - Removed definition of anon_inode_getfile_secure() as there are no
+    callers.
+  - Simplified function description of anon_inode_getfd_secure().
+  - Elaborated more on the purpose of 'context_inode' in commit message.
+
+Changes from the seventh version of the patch:
+
+  - Fixed error handling in _anon_inode_getfile().
+  - Fixed minor comment and indentation related issues.
+
+Changes from the eighth version of the patch:
+
+  - Replaced selinux_state.initialized with selinux_state.initialized
+
+
+[1] https://lore.kernel.org/lkml/20200211225547.235083-1-dancol@google.com/
+[2] https://lore.kernel.org/linux-fsdevel/20200213194157.5877-1-sds@tycho.nsa.gov/
+[3] https://lore.kernel.org/lkml/23f725ca-5b5a-5938-fcc8-5bbbfc9ba9bc@tycho.nsa.gov/
+
+Daniel Colascione (3):
+  Add a new LSM-supporting anonymous inode interface
+  Teach SELinux about anonymous inodes
+  Wire UFFD up to SELinux
+
+ fs/anon_inodes.c                    | 147 ++++++++++++++++++++--------
+ fs/userfaultfd.c                    |  19 ++--
+ include/linux/anon_inodes.h         |   8 ++
+ include/linux/lsm_hook_defs.h       |   2 +
+ include/linux/lsm_hooks.h           |   9 ++
+ include/linux/security.h            |  10 ++
+ security/security.c                 |   8 ++
+ security/selinux/hooks.c            |  53 ++++++++++
+ security/selinux/include/classmap.h |   2 +
+ 9 files changed, 209 insertions(+), 49 deletions(-)
+
+-- 
+2.28.0.681.g6f77f65b4e-goog
+
