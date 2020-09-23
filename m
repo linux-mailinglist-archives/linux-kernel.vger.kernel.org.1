@@ -2,100 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC118275512
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42D99275560
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726590AbgIWKFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 06:05:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgIWKFu (ORCPT
+        id S1726565AbgIWKPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 06:15:47 -0400
+Received: from cmccmta1.chinamobile.com ([221.176.66.79]:15905 "EHLO
+        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726328AbgIWKPr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 06:05:50 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE48C0613CE;
-        Wed, 23 Sep 2020 03:05:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=R+6pH9MDXo8iBZE23VD1Qz4m/pWUZJggcrrvmXTMzlM=; b=ExALYf+eJ59NgDjFaLDDQWGEv
-        kB/1C35EtyKiUIkhcLpRwt2PDcrbvVbTxhs5IFERtgqltUk4aum3IZLfl3DHn6oOk9imExkrI/DfF
-        mhzaVNsUaMpkkbLQhXKHTfbSg+y1REpp59J3d6P0iUGuK+hCHce1nXIJLzjTZYeRCszvJQrLToSs/
-        oNJZZEEsiAO8/Qqf+ddRW6OOUdIs6920AV7bpoyEPBvg5E6hV5Dp93UemFxEtQR7f1J/JJ2Wm7pWb
-        MCUqyTvOeTNTsDJry0yRevPBt1739ZZIX6np7q6l66wqe3+7/ZHiM+bdessUmZturVDq2QUPP4Dpl
-        6rGa0uQ7A==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:37216)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kL1eW-0003vf-NC; Wed, 23 Sep 2020 11:05:32 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kL1eQ-0003HJ-Ot; Wed, 23 Sep 2020 11:05:26 +0100
-Date:   Wed, 23 Sep 2020 11:05:26 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Tony Lindgren <tony@atomide.com>,
-        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-        Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Robin Murphy <robin.murphy@arm.com>,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH 1/4] ARM/omap1: switch to use dma_direct_set_offset for
- lbus DMA offsets
-Message-ID: <20200923100526.GD1559@shell.armlinux.org.uk>
-References: <20200917173229.3311382-1-hch@lst.de>
- <20200917173229.3311382-2-hch@lst.de>
- <20200918054933.GK7101@atomide.com>
- <2184547.ElGaqSPkdT@z50>
- <20200921064418.GM7101@atomide.com>
- <20200921064723.GA18559@lst.de>
+        Wed, 23 Sep 2020 06:15:47 -0400
+X-Greylist: delayed 591 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Sep 2020 06:15:44 EDT
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.3]) by rmmx-syy-dmz-app01-12001 (RichMail) with SMTP id 2ee15f6b1df2a4a-86392; Wed, 23 Sep 2020 18:05:40 +0800 (CST)
+X-RM-TRANSID: 2ee15f6b1df2a4a-86392
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[223.112.105.130])
+        by rmsmtp-syy-appsvr02-12002 (RichMail) with SMTP id 2ee25f6b1df1e3d-8f271;
+        Wed, 23 Sep 2020 18:05:40 +0800 (CST)
+X-RM-TRANSID: 2ee25f6b1df1e3d-8f271
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     davem@davemloft.net, andrew@lunn.ch, hkallweit1@gmail.com,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>,
+        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Subject: [PATCH] net: mdio: Remove redundant parameter and check
+Date:   Wed, 23 Sep 2020 18:05:32 +0800
+Message-Id: <20200923100532.18452-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200921064723.GA18559@lst.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 08:47:23AM +0200, Christoph Hellwig wrote:
-> On Mon, Sep 21, 2020 at 09:44:18AM +0300, Tony Lindgren wrote:
-> > * Janusz Krzysztofik <jmkrzyszt@gmail.com> [200919 22:29]:
-> > > Hi Tony,
-> > > 
-> > > On Friday, September 18, 2020 7:49:33 A.M. CEST Tony Lindgren wrote:
-> > > > * Christoph Hellwig <hch@lst.de> [200917 17:37]:
-> > > > > Switch the omap1510 platform ohci device to use dma_direct_set_offset
-> > > > > to set the DMA offset instead of using direct hooks into the DMA
-> > > > > mapping code and remove the now unused hooks.
-> > > > 
-> > > > Looks nice to me :) I still can't test this probably for few more weeks
-> > > > though but hopefully Aaro or Janusz (Added to Cc) can test it.
-> > > 
-> > > Works for me on Amstrad Delta (tested with a USB ethernet adapter).
-> > > 
-> > > Tested-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-> > 
-> > Great, good to hear! And thanks for testing it.
-> > 
-> > Christoph, feel free to queue this along with the other patches:
-> > 
-> > Acked-by: Tony Lindgren <tony@atomide.com>
-> > 
-> > Or let me know if you want me to pick it up.
-> 
-> I'd prefer to pick it up through the dma-mapping tree, but preferably
-> I'd pick the whole series up once Russell has tested footwinder.
+In the function ipq8064_mdio_probe(), of_mdiobus_register() might
+returned zero, so the direct return can simplify code. Thus remove
+redundant parameter and check.
 
-I don't think that's going to happen very soon... seems way too much
-effort to pull down the appropriate tree to build and test.  Sorry.
+Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+---
+ drivers/net/mdio/mdio-ipq8064.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
+diff --git a/drivers/net/mdio/mdio-ipq8064.c b/drivers/net/mdio/mdio-ipq8064.c
+index 1bd1885..33cccce 100644
+--- a/drivers/net/mdio/mdio-ipq8064.c
++++ b/drivers/net/mdio/mdio-ipq8064.c
+@@ -102,7 +102,6 @@ ipq8064_mdio_probe(struct platform_device *pdev)
+ 	struct device_node *np = pdev->dev.of_node;
+ 	struct ipq8064_mdio *priv;
+ 	struct mii_bus *bus;
+-	int ret;
+ 
+ 	bus = devm_mdiobus_alloc_size(&pdev->dev, sizeof(*priv));
+ 	if (!bus)
+@@ -125,12 +124,9 @@ ipq8064_mdio_probe(struct platform_device *pdev)
+ 		return PTR_ERR(priv->base);
+ 	}
+ 
+-	ret = of_mdiobus_register(bus, np);
+-	if (ret)
+-		return ret;
+-
+ 	platform_set_drvdata(pdev, bus);
+-	return 0;
++
++	return of_mdiobus_register(bus, np);
+ }
+ 
+ static int
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.20.1.windows.1
+
+
+
