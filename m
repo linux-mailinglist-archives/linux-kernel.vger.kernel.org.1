@@ -2,59 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD65B275FCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 20:27:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE20275FD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 20:28:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbgIWS1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 14:27:40 -0400
-Received: from fallback10.mail.ru ([94.100.178.50]:42014 "EHLO
-        fallback10.mail.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726228AbgIWS1k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 14:27:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru; s=mail2;
-        h=Content-Transfer-Encoding:Content-Type:Message-ID:Reply-To:Date:MIME-Version:Subject:To:From; bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-        b=buEBLP+351srqVzFGmi9+GoKiWzjdtm1NaH9nX5uS7nx3dSEFFp127JxRiUEQiIvbLscLc4O9P8v+5xGkreNSvcsEGe4OTDawgK9DNZDorKFuGXSkIAG9zBje2OwvOqn+QNCg3ZipQyjzvKXvpWHLJZohRUjowvZ9b7/zjp8XNM=;
-Received: from [10.161.166.3] (port=53470 helo=f454.i.mail.ru)
-        by fallback10.m.smailru.net with esmtp (envelope-from <meregbss2gmail.com@mail.ru>)
-        id 1kL9UP-0001Jo-5s
-        for linux-kernel@vger.kernel.org; Wed, 23 Sep 2020 21:27:37 +0300
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru; s=mail3;
-        h=Content-Transfer-Encoding:Content-Type:Message-ID:Reply-To:Date:MIME-Version:Subject:To:From:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-        b=p5WJqeigZV+4kTmkw/CR3w1/7pUlwEj8fawJr+1oRIRE6+s/rS/7b6I1eB1FeANOmXqg483/pe/hfReu/FNqNIalkcoqbBcN0pARwJve61GqU6V/c2kzaliukt2IdQ0kcUV0uuwhjAaGI+QMymTVObudpzJpJyUXHirxjrvV6Vc=;
-Received: by f454.i.mail.ru with local (envelope-from <meregbss2gmail.com@mail.ru>)
-        id 1kL9UN-0004MM-9a
-        for linux-kernel@vger.kernel.org; Wed, 23 Sep 2020 21:27:35 +0300
-Received: by e.mail.ru with HTTP;
-        Wed, 23 Sep 2020 21:27:35 +0300
-From:   =?UTF-8?B?TWljaGVhbCBBZGFtcw==?= <meregbss2gmail.com@mail.ru>
-To:     linux-kernel@vger.kernel.org
-Subject: =?UTF-8?B?SGVsbG8sIEV4Y3VzZSBtZT8gRGlkIHlvdSByZWNlaXZlIG15IHByZXZpb3Vz?=
- =?UTF-8?B?IG1haWwgSSBzZW50IHRvIHlvdSBlYXJsaWVyIFRoaXMgd2VlayA/Lg==?=
+        id S1726672AbgIWS2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 14:28:43 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:61733 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726476AbgIWS2n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 14:28:43 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600885722; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: To:
+ Subject: Sender; bh=HSmX8kpVwDUv15l7Sb/7/CBV4c0IJBor4yUGLVYSTNc=; b=ovWvmzId2Ssx+AfFP3SaH+fXxHK68xLrY9UBaUhPdvnALMFltQyAFX2ua6rr1/roZS4qyqne
+ YYtbQECGZPRLSthiucbOBMw8nvDFhICLWVhzC4Ad9iefvTq/aiwhoNvfUBEzetvLgJhCyY6e
+ bWsJFiIgwSppOSrb9TOmy5vNwQ8=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5f6b93c6705bd2c5ddd92e2e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 23 Sep 2020 18:28:22
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E5F3BC433CB; Wed, 23 Sep 2020 18:28:21 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.7] (unknown [61.1.224.240])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9404CC433CA;
+        Wed, 23 Sep 2020 18:28:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9404CC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+Subject: Re: [PATCH v2 1/2] drm/msm: Fix premature purging of BO
+To:     freedreno@lists.freedesktop.org, dri-devel@freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mka@chromium.org, jonathan@marek.ca, robdclark@gmail.com,
+        dianders@chromium.org, Jordan Crouse <jcrouse@codeaurora.org>
+References: <1600786527-7343-1-git-send-email-akhilpo@codeaurora.org>
+ <20200923145047.GB31425@jcrouse1-lnx.qualcomm.com>
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+Message-ID: <df7a93b7-240f-bb52-9e3c-eeb346a4574e@codeaurora.org>
+Date:   Wed, 23 Sep 2020 23:58:14 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-X-Mailer: Mail.Ru Mailer 1.0
-Date:   Wed, 23 Sep 2020 21:27:35 +0300
-Reply-To: =?UTF-8?B?TWljaGVhbCBBZGFtcw==?= <meregbss2gmail.com@mail.ru>
-X-Priority: 3 (Normal)
-Message-ID: <1600885655.159448003@f454.i.mail.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-X-7564579A: EEAE043A70213CC8
-X-77F55803: 119C1F4DF6A9251CEED2222FD8C92991C90BB8DB99BFD93FB172D64C9E45E6738FD872164937FA4CAEA4A68A46300896290CD28573AB93B072BB84B82B16FBA401272442CC4F8440
-X-7FA49CB5: 70AAF3C13DB7016878DA827A17800CE7D06269167652BC49D82A6BABE6F325AC08BE7437D75B48FABCF491FFA38154B613377AFFFEAFD269176DF2183F8FC7C00F1463317FA92A59C2099A533E45F2D0395957E7521B51C2CFCAF695D4D8E9FCEA1F7E6F0F101C6778DA827A17800CE7FCFCB92DA8654BB0EA1F7E6F0F101C674E70A05D1297E1BBC6CDE5D1141D2B1C7950097B7479427CC58BA5BD8258E545175D7D1F5EA6A8459FA2833FD35BB23D9E625A9149C048EE33AC447995A7AD18C26CFBAC0749D213D2E47CDBA5A96583BD4B6F7A4D31EC0BB23A54CFFDBC96A8389733CBF5DBD5E9D5E8D9A59859A8B68CE9D8A6861299E6CC7F00164DA146DA6F5DAA56C3B73B2353BE0CC136970AD475ECD9A6C639B01BC09775C1D3CA48CF142B633921F444BA35872C767BF85DA22EF20D2F80756B5F40A5AABA2AD3711975ECD9A6C639B01B78DA827A17800CE776424935169F077F731C566533BA786A40A5AABA2AD371193C9F3DD0FB1AF5EB1248E41960EB3BA62623479134186CDE6BA297DBC24807EABDAD6C7F3747799A
-X-C8649E89: 546D9EAF811070957A98CD68D2397C14BA5BA43260FD498C205BD807106FCA5968783838A385238A
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5+wYjsrrSY/u8Y3PrTqANeitKFiSd6Yd7yPpbiiZ/d5BsxIjK0jGQgCHUM3Ry2Lt2G3MDkMauH3h0dBdQGj+BB/iPzQYh7XS329fgu+/vnDhF6uVdb4DMALYohjnKwoicA==
-X-Mailru-Internal-Actual: A:0.89348497805397
-X-Mailru-Sender: EC3616DD22F3FA708B8587D77D3236486AF3C8ECA28D63651874A44486629577CF426676C031815B6695E1614317C103D96429E4E88F1F7C426C5784A2ACDA168B67290C0B8F2C0D5A7FD0CCD7EF5AE6550821F9A55A3D4B484D224A6F5B4E1ACA9B01087240937DAE208404248635DF
-X-Mras: Ok
-X-Spam: undefined
-X-7564579A: 78E4E2B564C1792B
-X-77F55803: 6242723A09DB00B4297D9AD4AAE60BCB522875AE1892928AF706C19557FC86BC049FFFDB7839CE9ED737886AD7C5106C13F9F043BE25C8727EA85BAAD02C41C0F224A6B23CB220B7
-X-7FA49CB5: 0D63561A33F958A520859B5B083BFC8D8ED4E124722200CB611352BAC7CAFE878941B15DA834481FA18204E546F3947C672DC5A730DF09D2F6B57BC7E64490618DEB871D839B7333395957E7521B51C2545D4CF71C94A83E9FA2833FD35BB23D27C277FBC8AE2E8BF1175FABE1C0F9B6A471835C12D1D977C4224003CC836476F955D27B0B04682BA7F4EDE966BC389F9E8FC8737B5C2249957CA336B8962A5D089D37D7C0E48F6CCF19DD082D7633A0E7DDDDC251EA7DABAAAE862A0553A3920E30A4C9C8E338DA62AE4C4836B63D4A43847C11F186F3C5E7DDDDC251EA7DABCC89B49CDF41148FFC2B27DE93B9EBF03B503F486389A921A5CC5B56E945C8DA
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5+wYjsrrSY/u8Y3PrTqANeitKFiSd6Yd7yPpbiiZ/d5BsxIjK0jGQgCHUM3Ry2Lt2G3MDkMauH3h0dBdQGj+BB/iPzQYh7XS329fgu+/vnDhF6uVdb4DMAL4AotpG/bYcQ==
-X-Mailru-MI: 800
-X-Mras: Ok
+In-Reply-To: <20200923145047.GB31425@jcrouse1-lnx.qualcomm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
+
+On 9/23/2020 8:20 PM, Jordan Crouse wrote:
+> On Tue, Sep 22, 2020 at 08:25:26PM +0530, Akhil P Oommen wrote:
+>> In the case where we have a back-to-back submission that shares the same
+>> BO, this BO will be prematurely moved to inactive_list while retiring the
+>> first submit. But it will be still part of the second submit which is
+>> being processed by the GPU. Now, if the shrinker happens to be triggered at
+>> this point, it will result in a premature purging of this BO.
+>>
+>> To fix this, we need to refcount BO while doing submit and retire. Then,
+>> it should be moved to inactive list when this refcount becomes 0.
+>>
+>> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+>> ---
+>> Changes in v2:
+>> 	1. Keep Active List around
+>> 	2. Put back the deleted WARN_ON
+>>
+>>   drivers/gpu/drm/msm/msm_drv.h |  5 ++---
+>>   drivers/gpu/drm/msm/msm_gem.c | 32 ++++++++++++++++----------------
+>>   drivers/gpu/drm/msm/msm_gem.h |  4 +++-
+>>   drivers/gpu/drm/msm/msm_gpu.c | 11 +++++++----
+>>   4 files changed, 28 insertions(+), 24 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
+>> index 3193274..28e3c8d 100644
+>> --- a/drivers/gpu/drm/msm/msm_drv.h
+>> +++ b/drivers/gpu/drm/msm/msm_drv.h
+>> @@ -309,9 +309,8 @@ void msm_gem_put_vaddr(struct drm_gem_object *obj);
+>>   int msm_gem_madvise(struct drm_gem_object *obj, unsigned madv);
+>>   int msm_gem_sync_object(struct drm_gem_object *obj,
+>>   		struct msm_fence_context *fctx, bool exclusive);
+>> -void msm_gem_move_to_active(struct drm_gem_object *obj,
+>> -		struct msm_gpu *gpu, bool exclusive, struct dma_fence *fence);
+>> -void msm_gem_move_to_inactive(struct drm_gem_object *obj);
+>> +void msm_gem_active_get(struct drm_gem_object *obj, struct msm_gpu *gpu);
+>> +void msm_gem_active_put(struct drm_gem_object *obj);
+>>   int msm_gem_cpu_prep(struct drm_gem_object *obj, uint32_t op, ktime_t *timeout);
+>>   int msm_gem_cpu_fini(struct drm_gem_object *obj);
+>>   void msm_gem_free_object(struct drm_gem_object *obj);
+>> diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
+>> index 76a6c52..14e14ca 100644
+>> --- a/drivers/gpu/drm/msm/msm_gem.c
+>> +++ b/drivers/gpu/drm/msm/msm_gem.c
+>> @@ -743,31 +743,31 @@ int msm_gem_sync_object(struct drm_gem_object *obj,
+>>   	return 0;
+>>   }
+>>   
+>> -void msm_gem_move_to_active(struct drm_gem_object *obj,
+>> -		struct msm_gpu *gpu, bool exclusive, struct dma_fence *fence)
+>> +void msm_gem_active_get(struct drm_gem_object *obj, struct msm_gpu *gpu)
+>>   {
+>>   	struct msm_gem_object *msm_obj = to_msm_bo(obj);
+>> +	WARN_ON(!mutex_is_locked(&obj->dev->struct_mutex));
+>>   	WARN_ON(msm_obj->madv != MSM_MADV_WILLNEED);
+>> -	msm_obj->gpu = gpu;
+>> -	if (exclusive)
+>> -		dma_resv_add_excl_fence(obj->resv, fence);
+>> -	else
+>> -		dma_resv_add_shared_fence(obj->resv, fence);
+>> -	list_del_init(&msm_obj->mm_list);
+>> -	list_add_tail(&msm_obj->mm_list, &gpu->active_list);
+>> +
+>> +	if (!atomic_fetch_inc(&msm_obj->active_count)) {
+>> +		msm_obj->gpu = gpu;
+>> +		list_del_init(&msm_obj->mm_list);
+>> +		list_add_tail(&msm_obj->mm_list, &gpu->active_list);
+>> +	}
+> 
+> I'm not sure if all the renaming and reorganization are really needed here -
+> this is the meat of the change and it would have fit in reasonably well with the
+> existing function design.
+This happened due to the way I implemented the v1 patch. In the 
+hindsight, I think you are right.
+
+Akhil.
+> 
+>>   }
+>>   
+>> -void msm_gem_move_to_inactive(struct drm_gem_object *obj)
+>> +void msm_gem_active_put(struct drm_gem_object *obj)
+>>   {
+>> -	struct drm_device *dev = obj->dev;
+>> -	struct msm_drm_private *priv = dev->dev_private;
+>>   	struct msm_gem_object *msm_obj = to_msm_bo(obj);
+>> +	struct msm_drm_private *priv = obj->dev->dev_private;
+>>   
+>> -	WARN_ON(!mutex_is_locked(&dev->struct_mutex));
+>> +	WARN_ON(!mutex_is_locked(&obj->dev->struct_mutex));
+>>   
+>> -	msm_obj->gpu = NULL;
+>> -	list_del_init(&msm_obj->mm_list);
+>> -	list_add_tail(&msm_obj->mm_list, &priv->inactive_list);
+>> +	if (!atomic_dec_return(&msm_obj->active_count)) {
+>> +		msm_obj->gpu = NULL;
+>> +		list_del_init(&msm_obj->mm_list);
+>> +		list_add_tail(&msm_obj->mm_list, &priv->inactive_list);
+>> +	}
+> 
+> Same.
+> 
+> Jordan
+>>   }
+>>   
+>>   int msm_gem_cpu_prep(struct drm_gem_object *obj, uint32_t op, ktime_t *timeout)
+>> diff --git a/drivers/gpu/drm/msm/msm_gem.h b/drivers/gpu/drm/msm/msm_gem.h
+>> index 7b1c7a5..a1bf741 100644
+>> --- a/drivers/gpu/drm/msm/msm_gem.h
+>> +++ b/drivers/gpu/drm/msm/msm_gem.h
+>> @@ -88,12 +88,14 @@ struct msm_gem_object {
+>>   	struct mutex lock; /* Protects resources associated with bo */
+>>   
+>>   	char name[32]; /* Identifier to print for the debugfs files */
+>> +
+>> +	atomic_t active_count;
+>>   };
+>>   #define to_msm_bo(x) container_of(x, struct msm_gem_object, base)
+>>   
+>>   static inline bool is_active(struct msm_gem_object *msm_obj)
+>>   {
+>> -	return msm_obj->gpu != NULL;
+>> +	return atomic_read(&msm_obj->active_count);
+>>   }
+>>   
+>>   static inline bool is_purgeable(struct msm_gem_object *msm_obj)
+>> diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
+>> index 29c8d73c..55d1648 100644
+>> --- a/drivers/gpu/drm/msm/msm_gpu.c
+>> +++ b/drivers/gpu/drm/msm/msm_gpu.c
+>> @@ -698,8 +698,8 @@ static void retire_submit(struct msm_gpu *gpu, struct msm_ringbuffer *ring,
+>>   
+>>   	for (i = 0; i < submit->nr_bos; i++) {
+>>   		struct msm_gem_object *msm_obj = submit->bos[i].obj;
+>> -		/* move to inactive: */
+>> -		msm_gem_move_to_inactive(&msm_obj->base);
+>> +
+>> +		msm_gem_active_put(&msm_obj->base);
+>>   		msm_gem_unpin_iova(&msm_obj->base, submit->aspace);
+>>   		drm_gem_object_put_locked(&msm_obj->base);
+>>   	}
+>> @@ -774,6 +774,7 @@ void msm_gpu_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+>>   
+>>   	for (i = 0; i < submit->nr_bos; i++) {
+>>   		struct msm_gem_object *msm_obj = submit->bos[i].obj;
+>> +		struct drm_gem_object *drm_obj = &msm_obj->base;
+>>   		uint64_t iova;
+>>   
+>>   		/* can't happen yet.. but when we add 2d support we'll have
+>> @@ -786,9 +787,11 @@ void msm_gpu_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+>>   		msm_gem_get_and_pin_iova(&msm_obj->base, submit->aspace, &iova);
+>>   
+>>   		if (submit->bos[i].flags & MSM_SUBMIT_BO_WRITE)
+>> -			msm_gem_move_to_active(&msm_obj->base, gpu, true, submit->fence);
+>> +			dma_resv_add_excl_fence(drm_obj->resv, submit->fence);
+>>   		else if (submit->bos[i].flags & MSM_SUBMIT_BO_READ)
+>> -			msm_gem_move_to_active(&msm_obj->base, gpu, false, submit->fence);
+>> +			dma_resv_add_shared_fence(drm_obj->resv, submit->fence);
+>> +
+>> +		msm_gem_active_get(drm_obj, gpu);
+>>   	}
+>>   
+>>   	gpu->funcs->submit(gpu, submit);
+>> -- 
+>> 2.7.4
+>>
+> 
 
