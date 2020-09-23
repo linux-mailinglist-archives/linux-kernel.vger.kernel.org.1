@@ -2,103 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 491D6275641
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99AC5275646
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726749AbgIWKYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 06:24:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47078 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgIWKYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 06:24:06 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 86EF521BE5;
-        Wed, 23 Sep 2020 10:24:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600856646;
-        bh=4axLnYFaEHtr9+q27LR9CjkX1jMW8YKOSTMnO3OD97o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QaY6iA3xkR5TGJx2K7V/+m5EtdlK9/Fu/ZBAOuocOaJy3KikVsEt/NfipxIsN+KVk
-         XcJGR+N15eWXOgxJ+xF6P8Edsu1vbtiUGfcJeEINxQnvOsmq5C5VStjK9T2r3RuHlH
-         7NkOmNhwoViSSUm97fxeC28Hzl/9eCFGd8Zvgx9w=
-Date:   Wed, 23 Sep 2020 12:24:25 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Himadri Pandya <himadrispandya@gmail.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, oneukum@suse.com,
-        pankaj.laxminarayan.bharadiya@intel.com, keescook@chromium.org,
-        yuehaibing@huawei.com, petkan@nucleusys.com, ogiannou@gmail.com,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH 1/4] net: usbnet: use usb_control_msg_recv() and
- usb_control_msg_send()
-Message-ID: <20200923102425.GC3154647@kroah.com>
-References: <20200923090519.361-1-himadrispandya@gmail.com>
- <20200923090519.361-2-himadrispandya@gmail.com>
+        id S1726590AbgIWKZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 06:25:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726475AbgIWKZT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 06:25:19 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 904EBC0613D2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 03:25:19 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id s13so6548471wmh.4
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 03:25:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=YH104ZB8OeVJHtVUQ2VvvA2q3T8sqPmsWx/W6gm8gTc=;
+        b=eWmZU1Fq8Tc1IaKlqHtAEy9dUcRmePGKEvJS8oT6zKqB/wZLSXJa0DL/HcI8GyR0nP
+         5Gt+7VFN7tp14qi1VGnjEnph2NXooLwr98Hf7DlvY93RIr1O54xNlICuFOHOVnU3T8Mr
+         gTwiKcxmCZSJxl9N1q7BvnM5G3FKLByva6z1bhnFPqJsXVfLxVWhtfDiEulWrVB97DgG
+         FPWbFzvdKa7hvr7zggy8luR90enD5G/zjcxCBEPcsDy+3DkngiIWD3PDi46wASBExqbD
+         IaAlYagyuQXVtHZ50bsFohRl/ljMIOL63uKv7/2s7dS8REpXX1MGnwGmSyD+FLrqWNzM
+         f/ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YH104ZB8OeVJHtVUQ2VvvA2q3T8sqPmsWx/W6gm8gTc=;
+        b=X7cnrGW31LX4dw+kme3AY9E+mvc068vBxM37A163x6PUQIf5Bbp0LHYPUolRztiujU
+         YUaas6e6XG3agPAZc1jxGfVVmcpgy28ddp3sLAIGxe/dl7o0DC328exsNSNiEV4MkhBB
+         gKHSzfUWWcHAO4JczLjh3semwt6B2/o4Izq+7Qe+ohhi6uXfz6SKbP0D6V8Ap1M1AKzl
+         pFkIxJnVaw8PeIGzuP5d+p4hPvDvBCL/wC7O4VKt5K9KeI+XkutDm5Xt2sC2MJpuXEnI
+         uNhpkReAD6hjakbLdcEvZXnn5v9wFnUQHkkddknw4R/iGCXpRAS3DgrHW1n9W9Pdylm0
+         iOoQ==
+X-Gm-Message-State: AOAM531hX8NQBl5pTXHo82xU1YOr73dk059iDiIBF6vvUKvrN0zEcj7p
+        6Z7PT0bB81QUti8CkTlK7OTv4Q==
+X-Google-Smtp-Source: ABdhPJyXK3Q6uDr6Rs3llAbf0QVsQzm36rlyPthGucBv/hXUeqfLWTOVYfszVqKmAZv7vOaIpQRz4g==
+X-Received: by 2002:a05:600c:28d:: with SMTP id 13mr5602925wmk.69.1600856718141;
+        Wed, 23 Sep 2020 03:25:18 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id r14sm29447423wrn.56.2020.09.23.03.25.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 23 Sep 2020 03:25:17 -0700 (PDT)
+Subject: Re: [PATCH 1/4] dt-bindings: clock: Add support for LPASS Audio Clock
+ Controller
+To:     Rob Herring <robh@kernel.org>
+Cc:     sboyd@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, mturquette@baylibre.com,
+        bjorn.andersson@linaro.org, linux-clk@vger.kernel.org
+References: <20200917132850.7730-1-srinivas.kandagatla@linaro.org>
+ <20200917132850.7730-2-srinivas.kandagatla@linaro.org>
+ <20200918172917.GA3827183@bogus>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <7454ad51-edd7-4080-72b6-1d37858ba3ff@linaro.org>
+Date:   Wed, 23 Sep 2020 11:25:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200923090519.361-2-himadrispandya@gmail.com>
+In-Reply-To: <20200918172917.GA3827183@bogus>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 02:35:16PM +0530, Himadri Pandya wrote:
-> Potential incorrect use of usb_control_msg() has resulted in new wrapper
-> functions to enforce its correct usage with proper error check. Hence
-> use these new wrapper functions instead of calling usb_control_msg()
-> directly.
-> 
-> Signed-off-by: Himadri Pandya <himadrispandya@gmail.com>
-> ---
->  drivers/net/usb/usbnet.c | 46 ++++------------------------------------
->  1 file changed, 4 insertions(+), 42 deletions(-)
-> 
-> diff --git a/drivers/net/usb/usbnet.c b/drivers/net/usb/usbnet.c
-> index 2b2a841cd938..a38a85bef46a 100644
-> --- a/drivers/net/usb/usbnet.c
-> +++ b/drivers/net/usb/usbnet.c
-> @@ -1982,64 +1982,26 @@ EXPORT_SYMBOL(usbnet_link_change);
->  static int __usbnet_read_cmd(struct usbnet *dev, u8 cmd, u8 reqtype,
->  			     u16 value, u16 index, void *data, u16 size)
->  {
-> -	void *buf = NULL;
-> -	int err = -ENOMEM;
-> -
->  	netdev_dbg(dev->net, "usbnet_read_cmd cmd=0x%02x reqtype=%02x"
->  		   " value=0x%04x index=0x%04x size=%d\n",
->  		   cmd, reqtype, value, index, size);
->  
-> -	if (size) {
-> -		buf = kmalloc(size, GFP_KERNEL);
-> -		if (!buf)
-> -			goto out;
-> -	}
-> -
-> -	err = usb_control_msg(dev->udev, usb_rcvctrlpipe(dev->udev, 0),
-> -			      cmd, reqtype, value, index, buf, size,
-> +	return usb_control_msg_recv(dev->udev, 0,
-> +			      cmd, reqtype, value, index, data, size,
->  			      USB_CTRL_GET_TIMEOUT);
-> -	if (err > 0 && err <= size) {
-> -        if (data)
-> -            memcpy(data, buf, err);
-> -        else
-> -            netdev_dbg(dev->net,
-> -                "Huh? Data requested but thrown away.\n");
-> -    }
-> -	kfree(buf);
-> -out:
-> -	return err;
->  }
+Hi Rob,
 
-Now there is no real need for these wrapper functions at all, except for
-the debugging which I doubt anyone needs anymore.
+On 18/09/2020 18:29, Rob Herring wrote:
+> On Thu, 17 Sep 2020 14:28:47 +0100, Srinivas Kandagatla wrote:
+>> Audio Clock controller is a block inside LPASS which controls
+>> 2 Glitch free muxes to LPASS codec Macros.
+>>
+>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> ---
+>>   .../bindings/clock/qcom,audiocc-sm8250.yaml   | 58 +++++++++++++++++++
+>>   .../clock/qcom,sm8250-lpass-audiocc.h         | 13 +++++
+>>   2 files changed, 71 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/clock/qcom,audiocc-sm8250.yaml
+>>   create mode 100644 include/dt-bindings/clock/qcom,sm8250-lpass-audiocc.h
+>>
+> 
+> 
+> My bot found errors running 'make dt_binding_check' on your patch:
+> 
+> Error: Documentation/devicetree/bindings/clock/qcom,audiocc-sm8250.example.dts:25.30-31 syntax error
+> FATAL ERROR: Unable to parse input tree
+> make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/clock/qcom,audiocc-sm8250.example.dt.yaml] Error 1
+> make[1]: *** Waiting for unfinished jobs....
+> make: *** [Makefile:1366: dt_binding_check] Error 2
+> 
 
-So how about just deleting these and calling the real function instead?
+Is this check done against linux-next?
+
+or linux master?
+
+I have rechecked this once again on next and I see no check failures.
+Next has a patch [1] which adds defines in header file that are used in 
+example! Possibly that is what is making the check fail!
+
 
 thanks,
+srini
 
-greg k-h
+[1] 
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?h=next-20200922&id=4e398353a7e51410c34fd19f8b7dfc56fff5901b
+
+
+> 
+> See https://patchwork.ozlabs.org/patch/1366127
+> 
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure dt-schema is up to date:
+> 
+> pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+> 
+> Please check and re-submit.
+> 
