@@ -2,79 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52FA9275F38
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 19:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6E71275F40
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 20:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726610AbgIWR4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 13:56:15 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:58081 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726234AbgIWR4P (ORCPT
+        id S1726581AbgIWSAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 14:00:15 -0400
+Received: from mother.openwall.net ([195.42.179.200]:53992 "HELO
+        mother.openwall.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1726460AbgIWSAP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 13:56:15 -0400
-Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kL8zz-0005V0-Hn; Wed, 23 Sep 2020 17:56:12 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com
-Cc:     alex_lu@realsil.com.cn,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        linux-bluetooth@vger.kernel.org (open list:BLUETOOTH DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] Bluetooth: btusb: Avoid unnecessary reset upon system resume
-Date:   Thu, 24 Sep 2020 01:56:02 +0800
-Message-Id: <20200923175602.9523-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 23 Sep 2020 14:00:15 -0400
+Received: (qmail 18029 invoked from network); 23 Sep 2020 18:00:12 -0000
+Received: from localhost (HELO pvt.openwall.com) (127.0.0.1)
+  by localhost with SMTP; 23 Sep 2020 18:00:12 -0000
+Received: by pvt.openwall.com (Postfix, from userid 503)
+        id 59151AB844; Wed, 23 Sep 2020 20:00:07 +0200 (CEST)
+Date:   Wed, 23 Sep 2020 20:00:07 +0200
+From:   Solar Designer <solar@openwall.com>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     madvenka@linux.microsoft.com, kernel-hardening@lists.openwall.com,
+        linux-api@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, oleg@redhat.com,
+        x86@kernel.org, luto@kernel.org, David.Laight@ACULAB.COM,
+        fweimer@redhat.com, mark.rutland@arm.com, mic@digikod.net,
+        Rich Felker <dalias@libc.org>
+Subject: Re: [PATCH v2 0/4] [RFC] Implement Trampoline File Descriptor
+Message-ID: <20200923180007.GA8646@openwall.com>
+References: <20200922215326.4603-1-madvenka@linux.microsoft.com> <20200923081426.GA30279@amd> <20200923091456.GA6177@openwall.com> <20200923141102.GA7142@openwall.com> <20200923151835.GA32555@duo.ucw.cz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200923151835.GA32555@duo.ucw.cz>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Realtek bluetooth controller may fail to work after system sleep:
-[ 1272.707670] Bluetooth: hci0: command 0x1001 tx timeout
-[ 1280.835712] Bluetooth: hci0: RTL: HCI_OP_READ_LOCAL_VERSION failed (-110)
+On Wed, Sep 23, 2020 at 05:18:35PM +0200, Pavel Machek wrote:
+> > It sure does make sense to combine ret2libc/ROP to mprotect() with one's
+> > own injected shellcode.  Compared to doing everything from ROP, this is
+> > easier and more reliable across versions/builds if the desired
+> > payload
+> 
+> Ok, so this starts to be a bit confusing.
+> 
+> I thought W^X is to protect from attackers that have overflowed buffer
+> somewhere, but can not to do arbitrary syscalls, yet.
+> 
+> You are saying that there's important class of attackers that can do
+> some syscalls but not arbitrary ones.
 
-If platform firmware doesn't cut power off during suspend, the firmware
-is considered retained in controller but the driver is still asking USB
-core to perform a reset-resume. This can make bluetooth controller
-unusable.
+They might be able to do many, most, or all arbitrary syscalls via
+ret2libc or such.  The crucial detail is that each time they do that,
+they risk incompatibility with the given target system (version, build,
+maybe ASLR if gadgets from multiple libraries are involved).  By using
+mprotect(), they only take this risk once (need to get the address of an
+mprotect() gadget and of what to change protections on right), and then
+they can invoke multiple syscalls from their shellcode more reliably.
+So for doing a lot of work, mprotect() combined with injected code can
+be easier and more reliable.  It is also an extra option an attacker can
+use, in addition to doing everything via borrowed code.  More
+flexibility for the attacker means the attacker may choose whichever
+approach works better in a given case (or try several).
 
-So avoid unnecessary reset to resolve the issue.
+I am embarrassed for not thinking/recalling this when I first posted
+earlier today.  It's actually obvious.  I'm just getting old and rusty.
 
-For devices that really lose power during suspend, USB core will detect
-and handle reset-resume correctly.
+> I'd like to see definition of that attacker (and perhaps description
+> of the system the protection is expected to be useful on -- if it is
+> not close to common Linux distros).
 
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- drivers/bluetooth/btusb.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+There's nothing unusual about that attacker and the system.
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 8d2608ddfd08..de86ef4388f9 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -4255,17 +4255,15 @@ static int btusb_suspend(struct usb_interface *intf, pm_message_t message)
- 		enable_irq(data->oob_wake_irq);
- 	}
- 
--	/* For global suspend, Realtek devices lose the loaded fw
--	 * in them. But for autosuspend, firmware should remain.
--	 * Actually, it depends on whether the usb host sends
-+	/* For global suspend, Realtek devices lose the loaded fw in them if
-+	 * platform firmware cut power off. But for autosuspend, firmware
-+	 * should remain.  Actually, it depends on whether the usb host sends
- 	 * set feature (enable wakeup) or not.
- 	 */
- 	if (test_bit(BTUSB_WAKEUP_DISABLE, &data->flags)) {
- 		if (PMSG_IS_AUTO(message) &&
- 		    device_can_wakeup(&data->udev->dev))
- 			data->udev->do_remote_wakeup = 1;
--		else if (!PMSG_IS_AUTO(message))
--			data->udev->reset_resume = 1;
- 	}
- 
- 	return 0;
--- 
-2.17.1
+A couple of other things Brad kindly pointed out:
 
+SELinux already has similar protections (execmem, execmod):
+
+http://lkml.iu.edu/hypermail/linux/kernel/0508.2/0194.html
+https://danwalsh.livejournal.com/6117.html
+
+PaX MPROTECT is implemented in a way or at a layer that covers ptrace()
+abuse that I mentioned.  (At least that's how I understood Brad.)
+
+Alexander
+
+P.S. Meanwhile, Twitter locked my account "for security purposes".  Fun.
+I'll just let it be for now.
