@@ -2,152 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A27275E23
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 19:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0FD275E24
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 19:03:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726738AbgIWRCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 13:02:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51998 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726342AbgIWRCx (ORCPT
+        id S1726801AbgIWRDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 13:03:05 -0400
+Received: from mail.efficios.com ([167.114.26.124]:51846 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726779AbgIWRDE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 13:02:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600880571;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wh8ZSulQnN1Zj4DNTEW6JJd0xzaPcYkEfvdxXHeAev8=;
-        b=CvIB/meMokjYBcwbtZoPgPl3kctoTZ7WbTjQYDGu+dRMPXJeWxqHJ6kIBgsG6vSd4XmfGv
-        exbAGhJ0+5RBz53x+01Vux/cDcVYizdkqUclvwN5v91V1RG4xJZezZiN3VEfBgo2SwWSaw
-        5n/iMCtpWTkbV7Ms4OP0x7dIo+o1iU4=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-394-tENGgg_FNrSnDnuStt61tA-1; Wed, 23 Sep 2020 13:02:49 -0400
-X-MC-Unique: tENGgg_FNrSnDnuStt61tA-1
-Received: by mail-wm1-f69.google.com with SMTP id a25so164629wmb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 10:02:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wh8ZSulQnN1Zj4DNTEW6JJd0xzaPcYkEfvdxXHeAev8=;
-        b=hNO3Q99fMggmeMp+lV98cLIjV7ULoJg12JAVlzODx9yEyp74gzdaRGyoxvO5YbBj7K
-         gyVczMuso8rDq9bFXN3W9J+FakMAFZyzwzGy4C4+JSV1GH45bdxwsditu45t9XZZKcQi
-         6ROU/arrMR4gk4y0VNMJCm7ISnS9LoB3XWcTmtze1n9sM7qtCXDcLQ7my0Z/feIJ6IGi
-         z3+beyQDWECcY5qF/wyv9ncSvtY5VO3V3hDrbitBq2A9v5dJkPoxlRRw5ZKvjzOu72VO
-         5BSfkr3CHbzXcBsgTgXjXcyGfN3j907ieZh70DKLes8wmLKK9zD4ghRc9TjLLcM2X6td
-         Z/0g==
-X-Gm-Message-State: AOAM531sQBTmDztVAjVZKAHuYlt+4IdZrju45A8mNy7W472nUnl3B6Y4
-        T0UfFg2oLXvf7G7tbk6azyVuh91Zow6Bll6X2kLTlsr08t3f3P4EEikuC6LIR3W1az58uv+d3cp
-        R1VcZ2drBiA9mBpdM6nN6FC59
-X-Received: by 2002:a7b:c959:: with SMTP id i25mr532801wml.39.1600880567942;
-        Wed, 23 Sep 2020 10:02:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzQEms+v2XPzjI+yTDNOtuowwjrFIgRvbOnHL8okDQ1x8MM4BVX6RRR+HIiTftDIxYMCyn7AA==
-X-Received: by 2002:a7b:c959:: with SMTP id i25mr532778wml.39.1600880567699;
-        Wed, 23 Sep 2020 10:02:47 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:15f1:648d:7de6:bad9? ([2001:b07:6468:f312:15f1:648d:7de6:bad9])
-        by smtp.gmail.com with ESMTPSA id z19sm422712wmi.3.2020.09.23.10.02.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Sep 2020 10:02:47 -0700 (PDT)
-Subject: Re: [PATCH] KVM: x86/mmu: Move individual kvm_mmu initialization into
- common helper
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200923163314.8181-1-sean.j.christopherson@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <815dfaef-54e3-f0e8-9641-8a87f8910b74@redhat.com>
-Date:   Wed, 23 Sep 2020 19:02:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Wed, 23 Sep 2020 13:03:04 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 1B4B22CBF57;
+        Wed, 23 Sep 2020 13:03:04 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id UtFJwFqFqI9A; Wed, 23 Sep 2020 13:03:03 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id D4A562CC076;
+        Wed, 23 Sep 2020 13:03:03 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com D4A562CC076
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1600880583;
+        bh=F8UBWvDOoZ47q2doq5ED60G9uh3N3lilVQ/T/onXtlA=;
+        h=From:To:Message-ID:Date:MIME-Version;
+        b=KE0td2akdrkYy0OjNq2iKGyXrqi78FpRXBhHLTd8mAZt9Ij59DtIXN7m96NjBoRS8
+         JTFc/kvFdann7gDSNQzKv70dUym2lp2iQ6C7TbU+AyogVDb3MXcbb8MOPftj+TsgiU
+         QDg1xE8Axke7sJpBh/rKwYBYy4c/1jLS292H642gqKLKAcaf3Ga8NFJgo89tjew8ND
+         +AGWuoRqlndZU+HF+JT9c5W6xB43pOxEk383yofag4PxRUiKqkKqoc/kIL2o1GJMLb
+         ZA5jE6D9YtG1IjU2w4I1rw24hx92Geh9Y68o+brM5ZaJZDuDAwnKSNkchTWSCoc+u2
+         BzLjedffI0EwA==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 6tPWE3jsjytB; Wed, 23 Sep 2020 13:03:03 -0400 (EDT)
+Received: from [10.10.0.55] (96-127-212-112.qc.cable.ebox.net [96.127.212.112])
+        by mail.efficios.com (Postfix) with ESMTPSA id B45ED2CC1C5;
+        Wed, 23 Sep 2020 13:03:03 -0400 (EDT)
+Subject: Re: [RFC PATCH v2 0/3] l3mdev icmp error route lookup fixes
+From:   Michael Jeanson <mjeanson@efficios.com>
+To:     David Ahern <dsahern@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     David <davem@davemloft.net>, netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20200918181801.2571-1-mathieu.desnoyers@efficios.com>
+ <390b230b-629b-7f96-e7c9-b28f8b592102@gmail.com>
+ <1453768496.36855.1600713879236.JavaMail.zimbra@efficios.com>
+ <dd1caf15-2ef0-f557-b9a8-26c46739f20b@gmail.com>
+ <1383129694.37216.1600716821449.JavaMail.zimbra@efficios.com>
+ <1135414696.37989.1600782730509.JavaMail.zimbra@efficios.com>
+ <4456259a-979a-7821-ef3d-aed5d330ed2b@gmail.com>
+ <730d8a09-7d3b-1033-4131-520dc42e8855@efficios.com>
+Message-ID: <47175ae8-e7e8-473c-5103-90bf444db16c@efficios.com>
+Date:   Wed, 23 Sep 2020 13:03:03 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.1
 MIME-Version: 1.0
-In-Reply-To: <20200923163314.8181-1-sean.j.christopherson@intel.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <730d8a09-7d3b-1033-4131-520dc42e8855@efficios.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/09/20 18:33, Sean Christopherson wrote:
-> Move initialization of 'struct kvm_mmu' fields into alloc_mmu_pages() to
-> consolidate code, and rename the helper to __kvm_mmu_create().
+On 2020-09-23 12 h 04, Michael Jeanson wrote:
+>> It should work without asymmetric routing; adding the return route to
+>> the second vrf as I mentioned above fixes the FRAG_NEEDED problem. It
+>> should work for TTL as well.
+>>
+>> Adding a second pass on the tests with the return through r2 is fine,
+>> but add a first pass for the more typical case.
 > 
-> No functional change intended.
+> Hi,
 > 
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> ---
->  arch/x86/kvm/mmu/mmu.c | 25 +++++++++----------------
->  1 file changed, 9 insertions(+), 16 deletions(-)
+> Before writing new tests I just want to make sure we are trying to fix 
+> the same issue. If I add a return route to the red VRF then we don't
+> need this patchset because whether the ICMP error are routed using the
+> table from the source or destination interface they will reach the 
+> source host.
 > 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 76c5826e29a2..a2c4c71ce5f2 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -5682,11 +5682,17 @@ static void free_mmu_pages(struct kvm_mmu *mmu)
->  	free_page((unsigned long)mmu->lm_root);
->  }
->  
-> -static int alloc_mmu_pages(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu)
-> +static int __kvm_mmu_create(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu)
->  {
->  	struct page *page;
->  	int i;
->  
-> +	mmu->root_hpa = INVALID_PAGE;
-> +	mmu->root_pgd = 0;
-> +	mmu->translate_gpa = translate_gpa;
-> +	for (i = 0; i < KVM_MMU_NUM_PREV_ROOTS; i++)
-> +		mmu->prev_roots[i] = KVM_MMU_ROOT_INFO_INVALID;
-> +
->  	/*
->  	 * When using PAE paging, the four PDPTEs are treated as 'root' pages,
->  	 * while the PDP table is a per-vCPU construct that's allocated at MMU
-> @@ -5712,7 +5718,6 @@ static int alloc_mmu_pages(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu)
->  
->  int kvm_mmu_create(struct kvm_vcpu *vcpu)
->  {
-> -	uint i;
->  	int ret;
->  
->  	vcpu->arch.mmu_pte_list_desc_cache.kmem_cache = pte_list_desc_cache;
-> @@ -5726,25 +5731,13 @@ int kvm_mmu_create(struct kvm_vcpu *vcpu)
->  	vcpu->arch.mmu = &vcpu->arch.root_mmu;
->  	vcpu->arch.walk_mmu = &vcpu->arch.root_mmu;
->  
-> -	vcpu->arch.root_mmu.root_hpa = INVALID_PAGE;
-> -	vcpu->arch.root_mmu.root_pgd = 0;
-> -	vcpu->arch.root_mmu.translate_gpa = translate_gpa;
-> -	for (i = 0; i < KVM_MMU_NUM_PREV_ROOTS; i++)
-> -		vcpu->arch.root_mmu.prev_roots[i] = KVM_MMU_ROOT_INFO_INVALID;
-> -
-> -	vcpu->arch.guest_mmu.root_hpa = INVALID_PAGE;
-> -	vcpu->arch.guest_mmu.root_pgd = 0;
-> -	vcpu->arch.guest_mmu.translate_gpa = translate_gpa;
-> -	for (i = 0; i < KVM_MMU_NUM_PREV_ROOTS; i++)
-> -		vcpu->arch.guest_mmu.prev_roots[i] = KVM_MMU_ROOT_INFO_INVALID;
-> -
->  	vcpu->arch.nested_mmu.translate_gpa = translate_nested_gpa;
->  
-> -	ret = alloc_mmu_pages(vcpu, &vcpu->arch.guest_mmu);
-> +	ret = __kvm_mmu_create(vcpu, &vcpu->arch.guest_mmu);
->  	if (ret)
->  		return ret;
->  
-> -	ret = alloc_mmu_pages(vcpu, &vcpu->arch.root_mmu);
-> +	ret = __kvm_mmu_create(vcpu, &vcpu->arch.root_mmu);
->  	if (ret)
->  		goto fail_allocate_root;
->  
+> The issue for which this patchset was sent only happens when the 
+> destination interface's VRF doesn't have a route back to the source 
+> host. I guess we might question if this is actually a bug or not.
 > 
+> So the question really is, when a packet is forwarded between VRFs 
+> through route leaking and an icmp error is generated, which table should 
+> be used for the route lookup? And does it depend on the type of icmp 
+> error? (e.g. TTL=1 happens before forwarding, but fragmentation needed 
+> happens after when on the destination interface)
 
-Queued, thanks.
+As a side note, I don't mind reworking the tests as you requested even 
+if the patchset as a whole ends up not being needed and if you think 
+they are still useful. I just wanted to make sure we understood each other.
 
-Paolo
+Cheers,
 
+Michael
