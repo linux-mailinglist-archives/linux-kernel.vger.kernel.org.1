@@ -2,126 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99AC5275646
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73FE2275655
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726590AbgIWKZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 06:25:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726475AbgIWKZT (ORCPT
+        id S1726504AbgIWK2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 06:28:44 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:58858 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726314AbgIWK2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 06:25:19 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 904EBC0613D2
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 03:25:19 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id s13so6548471wmh.4
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 03:25:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YH104ZB8OeVJHtVUQ2VvvA2q3T8sqPmsWx/W6gm8gTc=;
-        b=eWmZU1Fq8Tc1IaKlqHtAEy9dUcRmePGKEvJS8oT6zKqB/wZLSXJa0DL/HcI8GyR0nP
-         5Gt+7VFN7tp14qi1VGnjEnph2NXooLwr98Hf7DlvY93RIr1O54xNlICuFOHOVnU3T8Mr
-         gTwiKcxmCZSJxl9N1q7BvnM5G3FKLByva6z1bhnFPqJsXVfLxVWhtfDiEulWrVB97DgG
-         FPWbFzvdKa7hvr7zggy8luR90enD5G/zjcxCBEPcsDy+3DkngiIWD3PDi46wASBExqbD
-         IaAlYagyuQXVtHZ50bsFohRl/ljMIOL63uKv7/2s7dS8REpXX1MGnwGmSyD+FLrqWNzM
-         f/ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YH104ZB8OeVJHtVUQ2VvvA2q3T8sqPmsWx/W6gm8gTc=;
-        b=X7cnrGW31LX4dw+kme3AY9E+mvc068vBxM37A163x6PUQIf5Bbp0LHYPUolRztiujU
-         YUaas6e6XG3agPAZc1jxGfVVmcpgy28ddp3sLAIGxe/dl7o0DC328exsNSNiEV4MkhBB
-         gKHSzfUWWcHAO4JczLjh3semwt6B2/o4Izq+7Qe+ohhi6uXfz6SKbP0D6V8Ap1M1AKzl
-         pFkIxJnVaw8PeIGzuP5d+p4hPvDvBCL/wC7O4VKt5K9KeI+XkutDm5Xt2sC2MJpuXEnI
-         uNhpkReAD6hjakbLdcEvZXnn5v9wFnUQHkkddknw4R/iGCXpRAS3DgrHW1n9W9Pdylm0
-         iOoQ==
-X-Gm-Message-State: AOAM531hX8NQBl5pTXHo82xU1YOr73dk059iDiIBF6vvUKvrN0zEcj7p
-        6Z7PT0bB81QUti8CkTlK7OTv4Q==
-X-Google-Smtp-Source: ABdhPJyXK3Q6uDr6Rs3llAbf0QVsQzm36rlyPthGucBv/hXUeqfLWTOVYfszVqKmAZv7vOaIpQRz4g==
-X-Received: by 2002:a05:600c:28d:: with SMTP id 13mr5602925wmk.69.1600856718141;
-        Wed, 23 Sep 2020 03:25:18 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id r14sm29447423wrn.56.2020.09.23.03.25.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 23 Sep 2020 03:25:17 -0700 (PDT)
-Subject: Re: [PATCH 1/4] dt-bindings: clock: Add support for LPASS Audio Clock
- Controller
-To:     Rob Herring <robh@kernel.org>
-Cc:     sboyd@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, mturquette@baylibre.com,
-        bjorn.andersson@linaro.org, linux-clk@vger.kernel.org
-References: <20200917132850.7730-1-srinivas.kandagatla@linaro.org>
- <20200917132850.7730-2-srinivas.kandagatla@linaro.org>
- <20200918172917.GA3827183@bogus>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <7454ad51-edd7-4080-72b6-1d37858ba3ff@linaro.org>
-Date:   Wed, 23 Sep 2020 11:25:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Wed, 23 Sep 2020 06:28:43 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08NAPj3r175201;
+        Wed, 23 Sep 2020 10:28:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=W3kJESmWStoZ1/qcN3kLp6J7+/AYQxW/3+oWR15CPwE=;
+ b=klLBic4t3Uy/UQ2s4L4/mJ9dCJUO2CxSz3sgJ50e8/941BZf9SH4KAWDgO4vP3Z8hgxH
+ /qAwiYgQQmhWpfVOoi3wrVW4+GOotJQW7I1puH4G5u5ZtG6gNJC/UhNJVu2xCMtuYT1h
+ aKsDRgqIdo28SX/nimHv2ejaACCyKq2g96I+7uYA+HolvFaiSyGDS+yC/2nX+KvyxRaB
+ NjNGwixahiueaR2PjBtXlniFg2uNZj7dFjVqwJzxqGQBLJERQYyGFztFFfrTinwa6BuN
+ TU2zOW36bdCr4S0NCbQP2hLfbFeXMyrCESpN/ttHRhY+X1hLt5TcLTr2nDtNRNDilxNR ag== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 33qcptxj9f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 23 Sep 2020 10:28:36 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08NAQQrr129678;
+        Wed, 23 Sep 2020 10:28:35 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 33nujpe9pk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 23 Sep 2020 10:28:35 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08NASYVk032454;
+        Wed, 23 Sep 2020 10:28:34 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 23 Sep 2020 03:28:34 -0700
+Date:   Wed, 23 Sep 2020 13:28:28 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Simon Horman <horms+renesas@verge.net.au>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] soc: renesas: rmobile-sysc: Fix some leaks in
+ rmobile_init_pm_domains()
+Message-ID: <20200923102828.GH18329@kadam>
+References: <20200923084458.GD1454948@mwanda>
+ <CAMuHMdXyM1dUPJ7ZDAk6-cEjaG_bVBfsE=bqdpf7pA0ChdRLVw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200918172917.GA3827183@bogus>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdXyM1dUPJ7ZDAk6-cEjaG_bVBfsE=bqdpf7pA0ChdRLVw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9752 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0
+ mlxlogscore=999 phishscore=0 adultscore=0 spamscore=0 suspectscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009230082
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9752 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ adultscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0 priorityscore=1501
+ phishscore=0 spamscore=0 malwarescore=0 clxscore=1011 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009230082
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-On 18/09/2020 18:29, Rob Herring wrote:
-> On Thu, 17 Sep 2020 14:28:47 +0100, Srinivas Kandagatla wrote:
->> Audio Clock controller is a block inside LPASS which controls
->> 2 Glitch free muxes to LPASS codec Macros.
->>
->> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> ---
->>   .../bindings/clock/qcom,audiocc-sm8250.yaml   | 58 +++++++++++++++++++
->>   .../clock/qcom,sm8250-lpass-audiocc.h         | 13 +++++
->>   2 files changed, 71 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/clock/qcom,audiocc-sm8250.yaml
->>   create mode 100644 include/dt-bindings/clock/qcom,sm8250-lpass-audiocc.h
->>
+On Wed, Sep 23, 2020 at 11:10:17AM +0200, Geert Uytterhoeven wrote:
+> Hi Dan,
 > 
+> On Wed, Sep 23, 2020 at 10:47 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> > This code needs to call iounmap() on the error paths.
 > 
-> My bot found errors running 'make dt_binding_check' on your patch:
+> Thanks for your patch!
 > 
-> Error: Documentation/devicetree/bindings/clock/qcom,audiocc-sm8250.example.dts:25.30-31 syntax error
-> FATAL ERROR: Unable to parse input tree
-> make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/clock/qcom,audiocc-sm8250.example.dt.yaml] Error 1
-> make[1]: *** Waiting for unfinished jobs....
-> make: *** [Makefile:1366: dt_binding_check] Error 2
+> > Fixes: 2ed29e15e4b2 ("ARM: shmobile: R-Mobile: Move pm-rmobile to drivers/soc/renesas/")
 > 
+> This is not the commit that introduced the issue.
 
-Is this check done against linux-next?
-
-or linux master?
-
-I have rechecked this once again on next and I see no check failures.
-Next has a patch [1] which adds defines in header file that are used in 
-example! Possibly that is what is making the check fail!
-
-
-thanks,
-srini
-
-[1] 
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?h=next-20200922&id=4e398353a7e51410c34fd19f8b7dfc56fff5901b
-
+Duh...  I don't know what I was thinking there.
 
 > 
-> See https://patchwork.ozlabs.org/patch/1366127
+> Fixes: 2173fc7cb681c38b ("ARM: shmobile: R-Mobile: Add DT support for
+> PM domains")
 > 
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure dt-schema is up to date:
+> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 > 
-> pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+> > --- a/drivers/soc/renesas/rmobile-sysc.c
+> > +++ b/drivers/soc/renesas/rmobile-sysc.c
+> > @@ -328,6 +328,7 @@ static int __init rmobile_init_pm_domains(void)
+> >                 pmd = of_get_child_by_name(np, "pm-domains");
+> >                 if (!pmd) {
+> >                         pr_warn("%pOF lacks pm-domains node\n", np);
+> > +                       iounmap(base);
 > 
-> Please check and re-submit.
+> This one I can agree with, although that case is a bug in the DTS.
 > 
+> >                         continue;
+> >                 }
+> >
+> > @@ -341,6 +342,7 @@ static int __init rmobile_init_pm_domains(void)
+> >                 of_node_put(pmd);
+> >                 if (ret) {
+> >                         of_node_put(np);
+> > +                       iounmap(base);
+> 
+> This one I cannot: in the (unlikely, only if OOM) case
+> rmobile_add_pm_domains() returns an error, one or more PM subdomains may
+> have been registered already.  Hence if you call iounmap() here, the
+> code will try to access unmapped registers later, leading to a crash.
+> 
+
+It's actually impossible for this rmobile_add_pm_domains() to fail on
+current kernels because small allocations never fail...
+
+I'll send a v2.  This is for a new static checker test that I added to
+Smatch so I'm just sending a few of these out every day to collect
+feedback for now.  So thanks for reviewing this, it's very helpful.
+
+regards,
+dan carpenter
+
