@@ -2,107 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC42527537B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 10:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CCE2275382
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 10:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbgIWImf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 04:42:35 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:45778 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726381AbgIWImf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 04:42:35 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 59AD61C0BB1; Wed, 23 Sep 2020 10:42:33 +0200 (CEST)
-Date:   Wed, 23 Sep 2020 10:42:32 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     madvenka@linux.microsoft.com
-Cc:     kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, oleg@redhat.com,
-        x86@kernel.org, luto@kernel.org, David.Laight@ACULAB.COM,
-        fweimer@redhat.com, mark.rutland@arm.com, mic@digikod.net
-Subject: Re: [PATCH v2 0/4] [RFC] Implement Trampoline File Descriptor
-Message-ID: <20200923084232.GB30279@amd>
-References: <210d7cd762d5307c2aa1676705b392bd445f1baa>
- <20200922215326.4603-1-madvenka@linux.microsoft.com>
+        id S1726632AbgIWInI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 04:43:08 -0400
+Received: from verein.lst.de ([213.95.11.211]:47725 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726328AbgIWInH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 04:43:07 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 813D367357; Wed, 23 Sep 2020 10:43:03 +0200 (CEST)
+Date:   Wed, 23 Sep 2020 10:43:03 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Coly Li <colyli@suse.de>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-block@vger.kernel.org,
+        linux-nvme@lists.infradead.org, netdev@vger.kernel.org,
+        open-iscsi@googlegroups.com, linux-scsi@vger.kernel.org,
+        ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Hannes Reinecke <hare@suse.de>, Jan Kara <jack@suse.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Mikhail Skorzhinskii <mskorzhinskiy@solarflare.com>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Vlastimil Babka <vbabka@suse.com>, stable@vger.kernel.org
+Subject: Re: [PATCH v7 1/6] net: introduce helper sendpage_ok() in
+ include/linux/net.h
+Message-ID: <20200923084303.GA21657@lst.de>
+References: <20200818131227.37020-1-colyli@suse.de> <20200818131227.37020-2-colyli@suse.de> <20200818162404.GA27196@lst.de> <217ec0ec-3c5a-a8ed-27d9-c634f0b9a045@suse.de> <20200818194930.GA31966@lst.de> <04408ff6-f765-8f3e-ead9-aec55043e469@suse.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="zx4FCpZtqtKETZ7O"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200922215326.4603-1-madvenka@linux.microsoft.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <04408ff6-f765-8f3e-ead9-aec55043e469@suse.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 19, 2020 at 12:22:05PM +0800, Coly Li wrote:
+> On 2020/8/19 03:49, Christoph Hellwig wrote:
+> > On Wed, Aug 19, 2020 at 12:33:37AM +0800, Coly Li wrote:
+> >> On 2020/8/19 00:24, Christoph Hellwig wrote:
+> >>> I think we should go for something simple like this instead:
+> >>
+> >> This idea is fine to me. Should a warning message be through here? IMHO
+> >> the driver still sends an improper page in, fix it in silence is too
+> >> kind or over nice to the buggy driver(s).
+> > 
+> > I don't think a warning is a good idea.  An API that does the right
+> > thing underneath and doesn't require boiler plate code in most callers
+> > is the right API.
+> > 
+> 
+> Then I don't have more comment.
 
---zx4FCpZtqtKETZ7O
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi!
-
-> Solution proposed in this RFC
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
->=20
-> >From this RFC's perspective, there are two scenarios for dynamic code:
->=20
-> Scenario 1
-> ----------
->=20
-> We know what code we need only at runtime. For instance, JIT code generat=
-ed
-> for frequently executed Java methods. Only at runtime do we know what
-> methods need to be JIT compiled. Such code cannot be statically defined. =
-It
-> has to be generated at runtime.
->=20
-> Scenario 2
-> ----------
->=20
-> We know what code we need in advance. User trampolines are a good example=
- of
-> this. It is possible to define such code statically with some help from t=
-he
-> kernel.
->=20
-> This RFC addresses (2). (1) needs a general purpose trusted code generator
-> and is out of scope for this RFC.
-
-This is slightly less crazy talk than introduction talking about holes
-in W^X. But it is very, very far from normal Unix system, where you
-have selection of interpretters to run your malware on (sh, python,
-awk, emacs, ...) and often you can even compile malware from sources.=20
-
-And as you noted, we don't have "a general purpose trusted code
-generator" for our systems.
-
-I believe you should simply delete confusing "introduction" and
-provide details of super-secure system where your patches would be
-useful, instead.
-
-Best regards,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---zx4FCpZtqtKETZ7O
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl9rCngACgkQMOfwapXb+vKeqgCgpVQMutlRE7F/wzcDjcBTlXwI
-RbAAnjRDzunOtf0iSPKO6rIM9FPy6+JQ
-=wVZX
------END PGP SIGNATURE-----
-
---zx4FCpZtqtKETZ7O--
+So given the feedback from Dave I suspect we should actually resurrect
+this series, sorry for the noise.  And in this case I think we do need
+the warning in kernel_sendpage.
