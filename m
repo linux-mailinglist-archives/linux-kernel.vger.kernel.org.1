@@ -2,154 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3E52759A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDF442759B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726676AbgIWOPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 10:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59380 "EHLO
+        id S1726703AbgIWORG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 10:17:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgIWOPQ (ORCPT
+        with ESMTP id S1726130AbgIWORF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 10:15:16 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6695AC0613CE;
-        Wed, 23 Sep 2020 07:15:16 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id c18so173160wrm.9;
-        Wed, 23 Sep 2020 07:15:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=CCpG6jWr4GZzW1CfQaSnnmzY1h1hQX+z5GfUGphu6mo=;
-        b=WyrzDX2hgEfYU9YEV2oB2Vy6Tk0kl11zvxMh4GY5Zt2ZGXDlcM0bIRvJURSeI8ygz8
-         K7BOrYW6NZZZZ8WNO359lHGhMUBKLp8RYVFb1RA9XE6CqaxCBH28mpQ9VlNnCEYpp3oB
-         YaiQ5Pj3XC5d+3qWk61xf4Xl2LYrqI3P+6YmLSDhln3QT1ToaJ/YKV/EMYVvYoFY1K/n
-         CYQfJkBIqbqGPooaLBU3l8dRSPFw3jl+SdGXFuDyljkKofyPmTaHKCbPTQL6hm3orrk/
-         wFBw5Rfz51qnFjDZ6W5wZswA+McLUuOlY4QMfhiXajTRVEeG7MBrNA9HnrmSlEwbsek2
-         V/pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=CCpG6jWr4GZzW1CfQaSnnmzY1h1hQX+z5GfUGphu6mo=;
-        b=j9SmZ4sBiSMf4g2btvHev7WDIpJIdRN0dhxjbWsGERL+LJBZqQ20WrVptNvv6jf6yv
-         IJeBhVu8iP2usmmWCFiA8Qtlo1z/L894jKg8nNbhJj5/eqbPDv193PCBiqFiy5YjxxcF
-         b7ns7unDr0lv2xpiuwcjY4az/hJywusbujDdo1UXBRFvb6EcU8NXHqhg3W/spbN++3jF
-         gf/nLM6JMBLNuc3SJIGOaaJ+yxDHdF7wDvhXTeOUi4uofBRd8P93q7vPJzVXhhHbW9hT
-         7KKjeOG2Ik0wmd1VXHFlgMiLukLNOqEuEtUxEpHfVkbxBWQx7h/CYJeCnSX/0OuafBvP
-         B4fQ==
-X-Gm-Message-State: AOAM533fqfkRPjCJQhTEiWnkgWxSeb9GvLKWoVpPPTmMOdVNYYPqvQPo
-        HZKGdMiQrJbnZ9hbmnVBm9o=
-X-Google-Smtp-Source: ABdhPJxE/2vXIiL4kN9hTjYGmAYGf/ntfPr0bNkLM/DKOX5sQazw3tKXKwd9st2bXep+5i7oBXEVXA==
-X-Received: by 2002:a5d:568d:: with SMTP id f13mr1056599wrv.303.1600870515112;
-        Wed, 23 Sep 2020 07:15:15 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id o4sm29300893wru.55.2020.09.23.07.15.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 07:15:13 -0700 (PDT)
-Date:   Wed, 23 Sep 2020 16:15:11 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Li Yang <leoyang.li@nxp.com>, Han Xu <han.xu@nxp.com>,
-        Frank Li <frank.li@nxp.com>, Fugang Duan <fugang.duan@nxp.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-watchdog@vger.kernel.org
-Subject: Re: [PATCH v3 06/19] dt-bindings: pwm: imx-pwm: Add i.MX 8M
- compatibles
-Message-ID: <20200923141511.GF1848911@ulmo>
-References: <20200825193536.7332-1-krzk@kernel.org>
- <20200825193536.7332-7-krzk@kernel.org>
- <20200923115201.GD1846003@ulmo>
- <CAJKOXPcZuonCBK1Fc9r=rHzOL02MArrsE=R4x1tWGqov2nP0fA@mail.gmail.com>
+        Wed, 23 Sep 2020 10:17:05 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E07F8C0613CE;
+        Wed, 23 Sep 2020 07:17:04 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kL5Zm-004aBB-Mq; Wed, 23 Sep 2020 14:16:54 +0000
+Date:   Wed, 23 Sep 2020 15:16:54 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
+        David Laight <David.Laight@aculab.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-aio@kvack.org, io-uring@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        netdev@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH 3/9] iov_iter: refactor rw_copy_check_uvector and
+ import_iovec
+Message-ID: <20200923141654.GJ3421308@ZenIV.linux.org.uk>
+References: <20200923060547.16903-1-hch@lst.de>
+ <20200923060547.16903-4-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="SxgehGEc6vB0cZwN"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJKOXPcZuonCBK1Fc9r=rHzOL02MArrsE=R4x1tWGqov2nP0fA@mail.gmail.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+In-Reply-To: <20200923060547.16903-4-hch@lst.de>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 23, 2020 at 08:05:41AM +0200, Christoph Hellwig wrote:
 
---SxgehGEc6vB0cZwN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> +struct iovec *iovec_from_user(const struct iovec __user *uvec,
+> +		unsigned long nr_segs, unsigned long fast_segs,
 
-On Wed, Sep 23, 2020 at 04:08:53PM +0200, Krzysztof Kozlowski wrote:
-> On Wed, 23 Sep 2020 at 13:52, Thierry Reding <thierry.reding@gmail.com> w=
-rote:
-> >
-> > On Tue, Aug 25, 2020 at 09:35:23PM +0200, Krzysztof Kozlowski wrote:
-> > > DTSes with new i.MX 8M SoCs introduce their own compatibles so add th=
-em
-> > > to fix dtbs_check warnings like:
-> > >
-> > >   arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml: pwm@30660000:
-> > >     compatible:0: 'fsl,imx8mm-pwm' is not one of ['fsl,imx1-pwm', 'fs=
-l,imx27-pwm']
-> > >     From schema: Documentation/devicetree/bindings/pwm/imx-pwm.yaml
-> > >
-> > >   arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml: pwm@30660000:
-> > >     compatible: ['fsl,imx8mm-pwm', 'fsl,imx27-pwm'] is too long
-> > >
-> > >   arch/arm64/boot/dts/freescale/imx8mm-evk.dt.yaml: pwm@30660000:
-> > >     compatible: Additional items are not allowed ('fsl,imx27-pwm' was=
- unexpected)
-> > >
-> > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > > Reviewed-by: Rob Herring <robh@kernel.org>
-> > > ---
-> > >  Documentation/devicetree/bindings/pwm/imx-pwm.yaml | 14 +++++++++++-=
---
-> > >  1 file changed, 11 insertions(+), 3 deletions(-)
-> >
-> > Applied, thanks.
->=20
-> Thanks Thierry, but this was already picked up by Rob into DT tree.
+Hmm...  For fast_segs unsigned long had always been ridiculous
+(4G struct iovec on caller stack frame?), but that got me wondering about
+nr_segs and I wish I'd thought of that when introducing import_iovec().
 
-I hadn't seen any email and since Rob had given a reviewed-by I assumed
-this was supposed to be picked up into subsystem trees. I'll drop it
-again.
+The thing is, import_iovec() takes unsigned int there.  Which is fine
+(hell, the maximal value that can be accepted in 1024), except that
+we do pass unsigned long syscall argument to it in some places.
 
-Thierry
+E.g. vfs_readv() quietly truncates vlen to 32 bits, and vlen can
+come unchanged through sys_readv() -> do_readv() -> vfs_readv().
+With unsigned long passed by syscall glue.
 
---SxgehGEc6vB0cZwN
-Content-Type: application/pgp-signature; name="signature.asc"
+AFAICS, passing 4G+1 as the third argument to readv(2) on 64bit box
+will be quietly treated as 1 these days.  Which would be fine, except
+that before "switch {compat_,}do_readv_writev() to {compat_,}import_iovec()"
+it used to fail with -EINVAL.
 
------BEGIN PGP SIGNATURE-----
+Userland, BTW, describes readv(2) iovcnt as int; process_vm_readv(),
+OTOH, has these counts unsigned long from the userland POV...
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9rWG8ACgkQ3SOs138+
-s6FYZA/+J5rgjcPTqcNSA6/9QwG56DhiJV6FV2eQhf5UbL1l2RFHvVGpAnZxjxM7
-UFP1CVWZIFEYJlXCAjEjHeKrz8wz/M8+j2UYqzCnew7XwH2QOKvJRiQYyjMzJyLh
-Z9AI7zgkZXqz0xH+WIjkynmWnoz1jZw2Ct331f2jaPHmkD4B2CURyhkVtVNhW0Kr
-5Vq8t7NQ7tqQjh2+q4cxf6ge1zc1J2PCNNdc6MDdTHFTBhpqGp4IF7Sx7aMq79OT
-/JtEp0TZohhPUXtkDl1ZghDzryf9pksNOf+HwgpgrbrbZl5tP0y2K3TL+9uIXjfT
-6clna7VIx9ofQpnAeL1RzJMGM93laLOpvdcAj02cgUcNcOU3Bj3oVGBx076M8WyA
-i58nto1/wlQEcZzlMcQigyNCFWu6nhXjebM5U9WdEWAm9xkGv4OSbHQw7ZV7TM8b
-JI334Uvholn1f99bt3JosCAOYTV/88sn4Px8SAxvwGy6EttBPKdnUvBwZdk86xTa
-eKbDtGkvF2pFAgaO7ylV2ADQnVW+A3JEXF+RbT/u5jiFiHUEz8XncHiJmB+e4xrf
-4W3V2QqbWkF6y7BQ+OaNYk98m5dkNE/e7kSCdXcmjjJwazDunejXvQvnNDr70LIP
-oNqvMzEtfA0q5K2Fee3TyE31GBycFO3i6PjxrIad0PsInjVV2Ok=
-=J7v2
------END PGP SIGNATURE-----
+I suppose we ought to switch import_iovec() to unsigned long for nr_segs ;-/
+Strictly speaking that had been a userland ABI change, even though nothing
+except regression tests checking for expected errors would've been likely
+to notice.  And it looks like no regression tests covered that one...
 
---SxgehGEc6vB0cZwN--
+Linus, does that qualify for your "if no userland has noticed the change,
+it's not a breakage"?
