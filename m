@@ -2,134 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7469D27561A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 760D627563B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:23:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726827AbgIWKWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 06:22:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43996 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726630AbgIWKWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 06:22:38 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726676AbgIWKXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 06:23:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52351 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726332AbgIWKXK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 06:23:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600856588;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lnhZ1p8MPUWNhHhmu91uoAEGZXibovEmFTnT+gcwC+M=;
+        b=QHVmYaTEgbsGHbTfbO/572LIARTPF2x68yzv6vx6dyl68L13QekEKBjWmFFGggjR9fByKX
+        LMaQJWskpiTBhRJ7MY8fFYMvJNOBqfKhAJSOaCDhqAuOfjaeaGf2swCdwtJrdvohVBTdub
+        AvUGVzt1UIqOZmNmsNF65F/aNgx7BfE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-105-QPRawwAFMz-l4cPXkxpLTA-1; Wed, 23 Sep 2020 06:23:03 -0400
+X-MC-Unique: QPRawwAFMz-l4cPXkxpLTA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 71CFC21BE5;
-        Wed, 23 Sep 2020 10:22:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600856557;
-        bh=XWz+vZF1g9LHOoSDkcsY0DgfgY9ECKBeXlo0tAjLp3E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2i1jUvoLRFBz01yCEMI3AOBl7f7kw3YeK1wDQAayGCIXdpUkkkYqac305/pA+Xk2t
-         rz8XlHaWtW2W13ht3sKCDS3XCKPPmcTSwwMVrPaFlfp9A5sW4wbcJ1BozSbPzVhOsl
-         2czFjN+d/NXfHtVMK4ZP3O4jv8B36hSznoXXwG7Q=
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BD8641084C8A;
+        Wed, 23 Sep 2020 10:23:00 +0000 (UTC)
+Received: from krava (unknown [10.40.192.120])
+        by smtp.corp.redhat.com (Postfix) with SMTP id AD4EA55783;
+        Wed, 23 Sep 2020 10:22:57 +0000 (UTC)
 Date:   Wed, 23 Sep 2020 12:22:56 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Himadri Pandya <himadrispandya@gmail.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, oneukum@suse.com,
-        pankaj.laxminarayan.bharadiya@intel.com, keescook@chromium.org,
-        yuehaibing@huawei.com, petkan@nucleusys.com, ogiannou@gmail.com,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH 4/4] net: rndis_host: use usb_control_msg_recv() and
- usb_control_msg_send()
-Message-ID: <20200923102256.GA3154647@kroah.com>
-References: <20200923090519.361-1-himadrispandya@gmail.com>
- <20200923090519.361-5-himadrispandya@gmail.com>
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        John Garry <john.garry@huawei.com>,
+        Kajol Jain <kjain@linux.ibm.com>
+Subject: Re: [PATCH 3/5] perf tools: Copy metric events properly when expand
+ cgroups
+Message-ID: <20200923102256.GI2893484@krava>
+References: <20200923015945.47535-1-namhyung@kernel.org>
+ <20200923015945.47535-4-namhyung@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200923090519.361-5-himadrispandya@gmail.com>
+In-Reply-To: <20200923015945.47535-4-namhyung@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 02:35:19PM +0530, Himadri Pandya wrote:
-> The new usb_control_msg_recv() and usb_control_msg_send() nicely wraps
-> usb_control_msg() with proper error check. Hence use the wrappers
-> instead of calling usb_control_msg() directly.
-> 
-> Signed-off-by: Himadri Pandya <himadrispandya@gmail.com>
-> ---
->  drivers/net/usb/rndis_host.c | 44 ++++++++++++++----------------------
->  1 file changed, 17 insertions(+), 27 deletions(-)
-> 
-> diff --git a/drivers/net/usb/rndis_host.c b/drivers/net/usb/rndis_host.c
-> index 6fa7a009a24a..30fc4a7183d3 100644
-> --- a/drivers/net/usb/rndis_host.c
-> +++ b/drivers/net/usb/rndis_host.c
-> @@ -113,14 +113,13 @@ int rndis_command(struct usbnet *dev, struct rndis_msg_hdr *buf, int buflen)
->  		buf->request_id = (__force __le32) xid;
->  	}
->  	master_ifnum = info->control->cur_altsetting->desc.bInterfaceNumber;
-> -	retval = usb_control_msg(dev->udev,
-> -		usb_sndctrlpipe(dev->udev, 0),
-> -		USB_CDC_SEND_ENCAPSULATED_COMMAND,
-> -		USB_TYPE_CLASS | USB_RECIP_INTERFACE,
-> -		0, master_ifnum,
-> -		buf, le32_to_cpu(buf->msg_len),
-> -		RNDIS_CONTROL_TIMEOUT_MS);
-> -	if (unlikely(retval < 0 || xid == 0))
-> +	retval = usb_control_msg_send(dev->udev, 0,
-> +				      USB_CDC_SEND_ENCAPSULATED_COMMAND,
-> +				      USB_TYPE_CLASS | USB_RECIP_INTERFACE,
-> +				      0, master_ifnum, buf,
-> +				      le32_to_cpu(buf->msg_len),
-> +				      RNDIS_CONTROL_TIMEOUT_MS);
-> +	if (unlikely(xid == 0))
->  		return retval;
+On Wed, Sep 23, 2020 at 10:59:43AM +0900, Namhyung Kim wrote:
+
+SNIP
+
+  
+> diff --git a/tools/perf/util/cgroup.c b/tools/perf/util/cgroup.c
+> index 8b6a4fa49082..dcd18ef268a1 100644
+> --- a/tools/perf/util/cgroup.c
+> +++ b/tools/perf/util/cgroup.c
+> @@ -3,6 +3,9 @@
+>  #include "evsel.h"
+>  #include "cgroup.h"
+>  #include "evlist.h"
+> +#include "rblist.h"
+> +#include "metricgroup.h"
+> +#include "stat.h"
+>  #include <linux/zalloc.h>
+>  #include <sys/types.h>
+>  #include <sys/stat.h>
+> @@ -193,10 +196,12 @@ int parse_cgroups(const struct option *opt, const char *str,
+>  	return 0;
+>  }
 >  
->  	/* Some devices don't respond on the control channel until
-> @@ -139,14 +138,11 @@ int rndis_command(struct usbnet *dev, struct rndis_msg_hdr *buf, int buflen)
->  	/* Poll the control channel; the request probably completed immediately */
->  	rsp = le32_to_cpu(buf->msg_type) | RNDIS_MSG_COMPLETION;
->  	for (count = 0; count < 10; count++) {
-> -		memset(buf, 0, CONTROL_BUFFER_SIZE);
-> -		retval = usb_control_msg(dev->udev,
-> -			usb_rcvctrlpipe(dev->udev, 0),
-> -			USB_CDC_GET_ENCAPSULATED_RESPONSE,
-> -			USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
-> -			0, master_ifnum,
-> -			buf, buflen,
-> -			RNDIS_CONTROL_TIMEOUT_MS);
-> +		retval = usb_control_msg_recv(dev->udev, 0,
-> +					      USB_CDC_GET_ENCAPSULATED_RESPONSE,
-> +					      USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
-> +					      0, master_ifnum, buf, buflen,
-> +					      RNDIS_CONTROL_TIMEOUT_MS);
->  		if (likely(retval >= 8)) {
+> -int evlist__expand_cgroup(struct evlist *evlist, const char *str)
+> +int evlist__expand_cgroup(struct evlist *evlist, const char *str,
+> +			  struct rblist *metric_events)
+>  {
+>  	struct evlist *orig_list, *tmp_list;
+>  	struct evsel *pos, *evsel, *leader;
+> +	struct rblist orig_metric_events;
+>  	struct cgroup *cgrp = NULL;
+>  	const char *p, *e, *eos = str + strlen(str);
+>  	int ret = -1;
+> @@ -216,6 +221,8 @@ int evlist__expand_cgroup(struct evlist *evlist, const char *str)
+>  	/* save original events and init evlist */
+>  	perf_evlist__splice_list_tail(orig_list, &evlist->core.entries);
+>  	evlist->core.nr_entries = 0;
+> +	orig_metric_events = *metric_events;
+> +	rblist__init(metric_events);
+>  
+>  	for (;;) {
+>  		p = strchr(str, ',');
+> @@ -255,6 +262,11 @@ int evlist__expand_cgroup(struct evlist *evlist, const char *str)
+>  		cgroup__put(cgrp);
+>  		nr_cgroups++;
+>  
+> +		perf_stat__collect_metric_expr(tmp_list);
 
-retval here is never going to be positive, right?  So I don't think this
-patch is correct :(
+I know you added the option just for perf stat, not record,
+but the code looks generic apart from using this function
 
->  			msg_type = le32_to_cpu(buf->msg_type);
->  			msg_len = le32_to_cpu(buf->msg_len);
-> @@ -178,17 +174,11 @@ int rndis_command(struct usbnet *dev, struct rndis_msg_hdr *buf, int buflen)
->  				msg->msg_type = cpu_to_le32(RNDIS_MSG_KEEPALIVE_C);
->  				msg->msg_len = cpu_to_le32(sizeof *msg);
->  				msg->status = cpu_to_le32(RNDIS_STATUS_SUCCESS);
-> -				retval = usb_control_msg(dev->udev,
-> -					usb_sndctrlpipe(dev->udev, 0),
-> -					USB_CDC_SEND_ENCAPSULATED_COMMAND,
-> -					USB_TYPE_CLASS | USB_RECIP_INTERFACE,
-> -					0, master_ifnum,
-> -					msg, sizeof *msg,
-> -					RNDIS_CONTROL_TIMEOUT_MS);
-> -				if (unlikely(retval < 0))
-> -					dev_dbg(&info->control->dev,
-> -						"rndis keepalive err %d\n",
-> -						retval);
-> +				retval = usb_control_msg_send(dev->udev, 0,
-> +							      USB_CDC_SEND_ENCAPSULATED_COMMAND,
-> +							      USB_TYPE_CLASS | USB_RECIP_INTERFACE,
-> +							      0, master_ifnum, msg, sizeof(*msg),
-> +							      RNDIS_CONTROL_TIMEOUT_MS);
+I wonder if this would cause any issues if it was called in record
+context.. maybe we could just skip it in that case, but that's for
+future to worry about ;-)
 
-You lost the error message that the previous call had if something went
-wrong.  Don't know if it's really needed, but there's no reason to
-remove it here.
+jirka
 
-thanks,
+> +		if (metricgroup__copy_metric_events(tmp_list, cgrp, metric_events,
+> +						    &orig_metric_events) < 0)
+> +			break;
+> +
+>  		perf_evlist__splice_list_tail(evlist, &tmp_list->core.entries);
+>  		tmp_list->core.nr_entries = 0;
+>  
+> @@ -268,6 +280,7 @@ int evlist__expand_cgroup(struct evlist *evlist, const char *str)
+>  out_err:
+>  	evlist__delete(orig_list);
+>  	evlist__delete(tmp_list);
+> +	rblist__exit(&orig_metric_events);
+>  
+>  	return ret;
+>  }
 
-greg k-h
+SNIP
+
