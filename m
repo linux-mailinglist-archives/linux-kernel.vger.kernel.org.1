@@ -2,131 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 360E6275967
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CBBD27596B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:08:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726696AbgIWOIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 10:08:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50263 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726130AbgIWOIA (ORCPT
+        id S1726711AbgIWOI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 10:08:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726526AbgIWOI0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 10:08:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600870079;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=it2WE8HSky4eTkM1IOAj4PM/27T11fCRsFPmvTOl5jQ=;
-        b=iTTroEISRTrnGDcVG5DbPjbES88pDUh3ByET0Opgk8mEXPiq4xRqqKtKNM4RuLOAblORYY
-        NWaIppAWC8vA3iifAdpS14AfEy2qO3V0rpSWLe9Yki7csSmqXGMs6Uj3L8XvFyDtzh8aTr
-        L0Tw5smCBtLdIGwiG22DkjdIIQP9qIU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-547-yEBWGn5SPUSTUFLSvc4jVw-1; Wed, 23 Sep 2020 10:07:55 -0400
-X-MC-Unique: yEBWGn5SPUSTUFLSvc4jVw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 76B131007B04;
-        Wed, 23 Sep 2020 14:07:53 +0000 (UTC)
-Received: from krava (unknown [10.40.192.120])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 1E72419C4F;
-        Wed, 23 Sep 2020 14:07:48 +0000 (UTC)
-Date:   Wed, 23 Sep 2020 16:07:47 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Wei Li <liwei391@huawei.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Li Bin <huawei.libin@huawei.com>
-Subject: Re: [PATCH 1/2] perf stat: Fix segfault when counting armv8_pmu
- events
-Message-ID: <20200923140747.GN2893484@krava>
-References: <20200922031346.15051-1-liwei391@huawei.com>
- <20200922031346.15051-2-liwei391@huawei.com>
- <20200923054426.GG2893484@krava>
- <CAM9d7cjLKosv97fEUCATVTr0mkZL_W5oDzBSxde70RhOeZ=6fg@mail.gmail.com>
+        Wed, 23 Sep 2020 10:08:26 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E9E2C0613CE;
+        Wed, 23 Sep 2020 07:08:26 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id j2so161571wrx.7;
+        Wed, 23 Sep 2020 07:08:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4uOSBvkeFCtt0jtghI6Iaa1Oo8+32MdaZFs6lvK60t8=;
+        b=hIsdByJzmuRZb2kuHY+GIbDpMgWlvIUBRMTXmdV1C4IB9eRgcQy/OMVs2LdsuXRALc
+         OPjiJGytcYJ+AqzYQ5+tx7xtLh+HPD1VxW1yvp/tZNOtCvSnydgapNZUVaFkMSapnkUV
+         dn9rUUzdxM28cMyXFHXi4gXE32x+JjKe7gj8YX07quIKnNYjNcsA1Hj71H1/YIqtk+An
+         vqMD9ip4rhlImUBqeu7EzMTx6OQe7a94hq6HBB21V+1x2Kk7PgLgb+t2XF8Njo6T8Qlv
+         QgC7XqKrVAt5bRwL5i4A/pXjwpHdnhvjfMKRd9HDdfGzo52JbJhYPkcUFq8/+7FfOHMB
+         7HJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4uOSBvkeFCtt0jtghI6Iaa1Oo8+32MdaZFs6lvK60t8=;
+        b=OXNimDKPLSN5JT13A7joN6I+TTlH7+Cggq0KGMe0t4tjaXjnNq9jLjQNm1ecqwRJcF
+         OE0ElszMFiSGwLJWUAi/AyxjMXXUMj9ukuj4EXXDDzTGEqjKLkP5ugO5AAhlltwj5XkX
+         DIf4NGI1QCCwb7wsrrMNM1HnRespiS63ylRAAOVCQvTae1kDubvzvBM0aqLSq2RzsoGl
+         rqRGkwbnxTVGtwsZD5CdBbqfhxua0FCWd1QY5gJS1vz9t4fs1clEADazd/4ikc90MElC
+         J/Az2r1kgkJyPtR9/aGauRBh8uUxvQE/cfZnLO8UXWOhONPk3+dEi+HABbQX9KMJDCXU
+         ztBw==
+X-Gm-Message-State: AOAM531KsiDWC6xcRThBmHyK6WaYeyWZ/rDNy62sLdOG87rWnXOA+/1o
+        RZbdVBH/Y+qDXsmJdSP/sd0wPc/S4KbkcouDE68=
+X-Google-Smtp-Source: ABdhPJwfifO44HBhduMMKEMbLd2291rc6s++c2z9Q98+xivVO3BJPwzCQSMyA1phXsZQ4fDrwn6LpOEPvUyk8VM1Cs4=
+X-Received: by 2002:adf:9b8b:: with SMTP id d11mr1141570wrc.71.1600870104795;
+ Wed, 23 Sep 2020 07:08:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM9d7cjLKosv97fEUCATVTr0mkZL_W5oDzBSxde70RhOeZ=6fg@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20200923090519.361-1-himadrispandya@gmail.com>
+ <20200923090519.361-2-himadrispandya@gmail.com> <20200923102425.GC3154647@kroah.com>
+In-Reply-To: <20200923102425.GC3154647@kroah.com>
+From:   Himadri Pandya <himadrispandya@gmail.com>
+Date:   Wed, 23 Sep 2020 19:38:13 +0530
+Message-ID: <CAOY-YVk3Vio=jKndTMnn66h-dZAnFUpZU701KqvdYh51ZQFk+g@mail.gmail.com>
+Subject: Re: [PATCH 1/4] net: usbnet: use usb_control_msg_recv() and usb_control_msg_send()
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oliver Neukum <oneukum@suse.com>,
+        pankaj.laxminarayan.bharadiya@intel.com,
+        Kees Cook <keescook@chromium.org>, yuehaibing@huawei.com,
+        petkan@nucleusys.com, ogiannou@gmail.com,
+        USB list <linux-usb@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 10:49:52PM +0900, Namhyung Kim wrote:
-> On Wed, Sep 23, 2020 at 2:44 PM Jiri Olsa <jolsa@redhat.com> wrote:
+On Wed, Sep 23, 2020 at 3:54 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, Sep 23, 2020 at 02:35:16PM +0530, Himadri Pandya wrote:
+> > Potential incorrect use of usb_control_msg() has resulted in new wrapper
+> > functions to enforce its correct usage with proper error check. Hence
+> > use these new wrapper functions instead of calling usb_control_msg()
+> > directly.
 > >
-> > On Tue, Sep 22, 2020 at 11:13:45AM +0800, Wei Li wrote:
-> > > When executing perf stat with armv8_pmu events with a workload, it will
-> > > report a segfault as result.
+> > Signed-off-by: Himadri Pandya <himadrispandya@gmail.com>
+> > ---
+> >  drivers/net/usb/usbnet.c | 46 ++++------------------------------------
+> >  1 file changed, 4 insertions(+), 42 deletions(-)
 > >
-> > please share the perf stat command line you see that segfault for
-> 
-> It seems the description in the patch 0/2 already has it:
-> 
->   [root@localhost hulk]# tools/perf/perf stat  -e
-> armv8_pmuv3_0/ll_cache_rd/,armv8_pmuv3_0/ll_cache_miss_rd/ ls >
-> /dev/null
->   Segmentation fault
-
-yea I found it, but can't reproduce it.. I see the issue from
-patch 2, but not sure what's the problem so far
-
-jirka
-
-> 
-> Thanks
-> Namhyun
-> 
-> 
+> > diff --git a/drivers/net/usb/usbnet.c b/drivers/net/usb/usbnet.c
+> > index 2b2a841cd938..a38a85bef46a 100644
+> > --- a/drivers/net/usb/usbnet.c
+> > +++ b/drivers/net/usb/usbnet.c
+> > @@ -1982,64 +1982,26 @@ EXPORT_SYMBOL(usbnet_link_change);
+> >  static int __usbnet_read_cmd(struct usbnet *dev, u8 cmd, u8 reqtype,
+> >                            u16 value, u16 index, void *data, u16 size)
+> >  {
+> > -     void *buf = NULL;
+> > -     int err = -ENOMEM;
+> > -
+> >       netdev_dbg(dev->net, "usbnet_read_cmd cmd=0x%02x reqtype=%02x"
+> >                  " value=0x%04x index=0x%04x size=%d\n",
+> >                  cmd, reqtype, value, index, size);
 > >
-> > thanks,
-> > jirka
-> >
-> > >
-> > > (gdb) bt
-> > > #0  0x0000000000603fc8 in perf_evsel__close_fd_cpu (evsel=<optimized out>,
-> > >     cpu=<optimized out>) at evsel.c:122
-> > > #1  perf_evsel__close_cpu (evsel=evsel@entry=0x716e950, cpu=7) at evsel.c:156
-> > > #2  0x00000000004d4718 in evlist__close (evlist=0x70a7cb0) at util/evlist.c:1242
-> > > #3  0x0000000000453404 in __run_perf_stat (argc=3, argc@entry=1, argv=0x30,
-> > >     argv@entry=0xfffffaea2f90, run_idx=119, run_idx@entry=1701998435)
-> > >     at builtin-stat.c:929
-> > > #4  0x0000000000455058 in run_perf_stat (run_idx=1701998435, argv=0xfffffaea2f90,
-> > >     argc=1) at builtin-stat.c:947
-> > > #5  cmd_stat (argc=1, argv=0xfffffaea2f90) at builtin-stat.c:2357
-> > > #6  0x00000000004bb888 in run_builtin (p=p@entry=0x9764b8 <commands+288>,
-> > >     argc=argc@entry=4, argv=argv@entry=0xfffffaea2f90) at perf.c:312
-> > > #7  0x00000000004bbb54 in handle_internal_command (argc=argc@entry=4,
-> > >     argv=argv@entry=0xfffffaea2f90) at perf.c:364
-> > > #8  0x0000000000435378 in run_argv (argcp=<synthetic pointer>,
-> > >     argv=<synthetic pointer>) at perf.c:408
-> > > #9  main (argc=4, argv=0xfffffaea2f90) at perf.c:538
-> > >
-> > > After debugging, i found the root reason is that the xyarray fd is created
-> > > by evsel__open_per_thread() ignoring the cpu passed in
-> > > create_perf_stat_counter(), while the evsel' cpumap is assigned as the
-> > > corresponding PMU's cpumap in __add_event(). Thus, the xyarray fd is created
-> > > with ncpus of dummy cpumap and an out of bounds 'cpu' index will be used in
-> > > perf_evsel__close_fd_cpu().
-> > >
-> > > To address this, add a flag to mark this situation and avoid using the
-> > > affinity technique when closing/enabling/disabling events.
-> > >
-> > > Fixes: 7736627b865d ("perf stat: Use affinity for closing file descriptors")
-> > > Fixes: 704e2f5b700d ("perf stat: Use affinity for enabling/disabling events")
-> > > Signed-off-by: Wei Li <liwei391@huawei.com>
-> > > ---
-> 
+> > -     if (size) {
+> > -             buf = kmalloc(size, GFP_KERNEL);
+> > -             if (!buf)
+> > -                     goto out;
+> > -     }
+> > -
+> > -     err = usb_control_msg(dev->udev, usb_rcvctrlpipe(dev->udev, 0),
+> > -                           cmd, reqtype, value, index, buf, size,
+> > +     return usb_control_msg_recv(dev->udev, 0,
+> > +                           cmd, reqtype, value, index, data, size,
+> >                             USB_CTRL_GET_TIMEOUT);
+> > -     if (err > 0 && err <= size) {
+> > -        if (data)
+> > -            memcpy(data, buf, err);
+> > -        else
+> > -            netdev_dbg(dev->net,
+> > -                "Huh? Data requested but thrown away.\n");
+> > -    }
+> > -     kfree(buf);
+> > -out:
+> > -     return err;
+> >  }
+>
+> Now there is no real need for these wrapper functions at all, except for
+> the debugging which I doubt anyone needs anymore.
+>
+> So how about just deleting these and calling the real function instead?
+>
 
+Yes, that would be a better thing to do.
+
+Thanks,
+Himadri
+
+> thanks,
+>
+> greg k-h
