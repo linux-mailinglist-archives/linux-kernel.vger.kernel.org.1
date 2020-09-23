@@ -2,181 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC8D0275909
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:45:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C113C275919
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726715AbgIWNpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 09:45:19 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:40410 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726636AbgIWNpT (ORCPT
+        id S1726662AbgIWNsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 09:48:38 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:42157 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726606AbgIWNsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 09:45:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600868716;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QG/XpftCpbOncz4MqVk/ddxYXgT+Lw6rTWS+CEJwsqw=;
-        b=ReEgkbugASa+6SobL6eqkznxF5lT2rg/URIBOqcw5Ufy3qCvjs4mdsfdfumBeLLohupLhi
-        eKiEH/rFnmofpYhz3XrDAW7KQNDnBQ4d5Au2l9bp+K9pBLtzDdWvkWUQvOWuF3ZSS9FZ8G
-        iE9nqw0ZV8VPt0SiV3rcNKuZ4YFn88M=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-250-KqIyla3VMuqmTLn_sF1zYw-1; Wed, 23 Sep 2020 09:45:13 -0400
-X-MC-Unique: KqIyla3VMuqmTLn_sF1zYw-1
-Received: by mail-wr1-f69.google.com with SMTP id a12so8847659wrg.13
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 06:45:13 -0700 (PDT)
+        Wed, 23 Sep 2020 09:48:38 -0400
+Received: by mail-ot1-f65.google.com with SMTP id m13so14503249otl.9;
+        Wed, 23 Sep 2020 06:48:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QG/XpftCpbOncz4MqVk/ddxYXgT+Lw6rTWS+CEJwsqw=;
-        b=q7tLBEdQgwPk2nGFOAjdACR4/SnkRPvesM+g/HMyIOfgxAB/iX74FP9mWX02G2XYrv
-         MAJPxk3wWQ3Hmw/17TvU53K1T+HEJX+WrCqBJtCb3v7RXT+xTdbWgtfVy7NcalCKfOxY
-         vv5DZOQ2JylOyZBwugd6SHE/F3zHb4Zm3qumqK+b1Dan5vFR7jTY24HFRl0WThIlunT+
-         9fGo9HL0rQURbpjuiu/lqc5DyrNudekcDJkK2wQfxyM75TjhiWzJLhQqNeaYBSPR7xwP
-         bPIMdMmSJZOcdJ8BS0u3hzU5x4/X/WAk2fhutAXquzX17qDsEoaC7LHe9Ng7hzUewW+2
-         bVRw==
-X-Gm-Message-State: AOAM533XJ9PjnXkduip/rWP5DBobCBauu8PMGTREgH82xS8wZUXFewAf
-        eRIkNQnW2bZPcDpf7dNh8X+uXbOUzZsYkvDRH7hqtdx5Tm4ruLzWUAgixAP4RwAmZ68oL1N8tDw
-        QKI0d55RS7DKhDBsb8mlFyCon
-X-Received: by 2002:a5d:4f12:: with SMTP id c18mr894640wru.33.1600868712235;
-        Wed, 23 Sep 2020 06:45:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyb3cleun1Mcb1EtEe3QbBYzLOy6zExpHXgfTHp4hlVL/wCgtWG6/xhTdTSb3C3JjWrxKZ/Hw==
-X-Received: by 2002:a5d:4f12:: with SMTP id c18mr894615wru.33.1600868711914;
-        Wed, 23 Sep 2020 06:45:11 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:15f1:648d:7de6:bad9? ([2001:b07:6468:f312:15f1:648d:7de6:bad9])
-        by smtp.gmail.com with ESMTPSA id 97sm32423184wrm.15.2020.09.23.06.45.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Sep 2020 06:45:10 -0700 (PDT)
-Subject: Re: [PATCH] KVM: x86: VMX: Make smaller physical guest address space
- support user-configurable
-To:     Mohammed Gamal <mgamal@redhat.com>, kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, sean.j.christopherson@intel.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org
-References: <20200903141122.72908-1-mgamal@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <8c7ce8ff-a212-a974-3829-c45eb5335651@redhat.com>
-Date:   Wed, 23 Sep 2020 15:45:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mJSihRXz/gvuMsPkQyFBnZN2lc53j8bv4MakGdcfst4=;
+        b=kjHj9O1XKNlv8TcC0ej6ZzJ6v4fOVvFMyE+C+J8Gn7gLoPIgJJ6J5leuwhg+JYO/9n
+         lXsbEsJpyq2pPToqAjGca18kmB7pdMutlL61VU5mzuR81hRX02/T+Z3C6j9WBCkLEsCY
+         u0cBRN+uJPLfvJ8yPjFIOMZxf3fhJvLC0QUZ3tluTGJ8AB9QqPB35FcogazUmUsMbwX7
+         E+FKjnvRov0CE85/xQ/plEo0rtJaO2gego0WvPR2mnEwripvz32o4apFF7thc5H2laq3
+         0Ehma9pbA0Q7G5H7oUTuh9RoxDjmtEr/yFw1xlt3Tck7sozVpNX6ia3sgPi8doSgmHWp
+         RDcA==
+X-Gm-Message-State: AOAM530BAKc/bIJW0oH8bGTuuYpUJ3y/voTcS/dJb/fQFeVwJE74c5fq
+        nVKImLzZn4NbNauRvjgZzEmd57o8rV3/zpW2Nqk=
+X-Google-Smtp-Source: ABdhPJxqnJ6rTAsG4LPmdV/0Tzgrr9KmZtVMh6uIxv4EEJmW66ziwr76KlgavrDQoaSEuksMvlkfk69zy8bKLRrgHdk=
+X-Received: by 2002:a05:6830:1f16:: with SMTP id u22mr5927129otg.118.1600868915730;
+ Wed, 23 Sep 2020 06:48:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200903141122.72908-1-mgamal@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1600238586.git.viresh.kumar@linaro.org> <31999d801bfb4d8063dc1ceec1234b6b80b4ae68.1600238586.git.viresh.kumar@linaro.org>
+In-Reply-To: <31999d801bfb4d8063dc1ceec1234b6b80b4ae68.1600238586.git.viresh.kumar@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 23 Sep 2020 15:48:24 +0200
+Message-ID: <CAJZ5v0i0aW6jT=DD6ogyfr+bs5LZu7Gn+5A9O_bZxNsnHPojOQ@mail.gmail.com>
+Subject: Re: [PATCH V2 1/4] cpufreq: stats: Defer stats update to cpufreq_stats_record_transition()
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Lukasz Luba <lukasz.luba@arm.com>, cristian.marussi@arm.com,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/09/20 16:11, Mohammed Gamal wrote:
-> This patch exposes allow_smaller_maxphyaddr to the user as a module parameter.
-> 
-> Since smaller physical address spaces are only supported on VMX, the parameter
-> is only exposed in the kvm_intel module.
-> Modifications to VMX page fault and EPT violation handling will depend on whether
-> that parameter is enabled.
-> 
-> Also disable support by default, and let the user decide if they want to enable
-> it.
-> 
-> Signed-off-by: Mohammed Gamal <mgamal@redhat.com>
+On Wed, Sep 16, 2020 at 8:45 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> In order to prepare for lock-less stats update, add support to defer any
+> updates to it until cpufreq_stats_record_transition() is called.
+
+This is a bit devoid of details.
+
+I guess you mean reset in particular, but that's not clear from the above.
+
+Also, it would be useful to describe the design somewhat.
+
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 > ---
->  arch/x86/kvm/vmx/vmx.c | 15 ++++++---------
->  arch/x86/kvm/vmx/vmx.h |  3 +++
->  arch/x86/kvm/x86.c     |  2 +-
->  3 files changed, 10 insertions(+), 10 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 819c185adf09..dc778c7b5a06 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -129,6 +129,9 @@ static bool __read_mostly enable_preemption_timer = 1;
->  module_param_named(preemption_timer, enable_preemption_timer, bool, S_IRUGO);
->  #endif
->  
-> +extern bool __read_mostly allow_smaller_maxphyaddr;
-> +module_param(allow_smaller_maxphyaddr, bool, S_IRUGO | S_IWUSR);
+>  drivers/cpufreq/cpufreq_stats.c | 75 ++++++++++++++++++++++++---------
+>  1 file changed, 56 insertions(+), 19 deletions(-)
+>
+> diff --git a/drivers/cpufreq/cpufreq_stats.c b/drivers/cpufreq/cpufreq_stats.c
+> index 94d959a8e954..3e7eee29ee86 100644
+> --- a/drivers/cpufreq/cpufreq_stats.c
+> +++ b/drivers/cpufreq/cpufreq_stats.c
+> @@ -22,17 +22,22 @@ struct cpufreq_stats {
+>         spinlock_t lock;
+>         unsigned int *freq_table;
+>         unsigned int *trans_table;
 > +
->  #define KVM_VM_CR0_ALWAYS_OFF (X86_CR0_NW | X86_CR0_CD)
->  #define KVM_VM_CR0_ALWAYS_ON_UNRESTRICTED_GUEST X86_CR0_NE
->  #define KVM_VM_CR0_ALWAYS_ON				\
-> @@ -4798,7 +4801,8 @@ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
->  
->  	if (is_page_fault(intr_info)) {
->  		cr2 = vmx_get_exit_qual(vcpu);
-> -		if (enable_ept && !vcpu->arch.apf.host_apf_flags) {
-> +		if (enable_ept && !vcpu->arch.apf.host_apf_flags
-> +			&& allow_smaller_maxphyaddr) {
->  			/*
->  			 * EPT will cause page fault only if we need to
->  			 * detect illegal GPAs.
-> @@ -5331,7 +5335,7 @@ static int handle_ept_violation(struct kvm_vcpu *vcpu)
->  	 * would also use advanced VM-exit information for EPT violations to
->  	 * reconstruct the page fault error code.
->  	 */
-> -	if (unlikely(kvm_mmu_is_illegal_gpa(vcpu, gpa)))
-> +	if (unlikely(kvm_mmu_is_illegal_gpa(vcpu, gpa)) && allow_smaller_maxphyaddr)
->  		return kvm_emulate_instruction(vcpu, 0);
->  
->  	return kvm_mmu_page_fault(vcpu, gpa, error_code, NULL, 0);
-> @@ -8303,13 +8307,6 @@ static int __init vmx_init(void)
->  #endif
->  	vmx_check_vmcs12_offsets();
->  
-> -	/*
-> -	 * Intel processors don't have problems with
-> -	 * GUEST_MAXPHYADDR < HOST_MAXPHYADDR so enable
-> -	 * it for VMX by default
-> -	 */
-> -	allow_smaller_maxphyaddr = true;
-> -
->  	return 0;
->  }
->  module_init(vmx_init);
-> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-> index 26175a4759fa..b859435efa2e 100644
-> --- a/arch/x86/kvm/vmx/vmx.h
-> +++ b/arch/x86/kvm/vmx/vmx.h
-> @@ -551,6 +551,9 @@ static inline bool vmx_has_waitpkg(struct vcpu_vmx *vmx)
->  
->  static inline bool vmx_need_pf_intercept(struct kvm_vcpu *vcpu)
+> +       /* Deferred reset */
+> +       unsigned int reset_pending;
+> +       unsigned long long reset_time;
+>  };
+>
+> -static void cpufreq_stats_update(struct cpufreq_stats *stats)
+> +static void cpufreq_stats_update(struct cpufreq_stats *stats,
+> +                                unsigned long long time)
 >  {
-> +	if (!allow_smaller_maxphyaddr)
-> +		return false;
-> +
->  	return !enable_ept || cpuid_maxphyaddr(vcpu) < boot_cpu_data.x86_phys_bits;
-
-This needs to return true if !enable_ept.
-
-	if (!enable_ept)
-		return true;
-
-	return allow_smaller_maxphyaddr &&
-		 cpuid_maxphyaddr(vcpu) < boot_cpu_data.x86_phys_bits;
-
-Fixed and queued, thanks.
-
-Paolo
-
+>         unsigned long long cur_time = get_jiffies_64();
+>
+> -       stats->time_in_state[stats->last_index] += cur_time - stats->last_time;
+> +       stats->time_in_state[stats->last_index] += cur_time - time;
+>         stats->last_time = cur_time;
 >  }
->  
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index d39d6cf1d473..982f1d73a884 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -188,7 +188,7 @@ static struct kvm_shared_msrs __percpu *shared_msrs;
->  u64 __read_mostly host_efer;
->  EXPORT_SYMBOL_GPL(host_efer);
->  
-> -bool __read_mostly allow_smaller_maxphyaddr;
-> +bool __read_mostly allow_smaller_maxphyaddr = 0;
->  EXPORT_SYMBOL_GPL(allow_smaller_maxphyaddr);
->  
->  static u64 __read_mostly host_xss;
-> 
+>
+> -static void cpufreq_stats_clear_table(struct cpufreq_stats *stats)
+> +static void cpufreq_stats_reset_table(struct cpufreq_stats *stats)
+>  {
+>         unsigned int count = stats->max_state;
+>
+> @@ -41,42 +46,67 @@ static void cpufreq_stats_clear_table(struct cpufreq_stats *stats)
+>         memset(stats->trans_table, 0, count * count * sizeof(int));
+>         stats->last_time = get_jiffies_64();
+>         stats->total_trans = 0;
+> +
+> +       /* Adjust for the time elapsed since reset was requested */
+> +       WRITE_ONCE(stats->reset_pending, 0);
 
+What if this runs in parallel with store_reset()?
+
+The latter may update reset_pending to 1 before the below runs.
+Conversely, this may clear reset_pending right after store_reset() has
+set it to 1, but before it manages to set reset_time.  Is that not a
+problem?
+
+> +       cpufreq_stats_update(stats, stats->reset_time);
+>
+>         spin_unlock(&stats->lock);
+>  }
+>
+>  static ssize_t show_total_trans(struct cpufreq_policy *policy, char *buf)
+>  {
+> -       return sprintf(buf, "%d\n", policy->stats->total_trans);
+> +       struct cpufreq_stats *stats = policy->stats;
+> +
+> +       if (READ_ONCE(stats->reset_pending))
+> +               return sprintf(buf, "%d\n", 0);
+> +       else
+> +               return sprintf(buf, "%d\n", stats->total_trans);
+>  }
+>  cpufreq_freq_attr_ro(total_trans);
+>
+>  static ssize_t show_time_in_state(struct cpufreq_policy *policy, char *buf)
+>  {
+>         struct cpufreq_stats *stats = policy->stats;
+> +       bool pending = READ_ONCE(stats->reset_pending);
+> +       unsigned long long time;
+>         ssize_t len = 0;
+>         int i;
+>
+>         if (policy->fast_switch_enabled)
+>                 return 0;
+>
+> -       spin_lock(&stats->lock);
+> -       cpufreq_stats_update(stats);
+> -       spin_unlock(&stats->lock);
+> -
+>         for (i = 0; i < stats->state_num; i++) {
+> +               if (pending) {
+> +                       if (i == stats->last_index)
+> +                               time = get_jiffies_64() - stats->reset_time;
+
+What if this runs in parallel with store_reset() and reads reset_time
+before the latter manages to update it?
+
+> +                       else
+> +                               time = 0;
+> +               } else {
+> +                       time = stats->time_in_state[i];
+> +                       if (i == stats->last_index)
+> +                               time += get_jiffies_64() - stats->last_time;
+> +               }
+> +
+>                 len += sprintf(buf + len, "%u %llu\n", stats->freq_table[i],
+> -                       (unsigned long long)
+> -                       jiffies_64_to_clock_t(stats->time_in_state[i]));
+> +                              jiffies_64_to_clock_t(time));
+>         }
+>         return len;
+>  }
+>  cpufreq_freq_attr_ro(time_in_state);
+>
+> +/* We don't care what is written to the attribute */
+>  static ssize_t store_reset(struct cpufreq_policy *policy, const char *buf,
+>                            size_t count)
+>  {
+> -       /* We don't care what is written to the attribute. */
+> -       cpufreq_stats_clear_table(policy->stats);
+> +       struct cpufreq_stats *stats = policy->stats;
+> +
+> +       /*
+> +        * Defer resetting of stats to cpufreq_stats_record_transition() to
+> +        * avoid races.
+> +        */
+> +       WRITE_ONCE(stats->reset_pending, 1);
+> +       stats->reset_time = get_jiffies_64();
+
+AFAICS, there is nothing to ensure that reset_time will be updated in
+one go and even to ensure that it won't be partially updated before
+setting reset_pending.
+
+This should at least be addressed in a comment to explain why it is
+not a problem.
+
+> +
+>         return count;
+>  }
+>  cpufreq_freq_attr_wo(reset);
+> @@ -84,8 +114,9 @@ cpufreq_freq_attr_wo(reset);
+>  static ssize_t show_trans_table(struct cpufreq_policy *policy, char *buf)
+>  {
+>         struct cpufreq_stats *stats = policy->stats;
+> +       bool pending = READ_ONCE(stats->reset_pending);
+>         ssize_t len = 0;
+> -       int i, j;
+> +       int i, j, count;
+>
+>         if (policy->fast_switch_enabled)
+>                 return 0;
+> @@ -113,8 +144,13 @@ static ssize_t show_trans_table(struct cpufreq_policy *policy, char *buf)
+>                 for (j = 0; j < stats->state_num; j++) {
+>                         if (len >= PAGE_SIZE)
+>                                 break;
+> -                       len += scnprintf(buf + len, PAGE_SIZE - len, "%9u ",
+> -                                       stats->trans_table[i*stats->max_state+j]);
+> +
+> +                       if (pending)
+> +                               count = 0;
+> +                       else
+> +                               count = stats->trans_table[i * stats->max_state + j];
+> +
+> +                       len += scnprintf(buf + len, PAGE_SIZE - len, "%9u ", count);
+>                 }
+>                 if (len >= PAGE_SIZE)
+>                         break;
+> @@ -228,10 +264,11 @@ void cpufreq_stats_record_transition(struct cpufreq_policy *policy,
+>         struct cpufreq_stats *stats = policy->stats;
+>         int old_index, new_index;
+>
+> -       if (!stats) {
+> -               pr_debug("%s: No stats found\n", __func__);
+> +       if (!stats)
+>                 return;
+> -       }
+> +
+> +       if (READ_ONCE(stats->reset_pending))
+> +               cpufreq_stats_reset_table(stats);
+
+This is a bit confusing, because cpufreq_stats_reset_table() calls
+cpufreq_stats_update() and passes reset_time to it, but it is called
+again below with last_time as the second arg.
+
+It is not particularly clear to me why this needs to be done this way.
+
+>
+>         old_index = stats->last_index;
+>         new_index = freq_table_get_index(stats, new_freq);
+> @@ -241,7 +278,7 @@ void cpufreq_stats_record_transition(struct cpufreq_policy *policy,
+>                 return;
+>
+>         spin_lock(&stats->lock);
+> -       cpufreq_stats_update(stats);
+> +       cpufreq_stats_update(stats, stats->last_time);
+>
+>         stats->last_index = new_index;
+>         stats->trans_table[old_index * stats->max_state + new_index]++;
+> --
+> 2.25.0.rc1.19.g042ed3e048af
+>
