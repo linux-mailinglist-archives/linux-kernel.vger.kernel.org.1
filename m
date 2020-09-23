@@ -2,404 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99EF0275C41
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BD5E275C42
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:44:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726638AbgIWPn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 11:43:58 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:32840 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726265AbgIWPn6 (ORCPT
+        id S1726687AbgIWPoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 11:44:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52733 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726156AbgIWPoZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 11:43:58 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08NFOu2I091440;
-        Wed, 23 Sep 2020 15:43:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=F5lEKgJ45wkWUYmva0Jj2qx+WGncz/TKvT2D/F19+Ow=;
- b=Wz01mJvhHYHiiTASaUSKJ3swf4/EAuUHb1I4tG4FdeYrbVnCjlHqYvRlkp0QyOjpV0Co
- G/dmlfCBrXt66jXS3fanuKWZpKmFrjRQLSOkOYRiZ+m8W9iPD2o8JY1QkwHBzMjK4Iiw
- Xn6tU50C+HmgAb/8g0R1YU3C+1pk+6vLD5BI/mLsuN5m+Re1BwzE53C5H/9GGU4mvg9D
- /mvRKnOer0hEjomZZuX2ljGiyePze9IV0mbO0/DxiEtifVmBrubsfj9EEv3hyt6J5DRH
- kg86gG9ISdGs1SgPm4TOd7AXSEg7A9LbepDdedvzYn4Dj7D8Edm3JkYiAClPTnGAvdq0 vQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 33ndnukbas-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 23 Sep 2020 15:43:48 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08NFQ3dp124475;
-        Wed, 23 Sep 2020 15:43:48 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 33r28vqpts-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 23 Sep 2020 15:43:47 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08NFhldm031465;
-        Wed, 23 Sep 2020 15:43:47 GMT
-Received: from anon-dhcp-152.1015granger.net (/68.61.232.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 23 Sep 2020 08:43:47 -0700
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
-Subject: Re: fs/nfsd/nfs4xdr.c:4683:24: sparse: sparse: incorrect type in
- return expression (different base types)
-From:   Chuck Lever <chuck.lever@oracle.com>
-In-Reply-To: <202009232306.LM4tz9RH%lkp@intel.com>
-Date:   Wed, 23 Sep 2020 11:43:45 -0400
-Cc:     Frank van der Linden <fllinden@amazon.com>,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <ADDB187A-B65D-400D-9FFE-6808863D7903@oracle.com>
-References: <202009232306.LM4tz9RH%lkp@intel.com>
-To:     kernel test robot <lkp@intel.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.1)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9753 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999
- suspectscore=0 adultscore=0 bulkscore=0 malwarescore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009230124
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9753 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- lowpriorityscore=0 phishscore=0 adultscore=0 suspectscore=0 bulkscore=0
- clxscore=1011 impostorscore=0 mlxlogscore=999 mlxscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009230124
+        Wed, 23 Sep 2020 11:44:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600875863;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+DuC7lq68It6bf8N8+4h/Du8Hn8l1j2ilbaVQGr77aw=;
+        b=bsh6usdItJw8SQFaKmDwLJGihXLQe4g5z6tjnRKWtS7grVyd5gR3CTGOchIFaSykVVcq8M
+        BypFP1353U0JmWUnDwVfK7/QGGPBjcGxV1ghXCalOTvHa7sR+HLjpn3zSN9+aEkfxo4v2c
+        5R4/GEMDOdmGHL46Iy0bv7+qEMU05rA=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-64-oTVthZ34O0uao5_-mWg79Q-1; Wed, 23 Sep 2020 11:44:21 -0400
+X-MC-Unique: oTVthZ34O0uao5_-mWg79Q-1
+Received: by mail-qk1-f200.google.com with SMTP id 205so17020092qkd.2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 08:44:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+DuC7lq68It6bf8N8+4h/Du8Hn8l1j2ilbaVQGr77aw=;
+        b=ZL1hcs3i4ut+g9kysynSnWTjSnW9XNdqXZp1PTiz7z80CaIg+9RBvLN6onGRQ6yIiR
+         g8ekbZzdC8jx04bIOEi4AtdndXzlrIFZ+0CUhBH7se50QuMofREQLrTA31/fkkaw4Nut
+         C4/3SgpqupBW5Roq9VOoOgLjtApM1/EMXdk3wS4RarldOfAtr0d5OUPp3pZMywn3bWK2
+         tNZ4eVdB5Jqmrl3HqtnD1PR5zdDKyrzPeckgOJCeObouw7mWYyXOjgdoKdXndIktvg1y
+         82NmJJgI+NkocQOWAWfZDbw+QvPB3QdXOtZ6w8xKmMBGABj3SRYOf3XgA83pfnYk6Po7
+         Wedg==
+X-Gm-Message-State: AOAM5336xmbywP3RqIPYoES+c30PLgJsmV3KtjgIew26h2KOszpkg04X
+        MNamca13ECY1cSTLoJ0yO6H+SAgjPnKaEOv4ulKuLxdCwDFG4p3/KWuup0/goKlpi4eRbh1nmnG
+        Ar9qQ73xZLODlCeeOEbCeMn1Q
+X-Received: by 2002:ac8:5d14:: with SMTP id f20mr704340qtx.104.1600875861204;
+        Wed, 23 Sep 2020 08:44:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwEEQs77/sk/rd1u/Y6BbPbkBwZIyOk8AtTRRxaLQbazk8HtifvBJqlo82hUU4l21aLDgrX2Q==
+X-Received: by 2002:ac8:5d14:: with SMTP id f20mr704299qtx.104.1600875860896;
+        Wed, 23 Sep 2020 08:44:20 -0700 (PDT)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
+        by smtp.gmail.com with ESMTPSA id f64sm199019qkj.124.2020.09.23.08.44.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2020 08:44:20 -0700 (PDT)
+Date:   Wed, 23 Sep 2020 11:44:18 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     John Hubbard <jhubbard@nvidia.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Jann Horn <jannh@google.com>, Oleg Nesterov <oleg@redhat.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Hugh Dickins <hughd@google.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Subject: Re: [PATCH 5/5] mm/thp: Split huge pmds/puds if they're pinned when
+ fork()
+Message-ID: <20200923154418.GE59978@xz-x1>
+References: <20200921211744.24758-1-peterx@redhat.com>
+ <20200921212031.25233-1-peterx@redhat.com>
+ <5e594e71-537f-3e9f-85b6-034b7f5fedbe@nvidia.com>
+ <20200922103315.GD15112@quack2.suse.cz>
+ <4a65586e-9282-beb0-1880-1ef8da03727c@nvidia.com>
+ <20200923092205.GA6719@quack2.suse.cz>
+ <20200923135004.GB59978@xz-x1>
+ <20200923140114.GA15875@quack2.suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200923140114.GA15875@quack2.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 23, 2020 at 04:01:14PM +0200, Jan Kara wrote:
+> On Wed 23-09-20 09:50:04, Peter Xu wrote:
+> > On Wed, Sep 23, 2020 at 11:22:05AM +0200, Jan Kara wrote:
+> > > On Tue 22-09-20 13:01:13, John Hubbard wrote:
+> > > > On 9/22/20 3:33 AM, Jan Kara wrote:
+> > > > > On Mon 21-09-20 23:41:16, John Hubbard wrote:
+> > > > > > On 9/21/20 2:20 PM, Peter Xu wrote:
+> > > > > > ...
+> > > > > > > +	if (unlikely(READ_ONCE(src_mm->has_pinned) &&
+> > > > > > > +		     page_maybe_dma_pinned(src_page))) {
+> > > > > > 
+> > > > > > This condition would make a good static inline function. It's used in 3
+> > > > > > places, and the condition is quite special and worth documenting, and
+> > > > > > having a separate function helps with that, because the function name
+> > > > > > adds to the story. I'd suggest approximately:
+> > > > > > 
+> > > > > >      page_likely_dma_pinned()
+> > > > > > 
+> > > > > > for the name.
+> > > > > 
+> > > > > Well, but we should also capture that this really only works for anonymous
+> > > > > pages. For file pages mm->has_pinned does not work because the page may be
+> > > > > still pinned by completely unrelated process as Jann already properly
+> > > > > pointed out earlier in the thread. So maybe anon_page_likely_pinned()?
+> > > > > Possibly also assert PageAnon(page) in it if we want to be paranoid...
+> > > > > 
+> > > > > 								Honza
+> > > > 
+> > > > The file-backed case doesn't really change anything, though:
+> > > > page_maybe_dma_pinned() is already a "fuzzy yes" in the same sense: you
+> > > > can get a false positive. Just like here, with an mm->has_pinned that
+> > > > could be a false positive for a process.
+> > > > 
+> > > > And for that reason, I'm also not sure an "assert PageAnon(page)" is
+> > > > desirable. That assertion would prevent file-backed callers from being
+> > > > able to call a function that provides a fuzzy answer, but I don't see
+> > > > why you'd want or need to do that. The goal here is to make the fuzzy
+> > > > answer a little bit more definite, but it's not "broken" just because
+> > > > the result is still fuzzy, right?
+> > > > 
+> > > > Apologies if I'm missing a huge point here... :)
+> > > 
+> > > But the problem is that if you apply mm->has_pinned check on file pages,
+> > > you can get false negatives now. And that's not acceptable...
+> > 
+> > Do you mean the case where proc A pinned page P from a file, then proc B
+> > mapped the same page P on the file, then fork() on proc B?
+> 
+> Yes.
+> 
+> > If proc B didn't explicitly pinned page P in B's address space too,
+> > shouldn't we return "false" for page_likely_dma_pinned(P)?  Because if
+> > proc B didn't pin the page in its own address space, I'd think it's ok to
+> > get the page replaced at any time as long as the content keeps the same.
+> > Or couldn't we?
+> 
+> So it depends on the reason why you call page_likely_dma_pinned(). For your
+> COW purposes the check is correct but e.g. for "can filesystem safely
+> writeback this page" the page_likely_dma_pinned() would be wrong. So I'm
+> not objecting to the mechanism as such. I'm mainly objecting to the generic
+> function name which suggests something else than what it really checks and
+> thus it could be used in wrong places in the future... That's why I'd
+> prefer to restrict the function to PageAnon pages where there's no risk of
+> confusion what the check actually does.
 
+How about I introduce the helper as John suggested, but rename it to
 
-> On Sep 23, 2020, at 11:42 AM, kernel test robot <lkp@intel.com> wrote:
->=20
-> tree:   =
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git =
-master
-> head:   805c6d3c19210c90c109107d189744e960eae025
-> commit: 23e50fe3a5e6045a573c69d4b0e3d78aa6183323 nfsd: implement the =
-xattr functions and en/decode logic
-> date:   2 months ago
-> config: m68k-randconfig-s032-20200923 (attached as .config)
-> compiler: m68k-linux-gcc (GCC) 9.3.0
-> reproduce:
->        wget =
-https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross =
--O ~/bin/make.cross
->        chmod +x ~/bin/make.cross
->        # apt-get install sparse
->        # sparse version: v0.6.2-201-g24bdaac6-dirty
->        git checkout 23e50fe3a5e6045a573c69d4b0e3d78aa6183323
->        # save the attached .config to linux build tree
->        COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dgcc-9.3.0 =
-make.cross C=3D1 CF=3D'-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=3Dm68k=
-=20
->=20
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+  page_maybe_dma_pinned_by_mm()
 
-I believe both of these robot reports are addressed by
-patches I have sent to Bruce for v5.10.
+?
 
+Then we also don't need to judge on which is more likely to happen (between
+"maybe" and "likely", since that will confuse me if I only read these words..).
 
-> sparse warnings: (new ones prefixed by >>)
->=20
->   fs/nfsd/nfs4xdr.c:1860:16: sparse: sparse: incorrect type in =
-assignment (different base types) @@     expected int status @@     got =
-restricted __be32 @@
->   fs/nfsd/nfs4xdr.c:1860:16: sparse:     expected int status
->   fs/nfsd/nfs4xdr.c:1860:16: sparse:     got restricted __be32
->   fs/nfsd/nfs4xdr.c:1862:24: sparse: sparse: incorrect type in return =
-expression (different base types) @@     expected restricted __be32 @@   =
-  got int status @@
->   fs/nfsd/nfs4xdr.c:1862:24: sparse:     expected restricted __be32
->   fs/nfsd/nfs4xdr.c:1862:24: sparse:     got int status
->>> fs/nfsd/nfs4xdr.c:4683:24: sparse: sparse: incorrect type in return =
-expression (different base types) @@     expected int @@     got =
-restricted __be32 [usertype] @@
->>> fs/nfsd/nfs4xdr.c:4683:24: sparse:     expected int
->>> fs/nfsd/nfs4xdr.c:4683:24: sparse:     got restricted __be32 =
-[usertype]
->   fs/nfsd/nfs4xdr.c:4693:32: sparse: sparse: incorrect type in return =
-expression (different base types) @@     expected int @@     got =
-restricted __be32 [usertype] @@
->   fs/nfsd/nfs4xdr.c:4693:32: sparse:     expected int
->   fs/nfsd/nfs4xdr.c:4693:32: sparse:     got restricted __be32 =
-[usertype]
->>> fs/nfsd/nfs4xdr.c:4730:13: sparse: sparse: incorrect type in =
-assignment (different base types) @@     expected restricted __be32 =
-[usertype] err @@     got int @@
->>> fs/nfsd/nfs4xdr.c:4730:13: sparse:     expected restricted __be32 =
-[usertype] err
->>> fs/nfsd/nfs4xdr.c:4730:13: sparse:     got int
->>> fs/nfsd/nfs4xdr.c:4882:15: sparse: sparse: incorrect type in =
-assignment (different base types) @@     expected unsigned int =
-[assigned] [usertype] count @@     got restricted __be32 [usertype] @@
->>> fs/nfsd/nfs4xdr.c:4882:15: sparse:     expected unsigned int =
-[assigned] [usertype] count
->   fs/nfsd/nfs4xdr.c:4882:15: sparse:     got restricted __be32 =
-[usertype]
->=20
-> # =
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/=
-?id=3D23e50fe3a5e6045a573c69d4b0e3d78aa6183323
-> git remote add linus =
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> git fetch --no-tags linus master
-> git checkout 23e50fe3a5e6045a573c69d4b0e3d78aa6183323
-> vim +4683 fs/nfsd/nfs4xdr.c
->=20
->  4669=09
->  4670	/*
->  4671	 * Encode kmalloc-ed buffer in to XDR stream.
->  4672	 */
->  4673	static int
->  4674	nfsd4_vbuf_to_stream(struct xdr_stream *xdr, char *buf, u32 =
-buflen)
->  4675	{
->  4676		u32 cplen;
->  4677		__be32 *p;
->  4678=09
->  4679		cplen =3D min_t(unsigned long, buflen,
->  4680			      ((void *)xdr->end - (void *)xdr->p));
->  4681		p =3D xdr_reserve_space(xdr, cplen);
->  4682		if (!p)
->> 4683			return nfserr_resource;
->  4684=09
->  4685		memcpy(p, buf, cplen);
->  4686		buf +=3D cplen;
->  4687		buflen -=3D cplen;
->  4688=09
->  4689		while (buflen) {
->  4690			cplen =3D min_t(u32, buflen, PAGE_SIZE);
->  4691			p =3D xdr_reserve_space(xdr, cplen);
->  4692			if (!p)
->  4693				return nfserr_resource;
->  4694=09
->  4695			memcpy(p, buf, cplen);
->  4696=09
->  4697			if (cplen < PAGE_SIZE) {
->  4698				/*
->  4699				 * We're done, with a length that wasn't =
-page
->  4700				 * aligned, so possibly not word =
-aligned. Pad
->  4701				 * any trailing bytes with 0.
->  4702				 */
->  4703				xdr_encode_opaque_fixed(p, NULL, cplen);
->  4704				break;
->  4705			}
->  4706=09
->  4707			buflen -=3D PAGE_SIZE;
->  4708			buf +=3D PAGE_SIZE;
->  4709		}
->  4710=09
->  4711		return 0;
->  4712	}
->  4713=09
->  4714	static __be32
->  4715	nfsd4_encode_getxattr(struct nfsd4_compoundres *resp, __be32 =
-nfserr,
->  4716			      struct nfsd4_getxattr *getxattr)
->  4717	{
->  4718		struct xdr_stream *xdr =3D &resp->xdr;
->  4719		__be32 *p, err;
->  4720=09
->  4721		p =3D xdr_reserve_space(xdr, 4);
->  4722		if (!p)
->  4723			return nfserr_resource;
->  4724=09
->  4725		*p =3D cpu_to_be32(getxattr->getxa_len);
->  4726=09
->  4727		if (getxattr->getxa_len =3D=3D 0)
->  4728			return 0;
->  4729=09
->> 4730		err =3D nfsd4_vbuf_to_stream(xdr, getxattr->getxa_buf,
->  4731					    getxattr->getxa_len);
->  4732=09
->  4733		kvfree(getxattr->getxa_buf);
->  4734=09
->  4735		return err;
->  4736	}
->  4737=09
->  4738	static __be32
->  4739	nfsd4_encode_setxattr(struct nfsd4_compoundres *resp, __be32 =
-nfserr,
->  4740			      struct nfsd4_setxattr *setxattr)
->  4741	{
->  4742		struct xdr_stream *xdr =3D &resp->xdr;
->  4743		__be32 *p;
->  4744=09
->  4745		p =3D xdr_reserve_space(xdr, 20);
->  4746		if (!p)
->  4747			return nfserr_resource;
->  4748=09
->  4749		encode_cinfo(p, &setxattr->setxa_cinfo);
->  4750=09
->  4751		return 0;
->  4752	}
->  4753=09
->  4754	/*
->  4755	 * See if there are cookie values that can be rejected outright.
->  4756	 */
->  4757	static __be32
->  4758	nfsd4_listxattr_validate_cookie(struct nfsd4_listxattrs =
-*listxattrs,
->  4759					u32 *offsetp)
->  4760	{
->  4761		u64 cookie =3D listxattrs->lsxa_cookie;
->  4762=09
->  4763		/*
->  4764		 * If the cookie is larger than the maximum number we =
-can fit
->  4765		 * in either the buffer we just got back from =
-vfs_listxattr, or,
->  4766		 * XDR-encoded, in the return buffer, it's invalid.
->  4767		 */
->  4768		if (cookie > (listxattrs->lsxa_len) / =
-(XATTR_USER_PREFIX_LEN + 2))
->  4769			return nfserr_badcookie;
->  4770=09
->  4771		if (cookie > (listxattrs->lsxa_maxcount /
->  4772			      (XDR_QUADLEN(XATTR_USER_PREFIX_LEN + 2) + =
-4)))
->  4773			return nfserr_badcookie;
->  4774=09
->  4775		*offsetp =3D (u32)cookie;
->  4776		return 0;
->  4777	}
->  4778=09
->  4779	static __be32
->  4780	nfsd4_encode_listxattrs(struct nfsd4_compoundres *resp, __be32 =
-nfserr,
->  4781				struct nfsd4_listxattrs *listxattrs)
->  4782	{
->  4783		struct xdr_stream *xdr =3D &resp->xdr;
->  4784		u32 cookie_offset, count_offset, eof;
->  4785		u32 left, xdrleft, slen, count;
->  4786		u32 xdrlen, offset;
->  4787		u64 cookie;
->  4788		char *sp;
->  4789		__be32 status;
->  4790		__be32 *p;
->  4791		u32 nuser;
->  4792=09
->  4793		eof =3D 1;
->  4794=09
->  4795		status =3D nfsd4_listxattr_validate_cookie(listxattrs, =
-&offset);
->  4796		if (status)
->  4797			goto out;
->  4798=09
->  4799		/*
->  4800		 * Reserve space for the cookie and the name array =
-count. Record
->  4801		 * the offsets to save them later.
->  4802		 */
->  4803		cookie_offset =3D xdr->buf->len;
->  4804		count_offset =3D cookie_offset + 8;
->  4805		p =3D xdr_reserve_space(xdr, 12);
->  4806		if (!p) {
->  4807			status =3D nfserr_resource;
->  4808			goto out;
->  4809		}
->  4810=09
->  4811		count =3D 0;
->  4812		left =3D listxattrs->lsxa_len;
->  4813		sp =3D listxattrs->lsxa_buf;
->  4814		nuser =3D 0;
->  4815=09
->  4816		xdrleft =3D listxattrs->lsxa_maxcount;
->  4817=09
->  4818		while (left > 0 && xdrleft > 0) {
->  4819			slen =3D strlen(sp);
->  4820=09
->  4821			/*
->  4822			 * Check if this a user. attribute, skip it if =
-not.
->  4823			 */
->  4824			if (strncmp(sp, XATTR_USER_PREFIX, =
-XATTR_USER_PREFIX_LEN))
->  4825				goto contloop;
->  4826=09
->  4827			slen -=3D XATTR_USER_PREFIX_LEN;
->  4828			xdrlen =3D 4 + ((slen + 3) & ~3);
->  4829			if (xdrlen > xdrleft) {
->  4830				if (count =3D=3D 0) {
->  4831					/*
->  4832					 * Can't even fit the first =
-attribute name.
->  4833					 */
->  4834					status =3D nfserr_toosmall;
->  4835					goto out;
->  4836				}
->  4837				eof =3D 0;
->  4838				goto wreof;
->  4839			}
->  4840=09
->  4841			left -=3D XATTR_USER_PREFIX_LEN;
->  4842			sp +=3D XATTR_USER_PREFIX_LEN;
->  4843			if (nuser++ < offset)
->  4844				goto contloop;
->  4845=09
->  4846=09
->  4847			p =3D xdr_reserve_space(xdr, xdrlen);
->  4848			if (!p) {
->  4849				status =3D nfserr_resource;
->  4850				goto out;
->  4851			}
->  4852=09
->  4853			p =3D xdr_encode_opaque(p, sp, slen);
->  4854=09
->  4855			xdrleft -=3D xdrlen;
->  4856			count++;
->  4857	contloop:
->  4858			sp +=3D slen + 1;
->  4859			left -=3D slen + 1;
->  4860		}
->  4861=09
->  4862		/*
->  4863		 * If there were user attributes to copy, but we didn't =
-copy
->  4864		 * any, the offset was too large (e.g. the cookie was =
-invalid).
->  4865		 */
->  4866		if (nuser > 0 && count =3D=3D 0) {
->  4867			status =3D nfserr_badcookie;
->  4868			goto out;
->  4869		}
->  4870=09
->  4871	wreof:
->  4872		p =3D xdr_reserve_space(xdr, 4);
->  4873		if (!p) {
->  4874			status =3D nfserr_resource;
->  4875			goto out;
->  4876		}
->  4877		*p =3D cpu_to_be32(eof);
->  4878=09
->  4879		cookie =3D offset + count;
->  4880=09
->  4881		write_bytes_to_xdr_buf(xdr->buf, cookie_offset, &cookie, =
-8);
->> 4882		count =3D htonl(count);
->  4883		write_bytes_to_xdr_buf(xdr->buf, count_offset, &count, =
-4);
->  4884	out:
->  4885		if (listxattrs->lsxa_len)
->  4886			kvfree(listxattrs->lsxa_buf);
->  4887		return status;
->  4888	}
->  4889=09
->=20
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> <.config.gz>
+I didn't use any extra suffix like "cow" because I think it might be useful for
+things besides cow.  Fundamentally the new helper will be mm-based, so "by_mm"
+seems to suite better to me.
 
---
-Chuck Lever
+Does that sound ok?
 
-
+-- 
+Peter Xu
 
