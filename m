@@ -2,92 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B386B275CB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22427275CBA
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:04:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726796AbgIWQDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 12:03:33 -0400
-Received: from mail-il1-f194.google.com ([209.85.166.194]:41526 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726761AbgIWQDb (ORCPT
+        id S1726788AbgIWQEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 12:04:30 -0400
+Received: from mail.efficios.com ([167.114.26.124]:35626 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726332AbgIWQE3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 12:03:31 -0400
-Received: by mail-il1-f194.google.com with SMTP id f82so87460ilh.8;
-        Wed, 23 Sep 2020 09:03:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=f7oNf2n/2S4LdD+hJ5wvJbkdup7gyW0tYobtVU4/lCo=;
-        b=LJxua3tbHd2IGS7253Qjbw6lZg6qeXG1jQn/HsZinU323Ehay5oRodKmTGClYHstgl
-         lEuIXhDet/nt4yQjx4fd4QGoElccOnJ7DXI2w/IJwXrAwDkrhNuMZGY9OKIMuqxtKjS2
-         rc9eX4STQkTYRceH4zTR+Yr1ddzNu6pnIadQcTCGbLma1vmXR2dRIZzxkLjCOEVaOGgo
-         LdXkd9UpBQXCZg5nxS/0u3ybqrNAeMZ9oxTFhkY7F8jlxuKLaNMj17LT1D23xb0hdFGI
-         DSwwohR52Ubp0XEJwAYplruwZc8C9srqRg+TWk0xk1P0Th7wzpqM9wYfQtvFT0ktx8iq
-         BUyA==
-X-Gm-Message-State: AOAM532hLT+wTZhwgfso4u4dmfww7avgJ4aCSQr5aPmByL+cCzNuRZVK
-        gLLsa/EvjrYcHJCqiiogVw==
-X-Google-Smtp-Source: ABdhPJx8Jk2Cu+4knjIJI93h2RDm8Bp12YNWlPvaSS83rCXADkAPJBrKwucmpTFhKApUGVNahPjd0A==
-X-Received: by 2002:a92:bb57:: with SMTP id w84mr421072ili.41.1600877010279;
-        Wed, 23 Sep 2020 09:03:30 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id v24sm129353ioh.21.2020.09.23.09.03.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 09:03:29 -0700 (PDT)
-Received: (nullmailer pid 836373 invoked by uid 1000);
-        Wed, 23 Sep 2020 16:03:28 -0000
-Date:   Wed, 23 Sep 2020 10:03:28 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     rui.zhang@intel.com, daniel.lezcano@linaro.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, lukasz.luba@arm.com,
-        amitk@kernel.org
-Subject: Re: [PATCH RFC 1/8] dt-bindings: thermal: Introduce monitor-falling
- parameter to thermal trip point binding
-Message-ID: <20200923160328.GA833754@bogus>
-References: <20200917032226.820371-1-thara.gopinath@linaro.org>
- <20200917032226.820371-2-thara.gopinath@linaro.org>
+        Wed, 23 Sep 2020 12:04:29 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id EEAFA2CB55D;
+        Wed, 23 Sep 2020 12:04:27 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 8lXWDWbGLAAe; Wed, 23 Sep 2020 12:04:27 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 9287D2CBBAB;
+        Wed, 23 Sep 2020 12:04:27 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 9287D2CBBAB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1600877067;
+        bh=ilJP4P+b5zd06K+09mhQTiXAXrwBtZ+Qj36UF8Qgz7U=;
+        h=To:From:Message-ID:Date:MIME-Version;
+        b=mvlAVO287lXGhlqxOYNMvbiTMRkZpQRx3P6vvlaMOlXRnLBNS6qT+NVGjDqgjAbOw
+         Y/qxt5WhuhX5+21U/W/Esf+uvBoYrl/QIaBhIfAhmFHdcCu4ZsFfpdhd6PK2iHc2ov
+         /5HVa9Y2tA4EHUMagYSeq/XusPO3jk2KYjjQqgQphSaqBSbujSror1hSDtshLdJ+os
+         xvJwm1zxFyWdWQOfbsjrejrnGE73Ukphp+/3JwTiQcKV9Tz4pJKpfV6jfyJcF4KY2q
+         qj8tsJF25EjUF0pxzzrdobBNovEeOWvdH1F3Jwzr8pegQJkyw5V8IL3vS+TMTiB1/u
+         cXRCk7v9Zz/lA==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id hiXAN2-NHCbA; Wed, 23 Sep 2020 12:04:27 -0400 (EDT)
+Received: from [10.10.0.55] (96-127-212-112.qc.cable.ebox.net [96.127.212.112])
+        by mail.efficios.com (Postfix) with ESMTPSA id 669042CB676;
+        Wed, 23 Sep 2020 12:04:27 -0400 (EDT)
+Subject: Re: [RFC PATCH v2 0/3] l3mdev icmp error route lookup fixes
+To:     David Ahern <dsahern@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     David <davem@davemloft.net>, netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20200918181801.2571-1-mathieu.desnoyers@efficios.com>
+ <390b230b-629b-7f96-e7c9-b28f8b592102@gmail.com>
+ <1453768496.36855.1600713879236.JavaMail.zimbra@efficios.com>
+ <dd1caf15-2ef0-f557-b9a8-26c46739f20b@gmail.com>
+ <1383129694.37216.1600716821449.JavaMail.zimbra@efficios.com>
+ <1135414696.37989.1600782730509.JavaMail.zimbra@efficios.com>
+ <4456259a-979a-7821-ef3d-aed5d330ed2b@gmail.com>
+From:   Michael Jeanson <mjeanson@efficios.com>
+Message-ID: <730d8a09-7d3b-1033-4131-520dc42e8855@efficios.com>
+Date:   Wed, 23 Sep 2020 12:04:27 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917032226.820371-2-thara.gopinath@linaro.org>
+In-Reply-To: <4456259a-979a-7821-ef3d-aed5d330ed2b@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 11:22:19PM -0400, Thara Gopinath wrote:
-> Introduce a new binding parameter to thermal trip point description
-> to indicate whether the temperature level specified by the trip point
-> is monitored for a rise or fall in temperature.
+On 2020-09-22 21 h 59, David Ahern wrote:
+> On 9/22/20 7:52 AM, Michael Jeanson wrote:
+>>>>
+>>>> the test setup is bad. You have r1 dropping the MTU in VRF red, but not
+>>>> telling VRF red how to send back the ICMP. e.g., for IPv4 add:
+>>>>
+>>>>     ip -netns r1 ro add vrf red 172.16.1.0/24 dev blue
+>>>>
+>>>> do the same for v6.
+>>>>
+>>>> Also, I do not see a reason for r2; I suggest dropping it. What you are
+>>>> testing is icmp crossing VRF with route leaking, so there should not be
+>>>> a need for r2 which leads to asymmetrical routing (172.16.1.0 via r1 and
+>>>> the return via r2).
+>>
+>> The objective of the test was to replicate a clients environment where
+>> packets are crossing from a VRF which has a route back to the source to
+>> one which doesn't while reaching a ttl of 0. If the route lookup for the
+>> icmp error is done on the interface in the first VRF, it can be routed to
+>> the source but not on the interface in the second VRF which is the
+>> current behaviour for icmp errors generated while crossing between VRFs.
+>>
+>> There may be a better test case that doesn't involve asymmetric routing
+>> to test this but it's the only way I found to replicate this.
+>>
 > 
-> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
-> ---
->  .../devicetree/bindings/thermal/thermal-zones.yaml         | 7 +++++++
->  1 file changed, 7 insertions(+)
+> It should work without asymmetric routing; adding the return route to
+> the second vrf as I mentioned above fixes the FRAG_NEEDED problem. It
+> should work for TTL as well.
 > 
-> diff --git a/Documentation/devicetree/bindings/thermal/thermal-zones.yaml b/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
-> index 3ec9cc87ec50..cc1332ad6c16 100644
-> --- a/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
-> +++ b/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
-> @@ -161,6 +161,13 @@ patternProperties:
->                    The active trip type can be used to control other HW to
->                    help in cooling e.g. fans can be sped up or slowed down
->  
-> +              monitor-falling:
-> +                description: |
-> +                  boolean, If true, the trip point is being monitored for
-> +                  falling temperature. If false/absent/default, the trip
-> +                  point is being monitored for rising temperature.
-> +                type: boolean
+> Adding a second pass on the tests with the return through r2 is fine,
+> but add a first pass for the more typical case.
 
-What if you wanted to monitor for both?
+Hi,
 
-> +
->              required:
->                - temperature
->                - hysteresis
-> -- 
-> 2.25.1
-> 
+Before writing new tests I just want to make sure we are trying to fix 
+the same issue. If I add a return route to the red VRF then we don't
+need this patchset because whether the ICMP error are routed using the
+table from the source or destination interface they will reach the 
+source host.
+
+The issue for which this patchset was sent only happens when the 
+destination interface's VRF doesn't have a route back to the source 
+host. I guess we might question if this is actually a bug or not.
+
+So the question really is, when a packet is forwarded between VRFs 
+through route leaking and an icmp error is generated, which table should 
+be used for the route lookup? And does it depend on the type of icmp 
+error? (e.g. TTL=1 happens before forwarding, but fragmentation needed 
+happens after when on the destination interface)
+
+Cheers,
+
+Michael
+
