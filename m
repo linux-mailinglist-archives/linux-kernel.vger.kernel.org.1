@@ -2,140 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A870D275702
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 13:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04A22275704
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 13:18:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726584AbgIWLSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 07:18:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60442 "EHLO
+        id S1726620AbgIWLSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 07:18:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726332AbgIWLSR (ORCPT
+        with ESMTP id S1726332AbgIWLSi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 07:18:17 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15794C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 04:18:17 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id t10so20599988wrv.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 04:18:17 -0700 (PDT)
+        Wed, 23 Sep 2020 07:18:38 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54FE4C0613CE;
+        Wed, 23 Sep 2020 04:18:38 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id f2so14192056pgd.3;
+        Wed, 23 Sep 2020 04:18:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=foundries-io.20150623.gappssmtp.com; s=20150623;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=gGpFJSDKd0sKkvjB0V32Qzv/0Jq660H9TWfFOaRXVLo=;
-        b=VxaUUByBrSJ78lo2nBLkBKzIXVK36/TG5bTJeA88Lk/8FBQXqy7B8maVIeXR8XoQmt
-         93GpqIzOFOdP7iowRTw2PyxvJEz6wXx2QKhPSIaeDf89bHa+d/44fQPZxkAEgd+ZNomY
-         szqlrp2qEXSkD+LQ6KrEODgiMfvO50SejMRuoWbMxPeckh+Xxoxt7aINOGcjMU/dPkJt
-         fHEsspdWuuNPhPxcYXFnEOw4QYP4x0odSwVuJF+L1g2dVgNeeYMBhcT7ehyjxfh4yQUA
-         96q0OFN8HAKhnaMNvGt69AvwaiZk/0w5TbQcp0jpV0cy7PR5rd+wKOe78fINDlZxu+0z
-         jaKw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=7WNGKPx7P80fSH8HCUI8e1FELBKekz/aYKgxcKHN5ds=;
+        b=fLswLrk+e7QN82DV+NF1kTEJSNPNUN/srUAt5gMWtLZMkHrb4UbLKgx4r3IkHbPpN/
+         1iMmRXtqrj7Xefvf6Pjk14wawK4M9if8nUOG8IRRS2C0eLm4nE2b2EmegCRq/1MsZClp
+         p/KmYzVy0a+ZIgo7dY4U7vS5ezZsutdJybqqamuB+AXbYyvo9+1CjtOJ2BDKM8kTdAJf
+         MtTH6FzgEBz2bFoqrDCeDSixXloPviCZlgTug14Fq88EeQA5QW3BfMdtnD7NBPUKhjDA
+         iklYpeP23Dbz37yYpHefzBIMzDhOnwd8tAmdb5Ez4b9kNuEtvkL3Lwuy+4iMKiQsIQnA
+         ySgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=gGpFJSDKd0sKkvjB0V32Qzv/0Jq660H9TWfFOaRXVLo=;
-        b=JphBZMi1TZNVXJ/m4tPeWiLa74+/4vEr9F4ybNup7xGKgrDd8e+1zoEz9kY/tc6DVr
-         uGjjir2q1Tp+9pOyroSZNZmvMKF5x8hcVanf4YQzrzwYPvsQfSc41z3eZFaoKt6QiFaM
-         Prz1ctLd9yqLle8uZUzxDb7Jk32NBk3UEcVuS4jN/GPpxmVo3f9aK9JF8H3qBC1JLvZ/
-         jqzxDAQuedXcba9IGJB0O6T849oOGahTNMg2O1xSH4euFFxoCXs7+Kq5nHKRiRIHloPB
-         0cR7PmUeGTnRliGWDEc7kvXpurfARbaC872Y/ZRtUkTbK+QFZX2LSd7ti2u74bn445dX
-         0Ciw==
-X-Gm-Message-State: AOAM532qtSw38LUXgiX4GP9/6MMFlklyAR3NeaqXI5M6i7qyPeMgWpXX
-        rdIWQsjf74qIjy5oCDdym0RBHA==
-X-Google-Smtp-Source: ABdhPJwfrVsjr6nvnQP0PxQ3NoAVMh3uEDHEItvjMksx4vxDZX7rFHYB+hPcLO/OMAjJYo5hcU+NMg==
-X-Received: by 2002:a5d:4c52:: with SMTP id n18mr229713wrt.267.1600859895648;
-        Wed, 23 Sep 2020 04:18:15 -0700 (PDT)
-Received: from trex (75.red-81-34-51.dynamicip.rima-tde.net. [81.34.51.75])
-        by smtp.gmail.com with ESMTPSA id 18sm7563660wmj.28.2020.09.23.04.18.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 23 Sep 2020 04:18:15 -0700 (PDT)
-From:   "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
-X-Google-Original-From: "Jorge Ramirez-Ortiz, Foundries" <JorgeRamirez-Ortiz>
-Date:   Wed, 23 Sep 2020 13:18:13 +0200
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     Jorge Ramirez-Ortiz <jorge@foundries.io>, sumit.garg@linaro.org,
-        ricardo@foundries.io, mike@foundries.io, tee-dev@lists.linaro.org,
-        linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org
-Subject: Re: [PATCH] drivers: optee: i2c: add bus retry configuration
-Message-ID: <20200923111813.GA30271@trex>
-References: <20200916152732.23604-1-jorge@foundries.io>
- <20200922163859.GA1518183@jade>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922163859.GA1518183@jade>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=7WNGKPx7P80fSH8HCUI8e1FELBKekz/aYKgxcKHN5ds=;
+        b=tgf9ywQOI5wMxyVErvw1+mv8iY6UyNGAzYzqNKbIF1Zou0dbmwUc5bn3M38AHSMLbb
+         cwMUeP2d3PX9xCbL2BxUQ1LxZRXwUxIaksuXsGW4385SIPs50EE0bzHBhFPpTpuFZPQE
+         Vni6cq8eooKY81VZEGThI669vcQepE8N8Yq4i77xLYm7b80oKMToUgPajyUMyTkHDPi5
+         F4JL3djt+v3WkZLyYu97p5gc4QPPlK0VNmYysbH2g4j+BFf0efrECz1+oalh5KHjBmub
+         Kwe7bOx5q/W/MtlXeiSmqXoFvgCACarYaAsmEKQorVHo90o+5c7+ACTeSvJYM57+MDy0
+         8UVw==
+X-Gm-Message-State: AOAM532Jo+c+R9sGR04+pr+GOroFX8RS3S0IGd7krjpOJr7N6dGZUwB1
+        2jArJzHaY3LPS/FbUTBRrto=
+X-Google-Smtp-Source: ABdhPJwJ3sGbKfNfOeDqNYze2sgU8ZtcXt+CyLHpXNk8j1WSvxzSE/U9SkUgM3Bo2HbUrGN6JQ7EsQ==
+X-Received: by 2002:a63:547:: with SMTP id 68mr4498525pgf.177.1600859917914;
+        Wed, 23 Sep 2020 04:18:37 -0700 (PDT)
+Received: from localhost.localdomain ([117.19.194.39])
+        by smtp.gmail.com with ESMTPSA id 25sm17549693pfj.35.2020.09.23.04.18.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 23 Sep 2020 04:18:37 -0700 (PDT)
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+To:     sre@kernel.org, matthias.bgg@gmail.com, robh+dt@kernel.org
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Gene Chen <gene_chen@richtek.com>
+Subject: [PATCH 1/2] dt-bindings: power: Add bindings document for Charger support on MT6360 PMIC
+Date:   Wed, 23 Sep 2020 19:18:29 +0800
+Message-Id: <1600859910-15855-1-git-send-email-gene.chen.richtek@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/09/20, Jens Wiklander wrote:
-> On Wed, Sep 16, 2020 at 05:27:32PM +0200, Jorge Ramirez-Ortiz wrote:
-> > Allow OP-TEE to specify the number of retries in the adaptor.
-> > 
-> > Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
-> > ---
-> >  drivers/tee/optee/rpc.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> > 
-> > diff --git a/drivers/tee/optee/rpc.c b/drivers/tee/optee/rpc.c
-> > index 1e3614e4798f..2d46a9ecb1de 100644
-> > --- a/drivers/tee/optee/rpc.c
-> > +++ b/drivers/tee/optee/rpc.c
-> > @@ -58,6 +58,7 @@ static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
-> >  	struct tee_param *params;
-> >  	size_t i;
-> >  	int ret = -EOPNOTSUPP;
-> > +	int retries = 0;
-> >  	u8 attr[] = {
-> >  		TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT,
-> >  		TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT,
-> > @@ -102,12 +103,17 @@ static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
-> >  	client.addr = params[0].u.value.c;
-> >  	snprintf(client.name, I2C_NAME_SIZE, "i2c%d", client.adapter->nr);
-> >  
-> > +	/* cache the current value */
-> > +	retries = client.adapter->retries;
-> > +
-> >  	switch (params[0].u.value.a) {
-> >  	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_RD:
-> > +		client.adapter->retries = params[1].u.value.b;
-> Do we need to take any locks befor this?
+From: Gene Chen <gene_chen@richtek.com>
 
-no I dont think so: there is no need for bus locks when requesting a
-transfer via i2c_master_recv/send; the lock for the bus segment gets
-taken later on, when the actual transfer hppens ( __i2c_transfer())
+Add bindings document for Charger support on MT6360 PMIC
 
-the functionality implemented in this function pretty much mimicks
-what is done in the normal world via /dev/i2c-X
-(drivers/i2c/i2c_dev.c)
+Signed-off-by: Gene Chen <gene_chen@richtek.com>
+---
+ .../bindings/power/supply/mt6360_charger.yaml      | 44 ++++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/power/supply/mt6360_charger.yaml
 
- - i2cdev_read --> i2c_master_send
- - i2cdev->write -->i2c_master_recv
+diff --git a/Documentation/devicetree/bindings/power/supply/mt6360_charger.yaml b/Documentation/devicetree/bindings/power/supply/mt6360_charger.yaml
+new file mode 100644
+index 0000000..711fc19
+--- /dev/null
++++ b/Documentation/devicetree/bindings/power/supply/mt6360_charger.yaml
+@@ -0,0 +1,44 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/power/supply/mt6360_charger.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Battery charger driver for MT6360 PMIC from MediaTek Integrated.
++
++maintainers:
++  - Gene Chen <gene_chen@richtek.com>
++
++description: |
++  This module is part of the MT6360 MFD device.
++  Provides Battery Charger, Boost for OTG devices and BC1.2 detection.
++
++properties:
++  compatible:
++    const: mediatek,mt6360-chg
++
++  vinovp:
++    description:
++      Maximum CHGIN regulation voltage.
++
++  usb-otg-vbus:
++      $ref: /schemas/regulator/regulator.yaml#
++
++required:
++  - compatible
++
++additionalProperties: false
++
++examples:
++  - |
++    mt6360_chg: chg {
++      compatible = "mediatek,mt6360-chg";
++      vinovp = <14500000>;
++      otg_vbus: usb-otg-vbus {
++        regulator-compatible = "usb-otg-vbus";
++        regulator-name = "usb-otg-vbus";
++        regulator-min-microvolt = <4425000>;
++        regulator-max-microvolt = <5825000>;
++      };
++    };
++...
+-- 
+2.7.4
 
-and now the retry count setup on the adaptor with this commit.
-
- - i2cdev_ioctl I2C_RETRIES
-
-> 
-> Cheers,
-> Jens
-> 
-> >  		ret = i2c_master_recv(&client, params[2].u.memref.shm->kaddr,
-> >  				      params[2].u.memref.size);
-> >  		break;
-> >  	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_WR:
-> > +		client.adapter->retries = params[1].u.value.b;
-> >  		ret = i2c_master_send(&client, params[2].u.memref.shm->kaddr,
-> >  				      params[2].u.memref.size);
-> >  		break;
-> > @@ -126,6 +132,7 @@ static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
-> >  			arg->ret = TEEC_SUCCESS;
-> >  	}
-> >  
-> > +	client.adapter->retries = retries;
-> >  	i2c_put_adapter(client.adapter);
-> >  	kfree(params);
-> >  	return;
-> > -- 
-> > 2.17.1
-> > 
