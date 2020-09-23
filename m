@@ -2,142 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B000275924
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8B01275925
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:51:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726689AbgIWNvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 09:51:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726582AbgIWNvP (ORCPT
+        id S1726630AbgIWNvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 09:51:35 -0400
+Received: from sonic301-8.consmr.mail.bf2.yahoo.com ([74.6.129.47]:42607 "EHLO
+        sonic301-8.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726526AbgIWNve (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 09:51:15 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56311C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 06:51:15 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id e2so135222wme.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 06:51:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=foundries-io.20150623.gappssmtp.com; s=20150623;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=VoQqDm7gDg88X7x8Kh2tv3F5Q5Cs+LznuqfdOcS3c0s=;
-        b=sSwDx35Pb1ruz1c+JThcEU+PkU9kI3nDb0WLrjLb/aakp2OA/aXLHOQIvxHtLeb06K
-         6ijlBgtTPgDZFG0h7YrV73vsO4oM7I1ajGTrcbUlVpqsaBjTpLaXCKcMJef8NsHtGrVF
-         fx1uuJz+CHuD6Hi5Pl5bWxkITMN4vsicUK5PyT0xCv0fIbvSXgvB5N/RGzZJUxP/Iixr
-         tzZmT9ny52z9gmOyRS6nzXJKrYptiTwjktvV8irke7N+boruC0igodHSUZen5jHoUGnV
-         Cb+iSq3TJQ0aLeUDUN2xDV9U6u2Xf2t6xhIryHFouEY85hTOe1fNnppXTqw7TlJjsylV
-         KxtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VoQqDm7gDg88X7x8Kh2tv3F5Q5Cs+LznuqfdOcS3c0s=;
-        b=ALMoFErMt1rukSe5Esomkb2MerLP+B5S0iEwSI2KfGdIBQUUq0Kb0sZfisyg6VG4ld
-         /PM3iv9Yw0/cxTWOsVev4k8qFvDF008OsaOejzfvDXcZ0jAJD6yvZcfL3MwuWY0e+O2c
-         0I1Ljq5Idq91sLRnwhAff9IRQvdKFfj93pc8tZFkjIf4X9464NPlzkYafyAe+hLzSeOn
-         1rnrXOjX31bR4+phUNEC4O2tQwSa4IyMd8KgVZhVOBQllzucLgH+izvV40N866ghAiSX
-         XiqxJEMHN9FKtQTSdxUpbHOz0/bqWRJXCGZhrKWcJgWbSjpJ4XA5ydJo4Z1x8U8+q8pF
-         ho+g==
-X-Gm-Message-State: AOAM531EslyhWVgXrpKdRLsNBMLSulNJM6Agde0DR1IEJcl9L6txri+1
-        Cantup0X1AQoohyMVrjCw5yipg==
-X-Google-Smtp-Source: ABdhPJz11feQCSdcAZ8qNVexDftN0nhEZQThHTpl5mrAm/ps8cDYkFN1Xb/0nyT7RJiSaQ/J9npCyQ==
-X-Received: by 2002:a1c:4e02:: with SMTP id g2mr6362729wmh.3.1600869074015;
-        Wed, 23 Sep 2020 06:51:14 -0700 (PDT)
-Received: from trex (75.red-81-34-51.dynamicip.rima-tde.net. [81.34.51.75])
-        by smtp.gmail.com with ESMTPSA id m3sm29681179wrs.83.2020.09.23.06.51.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 23 Sep 2020 06:51:13 -0700 (PDT)
-From:   "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
-X-Google-Original-From: "Jorge Ramirez-Ortiz, Foundries" <JorgeRamirez-Ortiz>
-Date:   Wed, 23 Sep 2020 15:51:12 +0200
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>,
-        sumit.garg@linaro.org, ricardo@foundries.io, mike@foundries.io,
-        tee-dev@lists.linaro.org, linux-kernel@vger.kernel.org,
-        op-tee@lists.trustedfirmware.org
-Subject: Re: [PATCH] drivers: optee: i2c: add bus retry configuration
-Message-ID: <20200923135112.GA21608@trex>
-References: <20200916152732.23604-1-jorge@foundries.io>
- <20200922163859.GA1518183@jade>
- <20200923111813.GA30271@trex>
- <20200923112631.GB30271@trex>
- <20200923121356.GA1659958@jade>
+        Wed, 23 Sep 2020 09:51:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1600869093; bh=VQV+To5S2gWVZyYzSF6aVVNoKJSf7fw7hH7Ff0SULss=; h=Date:From:Reply-To:Subject:References:From:Subject; b=IKkglCF/CoWriG0Yb8Q5VOiSDCLrTmEfx9T/7ro6Tbqj21HhW85dRwtc3/P2BlEQ1K2qcOdywj1FttrcAA/Jd/jr3nTstPz08UTyfEeqGWEVttEjQVurjPVKvDlTfMLEF0NToIyxK7hkGWZmJ3zKqUTetQ0spJgV2P5etqwv97MRQngQ2iBvXI3/U6z+uuntcyHIHEF598GlSFihMLv44DgdyUH3W4AYIwE3aZjkNd3R7ubPvaoQq/l5R+jKOzTInyssZSzPIAdFX+EfWRQIlsKwj3L4VUowM5iLTpHK9Q5dRNar0czwW3qkdDnTnCjQ3gvIzGGfxwiOUDhzY8JQjw==
+X-YMail-OSG: qn2bFw4VM1lqSGodHAld7oqV9auwOWXkp2DevfFDa1hZZ0BJlyElpktnqwcuYnA
+ 8ymGUKl5z8sI0XhGZairiYPjP5z0UyyrjRYjnIlDWvPTgX3oo_cjdT4GhjgYEL3FXyulzYil6H6B
+ 5eEjoJmMWrnRxas1e3AyWJB0nb8LAGmQ7iGo7Q8nVrDrP6Bb_2rSvocfRbzoqxFOTNf3iwlePcIv
+ C0m07QOtXLmSI7OGviLrFrOr1dHSDXHz.ze9O5oDoH78bVRDN9whDCQvz1Va1SzM0mbfHHMKi15h
+ mQAlVVo.yCAO41D1jT5JInOUz4D1HDVJyzSg4y8jN4dSmknZWgx3JIjSNOmt4_J_1W91GAWj1wSq
+ Gl.U9mfMsdjOfIyIcQonUFS8R_s_q_2A3TQ1.JtHYqTPhIjpRgtvvNtj8ic6QYfDpj8XcxBPM6hv
+ 408VjjZYm3k89paRNzEvnh5OyRj4YpO2kl01ybHVhAQAT_tdEv3ov8jtm6BUDZaMSvoC44W8.0pz
+ 52LBDFIGoqbJvYQz2tLF3DPUqYHjj1ybQZ5.HCz6OUfKfh7B3z_Ym.17z5Jw_pFRsfGkcDvLmdoL
+ OOeV9Mxr5bRMVtNudq1zknL9zi7..IjE2U23oFppBr0zW7OYUoqrXRQmhLLnlBMFQK39SzWyCfoO
+ 4bHlhLpDc5J5tLKJnK3WaMqU9LmN32wW2VNBN.HwSOPTdfCxLjP182pF0bVjdWAy955SL0xNePlY
+ U9sk1dNB.pKdkpwM.acHGnIK4ABaJXkVCHRMq845QMLLN2prL7HMhHOdQ2NyIoMGQqJaDM808QMq
+ w2bjozXb4cEqn6kwP0wOZ.2gqYO5K6Xodp0LljItjviT9fMyfIeUjI9goMFw88ch6KkKNNKXCxlR
+ U6BBUvK46vWMv2CtFF2uZWiPEbcHQaHohGaCRdRHIwvCxJrom7dgE6vcmSKWl65_83VzRhoyil8f
+ nBrpZ4CcyrTpftd3D3_wn0IrDfzWaLRPYs_QKiBl3mVc5PqDCn4Pa6aPIv86Ug_UUpLJ7c_uOQsq
+ YitB4jjtT0dDZpk8AkY3JaPiVWe5jmPwqWt1oLixvxRtQLyIOZsWCSzs4LFR3xQF7H2s6xEvUwJo
+ 2vDeFdiRfTZyuNrvV2YOWTg0iKVb.ZWR.NxjU7Luql9bR7OPBTGWELqt_0YzTiWJu9nQT5SytAyy
+ NscwrkHJmdwLIPVuwThUHO7qZu85AYv8GIVOWzMlkWFV54EA480LPbbazLmE8jxLUvgQzZVelzcl
+ VV4mWV0CI3AyRbLZOj6Jxhin1osQnoS5llDRAr9ilX_DNPE0vZyibQ5cPJgZgfMrVJmoMZI54ANQ
+ W1f200FT0b3vJHy9JfrAZqQ7HqZ47FK0W5NwBWtQNn07EtMWeJJHWPXa7HiVL.et7YasszlrQZge
+ f1B00KavmCbtbUDOnrJhZ1_sq5dTECfBOxzE2Oj7vuO.HbwQx
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic301.consmr.mail.bf2.yahoo.com with HTTP; Wed, 23 Sep 2020 13:51:33 +0000
+Date:   Wed, 23 Sep 2020 13:51:33 +0000 (UTC)
+From:   Wang Xiu Ying <gjgjtrrr@senfv.in>
+Reply-To: wying353@yahoo.com
+Message-ID: <71798255.5168324.1600869093110@mail.yahoo.com>
+Subject: My business proposal
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200923121356.GA1659958@jade>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <71798255.5168324.1600869093110.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16583 YMailNodin Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/09/20, Jens Wiklander wrote:
-> On Wed, Sep 23, 2020 at 01:26:31PM +0200, Jorge Ramirez-Ortiz, Foundries wrote:
-> > On 23/09/20, Jorge Ramirez-Ortiz, Foundries wrote:
-> > > On 22/09/20, Jens Wiklander wrote:
-> > > > On Wed, Sep 16, 2020 at 05:27:32PM +0200, Jorge Ramirez-Ortiz wrote:
-> > > > > Allow OP-TEE to specify the number of retries in the adaptor.
-> > > > > 
-> > > > > Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
-> > > > > ---
-> > > > >  drivers/tee/optee/rpc.c | 7 +++++++
-> > > > >  1 file changed, 7 insertions(+)
-> > > > > 
-> > > > > diff --git a/drivers/tee/optee/rpc.c b/drivers/tee/optee/rpc.c
-> > > > > index 1e3614e4798f..2d46a9ecb1de 100644
-> > > > > --- a/drivers/tee/optee/rpc.c
-> > > > > +++ b/drivers/tee/optee/rpc.c
-> > > > > @@ -58,6 +58,7 @@ static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
-> > > > >  	struct tee_param *params;
-> > > > >  	size_t i;
-> > > > >  	int ret = -EOPNOTSUPP;
-> > > > > +	int retries = 0;
-> > > > >  	u8 attr[] = {
-> > > > >  		TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT,
-> > > > >  		TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT,
-> > > > > @@ -102,12 +103,17 @@ static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
-> > > > >  	client.addr = params[0].u.value.c;
-> > > > >  	snprintf(client.name, I2C_NAME_SIZE, "i2c%d", client.adapter->nr);
-> > > > >  
-> > > > > +	/* cache the current value */
-> > > > > +	retries = client.adapter->retries;
-> > > > > +
-> > > > >  	switch (params[0].u.value.a) {
-> > > > >  	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_RD:
-> > > > > +		client.adapter->retries = params[1].u.value.b;
-> > > > Do we need to take any locks befor this?
-> > > 
-> > > no I dont think so: there is no need for bus locks when requesting a
-> > > transfer via i2c_master_recv/send; the lock for the bus segment gets
-> > > taken later on, when the actual transfer hppens ( __i2c_transfer())
-> > > 
-> > > the functionality implemented in this function pretty much mimicks
-> > > what is done in the normal world via /dev/i2c-X
-> > > (drivers/i2c/i2c_dev.c)
-> > >
-> > 
-> > correction (of course)
-> >   - i2cdev_read --> i2c_master_recv
-> >   - i2cdev->write -->i2c_master_send
-> > > 
-> > > and now the retry count setup on the adaptor with this commit.
-> > > 
-> > >  - i2cdev_ioctl I2C_RETRIES
-> 
-> I don't understand. Do you mean that client.adapter->retries doesn't
-> need to be protected from concurrent updates? Or is it already protected
-> by some other mechanism?
 
-yeah I probably misunderstood your comment. my bad.
 
-um I thought that upon getting the adaptor there would be some
-protection mechanism in place until it is put back; but that is not
-the case. looking a bit into it I see no simple way of protecting
-changes to the adaptor (at any given time any thread could get a
-pointer to it) so it seems that setting the retry field is not a
-guarantee that it will be applied.
-
-> 
-> Cheers,
-> Jens
+Good Day,
+I am Wang Xiu Ying, the Director for Credit & Marketing Chong Hing Bank, Hong Kong, Chong Hing Bank Center, 24 Des Voeux Road Central, Hong Kong. I have a business proposal of USD$13,991,674 All confirmable documents to back up the claims will be made availableto you prior to your acceptance and as soon as I receive your return mail.
+Best Regards,
+Wang Xiu Ying
