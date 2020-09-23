@@ -2,156 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8528F2761B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E85932761B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:12:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726687AbgIWUIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 16:08:14 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:36272 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726199AbgIWUIN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 16:08:13 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08NK5MeX162814;
-        Wed, 23 Sep 2020 20:08:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=+bF0Y3pJwQVU206msgY0xGA4jeQnQf6Jy5Yw7gSqLJg=;
- b=nDpnjPAZ4irr7f9Pomk4/IlIzLCGNqLrYrAIa5nEetyA6SdyH15WtYIkVfA9xZIIjTtU
- xtLKV+oUfhvmO6sdyC0CLq+hweMxtS2sUBdEXV/uleNyVfK2V+MPkuR1o5BkSqAm7+bO
- vVGQfRm5wUoVmBNcYEkKfXYKY5kueUMIwTgB9tBwrjQbID4wPHh6iob5lqmIQ4bqoNEp
- /2h4NQ4dWpWvCre/eTlbpuz12YJq/dkhcXetwbdsqypM48T8ZQMagOfpahQJSxymFNgY
- UcjX1DKPdtrbQASefbu2AOdZqatLKcKtgsjkffmRR97kki18YqXDJZaZvLNIkb9RJeD0 Yg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 33q5rgjxu0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 23 Sep 2020 20:08:05 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08NK67LD055477;
-        Wed, 23 Sep 2020 20:08:05 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 33r28w39s2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 23 Sep 2020 20:08:04 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08NK831j014560;
-        Wed, 23 Sep 2020 20:08:03 GMT
-Received: from char.us.oracle.com (/10.152.32.25)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 23 Sep 2020 13:08:03 -0700
-Received: by char.us.oracle.com (Postfix, from userid 1000)
-        id C365A6A0109; Wed, 23 Sep 2020 16:09:30 -0400 (EDT)
-Date:   Wed, 23 Sep 2020 16:09:30 -0400
-From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-To:     SeongJae Park <sjpark@amazon.com>
-Cc:     roger.pau@citrix.com, SeongJae Park <sjpark@amazon.de>,
-        axboe@kernel.dk, aliguori@amazon.com, amit@kernel.org,
-        mheyne@amazon.de, linux-block@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] xen-blkback: add a parameter for disabling of persistent
- grants
-Message-ID: <20200923200930.GB11767@char.us.oracle.com>
-References: <20200922070125.27251-1-sjpark@amazon.com>
+        id S1726518AbgIWUMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 16:12:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52090 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726265AbgIWUMy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 16:12:54 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9FC462376F;
+        Wed, 23 Sep 2020 20:12:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600891973;
+        bh=VJzs768qwtne0ag6eBSnLTLairbiPmRxCP3NJf33P38=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Muw91GTHz4jKR1dgKCs7wW12xT6J4ZUBo4KFsulNSSJADll542/uGLu/+bIU2bbC6
+         lTNtqZ++0F4DghhlN6gM7epQ9CEYQdVfuApJeDyTx3I2euP0mX9u4h3C6lsV7OV0cG
+         aJ/RqGYAs8+xQQt7O0Na5fa+437aD+EBvitS6XwQ=
+Date:   Wed, 23 Sep 2020 21:12:49 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2 v2] iio: event: use short-hand variable in
+ iio_device_{un}register_eventset functions
+Message-ID: <20200923211249.164241d0@archlinux>
+In-Reply-To: <20200921103156.194748-1-alexandru.ardelean@analog.com>
+References: <20200921103156.194748-1-alexandru.ardelean@analog.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922070125.27251-1-sjpark@amazon.com>
-User-Agent: Mutt/1.9.1 (2017-09-22)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9753 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999
- suspectscore=0 adultscore=0 bulkscore=0 malwarescore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009230150
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9753 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 impostorscore=0
- clxscore=1011 suspectscore=0 phishscore=0 malwarescore=0
- priorityscore=1501 mlxlogscore=999 adultscore=0 bulkscore=0 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009230150
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 09:01:25AM +0200, SeongJae Park wrote:
-> From: SeongJae Park <sjpark@amazon.de>
-> 
-> Persistent grants feature provides high scalability.  On some small
-> systems, however, it could incur data copy overhead[1] and thus it is
-> required to be disabled.  But, there is no option to disable it.  For
-> the reason, this commit adds a module parameter for disabling of the
-> feature.
+On Mon, 21 Sep 2020 13:31:55 +0300
+Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
 
-Would it be better suited to have it per guest?
+> With the recent 'iio_dev_opaque' variable name, these two functions are
+> looking a bit ugly.
 > 
-> [1] https://wiki.xen.org/wiki/Xen_4.3_Block_Protocol_Scalability
+> This change uses an 'ev_int' variable for the
+> iio_device_{un}register_eventset functions to make the code a little easier
+> to read.
 > 
-> Signed-off-by: Anthony Liguori <aliguori@amazon.com>
-> Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+
+Seems sensible.  Series applied to the togreg branch of iio.git and pushed out as
+testing.  Not sure if this will make it into a final pull request for this
+cycle or not. Kind of depends what Linus says on Sunday about whether we are
+going to see an rc8.
+
+Thanks,
+
+Jonathan
+
 > ---
->  .../ABI/testing/sysfs-driver-xen-blkback        |  8 ++++++++
->  drivers/block/xen-blkback/xenbus.c              | 17 ++++++++++++++---
->  2 files changed, 22 insertions(+), 3 deletions(-)
 > 
-> diff --git a/Documentation/ABI/testing/sysfs-driver-xen-blkback b/Documentation/ABI/testing/sysfs-driver-xen-blkback
-> index ecb7942ff146..0c42285c75ee 100644
-> --- a/Documentation/ABI/testing/sysfs-driver-xen-blkback
-> +++ b/Documentation/ABI/testing/sysfs-driver-xen-blkback
-> @@ -35,3 +35,11 @@ Description:
->                  controls the duration in milliseconds that blkback will not
->                  cache any page not backed by a grant mapping.
->                  The default is 10ms.
+> Changelog v1 -> v2:
+> * move 'iio_dev_opaque->event_interface = ev_int;' assigment right after
+>   allocation to avoid crash; 'iio_dev_opaque->event_interface' is accessed
+>   after init
+> 
+>  drivers/iio/industrialio-event.c | 50 +++++++++++++++-----------------
+>  1 file changed, 24 insertions(+), 26 deletions(-)
+> 
+> diff --git a/drivers/iio/industrialio-event.c b/drivers/iio/industrialio-event.c
+> index 2ab4d4c44427..a85919eb7c4a 100644
+> --- a/drivers/iio/industrialio-event.c
+> +++ b/drivers/iio/industrialio-event.c
+> @@ -477,6 +477,7 @@ static const char *iio_event_group_name = "events";
+>  int iio_device_register_eventset(struct iio_dev *indio_dev)
+>  {
+>  	struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
+> +	struct iio_event_interface *ev_int;
+>  	struct iio_dev_attr *p;
+>  	int ret = 0, attrcount_orig = 0, attrcount, attrn;
+>  	struct attribute **attr;
+> @@ -485,14 +486,15 @@ int iio_device_register_eventset(struct iio_dev *indio_dev)
+>  	      iio_check_for_dynamic_events(indio_dev)))
+>  		return 0;
+>  
+> -	iio_dev_opaque->event_interface =
+> -		kzalloc(sizeof(struct iio_event_interface), GFP_KERNEL);
+> -	if (iio_dev_opaque->event_interface == NULL)
+> +	ev_int = kzalloc(sizeof(struct iio_event_interface), GFP_KERNEL);
+> +	if (ev_int == NULL)
+>  		return -ENOMEM;
+>  
+> -	INIT_LIST_HEAD(&iio_dev_opaque->event_interface->dev_attr_list);
+> +	iio_dev_opaque->event_interface = ev_int;
 > +
-> +What:           /sys/module/xen_blkback/parameters/feature_persistent
-> +Date:           September 2020
-> +KernelVersion:  5.10
-> +Contact:        SeongJae Park <sjpark@amazon.de>
-> +Description:
-> +                Whether to enable the persistent grants feature or not.
-> +                The default is 1 (enable).
-> diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
-> index b9aa5d1ac10b..9c03d70469f4 100644
-> --- a/drivers/block/xen-blkback/xenbus.c
-> +++ b/drivers/block/xen-blkback/xenbus.c
-> @@ -879,6 +879,12 @@ static void reclaim_memory(struct xenbus_device *dev)
+> +	INIT_LIST_HEAD(&ev_int->dev_attr_list);
 >  
->  /* ** Connection ** */
->  
-> +/* Enable the persistent grants feature. */
-> +static unsigned int feature_persistent = 1;
-> +module_param_named(feature_persistent, feature_persistent, int, 0644);
-> +MODULE_PARM_DESC(feature_persistent,
-> +		"Enables the persistent grants feature");
-> +
->  /*
->   * Write the physical details regarding the block device to the store, and
->   * switch to Connected state.
-> @@ -906,7 +912,8 @@ static void connect(struct backend_info *be)
->  
->  	xen_blkbk_barrier(xbt, be, be->blkif->vbd.flush_support);
->  
-> -	err = xenbus_printf(xbt, dev->nodename, "feature-persistent", "%u", 1);
-> +	err = xenbus_printf(xbt, dev->nodename, "feature-persistent", "%u",
-> +			feature_persistent ? 1 : 0);
->  	if (err) {
->  		xenbus_dev_fatal(dev, err, "writing %s/feature-persistent",
->  				 dev->nodename);
-> @@ -1093,8 +1100,12 @@ static int connect_ring(struct backend_info *be)
->  		xenbus_dev_fatal(dev, err, "unknown fe protocol %s", protocol);
->  		return -ENOSYS;
+> -	iio_setup_ev_int(iio_dev_opaque->event_interface);
+> +	iio_setup_ev_int(ev_int);
+>  	if (indio_dev->info->event_attrs != NULL) {
+>  		attr = indio_dev->info->event_attrs->attrs;
+>  		while (*attr++ != NULL)
+> @@ -506,34 +508,29 @@ int iio_device_register_eventset(struct iio_dev *indio_dev)
+>  		attrcount += ret;
 >  	}
-> -	pers_grants = xenbus_read_unsigned(dev->otherend, "feature-persistent",
-> -					   0);
-> +	if (feature_persistent)
-> +		pers_grants = xenbus_read_unsigned(dev->otherend,
-> +				"feature-persistent", 0);
-> +	else
-> +		pers_grants = 0;
-> +
->  	blkif->vbd.feature_gnt_persistent = pers_grants;
->  	blkif->vbd.overflow_max_grants = 0;
 >  
-> -- 
-> 2.17.1
-> 
+> -	iio_dev_opaque->event_interface->group.name = iio_event_group_name;
+> -	iio_dev_opaque->event_interface->group.attrs = kcalloc(attrcount + 1,
+> -							  sizeof(iio_dev_opaque->event_interface->group.attrs[0]),
+> -							  GFP_KERNEL);
+> -	if (iio_dev_opaque->event_interface->group.attrs == NULL) {
+> +	ev_int->group.name = iio_event_group_name;
+> +	ev_int->group.attrs = kcalloc(attrcount + 1,
+> +				      sizeof(ev_int->group.attrs[0]),
+> +				      GFP_KERNEL);
+> +	if (ev_int->group.attrs == NULL) {
+>  		ret = -ENOMEM;
+>  		goto error_free_setup_event_lines;
+>  	}
+>  	if (indio_dev->info->event_attrs)
+> -		memcpy(iio_dev_opaque->event_interface->group.attrs,
+> +		memcpy(ev_int->group.attrs,
+>  		       indio_dev->info->event_attrs->attrs,
+> -		       sizeof(iio_dev_opaque->event_interface->group.attrs[0])
+> -		       *attrcount_orig);
+> +		       sizeof(ev_int->group.attrs[0]) * attrcount_orig);
+>  	attrn = attrcount_orig;
+>  	/* Add all elements from the list. */
+> -	list_for_each_entry(p,
+> -			    &iio_dev_opaque->event_interface->dev_attr_list,
+> -			    l)
+> -		iio_dev_opaque->event_interface->group.attrs[attrn++] =
+> -			&p->dev_attr.attr;
+> -	indio_dev->groups[indio_dev->groupcounter++] =
+> -		&iio_dev_opaque->event_interface->group;
+> +	list_for_each_entry(p, &ev_int->dev_attr_list, l)
+> +		ev_int->group.attrs[attrn++] = &p->dev_attr.attr;
+> +	indio_dev->groups[indio_dev->groupcounter++] = &ev_int->group;
+>  
+>  	return 0;
+>  
+>  error_free_setup_event_lines:
+> -	iio_free_chan_devattr_list(&iio_dev_opaque->event_interface->dev_attr_list);
+> -	kfree(iio_dev_opaque->event_interface);
+> +	iio_free_chan_devattr_list(&ev_int->dev_attr_list);
+> +	kfree(ev_int);
+>  	iio_dev_opaque->event_interface = NULL;
+>  	return ret;
+>  }
+> @@ -557,10 +554,11 @@ void iio_device_wakeup_eventset(struct iio_dev *indio_dev)
+>  void iio_device_unregister_eventset(struct iio_dev *indio_dev)
+>  {
+>  	struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
+> +	struct iio_event_interface *ev_int = iio_dev_opaque->event_interface;
+>  
+> -	if (iio_dev_opaque->event_interface == NULL)
+> +	if (ev_int == NULL)
+>  		return;
+> -	iio_free_chan_devattr_list(&iio_dev_opaque->event_interface->dev_attr_list);
+> -	kfree(iio_dev_opaque->event_interface->group.attrs);
+> -	kfree(iio_dev_opaque->event_interface);
+> +	iio_free_chan_devattr_list(&ev_int->dev_attr_list);
+> +	kfree(ev_int->group.attrs);
+> +	kfree(ev_int);
+>  }
+
