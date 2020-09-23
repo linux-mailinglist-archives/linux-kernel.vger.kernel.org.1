@@ -2,90 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1F592762E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 23:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53EB12762EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 23:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726762AbgIWVJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 17:09:07 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:43524 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726562AbgIWVJG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 17:09:06 -0400
-Received: by mail-io1-f65.google.com with SMTP id z25so983796iol.10;
-        Wed, 23 Sep 2020 14:09:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ofc8Uf8vX6HYj+yzwCeK/wH2vGs3V2iAMN76I9foEns=;
-        b=LyXcW2q9G9Eb9NWyqp2FZGn/FEHedA7aDzYbdQrJFVxIFRPy0Qu6Wmh9W7elr0P00M
-         QqAEAz77a2cLrE0VCmieOR0ZLve9eRVWYKSwp6Z4YkBZwWAKn4DHZMywiPdai7Jbv6Y3
-         4z821Eb6GE1MCd2lfMJbbDOEuUSlRGtHc/0ICc91RSVrcvHYg1xGtROdVNrozHPhMDgu
-         pg1z+JKsgTXLB2TT7IMpncJBDRGB0bEe+kQfyiUrzgSeg9lIppLLqKrCkQhac1SKa/fp
-         bomv5CXsnkZgm1bo9REYq1mg6qCWvEjIdXtlJmi5erx2c0PVRtN9NxVplCO6Ta3T1XCn
-         WYCQ==
-X-Gm-Message-State: AOAM530MSQuYymyBuaLaW7O8Bxp9EUTbo54jRjMwgF86FlK3IJR0GE0w
-        nnBthYsRTPY7ww0Y97NBzQ==
-X-Google-Smtp-Source: ABdhPJxgj8CW4iD2hYjlW12G1nxhLdqPEZWa0g4WQq69yvbC2eDAp4izySPBdQB232PZqOqPsrIyfA==
-X-Received: by 2002:a6b:db1a:: with SMTP id t26mr1137187ioc.152.1600895345518;
-        Wed, 23 Sep 2020 14:09:05 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id e14sm456086iow.16.2020.09.23.14.09.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 14:09:05 -0700 (PDT)
-Received: (nullmailer pid 1314012 invoked by uid 1000);
-        Wed, 23 Sep 2020 21:09:04 -0000
-Date:   Wed, 23 Sep 2020 15:09:04 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     NXP Linux Team <linux-imx@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Stefan Agner <stefan@agner.ch>, linux-kernel@vger.kernel.org,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-gpio@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Anson Huang <Anson.Huang@nxp.com>
-Subject: Re: [PATCH v3 4/4] dt-bindings: gpio: gpio-vf610: fix iMX 7ULP
- compatible matching
-Message-ID: <20200923210904.GA1313958@bogus>
-References: <20200920195848.27075-1-krzk@kernel.org>
- <20200920195848.27075-4-krzk@kernel.org>
+        id S1726605AbgIWVMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 17:12:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50774 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726381AbgIWVMl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 17:12:41 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0CA3D2145D;
+        Wed, 23 Sep 2020 21:12:35 +0000 (UTC)
+Date:   Wed, 23 Sep 2020 17:12:34 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     peterz@infradead.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        "open list\:SYNOPSYS ARC ARCHITECTURE" 
+        <linux-snps-arc@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
+        linux-csky@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-sparc <sparclinux@vger.kernel.org>
+Subject: Re: [patch RFC 00/15] mm/highmem: Provide a preemptible variant of
+ kmap_atomic & friends
+Message-ID: <20200923171234.0001402d@oasis.local.home>
+In-Reply-To: <874kno9pr9.fsf@nanos.tec.linutronix.de>
+References: <20200919091751.011116649@linutronix.de>
+        <CAHk-=wiYGyrFRbA1cc71D2-nc5U9LM9jUJesXGqpPnB7E4X1YQ@mail.gmail.com>
+        <87mu1lc5mp.fsf@nanos.tec.linutronix.de>
+        <87k0wode9a.fsf@nanos.tec.linutronix.de>
+        <CAHk-=wgbmwsTOKs23Z=71EBTrULoeaH2U3TNqT2atHEWvkBKdw@mail.gmail.com>
+        <87eemwcpnq.fsf@nanos.tec.linutronix.de>
+        <CAHk-=wgF-upZVpqJWK=TK7MS9H-Rp1ZxGfOG+dDW=JThtxAzVQ@mail.gmail.com>
+        <87a6xjd1dw.fsf@nanos.tec.linutronix.de>
+        <CAHk-=wjhxzx3KHHOMvdDj3Aw-_Mk5eRiNTUBB=tFf=vTkw1FeA@mail.gmail.com>
+        <87sgbbaq0y.fsf@nanos.tec.linutronix.de>
+        <20200923084032.GU1362448@hirez.programming.kicks-ass.net>
+        <20200923115251.7cc63a7e@oasis.local.home>
+        <874kno9pr9.fsf@nanos.tec.linutronix.de>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200920195848.27075-4-krzk@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 20 Sep 2020 21:58:48 +0200, Krzysztof Kozlowski wrote:
-> The i.MX 7ULP DTSes use two compatibles so update the binding to fix
-> dtbs_check warnings like:
-> 
->   arch/arm/boot/dts/imx7ulp-com.dt.yaml: gpio@40ae0000:
->     compatible: ['fsl,imx7ulp-gpio', 'fsl,vf610-gpio'] is too long
-> 
->   arch/arm/boot/dts/imx7ulp-com.dt.yaml: gpio@40ae0000:
->     compatible: Additional items are not allowed ('fsl,vf610-gpio' was unexpected)
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> 
-> ---
-> 
-> Changes since v2:
-> 1. None, split from previous patchset using common GPIO schema
-> 
-> Changes since v1:
-> 1. New patch
-> ---
->  Documentation/devicetree/bindings/gpio/gpio-vf610.yaml | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
+On Wed, 23 Sep 2020 22:55:54 +0200
+Thomas Gleixner <tglx@linutronix.de> wrote:
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+> > Perhaps make migrate_disable() an anonymous local_lock()?
+> >
+> > This should lower the SHC in theory, if you can't have stacked migrate
+> > disables on the same CPU.  
+> 
+> I'm pretty sure this ends up in locking hell pretty fast and aside of
+> that it's not working for scenarios like:
+> 
+>      kmap_local();
+>        migrate_disable();
+>        ...
+> 
+>      copy_from_user()
+>         -> #PF
+>            -> schedule()  
+> 
+> which brought us into that discussion in the first place. You would stop
+> any other migrate disable user from running until the page fault is
+> resolved...
+
+Then scratch the idea of having anonymous local_lock() and just bring
+local_lock in directly? Then have a kmap local lock, which would only
+block those that need to do a kmap.
+
+Now as for migration disabled nesting, at least now we would have
+groupings of this, and perhaps the theorists can handle that. I mean,
+how is this much different that having a bunch of tasks blocked on a
+mutex with the owner is pinned on a CPU?
+
+migrate_disable() is a BKL of pinning affinity. If we only have
+local_lock() available (even on !RT), then it makes the blocking in
+groups. At least this way you could grep for all the different
+local_locks in the system and plug that into the algorithm for WCS,
+just like one would with a bunch of mutexes.
+
+-- Steve
