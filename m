@@ -2,114 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6682527645B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA6E276464
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726734AbgIWXLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 19:11:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726714AbgIWXLT (ORCPT
+        id S1726681AbgIWXSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 19:18:50 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:34489 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726419AbgIWXSu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 19:11:19 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A6DCC0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:11:19 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id y17so555546plb.6
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:11:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2C2k3bgm/wJgHGoPq3RjqjO7qGsk8WgF9RAs+eFblaY=;
-        b=LiswQhMejoVglYkrxG9w0XpsBon11s3vESoHybcFToEdc5v2+NWsS8qqK5KwzJ/AsD
-         d17on9QRv/S/TyDlJsRNEOvGZ6UpT+LdvtburVCLnEgzWB0oIEd8fi5ehdVx0RJRsupQ
-         xmspR5jK/Y+6o6D0HKN7vH4QrmrUnFp3kw2e76h+331JCqdxZzZc6VgTIcVCPZZfj717
-         ncaxK3US42BrvAlPy6qWLMc6FPyIfkadKdRoo0kO3u/BM2o+FFxNkVHEkvslRD9xT7A7
-         OUTzgcYRNF5zXEihYdZntXS33ZP0+5CMSsynjHG0JtYipj1yIDWes8af7HqwLJy2eokG
-         vnnA==
+        Wed, 23 Sep 2020 19:18:50 -0400
+Received: by mail-io1-f67.google.com with SMTP id m17so1372209ioo.1;
+        Wed, 23 Sep 2020 16:18:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=2C2k3bgm/wJgHGoPq3RjqjO7qGsk8WgF9RAs+eFblaY=;
-        b=HlpAm0f44NwJ5Pr6E3oZL8w7cykGX5Og3Bfe5Hm5bj0behkVgwodg+SRFjh8Wpnbqf
-         LtIwlmKI3bAYMXeoVnVlzGQ1YD8+jymv8E4na8s7DK96UMPf4cdKOFTtGKGenzaaGn9/
-         QWv2UgP4gLDj8GoihzDe5maP6hnGkhCxp34NWq5W/5PCFLCj/VxqFsMTkgGls+WBrmLB
-         2V4g40ulj0KtNswpQnJijO/0kDckpvOQAl18413n24uRP3sNN6PA9zDCP5Ffy174mR2q
-         w7pzocXq7Dbb+x6tc9n1Fbo7e9ggsLxYbMb9DF5YtvK6REEOxpdgUy9Zxiv/iFsWtXEl
-         NzOg==
-X-Gm-Message-State: AOAM532DeHy2fngqeQ+3p18InjirfbGCL/nk5lxMG5uuiPzzHOzprU/I
-        qpROz64ZNm2ZElRrTuemYApb/A==
-X-Google-Smtp-Source: ABdhPJxqk2zGhDGZJVw4sdmPM+ciEWAW24BXvgeiu5oFPiHXm3UbUZEWegPSBDlvL8N/12l5EIu9eg==
-X-Received: by 2002:a17:902:7fca:b029:d2:439c:3e97 with SMTP id t10-20020a1709027fcab02900d2439c3e97mr1917445plb.22.1600902678777;
-        Wed, 23 Sep 2020 16:11:18 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id j19sm668468pfe.108.2020.09.23.16.11.17
+        bh=BHsD3SLJmcx9KOWGYcQYUc0v4uSy8LxJrJDo7E9k6nU=;
+        b=FO+S6HHGww9f9jIL0cCqGDH/mMKnml3C4A+uwsp7xHjxc1esYqcJWwU6qEQngWaFUk
+         6XLZi/8yoChngG8akxn0MRFngZ76TMkPC3VWrB5EcDInn15y9vh3rePeEh5gGp8qUVBu
+         t0RY9vOC4AvaekAPy3J5Ut0z0N4Y4os8L3dbPbPBdn8Ms59FanEwFFY0lxuY4dEMcJaD
+         47QjuGagYU/zQD21uQ0mhsr5SciXWfc76XG8Kfg+NdfUFsyGuGFwNxQIyux6N9H+Nvc0
+         5jN+T5Pv+y3CAYa3MZhkwmyFEp0LkSb92ngDQsVbdusm0l98EdsxQcMEnAsIkGg3jq2X
+         DQyg==
+X-Gm-Message-State: AOAM531CQbJqZ+no5OuKXws73LuxTP2w9Ckfvaw2Lqyn3oqtEVSTEUMi
+        9r4GcnrwZNbR7Ohm1mxcrw==
+X-Google-Smtp-Source: ABdhPJxSJk9gVxVd4DzgOoBg2o/2cl0dNWV5EfDhP0rogbALgaKqDWWJZiSGxIx7hwclwNEtFTtnNg==
+X-Received: by 2002:a05:6638:1448:: with SMTP id l8mr1411528jad.83.1600903128864;
+        Wed, 23 Sep 2020 16:18:48 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id z10sm621736ioi.13.2020.09.23.16.18.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 16:11:18 -0700 (PDT)
-Date:   Wed, 23 Sep 2020 17:11:16 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Alexandre Bailon <abailon@baylibre.com>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        matthias.bgg@gmail.com, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stephane.leprovost@mediatek.com, gpain@baylibre.com
-Subject: Re: [PATCH v2 0/4] Add support of mt8183 APU
-Message-ID: <20200923231116.GA1154153@xps15>
-References: <20200910130148.8734-1-abailon@baylibre.com>
+        Wed, 23 Sep 2020 16:18:48 -0700 (PDT)
+Received: (nullmailer pid 1517051 invoked by uid 1000);
+        Wed, 23 Sep 2020 23:18:46 -0000
+Date:   Wed, 23 Sep 2020 17:18:46 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Niklas Cassel <niklas.cassel@axis.com>
+Cc:     Jingoo Han <jingoohan1@gmail.com>,
+        Joao Pinto <Joao.Pinto@synopsys.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Niklas Cassel <niklass@axis.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 01/18] PCI: dwc: Use the DMA-API to get the MSI address
+Message-ID: <20200923231846.GA1499246@bogus>
+References: <20171219232940.659-1-niklas.cassel@axis.com>
+ <20171219232940.659-2-niklas.cassel@axis.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200910130148.8734-1-abailon@baylibre.com>
+In-Reply-To: <20171219232940.659-2-niklas.cassel@axis.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexander,
+On Wed, Dec 20, 2017 at 12:29:22AM +0100, Niklas Cassel wrote:
+> Use the DMA-API to get the MSI address. This address will be written to
+> our PCI config space and to the register which determines which AXI
+> address the DWC IP will spoof for incoming MSI irqs.
+> 
+> Since it is a PCIe endpoint device, rather than the CPU, that is supposed
+> to write to the MSI address, the proper way to get the MSI address is by
+> using the DMA API, not by using virt_to_phys().
+> 
+> Using virt_to_phys() might work on some systems, but using the DMA API
+> should work on all systems.
+> 
+> This is essentially the same thing as allocating a buffer in a driver
+> to which the endpoint will write to. To do this, we use the DMA API.
+> 
+> Signed-off-by: Niklas Cassel <niklas.cassel@axis.com>
+> ---
+>  drivers/pci/dwc/pcie-designware-host.c | 15 ++++++++++++---
+>  drivers/pci/dwc/pcie-designware.h      |  3 ++-
+>  2 files changed, 14 insertions(+), 4 deletions(-)
 
-Things have been quite busy over the last 3 weeks, preventing me from
-giving your work the attention it deserves.  It is on my radar and will get to
-it in the next two weeks.
+Resurrecting an old thread...
 
-Thanks,
-Mathieu
- 
-On Thu, Sep 10, 2020 at 03:01:44PM +0200, Alexandre Bailon wrote:
-> Some Mediatek's SoC have an Accelerated Processing Unit.
-> This adds support of the one available in the mt8183
-> (aswell some derivative SoC).
+Did this fix any actual problem for you? I'm asking because this 
+introduces a bug that an unmap is never done in the error path and 
+there's an issue with suspend/resume[1].
+
+I'd like to simplify all this. The whole thing including the existing 
+alloc_page() seems pointless. AIUI, the DWC MSI controller just needs a 
+single address which is never forwarded out of the RC. So we could use 
+any address that an EP would never write to. Some drivers just take the 
+address of a field in their driver data. Perhaps even just the DBI base 
+would work or the address of PCIE_MSI_ADDR_LO. 
+
+Rob
+
+[1] https://lore.kernel.org/r/20200923142607.10c89bd2@xhacker.debian
+
+
 > 
-> This series depends on two other series:
-> - Mediatek MT8183 scpsys support  
-> - arm64: dts: Add m4u and smi-larbs nodes for mt8183
-> 
-> Changes in v2:
-> - Drop the workarounds needed to load bad firmwares
-> - There are many name for the APU (most common one is VPU).
->   Rename many functions and dts nodes to be more consistent.
-> - Use the bulk clock API, and enable / disable clock at a better place
-> - add few comments explaining how to start the APU
-> - update the way to use pinctl for JTAG
-> - fix some minors issues
-> - fix device tree bindings
-> 
-> Alexandre Bailon (4):
->   dt bindings: remoteproc: Add bindings for MT8183 APU
->   remoteproc: Add a remoteproc driver for the MT8183's APU
->   remoteproc: mtk_vpu_rproc: Add support of JTAG
->   ARM64: mt8183: Add support of APU to mt8183
-> 
->  .../bindings/remoteproc/mtk,apu.yaml          | 107 +++++
->  arch/arm64/boot/dts/mediatek/mt8183.dtsi      |  39 ++
->  drivers/remoteproc/Kconfig                    |  19 +
->  drivers/remoteproc/Makefile                   |   1 +
->  drivers/remoteproc/mtk_apu.c                  | 437 ++++++++++++++++++
->  5 files changed, 603 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/remoteproc/mtk,apu.yaml
->  create mode 100644 drivers/remoteproc/mtk_apu.c
-> 
+> diff --git a/drivers/pci/dwc/pcie-designware-host.c b/drivers/pci/dwc/pcie-designware-host.c
+> index 81e2157a7cfb..bf558df5b7b3 100644
+> --- a/drivers/pci/dwc/pcie-designware-host.c
+> +++ b/drivers/pci/dwc/pcie-designware-host.c
+> @@ -83,10 +83,19 @@ irqreturn_t dw_handle_msi_irq(struct pcie_port *pp)
+>  
+>  void dw_pcie_msi_init(struct pcie_port *pp)
+>  {
+> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> +	struct device *dev = pci->dev;
+> +	struct page *page;
+>  	u64 msi_target;
+>  
+> -	pp->msi_data = __get_free_pages(GFP_KERNEL, 0);
+> -	msi_target = virt_to_phys((void *)pp->msi_data);
+> +	page = alloc_page(GFP_KERNEL);
+> +	pp->msi_data = dma_map_page(dev, page, 0, PAGE_SIZE, DMA_FROM_DEVICE);
+> +	if (dma_mapping_error(dev, pp->msi_data)) {
+> +		dev_err(dev, "failed to map MSI data\n");
+> +		__free_page(page);
+> +		return;
+> +	}
+> +	msi_target = (u64)pp->msi_data;
+>  
+>  	/* program the msi_data */
+>  	dw_pcie_wr_own_conf(pp, PCIE_MSI_ADDR_LO, 4,
+> @@ -187,7 +196,7 @@ static void dw_msi_setup_msg(struct pcie_port *pp, unsigned int irq, u32 pos)
+>  	if (pp->ops->get_msi_addr)
+>  		msi_target = pp->ops->get_msi_addr(pp);
+>  	else
+> -		msi_target = virt_to_phys((void *)pp->msi_data);
+> +		msi_target = (u64)pp->msi_data;
+>  
+>  	msg.address_lo = (u32)(msi_target & 0xffffffff);
+>  	msg.address_hi = (u32)(msi_target >> 32 & 0xffffffff);
+> diff --git a/drivers/pci/dwc/pcie-designware.h b/drivers/pci/dwc/pcie-designware.h
+> index e5d9d77b778e..ecdede68522a 100644
+> --- a/drivers/pci/dwc/pcie-designware.h
+> +++ b/drivers/pci/dwc/pcie-designware.h
+> @@ -14,6 +14,7 @@
+>  #ifndef _PCIE_DESIGNWARE_H
+>  #define _PCIE_DESIGNWARE_H
+>  
+> +#include <linux/dma-mapping.h>
+>  #include <linux/irq.h>
+>  #include <linux/msi.h>
+>  #include <linux/pci.h>
+> @@ -168,7 +169,7 @@ struct pcie_port {
+>  	const struct dw_pcie_host_ops *ops;
+>  	int			msi_irq;
+>  	struct irq_domain	*irq_domain;
+> -	unsigned long		msi_data;
+> +	dma_addr_t		msi_data;
+>  	DECLARE_BITMAP(msi_irq_in_use, MAX_MSI_IRQS);
+>  };
+>  
 > -- 
-> 2.26.2
-> 
+> 2.14.2
