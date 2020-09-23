@@ -2,99 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6BC27531E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 10:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0D4E275326
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 10:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726504AbgIWIUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 04:20:48 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:37984 "EHLO mail.skyhub.de"
+        id S1726574AbgIWIWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 04:22:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33744 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726178AbgIWIUr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 04:20:47 -0400
-Received: from zn.tnic (p200300ec2f0d130076d2caf1fa3322b0.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:1300:76d2:caf1:fa33:22b0])
+        id S1726267AbgIWIWG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 04:22:06 -0400
+Received: from mail.kernel.org (ip5f5ad5c8.dynamic.kabel-deutschland.de [95.90.213.200])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A5E831EC0380;
-        Wed, 23 Sep 2020 10:20:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600849245;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=r5Cd7LFhrYgz2VmAEYm36AYonaN9I3+AtkPi8xH5OWs=;
-        b=CAVFc9vrp81ssTcu3hlTIYzr4Zk54r/HrRvTi+IjWXxCWc024xydgO2ck/76DNoSVd0P2s
-        aLXuYlNi9HFPF3XVdPWDn3tVKU/sOObc2b/92a2t7hCa6T9UZhJJRHKdTA2utqZwhmwM/d
-        KuU6txzPv3GdADhxvYW4Ritjet0puPg=
-Date:   Wed, 23 Sep 2020 10:20:39 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yazen Ghannam <Yazen.Ghannam@amd.com>
-Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tony.luck@intel.com, x86@kernel.org,
-        Smita.KoralahalliChannabasappa@amd.com
-Subject: Re: [PATCH v2 8/8] x86/MCE/AMD Support new memory interleaving modes
- during address translation
-Message-ID: <20200923082039.GB28545@zn.tnic>
-References: <20200903200144.310991-1-Yazen.Ghannam@amd.com>
- <20200903200144.310991-9-Yazen.Ghannam@amd.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id C567A238A1;
+        Wed, 23 Sep 2020 08:22:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600849325;
+        bh=DmXoYTsrp+5X+VdcYTdixz0bMYx13NlME21W5hL9F0k=;
+        h=From:To:Cc:Subject:Date:From;
+        b=P5z88MhpNjVgVXiObYz3irhiottc6m/gxZCLppZ9IO1aU3TmCojaGwmOcVEXe+GTS
+         HLKacSOzaqgbHwxfCeK2W32r0Dc0roB+V0a9yLUKL+18JNvpUnkBjfBA4bn3kyzS5P
+         nQ/9A7ZS+ZRIKMqlxdVnksyasjb/yC4GOKkgZGmk=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kL02L-001F20-7o; Wed, 23 Sep 2020 10:22:01 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Media Mailing List <linux-media@vger.kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] media: atomisp: fix gcc warnings
+Date:   Wed, 23 Sep 2020 10:21:59 +0200
+Message-Id: <8e3d5d4baf0781974a224e284e837665c0d26f92.1600849288.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200903200144.310991-9-Yazen.Ghannam@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 03, 2020 at 08:01:44PM +0000, Yazen Ghannam wrote:
-> From: Muralidhara M K <muralidhara.mk@amd.com>
-> 
-> Add support for new memory interleaving modes used in current AMD systems.
->
-> Check if the system is using a current Data Fabric version or a legacy
-> version as some bit and register definitions have changed.
-> 
-> Tested on AMD reference platforms with the following memory interleaving
-> options.
-> 
-> Naples
-> - None
-> - Channel
-> - Die
-> - Socket
-> 
-> Rome (NPS = Nodes per Socket)
-> - None
-> - NPS0
-> - NPS1
-> - NPS2
-> - NPS4
-> 
-> The fixes tag refers to the commit that allows amd64_edac_mod to load on
-> Rome systems.
+Depending on the gcc version, after changeset
+72a9ff3bf7fb ("media: atomisp: get rid of -Wsuggest-attribute=format warnings"),
+we're now getting two warnings, which are breaking the Jenkins
+CI instance at https://builder.linuxtv.org:
 
-Err, why? This is adding new stuff to an address translation function.
-How does that fix amd64_edac loading on Rome?
+	../drivers/staging/media/atomisp/pci/atomisp_compat_css20.c: In function ‘__set_css_print_env’:
+	../drivers/staging/media/atomisp/pci/atomisp_compat_css20.c:860:50: error: assignment to ‘int (*)(const char *, char *)’ from incompatible pointer type ‘int (__attribute__((regparm(0))) *)(const char *, char *)’ [-Werror=incompatible-pointer-types]
+	   isp->css_env.isp_css_env.print_env.debug_print = vprintk;
+	                                                  ^
+	../drivers/staging/media/atomisp/pci/atomisp_compat_css20.c: In function ‘atomisp_css_load_firmware’:
+	../drivers/staging/media/atomisp/pci/atomisp_compat_css20.c:893:49: error: assignment to ‘int (*)(const char *, char *)’ from incompatible pointer type ‘int (__attribute__((regparm(0))) *)(const char *, char *)’ [-Werror=incompatible-pointer-types]
+	  isp->css_env.isp_css_env.print_env.error_print = vprintk;
+                                                 ^
+	cc1: some warnings being treated as errors
 
-> The module may report an incorrect system addresses on
-> Rome systems depending on the interleaving option used.
+So, we need to partially revert the patch.
 
-That doesn't stop it from loading, sorry.
+Fixes: 72a9ff3bf7fb ("media: atomisp: get rid of -Wsuggest-attribute=format warnings")
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ .../staging/media/atomisp/pci/atomisp_compat_css20.c  | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-Now, before you guys do any new features, I'd like you to split this
-humongous function umc_normaddr_to_sysaddr() logically into separate
-helpers and each helper does exactly one thing and one thing only.
-
-Then use a verb in its name: umc_translate_normaddr_to_sysaddr() or so.
-
-Also, Yazen, remind me again pls why isn't this function in
-drivers/edac/amd64_edac.c, where it is needed?
-
-If the reason is not valid anymore, let's move it there before splitting
-so that it doesn't bloat the core code.
-
-Thx.
-
+diff --git a/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c b/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
+index 28796ec177e3..85b39de7bc28 100644
+--- a/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
++++ b/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
+@@ -166,6 +166,13 @@ atomisp_css2_dbg_ftrace_print(const char *fmt, va_list args)
+ 	return 0;
+ }
+ 
++static int  __attribute__((format (printf, 1, 0)))
++atomisp_vprintk(const char *fmt, va_list args)
++{
++	vprintk(fmt, args);
++	return 0;
++}
++
+ void atomisp_load_uint32(hrt_address addr, uint32_t *data)
+ {
+ 	*data = atomisp_css2_hw_load_32(addr);
+@@ -857,7 +864,7 @@ static inline int __set_css_print_env(struct atomisp_device *isp, int opt)
+ 		isp->css_env.isp_css_env.print_env.debug_print =
+ 		    atomisp_css2_dbg_ftrace_print;
+ 	else if (opt == 2)
+-		isp->css_env.isp_css_env.print_env.debug_print = vprintk;
++		isp->css_env.isp_css_env.print_env.debug_print = atomisp_vprintk;
+ 	else
+ 		ret = -EINVAL;
+ 
+@@ -890,7 +897,7 @@ int atomisp_css_load_firmware(struct atomisp_device *isp)
+ 
+ 	__set_css_print_env(isp, dbg_func);
+ 
+-	isp->css_env.isp_css_env.print_env.error_print = vprintk;
++	isp->css_env.isp_css_env.print_env.error_print = atomisp_vprintk;
+ 
+ 	/* load isp fw into ISP memory */
+ 	err = ia_css_load_firmware(isp->dev, &isp->css_env.isp_css_env,
 -- 
-Regards/Gruss,
-    Boris.
+2.26.2
 
-https://people.kernel.org/tglx/notes-about-netiquette
