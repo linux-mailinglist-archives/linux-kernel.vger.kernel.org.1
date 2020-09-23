@@ -2,93 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3443A275235
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 09:17:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 902EC27522F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 09:15:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726661AbgIWHRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 03:17:47 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:57342 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726550AbgIWHRr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 03:17:47 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 0D831B5F63FC6E501F08;
-        Wed, 23 Sep 2020 15:17:45 +0800 (CST)
-Received: from huawei.com (10.175.112.208) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Wed, 23 Sep 2020
- 15:17:35 +0800
-From:   Wang Wensheng <wangwensheng4@huawei.com>
-To:     <mpe@ellerman.id.au>, <benh@kernel.crashing.org>,
-        <paulus@samba.org>, <atrajeev@linux.vnet.ibm.com>,
-        <maddy@linux.ibm.com>, <wangwensheng4@huawei.com>,
-        <anju@linux.vnet.ibm.com>, <linuxppc-dev@lists.ozlabs.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <rui.xiang@huawei.com>
-Subject: [PATCH -next v2] powerpc/perf: Fix symbol undeclared warning
-Date:   Wed, 23 Sep 2020 07:14:53 +0000
-Message-ID: <20200923071453.2540-1-wangwensheng4@huawei.com>
-X-Mailer: git-send-email 2.25.0
+        id S1726685AbgIWHPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 03:15:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726550AbgIWHPi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 03:15:38 -0400
+Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050::465:201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50260C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 00:15:38 -0700 (PDT)
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:105:465:1:1:0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4Bx8bD3x9czQlWP;
+        Wed, 23 Sep 2020 09:15:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
+        content-disposition:content-description:content-type
+        :content-type:mime-version:message-id:subject:subject:from:from
+        :date:date:received; s=mail20150812; t=1600845332; bh=qxgYe414M1
+        Mf29+QzYXDxTcG1W4rIE1cEKTwxc6W0K4=; b=LLtzvvEddB7riBdpUKIpHOPRIV
+        zkUzpx8HA6i+GbP5MrhFtHBp8t1T1RgCertzfY9ghfkN/JRXfNvrE2KwmRARxsVM
+        NXT7VUD2csvWnSt6Mf30n7PpAm18nYOzotGYNf5MrSdKbflpBbbbRnjyKmFV1rgQ
+        3ihd+UHXDj532ElgXMQMzHC7YC9jwPt1p8Z0NVKvGMWXw5hKdDFFzdz/lpUU5zb9
+        Uc7mXnLhFmDnOWb7izBoIc/FBz+cMPB6uCf2SnFcsaWHUzSzc9URLKQGCl93+25k
+        s/wSmvq3dKogHDBe5+JBiLJ0QfsgjBGy61ewhO5qsfTgytCoyAvxomp0FCAg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1600845334;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=yydUcsnfgzvWiA/EogiVtXC0mvVj51s7Z38PO9S8mZ0=;
+        b=OhHPul/bUgW/qmBHwWx0aOMDEpMA2GgOJIjdYLGryj97P/R2GqtnZ+rPZjMfGAEYIux6PW
+        IU/ZBU2jiLOYAXuepYQbB2U4MvRYbjGECKUPpWxphbUhKEJJVCG7OfrRHHjMMzae6/+5/A
+        dtw+y+IFT0hs1R07FZCYa18jz1Nrg9whGTMdsDe4S1b1uEoFG8Gfw+ZSX8r4iOq0eDrUH/
+        XcAOQv9QYlACh7XKdNnDIOJ/gzgt95xiAof665ftDkChu7/qxhJUCr5vfRtoGaiKTVSKMa
+        7xuxusMTrQIWTQ8OIEJ1LcY01Qnima9PVODRylAQ0AtVsjrVohmVquEvHZX8nA==
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp1.mailbox.org ([80.241.60.240])
+        by gerste.heinlein-support.de (gerste.heinlein-support.de [91.198.250.173]) (amavisd-new, port 10030)
+        with ESMTP id YBx3ML6zKiFi; Wed, 23 Sep 2020 09:15:32 +0200 (CEST)
+Date:   Wed, 23 Sep 2020 09:15:30 +0200
+From:   Wilken Gottwalt <wilken.gottwalt@mailbox.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH] net: usb: ax88179_178a fix missing stop entry in belkin
+ product
+Message-ID: <20200923071530.GA23455@monster.powergraphx.local>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.112.208]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Description:  =?ISO-8859-1?Q?=20=1B?=
+Content-Disposition: inline
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -4.59 / 15.00 / 15.00
+X-Rspamd-Queue-Id: 9241614E4
+X-Rspamd-UID: 7f1481
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Build kernel with `C=2`:
-arch/powerpc/perf/isa207-common.c:24:18: warning: symbol
-'isa207_pmu_format_attr' was not declared. Should it be static?
-arch/powerpc/perf/power9-pmu.c:101:5: warning: symbol 'p9_dd21_bl_ev'
-was not declared. Should it be static?
-arch/powerpc/perf/power9-pmu.c:115:5: warning: symbol 'p9_dd22_bl_ev'
-was not declared. Should it be static?
+Added the missing .stop entry in the driver_info of the Belking device.
 
-Those symbols are used only in the files that define them so we declare
-them as static to fix the warnings.
-
-Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
+Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
 ---
- arch/powerpc/perf/isa207-common.c | 2 +-
- arch/powerpc/perf/power9-pmu.c    | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/usb/ax88179_178a.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/powerpc/perf/isa207-common.c b/arch/powerpc/perf/isa207-common.c
-index 964437adec18..85dc860b265b 100644
---- a/arch/powerpc/perf/isa207-common.c
-+++ b/arch/powerpc/perf/isa207-common.c
-@@ -21,7 +21,7 @@ PMU_FORMAT_ATTR(thresh_stop,	"config:32-35");
- PMU_FORMAT_ATTR(thresh_start,	"config:36-39");
- PMU_FORMAT_ATTR(thresh_cmp,	"config:40-49");
- 
--struct attribute *isa207_pmu_format_attr[] = {
-+static struct attribute *isa207_pmu_format_attr[] = {
- 	&format_attr_event.attr,
- 	&format_attr_pmcxsel.attr,
- 	&format_attr_mark.attr,
-diff --git a/arch/powerpc/perf/power9-pmu.c b/arch/powerpc/perf/power9-pmu.c
-index 2a57e93a79dc..4a315fad1f99 100644
---- a/arch/powerpc/perf/power9-pmu.c
-+++ b/arch/powerpc/perf/power9-pmu.c
-@@ -98,7 +98,7 @@ extern u64 PERF_REG_EXTENDED_MASK;
- /* PowerISA v2.07 format attribute structure*/
- extern struct attribute_group isa207_pmu_format_group;
- 
--int p9_dd21_bl_ev[] = {
-+static int p9_dd21_bl_ev[] = {
- 	PM_MRK_ST_DONE_L2,
- 	PM_RADIX_PWC_L1_HIT,
- 	PM_FLOP_CMPL,
-@@ -112,7 +112,7 @@ int p9_dd21_bl_ev[] = {
- 	PM_DISP_HELD_SYNC_HOLD,
- };
- 
--int p9_dd22_bl_ev[] = {
-+static int p9_dd22_bl_ev[] = {
- 	PM_DTLB_MISS_16G,
- 	PM_DERAT_MISS_2M,
- 	PM_DTLB_MISS_2M,
+diff --git a/drivers/net/usb/ax88179_178a.c b/drivers/net/usb/ax88179_178a.c
+index a38e868e44d4..ac7bc436da33 100644
+--- a/drivers/net/usb/ax88179_178a.c
++++ b/drivers/net/usb/ax88179_178a.c
+@@ -1823,6 +1823,7 @@ static const struct driver_info belkin_info = {
+ 	.status = ax88179_status,
+ 	.link_reset = ax88179_link_reset,
+ 	.reset	= ax88179_reset,
++	.stop = ax88179_stop,
+ 	.flags	= FLAG_ETHER | FLAG_FRAMING_AX,
+ 	.rx_fixup = ax88179_rx_fixup,
+ 	.tx_fixup = ax88179_tx_fixup,
 -- 
-2.25.0
+2.28.0
 
