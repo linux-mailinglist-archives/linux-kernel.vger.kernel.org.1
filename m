@@ -2,69 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3515A275B32
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 718D0275B38
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726672AbgIWPLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 11:11:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46106 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgIWPLb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 11:11:31 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600873890;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=E83v/ucSMhfwTfzb6+rCLz1IyffRCv3VxbYq7yyWQFA=;
-        b=o7SaWIcurg5lg7DJWZDVtpbqkcPhHlyKzFMtsbc5vWBM5uwvEmV25hy6eZV2eEp7B3IvBs
-        r37XILVPHv7rWt0fNk88kei0U1F4TT996aWYVyq+8mD7doBDKIk2eAq4RY9M9g0BFBluwS
-        xbNfRESUqKZUdcOnYoWfljIlouSqtSI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6EFE3AB54;
-        Wed, 23 Sep 2020 15:12:07 +0000 (UTC)
-Date:   Wed, 23 Sep 2020 17:11:29 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk 3/5] printk: use buffer pool for sprint buffers
-Message-ID: <20200923151129.GC6442@alley>
-References: <20200922153816.5883-1-john.ogness@linutronix.de>
- <20200922153816.5883-4-john.ogness@linutronix.de>
+        id S1726668AbgIWPPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 11:15:01 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:45197 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgIWPPB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 11:15:01 -0400
+Received: by mail-ot1-f68.google.com with SMTP id g96so8223otb.12;
+        Wed, 23 Sep 2020 08:15:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jLhyE7P88DmYg4/i6cdyiyPI9KCBG/i6ZZuiz/aXSLc=;
+        b=Q4lxKB/nQ2UAVawqaeqehqOj4qKewY+w30Q3EQjP+XK9vEKi3RUeFlDuzFNQo61Pe4
+         WS7dQ8/kBbF7TwIU3gsB2I0t8lCJiG46s34Ws9mCLtg9h0MqwEAhagW36TGgZ8iUdL6V
+         Eyyhr76muktuxSimtfiicvfgZx0W7ELDhITlbRvJWk8srBR7O0s36CPeoU9eBS73ehn7
+         z/QpkOUDslgKZOiwpP8AufndbFmBb3Dw1DPFeLp59GLqNjzmeZbVuJLOSiEGJm+8eFdD
+         UEjVCv0cHX1yax4yS1X1/0cWNRYzPFdb7VyDpgYLXkkfowg+3Sp84awGAwJgJzw9zwTn
+         jEPg==
+X-Gm-Message-State: AOAM53133+ATG7rk9L+BYQqwWbtkN8KOEig6m9w/G5t8UjehwVwD1xmB
+        c3eGcjhvKtxrH3w8ldftKn2LP6ljZZdwAUMxr0F2uNC2gfg=
+X-Google-Smtp-Source: ABdhPJykR8lBZF2HGW4t494yDOxxknw2beOWkCZU2P5J0lda09bal7FRXuYyNAdAJoX9HWknleYb3Y466Xlu/6zqt2E=
+X-Received: by 2002:a9d:6010:: with SMTP id h16mr114896otj.262.1600874100200;
+ Wed, 23 Sep 2020 08:15:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922153816.5883-4-john.ogness@linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <cover.1600238586.git.viresh.kumar@linaro.org> <c9dc39f9956ad9851511d6710e8f8a5cb142789e.1600238586.git.viresh.kumar@linaro.org>
+In-Reply-To: <c9dc39f9956ad9851511d6710e8f8a5cb142789e.1600238586.git.viresh.kumar@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 23 Sep 2020 17:14:49 +0200
+Message-ID: <CAJZ5v0hpT9CAb1hxKcQVA-OJP3UYja=Kqvgh-Ed4N8Ln+=2b5A@mail.gmail.com>
+Subject: Re: [PATCH V2 3/4] cpufreq: stats: Enable stats for fast-switch as well
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Lukasz Luba <lukasz.luba@arm.com>, cristian.marussi@arm.com,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2020-09-22 17:44:14, John Ogness wrote:
-> vprintk_store() is using a single static buffer as a temporary
-> sprint buffer for the message text. This will not work once
-> @logbuf_lock is removed. Replace the single static buffer with a
-> pool of buffers.
+On Wed, Sep 16, 2020 at 8:46 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> Now that all the blockers are gone for enabling stats in fast-switching
+> case, enable it.
+>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  drivers/cpufreq/cpufreq.c       | 6 +++++-
+>  drivers/cpufreq/cpufreq_stats.c | 6 ------
+>  2 files changed, 5 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> index 47aa90f9a7c2..d5fe64e96be9 100644
+> --- a/drivers/cpufreq/cpufreq.c
+> +++ b/drivers/cpufreq/cpufreq.c
+> @@ -2057,8 +2057,12 @@ unsigned int cpufreq_driver_fast_switch(struct cpufreq_policy *policy,
+>                                         unsigned int target_freq)
+>  {
+>         target_freq = clamp_val(target_freq, policy->min, policy->max);
+> +       target_freq = cpufreq_driver->fast_switch(policy, target_freq);
+>
+> -       return cpufreq_driver->fast_switch(policy, target_freq);
+> +       if (target_freq)
+> +               cpufreq_stats_record_transition(policy, target_freq);
 
-The buffer is used because we do not know the length of the
-formatted message to reserve the right space in the ring buffer
-in advance.
+So this adds two extra branches in the scheduler path for the cases
+when the stats are not used at all which seems avoidable to some
+extent.
 
-There was the idea to call vsprintf(NULL, fmt, args) to count
-the length in advance.
+Can we check policy->stats upfront here and bail out right away if it
+is not set, for example?
 
-AFAIK, there is one catch. We need to use va_copy() around
-the 1st call because va_format can be proceed only once.
-See, va_format() in lib/vsprintf.c as an example.
-
-Is there any other problem, please?
-
-Best Regards,
-Petr
+> +
+> +       return target_freq;
+>  }
+>  EXPORT_SYMBOL_GPL(cpufreq_driver_fast_switch);
+>
+> diff --git a/drivers/cpufreq/cpufreq_stats.c b/drivers/cpufreq/cpufreq_stats.c
+> index 314fa1d506d0..daea17f0c36c 100644
+> --- a/drivers/cpufreq/cpufreq_stats.c
+> +++ b/drivers/cpufreq/cpufreq_stats.c
+> @@ -69,9 +69,6 @@ static ssize_t show_time_in_state(struct cpufreq_policy *policy, char *buf)
+>         ssize_t len = 0;
+>         int i;
+>
+> -       if (policy->fast_switch_enabled)
+> -               return 0;
+> -
+>         for (i = 0; i < stats->state_num; i++) {
+>                 if (pending) {
+>                         if (i == stats->last_index)
+> @@ -115,9 +112,6 @@ static ssize_t show_trans_table(struct cpufreq_policy *policy, char *buf)
+>         ssize_t len = 0;
+>         int i, j, count;
+>
+> -       if (policy->fast_switch_enabled)
+> -               return 0;
+> -
+>         len += scnprintf(buf + len, PAGE_SIZE - len, "   From  :    To\n");
+>         len += scnprintf(buf + len, PAGE_SIZE - len, "         : ");
+>         for (i = 0; i < stats->state_num; i++) {
+> --
+> 2.25.0.rc1.19.g042ed3e048af
+>
