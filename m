@@ -2,111 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B280275F9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 20:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53614275F7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 20:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726794AbgIWSSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 14:18:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52926 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726687AbgIWSRn (ORCPT
+        id S1726638AbgIWSLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 14:11:42 -0400
+Received: from mother.openwall.net ([195.42.179.200]:60274 "HELO
+        mother.openwall.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1726476AbgIWSLl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 14:17:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600885062;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:in-reply-to:in-reply-to:references:references;
-        bh=xjpjpRpbrSKVLsfonq//6ufQkFBP9fDdk1nbF16APfU=;
-        b=IhSBOor5d1FoepnlZm1I8QHHoZR5lLTAJycOOn3XcRdTqHDLX9rIUslKWi+tmotWNrrzQZ
-        +Ac/sew9kl/D1ml3rfHXegQgZakq94vZEEiZVVeSLkt4o1zTBDEOtifVJ0Nn9sGmAlMyas
-        2zG5VMEp6xyX97p5HF7AQiFONHhjmQo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-104-l18lSME8ME6Mv-dEVZsF6Q-1; Wed, 23 Sep 2020 14:17:41 -0400
-X-MC-Unique: l18lSME8ME6Mv-dEVZsF6Q-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A528B64095;
-        Wed, 23 Sep 2020 18:17:38 +0000 (UTC)
-Received: from virtlab719.virt.lab.eng.bos.redhat.com (virtlab719.virt.lab.eng.bos.redhat.com [10.19.153.15])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D079F5C1C7;
-        Wed, 23 Sep 2020 18:17:36 +0000 (UTC)
-From:   Nitesh Narayan Lal <nitesh@redhat.com>
-To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        frederic@kernel.org, mtosatti@redhat.com, sassmann@redhat.com,
-        jesse.brandeburg@intel.com, lihong.yang@intel.com,
-        helgaas@kernel.org, nitesh@redhat.com, jeffrey.t.kirsher@intel.com,
-        jacob.e.keller@intel.com, jlelli@redhat.com, hch@infradead.org,
-        bhelgaas@google.com, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
-        jerinj@marvell.com, mathias.nyman@intel.com, jiri@nvidia.com,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org
-Subject: [PATCH v2 4/4] PCI: Limit pci_alloc_irq_vectors as per housekeeping CPUs
-Date:   Wed, 23 Sep 2020 14:11:26 -0400
-Message-Id: <20200923181126.223766-5-nitesh@redhat.com>
-In-Reply-To: <20200923181126.223766-1-nitesh@redhat.com>
-References: <20200923181126.223766-1-nitesh@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        Wed, 23 Sep 2020 14:11:41 -0400
+Received: (qmail 8044 invoked from network); 23 Sep 2020 18:11:39 -0000
+Received: from localhost (HELO pvt.openwall.com) (127.0.0.1)
+  by localhost with SMTP; 23 Sep 2020 18:11:39 -0000
+Received: by pvt.openwall.com (Postfix, from userid 503)
+        id 73B4DAB844; Wed, 23 Sep 2020 20:11:36 +0200 (CEST)
+Date:   Wed, 23 Sep 2020 20:11:36 +0200
+From:   Solar Designer <solar@openwall.com>
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, madvenka@linux.microsoft.com,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, oleg@redhat.com,
+        x86@kernel.org, luto@kernel.org, David.Laight@ACULAB.COM,
+        mark.rutland@arm.com, mic@digikod.net,
+        Rich Felker <dalias@libc.org>
+Subject: Re: [PATCH v2 0/4] [RFC] Implement Trampoline File Descriptor
+Message-ID: <20200923181136.GA8846@openwall.com>
+References: <20200922215326.4603-1-madvenka@linux.microsoft.com> <20200923081426.GA30279@amd> <20200923091456.GA6177@openwall.com> <87wo0ko8v0.fsf@oldenburg2.str.redhat.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87wo0ko8v0.fsf@oldenburg2.str.redhat.com>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch limits the pci_alloc_irq_vectors, max_vecs argument that is
-passed on by the caller based on the housekeeping online CPUs (that are
-meant to perform managed IRQ jobs).
+On Wed, Sep 23, 2020 at 04:39:31PM +0200, Florian Weimer wrote:
+> * Solar Designer:
+> 
+> > While I share my opinion here, I don't mean that to block Madhavan's
+> > work.  I'd rather defer to people more knowledgeable in current userland
+> > and ABI issues/limitations and plans on dealing with those, especially
+> > to Florian Weimer.  I haven't seen Florian say anything specific for or
+> > against Madhavan's proposal, and I'd like to.  (Have I missed that?)
 
-A minimum of the max_vecs passed and housekeeping online CPUs is derived
-to ensure that we don't create excess vectors as that can be problematic
-specifically in an RT environment. In cases where the min_vecs exceeds the
-housekeeping online CPUs, max vecs is restricted based on the min_vecs
-instead. The proposed change is required because for an RT environment
-unwanted IRQs are moved to the housekeeping CPUs from isolated CPUs to
-keep the latency overhead to a minimum. If the number of housekeeping CPUs
-is significantly lower than that of the isolated CPUs we can run into
-failures while moving these IRQs to housekeeping CPUs due to per CPU
-vector limit.
+[...]
+> I think it's unnecessary for the libffi use case.
+[...]
 
-Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
----
- include/linux/pci.h | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+> I don't know if kernel support could
+> make sense in this context, but it would be a completely different
+> patch.
 
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index 835530605c0d..cf9ca9410213 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -38,6 +38,7 @@
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/resource_ext.h>
-+#include <linux/sched/isolation.h>
- #include <uapi/linux/pci.h>
- 
- #include <linux/pci_ids.h>
-@@ -1797,6 +1798,20 @@ static inline int
- pci_alloc_irq_vectors(struct pci_dev *dev, unsigned int min_vecs,
- 		      unsigned int max_vecs, unsigned int flags)
- {
-+	unsigned int hk_cpus = hk_num_online_cpus();
-+
-+	/*
-+	 * For a real-time environment, try to be conservative and at max only
-+	 * ask for the same number of vectors as there are housekeeping online
-+	 * CPUs. In case, the min_vecs requested exceeds the housekeeping
-+	 * online CPUs, restrict the max_vecs based on the min_vecs instead.
-+	 */
-+	if (hk_cpus != num_online_cpus()) {
-+		if (min_vecs > hk_cpus)
-+			max_vecs = min_vecs;
-+		else
-+			max_vecs = min_t(int, max_vecs, hk_cpus);
-+	}
- 	return pci_alloc_irq_vectors_affinity(dev, min_vecs, max_vecs, flags,
- 					      NULL);
- }
--- 
-2.18.2
+Thanks.  Are there currently relevant use cases where the proposed
+trampfd would be useful and likely actually made use of by userland -
+e.g., specific userland project developers saying they'd use it, or
+Madhavan intending to develop and contribute userland patches?
 
+Alexander
