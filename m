@@ -2,77 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FB88275BC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C81AD275BC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:25:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726851AbgIWPZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 11:25:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48464 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726620AbgIWPZN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 11:25:13 -0400
-Received: from localhost (lfbn-ncy-1-588-162.w81-51.abo.wanadoo.fr [81.51.203.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C0EAD2220D;
-        Wed, 23 Sep 2020 15:25:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600874713;
-        bh=GtUNi2xC/DgdAUMktjvo6czLNTJ9nms3Adqfe/jg1gE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qj/4Jc+mZHzRendLHQgw1OaMaRrMJwD/fRy0JEQ3j1lErl5LUWQo2ALwEYZ2p8Sec
-         Layj50SVJrhV7oqIJe84DqBizv6cdoS1+gahgPKRshtIz+KAPn4uejW08IJ9IcoKam
-         eq366HchbHDi0vTyU8Vzdb8IUnfuurDOcDMq2UKU=
-Date:   Wed, 23 Sep 2020 17:25:10 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>
-Subject: Re: [RFC PATCH 01/12] rcu: Implement rcu_segcblist_is_offloaded()
- config dependent
-Message-ID: <20200923152509.GA31465@lenoir>
-References: <20200921124351.24035-1-frederic@kernel.org>
- <20200921124351.24035-2-frederic@kernel.org>
- <20200922002732.GT29330@paulmck-ThinkPad-P72>
- <20200922214326.GF5217@lenoir>
- <20200922231150.GK29330@paulmck-ThinkPad-P72>
+        id S1726704AbgIWPZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 11:25:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726184AbgIWPZv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 11:25:51 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC43C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 08:25:50 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id l15so4777627wmh.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 08:25:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AZ0TNN/4mlEawbq5kme4KBtAcxVTJOsazW2quN2exhk=;
+        b=knEE8ZNEPhd02dhjiafNZIh6Ilcs2hRJuBBFe+Sx2gKj6V+tziP1ZYabkfgXV17TW+
+         NUMy2UFrZwlfmV+sdZoLINzvMUyTG87xDRqw6gwbhA534sM/HHF/4rwqLNdrpC+7QaoX
+         qU2N+vvwVpZazeSc6YeUX68W22fba8Lj2eA+w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=AZ0TNN/4mlEawbq5kme4KBtAcxVTJOsazW2quN2exhk=;
+        b=mcvahAAJi4EbFjzsnWXfcsC2TMbRvACxmzao/1klm0GzwW4AW9wKAv5xKRLukJvWJP
+         RP65u3u5Nx9sp4Kc+ptHGesQXp1UKhIpUfQrQ0ftPOStR7y/pyrNU6I9zJ/N+Pk6sxZK
+         d/ho6eRvl8QBANa1epq1LzqouKObZ6V/bySqVmZRk9A64VXXQwIAtr+674UVc9lfO/3p
+         NFA2hghKLqYDX3jfSjvKFcAhoYLjebfk6FzTK8UpalOOCDdBbouaHG830BMU6hIPGu8F
+         ZiCTNaTgpra0AQx5J9gmm6msLpyeDkIqnTO21Gd3H2tsfgLF/XpfJiHggHq1jUO5sERQ
+         R3kQ==
+X-Gm-Message-State: AOAM532rMhxZKsLe6a9wcll/5WKq+i0toazenIw4wzFRhrUe2136P/0h
+        EH959ugnVyDKg2jWwoIVbtDduw==
+X-Google-Smtp-Source: ABdhPJwhaHjfJRQ0ck6dLHaDnam+iSpD5QCMjr6WsmrCc91FeiuFw1E8N+Fhyjg1fYBV6n1qNiQ1Mg==
+X-Received: by 2002:a1c:398a:: with SMTP id g132mr75865wma.41.1600874748672;
+        Wed, 23 Sep 2020 08:25:48 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id h76sm178488wme.10.2020.09.23.08.25.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2020 08:25:47 -0700 (PDT)
+Date:   Wed, 23 Sep 2020 17:25:45 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Tim Murray <timmurray@google.com>, Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH 0/3] drm: commit_work scheduling
+Message-ID: <20200923152545.GQ438822@phenom.ffwll.local>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Tim Murray <timmurray@google.com>, Tejun Heo <tj@kernel.org>
+References: <20200919193727.2093945-1-robdclark@gmail.com>
+ <20200921092154.GJ438822@phenom.ffwll.local>
+ <CAF6AEGuDRk9D_aqyb6R8N5VHx2rvbZDf4uTqF3gQTrmzno+qtw@mail.gmail.com>
+ <CAKMK7uEqDD-oDAQKyA9DQbxkCgEjC5yyjvKR7d8T0Gj0SqEZ4A@mail.gmail.com>
+ <CAF6AEGtYAn+W8HxP7SXtxPr5FsEB1hYGU91WrHCtwX89UmUR5w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200922231150.GK29330@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAF6AEGtYAn+W8HxP7SXtxPr5FsEB1hYGU91WrHCtwX89UmUR5w@mail.gmail.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 04:11:50PM -0700, Paul E. McKenney wrote:
-> On Tue, Sep 22, 2020 at 11:43:26PM +0200, Frederic Weisbecker wrote:
-> > On Mon, Sep 21, 2020 at 05:27:32PM -0700, Paul E. McKenney wrote:
-> > > On Mon, Sep 21, 2020 at 02:43:40PM +0200, Frederic Weisbecker wrote:
-> > > > This simplify the usage of this API and avoid checking the kernel
-> > > > config from the callers.
-> > > > 
-> > > > Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > > > Cc: Paul E. McKenney <paulmck@kernel.org>
-> > > > Cc: Josh Triplett <josh@joshtriplett.org>
-> > > > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > > > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> > > > Cc: Joel Fernandes <joel@joelfernandes.org>
-> > > 
-> > > Nice cleanup!  I clearly should have done it this way to start with.
-> > > 
-> > > Any reason I shouldn't pull this into -rcu right now?
-> > 
-> > I think that very one can be applied indeed.
+On Tue, Sep 22, 2020 at 07:48:10AM -0700, Rob Clark wrote:
+> On Mon, Sep 21, 2020 at 11:59 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+> >
+> > On Mon, Sep 21, 2020 at 5:16 PM Rob Clark <robdclark@gmail.com> wrote:
+> > >
+> > > On Mon, Sep 21, 2020 at 2:21 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > > >
+> > > > On Sat, Sep 19, 2020 at 12:37:23PM -0700, Rob Clark wrote:
+> > > > > From: Rob Clark <robdclark@chromium.org>
+> > > > >
+> > > > > The android userspace treats the display pipeline as a realtime problem.
+> > > > > And arguably, if your goal is to not miss frame deadlines (ie. vblank),
+> > > > > it is.  (See https://lwn.net/Articles/809545/ for the best explaination
+> > > > > that I found.)
+> > > > >
+> > > > > But this presents a problem with using workqueues for non-blocking
+> > > > > atomic commit_work(), because the SCHED_FIFO userspace thread(s) can
+> > > > > preempt the worker.  Which is not really the outcome you want.. once
+> > > > > the required fences are scheduled, you want to push the atomic commit
+> > > > > down to hw ASAP.
+> > > > >
+> > > > > But the decision of whether commit_work should be RT or not really
+> > > > > depends on what userspace is doing.  For a pure CFS userspace display
+> > > > > pipeline, commit_work() should remain SCHED_NORMAL.
+> > > > >
+> > > > > To handle this, convert non-blocking commit_work() to use per-CRTC
+> > > > > kthread workers, instead of system_unbound_wq.  Per-CRTC workers are
+> > > > > used to avoid serializing commits when userspace is using a per-CRTC
+> > > > > update loop.
+> > > > >
+> > > > > A client-cap is introduced so that userspace can opt-in to SCHED_FIFO
+> > > > > priority commit work.
+> > > > >
+> > > > > A potential issue is that since 616d91b68cd ("sched: Remove
+> > > > > sched_setscheduler*() EXPORTs") we have limited RT priority levels,
+> > > > > meaning that commit_work() ends up running at the same priority level
+> > > > > as vblank-work.  This shouldn't be a big problem *yet*, due to limited
+> > > > > use of vblank-work at this point.  And if it could be arranged that
+> > > > > vblank-work is scheduled before signaling out-fences and/or sending
+> > > > > pageflip events, it could probably work ok to use a single priority
+> > > > > level for both commit-work and vblank-work.
+> > > >
+> > > > The part I don't like about this is that it all feels rather hacked
+> > > > together, and if we add more stuff (or there's some different thing in the
+> > > > system that also needs rt scheduling) then it doesn't compose.
+> > >
+> > > The ideal thing would be that userspace is in control of the
+> > > priorities.. the setclientcap approach seemed like a reasonable way to
+> > > give the drm-master a way to opt in.
+> > >
+> > > I suppose instead userspace could use sched_setscheduler().. but that
+> > > would require userspace to be root, and would require some way to find
+> > > the tid.
+> >
+> > Userspace already needs that for the SCHED_FIFO for surface-flinger.
+> > Or is the problem that CAP_SYS_NICE is only good for your own
+> > processes?
 > 
-> Very well!  I had to hand-apply it due to recent -rcu thrash, and as
-> usual I could not resist wordsmithing the commit log.  Please let
-> me know if I messed anything up.
+> tbh, I'm not completely sure offhand what gives surfaceflinger
+> permission to set itself SCHED_FIFO
+> 
+> (But on CrOS there are a few more pieces to the puzzle)
+> 
+> > Other question I have for this is whether there's any recommendations
+> > for naming the kthreads (since I guess that name is what becomes the
+> > uapi for userspace to control this)?
+> >
+> > Otherwise I think "userspace calls sched_setscheduler on the right
+> > kthreads" sounds like a good interface, since it lets userspace decide
+> > how it all needs to fit together and compose. Anything we hard-code in
+> > an ioctl is kinda lost cause. And we can choose the default values to
+> > work reasonably well when the compositor runs at normal priority
+> > (lowest niceness or something like that for the commit work).
+> 
+> I don't really like the naming convention approach.. what is to stop
+> some unrelated process to name it's thread the same thing to get a
+> SCHED_FIFO boost..
+> 
+> But we can stick with my idea to expose the thread id as a read-only
+> CRTC property, for userspace to find the things to call
+> sched_setscheduler() on.  If for whatever reason the drm master is not
+> privileged (or is running in a sandbox, etc), a small helper that has
+> the necessary permissions could open the drm device to find the CRTC
+> thread-ids and call sched_setscheduler()..
 
-Looks very good, thanks!
+Hm thread ids don't translate too well across PID namespaces I think ...
+So that's another can of worms. And pidfd doesn't really work as a
+property.
+
+I also thought kernel threads can be distinguished from others, so
+userspace shouldn't be able to sneak in and get elevated by accident.
+-Daniel
+
+> 
+> BR,
+> -R
+> 
+> > -Daniel
+> >
+> > > Is there some way we could arrange for the per-crtc kthread's to be
+> > > owned by the drm master?  That would solve the "must be root" issue.
+> > > And since the target audience is an atomic userspace, I suppose we
+> > > could expose the tid as a read-only property on the crtc?
+> > >
+> > > BR,
+> > > -R
+> > >
+> > > > So question to rt/worker folks: What's the best way to let userspace set
+> > > > the scheduling mode and priorities of things the kernel does on its
+> > > > behalf? Surely we're not the first ones where if userspace runs with some
+> > > > rt priority it'll starve out the kernel workers that it needs. Hardcoding
+> > > > something behind a subsystem ioctl (which just means every time userspace
+> > > > changes what it does, we need a new such flag or mode) can't be the right
+> > > > thing.
+> > > >
+> > > > Peter, Tejun?
+> > > >
+> > > > Thanks, Daniel
+> > > >
+> > > > >
+> > > > > Rob Clark (3):
+> > > > >   drm/crtc: Introduce per-crtc kworker
+> > > > >   drm/atomic: Use kthread worker for nonblocking commits
+> > > > >   drm: Add a client-cap to set scheduling mode
+> > > > >
+> > > > >  drivers/gpu/drm/drm_atomic_helper.c | 13 ++++++----
+> > > > >  drivers/gpu/drm/drm_auth.c          |  4 ++++
+> > > > >  drivers/gpu/drm/drm_crtc.c          | 37 +++++++++++++++++++++++++++++
+> > > > >  drivers/gpu/drm/drm_ioctl.c         | 13 ++++++++++
+> > > > >  include/drm/drm_atomic.h            | 31 ++++++++++++++++++++++++
+> > > > >  include/drm/drm_crtc.h              | 10 ++++++++
+> > > > >  include/uapi/drm/drm.h              | 13 ++++++++++
+> > > > >  7 files changed, 117 insertions(+), 4 deletions(-)
+> > > > >
+> > > > > --
+> > > > > 2.26.2
+> > > > >
+> > > > > _______________________________________________
+> > > > > dri-devel mailing list
+> > > > > dri-devel@lists.freedesktop.org
+> > > > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> > > >
+> > > > --
+> > > > Daniel Vetter
+> > > > Software Engineer, Intel Corporation
+> > > > http://blog.ffwll.ch
+> > > _______________________________________________
+> > > dri-devel mailing list
+> > > dri-devel@lists.freedesktop.org
+> > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> >
+> >
+> >
+> > --
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > http://blog.ffwll.ch
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
