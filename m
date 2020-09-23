@@ -2,255 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05247275841
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 14:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2DF2275844
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 14:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbgIWMxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 08:53:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23635 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726513AbgIWMxC (ORCPT
+        id S1726676AbgIWMxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 08:53:11 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:59202 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726606AbgIWMxK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 08:53:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600865580;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/g1tYT9pMTr2ngmzRF/xBW6JmkEzc5xr2sKzll0rdNE=;
-        b=TebylBm05NHksi/chRWhsL5ny0fTKJiLguVowKBtP2GH0lm1B3N1yht/fOLQJu4GGLa6nb
-        1oYJRUb7HtSkkC3oT8ZnVYx94CJy9EdDjNzJtpkT9IfY+aREkvne9RFaqiDMxG1tko1WCb
-        Maep2bkT9tSzpktncr7M9Vk5YzWDxdA=
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
- [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-362-ORyQrwXZNq6x74NN81XEWQ-1; Wed, 23 Sep 2020 08:52:58 -0400
-X-MC-Unique: ORyQrwXZNq6x74NN81XEWQ-1
-Received: by mail-oo1-f71.google.com with SMTP id h20so10249851oou.8
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 05:52:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=/g1tYT9pMTr2ngmzRF/xBW6JmkEzc5xr2sKzll0rdNE=;
-        b=sXRBqJ3S9moIk+h8R62pypq+9dbUTNxgfX31Ky+121MbqJ2ptCwMhfbleoEYPSMQGo
-         z7tW5x5SMv72wafgn8E0Vxr5e/tO46DXAerMhEx9Kxc83PU0Aih/ihZEWZw2wp5J+BTN
-         bx3Wb6vNIjTHoFrLLrNKqmbFQQg2AcQ6MRhJslt9X0Rl8XJmA2bwl00x8Ft0fGr001be
-         OnbHKjaNQ2cau5ihphyicVNbS3YfYJE570VPQDVmkt/zPwV+VenadQzO6Q0FHJmraUZp
-         WOH/1gFQzdsZ79qLpJxR0C8zYe9+76PpNyJo/cQvICzCV6QbGSt7tlSSVstKqtCNrCOq
-         WegA==
-X-Gm-Message-State: AOAM531qvOYje/vNYclMxxPECNsdf+t2oMsbZum7FD07qG6//kc/g+Ns
-        Lv2ugx6KX7fut/4H+jZ0nYfnI9MharrL9oXN3dIUF5UHI1pLw7A2KrPiwZZR50XNowbjgXGZQ+Z
-        FsMW0eJWGGxg+9F4dTQRirdvh
-X-Received: by 2002:a05:6830:1d96:: with SMTP id y22mr5970838oti.243.1600865577689;
-        Wed, 23 Sep 2020 05:52:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxj1fnOWsn6weBjbgU91ROnyK3cBQtj+KHENpBSVntT/XWQ0FthpviuTMZnwBKijHxMnvclZA==
-X-Received: by 2002:a05:6830:1d96:: with SMTP id y22mr5970819oti.243.1600865577322;
-        Wed, 23 Sep 2020 05:52:57 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id z10sm8950663ooz.14.2020.09.23.05.52.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Sep 2020 05:52:56 -0700 (PDT)
-Subject: Re: [PATCH v1 08/12] fpga: expose sec-mgr update errors
-To:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
-        lee.jones@linaro.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
-        matthew.gerlach@intel.com
-References: <20200904235305.6254-1-russell.h.weight@intel.com>
- <20200904235305.6254-9-russell.h.weight@intel.com>
- <448b27a2-0724-77c1-20e8-1c3ff9287034@redhat.com>
- <62e8f79b-32aa-041e-8b12-4b8570b085f6@intel.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <16738b0c-0e8a-8f39-4f4c-325bc74f1e3e@redhat.com>
-Date:   Wed, 23 Sep 2020 05:52:55 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Wed, 23 Sep 2020 08:53:10 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08NCWvgP155709;
+        Wed, 23 Sep 2020 08:53:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=pp1;
+ bh=Z8mPk36VOce+KlKDpk8jJO4I7+ATiLIwcpb4W6Wl/mQ=;
+ b=X10kQhDhAVJx9QlHu9KXpP16n0+0avj7fF2vo2AxUZva6aFKGF83CwVdIv9cuj6djNc6
+ BtYzYGS23UamJ4SP4pX0oRSRlapYUQlX+9/b/mnj7fWwjADhK5xjHr2jRxAtG4h+dDnl
+ lAMZya9iXkFMW36DvyA6ky8vdSi1gUIDM8I8QwRmz19I9T1Vk5giql7c6jXYME3SZvPT
+ twpJ/MTPEozK2tJ7cQNNkucnrnBThh3x/Jscgc3wqLrxbYuoDk84fG8/sCplztzH22Id
+ lVrcxt7+BAhxPKyKEsv028mmvhpt9SpdGsyElu5Yv6Krk6SgcAPCXlVla1fchPyv+xue 9A== 
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33r5dy2p90-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Sep 2020 08:53:06 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08NChkh9019993;
+        Wed, 23 Sep 2020 12:53:04 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma05fra.de.ibm.com with ESMTP id 33n9m7t5bh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Sep 2020 12:53:04 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08NCr1XF23068940
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 23 Sep 2020 12:53:01 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3E14642047;
+        Wed, 23 Sep 2020 12:53:01 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7BAC94203F;
+        Wed, 23 Sep 2020 12:53:00 +0000 (GMT)
+Received: from marcibm (unknown [9.145.64.218])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed, 23 Sep 2020 12:53:00 +0000 (GMT)
+From:   Marc Hartmayer <mhartmay@linux.ibm.com>
+To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        Marc Hartmayer <mhartmay@linux.ibm.com>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Block Mailing List <linux-block@vger.kernel.org>,
+        Linux SCSI Mailing List <linux-scsi@vger.kernel.org>
+Subject: linux-next: possible bug in 'block: remove the BIO_NULL_MAPPED flag'
+Date:   Wed, 23 Sep 2020 14:52:59 +0200
+Message-ID: <87tuvo8xjo.fsf@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <62e8f79b-32aa-041e-8b12-4b8570b085f6@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-23_07:2020-09-23,2020-09-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxlogscore=999
+ impostorscore=0 clxscore=1011 phishscore=0 bulkscore=0 malwarescore=0
+ suspectscore=1 priorityscore=1501 adultscore=0 lowpriorityscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009230098
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Christoph, Jens,
 
-On 9/22/20 4:42 PM, Russ Weight wrote:
->
-> On 9/6/20 9:27 AM, Tom Rix wrote:
->> On 9/4/20 4:53 PM, Russ Weight wrote:
->>> Extend Intel Security Manager class driver to include
->>> an update/error sysfs node that can be read for error
->>> information when a secure update fails.
->>>
->>> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
->>> Reviewed-by: Wu Hao <hao.wu@intel.com>
->>> ---
->>>  .../ABI/testing/sysfs-class-ifpga-sec-mgr     | 17 ++++++
->>>  drivers/fpga/ifpga-sec-mgr.c                  | 60 +++++++++++++++++--
->>>  include/linux/fpga/ifpga-sec-mgr.h            |  1 +
->>>  3 files changed, 73 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr b/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
->>> index 849ccb2802f8..e7b1b02bf7ee 100644
->>> --- a/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
->>> +++ b/Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
->>> @@ -97,3 +97,20 @@ Description:	Read-only. Returns a string describing the current
->>>  		programming. Userspace code can poll on this file,
->>>  		as it will be signaled by sysfs_notify() on each
->>>  		state change.
->>> +
->>> +What: 		/sys/class/ifpga_sec_mgr/ifpga_secX/update/error
->>> +Date:		Sep 2020
->>> +KernelVersion:  5.10
->>> +Contact:	Russ Weight <russell.h.weight@intel.com>
->>> +Description:	Read-only. Returns a string describing the failure
->>> +		of a secure update. This string will be in the form
->>> +		of <STATUS>:<ERROR>, where <STATUS> will be one of
->>> +		the status strings described for the status sysfs
->>> +		file and <ERROR> will be one of the following:
->>> +		hw-error, timeout, user-abort, device-busy,
->>> +		invalid-file-size, read-write-error, flash-wearout,
->>> +		file-read-error.  The error sysfs file is only
->>> +		meaningful when the secure update engine is in the
->>> +		idle state. If this file is read while a secure
->>> +		update is in progress, then the read will fail with
->>> +		EBUSY.
->>> diff --git a/drivers/fpga/ifpga-sec-mgr.c b/drivers/fpga/ifpga-sec-mgr.c
->>> index 5fe3d85e2963..a7718bd8ee61 100644
->>> --- a/drivers/fpga/ifpga-sec-mgr.c
->>> +++ b/drivers/fpga/ifpga-sec-mgr.c
->>> @@ -146,10 +146,16 @@ static void update_progress(struct ifpga_sec_mgr *imgr,
->>>  	sysfs_notify(&imgr->dev.kobj, "update", "status");
->>>  }
->>>  
->>> +static void set_error(struct ifpga_sec_mgr *imgr, enum ifpga_sec_err err_code)
->>> +{
->>> +	imgr->err_state = imgr->progress;
->>> +	imgr->err_code = err_code;
->>> +}
->>> +
->>>  static void ifpga_sec_dev_error(struct ifpga_sec_mgr *imgr,
->>>  				enum ifpga_sec_err err_code)
->>>  {
->>> -	imgr->err_code = err_code;
->>> +	set_error(imgr, err_code);
->>>  	imgr->iops->cancel(imgr);
->>>  }
->>>  
->>> @@ -172,7 +178,7 @@ static void ifpga_sec_mgr_update(struct work_struct *work)
->>>  
->>>  	get_device(&imgr->dev);
->>>  	if (request_firmware(&fw, imgr->filename, &imgr->dev)) {
->>> -		imgr->err_code = IFPGA_SEC_ERR_FILE_READ;
->>> +		set_error(imgr, IFPGA_SEC_ERR_FILE_READ);
->>>  		goto idle_exit;
->>>  	}
->>>  
->>> @@ -180,7 +186,7 @@ static void ifpga_sec_mgr_update(struct work_struct *work)
->>>  	imgr->remaining_size = fw->size;
->>>  
->>>  	if (!try_module_get(imgr->dev.parent->driver->owner)) {
->>> -		imgr->err_code = IFPGA_SEC_ERR_BUSY;
->>> +		set_error(imgr, IFPGA_SEC_ERR_BUSY);
->>>  		goto release_fw_exit;
->>>  	}
->>>  
->>> @@ -266,16 +272,59 @@ static const char * const sec_mgr_prog_str[] = {
->>>  	"programming"		/* IFPGA_SEC_PROG_PROGRAMMING */
->>>  };
->>>  
->>> +static const char * const sec_mgr_err_str[] = {
->>> +	"none",			/* IFPGA_SEC_ERR_NONE */
->>> +	"hw-error",		/* IFPGA_SEC_ERR_HW_ERROR */
->>> +	"timeout",		/* IFPGA_SEC_ERR_TIMEOUT */
->>> +	"user-abort",		/* IFPGA_SEC_ERR_CANCELED */
->>> +	"device-busy",		/* IFPGA_SEC_ERR_BUSY */
->>> +	"invalid-file-size",	/* IFPGA_SEC_ERR_INVALID_SIZE */
->>> +	"read-write-error",	/* IFPGA_SEC_ERR_RW_ERROR */
->>> +	"flash-wearout",	/* IFPGA_SEC_ERR_WEAROUT */
->>> +	"file-read-error"	/* IFPGA_SEC_ERR_FILE_READ */
->>> +};
->>> +
->>> +static const char *sec_progress(enum ifpga_sec_prog prog)
->>> +{
->> A consistent api would have imgr as the parameter.
-> There are two calls to this function: one passes imgr->progress, and one
-> passes imgr->err_status. For this function, passing imgr alone would be
-> insufficient.
+I found an interesting bug in my KVM guest (tested on s390x). The guest
+uses a virtio-scsi disk and the current linux-next kernel. The problem
+is that I cannot get the SCSI ID of the attached SCSI disk. Running the
+command `lsscsi --scsi_id` in the guest returns:
 
-ok.
+root@qemus390x:~# lsscsi --scsi_id
+[0:0:0:0]    disk    Linux    scsi_debug       0190  /dev/sda   -
 
-Tom
+but the expected result is something like:
 
->>> +	return (prog < IFPGA_SEC_PROG_MAX) ?
->>> +		sec_mgr_prog_str[prog] : "unknown-status";
->>> +}
->>> +
->>>  static ssize_t
->>>  status_show(struct device *dev, struct device_attribute *attr, char *buf)
->>>  {
->>>  	struct ifpga_sec_mgr *imgr = to_sec_mgr(dev);
->>>  
->>> -	return sprintf(buf, "%s\n", (imgr->progress < IFPGA_SEC_PROG_MAX) ?
->>> -		       sec_mgr_prog_str[imgr->progress] : "unknown-status");
->>> +	return sprintf(buf, "%s\n", sec_progress(imgr->progress));
->>>  }
->>>  static DEVICE_ATTR_RO(status);
->>>  
->>> +static ssize_t
->>> +error_show(struct device *dev, struct device_attribute *attr, char *buf)
->>> +{
->>> +	struct ifpga_sec_mgr *imgr = to_sec_mgr(dev);
->>> +	enum ifpga_sec_err err_code;
->>> +	const char *prog_str;
->>> +	int ret;
->>> +
->>> +	mutex_lock(&imgr->lock);
->>> +	if (imgr->progress != IFPGA_SEC_PROG_IDLE) {
->>> +		ret = -EBUSY;
->>> +	} else if (!imgr->err_code) {
->>> +		ret = 0;
->>> +	} else {
->>> +		err_code = imgr->err_code;
->>> +		prog_str = sec_progress(imgr->err_state);
->>> +		ret = sprintf(buf, "%s:%s\n", prog_str,
->>> +			      (err_code < IFPGA_SEC_ERR_MAX) ?
->>> +			      sec_mgr_err_str[err_code] : "unknown-error");
->> Should have sec_error() call to match the new sec_progress()
-> OK - I'll add the sec_error() function.
->> Tom
->>
->>> +	}
->>> +	mutex_unlock(&imgr->lock);
->>> +
->>> +	return ret;
->>> +}
->>> +static DEVICE_ATTR_RO(error);
->>> +
->>>  static ssize_t filename_store(struct device *dev, struct device_attribute *attr,
->>>  			      const char *buf, size_t count)
->>>  {
->>> @@ -314,6 +363,7 @@ static DEVICE_ATTR_WO(filename);
->>>  static struct attribute *sec_mgr_update_attrs[] = {
->>>  	&dev_attr_filename.attr,
->>>  	&dev_attr_status.attr,
->>> +	&dev_attr_error.attr,
->>>  	NULL,
->>>  };
->>>  
->>> diff --git a/include/linux/fpga/ifpga-sec-mgr.h b/include/linux/fpga/ifpga-sec-mgr.h
->>> index 4da2864e251c..f04bf9e30c67 100644
->>> --- a/include/linux/fpga/ifpga-sec-mgr.h
->>> +++ b/include/linux/fpga/ifpga-sec-mgr.h
->>> @@ -181,6 +181,7 @@ struct ifpga_sec_mgr {
->>>  	const u8 *data;			/* pointer to update data */
->>>  	u32 remaining_size;		/* size remaining to transfer */
->>>  	enum ifpga_sec_prog progress;
->>> +	enum ifpga_sec_prog err_state;	/* progress state at time of failure */
->>>  	enum ifpga_sec_err err_code;	/* security manager error code */
->>>  	bool driver_unload;
->>>  	void *priv;
+root@qemus390x:~# lsscsi --scsi_id
+[0:0:0:0]    disk    Linux    scsi_debug       0190  /dev/sda   33333333000002710
 
+Also there is no /dev/disk/by-id/scsi-* path created. I bisected the
+problem to...
+
+commit f3256075ba49d80835b601bfbff350a2140b2924 (HEAD, refs/bisect/bad)
+Author: Christoph Hellwig <hch@lst.de>
+Date:   Thu Aug 27 17:37:45 2020 +0200
+
+    block: remove the BIO_NULL_MAPPED flag
+
+When I reverted this commit the problem was gone. Any ideas what the
+problem is? Thanks in advance.
+
+Best regards,
+ Marc
