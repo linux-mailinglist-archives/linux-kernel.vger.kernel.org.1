@@ -2,79 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BE242758B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 900C82758B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726534AbgIWN3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 09:29:32 -0400
-Received: from lobo.ruivo.org ([173.14.175.98]:53606 "EHLO lobo.ruivo.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgIWN3c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 09:29:32 -0400
-Received: by lobo.ruivo.org (Postfix, from userid 1011)
-        id 4154453126; Wed, 23 Sep 2020 09:29:31 -0400 (EDT)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on tate.lan.ruivo
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=3.5 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.2
-Received: from jake.ruivo.org (bob.qemu.ruivo [192.168.72.19])
-        by lobo.ruivo.org (Postfix) with ESMTPA id 3633A52A65;
-        Wed, 23 Sep 2020 09:29:12 -0400 (EDT)
-Received: by jake.ruivo.org (Postfix, from userid 1000)
-        id 0870A1A06DB; Wed, 23 Sep 2020 09:29:12 -0400 (EDT)
-Date:   Wed, 23 Sep 2020 09:29:12 -0400
-From:   Aristeu Rozanski <aris@ruivo.org>
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     akpm@linux-foundation.org, naoya.horiguchi@nec.com,
-        mhocko@kernel.org, tony.luck@intel.com, cai@lca.pw,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v7 00/14] HWPOISON: soft offline rework
-Message-ID: <20200923132911.GF17169@cathedrallabs.org>
-References: <20200922135650.1634-1-osalvador@suse.de>
+        id S1726609AbgIWN3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 09:29:39 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:40615 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgIWN3i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 09:29:38 -0400
+Received: by mail-oi1-f196.google.com with SMTP id t76so25005527oif.7;
+        Wed, 23 Sep 2020 06:29:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1rMoEuPGDAy971L25OQzzcUwzDymkiOVA4jg4tTeTHI=;
+        b=Lea3InaDNDnXi04N6avkexks0kmaBfLs9johDZqyWZ+UwMdepz6gMikrBF7c7fc4jn
+         bFJj/urKShgXHQFuuVr8uzbVvG+nJ0png9li+AkqfeDkfc9GxonahGMA1Q7VXYJzRapO
+         El+FXFd2mxboXOp3toWcZX0jIX8x6TOgl06b5Ng0yqy5zX6uIYdErBEIcK0EGtvl3uqC
+         g5D9EwOu6qVCnO9YXyIB4Zb4MpwrNQd5uWqUqwkz/ToYuG8sI868SJjpw/fmCLl1MxC3
+         oBsdIOyv7WFQdcPmmfkIaoxNMCiWzXHhvctQ72+7UeH8C82f6QfF3abD0sJMlP/jbcti
+         40zA==
+X-Gm-Message-State: AOAM531EonW/bBhdS3K8QzcM2FgX9QnAsEZX/DTkeUgSbwJF8OIrACQR
+        +bj4/39YTjof4SVk83b+90DBFobJNF5OXmpCxv3T6c1c
+X-Google-Smtp-Source: ABdhPJziefyJq4JP9IubrLkGlZIwmizPmfyZzixhXhqNpkNSciMNfsNrp++kEzyejdd8neZ6NVOcBk24rZGIIwTUkDs=
+X-Received: by 2002:aca:3bc3:: with SMTP id i186mr5442092oia.148.1600867777289;
+ Wed, 23 Sep 2020 06:29:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922135650.1634-1-osalvador@suse.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200825104455.18000-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200825104455.18000-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <CAMuHMdWmvcA8x-t=FgNOuMnAtw6j3OAgo8irmD5e2wrB+LfhHg@mail.gmail.com> <20200923121452.GD1848911@ulmo>
+In-Reply-To: <20200923121452.GD1848911@ulmo>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 23 Sep 2020 15:29:25 +0200
+Message-ID: <CAMuHMdX=G0n4MWNUM46OcUzeKUc=i1Sv4J8tnU0=_Nkt=Pf6xA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] arm64: dts: renesas: r8a774e1: Add PWM device nodes
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Linux PWM List <linux-pwm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oscar,
+Hi Thierry,
 
-On Tue, Sep 22, 2020 at 03:56:36PM +0200, Oscar Salvador wrote:
-> This patchset is the latest version of soft offline rework patchset
-> targetted for v5.9.
-> 
-> This patchset fixes a couple of issues that the patchset Naoya
-> sent [1] contained due to rebasing problems and a misunterdansting.
-> 
-> Main focus of this series is to stabilize soft offline.  Historically soft
-> offlined pages have suffered from racy conditions because PageHWPoison is
-> used to a little too aggressively, which (directly or indirectly) invades
-> other mm code which cares little about hwpoison.  This results in unexpected
-> behavior or kernel panic, which is very far from soft offline's "do not
-> disturb userspace or other kernel component" policy.
-> An example of this can be found here [2].
-> 
-> Along with several cleanups, this code refactors and changes the way soft
-> offline work.
-> Main point of this change set is to contain target page "via buddy allocator"
-> or in migrating path.
-> For ther former we first free the target page as we do for normal pages, and
-> once it has reached buddy and it has been taken off the freelists, we flag it
-> as HWpoison.
-> For the latter we never get to release the page in unmap_and_move, so
-> the page is under our control and we can handle it in hwpoison code.
-> 
-> [1] https://patchwork.kernel.org/cover/11704083/
-> [2] https://lore.kernel.org/linux-mm/20190826104144.GA7849@linux/T/#u
+On Wed, Sep 23, 2020 at 2:14 PM Thierry Reding <thierry.reding@gmail.com> wrote:
+> On Tue, Aug 25, 2020 at 03:32:08PM +0200, Geert Uytterhoeven wrote:
+> > On Tue, Aug 25, 2020 at 12:45 PM Lad Prabhakar
+> > <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > > From: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+> > >
+> > > This patch adds PWM[0123456] device nodes to the RZ/G2H (a.k.a R8A774E1)
+> > > device tree.
+> > >
+> > > Signed-off-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+> > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> >
+> > Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > i.e. will queue in renesas-devel for v5.10.
+>
+> Hi Geert,
+>
+> did you also pick up patch 1/2 in this series?
 
-FWIW, tested again with these patches in the ppc64 box and they work.
-I see that you added my Tested-by in the last patch but in any case:
+No, I typically don't take DT binding updates for non-core devices.
+Can you please pick it up?
 
-Tested-by: Aristeu Rozanski <aris@ruivo.org>
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Aristeu
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
