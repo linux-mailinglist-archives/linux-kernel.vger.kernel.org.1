@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3B452764A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:37:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 706352764A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726820AbgIWXgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 19:36:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33164 "EHLO
+        id S1726810AbgIWXgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 19:36:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726766AbgIWXgY (ORCPT
+        with ESMTP id S1726784AbgIWXg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 19:36:24 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB2FEC0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:36:24 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id s9so939856plq.15
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:36:24 -0700 (PDT)
+        Wed, 23 Sep 2020 19:36:27 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26533C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:36:27 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id y17so845857qkf.15
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:36:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=ns9cS9dj1D0b/ezL20f6+qIcG/yawwfocQGXxEThZH4=;
-        b=BdlUgsI/j2FnN5fHx8px2qiiZLqn4x3SgI2QlJiJgfEXSusZyV29B/a4Z38pe5q+nF
-         LfaEiIV6DBnrFpc/v3o0y7QUiHJ2t0a0m0EBHnat9mBDeSfnaRhv8MVPiSaU1bwgSPbs
-         q6tLOcX2cn0Lu3XHgNQ+aIdwj38GsGZ9DudZxIQAnNvJmULQTiJDvGrPpUZlJh5ORCPZ
-         RIj+YXoNQ5hEhKSWFRccAJube1BKDCV4VRXTfVHY3PwDUlz+vehHKUYkFQcNUa5HcJzX
-         zwGlywo8MuROR99a+BTT/TkgYy/K2QIHMYFeD5gcvTEqHtRugqptGw1jdAfZY5ZEQrG1
-         npaA==
+        bh=iBEW324qVsBn+Epu6t5+eFVQzIF+eeHU0CdjJmhI4ig=;
+        b=R+YYI7bzN+y9ybelrj03v9yVBy9KOM9LM9YbCLKgeZU77/2czxKFM8tBA4tCE9de2L
+         jjsfQsJUURxTos9yQl01QPTRxGutAPERDkbqdYuEp1IqLl3cd/9JjZZVZGUUI79kP5an
+         l8zRMiCluRYNBfuN1fYgaXq5oXND39wo06YvRtAfQHX9uUQzikEPkYn1WlpX7+/otv2J
+         1Y9hjhy44qByuUaA9YJREK1fyD9Y/3tq5U+LEP8OwgEQTQeKUtJxxOygrHTcnoPez6Tg
+         U0Flwlr5hVIzUtk5I8u8Ou4XYuY7lvE2Yhc7JZW2MAncjl4RYbTwZS3dCIhFPTKIMfF9
+         tqTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=ns9cS9dj1D0b/ezL20f6+qIcG/yawwfocQGXxEThZH4=;
-        b=MJPss7b6scyggYF2vcQQlBQ14q3mnRVjNb1mHIQVHtdwQXOhrkJhorJPrWqxEOR4Wu
-         VkErray6ej+i5oubfyumq7PrW9bary4hpqDrTk/SM/uXH+bZvjP5Ci2lw5Ayll+THA/3
-         6CyKZkZpRWMIQd9RXtxkg+xxxhwxD7lHWsCAr5nw0WiEaYgB0s/02/WKphxUpISwBz+L
-         NIB/3w20GnmVuyDdr59nIEya0RUBGSAWmP9MK1OuSnBt6Vst26Ua2LvvHHcM/31io2Ar
-         oNiG/9GwYe22BDqffa9cRko+dSMpPllSPbQZuX7ISREEr1hbFyxBIdHcwhzRawue16C2
-         EkpA==
-X-Gm-Message-State: AOAM531U9tZNrdfcQjzuVyOqH4Vr+dhZtiVdzY62DsZrNnyLc0/+HhCI
-        2n6R1VzHKRH/ihbcjmAdOG7PGd8X
-X-Google-Smtp-Source: ABdhPJzSsKZViFdwP9hrb19U9urvXlXJ1wO/ZQRxPhGzH7KUrhUGGDjQS7hrVTTS7aU/nWE77axw+6b/
+        bh=iBEW324qVsBn+Epu6t5+eFVQzIF+eeHU0CdjJmhI4ig=;
+        b=kPBGWGOEiRBMPP3925P5BWqgAQLKAeHnmsGjaFcrg3dylgM/cV94mWb/egzhh9eoLe
+         H/riJLn03CiEAYiaM9N0abYHRDUhYGOM71f7G1gsRyv9sZiurLFrU2r56oWJ3iB3za+4
+         ZQDLy2qHYbH4D89qo7mQ92EUJkzdSNAmsvYp7sOzDz7K6trPXi2giZNAtBacxX3Erhao
+         FEnuJtS3cCl1xmmb4uZ2MwqoVqCzxzqyrjimVjY0+rTnbUI2HP6mBlbLl3voM86PuGp0
+         gqZYHecifio34C/SeF9t83CWxD9bXir6V27FOawvos76SEwccEVhPOPoaPrpAX6BHbKq
+         z6EQ==
+X-Gm-Message-State: AOAM532i1D1OCADXAnDp/70Vr5NIrxekG98xTRZnMjHxWIzGcn/5bkxp
+        gPm8lf0FBDpCKGMtkzHlfw/dxZEF
+X-Google-Smtp-Source: ABdhPJxQWHAyw0zXo4j/eKFXglIg954rKcdnGn3Sy2nfZv4ULfeAWE93q93uZOsZbj4A62+ULPn74YkT
 Sender: "posk via sendgmr" <posk@posk.svl.corp.google.com>
 X-Received: from posk.svl.corp.google.com ([2620:15c:2cd:202:7220:84ff:fe09:7598])
- (user=posk job=sendgmr) by 2002:a17:90a:ee4f:: with SMTP id
- bu15mr1431280pjb.16.1600904184153; Wed, 23 Sep 2020 16:36:24 -0700 (PDT)
-Date:   Wed, 23 Sep 2020 16:36:17 -0700
+ (user=posk job=sendgmr) by 2002:a0c:b29e:: with SMTP id r30mr2672693qve.38.1600904186187;
+ Wed, 23 Sep 2020 16:36:26 -0700 (PDT)
+Date:   Wed, 23 Sep 2020 16:36:18 -0700
 In-Reply-To: <20200923233618.2572849-1-posk@google.com>
-Message-Id: <20200923233618.2572849-2-posk@google.com>
+Message-Id: <20200923233618.2572849-3-posk@google.com>
 Mime-Version: 1.0
 References: <20200923233618.2572849-1-posk@google.com>
 X-Mailer: git-send-email 2.28.0.709.gb0816b6eb0-goog
-Subject: [PATCH v8 2/3] rseq/selftests: add rseq_offset_deref_addv
+Subject: [PATCH v8 3/3] rseq/selftests: test MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ
 From:   Peter Oskolkov <posk@google.com>
 To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         "Paul E . McKenney" <paulmck@kernel.org>,
@@ -67,85 +67,312 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds rseq_offset_deref_addv function to
-tools/testing/selftests/rseq/rseq-x86.h, to be used
-in a selftest in the next patch in the patchset.
+Based on Google-internal RSEQ work done by
+Paul Turner and Andrew Hunter.
 
-v7->v8: this patch split out of the v7 selftest patch.
+This patch adds a selftest for MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ.
+The test quite often fails without the previous patch in this patchset,
+but consistently passes with it.
+
+v3: added rseq_offset_deref_addv() to x86_64 to make the test
+    more explicit; on other architectures I kept using existing
+    rseq_cmpeqv_cmpeqv_storev() as I have no easy way to test
+    there.  Added a comment explaining why the test works this way.
+v4: skipped the test if rseq_offset_deref_addv() is not present
+    (that is, on all architectures other than x86_64).
+v8: split rseq_offset_deref_addv() into a separate patch;
+    moved the test to param_test; other minor tweaks.
 
 Signed-off-by: Peter Oskolkov <posk@google.com>
 ---
- tools/testing/selftests/rseq/rseq-x86.h | 57 +++++++++++++++++++++++++
- 1 file changed, 57 insertions(+)
+ tools/testing/selftests/rseq/param_test.c     | 223 +++++++++++++++++-
+ .../testing/selftests/rseq/run_param_test.sh  |   2 +
+ 2 files changed, 224 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/rseq/rseq-x86.h b/tools/testing/selftests/rseq/rseq-x86.h
-index b2da6004fe30..640411518e46 100644
---- a/tools/testing/selftests/rseq/rseq-x86.h
-+++ b/tools/testing/selftests/rseq/rseq-x86.h
-@@ -279,6 +279,63 @@ int rseq_addv(intptr_t *v, intptr_t count, int cpu)
- #endif
+diff --git a/tools/testing/selftests/rseq/param_test.c b/tools/testing/selftests/rseq/param_test.c
+index e8a657a5f48a..384589095864 100644
+--- a/tools/testing/selftests/rseq/param_test.c
++++ b/tools/testing/selftests/rseq/param_test.c
+@@ -1,8 +1,10 @@
+ // SPDX-License-Identifier: LGPL-2.1
+ #define _GNU_SOURCE
+ #include <assert.h>
++#include <linux/membarrier.h>
+ #include <pthread.h>
+ #include <sched.h>
++#include <stdatomic.h>
+ #include <stdint.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+@@ -1131,6 +1133,220 @@ static int set_signal_handler(void)
+ 	return ret;
  }
  
-+#define RSEQ_ARCH_HAS_OFFSET_DEREF_ADDV
++struct test_membarrier_thread_args {
++	int stop;
++	intptr_t percpu_list_ptr;
++};
 +
-+/*
-+ *   pval = *(ptr+off)
-+ *  *pval += inc;
-+ */
-+static inline __attribute__((always_inline))
-+int rseq_offset_deref_addv(intptr_t *ptr, off_t off, intptr_t inc, int cpu)
++/* Worker threads modify data in their "active" percpu lists. */
++void *test_membarrier_worker_thread(void *arg)
 +{
-+	RSEQ_INJECT_C(9)
++	struct test_membarrier_thread_args *args =
++		(struct test_membarrier_thread_args *)arg;
++	const int iters = opt_reps;
++	int i;
 +
-+	__asm__ __volatile__ goto (
-+		RSEQ_ASM_DEFINE_TABLE(3, 1f, 2f, 4f) /* start, commit, abort */
-+#ifdef RSEQ_COMPARE_TWICE
-+		RSEQ_ASM_DEFINE_EXIT_POINT(1f, %l[error1])
-+#endif
-+		/* Start rseq by storing table entry pointer into rseq_cs. */
-+		RSEQ_ASM_STORE_RSEQ_CS(1, 3b, RSEQ_CS_OFFSET(%[rseq_abi]))
-+		RSEQ_ASM_CMP_CPU_ID(cpu_id, RSEQ_CPU_ID_OFFSET(%[rseq_abi]), 4f)
-+		RSEQ_INJECT_ASM(3)
-+#ifdef RSEQ_COMPARE_TWICE
-+		RSEQ_ASM_CMP_CPU_ID(cpu_id, RSEQ_CPU_ID_OFFSET(%[rseq_abi]), %l[error1])
-+#endif
-+		/* get p+v */
-+		"movq %[ptr], %%rbx\n\t"
-+		"addq %[off], %%rbx\n\t"
-+		/* get pv */
-+		"movq (%%rbx), %%rcx\n\t"
-+		/* *pv += inc */
-+		"addq %[inc], (%%rcx)\n\t"
-+		"2:\n\t"
-+		RSEQ_INJECT_ASM(4)
-+		RSEQ_ASM_DEFINE_ABORT(4, "", abort)
-+		: /* gcc asm goto does not allow outputs */
-+		: [cpu_id]		"r" (cpu),
-+		  [rseq_abi]		"r" (&__rseq_abi),
-+		  /* final store input */
-+		  [ptr]			"m" (*ptr),
-+		  [off]			"er" (off),
-+		  [inc]			"er" (inc)
-+		: "memory", "cc", "rax", "rbx", "rcx"
-+		  RSEQ_INJECT_CLOBBER
-+		: abort
-+#ifdef RSEQ_COMPARE_TWICE
-+		  , error1
-+#endif
-+	);
-+	return 0;
-+abort:
-+	RSEQ_INJECT_FAILED
-+	return -1;
-+#ifdef RSEQ_COMPARE_TWICE
-+error1:
-+	rseq_bug("cpu_id comparison failed");
-+#endif
++	if (rseq_register_current_thread()) {
++		fprintf(stderr, "Error: rseq_register_current_thread(...) failed(%d): %s\n",
++			errno, strerror(errno));
++		abort();
++	}
++
++	/* Wait for initialization. */
++	while (!atomic_load(&args->percpu_list_ptr)) {}
++
++	for (i = 0; i < iters; ++i) {
++		int ret;
++
++		do {
++			int cpu = rseq_cpu_start();
++
++			ret = rseq_offset_deref_addv(&args->percpu_list_ptr,
++				sizeof(struct percpu_list_entry) * cpu, 1, cpu);
++		} while (rseq_unlikely(ret));
++	}
++
++	if (rseq_unregister_current_thread()) {
++		fprintf(stderr, "Error: rseq_unregister_current_thread(...) failed(%d): %s\n",
++			errno, strerror(errno));
++		abort();
++	}
++	return NULL;
 +}
 +
- static inline __attribute__((always_inline))
- int rseq_cmpeqv_trystorev_storev(intptr_t *v, intptr_t expect,
- 				 intptr_t *v2, intptr_t newv2,
++void test_membarrier_init_percpu_list(struct percpu_list *list)
++{
++	int i;
++
++	memset(list, 0, sizeof(*list));
++	for (i = 0; i < CPU_SETSIZE; i++) {
++		struct percpu_list_node *node;
++
++		node = malloc(sizeof(*node));
++		assert(node);
++		node->data = 0;
++		node->next = NULL;
++		list->c[i].head = node;
++	}
++}
++
++void test_membarrier_free_percpu_list(struct percpu_list *list)
++{
++	int i;
++
++	for (i = 0; i < CPU_SETSIZE; i++)
++		free(list->c[i].head);
++}
++
++static int sys_membarrier(int cmd, int flags, int cpu_id)
++{
++	return syscall(__NR_membarrier, cmd, flags, cpu_id);
++}
++
++/*
++ * The manager thread swaps per-cpu lists that worker threads see,
++ * and validates that there are no unexpected modifications.
++ */
++void *test_membarrier_manager_thread(void *arg)
++{
++	struct test_membarrier_thread_args *args =
++		(struct test_membarrier_thread_args *)arg;
++	struct percpu_list list_a, list_b;
++	intptr_t expect_a = 0, expect_b = 0;
++	int cpu_a = 0, cpu_b = 0;
++
++	if (rseq_register_current_thread()) {
++		fprintf(stderr, "Error: rseq_register_current_thread(...) failed(%d): %s\n",
++			errno, strerror(errno));
++		abort();
++	}
++
++	/* Init lists. */
++	test_membarrier_init_percpu_list(&list_a);
++	test_membarrier_init_percpu_list(&list_b);
++
++	atomic_store(&args->percpu_list_ptr, (intptr_t)&list_a);
++
++	while (!atomic_load(&args->stop)) {
++		/* list_a is "active". */
++		cpu_a = rand() % CPU_SETSIZE;
++		/*
++		 * As list_b is "inactive", we should never see changes
++		 * to list_b.
++		 */
++		if (expect_b != atomic_load(&list_b.c[cpu_b].head->data)) {
++			fprintf(stderr, "Membarrier test failed\n");
++			abort();
++		}
++
++		/* Make list_b "active". */
++		atomic_store(&args->percpu_list_ptr, (intptr_t)&list_b);
++		if (sys_membarrier(MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ,
++					MEMBARRIER_CMD_FLAG_CPU, cpu_a) &&
++				errno != ENXIO /* missing CPU */) {
++			perror("sys_membarrier");
++			abort();
++		}
++		/*
++		 * Cpu A should now only modify list_b, so the values
++		 * in list_a should be stable.
++		 */
++		expect_a = atomic_load(&list_a.c[cpu_a].head->data);
++
++		cpu_b = rand() % CPU_SETSIZE;
++		/*
++		 * As list_a is "inactive", we should never see changes
++		 * to list_a.
++		 */
++		if (expect_a != atomic_load(&list_a.c[cpu_a].head->data)) {
++			fprintf(stderr, "Membarrier test failed\n");
++			abort();
++		}
++
++		/* Make list_a "active". */
++		atomic_store(&args->percpu_list_ptr, (intptr_t)&list_a);
++		if (sys_membarrier(MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ,
++					MEMBARRIER_CMD_FLAG_CPU, cpu_b) &&
++				errno != ENXIO /* missing CPU*/) {
++			perror("sys_membarrier");
++			abort();
++		}
++		/* Remember a value from list_b. */
++		expect_b = atomic_load(&list_b.c[cpu_b].head->data);
++	}
++
++	test_membarrier_free_percpu_list(&list_a);
++	test_membarrier_free_percpu_list(&list_b);
++
++	if (rseq_unregister_current_thread()) {
++		fprintf(stderr, "Error: rseq_unregister_current_thread(...) failed(%d): %s\n",
++			errno, strerror(errno));
++		abort();
++	}
++	return NULL;
++}
++
++/* Test MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU membarrier command. */
++#ifdef RSEQ_ARCH_HAS_OFFSET_DEREF_ADDV
++void test_membarrier(void)
++{
++	const int num_threads = opt_threads;
++	struct test_membarrier_thread_args thread_args;
++	pthread_t worker_threads[num_threads];
++	pthread_t manager_thread;
++	int i, ret;
++
++	if (sys_membarrier(MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_RSEQ, 0, 0)) {
++		perror("sys_membarrier");
++		abort();
++	}
++
++	thread_args.stop = 0;
++	thread_args.percpu_list_ptr = 0;
++	ret = pthread_create(&manager_thread, NULL,
++			test_membarrier_manager_thread, &thread_args);
++	if (ret) {
++		errno = ret;
++		perror("pthread_create");
++		abort();
++	}
++
++	for (i = 0; i < num_threads; i++) {
++		ret = pthread_create(&worker_threads[i], NULL,
++				test_membarrier_worker_thread, &thread_args);
++		if (ret) {
++			errno = ret;
++			perror("pthread_create");
++			abort();
++		}
++	}
++
++
++	for (i = 0; i < num_threads; i++) {
++		ret = pthread_join(worker_threads[i], NULL);
++		if (ret) {
++			errno = ret;
++			perror("pthread_join");
++			abort();
++		}
++	}
++
++	atomic_store(&thread_args.stop, 1);
++	ret = pthread_join(manager_thread, NULL);
++	if (ret) {
++		errno = ret;
++		perror("pthread_join");
++		abort();
++	}
++}
++#else /* RSEQ_ARCH_HAS_OFFSET_DEREF_ADDV */
++void test_membarrier(void)
++{
++	fprintf(stderr, "rseq_offset_deref_addv is not implemented on this architecture. "
++			"Skipping membarrier test.\n");
++}
++#endif
++
+ static void show_usage(int argc, char **argv)
+ {
+ 	printf("Usage : %s <OPTIONS>\n",
+@@ -1153,7 +1369,7 @@ static void show_usage(int argc, char **argv)
+ 	printf("	[-r N] Number of repetitions per thread (default 5000)\n");
+ 	printf("	[-d] Disable rseq system call (no initialization)\n");
+ 	printf("	[-D M] Disable rseq for each M threads\n");
+-	printf("	[-T test] Choose test: (s)pinlock, (l)ist, (b)uffer, (m)emcpy, (i)ncrement\n");
++	printf("	[-T test] Choose test: (s)pinlock, (l)ist, (b)uffer, (m)emcpy, (i)ncrement, membarrie(r)\n");
+ 	printf("	[-M] Push into buffer and memcpy buffer with memory barriers.\n");
+ 	printf("	[-v] Verbose output.\n");
+ 	printf("	[-h] Show this help.\n");
+@@ -1268,6 +1484,7 @@ int main(int argc, char **argv)
+ 			case 'i':
+ 			case 'b':
+ 			case 'm':
++			case 'r':
+ 				break;
+ 			default:
+ 				show_usage(argc, argv);
+@@ -1320,6 +1537,10 @@ int main(int argc, char **argv)
+ 		printf_verbose("counter increment\n");
+ 		test_percpu_inc();
+ 		break;
++	case 'r':
++		printf_verbose("membarrier\n");
++		test_membarrier();
++		break;
+ 	}
+ 	if (!opt_disable_rseq && rseq_unregister_current_thread())
+ 		abort();
+diff --git a/tools/testing/selftests/rseq/run_param_test.sh b/tools/testing/selftests/rseq/run_param_test.sh
+index e426304fd4a0..f51bc83c9e41 100755
+--- a/tools/testing/selftests/rseq/run_param_test.sh
++++ b/tools/testing/selftests/rseq/run_param_test.sh
+@@ -15,6 +15,7 @@ TEST_LIST=(
+ 	"-T m"
+ 	"-T m -M"
+ 	"-T i"
++	"-T r"
+ )
+ 
+ TEST_NAME=(
+@@ -25,6 +26,7 @@ TEST_NAME=(
+ 	"memcpy"
+ 	"memcpy with barrier"
+ 	"increment"
++	"membarrier"
+ )
+ IFS="$OLDIFS"
+ 
 -- 
 2.28.0.709.gb0816b6eb0-goog
 
