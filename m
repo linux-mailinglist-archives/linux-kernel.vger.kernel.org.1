@@ -2,55 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAAF1275387
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 10:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24B7027538C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 10:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726645AbgIWInV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 04:43:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45882 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgIWInV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 04:43:21 -0400
-Received: from gaia (unknown [31.124.44.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF505221F0;
-        Wed, 23 Sep 2020 08:43:19 +0000 (UTC)
-Date:   Wed, 23 Sep 2020 09:43:17 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Gavin Shan <gshan@redhat.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, anshuman.khandual@arm.com,
-        robin.murphy@arm.com, will@kernel.org, shan.gavin@gmail.com
-Subject: Re: [PATCH v2 0/2] arm64/mm: Enable color zero pages
-Message-ID: <20200923084317.GA13434@gaia>
-References: <20200923053721.28873-1-gshan@redhat.com>
+        id S1726445AbgIWIoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 04:44:30 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:46174 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgIWIo3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 04:44:29 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 3ACE61C0BB3; Wed, 23 Sep 2020 10:44:28 +0200 (CEST)
+Date:   Wed, 23 Sep 2020 10:44:27 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Pavel Machek <pavel@denx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>, jikos@suse.cz,
+        vojtech@suse.cz, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Yuan Ming <yuanmingbuaa@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH 4.19 66/78] fbcon: remove soft scrollback code
+Message-ID: <20200923084427.GA32110@amd>
+References: <20200915140633.552502750@linuxfoundation.org>
+ <20200915140636.861676717@linuxfoundation.org>
+ <20200916075759.GC32537@duo.ucw.cz>
+ <20200916082510.GB509119@kroah.com>
+ <20200916090723.GA4151@duo.ucw.cz>
+ <20200916091420.GF13670@1wt.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="HcAYCG3uE/tztfnV"
 Content-Disposition: inline
-In-Reply-To: <20200923053721.28873-1-gshan@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200916091420.GF13670@1wt.eu>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gavin,
 
-On Wed, Sep 23, 2020 at 03:37:19PM +1000, Gavin Shan wrote:
-> The feature of color zero pages isn't enabled on arm64, meaning all
-> read-only (anonymous) VM areas are backed up by same zero page. It
-> leads pressure to L1 (data) cache on reading data from them. This
-> tries to enable color zero pages.
-> 
-> PATCH[1/2] decouples the zero PGD table from zero page
-> PATCH[2/2] allocates the needed zero pages according to L1 cache size
+--HcAYCG3uE/tztfnV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-To save you (and potential reviewers) some time, please include in the
-cover letter details of a realistic workload/benchmark that is improved
-by this patchset, backed by numbers. Just because it's doable and the
-patches aren't too complex is not a good enough reason for merging.
+Hi!
 
-Thanks.
+> > I believe it will need to be reverted in Linus' tree, too. In fact,
+> > the patch seems to be a way for Linus to find a maintainer for the
+> > code, and I already stated I can do it. Patch is so new it was not
+> > even in -rc released by Linus.
+>=20
+> I can honestly see how it can be missed from fbcon, but using vgacon
+> myself for cases like you described, I still benefit from the hw scroll
+> buffer which is OK.
+>=20
+> > > See the email recently on oss-devel for one such reason why this was
+> > > removed...
+> >=20
+> > Would you have a link for that?
+>=20
+> Here it is:
+>=20
+>   https://www.openwall.com/lists/oss-security/2020/09/15/2
 
--- 
-Catalin
+Thank you for the pointer!
+
+Best regards,
+								Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--HcAYCG3uE/tztfnV
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl9rCusACgkQMOfwapXb+vJD9QCgq8uPa3CErsd9aG+WeyQHw58W
+5rkAn1hcOezryPDv6NTJS4D5olmgVTPF
+=Eekr
+-----END PGP SIGNATURE-----
+
+--HcAYCG3uE/tztfnV--
