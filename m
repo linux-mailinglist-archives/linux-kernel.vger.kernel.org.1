@@ -2,112 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32901275E63
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 19:12:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42AC1275E69
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 19:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726732AbgIWRMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 13:12:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58506 "EHLO
+        id S1726537AbgIWRPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 13:15:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726466AbgIWRMK (ORCPT
+        with ESMTP id S1726332AbgIWRPZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 13:12:10 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D95ACC0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 10:12:09 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id p65so532686qtd.2
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 10:12:09 -0700 (PDT)
+        Wed, 23 Sep 2020 13:15:25 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD9AFC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 10:15:24 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id w16so662355oia.2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 10:15:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YH/9x4YduAyQyFROAONGfUKpUo9D+DQjCl2dO1jW42c=;
-        b=TRkNPai+t1R0PtqPcyqs6KRV5QEbc5x6RwYBkbneOVWJUErvcMuwUfidTUu24hxvyM
-         QWWezsITBu4MtvOSn52tUC4S+bParRapl0X1mF37RPWvx1qRmxnLLM8IoCpXai2n27mH
-         Xntw7cmjEgXr3GjsThBy3MziR0NoftOW9lGqsGcjV+yx8u8QFsgjEkSpNGzJIVb4yV/T
-         c64V+znpcZwKsPdgLyasu5JkVCGdiuwpf3EiT3C8lUdLMDdxp8CZ3+br0S6bmNmQHaZT
-         /E9bdFiaO7KOWdWGOeoqG7XI9coRz+0HTBpiS3k9dlSFxGSMAv7gKooWZfQwiV2Qj9Go
-         ChwQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aSM6VNxIk/hW9b7HWRMM8Fz1NvuMmVL13BGTLFDNXLg=;
+        b=Eqpxfmr1+HzFZcPMoUomkh+DeAjajz3940PD1iEWFN/1p2M3ZSerxdCGjjJS97NM0J
+         QiJXDQgMt1SNiUQEaO7MvKJhD71RCVQKMlrBbER7F4Vi5kC7lVfjyQLZ1oi+ZQS00k21
+         w7Nu6e+h+1Jtdfwz3Q5g1uZsa5oTyWofxMG+IKWC9i5ninl4+T70bsc6ELLLzbemG2ar
+         gYBTdt8q9wO6CEwiSkVyO+zrWze9RCkI7/hzu8MC+wyAF3U2IBCX1UcT1jP1mBHhmGKh
+         5ANRuFXXR/s1xoQWJakyGokWzYScnwOSyhSC0yAEQm+ebqilVjwnQzTiLoT7sV25iGkQ
+         wX+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YH/9x4YduAyQyFROAONGfUKpUo9D+DQjCl2dO1jW42c=;
-        b=PhYiWxbUwxsvjTnM/RNGgkUcqXPZwESPEBFhg+e5aGRYzNH8kY3c7gWwn7J5Ol0BMf
-         57cyQY44Z90MV1jRsxbh5/OmO0QdcLEN+vAmtQHDlbFUq2C6gpWwLYzS868LL0JgJu/o
-         UHu/zkfnvsoLbQyE0UUcIDohvXNfY37HPTcSxdcsVVvFN0V+S2mA0NLTnF8xbbnhw7R6
-         qAUZN63Atjayvww1R9WIP79XB0iGb3IHS/K54BW33LexQ/DirUBbIGXwJSCPodFkCvXx
-         CSea45xgnYjoiu02Gi1CKunVaYXHp85QxgVOcgKKRuhVr38B43jOmUhC1uCQB1HGLt7o
-         rxpQ==
-X-Gm-Message-State: AOAM532eLNmTKfGGoyVLtPwqF85PqND14TZeRRKva02ml/onzG3Dxbq2
-        uonWeH4EVoBGgsTsvbjpoVmR6SrhR+U2tGi+
-X-Google-Smtp-Source: ABdhPJxhAjIHv39LR6OHwFCOae6z68HtgCbw+0HGYa1v5jIrIg/spi3GmVBR2szfKKNfPUBjRm5YCQ==
-X-Received: by 2002:ac8:1c5a:: with SMTP id j26mr1153667qtk.48.1600881129105;
-        Wed, 23 Sep 2020 10:12:09 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id g25sm259170qto.47.2020.09.23.10.12.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 10:12:08 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kL8JL-0006N8-Pz; Wed, 23 Sep 2020 14:12:07 -0300
-Date:   Wed, 23 Sep 2020 14:12:07 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Peter Xu <peterx@redhat.com>, John Hubbard <jhubbard@nvidia.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jann Horn <jannh@google.com>
-Subject: Re: [PATCH 1/5] mm: Introduce mm_struct.has_pinned
-Message-ID: <20200923171207.GB9916@ziepe.ca>
-References: <20200921211744.24758-1-peterx@redhat.com>
- <20200921211744.24758-2-peterx@redhat.com>
- <224908c1-5d0f-8e01-baa9-94ec2374971f@nvidia.com>
- <20200922151736.GD19098@xz-x1>
- <20200922161046.GB731578@ziepe.ca>
- <20200922175415.GI19098@xz-x1>
- <20200922191116.GK8409@ziepe.ca>
- <20200923002735.GN19098@xz-x1>
- <20200923131043.GA59978@xz-x1>
- <20200923142003.GB15875@quack2.suse.cz>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aSM6VNxIk/hW9b7HWRMM8Fz1NvuMmVL13BGTLFDNXLg=;
+        b=i4IfXjAny8F9zAXVoEvxAkwR6U4YshcR6hDeL8RJoLV/p6h9FMScph61hKMu8Awmgk
+         EWEothBx52yBnmj9DkPJDX82VclXxOUMCWRA7eNMbmTXAwwCReRVs2448iNcfS2rxG6g
+         v1PMCbD4oiKlDQPRNcCNUbjU2bZh33YRTuOVzxMzE4HAfA37gBwuP5ImFg2ari7Ckjf1
+         wVZh1zTi1Iin6H2c4zZ5m8zCXXZo+EqigT79/5WvaVn3v+tYtHQ5SddUabH5S/24TPDK
+         QRmbWAFqYmgzY8txtubAV4FjOfCpfsmhcYkSb604qinM84RR/w10N75DgiXbU2iEvf80
+         mmxg==
+X-Gm-Message-State: AOAM530d/3Oup01ZkBC2a1GT7RcrB/ljPOdKf3tc2Cxu2su6XzqkWjgh
+        vYaJN25qYM/bLuYlHhtrGyqn53nb/Icx2PfLkoVS0w==
+X-Google-Smtp-Source: ABdhPJy1AKrZZ8Zfv0p6tedm40ARQ3FcaZOrgSEDcfYLTKpDv2MU6nbD47crkAbYYy5lGoBSQQg9neiZTt3rRtERhgU=
+X-Received: by 2002:aca:4a4d:: with SMTP id x74mr317522oia.6.1600881323905;
+ Wed, 23 Sep 2020 10:15:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200923142003.GB15875@quack2.suse.cz>
+References: <20200923165048.20486-1-sean.j.christopherson@intel.com> <20200923165048.20486-3-sean.j.christopherson@intel.com>
+In-Reply-To: <20200923165048.20486-3-sean.j.christopherson@intel.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Wed, 23 Sep 2020 10:15:11 -0700
+Message-ID: <CALMp9eTPG14Mwd_NcMf-f86U5GyfcOAVHk=ugydyJj0PybiRMA@mail.gmail.com>
+Subject: Re: [PATCH 2/4] KVM: VMX: Unconditionally clear CPUID.INVPCID if !CPUID.PCID
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 04:20:03PM +0200, Jan Kara wrote:
+On Wed, Sep 23, 2020 at 9:51 AM Sean Christopherson
+<sean.j.christopherson@intel.com> wrote:
+>
+> If PCID is not exposed to the guest, clear INVPCID in the guest's CPUID
+> even if the VMCS INVPCID enable is not supported.  This will allow
+> consolidating the secondary execution control adjustment code without
+> having to special case INVPCID.
+>
+> Technically, this fixes a bug where !CPUID.PCID && CPUID.INVCPID would
+> result in unexpected guest behavior (#UD instead of #GP/#PF), but KVM
+> doesn't support exposing INVPCID if it's not supported in the VMCS, i.e.
+> such a config is broken/bogus no matter what.
+>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> ---
+>  arch/x86/kvm/vmx/vmx.c | 16 +++++++++++-----
+>  1 file changed, 11 insertions(+), 5 deletions(-)
+>
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index cfed29329e4f..57e48c5a1e91 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -4149,16 +4149,22 @@ static void vmx_compute_secondary_exec_control(struct vcpu_vmx *vmx)
+>                 }
+>         }
+>
+> +       /*
+> +        * Expose INVPCID if and only if PCID is also exposed to the guest.
+> +        * INVPCID takes a #UD when it's disabled in the VMCS, but a #GP or #PF
+> +        * if CR4.PCIDE=0.  Enumerating CPUID.INVPCID=1 would lead to incorrect
+> +        * behavior from the guest perspective (it would expect #GP or #PF).
+> +        */
+> +       if (!guest_cpuid_has(vcpu, X86_FEATURE_PCID))
+> +               guest_cpuid_clear(vcpu, X86_FEATURE_INVPCID);
+> +
 
-> I'd hate to take spinlock in the GUP-fast path. Also I don't think this is
-> quite correct because GUP-fast-only can be called from interrupt context
-> and page table locks are not interrupt safe. 
-
-Yes, IIRC, that is a key element of GUP-fast. Was it something to do
-with futexes?
-
-> and then checking page_may_be_dma_pinned() during fork(). That should work
-> just fine AFAICT... BTW note that GUP-fast code is (and this is deliberated
-> because e.g. DAX depends on this) first updating page->_refcount and then
-> rechecking PTE didn't change and the page->_refcount update is actually
-> done using atomic_add_unless() so that it cannot be reordered wrt the PTE
-> check. So the fork() code only needs to add barriers to pair with this.
-
-It is not just DAX, everything needs this check.
-
-After the page is pinned it is prevented from being freed and
-recycled. After GUP has the pin it must check that the PTE still
-points at the same page, otherwise it might have pinned a page that is
-alreay free'd - and that would be a use-after-free issue.
-
-ason
+I thought the general rule for userspace provided CPUID bits was that
+kvm only made any adjustments necessary to prevent bad things from
+happening at the host level. Proper guest semantics are entirely the
+responsibility of userspace. Or did I misunderstand?
