@@ -2,113 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5A727428C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1227274268
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Sep 2020 14:51:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726607AbgIVM7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 08:59:52 -0400
-Received: from mail-dm6nam10on2069.outbound.protection.outlook.com ([40.107.93.69]:23520
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726563AbgIVM7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 08:59:51 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EsoB/lGQVo+E4bH/0KnHL9tA+/nao1LzcKZPf6Z0Btif6kWza/uFiwF9DCh1iuBfdKI2ktkd89unQp83P15BOCRY4YYXHXZwnw5REvqr3NSYOKOc4Ik+MN5cRT5/d3n9g36W5tMdvPeDbanJzoUdZyUkrPY4pywY4T8XYy2+/vMPdvBtRXwnrNVs0zki/hmirz0ORjwqJpE5sndFiTuZVBuMkJ7XRuvX+jgGgiW27vlAMsl4Jn+S7uA8E3ZJ2ngNV1r1Mzzhf8RXV0PAIkBaXwdxtoJjnmrq7tX2DLO+/oGKwg8wGB1OqU7XR1+auc9gHgyEldAH9pfvs4eZwRgQbA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JVszv1hS6fG38NL+tKrtbZUJM7fJ88qzGTfuReTO/gk=;
- b=k9yxu0TBTqB+DQoAUnmZTIRi2z3ZR4Kyi4P+OJTcOu6A0rXIQCaewqB+k67wcv48+d2cKxMxVXT8FD3UVuW4cBrVgn3lozJ4IxpQTzB4PRGX5+CPJjkStQACxx9o5cxoqyysBrhm+2X9vAuhLOqcjS/3yuROP0GUDN87JX1rN571HHPbBoVYr3T1pJb5a/OhceZ03HgPBwggjQTa3hVU0lnu42KjrrCtjAHjOngFOPEaqh/csZvH+fVmUPbkcw5lvPfHspO+OAs6Rsy8NeOPF4LzP3sGgbWk3kEWTBLE6QhF6qmWtAbczRz9L2y8TG/LNjkKlvMAnJbBga8n1mJ1Kg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1726646AbgIVMvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 08:51:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726578AbgIVMvT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 08:51:19 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6046FC061755;
+        Tue, 22 Sep 2020 05:51:19 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id d6so12342756pfn.9;
+        Tue, 22 Sep 2020 05:51:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JVszv1hS6fG38NL+tKrtbZUJM7fJ88qzGTfuReTO/gk=;
- b=zR3WPW9qDUlzn++cvkfhyA4Mq8In1+mBeSrP6QqxAdsuS3NUA2b+ic7mdrEuBTx1jptjaHWzzqk+mHrPh9FI3k4CLfcDzjXWZyQf8MAUwiBUDTi8FTDpMx+tLTQ51MBli7AYJdmuRT6JYSb27uPwGbF2dpuBTvl01XjdYUdSJlA=
-Authentication-Results: denx.de; dkim=none (message not signed)
- header.d=none;denx.de; dmarc=none action=none header.from=amd.com;
-Received: from SN1PR12MB2590.namprd12.prod.outlook.com (2603:10b6:802:2e::17)
- by SN1PR12MB2557.namprd12.prod.outlook.com (2603:10b6:802:22::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.19; Tue, 22 Sep
- 2020 12:59:48 +0000
-Received: from SN1PR12MB2590.namprd12.prod.outlook.com
- ([fe80::119d:6402:3d29:75fc]) by SN1PR12MB2590.namprd12.prod.outlook.com
- ([fe80::119d:6402:3d29:75fc%7]) with mapi id 15.20.3391.027; Tue, 22 Sep 2020
- 12:59:48 +0000
-Date:   Tue, 22 Sep 2020 07:59:42 -0500
-From:   John Allen <john.allen@amd.com>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     thomas.lendacky@amd.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: ccp - fix error handling
-Message-ID: <20200922125942.GA8119@mojo>
-References: <20200921113435.GA20450@duo.ucw.cz>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200921113435.GA20450@duo.ucw.cz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: DM5PR19CA0015.namprd19.prod.outlook.com
- (2603:10b6:3:151::25) To SN1PR12MB2590.namprd12.prod.outlook.com
- (2603:10b6:802:2e::17)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mojo (165.204.77.1) by DM5PR19CA0015.namprd19.prod.outlook.com (2603:10b6:3:151::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14 via Frontend Transport; Tue, 22 Sep 2020 12:59:47 +0000
-X-Originating-IP: [165.204.77.1]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: e9e3ca4a-f3a6-49fe-ba92-08d85ef762dd
-X-MS-TrafficTypeDiagnostic: SN1PR12MB2557:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN1PR12MB255707BA438E9B801BF0954D9A3B0@SN1PR12MB2557.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4YbVEpnwxyeU1eoI2QU1T7yLmA4ZtVMfeIQezlB7ZcSkr6BYjhMtSzpJSsmhqFnGdyqXjRO+Hjkn5Wcsgdfc+LqSCJ68mDz9zOxHnH0zgHMl61TrdA2ooEdh+tcGN334g8J22TAO1cw8HZ5w5obK4wl6PC3ciIDHpvqbmV/PPyQOdwqfHPHxmBA6BXc722jj27Wy0Ki3xWA/EY1zHf1yCAcvG9dnIfSTV2TeRD6FfxXaXXA1YUqvDHa6I7KJzRPS9c9U3X0n0eIGRQBkzakulnNDYSH6+hUfV5s/ZvOp+8MEPRkq+hQCEAQcka0Tg4x6g/H90QBqY8jCthDVzrIoeQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN1PR12MB2590.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(136003)(366004)(376002)(346002)(52116002)(16526019)(8936002)(44832011)(2906002)(9576002)(66946007)(5660300002)(4744005)(6496006)(66476007)(66556008)(1076003)(6916009)(8676002)(33716001)(4326008)(86362001)(956004)(316002)(55016002)(6666004)(33656002)(26005)(186003)(478600001)(9686003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: Y61SzCxazvaqJPkltYan+52Bg8a4CvSwiGWBSrgsYZdib+r/jP8RnRntCq5dRU3jnfE8quHoY8HVdsC+ePX+biFzu+DTpIbjDnLQXi5gIR+D6okmiGre7XaEahm+uMjYN1nhFeHkDU7zLUe8jm+o1XvOY7ba8ol2Do49/z/0MPwXDP6bYW9VPMybQiTCqGi1VJL8W5uBVxfbJ2++I/7NJ+FJBNbwLQe0CrSrZKSe7T0WVWSTdihYHBMI/CCD3sy+z0eAQ40oWJ0zgH7OPY+bv5CFBPVse71psOwcu63mgMyCghmN1M0JMrGn2/bHY8SrjlAsuTuVGz9We6gsqHBoB4F0GaE0AVLy65jP3DfkroSOOd9kSpj1h6kYMxtavE+CqqcwvxQ3jNUrjkNNVUtDzI4gK3rucuz0wIotqfNhvn8KulomahTidGU1tIP0ytj/yBnKI15MEbRj+B2nCmAtG68u6VE8nJaOxLMZonoAsH+9R99IXw4O0RaRhobl2Bm3Ep6FoVeGYUqD2f4Q8jYnmy024i6Y+0Z+VhcxivCppP2g7svKsVZmmERw3dGcBb5zGt3VSzystSXWtB9VXyeuDfjw5W0IItVQ3/YpdAUGpllh9rbMbyiL8C4TNABCxd9C/4AbUyvwZlTSk66T/caE+Q==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e9e3ca4a-f3a6-49fe-ba92-08d85ef762dd
-X-MS-Exchange-CrossTenant-AuthSource: SN1PR12MB2590.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2020 12:59:48.5234
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: btTNDjzpxCfcbeLtE5GzkmyD5gJn1Uf6pW+MXD5ks4YqyEnI5ILvOEfzS7R2yzvwTxe0PFAVubuBQexP3yltBg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2557
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Uq4gszUN314/xrax/zivCjL8TtnAIPQarXrbHoUDZEw=;
+        b=E8ABS3R7AQYqZW4xbmmlHZMrrHqhduMblu/D5suTnRNJuIlLN8UYQooUjD56MqtAwq
+         w98dg3iOS+/k/EdOQK6N5eHRJB+DiWSBsdq3RWT3NF7f3m5HCpandqi2sXd3RqtUMPUa
+         XnnUDQfsHPtlesfzMgkQfzHv84kAMlVN0fyuvX54Qb8EgCsktYzG4bLloKwgcZFOHHTa
+         hmWsvh5TcbdwKOBrQJzDkuKXbBMhBd7b32o6yNCZWOVWjleNIeXYuPLgdpittmLE+weX
+         M2O35yFEGQzp2UkvU2z6DKaIPBYxzK1H4QxBjBpVpdBQFLNXbhH8Negc+WI5ThoMwyaW
+         Tl/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Uq4gszUN314/xrax/zivCjL8TtnAIPQarXrbHoUDZEw=;
+        b=cRNjHgmgqye3QRIl+NjhIAi+bYDfWGOQxes7YEyrHSKlaWaKj7bxgzBGWXXjjf0Hgn
+         7Ji2OpK5bO9L0ldEGbmGFbRTvnoytUKVhkQeLAoU/RDQW06h/G00bY/LpH7gkjFn7kLq
+         4GwvJCrq2LzqUo2J3vUg3GpGYPXJj8+uIhDSpvzwhlRyjyYQZGmM+7pooH5JfrvjoAo+
+         u/bhuJn2/aW9fW6OMI++xz6c2bJKCzQf81f1xTtGgtQ44uB0RUqb3EqdO7AFcBDNSUy4
+         AVr0zHP3wyK6Qd5LrUnSyXA+I2cz/+DhXPoEUTltgJ4u4V9fIu3qSAuyjcBTtGKxc7Bn
+         MKmg==
+X-Gm-Message-State: AOAM530ACEg4ib48+9Mntp6vXedxZsW9Kk7saNNbRc1HqGIISLt2ylbK
+        FxIZpzos4c69nVm2yVGa8iU=
+X-Google-Smtp-Source: ABdhPJygZmnt7VKPOrJ+r7AEP2gHgW/QMzfNez2co3rHo1QeDJ1D4H6QbHERLnnMttxv3IJ+DhkwxA==
+X-Received: by 2002:a62:3401:0:b029:150:e9ad:569 with SMTP id b1-20020a6234010000b0290150e9ad0569mr2670613pfa.75.1600779078923;
+        Tue, 22 Sep 2020 05:51:18 -0700 (PDT)
+Received: from localhost.localdomain ([2402:7500:489:56d9:501b:f524:c013:2733])
+        by smtp.gmail.com with ESMTPSA id b18sm14995695pfr.4.2020.09.22.05.51.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 22 Sep 2020 05:51:18 -0700 (PDT)
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+To:     jacek.anaszewski@gmail.com, pavel@ucw.cz, robh+dt@kernel.org,
+        matthias.bgg@gmail.com
+Cc:     dmurphy@ti.com, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+Subject: [PATCH v4 0/2] leds: mt6360: Add LED driver for MT6360
+Date:   Wed, 23 Sep 2020 20:50:50 +0800
+Message-Id: <1600865452-19649-1-git-send-email-gene.chen.richtek@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 01:34:35PM +0200, Pavel Machek wrote:
-> Fix resource leak in error handling.
-> 
-> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+This patch series add MT6360 LED support contains driver and binding document
 
-Acked-by: John Allen <john.allen@amd.com>
+Gene Chen (2)
+ dt-bindings: leds: Add bindings for MT6360 LED
+ leds: mt6360: Add LED driver for MT6360
 
-> 
-> diff --git a/drivers/crypto/ccp/ccp-ops.c b/drivers/crypto/ccp/ccp-ops.c
-> index bd270e66185e..40869ea1ed20 100644
-> --- a/drivers/crypto/ccp/ccp-ops.c
-> +++ b/drivers/crypto/ccp/ccp-ops.c
-> @@ -1744,7 +1744,7 @@ ccp_run_sha_cmd(struct ccp_cmd_queue *cmd_q, struct ccp_cmd *cmd)
->  			break;
->  		default:
->  			ret = -EINVAL;
-> -			goto e_ctx;
-> +			goto e_data;
->  		}
->  	} else {
->  		/* Stash the context */
-> 
-> -- 
-> DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+ Documentation/devicetree/bindings/leds/leds-mt6360.yaml |  107 ++
+ drivers/leds/Kconfig                                    |   11 
+ drivers/leds/Makefile                                   |    1 
+ drivers/leds/leds-mt6360.c                              |  705 ++++++++++++++++
+ 4 files changed, 824 insertions(+)
 
+changelogs between v1 & v2
+ - add led driver with mfd
+
+changelogs between v2 & v3
+ - independent add led driver
+ - add dt-binding document
+ - refactor macros definition for easy to debug
+ - parse device tree by fwnode
+ - use devm*ext to register led class device
+
+changelogs between v3 & v4
+ - fix binding document description
+ - use GENMASK and add unit postfix to definition
+ - isink register led class device
 
