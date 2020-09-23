@@ -2,197 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29C3E276265
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 326A427626D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726801AbgIWUpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 16:45:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35112 "EHLO
+        id S1726572AbgIWUsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 16:48:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726749AbgIWUpj (ORCPT
+        with ESMTP id S1726199AbgIWUsY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 16:45:39 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA87BC0613D1;
-        Wed, 23 Sep 2020 13:45:38 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id u4so363928plr.4;
-        Wed, 23 Sep 2020 13:45:38 -0700 (PDT)
+        Wed, 23 Sep 2020 16:48:24 -0400
+Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8170C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 13:48:24 -0700 (PDT)
+Received: by mail-oo1-xc43.google.com with SMTP id b12so209139oop.13
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 13:48:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=eXYv5X8tjs0NHlmzc9aivkeUDJvNkRf/+n+TLaTZCbU=;
-        b=UQujlSywlGHQs7UvJ9utW/QwnTvMmtRJZIIF5N38H2nS+k83bInmuMY2yEhCHvmMzx
-         xGqIZnQvEq6gQGlBvoadOK5YWnSgFf+rogzN+xa5sEEybpGPEMCj5scO1ospoq6Ae6ii
-         D/Wu/QgU1FGgMbOtFjGmFr/knTV0SSGUCQpDUpHvRDrfvZrZtK+c1zNqPsJcd86t6ac1
-         oEV/Dpfc+5KbnWhQdxhZsj/FjNIXZYfhFF5juQZnj89iFMo27Bx9UX52KcL4gK9Zt2AE
-         c/fGdgHA+s3j/RyCDeTCZsvWgEo/erOtNlU5Dvj7YDn6GG3Zd6SQ/4DoaB3Zh9wsZlzu
-         TnEg==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BJTll+5qmwvzugKjnqEDOGM/u8Q3ptEr/+CUXO1yFV8=;
+        b=cQh6h2pABmrqmAp2MlHEWPXY3TiTUycxbtrwrU9fZAPJ7TseOdYnbrjMtUhwEZKfYl
+         KPgoJrJSvFrSGFphSBkpUDR6YNW7etto5ao5O/6c5APQe4m56C/oKbK8hwVfBVVclrRX
+         v92szi/ev5ENJ2wwRVF0omqP05aTod4NUhasU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=eXYv5X8tjs0NHlmzc9aivkeUDJvNkRf/+n+TLaTZCbU=;
-        b=bdF6U59himerP9jSun9eExtmNloaEAWlJO3F5aVkYBiqUmAi4Rb5fXk2OzLrkr41SW
-         uBPv/fhSuVtciIyMv/GbSQ6XnujR2oweJhiN/yBRPNtbvg0eh7iO1SwETDzjSdtSxnTv
-         PW4gTWQHuPiX9lq9tVeKU1f6jq6NvjcGubOsY/aqaV7MmvyTZiRMyiDQCPvrhlTv5Jg+
-         6TPA79Qd7yOReOQ979mpwfgu4lsTXerYLAQAHvu4rjL+qQoVlLr9qNghMw4pC2hm2ts3
-         SL8ZGvZEdsYk0a/l9VdAQa98qyASKu68LZXvrosUbLV4PYqQFi1cLL9XKxJIM8wUoKPA
-         L6Lw==
-X-Gm-Message-State: AOAM530ZOzrhocxhnuPaJpaaOUi51qzKUVbmke4lgSdlM/hREepjIFoy
-        KXhZr14PeIBjcOgz46h4CC5rFdU3XDRIfw==
-X-Google-Smtp-Source: ABdhPJycviktBl1RnSLgo0FFz9w43sHvciYRgW6i0PCmhUzU+pByVgVIxlOcDWdi+HC2dDlslBY8Gg==
-X-Received: by 2002:a17:902:7281:b029:d2:2a0b:f050 with SMTP id d1-20020a1709027281b02900d22a0bf050mr1511614pll.42.1600893937956;
-        Wed, 23 Sep 2020 13:45:37 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id u6sm330776pjy.37.2020.09.23.13.45.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 13:45:37 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-kernel@vger.kernel.org (open list),
-        vladimir.oltean@nxp.com, olteanv@gmail.com, nikolay@nvidia.com
-Subject: [PATCH net-next v2 2/2] net: dsa: b53: Configure VLANs while not filtering
-Date:   Wed, 23 Sep 2020 13:45:14 -0700
-Message-Id: <20200923204514.3663635-3-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200923204514.3663635-1-f.fainelli@gmail.com>
-References: <20200923204514.3663635-1-f.fainelli@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BJTll+5qmwvzugKjnqEDOGM/u8Q3ptEr/+CUXO1yFV8=;
+        b=FmukolIaIV0rwLCZ91Q62TnChKVZpM/3oWAG3DFXW57vJ2pMN5eJX6pEtToKIbj2u3
+         1NKf3ZDGqcCMEQMyxQABC3ppQrnxSeEq+8Pn/NvbhSgL+2qPws17gVFiWs+a8Zq9k74Y
+         mT8uSQ0AfAY80lW2sUw9Rn4IgEpjIuXyCJ9BMUQlRgATdqt0G1dM3GwDEdl0pj1X+z4m
+         s3MDdAiqiwb92H+wldPg8c56lbR8C31Zy5jThncAM3QC67lCLsUgLVd/0AwVlqhZPkYb
+         n/tT2I4eBIFEzyBXoDE4YEdy9V+az50YGE/CwsnLQL2n2wO2FdJw//PWVVd/ZgrEsDgs
+         TgZw==
+X-Gm-Message-State: AOAM531muQrZVBBKoJxtL38YH+zljAZ+hEnH6hPmJQOD/+gnBC4B1Rzy
+        ++Elu+yC8bcQRbcsdod6/t/yTp7+Y/+j1A==
+X-Google-Smtp-Source: ABdhPJxx7ZByX2zs74ayc27B4BArC4rnhdm8yTY/kMHWGzici9Sj8A7ttmzcG/iSm2G82yOvM0vnvw==
+X-Received: by 2002:a4a:7055:: with SMTP id b21mr1091159oof.26.1600894103959;
+        Wed, 23 Sep 2020 13:48:23 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id l25sm291674otb.4.2020.09.23.13.48.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Sep 2020 13:48:23 -0700 (PDT)
+Subject: Re: [RFC PATCH 01/11] counters: Introduce counter and counter_atomic
+To:     Kees Cook <keescook@chromium.org>
+Cc:     corbet@lwn.net, gregkh@linuxfoundation.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <cover.1600816121.git.skhan@linuxfoundation.org>
+ <e57eb89132000b255b5a7952cb82725ec2f3e4e0.1600816121.git.skhan@linuxfoundation.org>
+ <202009231152.5023C4656F@keescook>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <599e3faa-4228-f867-46f1-66566297256b@linuxfoundation.org>
+Date:   Wed, 23 Sep 2020 14:48:22 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <202009231152.5023C4656F@keescook>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the B53 driver to support VLANs while not filtering. This
-requires us to enable VLAN globally within the switch upon driver
-initial configuration (dev->vlan_enabled).
+On 9/23/20 1:04 PM, Kees Cook wrote:
+> On Tue, Sep 22, 2020 at 07:43:30PM -0600, Shuah Khan wrote:
+>> Introduce Simple atomic and non-atomic counters.
+>>
+>> There are a number of atomic_t usages in the kernel where atomic_t api
+>> is used strictly for counting and not for managing object lifetime. In
+>> some cases, atomic_t might not even be needed.
+> 
+> Thank you for working on a counter API! I'm glad to see work here,
+> though I have some pretty significant changes to request; see below...
+> 
 
-We also need to remove the code that dealt with PVID re-configuration in
-b53_vlan_filtering() since that function worked under the assumption
-that it would only be called to make a bridge VLAN filtering, or not
-filtering, and we would attempt to move the port's PVID accordingly.
+Thanks for the review.
 
-Now that VLANs are programmed all the time, even in the case of a
-non-VLAN filtering bridge, we would be programming a default_pvid for
-the bridged switch ports.
+>>
+>> The purpose of these counters is twofold: 1. clearly differentiate
+>> atomic_t counters from atomic_t usages that guard object lifetimes,
+>> hence prone to overflow and underflow errors. It allows tools that scan
+>> for underflow and overflow on atomic_t usages to detect overflow and
+>> underflows to scan just the cases that are prone to errors. 2. provides
+>> non-atomic counters for cases where atomic isn't necessary.
+>>
+>> Simple atomic and non-atomic counters api provides interfaces for simple
+>> atomic and non-atomic counters that just count, and don't guard resource
+>> lifetimes. Counters will wrap around to 0 when it overflows and should
+>> not be used to guard resource lifetimes, device usage and open counts
+>> that control state changes, and pm states.
+>>
+>> Using counter_atomic to guard lifetimes could lead to use-after free
+>> when it overflows and undefined behavior when used to manage state
+>> changes and device usage/open states.
+>>
+>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> 
+> I would really like these APIs to be _impossible_ to use for object
+> lifetime management. To that end, I would like to have all of the
+> *_return() functions removed. It should be strictly init, inc, dec,
+> read.
+> 
 
-We need the DSA receive path to pop the VLAN tag if it is the bridge's
-default_pvid because the CPU port is always programmed tagged in the
-programmed VLANs. In order to do so we utilize the
-dsa_untag_bridge_pvid() helper introduced in the commit before by
-setting ds->untag_bridge_pvid to true.
+Yes. I am with you on making this API as small as possible so it won't
+be used for lifetime mgmt. That means no support for:
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/net/dsa/b53/b53_common.c | 19 ++-----------------
- drivers/net/dsa/b53/b53_priv.h   |  1 -
- net/dsa/tag_brcm.c               | 16 ++++++++++++++--
- 3 files changed, 16 insertions(+), 20 deletions(-)
+*_test, add_negative etc.
 
-diff --git a/drivers/net/dsa/b53/b53_common.c b/drivers/net/dsa/b53/b53_common.c
-index 6a5796c32721..73507cff3bc4 100644
---- a/drivers/net/dsa/b53/b53_common.c
-+++ b/drivers/net/dsa/b53/b53_common.c
-@@ -1377,23 +1377,6 @@ EXPORT_SYMBOL(b53_phylink_mac_link_up);
- int b53_vlan_filtering(struct dsa_switch *ds, int port, bool vlan_filtering)
- {
- 	struct b53_device *dev = ds->priv;
--	u16 pvid, new_pvid;
--
--	b53_read16(dev, B53_VLAN_PAGE, B53_VLAN_PORT_DEF_TAG(port), &pvid);
--	if (!vlan_filtering) {
--		/* Filtering is currently enabled, use the default PVID since
--		 * the bridge does not expect tagging anymore
--		 */
--		dev->ports[port].pvid = pvid;
--		new_pvid = b53_default_pvid(dev);
--	} else {
--		/* Filtering is currently disabled, restore the previous PVID */
--		new_pvid = dev->ports[port].pvid;
--	}
--
--	if (pvid != new_pvid)
--		b53_write16(dev, B53_VLAN_PAGE, B53_VLAN_PORT_DEF_TAG(port),
--			    new_pvid);
- 
- 	b53_enable_vlan(dev, dev->vlan_enabled, vlan_filtering);
- 
-@@ -2619,6 +2602,8 @@ struct b53_device *b53_switch_alloc(struct device *base,
- 	dev->priv = priv;
- 	dev->ops = ops;
- 	ds->ops = &b53_switch_ops;
-+	ds->configure_vlan_while_not_filtering = true;
-+	dev->vlan_enabled = ds->configure_vlan_while_not_filtering;
- 	mutex_init(&dev->reg_mutex);
- 	mutex_init(&dev->stats_mutex);
- 
-diff --git a/drivers/net/dsa/b53/b53_priv.h b/drivers/net/dsa/b53/b53_priv.h
-index c55c0a9f1b47..24893b592216 100644
---- a/drivers/net/dsa/b53/b53_priv.h
-+++ b/drivers/net/dsa/b53/b53_priv.h
-@@ -91,7 +91,6 @@ enum {
- struct b53_port {
- 	u16		vlan_ctl_mask;
- 	struct ethtool_eee eee;
--	u16		pvid;
- };
- 
- struct b53_vlan {
-diff --git a/net/dsa/tag_brcm.c b/net/dsa/tag_brcm.c
-index cc8512b5f9e2..703770161738 100644
---- a/net/dsa/tag_brcm.c
-+++ b/net/dsa/tag_brcm.c
-@@ -7,6 +7,7 @@
- 
- #include <linux/etherdevice.h>
- #include <linux/list.h>
-+#include <linux/if_vlan.h>
- #include <linux/slab.h>
- 
- #include "dsa_priv.h"
-@@ -140,6 +141,11 @@ static struct sk_buff *brcm_tag_rcv_ll(struct sk_buff *skb,
- 	/* Remove Broadcom tag and update checksum */
- 	skb_pull_rcsum(skb, BRCM_TAG_LEN);
- 
-+	/* Set the MAC header to where it should point for
-+	 * dsa_untag_bridge_pvid() to parse the correct VLAN header.
-+	 */
-+	skb_set_mac_header(skb, -ETH_HLEN);
-+
- 	skb->offload_fwd_mark = 1;
- 
- 	return skb;
-@@ -191,7 +197,7 @@ static struct sk_buff *brcm_tag_rcv(struct sk_buff *skb, struct net_device *dev,
- 		nskb->data - ETH_HLEN - BRCM_TAG_LEN,
- 		2 * ETH_ALEN);
- 
--	return nskb;
-+	return dsa_untag_bridge_pvid(nskb);
- }
- 
- static const struct dsa_device_ops brcm_netdev_ops = {
-@@ -219,8 +225,14 @@ static struct sk_buff *brcm_tag_rcv_prepend(struct sk_buff *skb,
- 					    struct net_device *dev,
- 					    struct packet_type *pt)
- {
-+	struct sk_buff *nskb;
-+
- 	/* tag is prepended to the packet */
--	return brcm_tag_rcv_ll(skb, dev, pt, ETH_HLEN);
-+	nskb = brcm_tag_rcv_ll(skb, dev, pt, ETH_HLEN);
-+	if (!nskb)
-+		return nskb;
-+
-+	return dsa_untag_bridge_pvid(nskb);
- }
- 
- static const struct dsa_device_ops brcm_prepend_netdev_ops = {
--- 
-2.25.1
+I started out with just init, inc, dec, read. As I started looking
+for candidates that can be converted to counters, I found inc_return()
+usages. I think we need inc_return() for sure. I haven't come across
+atomic_dec_return() yet.
 
+I would say we will need at least inc_return() for being able to convert
+all counter atomic_t usages.
+
+>> +There are a number of atomic_t usages in the kernel where atomic_t api
+>> +is used strictly for counting and not for managing object lifetime. In
+>> +some cases, atomic_t might not even be needed.
+> 
+> Why even force the distinction? I think all the counters should be
+> atomic and then there is no chance they will get accidentally used in
+> places where someone *thinks* it's safe to use a non-atomic. So,
+> "_atomic" can be removed from the name and the non-atomic implementation
+> can get removed. Anyone already using non-atomic counters is just using
+> "int" and "long" anyway. Let's please only create APIs that are always
+> safe to use, and provide some benefit over a native time.
+> 
+
+I am with Greg on this. I think we will find several atomic_t usages
+that don't need atomicity.
+
+>> +Simple atomic and non-atomic counters api provides interfaces for simple
+>> +atomic and non-atomic counters that just count, and don't guard resource
+>> +lifetimes. Counters will wrap around to 0 when it overflows and should
+>> +not be used to guard resource lifetimes, device usage and open counts
+>> +that control state changes, and pm states.
+>> +
+>> +Using counter_atomic to guard lifetimes could lead to use-after free
+>> +when it overflows and undefined behavior when used to manage state
+>> +changes and device usage/open states.
+>> +
+>> +Use refcnt_t interfaces for guarding resources.
+>  > typo: refcount_t (this typo is repeated in a few places)
+> 
+
+Thanks for the catch. Will fit it.
+
+>> +
+>> +.. warning::
+>> +        Counter will wrap around to 0 when it overflows.
+>> +        Should not be used to guard resource lifetimes.
+>> +        Should not be used to manage device state and pm state.
+>> +
+>> +Test Counters Module and selftest
+>> +---------------------------------
+>> +
+>> +Please see :ref:`lib/test_counters.c <Test Counters Module>` for how to
+>> +use these interfaces and also test them.
+>> +
+>> +Selftest for testing:
+>> +:ref:`testing/selftests/lib/test_counters.sh <selftest for counters>`
+>> +
+>> +Atomic counter interfaces
+>> +=========================
+>> +
+>> +counter_atomic and counter_atomic_long types use atomic_t and atomic_long_t
+>> +underneath to leverage atomic_t api,  providing a small subset of atomic_t
+>> +interfaces necessary to support simple counters. ::
+>> +
+>> +        struct counter_atomic { atomic_t cnt; };
+>> +        struct counter_atomic_long { atomic_long_t cnt; };
+> 
+> "Unsized" and "Long" are both unhelpful here. If it's unsized, that
+> tells nothing about the counter size. And "long" changes with word size.
+> I think counters should either _all_ be 64-bit, or they should be
+> explicitly sized in their name. Either:
+> 
+> struct counter;  /* unsigned 64-bit, wraps back around to 0 */
+> 
+> or
+> 
+> struct counter32; /* unsigned 32-bit, wraps back around to 0 */
+> struct counter64; /* unsigned 64-bit, wraps back around to 0 */
+> 
+
+Will do.
+
+>> --- /dev/null
+>> +++ b/lib/test_counters.c
+>> @@ -0,0 +1,283 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +/*
+>> + * Kernel module for testing Counters
+>> + *
+>> + * Authors:
+>> + *	Shuah Khan	<skhan@linuxfoundation.org>
+>> + */
+>> +
+>> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+>> +
+>> +#include <linux/module.h>
+>> +#include <linux/counters.h>
+>> +
+>> +void test_counter_atomic(void)
+>> +{
+>> +	static struct counter_atomic acnt = COUNTER_ATOMIC_INIT(0);
+>> +	int start_val = counter_atomic_read(&acnt);
+>> +	int end_val;
+> 
+> Please build this test using KUnit.
+> 
+
+Sounds good.
+
+>> +	start_val = counter_long_read(&acnt);
+>> +	end_val = counter_long_dec_return(&acnt);
+>> +	pr_info("Test read decrement and return: %ld to %ld - %s\n",
+>> +		start_val, end_val,
+>> +		((start_val-1 == end_val) ? "PASS" : "FAIL"));
+> 
+> I also see a lot of copy/paste patterns here. These should all use a
+> common helper.
+
+I knew you would ask for helpers. :)
+
+Yeah will do.
+
+thanks,
+-- Shuah
