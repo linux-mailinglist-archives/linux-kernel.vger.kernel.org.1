@@ -2,175 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 784AD276236
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC1CB27623B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726681AbgIWUfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 16:35:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726199AbgIWUfT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 16:35:19 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D2E8C0613CE;
-        Wed, 23 Sep 2020 13:35:19 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id g4so1415736wrs.5;
-        Wed, 23 Sep 2020 13:35:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=cc:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+JAoNjE9BgUgD/+Nf0dEC/V7RUaftxkwzVMbH4CwSVQ=;
-        b=lRn68ON7gqkN0fpBPmNJJ62K7nvMcG93yf5fYTDknk7w0WENXAHqjxi703j4UFgwMG
-         aIb9BwHnIe93k6gtaJgBFyTudZgb+IOhHUBsG9clYo1Rg0mGIZ8WxWBrq1K3XXzy0iH5
-         tRrNRnZvG9oUUuZ4u+eLyL5t8MoNE3HN0UaWEsKlD+0vfU1m1uusMx8I9FTJ5Mx5GhhO
-         Q4lQ/ghwXzSZX3f/hoBdedJFGtBKdsvO/MQco9M4lqvZ/G8NXChQmoALwLoKiiXl72Lu
-         iVIkyQrUNcBmnUgGEI0ujuoeMu/rnZx3+S5f+TQUIZ49Mjp7nnGlCeZFptN6jpnkuGh/
-         gDJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+JAoNjE9BgUgD/+Nf0dEC/V7RUaftxkwzVMbH4CwSVQ=;
-        b=ma+jK1M5V/u68Bcn4gJ76ueToPwYQiGet+BdD/QVX7U278FDG+43AnzTAgBzplXPdS
-         xu/OQD8oXb6s8Ybww3iAIeEGlhSea5nXV+hBHWmsTyYGRa5z+u4c/u6X7sB3xEb2thaF
-         +6OVQFfs/f3OoGuxRCHUdE/YipSrQyFmOqg3XvRtOj37Pv1Gf04xQAOYMnhkTRKneUOf
-         6hIR+vWIpePDwIzvSN5FhT1yhdMCkbRX6hxswByE7gXnlQgJHPqCEYp3XjRGcLIfgfn4
-         ZfbrpvbXw1PB/uVGmem52XMneKOa8PGNR/Z9AH6YXEBDKz95pjMLzYbMNUxuQfNorDSn
-         0PNQ==
-X-Gm-Message-State: AOAM531klQXrR3OAXrQi6kKPWDTfiVhc+nPVFiQJxvBZDBuCxgGGXUtN
-        t+NsQEfih2BLYrpxO1xN+v0CWtg5jFs=
-X-Google-Smtp-Source: ABdhPJyQTBMSYo+WY1tf+NPwrxEyJPXJUoGDRUSqew4rUkpd7WSrRqukQPhUBVfdIdkLsOiqdHzSrg==
-X-Received: by 2002:adf:b306:: with SMTP id j6mr1353497wrd.279.1600893317599;
-        Wed, 23 Sep 2020 13:35:17 -0700 (PDT)
-Received: from ?IPv6:2001:a61:2479:6801:d8fe:4132:9f23:7e8f? ([2001:a61:2479:6801:d8fe:4132:9f23:7e8f])
-        by smtp.gmail.com with ESMTPSA id m12sm862761wml.38.2020.09.23.13.35.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Sep 2020 13:35:16 -0700 (PDT)
-Cc:     mtk.manpages@gmail.com, lnx-man <linux-man@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 12/24] getgrent_r.3: Use sizeof() to get buffer size
- (instead of hardcoding macro name)
-To:     Stefan Puiu <stefan.puiu@gmail.com>,
-        Alejandro Colomar <colomar.6.4.3@gmail.com>
-References: <20200910211344.3562-1-colomar.6.4.3@gmail.com>
- <20200910211344.3562-13-colomar.6.4.3@gmail.com>
- <CACKs7VD_p=d+nvuFxkWofSE6jCoKAKx5w44_5ciTJ0NX_H1ZFA@mail.gmail.com>
- <7dd2ab72-3ce7-1f50-229a-e663c3df2dcd@gmail.com>
- <CACKs7VDzgUyDM9FhRR69Aqw2-0xiZC86EhkqSmD5P68derRBFw@mail.gmail.com>
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Message-ID: <de87f720-68fd-02ef-1ce4-aba7593dd84a@gmail.com>
-Date:   Wed, 23 Sep 2020 22:35:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726599AbgIWUiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 16:38:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36016 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726419AbgIWUiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 16:38:11 -0400
+Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C589220725;
+        Wed, 23 Sep 2020 20:38:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600893491;
+        bh=AskTKIC0gVf9+eudy7V2ZFeIHmr9SERPbmozivXSEaQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=BuDzCXnwneiQEBijijm9OgF/t4EVX12j+56co+NLwWejFSek19RliEPne7vUBU8AV
+         DdU2YzX7tm6v52Y6F6fSdEinqudN3rDVWx7q+Q6Mn9j8mHPIr2b0dtIWooiEHJIy/X
+         IHHdXtaiVkyZvSiz5zAfr2rEsweAw2olm40Hk1Sg=
+Date:   Wed, 23 Sep 2020 15:38:09 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Nadeem Athani <nadeem@cadence.com>
+Cc:     tjoseph@cadence.com, lorenzo.pieralisi@arm.com, robh@kernel.org,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kishon@ti.com, mparab@cadence.com,
+        sjakhade@cadence.com
+Subject: Re: [PATCH v2] PCI: Cadence: Add quirk for Gen2 controller to do
+ autonomous speed change.
+Message-ID: <20200923203809.GA2289779@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <CACKs7VDzgUyDM9FhRR69Aqw2-0xiZC86EhkqSmD5P68derRBFw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200923183427.9258-1-nadeem@cadence.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/20 12:03 PM, Stefan Puiu wrote:
-> Hi,
+Something like:
+
+  PCI: cadence: Retrain Link to work around Gen2 training defect
+
+to match history (see "git log --oneline
+drivers/pci/controller/cadence/pcie-cadence-host.c").
+
+On Wed, Sep 23, 2020 at 08:34:27PM +0200, Nadeem Athani wrote:
+> Cadence controller will not initiate autonomous speed change if
+> strapped as Gen2. The Retrain bit is set as a quirk to trigger
+> this speed change.
+
+To match the spec terminology:
+
+  Set the Retrain Link bit ...
+
+Obviously I don't know the details of your device or even how PCIe
+works at this level.  But IIUC a link always comes up at 2.5 GT/s
+first and then the upstream and downstream components negotiate the
+highest speed they both support.  It sounds like your controller
+doesn't actually do this negotiation unless you set the Retrain Link
+bit?
+
+Is cdns_pcie_host_init_root_port() the only time this needs to be
+done?  We don't have to worry about doing this again after a reset,
+hot-add event, etc?
+
+> Signed-off-by: Nadeem Athani <nadeem@cadence.com>
+> ---
+>  drivers/pci/controller/cadence/pcie-cadence-host.c | 14 ++++++++++++++
+>  drivers/pci/controller/cadence/pcie-cadence.h      | 15 +++++++++++++++
+>  2 files changed, 29 insertions(+)
 > 
-> On Fri, Sep 11, 2020 at 6:28 PM Alejandro Colomar
-> <colomar.6.4.3@gmail.com> wrote:
->>
->> Hi Stefan,
->>
->> On 2020-09-11 16:35, Stefan Puiu wrote:
->>  > Hi,
->>  >
->>  > On Fri, Sep 11, 2020 at 12:15 AM Alejandro Colomar
->>  > <colomar.6.4.3@gmail.com> wrote:
->>  >>
->>  >> Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
->>  >> ---
->>  >>   man3/getgrent_r.3 | 2 +-
->>  >>   1 file changed, 1 insertion(+), 1 deletion(-)
->>  >>
->>  >> diff --git a/man3/getgrent_r.3 b/man3/getgrent_r.3
->>  >> index 81d81a851..76deec370 100644
->>  >> --- a/man3/getgrent_r.3
->>  >> +++ b/man3/getgrent_r.3
->>  >> @@ -186,7 +186,7 @@ main(void)
->>  >>
->>  >>       setgrent();
->>  >>       while (1) {
->>  >> -        i = getgrent_r(&grp, buf, BUFLEN, &grpp);
->>  >> +        i = getgrent_r(&grp, buf, sizeof(buf), &grpp);
->>  >
->>  > I'm worried that less attentive people might copy/paste parts of this
->>  > in their code, where maybe buf is just a pointer, and expect it to
->>  > work. Maybe leaving BUFLEN here is useful as a reminder that they need
->>  > to change something to adapt the code?
->>  >
->>  > Just my 2 cents,
->>  > Stefan.
->>  >
->> That's a very good point.
->>
->> So we have 3 options and I will propose now a 4th one.  Let's see all
->> of them and see which one is better for the man pages.
->>
->> 1.-     Use the macro everywhere.
->>
->> pros:
->> - It is still valid when the buffer is a pointer and not an array.
->> cons:
->> - Hardcodes the initializer.  If the array is later initialized with a
->>    different value, it may produce a silent bug, or a compilation break.
->>
->> 2.-     Use sizeof() everywhere, and the macro for the initializer.
->>
->> pros:
->> - It is valid as long as the buffer is an array.
->> cons:
->> - If the code gets into a function, and the buffer is then a pointer,
->>    it will definitively produce a silent bug.
->>
->> 3.-     Use sizeof() everywhere, and a magic number for the initializer.
->>
->> The same as 2.
->>
->> 4.-     Use ARRAY_BYTES() macro
->>
->> pros:
->> - It is always safe and when code changes, it may break compilation, but
->>    never a silent bug.
->> cons:
->> - Add a few lines of code.  Maybe too much complexity for an example.
->>    But I'd say that it is the only safe option, and in real code it
->>    should probably be used more, so maybe it's good to show a good practice.
+> diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c b/drivers/pci/controller/cadence/pcie-cadence-host.c
+> index 4550e0d469ca..a2317614268d 100644
+> --- a/drivers/pci/controller/cadence/pcie-cadence-host.c
+> +++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
+> @@ -83,6 +83,9 @@ static int cdns_pcie_host_init_root_port(struct cdns_pcie_rc *rc)
+>  	struct cdns_pcie *pcie = &rc->pcie;
+>  	u32 value, ctrl;
+>  	u32 id;
+> +	u32 link_cap = CDNS_PCIE_LINK_CAP_OFFSET;
+
+This is not actually the link cap offset.  Based on the usage, this
+appears to be the offset of the PCIe Capability.
+
+> +	u8 sls;
+> +	u16 lnk_ctl;
+>  
+>  	/*
+>  	 * Set the root complex BAR configuration register:
+> @@ -111,6 +114,17 @@ static int cdns_pcie_host_init_root_port(struct cdns_pcie_rc *rc)
+>  	if (rc->device_id != 0xffff)
+>  		cdns_pcie_rp_writew(pcie, PCI_DEVICE_ID, rc->device_id);
+>  
+> +	/* Quirk to enable autonomous speed change for GEN2 controller */
+> +	/* Reading Supported Link Speed value */
+> +	sls = PCI_EXP_LNKCAP_SLS &
+> +		cdns_pcie_rp_readb(pcie, link_cap + PCI_EXP_LNKCAP);
+
+The conventional way to write this would be
+
+  sls = cdns_pcie_rp_readb(pcie, link_cap + PCI_EXP_LNKCAP) &
+    PCI_EXP_LNKCAP_SLS;
+
+> +	if (sls == PCI_EXP_LNKCAP_SLS_5_0GB) {
+> +		/* Since this a Gen2 controller, set Retrain Link(RL) bit */
+> +		lnk_ctl = cdns_pcie_rp_readw(pcie, link_cap + PCI_EXP_LNKCTL);
+> +		lnk_ctl |= PCI_EXP_LNKCTL_RL;
+> +		cdns_pcie_rp_writew(pcie, link_cap + PCI_EXP_LNKCTL, lnk_ctl);
+> +	}
+> +
+>  	cdns_pcie_rp_writeb(pcie, PCI_CLASS_REVISION, 0);
+>  	cdns_pcie_rp_writeb(pcie, PCI_CLASS_PROG, 0);
+>  	cdns_pcie_rp_writew(pcie, PCI_CLASS_DEVICE, PCI_CLASS_BRIDGE_PCI);
+> diff --git a/drivers/pci/controller/cadence/pcie-cadence.h b/drivers/pci/controller/cadence/pcie-cadence.h
+> index feed1e3038f4..fe560480c573 100644
+> --- a/drivers/pci/controller/cadence/pcie-cadence.h
+> +++ b/drivers/pci/controller/cadence/pcie-cadence.h
+> @@ -120,6 +120,7 @@
+>   */
+>  #define CDNS_PCIE_RP_BASE	0x00200000
+>  
+> +#define CDNS_PCIE_LINK_CAP_OFFSET 0xC0
+
+Use lower-case in hex as the rest of the file does.
+
+>  /*
+>   * Address Translation Registers
+> @@ -413,6 +414,20 @@ static inline void cdns_pcie_rp_writew(struct cdns_pcie *pcie,
+>  	cdns_pcie_write_sz(addr, 0x2, value);
+>  }
+>  
+> +static inline u8 cdns_pcie_rp_readb(struct cdns_pcie *pcie, u32 reg)
+> +{
+> +	void __iomem *addr = pcie->reg_base + CDNS_PCIE_RP_BASE + reg;
+> +
+> +	return cdns_pcie_read_sz(addr, 0x1);
+> +}
+> +
+> +static inline u16 cdns_pcie_rp_readw(struct cdns_pcie *pcie, u32 reg)
+> +{
+> +	void __iomem *addr = pcie->reg_base + CDNS_PCIE_RP_BASE + reg;
+> +
+> +	return cdns_pcie_read_sz(addr, 0x2);
+> +}
+> +
+>  /* Endpoint Function register access */
+>  static inline void cdns_pcie_ep_fn_writeb(struct cdns_pcie *pcie, u8 fn,
+>  					  u32 reg, u8 value)
+> -- 
+> 2.15.0
 > 
-> If you ask me, I think examples should be simple and easy to
-> understand, and easy to copy/paste in your code. I'd settle for easy
-> enough, not perfect or completely foolproof. If you need to look up
-> obscure gcc features to understand an example, that's not very
-> helpful. So I'd be more inclined to prefer version 1 above. But let's
-> see Michael's opinion on this.
-> 
-> Just my 2c,
-
-So, the fundamental problem is that C is nearly 50 years old.
-It's a great high-level assembly language, but when it comes
-to nuances like this it gets pretty painful. One can do macro
-magic of the kind you suggest, but I agree with Stefan that it
-gets confusing and distracting for the reader. I think I also
-lean to solution 1. Yes, it's not perfect, but it's easy to 
-understand, and I don't think we can or should try and solve
-the broken-ness of C in the manual pages.
-
-Thanks,
-
-Michael
-
-
--- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
