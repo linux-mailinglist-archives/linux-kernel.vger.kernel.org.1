@@ -2,104 +2,392 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED24C2763C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 00:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67C842763D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 00:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726693AbgIWWZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 18:25:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50558 "EHLO
+        id S1726562AbgIWWgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 18:36:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726199AbgIWWZs (ORCPT
+        with ESMTP id S1726199AbgIWWgu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 18:25:48 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29BD5C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 15:25:48 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id b124so517873pfg.13
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 15:25:48 -0700 (PDT)
+        Wed, 23 Sep 2020 18:36:50 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A76C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 15:36:49 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id l15so5481423wmh.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 15:36:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Xg7mlsflqOZjaUBEnBA79UQEVkg0iaM4XozGdbwIH2I=;
-        b=JWGSMPriiXoOPSN59UxJawZOsymif1IRnpFmcUeFVLrk+16iLXZo23rz7sV0MTgLjc
-         AkhhMecLtxb4XWCibtF10nTqcbQ1PQqt2tOioWG6HfxhavA+JNejFotwMCa7tMO/A96V
-         J4cgU4LAGTDhGiusLrU0xSKksix+A0oZbEevA=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JKQE2w+gjnoySO4R3QQZuwI1OlK9t0imiWjqzR2mPqs=;
+        b=XtrLa9/hl4gi/U1DdtoCsNdsHBwgrTpdZyJrjqXeDtMNqEw6Q4x49Uo/Gs+TOMLmv7
+         HczSizPZoevMfWm29TxS2AyYrzctCi6Qrg3Ema3roT2gljAq0NRozcgaV4cwm2xh3dHX
+         NaOuQJNWQFyq2JT6vui1WvOzCCc/q9rYztHu+UzwGUN89cxbQL2xsUCPEOVsshQPWFTm
+         Uu48RkyeOPRuvWEhRb4WCBX76JbKVPXTGBMKhLq6/L/UXH4bSQ2LJcDCpFWZdh9qUvSJ
+         vZVpF1mGeaKYX3SxGL8Hp/uptK8OVWTMCwPgGcEi3djozywNMVFZn+VhNjL1l3fQhZBG
+         jVNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Xg7mlsflqOZjaUBEnBA79UQEVkg0iaM4XozGdbwIH2I=;
-        b=Ur+YWzi3NGXOD/F5tfa4N9lxnWKClwliCm+AhyCicvZ1RKVSrCsZ7Psj6mJ6C4MTFA
-         NWQU/6LzI+99UktEzr1LN7181/fy8JglvIlnaPy2pXS8ZoIinsnSs0GEA2vkVbBDHTa4
-         cjMXDpwjFAWC713GF/mrcmrplPAYRGPiDhQ2W1eZYKYwNg8ic5rggeNYacFELs9ns+Af
-         u6DuxQB1jyKbzn2O7faGnSkv3h9rT9XuIDIk1lwrx6plUeiZ39necbtrF4LvNkmEBXDg
-         i7lYmLXKC1+zL++SVH53FhmfNRIprBNiMBkbXtHc2fO7pMS3S4VKhhce0ogBOrVX59GB
-         8Tlg==
-X-Gm-Message-State: AOAM530/RqxqwszOL+ovzlaG/9UZ2eDefx9OXWLZ8/AxRBdq1Q1v9kDO
-        EG4b9E/4H1gSll2voieqDnbI7g==
-X-Google-Smtp-Source: ABdhPJxP5OrfctcuRCfs6dIC6macZBnv6XWCLbPOIVye/T+0apkyTU21z8xiaysegw+hW5e6aSN1qg==
-X-Received: by 2002:a63:160b:: with SMTP id w11mr1522159pgl.110.1600899947689;
-        Wed, 23 Sep 2020 15:25:47 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
-        by smtp.gmail.com with ESMTPSA id ca6sm402786pjb.53.2020.09.23.15.25.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Sep 2020 15:25:47 -0700 (PDT)
-Date:   Wed, 23 Sep 2020 15:25:45 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        linux-usb@vger.kernel.org, Bastien Nocera <hadess@hadess.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        devicetree@vger.kernel.org,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Peter Chen <peter.chen@nxp.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH v2 2/2] USB: misc: Add onboard_usb_hub driver
-Message-ID: <20200923222545.GB2105328@google.com>
-References: <20200917114600.v2.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
- <20200917114600.v2.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
- <20200920141720.GD2915460@kroah.com>
- <20200922011837.GE21107@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JKQE2w+gjnoySO4R3QQZuwI1OlK9t0imiWjqzR2mPqs=;
+        b=ba19E35GP73vRA/MxeIzifP8PtD3kFG1Wi63CX/XBU/f7iZkdmjKyGiP/3x3OLzPbn
+         PpON6EVgft9MnUrGOBmkGjwoyDWwzl0leboVm+m3czB6ZwlmgZ4rxLi+qmasHGa5+17J
+         HJaHJbUlQBdC2VWRlDe/S1TTmLGS14M851YXN4siypgQP36RylKKEcBNtdRg5Ni0P6Cg
+         nbFwbluLBhgxWyoOE0NeC4+3rEOga5aTRQJxmulI9YcuhA2oCDTaSf2JcQ2ds/+QrRS1
+         Jjhp0laFY2MJetjCFm3MrlyYYoCUcP7O0DFE3liporxpJ7atla/JgljyplThUyBvH1eB
+         PmYg==
+X-Gm-Message-State: AOAM530hC6XQMyQdYKjqqKeU7D9ObRxnhRixIE4ASh+KsG+hGjCB80HU
+        sRrr4w5SC52uvMoDSuR0eCjLXSamRjWPRkasQZolEQ==
+X-Google-Smtp-Source: ABdhPJziMst1ZXwA1f/5nXjMEanPoReYzUXVleem/bOuB/Vm7DakvM+8Oa2LjBH/zCd1aXkrQVNdpYHWBuQEe6V6fUk=
+X-Received: by 2002:a1c:2cc2:: with SMTP id s185mr1680723wms.77.1600900607831;
+ Wed, 23 Sep 2020 15:36:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200922011837.GE21107@google.com>
+References: <20200923015945.47535-1-namhyung@kernel.org> <20200923015945.47535-6-namhyung@kernel.org>
+In-Reply-To: <20200923015945.47535-6-namhyung@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 23 Sep 2020 15:36:36 -0700
+Message-ID: <CAP-5=fWzg9_wL7naAsyMOj5Z89S+jx6RzKnAf8g84ZWhcsOawA@mail.gmail.com>
+Subject: Re: [PATCH 5/5] perf test: Add expand cgroup event test
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 06:18:37PM -0700, Matthias Kaehlcke wrote:
-> On Sun, Sep 20, 2020 at 04:17:20PM +0200, Greg Kroah-Hartman wrote:
-> > On Thu, Sep 17, 2020 at 11:46:22AM -0700, Matthias Kaehlcke wrote:
-> > >
-> > > ...
-> > >
-> > > +static int __init onboard_hub_init(void)
-> > > +{
-> > > +	int rc;
-> > > +
-> > > +	rc = platform_driver_register(&onboard_hub_driver);
-> > > +	if (rc)
-> > > +		return rc;
-> > > +
-> > > +	return usb_register_device_driver(&onboard_hub_usbdev_driver, THIS_MODULE);
-> > 
-> > No unwinding of the platform driver register if this fails?
-> 
-> Right, will add unwinding.
-> 
-> > And THIS_MODULE should not be needed, did we get the api wrong here?
-> 
-> It seems you suggest to use usb_register() instead, SGTM
+On Tue, Sep 22, 2020 at 7:00 PM Namhyung Kim <namhyung@kernel.org> wrote:
+>
+> It'll expand given events for cgroups A, B and C.
+>
+>   $ ./perf test -v expansion
+>   69: Event expansion for cgroups                      :
+>   --- start ---
+>   test child forked, pid 983140
+>   metric expr 1 / IPC for CPI
+>   metric expr instructions / cycles for IPC
+>   found event instructions
+>   found event cycles
+>   adding {instructions,cycles}:W
+>   copying metric event for cgroup 'A': instructions (idx=0)
+>   copying metric event for cgroup 'B': instructions (idx=0)
+>   copying metric event for cgroup 'C': instructions (idx=0)
+>   test child finished with 0
+>   ---- end ----
+>   Event expansion for cgroups: Ok
+>
+> Cc: John Garry <john.garry@huawei.com>
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/tests/Build           |   1 +
+>  tools/perf/tests/builtin-test.c  |   4 +
+>  tools/perf/tests/expand-cgroup.c | 241 +++++++++++++++++++++++++++++++
+>  tools/perf/tests/tests.h         |   1 +
+>  4 files changed, 247 insertions(+)
+>  create mode 100644 tools/perf/tests/expand-cgroup.c
+>
+> diff --git a/tools/perf/tests/Build b/tools/perf/tests/Build
+> index 69bea7996f18..4d15bf6041fb 100644
+> --- a/tools/perf/tests/Build
+> +++ b/tools/perf/tests/Build
+> @@ -61,6 +61,7 @@ perf-y += demangle-java-test.o
+>  perf-y += pfm.o
+>  perf-y += parse-metric.o
+>  perf-y += pe-file-parsing.o
+> +perf-y += expand-cgroup.o
+>
+>  $(OUTPUT)tests/llvm-src-base.c: tests/bpf-script-example.c tests/Build
+>         $(call rule_mkdir)
+> diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
+> index 651b8ea3354a..132bdb3e6c31 100644
+> --- a/tools/perf/tests/builtin-test.c
+> +++ b/tools/perf/tests/builtin-test.c
+> @@ -345,6 +345,10 @@ static struct test generic_tests[] = {
+>                 .desc = "PE file support",
+>                 .func = test__pe_file_parsing,
+>         },
+> +       {
+> +               .desc = "Event expansion for cgroups",
+> +               .func = test__expand_cgroup_events,
+> +       },
+>         {
+>                 .func = NULL,
+>         },
+> diff --git a/tools/perf/tests/expand-cgroup.c b/tools/perf/tests/expand-cgroup.c
+> new file mode 100644
+> index 000000000000..d5771e4d094f
+> --- /dev/null
+> +++ b/tools/perf/tests/expand-cgroup.c
+> @@ -0,0 +1,241 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include "tests.h"
+> +#include "debug.h"
+> +#include "evlist.h"
+> +#include "cgroup.h"
+> +#include "rblist.h"
+> +#include "metricgroup.h"
+> +#include "parse-events.h"
+> +#include "pmu-events/pmu-events.h"
+> +#include "pfm.h"
+> +#include <subcmd/parse-options.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <string.h>
+> +
+> +static int test_expand_events(struct evlist *evlist,
+> +                             struct rblist *metric_events)
+> +{
+> +       int i, ret = TEST_FAIL;
+> +       int nr_events;
+> +       bool was_group_event;
+> +       int nr_members;  /* for the first evsel only */
+> +       const char cgrp_str[] = "A,B,C";
+> +       const char *cgrp_name[] = { "A", "B", "C" };
+> +       int nr_cgrps = ARRAY_SIZE(cgrp_name);
+> +       char **ev_name;
+> +       struct evsel *evsel;
+> +
+> +       TEST_ASSERT_VAL("evlist is empty", !perf_evlist__empty(evlist));
+> +
+> +       nr_events = evlist->core.nr_entries;
+> +       ev_name = calloc(nr_events, sizeof(*ev_name));
+> +       if (ev_name == NULL) {
+> +               pr_debug("memory allocation failure\n");
+> +               return TEST_FAIL;
+> +       }
+> +       i = 0;
+> +       evlist__for_each_entry(evlist, evsel) {
+> +               ev_name[i] = strdup(evsel->name);
+> +               if (ev_name[i] == NULL) {
+> +                       pr_debug("memory allocation failure\n");
+> +                       goto out;
+> +               }
+> +               i++;
+> +       }
+> +       /* remember grouping info */
+> +       was_group_event = evsel__is_group_event(evlist__first(evlist));
+> +       nr_members = evlist__first(evlist)->core.nr_members;
+> +
+> +       ret = evlist__expand_cgroup(evlist, cgrp_str, metric_events, false);
+> +       if (ret < 0) {
+> +               pr_debug("failed to expand events for cgroups\n");
+> +               goto out;
+> +       }
+> +
+> +       ret = TEST_FAIL;
+> +       if (evlist->core.nr_entries != nr_events * nr_cgrps) {
+> +               pr_debug("event count doesn't match\n");
+> +               goto out;
+> +       }
+> +
+> +       i = 0;
+> +       evlist__for_each_entry(evlist, evsel) {
+> +               if (strcmp(evsel->name, ev_name[i % nr_events])) {
+> +                       pr_debug("event name doesn't match:\n");
+> +                       pr_debug("  evsel[%d]: %s\n  expected: %s\n",
+> +                                i, evsel->name, ev_name[i % nr_events]);
+> +                       goto out;
+> +               }
+> +               if (strcmp(evsel->cgrp->name, cgrp_name[i / nr_events])) {
+> +                       pr_debug("cgroup name doesn't match:\n");
+> +                       pr_debug("  evsel[%d]: %s\n  expected: %s\n",
+> +                                i, evsel->cgrp->name, cgrp_name[i / nr_events]);
+> +                       goto out;
+> +               }
+> +
+> +               if ((i % nr_events) == 0) {
+> +                       if (evsel__is_group_event(evsel) != was_group_event) {
+> +                               pr_debug("event group doesn't match: got %s, expect %s\n",
+> +                                        evsel__is_group_event(evsel) ? "true" : "false",
+> +                                        was_group_event ? "true" : "false");
+> +                               goto out;
+> +                       }
+> +                       if (evsel->core.nr_members != nr_members) {
+> +                               pr_debug("event group member doesn't match: %d vs %d\n",
+> +                                        evsel->core.nr_members, nr_members);
+> +                               goto out;
+> +                       }
+> +               }
+> +               i++;
+> +       }
+> +       ret = TEST_OK;
+> +
+> +out:   for (i = 0; i < nr_events; i++)
+> +               free(ev_name[i]);
+> +       free(ev_name);
+> +       return ret;
+> +}
+> +
+> +static int expand_default_events(void)
+> +{
+> +       int ret;
+> +       struct evlist *evlist;
+> +       struct rblist metric_events;
+> +
+> +       evlist = perf_evlist__new_default();
+> +       TEST_ASSERT_VAL("failed to get evlist", evlist);
+> +
+> +       rblist__init(&metric_events);
+> +       ret = test_expand_events(evlist, &metric_events);
+> +       evlist__delete(evlist);
+> +       return ret;
+> +}
+> +
+> +static int expand_group_events(void)
+> +{
+> +       int ret;
+> +       struct evlist *evlist;
+> +       struct rblist metric_events;
+> +       struct parse_events_error err;
+> +       const char event_str[] = "{cycles,instructions}";
+> +
+> +       symbol_conf.event_group = true;
+> +
+> +       evlist = evlist__new();
+> +       TEST_ASSERT_VAL("failed to get evlist", evlist);
+> +
+> +       ret = parse_events(evlist, event_str, &err);
+> +       if (ret < 0) {
+> +               pr_debug("failed to parse event '%s', err %d, str '%s'\n",
+> +                        event_str, ret, err.str);
+> +               parse_events_print_error(&err, event_str);
+> +               goto out;
+> +       }
+> +
+> +       rblist__init(&metric_events);
+> +       ret = test_expand_events(evlist, &metric_events);
+> +out:
+> +       evlist__delete(evlist);
+> +       return ret;
+> +}
+> +
 
-Actually usb_register() is for registering a struct usb_driver, however
-this is a struct usb_device_driver, there doesn't seem to be a
-registration function/macro that doesn't require THIS_MODULE. Please
-provide a pointer if I'm wrong.
+Should this be #ifdef HAVE_LIBPFM ?
+
+Thanks,
+Ian
+
+> +static int expand_libpfm_events(void)
+> +{
+> +       int ret;
+> +       struct evlist *evlist;
+> +       struct rblist metric_events;
+> +       const char event_str[] = "UNHALTED_CORE_CYCLES";
+> +       struct option opt = {
+> +               .value = &evlist,
+> +       };
+> +
+> +       symbol_conf.event_group = true;
+> +
+> +       evlist = evlist__new();
+> +       TEST_ASSERT_VAL("failed to get evlist", evlist);
+> +
+> +       ret = parse_libpfm_events_option(&opt, event_str, 0);
+> +       if (ret < 0) {
+> +               pr_debug("failed to parse libpfm event '%s', err %d\n",
+> +                        event_str, ret);
+> +               goto out;
+> +       }
+> +       if (perf_evlist__empty(evlist)) {
+> +               pr_debug("libpfm was not enabled\n");
+> +               goto out;
+> +       }
+> +
+> +       rblist__init(&metric_events);
+> +       ret = test_expand_events(evlist, &metric_events);
+> +out:
+> +       evlist__delete(evlist);
+> +       return ret;
+> +}
+> +
+> +static int expand_metric_events(void)
+> +{
+> +       int ret;
+> +       struct evlist *evlist;
+> +       struct rblist metric_events;
+> +       const char metric_str[] = "CPI";
+> +
+> +       struct pmu_event pme_test[] = {
+> +               {
+> +                       .metric_expr    = "instructions / cycles",
+> +                       .metric_name    = "IPC",
+> +               },
+> +               {
+> +                       .metric_expr    = "1 / IPC",
+> +                       .metric_name    = "CPI",
+> +               },
+> +               {
+> +                       .metric_expr    = NULL,
+> +                       .metric_name    = NULL,
+> +               },
+> +       };
+> +       struct pmu_events_map ev_map = {
+> +               .cpuid          = "test",
+> +               .version        = "1",
+> +               .type           = "core",
+> +               .table          = pme_test,
+> +       };
+> +
+> +       evlist = evlist__new();
+> +       TEST_ASSERT_VAL("failed to get evlist", evlist);
+> +
+> +       rblist__init(&metric_events);
+> +       ret = metricgroup__parse_groups_test(evlist, &ev_map, metric_str,
+> +                                            false, false, &metric_events);
+> +       if (ret < 0) {
+> +               pr_debug("failed to parse '%s' metric\n", metric_str);
+> +               goto out;
+> +       }
+> +
+> +       ret = test_expand_events(evlist, &metric_events);
+> +
+> +out:
+> +       metricgroup__rblist_exit(&metric_events);
+> +       evlist__delete(evlist);
+> +       return ret;
+> +}
+> +
+> +int test__expand_cgroup_events(struct test *test __maybe_unused,
+> +                              int subtest __maybe_unused)
+> +{
+> +       int ret;
+> +
+> +       ret = expand_default_events();
+> +       TEST_ASSERT_EQUAL("failed to expand default events", ret, 0);
+> +
+> +       ret = expand_group_events();
+> +       TEST_ASSERT_EQUAL("failed to expand event group", ret, 0);
+> +
+> +       ret = expand_libpfm_events();
+> +       TEST_ASSERT_EQUAL("failed to expand event group", ret, 0);
+> +
+> +       ret = expand_metric_events();
+> +       TEST_ASSERT_EQUAL("failed to expand metric events", ret, 0);
+> +
+> +       return ret;
+> +}
+> diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
+> index ef0f33c6ba23..c85a2c08e407 100644
+> --- a/tools/perf/tests/tests.h
+> +++ b/tools/perf/tests/tests.h
+> @@ -123,6 +123,7 @@ const char *test__pfm_subtest_get_desc(int subtest);
+>  int test__pfm_subtest_get_nr(void);
+>  int test__parse_metric(struct test *test, int subtest);
+>  int test__pe_file_parsing(struct test *test, int subtest);
+> +int test__expand_cgroup_events(struct test *test, int subtest);
+>
+>  bool test__bp_signal_is_supported(void);
+>  bool test__bp_account_is_supported(void);
+> --
+> 2.28.0.681.g6f77f65b4e-goog
+>
