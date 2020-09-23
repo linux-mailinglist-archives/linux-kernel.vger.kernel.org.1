@@ -2,112 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D869A275F6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 20:06:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82E85275F6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 20:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726955AbgIWSGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 14:06:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726537AbgIWSGN (ORCPT
+        id S1726720AbgIWSGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 14:06:33 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:36338 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726413AbgIWSGd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 14:06:13 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F56DC0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 11:06:13 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id d4so934093wmd.5
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 11:06:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rBQqEcNI4qmQoA7TvV4cKxPn9VpIANl2GdIqii9bNbU=;
-        b=ueL9XXI+GUUtrlNnir3mOL/bIGZr6jNjX0YvFnEppBB+t7oi2t723yNVDI4ZUdLeJt
-         pPeQBRbm2R0RiKsD9uUrcCUGcW/svCrTyfuR2+8cWGmx7WXu0lfuJDGbNB/lE+P7CcE6
-         vrDbP5b1klSs3fbRQAFv4SBuSTZp66AhBw/NCzFv1EOtSvTHJx00A/+aZ1Ho0qh3Fs8+
-         MBrmy2t4ZKhOqI2P8MDOI78ActrU+Q9nRQ8C0TNaiBw/BkMPj6LdX7ZSRP1wADeQ4OUy
-         aRAJ3r2mgYe4Lno0nLsE0KMOSNfN9asYiR+2Y0tqt0e9fKSMoXl9aGOk2U6h6OkOE70D
-         RsNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rBQqEcNI4qmQoA7TvV4cKxPn9VpIANl2GdIqii9bNbU=;
-        b=kTBIZdiuLJAdRDzdU1dBJUyBYmlrElF6l2KA0XcG7TMCyMx0JSrivC2+zyYbYWxmC9
-         KPgTKcFjPucwq4SBeuDx+LJY0LzHj+tk+L+8Rjuu5xvwpJBruQCd2n4x4avoOHC9c6Qc
-         U0d3c40hRKcd+94HZ3by+WrSgM0ZpBXO3AZpOhrW0eFhGDeDIwHfFzSbpfyX4mfkRMb1
-         hTCEk2wkNKHtW0gb5Lq09cy8SUzUphzxhhQZdqo6ShDhIRgIIHrTX4Yl0db3+KXPbK5c
-         LvtSKtdv/9ylNfVV5sxhhuHp/n8g7qvyyQDTMS9yuq+vf0sILvrhh6D5F9VIUTAwjSqG
-         DKmg==
-X-Gm-Message-State: AOAM533KupTju8HR68EkXJyrBFF7Hx/QBCMwHrpW4s7frVZpLxmI8Jwv
-        6oogC199RI9hHfXmvJetsZhZlw==
-X-Google-Smtp-Source: ABdhPJytV9q3vh1dokw73NDu8zEDyQey80TL3qbLRsyGW990BMBCXndofi3MAqXrMN/rc9rF3zxoNA==
-X-Received: by 2002:a1c:152:: with SMTP id 79mr800490wmb.90.1600884371787;
-        Wed, 23 Sep 2020 11:06:11 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id o16sm541123wrp.52.2020.09.23.11.06.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 11:06:10 -0700 (PDT)
-Date:   Wed, 23 Sep 2020 20:06:08 +0200
-From:   LABBE Corentin <clabbe@baylibre.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     David Miller <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>,
-        "# 3.4.x" <stable@vger.kernel.org>
-Subject: Re: [PATCH v2 4/7] crypto: sun4i-ss: handle BigEndian for cipher
-Message-ID: <20200923180608.GA26666@Red>
-References: <1600627038-40000-1-git-send-email-clabbe@baylibre.com>
- <1600627038-40000-5-git-send-email-clabbe@baylibre.com>
- <CAK8P3a34V16PUoVJjoUOVCik_rdb6vAy=54qRzWdO+aJcwUwsg@mail.gmail.com>
+        Wed, 23 Sep 2020 14:06:33 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08NI6O6R113435;
+        Wed, 23 Sep 2020 13:06:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600884384;
+        bh=Hhjy9v9VdpkwlFFrSW6d6ZyqmVJVZU9tfSurVGCzSB4=;
+        h=Subject:From:To:CC:References:Date:In-Reply-To;
+        b=s+6PqfFjG0MNL6W/W8+cClGYxgmEWFEVyTgaHT0A4s7guxjPY3763XHhx1BY7FaBy
+         M4pCd8wmMOW6Lp8N/SNrGKEM/ERu7Xt0IcGXwuXOvW2vGhGd0N7S4OXvlKCaQpygdd
+         UAo4J3+XDpwhqCO/yhNy6pfgEIebuJwFCfxp8dLY=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08NI6OJ8113098
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 23 Sep 2020 13:06:24 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 23
+ Sep 2020 13:06:24 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 23 Sep 2020 13:06:24 -0500
+Received: from [10.250.71.177] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08NI6Nb6007743;
+        Wed, 23 Sep 2020 13:06:23 -0500
+Subject: Re: [RESEND PATCH can-next 1/2] can: tcan4x5x: Rename parse_config
+ function
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <mkl@pengutronix.de>, <wg@grandegger.com>
+CC:     <linux-can@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200227183829.21854-1-dmurphy@ti.com>
+ <057bc43f-7db5-de7e-dbf5-8bfe324a973e@ti.com>
+Message-ID: <b61b1a65-90c6-5380-d4ba-d8efcdb42094@ti.com>
+Date:   Wed, 23 Sep 2020 13:06:23 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a34V16PUoVJjoUOVCik_rdb6vAy=54qRzWdO+aJcwUwsg@mail.gmail.com>
+In-Reply-To: <057bc43f-7db5-de7e-dbf5-8bfe324a973e@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 04:00:32PM +0200, Arnd Bergmann wrote:
-> On Sun, Sep 20, 2020 at 8:37 PM Corentin Labbe <clabbe@baylibre.com> wrote:
-> >
-> > Ciphers produce invalid results on BE.
-> > Key and IV need to be written in LE.
-> >
-> > Fixes: 6298e948215f2 ("crypto: sunxi-ss - Add Allwinner Security System crypto accelerator")
-> > Cc: <stable@vger.kernel.org>
-> > Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
-> > ---
-> >  drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c | 12 ++++++------
-> >  1 file changed, 6 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
-> > index c6c25204780d..a05889745097 100644
-> > --- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
-> > +++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
-> > @@ -52,13 +52,13 @@ static int noinline_for_stack sun4i_ss_opti_poll(struct skcipher_request *areq)
-> >
-> >         spin_lock_irqsave(&ss->slock, flags);
-> >
-> > -       for (i = 0; i < op->keylen; i += 4)
-> > -               writel(*(op->key + i / 4), ss->base + SS_KEY0 + i);
-> > +       for (i = 0; i < op->keylen / 4; i++)
-> > +               writel(cpu_to_le32(op->key[i]), ss->base + SS_KEY0 + i * 4);
-> 
-> I suspect what you actually want here is writesl() in place of the
-> loop. This skips the byteswap on big-endian, rather than swapping
-> each word twice.
-> 
-> The point is that this register seems to act as a FIFO for a byte-stream
-> rather than a 32-bit fixed-endian register.
-> 
->      Arnd
+Mark and Wolfgang
 
-Thanks, using writesl() fixes the warning, but I need to keep the loop since the register is different each time.
-Or does it is better to use directly __raw_writel() ?
+On 4/28/20 2:48 PM, Dan Murphy wrote:
+> Marc
+>
+> On 2/27/20 12:38 PM, Dan Murphy wrote:
+>> Rename the tcan4x5x_parse_config function to tcan4x5x_get_gpios since
+>> the function retrieves the gpio configurations from the firmware.
+>>
+>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+>> ---
+>>   drivers/net/can/m_can/tcan4x5x.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/net/can/m_can/tcan4x5x.c 
+>> b/drivers/net/can/m_can/tcan4x5x.c
+>> index 9821babef55e..37d53ecc560b 100644
+>> --- a/drivers/net/can/m_can/tcan4x5x.c
+>> +++ b/drivers/net/can/m_can/tcan4x5x.c
+>> @@ -381,7 +381,7 @@ static int tcan4x5x_disable_state(struct 
+>> m_can_classdev *cdev)
+>>                     TCAN4X5X_DISABLE_INH_MSK, 0x01);
+>>   }
+>>   -static int tcan4x5x_parse_config(struct m_can_classdev *cdev)
+>> +static int tcan4x5x_get_gpios(struct m_can_classdev *cdev)
+>>   {
+>>       struct tcan4x5x_priv *tcan4x5x = cdev->device_data;
+>>       int ret;
+>> @@ -507,7 +507,7 @@ static int tcan4x5x_can_probe(struct spi_device 
+>> *spi)
+>>       if (ret)
+>>           return ret;
+>>   -    ret = tcan4x5x_parse_config(mcan_class);
+>> +    ret = tcan4x5x_get_gpios(mcan_class);
+>>       if (ret)
+>>           goto out_power;
+>
+> I noticed this series never was reviewed and applied.  They are still 
+> applicable and were requested changes.
+>
+Did you need me to combine all the patches on a m_can-next branch and 
+submit a PR after test?
+
+There are quite a few patches out there and they all seem relevant.
+
+Dan
+
+
+> Dan
+>
