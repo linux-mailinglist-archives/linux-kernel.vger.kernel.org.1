@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B21FC2757BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 14:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F7932757B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 14:11:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726593AbgIWMLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 08:11:20 -0400
-Received: from mail-dm6nam12on2056.outbound.protection.outlook.com ([40.107.243.56]:27233
+        id S1726565AbgIWMLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 08:11:16 -0400
+Received: from mail-dm6nam12on2066.outbound.protection.outlook.com ([40.107.243.66]:21792
         "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726487AbgIWMLU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 08:11:20 -0400
+        id S1726476AbgIWMLQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 08:11:16 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lhnsarZ/0swVneZe5ZL2sJFQR4+VLbKo54wNqlY+EyZoWiuIkBUYCwgPtGlXPmsXZBR2GnHNhX8Cp7ptwu+GfvZ1NLP01nqa+lbgczWjdbI3Y7xlWF88nV9XhaFag43b0RkhcPydyWpJrimw56oiS1Zft+43wTQTpahQ+i5UnxM6C37+alWE8CEv4VlzIULmgSW9AUMrk9NdStn0gc1cDaKQnidK8/TTZDpF6HhVVB4g1Q+fMPsfXCUcJtehd7xt2KJLwBe7PjpUQM3+jjaSoIXKn+bLjoGB4LZu2x39ycaq97IMHVah66EfhF5z0lrqSSc6JIwEXpec8aGIxfaqnQ==
+ b=hWNYcjUr7YFCqPQyWkgRzukcMM40sr90OgE/ArBE44wmB7FoYKml8ZzlerP/WU41F9V7xCoYtAI/avEl6fmQLk4ZMlfKhnCWf96XLJnvc9OGgc89J0I+zNHyImyimP6rFnzb291vgvl3NhVvvQoaq1T3wS3+MhVC+0MFfPz123fZB8cl7XG8f7+K2kjkS01SaKanYgPFGmw9rg2s5nvh34dk/dICvTSrcj+mj1SUvm47eu1hx4U3vjukpfPx1kbW3CBbohAjJ6a5rJyuudN7fsp1IIZyycJMOCToKGaKYGOteddm67Ab8ppybDWQX+ezl51eyG9EX9aJWbD7ouXJSA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=umFjYbxEyTaa42GA7i79rGIPyy83NGM4qxMSdnOE0GI=;
- b=ZpGfQluaT/UliuZ9LP40fCH1FXpgT6cGMbEdeLtsbnPlz2bl7S/LbIri2TiP/LgjLh3B7HOgDw46NE0e4Mn1QnsCgmIRhivQXWeMliKyfpoORVZ+HJnRxp2C0S9eP6xKs0yFBeqvMoEEqpgjv8tgvsTwUslp2C8ey0mQdtCv/whLNfrkSZCIcfawtHdTyWcuRKl7s7punuHvp4UBECG/iSUVlBy762ojl2zfgH18MnyipjVNWfjvsLgjvgaSSNfGEScfRHaobmhGgpQXrzo/t41pfgpxauNHJZRV8pZgEJRR4JAnPN9rAm/5GmAwgI+Xc9ok5ZY1tV2Tfu4t8j3kgQ==
+ bh=lHqpGg34lVL2bOoDT4+HdGcNQs4yE2n3lsve3CDhhpw=;
+ b=cIOGsTlZg3hod37/lNElApxXEidi0LpT+1LI69mIZsyo8QcguPnal13ojM/7nTFYMx4nJ912gPKzxf590BVn4u85L7c5tK99BDzVIvj8kbyW8dgoYpFyqchNrE63A362FpOK3zDPKqw0dtUtkseoDBkbTa9y3fGHI+HKO318z0Udk6oOmCzbMCa9b+/c2t3+W4Xp4ytCGvhq79kPEhtXw2VC3R1aGK2WqFQTgNAesFu8vuUR0rQ4ICHT/FBfIo403Gly1gVmraEUpyWJrjN3ktQeW7muhs5BMHIM8pdC6qU0ZYU+GHZ1+04x34snuR2Um4f1vVeBg1B92+bu+7gPtg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=umFjYbxEyTaa42GA7i79rGIPyy83NGM4qxMSdnOE0GI=;
- b=uU7AplVOGb4rntzanP2DrR9OeIAbx1K0DizxjnJ4QpkSmnvIreMQ+e9SQjwxPYupBobWiEAKp0oHetmYoLRg3ukZVhMxqdYhGm/LLMnZJVfocR2jpkhvQHNrmlCyfnl8L5RbF8P0zpdfo3C1yz7LEmNLp01+gnSEwcw7VJZHTiE=
+ bh=lHqpGg34lVL2bOoDT4+HdGcNQs4yE2n3lsve3CDhhpw=;
+ b=xWeXZyZAo2RvnemXG1wiHzgEd//8s3c6g4fGr4Xp4Jss+1cg608o/CXAmpipPFFeonlUGw1/dO1WiKy4tB8po+pnOr3bcrVXIxrNiSamlmuX9omxX3vjCsQFgyI1b5bI18K+aE7pwSxUo1ew5wYCjn+m1VsCD3X3N4cUKym7TTo=
 Authentication-Results: vger.kernel.org; dkim=none (message not signed)
  header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
 Received: from DM5PR12MB1163.namprd12.prod.outlook.com (2603:10b6:3:7a::18) by
  DM6PR12MB4436.namprd12.prod.outlook.com (2603:10b6:5:2a3::20) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3412.20; Wed, 23 Sep 2020 12:10:40 +0000
+ 15.20.3412.20; Wed, 23 Sep 2020 12:10:41 +0000
 Received: from DM5PR12MB1163.namprd12.prod.outlook.com
  ([fe80::48cf:d69:d457:1b1e]) by DM5PR12MB1163.namprd12.prod.outlook.com
  ([fe80::48cf:d69:d457:1b1e%5]) with mapi id 15.20.3412.022; Wed, 23 Sep 2020
- 12:10:40 +0000
+ 12:10:41 +0000
 From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
 To:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
 Cc:     joro@8bytes.org, Jon.Grimm@amd.com, brijesh.singh@amd.com,
         Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Subject: [PATCH v2 1/3] iommu: amd: Use 4K page for completion wait write-back semaphore
-Date:   Wed, 23 Sep 2020 12:13:45 +0000
-Message-Id: <20200923121347.25365-2-suravee.suthikulpanit@amd.com>
+Subject: [PATCH v2 2/3] iommu: amd: Add support for RMP_PAGE_FAULT and RMP_HW_ERR
+Date:   Wed, 23 Sep 2020 12:13:46 +0000
+Message-Id: <20200923121347.25365-3-suravee.suthikulpanit@amd.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200923121347.25365-1-suravee.suthikulpanit@amd.com>
 References: <20200923121347.25365-1-suravee.suthikulpanit@amd.com>
@@ -54,184 +54,145 @@ X-ClientProxiedBy: SA0PR11CA0064.namprd11.prod.outlook.com
  (2603:10b6:3:7a::18)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ethanolx5673host.amd.com (165.204.78.2) by SA0PR11CA0064.namprd11.prod.outlook.com (2603:10b6:806:d2::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Wed, 23 Sep 2020 12:10:39 +0000
+Received: from ethanolx5673host.amd.com (165.204.78.2) by SA0PR11CA0064.namprd11.prod.outlook.com (2603:10b6:806:d2::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Wed, 23 Sep 2020 12:10:40 +0000
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 3828b096-238f-4d02-aab6-08d85fb9b01f
+X-MS-Office365-Filtering-Correlation-Id: 3782a51e-3244-49ef-c2e8-08d85fb9b0bc
 X-MS-TrafficTypeDiagnostic: DM6PR12MB4436:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB44360BDE5C6E9D05F2B31782F3380@DM6PR12MB4436.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-Microsoft-Antispam-PRVS: <DM6PR12MB4436E54F62121A3DF9C517B1F3380@DM6PR12MB4436.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1013;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 69cgDpr2Gp4ZArQDV5no9S9lUTw2RndLZ7yHW4B55oOK9EIrZNYZgz5f/vBUe4mCY1rX8JXuLerujpa9yP95ZW3D+JKMchFipALx5FO4Ua5SqQP7L07RSY5Wl4X/4M2twcl+jPGONy9y3WKm1o2RLy2w3PwpbHMMBMTaveHKQDEREFBTaoBtZe60rF2DUcjPc01WpZE2e9M/4/EqqscxyNfn7/bVX78z4+aa/XsK86xrX7rfmB7GkJhyxFR4d0msr3pVPZpB0LbAOp67iwV8yVodaArIhMInYn+n5BfzmZ235o2mqwN4P7jJY2XLGORlNj9hEJmfTMGVa2mH8MM4cg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1163.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(346002)(39860400002)(376002)(136003)(186003)(16526019)(83380400001)(86362001)(956004)(2616005)(26005)(52116002)(7696005)(478600001)(8936002)(5660300002)(44832011)(6666004)(8676002)(66946007)(6486002)(66556008)(4326008)(66476007)(316002)(1076003)(2906002)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: Vpy/izHrP2OPy4g1p3O5jEzdGXtPxsuiFXvhpT+DZpO41MyTPvhxqShOP829OC+qLOqRpNJ/z7hkt61SRb60aYWI95vGkaSHZPMUSY1ZLR0PtyDkJAXwGcLZZ7P5bfhb45Bvp2WiAHSKNnwywa/rTiGYtmtzP1tSnsRGSJ/mfwoLBOTOVqD8E1nbmpj2R+LnB6Y5fgmdhsWSNHtDAsIuGS5bd1lU+7H5sEr093lu/NWnBVuDW8oZmBtB6mwVKFxfMxhut89rpIqFquo9OvynJ2wraPPTqox59vChNmNx7uvgBOH4VLuNczcNJ1SLvjv6q5AOK/gZuf3aT8lY0p65o8/i3hWiTTitqRITvcxrTOmeWy5cpHCaN4/eotdfV5Ib9n/KwXEIXB2z07xQiO/z5DRwHKTVY1ajwbPi8N8fNLSK+9Sm0jOV3xCeZvdVsxbUVtc6JN4sLL5RN4D4AR0GeSODGum53561NHkA+8M7MIjjz9ytGjRbXISZwV45Hp9PUCcZ+321HB8tlSHYtw6IawTRfZCegaruoUe6kHct8XiWOGxWF9qV9P7zRMRBNdcAH2AARv8GgX+Fc9EYXcZGptEJToysjx+sgF/u4DrtN98L/oTQ5IfaKMBBumTmZbhThtqN4p74eRHbnBvR1L1U/A==
+X-Microsoft-Antispam-Message-Info: KTDbwlxhreMc6cMmFet6tsYjZU/narSA4V4tzVBD1rZt+1kyYa8DeMoKGsliND7Q9uX89fsgqTwONWnto3PWts6foLenIczzyPKSBP4uEMNu4DuVoE46qJ+XKsWBI64g3ewXjrixDiio7suioc93f4F+LsDFq/ul7jkIhJlhL2VcvlyXrQAHf9ZlKPP65lSrmkKIJUpVxGHPUm9JJduUkWjUIlFLy1vU9En6nSxreBDFZtNAA5KwxcjoKzEyZoVMjn+6acqXOBTwheusgVUFITiKW+lsfx4NPu9FtoGQS/kLLDJFSPcdz298BcUl7PPO
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1163.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(346002)(39860400002)(376002)(136003)(186003)(16526019)(83380400001)(86362001)(956004)(2616005)(26005)(52116002)(7696005)(478600001)(8936002)(5660300002)(44832011)(8676002)(66946007)(6486002)(66556008)(4326008)(66476007)(316002)(1076003)(2906002)(36756003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: x/AnkwrbCRmOxnKSxU6D5rFVgmEgpG4qlP9UK8yAZzRKohdm1G0Ag6ua6jbDVqkkhfkZY1Wxjy0qg47g4pii4lkGdCv2f+xB+7+w70Xy0L0cxMF14S7shTzlVMbvcDrLZqNFU8CQ/uyqO/JOmPLvWd4Ndw9E4fmchwyoTyQfgTFJCdWxOyPPkFQWw0V0cdd6h9PqNYco8aF+EhDrmuYg52LdFWZl3TcUyvPu0qUwa7aazP9kiWMxgMY10fxIZTwOq/5g8TRxBbBbUlk1rkTd9hlO0wnKv+/WHwNxncXFVZ8LCTK3jcQiEZQexFhezHhgN51oQ2vJ0+ANA0KxS9oHBQGJdYHEDDqEqAMECfabdVgICxqgHo0e8A43mq6H2E6FrL5X0AUxKKfGdaFO4rIDmBdRcsjtamxqELC5LrO8XV6m9IwrRNAbVhdBXo19R6wJNyJURXHY0idiKqA4eT2z+OfYDfG8tNp44wYfbWOsON+eA6Ii1CdJF4tcPqraQH+x3VhCzkOUYagVuGVSLnQvLob84b5zECLS0B9sZqrWxiNDGHW0UrB4rDlkeZohEZR6KiZK206Bq8ek+/rZQIrgtM8iF2vDTaSyx+UkAyKPs94GAqyT4TpyFrhGGAEfu36tSRGiCwRorJD28cy9s1hncA==
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3828b096-238f-4d02-aab6-08d85fb9b01f
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3782a51e-3244-49ef-c2e8-08d85fb9b0bc
 X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1163.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2020 12:10:40.3398
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2020 12:10:41.3873
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iL9O1SbAAOS5ox40F3pUxbI/qsbzLHC00GhyZKvYU/gNDZthke1ypSXMrRKygapYyK7lN6lWQY1k5Ib3roAdgA==
+X-MS-Exchange-CrossTenant-UserPrincipalName: MlrE9i7AhVJmFio/IwkhjIxfhlkwcM5oCGOcMvuSsLMoHV2hO/FAz7k+czbs1MK17khuXmTZBFUYCkJJRiQa6Q==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4436
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IOMMU SNP support requires the completion wait write-back semaphore to be
-implemented using a 4K-aligned page, where the page address is to be
-programmed into the newly introduced MMIO base/range registers.
+IOMMU SNP support introduces two new IOMMU events:
+  * RMP Page Fault event
+  * RMP Hardware Error event
 
-This new scheme uses a per-iommu atomic variable to store the current
-semaphore value, which is incremented for every completion wait command.
-
-Since this new scheme is also compatible with non-SNP mode,
-generalize the driver to use 4K page for completion-wait semaphore in
-both modes.
+Hence, add reporting functions for these events.
 
 Cc: Brijesh Singh <brijesh.singh@amd.com>
 Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
 ---
- drivers/iommu/amd/amd_iommu_types.h |  3 ++-
- drivers/iommu/amd/init.c            | 18 ++++++++++++++++++
- drivers/iommu/amd/iommu.c           | 23 +++++++++++------------
- 3 files changed, 31 insertions(+), 13 deletions(-)
+ drivers/iommu/amd/amd_iommu_types.h |  2 +
+ drivers/iommu/amd/iommu.c           | 67 +++++++++++++++++++++++++++++
+ 2 files changed, 69 insertions(+)
 
 diff --git a/drivers/iommu/amd/amd_iommu_types.h b/drivers/iommu/amd/amd_iommu_types.h
-index 30a5d412255a..4c80483e78ec 100644
+index 4c80483e78ec..1e7966c73707 100644
 --- a/drivers/iommu/amd/amd_iommu_types.h
 +++ b/drivers/iommu/amd/amd_iommu_types.h
-@@ -595,7 +595,8 @@ struct amd_iommu {
- #endif
- 
- 	u32 flags;
--	volatile u64 __aligned(8) cmd_sem;
-+	volatile u64 *cmd_sem;
-+	u64 cmd_sem_val;
- 
- #ifdef CONFIG_AMD_IOMMU_DEBUGFS
- 	/* DebugFS Info */
-diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
-index 445a08d23fed..febc072f2717 100644
---- a/drivers/iommu/amd/init.c
-+++ b/drivers/iommu/amd/init.c
-@@ -813,6 +813,19 @@ static int iommu_init_ga(struct amd_iommu *iommu)
- 	return ret;
- }
- 
-+static int __init alloc_cwwb_sem(struct amd_iommu *iommu)
-+{
-+	iommu->cmd_sem = (void *)get_zeroed_page(GFP_KERNEL);
-+
-+	return iommu->cmd_sem ? 0 : -ENOMEM;
-+}
-+
-+static void __init free_cwwb_sem(struct amd_iommu *iommu)
-+{
-+	if (iommu->cmd_sem)
-+		free_page((unsigned long)iommu->cmd_sem);
-+}
-+
- static void iommu_enable_xt(struct amd_iommu *iommu)
- {
- #ifdef CONFIG_IRQ_REMAP
-@@ -1395,6 +1408,7 @@ static int __init init_iommu_from_acpi(struct amd_iommu *iommu,
- 
- static void __init free_iommu_one(struct amd_iommu *iommu)
- {
-+	free_cwwb_sem(iommu);
- 	free_command_buffer(iommu);
- 	free_event_buffer(iommu);
- 	free_ppr_log(iommu);
-@@ -1481,6 +1495,7 @@ static int __init init_iommu_one(struct amd_iommu *iommu, struct ivhd_header *h)
- 	int ret;
- 
- 	raw_spin_lock_init(&iommu->lock);
-+	iommu->cmd_sem_val = 0;
- 
- 	/* Add IOMMU to internal data structures */
- 	list_add_tail(&iommu->list, &amd_iommu_list);
-@@ -1558,6 +1573,9 @@ static int __init init_iommu_one(struct amd_iommu *iommu, struct ivhd_header *h)
- 	if (!iommu->mmio_base)
- 		return -ENOMEM;
- 
-+	if (alloc_cwwb_sem(iommu))
-+		return -ENOMEM;
-+
- 	if (alloc_command_buffer(iommu))
- 		return -ENOMEM;
- 
+@@ -128,6 +128,8 @@
+ #define EVENT_TYPE_IOTLB_INV_TO	0x7
+ #define EVENT_TYPE_INV_DEV_REQ	0x8
+ #define EVENT_TYPE_INV_PPR_REQ	0x9
++#define EVENT_TYPE_RMP_FAULT	0xd
++#define EVENT_TYPE_RMP_HW_ERR	0xe
+ #define EVENT_DEVID_MASK	0xffff
+ #define EVENT_DEVID_SHIFT	0
+ #define EVENT_DOMID_MASK_LO	0xffff
 diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-index 10e4200d3552..9e9898683537 100644
+index 9e9898683537..ea64fa8a9418 100644
 --- a/drivers/iommu/amd/iommu.c
 +++ b/drivers/iommu/amd/iommu.c
-@@ -792,11 +792,11 @@ irqreturn_t amd_iommu_int_handler(int irq, void *data)
-  *
-  ****************************************************************************/
- 
--static int wait_on_sem(volatile u64 *sem)
-+static int wait_on_sem(struct amd_iommu *iommu, u64 data)
- {
- 	int i = 0;
- 
--	while (*sem == 0 && i < LOOP_TIMEOUT) {
-+	while (*iommu->cmd_sem != data && i < LOOP_TIMEOUT) {
- 		udelay(1);
- 		i += 1;
- 	}
-@@ -827,16 +827,16 @@ static void copy_cmd_to_buffer(struct amd_iommu *iommu,
- 	writel(tail, iommu->mmio_base + MMIO_CMD_TAIL_OFFSET);
+@@ -486,6 +486,67 @@ static void dump_command(unsigned long phys_addr)
+ 		pr_err("CMD[%d]: %08x\n", i, cmd->data[i]);
  }
  
--static void build_completion_wait(struct iommu_cmd *cmd, u64 address)
-+static void build_completion_wait(struct iommu_cmd *cmd,
-+				  struct amd_iommu *iommu,
-+				  u64 data)
++static void amd_iommu_report_rmp_hw_error(volatile u32 *event)
++{
++	struct iommu_dev_data *dev_data = NULL;
++	int devid, vmg_tag, flags;
++	struct pci_dev *pdev;
++	u64 spa;
++
++	devid   = (event[0] >> EVENT_DEVID_SHIFT) & EVENT_DEVID_MASK;
++	vmg_tag = (event[1]) & 0xFFFF;
++	flags   = (event[1] >> EVENT_FLAGS_SHIFT) & EVENT_FLAGS_MASK;
++	spa     = ((u64)event[3] << 32) | (event[2] & 0xFFFFFFF8);
++
++	pdev = pci_get_domain_bus_and_slot(0, PCI_BUS_NUM(devid),
++					   devid & 0xff);
++	if (pdev)
++		dev_data = dev_iommu_priv_get(&pdev->dev);
++
++	if (dev_data && __ratelimit(&dev_data->rs)) {
++		pci_err(pdev, "Event logged [RMP_HW_ERROR vmg_tag=0x%04x, spa=0x%llx, flags=0x%04x]\n",
++			vmg_tag, spa, flags);
++	} else {
++		pr_err_ratelimited("Event logged [RMP_HW_ERROR device=%02x:%02x.%x, vmg_tag=0x%04x, spa=0x%llx, flags=0x%04x]\n",
++			PCI_BUS_NUM(devid), PCI_SLOT(devid), PCI_FUNC(devid),
++			vmg_tag, spa, flags);
++	}
++
++	if (pdev)
++		pci_dev_put(pdev);
++}
++
++static void amd_iommu_report_rmp_fault(volatile u32 *event)
++{
++	struct iommu_dev_data *dev_data = NULL;
++	int devid, flags_rmp, vmg_tag, flags;
++	struct pci_dev *pdev;
++	u64 gpa;
++
++	devid     = (event[0] >> EVENT_DEVID_SHIFT) & EVENT_DEVID_MASK;
++	flags_rmp = (event[0] >> EVENT_FLAGS_SHIFT) & 0xFF;
++	vmg_tag   = (event[1]) & 0xFFFF;
++	flags     = (event[1] >> EVENT_FLAGS_SHIFT) & EVENT_FLAGS_MASK;
++	gpa       = ((u64)event[3] << 32) | event[2];
++
++	pdev = pci_get_domain_bus_and_slot(0, PCI_BUS_NUM(devid),
++					   devid & 0xff);
++	if (pdev)
++		dev_data = dev_iommu_priv_get(&pdev->dev);
++
++	if (dev_data && __ratelimit(&dev_data->rs)) {
++		pci_err(pdev, "Event logged [RMP_PAGE_FAULT vmg_tag=0x%04x, gpa=0x%llx, flags_rmp=0x%04x, flags=0x%04x]\n",
++			vmg_tag, gpa, flags_rmp, flags);
++	} else {
++		pr_err_ratelimited("Event logged [RMP_PAGE_FAULT device=%02x:%02x.%x, vmg_tag=0x%04x, gpa=0x%llx, flags_rmp=0x%04x, flags=0x%04x]\n",
++			PCI_BUS_NUM(devid), PCI_SLOT(devid), PCI_FUNC(devid),
++			vmg_tag, gpa, flags_rmp, flags);
++	}
++
++	if (pdev)
++		pci_dev_put(pdev);
++}
++
+ static void amd_iommu_report_page_fault(u16 devid, u16 domain_id,
+ 					u64 address, int flags)
  {
--	u64 paddr = iommu_virt_to_phys((void *)address);
--
--	WARN_ON(address & 0x7ULL);
-+	u64 paddr = iommu_virt_to_phys((void *)iommu->cmd_sem);
- 
- 	memset(cmd, 0, sizeof(*cmd));
- 	cmd->data[0] = lower_32_bits(paddr) | CMD_COMPL_WAIT_STORE_MASK;
- 	cmd->data[1] = upper_32_bits(paddr);
--	cmd->data[2] = 1;
-+	cmd->data[2] = data;
- 	CMD_SET_TYPE(cmd, CMD_COMPL_WAIT);
- }
- 
-@@ -1045,22 +1045,21 @@ static int iommu_completion_wait(struct amd_iommu *iommu)
- 	struct iommu_cmd cmd;
- 	unsigned long flags;
- 	int ret;
-+	u64 data;
- 
- 	if (!iommu->need_sync)
- 		return 0;
- 
--
--	build_completion_wait(&cmd, (u64)&iommu->cmd_sem);
--
- 	raw_spin_lock_irqsave(&iommu->lock, flags);
- 
--	iommu->cmd_sem = 0;
-+	data = ++iommu->cmd_sem_val;
-+	build_completion_wait(&cmd, iommu, data);
- 
- 	ret = __iommu_queue_command_sync(iommu, &cmd, false);
- 	if (ret)
- 		goto out_unlock;
- 
--	ret = wait_on_sem(&iommu->cmd_sem);
-+	ret = wait_on_sem(iommu, data);
- 
- out_unlock:
- 	raw_spin_unlock_irqrestore(&iommu->lock, flags);
+@@ -577,6 +638,12 @@ static void iommu_print_event(struct amd_iommu *iommu, void *__evt)
+ 			PCI_BUS_NUM(devid), PCI_SLOT(devid), PCI_FUNC(devid),
+ 			pasid, address, flags);
+ 		break;
++	case EVENT_TYPE_RMP_FAULT:
++		amd_iommu_report_rmp_fault(event);
++		break;
++	case EVENT_TYPE_RMP_HW_ERR:
++		amd_iommu_report_rmp_hw_error(event);
++		break;
+ 	case EVENT_TYPE_INV_PPR_REQ:
+ 		pasid = PPR_PASID(*((u64 *)__evt));
+ 		tag = event[1] & 0x03FF;
 -- 
 2.17.1
 
