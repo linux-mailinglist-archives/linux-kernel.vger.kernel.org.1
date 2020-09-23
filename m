@@ -2,112 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86DB32758BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80A862758C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726603AbgIWNbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 09:31:09 -0400
-Received: from mga02.intel.com ([134.134.136.20]:52193 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgIWNbI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 09:31:08 -0400
-IronPort-SDR: A6LwXju4an2RQAfeDyFDjgfLUKEf9qn64qDLP3CjS+hZDhHHEmPBqcnqRQUKp4X4Uc0ClJTD6A
- kXWYf2seMR2g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9752"; a="148538140"
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="148538140"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 06:31:08 -0700
-IronPort-SDR: Uj5lNb/86HNoXNl0NOZ1QzuO25rPsPO40SiyFdWUt2yP40x3KowyctRG3E7q7xNzTNmpxGmzhA
- mYsBi72ufEKw==
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="486442114"
-Received: from ichiojdo-mobl.ger.corp.intel.com (HELO localhost) ([10.252.51.82])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 06:31:01 -0700
-Date:   Wed, 23 Sep 2020 16:30:59 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        asapek@google.com, Borislav Petkov <bp@alien8.de>,
-        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
-        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
-        Christian Ludloff <ludloff@google.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Patrick Uiterwijk <puiterwijk@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
-Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
-Message-ID: <20200923133059.GB5160@linux.intel.com>
-References: <20200918235337.GA21189@sjchrist-ice>
- <1B23E216-0229-4BDD-8B09-807256A54AF5@amacapital.net>
- <20200922125801.GA133710@linux.intel.com>
- <25d46fdc-1c19-2de8-2ce8-1033a0027ecf@intel.com>
+        id S1726634AbgIWNbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 09:31:37 -0400
+Received: from mail-vi1eur05on2108.outbound.protection.outlook.com ([40.107.21.108]:63904
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726130AbgIWNbh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 09:31:37 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iRPyMKzhYmccNRKWx1SiPEEK2SeD79by91mFucgO2viSnMjmyR8qljEmO9Nt8liXYp6KXtrXuSJLrNAeZwtn31vSVKINPMYLcqodQvl37u8HFMnT1JsqB/ckgATGJnHclASNue1D48YcjCMmX8vMVjVAhs3JY43S3x8gI4cTUqpYm9rqNhnVUfw+5wJPm0Znh3wtANz/Qxhmkl/ra3BmOghx+PjQtV3HbtHq5ZZNMpTf7/3zXbzw1au0F9U73R/ELXFh1211D2qbUnqhYOuobJ+cmygYlHKc5dwd8ZiifOtJ7HLif233umoXwBBajvVrQRTDOcIqqPAuRg1dnPJxlQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CIupRd/EPzUkDp+g7Nfn8/uI/iuZ+diBJsG92Ye5TZQ=;
+ b=Dy4q5Ep+3tVQWc7v3sQ+uVYAzc6bzXOBl6mLv7xqvrOLVSW34ukL2HQhIXt/AhQRov1L6rvgwU8WhkYstA+A2T730oMn5GpJV6UhTfVKxs/cx+nGcXGwr9ArQeyEH9xw5GfDU6FlmwZAgam5j88RbyN6BOBhOoLLtSjRl/5FtBpY7ywilsbaVafF8D3ZWDk+9SFpRrB77HIYL/Z1Uomj8YoVgsT4XjGFs5rZJpLlSBk5Eu1RFmDLFqnuhjE7ZE9EwKP9uoIp4UGyL3T29+HZPCptT347dgC8XTlCc7TKL693D4F0x0AQ5XYJE4s2LxDos7mxg13fUwiKFl3eGPt2ow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=virtuozzo.com; dmarc=pass action=none
+ header.from=virtuozzo.com; dkim=pass header.d=virtuozzo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=virtuozzo.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CIupRd/EPzUkDp+g7Nfn8/uI/iuZ+diBJsG92Ye5TZQ=;
+ b=RzPzfWSzsk/dQqWhKxSn+7cze6wHvEjdIL4XtfWkgpVVSTvieWL2yJpnEjdbFmfIWkU7Dft6KouztioJRWzQeLcbZleBRG7MRDRIcqPyxXho7OZpxZoLLjgRZ0yG9IbIMi3L9dleX1OxpH4ltVzIjIlmH2nrp2Mf3qLWuwddSTo=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=virtuozzo.com;
+Received: from AM6PR08MB4756.eurprd08.prod.outlook.com (2603:10a6:20b:cd::17)
+ by AM5PR0801MB1794.eurprd08.prod.outlook.com (2603:10a6:203:2e::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Wed, 23 Sep
+ 2020 13:31:33 +0000
+Received: from AM6PR08MB4756.eurprd08.prod.outlook.com
+ ([fe80::71e0:46d9:2c06:2322]) by AM6PR08MB4756.eurprd08.prod.outlook.com
+ ([fe80::71e0:46d9:2c06:2322%7]) with mapi id 15.20.3391.027; Wed, 23 Sep 2020
+ 13:31:33 +0000
+Subject: Re: [PATCH] ovl: introduce new "index=nouuid" option for inodes index
+ feature
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Amir Goldstein <amir73il@gmail.com>,
+        Vivek Goyal <vgoyal@redhat.com>, linux-unionfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200923125014.181931-1-ptikhomirov@virtuozzo.com>
+From:   Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+Message-ID: <a50e08f1-953d-d8c0-9f29-821eccb9bf8f@virtuozzo.com>
+Date:   Wed, 23 Sep 2020 16:31:25 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+In-Reply-To: <20200923125014.181931-1-ptikhomirov@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM0PR01CA0165.eurprd01.prod.exchangelabs.com
+ (2603:10a6:208:aa::34) To AM6PR08MB4756.eurprd08.prod.outlook.com
+ (2603:10a6:20b:cd::17)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <25d46fdc-1c19-2de8-2ce8-1033a0027ecf@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.41] (95.179.127.150) by AM0PR01CA0165.eurprd01.prod.exchangelabs.com (2603:10a6:208:aa::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Wed, 23 Sep 2020 13:31:32 +0000
+X-Originating-IP: [95.179.127.150]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b0bcbb3b-6fe0-4c47-99af-08d85fc4fc96
+X-MS-TrafficTypeDiagnostic: AM5PR0801MB1794:
+X-Microsoft-Antispam-PRVS: <AM5PR0801MB1794BBAEFF5B89FAF598F2D6B7380@AM5PR0801MB1794.eurprd08.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OjwHhJnlQIqbqs/2su33dQRo42+TAMEw+yTYU0A3CTwxD6JqcA/v7YkmNOP99ZmOwMxigFKxn0PYZsOpYVdZuYVcgQ7oY440RfPUMv9osNZ+lDIrQrP/Z3Nau3UImJAlArzjHHa6TUbt143mNzbrnJsGk8N0vSk1j/06mpc0KHi1kuK8X58aXzRZBJQfuTK9h9kDe1pR6lCzryvb52NjuON7TErU0Vcjw5zCbQFPmh/Ww6mCI4+UCMtdxNl+i3pQnKqCn+KjkpVJZCGvBomDFHKGNvpuJwk7EGM4v1OJTxIrGVd9VUAXzqZ9RzGw9dBZjPIeFEXT+dfMUDjInBVZw/Jk1U0n0PVBAtskqtUQQpQt2al8FGSnGNY81O7iON17
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR08MB4756.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39840400004)(366004)(396003)(376002)(136003)(346002)(2906002)(52116002)(16576012)(956004)(2616005)(31686004)(316002)(5660300002)(53546011)(26005)(186003)(16526019)(36756003)(66946007)(54906003)(31696002)(6916009)(86362001)(8936002)(6486002)(66556008)(4326008)(66476007)(478600001)(6666004)(8676002)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: qLYN/snFEwN3gaBIIB0WtFx0q7SFIu9lb95hS5Tv/qLEGfgsh//ZkK4nkElQhQEcHy4y9KKpi6j3k8POqVJboeW3bBnQvTWh8RpHHfVnAgkzlhRs4YLxOlGxQBMD9wSZVe/SzS+3K/HzygxOiIMdFzKka1sDYZv3kMQIvWPAiS++86f0AfMCBawyEBJVCn7X5ETy2cVxrL+TrvrSGfXJ2TwkiPodl1ZvBhCMh3TBsK+Rz7rZ7XloI92Cwx/Sql3Q0F7jfEbVDQxmtUzKtjnU6LQTAKth57CEzYpVGrH/JM1jQFHIHD34a5eFJZ17GPpneBk+OOzrc75Nys3g5cDTBLzUJeVnkWhHqT1Zsw+h5FdFyf+09h+v+9MlkRUvpQkKbEONBltp1ZcLAJcYpRmKT2LVbmhqKj6aMCch+pySDse5PYCCvzEtj1ZXyko1BFk1pef5UFfrxRKkoSKxNOhNtv06gQuCA3K0ag48blWzFwwZgNHRs1m1wywuS4+ULnnyKuY22QKuM5nIq+y5rl/0HXgCW1A7XndOE7Ejt+Yr/TS9qxKNYP+1sA/502V4XreW6RO265qs0WkEwojBOK5RHcRXY1g5CGyAAbuCWDlqwcGH+B4mEUza9ixxucgs7esbgwmaPDoiB+ubEFGKaMQjRw==
+X-OriginatorOrg: virtuozzo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b0bcbb3b-6fe0-4c47-99af-08d85fc4fc96
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR08MB4756.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2020 13:31:33.0541
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 0bc7f26d-0264-416e-a6fc-8352af79c58f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ARd1zfhV6zS6XWbB7CFubed7hXiOFPJXU+bKLG6G0tsoSmzgTbdQkpJnPk+dI/tCBJD9w5DnOFvCXXV1+MgL9JmEfbieigW48F5XBiEJeDs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM5PR0801MB1794
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 08:11:14AM -0700, Dave Hansen wrote:
-> > Enclave permissions can be dynamically modified by using ENCLS[EMODPE]
+Please drop, I accidentally missed several hunks...
+
+On 9/23/20 3:50 PM, Pavel Tikhomirov wrote:
+> dd if=/dev/zero of=loopbackfile.img bs=100M count=10
+> losetup -fP loopbackfile.img
+> losetup -a
+>    #/dev/loop0: [64768]:35 (/loop-test/loopbackfile.img)
+> mkfs.ext4 /root/loopbackfile.img
+> mkdir loop-mp
+> mount -o loop /dev/loop0 loop-mp
+> mkdir loop-mp/{lower,upper,work,merged}
+> mount -t overlay overlay -oindex=on,lowerdir=loop-mp/lower,\
+> upperdir=loop-mp/upper,workdir=loop-mp/work loop-mp/merged
+> umount loop-mp/merged
+> umount loop-mp
+> e2fsck -f /dev/loop0
+> tune2fs -U random /dev/loop0
 > 
-> I'm not sure this sentence matters.  I'm not sure why I care what the
-> instruction is named that does this.  But, it _sounds_ here like an
-> enclave can adjust its own permissions directly with ENCLS[EMODPE].
+> mount -o loop /dev/loop0 loop-mp
+> mount -t overlay overlay -oindex=on,lowerdir=loop-mp/lower,\
+> upperdir=loop-mp/upper,workdir=loop-mp/work loop-mp/merged
+>    #mount: /loop-test/loop-mp/merged:
+>    #mount(2) system call failed: Stale file handle.
+> 
+> If you just change the uuid of the backing filesystem, overlay is not
+> mounting any more. In Virtuozzo we copy container disks (ploops) when
+> crate the copy of container and we require fs uuid to be uniq for a new
+> container.
 
-If there was no EMODPE, I would drop this patch from the patch set. It
-is the only reason I keep it. There are no other hard reasons to have
-this.
-
-> Now I'm confused.  I actually don't think I have a strong understanding
-> of how an enclave actually gets loaded, how mmap() and mprotect() are
-> normally used and what this hook is intended to thwart.
-
-Enclave gets loaded with the ioctl API so ATM we rely only on
-DAC permissions.
-
-In future you might want to have LSM hooks to improve granularity
-in two points:
-
-1. When pages are added using SGX_IOC_ENCLAVE ADD_PAGES.
-2. When enclave is initialized using SGX_IOC_ENCLAVE_INIT
-
-In both you might want to make a policy decision based on origin
-and page permissions.
-
-If we do not limit mmap(), enclave could later on upgrade its
-permissions with EMODPE and do mmap().
-
-No matter what kind of LSM hooks or whatever possible improvements
-are done later on to access control, they won't work unless we have
-this because the permissions could be different than the original.
-
-With this change you can still do EMODPE inside an enclave, but you
-don't gain anything with it because your max permissions are capped
-during the build time.
-
-I'm not sure what exactly from this is missing from the commit message
-but if you get this explanation maybe you can help me out with that.
-
-Thank you for the feedback.
-
-/Jarkko
+-- 
+Best regards, Tikhomirov Pavel
+Software Developer, Virtuozzo.
