@@ -2,83 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B392275E7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 19:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97F10275E7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 19:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726684AbgIWRUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 13:20:15 -0400
-Received: from relay.sw.ru ([185.231.240.75]:36078 "EHLO relay3.sw.ru"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726130AbgIWRUO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 13:20:14 -0400
-X-Greylist: delayed 1987 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Sep 2020 13:20:13 EDT
-Received: from [192.168.15.220] (helo=alex-laptop)
-        by relay3.sw.ru with smtp (Exim 4.94)
-        (envelope-from <alexander.mikhalitsyn@virtuozzo.com>)
-        id 1kL8Qm-000qs2-Kg; Wed, 23 Sep 2020 20:19:48 +0300
-Date:   Wed, 23 Sep 2020 20:19:58 +0300
-From:   Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     avagin@gmail.com, linux-fsdevel@vger.kernel.org,
+        id S1726721AbgIWRUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 13:20:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59143 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726498AbgIWRUY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 13:20:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600881622;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qZFvXxnOLhEH+5dxb25balw/PWjti1ehR7buvEyRBXk=;
+        b=bVDCRf/ATx0vbQgQ173qoB6NfOvKPiAlH5dXT53JaheHDw1pgjHKhphX0XK9Aw8NRq49sx
+        mmnfVxfxX6/sO9ZmiXWaRYqVJ3KU09a5F5igLE8BcakB7N1dKGizpY3ePPG4S3u+UI47iZ
+        /xpD9UZmhfOeMrllL5pEU9i9b2Ev0XM=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-109-BO6e4stLMQGWYzCIBG_9YQ-1; Wed, 23 Sep 2020 13:20:20 -0400
+X-MC-Unique: BO6e4stLMQGWYzCIBG_9YQ-1
+Received: by mail-wm1-f70.google.com with SMTP id c200so180714wmd.5
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 10:20:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qZFvXxnOLhEH+5dxb25balw/PWjti1ehR7buvEyRBXk=;
+        b=dHGXFv+oQUGwZyqlSHd00j1jiosGhpwkGZjw56eC0k5joxssasPFWN05f54nny7G3X
+         yw1VSnyhTcnqbdkr1oX5rwbDxdnoVmKazDGI5/wdf/3omM6lLsu/r0j8GiV0iDoEsI3T
+         V32YnVEV5K8h/2NMT1I44v1FR+jQ37bZIh09kaqaWQoTKRvidy+nan6BaCRe5JeKSt03
+         0/ZBMS1Rl+6Ay/wW9t3/vEicVUCdfY4LGxpxDskC+fTYb5tj4spijL/EKG7Asr2ahT0X
+         j+Ugzv+JSjqQ4tQKabvYsbSu+bLImRwz+iAVzrJ7MSNJ2e/36rKXY007VZeSAWAOjs4E
+         /kGA==
+X-Gm-Message-State: AOAM5328hFONCo8K44t121uf7rc8sBAv8py0rD3rxBSwq8DR/oXB4KTL
+        c07JNlQYIevEQZFLxitGh+75ijQwdI8rF03A1HE+3Qq2jahk7OaIOkYgV6qYU4OQ6z/RTuZ4ik1
+        CrLAWwz6N8zmFvjvnMdNppJAW
+X-Received: by 2002:a1c:3d44:: with SMTP id k65mr584139wma.132.1600881619295;
+        Wed, 23 Sep 2020 10:20:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw+BW+6WpVYdCqI1KtCMdlHEnNs6/D6BI9+kloY8rGnumiArlM+N7mI2f0/xlcRsDUXMEuowA==
+X-Received: by 2002:a1c:3d44:: with SMTP id k65mr584116wma.132.1600881618990;
+        Wed, 23 Sep 2020 10:20:18 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:15f1:648d:7de6:bad9? ([2001:b07:6468:f312:15f1:648d:7de6:bad9])
+        by smtp.gmail.com with ESMTPSA id 97sm538185wrm.15.2020.09.23.10.20.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Sep 2020 10:20:17 -0700 (PDT)
+Subject: Re: [PATCH 4/4] KVM: VMX: Add a helper and macros to reduce
+ boilerplate for sec exec ctls
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] fsopen: fsconfig syscall restart fix
-Message-Id: <20200923201958.b27ecda5a1e788fb5f472bcd@virtuozzo.com>
-In-Reply-To: <20200923170322.GP3421308@ZenIV.linux.org.uk>
-References: <20200923164637.13032-1-alexander.mikhalitsyn@virtuozzo.com>
-        <20200923164637.13032-2-alexander.mikhalitsyn@virtuozzo.com>
-        <20200923170322.GP3421308@ZenIV.linux.org.uk>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20200923165048.20486-1-sean.j.christopherson@intel.com>
+ <20200923165048.20486-5-sean.j.christopherson@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <784480fd-3aeb-6c08-30f9-ac474bb23b6c@redhat.com>
+Date:   Wed, 23 Sep 2020 19:20:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <20200923165048.20486-5-sean.j.christopherson@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Sep 2020 18:03:22 +0100
-Al Viro <viro@zeniv.linux.org.uk> wrote:
-
-> On Wed, Sep 23, 2020 at 07:46:36PM +0300, Alexander Mikhalitsyn wrote:
-> > During execution of vfs_fsconfig_locked function we can get ERESTARTNOINTR
-> > error (or other interrupt error). But we changing fs context fc->phase
-> > field to transient states and our entry fc->phase checks in switch cases
-> > (see FS_CONTEXT_CREATE_PARAMS, FS_CONTEXT_RECONF_PARAMS) will always fail
-> > after syscall restart which will lead to returning -EBUSY to the userspace.
-> > 
-> > The idea of the fix is to save entry-time fs_context phase field value and
-> > recover fc->phase value to the original one before exiting with
-> > "interrupt error" (ERESTARTNOINTR or similar).
+On 23/09/20 18:50, Sean Christopherson wrote:
+> Add a helper function and several wrapping macros to consolidate the
+> copy-paste code in vmx_compute_secondary_exec_control() for adjusting
+> controls that are dependent on guest CPUID bits.
 > 
-> If you have e.g. vfs_create_tree() fail in the middle of ->get_tree(),
-> the only thing you can do to that thing is to discard it.  The state is
-> *NOT* required to be recoverable after a failure exit - quite a bit of
-> config might've been consumed and freed by that point.
+> No functional change intended.
 > 
-> CREATE and RECONFIGURE are simply not restartable.
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> ---
+>  arch/x86/kvm/vmx/vmx.c | 128 +++++++++++++----------------------------
+>  1 file changed, 41 insertions(+), 87 deletions(-)
 
-Thank you for quick response!
+The diffstat is enticing but the code a little less so...  Can you just
+add documentation above vmx_adjust_secondary_exec_control that explains
+the how/why?
 
-I got you idea. But as far as I understand fsopen/fsconfig API is in
-early-development stage and we can think about convenience here.
+Paolo
 
-Consider the typical code here:
-int fsfd;
-fsfd = fsopen("somefs", 0);
-// a lot of:
-fsconfig(fsfd, FSCONFIG_SET_FLAG, ...);
-fsconfig(fsfd, FSCONFIG_SET_STRING, ...);
-fsconfig(fsfd, FSCONFIG_SET_BINARY, ...);
-//...
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 5180529f6531..b786cfb74f4f 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -4073,6 +4073,38 @@ u32 vmx_exec_control(struct vcpu_vmx *vmx)
+>  }
+>  
+>  
+> +static inline void
+> +vmx_adjust_secondary_exec_control(struct vcpu_vmx *vmx, u32 *exec_control,
+> +				  u32 control, bool enabled, bool exiting)
+> +{
+> +	if (enabled == exiting)
+> +		*exec_control &= ~control;
+> +	if (nested) {
+> +		if (enabled)
+> +			vmx->nested.msrs.secondary_ctls_high |= control;
+> +		else
+> +			vmx->nested.msrs.secondary_ctls_high &= ~control;
+> +	}
+> +}
+> +
+> +#define vmx_adjust_sec_exec_control(vmx, exec_control, name, feat_name, ctrl_name, exiting) \
+> +({									 \
+> +	bool __enabled;							 \
+> +									 \
+> +	if (cpu_has_vmx_##name()) {					 \
+> +		__enabled = guest_cpuid_has(&(vmx)->vcpu,		 \
+> +					    X86_FEATURE_##feat_name);	 \
+> +		vmx_adjust_secondary_exec_control(vmx, exec_control,	 \
+> +			SECONDARY_EXEC_##ctrl_name, __enabled, exiting); \
+> +	}								 \
+> +})
+> +
+> +#define vmx_adjust_sec_exec_feature(vmx, exec_control, lname, uname) \
+> +	vmx_adjust_sec_exec_control(vmx, exec_control, lname, uname, ENABLE_##uname, false)
+> +
+> +#define vmx_adjust_sec_exec_exiting(vmx, exec_control, lname, uname) \
+> +	vmx_adjust_sec_exec_control(vmx, exec_control, lname, uname, uname##_EXITING, true)
+> +
+>  static void vmx_compute_secondary_exec_control(struct vcpu_vmx *vmx)
+>  {
 
-// now call:
-fsconfig(sfd, FSCONFIG_CMD_CREATE, NULL, NULL, 0)
--> get signal here or something else
--> syscall restarted but this doesn't work because
-of broken fc->phase state
--> get EBUSY
--> now we need to repeat *all* steps with
-fsconfig(fsfd, FSCONFIG_SET_FLAG/FSCONFIG_SET_STRING, ...).
-Speaking honestly, this looks weird.
-
-Regards,
-Alex.
