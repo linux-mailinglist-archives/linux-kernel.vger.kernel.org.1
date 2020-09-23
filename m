@@ -2,148 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9E027555A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8AC27555F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726921AbgIWKMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 06:12:42 -0400
-Received: from mail-dm6nam10on2050.outbound.protection.outlook.com ([40.107.93.50]:27069
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726703AbgIWKMh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 06:12:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gSCkt8qzOB5vSHKTOqkMUhChspSFhxlXmWxIcx+kTx+SaKwbSgqK7bDGvZWMIeZtB2s5dXUrFagGe8vNgEO7Mf08kaIo/UGMmFmKe7Z069TfbrlkoN/sOftHeT32AqXUGUrogKgJSDuNb7aRNHIebDMGFEzzlyvMNR46NLiLKvytCgk72gvTruVxjZpBkJ9ITVVzXxdxDdTlBvUb/ltONaNWvI3sNGHgiWQe9OoAN2kGh8txDPeMX1LH+jKKbjljdE6FMbj9FVj5iMT5Da4ICZ4gs0lK46QWCstz7gavJzMgJxubZ57Bj4yrIjB43BqTAJcEA5lOKb2KKgb0CXGJSg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g3RLf7vkzqmj8xhjVfDs2PGkjZENcM+ralpFLJL6f0g=;
- b=hBPuBJ5L4B0hvoL+76DR+fB4vXDK756zZkkAnLiJ5U5usPlcKUn3aPKc7EOx2yH/6EzMu4AeSjiXQc5Dy/JiUTvEfYzgvc8qzE24L8MN6fmtqJGzQLKwJaZzVQBW35iXm+eaa4/AgEAXlmJ7mN8BTRpUWLX58OauaW8QVxNAtK4XReuH8WKvTo8BqZDPwH3HFBegu9WJ7lf9e9jKptYDvJw/Tf2FYmhlIjOrRbAmQIdqcyAnypIjA/Wc5Hhb7FHChpitxfZ4esEuDZvXURpNiBM+6XA/YUYTCp8TObvTLZbmETmiDFmTQ75wkrfaBzI4aKq1VtOy0UX0tpfxKLAADg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g3RLf7vkzqmj8xhjVfDs2PGkjZENcM+ralpFLJL6f0g=;
- b=tZJhg8quARfipucuOk3mV6wNk8SN6d1j6hZ6KM/CqxI4fV5e2sPtbisVuCJJU7UHXJFsOmW7VUGqzT3In4PCKeb4Sf+mfLf4CX7Ah+E3y+cBEv9lMwWoHvmG6MNrWDTsInI1Pny7tgaDU1FXLU3sDkeHe+2EFlMwYk4HD/+TAtU=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1163.namprd12.prod.outlook.com (2603:10b6:3:7a::18) by
- DM6PR12MB3466.namprd12.prod.outlook.com (2603:10b6:5:3b::33) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3391.11; Wed, 23 Sep 2020 10:11:53 +0000
-Received: from DM5PR12MB1163.namprd12.prod.outlook.com
- ([fe80::48cf:d69:d457:1b1e]) by DM5PR12MB1163.namprd12.prod.outlook.com
- ([fe80::48cf:d69:d457:1b1e%5]) with mapi id 15.20.3412.022; Wed, 23 Sep 2020
- 10:11:53 +0000
-From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-To:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
-Cc:     joro@8bytes.org,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Subject: [PATCH 13/13] iommu: amd: Adopt IO page table framework
-Date:   Wed, 23 Sep 2020 10:14:42 +0000
-Message-Id: <20200923101442.73157-14-suravee.suthikulpanit@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200923101442.73157-1-suravee.suthikulpanit@amd.com>
-References: <20200923101442.73157-1-suravee.suthikulpanit@amd.com>
-Content-Type: text/plain
-X-Originating-IP: [165.204.78.2]
-X-ClientProxiedBy: SN4PR0601CA0003.namprd06.prod.outlook.com
- (2603:10b6:803:2f::13) To DM5PR12MB1163.namprd12.prod.outlook.com
- (2603:10b6:3:7a::18)
+        id S1726518AbgIWKPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 06:15:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35978 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726381AbgIWKPJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 06:15:09 -0400
+Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E38472145D
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 10:15:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600856109;
+        bh=78Wi9zuhU4MDIiFwhcs5urBVnDFgHsmd3gVruFuwOac=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=R1nG/3T3RJgDtO1Bkpws8RIzukkYai1qoBKpZTwDAexr3TrxjH1syv7mISSklr39U
+         gO3NvuZpzzp6x+BzyLc7P9hmiIT1JaZ//AaWb0SXpqneQ3eO8AS+hdGIkKAd67IYH7
+         Ec11qwJP83+YdqoJjMTqGw4Oa2vFsOD8rBerZZ4U=
+Received: by mail-ot1-f49.google.com with SMTP id y5so18434395otg.5
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 03:15:08 -0700 (PDT)
+X-Gm-Message-State: AOAM533lHfQWXImQ34TM0WPrwPraEZFsirAqVXL61laBimtxpu7F3u0k
+        Ti+LFuUJqF7GnWykr6lFpkAvHY3NaAIX+pTf/oc=
+X-Google-Smtp-Source: ABdhPJyjSp5/Spt0IdZZXmghSpOQ+XwGrsDyxPanP4cVdom6we+nl8VFuc3RoJHUDEW8Kdv3zDTb2mWtdzg+p3vKV8s=
+X-Received: by 2002:a9d:6193:: with SMTP id g19mr5508915otk.108.1600856108198;
+ Wed, 23 Sep 2020 03:15:08 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ethanolx5673host.amd.com (165.204.78.2) by SN4PR0601CA0003.namprd06.prod.outlook.com (2603:10b6:803:2f::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Wed, 23 Sep 2020 10:11:52 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 23dd60a9-bb0e-4671-23b5-08d85fa91835
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3466:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB34667A5D874DEC72F144AD35F3380@DM6PR12MB3466.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Y+FRuyOwW8n9m0ExfDgBa7l1O9FZ2HFyHrNCIGvC5rRzJVvSX/1cM4/vedPTd5+q4Zwnk2BP3M2yHLsT6Dfv0YTRzc6Zvhzq0kL/oGSnY2gtFmm4rFGOXC5Z/4baA3ykCh1Y9Duelg7m2+lxfg31kk/9zqQaBGbeM0Ll64AUdiaAe54/CtWEnEvqFTsMKzhFj/4TN/jrlyTOY8pBan8/S/kBOpVny/dLYlMYub06MNXDfQhVYAXruAYVDKuZuSpzQhbUYlSjPEPHmhBvb924qN/jY/GMvWd/wy2Mg6tiQXU2oQ4ceNRvzUe4a/0e1jE1dzRSRDWtyjZNUmdaCZv87g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1163.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(366004)(376002)(346002)(396003)(44832011)(5660300002)(66946007)(66476007)(66556008)(6486002)(86362001)(36756003)(2906002)(8936002)(4326008)(26005)(316002)(1076003)(956004)(478600001)(6666004)(186003)(16526019)(52116002)(8676002)(2616005)(7696005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: PzmOGM0othNEFV70MFsfVEejgWa2n0/Qk1EsoWIvq09AOAaAueo8jjA4dt1Be/izBiRNJKJ8bsy+VIfmhWNKsseCay6cE/7rbBgN57ehCRqDsv9opZ19hRFlfALNJz/yRwf2Pf36qHUp8GVULkxNMQglRxvMZRFPX75GU6JzVNFDqQdrsPlCNC70Tezd2HJKm1mP3oIJM7+HsdnU22FB6X3ZWttlCZMZ1ndgpoI7DdoA7K9DlgTTz6oFNMmrfFOPhzXwrZN9hix/qJLz2nY/A/FZHKqP61ngk2oSzv6eRo84ViGYJqClLYPXnawJIg0X9zMvZ903wODZMxeAz4gPBeG4v+fJCHV4dHGmilkUG2Ua93PuWqZFMz+P67k8K1xRvas5L9T0hIsETAALgOEiJiT+RNHKpKPNR0T+jir3CdMdAT4btk/IfKtcA6kNZLT/CekXhL8Gbz2LN9Ma/CD1ZEBppaKK+EDjqe9Qfx4BUz27hH3JVb/XQvvrzWYTvKvlRMOwpE4WquUehkQt/rzkoEx2FTa2tRkEYFgMKRNmQq5nRb7S8tOoZn/bZLjRjXsqgAJKMT0x5w30GhAW/9ejhxlvdDuLWxpwdqh2ZIuJZpf6t066Z4iEMdCbdNmCIwtdtWGTtCkrXxChShJDHSD1uQ==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 23dd60a9-bb0e-4671-23b5-08d85fa91835
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1163.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2020 10:11:53.5531
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dp/tlIQJEa0tQwUtm4xKvNWFgAdge6WKZUdDs4lKExAxHe23HOfqs/iQ4rBn+J4ipawaH5wBV+3EVDEOX6LqyA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3466
+References: <20200921172603.1.Id9450c1d3deef17718bd5368580a3c44895209ee@changeid>
+ <ad9108e155ba4245a2005e9212a7d2b5@AcuMS.aculab.com> <CAMj1kXEF9SHnas_Hy=eU+=hHuuyxMb2_UtPtsuU2CCH6BaUPbg@mail.gmail.com>
+ <CAD=FV=VG-BzzEJ2jn6hAYjre+BtOu-uyi4OQst=Lg9QQqAtKNw@mail.gmail.com>
+In-Reply-To: <CAD=FV=VG-BzzEJ2jn6hAYjre+BtOu-uyi4OQst=Lg9QQqAtKNw@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 23 Sep 2020 12:14:57 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXH4=b1eSGq+4tQNKsXkzEyWKRvUEcjyez=1yST4kVAMRQ@mail.gmail.com>
+Message-ID: <CAMj1kXH4=b1eSGq+4tQNKsXkzEyWKRvUEcjyez=1yST4kVAMRQ@mail.gmail.com>
+Subject: Re: [PATCH] arm64: crypto: Add an option to assume NEON XOR is the fastest
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     David Laight <David.Laight@aculab.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jackie Liu <liuyun01@kylinos.cn>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch to using IO page table framework for AMD IOMMU v1 page table.
+On Wed, 23 Sep 2020 at 02:39, Doug Anderson <dianders@chromium.org> wrote:
+>
+> Hi,
+>
+> On Tue, Sep 22, 2020 at 3:30 AM Ard Biesheuvel <ardb@kernel.org> wrote:
+> >
+> > On Tue, 22 Sep 2020 at 10:26, David Laight <David.Laight@aculab.com> wrote:
+> > >
+> > > From: Douglas Anderson
+> > > > Sent: 22 September 2020 01:26
+> > > >
+> > > > On every boot time we see messages like this:
+> > > >
+> > > > [    0.025360] calling  calibrate_xor_blocks+0x0/0x134 @ 1
+> > > > [    0.025363] xor: measuring software checksum speed
+> > > > [    0.035351]    8regs     :  3952.000 MB/sec
+> > > > [    0.045384]    32regs    :  4860.000 MB/sec
+> > > > [    0.055418]    arm64_neon:  5900.000 MB/sec
+> > > > [    0.055423] xor: using function: arm64_neon (5900.000 MB/sec)
+> > > > [    0.055433] initcall calibrate_xor_blocks+0x0/0x134 returned 0 after 29296 usecs
+> > > >
+> > > > As you can see, we spend 30 ms on every boot re-confirming that, yet
+> > > > again, the arm64_neon implementation is the fastest way to do XOR.
+> > > > ...and the above is on a system with HZ=1000.  Due to the way the
+> > > > testing happens, if we have HZ defined to something slower it'll take
+> > > > much longer.  HZ=100 means we spend 300 ms on every boot re-confirming
+> > > > a fact that will be the same for every bootup.
+> > >
+> > > Can't the code use a TSC (or similar high-res counter) to
+> > > see how long it takes to process a short 'hot cache' block?
+> > > That wouldn't take long at all.
+> > >
+> >
+> > This is generic code that runs from an core_initcall() so I am not
+> > sure we can easily implement this in a portable way.
+>
+> If it ran later, presumably you could just use ktime?  That seems like
+> it'd be a portable enough way?
+>
 
-Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
----
- drivers/iommu/amd/amd_iommu.h |  3 +++
- drivers/iommu/amd/iommu.c     | 10 ++++++++++
- 2 files changed, 13 insertions(+)
+That should work, I suppose. That should also permit us to simply time
+N iterations of the benchmark instead of running it as many times as
+we can while waiting for a jiffy to elapse.
 
-diff --git a/drivers/iommu/amd/amd_iommu.h b/drivers/iommu/amd/amd_iommu.h
-index 2e8dc2a1ec0f..046ea81a3b77 100644
---- a/drivers/iommu/amd/amd_iommu.h
-+++ b/drivers/iommu/amd/amd_iommu.h
-@@ -127,4 +127,7 @@ static inline void amd_iommu_apply_ivrs_quirks(void) { }
- extern void amd_iommu_domain_set_pgtable(struct protection_domain *domain,
- 					 u64 *root, int mode);
- extern void amd_iommu_free_pgtable(struct amd_io_pgtable *pgtable);
-+extern struct io_pgtable_ops *
-+amd_iommu_setup_io_pgtable_ops(struct iommu_dev_data *dev_data,
-+			       struct protection_domain *pdom);
+>
+> > Doug: would it help if we deferred this until late_initcall()? We
+> > could take an arbitrary pick from the list at core_initcall() time to
+> > serve early users, and update to the fastest one at a later time.
+>
+> Yeah, I think that'd work OK.  One advantage of it being later would
+> be that it could run in parallel to other things that were happening
+> in the system (anyone who enabled async probe on their driver).  Even
+> better would be if your code itself could run async and not block the
+> rest of boot.  ;-)
+
+My code? :-)
+
+> I do like the idea that we could just arbitrarily
+> pick one implementation until we've calibrated.  I guess we'd want to
+> figure out how to do this lockless but it shouldn't be too hard to
+> just check to see if a single pointer is non-NULL and once it becomes
+> non-NULL then you can use it...  ...or a pointer plus a sentinel if
+> writing the pointer can't be done atomically...
+>
+
+Surely, any SMP capable architecture that cares about atomicity at
+that level can update a function pointer, which is guaranteed to be
+the native word size, without tearing?
+
+This should do it afaict:
+
+--- a/crypto/xor.c
++++ b/crypto/xor.c
+@@ -21,7 +21,7 @@
  #endif
-diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-index 77f44b927ae7..df304d8a630a 100644
---- a/drivers/iommu/amd/iommu.c
-+++ b/drivers/iommu/amd/iommu.c
-@@ -32,6 +32,7 @@
- #include <linux/irqdomain.h>
- #include <linux/percpu.h>
- #include <linux/iova.h>
-+#include <linux/io-pgtable.h>
- #include <asm/irq_remapping.h>
- #include <asm/io_apic.h>
- #include <asm/apic.h>
-@@ -1580,6 +1581,7 @@ static int pdev_iommuv2_enable(struct pci_dev *pdev)
- static int attach_device(struct device *dev,
- 			 struct protection_domain *domain)
- {
-+	struct io_pgtable_ops *pgtbl_ops;
- 	struct iommu_dev_data *dev_data;
- 	struct pci_dev *pdev;
- 	unsigned long flags;
-@@ -1623,6 +1625,12 @@ static int attach_device(struct device *dev,
- skip_ats_check:
- 	ret = 0;
- 
-+	pgtbl_ops = amd_iommu_setup_io_pgtable_ops(dev_data, domain);
-+	if (!pgtbl_ops) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
- 	do_attach(dev_data, domain);
- 
- 	/*
-@@ -1958,6 +1966,8 @@ static void amd_iommu_domain_free(struct iommu_domain *dom)
- 	if (domain->dev_cnt > 0)
- 		cleanup_domain(domain);
- 
-+	free_io_pgtable_ops(&domain->iop.iop.ops);
-+
- 	BUG_ON(domain->dev_cnt != 0);
- 
- 	if (!dom)
--- 
-2.17.1
 
+ /* The xor routines to use.  */
+-static struct xor_block_template *active_template;
++static struct xor_block_template *active_template = xor_block_8regs;
+
+ void
+ xor_blocks(unsigned int src_count, unsigned int bytes, void *dest, void **srcs)
+@@ -150,6 +150,5 @@ static __exit void xor_exit(void) { }
+
+ MODULE_LICENSE("GPL");
+
+-/* when built-in xor.o must initialize before drivers/md/md.o */
+-core_initcall(calibrate_xor_blocks);
++late_initcall(calibrate_xor_blocks);
+ module_exit(xor_exit);
+
+
+> It also feels like with the large number of big.LITTLE systems out
+> there you'd either want a lookup table per core or you'd want to do
+> calibration per core.
+>
+
+I don't think the complexity is worth it, tbh, as there are too many
+parameters to consider, although it would be nice if we could run the
+benchmark on the best performing CPU (as that is where the scheduler
+will run the code if it is on a sufficiently hot path, and if it is
+not, it doesn't really matter)
