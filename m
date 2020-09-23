@@ -2,265 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5E5C2764BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C67C2764C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:53:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726643AbgIWXwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 19:52:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38774 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726265AbgIWXwS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 19:52:18 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0084620C56;
-        Wed, 23 Sep 2020 23:52:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600905137;
-        bh=6zFWXkkFznLvhQ+/b7puuq4ataR9mBVYGxbSgkiiGes=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rWUFgSCHpAgplUWlnRMzA2hySnbGhWmFNAB+9+O7gph/+Jd9d4CZZSZbqYus430n7
-         jKTveOOD5+ZWn+SoeP2KbVkE3qFj3Q7fPSJCjmS8zhiT0miP86EpEfRkwkyFgiwWw3
-         JsS56pNs8B822v7pcqDtYtsBRiglXpCO4d7c9i0w=
-Date:   Thu, 24 Sep 2020 08:52:14 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [for-next][PATCH 24/26] tracing: Enable creating new instance
- early boot
-Message-Id: <20200924085214.f2e901534037bede0bb55447@kernel.org>
-In-Reply-To: <20200922012453.507002285@goodmis.org>
-References: <20200922012414.115238201@goodmis.org>
-        <20200922012453.507002285@goodmis.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1726720AbgIWXxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 19:53:24 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:53714 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726466AbgIWXxX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 19:53:23 -0400
+Received: from [192.168.254.38] (unknown [47.187.206.220])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 035D320B7179;
+        Wed, 23 Sep 2020 16:53:21 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 035D320B7179
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1600905202;
+        bh=stfW7VJ9ixikhAwpOM4Y5v+Co/aY6HnPcRI9MXRFn5o=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=XU8UVx4l9QT/FMwo8coMBjnSlLBVk+KBoR6KrO3k/zZ6+mnhEd9ikKjXqtLLVZvX8
+         6L4k3p2sXtnrt7iHN48ZKcWMojIdvdW6wCunGopAI4Vm339QmzKeUGR7hpZh3q8OSK
+         MOlqBqWNABhGiq2M7DKxely5hf7eFnDLY3+f4pu8=
+Subject: Re: [PATCH v2 0/4] [RFC] Implement Trampoline File Descriptor
+To:     Florian Weimer <fweimer@redhat.com>,
+        Solar Designer <solar@openwall.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, kernel-hardening@lists.openwall.com,
+        linux-api@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, oleg@redhat.com,
+        x86@kernel.org, luto@kernel.org, David.Laight@ACULAB.COM,
+        mark.rutland@arm.com, mic@digikod.net,
+        Rich Felker <dalias@libc.org>
+References: <20200922215326.4603-1-madvenka@linux.microsoft.com>
+ <20200923081426.GA30279@amd> <20200923091456.GA6177@openwall.com>
+ <87wo0ko8v0.fsf@oldenburg2.str.redhat.com>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <1a7c9989-fb98-20f7-c0d9-2261aa50d967@linux.microsoft.com>
+Date:   Wed, 23 Sep 2020 18:53:21 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <87wo0ko8v0.fsf@oldenburg2.str.redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steve,
-
-Sorry, I found that this is not enough for setting up the instance.
-It seems that an instance is created but the events of the instance
-are not created (and maybe reset when initializing the tracefs).
-Let me fix it.
-
-Thank you,
-
-On Mon, 21 Sep 2020 21:24:38 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> From: Masami Hiramatsu <mhiramat@kernel.org>
-> 
-> Enable creating new trace_array instance in early boot stage.
-> If the instances directory is not created, postpone it until
-> the tracefs is initialized.
-> 
-> Link: https://lkml.kernel.org/r/159974154763.478751.6289753509587233103.stgit@devnote2
-> 
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
->  kernel/trace/trace.c           | 53 +++++++++++++++++++++++++++-------
->  kernel/trace/trace.h           |  7 +++++
->  kernel/trace/trace_functions.c | 22 +++++++++-----
->  3 files changed, 63 insertions(+), 19 deletions(-)
-> 
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index c35fcd2f2529..6211a13b3327 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -8636,6 +8636,24 @@ struct trace_array *trace_array_find_get(const char *instance)
->  	return tr;
->  }
->  
-> +static int trace_array_create_dir(struct trace_array *tr)
-> +{
-> +	int ret;
-> +
-> +	tr->dir = tracefs_create_dir(tr->name, trace_instance_dir);
-> +	if (!tr->dir)
-> +		return -EINVAL;
-> +
-> +	ret = event_trace_add_tracer(tr->dir, tr);
-> +	if (ret)
-> +		tracefs_remove(tr->dir);
-> +
-> +	init_tracer_tracefs(tr, tr->dir);
-> +	__update_tracer_options(tr);
-> +
-> +	return ret;
-> +}
-> +
->  static struct trace_array *trace_array_create(const char *name)
->  {
->  	struct trace_array *tr;
-> @@ -8671,30 +8689,27 @@ static struct trace_array *trace_array_create(const char *name)
->  	if (allocate_trace_buffers(tr, trace_buf_size) < 0)
->  		goto out_free_tr;
->  
-> -	tr->dir = tracefs_create_dir(name, trace_instance_dir);
-> -	if (!tr->dir)
-> -		goto out_free_tr;
-> -
-> -	ret = event_trace_add_tracer(tr->dir, tr);
-> -	if (ret) {
-> -		tracefs_remove(tr->dir);
-> +	if (ftrace_allocate_ftrace_ops(tr) < 0)
->  		goto out_free_tr;
-> -	}
->  
->  	ftrace_init_trace_array(tr);
->  
-> -	init_tracer_tracefs(tr, tr->dir);
->  	init_trace_flags_index(tr);
-> -	__update_tracer_options(tr);
-> +
-> +	if (trace_instance_dir) {
-> +		ret = trace_array_create_dir(tr);
-> +		if (ret)
-> +			goto out_free_tr;
-> +	}
->  
->  	list_add(&tr->list, &ftrace_trace_arrays);
->  
->  	tr->ref++;
->  
-> -
->  	return tr;
->  
->   out_free_tr:
-> +	ftrace_free_ftrace_ops(tr);
->  	free_trace_buffers(tr);
->  	free_cpumask_var(tr->tracing_cpumask);
->  	kfree(tr->name);
-> @@ -8852,11 +8867,27 @@ static int instance_rmdir(const char *name)
->  
->  static __init void create_trace_instances(struct dentry *d_tracer)
->  {
-> +	struct trace_array *tr;
-> +
->  	trace_instance_dir = tracefs_create_instance_dir("instances", d_tracer,
->  							 instance_mkdir,
->  							 instance_rmdir);
->  	if (MEM_FAIL(!trace_instance_dir, "Failed to create instances directory\n"))
->  		return;
-> +
-> +	mutex_lock(&event_mutex);
-> +	mutex_lock(&trace_types_lock);
-> +
-> +	list_for_each_entry(tr, &ftrace_trace_arrays, list) {
-> +		if (!tr->name)
-> +			continue;
-> +		if (MEM_FAIL(trace_array_create_dir(tr) < 0,
-> +			     "Failed to create instance directory\n"))
-> +			break;
-> +	}
-> +
-> +	mutex_unlock(&trace_types_lock);
-> +	mutex_unlock(&event_mutex);
->  }
->  
->  static void
-> diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-> index 0d3a405fe446..525434145eea 100644
-> --- a/kernel/trace/trace.h
-> +++ b/kernel/trace/trace.h
-> @@ -1125,6 +1125,8 @@ extern int ftrace_is_dead(void);
->  int ftrace_create_function_files(struct trace_array *tr,
->  				 struct dentry *parent);
->  void ftrace_destroy_function_files(struct trace_array *tr);
-> +int ftrace_allocate_ftrace_ops(struct trace_array *tr);
-> +void ftrace_free_ftrace_ops(struct trace_array *tr);
->  void ftrace_init_global_array_ops(struct trace_array *tr);
->  void ftrace_init_array_ops(struct trace_array *tr, ftrace_func_t func);
->  void ftrace_reset_array_ops(struct trace_array *tr);
-> @@ -1146,6 +1148,11 @@ ftrace_create_function_files(struct trace_array *tr,
->  {
->  	return 0;
->  }
-> +static inline int ftrace_allocate_ftrace_ops(struct trace_array *tr)
-> +{
-> +	return 0;
-> +}
-> +static inline void ftrace_free_ftrace_ops(struct trace_array *tr) { }
->  static inline void ftrace_destroy_function_files(struct trace_array *tr) { }
->  static inline __init void
->  ftrace_init_global_array_ops(struct trace_array *tr) { }
-> diff --git a/kernel/trace/trace_functions.c b/kernel/trace/trace_functions.c
-> index dd4dff71d89a..2c2126e1871d 100644
-> --- a/kernel/trace/trace_functions.c
-> +++ b/kernel/trace/trace_functions.c
-> @@ -34,10 +34,14 @@ enum {
->  	TRACE_FUNC_OPT_STACK	= 0x1,
->  };
->  
-> -static int allocate_ftrace_ops(struct trace_array *tr)
-> +int ftrace_allocate_ftrace_ops(struct trace_array *tr)
->  {
->  	struct ftrace_ops *ops;
->  
-> +	/* The top level array uses the "global_ops" */
-> +	if (tr->flags & TRACE_ARRAY_FL_GLOBAL)
-> +		return 0;
-> +
->  	ops = kzalloc(sizeof(*ops), GFP_KERNEL);
->  	if (!ops)
->  		return -ENOMEM;
-> @@ -48,15 +52,19 @@ static int allocate_ftrace_ops(struct trace_array *tr)
->  
->  	tr->ops = ops;
->  	ops->private = tr;
-> +
->  	return 0;
->  }
->  
-> +void ftrace_free_ftrace_ops(struct trace_array *tr)
-> +{
-> +	kfree(tr->ops);
-> +	tr->ops = NULL;
-> +}
->  
->  int ftrace_create_function_files(struct trace_array *tr,
->  				 struct dentry *parent)
->  {
-> -	int ret;
-> -
->  	/*
->  	 * The top level array uses the "global_ops", and the files are
->  	 * created on boot up.
-> @@ -64,9 +72,8 @@ int ftrace_create_function_files(struct trace_array *tr,
->  	if (tr->flags & TRACE_ARRAY_FL_GLOBAL)
->  		return 0;
->  
-> -	ret = allocate_ftrace_ops(tr);
-> -	if (ret)
-> -		return ret;
-> +	if (!tr->ops)
-> +		return -EINVAL;
->  
->  	ftrace_create_filter_files(tr->ops, parent);
->  
-> @@ -76,8 +83,7 @@ int ftrace_create_function_files(struct trace_array *tr,
->  void ftrace_destroy_function_files(struct trace_array *tr)
->  {
->  	ftrace_destroy_filter_files(tr->ops);
-> -	kfree(tr->ops);
-> -	tr->ops = NULL;
-> +	ftrace_free_ftrace_ops(tr);
->  }
->  
->  static int function_trace_init(struct trace_array *tr)
-> -- 
-> 2.28.0
-> 
-> 
 
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+On 9/23/20 9:39 AM, Florian Weimer wrote:
+> * Solar Designer:
+> 
+>> While I share my opinion here, I don't mean that to block Madhavan's
+>> work.  I'd rather defer to people more knowledgeable in current userland
+>> and ABI issues/limitations and plans on dealing with those, especially
+>> to Florian Weimer.  I haven't seen Florian say anything specific for or
+>> against Madhavan's proposal, and I'd like to.  (Have I missed that?)
+> 
+> There was a previous discussion, where I provided feedback (not much
+> different from the feedback here, given that the mechanism is mostly the
+> same).
+> 
+> I think it's unnecessary for the libffi use case.  Precompiled code can
+> be loaded from disk because the libffi trampolines are so regular.  On
+> most architectures, it's not even the code that's patched, but some of
+> the data driving it, which happens to be located on the same page due to
+> a libffi quirk.
+> 
+> The libffi use case is a bit strange anyway: its trampolines are
+> type-generic, and the per-call adjustment is data-driven.  This means
+> that once you have libffi in the process, you have a generic
+> data-to-function-call mechanism available that can be abused (it's even
+> fully CET compatible in recent versions).  And then you need to look at
+> the processes that use libffi.  A lot of them contain bytecode
+> interpreters, and those enable data-driven arbitrary code execution as
+> well.  I know that there are efforts under way to harden Python, but
+> it's going to be tough to get to the point where things are still
+> difficult for an attacker once they have the ability to make mprotect
+> calls.
+> 
+> It was pointed out to me that libffi is doing things wrong, and the
+> trampolines should not be type-generic, but generated so that they match
+> the function being called.  That is, the marshal/unmarshal code would be
+> open-coded in the trampoline, rather than using some generic mechanism
+> plus run-time dispatch on data tables describing the function type.
+> That is a very different design (and typically used by compilers (JIT or
+> not JIT) to implement native calls).  Mapping some code page with a
+> repeating pattern would no longer work to defeat anti-JIT measures
+> because it's closer to real JIT.  I don't know if kernel support could
+> make sense in this context, but it would be a completely different
+> patch.
+> 
+> Thanks,
+> Florian
+> 
+Hi Florian,
+
+I am making myself familiar with anti-JIT measures before I can respond
+to this comment. Bear with me. I will also respond to the above
+libffi comment.
+
+Madhavan
