@@ -2,92 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEBEE275B86
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D72D6275B91
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726723AbgIWPVt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 23 Sep 2020 11:21:49 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:40478 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726156AbgIWPVr (ORCPT
+        id S1726731AbgIWPWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 11:22:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726156AbgIWPWQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 11:21:47 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-279-RO2zBdHMMA6wi2dLfDiKZw-1; Wed, 23 Sep 2020 16:21:42 +0100
-X-MC-Unique: RO2zBdHMMA6wi2dLfDiKZw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Wed, 23 Sep 2020 16:21:41 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Wed, 23 Sep 2020 16:21:41 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Petr Mladek' <pmladek@suse.com>,
-        John Ogness <john.ogness@linutronix.de>
-CC:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Linus Torvalds" <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH printk 3/5] printk: use buffer pool for sprint buffers
-Thread-Topic: [PATCH printk 3/5] printk: use buffer pool for sprint buffers
-Thread-Index: AQHWkbvTttZV2GpHGUOQ6CZ1VgO6Jal2Vhqg
-Date:   Wed, 23 Sep 2020 15:21:41 +0000
-Message-ID: <f4c854b05b394a5f9548715698fd5f59@AcuMS.aculab.com>
-References: <20200922153816.5883-1-john.ogness@linutronix.de>
- <20200922153816.5883-4-john.ogness@linutronix.de>
- <20200923151129.GC6442@alley>
-In-Reply-To: <20200923151129.GC6442@alley>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 23 Sep 2020 11:22:16 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10290C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 08:22:16 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id q5so55995qkc.2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 08:22:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Zsf+EwlQ/vJ5nQq6iEXR0Qv2IGG/PhQoRKnRcKN3RJk=;
+        b=we1UoORwPWcI+UtqtoiXWDV6ejQSy9EcodZBvq8bfGaMnmNw25cQOwZdN2irQ1kRpj
+         gHNrBqeRsi0z0mIs7StBtCi/s9PKZEYEAFeNCI2LFLu/G5FJVXuLX91md5NtX07s+phw
+         wwtt92H40fOuN04kDbYpMYDYJbuOEl6WjJfis=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Zsf+EwlQ/vJ5nQq6iEXR0Qv2IGG/PhQoRKnRcKN3RJk=;
+        b=BCQUTy9EevOfq9zMrpb/514eBI7SCGJ0sAdVbsjWwiTmcnF3ClGoxwLT83n79f4pmq
+         7jKFg6yqWPf6zIRAEs8JernAurA7KvIu2LXGoq7CLXefv2V3ICfn0taujEKQA/SnkHU7
+         X36vEA7KtNYLYl9f3Dk0mJrjtpHikuX7RlSddxAakmdg8GVFG4ojMjOEldcl72nKz2rU
+         8AfmQejYW5SsTjrUQkKe2t/huOn32MJnEzK62CnpG2BQCh/KBIevNS5dBPINggjiAbDx
+         V5nvnt3KQf+Pa9eVMZcgd1L23KcVc3DET7C9sHDa/9Gq3r0p8+5c8FD7bRJPLkx6Gqh/
+         oUCQ==
+X-Gm-Message-State: AOAM5308LO68YWBBv5ZODGOjkBX3k+U9P9anfhU/maZp3fuCV/7l1f28
+        a7RXdwKsBU/4hQOcL5Yg46KOJb2eShrC/Q==
+X-Google-Smtp-Source: ABdhPJyeuvIUk9cxpa08DtvNpej/wXfLpGEqMDDSx1FItXAPvuD88vu2da6n2UY6y3sbYS4vjr9BdQ==
+X-Received: by 2002:a37:48c6:: with SMTP id v189mr403594qka.378.1600874534379;
+        Wed, 23 Sep 2020 08:22:14 -0700 (PDT)
+Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id g5sm37909qtx.43.2020.09.23.08.22.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2020 08:22:13 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        neeraj.iitr10@gmail.com, "Paul E. McKenney" <paulmck@kernel.org>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Subject: [PATCH v6 0/4] Add support for length of each segment in the segcblist
+Date:   Wed, 23 Sep 2020 11:22:07 -0400
+Message-Id: <20200923152211.2403352-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Petr Mladek
-> Sent: 23 September 2020 16:11
-> 
-> On Tue 2020-09-22 17:44:14, John Ogness wrote:
-> > vprintk_store() is using a single static buffer as a temporary
-> > sprint buffer for the message text. This will not work once
-> > @logbuf_lock is removed. Replace the single static buffer with a
-> > pool of buffers.
-> 
-> The buffer is used because we do not know the length of the
-> formatted message to reserve the right space in the ring buffer
-> in advance.
-> 
-> There was the idea to call vsprintf(NULL, fmt, args) to count
-> the length in advance.
-> 
-> AFAIK, there is one catch. We need to use va_copy() around
-> the 1st call because va_format can be proceed only once.
-> See, va_format() in lib/vsprintf.c as an example.
-> 
-> Is there any other problem, please?
 
-Potentially the data can change after the vsprintf(NULL, ...)
-call so that the buffer isn't guaranteed to be the right length.
+This is required for several usecases identified. One of them being tracing how
+the segmented callback list changes. Tracing this has identified issues in RCU
+code in the past.
 
-Never mind the extra cost of doing all the work twice.
+From Paul:
+Another use case is of course more accurately determining whether a given CPU's
+large pile of callbacks can be best served by making grace periods go faster,
+invoking callbacks more vigorously, or both.  It should also be possible to
+simplify some of the callback handling a bit, given that some of the unnatural
+acts are due to there having been no per-batch counts.
 
-	David
+Revision history:
+v6: Fixed TREE04, and restored older logic to ensure rcu_barrier works.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+v5: Various changes, bug fixes. Discovery of rcu_barrier issue.
+
+v4: Restructured rcu_do_batch() and segcblist merging to avoid issues.
+    Fixed minor nit from Davidlohr.
+v1->v3: minor nits.
+(https://lore.kernel.org/lkml/20200719034210.2382053-1-joel@joelfernandes.org/)
+
+Joel Fernandes (Google) (4):
+rcu/tree: Make rcu_do_batch count how many callbacks were executed
+rcu/segcblist: Add counters to segcblist datastructure
+rcu/trace: Add tracing for how segcb list changes
+rcu/segcblist: Remove useless rcupdate.h include
+
+include/linux/rcu_segcblist.h |   2 +
+include/trace/events/rcu.h    |  25 ++++++
+kernel/rcu/rcu_segcblist.c    | 161 +++++++++++++++++++++++++---------
+kernel/rcu/rcu_segcblist.h    |   8 +-
+kernel/rcu/tree.c             |  18 ++--
+5 files changed, 165 insertions(+), 49 deletions(-)
+
+--
+2.28.0.681.g6f77f65b4e-goog
 
