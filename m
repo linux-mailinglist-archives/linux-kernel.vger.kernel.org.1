@@ -2,228 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B1E627624E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08E47276251
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726709AbgIWUmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 16:42:00 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:47057 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726419AbgIWUl7 (ORCPT
+        id S1726735AbgIWUmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 16:42:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726419AbgIWUmK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 16:41:59 -0400
-Received: by mail-io1-f68.google.com with SMTP id g7so884766iov.13;
-        Wed, 23 Sep 2020 13:41:58 -0700 (PDT)
+        Wed, 23 Sep 2020 16:42:10 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88F2BC0613CE;
+        Wed, 23 Sep 2020 13:42:10 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id f18so373338pfa.10;
+        Wed, 23 Sep 2020 13:42:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YTqMKJ2r9lJvoz5eaRhmClYptdjVPN0cfBkpHCFpZIY=;
+        b=q4GZzSi+KRrJZowwN18dJwrui7xW5qEWqe4+gnz8T95t47d9fUojDy3a6MRidGtPVJ
+         bhehuf04pA6jWBSCmeJR0Gbs52BMbpnOt4PjVXPN5KGXvRNE87BcANbwIa9l9prfEiYW
+         vQmGbf2fzIgLbnOxNNDugHu9KSbpzTu46lzagCg0Ta+ccTSpDl7jL90BIoXMYrmbOM0e
+         dmxe3w9FzlE9KkircotdV/F0bs9MQpUjSsieo67VYpWISr0Lcg65eZyoJTZmPHmWPSJp
+         dQHD9xsYVIRRHBybQeUUu2S9aziJaLxaRk6Z4jJlHU3Ub0C5m0rvUibvhAOFO+rcpF5Z
+         SbCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=RlUZjMU4duw214AYO6t6QWSC1dLgrNo875Jdwc3bxEc=;
-        b=E8U07pdBmv5S9YHQrYX8RXdyfBK48JXo2GjHe2y4LvOLp72KxjkYczIoxhr/6RjFEe
-         9BJKkaeYxPUX1W9YkzMWYoDHkybm9pkskCnzSJbW7r6k4APr5JnLXOaY37kJX4w4alSU
-         iPPfr9RPdZq/rmHDRW7gHl32KgIyHocZYHD1kzHVyfbgrpWMPfFeitEnLuCpKq/HlFXW
-         b8on0XbOdXOweFFz9INwcIIPHzOLILhIqz2r/UTOyONv87oXej+NpWi/E6Aq+sEMKvhz
-         RAQIDBi4FradFe5H9zEnDlg0OWtzGmntitlG/B4/qqLBy/MKiiqOVoQtj/C3p8RicoVV
-         vlpw==
-X-Gm-Message-State: AOAM532B66qlDDHxmSpieFgxZXZM/8rLJUU1Hpm6qAR240Othd10wHVG
-        HdOpeNhR3RhW/RxxyIXHPQ==
-X-Google-Smtp-Source: ABdhPJzMbLLYzgaphJVeHdGZ0Hi9G2/IgrFv27w4wrBHlwuEdliGpnuCLuOMx4lZHWCobKET72hNtg==
-X-Received: by 2002:a02:11c2:: with SMTP id 185mr974444jaf.35.1600893718143;
-        Wed, 23 Sep 2020 13:41:58 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id s17sm425424ilb.24.2020.09.23.13.41.55
+        bh=YTqMKJ2r9lJvoz5eaRhmClYptdjVPN0cfBkpHCFpZIY=;
+        b=uVRpxTn2ppTs7NjuwP7xT5jLrO3ByrB4L39j8/6E/EOPXS5wYBOVnwftcLXKX8fXkh
+         7QzUUY2baFJveif8QmavWZbLMkHD8yeRBO/VXaJCNVE9/P1wS7Py6X+bgHC/I3clPA+J
+         SFjYWMrbQ7Dq+ZSgmB+loZzKSovz6TtACxSO+gu1MzFMea+VhGHxD9Pk+zza+zZSK0o/
+         rWRQ0k/WB0+MP5rNlkKE5i+WwM7B1LRYiOEwHGEQ4SLPX70dPgj9MeA5zM6c9dYtG0an
+         38Vf1FZzALNezH+rwkM/syjwpz+vFkiMN0ETzRcBPvXfFUZDGJXCi/WOAjev/AAhQWaT
+         mgLg==
+X-Gm-Message-State: AOAM532+9qZw7MZyoF951JtPCT0b7eZoyvekvk5LZqPOZdlVxwxZggJg
+        zDUdmHORh7p91j+eUDyhbqQ=
+X-Google-Smtp-Source: ABdhPJylVlBnSEBRjtVUI/3ECfLXMd7+wI/L2Scyeh9x+sImzwiYpOS7niZGC5P1GAkPH+SzRA95fA==
+X-Received: by 2002:a63:457:: with SMTP id 84mr1253837pge.191.1600893729932;
+        Wed, 23 Sep 2020 13:42:09 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id e10sm693437pgb.45.2020.09.23.13.42.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 13:41:57 -0700 (PDT)
-Received: (nullmailer pid 1269697 invoked by uid 1000);
-        Wed, 23 Sep 2020 20:41:54 -0000
-Date:   Wed, 23 Sep 2020 14:41:54 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
-        perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Subject: Re: [PATCH v6 2/5] ASoC: dt-bindings: Add dt binding for lpass hdmi
-Message-ID: <20200923204154.GA1263348@bogus>
-References: <1600409084-29093-1-git-send-email-srivasam@codeaurora.org>
- <1600409084-29093-3-git-send-email-srivasam@codeaurora.org>
+        Wed, 23 Sep 2020 13:42:08 -0700 (PDT)
+Date:   Wed, 23 Sep 2020 13:42:06 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Vincent Huang <vincent.huang@tw.synaptics.com>
+Subject: Re: [PATCH 4.19 43/49] Input: trackpoint - add new trackpoint
+ variant IDs
+Message-ID: <20200923204206.GN1681290@dtor-ws>
+References: <20200921162034.660953761@linuxfoundation.org>
+ <20200921162036.567357303@linuxfoundation.org>
+ <20200922153957.GB18907@duo.ucw.cz>
+ <20200922161642.GA2283857@kroah.com>
+ <20200922202403.GA10773@duo.ucw.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1600409084-29093-3-git-send-email-srivasam@codeaurora.org>
+In-Reply-To: <20200922202403.GA10773@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 11:34:41AM +0530, Srinivasa Rao Mandadapu wrote:
-> From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+On Tue, Sep 22, 2020 at 10:24:03PM +0200, Pavel Machek wrote:
+> On Tue 2020-09-22 18:16:42, Greg Kroah-Hartman wrote:
+> > On Tue, Sep 22, 2020 at 05:39:57PM +0200, Pavel Machek wrote:
+> > > Hi!
+> > > 
+> > > > From: Vincent Huang <vincent.huang@tw.synaptics.com>
+> > > > 
+> > > > commit 6c77545af100a72bf5e28142b510ba042a17648d upstream.
+> > > > 
+> > > > Add trackpoint variant IDs to allow supported control on Synaptics
+> > > > trackpoints.
+> > > 
+> > > This just adds unused definitions. I don't think it is needed in
+> > > stable.
+> > 
+> > It add support for a new device.
 > 
-> Adds bindings for lpass hdmi interface
-> which can support audio path over dp.
-> 
-> Signed-off-by: Srinivasa Rao <srivasam@codeaurora.org>
-> Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-> ---
->  .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  | 74 +++++++++++++++-------
->  1 file changed, 52 insertions(+), 22 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-> index 09c9bd2..f95ef70 100644
-> --- a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-> +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
-> @@ -24,9 +24,10 @@ properties:
->        - qcom,sc7180-lpass-cpu
->  
->    reg:
-> -    maxItems: 1
-> +    maxItems: 2
->      description: LPAIF core registers
-> -
-> +  reg-names:
-> +     maxItems: 2
->    clocks:
->      minItems: 3
->      maxItems: 6
-> @@ -36,15 +37,16 @@ properties:
->      maxItems: 6
->  
->    interrupts:
-> -    maxItems: 1
-> +    maxItems: 2
->      description: LPAIF DMA buffer interrupt
-> -
-> +  interrupt-names:
-> +    maxItems: 2
->    qcom,adsp:
->      $ref: /schemas/types.yaml#/definitions/phandle
->      description: Phandle for the audio DSP node
->  
->    iommus:
-> -    maxItems: 1
-> +    maxItems: 2
->      description: Phandle to apps_smmu node with sid mask
->  
->    power-domains:
-> @@ -60,10 +62,12 @@ properties:
->      const: 0
->  
->  patternProperties:
-> -  "(^mi2s-[0-9a-f]$|mi2s)":
-> +  "^dai-link@[0-9a-f]$":
->      type: object
-> -    description: Required properties for each DAI
-> -
-> +    description: |
-> +      LPASS CPU dai node for each I2S device. Bindings of each node
-> +      depends on the specific driver providing the functionality and
-> +      properties.
->      properties:
->        reg:
->          maxItems: 1
-> @@ -85,9 +89,11 @@ patternProperties:
->  required:
->    - compatible
->    - reg
-> +  - reg-names
->    - clocks
->    - clock-names
->    - interrupts
-> +  - interrupt-names
->    - '#sound-dai-cells'
->  
->  additionalProperties: false
-> @@ -134,13 +140,32 @@ allOf:
->      then:
->        properties:
->          clock-names:
-> -          items:
-> -            - const: pcnoc-sway-clk
-> -            - const: audio-core
-> -            - const: mclk0
-> -            - const: pcnoc-mport-clk
-> -            - const: mi2s-bit-clk0
-> -            - const: mi2s-bit-clk1
-> +          oneOf:
-> +           - items:   #for I2S
-> +              - const: pcnoc-sway-clk
-> +              - const: audio-core
-> +              - const: mclk0
-> +              - const: pcnoc-mport-clk
-> +              - const: mi2s-bit-clk0
-> +              - const: mi2s-bit-clk1
-> +           - items:   #for HDMI
-> +              - const: pcnoc-sway-clk
-> +              - const: audio-core
-> +              - const: pcnoc-mport-clk
-> +        reg-names:
-> +          anyOf:
-> +            - items:   #for I2S and HDMI
-> +              - const: lpass-hdmiif
-> +              - const: lpass-lpaif
+> No, it does not. Maybe in mainline there's followup patch that adds
+> such support, but that's not in 4.19.
 
-It would be a bit cleaner if you switch the order. Then you are just 
-adding on to the end.
+es, indeed, there is a chunk missing, so this patch is incomplete. It
+will not cause any issues if applied, so I'll leave it to Greg to decide
+what to do with this.
 
-Otherwise,
+Vincent, there needs to be a change in trackpoint_start_protocol() to
+mark these new IDs as valid. Was it s3ent in a separate patch and I
+missed it?
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Thanks.
 
-> +            - items:   #for I2S
-> +              - const: lpass-lpaif
-> +        interrupt-names:
-> +          anyOf:
-> +            - items:   #for I2S and HDMI
-> +              - const: lpass-irq-lpaif
-> +              - const: lpass-irq-hdmi
-> +            - items:   #for I2S
-> +              - const: lpass-irq-lpaif
->        required:
->          - iommus
->          - power-domains
-> @@ -152,12 +177,15 @@ examples:
->      soc {
->          #address-cells = <2>;
->          #size-cells = <2>;
-> -        lpass@62f00000 {
-> +        lpass@62d80000 {
->              compatible = "qcom,sc7180-lpass-cpu";
->  
-> -            reg = <0 0x62f00000  0 0x29000>;
-> -
-> -            iommus = <&apps_smmu 0x1020 0>;
-> +            reg = <0 0x62d87000 0 0x68000>,
-> +                  <0 0x62f00000 0 0x29000>;
-> +            reg-names = "lpass-hdmiif",
-> +                        "lpass-lpaif";
-> +            iommus = <&apps_smmu 0x1020 0>,
-> +                     <&apps_smmu 0x1032 0>;
->              power-domains = <&lpass_hm 0>;
->  
->              clocks = <&gcc 131>,
-> @@ -171,14 +199,16 @@ examples:
->                            "mclk0", "pcnoc-mport-clk",
->                            "mi2s-bit-clk0", "mi2s-bit-clk1";
->  
-> -            interrupts = <0 160 1>;
-> -
-> +            interrupts = <0 160 1>,
-> +                         <0 268 1>;
-> +            interrupt-names = "lpass-irq-lpaif",
-> +                              "lpass-irq-hdmi";
->              #sound-dai-cells = <1>;
->  
->              #address-cells = <1>;
->              #size-cells = <0>;
->              /* Optional to set different MI2S SD lines */
-> -            mi2s-primary@0 {
-> +            dai-link@0 {
->                  reg = <MI2S_PRIMARY>;
->                  qcom,playback-sd-lines = <1>;
->                  qcom,capture-sd-lines = <0>;
-> -- 
-> Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-> is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-> 
+-- 
+Dmitry
