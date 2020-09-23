@@ -2,104 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46998275EB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 19:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46658275ECF
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 19:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726749AbgIWReK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 13:34:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50720 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726360AbgIWReK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 13:34:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600882449;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ldfka2JU/8jYBcA7GSDSVnVY22PnP+CZq+UK9hEXQUs=;
-        b=KCQzpGw5adQNbKumoJ6jjRN6GmNxwsD4aesMTi0lz+ZIfWH0U64SrOQ+1iGzc/KnUct4mE
-        x3jWMCT98BwdpZfHuQoz2Ss1Zl499plWkVSZ+HguuK1JRDTF7PrAiWyn0rh6rGtjyLmEP1
-        qrOek8Z2c6rVHbxf/7XUnbVPVxHnSPw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-406--llZzXH6MFadSR-JdG7y4w-1; Wed, 23 Sep 2020 13:34:04 -0400
-X-MC-Unique: -llZzXH6MFadSR-JdG7y4w-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0BCDE1800D42;
-        Wed, 23 Sep 2020 17:34:03 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9D24D5C230;
-        Wed, 23 Sep 2020 17:34:02 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: [PATCH] KVM: SEV: shorten comments around sev_clflush_pages
-Date:   Wed, 23 Sep 2020 13:34:01 -0400
-Message-Id: <20200923173401.1632172-1-pbonzini@redhat.com>
+        id S1726668AbgIWRj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 13:39:57 -0400
+Received: from mga04.intel.com ([192.55.52.120]:17159 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726360AbgIWRj5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 13:39:57 -0400
+IronPort-SDR: NDTaTnuJ3ILZ9YTmimWaVdttVMRythLhNlxEmSEUfZNXdmQxw1L6KqHBEBOSoQbUOWHj+YZnJ4
+ dyrll37KKYtA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="158372081"
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
+   d="scan'208";a="158372081"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 10:39:57 -0700
+IronPort-SDR: l/p7iSt4D/0o7SpwXtXWSrDNVwVnREFcqk9shbPX11s02ofuyv57DcHWdIF87fDkIrTiMrnvG8
+ rXC6RVZcGEEw==
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
+   d="scan'208";a="309992887"
+Received: from kcaccard-mobl.amr.corp.intel.com (HELO kcaccard-mobl1.jf.intel.com) ([10.212.14.213])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 10:39:53 -0700
+From:   Kristen Carlson Accardi <kristen@linux.intel.com>
+To:     keescook@chromium.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Cc:     arjan@linux.intel.com, linux-kernel@vger.kernel.org,
+        kernel-hardening@lists.openwall.com, rick.p.edgecombe@intel.com,
+        Kristen Carlson Accardi <kristen@linux.intel.com>
+Subject: [PATCH v5 02/10] x86/boot: Allow a "silent" kaslr random byte fetch
+Date:   Wed, 23 Sep 2020 10:38:56 -0700
+Message-Id: <20200923173905.11219-3-kristen@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200923173905.11219-1-kristen@linux.intel.com>
+References: <20200923173905.11219-1-kristen@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Very similar content is present in four comments in sev.c.  Unfortunately
-there are small differences that make it harder to place the comment
-in sev_clflush_pages itself, but at least we can make it more concise.
+From: Kees Cook <keescook@chromium.org>
 
-Suggested-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Under earlyprintk, each RNG call produces a debug report line. When
+shuffling hundreds of functions, this is not useful information (each
+line is identical and tells us nothing new). Instead, allow for a NULL
+"purpose" to suppress the debug reporting.
+
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
 ---
- arch/x86/kvm/svm/sev.c | 19 +++++++------------
- 1 file changed, 7 insertions(+), 12 deletions(-)
+ arch/x86/lib/kaslr.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index bb0e89c79a04..65e15c22bd3c 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -446,10 +446,8 @@ static int sev_launch_update_data(struct kvm *kvm, struct kvm_sev_cmd *argp)
+diff --git a/arch/x86/lib/kaslr.c b/arch/x86/lib/kaslr.c
+index a53665116458..2b3eb8c948a3 100644
+--- a/arch/x86/lib/kaslr.c
++++ b/arch/x86/lib/kaslr.c
+@@ -56,11 +56,14 @@ unsigned long kaslr_get_random_long(const char *purpose)
+ 	unsigned long raw, random = get_boot_seed();
+ 	bool use_i8254 = true;
+ 
+-	debug_putstr(purpose);
+-	debug_putstr(" KASLR using");
++	if (purpose) {
++		debug_putstr(purpose);
++		debug_putstr(" KASLR using");
++	}
+ 
+ 	if (has_cpuflag(X86_FEATURE_RDRAND)) {
+-		debug_putstr(" RDRAND");
++		if (purpose)
++			debug_putstr(" RDRAND");
+ 		if (rdrand_long(&raw)) {
+ 			random ^= raw;
+ 			use_i8254 = false;
+@@ -68,7 +71,8 @@ unsigned long kaslr_get_random_long(const char *purpose)
  	}
  
- 	/*
--	 * The LAUNCH_UPDATE command will perform in-place encryption of the
--	 * memory content (i.e it will write the same memory region with C=1).
--	 * It's possible that the cache may contain the data with C=0, i.e.,
--	 * unencrypted so invalidate it first.
-+	 * Flush (on non-coherent CPUs) before LAUNCH_UPDATE encrypts pages in
-+	 * place; the cache may contain the data that was written unencrypted.
- 	 */
- 	sev_clflush_pages(inpages, npages);
+ 	if (has_cpuflag(X86_FEATURE_TSC)) {
+-		debug_putstr(" RDTSC");
++		if (purpose)
++			debug_putstr(" RDTSC");
+ 		raw = rdtsc();
  
-@@ -805,10 +803,9 @@ static int sev_dbg_crypt(struct kvm *kvm, struct kvm_sev_cmd *argp, bool dec)
- 		}
+ 		random ^= raw;
+@@ -76,7 +80,8 @@ unsigned long kaslr_get_random_long(const char *purpose)
+ 	}
  
- 		/*
--		 * The DBG_{DE,EN}CRYPT commands will perform {dec,en}cryption of the
--		 * memory content (i.e it will write the same memory region with C=1).
--		 * It's possible that the cache may contain the data with C=0, i.e.,
--		 * unencrypted so invalidate it first.
-+		 * Flush (on non-coherent CPUs) before DBG_{DE,EN}CRYPT read or modify
-+		 * the pages; flush the destination too so that future accesses do not
-+		 * see stale data.
- 		 */
- 		sev_clflush_pages(src_p, 1);
- 		sev_clflush_pages(dst_p, 1);
-@@ -870,10 +867,8 @@ static int sev_launch_secret(struct kvm *kvm, struct kvm_sev_cmd *argp)
- 		return PTR_ERR(pages);
+ 	if (use_i8254) {
+-		debug_putstr(" i8254");
++		if (purpose)
++			debug_putstr(" i8254");
+ 		random ^= i8254();
+ 	}
  
- 	/*
--	 * The LAUNCH_SECRET command will perform in-place encryption of the
--	 * memory content (i.e it will write the same memory region with C=1).
--	 * It's possible that the cache may contain the data with C=0, i.e.,
--	 * unencrypted so invalidate it first.
-+	 * Flush (on non-coherent CPUs) before LAUNCH_SECRET encrypts pages in
-+	 * place; the cache may contain the data that was written unencrypted.
- 	 */
- 	sev_clflush_pages(pages, n);
+@@ -86,7 +91,8 @@ unsigned long kaslr_get_random_long(const char *purpose)
+ 	    : "a" (random), "rm" (mix_const));
+ 	random += raw;
  
+-	debug_putstr("...\n");
++	if (purpose)
++		debug_putstr("...\n");
+ 
+ 	return random;
+ }
 -- 
-2.26.2
+2.20.1
 
