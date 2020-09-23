@@ -2,169 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 240EF275300
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 10:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B4AB275302
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 10:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726338AbgIWING (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 04:13:06 -0400
-Received: from esa3.microchip.iphmx.com ([68.232.153.233]:33106 "EHLO
-        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgIWING (ORCPT
+        id S1726406AbgIWIOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 04:14:30 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:41656 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726178AbgIWIOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 04:13:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1600848785; x=1632384785;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version;
-  bh=sVXDLEVpB1fwDYZd2wzNZ6+ESokMEqDvMqO0aXurJHI=;
-  b=pwU8Y+GW6mDLq1Uqcgxjx2lN/OMpuEVASfGLmC/bRMxl6WgCf9zVeMkx
-   OAMKEEn3SyrfrQjTJH0YB8yDmoe5+zb2gbjdlJYDI6ga3dZ4TX6peSC+H
-   084PvKQcSauPubebcgS8Zrf1P+4hOB5vB71rRXE65whRFTSDvkyVKqFOB
-   LYg3lP3gCsOS/4qFkSQykgxlgW1/XUvxsflKQlyNqqDXvdn35OYEGGEtX
-   NGz22Tz8TXtE+KKBA6wcpL9jS9qwaWFxya00rZJIy2OJsLGUWJcfdi92Y
-   nzPaShQ1Du1y163GwTOGRy12h95IiPGxnn8wi1oR9GFJBi8QyE/NEcyOs
-   A==;
-IronPort-SDR: C9G9KPBY2HYmGUtIi8EnwQPjAYaiej8zwQlQRTIpOoLxGH94VjF5VF6j6WNwMHiVDvCgEHysje
- pAWalQSpuRi1TAhCXXlLaAwqxDggoh9vlWl+EKribQ/FyYmgN7QqVRNGrC+f0Ez7Mg1Xv8EvVH
- Z7JGA6n2MzBDeHZhErq3OgA9tqe3Lh4XVh57xmv4Bi+x+M9Uafw2VpFSdP6AR1lOv+uZTnc8km
- hD388pvFUyarBvgSq4FkN0o6GQO7ejF/8/rwdQkdHHECZanoEKyRDw+khcA5wOQJx1El8W/+Vp
- a90=
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="92880649"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Sep 2020 01:13:04 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 23 Sep 2020 01:13:03 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
- via Frontend Transport; Wed, 23 Sep 2020 01:13:03 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZwgYywzvDOWfYCWkcC1Su0uhhork6wGEsgMtvU/Apjr2p24hcj2k++85mj6rwk+NWH02i4H4S26wwsgLenEWbumXaepoDtBNdNUtesZtDi93We5b6R87Iu4iuti5k8MTw97NVAsQ5D65B4EdtZSArgVyWmcN1W8Gufs1oc6H9QlTG2OZRYdYNs/DDOkY5fNG40D7IL7BJusENt3MlX+MDIZRKWEAxT2MdwvrjEQLNuNYjPOmLTb5rGSwCXCjvvUtja4q82/J8uHW/HwqoLePrllL9KqdxORyZiZZku65IdadzBOf/6+5CyI5TuGOreOCh4WR7RAycqzPTdOkrjnviQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pZVJShvd/LW5PvOizOKc82ocA5aIXIGxBmbDGUAzZS4=;
- b=WstruwWfQ29H854dSPrCkAv1CdUAF+o+lKM6O6mbRSlDzEq5lk6bd7MvP+ttGYW2ng4XK7ITSDb8vhi3vI9o4VE4oj7UcoCP9RrTiUKkWL9H8tHv4eOnwRT/YfUVWQZ7F9y0gOdhP3Ml/IWTjj+huAo38iJ3jlGpyEWLglN7gHgP55cvUWFmMO+PAWQo6DEeA1EbPJpApFUokr/wT/uY9DY1CejGJZUmRIYD/a5TkPy5EaO7xlrQVroNQkA49Z7/ngMJe9cwVZiIqLFbkQ3hM8bx6wPZBfD2juzC5RWyLZrbwtb6s6k2T2PD2O5YuNhC/A68CgT6EkpsIA4ZywhzLA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pZVJShvd/LW5PvOizOKc82ocA5aIXIGxBmbDGUAzZS4=;
- b=vbvR2lk87GFoiuJoTMeK4kcnTOW3uJNjym3uhI3XRia6C6hA0JXWMDhZwYw7R1qLpzFYR6rcY6L8+tDDRjjc5R2qW3b+Io80et7Z9Q4r9Hlqw75f1WJnijIygvIKIm0UhZB90A0dZdo3L3nJIexpJD+BXiiKSwQVCzi0yTN9ENg=
-Received: from DM5PR11MB1914.namprd11.prod.outlook.com (2603:10b6:3:112::12)
- by DM6PR11MB3242.namprd11.prod.outlook.com (2603:10b6:5:5b::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Wed, 23 Sep
- 2020 08:13:03 +0000
-Received: from DM5PR11MB1914.namprd11.prod.outlook.com
- ([fe80::a8e8:d0bc:8b3c:d385]) by DM5PR11MB1914.namprd11.prod.outlook.com
- ([fe80::a8e8:d0bc:8b3c:d385%11]) with mapi id 15.20.3391.027; Wed, 23 Sep
- 2020 08:13:03 +0000
-From:   <Tudor.Ambarus@microchip.com>
-To:     <pavel@ucw.cz>, <linux-kernel@vger.kernel.org>,
-        <dmaengine@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <dan.j.williams@intel.com>,
-        <vkoul@kernel.org>, <Ludovic.Desroches@microchip.com>,
-        <stable@vger.kernel.org>, <greg@kroah.com>
-Subject: Re: [PATCH 4.19] dmaengine: at_hdmac: Fix memory leak
-Thread-Topic: [PATCH 4.19] dmaengine: at_hdmac: Fix memory leak
-Thread-Index: AQHWkYFbVNgbQZmRd0SqW2sKLrUKIA==
-Date:   Wed, 23 Sep 2020 08:13:02 +0000
-Message-ID: <80065eac-7dce-aadf-51ef-9a290973b9ec@microchip.com>
-References: <20200920082838.GA813@amd>
-In-Reply-To: <20200920082838.GA813@amd>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-authentication-results: ucw.cz; dkim=none (message not signed)
- header.d=none;ucw.cz; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [82.77.80.152]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d9e13577-4bdc-4803-34b4-08d85f987e3a
-x-ms-traffictypediagnostic: DM6PR11MB3242:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR11MB3242943DC43581B38F2E7874F0380@DM6PR11MB3242.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:820;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 7wv1WDeMAqsJe/SyatOjsSKOZPfKuhy9zeVq6VsZ2B+q2NcNir7H//1rLeR6UB0VBiLQOjIkyhdPvN52hzzoGqn+GPQZi/7z3F+bgboU2gGTmLbeQEqjreotj9F7Dw7uu1KVIWoZmfzOcV/HSSbtaMCOy2XSNxXnlgIT1eRQRiy5BXOBypBaU20OlYEFFrlvBXqXO5kvFfS/QvdfYPXMdeu0AjaJcjqkitFTTgyKN2cYmTZNcG+ZJtZ8vr17CSRL7u4d6fKfuH6CoZvuPppagHCY38WPnUc8AKiUaQwsSeocFrHUTChbvCaPL1Kjhl0rSck2Oi+dNtxE33UQOcTMyes13xSA3RQj5JrSwvljRY743CJ6IqOq2uNvxUfZemJPvdkBU9S6VoJmNFQ1gURZaAMa6CIE+WnWMny3dps6KFwaiGU3UpKpHDqDhbJ8mTrNHre6H7WdFTK1iNpjyjdk0f6S1bva4jcw/PJPij/P9+XOgoMgDBm+p1qR/3Y32ugR
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR11MB1914.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(366004)(396003)(136003)(39860400002)(316002)(76116006)(91956017)(83380400001)(6486002)(6506007)(53546011)(31696002)(966005)(66556008)(66476007)(66446008)(66946007)(64756008)(26005)(2616005)(5660300002)(31686004)(186003)(6512007)(478600001)(71200400001)(8936002)(110136005)(2906002)(8676002)(36756003)(86362001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: tdxFg87R95gH1/HqtyfXP8YDFYkESTfcds6JTyD4z2pkwOZEFW6UhaJohzaVVwIV9bzP7lx3sVlVjR4rdYt7/m8yP/AJkx2nhk0+km3BPqjvQvE2It0Zri5EiRzlw/+GxlDB5Wt7JcoHO49HEkMbm59Pxx6gYlnwIHEQ/vD9vgZIJU4C9lOi77c4jQaVCzLeu18AmLDIkl4bq969YibOahlksrdeuPI2DzoWdEt8402oxwNk8t6kAtg4ZGh9UWV5850A9bIEQzVfE245pss+M+c7QGJfajuelxtulR6Ty/hW7TYBJTWzR0O/B89/zFB19wt69Xbl9v3kEN36Z1AZFTgiOpgIP7pTB5BEVlajuAO8cCm93H8EIOSAcENJpX3p0DKHuzvTG/EPGNcSFwnXNbmovf4kUMHPCkffwxsY7WqFos5zwqUqL+ZF1h3uXEMgJOKRUfznz0/MoNlJ8EJUbtOcEyNuhwh5XQn7tNpoj2OPTbvMdFgeQuu4NiJmy9YtnFgcjXZipalH7b/ACQnsIiFpQgyXvALnpeRAibcs5m4N+7tl9TRlsowUVpLmTPQfSn1KNCPaq+Yc4pvygqb5SBP96FhjYjkhtKx47T3UCMqDX1Ik2aYJDOfCYQLROyQJoG+eOxtfKVV7ejusvSH+WA==
-Content-Type: text/plain; charset="Windows-1252"
-Content-ID: <0DC78A65EEAEBC4E8B0614F2BCDB86D4@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Wed, 23 Sep 2020 04:14:30 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 4B82D1C0BB9; Wed, 23 Sep 2020 10:14:27 +0200 (CEST)
+Date:   Wed, 23 Sep 2020 10:14:26 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     madvenka@linux.microsoft.com
+Cc:     kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, oleg@redhat.com,
+        x86@kernel.org, luto@kernel.org, David.Laight@ACULAB.COM,
+        fweimer@redhat.com, mark.rutland@arm.com, mic@digikod.net
+Subject: Re: [PATCH v2 0/4] [RFC] Implement Trampoline File Descriptor
+Message-ID: <20200923081426.GA30279@amd>
+References: <210d7cd762d5307c2aa1676705b392bd445f1baa>
+ <20200922215326.4603-1-madvenka@linux.microsoft.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR11MB1914.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d9e13577-4bdc-4803-34b4-08d85f987e3a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2020 08:13:02.9277
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: unBXlU6x47XOt6iZhqREBJ2UAlX7NlELDYm06PGZHKWxmUjAkCbG5PBbyda+hrA//Le1qxO689h1TZqjT2P6ma97HpBU6HNBAGPh7oPMZ+8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3242
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="ew6BAiZeqk4r7MaW"
+Content-Disposition: inline
+In-Reply-To: <20200922215326.4603-1-madvenka@linux.microsoft.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Pavel,
 
-On 9/20/20 11:28 AM, Pavel Machek wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know th=
-e content is safe
+--ew6BAiZeqk4r7MaW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> Introduction
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 >=20
-> This fixes memory leak in at_hdmac. Mainline does not have the same
-> problem.
+> Dynamic code is used in many different user applications. Dynamic code is
+> often generated at runtime. Dynamic code can also just be a pre-defined
+> sequence of machine instructions in a data buffer. Examples of dynamic
+> code are trampolines, JIT code, DBT code, etc.
 >=20
-> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+> Dynamic code is placed either in a data page or in a stack page. In order
+> to execute dynamic code, the page it resides in needs to be mapped with
+> execute permissions. Writable pages with execute permissions provide an
+> attack surface for hackers. Attackers can use this to inject malicious
+> code, modify existing code or do other harm.
 >=20
-> diff --git a/drivers/dma/at_hdmac.c b/drivers/dma/at_hdmac.c
-> index 86427f6ba78c..0847b2055857 100644
-> --- a/drivers/dma/at_hdmac.c
-> +++ b/drivers/dma/at_hdmac.c
-> @@ -1714,8 +1714,10 @@ static struct dma_chan *at_dma_xlate(struct of_pha=
-ndle_args *dma_spec,
->         atslave->dma_dev =3D &dmac_pdev->dev;
+> To mitigate this, LSMs such as SELinux implement W^X. That is, they may n=
+ot
+> allow pages to have both write and execute permissions. This prevents
+> dynamic code from executing and blocks applications that use it. To allow
+> genuine applications to run, exceptions have to be made for them (by sett=
+ing
+> execmem, etc) which opens the door to security issues.
 >=20
->         chan =3D dma_request_channel(mask, at_dma_filter, atslave);
-> -       if (!chan)
-> +       if (!chan) {
-> +               kfree(atslave);
->                 return NULL;
-> +       }
+> The W^X implementation today is not complete. There exist many user level
+> tricks that can be used to load and execute dynamic code. E.g.,
+>=20
+> - Load the code into a file and map the file with R-X.
+>=20
+> - Load the code in an RW- page. Change the permissions to R--. Then,
+>   change the permissions to R-X.
+>=20
+> - Load the code in an RW- page. Remap the page with R-X to get a separate
+>   mapping to the same underlying physical page.
+>=20
+> IMO, these are all security holes as an attacker can exploit them to inje=
+ct
+> his own code.
 
-Thanks for submitting this to stable. While the fix is good, you can instea=
-d
-cherry-pick the commit that hit upstream. In order to do that cleanly on to=
-p
-of v4.19.145, you have to pick two other fixes:
+IMO, you are smoking crack^H^H very seriously misunderstanding what
+W^X is supposed to protect from.
 
-commit a6e7f19c9100 ("dmaengine: at_hdmac: Substitute kzalloc with kmalloc"=
-)
-commit 3832b78b3ec2 ("dmaengine: at_hdmac: add missing put_device() call in=
- at_dma_xlate()")
-commit a6e7f19c9100 ("dmaengine: at_hdmac: Substitute kzalloc with kmalloc"=
-)
+W^X is not supposed to protect you from attackers that can already do
+system calls. So loading code into a file then mapping the file as R-X
+is in no way security hole in W^X.
 
-There are also some locking/deadlock fixes in mainline for this driver,
-depending on the time you can allocate for this, the list of patches can in=
-crease.
-I should have Cc'ed stable@vger.kernel.org in the first place, my bad.
+If you want to provide protection from attackers that _can_ do system
+calls, fine, but please don't talk about W^X and please specify what
+types of attacks you want to prevent and why that's good thing.
 
-Also it may worth to read the rules for submitting to stable at:
-https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+Hint: attacker that can "Load the code into a file and map the file
+with R-X." can probably also load the code into /foo and
+os.system("/usr/bin/python /foo").
 
-Cheers,
-ta
+This is not first crazy patch from your company. Perhaps you should
+have a person with strong Unix/Linux experience performing "straight
+face test" on outgoing patches?
+
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--ew6BAiZeqk4r7MaW
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl9rA+IACgkQMOfwapXb+vLeswCgxLsVovoEu7Zr4CWuzSbUatKX
+B5wAnRA2x52GHgeeAkFmdWf8Tz3etxRA
+=lIi4
+-----END PGP SIGNATURE-----
+
+--ew6BAiZeqk4r7MaW--
