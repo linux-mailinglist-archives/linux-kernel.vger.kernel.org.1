@@ -2,140 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D81BE27635F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 23:53:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C52DF276360
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 23:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726562AbgIWVxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 17:53:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726199AbgIWVxl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 17:53:41 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82981C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 14:53:41 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id 60so1250192otw.3
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 14:53:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=fOb33T+YNOHc4vIBVgqzuq7U+UoXOh9A3nK6B7gM0do=;
-        b=UIrV3HdF2956LQEYJdqcgj3NASCJwUzME0jGDZrc8T8x/GnbaKUwPdLcnQ5Ze1tOBG
-         DPPFL7J30nCzElb6Ryo9LWY6A/qtpfhiqM4yVuQ2KiZM/Unn46Jh+DjAkWNG3wsj1pHH
-         7eso/9lJqZ7RjsxGYz/cF9AlxtY5DUyvosIuQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fOb33T+YNOHc4vIBVgqzuq7U+UoXOh9A3nK6B7gM0do=;
-        b=crY9dC3gw8Go0/ROGrIIO605C+km82/dAodYfsSvA+ScxE9rIlgb0de51wr7i5C1pa
-         tzdBg8qZCbvgn6J5qavch6Jww/H2wDVSp0vFsXZACbPCnzQ4ANLH+W41/59pOdcZ96M6
-         m/RLvjrb2h3a94s7FPLh19E4SjariqK9wIRGJYkXlzaFOJp3A0VI/tot36zyt5VlTlKD
-         h05gfU5WrAwiBzl3LdGYTTmnTqiQ48fpIccxC0/dovcp7ISi/IbEvNyHG6dC12izykon
-         TffJ/UF/cpsEUX0wbGQQ7H9dZsPRWUfMp10qK7LDX4Fa/yD1wWSjfp/hqbxImSog1GN1
-         yuNQ==
-X-Gm-Message-State: AOAM530gkR3xEAHLlZFI8Zeq7g47YBgLKjqk1KH45zw7asXURxNuzxOC
-        qUefDhRGSnzZd9bCfdlI4JINmA==
-X-Google-Smtp-Source: ABdhPJxExq4JHuVzVZKU9uaUiYXh3uICLg9b4TOBOOJQi7zlKYp3+50qVXQgomQIypWjMNM9eK2RIw==
-X-Received: by 2002:a05:6830:1191:: with SMTP id u17mr1099399otq.335.1600898020691;
-        Wed, 23 Sep 2020 14:53:40 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id e19sm323206ote.37.2020.09.23.14.53.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Sep 2020 14:53:40 -0700 (PDT)
-Subject: Re: [PATCH v1] kunit: tool: fix --alltests flag
-To:     Brendan Higgins <brendanhiggins@google.com>, shuah@kernel.org,
-        davidgow@google.com
-Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20200923211938.3727976-1-brendanhiggins@google.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <3fbc056e-6baa-a457-cc5f-058606903fe3@linuxfoundation.org>
-Date:   Wed, 23 Sep 2020 15:53:39 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726662AbgIWVxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 17:53:53 -0400
+Received: from mga17.intel.com ([192.55.52.151]:36586 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726199AbgIWVxx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 17:53:53 -0400
+IronPort-SDR: mIUDTGRSymmnYE56UqDrp3ysb3zWZ8dzw3+EjMmI/iOqT/3six//cTpABbIfwe8fjlAi/i5IDt
+ 4StO1k5Tuyhw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="141037930"
+X-IronPort-AV: E=Sophos;i="5.77,295,1596524400"; 
+   d="scan'208";a="141037930"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 14:53:53 -0700
+IronPort-SDR: R8tPOzfBFwE35C1bIv0L7gPeceJWTkWVyRmhP0IgOBgtYibE1kjpJIRFNJGMnsKj3nb9ynqiWJ
+ bWoyTp8rGWow==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,295,1596524400"; 
+   d="scan'208";a="455085173"
+Received: from sjchrist-coffee.jf.intel.com ([10.54.74.160])
+  by orsmga004.jf.intel.com with ESMTP; 23 Sep 2020 14:53:52 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peter Shier <pshier@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: [PATCH] KVM: x86: Reset MMU context if guest toggles CR4.SMAP or CR4.PKE
+Date:   Wed, 23 Sep 2020 14:53:52 -0700
+Message-Id: <20200923215352.17756-1-sean.j.christopherson@intel.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20200923211938.3727976-1-brendanhiggins@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/23/20 3:19 PM, Brendan Higgins wrote:
-> Alltests flag evidently stopped working when run from outside of the
-> root of the source tree, so fix that. Also add an additional broken
-> config to the broken_on_uml config.
-> 
-> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-> ---
->   tools/testing/kunit/configs/broken_on_uml.config |  1 +
->   tools/testing/kunit/kunit_kernel.py              | 15 ++++++++++-----
->   2 files changed, 11 insertions(+), 5 deletions(-)
-> 
-> diff --git a/tools/testing/kunit/configs/broken_on_uml.config b/tools/testing/kunit/configs/broken_on_uml.config
-> index 239b9f03da2c..a7f0603d33f6 100644
-> --- a/tools/testing/kunit/configs/broken_on_uml.config
-> +++ b/tools/testing/kunit/configs/broken_on_uml.config
-> @@ -39,3 +39,4 @@
->   # CONFIG_QCOM_CPR is not set
->   # CONFIG_RESET_BRCMSTB_RESCAL is not set
->   # CONFIG_RESET_INTEL_GW is not set
-> +# CONFIG_ADI_AXI_ADC is not set
-> diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-> index e20e2056cb38..1b1826500f61 100644
-> --- a/tools/testing/kunit/kunit_kernel.py
-> +++ b/tools/testing/kunit/kunit_kernel.py
-> @@ -53,18 +53,23 @@ class LinuxSourceTreeOperations(object):
->   		except subprocess.CalledProcessError as e:
->   			raise ConfigError(e.output)
->   
-> -	def make_allyesconfig(self):
-> +	def make_allyesconfig(self, build_dir, make_options):
->   		kunit_parser.print_with_timestamp(
->   			'Enabling all CONFIGs for UML...')
-> +		command = ['make', 'ARCH=um', 'allyesconfig']
-> +		if make_options:
-> +			command.extend(make_options)
-> +		if build_dir:
-> +			command += ['O=' + build_dir]
->   		process = subprocess.Popen(
-> -			['make', 'ARCH=um', 'allyesconfig'],
-> +			command,
->   			stdout=subprocess.DEVNULL,
->   			stderr=subprocess.STDOUT)
->   		process.wait()
->   		kunit_parser.print_with_timestamp(
->   			'Disabling broken configs to run KUnit tests...')
->   		with ExitStack() as es:
-> -			config = open(KCONFIG_PATH, 'a')
-> +			config = open(get_kconfig_path(build_dir), 'a')
->   			disable = open(BROKEN_ALLCONFIG_PATH, 'r').read()
->   			config.write(disable)
->   		kunit_parser.print_with_timestamp(
-> @@ -161,9 +166,9 @@ class LinuxSourceTree(object):
->   			return self.build_config(build_dir, make_options)
->   
->   	def build_um_kernel(self, alltests, jobs, build_dir, make_options):
-> -		if alltests:
-> -			self._ops.make_allyesconfig()
->   		try:
-> +			if alltests:
-> +				self._ops.make_allyesconfig(build_dir, make_options)
->   			self._ops.make_olddefconfig(build_dir, make_options)
->   			self._ops.make(jobs, build_dir, make_options)
->   		except (ConfigError, BuildError) as e:
-> 
-> base-commit: 92a2b470086f68bf35eb9f94b6cb5ebdfac41b25
-> 
+Reset the MMU context during kvm_set_cr4() if SMAP or PKE is toggled.
+Recent commits to (correctly) not reload PDPTRs when SMAP/PKE are
+toggled inadvertantly skipped the MMU context reset due to the mask
+of bits that triggers PDPTR loads also being used to trigger MMU context
+resets.
 
+Fixes: 427890aff855 ("kvm: x86: Toggling CR4.SMAP does not load PDPTEs in PAE mode")
+Fixes: cb957adb4ea4 ("kvm: x86: Toggling CR4.PKE does not load PDPTEs in PAE mode")
+Cc: Jim Mattson <jmattson@google.com>
+Cc: Peter Shier <pshier@google.com>
+Cc: Oliver Upton <oupton@google.com>
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+---
+ arch/x86/kvm/x86.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Thanks. Applied to linux-kselftest kunit-fiex for 5.10-rc1
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 17f4995e80a7..fd0da41bc149 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -977,6 +977,7 @@ int kvm_set_cr4(struct kvm_vcpu *vcpu, unsigned long cr4)
+ 	unsigned long old_cr4 = kvm_read_cr4(vcpu);
+ 	unsigned long pdptr_bits = X86_CR4_PGE | X86_CR4_PSE | X86_CR4_PAE |
+ 				   X86_CR4_SMEP;
++	unsigned long mmu_role_bits = pdptr_bits | X86_CR4_SMAP | X86_CR4_PKE;
+ 
+ 	if (kvm_valid_cr4(vcpu, cr4))
+ 		return 1;
+@@ -1004,7 +1005,7 @@ int kvm_set_cr4(struct kvm_vcpu *vcpu, unsigned long cr4)
+ 	if (kvm_x86_ops.set_cr4(vcpu, cr4))
+ 		return 1;
+ 
+-	if (((cr4 ^ old_cr4) & pdptr_bits) ||
++	if (((cr4 ^ old_cr4) & mmu_role_bits) ||
+ 	    (!(cr4 & X86_CR4_PCIDE) && (old_cr4 & X86_CR4_PCIDE)))
+ 		kvm_mmu_reset_context(vcpu);
+ 
+-- 
+2.28.0
 
-thanks,
--- Shuah
