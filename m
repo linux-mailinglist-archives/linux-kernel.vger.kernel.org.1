@@ -2,96 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05545275730
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 13:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C8C627573D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 13:38:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbgIWLcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 07:32:00 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:43768 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726332AbgIWLcA (ORCPT
+        id S1726515AbgIWLig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 07:38:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726445AbgIWLif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 07:32:00 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08NBPDQ7125046;
-        Wed, 23 Sep 2020 11:31:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type : in-reply-to;
- s=corp-2020-01-29; bh=a/3Y0JWml0cElcLXECJKh9QCu2GcyQ6fS9FlXSoHn8Y=;
- b=ohFxs4WM4GWSyb1Y7kDlXaCx3HVFbXmgcXxrVAvUXr+UGxMacL1y9OWozf4KZSwH7d2s
- 53+QxNb6Tyi7FwOy/3WKjYfPzfitMg8pbnYFvm2c5zPahgDHE8rNA47R+q4FYDFalVHq
- ryQrgSwS1otOHF5GpwRhjdM0Fr2IjY6Il+vqdPSpvtzoqH8jQtucuhS0cR1Rw0ZlzqrS
- Pzi/GljHIXq2lLhUc2/2N5t7MSatotTIg9Z+EhBoYIwK0c4ouKEz09lPbUQ8PxuQXpNs
- gFGK0BZkn2DyX/Clf0/2RPtxKJtbsxvjUQKHv3Ag74pdGdfkI8eBCoe92c8L6zcTN59M 1w== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 33q5rgg8fs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 23 Sep 2020 11:31:51 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08NBTPS8145902;
-        Wed, 23 Sep 2020 11:31:51 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 33nux100pv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 23 Sep 2020 11:31:50 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08NBVmlR008029;
-        Wed, 23 Sep 2020 11:31:50 GMT
-Received: from mwanda (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 23 Sep 2020 04:31:48 -0700
-Date:   Wed, 23 Sep 2020 14:31:42 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Magnus Damm <magnus.damm@gmail.com>,
-        Simon Horman <horms+renesas@verge.net.au>,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH v2] soc: renesas: rmobile-sysc: Fix some leaks in
- rmobile_init_pm_domains()
-Message-ID: <20200923113142.GC1473821@mwanda>
+        Wed, 23 Sep 2020 07:38:35 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EDE1C0613CE;
+        Wed, 23 Sep 2020 04:38:35 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id y15so6766654wmi.0;
+        Wed, 23 Sep 2020 04:38:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=W4t+72Rd9BRbOxDCzWkNzy7ayx5sj6wel8M7/f96GfE=;
+        b=gMwZsd4FyKgaQjgL0cQVNKc6IVCeaCTkg1MFtFL1R9P/JFC8qBT8q82SbMQEPNJtmx
+         SrATKCtochuXDfyps32jh5mtXSKhZUVbPelL+mVFLX13vKn/5AuX6vRHq9t+iXWhyE8p
+         N0wqLmuS1cgcxp8QGW6/UbdEqnawplKOIFdSvnn1ONRgp8Mdg1kplyo+Z+aHZyjFOMzj
+         blKEqaSJyTlbLYVNYcawptR5hE3dJwWpUvtSchNEzjpr6UAMkggbARrawCKziyNnkWdA
+         ASKohbeURgNYB8T9LWhU8Cn0RM3kREzshNGq6QtvfKE/fYU5y1iMyr523cfOsYodda71
+         apeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=W4t+72Rd9BRbOxDCzWkNzy7ayx5sj6wel8M7/f96GfE=;
+        b=rbREjusnDY860a7fHLjnKmFkvMfS2MNcBQEEiUnrIwXfO+gC336Vlno3dJWdhiT02f
+         soY4hREbMc+wvwejuWHL1jMqRRj5vRSqrZdNukva3FVzZXY3WQ+GTs9uzVafzgn7VebY
+         /g+RcZe5ZGoO2/Sna9C/HZdmVJf2+s50oDDhDN5sC5VadYmSQndnBN4FtkYwPDvk6UPm
+         NvYwCVRofot0dWnCA7c3wUWZGoxUp0/xbQOoqjVNcjF0iocnPJiuXlMes7ZyuMV5USlM
+         ndSj0+a3xXKZkojrfSMSQ214rdLGSg4axkeOyBzAqY6C0FMD2lpbcxNRkyjrjN8XLypV
+         wFhg==
+X-Gm-Message-State: AOAM531gnpqMKT1DWJKgjFGtkEpAYlHZ9NV3xWtI+bMi6nb03nbAo4Uf
+        364DztgZ60CSUqgLuuLHdYo=
+X-Google-Smtp-Source: ABdhPJyP7M6ejF+lzdGEE6Fr5/fL3p4IQ5iKzHXqk5PjV9rwA2+Jo5TuDsnlbCuZSMpdJ2cGhWRhFw==
+X-Received: by 2002:a05:600c:2312:: with SMTP id 18mr5920078wmo.141.1600861113644;
+        Wed, 23 Sep 2020 04:38:33 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id u8sm7803632wmj.45.2020.09.23.04.38.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2020 04:38:32 -0700 (PDT)
+Date:   Wed, 23 Sep 2020 13:38:30 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Jon Hunter <jonathanh@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH V2 0/5] Add support for custom names for AT24 EEPROMs
+Message-ID: <20200923113830.GA1846003@ulmo>
+References: <20200916094952.458003-1-jonathanh@nvidia.com>
+ <CAMpxmJX6OxS-dxcK8whCm-Ups6Uts1iYE8bux_wAGeBPXihYBA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="yrj/dFKFPuw6o+aM"
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdXyM1dUPJ7ZDAk6-cEjaG_bVBfsE=bqdpf7pA0ChdRLVw@mail.gmail.com>
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9752 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 adultscore=0
- bulkscore=0 mlxlogscore=999 phishscore=0 suspectscore=2 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009230093
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9752 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 impostorscore=0
- clxscore=1015 suspectscore=2 phishscore=0 malwarescore=0
- priorityscore=1501 mlxlogscore=999 adultscore=0 bulkscore=0 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009230092
+In-Reply-To: <CAMpxmJX6OxS-dxcK8whCm-Ups6Uts1iYE8bux_wAGeBPXihYBA@mail.gmail.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This code needs to call iounmap() on one error path.
 
-Fixes: 2173fc7cb681 ("ARM: shmobile: R-Mobile: Add DT support for PM domains")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-v2:  The v1 patch potentially led to a use after free.
+--yrj/dFKFPuw6o+aM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- drivers/soc/renesas/rmobile-sysc.c | 1 +
- 1 file changed, 1 insertion(+)
+On Wed, Sep 23, 2020 at 11:15:03AM +0200, Bartosz Golaszewski wrote:
+> On Wed, Sep 16, 2020 at 11:50 AM Jon Hunter <jonathanh@nvidia.com> wrote:
+> >
+> > For platforms that have multiple boards and hence have multiple EEPROMs
+> > for identifying the different boards, it is useful to label the EEPROMs
+> > in device-tree so that they can be easily identified. For example, MAC
+> > address information is stored in the EEPROM on the processor module for
+> > some Jetson platforms which is not only required by the kernel but the
+> > bootloader as well. So having a simple way to identify the EEPROM is
+> > needed.
+> >
+> > Changes since V1:
+> > - By default initialise the nvmem_config.id as NVMEM_DEVID_AUTO and not
+> >   NVMEM_DEVID_NONE
+> > - Dropped the 'maxItems' from the dt-binding doc.
+> >
+> > Jon Hunter (5):
+> >   misc: eeprom: at24: Initialise AT24 NVMEM ID field
+> >   dt-bindings: eeprom: at24: Add label property for AT24
+> >   misc: eeprom: at24: Support custom device names for AT24 EEPROMs
+> >   arm64: tegra: Add label properties for EEPROMs
+> >   arm64: tegra: Populate EEPROMs for Jetson Xavier NX
+> >
+> >  .../devicetree/bindings/eeprom/at24.yaml      |  3 +++
+> >  .../boot/dts/nvidia/tegra186-p2771-0000.dts   |  1 +
+> >  .../arm64/boot/dts/nvidia/tegra186-p3310.dtsi |  1 +
+> >  .../arm64/boot/dts/nvidia/tegra194-p2888.dtsi |  1 +
+> >  .../boot/dts/nvidia/tegra194-p2972-0000.dts   |  1 +
+> >  .../nvidia/tegra194-p3509-0000+p3668-0000.dts | 14 ++++++++++++
+> >  .../boot/dts/nvidia/tegra194-p3668-0000.dtsi  | 16 ++++++++++++++
+> >  .../arm64/boot/dts/nvidia/tegra210-p2180.dtsi |  1 +
+> >  .../boot/dts/nvidia/tegra210-p2371-2180.dts   |  1 +
+> >  .../boot/dts/nvidia/tegra210-p3450-0000.dts   |  2 ++
+> >  drivers/misc/eeprom/at24.c                    | 22 ++++++++++++++++++-
+> >  11 files changed, 62 insertions(+), 1 deletion(-)
+> >
+> > --
+> > 2.25.1
+> >
+>=20
+> Just FYI: I'm fine with the at24 part. I can take them through my tree
+> for v5.10. Who is taking the DTS patches for tegra? Thierry? I can
+> provide you with an immutable branch if that's fine. I can't just ack
+> the at24 patches because they conflict with what I already have in my
+> tree for v5.10.
 
-diff --git a/drivers/soc/renesas/rmobile-sysc.c b/drivers/soc/renesas/rmobile-sysc.c
-index 54b616ad4a62..beb1c7211c3d 100644
---- a/drivers/soc/renesas/rmobile-sysc.c
-+++ b/drivers/soc/renesas/rmobile-sysc.c
-@@ -327,6 +327,7 @@ static int __init rmobile_init_pm_domains(void)
- 
- 		pmd = of_get_child_by_name(np, "pm-domains");
- 		if (!pmd) {
-+			iounmap(base);
- 			pr_warn("%pOF lacks pm-domains node\n", np);
- 			continue;
- 		}
--- 
-2.28.0
+I don't think I'll need an immutable branch since the device tree
+changes are not dependent on anything in the bindings, except maybe for
+validation, or the driver.
 
+Thierry
+
+--yrj/dFKFPuw6o+aM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9rM7MACgkQ3SOs138+
+s6FSxQ//Y3cu1pKoORNASb4SjuhJ1XGyVeT1xKWlhPxPQ1aAR3KgU/LGMQ3WbU6M
+FJ63l/kiFyUdMspp0VTssirFu9QxgSLPtOtz8W+s9bJQgEq2ePTGcd5lbS+Vft9a
+mGYfpDPCMo3rxvLKFZ1rXeqhMQKqU+Sp7rxYDAFlYXzTHyQREmnnR3HZNsEIMfqy
+xOXa0coi2G15CWUtdsBQD5DZn4r8fgENfkXSTXrpv/SqAFz5XBt6VPGMr+s/486f
+Bj/N0Exbjf07P5vTsbN+KmVH7eMbJg+LCRjZ+SxtGgn3UwRU7Fg/oO0UpinzISBK
+7WFyzGw2bKKbIFXRL4nEYyrJO4IIXje6VB8pg+Qtx6qdwgJk1jOz0QGjrhqzlyNn
+WaLSqxohWtTsmQdrTN2bbzSmKfKUtp4DcYdn1WSvGAsgc3oEbcSpXR6tSHhK1c35
+xshvEZopkDrNxUdg1fwetfyUbyyNNNGjUatcXMKZsMTJ+F4xPf1tcB1xneAJmmj8
+l0Y0cUh3SCO3IZvN4xrkxEK8EwiYES2LnrIdZjIj/DSkwa9W5FylrnOA6GK+niGn
+9PtaoeJfe4M2jmFrZDlI7Kh7A8AuuTH+WjUVBoxQJxY6EdAJWlIcvh2u/Ee4stcX
+NaKddzWQd6nEGDIa11KIZ6RZa/bSU+oM8D5WKlVkSgLVSTSwG0I=
+=UAvS
+-----END PGP SIGNATURE-----
+
+--yrj/dFKFPuw6o+aM--
