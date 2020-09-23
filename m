@@ -2,87 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0EA2756D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 13:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F8CD2756D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 13:08:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726617AbgIWLFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 07:05:38 -0400
-Received: from foss.arm.com ([217.140.110.172]:43580 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726422AbgIWLFh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 07:05:37 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8526AD6E;
-        Wed, 23 Sep 2020 04:05:36 -0700 (PDT)
-Received: from [10.57.48.76] (unknown [10.57.48.76])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2B57D3F718;
-        Wed, 23 Sep 2020 04:05:35 -0700 (PDT)
-Subject: Re: [PATCH] drm/rockchip: skip probed failed device
-To:     Jian-Hong Pan <jhp@endlessos.org>,
-        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux@endlessm.com,
-        linux-arm-kernel@lists.infradead.org
-References: <CAPpJ_efHX70Ej0uzRi-iRf7N0n6ZO5sMN-wK_YpszvVD-Un9RQ@mail.gmail.com>
- <20200923065900.658666-1-jhp@endlessos.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <439c4b59-b1e6-88bb-568e-1c2a0feceed4@arm.com>
-Date:   Wed, 23 Sep 2020 12:05:26 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        id S1726500AbgIWLIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 07:08:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726332AbgIWLIp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 07:08:45 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 909BFC0613CE;
+        Wed, 23 Sep 2020 04:08:45 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0d13006bfbbaac21a5376c.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:1300:6bfb:baac:21a5:376c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DBF6C1EC0445;
+        Wed, 23 Sep 2020 13:08:43 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600859324;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=v8IZo3CWRXJtiTiLfrNSgkG9waQamx4FDxHZUEDGYM8=;
+        b=Vz2sK9dO9MXnh7NRaaeCAITabzPj8R505yEKcROShGBtiARdVsSwwW3dAGYhGDD6gXqcY0
+        aRxFYByKrTAWcwOGM8rur0sqoMNQwDqoJEpyodRqRsE+X6kFHZydPkkI28Ej0kD3PvNads
+        k6/KOxg37lv62T7IZFbAEDvjq3O5DEE=
+Date:   Wed, 23 Sep 2020 13:08:37 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Dave Jiang <dave.jiang@intel.com>
+Cc:     vkoul@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        dan.j.williams@intel.com, tony.luck@intel.com, jing.lin@intel.com,
+        ashok.raj@intel.com, sanjay.k.kumar@intel.com,
+        fenghua.yu@intel.com, kevin.tian@intel.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/5] x86/asm: add enqcmds() to support ENQCMDS
+ instruction
+Message-ID: <20200923110837.GH28545@zn.tnic>
+References: <160037680630.3777.16356270178889649944.stgit@djiang5-desk3.ch.intel.com>
+ <160037732334.3777.8083106831110728138.stgit@djiang5-desk3.ch.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200923065900.658666-1-jhp@endlessos.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <160037732334.3777.8083106831110728138.stgit@djiang5-desk3.ch.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-23 07:59, Jian-Hong Pan wrote:
-> The cdn-dp sub driver probes the device failed on PINEBOOK Pro.
-> 
-> kernel: cdn-dp fec00000.dp: [drm:cdn_dp_probe [rockchipdrm]] *ERROR* missing extcon or phy
-> kernel: cdn-dp: probe of fec00000.dp failed with error -22
+On Thu, Sep 17, 2020 at 02:15:23PM -0700, Dave Jiang wrote:
+> Add enqcmds() in x86 io.h instead of special_insns.h.
 
-Wouldn't it make more sense to simply not enable the DisplayPort node in 
-the upstream DT, until the type-C phy work has been done to make it 
-usable at all? AIUI the "official" Manjaro kernel is carrying a bunch of 
-hacks to make type-C work via extcon, but they know that isn't an 
-upstreamable solution.
+Why? It is an asm wrapper for a special instruction.
 
-Robin.
-
-> Then, the device halts all of the DRM related device jobs. For example,
-> the operations: vop_component_ops, vop_component_ops and
-> rockchip_dp_component_ops cannot be bound to corresponding devices. So,
-> Xorg cannot find the correct DRM device.
+> MOVDIR64B
+> instruction can be used for other purposes. A wrapper was introduced
+> in io.h for its command submission usage. ENQCMDS has a single
+> purpose of submit 64-byte commands to supported devices and should
+> be called directly.
 > 
-> This patch skips the probing failed devices to fix this issue.
-> 
-> Link: http://lists.infradead.org/pipermail/linux-rockchip/2020-September/022352.html
-> Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+> Signed-off-by: Dave Jiang <dave.jiang@intel.com>
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
 > ---
->   drivers/gpu/drm/rockchip/rockchip_drm_drv.c | 6 ++++++
->   1 file changed, 6 insertions(+)
+>  arch/x86/include/asm/io.h |   29 +++++++++++++++++++++++++++++
+>  1 file changed, 29 insertions(+)
 > 
-> diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
-> index 0f3eb392fe39..de13588602b4 100644
-> --- a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
-> +++ b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
-> @@ -331,6 +331,12 @@ static struct component_match *rockchip_drm_match_add(struct device *dev)
->   
->   			if (!d)
->   				break;
-> +			if (!d->driver) {
-> +				DRM_DEV_ERROR(d,
-> +					      "%s did not probe successfully",
-> +					      drv->driver.name);
-> +				continue;
-> +			}
->   
->   			device_link_add(dev, d, DL_FLAG_STATELESS);
->   			component_match_add(dev, &match, compare_dev, d);
-> 
+> diff --git a/arch/x86/include/asm/io.h b/arch/x86/include/asm/io.h
+> index d726459d08e5..b7af0bf8a018 100644
+> --- a/arch/x86/include/asm/io.h
+> +++ b/arch/x86/include/asm/io.h
+> @@ -424,4 +424,33 @@ static inline void iosubmit_cmds512(void __iomem *dst, const void *src,
+>  	}
+>  }
+>  
+> +/**
+> + * enqcmds - copy a 512 bits data unit to single MMIO location
+
+Your #319433 doc says
+
+"ENQCMDS — Enqueue Command Supervisor"
+
+Now *how* that enqueueing is done you can explain in the comment below.
+
+> + * @dst: destination, in MMIO space (must be 512-bit aligned)
+> + * @src: source
+> + *
+> + * Submit data from kernel space to MMIO space, in a unit of 512 bits.
+> + * Order of data access is not guaranteed, nor is a memory barrier
+> + * performed afterwards. The command returns false (0) on failure, and true (1)
+> + * on success.
+
+The command or the function?
+
+From what I see below, the instruction sets ZF=1 to denote that it needs
+to be retried and ZF=0 means success, as the doc says. And in good UNIX
+tradition, 0 means usually success and !0 failure.
+
+So why are you flipping that?
+
+> + * Warning: Do not use this helper unless your driver has checked that the CPU
+> + * instruction is supported on the platform.
+> + */
+> +static inline bool enqcmds(void __iomem *dst, const void *src)
+> +{
+> +	bool retry;
+> +
+> +	/* ENQCMDS [rdx], rax */
+> +	asm volatile(".byte 0xf3, 0x0f, 0x38, 0xf8, 0x02, 0x66, 0x90\t\n"
+								    ^^^^
+No need for those last two chars.
+
+> +		     CC_SET(z)
+> +		     : CC_OUT(z) (retry)
+> +		     : "a" (dst), "d" (src));
+
+<---- newline here.
+
+> +	/* Submission failure is indicated via EFLAGS.ZF=1 */
+> +	if (retry)
+> +		return false;
+> +
+> +	return true;
+> +}
+> +
+>  #endif /* _ASM_X86_IO_H */
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
