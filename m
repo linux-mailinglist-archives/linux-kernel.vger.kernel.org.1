@@ -2,140 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D005B27591E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59390275920
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgIWNuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 09:50:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49489 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726587AbgIWNuL (ORCPT
+        id S1726678AbgIWNuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 09:50:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726587AbgIWNuO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 09:50:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600869009;
+        Wed, 23 Sep 2020 09:50:14 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC12CC0613CE;
+        Wed, 23 Sep 2020 06:50:14 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0d13003cb05fb00c1da4a2.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:1300:3cb0:5fb0:c1d:a4a2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 934761EC0409;
+        Wed, 23 Sep 2020 15:50:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600869012;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cBbOOKO0ucHd2rpc+S+Efks0E+NiERhRTxqZGrwQ8go=;
-        b=Y84tj9eMXVqD8i/T3YD6zogW8lSVfCs1AohTHclVZOO/M0/Vyt/1nsdGZJJg6d7TzBTBDw
-        VtQxMiQB5SPPxss2SiclLigq4jEPUwFPhnYlAx4GiI78WOkJEW642ctsO7OrKR2CChAya7
-        JTMiUWtHVb3YDQekZbeBCY4lyIC5rn8=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-395--1tXGpdyMEyBuGaO7FQVuw-1; Wed, 23 Sep 2020 09:50:07 -0400
-X-MC-Unique: -1tXGpdyMEyBuGaO7FQVuw-1
-Received: by mail-qt1-f197.google.com with SMTP id b54so19295797qtk.17
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 06:50:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cBbOOKO0ucHd2rpc+S+Efks0E+NiERhRTxqZGrwQ8go=;
-        b=WsAmRcHZA8G0ufS379z58f7lzWEmscRR/CXGywyS1Ddz4ZgqUAQowxsHsEB2jfKFi6
-         9yo/H+kNqRK5GVVYf4yqAxbWAwiih7Oo5vTc/GmSiDF/VIaRmx+MJziyYioJ1Mb8Bc90
-         iYb2gRMms4p4+8FwazxOna1sW4R1+nf+7eQBzy7to5QFyejhzhoO4FYcruK19/x50ua3
-         hj2iRtN9eeonM4SPJOdS4mvSDSVCzD6ZqG85BBiAiCcHCwPc57nwtvxuFXU7/yuoEBmj
-         syA+MFr/MUzVvb416JxURiZN2D41qZJCu0MgH5XWbJbzPj84WNzHh6FKQvup/YZapEnE
-         /CZg==
-X-Gm-Message-State: AOAM5329W++vPCLxqZNnOdizlka1kpLzkoOHSsMfEo4pvN6pqBsfAITi
-        5lJpgqmBgTyL9iM3+snM3rtWKfVrZgnLVGaBgnQXI7LRyjWjnf2jgdsWQnZaGkfwoh4cTvL3a1g
-        1i7iC7vXac7ljOtHCUBiCFAB0
-X-Received: by 2002:ac8:4784:: with SMTP id k4mr94266qtq.266.1600869007127;
-        Wed, 23 Sep 2020 06:50:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJymluAocXlZKNKvjSQP1X70AcJPuQ7HzHich5liwak0L/3clODl36dmZDmKsXiVxH3joTCAnw==
-X-Received: by 2002:ac8:4784:: with SMTP id k4mr94229qtq.266.1600869006828;
-        Wed, 23 Sep 2020 06:50:06 -0700 (PDT)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
-        by smtp.gmail.com with ESMTPSA id z2sm11400qkg.40.2020.09.23.06.50.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 06:50:06 -0700 (PDT)
-Date:   Wed, 23 Sep 2020 09:50:04 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     John Hubbard <jhubbard@nvidia.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Jann Horn <jannh@google.com>, Oleg Nesterov <oleg@redhat.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Hugh Dickins <hughd@google.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [PATCH 5/5] mm/thp: Split huge pmds/puds if they're pinned when
- fork()
-Message-ID: <20200923135004.GB59978@xz-x1>
-References: <20200921211744.24758-1-peterx@redhat.com>
- <20200921212031.25233-1-peterx@redhat.com>
- <5e594e71-537f-3e9f-85b6-034b7f5fedbe@nvidia.com>
- <20200922103315.GD15112@quack2.suse.cz>
- <4a65586e-9282-beb0-1880-1ef8da03727c@nvidia.com>
- <20200923092205.GA6719@quack2.suse.cz>
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=0fGvnIQVdKsMqeTksW4QaaQdYOv2dMjo3K5+QpVLLC8=;
+        b=TEMPDJLks9CJno66rpFCZKPTRy9PbYXCVYKioWfHID1hEW9su1NnCiPiF7C9/aZ7WlciEb
+        QybTPddDIiIPJ55Q21MtaXLgesdq2zN81lzt8IY+cw1TKVj91JUbo5IXEJ7G2en8LgcrK+
+        l9AwkaJl9Dk6AIQLdy4WEK56UyZeFtA=
+Date:   Wed, 23 Sep 2020 15:50:05 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 23/24] docs: x86/sgx: Document SGX micro architecture
+ and kernel internals
+Message-ID: <20200923135005.GI28545@zn.tnic>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-24-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200923092205.GA6719@quack2.suse.cz>
+In-Reply-To: <20200915112842.897265-24-jarkko.sakkinen@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 11:22:05AM +0200, Jan Kara wrote:
-> On Tue 22-09-20 13:01:13, John Hubbard wrote:
-> > On 9/22/20 3:33 AM, Jan Kara wrote:
-> > > On Mon 21-09-20 23:41:16, John Hubbard wrote:
-> > > > On 9/21/20 2:20 PM, Peter Xu wrote:
-> > > > ...
-> > > > > +	if (unlikely(READ_ONCE(src_mm->has_pinned) &&
-> > > > > +		     page_maybe_dma_pinned(src_page))) {
-> > > > 
-> > > > This condition would make a good static inline function. It's used in 3
-> > > > places, and the condition is quite special and worth documenting, and
-> > > > having a separate function helps with that, because the function name
-> > > > adds to the story. I'd suggest approximately:
-> > > > 
-> > > >      page_likely_dma_pinned()
-> > > > 
-> > > > for the name.
-> > > 
-> > > Well, but we should also capture that this really only works for anonymous
-> > > pages. For file pages mm->has_pinned does not work because the page may be
-> > > still pinned by completely unrelated process as Jann already properly
-> > > pointed out earlier in the thread. So maybe anon_page_likely_pinned()?
-> > > Possibly also assert PageAnon(page) in it if we want to be paranoid...
-> > > 
-> > > 								Honza
-> > 
-> > The file-backed case doesn't really change anything, though:
-> > page_maybe_dma_pinned() is already a "fuzzy yes" in the same sense: you
-> > can get a false positive. Just like here, with an mm->has_pinned that
-> > could be a false positive for a process.
-> > 
-> > And for that reason, I'm also not sure an "assert PageAnon(page)" is
-> > desirable. That assertion would prevent file-backed callers from being
-> > able to call a function that provides a fuzzy answer, but I don't see
-> > why you'd want or need to do that. The goal here is to make the fuzzy
-> > answer a little bit more definite, but it's not "broken" just because
-> > the result is still fuzzy, right?
-> > 
-> > Apologies if I'm missing a huge point here... :)
-> 
-> But the problem is that if you apply mm->has_pinned check on file pages,
-> you can get false negatives now. And that's not acceptable...
+This patch must come first in the set so that other reviewers can read
+what all this jazz is about first, before exposing them to the gory
+details later.
 
-Do you mean the case where proc A pinned page P from a file, then proc B mapped
-the same page P on the file, then fork() on proc B?
+On Tue, Sep 15, 2020 at 02:28:41PM +0300, Jarkko Sakkinen wrote:
+> diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
+> new file mode 100644
+> index 000000000000..706a846ae353
+> --- /dev/null
+> +++ b/Documentation/x86/sgx.rst
+> @@ -0,0 +1,200 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +============
+> +Architecture
+> +============
 
-If proc B didn't explicitly pinned page P in B's address space too, shouldn't
-we return "false" for page_likely_dma_pinned(P)?  Because if proc B didn't pin
-the page in its own address space, I'd think it's ok to get the page replaced
-at any time as long as the content keeps the same.  Or couldn't we?
+Only the title of the document should be sandwiched between two lines of
 
-Thanks,
+============
+
+as that is what appears in the documentation TOC. As it is right now,it says
+"Architecture" but it should say "Software Guard eXtensions (SGX)"
+
+Architecture should follow only with a bottom line as a section name:
+
+Architecture
+============
+
+> +
+> +*Software Guard eXtensions (SGX)* is a set of instructions that enable ring-3
+> +applications to set aside private regions of code and data. These regions are
+> +called enclaves. An enclave can be entered to a fixed set of entry points. Only
+
+s / to / at /
+
+> +a CPU running inside the enclave can access its code and data.
+> +
+> +The support can be determined by
+> +
+> +	``grep sgx /proc/cpuinfo``
+> +
+> +Enclave Page Cache
+> +==================
+> +
+> +SGX utilizes an *Enclave Page Cache (EPC)* to store pages that are associated
+> +with an enclave. It is contained in a BIOS reserved region of physical memory.
+
+BIOS-reserved
+
+> +Unlike pages used for regular memory, pages can only be accessed outside the
+> +enclave for different purposes with the instructions **ENCLS**, **ENCLV** and
+> +**ENCLU**.
+> +
+> +Direct memory accesses to an enclave can be only done by a CPU executing inside
+> +the enclave. An enclave can be entered with **ENCLU[EENTER]** to a fixed set of
+
+s / to / at /
+
+> +entry points. However, a CPU executing inside the enclave can do outside memory
+> +accesses.
+> +
+> +Page Types
+> +----------
+> +
+> +**SGX Enclave Control Structure (SECS)**
+> +   Enclave's address range, attributes and other global data are defined
+> +   by this structure.
+> +
+> +**Regular (REG)**
+> +   Regular EPC pages contain the code and data of an enclave.
+> +
+> +**Thread Control Structure (TCS)**
+> +   Thread Control Structure pages define the entry points to an enclave and
+> +   track the execution state of an enclave thread.
+> +
+> +**Version Array (VA)**
+> +   Version Array pages contain 512 slots, each of which can contain a version
+> +   number for a page evicted from the EPC.
+> +
+> +Enclave Page Cache Map
+> +----------------------
+> +
+> +The processor tracks EPC pages via the *Enclave Page Cache Map (EPCM)*.  EPCM
+> +contains an entry for each EPC page, which describes the owning enclave, access
+> +rights and page type among the other things.
+> +
+> +The permissions from EPCM is consulted if and only if walking the kernel page
+
+s/ is / are /
+
+> +tables succeeds. The total permissions are thus a conjunction between page table
+> +and EPCM permissions.
+> +
+> +For all intents and purposes the SGX architecture allows the processor to
+			       ^
+			       ,
+
+> +invalidate all EPCM entries at will, i.e. requires that software be prepared to
+> +handle an EPCM fault at any time. The contents of EPC are encrypted with an
+> +ephemeral key, which is lost on power transitions.
+> +
+> +EPC management
+> +==============
+> +
+> +EPC pages do not have ``struct page`` instances. They are IO memory from kernel
+> +perspective. The consequence is that they are always mapped as shared memory.
+> +Kernel defines ``/dev/sgx/enclave`` that can be mapped as ``MAP_SHARED`` to
+> +define the address range for an enclave.
+> +
+> +EPC Over-subscription
+> +=====================
+> +
+> +When the amount of free EPC pages goes below a low watermark the swapping thread
+> +starts reclaiming pages. The pages that do not have the **A** bit set are
+> +selected as victim pages.
+> +
+> +Launch Control
+> +==============
+> +
+> +SGX provides a launch control mechanism. After all enclave pages have been
+> +copied, kernel executes **ENCLS[EINIT]**, which initializes the enclave. Only
+> +after this the CPU can execute inside the enclave.
+> +
+> +This leaf function takes an RSA-3072 signature of the enclave measurement and an
+> +optional cryptographic token. Linux does not take advantage of launch tokens.
+> +The instruction checks that the signature is signed with the key defined in
+> +**IA32_SGXLEPUBKEYHASH?** MSRs and the measurement is correct. If so, the
+
+That '?' wants to be '[0123]' perhaps?
+
+> +enclave is allowed to be executed.
+> +
+> +MSRs can be configured by the BIOS to be either readable or writable. Linux
+
+"Those MSRs..."
+
+> +supports only writable configuration in order to give full control to the kernel
+> +on launch control policy. Readable configuration requires the use of previously
+> +mentioned launch tokens.
+> +
+> +The current kernel implementation supports only writable MSRs.
+
+This sentence is repeated a couple of lines above.
+
+> The launch is
+> +performed by setting the MSRs to the hash of the enclave signer's public key.
+> +The alternative would be to have *a launch enclave* that would be signed with
+> +the key set into MSRs, which would then generate launch tokens for other
+> +enclaves. This would only make sense with read-only MSRs, and thus the option
+> +has been discarded.
+> +
+> +Attestation
+> +===========
+> +
+> +Local Attestation
+> +-----------------
+> +
+> +In local attestation an enclave creates a **REPORT** data structure with
+		       ^
+		       ,
+
+> +**ENCLS[EREPORT]**, which describes the origin of an enclave. In particular, it
+> +contains a AES-CMAC of the enclave contents signed with a report key unique to
+> +each processor. All enclaves have access to this key.
+> +
+> +This mechanism can also be used in addition as a communication channel as the
+> +**REPORT** data structure includes a 64-byte field for variable information.
+
+...
 
 -- 
-Peter Xu
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
