@@ -2,77 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB5A7275018
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 06:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCA64275021
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 07:00:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726918AbgIWEwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 00:52:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57656 "EHLO
+        id S1726930AbgIWFAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 01:00:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726198AbgIWEwe (ORCPT
+        with ESMTP id S1726817AbgIWFAH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 00:52:34 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 974E3C061755;
-        Tue, 22 Sep 2020 21:52:34 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kKwlb-004Ihd-2q; Wed, 23 Sep 2020 04:52:31 +0000
-Date:   Wed, 23 Sep 2020 05:52:31 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Zhenzhong Duan <zhenzhong.duan@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>
-Subject: Re: [PATCH] csky: Fix a size determination in gpr_get()
-Message-ID: <20200923045231.GH3421308@ZenIV.linux.org.uk>
-References: <20200922091505.471-1-zhenzhong.duan@gmail.com>
- <20200922162901.GA3421308@ZenIV.linux.org.uk>
- <CAJF2gTSMWc_=j1NKCTXqhLj7cmSB_A3dYB7nL4F7H3jqT+u38A@mail.gmail.com>
- <20200923002315.GC3421308@ZenIV.linux.org.uk>
- <CAJF2gTSU4e4yU63z1q502SeuTf2m2BKaD0yZ0deFj0TkiVupFg@mail.gmail.com>
+        Wed, 23 Sep 2020 01:00:07 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E55FCC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 22:00:06 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id n133so21634435qkn.11
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 22:00:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
+        b=kuU8Wfl3BK6NTYe8MZfgh6IGAg0SnB1dB+g1AnM7c+xZZ0Gi80CDQ0/O9ZiifWGe6c
+         is/19X8GKZrFSMsZ+T93KLvWvbqe0cOJYsdxv/af9bjdHf6TRluH9TsMv//BwR4DsnbU
+         IMz8OM4rbb4i2iNndHSLKNsXWju9as6rwKxGHXijiwGvPbmGSDT87IOqTH8sw1ptknD+
+         4vYVzsgWlU3i6ibHIyavHTvaYt2bEgoCDuuM78laW1VmWcLrc7ulAlTURTigRxO1Q35S
+         hWzJV9Cj5Z4/mW7aBmzrW8Zk2CEEKxEWNprZyc0xoFfIiOuYghRy+5FFKpRLLFtIoJwg
+         QFfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
+        b=fwygXknfmmcy3+KveJD3Hk7ia7uYmabF3jRZttZedlrc/THV5PAMwy3hfza5Mbocm1
+         UZXJOZTivEOZ/xVmhFPH2DOTXf+brdk2tfk8qyGDaSgAL9Y3wuczR8VkUEt+9zf2VxNo
+         fpRC8qWjl7bvaxEWal1htJk7YbPjUvVP5mnGm/t8yQMuTXo5XGudHnXLkjRC8q/z6sJY
+         /XFJxusikdy56JXtydIQztjTtvh2wXkqO1Davw3J/kn7kKb6OSDSfIRW/BJI2QpizF9o
+         CinRs8wauMixeyiZvn/4iaHxW58kyGN75qYJjyEmOycXJsaN+J0MFRsDxlhaxI0ZAdet
+         KjhA==
+X-Gm-Message-State: AOAM5326pP/wO1Kb9JMOdvj3/GRZjxWmn4Ja72zXc735fX5F+bdy9CfJ
+        8DwXjE0TKBOiP9Sqowpy6SlyVSJh/5VnGcccQ/4=
+X-Google-Smtp-Source: ABdhPJyJCH8bDzlhCuMk1/r8xUptp/qzTXTS0on/PVjkE/Fa581pKuj5dO+DOw8Tp0n1hEEWjJ1VfmkoVEPTZ86Rb0o=
+X-Received: by 2002:ae9:f444:: with SMTP id z4mr8630768qkl.333.1600837205649;
+ Tue, 22 Sep 2020 22:00:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJF2gTSU4e4yU63z1q502SeuTf2m2BKaD0yZ0deFj0TkiVupFg@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Received: by 2002:a05:6214:1507:0:0:0:0 with HTTP; Tue, 22 Sep 2020 22:00:05
+ -0700 (PDT)
+Reply-To: ayishagddafio@mail.ru
+From:   Aisha Gaddafi <mrzakirhossain4444@gmail.com>
+Date:   Tue, 22 Sep 2020 22:00:05 -0700
+Message-ID: <CAJGJQuZYsxn7EDMpmkJoDpLLtg5xr5ekiretWNiQDfD89ED_Sw@mail.gmail.com>
+Subject: Lieber Freund (Assalamu Alaikum),?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 10:37:31AM +0800, Guo Ren wrote:
+--=20
+Lieber Freund (Assalamu Alaikum),
 
-> > What's going on there?  The mapping is really weird - assuming
-> > you had v0..v31 in the first 32 elements of regs->vr[], you
-> > end up with
-> >
-> > v0 v1 v2 v3 v2 v3 v6 v7 v4 v5 v10 v11 v6 v7 v14 v15
-> > v8 v9 v18 v19 v10 v11 v22 v23 v12 v13 v26 v27 v14 v15 v30 v31
-> >
-> > in the beginning of the output.  Assuming it is the intended
-> > behaviour, it's probably worth some comments...
-> FPU & VDSP use the same regs. 32 FPU regs' width is 64b and 16 VDSP
-> regs' width is 128b.
-> 
-> vr[0], vr[1] = fp[0] & vr[0] vr[1], vr[2], vr[3] = vdsp reg[0]
-> ...
-> vr[60], vr[61] = fp[15] & vr[60] vr[61], vr[62], vr[63] = vdsp reg[15]
-> vr[64], vr[65] = fp[16]
-> vr[66], vr[67] = fp[17]
-> ...
-> vr[94], vr[95] = fp[31]
-> 
-> Yeah, this is confusing and I'll add a comment later.
+Ich bin vor einer privaten Suche auf Ihren E-Mail-Kontakt gesto=C3=9Fen
+Ihre Hilfe. Mein Name ist Aisha Al-Qaddafi, eine alleinerziehende
+Mutter und eine Witwe
+mit drei Kindern. Ich bin die einzige leibliche Tochter des Sp=C3=A4tlibysc=
+hen
+Pr=C3=A4sident (verstorbener Oberst Muammar Gaddafi).
 
-Umm...  It would help if you described these 3 layouts:
-	1) kernel-side with VDSP
-	2) userland (identical to (1)?)
-	3) kernel-side without VDSP
-Still confused...
+Ich habe Investmentfonds im Wert von siebenundzwanzig Millionen
+f=C3=BCnfhunderttausend
+United State Dollar ($ 27.500.000.00) und ich brauche eine
+vertrauensw=C3=BCrdige Investition
+Manager / Partner aufgrund meines aktuellen Fl=C3=BCchtlingsstatus bin ich =
+jedoch
+M=C3=B6glicherweise interessieren Sie sich f=C3=BCr die Unterst=C3=BCtzung =
+von
+Investitionsprojekten in Ihrem Land
+Von dort aus k=C3=B6nnen wir in naher Zukunft Gesch=C3=A4ftsbeziehungen auf=
+bauen.
 
-PS: my apologies re commit message - I left a note to myself when doing
-that series and then forgot about it ;-/
+Ich bin bereit, mit Ihnen =C3=BCber das Verh=C3=A4ltnis zwischen Investitio=
+n und
+Unternehmensgewinn zu verhandeln
+Basis f=C3=BCr die zuk=C3=BCnftige Investition Gewinne zu erzielen.
 
-Anyway, which tree should it go through?  In any case, that fix is
-Acked-by: Al Viro <viro@zeniv.linux.org.uk>
-and I can take it through vfs.git or you guys can pick in csky tree;
-up to you.
+Wenn Sie bereit sind, dieses Projekt in meinem Namen zu bearbeiten,
+antworten Sie bitte dringend
+Damit ich Ihnen mehr Informationen =C3=BCber die Investmentfonds geben kann=
+.
+
+Ihre dringende Antwort wird gesch=C3=A4tzt. schreibe mir an diese email adr=
+esse (
+ayishagddafio@mail.ru ) zur weiteren Diskussion.
+
+Freundliche Gr=C3=BC=C3=9Fe
+Frau Aisha Al-Qaddafi
