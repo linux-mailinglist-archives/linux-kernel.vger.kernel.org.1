@@ -2,116 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF3E275A25
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D45A8275A28
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:33:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726610AbgIWOdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 10:33:17 -0400
-Received: from mga02.intel.com ([134.134.136.20]:57822 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726587AbgIWOdP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 10:33:15 -0400
-IronPort-SDR: ZkyNyoPd3h1HfwwPjicwPH4aJkXqjh22WZqPdqbO6R9es3C5IGMmbgsfoyYQ6SStyeg0M8m6d/
- 3WTNs+0GO0+Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9752"; a="148552790"
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="148552790"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 07:33:14 -0700
-IronPort-SDR: ItLiQJZoZ4CdNDBYceiZlvD85IZXi7GL/1hQJIpXeosadYCS1uHk+MasVby8eq6GxSbZFtzxqO
- PXxbe8IMI3gw==
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="486460853"
-Received: from ichiojdo-mobl.ger.corp.intel.com (HELO localhost) ([10.252.51.82])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 07:33:08 -0700
-Date:   Wed, 23 Sep 2020 17:33:05 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
+        id S1726817AbgIWOdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 10:33:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726587AbgIWOdV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 10:33:21 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B8F9C0613CE;
+        Wed, 23 Sep 2020 07:33:21 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600871599;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=htFCLJWsNhxoKbCNWhQS/6Kyz86LUNNWBiBq6qkBFyQ=;
+        b=pA5Hd7/wYPJW36CTtNNTbOYCzRvXBsTbhCHBjjmQZ01hpagIyv/VcnxLW17kJqMxHoJumz
+        z5+hv3BrOqb8U7x+bnWe3Vg7hjpdsIzhk0Jj3S1z+5+winumEs8KsUyf1K1TnGwBajSWcB
+        LPdDuPzlUY6BQkUL/KCzLAeEkhIHNDaswPGDWAOJny+dzcHlZahNl7c2FSd1xp6gP0rEgj
+        KzUlj0Dxhw0txRUSLaqWlErEiWSU9Sozf2/yRD5Qwp08ro8Q2KjAE/20gQBa42apztEBT8
+        SUzGb5WlY8s1AJc0khV/84NW02EhLXtT8nMIfQBdpZd1EmcFI7Hj8Ky6D6u98A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600871599;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=htFCLJWsNhxoKbCNWhQS/6Kyz86LUNNWBiBq6qkBFyQ=;
+        b=qGRiwr69/8k8ntlbQpv0icecJVUI4PbZN1b5MTw/xOk+gHpAMJmHhEqUxn40L21XWDImxq
+        PUiJwewr0xn47MAg==
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        asapek@google.com, Borislav Petkov <bp@alien8.de>,
-        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
-        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
-        Christian Ludloff <ludloff@google.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Patrick Uiterwijk <puiterwijk@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
-Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
-Message-ID: <20200923143305.GE5160@linux.intel.com>
-References: <20200918235337.GA21189@sjchrist-ice>
- <1B23E216-0229-4BDD-8B09-807256A54AF5@amacapital.net>
- <20200922125801.GA133710@linux.intel.com>
- <25d46fdc-1c19-2de8-2ce8-1033a0027ecf@intel.com>
+        Linux-MM <linux-mm@kvack.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        "open list\:SYNOPSYS ARC ARCHITECTURE" 
+        <linux-snps-arc@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
+        linux-csky@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-sparc <sparclinux@vger.kernel.org>
+Subject: Re: [patch RFC 00/15] mm/highmem: Provide a preemptible variant of kmap_atomic & friends
+In-Reply-To: <87sgbbaq0y.fsf@nanos.tec.linutronix.de>
+References: <20200919091751.011116649@linutronix.de> <CAHk-=wiYGyrFRbA1cc71D2-nc5U9LM9jUJesXGqpPnB7E4X1YQ@mail.gmail.com> <87mu1lc5mp.fsf@nanos.tec.linutronix.de> <87k0wode9a.fsf@nanos.tec.linutronix.de> <CAHk-=wgbmwsTOKs23Z=71EBTrULoeaH2U3TNqT2atHEWvkBKdw@mail.gmail.com> <87eemwcpnq.fsf@nanos.tec.linutronix.de> <CAHk-=wgF-upZVpqJWK=TK7MS9H-Rp1ZxGfOG+dDW=JThtxAzVQ@mail.gmail.com> <87a6xjd1dw.fsf@nanos.tec.linutronix.de> <CAHk-=wjhxzx3KHHOMvdDj3Aw-_Mk5eRiNTUBB=tFf=vTkw1FeA@mail.gmail.com> <87sgbbaq0y.fsf@nanos.tec.linutronix.de>
+Date:   Wed, 23 Sep 2020 16:33:19 +0200
+Message-ID: <877dska7gw.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <25d46fdc-1c19-2de8-2ce8-1033a0027ecf@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 08:11:14AM -0700, Dave Hansen wrote:
-> Now I'm confused.  I actually don't think I have a strong understanding
-> of how an enclave actually gets loaded, how mmap() and mprotect() are
-> normally used and what this hook is intended to thwart.
+On Mon, Sep 21 2020 at 21:27, Thomas Gleixner wrote:
+> On Mon, Sep 21 2020 at 09:24, Linus Torvalds wrote:
+>> On Mon, Sep 21, 2020 at 12:39 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>> Maybe we really *could* call this new kmap functionality something
+>> like "kmap_percpu()" (or maybe "local" is good enough), and make it
+>> act like your RT code does for spinlocks - not disable preemption, but
+>> only disabling CPU migration.
+>
+> I"m all for it, but the scheduler people have opinions :)
 
-You saw my other comments. I scraped this together based on your
-feedback and my responses:
+I just took the latest version of migrate disable patches
 
-"
-mm: Add 'mprotect' callback to vm_ops
+  https://lore.kernel.org/r/20200921163557.234036895@infradead.org
 
-Intel Sofware Guard eXtensions (SGX) allows creation of blobs called
-enclaves, for which page permissions are defined when the enclave is first
-loaded. Once an enclave is loaded and initialized, it can be mapped to the
-process address space.
+removed the RT dependency on top of them and adopted the kmap stuff
+(addressing the various comments while at it and unbreaking ARM).
 
-There is no standard file format for enclaves. They are dynamically built
-and the ways how enclaves are deployed differ greatly. For an app you might
-want to have a simple static binary, but on the other hand for a container
-you might want to dynamically create the whole thing at run-time. Also, the
-existing ecosystem for SGX is already large, which would make the task very
-hard.
+I'm not going to post that until there is consensus about the general
+availability of migrate disable, but for those who want to play with it
+I've pushed the resulting combo out to:
 
-Finally, even if there was a standard format, one would still want a
-dynamic way to add pages to the enclave. One big reason for this is that
-enclaves have load time defined pages that represent entry points to the
-enclave. Each entry point can service one hardware thread at a time and
-you might want to run-time parametrize this depending on your environment.
+   git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git highmem 
 
-The consequence is that enclaves are best created with an ioctl API and the
-access control can be based only to the origin of the source file for the
-enclave data, i.e. on VMA file pointer and page permissions. For example,
-this could be done with LSM hooks that are triggered in the appropriate
-ioctl's and they could make the access control decision based on this
-information.
+For testing I've tweaked a few places to use the new _local() variants
+and it survived testing so far and I've verified that there is actual
+preemption which means zap/restore of the thread local kmaps.
 
-Unfortunately, there is ENCLS[EMODPE] that a running enclave can use to
-upgrade its permissions. If we do not limit mmap() and mprotect(), enclave
-could upgrade its permissions by using EMODPE followed by an appropriate
-mprotect() call. This would be completely hidden from the kernel.
+Thanks,
 
-Add 'mprotect' hook to vm_ops, so that a callback can be implemeted for SGX
-that will ensure that {mmap, mprotect}() permissions do not surpass any of
-the original page permissions. This feature allows to maintain and refine
-sane access control for enclaves.
-"
-
-/Jarkko
+        tglx
