@@ -2,242 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C81AD275BC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71426275BCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:26:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726704AbgIWPZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 11:25:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726184AbgIWPZv (ORCPT
+        id S1726755AbgIWP0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 11:26:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60252 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726518AbgIWP0V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 11:25:51 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC43C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 08:25:50 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id l15so4777627wmh.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 08:25:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AZ0TNN/4mlEawbq5kme4KBtAcxVTJOsazW2quN2exhk=;
-        b=knEE8ZNEPhd02dhjiafNZIh6Ilcs2hRJuBBFe+Sx2gKj6V+tziP1ZYabkfgXV17TW+
-         NUMy2UFrZwlfmV+sdZoLINzvMUyTG87xDRqw6gwbhA534sM/HHF/4rwqLNdrpC+7QaoX
-         qU2N+vvwVpZazeSc6YeUX68W22fba8Lj2eA+w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=AZ0TNN/4mlEawbq5kme4KBtAcxVTJOsazW2quN2exhk=;
-        b=mcvahAAJi4EbFjzsnWXfcsC2TMbRvACxmzao/1klm0GzwW4AW9wKAv5xKRLukJvWJP
-         RP65u3u5Nx9sp4Kc+ptHGesQXp1UKhIpUfQrQ0ftPOStR7y/pyrNU6I9zJ/N+Pk6sxZK
-         d/ho6eRvl8QBANa1epq1LzqouKObZ6V/bySqVmZRk9A64VXXQwIAtr+674UVc9lfO/3p
-         NFA2hghKLqYDX3jfSjvKFcAhoYLjebfk6FzTK8UpalOOCDdBbouaHG830BMU6hIPGu8F
-         ZiCTNaTgpra0AQx5J9gmm6msLpyeDkIqnTO21Gd3H2tsfgLF/XpfJiHggHq1jUO5sERQ
-         R3kQ==
-X-Gm-Message-State: AOAM532rMhxZKsLe6a9wcll/5WKq+i0toazenIw4wzFRhrUe2136P/0h
-        EH959ugnVyDKg2jWwoIVbtDduw==
-X-Google-Smtp-Source: ABdhPJwhaHjfJRQ0ck6dLHaDnam+iSpD5QCMjr6WsmrCc91FeiuFw1E8N+Fhyjg1fYBV6n1qNiQ1Mg==
-X-Received: by 2002:a1c:398a:: with SMTP id g132mr75865wma.41.1600874748672;
-        Wed, 23 Sep 2020 08:25:48 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id h76sm178488wme.10.2020.09.23.08.25.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 08:25:47 -0700 (PDT)
-Date:   Wed, 23 Sep 2020 17:25:45 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Tim Murray <timmurray@google.com>, Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH 0/3] drm: commit_work scheduling
-Message-ID: <20200923152545.GQ438822@phenom.ffwll.local>
-Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Tim Murray <timmurray@google.com>, Tejun Heo <tj@kernel.org>
-References: <20200919193727.2093945-1-robdclark@gmail.com>
- <20200921092154.GJ438822@phenom.ffwll.local>
- <CAF6AEGuDRk9D_aqyb6R8N5VHx2rvbZDf4uTqF3gQTrmzno+qtw@mail.gmail.com>
- <CAKMK7uEqDD-oDAQKyA9DQbxkCgEjC5yyjvKR7d8T0Gj0SqEZ4A@mail.gmail.com>
- <CAF6AEGtYAn+W8HxP7SXtxPr5FsEB1hYGU91WrHCtwX89UmUR5w@mail.gmail.com>
+        Wed, 23 Sep 2020 11:26:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600874779;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=TpOu0LQpxSmgKrorKRNPGs/CUcDdTq51lBoo6YwLZQU=;
+        b=Yn+qZ/wtSKOuDUqQ/3dj4HGfN57GFeTjfSbPHmJbPJ42peSnFLmBDzfcxISr19ZcyQE3Ty
+        fP4keoykvK/XrtxBQH562a+H8jkOgvuLySHzRDr/TT0KtC9jCU1JuOpIWZrrElUxWRs17z
+        MbKxjRvb4UU1GD27IdhEy7URVxla38w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-82-ohuB0gbdOfCPTqcziG7Twg-1; Wed, 23 Sep 2020 11:26:14 -0400
+X-MC-Unique: ohuB0gbdOfCPTqcziG7Twg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 552CD10BBED9;
+        Wed, 23 Sep 2020 15:26:11 +0000 (UTC)
+Received: from [10.36.112.54] (ovpn-112-54.ams2.redhat.com [10.36.112.54])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 321B57B7CF;
+        Wed, 23 Sep 2020 15:26:07 +0000 (UTC)
+Subject: Re: [PATCH RFC 0/4] mm: place pages to the freelist tail when onling
+ and undoing isolation
+To:     Vlastimil Babka <vbabka@suse.cz>, osalvador@suse.de
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-acpi@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Scott Cheloha <cheloha@linux.ibm.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <5c0910c2cd0d9d351e509392a45552fb@suse.de>
+ <DAC9E747-BDDF-41B6-A89B-604880DD7543@redhat.com>
+ <67928cbd-950a-3279-bf9b-29b04c87728b@suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <fee562a3-9f8f-e9b4-68fe-09c5ea885b91@redhat.com>
+Date:   Wed, 23 Sep 2020 17:26:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAF6AEGtYAn+W8HxP7SXtxPr5FsEB1hYGU91WrHCtwX89UmUR5w@mail.gmail.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <67928cbd-950a-3279-bf9b-29b04c87728b@suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 07:48:10AM -0700, Rob Clark wrote:
-> On Mon, Sep 21, 2020 at 11:59 PM Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> > On Mon, Sep 21, 2020 at 5:16 PM Rob Clark <robdclark@gmail.com> wrote:
-> > >
-> > > On Mon, Sep 21, 2020 at 2:21 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > > >
-> > > > On Sat, Sep 19, 2020 at 12:37:23PM -0700, Rob Clark wrote:
-> > > > > From: Rob Clark <robdclark@chromium.org>
-> > > > >
-> > > > > The android userspace treats the display pipeline as a realtime problem.
-> > > > > And arguably, if your goal is to not miss frame deadlines (ie. vblank),
-> > > > > it is.  (See https://lwn.net/Articles/809545/ for the best explaination
-> > > > > that I found.)
-> > > > >
-> > > > > But this presents a problem with using workqueues for non-blocking
-> > > > > atomic commit_work(), because the SCHED_FIFO userspace thread(s) can
-> > > > > preempt the worker.  Which is not really the outcome you want.. once
-> > > > > the required fences are scheduled, you want to push the atomic commit
-> > > > > down to hw ASAP.
-> > > > >
-> > > > > But the decision of whether commit_work should be RT or not really
-> > > > > depends on what userspace is doing.  For a pure CFS userspace display
-> > > > > pipeline, commit_work() should remain SCHED_NORMAL.
-> > > > >
-> > > > > To handle this, convert non-blocking commit_work() to use per-CRTC
-> > > > > kthread workers, instead of system_unbound_wq.  Per-CRTC workers are
-> > > > > used to avoid serializing commits when userspace is using a per-CRTC
-> > > > > update loop.
-> > > > >
-> > > > > A client-cap is introduced so that userspace can opt-in to SCHED_FIFO
-> > > > > priority commit work.
-> > > > >
-> > > > > A potential issue is that since 616d91b68cd ("sched: Remove
-> > > > > sched_setscheduler*() EXPORTs") we have limited RT priority levels,
-> > > > > meaning that commit_work() ends up running at the same priority level
-> > > > > as vblank-work.  This shouldn't be a big problem *yet*, due to limited
-> > > > > use of vblank-work at this point.  And if it could be arranged that
-> > > > > vblank-work is scheduled before signaling out-fences and/or sending
-> > > > > pageflip events, it could probably work ok to use a single priority
-> > > > > level for both commit-work and vblank-work.
-> > > >
-> > > > The part I don't like about this is that it all feels rather hacked
-> > > > together, and if we add more stuff (or there's some different thing in the
-> > > > system that also needs rt scheduling) then it doesn't compose.
-> > >
-> > > The ideal thing would be that userspace is in control of the
-> > > priorities.. the setclientcap approach seemed like a reasonable way to
-> > > give the drm-master a way to opt in.
-> > >
-> > > I suppose instead userspace could use sched_setscheduler().. but that
-> > > would require userspace to be root, and would require some way to find
-> > > the tid.
-> >
-> > Userspace already needs that for the SCHED_FIFO for surface-flinger.
-> > Or is the problem that CAP_SYS_NICE is only good for your own
-> > processes?
+On 23.09.20 16:31, Vlastimil Babka wrote:
+> On 9/16/20 9:31 PM, David Hildenbrand wrote:
+>>
+>>
+>>> Am 16.09.2020 um 20:50 schrieb osalvador@suse.de:
+>>>
+>>> ﻿On 2020-09-16 20:34, David Hildenbrand wrote:
+>>>> When adding separate memory blocks via add_memory*() and onlining them
+>>>> immediately, the metadata (especially the memmap) of the next block will be
+>>>> placed onto one of the just added+onlined block. This creates a chain
+>>>> of unmovable allocations: If the last memory block cannot get
+>>>> offlined+removed() so will all dependant ones. We directly have unmovable
+>>>> allocations all over the place.
+>>>> This can be observed quite easily using virtio-mem, however, it can also
+>>>> be observed when using DIMMs. The freshly onlined pages will usually be
+>>>> placed to the head of the freelists, meaning they will be allocated next,
+>>>> turning the just-added memory usually immediately un-removable. The
+>>>> fresh pages are cold, prefering to allocate others (that might be hot)
+>>>> also feels to be the natural thing to do.
+>>>> It also applies to the hyper-v balloon xen-balloon, and ppc64 dlpar: when
+>>>> adding separate, successive memory blocks, each memory block will have
+>>>> unmovable allocations on them - for example gigantic pages will fail to
+>>>> allocate.
+>>>> While the ZONE_NORMAL doesn't provide any guarantees that memory can get
+>>>> offlined+removed again (any kind of fragmentation with unmovable
+>>>> allocations is possible), there are many scenarios (hotplugging a lot of
+>>>> memory, running workload, hotunplug some memory/as much as possible) where
+>>>> we can offline+remove quite a lot with this patchset.
+>>>
+>>> Hi David,
+>>>
+>>
+>> Hi Oscar.
+>>
+>>> I did not read through the patchset yet, so sorry if the question is nonsense, but is this not trying to fix the same issue the vmemmap patches did? [1]
+>>
+>> Not nonesense at all. It only helps to some degree, though. It solves the dependencies due to the memmap. However, it‘s not completely ideal, especially for single memory blocks.
+>>
+>> With single memory blocks (virtio-mem, xen-balloon, hv balloon, ppc dlpar) you still have unmovable (vmemmap chunks) all over the physical address space. Consider the gigantic page example after hotplug. You directly fragmented all hotplugged memory.
+>>
+>> Of course, there might be (less extreme) dependencies due page tables for the identity mapping, extended struct pages and similar.
+>>
+>> Having that said, there are other benefits when preferring other memory over just hotplugged memory. Think about adding+onlining memory during boot (dimms under QEMU, virtio-mem), once the system is up you will have most (all) of that memory completely untouched.
+>>
+>> So while vmemmap on hotplugged memory would tackle some part of the issue, there are cases where this approach is better, and there are even benefits when combining both.
 > 
-> tbh, I'm not completely sure offhand what gives surfaceflinger
-> permission to set itself SCHED_FIFO
-> 
-> (But on CrOS there are a few more pieces to the puzzle)
-> 
-> > Other question I have for this is whether there's any recommendations
-> > for naming the kthreads (since I guess that name is what becomes the
-> > uapi for userspace to control this)?
-> >
-> > Otherwise I think "userspace calls sched_setscheduler on the right
-> > kthreads" sounds like a good interface, since it lets userspace decide
-> > how it all needs to fit together and compose. Anything we hard-code in
-> > an ioctl is kinda lost cause. And we can choose the default values to
-> > work reasonably well when the compositor runs at normal priority
-> > (lowest niceness or something like that for the commit work).
-> 
-> I don't really like the naming convention approach.. what is to stop
-> some unrelated process to name it's thread the same thing to get a
-> SCHED_FIFO boost..
-> 
-> But we can stick with my idea to expose the thread id as a read-only
-> CRTC property, for userspace to find the things to call
-> sched_setscheduler() on.  If for whatever reason the drm master is not
-> privileged (or is running in a sandbox, etc), a small helper that has
-> the necessary permissions could open the drm device to find the CRTC
-> thread-ids and call sched_setscheduler()..
 
-Hm thread ids don't translate too well across PID namespaces I think ...
-So that's another can of worms. And pidfd doesn't really work as a
-property.
+Hi Vlastimil,
 
-I also thought kernel threads can be distinguished from others, so
-userspace shouldn't be able to sneak in and get elevated by accident.
--Daniel
+> I see the point, but I don't think the head/tail mechanism is great for this. It
+> might sort of work, but with other interfering activity there are no guarantees
+> and it relies on a subtle implementation detail. There are better mechanisms
+
+For the specified use case of adding+onlining a whole bunch of memory
+this works just fine. We don't care too much about "other interfering
+activity" as you mention here, or about guarantees - this is a pure
+optimization that seems to work just fine in practice.
+
+I'm not sure about the "subtle implementation detail" - buddy merging,
+and head/tail of buddy lists are a basic concept of our page allocator.
+If that would ever change, the optimization here would be lost and we
+would have to think of something else. Nothing would actually break -
+and it's all kept directly in page_alloc.c
+
+I'd like to stress that what I propose here is both simple and powerful.
+
+> possible I think, such as preparing a larger MIGRATE_UNMOVABLE area in the
+> existing memory before we allocate those long-term management structures. Or
+> onlining a bunch of blocks as zone_movable first and only later convert to
+> zone_normal in a controlled way when existing normal zone becomes depeted?
+
+I see the following (more or less complicated) alternatives
+
+1) Having a larger MIGRATE_UNMOVABLE area
+
+a) Sizing it is difficult. I mean you would have to plan ahead for all
+memory you might eventually hotplug later - and that could even be
+impossible if you hotplug quite a lot of memory to a smaller machine.
+(I've seen people in the vm/container world trying to hotplug 128GB
+DIMMs to 2GB VMs ... and failing for obvious reasons)
+b) not really desired. You usually want to have most memory movable, not
+the opposite (just because you might hotplug memory in small chunks later).
+
+2) smarter onlining
+
+I have prototype patches for better auto-onlining (which I'll share at
+some point), where I balance between ZONE_NORMAL and ZONE_MOVABLE in a
+defined ratio. Assuming something very simple, adding separate memory
+blocks and onlining them based on the current zone ratio (assuming a 1:4
+normal:movable target ratio) would (without some other policies I have
+in place) result in something like this for hotplugged memory (via
+virtio-mem):
+
+[N][M][M][M][M][N][M][M][M][M][N][M][M][M][M]...
+
+(note: layout is suboptimal, just a simple example)
+
+But even here, all [N] memory blocks would immediately be use for
+allocations for the memmap of successive blocks. It doesn't solve the
+dependency issues.
+
+Now assume we would want to group [N] in a way to allow for gigantic
+pages, like
+
+[N][N][N][N][N][N][N][N][M][M][M][M] ....
+
+we would, once again, never be able to allocate a gigantic page because
+all [N] would contain a memmap.
+
+3) conversion from MOVABLE -> NORMAL
+
+While a conversion from MOVABLE to NORMAL would be interesting to see,
+it's going to be a challenging task to actually implement (people expect
+that page_zone() remains stable). Without any hacks, we'd have to
+
+1. offline the selected (MOVABLE) memory block/chunk
+2. online the selected memory block/chunk to the NORMAL zone
+
+This is not something we can do out of random context (for example, we
+need both, the device hotplug lock and the memory hotplug lock, as we
+might race with user space) - so there might still be a chance of
+corner-case OOMs.
+
+(I assume there could also be quite a negative performance impact when
+always relying on the conversion, and not properly planning ahead as in 2.)
 
 > 
-> BR,
-> -R
-> 
-> > -Daniel
-> >
-> > > Is there some way we could arrange for the per-crtc kthread's to be
-> > > owned by the drm master?  That would solve the "must be root" issue.
-> > > And since the target audience is an atomic userspace, I suppose we
-> > > could expose the tid as a read-only property on the crtc?
-> > >
-> > > BR,
-> > > -R
-> > >
-> > > > So question to rt/worker folks: What's the best way to let userspace set
-> > > > the scheduling mode and priorities of things the kernel does on its
-> > > > behalf? Surely we're not the first ones where if userspace runs with some
-> > > > rt priority it'll starve out the kernel workers that it needs. Hardcoding
-> > > > something behind a subsystem ioctl (which just means every time userspace
-> > > > changes what it does, we need a new such flag or mode) can't be the right
-> > > > thing.
-> > > >
-> > > > Peter, Tejun?
-> > > >
-> > > > Thanks, Daniel
-> > > >
-> > > > >
-> > > > > Rob Clark (3):
-> > > > >   drm/crtc: Introduce per-crtc kworker
-> > > > >   drm/atomic: Use kthread worker for nonblocking commits
-> > > > >   drm: Add a client-cap to set scheduling mode
-> > > > >
-> > > > >  drivers/gpu/drm/drm_atomic_helper.c | 13 ++++++----
-> > > > >  drivers/gpu/drm/drm_auth.c          |  4 ++++
-> > > > >  drivers/gpu/drm/drm_crtc.c          | 37 +++++++++++++++++++++++++++++
-> > > > >  drivers/gpu/drm/drm_ioctl.c         | 13 ++++++++++
-> > > > >  include/drm/drm_atomic.h            | 31 ++++++++++++++++++++++++
-> > > > >  include/drm/drm_crtc.h              | 10 ++++++++
-> > > > >  include/uapi/drm/drm.h              | 13 ++++++++++
-> > > > >  7 files changed, 117 insertions(+), 4 deletions(-)
-> > > > >
-> > > > > --
-> > > > > 2.26.2
-> > > > >
-> > > > > _______________________________________________
-> > > > > dri-devel mailing list
-> > > > > dri-devel@lists.freedesktop.org
-> > > > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> > > >
-> > > > --
-> > > > Daniel Vetter
-> > > > Software Engineer, Intel Corporation
-> > > > http://blog.ffwll.ch
-> > > _______________________________________________
-> > > dri-devel mailing list
-> > > dri-devel@lists.freedesktop.org
-> > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> >
-> >
-> >
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
+> I guess it's an issue that the e.g. 128M block onlines are so disconnected from
+> each other it's hard to employ a strategy that works best for e.g. a whole bunch
+> of GB onlined at once. But I noticed some effort towards new API, so maybe that
+> will be solved there too?
+
+While new interfaces might make it easier to identify boundaries of
+separate DIMMs (e.g., to online a single DIMM either movable or
+unmovable - which can partially be done right now when going via memory
+resource boundaries), it doesn't help for the use case of adding
+separate memory blocks.
+
+So while having an automatic conversion from MOVABLE -> NORMAL would be
+interesting, I doubt we'll see it in the foreseeable future. Are there
+any similarly simple alternatives to optimize this?
+
+Thanks!
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Thanks,
+
+David / dhildenb
+
