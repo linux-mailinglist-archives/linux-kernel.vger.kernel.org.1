@@ -2,131 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94053275D43
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA253275D50
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726424AbgIWQXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 12:23:21 -0400
-Received: from mail-vi1eur05on2131.outbound.protection.outlook.com ([40.107.21.131]:44705
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726130AbgIWQXV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 12:23:21 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q/G8QBzeducLOOMkH6FbDF4gDSGb16+U/KHOJNoA2i4mFPf1EcnZmNQxuNjNzrR1hC7H8zpTer786bGpbzKbN9qfGKXA6nZYAslg2JXYK5Q8DEJq/2ignBCdsHle9HSLZkl2Lsojoh/z39gk9IvF64M0PzclxmctirJyZtxYBd+M5e/hlN8JgOM3BOEEgSVQI8VbQ0KTfI9Q7mIfhGCfpOej8ptQ2YT4aXXb30FImUYMQI6WqUU160wshrJDOkQ4xaCFrhi4aLdYLRVqUwyFAMqN8/iJ9Y3cPK/ikGIboGfcH3A+l54qhukBeMYnEcBS9ruTcF6w4r2pGEk8gVuM+A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1bHqMzSrpHQJKkWYMK8b5GB7MJEPgh0QFfKOiRaRTms=;
- b=XWEMplGeIqzimMcdXjlrQbsKB5x7CP32o342jPMKz8jFz5jQkUdbQCxK0X5AFz+akn0C9Nd8uibhJAM+QyPncBVZ2cQwCIx29SHMxZyDqEiDW7cjPSnmb87b6nePCV60aa4pfZJNoDOmBbPqH2jJD4PoAlN/EYRLrlSOSkWDXiUbkSPv8RlVhZvqgd5Q9+xom0Xg2QxR/CZizKNVcXotTn6nAyQcq2f+04CsVoXHQWDhRAu5L48ErYLYPm0bsL6vo7BPasRRTM41BlAOxLsDbBSAP/EIvVf1TR/IouPKtUxFSrgAd/Ac/ILAHjtPE1+SS+dUSlv4b8KcpXDTQwLKlA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
- dkim=pass header.d=plvision.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1bHqMzSrpHQJKkWYMK8b5GB7MJEPgh0QFfKOiRaRTms=;
- b=XcHhU5qzo1aJC3+L6YmSZKTH5S1rEW5epzTeCBKkuBpwW3pmqDuLjmJoilfYAJpNfc0hjBRBTK8XxaWuLuD7HONKQkeyvH2eNgYEQZm5BAc6rqR0CId2fCpOEa4Yk3ZRsfZCvJNhR2EP+HLfRtuVuGW3FIDrg8/v+H6Rg39kzSE=
-Authentication-Results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=plvision.eu;
-Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:56::28) by
- HE1P190MB0330.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:61::15) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3391.14; Wed, 23 Sep 2020 16:23:17 +0000
-Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- ([fe80::c1ab:71de:6bc2:89fe]) by HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- ([fe80::c1ab:71de:6bc2:89fe%6]) with mapi id 15.20.3391.027; Wed, 23 Sep 2020
- 16:23:17 +0000
-Date:   Wed, 23 Sep 2020 19:23:14 +0300
-From:   Vadym Kochan <vadym.kochan@plvision.eu>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] nvmem: core: fix possibly memleak when use
- nvmem_cell_info_to_nvmem_cell()
-Message-ID: <20200923162314.GF16798@plvision.eu>
-References: <20200923135343.16565-1-vadym.kochan@plvision.eu>
- <7a072204-a4b8-e5ef-9ce2-4db176f70366@linaro.org>
- <20200923141334.GA16798@plvision.eu>
- <1f65dc6a-50f3-d4e5-f1ce-7a68fddde287@linaro.org>
- <20200923145107.GB16798@plvision.eu>
- <19c5fa23-41c9-f5c7-beaf-aeb9655bfefd@linaro.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <19c5fa23-41c9-f5c7-beaf-aeb9655bfefd@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: AM6PR0502CA0064.eurprd05.prod.outlook.com
- (2603:10a6:20b:56::41) To HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:7:56::28)
+        id S1726718AbgIWQZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 12:25:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726178AbgIWQZd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 12:25:33 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C20BC0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 09:25:33 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id w16so237856qkj.7
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 09:25:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=bod+KA++P85pU20jfJ5vwCcsVE27X5/8ush82A6fa28=;
+        b=LDMkD7Dksx6sEh5TMPKFRCduNXALi8F1ujxrEamhcNMqTf2RdkFpFlLcRLV68MogME
+         b09UtnzuVu2+zzitJFB0HLp4Uub8hrMjkqafMbSNjCqq0f1POJvtQQNJvBmHqj2G5h5B
+         7Oj5aG4en1W4p+Km7wPq5M3HL+oq/kcUOLFzi+aTvULnVDLWg7q2Grr9hU+ySWxdM16x
+         zWHS2+WPHCLsoGF/nv4P7eI/meB5Uww52K24p0VpzcH3pFFSLZ2+LdlsSThcU4a83KW4
+         mMQIn5R1HC3lAunoL0gL3qRJVYwzMjcObXhjUKXpHQ5bAmN5GuUrrRtVojrrmUc2OQ4r
+         xH0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bod+KA++P85pU20jfJ5vwCcsVE27X5/8ush82A6fa28=;
+        b=qCb+ZPO7GxZs6UpymOAynzPukUGoIRrI7tHLItM76yx6sfxG9ZL5dpxqysgUljD/Xw
+         HY8nmmDEnz9IAHN6S+ZltEYIEQ0f6NB8WZvBDCADm7b8OzvKAFIzp03JElApoMvXxbpP
+         EWvfUjE6HlGNkDKRU8rO8TtVTbwMN6ZQkX6gx2CbxNO4t+2J5BDYp4+JtahYZrryGG3N
+         z4ErE6iJulGNiznjgyGk3OAizd7t2ry3Y9gzGH0p7z4JCkGoOfOCov35X9d60ktkPueL
+         NC4W7lCG2V45F40I5yLye27YVhJk6cz8/FqwNjdMKu5GyF+Omt80yGdq887hrHSDRNsj
+         YAag==
+X-Gm-Message-State: AOAM531ArJAhA6VWC/dDsZIXPJJbnpAGupWmDfcgbnT3LmsUC4bEIVnj
+        egd5jJzEWNGKAA4sqBaDqBR3nQ==
+X-Google-Smtp-Source: ABdhPJw6groUotwQ8vbhdy/IR1sMD/34/axJnsXXheLrwgCvcSStxI4/PuxfuCq+USg3V9Z5KE7fRw==
+X-Received: by 2002:a37:9d86:: with SMTP id g128mr653358qke.26.1600878332126;
+        Wed, 23 Sep 2020 09:25:32 -0700 (PDT)
+Received: from [192.168.0.189] ([147.253.86.153])
+        by smtp.gmail.com with ESMTPSA id 25sm313336qks.41.2020.09.23.09.25.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Sep 2020 09:25:31 -0700 (PDT)
+Subject: Re: [PATCH v3 6/7] clk: qcom: Add display clock controller driver for
+ SM8150
+To:     Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+References: <20200911153412.21672-1-jonathan@marek.ca>
+ <20200911153412.21672-7-jonathan@marek.ca>
+ <160080149549.310579.17453759593211612997@swboyd.mtv.corp.google.com>
+From:   Jonathan Marek <jonathan@marek.ca>
+Message-ID: <3370cff3-9296-74fc-8e7d-ff93c3978351@marek.ca>
+Date:   Wed, 23 Sep 2020 12:24:04 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from plvision.eu (217.20.186.93) by AM6PR0502CA0064.eurprd05.prod.outlook.com (2603:10a6:20b:56::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14 via Frontend Transport; Wed, 23 Sep 2020 16:23:16 +0000
-X-Originating-IP: [217.20.186.93]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 480125a0-fc24-43ed-6684-08d85fdcfa40
-X-MS-TrafficTypeDiagnostic: HE1P190MB0330:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <HE1P190MB0330E43436A2E732A30631AA95380@HE1P190MB0330.EURP190.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tr+6fVJldDYIjY9AS7fTdCcHD5KqRyDnfLBHhrDpJ37SDdF76EhLj2bbbj7I8K6NCOzu3zkWdEyRRg5bsL2wc+45Z1LpDKOiTvVZBGcFn2QYkhe2vxBX4KyNJnaZedodd9CGC/BDZWVSwpz2u8yg8UCAZce/gGDvS4CXdhaT7/Ca/Rx2cCTFTmXgdcUDCc+hdp5/SAD9WjlDheCsvR8Ig/iB8aXJs5xB7+X14anwQKmpoB7JUR83J+cLOiHV8ihB+tXaEXydMK+kRsKiAE2IuGYtxDClwKspRVdCwaMCyGLVYbjUau52DyP88SNbTG49xesDf55wk+daI5VXo7MATA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1P190MB0539.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(346002)(136003)(376002)(396003)(366004)(39830400003)(7696005)(6916009)(26005)(33656002)(83380400001)(55016002)(316002)(8936002)(16526019)(53546011)(186003)(8676002)(86362001)(36756003)(478600001)(2616005)(5660300002)(956004)(8886007)(52116002)(66556008)(66946007)(4326008)(44832011)(1076003)(66476007)(2906002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: tzaYts4S1Y7skxgfl7hxCMOmHj8cr0vypGkAXfIkMvOKIJ37I3AdgfmgoMIbA9tOjSUNsAY7JCfRQ3Iofg+4YwJCj1i5ypvSIKM0RlC7cBmL4K3VddH4c19AuQKfJzOPPlUPChZ21HpQX/z4md0c1RUZyGaCWbJTF7yvW/GkyFmVLaQ0F8Ull4A5SpooyuaUXx6nXPk++t4hLZ5MJwJtlejhlqJzAM5/1wADsPLkqXBPEhZ3CRWv8wydDqcGfZyD7+Q/Nzfe3p8UAkSeOukHVR5AfiCBjHIoCC7bYzX7eLtAtv6n1KIJaP+WOBRUkY0IDb6N0xcNhY8wQTj1GtUg4yInkY4x9ElKqPLQxyAQ24w/q/3sS30G7XSdFt7KmVexKITCcUnzjGM8ObgE2ZorVDYEbfbLqUhVZySPIq0CW0KFMx9+uZSFyoYZirzwHXDy7ZmcgkXYnWv62shpsPVfiPhY1FUhk85Ad910rZqNCKRN0Qo545TLnFEoiQmhB0amE4EjRpKvRaCev0/sqIl85Z3MfqGLU47pb/hc2NdcWgBWH8OslyQHXy5fIYP2jPl4hWYIhDjXrRQabrVmCSZCc3H9u7DZ5FuashDzf8nK8tuBOyvTVu5G0VsX0y0iLfhQpgVzvEO6Erzh0g4q5PS41A==
-X-OriginatorOrg: plvision.eu
-X-MS-Exchange-CrossTenant-Network-Message-Id: 480125a0-fc24-43ed-6684-08d85fdcfa40
-X-MS-Exchange-CrossTenant-AuthSource: HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2020 16:23:17.0892
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iVinOTX6huMuPzm/3BkuzC5ChUn9wYEZw99lTIjOFDMTm1F/OHpKGh3XmD/+JeMC6W5yL0IqB9Kzo49QsBW7Oe+Z+XRxXdZLMDU2ju56zmA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1P190MB0330
+In-Reply-To: <160080149549.310579.17453759593211612997@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 04:51:06PM +0100, Srinivas Kandagatla wrote:
+On 9/22/20 3:04 PM, Stephen Boyd wrote:
+> Quoting Jonathan Marek (2020-09-11 08:34:06)
+>> Add support for the display clock controller found on SM8150
+>> based devices. This would allow display drivers to probe and
+>> control their clocks.
+>>
+>> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+>> ---
+>>   drivers/clk/qcom/Kconfig         |    9 +
+>>   drivers/clk/qcom/Makefile        |    1 +
+>>   drivers/clk/qcom/dispcc-sm8150.c | 1152 ++++++++++++++++++++++++++++++
+>>   3 files changed, 1162 insertions(+)
+>>   create mode 100644 drivers/clk/qcom/dispcc-sm8150.c
 > 
-> 
-> On 23/09/2020 15:51, Vadym Kochan wrote:
-> > > -       return nvmem_cell_write(&cell, buf, cell.bytes);
-> > > +       rc = nvmem_cell_write(&cell, buf, cell.bytes);
-> > > +       if (rc)
-> > > +               kfree_const(cell->name);
-> > > +
-> > > +       return rc;
-> > >   }
-> > >   EXPORT_SYMBOL_GPL(nvmem_device_cell_write);
-> > >   ------------------------>cut<---------------------------
-> > > 
-> > > --srini
-> > > 
-> > But is it really needed to kstrdup(cell->name) for nvmem_device_cell_{read,write} ?
-> This boils down to if we want to use same api to parse nvmem_cell_info or
-> not!
-> 
-> If we want to keep this simple, we can either explicitly add free for
-> successful caller to nvmem_cell_info_to_nvmem_cell()!
-> 
-> Or
-> 
-> use something like what you did, but new api needs more clarity!
-> May be renaming __nvmem_cell_info_to_nvmem_cell to
-> nvmem_cell_info_to_nvmem_cell_no_alloc would clarify that a bit!
+> If the bindings are the same for these two drivers I wonder if there is
+> anything different between the two. Maybe the two drivers can be one
+> driver?
 > 
 
-Naming is most difficult thing, what about __nvmem_cell_info_to_nvmem_cell_{unsafe,nodup}() ?
-At least this is an indication to be carefully here.
-
-> Also can you make sure that linewrapping on function names be inline with
-> existing code.
-> 
-> Please send v3 with that changes!
-> 
-> 
-> --srini
-> > It is used only for log error in case the unaligned access did not
-> > pass the check
+Possibly, the biggest difference seems to be the plls (trion vs lucid, 
+different config), which could be resolved in the probe() function. If 
+you think combining the drivers is the right thing to do then I can do that.
