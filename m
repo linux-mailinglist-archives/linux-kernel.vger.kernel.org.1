@@ -2,58 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7630D274E0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 02:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0ACF274E0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 02:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726743AbgIWA7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 20:59:19 -0400
-Received: from relay4.mymailcheap.com ([137.74.80.156]:36074 "EHLO
-        relay4.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726589AbgIWA7S (ORCPT
+        id S1726761AbgIWA7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 20:59:25 -0400
+Received: from relay5.mymailcheap.com ([159.100.248.207]:49522 "EHLO
+        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726589AbgIWA7Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 20:59:18 -0400
-X-Greylist: delayed 436 seconds by postgrey-1.27 at vger.kernel.org; Tue, 22 Sep 2020 20:59:17 EDT
-Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
-        by relay4.mymailcheap.com (Postfix) with ESMTPS id EFB3F3F162;
-        Wed, 23 Sep 2020 02:59:15 +0200 (CEST)
+        Tue, 22 Sep 2020 20:59:24 -0400
+Received: from relay1.mymailcheap.com (relay1.mymailcheap.com [144.217.248.102])
+        by relay5.mymailcheap.com (Postfix) with ESMTPS id 34270260EB;
+        Wed, 23 Sep 2020 00:59:22 +0000 (UTC)
+Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
+        by relay1.mymailcheap.com (Postfix) with ESMTPS id EA29D3F201;
+        Wed, 23 Sep 2020 00:59:19 +0000 (UTC)
 Received: from localhost (localhost [127.0.0.1])
-        by filter1.mymailcheap.com (Postfix) with ESMTP id 150532A3E1;
-        Tue, 22 Sep 2020 20:59:15 -0400 (EDT)
+        by filter2.mymailcheap.com (Postfix) with ESMTP id 2DA522A911;
+        Wed, 23 Sep 2020 02:59:19 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1600822755;
-        bh=2GPWCCvw894rUhZgXRfbyjz8WKkpTgKFBRimqBMWJ9k=;
+        s=default; t=1600822759;
+        bh=kPoz5xWCZ0urom+8cz1Y5v7QCbvCnYjIYd/MWXLbPPA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SwsZYmm5ApOLmLgg/5dTmrArECI9n8Kj0iHiCKJKO37X/GQOS3V5aypeQ9XimgvOR
-         DHV52TaSlqyONiyqHtjmzv+a4kfzHNTCd51xmZJJ/kkbSzmNPKwTJTsUnNNuWAkT4F
-         y2OiSpbcSBu7sFY0JGGAi0nOaxVXFwH6XhCAzvF4=
-X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
-Received: from filter1.mymailcheap.com ([127.0.0.1])
-        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id znaVg3pixAS2; Tue, 22 Sep 2020 20:59:14 -0400 (EDT)
+        b=ugG1UcdnUgXKEJWEoc8pvrKB5qudl9cVg1FsmGDL6mVMYpUxnkpIFTS8A5/szQIUV
+         xfwOyBIl/4XQNIb3cPYFpQ6YJuln6dJbojJDxi05f4y6OhV2D78wNCFm0m7PH4Mpxm
+         f3zriHrFDu5Mo3rYR118QPe8gNR5St2viFV7/UPo=
+X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
+Received: from filter2.mymailcheap.com ([127.0.0.1])
+        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id X83tJ4DrXy-T; Wed, 23 Sep 2020 02:59:18 +0200 (CEST)
 Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
         (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by filter1.mymailcheap.com (Postfix) with ESMTPS;
-        Tue, 22 Sep 2020 20:59:14 -0400 (EDT)
+        by filter2.mymailcheap.com (Postfix) with ESMTPS;
+        Wed, 23 Sep 2020 02:59:18 +0200 (CEST)
 Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 30B9841009;
-        Wed, 23 Sep 2020 00:59:13 +0000 (UTC)
+        by mail20.mymailcheap.com (Postfix) with ESMTP id A1C7B41009;
+        Wed, 23 Sep 2020 00:59:17 +0000 (UTC)
 Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="k7sMhUkd";
+        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="fiemhAgr";
         dkim-atps=neutral
 AI-Spam-Status: Not processed
 Received: from ice-e5v2.lan (unknown [59.41.160.155])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id EF0A341009;
-        Wed, 23 Sep 2020 00:59:05 +0000 (UTC)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 054EC41009;
+        Wed, 23 Sep 2020 00:59:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
-        t=1600822748; bh=2GPWCCvw894rUhZgXRfbyjz8WKkpTgKFBRimqBMWJ9k=;
+        t=1600822752; bh=kPoz5xWCZ0urom+8cz1Y5v7QCbvCnYjIYd/MWXLbPPA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k7sMhUkdG4Fk95KOd0LLENUvGjqhuq+n96ou1++jnWHvH9kbQwZHf+HzazYdIjduE
-         qvtMfqSmGjvbPAHN7jnc3IIxTSIh8bD7txeqiT7eTmAtgfH/b9zrp58nZcxRdoYROo
-         o0YkgRbYhGdoVSuFHrHJ/c7AWENgdU02T0Fm+43U=
+        b=fiemhAgr4eeksuPhmwyjvUsbjIZsRc3MHKzpNOhgW5EMKktyflRVtHhg4fWDFRYvo
+         XtrEeP/edMzZxV+ydde+jWX4k6oFeWMqzuRhHp3+Ezx25dJ+nNzAD93eIelWe4HN9G
+         6IA1ycDu83GGRuf14o/+wCiK66BZgAbQjviPtyHU=
 From:   Icenowy Zheng <icenowy@aosc.io>
 To:     Rob Herring <robh+dt@kernel.org>,
         Maxime Ripard <mripard@kernel.org>,
@@ -61,15 +63,16 @@ To:     Rob Herring <robh+dt@kernel.org>,
 Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
         Icenowy Zheng <icenowy@aosc.io>
-Subject: [PATCH 2/7] ARM: dts: sun8i: V3/V3s/S3/S3L: add pinctrl for UART2 RX/TX
-Date:   Wed, 23 Sep 2020 08:58:53 +0800
-Message-Id: <20200923005858.148261-1-icenowy@aosc.io>
+Subject: [PATCH 3/7] ARM: dts: sun8i: V3/V3s/S3/S3L: add CSI1 device node
+Date:   Wed, 23 Sep 2020 08:58:54 +0800
+Message-Id: <20200923005858.148261-2-icenowy@aosc.io>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200923005709.147966-1-icenowy@aosc.io>
+In-Reply-To: <20200923005858.148261-1-icenowy@aosc.io>
 References: <20200923005709.147966-1-icenowy@aosc.io>
+ <20200923005858.148261-1-icenowy@aosc.io>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 30B9841009
+X-Rspamd-Queue-Id: A1C7B41009
 X-Spamd-Result: default: False [6.40 / 20.00];
          ARC_NA(0.00)[];
          RCVD_VIA_SMTP_AUTH(0.00)[];
@@ -100,40 +103,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The UART2 RX/TX pins on Allwinner V3 series is at PB0/1, which is used
-as debugging UART on some boards.
+The CSI1 controller of V3/V3s/S3/S3L chips is used for parallel CSI.
 
-Add pinctrl node for them.
+Add the device tree node of it.
 
 Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
 ---
- arch/arm/boot/dts/sun8i-v3s.dtsi | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/arm/boot/dts/sun8i-v3s.dtsi | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
 diff --git a/arch/arm/boot/dts/sun8i-v3s.dtsi b/arch/arm/boot/dts/sun8i-v3s.dtsi
-index 7d40897dab09..4cfdf193cf88 100644
+index 4cfdf193cf88..3e079973672d 100644
 --- a/arch/arm/boot/dts/sun8i-v3s.dtsi
 +++ b/arch/arm/boot/dts/sun8i-v3s.dtsi
-@@ -322,6 +322,11 @@ uart0_pb_pins: uart0-pb-pins {
- 				function = "uart0";
- 			};
- 
-+			uart2_pins: uart2-pins {
-+				pins = "PB0", "PB1";
-+				function = "uart2";
-+			};
-+
- 			mmc0_pins: mmc0-pins {
- 				pins = "PF0", "PF1", "PF2", "PF3",
- 				       "PF4", "PF5";
-@@ -397,6 +402,8 @@ uart2: serial@1c28800 {
- 			reg-io-width = <4>;
- 			clocks = <&ccu CLK_BUS_UART2>;
- 			resets = <&ccu RST_BUS_UART2>;
-+			pinctrl-0 = <&uart2_pins>;
-+			pinctrl-names = "default";
- 			status = "disabled";
+@@ -488,6 +488,18 @@ spi0: spi@1c68000 {
+ 			#size-cells = <0>;
  		};
  
++		csi1: camera@1cb4000 {
++			compatible = "allwinner,sun8i-v3s-csi";
++			reg = <0x01cb4000 0x3000>;
++			interrupts = <GIC_SPI 84 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&ccu CLK_BUS_CSI>,
++				 <&ccu CLK_CSI1_SCLK>,
++				 <&ccu CLK_DRAM_CSI>;
++			clock-names = "bus", "mod", "ram";
++			resets = <&ccu RST_BUS_CSI>;
++			status = "disabled";
++		};
++
+ 		gic: interrupt-controller@1c81000 {
+ 			compatible = "arm,gic-400";
+ 			reg = <0x01c81000 0x1000>,
 -- 
 2.27.0
