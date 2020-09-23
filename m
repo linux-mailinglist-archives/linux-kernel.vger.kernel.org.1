@@ -2,138 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3030275491
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 11:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FFB3275494
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 11:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726332AbgIWJav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 05:30:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48115 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726178AbgIWJav (ORCPT
+        id S1726476AbgIWJcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 05:32:05 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:53724 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726359AbgIWJcE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 05:30:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600853449;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=r5p+daryNxkyz0OgmKt+SUjejQfASxt16NwrXrf4GS0=;
-        b=buVDudNiN/vITafD+6U9stkfqAjaIifdVZKNnYRrsiuVd73+0ZV6VULFRS+6mcLmorZLZf
-        S6zohj7Z140V1gZPI8h6t+Gp+R50U4tchkMBZtbHZYLMP9EY1KD4elW0lvJ0m7Ih+ugtMr
-        v3pyTS7xAJxflzXtWXlm13VzsSZs43c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-493-Br6rjbgmM8itU4ga_0vkuA-1; Wed, 23 Sep 2020 05:30:47 -0400
-X-MC-Unique: Br6rjbgmM8itU4ga_0vkuA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 00133188C126;
-        Wed, 23 Sep 2020 09:30:44 +0000 (UTC)
-Received: from krava (unknown [10.40.192.120])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 9FE245577B;
-        Wed, 23 Sep 2020 09:30:42 +0000 (UTC)
-Date:   Wed, 23 Sep 2020 11:30:41 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCH 2/5] perf stat: Add --for-each-cgroup option
-Message-ID: <20200923093041.GH2893484@krava>
-References: <20200921094610.83736-1-namhyung@kernel.org>
- <20200921094610.83736-3-namhyung@kernel.org>
- <20200922214033.GD2893484@krava>
- <CAM9d7ciL7LmpFyxxD20q+6JM4pE1T9hsMKvOtv-s1r+EamCDpQ@mail.gmail.com>
+        Wed, 23 Sep 2020 05:32:04 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08N9RfZF025147;
+        Wed, 23 Sep 2020 11:31:42 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=lzbFRFsz/R6jt9tD1gxmeXbe10XEpYjyF4q6GDF0eY8=;
+ b=HKRLjl+N+kCvWIU+T8HEO7D2PQY4QJBEjKqWVe5uagmlRjLoAeZJSpJjvSdsU4rwHWEy
+ UZCY02zB8HxV5loJRqnUzLBXK98D+Mk4uzbkMdfPJHLaQ0mVqhGmE2HsMgZzEgTgIMf5
+ rhRB+OAXurla8GpssLSBR5Ag/2UURowVc5xjZiyiJ2V1Bm9lW88i97I3yveMvAft2O5q
+ wam7e2SszUnMHl9olK7KowhNixT0PUDAR7v4sAw4Rm0bNc2HVvD1Sp+6EyrSouI3lRTf
+ BJD1T0gyvI4vEU3FiOw3/Jl61qPenABA41LE0/rUrWPVu6fL8kx9I6tegp1IoD/zmots 2g== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 33n8vewct2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Sep 2020 11:31:42 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C692910002A;
+        Wed, 23 Sep 2020 11:31:39 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D01B22A5612;
+        Wed, 23 Sep 2020 11:31:39 +0200 (CEST)
+Received: from lmecxl0995.lme.st.com (10.75.127.47) by SFHDAG3NODE2.st.com
+ (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 23 Sep
+ 2020 11:31:17 +0200
+Subject: Re: [RESEND PATCH v2 1/6] dt-bindings: connector: add power-opmode
+ optional property to usb-connector
+To:     Jun Li <lijun.kernel@gmail.com>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>
+References: <20200902075707.9052-1-amelie.delaunay@st.com>
+ <20200902075707.9052-2-amelie.delaunay@st.com>
+ <CAKgpwJWPWFF_yWC0N_7qPONpWCN8U8tKVJ5Ctr1DGqXd_FyWkA@mail.gmail.com>
+From:   Amelie DELAUNAY <amelie.delaunay@st.com>
+Message-ID: <31ee8d7c-00b0-0ae1-eea1-e245f215c586@st.com>
+Date:   Wed, 23 Sep 2020 11:31:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM9d7ciL7LmpFyxxD20q+6JM4pE1T9hsMKvOtv-s1r+EamCDpQ@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <CAKgpwJWPWFF_yWC0N_7qPONpWCN8U8tKVJ5Ctr1DGqXd_FyWkA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG5NODE3.st.com (10.75.127.15) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-23_03:2020-09-23,2020-09-23 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 07:51:33AM +0900, Namhyung Kim wrote:
-> On Wed, Sep 23, 2020 at 6:40 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Mon, Sep 21, 2020 at 06:46:07PM +0900, Namhyung Kim wrote:
-> >
-> > SNIP
-> >
-> > > +int evlist__expand_cgroup(struct evlist *evlist, const char *str)
-> > > +{
-> > > +     struct evlist *orig_list, *tmp_list;
-> > > +     struct evsel *pos, *evsel, *leader;
-> > > +     struct cgroup *cgrp = NULL;
-> > > +     const char *p, *e, *eos = str + strlen(str);
-> > > +     int ret = -1;
-> > > +
-> > > +     if (evlist->core.nr_entries == 0) {
-> > > +             fprintf(stderr, "must define events before cgroups\n");
-> > > +             return -EINVAL;
-> > > +     }
-> > > +
-> > > +     orig_list = evlist__new();
-> > > +     tmp_list = evlist__new();
-> > > +     if (orig_list == NULL || tmp_list == NULL) {
-> > > +             fprintf(stderr, "memory allocation failed\n");
-> > > +             return -ENOMEM;
-> > > +     }
-> > > +
-> > > +     /* save original events and init evlist */
-> > > +     perf_evlist__splice_list_tail(orig_list, &evlist->core.entries);
-> > > +     evlist->core.nr_entries = 0;
-> > > +
-> > > +     for (;;) {
-> > > +             p = strchr(str, ',');
-> > > +             e = p ? p : eos;
-> > > +
-> > > +             /* allow empty cgroups, i.e., skip */
-> > > +             if (e - str) {
-> > > +                     /* termination added */
-> > > +                     char *name = strndup(str, e - str);
-> > > +                     if (!name)
-> > > +                             goto out_err;
-> > > +
-> > > +                     cgrp = cgroup__new(name);
-> > > +                     free(name);
-> > > +                     if (cgrp == NULL)
-> > > +                             goto out_err;
-> > > +             } else {
-> > > +                     cgrp = NULL;
-> > > +             }
-> > > +
-> > > +             leader = NULL;
-> > > +             evlist__for_each_entry(orig_list, pos) {
-> > > +                     evsel = evsel__clone(pos);
-> > > +                     if (evsel == NULL)
-> > > +                             goto out_err;
-> > > +
-> > > +                     cgroup__put(evsel->cgrp);
-> > > +                     evsel->cgrp = cgroup__get(cgrp);
-> > > +
-> > > +                     if (evsel__is_group_leader(pos))
-> > > +                             leader = evsel;
-> > > +                     evsel->leader = leader;
-> >
-> > hum, will this work if there's standalone event after group? like:
-> >
-> >   {cycles,instructions},cache-misses
-> >
-> > cache-misses will get cycles as group leader no?
+
+
+On 9/23/20 11:08 AM, Jun Li wrote:
+> Amelie Delaunay <amelie.delaunay@st.com> 于2020年9月2日周三 下午4:01写道：
+>>
+>> Power operation mode may depends on hardware design, so, add the optional
+>> property power-opmode for usb-c connector to select the power operation
+>> mode capability.
+>>
+>> Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
+>> ---
+>> Changes in v2:
+>> - Add description for possible operation current values
+>> ---
+>>   .../bindings/connector/usb-connector.yaml     | 20 +++++++++++++++++++
+>>   1 file changed, 20 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/connector/usb-connector.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+>> index 9bd52e63c935..2fd85b9a7e1a 100644
+>> --- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
+>> +++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+>> @@ -88,6 +88,26 @@ properties:
+>>         - device
+>>         - dual
+>>
+>> +  power-opmode:
+>> +    description: Determines the power operation mode that the Type C connector
+>> +      will support and will advertise through CC pins.
+>> +      - "default" corresponds to default USB voltage and current defined by the
+>> +        USB 2.0 and USB 3.2 specifications, 5V 500mA for USB 2.0 ports and
+>> +        5V 900mA or 1500mA for USB 3.2 ports in single-lane or dual-lane
+>> +        operation respectively.
+>> +      - "1.5A" and "3.0A", 5V 1.5A and 5V 3.0A respectively, as defined in USB
+>> +        Type-C Cable and Connector specification, when Power Delivery is not
+>> +        supported.
+>> +      - "usb_power_delivery" when Power Delivery is supported, as defined in
+>> +        USB Power Delivery specification.
 > 
-> AFAIK non-group events are treated as a leader of its own group.
-> So evsel__is_group_leader() will return true for cache-misses.
+> Why need "usb_power_delivery"? isn't this information can be implied by
+> existing properties like if "source-pdos" is present?
+> 
 
-right, then it's fine
+power-opmode is an optional property.
+usb_power_delivery, as 3.0A, 1.5A or default here, only reflect the 
+possible power operation mode you can set and that are understood by 
+typec class:
+static const char * const typec_pwr_opmodes[] = {
+	[TYPEC_PWR_MODE_USB]	= "default",
+	[TYPEC_PWR_MODE_1_5A]	= "1.5A",
+	[TYPEC_PWR_MODE_3_0A]	= "3.0A",
+	[TYPEC_PWR_MODE_PD]	= "usb_power_delivery",
+};
 
-thanks,
-jirka
+But I guess that a Type-C controller with usb power delivery support 
+won't use power-opmode property but rather source/sink-pdos.
 
+power-opmode shows what will be advertised through CC pins. I can remove 
+usb_power_delivery from the possible values, but what about the user who 
+will add power-opmode property to configure his Type-C controller with 
+USB power delivery support (sink and/or source by the way) ?
+Should I restrict the use of power-opmode to non-USB power delivery 
+Type-C controllers ?
+Please advise.
+
+Regards,
+Amelie
+
+
+> Li Jun
+>> +    allOf:
+>> +      - $ref: /schemas/types.yaml#definitions/string
+>> +    enum:
+>> +      - default
+>> +      - 1.5A
+>> +      - 3.0A
+>> +      - usb_power_delivery
+>> +
+>>     # The following are optional properties for "usb-c-connector" with power
+>>     # delivery support.
+>>     source-pdos:
+>> --
+>> 2.17.1
+>>
