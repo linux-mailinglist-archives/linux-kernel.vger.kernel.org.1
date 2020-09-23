@@ -2,89 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E0552756BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:58:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 978B12756C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 13:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726515AbgIWK6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 06:58:02 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:46292 "EHLO gloria.sntech.de"
+        id S1726504AbgIWLAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 07:00:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726332AbgIWK6C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 06:58:02 -0400
-Received: from [95.90.166.74] (helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1kL2TF-0006YK-2A; Wed, 23 Sep 2020 12:57:57 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Artem Lapkin <email2tema@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
-        art@khadas.com, jbx6244@gmail.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, nick@khadas.com
-Subject: Re: [PATCH 1/2] arm64: dts: rockchip: rk3399-khadas-edge: add missed spiflash node
-Date:   Wed, 23 Sep 2020 12:57:56 +0200
-Message-ID: <8046326.tZ3HhvINgq@diego>
-In-Reply-To: <20200923101225.1513392-2-email2tema@gmail.com>
-References: <20200923101225.1513392-1-email2tema@gmail.com> <20200923101225.1513392-2-email2tema@gmail.com>
+        id S1726419AbgIWLA2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 07:00:28 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 60753235FC;
+        Wed, 23 Sep 2020 11:00:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600858827;
+        bh=1FLlLoKhI8jFAzxGn/pX4LIgO96pXGzKo7MWgSaa5CU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aR43T2WnSdUL19GqzJ5374w0b6hIrZnLcMEAKhF9QhjO5VIf2fVtfKBBWlbPT2OeW
+         KFimd+WkjmVv9z8fpMy6zS9+VPhDxwQimdHVSI06NlGj+MVYGUEEpwrVIq1Um+lnlr
+         NhqJ3bDP/eUlAXjlsqCmX3bpDadaXcFtU+AhR75w=
+Date:   Wed, 23 Sep 2020 13:00:47 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        stable <stable@vger.kernel.org>
+Subject: Re: [PATCH 5.8 000/118] 5.8.11-rc1 review
+Message-ID: <20200923110047.GA3340140@kroah.com>
+References: <20200921162036.324813383@linuxfoundation.org>
+ <CAMuHMdVhowO4jK7hNk9MK5-SdmgQs3BTV3rd9jvYBknTX0GeXA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdVhowO4jK7hNk9MK5-SdmgQs3BTV3rd9jvYBknTX0GeXA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Artem,
-
-please make the subject something like
-"arm64: dts: rockchip: add spiflash node to rk3399-khadas-edge"
-
-Am Mittwoch, 23. September 2020, 12:12:24 CEST schrieb Artem Lapkin:
-> From: Artem Lapkin <art@khadas.com>
+On Mon, Sep 21, 2020 at 08:44:29PM +0200, Geert Uytterhoeven wrote:
+> Hi Greg,
 > 
-> The Khadas Edge Boards uses winbond - w25q128 spi flash with 104Mhz
-
-Missing "Signed-off-by: ..."
-
-> ---
->  .../boot/dts/rockchip/rk3399-khadas-edge.dtsi      | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
+> On Mon, Sep 21, 2020 at 6:47 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> > This is the start of the stable review cycle for the 5.8.11 release.
+> > There are 118 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Wed, 23 Sep 2020 16:20:12 +0000.
+> > Anything received after that time might be too late.
 > 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
-> index e36837c04dc..42ebbd6fa46 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
-> @@ -805,3 +805,17 @@ &vopl {
->  &vopl_mmu {
->  	status = "okay";
->  };
-> +
-> +
-no double empty lines please
-
-> +&spi1 {
-
-please group the &spi1 alphabetically in the file
-
-> +    max-freq = <104000000>;
-
-not part of any binding, spi-max-frequency below should be enough.
-
-> +    status = "okay";
-> +
-> +    spiflash: flash@0 {
-> +    u-boot,dm-pre-reloc;
-
-u-boot specific, please drop
-
-> +    compatible = "winbond,w25q128fw", "jedec,spi-nor";
-> +    reg = <0>;
-> +    spi-max-frequency = <104000000>;
-> +    };
-> +};
-> +
+> > Jan Kara <jack@suse.cz>
+> >     dax: Fix compilation for CONFIG_DAX && !CONFIG_FS_DAX
+> >
+> > Jan Kara <jack@suse.cz>
+> >     dm: Call proper helper to determine dax support
 > 
+> Perhaps it would be wise to hold-off a bit on backporting these, until
+> they have received more testing?
 
+Seems to be passing all of the testing bots we have thrown at it :)
 
-Heiko
+thanks,
 
-
+greg k-h
