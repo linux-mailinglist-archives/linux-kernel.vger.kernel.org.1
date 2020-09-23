@@ -2,58 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DEE1274EA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 03:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE2CD274EA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 03:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727222AbgIWBoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 21:44:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56846 "EHLO
+        id S1727215AbgIWBoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 21:44:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727170AbgIWBo0 (ORCPT
+        with ESMTP id S1727092AbgIWBo2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 21:44:26 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 426EFC0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 18:44:26 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id n61so17493322ota.10
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 18:44:26 -0700 (PDT)
+        Tue, 22 Sep 2020 21:44:28 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F3DCC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 18:44:28 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id g96so17484091otb.12
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 18:44:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linuxfoundation.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=hAa/7FCcR/kmgCzTDm4BV8p1GGTgIacqCiPKzsb8XqA=;
-        b=WnSq6uLWHqqrRligHEcVIeXpbmVZvEORc2Zxh+jmhmXxHkbO4G8kcfoImsvwStzUWc
-         jb9cKva8GdNDBTAkKWLGSTy2hGwwX67ob8R0XFN+lysja9GbKwlOyBZ1k/AfdnARSi4/
-         noqxUFUndVbvAH+XxJOtzC0FQC4mP3xpTi+Oo=
+        bh=uGQYLVxFon+BMRQmo5jd0t2Y8IqeCwVAew8G9KfybSI=;
+        b=FJKquwpUzE+cYhUFoa3GEcos73wq+OoYSC+PzkhQqx0xruLmQVlUOg8HUr4U7LRfXW
+         3KEpGTIOxfeWDhCkpi2vUq/HAOPq2v5DXCybhFmIphIPjgDngNJ4f67xLDUvJpdZC/VB
+         ubMA2OlG2s4OBL3z15zFUiC7D0M5QKaJPm8P8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=hAa/7FCcR/kmgCzTDm4BV8p1GGTgIacqCiPKzsb8XqA=;
-        b=IsOZ9bkjYcptdihif1qnNhEz9CDVTIF9BvnJyO7983jYVkM2el4k711fNL8lvNYFzc
-         5qu5qrir4Cm3oSCSsXb4+CAuSNHzLRPNGCBwDfxR1vJmm5yv0jWDiPBXBgQxyLQbgdg0
-         K02n8yxg70aDN/1cuJdH5ahlJLm1zaq8szEmN8Q/en8ITfwwkM6sRqWEpGuzkU6vvZls
-         XVL5eXjgkv4pD9nnlb0OtzElxs1w8oNPM6UfPIjcnUR2RdtBZdyYd2L3yqID1vY0+uc5
-         NHh428+MXAIzVBIoCGObIYln6htu+b5HORN/OOlfENyx4V4QSE1zpRpq7kz67xLYmDHb
-         L4HA==
-X-Gm-Message-State: AOAM530bWZsj1y5oRekEhuDXUzX04iu8Nj3wPT2hF/IpLr23WqesjNoQ
-        2L5c0RT3Mz3Z7umEjoBnPJRtsA==
-X-Google-Smtp-Source: ABdhPJwytX0mlOo4QI3fd1gLgDwgIvZk30z+k1ZY5QxwttvEkCKpOA5/cb/JZeaHEvhq3Kx4RnM70A==
-X-Received: by 2002:a9d:6b16:: with SMTP id g22mr3390081otp.42.1600825465640;
-        Tue, 22 Sep 2020 18:44:25 -0700 (PDT)
+        bh=uGQYLVxFon+BMRQmo5jd0t2Y8IqeCwVAew8G9KfybSI=;
+        b=DtFdJ6J5azhg3OZ1xUeDhHZEF1RERi3zdRSF34qdJJXO1dccOOQU3ETxEDmoMmo6c0
+         LAh314oheXPk6JqpPOiYtccPtrzO221Lp1qjMtWz1jh35PqLiXkqilCf7z0Ghxm+3gPq
+         s8NFzx0n7+/ZE6Jz6dJcjuxA4C/HvN1RahZkAd5eGq84N5uo6DwUnfd+u1k09BT3RU7Q
+         vkiWJhmHUae5Dg4FDvKWMy+QaRFqeWAHumbSB61MsngdFbZzXpbaeDZ2rOtUTcRACQbP
+         20zBl8EnLtlrM/qDkGw8YJsQ5JWJJFNs3Y8ji6szUZ7KPSe7Bh4GjJ55doLgaD4cf6ZK
+         iLoA==
+X-Gm-Message-State: AOAM533DqjYvkBLEdv5y1uIVk1K5En/SG0XWm4kjwytP/+AQyyfF6j9g
+        YvwJYH69aUHc4gidZoTLu9k04XYKIq59Ww==
+X-Google-Smtp-Source: ABdhPJxp82Izfr09pk4P1bnzl3JMRLNZcG8y7BkJGfo8GZNdCKqngqYtQdLKnQYBMZQYegeO7E46AQ==
+X-Received: by 2002:a9d:6a85:: with SMTP id l5mr4611443otq.271.1600825467650;
+        Tue, 22 Sep 2020 18:44:27 -0700 (PDT)
 Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id y23sm8801820ooj.34.2020.09.22.18.44.24
+        by smtp.gmail.com with ESMTPSA id y23sm8801820ooj.34.2020.09.22.18.44.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 18:44:25 -0700 (PDT)
+        Tue, 22 Sep 2020 18:44:27 -0700 (PDT)
 From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     minyard@acm.org, arnd@arndb.de, gregkh@linuxfoundation.org,
-        keescook@chromium.org
+To:     arnd@arndb.de, gregkh@linuxfoundation.org, keescook@chromium.org
 Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        openipmi-developer@lists.sourceforge.net,
         linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 09/11] drivers/char/ipmi: convert stats to use counter_atomic
-Date:   Tue, 22 Sep 2020 19:43:38 -0600
-Message-Id: <4d4e8e16549a770cdb97c48886502db0ed5a03ea.1600816121.git.skhan@linuxfoundation.org>
+Subject: [RFC PATCH 10/11] drivers/misc/vmw_vmci: convert num guest devices counter to counter_atomic
+Date:   Tue, 22 Sep 2020 19:43:39 -0600
+Message-Id: <e53dcdeb280bd90e074f214f8f292e89dedb36df.1600816121.git.skhan@linuxfoundation.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1600816121.git.skhan@linuxfoundation.org>
 References: <cover.1600816121.git.skhan@linuxfoundation.org>
@@ -71,101 +69,63 @@ counter_atomic variables will wrap around to 0 when it overflows and
 should not be used to guard resource lifetimes, device usage and
 open counts that control state changes, and pm states.
 
-atomic_t variables used for stats are atomic counters. Overflow will
-wrap around and reset the stats and no change with the conversion.
+atomic_t variable used to count number of vmci guest devices is used
+as just as counter and it doesn't control object lifetimes or state
+management. Overflow doesn't appear to be problem for this use.
 
-Convert them to use counter_atomic.
+Convert it to use counter_atomic.
+
+This conversion doesn't change the oveflow wrap around behavior.
 
 Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 ---
- drivers/char/ipmi/ipmi_msghandler.c | 9 +++++----
- drivers/char/ipmi/ipmi_si_intf.c    | 9 +++++----
- 2 files changed, 10 insertions(+), 8 deletions(-)
+ drivers/misc/vmw_vmci/vmci_guest.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
-index 737c0b6b24ea..c3ad8edd1da3 100644
---- a/drivers/char/ipmi/ipmi_msghandler.c
-+++ b/drivers/char/ipmi/ipmi_msghandler.c
-@@ -34,6 +34,7 @@
- #include <linux/uuid.h>
- #include <linux/nospec.h>
+diff --git a/drivers/misc/vmw_vmci/vmci_guest.c b/drivers/misc/vmw_vmci/vmci_guest.c
+index cc8eeb361fcd..2c21448af730 100644
+--- a/drivers/misc/vmw_vmci/vmci_guest.c
++++ b/drivers/misc/vmw_vmci/vmci_guest.c
+@@ -20,6 +20,7 @@
+ #include <linux/smp.h>
+ #include <linux/io.h>
  #include <linux/vmalloc.h>
 +#include <linux/counters.h>
  
- #define IPMI_DRIVER_VERSION "39.2"
+ #include "vmci_datagram.h"
+ #include "vmci_doorbell.h"
+@@ -68,11 +69,11 @@ struct pci_dev *vmci_pdev;
+ static struct vmci_guest_device *vmci_dev_g;
+ static DEFINE_SPINLOCK(vmci_dev_spinlock);
  
-@@ -584,7 +585,7 @@ struct ipmi_smi {
- 	struct ipmi_my_addrinfo addrinfo[IPMI_MAX_CHANNELS];
- 	bool channels_ready;
+-static atomic_t vmci_num_guest_devices = ATOMIC_INIT(0);
++static struct counter_atomic vmci_num_guest_devices = COUNTER_ATOMIC_INIT(0);
  
--	atomic_t stats[IPMI_NUM_STATS];
-+	struct counter_atomic stats[IPMI_NUM_STATS];
+ bool vmci_guest_code_active(void)
+ {
+-	return atomic_read(&vmci_num_guest_devices) != 0;
++	return counter_atomic_read(&vmci_num_guest_devices) != 0;
+ }
  
- 	/*
- 	 * run_to_completion duplicate of smb_info, smi_info
-@@ -630,9 +631,9 @@ static LIST_HEAD(smi_watchers);
- static DEFINE_MUTEX(smi_watchers_mutex);
+ u32 vmci_get_vm_context_id(void)
+@@ -624,7 +625,7 @@ static int vmci_guest_probe_device(struct pci_dev *pdev,
  
- #define ipmi_inc_stat(intf, stat) \
--	atomic_inc(&(intf)->stats[IPMI_STAT_ ## stat])
-+	counter_atomic_inc(&(intf)->stats[IPMI_STAT_ ## stat])
- #define ipmi_get_stat(intf, stat) \
--	((unsigned int) atomic_read(&(intf)->stats[IPMI_STAT_ ## stat]))
-+	((unsigned int) counter_atomic_read(&(intf)->stats[IPMI_STAT_ ## stat]))
+ 	dev_dbg(&pdev->dev, "Registered device\n");
  
- static const char * const addr_src_to_str[] = {
- 	"invalid", "hotmod", "hardcoded", "SPMI", "ACPI", "SMBIOS", "PCI",
-@@ -3448,7 +3449,7 @@ int ipmi_add_smi(struct module         *owner,
- 	INIT_LIST_HEAD(&intf->cmd_rcvrs);
- 	init_waitqueue_head(&intf->waitq);
- 	for (i = 0; i < IPMI_NUM_STATS; i++)
--		atomic_set(&intf->stats[i], 0);
-+		counter_atomic_set(&intf->stats[i], 0);
+-	atomic_inc(&vmci_num_guest_devices);
++	counter_atomic_inc(&vmci_num_guest_devices);
  
- 	mutex_lock(&ipmi_interfaces_mutex);
- 	/* Look for a hole in the numbers. */
-diff --git a/drivers/char/ipmi/ipmi_si_intf.c b/drivers/char/ipmi/ipmi_si_intf.c
-index 77b8d551ae7f..cea1131f7639 100644
---- a/drivers/char/ipmi/ipmi_si_intf.c
-+++ b/drivers/char/ipmi/ipmi_si_intf.c
-@@ -43,6 +43,7 @@
- #include "ipmi_si_sm.h"
- #include <linux/string.h>
- #include <linux/ctype.h>
-+#include <linux/counters.h>
+ 	/* Enable specific interrupt bits. */
+ 	cmd = VMCI_IMR_DATAGRAM;
+@@ -684,7 +685,7 @@ static void vmci_guest_remove_device(struct pci_dev *pdev)
  
- /* Measure times between events in the driver. */
- #undef DEBUG_TIMING
-@@ -237,7 +238,7 @@ struct smi_info {
- 	bool dev_group_added;
+ 	dev_dbg(&pdev->dev, "Removing device\n");
  
- 	/* Counters and things for the proc filesystem. */
--	atomic_t stats[SI_NUM_STATS];
-+	struct counter_atomic stats[SI_NUM_STATS];
+-	atomic_dec(&vmci_num_guest_devices);
++	counter_atomic_dec(&vmci_num_guest_devices);
  
- 	struct task_struct *thread;
+ 	vmci_qp_guest_endpoints_exit();
  
-@@ -245,9 +246,9 @@ struct smi_info {
- };
- 
- #define smi_inc_stat(smi, stat) \
--	atomic_inc(&(smi)->stats[SI_STAT_ ## stat])
-+	counter_atomic_inc(&(smi)->stats[SI_STAT_ ## stat])
- #define smi_get_stat(smi, stat) \
--	((unsigned int) atomic_read(&(smi)->stats[SI_STAT_ ## stat]))
-+	((unsigned int) counter_atomic_read(&(smi)->stats[SI_STAT_ ## stat]))
- 
- #define IPMI_MAX_INTFS 4
- static int force_kipmid[IPMI_MAX_INTFS];
-@@ -2013,7 +2014,7 @@ static int try_smi_init(struct smi_info *new_smi)
- 	atomic_set(&new_smi->req_events, 0);
- 	new_smi->run_to_completion = false;
- 	for (i = 0; i < SI_NUM_STATS; i++)
--		atomic_set(&new_smi->stats[i], 0);
-+		counter_atomic_set(&new_smi->stats[i], 0);
- 
- 	new_smi->interrupt_disabled = true;
- 	atomic_set(&new_smi->need_watch, 0);
 -- 
 2.25.1
 
