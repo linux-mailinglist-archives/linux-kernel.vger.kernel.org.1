@@ -2,122 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0890A275B73
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5439275B79
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726796AbgIWPSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 11:18:40 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:56626 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726603AbgIWPSj (ORCPT
+        id S1726706AbgIWPTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 11:19:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32802 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726265AbgIWPTx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 11:18:39 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 8B8181C0BBB; Wed, 23 Sep 2020 17:18:35 +0200 (CEST)
-Date:   Wed, 23 Sep 2020 17:18:35 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Solar Designer <solar@openwall.com>
-Cc:     madvenka@linux.microsoft.com, kernel-hardening@lists.openwall.com,
-        linux-api@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, oleg@redhat.com,
-        x86@kernel.org, luto@kernel.org, David.Laight@ACULAB.COM,
-        fweimer@redhat.com, mark.rutland@arm.com, mic@digikod.net,
-        Rich Felker <dalias@libc.org>
-Subject: Re: [PATCH v2 0/4] [RFC] Implement Trampoline File Descriptor
-Message-ID: <20200923151835.GA32555@duo.ucw.cz>
-References: <20200922215326.4603-1-madvenka@linux.microsoft.com>
- <20200923081426.GA30279@amd>
- <20200923091456.GA6177@openwall.com>
- <20200923141102.GA7142@openwall.com>
+        Wed, 23 Sep 2020 11:19:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600874392;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VP/uPxlVn+VO8OSs/cXXYD6CRLQQniKKhgRTFTtzIRU=;
+        b=M+OmTQ0jCuGVjTUAXx2Tn0oAXoNEeuHUi87msS1s75acSwtd0PgkS9Y99XXtbps6uRnGyl
+        OQSKZhFTHI/dTvHYsdqavag74Lm6igWo3vmwW/ryOvXX7RZ8yDRvOah1oc9IEYN+o01Nl1
+        kzbnYG5VnrraThBMAUfk2zfgIHh0hnk=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-141-1xsYwNAbPrS5sBBfeI8p9w-1; Wed, 23 Sep 2020 11:19:50 -0400
+X-MC-Unique: 1xsYwNAbPrS5sBBfeI8p9w-1
+Received: by mail-wr1-f70.google.com with SMTP id l9so8916037wrq.20
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 08:19:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VP/uPxlVn+VO8OSs/cXXYD6CRLQQniKKhgRTFTtzIRU=;
+        b=q+nt+LgFOZHDPef0pEbgTB5RecAL9PNr6OFBu6C5OlFPTStTKs1ZX8iKfV4TOEiiGp
+         VQGhTnRAVJtMgyqCB/C1aw51AenmflGwSsvZTHzuPPupQoGRW44NJYeCqS3HmbqsDRei
+         7H2BHdVyQNMUphK6J5T3NFuLUk6MdQQ1PeELdX8QKFIp4K8YBryd0A5/2Qrw9WIX91Pj
+         VNscigeZHOGjbZzOWBHSsxCY9/ssOBCFGRGqNjls+tLNbLpPNnf+Y+YlLlbtLZ+zYx5c
+         WbFHTQKzIqY+KaV7t2QJ0zUeEA3F3QCKEoXIEPUoy5qkLRYyNYfrwqSBRG6i+jmQ0B45
+         MLrQ==
+X-Gm-Message-State: AOAM531Z52rFGGp28Q0GPLQ8j7i3I6fKMiamun9uo0RpQytj6GOhpLrc
+        oySh034m9sH3lk7tG1TKyFCPGkmqK7a8nrzM6/syod3hhGW4VG0hX1vG4asxPcu9tAlxwAwQwLT
+        7N4eD3QzrquZlrovEbgLyHgYO
+X-Received: by 2002:a05:600c:22d2:: with SMTP id 18mr25121wmg.145.1600874389035;
+        Wed, 23 Sep 2020 08:19:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzbgMoWwfq+neyAnsK0EaJ4ibs2pkKiG4LrxWCZ5IbM3u5TcuDmjgY1SOIQ3UTsK1K+EpMxkg==
+X-Received: by 2002:a05:600c:22d2:: with SMTP id 18mr25098wmg.145.1600874388795;
+        Wed, 23 Sep 2020 08:19:48 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:15f1:648d:7de6:bad9? ([2001:b07:6468:f312:15f1:648d:7de6:bad9])
+        by smtp.gmail.com with ESMTPSA id c4sm120226wme.27.2020.09.23.08.19.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Sep 2020 08:19:48 -0700 (PDT)
+Subject: Re: [PATCH] KVM: x86: VMX: Make smaller physical guest address space
+ support user-configurable
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Mohammed Gamal <mgamal@redhat.com>, joro@8bytes.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sean.j.christopherson@intel.com, vkuznets@redhat.com,
+        wanpengli@tencent.com
+References: <20200903141122.72908-1-mgamal@redhat.com>
+ <8c7ce8ff-a212-a974-3829-c45eb5335651@redhat.com>
+ <CALMp9eTHbhwfdq4Be=XcUG9z82KK8AapQeVmsdH=mGdQ_Yt2ug@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <79277092-a5b8-ebb0-8a9f-e41d094ed05b@redhat.com>
+Date:   Wed, 23 Sep 2020 17:19:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="fUYQa+Pmc3FrFX/N"
-Content-Disposition: inline
-In-Reply-To: <20200923141102.GA7142@openwall.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CALMp9eTHbhwfdq4Be=XcUG9z82KK8AapQeVmsdH=mGdQ_Yt2ug@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 23/09/20 16:32, Jim Mattson wrote:
+> You don’t buy my argument that this should be per-VM, then? I’d bet that
+> we have very close to 0 customers who care about emulating the reserved
+> bits properly for 46-but wide VMs, but there may be someone out there
+> using shadow paging in a nested kvm. 
+> 
 
---fUYQa+Pmc3FrFX/N
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I do buy it but I prefer not to have a released version of Linux where
+this is enabled by default.  I procrastinated hoping to cobble something
+together but I didn't have time.
 
-Hi!
+Paolo
 
-> > > > The W^X implementation today is not complete. There exist many user=
- level
-> > > > tricks that can be used to load and execute dynamic code. E.g.,
-> > > >=20
-> > > > - Load the code into a file and map the file with R-X.
-> > > >=20
-> > > > - Load the code in an RW- page. Change the permissions to R--. Then,
-> > > >   change the permissions to R-X.
-> > > >=20
-> > > > - Load the code in an RW- page. Remap the page with R-X to get a se=
-parate
-> > > >   mapping to the same underlying physical page.
-> > > >=20
-> > > > IMO, these are all security holes as an attacker can exploit them t=
-o inject
-> > > > his own code.
-> > >=20
-> > > IMO, you are smoking crack^H^H very seriously misunderstanding what
-> > > W^X is supposed to protect from.
-> > >=20
-> > > W^X is not supposed to protect you from attackers that can already do
-> > > system calls. So loading code into a file then mapping the file as R-X
-> > > is in no way security hole in W^X.
-> > >=20
-> > > If you want to provide protection from attackers that _can_ do system
-> > > calls, fine, but please don't talk about W^X and please specify what
-> > > types of attacks you want to prevent and why that's good thing.
-> >=20
-> > On one hand, Pavel is absolutely right.  It is ridiculous to say that
-> > "these are all security holes as an attacker can exploit them to inject
-> > his own code."
->=20
-> I stand corrected, due to Brad's tweet and follow-ups here:
->=20
-> https://twitter.com/spendergrsec/status/1308728284390318082
->=20
-> It sure does make sense to combine ret2libc/ROP to mprotect() with one's
-> own injected shellcode.  Compared to doing everything from ROP, this is
-> easier and more reliable across versions/builds if the desired
-> payload
-
-Ok, so this starts to be a bit confusing.
-
-I thought W^X is to protect from attackers that have overflowed buffer
-somewhere, but can not to do arbitrary syscalls, yet.
-
-You are saying that there's important class of attackers that can do
-some syscalls but not arbitrary ones.
-
-I'd like to see definition of that attacker (and perhaps description
-of the system the protection is expected to be useful on -- if it is
-not close to common Linux distros).
-
-Best regards,
-
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---fUYQa+Pmc3FrFX/N
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX2tnSwAKCRAw5/Bqldv6
-8i65AKCaFokdFtwbykoqIQdSHvCvSHOLDQCdFG4dtfWtOuYiT5+Qq+ozWoM46eM=
-=Ferp
------END PGP SIGNATURE-----
-
---fUYQa+Pmc3FrFX/N--
