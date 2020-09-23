@@ -2,126 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B76275F77
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 20:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C727275F90
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 20:17:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726706AbgIWSJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 14:09:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58434 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726674AbgIWSJp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 14:09:45 -0400
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726636AbgIWSRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 14:17:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49878 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726557AbgIWSRh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 14:17:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600885055;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=jgZKBASAdOPCe+dZxTfTeplwc7t5VMKQw5zF/QhNk4E=;
+        b=e6atXzfRJPP4LtHbPqkubqIsuBfA87i9z4c4ci8FGEQ3m+B/KUznz2atyKymtsM4l/oZnC
+        vSJuAygcFDvc23i0ScrqwuFS/x1s6sExSsdpYqFmEPACG4dckfaLDi3ximMgQsTjKONBOO
+        4tWcmD3CYCjYx819vC5LVq5y17hJF94=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-179-4bx5UWG8ObywqRpplFOaSQ-1; Wed, 23 Sep 2020 14:17:33 -0400
+X-MC-Unique: 4bx5UWG8ObywqRpplFOaSQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A216238D7
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 18:09:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600884584;
-        bh=0sQpYjrO1FEOUdJEyt75wZRgQiNVOyCLQf75CE6PFHk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=oGNukZ1XzS6+01unsngiaWE+87lr66kpPInuBoy/nJdJAwRXJ3MMlxk++8egYoI+l
-         uYqjaOFRo6XImKO5Xgc7VG7K8JPLOLjY/WBGg+8qNiErRQvMbi06E9ylJM0RYc2rP3
-         xNjnr+21fWQcIlSZqvNMaM83CpvisjcgTDpWjjiw=
-Received: by mail-wr1-f54.google.com with SMTP id a17so1027327wrn.6
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 11:09:44 -0700 (PDT)
-X-Gm-Message-State: AOAM531UOc9nAWb6jLloUAuuvmft3ctvvjkhvgG1kOyJOHAR+/Tbdrld
-        VP96UZS2eFn6cdVVjbGXeM/Op95g4bsOyfGxDf4fmA==
-X-Google-Smtp-Source: ABdhPJwfMfqd9rmUBSaNu+esX7OO7HDQLQ/5mB6cl8BJqHE3Ip+CBSog/eVQL5KyNSbUahOo8NC7kD0pV+eTdSv397I=
-X-Received: by 2002:adf:a3c3:: with SMTP id m3mr947291wrb.70.1600884582830;
- Wed, 23 Sep 2020 11:09:42 -0700 (PDT)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D42191007464;
+        Wed, 23 Sep 2020 18:17:30 +0000 (UTC)
+Received: from virtlab719.virt.lab.eng.bos.redhat.com (virtlab719.virt.lab.eng.bos.redhat.com [10.19.153.15])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BF8215C1C7;
+        Wed, 23 Sep 2020 18:17:21 +0000 (UTC)
+From:   Nitesh Narayan Lal <nitesh@redhat.com>
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        frederic@kernel.org, mtosatti@redhat.com, sassmann@redhat.com,
+        jesse.brandeburg@intel.com, lihong.yang@intel.com,
+        helgaas@kernel.org, nitesh@redhat.com, jeffrey.t.kirsher@intel.com,
+        jacob.e.keller@intel.com, jlelli@redhat.com, hch@infradead.org,
+        bhelgaas@google.com, mike.marciniszyn@intel.com,
+        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
+        jerinj@marvell.com, mathias.nyman@intel.com, jiri@nvidia.com,
+        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org
+Subject: [PATCH v2 0/4] isolation: limit msix vectors based on housekeeping CPUs
+Date:   Wed, 23 Sep 2020 14:11:22 -0400
+Message-Id: <20200923181126.223766-1-nitesh@redhat.com>
 MIME-Version: 1.0
-References: <20200922215326.4603-1-madvenka@linux.microsoft.com>
- <20200923081426.GA30279@amd> <20200923091456.GA6177@openwall.com> <87wo0ko8v0.fsf@oldenburg2.str.redhat.com>
-In-Reply-To: <87wo0ko8v0.fsf@oldenburg2.str.redhat.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 23 Sep 2020 11:09:29 -0700
-X-Gmail-Original-Message-ID: <CALCETrUqct4tDrjTSzJG4+=+cEaaDbZ+Mx=LAUdQjVV=CruUcw@mail.gmail.com>
-Message-ID: <CALCETrUqct4tDrjTSzJG4+=+cEaaDbZ+Mx=LAUdQjVV=CruUcw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] [RFC] Implement Trampoline File Descriptor
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     Solar Designer <solar@openwall.com>, Pavel Machek <pavel@ucw.cz>,
-        "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>, X86 ML <x86@kernel.org>,
-        Andrew Lutomirski <luto@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
-        Rich Felker <dalias@libc.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 7:39 AM Florian Weimer <fweimer@redhat.com> wrote:
->
-> * Solar Designer:
->
-> > While I share my opinion here, I don't mean that to block Madhavan's
-> > work.  I'd rather defer to people more knowledgeable in current userland
-> > and ABI issues/limitations and plans on dealing with those, especially
-> > to Florian Weimer.  I haven't seen Florian say anything specific for or
-> > against Madhavan's proposal, and I'd like to.  (Have I missed that?)
->
-> There was a previous discussion, where I provided feedback (not much
-> different from the feedback here, given that the mechanism is mostly the
-> same).
->
-> I think it's unnecessary for the libffi use case.  Precompiled code can
-> be loaded from disk because the libffi trampolines are so regular.  On
-> most architectures, it's not even the code that's patched, but some of
-> the data driving it, which happens to be located on the same page due to
-> a libffi quirk.
->
-> The libffi use case is a bit strange anyway: its trampolines are
-> type-generic, and the per-call adjustment is data-driven.  This means
-> that once you have libffi in the process, you have a generic
-> data-to-function-call mechanism available that can be abused (it's even
-> fully CET compatible in recent versions).  And then you need to look at
-> the processes that use libffi.  A lot of them contain bytecode
-> interpreters, and those enable data-driven arbitrary code execution as
-> well.  I know that there are efforts under way to harden Python, but
-> it's going to be tough to get to the point where things are still
-> difficult for an attacker once they have the ability to make mprotect
-> calls.
->
-> It was pointed out to me that libffi is doing things wrong, and the
-> trampolines should not be type-generic, but generated so that they match
-> the function being called.  That is, the marshal/unmarshal code would be
-> open-coded in the trampoline, rather than using some generic mechanism
-> plus run-time dispatch on data tables describing the function type.
-> That is a very different design (and typically used by compilers (JIT or
-> not JIT) to implement native calls).  Mapping some code page with a
-> repeating pattern would no longer work to defeat anti-JIT measures
-> because it's closer to real JIT.  I don't know if kernel support could
-> make sense in this context, but it would be a completely different
-> patch.
+This is a follow-up posting for "[RFC v1 0/3] isolation: limit msix vectors
+based on housekeeping CPUs".
 
-I would very much like to see a well-designed kernel facility for
-helping userspace do JIT in a safer manner, but designing such a thing
-is likely to be distinctly nontrivial.  To throw a half-backed idea
-out there, suppose a program could pre-declare a list of JIT
-verifiers:
 
-static bool ffi_trampoline_verifier(void *target_address, size_t
-target_size, void *source_data, void *context);
+Issue
+=====
+With the current implementation device drivers while creating their MSIX        
+vectors only take num_online_cpus() into consideration which works quite well  
+for a non-RT environment, but in an RT environment that has a large number of   
+isolated CPUs and very few housekeeping CPUs this could lead to a problem.    
+The problem will be triggered when something like tuned will try to move all    
+the IRQs from isolated CPUs to the limited number of housekeeping CPUs to       
+prevent interruptions for a latency-sensitive workload that will be running on   
+the isolated CPUs. This failure is caused because of the per CPU vector         
+limitation.                                                                     
 
-struct jit_verifier {
-  .magic = 0xMAGIC_HERE,
-  .verifier = ffi_trampoline_verifier,
-} my_verifier __attribute((section("something special here?)));
 
-and then a system call something like:
+Proposed Fix
+============
+In this patch-set, the following changes are proposed:
+- A generic API hk_num_online_cpus() which is meant to return the online
+  housekeeping CPUs that are meant to handle managed IRQ jobs.
+- i40e: Specifically for the i40e driver the num_online_cpus() used in 
+  i40e_init_msix() to calculate numbers msix vectors is replaced with the above
+  defined API. This is done to restrict the number of msix vectors for i40e in
+  RT environments.
+- pci_alloc_irq_vector(): With the help of hk_num_online_cpus() the max_vecs
+  passed in pci_alloc_irq_vector() is restricted only to the online
+  housekeeping CPUs only in an RT environment. However, if the min_vecs exceeds
+  the online housekeeping CPUs, max_vecs is limited based on the min_vecs
+  instead.
 
-instantiate_jit_code(target, source, size, &my_verifier, context);
 
-The idea being that even an attacker that can force a call to
-instantiate_jit_code() can only create code that passes verification
-by one of the pre-declared verifiers in the process.
+Future Work
+===========
+
+- In the previous upstream discussion [1], it was decided that it would be
+  better if we can have a generic framework that can be consumed by all the
+  drivers to  fix this kind of issue. However, it will be a long term work,
+  and since there are RT workloads that are getting impacted by the reported
+  issue. We agreed upon the proposed per-device approach for now.
+
+
+Testing
+=======
+Functionality:
+- To test that the issue is resolved with i40e change I added a tracepoint
+  in i40e_init_msix() to find the number of CPUs derived for vector creation
+  with and without tuned's realtime-virtual-host profile. As per expectation
+  with the profile applied I was only getting the number of housekeeping CPUs
+  and all available CPUs without it.
+  Similarly did a few more tests with different modes eg with only
+  nohz_full, isolcpus etc.
+
+Performance:
+- To analyze the performance impact I have targetted the change introduced in 
+  pci_alloc_irq_vectors() and compared the results against a vanilla kernel
+  (5.9.0-rc3) results.
+
+  Setup Information:
+  + I had a couple of 24-core machines connected back to back via a couple of
+    mlx5 NICs and I analyzed the average bitrate for server-client TCP and UDP
+    transmission via iperf. 
+  + To minimize the Bitrate variation of iperf TCP and UDP stream test I have
+    applied the tuned's network-throughput profile and disabled HT.
+ Test Information:
+  + For the environment that had no isolated CPUs:
+    I have tested with single stream and 24 streams (same as that of online
+    CPUs).
+  + For the environment that had 20 isolated CPUs:
+    I have tested with single stream, 4 streams (same as that the number of
+    housekeeping) and 24 streams (same as that of online CPUs).
+
+ Results:
+  # UDP Stream Test:
+    + There was no degradation observed in UDP stream tests in both
+      environments. (With isolated CPUs and without isolated CPUs after the
+      introduction of the patches).
+  # TCP Stream Test - No isolated CPUs:
+    + No noticeable degradation was observed.
+  # TCP Stream Test - With isolated CPUs:
+    + Multiple Stream (4)  - Average degradation of around 5-6%
+    + Multiple Stream (24) - Average degradation of around 2-3%
+    + Single Stream        - Even on a vanilla kernel the Bitrate observed for
+                             a TCP single stream test seem to vary
+                             significantly across different runs (eg. the %
+                             variation between the best and the worst case on
+                             a vanilla kernel was around 8-10%). A similar
+                             variation was observed with the kernel that
+                             included my patches. No additional degradation
+                             was observed.
+
+If there are any suggestions for more performance evaluation, I would
+be happy to discuss/perform them.
+
+Changes from v1[2]:
+==================
+Patch1:                                                                       
+- Replaced num_houskeeeping_cpus() with hk_num_online_cpus() and started using
+  the cpumask corresponding to HK_FLAG_MANAGED_IRQ to derive the number of
+  online housekeeping CPUs. This is based on Frederic Weisbecker's suggestion.                                           
+- Since the hk_num_online_cpus() is self-explanatory, got rid of             
+  the comment that was added previously.                                     
+Patch2:                                                                       
+- Added a new patch that is meant to enable managed IRQ isolation for nohz_full
+  CPUs. This is based on Frederic Weisbecker's suggestion.              
+Patch4 (PCI):                                                                 
+- For cases where the min_vecs exceeds the online housekeeping CPUs, instead
+  of skipping modification to max_vecs, started restricting it based on the
+  min_vecs. This is based on a suggestion from Marcelo Tosatti.                                                                    
+
+[1] https://lore.kernel.org/lkml/20200922095440.GA5217@lenoir/
+[2] https://lore.kernel.org/lkml/20200909150818.313699-1-nitesh@redhat.com/
+
+Nitesh Narayan Lal (4):
+  sched/isolation: API to get housekeeping online CPUs
+  sched/isolation: Extend nohz_full to isolate managed IRQs
+  i40e: limit msix vectors based on housekeeping CPUs
+  PCI: Limit pci_alloc_irq_vectors as per housekeeping CPUs
+
+ drivers/net/ethernet/intel/i40e/i40e_main.c |  3 ++-
+ include/linux/pci.h                         | 15 +++++++++++++++
+ include/linux/sched/isolation.h             | 13 +++++++++++++
+ kernel/sched/isolation.c                    |  2 +-
+ 4 files changed, 31 insertions(+), 2 deletions(-)
+
+-- 
+
+
