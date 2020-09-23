@@ -2,114 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C92C7274D90
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 02:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 484C7274D94
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 02:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726992AbgIWAB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 20:01:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726641AbgIWAB2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 20:01:28 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BDDFC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 17:01:28 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id k14so13230419pgi.9
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 17:01:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zCzet71T0DTkaVJKD74uRfQOUvTA6fuxWbEiPIVm6E8=;
-        b=SwhruGZPJWXUFTSoLEOYcIZg7eJuuW27uXsEhgEw3jnStd01TC+Ne5rg/aFvTx0v/9
-         IzhXjoc62AWOUKNum84yikEf1uIm2oaRyWxmxhj6Ijq/Gprvm9qJQxdLef3Az+F+AetT
-         K4pRJmUf8puuK7N5tgnF680B6ZmZWDN+TO4O2Og9SUb8RIA1bfNSJHS8JcGZpTFdkn8G
-         XndnFxT22EfiNdPkv5EIE84kb8DzXr3l5Yb1VgqzPfAZ4v3uuuQ8/fKfQIiq+uZO12D2
-         823PYjSPnuGPlErKp7SeDP553g65lQu/ChU0+lskWrj/nYLb818Q0GxsQvjLtq1brIYv
-         FAOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zCzet71T0DTkaVJKD74uRfQOUvTA6fuxWbEiPIVm6E8=;
-        b=d/Y1/BEJF/U6w15VAaAxT6UD3cKscecfEn8t7nEbJyCo5tQ9mV8UOLs5jvoVBTnwWg
-         MK6LfdkUNIfpCoj590lH7KgZvGGrJXIrkFwbx5NCschghAdbwNpFi0HnpGrNFd6fjbOb
-         4yIwEKrZtfK/KGPMtZraM3d9lsU1OV8BzUylOMniU6KE7fUfo+YPY78LvMBWz4lzhxv+
-         4HNPTSoMJBR7F87hzfHy0aU+Ce+iELGAnk4CZx4TAVkxL/dEHSzL5wOH3ISj8IyGQar4
-         ByM878cuTCz1rTPFpzqgDOalHfAZWCUiibhHda1+qVpOU6nR/vGBO1mVZscE5HZf5E22
-         2Y9g==
-X-Gm-Message-State: AOAM5335ImldunbYHEVy1ddIuYEC9/72mFVwWY9P3EwVjJebIiDL9S2g
-        E59egLYESOvonFS3Ue4Dtoq4UnHT5ii4TQ==
-X-Google-Smtp-Source: ABdhPJxIPs65by9ZDnbt0crzTKqvVAuKP9Fj1E4gGS2thAfOOflLwxNNLhGV7OLx36UAj3o1msJLLw==
-X-Received: by 2002:a62:2985:0:b029:142:2501:34d6 with SMTP id p127-20020a6229850000b0290142250134d6mr6117808pfp.47.1600819288177;
-        Tue, 22 Sep 2020 17:01:28 -0700 (PDT)
-Received: from hermes.lan (204-195-22-127.wavecable.com. [204.195.22.127])
-        by smtp.gmail.com with ESMTPSA id mh8sm3009664pjb.32.2020.09.22.17.01.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 17:01:27 -0700 (PDT)
-Date:   Tue, 22 Sep 2020 17:01:19 -0700
-From:   Stephen Hemminger <stephen@networkplumber.org>
-To:     Jay Vosburgh <jay.vosburgh@canonical.com>
-Cc:     Jarod Wilson <jarod@redhat.com>, linux-kernel@vger.kernel.org,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
-Subject: Re: [PATCH net-next 4/5] bonding: make Kconfig toggle to disable
- legacy interfaces
-Message-ID: <20200922170119.079fe32f@hermes.lan>
-In-Reply-To: <17374.1600818427@famine>
-References: <20200922133731.33478-1-jarod@redhat.com>
-        <20200922133731.33478-5-jarod@redhat.com>
-        <20200922162459.3f0cf0a8@hermes.lan>
-        <17374.1600818427@famine>
+        id S1726728AbgIWADg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 20:03:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50418 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726179AbgIWADf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 20:03:35 -0400
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E775B20757;
+        Wed, 23 Sep 2020 00:03:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600819414;
+        bh=i58ypvkgLjLghB96ZUovykSRgFAs1lf7vEOaMTuu5Z0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Ivo+aU4F5Ovmissa17bOszq2nvN9ZTM3cWJly+f8zqpNzwl7YJgM2EE73uxWKeQJB
+         4M6kJwy4roA+eqG61qZ+l7Pj1GYBHyuY20bXET9eqIYpxAO5Te+tKONQRBSV7Fm0zP
+         YeO7SMS+14z/pr5mVD69WJI3BPmpg7I77fWUIn0g=
+Received: by mail-lf1-f42.google.com with SMTP id b22so19966054lfs.13;
+        Tue, 22 Sep 2020 17:03:33 -0700 (PDT)
+X-Gm-Message-State: AOAM530FTaTdojpQsGgqT38GLofHBOx6ixxqtvVtqQhSPvLtBVAlGsAH
+        roFe6HUBH1Wj6sHrpsG0wPV7ErU6NAw7FI+Xz1w=
+X-Google-Smtp-Source: ABdhPJxzsHes4chXBhlUMVanCfLt3orAEKdPUPooP+Scdvmd2OOjL177tqamlgnbhh0pF+87gQqTIf5p9KgcxPdEvoI=
+X-Received: by 2002:a19:a41a:: with SMTP id q26mr2281545lfc.121.1600819412236;
+ Tue, 22 Sep 2020 17:03:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20200922091505.471-1-zhenzhong.duan@gmail.com> <20200922162901.GA3421308@ZenIV.linux.org.uk>
+In-Reply-To: <20200922162901.GA3421308@ZenIV.linux.org.uk>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Wed, 23 Sep 2020 08:03:20 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTSMWc_=j1NKCTXqhLj7cmSB_A3dYB7nL4F7H3jqT+u38A@mail.gmail.com>
+Message-ID: <CAJF2gTSMWc_=j1NKCTXqhLj7cmSB_A3dYB7nL4F7H3jqT+u38A@mail.gmail.com>
+Subject: Re: [PATCH] csky: Fix a size determination in gpr_get()
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Zhenzhong Duan <zhenzhong.duan@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Sep 2020 16:47:07 -0700
-Jay Vosburgh <jay.vosburgh@canonical.com> wrote:
+Thx Duan,
 
-> Stephen Hemminger <stephen@networkplumber.org> wrote:
-> 
-> >On Tue, 22 Sep 2020 09:37:30 -0400
-> >Jarod Wilson <jarod@redhat.com> wrote:
-> >  
-> >> By default, enable retaining all user-facing API that includes the use of
-> >> master and slave, but add a Kconfig knob that allows those that wish to
-> >> remove it entirely do so in one shot.
-> >> 
-> >> Cc: Jay Vosburgh <j.vosburgh@gmail.com>
-> >> Cc: Veaceslav Falico <vfalico@gmail.com>
-> >> Cc: Andy Gospodarek <andy@greyhouse.net>
-> >> Cc: "David S. Miller" <davem@davemloft.net>
-> >> Cc: Jakub Kicinski <kuba@kernel.org>
-> >> Cc: Thomas Davis <tadavis@lbl.gov>
-> >> Cc: netdev@vger.kernel.org
-> >> Signed-off-by: Jarod Wilson <jarod@redhat.com>  
+Acked-by: Guo Ren <guoren@kernel.org>
+
+Hi AI,
+
+I found the broken commit still has a question:
+
+> commit dcad7854fcce6a2d49b6a3ead5bbefeff047e559
+> Author: Al Viro <viro@zeniv.linux.org.uk>
+> Date:   Tue Jun 16 15:28:29 2020 -0400
+
+>    csky: switch to ->regset_get()
+
+>    NB: WTF "- what the fuck :(" is fpregs_get() playing at???
+The fpregs_get() is for REGSET_FPR regset used by ptrace (gdb) and all
+fp regs are stored in threads' context.
+So, WTF question for?
+
+Best Regards
+ Guo Ren
+
+On Wed, Sep 23, 2020 at 12:29 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> On Tue, Sep 22, 2020 at 05:15:05PM +0800, Zhenzhong Duan wrote:
+> > "*" is missed  in size determination as we are passing register set
+> > rather than a pointer.
+>
+> Ack.  I can push it to Linus today, unless you want it to go through
+> csky tree.  Preferences?
+>
+> > Fixes: dcad7854fcce ("sky: switch to ->regset_get()")
+> > Signed-off-by: Zhenzhong Duan <zhenzhong.duan@gmail.com>
+> > ---
+> >  arch/csky/kernel/ptrace.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
 > >
-> >Why not just have a config option to remove all the /proc and sysfs options
-> >in bonding (and bridging) and only use netlink? New tools should be only able
-> >to use netlink only.  
-> 
-> 	I agree that new tooling should be netlink, but what value is
-> provided by such an option that distros are unlikely to enable, and
-> enabling will break the UAPI?
-> 
-> >Then you might convince maintainers to update documentation as well.
-> >Last I checked there were still references to ifenslave.  
-> 
-> 	Distros still include ifenslave, but it's now a shell script
-> that uses sysfs.  I see it used in scripts from time to time.
+> > diff --git a/arch/csky/kernel/ptrace.c b/arch/csky/kernel/ptrace.c
+> > index d822144906ac..a4cf2e2ac15a 100644
+> > --- a/arch/csky/kernel/ptrace.c
+> > +++ b/arch/csky/kernel/ptrace.c
+> > @@ -83,7 +83,7 @@ static int gpr_get(struct task_struct *target,
+> >       /* Abiv1 regs->tls is fake and we need sync here. */
+> >       regs->tls = task_thread_info(target)->tp_value;
+> >
+> > -     return membuf_write(&to, regs, sizeof(regs));
+> > +     return membuf_write(&to, regs, sizeof(*regs));
+> >  }
+> >
+> >  static int gpr_set(struct task_struct *target,
+> > --
+> > 2.25.1
+> >
 
-Some bleeding edge distros have already dropped ifenslave and even ifconfig.
-The Enterprise ones never will.
 
-The one motivation would be for the embedded folks which are always looking
-to trim out the fat. Although not sure if the minimal versions of commands
-in busybox are pure netlink yet.
+
+-- 
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
