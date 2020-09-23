@@ -2,269 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D732762F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 23:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6095F2762F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 23:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726643AbgIWVMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 17:12:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726419AbgIWVMx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 17:12:53 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7289AC0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 14:12:53 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id b12so1177204edz.11
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 14:12:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lnTcNK2k5fhZGNVa9CuuWbk6pDcOcS1Nz4vHbVvTkuU=;
-        b=WUQJzX6RFjg4AvlvsUiAgpD4njD/IuA8/hukmCvV0irPWx4lmWaso1x3YGr0l5Nr7g
-         AWApXVWhaXrLyGUvwdqg2I2cGxDP81sDjlBOu8uLIlTP3Q27m/7parwErgy/eHcxrxuj
-         YAvcWDOqT+0g+LWWOGZqz/d5jNijbq42P1rzjy3jdW/tNly17+13qwHiPp0Om1y2Dr8R
-         iNJ87HrwniQBvXBQBQotNuioOSjgpg8Z/UADm1uQk9lXHCi0O2e/dVVTzqWg1ThkVEkE
-         L2+NunMgbDpzS+klTrv/18uvOL+IZ7dqyTUvwWWjhRg3oeN5woDGpaTkMZ/apWLIluJf
-         0JiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lnTcNK2k5fhZGNVa9CuuWbk6pDcOcS1Nz4vHbVvTkuU=;
-        b=I8xlnzlYiQelPlGeiLzBukvUdfJZ1BCp8l1z4296kJeaqjvuV99OEOO1Qa0Os3c+xy
-         yrqPCGAz87KfJUzUoMtAe9CY4c8l9LQ80enazi8zNbFPKf4Pe6hxgOpXxdx8iZ76iZYo
-         f4P6dvjz/IuHJsOHnrdY7s2J4oFjv/nTMVkKuc0th1CmUv/AQaqEOvBOiEucwlP2UFiG
-         aOBq4Uv8T9jSV8oyzs7mLZUFHkmhpWw8FTKj+JmWheVGjDRa9n9hMMbfXWvgCbNHNiog
-         3tSJHYrTutCheQ0YgZslZMm/DuP+HqM9uNSLYf00C7zj/hzfuiUSC9E0cjPbPKdZE6eD
-         QPrg==
-X-Gm-Message-State: AOAM531aosRxkmdKS00ja6RQ7YJC3exXJ0bn9Anm+04nZ6sA5MD0nWAJ
-        KkiJ4T7IH8ujbU0k1adqMpU=
-X-Google-Smtp-Source: ABdhPJz6jKe6ym3iMeOo/AVaDHAXT39sS4h73JExvhoZ2DPW4zHYyGWuIqGc0FWsokk3d35eonytbQ==
-X-Received: by 2002:aa7:c70a:: with SMTP id i10mr1322163edq.218.1600895571951;
-        Wed, 23 Sep 2020 14:12:51 -0700 (PDT)
-Received: from [192.168.2.202] (pd9e5a9df.dip0.t-ipconnect.de. [217.229.169.223])
-        by smtp.gmail.com with ESMTPSA id i3sm856497edn.55.2020.09.23.14.12.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Sep 2020 14:12:51 -0700 (PDT)
-Subject: Re: [RFC PATCH 6/9] surface_aggregator: Add dedicated bus and device
- type
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
-        Dorian Stoll <dorian.stoll@tmsp.io>
-References: <20200923151511.3842150-1-luzmaximilian@gmail.com>
- <20200923151511.3842150-7-luzmaximilian@gmail.com>
- <20200923173308.GA3965283@kroah.com>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <bdb02c89-2290-f53f-65a1-fd2b42fc98a2@gmail.com>
-Date:   Wed, 23 Sep 2020 23:12:49 +0200
+        id S1726476AbgIWVR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 17:17:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52244 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726199AbgIWVR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 17:17:58 -0400
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2C79521D43;
+        Wed, 23 Sep 2020 21:17:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600895877;
+        bh=Fv8vjLo6iV8lbW6twrAEQbbeDfVmj2mS7ucahi9brMI=;
+        h=Reply-To:Subject:To:References:From:Date:In-Reply-To:From;
+        b=P7LJNpq33eIqcl75C25zSbP9kRjDF/yfAVqXWLZVnDNz/R3W4wP8ehlr5tTYWYuze
+         dlowemphyzxA3j7ZhyeIQJiqB+PxFs/xm2ujk3PgrQa86x9ZzrpwlcqHX0dDbZA/Gz
+         St0Hqy0P1ynT3HA+ovll5OY9Gp1O05PH539DHMY4=
+Reply-To: kbingham@kernel.org
+Subject: Re: [PATCH] scripts/gdb: fix list_for_each
+To:     George Prekas <prekageo@amazon.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        linux-kernel@vger.kernel.org
+References: <3b382958-9f1d-a3d2-a239-09ba084227e6@amazon.com>
+ <2516a051-306f-670b-1f9e-d46fc577c7f8@siemens.com>
+ <109fe98d-4143-cfd3-b145-8d5fee189f63@amazon.com>
+ <25111834-a414-e380-1e61-c1b1c0e766cb@kernel.org>
+ <d694a1f7-e1c9-2631-12e2-a17abaf004da@amazon.com>
+From:   Kieran Bingham <kbingham@kernel.org>
+Autocrypt: addr=kbingham@kernel.org; keydata=
+ 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
+Message-ID: <0a687830-a334-60ba-7a65-f25342139e08@kernel.org>
+Date:   Wed, 23 Sep 2020 22:17:53 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200923173308.GA3965283@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <d694a1f7-e1c9-2631-12e2-a17abaf004da@amazon.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/23/20 7:33 PM, Greg Kroah-Hartman wrote:
-> On Wed, Sep 23, 2020 at 05:15:08PM +0200, Maximilian Luz wrote:
-[...]
-
-> Overall, nice work on this patch, the integration to the driver core
-> looks totally correct.  Great job.
-
-Thanks!
-
-> A few minor nits below:
+On 23/09/2020 14:13, George Prekas wrote:
+> Hi Kieran,
 > 
->> --- /dev/null
->> +++ b/drivers/misc/surface_aggregator/bus.c
->> @@ -0,0 +1,419 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +
+> On 9/22/2020 2:11 PM, Kieran Bingham wrote:
+>> Hi George,
+>>
+>> On 22/09/2020 18:17, Prekas, George wrote:
+>>>
+>>> On 9/22/2020 9:32 AM, Jan Kiszka wrote:
+>>>>
+>>>> On 22.09.20 16:28, George Prekas wrote:
+>>>>> If the next pointer is NULL, list_for_each gets stuck in an infinite
+>>>>> loop.
+>>>>>
+>>>>> Signed-off-by: George Prekas <prekageo@amazon.com>
+>>>>> ---
+>>>>>    scripts/gdb/linux/lists.py | 2 ++
+>>>>>    1 file changed, 2 insertions(+)
+>>>>>
+>>>>> diff --git a/scripts/gdb/linux/lists.py b/scripts/gdb/linux/lists.py
+>>>>> index c487ddf09d38..424a91c1aa8b 100644
+>>>>> --- a/scripts/gdb/linux/lists.py
+>>>>> +++ b/scripts/gdb/linux/lists.py
+>>>>> @@ -27,6 +27,8 @@ def list_for_each(head):
+>>>>>            raise TypeError("Must be struct list_head not {}"
+>>>>>                               .format(head.type))
+>>>>>
+>>>>> +    if head['next'] == 0:
+>>>>> +        return
+>>>>>        node = head['next'].dereference()
+>>>>>        while node.address != head.address:
+>>>>>            yield node.address
+>>>>
+>>>> Obviously, infinite loops are bad and should be avoided. But NULL is
+>>>> bug, isn't it? Shouldn't we report such a corruption?
+>>>>
+>>>
+>>> Hi Jan,
+>>>
+>>> Is it a bug? Or does it mean that the list is empty?
+>>
+>> A correctly initialised (empty) list_head has the next, and prev
+>> pointers pointing to itself
+>>
 > 
-> No copyright?
-
-As with the other files, I forgot to add that.
-
-[...]
-
->> +int ssam_device_add(struct ssam_device *sdev)
->> +{
->> +	int status;
->> +
->> +	/*
->> +	 * Ensure that we can only add new devices to a controller if it has
->> +	 * been started and is not going away soon. This works in combination
->> +	 * with ssam_controller_remove_clients to ensure driver presence for the
->> +	 * controller device, i.e. it ensures that the controller (sdev->ctrl)
->> +	 * is always valid and can be used for requests as long as the client
->> +	 * device we add here is registered as child under it. This essentially
->> +	 * guarantees that the client driver can always expect the preconditions
->> +	 * for functions like ssam_request_sync (controller has to be started
->> +	 * and is not suspended) to hold and thus does not have to check for
->> +	 * them.
->> +	 *
->> +	 * Note that for this to work, the controller has to be a parent device.
->> +	 * If it is not a direct parent, care has to be taken that the device is
->> +	 * removed via ssam_device_remove(), as device_unregister does not
->> +	 * remove child devices recursively.
->> +	 */
->> +	ssam_controller_statelock(sdev->ctrl);
->> +
->> +	if (READ_ONCE(sdev->ctrl->state) != SSAM_CONTROLLER_STARTED) {
+> You are right, actually.
 > 
-> You locked the state, why the READ_ONCE()?  Is taht needed?
-
-At this point, no. I have, at some point, decided that, since I do
-access the state outside of that lock at some point (specifically when
-submitting the request in ssam_request_sync_submit() to detect mis-use
-of the AP), that I'm going to mark them all as READ_ONCE. Mostly
-because, due to that one check, I have to set the state via WRITE_ONCE.
-Note that that check accessing it outside of the lock is a very basic
-validity check and actually doesn't guarantee _anything_. Again, it's
-just there to try and spot bad API usage. Every actually valid access to
-the state should be locked, so the rest doesn't need the READ_ONCE. I
-can remove those if you want me to.
-
->> +		ssam_controller_stateunlock(sdev->ctrl);
->> +		return -ENXIO;
+>>
+>>> Let me give some background. If you do the following:
+>>>
+>>> $ qemu-system-x86_64 -nographic -m 1024 -kernel
+>>> build/arch/x86/boot/bzImage -s -S < /dev/null > /dev/null &
+>>> $ gdb -q build/vmlinux -ex 'target remote localhost:1234' -iex 'set
+>>> auto-load safe-path /' -ex 'lx-symbols'
+>>
+>> I suspect this is trying to load modules before the kernel is actually
+>> fully loaded and running, so nothing is yet initialised.
+>>
+>>
+>>> You will see:
+>>>
+>>> loading vmlinux
+>>> scanning for modules in /home/ubuntu/linux-5.8.10
+>>> no module object found for ''
+>>>
+>>> And the last line repeats forever. This happens because modules.next ==
+>>> NULL. This is the Python stack trace:
+>>>
+>>>[...]
+>>>
+>>> This patch tries to fix the above problem.
+>>
+>> Does it fix it for you ?
+>>
+>> I expect it allows the boot process to continue, but the lx-symbols
+>> command will not have completed successfully (or rather I expect it will
+>> not have found anything to load).
+>>
+>> I suspect adding defensive checks in here might be helpful but I think
+>> the reality is the code is being called at the wrong time.
+>>
+>> The fact that it 'can' be called at the wrong time is where we might
+>> need to be more defensive.
+>>
 > 
-> odd error value, why this one?
-
-I generally use -ENXIO to indicate that the controller device is not
-present, has not been initialized yet, or is being/has been shut down.
-The error here will be caused by the controller going away (or having
-been suspended) after the device has been created and befor the device
-is added. I guess in case of shutdown, -ESHUTDOWN may be better, but
-then I'm not sure what to return when the controller is suspended.
-
->> +/**
->> + * struct ssam_device_uid - Unique identifier for SSAM device.
->> + * @domain:   Domain of the device.
->> + * @category: Target category of the device.
->> + * @target:   Target ID of the device.
->> + * @instance: Instance ID of the device.
->> + * @function: Sub-function of the device. This field can be used to split a
->> + *            single SAM device into multiple virtual subdevices to separate
->> + *            different functionality of that device and allow one driver per
->> + *            such functionality.
->> + */
->> +struct ssam_device_uid {
->> +	u8 domain;
->> +	u8 category;
->> +	u8 target;
->> +	u8 instance;
->> +	u8 function;
->> +};
->> +
->> +/*
->> + * Special values for device matching.
->> + */
->> +#define SSAM_ANY_TID		0xffff
->> +#define SSAM_ANY_IID		0xffff
->> +#define SSAM_ANY_FUN		0xffff
+> At that point in time, the kernel has not even started so it does not
+> have any loaded modules. In fact, as you said, the modules linked list
+> is uninitialized. So with this patch, lx-symbols does not get stuck in
+> an infinite loop and loads only the vmlinux symbols.
 > 
-> These are 16 bits, but the uid values above are 8 bits.  How does that
-> match up?
-
-Those values are only intended for use with the SSAM_DEVICE() macro,
-where they are used to set the match flags. They're u16 so that they
-don't interfere with any potentially valid ID value (0x00 to 0xff). The
-lowest byte is specifically 0xff to make it easier to spot potential
-mis-use in the struct above, as that's an ID that, as far as I know,
-doesn't have any valid use (at least yet). They should never be used
-directly with the struct above, something I should probably clarify in
-the documentation.
-
->> +/**
->> + * SSAM_DEVICE() - Initialize a &struct ssam_device_id with the given
->> + * parameters.
->> + * @d:   Domain of the device.
->> + * @cat: Target category of the device.
->> + * @tid: Target ID of the device.
->> + * @iid: Instance ID of the device.
->> + * @fun: Sub-function of the device.
->> + *
->> + * Initializes a &struct ssam_device_id with the given parameters. See &struct
->> + * ssam_device_uid for details regarding the parameters. The special values
->> + * %SSAM_ANY_TID, %SSAM_ANY_IID, and %SSAM_ANY_FUN can be used to specify that
->> + * matching should ignore target ID, instance ID, and/or sub-function,
->> + * respectively. This macro initializes the ``match_flags`` field based on the
->> + * given parameters.
->> + */
->> +#define SSAM_DEVICE(d, cat, tid, iid, fun)					\
->> +	.match_flags = (((tid) != SSAM_ANY_TID) ? SSAM_MATCH_TARGET : 0)	\
->> +		     | (((iid) != SSAM_ANY_IID) ? SSAM_MATCH_INSTANCE : 0)	\
->> +		     | (((fun) != SSAM_ANY_FUN) ? SSAM_MATCH_FUNCTION : 0),	\
->> +	.domain   = d,								\
->> +	.category = cat,							\
->> +	.target   = ((tid) != SSAM_ANY_TID) ? (tid) : 0,			\
->> +	.instance = ((iid) != SSAM_ANY_IID) ? (iid) : 0,			\
->> +	.function = ((fun) != SSAM_ANY_FUN) ? (fun) : 0				\
+> Maybe, I should rephrase the commit message to say that list_for_each
+> gets stuck in an infinite loop on uninitialized linked lists.
 > 
-> Again, the 16 vs 8 bits here feels odd.  No casting???
-
-I could add casts, but I don't really see any reason why. All valid
-inputs for this macro are either u8 or SSAM_ANY_[TID,IID,FUN], for the
-respective parameter. Other values are considered invalid. So the
-assignment should, if used correctly, only ever assign u8 (zero in case
-of the one special value). I do somewhat hope that the compiler would
-complain about an overflow if someone entered any non-special fixed
-value larger than U8_MAX if I don't cast here. Casting would remove
-those warnings. I should probably explicitly say that the input type is
-u8 in the documentation though.
-
->> +/**
->> + * ssam_device_get() - Increment reference count of SSAM client device.
->> + * @sdev: The device to increment the reference count of.
->> + *
->> + * Increments the reference count of the given SSAM client device by
->> + * incrementing the reference count of the enclosed &struct device via
->> + * get_device().
->> + *
->> + * See ssam_device_put() for the counter-part of this function.
->> + *
->> + * Return: Returns the device provided as input.
->> + */
->> +static inline struct ssam_device *ssam_device_get(struct ssam_device *sdev)
->> +{
->> +	get_device(&sdev->dev);
->> +	return sdev;
+> Do you think that list_for_each should handle uninitialized lists? If
+> yes, how do you propose to handle them?
 > 
-> Do you want to check if sdev is NULL or not here before referencing
-> it?
-
-That would be a good idea.
-
->> +}
->> +
->> +/**
->> + * ssam_device_put() - Decrement reference count of SSAM client device.
->> + * @sdev: The device to decrement the reference count of.
->> + *
->> + * Decrements the reference count of the given SSAM client device by
->> + * decrementing the reference count of the enclosed &struct device via
->> + * put_device().
->> + *
->> + * See ssam_device_get() for the counter-part of this function.
->> + */
->> +static inline void ssam_device_put(struct ssam_device *sdev)
->> +{
->> +	put_device(&sdev->dev);
+> 1. Treat them as empty lists (this patch).
+> 2. Print a warning and treat them as empty lists.
+> 3. Raise exception and treat them as empty lists.
 > 
-> Same here, do you need to check?
-> 
-> anyway, again, nice work, if only all of my code reviews were this easy
-> :)
+> I would go with option 1. For traversal purposes an uninitialized list
+> is the same as an empty list; it has no elements. I am happy, though, to
+> change the patch to another option if you believe it would be better.
 
-Wow, thank you for the praise!
+I would choose 2 personally.
 
-Regards,
-Max
+While debugging, if anyone hits an uninitialised linked-list - that's a
+problem they want to know about, not ignore.
+
+--
+Kieran
+
+
+> -- 
+> George
+>
