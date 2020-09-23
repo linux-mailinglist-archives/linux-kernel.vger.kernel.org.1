@@ -2,122 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5425E275576
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E715275579
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726524AbgIWKVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 06:21:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgIWKVO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 06:21:14 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06077C0613CE;
-        Wed, 23 Sep 2020 03:21:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=O4A3QRP4HEH7pkY19EFh0K5o5RX6GGVTm9jhhlkiNIA=; b=pNi62cLpz5Zta9gkWwEt4lfxLS
-        MvhJOB6wShDmzS61MUaHO4PpqjGN9Sm/CRsoDDzFeOKdB1AsXqzPU0+ObaxataHs7GirJ6ZZrNA29
-        JPWLW2cWAsjQWQbdxWBW0dcBjYBOhFdcukcR730OctenEgtMdnxXFf2H16Xmyh8kGL1vudzudnTWS
-        vgNOihiXykvGZ4JuqnJtzxEEw21LcbXj/0WRtpi2vf37zyqZKGgA0xHxtS+lCluMZDHojS7jgks+j
-        aId3Dnzk0AyXRqRRmekuY3B5xhsSuZTtpZucjls9NPVPsQXWrpdBaC7TpOBBrZeOKsQtIyaebVCjb
-        X6rPNsiw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kL1sU-00033a-DF; Wed, 23 Sep 2020 10:19:58 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S1726573AbgIWKVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 06:21:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41814 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726130AbgIWKVX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 06:21:23 -0400
+Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0EA94301124;
-        Wed, 23 Sep 2020 12:19:54 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E35462B79EDA9; Wed, 23 Sep 2020 12:19:53 +0200 (CEST)
-Date:   Wed, 23 Sep 2020 12:19:53 +0200
-From:   peterz@infradead.org
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 759EE20C56;
+        Wed, 23 Sep 2020 10:21:22 +0000 (UTC)
+Date:   Wed, 23 Sep 2020 13:21:19 +0300
+From:   Leon Romanovsky <leonro@nvidia.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Jason Gunthorpe <jgg@ziepe.ca>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        "open list\:SYNOPSYS ARC ARCHITECTURE" 
-        <linux-snps-arc@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
-        linux-csky@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-sparc <sparclinux@vger.kernel.org>
-Subject: Re: [patch RFC 00/15] mm/highmem: Provide a preemptible variant of
- kmap_atomic & friends
-Message-ID: <20200923101953.GT2674@hirez.programming.kicks-ass.net>
-References: <20200919091751.011116649@linutronix.de>
- <CAHk-=wiYGyrFRbA1cc71D2-nc5U9LM9jUJesXGqpPnB7E4X1YQ@mail.gmail.com>
- <87mu1lc5mp.fsf@nanos.tec.linutronix.de>
- <87k0wode9a.fsf@nanos.tec.linutronix.de>
- <CAHk-=wgbmwsTOKs23Z=71EBTrULoeaH2U3TNqT2atHEWvkBKdw@mail.gmail.com>
- <87eemwcpnq.fsf@nanos.tec.linutronix.de>
- <CAHk-=wgF-upZVpqJWK=TK7MS9H-Rp1ZxGfOG+dDW=JThtxAzVQ@mail.gmail.com>
- <87a6xjd1dw.fsf@nanos.tec.linutronix.de>
- <CAHk-=wjhxzx3KHHOMvdDj3Aw-_Mk5eRiNTUBB=tFf=vTkw1FeA@mail.gmail.com>
- <87sgbbaq0y.fsf@nanos.tec.linutronix.de>
+        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jann Horn <jannh@google.com>
+Subject: Re: [PATCH 0/5] mm: Break COW for pinned pages during fork()
+Message-ID: <20200923102119.GK1223944@unreal>
+References: <20200921211744.24758-1-peterx@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87sgbbaq0y.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <20200921211744.24758-1-peterx@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 09:27:57PM +0200, Thomas Gleixner wrote:
-> Alternatively this could of course be solved with per CPU page tables
-> which will come around some day anyway I fear.
+On Mon, Sep 21, 2020 at 05:17:39PM -0400, Peter Xu wrote:
+> Finally I start to post formal patches because it's growing.  And also since
+> we've discussed quite some issues already, so I feel like it's clearer on what
+> we need to do, and how.
+>
+> This series is majorly inspired by the previous discussion on the list [1],
+> starting from the report from Jason on the rdma test failure.  Linus proposed
+> the solution, which seems to be a very nice approach to avoid the breakage of
+> userspace apps that didn't use MADV_DONTFORK properly before.  More information
+> can be found in that thread too.
+>
+> I believe the initial plan was to consider merging something like this for
+> rc7/rc8.  However now I'm not sure due to the fact that the code change in
+> copy_pte_range() is probably more than expected, so it can be with some risk.
+> I'll leave this question to the reviewers...
+>
+> I tested it myself with fork() after vfio pinning a bunch of device pages, and
+> I verified that the new copy pte logic worked as expected at least in the most
+> general path.  However I didn't test thp case yet because afaict vfio does not
+> support thp backed dma pages.  Luckily, the pmd/pud thp patch is much more
+> straightforward than the pte one, so hopefully it can be directly verified by
+> some code review plus some more heavy-weight rdma tests.
+>
+> Patch 1:      Introduce mm.has_pinned (as single patch as suggested by Jason)
+> Patch 2-3:    Some slight rework on copy_page_range() path as preparation
+> Patch 4:      Early cow solution for pte copy for pinned pages
+> Patch 5:      Same as above, but for thp (pmd/pud).
+>
+> Hugetlbfs fix is still missing, but as planned, that's not urgent so we can
+> work upon.  Comments greatly welcomed.
 
-Previously (with PTI) we looked at making the entire kernel map per-CPU,
-and that takes a 2K copy on switch_mm() (or more general, the user part
-of whatever the top level directory is for architectures that have a
-shared kernel/user page-table setup in the first place).
+Hi Peter,
 
-The idea was having a fixed per-cpu kernel page-table, share a bunch of
-(kernel) page-tables between all CPUs and then copy in the user part on
-switch.
+I'm ware that this series is under ongoing review and probably not
+final, but we tested anyway and it solves our RDMA failures.
 
-I've forgotten what the plan was for ASID/PCID in that scheme.
+Thanks
 
-For x86_64 we've been fearing the performance of that 2k copy, but I
-don't think we've ever actually bit the bullet and implemented it to see
-how bad it really is.
+>
+> Thanks.
+>
+> Peter Xu (5):
+>   mm: Introduce mm_struct.has_pinned
+>   mm/fork: Pass new vma pointer into copy_page_range()
+>   mm: Rework return value for copy_one_pte()
+>   mm: Do early cow for pinned pages during fork() for ptes
+>   mm/thp: Split huge pmds/puds if they're pinned when fork()
+>
+>  include/linux/mm.h       |   2 +-
+>  include/linux/mm_types.h |  10 ++
+>  kernel/fork.c            |   3 +-
+>  mm/gup.c                 |   6 ++
+>  mm/huge_memory.c         |  26 +++++
+>  mm/memory.c              | 226 +++++++++++++++++++++++++++++++++++----
+>  6 files changed, 248 insertions(+), 25 deletions(-)
+>
+> --
+> 2.26.2
+>
+>
