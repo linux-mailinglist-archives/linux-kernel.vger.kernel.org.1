@@ -2,55 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE43275045
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 07:28:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C53F275048
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 07:30:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726931AbgIWF2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 01:28:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50818 "EHLO mail.kernel.org"
+        id S1726948AbgIWF37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 01:29:59 -0400
+Received: from verein.lst.de ([213.95.11.211]:47222 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726189AbgIWF2P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 01:28:15 -0400
-Received: from localhost (unknown [122.171.175.143])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3DAF421974;
-        Wed, 23 Sep 2020 05:28:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600838895;
-        bh=RjhLMXt/b1I6E+E0MwKZD5yTljhVA2abPNYP6STiOwA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uvvcptujw0Cg/1IcRUASNopFQ1uHXSIp4eufrELpZTY6t+W0AKA0uGTeUwfBj7ma6
-         0Q4wSIVTH8XOONeb/2DPLBBZdapaaVmcIxRVxEcZ36/6YFzuHfouAO75oUpENZbZTm
-         wsP0/x8nzsoQvs8JxeAOs17CIbxDGmgsvH9PagVk=
-Date:   Wed, 23 Sep 2020 10:58:06 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Tomi Valkeinen <tomi.valkeinen@ti.com>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Swapnil Jakhade <sjakhade@cadence.com>,
-        Yuti Amonkar <yamonkar@cadence.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Sekhar Nori <nsekhar@ti.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: phy: cdns,torrent-phy: add
- reset-names
-Message-ID: <20200923052806.GC2968@vkoul-mobl>
-References: <20200918083743.213874-1-tomi.valkeinen@ti.com>
+        id S1726198AbgIWF36 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 01:29:58 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 4D2C167373; Wed, 23 Sep 2020 07:29:56 +0200 (CEST)
+Date:   Wed, 23 Sep 2020 07:29:56 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Tianxianting <tian.xianting@h3c.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>,
+        "axboe@fb.com" <axboe@fb.com>,
+        "sagi@grimberg.me" <sagi@grimberg.me>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] [v2] nvme: replace meaningless judgement by checking
+ whether req is null
+Message-ID: <20200923052956.GA15063@lst.de>
+References: <20200922062517.30031-1-tian.xianting@h3c.com> <20200922145705.GA4035426@dhcp-10-100-145-180.wdl.wdc.com> <20200922145842.GB28420@lst.de> <5099986543624f9fbbeb26c2173934ba@h3c.com> <20200922154105.GA31758@lst.de> <53ae0341e62346f985ca289c6325078d@h3c.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200918083743.213874-1-tomi.valkeinen@ti.com>
+In-Reply-To: <53ae0341e62346f985ca289c6325078d@h3c.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18-09-20, 11:37, Tomi Valkeinen wrote:
-> Add reset-names as a required property.
-> 
-> There are no dts files using torrent phy yet, so it is safe to add a new
-> required property.
+On Tue, Sep 22, 2020 at 03:47:40PM +0000, Tianxianting wrote:
+> Finally, it applied:)
+> Thanks again for all your kindly guides to me.
 
-Applied both, thanks
-
--- 
-~Vinod
+Thanks a lot for the patch!
