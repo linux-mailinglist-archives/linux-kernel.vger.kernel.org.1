@@ -2,53 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F36F4275F75
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 20:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B76275F77
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 20:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726627AbgIWSJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 14:09:30 -0400
-Received: from mga11.intel.com ([192.55.52.93]:39818 "EHLO mga11.intel.com"
+        id S1726706AbgIWSJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 14:09:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726515AbgIWSJ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 14:09:29 -0400
-IronPort-SDR: xpyLsANDwsiMRm8dvOM6TkfLgFAoq1fFhp0nYTqDIu4x8Lhrz4bd8OPRO68C9r7KSVzg3GORQG
- 92bGH1ivXktQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="158332283"
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="158332283"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 11:08:04 -0700
-IronPort-SDR: QJkMPzOfLNIkiYOMN9rZ2xZnXypTQJCtopq1wGF+R3syPkY/kr7SQEkzK7cu8sqSTlrg2fxY9W
- m8xXgH+H51dA==
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="305478192"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 11:08:04 -0700
-Date:   Wed, 23 Sep 2020 11:08:03 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH] KVM: SEV: shorten comments around sev_clflush_pages
-Message-ID: <20200923180803.GC32044@linux.intel.com>
-References: <20200923173401.1632172-1-pbonzini@redhat.com>
+        id S1726674AbgIWSJp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 14:09:45 -0400
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7A216238D7
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 18:09:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600884584;
+        bh=0sQpYjrO1FEOUdJEyt75wZRgQiNVOyCLQf75CE6PFHk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=oGNukZ1XzS6+01unsngiaWE+87lr66kpPInuBoy/nJdJAwRXJ3MMlxk++8egYoI+l
+         uYqjaOFRo6XImKO5Xgc7VG7K8JPLOLjY/WBGg+8qNiErRQvMbi06E9ylJM0RYc2rP3
+         xNjnr+21fWQcIlSZqvNMaM83CpvisjcgTDpWjjiw=
+Received: by mail-wr1-f54.google.com with SMTP id a17so1027327wrn.6
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 11:09:44 -0700 (PDT)
+X-Gm-Message-State: AOAM531UOc9nAWb6jLloUAuuvmft3ctvvjkhvgG1kOyJOHAR+/Tbdrld
+        VP96UZS2eFn6cdVVjbGXeM/Op95g4bsOyfGxDf4fmA==
+X-Google-Smtp-Source: ABdhPJwfMfqd9rmUBSaNu+esX7OO7HDQLQ/5mB6cl8BJqHE3Ip+CBSog/eVQL5KyNSbUahOo8NC7kD0pV+eTdSv397I=
+X-Received: by 2002:adf:a3c3:: with SMTP id m3mr947291wrb.70.1600884582830;
+ Wed, 23 Sep 2020 11:09:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200923173401.1632172-1-pbonzini@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20200922215326.4603-1-madvenka@linux.microsoft.com>
+ <20200923081426.GA30279@amd> <20200923091456.GA6177@openwall.com> <87wo0ko8v0.fsf@oldenburg2.str.redhat.com>
+In-Reply-To: <87wo0ko8v0.fsf@oldenburg2.str.redhat.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Wed, 23 Sep 2020 11:09:29 -0700
+X-Gmail-Original-Message-ID: <CALCETrUqct4tDrjTSzJG4+=+cEaaDbZ+Mx=LAUdQjVV=CruUcw@mail.gmail.com>
+Message-ID: <CALCETrUqct4tDrjTSzJG4+=+cEaaDbZ+Mx=LAUdQjVV=CruUcw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] [RFC] Implement Trampoline File Descriptor
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     Solar Designer <solar@openwall.com>, Pavel Machek <pavel@ucw.cz>,
+        "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>, X86 ML <x86@kernel.org>,
+        Andrew Lutomirski <luto@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
+        Rich Felker <dalias@libc.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 01:34:01PM -0400, Paolo Bonzini wrote:
-> Very similar content is present in four comments in sev.c.  Unfortunately
-> there are small differences that make it harder to place the comment
-> in sev_clflush_pages itself, but at least we can make it more concise.
-> 
-> Suggested-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
+On Wed, Sep 23, 2020 at 7:39 AM Florian Weimer <fweimer@redhat.com> wrote:
+>
+> * Solar Designer:
+>
+> > While I share my opinion here, I don't mean that to block Madhavan's
+> > work.  I'd rather defer to people more knowledgeable in current userland
+> > and ABI issues/limitations and plans on dealing with those, especially
+> > to Florian Weimer.  I haven't seen Florian say anything specific for or
+> > against Madhavan's proposal, and I'd like to.  (Have I missed that?)
+>
+> There was a previous discussion, where I provided feedback (not much
+> different from the feedback here, given that the mechanism is mostly the
+> same).
+>
+> I think it's unnecessary for the libffi use case.  Precompiled code can
+> be loaded from disk because the libffi trampolines are so regular.  On
+> most architectures, it's not even the code that's patched, but some of
+> the data driving it, which happens to be located on the same page due to
+> a libffi quirk.
+>
+> The libffi use case is a bit strange anyway: its trampolines are
+> type-generic, and the per-call adjustment is data-driven.  This means
+> that once you have libffi in the process, you have a generic
+> data-to-function-call mechanism available that can be abused (it's even
+> fully CET compatible in recent versions).  And then you need to look at
+> the processes that use libffi.  A lot of them contain bytecode
+> interpreters, and those enable data-driven arbitrary code execution as
+> well.  I know that there are efforts under way to harden Python, but
+> it's going to be tough to get to the point where things are still
+> difficult for an attacker once they have the ability to make mprotect
+> calls.
+>
+> It was pointed out to me that libffi is doing things wrong, and the
+> trampolines should not be type-generic, but generated so that they match
+> the function being called.  That is, the marshal/unmarshal code would be
+> open-coded in the trampoline, rather than using some generic mechanism
+> plus run-time dispatch on data tables describing the function type.
+> That is a very different design (and typically used by compilers (JIT or
+> not JIT) to implement native calls).  Mapping some code page with a
+> repeating pattern would no longer work to defeat anti-JIT measures
+> because it's closer to real JIT.  I don't know if kernel support could
+> make sense in this context, but it would be a completely different
+> patch.
 
-Reviewed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+I would very much like to see a well-designed kernel facility for
+helping userspace do JIT in a safer manner, but designing such a thing
+is likely to be distinctly nontrivial.  To throw a half-backed idea
+out there, suppose a program could pre-declare a list of JIT
+verifiers:
+
+static bool ffi_trampoline_verifier(void *target_address, size_t
+target_size, void *source_data, void *context);
+
+struct jit_verifier {
+  .magic = 0xMAGIC_HERE,
+  .verifier = ffi_trampoline_verifier,
+} my_verifier __attribute((section("something special here?)));
+
+and then a system call something like:
+
+instantiate_jit_code(target, source, size, &my_verifier, context);
+
+The idea being that even an attacker that can force a call to
+instantiate_jit_code() can only create code that passes verification
+by one of the pre-declared verifiers in the process.
