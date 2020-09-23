@@ -2,155 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 024C62761E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:19:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDED32761E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 22:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726716AbgIWUTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 16:19:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55936 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726600AbgIWUTE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 16:19:04 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726781AbgIWUTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 16:19:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22071 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726498AbgIWUTO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 16:19:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600892352;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DHTSvTADLG6e+v7rV8YcXc8m4s3QJCzEI+irlAKTENE=;
+        b=cRryKQFOFkw/XUUhvTZK5ljdVTRoiRk7cvsqu1/RPUkpofIqf+LTBGd39CHVYBZ07vs3Xu
+        WB6Ne4qeXuOwk/+dVhzadjXJBo4aySATDxaq9Pl7AkRhcW+31FD/fy2kH53xFhD16zPYiA
+        40YwnV6cfkmOMNMDdD/qAyKGazG5rAI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-538-HFmRnXl8No-YwcZFXE-1Mw-1; Wed, 23 Sep 2020 16:19:08 -0400
+X-MC-Unique: HFmRnXl8No-YwcZFXE-1Mw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 087B1206D9;
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A0F061007B1D;
+        Wed, 23 Sep 2020 20:19:06 +0000 (UTC)
+Received: from krava (ovpn-112-117.ams2.redhat.com [10.36.112.117])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 8A79960BF1;
         Wed, 23 Sep 2020 20:19:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600892343;
-        bh=67irmCRtbP7AGPKEMBlUnsizeDR/qE2sRnJe8qhBebA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=0qsWFe1dFX26VU+6k7RW/FpnuiX8UNvcxbXy6LpI+JzArGXsMDhsC9zP7+W8ynjni
-         qZtuCV8JcEGbpj50xOzHV9m9Tqi5v+RnUsjAr2X6v7wyFi2JwovRY6ZKuE1p78ZzT+
-         J4oj60zqTNRYulml2wQXmbHpipjRSEf75ofA6Y3c=
-Date:   Wed, 23 Sep 2020 21:18:58 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Michael Auchter <michael.auchter@ni.com>
-Cc:     Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] iio: dac: ad5686: add support for AD5338R
-Message-ID: <20200923211858.4709ec53@archlinux>
-In-Reply-To: <20200922184012.557622-1-michael.auchter@ni.com>
-References: <20200922184012.557622-1-michael.auchter@ni.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Date:   Wed, 23 Sep 2020 22:19:00 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Wei Li <liwei391@huawei.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Andi Kleen <andi@firstfloor.org>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Li Bin <huawei.libin@huawei.com>
+Subject: Re: [PATCH 1/2] perf stat: Fix segfault when counting armv8_pmu
+ events
+Message-ID: <20200923201900.GQ2893484@krava>
+References: <20200922031346.15051-1-liwei391@huawei.com>
+ <20200922031346.15051-2-liwei391@huawei.com>
+ <20200923054426.GG2893484@krava>
+ <CAM9d7cjLKosv97fEUCATVTr0mkZL_W5oDzBSxde70RhOeZ=6fg@mail.gmail.com>
+ <20200923140747.GN2893484@krava>
+ <CAM9d7cgT4qLH0mPM1nTRa-FYwjMOc4LOCUD_X0r21hdUUVLpRA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM9d7cgT4qLH0mPM1nTRa-FYwjMOc4LOCUD_X0r21hdUUVLpRA@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Sep 2020 13:40:10 -0500
-Michael Auchter <michael.auchter@ni.com> wrote:
-
-> The AD5338R is a 10-bit DAC with 2 outputs and an internal 2.5V
-> reference (enabled by default). The register configuration is nearly
-> identical to the AD5696R DAC that's already supported by this driver,
-> with the channel selection bits being the only thing different.
+On Wed, Sep 23, 2020 at 11:15:06PM +0900, Namhyung Kim wrote:
+> On Wed, Sep 23, 2020 at 11:08 PM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Wed, Sep 23, 2020 at 10:49:52PM +0900, Namhyung Kim wrote:
+> > > On Wed, Sep 23, 2020 at 2:44 PM Jiri Olsa <jolsa@redhat.com> wrote:
+> > > >
+> > > > On Tue, Sep 22, 2020 at 11:13:45AM +0800, Wei Li wrote:
+> > > > > When executing perf stat with armv8_pmu events with a workload, it will
+> > > > > report a segfault as result.
+> > > >
+> > > > please share the perf stat command line you see that segfault for
+> > >
+> > > It seems the description in the patch 0/2 already has it:
+> > >
+> > >   [root@localhost hulk]# tools/perf/perf stat  -e
+> > > armv8_pmuv3_0/ll_cache_rd/,armv8_pmuv3_0/ll_cache_miss_rd/ ls >
+> > > /dev/null
+> > >   Segmentation fault
+> >
+> > yea I found it, but can't reproduce it.. I see the issue from
+> > patch 2, but not sure what's the problem so far
 > 
-> Signed-off-by: Michael Auchter <michael.auchter@ni.com>
-
-Looks good to me - just the DT binding to tweak for v3 unless
-anyone else comments.
-
-Thanks,
-
-Jonathan
-
-
-> ---
-> Changes since v1:
-> - Keep things sorted by product name
-> - Update Kconfig description to list supported converters
+> I think the problem is that armv8_pmu has a cpumask,
+> and the user requested per-task events.
 > 
->  drivers/iio/dac/Kconfig      |  7 ++++---
->  drivers/iio/dac/ad5686.c     | 13 +++++++++++++
->  drivers/iio/dac/ad5686.h     |  1 +
->  drivers/iio/dac/ad5696-i2c.c |  1 +
->  4 files changed, 19 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/iio/dac/Kconfig b/drivers/iio/dac/Kconfig
-> index dae8d27e772d..6f6074a5d3db 100644
-> --- a/drivers/iio/dac/Kconfig
-> +++ b/drivers/iio/dac/Kconfig
-> @@ -141,9 +141,10 @@ config AD5696_I2C
->  	depends on I2C
->  	select AD5686
->  	help
-> -	  Say yes here to build support for Analog Devices AD5671R, AD5675R,
-> -	  AD5694, AD5694R, AD5695R, AD5696, AD5696R Voltage Output Digital to
-> -	  Analog Converter.
-> +	  Say yes here to build support for Analog Devices AD5311R, AD5338R,
-> +	  AD5671R, AD5675R, AD5691R, AD5692R, AD5693, AD5693R, AD5694, AD5694R,
-> +	  AD5695R, AD5696, and AD5696R Digital to Analog converters.
-> +
->  	  To compile this driver as a module, choose M here: the module will be
->  	  called ad5696.
->  
-> diff --git a/drivers/iio/dac/ad5686.c b/drivers/iio/dac/ad5686.c
-> index 56cf9344d187..382b3eb7ec06 100644
-> --- a/drivers/iio/dac/ad5686.c
-> +++ b/drivers/iio/dac/ad5686.c
-> @@ -210,6 +210,12 @@ static struct iio_chan_spec name[] = {				\
->  		AD5868_CHANNEL(0, 0, bits, _shift),		\
->  }
->  
-> +#define DECLARE_AD5338_CHANNELS(name, bits, _shift)		\
-> +static struct iio_chan_spec name[] = {				\
-> +		AD5868_CHANNEL(0, 1, bits, _shift),		\
-> +		AD5868_CHANNEL(1, 8, bits, _shift),		\
-> +}
-> +
->  #define DECLARE_AD5686_CHANNELS(name, bits, _shift)		\
->  static struct iio_chan_spec name[] = {				\
->  		AD5868_CHANNEL(0, 1, bits, _shift),		\
-> @@ -252,6 +258,7 @@ static struct iio_chan_spec name[] = {				\
->  
->  DECLARE_AD5693_CHANNELS(ad5310r_channels, 10, 2);
->  DECLARE_AD5693_CHANNELS(ad5311r_channels, 10, 6);
-> +DECLARE_AD5338_CHANNELS(ad5338r_channels, 10, 6);
->  DECLARE_AD5676_CHANNELS(ad5672_channels, 12, 4);
->  DECLARE_AD5679_CHANNELS(ad5674r_channels, 12, 4);
->  DECLARE_AD5676_CHANNELS(ad5676_channels, 16, 0);
-> @@ -276,6 +283,12 @@ static const struct ad5686_chip_info ad5686_chip_info_tbl[] = {
->  		.num_channels = 1,
->  		.regmap_type = AD5693_REGMAP,
->  	},
-> +	[ID_AD5338R] = {
-> +		.channels = ad5338r_channels,
-> +		.int_vref_mv = 2500,
-> +		.num_channels = 2,
-> +		.regmap_type = AD5686_REGMAP,
-> +	},
->  	[ID_AD5671R] = {
->  		.channels = ad5672_channels,
->  		.int_vref_mv = 2500,
-> diff --git a/drivers/iio/dac/ad5686.h b/drivers/iio/dac/ad5686.h
-> index 52009b5eef88..c714afa40adf 100644
-> --- a/drivers/iio/dac/ad5686.h
-> +++ b/drivers/iio/dac/ad5686.h
-> @@ -52,6 +52,7 @@
->  enum ad5686_supported_device_ids {
->  	ID_AD5310R,
->  	ID_AD5311R,
-> +	ID_AD5338R,
->  	ID_AD5671R,
->  	ID_AD5672R,
->  	ID_AD5674R,
-> diff --git a/drivers/iio/dac/ad5696-i2c.c b/drivers/iio/dac/ad5696-i2c.c
-> index ccf794caef43..89e7b063b7bb 100644
-> --- a/drivers/iio/dac/ad5696-i2c.c
-> +++ b/drivers/iio/dac/ad5696-i2c.c
-> @@ -72,6 +72,7 @@ static int ad5686_i2c_remove(struct i2c_client *i2c)
->  
->  static const struct i2c_device_id ad5686_i2c_id[] = {
->  	{"ad5311r", ID_AD5311R},
-> +	{"ad5338r", ID_AD5338R},
->  	{"ad5671r", ID_AD5671R},
->  	{"ad5675r", ID_AD5675R},
->  	{"ad5691r", ID_AD5691R},
+> The code tried to open the event with a dummy cpu map
+> since it's not a cpu event, but the pmu has cpu map and
+> it's passed to evsel.  So there's confusion somewhere
+> whether it should use evsel->cpus or a dummy map.
+
+you're right, I have following cpus file in pmu:
+
+  # cat /sys/devices/armv8_pmuv3_0/cpus 
+  0-3
+
+covering all the cpus.. and once you have cpumask/cpus file,
+you're system wide by default in current code, but we should
+not crash ;-)
+
+I tried to cover this case in patch below and I probably broke
+some other use cases, but perhaps we could allow to open counters
+per cpus for given workload
+
+I'll try to look at this more tomorrow
+
+jirka
+
+
+---
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index 7f8d756d9408..0c7f16a673c2 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -379,12 +379,7 @@ static int read_affinity_counters(struct timespec *rs)
+ 	if (affinity__setup(&affinity) < 0)
+ 		return -1;
+ 
+-	ncpus = perf_cpu_map__nr(evsel_list->core.all_cpus);
+-	if (!target__has_cpu(&target) || target__has_per_thread(&target))
+-		ncpus = 1;
+ 	evlist__for_each_cpu(evsel_list, i, cpu) {
+-		if (i >= ncpus)
+-			break;
+ 		affinity__set(&affinity, cpu);
+ 
+ 		evlist__for_each_entry(evsel_list, counter) {
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index fd865002cbbd..ef525eb2f619 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -1861,6 +1861,16 @@ void evsel__close(struct evsel *evsel)
+ 	perf_evsel__free_id(&evsel->core);
+ }
+ 
++int evsel__open_threads_per_cpu(struct evsel *evsel, struct perf_thread_map *threads,
++				struct perf_cpu_map *cpus, int cpu)
++{
++	if (cpu == -1)
++		return evsel__open_cpu(evsel, cpus, threads, 0,
++					cpus ? cpus->nr : 1);
++
++	return evsel__open_cpu(evsel, cpus, threads, cpu, cpu + 1);
++}
++
+ int evsel__open_per_cpu(struct evsel *evsel, struct perf_cpu_map *cpus, int cpu)
+ {
+ 	if (cpu == -1)
+diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+index 35e3f6d66085..1d055699bd1f 100644
+--- a/tools/perf/util/evsel.h
++++ b/tools/perf/util/evsel.h
+@@ -231,6 +231,8 @@ int evsel__enable(struct evsel *evsel);
+ int evsel__disable(struct evsel *evsel);
+ int evsel__disable_cpu(struct evsel *evsel, int cpu);
+ 
++int evsel__open_threads_per_cpu(struct evsel *evsel, struct perf_thread_map *threads,
++				struct perf_cpu_map *cpus, int cpu);
+ int evsel__open_per_cpu(struct evsel *evsel, struct perf_cpu_map *cpus, int cpu);
+ int evsel__open_per_thread(struct evsel *evsel, struct perf_thread_map *threads);
+ int evsel__open(struct evsel *evsel, struct perf_cpu_map *cpus,
+diff --git a/tools/perf/util/stat.c b/tools/perf/util/stat.c
+index cdb154381a87..2b17f1315cfb 100644
+--- a/tools/perf/util/stat.c
++++ b/tools/perf/util/stat.c
+@@ -560,6 +560,11 @@ int create_perf_stat_counter(struct evsel *evsel,
+ 			attr->enable_on_exec = 1;
+ 	}
+ 
++	if (evsel->core.own_cpus && evsel->core.threads) {
++		return evsel__open_threads_per_cpu(evsel, evsel->core.threads,
++						   evsel__cpus(evsel), cpu);
++	}
++
+ 	if (target__has_cpu(target) && !target__has_per_thread(target))
+ 		return evsel__open_per_cpu(evsel, evsel__cpus(evsel), cpu);
+ 
 
