@@ -2,95 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22E57274FFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 06:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A955274FF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 06:26:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726855AbgIWEad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 00:30:33 -0400
-Received: from extramail.gelsen.net ([46.28.37.15]:57914 "EHLO
-        extramail.gelsen.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726448AbgIWEac (ORCPT
+        id S1726882AbgIWE0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 00:26:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726448AbgIWE0X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 00:30:32 -0400
-X-Greylist: delayed 903 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Sep 2020 00:30:30 EDT
-Received: from w-extra-mail-2.extra.local
- (2a02:1670:0:150:817f:709f:6584:3824) by w-extra-mail-2.extra.local
- (2a02:1670:0:150:817f:709f:6584:3824) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 23 Sep 2020 06:15:21 +0200
-Received: from User (172.19.12.71) by exchange.extra.local (172.19.12.29) with
- Microsoft SMTP Server id 15.1.1979.3 via Frontend Transport; Wed, 23 Sep 2020
- 06:15:16 +0200
-Reply-To: <akuabatajoshua86@gmail.com>
-From:   "DR. DONALD MOORE" <admin@puntonet.ec>
-Subject: IMPORTANT NOTICE !!!  46.28.37.15
-Date:   Tue, 22 Sep 2020 21:14:55 -0700
+        Wed, 23 Sep 2020 00:26:23 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1AEFC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 21:26:23 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kKwM1-004Hvh-Hd; Wed, 23 Sep 2020 04:26:05 +0000
+Date:   Wed, 23 Sep 2020 05:26:05 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        syzbot <syzbot+ea3a78a71705faf41d77@syzkaller.appspotmail.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        syzkaller-bugs@googlegroups.com,
+        Thomas Gleixner <tglx@linutronix.de>, X86 ML <x86@kernel.org>
+Subject: Re: WARNING in ex_handler_uaccess
+Message-ID: <20200923042605.GG3421308@ZenIV.linux.org.uk>
+References: <000000000000762dee05af9ccd01@google.com>
+ <CALCETrVL=VGNXbWK1BB1LnsxaKOGRbEfCGUEx4jaCW9cF-54Ag@mail.gmail.com>
+ <20200918235528.GB3421308@ZenIV.linux.org.uk>
+ <CALCETrVi=quLyPXzt-0ou-FF_OYMa7pE5N8_NchRaWtwLg3kNg@mail.gmail.com>
+ <20200919001714.GC3421308@ZenIV.linux.org.uk>
+ <bc5d889c-17f0-dcb8-d174-f21b321cf85b@rasmusvillemoes.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-ID: <9d427f21-de43-4251-9df2-2bcfa76af2f0@w-extra-mail-2.extra.local>
-To:     Undisclosed recipients:;
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bc5d889c-17f0-dcb8-d174-f21b321cf85b@rasmusvillemoes.dk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear friend,
+On Mon, Sep 21, 2020 at 12:22:19PM +0200, Rasmus Villemoes wrote:
 
-How are you today? Hope all is well with you and your family? I hope This
-mail meets you in a perfect condition.
+> So, not sure how the above got triggered, but I notice there might be an
+> edge case in check_zeroed_user():
+> 
+> 	from -= align;
+> 	size += align;
+> 
+> 	if (!user_read_access_begin(from, size))
+> 		return -EFAULT;
+> 
+> 	unsafe_get_user(val, (unsigned long __user *) from, err_fault);
+> 
+> 
+> Suppose size is (size_t)-3 and align is 3. What's the convention for
+> access_ok(whatever, 0)? Is that equivalent to access_ok(whatever, 1), or
+> is it always true (or $ARCH-dependent)?
 
-I am using this opportunity to thank you for your great effort to our
-unfinished transfer of fund into your account due to one reason or the
-other best known to you.
- 
-But I want to inform you that I have successfully transferred the Cheque
-out of the company to someone else who was capable of assisting me in
-this great venture.
+It's usually true...
 
-Due to your effort, sincerity, courage and trust worthiness you showed at
-the course of the transaction I want to compensate you and show my
-gratitude to you with the sum of 20,000.000.00(Twenty Million United States
-Of American Dollars) in respect to your lottery winnings Compensation.
+> But, AFAICT, no current caller of check_zeroed_user can end up passing
+> in a size that can overflow to 0. E.g. for the case at hand, size cannot
+> be more than SIZE_MAX-24.
 
-I have authorized the finance house in the Ghana where I deposited my money
-to issue you international certified bank draft cashable at your bank.
-
-My dear friend I will like you to contact the finance house for the
-collection of this international certified bank draft. The name and
-contact address of the Person with your Cheque is as follows.
-
-COMPENSATION OFFICER
-CONTACT AGENT
-BARRISTER. JOSHUA AKUABATA
-PHONE NUM: +233573629956
-EMAIL: akuabatajoshua86@gmail.com
-
-Contact him with the following information
-
-1. Full Name:
-2. Residential Address:
-3. Phone Number:
-4. Fax Number:
-5. Occupation:
-6. Sex:
-7. Age:
-8. Nationality:
-9. Country:
-
-At the moment, I am very busy here because of the investment projects
-which I and my new partner are having at hand.
-
-Finally, remember that I have forwarded instruction to the finance house
-on your behalf to send the bank draft to you as soon as you contact them
-without delay. Please I will like you to accept this token with good
-faith as this is from the bottom of my heart.
-
-Thanks and God bless you and your family. Hope to hear from you soon.
-
-Best Regards,
-Dr. Donald Moore
-Controller General
+Might be worth slapping if (unlikely(!size)) return -EFAULT; // overflow
+just before user_read_access_begin() to be sure...
