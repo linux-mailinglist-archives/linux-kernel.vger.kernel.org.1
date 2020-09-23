@@ -2,207 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 203112752C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 10:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A6DF2752CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 10:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726405AbgIWIER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 04:04:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgIWIEP (ORCPT
+        id S1726445AbgIWIEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 04:04:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30529 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726328AbgIWIEs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 04:04:15 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74632C061755;
-        Wed, 23 Sep 2020 01:04:15 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id a9so6049924wmm.2;
-        Wed, 23 Sep 2020 01:04:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:autocrypt:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ONodeowpirgKu2fWGk3Tuj8MhxBtn1x7pOHZ1lVstcw=;
-        b=MzoKpsZPMOiF5yYvEPp759U2ZjK3YzIFcKVI0hpLf7Xd9waLnNI3KxdguoSDjC2A9q
-         kOy74+BBHOCeG9fgauj1WGJa2A3l55+l1D/9ayqSzfewV92N8zfOhh0jQ8KDwZdZ0Wc+
-         pm0vHUIhD3KPR6dJ3R6edydt4ho5TGTB5EjolCrD2s9tYuJyJFX/n8V58fGZLFbqgzWr
-         NNz67w0uK/ZROSVdeqbZC24nk0Qrbx6iFRMOAvkuOhm9cB7neMyc24Yf6OdJTHK3aRBz
-         PZ8JE8fGVOclR8F5cUNHMz9MlsxF06G2W8pUoDZama+JQgSY1+Esbu0GHunoAplzbWQs
-         UWXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:autocrypt:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=ONodeowpirgKu2fWGk3Tuj8MhxBtn1x7pOHZ1lVstcw=;
-        b=H7ju0USDXaG3m5BFKZZg7gXX6UT5WdAx1WaIw2mftSkKjH7JVeV6j3E1tzWqfhJpyl
-         cJgMAWbarPRZUNNszAV++1FTaly6d044aFx53sY0h8FnjP0VI9XwsYZcw5cqfORtyyWa
-         k/z54Mk/JoyUBpKxGO+2G0wQqvwA2E94Pcvmp63oWiZG+piksuV+VZ7Md30HHAKiab8p
-         MZ1vQa3O4+oZqCr2kow59E/zBk/+4bDWpQhcco0E1zWbZDbXIxyOLR/zfuoPbAfkYHPH
-         tfkmzhMjTa6py370aU+kaIFaKFqh5FBlzVGqhMX7Y+qjv2eESx6DjD1oiNryHrwaYEeT
-         U6Og==
-X-Gm-Message-State: AOAM533xfiJ1WYK2otgFg3LNRbLRAORCq+tuR0ChjIFoiWhnqzEPpnnZ
-        fWXLgxBk+SItYC/TCSKFCLDKwpjd9F72AA==
-X-Google-Smtp-Source: ABdhPJyHjes2guPDIH/GjSt6urDwIAObxYd85bPxA03C5r6pWsFZBYQtPZnXFeWZykiGGKGD1MH1fA==
-X-Received: by 2002:a7b:c215:: with SMTP id x21mr4946654wmi.138.1600848253769;
-        Wed, 23 Sep 2020 01:04:13 -0700 (PDT)
-Received: from [192.168.43.240] ([5.100.192.97])
-        by smtp.gmail.com with ESMTPSA id 63sm31416477wrh.71.2020.09.23.01.04.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Sep 2020 01:04:13 -0700 (PDT)
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Andy Lutomirski <luto@kernel.org>, Christoph Hellwig <hch@lst.de>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        David Howells <dhowells@redhat.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Linux SCSI List <linux-scsi@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-aio <linux-aio@kvack.org>, io-uring@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Network Development <netdev@vger.kernel.org>,
-        keyrings@vger.kernel.org,
-        LSM List <linux-security-module@vger.kernel.org>
-References: <CAK8P3a2Mi+1yttyGk4k7HxRVrMtmFqJewouVhynqUL0PJycmog@mail.gmail.com>
- <D0791499-1190-4C3F-A984-0A313ECA81C7@amacapital.net>
- <563138b5-7073-74bc-f0c5-b2bad6277e87@gmail.com>
- <486c92d0-0f2e-bd61-1ab8-302524af5e08@gmail.com>
- <CALCETrW3rwGsgfLNnu_0JAcL5jvrPVTLTWM3JpbB5P9Hye6Fdw@mail.gmail.com>
- <d5c6736a-2cb4-4e22-78da-a667bda5c05a@gmail.com>
- <CALCETrUEC81va8-fuUXG1uA5rbKxnKDYsDOXC70_HtKD4LAeAg@mail.gmail.com>
- <e0a1b4d1-ff47-18d1-d535-c62812cb3105@gmail.com>
- <CAK8P3a2-6JNS38EbZcLrk=cTT526oP=Rf0aoqWNSJ-k4XTYehQ@mail.gmail.com>
- <f25b4708-eba6-78d6-03f9-5bfb04e07627@gmail.com>
- <CAK8P3a39jN+t2hhLg0oKZnbYATQXmYE2-Z1JkmFyc1EPdg1HXw@mail.gmail.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
- 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 bA==
-Subject: Re: [PATCH 1/9] kernel: add a PF_FORCE_COMPAT flag
-Message-ID: <91209170-dcb4-d9ee-afa0-a819f8877b86@gmail.com>
-Date:   Wed, 23 Sep 2020 11:01:34 +0300
+        Wed, 23 Sep 2020 04:04:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600848285;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=N48g0ejR7+vnU9zZ+7/ssBxVKHOZrfIs9xMj3k/315g=;
+        b=di9RU7yU1QC4mHS9bTsXTcgy470qzpleSkeu05q40alMyJkLxiqWN+zadBxPsPH0X3RVoY
+        TZ8mSRVkSBSzeJUvHTNKnbCC3e+8Vbr5aL0r/IcelZ7bJmcCCJTp4xcPC6ayx6QwpC8YYW
+        NI2xUg4/iRLTX6P6uEqTTdpNW6SI9F0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-366-ZcDCLb34Nnea1KP1GqBCnA-1; Wed, 23 Sep 2020 04:04:41 -0400
+X-MC-Unique: ZcDCLb34Nnea1KP1GqBCnA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5B6EA1018F64;
+        Wed, 23 Sep 2020 08:04:39 +0000 (UTC)
+Received: from [10.36.112.54] (ovpn-112-54.ams2.redhat.com [10.36.112.54])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A319C5C26B;
+        Wed, 23 Sep 2020 08:04:36 +0000 (UTC)
+Subject: Re: [PATCH v4 11/23] device-dax: Kill dax_kmem_res
+To:     Joao Martins <joao.m.martins@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     akpm@linux-foundation.org, Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        peterz@infradead.org, ard.biesheuvel@linaro.org,
+        linux-mm@kvack.org, linux-nvdimm@lists.01.org,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+References: <159643094279.4062302.17779410714418721328.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <159643100485.4062302.976628339798536960.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <a3ad70a2-77a8-d50e-f372-731a8e27c03b@redhat.com>
+ <17686fcc-202e-0982-d0de-54d5349cfb5d@oracle.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <9acc6148-72eb-7016-dba9-46fa87ded5a5@redhat.com>
+Date:   Wed, 23 Sep 2020 10:04:35 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a39jN+t2hhLg0oKZnbYATQXmYE2-Z1JkmFyc1EPdg1HXw@mail.gmail.com>
+In-Reply-To: <17686fcc-202e-0982-d0de-54d5349cfb5d@oracle.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/09/2020 12:01, Arnd Bergmann wrote:
-> On Tue, Sep 22, 2020 at 9:59 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
->> On 22/09/2020 10:23, Arnd Bergmann wrote:
->>> On Tue, Sep 22, 2020 at 8:32 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
->>>> On 22/09/2020 03:58, Andy Lutomirski wrote:
->>>>> On Mon, Sep 21, 2020 at 5:24 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
->>>>> I may be looking at a different kernel than you, but aren't you
->>>>> preventing creating an io_uring regardless of whether SQPOLL is
->>>>> requested?
->>>>
->>>> I diffed a not-saved file on a sleepy head, thanks for noticing.
->>>> As you said, there should be an SQPOLL check.
->>>>
->>>> ...
->>>> if (ctx->compat && (p->flags & IORING_SETUP_SQPOLL))
->>>>         goto err;
->>>
->>> Wouldn't that mean that now 32-bit containers behave differently
->>> between compat and native execution?
->>>
->>> I think if you want to prevent 32-bit applications from using SQPOLL,
->>> it needs to be done the same way on both to be consistent:
+On 08.09.20 17:33, Joao Martins wrote:
+> [Sorry for the late response]
+> 
+> On 8/21/20 11:06 AM, David Hildenbrand wrote:
+>> On 03.08.20 07:03, Dan Williams wrote:
+>>> @@ -37,109 +45,94 @@ int dev_dax_kmem_probe(struct device *dev)
+>>>  	 * could be mixed in a node with faster memory, causing
+>>>  	 * unavoidable performance issues.
+>>>  	 */
+>>> -	numa_node = dev_dax->target_node;
+>>>  	if (numa_node < 0) {
+>>>  		dev_warn(dev, "rejecting DAX region with invalid node: %d\n",
+>>>  				numa_node);
+>>>  		return -EINVAL;
+>>>  	}
+>>>  
+>>> -	/* Hotplug starting at the beginning of the next block: */
+>>> -	kmem_start = ALIGN(range->start, memory_block_size_bytes());
+>>> -
+>>> -	kmem_size = range_len(range);
+>>> -	/* Adjust the size down to compensate for moving up kmem_start: */
+>>> -	kmem_size -= kmem_start - range->start;
+>>> -	/* Align the size down to cover only complete blocks: */
+>>> -	kmem_size &= ~(memory_block_size_bytes() - 1);
+>>> -	kmem_end = kmem_start + kmem_size;
+>>> -
+>>> -	new_res_name = kstrdup(dev_name(dev), GFP_KERNEL);
+>>> -	if (!new_res_name)
+>>> +	res_name = kstrdup(dev_name(dev), GFP_KERNEL);
+>>> +	if (!res_name)
+>>>  		return -ENOMEM;
+>>>  
+>>> -	/* Region is permanently reserved if hotremove fails. */
+>>> -	new_res = request_mem_region(kmem_start, kmem_size, new_res_name);
+>>> -	if (!new_res) {
+>>> -		dev_warn(dev, "could not reserve region [%pa-%pa]\n",
+>>> -			 &kmem_start, &kmem_end);
+>>> -		kfree(new_res_name);
+>>> +	res = request_mem_region(range.start, range_len(&range), res_name);
 >>
->> The intention was to disable only compat not native 32-bit.
-> 
-> I'm not following why that would be considered a valid option,
-> as that clearly breaks existing users that update from a 32-bit
-> kernel to a 64-bit one.
-
-Do you mean users who move 32-bit binaries (without recompiling) to a
-new x64 kernel? Does the kernel guarantees that to work? I'd personally
-care more native-bitness apps.
-
-> 
-> Taking away the features from users that are still on 32-bit kernels
-> already seems questionable to me, but being inconsistent
-> about it seems much worse, in particular when the regression
-> is on the upgrade path.
-
-TBH, this won't fix that entirely (e.g. passing non-compat io_uring
-to a compat process should yield the same problem). So, let's put
-it aside for now until this bikeshedding would be relevant.
-
-> 
->>> Can we expect all existing and future user space to have a sane
->>> fallback when IORING_SETUP_SQPOLL fails?
+>> I think our range could be empty after aligning. I assume
+>> request_mem_region() would check that, but maybe we could report a
+>> better error/warning in that case.
 >>
->> SQPOLL has a few differences with non-SQPOLL modes, but it's easy
->> to convert between them. Anyway, SQPOLL is a privileged special
->> case that's here for performance/latency reasons, I don't think
->> there will be any non-accidental users of it.
+> dax_kmem_range() already returns a memory-block-aligned @range but
+> IIUC request_mem_region() isn't checking for that. Having said that
+> the returned @res wouldn't be different from the passed range.start.
 > 
-> Ok, so the behavior of 32-bit tasks would be the same as running
-> the same application as unprivileged 64-bit tasks, with applications
+>>>  	/*
+>>>  	 * Ensure that future kexec'd kernels will not treat this as RAM
+>>>  	 * automatically.
+>>>  	 */
+>>> -	rc = add_memory_driver_managed(numa_node, new_res->start,
+>>> -				       resource_size(new_res), kmem_name);
+>>> +	rc = add_memory_driver_managed(numa_node, res->start,
+>>> +				       resource_size(res), kmem_name);
+>>> +
+>>> +	res->flags |= IORESOURCE_BUSY;
+>>
+>> Hm, I don't think that's correct. Any specific reason why to mark the
+>> not-added, unaligned parts BUSY? E.g., walk_system_ram_range() could
+>> suddenly stumble over it - and e.g., similarly kexec code when trying to
+>> find memory for placing kexec images. I think we should leave this
+>> !BUSY, just as it is right now.
+>>
+> Agreed.
+> 
+>>>  	if (rc) {
+>>> -		release_resource(new_res);
+>>> -		kfree(new_res);
+>>> -		kfree(new_res_name);
+>>> +		release_mem_region(range.start, range_len(&range));
+>>> +		kfree(res_name);
+>>>  		return rc;
+>>>  	}
+>>> -	dev_dax->dax_kmem_res = new_res;
+>>> +
+>>> +	dev_set_drvdata(dev, res_name);
+>>>  
+>>>  	return 0;
+>>>  }
+>>>  
+>>>  #ifdef CONFIG_MEMORY_HOTREMOVE
+>>> -static int dev_dax_kmem_remove(struct device *dev)
+>>> +static void dax_kmem_release(struct dev_dax *dev_dax)
+>>>  {
+>>> -	struct dev_dax *dev_dax = to_dev_dax(dev);
+>>> -	struct resource *res = dev_dax->dax_kmem_res;
+>>> -	resource_size_t kmem_start = res->start;
+>>> -	resource_size_t kmem_size = resource_size(res);
+>>> -	const char *res_name = res->name;
+>>>  	int rc;
+>>> +	struct device *dev = &dev_dax->dev;
+>>> +	const char *res_name = dev_get_drvdata(dev);
+>>> +	struct range range = dax_kmem_range(dev_dax);
+>>>  
+>>>  	/*
+>>>  	 * We have one shot for removing memory, if some memory blocks were not
+>>>  	 * offline prior to calling this function remove_memory() will fail, and
+>>>  	 * there is no way to hotremove this memory until reboot because device
+>>> -	 * unbind will succeed even if we return failure.
+>>> +	 * unbind will proceed regardless of the remove_memory result.
+>>>  	 */
+>>> -	rc = remove_memory(dev_dax->target_node, kmem_start, kmem_size);
+>>> -	if (rc) {
+>>> -		any_hotremove_failed = true;
+>>> -		dev_err(dev,
+>>> -			"DAX region %pR cannot be hotremoved until the next reboot\n",
+>>> -			res);
+>>> -		return rc;
+>>> +	rc = remove_memory(dev_dax->target_node, range.start, range_len(&range));
+>>> +	if (rc == 0) {
+>>
+>> if (!rc) ?
+>>
+> Better off would be to keep the old order:
+> 
+> 	if (rc) {
+> 		any_hotremove_failed = true;
+> 		dev_err(dev, "%#llx-%#llx cannot be hotremoved until the next reboot\n",
+> 				range.start, range.end);
+> 	        return;
+> 	}
+> 
+> 	release_mem_region(range.start, range_len(&range));
+> 	dev_set_drvdata(dev, NULL);
+> 	kfree(res_name);
+> 	return;
+> 
+> 
+>>> +		release_mem_region(range.start, range_len(&range));
+>>
+>> remove_memory() does a release_mem_region_adjustable(). Don't you
+>> actually want to release the *unaligned* region you requested?
+>>
+> Isn't it what we're doing here?
+> (The release_mem_region_adjustable() is using the same
+> dax_kmem-aligned range and there's no split/adjust)
+> 
+> Meaning right now (+ parent marked as !BUSY), and if I am understanding
+> this correctly:
+> 
+> request_mem_region(range.start, range_len)
+>    __request_region(iomem_res, range.start, range_len) -> alloc @parent
+> add_memory_driver_managed(parent.start, resource_size(parent))
+>    __request_region(parent.start, resource_size(parent)) -> alloc @child
+> 
+> [...]
+> 
+> remove_memory(range.start, range_len)
+>  request_mem_region_adjustable(range.start, range_len)
+>   __release_region(range.start, range_len) -> remove @child
+> 
+> release_mem_region(range.start, range_len)
+>   __release_region(range.start, range_len) -> doesn't remove @parent because !BUSY?
+> 
+> The add/removal of this relies on !BUSY. But now I am wondering if the parent remaining
+> unreleased is deliberate even on CONFIG_MEMORY_HOTREMOVE=y.
+> 
+> 	Joao
+> 
 
-Yes, something like that, but that's not automatic and in some
-(hopefully rare) cases there may be pitfalls. That's in short,
-I can expand the idea a bit if anyone would be interested.
+Thinking about it, if we don't set the parent resource BUSY (which is
+what I think is the right way of doing things), and don't want to store
+the parent resource pointer, we could add something like
+lookup_resource() - e.g., lookup_mem_resource() - , however, searching
+properly in the whole hierarchy (instead of only the first level), and
+traversing down to the last hierarchy. Then it would be as simple as
 
-> already having to implement that fallback, right?
-
-Well, not everyone _have_ to implement such a fallback, e.g.
-applications working only whilst privileged may use SQPOLL only.
+remove_memory(range.start, range_len)
+res = lookup_mem_resource(range.start);
+release_resource(res);
 
 -- 
-Pavel Begunkov
+Thanks,
+
+David / dhildenb
+
