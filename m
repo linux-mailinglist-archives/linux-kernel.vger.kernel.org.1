@@ -2,95 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7AF2275AA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CBCD275AAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726805AbgIWOt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 10:49:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726572AbgIWOtZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 10:49:25 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA320C0613CE;
-        Wed, 23 Sep 2020 07:49:24 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kL657-004bBq-D5; Wed, 23 Sep 2020 14:49:17 +0000
-Date:   Wed, 23 Sep 2020 15:49:17 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-aio@kvack.org" <linux-aio@kvack.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 3/9] iov_iter: refactor rw_copy_check_uvector and
- import_iovec
-Message-ID: <20200923144917.GM3421308@ZenIV.linux.org.uk>
-References: <20200923060547.16903-1-hch@lst.de>
- <20200923060547.16903-4-hch@lst.de>
- <20200923141654.GJ3421308@ZenIV.linux.org.uk>
- <200cf2b9ce5e408f8838948fda7ce9a0@AcuMS.aculab.com>
+        id S1726670AbgIWOtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 10:49:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45718 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726572AbgIWOtb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 10:49:31 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1B663206FB;
+        Wed, 23 Sep 2020 14:49:30 +0000 (UTC)
+Date:   Wed, 23 Sep 2020 10:49:28 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>
+Subject: Re: [PATCH 0/4] bootconfig: Fix a parser bug
+Message-ID: <20200923104928.0c0a2ec1@oasis.local.home>
+In-Reply-To: <20200923143014.6c904389a4b20fe904144d3f@kernel.org>
+References: <160068147328.1088739.7282405187565509762.stgit@devnote2>
+        <20200923143014.6c904389a4b20fe904144d3f@kernel.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200cf2b9ce5e408f8838948fda7ce9a0@AcuMS.aculab.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 02:38:24PM +0000, David Laight wrote:
-> From: Al Viro
-> > Sent: 23 September 2020 15:17
-> > 
-> > On Wed, Sep 23, 2020 at 08:05:41AM +0200, Christoph Hellwig wrote:
-> > 
-> > > +struct iovec *iovec_from_user(const struct iovec __user *uvec,
-> > > +		unsigned long nr_segs, unsigned long fast_segs,
-> > 
-> > Hmm...  For fast_segs unsigned long had always been ridiculous
-> > (4G struct iovec on caller stack frame?), but that got me wondering about
-> > nr_segs and I wish I'd thought of that when introducing import_iovec().
-> > 
-> > The thing is, import_iovec() takes unsigned int there.  Which is fine
-> > (hell, the maximal value that can be accepted in 1024), except that
-> > we do pass unsigned long syscall argument to it in some places.
+On Wed, 23 Sep 2020 14:30:14 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
+
+> Hi Steve,
 > 
-> It will make diddly-squit difference.
-> The parameters end up in registers on most calling conventions.
-> Plausibly you get an extra 'REX' byte on x86 for the 64bit value.
-> What you want to avoid is explicit sign/zero extension and value
-> masking after arithmetic.
+> Thank you for merging previous 3 serieses!
+> Could you also pick this series as urgent-fix branch?
+> 
 
-Don't tell me what I want; your telepathic abilities are consistently sucky.
+Already pulled them and just finished testing them. Will push to Linus
+in a bit.
 
-I am *NOT* talking about microoptimization here.  I have described
-the behaviour change of syscall caused by commit 5 years ago.  Which is
-generally considered a problem.  Then I asked whether that behaviour
-change would fall under the "if nobody noticed, it's not a userland ABI
-breakage" exception.
-
-Could you show me the point where I have expressed concerns about
-the quality of amd64 code generated for that thing, before or after
-the change in question?
+-- Steve
