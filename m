@@ -2,219 +2,355 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3668E27522A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 09:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E08B627522B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 09:12:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726685AbgIWHMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 03:12:08 -0400
-Received: from mga09.intel.com ([134.134.136.24]:53779 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726557AbgIWHMI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 03:12:08 -0400
-IronPort-SDR: 1evR14QMrRszgAqOoPVzIhiQabbqunzdzNo1X2IWpmEATBL1b15jKCOnbazD/IzQ4j7LmRahhG
- Y603GmA9nfCQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9752"; a="161750423"
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="161750423"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 00:12:05 -0700
-IronPort-SDR: lVgISsAsR1pRDj/UDWPnlp30IMc0xQm3XunUJ3SEKkK1NQLXwtN8AyU5RAe8ggZWijBGxhuail
- +Dja4Z3bDb1g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="347244275"
-Received: from lkp-server01.sh.intel.com (HELO 9f27196b5390) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 23 Sep 2020 00:12:04 -0700
-Received: from kbuild by 9f27196b5390 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kKywd-00002p-FR; Wed, 23 Sep 2020 07:12:03 +0000
-Date:   Wed, 23 Sep 2020 15:11:56 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2020.09.19a] BUILD SUCCESS
- e4b70593d9681a2d10a84681dc16a31a9d1bde05
-Message-ID: <5f6af53c.8h4w7HMBJ6TPbCxj%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726719AbgIWHMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 03:12:20 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14264 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726550AbgIWHMT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 03:12:19 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 4E74F26F73F1C048E02A;
+        Wed, 23 Sep 2020 15:12:16 +0800 (CST)
+Received: from [10.174.179.35] (10.174.179.35) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 23 Sep 2020 15:12:09 +0800
+Subject: Re: [RFC PATCH V2] ipmi: ssif: Fix out of bounds in write_next_byte()
+To:     <minyard@acm.org>
+CC:     <openipmi-developer@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <arnd@arndb.de>,
+        <gregkh@linuxfoundation.org>, <hidehiro.kawai.ez@hitachi.com>,
+        <linfeilong@huawei.com>, <liuzhiqiang26@huawei.com>
+References: <1600696808-613951-1-git-send-email-wubo40@huawei.com>
+ <20200922133144.GP3674@minyard.net> <20200922161311.GQ3674@minyard.net>
+From:   Wu Bo <wubo40@huawei.com>
+Message-ID: <6e932418-3fe8-8f62-90b6-11f11c4bfb5a@huawei.com>
+Date:   Wed, 23 Sep 2020 15:12:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20200922161311.GQ3674@minyard.net>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.35]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.09.19a
-branch HEAD: e4b70593d9681a2d10a84681dc16a31a9d1bde05  torture: Force weak-hashed pointers on console log
+On 2020/9/23 0:13, Corey Minyard wrote:
+> On Tue, Sep 22, 2020 at 08:31:44AM -0500, Corey Minyard wrote:
+>> On Mon, Sep 21, 2020 at 10:00:08PM +0800, Wu Bo wrote:
+>>> In my virtual machine (have 4 cpus), Use mce_inject to inject errors
+>>> into the system. After mce-inject injects an uncorrectable error,
+>>> there is a probability that the virtual machine is not reset immediately,
+>>> but hangs for more than 3000 seconds, and appeared unable to
+>>> handle kernel paging request.
+>>>
+>>> The analysis reasons are as follows:
+>>> 1) MCE appears on all CPUs, Currently all CPUs are in the NMI interrupt
+>>>     context. cpu0 is the first to seize the opportunity to run panic
+>>>     routines, and panic event should stop the other processors before
+>>>     do ipmi flush_messages(). but cpu1, cpu2 and cpu3 has already
+>>>     in NMI interrupt context, So the Second NMI interrupt(IPI)
+>>>     will not be processed again by cpu1, cpu2 and cpu3.
+>>>     At this time, cpu1,cpu2 and cpu3 did not stopped.
+>>>
+>>> 2) cpu1, cpu2 and cpu3 are waitting for cpu0 to finish the panic process.
+>>>     if a timeout waiting for other CPUs happened, do wait_for_panic(),
+>>>     the irq is enabled in the wait_for_panic() function.
+>>>
+>>> 3) ipmi IRQ occurs on the cpu3, and the cpu0 is doing the panic,
+>>>     they have the opportunity to call the smi_event_handler()
+>>>     function concurrently. the ipmi IRQ affects the panic process of cpu0.
+>>>
+>>>    CPU0                                    CPU3
+>>>
+>>>     |-nmi_handle do mce_panic               |-nmi_handle do_machine_check
+>>>     |                                       |
+>>>     |-panic()                               |-wait_for_panic()
+>>>     |                                       |
+>>>     |-stop other cpus ---- NMI ------> (Ignore, already in nmi interrupt)
+>>
+>> There is a step that happens before this.  In native_stop_other_cpus()
+>> it uses the REBOOT_VECTOR irq to stop the other CPUs before it does the
+>> NMI.
+>>
+>> The question is: Why isn't that working?  That's why irqs are enabled in
+>> wait_for_panic, so this REBOOT_VECTOR will work.
+>>
+>> Again, changing the IPMI driver to account for this is ignoring the root
+>> problem, and the root problem will cause other issues.
+>>
+>> You mention you are running in a VM, but you don't mention which one.
+>> Maybe the problem is in the VM?  I can't see how this is an issue unless
+>> you are not using native_stop_other_cpus() (using Xen?) or you have
+>> other kernel code changes.
+> 
+> I looked a bit more, and I'm guessing you are using kdump.
+> kdump_nmi_shuutdown_cpus() does not have the same handling for sending
+> the REBOOT_VECTOR interrupts as native_stop_other_cpus().
+> 
+> The kdump version of the code is not going to work with an MCE as it
+> only uses the NMI, and the NMI is not going to work.
+> 
+> I'm still not sure of the right way to fix this.  I can see two options:
+> 
+> * Do the REBOOT_VECTOR handling in kdump_nmi_shuutdown_cpus().
+> 
+> * In mce_panic, detect if you are going to do a kdump and handle it
+>    appropriately there.
+> 
+> We really need to get the x86 maintainers to see the issue and fix it.
+> 
+> -corey
+> 
+Hi, corey
 
-elapsed time: 851m
+Your guess is correct. Kdump is enabled in my VM (using qemu-kvm).
+The panic process use kdump_nmi_shootdown_cpus() to stop other cpus.
 
-configs tested: 155
-configs skipped: 2
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Thanks,
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                          pcm027_defconfig
-arm                         vf610m4_defconfig
-arm                           viper_defconfig
-arm                      jornada720_defconfig
-powerpc                 mpc837x_rdb_defconfig
-nios2                         3c120_defconfig
-powerpc                     tqm8555_defconfig
-arm                          iop32x_defconfig
-ia64                         bigsur_defconfig
-sh                     magicpanelr2_defconfig
-h8300                     edosk2674_defconfig
-powerpc                 xes_mpc85xx_defconfig
-ia64                                defconfig
-arm                            lart_defconfig
-riscv                    nommu_virt_defconfig
-powerpc                        warp_defconfig
-powerpc                       maple_defconfig
-sh                             sh03_defconfig
-mips                          rm200_defconfig
-mips                       bmips_be_defconfig
-powerpc                   currituck_defconfig
-mips                           gcw0_defconfig
-sh                           se7722_defconfig
-arm                      tct_hammer_defconfig
-powerpc                       ebony_defconfig
-arm                          tango4_defconfig
-powerpc                 mpc834x_mds_defconfig
-powerpc                      obs600_defconfig
-m68k                          amiga_defconfig
-m68k                       m5275evb_defconfig
-sh                           sh2007_defconfig
-c6x                        evmc6457_defconfig
-arm                           sama5_defconfig
-x86_64                           alldefconfig
-arm                         s5pv210_defconfig
-powerpc                      chrp32_defconfig
-arm                         axm55xx_defconfig
-um                            kunit_defconfig
-arm                       mainstone_defconfig
-sh                          rsk7269_defconfig
-sh                               alldefconfig
-arc                     haps_hs_smp_defconfig
-powerpc                        fsp2_defconfig
-arm                         cm_x300_defconfig
-powerpc                  mpc866_ads_defconfig
-sh                           se7206_defconfig
-arm                        shmobile_defconfig
-mips                      bmips_stb_defconfig
-mips                        bcm63xx_defconfig
-arm                       imx_v4_v5_defconfig
-arm                         ebsa110_defconfig
-arm                     am200epdkit_defconfig
-powerpc                 mpc8315_rdb_defconfig
-arm                           efm32_defconfig
-m68k                            q40_defconfig
-powerpc                 mpc8313_rdb_defconfig
-m68k                       m5249evb_defconfig
-powerpc                      cm5200_defconfig
-mips                   sb1250_swarm_defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a002-20200921
-i386                 randconfig-a006-20200921
-i386                 randconfig-a003-20200921
-i386                 randconfig-a004-20200921
-i386                 randconfig-a005-20200921
-i386                 randconfig-a001-20200921
-i386                 randconfig-a002-20200923
-i386                 randconfig-a006-20200923
-i386                 randconfig-a003-20200923
-i386                 randconfig-a004-20200923
-i386                 randconfig-a005-20200923
-i386                 randconfig-a001-20200923
-i386                 randconfig-a002-20200922
-i386                 randconfig-a006-20200922
-i386                 randconfig-a003-20200922
-i386                 randconfig-a004-20200922
-i386                 randconfig-a005-20200922
-i386                 randconfig-a001-20200922
-x86_64               randconfig-a011-20200923
-x86_64               randconfig-a013-20200923
-x86_64               randconfig-a014-20200923
-x86_64               randconfig-a015-20200923
-x86_64               randconfig-a012-20200923
-x86_64               randconfig-a016-20200923
-i386                 randconfig-a012-20200923
-i386                 randconfig-a014-20200923
-i386                 randconfig-a016-20200923
-i386                 randconfig-a013-20200923
-i386                 randconfig-a011-20200923
-i386                 randconfig-a015-20200923
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Wu Bo.
+>>
+>> -corey
+>>
+>>>     |                                       |
+>>>     |-notifier call(ipmi panic_event)       |<-ipmi IRQ occurs
+>>>     |                                       |
+>>>    \|/                                     \|/
+>>> do smi_event_handler()             do smi_event_handler()
+>>>
+>>>
+>>> The current scene encountered is a simulation injection error of the mce software,
+>>> and it is not confirmed whether there are other similar scenes.
+>>>
+>>> so add the try spinlocks in the IPMI panic handler to solve the concurrency problem of
+>>> panic process and IRQ process, and also to prevent the panic process from deadlock.
+>>>
+>>> Steps to reproduce (Have a certain probability):
+>>> 1. # vim /tmp/uncorrected
+>>> CPU 1 BANK 4
+>>> STATUS uncorrected 0xc0
+>>> MCGSTATUS  EIPV MCIP
+>>> ADDR 0x1234
+>>> RIP 0xdeadbabe
+>>> RAISINGCPU 0
+>>> MCGCAP SER CMCI TES 0x6
+>>>
+>>> 2. # modprobe mce_inject
+>>> 3. # cd /tmp
+>>> 4. # mce-inject uncorrected
+>>>
+>>> The logs:
+>>> [   55.086670] core: [Hardware Error]: RIP 00:<00000000deadbabe>
+>>> [   55.086671] core: [Hardware Error]: TSC 2e11aff65eea ADDR 1234
+>>> [   55.086673] core: [Hardware Error]: PROCESSOR 0:50654 TIME 1598967234 SOCKET 0 APIC 1 microcode 1
+>>> [   55.086674] core: [Hardware Error]: Run the above through 'mcelog --ascii'
+>>> [   55.086675] core: [Hardware Error]: Machine check: In kernel and no restart IP
+>>> [   55.086676] Kernel panic - not syncing: Fatal machine check
+>>> [   55.086677] kernel fault(0x5) notification starting on CPU 0
+>>> [   55.086682] kernel fault(0x5) notification finished on CPU 0
+>>> [ 4767.947960] BUG: unable to handle kernel paging request at ffff893e40000000
+>>> [ 4767.947962] PGD 13c001067 P4D 13c001067 PUD 0
+>>> [ 4767.947965] Oops: 0000 [#1] SMP PTI
+>>> [ 4767.947967] CPU: 0 PID: 0 Comm: swapper/0
+>>> [ 4767.947968] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.10.2-0-g5f4c7b1-20181220_000000-szxrtosci10000 04/01/2014
+>>> [ 4767.947972] RIP: 0010:kcs_event+0x3c2/0x890 [ipmi_si]
+>>> [ 4767.947974] Code: 74 0e 48 8b 7b 08 31 f6 48 8b 07 e8 98 4f 44 cd 83 bb 24 01
+>>> [ 4767.947975] RSP: 0018:fffffe0000007658 EFLAGS: 00010046
+>>> [ 4767.947976] RAX: 000000000c7c5ff0 RBX: ffff893e3383a000 RCX: 0000000000000000
+>>> [ 4767.947976] RDX: 0000000000000ca2 RSI: 0000000000000000 RDI: ffff893e2fdf6e40
+>>> [ 4767.947977] RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000a35
+>>> [ 4767.947978] R10: 0000000000000002 R11: 0000000000000006 R12: 0000000000000000
+>>> [ 4767.947978] R13: fffffe0000007b28 R14: ffff893e34bd0000 R15: 0000000000000000
+>>> [ 4767.947979] FS:  0000000000000000(0000) GS:ffff893e3ec00000(0000) knlGS:0000000000000000
+>>> [ 4767.947980] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>> [ 4767.947981] CR2: ffff893e40000000 CR3: 000000013b20a002 CR4: 00000000003606f0
+>>> [ 4767.947987] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>>> [ 4767.947988] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>>> [ 4767.947988] Call Trace:
+>>> [ 4767.947991]  <NMI>
+>>> [ 4767.947994]  smi_event_handler+0x62/0x660 [ipmi_si]
+>>> [ 4767.947997]  flush_messages+0x10/0x40 [ipmi_si]
+>>> [ 4767.948001]  ipmi_panic_request_and_wait+0xf5/0x100 [ipmi_msghandler]
+>>> [ 4767.948005]  ? symbol_string+0x5a/0x90
+>>> [ 4767.948007]  ? dummy_smi_done_handler+0x10/0x10 [ipmi_msghandler]
+>>> [ 4767.948011]  ? kvm_sched_clock_read+0xd/0x20
+>>> [ 4767.948014]  ? sched_clock+0x5/0x10
+>>> [ 4767.948017]  ? sched_clock_cpu+0xc/0xa0
+>>> [ 4767.948019]  ? kvm_sched_clock_read+0xd/0x20
+>>> [ 4767.948020]  ? sched_clock+0x5/0x10
+>>> [ 4767.948022]  ? sched_clock_cpu+0xc/0xa0
+>>> [ 4767.948026]  ? log_store+0x278/0x2c0
+>>> [ 4767.948027]  ? kvm_sched_clock_read+0xd/0x20
+>>> [ 4767.948029]  ? sched_clock+0x5/0x10
+>>> [ 4767.948030]  ? sched_clock_cpu+0xc/0xa0
+>>> [ 4767.948032]  ? log_store+0x278/0x2c0
+>>> [ 4767.948034]  ? vprintk_emit+0x1dd/0x470
+>>> [ 4767.948035]  ? vprintk_emit+0x234/0x470
+>>> [ 4767.948039]  ? secondary_startup_64+0xb7/0xc0
+>>> [ 4767.948040]  ? vprintk_deferred+0x3a/0x40
+>>> [ 4767.948042]  ? kvm_sched_clock_read+0xd/0x20
+>>> [ 4767.948043]  ? sched_clock+0x5/0x10
+>>> [ 4767.948045]  ? sched_clock_cpu+0xc/0xa0
+>>> [ 4767.948046]  ? log_store+0x278/0x2c0
+>>> [ 4767.948048]  ? vprintk_emit+0x1dd/0x470
+>>> [ 4767.948049]  ? vprintk_emit+0x234/0x470
+>>> [ 4767.948051]  ? vprintk_deferred+0x3a/0x40
+>>> [ 4767.948053]  ? printk+0x52/0x6e
+>>> [ 4767.948055]  ? ipmi_addr_length+0x40/0x40 [ipmi_msghandler]
+>>> [ 4767.948057]  ? panic_event+0x1d4/0x3e0 [ipmi_msghandler]
+>>> [ 4767.948059]  panic_event+0x1d4/0x3e0 [ipmi_msghandler]
+>>> [ 4767.948062]  ? vprintk_deferred+0x3a/0x40
+>>> [ 4767.948063]  ? printk+0x52/0x6e
+>>> [ 4767.948065]  ? cpumask_next+0x17/0x20
+>>> [ 4767.948067]  notifier_call_chain+0x47/0x70
+>>> [ 4767.948070]  panic+0x17d/0x2c2
+>>> [ 4767.948075]  mce_panic+0x216/0x240
+>>> [ 4767.948077]  do_machine_check+0xccd/0xdb0
+>>> [ 4767.948082]  ? native_safe_halt+0xe/0x10
+>>> [ 4767.948086]  raise_exception+0x47/0xb0 [mce_inject]
+>>> [ 4767.948089]  ? __intel_pmu_enable_all+0x47/0x80
+>>> [ 4767.948092]  ? native_apic_msr_write+0x27/0x30
+>>> [ 4767.948093]  ? intel_pmu_handle_irq+0x10d/0x160
+>>> [ 4767.948095]  mce_raise_notify+0x62/0x70 [mce_inject]
+>>> [ 4767.948097]  ? raise_local+0xc0/0xc0 [mce_inject]
+>>> [ 4767.948100]  nmi_handle+0x63/0x110
+>>> [ 4767.948103]  default_do_nmi+0x4e/0x100
+>>> [ 4767.948105]  do_nmi+0x12c/0x190
+>>> [ 4767.948107]  end_repeat_nmi+0x16/0x6a
+>>>
+>>> Call Trace:
+>>> crash> bt -a
+>>> PID: 0      TASK: ffffffff91c12780  CPU: 0   COMMAND: "swapper/0"
+>>>   #0 [fffffe0000007ba0] panic at ffffffff90ab2e4b
+>>>   #1 [fffffe0000007c28] mce_panic at ffffffff90a37ec6
+>>>   #2 [fffffe0000007c70] do_machine_check at ffffffff90a391ad
+>>>   #3 [fffffe0000007d80] raise_exception at ffffffffc0642117 [mce_inject]
+>>>   #4 [fffffe0000007e48] mce_raise_notify at ffffffffc0642a92 [mce_inject]
+>>>   #5 [fffffe0000007e58] nmi_handle at ffffffff90a21c73
+>>>   #6 [fffffe0000007eb0] default_do_nmi at ffffffff90a2213e
+>>>   #7 [fffffe0000007ed0] do_nmi at ffffffff90a2231c
+>>>   #8 [fffffe0000007ef0] end_repeat_nmi at ffffffff914016b4
+>>>      [exception RIP: native_safe_halt+14]
+>>>      RIP: ffffffff9127223e  RSP: ffffffff91c03e90  RFLAGS: 00000246
+>>>      RAX: ffffffff91271f30  RBX: 0000000000000000  RCX: 0000000000000000
+>>>      RDX: 0000000000000001  RSI: 0000000000000000  RDI: 0000000000000000
+>>>      RBP: 0000000000000000   R8: 00000031237ac86a   R9: 0000000000000001
+>>>      R10: ffff9f7c01397b88  R11: 0000000002a3fabf  R12: 0000000000000000
+>>>      R13: 0000000000000000  R14: 0000000000000000  R15: 0000000000000000
+>>>      ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
+>>> --- <NMI exception stack> ---
+>>>   #9 [ffffffff91c03e90] native_safe_halt at ffffffff9127223e
+>>>   #10 [ffffffff91c03e90] default_idle at ffffffff91271f4a
+>>>   #11 [ffffffff91c03eb0] do_idle at ffffffff90ae959a
+>>>   #12 [ffffffff91c03ef0] cpu_startup_entry at ffffffff90ae981f
+>>>   #13 [ffffffff91c03f10] start_kernel at ffffffff9219b206
+>>>   #14 [ffffffff91c03f50] secondary_startup_64 at ffffffff90a000e7
+>>>
+>>>
+>>> PID: 0      TASK: ffff8b06c77dc740  CPU: 3   COMMAND: "swapper/3"
+>>>       [exception RIP: port_outb+17]
+>>>       RIP: ffffffffc035f1a1  RSP: ffff8b06fad83e90  RFLAGS: 00000002
+>>>       RAX: 0000000000000000  RBX: ffff8b06f08bec00  RCX: 0000000000000010
+>>>       RDX: 0000000000000ca2  RSI: 0000000000000000  RDI: ffff8b06f0bd5e40
+>>>       RBP: 0000000000000001   R8: ffff8b06fad80080   R9: ffff8b06fad84000
+>>>       R10: 0000000000000000  R11: 0000000000000000  R12: 0000000000000000
+>>>       R13: ffff8b06fad83f54  R14: 0000000000000000  R15: 0000000000000000
+>>>       CS: 0010  SS: 0018
+>>>    #0 [ffff8b06fad83e90] kcs_event at ffffffffc035c2c7 [ipmi_si]
+>>>    #1 [ffff8b06fad83eb0] smi_event_handler at ffffffffc035aa3f [ipmi_si]
+>>>    #2 [ffff8b06fad83ee8] ipmi_si_irq_handler at ffffffffc035b0cc [ipmi_si]
+>>>    #3 [ffff8b06fad83f08] __handle_irq_event_percpu at ffffffff9571dfc0
+>>>    #4 [ffff8b06fad83f48] handle_irq_event_percpu at ffffffff9571e140
+>>>    #5 [ffff8b06fad83f70] handle_irq_event at ffffffff9571e1b6
+>>>    #6 [ffff8b06fad83f90] handle_fasteoi_irq at ffffffff95721b42
+>>>    #7 [ffff8b06fad83fb0] handle_irq at ffffffff956209e8
+>>>    #8 [ffff8b06fad83fc0] do_IRQ at ffffffff96001ee9
+>>> --- <IRQ stack> ---
+>>>    #9 [fffffe0000088b98] ret_from_intr at ffffffff96000a8f
+>>>       [exception RIP: delay_tsc+52]
+>>>       RIP: ffffffff95e5fb64  RSP: fffffe0000088c48  RFLAGS: 00000287
+>>>       RAX: 000023fb5edf4b14  RBX: 00000000003e0451  RCX: 000023fb5edf4798
+>>>       RDX: 000000000000037c  RSI: 0000000000000003  RDI: 000000000000095b
+>>>       RBP: fffffe0000088cc0   R8: 0000000000000004   R9: fffffe0000088c5c
+>>>       R10: ffffffff96a05ae0  R11: 0000000000000000  R12: fffffe0000088cb0
+>>>       R13: 0000000000000001  R14: fffffe0000088ef8  R15: ffffffff9666a2f0
+>>>       ORIG_RAX: ffffffffffffffd9  CS: 0010  SS: 0018
+>>>   #10 [fffffe0000088c48] wait_for_panic at ffffffff95637c6c
+>>>   #11 [fffffe0000088c58] mce_timed_out at ffffffff95637f5d
+>>>   #12 [fffffe0000088c70] do_machine_check at ffffffff95638db4
+>>>   #13 [fffffe0000088d80] raise_exception at ffffffffc05b6117 [mce_inject]
+>>>   #14 [fffffe0000088e48] mce_raise_notify at ffffffffc05b6a92 [mce_inject]
+>>>   #15 [fffffe0000088e58] nmi_handle at ffffffff95621c73
+>>>   #16 [fffffe0000088eb0] default_do_nmi at ffffffff9562213e
+>>>   #17 [fffffe0000088ed0] do_nmi at ffffffff9562231c
+>>>   #18 [fffffe0000088ef0] end_repeat_nmi at ffffffff960016b4
+>>>       [exception RIP: native_safe_halt+14]
+>>>       RIP: ffffffff95e7223e  RSP: ffffa222c06a3eb0  RFLAGS: 00000246
+>>>       RAX: ffffffff95e71f30  RBX: 0000000000000003  RCX: 0000000000000001
+>>>       RDX: 0000000000000001  RSI: 0000000000000083  RDI: 0000000000000000
+>>>       RBP: 0000000000000003   R8: 00000018cf7cd9a0   R9: 0000000000000001
+>>>       R10: 0000000000000400  R11: 00000000000003fb  R12: 0000000000000000
+>>>       R13: 0000000000000000  R14: 0000000000000000  R15: 0000000000000000
+>>>       ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
+>>>   --- <NMI exception stack> ---
+>>>   #19 [ffffa222c06a3eb0] native_safe_halt at ffffffff95e7223e
+>>>   #20 [ffffa222c06a3eb0] default_idle at ffffffff95e71f4a
+>>>   #21 [ffffa222c06a3ed0] do_idle at ffffffff956e959a
+>>>   #22 [ffffa222c06a3f10] cpu_startup_entry at ffffffff956e981f
+>>>   #23 [ffffa222c06a3f30] start_secondary at ffffffff9564e697
+>>>   #24 [ffffa222c06a3f50] secondary_startup_64 at ffffffff956000e7
+>>>
+>>> Fixes: e45361d73 ("Factor out message flushing procedure")
+>>> Signed-off-by: Feilong Lin <linfeilong@huawei.com>
+>>> Signed-off-by: Wu Bo <wubo40@huawei.com>
+>>> ---
+>>>   drivers/char/ipmi/ipmi_si_intf.c | 21 ++++++++++++---------
+>>>   1 file changed, 12 insertions(+), 9 deletions(-)
+>>>
+>>> diff --git a/drivers/char/ipmi/ipmi_si_intf.c b/drivers/char/ipmi/ipmi_si_intf.c
+>>> index 77b8d55..44ba9b6 100644
+>>> --- a/drivers/char/ipmi/ipmi_si_intf.c
+>>> +++ b/drivers/char/ipmi/ipmi_si_intf.c
+>>> @@ -882,16 +882,19 @@ static void flush_messages(void *send_info)
+>>>   {
+>>>   	struct smi_info *smi_info = send_info;
+>>>   	enum si_sm_result result;
+>>> +	unsigned long flags = 0;
+>>> +	int time = 0;
+>>>   
+>>> -	/*
+>>> -	 * Currently, this function is called only in run-to-completion
+>>> -	 * mode.  This means we are single-threaded, no need for locks.
+>>> -	 */
+>>> -	result = smi_event_handler(smi_info, 0);
+>>> -	while (result != SI_SM_IDLE) {
+>>> -		udelay(SI_SHORT_TIMEOUT_USEC);
+>>> -		result = smi_event_handler(smi_info, SI_SHORT_TIMEOUT_USEC);
+>>> -	}
+>>> +restart:
+>>> +        if (!spin_trylock_irqsave(&smi_info->si_lock, flags))
+>>> +                return;
+>>> +        result = smi_event_handler(smi_info, time);
+>>> +        spin_unlock_irqrestore(&smi_info->si_lock, flags);
+>>> +        if (result != SI_SM_IDLE) {
+>>> +                udelay(SI_SHORT_TIMEOUT_USEC);
+>>> +                time = SI_SHORT_TIMEOUT_USEC;
+>>> +                goto restart;
+>>> +        }
+>>>   }
+>>>   
+>>>   static void sender(void                *send_info,
+>>> -- 
+>>> 1.8.3.1
+>>>
+> .
+> 
 
-clang tested configs:
-x86_64               randconfig-a005-20200923
-x86_64               randconfig-a003-20200923
-x86_64               randconfig-a004-20200923
-x86_64               randconfig-a002-20200923
-x86_64               randconfig-a006-20200923
-x86_64               randconfig-a001-20200923
-x86_64               randconfig-a011-20200922
-x86_64               randconfig-a013-20200922
-x86_64               randconfig-a014-20200922
-x86_64               randconfig-a015-20200922
-x86_64               randconfig-a012-20200922
-x86_64               randconfig-a016-20200922
-x86_64               randconfig-a011-20200920
-x86_64               randconfig-a013-20200920
-x86_64               randconfig-a014-20200920
-x86_64               randconfig-a015-20200920
-x86_64               randconfig-a012-20200920
-x86_64               randconfig-a016-20200920
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
