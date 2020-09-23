@@ -2,89 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C16A1275658
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73878275659
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726515AbgIWK3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 06:29:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726422AbgIWK3c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 06:29:32 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F51C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 03:29:32 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id s19so875211plp.3
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 03:29:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JI/zqwqxLAG9o9M3uwdlp+Q2ESbf1KLswdxq+phSMss=;
-        b=u6yJI32vRYyXSnq/EAHe1ycM5E/UH402GHw9uEHyjFqkwGjw4LxgSg5iLS+DiRQ4+r
-         o7Oeyl6s40YgiEk5lLE815dRP47+HbnUA46uteNZkALAUaMU9icgkCx5V4xe0cnUQ99d
-         71b4vGj6t937JuPHgrem0dQTIRFdtBXZomoi7lc8431D0L6a2Xeqc82fbvp82Orpl5Yv
-         xJIV4wAoYiWMAXCsvj6cDs5aD51aFHi5y24p9NIRSNDyHU6AwnltjuqaIfChy9ZiQVJy
-         XtBQWuz11V6nG0xekQREIqGo0xJovNXYI4Yy9cD1YOtH3Im1aHFRg2HZUJVsiXtR8gBT
-         EISw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JI/zqwqxLAG9o9M3uwdlp+Q2ESbf1KLswdxq+phSMss=;
-        b=D7HjI9r/mFVvpc9XdAJn9S6juR6D0JsqkX6SoIeH1pPrpF0gd9reVBN2Dkcq0Z/rUO
-         tNu/ABM83KLBIVfrGyqYXYv1depPgYtbc4ItikU1AYLbqTsHMQQVWgt0Q7A7WqjyevNo
-         vdbpXgj4Xx1m8LMvP3L3/iDlXhJjZKrXhhEzc7QJgcOuqW0bD5uCMkcjQRBtZxc61C1Z
-         PqBuwECt+kHdCnKppQz7ENBXjOIIYRWa7OU19yMwAyGtq3FLmP2Adud/2D6i5wUbKj+2
-         B2KElx2b3oQMn8Ks64mWCEzPWWclIhEk4yP7P8NU6nlCPywsqfwBgjObYW02c/Yv4zK0
-         bcuw==
-X-Gm-Message-State: AOAM531GCnge/Bi5r2EKo7ccLsVKmOBpBCntT6Fn6b++gDt8ohtsqFXQ
-        9McWaKEwGfAVPrDdVXxFvQ==
-X-Google-Smtp-Source: ABdhPJwkJ17OXMhXTjQk3IyAhB+j/BlL4pmBt9igviElaN0XRW+WDlr9Yxgy9/m+2VJRbrio0D/iMQ==
-X-Received: by 2002:a17:90b:46c4:: with SMTP id jx4mr2931642pjb.190.1600856971629;
-        Wed, 23 Sep 2020 03:29:31 -0700 (PDT)
-Received: from PWN (n11212042027.netvigator.com. [112.120.42.27])
-        by smtp.gmail.com with ESMTPSA id x27sm18118583pfp.128.2020.09.23.03.29.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 03:29:30 -0700 (PDT)
-Date:   Wed, 23 Sep 2020 06:29:25 -0400
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Jan Kara <jack@suse.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: Re: [Linux-kernel-mentees] [PATCH] udf: Fix memory leak in
- udf_process_sequence()
-Message-ID: <20200923102925.GA288879@PWN>
-References: <0000000000004c1f4d05afcff2f4@google.com>
- <20200922154531.153922-1-yepeilin.cs@gmail.com>
- <20200923100405.GD6719@quack2.suse.cz>
+        id S1726573AbgIWK3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 06:29:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52284 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726422AbgIWK3j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 06:29:39 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CCAAE23119;
+        Wed, 23 Sep 2020 10:29:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600856978;
+        bh=wHFiqSVP5wiacoZPIFyckOzrdnch7kPOpZ+Gij8UoLs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=avm7LiDgHBa4fVDvu0xyDB8Zo8qQYTiXQt8zn0xEPGYOTW52E7S89HBXc5q+w/D0b
+         kxmbKuciqkuunFNzfXAB8wMcHnFNpxoXXQ8fo4wmMcWq1IihvNOuaD+DmjzEeT+YrN
+         JKKkN+QyOSn8k6KIOTYIMoWzt4WL+tYdFB9aXF7E=
+Date:   Wed, 23 Sep 2020 12:29:57 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     arnd@arndb.de, keescook@chromium.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 10/11] drivers/misc/vmw_vmci: convert num guest
+ devices counter to counter_atomic
+Message-ID: <20200923102957.GF3154647@kroah.com>
+References: <cover.1600816121.git.skhan@linuxfoundation.org>
+ <e53dcdeb280bd90e074f214f8f292e89dedb36df.1600816121.git.skhan@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200923100405.GD6719@quack2.suse.cz>
+In-Reply-To: <e53dcdeb280bd90e074f214f8f292e89dedb36df.1600816121.git.skhan@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Wed, Sep 23, 2020 at 12:04:05PM +0200, Jan Kara wrote:
-> On Tue 22-09-20 11:45:31, Peilin Ye wrote:
-> > udf_process_sequence() is leaking memory. Free `data.part_descs_loc`
-> > before returning.
-> > 
-> > Cc: stable@vger.kernel.org
-> > Fixes: 7b78fd02fb19 ("udf: Fix handling of Partition Descriptors")
-> > Reported-and-tested-by: syzbot+128f4dd6e796c98b3760@syzkaller.appspotmail.com
-> > Link: https://syzkaller.appspot.com/bug?id=c5ec4e6f5d818f3c4afd4d59342468eec08a38da
-> > Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+On Tue, Sep 22, 2020 at 07:43:39PM -0600, Shuah Khan wrote:
+> counter_atomic is introduced to be used when a variable is used as
+> a simple counter and doesn't guard object lifetimes. This clearly
+> differentiates atomic_t usages that guard object lifetimes.
 > 
-> Thanks for the patch but I've just yesterday written exactly the same patch
-> and merged it to my tree...
+> counter_atomic variables will wrap around to 0 when it overflows and
+> should not be used to guard resource lifetimes, device usage and
+> open counts that control state changes, and pm states.
+> 
+> atomic_t variable used to count number of vmci guest devices is used
+> as just as counter and it doesn't control object lifetimes or state
+> management. Overflow doesn't appear to be problem for this use.
+> 
+> Convert it to use counter_atomic.
+> 
+> This conversion doesn't change the oveflow wrap around behavior.
+> 
+> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> ---
+>  drivers/misc/vmw_vmci/vmci_guest.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/misc/vmw_vmci/vmci_guest.c b/drivers/misc/vmw_vmci/vmci_guest.c
+> index cc8eeb361fcd..2c21448af730 100644
+> --- a/drivers/misc/vmw_vmci/vmci_guest.c
+> +++ b/drivers/misc/vmw_vmci/vmci_guest.c
+> @@ -20,6 +20,7 @@
+>  #include <linux/smp.h>
+>  #include <linux/io.h>
+>  #include <linux/vmalloc.h>
+> +#include <linux/counters.h>
+>  
+>  #include "vmci_datagram.h"
+>  #include "vmci_doorbell.h"
+> @@ -68,11 +69,11 @@ struct pci_dev *vmci_pdev;
+>  static struct vmci_guest_device *vmci_dev_g;
+>  static DEFINE_SPINLOCK(vmci_dev_spinlock);
+>  
+> -static atomic_t vmci_num_guest_devices = ATOMIC_INIT(0);
+> +static struct counter_atomic vmci_num_guest_devices = COUNTER_ATOMIC_INIT(0);
+>  
+>  bool vmci_guest_code_active(void)
+>  {
+> -	return atomic_read(&vmci_num_guest_devices) != 0;
+> +	return counter_atomic_read(&vmci_num_guest_devices) != 0;
+>  }
+>  
+>  u32 vmci_get_vm_context_id(void)
+> @@ -624,7 +625,7 @@ static int vmci_guest_probe_device(struct pci_dev *pdev,
+>  
+>  	dev_dbg(&pdev->dev, "Registered device\n");
+>  
+> -	atomic_inc(&vmci_num_guest_devices);
+> +	counter_atomic_inc(&vmci_num_guest_devices);
+>  
+>  	/* Enable specific interrupt bits. */
+>  	cmd = VMCI_IMR_DATAGRAM;
+> @@ -684,7 +685,7 @@ static void vmci_guest_remove_device(struct pci_dev *pdev)
+>  
+>  	dev_dbg(&pdev->dev, "Removing device\n");
+>  
+> -	atomic_dec(&vmci_num_guest_devices);
+> +	counter_atomic_dec(&vmci_num_guest_devices);
+>  
+>  	vmci_qp_guest_endpoints_exit();
+>  
 
-Ah, no worries, happy to see the bug gets fixed!
+While this conversion looks fine to me, wow, the code does not really
+seem to be doing the right thing.  So that's something to fix up
+independantly of this change, not your fault at all :)
 
-Peilin Ye
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
