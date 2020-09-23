@@ -2,135 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E54C2762F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 23:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E35E2762F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 23:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgIWVTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 17:19:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40308 "EHLO
+        id S1726638AbgIWVTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 17:19:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726515AbgIWVTK (ORCPT
+        with ESMTP id S1726265AbgIWVTq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 17:19:10 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C48FAC0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 14:19:10 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id g96so1091769otb.12
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 14:19:10 -0700 (PDT)
+        Wed, 23 Sep 2020 17:19:46 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 842E7C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 14:19:46 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id u6so950865qte.8
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 14:19:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=76bE4TBEk9oRvBu9iAhm7JLXdHzFi0Vc2Hd7Dse6DE4=;
-        b=gQJcjND014aKi3pGkWiRscEmRXnjH9MQHXhXMZz2MqX62he6u1xthqIncnsPFer1Oo
-         SexshlHVx9WGFtnzObHeDkyA+PQ9LrgmMYwuGF/zaaFmbXlrwZHxITTxmevVhi6RJLrE
-         1JbymauFWwJV4VyFMluSX4s39RBFURyDm6JGU=
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=TH7NITt1/yHWLLqIMcLUH9XOOzYm0k8mnM3wRK4YRh8=;
+        b=WgG8VKS18X+Z+jXJohpNfVgAhGpTnwAYZbGIWi+8sGilAcec/NVcKG5BlYbMnM8Qxo
+         QaAc4E3ThgHPxOZx+QeuMvr4ynnOTly5AHb11TJcpRvcycNfW+CU07vyXZTYaI4pTPNv
+         bOuaL8pokxQSWjwCaAbtkVyXrLnyfX+Udjpi4uwfMmg1Lda7d31f/Dfn4MfpbO9k6Koe
+         acj8k8k1BRIYBtX7hzST5Qxk1xBtt+to87EAliTUqE5H2lDFM9MGUQGcN28+kEmeLK8u
+         BV6956ogKNdVDwfmwOzK8UsCcgFWc8vdOFfHLV1lRdlB9jmCWVr4MVXWqZQpHeethTLS
+         I60Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=76bE4TBEk9oRvBu9iAhm7JLXdHzFi0Vc2Hd7Dse6DE4=;
-        b=DvcrlTmTvDWTZ1ScVR71DvHuDetFZ1/tKFJxvVGG1nXk7AXzapoOtWdUlC5DI9bNNW
-         Q/7MPXnIRE4M/X2L6HjSZzMFD5qxFCxNse8vajFvmR6LppDRt2cFRP+Y8bbp5KWY/ULy
-         MqSFD3o/V0ar0iZeR/7YVd6EeMZa/CMDteCj1r8+UfBNK0BQPJvl1OLykZNW9ruzT6Qa
-         mVhvEmjT1qZmOCMz2MSX3izIKFzu/L1QBFOCqCFYFIAokVx3mIbT19BqnkO0rJCeDDVW
-         0WQsXXiiGAbJqn2VgYsLIx8h7GBYvxiSVFBaaiPEsuLyJLS70nM+yI4x3ndoXrgMMIkw
-         3s/Q==
-X-Gm-Message-State: AOAM532cjicBQSPDMukfAIlniVB5d4nGZ2leZe8eD4UZJnOT1Y5TVD1P
-        cwTl4W7nZM+vOhDGacGVdXOvx4g0Zpv4Rw==
-X-Google-Smtp-Source: ABdhPJxxkXdW6hd7/WvGygoQDyeZw1wsRb1Qn5tnKgpsnVAOHRMnnb5wm3PYuqARYCq910vYaXkaMQ==
-X-Received: by 2002:a05:6830:196:: with SMTP id q22mr1004057ota.221.1600895949954;
-        Wed, 23 Sep 2020 14:19:09 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id i23sm257156oos.17.2020.09.23.14.19.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Sep 2020 14:19:09 -0700 (PDT)
-Subject: Re: [RFC PATCH 01/11] counters: Introduce counter and counter_atomic
-To:     Kees Cook <keescook@chromium.org>
-Cc:     corbet@lwn.net, gregkh@linuxfoundation.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <cover.1600816121.git.skhan@linuxfoundation.org>
- <e57eb89132000b255b5a7952cb82725ec2f3e4e0.1600816121.git.skhan@linuxfoundation.org>
- <202009231152.5023C4656F@keescook>
- <599e3faa-4228-f867-46f1-66566297256b@linuxfoundation.org>
- <202009231354.3456CB141@keescook>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <4ec035ae-efbf-d4b9-cf11-d6e3819a7edc@linuxfoundation.org>
-Date:   Wed, 23 Sep 2020 15:19:08 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <202009231354.3456CB141@keescook>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=TH7NITt1/yHWLLqIMcLUH9XOOzYm0k8mnM3wRK4YRh8=;
+        b=HoznuCcWIL/N2CuRhAYiKSTnfxBAxfrj1KGqLFilCsOiLlJKQzK2zhKg2xU56x+8EQ
+         4MqfcSxAe3qYlN6u2R0q6NySsWKNhDGdK5bHJWPszrUI7cbUH9xeNmOBMSu6d5pNF9g2
+         MNrLUzQWG081zpljqLCsVtUcqwwfNxq3FqGmXqWvMxBlPHoUcE23poadDFuERg2+Ah/G
+         /d//rtqy9Hp7hqfHCXUhKvqpzvB5JoD/aouwK4XbS8gSnISDvtcE3UN/+42LpNYSS7hQ
+         rZ+8LKNNeIrZ8m2phGkPhv8VSjtvnTBJBEW+ik5q4e0p7R/XVFNvwQNl2POu/oJl0A0X
+         S0hQ==
+X-Gm-Message-State: AOAM532pcRzpjkVeLyEaZkh8lRyidCAiedkl2pma4MSUiM4ak8H/vVNH
+        s3ARu5qjpxK50gBJ91Xinrrs1ukqBEWK07FRbR8bSw==
+X-Google-Smtp-Source: ABdhPJw43+sjSUo7FKERKf2xCxxc8JPOYcaeJHrxsWgON3azJYYkTt6PQXCKR9w1wBB51KBkOXp8oqPSBu6aZD1+dNNVJQ==
+Sender: "brendanhiggins via sendgmr" 
+        <brendanhiggins@mactruck.svl.corp.google.com>
+X-Received: from mactruck.svl.corp.google.com ([2620:15c:2cb:1:c634:6bff:fe71:d8d1])
+ (user=brendanhiggins job=sendgmr) by 2002:a0c:eac5:: with SMTP id
+ y5mr2205279qvp.2.1600895985596; Wed, 23 Sep 2020 14:19:45 -0700 (PDT)
+Date:   Wed, 23 Sep 2020 14:19:38 -0700
+Message-Id: <20200923211938.3727976-1-brendanhiggins@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
+Subject: [PATCH v1] kunit: tool: fix --alltests flag
+From:   Brendan Higgins <brendanhiggins@google.com>
+To:     shuah@kernel.org, davidgow@google.com
+Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org,
+        Brendan Higgins <brendanhiggins@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/23/20 2:58 PM, Kees Cook wrote:
-> On Wed, Sep 23, 2020 at 02:48:22PM -0600, Shuah Khan wrote:
->> On 9/23/20 1:04 PM, Kees Cook wrote:
->>> On Tue, Sep 22, 2020 at 07:43:30PM -0600, Shuah Khan wrote:
->>> I would really like these APIs to be _impossible_ to use for object
->>> lifetime management. To that end, I would like to have all of the
->>> *_return() functions removed. It should be strictly init, inc, dec,
->>> read.
->>>
->>
->> Yes. I am with you on making this API as small as possible so it won't
->> be used for lifetime mgmt. That means no support for:
->>
->> *_test, add_negative etc.
->>
->> I started out with just init, inc, dec, read. As I started looking
->> for candidates that can be converted to counters, I found inc_return()
->> usages. I think we need inc_return() for sure. I haven't come across
->> atomic_dec_return() yet.
-> 
-> What are the inc_return() cases? If they're not "safe" to use inc() and
-> then read(), then those likely need a closer look at what they're doing.
-> 
+Alltests flag evidently stopped working when run from outside of the
+root of the source tree, so fix that. Also add an additional broken
+config to the broken_on_uml config.
 
-3 in this series I sent. I would say I barely scratched the surface
-when it comes to finding candidates for converting.
+Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+---
+ tools/testing/kunit/configs/broken_on_uml.config |  1 +
+ tools/testing/kunit/kunit_kernel.py              | 15 ++++++++++-----
+ 2 files changed, 11 insertions(+), 5 deletions(-)
 
-drivers/android/binder.c
-drivers/acpi/acpi_extlog.c
-drivers/acpi/apei/ghes.c
+diff --git a/tools/testing/kunit/configs/broken_on_uml.config b/tools/testing/kunit/configs/broken_on_uml.config
+index 239b9f03da2c..a7f0603d33f6 100644
+--- a/tools/testing/kunit/configs/broken_on_uml.config
++++ b/tools/testing/kunit/configs/broken_on_uml.config
+@@ -39,3 +39,4 @@
+ # CONFIG_QCOM_CPR is not set
+ # CONFIG_RESET_BRCMSTB_RESCAL is not set
+ # CONFIG_RESET_INTEL_GW is not set
++# CONFIG_ADI_AXI_ADC is not set
+diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
+index e20e2056cb38..1b1826500f61 100644
+--- a/tools/testing/kunit/kunit_kernel.py
++++ b/tools/testing/kunit/kunit_kernel.py
+@@ -53,18 +53,23 @@ class LinuxSourceTreeOperations(object):
+ 		except subprocess.CalledProcessError as e:
+ 			raise ConfigError(e.output)
+ 
+-	def make_allyesconfig(self):
++	def make_allyesconfig(self, build_dir, make_options):
+ 		kunit_parser.print_with_timestamp(
+ 			'Enabling all CONFIGs for UML...')
++		command = ['make', 'ARCH=um', 'allyesconfig']
++		if make_options:
++			command.extend(make_options)
++		if build_dir:
++			command += ['O=' + build_dir]
+ 		process = subprocess.Popen(
+-			['make', 'ARCH=um', 'allyesconfig'],
++			command,
+ 			stdout=subprocess.DEVNULL,
+ 			stderr=subprocess.STDOUT)
+ 		process.wait()
+ 		kunit_parser.print_with_timestamp(
+ 			'Disabling broken configs to run KUnit tests...')
+ 		with ExitStack() as es:
+-			config = open(KCONFIG_PATH, 'a')
++			config = open(get_kconfig_path(build_dir), 'a')
+ 			disable = open(BROKEN_ALLCONFIG_PATH, 'r').read()
+ 			config.write(disable)
+ 		kunit_parser.print_with_timestamp(
+@@ -161,9 +166,9 @@ class LinuxSourceTree(object):
+ 			return self.build_config(build_dir, make_options)
+ 
+ 	def build_um_kernel(self, alltests, jobs, build_dir, make_options):
+-		if alltests:
+-			self._ops.make_allyesconfig()
+ 		try:
++			if alltests:
++				self._ops.make_allyesconfig(build_dir, make_options)
+ 			self._ops.make_olddefconfig(build_dir, make_options)
+ 			self._ops.make(jobs, build_dir, make_options)
+ 		except (ConfigError, BuildError) as e:
 
-These uses look reasonable to me. Having this inc_return() will save
-making _inc() followed by _read()
-
->>>> +There are a number of atomic_t usages in the kernel where atomic_t api
->>>> +is used strictly for counting and not for managing object lifetime. In
->>>> +some cases, atomic_t might not even be needed.
->>>
->>> Why even force the distinction? I think all the counters should be
->>> atomic and then there is no chance they will get accidentally used in
->>> places where someone *thinks* it's safe to use a non-atomic. So,
->>> "_atomic" can be removed from the name and the non-atomic implementation
->>> can get removed. Anyone already using non-atomic counters is just using
->>> "int" and "long" anyway. Let's please only create APIs that are always
->>> safe to use, and provide some benefit over a native time.
->>>
->>
->> I am with Greg on this. I think we will find several atomic_t usages
->> that don't need atomicity.
-> 
-> If you want to distinguish from atomic and create a wrapping "int", how
-> about making "counter" be the atomic and name the other "counter_unsafe"
-> (or "counter_best_effort", "counter_simple", ...) etc?
-> 
-
-I will change counter to counter_simple and add a warning that this
-should only be used when atomic isn't needed. I can outline some
-tips for choosing the right one.
-
-thanks,
--- Shuah
-
-
+base-commit: 92a2b470086f68bf35eb9f94b6cb5ebdfac41b25
+-- 
+2.28.0.681.g6f77f65b4e-goog
 
