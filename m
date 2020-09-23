@@ -2,114 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E761A274F34
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 04:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44096274F3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 04:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727330AbgIWCpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 22:45:36 -0400
-Received: from mga18.intel.com ([134.134.136.126]:39590 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726863AbgIWCpg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 22:45:36 -0400
-IronPort-SDR: lbmKAppA/wrKddoXD/KpUVdEXZvEu+QNUFVFbYIHZG4u7OaafSsEh/W45n0AhM+JK/tS/L2dbe
- 2JGa7wSLhyqQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9752"; a="148519947"
-X-IronPort-AV: E=Sophos;i="5.77,292,1596524400"; 
-   d="scan'208";a="148519947"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 19:45:34 -0700
-IronPort-SDR: edeD7pcbQkqzGUw16GNubCkD5zODZXm9cLryrTx55fwp96MKt3obBu1Q+fWTVDBb/IzFDbzrxz
- ZUFZBtrb3zxw==
-X-IronPort-AV: E=Sophos;i="5.77,292,1596524400"; 
-   d="scan'208";a="486237118"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.107])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 19:45:31 -0700
-Date:   Wed, 23 Sep 2020 10:45:29 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Yazen Ghannam <yazen.ghannam@amd.com>,
-        Wei Huang <wei.huang2@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2] tools/x86: add kcpuid tool to show raw CPU
- features
-Message-ID: <20200923024529.GA15894@shbuild999.sh.intel.com>
-References: <1600752470-43179-1-git-send-email-feng.tang@intel.com>
- <20200922201024.GS22660@zn.tnic>
- <20200922221523.GA1185357@rani.riverdale.lan>
+        id S1727344AbgIWCtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 22:49:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726873AbgIWCtD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 22:49:03 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8117DC061755;
+        Tue, 22 Sep 2020 19:49:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+tm3L9Qdu9Qa27/TXUn0VZXyFl0wWgXIWdk1uWUmYXo=; b=bro9h2a+1VJMD+WRmif02SxOCd
+        V6iYwofbx8Scioi6syigtzG1nhgPfDNbKD+0AWCloYcoCtuGqizghQ+7957ITN7duW0ad3Y5qa8VB
+        ihRdtXr+JyqzpvML6OtwnnNFi7N//U0P0vnT9u30mG5Rim8975d7CazXnklVXf3CEerJaHJoGFIz9
+        4bAUYyK+H0hxgkSUl+ojUHYKyXOM0gcJpmUlOTvCob9VH08ZAXjhQFntUbdjqyBJJLNWrbVYtRIHC
+        OodUmoJ9hZSATDquWRrgE+cTS0iPMrQgoPY77FgQMh9bNrJbF4LdjWkjTbbI5hNKEdsJTwkzAeM1R
+        P9U1wjcA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kKuq4-0000Po-1g; Wed, 23 Sep 2020 02:49:00 +0000
+Date:   Wed, 23 Sep 2020 03:48:59 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Qian Cai <cai@redhat.com>
+Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org,
+        Dave Kleikamp <shaggy@kernel.org>,
+        jfs-discussion@lists.sourceforge.net,
+        Dave Chinner <dchinner@redhat.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-next@vger.kernel.org
+Subject: Re: [PATCH v2 5/9] iomap: Support arbitrarily many blocks per page
+Message-ID: <20200923024859.GM32101@casper.infradead.org>
+References: <20200910234707.5504-1-willy@infradead.org>
+ <20200910234707.5504-6-willy@infradead.org>
+ <163f852ba12fd9de5dec7c4a2d6b6c7cdb379ebc.camel@redhat.com>
+ <20200922170526.GK32101@casper.infradead.org>
+ <95bd1230f2fcf01f690770eb77696862b8fb607b.camel@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200922221523.GA1185357@rani.riverdale.lan>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <95bd1230f2fcf01f690770eb77696862b8fb607b.camel@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arvind,
-
-On Tue, Sep 22, 2020 at 06:15:23PM -0400, Arvind Sankar wrote:
-> On Tue, Sep 22, 2020 at 10:10:24PM +0200, Borislav Petkov wrote:
-> > + AMD folks.
+On Tue, Sep 22, 2020 at 09:06:03PM -0400, Qian Cai wrote:
+> On Tue, 2020-09-22 at 18:05 +0100, Matthew Wilcox wrote:
+> > On Tue, Sep 22, 2020 at 12:23:45PM -0400, Qian Cai wrote:
+> > > On Fri, 2020-09-11 at 00:47 +0100, Matthew Wilcox (Oracle) wrote:
+> > > > Size the uptodate array dynamically to support larger pages in the
+> > > > page cache.  With a 64kB page, we're only saving 8 bytes per page today,
+> > > > but with a 2MB maximum page size, we'd have to allocate more than 4kB
+> > > > per page.  Add a few debugging assertions.
+> > > > 
+> > > > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> > > > Reviewed-by: Dave Chinner <dchinner@redhat.com>
+> > > 
+> > > Some syscall fuzzing will trigger this on powerpc:
+> > > 
+> > > .config: https://gitlab.com/cailca/linux-mm/-/blob/master/powerpc.config
+> > > 
+> > > [ 8805.895344][T445431] WARNING: CPU: 61 PID: 445431 at fs/iomap/buffered-
+> > > io.c:78 iomap_page_release+0x250/0x270
 > > 
-> > On Tue, Sep 22, 2020 at 01:27:50PM +0800, Feng Tang wrote:
-> > > End users frequently want to know what features their processor
-> > > supports, independent of what the kernel supports.
-> > > 
-> > > /proc/cpuinfo is great. It is omnipresent and since it is provided by
-> > > the kernel it is always as up to date as the kernel. But, it could be
-> > > ambiguous about processor features which can be disabled by the kernel
-> > > at boot-time or compile-time.
-> > > 
-> > > There are some user space tools showing more raw features, but they are
-> > > not bound with kernel, and go with distros. Many end users are still
-> > > using old distros with new kernels (upgraded by themselves), and may
-> > > not upgrade the distros only to get a newer tool.
-> > > 
-> > > So here arise the need for a new tool, which
-> > >   * Shows raw cpu features got from running cpuid
-> > >   * Be easier to obtain updates for compared to existing userspace
-> > >     tooling (perhaps distributed like perf)
-> > >   * Inherits "modern" kernel development process, in contrast to some
-> > >     of the existing userspace cpuid tools which are still being developed
-> > >     without git and distributed in tarballs from non-https sites.
-> > >   * Can produce output consistent with /proc/cpuinfo to make comparison
-> > >     easier.
+> > Well, I'm glad it triggered.  That warning is:
+> >         WARN_ON_ONCE(bitmap_full(iop->uptodate, nr_blocks) !=
+> >                         PageUptodate(page));
+> > so there was definitely a problem of some kind.
+> > 
+> > truncate_cleanup_page() calls
+> > do_invalidatepage() calls
+> > iomap_invalidatepage() calls
+> > iomap_page_release()
+> > 
+> > Is this the first warning?  I'm wondering if maybe there was an I/O error
+> > earlier which caused PageUptodate to get cleared again.  If it's easy to
+> > reproduce, perhaps you could try something like this?
+> > 
+> > +void dump_iomap_page(struct page *page, const char *reason)
+> > +{
+> > +       struct iomap_page *iop = to_iomap_page(page);
+> > +       unsigned int nr_blocks = i_blocks_per_page(page->mapping->host, page);
+> > +
+> > +       dump_page(page, reason);
+> > +       if (iop)
+> > +               printk("iop:reads %d writes %d uptodate %*pb\n",
+> > +                               atomic_read(&iop->read_bytes_pending),
+> > +                               atomic_read(&iop->write_bytes_pending),
+> > +                               nr_blocks, iop->uptodate);
+> > +       else
+> > +               printk("iop:none\n");
+> > +}
+> > 
+> > and then do something like:
+> > 
+> > 	if (bitmap_full(iop->uptodate, nr_blocks) != PageUptodate(page))
+> > 		dump_iomap_page(page, NULL);
 > 
-> Rather than a tool, would additional file(s) in, say,
-> /sys/devices/system/cpu/cpu<n> be nicer? They could show the raw CPUID
-> features, one file per leaf or sub-leaf, maybe even along with whether
-> they were disabled at boot-time.
-
-My thought is we already have in-kernel powerful /proc/cpuinfo, while 
-a user space tool could be more flexible for text parsing/layout, and
-show different info on user's demand/options.
-
-> > >   * Be in-kernel, could leverage kernel enabling, and even
-> > >     theoretically consume arch/x86/boot/cpustr.h so it could pick up
-> > >     new features directly from one-line X86_FEATURE_* definitions.
+> This:
 > 
-> That's arch/x86/include/asm/cpufeatures.h right -- cpustr.h is generated
-> from that. The table there already has comments which could be extracted
-> as the one-line description.
+> [ 1683.158254][T164965] page:000000004a6c16cd refcount:2 mapcount:0 mapping:00000000ea017dc5 index:0x2 pfn:0xc365c
+> [ 1683.158311][T164965] aops:xfs_address_space_operations ino:417b7e7 dentry name:"trinity-testfile2"
+> [ 1683.158354][T164965] flags: 0x7fff8000000015(locked|uptodate|lru)
+> [ 1683.158392][T164965] raw: 007fff8000000015 c00c0000019c4b08 c00c0000019a53c8 c000201c8362c1e8
+> [ 1683.158430][T164965] raw: 0000000000000002 0000000000000000 00000002ffffffff c000201c54db4000
+> [ 1683.158470][T164965] page->mem_cgroup:c000201c54db4000
+> [ 1683.158506][T164965] iop:none
 
-Thanks for the hint! I found the comments in cpufeatures.h is much better
-than what I extraced from SDM :), which I should use instead.
+Oh, I'm a fool.  This is after the call to detach_page_private() so
+page->private is NULL and we don't get the iop dumped.
 
-One other thing as Boris has mentioned, cpu feature is mixture of raw
-silicon features and kernel software ones. Also, cpufeatures.h only
-contains shows ont-bit boolean flag, while cpuid has multiple-bits field
-containing numbers.
+Nevertheless, this is interesting.  Somehow, the page is marked Uptodate,
+but the bitmap is deemed not full.  There are three places where we set
+an iomap page Uptodate:
 
-Thanks,
-Feng
+1.      if (bitmap_full(iop->uptodate, i_blocks_per_page(inode, page)))
+                SetPageUptodate(page);
 
+2.      if (page_has_private(page))
+                iomap_iop_set_range_uptodate(page, off, len);
+        else
+                SetPageUptodate(page);
 
+3.      BUG_ON(page->index);
+...
+        SetPageUptodate(page);
+
+It can't be #2 because the page has an iop.  It can't be #3 because the
+page->index is not 0.  So at some point in the past, the bitmap was full.
+
+I don't think it's possible for inode->i_blksize to change, and you
+aren't running with THPs, so it's definitely not possible for thp_size()
+to change.  So i_blocks_per_page() isn't going to change.
+
+We seem to have allocated enough memory for ->iop because that's also
+based on i_blocks_per_page().
+
+I'm out of ideas.  Maybe I'll wake up with a better idea in the morning.
+I've been trying to reproduce this on x86 with a 1kB block size
+filesystem, and haven't been able to yet.  Maybe I'll try to setup a
+powerpc cross-compilation environment tomorrow.
