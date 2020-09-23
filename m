@@ -2,114 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F01D42764A9
+	by mail.lfdr.de (Postfix) with ESMTP id 17BBC2764A7
 	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726761AbgIWXh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 19:37:58 -0400
-Received: from mga11.intel.com ([192.55.52.93]:2728 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726419AbgIWXh5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 19:37:57 -0400
-IronPort-SDR: 28NqNpMJG/m5adPOJgcPoH/Wi/DWIsjXLrxREvyuBR3LyFsim7blEk7tYL9mR/OAlCoSMQITrz
- xrr8nVrnRGnw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="158399686"
-X-IronPort-AV: E=Sophos;i="5.77,295,1596524400"; 
-   d="scan'208";a="158399686"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 16:37:57 -0700
-IronPort-SDR: WdTdzfVzp3Lt4/dSGVRMHwVmN1s8WAVnIUCVfH5cqidBiXhfihNDyd5b8mtVi965r3q1WvMTHU
- AgQ52VeEmwkg==
-X-IronPort-AV: E=Sophos;i="5.77,295,1596524400"; 
-   d="scan'208";a="511260588"
-Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 16:37:57 -0700
-Received: from localhost (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id 20DE26369;
-        Wed, 23 Sep 2020 16:37:04 -0700 (PDT)
-Date:   Wed, 23 Sep 2020 16:37:04 -0700
-From:   mark gross <mgross@linux.intel.com>
-To:     Voon Weifeng <weifeng.voon@intel.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jose Abreu <joabreu@synopsys.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        Seow Chen Yong <chen.yong.seow@intel.com>
-Subject: Re: [PATCH v1 net] net: stmmac: removed enabling eee in EEE set
- callback
-Message-ID: <20200923233704.GE56905@mtg-dev.jf.intel.com>
-Reply-To: mgross@linux.intel.com
-References: <20200923085614.8147-1-weifeng.voon@intel.com>
+        id S1726734AbgIWXhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 19:37:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726419AbgIWXhU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 19:37:20 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64C1DC0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:37:20 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id m15so582708pls.8
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:37:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3kSPJ43fJuwiBvEdY81hpG9H6DNbf9OCk668utuncwk=;
+        b=CJ4nRQsNPuX4zNSLx8SZnKpDLdLLrnHiBj0TwtUW+u1H2QkFpJgH7ZQuJ/WyVeVhBJ
+         8s3Mgbj7B2soK8NFHqX2vwFnhYWBtf0lhMQh04GeRNl07NiHswyY47M2C6dtl2xv8mlg
+         yAVzbkiJw+2jbr46vChgeq/yGLEOIO6TZLgaj2IskrmmQqBIQ5bCqT8hDq9OK1s3qHIX
+         bX2qzXOK6Ttj8lN5DD+ConDWQ9Wz/BIiQawXFGd1ogs1IVavJjcleF81o1JxtcLmAUT3
+         k8wc3rdvy8UfJcixXHxeSMyoiVKf2QqMGUDPcYqdvoxMOtI1aTYUysfmfsIgkDmvsX4x
+         Zk5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3kSPJ43fJuwiBvEdY81hpG9H6DNbf9OCk668utuncwk=;
+        b=MIE1GNpu+kw9c0KqEdzJrLGbZMJyQPrYjmj7PZ7UgZbNRUgXyTjgs35Ee8IH2TUh5T
+         X8CHpy4AXnb6QarD0g1ypc0qJuz4s8hYXKlBynB8L7EKw9cn/DHLSX65PusXaes+POUw
+         sXUCj46b4MtZkL5D6ts6twPFr2EtytUM8o9oop7Qpv0VwjbiJrmGkBXnMeaoea/E7xr/
+         diD5AwbFY1iHR93VXCj65ajg+Fo7MzIYgmq9YoAxPk7s7zDhan63fFTLd9KbK4pAVk4u
+         rqpkXe9SsJM9fR0RWNU5yL41DW3t3QbX85OeMyQJH+W3hBNTE3ASSQFEk1A6T/2E6CJm
+         Y60A==
+X-Gm-Message-State: AOAM533J/b0y7BSw3OMIcozRmyOTG6kVmkY7MMwg7YShjCnIMJrfIUsU
+        ljxFLXziznjd9MqDjZDgOiYOEWgJP1TIJQIjCcBL8w==
+X-Google-Smtp-Source: ABdhPJxqKOf4uBMPjiL96YHaBfoMVeQln+/bfnett7ZuIBtWaCiGsCIaaTktTQG50NiR008PvSm7PhoRjJegMgaP86A=
+X-Received: by 2002:a17:90b:f18:: with SMTP id br24mr1504260pjb.32.1600904239727;
+ Wed, 23 Sep 2020 16:37:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200923085614.8147-1-weifeng.voon@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200923210655.4143682-1-irogers@google.com>
+In-Reply-To: <20200923210655.4143682-1-irogers@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 23 Sep 2020 16:37:08 -0700
+Message-ID: <CAKwvOd=V6QFoAmYEVNjHKuOyWG8agjzxwan2EmkuZcQjv6qJ0g@mail.gmail.com>
+Subject: Re: [PATCH] perf test: Fix msan uninitialized use.
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Acked-by: Mark Gross <mgross@linux.intel.com>
+On Wed, Sep 23, 2020 at 2:07 PM 'Ian Rogers' via Clang Built Linux
+<clang-built-linux@googlegroups.com> wrote:
+>
+> Ensure 'st' is initialized before an error branch is taken.
+> Fixes test "67: Parse and process metrics" with LLVM msan:
+> ==6757==WARNING: MemorySanitizer: use-of-uninitialized-value
+>     #0 0x5570edae947d in rblist__exit tools/perf/util/rblist.c:114:2
+>     #1 0x5570edb1c6e8 in runtime_stat__exit tools/perf/util/stat-shadow.c:141:2
+>     #2 0x5570ed92cfae in __compute_metric tools/perf/tests/parse-metric.c:187:2
+>     #3 0x5570ed92cb74 in compute_metric tools/perf/tests/parse-metric.c:196:9
+>     #4 0x5570ed92c6d8 in test_recursion_fail tools/perf/tests/parse-metric.c:318:2
+>     #5 0x5570ed92b8c8 in test__parse_metric tools/perf/tests/parse-metric.c:356:2
+>     #6 0x5570ed8de8c1 in run_test tools/perf/tests/builtin-test.c:410:9
+>     #7 0x5570ed8ddadf in test_and_print tools/perf/tests/builtin-test.c:440:9
+>     #8 0x5570ed8dca04 in __cmd_test tools/perf/tests/builtin-test.c:661:4
+>     #9 0x5570ed8dbc07 in cmd_test tools/perf/tests/builtin-test.c:807:9
+>     #10 0x5570ed7326cc in run_builtin tools/perf/perf.c:313:11
+>     #11 0x5570ed731639 in handle_internal_command tools/perf/perf.c:365:8
+>     #12 0x5570ed7323cd in run_argv tools/perf/perf.c:409:2
+>     #13 0x5570ed731076 in main tools/perf/perf.c:539:3
+>
+> Fixes: commit f5a56570a3f2 ("perf test: Fix memory leaks in parse-metric test")
+> Signed-off-by: Ian Rogers <irogers@google.com>
 
-On Wed, Sep 23, 2020 at 04:56:14PM +0800, Voon Weifeng wrote:
-> EEE should be only be enabled during stmmac_mac_link_up() when the
-> link are up and being set up properly. set_eee should only do settings
-> configuration and disabling the eee.
-> 
-> Without this fix, turning on EEE using ethtool will return
-> "Operation not supported". This is due to the driver is in a dead loop
-> waiting for eee to be advertised in the for eee to be activated but the
-> driver will only configure the EEE advertisement after the eee is
-> activated.
-> 
-> Ethtool should only return "Operation not supported" if there is no EEE
-> capbility in the MAC controller.
-> 
-> Fixes: 8a7493e58ad6 ("net: stmmac: Fix a race in EEE enable callback")
-> 
-> Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+
+Orthogonal:
+The case where metricgroup__parse_groups_test() can fail in
+__compute_metric() also looks curious. Should &metric_events be passed
+to metricgroup__rblist_exit() in that case?
+
 > ---
->  .../net/ethernet/stmicro/stmmac/stmmac_ethtool.c  | 15 ++++-----------
->  1 file changed, 4 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-> index ac5e8cc5fb9f..430a4b32ec1e 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-> @@ -675,23 +675,16 @@ static int stmmac_ethtool_op_set_eee(struct net_device *dev,
->  	struct stmmac_priv *priv = netdev_priv(dev);
->  	int ret;
->  
-> -	if (!edata->eee_enabled) {
-> +	if (!priv->dma_cap.eee)
-> +		return -EOPNOTSUPP;
-> +
-> +	if (!edata->eee_enabled)
->  		stmmac_disable_eee_mode(priv);
-> -	} else {
-> -		/* We are asking for enabling the EEE but it is safe
-> -		 * to verify all by invoking the eee_init function.
-> -		 * In case of failure it will return an error.
-> -		 */
-> -		edata->eee_enabled = stmmac_eee_init(priv);
-> -		if (!edata->eee_enabled)
-> -			return -EOPNOTSUPP;
-> -	}
->  
->  	ret = phylink_ethtool_set_eee(priv->phylink, edata);
->  	if (ret)
->  		return ret;
->  
-> -	priv->eee_enabled = edata->eee_enabled;
->  	priv->tx_lpi_timer = edata->tx_lpi_timer;
->  	return 0;
->  }
-> -- 
-> 2.17.1
-> 
+>  tools/perf/tests/parse-metric.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/perf/tests/parse-metric.c b/tools/perf/tests/parse-metric.c
+> index aea4f970fccc..7c1bde01cb50 100644
+> --- a/tools/perf/tests/parse-metric.c
+> +++ b/tools/perf/tests/parse-metric.c
+> @@ -157,6 +157,7 @@ static int __compute_metric(const char *name, struct value *vals,
+>         }
+>
+>         perf_evlist__set_maps(&evlist->core, cpus, NULL);
+> +       runtime_stat__init(&st);
+>
+>         /* Parse the metric into metric_events list. */
+>         err = metricgroup__parse_groups_test(evlist, &map, name,
+> @@ -170,7 +171,6 @@ static int __compute_metric(const char *name, struct value *vals,
+>                 goto out;
+>
+>         /* Load the runtime stats with given numbers for events. */
+> -       runtime_stat__init(&st);
+>         load_runtime_stat(&st, evlist, vals);
+>
+>         /* And execute the metric */
+> --
+> 2.28.0.681.g6f77f65b4e-goog
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200923210655.4143682-1-irogers%40google.com.
+
+
+
+-- 
+Thanks,
+~Nick Desaulniers
