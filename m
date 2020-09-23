@@ -2,118 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCACE2752FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 10:12:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 240EF275300
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 10:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726239AbgIWIMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 04:12:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgIWIMo (ORCPT
+        id S1726338AbgIWING (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 04:13:06 -0400
+Received: from esa3.microchip.iphmx.com ([68.232.153.233]:33106 "EHLO
+        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgIWING (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 04:12:44 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C50C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 01:12:43 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id v14so2768063pjd.4
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 01:12:43 -0700 (PDT)
+        Wed, 23 Sep 2020 04:13:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1600848785; x=1632384785;
+  h=from:to:subject:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version;
+  bh=sVXDLEVpB1fwDYZd2wzNZ6+ESokMEqDvMqO0aXurJHI=;
+  b=pwU8Y+GW6mDLq1Uqcgxjx2lN/OMpuEVASfGLmC/bRMxl6WgCf9zVeMkx
+   OAMKEEn3SyrfrQjTJH0YB8yDmoe5+zb2gbjdlJYDI6ga3dZ4TX6peSC+H
+   084PvKQcSauPubebcgS8Zrf1P+4hOB5vB71rRXE65whRFTSDvkyVKqFOB
+   LYg3lP3gCsOS/4qFkSQykgxlgW1/XUvxsflKQlyNqqDXvdn35OYEGGEtX
+   NGz22Tz8TXtE+KKBA6wcpL9jS9qwaWFxya00rZJIy2OJsLGUWJcfdi92Y
+   nzPaShQ1Du1y163GwTOGRy12h95IiPGxnn8wi1oR9GFJBi8QyE/NEcyOs
+   A==;
+IronPort-SDR: C9G9KPBY2HYmGUtIi8EnwQPjAYaiej8zwQlQRTIpOoLxGH94VjF5VF6j6WNwMHiVDvCgEHysje
+ pAWalQSpuRi1TAhCXXlLaAwqxDggoh9vlWl+EKribQ/FyYmgN7QqVRNGrC+f0Ez7Mg1Xv8EvVH
+ Z7JGA6n2MzBDeHZhErq3OgA9tqe3Lh4XVh57xmv4Bi+x+M9Uafw2VpFSdP6AR1lOv+uZTnc8km
+ hD388pvFUyarBvgSq4FkN0o6GQO7ejF/8/rwdQkdHHECZanoEKyRDw+khcA5wOQJx1El8W/+Vp
+ a90=
+X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
+   d="scan'208";a="92880649"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Sep 2020 01:13:04 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 23 Sep 2020 01:13:03 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
+ via Frontend Transport; Wed, 23 Sep 2020 01:13:03 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZwgYywzvDOWfYCWkcC1Su0uhhork6wGEsgMtvU/Apjr2p24hcj2k++85mj6rwk+NWH02i4H4S26wwsgLenEWbumXaepoDtBNdNUtesZtDi93We5b6R87Iu4iuti5k8MTw97NVAsQ5D65B4EdtZSArgVyWmcN1W8Gufs1oc6H9QlTG2OZRYdYNs/DDOkY5fNG40D7IL7BJusENt3MlX+MDIZRKWEAxT2MdwvrjEQLNuNYjPOmLTb5rGSwCXCjvvUtja4q82/J8uHW/HwqoLePrllL9KqdxORyZiZZku65IdadzBOf/6+5CyI5TuGOreOCh4WR7RAycqzPTdOkrjnviQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pZVJShvd/LW5PvOizOKc82ocA5aIXIGxBmbDGUAzZS4=;
+ b=WstruwWfQ29H854dSPrCkAv1CdUAF+o+lKM6O6mbRSlDzEq5lk6bd7MvP+ttGYW2ng4XK7ITSDb8vhi3vI9o4VE4oj7UcoCP9RrTiUKkWL9H8tHv4eOnwRT/YfUVWQZ7F9y0gOdhP3Ml/IWTjj+huAo38iJ3jlGpyEWLglN7gHgP55cvUWFmMO+PAWQo6DEeA1EbPJpApFUokr/wT/uY9DY1CejGJZUmRIYD/a5TkPy5EaO7xlrQVroNQkA49Z7/ngMJe9cwVZiIqLFbkQ3hM8bx6wPZBfD2juzC5RWyLZrbwtb6s6k2T2PD2O5YuNhC/A68CgT6EkpsIA4ZywhzLA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/y+uABu4va+n9lHIrjSOWbQaLnHg2GRR6lgfP4MtBaY=;
-        b=S/XtOKyVw6C4sxBtXfhBSz9R64XFtjp0NrdHcG2qGxJofQ6X69cL/rwi/9kLrQ1Dil
-         NDREvv+GQ8AwmivJztxvwy3LafCRaG+o2XS3zLyFEcVRBhLExvd55mF5aV5B3ULux5Yp
-         qBnoA+kcH+L4OWnjJVH2NhVgph3gtLhNb01RVY6LblH1oeI0JVevYaiBOq3RHZ7pTmkL
-         Bv/9YH5j3F/lMZFpn1PIgVN85UxYaCINIaHYf3QGwesKXFxWEu7Bi1hWLqpRgQvUQ4CU
-         MA+xdMn3pk0dRKJzeoSbprbdkDkvl/f/EqLnyxANfnptS4WOiYV6luNNXpIDUBcwtX6b
-         T+Og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/y+uABu4va+n9lHIrjSOWbQaLnHg2GRR6lgfP4MtBaY=;
-        b=a7vSZiZ2VGCh9gyOcnUBe/E9mrkCOJkSGyFlCcTtHTX0X9jtiQ2p4/kAIny3eX42K9
-         2r6J/hU3cOrjw7wm1aVIwg9jZOlLoi4UOblmVw2zsVB2O22K95vz3L2tOfrwvRadzAlD
-         RY4tLq3zEKLApWKTzgMDWuGD5A/4PeeiXDf7j9rmJr8YLfJ9CX4WFScy3lJTY4QTpQy1
-         eSv8HPT82y+WRmHTLSAwzGeD/6T2EvG9DwI7MmvOEbXkxs0/9VWwJjfmmj+bPvIqLtYB
-         NH496dHZTHTtRuMVlTH2lTb7Y2kzEPpJ3Tku1vHjQ6xaIaV1iKMuo73qugSQ+2SmTx8r
-         muHQ==
-X-Gm-Message-State: AOAM530LsQf+RSy4C6ZeqGofoby5iN6osAby6Ta5uuckvSFfAan92wWQ
-        Wfy4hui8KF+AOZjorhike/Qmaw==
-X-Google-Smtp-Source: ABdhPJw1H7f92cb/4AQgjeapRkgFrSe/ckdIsULnLrd3oy06MrYCKHt9snl3d9Dh1Hvyii3UYD8iYg==
-X-Received: by 2002:a17:902:8f8f:b029:d2:439c:3b7d with SMTP id z15-20020a1709028f8fb02900d2439c3b7dmr5530752plo.39.1600848763198;
-        Wed, 23 Sep 2020 01:12:43 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([2600:3c01::f03c:91ff:fe8a:bb03])
-        by smtp.gmail.com with ESMTPSA id 22sm17374350pfw.17.2020.09.23.01.12.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 23 Sep 2020 01:12:42 -0700 (PDT)
-Date:   Wed, 23 Sep 2020 16:12:32 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kemeng Shi <shikemeng@huawei.com>,
-        Ian Rogers <irogers@google.com>,
-        Remi Bernon <rbernon@codeweavers.com>,
-        Nick Gasson <nick.gasson@arm.com>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Steve MacLean <Steve.MacLean@microsoft.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Zou Wei <zou_wei@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 0/6] Perf tool: Support TSC for Arm64
-Message-ID: <20200923081232.GA13232@leoy-ThinkPad-X240s>
-References: <20200914115311.2201-1-leo.yan@linaro.org>
- <20200922120732.GB15124@leoy-ThinkPad-X240s>
- <20200922164906.GA2248446@kernel.org>
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pZVJShvd/LW5PvOizOKc82ocA5aIXIGxBmbDGUAzZS4=;
+ b=vbvR2lk87GFoiuJoTMeK4kcnTOW3uJNjym3uhI3XRia6C6hA0JXWMDhZwYw7R1qLpzFYR6rcY6L8+tDDRjjc5R2qW3b+Io80et7Z9Q4r9Hlqw75f1WJnijIygvIKIm0UhZB90A0dZdo3L3nJIexpJD+BXiiKSwQVCzi0yTN9ENg=
+Received: from DM5PR11MB1914.namprd11.prod.outlook.com (2603:10b6:3:112::12)
+ by DM6PR11MB3242.namprd11.prod.outlook.com (2603:10b6:5:5b::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Wed, 23 Sep
+ 2020 08:13:03 +0000
+Received: from DM5PR11MB1914.namprd11.prod.outlook.com
+ ([fe80::a8e8:d0bc:8b3c:d385]) by DM5PR11MB1914.namprd11.prod.outlook.com
+ ([fe80::a8e8:d0bc:8b3c:d385%11]) with mapi id 15.20.3391.027; Wed, 23 Sep
+ 2020 08:13:03 +0000
+From:   <Tudor.Ambarus@microchip.com>
+To:     <pavel@ucw.cz>, <linux-kernel@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <dan.j.williams@intel.com>,
+        <vkoul@kernel.org>, <Ludovic.Desroches@microchip.com>,
+        <stable@vger.kernel.org>, <greg@kroah.com>
+Subject: Re: [PATCH 4.19] dmaengine: at_hdmac: Fix memory leak
+Thread-Topic: [PATCH 4.19] dmaengine: at_hdmac: Fix memory leak
+Thread-Index: AQHWkYFbVNgbQZmRd0SqW2sKLrUKIA==
+Date:   Wed, 23 Sep 2020 08:13:02 +0000
+Message-ID: <80065eac-7dce-aadf-51ef-9a290973b9ec@microchip.com>
+References: <20200920082838.GA813@amd>
+In-Reply-To: <20200920082838.GA813@amd>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+authentication-results: ucw.cz; dkim=none (message not signed)
+ header.d=none;ucw.cz; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [82.77.80.152]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d9e13577-4bdc-4803-34b4-08d85f987e3a
+x-ms-traffictypediagnostic: DM6PR11MB3242:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR11MB3242943DC43581B38F2E7874F0380@DM6PR11MB3242.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:820;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 7wv1WDeMAqsJe/SyatOjsSKOZPfKuhy9zeVq6VsZ2B+q2NcNir7H//1rLeR6UB0VBiLQOjIkyhdPvN52hzzoGqn+GPQZi/7z3F+bgboU2gGTmLbeQEqjreotj9F7Dw7uu1KVIWoZmfzOcV/HSSbtaMCOy2XSNxXnlgIT1eRQRiy5BXOBypBaU20OlYEFFrlvBXqXO5kvFfS/QvdfYPXMdeu0AjaJcjqkitFTTgyKN2cYmTZNcG+ZJtZ8vr17CSRL7u4d6fKfuH6CoZvuPppagHCY38WPnUc8AKiUaQwsSeocFrHUTChbvCaPL1Kjhl0rSck2Oi+dNtxE33UQOcTMyes13xSA3RQj5JrSwvljRY743CJ6IqOq2uNvxUfZemJPvdkBU9S6VoJmNFQ1gURZaAMa6CIE+WnWMny3dps6KFwaiGU3UpKpHDqDhbJ8mTrNHre6H7WdFTK1iNpjyjdk0f6S1bva4jcw/PJPij/P9+XOgoMgDBm+p1qR/3Y32ugR
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR11MB1914.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(366004)(396003)(136003)(39860400002)(316002)(76116006)(91956017)(83380400001)(6486002)(6506007)(53546011)(31696002)(966005)(66556008)(66476007)(66446008)(66946007)(64756008)(26005)(2616005)(5660300002)(31686004)(186003)(6512007)(478600001)(71200400001)(8936002)(110136005)(2906002)(8676002)(36756003)(86362001)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: tdxFg87R95gH1/HqtyfXP8YDFYkESTfcds6JTyD4z2pkwOZEFW6UhaJohzaVVwIV9bzP7lx3sVlVjR4rdYt7/m8yP/AJkx2nhk0+km3BPqjvQvE2It0Zri5EiRzlw/+GxlDB5Wt7JcoHO49HEkMbm59Pxx6gYlnwIHEQ/vD9vgZIJU4C9lOi77c4jQaVCzLeu18AmLDIkl4bq969YibOahlksrdeuPI2DzoWdEt8402oxwNk8t6kAtg4ZGh9UWV5850A9bIEQzVfE245pss+M+c7QGJfajuelxtulR6Ty/hW7TYBJTWzR0O/B89/zFB19wt69Xbl9v3kEN36Z1AZFTgiOpgIP7pTB5BEVlajuAO8cCm93H8EIOSAcENJpX3p0DKHuzvTG/EPGNcSFwnXNbmovf4kUMHPCkffwxsY7WqFos5zwqUqL+ZF1h3uXEMgJOKRUfznz0/MoNlJ8EJUbtOcEyNuhwh5XQn7tNpoj2OPTbvMdFgeQuu4NiJmy9YtnFgcjXZipalH7b/ACQnsIiFpQgyXvALnpeRAibcs5m4N+7tl9TRlsowUVpLmTPQfSn1KNCPaq+Yc4pvygqb5SBP96FhjYjkhtKx47T3UCMqDX1Ik2aYJDOfCYQLROyQJoG+eOxtfKVV7ejusvSH+WA==
+Content-Type: text/plain; charset="Windows-1252"
+Content-ID: <0DC78A65EEAEBC4E8B0614F2BCDB86D4@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922164906.GA2248446@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR11MB1914.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d9e13577-4bdc-4803-34b4-08d85f987e3a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2020 08:13:02.9277
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: unBXlU6x47XOt6iZhqREBJ2UAlX7NlELDYm06PGZHKWxmUjAkCbG5PBbyda+hrA//Le1qxO689h1TZqjT2P6ma97HpBU6HNBAGPh7oPMZ+8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3242
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 01:49:06PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Tue, Sep 22, 2020 at 08:07:32PM +0800, Leo Yan escreveu:
-> > Hi Arnaldo,
-> > 
-> > On Mon, Sep 14, 2020 at 07:53:05PM +0800, Leo Yan wrote:
-> > > This patch set is to refactor TSC implementation and move TSC code from
-> > > x86 folder to util/tsc.c, this allows all archs to reuse the code.  And
-> > > alse move the TSC testing from x86 folder to tests so can work as a
-> > > common testing.
-> > > 
-> > > So far, for x86 it needs to support cap_user_time_zero and for Arm64
-> > > it needs to support cap_user_time_short.  For architecture specific
-> > > code, every arch only needs to implement its own rdtsc() to read out
-> > > timer's counter.
-> > > 
-> > > This patch set has been rebased on the perf/core branch with latest
-> > > commit b1f815c479c1 ("perf vendor events power9: Add hv_24x7 core level
-> > > metric events") and tested on Arm64 DB410c.
-> > 
-> > Could you pick up this patch set?  Thanks!
-> 
-> Yeah, I picked it up now, its a pity nobody provided Acks :-\
+Hi, Pavel,
 
-Thanks, Arnaldo!
+On 9/20/20 11:28 AM, Pavel Machek wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know th=
+e content is safe
+>=20
+> This fixes memory leak in at_hdmac. Mainline does not have the same
+> problem.
+>=20
+> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+>=20
+> diff --git a/drivers/dma/at_hdmac.c b/drivers/dma/at_hdmac.c
+> index 86427f6ba78c..0847b2055857 100644
+> --- a/drivers/dma/at_hdmac.c
+> +++ b/drivers/dma/at_hdmac.c
+> @@ -1714,8 +1714,10 @@ static struct dma_chan *at_dma_xlate(struct of_pha=
+ndle_args *dma_spec,
+>         atslave->dma_dev =3D &dmac_pdev->dev;
+>=20
+>         chan =3D dma_request_channel(mask, at_dma_filter, atslave);
+> -       if (!chan)
+> +       if (!chan) {
+> +               kfree(atslave);
+>                 return NULL;
+> +       }
 
-> Or have a missed them somehow?
+Thanks for submitting this to stable. While the fix is good, you can instea=
+d
+cherry-pick the commit that hit upstream. In order to do that cleanly on to=
+p
+of v4.19.145, you have to pick two other fixes:
 
-No, you didn't miss anything.  I should actively chase Ack tags (e.g.
-Peter or Will's acknowledge) before ask merging.  Will note for this
-later.
+commit a6e7f19c9100 ("dmaengine: at_hdmac: Substitute kzalloc with kmalloc"=
+)
+commit 3832b78b3ec2 ("dmaengine: at_hdmac: add missing put_device() call in=
+ at_dma_xlate()")
+commit a6e7f19c9100 ("dmaengine: at_hdmac: Substitute kzalloc with kmalloc"=
+)
 
-Thanks,
-Leo
+There are also some locking/deadlock fixes in mainline for this driver,
+depending on the time you can allocate for this, the list of patches can in=
+crease.
+I should have Cc'ed stable@vger.kernel.org in the first place, my bad.
+
+Also it may worth to read the rules for submitting to stable at:
+https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+
+Cheers,
+ta
