@@ -2,65 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F0922751EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 08:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE3022751F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 08:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726703AbgIWGyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 02:54:20 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14216 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726179AbgIWGyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 02:54:19 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 5833B4B87C3C82016577;
-        Wed, 23 Sep 2020 14:54:16 +0800 (CST)
-Received: from euler.huawei.com (10.175.124.27) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 23 Sep 2020 14:54:06 +0800
-From:   Wei Li <liwei391@huawei.com>
-To:     Hauke Mehrtens <hauke@hauke-m.de>,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "Ralf Baechle" <ralf@linux-mips.org>,
-        Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>,
-        "Steven J. Hill" <Steven.Hill@imgtec.com>
-CC:     <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <guohanjun@huawei.com>
-Subject: [PATCH] MIPS: BCM47XX: Remove the needless check with the 1074K
-Date:   Wed, 23 Sep 2020 14:53:26 +0800
-Message-ID: <20200923065326.44898-1-liwei391@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726743AbgIWGy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 02:54:27 -0400
+Received: from muru.com ([72.249.23.125]:45114 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726179AbgIWGy0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 02:54:26 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id D420080A0;
+        Wed, 23 Sep 2020 06:54:26 +0000 (UTC)
+Date:   Wed, 23 Sep 2020 09:55:20 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Haojian Zhuang <haojian.zhuang@linaro.org>,
+        devicetree@vger.kernel.org, bcousson@baylibre.com,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@gmail.com>,
+        Trent Piepho <tpiepho@gmail.com>
+Subject: Re: [PATCH v2] pinctrl: single: fix debug output when #pinctrl-cells
+ = 2
+Message-ID: <20200923065520.GP7101@atomide.com>
+References: <20200913230306.2061645-1-drew@beagleboard.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.124.27]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200913230306.2061645-1-drew@beagleboard.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As there is no known soc powered by mips 1074K in bcm47xx series,
-the check with 1074K is needless. So just remove it.
+* Drew Fustini <drew@beagleboard.org> [200913 23:04]:
+> The debug output in pcs_parse_one_pinctrl_entry() needs to be updated
+> to print the correct pinctrl register value when #pinctrl-cells is 2.
+> 
+> Fixes: a13395418888 ("pinctrl: single: parse #pinctrl-cells = 2")
+> Reported-by: Trent Piepho <tpiepho@gmail.com>
+> Link: https://lore.kernel.org/linux-omap/3139716.CMS8C0sQ7x@zen.local/
+> Signed-off-by: Drew Fustini <drew@beagleboard.org>
+> ---
+> v2 change:
+> this is a fix to my prior email where I referred to #pinctrl-cells = 3
+> which is incorrect.  pinctrl_spec.args_count is 3 but #pinctrl-cells = 2
+> https://lore.kernel.org/linux-omap/20200913224746.2048603-1-drew@beagleboard.org/
 
-Link: https://wireless.wiki.kernel.org/en/users/Drivers/b43/soc
-Fixes: 442e14a2c55e ("MIPS: Add 1074K CPU support explicitly.")
-Signed-off-by: Wei Li <liwei391@huawei.com>
----
- arch/mips/bcm47xx/setup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Acked-by: Tony Lindgren <tony@atomide.com>
 
-diff --git a/arch/mips/bcm47xx/setup.c b/arch/mips/bcm47xx/setup.c
-index 82627c264964..01427bde2397 100644
---- a/arch/mips/bcm47xx/setup.c
-+++ b/arch/mips/bcm47xx/setup.c
-@@ -148,7 +148,7 @@ void __init plat_mem_setup(void)
- {
- 	struct cpuinfo_mips *c = &current_cpu_data;
- 
--	if ((c->cputype == CPU_74K) || (c->cputype == CPU_1074K)) {
-+	if (c->cputype == CPU_74K) {
- 		pr_info("Using bcma bus\n");
- #ifdef CONFIG_BCM47XX_BCMA
- 		bcm47xx_bus_type = BCM47XX_BUS_TYPE_BCMA;
--- 
-2.17.1
-
+>  drivers/pinctrl/pinctrl-single.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
+> index 5cbf0e55087c..f3cd7e296712 100644
+> --- a/drivers/pinctrl/pinctrl-single.c
+> +++ b/drivers/pinctrl/pinctrl-single.c
+> @@ -1033,7 +1033,7 @@ static int pcs_parse_one_pinctrl_entry(struct pcs_device *pcs,
+>  		}
+>  
+>  		dev_dbg(pcs->dev, "%pOFn index: 0x%x value: 0x%x\n",
+> -			pinctrl_spec.np, offset, pinctrl_spec.args[1]);
+> +			pinctrl_spec.np, offset, vals[found].val);
+>  
+>  		pin = pcs_get_pin_by_offset(pcs, offset);
+>  		if (pin < 0) {
+> -- 
+> 2.25.1
+> 
