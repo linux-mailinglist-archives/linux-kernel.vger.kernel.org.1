@@ -2,161 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23EB727586E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:11:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A504A275873
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 15:13:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726621AbgIWNLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 09:11:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25241 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726332AbgIWNLy (ORCPT
+        id S1726594AbgIWNNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 09:13:18 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:10283 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726332AbgIWNNS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 09:11:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600866712;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kDxFW0Zci5a4gqRLOX3WWCWSqU2y/VaKVhoCtZvVWrs=;
-        b=ZGkP/NDrjVBk1hUW9PJbmxuCpHuhhvIf3SFU4pV3x5gxuOkxj6a03Z+ce7SuFwAUM+4Cba
-        5C0jt8EpUefShXxsIquWkIQZD/qiCoNBmDUSW5itd56Zb46PpQSM8CYgG+/BNX5SwnQf0n
-        nNoo9+NxvQIRbGLQ/xfRY3m85uAcr0I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-118-LjZwdbeiODmyd-uDEwuOfA-1; Wed, 23 Sep 2020 09:11:47 -0400
-X-MC-Unique: LjZwdbeiODmyd-uDEwuOfA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5830B802B4C;
-        Wed, 23 Sep 2020 13:11:45 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B90DB78822;
-        Wed, 23 Sep 2020 13:11:44 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 08NDBiOY022621;
-        Wed, 23 Sep 2020 09:11:44 -0400
-Received: from localhost (mpatocka@localhost)
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 08NDBhOr022617;
-        Wed, 23 Sep 2020 09:11:43 -0400
-X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
-Date:   Wed, 23 Sep 2020 09:11:43 -0400 (EDT)
-From:   Mikulas Patocka <mpatocka@redhat.com>
-X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
-To:     Jan Kara <jack@suse.cz>
-cc:     Dave Chinner <david@fromorbit.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Eric Sandeen <esandeen@redhat.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        "Kani, Toshi" <toshi.kani@hpe.com>,
-        "Norton, Scott J" <scott.norton@hpe.com>,
-        "Tadakamadla, Rajesh (DCIG/CDI/HPS Perf)" 
-        <rajesh.tadakamadla@hpe.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>
-Subject: Re: NVFS XFS metadata (was: [PATCH] pmem: export the symbols
- __copy_user_flushcache and __copy_from_user_flushcache)
-In-Reply-To: <20200923095739.GC6719@quack2.suse.cz>
-Message-ID: <alpine.LRH.2.02.2009230841110.1800@file01.intranet.prod.int.rdu2.redhat.com>
-References: <alpine.LRH.2.02.2009151216050.16057@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2009151332280.3851@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2009160649560.20720@file01.intranet.prod.int.rdu2.redhat.com>
- <CAPcyv4gW6AvR+RaShHdQzOaEPv9nrq5myXDmywuoCTYDZxk-hw@mail.gmail.com> <alpine.LRH.2.02.2009161254400.745@file01.intranet.prod.int.rdu2.redhat.com> <CAPcyv4gD0ZFkfajKTDnJhEEjf+5Av-GH+cHRFoyhzGe8bNEgAA@mail.gmail.com> <alpine.LRH.2.02.2009161359540.20710@file01.intranet.prod.int.rdu2.redhat.com>
- <alpine.LRH.2.02.2009191336380.3478@file01.intranet.prod.int.rdu2.redhat.com> <20200922050314.GB12096@dread.disaster.area> <alpine.LRH.2.02.2009220815420.16480@file01.intranet.prod.int.rdu2.redhat.com> <20200923095739.GC6719@quack2.suse.cz>
-User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
+        Wed, 23 Sep 2020 09:13:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1600866798; x=1632402798;
+  h=subject:to:references:from:message-id:date:mime-version:
+   in-reply-to:content-transfer-encoding;
+  bh=b9FOTIom2yG/uJ7oPQq+RshGS0t1Ir+1vbRjTPkEr4E=;
+  b=nqmfA9paoneWX72ghO4cuFPoS23OoXLs4g7MEOy+0LEREa/sN82qS+5W
+   B5ogYf9OQc4sT0BLT4YHKjCUm+uYYcwB1rCxzxrlMFGUq+IuYYZmshE+8
+   DP4Byn5rbn8ZSOYfvMvR/52c7rj3J0hPdPf2Mvly39eUJKcaasrMcPY1b
+   E=;
+X-IronPort-AV: E=Sophos;i="5.77,293,1596499200"; 
+   d="scan'208";a="77379363"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-119b4f96.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 23 Sep 2020 13:13:04 +0000
+Received: from EX13MTAUWC002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2a-119b4f96.us-west-2.amazon.com (Postfix) with ESMTPS id 032B41A1A8D;
+        Wed, 23 Sep 2020 13:13:03 +0000 (UTC)
+Received: from EX13D12UWC002.ant.amazon.com (10.43.162.253) by
+ EX13MTAUWC002.ant.amazon.com (10.43.162.240) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 23 Sep 2020 13:13:03 +0000
+Received: from [10.95.178.71] (10.43.160.137) by EX13D12UWC002.ant.amazon.com
+ (10.43.162.253) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 23 Sep
+ 2020 13:13:02 +0000
+Subject: Re: [PATCH] scripts/gdb: fix list_for_each
+To:     <kbingham@kernel.org>, Jan Kiszka <jan.kiszka@siemens.com>,
+        <linux-kernel@vger.kernel.org>
+References: <3b382958-9f1d-a3d2-a239-09ba084227e6@amazon.com>
+ <2516a051-306f-670b-1f9e-d46fc577c7f8@siemens.com>
+ <109fe98d-4143-cfd3-b145-8d5fee189f63@amazon.com>
+ <25111834-a414-e380-1e61-c1b1c0e766cb@kernel.org>
+From:   George Prekas <prekageo@amazon.com>
+Message-ID: <d694a1f7-e1c9-2631-12e2-a17abaf004da@amazon.com>
+Date:   Wed, 23 Sep 2020 08:13:00 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <25111834-a414-e380-1e61-c1b1c0e766cb@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.43.160.137]
+X-ClientProxiedBy: EX13D24UWB002.ant.amazon.com (10.43.161.159) To
+ EX13D12UWC002.ant.amazon.com (10.43.162.253)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Kieran,
 
+On 9/22/2020 2:11 PM, Kieran Bingham wrote:
+ > Hi George,
+ >
+ > On 22/09/2020 18:17, Prekas, George wrote:
+ >>
+ >> On 9/22/2020 9:32 AM, Jan Kiszka wrote:
+ >>>
+ >>> On 22.09.20 16:28, George Prekas wrote:
+ >>>> If the next pointer is NULL, list_for_each gets stuck in an infinite
+ >>>> loop.
+ >>>>
+ >>>> Signed-off-by: George Prekas <prekageo@amazon.com>
+ >>>> ---
+ >>>>    scripts/gdb/linux/lists.py | 2 ++
+ >>>>    1 file changed, 2 insertions(+)
+ >>>>
+ >>>> diff --git a/scripts/gdb/linux/lists.py b/scripts/gdb/linux/lists.py
+ >>>> index c487ddf09d38..424a91c1aa8b 100644
+ >>>> --- a/scripts/gdb/linux/lists.py
+ >>>> +++ b/scripts/gdb/linux/lists.py
+ >>>> @@ -27,6 +27,8 @@ def list_for_each(head):
+ >>>>            raise TypeError("Must be struct list_head not {}"
+ >>>>                               .format(head.type))
+ >>>>
+ >>>> +    if head['next'] == 0:
+ >>>> +        return
+ >>>>        node = head['next'].dereference()
+ >>>>        while node.address != head.address:
+ >>>>            yield node.address
+ >>>
+ >>> Obviously, infinite loops are bad and should be avoided. But NULL is
+ >>> bug, isn't it? Shouldn't we report such a corruption?
+ >>>
+ >>
+ >> Hi Jan,
+ >>
+ >> Is it a bug? Or does it mean that the list is empty?
+ >
+ > A correctly initialised (empty) list_head has the next, and prev
+ > pointers pointing to itself
+ >
 
-On Wed, 23 Sep 2020, Jan Kara wrote:
+You are right, actually.
 
-> On Tue 22-09-20 12:46:05, Mikulas Patocka wrote:
-> > > mapping 2^21 blocks requires a 5 level indirect tree. Which one if going 
-> > > to be faster to truncate away - a single record or 2 million individual 
-> > > blocks?
-> > > 
-> > > IOWs, we can take afford to take an extra cacheline miss or two on a
-> > > tree block search, because we're accessing and managing orders of
-> > > magnitude fewer records in the mapping tree than an indirect block
-> > > tree.
-> > > 
-> > > PMEM doesn't change this: extents are more time and space efficient
-> > > at scale for mapping trees than indirect block trees regardless
-> > > of the storage medium in use.
-> > 
-> > PMEM doesn't have to be read linearly, so the attempts to allocate large 
-> > linear space are not needed. They won't harm but they won't help either.
-> > 
-> > That's why NVFS has very simple block allocation alrogithm - it uses a 
-> > per-cpu pointer and tries to allocate by a bit scan from this pointer. If 
-> > the group is full, it tries a random group with above-average number of 
-> > free blocks.
-> 
-> I agree with Dave here. People are interested in 2MB or 1GB contiguous
-> allocations for DAX so that files can be mapped at PMD or event PUD levels
-> thus saving a lot of CPU time on page faults and TLB.
+ >
+ >> Let me give some background. If you do the following:
+ >>
+ >> $ qemu-system-x86_64 -nographic -m 1024 -kernel
+ >> build/arch/x86/boot/bzImage -s -S < /dev/null > /dev/null &
+ >> $ gdb -q build/vmlinux -ex 'target remote localhost:1234' -iex 'set
+ >> auto-load safe-path /' -ex 'lx-symbols'
+ >
+ > I suspect this is trying to load modules before the kernel is actually
+ > fully loaded and running, so nothing is yet initialised.
+ >
+ >
+ >> You will see:
+ >>
+ >> loading vmlinux
+ >> scanning for modules in /home/ubuntu/linux-5.8.10
+ >> no module object found for ''
+ >>
+ >> And the last line repeats forever. This happens because modules.next ==
+ >> NULL. This is the Python stack trace:
+ >>
+ >>[...]
+ >>
+ >> This patch tries to fix the above problem.
+ >
+ > Does it fix it for you ?
+ >
+ > I expect it allows the boot process to continue, but the lx-symbols
+ > command will not have completed successfully (or rather I expect it will
+ > not have found anything to load).
+ >
+ > I suspect adding defensive checks in here might be helpful but I think
+ > the reality is the code is being called at the wrong time.
+ >
+ > The fact that it 'can' be called at the wrong time is where we might
+ > need to be more defensive.
+ >
 
-NVFS has upper limit on block size 1MB. So, should raise it to 2MB? Will 
-2MB blocks be useful to someone?
+At that point in time, the kernel has not even started so it does not 
+have any loaded modules. In fact, as you said, the modules linked list 
+is uninitialized. So with this patch, lx-symbols does not get stuck in 
+an infinite loop and loads only the vmlinux symbols.
 
-Is there some API how userspace can ask the kernel for aligned allocation? 
-fallocate() doesn't seem to offer an option for alignment.
+Maybe, I should rephrase the commit message to say that list_for_each 
+gets stuck in an infinite loop on uninitialized linked lists.
 
-> > EXT4 uses bit scan for allocations and people haven't complained that it's 
-> > inefficient, so it is probably OK.
-> 
-> Yes, it is more or less OK but once you get to 1TB filesystem size and
-> larger, the number of block groups grows enough that it isn't that great
-> anymore. We are actually considering new allocation schemes for ext4 for
-> this large filesystems...
+Do you think that list_for_each should handle uninitialized lists? If 
+yes, how do you propose to handle them?
 
-NVFS can run with block size larger than page size, so you can reduce the 
-number of block groups by increasing block size.
+1. Treat them as empty lists (this patch).
+2. Print a warning and treat them as empty lists.
+3. Raise exception and treat them as empty lists.
 
-(ext4 also has bigalloc feature that will do it)
+I would go with option 1. For traversal purposes an uninitialized list 
+is the same as an empty list; it has no elements. I am happy, though, to 
+change the patch to another option if you believe it would be better.
 
-> > If you think that the lack of journaling is show-stopper, I can implement 
-> > it. But then, I'll have something that has complexity of EXT4 and 
-> > performance of EXT4. So that there will no longer be any reason why to use 
-> > NVFS over EXT4. Without journaling, it will be faster than EXT4 and it may 
-> > attract some users who want good performance and who don't care about GID 
-> > and UID being updated atomically, etc.
-> 
-> I'd hope that your filesystem offers more performance benefits than just
-> what you can get from a lack of journalling :). ext4 can be configured to
-
-I also don't know how to implement journling on persistent memory :) On 
-EXT4 or XFS you can pin dirty buffers in memory until the journal is 
-flushed. This is obviously impossible on persistent memory. So, I'm 
-considering implementing only some lightweight journaling that will 
-guarantee atomicity between just a few writes.
-
-> run without a journal as well - mkfs.ext4 -O ^has_journal. And yes, it does
-> significantly improve performance for some workloads but you have to have
-> some way to recover from crashes so it's mostly used for scratch
-> filesystems (e.g. in build systems, Google uses this feature a lot for some
-> of their infrastructure as well).
-> 
-> 								Honza
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
-
-I've run "dir-test /mnt/test/ 8000000 8000000" and the result is:
-EXT4 with journal	- 5m54,019s
-EXT4 without journal	- 4m4,444s
-NVFS			- 2m9,482s
-
-Mikulas
+--
+George
 
