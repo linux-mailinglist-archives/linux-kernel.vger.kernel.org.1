@@ -2,93 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48258275257
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 09:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E69627525A
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 09:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726682AbgIWHhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 03:37:20 -0400
-Received: from muru.com ([72.249.23.125]:45204 "EHLO muru.com"
+        id S1726716AbgIWHia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 03:38:30 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:44886 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726550AbgIWHhT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 03:37:19 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id E7B0B80A0;
-        Wed, 23 Sep 2020 07:37:19 +0000 (UTC)
-Date:   Wed, 23 Sep 2020 10:38:13 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@gmail.com>,
-        Trent Piepho <tpiepho@gmail.com>,
-        Christina Quast <cquast@hanoverdisplays.com>,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org
-Subject: Re: [PATCH v2] ARM: dts: document pinctrl-single,pins when
- #pinctrl-cells = 2
-Message-ID: <20200923073813.GV7101@atomide.com>
-References: <20200919200836.3218536-1-drew@beagleboard.org>
+        id S1726550AbgIWHia (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 03:38:30 -0400
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1kKzM1-0005G0-UU; Wed, 23 Sep 2020 09:38:17 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Jian-Hong Pan <jhp@endlessos.org>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux@endlessm.com, Jian-Hong Pan <jhp@endlessos.org>
+Subject: Re: [PATCH] drm/rockchip: skip probed failed device
+Date:   Wed, 23 Sep 2020 09:38:17 +0200
+Message-ID: <4075212.IPEHUSCvie@diego>
+In-Reply-To: <20200923065900.658666-1-jhp@endlessos.org>
+References: <CAPpJ_efHX70Ej0uzRi-iRf7N0n6ZO5sMN-wK_YpszvVD-Un9RQ@mail.gmail.com> <20200923065900.658666-1-jhp@endlessos.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200919200836.3218536-1-drew@beagleboard.org>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Drew Fustini <drew@beagleboard.org> [200919 23:10]:
-> Document the values in pinctrl-single,pins when #pinctrl-cells = <2>
+Hi,
+
+Am Mittwoch, 23. September 2020, 08:59:00 CEST schrieb Jian-Hong Pan:
+> The cdn-dp sub driver probes the device failed on PINEBOOK Pro.
 > 
-> Fixes: 27c90e5e48d0 ("ARM: dts: am33xx-l4: change #pinctrl-cells from 1 to 2")
-> Reported-by: Trent Piepho <tpiepho@gmail.com>
-> Link: https://lore.kernel.org/linux-omap/3139716.CMS8C0sQ7x@zen.local/
-> Signed-off-by: Drew Fustini <drew@beagleboard.org>
+> kernel: cdn-dp fec00000.dp: [drm:cdn_dp_probe [rockchipdrm]] *ERROR* missing extcon or phy
+> kernel: cdn-dp: probe of fec00000.dp failed with error -22
+> 
+> Then, the device halts all of the DRM related device jobs. For example,
+> the operations: vop_component_ops, vop_component_ops and
+> rockchip_dp_component_ops cannot be bound to corresponding devices. So,
+> Xorg cannot find the correct DRM device.
+> 
+> This patch skips the probing failed devices to fix this issue.
+> 
+> Link: http://lists.infradead.org/pipermail/linux-rockchip/2020-September/022352.html
+> Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
 > ---
-> v2 change:
-> - rephrase to make it clear that the pin conf value and pin mux value
->   are OR'd together with #pinctrl-cells = <2>
-
-Acked-by: Tony Lindgren <tony@atomide.com>
-
->  .../bindings/pinctrl/pinctrl-single.txt       | 21 ++++++++++++-------
->  1 file changed, 14 insertions(+), 7 deletions(-)
+>  drivers/gpu/drm/rockchip/rockchip_drm_drv.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt b/Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt
-> index e705acd3612c..f903eb4471f8 100644
-> --- a/Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt
-> +++ b/Documentation/devicetree/bindings/pinctrl/pinctrl-single.txt
-> @@ -94,16 +94,23 @@ pinctrl-single,bit-per-mux is set), and uses the common pinctrl bindings as
->  specified in the pinctrl-bindings.txt document in this directory.
+> diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
+> index 0f3eb392fe39..de13588602b4 100644
+> --- a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
+> +++ b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
+> @@ -331,6 +331,12 @@ static struct component_match *rockchip_drm_match_add(struct device *dev)
 >  
->  The pin configuration nodes for pinctrl-single are specified as pinctrl
-> -register offset and value pairs using pinctrl-single,pins. Only the bits
-> -specified in pinctrl-single,function-mask are updated. For example, setting
-> -a pin for a device could be done with:
-> +register offset and values using pinctrl-single,pins. Only the bits specified
-> +in pinctrl-single,function-mask are updated.
-> +
-> +When #pinctrl-cells = 1, then setting a pin for a device could be done with:
+>  			if (!d)
+>  				break;
+> +			if (!d->driver) {
+> +				DRM_DEV_ERROR(d,
+> +					      "%s did not probe successfully",
+> +					      drv->driver.name);
+> +				continue;
+> +			}
+
+How does this relate to drivers doing EPROBE_DEFER?
+
+Very often you have sub-drivers defering probe as they still need another
+resource, so excluding them in that case would not work?
+
+Heiko
+
+
 >  
->  	pinctrl-single,pins = <0xdc 0x118>;
->  
-> -Where 0xdc is the offset from the pinctrl register base address for the
-> -device pinctrl register, and 0x118 contains the desired value of the
-> -pinctrl register. See the device example and static board pins example
-> -below for more information.
-> +Where 0xdc is the offset from the pinctrl register base address for the device
-> +pinctrl register, and 0x118 contains the desired value of the pinctrl register.
-> +
-> +When #pinctrl-cells = 2, then setting a pin for a device could be done with:
-> +
-> +	pinctrl-single,pins = <0xdc 0x30 0x07>;
-> +
-> +Where 0x30 is the pin configuration value and 0x07 is the pin mux mode value.
-> +These two values are OR'd together to produce the value stored at offset 0xdc.
-> +See the device example and static board pins example below for more information.
->  
->  In case when one register changes more than one pin's mux the
->  pinctrl-single,bits need to be used which takes three parameters:
-> -- 
-> 2.25.1
+>  			device_link_add(dev, d, DL_FLAG_STATELESS);
+>  			component_match_add(dev, &match, compare_dev, d);
 > 
+
+
+
+
