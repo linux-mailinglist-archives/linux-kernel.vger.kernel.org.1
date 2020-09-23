@@ -2,200 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF1927550B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AAA527550E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726497AbgIWKE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 06:04:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49122 "EHLO
+        id S1726524AbgIWKEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 06:04:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgIWKEY (ORCPT
+        with ESMTP id S1726130AbgIWKEz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 06:04:24 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96A8FC0613CE;
-        Wed, 23 Sep 2020 03:04:23 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id d19so6592896pld.0;
-        Wed, 23 Sep 2020 03:04:23 -0700 (PDT)
+        Wed, 23 Sep 2020 06:04:55 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2435C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 03:04:54 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id y13so23019982iow.4
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 03:04:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=FkYqYStFxJ6DfYL7hPfSU7rflihsJBrQX0AyZVatfFk=;
-        b=l1n9DduT2uuNOi3NnJ/np3LCh2KISCWfsVqK4YeE4xvHgleGz7Icp94jp0BBFlY+0P
-         nmrFMLrFU1eiT5xR+gHH9E7tcPQ8GiKF+j/qcFIhHn83p7nexC0ojDZmAVQD9YeVOsgU
-         vpr6bKHM8xPOqZCKO42GJgu6afnuHhrxV9oz71i9CGPyWRyoop9SyVw04JpNQUCK9l/W
-         R2m/xwkrlc0nQqU9J7KOKmWHgK0jPe5PZjXa++muK1uUBZtxdcLLGsx7NuyL4jTVdImW
-         /swZxkvrnBugHbbe7A4LAOYwHi+H/BtFtqvUZwHsAfpQjMDbqMVMlxJXrrhZcWKjthpx
-         9Gag==
+        bh=U3SJLMlf/gmjcb1bIq1gmYKwOwQU6kOmc4/dD7hBTLI=;
+        b=AnF9bkr+Aofx+XR6HFARYdNts9+MCFj6xElg03TL4mbKqwB33/RxxUR1B3JuBGn6Ep
+         lKE+ysLgFx7oo3ZOCViOcEHvaYNSlzitXJTRbSe4rP8BqboWFVVyfQoYiW65+8JMvFv7
+         VQ3Yr1iHP1QGE17uMY81/BtOdLDHWrDH9jGlFyzUwnXxSM61fNUOCHXMIADit8pK09eC
+         VPjY3Sn60haZM8/pIODuSTwT7kva4LPnIYQCO9yY49V3p3fItl1B6KGp1nw4J41W1Kxb
+         CyM8judgx+xv6GXc8AS77zzqWLaSBKmyWTjz7kWNtRZNbf8tMG5QnzQjZz2uVrvzxMhw
+         uGdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=FkYqYStFxJ6DfYL7hPfSU7rflihsJBrQX0AyZVatfFk=;
-        b=ABvI7lo2VUWlJDDdF+H1YpGWRWEdBoMWJSwv3alxazmuJZa7yD3sTg/STirfJn+cXp
-         /c61IgAunpmb0NotXVwcgbYjGTCTe4ExhP/eaIj1gwTNY5oLCjr92flIMMVpIcolvE1O
-         4WYT2VA++7ZrC0R30H4wIr9LJ4Wu1Pj4qPuHLfsyEa6NIPletDzNB4gOAhwN0WJKo8Ii
-         /r7hzr98GrN0mYyBCu+/k6Q8pIfQf77vC/rWSM7enSDcaSHALuxUBGlnx5Iq0jXmWpt+
-         C0lnbGIJ1By2jOLtWY7A8OLh9qCJeCSEE28s4hvP7MZjqO5+ebolE8GtrU6iv0KD7NvS
-         3J4Q==
-X-Gm-Message-State: AOAM532T+JY+m0PMCSvUxkmMJe/vxb/frXwb5cRiNxCPD/P2Rcyxk5J8
-        xZT6qhkJoSbQTDu4uvM7IaOwbA2F/KIuXZMTvdc=
-X-Google-Smtp-Source: ABdhPJzzMGQiuxp/3TSZv7QWahdtf/4iY8MfvuRnGTeHcbjylmnREeYP8v4JNMcluPmchu4UFhYExVaVsC1buXKjL+E=
-X-Received: by 2002:a17:90a:b387:: with SMTP id e7mr7840420pjr.228.1600855463097;
- Wed, 23 Sep 2020 03:04:23 -0700 (PDT)
+        bh=U3SJLMlf/gmjcb1bIq1gmYKwOwQU6kOmc4/dD7hBTLI=;
+        b=X5r13VmN2DwKmatUd2DMWpO6ahTf0Dwq18M6MKZfdzEDKMigxTQmfQ4eneqEVBVfEW
+         Q3bN1fQdPQKRoBkIyJuHsmzJsb4kbN6QrmjuE4V7SMkOUm8YYO7Nv9XlOxOL+PSS/KrZ
+         B8eRZIbGg6QzaMnNhu5mrtB0iL6NKmJZoqi0TG+l9NdYg81Khw4rkY+z4j1KC8UFmflP
+         JdrdDOtzFrNQeFZXFcWO+b1CEu3ghg/9dt4lrUcPSymMsiuAHgcNMmU8X7Uxc0CVdbxM
+         1+aU6/IzM2wRKND8eTIUZqQbTg2ruVlG1WscceYMbKNs7UMekTdepUnLYeYk/2zZnrTz
+         cpZg==
+X-Gm-Message-State: AOAM5304+KUIsOU5O5t7vihWLws1kJBqUtvrL//ZqKxRyQ8ZrFSQIxof
+        +eJVJVtuYExNl1xj9luoHuIaElVaMaSN2WlpS/8=
+X-Google-Smtp-Source: ABdhPJxqbN0Ql5FC1qxjeBTn3rLaRsch4PfTVq6Y5dMRz+dkBBngdnkN1RXN+z39qc0QoQMv2mKP5RT5jG1+H2xQhbQ=
+X-Received: by 2002:a6b:7005:: with SMTP id l5mr6728218ioc.10.1600855494306;
+ Wed, 23 Sep 2020 03:04:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200922023151.387447-1-warthog618@gmail.com> <20200922023151.387447-5-warthog618@gmail.com>
-In-Reply-To: <20200922023151.387447-5-warthog618@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 23 Sep 2020 13:04:05 +0300
-Message-ID: <CAHp75VewJYDQ1Moi4jw=wbBMLNpaUGPgz+AsPjNdZqtHCgkjwA@mail.gmail.com>
-Subject: Re: [PATCH v9 04/20] gpio: uapi: define uAPI v2
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>
+References: <20200917181347.1359365-1-axelrasmussen@google.com>
+ <CALOAHbDSHGeXjJN3E5mTOAFTVsXAvQL9+nSYTqht5Lz8HRNv0A@mail.gmail.com>
+ <CAJHvVcg6eY0vVtfi8D6D9aus7=5zeP2H7Yc0mY5ofXztSzOFqQ@mail.gmail.com>
+ <CALOAHbBr=ASfvHw1ZscWBE=CY-e7sBrLV0F5Ow=g1UGxmQsWcw@mail.gmail.com> <20200922125113.12ef1e03@gandalf.local.home>
+In-Reply-To: <20200922125113.12ef1e03@gandalf.local.home>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Wed, 23 Sep 2020 18:04:17 +0800
+Message-ID: <CALOAHbD2qgvd7CHy6ZFJ_h8drtRWEU=E-hPofY-TuGTNfxyQbw@mail.gmail.com>
+Subject: Re: [PATCH] mmap_lock: add tracepoints around lock acquisition
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Axel Rasmussen <axelrasmussen@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michel Lespinasse <walken@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 5:34 AM Kent Gibson <warthog618@gmail.com> wrote:
+On Wed, Sep 23, 2020 at 12:51 AM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> Add a new version of the uAPI to address existing 32/64-bit alignment
-> issues, add support for debounce and event sequence numbers, allow
-> requested lines with different configurations, and provide some future
-> proofing by adding padding reserved for future use.
+> On Tue, 22 Sep 2020 12:09:19 +0800
+> Yafang Shao <laoar.shao@gmail.com> wrote:
 >
-> The alignment issue relates to the gpioevent_data, which packs to different
-> sizes on 32-bit and 64-bit platforms. That creates problems for 32-bit apps
-> running on 64-bit kernels.  uAPI v2 addresses that particular issue, and
-> the problem more generally, by adding pad fields that explicitly pad
-> structs out to 64-bit boundaries, so they will pack to the same size now,
-> and even if some of the reserved padding is used for __u64 fields in the
-> future.
+> > > > Are there any methods to avoid un-inlining these wrappers ?
+> > > >
+> > > > For example,
+> > > > // include/linux/mmap_lock.h
+> > > >
+> > > > void mmap_lock_start_trace_wrapper();
+> > > > void mmap_lock_acquire_trace_wrapper();
+> > > >
+> > > > static inline void mmap_write_lock(struct mm_struct *mm)
+> > > > {
+> > > >     mmap_lock_start_trace_wrapper();
+> > > >     down_write(&mm->mmap_lock);
+> > > >     mmap_lock_acquire_trace_wrapper();
+> > > > }
+> > > >
+> > > > // mm/mmap_lock.c
+> > > > void mmap_lock_start_trace_wrapper()
+> > > > {
+> > > >     trace_mmap_lock_start();
+> > > > }
+> > > >
+> > > > void mmap_lock_start_trace_wrapper()
+> > > > {
+> > > >     trace_mmap_lock_acquired();
+> > > > }
+> > >
+> > > We can do something like that, but I don't think it would end up being better.
+> > >
+> > > At the end of the day, because the trace stuff cannot be in the
+> > > header, we have to add an extra function call one way or the other.
+> > > This would just move the call one step further down the call stack.
+> > > So, I don't think it would affect performance in the
+> > > CONFIG_MMAP_LOCK_STATS + tracepoints not enabled at runtime case.
+> > >
+> >
+> > Right, it seems we have to add an extra function call.
+> >
+> > > Also the wrappers aren't quite so simple as this, they need some
+> > > parameters to work. (the struct mm_struct, whether it was a read or a
+> > > write lock, and whether or not the lock operation succeeded), so it
+> > > would mean adding more inlined code, which I think adds up to be a
+> > > nontrivial amount since these wrappers are called so often in the
+> > > kernel.
+> > >
+> > > If you feel strongly, let me know and I can send a version as you
+> > > describe and we can compare the two.
+> > >
+> >
+> > These tracepoints will be less useful if we have to turn on the config
+> > to enable it.
+> > I don't mind implementing it that way if we can't optimize it.
+> >
+> > Maybe Steven can give some suggestions, Steven ?
+> >
 >
-> The new structs have been analysed with pahole to ensure that they
-> are sized as expected and contain no implicit padding.
 >
-> The lack of future proofing in v1 makes it impossible to, for example,
-> add the debounce feature that is included in v2.
-> The future proofing is addressed by providing configurable attributes in
-> line config and reserved padding in all structs for future features.
-> Specifically, the line request, config, info, info_changed and event
-> structs receive updated versions and new ioctls.
+> What you can do, and what we have done is the following:
 >
-> As the majority of the structs and ioctls were being replaced, it is
-> opportune to rework some of the other aspects of the uAPI:
+> (see include/linux/page_ref.h)
 >
-> v1 has three different flags fields, each with their own separate
-> bit definitions.  In v2 that is collapsed to one - gpio_v2_line_flag.
 >
-> The handle and event requests are merged into a single request, the line
-> request, as the two requests were mostly the same other than the edge
-> detection provided by event requests.  As a byproduct, the v2 uAPI allows
-> for multiple lines producing edge events on the same line handle.
-> This is a new capability as v1 only supports a single line in an event
-> request.
+> #ifdef CONFIG_TRACING
+> extern struct tracepoint __tracepoint_mmap_lock_start_locking;
+> extern struct tracepoint __tracepoint_mmap_lock_acquire_returned;
 >
-> As a consequence, there are now only two types of file handle to be
-> concerned with, the chip and the line, and it is clearer which ioctls
-> apply to which type of handle.
+> #define mmap_lock_tracepoint_active(t) static_key_false(&(__tracepoint_mmap_lock_##t).key)
 >
-> There is also some minor renaming of fields for consistency compared to
-> their v1 counterparts, e.g. offset rather than lineoffset or line_offset,
-> and consumer rather than consumer_label.
+> #else
+> #define mmap_lock_tracepoint_active(t) false
+> #endif
 >
-> Additionally, v1 GPIOHANDLES_MAX becomes GPIO_V2_LINES_MAX in v2 for
-> clarity, and the gpiohandle_data __u8 array becomes a bitmap in
-> gpio_v2_line_values.
+> static inline void mmap_write_lock(struct mm_struct *mm)
+> {
+>         if (mmap_lock_tracepoint_active(start_locking))
+>                 mmap_lock_start_trace_wrapper();
+>         down_write(&mm->mmap_lock);
+>         if (mmap_lock_tracepoint_active(acquire_returned))
+>                 mmap_lock_acquire_trace_wrapper();
+> }
 >
-> The v2 uAPI is mostly a reorganisation and extension of v1, so userspace
-> code, particularly libgpiod, should readily port to it.
+>
+> -- Steve
 
-...
 
-> +struct gpio_v2_line_config {
-> +       __aligned_u64 flags;
-> +       __u32 num_attrs;
+Great!
 
-> +       /* Pad to fill implicit padding and reserve space for future use. */
-> +       __u32 padding[5];
-
-Probably I somehow missed the answer, but why do we need 5 here and not 1?
-
-> +       struct gpio_v2_line_config_attribute attrs[GPIO_V2_LINE_NUM_ATTRS_MAX];
-> +};
-
-...
-
-> +struct gpio_v2_line_request {
-> +       __u32 offsets[GPIO_V2_LINES_MAX];
-> +       char consumer[GPIO_MAX_NAME_SIZE];
-> +       struct gpio_v2_line_config config;
-> +       __u32 num_lines;
-> +       __u32 event_buffer_size;
-
-> +       /* Pad to fill implicit padding and reserve space for future use. */
-> +       __u32 padding[5];
-
-Ditto.
-
-> +       __s32 fd;
-> +};
-
-...
-
-> +struct gpio_v2_line_info {
-> +       char name[GPIO_MAX_NAME_SIZE];
-> +       char consumer[GPIO_MAX_NAME_SIZE];
-> +       __u32 offset;
-> +       __u32 num_attrs;
-> +       __aligned_u64 flags;
-> +       struct gpio_v2_line_attribute attrs[GPIO_V2_LINE_NUM_ATTRS_MAX];
-
-> +       /* Space reserved for future use. */
-> +       __u32 padding[4];
-
-Here two comments as in previous patches, why this went after
-attribute structures and why 2 is not enough?
-
-> +};
-
-...
-
-> +struct gpio_v2_line_info_changed {
-> +       struct gpio_v2_line_info info;
-> +       __aligned_u64 timestamp_ns;
-> +       __u32 event_type;
-> +       /* Pad struct to 64-bit boundary and reserve space for future use. */
-> +       __u32 padding[5];
-
-Again, why 5 and not 1?
-
-> +};
-
-...
-
-> +struct gpio_v2_line_event {
-> +       __aligned_u64 timestamp_ns;
-> +       __u32 id;
-> +       __u32 offset;
-> +       __u32 seqno;
-> +       __u32 line_seqno;
-
-> +       /* Space reserved for future use. */
-> +       __u32 padding[6];
-
-Why 6 and not 2?
-
-And here actually sizeof() can be a version.
-So, I still see possible versioning issues with ABI.
-
-> +};
+Thanks Steve.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Thanks
+Yafang
