@@ -2,146 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD03F275719
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 13:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B908D275727
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 13:30:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726590AbgIWL2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 07:28:00 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:59998 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726332AbgIWL2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 07:28:00 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id E9297626864E5F774AE4;
-        Wed, 23 Sep 2020 19:27:55 +0800 (CST)
-Received: from [10.174.185.226] (10.174.185.226) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 23 Sep 2020 19:27:47 +0800
-Subject: Re: [PATCH v10 01/11] vfio: VFIO_IOMMU_SET_PASID_TABLE
-To:     Eric Auger <eric.auger@redhat.com>, <eric.auger.pro@gmail.com>,
-        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <kvm@vger.kernel.org>, <kvmarm@lists.cs.columbia.edu>,
-        <joro@8bytes.org>, <alex.williamson@redhat.com>,
-        <jacob.jun.pan@linux.intel.com>, <yi.l.liu@intel.com>,
-        <robin.murphy@arm.com>
-References: <20200320161911.27494-1-eric.auger@redhat.com>
- <20200320161911.27494-2-eric.auger@redhat.com>
-From:   Zenghui Yu <yuzenghui@huawei.com>
-Message-ID: <2fba23af-9cd7-147d-6202-01c13fff92e5@huawei.com>
-Date:   Wed, 23 Sep 2020 19:27:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1726515AbgIWL35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 07:29:57 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:41819 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726445AbgIWL35 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 07:29:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600860596;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=puu3LR6PBVkJbaIlQWrIFXp+CHL9X+avvkTO38uPYuA=;
+        b=EZ7OhJZhlTYZg3IoNnQGLg+QOThwXG8zJCD2OItgOuQeTBgH+5Pa/H9OqWI0xSradgO58x
+        HAx3IqmyMXrGMrYnqw0CaWf0I3A++ytPdC7/Lr6mo9pKvx4DxnGN0Je+uFQVq3Y3ltZ3g0
+        NIx5OKvHl7fMvhf5DrY+tg8eGKWeaTA=
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
+ [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-355-YO8HwCvvO7KsPI3zoDa1KQ-1; Wed, 23 Sep 2020 07:29:54 -0400
+X-MC-Unique: YO8HwCvvO7KsPI3zoDa1KQ-1
+Received: by mail-oo1-f71.google.com with SMTP id a21so10172708oos.5
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 04:29:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=puu3LR6PBVkJbaIlQWrIFXp+CHL9X+avvkTO38uPYuA=;
+        b=TNBMAHm3vrDRxf7w8saXiPuluqce9xb/rkLMpL1WmT86fHZgLdQXXsiMnmjsSQ5m6N
+         c1+2VsDB8ncWuWGfL/F1mvUa292JO1C5Zm6DrLkOtZRP3wLgZoRSYeCkZie2UCzspDYV
+         ReWTUJpTvC35cFhnool9tITBGN1Z2X0ubnP2NHv88Keu1uvFNSeuJBEFLJNBTXHaLSi9
+         a5TVt7aBryirORpQi0bibGtksA3EjoM1Ze9VWnlXLEcgbdvlxYOdpZU5RtsfnbK7tYQo
+         72e6xm0NaS++KItmu+fR7L4ZIRXAP5Z8qM0VVTxBbnm993v6M8IRZZqOu9sZYV4bDhkM
+         CgWw==
+X-Gm-Message-State: AOAM531UPZhQMNMmlbt3mhoCzj8ZfMJqBtVVl2gGamOwxMlEe+kdbfwD
+        ZWjnP83msdhOWj+n6ZTGlpZeUjCRY+rSp5Hu+V1FGQpF9byDPDm6Y0v8nz0DFSpSFmZQistQ3mx
+        uhVz6QJnEqWtY1xZm+CGcwCwKS39IPkPwGVDY3Aqs
+X-Received: by 2002:a9d:3ca:: with SMTP id f68mr5367788otf.330.1600860593957;
+        Wed, 23 Sep 2020 04:29:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxpHbmO/24vw0t0dO0Z48Fo9ja7x9xin6XTNYYbw55FKRewu8qtDKfTiW2oZqiFX3+OgoxgQGeq71niS4pG3qE=
+X-Received: by 2002:a9d:3ca:: with SMTP id f68mr5367775otf.330.1600860593748;
+ Wed, 23 Sep 2020 04:29:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200320161911.27494-2-eric.auger@redhat.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.185.226]
-X-CFilter-Loop: Reflected
+References: <20200922133731.33478-5-jarod@redhat.com> <20200923041337.GA29158@0b758a8b4a67>
+In-Reply-To: <20200923041337.GA29158@0b758a8b4a67>
+From:   Jarod Wilson <jarod@redhat.com>
+Date:   Wed, 23 Sep 2020 07:29:43 -0400
+Message-ID: <CAKfmpScApsp7MXRdHS=V3LFVaJTPrhL7qmb4J_EKH=8KVDh-rA@mail.gmail.com>
+Subject: Re: [RFC PATCH] bonding: linkdesc can be static
+To:     kernel test robot <lkp@intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kbuild-all@lists.01.org,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, Netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
+On Wed, Sep 23, 2020 at 12:15 AM kernel test robot <lkp@intel.com> wrote:
+>
+> Signed-off-by: kernel test robot <lkp@intel.com>
+> ---
+>  bond_procfs.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/bonding/bond_procfs.c b/drivers/net/bonding/bond_procfs.c
+> index 91ece68607b23..9b1b37a682728 100644
+> --- a/drivers/net/bonding/bond_procfs.c
+> +++ b/drivers/net/bonding/bond_procfs.c
+> @@ -8,7 +8,7 @@
+>  #include "bonding_priv.h"
+>
+>  #ifdef CONFIG_BONDING_LEGACY_INTERFACES
+> -const char *linkdesc = "Slave";
+> +static const char *linkdesc = "Slave";
+>  #else
+>  const char *linkdesc = "Link";
+>  #endif
 
-On 2020/3/21 0:19, Eric Auger wrote:
-> From: "Liu, Yi L" <yi.l.liu@linux.intel.com>
-> 
-> This patch adds an VFIO_IOMMU_SET_PASID_TABLE ioctl
-> which aims to pass the virtual iommu guest configuration
-> to the host. This latter takes the form of the so-called
-> PASID table.
-> 
-> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> Signed-off-by: Liu, Yi L <yi.l.liu@linux.intel.com>
-> Signed-off-by: Eric Auger <eric.auger@redhat.com>
+Good attempt, robot, but you missed the #else. Will fold a full
+version into my set.
 
-[...]
+-- 
+Jarod Wilson
+jarod@redhat.com
 
-> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> index a177bf2c6683..bfacbd876ee1 100644
-> --- a/drivers/vfio/vfio_iommu_type1.c
-> +++ b/drivers/vfio/vfio_iommu_type1.c
-> @@ -2172,6 +2172,43 @@ static int vfio_iommu_iova_build_caps(struct vfio_iommu *iommu,
->   	return ret;
->   }
->   
-> +static void
-> +vfio_detach_pasid_table(struct vfio_iommu *iommu)
-> +{
-> +	struct vfio_domain *d;
-> +
-> +	mutex_lock(&iommu->lock);
-> +
-> +	list_for_each_entry(d, &iommu->domain_list, next) {
-> +		iommu_detach_pasid_table(d->domain);
-> +	}
-> +	mutex_unlock(&iommu->lock);
-> +}
-> +
-> +static int
-> +vfio_attach_pasid_table(struct vfio_iommu *iommu,
-> +			struct vfio_iommu_type1_set_pasid_table *ustruct)
-> +{
-> +	struct vfio_domain *d;
-> +	int ret = 0;
-> +
-> +	mutex_lock(&iommu->lock);
-> +
-> +	list_for_each_entry(d, &iommu->domain_list, next) {
-> +		ret = iommu_attach_pasid_table(d->domain, &ustruct->config);
-> +		if (ret)
-> +			goto unwind;
-> +	}
-> +	goto unlock;
-> +unwind:
-> +	list_for_each_entry_continue_reverse(d, &iommu->domain_list, next) {
-> +		iommu_detach_pasid_table(d->domain);
-> +	}
-> +unlock:
-> +	mutex_unlock(&iommu->lock);
-> +	return ret;
-> +}
-> +
->   static long vfio_iommu_type1_ioctl(void *iommu_data,
->   				   unsigned int cmd, unsigned long arg)
->   {
-> @@ -2276,6 +2313,25 @@ static long vfio_iommu_type1_ioctl(void *iommu_data,
->   
->   		return copy_to_user((void __user *)arg, &unmap, minsz) ?
->   			-EFAULT : 0;
-> +	} else if (cmd == VFIO_IOMMU_SET_PASID_TABLE) {
-> +		struct vfio_iommu_type1_set_pasid_table ustruct;
-> +
-> +		minsz = offsetofend(struct vfio_iommu_type1_set_pasid_table,
-> +				    config);
-> +
-> +		if (copy_from_user(&ustruct, (void __user *)arg, minsz))
-> +			return -EFAULT;
-> +
-> +		if (ustruct.argsz < minsz)
-> +			return -EINVAL;
-> +
-> +		if (ustruct.flags & VFIO_PASID_TABLE_FLAG_SET)
-> +			return vfio_attach_pasid_table(iommu, &ustruct);
-> +		else if (ustruct.flags & VFIO_PASID_TABLE_FLAG_UNSET) {
-> +			vfio_detach_pasid_table(iommu);
-> +			return 0;
-> +		} else
-> +			return -EINVAL;
-
-Nit:
-
-What if user-space blindly set both flags? Should we check that only one
-flag is allowed to be set at this stage, and return error otherwise?
-
-Besides, before going through the whole series [1][2], I'd like to know
-if this is the latest version of your Nested-Stage-Setup work in case I
-had missed something.
-
-[1] https://lore.kernel.org/r/20200320161911.27494-1-eric.auger@redhat.com
-[2] https://lore.kernel.org/r/20200414150607.28488-1-eric.auger@redhat.com
-
-
-Thanks,
-Zenghui
