@@ -2,137 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 760D627563B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:23:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2B3727563E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:23:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726676AbgIWKXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 06:23:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52351 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726332AbgIWKXK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 06:23:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600856588;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lnhZ1p8MPUWNhHhmu91uoAEGZXibovEmFTnT+gcwC+M=;
-        b=QHVmYaTEgbsGHbTfbO/572LIARTPF2x68yzv6vx6dyl68L13QekEKBjWmFFGggjR9fByKX
-        LMaQJWskpiTBhRJ7MY8fFYMvJNOBqfKhAJSOaCDhqAuOfjaeaGf2swCdwtJrdvohVBTdub
-        AvUGVzt1UIqOZmNmsNF65F/aNgx7BfE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-105-QPRawwAFMz-l4cPXkxpLTA-1; Wed, 23 Sep 2020 06:23:03 -0400
-X-MC-Unique: QPRawwAFMz-l4cPXkxpLTA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726674AbgIWKXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 06:23:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45378 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726332AbgIWKXL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 06:23:11 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BD8641084C8A;
-        Wed, 23 Sep 2020 10:23:00 +0000 (UTC)
-Received: from krava (unknown [10.40.192.120])
-        by smtp.corp.redhat.com (Postfix) with SMTP id AD4EA55783;
-        Wed, 23 Sep 2020 10:22:57 +0000 (UTC)
-Date:   Wed, 23 Sep 2020 12:22:56 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        John Garry <john.garry@huawei.com>,
-        Kajol Jain <kjain@linux.ibm.com>
-Subject: Re: [PATCH 3/5] perf tools: Copy metric events properly when expand
- cgroups
-Message-ID: <20200923102256.GI2893484@krava>
-References: <20200923015945.47535-1-namhyung@kernel.org>
- <20200923015945.47535-4-namhyung@kernel.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 70D10238D7;
+        Wed, 23 Sep 2020 10:23:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600856591;
+        bh=vbe7KhLEZRy4OEuhFJNKIUNqjK+4f7n+EAp2CYmrpyI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=K1hQRymbnkZkbCaJfs7jUvv1JxrUwU4Z6Nl9qJwa5StOAbwQv4gM3cVnqrE6VuDr1
+         6ymn5CiB7/D1c0bpifdyydecHdfJWw6nTtOlgZMLUX4FNTzjUheVGgGtb/s+VFJtAz
+         DacfhjfPQxE1VqvdcGhcmTkd30hsdFOknC4gcMoI=
+Date:   Wed, 23 Sep 2020 12:23:30 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Himadri Pandya <himadrispandya@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, oneukum@suse.com,
+        pankaj.laxminarayan.bharadiya@intel.com, keescook@chromium.org,
+        yuehaibing@huawei.com, petkan@nucleusys.com, ogiannou@gmail.com,
+        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH 0/4] net: usb: avoid using usb_control_msg() directly
+Message-ID: <20200923102330.GB3154647@kroah.com>
+References: <20200923090519.361-1-himadrispandya@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200923015945.47535-4-namhyung@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20200923090519.361-1-himadrispandya@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 10:59:43AM +0900, Namhyung Kim wrote:
+On Wed, Sep 23, 2020 at 02:35:15PM +0530, Himadri Pandya wrote:
+> A recent bug-fix shaded light on possible incorrect use of
+> usb_control_msg() without proper error check. This resulted in
+> introducing new usb core api wrapper functions usb_control_msg_send()
+> and usb_control_msg_recv() by Greg KH. This patch series continue the
+> clean-up using the new functions.
+> 
+> Himadri Pandya (4):
+>   net: usbnet: use usb_control_msg_recv() and usb_control_msg_send()
+>   net: sierra_net: use usb_control_msg_recv()
+>   net: usb: rtl8150: use usb_control_msg_recv() and
+>     usb_control_msg_send()
+>   net: rndis_host: use usb_control_msg_recv() and usb_control_msg_send()
+> 
+>  drivers/net/usb/rndis_host.c | 44 +++++++++++++---------------------
+>  drivers/net/usb/rtl8150.c    | 32 +++++--------------------
+>  drivers/net/usb/sierra_net.c | 17 ++++++-------
+>  drivers/net/usb/usbnet.c     | 46 ++++--------------------------------
+>  4 files changed, 34 insertions(+), 105 deletions(-)
+> 
 
-SNIP
+Note, all of these depend on a set of patches in my usb tree, so they
+should probably wait to be sent to the networking developers until after
+5.10-rc1 is out.
 
-  
-> diff --git a/tools/perf/util/cgroup.c b/tools/perf/util/cgroup.c
-> index 8b6a4fa49082..dcd18ef268a1 100644
-> --- a/tools/perf/util/cgroup.c
-> +++ b/tools/perf/util/cgroup.c
-> @@ -3,6 +3,9 @@
->  #include "evsel.h"
->  #include "cgroup.h"
->  #include "evlist.h"
-> +#include "rblist.h"
-> +#include "metricgroup.h"
-> +#include "stat.h"
->  #include <linux/zalloc.h>
->  #include <sys/types.h>
->  #include <sys/stat.h>
-> @@ -193,10 +196,12 @@ int parse_cgroups(const struct option *opt, const char *str,
->  	return 0;
->  }
->  
-> -int evlist__expand_cgroup(struct evlist *evlist, const char *str)
-> +int evlist__expand_cgroup(struct evlist *evlist, const char *str,
-> +			  struct rblist *metric_events)
->  {
->  	struct evlist *orig_list, *tmp_list;
->  	struct evsel *pos, *evsel, *leader;
-> +	struct rblist orig_metric_events;
->  	struct cgroup *cgrp = NULL;
->  	const char *p, *e, *eos = str + strlen(str);
->  	int ret = -1;
-> @@ -216,6 +221,8 @@ int evlist__expand_cgroup(struct evlist *evlist, const char *str)
->  	/* save original events and init evlist */
->  	perf_evlist__splice_list_tail(orig_list, &evlist->core.entries);
->  	evlist->core.nr_entries = 0;
-> +	orig_metric_events = *metric_events;
-> +	rblist__init(metric_events);
->  
->  	for (;;) {
->  		p = strchr(str, ',');
-> @@ -255,6 +262,11 @@ int evlist__expand_cgroup(struct evlist *evlist, const char *str)
->  		cgroup__put(cgrp);
->  		nr_cgroups++;
->  
-> +		perf_stat__collect_metric_expr(tmp_list);
+thanks,
 
-I know you added the option just for perf stat, not record,
-but the code looks generic apart from using this function
-
-I wonder if this would cause any issues if it was called in record
-context.. maybe we could just skip it in that case, but that's for
-future to worry about ;-)
-
-jirka
-
-> +		if (metricgroup__copy_metric_events(tmp_list, cgrp, metric_events,
-> +						    &orig_metric_events) < 0)
-> +			break;
-> +
->  		perf_evlist__splice_list_tail(evlist, &tmp_list->core.entries);
->  		tmp_list->core.nr_entries = 0;
->  
-> @@ -268,6 +280,7 @@ int evlist__expand_cgroup(struct evlist *evlist, const char *str)
->  out_err:
->  	evlist__delete(orig_list);
->  	evlist__delete(tmp_list);
-> +	rblist__exit(&orig_metric_events);
->  
->  	return ret;
->  }
-
-SNIP
-
+greg k-h
