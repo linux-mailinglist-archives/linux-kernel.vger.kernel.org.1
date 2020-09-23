@@ -2,196 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 482E2275FA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 20:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBF12275FA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 20:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726811AbgIWSSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 14:18:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40586 "EHLO
+        id S1726674AbgIWSTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 14:19:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726620AbgIWSSX (ORCPT
+        with ESMTP id S1726419AbgIWSTi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 14:18:23 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27E04C0613CE;
-        Wed, 23 Sep 2020 11:18:23 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id f2so216247pgd.3;
-        Wed, 23 Sep 2020 11:18:23 -0700 (PDT)
+        Wed, 23 Sep 2020 14:19:38 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7FAEC0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 11:19:37 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id u8so981517lff.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 11:19:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uXe+Xi2hqeDB8MW7GyGTEglCxm3DJb1+87Kb1HBQWfg=;
-        b=dcrRSZIM8n7Pb8lEpy1uBQjkoW07HJcmt5qqW2sAXWPsWKzSXi4+TY5gn+DbB8npg3
-         m6gOP8ephpLSkfq5mkNZJBhZiwsyyZ4uBceieghZcbq0eNZAVpZTYkSRlrb3ClxXAeRo
-         5cJwcFH68SlvDSIB8LtThRnl46bn3gQ3YrepcsctnbCJSVdltGvkTM3IGVTNvz5mzRqa
-         tV8zAPjUgcsGVwMiRpkf64XYqtJ53O+93Gf3egDwwhU9JJA8jkljFkQNg81JZSB6YPZk
-         QRt1SPR5MKKW6n1Uc3nKV/PqjT6gqUGAjipxJD7kDPCnKd5w6uW8XQQr2wGOMVvP0nqL
-         6Y4Q==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HKzL90mPBVyB4BFuLjfA3vDiSe9w+bx4riMJ/2lUYsI=;
+        b=SaS3fMQ4TAJGIV2uK+VYGwCnc06kLKp5cMIqKfSOXB/uM7x1omUGq53QTex0mvH2C6
+         SilqOUVmahXKC+gO2rkwizwFsmYaX6aN2AKtwHlRfJvr8PahTFw9AytRPIM5cEQld1pA
+         RN+Qj1FNG/topCYovowX1nCso+SP7J+0/DQBU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uXe+Xi2hqeDB8MW7GyGTEglCxm3DJb1+87Kb1HBQWfg=;
-        b=MHl3Tl71Ywymoatf+QSa0GfMANrj1ib/KQwW7NCjfNj2+GQlM/7M8TtTbX+YQetodY
-         vCW9v+oWQrdZqs2H29lBjPPPHB4eOf8w4znE4YEHI385MolzWKYQdpc3Lj4ooycgc/xJ
-         nK2LVbBA//pwv3hACsy8v6KDiJ7Kmt6fhlJmLr28Ixd/cOHqeOBtzd+q6tHFgAGVUlOH
-         wYG8aClXVU3/y0y933EHtuK9HigAjrTcDeqofsQuG+udt66S7ink0iIOQhSuYNLaG7Fh
-         JDAPK6pjMuyBf0ru+GfyfVV8eYBZabGU4d4hpzyOagKNgIzbogLPYhYBpWq6j44aXLsK
-         gukg==
-X-Gm-Message-State: AOAM531vbLhbkTGaBXYBoVvQJiWwBDo2pQjJyZhdetGX3OLc7H04CruT
-        FBIukH3mU2N/M3HVpBDfkA1LYqUDjHc=
-X-Google-Smtp-Source: ABdhPJzpQHKL/4vlUVobCdQXxCV7Z04CNMzQRVpRqdeCAwPFB4zCExxsX9vIteOjtAk6PgEz6jQThA==
-X-Received: by 2002:a63:ea4f:: with SMTP id l15mr803127pgk.434.1600885102711;
-        Wed, 23 Sep 2020 11:18:22 -0700 (PDT)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:a59c:1afa:6c3b:76b3])
-        by smtp.gmail.com with ESMTPSA id q15sm561446pgr.27.2020.09.23.11.18.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 11:18:22 -0700 (PDT)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Martin Schiller <ms@dev.tdt.de>,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-Cc:     Xie He <xie.he.0141@gmail.com>
-Subject: [PATCH net v2] drivers/net/wan/x25_asy: Correct the ndo_open and ndo_stop functions
-Date:   Wed, 23 Sep 2020 11:18:18 -0700
-Message-Id: <20200923181818.422274-1-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HKzL90mPBVyB4BFuLjfA3vDiSe9w+bx4riMJ/2lUYsI=;
+        b=KISNIxwsO9KJmrXNfDZneY4T9/SyhvKvrr0kEN9Q29LVkQV0caYIyJa3UQqQq6kL08
+         Gumj12VegZ2Odla2Zjtl61ek2Zb4ZNBlPCFd2yppTI5V/3Sfqf/C1qxT5OKus2XSkf98
+         4OqqA7WURuVJquwClHABiNLh2QNjX+sHL0+Ixi5/h39wq//0pDLnQ39zJnibAOAturEV
+         yIHuS7kxUYkG/hegliiqOCwI7YebDNRSIbnvbkPl2ve7aYBT4P9+wF02dccbbxC8oxEI
+         /6jrLDRoCX2kdEdZ8OIJ0GhNlLhQnolPMyBTbqizwiLqZLrGL9PdNKV4R9eMDRunWH+d
+         l1Wg==
+X-Gm-Message-State: AOAM530cdmsaqGlx3cGvZZ1GTVc6fDYzo3GlFB1w1sKI88ofqOciupMU
+        X02oI3FAHfKDsB4uN2dqy6z2r9fNoeZ7mQ==
+X-Google-Smtp-Source: ABdhPJxEpp+rJ+uEpqV2053i1DUf6PJs0SH5Wpa0aFm2v0UpuPautScS1q6XWxpGNq0qnwOxxle68g==
+X-Received: by 2002:ac2:5594:: with SMTP id v20mr379524lfg.344.1600885175838;
+        Wed, 23 Sep 2020 11:19:35 -0700 (PDT)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id u22sm277111lfl.160.2020.09.23.11.19.31
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Sep 2020 11:19:32 -0700 (PDT)
+Received: by mail-lj1-f180.google.com with SMTP id u4so428874ljd.10
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 11:19:31 -0700 (PDT)
+X-Received: by 2002:a05:651c:32e:: with SMTP id b14mr345723ljp.314.1600885171360;
+ Wed, 23 Sep 2020 11:19:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200915140633.552502750@linuxfoundation.org> <20200915140636.861676717@linuxfoundation.org>
+ <20200916075759.GC32537@duo.ucw.cz> <20200916082510.GB509119@kroah.com>
+ <20200916090723.GA4151@duo.ucw.cz> <20200916091420.GF13670@1wt.eu> <20200923084427.GA32110@amd>
+In-Reply-To: <20200923084427.GA32110@amd>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 23 Sep 2020 11:19:15 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whe4ZdTdCebneWqC4gSQZwsVJ5-Emg0BucOGCwPhOAJpw@mail.gmail.com>
+Message-ID: <CAHk-=whe4ZdTdCebneWqC4gSQZwsVJ5-Emg0BucOGCwPhOAJpw@mail.gmail.com>
+Subject: Re: [PATCH 4.19 66/78] fbcon: remove soft scrollback code
+To:     Pavel Machek <pavel@denx.de>
+Cc:     Willy Tarreau <w@1wt.eu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>, jikos@suse.cz,
+        vojtech@suse.cz,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>,
+        Yuan Ming <yuanmingbuaa@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1.
-Move the lapb_register/lapb_unregister calls into the ndo_open/ndo_stop
-functions.
-This makes the LAPB protocol start/stop when the network interface
-starts/stops. When the network interface is down, the LAPB protocol
-shouldn't be running and the LAPB module shoudn't be generating control
-frames.
+On Wed, Sep 23, 2020 at 1:44 AM Pavel Machek <pavel@denx.de> wrote:
+>
+> >
+> >   https://www.openwall.com/lists/oss-security/2020/09/15/2
+>
+> Thank you for the pointer!
 
-2.
-Move netif_start_queue/netif_stop_queue into the ndo_open/ndo_stop
-functions.
-This makes the TX queue start/stop when the network interface
-starts/stops.
-(netif_stop_queue was originally in the ndo_stop function. But to make
-the code look better, I created a new function to use as ndo_stop, and
-made it call the original ndo_stop function. I moved netif_stop_queue
-from the original ndo_stop function to the new ndo_stop function.)
+Note that for me to be willing to take the softscollback code back, it
+really would have to be more than just a revert and a trivial fix.
 
-Cc: Martin Schiller <ms@dev.tdt.de>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
----
+It would have to be more along the lines of "this is simplified and
+verified". For example, at a minimum all the VT_RESIZE etc stuff would
+have to clearly and obviously reset the soft-scrollback, so that we
+simply can't have those kinds of issues.
 
-Change from v1:
-In v1, I moved the x25_asy_close call to x25_asy_close_tty.
-Now, although I still want to do that change, I think it may be better
-to do that in a future patch.
+If you look at that commit 50145474f6ef ("fbcon: remove soft
+scrollback code") that removes the code, most of that code really
+doesn't make much sense.
 
----
- drivers/net/wan/x25_asy.c | 43 +++++++++++++++++++++++----------------
- 1 file changed, 26 insertions(+), 17 deletions(-)
+I dare anybody looking at that removed fbcon_redraw_softback()
+function (or the different cases in fbcon_scrolldelta(), for that
+matter) to claim they understand what it is doing. It's very odd code,
+and it handles a lot of odd special cases.
 
-diff --git a/drivers/net/wan/x25_asy.c b/drivers/net/wan/x25_asy.c
-index 7ee980575208..c418767a890a 100644
---- a/drivers/net/wan/x25_asy.c
-+++ b/drivers/net/wan/x25_asy.c
-@@ -464,7 +464,6 @@ static int x25_asy_open(struct net_device *dev)
- {
- 	struct x25_asy *sl = netdev_priv(dev);
- 	unsigned long len;
--	int err;
- 
- 	if (sl->tty == NULL)
- 		return -ENODEV;
-@@ -490,14 +489,7 @@ static int x25_asy_open(struct net_device *dev)
- 	sl->xleft    = 0;
- 	sl->flags   &= (1 << SLF_INUSE);      /* Clear ESCAPE & ERROR flags */
- 
--	netif_start_queue(dev);
--
--	/*
--	 *	Now attach LAPB
--	 */
--	err = lapb_register(dev, &x25_asy_callbacks);
--	if (err == LAPB_OK)
--		return 0;
-+	return 0;
- 
- 	/* Cleanup */
- 	kfree(sl->xbuff);
-@@ -519,7 +511,6 @@ static int x25_asy_close(struct net_device *dev)
- 	if (sl->tty)
- 		clear_bit(TTY_DO_WRITE_WAKEUP, &sl->tty->flags);
- 
--	netif_stop_queue(dev);
- 	sl->rcount = 0;
- 	sl->xleft  = 0;
- 	spin_unlock(&sl->lock);
-@@ -604,7 +595,6 @@ static int x25_asy_open_tty(struct tty_struct *tty)
- static void x25_asy_close_tty(struct tty_struct *tty)
- {
- 	struct x25_asy *sl = tty->disc_data;
--	int err;
- 
- 	/* First make sure we're connected. */
- 	if (!sl || sl->magic != X25_ASY_MAGIC)
-@@ -615,11 +605,6 @@ static void x25_asy_close_tty(struct tty_struct *tty)
- 		dev_close(sl->dev);
- 	rtnl_unlock();
- 
--	err = lapb_unregister(sl->dev);
--	if (err != LAPB_OK)
--		pr_err("%s: lapb_unregister error: %d\n",
--		       __func__, err);
--
- 	tty->disc_data = NULL;
- 	sl->tty = NULL;
- 	x25_asy_free(sl);
-@@ -722,15 +707,39 @@ static int x25_asy_ioctl(struct tty_struct *tty, struct file *file,
- 
- static int x25_asy_open_dev(struct net_device *dev)
- {
-+	int err;
- 	struct x25_asy *sl = netdev_priv(dev);
- 	if (sl->tty == NULL)
- 		return -ENODEV;
-+
-+	err = lapb_register(dev, &x25_asy_callbacks);
-+	if (err != LAPB_OK)
-+		return -ENOMEM;
-+
-+	netif_start_queue(dev);
-+
-+	return 0;
-+}
-+
-+static int x25_asy_close_dev(struct net_device *dev)
-+{
-+	int err;
-+
-+	netif_stop_queue(dev);
-+
-+	err = lapb_unregister(dev);
-+	if (err != LAPB_OK)
-+		pr_err("%s: lapb_unregister error: %d\n",
-+		       __func__, err);
-+
-+	x25_asy_close(dev);
-+
- 	return 0;
- }
- 
- static const struct net_device_ops x25_asy_netdev_ops = {
- 	.ndo_open	= x25_asy_open_dev,
--	.ndo_stop	= x25_asy_close,
-+	.ndo_stop	= x25_asy_close_dev,
- 	.ndo_start_xmit	= x25_asy_xmit,
- 	.ndo_tx_timeout	= x25_asy_timeout,
- 	.ndo_change_mtu	= x25_asy_change_mtu,
--- 
-2.25.1
+So I wouldn't mind re-introducing the scrollback code, but the
+reintroduced version needs to be simple and fairly _obvious_.  It
+would need to not have all those odd special cases, and it would need
+to clearly not have any subtle issues with things like font or screen
+resizing.
 
+I'd also suggest that it not even try to handle the multiple virtual
+console case.
+
+And yes, some of it may involve also clarifying the code in the VT
+code itself, so that the interactions with the cursor and VT switching
+is more obvious. Maybe instead of trying to deal with a SW cursor when
+scrollback is active, just hide the cursor entirely before doing
+scrollback. And make change_console (and all the resizing) explicitly
+reset scrollback etc.
+
+So the reason the code got removed was that it was just very grotty
+and hasn't really been maintained for over a decade.
+
+In order to resurrect it we'd not just have to have a maintainer, the
+whole "it's grotty and incomprehensible and has these nasty
+interactions with random other things" would need to be addressed too.
+
+              Linus
