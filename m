@@ -2,221 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88BE32764AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:43:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC5682764B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:48:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726599AbgIWXnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 19:43:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34208 "EHLO
+        id S1726537AbgIWXsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 19:48:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726265AbgIWXnM (ORCPT
+        with ESMTP id S1726265AbgIWXsQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 19:43:12 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C8E2C0613CE;
-        Wed, 23 Sep 2020 16:43:12 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id nw23so1961656ejb.4;
-        Wed, 23 Sep 2020 16:43:12 -0700 (PDT)
+        Wed, 23 Sep 2020 19:48:16 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A740EC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:48:15 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id p9so1960782ejf.6
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:48:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gTCQ6FmbtqXr2lWYi2SA92VBSqB0+yg7rI8urwU4EPQ=;
-        b=GIuAB5Gf+EQXOBC+oUffPLM/u/Ny+yaZHgdkRxzMUIYycsGcIRBgEz6S6H32yT5SG/
-         3y0daOEPOh0ZdPkEYg+qpA5IJ2AzUPaMl2kJabgSid7hPCi04pb/fTIa/RNHyjOX8N/B
-         zTPujNrL3fYTeJ6Pyl+J3PpyDRWs0J7r/wPG2NwARq4hHV1D8S6QcSzc19at3t04ubZe
-         ZysCzDVzvPMbFSwHZ6kUFDVzWVkNRjzPxe72i8xDynUG2OL4fqS2gXCkrU4uUPy5x03z
-         YOranh+9jwvCWccxq354q/SJiFub/8j3DwYgLXFA2FbAKFW/Un9VA6O6LMYR45pgDDZE
-         u7Qg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=39UUQGQGuW0pJ99c+3XIOwje30cjhE1B1JoOVCrOppE=;
+        b=HDDz0mvq7a3RG21pW1YeQt8LuyT+FQycHVtfHpuOxU6Biqeaq27Gw7cP0U+Spr7uTp
+         Nfq1GselwDFRfr9FK3059LriMRW5TYJYcX4A3//RneCtrNUpPDWnkxJMQiwtFIpc+xw1
+         TrsSkUpUgbQzzNtMrHzq4TS+NTY69w1m+cz1jSf5lzvMoJsoiRFI4xUrHsuNE58iigSY
+         dsycOzIWKTJ/5jb7J3PeM5sJ+YXGWe5SKxbRup2+kxQQThT5O52j2q8aOVj3NI/LcdsV
+         4K4MJstPwqmiwhW2iAm2V8jx4jj4lNPMoabpg7l5YPdv92Pf0rDC2GeoWWIt7WxkjGvU
+         abwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gTCQ6FmbtqXr2lWYi2SA92VBSqB0+yg7rI8urwU4EPQ=;
-        b=bU0NChSPDeOQL/yQY4NLu4/kDVF94vM6Y+1eghb8HQjZ2bYoDXIt9GUt6Frdygb0/J
-         XXp2DXVXCRKdzc95brtxYynafv/KxiAUn5/dunv/nm2Ov4qCghEym+VBASeGZbOQyK2w
-         1RSdCnqz0XwcRNl/VXo3+WnNPpV5kU1gTqOgKYPcBDUMZtavmeeEacZjyWXPdKRFQoDe
-         NZIT2L9hPNUrmVF6nSK6wXG8fgh44mf7/1WMUPuXoFLsk0fk6l4OZ3xcoYv4rtgzYmbJ
-         iEJ/PTdxYaoqOMAmKJ6wPq173dFyx4hnlYuUmLK5202UWy60UEc57CeC8/a8EET/kZ+x
-         yA7A==
-X-Gm-Message-State: AOAM532dM78A8kLuHeACvXyuldUUHGPQ9Mm3P4jSyV6ohQIrd6MZjSaF
-        d++hKjoLyO5Eo5Ou7poa71E=
-X-Google-Smtp-Source: ABdhPJyBcZOwL1UAV6einIScXJQW7Azt3W1QKVNAZG3ADffqAfkH8MNFxJpP7x/4rn3kD2KFZPAoDg==
-X-Received: by 2002:a17:906:7fcc:: with SMTP id r12mr2022196ejs.360.1600904590831;
-        Wed, 23 Sep 2020 16:43:10 -0700 (PDT)
-Received: from [192.168.2.202] (pd9e5a9df.dip0.t-ipconnect.de. [217.229.169.223])
-        by smtp.gmail.com with ESMTPSA id e25sm999772edj.43.2020.09.23.16.43.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Sep 2020 16:43:10 -0700 (PDT)
-Subject: Re: [RFC PATCH 4/9] surface_aggregator: Add trace points
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
-        Dorian Stoll <dorian.stoll@tmsp.io>
-References: <20200923151511.3842150-1-luzmaximilian@gmail.com>
- <20200923151511.3842150-5-luzmaximilian@gmail.com>
- <20200923160757.51e773a0@oasis.local.home>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <dad57e7f-7f3c-7fea-0fbf-a32006da52b6@gmail.com>
-Date:   Thu, 24 Sep 2020 01:43:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=39UUQGQGuW0pJ99c+3XIOwje30cjhE1B1JoOVCrOppE=;
+        b=hNguDGW8H+Hn7B/YGz4GhBDH8vMfL50BPYDV+h5q9wxQZISw2pAwFJTYGzgrlTHjo0
+         6vH6WeKymf3GP0MYoiiXnxAcGT05b3RxJRx+dR9lRvoh0S6vNDY9WwByrTpl2oRkBmga
+         +yjnmnhitsdxQC/wV1Wy5Dd6Y1PUj1CfWvWkQSwjIXOTwpAovu0LUy4lMDVAMRyhuxz+
+         5NFIVxO/s5qJ7ID6gaOxaIHSldy6myJbihKKfxdOxVq8RFp//ROXdHpsmzrpIL04Fjfk
+         EhAHHQxlY6ZsuPcEaqzyjOY8/WYykTN2DC7geSqnONg+JrVyZlSAAg6TQbNvi/C/RRpG
+         hrqQ==
+X-Gm-Message-State: AOAM531Ql5sm+rtGZi30qYLDBW1NTmpKX46HGz0iFVGWDO/dSEMCnpAl
+        IE0dXtovjcRWSkHj8HuJ25vKSrCpHpU13y2/Df/BFA==
+X-Google-Smtp-Source: ABdhPJztAHF67qXzKrzzYSP3nT64vv5jq7HwOELGrmAfvL52R7Pr4wN/V46V4Apb43rLzuJU3SZ/sIdez/zch09EI8g=
+X-Received: by 2002:a17:907:64d:: with SMTP id wq13mr1931271ejb.513.1600904893980;
+ Wed, 23 Sep 2020 16:48:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200923160757.51e773a0@oasis.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200923232923.3142503-1-keescook@chromium.org> <20200923232923.3142503-5-keescook@chromium.org>
+In-Reply-To: <20200923232923.3142503-5-keescook@chromium.org>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 24 Sep 2020 01:47:47 +0200
+Message-ID: <CAG48ez251v19U60GYH4aWE6+C-3PYw5mr_Ax_kxnebqDOBn_+Q@mail.gmail.com>
+Subject: Re: [PATCH 4/6] seccomp: Emulate basic filters for constant action results
+To:     Kees Cook <keescook@chromium.org>
+Cc:     YiFei Zhu <yifeifz2@illinois.edu>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/23/20 10:07 PM, Steven Rostedt wrote:
-> On Wed, 23 Sep 2020 17:15:06 +0200
-> Maximilian Luz <luzmaximilian@gmail.com> wrote:
-> 
->> Add trace points to the Surface Aggregator subsystem core. These trace
->> points can be used to track packets, requests, and allocations. They are
->> further intended for debugging and testing/validation, specifically in
->> combination with the error injection capabilities introduced in the
->> subsequent commit.
-> 
-> I'm impressed! This uses some of the advanced features of the tracing
-> infrastructure. But I still have some comments to make about the layout
-> of the TP_STRUCT__entry() fields.
+On Thu, Sep 24, 2020 at 1:29 AM Kees Cook <keescook@chromium.org> wrote:
+> This emulates absolutely the most basic seccomp filters to figure out
+> if they will always give the same results for a given arch/nr combo.
+>
+> Nearly all seccomp filters are built from the following ops:
+>
+> BPF_LD  | BPF_W    | BPF_ABS
+> BPF_JMP | BPF_JEQ  | BPF_K
+> BPF_JMP | BPF_JGE  | BPF_K
+> BPF_JMP | BPF_JGT  | BPF_K
+> BPF_JMP | BPF_JSET | BPF_K
+> BPF_JMP | BPF_JA
+> BPF_RET | BPF_K
+>
+> These are now emulated to check for accesses beyond seccomp_data::arch
+> or unknown instructions.
+>
+> Not yet implemented are:
+>
+> BPF_ALU | BPF_AND (generated by libseccomp and Chrome)
 
-Thanks!
+BPF_AND is normally only used on syscall arguments, not on the syscall
+number or the architecture, right? And when a syscall argument is
+loaded, we abort execution anyway. So I think there is no need to
+implement those?
 
-[...]
+> Suggested-by: Jann Horn <jannh@google.com>
+> Link: https://lore.kernel.org/lkml/CAG48ez1p=dR_2ikKq=xVxkoGg0fYpTBpkhJSv1w-6BG=76PAvw@mail.gmail.com/
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  kernel/seccomp.c  | 82 ++++++++++++++++++++++++++++++++++++++++++++---
+>  net/core/filter.c |  3 +-
+>  2 files changed, 79 insertions(+), 6 deletions(-)
+>
+> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> index 111a238bc532..9921f6f39d12 100644
+> --- a/kernel/seccomp.c
+> +++ b/kernel/seccomp.c
+> @@ -610,7 +610,12 @@ static struct seccomp_filter *seccomp_prepare_filter(struct sock_fprog *fprog)
+>  {
+>         struct seccomp_filter *sfilter;
+>         int ret;
+> -       const bool save_orig = IS_ENABLED(CONFIG_CHECKPOINT_RESTORE);
+> +       const bool save_orig =
+> +#if defined(CONFIG_CHECKPOINT_RESTORE) || defined(SECCOMP_ARCH)
+> +               true;
+> +#else
+> +               false;
+> +#endif
 
->> +DECLARE_EVENT_CLASS(ssam_packet_class,
->> +	TP_PROTO(const struct ssh_packet *packet),
->> +
->> +	TP_ARGS(packet),
->> +
->> +	TP_STRUCT__entry(
->> +		__array(char, uid, SSAM_PTR_UID_LEN)
->> +		__field(u8, priority)
->> +		__field(u16, length)
->> +		__field(unsigned long, state)
->> +		__field(u16, seq)
-> 
-> 
-> Order matters above to keep the events as compact as possible. The more
-> compact they are, the more events you can store without loss.
-> 
-> Now with SSAM_PTR_UID_LEN = 9, the above is (on a 64 bit system);
-> 
-> 	9 bytes;
-> 	1 byte;
-> 	2 bytes;
-> 	8 bytes;
-> 	2 bytes;
-> 
-> The ftrace ring buffer is 4 byte aligned. As words and long words are
-> also 4 byte aligned, there's not much different to change. But it is
-> possible that the compiler might add 4 byte padding between the long
-> word "length" and "priority". Note, these are not packed structures.
-> 
-> Testing this out with the following code:
-> 
->   $ cat << EOF > test.c
-> struct test {
-> 	unsigned char array[9];
-> 	unsigned char priority;
-> 	unsigned short length;
-> 	unsigned long state;
-> 	unsigned short seq;
-> };
-> 
-> static struct test x;
-> 
-> void receive_x(struct test *p)
-> {
-> 	p = &x;
-> }
-> EOF
-> 
->   $ gcc -g -c -o test.o test.c
->   $ pahole test.o
-> struct test {
-> 	unsigned char              array[9];             /*     0     9 */
-> 	unsigned char              priority;             /*     9     1 */
-> 	short unsigned int         length;               /*    10     2 */
-> 
-> 	/* XXX 4 bytes hole, try to pack */
-> 
-> 	long unsigned int          state;                /*    16     8 */
-> 	short unsigned int         seq;                  /*    24     2 */
-> 
-> 	/* size: 32, cachelines: 1, members: 5 */
-> 	/* sum members: 22, holes: 1, sum holes: 4 */
-> 	/* padding: 6 */
-> 	/* last cacheline: 32 bytes */
-> };
-> 
-> You do see a hole between length and state. Now if we were to move this
-> around a little.
-> 
->   $ cat <<EOF > test2.c
-> struct test {
-> 	unsigned long state;
-> 	unsigned char array[9];
-> 	unsigned char priority;
-> 	unsigned short length;
-> 	unsigned short seq;
-> };
-> 
-> static struct test x;
-> 
-> void receive_x(struct test *p)
-> {
-> 	p = &x;
-> }
-> EOF
-> 
->   $ gcc -g -c -o test2 test2.c
->   $ pahole test2.o
-> struct test {
-> 	long unsigned int          state;                /*     0     8 */
-> 	unsigned char              array[9];             /*     8     9 */
-> 	unsigned char              priority;             /*    17     1 */
-> 	short unsigned int         length;               /*    18     2 */
-> 	short unsigned int         seq;                  /*    20     2 */
-> 
-> 	/* size: 24, cachelines: 1, members: 5 */
-> 	/* padding: 2 */
-> 	/* last cacheline: 24 bytes */
-> };
-> 
-> 
-> We get a more compact structure with:
-> 
-> 	TP_STRUCT__entry(
-> 		__field(unsigned long, state)
-> 		__array(char, uid, SSAM_PTR_UID_LEN)
-> 		__field(u8, priority)
-> 		__field(u16, length)
-> 		__field(u16, seq)
-> 	),
-> 
-> 
-> Note, you can find pahole here:
-> 
->     https://git.kernel.org/pub/scm/devel/pahole/pahole.git
-> 
-> 
->> +	),
+You could probably write this as something like:
 
-Thank you for that detailed write-up! As you have clearly noticed, I
-have not really looked at the struct layouts. I will fix this for v2,
-include your changes, and have a look at pahole.
+const bool save_orig = IS_ENABLED(CONFIG_CHECKPOINT_RESTORE) ||
+__is_defined(SECCOMP_ARCH);
 
 [...]
+> diff --git a/net/core/filter.c b/net/core/filter.c
+[...]
+> -static void bpf_release_orig_filter(struct bpf_prog *fp)
+> +void bpf_release_orig_filter(struct bpf_prog *fp)
+>  {
+>         struct sock_fprog_kern *fprog = fp->orig_prog;
+>
+> @@ -1154,6 +1154,7 @@ static void bpf_release_orig_filter(struct bpf_prog *fp)
+>                 kfree(fprog);
+>         }
+>  }
+> +EXPORT_SYMBOL_GPL(bpf_release_orig_filter);
 
-Thanks,
-Max
+If this change really belongs into this patch (which I don't think it
+does), please describe why in the commit message.
