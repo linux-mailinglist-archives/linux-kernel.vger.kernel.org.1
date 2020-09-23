@@ -2,245 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF4E274DCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 02:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0400274DCE
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 02:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727077AbgIWAY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 20:24:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44648 "EHLO
+        id S1727097AbgIWA04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 20:26:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727076AbgIWAY5 (ORCPT
+        with ESMTP id S1727058AbgIWA0z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 20:24:57 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A1A0C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 17:24:57 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id y8so18790207ilm.11
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 17:24:57 -0700 (PDT)
+        Tue, 22 Sep 2020 20:26:55 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E535C0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 17:26:55 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id e23so25350963eja.3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 17:26:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=22z2o3zRVcc0e/vm/tTsJvCKG6pWnKo32sxDAjGNRQM=;
-        b=MFiycCcSrtEORo7U7YiSmkKWaWvAD/zh9ujSqXbN4v5DFcDYaJRjK0IQm6ujQi9sCC
-         TPP60v9Dl4aPkOLFQtsUpLS6YiwX9rs/zk3OrXfEDCyYYgy+LbrsW8dFHo6Gs3ChJvgW
-         ztTZEdcCaA6+8LJF0dcRUQREzfu75m4n+mlYt07H0dcLVu4FKgJTIgthDlu4FtQ2ChnK
-         dbCYpR9pAzwT5e3N0s4/G16njOk34wuqjddwY+FHBLpqGxGq0mcPnwkDq1yhngzSz5AW
-         oc+yl6jgLd2f3HFMC5yhPi+jUNuFJWogVGjFkchAElepMHjdOQ7REii+PZoIf/dw35R4
-         tGcA==
+        bh=mVimv4F4pEyqaeD0LO4zdEDOLVsHvqmHuDl7JJ50ulQ=;
+        b=egeCKs17gt8CwPK7u6srOHG8/XtUaR57acvx0TxFQN4OgfTewTTwNVhJ3xelSuchN5
+         dH/v0TdAhVjm1OyK8YI/T1+nqHAvQGirk70/PXrjkrdJstF0zEVxO5EnN1TxNqfCZaIs
+         sVFUFHg41vJCFF8sHTLjyTKmBQc6j+DXLyARf1yKv3ipC/84wjQsbZkM+FPiwArDH8cJ
+         bKSG7LvIosF6KjiHPL5OTU7DIEfS5cCFKMjLfJ3X4RvlJz61N2TQQVaxEsdJ9C8UZ2Ss
+         6EcJmIO8EzYqFXjqs1VH/T6FFOBJAM/zJ/HxZwB4JnNx4mM4AmtxRYYLWa/cjUZee6+T
+         Cwfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=22z2o3zRVcc0e/vm/tTsJvCKG6pWnKo32sxDAjGNRQM=;
-        b=Ggww+yZ2rbwGlizHkfsmeIcEpnlUASSixyywl4WEKhvyZTznoeZVp25WST10Z6hMbI
-         3G1jGf2Eu8crrKUJuGXmdOigAuiOcM8MS8cH8jy2NWxzERh0Ej+j1OZ37q3tyWRCfxlk
-         54umx+uQ93G5E0QFP98vJ0F1KhF9vcBCdTz66JIq3y/DFq89TifwbPV6svsAkGBvGot1
-         rgM6igW28bHB7aZGKsni+1pXx05LAPXb67aIy7X4lxCMVTlUlc3miNHHqoRWfhhJEjrm
-         og2RtNz9PFU21Osl3WUU7eZ3wGXME8AT0DZWuVNWb+6aK/gxjvBckr+/HPorNZpf/lRd
-         3Q4w==
-X-Gm-Message-State: AOAM533wnMNb8jI5DPhehmuPOS3IZ9+d2UAxh/D6QP6+8XlSN2u31NbW
-        TrfJqhWRaOwkjJsovCe9ZH29J2V42PuVOYPydHEJtw==
-X-Google-Smtp-Source: ABdhPJyw9neovCgdyECzhy9QuZZ8H8mcTDuJf6HFH2RwiTq8+oM8g5VpzRB7BvCtHJbyT6YmH5WL8Zuy4CmtU8DpxQY=
-X-Received: by 2002:a92:9943:: with SMTP id p64mr6499555ili.295.1600820696350;
- Tue, 22 Sep 2020 17:24:56 -0700 (PDT)
+        bh=mVimv4F4pEyqaeD0LO4zdEDOLVsHvqmHuDl7JJ50ulQ=;
+        b=Ixow5R7cHolasalfT6sYPd61uwt0FV2YfHQNr+Hcum7KBEwO2o9MmITbbvnf9A8sUP
+         IIY7CpNTIVMICrODOVEh4Lb5eZjNySWQcp23f6ZDRdMCfAPFB3+JeCfbI8LHdGlI8vb7
+         pCJck6+ddkCqkrCDzSd8wCZVmTicXKNdBHZAbEcFsHGUWkRDZCyKoaiDDdXOJkvvFDrf
+         mfnXx6VTpbhq/EMG/jsUbmdX0B9qhYCIe7+vB3qor8+vH1Dm34sYtHc9xy/vF/hCbnj4
+         6VOF/1AJGx7+OSJw/DywYPLvzulgAuoO/52Ok+kGSOrTJ85iNo/wcCpGf+cXrdrjBPKp
+         vXvg==
+X-Gm-Message-State: AOAM530Cmth/wHjcUT+ypYIyRu78v4OdOvdOc3cxJTLFRq71fpXpe8hg
+        kt07eyntt6S+ej62XsfkJNzm8unV6hrvFc+8gAk2+g==
+X-Google-Smtp-Source: ABdhPJzMI1hBpS5IYBJf0bWw0qKhmM688XSDWbxykQZ6wRaR8yLKTmjvfdk/TFFeszIL860KBJljCLyAkyMM+SAS30U=
+X-Received: by 2002:a17:906:2354:: with SMTP id m20mr7460553eja.341.1600820812915;
+ Tue, 22 Sep 2020 17:26:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200918183114.2571146-1-dlatypov@google.com>
-In-Reply-To: <20200918183114.2571146-1-dlatypov@google.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Tue, 22 Sep 2020 17:24:44 -0700
-Message-ID: <CAGS_qxpt1NLhh=XEKLCNEayTmB4ZhjOY32XjmL1YRPDnYVvYMw@mail.gmail.com>
-Subject: Re: [RFC v1 00/12] kunit: introduce class mocking support.
-To:     Brendan Higgins <brendanhiggins@google.com>,
-        David Gow <davidgow@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Cc:     KUnit Development <kunit-dev@googlegroups.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Stephen Boyd <sboyd@kernel.org>
+References: <159630256804.3143511.8894023468833792004.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <20200803094257.GA23458@shao2-debian> <20200806133452.GA2077191@gmail.com>
+ <CAPcyv4hS7K0Arrd+C0LhjrFH=yGJf3g55_WkHOET4z58AcWrJw@mail.gmail.com> <20200806153500.GC2131635@gmail.com>
+In-Reply-To: <20200806153500.GC2131635@gmail.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 22 Sep 2020 17:26:41 -0700
+Message-ID: <CAPcyv4jk8TRDSJVmN_sAbqkHAQa4gvE2_k4Vrg1aUOikX44yMA@mail.gmail.com>
+Subject: Re: [x86/copy_mc] a0ac629ebe: fio.read_iops -43.3% regression
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     kernel test robot <rong.a.chen@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        X86 ML <x86@kernel.org>, stable <stable@vger.kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Erwin Tsaur <erwin.tsaur@intel.com>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        0day robot <lkp@intel.com>, lkp@lists.01.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 11:31 AM Daniel Latypov <dlatypov@google.com> wrote:
+On Thu, Aug 6, 2020 at 8:35 AM Ingo Molnar <mingo@kernel.org> wrote:
 >
-> # Background
-> KUnit currently lacks any first-class support for mocking.
-> For an overview and discussion on the pros and cons, see
-> https://martinfowler.com/articles/mocksArentStubs.html
 >
-> This patch set introduces the basic machinery needed for mocking:
-> setting and validating expectations, setting default actions, etc.
+> * Dan Williams <dan.j.williams@intel.com> wrote:
 >
-> Using that basic infrastructure, we add macros for "class mocking", as
-> it's probably the easiest type of mocking to start with.
+> > On Thu, Aug 6, 2020 at 6:35 AM Ingo Molnar <mingo@kernel.org> wrote:
+> > >
+> > >
+> > > * kernel test robot <rong.a.chen@intel.com> wrote:
+> > >
+> > > > Greeting,
+> > > >
+> > > > FYI, we noticed a -43.3% regression of fio.read_iops due to commit:
+> > > >
+> > > >
+> > > > commit: a0ac629ebe7b3d248cb93807782a00d9142fdb98 ("x86/copy_mc: Introduce copy_mc_generic()")
+> > > > url: https://github.com/0day-ci/linux/commits/Dan-Williams/Renovate-memcpy_mcsafe-with-copy_mc_to_-user-kernel/20200802-014046
+> > > >
+> > > >
+> > > > in testcase: fio-basic
+> > > > on test machine: 96 threads Intel(R) Xeon(R) Gold 6252 CPU @ 2.10GHz with 256G memory
+> > > > with following parameters:
+> > >
+> > > So this performance regression, if it isn't a spurious result, looks
+> > > concerning. Is this expected?
+> >
+> > This is not expected and I think delays these patches until I'm back
+> > from leave in a few weeks. I know that we might lose some inlining
+> > effect due to replacing native memcpy, but I did not expect it would
+> > have an impact like this. In my testing I was seeing a performance
+> > improvement from replacing the careful / open-coded copy with rep;
+> > mov;, which increases the surprise of this result.
 >
-> ## Class mocking
->
-> By "class mocking", we're referring mocking out function pointers stored
-> in structs like:
->   struct sender {
->         int (*send)(struct sender *sender, int data);
->   };
+> It would be nice to double check this on the kernel-test-robot side as
+> well, to make sure it's not a false positive.
 
-Discussed this offline a bit with Brendan and David.
-The requirement that the first argument is a `sender *` means this
-doesn't work for a few common cases.
+Circling back to this, I found the bug. This incremental patch nearly
+doubles the iops in the case when copy_mc_fragile() is enabled because
+it was turning around and redoing the copy with copy_mc_generic(). So
+this would have been a regression for existing systems that indicate
+that "carefu/fragilel" copying can avoid some PCC=1 machine checks. My
+performance checkout was comparing copy_mc_fragile() and
+copy_mc_generic() in isolation. Refreshed patches inbound.
 
-E.g. ops structs don't usually have funcs that take `XXX_ops *`
-`pci_ops` all take a `struct pci_bus *`, which at least contains a
-`struct pci_ops*`.
-
-Why does this matter?
-We need to stash a  `struct mock` somewhere to store expectations.
-For this version of class mocking (in patch 10), we've assumed we could have
-
-struct MOCK(sender) {
-         struct mock ctrl;
-         struct sender trgt; //&trgt assumed to be the first param
-}
-
-Then we can always use `container_of(sender)` to get the MOCK(sender)
-which holds `ctrl`.
-But if the first parameter isn't a `struct sender*`, this trick
-obviously doesn't work.
-
-So to support something like pci_ops, we'd need another approach to
-stash `ctrl`.
-
-After thinking a bit more, we could perhaps decouple the first param
-from the mocked struct.
-Using pci_ops as the example:
-
-struct MOCK(pci_ops) {
-         struct mock ctrl;
-         struct pci_bus *self; // this is the first param. Using
-python terminology here.
-         struct pci_ops trgt; // continue to store this, as this holds
-the function pointers
-}
-
-// Name of this func is currently based on the class we're mocking
-static inline struct mock *from_pci_ops_to_mock(
-  const struct pci_bus *self)
-{
-          return mock_get_ctrl(container_of(self, struct MOCK(pci_ops), self));
-}
-
-// then in tests, we'd need something like
-struct pci_bus bus;
-bus.ops = mock_get_trgt(mock_ops);
-mock_ops.self = &bus;
-
-
-Do others have thoughts/opinions?
-
-After grepping around for examples, I'm struck by how the number of
-outliers there are.
-E.g. most take a `struct thing *` as the first param, but cfspi_ifc in
-caif_spi.h opts to take that as the last parameter.
-And others take a different mix of structs for each function.
-
-But it feels like a decoupled self / struct-holding-func-pointers
-approach should be generic enough, as far as I can tell.
-The more exotic types will probably have to remain unsupported.
-
->
-> After the necessary DEFINE_* macros, we can then write code like
->   struct MOCK(sender) mock_sender = CONSTRUCT_MOCK(sender, test);
->
->   /* Fake an error for a specific input. */
->   handle = KUNIT_EXPECT_CALL(send(<omitted>, kunit_int_eq(42)));
->   handle->action = kunit_int_return(test, -EINVAL);
->
->   /* Pass the mocked object to some code under test. */
->   KUNIT_EXPECT_EQ(test, -EINVAL, send_message(...));
->
-> I.e. the goal is to make it easier to test
-> 1) with less dependencies (we don't need to setup a real `sender`)
-> 2) unusual/error conditions more easily.
->
-> In the future, we hope to build upon this to support mocking in more
-> contexts, e.g. standalone funcs, etc.
->
-> # TODOs
->
-> ## Naming
-> This introduces a number of new macros for dealing with mocks,
-> e.g:
->   DEFINE_STRUCT_CLASS_MOCK(METHOD(foo), CLASS(example),
->                            RETURNS(int),
->                            PARAMS(struct example *, int));
->   ...
->   KUNIT_EXPECT_CALL(foo(mock_get_ctrl(mock_example), ...);
-> For consistency, we could prefix everything with KUNIT, e.g.
-> `KUNIT_DEFINE_STRUCT_CLASS_MOCK` and `kunit_mock_get_ctrl`, but it feels
-> like the names might be long enough that they would hinder readability.
->
-> ## Usage
-> For now the only use of class mocking is in kunit-example-test.c
-> As part of changing this from an RFC to a real patch set, we're hoping
-> to include at least one example.
->
-> Pointers to bits of code where this would be useful that aren't too
-> hairy would be appreciated.
-> E.g. could easily add a test for tools/perf/ui/progress.h, e.g. that
-> ui_progress__init() calls ui_progress_ops.init(), but that likely isn't
-> useful to anyone.
->
->
-> Brendan Higgins (9):
->   kunit: test: add kunit_stream a std::stream like logger
->   kunit: test: add concept of post conditions
->   checkpatch: add support for struct MOCK(foo) syntax
->   kunit: mock: add parameter list manipulation macros
->   kunit: mock: add internal mock infrastructure
->   kunit: mock: add basic matchers and actions
->   kunit: mock: add class mocking support
->   kunit: mock: add struct param matcher
->   kunit: mock: implement nice, strict and naggy mock distinctions
->
-> Daniel Latypov (2):
->   Revert "kunit: move string-stream.h to lib/kunit"
->   kunit: expose kunit_set_failure() for use by mocking
->
-> Marcelo Schmitt (1):
->   kunit: mock: add macro machinery to pick correct format args
->
->  include/kunit/assert.h                 |   3 +-
->  include/kunit/kunit-stream.h           |  94 +++
->  include/kunit/mock.h                   | 902 +++++++++++++++++++++++++
->  include/kunit/params.h                 | 305 +++++++++
->  {lib => include}/kunit/string-stream.h |   2 +
->  include/kunit/test.h                   |   9 +
->  lib/kunit/Makefile                     |   9 +-
->  lib/kunit/assert.c                     |   2 -
->  lib/kunit/common-mocks.c               | 409 +++++++++++
->  lib/kunit/kunit-example-test.c         |  90 +++
->  lib/kunit/kunit-stream.c               | 110 +++
->  lib/kunit/mock-macro-test.c            | 241 +++++++
->  lib/kunit/mock-test.c                  | 531 +++++++++++++++
->  lib/kunit/mock.c                       | 370 ++++++++++
->  lib/kunit/string-stream-test.c         |   3 +-
->  lib/kunit/string-stream.c              |   5 +-
->  lib/kunit/test.c                       |  15 +-
->  scripts/checkpatch.pl                  |   4 +
->  18 files changed, 3091 insertions(+), 13 deletions(-)
->  create mode 100644 include/kunit/kunit-stream.h
->  create mode 100644 include/kunit/mock.h
->  create mode 100644 include/kunit/params.h
->  rename {lib => include}/kunit/string-stream.h (95%)
->  create mode 100644 lib/kunit/common-mocks.c
->  create mode 100644 lib/kunit/kunit-stream.c
->  create mode 100644 lib/kunit/mock-macro-test.c
->  create mode 100644 lib/kunit/mock-test.c
->  create mode 100644 lib/kunit/mock.c
->
->
-> base-commit: 10b82d5176488acee2820e5a2cf0f2ec5c3488b6
-> --
-> 2.28.0.681.g6f77f65b4e-goog
->
+diff --git a/arch/x86/lib/copy_mc.c b/arch/x86/lib/copy_mc.c
+index 9e6fac1ab72e..afac844c8f45 100644
+--- a/arch/x86/lib/copy_mc.c
++++ b/arch/x86/lib/copy_mc.c
+@@ -58,7 +58,8 @@ copy_mc_to_user(void *to, const void *from, unsigned len)
+        __uaccess_begin();
+        if (static_branch_unlikely(&copy_mc_fragile_key))
+                ret = copy_mc_fragile(to, from, len);
+-       ret = copy_mc_generic(to, from, len);
++       else
++               ret = copy_mc_generic(to, from, len);
+        __uaccess_end();
+        return ret;
+ }
