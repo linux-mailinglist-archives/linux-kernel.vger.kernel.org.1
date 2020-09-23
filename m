@@ -2,259 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73CF2276345
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 23:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19EB727634E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 23:49:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726749AbgIWVl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 17:41:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726134AbgIWVl6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 17:41:58 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B19EC0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 14:41:58 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id nw23so1653447ejb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 14:41:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4h/RkUUdwjIPqFz1gTT0y7JkCLow5mQtN0rQpacgcms=;
-        b=JCni4lxaiZYVrmErS1js3kV9RMqH+yMaUhmxSb2biXg+NxceGuRWwUcjOUYKvuk4EF
-         i7h8djcftPLdWtyW2ZCTbvztQ2QkGV6hyZuyfd+DrsvP0SavOfFcmzLqPgWjao/niJN8
-         xTPjeAdMq/cqzGM7k0A1RxUyzDcgH4Dl0C4KVxc3b7dANp170gJ0fxC5DutOMdDoe+nk
-         wbKwwsTK5gjqSxLEgy64cPvZzJgRmLx6s6uHvM2IFtebLaRY7B8kgLv0WAqOQj+ADboE
-         k/4GYgwXtFFHnQCLp+2XvzJUrtAsOR/+uhlobUfdAfpr9276v1bCYVoP8QbQQyb16alu
-         2x2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4h/RkUUdwjIPqFz1gTT0y7JkCLow5mQtN0rQpacgcms=;
-        b=jWZSCh9t7xlCdZjLSdKF6699goirWdKQoSy6DrY+b0i7AR+6s/OkzdKYBBzSjKt8eJ
-         tUASHl2knfNKR6JQFj1n3SbBiwQRL5p9kuzYT79azMjD9AVgpbfjENu3Cyavdt3MCSiY
-         y+1EqoMMhmi/BT7I+o4g4LnECHaOasvZr9hD9NmNND+SnxxhJQCbAjfgz4MGMmJx9G/S
-         Pv6eMU7/4TWErZ0Q8gJIEnGcsXCFSamg2vNBvkYb+j61QxnMPtwp6MQp/FcOXM2Xw1tL
-         8N6jk/KEy329yLguC1MQiy6P/8vyu/kBFETMONazqHy0deQLZOVx7akq2tWRauu1gs3d
-         wFdQ==
-X-Gm-Message-State: AOAM532r7El0wogFRAQt+BCt/AAbseEUb+227W+8GsUZrVyMJtIP0tYo
-        NhaglTDsbirhNmOudg7teSgp9FKRcqo//04FAy7QlA==
-X-Google-Smtp-Source: ABdhPJwhmaJTy+DwDRpY4gTDZ5tj7/qFfAQYU5pGD1zHam4Ng3Y7EU7X2pGbjv+OHeoNHevly5P95IKLkFku3R9OLDU=
-X-Received: by 2002:a17:906:8289:: with SMTP id h9mr1597984ejx.45.1600897317154;
- Wed, 23 Sep 2020 14:41:57 -0700 (PDT)
+        id S1726638AbgIWVs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 17:48:58 -0400
+Received: from mail-eopbgr80042.outbound.protection.outlook.com ([40.107.8.42]:52241
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726265AbgIWVs5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 17:48:57 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QGk6F4i/efly3mi+H58D6N/jUHAgtp4UXVrgfEVaYMjlqmskqaxusL5ElTr6FKf39hAhedNfdHMok+Tg+LzcP+d8Rf9XxJNKeDplyrsi+TiKIl0QFNvvn7ff2I/4gobJYisTm42Zq4AdCJKw4K/zfCwAPOb92yeLZILyKjh6/RnP7PxvG/XNzXolDTj2UWpsbNYIVdYnh+rucFs+oQfElY+oCKTLEoo+ug5KQXUhcI9yGSbX0JgoownELzvusWQjMn6AmVsLYsemIxbwmBWqeAqIBcEaY83HC6s9viHUOlF4A+j0XvA4wD+fT2f9HtaTtA73DWI5DYwlTh5QuCmGnQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=l7Rf9wJ/u9yicnoJozD3UOOaVlemLcJeWt9zstcZJ5Q=;
+ b=i6KCnCP3yxUvrQzWjEVWUo0l5jd5oMOilTtgw1CmiOFwaQvudox/NLn9fiSm2dNbHBCMa3mC6ep6SqBA0raP8qyXc84Jg3M0CNaExr+ESkyveqQqC5FTB+sQWoEgDCeq600SLP1QLJhs7DiXD08UgPJ1JYBoy6BFyLloO6P+WX69pacgloY2lmbWqn9I7sdgrMUi+ibfGFVmjLEvHVaclTx1Nj8DDHuc7nChm5VxeM6ghAX8mnE/T1VAhxbCezInosj55ncJ6eL8UUiMixfDhKvZoVajwPAgfTs9liirSKutmZClbgxVt0o0cQmb3AVtSllGGImO7DmuYuQtmW/KRA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=l7Rf9wJ/u9yicnoJozD3UOOaVlemLcJeWt9zstcZJ5Q=;
+ b=fPx/SlnVLvng8vPAX0xM/3LQReKfXPnvO+j2cz0wnwOUQVnRwxUrwsQ4R4bH+pUqFW9jvvB29qFpXcfFIOQPs9o3GcPJrzKllnU3SK9hPAW0dPUsKhqJ4KDIzUXrToFcrjqf/Ej6Q42UnynAnEof2px9EppCdC7aAne4aKLENhI=
+Received: from VI1PR04MB5696.eurprd04.prod.outlook.com (2603:10a6:803:e7::13)
+ by VI1PR04MB4815.eurprd04.prod.outlook.com (2603:10a6:803:5d::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.21; Wed, 23 Sep
+ 2020 21:48:54 +0000
+Received: from VI1PR04MB5696.eurprd04.prod.outlook.com
+ ([fe80::983b:73a7:cc93:e63d]) by VI1PR04MB5696.eurprd04.prod.outlook.com
+ ([fe80::983b:73a7:cc93:e63d%3]) with mapi id 15.20.3412.020; Wed, 23 Sep 2020
+ 21:48:53 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "olteanv@gmail.com" <olteanv@gmail.com>,
+        "nikolay@nvidia.com" <nikolay@nvidia.com>
+Subject: Re: [PATCH net-next v3 1/2] net: dsa: untag the bridge pvid from rx
+ skbs
+Thread-Topic: [PATCH net-next v3 1/2] net: dsa: untag the bridge pvid from rx
+ skbs
+Thread-Index: AQHWkfI49n/dW6yWhUaSsyNzEyjVval2wsIA
+Date:   Wed, 23 Sep 2020 21:48:53 +0000
+Message-ID: <20200923214852.x2z5gb6pzaphpfvv@skbuf>
+References: <20200923214038.3671566-1-f.fainelli@gmail.com>
+ <20200923214038.3671566-2-f.fainelli@gmail.com>
+In-Reply-To: <20200923214038.3671566-2-f.fainelli@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [188.25.217.212]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 0e8b2325-394f-4498-4498-08d8600a772d
+x-ms-traffictypediagnostic: VI1PR04MB4815:
+x-microsoft-antispam-prvs: <VI1PR04MB4815C0DA64B7FA48C4B6C7A9E0380@VI1PR04MB4815.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: MnxhTEl25rpGOLu1eDess8kYgq8ZdGjX3nGVF9uGVFQPUGxogyiJqHi9lJ8xED3ScBcuDKZ99A+5CpWlWSmCpnFl73qeMH69FUIxGC06bLnh6tT4vyeo0NYPO1NOmDuibTjaeXG401VVhQsgDtfKjC2XizACUd0rDUurGgxag343u0yrF5uJAioXhQ8P2L6tP9WQlDUD9tO3GsXGDAkra9LlfrrTecLSwpsSEx7sYHl8xkqBQKeSHLCUf8nG3twWrEGre/WdRy7y23g2Bw6iOxbyGXl/goGjGeP50hM5ndLTBYtg/H4rk20egJWq92Dq
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5696.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(346002)(376002)(366004)(39860400002)(136003)(396003)(76116006)(66446008)(64756008)(66556008)(91956017)(66946007)(6916009)(186003)(71200400001)(86362001)(44832011)(2906002)(8936002)(6486002)(5660300002)(33716001)(1076003)(9686003)(66476007)(6512007)(316002)(6506007)(26005)(4326008)(54906003)(8676002)(478600001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: Z40lRxGN7O4Ye3CmCiqGOJ0bnURgC5zeGeHJxYyD6faCMUqPh3br2vkUiQFK4A0ib9/jdUY001PHH1NvRdO62mGfhhcjYVbUExxEfsmu8DKN56RvfwnS83ZdY3altIoykRymvHKyiiDZ1IP9bONCa8nKUu91p0A2iP/1+qAhDb5avyLDGJXqPrpukD63uSxD5f38zWUQQ2MKJMA3f16kgmNewG5xTlBVMW9VbkAFHFBiSLJXUksgyX/6fBKDSw6NJWGJi+/j5S0MCTHQ7LYOVmjyjg4FwPrsLNsaIOwlfG0czPQJcYqP+N3UlYBAHISr02Pb4NeSPnEibrFE62UN52WA/WrTXMFyMlN2BwQ3RtQldROFXdSQ7IrWDcRJu5XdlzCTLmH7HocV8r+uYdVF6XygK/KHhuOGYa7Ybz0shqOto3psnN53S73SfPybGMRNHR9hLBB0aqE4yc26u7StFbAg02UEXTG2e/cwISXFCG1kOiIHHI/T3ZYCfcN1HQQQ5nJnfWODaYYZJgDLDijXl0g6xTxvKEIudmu0BY9WsxPAkrq4EmQsQ6sBTiO3Zak+3MFqizTeqhmQxXRLxNk2scM45V4YDWRQ7khQXPRjs2U3StEjWwMDLY6aDIwlEgPc/oTSXN+3fa4TYbYJ5zf2Ug==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <F2FC9259F1F94540A8635D51D808CAB1@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <159643094279.4062302.17779410714418721328.stgit@dwillia2-desk3.amr.corp.intel.com>
- <159643100485.4062302.976628339798536960.stgit@dwillia2-desk3.amr.corp.intel.com>
- <a3ad70a2-77a8-d50e-f372-731a8e27c03b@redhat.com> <17686fcc-202e-0982-d0de-54d5349cfb5d@oracle.com>
- <9acc6148-72eb-7016-dba9-46fa87ded5a5@redhat.com>
-In-Reply-To: <9acc6148-72eb-7016-dba9-46fa87ded5a5@redhat.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 23 Sep 2020 14:41:45 -0700
-Message-ID: <CAPcyv4h5GGV3F-0rFY_pyv9Bj8LAkrwXruxGE=K2y9=dA8oDHw@mail.gmail.com>
-Subject: Re: [PATCH v4 11/23] device-dax: Kill dax_kmem_res
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Joao Martins <joao.m.martins@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5696.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0e8b2325-394f-4498-4498-08d8600a772d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2020 21:48:53.6890
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ePZ66szs6xzjmiELNOmRPNfaRJ+I2LF7NRcVzkzM+FWRERtQx5k2ox7ukaD0O5DH/aEoO7SXNbjEJgez0O8pgQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4815
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 1:04 AM David Hildenbrand <david@redhat.com> wrote:
->
-> On 08.09.20 17:33, Joao Martins wrote:
-> > [Sorry for the late response]
-> >
-> > On 8/21/20 11:06 AM, David Hildenbrand wrote:
-> >> On 03.08.20 07:03, Dan Williams wrote:
-> >>> @@ -37,109 +45,94 @@ int dev_dax_kmem_probe(struct device *dev)
-> >>>      * could be mixed in a node with faster memory, causing
-> >>>      * unavoidable performance issues.
-> >>>      */
-> >>> -   numa_node = dev_dax->target_node;
-> >>>     if (numa_node < 0) {
-> >>>             dev_warn(dev, "rejecting DAX region with invalid node: %d\n",
-> >>>                             numa_node);
-> >>>             return -EINVAL;
-> >>>     }
-> >>>
-> >>> -   /* Hotplug starting at the beginning of the next block: */
-> >>> -   kmem_start = ALIGN(range->start, memory_block_size_bytes());
-> >>> -
-> >>> -   kmem_size = range_len(range);
-> >>> -   /* Adjust the size down to compensate for moving up kmem_start: */
-> >>> -   kmem_size -= kmem_start - range->start;
-> >>> -   /* Align the size down to cover only complete blocks: */
-> >>> -   kmem_size &= ~(memory_block_size_bytes() - 1);
-> >>> -   kmem_end = kmem_start + kmem_size;
-> >>> -
-> >>> -   new_res_name = kstrdup(dev_name(dev), GFP_KERNEL);
-> >>> -   if (!new_res_name)
-> >>> +   res_name = kstrdup(dev_name(dev), GFP_KERNEL);
-> >>> +   if (!res_name)
-> >>>             return -ENOMEM;
-> >>>
-> >>> -   /* Region is permanently reserved if hotremove fails. */
-> >>> -   new_res = request_mem_region(kmem_start, kmem_size, new_res_name);
-> >>> -   if (!new_res) {
-> >>> -           dev_warn(dev, "could not reserve region [%pa-%pa]\n",
-> >>> -                    &kmem_start, &kmem_end);
-> >>> -           kfree(new_res_name);
-> >>> +   res = request_mem_region(range.start, range_len(&range), res_name);
-> >>
-> >> I think our range could be empty after aligning. I assume
-> >> request_mem_region() would check that, but maybe we could report a
-> >> better error/warning in that case.
-> >>
-> > dax_kmem_range() already returns a memory-block-aligned @range but
-> > IIUC request_mem_region() isn't checking for that. Having said that
-> > the returned @res wouldn't be different from the passed range.start.
-> >
-> >>>     /*
-> >>>      * Ensure that future kexec'd kernels will not treat this as RAM
-> >>>      * automatically.
-> >>>      */
-> >>> -   rc = add_memory_driver_managed(numa_node, new_res->start,
-> >>> -                                  resource_size(new_res), kmem_name);
-> >>> +   rc = add_memory_driver_managed(numa_node, res->start,
-> >>> +                                  resource_size(res), kmem_name);
-> >>> +
-> >>> +   res->flags |= IORESOURCE_BUSY;
-> >>
-> >> Hm, I don't think that's correct. Any specific reason why to mark the
-> >> not-added, unaligned parts BUSY? E.g., walk_system_ram_range() could
-> >> suddenly stumble over it - and e.g., similarly kexec code when trying to
-> >> find memory for placing kexec images. I think we should leave this
-> >> !BUSY, just as it is right now.
-> >>
-> > Agreed.
-> >
-> >>>     if (rc) {
-> >>> -           release_resource(new_res);
-> >>> -           kfree(new_res);
-> >>> -           kfree(new_res_name);
-> >>> +           release_mem_region(range.start, range_len(&range));
-> >>> +           kfree(res_name);
-> >>>             return rc;
-> >>>     }
-> >>> -   dev_dax->dax_kmem_res = new_res;
-> >>> +
-> >>> +   dev_set_drvdata(dev, res_name);
-> >>>
-> >>>     return 0;
-> >>>  }
-> >>>
-> >>>  #ifdef CONFIG_MEMORY_HOTREMOVE
-> >>> -static int dev_dax_kmem_remove(struct device *dev)
-> >>> +static void dax_kmem_release(struct dev_dax *dev_dax)
-> >>>  {
-> >>> -   struct dev_dax *dev_dax = to_dev_dax(dev);
-> >>> -   struct resource *res = dev_dax->dax_kmem_res;
-> >>> -   resource_size_t kmem_start = res->start;
-> >>> -   resource_size_t kmem_size = resource_size(res);
-> >>> -   const char *res_name = res->name;
-> >>>     int rc;
-> >>> +   struct device *dev = &dev_dax->dev;
-> >>> +   const char *res_name = dev_get_drvdata(dev);
-> >>> +   struct range range = dax_kmem_range(dev_dax);
-> >>>
-> >>>     /*
-> >>>      * We have one shot for removing memory, if some memory blocks were not
-> >>>      * offline prior to calling this function remove_memory() will fail, and
-> >>>      * there is no way to hotremove this memory until reboot because device
-> >>> -    * unbind will succeed even if we return failure.
-> >>> +    * unbind will proceed regardless of the remove_memory result.
-> >>>      */
-> >>> -   rc = remove_memory(dev_dax->target_node, kmem_start, kmem_size);
-> >>> -   if (rc) {
-> >>> -           any_hotremove_failed = true;
-> >>> -           dev_err(dev,
-> >>> -                   "DAX region %pR cannot be hotremoved until the next reboot\n",
-> >>> -                   res);
-> >>> -           return rc;
-> >>> +   rc = remove_memory(dev_dax->target_node, range.start, range_len(&range));
-> >>> +   if (rc == 0) {
-> >>
-> >> if (!rc) ?
-> >>
-> > Better off would be to keep the old order:
-> >
-> >       if (rc) {
-> >               any_hotremove_failed = true;
-> >               dev_err(dev, "%#llx-%#llx cannot be hotremoved until the next reboot\n",
-> >                               range.start, range.end);
-> >               return;
-> >       }
-> >
-> >       release_mem_region(range.start, range_len(&range));
-> >       dev_set_drvdata(dev, NULL);
-> >       kfree(res_name);
-> >       return;
-> >
-> >
-> >>> +           release_mem_region(range.start, range_len(&range));
-> >>
-> >> remove_memory() does a release_mem_region_adjustable(). Don't you
-> >> actually want to release the *unaligned* region you requested?
-> >>
-> > Isn't it what we're doing here?
-> > (The release_mem_region_adjustable() is using the same
-> > dax_kmem-aligned range and there's no split/adjust)
-> >
-> > Meaning right now (+ parent marked as !BUSY), and if I am understanding
-> > this correctly:
-> >
-> > request_mem_region(range.start, range_len)
-> >    __request_region(iomem_res, range.start, range_len) -> alloc @parent
-> > add_memory_driver_managed(parent.start, resource_size(parent))
-> >    __request_region(parent.start, resource_size(parent)) -> alloc @child
-> >
-> > [...]
-> >
-> > remove_memory(range.start, range_len)
-> >  request_mem_region_adjustable(range.start, range_len)
-> >   __release_region(range.start, range_len) -> remove @child
-> >
-> > release_mem_region(range.start, range_len)
-> >   __release_region(range.start, range_len) -> doesn't remove @parent because !BUSY?
-> >
-> > The add/removal of this relies on !BUSY. But now I am wondering if the parent remaining
-> > unreleased is deliberate even on CONFIG_MEMORY_HOTREMOVE=y.
-> >
-> >       Joao
-> >
->
-> Thinking about it, if we don't set the parent resource BUSY (which is
-> what I think is the right way of doing things), and don't want to store
-> the parent resource pointer, we could add something like
-> lookup_resource() - e.g., lookup_mem_resource() - , however, searching
-> properly in the whole hierarchy (instead of only the first level), and
-> traversing down to the last hierarchy. Then it would be as simple as
->
-> remove_memory(range.start, range_len)
-> res = lookup_mem_resource(range.start);
-> release_resource(res);
+On Wed, Sep 23, 2020 at 02:40:37PM -0700, Florian Fainelli wrote:
+> From: Vladimir Oltean <vladimir.oltean@nxp.com>
+> +	/* The sad part about attempting to untag from DSA is that we
+> +	 * don't know, unless we check, if the skb will end up in
+> +	 * the bridge's data path - br_allowed_ingress() - or not.
+> +	 * For example, there might be an 8021q upper for the
+> +	 * default_pvid of the bridge, which will steal VLAN-tagged traffic
+> +	 * from the bridge's data path. This is a configuration that DSA
+> +	 * supports because vlan_filtering is 0. In that case, we should
+> +	 * definitely keep the tag, to make sure it keeps working.
+> +	 */
+> +	netdev_for_each_upper_dev_rcu(dev, upper_dev, iter) {
+> +		if (!is_vlan_dev(upper_dev))
+> +			continue;
+> +
+> +		if (vid =3D=3D vlan_dev_vlan_id(upper_dev))
+> +			return skb;
+> +	}
 
-Another thought... I notice that you've taught
-register_memory_resource() a IORESOURCE_MEM_DRIVER_MANAGED special
-case. Lets just make the assumption of add_memory_driver_managed()
-that it is the driver's responsibility to mark the range busy before
-calling, and the driver's responsibility to release the region. I.e.
-validate (rather than request) that the range is busy in
-register_memory_resource(), and teach release_memory_resource() to
-skip releasing the region when the memory is marked driver managed.
-That would let dax_kmem drop its manipulation of the 'busy' flag which
-is a layering violation no matter how many comments we put around it.
+Argh...
+So I wanted to ask you how's performance with a few 8021q uppers, then I
+remembered that vlan_do_receive() probably does something more efficient
+here than a complete lookup, like hashing or something, then I found the
+vlan_find_dev() helper function.... Sorry for not noticing it in the
+first place.=
