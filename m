@@ -2,104 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D25F275184
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 08:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBFFA275196
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 08:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726686AbgIWGcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 02:32:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36674 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726179AbgIWGcz (ORCPT
+        id S1726827AbgIWGef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 02:34:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726179AbgIWGed (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 02:32:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600842774;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KNYXvNzELYq54wu7W3RCN3nmnlEFmyGx388a6Bc/HMA=;
-        b=ZCQbjFVvQLI5Rjr75v+L+cJbGMNprnFc6Kmv9o9n1NYwxPe+Kp39tuXEJCp1cRJFiCR4jf
-        6Bm6gPmhnzXH5j7fvYhk8cOzDCugTSyjAaHchLJlMlCwUXYTMPeUUG+gm7UTUFdJ4iMzYU
-        vQbBr1hk2qSyIu+S4DowishcqvaZtMg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-447-OsAsDADyNyWgWEaMZInWBA-1; Wed, 23 Sep 2020 02:32:49 -0400
-X-MC-Unique: OsAsDADyNyWgWEaMZInWBA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BD408807100;
-        Wed, 23 Sep 2020 06:32:47 +0000 (UTC)
-Received: from [10.36.112.29] (ovpn-112-29.ams2.redhat.com [10.36.112.29])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4694B78822;
-        Wed, 23 Sep 2020 06:32:45 +0000 (UTC)
-Subject: Re: [PATCH v2] iommu/arm: Add module parameter to set msi iova
- address
-To:     Will Deacon <will@kernel.org>,
-        Vennila Megavannan <vemegava@linux.microsoft.com>
-Cc:     jean-philippe@linaro.org, joro@8bytes.org,
-        linux-kernel@vger.kernel.org, shameerali.kolothum.thodi@huawei.com,
-        iommu@lists.linux-foundation.org, tyhicks@linux.microsoft.com,
-        srinath.mannam@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
-        robin.murphy@arm.com, linux-arm-kernel@lists.infradead.org
-References: <20200914181307.117792-1-vemegava@linux.microsoft.com>
- <20200921204545.GA3811@willie-the-truck>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <85f7d1ae-71a9-4e95-8a30-03cc699d4794@redhat.com>
-Date:   Wed, 23 Sep 2020 08:32:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Wed, 23 Sep 2020 02:34:33 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2E64C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 23:34:32 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id lo4so26134407ejb.8
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 23:34:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MJXfV81t/sXYl4JgftuDRtEbB8599Smh1I+VQSzWSeE=;
+        b=Qt4u0jAOa3Xtg8NwEC6733GHoTotQMbK+cv3/dl/9k9bmkFORy7UNm2RRRuEt3fUDp
+         mpEQo7f9MlB3ipYPGQCtiEFuRB5Z100GHmmKLQxZH5b78903jGBatxea2H81tGXJ/2JQ
+         lsag7Ig3ErS1ZZMLOiM0dVIERN6W+X3mn3tvo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MJXfV81t/sXYl4JgftuDRtEbB8599Smh1I+VQSzWSeE=;
+        b=oAr+Pt/xWb6iWS4mMZSKIp1MaVhyuT6pvzN+9P8O0tbxfc4d4ZcggHMewwfdf7T1s0
+         b9cQ/6ED7oz4Vr3VtHPqlak2LhqntPtEuIIdbwU0l4u2EfoDPl5KH5Im/1p7pNxGx9MW
+         VPIjkD2Zg5+Xjf4Q6bqv+IiH5PpdcIJLbNzwMFYR5M9XSPbpS0tTWloWcZQT7RnsakEJ
+         er1DEy9dDpl9O985O4hBGwfidywYlStPS/8vaAKzy01V64N6+aGhGfrEZ47ZAVqQJXdY
+         l33KBGoeirVvyu8IQc/PnQ5rmyxVQUvvCGOttG6lOoN2fbH9GdTovRJ0cTDSKGJxQpgh
+         v5Jw==
+X-Gm-Message-State: AOAM531poTsl+8lpLu4GLuYzjOfqn0VJ5uCus9djWSApbUSdZh6XNpZ1
+        EokzoeNQ5cNwqW+yO0Wmipqtx2iv1WNeU6U0zEa7FA==
+X-Google-Smtp-Source: ABdhPJxVp0i9LV/h1/bBJ7dAOqBc+Foo/bYGPSvrZYzkvDkdDb8Y/5tW5bGvpIFjzyKvdVgsVvpISbgglQCSu2pQ6Yg=
+X-Received: by 2002:a17:906:4c81:: with SMTP id q1mr8550168eju.72.1600842871347;
+ Tue, 22 Sep 2020 23:34:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200921204545.GA3811@willie-the-truck>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <20200904021029.365700-1-allen.chen@ite.com.tw>
+In-Reply-To: <20200904021029.365700-1-allen.chen@ite.com.tw>
+From:   Pi-Hsun Shih <pihsun@chromium.org>
+Date:   Wed, 23 Sep 2020 14:33:55 +0800
+Message-ID: <CANdKZ0erkp_S-K_QpH-9dvEDR9THypLxTT3s+0aZQUaNDoZM-w@mail.gmail.com>
+Subject: Re: [PATCH v3] drm/bridge: add it6505 driver
+To:     allen <allen.chen@ite.com.tw>
+Cc:     Kenneth Hung <Kenneth.Hung@ite.com.tw>,
+        Jau-Chih Tseng <Jau-Chih.Tseng@ite.com.tw>,
+        Hermes Wu <Hermes.Wu@ite.com.tw>,
+        Jitao Shi <jitao.shi@mediatek.com>,
+        Yilun Lin <yllin@google.com>,
+        kernel test robot <lkp@intel.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will,
+On Fri, Sep 4, 2020 at 10:17 AM allen <allen.chen@ite.com.tw> wrote:
+>
+> This adds support for the iTE IT6505.
+> This device can convert DPI signal to DP output.
+>
+> From: Allen Chen <allen.chen@ite.com.tw>
+> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
+> Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
+> Signed-off-by: Yilun Lin <yllin@google.com>
+> Signed-off-by: Hermes Wu <hermes.wu@ite.com.tw>
+> Signed-off-by: Allen Chen <allen.chen@ite.com.tw>
+> Reported-by: kernel test robot <lkp@intel.com>
+> ---
+>  drivers/gpu/drm/bridge/Kconfig      |    7 +
+>  drivers/gpu/drm/bridge/Makefile     |    1 +
+>  drivers/gpu/drm/bridge/ite-it6505.c | 3338 +++++++++++++++++++++++++++
+>  3 files changed, 3346 insertions(+)
+>  create mode 100644 drivers/gpu/drm/bridge/ite-it6505.c
+>
+> diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
+> index 3e11af4e9f63e..f21dce3fabeb9 100644
+> --- a/drivers/gpu/drm/bridge/Kconfig
+> +++ b/drivers/gpu/drm/bridge/Kconfig
+> @@ -61,6 +61,13 @@ config DRM_LONTIUM_LT9611
+>           HDMI signals
+>           Please say Y if you have such hardware.
+>
+> +config DRM_ITE_IT6505
+> +       tristate "ITE IT6505 DisplayPort bridge"
+> +       depends on OF
+> +       select DRM_KMS_HELPER
+> +       help
+> +         ITE IT6505 DisplayPort bridge chip driver.
+> +
+>  config DRM_LVDS_CODEC
+>         tristate "Transparent LVDS encoders and decoders support"
+>         depends on OF
+> diff --git a/drivers/gpu/drm/bridge/Makefile b/drivers/gpu/drm/bridge/Makefile
+> index c589a6a7cbe1d..8a118fd901ad7 100644
+> --- a/drivers/gpu/drm/bridge/Makefile
+> +++ b/drivers/gpu/drm/bridge/Makefile
+> @@ -3,6 +3,7 @@ obj-$(CONFIG_DRM_CDNS_DSI) += cdns-dsi.o
+>  obj-$(CONFIG_DRM_CHRONTEL_CH7033) += chrontel-ch7033.o
+>  obj-$(CONFIG_DRM_DISPLAY_CONNECTOR) += display-connector.o
+>  obj-$(CONFIG_DRM_LONTIUM_LT9611) += lontium-lt9611.o
+> +obj-$(CONFIG_DRM_ITE_IT6505) += ite-it6505.o
+>  obj-$(CONFIG_DRM_LVDS_CODEC) += lvds-codec.o
+>  obj-$(CONFIG_DRM_MEGACHIPS_STDPXXXX_GE_B850V3_FW) += megachips-stdpxxxx-ge-b850v3-fw.o
+>  obj-$(CONFIG_DRM_NXP_PTN3460) += nxp-ptn3460.o
+> diff --git a/drivers/gpu/drm/bridge/ite-it6505.c b/drivers/gpu/drm/bridge/ite-it6505.c
+> new file mode 100644
+> index 0000000000000..0ed19673431ee
+> --- /dev/null
+> +++ b/drivers/gpu/drm/bridge/ite-it6505.c
+> ...
+> +
+> +static void __maybe_unused it6505_delayed_audio(struct work_struct *work)
+> +{
+> +       struct it6505 *it6505 = container_of(work, struct it6505,
+> +                                            delayed_audio.work);
+> +
+> +       DRM_DEV_DEBUG_DRIVER(&it6505->client->dev, "start");
+> +
+> +       if (!it6505->powered)
+> +               return;
+> +
+> +       if (!it6505->enable_drv_hold)
+> +               it6505_enable_audio(it6505);
+> +}
+> +
+> +static int __maybe_unused it6505_audio_setup_hw_params(struct it6505 *it6505,
+> +                                       struct hdmi_codec_params *params)
+> +{
+> +       struct device *dev = &it6505->client->dev;
+> +       int i = 0;
+> +
+> +       DRM_DEV_DEBUG_DRIVER(dev, "%s %d Hz, %d bit, %d channels\n", __func__,
+> +                            params->sample_rate, params->sample_width,
+> +                            params->cea.channels);
+> +
+> +       if (!it6505->bridge.encoder)
+> +               return -ENODEV;
+> +
+> +       if (params->cea.channels <= 1 || params->cea.channels > 8) {
+> +               DRM_DEV_DEBUG_DRIVER(dev, "channel number: %d not support",
+> +                                    it6505->audio.channel_count);
+> +               return -EINVAL;
+> +       }
+> +
+> +       it6505->audio.channel_count = params->cea.channels;
+> +
+> +       while (i < ARRAY_SIZE(audio_sample_rate_map) &&
+> +              params->sample_rate !=
+> +                      audio_sample_rate_map[i].sample_rate_value) {
+> +               i++;
+> +       }
+> +       if (i == ARRAY_SIZE(audio_sample_rate_map)) {
+> +               DRM_DEV_DEBUG_DRIVER(dev, "sample rate: %d Hz not support",
+> +                                    params->sample_rate);
+> +               return -EINVAL;
+> +       }
+> +       it6505->audio.sample_rate = audio_sample_rate_map[i].rate;
+> +
+> +       switch (params->sample_width) {
+> +       case 16:
+> +               it6505->audio.word_length = WORD_LENGTH_16BIT;
+> +               break;
+> +       case 18:
+> +               it6505->audio.word_length = WORD_LENGTH_18BIT;
+> +               break;
+> +       case 20:
+> +               it6505->audio.word_length = WORD_LENGTH_20BIT;
+> +               break;
+> +       case 24:
+> +       case 32:
+> +               it6505->audio.word_length = WORD_LENGTH_24BIT;
+> +               break;
+> +       default:
+> +               DRM_DEV_DEBUG_DRIVER(dev, "wordlength: %d bit not support",
+> +                                    params->sample_width);
+> +               return -EINVAL;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static void __maybe_unused it6505_audio_shutdown(struct device *dev, void *data)
+> +{
+> +       struct it6505 *it6505 = dev_get_drvdata(dev);
+> +
+> +       if (it6505->powered)
+> +               it6505_disable_audio(it6505);
+> +}
+> +
+> +static int __maybe_unused it6505_audio_hook_plugged_cb(struct device *dev,
+> +                                                      void *data,
+> +                                                      hdmi_codec_plugged_cb fn,
+> +                                                      struct device *codec_dev)
+> +{
+> +       struct it6505 *it6505 = data;
+> +
+> +       it6505->plugged_cb = fn;
+> +       it6505->codec_dev = codec_dev;
+> +       it6505_plugged_status_to_codec(it6505);
+> +
+> +       return 0;
+> +}
 
-On 9/21/20 10:45 PM, Will Deacon wrote:
-> On Mon, Sep 14, 2020 at 11:13:07AM -0700, Vennila Megavannan wrote:
->> From: Srinath Mannam <srinath.mannam@broadcom.com>
->>
->> Add provision to change default value of MSI IOVA base to platform's
->> suitable IOVA using module parameter. The present hardcoded MSI IOVA base
->> may not be the accessible IOVA ranges of platform.
->>
->> If any platform has the limitaion to access default MSI IOVA, then it can
->> be changed using "arm-smmu.msi_iova_base=0xa0000000" command line argument.
->>
->> Signed-off-by: Srinath Mannam <srinath.mannam@broadcom.com>
->> Co-developed-by: Vennila Megavannan <vemegava@linux.microsoft.com>
->> Signed-off-by: Vennila Megavannan <vemegava@linux.microsoft.com>
->> ---
->>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 5 ++++-
->>  drivers/iommu/arm/arm-smmu/arm-smmu.c       | 5 ++++-
->>  2 files changed, 8 insertions(+), 2 deletions(-)
-> 
-> This feels pretty fragile. Wouldn't it be better to realise that there's
-> a region conflict with iommu_dma_get_resv_regions() and move the MSI window
-> accordingly at runtime?
+These four functions about audio seem to be unused. Move them (and
+other audio related changes) into another patch.
 
-Since cd2c9fcf5c66 ("iommu/dma: Move PCI window region reservation back
-into dma specific path"), the PCI host bridge windows are not exposed by
-iommu_dma_get_resv_regions() anymore. If I understood correctly, what is
-attempted here is to avoid the collision between such PCI host bridge
-window and the MSI IOVA range.
-
-Thanks
-
-Eric
-> 
-> Will
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
-
+> +
+> ...
+> 2.25.1
+>
