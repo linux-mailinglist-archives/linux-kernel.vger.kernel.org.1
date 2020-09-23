@@ -2,201 +2,351 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FEE6275836
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 14:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FAA927583F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 14:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726665AbgIWMsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 08:48:17 -0400
-Received: from mail-io1-f79.google.com ([209.85.166.79]:42610 "EHLO
-        mail-io1-f79.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726557AbgIWMsQ (ORCPT
+        id S1726600AbgIWMwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 08:52:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726513AbgIWMwj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 08:48:16 -0400
-Received: by mail-io1-f79.google.com with SMTP id w3so15246083iou.9
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 05:48:15 -0700 (PDT)
+        Wed, 23 Sep 2020 08:52:39 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D596C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 05:52:39 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id a2so18801078otr.11
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 05:52:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:reply-to:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=31e/9hnjGjBaSvfSzNB5mOVLnVWAb9RUd/BaxDGfT4A=;
+        b=GuzQy8gx7X7/aMG7eKdOZ5pwehmrMc1CRrR17t6PRaddpPd4AlqfMLE65PiQRFzJ65
+         o2gsOF60wTXCyIOunmfujQXGdMa90OeDcem0LhMBXBFJLDUSJ3Fa45ocfp2gwgMYib4o
+         YC5oLTPAF0arnm8fUZ8jaJltuwAdlqlyigTB841FtCVBHk2O1c/fLAjh0YcEShRDfMIn
+         sQvlbLHVBy+Yf8r1irsgknqLSzZ7RwR52BSztciZTa+eINd91bizh4sr/69rmTpoaYSg
+         mS18P3Qg2FYCtQDFbW14pchoxOxso+9VnuekHa3kmvd4BuxqDDzDOLBvCxZs/Ryj0jUR
+         UY5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=9amvSa+VcDc4r++Yk6yADA7yaRZOWiehjYanwAasRAA=;
-        b=AqsLHc+5NUyWt1Wm6LR4cAvOco0z5pe72OxFk06upX6lRrazNJQ9AsnvHd90ZQedK+
-         RzKFuo0JV95BEuQ+6S8ccJ/OqPkhjkMric5GtayWrXga92bVl65+Wn5eE0dVQ/IflSxQ
-         MlBpXQvR3J+LXKczTurtM+1eI8itTjgxR6HtfqDuWCHVgR30Nfq//EzV7nJdrqBNEvha
-         6rxiKyhC612Tn7bOoI8nt6baez0+19i9qL0jwgaeku9ARo1RAZsma3iR7nxBdpHdLhQz
-         2LwscreobrNJYMjH4tb5hR+nMF9o9ogy2ozsFGTWGQZbDB3jbzH1OMrW0FFc/FGSCHYW
-         6v1Q==
-X-Gm-Message-State: AOAM533GHtrH4+Eu2/c5Fwk2bZS486EnaDoWZNG250ifHLVm0A8CymdF
-        gs35q38c2G1yuwWH9W/1eEC8O92vvZ/dZAf1g0WXvWwatcQ9
-X-Google-Smtp-Source: ABdhPJw5gA+YlKULybj+s9D+XDakwy7FaflxmkySVHNr+TJXS+EHmV74AGCbL+EXgKZoc9Jp47/RhS77ildXDLy+xqZEJjHwx3ha
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :reply-to:references:mime-version:content-disposition:in-reply-to
+         :user-agent;
+        bh=31e/9hnjGjBaSvfSzNB5mOVLnVWAb9RUd/BaxDGfT4A=;
+        b=EwunccfpG6n2cAW/5kV17UbdL8XcWpF3lZeG8YMLAqp12C/V1ir45FvPgOhb6pw2Gn
+         UpfgJr0GDKpVPdRf2dE0SUHPtp5p3pQBEN/esRafHYekL++cqyat/w8F6aj0NsbNJwJ6
+         o0mjimazpsMP3WF3cCJPkhcszgWt8dzylCoowmCltp0HxJcixE9J3c/uiOLAVLVsyChx
+         YNNRUtkmC+gpVvg7z1+OC0wnnf9Nf1SAZ8sQWudMkLQ9WtbtfILZqpSmocsrMwsyLvdB
+         qzY486Pm9hUP97vRTMcLgSDxbEwdxOHjP2e57kyEiFEJmNN0+1B3nsMviZPiVxPfhW3d
+         jzzg==
+X-Gm-Message-State: AOAM5308PDUbMenx5ghXSIOazlCqOCWilKkNtmnuHvsa3clyJNLbRPYD
+        H6nrwpNCuzhiiznL96K42w==
+X-Google-Smtp-Source: ABdhPJw3Hctr5mIKcQTNl9GNloqwfp/z9+4P/frBZE47RURn1QspopM9HgN8KvDTd2HH59Sfo/CE7Q==
+X-Received: by 2002:a9d:7b48:: with SMTP id f8mr6085167oto.297.1600865558751;
+        Wed, 23 Sep 2020 05:52:38 -0700 (PDT)
+Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
+        by smtp.gmail.com with ESMTPSA id k51sm7607386otc.46.2020.09.23.05.52.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2020 05:52:37 -0700 (PDT)
+Sender: Corey Minyard <tcminyard@gmail.com>
+Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:bda8:cea9:424f:cdc4])
+        by serve.minyard.net (Postfix) with ESMTPSA id A7332182239;
+        Wed, 23 Sep 2020 12:52:36 +0000 (UTC)
+Date:   Wed, 23 Sep 2020 07:52:35 -0500
+From:   Corey Minyard <minyard@acm.org>
+To:     Wu Bo <wubo40@huawei.com>
+Cc:     Corey Minyard <cminyard@mvista.com>, arnd@arndb.de,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linfeilong@huawei.com, hidehiro.kawai.ez@hitachi.com,
+        openipmi-developer@lists.sourceforge.net, liuzhiqiang26@huawei.com
+Subject: Re: [Openipmi-developer] [PATCH] x86: Fix MCE error handing when
+ kdump is enabled
+Message-ID: <20200923125235.GW3674@minyard.net>
+Reply-To: minyard@acm.org
+References: <20200922161311.GQ3674@minyard.net>
+ <20200922182940.31843-1-minyard@acm.org>
+ <20200922184332.GT3674@minyard.net>
+ <29448f27-12f7-82a1-7483-80471c36d48c@huawei.com>
 MIME-Version: 1.0
-X-Received: by 2002:a02:76d5:: with SMTP id z204mr7801821jab.93.1600865295462;
- Wed, 23 Sep 2020 05:48:15 -0700 (PDT)
-Date:   Wed, 23 Sep 2020 05:48:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000044f9f005affa7fb1@google.com>
-Subject: INFO: task can't die in request_wait_answer
-From:   syzbot <syzbot+ea48ca29949b1820e745@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        miklos@szeredi.hu, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <29448f27-12f7-82a1-7483-80471c36d48c@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Sep 23, 2020 at 04:48:31PM +0800, Wu Bo wrote:
+> On 2020/9/23 2:43, Corey Minyard wrote:
+> > On Tue, Sep 22, 2020 at 01:29:40PM -0500, minyard@acm.org wrote:
+> > > From: Corey Minyard <cminyard@mvista.com>
+> > > 
+> > > If kdump is enabled, the handling of shooting down CPUs does not use the
+> > > RESET_VECTOR irq before trying to use NMIs to shoot down the CPUs.
+> > > 
+> > > For normal errors that is fine.  MCEs, however, are already running in
+> > > an NMI, so sending them an NMI won't do anything.  The MCE code is set
+> > > up to receive the RESET_VECTOR because it disables CPUs, but it won't
+> >                                              ^ should be "enables irqs"
+> > > work on the NMI-only case.
+> > > 
+> > > There is already code in place to scan for the NMI callback being ready,
+> > > simply call that from the MCE's wait_for_panic() code so it will pick up
+> > > and handle it if an NMI shootdown is requested.  This required
+> > > propagating the registers down to wait_for_panic().
+> > > 
+> > > Signed-off-by: Corey Minyard <cminyard@mvista.com>
+> > > ---
+> > > After looking at it a bit, I think this is the proper way to fix the
+> > > issue, though I'm not an expert on this code so I'm not sure.
+> > > 
+> > > I have not even tested this patch, I have only compiled it.  But from
+> > > what I can tell, things waiting in NMIs for a shootdown should call
+> > > run_crash_ipi_callback() in their wait loop.
+> 
+> Hi,
+> 
+> In my VM (using qemu-kvm), Kump is enabled, used mce-inject injects an
+> uncorrectable error. I has an issue with the IPMI driver's panic handling
+> running while the other CPUs are sitting in "wait_for_panic()" with
+> interrupt on, and IPMI interrupts interfering with the panic handling, As a
+> result, IPMI panic hangs for more than 3000 seconds.
+> 
+> After I has patched and tested this patch, the problem of IPMI hangs has
+> disappeared. It should be a solution to the problem.
 
-syzbot found the following issue on:
+Thanks for testing this.  I have submitted the patch to the MCE
+maintainers.
 
-HEAD commit:    dcf2427b Add linux-next specific files for 20200923
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=111346c5900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=254e028a642027c
-dashboard link: https://syzkaller.appspot.com/bug?extid=ea48ca29949b1820e745
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+-corey
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ea48ca29949b1820e745@syzkaller.appspotmail.com
-
-INFO: task syz-executor.3:19649 can't die for more than 143 seconds.
-task:syz-executor.3  state:D stack:27488 pid:19649 ppid:  6909 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:3777 [inline]
- __schedule+0xec5/0x2200 kernel/sched/core.c:4526
- schedule+0xcf/0x270 kernel/sched/core.c:4604
- request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
- __fuse_request_send fs/fuse/dev.c:421 [inline]
- fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
- fuse_lookup_name+0x258/0x5c0 fs/fuse/dir.c:352
- fuse_lookup+0xdf/0x390 fs/fuse/dir.c:390
- fuse_atomic_open+0x210/0x340 fs/fuse/dir.c:533
- atomic_open fs/namei.c:2970 [inline]
- lookup_open.isra.0+0xc09/0x1350 fs/namei.c:3076
- open_last_lookups fs/namei.c:3178 [inline]
- path_openat+0x96d/0x2730 fs/namei.c:3366
- do_filp_open+0x17e/0x3c0 fs/namei.c:3396
- do_sys_openat2+0x16d/0x420 fs/open.c:1168
- do_sys_open fs/open.c:1184 [inline]
- __do_sys_openat fs/open.c:1200 [inline]
- __se_sys_openat fs/open.c:1195 [inline]
- __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45e179
-Code: Bad RIP value.
-RSP: 002b:00007fe86377ac78 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
-RAX: ffffffffffffffda RBX: 0000000000021e00 RCX: 000000000045e179
-RDX: 0000000000000000 RSI: 0000000020002040 RDI: ffffffffffffff9c
-RBP: 000000000118cf88 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118cf4c
-R13: 00007ffe2255861f R14: 00007fe86377b9c0 R15: 000000000118cf4c
-INFO: task syz-executor.3:19649 blocked for more than 143 seconds.
-      Not tainted 5.9.0-rc6-next-20200923-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.3  state:D stack:27488 pid:19649 ppid:  6909 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:3777 [inline]
- __schedule+0xec5/0x2200 kernel/sched/core.c:4526
- schedule+0xcf/0x270 kernel/sched/core.c:4604
- request_wait_answer+0x505/0x7f0 fs/fuse/dev.c:402
- __fuse_request_send fs/fuse/dev.c:421 [inline]
- fuse_simple_request+0x526/0xc10 fs/fuse/dev.c:503
- fuse_lookup_name+0x258/0x5c0 fs/fuse/dir.c:352
- fuse_lookup+0xdf/0x390 fs/fuse/dir.c:390
- fuse_atomic_open+0x210/0x340 fs/fuse/dir.c:533
- atomic_open fs/namei.c:2970 [inline]
- lookup_open.isra.0+0xc09/0x1350 fs/namei.c:3076
- open_last_lookups fs/namei.c:3178 [inline]
- path_openat+0x96d/0x2730 fs/namei.c:3366
- do_filp_open+0x17e/0x3c0 fs/namei.c:3396
- do_sys_openat2+0x16d/0x420 fs/open.c:1168
- do_sys_open fs/open.c:1184 [inline]
- __do_sys_openat fs/open.c:1200 [inline]
- __se_sys_openat fs/open.c:1195 [inline]
- __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45e179
-Code: Bad RIP value.
-RSP: 002b:00007fe86377ac78 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
-RAX: ffffffffffffffda RBX: 0000000000021e00 RCX: 000000000045e179
-RDX: 0000000000000000 RSI: 0000000020002040 RDI: ffffffffffffff9c
-RBP: 000000000118cf88 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118cf4c
-R13: 00007ffe2255861f R14: 00007fe86377b9c0 R15: 000000000118cf4c
-
-Showing all locks held in the system:
-4 locks held by kworker/u4:6/255:
- #0: ffff8880ae536098 (&rq->lock){-.-.}-{2:2}, at: rq_lock kernel/sched/sched.h:1292 [inline]
- #0: ffff8880ae536098 (&rq->lock){-.-.}-{2:2}, at: __schedule+0x284/0x2200 kernel/sched/core.c:4444
- #1: ffff8880ae520ec8 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_switch+0x305/0x440 kernel/sched/psi.c:833
- #2: ffff8880ae525698 (&base->lock){-.-.}-{2:2}, at: lock_timer_base+0x5a/0x1f0 kernel/time/timer.c:947
- #3: ffffffff8dd778e0 (&obj_hash[i].lock){-.-.}-{2:2}, at: debug_object_activate+0x12e/0x3e0 lib/debugobjects.c:636
-1 lock held by khungtaskd/1176:
- #0: ffffffff8a553d40 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6221
-2 locks held by syz-executor.3/19649:
- #0: ffff8880552bc850 (&type->i_mutex_dir_key#8){++++}-{3:3}, at: inode_lock_shared include/linux/fs.h:792 [inline]
- #0: ffff8880552bc850 (&type->i_mutex_dir_key#8){++++}-{3:3}, at: open_last_lookups fs/namei.c:3177 [inline]
- #0: ffff8880552bc850 (&type->i_mutex_dir_key#8){++++}-{3:3}, at: path_openat+0x14a3/0x2730 fs/namei.c:3366
- #1: ffff8880552bcc28 (&fi->mutex){+.+.}-{3:3}, at: fuse_lock_inode+0xaf/0xe0 fs/fuse/inode.c:375
-
-=============================================
-
-NMI backtrace for cpu 0
-CPU: 0 PID: 1176 Comm: khungtaskd Not tainted 5.9.0-rc6-next-20200923-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fb lib/dump_stack.c:118
- nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
- nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:147 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:253 [inline]
- watchdog+0xd89/0xf30 kernel/hung_task.c:339
- kthread+0x3af/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 PID: 6674 Comm: rs:main Q:Reg Not tainted 5.9.0-rc6-next-20200923-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:find_held_lock+0xec/0x110 kernel/locking/lockdep.c:4922
-Code: 00 fc ff df 4c 89 f2 48 c1 ea 03 0f b6 14 02 4c 89 f0 83 e0 07 83 c0 03 38 d0 7c 04 84 d2 75 11 5b 45 89 3e 4c 89 e0 5d 41 5c <41> 5d 41 5e 41 5f c3 4c 89 f7 e8 75 95 5c 00 eb e5 e8 de 94 5c 00
-RSP: 0018:ffffc9000a517d60 EFLAGS: 00000097
-RAX: ffff888093356af8 RBX: 1ffff920014a2fb2 RCX: ffffc9000a517dd0
-RDX: 0000000000000004 RSI: ffff888214090460 RDI: ffff888093356af8
-RBP: ffff888214090460 R08: 0000000000000001 R09: ffff888093356ac8
-R10: fffffbfff1769349 R11: 0000000000000000 R12: ffffffff81c19c45
-R13: ffff888214090460 R14: ffffc9000a517dd0 R15: 0000000000000001
-FS:  00007ff45700c700(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f0f4c7c4018 CR3: 00000000a44c7000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __lock_release kernel/locking/lockdep.c:5083 [inline]
- lock_release+0x247/0x890 kernel/locking/lockdep.c:5418
- percpu_up_read include/linux/percpu-rwsem.h:99 [inline]
- __sb_end_write+0x2d/0x1b0 fs/super.c:1638
- file_end_write include/linux/fs.h:2782 [inline]
- vfs_write+0x375/0x700 fs/read_write.c:603
- ksys_write+0x12d/0x250 fs/read_write.c:648
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x7ff459a501cd
-Code: c2 20 00 00 75 10 b8 01 00 00 00 0f 05 48 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 ae fc ff ff 48 89 04 24 b8 01 00 00 00 0f 05 <48> 8b 3c 24 48 89 c2 e8 f7 fc ff ff 48 89 d0 48 83 c4 08 48 3d 01
-RSP: 002b:00007ff45700b590 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007ff44c023900 RCX: 00007ff459a501cd
-RDX: 0000000000000525 RSI: 00007ff44c023900 RDI: 0000000000000006
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000293 R12: 00007ff44c023680
-R13: 00007ff45700b5b0 R14: 0000556d485ab360 R15: 0000000000000525
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
+> 
+> Thanks,
+> 
+> Wu Bo
+> 
+> > > 
+> > >   arch/x86/kernel/cpu/mce/core.c | 67 ++++++++++++++++++++++------------
+> > >   1 file changed, 44 insertions(+), 23 deletions(-)
+> > > 
+> > > diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+> > > index f43a78bde670..3a842b3773b3 100644
+> > > --- a/arch/x86/kernel/cpu/mce/core.c
+> > > +++ b/arch/x86/kernel/cpu/mce/core.c
+> > > @@ -282,20 +282,35 @@ static int fake_panic;
+> > >   static atomic_t mce_fake_panicked;
+> > >   /* Panic in progress. Enable interrupts and wait for final IPI */
+> > > -static void wait_for_panic(void)
+> > > +static void wait_for_panic(struct pt_regs *regs)
+> > >   {
+> > >   	long timeout = PANIC_TIMEOUT*USEC_PER_SEC;
+> > >   	preempt_disable();
+> > >   	local_irq_enable();
+> > > -	while (timeout-- > 0)
+> > > +	while (timeout-- > 0) {
+> > > +		/*
+> > > +		 * We are in an NMI waiting to be stopped by the
+> > > +		 * handing processor.  For kdump handling, we need to
+> > > +		 * be monitoring crash_ipi_issued since that is what
+> > > +		 * is used for an NMI stop used by kdump.  But we also
+> > > +		 * need to have interrupts enabled some so that
+> > > +		 * RESET_VECTOR will interrupt us on a normal
+> > > +		 * shutdown.
+> > > +		 */
+> > > +		local_irq_disable();
+> > > +		run_crash_ipi_callback(regs);
+> > > +		local_irq_enable();
+> > > +
+> > >   		udelay(1);
+> > > +	}
+> > >   	if (panic_timeout == 0)
+> > >   		panic_timeout = mca_cfg.panic_timeout;
+> > >   	panic("Panicing machine check CPU died");
+> > >   }
+> > > -static void mce_panic(const char *msg, struct mce *final, char *exp)
+> > > +static void mce_panic(const char *msg, struct mce *final, char *exp,
+> > > +		      struct pt_regs *regs)
+> > >   {
+> > >   	int apei_err = 0;
+> > >   	struct llist_node *pending;
+> > > @@ -306,7 +321,7 @@ static void mce_panic(const char *msg, struct mce *final, char *exp)
+> > >   		 * Make sure only one CPU runs in machine check panic
+> > >   		 */
+> > >   		if (atomic_inc_return(&mce_panicked) > 1)
+> > > -			wait_for_panic();
+> > > +			wait_for_panic(regs);
+> > >   		barrier();
+> > >   		bust_spinlocks(1);
+> > > @@ -817,7 +832,7 @@ static atomic_t mce_callin;
+> > >   /*
+> > >    * Check if a timeout waiting for other CPUs happened.
+> > >    */
+> > > -static int mce_timed_out(u64 *t, const char *msg)
+> > > +static int mce_timed_out(u64 *t, const char *msg, struct pt_regs *regs)
+> > >   {
+> > >   	/*
+> > >   	 * The others already did panic for some reason.
+> > > @@ -827,12 +842,12 @@ static int mce_timed_out(u64 *t, const char *msg)
+> > >   	 */
+> > >   	rmb();
+> > >   	if (atomic_read(&mce_panicked))
+> > > -		wait_for_panic();
+> > > +		wait_for_panic(regs);
+> > >   	if (!mca_cfg.monarch_timeout)
+> > >   		goto out;
+> > >   	if ((s64)*t < SPINUNIT) {
+> > >   		if (mca_cfg.tolerant <= 1)
+> > > -			mce_panic(msg, NULL, NULL);
+> > > +			mce_panic(msg, NULL, NULL, regs);
+> > >   		cpu_missing = 1;
+> > >   		return 1;
+> > >   	}
+> > > @@ -866,7 +881,7 @@ static int mce_timed_out(u64 *t, const char *msg)
+> > >    * All the spin loops have timeouts; when a timeout happens a CPU
+> > >    * typically elects itself to be Monarch.
+> > >    */
+> > > -static void mce_reign(void)
+> > > +static void mce_reign(struct pt_regs *regs)
+> > >   {
+> > >   	int cpu;
+> > >   	struct mce *m = NULL;
+> > > @@ -896,7 +911,7 @@ static void mce_reign(void)
+> > >   	 * other CPUs.
+> > >   	 */
+> > >   	if (m && global_worst >= MCE_PANIC_SEVERITY && mca_cfg.tolerant < 3)
+> > > -		mce_panic("Fatal machine check", m, msg);
+> > > +		mce_panic("Fatal machine check", m, msg, regs);
+> > >   	/*
+> > >   	 * For UC somewhere we let the CPU who detects it handle it.
+> > > @@ -909,7 +924,8 @@ static void mce_reign(void)
+> > >   	 * source or one CPU is hung. Panic.
+> > >   	 */
+> > >   	if (global_worst <= MCE_KEEP_SEVERITY && mca_cfg.tolerant < 3)
+> > > -		mce_panic("Fatal machine check from unknown source", NULL, NULL);
+> > > +		mce_panic("Fatal machine check from unknown source", NULL, NULL,
+> > > +			  regs);
+> > >   	/*
+> > >   	 * Now clear all the mces_seen so that they don't reappear on
+> > > @@ -928,7 +944,7 @@ static atomic_t global_nwo;
+> > >    * in the entry order.
+> > >    * TBD double check parallel CPU hotunplug
+> > >    */
+> > > -static int mce_start(int *no_way_out)
+> > > +static int mce_start(int *no_way_out, struct pt_regs *regs)
+> > >   {
+> > >   	int order;
+> > >   	int cpus = num_online_cpus();
+> > > @@ -949,7 +965,8 @@ static int mce_start(int *no_way_out)
+> > >   	 */
+> > >   	while (atomic_read(&mce_callin) != cpus) {
+> > >   		if (mce_timed_out(&timeout,
+> > > -				  "Timeout: Not all CPUs entered broadcast exception handler")) {
+> > > +				  "Timeout: Not all CPUs entered broadcast exception handler",
+> > > +				  regs)) {
+> > >   			atomic_set(&global_nwo, 0);
+> > >   			return -1;
+> > >   		}
+> > > @@ -975,7 +992,8 @@ static int mce_start(int *no_way_out)
+> > >   		 */
+> > >   		while (atomic_read(&mce_executing) < order) {
+> > >   			if (mce_timed_out(&timeout,
+> > > -					  "Timeout: Subject CPUs unable to finish machine check processing")) {
+> > > +					  "Timeout: Subject CPUs unable to finish machine check processing",
+> > > +					  regs)) {
+> > >   				atomic_set(&global_nwo, 0);
+> > >   				return -1;
+> > >   			}
+> > > @@ -995,7 +1013,7 @@ static int mce_start(int *no_way_out)
+> > >    * Synchronize between CPUs after main scanning loop.
+> > >    * This invokes the bulk of the Monarch processing.
+> > >    */
+> > > -static int mce_end(int order)
+> > > +static int mce_end(int order, struct pt_regs *regs)
+> > >   {
+> > >   	int ret = -1;
+> > >   	u64 timeout = (u64)mca_cfg.monarch_timeout * NSEC_PER_USEC;
+> > > @@ -1020,12 +1038,13 @@ static int mce_end(int order)
+> > >   		 */
+> > >   		while (atomic_read(&mce_executing) <= cpus) {
+> > >   			if (mce_timed_out(&timeout,
+> > > -					  "Timeout: Monarch CPU unable to finish machine check processing"))
+> > > +					  "Timeout: Monarch CPU unable to finish machine check processing",
+> > > +					  regs))
+> > >   				goto reset;
+> > >   			ndelay(SPINUNIT);
+> > >   		}
+> > > -		mce_reign();
+> > > +		mce_reign(regs);
+> > >   		barrier();
+> > >   		ret = 0;
+> > >   	} else {
+> > > @@ -1034,7 +1053,8 @@ static int mce_end(int order)
+> > >   		 */
+> > >   		while (atomic_read(&mce_executing) != 0) {
+> > >   			if (mce_timed_out(&timeout,
+> > > -					  "Timeout: Monarch CPU did not finish machine check processing"))
+> > > +					  "Timeout: Monarch CPU did not finish machine check processing",
+> > > +					  regs))
+> > >   				goto reset;
+> > >   			ndelay(SPINUNIT);
+> > >   		}
+> > > @@ -1286,9 +1306,9 @@ noinstr void do_machine_check(struct pt_regs *regs)
+> > >   	 */
+> > >   	if (lmce) {
+> > >   		if (no_way_out)
+> > > -			mce_panic("Fatal local machine check", &m, msg);
+> > > +			mce_panic("Fatal local machine check", &m, msg, regs);
+> > >   	} else {
+> > > -		order = mce_start(&no_way_out);
+> > > +		order = mce_start(&no_way_out, regs);
+> > >   	}
+> > >   	__mc_scan_banks(&m, final, toclear, valid_banks, no_way_out, &worst);
+> > > @@ -1301,7 +1321,7 @@ noinstr void do_machine_check(struct pt_regs *regs)
+> > >   	 * When there's any problem use only local no_way_out state.
+> > >   	 */
+> > >   	if (!lmce) {
+> > > -		if (mce_end(order) < 0)
+> > > +		if (mce_end(order, regs) < 0)
+> > >   			no_way_out = worst >= MCE_PANIC_SEVERITY;
+> > >   	} else {
+> > >   		/*
+> > > @@ -1314,7 +1334,7 @@ noinstr void do_machine_check(struct pt_regs *regs)
+> > >   		 */
+> > >   		if (worst >= MCE_PANIC_SEVERITY && mca_cfg.tolerant < 3) {
+> > >   			mce_severity(&m, cfg->tolerant, &msg, true);
+> > > -			mce_panic("Local fatal machine check!", &m, msg);
+> > > +			mce_panic("Local fatal machine check!", &m, msg, regs);
+> > >   		}
+> > >   	}
+> > > @@ -1325,7 +1345,7 @@ noinstr void do_machine_check(struct pt_regs *regs)
+> > >   	if (cfg->tolerant == 3)
+> > >   		kill_it = 0;
+> > >   	else if (no_way_out)
+> > > -		mce_panic("Fatal machine check on current CPU", &m, msg);
+> > > +		mce_panic("Fatal machine check on current CPU", &m, msg, regs);
+> > >   	if (worst > 0)
+> > >   		irq_work_queue(&mce_irq_work);
+> > > @@ -1361,7 +1381,8 @@ noinstr void do_machine_check(struct pt_regs *regs)
+> > >   		 */
+> > >   		if (m.kflags & MCE_IN_KERNEL_RECOV) {
+> > >   			if (!fixup_exception(regs, X86_TRAP_MC, 0, 0))
+> > > -				mce_panic("Failed kernel mode recovery", &m, msg);
+> > > +				mce_panic("Failed kernel mode recovery", &m,
+> > > +					  msg, regs);
+> > >   		}
+> > >   	}
+> > >   }
+> > > -- 
+> > > 2.17.1
+> > > 
+> > > 
+> > > 
+> > > _______________________________________________
+> > > Openipmi-developer mailing list
+> > > Openipmi-developer@lists.sourceforge.net
+> > > https://lists.sourceforge.net/lists/listinfo/openipmi-developer
+> > .
+> > 
+> 
