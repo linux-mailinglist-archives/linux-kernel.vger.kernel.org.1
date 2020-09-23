@@ -2,132 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F8EB274DEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 02:39:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C88274DF1
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 02:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727180AbgIWAjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 20:39:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726878AbgIWAjn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 20:39:43 -0400
-Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9776C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 17:39:42 -0700 (PDT)
-Received: by mail-vk1-xa43.google.com with SMTP id n7so4737099vkq.5
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 17:39:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C8C1mlEJMqwWptPrIyFJT+dpSuLKuAMNUHxa+me7hPw=;
-        b=CmoOMqwpb8rDpx9s1EjCYGLAtKTnWnMdGUdS+jco/xwO4ZPBcMKbCV/8dwLWZyBVgU
-         7uI0/GVpgpI/LbW13HgXLMHljX8kDL1YIO+hKzzvKRgasAjl75o9YN+aSJbTN5nbVMxn
-         J2Cijewfe7WC/mwuSPoLQwxqsUT7SK8Da6Waw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C8C1mlEJMqwWptPrIyFJT+dpSuLKuAMNUHxa+me7hPw=;
-        b=B3456ReCsmcQwT0CuuzJRY8QOzIukRWkKCH5HaR/VihvUd4kspjo3i2r1lkSR5PGPi
-         NnpRRP4RnSLDUYtpPnkk+fzX5fyoovfmU/kBvi9o77Hihf0x30bPUzn/+4cuxKNuy62v
-         9sm1q5j58UEIfOkYI5j3SF1+TbuK+nnoqSB6yJ8LTguYJi89LAHf3gV3LFjRFMEqyF8O
-         uRyGKMVIj75N6NoqCGj20Yl85va+yMRKluuaLu4CXUrF91Kn7uIdDEzb80W+pO4SaVZj
-         DHSQ8R4wLYlilYm1MOer60yxJsH6OAdIjY2mnJ1PUgFV3r/Sr9PzNvdoO3rNA+8VQhd5
-         iHSg==
-X-Gm-Message-State: AOAM532wtbf9YHAdZAXiHwVXnUYM0NNr5S4I7h//ue+yaliNq3Ruaxkl
-        Der+VOsguzxay2dce6i2ICKWzdS0CaVWZg==
-X-Google-Smtp-Source: ABdhPJxzvbrtfAk3cBpko67T6auK+l6PBLMB44f5dfaCKm+4TH8B1QhSbcKlfSpi0jQqyOPJC0jJHw==
-X-Received: by 2002:a1f:1f46:: with SMTP id f67mr5467105vkf.6.1600821581422;
-        Tue, 22 Sep 2020 17:39:41 -0700 (PDT)
-Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com. [209.85.222.54])
-        by smtp.gmail.com with ESMTPSA id v16sm2095715uam.5.2020.09.22.17.39.39
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Sep 2020 17:39:40 -0700 (PDT)
-Received: by mail-ua1-f54.google.com with SMTP id h15so6088728uab.3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Sep 2020 17:39:39 -0700 (PDT)
-X-Received: by 2002:ab0:4542:: with SMTP id r60mr5032191uar.90.1600821578898;
- Tue, 22 Sep 2020 17:39:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200921172603.1.Id9450c1d3deef17718bd5368580a3c44895209ee@changeid>
- <ad9108e155ba4245a2005e9212a7d2b5@AcuMS.aculab.com> <CAMj1kXEF9SHnas_Hy=eU+=hHuuyxMb2_UtPtsuU2CCH6BaUPbg@mail.gmail.com>
-In-Reply-To: <CAMj1kXEF9SHnas_Hy=eU+=hHuuyxMb2_UtPtsuU2CCH6BaUPbg@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 22 Sep 2020 17:39:27 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=VG-BzzEJ2jn6hAYjre+BtOu-uyi4OQst=Lg9QQqAtKNw@mail.gmail.com>
-Message-ID: <CAD=FV=VG-BzzEJ2jn6hAYjre+BtOu-uyi4OQst=Lg9QQqAtKNw@mail.gmail.com>
-Subject: Re: [PATCH] arm64: crypto: Add an option to assume NEON XOR is the fastest
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jackie Liu <liuyun01@kylinos.cn>,
+        id S1727192AbgIWAm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Sep 2020 20:42:26 -0400
+Received: from mga18.intel.com ([134.134.136.126]:30653 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726878AbgIWAmZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Sep 2020 20:42:25 -0400
+IronPort-SDR: fBvUd6DkQroTS5UXemMRK1+xBfSV95a+L3ZGWQy9tERAO34XKqpk+/Wm8ZXSOQAosiqTA9o9KO
+ vyDu87WSnxKQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9752"; a="148500441"
+X-IronPort-AV: E=Sophos;i="5.77,292,1596524400"; 
+   d="scan'208";a="148500441"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 17:42:24 -0700
+IronPort-SDR: m9JSWIzVB8856v5O4LF6S3dn/ZJV8s81t1VICbn1FQpocsFD3rNVuBhtpiax59nJFtGhSgmNUO
+ LMWv4ZHCnroQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,292,1596524400"; 
+   d="scan'208";a="412828679"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmsmga001.fm.intel.com with ESMTP; 22 Sep 2020 17:42:24 -0700
+Received: from orsmsx609.amr.corp.intel.com (10.22.229.22) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 22 Sep 2020 17:42:23 -0700
+Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
+ ORSMSX609.amr.corp.intel.com (10.22.229.22) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 22 Sep 2020 17:42:23 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Tue, 22 Sep 2020 17:42:23 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.171)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Tue, 22 Sep 2020 17:42:18 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DZFog7WUDt1cgZORJdaY/mgk2FOTXT0VPz0nxz0AiSuOngfFlNCNQ/S8yYF+z9hejrV7d/lvAB854MroQD5gnW+Xm81D44OLLxYrPceL3qx0bBpPEQEHpXpIw5siyGdRBOwjclB42SYCwOs24BDBJZFhipxu6g47t2BG+zdkXPXSdJFJQxiZuV9BFQvlHM7O1nsMr+l9GvsvqHLTRvHTbaO6lkLHu73OP1viLsgkC96xLVjPQGkl9N9xcA+XAqe5fvrSkdUrcBcIztw+BHV1bvqfXfKGzPtCVR4EiRKCJJ7goY3dpNcUZEmXD6wHewlLHZdSLmJhooZfdHzkdIGxVg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=V/2RGz7MwW0mmvO/pieWlLi67QRWs0npRkaUisR7eCk=;
+ b=nhR6HW2uH4FtRLsly2QeqJTMe4FBLtVjCxEW39rAHYNT1wMSyGB2Uh3n78X1YCdVoRNIMCEU/wf4tn0nQ7Z14JcKGKID0hUg/H8YuCqNX3ItPL8pxW0Q5AZcfWbXwi2s54bllNwBzB3JH/mtKdmGi061Gj7ylQozO6XLZfWmdgmpzUrsOzJQpsQPRdHCtLCRp9A8N7ciJIJZtmewPnKVis4DHiFWmanzBgWHeDQuA7y66SVi+0CwCMe08lit7AoTpgmlKmXvW+AjCFJHa5QTB21y7oV+fLaLdN6fP6WMdbfQC/7Qqsp8LdpmA+aRtaAxlVzNO2L8OLpnuTNKo/Ms3g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=V/2RGz7MwW0mmvO/pieWlLi67QRWs0npRkaUisR7eCk=;
+ b=Qt5iVTfUdvlX3y+onHsXtaEk1mQAkZGIE0KCvxf2+ognf7Zqc0U5btp3SCKvkeLO2tYQSctb3xiDvX0CLWgh23T+tGqpL6TBp5EQLmY3ujVHQIdkb4FaSdXfyx9kHGg/O173kUvFTKecFjrmYk9tzAWko16fCwXVOxy/BpGlkMU=
+Received: from MWHPR11MB1968.namprd11.prod.outlook.com (2603:10b6:300:113::16)
+ by MW3PR11MB4569.namprd11.prod.outlook.com (2603:10b6:303:54::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14; Wed, 23 Sep
+ 2020 00:42:13 +0000
+Received: from MWHPR11MB1968.namprd11.prod.outlook.com
+ ([fe80::fcf5:948c:28d7:7ee3]) by MWHPR11MB1968.namprd11.prod.outlook.com
+ ([fe80::fcf5:948c:28d7:7ee3%8]) with mapi id 15.20.3391.027; Wed, 23 Sep 2020
+ 00:42:12 +0000
+From:   "Qi, Yadong" <yadong.qi@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+        "x86@kernel.org" <x86@kernel.org>
+CC:     "Christopherson, Sean J" <sean.j.christopherson@intel.com>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "wanpengli@tencent.com" <wanpengli@tencent.com>,
+        "jmattson@google.com" <jmattson@google.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>,
+        "liran.alon@oracle.com" <liran.alon@oracle.com>,
+        "nikita.leshchenko@oracle.com" <nikita.leshchenko@oracle.com>,
+        "Gao, Chao" <chao.gao@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "Chen, Luhai" <luhai.chen@intel.com>,
+        "Zhu, Bing" <bing.zhu@intel.com>,
+        "Wang, Kai Z" <kai.z.wang@intel.com>
+Subject: RE: [PATCH] KVM: x86: emulate wait-for-SIPI and SIPI-VMExit
+Thread-Topic: [PATCH] KVM: x86: emulate wait-for-SIPI and SIPI-VMExit
+Thread-Index: AQHWkKDXpbo0akWSWkKXeJbWVxPoT6l0XvaAgAEDrrA=
+Date:   Wed, 23 Sep 2020 00:42:12 +0000
+Message-ID: <MWHPR11MB196858E9DC7AF08DC87E9261E3380@MWHPR11MB1968.namprd11.prod.outlook.com>
+References: <20200922052343.84388-1-yadong.qi@intel.com>
+ <c0157014-d1bb-ef81-b92f-ebecb72396c9@redhat.com>
+In-Reply-To: <c0157014-d1bb-ef81-b92f-ebecb72396c9@redhat.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.102.204.38]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 58c8f500-3f90-43bf-b2b7-08d85f598326
+x-ms-traffictypediagnostic: MW3PR11MB4569:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW3PR11MB4569101B9363E72681C031CFE3380@MW3PR11MB4569.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3968;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: dVYHQmupyVrvKakUC3+8RXdlP7y39Q6U0o7phC9m797HfLzz9rogs5q90Irfe9w7SmlN1WLaVGo+Imnw8qVMCHbonZe2u8YEp9sxqlhQUZuID6JkpawuXgJkNHIGP2CeWweHfE9QnLC4EaO50iuyrWX8D/CwNKSPv14CFwq4U11VVSKgKLnYrAjnhQ3TfBIzLI8cq2vNAK+IcCarbpytT2Nx6AxrZfQujR9wDnpofJhl1oDV04heWQV/nbtEAUfW1MGDUvkfk0u4d8PbkfRQYBJwR5HL2OsTQG7l0WwI09L24UGtLs4OPDAcbV6zf5UcNMW9MPBr6qNNJakJkQLB8+/PiIilcVga/XY0r+yurfv8qs9e4TsTQLHVyXujp+Qo
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1968.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(376002)(346002)(396003)(39860400002)(55016002)(71200400001)(52536014)(316002)(558084003)(8936002)(6506007)(8676002)(9686003)(5660300002)(7696005)(76116006)(107886003)(66946007)(66476007)(186003)(33656002)(66556008)(7416002)(4326008)(66446008)(64756008)(110136005)(86362001)(26005)(478600001)(2906002)(54906003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: aRYSEMP+VBQy6L7tBDB8FJHNNtQ2SbDpr14pH3FzwkHk/FJ4OLqmMgU7QKXYDalTU4DRHOLoM/BCmmQgffEjt182atp7P/bzIx+L0P89sxSwszm0LdhuPrCRNVBc75OQXIR7zUKiJSdQKhfoM6fw6IjCQEkBymnwEArOIFYPmxdcwdnqnC49HPxX9CK/sFEp36ux83XnL/Vn4WZL4L6EBcs8XTRJ23JuruGrL57vj7pKSboUctSqw5jNjHsXcqx+q283AyfsXNjP0DrG0eUtWsVwz/qWK+OIGDKC0iLJzoKIALK+KeIszPbRBNyTl3YNwtkeJ1Se5Z35NBVx+US1b7pYuMvj9a1B/H6lDtAj/wv2K5XpaeJxjV9FaJjTQE2EtVDtLybHyoGn/TDDjx/JUfI1AUQfPuUtpIu/a3ooL5SbJq25BzJKf5/n4BoQSEEG/o3Y3EBceqtm0ZoBnCQL1PcZnAX9t1s0eXk4/uRW74WNu/ttJuhhDZSul8tlFaAERYsnzo8GpQ10fZkM3CT4kcXGX4I5bPGMVesM/In0ZQGQBSVyjAMw4AZK4C/paSKehHBewej6uBnvMO6aGDRgMfzOVsZHPgWcAS3Sqqu7Ke08JCK3YhdPBz50I94kBMrUCQZAGZGyBKo64keAhz++3A==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1968.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 58c8f500-3f90-43bf-b2b7-08d85f598326
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2020 00:42:12.6866
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wXSTPYndJqHD1B+8BrYYLVpxJ4eDzHS2jqis2Rc9Q3HBaLn6/mlN9gLdLiUaAMQgFrBZqeSX662fPO0NxAKpNQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4569
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Tue, Sep 22, 2020 at 3:30 AM Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Tue, 22 Sep 2020 at 10:26, David Laight <David.Laight@aculab.com> wrote:
-> >
-> > From: Douglas Anderson
-> > > Sent: 22 September 2020 01:26
-> > >
-> > > On every boot time we see messages like this:
-> > >
-> > > [    0.025360] calling  calibrate_xor_blocks+0x0/0x134 @ 1
-> > > [    0.025363] xor: measuring software checksum speed
-> > > [    0.035351]    8regs     :  3952.000 MB/sec
-> > > [    0.045384]    32regs    :  4860.000 MB/sec
-> > > [    0.055418]    arm64_neon:  5900.000 MB/sec
-> > > [    0.055423] xor: using function: arm64_neon (5900.000 MB/sec)
-> > > [    0.055433] initcall calibrate_xor_blocks+0x0/0x134 returned 0 after 29296 usecs
-> > >
-> > > As you can see, we spend 30 ms on every boot re-confirming that, yet
-> > > again, the arm64_neon implementation is the fastest way to do XOR.
-> > > ...and the above is on a system with HZ=1000.  Due to the way the
-> > > testing happens, if we have HZ defined to something slower it'll take
-> > > much longer.  HZ=100 means we spend 300 ms on every boot re-confirming
-> > > a fact that will be the same for every bootup.
-> >
-> > Can't the code use a TSC (or similar high-res counter) to
-> > see how long it takes to process a short 'hot cache' block?
-> > That wouldn't take long at all.
-> >
->
-> This is generic code that runs from an core_initcall() so I am not
-> sure we can easily implement this in a portable way.
-
-If it ran later, presumably you could just use ktime?  That seems like
-it'd be a portable enough way?
-
-
-> Doug: would it help if we deferred this until late_initcall()? We
-> could take an arbitrary pick from the list at core_initcall() time to
-> serve early users, and update to the fastest one at a later time.
-
-Yeah, I think that'd work OK.  One advantage of it being later would
-be that it could run in parallel to other things that were happening
-in the system (anyone who enabled async probe on their driver).  Even
-better would be if your code itself could run async and not block the
-rest of boot.  ;-)  I do like the idea that we could just arbitrarily
-pick one implementation until we've calibrated.  I guess we'd want to
-figure out how to do this lockless but it shouldn't be too hard to
-just check to see if a single pointer is non-NULL and once it becomes
-non-NULL then you can use it...  ...or a pointer plus a sentinel if
-writing the pointer can't be done atomically...
-
-It also feels like with the large number of big.LITTLE systems out
-there you'd either want a lookup table per core or you'd want to do
-calibration per core.
-
--Doug
+PiBBZ2FpbiwgdGhpcyBsb29rcyBnb29kIGJ1dCBpdCBuZWVkcyB0ZXN0Y2FzZXMuDQoNClllcywg
+dGhlIHVuaXQgdGVzdCBkZXZlbG9wbWVudCBpcyBXSVAuDQoNCkJlc3QgUmVnYXJkDQpZYWRvbmcN
+Cg0K
