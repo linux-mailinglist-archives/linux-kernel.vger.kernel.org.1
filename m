@@ -2,138 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1CCE275064
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 07:44:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF4A275065
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 07:44:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726980AbgIWFoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 01:44:13 -0400
-Received: from mga12.intel.com ([192.55.52.136]:35660 "EHLO mga12.intel.com"
+        id S1727011AbgIWFoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 01:44:19 -0400
+Received: from mga03.intel.com ([134.134.136.65]:42422 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726883AbgIWFoN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 01:44:13 -0400
-IronPort-SDR: g/MO4lQI9HdqG+EOzwhd2jDe+YMzSseFKGPw7RrMBcantFo36qrb6IuVUSWWMGlPBod5MDTywt
- 1AAVbgMEHE6g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9752"; a="140265114"
+        id S1726883AbgIWFoT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 01:44:19 -0400
+IronPort-SDR: nHBUuQEVn+REe69ix/w6Y+RgMnAPAbaKWe9WX8iCsDzGziJLFhKKv3iEfSlil+0nxkxfWJCLiZ
+ UBw4J3U9S0qA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9752"; a="160869434"
 X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="140265114"
+   d="scan'208";a="160869434"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 22:44:11 -0700
-IronPort-SDR: CkmKka6DBA6ajh/NWMmcSZBHr2cMIuifPtzoqLnwIXRahp8uvEDRyeUcEMggOqArX2oVhguqna
- hqdNfVFu4joQ==
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 22:44:16 -0700
+IronPort-SDR: ecSZn7beoVqP/TqvZcl1OzTC3kykreZ5ip1xx5+wWc0Jw2P8qE+3tzgCOSM0m0R26e/CQZhdM9
+ SEdPvw7ke0+g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,293,1596524400"; 
-   d="scan'208";a="412892054"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
-  by fmsmga001.fm.intel.com with ESMTP; 22 Sep 2020 22:44:08 -0700
-Cc:     baolu.lu@linux.intel.com, Intel-gfx@lists.freedesktop.org,
-        Ashok Raj <ashok.raj@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/6] Convert the intel iommu driver to the dma-iommu
- api
-To:     Robin Murphy <robin.murphy@arm.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Tom Murphy <murphyt7@tcd.ie>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>
-References: <20200912032200.11489-1-baolu.lu@linux.intel.com>
- <51a1baec-48d1-c0ac-181b-1fba92aa428d@linux.intel.com>
- <001f4446-7c43-9832-42d8-55dc4a13c2ae@linux.intel.com>
- <9173fed9-e60f-5189-e17d-b23bfabdaa38@linux.intel.com>
- <d4633137-136e-d96c-877a-b523018c51e7@arm.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <8d2a5124-92ce-2cdd-42a4-d7a22aa4e02a@linux.intel.com>
-Date:   Wed, 23 Sep 2020 13:38:05 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+   d="scan'208";a="347216154"
+Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.164])
+  by FMSMGA003.fm.intel.com with ESMTP; 22 Sep 2020 22:44:12 -0700
+From:   "Huang\, Ying" <ying.huang@intel.com>
+To:     Phil Auld <pauld@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>, Mel Gorman <mgorman@suse.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "Matthew Wilcox \(Oracle\)" <willy@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>
+Subject: Re: [RFC -V2] autonuma: Migrate on fault among multiple bound nodes
+References: <20200922065401.376348-1-ying.huang@intel.com>
+        <20200922125049.GA10420@lorien.usersys.redhat.com>
+Date:   Wed, 23 Sep 2020 13:44:12 +0800
+In-Reply-To: <20200922125049.GA10420@lorien.usersys.redhat.com> (Phil Auld's
+        message of "Tue, 22 Sep 2020 08:51:53 -0400")
+Message-ID: <87o8lxoxn7.fsf@yhuang-dev.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <d4633137-136e-d96c-877a-b523018c51e7@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/22/20 7:05 PM, Robin Murphy wrote:
->>>> With the previous version of the series I hit a problem on Ivybridge 
->>>> where apparently the dma engine width is not respected. At least 
->>>> that is my layman interpretation of the errors. From the older thread:
->>>>
->>>> <3> [209.526605] DMAR: intel_iommu_map: iommu width (39) is not 
->>>> sufficient for the mapped address (ffff008000)
->>>>
->>>> Relevant iommu boot related messages are:
->>>>
->>>> <6>[    0.184234] DMAR: Host address width 36
->>>> <6>[    0.184245] DMAR: DRHD base: 0x000000fed90000 flags: 0x0
->>>> <6>[    0.184288] DMAR: dmar0: reg_base_addr fed90000 ver 1:0 cap 
->>>> c0000020e60262 ecap f0101a
->>>> <6>[    0.184308] DMAR: DRHD base: 0x000000fed91000 flags: 0x1
->>>> <6>[    0.184337] DMAR: dmar1: reg_base_addr fed91000 ver 1:0 cap 
->>>> c9008020660262 ecap f0105a
->>>> <6>[    0.184357] DMAR: RMRR base: 0x000000d8d28000 end: 
->>>> 0x000000d8d46fff
->>>> <6>[    0.184377] DMAR: RMRR base: 0x000000db000000 end: 
->>>> 0x000000df1fffff
->>>> <6>[    0.184398] DMAR-IR: IOAPIC id 2 under DRHD base  0xfed91000 
->>>> IOMMU 1
->>>> <6>[    0.184414] DMAR-IR: HPET id 0 under DRHD base 0xfed91000
->>>> <6>[    0.184428] DMAR-IR: Queued invalidation will be enabled to 
->>>> support x2apic and Intr-remapping.
->>>> <6>[    0.185173] DMAR-IR: Enabled IRQ remapping in x2apic mode
->>>>
->>>> <6>[    0.878934] DMAR: No ATSR found
->>>> <6>[    0.878966] DMAR: dmar0: Using Queued invalidation
->>>> <6>[    0.879007] DMAR: dmar1: Using Queued invalidation
->>>>
->>>> <6>[    0.915032] DMAR: Intel(R) Virtualization Technology for 
->>>> Directed I/O
->>>> <6>[    0.915060] PCI-DMA: Using software bounce buffering for IO 
->>>> (SWIOTLB)
->>>> <6>[    0.915084] software IO TLB: mapped [mem 
->>>> 0xc80d4000-0xcc0d4000] (64MB)
->>>>
->>>> (Full boot log at 
->>>> https://intel-gfx-ci.01.org/tree/drm-tip/Trybot_7054/fi-ivb-3770/boot0.txt, 
->>>> failures at 
->>>> https://intel-gfx-ci.01.org/tree/drm-tip/Trybot_7054/fi-ivb-3770/igt@i915_selftest@live@blt.html.) 
->>>>
->>>>
->>>> Does this look familiar or at least plausible to you? Is this 
->>>> something your new series has fixed?
->>>
->>> This happens during attaching a domain to device. It has nothing to do
->>> with this patch series. I will look into this issue, but not in this
->>> email thread context.
+Phil Auld <pauld@redhat.com> writes:
+
+> Hi,
+>
+> On Tue, Sep 22, 2020 at 02:54:01PM +0800 Huang Ying wrote:
+>> Now, AutoNUMA can only optimize the page placement among the NUMA nodes if the
+>> default memory policy is used.  Because the memory policy specified explicitly
+>> should take precedence.  But this seems too strict in some situations.  For
+>> example, on a system with 4 NUMA nodes, if the memory of an application is bound
+>> to the node 0 and 1, AutoNUMA can potentially migrate the pages between the node
+>> 0 and 1 to reduce cross-node accessing without breaking the explicit memory
+>> binding policy.
+>> 
+>> So in this patch, if mbind(.mode=MPOL_BIND, .flags=MPOL_MF_LAZY) is used to bind
+>> the memory of the application to multiple nodes, and in the hint page fault
+>> handler both the faulting page node and the accessing node are in the policy
+>> nodemask, the page will be tried to be migrated to the accessing node to reduce
+>> the cross-node accessing.
 >>
->> I am not sure what step is attaching domain to device, but these type 
->> messages:
->>
->> <3> [209.526605] DMAR: intel_iommu_map: iommu width (39) is not
->>  >> sufficient for the mapped address (ffff008000)
->>
->> They definitely appear to happen at runtime, as i915 is getting 
->> exercised by userspace.
-> 
-> AFAICS this certainly might be related to this series - iommu-dma will 
+>
+> Do you have any performance numbers that show the effects of this on
+> a workload?
 
-Oh! I looked at the wrong function. prepare_domain_attach_device()
-prints a similar message which made me believe that it was not caused
-by the this patches series.
+I have done some simple test to confirm that NUMA balancing works in the
+target configuration.
 
-> constrain IOVA allocation based on the domain geometry that the driver 
-> reports, which in this case is set only once when first allocating the 
-> domain. Thus it looks like both the dmar_domain->gaw adjustment in 
-> prepare_domain_attach_device() and the domain_use_first_level() business 
-> in intel_alloc_iova() effectively get lost in this conversion, since the 
-> domain geometry never gets updated to reflect those additional constraints.
+As for performance numbers, it's exactly same as that of the original
+NUMA balancing in a different configuration.  Between without memory
+binding and with memory bound to all NUMA nodes.
 
-Sounds reasonable. I will look into the code and work out a fix.
+>
+>> [Peter Zijlstra: provided the simplified implementation method.]
+>> 
+>> Questions:
+>> 
+>> Sysctl knob kernel.numa_balancing can enable/disable AutoNUMA optimizing
+>> globally.  But for the memory areas that are bound to multiple NUMA nodes, even
+>> if the AutoNUMA is enabled globally via the sysctl knob, we still need to enable
+>> AutoNUMA again with a special flag.  Why not just optimize the page placement if
+>> possible as long as AutoNUMA is enabled globally?  The interface would look
+>> simpler with that.
+>
+>
+> I agree. I think it should try to do this if globally enabled.
 
-> > Robin.
-> 
+Thanks!
 
-Best regards,
-baolu
+>> 
+>> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: Ingo Molnar <mingo@redhat.com>
+>> Cc: Mel Gorman <mgorman@suse.de>
+>> Cc: Rik van Riel <riel@redhat.com>
+>> Cc: Johannes Weiner <hannes@cmpxchg.org>
+>> Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+>> Cc: Dave Hansen <dave.hansen@intel.com>
+>> Cc: Andi Kleen <ak@linux.intel.com>
+>> Cc: Michal Hocko <mhocko@suse.com>
+>> Cc: David Rientjes <rientjes@google.com>
+>> ---
+>>  mm/mempolicy.c | 17 +++++++++++------
+>>  1 file changed, 11 insertions(+), 6 deletions(-)
+>> 
+>> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+>> index eddbe4e56c73..273969204732 100644
+>> --- a/mm/mempolicy.c
+>> +++ b/mm/mempolicy.c
+>> @@ -2494,15 +2494,19 @@ int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long
+>>  		break;
+>>  
+>>  	case MPOL_BIND:
+>> -
+>>  		/*
+>> -		 * allows binding to multiple nodes.
+>> -		 * use current page if in policy nodemask,
+>> -		 * else select nearest allowed node, if any.
+>> -		 * If no allowed nodes, use current [!misplaced].
+>> +		 * Allows binding to multiple nodes.  If both current and
+>> +		 * accessing nodes are in policy nodemask, migrate to
+>> +		 * accessing node to optimize page placement. Otherwise,
+>> +		 * use current page if in policy nodemask, else select
+>> +		 * nearest allowed node, if any.  If no allowed nodes, use
+>> +		 * current [!misplaced].
+>>  		 */
+>> -		if (node_isset(curnid, pol->v.nodes))
+>> +		if (node_isset(curnid, pol->v.nodes)) {
+>> +			if (node_isset(thisnid, pol->v.nodes))
+>> +				goto moron;
+>
+> Nice label :)
+
+OK.  Because quite some people pay attention to this.  I will rename all
+"moron" to "mopron" as suggested by Matthew.  Although MPOL_F_MORON is
+defined in include/uapi/linux/mempolicy.h, it is explicitly marked as
+internal flags.
+
+Best Regards,
+Huang, Ying
+
+>>  			goto out;
+>> +		}
+>>  		z = first_zones_zonelist(
+>>  				node_zonelist(numa_node_id(), GFP_HIGHUSER),
+>>  				gfp_zone(GFP_HIGHUSER),
+>> @@ -2516,6 +2520,7 @@ int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long
+>>  
+>>  	/* Migrate the page towards the node whose CPU is referencing it */
+>>  	if (pol->flags & MPOL_F_MORON) {
+>> +moron:
+>>  		polnid = thisnid;
+>>  
+>>  		if (!should_numa_migrate_memory(current, page, curnid, thiscpu))
+>> -- 
+>> 2.28.0
+>> 
+>
+>
+> Cheers,
+> Phil
