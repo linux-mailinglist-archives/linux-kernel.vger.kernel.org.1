@@ -2,156 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51615274FAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 05:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3C45274FB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 06:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726817AbgIWDvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Sep 2020 23:51:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56920 "EHLO mail.kernel.org"
+        id S1726855AbgIWEKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 00:10:18 -0400
+Received: from mail5.windriver.com ([192.103.53.11]:35708 "EHLO mail5.wrs.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726448AbgIWDvi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Sep 2020 23:51:38 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 280FB2076E;
-        Wed, 23 Sep 2020 03:51:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600833098;
-        bh=IRvofdC9p6whOD7WsodxEGJiMATxLVmtshgV275e4jQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=vsogR3ZO3YdR45MojtUn/yl2z1OajglLzDtS59i67WXtAm7r/tuH0OTivNzJzlvau
-         3tQpIbd9PAjFEZKL24QfpbEJpRq5lnC3G9snj80ai/7JIj1PUDVe91nQcd+HXkr8WM
-         zpk8dNHt8t94i+WvLW5pqJ9TZGRcmUmQdgZ2k9mA=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id E22F535231BA; Tue, 22 Sep 2020 20:51:37 -0700 (PDT)
-Date:   Tue, 22 Sep 2020 20:51:37 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Hou Tao <houtao1@huawei.com>
-Cc:     Davidlohr Bueso <dave@stgolabs.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [PATCH 2/2] locktorture: call percpu_free_rwsem() to do
- percpu-rwsem cleanup
-Message-ID: <20200923035137.GN29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200917135910.137389-1-houtao1@huawei.com>
- <20200917135910.137389-3-houtao1@huawei.com>
- <20200922232426.GL29330@paulmck-ThinkPad-P72>
- <fe8c274e-efa4-04ec-0d95-d7c49ec4dd83@huawei.com>
+        id S1726448AbgIWEKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 00:10:18 -0400
+X-Greylist: delayed 3042 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Sep 2020 00:09:47 EDT
+Received: from ALA-HCB.corp.ad.wrs.com (ala-hcb.corp.ad.wrs.com [147.11.189.41])
+        by mail5.wrs.com (8.15.2/8.15.2) with ESMTPS id 08N3GRwo028821
+        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
+        Tue, 22 Sep 2020 20:16:37 -0700
+Received: from pek-qzhang2-d1.wrs.com (128.224.162.183) by
+ ALA-HCB.corp.ad.wrs.com (147.11.189.41) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 22 Sep 2020 20:16:16 -0700
+From:   <qiang.zhang@windriver.com>
+To:     <tglx@linutronix.de>, <miaoqinglang@huawei.com>,
+        <elver@google.com>, <longman@redhat.com>,
+        <akpm@linux-foundation.org>, <cai@gmx.us>
+CC:     <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4] debugobjects: install CPU hotplug callback
+Date:   Wed, 23 Sep 2020 11:16:13 +0800
+Message-ID: <20200923031613.20161-1-qiang.zhang@windriver.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fe8c274e-efa4-04ec-0d95-d7c49ec4dd83@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 10:24:20AM +0800, Hou Tao wrote:
-> Hi Paul,
-> 
-> > On 2020/9/23 7:24, Paul E. McKenney wrote:
-> snip
-> 
-> >> Fix it by adding an exit hook in lock_torture_ops and
-> >> use it to call percpu_free_rwsem() for percpu rwsem torture
-> >> before the module is removed, so we can ensure rcu_sync_func()
-> >> completes before module exits.
-> >>
-> >> Also needs to call exit hook if lock_torture_init() fails half-way,
-> >> so use ctx->cur_ops != NULL to signal that init hook has been called.
-> > 
-> > Good catch, but please see below for comments and questions.
-> > 
-> >> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> >> ---
-> >>  kernel/locking/locktorture.c | 28 ++++++++++++++++++++++------
-> >>  1 file changed, 22 insertions(+), 6 deletions(-)
-> >>
-> >> diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-> >> index bebdf98e6cd78..e91033e9b6f95 100644
-> >> --- a/kernel/locking/locktorture.c
-> >> +++ b/kernel/locking/locktorture.c
-> >> @@ -74,6 +74,7 @@ static void lock_torture_cleanup(void);
-> >>   */
-> >>  struct lock_torture_ops {
-> >>  	void (*init)(void);
-> >> +	void (*exit)(void);
-> > 
-> > This is fine, but why not also add a flag to the lock_torture_cxt
-> > structure that is set when the ->init() function is called?  Perhaps
-> > something like this in lock_torture_init():
-> > 
-> > 	if (cxt.cur_ops->init) {
-> > 		cxt.cur_ops->init();
-> > 		cxt.initcalled = true;
-> > 	}
-> > 
-> 
-> You are right. Add a new field to indicate the init hook has been
-> called is much better than reusing ctx->cur_ops != NULL to do that.
-> 
-> >>  	int (*writelock)(void);
-> >>  	void (*write_delay)(struct torture_random_state *trsp);
-> >>  	void (*task_boost)(struct torture_random_state *trsp);
-> >> @@ -571,6 +572,11 @@ void torture_percpu_rwsem_init(void)
-> >>  	BUG_ON(percpu_init_rwsem(&pcpu_rwsem));
-> >>  }
-> >>  
-> >> +static void torture_percpu_rwsem_exit(void)
-> >> +{
-> >> +	percpu_free_rwsem(&pcpu_rwsem);
-> >> +}
-> >> +
-> snip
-> 
-> >> @@ -828,6 +836,12 @@ static void lock_torture_cleanup(void)
-> >>  	cxt.lrsa = NULL;
-> >>  
-> >>  end:
-> >> +	/* If init() has been called, then do exit() accordingly */
-> >> +	if (cxt.cur_ops) {
-> >> +		if (cxt.cur_ops->exit)
-> >> +			cxt.cur_ops->exit();
-> >> +		cxt.cur_ops = NULL;
-> >> +	}
-> > 
-> > The above can then be:
-> > 
-> > 	if (cxt.initcalled && cxt.cur_ops->exit)
-> > 		cxt.cur_ops->exit();
-> > 
-> > Maybe you also need to clear cxt.initcalled at this point, but I don't
-> > immediately see why that would be needed.
-> > 
-> Because we are doing cleanup, so I think reset initcalled to false is OK
-> after the cleanup is done.
+From: Zqiang <qiang.zhang@windriver.com>
 
-Maybe best to try it both ways and see how each really works?
+Due to CPU hotplug, it may never be online after it's offline,
+some objects in percpu pool is never free. in order to avoid
+this happening, install CPU hotplug callback, call this callback
+func to free objects in percpu pool when CPU going offline.
 
-We might each have our opinions, but the computer's opinion is the one
-that really counts.  ;-)
+Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+Acked-by: Waiman Long <longman@redhat.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc: Qian Cai <cai@gmx.us>
+---
+ v1->v2:
+ Modify submission information.
 
-> >>  	torture_cleanup_end();
-> >>  }
-> >>  
-> >> @@ -835,6 +849,7 @@ static int __init lock_torture_init(void)
-> >>  {
-> >>  	int i, j;
-> >>  	int firsterr = 0;
-> >> +	struct lock_torture_ops *cur_ops;
-> > 
-> > And then you don't need this extra pointer.  Not that this pointer is bad
-> > in and of itself, but using (!cxt.cur_ops) to indicate that the ->init()
-> > function has not been called is an accident waiting to happen.
-> > 
-> > And the changes below are no longer needed.
-> > 
-> > Or am I missing something subtle?
-> > 
-> Thanks for your suggestion. Will send v2.
+ v2->v3:
+ In CPU hotplug callback func, add clear percpu pool "obj_free" operation.
+ capitalize 'CPU', and use shorter preprocessor sequence.
 
-Looking forward to seeing it!
+ v3->v4:
+ Add Cc and Acked-by tags
 
-							Thanx, Paul
+ include/linux/cpuhotplug.h |  1 +
+ lib/debugobjects.c         | 24 ++++++++++++++++++++++++
+ 2 files changed, 25 insertions(+)
+
+diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+index 3215023d4852..0c39d57e5342 100644
+--- a/include/linux/cpuhotplug.h
++++ b/include/linux/cpuhotplug.h
+@@ -36,6 +36,7 @@ enum cpuhp_state {
+ 	CPUHP_X86_MCE_DEAD,
+ 	CPUHP_VIRT_NET_DEAD,
+ 	CPUHP_SLUB_DEAD,
++	CPUHP_DEBUG_OBJ_DEAD,
+ 	CPUHP_MM_WRITEBACK_DEAD,
+ 	CPUHP_MM_VMSTAT_DEAD,
+ 	CPUHP_SOFTIRQ_DEAD,
+diff --git a/lib/debugobjects.c b/lib/debugobjects.c
+index fe4557955d97..bb69a02c3e7b 100644
+--- a/lib/debugobjects.c
++++ b/lib/debugobjects.c
+@@ -19,6 +19,7 @@
+ #include <linux/slab.h>
+ #include <linux/hash.h>
+ #include <linux/kmemleak.h>
++#include <linux/cpu.h>
+ 
+ #define ODEBUG_HASH_BITS	14
+ #define ODEBUG_HASH_SIZE	(1 << ODEBUG_HASH_BITS)
+@@ -433,6 +434,24 @@ static void free_object(struct debug_obj *obj)
+ 	}
+ }
+ 
++#ifdef CONFIG_HOTPLUG_CPU
++static int object_cpu_offline(unsigned int cpu)
++{
++	struct debug_percpu_free *percpu_pool;
++	struct hlist_node *tmp;
++	struct debug_obj *obj;
++
++	percpu_pool = per_cpu_ptr(&percpu_obj_pool, cpu);
++	hlist_for_each_entry_safe(obj, tmp, &percpu_pool->free_objs, node) {
++		hlist_del(&obj->node);
++		kmem_cache_free(obj_cache, obj);
++	}
++	percpu_pool->obj_free = 0;
++
++	return 0;
++}
++#endif
++
+ /*
+  * We run out of memory. That means we probably have tons of objects
+  * allocated.
+@@ -1367,6 +1386,11 @@ void __init debug_objects_mem_init(void)
+ 	} else
+ 		debug_objects_selftest();
+ 
++#ifdef CONFIG_HOTPLUG_CPU
++	cpuhp_setup_state_nocalls(CPUHP_DEBUG_OBJ_DEAD, "object:offline", NULL,
++					object_cpu_offline);
++#endif
++
+ 	/*
+ 	 * Increase the thresholds for allocating and freeing objects
+ 	 * according to the number of possible CPUs available in the system.
+-- 
+2.17.1
+
