@@ -2,80 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF210275D2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5407275D2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 18:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726620AbgIWQRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 12:17:41 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:54726 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726156AbgIWQRl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 12:17:41 -0400
-Received: from zn.tnic (p200300ec2f0d130017aaf728a0fb4ec3.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:1300:17aa:f728:a0fb:4ec3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D7FC71EC02F2;
-        Wed, 23 Sep 2020 18:17:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600877860;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=9vrgG+z3uy4woKxYpCo5bmuVsjyUBzW3v2CH/Pl0oAc=;
-        b=bUE37NEwPM40nczvs2/wga4QZhAksPnXS9MY18KWeQVXJecV+W77oKZ7RfDHgHuAPCqkcp
-        hKhbun0mIlGEH0VsecsvQbCsVCPntncGULXHHfysZvfLpmH9CEN332GOT3q9suDiGqNK1u
-        U6XXUkhaUuNMVyXzP8PJZZ7JS2fLj4k=
-Date:   Wed, 23 Sep 2020 18:17:33 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jethro Beekman <jethro@fortanix.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, sean.j.christopherson@intel.com,
-        tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v38 17/24] x86/sgx: ptrace() support for the SGX driver
-Message-ID: <20200923161733.GP28545@zn.tnic>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-18-jarkko.sakkinen@linux.intel.com>
- <20200922154424.GL22660@zn.tnic>
- <20200923132037.GA5160@linux.intel.com>
+        id S1726596AbgIWQS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 12:18:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgIWQS1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 12:18:27 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34977C0613CE;
+        Wed, 23 Sep 2020 09:18:27 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id k133so9930390pgc.7;
+        Wed, 23 Sep 2020 09:18:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ppUCNhLmOopuimPTANSvO30QCF1CC2nP4YDFFJTQF2w=;
+        b=FusmfOx/YO6EPSrv5/bO4uoPq0+JLceZT58dKLsNT7DaXT2MLAFkLulIkjimQFOK3p
+         sQZh7DFa5gphpwuW3jakn7iPOKNWMfH0g9iFxPrKAYWy08tc02lG+eG3JQ/k2IKDkEE4
+         W6c66n9v93lLZ1uHiFwAjV9hpbNvpBsUe1oD83p95RKpi38taTH7/0z+SaBe52nHcyJc
+         t+U0ftW7IeK7CCmUz30i134cAUq6CEpJNg1lJe5KWWqqichj0rFGMHrSkkyVlgxcvePW
+         kbWGw3UeFIaCGrV1l3hbLqVWPx/afYrubDcXY39hkaN1ALAnOcI4PkxAhL+j/njAI8f/
+         nYcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ppUCNhLmOopuimPTANSvO30QCF1CC2nP4YDFFJTQF2w=;
+        b=cV/wuWdCHk2Dv9+1JqEVLSBJCQ+2FOb7Vn1gBzq+wIDTyF3wkv3hTQ9Cq/hcitfWE0
+         HMrri6pytLQbaZfhZS0fUn4GE1/mVNpBRarwlKEUKQ1OhJtEXkAZeD5U9ayrnKuzeAk0
+         wQYyxf4e4ja5DP7LJU239qvl+E1CzG1AcAV/RJ8ziYp4GBJ6inecWFblZ1Ae+oIG5rHQ
+         tNuvUkPuUshvHh8VpUqfQ6f6VktZ1HO61TSNpTGwlp8eL9RC9+EW5TRzm/Z1yAwVwqoO
+         WEss5cJkEwNk1fdqH2DqBHYF+UC5KRiv7ucQI6SlF5d5d9oUoReh5uJ0+M0P21CmoCrR
+         8MYw==
+X-Gm-Message-State: AOAM532hl/PlttyU4GIQWbOxPpAWdPUzgYiZTmhdpsOfPL1iWA3+hGjz
+        +qQAasCUHFm++0RCMUEfIcCGXN9MpqL1BZh6YSsHfLqQACSVJ1rv
+X-Google-Smtp-Source: ABdhPJw64boQLBfmrOjrKgUJNkKCKaQfT2HQljqrpN1xDENoqeyiOr1/MyyXs/y6lfZ+Xvs4d8E9CT9fLQT1xZeeGq4=
+X-Received: by 2002:a63:d648:: with SMTP id d8mr462372pgj.4.1600877906782;
+ Wed, 23 Sep 2020 09:18:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200923132037.GA5160@linux.intel.com>
+References: <20200922023151.387447-1-warthog618@gmail.com> <20200922023151.387447-12-warthog618@gmail.com>
+In-Reply-To: <20200922023151.387447-12-warthog618@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 23 Sep 2020 19:18:08 +0300
+Message-ID: <CAHp75Vd6tb09n+okJmoPse992DeoPkJQHReNBo20FQNz1V2c5w@mail.gmail.com>
+Subject: Re: [PATCH v9 11/20] gpiolib: cdev: support GPIO_V2_LINE_SET_VALUES_IOCTL
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 04:20:49PM +0300, Jarkko Sakkinen wrote:
-> Intel Sofware Guard eXtensions (SGX) allows creation of executable blobs
-> called enclaves, which cannot be accessed by default when not executing
-> inside the enclave. Enclaves can be entered by only using predefined memory
-> addresses, which are defined the enclave is loaded.
-			      ^
-			      "when" or "before". I think it is before.
+On Tue, Sep 22, 2020 at 5:36 AM Kent Gibson <warthog618@gmail.com> wrote:
+>
+> Add support for the GPIO_V2_LINE_SET_VALUES_IOCTL.
 
-> However, enclaves can defined as debug enclaves during the load time. In
+> +static long linereq_set_values_unlocked(struct linereq *lr,
+> +                                       struct gpio_v2_line_values *lv)
+> +{
+> +       DECLARE_BITMAP(vals, GPIO_V2_LINES_MAX);
+> +       struct gpio_desc **descs;
+> +       unsigned int i, didx, num_set;
+> +       int ret;
+> +
+> +       bitmap_zero(vals, GPIO_V2_LINES_MAX);
+> +       for (num_set = 0, i = 0; i < lr->num_lines; i++) {
+> +               if (lv->mask & BIT_ULL(i)) {
 
-"However, enclaves can be defined as debug enclaves at load time."
+Similar idea
 
-> debug enclaves data can be read and/or written a memory word at a time by
-> using by using ENCLS[EDBGRD] and ENCLS[EDBGWR] leaf instructions.
+DECLARE_BITMAP(mask, 64) = BITMAP_FROM_U64(lv->mask);
 
-only one "by using" is enough.
+num_set = bitmap_weight();
 
-> Add 'access' implementation to vm_ops with the help of these functions.
+for_each_set_bit(i, mask, lr->num_lines)
 
-"Add an ->access virtual MM function for accessing the enclave's memory... "
+
+> +                       if (!test_bit(FLAG_IS_OUT, &lr->lines[i].desc->flags))
+> +                               return -EPERM;
+> +                       if (lv->bits & BIT_ULL(i))
+> +                               __set_bit(num_set, vals);
+> +                       num_set++;
+> +                       descs = &lr->lines[i].desc;
+> +               }
+> +       }
+> +       if (num_set == 0)
+> +               return -EINVAL;
+> +
+> +       if (num_set != 1) {
+> +               /* build compacted desc array and values */
+> +               descs = kmalloc_array(num_set, sizeof(*descs), GFP_KERNEL);
+> +               if (!descs)
+> +                       return -ENOMEM;
+> +               for (didx = 0, i = 0; i < lr->num_lines; i++) {
+> +                       if (lv->mask & BIT_ULL(i)) {
+> +                               descs[didx] = lr->lines[i].desc;
+> +                               didx++;
+> +                       }
+> +               }
+> +       }
+> +       ret = gpiod_set_array_value_complex(false, true, num_set,
+> +                                           descs, NULL, vals);
+> +
+> +       if (num_set != 1)
+> +               kfree(descs);
+> +       return ret;
+> +}
+> +
+> +static long linereq_set_values(struct linereq *lr, void __user *ip)
+> +{
+> +       struct gpio_v2_line_values lv;
+> +       int ret;
+> +
+> +       if (copy_from_user(&lv, ip, sizeof(lv)))
+> +               return -EFAULT;
+> +
+> +       mutex_lock(&lr->config_mutex);
+> +
+> +       ret = linereq_set_values_unlocked(lr, &lv);
+> +
+> +       mutex_unlock(&lr->config_mutex);
+> +
+> +       return ret;
+> +}
+> +
+>  static long linereq_set_config_unlocked(struct linereq *lr,
+>                                         struct gpio_v2_line_config *lc)
+>  {
+> @@ -889,6 +948,8 @@ static long linereq_ioctl(struct file *file, unsigned int cmd,
+>
+>         if (cmd == GPIO_V2_LINE_GET_VALUES_IOCTL)
+>                 return linereq_get_values(lr, ip);
+> +       else if (cmd == GPIO_V2_LINE_SET_VALUES_IOCTL)
+> +               return linereq_set_values(lr, ip);
+>         else if (cmd == GPIO_V2_LINE_SET_CONFIG_IOCTL)
+>                 return linereq_set_config(lr, ip);
+>
+> --
+> 2.28.0
+>
+
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+With Best Regards,
+Andy Shevchenko
