@@ -2,104 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D93DF275B26
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D610275B28
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgIWPGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 11:06:41 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:47234 "EHLO m42-4.mailgun.net"
+        id S1726693AbgIWPGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 11:06:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726156AbgIWPGk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 11:06:40 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600873600; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=IaimSPUJbwscieRTas1qOVe4R5tD4hrlB8skTNUaUyU=; b=t9LG8jfPI55Ogvr76oLpR8UHiPsHdvUSrA6BTs1rnRxAH576CvT+RT8Sncu8jxsXNaiYY9Q1
- fCazWmClwQcnk3oTmp3zZBtH2mqZhDEtDxxaJ7N5jw7k1XG36c87Zf2zfmoYScrfXKvrcJWK
- cbL1VI0fMV0ewVKPO2pnivPvBfQ=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5f6b6470429250c1dd98e7fe (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 23 Sep 2020 15:06:24
- GMT
-Sender: jcrouse=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 26293C43382; Wed, 23 Sep 2020 15:06:24 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        id S1726156AbgIWPGm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 11:06:42 -0400
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3AD2AC433C8;
-        Wed, 23 Sep 2020 15:06:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3AD2AC433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
-Date:   Wed, 23 Sep 2020 09:06:19 -0600
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     Zhenzhong Duan <zhenzhong.duan@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, robdclark@gmail.com, sean@poorly.run,
-        airlied@linux.ie, daniel@ffwll.ch, smasetty@codeaurora.org,
-        jonathan@marek.ca, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        Markus.Elfring@web.de
-Subject: Re: [PATCH v2] drm/msm/a6xx: Fix a size determination in
- a6xx_get_indexed_registers()
-Message-ID: <20200923150618.GE31425@jcrouse1-lnx.qualcomm.com>
-Mail-Followup-To: Zhenzhong Duan <zhenzhong.duan@gmail.com>,
-        linux-kernel@vger.kernel.org, robdclark@gmail.com, sean@poorly.run,
-        airlied@linux.ie, daniel@ffwll.ch, smasetty@codeaurora.org,
-        jonathan@marek.ca, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        Markus.Elfring@web.de
-References: <20200914022949.129-1-zhenzhong.duan@gmail.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 9AE5D23119;
+        Wed, 23 Sep 2020 15:06:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600873601;
+        bh=OvVQCoqK76PnVayVef+eyOe3qVoNcxHgcMGbxGzsbms=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=c8JWlEocwvO1ONAyQcrbBNKereMYLF+HXvsetBwE70zA/8YKWPwhaP3fCYsJYunho
+         AkvwuUInDaSlp1fJsT06+rxZ+Qsc8l0pskNz6994SDs8CbfVwL2Xn2DidODsn8MgLx
+         6JKQppjSNk5zWJvPoacLlNvZw8j+61u+mLrcoJNs=
+Received: by mail-ej1-f42.google.com with SMTP id z23so40320ejr.13;
+        Wed, 23 Sep 2020 08:06:41 -0700 (PDT)
+X-Gm-Message-State: AOAM531SWrq17zinprjGrI6jOSVHQfSZGEU4LjCBELtzyfAIKItGHMHY
+        xL0gwBZr8zR8+bFs9yRdxGVVzsd5yTYSuhwlN3U=
+X-Google-Smtp-Source: ABdhPJw2OR65sE0ouKRBJG8zu9JqRIJtV6E2+4agvXD5tSdjXqiFUk+yeliH8xvrLDUXbKzW19aU6o7AJ+uEzRoHji4=
+X-Received: by 2002:a17:906:4046:: with SMTP id y6mr119390ejj.148.1600873600132;
+ Wed, 23 Sep 2020 08:06:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914022949.129-1-zhenzhong.duan@gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <1599031090-21608-1-git-send-email-krzk@kernel.org>
+ <20200914201310.GA154873@bogus> <20200921112635.GA1233@kozik-lap> <CAL_Jsq+gT3WSCAsKTrjZMh+vF4mx-m51rO=Wv+YcNxNhjEoO8A@mail.gmail.com>
+In-Reply-To: <CAL_Jsq+gT3WSCAsKTrjZMh+vF4mx-m51rO=Wv+YcNxNhjEoO8A@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Wed, 23 Sep 2020 17:06:27 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPe7KgRLzrqMrWgmVcimvGO5N3028NPwJgXzZb76gz2MuQ@mail.gmail.com>
+Message-ID: <CAJKOXPe7KgRLzrqMrWgmVcimvGO5N3028NPwJgXzZb76gz2MuQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: media: imx258: Add bindings for
+ IMX258 sensor
+To:     Rob Herring <robh@kernel.org>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 10:29:49AM +0800, Zhenzhong Duan wrote:
-> It's allocating an array of a6xx_gpu_state_obj structure rather than
-> its pointers.
-> 
-> Fixes: d6852b4b2d01 ("drm/msm/a6xx: Track and manage a6xx state memory")
-> Signed-off-by: Zhenzhong Duan <zhenzhong.duan@gmail.com>
+On Tue, 22 Sep 2020 at 21:23, Rob Herring <robh@kernel.org> wrote:
+>
+> > > If this is the only config, why does it need to be in DT?
+> >
+> > The sensor is capable of two settings: two lanes (1 and 2) and four
+> > lanes described above.  However Linux driver requires the latter (four
+> > lanes, 1+2+3+4).
+> >
+> > If I were to describe the bindings for HW, someone would really be
+> > confused and try to use two lanes setup, which won't work. Driver won't
+> > allow it.
+>
+> If someone has h/w with only 2 lanes connected, then they have to go
+> add support to the driver whether we've documented 2 lanes in the
+> binding or not.
+>
+> > I understand that bindings document the HW and describe its interface
+> > but do we really want to put "theoretical" bindings which cannot be used
+> > in practice with Linux kernel?
+> >
+> > If yes, how to nicely document this that only one setting is currently
+> > working?
+>
+> You don't, at least in the binding. That's a driver issue. Bindings
+> are separate. They are stored in the kernel tree for convenience, not
+> because they are part of the kernel.
 
-Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
-> ---
-> v2: Update commit message per Markus, thanks
-> 
->  drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
-> index b12f5b4..e9ede19 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
-> @@ -875,7 +875,7 @@ static void a6xx_get_indexed_registers(struct msm_gpu *gpu,
->  	int i;
->  
->  	a6xx_state->indexed_regs = state_kcalloc(a6xx_state, count,
-> -		sizeof(a6xx_state->indexed_regs));
-> +		sizeof(*a6xx_state->indexed_regs));
->  	if (!a6xx_state->indexed_regs)
->  		return;
->  
-> -- 
-> 1.8.3.1
-> 
+Mhmm... okay. I already sent v3 for this with fixed four lanes so I
+will re-spin with 2 or 4 lanes setup.
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Thanks for the review!
+
+Best regards,
+Krzysztof
