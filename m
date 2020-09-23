@@ -2,67 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F26027549D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 11:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70FDD2754A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 11:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726332AbgIWJg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 05:36:58 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:52774 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726102AbgIWJg6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 05:36:58 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 70B9F4AB2FB939EC5AFB;
-        Wed, 23 Sep 2020 17:36:52 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 23 Sep 2020 17:36:42 +0800
-From:   Qi Liu <liuqi115@huawei.com>
-To:     <zhangshaokun@hisilicon.com>, <will@kernel.org>,
-        <mark.rutland@arm.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH] drivers/perf: hisi: Fix typo in HiSilicon DDRC driver
-Date:   Wed, 23 Sep 2020 17:35:29 +0800
-Message-ID: <1600853729-37985-1-git-send-email-liuqi115@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S1726497AbgIWJjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 05:39:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726253AbgIWJjU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 05:39:20 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A51C0613CE;
+        Wed, 23 Sep 2020 02:39:19 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id z4so20251574wrr.4;
+        Wed, 23 Sep 2020 02:39:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=D1hykoJlnCEeW9Ghu+9NT8UmdNa8KDWJIzw0nB++G+o=;
+        b=aNZZ3zh3dXHZq+DEvmi7EBk7MW0F6CK2wfzsWMJi/8ksphUU3JgVFvXpnudNyt3YSG
+         mVFenqW5r0JRO70qWqa9wmqnlwxBHrH+NqiadFbxeE/lGAhjtpBAAXmzUBs+sCJq+qn1
+         DZbT59o/7j6ma2DJmPzo1nwjUeEWimkKNrYifnXRU03vECyGHTW4b/Ox0VaqAXSj0HGW
+         wmiVetpwyPlDi7l/KCJxBHL6YFLEKUSPikWDm2BBLQ/wa+LE09UxwChRaIyGq5TZqxFm
+         bosvRPYRrRPojzUcd6XrPsDwxGeOayfFDwAy1XF7p4b2iVwLkxQl3m3aTvlHu4l7QGS8
+         IYYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=D1hykoJlnCEeW9Ghu+9NT8UmdNa8KDWJIzw0nB++G+o=;
+        b=W3uAn563S9JHHf9decIHERQdKF/K0XS1OJ7jiNiiuPYSdd9BNpbt2iuHC4Ec1ihtTp
+         qaT+i4rP67uP7tYNN9dsTMWZW2RqZBV3cd1Y8MYrAEAPJL3qFyWFluX+2fRWim5TPLqa
+         iWbBrflmU6HKf7/bAEr4Y6tvZdpTYACS6aFDRUacyIa3CwXKJOqo1eC19nXNU+IU04jd
+         aSWY47xvyDqTi0dHF8ivoJYG/OsOBNysPfsaZYbJnHAQsKgxTLewT0Ua6tIcehN/VewI
+         Bi/5zewMw4wtyIu3duCM4FhO+1FHHhjvTQpc38/myyKqQN1viPTFxAsY2k/sAWJd163j
+         x56g==
+X-Gm-Message-State: AOAM5323h8ofNCApCTIg/X3UAQgb97yFaK6SXTSOjiB+Jqn3dWJpdm0W
+        H09v5jXqwUtXGxgqlQ6G+DI=
+X-Google-Smtp-Source: ABdhPJza60wC4/rfImEEWz0r/cdUr/7aJlKJeSHoy/5KQ0fM/QJ0m+D6tCiwl/7pIL0vXx6Sonergw==
+X-Received: by 2002:a5d:60d0:: with SMTP id x16mr9981993wrt.196.1600853957992;
+        Wed, 23 Sep 2020 02:39:17 -0700 (PDT)
+Received: from [192.168.1.211] ([95.144.134.217])
+        by smtp.gmail.com with ESMTPSA id c205sm7680655wmd.33.2020.09.23.02.39.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Sep 2020 02:39:17 -0700 (PDT)
+Subject: Re: [RFC PATCH] Add bridge driver to connect sensors to CIO2 device
+ via software nodes on ACPI platforms
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     yong.zhi@intel.com, bingbu.cao@intel.com, tian.shu.qiu@intel.com,
+        mchehab@kernel.org, gregkh@linuxfoundation.org,
+        davem@davemloft.net, robh@kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        jorhand@linux.microsoft.com, kitakar@gmail.com,
+        kieran.bingham@ideasonboard.com, andriy.shevchenko@linux.intel.com
+References: <20200916213618.8003-1-djrscally@gmail.com>
+ <20200917103343.GW26842@paasikivi.fi.intel.com>
+From:   Dan Scally <djrscally@gmail.com>
+Message-ID: <c2bb9d22-6914-ed59-6c77-a0020e2faed5@gmail.com>
+Date:   Wed, 23 Sep 2020 10:39:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200917103343.GW26842@paasikivi.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix up typo in function hisi_ddrc_pmu_write_evtype(), and the whitespace
-in function hisi_ddrc_pmu_module_exit()
+Hi Sakari
 
-Signed-off-by: Qi Liu <liuqi115@huawei.com>
----
- drivers/perf/hisilicon/hisi_uncore_ddrc_pmu.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+On 17/09/2020 11:33, Sakari Ailus wrote:
+>> +		ret = software_node_register_nodes(nodes);
+>> +		if (ret) {
+>> +			dev_err(dev,
+>> +				"Failed to register software nodes for %s\n",
+>> +				supported_devices[i]);
+>> +			return ret;
+>> +		}
+>> +
+>> +		fwnode = software_node_fwnode(&nodes[SWNODE_SENSOR_HID]);
+>> +		if (!fwnode) {
+>> +			dev_err(dev,
+>> +				"Failed to get software node for %s\n",
+>> +				supported_devices[i]);
+>> +			return ret;
+>> +		}
+>> +
+>> +		fwnode->secondary = ERR_PTR(-ENODEV);
+>> +		dev->fwnode = fwnode;
+>> +
+>> +		/*
+>> +		 * The device should by this point has driver_data set to an
+>> +		 * instance of struct v4l2_subdev; set the fwnode for that too.
+>> +		 */
+>> +
+>> +		sd = dev_get_drvdata(dev);
+>> +		sd->fwnode = fwnode;
+> I'm a bit lost here. Isn't it enough to have the sensor device's fwnode,
+> and to use that for V4L2 async fwnode matching (as usual)?
 
-diff --git a/drivers/perf/hisilicon/hisi_uncore_ddrc_pmu.c b/drivers/perf/hisilicon/hisi_uncore_ddrc_pmu.c
-index 5e3645c..e6fe4b8 100644
---- a/drivers/perf/hisilicon/hisi_uncore_ddrc_pmu.c
-+++ b/drivers/perf/hisilicon/hisi_uncore_ddrc_pmu.c
-@@ -93,7 +93,7 @@ static void hisi_ddrc_pmu_write_counter(struct hisi_pmu *ddrc_pmu,
-  * For DDRC PMU, event has been mapped to fixed-purpose counter by hardware,
-  * so there is no need to write event type.
-  */
--static void hisi_ddrc_pmu_write_evtype(struct hisi_pmu *hha_pmu, int idx,
-+static void hisi_ddrc_pmu_write_evtype(struct hisi_pmu *ddrc_pmu, int idx,
- 				       u32 type)
- {
- }
-@@ -450,7 +450,6 @@ static void __exit hisi_ddrc_pmu_module_exit(void)
- {
- 	platform_driver_unregister(&hisi_ddrc_pmu_driver);
- 	cpuhp_remove_multi_state(CPUHP_AP_PERF_ARM_HISI_DDRC_ONLINE);
--
- }
- module_exit(hisi_ddrc_pmu_module_exit);
+Just working through the changes everyone's suggested for the v2. For
+this one the reason it had to be this way is that
+v4l2_async_register_subdev() just picks up the fwnode from the device.
+If we wanted to just rely on that call as part of the sensor driver's
+probe() then we need to reprobe() the sensor in case it already probed
+before this code has managed to run, and reprobing after assigning the
+software_nodes as fwnode to the sensor no longer works - the long and
+short of that is that the ACPI matching portion of i2c_device_match()
+calls ACPI_COMPANION(dev), and that macro relies on dev->fwnode->ops
+being acpi_device_fwnode_ops which they no longer are. This is also the
+reason I was storing the original fwnode's of the sensor device and cio2
+device in the cio2-bridge; so that they could be restored if the module
+was removed.
 
---
-2.8.1
+
 
