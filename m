@@ -2,54 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 091492754FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 11:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD334275509
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726444AbgIWJ7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 05:59:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56872 "EHLO mail.kernel.org"
+        id S1726415AbgIWKEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 06:04:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56774 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgIWJ7s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 05:59:48 -0400
-Received: from localhost (unknown [122.171.175.143])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 073932076A;
-        Wed, 23 Sep 2020 09:59:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600855187;
-        bh=gXbJ4m3EOZZIo68OmhBK/pSuASydiqJQCDYHTsm+A+c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q7moUM9hDNa6yVYV/Akfr9mwsSyjdfx8/42T8ZXZRBMg90PB2MQuTDYLxRv1bb4qM
-         IoNY7sguQBc5ZM1dFosz2A7rqM5uKycTMqJFhpk+1lhsN8xevBwjEs/HupwvNbvuq6
-         6Jm3p0c6Mmh5nivWGzz+jIrZfPesiZ8AMOnbCjY8=
-Date:   Wed, 23 Sep 2020 15:29:39 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, jank@cadence.com,
-        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        mengdong.lin@intel.com, bard.liao@intel.com
-Subject: Re: [PATCH 0/3] soundwire: enable Data Port test modes
-Message-ID: <20200923095939.GE2968@vkoul-mobl>
-References: <20200920193207.31241-1-yung-chuan.liao@linux.intel.com>
+        id S1726130AbgIWKEH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 06:04:07 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C3226B207;
+        Wed, 23 Sep 2020 10:04:42 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 3BB141E12E3; Wed, 23 Sep 2020 12:04:05 +0200 (CEST)
+Date:   Wed, 23 Sep 2020 12:04:05 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Peilin Ye <yepeilin.cs@gmail.com>
+Cc:     Jan Kara <jack@suse.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [Linux-kernel-mentees] [PATCH] udf: Fix memory leak in
+ udf_process_sequence()
+Message-ID: <20200923100405.GD6719@quack2.suse.cz>
+References: <0000000000004c1f4d05afcff2f4@google.com>
+ <20200922154531.153922-1-yepeilin.cs@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200920193207.31241-1-yung-chuan.liao@linux.intel.com>
+In-Reply-To: <20200922154531.153922-1-yepeilin.cs@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-09-20, 03:32, Bard Liao wrote:
-> Test modes are required for all SoundWire IP, and help debug
-> integration issues. This series adds debugfs support and data
-> port test fail interrupt to enable data port test mode feature
-> on Intel platforms. 
+On Tue 22-09-20 11:45:31, Peilin Ye wrote:
+> udf_process_sequence() is leaking memory. Free `data.part_descs_loc`
+> before returning.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 7b78fd02fb19 ("udf: Fix handling of Partition Descriptors")
+> Reported-and-tested-by: syzbot+128f4dd6e796c98b3760@syzkaller.appspotmail.com
+> Link: https://syzkaller.appspot.com/bug?id=c5ec4e6f5d818f3c4afd4d59342468eec08a38da
+> Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
 
-Applied, thanks
+Thanks for the patch but I've just yesterday written exactly the same patch
+and merged it to my tree...
 
+								Honza
+
+> ---
+>  fs/udf/super.c | 20 +++++++++++++-------
+>  1 file changed, 13 insertions(+), 7 deletions(-)
+> 
+> diff --git a/fs/udf/super.c b/fs/udf/super.c
+> index 1c42f544096d..b0d862ab3024 100644
+> --- a/fs/udf/super.c
+> +++ b/fs/udf/super.c
+> @@ -1698,7 +1698,8 @@ static noinline int udf_process_sequence(
+>  					"Pointers (max %u supported)\n",
+>  					UDF_MAX_TD_NESTING);
+>  				brelse(bh);
+> -				return -EIO;
+> +				ret = -EIO;
+> +				goto out;
+>  			}
+>  
+>  			vdp = (struct volDescPtr *)bh->b_data;
+> @@ -1718,7 +1719,8 @@ static noinline int udf_process_sequence(
+>  			curr = get_volume_descriptor_record(ident, bh, &data);
+>  			if (IS_ERR(curr)) {
+>  				brelse(bh);
+> -				return PTR_ERR(curr);
+> +				ret = PTR_ERR(curr);
+> +				goto out;
+>  			}
+>  			/* Descriptor we don't care about? */
+>  			if (!curr)
+> @@ -1740,28 +1742,32 @@ static noinline int udf_process_sequence(
+>  	 */
+>  	if (!data.vds[VDS_POS_PRIMARY_VOL_DESC].block) {
+>  		udf_err(sb, "Primary Volume Descriptor not found!\n");
+> -		return -EAGAIN;
+> +		ret = -EAGAIN;
+> +		goto out;
+>  	}
+>  	ret = udf_load_pvoldesc(sb, data.vds[VDS_POS_PRIMARY_VOL_DESC].block);
+>  	if (ret < 0)
+> -		return ret;
+> +		goto out;
+>  
+>  	if (data.vds[VDS_POS_LOGICAL_VOL_DESC].block) {
+>  		ret = udf_load_logicalvol(sb,
+>  				data.vds[VDS_POS_LOGICAL_VOL_DESC].block,
+>  				fileset);
+>  		if (ret < 0)
+> -			return ret;
+> +			goto out;
+>  	}
+>  
+>  	/* Now handle prevailing Partition Descriptors */
+>  	for (i = 0; i < data.num_part_descs; i++) {
+>  		ret = udf_load_partdesc(sb, data.part_descs_loc[i].rec.block);
+>  		if (ret < 0)
+> -			return ret;
+> +			goto out;
+>  	}
+>  
+> -	return 0;
+> +	ret = 0;
+> +out:
+> +	kfree(data.part_descs_loc);
+> +	return ret;
+>  }
+>  
+>  /*
+> -- 
+> 2.25.1
+> 
 -- 
-~Vinod
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
