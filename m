@@ -2,136 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17BBC2764A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:38:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 579412764AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 01:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726734AbgIWXhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 19:37:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726419AbgIWXhU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 19:37:20 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64C1DC0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:37:20 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id m15so582708pls.8
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 16:37:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3kSPJ43fJuwiBvEdY81hpG9H6DNbf9OCk668utuncwk=;
-        b=CJ4nRQsNPuX4zNSLx8SZnKpDLdLLrnHiBj0TwtUW+u1H2QkFpJgH7ZQuJ/WyVeVhBJ
-         8s3Mgbj7B2soK8NFHqX2vwFnhYWBtf0lhMQh04GeRNl07NiHswyY47M2C6dtl2xv8mlg
-         yAVzbkiJw+2jbr46vChgeq/yGLEOIO6TZLgaj2IskrmmQqBIQ5bCqT8hDq9OK1s3qHIX
-         bX2qzXOK6Ttj8lN5DD+ConDWQ9Wz/BIiQawXFGd1ogs1IVavJjcleF81o1JxtcLmAUT3
-         k8wc3rdvy8UfJcixXHxeSMyoiVKf2QqMGUDPcYqdvoxMOtI1aTYUysfmfsIgkDmvsX4x
-         Zk5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3kSPJ43fJuwiBvEdY81hpG9H6DNbf9OCk668utuncwk=;
-        b=MIE1GNpu+kw9c0KqEdzJrLGbZMJyQPrYjmj7PZ7UgZbNRUgXyTjgs35Ee8IH2TUh5T
-         X8CHpy4AXnb6QarD0g1ypc0qJuz4s8hYXKlBynB8L7EKw9cn/DHLSX65PusXaes+POUw
-         sXUCj46b4MtZkL5D6ts6twPFr2EtytUM8o9oop7Qpv0VwjbiJrmGkBXnMeaoea/E7xr/
-         diD5AwbFY1iHR93VXCj65ajg+Fo7MzIYgmq9YoAxPk7s7zDhan63fFTLd9KbK4pAVk4u
-         rqpkXe9SsJM9fR0RWNU5yL41DW3t3QbX85OeMyQJH+W3hBNTE3ASSQFEk1A6T/2E6CJm
-         Y60A==
-X-Gm-Message-State: AOAM533J/b0y7BSw3OMIcozRmyOTG6kVmkY7MMwg7YShjCnIMJrfIUsU
-        ljxFLXziznjd9MqDjZDgOiYOEWgJP1TIJQIjCcBL8w==
-X-Google-Smtp-Source: ABdhPJxqKOf4uBMPjiL96YHaBfoMVeQln+/bfnett7ZuIBtWaCiGsCIaaTktTQG50NiR008PvSm7PhoRjJegMgaP86A=
-X-Received: by 2002:a17:90b:f18:: with SMTP id br24mr1504260pjb.32.1600904239727;
- Wed, 23 Sep 2020 16:37:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200923210655.4143682-1-irogers@google.com>
-In-Reply-To: <20200923210655.4143682-1-irogers@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 23 Sep 2020 16:37:08 -0700
-Message-ID: <CAKwvOd=V6QFoAmYEVNjHKuOyWG8agjzxwan2EmkuZcQjv6qJ0g@mail.gmail.com>
-Subject: Re: [PATCH] perf test: Fix msan uninitialized use.
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726828AbgIWXiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 19:38:09 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:51996 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726794AbgIWXiI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 19:38:08 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600904288; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=gUzIjt7P4SHEi06/OHoGDRBOZQ31S29WQXIO8JR8Ev4=; b=TosuF63mwpG29nYF18830OmlRn2RQFc3hDkbY9DVt4XDV3DRHu49YkIZsLK4OWSIqBGWVjYc
+ mxr0l/X6gIZxPW5GaYEfIE9y9TzacaPuIBhOgfqSRvwn8CZlum+pqNf7ZHMq6IxGQE3QKJBI
+ ajTO1gc9LUll0Lo+OfaKMF8ylOs=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5f6bdc56429250c1dda4e95d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 23 Sep 2020 23:37:58
+ GMT
+Sender: psodagud=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C7051C433F1; Wed, 23 Sep 2020 23:37:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from th-lint-038.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: psodagud)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8777DC433C8;
+        Wed, 23 Sep 2020 23:37:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8777DC433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=psodagud@codeaurora.org
+From:   Prasad Sodagudi <psodagud@codeaurora.org>
+To:     rostedt@goodmis.org, tglx@linutronix.de, qais.yousef@arm.com,
+        peterz@infradead.org, mingo@kernel.org, cai@lca.pw,
+        tyhicks@canonical.com, arnd@arndb.de
+Cc:     rameezmustafa@codeaurora.org, linux-kernel@vger.kernel.org,
+        Prasad Sodagudi <psodagud@codeaurora.org>
+Subject: [PATCH 0/2] measure latency of cpu hotplug path
+Date:   Wed, 23 Sep 2020 16:37:44 -0700
+Message-Id: <1600904266-102397-1-git-send-email-psodagud@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 2:07 PM 'Ian Rogers' via Clang Built Linux
-<clang-built-linux@googlegroups.com> wrote:
->
-> Ensure 'st' is initialized before an error branch is taken.
-> Fixes test "67: Parse and process metrics" with LLVM msan:
-> ==6757==WARNING: MemorySanitizer: use-of-uninitialized-value
->     #0 0x5570edae947d in rblist__exit tools/perf/util/rblist.c:114:2
->     #1 0x5570edb1c6e8 in runtime_stat__exit tools/perf/util/stat-shadow.c:141:2
->     #2 0x5570ed92cfae in __compute_metric tools/perf/tests/parse-metric.c:187:2
->     #3 0x5570ed92cb74 in compute_metric tools/perf/tests/parse-metric.c:196:9
->     #4 0x5570ed92c6d8 in test_recursion_fail tools/perf/tests/parse-metric.c:318:2
->     #5 0x5570ed92b8c8 in test__parse_metric tools/perf/tests/parse-metric.c:356:2
->     #6 0x5570ed8de8c1 in run_test tools/perf/tests/builtin-test.c:410:9
->     #7 0x5570ed8ddadf in test_and_print tools/perf/tests/builtin-test.c:440:9
->     #8 0x5570ed8dca04 in __cmd_test tools/perf/tests/builtin-test.c:661:4
->     #9 0x5570ed8dbc07 in cmd_test tools/perf/tests/builtin-test.c:807:9
->     #10 0x5570ed7326cc in run_builtin tools/perf/perf.c:313:11
->     #11 0x5570ed731639 in handle_internal_command tools/perf/perf.c:365:8
->     #12 0x5570ed7323cd in run_argv tools/perf/perf.c:409:2
->     #13 0x5570ed731076 in main tools/perf/perf.c:539:3
->
-> Fixes: commit f5a56570a3f2 ("perf test: Fix memory leaks in parse-metric test")
-> Signed-off-by: Ian Rogers <irogers@google.com>
+There are all changes related to cpu hotplug path and would like to seek
+upstream review. These are all patches in Qualcomm downstream kernel
+for a quite long time. First patch sets the rt prioity to hotplug
+task and second patch adds cpuhp trace events.
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+1) cpu-hotplug: Always use real time scheduling when hotplugging a CPU
+2) cpu/hotplug: Add cpuhp_latency trace event
 
-Orthogonal:
-The case where metricgroup__parse_groups_test() can fail in
-__compute_metric() also looks curious. Should &metric_events be passed
-to metricgroup__rblist_exit() in that case?
+Example logs:-  
+cpu online -
+         cpuhp/4-200   [004] ....   223.891886: cpuhp_enter: cpu: 0004 target: 213 step: 212 (sched_cpu_activate)
+         cpuhp/4-200   [004] ....   223.891894: cpuhp_exit:  cpu: 0004  state: 212 step: 212 ret: 0
+              sh-176   [000] ....   223.891912: cpuhp_exit:  cpu: 0004  state: 213 step:  86 ret: 0
+              sh-176   [000] ....   223.891915: cpuhp_latency:  cpu:4 state:online latency:3874 USEC ret: 0
 
-> ---
->  tools/perf/tests/parse-metric.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/perf/tests/parse-metric.c b/tools/perf/tests/parse-metric.c
-> index aea4f970fccc..7c1bde01cb50 100644
-> --- a/tools/perf/tests/parse-metric.c
-> +++ b/tools/perf/tests/parse-metric.c
-> @@ -157,6 +157,7 @@ static int __compute_metric(const char *name, struct value *vals,
->         }
->
->         perf_evlist__set_maps(&evlist->core, cpus, NULL);
-> +       runtime_stat__init(&st);
->
->         /* Parse the metric into metric_events list. */
->         err = metricgroup__parse_groups_test(evlist, &map, name,
-> @@ -170,7 +171,6 @@ static int __compute_metric(const char *name, struct value *vals,
->                 goto out;
->
->         /* Load the runtime stats with given numbers for events. */
-> -       runtime_stat__init(&st);
->         load_runtime_stat(&st, evlist, vals);
->
->         /* And execute the metric */
-> --
-> 2.28.0.681.g6f77f65b4e-goog
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200923210655.4143682-1-irogers%40google.com.
+cpu offline - 
+              sh-176   [000] ....   265.193490: cpuhp_exit:  cpu: 0004  state:   2 step:   2 ret: 0
+              sh-176   [000] ....   265.193494: cpuhp_latency:  cpu:4 state:offline latency:57431 USEC ret: 0
 
 
+Prasad Sodagudi (1):
+  cpu/hotplug: Add cpuhp_latency trace event
+
+Syed Rameez Mustafa (1):
+  cpu-hotplug: Always use real time scheduling when hotplugging a CPU
+
+ include/trace/events/cpuhp.h | 29 +++++++++++++++++++++++++
+ kernel/cpu.c                 | 50 ++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 79 insertions(+)
 
 -- 
-Thanks,
-~Nick Desaulniers
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
