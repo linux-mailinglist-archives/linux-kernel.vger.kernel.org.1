@@ -2,88 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9166275AE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A01275B07
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 17:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726701AbgIWO7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 10:59:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgIWO7M (ORCPT
+        id S1726621AbgIWPAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 11:00:54 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:15590 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgIWPAy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 10:59:12 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B643C0613CE;
-        Wed, 23 Sep 2020 07:59:12 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kL6EX-004bOc-Io; Wed, 23 Sep 2020 14:59:01 +0000
-Date:   Wed, 23 Sep 2020 15:59:01 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        David Laight <David.Laight@aculab.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-aio@kvack.org, io-uring@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        netdev@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH 5/9] fs: remove various compat readv/writev helpers
-Message-ID: <20200923145901.GN3421308@ZenIV.linux.org.uk>
-References: <20200923060547.16903-1-hch@lst.de>
- <20200923060547.16903-6-hch@lst.de>
- <20200923142549.GK3421308@ZenIV.linux.org.uk>
- <20200923143251.GA14062@lst.de>
+        Wed, 23 Sep 2020 11:00:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1600873253; x=1632409253;
+  h=to:cc:from:subject:message-id:date:mime-version:
+   content-transfer-encoding;
+  bh=ncTiycxbLLLABb828Z5CFC0O0VQndKnHSZDh9Pb2FUA=;
+  b=rTmFAlorAGGAk+ILKIy10Y1JeVgXeMpaEnaYjejtXbzJCtfUxxXkp2hR
+   IeF+b4vChQD82MagQ0hvshtJ9I+nuXv/ltJUhXltE5V6SdBu0BZSYiSUi
+   wosUIlLQ7vIjmm795DSWyY2r1TmCBiqj6lBD7o6REiPBpcTRrrPaZohlX
+   Q=;
+X-IronPort-AV: E=Sophos;i="5.77,293,1596499200"; 
+   d="scan'208";a="55868833"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-859fe132.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 23 Sep 2020 15:00:49 +0000
+Received: from EX13MTAUWC002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2b-859fe132.us-west-2.amazon.com (Postfix) with ESMTPS id 63C8F222BE2;
+        Wed, 23 Sep 2020 15:00:45 +0000 (UTC)
+Received: from EX13D12UWC002.ant.amazon.com (10.43.162.253) by
+ EX13MTAUWC002.ant.amazon.com (10.43.162.240) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 23 Sep 2020 15:00:45 +0000
+Received: from [10.95.178.71] (10.43.161.71) by EX13D12UWC002.ant.amazon.com
+ (10.43.162.253) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 23 Sep
+ 2020 15:00:43 +0000
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Xu <peterx@redhat.com>,
+        Kaitao Cheng <pilgrimtao@gmail.com>
+CC:     <linux-kernel@vger.kernel.org>
+From:   George Prekas <prekageo@amazon.com>
+Subject: [PATCH] latency improvement in __smp_call_single_queue
+Message-ID: <281da382-4511-e1df-6917-154a5914dd43@amazon.com>
+Date:   Wed, 23 Sep 2020 10:00:41 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200923143251.GA14062@lst.de>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.43.161.71]
+X-ClientProxiedBy: EX13D48UWB004.ant.amazon.com (10.43.163.74) To
+ EX13D12UWC002.ant.amazon.com (10.43.162.253)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 04:32:51PM +0200, Christoph Hellwig wrote:
-> On Wed, Sep 23, 2020 at 03:25:49PM +0100, Al Viro wrote:
-> > On Wed, Sep 23, 2020 at 08:05:43AM +0200, Christoph Hellwig wrote:
-> > >  COMPAT_SYSCALL_DEFINE3(readv, compat_ulong_t, fd,
-> > > -		const struct compat_iovec __user *,vec,
-> > > +		const struct iovec __user *, vec,
-> > 
-> > Um...  Will it even compile?
-> > 
-> > >  #ifdef __ARCH_WANT_COMPAT_SYS_PREADV64
-> > >  COMPAT_SYSCALL_DEFINE4(preadv64, unsigned long, fd,
-> > > -		const struct compat_iovec __user *,vec,
-> > > +		const struct iovec __user *, vec,
-> > 
-> > Ditto.  Look into include/linux/compat.h and you'll see
-> > 
-> > asmlinkage long compat_sys_preadv64(unsigned long fd,
-> >                 const struct compat_iovec __user *vec,
-> >                 unsigned long vlen, loff_t pos);
-> > 
-> > How does that manage to avoid the compiler screaming bloody
-> > murder?
-> 
-> That's a very good question.  But it does not just compile but actually
-> works.  Probably because all the syscall wrappers mean that we don't
-> actually generate the normal names.  I just tried this:
-> 
-> --- a/include/linux/syscalls.h
-> +++ b/include/linux/syscalls.h
-> @@ -468,7 +468,7 @@ asmlinkage long sys_lseek(unsigned int fd, off_t offset,
->  asmlinkage long sys_read(unsigned int fd, char __user *buf, size_t count);
->  asmlinkage long sys_write(unsigned int fd, const char __user *buf,
->                             size_t count);
-> -asmlinkage long sys_readv(unsigned long fd,
-> +asmlinkage long sys_readv(void *fd,
-> 
-> for fun, and the compiler doesn't care either..
+If an interrupt arrives between llist_add and
+send_call_function_single_ipi in the following code snippet, then the
+remote CPU will not receive the IPI in a timely manner and subsequent
+SMP calls even from other CPUs for other functions will be delayed:
 
-Try to build it for sparc or ppc...
+     if (llist_add(node, &per_cpu(call_single_queue, cpu)))
+         send_call_function_single_ipi(cpu);
+
+Note: llist_add returns 1 if it was empty before the operation.
+
+CPU 0                           | CPU 1                     | CPU 2
+__smp_call_single_q(2,f1)       | __smp_call_single_q(2,f2) |
+   llist_add returns 1           |                           |
+   interrupted                   |   llist_add returns 0     |
+       ...                       |   branch not taken        |
+       ...                       |                           |
+   resumed                       |                           |
+   send_call_function_single_ipi |                           |
+                                 |                           | f1
+                                 |                           | f2
+
+The call from CPU 1 for function f2 will be delayed because CPU 0 was
+interrupted.
+
+Signed-off-by: George Prekas <prekageo@amazon.com>
+---
+  kernel/smp.c | 4 ++++
+  1 file changed, 4 insertions(+)
+
+diff --git a/kernel/smp.c b/kernel/smp.c
+index aa17eedff5be..9dc679466cf0 100644
+--- a/kernel/smp.c
++++ b/kernel/smp.c
+@@ -135,6 +135,8 @@ static 
+DEFINE_PER_CPU_SHARED_ALIGNED(call_single_data_t, csd_data);
+
+  void __smp_call_single_queue(int cpu, struct llist_node *node)
+  {
++    unsigned long flags;
++
+      /*
+       * The list addition should be visible before sending the IPI
+       * handler locks the list to pull the entry off it because of
+@@ -146,8 +148,10 @@ void __smp_call_single_queue(int cpu, struct 
+llist_node *node)
+       * locking and barrier primitives. Generic code isn't really
+       * equipped to do the right thing...
+       */
++    local_irq_save(flags);
+      if (llist_add(node, &per_cpu(call_single_queue, cpu)))
+          send_call_function_single_ipi(cpu);
++    local_irq_restore(flags);
+  }
+
+  /*
+-- 
+2.16.6
+
+
