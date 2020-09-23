@@ -2,117 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5FCA27565F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08FA0275679
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 12:37:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726665AbgIWKai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 06:30:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726620AbgIWKai (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 06:30:38 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19738C0613CE;
-        Wed, 23 Sep 2020 03:30:38 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id jw11so2940840pjb.0;
-        Wed, 23 Sep 2020 03:30:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nP++NZ224p8zlGXJK1tGuiJs6j6iH4DYtzzmMH1lbLU=;
-        b=MEf1Do95YjkVTRjkgSLDwQmlFDPBYnD7B5zCT61hqQCC/M3lvEoYojHU8Ml0oQwL11
-         U35d39H9r357oaXWR0FJi/TIYdI7o0SJS+8IzNBzfMUdclT4O5VZsiokLioh8rYN1CQ0
-         KcXFG7mfAtNegt8lvej9k6t6uSN95WJ2TBF7HaCE6syh54Yx+IkoCamQ26UGbcTK/xlQ
-         ATx5TNLH8dgAEvcIEGIFrvFVbWm3ZW3V69jaX4NcYlfuRNHTvB+tHqzPziCSOxXf+dwG
-         f+ELVK2oRusE1dtgzoy7myMrycheMmEt4wwoxWCQEA61NpXLS6Hs9GxvPg1J1jK4wCRy
-         3M1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nP++NZ224p8zlGXJK1tGuiJs6j6iH4DYtzzmMH1lbLU=;
-        b=D0LB6V7l+z/C0w1gyK/78Z38bdhyfF1UuLv5j/nyRnJJrOOZZnSyc/b+I6Uaxzo4qB
-         1wrtiorTi7ZfgYisge1UkDb93zs5g+13NrE2GVsSNCOFCl0z3Zoy8Mv0pHuiW7GECF9H
-         MxzDk2yeQqtzoX9jVcmVjf/eKjKca28oyQ2JhjlTUzrWqEIUyy87rjYkNStGbHbi08+C
-         AswfNscQAvJltyUFfRTDzsDMKYPpzUQ1JXTxDpYTLcaFq1nfv+CN41+qIVyR09CLJrkI
-         ElLoRBapgDocRVZ4I77p3ok3hFHAdG/9vFBxca09MZi9KAsSyFJivjCPoRVPnjiARf6Q
-         wG1g==
-X-Gm-Message-State: AOAM530JJeTLT7ZqH14oUe7EsMEx7M5GVE+wbotp5SH0nRNmsk2ikQ/+
-        SQx7EulZm2h0onr8ylh6l4d8WhSPgKTPew==
-X-Google-Smtp-Source: ABdhPJzVgHX/nb1wRN/QuarS3kijpOYxBfZF/qRxvwAmrqGKPRBFAYNeHg+vrVkcu3zskwEpDrKTLw==
-X-Received: by 2002:a17:902:ab88:b029:d2:18ab:9a0e with SMTP id f8-20020a170902ab88b02900d218ab9a0emr9118351plr.56.1600857037540;
-        Wed, 23 Sep 2020 03:30:37 -0700 (PDT)
-Received: from sol (106-69-189-59.dyn.iinet.net.au. [106.69.189.59])
-        by smtp.gmail.com with ESMTPSA id s19sm17606398pfc.69.2020.09.23.03.30.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 03:30:36 -0700 (PDT)
-Date:   Wed, 23 Sep 2020 18:30:31 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v9 04/20] gpio: uapi: define uAPI v2
-Message-ID: <20200923103031.GA579645@sol>
-References: <20200922023151.387447-1-warthog618@gmail.com>
- <20200922023151.387447-5-warthog618@gmail.com>
- <CAHp75VewJYDQ1Moi4jw=wbBMLNpaUGPgz+AsPjNdZqtHCgkjwA@mail.gmail.com>
+        id S1726659AbgIWKh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 06:37:26 -0400
+Received: from hermes.cta.br ([161.24.235.5]:40214 "EHLO hermes.cta.br"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726130AbgIWKh0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 06:37:26 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by hermes.cta.br (Postfix) with ESMTP id CA4981707816;
+        Wed, 23 Sep 2020 03:05:32 -0300 (-03)
+Received: from hermes.cta.br ([127.0.0.1])
+        by localhost (hermes.cta.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id PnTd7I6ZPMc2; Wed, 23 Sep 2020 03:05:32 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by hermes.cta.br (Postfix) with ESMTP id 36B1C1564F26;
+        Wed, 23 Sep 2020 01:51:38 -0300 (-03)
+DKIM-Filter: OpenDKIM Filter v2.10.3 hermes.cta.br 36B1C1564F26
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cta.br;
+        s=50824260-A46F-11E8-B5E3-16F5207DEC71; t=1600836698;
+        bh=PEgy+RpcsckcVXxslQn6d+tc//P81+6V7lvSU9dRFp0=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=pM4UVQMRvxhuYy+aoSy5C6dTX22F7yEH7VZVUyHGz6GS4oV0PsgoJE8YP1B8z8XUw
+         1Qi9WtJati830rgGNLCeXO2u6g0d1oCt4Cq5pkxsBA83beZ2lWBuVVa1W8aherjQzF
+         72NjOdu3W+dtZkwC4BHJjN774xMGAiUYhx2Gasn0EKYk9OzjlCPjRPNFEP5rf0dDp0
+         qJ80u5JSIM+dxdSx768Idnmgn1XF/KihtXzjrHp58epL1mSpTwiTIwnyZwbU3SQJfT
+         LqYa6sp4DCe+rJgikuEIlHW+Bo+fCn7xJ6bLN4hL5AoRJ3nkCebxOZSi8hkUEEcJfU
+         RG9zqhMyvuV1w==
+X-Virus-Scanned: amavisd-new at cta.br
+Received: from hermes.cta.br ([127.0.0.1])
+        by localhost (hermes.cta.br [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 4bsXoCChTubC; Wed, 23 Sep 2020 01:51:37 -0300 (-03)
+Received: from [10.120.212.214] (unknown [105.12.3.179])
+        by hermes.cta.br (Postfix) with ESMTPSA id 56C9116E8E1C;
+        Wed, 23 Sep 2020 01:24:53 -0300 (-03)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VewJYDQ1Moi4jw=wbBMLNpaUGPgz+AsPjNdZqtHCgkjwA@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: spende von 2,000,000 euro
+To:     Recipients <scco@cta.br>
+From:   ''Tayeb souami'' <scco@cta.br>
+Date:   Wed, 23 Sep 2020 06:27:12 +0200
+Reply-To: Tayebsouam.spende@gmail.com
+Message-Id: <20200923042454.56C9116E8E1C@hermes.cta.br>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 01:04:05PM +0300, Andy Shevchenko wrote:
-> On Tue, Sep 22, 2020 at 5:34 AM Kent Gibson <warthog618@gmail.com> wrote:
-> >
+Hallo mein lieber Freund
+                                  Mein Name ist Tayeb Souami aus New Jersey=
+ in Amerika und ich habe den America Lottery Jackpot von 315 Millionen Euro=
+ gewonnen. Ich habe mich entschlossen, die Summe von 2.000.000 Euro an f=FC=
+nf gl=FCckliche Personen zu spenden, und Sie wurden als einer der Beg=FCnst=
+igten ausgew=E4hlt. Bitte klicken Sie auf diesen Link, um mehr =FCber meine=
+n Gewinn zu erfahren.
 
-[snip]
 
-> > There is also some minor renaming of fields for consistency compared to
-> > their v1 counterparts, e.g. offset rather than lineoffset or line_offset,
-> > and consumer rather than consumer_label.
-> >
-> > Additionally, v1 GPIOHANDLES_MAX becomes GPIO_V2_LINES_MAX in v2 for
-> > clarity, and the gpiohandle_data __u8 array becomes a bitmap in
-> > gpio_v2_line_values.
-> >
-> > The v2 uAPI is mostly a reorganisation and extension of v1, so userspace
-> > code, particularly libgpiod, should readily port to it.
-> 
-> ...
-> 
-> > +struct gpio_v2_line_config {
-> > +       __aligned_u64 flags;
-> > +       __u32 num_attrs;
-> 
-> > +       /* Pad to fill implicit padding and reserve space for future use. */
-> > +       __u32 padding[5];
-> 
-> Probably I somehow missed the answer, but why do we need 5 here and not 1?
-> 
+UHR MICH HIER: https://www.youtube.com/watch?v=3DZ6ui8ZDQ6Ks
 
-Sorry, I got tired of repeating myself, and just acked that we disagree
-on the approach here.
+Bitte kontaktieren Sie mich =FCber diese E-Mail: Tayebsouam.spende@gmail.com
 
-Your suggestion to use the size for version would result in an
-explosion of ioctl signatures - every time we add a field we have to add
-a new ioctl and handle it separately in gpio_ioctl() or linereq_ioctl().
 
-Instead what we do here is reserve some space for future use - that we
-can replace with fields without changing the signature.
-The padding is required to be zeroed now, and any future use will take
-a 0 to mean "leave alone".
+Ich hoffe, Sie und Ihre Familie gl=FCcklich zu machen.
 
-The sizes are a guestimate as to what may be needed in the future, and
-as such are almost certainly wrong - but hopefully on the high side.
-If that fails we can always fall back to your approach.
-
-Cheers,
-Kent.
+Gr=FC=DFe
+Herr Tayeb Souami
