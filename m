@@ -2,75 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C592759CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FC472759D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Sep 2020 16:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726668AbgIWOVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 10:21:20 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56154 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgIWOVU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 10:21:20 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600870879;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tZWkBOW6OkyhpRIUicvESlEm1fQJupW4N/xDOD1gvLc=;
-        b=Th4XZjSPlywXH6zCrM7dRqvtQDp/fjEjNRk//qQhxhFDqdpwg8cWymJ+mAtRzt5503Jpwl
-        oqI/f5UQ1RzPm60+DU2G6I4H8HG/3tzW8mykBylZ2wrfIGGbT94h3014agaNVmMh+TVh+b
-        G8SR8D939WpImyI4CKO44vvds1G44Ok=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6FBEAB29E;
-        Wed, 23 Sep 2020 14:21:56 +0000 (UTC)
-Message-ID: <1600870858.25088.1.camel@suse.com>
-Subject: Re: [PATCH 3/4] net: usb: rtl8150: use usb_control_msg_recv() and
- usb_control_msg_send()
-From:   Oliver Neukum <oneukum@suse.com>
-To:     Himadri Pandya <himadrispandya@gmail.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        pankaj.laxminarayan.bharadiya@intel.com,
-        Kees Cook <keescook@chromium.org>, yuehaibing@huawei.com,
-        petkan@nucleusys.com, ogiannou@gmail.com,
-        USB list <linux-usb@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Greg KH <gregkh@linuxfoundation.org>
-Date:   Wed, 23 Sep 2020 16:20:58 +0200
-In-Reply-To: <CAOY-YVkHycXqem_Xr6nQLgKEunk3MNc7dBtZ=5Aym4Y06vs9xQ@mail.gmail.com>
-References: <20200923090519.361-1-himadrispandya@gmail.com>
-         <20200923090519.361-4-himadrispandya@gmail.com>
-         <1600856557.26851.6.camel@suse.com>
-         <CAOY-YVkHycXqem_Xr6nQLgKEunk3MNc7dBtZ=5Aym4Y06vs9xQ@mail.gmail.com>
+        id S1726674AbgIWOWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 10:22:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726475AbgIWOWR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 10:22:17 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA704C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 07:22:17 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id e23so102569vsk.2
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 07:22:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=DfASuP4wTyn3pr6VYvm8A1z5RVX46kLf4FcH4npIyzc=;
+        b=D4nNydf+MHc+IWQZKD3zTZKNm9RDLRVf/ccFBiozGSMayUBpd+Nfk55jyjJJlWdo2s
+         90YZZJmlz465/26fH4FhpNPrJxICDVSVh2Ff7cg5G09PCizdTa00F5sZBtCRdeFfq4ne
+         OMvuIii0a+wdxKNhTqttw+N0+F6TAv10tlqac7xzm1uiix7bWROjgeT749p3o6BwunjP
+         r8QMKPmx8Plf5kRBoRJwNyyfI0qwKo1zWFMvUBgiXiGN8OYe+h8u6ps2iUeWtcbWffkx
+         2Ij0YugqNZa8iYouPDA4bHfLObTlLYXI0ThxaM7rNl/5QhtguMDpZKTIXxAURJYKZVY6
+         MPyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=DfASuP4wTyn3pr6VYvm8A1z5RVX46kLf4FcH4npIyzc=;
+        b=E2IIqnwR8uXegjm91ulTBs4cEWIEp5if2RQ4xwFJ4lb7hgDoLLRzPItPRChGLNyG0H
+         /+BdfG2cagluqc8RxJV/isoDvQ/HL5ca7NrL7oN2aCCGt99KVlwE3LwS+YJrCklBUmek
+         4/na1mbjEcsLwEimq4oqlYCR++wOF5uGctItAqM2WdRviio6zvEz4CsnrDfa3TqMdABK
+         YGeNchP1Nv+YaIN34GX7JLyI2uVnECtz7GsMN3ofwuaKnve9R0Xg5+p/eY0kaNjW56fK
+         CUDp43jzWAADPmCPHkBCRY+7MWbvGeQS/I2aYiVZQwP7HzXCybQKt2dWk+io9loKu92k
+         lkNA==
+X-Gm-Message-State: AOAM531nfAPUDQHoSSEj3tVSDJ1bLYZRenzb+esvakvdSRUFbL2IReDu
+        P6eyzOhEqx5cDJez0CFabrl/8whXPAqWP8LZFrqQmQ==
+X-Google-Smtp-Source: ABdhPJyGT5d7kAzOWWOZyEuq+BVCrWdPRUSfm6tf7pVHXKklSwXBe0J8rse0+Sbr94QBjZSwHfW71Ao8kAoWRyg03gY=
+X-Received: by 2002:a05:6102:310f:: with SMTP id e15mr92501vsh.39.1600870936625;
+ Wed, 23 Sep 2020 07:22:16 -0700 (PDT)
+MIME-Version: 1.0
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 23 Sep 2020 19:52:05 +0530
+Message-ID: <CA+G9fYtF44bTzjswt26tOwfEQxrWvcSOROmEtH0HKfGn24QbRQ@mail.gmail.com>
+Subject: selftests: pidfd: pidfd_wait hangs on linux next kernel on all devices
+To:     "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, linux-api@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
+Cc:     Christian Brauner <christian@brauner.io>,
+        Kees Cook <keescook@chromium.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Oleg Nesterov <oleg@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Shuah Khan <shuah@kernel.org>, lkft-triage@lists.linaro.org
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mittwoch, den 23.09.2020, 19:36 +0530 schrieb Himadri Pandya:
-> On Wed, Sep 23, 2020 at 3:52 PM Oliver Neukum <oneukum@suse.com> wrote:
-> > 
-> > Am Mittwoch, den 23.09.2020, 14:35 +0530 schrieb Himadri Pandya:
+selftests: pidfd: pidfd_wait hangs on linux next kernel on x86_64,
+i386 and arm64 Juno-r2
+These devices are using NFS mounted rootfs.
+I have tested pidfd testcases independently and all test PASS.
 
-> > GFP_NOIO is used here for a reason. You need to use this helper
-> > while in contexts of error recovery and runtime PM.
-> > 
-> 
-> Understood. Apologies for proposing such a stupid change.
+The Hang or exit from test run noticed when run by run_kselftest.sh
 
-Hi,
+pidfd_wait.c:208:wait_nonblock:Expected sys_waitid(P_PIDFD, pidfd,
+&info, WSTOPPED, NULL) (-1) == 0 (0)
+wait_nonblock: Test terminated by assertion
 
-sorry if you concluded that the patch was stupid. That was not my
-intent. It was the best the API allowed for. If an API makes it
-easy to make a mistake, the problem is with the API, not the developer.
+metadata:
+  git branch: master
+  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+  git commit: e64997027d5f171148687e58b78c8b3c869a6158
+  git describe: next-20200922
+  make_kernelversion: 5.9.0-rc6
+  kernel-config:
+http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/intel-core2-32/lkft/linux-next/865/config
 
-	Regards
-		Oliver
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 
+Test output log:
+---------------------
+[ 1385.104983] audit: type=1701 audit(1600804535.960:87865):
+auid=4294967295 uid=0 gid=0 ses=4294967295 subj=kernel pid=31268
+comm=\"pidfd_wait\"
+exe=\"/opt/kselftests/default-in-kernel/pidfd/pidfd_wait\" sig=6 res=1
+
+# selftests: pidfd: pidfd_wait
+# TAP version 13
+# 1..3
+# # Starting 3 tests from 1 test cases.
+# #  RUN           global.wait_simple ...
+# #            OK  global.wait_simple
+# ok 1 global.wait_simple
+# #  RUN           global.wait_states ...
+# #            OK  global.wait_states
+# ok 2 global.wait_states
+# #  RUN           global.wait_nonblock ...
+# # pidfd_wait.c:208:wait_nonblock:Expected sys_waitid(P_PIDFD, pidfd,
+&info, WSTOPPED, NULL) (-1) == 0 (0)
+# # wait_nonblock: Test terminated by assertion
+# #          FAIL  global.wait_nonblock
+# not ok 3 global.wait_nonblock
+# # FAILED: 2 / 3 tests passed.
+# # Totals: pass:2 fail:1 xfail:0 xpass:0 skip:0 error:0
+Marking unfinished test run as failed
+
+ref:
+https://lkft.validation.linaro.org/scheduler/job/1782129#L11737
+https://lkft.validation.linaro.org/scheduler/job/1782130#L12735
+https://lkft.validation.linaro.org/scheduler/job/1782138#L14178
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
