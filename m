@@ -2,112 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36E45276BBE
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA1C7276BC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727151AbgIXIYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 04:24:52 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:30462 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726837AbgIXIYv (ORCPT
+        id S1727240AbgIXIZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 04:25:33 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:47454 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726837AbgIXIZd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 04:24:51 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-95-VXUOEVhfMDqraFBgS_BjUQ-1; Thu, 24 Sep 2020 09:24:47 +0100
-X-MC-Unique: VXUOEVhfMDqraFBgS_BjUQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 24 Sep 2020 09:24:46 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 24 Sep 2020 09:24:46 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Dave Jiang' <dave.jiang@intel.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "jing.lin@intel.com" <jing.lin@intel.com>,
-        "ashok.raj@intel.com" <ashok.raj@intel.com>,
-        "sanjay.k.kumar@intel.com" <sanjay.k.kumar@intel.com>,
-        "fenghua.yu@intel.com" <fenghua.yu@intel.com>,
-        "kevin.tian@intel.com" <kevin.tian@intel.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v5 1/5] x86/asm: Carve out a generic movdir64b() helper
- for general usage
-Thread-Topic: [PATCH v5 1/5] x86/asm: Carve out a generic movdir64b() helper
- for general usage
-Thread-Index: AQHWkf7GVv/Eui5H70ijlKVH2OrKB6l3b2tw
-Date:   Thu, 24 Sep 2020 08:24:46 +0000
-Message-ID: <a8c81da06df2471296b663d40b186c92@AcuMS.aculab.com>
-References: <160090233730.44288.4446779116422752486.stgit@djiang5-desk3.ch.intel.com>
- <160090264332.44288.7575027054245105525.stgit@djiang5-desk3.ch.intel.com>
-In-Reply-To: <160090264332.44288.7575027054245105525.stgit@djiang5-desk3.ch.intel.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 24 Sep 2020 04:25:33 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08O83jdK046375;
+        Thu, 24 Sep 2020 04:25:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Ifch1AEfNsKK2bI+U+ETwakiXL+Ndk0qT/3Mta2JI8Y=;
+ b=EXMpKBPlOW53HgP/N8x9cla3qaDC/ZkJZW+ioATcrTjeEQk/DYbvciOeYV5hWs6X4AxG
+ Xdn6A/gWIF/GaPxQjV3qiqSTbvWm7oI7KcK5z1blCWpcnESBqMMcWRYeI+a4oAoLEpfx
+ F/VdeC0SfxWQ2m5imMfxdBb3bC6392m0GFjZbMY7mBbr25WeWGjPlB3PzmOvMzI6fDfR
+ 8KhI50oMD6VLfmlnW0lTGCtvNkHKSMP4S5vxu+I2uhC/SP/i46+8Ei9SPC8AJzOVju85
+ 9pS/JN46ab2fhYVJIbAJqRaoeIUHQyVjvRxc4vECw1DFBq8PXm0PDLzsDWdgFv4ghAAg OQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33rqm7rpgv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Sep 2020 04:25:26 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08O83qjA047431;
+        Thu, 24 Sep 2020 04:25:25 -0400
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33rqm7rpg3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Sep 2020 04:25:25 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08O8HUe1025798;
+        Thu, 24 Sep 2020 08:25:23 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma01fra.de.ibm.com with ESMTP id 33n9m7tks8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Sep 2020 08:25:23 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08O8PHdf22282518
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 24 Sep 2020 08:25:17 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 117AD11C05B;
+        Thu, 24 Sep 2020 08:25:17 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 95D2211C052;
+        Thu, 24 Sep 2020 08:25:16 +0000 (GMT)
+Received: from [9.145.35.177] (unknown [9.145.35.177])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 24 Sep 2020 08:25:16 +0000 (GMT)
+Subject: Re: linux-next: manual merge of the vfio tree with the s390 tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Matthew Rosato <mjrosato@linux.ibm.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200924142651.28382ed7@canb.auug.org.au>
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+Message-ID: <b9f4f5d2-ea40-aa58-3c4d-bebfa828ce72@linux.ibm.com>
+Date:   Thu, 24 Sep 2020 10:25:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+In-Reply-To: <20200924142651.28382ed7@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-24_02:2020-09-24,2020-09-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
+ mlxlogscore=999 malwarescore=0 lowpriorityscore=0 phishscore=0
+ priorityscore=1501 suspectscore=0 spamscore=0 clxscore=1011 mlxscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009240062
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogRGF2ZSBKaWFuZw0KPiBTZW50OiAyNCBTZXB0ZW1iZXIgMjAyMCAwMDoxMQ0KPg0KPiBU
-aGUgTU9WRElSNjRCIGluc3RydWN0aW9uIGNhbiBiZSB1c2VkIGJ5IG90aGVyIHdyYXBwZXIgaW5z
-dHJ1Y3Rpb25zLiBNb3ZlDQo+IHRoZSBhc20gY29kZSB0byBzcGVjaWFsX2luc25zLmggYW5kIGhh
-dmUgaW9zdWJtaXRfY21kczUxMigpIGNhbGwgdGhlDQo+IGFzbSBmdW5jdGlvbi4NCj4gDQo+IFNp
-Z25lZC1vZmYtYnk6IERhdmUgSmlhbmcgPGRhdmUuamlhbmdAaW50ZWwuY29tPg0KPiBSZXZpZXdl
-ZC1ieTogVG9ueSBMdWNrIDx0b255Lmx1Y2tAaW50ZWwuY29tPg0KPiAtLS0NCj4gIGFyY2gveDg2
-L2luY2x1ZGUvYXNtL2lvLmggICAgICAgICAgICB8ICAgMTcgKysrLS0tLS0tLS0tLS0tLS0NCj4g
-IGFyY2gveDg2L2luY2x1ZGUvYXNtL3NwZWNpYWxfaW5zbnMuaCB8ICAgMTkgKysrKysrKysrKysr
-KysrKysrKw0KPiAgMiBmaWxlcyBjaGFuZ2VkLCAyMiBpbnNlcnRpb25zKCspLCAxNCBkZWxldGlv
-bnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9pby5oIGIvYXJj
-aC94ODYvaW5jbHVkZS9hc20vaW8uaA0KPiBpbmRleCBlMWFhMTdhNDY4YTguLmQ3MjY0NTlkMDhl
-NSAxMDA2NDQNCj4gLS0tIGEvYXJjaC94ODYvaW5jbHVkZS9hc20vaW8uaA0KPiArKysgYi9hcmNo
-L3g4Ni9pbmNsdWRlL2FzbS9pby5oDQouLi4NCj4gZGlmZiAtLWdpdCBhL2FyY2gveDg2L2luY2x1
-ZGUvYXNtL3NwZWNpYWxfaW5zbnMuaCBiL2FyY2gveDg2L2luY2x1ZGUvYXNtL3NwZWNpYWxfaW5z
-bnMuaA0KPiBpbmRleCA1OWEzZTEzMjA0YzMuLjJhNWFiZDI3YmI4NiAxMDA2NDQNCj4gLS0tIGEv
-YXJjaC94ODYvaW5jbHVkZS9hc20vc3BlY2lhbF9pbnNucy5oDQo+ICsrKyBiL2FyY2gveDg2L2lu
-Y2x1ZGUvYXNtL3NwZWNpYWxfaW5zbnMuaA0KPiBAQCAtMjM0LDYgKzIzNCwyNSBAQCBzdGF0aWMg
-aW5saW5lIHZvaWQgY2x3Yih2b2xhdGlsZSB2b2lkICpfX3ApDQo+IA0KPiAgI2RlZmluZSBub3Ao
-KSBhc20gdm9sYXRpbGUgKCJub3AiKQ0KPiANCj4gKy8qIFRoZSBkc3QgcGFyYW1ldGVyIG11c3Qg
-YmUgNjQtYnl0ZXMgYWxpZ25lZCAqLw0KPiArc3RhdGljIGlubGluZSB2b2lkIG1vdmRpcjY0Yih2
-b2lkICpkc3QsIGNvbnN0IHZvaWQgKnNyYykNCj4gK3sNCj4gKwkvKg0KPiArCSAqIE5vdGUgdGhh
-dCB0aGlzIGlzbid0IGFuICJvbi1zdGFjayBjb3B5IiwganVzdCBkZWZpbml0aW9uIG9mICJkc3Qi
-DQo+ICsJICogYXMgYSBwb2ludGVyIHRvIDY0LWJ5dGVzIG9mIHN0dWZmIHRoYXQgaXMgZ29pbmcg
-dG8gYmUgb3ZlcndyaXR0ZW4uDQo+ICsJICogSW4gdGhlIE1PVkRJUjY0QiBjYXNlIHRoYXQgbWF5
-IGJlIG5lZWRlZCBhcyB5b3UgY2FuIHVzZSB0aGUNCj4gKwkgKiBNT1ZESVI2NEIgaW5zdHJ1Y3Rp
-b24gdG8gY29weSBhcmJpdHJhcnkgbWVtb3J5IGFyb3VuZC4gVGhpcyB0cmljaw0KPiArCSAqIGxl
-dHMgdGhlIGNvbXBpbGVyIGtub3cgaG93IG11Y2ggZ2V0cyBjbG9iYmVyZWQuDQo+ICsJICovDQo+
-ICsJdm9sYXRpbGUgc3RydWN0IHsgY2hhciBfWzY0XTsgfSAqX19kc3QgPSBkc3Q7DQo+ICsNCj4g
-KwkvKiBNT1ZESVI2NEIgW3JkeF0sIHJheCAqLw0KPiArCWFzbSB2b2xhdGlsZSgiLmJ5dGUgMHg2
-NiwgMHgwZiwgMHgzOCwgMHhmOCwgMHgwMiINCj4gKwkJICAgICA6DQo+ICsJCSAgICAgOiAibSIg
-KCooc3RydWN0IHsgY2hhciBfWzY0XTt9ICoqKXNyYyksICJhIiAoX19kc3QpDQo+ICsJCSAgICAg
-OiAibWVtb3J5Iik7DQo+ICt9DQo+ICsNCj4gICNlbmRpZiAvKiBfX0tFUk5FTF9fICovDQoNCllv
-dSd2ZSBsb3N0IHRoZSAiZCIgKHNyYykuDQpZb3UgZG9uJ3QgbmVlZCB0aGUgJ21lbW9yeScgY2xv
-YmJlciwganVzdDoNCg0Kc3RhdGljIGlubGluZSB2b2lkIG1vdmRpcjY0Yih2b2lkICpkc3QsIGNv
-bnN0IHZvaWQgKnNyYykNCnsNCgkvKg0KCSAqIDY0IGJ5dGVzIGZyb20gZHN0IGFyZSBtYXJrZWQg
-YXMgbW9kaWZpZWQgZm9yIGNvbXBsZXRlbmVzcy4NCgkgKiBTaW5jZSB0aGUgd3JpdGVzIGJ5cGFz
-cyB0aGUgY2FjaGUgbGF0ZXIgcmVhZHMgbWF5IHJldHVybg0KCSAqIG9sZCBkYXRhIGFueXdheS4N
-CgkgKi8NCgkvKiBNT1ZESVI2NEIgW3JkeF0sIHJheCAqLw0KCWFzbSB2b2xhdGlsZSAoIi5ieXRl
-IDB4NjYsIDB4MGYsIDB4MzgsIDB4ZjgsIDB4MDIiDQoJICAgICA6ICI9bSIgKChzdHJ1Y3QgeyBj
-aGFyIF9bNjRdO30gKilkc3QpLA0KCSAgICAgOiAibSIgKChzdHJ1Y3QgeyBjaGFyIF9bNjRdO30g
-KilzcmMpLCAiZCIgKHNyYyksICJhIiAoZHN0KSk7DQp9DQoNCkkndmUgY2hlY2tlZCB0aGF0IHRo
-ZSAibSIgY29uc3RyYWludCBvbiBzcmMgZG9lcyBmb3JjZSAoYXQgbGVhc3Qgb25lDQp2ZXJzaW9u
-IG9mKSBnY2MgdG8gYWN0dWFsbHkgd3JpdGUgdG8gdGhlIHN1cHBsaWVkIGJ1ZmZlci4NCg0KCURh
-dmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3Vu
-dCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3
-Mzg2IChXYWxlcykNCg==
+Hi Stephen,
 
+first thanks for the manual fix it's exactly the same resolution I would
+have used. Sorry this conflict ended up on your desk without warning,
+I had made Vasily and Heiko aware of this as an upcoming conflict but failed
+to alert Alex who finally ended up carrying the change so I this is my fault.
+
+Best regards,
+Niklas Schnelle
+
+On 9/24/20 6:26 AM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the vfio tree got a conflict in:
+> 
+>   arch/s390/pci/pci_bus.c
+> 
+> between commit:
+> 
+>   abb95b7550f8 ("s390/pci: consolidate SR-IOV specific code")
+> 
+> from the s390 tree and commit:
+> 
+>   08b6e22b850c ("s390/pci: Mark all VFs as not implementing PCI_COMMAND_MEMORY")
+> 
+> from the vfio tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+> 
