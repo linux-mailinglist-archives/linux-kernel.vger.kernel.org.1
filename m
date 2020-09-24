@@ -2,125 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59594276782
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 06:06:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92063276785
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 06:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726799AbgIXEGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 00:06:05 -0400
-Received: from mga02.intel.com ([134.134.136.20]:1793 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726477AbgIXEGF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 00:06:05 -0400
-IronPort-SDR: YPZAqsJ9FuUwt5BasewU/KjFjsMOKv5hXl6drtc1Jo+7WCM/SAsK3SuPS9XMsA/hC+ruSFrEH2
- yUqDB0Q0XBVQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="148742977"
-X-IronPort-AV: E=Sophos;i="5.77,296,1596524400"; 
-   d="scan'208";a="148742977"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 21:06:04 -0700
-IronPort-SDR: lCB7twMKEy7YoLxAl1iGlDk04HMidEkWq+sreiWlLZaGvJnMXn503NT6308WSABhaEwtzNtxy+
- dwk/HuFUWwhg==
-X-IronPort-AV: E=Sophos;i="5.77,296,1596524400"; 
-   d="scan'208";a="382903886"
-Received: from jdelagui-mobl.amr.corp.intel.com (HELO [10.255.231.15]) ([10.255.231.15])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 21:06:04 -0700
-Subject: Re: [PATCH v3 1/1] PCI/ERR: Fix reset logic in pcie_do_recovery()
- call
-To:     Sinan Kaya <okaya@kernel.org>, Bjorn Helgaas <helgaas@kernel.org>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
-        Jay Vosburgh <jay.vosburgh@canonical.com>
-References: <20200922233333.GA2239404@bjorn-Precision-5520>
- <704c39bf-6f0c-bba3-70b8-91de6a445e43@linux.intel.com>
- <3d27d0a4-2115-fa72-8990-a84910e4215f@kernel.org>
- <d5aa53dc-0c94-e57a-689a-1c1f89787af1@linux.intel.com>
- <526dc846-b12b-3523-4995-966eb972ceb7@kernel.org>
- <1fdcc4a6-53b7-2b5f-8496-f0f09405f561@linux.intel.com>
- <aef0b9aa-59f5-9ec3-adac-5bc366b362e0@kernel.org>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <a647f485-8db4-db45-f404-940b55117b53@linux.intel.com>
-Date:   Wed, 23 Sep 2020 21:06:01 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726837AbgIXEG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 00:06:26 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:60136 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726477AbgIXEG0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 00:06:26 -0400
+X-UUID: 888a959d97b549a499044dc089591337-20200924
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=IVo58NkQ33GGKE0b3jzyWWKlUmdeJt6uk543PzI5rcE=;
+        b=BU628Vj8PgwskSfSxzEK0siuGLaRpCuuQVU6AnGoF3pXFNW5myjXYZ4xIm9OiK9j2A78f6ihmbWuM1M/ZCqFeMnhc0GGl937ZiRF+ToLI+udnv+cB4OjAWDcr/ES1gTElmYUWLpPmgAN5PGzeZC13vti+901pWlQvkcZON2pB5k=;
+X-UUID: 888a959d97b549a499044dc089591337-20200924
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <walter-zh.wu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1807994880; Thu, 24 Sep 2020 12:06:23 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 24 Sep 2020 12:06:22 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 24 Sep 2020 12:06:21 +0800
+From:   Walter Wu <walter-zh.wu@mediatek.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Marco Elver <elver@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        Walter Wu <walter-zh.wu@mediatek.com>
+Subject: PATCH v4 5/6] kasan: add tests for workqueue stack recording
+Date:   Thu, 24 Sep 2020 12:06:21 +0800
+Message-ID: <20200924040621.31164-1-walter-zh.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-In-Reply-To: <aef0b9aa-59f5-9ec3-adac-5bc366b362e0@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+QWRkcyBhIHRlc3QgdG8gdmVyaWZ5IHdvcmtxdWV1ZSBzdGFjayByZWNvcmRpbmcgYW5kIHByaW50
+IGl0IGluDQpLQVNBTiByZXBvcnQuDQoNClRoZSBLQVNBTiByZXBvcnQgd2FzIGFzIGZvbGxvd3Mo
+Y2xlYW5lZCB1cCBzbGlnaHRseSk6DQoNCiBCVUc6IEtBU0FOOiB1c2UtYWZ0ZXItZnJlZSBpbiBr
+YXNhbl93b3JrcXVldWVfdWFmDQoNCiBGcmVlZCBieSB0YXNrIDU0Og0KICBrYXNhbl9zYXZlX3N0
+YWNrKzB4MjQvMHg1MA0KICBrYXNhbl9zZXRfdHJhY2srMHgyNC8weDM4DQogIGthc2FuX3NldF9m
+cmVlX2luZm8rMHgyMC8weDQwDQogIF9fa2FzYW5fc2xhYl9mcmVlKzB4MTBjLzB4MTcwDQogIGth
+c2FuX3NsYWJfZnJlZSsweDEwLzB4MTgNCiAga2ZyZWUrMHg5OC8weDI3MA0KICBrYXNhbl93b3Jr
+cXVldWVfd29yaysweGMvMHgxOA0KDQogTGFzdCBwb3RlbnRpYWxseSByZWxhdGVkIHdvcmsgY3Jl
+YXRpb246DQogIGthc2FuX3NhdmVfc3RhY2srMHgyNC8weDUwDQogIGthc2FuX3JlY29yZF93cV9z
+dGFjaysweGE4LzB4YjgNCiAgaW5zZXJ0X3dvcmsrMHg0OC8weDI4OA0KICBfX3F1ZXVlX3dvcmsr
+MHgzZTgvMHhjNDANCiAgcXVldWVfd29ya19vbisweGY0LzB4MTE4DQogIGthc2FuX3dvcmtxdWV1
+ZV91YWYrMHhmYy8weDE5MA0KDQpTaWduZWQtb2ZmLWJ5OiBXYWx0ZXIgV3UgPHdhbHRlci16aC53
+dUBtZWRpYXRlay5jb20+DQpBY2tlZC1ieTogTWFyY28gRWx2ZXIgPGVsdmVyQGdvb2dsZS5jb20+
+DQpSZXZpZXdlZC1ieTogRG1pdHJ5IFZ5dWtvdiA8ZHZ5dWtvdkBnb29nbGUuY29tPg0KUmV2aWV3
+ZWQtYnk6IEFuZHJleSBLb25vdmFsb3YgPGFuZHJleWtudmxAZ29vZ2xlLmNvbT4NCkNjOiBBbmRy
+ZXkgUnlhYmluaW4gPGFyeWFiaW5pbkB2aXJ0dW96em8uY29tPg0KQ2M6IEFsZXhhbmRlciBQb3Rh
+cGVua28gPGdsaWRlckBnb29nbGUuY29tPg0KQ2M6IE1hdHRoaWFzIEJydWdnZXIgPG1hdHRoaWFz
+LmJnZ0BnbWFpbC5jb20+DQotLS0NCg0KdjQ6DQotIHRlc3RjYXNlIGhhcyBtZXJnZSBjb25mbGlj
+dCwgc28gdGhhdCByZWJhc2Ugb250byB0aGUgS0FTQU4tS1VOSVQNCg0KLS0tDQogbGliL3Rlc3Rf
+a2FzYW5fbW9kdWxlLmMgfCAzMCArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysNCiAxIGZp
+bGUgY2hhbmdlZCwgMzAgaW5zZXJ0aW9ucygrKQ0KDQpkaWZmIC0tZ2l0IGEvbGliL3Rlc3Rfa2Fz
+YW5fbW9kdWxlLmMgYi9saWIvdGVzdF9rYXNhbl9tb2R1bGUuYw0KaW5kZXggMmU1ZTdiZTk2OTU1
+Li5jM2EyZDExM2U3NTcgMTAwNjQ0DQotLS0gYS9saWIvdGVzdF9rYXNhbl9tb2R1bGUuYw0KKysr
+IGIvbGliL3Rlc3Rfa2FzYW5fbW9kdWxlLmMNCkBAIC0xMTUsNiArMTE1LDM1IEBAIHN0YXRpYyBu
+b2lubGluZSB2b2lkIF9faW5pdCBrYXNhbl90aW1lcl91YWYodm9pZCkNCiAJKCh2b2xhdGlsZSBz
+dHJ1Y3QgdGltZXJfbGlzdCAqKXRpbWVyKS0+ZXhwaXJlczsNCiB9DQogDQorc3RhdGljIG5vaW5s
+aW5lIHZvaWQgX19pbml0IGthc2FuX3dvcmtxdWV1ZV93b3JrKHN0cnVjdCB3b3JrX3N0cnVjdCAq
+d29yaykNCit7DQorCWtmcmVlKHdvcmspOw0KK30NCisNCitzdGF0aWMgbm9pbmxpbmUgdm9pZCBf
+X2luaXQga2FzYW5fd29ya3F1ZXVlX3VhZih2b2lkKQ0KK3sNCisJc3RydWN0IHdvcmtxdWV1ZV9z
+dHJ1Y3QgKndvcmtxdWV1ZTsNCisJc3RydWN0IHdvcmtfc3RydWN0ICp3b3JrOw0KKw0KKwl3b3Jr
+cXVldWUgPSBjcmVhdGVfd29ya3F1ZXVlKCJrYXNhbl93cV90ZXN0Iik7DQorCWlmICghd29ya3F1
+ZXVlKSB7DQorCQlwcl9lcnIoIkFsbG9jYXRpb24gZmFpbGVkXG4iKTsNCisJCXJldHVybjsNCisJ
+fQ0KKwl3b3JrID0ga21hbGxvYyhzaXplb2Yoc3RydWN0IHdvcmtfc3RydWN0KSwgR0ZQX0tFUk5F
+TCk7DQorCWlmICghd29yaykgew0KKwkJcHJfZXJyKCJBbGxvY2F0aW9uIGZhaWxlZFxuIik7DQor
+CQlyZXR1cm47DQorCX0NCisNCisJSU5JVF9XT1JLKHdvcmssIGthc2FuX3dvcmtxdWV1ZV93b3Jr
+KTsNCisJcXVldWVfd29yayh3b3JrcXVldWUsIHdvcmspOw0KKwlkZXN0cm95X3dvcmtxdWV1ZSh3
+b3JrcXVldWUpOw0KKw0KKwlwcl9pbmZvKCJ1c2UtYWZ0ZXItZnJlZSBvbiB3b3JrcXVldWVcbiIp
+Ow0KKwkoKHZvbGF0aWxlIHN0cnVjdCB3b3JrX3N0cnVjdCAqKXdvcmspLT5kYXRhOw0KK30NCisN
+CiBzdGF0aWMgaW50IF9faW5pdCB0ZXN0X2thc2FuX21vZHVsZV9pbml0KHZvaWQpDQogew0KIAkv
+Kg0KQEAgLTEyNiw2ICsxNTUsNyBAQCBzdGF0aWMgaW50IF9faW5pdCB0ZXN0X2thc2FuX21vZHVs
+ZV9pbml0KHZvaWQpDQogCWNvcHlfdXNlcl90ZXN0KCk7DQogCWthc2FuX3JjdV91YWYoKTsNCiAJ
+a2FzYW5fdGltZXJfdWFmKCk7DQorCWthc2FuX3dvcmtxdWV1ZV91YWYoKTsNCiANCiAJa2FzYW5f
+cmVzdG9yZV9tdWx0aV9zaG90KG11bHRpc2hvdCk7DQogCXJldHVybiAtRUFHQUlOOw0KLS0gDQoy
+LjE4LjANCg==
 
-
-On 9/23/20 8:13 PM, Sinan Kaya wrote:
-> On 9/23/2020 10:51 PM, Kuppuswamy, Sathyanarayanan wrote:
->>>
->>> I see. Can I assume that your system supports DPC?
->>> DPC is supposed to recover the link via dpc_reset_link().
->> Yes. But the affected device/drivers cleanup during error recovery
->> is handled by hotplug handler. So we are facing issue when dealing
->> with non hotplug capable ports.
-> 
-> This is confusing.
-> 
-> Why would hotplug driver be involved unless port supports hotplug and
-> the link goes down? You said that DLLSC is only supported on hotplug
-> capable ports.
-hotplug driver is *only* involved when dealing with recovery of hotplug
-capable ports. For hotplug capable ports, when DPC is triggered and link
-goes down, DLLSC handler in pciehp driver will remove the affected
-devices/drivers. Once the link comes back it will re-attach them.
-
-> 
-> Need a better description of symptoms and what triggers hotplug driver
-> to activate.
-For problem description, please check the following details
-
-Current pcie_do_recovery() implementation has following two issues:
-
-1. Fatal (DPC) error recovery is currently broken for non-hotplug
-capable devices. Current fatal error recovery implementation relies
-on PCIe hotplug (pciehp) handler for detaching and re-enumerating
-the affected devices/drivers. pciehp handler listens for DLLSC state
-changes and handles device/driver detachment on DLLSC_LINK_DOWN event
-and re-enumeration on DLLSC_LINK_UP event. So when dealing with
-non-hotplug capable devices, recovery code does not restore the state
-of the affected devices correctly. Correct implementation should
-restore the device state and call report_slot_reset() function after
-resetting the link to restore the state of the device/driver.
-
-You can find fatal non-hotplug related issues reported in following links:
-
-https://lore.kernel.org/linux-pci/20200527083130.4137-1-Zhiqiang.Hou@nxp.com/
-https://lore.kernel.org/linux-pci/12115.1588207324@famine/
-https://lore.kernel.org/linux-pci/0e6f89cd6b9e4a72293cc90fafe93487d7c2d295.1585000084.git.sathyanarayanan.kuppuswamy@linux.intel.com/
-
-2. For non-fatal errors if report_error_detected() or
-report_mmio_enabled() functions requests PCI_ERS_RESULT_NEED_RESET then
-current pcie_do_recovery() implementation does not do the requested
-explicit device reset, instead just calls the report_slot_reset() on all
-affected devices. Notifying about the reset via report_slot_reset()
-without doing the actual device reset is incorrect.
-
-To fix above issues, use PCI_ERS_RESULT_NEED_RESET as error state after
-successful reset_link() operation. This will ensure ->slot_reset() be
-called after reset_link() operation for fatal errors. Also call
-pci_bus_reset() to do slot/bus reset() before triggering device specific
-->slot_reset() callback. Also, using pci_bus_reset() will restore the state
-of the devices after performing the reset operation.
-
-Even though using pci_bus_reset() will do redundant reset operation after
-->reset_link() for fatal errors, it should should affect the functional
-behavior.
-
-> 
-> Can you expand this a little bit?
-> 
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
