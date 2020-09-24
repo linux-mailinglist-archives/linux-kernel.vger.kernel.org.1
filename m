@@ -2,182 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9308D27788F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 20:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA2F277891
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 20:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728747AbgIXSki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 14:40:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727753AbgIXSki (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 14:40:38 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA041C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 11:40:37 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id b12so4349809edz.11
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 11:40:37 -0700 (PDT)
+        id S1728756AbgIXSmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 14:42:23 -0400
+Received: from mail-co1nam11on2053.outbound.protection.outlook.com ([40.107.220.53]:53036
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727753AbgIXSmW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 14:42:22 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ExYTL9eTaWpX4TWksvwSbIMBRJPl3UUvc2Qn+pb0jKPIm0wcUluw/ww21xbskmTcZJZPkxtV8tVP+/O/u3hUy0QcWBvd2y1PdGD0eXyuRDRcWor/w0HqU1qcWzWYkD7/QjIiiFthCE8gDL+UXst4fQXV7dUWD+EUUyIMBxg6GESnmrYAS79jPqli5yfZZZwAarb4ctQ9eqJAhYscBv7mU4bgscyNMV2b8Dy+5fVVDxS2L8EZGoVeBz9GmwW9izBwiRmBSs/xSc3b46H5LyuLx9OyQ+Lidi7Jd7tZhnpad7wJlRBaG6gSMTnB457ZYut3zpAHn4HgS2hhGwgW6IIC+g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Lcm8HfIXgqeSNXSEypqoTkY498c1ADpLBsIAWg5qeds=;
+ b=mb4UfTu8Weo3RY29VlMMTb/rCvaWiy0SYxDkg89XquNZSqfVNjRFiOZlBoZxsA53HlXHJ2xvESW1MxJD2FM9NE5/p5+yTo+gRhBssDh9z4Tz9uprfPjSOQfdbkGvFNHvfq778WCA/xiA4j/vGZhlEUcm6A8azr7ncN1tMill+SGdbr5TaPHrb00+xrXE40LPTrptB/UZv5nvOl2mwOb9tbyvO05K4XugA2qfLxBvgKaNyQZpo/lVK5c1LVRKRjjs3ii0H9lFnRJe5iAdluTzHiY655hG5c747O2+/WFpUJ8AKT5A4nEK4/Msfze8x8B5Mcud8fKricnWc/di0XCbwg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Sl4h7biFYu3LMf1sX/N8/Ldva5q8XZy69drEdHEwD40=;
-        b=fswH2dxPqL7Ql84dUmCR2mmIxWWlX1St2mHY+pdCT5oex5so0894+pg/ZXrWAgHjYb
-         MFr7tAG6uDTCKj8FyPsGUT5X5SOLeYgH/0py/Hr+54xbfhBsCHgs+bS/k6aCdmC/fSW+
-         vGr3Pd8R4cyZpkttwpRB0tUjTI+cCFy59YoAkhcVavEMq5myTnfsne1n4K7H/hlnxhqt
-         xzftvYM67SGwQ+Dc4hodCMjN6Emc+O6feBrUT2CNQBJDNaJ0PzOe26Y7ZaHGKD8BuN1F
-         YP+/w1kfP3hP0ARBe69P5Qh5IyexsUeSITkj4lj4nk4gqgcsnimfzEVdPSepR21ihmgh
-         9++g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Sl4h7biFYu3LMf1sX/N8/Ldva5q8XZy69drEdHEwD40=;
-        b=lIoJ7LLc04hLaFgb+hOaBDL1FbXDR2kr6M1s7gz2XV+YMBCjl7uu34gcBhhxgjnq76
-         5OYL18CqmWQnZ0ToFE57FIg/Yav7HQUUfAE4P16YqEXmoIxnBbvghmaBNek/uY23hcBq
-         llqRSJzoS0czh7Njr5YwFJPI7gCffBPTM/g0dMo/Al1q43vmXQAIm2FIcVEORMe6aFBY
-         azZJ/ueGOHoEYwy1hahamMK6N75jlenQVPzzHGP/M86IUwmiTAYNRm24R/rxcDGEOFUD
-         y+AVyoZcU8fFEg+vCANkIlcS/XH8kgpgpoQC3x4O4SjEuVl5UNgEbwq7zO7ucX3/mNBY
-         GzUQ==
-X-Gm-Message-State: AOAM5336fd1Lp9rnXtftlWifwIeC3DZ4MjzrzPZ4GaUM0yDtY0AiECDs
-        WTMg0rpUdoXkVaweaNCIdllkOFWPpQg=
-X-Google-Smtp-Source: ABdhPJx338sZpcoZMH0b9I4xOPXq/lTTAcY27/RRn1XYt0UgyEM2w+Obk6uCRjOMo0Wt+h/ok1ez3Q==
-X-Received: by 2002:a50:e68a:: with SMTP id z10mr203871edm.100.1600972836464;
-        Thu, 24 Sep 2020 11:40:36 -0700 (PDT)
-Received: from [192.168.2.202] (pd9e5a9d2.dip0.t-ipconnect.de. [217.229.169.210])
-        by smtp.gmail.com with ESMTPSA id v2sm169912ejh.57.2020.09.24.11.40.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Sep 2020 11:40:35 -0700 (PDT)
-Subject: Re: [RFC PATCH 8/9] surface_aggregator: Add DebugFS interface
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
-        Dorian Stoll <dorian.stoll@tmsp.io>
-References: <20200923151511.3842150-1-luzmaximilian@gmail.com>
- <20200923151511.3842150-9-luzmaximilian@gmail.com>
- <20200923161416.GA3723109@kroah.com>
- <7d571ed4-862e-cfbd-44d4-0fda25f03294@gmail.com>
- <20200923182948.GA107114@kroah.com>
- <33ebf267-0216-4480-4217-2e5cbf9dbe52@gmail.com>
- <20200924064614.GA593984@kroah.com>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <681bb644-5acc-b299-561a-757ac3db24b5@gmail.com>
-Date:   Thu, 24 Sep 2020 20:40:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <20200924064614.GA593984@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Lcm8HfIXgqeSNXSEypqoTkY498c1ADpLBsIAWg5qeds=;
+ b=s8DvnKhyO+RNI+Llurl0ofpertoN9jIYPHhgZN/cyFeJsjEJ7+1I8+t5ZERE9y/ztO5RZqqbPKOqjNhoLZu4TaPWZyKJk4oa/hnTH7AKvHFARu/FqxW2+crLL/VW9YAxpZz03ABkxltoRjAZjpaiE7yfY2LrLB57ifo+7mVyMzo=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
+ DM6PR12MB3082.namprd12.prod.outlook.com (2603:10b6:5:11b::12) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3412.23; Thu, 24 Sep 2020 18:42:20 +0000
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::299a:8ed2:23fc:6346]) by DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::299a:8ed2:23fc:6346%3]) with mapi id 15.20.3391.024; Thu, 24 Sep 2020
+ 18:42:20 +0000
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+To:     kvm@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH v2 0/2] INVD intercept change to skip instruction
+Date:   Thu, 24 Sep 2020 13:41:56 -0500
+Message-Id: <cover.1600972918.git.thomas.lendacky@amd.com>
+X-Mailer: git-send-email 2.28.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DM5PR21CA0057.namprd21.prod.outlook.com
+ (2603:10b6:3:129::19) To DM5PR12MB1355.namprd12.prod.outlook.com
+ (2603:10b6:3:6e::7)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from tlendack-t1.amd.com (165.204.77.1) by DM5PR21CA0057.namprd21.prod.outlook.com (2603:10b6:3:129::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.2 via Frontend Transport; Thu, 24 Sep 2020 18:42:19 +0000
+X-Mailer: git-send-email 2.28.0
+X-Originating-IP: [165.204.77.1]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: c5c51f53-83e9-449b-45d9-08d860b99174
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3082:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB308283D9FE4F99E2820198EEEC390@DM6PR12MB3082.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 44C3SicwqDquHX6VSeFAP6NeY9I3ohr587dbTahz+TTzVlk2U/hz3Cy9RZl2njYKxgXBycCqUP0plxV5Gj8FrXNXpnSevbQMB8q1wu6XgXC7v2JrNWrjuG+h7K9+YT20CaygY0G8SOGXzXLQKppAbu906PKgKnoY2Yj6T0dBDsU2Mygs+8/eN4H5iNe9DiFgDIgALCchpMXa+XwaAxlxqKA5plOvCYjIQPO9bomAp19o++AubRGNK4/fc7elYSqMauCK0/yWWZkfD0QkgKGGvYsgvWTmt6fKhw3cJhRSmbDlfc8wOpGgSwW4gF1PT//9pWvMjX4vzd2Jl2ZcoKWWsA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(376002)(346002)(136003)(39860400002)(7416002)(83380400001)(316002)(36756003)(2906002)(956004)(8676002)(8936002)(66556008)(26005)(66476007)(186003)(16526019)(54906003)(478600001)(52116002)(7696005)(2616005)(4744005)(6666004)(5660300002)(66946007)(4326008)(6486002)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 5pzVv+CYb5xXVmKiEe+ZNw1Na7FJd2vecnkF3cLcjlU+i1+5K3YWIkWn+cTdsn0UDJgWno5jNGmZLwSZYHoic/jBS+upfcYH/EVmZRTII+50r3vMRauRbVlJ04N+5tWCXooq9pdsA25+JnwvOoSsHQuN24njjk5XkIYxSVBONbx+gOZSaRyGbodCxXsraDMBT4LEo2waXviu0/Jw2PqAwcDe8fYldwyxdqxTKsm4u8Ayt04xG+9n7nsOytmiXj89bhupYjyyw6nkdCejg6t6oOTaoct9KrUEBp6GBS8+K5Ws9NDUzluo8Atsv+rXjXTGx7nF4VnVr2d2c0WeXWCpnAAuEsgmrKt3TG/+AIM0jnJ9FyM2MvvxRBfiat7FkU1YpvvWQhkiUe18WwYdCSbHEk8/iFwDhFvim0PuQA0d6ue9CBF14fVPMBwhY/coRE/eBrU/ONMJrsC4DogZD4ESVXNwmr0fGouR2BuBfldJ7sHGmpUcBWDpibPlUxWggkTYRRM4H8iGbz3tCU/syDgLYz5yLlfwLuAZMqdvFFqZqLTcFZtYCAagCixlxc6XMzezWesGAoa3bCPFpvBNOHIapB7XG6KWNE9pWnnbcnd7wABHtt9II6/L9eQfUHYsgBmWWBRHmuDjCGT8rD2FammBSw==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c5c51f53-83e9-449b-45d9-08d860b99174
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Sep 2020 18:42:19.9787
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wnmykPQSTd1S/aWTmCPV5pS3IGxcC38eOYaWEUhTy/gUUBRiWD606XmGvrCuo7MOL64ZG682fdfm+Rp7jh4igg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3082
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/24/20 8:46 AM, Greg Kroah-Hartman wrote:
-> On Thu, Sep 24, 2020 at 12:06:54AM +0200, Maximilian Luz wrote:
->> On 9/23/20 8:29 PM, Greg Kroah-Hartman wrote:
->>> On Wed, Sep 23, 2020 at 08:03:38PM +0200, Maximilian Luz wrote:
->>>> On 9/23/20 6:14 PM, Greg Kroah-Hartman wrote:
->>
->> [...]
->>
->>>> So the -EFAULT returned by put_user should have precedence? I was aiming
->>>> for "in case it fails, return with the first error".
->>>
->>> -EFAULT trumps everything :)
->>
->> Perfect, thanks!
->>
->>>>> Listen, I'm all for doing whatever you want in debugfs, but why are you
->>>>> doing random ioctls here?  Why not just read/write a file to do what you
->>>>> need/want to do here instead?
->>>>
->>>> Two reasons, mostly: First, the IOCTL allows me to execute requests in
->>>> parallel with just one open file descriptor and not having to maintain
->>>> some sort of back-buffer to wait around until the reader gets to reading
->>>> the thing. I've used that for stress-testing the EC communication in the
->>>> past, which had some issues (dropping bytes, invalid CRCs, ...) under
->>>> heavy(-ish) load. Second, I'm considering adding support for events to
->>>> this device in the future by having user-space receive events by reading
->>>> from the device. Events would also be enabled or disabled via an IOCTL.
->>>> That could be implemented in a second device though. Events were also my
->>>> main reason for adding a version to this interface: Discerning between
->>>> one that has event support and one that has not.
->>>
->>> A misc device can also do this, much simpler, right?  Why not use that?
->>
->> Sorry to ask so many questions, just want to make sure I understand you
->> correctly:
->>
->>   - So you suggest I go with a misc device instead of putting this into
->>     debugfs?
-> 
-> Yes.
-> 
->>   - And I keep the IOCTL?
-> 
-> If you need it, although the interface Arnd says might be much simpler
-> (read/write)
-> 
->>   - Can I still tell people to not use it and that it's not my fault if a
->>     change in the interface breaks their tools if it's not in debugfs?
-> 
-> Yes :)
-> 
->>   - Also load it via a separate module (module_misc_device, I assume)?
-> 
-> That works.
-> 
->> One reason why the platform_device approach is practical in this
->> scenario is that I can leverage the driver core to defer probing and
->> thus defer creating the device if the controller isn't there yet.
-> 
-> That's fine, and is a nice abuse of the platform driver interface.  I
-> say "abuse" because we really don't have a simpler way to do this at the
-> moment, but this really isn't a platform device...
+From: Tom Lendacky <thomas.lendacky@amd.com>
 
-Yeah, it is a bit of a hack...
+This series updates the INVD intercept support for both SVM and VMX to
+skip the instruction rather than emulating it, since emulation of this
+instruction is just a NOP.
 
->> Similarly, the driver is automatically unbound if the controller goes
->> away and the device should be destroyed. All of this should currently be
->> handled via the device link created by ssam_client_bind() (unless I
->> really misunderstood those).
-> 
-> That all is fine, just create the misc device when your driver binds to
-> the device, just like you create the debugfs file entries today.
-> There's no difference except you get a "real" char device node instead
-> of a debugfs file.
-> 
->> I should be able to handle that by having the device refuse to open the
->> file if the controller isn't there. Holding the state-lock during the
->> request execution should ensure that the controller doesn't get shut
->> down.
-> 
-> Nah, no need for that, again, keep the platform driver/device and then
-> create the misc device (and remove it) where you are creating/removing
-> the debugfs files.
+For SVM, it requires creating a dedicated INVD intercept routine that
+invokes kvm_skip_emulated_instruction(). The current support uses the
+common emulate_on_interception() routine, which does not work for SEV
+guests, and so a Fixes: tag is added.
 
-Okay, I'll do that. Thank you!
+For VMX, which already has a dedicated INVD intercept routine, it changes
+kvm_emulate_instruction() into a call to kvm_skip_emulated_instruction().
 
->>> A simple misc device would make it very simple and easy to do instead,
->>> why not do that?
->>
->> Again, I considered the probe deferring of the platform driver fairly
->> handy (in addition to having the implicit debugfs warning of "don't rely
->> on this"), but if you prefer me implementing this as misc device, I'll
->> do that.
-> 
-> The "joy" of creating a user api is that no matter how much you tell
-> people "do not depend on this", they will, so no matter the file being
-> in debugfs, or a misc device, you might be stuck with it for forever,
-> sorry.
+Tom Lendacky (2):
+  KVM: SVM: Add a dedicated INVD intercept routine
+  KVM: VMX: Do not perform emulation for INVD intercept
 
-Hmm, true. I'm fairly confident that the request-IOCTL, as is right now,
-should be sound (regarding to 5th and later gen. requests). It also can
-be extended in a non-breaking way to handle events by reading from the
-device in the future. So might as well commit to that.
+ arch/x86/kvm/svm/svm.c | 8 +++++++-
+ arch/x86/kvm/vmx/vmx.c | 3 ++-
+ 2 files changed, 9 insertions(+), 2 deletions(-)
 
-Thanks,
-Max
+-- 
+2.28.0
+
