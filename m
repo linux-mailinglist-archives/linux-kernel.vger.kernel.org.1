@@ -2,99 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC5F276AE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:37:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F31F2276AF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:38:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727172AbgIXHhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 03:37:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727112AbgIXHhd (ORCPT
+        id S1727206AbgIXHif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 03:38:35 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:17935 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727109AbgIXHie (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 03:37:33 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28646C0613CE;
-        Thu, 24 Sep 2020 00:37:33 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id q21so2267125ota.8;
-        Thu, 24 Sep 2020 00:37:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0LgeB6IhoKHpPJRdUqtdxcrEPshsH9ulrWgRlYFPb5s=;
-        b=R7cwN5O2MUBBBCDXSxHG6WFubm52sa9P3VadV2G153g1zfGBi3uKFXyWIRNbXpCEnP
-         Hz2zBx/zoz9KLqIqINRB/7z8FctR9R+BV8im590D/mGuhr2C5+gzK61wgqqjh8NqYKyC
-         APK2zr3I9fjunBwjZINK2+ua3dLsih3Z90wCpI/xVYTnp6mb9qKhwUcVdidUumHdMRHS
-         s8JVFlCvl4hyoekpnt1TeYxIk0cXEn8yKNkdPrOv8eP1lHVaTJhE/YXIMYJAiKt67/tH
-         AoRB7a/4+ZoQmPpUOW8MVFixrhEPmPxCZp+5VbzFOzIHMM+iTObkL5Cs6oi3B8PCVHjo
-         1FFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0LgeB6IhoKHpPJRdUqtdxcrEPshsH9ulrWgRlYFPb5s=;
-        b=QAAcuxWWn9AB+YMTiPUclKe+2MlbjpCyEbIjYPtKlc0pov9rvlpdhxSPo6GgxKv/i7
-         Cd2/BxhvUJ582ZbVBkj/DX8neA+KuGqf4cmV1TuUJgbk1NZEPutNy1MPMNtuX3pnJuB7
-         vfRHRlLw0RrCMAkrcu3XLZAUjl7PiM8LmozkC0XTu43xd5ThVam42dBuTl+5MgA3AlP7
-         5FxubPLtaLNUjMEubXX5TcG7RV9rCD/7qWM0QWjVjrojcUkrx2jVRbyYvMRbMJGhR5p7
-         ecQ+zHOXOTIynzKK1A0gT+vutTDAZqKs/jaapcViJpjhX55Y7B2BeC6AxIgF2Brh2eJz
-         uyTQ==
-X-Gm-Message-State: AOAM530AIjntUfBQLwyiI2WRF+53bgI6Cu1RDp7IYcX3fyQPbhe5VWoL
-        SRXj/Bq1mIeoVJzeOUCwbzRaTN3/z7Nxm4ivERI=
-X-Google-Smtp-Source: ABdhPJytolHnKin5qHWsuzdw4wR3D0CV3ghZN/gVL/TGyQAMpHz0QdXRWHeayrfvfXIarb+cu6NLd6rpTZ0LUp8Pvto=
-X-Received: by 2002:a9d:7095:: with SMTP id l21mr2326757otj.224.1600933052470;
- Thu, 24 Sep 2020 00:37:32 -0700 (PDT)
+        Thu, 24 Sep 2020 03:38:34 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f6c4c9a0000>; Thu, 24 Sep 2020 00:36:58 -0700
+Received: from mtl-vdi-166.wap.labs.mlnx (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 24 Sep
+ 2020 07:38:14 +0000
+Date:   Thu, 24 Sep 2020 10:38:10 +0300
+From:   Eli Cohen <elic@nvidia.com>
+To:     Jason Wang <jasowang@redhat.com>
+CC:     <mst@redhat.com>, <lulu@redhat.com>, <kvm@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <rob.miller@broadcom.com>, <lingshan.zhu@intel.com>,
+        <eperezma@redhat.com>, <hanand@xilinx.com>,
+        <mhabets@solarflare.com>, <eli@mellanox.com>,
+        <amorenoz@redhat.com>, <maxime.coquelin@redhat.com>,
+        <stefanha@redhat.com>, <sgarzare@redhat.com>
+Subject: Re: [RFC PATCH 01/24] vhost-vdpa: fix backend feature ioctls
+Message-ID: <20200924073810.GB170403@mtl-vdi-166.wap.labs.mlnx>
+References: <20200924032125.18619-1-jasowang@redhat.com>
+ <20200924032125.18619-2-jasowang@redhat.com>
+ <20200924071609.GA170403@mtl-vdi-166.wap.labs.mlnx>
+ <042dc3f9-40f0-f740-7ffc-611d315bc150@redhat.com>
 MIME-Version: 1.0
-References: <20200922132559.38456-1-alexandru.ardelean@analog.com>
- <20200922132559.38456-4-alexandru.ardelean@analog.com> <20200923213912.05dda5ef@archlinux>
-In-Reply-To: <20200923213912.05dda5ef@archlinux>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Thu, 24 Sep 2020 10:37:20 +0300
-Message-ID: <CA+U=DsoMGHtGRcBrj-w_sQveKQEWjkfupBSr9QHjTtxbvEQa0w@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] dt-bindings: iio: ad9467: add entry for for AD9434 ADC
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        devicetree@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <042dc3f9-40f0-f740-7ffc-611d315bc150@redhat.com>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600933019; bh=+eY8+fXvngYj7XnYGCkUG8jrRpVijqI96ZMj1LGmxWE=;
+        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+         Content-Type:Content-Disposition:Content-Transfer-Encoding:
+         In-Reply-To:User-Agent:X-Originating-IP:X-ClientProxiedBy;
+        b=WnvFZcXfAFVVIByiIYbR+uKmdmmTlMOmyJvEJc7hCQzIVGcGXGJpD+Dr8/YQNWcGg
+         LOq+tR9i0Kn2gD+iaqawryJBcoNJcj0c+vW76jzqg3upQD2YeqCQTbXCK4MIWhA3PI
+         lDpNIHqe+WIjBtzCHb/k1rKcunqeiKFw/mXkCAjFuMITzH1bgwKpaDH79HQmpfXH7q
+         Pn93V4GsDH+6iYuiV3nRBeysiY2jNruBumG9wFHncs53dFH1sCAH3WhFhyjlvn6U8D
+         RayV6/I9+AKyi4lgpDVV1YdjlCyRr+DTl2/pLDiZ4Y3TIj+SiMJrf2EHOamqFvw+0w
+         biH0TccDh6mQA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 11:42 PM Jonathan Cameron <jic23@kernel.org> wrote:
->
-> On Tue, 22 Sep 2020 16:25:57 +0300
-> Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
->
-> > Add entry for the AD9434 high-speed ADC which is supported by the 'ad9467'
-> > driver.
-> >
-> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
->
-> Probably want to tweak a few other bits of the binding.
-> It has some specific statements about the ad9467 as this is only
-> second device to be added.  Need to change to those to "ad9467 and similar"
-> or something like that + add description for this part.
+On Thu, Sep 24, 2020 at 03:26:08PM +0800, Jason Wang wrote:
+>=20
+> On 2020/9/24 =E4=B8=8B=E5=8D=883:16, Eli Cohen wrote:
+> > On Thu, Sep 24, 2020 at 11:21:02AM +0800, Jason Wang wrote:
+> > > Commit 653055b9acd4 ("vhost-vdpa: support get/set backend features")
+> > > introduces two malfunction backend features ioctls:
+> > >=20
+> > > 1) the ioctls was blindly added to vring ioctl instead of vdpa device
+> > >     ioctl
+> > > 2) vhost_set_backend_features() was called when dev mutex has already
+> > >     been held which will lead a deadlock
+> > >=20
+> > I assume this patch requires some patch in qemu as well. Do you have
+> > such patch?
+> >=20
+>=20
+> It's this series: [PATCH 0/3] Vhost-vDPA: batch IOTLB updating.
+>=20
+> You were copied.
+>=20
 
-Yep, that was sloppy on my part.
-Will update.
-
->
-> > ---
-> >  Documentation/devicetree/bindings/iio/adc/adi,ad9467.yaml | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad9467.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad9467.yaml
-> > index c4f57fa6aad1..0e8da8ee6975 100644
-> > --- a/Documentation/devicetree/bindings/iio/adc/adi,ad9467.yaml
-> > +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad9467.yaml
-> > @@ -19,6 +19,7 @@ description: |
-> >  properties:
-> >    compatible:
-> >      enum:
-> > +      - adi,ad9434
-> >        - adi,ad9467
-> >
-> >    reg:
->
+Right, I miss those.
+Thanks.
