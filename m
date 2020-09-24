@@ -2,139 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EE8A27681A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 07:08:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B604127681B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 07:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726773AbgIXFIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 01:08:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53736 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726691AbgIXFIf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 01:08:35 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 45C35235FD;
-        Thu, 24 Sep 2020 05:08:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600924115;
-        bh=zg0bwBBQ7NADrq7ZFAJdHhDztu1Z0TDV3IOYU5K9GzA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AXpnlCkRjFIf8sAjRTaiRzoM84ikPzcHNUwvtwGE3sV3lwnkRriyNiB/2neFhKz3i
-         ya0psk3HIz1SVWpB5TB1D3HTB4Je97TJdL9aYnyPWZW0YP+Fc47ozL9lVoHrh48QpI
-         iiiOYhJoCp3bqdIXCxHNwFAu5YuCwCgnBLfDpkLs=
-Date:   Thu, 24 Sep 2020 07:08:51 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Scott Branden <scott.branden@broadcom.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        Desmond Yan <desmond.yan@broadcom.com>,
-        James Hu <james.hu@broadcom.com>
-Subject: Re: [PATCH v3 2/3] misc: bcm-vk: add Broadcom VK driver
-Message-ID: <20200924050851.GA271310@kroah.com>
-References: <20200825194400.28960-1-scott.branden@broadcom.com>
- <20200825194400.28960-3-scott.branden@broadcom.com>
- <20200907125530.GC2371705@kroah.com>
- <767f6b6a-07fc-f1b6-f43c-b974761f1505@broadcom.com>
+        id S1726794AbgIXFLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 01:11:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726683AbgIXFLl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 01:11:41 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A83AC0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 22:11:41 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id t7so1025246pjd.3
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 22:11:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IbzPox5jnfS/DQmh8djlNye1AT0DWj0P7hHtIMKDwWQ=;
+        b=FkkyUKYxCpfoJ2ecMoGh6ROu3M69X5VALvn5grx2GvyJL0d0IvLBVhOrEDy7CW2CDO
+         1nUK7ocrk2L91TMbHmwE3MKp0UdP/SpWzKk1dLhCxLvrQtpYBlcYbiMlrOToGJ7wZCfr
+         kK43FF2/8yP3ieU98Uj5+BfguC5S22hL5AQ6DJzjqy6WnYWEgW3ou5/374se6TooKhN/
+         Yd/Wyrs+ay97YO3xhzcawwaNrtXWcTU/nq1JGCOD793yt47DkyVh/ATuUx15F3D59Xe6
+         Y6Z0h07so/a9YQdQEYfhzjeWo8oPYGEHWobYZCQ6uhcNG/eJWPuH7YSoAMjkZgOFE4jK
+         oGVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IbzPox5jnfS/DQmh8djlNye1AT0DWj0P7hHtIMKDwWQ=;
+        b=Kl0eWcHOJvRhv5D+auBJ08ziGKbG45VZoffgbxxS3XZ+6bAN4oadjzV95pBJPqLArJ
+         DDEpSv1LZ/RxKnZwBJvS/6NOkuop9QTRlYOWLsMRXj+wSRzaYSR8L4PcA0FJpjW6v+tm
+         AYJSRFvPX8/bdV0MO7AgAqB3kjndhcQ79iY+mnIlm++rRouuI0q0GypxX6zT5BrSsaqU
+         rfCKZa9+W3YktHmkqlsTvsaNAYH/Mj6j8QjaEZ2McGOHfD0WOInLmds1QAkap9Wqk85v
+         gBxHa1UXs2phEORobpLXCYGHKEFsc8Xan59Jd86GPwdJBDqd7Hbo1lJNxBmr2ZT6eZ3t
+         5ZTw==
+X-Gm-Message-State: AOAM5321sauAy7t5yyPSNQlm1xg0G6npJnnvk1t/PP4w9zT3P/ImE/jq
+        k034pdWEnNh9rtVNTbpbVLUWp17NhE2HGxFB
+X-Google-Smtp-Source: ABdhPJxDqx2cNvY5ZYZXAj3yz7pPa4YrB0VaL8i1aMei83D4I+xii9AnLbYiY+iyOBht0JR1Fz4+UA==
+X-Received: by 2002:a17:90a:ead5:: with SMTP id ev21mr2241627pjb.188.1600924300494;
+        Wed, 23 Sep 2020 22:11:40 -0700 (PDT)
+Received: from [192.168.10.94] (124-171-83-152.dyn.iinet.net.au. [124.171.83.152])
+        by smtp.gmail.com with ESMTPSA id a2sm1225190pfk.201.2020.09.23.22.11.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Sep 2020 22:11:39 -0700 (PDT)
+Subject: Re: [PATCH v2] powerpc/pci: unmap legacy INTx interrupts when a PHB
+ is removed
+To:     =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
+        Qian Cai <cai@redhat.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Oliver O'Halloran <oohall@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-next@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200807101854.844619-1-clg@kaod.org>
+ <9c5eca863c63e360662fae7597213e8927c2a885.camel@redhat.com>
+ <fce8ffe1-521c-8344-c7ad-53550e408cdc@kaod.org>
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+Message-ID: <6716add0-9244-4da1-a578-f7faeb529e77@ozlabs.ru>
+Date:   Thu, 24 Sep 2020 15:11:34 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <fce8ffe1-521c-8344-c7ad-53550e408cdc@kaod.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <767f6b6a-07fc-f1b6-f43c-b974761f1505@broadcom.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 09:43:55PM -0700, Scott Branden wrote:
-> >> +struct bcm_vk_tty {
-> >> +	struct tty_port port;
-> >> +	uint32_t to_offset;	/* bar offset to use */
-> >> +	uint32_t to_size;	/* to VK buffer size */
-> >> +	uint32_t wr;		/* write offset shadow */
-> >> +	uint32_t from_offset;	/* bar offset to use */
-> >> +	uint32_t from_size;	/* from VK buffer size */
-> >> +	uint32_t rd;		/* read offset shadow */
-> > nit, these "unit32_t" stuff really doesn't matter in the kernel, 'u32'
-> > is a better choice overall.  Same for u8 and others, for this whole
-> > driver.
-> Other than personal preference, I don't understand how 'u32' is better.
-> uint32_t follows the ANSI stdint.h.  It allows for portable code without
-> the need to define custom u32 types.
 
-The ANSI namespace does not work in the kernel, which is why we have our
-own types that pre-date those, and work properly everywhere in the
-kernel.
 
-> stdint types are used in many drivers in the linux kernel already.
-> We would prefer to keep our code as portable as possible and use
-> stdint types in the driver.
-
-You aren't porting this code to other operating systems easily, please
-use the kernel types :)
-
-And yes, these types are used in other parts, but when you have 25
-million lines of code, some crud does slip in at times...
-
-> >> +	pid_t pid;
-> >> +	bool irq_enabled;
-> >> +	bool is_opened;		/* tracks tty open/close */
-> > Why do you need to track this?  Doesn't the tty core handle this for
-> > you?
-> I have tried using tty_port_kopened() and it doesn't seem to work.
-> Will need to debug some more unless you have another suggested function to use.
-
-You didn't answer _why_ you need to track this.  A tty driver shouldn't
-care about this type of thing.
-
-> >> +	struct workqueue_struct *tty_wq_thread;
-> >> +	struct work_struct tty_wq_work;
-> >> +
-> >> +	/* Reference-counting to handle file operations */
-> >> +	struct kref kref;
-> > And a kref?
-> >
-> > What is controlling the lifetime rules of your structure?
-> >
-> > Why a kref?
-> >
-> > Why the tty ports?
-> >
-> > Why the misc device?
-> >
-> > This feels really crazy to me...
-> Comments mostly from Desmond here:
+On 23/09/2020 17:06, CÃ©dric Le Goater wrote:
+> On 9/23/20 2:33 AM, Qian Cai wrote:
+>> On Fri, 2020-08-07 at 12:18 +0200, CÃ©dric Le Goater wrote:
+>>> When a passthrough IO adapter is removed from a pseries machine using
+>>> hash MMU and the XIVE interrupt mode, the POWER hypervisor expects the
+>>> guest OS to clear all page table entries related to the adapter. If
+>>> some are still present, the RTAS call which isolates the PCI slot
+>>> returns error 9001 "valid outstanding translations" and the removal of
+>>> the IO adapter fails. This is because when the PHBs are scanned, Linux
+>>> maps automatically the INTx interrupts in the Linux interrupt number
+>>> space but these are never removed.
+>>>
+>>> To solve this problem, we introduce a PPC platform specific
+>>> pcibios_remove_bus() routine which clears all interrupt mappings when
+>>> the bus is removed. This also clears the associated page table entries
+>>> of the ESB pages when using XIVE.
+>>>
+>>> For this purpose, we record the logical interrupt numbers of the
+>>> mapped interrupt under the PHB structure and let pcibios_remove_bus()
+>>> do the clean up.
+>>>
+>>> Since some PCI adapters, like GPUs, use the "interrupt-map" property
+>>> to describe interrupt mappings other than the legacy INTx interrupts,
+>>> we can not restrict the size of the mapping array to PCI_NUM_INTX. The
+>>> number of interrupt mappings is computed from the "interrupt-map"
+>>> property and the mapping array is allocated accordingly.
+>>>
+>>> Cc: "Oliver O'Halloran" <oohall@gmail.com>
+>>> Cc: Alexey Kardashevskiy <aik@ozlabs.ru>
+>>> Signed-off-by: CÃ©dric Le Goater <clg@kaod.org>
+>>
+>> Some syscall fuzzing will trigger this on POWER9 NV where the traces pointed to
+>> this patch.
+>>
+>> .config: https://gitlab.com/cailca/linux-mm/-/blob/master/powerpc.config
 > 
-> Yes, we have created a PCIe centric driver that combines with both a misc devices on top (for the read/write/ioctrl), and also ttys.
-> The device sits on PCIe but we are using the misc device for accessing it.
-> tty is just another on top.  I don't think this is that uncommon to have a hybrid driver.
+> OK. The patch is missing a NULL assignement after kfree() and that
+> might be the issue. 
+> 
+> I did try PHB removal under PowerNV, so I would like to understand 
+> how we managed to remove twice the PCI bus and possibly reproduce. 
+> Any chance we could grab what the syscall fuzzer (syzkaller) did ? 
 
-Ugh, yes, it is uncommon because those are two different things.  Why do
-you need/want a misc driver to control a tty device?  Why do you need a
-tty device?  What really is this beast?
 
-We got rid of the old "control path" device nodes for tty devices a long
-time ago, this feels like a return to that old model, is that why you
-are doing this?
 
-But again, I really don't understand what this driver is trying to
-control/manage, so it's hard to review it without that knowledge.
+My guess would be it is doing this in parallel to provoke races.
 
-> Since we have a hybrid of PCIe + misc + tty, it means that we could simultaneously have opening dev/node to read/write (multiple) + tty o going.
 
-That's almost always a bad idea.
 
-> Since the struct is embedded inside the primary PCIe structure, we need a way to know when all the references are done, and then at that point we could free the primary structure.
-> That is the reason for the kref.  On PCIe device removal, we signal the user space process to stop first, but the data structure can not be freed until the ref goes to 0.
-
-Again, you can not have multiple reference count objects controling a
-single object.  That way is madness and buggy and will never work
-properly.
-
-You can have different objects with different lifespans, which, if you
-really really want to do this, is the correct way.  Otherwise, stick
-with one object and one reference count please.
-
-thanks,
-
-greg k-h
+-- 
+Alexey
