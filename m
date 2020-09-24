@@ -2,125 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81D632766D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 05:20:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C771F2766D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 05:21:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726497AbgIXDUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 23:20:38 -0400
-Received: from mail-eopbgr10046.outbound.protection.outlook.com ([40.107.1.46]:6798
-        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726196AbgIXDUi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 23:20:38 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YUUt6kLJ57nO0go7Xjp+N4txOR0cV/Q0vb72blYsqIsvkJMiiQwBsfpduzFjT4mMtVKgFsGt2+eieNZ7KL4kI/Vv3VVrvh1xwBXUlz2xYyDn/u3P3dVHQNgYZFStvEeNDXcFxgXl6up24LPzt33XqQVwSwCTVjS35dpgNl7CrFNmBOIuDXrwx8BXgx3ZAJJgyXzwzrElZ2/5nBplRQmgdxqBi4gppY3HBogtVS4qGP0gw11f3seBidU4LgMV+Os+WrYJP23vXZXHXpk9NiFNp8WXA/8XJNmKSwW3DhI9g4F89HSe0pHmrSC2tsQ7+K3mOy/STAkinkuLeTZA81nPug==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=54e4JOsol3MbdHnbpxgyiZPuK6xKJ20pc2oveBYA68w=;
- b=eUWgAWRbyjRjDVbQmavKmEmQIG9Jyw09NXVaEqJl2VnF5h9iz4zGyrk2SqrUhMF9AOQwb8yG+5Pk8c+3k8Ub80/m7eJW0N8sydn80PPobnaVnVZciulNwyBi25qSiZ6F51ktL/KaHP9rJEp6Esr9UbteTwbERYxTyFbRhbfVfSlu0DQAjjtzUDoVmvuIc/ZMUxa/u699hlE3LqNKP+auMQEy9lhpr8S4iVzqe4jE6hgcx/3LwuegcRD2h5UFFTlkhx3bjklrwmxdGsGwWa6srZxZ0xEw1M74Sf5A4CWBmAHPvx6phfiGXdhwC4uFoJjPt7lQyh6FVt7JGP1cP4Zayw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=54e4JOsol3MbdHnbpxgyiZPuK6xKJ20pc2oveBYA68w=;
- b=VV7wD0VzyagM3vkU7q1MvwUcBVWOaFPooX265h7t3vZOQZWshMtXPURht6YfrUE+P9OZ3JEo890dWz1Ad5YaZmx8yaptVpGBBjjjRtcoZEI8BEofwgtdjC7UHAyzdplN+QvX6CqhHgaBO4KOMtRRqb1KN38o3K1urMeC+hAodbQ=
-Received: from DB8PR04MB6763.eurprd04.prod.outlook.com (2603:10a6:10:10b::28)
- by DB8PR04MB7147.eurprd04.prod.outlook.com (2603:10a6:10:126::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Thu, 24 Sep
- 2020 03:20:33 +0000
-Received: from DB8PR04MB6763.eurprd04.prod.outlook.com
- ([fe80::7926:bb74:b8fa:4447]) by DB8PR04MB6763.eurprd04.prod.outlook.com
- ([fe80::7926:bb74:b8fa:4447%4]) with mapi id 15.20.3391.027; Thu, 24 Sep 2020
- 03:20:33 +0000
-From:   Qiang Zhao <qiang.zhao@nxp.com>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-CC:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
-        "a.zummo@towertech.it" <a.zummo@towertech.it>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        =?utf-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= 
-        <u.kleine-koenig@pengutronix.de>
-Subject: RE: [Patch v2 1/3] dt-bindings: rtc: pcf2127: Add bindings for
- nxp,pcf2127
-Thread-Topic: [Patch v2 1/3] dt-bindings: rtc: pcf2127: Add bindings for
- nxp,pcf2127
-Thread-Index: AQHWj9v8ujWDbe4KQkWWGAO9y9OzgKl1/KOAgAEbugA=
-Date:   Thu, 24 Sep 2020 03:20:33 +0000
-Message-ID: <DB8PR04MB67635518BE38EEF5292C8D0991390@DB8PR04MB6763.eurprd04.prod.outlook.com>
-References: <20200921054821.26071-1-qiang.zhao@nxp.com>
- <20200923094449.GP9675@piout.net>
-In-Reply-To: <20200923094449.GP9675@piout.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: bootlin.com; dkim=none (message not signed)
- header.d=none;bootlin.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.73]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: fc8b5ab3-e763-412d-0c7e-08d86038cc39
-x-ms-traffictypediagnostic: DB8PR04MB7147:
-x-microsoft-antispam-prvs: <DB8PR04MB7147EF25E0B1877E2FA1C27791390@DB8PR04MB7147.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +cOu9e7bCqXw0hdYVp1rMV5lo+0EEoC0PU6wzCo5dVYV+T4qGYpWQQSQ2a0te6UkRIRUh6mmAkLXWtLTyydE7jP8NCqJaGK/3Tib6nEv411BetCJsuk05fojoobflhL3WZ94TZrf3WgVBIJ9czaIaA/y0zJKb84fd0vsAcfFTiBs/dS5dwxD3Td4ZWoUcfSZ/saXCZ3KEfW0xewwsRVsNTMfLbSqOrkn8dkz4GyC0dNMVmTCQytFMZwb5y9yYf+26JugiMWyiwFMCT9j4Kg5RPjdNjzrlOaWAw+Dxwg/rwYfxLyBSScMM2W9/5nlrLvxC5thiMtU8xlEfgIGcZihaLep6lRVUzp+GDug365XTCMVXHmUvWnz2Cf9YmbcKsPHCPxwITOj6qU/A0kMYtxRYZBdC1AgNRrXxspedGfcM/A=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6763.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(39860400002)(366004)(396003)(66556008)(64756008)(76116006)(186003)(4326008)(66446008)(66946007)(966005)(7416002)(2906002)(66476007)(5660300002)(8936002)(26005)(83380400001)(478600001)(7696005)(316002)(66574015)(9686003)(53546011)(8676002)(45080400002)(71200400001)(44832011)(6506007)(33656002)(6916009)(52536014)(55016002)(54906003)(86362001)(142933001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: NRkpwlCmnBvdF9Xr5nKHh0RUoQOBn6UtIOePAkJ7UqP5K9Ne+nrwmeNSduATex/kKnYZ5Dyo7TAHjQKvmaRLvtZbuYay8yS4UgHd69fDIdM+44+46YxKIPnER773Yx7aMAd7RzPmNlJPldy0EzrZx5T39fOooTJZNQJppOwTAr6eT+pLjYGIzq3cUzv0LmMu3yS98Frs77IUOyV7CNDGFxmhg5NeJJTMfQc5j9x3rPEsUG9DxfrJMsK/PyROFDaMYBpRbfKyvX593Yzj25k29r8pHQ+Zysf2F+LKKQAB5nv5tkKIBz2LKseoAmFCj8R6aHhEek3WImgvphCcs/yXKNFdHkDgCoCUP93er5vbBwy/Gi2P/uOrAw1epqJI2PAnQpr9ZWTRVKqb2ZBM4O+I3qod9FSf5iOvdWLGVoJf13gwkqIyjWwdgKaJETIFlMXtPedlxC7Eekf+MYMXUbh3IOQcDjPWkX1jIN0bzBAohE4U8JRc+mNaqnalLoVDoEzaQSbJsM1TdFEEyfyF1B508t8QHZ7mTe1v3z+Fdnh/faUuDnFswYdRDIDLoDJ27DI8cGrpKmkRAecEtNPOP52zQmFBUa9E2U9B0sERb+B6Jckwcm12iujSl1n/N26GhyOqJOTDuIYnRtNW7nfB+SQJGQ==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726600AbgIXDVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 23:21:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32155 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726426AbgIXDVs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 23:21:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600917706;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ulvoXaawU1LlJCvKBwZXwnTD0YBj1z2Rn2hoHe4yuKA=;
+        b=Ji0Pi0uvPp+TIOMcy7TqKvbmb1ZtbqIvG1BlqmBthkHyr4kg2kQzcTd4PSeGnt3tT+UNXf
+        aptIQ8vX9W9/s1kBWO9v6EjMWoyY9AG8W9LBYM891Bw987g5iOXMMNWTKQmlP+lFqaZYBF
+        uMFGMpx5d5OVokR7b79LNqnVEjmP8zs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-311-nXpWs3-YNjaBVu0TOZk99g-1; Wed, 23 Sep 2020 23:21:45 -0400
+X-MC-Unique: nXpWs3-YNjaBVu0TOZk99g-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2F5251005E72;
+        Thu, 24 Sep 2020 03:21:43 +0000 (UTC)
+Received: from jason-ThinkPad-X1-Carbon-6th.redhat.com (ovpn-13-193.pek2.redhat.com [10.72.13.193])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2852B3782;
+        Thu, 24 Sep 2020 03:21:27 +0000 (UTC)
+From:   Jason Wang <jasowang@redhat.com>
+To:     mst@redhat.com, jasowang@redhat.com
+Cc:     lulu@redhat.com, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rob.miller@broadcom.com,
+        lingshan.zhu@intel.com, eperezma@redhat.com, hanand@xilinx.com,
+        mhabets@solarflare.com, eli@mellanox.com, amorenoz@redhat.com,
+        maxime.coquelin@redhat.com, stefanha@redhat.com,
+        sgarzare@redhat.com
+Subject: [RFC PATCH 00/24] Control VQ support in vDPA
+Date:   Thu, 24 Sep 2020 11:21:01 +0800
+Message-Id: <20200924032125.18619-1-jasowang@redhat.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6763.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fc8b5ab3-e763-412d-0c7e-08d86038cc39
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Sep 2020 03:20:33.2801
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ccmimeo8PcTs7exPSMEStSf6XPSZJDkiXsi9om3rd1KKqNmwBwnr4kC/y+kgb+6wVuWN56qt/1C5I27wWrONZg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB7147
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMjEvMDkvMjAyMCAxMzo0ODoxOSswODAwLCBRaWFuZyBaaGFvIHdyb3RlOg0KDQo+IC0tLS0t
-T3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEFsZXhhbmRyZSBCZWxsb25pIDxhbGV4YW5k
-cmUuYmVsbG9uaUBib290bGluLmNvbT4NCj4gU2VudDogMjAyMOW5tDnmnIgyM+aXpSAxNzo0NQ0K
-PiBUbzogUWlhbmcgWmhhbyA8cWlhbmcuemhhb0BueHAuY29tPg0KPiBDYzogV2ltIFZhbiBTZWJy
-b2VjayA8d2ltQGxpbnV4LXdhdGNoZG9nLm9yZz47IEd1ZW50ZXIgUm9lY2sNCj4gPGxpbnV4QHJv
-ZWNrLXVzLm5ldD47IGxpbnV4LXdhdGNoZG9nQHZnZXIua2VybmVsLm9yZzsNCj4gYS56dW1tb0B0
-b3dlcnRlY2guaXQ7IHJvYmgrZHRAa2VybmVsLm9yZzsgbGludXgtcnRjQHZnZXIua2VybmVsLm9y
-ZzsNCj4gZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5l
-bC5vcmc7IFV3ZSBLbGVpbmUtS8O2bmlnDQo+IDx1LmtsZWluZS1rb2VuaWdAcGVuZ3V0cm9uaXgu
-ZGU+DQo+IFN1YmplY3Q6IFJlOiBbUGF0Y2ggdjIgMS8zXSBkdC1iaW5kaW5nczogcnRjOiBwY2Yy
-MTI3OiBBZGQgYmluZGluZ3MgZm9yDQo+IG54cCxwY2YyMTI3DQo+IA0KPiBIaSwNCj4gDQo+IFlv
-dSBmb3Jnb3QgdG8gY29weSB0aGUgd2F0Y2hkb2cgbWFpbnRhaW5lcnMsIEkgdGhpbmsgc3VjaCBh
-IHByb3BlcnR5IHNob3VsZCBiZQ0KPiBkaXNjdXNzZWQgd2l0aCB0aGVtLg0KPiANCj4gTm90ZSB0
-aGF0IEknbSBzdGlsbCBjb252aW5jZWQgdGhpcyBpcyBub3QgYSBjb21wbGV0ZSBzb2x1dGlvbiwg
-c2VlOg0KPiBodHRwczovL2V1cjAxLnNhZmVsaW5rcy5wcm90ZWN0aW9uLm91dGxvb2suY29tLz91
-cmw9aHR0cHMlM0ElMkYlMkZsb3JlLmtlcm4NCj4gZWwub3JnJTJGbGludXgtcnRjJTJGMjAyMDA3
-MTYxODE4MTYuR0YzNDI4JTQwcGlvdXQubmV0JTJGJmFtcDtkYXRhPQ0KPiAwMiU3QzAxJTdDcWlh
-bmcuemhhbyU0MG54cC5jb20lN0NiNzFmNzlhMDQ0YjA0OTNkNmQ0ZjA4ZDg1ZmE1NTFjDQo+IGIl
-N0M2ODZlYTFkM2JjMmI0YzZmYTkyY2Q5OWM1YzMwMTYzNSU3QzAlN0MxJTdDNjM3MzY0NTEwOTMx
-MTc0DQo+IDM1NSZhbXA7c2RhdGE9JTJCT3hyekI4Ukl1eE05TGV0NXNsaGZDVm1NbTZQTU5vRVJE
-ZUhDOSUyRmR4bmcNCj4gJTNEJmFtcDtyZXNlcnZlZD0wDQo+IA0KDQpZZXMsIHlvdSBhcmUgcmln
-aHQsIFRoZXJlIGlzIG5vdCBhIGZ1bmRhbWVudGFsIHNvbHV0aW9uLg0KSG93ZXZlciBpdCBzb21l
-d2hhdCBhdm9pZCB0aGlzIHNpdHVhdGlvbiBhdCBsZWFzdC4NCg0KQW5kIGlmIHdpdGhvdXQgdGhp
-cyBpc3N1ZSwgDQppcyBpdCBjb3JyZWN0IHRvIHJlZ2lzdGVyIGEgcnRjIGRldmljZSBhcyB3YXRj
-aGRvZyBubyBtYXR0ZXIgaXQgaXMgdXNlZCBhcyB3YXRjaGRvZyBvbiB0aGUgYm9hcmQ/IA0KRXZl
-cnkgdGltZSBMaW51eCBhcmUgYm9vdGVkIHVwLCB3YXRjaGRvZyBkZXZpY2Ugc2hvdWxkIGJlIGNv
-bmZpZ3VyZWQgdG8gdGhlIHJpZ2h0IG9uZSBtYW51YWxseS4NClNvIHRoZSBwYXRjaCBhcmUgdXNl
-ZnVsLCBldmVuIHRob3VnaCBpdCBpcyBub3QgZm9yIHRoZSBpc3N1ZS4NCg0KV2hhdCBzaG91bGQg
-d2UgZG8gdG8gcmVhbGx5IHJlc29sdmUgdGhpcyBpc3N1ZT8NCg0KQmVzdCBSZWdhcmRzDQpRaWFu
-ZyBaaGFvDQo=
+Hi All:
+
+This series tries to add the support for control virtqueue in vDPA.
+
+Control virtqueue is used by networking device for accepting various
+commands from the driver. It's a must to support multiqueue and other
+configurations.
+
+When used by vhost-vDPA bus driver for VM, the control virtqueue
+should be shadowed via userspace VMM (Qemu) instead of being assigned
+directly to Guest. This is because Qemu needs to know the device state
+in order to start and stop device correctly (e.g for Live Migration).
+
+This requies to isolate the memory mapping for control virtqueue
+presented by vhost-vDPA to prevent guest from accesing it directly.
+
+To achieve this, vDPA introduce two new abstractions:
+
+- address space: identified through address space id (ASID) and a set
+                 of memory mapping in maintained
+- virtqueue group: the minimal set of virtqueues that must share an
+                 address space
+
+Device needs to advertise the following attributes to vDPA:
+
+- the number of address spaces supported in the device
+- the number of virtqueue groups supported in the device
+- the mappings from a specific virtqueue to its virtqueue groups
+
+The mappings from virtqueue to virtqueue groups is fixed and defined
+by vDPA device driver. E.g:
+
+- For the device that has hardware ASID support, it can simply
+  advertise a per virtqueue virtqueue group.
+- For the device that does not have hardware ASID support, it can
+  simply advertise a single virtqueue group that contains all
+  virtqueues. Or if it wants a software emulated control virtqueue, it
+  can advertise two virtqueue groups, one is for cvq, another is for
+  the rest virtqueues.
+
+vDPA also allow to change the association between virtqueue group and
+address space. So in the case of control virtqueue, userspace
+VMM(Qemu) may use a dedicated address space for the control virtqueue
+group to isolate the memory mapping.
+
+The vhost/vhost-vDPA is also extend for the userspace to:
+
+- query the number of virtqueue groups and address spaces supported by
+  the device
+- query the virtqueue group for a specific virtqueue
+- assocaite a virtqueue group with an address space
+- send ASID based IOTLB commands
+
+This will help userspace VMM(Qemu) to detect whether the control vq
+could be supported and isolate memory mappings of control virtqueue
+from the others.
+
+To demonstrate the usage, vDPA simulator is extended to support
+setting MAC address via a emulated control virtqueue. Please refer
+patch 24 for more implementation details.
+
+Please review.
+
+Note that patch 1 and a equivalent of patch 2 have been posted in the
+list. Those two are requirement for this series to work, so I add them
+here.
+
+Thank
+
+Jason Wang (24):
+  vhost-vdpa: fix backend feature ioctls
+  vhost-vdpa: fix vqs leak in vhost_vdpa_open()
+  vhost: move the backend feature bits to vhost_types.h
+  virtio-vdpa: don't set callback if virtio doesn't need it
+  vhost-vdpa: passing iotlb to IOMMU mapping helpers
+  vhost-vdpa: switch to use vhost-vdpa specific IOTLB
+  vdpa: add the missing comment for nvqs in struct vdpa_device
+  vdpa: introduce virtqueue groups
+  vdpa: multiple address spaces support
+  vdpa: introduce config operations for associating ASID to a virtqueue
+    group
+  vhost_iotlb: split out IOTLB initialization
+  vhost: support ASID in IOTLB API
+  vhost-vdpa: introduce ASID based IOTLB
+  vhost-vdpa: introduce uAPI to get the number of virtqueue groups
+  vhost-vdpa: introduce uAPI to get the number of address spaces
+  vhost-vdpa: uAPI to get virtqueue group id
+  vhost-vdpa: introduce uAPI to set group ASID
+  vhost-vdpa: support ASID based IOTLB API
+  vdpa_sim: use separated iov for reading and writing
+  vdpa_sim: advertise VIRTIO_NET_F_MTU
+  vdpa_sim: advertise VIRTIO_NET_F_MAC
+  vdpa_sim: factor out buffer completion logic
+  vdpa_sim: filter destination mac address
+  vdpasim: control virtqueue support
+
+ drivers/vdpa/ifcvf/ifcvf_main.c   |   9 +-
+ drivers/vdpa/mlx5/net/mlx5_vnet.c |  11 +-
+ drivers/vdpa/vdpa.c               |   8 +-
+ drivers/vdpa/vdpa_sim/vdpa_sim.c  | 293 ++++++++++++++++++++++++------
+ drivers/vhost/iotlb.c             |  23 ++-
+ drivers/vhost/vdpa.c              | 259 ++++++++++++++++++++------
+ drivers/vhost/vhost.c             |  23 ++-
+ drivers/vhost/vhost.h             |   4 +-
+ drivers/virtio/virtio_vdpa.c      |   2 +-
+ include/linux/vdpa.h              |  42 ++++-
+ include/linux/vhost_iotlb.h       |   2 +
+ include/uapi/linux/vhost.h        |  19 +-
+ include/uapi/linux/vhost_types.h  |  10 +-
+ 13 files changed, 556 insertions(+), 149 deletions(-)
+
+-- 
+2.20.1
+
