@@ -2,108 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0E10277C13
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 01:00:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45BC9277C1F
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 01:05:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726716AbgIXXAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 19:00:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33722 "EHLO mail.kernel.org"
+        id S1726709AbgIXXFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 19:05:09 -0400
+Received: from mga12.intel.com ([192.55.52.136]:33534 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726205AbgIXXAA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 19:00:00 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E75782344C;
-        Thu, 24 Sep 2020 22:59:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600988399;
-        bh=FnlDJ4w2Wp7B+ooR/U+JqMBTHrFYFwOTHlid0jHxpp0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=BoKgzIPcUFGxxWG1d0l4lyQ9LcVunTMUK+FQSYmr9qH3iwtZ7pKeS49P3OGiw4mWW
-         tgStj13sQxhdQGeFuZPs/3TZ3RAR53f/77sWn7BTAoGmHAuQTUtPu3SGJjX/fazSmd
-         6yXWIW+X6fNRSRAhc0nmuaactMyCyyk7R8Iyfdpg=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id B2C9435230AC; Thu, 24 Sep 2020 15:59:59 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 15:59:59 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: Clarify nocb kthreads naming in RCU_NOCB_CPU config
-Message-ID: <20200924225959.GY29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <1600929250-20344-1-git-send-email-neeraju@codeaurora.org>
+        id S1726397AbgIXXFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 19:05:09 -0400
+IronPort-SDR: pDiq48MlVdehx9sqlaOdTwzCAwhEmeeslkBXXOhMal92aNdOgXhVPe1JLTnURxysF8KVRgxppT
+ zybrX02Q6ZLA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="140799556"
+X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
+   d="scan'208";a="140799556"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 16:05:09 -0700
+IronPort-SDR: DTeNHZ6aog3FVIKOt9A/8jA2Wdb4mMOF4QGxpICuPDHyv4eLWgFVqufJ3s+0wSn9qe3458UIjy
+ tpNmprXiVeXg==
+X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
+   d="scan'208";a="310579735"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 16:05:08 -0700
+Date:   Thu, 24 Sep 2020 16:05:06 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Haitao Huang <haitao.huang@linux.intel.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
+        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        asapek@google.com, Borislav Petkov <bp@alien8.de>,
+        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
+        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
+        "Huang, Haitao" <haitao.huang@intel.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
+        Christian Ludloff <ludloff@google.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Patrick Uiterwijk <puiterwijk@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
+Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
+Message-ID: <20200924230501.GA20095@linux.intel.com>
+References: <20200922053515.GA97687@linux.intel.com>
+ <20200922164301.GB30874@linux.intel.com>
+ <20200923135056.GD5160@linux.intel.com>
+ <op.0rgp5h0hwjvjmi@mqcpg7oapc828.gar.corp.intel.com>
+ <20200924192853.GA18826@linux.intel.com>
+ <c680f7bd-2d82-6477-707f-cd03aae4b4aa@intel.com>
+ <20200924200156.GA19127@linux.intel.com>
+ <e4bcb25f-581a-da93-502b-b8f73e28286a@intel.com>
+ <20200924202549.GB19127@linux.intel.com>
+ <e25bfeaa-afb4-3928-eb80-50d90815eabb@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1600929250-20344-1-git-send-email-neeraju@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <e25bfeaa-afb4-3928-eb80-50d90815eabb@intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 12:04:10PM +0530, Neeraj Upadhyay wrote:
-> Clarify the "x" in rcuox/N naming in RCU_NOCB_CPU config
-> description.
+On Thu, Sep 24, 2020 at 01:54:09PM -0700, Dave Hansen wrote:
+> On 9/24/20 1:25 PM, Sean Christopherson wrote:
+> ...
+> >> Why don't we just declare enclave memory as "out of scope for noexec" in
+> >> the same way that anonymous memory is, and just discard this patch?
+> >> That doesn't seem too much of a stretch.
+> > 
+> > Because we lose line of sight to LSM support.  Without enforcing "declare perms
+> > at load time" in the initial series, we would create an ABI where userspace
+> > could load an enclave page with only READ permissions and then map the enclave
+> > with whatever permissions it wants, without any convenient way for SGX to call
+> > into the LSM.
 > 
-> Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+> This argument holds no water for me.  LSMs are all about taking what
+> would otherwise be perfectly acceptable behavior and breaking them in
+> the name of security.  They fundamentally break applications that used
+> to work just fine and also did totally sane things.
 
-Applied with a few additional updates as shown below.  As always, please
-let me know if I messed anything up.
+It's not about LSMs breaking things, they can obviously do that without any
+help.  The concern is that, unless we lay the groundwork now, adding support
+for LSMs in the future will break existing applications or create an unholy
+mess of an ABI.
 
-							Thanx, Paul
+If we want to support LSM policy for enclave page permissions, checking LSM
+policies at load time and hooking mprotect() to enforce the policy at run
+time is by far the cleanest solution of the many ideas we discussed.
 
-------------------------------------------------------------------------
+The problem is that enforcing permissions via mprotect() needs to be done
+unconditionally, otherwise we end up with weird behavior where the existence
+of an LSM will change what is/isn't allowed, even if the LSM(s) has no SGX
+policy whatsover.
 
-commit 8d1d776b4998896a6f8f4608edb0b258bd37ec9f
-Author: Neeraj Upadhyay <neeraju@codeaurora.org>
-Date:   Thu Sep 24 12:04:10 2020 +0530
+And on the flip side, enforcing permissions unconditionally will break
+backwards compatibility.
 
-    rcu: Clarify nocb kthreads naming in RCU_NOCB_CPU config
-    
-    This commit clarifies that the "p" and the "s" in the in the RCU_NOCB_CPU
-    config-option description refer to the "x" in the "rcuox/N" kthread name.
-    
-    Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-    [ paulmck: While in the area, update description and advice. ]
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-index b71e21f..cdc57b4 100644
---- a/kernel/rcu/Kconfig
-+++ b/kernel/rcu/Kconfig
-@@ -221,19 +221,23 @@ config RCU_NOCB_CPU
- 	  Use this option to reduce OS jitter for aggressive HPC or
- 	  real-time workloads.	It can also be used to offload RCU
- 	  callback invocation to energy-efficient CPUs in battery-powered
--	  asymmetric multiprocessors.
-+	  asymmetric multiprocessors.  The price of this reduced jitter
-+	  is that the overhead of call_rcu() increases and that some
-+	  workloads will incur significant increases in context-switch
-+	  rates.
- 
- 	  This option offloads callback invocation from the set of CPUs
- 	  specified at boot time by the rcu_nocbs parameter.  For each
- 	  such CPU, a kthread ("rcuox/N") will be created to invoke
- 	  callbacks, where the "N" is the CPU being offloaded, and where
--	  the "p" for RCU-preempt (PREEMPTION kernels) and "s" for RCU-sched
--	  (!PREEMPTION kernels).  Nothing prevents this kthread from running
--	  on the specified CPUs, but (1) the kthreads may be preempted
--	  between each callback, and (2) affinity or cgroups can be used
--	  to force the kthreads to run on whatever set of CPUs is desired.
--
--	  Say Y here if you want to help to debug reduced OS jitter.
-+	  the "x" is "p" for RCU-preempt (PREEMPTION kernels) and "s" for
-+	  RCU-sched (!PREEMPTION kernels).  Nothing prevents this kthread
-+	  from running on the specified CPUs, but (1) the kthreads may be
-+	  preempted between each callback, and (2) affinity or cgroups can
-+	  be used to force the kthreads to run on whatever set of CPUs is
-+	  desired.
-+
-+	  Say Y here if you need reduced OS jitter, despite added overhead.
- 	  Say N here if you are unsure.
- 
- config TASKS_TRACE_RCU_READ_MB
+I'm a-ok if we want to kill off the ->mprotect() hook, so long as we
+acknowledge that in doing so we are likely throwing in the towel on supporting
+LSM policies for enclave page permissions.
