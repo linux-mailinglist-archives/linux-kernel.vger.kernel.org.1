@@ -2,208 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 318AA277028
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0194277036
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:46:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727641AbgIXLjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 07:39:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727621AbgIXLjE (ORCPT
+        id S1727388AbgIXLqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 07:46:47 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8828 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726406AbgIXLqr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 07:39:04 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D124C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 04:39:04 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id e16so3472686wrm.2
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 04:39:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JGub3DzXhL7AkkI6iK+SL+4zKCGwxV6kIyrPE4bsyiY=;
-        b=SLT/EHgSLvugpIfJOPkw+tO2fR6eaV03IDkcCh6puDqsCE52mI4xx0iLXRzlVE212Y
-         fXQKbrNW5b+CmVuRwvmZDpea6wVt1//t3OsdZLK8hyBNmtdfF5tdzQu18bxQ8484fG+g
-         q8z02hAuqdAFa3c0IqYMDagSBFatcLaQ4JH9+ervHXzTvKQ6tQMvnu3wB6r3bwcXOdtv
-         NdcDNeoCNHhEJNhULzeFSz1KUXGmtf4CanAp6tTlEdDE82lLUEr+ixR3oP3vj+i+ZgYU
-         EZbYqXG/scstrg6SqDGri3qay6PS+OLK+7lX5drQd3UgOv2DvQ9KtgIrsqe0UkOrStmD
-         7lVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JGub3DzXhL7AkkI6iK+SL+4zKCGwxV6kIyrPE4bsyiY=;
-        b=jgE9ThDVX/glNk2VkswPLw74UcRJYba1w0PJiKkQNQ9VdteATsT3D5o6rZCgiC5I+j
-         gaovauiiYt7s0hbUcS9/uFJW8yxhILmzsKR9v3xNFQ1PUQ2UTeoLPYumid3Uq38ENkMe
-         CYGaUFMSl33jdatmPTUU8DgEB6hK8GGOWYAH9bJRKp7EOY4BgOsvg1BmLHWUWJE+8xT5
-         XGL8iRD987VnUbmaNOYj22aElEuKGzIkTIYVHq/dfKI+z+BiVPcnwgiGIIzjwP5+DPnb
-         Phvk/nU/kaVxYGpyNyosAPrynFx4Jctc/O0Odnm8wQQDLfDYcInZ+qVQGuQU+cMHVdQz
-         cJdQ==
-X-Gm-Message-State: AOAM531AKYDPAQNLhrQ60U4YcwrTQpub7CWwfXUuPLxVvOqX+Z0PSS4F
-        mDW1TDR32fVSUPOF7MuBHVnkBg==
-X-Google-Smtp-Source: ABdhPJwRRHKuPOnQPU5XvgVnwnnUf+lAuiTXOzt+of8grtjvRhvSYM0OgF6GJfQq0ans8+65ykY0pg==
-X-Received: by 2002:adf:84c3:: with SMTP id 61mr4568421wrg.131.1600947543143;
-        Thu, 24 Sep 2020 04:39:03 -0700 (PDT)
-Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
-        by smtp.gmail.com with ESMTPSA id y207sm3390133wmc.17.2020.09.24.04.39.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 04:39:02 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>
-Cc:     linux-gpio@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 9/9] gpio: mockup: refactor the module init function
-Date:   Thu, 24 Sep 2020 13:38:42 +0200
-Message-Id: <20200924113842.11670-10-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200924113842.11670-1-brgl@bgdev.pl>
-References: <20200924113842.11670-1-brgl@bgdev.pl>
+        Thu, 24 Sep 2020 07:46:47 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08OBgKL0028663;
+        Thu, 24 Sep 2020 07:46:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=pp1; bh=cy9i3HKP06eSsk3EkUuP4ft7WU/EvISxSMpaosLKxSg=;
+ b=QwUZCb8Q0xh6cMlgBmGwtgF3hQsUGhD7AXJADvr5CuXwTXIMMi0salXUAhjaigoNBBiL
+ Eo55mdZAt70TgDWb321Xo4D43PxFy3uediLOMJLO4ek6gfk5hdHtVnqKiqLLC9gt7Q1f
+ 5+9qszMsHrpHqcn7krv2m69rmZ6bZ2McBr4dxt0FHFe5grWo/E850dEf4rqy0ayVlt41
+ WEwLEONXo6oYldYs/0gRcqpyERKQtFkPJ6VDpEUjXs5Lh/VrNJDiPhWDKt6Y7WOqER1s
+ VbEbZATbHEeLEIeVvkdXYgfE/5o/Uzae7dZI6EJSjQiBJ6I4IP3xkPWMSimZ5GxF2CZZ Mw== 
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33rttgr2u8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Sep 2020 07:46:09 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08OBhfn3009184;
+        Thu, 24 Sep 2020 11:46:07 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma01fra.de.ibm.com with ESMTP id 33n9m7tpfu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Sep 2020 11:46:07 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08OBk5BB30802264
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 24 Sep 2020 11:46:05 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1F81F52051;
+        Thu, 24 Sep 2020 11:46:05 +0000 (GMT)
+Received: from vajain21.in.ibm.com (unknown [9.85.113.96])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id 9954A5204F;
+        Thu, 24 Sep 2020 11:46:01 +0000 (GMT)
+Received: by vajain21.in.ibm.com (sSMTP sendmail emulation); Thu, 24 Sep 2020 17:16:00 +0530
+From:   Vaibhav Jain <vaibhav@linux.ibm.com>
+To:     Wang Wensheng <wangwensheng4@huawei.com>,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        aneesh.kumar@linux.ibm.com, dan.j.williams@intel.com,
+        ira.weiny@intel.com, santosh@fossix.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] powerpc/papr_scm: Fix warnings about undeclared
+ variable
+In-Reply-To: <20200918085951.44983-1-wangwensheng4@huawei.com>
+References: <20200918085951.44983-1-wangwensheng4@huawei.com>
+Date:   Thu, 24 Sep 2020 17:16:00 +0530
+Message-ID: <87lfgz9z47.fsf@vajain21.in.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-24_08:2020-09-24,2020-09-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
+ lowpriorityscore=0 malwarescore=0 suspectscore=1 phishscore=0
+ impostorscore=0 mlxscore=0 mlxlogscore=984 bulkscore=0 clxscore=1011
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009240085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Let's move the code preparing the device properties into a separate
-routine. This has the advantage of simplifying the error handling and
-makes the indentation less deep.
+Thanks for the patch. This looks good to me.
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- drivers/gpio/gpio-mockup.c | 96 +++++++++++++++++++-------------------
- 1 file changed, 49 insertions(+), 47 deletions(-)
+Wang Wensheng <wangwensheng4@huawei.com> writes:
 
-diff --git a/drivers/gpio/gpio-mockup.c b/drivers/gpio/gpio-mockup.c
-index c35fd05de395..e2285f4330dd 100644
---- a/drivers/gpio/gpio-mockup.c
-+++ b/drivers/gpio/gpio-mockup.c
-@@ -503,16 +503,59 @@ static __init char **gpio_mockup_make_line_names(const char *label,
- 	return names;
- }
- 
--static int __init gpio_mockup_init(void)
-+static int __init gpio_mockup_register_chip(int idx)
- {
- 	struct property_entry properties[GPIO_MOCKUP_MAX_PROP];
--	int i, prop, num_chips, err = 0, base;
- 	struct platform_device_info pdevinfo;
- 	struct platform_device *pdev;
-+	char **line_names = NULL;
- 	char chip_label[32];
--	char **line_names;
-+	int prop = 0, base;
- 	u16 ngpio;
- 
-+	memset(properties, 0, sizeof(properties));
-+	memset(&pdevinfo, 0, sizeof(pdevinfo));
-+
-+	snprintf(chip_label, sizeof(chip_label), "gpio-mockup-%c", idx + 'A');
-+	properties[prop++] = PROPERTY_ENTRY_STRING("chip-label", chip_label);
-+
-+	base = gpio_mockup_range_base(idx);
-+	if (base >= 0)
-+		properties[prop++] = PROPERTY_ENTRY_U32("gpio-base", base);
-+
-+	ngpio = base < 0 ? gpio_mockup_range_ngpio(idx)
-+			 : gpio_mockup_range_ngpio(idx) - base;
-+	properties[prop++] = PROPERTY_ENTRY_U16("nr-gpios", ngpio);
-+
-+	if (gpio_mockup_named_lines) {
-+		line_names = gpio_mockup_make_line_names(chip_label, ngpio);
-+		if (!line_names)
-+			return -ENOMEM;
-+
-+		properties[prop++] = PROPERTY_ENTRY_STRING_ARRAY_LEN(
-+					"gpio-line-names", line_names, ngpio);
-+	}
-+
-+	pdevinfo.name = "gpio-mockup";
-+	pdevinfo.id = idx;
-+	pdevinfo.properties = properties;
-+
-+	pdev = platform_device_register_full(&pdevinfo);
-+	kfree_strarray(line_names, line_names ? ngpio : 0);
-+	if (IS_ERR(pdev)) {
-+		pr_err("error registering device");
-+		return PTR_ERR(pdev);
-+	}
-+
-+	gpio_mockup_pdevs[idx] = pdev;
-+
-+	return 0;
-+}
-+
-+static int __init gpio_mockup_init(void)
-+{
-+	int i, num_chips, err;
-+
- 	if ((gpio_mockup_num_ranges < 2) ||
- 	    (gpio_mockup_num_ranges % 2) ||
- 	    (gpio_mockup_num_ranges > GPIO_MOCKUP_MAX_RANGES))
-@@ -540,54 +583,13 @@ static int __init gpio_mockup_init(void)
- 	}
- 
- 	for (i = 0; i < num_chips; i++) {
--		memset(properties, 0, sizeof(properties));
--		memset(&pdevinfo, 0, sizeof(pdevinfo));
--		prop = 0;
--		line_names = NULL;
--
--		snprintf(chip_label, sizeof(chip_label),
--			 "gpio-mockup-%c", i + 'A');
--		properties[prop++] = PROPERTY_ENTRY_STRING("chip-label",
--							   chip_label);
--
--		base = gpio_mockup_range_base(i);
--		if (base >= 0)
--			properties[prop++] = PROPERTY_ENTRY_U32("gpio-base",
--								base);
--
--		ngpio = base < 0 ? gpio_mockup_range_ngpio(i)
--				 : gpio_mockup_range_ngpio(i) - base;
--		properties[prop++] = PROPERTY_ENTRY_U16("nr-gpios", ngpio);
--
--		if (gpio_mockup_named_lines) {
--			line_names = gpio_mockup_make_line_names(chip_label,
--								 ngpio);
--			if (!line_names) {
--				platform_driver_unregister(&gpio_mockup_driver);
--				gpio_mockup_unregister_pdevs();
--				return -ENOMEM;
--			}
--
--			properties[prop++] = PROPERTY_ENTRY_STRING_ARRAY_LEN(
--						"gpio-line-names",
--						line_names, ngpio);
--		}
--
--		pdevinfo.name = "gpio-mockup";
--		pdevinfo.id = i;
--		pdevinfo.properties = properties;
--
--		pdev = platform_device_register_full(&pdevinfo);
--		kfree_strarray(line_names, line_names ? ngpio : 0);
--		if (IS_ERR(pdev)) {
--			pr_err("error registering device");
-+		err = gpio_mockup_register_chip(i);
-+		if (err) {
- 			platform_driver_unregister(&gpio_mockup_driver);
- 			gpio_mockup_unregister_pdevs();
- 			debugfs_remove_recursive(gpio_mockup_dbg_dir);
--			return PTR_ERR(pdev);
-+			return err;
- 		}
--
--		gpio_mockup_pdevs[i] = pdev;
- 	}
- 
- 	return 0;
+> Build the kernel with 'make C=2':
+> arch/powerpc/platforms/pseries/papr_scm.c:825:1: warning: symbol
+> 'dev_attr_perf_stats' was not declared. Should it be static?
+
+> Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
+Reviewed-by: Vaibhav Jain <vaibhav@linux.ibm.com>
+
 -- 
-2.26.1
-
+Cheers
+~ Vaibhav
