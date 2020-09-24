@@ -2,157 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52546277301
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:47:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 498A4277306
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:47:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728070AbgIXNq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 09:46:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26560 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727685AbgIXNq6 (ORCPT
+        id S1728151AbgIXNrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 09:47:14 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:39984 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727685AbgIXNrO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 09:46:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600955217;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qqRCr6v/2XRPWoGdR145qm6q0ywYEtAwn/2ujNTMrmk=;
-        b=eSw/Nv9WAe/oVh3PpI/VoeYAm9Q9mVxosIPSzm0a4sAVrZzzN9US5D1T0ZNNnyzn/izULc
-        hP1inr4QuMpaYgThOZClYmPg8B+qCPQerqfZlmbAHfnBahriF60XqZRvw9qbskXwA1IIRj
-        lhzC1dMm3SFzjJzx+MJB7wHloYYAa5I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-418-vw-rLk2uNEiJW348w4NcOA-1; Thu, 24 Sep 2020 09:46:55 -0400
-X-MC-Unique: vw-rLk2uNEiJW348w4NcOA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 005151868425;
-        Thu, 24 Sep 2020 13:46:52 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id F38C59CBA;
-        Thu, 24 Sep 2020 13:46:49 +0000 (UTC)
-Date:   Thu, 24 Sep 2020 09:46:49 -0400
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Eric Biggers <ebiggers@kernel.org>,
-        dm-devel@redhat.com, Alasdair Kergon <agk@redhat.com>
-Subject: Re: [PATCH 2/3] dm: add support for passing through inline crypto
- support
-Message-ID: <20200924134649.GB13849@redhat.com>
-References: <20200909234422.76194-1-satyat@google.com>
- <20200909234422.76194-3-satyat@google.com>
- <20200922003255.GC32959@sol.localdomain>
- <20200924011438.GD10500@redhat.com>
- <20200924071721.GA1883346@google.com>
+        Thu, 24 Sep 2020 09:47:14 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08ODdFOU075626;
+        Thu, 24 Sep 2020 13:47:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type : in-reply-to;
+ s=corp-2020-01-29; bh=llrB7MuICWocHsrG1uQvmKtEhooZDVhsGsiCoyXeDLM=;
+ b=moH3kzfDcXAO9sJIGSdDO746y13d3BbxLxzPcxVJpEwXgWp6H9M254EP9OKbd7/cCsCI
+ BlYZ6wKgI/5m1i9dZk4BVjQNDp4QCbT2zBQCmi0L+DaOLTx1rg5uKIuQvGsqzmbZo8Ec
+ fVUc/AX+FK53NLb+wvWwYvRfdb/hVzpuzDyfpbRXBL1GoOB0k7g5mLlxJDLeWVK/4k+7
+ nkJoryG9Thu51JUnWp6NDjM7xyCNouznljiKUIszwILc8GPhzYdeyhGwZjftUBTj/Z05
+ F6/qMLloCoWt0F4o1nUaAGEPaKYrEbN2EOuOcw/Cn9mOr7Tf7uEdJWiaJx+sKzE8K4JW tQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 33q5rgppfn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 24 Sep 2020 13:47:01 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08ODeArs013275;
+        Thu, 24 Sep 2020 13:47:00 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 33r28x1c4s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 24 Sep 2020 13:47:00 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08ODkwZg002104;
+        Thu, 24 Sep 2020 13:46:58 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 24 Sep 2020 06:46:57 -0700
+Date:   Thu, 24 Sep 2020 16:46:51 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>
+Cc:     Wei Yongjun <weiyongjun1@huawei.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Ralph Campbell <rcampbell@nvidia.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH v2] mm/hmm/test: use after free in dmirror_allocate_chunk()
+Message-ID: <20200924134651.GA1586456@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200924071721.GA1883346@google.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <c25729e4-8a53-07e3-ae98-d77919f3ac21@nvidia.com>
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9753 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999
+ suspectscore=2 adultscore=0 bulkscore=0 malwarescore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009240103
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9753 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 impostorscore=0
+ clxscore=1015 suspectscore=2 phishscore=0 malwarescore=0
+ priorityscore=1501 mlxlogscore=999 adultscore=0 bulkscore=0 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009240103
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24 2020 at  3:17am -0400,
-Satya Tangirala <satyat@google.com> wrote:
+The error handling code does this:
 
-> On Wed, Sep 23, 2020 at 09:14:39PM -0400, Mike Snitzer wrote:
-> > On Mon, Sep 21 2020 at  8:32pm -0400,
-> > Eric Biggers <ebiggers@kernel.org> wrote:
-> > 
-> > > On Wed, Sep 09, 2020 at 11:44:21PM +0000, Satya Tangirala wrote:
-> > > > From: Eric Biggers <ebiggers@google.com>
-> > > > 
-> > > > Update the device-mapper core to support exposing the inline crypto
-> > > > support of the underlying device(s) through the device-mapper device.
-> > > > 
-> > > > This works by creating a "passthrough keyslot manager" for the dm
-> > > > device, which declares support for encryption settings which all
-> > > > underlying devices support.  When a supported setting is used, the bio
-> > > > cloning code handles cloning the crypto context to the bios for all the
-> > > > underlying devices.  When an unsupported setting is used, the blk-crypto
-> > > > fallback is used as usual.
-> > > > 
-> > > > Crypto support on each underlying device is ignored unless the
-> > > > corresponding dm target opts into exposing it.  This is needed because
-> > > > for inline crypto to semantically operate on the original bio, the data
-> > > > must not be transformed by the dm target.  Thus, targets like dm-linear
-> > > > can expose crypto support of the underlying device, but targets like
-> > > > dm-crypt can't.  (dm-crypt could use inline crypto itself, though.)
-> > > > 
-> > > > When a key is evicted from the dm device, it is evicted from all
-> > > > underlying devices.
-> > > > 
-> > > > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> > > > Co-developed-by: Satya Tangirala <satyat@google.com>
-> > > > Signed-off-by: Satya Tangirala <satyat@google.com>
-> > > 
-> > > Looks good as far as Satya's changes from my original patch are concerned.
-> > > 
-> > > Can the device-mapper maintainers take a look at this?
-> > 
-> > In general it looks like these changes were implemented very carefully
-> > and are reasonable if we _really_ want to enable passing through inline
-> > crypto.
-> > 
-> > I do have concerns about the inability to handle changes at runtime (due
-> > to a table reload that introduces new devices without the encryption
-> > settings the existing devices in the table are using).  But the fallback
-> > mechanism saves it from being a complete non-starter.
->
-> Unfortunately, the fallback doesn't completely handle that situation
-> right now. The DM device could be suspended while an upper layer like
-> fscrypt is doing something like "checking if encryption algorithm 'A'
-> is supported by the DM device". It's possible that fscrypt thinks
-> the DM device supports 'A' even though the DM device is suspended, and
-> the table is about to be reloaded to introduce a new device that doesn't
-> support 'A'. Before the DM device is resumed with the new table, fscrypt
-> might send a bio that uses encryption algorithm 'A' without initializing
-> the blk-crypto-fallback ciphers for 'A', because it believes that the DM
-> device supports 'A'. When the bio gets processed by the DM (or when
-> blk-crypto does its checks to decide whether to use the fallback on that
-> bio), the bio will fail because the fallback ciphers aren't initialized.
-> 
-> Off the top of my head, one thing we could do is to always allocate the
-> fallback ciphers when the device mapper is the target device for the bio
-> (by maybe adding a "encryption_capabilities_may_change_at_runtime" flag
-> to struct blk_keyslot_manager that the DM will set to true, and that
-> the block layer will check for and decide to appropriately allocate
-> the fallback ciphers), although this does waste memory on systems
-> where we know the DM device tables will never change....
+err_free:
+	kfree(devmem);
+        ^^^^^^^^^^^^^
+err_release:
+	release_mem_region(devmem->pagemap.range.start, range_len(&devmem->pagemap.range));
+                           ^^^^^^^^
+The problem is that when we use "devmem->pagemap.range.start" the
+"devmem" pointer is either NULL or freed.
 
-Yeah, I agree that'd be too wasteful.
+Neither the allocation nor the call to request_free_mem_region() has to
+be done under the lock so I moved those to the start of the function.
+
+Fixes: b2ef9f5a5cb3 ("mm/hmm/test: add selftest driver for HMM")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+v2:  The first version introduced a locking bug
+
+ lib/test_hmm.c | 44 ++++++++++++++++++++++----------------------
+ 1 file changed, 22 insertions(+), 22 deletions(-)
+
+diff --git a/lib/test_hmm.c b/lib/test_hmm.c
+index c8133f50160b..e151a7f10519 100644
+--- a/lib/test_hmm.c
++++ b/lib/test_hmm.c
+@@ -459,6 +459,22 @@ static bool dmirror_allocate_chunk(struct dmirror_device *mdevice,
+ 	unsigned long pfn_last;
+ 	void *ptr;
  
-> This patch also doesn't handle the case when the encryption capabilities
-> of the new table are a superset of the old capabilities.  Currently, a
-> DM device's capabilities can only shrink after the device is initially
-> created. They can never "expand" to make use of capabilities that might
-> be added due to introduction of new devices via table reloads.  I might
-> be forgetting something I thought of before, but looking at it again
-> now, I don't immediately see anything wrong with expanding the
-> advertised capabilities on table reload....I'll look carefully into that
-> again.
-
-OK, that'd be good (expanding capabilities on reload).
-
-And conversely, you _could_ also fail a reload if the new device(s)
-don't have capabilities that are in use by the active table.
-
-> > Can you help me better understand the expected consumer of this code?
-> > If you have something _real_ please be explicit.  It makes justifying
-> > supporting niche code like this more tolerable.
->
-> So the motivation for this code was that Android currently uses a device
-> mapper target on top of a phone's disk for user data. On many phones,
-> that disk has inline encryption support, and it'd be great to be able to
-> make use of that. The DM device configuration isn't changed at runtime.
-
-OK, which device mapper target is used?
-
-Thanks,
-Mike
++	devmem = kzalloc(sizeof(*devmem), GFP_KERNEL);
++	if (!devmem)
++		return -ENOMEM;
++
++	res = request_free_mem_region(&iomem_resource, DEVMEM_CHUNK_SIZE,
++				      "hmm_dmirror");
++	if (IS_ERR(res))
++		goto err_devmem;
++
++	devmem->pagemap.type = MEMORY_DEVICE_PRIVATE;
++	devmem->pagemap.range.start = res->start;
++	devmem->pagemap.range.end = res->end;
++	devmem->pagemap.nr_range = 1;
++	devmem->pagemap.ops = &dmirror_devmem_ops;
++	devmem->pagemap.owner = mdevice;
++
+ 	mutex_lock(&mdevice->devmem_lock);
+ 
+ 	if (mdevice->devmem_count == mdevice->devmem_capacity) {
+@@ -471,30 +487,14 @@ static bool dmirror_allocate_chunk(struct dmirror_device *mdevice,
+ 				sizeof(new_chunks[0]) * new_capacity,
+ 				GFP_KERNEL);
+ 		if (!new_chunks)
+-			goto err;
++			goto err_release;
+ 		mdevice->devmem_capacity = new_capacity;
+ 		mdevice->devmem_chunks = new_chunks;
+ 	}
+ 
+-	res = request_free_mem_region(&iomem_resource, DEVMEM_CHUNK_SIZE,
+-					"hmm_dmirror");
+-	if (IS_ERR(res))
+-		goto err;
+-
+-	devmem = kzalloc(sizeof(*devmem), GFP_KERNEL);
+-	if (!devmem)
+-		goto err_release;
+-
+-	devmem->pagemap.type = MEMORY_DEVICE_PRIVATE;
+-	devmem->pagemap.range.start = res->start;
+-	devmem->pagemap.range.end = res->end;
+-	devmem->pagemap.nr_range = 1;
+-	devmem->pagemap.ops = &dmirror_devmem_ops;
+-	devmem->pagemap.owner = mdevice;
+-
+ 	ptr = memremap_pages(&devmem->pagemap, numa_node_id());
+ 	if (IS_ERR(ptr))
+-		goto err_free;
++		goto err_release;
+ 
+ 	devmem->mdevice = mdevice;
+ 	pfn_first = devmem->pagemap.range.start >> PAGE_SHIFT;
+@@ -525,12 +525,12 @@ static bool dmirror_allocate_chunk(struct dmirror_device *mdevice,
+ 
+ 	return true;
+ 
+-err_free:
+-	kfree(devmem);
+ err_release:
+-	release_mem_region(devmem->pagemap.range.start, range_len(&devmem->pagemap.range));
+-err:
+ 	mutex_unlock(&mdevice->devmem_lock);
++	release_mem_region(devmem->pagemap.range.start, range_len(&devmem->pagemap.range));
++err_devmem:
++	kfree(devmem);
++
+ 	return false;
+ }
+ 
+-- 
+2.28.0
 
