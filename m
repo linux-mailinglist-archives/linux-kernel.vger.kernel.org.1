@@ -2,93 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47416277393
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57D34277398
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728190AbgIXOHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 10:07:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51304 "EHLO mx2.suse.de"
+        id S1728206AbgIXOIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 10:08:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39528 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728101AbgIXOH1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 10:07:27 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5DD09AB0E;
-        Thu, 24 Sep 2020 14:07:25 +0000 (UTC)
-Date:   Thu, 24 Sep 2020 14:07:25 +0000 (UTC)
-From:   Michael Matz <matz@suse.de>
-To:     Borislav Petkov <bp@alien8.de>
-cc:     David Laight <David.Laight@ACULAB.COM>,
-        'Dave Jiang' <dave.jiang@intel.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "jing.lin@intel.com" <jing.lin@intel.com>,
-        "ashok.raj@intel.com" <ashok.raj@intel.com>,
-        "sanjay.k.kumar@intel.com" <sanjay.k.kumar@intel.com>,
-        "fenghua.yu@intel.com" <fenghua.yu@intel.com>,
-        "kevin.tian@intel.com" <kevin.tian@intel.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 1/5] x86/asm: Carve out a generic movdir64b() helper
- for general usage
-In-Reply-To: <20200924101506.GD5030@zn.tnic>
-Message-ID: <alpine.LSU.2.20.2009241356020.20802@wotan.suse.de>
-References: <160090233730.44288.4446779116422752486.stgit@djiang5-desk3.ch.intel.com> <160090264332.44288.7575027054245105525.stgit@djiang5-desk3.ch.intel.com> <a8c81da06df2471296b663d40b186c92@AcuMS.aculab.com> <20200924101506.GD5030@zn.tnic>
-User-Agent: Alpine 2.20 (LSU 67 2015-01-07)
+        id S1728101AbgIXOIF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 10:08:05 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CE121212CC;
+        Thu, 24 Sep 2020 14:08:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600956485;
+        bh=ZTaUIST6GpAfWCETtC1UaCXf9xNz/KEcUPSyTSP+apw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jFbb7roVQwX9zyyahSCr6PWGroxuxv/7tO01CHJg+o8CP/jknP7pAOfD9cBgxHV1o
+         CCJNnD2bAQW4QT3yK8iRVnFJM4TbWmJdwvTN7cUhqqxwYhSdIacXW3QS9WlRcZXN3P
+         0z2eLUOgkmK7dE1ny3eEbKUUjj1aGyJTYHC4gT2Y=
+Date:   Thu, 24 Sep 2020 16:08:22 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Mark Salyzyn <salyzyn@android.com>
+Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, kernel-team@android.com
+Subject: Re: commit 37bd22420f85 ("af_key: pfkey_dump needs parameter
+ validation") to stable
+Message-ID: <20200924140822.GA737653@kroah.com>
+References: <75492c42-5081-d988-5a9b-8dc269661e8c@android.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <75492c42-5081-d988-5a9b-8dc269661e8c@android.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-even though we hashed it out downthread, let me make some additional 
-remarks:
-
-On Thu, 24 Sep 2020, Borislav Petkov wrote:
-
-> > 	/* MOVDIR64B [rdx], rax */
-
-This comment is confusing as it uses Intel syntax for the operand forms, 
-but AT&T order (dest last).
-
-> 	volatile struct { char _[64]; } *__dst = dst;
+On Thu, Sep 24, 2020 at 06:58:24AM -0700, Mark Salyzyn wrote:
+> Please consider
 > 
-> 	...
+> commit 37bd22420f856fcd976989f1d4f1f7ad28e1fcac ("af_key: pfkey_dump needs
+> parameter validation")
 > 
-> 	: "=m" (__dst)
-
-This and the other occurences in this thread up to now always miss that 
-the 'm' constraints want the object itself, not the address of the object.  
-So you want '"m" (*__src)', same for dst, and so on.
-
-> Micha, the instruction is:
+> for merge into all the maintained stable trees.
 > 
-> MOVDIR64B %(rdx), rax
-> 
-> "Move 64-bytes as direct-store with guaranteed 64-byte write atomicity
-> from the source memory operand address to destination memory address
-> specified as offset to ES segment in the register operand."
+> Cc: netdev@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: kernel-team@android.com
+> Cc: stable@vger.kernel.org
+> Cc: Greg KH <gregkh@linuxfoundation.org>
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+>
 
-It's unfortunate that the introduction of this mnemonic into binutils 
-did it wrong already, but what the instruction should really read like in 
-AT&T mode is:
+Now queued up, thanks!
 
-  movdir64b (%rdx), (%rax)
-or even
-  movdir64b (%rdx), es:(%rax)
-
-because both are memory operands really (even though the destination can 
-only be encoded with a direct register, as these are the constraints of 
-x86 insn encodings).  It's comparable to movs, which, also having two 
-memory operands is written:
-
-  movsb  %ds:(%rsi),%es:(%rdi)
-
-
-Ciao,
-Michael.
+greg k-h
