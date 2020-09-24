@@ -2,137 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39FFC276EA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 12:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56EDA276EAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 12:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727443AbgIXKZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 06:25:09 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:32799 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727089AbgIXKZJ (ORCPT
+        id S1727448AbgIXKZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 06:25:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727358AbgIXKZj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 06:25:09 -0400
-Received: by mail-ot1-f67.google.com with SMTP id m12so2699012otr.0;
-        Thu, 24 Sep 2020 03:25:08 -0700 (PDT)
+        Thu, 24 Sep 2020 06:25:39 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 756D1C0613CE;
+        Thu, 24 Sep 2020 03:25:38 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id w2so2973799wmi.1;
+        Thu, 24 Sep 2020 03:25:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=4/7mHE7BxkmccTTH2BLUO+DA7CrohaCzbOjCPDUfgN0=;
+        b=U77b18qoLIwiwEgjDl1y0OmVs0s+KcFyNqBtmJC+gEZsC59CmvhDuUmV9kPsu+nRja
+         AlTM2xqOR+n1UsA8OiD6ll5MsvaXcTYcPn9x59MUz33PbYOZqOFV1zuym/tvbHeEJOrX
+         rS2ebaaHtDwd4Nu+9dZDesyYDFxoMibS30iyrUX5i9cGIcTXddHWgT2+NbveDPYnc3JK
+         9W+hQGyTRosm4EwV/P7bhTE0GADzXO9+FNdUMAl3kCWa/mI7zkMZCvGpPBJnb0kFtl6J
+         5A06+gUmTGe6UKhZA/5Vu00FhyoVokvTJdE72buu6lbnhMjX2jj2CCo8yejjoZUPIpLK
+         eUIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rd+YTDrEimq1BimK47ljL9rpY0VeXSNxYm1iPNxV2KY=;
-        b=onqfFF4Hi+v0sz7LZgxihkKEyAMLW5FQSjmgVd0zagnXkojRj0/uFDKeS822BNdv/L
-         DBJTxZxzU3KR4CZ7R2tuaXB66PFIVlJxpfFFD+sJy7HTPa6g2ogz69tz3NyCYhjJr0Qt
-         58BTIh0LekBgG+DQw6YNqCqTCp/MoEipHZoGGxDUEcasMoF/wvI2vFKpnZmhQT9lZfHP
-         zcHQnA9CxW+zeoshmgnu67eZpzEplGHO/XIASbz6U/rvmdf58SBmJistBGzX1kypP4gA
-         g1XwUgDGGZf133FpWhRNOw9LZuFTIq4UrifMh24e1qfgI1fIlIEf88EanZUiY7cgn/Iq
-         vufA==
-X-Gm-Message-State: AOAM5304wSN7zXiO85SEauG7X8LXdV3cWZBUgcVZij8pZWD5bIdLTqdi
-        6O5jvVKS+1AMsgsuqnufstL75QprjXrrv9hH24mi0MOq
-X-Google-Smtp-Source: ABdhPJw1CfCA7p6EBrHphIJKpbQBbhT9YWNTuOFSFjaDf5tPlRCrPnEgbkB4PdsWPbV6N2IxacIzTGh5tru/lkxdhIw=
-X-Received: by 2002:a05:6830:1f16:: with SMTP id u22mr2490195otg.118.1600943108102;
- Thu, 24 Sep 2020 03:25:08 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=4/7mHE7BxkmccTTH2BLUO+DA7CrohaCzbOjCPDUfgN0=;
+        b=uFf+/GsJtvTa5+hBliwGKj9HmzubY2f0T2UmPGdGeNBsHdiwPa1I0h9ltguY1SrJJD
+         IhOrnCx8Hc2rubpFifP4iIrewmR2ryaC3cSg3OzEQIF+B3dmd9DudEKYHn5ydfUCpNM4
+         l+w1dYf4LnUk2x/wTHaDcSElA4UMnidi8V4GUu/8BIsD5MS7QLNEO2CpJpSqMR/unsxv
+         j3O0Jz35U6svjPbuJ/v90/Rhp8skERGXFqBEtGhM6BVLWajViJqIQXzgIpAqWfZNBMxd
+         RyB7/LGVw4wP37hlCsfmnbNYuno/al4FZz48fQzrwcdrHMMHUpfRhUNZe3CwkcdbQZ0O
+         GCZA==
+X-Gm-Message-State: AOAM533XU1SDBbKXz7hCIsZnj/YPCCOfGoZI4IlIV94vo+7UG+pkP3/y
+        s3UHCxuahPcFcLBSon8aJq8=
+X-Google-Smtp-Source: ABdhPJyhb+PV6AabI5OtSsT0y1M2LOJjr35vXCf598N9AvMGTg3pKW/7E6qXjKSx6r7UnQabmUmiew==
+X-Received: by 2002:a1c:e904:: with SMTP id q4mr4199133wmc.151.1600943137217;
+        Thu, 24 Sep 2020 03:25:37 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id j14sm3209005wrr.66.2020.09.24.03.25.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 03:25:36 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 12:25:34 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     joro@8bytes.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-tegra@vger.kernel.org,
+        jonathanh@nvidia.com, vdumpa@nvidia.com
+Subject: Re: [PATCH 3/3] iommu/tegra-smmu: Allow to group clients in same
+ swgroup
+Message-ID: <20200924102534.GI2483160@ulmo>
+References: <20200911071643.17212-1-nicoleotsuka@gmail.com>
+ <20200911071643.17212-4-nicoleotsuka@gmail.com>
 MIME-Version: 1.0
-References: <cover.1600238586.git.viresh.kumar@linaro.org> <31999d801bfb4d8063dc1ceec1234b6b80b4ae68.1600238586.git.viresh.kumar@linaro.org>
- <CAJZ5v0i0aW6jT=DD6ogyfr+bs5LZu7Gn+5A9O_bZxNsnHPojOQ@mail.gmail.com> <a4c5a6b9-10f8-34f8-f01d-8b373214d173@arm.com>
-In-Reply-To: <a4c5a6b9-10f8-34f8-f01d-8b373214d173@arm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 24 Sep 2020 12:24:56 +0200
-Message-ID: <CAJZ5v0iFjzqTKTPFF5hB5C0TYSQn2rxL_6099gqUwoTARKRnZA@mail.gmail.com>
-Subject: Re: [PATCH V2 1/4] cpufreq: stats: Defer stats update to cpufreq_stats_record_transition()
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        cristian.marussi@arm.com, Sudeep Holla <sudeep.holla@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="r4QXMf6/kyF/FvJJ"
+Content-Disposition: inline
+In-Reply-To: <20200911071643.17212-4-nicoleotsuka@gmail.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 11:25 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
->
-> Hi Rafael,
->
-> On 9/23/20 2:48 PM, Rafael J. Wysocki wrote:
-> > On Wed, Sep 16, 2020 at 8:45 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> >>
-> >> In order to prepare for lock-less stats update, add support to defer any
-> >> updates to it until cpufreq_stats_record_transition() is called.
-> >
-> > This is a bit devoid of details.
-> >
-> > I guess you mean reset in particular, but that's not clear from the above.
-> >
-> > Also, it would be useful to describe the design somewhat.
-> >
-> >> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> >> ---
-> >>   drivers/cpufreq/cpufreq_stats.c | 75 ++++++++++++++++++++++++---------
-> >>   1 file changed, 56 insertions(+), 19 deletions(-)
-> >>
-> >> diff --git a/drivers/cpufreq/cpufreq_stats.c b/drivers/cpufreq/cpufreq_stats.c
-> >> index 94d959a8e954..3e7eee29ee86 100644
-> >> --- a/drivers/cpufreq/cpufreq_stats.c
-> >> +++ b/drivers/cpufreq/cpufreq_stats.c
-> >> @@ -22,17 +22,22 @@ struct cpufreq_stats {
-> >>          spinlock_t lock;
-> >>          unsigned int *freq_table;
-> >>          unsigned int *trans_table;
-> >> +
-> >> +       /* Deferred reset */
-> >> +       unsigned int reset_pending;
-> >> +       unsigned long long reset_time;
-> >>   };
-> >>
-> >> -static void cpufreq_stats_update(struct cpufreq_stats *stats)
-> >> +static void cpufreq_stats_update(struct cpufreq_stats *stats,
-> >> +                                unsigned long long time)
-> >>   {
-> >>          unsigned long long cur_time = get_jiffies_64();
-> >>
-> >> -       stats->time_in_state[stats->last_index] += cur_time - stats->last_time;
-> >> +       stats->time_in_state[stats->last_index] += cur_time - time;
-> >>          stats->last_time = cur_time;
-> >>   }
-> >>
-> >> -static void cpufreq_stats_clear_table(struct cpufreq_stats *stats)
-> >> +static void cpufreq_stats_reset_table(struct cpufreq_stats *stats)
-> >>   {
-> >>          unsigned int count = stats->max_state;
-> >>
-> >> @@ -41,42 +46,67 @@ static void cpufreq_stats_clear_table(struct cpufreq_stats *stats)
-> >>          memset(stats->trans_table, 0, count * count * sizeof(int));
-> >>          stats->last_time = get_jiffies_64();
-> >>          stats->total_trans = 0;
-> >> +
-> >> +       /* Adjust for the time elapsed since reset was requested */
-> >> +       WRITE_ONCE(stats->reset_pending, 0);
-> >
-> > What if this runs in parallel with store_reset()?
-> >
-> > The latter may update reset_pending to 1 before the below runs.
-> > Conversely, this may clear reset_pending right after store_reset() has
-> > set it to 1, but before it manages to set reset_time.  Is that not a
-> > problem?
->
-> I wonder if we could just drop the reset feature. Is there a tool
-> which uses this file? The 'reset' sysfs would probably have to stay
-> forever, but an empty implementation is not an option?
 
-Well, having an empty sysfs attr would be a bit ugly, but the
-implementation of it could be simplified.
+--r4QXMf6/kyF/FvJJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> The documentation states:
-> 'This can be useful for evaluating system behaviour under different
-> governors without the need for a reboot.'
-> With the scenario of fast-switch this resetting complicates the
-> implementation and the justification of having it just for experiments
-> avoiding reboot is IMO weak. The real production code would have to pay
-> extra cycles every time. Also, we would probably not experiment with
-> cpufreq different governors, since the SchedUtil is considered the best
-> option.
+On Fri, Sep 11, 2020 at 12:16:43AM -0700, Nicolin Chen wrote:
+> There can be clients using the same swgroup in DT, for example i2c0
+> and i2c1. The current driver will add them to separate IOMMU groups,
+> though it has implemented device_group() callback which is to group
+> devices using different swgroups like DC and DCB.
+>=20
+> All clients having the same swgroup should be also added to the same
+> IOMMU group so as to share an asid. Otherwise, the asid register may
+> get overwritten every time a new device is attached.
+>=20
+> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> ---
+>  drivers/iommu/tegra-smmu.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
 
-It would still be good to have a way to test it against the other
-available options, though.
+Makes sense:
+
+Acked-by: Thierry Reding <treding@nvidia.com>
+
+--r4QXMf6/kyF/FvJJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9sdB4ACgkQ3SOs138+
+s6FXSA/9HImjNheVtwru469lJEW3LBct1GkjgSPN4oFezSxMJgy/vj/YRrTy9Ezd
+X55ZrMV9GkKyXW5Bj9LUrnI8svadFcgn8Lyq19ywPJuDRz9KRwjpNYhsTbHycbDM
+qTaWGh6xzL2RCvRq0LvofEtJBdn972bpZWoBgNNN/obKs76RGEFasx6YhX8MI9L3
+I59OWzZMYraOjbVfiupZ+25wpVEHf2L4ADleLTJjM7SprxZX2wzqpH4k+simc01d
+V1yw1JaQk6YSKKy5+qHUWq9zU2g+j92YhZ38CVsdRcmqOnwljDkvHXSQREIOvBoL
+aGQcGE6F/KPI5G5bl2u6vI0Z+pDd886/zLKAUNThqhsi3CApLfr/r9ZnaUWjE/5O
+G6zEzghEY6lA88dWqQzg4Q0EVpSbJAt2a/QkoN0tdmtaoi0Kv6w2chKnzxU8Ql2s
+uVQd46EKITbnIFxYW713HAyfQ6mCbT0BGUwYhItM1H4du5Sc2x0e2Llv4WhM/7pP
+9vfs1bJjp5ZRhU4zb7ktuypFepunlYIW41lHA1PJkIm+O7kPf+leVUL86JeOjgyo
+142PMzUDPgKFbJa3VpmCerNtVE9+jp25tu0E+nsUvOvZhINvCYxE08sz1fMjn+84
+MKRzue+EB7DjFQefNE7Fww9+GoJ9qjffNunue6EX9QfZIw5Sr8Y=
+=nmeb
+-----END PGP SIGNATURE-----
+
+--r4QXMf6/kyF/FvJJ--
