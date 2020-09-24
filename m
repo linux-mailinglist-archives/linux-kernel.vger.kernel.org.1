@@ -2,104 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 945FC277538
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65083277555
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728380AbgIXP0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 11:26:13 -0400
-Received: from mga12.intel.com ([192.55.52.136]:52937 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728285AbgIXP0N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 11:26:13 -0400
-IronPort-SDR: Q1QgdfoFTjES77cpSnZOMml8lOBxo12t0xdEmlanTkQpFP+5n4s4WFu2h/X+1vz6j6rr39ezAn
- jfaChtGigH/g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="140682072"
-X-IronPort-AV: E=Sophos;i="5.77,298,1596524400"; 
-   d="scan'208";a="140682072"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 08:26:13 -0700
-IronPort-SDR: B0aRA+X0VcnD4Kv9nyTI3ri6M6OhVSh5exjBqLT3Lh4qNYPaR4St9y42RoFkfshJ4sGuSWnoTN
- DPhAw0JTSDKg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,298,1596524400"; 
-   d="scan'208";a="336024808"
-Received: from marshy.an.intel.com (HELO [10.122.105.159]) ([10.122.105.159])
-  by fmsmga004.fm.intel.com with ESMTP; 24 Sep 2020 08:26:13 -0700
-Subject: Re: [RESEND PATCHv1] MAINTAINERS: altera: change maintainer for
- Altera drivers
-To:     mchehab+huawei@kernel.org, davem@davemloft.net, robh@kernel.org,
-        gregkh@linuxfoundation.org, thor.thayer@linux.intel.com,
-        linux-kernel@vger.kernel.org
-Cc:     Richard Gong <richard.gong@intel.com>
-References: <1595606355-1329-1-git-send-email-richard.gong@linux.intel.com>
-From:   Richard Gong <richard.gong@linux.intel.com>
-Message-ID: <0d445238-fcf5-39f4-92b3-69346e681efa@linux.intel.com>
-Date:   Thu, 24 Sep 2020 10:45:49 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728384AbgIXPat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 11:30:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728343AbgIXPat (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 11:30:49 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3AF8C0613CE;
+        Thu, 24 Sep 2020 08:30:48 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id x22so2096513pfo.12;
+        Thu, 24 Sep 2020 08:30:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yanHGoZJj/tcEI8AVG6llL0fhzRiqvwYaviiL5Ezz3E=;
+        b=ezNq1DHk4aNb+MSOycaRr9VWUq1Qil3Y4UoOygCV1AX9tQN1xlt+KEI3xDsK4hm60D
+         GFOugf47Qt1NC/tZueImMyAiEYCqCXEP26A9qXOgblPKBalIb6Fp+r87y8OkF24rtv2e
+         1p8+WnTVov6uGi64oLAPHumRF4sskzWR3wFGEG7DiUIf0lWJQ/c9yG+61mFwp6K+kRct
+         gm1ASwt/Tj9es80OzDDvf30uxyZ46OdNkhAIf6Md/MCZVpqREZu7gKj3fZk4H48JYKBB
+         zbO82ZiSr+J1f1iAwv21h7zWDDL6cm1AKIL97ZEhHahS4+3ZCOZuy1sGWtGq/PVX+nZB
+         nQ2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yanHGoZJj/tcEI8AVG6llL0fhzRiqvwYaviiL5Ezz3E=;
+        b=LAu1tf09MvD7ntSV+aVlZFFy/1yRH3XKBb8zQyYXiC8BrVZF3mPmlvCqtPyaitO1IJ
+         /35KGVnPymt92uCmqOO5vWx3SGa9XxUyxNewK/UqCsWx8b3dV3hMRwh6BSCIZLTTD7YZ
+         HSvmmWGZUIIqKFj6nwvQRUXEY2NgwqOeGFkxHjCLHKWtXCnN9kEmN8Tw2vXNTRIgZeoQ
+         xHiqQftsE47Lgmh7UfUBZ/j2GaYVY8RLaVjll0K+OUjvdFTN9pikW/FStnpyq1/PAS/J
+         bfu13/mAudBtxnKQtyojWH0xdYFn1MGlLTo7gO7Zu0RJTDbeUC2oteiveVbat51UWqXH
+         3U2Q==
+X-Gm-Message-State: AOAM530gQuVUGdWKd7hYXV5a/DbJcxorBCr5CoC5w7UhnG5yRHnXvVaV
+        xHoG5F4+s6tFJYQyf1DSyA==
+X-Google-Smtp-Source: ABdhPJwqZfwiI24nj6maCQ3FVjnC1hLBovtP3quILpVSg5gXxUjuwWRHxbd90tmjpkb4DXHr/yYuNA==
+X-Received: by 2002:a62:3812:0:b029:13e:d13d:a062 with SMTP id f18-20020a6238120000b029013ed13da062mr4689781pfa.40.1600961448347;
+        Thu, 24 Sep 2020 08:30:48 -0700 (PDT)
+Received: from PWN (n11212042027.netvigator.com. [112.120.42.27])
+        by smtp.gmail.com with ESMTPSA id u2sm2825443pji.50.2020.09.24.08.30.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 08:30:47 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 11:30:35 -0400
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] Prevent out-of-bounds access for built-in font data
+ buffers
+Message-ID: <20200924153035.GA879703@PWN>
+References: <0000000000006b9e8d059952095e@google.com>
+ <cover.1600953813.git.yepeilin.cs@gmail.com>
+ <20200924140937.GA749208@kroah.com>
+ <394733ab6fae47488d078cb22f22a85b@AcuMS.aculab.com>
 MIME-Version: 1.0
-In-Reply-To: <1595606355-1329-1-git-send-email-richard.gong@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <394733ab6fae47488d078cb22f22a85b@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi!
 
-Sorry for asking.
+On Thu, Sep 24, 2020 at 02:42:18PM +0000, David Laight wrote:
+> > On Thu, Sep 24, 2020 at 09:38:22AM -0400, Peilin Ye wrote:
+> > > Hi all,
+> > >
+> > > syzbot has reported [1] a global out-of-bounds read issue in
+> > > fbcon_get_font(). A malicious user may resize `vc_font.height` to a large
+> > > value in vt_ioctl(), causing fbcon_get_font() to overflow our built-in
+> > > font data buffers, declared in lib/fonts/font_*.c:
+> ...
+> > > (drivers/video/fbdev/core/fbcon.c)
+> > >  	if (font->width <= 8) {
+> > >  		j = vc->vc_font.height;
+> > > +		if (font->charcount * j > FNTSIZE(fontdata))
+> > > +			return -EINVAL;
+> 
+> Can that still go wrong because the multiply wraps?
 
-This patch was submitted on July and is pending for approval. Would you 
-mind reviewing that?
+Thank you for bringing this up!
 
-Regards,
-Richard
+The resizing of `vc_font.height` happened in vt_resizex():
 
-On 7/24/20 10:59 AM, richard.gong@linux.intel.com wrote:
-> From: Richard Gong <richard.gong@intel.com>
-> 
-> Thor is moving to a new position and I will take over the maintainership.
-> Add myself as maintainer for 3 Altera drivers below:
-> 1. Altera I2C driver
-> 2. Altera System Manager driver
-> 3. Altera System Resource driver
-> 
-> Signed-off-by: Richard Gong <richard.gong@intel.com>
-> Acked-by: Thor Thayer <thor.thayer@linux.intel.com>
-> ---
->   MAINTAINERS | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index b4a43a9..d87a307 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -750,7 +750,7 @@ R:	Pali Rohár <pali@kernel.org>
->   F:	drivers/input/mouse/alps.*
->   
->   ALTERA I2C CONTROLLER DRIVER
-> -M:	Thor Thayer <thor.thayer@linux.intel.com>
-> +M:	Richard Gong <richard.gong@linux.intel.com>
->   S:	Maintained
->   F:	Documentation/devicetree/bindings/i2c/i2c-altera.txt
->   F:	drivers/i2c/busses/i2c-altera.c
-> @@ -767,13 +767,13 @@ S:	Maintained
->   F:	drivers/gpio/gpio-altera.c
->   
->   ALTERA SYSTEM MANAGER DRIVER
-> -M:	Thor Thayer <thor.thayer@linux.intel.com>
-> +M:	Richard Gong <richard.gong@linux.intel.com>
->   S:	Maintained
->   F:	drivers/mfd/altera-sysmgr.c
->   F:	include/linux/mfd/altera-sysmgr.h
->   
->   ALTERA SYSTEM RESOURCE DRIVER FOR ARRIA10 DEVKIT
-> -M:	Thor Thayer <thor.thayer@linux.intel.com>
-> +M:	Richard Gong <richard.gong@linux.intel.com>
->   S:	Maintained
->   F:	drivers/gpio/gpio-altera-a10sr.c
->   F:	drivers/mfd/altera-a10sr.c
-> 
+(drivers/tty/vt/vt_ioctl.c)
+	if (v.v_clin > 32)
+		return -EINVAL;
+	[...]
+	for (i = 0; i < MAX_NR_CONSOLES; i++) {
+			[...]
+			if (v.v_clin)
+				vcp->vc_font.height = v.v_clin;
+				     ^^^^^^^^^^^^^^
+
+It does check if `v.v_clin` is greater than 32. And, currently, all
+built-in fonts have a `charcount` of 256.
+
+Therefore, for built-in fonts and resizing happened in vt_resizex(), it
+cannot cause an interger overflow.
+
+However I am not very sure about user-provided fonts, and if there are
+other functions that can resize `height` or even `charcount` to a really
+huge value, but I will do more investigation and think about it.
+
+Thank you,
+Peilin Ye
+
