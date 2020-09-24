@@ -2,54 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4272276F9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7DA276F9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727483AbgIXLNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 07:13:39 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:38382 "EHLO
+        id S1726483AbgIXLNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 07:13:41 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:38384 "EHLO
         fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727429AbgIXLNe (ORCPT
+        with ESMTP id S1727421AbgIXLNe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 24 Sep 2020 07:13:34 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08OBDQll042546;
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08OBDQUS042544;
         Thu, 24 Sep 2020 06:13:26 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
         s=ti-com-17Q1; t=1600946006;
-        bh=XwfLjYFp2jwsCzESQtCyoGzKTJsrtkUeoml8Fo9Z80U=;
+        bh=CGDMjLiRfWcLMFZW+6G8I1fMQNV1IX0vtYvWoHRS1Hc=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=HDkJb0eFeRceVTGJ6pz34mJP6FwixIVd8nbq4/YxQ2b0tyNonVtOA9VOu8LxPwD9p
-         3GBPHByjmUkRMrhwFaiL6WTp+9jc3SgFX6vZaZAIQlwRKV8XIYvIb6jPWgwxYnmIXi
-         /h5B0I8D91Ln0K5jtFK3R5fA/pvJkeamboeXoSRk=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08OBDQlc067873
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        b=miQDfvEFpP1eK/4LVw1DfjBOlZSEKJNnT3/s4p7ZIrPuueya4Z2JnQ7f6wZZzpcUq
+         oUBJzoV7tUgr/xdDVQ7j4/jQFrJI9ivYZ7JBdh7Cpn+GlxB0/LfKhp3C5sabDBVmlz
+         p0zP+nrqco7b1uoGDXdWGnxhfgRjAMSOgXhriHNA=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08OBDQsf047311;
         Thu, 24 Sep 2020 06:13:26 -0500
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 24
  Sep 2020 06:13:25 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
  Frontend Transport; Thu, 24 Sep 2020 06:13:25 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08OBDPo3097129;
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08OBDPED073946;
         Thu, 24 Sep 2020 06:13:25 -0500
 From:   Nishanth Menon <nm@ti.com>
 To:     Tero Kristo <t-kristo@ti.com>,
         Vignesh Raghavendra <vigneshr@ti.com>
-CC:     Nishanth Menon <nm@ti.com>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
+CC:     Nishanth Menon <nm@ti.com>, Rob Herring <robh+dt@kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v2 0/2] arm64: dts: ti: k3-j7200: Add HyperFlash related nodes
-Date:   Thu, 24 Sep 2020 06:13:23 -0500
-Message-ID: <160094581404.6691.15021925542082151621.b4-ty@ti.com>
+        <devicetree@vger.kernel.org>, Faiz Abbas <faiz_abbas@ti.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 0/2] J7200: Add I2C support
+Date:   Thu, 24 Sep 2020 06:13:24 -0500
+Message-ID: <160094581403.6691.7126086748501099348.b4-ty@ti.com>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200923163150.16973-1-vigneshr@ti.com>
-References: <20200923163150.16973-1-vigneshr@ti.com>
+In-Reply-To: <20200923155400.13757-1-vigneshr@ti.com>
+References: <20200923155400.13757-1-vigneshr@ti.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -58,16 +57,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Sep 2020 22:01:48 +0530, Vignesh Raghavendra wrote:
-> This series adds HyperBus and HyperFlash nodes for TI's J7200 SoC
+On Wed, 23 Sep 2020 21:23:58 +0530, Vignesh Raghavendra wrote:
+> Add I2C and I2C IO expanders nodes for J7200
 > 
 > v2:
-> Rebase on latest ti-k3-next + I2C series
-> Align reg address format with this file's convention
+> Align reg address format with that of file's (s/0x0/0x00)
 > 
 > Vignesh Raghavendra (2):
->   arm64: dts: ti: k3-j7200-mcu-wakeup: Add HyperBus node
->   arm64: dts: ti: k3-j7200-som-p0: Add HyperFlash node
+>   arm64: dts: ti: j7200: Add I2C nodes
+>   arm64: dts: ti: k3-j7200-common-proc-board: Add I2C IO expanders
 > 
 > [...]
 
@@ -76,10 +74,10 @@ Hi Vignesh Raghavendra,
 I have applied the following to branch ti-k3-dts-next on [1].
 Thank you!
 
-[1/2] arm64: dts: ti: k3-j7200-mcu-wakeup: Add HyperBus node
-      commit: b905466d930a17393f3b67514568b14cbd629b34
-[2/2] arm64: dts: ti: k3-j7200-som-p0: Add HyperFlash node
-      commit: 78af3696f4b92b1038805e480f21ba2f51353276
+[1/2] arm64: dts: ti: j7200: Add I2C nodes
+      commit: afc0406bd8a797d8d5066e935eb7c098cf9449de
+[2/2] arm64: dts: ti: k3-j7200-common-proc-board: Add I2C IO expanders
+      commit: ef0b69464cc5182b35e8b4a7b0652f5ccef9c70a
 
 
 All being well this means that it will be integrated into the linux-next
