@@ -2,70 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8399027708D
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:01:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4619F27707E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727676AbgIXMBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 08:01:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39598 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727634AbgIXMB3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 08:01:29 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89C542344C;
-        Thu, 24 Sep 2020 12:01:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600948889;
-        bh=Gbv2myf3mm/YelzUd5RFwsmoYebMix9wSgM9SCsvMZ0=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=p/AGj8P41FOeOSee1kJ6P+5EvMNOP4CHcur8Z2oIVg7Z0AaDtls7e/ExE2rpe3IMX
-         6ein54SpZ6cfmX8Tgw4pKJoIQGWDC9hMqRlHG1eSnlXkP+l3tnpIdlVlFx9bvG3oyH
-         6xXlqDwP7D7O2QjosHQFFjHvzFUPPyrPyZu+Quo8=
-Date:   Thu, 24 Sep 2020 13:00:34 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Kamal Dasu <kdasu.kdev@gmail.com>,
-        Ray Jui <ray.jui@broadcom.com>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-spi@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com
-In-Reply-To: <20200910152539.45584-1-ray.jui@broadcom.com>
-References: <20200910152539.45584-1-ray.jui@broadcom.com>
-Subject: Re: [PATCH 1/4] dt-bindings: spi: Add compatible string for brcmstb SoCs
-Message-Id: <160094881929.50579.14070314073431135713.b4-ty@kernel.org>
+        id S1727552AbgIXMAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 08:00:44 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:35190 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727437AbgIXMAo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 08:00:44 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id F2AD51C0BCB; Thu, 24 Sep 2020 14:00:41 +0200 (CEST)
+Date:   Thu, 24 Sep 2020 14:00:41 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Lubomir Rintel <lkundrak@v3.sk>, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/5] leds: Add driver for Acer Iconia Tab A500
+Message-ID: <20200924120041.GB3933@duo.ucw.cz>
+References: <20200906195103.1347-1-digetx@gmail.com>
+ <20200906195103.1347-5-digetx@gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="Y7xTucakfITjPcLV"
+Content-Disposition: inline
+In-Reply-To: <20200906195103.1347-5-digetx@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Sep 2020 08:25:36 -0700, Ray Jui wrote:
-> Add compatible string for brcmstb 7445 SoCs.
 
-Applied to
+--Y7xTucakfITjPcLV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+On Sun 2020-09-06 22:51:02, Dmitry Osipenko wrote:
+> Acer Iconia Tab A500 is an Android tablet device which has two LEDs
+> embedded into the Power Button. Orange LED indicates "battery charging"
+> status and white LED indicates "wake-up/charge-done" status. The new LED
+> driver provides control over both LEDs to userspace.
+>=20
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 
-Thanks!
+Thanks, applied.
 
-[1/1] spi: bcm-qspi: Fix probe regression on iProc platforms
-      commit: 00fb259c618ea1198fc51b53a6167aa0d78672a9
+									Pavel
+								=09
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+--Y7xTucakfITjPcLV
+Content-Type: application/pgp-signature; name="signature.asc"
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+-----BEGIN PGP SIGNATURE-----
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX2yKaQAKCRAw5/Bqldv6
+8h7KAJ9RHZ0L+HYBj60LPGu9PNZjMYFyOwCffFDh8TOvkbAqDobirABHaaRTQ9w=
+=6kM8
+-----END PGP SIGNATURE-----
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+--Y7xTucakfITjPcLV--
