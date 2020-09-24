@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3568276D52
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57516276D37
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727686AbgIXJ1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 05:27:07 -0400
-Received: from mail-io1-f79.google.com ([209.85.166.79]:55805 "EHLO
-        mail-io1-f79.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727512AbgIXJ02 (ORCPT
+        id S1727593AbgIXJ0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 05:26:39 -0400
+Received: from mail-io1-f77.google.com ([209.85.166.77]:40334 "EHLO
+        mail-io1-f77.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727525AbgIXJ0b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 05:26:28 -0400
-Received: by mail-io1-f79.google.com with SMTP id t187so1905014iof.22
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:26:27 -0700 (PDT)
+        Thu, 24 Sep 2020 05:26:31 -0400
+Received: by mail-io1-f77.google.com with SMTP id f8so1939450iow.7
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:26:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=wU6ccGYS+enXp6FCShVO6SJ+HdsmSjYGBefu/l0tXSM=;
-        b=djW0YzZz3AbKWRj4K1MGuQ9YtjWWL6TCeThy0ebx1TQMS0lqwkUNGLcinUpUHnfGqa
-         k3hAil82mDfnwbXhzy1qiZjQFZq+Nl/klLxN55g6hoA54uetgvK8NvIRPxdaDy5GmWKP
-         du7W6sIwiEaO9xT1oBECwLOfWyJNdurzt5SI6SZ/Sgi/NbJL1x63Qmk9DUJbgZ7MMNw/
-         dvs5DPfGW73/q1sd85wjYAL5MqjyqX7J3ap2EIa1pg+NJhdmPWoC84q6xwv7VKgfiqiR
-         Fvz4PkWjjy0qRq76uQRv0jbRwyQoJgGfHmN0qfJinBN0efu4jnQhWJvZmtAHYK4Mkqvy
-         EUjg==
-X-Gm-Message-State: AOAM533fwgvWzgP2FZgVq02AbQoogzfeSqKLJe5HbKpt1ODom3muvOl2
-        +UM4QfI670u5PKlWHhbCT/L6MlaHzskrmz2PTw7m5KSgDlk1
-X-Google-Smtp-Source: ABdhPJzy6320140ZwLRGjAmBRh0Rvx7E5JbfpXH7/KnYEncupXTjw9J0CYU2eblltCaipMASgLplGVjruA6brDZW3UqkCRg5T/1s
+        bh=otfHJ0f9hgCs1ewN99rIs1KuCfluF9LocJ85WkVFjiM=;
+        b=ghXtupuu8UAWZZagQR9wS/zqOVs1SX6EqS/U2m+grm5Xcowup7Tf7C447l4tzFxsfN
+         IiVldYJKMK0e/3Es7TzxWN9WG6QOM5mlvPoOWcsXAIWTP9+eYAr1/FGMWjoD6Nmv/KIX
+         i0k/ttOaKSgsqFwOZAxMb0BOk+PRzLl2LtG1V07yG53I9UtuDDLde3ruseg3NXPhCapB
+         2ArEzuvqxOL8cGXbQXwmpvDBigCCVqSbyQ3mT5oP2yMVHKUUMp2F9HuJK1tHpZf6Poaf
+         HZmv5eveJw4BbzI6C0Y7MNube/f08Y+htihqKEppT0Kctjbk4wMkdv8iZJbCQU/S7mNV
+         CznQ==
+X-Gm-Message-State: AOAM531Zcm3dulyAuChL2LtHM7fkDEmUWu1cd/WovHvQR56JqPyqlWMG
+        ubvSwYU4D35tKoTS9e/CCLLDjmtQ36YdUR4smsKhhCZoHVPM
+X-Google-Smtp-Source: ABdhPJxbl+sY5zjIGOLG8VMjrrK+7uLjersuB+1zMXvStYAV/B2/fDLy5vWemgVjtYhaunTTEKBdCXPIXpTPRkBWhoSs/2GomKQt
 MIME-Version: 1.0
-X-Received: by 2002:a6b:e206:: with SMTP id z6mr2565339ioc.208.1600939587383;
- Thu, 24 Sep 2020 02:26:27 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 02:26:27 -0700
+X-Received: by 2002:a02:605c:: with SMTP id d28mr2801004jaf.12.1600939589842;
+ Thu, 24 Sep 2020 02:26:29 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 02:26:29 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000069b76105b00bcbfd@google.com>
-Subject: INFO: rcu detected stall in sys_newlstat
-From:   syzbot <syzbot+60b38542a0dfb2e0f746@syzkaller.appspotmail.com>
-To:     fweisbec@gmail.com, linux-kernel@vger.kernel.org, mingo@kernel.org,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
+Message-ID: <0000000000008f4fbc05b00bcbd5@google.com>
+Subject: KMSAN: uninit-value in udf_get_pblock_spar15
+From:   syzbot <syzbot+9991561e714f597095da@syzkaller.appspotmail.com>
+To:     glider@google.com, jack@suse.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -47,98 +47,100 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    eff48dde Merge tag 'trace-v5.9-rc5' of git://git.kernel.or..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=104fa8ad900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=af502ec9a451c9fc
-dashboard link: https://syzkaller.appspot.com/bug?extid=60b38542a0dfb2e0f746
+HEAD commit:    c5a13b33 kmsan: clang-format core
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=12152c81900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=20f149ad694ba4be
+dashboard link: https://syzkaller.appspot.com/bug?extid=9991561e714f597095da
 compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14ddd69b900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=179a69ab900000
+userspace arch: i386
+
+Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+60b38542a0dfb2e0f746@syzkaller.appspotmail.com
+Reported-by: syzbot+9991561e714f597095da@syzkaller.appspotmail.com
 
-rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-rcu: 	Tasks blocked on level-0 rcu_node (CPUs 0-1):
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 30808 at kernel/sched/core.c:3013 rq_unlock kernel/sched/sched.h:1325 [inline]
-WARNING: CPU: 0 PID: 30808 at kernel/sched/core.c:3013 try_invoke_on_locked_down_task+0x12d/0x270 kernel/sched/core.c:3019
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 30808 Comm: systemd-udevd Not tainted 5.9.0-rc6-syzkaller #0
+=====================================================
+BUG: KMSAN: uninit-value in udf_get_pblock_spar15+0x4de/0x6b0 fs/udf/partition.c:138
+CPU: 0 PID: 27543 Comm: syz-executor.4 Not tainted 5.9.0-rc4-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
- <IRQ>
  __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1d6/0x29e lib/dump_stack.c:118
- panic+0x2c0/0x800 kernel/panic.c:231
- __warn+0x227/0x250 kernel/panic.c:600
- report_bug+0x1b1/0x2e0 lib/bug.c:198
- handle_bug+0x42/0x80 arch/x86/kernel/traps.c:234
- exc_invalid_op+0x16/0x40 arch/x86/kernel/traps.c:254
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-RIP: 0010:try_invoke_on_locked_down_task+0x12d/0x270 kernel/sched/sched.h:1325
-Code: f8 48 c1 e8 03 42 8a 04 38 84 c0 0f 85 10 01 00 00 8b 74 24 18 48 89 ef e8 90 47 09 00 4c 89 ef e8 48 1c fb 06 e9 a4 00 00 00 <0f> 0b e9 2b ff ff ff 48 c7 c1 74 d5 af 89 80 e1 07 80 c1 03 38 c1
-RSP: 0018:ffffc90000007c50 EFLAGS: 00010046
-RAX: 0000000000000000 RBX: ffff8880a9bb27c0 RCX: 16c6f9e9214ef600
-RDX: ffffc90000007d00 RSI: ffffffff8162e8d0 RDI: ffff8880a8ada340
-RBP: ffffffff8162e8d0 R08: dffffc0000000000 R09: fffffbfff12df8f9
-R10: fffffbfff12df8f9 R11: 0000000000000000 R12: 0000000000000000
-R13: ffffffff896ff600 R14: ffff8880a8ada340 R15: dffffc0000000000
- rcu_print_task_stall kernel/rcu/tree_stall.h:267 [inline]
- print_other_cpu_stall kernel/rcu/tree_stall.h:475 [inline]
- check_cpu_stall kernel/rcu/tree_stall.h:634 [inline]
- rcu_pending kernel/rcu/tree.c:3637 [inline]
- rcu_sched_clock_irq+0x12bc/0x1eb0 kernel/rcu/tree.c:2519
- update_process_times+0x130/0x1b0 kernel/time/timer.c:1710
- tick_sched_handle kernel/time/tick-sched.c:176 [inline]
- tick_sched_timer+0x25e/0x410 kernel/time/tick-sched.c:1328
- __run_hrtimer kernel/time/hrtimer.c:1524 [inline]
- __hrtimer_run_queues+0x42d/0x930 kernel/time/hrtimer.c:1588
- hrtimer_interrupt+0x373/0xd60 kernel/time/hrtimer.c:1650
- local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
- __sysvec_apic_timer_interrupt+0xf0/0x260 arch/x86/kernel/apic/apic.c:1097
- asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:706
- </IRQ>
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
- sysvec_apic_timer_interrupt+0x94/0xf0 arch/x86/kernel/apic/apic.c:1091
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:581
-RIP: 0010:arch_local_irq_restore arch/x86/include/asm/paravirt.h:770 [inline]
-RIP: 0010:slab_alloc mm/slab.c:3305 [inline]
-RIP: 0010:__do_kmalloc mm/slab.c:3653 [inline]
-RIP: 0010:__kmalloc+0x196/0x300 mm/slab.c:3664
-Code: 7c 24 20 48 8b 7c 24 10 f7 c7 00 02 00 00 74 0a e8 8f 65 c6 ff 48 8b 7c 24 10 48 83 3d 4a ac b8 07 00 0f 84 63 01 00 00 57 9d <0f> 1f 44 00 00 41 0f 18 0f e9 25 00 00 00 89 d8 c1 e8 08 83 e0 01
-RSP: 0018:ffffc900053d7b60 EFLAGS: 00000282
-RAX: 000000000000ae2f RBX: 0000000000000c40 RCX: ffff88808ddc82c0
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000282
-RBP: ffff8880aa440900 R08: ffffffff817ad120 R09: ffffed1015488341
-R10: ffffed1015488341 R11: 0000000000000000 R12: 0000000000001000
-R13: 0000000000000c40 R14: ffffffff838566e8 R15: ffff88806e032000
- kmalloc include/linux/slab.h:559 [inline]
- tomoyo_realpath_from_path+0xd8/0x630 security/tomoyo/realpath.c:254
- tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
- tomoyo_path_perm+0x17d/0x740 security/tomoyo/file.c:822
- security_inode_getattr+0xc0/0x140 security/security.c:1278
- vfs_getattr fs/stat.c:121 [inline]
- vfs_statx+0x118/0x380 fs/stat.c:206
- vfs_lstat include/linux/fs.h:3178 [inline]
- __do_sys_newlstat fs/stat.c:374 [inline]
- __se_sys_newlstat fs/stat.c:368 [inline]
- __x64_sys_newlstat+0x81/0xd0 fs/stat.c:368
- do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x7f753b78f335
-Code: 69 db 2b 00 64 c7 00 16 00 00 00 b8 ff ff ff ff c3 0f 1f 40 00 83 ff 01 48 89 f0 77 30 48 89 c7 48 89 d6 b8 06 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 03 f3 c3 90 48 8b 15 31 db 2b 00 f7 d8 64 89
-RSP: 002b:00007ffe76fa30f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000006
-RAX: ffffffffffffffda RBX: 00005620599f5de0 RCX: 00007f753b78f335
-RDX: 00007ffe76fa3270 RSI: 00007ffe76fa3270 RDI: 00005620599e0d80
-RBP: 00007ffe76fa3270 R08: 0000562058300670 R09: 00000000000001b0
-R10: 0000562058300d0c R11: 0000000000000246 R12: 00007ffe76fa31c0
-R13: 0000000000000000 R14: 0000000000000003 R15: 000000000000000e
-Shutting down cpus with NMI
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+ dump_stack+0x21c/0x280 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:122
+ __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:219
+ udf_get_pblock_spar15+0x4de/0x6b0 fs/udf/partition.c:138
+ udf_get_pblock+0x1e9/0x2e0 fs/udf/partition.c:41
+ udf_get_lb_pblock fs/udf/udfdecl.h:212 [inline]
+ udf_read_ptagged+0x105/0x1d0 fs/udf/misc.c:262
+ udf_find_fileset fs/udf/super.c:828 [inline]
+ udf_fill_super+0x2238/0x3330 fs/udf/super.c:2262
+ mount_bdev+0x622/0x910 fs/super.c:1417
+ udf_mount+0xc9/0xe0 fs/udf/super.c:127
+ legacy_get_tree+0x163/0x2e0 fs/fs_context.c:592
+ vfs_get_tree+0xd8/0x5d0 fs/super.c:1547
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x3d1a/0x5d40 fs/namespace.c:3192
+ do_mount+0x1c6/0x220 fs/namespace.c:3205
+ __do_compat_sys_mount fs/compat.c:122 [inline]
+ __se_compat_sys_mount+0x7b5/0xaa0 fs/compat.c:89
+ __ia32_compat_sys_mount+0x62/0x80 fs/compat.c:89
+ do_syscall_32_irqs_on arch/x86/entry/common.c:80 [inline]
+ __do_fast_syscall_32+0x129/0x180 arch/x86/entry/common.c:139
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:162
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:205
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7f40549
+Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
+RSP: 002b:00000000f5539f20 EFLAGS: 00000292 ORIG_RAX: 0000000000000015
+RAX: ffffffffffffffda RBX: 00000000f5539f7c RCX: 0000000020000100
+RDX: 0000000020000000 RSI: 0000000000000000 RDI: 00000000f5539fbc
+RBP: 00000000f5539f7c R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+
+Uninit was created at:
+ kmsan_save_stack_with_flags+0x3c/0x90 mm/kmsan/kmsan.c:143
+ kmsan_internal_alloc_meta_for_pages mm/kmsan/kmsan_shadow.c:268 [inline]
+ kmsan_alloc_page+0xc5/0x1a0 mm/kmsan/kmsan_shadow.c:292
+ __alloc_pages_nodemask+0xf34/0x1120 mm/page_alloc.c:4927
+ alloc_pages_current+0x685/0xb50 mm/mempolicy.c:2275
+ alloc_pages include/linux/gfp.h:545 [inline]
+ __page_cache_alloc+0xc8/0x310 mm/filemap.c:957
+ pagecache_get_page+0xe81/0x1cd0 mm/filemap.c:1710
+ find_or_create_page include/linux/pagemap.h:348 [inline]
+ grow_dev_page+0x1aa/0xde0 fs/buffer.c:974
+ grow_buffers fs/buffer.c:1043 [inline]
+ __getblk_slow fs/buffer.c:1070 [inline]
+ __getblk_gfp+0x464/0x6a0 fs/buffer.c:1354
+ __bread_gfp+0xbc/0x7c0 fs/buffer.c:1399
+ udf_tread fs/udf/udf_sb.h:159 [inline]
+ udf_read_tagged+0x244/0xd90 fs/udf/misc.c:210
+ udf_load_sparable_map fs/udf/super.c:1359 [inline]
+ udf_load_logicalvol fs/udf/super.c:1450 [inline]
+ udf_process_sequence+0x5593/0x6eb0 fs/udf/super.c:1750
+ udf_load_sequence fs/udf/super.c:1795 [inline]
+ udf_check_anchor_block+0x50e/0x880 fs/udf/super.c:1835
+ udf_scan_anchors+0x27c/0xc60 fs/udf/super.c:1868
+ udf_find_anchor fs/udf/super.c:1925 [inline]
+ udf_load_vrs+0x33f/0x15b0 fs/udf/super.c:1990
+ udf_fill_super+0x1287/0x3330 fs/udf/super.c:2183
+ mount_bdev+0x622/0x910 fs/super.c:1417
+ udf_mount+0xc9/0xe0 fs/udf/super.c:127
+ legacy_get_tree+0x163/0x2e0 fs/fs_context.c:592
+ vfs_get_tree+0xd8/0x5d0 fs/super.c:1547
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x3d1a/0x5d40 fs/namespace.c:3192
+ do_mount+0x1c6/0x220 fs/namespace.c:3205
+ __do_compat_sys_mount fs/compat.c:122 [inline]
+ __se_compat_sys_mount+0x7b5/0xaa0 fs/compat.c:89
+ __ia32_compat_sys_mount+0x62/0x80 fs/compat.c:89
+ do_syscall_32_irqs_on arch/x86/entry/common.c:80 [inline]
+ __do_fast_syscall_32+0x129/0x180 arch/x86/entry/common.c:139
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:162
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:205
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+=====================================================
 
 
 ---
@@ -148,5 +150,3 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
