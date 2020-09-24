@@ -2,147 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36DBB277502
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:16:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78196277503
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728403AbgIXPQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 11:16:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59626 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728273AbgIXPQ3 (ORCPT
+        id S1728422AbgIXPQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 11:16:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728273AbgIXPQb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 11:16:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600960587;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JEGtP1M885HpaQR6XfPDu4hVB77QGMGwZzHzi2KUVdc=;
-        b=SfPlt8BAi4It2Ims8jkv3mYm3UjfePpi/tPz1bafqtXye58HlhdbxWiirIlkJyt/jJKT2O
-        RaLXtLDZ6U0MIWwF85xnU89xtlWy786aJzcOmASG3/wUZUaTH0zqaOY7Uwis9uE20OeHIg
-        v95oWvvyWkf9fVwlAJ0t9ttP0GkNB4U=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-511-L3hMCPZUN9GV4Re_3BUJIg-1; Thu, 24 Sep 2020 11:16:23 -0400
-X-MC-Unique: L3hMCPZUN9GV4Re_3BUJIg-1
-Received: by mail-qk1-f200.google.com with SMTP id y17so2166647qky.0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 08:16:23 -0700 (PDT)
+        Thu, 24 Sep 2020 11:16:31 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DF13C0613CE;
+        Thu, 24 Sep 2020 08:16:30 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id q8so4353872lfb.6;
+        Thu, 24 Sep 2020 08:16:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=vgIr3UnaQPyUPGT1YxgZ7u38f72zk1LPY4fqYV/vg8k=;
+        b=iXhYvPy0LzzINWscEsEuBJcHyNnMX2Q16bBmhHorBDz03Q5SDV4E7eNcUShLpEy/HA
+         vhLmMSvEojyifVv1TrPHcrueBEvatmn6Ije7kFLzZ2YcCMyu+1pUUJ/t8dXXPXCbN1WJ
+         cDp8Ml8B1Qh0vdg6VB+NaATaAe9MM9LLwW9ttO5mdULIjjk8bxBjVTVX8TSNqp8+3eRq
+         CTPJAS6yi1fwkiUNXWsG61mLH6LuR6lf2xBjZA/hxAfhPooqyF/19VVxZnypaWIyj+VL
+         iVuctOkCFTShInFW8LM2JetY6GJ+kmX+bj/iA39jMNqZo6JHhaRchtpiwGgZ/Gl0eT3+
+         eI0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JEGtP1M885HpaQR6XfPDu4hVB77QGMGwZzHzi2KUVdc=;
-        b=aBDrnlAKkDZAD2PwOByk+0E6EdRexI0FHfBLc7VbUC4v0LlXBGQ+6VpwcN7tmGMrrJ
-         ccghuALHUe/pwiCuBJczZRozNUeliAcHlyBvgVVc7cAR3QBCHW/6U181/TgWO/JKiW7t
-         Lcl8NuFF+v3arZZBxBvA8BrRcoin8vHVRuQ0J0XnFLJAFslAHCmAx8o2hZM99bQROdo8
-         UoK37uXwgr8eP4wizHkzIOMEEsKr2Qxtze74bBFqPK45ZpavS4qKJRbHc8r7TA2Y3UKf
-         FVx2f6K6E9BNbYfigHaPgDdKXBpGbY5JCnJTMzy9HTiJJOySvwMZeT9ES1E8q679vQpN
-         3OiA==
-X-Gm-Message-State: AOAM531i6gFonO3xkl7hWehUOdbbL1BnZXcAuqaMw8OZGdtSgJZ9+T0v
-        6LInEaMTEcso3IzDc/YMELrqVgHIgJulCH9RIhpdVUlM+mtf2LVPxlXELv+JOJ0JrDCnIvns9AD
-        RXDBdFBbwhDgAyrC2K1NS4eLH
-X-Received: by 2002:a0c:8064:: with SMTP id 91mr5906420qva.32.1600960583349;
-        Thu, 24 Sep 2020 08:16:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyld9DnbypPWR5nFPjnFyrJjYMGJ38UcvgnWhrOmiQba5Tp+8IV7jIKTMFFsrSTGbNwB/fIbQ==
-X-Received: by 2002:a0c:8064:: with SMTP id 91mr5906391qva.32.1600960582988;
-        Thu, 24 Sep 2020 08:16:22 -0700 (PDT)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
-        by smtp.gmail.com with ESMTPSA id z29sm2436288qtj.79.2020.09.24.08.16.21
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=vgIr3UnaQPyUPGT1YxgZ7u38f72zk1LPY4fqYV/vg8k=;
+        b=gxBglCQ2YwoZmnEjbG2xxR17W79yE/SLiX7xCPCngJ+r3LRbQEoYQjkO1wbSFl636L
+         l0fN3LHpO0MvnIB0CKwIYoLxb/k6tZYmPcwxn58g+2MDgeDbCTetuHv+EkbpEDhwyXFv
+         dl0UoChW5vITFOSyArUMJL03rZ7lwgEW6+DxwgsQH1cTbFp3YwPrRqAhl4K3spw++xfd
+         bmflYz/if1Bw2r+gt32C9MZwDEJkw3KIIF9iZFBeN0rwBiTPEu3rXLFTgjOW3FzT1Djx
+         faIGNwxrmRR1/W1GnCrFxxarOBVZmXd7rB4BUfeVjdFNHHlI7Y3KNjDatdOPpyG4RRpZ
+         AzCg==
+X-Gm-Message-State: AOAM531GQ86lO2Tc4HZJCb0SG62IC2UeVDYo1RTgosKI6aJiWBIq5ql1
+        D6PYU0rR5xqaibF5OpfP7gs=
+X-Google-Smtp-Source: ABdhPJzK2d/M+AZ9drrmmGdPQ2ZzuwPUEP3T7OwuWubTbWcL2qi9PC3R4p1P1pZ8awnBiEKz6kM71A==
+X-Received: by 2002:a19:430c:: with SMTP id q12mr470114lfa.68.1600960588909;
+        Thu, 24 Sep 2020 08:16:28 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id 193sm2311575lfb.212.2020.09.24.08.16.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 08:16:22 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 11:16:20 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Kirill Tkhai <ktkhai@virtuozzo.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        Thu, 24 Sep 2020 08:16:27 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Thu, 24 Sep 2020 17:16:25 +0200
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         Michal Hocko <mhocko@suse.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Jann Horn <jannh@google.com>, Oleg Nesterov <oleg@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [PATCH 4/5] mm: Do early cow for pinned pages during fork() for
- ptes
-Message-ID: <20200924151620.GF79898@xz-x1>
-References: <20200921211744.24758-1-peterx@redhat.com>
- <20200921212028.25184-1-peterx@redhat.com>
- <2a590103-95dc-5aed-6e7a-5f8b58337dd0@virtuozzo.com>
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Mel Gorman <mgorman@suse.de>
+Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
+Message-ID: <20200924151625.GA19013@pc636>
+References: <20200921154558.GD29330@paulmck-ThinkPad-P72>
+ <20200921160318.GO12990@dhcp22.suse.cz>
+ <20200921194819.GA24236@pc636>
+ <20200922075002.GU12990@dhcp22.suse.cz>
+ <20200922131257.GA29241@pc636>
+ <20200923103706.GJ3179@techsingularity.net>
+ <20200923154105.GO29330@paulmck-ThinkPad-P72>
+ <20200923232251.GK3179@techsingularity.net>
+ <20200924081614.GA14819@pc636>
+ <20200924111632.GD2628@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2a590103-95dc-5aed-6e7a-5f8b58337dd0@virtuozzo.com>
+In-Reply-To: <20200924111632.GD2628@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 02:48:00PM +0300, Kirill Tkhai wrote:
-> > +/*
-> > + * Duplicate the page for this PTE.  Returns zero if page copied (so we need to
-> > + * retry on the same PTE again to arm the copied page very soon), or negative
-> > + * if error happened.  In all cases, the old page will be properly released.
-> > + */
-> > +static int page_duplicate(struct mm_struct *src_mm, struct vm_area_struct *vma,
-> > +			  unsigned long address, struct copy_mm_data *data)
-> > +{
-> > +	struct page *new_page = NULL;
-> > +	int ret;
-> > +
-> > +	/* This should have been set in change_one_pte() when reach here */
-> > +	WARN_ON_ONCE(!data->cow_old_page);
+On Thu, Sep 24, 2020 at 01:16:32PM +0200, Peter Zijlstra wrote:
+> On Thu, Sep 24, 2020 at 10:16:14AM +0200, Uladzislau Rezki wrote:
+> > Other option is if we had unconditionally enabled PREEMPT_COUNT config.
+> > It would be easy to identify a context type and invoke a page allocator
+> > if a context is preemtale. But as of now preemptable() is "half" working.
+> > Thomas uploaded patches to make it unconditional. But it can be blocked.
 > 
-> Despite WARN() is preferred over BUG() in kernel, it looks a little strange that
-> we catch WARN once here, but later avoid panic in put_page().
-
-Do you mean "it'll panic in put_page()"?  I'll agree if so, seems this
-WARN_ON_ONCE() won't help much.
-
+> While I in principle support Thomas' patch, I think this is an abuse and
+> still complete wrong.
 > 
-> > +	new_page = alloc_page_vma(GFP_HIGHUSER_MOVABLE, vma, address);
-> > +	if (!new_page) {
-> > +		ret = -ENOMEM;
-> > +		goto out;
-> > +	}
-> > +
-> > +	copy_user_highpage(new_page, data->cow_old_page, address, vma);
-> > +	ret = mem_cgroup_charge(new_page, src_mm, GFP_KERNEL);
+Good that you support it :)
+
+>
+> Not all preemptible() context can deal with GFP_KERNEL (GFP_NOFS
+> existing should be a clue). !preemptible context cannot unconditionally
+> deal with GFP_NOWAIT, consider using it while holding zone->lock.
 > 
-> All failing operations should go first, while copy_user_highpage() should go last.
+Not sure if i fully follow you here. What i tried to express, if we had
+preemtable() fully working, including !PREEMPT, we can at least detect
+the following:
 
-Since I'll rebase to Linus's patch, I'll move this into the critical section
-because the preallocated page can be used by any pte after that.  The spin
-locks will need to be taken longer for that, but assuming that's not a problem
-for an unlikely path.
+if (!preemptable())
+    by pass using any ATOMIC/NOWAIT flags because they do not work;
 
-> > @@ -859,6 +989,25 @@ static int copy_pte_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
-> >  			    spin_needbreak(src_ptl) || spin_needbreak(dst_ptl))
-> >  				break;
-> >  		}
-> > +
-> > +		if (unlikely(data.cow_new_page)) {
-> > +			/*
-> > +			 * If cow_new_page set, we must be at the 2nd round of
-> > +			 * a previous COPY_MM_BREAK_COW.  Try to arm the new
-> > +			 * page now.  Note that in all cases page_break_cow()
-> > +			 * will properly release the objects in copy_mm_data.
-> > +			 */
-> > +			WARN_ON_ONCE(copy_ret != COPY_MM_BREAK_COW);
-> > +			if (pte_install_copied_page(dst_mm, new, src_pte,
-> > +						    dst_pte, addr, rss,
-> > +						    &data)) {
-> 
-> It looks a little confusing, that all helpers in this function return 0 in case of success,
-> while pte_install_copied_page() returns true. Won't be better to return 0 and -EAGAIN instead
-> from it?
+as an example you mentioned z->lock that is sleepable.
 
-IMHO it's fine as long as no real errno will be popped out of the new helper.
-But no strong opinion either, I'll see what I can do after the rebase.
+>
+> The preemption context does not say antying much useful about the
+> allocation context.
+>
+I am talking about taking a decision. 
 
-Thanks for reviewing the patch even if it's going away.
-
--- 
-Peter Xu
-
+--
+Vlad Rezki
