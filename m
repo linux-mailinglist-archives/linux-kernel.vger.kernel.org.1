@@ -2,356 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A6A32769A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08824276974
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727363AbgIXGwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 02:52:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727255AbgIXGwK (ORCPT
+        id S1727315AbgIXGwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 02:52:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34839 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727232AbgIXGwC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 02:52:10 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B9D6C0613DC;
-        Wed, 23 Sep 2020 23:52:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=MY4XScv0SUe+8z8haC+/G063lSniL07sW1RR2khIdts=; b=bFWX5KW1+dmQG/JunZeGU8Et2A
-        pzex90SSQYMWEuC3tqMSjNa31gCsympmamtumAZ18hUZC9v7YTDYDh6KBYa85B0Abx+5KjwuXh9SP
-        n1omaYjMYLVna7FpV6ybuPLXe7EhKb5mB+k9NCgLob/hVTjnclgCnXmNAM4VoIqCdVZFLvOQ/GzuP
-        UQTRjz5tvyhIJj1JmVvnnFHxZKCJlp28/6/xnnjX37A48+cAbw/anB+B3mK/WRnO0Qt6L9uGX/KVv
-        6o15Y8Xw7m7SCCM3nGv2gAnRzkqio1zuXWxDoaVRdEWn2dxwLfGrRdmxoOSHLLlEViNv11v+/15Xf
-        gXeQiZfw==;
-Received: from p4fdb0c34.dip0.t-ipconnect.de ([79.219.12.52] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kLL6k-0001Bw-79; Thu, 24 Sep 2020 06:51:58 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Song Liu <song@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
-        Coly Li <colyli@suse.de>, Richard Weinberger <richard@nod.at>,
-        Minchan Kim <minchan@kernel.org>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Justin Sanders <justin@coraid.com>,
-        linux-mtd@lists.infradead.org, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
-        linux-kernel@vger.kernel.org, drbd-dev@lists.linbit.com,
-        linux-raid@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        Jan Kara <jack@suse.cz>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH 13/13] bdi: replace BDI_CAP_NO_{WRITEBACK,ACCT_DIRTY} with a single flag
-Date:   Thu, 24 Sep 2020 08:51:40 +0200
-Message-Id: <20200924065140.726436-14-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200924065140.726436-1-hch@lst.de>
-References: <20200924065140.726436-1-hch@lst.de>
+        Thu, 24 Sep 2020 02:52:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600930321;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OnQ7RnpQyCWKyHzqHkBwFITRaelVc+b99566RYUlUuU=;
+        b=Px5jN3yUPLFgaCEZFODUlf2YVFDFEdsApCj4qCQR2ghCNC69dBxb/yQxFs4REUtPlAWuX9
+        79YXjGPXnNVXuIPk6q1poSEzV0500OkqpFqRi0HxepvMLBU/4uTcU7VXzJup9540pOA4Im
+        EWZ+pktwDL3kpIhUT1AYM2u4uz2E8jU=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-470-Om7ZnQ2wNm6yTWTU1ofa6g-1; Thu, 24 Sep 2020 02:51:59 -0400
+X-MC-Unique: Om7ZnQ2wNm6yTWTU1ofa6g-1
+Received: by mail-wr1-f72.google.com with SMTP id d13so823147wrr.23
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 23:51:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OnQ7RnpQyCWKyHzqHkBwFITRaelVc+b99566RYUlUuU=;
+        b=DZPJvASc6Kv8rR9/F4MqUNt2yTift4wG3Q8jdJTwwDAzt9lPDsTH7f2XkM73u1xOpi
+         l4jcN8LzRKxIILi6IldzWUZzkH7HSF7zkkmIbXGEtz8kPXKPVhSwa3QPl2r50LGSj1xJ
+         2hEbrks0l2A6pcuGb/Unka2/URyzSoaPwlovSbSdiA67ZnXJlAmC80KkGSGyj0g/PdoP
+         KvJLnvy19+V1vwwtT7q4g0SaMEv3rW9eNpJmLEs1xCn+FJ70gdREcFObToIBcU2BYJEg
+         zzqwvX73LbeIUsEjj4ghoRNvYTDWL0af+OuKuhl/LRQDO/DvmdpTKjmYgAy+PSRzTXWL
+         SLjg==
+X-Gm-Message-State: AOAM5314I6mAdwjF+87TOh6OeD4p8+L859Q1laq0UqyN8+wEv4Im3qnU
+        M8gQOGSk9OpWX70jFzmBUux8kHhhIZBvsxzJZn403MtT68Gdh0cFyYa9SvMgRWFCLsVGrB0KzJz
+        Tu7nHR5BdR9CKwWToyVKo669F
+X-Received: by 2002:a7b:c095:: with SMTP id r21mr3254607wmh.133.1600930318652;
+        Wed, 23 Sep 2020 23:51:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzIeIX5AT7dBIOdJC7LRZQn1fAtdurXZZQW16RpkfOrEWOzAPYZlFOar52I36l0bKFZs60P9g==
+X-Received: by 2002:a7b:c095:: with SMTP id r21mr3254593wmh.133.1600930318446;
+        Wed, 23 Sep 2020 23:51:58 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:d80e:a78:c27b:93ed? ([2001:b07:6468:f312:d80e:a78:c27b:93ed])
+        by smtp.gmail.com with ESMTPSA id n4sm2287101wrp.61.2020.09.23.23.51.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Sep 2020 23:51:57 -0700 (PDT)
+Subject: Re: [PATCH] KVM: SVM: Add a dedicated INVD intercept routine
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+References: <16f36f9a51608758211c54564cd17c8b909372f1.1600892859.git.thomas.lendacky@amd.com>
+ <20200923203241.GB15101@linux.intel.com>
+ <12be5ce2-2caf-ce8a-01f1-9254ca698849@amd.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <d260b1e1-1a53-a7ee-e613-a806395582f6@redhat.com>
+Date:   Thu, 24 Sep 2020 08:51:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <12be5ce2-2caf-ce8a-01f1-9254ca698849@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the two negative flags that are always used together with a
-single positive flag that indicates the writeback capability instead
-of two related non-capabilities.  Also remove the pointless wrappers
-to just check the flag.
+On 23/09/20 22:40, Tom Lendacky wrote:
+>>> +static int invd_interception(struct vcpu_svm *svm)
+>>> +{
+>>> +	/*
+>>> +	 * Can't do emulation on an SEV guest and INVD is emulated
+>>> +	 * as a NOP, so just skip the instruction.
+>>> +	 */
+>>> +	return (sev_guest(svm->vcpu.kvm))
+>>> +		? kvm_skip_emulated_instruction(&svm->vcpu)
+>>> +		: kvm_emulate_instruction(&svm->vcpu, 0);
+>>
+>> Is there any reason not to do kvm_skip_emulated_instruction() for both SEV
+>> and legacy?  VMX has the same odd kvm_emulate_instruction() call, but AFAICT
+>> that's completely unecessary, i.e. VMX can also convert to a straight skip.
+> 
+> You could, I just figured I'd leave the legacy behavior just in case. Not
+> that I can think of a reason that behavior would ever change.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/9p/vfs_file.c            |  2 +-
- fs/fs-writeback.c           |  7 +++---
- include/linux/backing-dev.h | 48 ++++++++-----------------------------
- mm/backing-dev.c            |  6 ++---
- mm/filemap.c                |  4 ++--
- mm/memcontrol.c             |  2 +-
- mm/memory-failure.c         |  2 +-
- mm/migrate.c                |  2 +-
- mm/mmap.c                   |  2 +-
- mm/page-writeback.c         | 12 +++++-----
- 10 files changed, 29 insertions(+), 58 deletions(-)
+Yeah, let's do skip for both SVM and VMX.
 
-diff --git a/fs/9p/vfs_file.c b/fs/9p/vfs_file.c
-index 3576123d82990e..6ecf863bfa2f4b 100644
---- a/fs/9p/vfs_file.c
-+++ b/fs/9p/vfs_file.c
-@@ -625,7 +625,7 @@ static void v9fs_mmap_vm_close(struct vm_area_struct *vma)
- 
- 	inode = file_inode(vma->vm_file);
- 
--	if (!mapping_cap_writeback_dirty(inode->i_mapping))
-+	if (!mapping_can_writeback(inode->i_mapping))
- 		wbc.nr_to_write = 0;
- 
- 	might_sleep();
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index 149227160ff0b0..d4f84a2fe0878e 100644
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -2321,7 +2321,7 @@ void __mark_inode_dirty(struct inode *inode, int flags)
- 
- 			wb = locked_inode_to_wb_and_lock_list(inode);
- 
--			WARN(bdi_cap_writeback_dirty(wb->bdi) &&
-+			WARN((wb->bdi->capabilities & BDI_CAP_WRITEBACK) &&
- 			     !test_bit(WB_registered, &wb->state),
- 			     "bdi-%s not registered\n", bdi_dev_name(wb->bdi));
- 
-@@ -2346,7 +2346,8 @@ void __mark_inode_dirty(struct inode *inode, int flags)
- 			 * to make sure background write-back happens
- 			 * later.
- 			 */
--			if (bdi_cap_writeback_dirty(wb->bdi) && wakeup_bdi)
-+			if (wakeup_bdi &&
-+			    (wb->bdi->capabilities & BDI_CAP_WRITEBACK))
- 				wb_wakeup_delayed(wb);
- 			return;
- 		}
-@@ -2581,7 +2582,7 @@ int write_inode_now(struct inode *inode, int sync)
- 		.range_end = LLONG_MAX,
- 	};
- 
--	if (!mapping_cap_writeback_dirty(inode->i_mapping))
-+	if (!mapping_can_writeback(inode->i_mapping))
- 		wbc.nr_to_write = 0;
- 
- 	might_sleep();
-diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
-index b217344a2c63be..44df4fcef65c1e 100644
---- a/include/linux/backing-dev.h
-+++ b/include/linux/backing-dev.h
-@@ -110,27 +110,14 @@ int bdi_set_max_ratio(struct backing_dev_info *bdi, unsigned int max_ratio);
- /*
-  * Flags in backing_dev_info::capability
-  *
-- * The first three flags control whether dirty pages will contribute to the
-- * VM's accounting and whether writepages() should be called for dirty pages
-- * (something that would not, for example, be appropriate for ramfs)
-- *
-- * WARNING: these flags are closely related and should not normally be
-- * used separately.  The BDI_CAP_NO_ACCT_AND_WRITEBACK combines these
-- * three flags into a single convenience macro.
-- *
-- * BDI_CAP_NO_ACCT_DIRTY:  Dirty pages shouldn't contribute to accounting
-- * BDI_CAP_NO_WRITEBACK:   Don't write pages back
-- * BDI_CAP_WRITEBACK_ACCT: Automatically account writeback pages
-- * BDI_CAP_STRICTLIMIT:    Keep number of dirty pages below bdi threshold.
-+ * BDI_CAP_WRITEBACK:		Supports dirty page writeback, and dirty pages
-+ *				should contribute to accounting
-+ * BDI_CAP_WRITEBACK_ACCT:	Automatically account writeback pages
-+ * BDI_CAP_STRICTLIMIT:		Keep number of dirty pages below bdi threshold
-  */
--#define BDI_CAP_NO_ACCT_DIRTY	0x00000001
--#define BDI_CAP_NO_WRITEBACK	0x00000002
--#define BDI_CAP_WRITEBACK_ACCT	0x00000004
--#define BDI_CAP_STRICTLIMIT	0x00000010
--#define BDI_CAP_CGROUP_WRITEBACK 0x00000020
--
--#define BDI_CAP_NO_ACCT_AND_WRITEBACK \
--	(BDI_CAP_NO_WRITEBACK | BDI_CAP_NO_ACCT_DIRTY)
-+#define BDI_CAP_WRITEBACK		(1 << 0)
-+#define BDI_CAP_WRITEBACK_ACCT		(1 << 1)
-+#define BDI_CAP_STRICTLIMIT		(1 << 2)
- 
- extern struct backing_dev_info noop_backing_dev_info;
- 
-@@ -169,24 +156,9 @@ static inline int wb_congested(struct bdi_writeback *wb, int cong_bits)
- long congestion_wait(int sync, long timeout);
- long wait_iff_congested(int sync, long timeout);
- 
--static inline bool bdi_cap_writeback_dirty(struct backing_dev_info *bdi)
--{
--	return !(bdi->capabilities & BDI_CAP_NO_WRITEBACK);
--}
--
--static inline bool bdi_cap_account_dirty(struct backing_dev_info *bdi)
--{
--	return !(bdi->capabilities & BDI_CAP_NO_ACCT_DIRTY);
--}
--
--static inline bool mapping_cap_writeback_dirty(struct address_space *mapping)
--{
--	return bdi_cap_writeback_dirty(inode_to_bdi(mapping->host));
--}
--
--static inline bool mapping_cap_account_dirty(struct address_space *mapping)
-+static inline bool mapping_can_writeback(struct address_space *mapping)
- {
--	return bdi_cap_account_dirty(inode_to_bdi(mapping->host));
-+	return inode_to_bdi(mapping->host)->capabilities & BDI_CAP_WRITEBACK;
- }
- 
- static inline int bdi_sched_wait(void *word)
-@@ -223,7 +195,7 @@ static inline bool inode_cgwb_enabled(struct inode *inode)
- 
- 	return cgroup_subsys_on_dfl(memory_cgrp_subsys) &&
- 		cgroup_subsys_on_dfl(io_cgrp_subsys) &&
--		bdi_cap_account_dirty(bdi) &&
-+		(bdi->capabilities & BDI_CAP_WRITEBACK) &&
- 		(inode->i_sb->s_iflags & SB_I_CGROUPWB);
- }
- 
-diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-index df18f0088dd3f5..408d5051d05b3d 100644
---- a/mm/backing-dev.c
-+++ b/mm/backing-dev.c
-@@ -14,9 +14,7 @@
- #include <linux/device.h>
- #include <trace/events/writeback.h>
- 
--struct backing_dev_info noop_backing_dev_info = {
--	.capabilities	= BDI_CAP_NO_ACCT_AND_WRITEBACK,
--};
-+struct backing_dev_info noop_backing_dev_info;
- EXPORT_SYMBOL_GPL(noop_backing_dev_info);
- 
- static struct class *bdi_class;
-@@ -745,7 +743,7 @@ struct backing_dev_info *bdi_alloc(int node_id)
- 		kfree(bdi);
- 		return NULL;
- 	}
--	bdi->capabilities = BDI_CAP_WRITEBACK_ACCT;
-+	bdi->capabilities = BDI_CAP_WRITEBACK | BDI_CAP_WRITEBACK_ACCT;
- 	bdi->ra_pages = VM_READAHEAD_PAGES;
- 	bdi->io_pages = VM_READAHEAD_PAGES;
- 	return bdi;
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 1aaea26556cc7e..6c2a0139e22fa3 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -414,7 +414,7 @@ int __filemap_fdatawrite_range(struct address_space *mapping, loff_t start,
- 		.range_end = end,
- 	};
- 
--	if (!mapping_cap_writeback_dirty(mapping) ||
-+	if (!mapping_can_writeback(mapping) ||
- 	    !mapping_tagged(mapping, PAGECACHE_TAG_DIRTY))
- 		return 0;
- 
-@@ -1702,7 +1702,7 @@ struct page *pagecache_get_page(struct address_space *mapping, pgoff_t index,
- no_page:
- 	if (!page && (fgp_flags & FGP_CREAT)) {
- 		int err;
--		if ((fgp_flags & FGP_WRITE) && mapping_cap_account_dirty(mapping))
-+		if ((fgp_flags & FGP_WRITE) && mapping_can_writeback(mapping))
- 			gfp_mask |= __GFP_WRITE;
- 		if (fgp_flags & FGP_NOFS)
- 			gfp_mask &= ~__GFP_FS;
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index b807952b4d431b..d2352f76d6519f 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5643,7 +5643,7 @@ static int mem_cgroup_move_account(struct page *page,
- 		if (PageDirty(page)) {
- 			struct address_space *mapping = page_mapping(page);
- 
--			if (mapping_cap_account_dirty(mapping)) {
-+			if (mapping_can_writeback(mapping)) {
- 				__mod_lruvec_state(from_vec, NR_FILE_DIRTY,
- 						   -nr_pages);
- 				__mod_lruvec_state(to_vec, NR_FILE_DIRTY,
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index f1aa6433f40416..a1e73943445e77 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -1006,7 +1006,7 @@ static bool hwpoison_user_mappings(struct page *p, unsigned long pfn,
- 	 */
- 	mapping = page_mapping(hpage);
- 	if (!(flags & MF_MUST_KILL) && !PageDirty(hpage) && mapping &&
--	    mapping_cap_writeback_dirty(mapping)) {
-+	    mapping_can_writeback(mapping)) {
- 		if (page_mkclean(hpage)) {
- 			SetPageDirty(hpage);
- 		} else {
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 34a842a8eb6a7b..9d2f42a3a16294 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -503,7 +503,7 @@ int migrate_page_move_mapping(struct address_space *mapping,
- 			__dec_lruvec_state(old_lruvec, NR_SHMEM);
- 			__inc_lruvec_state(new_lruvec, NR_SHMEM);
- 		}
--		if (dirty && mapping_cap_account_dirty(mapping)) {
-+		if (dirty && mapping_can_writeback(mapping)) {
- 			__dec_node_state(oldzone->zone_pgdat, NR_FILE_DIRTY);
- 			__dec_zone_state(oldzone, NR_ZONE_WRITE_PENDING);
- 			__inc_node_state(newzone->zone_pgdat, NR_FILE_DIRTY);
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 40248d84ad5fbd..1fc0e92be4ba9b 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -1666,7 +1666,7 @@ int vma_wants_writenotify(struct vm_area_struct *vma, pgprot_t vm_page_prot)
- 
- 	/* Can the mapping track the dirty pages? */
- 	return vma->vm_file && vma->vm_file->f_mapping &&
--		mapping_cap_account_dirty(vma->vm_file->f_mapping);
-+		mapping_can_writeback(vma->vm_file->f_mapping);
- }
- 
- /*
-diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-index 0139f9622a92da..358d6f28c627b7 100644
---- a/mm/page-writeback.c
-+++ b/mm/page-writeback.c
-@@ -1882,7 +1882,7 @@ void balance_dirty_pages_ratelimited(struct address_space *mapping)
- 	int ratelimit;
- 	int *p;
- 
--	if (!bdi_cap_account_dirty(bdi))
-+	if (!(bdi->capabilities & BDI_CAP_WRITEBACK))
- 		return;
- 
- 	if (inode_cgwb_enabled(inode))
-@@ -2423,7 +2423,7 @@ void account_page_dirtied(struct page *page, struct address_space *mapping)
- 
- 	trace_writeback_dirty_page(page, mapping);
- 
--	if (mapping_cap_account_dirty(mapping)) {
-+	if (mapping_can_writeback(mapping)) {
- 		struct bdi_writeback *wb;
- 
- 		inode_attach_wb(inode, page);
-@@ -2450,7 +2450,7 @@ void account_page_dirtied(struct page *page, struct address_space *mapping)
- void account_page_cleaned(struct page *page, struct address_space *mapping,
- 			  struct bdi_writeback *wb)
- {
--	if (mapping_cap_account_dirty(mapping)) {
-+	if (mapping_can_writeback(mapping)) {
- 		dec_lruvec_page_state(page, NR_FILE_DIRTY);
- 		dec_zone_page_state(page, NR_ZONE_WRITE_PENDING);
- 		dec_wb_stat(wb, WB_RECLAIMABLE);
-@@ -2513,7 +2513,7 @@ void account_page_redirty(struct page *page)
- {
- 	struct address_space *mapping = page->mapping;
- 
--	if (mapping && mapping_cap_account_dirty(mapping)) {
-+	if (mapping && mapping_can_writeback(mapping)) {
- 		struct inode *inode = mapping->host;
- 		struct bdi_writeback *wb;
- 		struct wb_lock_cookie cookie = {};
-@@ -2625,7 +2625,7 @@ void __cancel_dirty_page(struct page *page)
- {
- 	struct address_space *mapping = page_mapping(page);
- 
--	if (mapping_cap_account_dirty(mapping)) {
-+	if (mapping_can_writeback(mapping)) {
- 		struct inode *inode = mapping->host;
- 		struct bdi_writeback *wb;
- 		struct wb_lock_cookie cookie = {};
-@@ -2665,7 +2665,7 @@ int clear_page_dirty_for_io(struct page *page)
- 
- 	VM_BUG_ON_PAGE(!PageLocked(page), page);
- 
--	if (mapping && mapping_cap_account_dirty(mapping)) {
-+	if (mapping && mapping_can_writeback(mapping)) {
- 		struct inode *inode = mapping->host;
- 		struct bdi_writeback *wb;
- 		struct wb_lock_cookie cookie = {};
--- 
-2.28.0
+Paolo
 
