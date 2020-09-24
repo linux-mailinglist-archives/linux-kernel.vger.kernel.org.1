@@ -2,84 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A539A277B35
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 23:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B47CA277B38
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 23:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726500AbgIXVsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 17:48:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726205AbgIXVsQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 17:48:16 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1080C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 14:48:15 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id i17so588798oig.10
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 14:48:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xArRoyeelIzIpNPDluLH6f4v8ePnpcjzOS5A48X5f0w=;
-        b=B1c1WtVgsgU+MU3gEbQZPChT6adeHIhecNeka1JLXaUzoq0BXKK6voV7J3yMjvDc3w
-         W8FkWWtmm7ybExbABw2VDoq98F8IwlbYqi2NzPeII1Ze22GI73Y9s7ij2QiHzg0N/aJ1
-         QY54dKwVGA3U7o6oEAtEnMwD8sI/tL67pyuD5uR7QV9o5ilXb7tkYGOSjY5g4DkyNpmT
-         Sk4qtSIkJN9RL603u9flAL4etYSqafBnu8XJfpvDQzRo9E32QL3rCbl10zoBzYg2z4uo
-         RQeqvkawuD4pN0PaDpCU0Y3HsW1xVlDL6aQmbIv+l00cTI1gwkLVa8hQZPR4CKfmqg2g
-         spAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xArRoyeelIzIpNPDluLH6f4v8ePnpcjzOS5A48X5f0w=;
-        b=A5ck/s3qUGWNLVsgSE7bHEV+Kh6lBkOKPTlxrN61HoGJKc02P8kAwXWDIBwWdsWpge
-         Xi9ehAInqRrBYVTxiIO9OtMOcnd1cyz363ICq3ktLBQdnnFtzgYrr+rq6BjeiGTHUrIb
-         P9pGm6E02A0M7ZDXLR5pMzgiqUz2UPFZ9ekTlKgVTn21JtndbRZ2ZFXexqloqrvMvkph
-         qBbLQLMxjv1+QL5HcReSdLv4wbQLi7PLTQQnYgX9DgeBF3cLSXi0YK3qP8UqgpbVtccP
-         /+5rkOa+fj2sUBbw/TsdVYydxGuh1VBaAN0JotW2nlVAPbdSiu6Zz92GD5EumedlZat4
-         tOKQ==
-X-Gm-Message-State: AOAM530MHYhA2Jvd8Q2wUcKqypz/LLQc1I9zJUvPn7bCjVH5pYbZ7phZ
-        +vjAuUOSmzAPBKu9QSEX3MF5gfz20PYZOeJN/G+8XA==
-X-Google-Smtp-Source: ABdhPJztT6apWUYRoRTm4fBFbAB4wIE8562b5j+yIz6Utz/Sx6C0LjkYbxRe+JXOxzPTM162lBmpFXrUPmbGHgDv55M=
-X-Received: by 2002:aca:d9c2:: with SMTP id q185mr527387oig.28.1600984094899;
- Thu, 24 Sep 2020 14:48:14 -0700 (PDT)
+        id S1726625AbgIXVs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 17:48:29 -0400
+Received: from mga18.intel.com ([134.134.136.126]:43635 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726205AbgIXVs2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 17:48:28 -0400
+IronPort-SDR: aKY0DJCbP6zXfkBRojHV42LMNyTO7AVY5bBU5I3bFS9k+GTUwtErSbELo1dbD0zVhXhl13k35F
+ 6/S1v2TX8wmg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="149103634"
+X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
+   d="scan'208";a="149103634"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 14:48:27 -0700
+IronPort-SDR: ssnsRTuUVyjueYhkIc06VqG7xTF4vVobdiQ2zKoOjNlG6PqIN0aN8BzOl2P5YElYwjEP6plnYq
+ jg0vRcVZUigw==
+X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
+   d="scan'208";a="455530722"
+Received: from rhweight-mobl2.amr.corp.intel.com (HELO [10.0.2.15]) ([10.213.163.145])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 14:48:27 -0700
+Subject: Re: [PATCH v1 12/12] fpga: add max10 get_hw_errinfo callback func
+To:     Tom Rix <trix@redhat.com>, mdf@kernel.org, lee.jones@linaro.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
+        matthew.gerlach@intel.com
+References: <20200904235305.6254-1-russell.h.weight@intel.com>
+ <20200904235305.6254-13-russell.h.weight@intel.com>
+ <b90e8435-651c-e901-8be3-b0dac6eaac22@redhat.com>
+From:   Russ Weight <russell.h.weight@intel.com>
+Message-ID: <59ef7ab5-87be-3c5a-bee1-8bb165e69e48@intel.com>
+Date:   Thu, 24 Sep 2020 14:48:26 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200923215352.17756-1-sean.j.christopherson@intel.com>
-In-Reply-To: <20200923215352.17756-1-sean.j.christopherson@intel.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Thu, 24 Sep 2020 14:48:03 -0700
-Message-ID: <CALMp9eQzZmV5k6qjHZgJYnKv3c7VPB7qEDJRLREW_NNUo=H1zA@mail.gmail.com>
-Subject: Re: [PATCH] KVM: x86: Reset MMU context if guest toggles CR4.SMAP or CR4.PKE
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Shier <pshier@google.com>,
-        Oliver Upton <oupton@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <b90e8435-651c-e901-8be3-b0dac6eaac22@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 2:54 PM Sean Christopherson
-<sean.j.christopherson@intel.com> wrote:
->
-> Reset the MMU context during kvm_set_cr4() if SMAP or PKE is toggled.
-> Recent commits to (correctly) not reload PDPTRs when SMAP/PKE are
-> toggled inadvertantly skipped the MMU context reset due to the mask
-> of bits that triggers PDPTR loads also being used to trigger MMU context
-> resets.
->
-> Fixes: 427890aff855 ("kvm: x86: Toggling CR4.SMAP does not load PDPTEs in PAE mode")
-> Fixes: cb957adb4ea4 ("kvm: x86: Toggling CR4.PKE does not load PDPTEs in PAE mode")
-> Cc: Jim Mattson <jmattson@google.com>
-> Cc: Peter Shier <pshier@google.com>
-> Cc: Oliver Upton <oupton@google.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 
-Thanks for the fix!
 
-Reviewed-by: Jim Mattson <jmattson@google.com>
+On 9/6/20 10:14 AM, Tom Rix wrote:
+> On 9/4/20 4:53 PM, Russ Weight wrote:
+>> Extend the MAX10 BMC Security Engine driver to include
+>> a function that returns 64 bits of additional HW specific
+>> data for errors that require additional information.
+>> This callback function enables the hw_errinfo sysfs
+>> node in the Intel Security Manager class driver.
+>>
+>> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+>> Reviewed-by: Wu Hao <hao.wu@intel.com>
+>> ---
+>>  drivers/fpga/intel-m10-bmc-secure.c | 27 ++++++++++++++++++++++++++-
+>>  1 file changed, 26 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/fpga/intel-m10-bmc-secure.c b/drivers/fpga/intel-m10-bmc-secure.c
+>> index 4a66c2d448eb..7fb1c805f654 100644
+>> --- a/drivers/fpga/intel-m10-bmc-secure.c
+>> +++ b/drivers/fpga/intel-m10-bmc-secure.c
+>> @@ -450,6 +450,30 @@ static enum ifpga_sec_err m10bmc_sec_cancel(struct ifpga_sec_mgr *imgr)
+>>  	return ret ? IFPGA_SEC_ERR_RW_ERROR : IFPGA_SEC_ERR_NONE;
+>>  }
+>>  
+>> +static u64 m10bmc_sec_hw_errinfo(struct ifpga_sec_mgr *imgr)
+>> +{
+>> +	struct m10bmc_sec *sec = imgr->priv;
+>> +	u32 doorbell = 0, auth_result = 0;
+>> +	u64 hw_errinfo = 0;
+> hw_errinfo should be initialized to some poison value like -1
+>
+> to cover the case if either of sys_read's fail.
+Yes - that is a good idea. I'll make a change for the next patch version.
+
+- Russ
+>
+> Tom
+>
+>> +
+>> +	switch (imgr->err_code) {
+>> +	case IFPGA_SEC_ERR_HW_ERROR:
+>> +	case IFPGA_SEC_ERR_TIMEOUT:
+>> +	case IFPGA_SEC_ERR_BUSY:
+>> +	case IFPGA_SEC_ERR_WEAROUT:
+>> +		if (!m10bmc_sys_read(sec->m10bmc, M10BMC_DOORBELL, &doorbell))
+>> +			hw_errinfo = (u64)doorbell << 32;
+>> +
+>> +		if (!m10bmc_sys_read(sec->m10bmc, M10BMC_AUTH_RESULT,
+>> +				     &auth_result))
+>> +			hw_errinfo |= (u64)auth_result;
+>> +
+>> +		return hw_errinfo;
+>> +	default:
+>> +		return 0;
+>> +	}
+>> +}
+>> +
+>>  static const struct ifpga_sec_mgr_ops m10bmc_iops = {
+>>  	.user_flash_count = get_qspi_flash_count,
+>>  	.bmc_root_entry_hash = get_bmc_root_entry_hash,
+>> @@ -467,7 +491,8 @@ static const struct ifpga_sec_mgr_ops m10bmc_iops = {
+>>  	.prepare = m10bmc_sec_prepare,
+>>  	.write_blk = m10bmc_sec_write_blk,
+>>  	.poll_complete = m10bmc_sec_poll_complete,
+>> -	.cancel = m10bmc_sec_cancel
+>> +	.cancel = m10bmc_sec_cancel,
+>> +	.get_hw_errinfo = m10bmc_sec_hw_errinfo
+>>  };
+>>  
+>>  static void ifpga_sec_mgr_uinit(struct m10bmc_sec *sec)
+
