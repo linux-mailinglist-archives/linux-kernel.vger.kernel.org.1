@@ -2,107 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60D3B276B47
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:57:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 936AD276B4F
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727210AbgIXH5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 03:57:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53638 "EHLO
+        id S1727198AbgIXIAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 04:00:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727175AbgIXH5Q (ORCPT
+        with ESMTP id S1727151AbgIXIAV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 03:57:16 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F2FCC0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 00:57:16 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id s14so3928676pju.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 00:57:16 -0700 (PDT)
+        Thu, 24 Sep 2020 04:00:21 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A9DAC0613CE;
+        Thu, 24 Sep 2020 01:00:21 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id d9so1416679pfd.3;
+        Thu, 24 Sep 2020 01:00:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=nIx2g9hE/0bXNM/pwrWkRdm4URrOvOfMohT8HMjo9Ao=;
-        b=aTSU7n5fMU41yviqESs2c9mMPf+IYx8QwuWCdmdhLxJz0Jh7jgGhtT9KnY6hRtSnKx
-         1W4tIig0G0+UQUeoFk336wE8ZPR5Xl/ucbuyBnPKA6SjCe26xJRJ+kaPRtjpTOvI85L1
-         16HJ5NyO5LBSiWXQFYz1YCXlgYWz3dVEO3dss=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=To0aSlyvMOiABjo5WrXnv8NiYSlJHdgzfcFUckkTy+A=;
+        b=NzNraL9+txDHbbZlxYHyLJcahspbN0gIsmX89oLMorvVWqnCnUiyPcBUq9CJNmc36E
+         EUPfx3K2layQexREq50ryDSmC4iuE8iYt3N8JXDWYb6V8tAZKf5FQqK6BvwzOJvArioC
+         iQdCyjNwxr7571WEyqdHgO0ftf5TyVm/7/RDct2gS0XJWpsdikDKs34mWSXaV9eFgWzn
+         tViTS+NsgxMYsT6gQMTJx1aD1gsapFtUmDBLUs9lnvanrU/zyRjUoaB0Q6Sd++lQwUHG
+         mgaNFrJOxM/5woOrvIL4TKJWePYqrNBUGCoXUguUWDIydlZ4PHU9uT7oHZnk2WcVO8HW
+         P0Mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=nIx2g9hE/0bXNM/pwrWkRdm4URrOvOfMohT8HMjo9Ao=;
-        b=JgfKGh9xj69DP2uVFprDDQgsrvmI92NSKS282Csx9kFwIh8RWWYst8qsFCoT+o9jaJ
-         w2NVDz1ZC9d7vEOUNjl+koYhh2nGt8mi22GqsRhM2aB6iXlWiBFIe565UDA1rQd4zi4r
-         L1XdtWqBmpsAlQNUAHUnG7z3HrwsWAgQaA03L7mx86yyQiiv25wxk8yt8YAra4DjLW2r
-         iKRfp6qcv1EjFUAM4adN0vB/AWHblDPJaiqz/EkfcS2xXPiWRmPWyOI5ark2oCtNHjLA
-         IHdUWQiH2CyWjSWkNIxpWymqO3WGr2I7wHtJhGEmV4l+ki38vzT1zRCADOpuE7BwG0RD
-         mW2Q==
-X-Gm-Message-State: AOAM533ub4kW6Ago4PnzfHqH5giJNYjWEI0ZMN4dm14r4xaRPcF3Wk8w
-        pZNwzwGhvbEN0gPBgNw0lOMEeA==
-X-Google-Smtp-Source: ABdhPJxEM4eeBUcECdk2ALrU71tfv2XbEcD9NoBcPVvA8okwUHKyVVkEBPPPodWG+BJiiN8IUazBEg==
-X-Received: by 2002:a17:90a:8a04:: with SMTP id w4mr2894263pjn.72.1600934235780;
-        Thu, 24 Sep 2020 00:57:15 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id bx22sm1583848pjb.23.2020.09.24.00.57.15
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=To0aSlyvMOiABjo5WrXnv8NiYSlJHdgzfcFUckkTy+A=;
+        b=Maoi071nX2JjG8z8PZ+NVBRvLH00BfZQmgfNvAJw5B27cHzeamqh/gK+C+CDWon+tz
+         h/9MZlW4p2YXf0hhu8I1MefMr49Tlr0izE4SK0vC5ZTOI68tWpu609Qu4KtWDh7h0gwp
+         DYptY5Iq5sYduDf9qaMjsEwQQbOTCjGInBakbX9bpGMTkn70fYbWoODtNkXhW3r063Bm
+         JhCeebAtSXoqLK3EbqNsF073JCjKykcityd0K36sYQHcAqiItWfQXpEko8wvNWk05tj5
+         o9I8b1hvVmi/RB3+xglQTO3/0GPdXedqIUIl3OGHfwZoE83DWfGv44/Esf/aseqRlK4u
+         G8vQ==
+X-Gm-Message-State: AOAM533wSJu1jG3hOBbnr/xujncA6vlMYtK7xq+QBtvKx1TGOzScG+nx
+        y9XtBjq9fEktu7JEMUK5ZJFZ0K9CbdTWzw==
+X-Google-Smtp-Source: ABdhPJytYniWgyDDj0q6Q1aY4phnl2KsbcDGE91L55MUhYJXEtwmacy45a7KVVJ7nIeBH4bUC5YiHw==
+X-Received: by 2002:a62:6287:0:b029:142:2501:35d5 with SMTP id w129-20020a6262870000b0290142250135d5mr3520961pfb.53.1600934420534;
+        Thu, 24 Sep 2020 01:00:20 -0700 (PDT)
+Received: from sol (106-69-189-59.dyn.iinet.net.au. [106.69.189.59])
+        by smtp.gmail.com with ESMTPSA id l188sm1894953pfl.200.2020.09.24.01.00.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 00:57:15 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 24 Sep 2020 01:00:19 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 16:00:14 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v9 00/20] gpio: cdev: add uAPI v2
+Message-ID: <20200924080014.GD17562@sol>
+References: <20200922023151.387447-1-warthog618@gmail.com>
+ <CAHp75VeXbTkSTVgrqmeL_taEHPDBMo-rekA767Y+YT1_7RYjdg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <160090354388.310579.2465697259775252128@swboyd.mtv.corp.google.com>
-References: <20200903221828.3657250-1-swboyd@chromium.org> <20200906150247.3aaef3a3@archlinux> <159963232334.454335.9794130058200265122@swboyd.mtv.corp.google.com> <20200909121550.00005ede@Huawei.com> <160090354388.310579.2465697259775252128@swboyd.mtv.corp.google.com>
-Subject: Re: [PATCH] dt-bindings: iio: sx9310: Add various settings as DT properties
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, Daniel Campello <campello@chromium.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Evan Green <evgreen@chromium.org>
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Date:   Thu, 24 Sep 2020 00:57:13 -0700
-Message-ID: <160093423392.310579.10143738916599003618@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75VeXbTkSTVgrqmeL_taEHPDBMo-rekA767Y+YT1_7RYjdg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Stephen Boyd (2020-09-23 16:25:43)
-> > > > > +
-> > > > > +  semtech,close-debounce-samples:
-> > > > > +    allOf:
-> > > > > +      - $ref: /schemas/types.yaml#definitions/uint32
-> > > > > +      - enum: [0, 2, 4, 8]
-> > > > > +    default: 0
-> > > > > +    description:
-> > > > > +      The number of close samples debounced for proximity/body t=
-hresholds. =20
-> > > >=20
-> > > > This feels like something that has more to do with the object motio=
-n than
-> > > > the sensor setup, so perhaps should be controlled from userspace?  =
+On Wed, Sep 23, 2020 at 07:35:30PM +0300, Andy Shevchenko wrote:
+> On Tue, Sep 22, 2020 at 5:34 AM Kent Gibson <warthog618@gmail.com> wrote:
+> >
+> > This patchset defines and implements a new version of the
+> > GPIO CDEV uAPI to address existing 32/64-bit alignment issues, add
+> > support for debounce, event sequence numbers, and allow for requested
+> > lines with different configurations.
+> > It provides some future proofing by adding optional configuration fields
+> > and padding reserved for future use.
+> >
+> > The series can be partitioned into three blocks; the first two patches
+> > are minor fixes that impact later patches, the next eleven contain the
+> > v2 uAPI definition and implementation, and the final seven port the GPIO
+> > tools to the v2 uAPI and extend them to use new uAPI features.
+> >
+> > The more complicated patches include their own commentary where
+> > appropriate.
+> 
+> For tools (there are minor comments, which not prevent to have a tag):
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> 
+> For the rest I gave some comments but most of them are simply to
+> address. The uAPI definition I agree with after Arnd's comment. I
+> don't see big impediments to having this for v5.10.
+> 
+> Thanks!
+> 
 
-> > >=20
-> > > Sure. Is there an IIO sample property? Or I should make a custom
-> > > knob for this?
-> >=20
-> > It's kind of close to in_proximity0_thresh_period and that may be how t=
-hey
-> > have implemented it.
-> >=20
-> > That control specifies a number of samples for which a condition should=
- be true
-> > before it is reported.
->=20
-> Sounds good. I can do that. It looks like the driver reports close/far
-> via an event and these debounce values are the same for me so I can
-> write both fields (close and far) with the same thresh_period value from
-> userspace. If they need to be different between the two then this can be
-> reevaluated?
->=20
+Thanks for your review - I nearly always learn something new from them,
+and you can be picky pain in the arse at times - which is a good thing
+for a reviewer. Apart from the pain in the arse ;-).
 
-Or I can assign thresh_period to falling and rising corresponding to
-close/far debounce. Seems that the direction is the same, but that can
-be split apart and each direction gets a different sysfs file?
+Cheers,
+Kent.
