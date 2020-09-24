@@ -2,76 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF9C4277930
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 21:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7710427795A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 21:30:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728768AbgIXTZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 15:25:16 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:9785 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727254AbgIXTZO (ORCPT
+        id S1728879AbgIXT3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 15:29:37 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:11694 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728872AbgIXT3f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 15:25:14 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f6cf28d0000>; Thu, 24 Sep 2020 12:25:01 -0700
-Received: from rcampbell-dev.nvidia.com (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 24 Sep
- 2020 19:25:12 +0000
-Subject: Re: [PATCH v2] mm/hmm/test: use after free in
- dmirror_allocate_chunk()
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>
-CC:     Wei Yongjun <weiyongjun1@huawei.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
-References: <20200924134651.GA1586456@mwanda>
-X-Nvconfidentiality: public
-From:   Ralph Campbell <rcampbell@nvidia.com>
-Message-ID: <eb06e0c8-327e-6677-c393-139dffdf0dbe@nvidia.com>
-Date:   Thu, 24 Sep 2020 12:25:11 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Thu, 24 Sep 2020 15:29:35 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 08OJStnN007837
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 12:29:34 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=Gm5HN8n6mdZ7rY6Q/RyOuTixgQINVkSqfTOt7Y/p+cc=;
+ b=qxz3rxwCuWiFBORBZFyd+1QR5EZThSckmcmBnkbvoEktG3nDH2xtVSRY/O7qx3DBQTxH
+ gReXFY9s6pxXBAbWqantOCqHR5u01wz0HyeB6DSu8LmdVjUbx8EeX17TIb7qOhRjsyVS
+ v6eMlXkP9wFY0Vf/dd9KESYS8Q2Iay4cEgw= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 33qsp7knmq-15
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 12:29:34 -0700
+Received: from intmgw002.41.prn1.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 24 Sep 2020 12:27:17 -0700
+Received: by devvm1755.vll0.facebook.com (Postfix, from userid 111017)
+        id 67ADE992373; Thu, 24 Sep 2020 12:27:09 -0700 (PDT)
+From:   Roman Gushchin <guro@fb.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <kernel-team@fb.com>, Roman Gushchin <guro@fb.com>
+Subject: [PATCH v2 0/4] mm: allow mapping accounted kernel pages to userspace
+Date:   Thu, 24 Sep 2020 12:27:02 -0700
+Message-ID: <20200924192706.3075680-1-guro@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-In-Reply-To: <20200924134651.GA1586456@mwanda>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600975501; bh=VxKXOti6LWxDsQHTJ8Vj6sJYvHX2OPdhnAxzokJEpJg=;
-        h=Subject:To:CC:References:X-Nvconfidentiality:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=VWe62aC/uYbjVEz9Y/oRUv63BSpflwyw97N4YqYQZny3VxkgKrxHPAA2sEsXIvz/h
-         9KL49FsSXjFOWcHW9XBFrqjqS5o3RMX3GEAv2i4YrAXVGyIATZqZt2MENtoJNpfoeg
-         Pb9j1mTx6yZY+Mwa55uGK0YreUWiRnOqUs3dMNOyP2s9t63Ug8O2kC1i8/nDvsx9UD
-         WgExzgVBLmlflvobXN7Y5DCdjjcXeQz7fgGopgKcmclxp+FDCVnFRV0jhJ/BUwx7yW
-         9bjoQH9JPJROAhA42UdEOnmDFbynM5+V47+SVZ71utQpLDVVm7uIbp8QzvN9iRZZEm
-         BSthl/AxF/aUw==
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-24_14:2020-09-24,2020-09-24 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ phishscore=0 adultscore=0 clxscore=1015 priorityscore=1501 spamscore=0
+ mlxlogscore=398 lowpriorityscore=0 bulkscore=0 impostorscore=0 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009240140
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Currently a non-slab kernel page which has been charged to a memory
+cgroup can't be mapped to userspace. The underlying reason is simple:
+PageKmemcg flag is defined as a page type (like buddy, offline, etc),
+so it takes a bit from a page->mapped counter. Pages with a type set
+can't be mapped to userspace.
 
-On 9/24/20 6:46 AM, Dan Carpenter wrote:
-> The error handling code does this:
-> 
-> err_free:
-> 	kfree(devmem);
->          ^^^^^^^^^^^^^
-> err_release:
-> 	release_mem_region(devmem->pagemap.range.start, range_len(&devmem->pagemap.range));
->                             ^^^^^^^^
-> The problem is that when we use "devmem->pagemap.range.start" the
-> "devmem" pointer is either NULL or freed.
-> 
-> Neither the allocation nor the call to request_free_mem_region() has to
-> be done under the lock so I moved those to the start of the function.
-> 
-> Fixes: b2ef9f5a5cb3 ("mm/hmm/test: add selftest driver for HMM")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+But in general the kmemcg flag has nothing to do with mapping to
+userspace. It only means that the page has been accounted by the page
+allocator, so it has to be properly uncharged on release.
 
-Looks good.
-Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
+Some bpf maps are mapping the vmalloc-based memory to userspace, and
+their memory can't be accounted because of this implementation detail.
+
+This patchset removes this limitation by moving the PageKmemcg flag
+into one of the free bits of the page->mem_cgroup pointer. Also it
+formalizes all accesses to the page->mem_cgroup and page->obj_cgroups
+using new helpers, adds several checks and removes a couple of obsolete
+functions. As the result the code became more robust with fewer
+open-coded bits tricks.
+
+v2:
+  - fixed a bug in page_obj_cgroups_check()
+  - moved some definitions between patches, by Shakeel
+  - dropped the memcg flags mutual exclusion requirement, by Shakeel
+
+v1:
+  - added and fixed comments, by Shakeel
+  - added some VM_BUG_ON() checks
+  - fixed the debug output format of page->memcg_data
+
+
+Roman Gushchin (4):
+  mm: memcontrol: use helpers to access page's memcg data
+  mm: memcontrol/slab: use helpers to access slab page's memcg_data
+  mm: introduce page memcg flags
+  mm: convert page kmemcg type to a page memcg flag
+
+ fs/buffer.c                      |   2 +-
+ fs/iomap/buffered-io.c           |   2 +-
+ include/linux/memcontrol.h       | 243 +++++++++++++++++++++++++++++--
+ include/linux/mm.h               |  22 ---
+ include/linux/mm_types.h         |   5 +-
+ include/linux/page-flags.h       |  11 +-
+ include/trace/events/writeback.h |   2 +-
+ kernel/fork.c                    |   7 +-
+ mm/debug.c                       |   4 +-
+ mm/huge_memory.c                 |   4 +-
+ mm/memcontrol.c                  | 135 ++++++++---------
+ mm/migrate.c                     |   2 +-
+ mm/page_alloc.c                  |   6 +-
+ mm/page_io.c                     |   4 +-
+ mm/slab.h                        |  28 +---
+ mm/workingset.c                  |   6 +-
+ 16 files changed, 317 insertions(+), 166 deletions(-)
+
+--=20
+2.26.2
+
