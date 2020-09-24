@@ -2,110 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 521F9277B06
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 23:26:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90046277B0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 23:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726603AbgIXV0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 17:26:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726205AbgIXV0c (ORCPT
+        id S1726406AbgIXVaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 17:30:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41006 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725208AbgIXVaS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 17:26:32 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11EE4C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 14:26:32 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id e23so794956eja.3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 14:26:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=in8Rg86VvfYuzQh6U7/hDwBGxF8v1AUSBmpO9E789oQ=;
-        b=Prvekm5qZ88alNocW0qFgn9cNj4Z7QPimTG+psr7zIONUFcW/sHjWqo//GgbjmL/pf
-         Qyi3kbx59KsXbxbt5zVjLpfbDD5wqchk4ncB4m9x1sIIdLR7f/KrMYOWvVfcwXkCNzE0
-         mMBAE2hS6VPIeqVq5TwF/2xMYdk/evhZkCGinbxKW92OUZfrQKMIfnXtfyq1OMrF6fiI
-         7hM62hDuLhBPU6MmQIBfypJfSQi8cEJujTeoPII/G5Q0qktgQrL9sWDMLtSQcH2vxa1e
-         pAec2dHwsj0ZX6DcdP0RlhkEqNAcUa606Ui3etrBGY/9HZZN4lq2/eQdVX6P9Cnh39Wc
-         BhzQ==
+        Thu, 24 Sep 2020 17:30:18 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600983016;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GHZX7ZQSsiuVO3F0KOGNC6cDMHJGjkdiBXGbF9uY1qg=;
+        b=QA8iFnBsTpDuqDUBF6x5PhYYn9jxu9KXWbbwUrr+tittjzhlw3fF+/NSh7s1ScB9sX6pZX
+        2h+AUw6EBJWX+ho/dg823Un8+uNKxhWo/al1jWoimuSudTK3b+dJdzV/bAtSV5JinEg0GO
+        JBIS/UxLjJfs28bCQig1E1qjXIEE4Os=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-327-wGqAQgnKMDaZpkmAzR5QPQ-1; Thu, 24 Sep 2020 17:30:14 -0400
+X-MC-Unique: wGqAQgnKMDaZpkmAzR5QPQ-1
+Received: by mail-qv1-f71.google.com with SMTP id w8so355025qvt.18
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 14:30:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=in8Rg86VvfYuzQh6U7/hDwBGxF8v1AUSBmpO9E789oQ=;
-        b=goTwGR9dlDajqb497e5Uh8plxy3np2CJPmFPu/MNHWhzb7k8NiqXkuX9qkbSE93mLx
-         xZbSjsI0B9k8FAV9Ay0iS7RFkccz0CC42XwHm2zJRbQoh0CQFF/j6Sq16RxPbyCSJv97
-         A1q8809PLYJ80QBORf5msjv3VVePRNc/Ko8yX+o8YFVD6WQL8svX5TRRucE/kdM+klWk
-         KpgYpCsxH1zjvRTv5DzvlcsAc4+t6kfFhUAdlWAa+ATcXeuvk4k0MvOj8vxEjYRhUYoF
-         l7WpxLXc0xeiPDRto9ddfrVkufi7Si3k4WXFtgguifsvxAUBL3VXsNgAtnvRVDe7CC52
-         hRSQ==
-X-Gm-Message-State: AOAM532cQI3FmU57qMvs9DfY0XuJ4M8dKJPP1OjRV9cutkg9FXv+74DG
-        i9v/F1tFi0jgHkrigpxokFwWCST7+Dn63hWbfYdY2A==
-X-Google-Smtp-Source: ABdhPJwo2nc1Tk13TPjt0rD146GmflS4xaeaqP6B2BkyjnC8iqLNN+AT1GEdOa+lozWWeYUYn6ojXC5A3ZlNsX+AQxo=
-X-Received: by 2002:a17:907:4035:: with SMTP id nk5mr592391ejb.418.1600982790747;
- Thu, 24 Sep 2020 14:26:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <159643094279.4062302.17779410714418721328.stgit@dwillia2-desk3.amr.corp.intel.com>
- <159643100485.4062302.976628339798536960.stgit@dwillia2-desk3.amr.corp.intel.com>
- <a3ad70a2-77a8-d50e-f372-731a8e27c03b@redhat.com> <17686fcc-202e-0982-d0de-54d5349cfb5d@oracle.com>
- <9acc6148-72eb-7016-dba9-46fa87ded5a5@redhat.com> <CAPcyv4h5GGV3F-0rFY_pyv9Bj8LAkrwXruxGE=K2y9=dA8oDHw@mail.gmail.com>
- <d160c05b-9caa-1ffb-9c01-5bb261c744b5@redhat.com> <CAPcyv4jf9fK5oOcROMx=c-3q6aGFp89MNi-+GoZ-dy1gdNTrJw@mail.gmail.com>
- <28ad3045-9238-2a77-d74d-9660a36aa4da@redhat.com>
-In-Reply-To: <28ad3045-9238-2a77-d74d-9660a36aa4da@redhat.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 24 Sep 2020 14:26:19 -0700
-Message-ID: <CAPcyv4iQ4VnXMU0+_7rfXwPowgcdoABSFUH4WO_3P9vHtWAzPg@mail.gmail.com>
-Subject: Re: [PATCH v4 11/23] device-dax: Kill dax_kmem_res
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Joao Martins <joao.m.martins@oracle.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GHZX7ZQSsiuVO3F0KOGNC6cDMHJGjkdiBXGbF9uY1qg=;
+        b=pz+9chyIHjvGETVDb/qhqOYNaxIMbYqzgxqYn94V1zBlpgN9NWKYei0rowo4Jj2BZy
+         +aJHD9XKs8qJzUBlzyqjj06D+evxn00/6cj6wr3HeOy5XZj3H6D1eMwAGkDygYUw5iHe
+         MYCpGtrK+b1xYNRM+h4SwskHjpBjCTkO+g3o7e1zb9jxDaIWtPBM6DwJCzHtfcZXeYuM
+         LBKlwegIEZhEJBsYQPrZ4PyIRYVeHFXrKi7hkNtVlRg8QZQZxU+aojx8fsud5Y9/cbmu
+         DtXdcIv5AC2ahcs+i5juhB4ePlQnRA2dqaJSJLYRgu6jYDkAhqYHlCzlcDMVXvCrufFF
+         PX7w==
+X-Gm-Message-State: AOAM53126X6L1ITogeWYVYEI5j1p4C5ZlgSC0wRUBTsQriq7VaIQ9cgn
+        Xw2sjJVCZEyoiq9r3DvQUKfn+EdbQG3Yl+rRCfs8MqUuB0cbAdoW7CzIaxJTbcVAbr+Ot4WdtUD
+        eRtS2OhKUYDjx5dfF3rbcwAPP
+X-Received: by 2002:a05:620a:546:: with SMTP id o6mr1197904qko.296.1600983013477;
+        Thu, 24 Sep 2020 14:30:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwGdv9aQEFGeLxroRNPZ6s4EbIA5GgM4mhynzklei3yx+Gk8JqoQYvZjf7XJEiBcK/q3FcaCw==
+X-Received: by 2002:a05:620a:546:: with SMTP id o6mr1197874qko.296.1600983013220;
+        Thu, 24 Sep 2020 14:30:13 -0700 (PDT)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
+        by smtp.gmail.com with ESMTPSA id c28sm610766qtk.18.2020.09.24.14.30.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 14:30:12 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 17:30:10 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     John Hubbard <jhubbard@nvidia.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jann Horn <jannh@google.com>
+Subject: Re: [PATCH 1/5] mm: Introduce mm_struct.has_pinned
+Message-ID: <20200924213010.GL79898@xz-x1>
+References: <20200922175415.GI19098@xz-x1>
+ <20200922191116.GK8409@ziepe.ca>
+ <20200923002735.GN19098@xz-x1>
+ <20200923170759.GA9916@ziepe.ca>
+ <20200924143517.GD79898@xz-x1>
+ <20200924165152.GE9916@ziepe.ca>
+ <20200924175531.GH79898@xz-x1>
+ <20200924181501.GF9916@ziepe.ca>
+ <20200924183418.GJ79898@xz-x1>
+ <20200924183953.GG9916@ziepe.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200924183953.GG9916@ziepe.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[..]
-> > I'm not suggesting to busy the whole "virtio" range, just the portion
-> > that's about to be passed to add_memory_driver_managed().
->
-> I'm afraid I don't get your point. For virtio-mem:
->
-> Before:
->
-> 1. Create virtio0 container resource
->
-> 2. (somewhen in the future) add_memory_driver_managed()
->  - Create resource (System RAM (virtio_mem)), marking it busy/driver
->    managed
->
-> After:
->
-> 1. Create virtio0 container resource
->
-> 2. (somewhen in the future) Create resource (System RAM (virtio_mem)),
->    marking it busy/driver managed
-> 3. add_memory_driver_managed()
->
-> Not helpful or simpler IMHO.
+On Thu, Sep 24, 2020 at 03:39:53PM -0300, Jason Gunthorpe wrote:
+> On Thu, Sep 24, 2020 at 02:34:18PM -0400, Peter Xu wrote:
+> 
+> > > >        // RDONLY gup
+> > > >        pin_user_pages(buf, !WRITE);
+> > > >        // pte of buf duplicated on both sides
+> > > >        fork();
+> > > >        mprotect(buf, WRITE);
+> > > >        *buf = 1;
+> > > >        // buf page replaced as cow triggered
+> > > > 
+> > > > Currently when fork() we'll happily share a pinned read-only page with the
+> > > > child by copying the pte directly.  
+> > > 
+> > > Why? This series prevents that, the page will be maybe_dma_pinned, so
+> > > fork() will copy it.
+> > 
+> > With the extra mprotect(!WRITE), I think we'll see a !pte_write() entry.  Then
+> > it'll not go into maybe_dma_pinned() at all since cow==false.
+> 
+> Hum that seems like a problem in this patch, we still need to do the
+> DMA pinned logic even if the pte is already write protected.
 
-The concern I'm trying to address is the theoretical race window and
-layering violation in this sequence in the kmem driver:
+Yes I agree.  I'll take care of that in the next version too.
 
-1/ res = request_mem_region(...);
-2/ res->flags = IORESOURCE_MEM;
-3/ add_memory_driver_managed();
+-- 
+Peter Xu
 
-Between 2/ and 3/ something can race and think that it owns the
-region. Do I think it will happen in practice, no, but it's still a
-pattern that deserves come cleanup.
