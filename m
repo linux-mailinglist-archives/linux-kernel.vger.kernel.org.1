@@ -2,94 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B3CC276A0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:06:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54C17276A14
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727132AbgIXHGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 03:06:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726902AbgIXHGQ (ORCPT
+        id S1727084AbgIXHIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 03:08:20 -0400
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:49373 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726929AbgIXHIU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 03:06:16 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24FA6C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 00:06:16 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id w11so2724847lfn.2
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 00:06:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mMFKn7petaqw14RFBic1L+pEOZugLfwojCWzUGGlGRk=;
-        b=kH0LayK5JtiQ8tepUjGq57EtzET3XZ6P8Txuyf9x/cC+4xEgn59xevZUVDig78jBv3
-         oeO56q22fL/g1Gwr7UAoFwGY+CTNPf/d6FXFi0AVfJWsRon9MNchf144xgPN88ZoBOEr
-         6E5MMPJhzLAe/WVbdET9TGizCE864EdeoRwoWW/etbAJe07xxXtsi/HOxxf6A1ca/KSX
-         FNWp23EV+SvkjwXezkwYpzd5soSAqVjIPHNl43t3x1pfUDXQTx+yoYvF7MmfwwfEtN/d
-         5mpC39PLvwv+oSnmHSm07c61UhWmML33a2VmIzAbQg0jRG3d4cVYu4G73Sjxcj09QPXa
-         sOUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mMFKn7petaqw14RFBic1L+pEOZugLfwojCWzUGGlGRk=;
-        b=TIwGGXHKpgFT4npXMfaxDx4y54hnLZ+XxrQr/vmo4nfcmVIni27Fzw3BM1JwoJNLVS
-         xQD/CIAznSgpWNLuxE/r9omMStkpy+y/H58mr+ZGkNhTU/CO8vPLCDrVR1xTMf0rxoJN
-         0yjwVBNbSpoPSQfarA1FMMLLEnX2dk4gu5PFQ7FdBSwsP2ZSZ6/xnY4Qz11YYhVMc6yo
-         OWuuNWRm/fIUwWuDNEThvLH00M58HbgFUtDLzDDxYY/TA4lU0iPYRtUy3qxEfalSSu1P
-         4EfHXI3UTq1IiBVyekX2JrpYETB71Aqwc5IpU29qQAI5+kopGgGhMatEgm3hwFr9avc1
-         aZpQ==
-X-Gm-Message-State: AOAM533aMYxaJXhkdiSA9C74c2LJrHGtAMbcqfJ6Qj5+vHqlkpqAuiiA
-        r+EQE2oom8OPnvbySfZ7N1C5c4FdVGcr0qdkDJk5mg==
-X-Google-Smtp-Source: ABdhPJyrP+YkIWkaEI+NWeFL5KWoU3afg5MKHhZoH/V0ZiG8R83YgqOxCDiXW2noqxL4i9nQMQQzDrmvX4NiTGlpmV4=
-X-Received: by 2002:a19:2346:: with SMTP id j67mr1042414lfj.449.1600931174317;
- Thu, 24 Sep 2020 00:06:14 -0700 (PDT)
+        Thu, 24 Sep 2020 03:08:20 -0400
+X-Originating-IP: 90.65.88.165
+Received: from localhost (lfbn-lyo-1-1908-165.w90-65.abo.wanadoo.fr [90.65.88.165])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 2B210FF805;
+        Thu, 24 Sep 2020 07:08:17 +0000 (UTC)
+Date:   Thu, 24 Sep 2020 09:08:16 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, allan.nielsen@microchip.com,
+        joergen.andreasen@microchip.com, UNGLinuxDriver@microchip.com,
+        fido_max@inbox.ru, alexandru.marginean@nxp.com, po.liu@nxp.com,
+        claudiu.manoil@nxp.com, vladimir.oltean@nxp.com, leoyang.li@nxp.com
+Subject: Re: [net] net: mscc: ocelot: fix fields offset in SG_CONFIG_REG_3
+Message-ID: <20200924070816.GS9675@piout.net>
+References: <20200924021113.9964-1-xiaoliang.yang_1@nxp.com>
 MIME-Version: 1.0
-References: <20200922203700.2879671-1-guro@fb.com> <20200922203700.2879671-5-guro@fb.com>
-In-Reply-To: <20200922203700.2879671-5-guro@fb.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 24 Sep 2020 00:06:03 -0700
-Message-ID: <CALvZod6v2oYk+xhAzM97-wPRdHmCv-C5zEctXzBk=wd0ZAKruw@mail.gmail.com>
-Subject: Re: [PATCH v1 4/4] mm: convert page kmemcg type to a page memcg flag
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924021113.9964-1-xiaoliang.yang_1@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 1:37 PM Roman Gushchin <guro@fb.com> wrote:
->
-> PageKmemcg flag is currently defined as a page type (like buddy,
-> offline, table and guard). Semantically it means that the page
-> was accounted as a kernel memory by the page allocator and has
-> to be uncharged on the release.
->
-> As a side effect of defining the flag as a page type, the accounted
-> page can't be mapped to userspace (look at page_has_type() and
-> comments above). In particular, this blocks the accounting of
-> vmalloc-backed memory used by some bpf maps, because these maps
-> do map the memory to userspace.
->
-> One option is to fix it by complicating the access to page->mapcount,
-> which provides some free bits for page->page_type.
->
-> But it's way better to move this flag into page->memcg_data flags.
-> Indeed, the flag makes no sense without enabled memory cgroups
-> and memory cgroup pointer set in particular.
->
-> This commit replaces PageKmemcg() and __SetPageKmemcg() with
-> PageMemcgKmem() and SetPageMemcgKmem(). __ClearPageKmemcg()
-> can be simple deleted because clear_page_mem_cgroup() already
-> does the job.
->
-> As a bonus, on !CONFIG_MEMCG build the PageMemcgKmem() check will
-> be compiled out.
->
-> Signed-off-by: Roman Gushchin <guro@fb.com>
+Hi,
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+On 24/09/2020 10:11:13+0800, Xiaoliang Yang wrote:
+> INIT_IPS and GATE_ENABLE fields have a wrong offset in SG_CONFIG_REG_3.
+
+You are changing GATE_STATE, not GATE_ENABLE
+
+> This register is used by stream gate control of PSFP, and it has not
+> been used before, because PSFP is not implemented in ocelot driver.
+> 
+> Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+> ---
+>  include/soc/mscc/ocelot_ana.h | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/include/soc/mscc/ocelot_ana.h b/include/soc/mscc/ocelot_ana.h
+> index 841c6ec22b64..1669481d9779 100644
+> --- a/include/soc/mscc/ocelot_ana.h
+> +++ b/include/soc/mscc/ocelot_ana.h
+> @@ -252,10 +252,10 @@
+>  #define ANA_SG_CONFIG_REG_3_LIST_LENGTH_M                 GENMASK(18, 16)
+>  #define ANA_SG_CONFIG_REG_3_LIST_LENGTH_X(x)              (((x) & GENMASK(18, 16)) >> 16)
+>  #define ANA_SG_CONFIG_REG_3_GATE_ENABLE                   BIT(20)
+> -#define ANA_SG_CONFIG_REG_3_INIT_IPS(x)                   (((x) << 24) & GENMASK(27, 24))
+> -#define ANA_SG_CONFIG_REG_3_INIT_IPS_M                    GENMASK(27, 24)
+> -#define ANA_SG_CONFIG_REG_3_INIT_IPS_X(x)                 (((x) & GENMASK(27, 24)) >> 24)
+> -#define ANA_SG_CONFIG_REG_3_INIT_GATE_STATE               BIT(28)
+> +#define ANA_SG_CONFIG_REG_3_INIT_IPS(x)                   (((x) << 21) & GENMASK(24, 21))
+> +#define ANA_SG_CONFIG_REG_3_INIT_IPS_M                    GENMASK(24, 21)
+> +#define ANA_SG_CONFIG_REG_3_INIT_IPS_X(x)                 (((x) & GENMASK(24, 21)) >> 21)
+> +#define ANA_SG_CONFIG_REG_3_INIT_GATE_STATE               BIT(25)
+>  
+
+VSC7514 doesn't have the stream gate registers ans this was generated
+automatically from the cml file for felix. Did that change?
+
+Seeing that bits in this register are not packed, I would believe your
+change is correct.
+
+>  #define ANA_SG_GCL_GS_CONFIG_RSZ                          0x4
+>  
+> -- 
+> 2.17.1
+> 
+
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
