@@ -2,210 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F33327719A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 423802771A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727872AbgIXMvN convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 24 Sep 2020 08:51:13 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:56120 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727874AbgIXMvM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 08:51:12 -0400
-Received: from mail-pf1-f199.google.com ([209.85.210.199])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kLQiL-0003vU-Eo
-        for linux-kernel@vger.kernel.org; Thu, 24 Sep 2020 12:51:09 +0000
-Received: by mail-pf1-f199.google.com with SMTP id s204so1762347pfs.18
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:51:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=DjILAW2W1Nia4thAbmZLofAgJjNgLzZMs6DEDIxBnIo=;
-        b=lb1Vl7c/pd62I2GEXhxKEnzjMr/UOb67mcLUgbNX2FC6u9EBXQwYzqDg9iNti9lBb0
-         hOPND9AreQcQO/RfLEwsELaXn7KT+S0kDPkg+zLQSuz2UDhwrGfK3X+3UczK193SNUUR
-         ZLDc7Xy+hqMnH2yQMvb34IZIvarOrkkubrRANqyJioxafI72RcC4EFaouZ2xliNSYAkK
-         72hpO5JsCbA6HGyfTM5w+CIu4RrkGYbwwVi0etwOD7JJfdQFTwtR505C4PHgPxCTCtl8
-         LZ/viVh6onhQVuf80ArZoKKyDpC1LG1wWz7RB+57leFIW+1IC/VXp7hpOznUnMWpfjVU
-         irSQ==
-X-Gm-Message-State: AOAM532q9YyywkwmyoPuY0vrFzIEbbGwu0njhGFSjhAcDBGmtKiFjvJA
-        LKjki4I29TMnjI1WN7ldhmWzjS1ZiubitPnO9EzJ0Jt5GCsYnhdludDPwWxJ5cLNYypfDRfq/u7
-        gC58X4ROVYdwZpEylY2Ei3JY4faDJ2H++5Uu1eAqaUQ==
-X-Received: by 2002:a17:902:b109:b029:d1:e5e7:be53 with SMTP id q9-20020a170902b109b02900d1e5e7be53mr4459777plr.45.1600951867655;
-        Thu, 24 Sep 2020 05:51:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy+Y5i1WCdrHedy2G1MLAQKaJqLzvRJx54jTzBEz2xfl0cI8jcWhte7k+YO7+uWHFPAIn3tqQ==
-X-Received: by 2002:a17:902:b109:b029:d1:e5e7:be53 with SMTP id q9-20020a170902b109b02900d1e5e7be53mr4459743plr.45.1600951867169;
-        Thu, 24 Sep 2020 05:51:07 -0700 (PDT)
-Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
-        by smtp.gmail.com with ESMTPSA id y4sm2879537pgl.67.2020.09.24.05.51.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 24 Sep 2020 05:51:06 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
-Subject: Re: [PATCH] e1000e: Power cycle phy on PM resume
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <20200923153703.GC3764123@lunn.ch>
-Date:   Thu, 24 Sep 2020 20:50:59 +0800
-Cc:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "moderated list:INTEL ETHERNET DRIVERS" 
-        <intel-wired-lan@lists.osuosl.org>,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <B5008979-2999-4141-B373-2F649462DD0A@canonical.com>
-References: <20200923074751.10527-1-kai.heng.feng@canonical.com>
- <20200923121748.GE3770354@lunn.ch>
- <F6075687-7BC4-4348-86A8-29D83B7E5AAC@canonical.com>
- <20200923153703.GC3764123@lunn.ch>
-To:     Andrew Lunn <andrew@lunn.ch>
-X-Mailer: Apple Mail (2.3608.120.23.2.1)
+        id S1727857AbgIXMxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 08:53:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52328 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727772AbgIXMxD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 08:53:03 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1600951982;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=w/Gm604q90U/ArtkiAYziXtF7CMgqid9yHvU4IBGz9M=;
+        b=sYsHXxS376YD5gKomf38rfaUJvC34cXay/hUPfWvSjftkPqAwsxPrChqTH/9vNs0xGlTkD
+        o9qKcAleKH78nTGEjnGXSM+PQ6nCdls7iPmubOFPrNJ2Z3zgqFh4TTkNsov1kS9geZK5CM
+        sVNaoVR2cDcef0PF0m5/XTRgwLfe84A=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8D4F8AD76;
+        Thu, 24 Sep 2020 12:53:02 +0000 (UTC)
+Date:   Thu, 24 Sep 2020 14:53:01 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Mark Salyzyn <salyzyn@android.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Changki Kim <changki.kim@samsung.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC 2/2] printk: Add more information about the printk caller
+Message-ID: <20200924125259.GC29288@alley>
+References: <20200923135617.27149-1-pmladek@suse.com>
+ <20200923135617.27149-3-pmladek@suse.com>
+ <20200924042414.GA6039@lx-t490>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924042414.GA6039@lx-t490>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+On Thu 2020-09-24 06:24:14, Ahmed S. Darwish wrote:
+> On Wed, Sep 23, 2020 at 03:56:17PM +0200, Petr Mladek wrote:
+> ...
+> >
+> > -static inline u32 printk_caller_id(void)
+> > +static enum printk_caller_ctx get_printk_caller_ctx(void)
+> > +{
+> > +	if (in_nmi())
+> > +		return printk_ctx_nmi;
+> > +
+> > +	if (in_irq())
+> > +		return printk_ctx_hardirq;
+> > +
+> > +	if (in_softirq())
+> > +		return printk_ctx_softirq;
+> > +
+> > +	return printk_ctx_task;
+> > +}
+> > +
+> 
+> in_softirq() here will be true for both softirq contexts *and*
+> BH-disabled regions. Did you mean in_serving_softirq() instead?
 
-> On Sep 23, 2020, at 23:37, Andrew Lunn <andrew@lunn.ch> wrote:
-> 
-> On Wed, Sep 23, 2020 at 10:44:10PM +0800, Kai-Heng Feng wrote:
->> Hi Andrew,
->> 
->>> On Sep 23, 2020, at 20:17, Andrew Lunn <andrew@lunn.ch> wrote:
->>> 
->>> On Wed, Sep 23, 2020 at 03:47:51PM +0800, Kai-Heng Feng wrote:
->>>> We are seeing the following error after S3 resume:
->>>> [  704.746874] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
->>>> [  704.844232] e1000e 0000:00:1f.6 eno1: MDI Write did not complete
->>>> [  704.902817] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
->>>> [  704.903075] e1000e 0000:00:1f.6 eno1: reading PHY page 769 (or 0x6020 shifted) reg 0x17
->>>> [  704.903281] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
->>>> [  704.903486] e1000e 0000:00:1f.6 eno1: writing PHY page 769 (or 0x6020 shifted) reg 0x17
->>>> [  704.943155] e1000e 0000:00:1f.6 eno1: MDI Error
->>>> ...
->>>> [  705.108161] e1000e 0000:00:1f.6 eno1: Hardware Error
->>>> 
->>>> Since we don't know what platform firmware may do to the phy, so let's
->>>> power cycle the phy upon system resume to resolve the issue.
->>>> 
->>>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
->>>> ---
->>>> drivers/net/ethernet/intel/e1000e/netdev.c | 2 ++
->>>> 1 file changed, 2 insertions(+)
->>>> 
->>>> diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
->>>> index 664e8ccc88d2..c2a87a408102 100644
->>>> --- a/drivers/net/ethernet/intel/e1000e/netdev.c
->>>> +++ b/drivers/net/ethernet/intel/e1000e/netdev.c
->>>> @@ -6968,6 +6968,8 @@ static __maybe_unused int e1000e_pm_resume(struct device *dev)
->>>> 	    !e1000e_check_me(hw->adapter->pdev->device))
->>>> 		e1000e_s0ix_exit_flow(adapter);
->>>> 
->>>> +	e1000_power_down_phy(adapter);
->>>> +
->>> 
->>> static void e1000_power_down_phy(struct e1000_adapter *adapter)
->>> {
->>> 	struct e1000_hw *hw = &adapter->hw;
->>> 
->>> 	/* Power down the PHY so no link is implied when interface is down *
->>> 	 * The PHY cannot be powered down if any of the following is true *
->>> 	 * (a) WoL is enabled
->>> 	 * (b) AMT is active
->>> 	 * (c) SoL/IDER session is active
->>> 	 */
->>> 	if (!adapter->wol && hw->mac_type >= e1000_82540 &&
->>> 	   hw->media_type == e1000_media_type_copper) {
->> 
->> Looks like the the function comes from e1000, drivers/net/ethernet/intel/e1000/e1000_main.c.
->> However, this patch is for e1000e, so the function with same name is different.
-> 
-> Ah! Sorry. Missed that. Also it is not nice there are two functions in
-> the kernel with the same name.
-> 
->>> Could it be coming out of S3 because it just received a WoL?
->> 
->> No, the issue can be reproduced by pressing keyboard or rtcwake.
-> 
-> Not relevant now, since i was looking at the wrong function. But i was
-> meaning the call is a NOP in the case WoL caused the wake up. So if
-> the issues can also happen after WoL, your fix is not going to fix it.
-> 
->>> It seems unlikely that it is the MII_CR_POWER_DOWN which is helping,
->>> since that is an MDIO write itself. Do you actually know how this call
->>> to e1000_power_down_phy() fixes the issues?
->> 
-> 
->> I don't know from hardware's perspective, but I think the comment on
->> e1000_power_down_phy_copper() can give us some insight:
-> 
-> And there is only one function called e1000_power_down_phy_copper()
-> :-)
-> 
->> 
->> /**
->> * e1000_power_down_phy_copper - Restore copper link in case of PHY power down
->> * @hw: pointer to the HW structure
->> *
->> * In the case of a PHY power down to save power, or to turn off link during a
->> * driver unload, or wake on lan is not enabled, restore the link to previous
->> * settings.                       
->> **/
->> void e1000_power_down_phy_copper(struct e1000_hw *hw)
->> {
->>        u16 mii_reg = 0;
->> 
->>        /* The PHY will retain its settings across a power down/up cycle */
->>        e1e_rphy(hw, MII_BMCR, &mii_reg);
->>        mii_reg |= BMCR_PDOWN;
->>        e1e_wphy(hw, MII_BMCR, mii_reg);
->>        usleep_range(1000, 2000);
->> }
-> 
-> I don't really see how this explains this:
-> 
->>>> [  704.746874] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
->>>> [  704.844232] e1000e 0000:00:1f.6 eno1: MDI Write did not complete
-> 
-> https://elixir.bootlin.com/linux/latest/source/drivers/net/ethernet/intel/e1000e/phy.c#L181
-> 
-> So first off, the comments are all cut/paste from
-> e1000e_read_phy_reg_mdic(). It would be nice to s/read/write/g in that
-> function.
+Good question!
 
-Ah yes...
+I am not sure if people would want to distinguish these two
+situations.
 
-> 
-> So it sets up the transaction and starts it. MDIO is a serial bus with
-> no acknowledgements. You clock out around 64 bits, and hope the PHY
-> receives it. The time it takes to send those 64 bits is fixed by the
-> bus speed, typically 2.5MHz.
+Otherwise, I think that is_softirq() more close to the meaning of
+in_irq(). They both describe a context where a new interrupt has
+to wait until the handling gets enabled again.
 
-Thanks for the info.
-
-> 
-> So the driver polls waiting for the hardware to say the bits have been
-> sent. And this is timing out. How long that takes has nothing to do
-> with the PHY, or what state it is in. Powering down the PHY has no
-> effect on the MDIO bus master, and how long it takes to shift those
-> bits out. Which is why i don't think this patch is correct. This is
-> probably an MDIO bus issue, not a PHY issue.
-
-Thanks for pointing out the possible root cause.
-Indeed this looks like an MDIO issue so this patch is completely wrong.
-
-I'll send a V2, thanks.
-
-Kai-Heng
-
-> 
-> Try dumping the value of MDIC in the good/bad case before the
-> transaction starts.
-> 
-> 	 Andrew
-
+Best Regards,
+Petr
