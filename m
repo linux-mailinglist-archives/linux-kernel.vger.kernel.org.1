@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB5A276D6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49207276D69
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727183AbgIXJ2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 05:28:03 -0400
-Received: from mail-il1-f207.google.com ([209.85.166.207]:38729 "EHLO
-        mail-il1-f207.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727475AbgIXJ00 (ORCPT
+        id S1726899AbgIXJ2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 05:28:00 -0400
+Received: from mail-il1-f205.google.com ([209.85.166.205]:39866 "EHLO
+        mail-il1-f205.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727494AbgIXJ01 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 05:26:26 -0400
-Received: by mail-il1-f207.google.com with SMTP id n71so2099741ild.5
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:26:25 -0700 (PDT)
+        Thu, 24 Sep 2020 05:26:27 -0400
+Received: by mail-il1-f205.google.com with SMTP id r10so2094574ilq.6
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:26:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=KwtKvUDMcxdYzs6ADf81+0YwKHEm5MaqSDUuSHizkg8=;
-        b=Tnh2+6qhA9C3BQpaVJfTNXPA4muQMUibOwvwk7fKubep6YvRYIgy/O0BwcolepH1wN
-         oHPlF6FVBe2DjjPy9Rk+ngeRuCIruH2J27rF5ucPEd9rwvarFlX1YNfpESfIWvmS4FBN
-         IBlyW5S8P+qzzR76/BHb1h0I51QjPrC7g9XT16GLtuom1QoVzhFMIPyXE5PEGjNHFOjR
-         ohq39KCiK0BIPotc7EXnnN+T0fQ1jgSTy3gWuwI4QT1qVIEFdOxVW0si//zgXVrXR551
-         enlVMIX9DLJAVcCzlTCPtEYy2rOx1iY4lOUd4jUWafu4/nZjbouIQ8Zc/Zhwrz9sT+Gr
-         umfQ==
-X-Gm-Message-State: AOAM5319feWqDVjsMl5uklVjaaYkxTsOTs0HrD5Plg5wdv/LW2BUXxSA
-        boCTs9RojRLUenFO2+CbNM3GRQGC+xoxlAcmm40v5bSskI7L
-X-Google-Smtp-Source: ABdhPJzTyRPx3cOgeXGYY4+EUXdletyipVJqYGdcV1OlOfs7BzF1u5fWaj52gYsBTpNencNxqd5zgCjjdih5ydOHOydhQAPHGd+n
+        bh=wQ51f9WTAZ5e5qtWDKE3zolADPaVRzEKSYmLIUlQCxM=;
+        b=jnsv4EWVrvMwEx4UgoZM+bdzfBQ8Iou04phEkcWQA73UyLLprNtDEjUQzCxdLc2bXs
+         H+qqc7Mp4C/RpYSF+3B+Nxq8nknn/tDJLnE0qisDKkUFMGzIDQdeTxd7a9BE9PXpH5kK
+         sKaopdmex5RQ0LkFXAOrghl/+zA2Dm3OR30CfskNxGSb5xlqHxn/S8n3TO2tDiAFmfyZ
+         elM9Pg9dtR1ca5TJudnA51pSOdTcK4eEQU03hJrodhaqq4vnLtr0zKkGocsIjYaZoS8D
+         hqMEVLkS3xAei2eHLlLxImadYlR3F8fwqvOZaHJl9Rb50e43EExSybxdvJLwsp2eT9hz
+         hUzw==
+X-Gm-Message-State: AOAM532HUfqA3T0n6HStHRw6yzdcOX8XY9ZocuxpL888Yo5XUYPEOH/r
+        woxcgkAJ7T2xKGogSXkUMwMcgQSwxe1SbaKgbjIg6IinYaZt
+X-Google-Smtp-Source: ABdhPJwmsNm47rwzH7GpbfqeU15rs/Sv4XFx3pugpzM0RTOhBVAIlBylP3aBEGqVLJQk2YQasb0ysawOr7kN2bwA0xCSTMmW+kzX
 MIME-Version: 1.0
-X-Received: by 2002:a02:7fcf:: with SMTP id r198mr2783772jac.24.1600939585536;
- Thu, 24 Sep 2020 02:26:25 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 02:26:25 -0700
+X-Received: by 2002:a6b:d603:: with SMTP id w3mr2601767ioa.29.1600939586515;
+ Thu, 24 Sep 2020 02:26:26 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 02:26:26 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004d87c705b00bcb0a@google.com>
-Subject: WARNING in sta_info_insert_rcu
-From:   syzbot <syzbot+ef4ca92d9d6f5ba2f880@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <0000000000005c793005b00bcb89@google.com>
+Subject: general protection fault in cdev_del (2)
+From:   syzbot <syzbot+c49fe6089f295a05e6f8@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,60 +47,84 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    eff48dde Merge tag 'trace-v5.9-rc5' of git://git.kernel.or..
+HEAD commit:    98477740 Merge branch 'rcu/urgent' of git://git.kernel.org..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17b4e8e3900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12641dab900000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=5f4c828c9e3cef97
-dashboard link: https://syzkaller.appspot.com/bug?extid=ef4ca92d9d6f5ba2f880
+dashboard link: https://syzkaller.appspot.com/bug?extid=c49fe6089f295a05e6f8
 compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=167e5707900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1765b19b900000
-
-Bisection is inconclusive: the issue happens on the oldest tested release.
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10341dab900000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=12341dab900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=14341dab900000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14eadc8d900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1517d075900000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ef4ca92d9d6f5ba2f880@syzkaller.appspotmail.com
+Reported-by: syzbot+c49fe6089f295a05e6f8@syzkaller.appspotmail.com
 
-wlan1: Created IBSS using preconfigured BSSID 50:50:50:50:50:50
-wlan1: Creating new IBSS network, BSSID 50:50:50:50:50:50
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 72 at net/mac80211/sta_info.c:529 sta_info_insert_check net/mac80211/sta_info.c:529 [inline]
-WARNING: CPU: 0 PID: 72 at net/mac80211/sta_info.c:529 sta_info_insert_rcu+0x27a/0x2ba0 net/mac80211/sta_info.c:707
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 72 Comm: kworker/u4:3 Not tainted 5.9.0-rc6-syzkaller #0
+RBP: 00007ffee0265520 R08: 0000000000000002 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: ffffffffffffffff
+R13: 0000000000000005 R14: 0000000000000000 R15: 0000000000000000
+general protection fault, probably for non-canonical address 0xdffffc000000000c: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000060-0x0000000000000067]
+CPU: 0 PID: 7451 Comm: syz-executor249 Not tainted 5.9.0-rc6-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: phy4 ieee80211_iface_work
+RIP: 0010:cdev_del+0x22/0x90 fs/char_dev.c:596
+Code: b5 0f 1f 80 00 00 00 00 55 48 89 fd 48 83 ec 08 e8 d3 41 b3 ff 48 8d 7d 64 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 04 84 d2 75 4f 48
+RSP: 0018:ffffc90007f07b10 EFLAGS: 00010207
+RAX: dffffc0000000000 RBX: ffff8880a16f3500 RCX: ffffffff841165ff
+RDX: 000000000000000c RSI: ffffffff81c2fc6d RDI: 0000000000000064
+RBP: 0000000000000000 R08: 0000000000000001 R09: ffffffff8d0b7a67
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff8880a16f3508
+R13: ffff8880a17cd008 R14: ffff8880a6236420 R15: ffff8880a6236278
+FS:  0000000000000000(0000) GS:ffff8880ae400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0288f8a710 CR3: 0000000094f1e000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- panic+0x382/0x7fb kernel/panic.c:231
- __warn.cold+0x20/0x4b kernel/panic.c:600
- report_bug+0x1bd/0x210 lib/bug.c:198
- handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
- exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-RIP: 0010:sta_info_insert_check net/mac80211/sta_info.c:529 [inline]
-RIP: 0010:sta_info_insert_rcu+0x27a/0x2ba0 net/mac80211/sta_info.c:707
-Code: 24 e8 3a 79 b8 f9 0f b6 85 50 ff ff ff 31 ff 83 e0 01 41 89 c7 89 c6 e8 44 75 b8 f9 45 84 ff 0f 84 c5 00 00 00 e8 16 79 b8 f9 <0f> 0b 41 bd ea ff ff ff e8 09 79 b8 f9 48 8b bd 30 ff ff ff e8 ed
-RSP: 0018:ffffc90001017958 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff888093338c00 RCX: ffffffff87bdc51c
-RDX: ffff8880a9394040 RSI: ffffffff87bdc52a RDI: 0000000000000001
-RBP: ffffc90001017aa0 R08: 0000000000000000 R09: ffff88809333925f
-R10: 0000000000000000 R11: 0000000000000000 R12: 00000000500177e9
-R13: ffff8880a8916048 R14: ffff8880a8916000 R15: 0000000000000001
- ieee80211_ibss_finish_sta+0x212/0x390 net/mac80211/ibss.c:592
- ieee80211_ibss_work+0x2c7/0xe80 net/mac80211/ibss.c:1699
- ieee80211_iface_work+0x7d2/0x8f0 net/mac80211/iface.c:1438
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+ tty_unregister_device drivers/tty/tty_io.c:3193 [inline]
+ tty_unregister_device+0x112/0x1b0 drivers/tty/tty_io.c:3188
+ gsmld_detach_gsm drivers/tty/n_gsm.c:2411 [inline]
+ gsmld_close+0xaa/0x260 drivers/tty/n_gsm.c:2480
+ tty_ldisc_close+0x110/0x190 drivers/tty/tty_ldisc.c:489
+ tty_ldisc_kill+0x94/0x150 drivers/tty/tty_ldisc.c:637
+ tty_ldisc_hangup+0x30b/0x680 drivers/tty/tty_ldisc.c:756
+ __tty_hangup.part.0+0x403/0x870 drivers/tty/tty_io.c:625
+ __tty_hangup drivers/tty/tty_io.c:575 [inline]
+ tty_vhangup+0x1d/0x30 drivers/tty/tty_io.c:698
+ pty_close+0x3f5/0x550 drivers/tty/pty.c:79
+ tty_release+0x455/0xf60 drivers/tty/tty_io.c:1679
+ __fput+0x285/0x920 fs/file_table.c:281
+ task_work_run+0xdd/0x190 kernel/task_work.c:141
+ exit_task_work include/linux/task_work.h:25 [inline]
+ do_exit+0xb7d/0x29f0 kernel/exit.c:806
+ do_group_exit+0x125/0x310 kernel/exit.c:903
+ __do_sys_exit_group kernel/exit.c:914 [inline]
+ __se_sys_exit_group kernel/exit.c:912 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:912
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x440018
+Code: Bad RIP value.
+RSP: 002b:00007ffee02654c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000440018
+RDX: 0000000000000000 RSI: 000000000000003c RDI: 0000000000000000
+RBP: 00000000004bfd90 R08: 00000000000000e7 R09: ffffffffffffffd0
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00000000006d2180 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+---[ end trace 98d732d1ef99b6c5 ]---
+RIP: 0010:cdev_del+0x22/0x90 fs/char_dev.c:596
+Code: b5 0f 1f 80 00 00 00 00 55 48 89 fd 48 83 ec 08 e8 d3 41 b3 ff 48 8d 7d 64 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 04 84 d2 75 4f 48
+RSP: 0018:ffffc90007f07b10 EFLAGS: 00010207
+RAX: dffffc0000000000 RBX: ffff8880a16f3500 RCX: ffffffff841165ff
+RDX: 000000000000000c RSI: ffffffff81c2fc6d RDI: 0000000000000064
+RBP: 0000000000000000 R08: 0000000000000001 R09: ffffffff8d0b7a67
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff8880a16f3508
+R13: ffff8880a17cd008 R14: ffff8880a6236420 R15: ffff8880a6236278
+FS:  0000000000000000(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffd722a6000 CR3: 0000000094644000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
 ---
@@ -111,6 +134,5 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 syzbot can test patches for this issue, for details see:
 https://goo.gl/tpsmEJ#testing-patches
