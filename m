@@ -2,126 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 167862775B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3117D2775B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728516AbgIXPqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 11:46:12 -0400
-Received: from conuserg-09.nifty.com ([210.131.2.76]:42788 "EHLO
-        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728139AbgIXPqL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 11:46:11 -0400
-Received: from oscar.flets-west.jp (softbank126090211135.bbtec.net [126.90.211.135]) (authenticated)
-        by conuserg-09.nifty.com with ESMTP id 08OFjmFE031136;
-        Fri, 25 Sep 2020 00:45:48 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 08OFjmFE031136
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1600962349;
-        bh=2/84ainX+exPuFKLItFERxz7wYFsqiAakLmaR16zSEE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=sUUURivfHeDm3Lj17zEQvc3dpnGqHwk8yYFOMfAnzwDIb4H1KuZevs0sn49a++o6x
-         fiPyiRgTgnKCZrzdxkxdx65Zab+uJzzC/Gw//PF7L1DtTSg4Jb60NUPvQt3UEzTyKB
-         uwzNOqmS837TGk1fJddSuNuB6YIrkndJe0Z813ch7suIULLfAUv3mYUhH91MaWMyXB
-         GXudWqvvOIlauZEZwgZxVqgxlqZj34slviv49d+6w7y/UcZ/TIEB5cRlRYXztuHeSi
-         fUBycW6U3WvArCaG+Gk+s1tA4ETsuGIMtoGNiK92cjiTckV46neHqiuOymzXixsBhQ
-         TWIFMD1Tb9azA==
-X-Nifty-SrcIP: [126.90.211.135]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] kbuild: split the build log of kallsyms
-Date:   Fri, 25 Sep 2020 00:45:46 +0900
-Message-Id: <20200924154546.275123-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        id S1728503AbgIXPpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 11:45:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55802 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728139AbgIXPpx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 11:45:53 -0400
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 48A352220C;
+        Thu, 24 Sep 2020 15:45:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600962352;
+        bh=HpgA4t7U4Z9EnRNWOupT0nHkmf0YJ69c11DT/ilOQkE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DnOAY6GRHn6dLZz5fydeqEsHe0EzdNDeZFd0K5h2uaQXZHwyLUmZ+LXTxOs/tSiQy
+         TSKXqWcMOeGZbfaQpSsE/LOUCLmfOeJWCnWcqsOvztQJZYu1obLZ8v1cLcvKkPBb9b
+         tU0hjvJw3t7T0tDdf2fyG3mvW/pTmeDezPFpqgBI=
+Date:   Thu, 24 Sep 2020 08:45:50 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Mike Snitzer <snitzer@redhat.com>
+Cc:     Satya Tangirala <satyat@google.com>, Jens Axboe <axboe@kernel.dk>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dm-devel@redhat.com, Alasdair Kergon <agk@redhat.com>
+Subject: Re: [PATCH 2/3] dm: add support for passing through inline crypto
+ support
+Message-ID: <20200924154550.GA1266@sol.localdomain>
+References: <20200909234422.76194-1-satyat@google.com>
+ <20200909234422.76194-3-satyat@google.com>
+ <20200922003255.GC32959@sol.localdomain>
+ <20200924011438.GD10500@redhat.com>
+ <20200924071721.GA1883346@google.com>
+ <20200924134649.GB13849@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924134649.GB13849@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the build log shows KSYM + object name.
+On Thu, Sep 24, 2020 at 09:46:49AM -0400, Mike Snitzer wrote:
+> > > Can you help me better understand the expected consumer of this code?
+> > > If you have something _real_ please be explicit.  It makes justifying
+> > > supporting niche code like this more tolerable.
+> >
+> > So the motivation for this code was that Android currently uses a device
+> > mapper target on top of a phone's disk for user data. On many phones,
+> > that disk has inline encryption support, and it'd be great to be able to
+> > make use of that. The DM device configuration isn't changed at runtime.
+> 
+> OK, which device mapper target is used?
 
-Precisely speaking, kallsyms generates a .S file and then the compiler
-compiles it into a .o file. Split the build log into two.
+There are several device-mapper targets that Android can require for the
+"userdata" partition -- potentially in a stack of more than one:
 
-[Before]
+dm-linear: required for Dynamic System Updates
+(https://developer.android.com/topic/dsu)
 
-  GEN     modules.builtin
-  LD      .tmp_vmlinux.kallsyms1
-  KSYM    .tmp_vmlinux.kallsyms1.o
-  LD      .tmp_vmlinux.kallsyms2
-  KSYM    .tmp_vmlinux.kallsyms2.o
-  LD      vmlinux
+dm-bow: required for User Data Checkpoints on ext4
+(https://source.android.com/devices/tech/ota/user-data-checkpoint)
+(https://patchwork.kernel.org/patch/10838743/)
 
-[After]
+dm-default-key: required for metadata encryption
+(https://source.android.com/security/encryption/metadata)
 
-  GEN     modules.builtin
-  LD      .tmp_vmlinux.kallsyms1
-  KSYMS   .tmp_vmlinux.kallsyms1.S
-  AS      .tmp_vmlinux.kallsyms1.o
-  LD      .tmp_vmlinux.kallsyms2
-  KSYMS   .tmp_vmlinux.kallsyms2.S
-  AS      .tmp_vmlinux.kallsyms2.o
-  LD      vmlinux
+We're already carrying this patchset in the Android common kernels since late
+last year, as it's required for inline encryption to work when any of the above
+is used.  So this is something that is needed and is already being used.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+Now, you don't have to "count" dm-bow and dm-default-key since they aren't
+upstream; that leaves dm-linear.  But hopefully the others at least show that
+architecturally, dm-linear is just the initial use case, and this patchset also
+makes it easy to pass through inline crypto on any other target that can support
+it (basically, anything that doesn't change the data itself as it goes through).
 
- scripts/link-vmlinux.sh | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
-
-diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-index e6e2d9e5ff48..d9bcf36a1583 100755
---- a/scripts/link-vmlinux.sh
-+++ b/scripts/link-vmlinux.sh
-@@ -169,10 +169,9 @@ gen_btf()
- 	printf '\1' | dd of=${2} conv=notrunc bs=1 seek=16 status=none
- }
- 
--# Create ${2} .o file with all symbols from the ${1} object file
-+# Create ${2} .S file with all symbols from the ${1} object file
- kallsyms()
- {
--	info KSYM ${2}
- 	local kallsymopt;
- 
- 	if [ -n "${CONFIG_KALLSYMS_ALL}" ]; then
-@@ -187,13 +186,8 @@ kallsyms()
- 		kallsymopt="${kallsymopt} --base-relative"
- 	fi
- 
--	local aflags="${KBUILD_AFLAGS} ${KBUILD_AFLAGS_KERNEL}               \
--		      ${NOSTDINC_FLAGS} ${LINUXINCLUDE} ${KBUILD_CPPFLAGS}"
--
--	local afile="`basename ${2} .o`.S"
--
--	${NM} -n ${1} | scripts/kallsyms ${kallsymopt} > ${afile}
--	${CC} ${aflags} -c -o ${2} ${afile}
-+	info KSYMS ${2}
-+	${NM} -n ${1} | scripts/kallsyms ${kallsymopt} > ${2}
- }
- 
- # Perform one step in kallsyms generation, including temporary linking of
-@@ -203,9 +197,15 @@ kallsyms_step()
- 	kallsymso_prev=${kallsymso}
- 	kallsyms_vmlinux=.tmp_vmlinux.kallsyms${1}
- 	kallsymso=${kallsyms_vmlinux}.o
-+	kallsyms_S=${kallsyms_vmlinux}.S
- 
- 	vmlinux_link ${kallsyms_vmlinux} "${kallsymso_prev}" ${btf_vmlinux_bin_o}
--	kallsyms ${kallsyms_vmlinux} ${kallsymso}
-+	kallsyms ${kallsyms_vmlinux} ${kallsyms_S}
-+
-+	info AS ${kallsyms_S}
-+	${CC} ${NOSTDINC_FLAGS} ${LINUXINCLUDE} ${KBUILD_CPPFLAGS} \
-+	      ${KBUILD_AFLAGS} ${KBUILD_AFLAGS_KERNEL} \
-+	      -c -o ${kallsymso} ${kallsyms_S}
- }
- 
- # Create map file with all symbols from ${1}
--- 
-2.25.1
-
+- Eric
