@@ -2,91 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A82C277217
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D5027721B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:26:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727984AbgIXNZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 09:25:47 -0400
-Received: from mailgw02.mediatek.com ([216.200.240.185]:22843 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727846AbgIXNZq (ORCPT
+        id S1727998AbgIXN0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 09:26:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727846AbgIXN0I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 09:25:46 -0400
-X-UUID: b3e13f1d512a445aa0a2469b08f363b8-20200924
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=13CQbbbCVICRMofyq52vrwixbhSdHJNGZxZmv9+sfFk=;
-        b=uKdAiTCcp84WiecPLMb8VJ4qqgSK3b1CbHzaTPHk0YiSpmKIGNFrmX4OcU4sb+/ZcX0SOgBPTo0kaB0+v/DIeCLXJUQltLi9kDrzY2FEaiqj/yMdAE2Y2Tr/219fqF6b9R+x/NBpNNZELXZmqS5Xy5FDbZI9uljg0j0rSUcgsck=;
-X-UUID: b3e13f1d512a445aa0a2469b08f363b8-20200924
-Received: from mtkcas66.mediatek.inc [(172.29.193.44)] by mailgw02.mediatek.com
-        (envelope-from <landen.chao@mediatek.com>)
-        (musrelay.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1637863272; Thu, 24 Sep 2020 05:25:44 -0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- MTKMBS62N1.mediatek.inc (172.29.193.41) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 24 Sep 2020 06:25:41 -0700
-Received: from [172.21.84.99] (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 24 Sep 2020 21:25:32 +0800
-Message-ID: <1600953934.19244.2.camel@mtksdccf07>
-Subject: Re: [PATCH v2] net: dsa: mt7530: Add some return-value checks
-From:   Landen Chao <landen.chao@mediatek.com>
-To:     Alex Dewar <alex.dewar90@gmail.com>
-CC:     Sean Wang <Sean.Wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
-        "Vivien Didelot" <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Thu, 24 Sep 2020 21:25:34 +0800
-In-Reply-To: <9db38be8-9926-b74b-c860-018486b17f3a@gmail.com>
-References: <1600327978.11746.22.camel@mtksdccf07>
-         <20200919192809.29120-1-alex.dewar90@gmail.com>
-         <1600949604.11746.27.camel@mtksdccf07>
-         <9db38be8-9926-b74b-c860-018486b17f3a@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Thu, 24 Sep 2020 09:26:08 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E28ECC0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:26:07 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id z23so4405505ejr.13
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:26:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XexnDGcXtnYzxSDXXL3LsxUhuAmen63As9oxJV/uz9Q=;
+        b=kgTjvI+notSvcV1G6DlP/YbBRTYIoc9l+xpy2LnM2CAUVSj4ezg/9x6dqOZ6wnrq94
+         9MtdtxN11ZInl93BO1eYXIug84nACv74HI0Bou42h/R6ly+hJgJucBtFwoi55wT0shSk
+         LFDbcbXi7f8wKGj9oWgR9a4BMZ8us74xQRmaL0jhunAT0o6ZPyKIS1cQ5obDH5ZVDNK1
+         i/HHctQ+fqdd3KkbVaoKIPbGFGuQf7QfUZZX4jKh5f3qRC4qyq1s4k53xIqvXVLpHDQn
+         oRsIhLPdVxLK/zWXUj1yCexDQd9E2st1Mz0TEywAu4kFD7takgrMpk5THLnYgtq/3ckb
+         3sAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XexnDGcXtnYzxSDXXL3LsxUhuAmen63As9oxJV/uz9Q=;
+        b=ud/ZEqEI3QtQ0EVSnfXfWbNKMmBjpZfAx9r6miHrUaxtl3pi1AnLb4tOhGMPblpu2q
+         hJ/ZsK5/uO0Iltje1BAJY1FwdRLIMTJqkz7NpZSfticGBslZqgvJvjcaTa64+WcXfIzs
+         54ErqLZT4zmP3b/dn/XJod5K2xiL3ZgvyL0MOWcaz76n8GuJ+thT6Ls7NqRPeVKDpOwt
+         7ujGUfDVZefCFPWanFagvM+m7KlQtZ0fZ+Khsh53ryQPlaRwr+NfJGC26PjsfP1YgyCb
+         +Zulb7TFc6qIPZc0LNPzG1oEaxUhGrjei9iVwKMB8FPHyjjk4UNxjPYt6Skq/eEkzeeE
+         lv3w==
+X-Gm-Message-State: AOAM531Zz7aRHMK5RD+YjBmJ/JkIJQb2AP2lMPfi+jKV1oGbAm4dtGlB
+        Wu2p5T0fhUJgu8Cw1N1dY3Lz8DTYLcljxXkXeJmMfQ==
+X-Google-Smtp-Source: ABdhPJzL25q1kuPvZnzXILD9yCjuVJJoFdPmKYvOCzgBP1DPA6gPD4TIEnBP9L8hXZW3TjX9vVurhdi3YXx/TqF6yN8=
+X-Received: by 2002:a17:906:f11:: with SMTP id z17mr1101533eji.88.1600953966583;
+ Thu, 24 Sep 2020 06:26:06 -0700 (PDT)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20200916094952.458003-1-jonathanh@nvidia.com> <20200916094952.458003-4-jonathanh@nvidia.com>
+In-Reply-To: <20200916094952.458003-4-jonathanh@nvidia.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Thu, 24 Sep 2020 15:25:55 +0200
+Message-ID: <CAMpxmJVFtx4kZOvP5UkYL1U_1UJn_FGabBZdE7cdMDxQAPoSwA@mail.gmail.com>
+Subject: Re: [PATCH V2 3/5] misc: eeprom: at24: Support custom device names
+ for AT24 EEPROMs
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-tegra@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIwLTA5LTI0IGF0IDE0OjExICswMTAwLCBBbGV4IERld2FyIHdyb3RlOg0KPiBP
-biAyMDIwLTA5LTI0IDEzOjEzLCBMYW5kZW4gQ2hhbyB3cm90ZToNCj4gPiBIaSBBbGV4LA0KPiA+
-DQo+ID4gVGhhbmtzIGZvciB5b3VyIHBhdGNoLiBCeSBsaW51eC9zY3JpcHRzL2NoZWNrcGF0Y2gu
-cGwNCj4gPg0KPiA+IE9uIFN1biwgMjAyMC0wOS0yMCBhdCAwMzoyOCArMDgwMCwgQWxleCBEZXdh
-ciB3cm90ZToNCj4gPiBbLi5dDQo+ID4+IEBAIC0xNjMxLDkgKzE2MzUsMTEgQEAgbXQ3NTMwX3Nl
-dHVwKHN0cnVjdCBkc2Ffc3dpdGNoICpkcykNCj4gPj4gICAJCW10NzUzMF9ybXcocHJpdiwgTVQ3
-NTMwX1BDUl9QKGkpLCBQQ1JfTUFUUklYX01BU0ssDQo+ID4+ICAgCQkJICAgUENSX01BVFJJWF9D
-TFIpOw0KPiA+PiAgIA0KPiA+PiAtCQlpZiAoZHNhX2lzX2NwdV9wb3J0KGRzLCBpKSkNCj4gPj4g
-LQkJCW10NzUzeF9jcHVfcG9ydF9lbmFibGUoZHMsIGkpOw0KPiA+PiAtCQllbHNlDQo+ID4+ICsJ
-CWlmIChkc2FfaXNfY3B1X3BvcnQoZHMsIGkpKSB7DQo+ID4+ICsJCQlyZXQgPSBtdDc1M3hfY3B1
-X3BvcnRfZW5hYmxlKGRzLCBpKTsNCj4gPj4gKwkJCWlmIChyZXQpDQo+ID4+ICsJCQkJcmV0dXJu
-IHJldDsNCj4gPj4gKwkJfSBlbHNlDQo+ID4+ICAgCQkJbXQ3NTMwX3BvcnRfZGlzYWJsZShkcywg
-aSk7DQo+ID4gQ0hFQ0s6IGJyYWNlcyB7fSBzaG91bGQgYmUgdXNlZCBvbiBhbGwgYXJtcyBvZiB0
-aGlzIHN0YXRlbWVudA0KPiA+IENIRUNLOiBVbmJhbGFuY2VkIGJyYWNlcyBhcm91bmQgZWxzZSBz
-dGF0ZW1lbnQNCj4gPj4gICANCj4gPj4gICAJCS8qIEVuYWJsZSBjb25zaXN0ZW50IGVncmVzcyB0
-YWcgKi8NCj4gPj4gQEAgLTE3ODUsOSArMTc5MSwxMSBAQCBtdDc1MzFfc2V0dXAoc3RydWN0IGRz
-YV9zd2l0Y2ggKmRzKQ0KPiA+PiAgIA0KPiA+PiAgIAkJbXQ3NTMwX3NldChwcml2LCBNVDc1MzFf
-REJHX0NOVChpKSwgTVQ3NTMxX0RJU19DTFIpOw0KPiA+PiAgIA0KPiA+PiAtCQlpZiAoZHNhX2lz
-X2NwdV9wb3J0KGRzLCBpKSkNCj4gPj4gLQkJCW10NzUzeF9jcHVfcG9ydF9lbmFibGUoZHMsIGkp
-Ow0KPiA+PiAtCQllbHNlDQo+ID4+ICsJCWlmIChkc2FfaXNfY3B1X3BvcnQoZHMsIGkpKSB7DQo+
-ID4+ICsJCQlyZXQgPSBtdDc1M3hfY3B1X3BvcnRfZW5hYmxlKGRzLCBpKTsNCj4gPj4gKwkJCWlm
-IChyZXQpDQo+ID4+ICsJCQkJcmV0dXJuIHJldDsNCj4gPj4gKwkJfSBlbHNlDQo+ID4+ICAgCQkJ
-bXQ3NTMwX3BvcnRfZGlzYWJsZShkcywgaSk7DQo+ID4gQ0hFQ0s6IGJyYWNlcyB7fSBzaG91bGQg
-YmUgdXNlZCBvbiBhbGwgYXJtcyBvZiB0aGlzIHN0YXRlbWVudA0KPiA+IENIRUNLOiBVbmJhbGFu
-Y2VkIGJyYWNlcyBhcm91bmQgZWxzZSBzdGF0ZW1lbnQNCj4gPg0KPiA+IFsuLl0NCj4gPiByZWdh
-cmRzIGxhbmRlbg0KPiBIaSBMYW5kZW4sDQo+IA0KPiBTb3JyeSBhYm91dCB0aGlzLi4uIEkgdXN1
-YWxseSBydW4gY2hlY2twYXRjaCBvdmVyIG15IHBhdGNoZXMuIFdvdWxkIHlvdSANCj4gbGlrZSBt
-ZSB0byBzZW5kIGEgc2VwYXJhdGUgZml4IG9yIGEgdjM/DQo+IA0KPiBCZXN0LA0KPiBBbGV4DQpI
-aSBBbGV4LA0KDQpCZWNhdXNlIHYyIGhhcyBub3QgYmVlbiBtZXJnZWQgeWV0LCBjb3VsZCB5b3Ug
-aGVscCB0byBmaXggaXQgaW4gdjM/DQoNCnJlZ2FyZHMgbGFuZGVuDQoNCg==
+On Wed, Sep 16, 2020 at 11:50 AM Jon Hunter <jonathanh@nvidia.com> wrote:
+>
+> By using the label property, a more descriptive name can be populated
+> for AT24 EEPROMs NVMEM device. Update the AT24 driver to check to see
+> if the label property is present and if so, use this as the name for
+> NVMEM device. Please note that when the 'label' property is present for
+> the AT24 EEPROM, we do not want the NVMEM driver to append the 'devid'
+> to the name and so the nvmem_config.id is initialised to
+> NVMEM_DEVID_NONE.
+>
+> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+> ---
 
+Queued for v5.10, thanks!
+
+Bartosz
