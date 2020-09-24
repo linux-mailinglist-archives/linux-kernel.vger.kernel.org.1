@@ -2,140 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4124227778B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 19:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84D44277794
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 19:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728195AbgIXRQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 13:16:37 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:42244 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726915AbgIXRQg (ORCPT
+        id S1728639AbgIXRTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 13:19:17 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:49960 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727216AbgIXRTR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 13:16:36 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08OHDepu002825;
-        Thu, 24 Sep 2020 17:16:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=amW70FmbGDogjo5Q8xTnEpZcxgKAVRej5X76hhQrk08=;
- b=dboR68KZ/BcroeEjfAzp60eEl74y5h6X+nzkEQot63USMXv27x3ox9I2t5JS6S2UsrDE
- k7uTPCk87Y1Zj3xLaFzzZnGH7Cn8F6BAKRjG0gOcNqKm5F9JrXEjAI5znWyZRVWqM1fQ
- RvkxJyg3yYY0WqUOzcSchCR9/Ekkd/b8M1nK+Y1GAaYgBwAo1S53EoHdA8lNfSDOgJLD
- VjfZBBRSyOcWHcAT6dyN0tStnEwucsuMJHp11C031ae9GX1WNJcQWyBepJj6LAR0Fi70
- 2SwxK5xjWFRAW68OPW0ubuucsqLN1AtsQdg75E37mpkLyLJLDX9zaRUrmJKByLfCiD18 HQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 33qcpu6gbk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 24 Sep 2020 17:16:21 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08OHBUvr019516;
-        Thu, 24 Sep 2020 17:16:20 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 33nux34c7v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 24 Sep 2020 17:16:20 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08OHG8rn012734;
-        Thu, 24 Sep 2020 17:16:08 GMT
-Received: from [10.74.108.139] (/10.74.108.139)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 24 Sep 2020 10:16:08 -0700
-Subject: Re: [PATCH] Only allow to set crash_kexec_post_notifiers on boot time
-To:     Michael Kelley <mikelley@microsoft.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Dave Young <dyoung@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "bhe@redhat.com" <bhe@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
-        Eric DeVolder <eric.devolder@oracle.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Masami Hiramatsu <masami.hiramatsu.pt@hitachi.com>,
-        HATAYAMA Daisuke <d.hatayama@jp.fujitsu.com>
-References: <20200918032546.GA4180@dhcp-128-65.nay.redhat.com>
- <20200918174743.0994c59f058451948837dcb6@linux-foundation.org>
- <20200921201811.GB3437@char.us.oracle.com>
- <87v9g6fuub.fsf@x220.int.ebiederm.org>
- <20200923024329.GB3642@dhcp-128-65.nay.redhat.com>
- <20200923154825.GC7635@char.us.oracle.com>
- <MW2PR2101MB10521373DD95F5AF014254DDD7390@MW2PR2101MB1052.namprd21.prod.outlook.com>
- <874knndtvo.fsf@x220.int.ebiederm.org>
- <MW2PR2101MB1052ED1C8953135A58276F04D7390@MW2PR2101MB1052.namprd21.prod.outlook.com>
-From:   boris.ostrovsky@oracle.com
-Organization: Oracle Corporation
-Message-ID: <4f964490-7464-0071-db38-4b16d665503e@oracle.com>
-Date:   Thu, 24 Sep 2020 13:16:04 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.2.2
+        Thu, 24 Sep 2020 13:19:17 -0400
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 08OHIv4W025975;
+        Fri, 25 Sep 2020 02:18:58 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 08OHIv4W025975
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1600967938;
+        bh=BfAZ+Kz7r7qkfo61OgHPAKHCGchfZtW7vHgqjvU1wtA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=gzUzODYzGZROgaPKme/ZxGF1T1p2u0+Gk0Icanw35xumvgnhXNEPvfTneb0XOTaKO
+         R1bxDdSTcjE4who+FJRA8ue3SKIfB8kFsfRWtRY87QNBsbjSq6zL4ZcD4wu65rZJ2M
+         D9VYNlJiDP1uOetE1wCmPD//IiwTTQKH1IQb6Mah5RuLd0YJsbt5fA1UPXrmzTFvP6
+         OTpXsPuV9FIEUk1knJ4K37DMqrSy2xuhxOzGEcQRetTWRsLmDQ2rKvk/PT9EjEJNI2
+         +jjAZBjkqAHiVKIaieOAxKSPqrPurdeQL2WUFIE2J8oVPfH7tVmFEZiDeVotu7elbo
+         /U7x4O2LKHWNA==
+X-Nifty-SrcIP: [209.85.216.54]
+Received: by mail-pj1-f54.google.com with SMTP id md22so73093pjb.0;
+        Thu, 24 Sep 2020 10:18:58 -0700 (PDT)
+X-Gm-Message-State: AOAM530rVAYnEPqRf/ygvdKIWiKOpuDZLfbmUDigtkHHi/LAeSnzRWHr
+        9zqXB46lXAzVISa8R0rBovf/D/vuPaGWUCm1I/8=
+X-Google-Smtp-Source: ABdhPJyppqf08NAt+YyrDOfGu2DQLKWibZWlzvtz71d9DDV+hjcfQ33wSQ3LVzss7uz/MdI4Ehb6/qbdxTyg9shqbC4=
+X-Received: by 2002:a17:90b:208:: with SMTP id fy8mr187544pjb.153.1600967937296;
+ Thu, 24 Sep 2020 10:18:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <MW2PR2101MB1052ED1C8953135A58276F04D7390@MW2PR2101MB1052.namprd21.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9754 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 adultscore=0
- bulkscore=0 mlxlogscore=999 phishscore=0 suspectscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009240127
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9754 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
- adultscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0 priorityscore=1501
- phishscore=0 spamscore=0 malwarescore=0 clxscore=1011 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009240127
+References: <20200922155341.17906-1-James.Bottomley@HansenPartnership.com> <20200922155341.17906-2-James.Bottomley@HansenPartnership.com>
+In-Reply-To: <20200922155341.17906-2-James.Bottomley@HansenPartnership.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 25 Sep 2020 02:18:20 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATg2MG4xSoHiEa5CvB0x+LYS9ZOGKWz0ytBhBRcvCogoQ@mail.gmail.com>
+Message-ID: <CAK7LNATg2MG4xSoHiEa5CvB0x+LYS9ZOGKWz0ytBhBRcvCogoQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] Makefile.build: Add an explicit error for missing
+ ASN.1 compiler
+To:     James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 9/24/20 12:43 PM, Michael Kelley wrote:
-> From: Eric W. Biederman <ebiederm@xmission.com> Sent: Thursday, September 24, 2020 9:26 AM
->> Michael Kelley <mikelley@microsoft.com> writes:
->>
->>>>> Added Hyper-V people and people who created the param, it is below
->>>>> commit, I also want to remove it if possible, let's see how people
->>>>> think, but the least way should be to disable the auto setting in both systemd
->>>>> and kernel:
->>> Hyper-V uses a notifier to inform the host system that a Linux VM has
->>> panic'ed.  Informing the host is particularly important in a public cloud
->>> such as Azure so that the cloud software can alert the customer, and can
->>> track cloud-wide reliability statistics.   Whether a kdump is taken is controlled
->>> entirely by the customer and how he configures the VM, and we want
->>> the host to be informed either way.
->> Why?
->>
->> Why does the host care?
->> Especially if the VM continues executing into a kdump kernel?
-> The host itself doesn't care.  But the host is a convenient out-of-band
-> channel for recording that a panic has occurred and to collect basic data
-> about the panic.  This out-of-band channel is then used to notify the end
-> customer that his VM has panic'ed.  Sure, the customer should be running
-> his own monitoring software, but customers don't always do what they
-> should.  Equally important, the out-of-band channel allows the cloud
-> infrastructure software to notice trends, such as that the rate of Linux
-> panics has increased, and that perhaps there is a cloud problem that
-> should be investigated.
-
-
-In many cases (especially in cloud environment) your dump device is remote (e.g. iscsi) and kdump sometimes (often?) gets stuck because of connectivity issues (which could be cause of the panic in the first place). So it is quite desirable to inform the infrastructure that the VM is on its way out without waiting for kdump to complete.
-
-
+On Wed, Sep 23, 2020 at 12:55 AM James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
 >
->> Further like I have mentioned everytime something like this has come up
->> a call on the kexec on panic code path should be a direct call (That can
->> be audited) not something hidden in a notifier call chain (which can not).
->>
+> The current dependency rules mean that the build breaks if the ASN.1
+> compiler is required but CONFIG_ASN1 isn't set.  However, it isn't
+> obvious from the error message about missing files what the actual
+> problem is, so make the build system give an explicit error.
+>
+> Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
+> ---
 
-We btw already have a direct call from panic() to kmsg_dump() which is indirectly controlled by crash_kexec_post_notifiers, and it would also be preferable to be able to call it before kdump as well.
+Applied to linux-kbuild.
+Thanks.
 
 
--boris
+>  scripts/Makefile.build | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+> index a467b9323442..bca7003beac8 100644
+> --- a/scripts/Makefile.build
+> +++ b/scripts/Makefile.build
+> @@ -382,6 +382,11 @@ quiet_cmd_asn1_compiler = ASN.1   $(basename $@).[ch]
+>        cmd_asn1_compiler = $(objtree)/scripts/asn1_compiler $< \
+>                                 $(basename $@).c $(basename $@).h
+>
+> +ifndef CONFIG_ASN1
+> +$(objtree)/scripts/asn1_compiler:
+> +       $(error CONFIG_ASN1 must be defined for the asn1_compiler)
+> +endif
+> +
+>  $(obj)/%.asn1.c $(obj)/%.asn1.h: $(src)/%.asn1 $(objtree)/scripts/asn1_compiler
+>         $(call cmd,asn1_compiler)
+>
+> --
+> 2.26.2
+>
 
 
-> The use case I describe has no particular requirement that it be
-> implemented via the notifier call chain.  If there's a better way to run
-> some out-of-band notification code on all Linux panics regardless of
-> whether a kdump is taken, we're open to such an alternative.
+-- 
+Best Regards
+Masahiro Yamada
