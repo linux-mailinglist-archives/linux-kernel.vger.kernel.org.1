@@ -2,82 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EB66276F16
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 12:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85ACD276F19
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 12:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727407AbgIXKxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 06:53:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726796AbgIXKxI (ORCPT
+        id S1726668AbgIXKyz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 24 Sep 2020 06:54:55 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:27561 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726516AbgIXKyz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 06:53:08 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CCE9C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 03:53:08 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kLOs0-00062S-SC; Thu, 24 Sep 2020 12:53:00 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kLOrz-0005Ch-6e; Thu, 24 Sep 2020 12:52:59 +0200
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Qiang Zhao <qiang.zhao@nxp.com>,
-        Bruno Thomsen <bruno.thomsen@gmail.com>
-Cc:     linux-rtc@vger.kernel.org, a.zummo@towertech.it,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        kernel@pengutronix.de, Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 2/2] [RFC] rtc: pcf2127: only use watchdog when explicitly available
-Date:   Thu, 24 Sep 2020 12:52:56 +0200
-Message-Id: <20200924105256.18162-3-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200924105256.18162-1-u.kleine-koenig@pengutronix.de>
-References: <20200924074715.GT9675@piout.net>
- <20200924105256.18162-1-u.kleine-koenig@pengutronix.de>
+        Thu, 24 Sep 2020 06:54:55 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id uk-mta-8-FcGvPxsNMYiYtlI_mOjfwA-1;
+ Thu, 24 Sep 2020 11:54:51 +0100
+X-MC-Unique: FcGvPxsNMYiYtlI_mOjfwA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 24 Sep 2020 11:54:50 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 24 Sep 2020 11:54:50 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Coiby Xu' <coiby.xu@gmail.com>,
+        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>
+CC:     Vaibhav Agarwal <vaibhav.sr@gmail.com>,
+        Mark Greer <mgreer@animalcreek.com>,
+        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Jaroslav Kysela" <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        "moderated list:GREYBUS SUBSYSTEM" <greybus-dev@lists.linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:SOUND" <alsa-devel@alsa-project.org>
+Subject: RE: [PATCH 3/3] [PATCH] staging: greybus: __u8 is sufficient for
+ snd_ctl_elem_type_t and snd_ctl_elem_iface_t
+Thread-Topic: [PATCH 3/3] [PATCH] staging: greybus: __u8 is sufficient for
+ snd_ctl_elem_type_t and snd_ctl_elem_iface_t
+Thread-Index: AQHWklx17fnZOC5vd0GG3zjgQ4eUS6l3nRcQ
+Date:   Thu, 24 Sep 2020 10:54:50 +0000
+Message-ID: <0175c477851243baa8a92177667d6312@AcuMS.aculab.com>
+References: <20200924102039.43895-1-coiby.xu@gmail.com>
+ <20200924102039.43895-3-coiby.xu@gmail.com>
+In-Reply-To: <20200924102039.43895-3-coiby.xu@gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Most boards using the pcf2127 chip (in my bubble) don't make use of the
-watchdog functionality and the respective output is not connected. The
-effect on such a board is that there is a watchdog device provided that
-doesn't work.
+From: Coiby Xu
+> Sent: 24 September 2020 11:21
+> Use __8 to replace int and remove the unnecessary __bitwise type attribute.
+> 
+> Found by sparse,
+...
+> diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+> index 535a7229e1d9..8e71a95644ab 100644
+> --- a/include/uapi/sound/asound.h
+> +++ b/include/uapi/sound/asound.h
+> @@ -950,7 +950,7 @@ struct snd_ctl_card_info {
+>  	unsigned char components[128];	/* card components / fine identification, delimited with one
+> space (AC97 etc..) */
+>  };
+> 
+> -typedef int __bitwise snd_ctl_elem_type_t;
+> +typedef __u8 snd_ctl_elem_type_t;
+>  #define	SNDRV_CTL_ELEM_TYPE_NONE	((__force snd_ctl_elem_type_t) 0) /* invalid */
+>  #define	SNDRV_CTL_ELEM_TYPE_BOOLEAN	((__force snd_ctl_elem_type_t) 1) /* boolean type */
+>  #define	SNDRV_CTL_ELEM_TYPE_INTEGER	((__force snd_ctl_elem_type_t) 2) /* integer type */
 
-So only register the watchdog if the device tree has a "has-watchdog"
-property.
+WTF is all that about anyway??
+What is wrong with:
+#define	SNDRV_CTL_ELEM_TYPE_NONE	0u /* invalid */
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/rtc/rtc-pcf2127.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+	David
 
-diff --git a/drivers/rtc/rtc-pcf2127.c b/drivers/rtc/rtc-pcf2127.c
-index 5b1f1949b5e5..8bd89d641578 100644
---- a/drivers/rtc/rtc-pcf2127.c
-+++ b/drivers/rtc/rtc-pcf2127.c
-@@ -340,7 +340,8 @@ static int pcf2127_watchdog_init(struct device *dev, struct pcf2127 *pcf2127)
- 	u32 wdd_timeout;
- 	int ret;
- 
--	if (!IS_ENABLED(CONFIG_WATCHDOG))
-+	if (!IS_ENABLED(CONFIG_WATCHDOG) ||
-+	    !device_property_read_bool(dev, "has-watchdog"))
- 		return 0;
- 
- 	pcf2127->wdd.parent = dev;
--- 
-2.28.0
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
