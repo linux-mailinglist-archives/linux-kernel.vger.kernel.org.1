@@ -2,41 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 698AE277884
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 20:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB21A27787F
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 20:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728748AbgIXSaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 14:30:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46538 "EHLO mail.kernel.org"
+        id S1728737AbgIXS3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 14:29:02 -0400
+Received: from mga04.intel.com ([192.55.52.120]:48021 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728264AbgIXSa3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 14:30:29 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BBCB42311E;
-        Thu, 24 Sep 2020 18:30:27 +0000 (UTC)
-Date:   Thu, 24 Sep 2020 14:30:25 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michel Lespinasse <walken@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        linux-mm <linux-mm@kvack.org>, Ingo Molnar <mingo@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Subject: Re: [PATCH 1/2] tracepoints: Add helper to test if tracepoint is
- enabled in a header
-Message-ID: <20200924143025.58dc3c1f@gandalf.local.home>
-In-Reply-To: <2006335081.68212.1600969345189.JavaMail.zimbra@efficios.com>
-References: <20200924170928.466191266@goodmis.org>
-        <20200924171846.993048030@goodmis.org>
-        <2006335081.68212.1600969345189.JavaMail.zimbra@efficios.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728648AbgIXS3C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 14:29:02 -0400
+IronPort-SDR: 3yHXE7IWj/mNP2XtIecF696qX/sC2D8FeHqmLOE4DXhANdI7BE9u3JAhmAR0loOGNXrI5eMDxu
+ OXlrALCGD9Qw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="158685276"
+X-IronPort-AV: E=Sophos;i="5.77,298,1596524400"; 
+   d="scan'208";a="158685276"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 11:29:01 -0700
+IronPort-SDR: QXlCgJfZs4NQkVasYkmAuphEPC/dg9mtM1psTJODac5uq50sWC7/wkE/AoLsNbcbtEeyi2hQ5f
+ p9K5dySYZ1Ww==
+X-IronPort-AV: E=Sophos;i="5.77,298,1596524400"; 
+   d="scan'208";a="305931568"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 11:29:01 -0700
+Date:   Thu, 24 Sep 2020 11:31:07 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Jacob Pan <jacob.pan.linux@gmail.com>,
+        iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>, Wu Hao <hao.wu@intel.com>,
+        Yi Sun <yi.y.sun@intel.com>, jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH v9 3/7] iommu/uapi: Introduce enum type for PASID data
+ format
+Message-ID: <20200924113107.75379e6e@jacob-builder>
+In-Reply-To: <20200924084015.GC27174@8bytes.org>
+References: <1599861476-53416-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1599861476-53416-4-git-send-email-jacob.jun.pan@linux.intel.com>
+        <20200918094450.GP31590@8bytes.org>
+        <20200918101108.672c2f5a@jacob-builder>
+        <20200924084015.GC27174@8bytes.org>
+Organization: OTC
+X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -44,84 +60,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Sep 2020 13:42:25 -0400 (EDT)
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+Hi Joerg,
 
-> > Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> > ---
-> > Documentation/trace/tracepoints.rst | 25 ++++++++++++++++++++++
-> > include/linux/tracepoint-defs.h     | 33 +++++++++++++++++++++++++++++
-> > 2 files changed, 58 insertions(+)
-> > 
-> > diff --git a/Documentation/trace/tracepoints.rst
-> > b/Documentation/trace/tracepoints.rst
-> > index 6e3ce3bf3593..833d39ee1c44 100644
-> > --- a/Documentation/trace/tracepoints.rst
-> > +++ b/Documentation/trace/tracepoints.rst
-> > @@ -146,3 +146,28 @@ with jump labels and avoid conditional branches.
-> >       define tracepoints. Check http://lwn.net/Articles/379903,
-> >       http://lwn.net/Articles/381064 and http://lwn.net/Articles/383362
-> >       for a series of articles with more details.
-> > +
-> > +If you require calling a tracepoint from a header file, it is not
-> > +recommended to call one directly or to use the trace_<tracepoint>_enabled()
-> > +function call, as tracepoints in header files can have side effects if a
-> > +header is included from a file that has CREATE_TRACE_POINTS set. Instead,
-> > +include tracepoint-defs.h and use trace_enabled().  
+On Thu, 24 Sep 2020 10:40:16 +0200, Joerg Roedel <joro@8bytes.org> wrote:
+
+> > On Fri, 18 Sep 2020 11:44:50 +0200, Joerg Roedel <joro@8bytes.org>
+> > wrote: 
+> > > On Fri, Sep 11, 2020 at 02:57:52PM -0700, Jacob Pan wrote:  
+> > > > There can be multiple vendor-specific PASID data formats used in
+> > > > UAPI structures. This patch adds enum type with a last entry which
+> > > > makes range checking much easier.    
+> > > 
+> > > But it also makes it much easier to screw up the numbers (which are
+> > > ABI) by inserting a new value into the middle. I prefer defines here,
+> > > or alternativly BUILD_BUG_ON() checks for the numbers.
+> > >   
+> > I am not following, the purpose of IOMMU_PASID_FORMAT_LAST *is* for
+> > preparing the future insertion of new value into the middle.
+> > The checking against IOMMU_PASID_FORMAT_LAST is to protect ABI
+> > compatibility by making sure that out of range format are rejected in
+> > all versions of the ABI.  
 > 
-> Tracepoints per-se have no issues being used from header files. The TRACE_EVENT
-> infrastructure seems to be the cause of this problem. We should fix trace events
-> rather than require all users to use weird work-arounds thorough the kernel code
-> base.
-
-That's like saying "let's solve include hell". Note, in the past there has
-also been issues with the headers included also having issues including
-other headers and cause a dependency loop.
-
-But the magic of trace events (for both perf and ftrace, sorry if you
-refused to use it), is that people who add tracepoints do not need to know
-how tracepoints work. There's no adding of registering of them, or anything
-else. The formats and everything they record appear in the tracefs file
-system.
-
-How are your trace events created? All manual, or do you have helper
-macros. Would these be safe if a bunch were included?
-
+> But with the enum you could have:
 > 
-> I am not against the idea of a tracepoint_enabled(tp), but I am against the
-> motivation behind this patch and the new tracepoint user requirements it documents.
-
-It removes the open coded code that has been in the kernel for the last 4
-years.
-
+> enum {
+> 	VTD_FOO,
+> 	SMMU_FOO,
+> 	LAST,
+> };
 > 
-> > +
-> > +In a C file::
-> > +
-> > +	void do_trace_foo_bar_wrapper(args)
-> > +	{
-> > +		trace_foo_bar(args);
-> > +	}
-> > +
-> > +In the header file::
-> > +
-> > +	DECLEARE_TRACEPOINT(foo_bar);
-> > +
-> > +	static inline void some_inline_function()
-> > +	{
-> > +		[..]
-> > +		if (trace_enabled(foo_bar))  
+> which makes VTD_FOO==0 and SMMU_FOO==1, and when in the next version
+> someone adds:
 > 
-> Is it trace_enabled() or tracepoint_enabled() ? There is a mismatch
-> between the commit message/code and the documentation.
+> enum {
+> 	VTD_FOO,
+> 	VTD_BAR,
+> 	SMMU_FOO,
+> 	LAST,
+> };
+> 
+> then SMMU_FOO will become 2 and break ABI. So I'd like to have this
+> checked somewhere.
+Got your point, will change to defines.
 
-Yes, it should be tracepoint_enabled(). Thanks for catching that.
+Thanks,
 
-Anyway, this shouldn't affect you in any way, as it's just adding wrappers
-around locations that have been doing this for years.
-
-If you want, I can change the name to trace_event_enabled() and put the
-code in trace_events-defs.h instead. Which would simply include
-tracepoints-defs.h and have the exact same code.
-
--- Steve
+Jacob
