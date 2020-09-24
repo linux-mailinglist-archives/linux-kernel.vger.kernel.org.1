@@ -2,149 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60B9A276F2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA25A276F32
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727361AbgIXLAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 07:00:11 -0400
-Received: from foss.arm.com ([217.140.110.172]:42042 "EHLO foss.arm.com"
+        id S1727398AbgIXLAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 07:00:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726303AbgIXLAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 07:00:07 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6224F113E;
-        Thu, 24 Sep 2020 04:00:06 -0700 (PDT)
-Received: from [10.57.51.181] (unknown [10.57.51.181])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 821473F73B;
-        Thu, 24 Sep 2020 04:00:04 -0700 (PDT)
-Subject: Re: [PATCH V2 1/4] cpufreq: stats: Defer stats update to
- cpufreq_stats_record_transition()
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        cristian.marussi@arm.com, Sudeep Holla <sudeep.holla@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <cover.1600238586.git.viresh.kumar@linaro.org>
- <31999d801bfb4d8063dc1ceec1234b6b80b4ae68.1600238586.git.viresh.kumar@linaro.org>
- <CAJZ5v0i0aW6jT=DD6ogyfr+bs5LZu7Gn+5A9O_bZxNsnHPojOQ@mail.gmail.com>
- <a4c5a6b9-10f8-34f8-f01d-8b373214d173@arm.com>
- <CAJZ5v0iFjzqTKTPFF5hB5C0TYSQn2rxL_6099gqUwoTARKRnZA@mail.gmail.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <ae5771c8-6297-e447-4449-e39ae2ea5a0e@arm.com>
-Date:   Thu, 24 Sep 2020 12:00:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1726303AbgIXLAj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 07:00:39 -0400
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0E497239D2;
+        Thu, 24 Sep 2020 11:00:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600945238;
+        bh=mcQstb6kgrv0RCLL5uYxJdTKMZzoQT1OGetbZvl4Dys=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=HoERfLtzBHHfF9t7LHk1EVr5ENzggxhqG1fq2bIBjO0rsHGK7+wyVwfYjlsSOHeVA
+         M2Wa79HeFQQdgQZtj7cflzJuVlevXeBaUrbCsrOhW3X/dRNU9OBkViJu/G4EEt7sy5
+         tU5Ik3Bfo84YfhmKKB2zzpIf67hmF9bIGgyaHe2M=
+Received: by mail-oi1-f180.google.com with SMTP id v20so3230816oiv.3;
+        Thu, 24 Sep 2020 04:00:38 -0700 (PDT)
+X-Gm-Message-State: AOAM531Appt7O9pFAt8jBm2tWPQqJCLmPNwi6dlhl5HJdSGFsRaOOvRJ
+        s9BAUFKezVDQ9qkEgUTUqpXxpJrjU0a+R4mJzi0=
+X-Google-Smtp-Source: ABdhPJw672kHZvlPXq/Xj5fIkVqsPRuNnsOGNIheEW6trScKa826onwsLVZV11OPHvh1+Q14Z8+jPRWJ3pwlGNVeYa8=
+X-Received: by 2002:a54:4517:: with SMTP id l23mr2228436oil.174.1600945237175;
+ Thu, 24 Sep 2020 04:00:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0iFjzqTKTPFF5hB5C0TYSQn2rxL_6099gqUwoTARKRnZA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200923142607.10c89bd2@xhacker.debian>
+In-Reply-To: <20200923142607.10c89bd2@xhacker.debian>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 24 Sep 2020 13:00:26 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXEyQGEu7=-kbDuTDW9_xXkmns1HM2dQMrLn=XL9W88vJw@mail.gmail.com>
+Message-ID: <CAMj1kXEyQGEu7=-kbDuTDW9_xXkmns1HM2dQMrLn=XL9W88vJw@mail.gmail.com>
+Subject: Re: [PATCH] PCI: dwc: Move allocate and map page for msi out of dw_pcie_msi_init()
+To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Vidya Sagar <vidyas@nvidia.com>, linux-pci@vger.kernel.org,
+        linux-omap@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 23 Sep 2020 at 08:28, Jisheng Zhang <Jisheng.Zhang@synaptics.com> wrote:
+>
+> Currently, dw_pcie_msi_init() allocates and maps page for msi, then
+> program the PCIE_MSI_ADDR_LO and PCIE_MSI_ADDR_HI. The Root Complex
+> may lose power during suspend-to-RAM, so when we resume, we want to
+> redo the latter but not the former. If designware based driver (for
+> example, pcie-tegra194.c) calls dw_pcie_msi_init() in resume path, the
+> previous msi page will be leaked.
+>
+> Move the allocate and map msi page from dw_pcie_msi_init() to
+> dw_pcie_host_init() to fix this problem.
+>
+> Fixes: 56e15a238d92 ("PCI: tegra: Add Tegra194 PCIe support")
+> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+
+Why do you allocate a page for this in the first place? Isn't
+PCIE_MSI_ADDR_HI:PCIE_MSI_ADDR_LO simply a magic DMA address that
+never gets forwarded across to the CPU side of the host bridge, and
+triggers a SPI instead, which gets handled by reading
+PCIE_MSI_INTR0_STATUS ?
+
+Couldn't you just map the zero page instead?
 
 
-On 9/24/20 11:24 AM, Rafael J. Wysocki wrote:
-> On Thu, Sep 24, 2020 at 11:25 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
->>
->> Hi Rafael,
->>
->> On 9/23/20 2:48 PM, Rafael J. Wysocki wrote:
->>> On Wed, Sep 16, 2020 at 8:45 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->>>>
->>>> In order to prepare for lock-less stats update, add support to defer any
->>>> updates to it until cpufreq_stats_record_transition() is called.
->>>
->>> This is a bit devoid of details.
->>>
->>> I guess you mean reset in particular, but that's not clear from the above.
->>>
->>> Also, it would be useful to describe the design somewhat.
->>>
->>>> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
->>>> ---
->>>>    drivers/cpufreq/cpufreq_stats.c | 75 ++++++++++++++++++++++++---------
->>>>    1 file changed, 56 insertions(+), 19 deletions(-)
->>>>
->>>> diff --git a/drivers/cpufreq/cpufreq_stats.c b/drivers/cpufreq/cpufreq_stats.c
->>>> index 94d959a8e954..3e7eee29ee86 100644
->>>> --- a/drivers/cpufreq/cpufreq_stats.c
->>>> +++ b/drivers/cpufreq/cpufreq_stats.c
->>>> @@ -22,17 +22,22 @@ struct cpufreq_stats {
->>>>           spinlock_t lock;
->>>>           unsigned int *freq_table;
->>>>           unsigned int *trans_table;
->>>> +
->>>> +       /* Deferred reset */
->>>> +       unsigned int reset_pending;
->>>> +       unsigned long long reset_time;
->>>>    };
->>>>
->>>> -static void cpufreq_stats_update(struct cpufreq_stats *stats)
->>>> +static void cpufreq_stats_update(struct cpufreq_stats *stats,
->>>> +                                unsigned long long time)
->>>>    {
->>>>           unsigned long long cur_time = get_jiffies_64();
->>>>
->>>> -       stats->time_in_state[stats->last_index] += cur_time - stats->last_time;
->>>> +       stats->time_in_state[stats->last_index] += cur_time - time;
->>>>           stats->last_time = cur_time;
->>>>    }
->>>>
->>>> -static void cpufreq_stats_clear_table(struct cpufreq_stats *stats)
->>>> +static void cpufreq_stats_reset_table(struct cpufreq_stats *stats)
->>>>    {
->>>>           unsigned int count = stats->max_state;
->>>>
->>>> @@ -41,42 +46,67 @@ static void cpufreq_stats_clear_table(struct cpufreq_stats *stats)
->>>>           memset(stats->trans_table, 0, count * count * sizeof(int));
->>>>           stats->last_time = get_jiffies_64();
->>>>           stats->total_trans = 0;
->>>> +
->>>> +       /* Adjust for the time elapsed since reset was requested */
->>>> +       WRITE_ONCE(stats->reset_pending, 0);
->>>
->>> What if this runs in parallel with store_reset()?
->>>
->>> The latter may update reset_pending to 1 before the below runs.
->>> Conversely, this may clear reset_pending right after store_reset() has
->>> set it to 1, but before it manages to set reset_time.  Is that not a
->>> problem?
->>
->> I wonder if we could just drop the reset feature. Is there a tool
->> which uses this file? The 'reset' sysfs would probably have to stay
->> forever, but an empty implementation is not an option?
-> 
-> Well, having an empty sysfs attr would be a bit ugly, but the
-> implementation of it could be simplified.
-> 
->> The documentation states:
->> 'This can be useful for evaluating system behaviour under different
->> governors without the need for a reboot.'
->> With the scenario of fast-switch this resetting complicates the
->> implementation and the justification of having it just for experiments
->> avoiding reboot is IMO weak. The real production code would have to pay
->> extra cycles every time. Also, we would probably not experiment with
->> cpufreq different governors, since the SchedUtil is considered the best
->> option.
-> 
-> It would still be good to have a way to test it against the other
-> available options, though.
-> 
-
-Experimenting with different governors would still be possible, just
-the user-space would have to take a snapshot of the stats when switching
-to a new governor. Then the values presented in the stats would just
-need to be calculated in this user tool against the snapshot.
-
-The resetting is also not that bad, since nowadays more components
-maintain some kind of local statistics/history (scheduler, thermal).
-I would recommend to reset the whole system and repeat the same tests
-with different governor, just to be sure that everything starts from
-similar state (utilization, temperature, other devfreq devices
-frequencies etc).
-
-
+> ---
+>  drivers/pci/controller/dwc/pci-dra7xx.c       | 18 ++++++++++++-
+>  .../pci/controller/dwc/pcie-designware-host.c | 27 +++++++++----------
+>  2 files changed, 30 insertions(+), 15 deletions(-)
+>
+> diff --git a/drivers/pci/controller/dwc/pci-dra7xx.c b/drivers/pci/controller/dwc/pci-dra7xx.c
+> index dc387724cf08..4301cf844a4c 100644
+> --- a/drivers/pci/controller/dwc/pci-dra7xx.c
+> +++ b/drivers/pci/controller/dwc/pci-dra7xx.c
+> @@ -490,7 +490,9 @@ static struct irq_chip dra7xx_pci_msi_bottom_irq_chip = {
+>  static int dra7xx_pcie_msi_host_init(struct pcie_port *pp)
+>  {
+>         struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> +       struct device *dev = pci->dev;
+>         u32 ctrl, num_ctrls;
+> +       int ret;
+>
+>         pp->msi_irq_chip = &dra7xx_pci_msi_bottom_irq_chip;
+>
+> @@ -506,7 +508,21 @@ static int dra7xx_pcie_msi_host_init(struct pcie_port *pp)
+>                                     ~0);
+>         }
+>
+> -       return dw_pcie_allocate_domains(pp);
+> +       ret = dw_pcie_allocate_domains(pp);
+> +       if (ret)
+> +               return ret;
+> +
+> +       pp->msi_page = alloc_page(GFP_KERNEL);
+> +       pp->msi_data = dma_map_page(dev, pp->msi_page, 0, PAGE_SIZE,
+> +                                   DMA_FROM_DEVICE);
+> +       ret = dma_mapping_error(dev, pp->msi_data);
+> +       if (ret) {
+> +               dev_err(dev, "Failed to map MSI data\n");
+> +               __free_page(pp->msi_page);
+> +               pp->msi_page = NULL;
+> +               dw_pcie_free_msi(pp);
+> +       }
+> +       return ret;
+>  }
+>
+>  static const struct dw_pcie_host_ops dra7xx_pcie_host_ops = {
+> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+> index 9dafecba347f..c23ba64f64fe 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+> @@ -294,20 +294,7 @@ void dw_pcie_free_msi(struct pcie_port *pp)
+>
+>  void dw_pcie_msi_init(struct pcie_port *pp)
+>  {
+> -       struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> -       struct device *dev = pci->dev;
+> -       u64 msi_target;
+> -
+> -       pp->msi_page = alloc_page(GFP_KERNEL);
+> -       pp->msi_data = dma_map_page(dev, pp->msi_page, 0, PAGE_SIZE,
+> -                                   DMA_FROM_DEVICE);
+> -       if (dma_mapping_error(dev, pp->msi_data)) {
+> -               dev_err(dev, "Failed to map MSI data\n");
+> -               __free_page(pp->msi_page);
+> -               pp->msi_page = NULL;
+> -               return;
+> -       }
+> -       msi_target = (u64)pp->msi_data;
+> +       u64 msi_target = (u64)pp->msi_data;
+>
+>         /* Program the msi_data */
+>         dw_pcie_wr_own_conf(pp, PCIE_MSI_ADDR_LO, 4,
+> @@ -440,6 +427,18 @@ int dw_pcie_host_init(struct pcie_port *pp)
+>                                 irq_set_chained_handler_and_data(pp->msi_irq,
+>                                                             dw_chained_msi_isr,
+>                                                             pp);
+> +
+> +                       pp->msi_page = alloc_page(GFP_KERNEL);
+> +                       pp->msi_data = dma_map_page(pci->dev, pp->msi_page,
+> +                                                   0, PAGE_SIZE,
+> +                                                   DMA_FROM_DEVICE);
+> +                       ret = dma_mapping_error(pci->dev, pp->msi_data);
+> +                       if (ret) {
+> +                               dev_err(pci->dev, "Failed to map MSI data\n");
+> +                               __free_page(pp->msi_page);
+> +                               pp->msi_page = NULL;
+> +                               goto err_free_msi;
+> +                       }
+>                 } else {
+>                         ret = pp->ops->msi_host_init(pp);
+>                         if (ret < 0)
+> --
+> 2.28.0
+>
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
