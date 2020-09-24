@@ -2,102 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FF25277659
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 18:14:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 557F427765E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 18:15:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727677AbgIXQOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 12:14:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41072 "EHLO mail.kernel.org"
+        id S1727752AbgIXQPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 12:15:04 -0400
+Received: from foss.arm.com ([217.140.110.172]:50194 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726426AbgIXQN7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 12:13:59 -0400
-Received: from coco.lan (ip5f5ad5c4.dynamic.kabel-deutschland.de [95.90.213.196])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 18F572388A;
-        Thu, 24 Sep 2020 16:13:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600964039;
-        bh=hYhqt1zEygj1WJNEIIGL6rzLpB3sm1KkPrVfrQLZA8M=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PvRqwecwPYLFRLPE/T1L6whxVNOnIuw5O5dIUK+AP0FWwfhyViN6WjXW5oAfDQlbM
-         6ftTCxLYti0BC45lwSs4NkdAkoNZQkd3ZZPwws4pJJRq9wu7rTu2YF6pAuk/D4+eoV
-         zwFemSgWkqFK55OH8eujQ+bv9AkAh3fVDtihnVWI=
-Date:   Thu, 24 Sep 2020 18:13:54 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] docs: cdomain.py: add support for two new Sphinx
- 3.1+ tags
-Message-ID: <20200924181354.59087a8d@coco.lan>
-In-Reply-To: <20200924094335.65944316@lwn.net>
-References: <cover.1600945712.git.mchehab+huawei@kernel.org>
-        <4b8a20013ca0b631724e8a986544ada08ac3dfd7.1600945712.git.mchehab+huawei@kernel.org>
-        <20200924094335.65944316@lwn.net>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1726596AbgIXQPE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 12:15:04 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B04161396;
+        Thu, 24 Sep 2020 09:15:03 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 93BBA3F718;
+        Thu, 24 Sep 2020 09:15:02 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 17:15:00 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Rob Clark <robdclark@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Tim Murray <timmurray@google.com>, Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH 0/3] drm: commit_work scheduling
+Message-ID: <20200924161356.5kezxwiqwtbi3o2p@e107158-lin.cambridge.arm.com>
+References: <20200919193727.2093945-1-robdclark@gmail.com>
+ <20200921092154.GJ438822@phenom.ffwll.local>
+ <CAF6AEGuDRk9D_aqyb6R8N5VHx2rvbZDf4uTqF3gQTrmzno+qtw@mail.gmail.com>
+ <CAKMK7uEqDD-oDAQKyA9DQbxkCgEjC5yyjvKR7d8T0Gj0SqEZ4A@mail.gmail.com>
+ <CAF6AEGtYAn+W8HxP7SXtxPr5FsEB1hYGU91WrHCtwX89UmUR5w@mail.gmail.com>
+ <20200923152545.GQ438822@phenom.ffwll.local>
+ <CAF6AEGs9xDOoG3n4E_+6iDaiJXp_hqvSV1VKE=vpvG-twYPoew@mail.gmail.com>
+ <20200924084950.GY438822@phenom.ffwll.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200924084950.GY438822@phenom.ffwll.local>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, 24 Sep 2020 09:43:35 -0600
-Jonathan Corbet <corbet@lwn.net> escreveu:
+On 09/24/20 10:49, Daniel Vetter wrote:
 
-> So I'm just getting into this and trying to understand what's really going
-> on, but one thing jumped at me:
+[...]
+
+> > > I also thought kernel threads can be distinguished from others, so
+> > > userspace shouldn't be able to sneak in and get elevated by accident.
+> > 
+> > I guess maybe you could look at the parent?  I still would like to
+> > think that we could come up with something a bit less shaking than
+> > matching thread names by regexp..
 > 
-> On Thu, 24 Sep 2020 13:22:04 +0200
-> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+> ps marks up kernel threads with [], so there is a way. But I haven't
+> looked at what it is exactly that tells kernel threads apart from others.
 > 
-> > +# Namespace to be prepended to the full name
-> > +namespace = None
-
-^^^ See here....
-
-> > +
-> > +#
-> > +# Handle trivial newer c domain tags that are part of Sphinx 3.1 c domain tags
-> > +# - Convert :c:expr:`foo` into ``foo``
-> > +# - Store the namespace if ".. c:namespace::" tag is found
-> > +
-> > +RE_namespace = re.compile(r'^\s*..\s*c:namespace::\s*(\S+)\s*$')
-> > +RE_expr = re.compile(r':c:expr:`([^\`]+)`')
-> > +
-> > +def markup_namespace(match):
-> > +    namespace = match.group(1)
-> > +
-> > +    return ""
-> > +  
+> But aside from that sounds like "match right kernel thread with regex and
+> set its scheduler class" is how this is currently done, if I'm
+> understanding what Tejun and Peter said correctly.
 > 
-> How can this possibly work without a "global namespace" declaration in
-> markup_namespace()?
+> Not pretty, but also *shrug* ...
 
-... While I'm not a python expert, the namespace variable is global
-    because it was defined outside the "markup_namespace" function.
+Isn't there a real danger that a sneaky application names its threads to match
+this regex and get a free promotion to RT without having the capability to do
+so?
 
--
+Cheers
 
-On a quick check at the internet, this is supposed to work properly:
-
-	https://www.programiz.com/python-programming/global-local-nonlocal-variables
-
--
-
-In any cases, on my tests, this is working properly.
-
-Anyway, I'm sending a version 2 of the series, addressing the
-namespace for the remaining files under userspace-api/media.
-
-You can try building the media books without and with the
-patch series, in order to see the differences.
-
-There are still ~200 warnings produced after that, but it
-sounds that the remaining issues will require changes at
-kernel-doc.
-
-
-Thanks,
-Mauro
+--
+Qais Yousef
