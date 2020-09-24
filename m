@@ -2,138 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37834277748
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 18:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DCAC27774B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 18:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727816AbgIXQ5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 12:57:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53396 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726458AbgIXQ5d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 12:57:33 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4537D2311A;
-        Thu, 24 Sep 2020 16:57:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600966652;
-        bh=JNiJdDRQsrPnbeS7IK9+G/bFB5hGKoZITwaUtsAZbH0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lLJMRSPRXNQpBy6MpCRUPNVcZlvb7Ii/52Iwmk9hYjDZuKapjwutazBuwHQVH57rt
-         aHFaZueFZ55NCbuBf3qvo0malxcF4sFiVNpuKbI7uUL3Rp/db5ImVMIu+VqZawx5Im
-         V9WOuYfP4EUhH+SJqOq2EFhQa9ieD/XLtmsxbhaM=
-Date:   Thu, 24 Sep 2020 09:57:30 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Mike Snitzer <snitzer@redhat.com>
-Cc:     Satya Tangirala <satyat@google.com>, Jens Axboe <axboe@kernel.dk>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dm-devel@redhat.com, Alasdair Kergon <agk@redhat.com>
-Subject: Re: [PATCH 2/3] dm: add support for passing through inline crypto
- support
-Message-ID: <20200924165730.GA2865480@gmail.com>
-References: <20200909234422.76194-1-satyat@google.com>
- <20200909234422.76194-3-satyat@google.com>
- <20200922003255.GC32959@sol.localdomain>
- <20200924011438.GD10500@redhat.com>
- <20200924071721.GA1883346@google.com>
- <20200924134649.GB13849@redhat.com>
- <20200924154550.GA1266@sol.localdomain>
- <20200924161624.GC14369@redhat.com>
+        id S1728063AbgIXQ7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 12:59:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726458AbgIXQ7d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 12:59:33 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B49C0613CE;
+        Thu, 24 Sep 2020 09:59:33 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id bd2so44317plb.7;
+        Thu, 24 Sep 2020 09:59:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EoPsF8kT+VOZ0TY1NiW28PV/QlfjktpBLxI4qeILRo4=;
+        b=Xxj7YqZYUTyfP+NUXTtSCBseX1FoZILvOYExB17luljVEgXT6MQPrxbe2SwZePvnG7
+         pjB9h1S3PEtrGDy8r+b8fOnWXogVtc/yZ0g3K8zkDRq9+4nxJhWq5NOp/E3LMxrW0dP/
+         AHZn4V2FMZlJUJWGu+qPmtKly8U59JwqOL3AHVLiKB5PBX+6o7qxMuB//P+sliP2JrOk
+         Lcv/6x81xSKV+nZg9LX8xr58/NVn9VcPGB6201AkKwb43AZ5QjKyW0WVj2dXutj0Fzvw
+         LOuh33hAdh8QMvFioPeiFQeErKlXVUqdJQG1FFqpge0fOUr5X9s1XWXE6QYN6tG5vE7s
+         KzoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EoPsF8kT+VOZ0TY1NiW28PV/QlfjktpBLxI4qeILRo4=;
+        b=nPURLzHaVC6a2InnO4HA7oa8tfkY0QlGI0h8H13WficpNE3PYHDqWBQYcoSglA3CDJ
+         r49E938TtppqDzs+ROtsyXSbDk/T8FhDItJx5DUyAdDCLHnl6EuyESeoHtCKPl2pX7Qq
+         H/OLaqYYpmOeIuBZikq9VDneAB4xppC5g/cXM89UKptomzyqGziOxgCRo3vwk9f59rYI
+         Gz9pqLztyiRg25XDUy622LUym59HlpIQ5il1mjRlykvv4TtSf7eH43beNS1GjdmkCdKT
+         upUGpecmoiULGlWb5UQR9PJJQYdw92uzE+pC9lTZx6gJLo7ZIlqS8l/cmKux1mlj4iE0
+         qOfg==
+X-Gm-Message-State: AOAM533fzs8rpgDh439IJQqlQ2U275Ibt0qHQ9ITZNWT7+K3lhx9Vwty
+        bLXGOl+4ogGXtLPUjRG7Nw==
+X-Google-Smtp-Source: ABdhPJy0Cetm+6slveWErW0ubf/EmjYXGJAeOS5m+z8+iSgrtaRZr6rzhyYdogiEl3WzOse4BlCKaQ==
+X-Received: by 2002:a17:90b:245:: with SMTP id fz5mr100677pjb.131.1600966772308;
+        Thu, 24 Sep 2020 09:59:32 -0700 (PDT)
+Received: from PWN (n11212042027.netvigator.com. [112.120.42.27])
+        by smtp.gmail.com with ESMTPSA id x198sm3569037pgx.28.2020.09.24.09.59.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 09:59:31 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 12:59:19 -0400
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     David Laight <David.Laight@aculab.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] Prevent out-of-bounds access for built-in font data
+ buffers
+Message-ID: <20200924165919.GA880812@PWN>
+References: <0000000000006b9e8d059952095e@google.com>
+ <cover.1600953813.git.yepeilin.cs@gmail.com>
+ <20200924140937.GA749208@kroah.com>
+ <394733ab6fae47488d078cb22f22a85b@AcuMS.aculab.com>
+ <20200924153035.GA879703@PWN>
+ <20200924154516.GL4282@kadam>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200924161624.GC14369@redhat.com>
+In-Reply-To: <20200924154516.GL4282@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 12:16:24PM -0400, Mike Snitzer wrote:
-> On Thu, Sep 24 2020 at 11:45am -0400,
-> Eric Biggers <ebiggers@kernel.org> wrote:
+On Thu, Sep 24, 2020 at 06:45:16PM +0300, Dan Carpenter wrote:
+> Smatch has a tool to show where struct members are set.
 > 
-> > On Thu, Sep 24, 2020 at 09:46:49AM -0400, Mike Snitzer wrote:
-> > > > > Can you help me better understand the expected consumer of this code?
-> > > > > If you have something _real_ please be explicit.  It makes justifying
-> > > > > supporting niche code like this more tolerable.
-> > > >
-> > > > So the motivation for this code was that Android currently uses a device
-> > > > mapper target on top of a phone's disk for user data. On many phones,
-> > > > that disk has inline encryption support, and it'd be great to be able to
-> > > > make use of that. The DM device configuration isn't changed at runtime.
-> > > 
-> > > OK, which device mapper target is used?
-> > 
-> > There are several device-mapper targets that Android can require for the
-> > "userdata" partition -- potentially in a stack of more than one:
-> > 
-> > dm-linear: required for Dynamic System Updates
-> > (https://developer.android.com/topic/dsu)
-> > 
-> > dm-bow: required for User Data Checkpoints on ext4
-> > (https://source.android.com/devices/tech/ota/user-data-checkpoint)
-> > (https://patchwork.kernel.org/patch/10838743/)
-> > 
-> > dm-default-key: required for metadata encryption
-> > (https://source.android.com/security/encryption/metadata)
+> `~/smatch/smatch_data/db/smdb.py where console_font height`
 > 
-> Please work with all google stakeholders to post the latest code for the
-> dm-bow and dm-default-key targets and I'll work through them.
+> It's not perfect and this output comes from allmodconfig on yesterday's
+> linux-next.
 > 
-> I think the more code we have to inform DM core's implementation the
-> better off we'll be in the long run.  Could also help improve these
-> targets as a side-effect of additional review.
-> 
-> I know I largely ignored dm-bow before but that was more to do with
-> competing tasks, etc.  I'll try my best...
+> regards,
+> dan carpenter
 
-I'm not sure what happened with dm-bow; I'll check with the person maintaining
-it.
+Wow, thank you for the really interesting information!
 
-We expect that dm-default-key would be controversial, since it's sort of a
-layering violation; metadata encryption really should be a filesystem-level
-thing.  Satya has been investigating implementing it in filesystems instead.
-I think we need to see how that turns out first.
+> drivers/video/console/vgacon.c | vgacon_init                    | (struct console_font)->height | 0-32
+> drivers/video/console/vgacon.c | vgacon_adjust_height           | (struct console_font)->height | 1-32
+> drivers/video/fbdev/core/fbcon.c | fbcon_startup                  | (struct console_font)->height | 6,8,10-11,14,16,18,22,32
+> drivers/video/fbdev/core/fbcon.c | fbcon_init                     | (struct console_font)->height | 6,8,10-11,14,16,18,22,32
+> drivers/video/fbdev/core/fbcon.c | fbcon_do_set_font              | (struct console_font)->height | 0-u32max
+> drivers/video/fbdev/core/fbcon.c | fbcon_set_def_font             | (struct console_font)->height | 6,8,10-11,14,16,18,22,32
+> drivers/usb/misc/sisusbvga/sisusb_con.c | sisusbcon_init                 | (struct console_font)->height | 0-u32max
 
-> > We're already carrying this patchset in the Android common kernels since late
-> > last year, as it's required for inline encryption to work when any of the above
-> > is used.  So this is something that is needed and is already being used.
-> > 
-> > Now, you don't have to "count" dm-bow and dm-default-key since they aren't
-> > upstream; that leaves dm-linear.  But hopefully the others at least show that
-> > architecturally, dm-linear is just the initial use case, and this patchset also
-> > makes it easy to pass through inline crypto on any other target that can support
-> > it (basically, anything that doesn't change the data itself as it goes through).
-> 
-> Sure, that context really helps.
-> 
-> About "basically, anything that doesn't change the data itself as it
-> goes through": could you be a bit more precise?  Very few DM targets
-> actually change the data as associated bios are remapped.
-> 
-> I'm just wondering if your definition of "doesn't change the data"
-> includes things more subtle than the data itself?
+In looking at this one,
+	c->vc_font.height = sisusb->current_font_height;
 
-The semantics expected by upper layers (e.g. filesystems) are that a "write" bio
-that has an encryption context is equivalent to a "write" bio with no encryption
-context that contains the data already encrypted.  Similarly, a "read" bio with
-an encryption context is equivalent to submitting a "read" bio with no
-encryption context, then decrypting the resulting data.
+`sisusb->current_font_height` is only set in sisusbcon_do_font_op():
+		sisusb->current_font_height = fh;
 
-blk-crypto-fallback obviously works in that way.  However, when actual inline
-encryption hardware is used, the encryption/decryption actually happens at the
-lowest level in the stack.
+and...
 
-To maintain the semantics in that case, the data can't be modified anywhere in
-the stack.  For example, if the data also passes through a dm-crypt target that
-encrypted/decrypted the data (again) in software, that would break things.
+> drivers/usb/misc/sisusbvga/sisusb_con.c | sisusbcon_do_font_op           | (struct console_font)->height | 1-32
 
-You're right that it's a bit more than that, though.  The targets also have to
-behave the same way regardless of whether the data is already encrypted or not.
-So if e.g. a target hashes the data, then it can't set
-may_passthrough_inline_crypto, even if it doesn't change the data.  It can't
-sometimes be hashing the plaintext data and sometimes the ciphertext data.
-(And also, storing hashes of the plaintext on-disk would be insecure, as it
-would leak information that encryption is meant to protect.)
+...sisusbcon_do_font_op() is called in four places, with an `fh` of either
+16, `sisusb->font_backup_height`, or `font->height`. The latter two cases
+all come from sisusbcon_font_set(), whose dispatcher, con_font_set()
+gurantees that `font->height` is less than or equal to 32, as shown by
+Smatch here.
 
-- Eric
+> drivers/tty/vt/vt_ioctl.c      | vt_k_ioctl                     | (struct console_font)->height | ignore
+> drivers/tty/vt/vt_ioctl.c      | vt_resizex                     | (struct console_font)->height | 0-u32max
+> drivers/tty/vt/vt_ioctl.c      | vt_ioctl                       | (struct console_font)->height | ignore
+> drivers/tty/vt/vt_ioctl.c      | vt_compat_ioctl                | (struct console_font)->height | ignore
+> drivers/tty/vt/vt.c            | vc_allocate                    | (struct console_font)->height | 0
+> drivers/tty/vt/vt.c            | vt_resize                      | (struct console_font)->height | ignore
+> drivers/tty/vt/vt.c            | do_con_write                   | (struct console_font)->height | ignore
+> drivers/tty/vt/vt.c            | con_unthrottle                 | (struct console_font)->height | ignore
+> drivers/tty/vt/vt.c            | con_flush_chars                | (struct console_font)->height | ignore
+> drivers/tty/vt/vt.c            | con_shutdown                   | (struct console_font)->height | ignore
+> drivers/tty/vt/vt.c            | con_cleanup                    | (struct console_font)->height | ignore
+> drivers/tty/vt/vt.c            | con_init                       | (struct console_font)->height | 0
+> drivers/tty/vt/vt.c            | con_font_set                   | (struct console_font)->height | 1-32
+> drivers/tty/vt/vt.c            | con_font_default               | (struct console_font)->height | 0-u32max
+> drivers/tty/vt/selection.c     | paste_selection                | (struct console_font)->height | ignore
+
+I will go through the list starting from these "0-u32max" cases. Thanks
+again!
+
+Peilin Ye
+
