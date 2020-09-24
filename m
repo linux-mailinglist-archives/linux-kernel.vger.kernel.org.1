@@ -2,188 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A3F2771C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC4A22771C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727871AbgIXNCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 09:02:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727855AbgIXNCq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 09:02:46 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B638C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:02:46 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id e11so6767700wme.0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:02:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wd72o99dI8O+8Erl62aPyt+op0c7sTjoUw8Lqij53Ck=;
-        b=vgTkw2TNrI3qaJi7wfvHs5SXCUj+o0oDCjpQnhdcNZkAi7ShmJ03yyrI3MRrUd34Db
-         y7VvUO1XFFmGeKumZnQa9gNI3bTJUpeWE5gM44PI+Y307RsWKPYjRSd2JRWVwjtFCwb2
-         c8b/cUeDgNT7EhKZw3DXkzJ53k8NWkyWDd8L6XPfIbedo+j7ySF0v5Q0DqMnune2om6N
-         v4spXNLNEnKG9ajWetvtAzybNNLQ6+RyaTXmabXV02CijRM1xP7em57wNw7klz0FN9VM
-         wR+y4cwkbTe0OjE7emamEu9zatGvPjrsgaraTo+ormxbFZcEeZut6O4T4ig6KWWDZuJ7
-         83xQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wd72o99dI8O+8Erl62aPyt+op0c7sTjoUw8Lqij53Ck=;
-        b=gBKvg6sHl2dCK91qBAWLnS/ejflehORwHOqwEEertI5XKra6/R7D6zcmMRHshO6pb7
-         mvRpIy8IG51xuh+wISWGe1Muc+Yb4FEfPCjYqgEHj/url3l/PcPTJbpZ+jugXhT7zd+J
-         c5ltXQLbWjEgGujYYWoPkmp/2gUk/RrOHFy0361D3TsrZXVbcwqy9U8zLlsrVfIGCHis
-         w65TmYhhcELUbbEWjX3iyjMAgaZlTDhZCviTNhe9O4vC9T/M/a4Hqawzx06V8R0xEUEW
-         SrAnFskVvoePsy029aY4VTpARYOG+ruE+zhYyun30CRyJaj8y17as6cA8BHk+TPaXL6h
-         5OxA==
-X-Gm-Message-State: AOAM532UkjhlXwNGZ1lx/0TFhfx6T8DQq5aS0qoi492uCgiPQ+rbEtwG
-        kQoEfJ3QnPDFXDln1St4SaQaYQ==
-X-Google-Smtp-Source: ABdhPJxlNkv36npEGmirFkkM24uP+RpBoZpt4cCa2RcZXhcKgTHRUMCtNZq9fNmdpDxKf8X4qh3PSQ==
-X-Received: by 2002:a1c:7418:: with SMTP id p24mr4653554wmc.123.1600952564762;
-        Thu, 24 Sep 2020 06:02:44 -0700 (PDT)
-Received: from localhost.localdomain ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id v204sm3498579wmg.20.2020.09.24.06.02.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 24 Sep 2020 06:02:44 -0700 (PDT)
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        georgi.djakov@linaro.org
-Subject: [GIT PULL] interconnect changes for 5.10
-Date:   Thu, 24 Sep 2020 16:02:42 +0300
-Message-Id: <20200924130242.24867-1-georgi.djakov@linaro.org>
-X-Mailer: git-send-email 2.28.0
+        id S1727875AbgIXNEz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 24 Sep 2020 09:04:55 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:3530 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727704AbgIXNEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 09:04:55 -0400
+Received: from dggeme701-chm.china.huawei.com (unknown [172.30.72.56])
+        by Forcepoint Email with ESMTP id E7CCCB2F1CEAC7D79E4E;
+        Thu, 24 Sep 2020 21:04:52 +0800 (CST)
+Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
+ dggeme701-chm.china.huawei.com (10.1.199.97) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Thu, 24 Sep 2020 21:04:52 +0800
+Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
+ dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
+ Thu, 24 Sep 2020 21:04:52 +0800
+From:   linmiaohe <linmiaohe@huawei.com>
+To:     "mingo@redhat.com" <mingo@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] sched: Fix some comments
+Thread-Topic: [PATCH] sched: Fix some comments
+Thread-Index: AdaScyyy92CiHjWDS6iDdISEJA8IGw==
+Date:   Thu, 24 Sep 2020 13:04:52 +0000
+Message-ID: <1c13c996946449f58d607e7a94c54a93@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.176.109]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Greg,
+Friendly ping. :)
 
-This is the pull request with the interconnect changes for the 5.10-rc1
-merge window. It contains both core changes and new drivers. More details
-are available in the signed tag.
-
-All patches have been in linux-next without any reported issues. Please
-pull into char-misc-next.
-
-Thanks,
-Georgi
-
-The following changes since commit 91e045b93db79a2ef66e045ad0d1f8f9d348e1f4:
-
-  interconnect: qcom: Fix small BW votes being truncated to zero (2020-09-04 00:07:12 +0300)
-
-are available in the Git repository at:
-
-  https://git.linaro.org/people/georgi.djakov/linux.git tags/icc-5.10-rc1
-
-for you to fetch changes up to 86d6e5793e0fa3a510cff466894d0d3051fd716e:
-
-  interconnect: imx: simplify the return expression of imx_icc_unregister (2020-09-21 11:15:02 +0300)
-
-----------------------------------------------------------------
-interconnect changes for 5.10
-
-Here are the interconnect changes for the 5.10-rc1 merge window
-consisting of core changes, new drivers and cleanups.
-
-Core changes:
- - New bulk API helpers for managing multiple interconnect paths.
- - New xlate_extended() interface for parsing additional data from DT.
- - Support for sync_state().
-
-Driver changes:
- - New drivers for SM8150 and SM8250 platforms.
- - New drivers for the Qualcomm OSM and EPSS hardware blocks.
- - Per-BCM scaling factor support.
- - Misc cleanups.
-
-Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
-
-----------------------------------------------------------------
-Georgi Djakov (9):
-      interconnect: Add bulk API helpers
-      interconnect: Introduce xlate_extended() callback
-      dt-bindings: interconnect: Document the support of optional path tag
-      interconnect: qcom: Implement xlate_extended() to parse tags
-      interconnect: qcom: sdm845: Replace xlate with xlate_extended
-      interconnect: Add get_bw() callback
-      interconnect: Add sync state support
-      interconnect: qcom: Use icc_sync_state
-      Merge branch 'icc-syncstate' into icc-next
-
-Jonathan Marek (5):
-      dt-bindings: interconnect: single yaml file for RPMh interconnect drivers
-      dt-bindings: interconnect: Add Qualcomm SM8150 DT bindings
-      dt-bindings: interconnect: Add Qualcomm SM8250 DT bindings
-      interconnect: qcom: Add SM8150 interconnect provider driver
-      interconnect: qcom: Add SM8250 interconnect provider driver
-
-Krzysztof Kozlowski (2):
-      interconnect: core: Simplify with dev_err_probe()
-      interconnect: imx: Simplify with dev_err_probe()
-
-Liu Shixin (1):
-      interconnect: imx: simplify the return expression of imx_icc_unregister
-
-Mike Tipton (5):
-      dt-bindings: interconnect: Add generic qcom bindings
-      dt-bindings: interconnect: Add property to set BCM TCS wait behavior
-      interconnect: qcom: Support bcm-voter-specific TCS wait behavior
-      interconnect: qcom: Only wait for completion in AMC/WAKE by default
-      interconnect: qcom: Add support for per-BCM scaling factors
-
-Sibi Sankar (6):
-      interconnect: qcom: sc7180: Replace xlate with xlate_extended
-      dt-bindings: interconnect: Add OSM L3 DT binding on SM8150
-      interconnect: qcom: Add OSM L3 support on SM8150
-      interconnect: qcom: Lay the groundwork for adding EPSS support
-      dt-bindings: interconnect: Add EPSS L3 DT binding on SM8250
-      interconnect: qcom: Add EPSS L3 support on SM8250
-
-Stephen Boyd (1):
-      interconnect: qcom: osm-l3: Mark more structures const
-
- Documentation/devicetree/bindings/interconnect/interconnect.txt |  24 +-
- .../devicetree/bindings/interconnect/qcom,bcm-voter.yaml        |  20 +
- Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml |   2 +
- .../bindings/interconnect/{qcom,sdm845.yaml => qcom,rpmh.yaml}  |  42 +-
- Documentation/devicetree/bindings/interconnect/qcom,sc7180.yaml |  85 -
- drivers/interconnect/Makefile                                   |   2 +-
- drivers/interconnect/bulk.c                                     | 117 ++
- drivers/interconnect/core.c                                     | 140 +-
- drivers/interconnect/imx/imx.c                                  |  13 +-
- drivers/interconnect/qcom/Kconfig                               |  20 +
- drivers/interconnect/qcom/Makefile                              |   4 +
- drivers/interconnect/qcom/bcm-voter.c                           |  36 +-
- drivers/interconnect/qcom/icc-rpmh.c                            |  30 +
- drivers/interconnect/qcom/icc-rpmh.h                            |  21 +-
- drivers/interconnect/qcom/osm-l3.c                              |  91 +-
- drivers/interconnect/qcom/sc7180.c                              |   3 +-
- drivers/interconnect/qcom/sdm845.c                              |   3 +-
- drivers/interconnect/qcom/sm8150.c                              | 635 +++++++
- drivers/interconnect/qcom/sm8150.h                              | 154 ++
- drivers/interconnect/qcom/sm8250.c                              | 651 ++++++++
- drivers/interconnect/qcom/sm8250.h                              | 164 ++
- include/dt-bindings/interconnect/qcom,icc.h                     |  26 +
- include/dt-bindings/interconnect/qcom,osm-l3.h                  |   3 +
- include/dt-bindings/interconnect/qcom,sm8150.h                  | 162 ++
- include/dt-bindings/interconnect/qcom,sm8250.h                  | 172 ++
- include/linux/interconnect-provider.h                           |  24 +-
- include/linux/interconnect.h                                    |  22 +
- 27 files changed, 2490 insertions(+), 176 deletions(-)
- rename Documentation/devicetree/bindings/interconnect/{qcom,sdm845.yaml => qcom,rpmh.yaml} (60%)
- delete mode 100644 Documentation/devicetree/bindings/interconnect/qcom,sc7180.yaml
- create mode 100644 drivers/interconnect/bulk.c
- create mode 100644 drivers/interconnect/qcom/sm8150.c
- create mode 100644 drivers/interconnect/qcom/sm8150.h
- create mode 100644 drivers/interconnect/qcom/sm8250.c
- create mode 100644 drivers/interconnect/qcom/sm8250.h
- create mode 100644 include/dt-bindings/interconnect/qcom,icc.h
- create mode 100644 include/dt-bindings/interconnect/qcom,sm8150.h
- create mode 100644 include/dt-bindings/interconnect/qcom,sm8250.h
+> Since commit dfa50b605c2a ("sched: Make finish_task_switch() return 'struct rq *'"), prev == current is incorrect in finish_task_switch(). Also fix a typo in the comment of struct dl_bandwidth.
+>
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+>  kernel/sched/core.c  | 4 ++--
+>  kernel/sched/sched.h | 2 +-
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c index 8471a0f7eb32..725ccab230da 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -3571,8 +3571,8 @@ prepare_task_switch(struct rq *rq, struct task_struct *prev,
+>   *
+>   * The context switch have flipped the stack from under us and restored the
+>   * local variables which were saved when this task called schedule() in the
+> - * past. prev == current is still correct but we need to recalculate this_rq
+> - * because prev may have moved to another CPU.
+> + * past. We need to recalculate this_rq because prev may have moved to
+> + * another CPU.
+>   */
+>  static struct rq *finish_task_switch(struct task_struct *prev)
+>  	__releases(rq->lock)
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h index 28709f6b0975..1d7e45f7fbb9 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -278,7 +278,7 @@ void __dl_clear_params(struct task_struct *p);
+>   * consume bandwidth on the CPU they're running on.
+>   * Finally, dl_total_bw_cpu is used to cache the index of dl_total_bw
+>   * that will be shown the next time the proc or cgroup controls will
+> - * be red. It on its turn can be changed by writing on its own
+> + * be read. It on its turn can be changed by writing on its own
+>   * control.
+>   */
+>  struct dl_bandwidth {
+> --
+> 2.19.1
+>
