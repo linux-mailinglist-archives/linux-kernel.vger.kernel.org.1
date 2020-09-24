@@ -2,153 +2,332 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CF8B276BDC
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:28:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73EA6276BE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727312AbgIXI2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 04:28:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727243AbgIXI2l (ORCPT
+        id S1727256AbgIXI35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 04:29:57 -0400
+Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:49421 "EHLO
+        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727089AbgIXI34 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 04:28:41 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 304FDC0613CE;
-        Thu, 24 Sep 2020 01:28:41 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id 7so1442468pgm.11;
-        Thu, 24 Sep 2020 01:28:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=pyynvcyJWw45RLcJFif3rkDMjfz40Acej1BG50rYExA=;
-        b=fN0FVsVK6/aLfutTaXeWwikNpMEBP+1eq1lmhEibKxDp+B2s5B0nby8i7PUKsRUOVW
-         kvfXzqox3S31Gf04mzKtpC6SODD+Qx9MVT5cRLXCURcO6+YBEiP3cunBc45STaMW/U03
-         vGLmzVabDF0AoXcBbWHF9kcg19aSxTi/Y2q/9UbAAmshopEDTch/41+mCagp3EmqhB/1
-         nwQEyCCu8IhX8fU37C8Sw6vCUvW7HHoNTSu//SGM6+P4AKBWR6fOuLMrIRJPC67agH1H
-         8cqGlAiZW7DtiORk3Si7drRtbZlqersnaAni07UAQKt1keDcjUg1Z3OL1PlvLJUycumz
-         rAIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=pyynvcyJWw45RLcJFif3rkDMjfz40Acej1BG50rYExA=;
-        b=JI0ersJhVXkmuIgNGjCdqs4PnbBbSxnVLTHk8cKdHQ5QNYS/I766FKPTqK1VsxGug+
-         xd4TVCBub2+hOA8IU6nhH+ocDwKR5k9F0pMGZ7Viw8x9Ov23l+frszuMg1RJ47qQwFMi
-         Sr6XqQCj0aQ7D/I/JTh10U8FPtxlj1wI6JeRm3VJ8fe0lNgS1Ubr7L+pcwHEpRH7ZgbC
-         uRS9p7dkaWgwr6IybKfyCVm2PKaOAKgt7fkOU06tVT4KgYo3fUCZD63sV5hLmvDqagHx
-         mgSSngKhmTvw7ZUUyTmmhX2RzBbGAmGJSz0tb1sNYrvetKK4ZgvEhsNGxXWkrbRDvfBJ
-         5dTw==
-X-Gm-Message-State: AOAM533jVQ3+RaBKLCb9Ov3szMw5rOI3zkZIy1Fj/NccjGx5wdpC9Hq2
-        VY6JgrhWuVNgTT2vqO7Vo7Y=
-X-Google-Smtp-Source: ABdhPJx4++bBA0jGaoHN8SfJhMUfWfNCku4D/ZxUWGP29UmLRoeE4/H7/HUsd42eMrRuBb2RzcsSBw==
-X-Received: by 2002:aa7:9635:0:b029:142:2501:3980 with SMTP id r21-20020aa796350000b029014225013980mr3482317pfg.69.1600936120751;
-        Thu, 24 Sep 2020 01:28:40 -0700 (PDT)
-Received: from linux-691t.suse.de ([124.11.22.254])
-        by smtp.gmail.com with ESMTPSA id 11sm2079260pgp.21.2020.09.24.01.28.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 24 Sep 2020 01:28:39 -0700 (PDT)
-From:   "Lee, Chun-Yi" <joeyli.kernel@gmail.com>
-X-Google-Original-From: "Lee, Chun-Yi" <jlee@suse.com>
-To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Lee, Chun-Yi" <jlee@suse.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Matthias Brugger <mbrugger@suse.com>,
-        Fabian Vogt <fvogt@suse.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arthur Heymans <arthur@aheymans.xyz>,
-        Patrick Rudolph <patrick.rudolph@9elements.com>
-Subject: [PATCH] efi/efivars: Create efivars mount point in the registration of efivars abstraction
-Date:   Thu, 24 Sep 2020 16:28:33 +0800
-Message-Id: <20200924082833.12722-1-jlee@suse.com>
-X-Mailer: git-send-email 2.16.4
+        Thu, 24 Sep 2020 04:29:56 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id LMdRk3Sv74gEjLMdUkaWvp; Thu, 24 Sep 2020 10:29:52 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1600936192; bh=V8oiO5kx5Im9gP1gBJEcVtSbSgu719KwvVdN2unn7Dc=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=UPR+OYNf/EKwc0kSog8uXdWjZwSnYIs1HCR1I8+TY5P9XjzUaZdDt2meOaD1LIguR
+         eMsgXzMUiMzUyYcvOWa/EvolQ4U4UIR7yd+0zvU5B+YF32Oor5YPf8cT4I4r1O2wUZ
+         JSvqIfm6ELxiplDC4ENux0GfFJMt766pFDfnVqhp+xQdyGD5yXxqEj7EFIyc/mEthI
+         jaqU6RbXcAI/ynCeQv//Jh7q7T8WnXFZKyPkAHC1p/ddRumh1XTiCPh3+LYH/0Ukjy
+         zFS2fclZ6vVKh0mD6zTS9TyUpkxm26F/q+aqUg+YhjYZWG+kqO2iDnPrTb/g34FIMs
+         9sBi8ae7a7BbQ==
+Subject: Re: [PATCH] media: uapi: h264: Add documentation to the interface
+ header
+To:     Ezequiel Garcia <ezequiel@collabora.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kernel@collabora.com,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>
+References: <20200921193851.50752-1-ezequiel@collabora.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <5049b19f-cb31-6e6e-2667-c63b7adf997b@xs4all.nl>
+Date:   Thu, 24 Sep 2020 10:29:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <20200921193851.50752-1-ezequiel@collabora.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfDcKK9p3uL5xZa3Qk2DWRD7H61WMQUzoDc0XtnM6usthxY5ToN2BsrLh2x50CtgZY5kfC51RQ9okkF/fC+g2aAq4XOBkXEVEKR2F06cXvcckqhu+HEjr
+ V9aEinCJqlrxCPdsuD9ycA2SwDjWwkBkaUPRurmK14jAn2nnOhloMbjP1gKW3Ea1SNFj5N9WV0FWc+LDouM1l2l1P+GkwGfD+ZcWK66ICwDDo1BpXX4tqCF2
+ sadgSiz1XgJtrvns6HaAdvFLnHEAtXQbnr/H9IxhSQmnUQpCcZiUxsHPQmjacu6yqy2PB1ItS5OOffeM2bQznXCdrJFVhj5jxTAwb5L7U4A=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch moved the logic of creating efivars mount point to the
-registration of efivars abstraction. It's useful for userland to
-determine the availability of efivars filesystem by checking the
-existence of mount point.
+Hi Ezequiel,
 
-The 'efivars' platform device be created on generic EFI runtime services
-platform, so it can be used to determine the availability of efivarfs.
-But this approach is not available for google gsmi efivars abstraction.
+On 21/09/2020 21:38, Ezequiel Garcia wrote:
+> In preparation for making the interface public,
+> document all the structures. Special care is taken to
+> annotate those fields that depart from the H264 syntax.
+> 
+> This commit only adds documentation and doesn't affect
+> functionality in any way.
+> 
+> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> ---
+>  include/media/h264-ctrls.h | 138 ++++++++++++++++++++++++++++++++++---
+>  1 file changed, 128 insertions(+), 10 deletions(-)
+> 
+> diff --git a/include/media/h264-ctrls.h b/include/media/h264-ctrls.h
+> index ec4799154438..afc8e7c05c18 100644
+> --- a/include/media/h264-ctrls.h
+> +++ b/include/media/h264-ctrls.h
+> @@ -46,11 +46,38 @@
+>  #define V4L2_CTRL_TYPE_H264_DECODE_PARAMS	0x0114
+>  #define V4L2_CTRL_TYPE_H264_PRED_WEIGHTS	0x0115
+>  
+> +/**
+> + * enum v4l2_mpeg_video_h264_decode_mode - Decoding mode
+> + *
+> + * @V4L2_MPEG_VIDEO_H264_DECODE_MODE_SLICE_BASED: indicates that decoding
+> + * is performed one slice at a time. In this mode,
+> + * V4L2_CID_MPEG_VIDEO_H264_SLICE_PARAMS must contain the parsed slice
+> + * parameters and the OUTPUT buffer must contain a single slice.
+> + * V4L2_BUF_CAP_SUPPORTS_M2M_HOLD_CAPTURE_BUF feature is used
+> + * in order to support multislice frames.
+> + * @V4L2_MPEG_VIDEO_H264_DECODE_MODE_FRAME_BASED: indicates that
+> + * decoding is performed per frame. The OUTPUT buffer must contain
+> + * all slices and also both fields. This mode is typically supported
+> + * by device drivers that are able to parse the slice(s) header(s)
+> + * in hardware. When this mode is selected,
+> + * V4L2_CID_MPEG_VIDEO_H264_SLICE_PARAMS is not used.
+> + */
+>  enum v4l2_mpeg_video_h264_decode_mode {
+>  	V4L2_MPEG_VIDEO_H264_DECODE_MODE_SLICE_BASED,
+>  	V4L2_MPEG_VIDEO_H264_DECODE_MODE_FRAME_BASED,
+>  };
+>  
+> +/**
+> + * enum v4l2_mpeg_video_h264_start_code - Start code
+> + *
+> + * @V4L2_MPEG_VIDEO_H264_START_CODE_NONE: slices are passed
+> + * to the driver without any start code.
+> + * @V4L2_MPEG_VIDEO_H264_START_CODE_ANNEX_B: slices are passed
+> + * to the driver with an Annex B start code prefix
+> + * (legal start codes can be 3-bytes 0x000001 or 4-bytes 0x00000001).
+> + * This mode is typically supported by device drivers that parse
+> + * the start code in hardware.
+> + */
+>  enum v4l2_mpeg_video_h264_start_code {
+>  	V4L2_MPEG_VIDEO_H264_START_CODE_NONE,
+>  	V4L2_MPEG_VIDEO_H264_START_CODE_ANNEX_B,
+> @@ -71,6 +98,12 @@ enum v4l2_mpeg_video_h264_start_code {
+>  #define V4L2_H264_SPS_FLAG_MB_ADAPTIVE_FRAME_FIELD		0x20
+>  #define V4L2_H264_SPS_FLAG_DIRECT_8X8_INFERENCE			0x40
+>  
+> +/**
+> + * struct v4l2_ctrl_h264_sps - H264 sequence parameter set
+> + *
+> + * All the members on this sequence parameter set structure match the
+> + * sequence parameter set syntax as specified by the H264 specification.
+> + */
+>  struct v4l2_ctrl_h264_sps {
+>  	__u8 profile_idc;
+>  	__u8 constraint_set_flags;
+> @@ -101,6 +134,20 @@ struct v4l2_ctrl_h264_sps {
+>  #define V4L2_H264_PPS_FLAG_TRANSFORM_8X8_MODE				0x0040
+>  #define V4L2_H264_PPS_FLAG_SCALING_MATRIX_PRESENT			0x0080
+>  
+> +/**
+> + * struct v4l2_ctrl_h264_pps - H264 picture parameter set
+> + *
+> + * Except where noted, all the members on this picture parameter set
+> + * structure match the sequence parameter set syntax as specified
+> + * by the H264 specification.
+> + *
+> + * In particular, V4L2_H264_PPS_FLAG_SCALING_MATRIX_PRESENT flag
+> + * has a specific meaning. This flag should be set if a non-flat
+> + * scaling matrix applies to the picture. In this case, applications
+> + * are expected to use V4L2_CID_MPEG_VIDEO_H264_SCALING_MATRIX.
+> + * This will be the case if SPS scaling_matrix_present_flag or
+> + * PPS pic_scaling_matrix_present_flag syntax elements are set.
 
-This patch be tested on Here on qemu-OVMF and qemu-uboot.
+This is a bit confusing. 'This will be the case': what does 'This' refer
+to?
 
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: Matthias Brugger <mbrugger@suse.com>
-Cc: Fabian Vogt <fvogt@suse.com>
-Cc: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Arthur Heymans <arthur@aheymans.xyz>
-Cc: Patrick Rudolph <patrick.rudolph@9elements.com>
-Signed-off-by: "Lee, Chun-Yi" <jlee@suse.com>
----
- drivers/firmware/efi/efi.c  |  7 -------
- drivers/firmware/efi/vars.c | 17 +++++++++++++++++
- 2 files changed, 17 insertions(+), 7 deletions(-)
+> + */
+>  struct v4l2_ctrl_h264_pps {
+>  	__u8 pic_parameter_set_id;
+>  	__u8 seq_parameter_set_id;
+> @@ -115,6 +162,18 @@ struct v4l2_ctrl_h264_pps {
+>  	__u16 flags;
+>  };
+>  
+> +/**
+> + * struct v4l2_ctrl_h264_scaling_matrix - H264 scaling matrices
+> + *
+> + * @scaling_list_4x4: scaling matrix after applying the inverse
+> + * scanning process. Expected list order is Intra Y, Intra Cb,
+> + * Intra Cr, Inter Y, Inter Cb, Inter Cr. The values on each
+> + * scaling list are expected in raster scan order.
+> + * @scaling_list_8x8: scaling matrix after applying the inverse
+> + * scanning process. Expected list order is Intra Y, Inter Y,
+> + * Intra Cb, Inter Cb, Intra Cr, Inter Cr. The values on each
+> + * scaling list are expected in raster scan order.
 
-diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-index 3aa07c3b5136..23c11a2a3f4d 100644
---- a/drivers/firmware/efi/efi.c
-+++ b/drivers/firmware/efi/efi.c
-@@ -405,13 +405,6 @@ static int __init efisubsys_init(void)
- 	if (error)
- 		goto err_remove_group;
- 
--	/* and the standard mountpoint for efivarfs */
--	error = sysfs_create_mount_point(efi_kobj, "efivars");
--	if (error) {
--		pr_err("efivars: Subsystem registration failed.\n");
--		goto err_remove_group;
--	}
--
- 	if (efi_enabled(EFI_DBG) && efi_enabled(EFI_PRESERVE_BS_REGIONS))
- 		efi_debugfs_init();
- 
-diff --git a/drivers/firmware/efi/vars.c b/drivers/firmware/efi/vars.c
-index 973eef234b36..6fa7f288d635 100644
---- a/drivers/firmware/efi/vars.c
-+++ b/drivers/firmware/efi/vars.c
-@@ -1179,6 +1179,8 @@ int efivars_register(struct efivars *efivars,
- 		     const struct efivar_operations *ops,
- 		     struct kobject *kobject)
- {
-+	int error;
-+
- 	if (down_interruptible(&efivars_lock))
- 		return -EINTR;
- 
-@@ -1191,6 +1193,19 @@ int efivars_register(struct efivars *efivars,
- 
- 	up(&efivars_lock);
- 
-+	/* and the standard mountpoint for efivarfs */
-+	if (efi_kobj) {
-+		error = sysfs_create_mount_point(efi_kobj, "efivars");
-+		if (error) {
-+			if (down_interruptible(&efivars_lock))
-+				return -EINTR;
-+			__efivars = NULL;
-+			up(&efivars_lock);
-+			pr_err("efivars: Subsystem registration failed.\n");
-+			return error;
-+		}
-+	}
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(efivars_register);
-@@ -1222,6 +1237,8 @@ int efivars_unregister(struct efivars *efivars)
- 
- 	pr_info("Unregistered efivars operations\n");
- 	__efivars = NULL;
-+	if (efi_kobj)
-+		sysfs_remove_mount_point(efi_kobj, "efivars");
- 
- 	rv = 0;
- out:
--- 
-2.16.4
+The list order is different for the 4x4 and 8x8 matrices. Is that
+correct?
 
+If it is correct, then there should perhaps be a sentence like this
+at the start:
+
+"Note that the list order is different for the 4x4 and 8x8 matrices
+as per the H264 specification."
+
+(I assume that the order is based on the H264 spec)
+
+> + */
+>  struct v4l2_ctrl_h264_scaling_matrix {
+>  	__u8 scaling_list_4x4[6][16];
+>  	__u8 scaling_list_8x8[6][64];
+> @@ -134,6 +193,12 @@ struct v4l2_h264_weight_factors {
+>  	 ((pps)->weighted_bipred_idc == 1 && \
+>  	  (slice)->slice_type == V4L2_H264_SLICE_TYPE_B))
+>  
+> +/**
+> + * struct v4l2_ctrl_h264_pred_weights - Prediction weight table
+> + *
+> + * Prediction weight table, which matches the syntax specified
+> + * by the H264 specification.
+> + */
+>  struct v4l2_ctrl_h264_pred_weights {
+>  	__u16 luma_log2_weight_denom;
+>  	__u16 chroma_log2_weight_denom;
+> @@ -153,19 +218,41 @@ struct v4l2_ctrl_h264_pred_weights {
+>  #define V4L2_H264_BOTTOM_FIELD_REF			0x2
+>  #define V4L2_H264_FRAME_REF				0x3
+>  
+> +/**
+> + * struct v4l2_h264_reference - H264 picture reference
+> + *
+> + * @fields: indicates how the picture is referenced.
+> + * Valid values are V4L2_H264_{}_REF.
+> + * @index: index into v4l2_ctrl_h264_decode_params.dpb[].
+> + */
+>  struct v4l2_h264_reference {
+>  	__u8 fields;
+> -
+> -	/* Index into v4l2_ctrl_h264_decode_params.dpb[] */
+>  	__u8 index;
+>  };
+>  
+> +/**
+> + * struct v4l2_ctrl_h264_slice_params - H264 slice parameters
+> + *
+> + * This structure holds the H264 syntax elements that are specified
+> + * as non-invariant for the slices in a given frame.
+> + *
+> + * Slice invariant syntax elements are contained in struct
+> + * v4l2_ctrl_h264_decode_params. This is done to reduce the API surface
+> + * on frame-based decoders, where slice header parsing is done by the
+> + * hardware.
+> + *
+> + * Slice invariant syntax elements are specified in specification section
+> + * "7.4.3 Slice header semantics".
+> + *
+> + * Except where noted, the members on this struct match the slice header syntax.
+> + *
+> + * @header_bit_size: offset in bits to slice_data() from the beginning of this slice.
+> + * @ref_pic_list0: reference picture list 0 after applying the per-slice modifications.
+> + * @ref_pic_list1: reference picture list 1 after applying the per-slice modifications.
+
+There are a lot more fields here that are not mentioned.
+
+In order to prevent the doc checker to issue warnings about undocumented field,
+I would suggest adding them all, but just keep the description simple:
+
+@slice_type: see H264 specification.
+
+You should also document @reserved since that's obviously not part of the h264 spec.
+
+> + */
+>  struct v4l2_ctrl_h264_slice_params {
+> -	/* Offset in bits to slice_data() from the beginning of this slice. */
+>  	__u32 header_bit_size;
+> -
+>  	__u32 first_mb_in_slice;
+> -
+>  	__u8 slice_type;
+>  	__u8 colour_plane_id;
+>  	__u8 redundant_pic_cnt;
+> @@ -191,22 +278,55 @@ struct v4l2_ctrl_h264_slice_params {
+>  #define V4L2_H264_DPB_ENTRY_FLAG_LONG_TERM	0x04
+>  #define V4L2_H264_DPB_ENTRY_FLAG_FIELD		0x08
+>  
+> +/**
+> + * struct v4l2_h264_dpb_entry - H264 decoded picture buffer entry
+> + *
+> + * @reference_ts: timestamp of the V4L2 capture buffer to use as reference.
+> + * The timestamp refers to the timestamp field in struct v4l2_buffer.
+> + * Use v4l2_timeval_to_ns() to convert the struct timeval to a __u64.
+> + * @pic_num: matches PicNum variable assigned during the reference
+> + * picture lists construction process.
+> + * @frame_num: frame identifier which matches frame_num syntax element.
+> + * @fields: indicates how the DPB entry is referenced. Valid values are
+> + * V4L2_H264_{}_REF.
+> + * @top_field_order_cnt: matches TopFieldOrderCnt picture value.
+> + * @bottom_field_order_cnt: matches BottomFieldOrderCnt picture value.
+> + * Note that picture field is indicated by v4l2_buffer.field.
+
+@flags and @reserved are missing.
+
+> + */
+>  struct v4l2_h264_dpb_entry {
+>  	__u64 reference_ts;
+>  	__u32 pic_num;
+>  	__u16 frame_num;
+>  	__u8 fields;
+>  	__u8 reserved[5];
+> -	/* Note that field is indicated by v4l2_buffer.field */
+>  	__s32 top_field_order_cnt;
+>  	__s32 bottom_field_order_cnt;
+> -	__u32 flags; /* V4L2_H264_DPB_ENTRY_FLAG_* */
+> +	__u32 flags;
+>  };
+>  
+>  #define V4L2_H264_DECODE_PARAM_FLAG_IDR_PIC		0x01
+>  #define V4L2_H264_DECODE_PARAM_FLAG_FIELD_PIC		0x02
+>  #define V4L2_H264_DECODE_PARAM_FLAG_BOTTOM_FIELD	0x04
+>  
+> +/**
+> + * struct v4l2_ctrl_h264_decode_params - H264 decoding parameters
+> + *
+> + * @dpb: decoded picture buffer.
+> + * @nal_ref_idc: slice header syntax element.
+> + * @frame_num: slice header syntax element.
+> + * @top_field_order_cnt: matches TopFieldOrderCnt picture value.
+> + * @bottom_field_order_cnt: matches BottomFieldOrderCnt picture value.
+> + * Note that picture field is indicated by v4l2_buffer.field.
+> + * @idr_pic_id: slice header syntax element.
+> + * @pic_order_cnt_lsb: slice header syntax element.
+> + * @delta_pic_order_cnt_bottom: slice header syntax element.
+> + * @delta_pic_order_cnt0: slice header syntax element.
+> + * @delta_pic_order_cnt1: slice header syntax element.
+> + * @dec_ref_pic_marking_bit_size: size in bits of dec_ref_pic_marking()
+> + * syntax element.
+> + * @pic_order_cnt_bit_size: size in bits of pic order count syntax.
+> + * @slice_group_change_cycle: slice header syntax element.
+
+@reserved and @flags are missing.
+
+> + */
+>  struct v4l2_ctrl_h264_decode_params {
+>  	struct v4l2_h264_dpb_entry dpb[V4L2_H264_NUM_DPB_ENTRIES];
+>  	__u16 nal_ref_idc;
+> @@ -218,14 +338,12 @@ struct v4l2_ctrl_h264_decode_params {
+>  	__s32 delta_pic_order_cnt_bottom;
+>  	__s32 delta_pic_order_cnt0;
+>  	__s32 delta_pic_order_cnt1;
+> -	/* Size in bits of dec_ref_pic_marking() syntax element. */
+>  	__u32 dec_ref_pic_marking_bit_size;
+> -	/* Size in bits of pic order count syntax. */
+>  	__u32 pic_order_cnt_bit_size;
+>  	__u32 slice_group_change_cycle;
+>  
+>  	__u32 reserved;
+> -	__u32 flags; /* V4L2_H264_DECODE_PARAM_FLAG_* */
+> +	__u32 flags;
+>  };
+>  
+>  #endif
+> 
+
+Regards,
+
+	Hans
