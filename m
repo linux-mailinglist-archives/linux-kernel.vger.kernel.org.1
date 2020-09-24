@@ -2,121 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B36562776C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 18:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F98C2776C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 18:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727629AbgIXQbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 12:31:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48304 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726458AbgIXQbM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727353AbgIXQbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 24 Sep 2020 12:31:12 -0400
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
+Received: from m42-4.mailgun.net ([69.72.42.4]:55593 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726811AbgIXQbK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 12:31:10 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600965069; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=7yLmKI/5vET6oVISCZDrM5SQf3FU2iPOM2oBQ/UT4Go=; b=QWIpyY23Q9LTnV+vXMIEP6H49/F3PRlGZMFOhVjnA0yLjNg52RsaLPbsKxF1L+DXdwsCFFU9
+ U3sHMXvkbpJiWFgw/FdRkoubys/jCTdsjDm/9v9ZW+QrGZI/ZhGB7PXkDpMwCtGBDYYPzqv9
+ lHoUNn8Z/qnsJk2IwZAB0Z87wAM=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5f6cc9cbe051fb32a009b851 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 24 Sep 2020 16:31:07
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 80D57C433CA; Thu, 24 Sep 2020 16:31:07 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 409262395C
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 16:31:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600965071;
-        bh=r0fXoMmW8h7GGpdSSFHKUZuN2PTtugZd7ZmhkM7BICE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=OaTraEupyZ54lp+T+8e3JvWNMZXsQiBunsO0FSVdntf2jqBGe6EEmMGnXhBrO1CRx
-         NUNNv4G3STsoa8dRsW/HbkH/67T8eho4pFlOUf9lx/04YDjbrHSYCtXVF33G7N1nPm
-         ettThb0eJVqUQi80piD/75gmFYdNr4gBp7EFlG0I=
-Received: by mail-ot1-f48.google.com with SMTP id y5so3749193otg.5
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 09:31:11 -0700 (PDT)
-X-Gm-Message-State: AOAM530oaS94YhMh8Jmk61IMOkrqqkHslJYB4sAXq2ScSrXogNltN2vn
-        WROByLIPEDON3Orifbi74etpWjZ9MmjqT+QJ+Q==
-X-Google-Smtp-Source: ABdhPJzj1CbARNhNH5q6VXh2fdWD9g7kADI+PYIEHwYD4Dl0dHVcbfd6FBfOKcpKnNfg2+mUtzZkTCD8UDostGjeQJs=
-X-Received: by 2002:a9d:6ada:: with SMTP id m26mr31760otq.192.1600965070486;
- Thu, 24 Sep 2020 09:31:10 -0700 (PDT)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5C272C433CB;
+        Thu, 24 Sep 2020 16:31:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5C272C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Amit Pundir <amit.pundir@linaro.org>
+Cc:     David S Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        ath10k@lists.infradead.org, lkml <linux-kernel@vger.kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Subject: Re: [PATCH] ath10k: qmi: Skip host capability request for Xiaomi Poco F1
+References: <1600328501-8832-1-git-send-email-amit.pundir@linaro.org>
+Date:   Thu, 24 Sep 2020 19:31:02 +0300
+In-Reply-To: <1600328501-8832-1-git-send-email-amit.pundir@linaro.org> (Amit
+        Pundir's message of "Thu, 17 Sep 2020 13:11:41 +0530")
+Message-ID: <87d02bnnll.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-References: <1595606355-1329-1-git-send-email-richard.gong@linux.intel.com> <0d445238-fcf5-39f4-92b3-69346e681efa@linux.intel.com>
-In-Reply-To: <0d445238-fcf5-39f4-92b3-69346e681efa@linux.intel.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 24 Sep 2020 10:30:59 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJomTPg6g_tfry3V2sT02+_kA_FcMXj6vygPKFwtnjP2g@mail.gmail.com>
-Message-ID: <CAL_JsqJomTPg6g_tfry3V2sT02+_kA_FcMXj6vygPKFwtnjP2g@mail.gmail.com>
-Subject: Re: [RESEND PATCHv1] MAINTAINERS: altera: change maintainer for
- Altera drivers
-To:     Richard Gong <richard.gong@linux.intel.com>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thor Thayer <thor.thayer@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Richard Gong <richard.gong@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 9:26 AM Richard Gong
-<richard.gong@linux.intel.com> wrote:
->
-> Hi,
->
-> Sorry for asking.
->
-> This patch was submitted on July and is pending for approval. Would you
-> mind reviewing that?
+Amit Pundir <amit.pundir@linaro.org> writes:
 
-That's because get_maintainers.pl gave you crap for who to send it to
-(now fixed, kind of) and this has nothing to do with DT, networking,
-media, nor serial/char/USB. This should go to whomever would take the
-driver changes (I2C, MFD, GPIO). Or you could ask Andrew Morton to
-pick it up.
-
-Rob
-
+> Workaround to get WiFi working on Xiaomi Poco F1 (sdm845)
+> phone. We get a non-fatal QMI_ERR_MALFORMED_MSG_V01 error
+> message in ath10k_qmi_host_cap_send_sync(), but we can still
+> bring up WiFi services successfully on AOSP if we ignore it.
 >
-> Regards,
-> Richard
+> We suspect either the host cap is not implemented or there
+> may be firmware specific issues. Firmware version is
+> QC_IMAGE_VERSION_STRING=WLAN.HL.2.0.c3-00257-QCAHLSWMTPLZ-1
 >
-> On 7/24/20 10:59 AM, richard.gong@linux.intel.com wrote:
-> > From: Richard Gong <richard.gong@intel.com>
-> >
-> > Thor is moving to a new position and I will take over the maintainershi=
-p.
-> > Add myself as maintainer for 3 Altera drivers below:
-> > 1. Altera I2C driver
-> > 2. Altera System Manager driver
-> > 3. Altera System Resource driver
-> >
-> > Signed-off-by: Richard Gong <richard.gong@intel.com>
-> > Acked-by: Thor Thayer <thor.thayer@linux.intel.com>
-> > ---
-> >   MAINTAINERS | 6 +++---
-> >   1 file changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index b4a43a9..d87a307 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -750,7 +750,7 @@ R:        Pali Roh=C3=A1r <pali@kernel.org>
-> >   F:  drivers/input/mouse/alps.*
-> >
-> >   ALTERA I2C CONTROLLER DRIVER
-> > -M:   Thor Thayer <thor.thayer@linux.intel.com>
-> > +M:   Richard Gong <richard.gong@linux.intel.com>
-> >   S:  Maintained
-> >   F:  Documentation/devicetree/bindings/i2c/i2c-altera.txt
-> >   F:  drivers/i2c/busses/i2c-altera.c
-> > @@ -767,13 +767,13 @@ S:      Maintained
-> >   F:  drivers/gpio/gpio-altera.c
-> >
-> >   ALTERA SYSTEM MANAGER DRIVER
-> > -M:   Thor Thayer <thor.thayer@linux.intel.com>
-> > +M:   Richard Gong <richard.gong@linux.intel.com>
-> >   S:  Maintained
-> >   F:  drivers/mfd/altera-sysmgr.c
-> >   F:  include/linux/mfd/altera-sysmgr.h
-> >
-> >   ALTERA SYSTEM RESOURCE DRIVER FOR ARRIA10 DEVKIT
-> > -M:   Thor Thayer <thor.thayer@linux.intel.com>
-> > +M:   Richard Gong <richard.gong@linux.intel.com>
-> >   S:  Maintained
-> >   F:  drivers/gpio/gpio-altera-a10sr.c
-> >   F:  drivers/mfd/altera-a10sr.c
-> >
+> qcom,snoc-host-cap-8bit-quirk didn't help. If I use this
+> quirk, then the host capability request does get accepted,
+> but we run into fatal "msa info req rejected" error and
+> WiFi interface doesn't come up.
+>
+> Attempts are being made to debug the failure reasons but no
+> luck so far. Hence this device specific workaround instead
+> of checking for QMI_ERR_MALFORMED_MSG_V01 error message.
+> Tried ath10k/WCN3990/hw1.0/wlanmdsp.mbn from the upstream
+> linux-firmware project but it didn't help and neither did
+> building board-2.bin file from stock bdwlan* files.
+>
+> This workaround will be removed once we have a viable fix.
+> Thanks to postmarketOS guys for catching this.
+>
+> Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
+
+Bjorn, is this ok to take?
+
+> --- a/drivers/net/wireless/ath/ath10k/qmi.c
+> +++ b/drivers/net/wireless/ath/ath10k/qmi.c
+> @@ -651,7 +651,8 @@ static int ath10k_qmi_host_cap_send_sync(struct ath10k_qmi *qmi)
+>  
+>  	/* older FW didn't support this request, which is not fatal */
+>  	if (resp.resp.result != QMI_RESULT_SUCCESS_V01 &&
+> -	    resp.resp.error != QMI_ERR_NOT_SUPPORTED_V01) {
+> +	    resp.resp.error != QMI_ERR_NOT_SUPPORTED_V01 &&
+> +	    !of_machine_is_compatible("xiaomi,beryllium")) { /* Xiaomi Poco F1 workaround */
+>  		ath10k_err(ar, "host capability request rejected: %d\n", resp.resp.error);
+
+ath10k-check complained about a too long line, so in the pending branch
+I moved the comment before the if statement.
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
