@@ -2,201 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F33DE276C8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19C95276CB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727315AbgIXJAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 05:00:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726064AbgIXJAP (ORCPT
+        id S1727326AbgIXJEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 05:04:31 -0400
+Received: from smtpout1.mo529.mail-out.ovh.net ([178.32.125.2]:39045 "EHLO
+        smtpout1.mo529.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726710AbgIXJEa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 05:00:15 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DED89C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:00:14 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id 94D5029B8B9
-Subject: Re: [PATCH v3 16/16] ARM: Remove custom IRQ stat accounting
-To:     Marc Zyngier <maz@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Sumit Garg <sumit.garg@linaro.org>, kernel-team@android.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King <linux@arm.linux.org.uk>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Saravana Kannan <saravanak@google.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, kernelci-results@groups.io
-References: <20200901144324.1071694-1-maz@kernel.org>
- <20200901144324.1071694-17-maz@kernel.org>
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Message-ID: <aa8ff875-bee8-26f8-46b0-df579f2067a7@collabora.com>
-Date:   Thu, 24 Sep 2020 10:00:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Thu, 24 Sep 2020 05:04:30 -0400
+X-Greylist: delayed 488 seconds by postgrey-1.27 at vger.kernel.org; Thu, 24 Sep 2020 05:04:29 EDT
+Received: from mxplan5.mail.ovh.net (unknown [10.108.1.237])
+        by mo529.mail-out.ovh.net (Postfix) with ESMTPS id E56615E550ED;
+        Thu, 24 Sep 2020 10:56:19 +0200 (CEST)
+Received: from kaod.org (37.59.142.106) by DAG8EX1.mxp5.local (172.16.2.71)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Thu, 24 Sep
+ 2020 10:56:19 +0200
+Authentication-Results: garm.ovh; auth=pass (GARM-106R006c5bf5594-637d-4083-858d-063c7491bba4,
+                    85AEC8A2294FDACAA0F214F2A1981C2CEEF9973D) smtp.auth=groug@kaod.org
+Date:   Thu, 24 Sep 2020 10:56:18 +0200
+From:   Greg Kurz <groug@kaod.org>
+To:     Jianyong Wu <Jianyong.Wu@arm.com>
+CC:     Dominique Martinet <asmadeus@codewreck.org>,
+        "ericvh@gmail.com" <ericvh@gmail.com>,
+        "lucho@ionkov.net" <lucho@ionkov.net>,
+        "qemu_oss@crudebyte.com" <qemu_oss@crudebyte.com>,
+        "v9fs-developer@lists.sourceforge.net" 
+        <v9fs-developer@lists.sourceforge.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Justin He <Justin.He@arm.com>
+Subject: Re: [PATCH RFC v2 4/4] 9p: fix race issue in fid contention.
+Message-ID: <20200924105618.556b9a8d@bahia.lan>
+In-Reply-To: <HE1PR0802MB25556D1AAF1336F4EE3CA8DBF4390@HE1PR0802MB2555.eurprd08.prod.outlook.com>
+References: <20200923141146.90046-1-jianyong.wu@arm.com>
+        <20200923141146.90046-5-jianyong.wu@arm.com>
+        <20200923144953.GA1685@nautica>
+        <HE1PR0802MB25556D1AAF1336F4EE3CA8DBF4390@HE1PR0802MB2555.eurprd08.prod.outlook.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200901144324.1071694-17-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [37.59.142.106]
+X-ClientProxiedBy: DAG6EX1.mxp5.local (172.16.2.51) To DAG8EX1.mxp5.local
+ (172.16.2.71)
+X-Ovh-Tracer-GUID: b77c1de3-76da-4996-88e1-519bcc2401cd
+X-Ovh-Tracer-Id: 6859826660615493996
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedujedrudekgdduudcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkjghfofggtgfgihesthejredtredtvdenucfhrhhomhepifhrvghgucfmuhhriicuoehgrhhouhhgsehkrghougdrohhrgheqnecuggftrfgrthhtvghrnhepueffteeuffekveffhfffueejkeeitdfgjedvtdelgfettdffgfffieeijefftdevnecuffhomhgrihhnpehgihhthhhusgdrtghomhenucfkpheptddrtddrtddrtddpfeejrdehledrudegvddruddtieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehmgihplhgrnhehrdhmrghilhdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepghhrohhugheskhgrohgurdhorhhgpdhrtghpthhtoheplfhushhtihhnrdfjvgesrghrmhdrtghomh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+On Thu, 24 Sep 2020 08:38:01 +0000
+Jianyong Wu <Jianyong.Wu@arm.com> wrote:
 
-On 01/09/2020 15:43, Marc Zyngier wrote:
-> Let's switch the arm code to the core accounting, which already
-> does everything we need.
-> 
-> Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> ---
->  arch/arm/include/asm/hardirq.h | 17 -----------------
->  arch/arm/kernel/smp.c          | 20 ++++----------------
->  2 files changed, 4 insertions(+), 33 deletions(-)
+> > Given the other thread, what did you test this with?  
+> Er, I just use Greg's qemu of https://github.com/gkurz/qemu.git: 9p-attr-fixes. I should have referenced it in commit message.
 
-This appears to be causing a NULL pointer dereference on
-beaglebone-black, it got bisected automatically several times.
-None of the other platforms in the KernelCI labs appears to be
-affected.
+... which is a pretty old QEMU version BTW.
 
-Here's the error in the full job log, with next-20200923:
+https://github.com/gkurz/qemu/blob/9p-attr-fixes/VERSION
 
-  https://storage.staging.kernelci.org/kernelci/staging.kernelci.org/staging-20200924.0/arm/multi_v7_defconfig/gcc-8/lab-baylibre/baseline-beaglebone-black.html#L460
+2.6.50 aka 2.7 development tree
 
-and some meta-data:
+As said by Christian in some other mail, if someone wants these fixes to be
+effective when using QEMU, they should maybe invest time to rebase against
+the current development branch. I personally don't have time to do that but
+I'm available to answer questions if needed.
 
-  https://staging.kernelci.org/test/case/id/5f6bea67f724eb1b34dce584/
+Cheers,
 
-The full bisection report is available here:
-
-  https://groups.io/g/kernelci-results-staging/message/2094
-
-I've also run it again with a debug build to locate the problem,
-see below.
-
-
-> diff --git a/arch/arm/include/asm/hardirq.h b/arch/arm/include/asm/hardirq.h
-> index 7a88f160b1fb..b95848ed2bc7 100644
-> --- a/arch/arm/include/asm/hardirq.h
-> +++ b/arch/arm/include/asm/hardirq.h
-> @@ -6,29 +6,12 @@
->  #include <linux/threads.h>
->  #include <asm/irq.h>
->  
-> -/* number of IPIS _not_ including IPI_CPU_BACKTRACE */
-> -#define NR_IPI	7
-> -
->  typedef struct {
->  	unsigned int __softirq_pending;
-> -#ifdef CONFIG_SMP
-> -	unsigned int ipi_irqs[NR_IPI];
-> -#endif
->  } ____cacheline_aligned irq_cpustat_t;
->  
->  #include <linux/irq_cpustat.h>	/* Standard mappings for irq_cpustat_t above */
->  
-> -#define __inc_irq_stat(cpu, member)	__IRQ_STAT(cpu, member)++
-> -#define __get_irq_stat(cpu, member)	__IRQ_STAT(cpu, member)
-> -
-> -#ifdef CONFIG_SMP
-> -u64 smp_irq_stat_cpu(unsigned int cpu);
-> -#else
-> -#define smp_irq_stat_cpu(cpu)	0
-> -#endif
-> -
-> -#define arch_irq_stat_cpu	smp_irq_stat_cpu
-> -
->  #define __ARCH_IRQ_EXIT_IRQS_DISABLED	1
->  
->  #endif /* __ASM_HARDIRQ_H */
-> diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
-> index d51e64955a26..aead847ac8b9 100644
-> --- a/arch/arm/kernel/smp.c
-> +++ b/arch/arm/kernel/smp.c
-> @@ -65,6 +65,7 @@ enum ipi_msg_type {
->  	IPI_CPU_STOP,
->  	IPI_IRQ_WORK,
->  	IPI_COMPLETION,
-> +	NR_IPI,
->  	/*
->  	 * CPU_BACKTRACE is special and not included in NR_IPI
->  	 * or tracable with trace_ipi_*
-> @@ -529,27 +530,16 @@ void show_ipi_list(struct seq_file *p, int prec)
->  	unsigned int cpu, i;
->  
->  	for (i = 0; i < NR_IPI; i++) {
-> +		unsigned int irq = irq_desc_get_irq(ipi_desc[i]);
-
-It looks like irq_desc_get_irq() gets called with a NULL
-pointer (well, 0x0000001c):
-
-(gdb) l *0xc030ef38
-0xc030ef38 is in show_ipi_list (../include/linux/irqdesc.h:123).
-118		return container_of(data->common, struct irq_desc, irq_common_data);
-119	}
-120	
-121	static inline unsigned int irq_desc_get_irq(struct irq_desc *desc)
-122	{
-123		return desc->irq_data.irq;
-124	}
-125	
-126	static inline struct irq_data *irq_desc_get_irq_data(struct irq_desc *desc)
-127	{
-
-Full job log: https://lava.baylibre.com/scheduler/job/142375#L727
-
-I haven't looked any further but hopefully this should be a good
-enough clue to find the root cause.  I don't know if you have a
-platform at hand to reproduce the issue, please let me know if
-you need some help with debugging or testing a fix.
-
-Hope this helps,
-Guillaume
-
-
->  		seq_printf(p, "%*s%u: ", prec - 1, "IPI", i);
->  
->  		for_each_online_cpu(cpu)
-> -			seq_printf(p, "%10u ",
-> -				   __get_irq_stat(cpu, ipi_irqs[i]));
-> +			seq_printf(p, "%10u ", kstat_irqs_cpu(irq, cpu));
->  
->  		seq_printf(p, " %s\n", ipi_types[i]);
->  	}
->  }
->  
-> -u64 smp_irq_stat_cpu(unsigned int cpu)
-> -{
-> -	u64 sum = 0;
-> -	int i;
-> -
-> -	for (i = 0; i < NR_IPI; i++)
-> -		sum += __get_irq_stat(cpu, ipi_irqs[i]);
-> -
-> -	return sum;
-> -}
-> -
->  void arch_send_call_function_ipi_mask(const struct cpumask *mask)
->  {
->  	smp_cross_call(mask, IPI_CALL_FUNC);
-> @@ -630,10 +620,8 @@ static void do_handle_IPI(int ipinr)
->  {
->  	unsigned int cpu = smp_processor_id();
->  
-> -	if ((unsigned)ipinr < NR_IPI) {
-> +	if ((unsigned)ipinr < NR_IPI)
->  		trace_ipi_entry_rcuidle(ipi_types[ipinr]);
-> -		__inc_irq_stat(cpu, ipi_irqs[ipinr]);
-> -	}
->  
->  	switch (ipinr) {
->  	case IPI_WAKEUP:
-> 
-
+--
+Greg
