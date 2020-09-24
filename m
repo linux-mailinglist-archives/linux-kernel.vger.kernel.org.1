@@ -2,83 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 552612774EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6C62774F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:11:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728405AbgIXPKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 11:10:16 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:32815 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728381AbgIXPKP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 11:10:15 -0400
-Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kLSsp-0005yC-LQ; Thu, 24 Sep 2020 15:10:08 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     jeffrey.t.kirsher@intel.com
-Cc:     andrew@lunn.ch, Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        intel-wired-lan@lists.osuosl.org (moderated list:INTEL ETHERNET DRIVERS),
-        netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] e1000e: Increase iteration on polling MDIC ready bit
-Date:   Thu, 24 Sep 2020 23:09:58 +0800
-Message-Id: <20200924150958.18016-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200923074751.10527-1-kai.heng.feng@canonical.com>
-References: <20200923074751.10527-1-kai.heng.feng@canonical.com>
+        id S1728342AbgIXPLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 11:11:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41816 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728215AbgIXPLJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 11:11:09 -0400
+Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3DD7920888;
+        Thu, 24 Sep 2020 15:11:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600960268;
+        bh=eKzStppL6O+Yi3zbaWGa3CiyDjwdh/bVEGy1dk9/RAM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=1FzU+jmafCRzt7I9wuLQzoKAySsY9GoInYk3p6dgPXh0wFOJ+McDsLqsDnKH2k490
+         7t/7Pnd+lxzxhlTx7PTaJRBHoabCS+Abq2c8s0/sJbrGshJ7uzRvcXmu/tqQvFYMSm
+         Hhu915BUJdXsVo2F4I/qlT2aLBlQDIu6iYig6LA0=
+Date:   Thu, 24 Sep 2020 10:11:06 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: aardvark: Update comment about disabling link
+ training
+Message-ID: <20200924151106.GA2319992@bjorn-Precision-5520>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200924084618.12442-1-pali@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We are seeing the following error after S3 resume:
-[  704.746874] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
-[  704.844232] e1000e 0000:00:1f.6 eno1: MDI Write did not complete
-[  704.902817] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
-[  704.903075] e1000e 0000:00:1f.6 eno1: reading PHY page 769 (or 0x6020 shifted) reg 0x17
-[  704.903281] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
-[  704.903486] e1000e 0000:00:1f.6 eno1: writing PHY page 769 (or 0x6020 shifted) reg 0x17
-[  704.943155] e1000e 0000:00:1f.6 eno1: MDI Error
-...
-[  705.108161] e1000e 0000:00:1f.6 eno1: Hardware Error
+On Thu, Sep 24, 2020 at 10:46:18AM +0200, Pali Rohár wrote:
+> It is not HW bug or workaround for some cards but it is requirement by PCI
+> Express spec. After fundamental reset is needed 100ms delay prior enabling
+> link training. So update comment in code to reflect this requirement.
+> 
+> Signed-off-by: Pali Rohár <pali@kernel.org>
+> ---
+>  drivers/pci/controller/pci-aardvark.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
+> index 50ab6d7519ae..19b9b79226e5 100644
+> --- a/drivers/pci/controller/pci-aardvark.c
+> +++ b/drivers/pci/controller/pci-aardvark.c
+> @@ -259,7 +259,12 @@ static void advk_pcie_issue_perst(struct advk_pcie *pcie)
+>  	if (!pcie->reset_gpio)
+>  		return;
+>  
+> -	/* PERST does not work for some cards when link training is enabled */
+> +	/*
+> +	 * As required by PCI Express spec a delay for at least 100ms after
+> +	 * de-asserting PERST# signal is needed before link training is enabled.
+> +	 * So ensure that link training is disabled prior de-asserting PERST#
+> +	 * signal to fulfill that PCI Express spec requirement.
 
-As Andrew Lunn pointed out, MDIO has nothing to do with phy, and indeed
-increase polling iteration can resolve the issue.
+Can you please include the spec citation here?  In the PCIe base spec,
+PERST# is only mentioned in PCIe r5.0, sec 6.6.1, and I don't see the
+connection there to 100ms between de-assert of PERST# and enabling
+link training.
 
-While at it, also move the delay to the end of loop, to potentially save
-50 us.
+Sec 6.1.1 does talk about 100ms before sending config requests (for
+ports that support <= 5 GT/s), and 100ms after link training completes
+(for ports that support > 5 GT/s).
 
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
-v2:
- - Increase polling iteration instead of powering down the phy.
+Maybe there's more language in a form-factor spec or something?
 
- drivers/net/ethernet/intel/e1000e/phy.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/e1000e/phy.c b/drivers/net/ethernet/intel/e1000e/phy.c
-index e11c877595fb..72968a01164b 100644
---- a/drivers/net/ethernet/intel/e1000e/phy.c
-+++ b/drivers/net/ethernet/intel/e1000e/phy.c
-@@ -203,11 +203,12 @@ s32 e1000e_write_phy_reg_mdic(struct e1000_hw *hw, u32 offset, u16 data)
- 	 * Increasing the time out as testing showed failures with
- 	 * the lower time out
- 	 */
--	for (i = 0; i < (E1000_GEN_POLL_TIMEOUT * 3); i++) {
--		udelay(50);
-+	for (i = 0; i < (E1000_GEN_POLL_TIMEOUT * 10); i++) {
- 		mdic = er32(MDIC);
- 		if (mdic & E1000_MDIC_READY)
- 			break;
-+
-+		udelay(50);
- 	}
- 	if (!(mdic & E1000_MDIC_READY)) {
- 		e_dbg("MDI Write did not complete\n");
--- 
-2.17.1
-
+> +	 */
+>  	reg = advk_readl(pcie, PCIE_CORE_CTRL0_REG);
+>  	reg &= ~LINK_TRAINING_EN;
+>  	advk_writel(pcie, reg, PCIE_CORE_CTRL0_REG);
+> -- 
+> 2.20.1
+> 
