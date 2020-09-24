@@ -2,123 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AF02277350
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B45277340
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728209AbgIXN7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 09:59:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53298 "EHLO
+        id S1728133AbgIXN7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 09:59:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728152AbgIXN7T (ORCPT
+        with ESMTP id S1727970AbgIXN7E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 09:59:19 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FBBBC0613D8
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:59:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=DoQjzQarxloGAmnDI67QP4f0cjzIHBlULRPmusZkYFE=; b=Wle5rrsf+RqFWFUJjUE1hZ+CeZ
-        gESFPu3GnpG43g18SN2z5c30lwsCJXPouUI2dOzKKGTOY4iO72QA54PRkRtRNYAMtAhUoVaGNfsAP
-        qEUVsmaPq/JprzOd6dGTNyNyIxR4W5PWejpsei3Uuj82SsW7ET4sYAkFsZRjQBtBqwe799KZw1aha
-        7G8PNMRi5V1UH0TNGLwrymdthFBu3HqxsMm8Zxzzs3gza4c11P8o1Ap8kM1EVo++DvMZuKLMq1nmo
-        qmJyACVq9ezddAPwb2l/W3GltjZj6sQO1OLZ+iYp/9MgqLxWTTwQx2QmH7Zz8VpZ03Hnv8BGJbsEx
-        kQU0B9/Q==;
-Received: from p4fdb0c34.dip0.t-ipconnect.de ([79.219.12.52] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kLRm7-0003xB-62; Thu, 24 Sep 2020 13:59:07 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Nitin Gupta <ngupta@vflare.org>, x86@kernel.org,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-mm@kvack.org
-Subject: [PATCH 10/11] x86/xen: open code alloc_vm_area in arch_gnttab_valloc
-Date:   Thu, 24 Sep 2020 15:58:52 +0200
-Message-Id: <20200924135853.875294-11-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200924135853.875294-1-hch@lst.de>
-References: <20200924135853.875294-1-hch@lst.de>
+        Thu, 24 Sep 2020 09:59:04 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D89D0C0613CE;
+        Thu, 24 Sep 2020 06:59:04 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id q12so1703648plr.12;
+        Thu, 24 Sep 2020 06:59:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2VqKeVQ1TTob+l57hN7CdbLV7X6Dn8oLhoInjEYhe84=;
+        b=iJNOg80zt0Ah6l1cspo0ZJjdpKbJBzcvljzpu8+RCIbOrUi40Z1r3x2wlxIWpPzyK+
+         eLb7EzZ3TJE+vkIwK2o9x7A+85aoWnqvzUIvkM9O+WkPQwDljpljo07XtixsC/idbiW6
+         I5M/0BUAhIm+I37qSCiHIGqWqxsSIrJlkYRe9nvlaEabgDuxyKZeUYBWj1bNi6S9L6iP
+         v6NgR7zVnmBQ5+hA1BQ9E+BznV19j8PON6LZah+TVe5iAr7w14Fa3n/BBV7TE960fC+D
+         dBaJUb53KMUS/SQi/beDRYuLTahpqbK9FjRD9R5OvwgGQyFM+I59lTUFzO0RrZTU9sIm
+         8b1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2VqKeVQ1TTob+l57hN7CdbLV7X6Dn8oLhoInjEYhe84=;
+        b=dBgYZR+o1D8FNFJ/NgZpVxO/0wpQSf7sjJc0Jzi78koDgPlM58NSlXkMk8OlCSsbsj
+         WG8jqipyXCEXv3wnCCK4B5mOMTQBkS0A2C/IyR/6LHvadTuEUqGBI6n5BOVrvU6/s1S7
+         9Uo9K1wejARa86thWMNMWyVM2tEpGOJdqJxR8BOYy4AafgdF1y2WsDw0QYd7lImbBfDa
+         xlxSmj+C12WvcHAgGr+DJ8Kabb5ASfWSHVjMYL8UspA924jdOZFQtOFwtpjrXMLIsTx2
+         y59/SI6qprEdWSkX7VbJi+06Wp3rqFqMjpTKWzMLa5l8IzGOxvdCIAIEcp7V/P2O/7fZ
+         C35Q==
+X-Gm-Message-State: AOAM530XRI+aqXdc/e2YBkad9k4/rA06r53DXsmOAjt+NIWNNDD2qEHU
+        ymh7jQ7eZ55S4OkgF6/9/PFwPYjBBICz6AzzM2s=
+X-Google-Smtp-Source: ABdhPJyvl17/a3pu9tlrQgIEKe6i/q2CoeM5t9WnXhUUjEFht9tfPbDh6SnabQyrDZfNtd1ZmQpcooqGFz/nEPw+tIA=
+X-Received: by 2002:a17:90b:4b82:: with SMTP id lr2mr4074041pjb.184.1600955944381;
+ Thu, 24 Sep 2020 06:59:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20200923232923.3142503-1-keescook@chromium.org> <43039bb6-9d9f-b347-fa92-ea34ccc21d3d@rasmusvillemoes.dk>
+In-Reply-To: <43039bb6-9d9f-b347-fa92-ea34ccc21d3d@rasmusvillemoes.dk>
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+Date:   Thu, 24 Sep 2020 08:58:53 -0500
+Message-ID: <CABqSeAQKksqM1SdsQMoR52AJ5CY0VE2tk8-TJaMuOrkCprQ0MQ@mail.gmail.com>
+Subject: Re: [PATCH v1 0/6] seccomp: Implement constant action bitmaps
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Kees Cook <keescook@chromium.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        kernel list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the last call to alloc_vm_area with an open coded version using
-an iterator in struct gnttab_vm_area instead of the triple indirection
-magic in alloc_vm_area.
+On Thu, Sep 24, 2020 at 8:46 AM Rasmus Villemoes
+<linux@rasmusvillemoes.dk> wrote:
+> But one thing I'm wondering about and I haven't seen addressed anywhere:
+> Why build the bitmap on the kernel side (with all the complexity of
+> having to emulate the filter for all syscalls)? Why can't userspace just
+> hand the kernel "here's a new filter: the syscalls in this bitmap are
+> always allowed noquestionsasked, for the rest, run this bpf". Sure, that
+> might require a new syscall or extending seccomp(2) somewhat, but isn't
+> that a _lot_ simpler? It would probably also mean that the bpf we do get
+> handed is a lot smaller. Userspace might need to pass a couple of
+> bitmaps, one for each relevant arch, but you get the overall idea.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- arch/x86/xen/grant-table.c | 27 ++++++++++++++++++++-------
- 1 file changed, 20 insertions(+), 7 deletions(-)
+Perhaps. The thing is, the current API expects any filter attaches to
+be "additive". If a new filter gets attached that says "disallow read"
+then no matter whatever has been attached already, "read" shall not be
+allowed at the next syscall, bypassing all previous allowlist bitmaps
+(so you need to emulate the bpf anyways here?). We should also not
+have a API that could let anyone escape the secomp jail. Say "prctl"
+is permitted but "read" is not permitted, one must not be allowed to
+attach a bitmap so that "read" now appears in the allowlist. The only
+way this could potentially work is to attach a BPF filter and a bitmap
+at the same time in the same syscall, which might mean API redesign?
 
-diff --git a/arch/x86/xen/grant-table.c b/arch/x86/xen/grant-table.c
-index 4988e19598c8a5..1e681bf62561a0 100644
---- a/arch/x86/xen/grant-table.c
-+++ b/arch/x86/xen/grant-table.c
-@@ -25,6 +25,7 @@
- static struct gnttab_vm_area {
- 	struct vm_struct *area;
- 	pte_t **ptes;
-+	int idx;
- } gnttab_shared_vm_area, gnttab_status_vm_area;
- 
- int arch_gnttab_map_shared(unsigned long *frames, unsigned long nr_gframes,
-@@ -90,19 +91,31 @@ void arch_gnttab_unmap(void *shared, unsigned long nr_gframes)
- 	}
- }
- 
-+static int gnttab_apply(pte_t *pte, unsigned long addr, void *data)
-+{
-+	struct gnttab_vm_area *area = data;
-+
-+	area->ptes[area->idx++] = pte;
-+	return 0;
-+}
-+
- static int arch_gnttab_valloc(struct gnttab_vm_area *area, unsigned nr_frames)
- {
- 	area->ptes = kmalloc_array(nr_frames, sizeof(*area->ptes), GFP_KERNEL);
- 	if (area->ptes == NULL)
- 		return -ENOMEM;
--
--	area->area = alloc_vm_area(PAGE_SIZE * nr_frames, area->ptes);
--	if (area->area == NULL) {
--		kfree(area->ptes);
--		return -ENOMEM;
--	}
--
-+	area->area = get_vm_area(PAGE_SIZE * nr_frames, VM_IOREMAP);
-+	if (!area->area)
-+		goto out_free_ptes;
-+	if (apply_to_page_range(&init_mm, (unsigned long)area->area->addr,
-+			PAGE_SIZE * nr_frames, gnttab_apply, area))
-+		goto out_free_vm_area;
- 	return 0;
-+out_free_vm_area:
-+	free_vm_area(area->area);
-+out_free_ptes:
-+	kfree(area->ptes);
-+	return -ENOMEM;
- }
- 
- static void arch_gnttab_vfree(struct gnttab_vm_area *area)
--- 
-2.28.0
+> I'm also a bit worried about the performance of doing that emulation;
+> that's constant extra overhead for, say, launching a docker container.
 
+IMO, launching a docker container is so expensive this should be negligible.
+
+YiFei Zhu
