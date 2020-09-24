@@ -2,87 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C9ED276741
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 05:28:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12204276745
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 05:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727005AbgIXD1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 23:27:34 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14268 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726572AbgIXD1d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 23:27:33 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 42232317F7D5E91447CD;
-        Thu, 24 Sep 2020 11:27:32 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.253) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Thu, 24 Sep 2020
- 11:27:25 +0800
-Subject: Re: [PATCH v2 1/4] dt-bindings: arm: hisilicon: add binding for
- SD5203 SoC
-To:     Rob Herring <robh@kernel.org>
-CC:     Wei Xu <xuwei5@hisilicon.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Libin <huawei.libin@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-References: <20200919064555.3616-1-thunder.leizhen@huawei.com>
- <20200919064555.3616-2-thunder.leizhen@huawei.com>
- <20200923205905.GA1296543@bogus>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <76a3d247-d3e4-bd8c-2c4e-252908024cb0@huawei.com>
-Date:   Thu, 24 Sep 2020 11:27:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1726923AbgIXD2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 23:28:45 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:37825 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726702AbgIXD2m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 23:28:42 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R721e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0U9w0Ss1_1600918116;
+Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U9w0Ss1_1600918116)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 24 Sep 2020 11:28:37 +0800
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, willy@infradead.org,
+        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        shakeelb@google.com, iamjoonsoo.kim@lge.com,
+        richard.weiyang@gmail.com, kirill@shutemov.name,
+        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
+        vdavydov.dev@gmail.com, shy828301@gmail.com, aaron.lwe@gmail.com
+Subject: [PATCH v19 00/20] per memcg lru_lock 
+Date:   Thu, 24 Sep 2020 11:28:15 +0800
+Message-Id: <1600918115-22007-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-In-Reply-To: <20200923205905.GA1296543@bogus>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.253]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The new version rebased on v5.9-rc6 with line by line review by Hugh Dickins.
+Millions thanks! And removed the 4th part from last version which do post
+optimization, that we can repost after the main part get merged. About one
+year coding and review, now I believe it's ready.
+
+So now this patchset includes 3 parts:
+1, some code cleanup and minimum optimization as a preparation. 
+2, use TestCleanPageLRU as page isolation's precondition.
+3, replace per node lru_lock with per memcg per node lru_lock.
+
+Current lru_lock is one for each of node, pgdat->lru_lock, that guard for
+lru lists, but now we had moved the lru lists into memcg for long time. Still
+using per node lru_lock is clearly unscalable, pages on each of memcgs have
+to compete each others for a whole lru_lock. This patchset try to use per
+lruvec/memcg lru_lock to repleace per node lru lock to guard lru lists, make
+it scalable for memcgs and get performance gain.
+
+Currently lru_lock still guards both lru list and page's lru bit, that's ok.
+but if we want to use specific lruvec lock on the page, we need to pin down
+the page's lruvec/memcg during locking. Just taking lruvec lock first may be
+undermined by the page's memcg charge/migration. To fix this problem, we could
+take out the page's lru bit clear and use it as pin down action to block the
+memcg changes. That's the reason for new atomic func TestClearPageLRU.
+So now isolating a page need both actions: TestClearPageLRU and hold the
+lru_lock.
+
+The typical usage of this is isolate_migratepages_block() in compaction.c
+we have to take lru bit before lru lock, that serialized the page isolation
+in memcg page charge/migration which will change page's lruvec and new 
+lru_lock in it.
+
+The above solution suggested by Johannes Weiner, and based on his new memcg 
+charge path, then have this patchset. (Hugh Dickins tested and contributed much
+code from compaction fix to general code polish, thanks a lot!).
+
+Daniel Jordan's testing show 62% improvement on modified readtwice case
+on his 2P * 10 core * 2 HT broadwell box.
+https://lore.kernel.org/lkml/20200915165807.kpp7uhiw7l3loofu@ca-dmjordan1.us.oracle.com/
+
+Thanks Hugh Dickins and Konstantin Khlebnikov, they both brought this
+idea 8 years ago, and others who give comments as well: Daniel Jordan, 
+Mel Gorman, Shakeel Butt, Matthew Wilcox, Alexander Duyck etc.
+
+Thanks for Testing support from Intel 0day and Rong Chen, Fengguang Wu,
+and Yun Wang. Hugh Dickins also shared his kbuild-swap case. Thanks!
 
 
-On 2020/9/24 4:59, Rob Herring wrote:
-> On Sat, Sep 19, 2020 at 02:45:52PM +0800, Zhen Lei wrote:
->> Add devicetree binding for Hisilicon SD5203 SoC.
->>
->> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->> ---
->>  Documentation/devicetree/bindings/arm/hisilicon/hisilicon.txt | 5 +++++
->>  1 file changed, 5 insertions(+)
-> 
-> Please convert this to DT schema format first.
+Alex Shi (17):
+  mm/memcg: warning on !memcg after readahead page charged
+  mm/memcg: bail early from swap accounting if memcg disabled
+  mm/thp: move lru_add_page_tail func to huge_memory.c
+  mm/thp: use head for head page in lru_add_page_tail
+  mm/thp: Simplify lru_add_page_tail()
+  mm/thp: narrow lru locking
+  mm/vmscan: remove unnecessary lruvec adding
+  mm/memcg: add debug checking in lock_page_memcg
+  mm/swap.c: fold vm event PGROTATED into pagevec_move_tail_fn
+  mm/lru: move lock into lru_note_cost
+  mm/vmscan: remove lruvec reget in move_pages_to_lru
+  mm/mlock: remove lru_lock on TestClearPageMlocked
+  mm/mlock: remove __munlock_isolate_lru_page
+  mm/lru: introduce TestClearPageLRU
+  mm/compaction: do page isolation first in compaction
+  mm/swap.c: serialize memcg changes in pagevec_lru_move_fn
+  mm/lru: replace pgdat lru_lock with lruvec lock
 
-OK, I will do it.
+Alexander Duyck (1):
+  mm/lru: introduce the relock_page_lruvec function
 
-> 
->>
->> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.txt b/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.txt
->> index a97f643e7d1c760..5d80070bfb13fc0 100644
->> --- a/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.txt
->> +++ b/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.txt
->> @@ -56,6 +56,11 @@ HiP07 D05 Board
->>  Required root node properties:
->>  	- compatible = "hisilicon,hip07-d05";
->>  
->> +SD5203 SoC
->> +Required root node properties:
->> +	- compatible = "hisilicon,sd5203";
->> +
->> +
->>  Hisilicon system controller
->>  
->>  Required properties:
->> -- 
->> 1.8.3
->>
->>
-> 
-> .
-> 
+Hugh Dickins (2):
+  mm: page_idle_get_page() does not need lru_lock
+  mm/lru: revise the comments of lru_lock
+
+ Documentation/admin-guide/cgroup-v1/memcg_test.rst |  15 +-
+ Documentation/admin-guide/cgroup-v1/memory.rst     |  21 +--
+ Documentation/trace/events-kmem.rst                |   2 +-
+ Documentation/vm/unevictable-lru.rst               |  22 +--
+ include/linux/memcontrol.h                         | 110 +++++++++++
+ include/linux/mm_types.h                           |   2 +-
+ include/linux/mmdebug.h                            |  13 ++
+ include/linux/mmzone.h                             |   6 +-
+ include/linux/page-flags.h                         |   1 +
+ include/linux/swap.h                               |   4 +-
+ mm/compaction.c                                    |  94 +++++++---
+ mm/filemap.c                                       |   4 +-
+ mm/huge_memory.c                                   |  45 +++--
+ mm/memcontrol.c                                    |  85 ++++++++-
+ mm/mlock.c                                         |  63 ++-----
+ mm/mmzone.c                                        |   1 +
+ mm/page_alloc.c                                    |   1 -
+ mm/page_idle.c                                     |   4 -
+ mm/rmap.c                                          |   4 +-
+ mm/swap.c                                          | 199 ++++++++------------
+ mm/vmscan.c                                        | 203 +++++++++++----------
+ mm/workingset.c                                    |   2 -
+ 22 files changed, 523 insertions(+), 378 deletions(-)
+
+-- 
+1.8.3.1
 
