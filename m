@@ -2,97 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E4B276FA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB8B5276FA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727407AbgIXLQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 07:16:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56200 "EHLO
+        id S1727393AbgIXLQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 07:16:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726652AbgIXLQY (ORCPT
+        with ESMTP id S1726483AbgIXLQu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 07:16:24 -0400
-Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E6EDC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 04:16:24 -0700 (PDT)
-Received: by mail-ua1-x943.google.com with SMTP id u48so882595uau.0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 04:16:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=nk3vQHf7m3aiScaUunynzr1pMU90udNzOFKcaYY1Og8=;
-        b=aaCzl4nv5nzTj9EGJEU3mKQiR9PJx6/CJsNnnFqHU6HhqBwzQbCRhlsDC977JBDA3N
-         cdZV4V+2eKCqhUsiD3Rw43a1tj+MEeVs2nT7eKxoIF1ZAy42mLIb16R9/rY8nrkjDXS3
-         fP31qSj6gGSjUKYuoXDhfR+PikvI8GjT1xnSKAywezXZiwMFTjsp70EY8//fFsSEyUoQ
-         qD+nOL3T9PwB6MoItve4iZZY3hE3Tv8h9yw0AWocEzAgQv3DGA5HjPxEFrswSHuC1Wwf
-         Vk/Z56XCmxtiZtYv/rhA0rr+5EHhq0VWAhULxIvgOwY4YhIh1uLB8CjxqCc2aldG2W5L
-         nijg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=nk3vQHf7m3aiScaUunynzr1pMU90udNzOFKcaYY1Og8=;
-        b=jgU79+6oIiLtyzkT7p3c5AUfWltARZ6lNG7BGEi+cms0QDr9PRIPbxTz1ALpw+LuK7
-         XH6yZKmGNJrPj7Ay00uftSgqqaWnTdHuOAEvIfM86LFQtK1M5xyiFVVotIsmogmbL4M4
-         R4Kbd2axMtjCXDkCiIDXlN3l88ORxxLJb8/UNUkLzQEhe9R5rfL3rleC/VPwziapvNyV
-         JZN23CyOqnphp5Mw+QZrUxisAtwNLGkhlX9VPoc+EoIkNFMGuuujdPNkbPPzpWaXVk6U
-         qjS3+Tpj9RFL6AJdpRXU0YaXJ79xc16CKKkrGcY63po2BnH8N3RWmzetsDdWP0P//dGF
-         3erw==
-X-Gm-Message-State: AOAM533c3d6X4m46JluPUbYXE7e+VaptXD75i5AasPCeiXP6etK8yLjD
-        XXSZAt0mCYT/0X/6jnC2aF15bRU4cQ/Ivz8oUeq1GDiWITZ/6g==
-X-Google-Smtp-Source: ABdhPJztYC3bPd02xROVe1j/dcaglzm0oLQNe+n67Q+i8BWT7pMhmZgatS0vPhEVTaxbNrIuQ5mTVWKE2OgxgQzy3UY=
-X-Received: by 2002:ab0:130a:: with SMTP id g10mr2490969uae.100.1600946183277;
- Thu, 24 Sep 2020 04:16:23 -0700 (PDT)
+        Thu, 24 Sep 2020 07:16:50 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7D76C0613CE;
+        Thu, 24 Sep 2020 04:16:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=L0W7Y57hfB+sKNmMyauoXW4J1vjmTW/bBWQCemTSomo=; b=EFQMCtvpz0VPW66XEnnTwBcq8N
+        tYhRh2uod3w6Q7FSpDE1sn4xQKpv3KWg1K2QSNaFTj/QggNtOG6Q2UKK3YRHEMeELGs//+iv0UV7l
+        tUtjpxTIfrVajvIMBrYTB4c6spS91ujrobtXG6oyhGNCMYaFB8+qGNAEOS/BVhrBQP5tTeFOS8PkI
+        MDSyq8HctjRptuqLmOJm0AjpcrbgDaBqrQovXwppvzhfXlUjtf81lCF7R5BMB8i0T7f1MrLOX7HyQ
+        Ff00LG5TQsqIpfKn4rmUIDJY5XbouPeCo+pYDMLXfl0iBwgL13whg+w3+InWaTvsMsMiyu8fyGqsM
+        DoytgZJw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kLPEo-0004PT-6z; Thu, 24 Sep 2020 11:16:34 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 61F27303DA0;
+        Thu, 24 Sep 2020 13:16:32 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4AD32203161DB; Thu, 24 Sep 2020 13:16:32 +0200 (CEST)
+Date:   Thu, 24 Sep 2020 13:16:32 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Mel Gorman <mgorman@techsingularity.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Mel Gorman <mgorman@suse.de>
+Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
+Message-ID: <20200924111632.GD2628@hirez.programming.kicks-ass.net>
+References: <20200921074716.GC12990@dhcp22.suse.cz>
+ <20200921154558.GD29330@paulmck-ThinkPad-P72>
+ <20200921160318.GO12990@dhcp22.suse.cz>
+ <20200921194819.GA24236@pc636>
+ <20200922075002.GU12990@dhcp22.suse.cz>
+ <20200922131257.GA29241@pc636>
+ <20200923103706.GJ3179@techsingularity.net>
+ <20200923154105.GO29330@paulmck-ThinkPad-P72>
+ <20200923232251.GK3179@techsingularity.net>
+ <20200924081614.GA14819@pc636>
 MIME-Version: 1.0
-References: <1600933221-3496-1-git-send-email-rui_feng@realsil.com.cn>
- <202009241736.oeTpczA1%lkp@intel.com> <26c3f3e19bbb440798a791c5c7359b14@realsil.com.cn>
- <CAPDyKFpko92mcdim1UsnzGcPZD+KG0bNsq+DPhB-U+_kZ2Cr0w@mail.gmail.com>
-In-Reply-To: <CAPDyKFpko92mcdim1UsnzGcPZD+KG0bNsq+DPhB-U+_kZ2Cr0w@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 24 Sep 2020 13:15:46 +0200
-Message-ID: <CAPDyKFoRwQsMBRMzwxoJxBcLyvKhMGc2LJM+8z4SCHme+deADg@mail.gmail.com>
-Subject: Re: [PATCH] mmc: rtsx: Add SD Express mode support for RTS5261
-To:     =?UTF-8?B?5Yav6ZSQ?= <rui_feng@realsil.com.cn>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924081614.GA14819@pc636>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Sep 2020 at 12:01, Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> On Thu, 24 Sep 2020 at 11:48, =E5=86=AF=E9=94=90 <rui_feng@realsil.com.cn=
-> wrote:
-> >
-> > Hi Hansson,
-> >
-> > This patch is based on your patch "mmc: core: Initial support for SD ex=
-press card/host",
-> > If this patch is compiled alone, there must be errors.
-> > What should I do in this situation?
->
-> You need to pick my patch from the patchtracker or the mailing-list
-> and fold into your submission as part of a series. In this way the
-> 0-build server will build patches stacked on top of each other.
->
-> Moreover, if possible, I would suggest to split cardreader changes
-> from mmc host changes. In this way you would get a series along the
-> lines of below (not sure what order is best).
->
-> PATCH 1/3: mmc core changes.
-> PATCH 2/3. cardreader changes.
-> PATCH 3/3. mmc host changes.
->
-> Kind regards
-> Uffe
+On Thu, Sep 24, 2020 at 10:16:14AM +0200, Uladzislau Rezki wrote:
+> Other option is if we had unconditionally enabled PREEMPT_COUNT config.
+> It would be easy to identify a context type and invoke a page allocator
+> if a context is preemtale. But as of now preemptable() is "half" working.
+> Thomas uploaded patches to make it unconditional. But it can be blocked.
 
-One more thing, please send the series to linux-mmc as well.
+While I in principle support Thomas' patch, I think this is an abuse and
+still complete wrong.
 
-[...]
+Not all preemptible() context can deal with GFP_KERNEL (GFP_NOFS
+existing should be a clue). !preemptible context cannot unconditionally
+deal with GFP_NOWAIT, consider using it while holding zone->lock.
 
-Kind regards
-Uffe
+The preemption context does not say antying much useful about the
+allocation context.
