@@ -2,80 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5756277827
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 20:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4826427782C
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 20:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728726AbgIXSBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 14:01:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50538 "EHLO mail.kernel.org"
+        id S1728732AbgIXSBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 14:01:40 -0400
+Received: from mga07.intel.com ([134.134.136.100]:10426 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728659AbgIXSBO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 14:01:14 -0400
-Received: from localhost (unknown [192.55.55.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 68A7D2311B;
-        Thu, 24 Sep 2020 18:01:13 +0000 (UTC)
-From:   Dave Jiang <dave.jiang@intel.com>
-To:     vkoul@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dan.j.williams@intel.com, tony.luck@intel.com,
-        jing.lin@intel.com, ashok.raj@intel.com, sanjay.k.kumar@intel.com,
-        fenghua.yu@intel.com, kevin.tian@intel.com, David.Laight@ACULAB.COM
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v6 5/5] dmaengine: idxd: Add ABI documentation for shared wq
-Date:   Thu, 24 Sep 2020 11:00:41 -0700
-Message-Id: <20200924180041.34056-6-dave.jiang@intel.com>
-X-Mailer: git-send-email 2.21.3
-In-Reply-To: <20200924180041.34056-1-dave.jiang@intel.com>
-References: <20200924180041.34056-1-dave.jiang@intel.com>
+        id S1728577AbgIXSBj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 14:01:39 -0400
+IronPort-SDR: tspAxKL38P51eu2PSgU6Ir6nbEdt8uMy8r8MvvcLvadxq6+P5PVSOp/zXzj6QT10NyH5CByIzT
+ VogB/J68x3eQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="225434734"
+X-IronPort-AV: E=Sophos;i="5.77,298,1596524400"; 
+   d="scan'208";a="225434734"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 11:01:22 -0700
+IronPort-SDR: QJkOAgUtzmtFELwpkWXY/qDcpAauQAP7A0QAuKTa8XkbMa42AaMZapy+j9q6fR8Ru9ub+NgGCo
+ M2n4erRyIbzA==
+X-IronPort-AV: E=Sophos;i="5.77,298,1596524400"; 
+   d="scan'208";a="305920835"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 11:01:21 -0700
+Date:   Thu, 24 Sep 2020 11:01:20 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] KVM: VMX: Replace MSR_IA32_RTIT_OUTPUT_BASE_MASK
+ with helper function
+Message-ID: <20200924180120.GA9649@linux.intel.com>
+References: <20200923163629.20168-1-sean.j.christopherson@intel.com>
+ <20200923163629.20168-3-sean.j.christopherson@intel.com>
+ <0a215e25-798d-3f17-0fcb-885806f2351b@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0a215e25-798d-3f17-0fcb-885806f2351b@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the sysfs attribute bits in ABI/stable for shared wq support.
+On Wed, Sep 23, 2020 at 07:07:22PM +0200, Paolo Bonzini wrote:
+> On 23/09/20 18:36, Sean Christopherson wrote:
+> > +static inline bool pt_output_base_valid(struct kvm_vcpu *vcpu, u64 base)
+> > +{
+> > +	/* The base must be 128-byte aligned and a legal physical address. */
+> > +	return !(base & (~((1UL << cpuid_maxphyaddr(vcpu)) - 1) | 0x7f));
+> > +}
+> 
+> The fact that you deemed a comment necessary says something already. :)
+> What about:
+> 
+>         return !kvm_mmu_is_illegal_gpa(vcpu, base) && !(base & 0x7f);
+> 
+> (where this new usage makes it obvious that mmu should have been vcpu).
 
-Signed-off-by: Jing Lin <jing.lin@intel.com>
-Signed-off-by: Dave Jiang <dave.jiang@intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
----
- Documentation/ABI/stable/sysfs-driver-dma-idxd | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+Ya.  I think it was a sort of sunk cost fallacy.  Dammit, I spent all that
+time figuring out what this code does, I'm keeping it!!!
 
-diff --git a/Documentation/ABI/stable/sysfs-driver-dma-idxd b/Documentation/ABI/stable/sysfs-driver-dma-idxd
-index b44183880935..42d3dc03ffea 100644
---- a/Documentation/ABI/stable/sysfs-driver-dma-idxd
-+++ b/Documentation/ABI/stable/sysfs-driver-dma-idxd
-@@ -77,6 +77,13 @@ Contact:        dmaengine@vger.kernel.org
- Description:    The operation capability bit mask specify the operation types
- 		supported by the this device.
- 
-+What:		/sys/bus/dsa/devices/dsa<m>/pasid_enabled
-+Date:		Sep 17, 2020
-+KernelVersion:	5.10.0
-+Contact:	dmaengine@vger.kernel.org
-+Description:	To indicate if PASID (process address space identifier) is
-+		enabled or not for this device.
-+
- What:           /sys/bus/dsa/devices/dsa<m>/state
- Date:           Oct 25, 2019
- KernelVersion:  5.6.0
-@@ -122,6 +129,13 @@ KernelVersion:	5.10.0
- Contact:	dmaengine@vger.kernel.org
- Description:	The last executed device administrative command's status/error.
- 
-+What:		/sys/bus/dsa/devices/wq<m>.<n>/block_on_fault
-+Date:		Sept 17, 2020
-+KernelVersion:	5.10.0
-+Contact:	dmaengine@vger.kernel.org
-+Description:	To indicate block on fault is allowed or not for the work queue
-+		to support on demand paging.
-+
- What:           /sys/bus/dsa/devices/wq<m>.<n>/group_id
- Date:           Oct 25, 2019
- KernelVersion:  5.6.0
--- 
-2.21.3
-
+v3 incoming...
