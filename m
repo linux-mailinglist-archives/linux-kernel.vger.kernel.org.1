@@ -2,255 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 419AC2769C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B912769C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727057AbgIXGzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 02:55:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44066 "EHLO
+        id S1727101AbgIXG4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 02:56:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726929AbgIXGzn (ORCPT
+        with ESMTP id S1727014AbgIXG4K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 02:55:43 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 156F7C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 23:55:43 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kLLAG-0003Yl-9X; Thu, 24 Sep 2020 08:55:36 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kLLAE-0002Rk-8W; Thu, 24 Sep 2020 08:55:34 +0200
-Date:   Thu, 24 Sep 2020 08:55:34 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Rahul Tanwar <rahul.tanwar@linux.intel.com>
-Cc:     linux-pwm@vger.kernel.org, lee.jones@linaro.org,
-        thierry.reding@gmail.com, p.zabel@pengutronix.de,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, andriy.shevchenko@intel.com,
-        songjun.Wu@intel.com, cheol.yong.kim@intel.com,
-        qi-ming.wu@intel.com, rahul.tanwar.linux@gmail.com,
-        rtanwar@maxlinear.com
-Subject: Re: [PATCH v13 2/2] Add PWM fan controller driver for LGM SoC
-Message-ID: <20200924065534.e2anwghhtysv63e7@pengutronix.de>
-References: <cover.1600158087.git.rahul.tanwar@linux.intel.com>
- <befa655d8beb326fc8aa405a25a8b3e62b7e6a4a.1600158087.git.rahul.tanwar@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="lyhi37rmvs6eew2s"
-Content-Disposition: inline
-In-Reply-To: <befa655d8beb326fc8aa405a25a8b3e62b7e6a4a.1600158087.git.rahul.tanwar@linux.intel.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        Thu, 24 Sep 2020 02:56:10 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD42AC0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 23:56:10 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id r2so1505639pga.12
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 23:56:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=FX0p/GcmPpR3We5nTHUDyc9BUTZhvYJ9+N0VF4ja3D0=;
+        b=A6fOq1HOlUuYS2ejjODUD35m8TFnAilniB8q/he/79yXRI6J7NI/5Ni7kHBCvEkC2m
+         lcXuePvKeAjjCDD7fCMEPX38aVIXcuUWP+W4OMSy0zBk2sxHJx8ra7LETRsT0HIRDyye
+         xSwf61KUpd7wPrXq18JauwkfZwXsMB8awli9ljDrb5XWJlKwH3mlcV56ZLOVPibIG4Ic
+         o/eVdv/JTMLjilq0gn9LEnIdeugRCiuR9+nExc8TyYrfq2ju1CexD/xlhgumusLgQp7o
+         XRzmYIJmWMncSaLiHbfMQfFKTa0htqvMutDnKpI3x/vLO5QTmvQvgoeB0YAL5ijGpOW3
+         0CmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=FX0p/GcmPpR3We5nTHUDyc9BUTZhvYJ9+N0VF4ja3D0=;
+        b=c0d4XzHie0ch+IQKYwgSTA0ODqsj4HOxsKO8vZktgxX0bSgr+1nMBDwxXhs/WidGSa
+         Mv/y37Wpl8BE8209vuWUyLNLAoFz3glFj+98mBflpEVa0/ZUKmWQ3iDvxr1wh+KdJwig
+         3d3N6f8pjKgXqPpvOZ7VaeYNcbYbv5ogtzwYdCdSfdL2HUFi5u8Drl/pA6dQxae8RQ+F
+         YQFiZglZ1OheOFT8RoaCKY5bY6u2vgcYca+mu9mJXxspGr1WtV+LhVG8AnqOZu6Bzb2K
+         qKkyeHJ9dMmlIrnZkRq83S6O/7gjU/469dKcNAnhyTKR+cHlUW30AK/LnVR9hWjW56ZR
+         SC1w==
+X-Gm-Message-State: AOAM531wvkLNnuPjtbIJQuKmTdurfpAfIRJVCOeMARXjftTYyVo72xAV
+        wv4I48rDTskvJtkwzFwMYC5j3YBgYsTN3+kwkg==
+X-Google-Smtp-Source: ABdhPJwhRa38PHwfQdB4AKI0fOgdNDJYzEpWP8u7QkJdKT8QhABjPf/lE453ktfsBvnzt0vFPv5CAiF1JPyJRhzdTA==
+Sender: "lokeshgidra via sendgmr" <lokeshgidra@lg.mtv.corp.google.com>
+X-Received: from lg.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:29dd])
+ (user=lokeshgidra job=sendgmr) by 2002:a17:902:82c2:b029:d1:f36a:ab97 with
+ SMTP id u2-20020a17090282c2b02900d1f36aab97mr3356719plz.64.1600930570089;
+ Wed, 23 Sep 2020 23:56:10 -0700 (PDT)
+Date:   Wed, 23 Sep 2020 23:56:04 -0700
+Message-Id: <20200924065606.3351177-1-lokeshgidra@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
+Subject: [PATCH v4 0/2] Control over userfaultfd kernel-fault handling
+From:   Lokesh Gidra <lokeshgidra@google.com>
+To:     Kees Cook <keescook@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>, Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Daniel Colascione <dancol@dancol.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, kaleshsingh@google.com,
+        calin@google.com, surenb@google.com, nnk@google.com,
+        jeffv@google.com, kernel-team@android.com,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Shaohua Li <shli@fb.com>, Jerome Glisse <jglisse@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Nitin Gupta <nigupta@nvidia.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch series is split from [1]. The other series enables SELinux
+support for userfaultfd file descriptors so that its creation and
+movement can be controlled.
 
---lyhi37rmvs6eew2s
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It has been demonstrated on various occasions that suspending kernel
+code execution for an arbitrary amount of time at any access to
+userspace memory (copy_from_user()/copy_to_user()/...) can be exploited
+to change the intended behavior of the kernel. For instance, handling
+page faults in kernel-mode using userfaultfd has been exploited in [2, 3].
+Likewise, FUSE, which is similar to userfaultfd in this respect, has been
+exploited in [4, 5] for similar outcome.
 
-Hello,
+This small patch series adds a new flag to userfaultfd(2) that allows
+callers to give up the ability to handle kernel-mode faults with the
+resulting UFFD file object. It then adds a 'user-mode only' option to
+the unprivileged_userfaultfd sysctl knob to require unprivileged
+callers to use this new flag.
 
-(hhm Thierry already announced to have taken this patch, so my review is
-late.)
+The purpose of this new interface is to decrease the chance of an
+unprivileged userfaultfd user taking advantage of userfaultfd to
+enhance security vulnerabilities by lengthening the race window in
+kernel code.
 
-On Tue, Sep 15, 2020 at 04:23:37PM +0800, Rahul Tanwar wrote:
-> Intel Lightning Mountain(LGM) SoC contains a PWM fan controller.
-> This PWM controller does not have any other consumer, it is a
-> dedicated PWM controller for fan attached to the system. Add
-> driver for this PWM fan controller.
->=20
-> Signed-off-by: Rahul Tanwar <rahul.tanwar@linux.intel.com>
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
-> ---
->  drivers/pwm/Kconfig         |  11 ++
->  drivers/pwm/Makefile        |   1 +
->  drivers/pwm/pwm-intel-lgm.c | 246 ++++++++++++++++++++++++++++++++++++++=
-++++++
->  3 files changed, 258 insertions(+)
->  create mode 100644 drivers/pwm/pwm-intel-lgm.c
->=20
-> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-> index 7dbcf6973d33..4949c51fe90b 100644
-> --- a/drivers/pwm/Kconfig
-> +++ b/drivers/pwm/Kconfig
-> @@ -232,6 +232,17 @@ config PWM_IMX_TPM
->  	  To compile this driver as a module, choose M here: the module
->  	  will be called pwm-imx-tpm.
-> =20
-> +config PWM_INTEL_LGM
-> +	tristate "Intel LGM PWM support"
-> +	depends on HAS_IOMEM
-> +	depends on (OF && X86) || COMPILE_TEST
-> +	select REGMAP_MMIO
-> +	help
-> +	  Generic PWM fan controller driver for LGM SoC.
-> +
-> +	  To compile this driver as a module, choose M here: the module
-> +	  will be called pwm-intel-lgm.
-> +
->  config PWM_IQS620A
->  	tristate "Azoteq IQS620A PWM support"
->  	depends on MFD_IQS62X || COMPILE_TEST
-> diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
-> index 2c2ba0a03557..e9431b151694 100644
-> --- a/drivers/pwm/Makefile
-> +++ b/drivers/pwm/Makefile
-> @@ -20,6 +20,7 @@ obj-$(CONFIG_PWM_IMG)		+=3D pwm-img.o
->  obj-$(CONFIG_PWM_IMX1)		+=3D pwm-imx1.o
->  obj-$(CONFIG_PWM_IMX27)		+=3D pwm-imx27.o
->  obj-$(CONFIG_PWM_IMX_TPM)	+=3D pwm-imx-tpm.o
-> +obj-$(CONFIG_PWM_INTEL_LGM)	+=3D pwm-intel-lgm.o
->  obj-$(CONFIG_PWM_IQS620A)	+=3D pwm-iqs620a.o
->  obj-$(CONFIG_PWM_JZ4740)	+=3D pwm-jz4740.o
->  obj-$(CONFIG_PWM_LP3943)	+=3D pwm-lp3943.o
-> diff --git a/drivers/pwm/pwm-intel-lgm.c b/drivers/pwm/pwm-intel-lgm.c
-> new file mode 100644
-> index 000000000000..ea3df75a5971
-> --- /dev/null
-> +++ b/drivers/pwm/pwm-intel-lgm.c
-> @@ -0,0 +1,246 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2020 Intel Corporation.
-> + *
-> + * Limitations:
-> + * - The hardware supports fixed period which is dependent on 2/3 or 4
-> + *   wire fan mode.
+[1] https://lore.kernel.org/lkml/20200211225547.235083-1-dancol@google.com/
+[2] https://duasynt.com/blog/linux-kernel-heap-spray
+[3] https://duasynt.com/blog/cve-2016-6187-heap-off-by-one-exploit
+[4] https://googleprojectzero.blogspot.com/2016/06/exploiting-recursion-in-linux-kernel_20.html
+[5] https://bugs.chromium.org/p/project-zero/issues/detail?id=808
 
-The driver now hardcodes 2-wire mode. IMHO that is worth mentioning.
+Changes since v3:
 
-> +static void lgm_clk_disable(void *data)
-> +{
-> +	struct lgm_pwm_chip *pc =3D data;
-> +
-> +	clk_disable_unprepare(pc->clk);
-> +}
-> +
-> +static int lgm_clk_enable(struct device *dev, struct lgm_pwm_chip *pc)
-> +{
-> +	int ret;
-> +
-> +	ret =3D clk_prepare_enable(pc->clk);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return devm_add_action_or_reset(dev, lgm_clk_disable, pc);
-> +}
+  - Modified the meaning of value '0' of unprivileged_userfaultfd
+    sysctl knob. Setting this knob to '0' now allows unprivileged users
+    to use userfaultfd, but can handle page faults in user-mode only.
+  - The default value of unprivileged_userfaultfd sysctl knob is changed
+    to '0'.
 
-My first reflex here was to point out that lgm_clk_disable() isn't the
-counter part to lgm_clk_enable() and so lgm_clk_disable() needs
-adaption. On a second look this is correct and so I think the function
-names are wrong. The usual naming would be to use _release instead of
-_disable. Having said that the enable function could be named
-devm_clk_enable and live in drivers/clk/clk-devres.c. (Or
-devm_clk_get_enabled()?)
+Changes since v2:
 
-> +static void lgm_reset_control_assert(void *data)
-> +{
-> +	struct lgm_pwm_chip *pc =3D data;
-> +
-> +	reset_control_assert(pc->rst);
-> +}
-> +
-> +static int lgm_reset_control_deassert(struct device *dev, struct lgm_pwm=
-_chip *pc)
-> +{
-> +	int ret;
-> +
-> +	ret =3D reset_control_deassert(pc->rst);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return devm_add_action_or_reset(dev, lgm_reset_control_assert, pc);
-> +}
+  - Removed 'uffd_flags' and directly used 'UFFD_USER_MODE_ONLY' in
+    userfaultfd().
 
-A similar comment applies here.
+Changes since v1:
 
-> +static int lgm_pwm_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev =3D &pdev->dev;
-> +	struct lgm_pwm_chip *pc;
-> +	void __iomem *io_base;
-> +	int ret;
-> +
-> +	pc =3D devm_kzalloc(dev, sizeof(*pc), GFP_KERNEL);
-> +	if (!pc)
-> +		return -ENOMEM;
-> +
-> +	platform_set_drvdata(pdev, pc);
-> +
-> +	io_base =3D devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(io_base))
-> +		return PTR_ERR(io_base);
-> +
-> +	pc->regmap =3D devm_regmap_init_mmio(dev, io_base, &lgm_pwm_regmap_conf=
-ig);
-> +	if (IS_ERR(pc->regmap))
-> +		return dev_err_probe(dev, PTR_ERR(pc->regmap),
-> +				     "failed to init register map\n");
-> +
-> +	pc->clk =3D devm_clk_get(dev, NULL);
-> +	if (IS_ERR(pc->clk))
-> +		return dev_err_probe(dev, PTR_ERR(pc->clk), "failed to get clock\n");
-> +
-> +	ret =3D lgm_clk_enable(dev, pc);
-> +	if (ret) {
-> +		dev_err(dev, "failed to enable clock\n");
+  - Added external references to the threats from allowing unprivileged
+    users to handle page faults from kernel-mode.
+  - Removed the new sysctl knob restricting handling of page
+    faults from kernel-mode, and added an option for the same
+    in the existing 'unprivileged_userfaultfd' knob.
 
-You used dev_err_probe four times for six error paths. I wonder why you
-didn't use it here (and below for a failing pwmchip_add()).
+Lokesh Gidra (2):
+  Add UFFD_USER_MODE_ONLY
+  Add user-mode only option to unprivileged_userfaultfd sysctl knob
 
-> +		return ret;
-> +	}
-> +
-> +	pc->rst =3D devm_reset_control_get_exclusive(dev, NULL);
-> +	if (IS_ERR(pc->rst))
-> +		return dev_err_probe(dev, PTR_ERR(pc->rst),
-> +				     "failed to get reset control\n");
-> +
-> +	ret =3D lgm_reset_control_deassert(dev, pc);
-> +	if (ret)
-> +		return dev_err_probe(dev, ret, "cannot deassert reset control\n");
+ Documentation/admin-guide/sysctl/vm.rst | 15 ++++++++++-----
+ fs/userfaultfd.c                        | 12 +++++++++---
+ include/uapi/linux/userfaultfd.h        |  9 +++++++++
+ 3 files changed, 28 insertions(+), 8 deletions(-)
 
-After lgm_reset_control_deassert is called pc->rst is unused. So there
-is no need to have this member in struct lgm_pwm_chip. The same applies
-to ->clk. (You have to pass rst (or clk) to devm_add_action_or_reset for
-that to work. Looks like a nice idea anyhow.)
+-- 
+2.28.0.681.g6f77f65b4e-goog
 
-> +	pc->chip.dev =3D dev;
-> +	pc->chip.ops =3D &lgm_pwm_ops;
-> +	pc->chip.npwm =3D 1;
-
-pc->chip.base should probably be set to -1.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---lyhi37rmvs6eew2s
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl9sQuMACgkQwfwUeK3K
-7AnOoQf9G5gIg3fUua32ajP2OiSRucao6yYZO6ublycEcs/7NSXp3KWtQtLwla0z
-q+/cPupbA7DqmXLmAOWPqBnsWG4JFXK/KUUb9gQhuZstKPccDgz+VmgFpXchzkw/
-g9lTMItQvExjVvwfSqUdU65cxPfEa4uOrRjcB0GNW8E1AztgXIaR36lEgPjuQPWV
-GXJL9gklmnyPoSRjdwY8FXYWeJlXCJjK0qvRKoXQZbWODi6wcQOQUcf6Nc/Q/2zo
-XlZLWz8Hs4D814jxHCuc8jWcVHZhZx91IF/ujkzFh7c+k3MuU10b/amvPCckbebu
-7Qzh9E8mx+Rb2gL1F8dtdPCPzy/Hkg==
-=hGAM
------END PGP SIGNATURE-----
-
---lyhi37rmvs6eew2s--
