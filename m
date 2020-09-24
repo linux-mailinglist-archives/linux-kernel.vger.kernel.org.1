@@ -2,110 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBA0D277C74
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 01:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 464D2277C78
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 01:52:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726759AbgIXXt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 19:49:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59732 "EHLO mail.kernel.org"
+        id S1726817AbgIXXwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 19:52:19 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:48328 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726557AbgIXXt5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 19:49:57 -0400
-Received: from sstabellini-ThinkPad-T480s.hsd1.ca.comcast.net (c-67-164-102-47.hsd1.ca.comcast.net [67.164.102.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726704AbgIXXwR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 19:52:17 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600991536; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=84Zm6i7Jvic5qpawkUmAOufJMHIQOCTsiMPn8kZct3k=; b=fbenATTA8f72IBgyhOYSSK15mgCn0kLgH067bFdIbsl/1sTmFW6elMprTaB6NhY36ipOIUOz
+ ECFRrKnaaBhGeSq2/OaBom9gemcka6ALhMn9CGp41vONiaAwIIGB0YTygPSHR9aSQXABJN9m
+ byC90B4HIP+g6Tp991l6bYxPK1g=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5f6d310c89f51cb4f12e93ce (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 24 Sep 2020 23:51:39
+ GMT
+Sender: sidgup=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6EC06C433F1; Thu, 24 Sep 2020 23:51:38 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from sidgup-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D590F239EC;
-        Thu, 24 Sep 2020 23:49:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600991397;
-        bh=fRW1ZHqPHqZ48BxIvmHLvJMqcd/CjP5KGt6za+X8upo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ibTGX1WNRLvzLVxqQjXiWejMwgm0qp2FymbUjSI03Q6aCiLjE9B2v9kYJbja0qvDZ
-         dnlMXblBKt6KiV6m/4tIdKFIvqtAegPLT7cMK5iLBXumckmutbIIPngVVVGazfM1Fz
-         QOVhwEVae4X2Qo9X67C2d2B2KeK8lqXZGhN9/Oqs=
-From:   Stefano Stabellini <sstabellini@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     sstabellini@kernel.org,
-        Stefano Stabellini <stefano.stabellini@xilinx.com>,
-        Bertrand Marquis <Bertrand.Marquis@arm.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com
-Subject: [PATCH] xen/arm: do not setup the runstate info page if kpti is enabled
-Date:   Thu, 24 Sep 2020 16:49:55 -0700
-Message-Id: <20200924234955.15455-1-sstabellini@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        (Authenticated sender: sidgup)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4F6E3C433C8;
+        Thu, 24 Sep 2020 23:51:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4F6E3C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sidgup@codeaurora.org
+From:   Siddharth Gupta <sidgup@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, ohad@wizery.com,
+        linux-remoteproc@vger.kernel.org
+Cc:     Siddharth Gupta <sidgup@codeaurora.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, tsoni@codeaurora.org,
+        psodagud@codeaurora.org, rishabhb@codeaurora.org,
+        linux-doc@vger.kernel.org
+Subject: [PATCH v5 0/3] Introduce mini-dump support for remoteproc
+Date:   Thu, 24 Sep 2020 16:51:25 -0700
+Message-Id: <1600991488-17877-1-git-send-email-sidgup@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefano Stabellini <stefano.stabellini@xilinx.com>
+Sometimes firmware sizes can be in tens of MB's and reading
+all the memory during coredump can consume lot of time and
+memory.
+Introducing support for mini-dumps. Mini-dump contains smallest
+amount of useful information, that could help to debug subsystem
+crashes.
+During bootup memory is allocated in SMEM (Shared memory)
+in the form of a table that contains the physical
+addresses and sizes of the regions that are supposed to be
+collected during coredump. This memory is shared amongst all
+processors in a Qualcomm platform, so all remoteprocs
+fill in their entry in the global table once they are out
+of reset.
+This patch series adds support for parsing the global minidump
+table and uses the current coredump frameork to expose this memory
+to userspace during remoteproc's recovery.
 
-The VCPUOP_register_runstate_memory_area hypercall takes a virtual
-address of a buffer as a parameter. The semantics of the hypercall are
-such that the virtual address should always be valid.
+This patch series also integrates the patch:
+https://patchwork.kernel.org/patch/11695541/ sent by Siddharth.
 
-When KPTI is enabled and we are running userspace code, the virtual
-address is not valid, thus, Linux is violating the semantics of
-VCPUOP_register_runstate_memory_area.
+Changelog:
+v4 -> v5:
+- Fixed adsp_add_minidump_segments to read IO memory using appropriate functions.
 
-Do not call VCPUOP_register_runstate_memory_area when KPTI is enabled.
+v3 -> v4:
+- Made adsp_priv_cleanup a static function.
 
-Signed-off-by: Stefano Stabellini <stefano.stabellini@xilinx.com>
-CC: Bertrand Marquis <Bertrand.Marquis@arm.com>
-CC: boris.ostrovsky@oracle.com
-CC: jgross@suse.com
----
- arch/arm/include/asm/xen/page.h   | 5 +++++
- arch/arm/xen/enlighten.c          | 6 ++++--
- arch/arm64/include/asm/xen/page.h | 6 ++++++
- 3 files changed, 15 insertions(+), 2 deletions(-)
+v2 -> v3:
+- Refactored code to remove dependency on Qualcomm configs.
+- Renamed do_rproc_minidump to rproc_minidump and marked as exported
+  symbol.
 
-diff --git a/arch/arm/include/asm/xen/page.h b/arch/arm/include/asm/xen/page.h
-index 31bbc803cecb..dc7f6e91aafa 100644
---- a/arch/arm/include/asm/xen/page.h
-+++ b/arch/arm/include/asm/xen/page.h
-@@ -1 +1,6 @@
- #include <xen/arm/page.h>
-+
-+static inline bool xen_kernel_unmapped_at_usr(void)
-+{
-+	return false;
-+}
-diff --git a/arch/arm/xen/enlighten.c b/arch/arm/xen/enlighten.c
-index e93145d72c26..ea76562af1e9 100644
---- a/arch/arm/xen/enlighten.c
-+++ b/arch/arm/xen/enlighten.c
-@@ -158,7 +158,8 @@ static int xen_starting_cpu(unsigned int cpu)
- 	BUG_ON(err);
- 	per_cpu(xen_vcpu, cpu) = vcpup;
- 
--	xen_setup_runstate_info(cpu);
-+	if (!xen_kernel_unmapped_at_usr())
-+		xen_setup_runstate_info(cpu);
- 
- after_register_vcpu_info:
- 	enable_percpu_irq(xen_events_irq, 0);
-@@ -387,7 +388,8 @@ static int __init xen_guest_init(void)
- 		return -EINVAL;
- 	}
- 
--	xen_time_setup_guest();
-+	if (!xen_kernel_unmapped_at_usr())
-+		xen_time_setup_guest();
- 
- 	if (xen_initial_domain())
- 		pvclock_gtod_register_notifier(&xen_pvclock_gtod_notifier);
-diff --git a/arch/arm64/include/asm/xen/page.h b/arch/arm64/include/asm/xen/page.h
-index 31bbc803cecb..dffdc773221b 100644
---- a/arch/arm64/include/asm/xen/page.h
-+++ b/arch/arm64/include/asm/xen/page.h
-@@ -1 +1,7 @@
- #include <xen/arm/page.h>
-+#include <asm/mmu.h>
-+
-+static inline bool xen_kernel_unmapped_at_usr(void)
-+{
-+	return arm64_kernel_unmapped_at_el0();
-+}
+v1 -> v2:
+- 3 kernel test robot warnings have been resolved.
+- Introduced priv_cleanup op in order to making the cleaning of
+  private elements used by the remoteproc more readable.
+- Removed rproc_cleanup_priv as it is no longer needed.
+- Switched to if/else format for rproc_alloc in order to keep 
+  the static const decalaration of adsp_minidump_ops.
+
+Siddharth Gupta (3):
+  remoteproc: core: Add ops to enable custom coredump functionality
+  remoteproc: qcom: Add capability to collect minidumps
+  remoteproc: qcom: Add minidump id for sm8150 modem remoteproc
+
+ drivers/remoteproc/qcom_minidump.h          |  64 +++++++++++++
+ drivers/remoteproc/qcom_q6v5_pas.c          | 107 ++++++++++++++++++++-
+ drivers/remoteproc/remoteproc_core.c        |   6 +-
+ drivers/remoteproc/remoteproc_coredump.c    | 138 ++++++++++++++++++++++++++++
+ drivers/remoteproc/remoteproc_elf_helpers.h |  27 ++++++
+ include/linux/remoteproc.h                  |   5 +
+ 6 files changed, 344 insertions(+), 3 deletions(-)
+ create mode 100644 drivers/remoteproc/qcom_minidump.h
+
 -- 
-2.17.1
+Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
