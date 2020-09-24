@@ -2,70 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C20B9276C7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A9E8276C7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727310AbgIXIyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1727335AbgIXIys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 04:54:48 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36166 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727287AbgIXIyr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 24 Sep 2020 04:54:47 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:35356 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727274AbgIXIyq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 04:54:46 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R661e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=xlpang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0U9xKTdd_1600937682;
-Received: from xunleideMacBook-Pro.local(mailfrom:xlpang@linux.alibaba.com fp:SMTPD_---0U9xKTdd_1600937682)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 24 Sep 2020 16:54:43 +0800
-Reply-To: xlpang@linux.alibaba.com
-Subject: Re: [PATCH RESEND] sched/fair: Fix wrong cpu selecting from isolated
- domain
-To:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Xunlei Pang <xlpang@linux.alibaba.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Jiang Biao <benbjiang@tencent.com>,
-        Wetp Zhang <wetp.zy@linux.alibaba.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <1600930127-76857-1-git-send-email-xlpang@linux.alibaba.com>
- <CAKfTPtAgzcSZekb1D_Gm55vHpm4-9z5OyUxuoRTzx-_5icf5Ew@mail.gmail.com>
-From:   Xunlei Pang <xlpang@linux.alibaba.com>
-Message-ID: <aa06b988-e2bd-4ff9-caab-def399698bf2@linux.alibaba.com>
-Date:   Thu, 24 Sep 2020 16:54:42 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1600937685;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Gnupa/FLLl5BSc73ruXnxSmNk2cnUZqVStpXpBHlSG8=;
+        b=NPezC9QdftkpIrnAMch7/Gy7kMVeJhInMg8bpApfN7KFE0oNMe+k0ReKvOTPO/sW8KPEO8
+        9pGc7ShExvqmDy6iNhP84GbFjbYzMrnXkBZs7Zjnv7CCTp/X2ly20sNPAtXuAcEZ/KgGB7
+        w+sBMUijR6BI4MqCAydIP5CK1Ng6nzY=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id AA9B0ABF4;
+        Thu, 24 Sep 2020 08:55:23 +0000 (UTC)
+Date:   Thu, 24 Sep 2020 10:54:45 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk 3/5] printk: use buffer pool for sprint buffers
+Message-ID: <20200924085445.GK6442@alley>
+References: <20200922153816.5883-1-john.ogness@linutronix.de>
+ <20200922153816.5883-4-john.ogness@linutronix.de>
+ <20200924061746.GF577@jagdpanzerIV.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <CAKfTPtAgzcSZekb1D_Gm55vHpm4-9z5OyUxuoRTzx-_5icf5Ew@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924061746.GF577@jagdpanzerIV.localdomain>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/24/20 3:18 PM, Vincent Guittot wrote:
-> On Thu, 24 Sep 2020 at 08:48, Xunlei Pang <xlpang@linux.alibaba.com> wrote:
->>
->> We've met problems that occasionally tasks with full cpumask
->> (e.g. by putting it into a cpuset or setting to full affinity)
->> were migrated to our isolated cpus in production environment.
->>
->> After some analysis, we found that it is due to the current
->> select_idle_smt() not considering the sched_domain mask.
->>
->> Steps to reproduce on my 31-CPU hyperthreads machine:
->> 1. with boot parameter: "isolcpus=domain,2-31"
->>    (thread lists: 0,16 and 1,17)
->> 2. cgcreate -g cpu:test; cgexec -g cpu:test "test_threads"
->> 3. some threads will be migrated to the isolated cpu16~17.
->>
->> Fix it by checking the valid domain mask in select_idle_smt().
->>
->> Fixes: 10e2f1acd010 ("sched/core: Rewrite and improve select_idle_siblings())
->> Reported-by: Wetp Zhang <wetp.zy@linux.alibaba.com>
->> Reviewed-by: Jiang Biao <benbjiang@tencent.com>
->> Signed-off-by: Xunlei Pang <xlpang@linux.alibaba.com>
+On Thu 2020-09-24 15:17:46, Sergey Senozhatsky wrote:
+> On (20/09/22 17:44), John Ogness wrote:
+> > +/*
+> > + * The sprint buffers are used with interrupts disabled, so each CPU
+> > + * only requires 2 buffers: for non-NMI and NMI contexts. Recursive
+> > + * printk() calls are handled by the safe buffers.
+> > + */
+> > +#define SPRINT_CTX_DEPTH 2
+> > +
+> > +/* Static sprint buffers for early boot (only 1 CPU). */
+> > +static DECLARE_BITMAP(sprint_static_textbuf_map, SPRINT_CTX_DEPTH);
+> > +static char sprint_static_textbuf[SPRINT_CTX_DEPTH * LOG_LINE_MAX];
+> > +
+> > +/* Dynamically allocated sprint buffers. */
+> > +static unsigned int sprint_dynamic_textbuf_count;
+> > +static unsigned long *sprint_dynamic_textbuf_map;
+> > +static char *sprint_dynamic_textbuf;
 > 
-> Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+> Just a question:
 > 
+> Can dynamic_textbuf be a PER_CPU array of five textbuf[1024] buffers
+> (for normal printk, nmi, hard irq, soft irq and one extra buffer for
+> recursive printk calls)?
 
-Thanks, Vincent :-)
+That would be my preferred fallback when the approach with
+vsprintf(NULL, ) is not acceptable for some reasons.
+
+But I still think that calling vsprintf(NULL, ) is the most trivial
+and good enough solution.
+
+IMHO, the solution with per-CPU buffers is not that trivial, for
+example:
+
+  What if recursive printk() is interrupted by NMI and it causes
+  yet another recursion?
+
+  Is one level of recursion enough?
+
+Best Regards,
+Petr
