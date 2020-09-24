@@ -2,144 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE30A277C33
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 01:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42E84277C38
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 01:12:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726802AbgIXXLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 19:11:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53664 "EHLO
+        id S1726746AbgIXXMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 19:12:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726604AbgIXXLP (ORCPT
+        with ESMTP id S1726205AbgIXXMo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 19:11:15 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71179C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 16:11:15 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id x23so1048574wmi.3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 16:11:15 -0700 (PDT)
+        Thu, 24 Sep 2020 19:12:44 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A33CC0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 16:12:44 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id m6so1451616wrn.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 16:12:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2W5GfROT2ywvdVHXg3kVe/f8IQ60BJx7ZZO+5tSrV0o=;
-        b=xT0cYXCnnIQOO4dPaV6raNdKraovBxs6izlFewfphndLD9GXgYp2a9mk8I2U+z1vlp
-         ZsJ3qFNTXi72PQyFz7i6Yuu8onhC9rohuhw1tS8DUNHhkefE9u0B3HnWXv1mZNif+aLv
-         AkBt6fjkoErMGG9Fuly7/TOCB/JAtB2vh93MrfnvWzCwXlodmzYXf6W837Iz0j1fHwjy
-         dUhce4/dOv4XrY6kbxPQreDzi4ylLqjLh44AmfIpaz9vxJpdTW8yfwUg3yfkLmsMnsfe
-         t+nE3+aHL3N9KBR1dNcbDHajjNl0YHSktLluY2cm2ZvChkdWWy9/AoxkyITN64S3wsct
-         gwcA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6d77zHv3VbtLF8v+o64epFZYE7UndkOdN5QV2a28vPk=;
+        b=vDRBczFcapK+sf4cqh0oeG93Bs7+9mWhyd2HAL8xl3yFCGz3/eyno0OcmYerSAoYI1
+         7JAz9EtJdDGm01//XVedSTIbqfGQyLPbT+pDx8aHw68wveaoQTdnKrrx4/j35t61leCW
+         APi9tXZeuVKka47w4ZHWLpr89LbviV06fLa1z4yvi3gUwNi9WxwtaKGXhTSTTC2gNe2O
+         ZA7Rci6EYifjO69/U/ZW49zKWXw3evSxD8YXnfgcIsXDwCpdtYB1q6tccmqg2sZteCqm
+         Ab9RujQiSH3NsXUur98zf3ujOP5pMFdUsjlVoEviJz3Bm5e1ZVymk8HBmTcWcZLjzCnY
+         fKOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2W5GfROT2ywvdVHXg3kVe/f8IQ60BJx7ZZO+5tSrV0o=;
-        b=dzoR5ebr7Vo+aRtQ2kiTW7BwALjtF1w69P+6RPq1SH3V3/3Vp1a2GHgyphlWGbKQxu
-         M0AJWPqzjzen6M7dxjTedzI5g54Y90gHgREH93IlSn2iZeQ7XvTmOdWBUgi4RR80AI7g
-         4VjvRBY35KLPOQ51HgWKlBX3HzcBa2EDydAhNn4roP0/75vNWA1gyfVmv8ZDUMh9zt4+
-         UhZjP7oclX25ougnXIUawlMopsVFIvxjw+jGUx53xHJSunFzcpb2PcsuGf6xBHV4ezrM
-         JyehJgzdIftJeKFG+A1hj6y9eFU5++9g7h48Qm22bH4CclRXJ4g34PrpyCuKFiz4/LNc
-         Lrkw==
-X-Gm-Message-State: AOAM533UL59U2cjyGnZuQUMpvgQsE044Ij6HjhYqchWnLgLxJM9J4/xX
-        h9FA9Vf/2rVD2jdONGPzr5cOSA==
-X-Google-Smtp-Source: ABdhPJzfbymChHh9GTOGEwo12Z0OSMWzK4gS2Gg9nF+35xC/ZV142dMkNHCtIUkP+SemxI2yLaNsTw==
-X-Received: by 2002:a7b:cc09:: with SMTP id f9mr882333wmh.93.1600989074117;
-        Thu, 24 Sep 2020 16:11:14 -0700 (PDT)
-Received: from [192.168.1.7] ([195.24.90.54])
-        by smtp.googlemail.com with ESMTPSA id g14sm676116wrv.25.2020.09.24.16.11.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Sep 2020 16:11:13 -0700 (PDT)
-Subject: Re: [PATCH v3 1/4] venus: core: change clk enable and disable order
- in resume and suspend
-To:     Mansur Alisha Shaik <mansur@codeaurora.org>,
-        linux-media@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org
-References: <1600930266-9668-1-git-send-email-mansur@codeaurora.org>
- <1600930266-9668-2-git-send-email-mansur@codeaurora.org>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <afd16a0e-30d9-ecf2-f40b-f85f7500efc6@linaro.org>
-Date:   Fri, 25 Sep 2020 02:11:11 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6d77zHv3VbtLF8v+o64epFZYE7UndkOdN5QV2a28vPk=;
+        b=Vlz6v7r/6l2YX/MYrWD78GMuazfvN0LC3Sv6oQ0FqX9umxWr+Sk2mZPaQXMdmCwr7Y
+         kM/uiWDfMiXBTe7FUkOEM47+7ayeEEIvwQH0o7zEaE6txC1RaW1l2xAArbZMOpNvCaTu
+         wTPLmBeDi1MU17z0Ag9Y6sO+rU+/grEhg+YTYDYJqb7anEcL00yQ81xWwbhA9BdUyI6l
+         +mIftXPAT6kzfNcUnhu8xlwFygMF7s7TuppipcmRUdZ0Nw8d3B+RQ3/eo0BimIepo26n
+         47O1KnwBX3i8D9dzDlhpluvLMiR7t3cqnnzVhHHgH2SIipgge5KizYuYPf9RrHLzxjaZ
+         pKvA==
+X-Gm-Message-State: AOAM530+eXiurIYSeGresdZU18gG92igl5wOBuyNnRqXzuEtECa9RCpV
+        D56gfk6gyXTQIqqat8nrnq56iKQDXjMG96/p28PlTg==
+X-Google-Smtp-Source: ABdhPJyN0vu6hDMQHjttqLw73nVedJQMwf32cQlsKWJR/o9wLzUoNJNEn7Aw778+OvYnmZ+dUf1/a1ZTHDhpxidOwvY=
+X-Received: by 2002:a5d:458a:: with SMTP id p10mr1220315wrq.282.1600989162869;
+ Thu, 24 Sep 2020 16:12:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1600930266-9668-2-git-send-email-mansur@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200923210655.4143682-1-irogers@google.com> <CAKwvOd=V6QFoAmYEVNjHKuOyWG8agjzxwan2EmkuZcQjv6qJ0g@mail.gmail.com>
+In-Reply-To: <CAKwvOd=V6QFoAmYEVNjHKuOyWG8agjzxwan2EmkuZcQjv6qJ0g@mail.gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 24 Sep 2020 16:12:31 -0700
+Message-ID: <CAP-5=fW_uMxebqdrTB5dPMCybGk6w36YgMtyPCQGxA+d=qBf0Q@mail.gmail.com>
+Subject: Re: [PATCH] perf test: Fix msan uninitialized use.
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mansur,
+On Wed, Sep 23, 2020 at 4:37 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Wed, Sep 23, 2020 at 2:07 PM 'Ian Rogers' via Clang Built Linux
+> <clang-built-linux@googlegroups.com> wrote:
+> >
+> > Ensure 'st' is initialized before an error branch is taken.
+> > Fixes test "67: Parse and process metrics" with LLVM msan:
+> > ==6757==WARNING: MemorySanitizer: use-of-uninitialized-value
+> >     #0 0x5570edae947d in rblist__exit tools/perf/util/rblist.c:114:2
+> >     #1 0x5570edb1c6e8 in runtime_stat__exit tools/perf/util/stat-shadow.c:141:2
+> >     #2 0x5570ed92cfae in __compute_metric tools/perf/tests/parse-metric.c:187:2
+> >     #3 0x5570ed92cb74 in compute_metric tools/perf/tests/parse-metric.c:196:9
+> >     #4 0x5570ed92c6d8 in test_recursion_fail tools/perf/tests/parse-metric.c:318:2
+> >     #5 0x5570ed92b8c8 in test__parse_metric tools/perf/tests/parse-metric.c:356:2
+> >     #6 0x5570ed8de8c1 in run_test tools/perf/tests/builtin-test.c:410:9
+> >     #7 0x5570ed8ddadf in test_and_print tools/perf/tests/builtin-test.c:440:9
+> >     #8 0x5570ed8dca04 in __cmd_test tools/perf/tests/builtin-test.c:661:4
+> >     #9 0x5570ed8dbc07 in cmd_test tools/perf/tests/builtin-test.c:807:9
+> >     #10 0x5570ed7326cc in run_builtin tools/perf/perf.c:313:11
+> >     #11 0x5570ed731639 in handle_internal_command tools/perf/perf.c:365:8
+> >     #12 0x5570ed7323cd in run_argv tools/perf/perf.c:409:2
+> >     #13 0x5570ed731076 in main tools/perf/perf.c:539:3
+> >
+> > Fixes: commit f5a56570a3f2 ("perf test: Fix memory leaks in parse-metric test")
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+>
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+>
+> Orthogonal:
+> The case where metricgroup__parse_groups_test() can fail in
+> __compute_metric() also looks curious. Should &metric_events be passed
+> to metricgroup__rblist_exit() in that case?
 
-On 9/24/20 9:51 AM, Mansur Alisha Shaik wrote:
-> Currently video driver is voting after clk enable and un voting
-> before clk disable. This is incorrect, video driver should vote
-> before clk enable and unvote after clk disable.
-> 
-> Corrected this by changing the order of clk enable and clk disable.
-> 
-> Fixes: 7482a983d ("media: venus: redesign clocks and pm domains control")
+Thanks Nick! Checking metricgroup.c, metricgroup__rblist_init does
+occur even if an error is returned. So there isn't an error, but that
+doesn't mean the code couldn't be cleaner :-)
 
-The Fixes tag is incorrect. It should be
+Ian
 
-07f8f22a33a9e ("media: venus: core: remove CNOC voting while device
-suspend")
-
-> Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> ---
->  drivers/media/platform/qcom/venus/core.c | 17 ++++++++++-------
->  1 file changed, 10 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
-> index 6103aaf..52a3886 100644
-> --- a/drivers/media/platform/qcom/venus/core.c
-> +++ b/drivers/media/platform/qcom/venus/core.c
-> @@ -355,13 +355,16 @@ static __maybe_unused int venus_runtime_suspend(struct device *dev)
->  	if (ret)
->  		return ret;
->  
-> +	if (pm_ops->core_power) {
-> +		ret = pm_ops->core_power(dev, POWER_OFF);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
->  	ret = icc_set_bw(core->cpucfg_path, 0, 0);
->  	if (ret)
->  		return ret;
->  
-> -	if (pm_ops->core_power)
-> -		ret = pm_ops->core_power(dev, POWER_OFF);
-> -
->  	return ret;
->  }
->  
-> @@ -371,16 +374,16 @@ static __maybe_unused int venus_runtime_resume(struct device *dev)
->  	const struct venus_pm_ops *pm_ops = core->pm_ops;
->  	int ret;
->  
-> +	ret = icc_set_bw(core->cpucfg_path, 0, kbps_to_icc(1000));
-> +	if (ret)
-> +		return ret;
-> +
->  	if (pm_ops->core_power) {
->  		ret = pm_ops->core_power(dev, POWER_ON);
->  		if (ret)
->  			return ret;
->  	}
->  
-> -	ret = icc_set_bw(core->cpucfg_path, 0, kbps_to_icc(1000));
-> -	if (ret)
-> -		return ret;
-> -
->  	return hfi_core_resume(core, false);
->  }
->  
-> 
-
--- 
-regards,
-Stan
+> > ---
+> >  tools/perf/tests/parse-metric.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/tools/perf/tests/parse-metric.c b/tools/perf/tests/parse-metric.c
+> > index aea4f970fccc..7c1bde01cb50 100644
+> > --- a/tools/perf/tests/parse-metric.c
+> > +++ b/tools/perf/tests/parse-metric.c
+> > @@ -157,6 +157,7 @@ static int __compute_metric(const char *name, struct value *vals,
+> >         }
+> >
+> >         perf_evlist__set_maps(&evlist->core, cpus, NULL);
+> > +       runtime_stat__init(&st);
+> >
+> >         /* Parse the metric into metric_events list. */
+> >         err = metricgroup__parse_groups_test(evlist, &map, name,
+> > @@ -170,7 +171,6 @@ static int __compute_metric(const char *name, struct value *vals,
+> >                 goto out;
+> >
+> >         /* Load the runtime stats with given numbers for events. */
+> > -       runtime_stat__init(&st);
+> >         load_runtime_stat(&st, evlist, vals);
+> >
+> >         /* And execute the metric */
+> > --
+> > 2.28.0.681.g6f77f65b4e-goog
+> >
+> > --
+> > You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> > To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> > To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200923210655.4143682-1-irogers%40google.com.
+>
+>
+>
+> --
+> Thanks,
+> ~Nick Desaulniers
