@@ -2,76 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79452276FF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57D18276FFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727536AbgIXL2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 07:28:12 -0400
-Received: from mga14.intel.com ([192.55.52.115]:16373 "EHLO mga14.intel.com"
+        id S1727457AbgIXLbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 07:31:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35314 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726652AbgIXL2L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 07:28:11 -0400
-IronPort-SDR: 190nK8jV78sjHnGgbbyr00u9Q3Tb/c37ZPFYUIxjXaAuPPLz6nsbiV3O+DIrtLrGN6J69MmFnz
- 4uaBXN8NsLNg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="160457571"
-X-IronPort-AV: E=Sophos;i="5.77,297,1596524400"; 
-   d="scan'208";a="160457571"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 04:28:10 -0700
-IronPort-SDR: 6AaJWL+W/8naSncd7ds/TQNBCRDBKYoSc7qLYzcsk3/4fkbG3+WX2R+VyamwX13Q2vJU66ZQUv
- BZCJFIs+FjRg==
-X-IronPort-AV: E=Sophos;i="5.77,297,1596524400"; 
-   d="scan'208";a="486866581"
-Received: from ekoteln-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.45.129])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 04:28:04 -0700
-Date:   Thu, 24 Sep 2020 14:28:01 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v38 23/24] docs: x86/sgx: Document SGX micro architecture
- and kernel internals
-Message-ID: <20200924112801.GC56811@linux.intel.com>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-24-jarkko.sakkinen@linux.intel.com>
- <20200923135005.GI28545@zn.tnic>
+        id S1726617AbgIXLbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 07:31:38 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1600947096;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=clUvTAjWxOKB0zT0eA1ARy5x1LjR+x7YhgaXafvUhy4=;
+        b=VxAGt4wUGV/PfYiprAcyAstOnKD3EWlzpm56hGOesIFqUrJFqUqRCCy6LvrYDwNAFpIMPH
+        JSQrpwXV0rlQUzxDUi6T2a/WGJfrhqI0C8w4uOJJOrx77fkLCpilVATvMO0V1LSfSrakL7
+        unytmJKc/h6lLIXMRqIyOX4vFfMpx2o=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 98802AC85;
+        Thu, 24 Sep 2020 11:31:36 +0000 (UTC)
+Message-ID: <2f997848ed05c1f060125f7567f6bc3fae7410bb.camel@suse.com>
+Subject: Re: [PATCH 3/4] net: usb: rtl8150: use usb_control_msg_recv() and
+ usb_control_msg_send()
+From:   Oliver Neukum <oneukum@suse.com>
+To:     Petko Manolov <petkan@nucleusys.com>
+Cc:     Himadri Pandya <himadrispandya@gmail.com>, davem@davemloft.net,
+        kuba@kernel.org, pankaj.laxminarayan.bharadiya@intel.com,
+        keescook@chromium.org, yuehaibing@huawei.com, ogiannou@gmail.com,
+        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        gregkh@linuxfoundation.org
+Date:   Thu, 24 Sep 2020 13:09:05 +0200
+In-Reply-To: <20200923144832.GA11151@karbon>
+References: <20200923090519.361-1-himadrispandya@gmail.com>
+         <20200923090519.361-4-himadrispandya@gmail.com>
+         <1600856557.26851.6.camel@suse.com> <20200923144832.GA11151@karbon>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200923135005.GI28545@zn.tnic>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 03:50:05PM +0200, Borislav Petkov wrote:
-> > +This leaf function takes an RSA-3072 signature of the enclave measurement and an
-> > +optional cryptographic token. Linux does not take advantage of launch tokens.
-> > +The instruction checks that the signature is signed with the key defined in
-> > +**IA32_SGXLEPUBKEYHASH?** MSRs and the measurement is correct. If so, the
+Am Mittwoch, den 23.09.2020, 17:48 +0300 schrieb Petko Manolov:
+
+> > This internally uses kmemdup() with GFP_KERNEL.
+> > You cannot make this change. The API does not support it.
+> > I am afraid we will have to change the API first, before more
+> > such changes are done.
 > 
-> That '?' wants to be '[0123]' perhaps?
+> One possible fix is to add yet another argument to usb_control_msg_recv(), which 
+> would be the GFP_XYZ flag to pass on to kmemdup().  Up to Greg, of course.
 
-What do you think of this:
+Hi,
 
-"The leaf instruction checks that the measurement is correct and
-signature is signed with the key hashed to the four
-+**IA32_SGXLEPUBKEYHASH{0, 1, 2, 3}** MSRs representing the SHA256 of a
-public key."
+submitted. The problem is those usages that are very hard to trace.
+I'd dislike to just slab GFP_NOIO on them for no obvious reason.
 
-I though that little more detail would make sense here (i.e. what do the
-MSRs represent).
+	Regards
+		Oliver
 
-/Jarkko
+
