@@ -2,169 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4131C276BC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E8C276BCD
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:27:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727264AbgIXI01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 04:26:27 -0400
-Received: from mout.kundenserver.de ([212.227.17.10]:38727 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726979AbgIXI0Z (ORCPT
+        id S1727286AbgIXI1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 04:27:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727031AbgIXI1F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 04:26:25 -0400
-X-Greylist: delayed 60646 seconds by postgrey-1.27 at vger.kernel.org; Thu, 24 Sep 2020 04:26:23 EDT
-Received: from mail-qk1-f173.google.com ([209.85.222.173]) by
- mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MnagF-1kl78t23NN-00jX68; Thu, 24 Sep 2020 10:26:22 +0200
-Received: by mail-qk1-f173.google.com with SMTP id v123so2487558qkd.9;
-        Thu, 24 Sep 2020 01:26:22 -0700 (PDT)
-X-Gm-Message-State: AOAM5322pE9d6oTUDb0fysgmklL1BUbMvIuxZ9lnKS8K5QjuEr2L1zxA
-        ZY6wqc9/NIN+1S7po4YSnt5cXvw80BmJT+EDKbE=
-X-Google-Smtp-Source: ABdhPJwdB4OckyypHDvhO1cGrqIWN2A9DDGKREeH56+z++Kes/ubhHRnkNRx8EJcehFdXXe5kRHJ6nndT91q+XgyvnE=
-X-Received: by 2002:a37:5d8:: with SMTP id 207mr3790606qkf.352.1600935980950;
- Thu, 24 Sep 2020 01:26:20 -0700 (PDT)
+        Thu, 24 Sep 2020 04:27:05 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B181FC0613CE;
+        Thu, 24 Sep 2020 01:27:05 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id j7so1270351plk.11;
+        Thu, 24 Sep 2020 01:27:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x9lDp/fm1dXSek9vB0bYLHVoKOQKR8P/mOoxP5x0AnI=;
+        b=If5vtPX6M7ZWbPoCBAq27sx2WT8WY4MjVBPPBAJv/Ok3VfPY03mrb4WJd6UWiMRTeH
+         sAoz7ZqXlUQIHYqgcXdGZwwSGS0Dvb+mIpg/cuhui3eLYGW3F+M+lE1fwNjuZs+/OQ7O
+         tE4dQnPWP5FXssrWfDYSj3XEl2dbnkvAcYLzFx+juEY0KTCpYoR7y7pWI8YuoU3pO2+/
+         BM4NMzPnWny3uMQdOISJWTd5WRh1lXOv4z0EU/l54m1+QY0AiR9UCQX85Iezba3Ngio1
+         MYAX8xanzT5MKH4P2fgTVGMbR8VhlB/8Dd+UQAb4qPV8hC7wUNeW5JT6uQsof1gcBdDZ
+         nURg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x9lDp/fm1dXSek9vB0bYLHVoKOQKR8P/mOoxP5x0AnI=;
+        b=htqX98aQnpcxtjmORjrtouAX3SuikhFQGvGIoTSWNUE4JLVEhLQILukxb9Xu9uryS6
+         GJii9Al0/eZD6dsGy9CifdHMCKT84++WD961wJaJU4404fE0+m5a1Zz/Sw1lbCpQU4i3
+         Z/Wug47k0AtI9j4BfyXy7cwGhSUjdFPcW9LhNwt18vrlgwB8a+TID6dPXTW6aBaga9QJ
+         bk+05JUcogi9MRpaTHKnYXLEVxIgCfFWpGZdCJgwAL2H54HqieBVmlZbLf59aY64haXS
+         S2Dnw1Ea60LAjcoJDou118VeXfirI/VPS/FYolmFK9zTYsJu18QCRW3G/rWFJTnDrlNQ
+         sN4Q==
+X-Gm-Message-State: AOAM530HAYEk9J9RZqoPxXmXcyuTfEZFXjTZLaDZvd0Ow/xZ11afoSx2
+        f6WYL2cUNlZ0iARLdkyiOvFjzz1dBKCIWAz5THE=
+X-Google-Smtp-Source: ABdhPJzL6A21jEGBmU6S3cHiA5bF3btfaOTrr0dHojkgbOrwmJFKVxmQjTsrjo5HqZ3JCWwViypGmljdGZ7mDcT/gDQ=
+X-Received: by 2002:a17:902:c14c:b029:d2:4345:5a9 with SMTP id
+ 12-20020a170902c14cb02900d2434505a9mr3579454plj.0.1600936025168; Thu, 24 Sep
+ 2020 01:27:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200923151511.3842150-1-luzmaximilian@gmail.com>
- <CAK8P3a3Qie_CP1dA-ERqyDv=EnaQQPnNbFYrGr3ySiY4mO0=Uw@mail.gmail.com>
- <dad42dce-15d0-245a-4d91-4733e54883a0@gmail.com> <CAK8P3a2ryzmsrHHApT9O=dvsw+=z18Sjd4ygVxvFrrDetKA+rQ@mail.gmail.com>
- <c4c1d999-9ab7-8988-906a-3cb6a70bc93d@gmail.com>
-In-Reply-To: <c4c1d999-9ab7-8988-906a-3cb6a70bc93d@gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 24 Sep 2020 10:26:04 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2XegsP71yvd8Ku08_k6ecQfkU+V+t+QnjQBrJKF2MwCg@mail.gmail.com>
-Message-ID: <CAK8P3a2XegsP71yvd8Ku08_k6ecQfkU+V+t+QnjQBrJKF2MwCg@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/9] Add support for Microsoft Surface System
- Aggregator Module
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-serial@vger.kernel.org,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        =?UTF-8?Q?Bla=C5=BE_Hrastnik?= <blaz@mxxn.io>,
-        Dorian Stoll <dorian.stoll@tmsp.io>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>
+References: <20200922023151.387447-1-warthog618@gmail.com> <20200922023151.387447-11-warthog618@gmail.com>
+ <CAHp75VdaPR+iihenPYos1mAGLbDhJPvCfDTtURpk_MBa=3wYEg@mail.gmail.com>
+ <CAHp75Vcktxp1C6NTOrW-WEnfueOu0UvtquFLpsL5+vv6Fdaajw@mail.gmail.com> <20200924032414.GC11575@sol>
+In-Reply-To: <20200924032414.GC11575@sol>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 24 Sep 2020 11:26:49 +0300
+Message-ID: <CAHp75Vd1=CpsMecw=dua66i-P992e71uQcOzWR7tvd6ZGyKWoA@mail.gmail.com>
+Subject: Re: [PATCH v9 10/20] gpiolib: cdev: support GPIO_V2_LINE_SET_CONFIG_IOCTL
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:7BSu+DCzcAsvcwNW/57TzlBcHkc7QtvslyE7xNAfuxWY1xVxCeo
- vYxOvSAWLJpqEbhKmF0hg3Zga739OBAzSlxeJjvBo6SAvF3uiO049eJfPxMTg+7HB8vNX3B
- SKMxP6K3DPKwdLJhWX3WkxgN1SFR8v8X9nWg/AGHbA4tKGlll5EFdWlxArAeraBkXGUYH0B
- 4qaWBHB0Oo/7g1ZZ+jkNA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:582bsw1Rrf4=:sPBeZFmBT69s11y8Bqwgd+
- m/PUKiUo0KhGubXXotrGx+LRvY+R/vrgE37REXKbSenmUuuUa2dumfd+lnTPvFTRO1q1hN3uH
- l2Us+r93NZxLc2KPv8lQzmHH/3Wuvserps61c2au1tosZmvUdwh5LFSYopn1juVyKMDGypBzt
- c4ne/crunEBY12Eq7RtEzyRrCybHSz+0amEbVfZjhcwVmi9REHz7nVhFh8tAna2f4XWFz7S1Q
- Y6514NmNsynu65jLAyCh3+rzFoCxlQ7SlcEScLf2CWAppubX3yrxxWL7Fb4VnpiUXYCGN9Ztf
- gQALFbN2VbKWFHI7JGi2ndD0kdWVs4DQEmucr2c659lzdNOKQmt1LDoywvGSupI2Ff71Aq2yL
- MmZiBonZ3mNcOidb0x1zZT6FS3SV4Odw6LzGuf/7rQn216lmBGerPBzuVb+OfCSdl/ro+49VD
- QK7eAgKYWvPtd/fr5QH3OvebhMUWccqJ5HITp8d1aAmVtyLbpErKUeve/k17jrO+JLCsZPEsC
- F66SHVSGFSflw0UdPTExQyqED8XMLCM+46aSVvslI2ttvwfzyC/4PHopqbNjYZ7l//0CCEJIZ
- xzNjch1R8GWyrBlb2Tbf2qsNHwqbhnfjPyeeuMRtR3IPkQiMm4jPM/P8Zt6Sed2+4CHV0RYVg
- e3ZWsp7AGIi+uWzcDOLrF5J4eNDg7OPuyNrX7k/z+xrO2BkQlLCKLyRxWvYAkbfCyWH6zMpYw
- dgzwjWFhaRHpZzQceJa4UbDVLE/GVEJIMfiXyrBgd3q5F5gqVkQ3fnhjOvJVHgD6SVFUTmhco
- 3Xe9BtvPioyKs2Hkf6t+fb05ELSYxt0Jql2QtnAdnQvmkVbp6m0harmwQuKWRQjL+TvdAluOs
- jxdpUlGo+c7w/8Zid6rNaWr2vJjWAfT1gPSxHr5bliz5GknIReeCojYeI3h6rYpjtO2adIOlf
- 2bi87SFdnIAuz1TBLDXgLSed1gxdQVDcYTFozejbfDZsrNddiectF
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 1:28 AM Maximilian Luz <luzmaximilian@gmail.com> wrote:
-> On 9/23/20 9:43 PM, Arnd Bergmann wrote:
-> > On Wed, Sep 23, 2020 at 5:43 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
-> >>
-> >> On 9/23/20 5:30 PM, Arnd Bergmann wrote:
-> >>> On Wed, Sep 23, 2020 at 5:15 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
-> >>>>
-> >>>> Hello,
-> >>>>
-> >>>> The Surface System Aggregator Module (we'll refer to it as Surface
-> >>>> Aggregator or SAM below) is an embedded controller (EC) found on various
-> >>>> Microsoft Surface devices. Specifically, all 4th and later generation
-> >>>> Surface devices, i.e. Surface Pro 4, Surface Book 1 and later, with the
-> >>>> exception of the Surface Go series and the Surface Duo. Notably, it
-> >>>> seems like this EC can also be found on the ARM-based Surface Pro X [1].
-> >>>
-> >>> I think this should go to drivers/platform/x86 or drivers/platform/surface/
-> >>> along with other laptop vendor specific code rather than drivers/misc/.
-> >>
-> >> I initially had this under drivers/platform/x86. There are two main
-> >> reasons I changed that: First, I think it's a bit too big for
-> >> platform/x86 given that it basically introduces a new subsystem. At this
-> >> point it's really less of "a couple of odd devices here and there" and
-> >> more of a bus-type thing. Second, with the possibility of future support
-> >> for ARM devices (Pro X, Pro X 2 which is rumored to come out soon), I
-> >> thought that platform/x86 would not be a good fit.
+On Thu, Sep 24, 2020 at 6:24 AM Kent Gibson <warthog618@gmail.com> wrote:
+> On Wed, Sep 23, 2020 at 07:15:46PM +0300, Andy Shevchenko wrote:
+> > On Wed, Sep 23, 2020 at 7:14 PM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+> > > On Tue, Sep 22, 2020 at 5:35 AM Kent Gibson <warthog618@gmail.com> wrote:
+> > > >
+> > > > Add support for GPIO_V2_LINE_SET_CONFIG_IOCTL, the uAPI v2
+> > > > line set config ioctl.
 > >
-> > I don't see that as a strong reason against it. As you write yourself, the
-> > driver won't work on the arm machines without major changes anyway,
-> > and even if it does, it fits much better with the rest of it.
->
-> Sorry, I should have written that a bit more clearly. I don't see any
-> reason why these drivers would not work on an ARM device such as the Pro
-> X right now, assuming that it boots via ACPI and the serial device it
-> loads against is fully functional.
-
-As I understand, the dialect of ACPI used on the snapdragon laptops
-is not really compatible with the subset expected by the kernel, so
-you'd be more likely to run those laptops with a device tree description
-of the hardware instead (if at all).
-
-Making the driver talk to the hardware directly instead of going through
-AML likely requires more refactoring.
-
-> >> I'd be happy to move this to platform/surface though, if that's
-> >> considered a better fit and you're okay with me adding that. Would make
-> >> sense given that there's already a platform/chrome, which, as far as I
-> >> can tell, also seems to be mainly focused on EC support.
+> > > > +static long linereq_set_config_unlocked(struct linereq *lr,
+> > > > +                                       struct gpio_v2_line_config *lc)
+> > > > +{
+> > > > +       struct gpio_desc *desc;
+> > > > +       unsigned int i;
+> > > > +       u64 flags;
+> > > > +       bool polarity_change;
+> > > > +       int ret;
+> > > > +
+> > > > +       for (i = 0; i < lr->num_lines; i++) {
+> > > > +               desc = lr->lines[i].desc;
+> > > > +               flags = gpio_v2_line_config_flags(lc, i);
+> > >
+> > > > +               polarity_change =
+> > > > +                       (test_bit(FLAG_ACTIVE_LOW, &desc->flags) !=
+> > > > +                        ((flags & GPIO_V2_LINE_FLAG_ACTIVE_LOW) != 0));
+> > >
+> > > Comparison
 > >
-> > Yes, I think the main question is how much overlap you see functionally
-> > between this driver and the others in drivers/platform/x86.
+> > Comparison between int / long (not all archs are agreed on this) and
+> > boolean is not the best we can do.
+> >
 >
-> I think that the Pro X likely won't be the last ARM Surface device with
-> a SAM EC. Further, the subsystem is going to grow, and platform/x86
-> seems more like a collection of, if at all, loosely connected drivers,
-> which might give off the wrong impression. In my mind, this is just a
-> bit more comparable to platform/chrome than the rest of platform/x86. I
-> don't think I'm really qualified to make the decision on that though,
-> that's just my opinion.
+> There is no bool to int comparision here.
 
-I would ask the drivers/platform/x86 maintainers for an opinion here,
-they are probably best qualified to make that decision.
+test_bit() returns int or long depending on arch... Then you compare
+it to bool (which is a product of != 0).
 
-I don't really mind either way, for me this is more about who is
-responsible as a subsystem maintainer than whether these are
-technically x86 or not.
+> There are two comparisons - the inner int vs int => bool and the
+> outer bool vs bool.  The "!= 0" is effectively an implicit cast to
+> bool, as is your new_polarity initialisation below.
+>
+> > What about
+> >
+> >   bool old_polarity = test_bit(FLAG_ACTIVE_LOW, &desc->flags);
+> >   bool new_polarity = flags & GPIO_V2_LINE_FLAG_ACTIVE_LOW;
+> >
+> >   old_polarity ^ new_polarity
+>
+> So using bitwise operators on bools is ok??
 
-> Here's an overview of other drivers that I hopefully at some point get
-> in good enough shape, which are part of this subsystem/dependent on the
-> EC API introduced here:
->
-> - A device registry / device hub for devices that are connected to the
->    EC but can't be detected via ACPI.
->
-> - A dedicated battery driver for 7th generation devices (where the
->    battery isn't hanled via the ACPI shim).
->
-> - A driver properly handling clipboard detachment on the Surface Books.
->
-> - A driver for HID input/transport on the Surface Laptops and Surface
->    Book 3.
->
-> - A driver for allowing users to set the performance/cooling mode via
->    sysfs.
->
-> - Possibly a driver improving hot-plug handling of the discrete GPU in
->    the Surface Book base.
+XOR is special. There were never bitwise/boolean XORs.
 
-Note that drivers that connect to the bus typically don't live in the
-same subdirectory as the driver that operates the bus. E.g. the
-battery driver would go into drivers/power/supply and the input
-would go into drivers/input/ or drivers/hid.
+> > and move this under INPUT conditional?
+> >
+>
+> It has to be before the gpio_v2_line_config_flags_to_desc_flags() call,
+> as that modifies the desc flags, including the new polarity, so
+> polarity_change would then always be false :-).
 
-    Arnd
+I really don't see in the code how polarity_change value is used in
+FLAG_OUTPUT branch below.
+
+> > > > +
+> > > > +               gpio_v2_line_config_flags_to_desc_flags(flags, &desc->flags);
+> > > > +               /*
+> > > > +                * Lines have to be requested explicitly for input
+> > > > +                * or output, else the line will be treated "as is".
+> > > > +                */
+> > > > +               if (flags & GPIO_V2_LINE_FLAG_OUTPUT) {
+> > > > +                       int val = gpio_v2_line_config_output_value(lc, i);
+> > > > +
+> > > > +                       edge_detector_stop(&lr->lines[i]);
+> > > > +                       ret = gpiod_direction_output(desc, val);
+> > > > +                       if (ret)
+> > > > +                               return ret;
+> > > > +               } else if (flags & GPIO_V2_LINE_FLAG_INPUT) {
+> > > > +                       ret = gpiod_direction_input(desc);
+> > > > +                       if (ret)
+> > > > +                               return ret;
+> > > > +
+> > > > +                       ret = edge_detector_update(&lr->lines[i],
+> > > > +                                       flags & GPIO_V2_LINE_EDGE_FLAGS,
+> > > > +                                       polarity_change);
+> > > > +                       if (ret)
+> > > > +                               return ret;
+> > > > +               }
+> > > > +
+> > > > +               blocking_notifier_call_chain(&desc->gdev->notifier,
+> > > > +                                            GPIO_V2_LINE_CHANGED_CONFIG,
+> > > > +                                            desc);
+> > > > +       }
+> > > > +       return 0;
+> > > > +}
+> >
+> > --
+> > With Best Regards,
+> > Andy Shevchenko
+
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
