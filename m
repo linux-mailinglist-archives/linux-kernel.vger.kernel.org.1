@@ -2,95 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E63276919
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:38:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44A0327691A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726989AbgIXGiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 02:38:50 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:43847 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726721AbgIXGiu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 02:38:50 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BxlkF6K9Xz9sTH;
-        Thu, 24 Sep 2020 16:38:45 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1600929527;
-        bh=seWaRTVZXlHdO0q9uW/TGECU1LGVDqL3zNRfULslO0A=;
-        h=Date:From:To:Cc:Subject:From;
-        b=R6Z7AK/Ew40XwP7pQRf1swS65U2EOImcnF/LXO3N1KzBG3Wh23dAqAHHONkdysLqb
-         5eIS6+8Jo+g0/sNXaz89MlC4wsEig6d9tm65eYXZvpsTOVUCSKRHufmwgyl558oF22
-         gLXga2f4drItSb1pD+PMpDGRhd7rxLoY4gJNnxfCNOVbmpOwnmWmCtG8Tc3/qLnc9C
-         D0tK1rS86p6EspECFjbd9j0loYQnQefUPHuJoMv0JovoyKoJYIF2IzedQITvJboigY
-         kfDuXpswegEViRJgXQPi/6SuXNSQyP95CplYXhqC2AXZP6DHxiQ0rahhlt12EqAAkL
-         cwPrY+poyBsDQ==
-Date:   Thu, 24 Sep 2020 16:38:43 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Al Viro <viro@ZenIV.linux.org.uk>
-Cc:     Vishal Verma <vishal.l.verma@intel.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: manual merge of the nvdimm tree with the vfs tree
-Message-ID: <20200924163843.1c0d0f2c@canb.auug.org.au>
+        id S1727018AbgIXGjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 02:39:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726721AbgIXGjD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 02:39:03 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CCAEC0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 23:39:03 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id mn7so1071998pjb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 23:39:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0XdoGsthdP0st5oc3oiLDJoWjs7OJH+8MYDHvoMVNdQ=;
+        b=Ulx1bpyG87cjZx3cGY6T63diD/f6gR/G2OLQVPojfDalMYXegtyu4DsgqrlBb5xeLQ
+         8f+8vMhG5/anIvMxso1kCcHz6J4kyTw1fe2FxSwJCi8xjkn6ozkUh6N9LeUtS4JWKjXR
+         18HeH5xr84wP+ObKWF48RQSr3lpxFXk4Zv01VmzdQG6X45VwlCh10b9i3o4DevTMk1IJ
+         g8Rw0H6JaFaYSrXmFfzqZGEmX70DIkWuTPCOoF9BedJdMbqhzLFvfIQaKr0iGEKeABRl
+         4Z7zPVJMs2lYipVoqBpiQRRWKVEP8Mi0U7k/h02ORuvsVrEtqSx8QCxdrNi5iHTHFtY9
+         05VQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0XdoGsthdP0st5oc3oiLDJoWjs7OJH+8MYDHvoMVNdQ=;
+        b=mWL2AiBI3G2ObZsuNnCl68BK3Z0+FpYszCaiJURs+Hvlzw0nCpMX00zLkKN2EexZgJ
+         qSTgczLNIXGp8zZ97UpcOO8vA6/zrgv/oFlVT/Iq2EJJ6eN3r31434dPX6B3Xm8UH7MO
+         hPd9W0/ffi5NRdwE673heeKUWH2CGu4WWp4SLTHV4DLJrxYRyzVEat/dh6DeCKm7H61J
+         365r18vxj97uh6mxxRUN6Aw9tT+GwvTo/6rkA0IYf61cqJxLiza3FoC32MgXOQCdoFiy
+         yUQxYDhuc6Al5KnpZzm6IdVVKJeNenkA5v/SeFogH2giT+A/OGAHQ8N4BTMqCbB/9qDH
+         0fjg==
+X-Gm-Message-State: AOAM532Vhmv9xjJKhb1qOPb64zKDy6WAkEIbixKtGGKQKyLFrV5bJsfN
+        e78ZZ051URBTbKY/Mcr6/lM=
+X-Google-Smtp-Source: ABdhPJxLB/Bo759nQTWT6nB4BssNgSDgx/kfQRPH000wNkoineZBGZ8Me+y3YQlAROPB/3UeyQk8fg==
+X-Received: by 2002:a17:90a:d493:: with SMTP id s19mr2617266pju.91.1600929542518;
+        Wed, 23 Sep 2020 23:39:02 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id r6sm1586305pfq.11.2020.09.23.23.39.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2020 23:39:01 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 15:38:59 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Prasad Sodagudi <psodagud@codeaurora.org>
+Cc:     rostedt@goodmis.org, pmladek@suse.com,
+        sergey.senozhatsky@gmail.com, gregkh@linuxfoundation.org,
+        tglx@linutronix.de, linux-kernel@vger.kernel.org, tkjos@google.com,
+        Mohammed Khajapasha <mkhaja@codeaurora.org>
+Subject: Re: [PATCH 2/2] printk: Make the console flush configurable in
+ hotplug path
+Message-ID: <20200924063859.GA763318@jagdpanzerIV.localdomain>
+References: <1600906112-126722-1-git-send-email-psodagud@codeaurora.org>
+ <1600906112-126722-2-git-send-email-psodagud@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/4YVOXqSy3go/5DMeSCOCOPl";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1600906112-126722-2-git-send-email-psodagud@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/4YVOXqSy3go/5DMeSCOCOPl
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On (20/09/23 17:08), Prasad Sodagudi wrote:
+> From: Mohammed Khajapasha <mkhaja@codeaurora.org>
+> 
+> The thread which initiates the hot plug can get scheduled
+> out, while trying to acquire the console lock,
+> thus increasing the hot plug latency. This option
+> allows to selectively disable the console flush and
+> in turn reduce the hot plug latency.
 
-Hi all,
+It can schedule out or get preempted pretty much anywhere at any
+time. printk->console_lock is not special in this regard. What am
+I missing?
 
-Today's linux-next merge of the nvdimm tree got conflicts in:
-
-  arch/x86/include/asm/uaccess_64.h
-
-between commit:
-
-  e33ea6e5ba6a ("x86/uaccess: Use pointer masking to limit uaccess speculat=
-ion")
-
-from the vfs tree and commit:
-
-  0a78de3d4b7b ("x86, powerpc: Rename memcpy_mcsafe() to copy_mc_to_{user, =
-kernel}()")
-
-from the nvdimm tree.
-
-I fixed it up (the latter just removed copy_to_user_mcsafe from this file,
-so I did that) and can carry the fix as necessary. This is now fixed as
-far as linux-next is concerned, but any non trivial conflicts should be
-mentioned to your upstream maintainer when your tree is submitted for
-merging.  You may also want to consider cooperating with the maintainer
-of the conflicting tree to minimise any particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/4YVOXqSy3go/5DMeSCOCOPl
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9sPvMACgkQAVBC80lX
-0GyiTwf+Ki0u9wvPLEv3HOp3WzZWJsmxo/ZiphqsIwQqhcd8/ekM6xaOx7U4aBur
-LW3/btpUVPRSmR0KZCP7iPonuaXMHZbCw+5uDpt14n2s4lqjJWHq+odXXZB08k55
-JEfdA5acy+rAqYuIRvvsG0sROtYfQ+lrz+OsPSV7UXjuIvJLuYTGptX7daI4cnTo
-AJRZFUTlHzvaHkkfxNfpel2ds/hY1PhMLRdr4hmFyhMmD6cWnFkfJGwhFUKJzQVG
-TlIzNQQL2zmXQ+Zse8C7cPdZbrCHHHR4APzrMeFeQTtzu/rhjbHRqWzJp83w3hdP
-/wPNkd+jGVSj3ar0jj72rpDAtLV59w==
-=QgDn
------END PGP SIGNATURE-----
-
---Sig_/4YVOXqSy3go/5DMeSCOCOPl--
+	-ss
