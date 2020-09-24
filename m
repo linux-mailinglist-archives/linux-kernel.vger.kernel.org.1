@@ -2,145 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AED472772BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 782F22772BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728099AbgIXNke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 09:40:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32953 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728072AbgIXNkd (ORCPT
+        id S1728022AbgIXNkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 09:40:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727888AbgIXNka (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 09:40:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600954831;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kYAYqqd7z+BNCAHCjT3gWlmfrOPX+NjKniGPI1/zmmY=;
-        b=OCby7DVfSsKIKrUJcwwYmKMRRMBt6sY7pEmJiI1G0FmAKvjmexbcofNSmM1qb9EuldMIz3
-        f3H+eZiw3KVyUEI730y2pl7ZG8+4DnBdDnsabnx6+Epe6FZ8Dlp88eaeURowmGMfihYDg5
-        EjriH7NsEn38GuQFIFCxgfCeRNKzXK8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-377-WFyBiUTWPeC4OksGnGVzMg-1; Thu, 24 Sep 2020 09:40:27 -0400
-X-MC-Unique: WFyBiUTWPeC4OksGnGVzMg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 450AD800475;
-        Thu, 24 Sep 2020 13:40:26 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C1A717B7A2;
-        Thu, 24 Sep 2020 13:40:22 +0000 (UTC)
-Date:   Thu, 24 Sep 2020 09:40:22 -0400
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Eric Biggers <ebiggers@google.com>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        dm-devel@redhat.com, Alasdair Kergon <agk@redhat.com>
-Subject: Re: [PATCH 2/3] dm: add support for passing through inline crypto
- support
-Message-ID: <20200924134021.GA13849@redhat.com>
-References: <20200909234422.76194-1-satyat@google.com>
- <20200909234422.76194-3-satyat@google.com>
- <20200924012103.GE10500@redhat.com>
- <20200924074810.GB1894729@google.com>
+        Thu, 24 Sep 2020 09:40:30 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E4BC0613CE;
+        Thu, 24 Sep 2020 06:40:30 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id y6so1684200plt.9;
+        Thu, 24 Sep 2020 06:40:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=cGJ/OdtZht+9heWoI2epD1dIdA+gcxLBdCbKRQuv3zI=;
+        b=d5Sgm2ZR1hnM76gGIOud2fuXPBUPd68NCmYXPCjIrec51wvWiCTYtuxSawzakRYRI6
+         yxtPKuh/79mhucoh5rcviIifiCNBK/TGT8/0DVv3Dkv+c31sq65SY8ZuYgmuEVNLWD1y
+         6453nNl32aQ1GY8PJtwdfr/xuRpY5POSO88zVTEUjKGN7/uczSIsLmTdPVyoh8YNmbsL
+         C7wK5CNsVD4XOkQycag1rT2KFugOz2LHQopMT40bcwGPuypybsVDTBtL0wpXGeG2rqKI
+         zRmuLRfj0HtIM1RS6i/X2SaH2is4BmjdtM2jKsku9Cu2OxRINCkOuvCs31nJlmVdNoDD
+         mGkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cGJ/OdtZht+9heWoI2epD1dIdA+gcxLBdCbKRQuv3zI=;
+        b=rIQwnn6J/92rYcuBuGjQnA+1n9HMCJtDYMaZdi/3m0WE9rs3PayB6vVbAMO7b4f9GE
+         YIG8JqGboegoT3TWNmGqzC1RyphlkB4hRTAfneTOXi8rhkd1BUU0O4YDREeoDZPce0Tm
+         zEtiHYPwx1xwaHDiA4tapl5YXgH8tgF4mTNKOie6eptpu2jXNvtkE8F/F1Beao3Nshd/
+         vGM1UyDyptImKMdkdAP623PrQnIGU7z9ADYu8KL3vIpMVGmBBrLWm9qnr562WuXVDW+d
+         tDEt2VAurPdUmVEXRYQA/olavrPZg7CPHJBbkCdr8IxwRPuH/F5wJBdYAy7m1CEsKbwA
+         z40Q==
+X-Gm-Message-State: AOAM530qCnUupNhTArKYxF1JG3Z8JamiC9OFXBpdX97fDX46SB7jm4tb
+        4IBekmdUrj1gcbD7hqghnSnIPlJl3ZFyWA==
+X-Google-Smtp-Source: ABdhPJzCAhxrDicWNkVJXJeqpArxbDBDnaDbYHSOe++t5wawxWIMmm7Z/o5M3Kt8tbdxDFOUHpzx/A==
+X-Received: by 2002:a17:902:aa95:b029:d2:19f4:ff56 with SMTP id d21-20020a170902aa95b02900d219f4ff56mr4694395plr.78.1600954830270;
+        Thu, 24 Sep 2020 06:40:30 -0700 (PDT)
+Received: from sol (106-69-189-59.dyn.iinet.net.au. [106.69.189.59])
+        by smtp.gmail.com with ESMTPSA id u71sm3046759pfc.43.2020.09.24.06.40.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 06:40:29 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 21:40:24 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v7 07/20] gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL
+ and GPIO_V2_LINE_GET_VALUES_IOCTL
+Message-ID: <20200924134024.GA239773@sol>
+References: <20200905133549.24606-1-warthog618@gmail.com>
+ <20200905133549.24606-8-warthog618@gmail.com>
+ <CAHp75Vdm=61wibz70ScvayXk_D77rZw_pG7wPkLXkbkzagRPNA@mail.gmail.com>
+ <20200920111204.GB793608@sol>
+ <CAMpxmJW1g-Z4XR1BvOvxjweqMYA6dvS9A=ooLKyjdxU1n9-3HA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200924074810.GB1894729@google.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <CAMpxmJW1g-Z4XR1BvOvxjweqMYA6dvS9A=ooLKyjdxU1n9-3HA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24 2020 at  3:48am -0400,
-Satya Tangirala <satyat@google.com> wrote:
+On Thu, Sep 24, 2020 at 03:36:24PM +0200, Bartosz Golaszewski wrote:
+> On Sun, Sep 20, 2020 at 1:12 PM Kent Gibson <warthog618@gmail.com> wrote:
+> >
+> > >
+> > > Can we use static_assert() at the top of the file? Presumably after
+> > > inclusion block.
+> > >
+> >
+> > Good idea - will do.
+> 
+> Thanks Andy for bringing this to my attention, the amount of kernel
+> interfaces I still don't know after all these years still amazes me.
+> 
 
-> On Wed, Sep 23, 2020 at 09:21:03PM -0400, Mike Snitzer wrote:
-> > On Wed, Sep 09 2020 at  7:44pm -0400,
-> > Satya Tangirala <satyat@google.com> wrote:
-> > 
-> > > From: Eric Biggers <ebiggers@google.com>
-> > > 
-> > > Update the device-mapper core to support exposing the inline crypto
-> > > support of the underlying device(s) through the device-mapper device.
-> > > 
-> > > This works by creating a "passthrough keyslot manager" for the dm
-> > > device, which declares support for encryption settings which all
-> > > underlying devices support.  When a supported setting is used, the bio
-> > > cloning code handles cloning the crypto context to the bios for all the
-> > > underlying devices.  When an unsupported setting is used, the blk-crypto
-> > > fallback is used as usual.
-> > > 
-> > > Crypto support on each underlying device is ignored unless the
-> > > corresponding dm target opts into exposing it.  This is needed because
-> > > for inline crypto to semantically operate on the original bio, the data
-> > > must not be transformed by the dm target.  Thus, targets like dm-linear
-> > > can expose crypto support of the underlying device, but targets like
-> > > dm-crypt can't.  (dm-crypt could use inline crypto itself, though.)
-> > > 
-> > > When a key is evicted from the dm device, it is evicted from all
-> > > underlying devices.
-> > > 
-> > > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> > > Co-developed-by: Satya Tangirala <satyat@google.com>
-> > > Signed-off-by: Satya Tangirala <satyat@google.com>
-> > > ---
-> > >  block/blk-crypto.c              |  1 +
-> > >  block/keyslot-manager.c         | 34 ++++++++++++
-> > >  drivers/md/dm-core.h            |  4 ++
-> > >  drivers/md/dm-table.c           | 52 +++++++++++++++++++
-> > >  drivers/md/dm.c                 | 92 ++++++++++++++++++++++++++++++++-
-> > >  include/linux/device-mapper.h   |  6 +++
-> > >  include/linux/keyslot-manager.h |  7 +++
-> > >  7 files changed, 195 insertions(+), 1 deletion(-)
-> > > 
+And don't forget it was originally Andy's idea to use the BUILD_BUG_ON()
+as well ;-).
 
-> > > diff --git a/drivers/md/dm-core.h b/drivers/md/dm-core.h
-> > > index c4ef1fceead6..4542050eebfc 100644
-> > > --- a/drivers/md/dm-core.h
-> > > +++ b/drivers/md/dm-core.h
-> > > @@ -12,6 +12,7 @@
-> > >  #include <linux/kthread.h>
-> > >  #include <linux/ktime.h>
-> > >  #include <linux/blk-mq.h>
-> > > +#include <linux/keyslot-manager.h>
-> > >  
-> > >  #include <trace/events/block.h>
-> > >  
-> > > @@ -49,6 +50,9 @@ struct mapped_device {
-> > >  
-> > >  	int numa_node_id;
-> > >  	struct request_queue *queue;
-> > > +#ifdef CONFIG_BLK_INLINE_ENCRYPTION
-> > > +	struct blk_keyslot_manager ksm;
-> > > +#endif
-> > >  
-> > >  	atomic_t holders;
-> > >  	atomic_t open_count;
-> > 
-> > Any reason you placed the ksm member where you did?
->
-> As in, any reason why it's placed right after the struct request_queue
-> *queue? The ksm is going to be set up in the request_queue and is a part
-> of the request_queue is some sense, so it seemed reasonable to me to
-> group them together....but I don't think there's any reason it *has* to
-> be there, if you think it should be put elsewhere (or maybe I'm
-> misunderstanding your question :) ).
-
-Placing the full struct where you did is highly disruptive to the prior
-care taken to tune alignment of struct members within mapped_device.
-
-Switching to a pointer will be less so, but even still it might be best
-to either find a hole in the struct (not looked recently, but there may
-not be one) or simply put it at the end of the structure.
-
-The pahole utility is very useful for this kind of struct member
-placement, etc.  But it is increasingly unavailable in modern Linux
-distros...
-
-Mike
-
+Cheers,
+Kent.
