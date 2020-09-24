@@ -2,114 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 220F22770D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE1622770E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727694AbgIXMXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 08:23:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38360 "EHLO
+        id S1727730AbgIXMY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 08:24:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727680AbgIXMXg (ORCPT
+        with ESMTP id S1727468AbgIXMY2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 08:23:36 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2375C0613D7
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:23:35 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id a17so3592834wrn.6
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:23:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=PtKTSY41aN1c2YuBo2WSiO9cWck/dx6VHgtWV4uIRZY=;
-        b=JTw9rlKqb7OA6x+z5c1wx9ysAooN1pK080IGSL+W35JC7huBDX4ODEhwa9uX9gS/ot
-         JEVVjHvndcj5/E5EzEOC5riFAwzXaybbulwl6mgodr25RK+mfdfKEUDvxRZWNIUgbpl4
-         j4g0hcpdhVYblF1r6JUgpqOPid/6OEcM6CIcaVrg2YWW/rXAwuQKuPOU/a2zxO8SGtRS
-         g3mTZ2FqLPc7o8kVlyVXuyqVMKetHSqpmMQUoB1T/XsWl3yCTWcgcXeU7txgvZzMiMRt
-         EgR2nJWLr8t+D2qENoyn2l8rn6hcUr9p/E8EswMTPZMieAVp6dnmeCnKd1vT+46+SugJ
-         dBXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=PtKTSY41aN1c2YuBo2WSiO9cWck/dx6VHgtWV4uIRZY=;
-        b=Nst98oUglwlPKBx5O7t8XGB2SRDPF0eo7BdC4qJW4vFSqpIr3pMngxpVP9Nh44Zkn2
-         SqCzsfKApjX+nAdVW7uASyV+qdAtlJ1KHKHyP8nmkrZcxqbdAIe1FaZDlHbnY4juDwyt
-         6AP/CSxIuVK2BRhC90j55ZvOfPDMP/6pwW3inTXiyZS8WcmHp7ujvyCRUQ0xZ0MIDIMs
-         7orbbsAYLHnG3QKwlmII6ZYlxvOctWErD6YUTxPKYn79bIL3RiqdsVN/lv3Bbmh3CC3D
-         zyzI3yoiVsoNvnSwNuO7dxMfoZkPZfu3EU/XNN3TATYq6azk4oqzGqGcKeyYjL+ba0Qt
-         xbMA==
-X-Gm-Message-State: AOAM5324Ps6+SkTe1NcOmKEY1XWU96itQMLxTazC8p4iAOlZaZip0tc0
-        ao8Ndmgqpnx/au/+NekL6mSt2w==
-X-Google-Smtp-Source: ABdhPJy7ULYZbpEC8tfOVe9Mmk1pHPqjw5QNKn8R14l+Rp01r1fpkEf03DuUAi+CWOla+NWxotL9FA==
-X-Received: by 2002:a5d:458a:: with SMTP id p10mr4714560wrq.282.1600950214250;
-        Thu, 24 Sep 2020 05:23:34 -0700 (PDT)
-Received: from dell ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id m13sm3500600wrr.74.2020.09.24.05.23.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 05:23:33 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 13:23:31 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>, Dan Murphy <dmurphy@ti.com>,
-        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Sebastian Reichel <sre@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-iio@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-leds@vger.kernel.org, linux-pm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v2] MAINTAINERS: add Dan Murphy as TP LP8xxx drivers
- maintainer
-Message-ID: <20200924122331.GI4678@dell>
-References: <20200922152839.2744-1-krzk@kernel.org>
- <fe4609b5-5aab-46ed-5280-9a4742b97fe5@ti.com>
- <20200923205857.5af407ee@archlinux>
- <CAJKOXPdWD47OvK7qQ4Md2t3U=NmSf=j5hNjBq4+8CgZKLdup=Q@mail.gmail.com>
+        Thu, 24 Sep 2020 08:24:28 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB60DC0613CE;
+        Thu, 24 Sep 2020 05:24:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=h6ZjDVpARQmoVPgdF+zXfNDaRDvpx+lMRIGHPuMBPtY=; b=aOAz9t9fqjembb+394L2A1bdbS
+        z/vtPluZC+nVb3yOaU1S+Fq6jcMR7ammr4tS1JqhyGzj63uuYsLw9Gm+g3Il2eWJKtdH7irakPNSV
+        AyCpkbHXvIcIPg2R9o0JL4rTkaXPhdHfxJCipWE0wvTnVVZ6y1sJvk3ruEzy04oB8eCckhOsh1VKw
+        nsasweiQEUZIp/j66KN/XMrmJfHSh6WLy9ImN8LAkH/5DDBSR1dk9OW3TwRrqTxBJXUt6PtV/sJmS
+        XMIrli2fh1iV3Io+Ljl61Z3BG2nRYu6zzswKCqzCFLDu5OCv257xpqTZwomAknTyuD6uZVTn8MPEm
+        YeBG2WwQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kLQIA-0005qN-Om; Thu, 24 Sep 2020 12:24:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 508843059DE;
+        Thu, 24 Sep 2020 14:24:03 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id ECE7E20315103; Thu, 24 Sep 2020 14:24:02 +0200 (CEST)
+Date:   Thu, 24 Sep 2020 14:24:02 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        mtosatti@redhat.com, sassmann@redhat.com,
+        jesse.brandeburg@intel.com, lihong.yang@intel.com,
+        helgaas@kernel.org, jeffrey.t.kirsher@intel.com,
+        jacob.e.keller@intel.com, jlelli@redhat.com, hch@infradead.org,
+        bhelgaas@google.com, mike.marciniszyn@intel.com,
+        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
+        jerinj@marvell.com, mathias.nyman@intel.com, jiri@nvidia.com,
+        mingo@redhat.com, juri.lelli@redhat.com, vincent.guittot@linaro.org
+Subject: Re: [PATCH v2 1/4] sched/isolation: API to get housekeeping online
+ CPUs
+Message-ID: <20200924122402.GH2628@hirez.programming.kicks-ass.net>
+References: <20200923181126.223766-1-nitesh@redhat.com>
+ <20200923181126.223766-2-nitesh@redhat.com>
+ <20200924084029.GC1362448@hirez.programming.kicks-ass.net>
+ <20200924120956.GA19346@lenoir>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJKOXPdWD47OvK7qQ4Md2t3U=NmSf=j5hNjBq4+8CgZKLdup=Q@mail.gmail.com>
+In-Reply-To: <20200924120956.GA19346@lenoir>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Sep 2020, Krzysztof Kozlowski wrote:
+On Thu, Sep 24, 2020 at 02:09:57PM +0200, Frederic Weisbecker wrote:
 
-> On Wed, 23 Sep 2020 at 22:01, Jonathan Cameron <jic23@kernel.org> wrote:
-> >
-> > On Wed, 23 Sep 2020 11:53:33 -0500
-> > Dan Murphy <dmurphy@ti.com> wrote:
-> >
-> > > Hello
-> > >
-> > > On 9/22/20 10:28 AM, Krzysztof Kozlowski wrote:
-> > > > Milo Kim's email in TI bounces with permanent error (550: Invalid
-> > > > recipient).  Last email from him on LKML was in 2017.  Move Milo Kim to
-> > > > credits and add Dan Murphy from TI to look after:
-> > > >   - TI LP855x backlight driver,
-> > > >   - TI LP8727 charger driver,
-> > > >   - TI LP8788 MFD (ADC, LEDs, charger and regulator) drivers.
-> > > >
-> > > > Cc: Dan Murphy <dmurphy@ti.com>
-> > > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > >
-> > > Acked-by: Dan Murphy <dmurphy@ti.com>
-> > >
-> > Not sure who will pick this one up, but
-> > Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > > +static inline unsigned int hk_num_online_cpus(void)
+> > 
+> > This breaks with the established naming of that header.
 > 
-> I guess whoever is first. :)
-> This spans across systems but the common part is MFD, so maybe Lee -
-> could you pick it up?
+> I guess we can make it housekeeping_num_online_cpus() ?
 
-Yes, I'll handle it.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+That would be consistent :-)
