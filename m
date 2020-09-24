@@ -2,111 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A936C2778FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 21:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85AA42778FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 21:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728447AbgIXTOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 15:14:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726841AbgIXTOW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 15:14:22 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F0FC0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 12:14:22 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id kk9so265179pjb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 12:14:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=nYNQfolVzk1vZsWuLLwjSWbS4j2EWyO6uHCWvWRZVeg=;
-        b=hUuL9B2LljZoDiYX/vccdvchsfVW3zD0frsCzdluTXClpc8C2HXET+CAJvamf8MLKq
-         QFr9vs2aHQNF5XdI/+Bv2dvZtzG8BKQrL9vMYaLUbZqz/gjss7JyVTBH0Mqt5be7chwc
-         g3EHPYVjMh1V4WMwfy14LT7tos0fxp4yVfkVQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=nYNQfolVzk1vZsWuLLwjSWbS4j2EWyO6uHCWvWRZVeg=;
-        b=DXnWWZ8z2WYRXo9LaPgSXpQZrsHDuYl9NXt54dpNOf6cfqdS9/3x0UdvTeFYI7mHuY
-         0C39fBoCBk0akapFB/8FU7DyUYyCj0IA7Q8/xPAXAEpAB/YWUEcJIX5xDPEcK9rEB0hm
-         z9J/e2f8ExCnLoGKdRQ9u2JRamKoHgN6I8pP+bJqY4IyIACsjHoDSUc+hqrgTsgjcTzr
-         VJdsT0bKUhwplu3uJweI3Mb5TEMBGhTUk6qHkp8EMaQ6ncxkxj6w/EdAVh1oblaiAq6R
-         bi7h7/8dCJglWU4GNE6ed86YB2b/RtECdpaxwvZ+Te6k7aZnUiN0jGvSXT07LUQgPQJa
-         sCXQ==
-X-Gm-Message-State: AOAM533qBo4e44E/aZZaOtPUEF4JxSWyAQPU/FJPRcpOTFF5BYQ3M6M+
-        TdqmNgc3x5O5rRZWddj6eeIS+A==
-X-Google-Smtp-Source: ABdhPJzCOkXIw+4aHc3ITiPqTIKrHpD3nBHPrufYSJk0Eo6cGU3fq7XJIKl/Iks+YT9V1uuYNnr2ag==
-X-Received: by 2002:a17:90a:178e:: with SMTP id q14mr415155pja.154.1600974861729;
-        Thu, 24 Sep 2020 12:14:21 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id m25sm249209pfa.32.2020.09.24.12.14.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 12:14:20 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     containers@lists.linux-foundation.org,
-        YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>
-Subject: Re: [PATCH v2 seccomp 1/6] seccomp: Move config option SECCOMP to arch/Kconfig
-Date:   Thu, 24 Sep 2020 12:11:28 -0700
-Message-Id: <160097467791.3774715.6342246806292251250.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <9ede6ef35c847e58d61e476c6a39540520066613.1600951211.git.yifeifz2@illinois.edu>
-References: <9ede6ef35c847e58d61e476c6a39540520066613.1600951211.git.yifeifz2@illinois.edu>
+        id S1728765AbgIXTLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 15:11:43 -0400
+Received: from mga18.intel.com ([134.134.136.126]:28980 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726681AbgIXTLn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 15:11:43 -0400
+IronPort-SDR: +DOaxVDot9i31auQxIrCUSaQzy/yAgcmOQht8xCjEh3GzZSXkv9x6Rc6qh7Mpx+iEAPpBGzHoy
+ wAAqBtG/wNJg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="149070772"
+X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
+   d="scan'208";a="149070772"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 12:11:42 -0700
+IronPort-SDR: sFdNQ1YJfAhFcCUIcNn3YWrQppDxlEjDrQeC88L+/oTBth18HPw7a3y4nX43Zl1CSgKcxHTHJN
+ rMr8YuC0HoRQ==
+X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
+   d="scan'208";a="487051231"
+Received: from hhuan26-mobl1.amr.corp.intel.com (HELO mqcpg7oapc828.gar.corp.intel.com) ([10.255.37.118])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 24 Sep 2020 12:11:38 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     "Sean Christopherson" <sean.j.christopherson@intel.com>,
+        "Jarkko Sakkinen" <jarkko.sakkinen@linux.intel.com>
+Cc:     "Andy Lutomirski" <luto@kernel.org>, "X86 ML" <x86@kernel.org>,
+        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Matthew Wilcox" <willy@infradead.org>,
+        "Jethro Beekman" <jethro@fortanix.com>,
+        "Darren Kenny" <darren.kenny@oracle.com>,
+        "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
+        asapek@google.com, "Borislav Petkov" <bp@alien8.de>,
+        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
+        "Conrad Parker" <conradparker@google.com>, cyhanish@google.com,
+        "Dave Hansen" <dave.hansen@intel.com>,
+        "Huang, Haitao" <haitao.huang@intel.com>,
+        "Josh Triplett" <josh@joshtriplett.org>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Svahn, Kai" <kai.svahn@intel.com>,
+        "Keith Moyer" <kmoy@google.com>,
+        "Christian Ludloff" <ludloff@google.com>,
+        "Neil Horman" <nhorman@redhat.com>,
+        "Nathaniel McCallum" <npmccallum@redhat.com>,
+        "Patrick Uiterwijk" <puiterwijk@redhat.com>,
+        "David Rientjes" <rientjes@google.com>,
+        "Thomas Gleixner" <tglx@linutronix.de>, yaozhangx@google.com
+Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
+References: <20200915112842.897265-11-jarkko.sakkinen@linux.intel.com>
+ <CALCETrX9T1ZUug=M5ba9g4H5B7kV=yL5RzuTaeAEdy3uAieN_A@mail.gmail.com>
+ <20200918235337.GA21189@sjchrist-ice> <20200921124946.GF6038@linux.intel.com>
+ <20200921165758.GA24156@linux.intel.com>
+ <20200921210736.GB58176@linux.intel.com>
+ <20200921211849.GA25403@linux.intel.com>
+ <20200922052957.GA97272@linux.intel.com>
+ <20200922053515.GA97687@linux.intel.com>
+ <20200922164301.GB30874@linux.intel.com>
+ <20200923135056.GD5160@linux.intel.com>
+Date:   Thu, 24 Sep 2020 14:11:37 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel Corp
+Message-ID: <op.0rgp5h0hwjvjmi@mqcpg7oapc828.gar.corp.intel.com>
+In-Reply-To: <20200923135056.GD5160@linux.intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Sep 2020 07:44:15 -0500, YiFei Zhu wrote:
-> In order to make adding configurable features into seccomp
-> easier, it's better to have the options at one single location,
-> considering easpecially that the bulk of seccomp code is
-> arch-independent. An quick look also show that many SECCOMP
-> descriptions are outdated; they talk about /proc rather than
-> prctl.
-> 
-> As a result of moving the config option and keeping it default
-> on, architectures arm, arm64, csky, riscv, sh, and xtensa
-> did not have SECCOMP on by default prior to this and SECCOMP will
-> be default in this change.
-> 
-> Architectures microblaze, mips, powerpc, s390, sh, and sparc
-> have an outdated depend on PROC_FS and this dependency is removed
-> in this change.
-> 
-> Suggested-by: Jann Horn <jannh@google.com>
-> Link: https://lore.kernel.org/lkml/CAG48ez1YWz9cnp08UZgeieYRhHdqh-ch7aNwc4JRBnGyrmgfMg@mail.gmail.com/
-> Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
-> [...]
+On Wed, 23 Sep 2020 08:50:56 -0500, Jarkko Sakkinen  
+<jarkko.sakkinen@linux.intel.com> wrote:
 
-Yes; I've been meaning to do this for a while now. Thank you! I tweaked
-the help text a bit.
+> On Tue, Sep 22, 2020 at 09:43:02AM -0700, Sean Christopherson wrote:
+>> On Tue, Sep 22, 2020 at 08:35:15AM +0300, Jarkko Sakkinen wrote:
+>> > On Tue, Sep 22, 2020 at 08:30:06AM +0300, Jarkko Sakkinen wrote:
+>> > > On Mon, Sep 21, 2020 at 02:18:49PM -0700, Sean Christopherson wrote:
+>> > > > Userspace can add the page without EXEC permissions in the EPCM,  
+>> and thus
+>> > > > avoid the noexec/VM_MAYEXEC check.  The enclave can then do  
+>> EMODPE to gain
+>> > > > EXEC permissions in the EPMC.  Without the ->mprotect() hook, we  
+>> wouldn't
+>> > > > be able to detect/prevent such shenanigans.
+>> > >
+>> > > Right, the VM_MAYEXEC in the code is nested under VM_EXEC check.
+>> > >
+>> > > I'm only wondering why not block noexec completely with any  
+>> permissions,
+>> > > i.e. why not just have unconditional VM_MAYEXEC check?
+>> >
+>> > I.e. why not this:
+>> >
+>> > static int __sgx_encl_add_page(struct sgx_encl *encl,
+>> > 			       struct sgx_encl_page *encl_page,
+>> > 			       struct sgx_epc_page *epc_page,
+>> > 			       struct sgx_secinfo *secinfo, unsigned long src)
+>> > {
+>> > 	struct sgx_pageinfo pginfo;
+>> > 	struct vm_area_struct *vma;
+>> > 	struct page *src_page;
+>> > 	int ret;
+>> >
+>> > 	vma = find_vma(current->mm, src);
+>> > 	if (!vma)
+>> > 		return -EFAULT;
+>> >
+>> > 	if (!(vma->vm_flags & VM_MAYEXEC))
+>> > 		return -EACCES;
+>> >
+>> > I'm not seeing the reason for "partial support" for noexec partitions.
+>> >
+>> > If there is a good reason, fine, let's just then document it.
+>>
+>> There are scenarios I can contrive, e.g. loading an enclave from a  
+>> noexec
+>> filesystem without having to copy the entire enclave to anon memory, or
+>> loading a data payload from a noexec FS.
+>>
+>> They're definitely contrived scenarios, but given that we also want the
+>> ->mprotect() hook/behavior for potential LSM interaction, supporting  
+>> said
+>> contrived scenarios costs is "free".
+>
+> For me this has caused months of confusion and misunderstanding of this
+> feature. I only recently realized that "oh, right, we invented this".
+>
+> They are contrived scenarios enough that they should be considered when
+> the workloads hit.
+>
+> Either we fully support noexec or not at all. Any "partial" thing is a
+> two edged sword: it can bring some robustness with the price of
+> complexity and possible unknown uknown scenarios where they might become
+> API issue.
+>
+> I rather think later on how to extend API in some way to enable such
+> contrivid scenarios rather than worrying about how this could be abused.
+>
+> The whole SGX is complex beast already so lets not add any extra when
+> there is no a hard requirement to do so.
+>
+> I'll categorically deny noexec in the next patch set version.
+>
+> /Jarkko
 
-Applied, thanks!
-
-[1/1] seccomp: Move config option SECCOMP to arch/Kconfig
-      https://git.kernel.org/kees/c/c3c9c2df3636
-
--- 
-Kees Cook
-
+There are use cases supported currently in which enclave binary is  
+received via IPC/RPC and held in buffers before EADD. Denying noexec  
+altogether would break those, right?
+ 
