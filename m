@@ -2,122 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1148277147
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:43:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D0DD27714D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:45:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727806AbgIXMnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 08:43:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41504 "EHLO
+        id S1727786AbgIXMol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 08:44:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727738AbgIXMnu (ORCPT
+        with ESMTP id S1727719AbgIXMok (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 08:43:50 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02A01C0613CE;
-        Thu, 24 Sep 2020 05:43:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=SdhPXkSs5ZPBi948PCp3uVHmQU1pxaOPhPPF1KHSOtI=; b=cfpXNMYzVRlId2AJBOa+GyLPt6
-        zTFRf6xk7foaFg4tpi+0P2wk3EKKrMLVo5gmNxHWe7qOcz3Hmx3VWmRHmwVx/FwsBrIZ4LPXgFqji
-        cbVT02P2X6YSp/qAxsPzP7xWma/nd4gLtLGrrxZddBcakdrjDZddjCYlGyyVHu59U4aaO6z8FZ60s
-        49IhfEr0KMLRog0k4Y5qS0akYgifDqnz2qj8WKdCAn3F5dxbkr8x0mpQnMaztMPQpwH5mtFjW59VG
-        NHALCniQ15G9RJsPp0Y7Yvd0LIio3hjjsinuCY0H4Jgz5zGhVlW6aMgLPr7GKSkFGiFv6cxeg9duh
-        Tyn/G/Dw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kLQaG-0005M9-J5; Thu, 24 Sep 2020 12:42:48 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C0F753007CD;
-        Thu, 24 Sep 2020 14:42:41 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A98B620297EC5; Thu, 24 Sep 2020 14:42:41 +0200 (CEST)
-Date:   Thu, 24 Sep 2020 14:42:41 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        "open list:SYNOPSYS ARC ARCHITECTURE" 
-        <linux-snps-arc@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
-        linux-csky@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-sparc <sparclinux@vger.kernel.org>
-Subject: Re: [patch RFC 00/15] mm/highmem: Provide a preemptible variant of
- kmap_atomic & friends
-Message-ID: <20200924124241.GK2628@hirez.programming.kicks-ass.net>
-References: <CAHk-=wgF-upZVpqJWK=TK7MS9H-Rp1ZxGfOG+dDW=JThtxAzVQ@mail.gmail.com>
- <87a6xjd1dw.fsf@nanos.tec.linutronix.de>
- <CAHk-=wjhxzx3KHHOMvdDj3Aw-_Mk5eRiNTUBB=tFf=vTkw1FeA@mail.gmail.com>
- <87sgbbaq0y.fsf@nanos.tec.linutronix.de>
- <20200923084032.GU1362448@hirez.programming.kicks-ass.net>
- <20200923115251.7cc63a7e@oasis.local.home>
- <874kno9pr9.fsf@nanos.tec.linutronix.de>
- <20200923171234.0001402d@oasis.local.home>
- <871riracgf.fsf@nanos.tec.linutronix.de>
- <20200924083241.314f2102@gandalf.local.home>
+        Thu, 24 Sep 2020 08:44:40 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 909B1C0613CE;
+        Thu, 24 Sep 2020 05:44:40 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id r9so3154983ioa.2;
+        Thu, 24 Sep 2020 05:44:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=1CHmNYRrwZaQjXmmCr08P6NsP0s5XoYFUKoW0efPEKQ=;
+        b=SxxqTuVMUAermLanVKKkiJ2u8/6ZSpOTCKq9lHnPXQujqLJLgAKUvwfJK0kvahux9t
+         /EYlGdHAoSgcAj5UxOXijg5WCzwXZEkS7ICWDgzfGrdERqDmoH9Z8OahqkVB7qcgamcN
+         pCdE7Q5HfAlhd58+rh8jyIArw55qVvTsgPvtQ0gRZrOmWszvGBqGlQqLWRy1QuxHUkU5
+         QAb2NMVvJYn5SCxrnMm8Ykv9j5ZvdF8avWvRyBlOJjxkchaEfi8Ixfl8Ipxg7MjPjeBT
+         OqPG7nQ6dbVjZ2Uf6slCeCIM2P0gvFvdyjzxjK3v2dalY/5KHKLdRj0UFFzjbZ5ICGSe
+         EjZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=1CHmNYRrwZaQjXmmCr08P6NsP0s5XoYFUKoW0efPEKQ=;
+        b=FcC8JIiq25Tl8Sz4imsvSWzYXubbSSzAwV5CTDMjZHw0Uvv3nng4EGLyfQWNjaME49
+         kMTxf4ATtQcS9xhIfKMMWWL0zXErk39YXd4x5pufKuVtqXIxqoJF8Boukxinr1/jXXwz
+         iC0MBlmafLZ3NG2rhmzsqhEj9mw1cuAMoiIPcdR4URKV3it/LUma+lpCdkg7NBdMhLs5
+         T5MLCBhgiZ5MTVm2XEzY7GmLrVKYB8j9UqWf7W12fPtmD1xdtKvbOQ4jQZIMg7ZhFyfg
+         jQybPavLI6FddKj2Y6lNnJTM7ANQURVmPEejTMaYDFpZgIuYaUhsnx1TwQ88AWZiWpyK
+         kFoA==
+X-Gm-Message-State: AOAM530tXzhqnhTlrRHofDPgXMR48w+QUksWwT/LXBpl6Lj8dYuQYW/L
+        SobUiJJwpA8csBxN/zqMs7g=
+X-Google-Smtp-Source: ABdhPJyK7dARRPLgolJF/kYcLJ5hWSQGF21/2lLyA17+hNCEM5navKyrgzzuePDfuttcY6X1cpi2NA==
+X-Received: by 2002:a5d:8b4a:: with SMTP id c10mr3098314iot.143.1600951479730;
+        Thu, 24 Sep 2020 05:44:39 -0700 (PDT)
+Received: from localhost.localdomain (host-173-230-99-154.tnkngak.clients.pavlovmedia.com. [173.230.99.154])
+        by smtp.gmail.com with ESMTPSA id p5sm1575175ilg.32.2020.09.24.05.44.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 05:44:38 -0700 (PDT)
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+To:     containers@lists.linux-foundation.org
+Cc:     YiFei Zhu <yifeifz2@illinois.edu>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Subject: [PATCH v2 seccomp 0/6] seccomp: Add bitmap cache of arg-independent filter results that allow syscalls
+Date:   Thu, 24 Sep 2020 07:44:15 -0500
+Message-Id: <cover.1600951211.git.yifeifz2@illinois.edu>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <cover.1600946701.git.yifeifz2@illinois.edu>
+References: <cover.1600946701.git.yifeifz2@illinois.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924083241.314f2102@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 08:32:41AM -0400, Steven Rostedt wrote:
-> Anyway, instead of blocking. What about having a counter of number of
-> migrate disabled tasks per cpu, and when taking a migrate_disable(), and there's
-> already another task with migrate_disabled() set, and the current task has
-> an affinity greater than 1, it tries to migrate to another CPU?
+From: YiFei Zhu <yifeifz2@illinois.edu>
 
-That doesn't solve the problem. On wakeup we should already prefer an
-idle CPU over one running a (RT) task, but you can always wake more
-tasks than there's CPUs around and you'll _have_ to stack at some point.
+Alternative: https://lore.kernel.org/lkml/20200923232923.3142503-1-keescook@chromium.org/T/
 
-The trick is how to unstack them correctly. We need to detect when a
-migrate_disable() task _should_ start running again, and migrate away
-whoever is in the way at that point.
+Major differences from the linked alternative by Kees:
+* No x32 special-case handling -- not worth the complexity
+* No caching of denylist -- not worth the complexity
+* No seccomp arch pinning -- I think this is an independent feature
+* The bitmaps are part of the filters rather than the task.
+* Architectures supported by default through arch number array,
+  except for MIPS with its sparse syscall numbers.
+* Configurable per-build for future different cache modes.
 
-It turns out, that getting selected for pull-balance is exactly that
-condition, and clearly a migrate_disable() task cannot be pulled, but we
-can use that signal to try and pull away the running task that's in the
-way.
+This series adds a bitmap to cache seccomp filter results if the
+result permits a syscall and is indepenent of syscall arguments.
+This visibly decreases seccomp overhead for most common seccomp
+filters with very little memory footprint.
+
+The overhead of running Seccomp filters has been part of some past
+discussions [1][2][3]. Oftentimes, the filters have a large number
+of instructions that check syscall numbers one by one and jump based
+on that. Some users chain BPF filters which further enlarge the
+overhead. A recent work [6] comprehensively measures the Seccomp
+overhead and shows that the overhead is non-negligible and has a
+non-trivial impact on application performance.
+
+We observed some common filters, such as docker's [4] or
+systemd's [5], will make most decisions based only on the syscall
+numbers, and as past discussions considered, a bitmap where each bit
+represents a syscall makes most sense for these filters.
+
+In order to build this bitmap at filter attach time, each filter is
+emulated for every syscall (under each possible architecture), and
+checked for any accesses of struct seccomp_data that are not the "arch"
+nor "nr" (syscall) members. If only "arch" and "nr" are examined, and
+the program returns allow, then we can be sure that the filter must
+return allow independent from syscall arguments.
+
+When it is concluded that an allow must occur for the given
+architecture and syscall pair, seccomp will immediately allow
+the syscall, bypassing further BPF execution.
+
+Ongoing work is to further support arguments with fast hash table
+lookups. We are investigating the performance of doing so [6], and how
+to best integrate with the existing seccomp infrastructure.
+
+Some benchmarks are performed with results in patch 5, copied below:
+  Current BPF sysctl settings:
+  net.core.bpf_jit_enable = 1
+  net.core.bpf_jit_harden = 0
+  Benchmarking 100000000 syscalls...
+  63.896255358 - 0.008504529 = 63887750829 (63.9s)
+  getpid native: 638 ns
+  130.383312423 - 63.897315189 = 66485997234 (66.5s)
+  getpid RET_ALLOW 1 filter (bitmap): 664 ns
+  196.789080421 - 130.384414983 = 66404665438 (66.4s)
+  getpid RET_ALLOW 2 filters (bitmap): 664 ns
+  268.844643304 - 196.790234168 = 72054409136 (72.1s)
+  getpid RET_ALLOW 3 filters (full): 720 ns
+  342.627472515 - 268.845799103 = 73781673412 (73.8s)
+  getpid RET_ALLOW 4 filters (full): 737 ns
+  Estimated total seccomp overhead for 1 bitmapped filter: 26 ns
+  Estimated total seccomp overhead for 2 bitmapped filters: 26 ns
+  Estimated total seccomp overhead for 3 full filters: 82 ns
+  Estimated total seccomp overhead for 4 full filters: 99 ns
+  Estimated seccomp entry overhead: 26 ns
+  Estimated seccomp per-filter overhead (last 2 diff): 17 ns
+  Estimated seccomp per-filter overhead (filters / 4): 18 ns
+  Expectations:
+  	native ≤ 1 bitmap (638 ≤ 664): ✔️
+  	native ≤ 1 filter (638 ≤ 720): ✔️
+  	per-filter (last 2 diff) ≈ per-filter (filters / 4) (17 ≈ 18): ✔️
+  	1 bitmapped ≈ 2 bitmapped (26 ≈ 26): ✔️
+  	entry ≈ 1 bitmapped (26 ≈ 26): ✔️
+  	entry ≈ 2 bitmapped (26 ≈ 26): ✔️
+  	native + entry + (per filter * 4) ≈ 4 filters total (732 ≈ 737): ✔️
+
+RFC -> v1:
+* Config made on by default across all arches that could support it.
+* Added arch numbers array and emulate filter for each arch number, and
+  have a per-arch bitmap.
+* Massively simplified the emulator so it would only support the common
+  instructions in Kees's list.
+* Fixed inheriting bitmap across filters (filter->prev is always NULL
+  during prepare).
+* Stole the selftest from Kees.
+* Added a /proc/pid/seccomp_cache by Jann's suggestion.
+
+v1 -> v2:
+* Corrected one outdated function documentation.
+
+Patch 1 moves the SECCOMP Kcomfig option to arch/Kconfig.
+
+Patch 2 adds a syscall_arches array so the emulator can enumerate it.
+
+Patch 3 implements the emulator that finds if a filter must return allow,
+
+Patch 4 implements the test_bit against the bitmaps.
+
+Patch 5 updates the selftest to better show the new semantics.
+
+Patch 6 implements /proc/pid/seccomp_cache.
+
+[1] https://lore.kernel.org/linux-security-module/c22a6c3cefc2412cad00ae14c1371711@huawei.com/T/
+[2] https://lore.kernel.org/lkml/202005181120.971232B7B@keescook/T/
+[3] https://github.com/seccomp/libseccomp/issues/116
+[4] https://github.com/moby/moby/blob/ae0ef82b90356ac613f329a8ef5ee42ca923417d/profiles/seccomp/default.json
+[5] https://github.com/systemd/systemd/blob/6743a1caf4037f03dc51a1277855018e4ab61957/src/shared/seccomp-util.c#L270
+[6] Draco: Architectural and Operating System Support for System Call Security
+    https://tianyin.github.io/pub/draco.pdf, MICRO-53, Oct. 2020
+
+Kees Cook (1):
+  selftests/seccomp: Compare bitmap vs filter overhead
+
+YiFei Zhu (5):
+  seccomp: Move config option SECCOMP to arch/Kconfig
+  asm/syscall.h: Add syscall_arches[] array
+  seccomp/cache: Add "emulator" to check if filter is arg-dependent
+  seccomp/cache: Lookup syscall allowlist for fast path
+  seccomp/cache: Report cache data through /proc/pid/seccomp_cache
+
+ arch/Kconfig                                  |  56 ++++
+ arch/alpha/include/asm/syscall.h              |   4 +
+ arch/arc/include/asm/syscall.h                |  24 +-
+ arch/arm/Kconfig                              |  15 +-
+ arch/arm/include/asm/syscall.h                |   4 +
+ arch/arm64/Kconfig                            |  13 -
+ arch/arm64/include/asm/syscall.h              |   4 +
+ arch/c6x/include/asm/syscall.h                |  13 +-
+ arch/csky/Kconfig                             |  13 -
+ arch/csky/include/asm/syscall.h               |   4 +
+ arch/h8300/include/asm/syscall.h              |   4 +
+ arch/hexagon/include/asm/syscall.h            |   4 +
+ arch/ia64/include/asm/syscall.h               |   4 +
+ arch/m68k/include/asm/syscall.h               |   4 +
+ arch/microblaze/Kconfig                       |  18 +-
+ arch/microblaze/include/asm/syscall.h         |   4 +
+ arch/mips/Kconfig                             |  17 --
+ arch/mips/include/asm/syscall.h               |  16 ++
+ arch/nds32/include/asm/syscall.h              |  13 +-
+ arch/nios2/include/asm/syscall.h              |   4 +
+ arch/openrisc/include/asm/syscall.h           |   4 +
+ arch/parisc/Kconfig                           |  16 --
+ arch/parisc/include/asm/syscall.h             |   7 +
+ arch/powerpc/Kconfig                          |  17 --
+ arch/powerpc/include/asm/syscall.h            |  14 +
+ arch/riscv/Kconfig                            |  13 -
+ arch/riscv/include/asm/syscall.h              |  14 +-
+ arch/s390/Kconfig                             |  17 --
+ arch/s390/include/asm/syscall.h               |   7 +
+ arch/sh/Kconfig                               |  16 --
+ arch/sh/include/asm/syscall_32.h              |  17 +-
+ arch/sparc/Kconfig                            |  18 +-
+ arch/sparc/include/asm/syscall.h              |   9 +
+ arch/um/Kconfig                               |  16 --
+ arch/x86/Kconfig                              |  16 --
+ arch/x86/include/asm/syscall.h                |  11 +
+ arch/x86/um/asm/syscall.h                     |  14 +-
+ arch/xtensa/Kconfig                           |  14 -
+ arch/xtensa/include/asm/syscall.h             |   4 +
+ fs/proc/base.c                                |   7 +-
+ include/linux/seccomp.h                       |   5 +
+ kernel/seccomp.c                              | 257 +++++++++++++++++-
+ .../selftests/seccomp/seccomp_benchmark.c     | 151 ++++++++--
+ tools/testing/selftests/seccomp/settings      |   2 +-
+ 44 files changed, 639 insertions(+), 265 deletions(-)
+
+--
+2.28.0
