@@ -2,472 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98A85276FC1
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCE39276FCB
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727458AbgIXLWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 07:22:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49468 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726701AbgIXLWN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 07:22:13 -0400
-Received: from mail.kernel.org (ip5f5ad5c4.dynamic.kabel-deutschland.de [95.90.213.196])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EBA8C239A1;
-        Thu, 24 Sep 2020 11:22:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600946532;
-        bh=8q0NeK1iEJFxWv10SyZY2Z9vo3xQEz197fv4oj54u8w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EC0X0vWA5B7nQGxooTyZom8TRJp8D4G/jCdTHV0uR1ks03qnMibdrUPGZUPN1AQ0O
-         iEfobmdZJ/4RoSQQFmv42rdFo1PLdBPhY8Wt1iH1RNVopcPxDv4k1UnkGAGnsCs/Ci
-         Bd3uHB4mtOneX3JkuuwsMaxpX2nf0T1T+nwNH9rc=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1kLPKD-000AEW-Im; Thu, 24 Sep 2020 13:22:09 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: [PATCH 2/2] media: docs: make CEC documents compatible with Sphinx 3.1+
-Date:   Thu, 24 Sep 2020 13:22:05 +0200
-Message-Id: <fb55cdda730f305419207c804dab6dc76285ff87.1600945712.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1600945712.git.mchehab+huawei@kernel.org>
-References: <cover.1600945712.git.mchehab+huawei@kernel.org>
+        id S1727046AbgIXLWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 07:22:55 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:35757 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726406AbgIXLWy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 07:22:54 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200924112252euoutp01bb3eda96204d3d3d1b73663d072f2538~3tG0FPF3r2116021160euoutp01w
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 11:22:52 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200924112252euoutp01bb3eda96204d3d3d1b73663d072f2538~3tG0FPF3r2116021160euoutp01w
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1600946572;
+        bh=1HVgujXL6+VFHAinjipBTSMhpDiAZWzmTesRTiQUnYE=;
+        h=To:Cc:From:Subject:Date:References:From;
+        b=DLsznSWRI6mXxbNlOe8NdYt5RqPV9zoRdtTInzW17/lh5T2+rn8eHnF4Ivpdb72cU
+         CNANoOa+JIBK6WQ9lJrDiGu9yHuyabTurZoDogl3M1SsXfmtukaTa2o0BvFGfGplRf
+         WkM7+1D2OqTMuD5W6+ch/ZCQhZ3j/nEAwRbjivlk=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200924112252eucas1p2fb6d4757dff7fa9643fd533149b49ab1~3tGz6Q8hm2922129221eucas1p2X;
+        Thu, 24 Sep 2020 11:22:52 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 12.E7.06318.C818C6F5; Thu, 24
+        Sep 2020 12:22:52 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200924112252eucas1p2e372d1ce6d6f8cf8106572adeb200fee~3tGzkec1U1794217942eucas1p2X;
+        Thu, 24 Sep 2020 11:22:52 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200924112252eusmtrp1348420c81288c5e35fabede0444b26b0~3tGzj5E-e2014820148eusmtrp1f;
+        Thu, 24 Sep 2020 11:22:52 +0000 (GMT)
+X-AuditID: cbfec7f5-371ff700000018ae-26-5f6c818c004d
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 6A.75.06314.C818C6F5; Thu, 24
+        Sep 2020 12:22:52 +0100 (BST)
+Received: from [106.120.51.71] (unknown [106.120.51.71]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200924112252eusmtip18983928ef9ee893900e3033b552c28d3~3tGzYZA3a3166431664eusmtip19;
+        Thu, 24 Sep 2020 11:22:52 +0000 (GMT)
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: [PATCH] MAINTAINERS: remove LIBATA PATA DRIVERS entry
+Message-ID: <1c6cdd00-93a2-55f7-9494-1c0058de384a@samsung.com>
+Date:   Thu, 24 Sep 2020 13:22:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+        Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpjleLIzCtJLcpLzFFi42LZduzned2expx4g5M31CxW3+1nszi24xGT
+        xeVdc9gcmD0uny31+LxJLoApissmJTUnsyy1SN8ugSvj2PFpTAWLOCo+HlnN1MDYw97FyMkh
+        IWAiseLMfbYuRi4OIYEVjBL3Vs8HSwgJfGGUmLYyHiLxmVFiyrXLzF2MHGAdLZfdIeLLGSW2
+        nljPAuG8ZZQ4+38ZC0i3iICCRM/vlWwgNrOAtcTW1mlgU9kErCQmtq9iBLGFBewknk5ZzwRi
+        8wLZe3q+sYLYLAKqEtuPLwCLiwpESHx6cJgVokZQ4uTMJywQM8Ulbj2ZzwRhy0tsfzuHGeQI
+        CYHHbBJXr/yG+s1FYtWUTkYIW1ji1fEtUHEZidOTe1ggGtYxSvzteAHVvZ1RYvnkf2wQVdYS
+        d879YgP5mVlAU2L9Ln2IsKNE3/9b0KDgk7jxVhDiCD6JSdumQ4V5JTrahCCq1SQ2LNvABrO2
+        a+dKZgjbQ+LSyz3sExgVZyF5bRaS12YheW0Wwg0LGFlWMYqnlhbnpqcWG+ellusVJ+YWl+al
+        6yXn525iBKaO0/+Of93BuO9P0iFGAQ5GJR5eDt3seCHWxLLiytxDjBIczEoivE5nT8cJ8aYk
+        VlalFuXHF5XmpBYfYpTmYFES5zVe9DJWSCA9sSQ1OzW1ILUIJsvEwSnVwHjhSvozfRWnhD1/
+        pLSn9vxL7jv5aMPXz5EZxw6skNRpU4iwdnqVl9Ixdevx0w6nF+wwUPnq5aPRf2zzUV+1HZ+U
+        paKk7hxRyPgYrJBx2fPYUYVZBucehm7rC7TWCRa9/0bgcewupmb/T3IrAvqW3SlO7vbu0Txf
+        usel97zBo9/sb779WKB6zV+JpTgj0VCLuag4EQBhaKAYGQMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrPLMWRmVeSWpSXmKPExsVy+t/xu7o9jTnxBh+mCFusvtvPZnFsxyMm
+        i8u75rA5MHtcPlvq8XmTXABTlJ5NUX5pSapCRn5xia1StKGFkZ6hpYWekYmlnqGxeayVkamS
+        vp1NSmpOZllqkb5dgl7GsePTmAoWcVR8PLKaqYGxh72LkYNDQsBEouWyexcjF4eQwFJGieXT
+        HrNBxGUkjq8v62LkBDKFJf5c62KDqHnNKPFh+k42kISIgIJEz++VYDazgLXE1tZp7CA2m4CV
+        xMT2VYwgtrCAncTTKeuZQGxeIHtPzzdWEJtFQFVi+/EFYHFRgQiJwztmMULUCEqcnPmEBWKm
+        usSfeZeYIWxxiVtP5jNB2PIS29/OYZ7AKDALScssJC2zkLTMQtKygJFlFaNIamlxbnpusaFe
+        cWJucWleul5yfu4mRmDgbzv2c/MOxksbgw8xCnAwKvHwcuhmxwuxJpYVV+YeYpTgYFYS4XU6
+        ezpOiDclsbIqtSg/vqg0J7X4EKMp0EMTmaVEk/OBUZlXEm9oamhuYWlobmxubGahJM7bIXAw
+        RkggPbEkNTs1tSC1CKaPiYNTqoGRx8aERanl5vmMrLvtnrqfDrkYx9QfyRSfsp3Z9dRCjawe
+        s/hpl/f9y56xpyJMzSlY9N7FhIszDBsyL/6raLy+Z/K5y347Znh3XW0L2CE+d3FS9/HubUs3
+        rWIp3zTtrkd//Ns7F3cuvXb7e+g0zuj/3Nq+Qme//MqLE9UOzjnvNOlLT5PVm8MWSizFGYmG
+        WsxFxYkAepmCfZICAAA=
+X-CMS-MailID: 20200924112252eucas1p2e372d1ce6d6f8cf8106572adeb200fee
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200924112252eucas1p2e372d1ce6d6f8cf8106572adeb200fee
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200924112252eucas1p2e372d1ce6d6f8cf8106572adeb200fee
+References: <CGME20200924112252eucas1p2e372d1ce6d6f8cf8106572adeb200fee@eucas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sphinx 3.x broke support for the cdomain.py extension, as the
-c domain code was rewritten. Due to that, the c tags need to
-be re-written, in order to use the new c domain notation.
+Even though there is not much happening for libata PATA drivers
+I don't have time to look after them anymore.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Since Jens is maintaining the whole libata anyway just remove
+"LIBATA PATA DRIVERS" entry.
+
+Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
 ---
- .../userspace-api/media/cec/cec-func-close.rst     |  7 ++++---
- .../userspace-api/media/cec/cec-func-ioctl.rst     |  7 ++++---
- .../userspace-api/media/cec/cec-func-open.rst      |  7 ++++---
- .../userspace-api/media/cec/cec-func-poll.rst      | 11 ++++++-----
- .../media/cec/cec-ioc-adap-g-caps.rst              |  9 ++++++---
- .../media/cec/cec-ioc-adap-g-conn-info.rst         | 11 +++++++----
- .../media/cec/cec-ioc-adap-g-log-addrs.rst         | 14 +++++++++-----
- .../media/cec/cec-ioc-adap-g-phys-addr.rst         | 14 +++++++++-----
- .../userspace-api/media/cec/cec-ioc-dqevent.rst    |  9 ++++++---
- .../userspace-api/media/cec/cec-ioc-g-mode.rst     | 14 +++++++++-----
- .../userspace-api/media/cec/cec-ioc-receive.rst    | 14 +++++++++-----
- 11 files changed, 73 insertions(+), 44 deletions(-)
+ MAINTAINERS |    9 ---------
+ 1 file changed, 9 deletions(-)
 
-diff --git a/Documentation/userspace-api/media/cec/cec-func-close.rst b/Documentation/userspace-api/media/cec/cec-func-close.rst
-index 33c563f414a8..7771e40aa6e8 100644
---- a/Documentation/userspace-api/media/cec/cec-func-close.rst
-+++ b/Documentation/userspace-api/media/cec/cec-func-close.rst
-@@ -1,5 +1,7 @@
- .. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
- 
-+.. c:namespace:: CEC
-+
- .. _cec-func-close:
- 
- ***********
-@@ -21,13 +23,12 @@ Synopsis
- 
- 
- .. c:function:: int close( int fd )
--    :name: cec-close
- 
- Arguments
- =========
- 
- ``fd``
--    File descriptor returned by :c:func:`open() <cec-open>`.
-+    File descriptor returned by :c:func:open().
- 
- 
- Description
-@@ -40,7 +41,7 @@ freed. The device configuration remain unchanged.
- Return Value
- ============
- 
--:c:func:`close() <cec-close>` returns 0 on success. On error, -1 is returned, and
-+:c:func:close() returns 0 on success. On error, -1 is returned, and
- ``errno`` is set appropriately. Possible error codes are:
- 
- ``EBADF``
-diff --git a/Documentation/userspace-api/media/cec/cec-func-ioctl.rst b/Documentation/userspace-api/media/cec/cec-func-ioctl.rst
-index 3b88230fad80..3d2fed0470a8 100644
---- a/Documentation/userspace-api/media/cec/cec-func-ioctl.rst
-+++ b/Documentation/userspace-api/media/cec/cec-func-ioctl.rst
-@@ -1,5 +1,7 @@
- .. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
- 
-+.. c:namespace:: CEC
-+
- .. _cec-func-ioctl:
- 
- ***********
-@@ -20,13 +22,12 @@ Synopsis
- 
- 
- .. c:function:: int ioctl( int fd, int request, void *argp )
--   :name: cec-ioctl
- 
- Arguments
- =========
- 
- ``fd``
--    File descriptor returned by :c:func:`open() <cec-open>`.
-+    File descriptor returned by :c:func:open().
- 
- ``request``
-     CEC ioctl request code as defined in the cec.h header file, for
-@@ -39,7 +40,7 @@ Arguments
- Description
- ===========
- 
--The :c:func:`ioctl() <cec-ioctl>` function manipulates cec device parameters. The
-+The :c:func:ioctl() function manipulates cec device parameters. The
- argument ``fd`` must be an open file descriptor.
- 
- The ioctl ``request`` code specifies the cec function to be called. It
-diff --git a/Documentation/userspace-api/media/cec/cec-func-open.rst b/Documentation/userspace-api/media/cec/cec-func-open.rst
-index 887bfd2a755e..de43707768ca 100644
---- a/Documentation/userspace-api/media/cec/cec-func-open.rst
-+++ b/Documentation/userspace-api/media/cec/cec-func-open.rst
-@@ -1,5 +1,7 @@
- .. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
- 
-+.. c:namespace:: CEC
-+
- .. _cec-func-open:
- 
- **********
-@@ -20,7 +22,6 @@ Synopsis
- 
- 
- .. c:function:: int open( const char *device_name, int flags )
--   :name: cec-open
- 
- 
- Arguments
-@@ -46,7 +47,7 @@ Arguments
- Description
- ===========
- 
--To open a cec device applications call :c:func:`open() <cec-open>` with the
-+To open a cec device applications call :c:func:open() with the
- desired device name. The function has no side effects; the device
- configuration remain unchanged.
- 
-@@ -58,7 +59,7 @@ EBADF.
- Return Value
- ============
- 
--:c:func:`open() <cec-open>` returns the new file descriptor on success. On error,
-+:c:func:open() returns the new file descriptor on success. On error,
- -1 is returned, and ``errno`` is set appropriately. Possible error codes
- include:
- 
-diff --git a/Documentation/userspace-api/media/cec/cec-func-poll.rst b/Documentation/userspace-api/media/cec/cec-func-poll.rst
-index 2d87136e9a3f..3da4a96fb921 100644
---- a/Documentation/userspace-api/media/cec/cec-func-poll.rst
-+++ b/Documentation/userspace-api/media/cec/cec-func-poll.rst
-@@ -1,5 +1,7 @@
- .. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
- 
-+.. c:namespace:: CEC
-+
- .. _cec-func-poll:
- 
- **********
-@@ -21,7 +23,6 @@ Synopsis
- 
- 
- .. c:function:: int poll( struct pollfd *ufds, unsigned int nfds, int timeout )
--   :name: cec-poll
- 
- Arguments
- =========
-@@ -39,10 +40,10 @@ Arguments
- Description
- ===========
- 
--With the :c:func:`poll() <cec-poll>` function applications can wait for CEC
-+With the :c:func:poll() function applications can wait for CEC
- events.
- 
--On success :c:func:`poll() <cec-poll>` returns the number of file descriptors
-+On success :c:func:poll() returns the number of file descriptors
- that have been selected (that is, file descriptors for which the
- ``revents`` field of the respective struct :c:type:`pollfd`
- is non-zero). CEC devices set the ``POLLIN`` and ``POLLRDNORM`` flags in
-@@ -53,13 +54,13 @@ then the ``POLLPRI`` flag is set. When the function times out it returns
- a value of zero, on failure it returns -1 and the ``errno`` variable is
- set appropriately.
- 
--For more details see the :c:func:`poll() <cec-poll>` manual page.
-+For more details see the :c:func:poll() manual page.
- 
- 
- Return Value
- ============
- 
--On success, :c:func:`poll() <cec-poll>` returns the number structures which have
-+On success, :c:func:poll() returns the number structures which have
- non-zero ``revents`` fields, or zero if the call timed out. On error -1
- is returned, and the ``errno`` variable is set appropriately:
- 
-diff --git a/Documentation/userspace-api/media/cec/cec-ioc-adap-g-caps.rst b/Documentation/userspace-api/media/cec/cec-ioc-adap-g-caps.rst
-index 7f25365ce0fb..f19e2e4e3f3d 100644
---- a/Documentation/userspace-api/media/cec/cec-ioc-adap-g-caps.rst
-+++ b/Documentation/userspace-api/media/cec/cec-ioc-adap-g-caps.rst
-@@ -1,5 +1,7 @@
- .. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
- 
-+.. c:namespace:: CEC
-+
- .. _CEC_ADAP_G_CAPS:
- 
- *********************
-@@ -14,14 +16,15 @@ CEC_ADAP_G_CAPS - Query device capabilities
- Synopsis
- ========
- 
--.. c:function:: int ioctl( int fd, CEC_ADAP_G_CAPS, struct cec_caps *argp )
--    :name: CEC_ADAP_G_CAPS
-+.. c:macro:: CEC_ADAP_G_CAPS
-+
-+``int`` :c:expr:`ioctl(int fd, CEC_ADAP_G_CAPS, struct cec_caps *argp)`
- 
- Arguments
- =========
- 
- ``fd``
--    File descriptor returned by :c:func:`open() <cec-open>`.
-+    File descriptor returned by :c:func:open().
- 
- ``argp``
- 
-diff --git a/Documentation/userspace-api/media/cec/cec-ioc-adap-g-conn-info.rst b/Documentation/userspace-api/media/cec/cec-ioc-adap-g-conn-info.rst
-index 6818ddf1495c..68a6dcfedfe0 100644
---- a/Documentation/userspace-api/media/cec/cec-ioc-adap-g-conn-info.rst
-+++ b/Documentation/userspace-api/media/cec/cec-ioc-adap-g-conn-info.rst
-@@ -1,7 +1,9 @@
- .. SPDX-License-Identifier: GPL-2.0
- ..
- .. Copyright 2019 Google LLC
--..
-+
-+.. c:namespace:: CEC
-+
- .. _CEC_ADAP_G_CONNECTOR_INFO:
- 
- *******************************
-@@ -16,14 +18,15 @@ CEC_ADAP_G_CONNECTOR_INFO - Query HDMI connector information
- Synopsis
- ========
- 
--.. c:function:: int ioctl( int fd, CEC_ADAP_G_CONNECTOR_INFO, struct cec_connector_info *argp )
--    :name: CEC_ADAP_G_CONNECTOR_INFO
-+.. c:macro:: CEC_ADAP_G_CONNECTOR_INFO
-+
-+``int`` :c:expr:`ioctl(int fd, CEC_ADAP_G_CONNECTOR_INFO, struct cec_connector_info *argp)`
- 
- Arguments
- =========
- 
- ``fd``
--    File descriptor returned by :c:func:`open() <cec-open>`.
-+    File descriptor returned by :c:func:open().
- 
- ``argp``
- 
-diff --git a/Documentation/userspace-api/media/cec/cec-ioc-adap-g-log-addrs.rst b/Documentation/userspace-api/media/cec/cec-ioc-adap-g-log-addrs.rst
-index 1ca893270ae9..fafee09cd156 100644
---- a/Documentation/userspace-api/media/cec/cec-ioc-adap-g-log-addrs.rst
-+++ b/Documentation/userspace-api/media/cec/cec-ioc-adap-g-log-addrs.rst
-@@ -1,5 +1,7 @@
- .. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
- 
-+.. c:namespace:: CEC
-+
- .. _CEC_ADAP_LOG_ADDRS:
- .. _CEC_ADAP_G_LOG_ADDRS:
- .. _CEC_ADAP_S_LOG_ADDRS:
-@@ -17,17 +19,19 @@ CEC_ADAP_G_LOG_ADDRS, CEC_ADAP_S_LOG_ADDRS - Get or set the logical addresses
- Synopsis
- ========
- 
--.. c:function:: int ioctl( int fd, CEC_ADAP_G_LOG_ADDRS, struct cec_log_addrs *argp )
--   :name: CEC_ADAP_G_LOG_ADDRS
-+.. c:macro:: CEC_ADAP_G_LOG_ADDRS
- 
--.. c:function:: int ioctl( int fd, CEC_ADAP_S_LOG_ADDRS, struct cec_log_addrs *argp )
--   :name: CEC_ADAP_S_LOG_ADDRS
-+``int`` :c:expr:`ioctl(int fd, CEC_ADAP_G_LOG_ADDRS, struct cec_log_addrs *argp)`
-+
-+.. c:macro:: CEC_ADAP_S_LOG_ADDRS
-+
-+``int`` :c:expr:`ioctl(int fd, CEC_ADAP_S_LOG_ADDRS, struct cec_log_addrs *argp)`
- 
- Arguments
- =========
- 
- ``fd``
--    File descriptor returned by :c:func:`open() <cec-open>`.
-+    File descriptor returned by :c:func:open().
- 
- ``argp``
-     Pointer to struct :c:type:`cec_log_addrs`.
-diff --git a/Documentation/userspace-api/media/cec/cec-ioc-adap-g-phys-addr.rst b/Documentation/userspace-api/media/cec/cec-ioc-adap-g-phys-addr.rst
-index a10443be1b26..ba5bca26fbd8 100644
---- a/Documentation/userspace-api/media/cec/cec-ioc-adap-g-phys-addr.rst
-+++ b/Documentation/userspace-api/media/cec/cec-ioc-adap-g-phys-addr.rst
-@@ -1,5 +1,7 @@
- .. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
- 
-+.. c:namespace:: CEC
-+
- .. _CEC_ADAP_PHYS_ADDR:
- .. _CEC_ADAP_G_PHYS_ADDR:
- .. _CEC_ADAP_S_PHYS_ADDR:
-@@ -17,17 +19,19 @@ CEC_ADAP_G_PHYS_ADDR, CEC_ADAP_S_PHYS_ADDR - Get or set the physical address
- Synopsis
- ========
- 
--.. c:function:: int ioctl( int fd, CEC_ADAP_G_PHYS_ADDR, __u16 *argp )
--    :name: CEC_ADAP_G_PHYS_ADDR
-+.. c:macro:: CEC_ADAP_G_PHYS_ADDR
- 
--.. c:function:: int ioctl( int fd, CEC_ADAP_S_PHYS_ADDR, __u16 *argp )
--    :name: CEC_ADAP_S_PHYS_ADDR
-+``int`` :c:expr:`ioctl(int fd, CEC_ADAP_G_PHYS_ADDR, __u16 *argp)`
-+
-+.. c:macro:: CEC_ADAP_S_PHYS_ADDR
-+
-+``int`` :c:expr:`ioctl(int fd, CEC_ADAP_S_PHYS_ADDR, __u16 *argp)`
- 
- Arguments
- =========
- 
- ``fd``
--    File descriptor returned by :c:func:`open() <cec-open>`.
-+    File descriptor returned by :c:func:open().
- 
- ``argp``
-     Pointer to the CEC address.
-diff --git a/Documentation/userspace-api/media/cec/cec-ioc-dqevent.rst b/Documentation/userspace-api/media/cec/cec-ioc-dqevent.rst
-index 3bc81fc5a73f..394e3c3acf9d 100644
---- a/Documentation/userspace-api/media/cec/cec-ioc-dqevent.rst
-+++ b/Documentation/userspace-api/media/cec/cec-ioc-dqevent.rst
-@@ -1,5 +1,7 @@
- .. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
- 
-+.. c:namespace:: CEC
-+
- .. _CEC_DQEVENT:
- 
- *****************
-@@ -15,14 +17,15 @@ CEC_DQEVENT - Dequeue a CEC event
- Synopsis
- ========
- 
--.. c:function:: int ioctl( int fd, CEC_DQEVENT, struct cec_event *argp )
--    :name: CEC_DQEVENT
-+.. c:macro:: CEC_DQEVENT
-+
-+``int`` :c:expr:`ioctl(int fd, CEC_DQEVENT, struct cec_event *argp)`
- 
- Arguments
- =========
- 
- ``fd``
--    File descriptor returned by :c:func:`open() <cec-open>`.
-+    File descriptor returned by :c:func:open().
- 
- ``argp``
- 
-diff --git a/Documentation/userspace-api/media/cec/cec-ioc-g-mode.rst b/Documentation/userspace-api/media/cec/cec-ioc-g-mode.rst
-index 2093e373c93c..a2daf4017e91 100644
---- a/Documentation/userspace-api/media/cec/cec-ioc-g-mode.rst
-+++ b/Documentation/userspace-api/media/cec/cec-ioc-g-mode.rst
-@@ -1,5 +1,7 @@
- .. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
- 
-+.. c:namespace:: CEC
-+
- .. _CEC_MODE:
- .. _CEC_G_MODE:
- .. _CEC_S_MODE:
-@@ -13,17 +15,19 @@ CEC_G_MODE, CEC_S_MODE - Get or set exclusive use of the CEC adapter
- Synopsis
- ========
- 
--.. c:function:: int ioctl( int fd, CEC_G_MODE, __u32 *argp )
--   :name: CEC_G_MODE
-+.. c:macro:: CEC_G_MODE
- 
--.. c:function:: int ioctl( int fd, CEC_S_MODE, __u32 *argp )
--   :name: CEC_S_MODE
-+``int`` :c:expr:`ioctl(int fd, CEC_G_MODE, __u32 *argp)`
-+
-+.. c:macro:: CEC_S_MODE
-+
-+``int`` :c:expr:`ioctl(int fd, CEC_S_MODE, __u32 *argp)`
- 
- Arguments
- =========
- 
- ``fd``
--    File descriptor returned by :c:func:`open() <cec-open>`.
-+    File descriptor returned by :c:func:open().
- 
- ``argp``
-     Pointer to CEC mode.
-diff --git a/Documentation/userspace-api/media/cec/cec-ioc-receive.rst b/Documentation/userspace-api/media/cec/cec-ioc-receive.rst
-index 9d629d46973c..c0689c52e3f7 100644
---- a/Documentation/userspace-api/media/cec/cec-ioc-receive.rst
-+++ b/Documentation/userspace-api/media/cec/cec-ioc-receive.rst
-@@ -1,5 +1,7 @@
- .. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
- 
-+.. c:namespace:: CEC
-+
- .. _CEC_TRANSMIT:
- .. _CEC_RECEIVE:
- 
-@@ -16,17 +18,19 @@ CEC_RECEIVE, CEC_TRANSMIT - Receive or transmit a CEC message
- Synopsis
- ========
- 
--.. c:function:: int ioctl( int fd, CEC_RECEIVE, struct cec_msg \*argp )
--    :name: CEC_RECEIVE
-+.. c:macro:: CEC_RECEIVE
- 
--.. c:function:: int ioctl( int fd, CEC_TRANSMIT, struct cec_msg \*argp )
--    :name: CEC_TRANSMIT
-+``int`` :c:expr:`ioctl(int fd, CEC_RECEIVE, struct cec_msg *argp)`
-+
-+.. c:macro:: CEC_TRANSMIT
-+
-+``int`` :c:expr:`ioctl(int fd, CEC_TRANSMIT, struct cec_msg *argp)`
- 
- Arguments
- =========
- 
- ``fd``
--    File descriptor returned by :c:func:`open() <cec-open>`.
-+    File descriptor returned by :c:func:open().
- 
- ``argp``
-     Pointer to struct cec_msg.
--- 
-2.26.2
-
+Index: b/MAINTAINERS
+===================================================================
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9912,15 +9912,6 @@ T:	git git://git.kernel.org/pub/scm/linu
+ F:	drivers/ata/pata_arasan_cf.c
+ F:	include/linux/pata_arasan_cf_data.h
+ 
+-LIBATA PATA DRIVERS
+-M:	Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+-M:	Jens Axboe <axboe@kernel.dk>
+-L:	linux-ide@vger.kernel.org
+-S:	Maintained
+-T:	git git://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git
+-F:	drivers/ata/ata_generic.c
+-F:	drivers/ata/pata_*.c
+-
+ LIBATA PATA FARADAY FTIDE010 AND GEMINI SATA BRIDGE DRIVERS
+ M:	Linus Walleij <linus.walleij@linaro.org>
+ L:	linux-ide@vger.kernel.org
