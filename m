@@ -2,145 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 593B5277AAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 22:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D1ED277AB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 22:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726630AbgIXUqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 16:46:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726210AbgIXUqS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 16:46:18 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00AB1C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 13:46:17 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id j2so272050eds.9
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 13:46:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hNWgf5JR/cvx4+k2/k8//+NsLRafA9SikURsJTJxHl8=;
-        b=N/W4hr3EM1UoBKdrsToiPIHVsXsZea5kjUdS8aVBO0VqX+vlNG+bO2voUqHrH92lkx
-         v+cCb7BIpfE7J0COXu9ZveiX7hBiBESo1VPhidpBI1JkRyqPepo3jqNxoErSa7ggD7Bj
-         MLUMxpjuK+mfC0nMTCX4DLvJzLTliYNOhloeeWBzNrArRN2m8nCyPvgHXMO/qRm9xIP9
-         yDphfjjdEEvwDc1H58P3k8bEMGyF3FdmngMgF+y095/bdm8FGMsTS2nWw1Bvs8iIGz40
-         6fSaqQQ8BTbKoWXpnnOg8j1RUBcZ/ah40mqYQZ90MYPclO65VlQGxG253bBnA8WCIAyt
-         MFzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hNWgf5JR/cvx4+k2/k8//+NsLRafA9SikURsJTJxHl8=;
-        b=n5iAqduTonhEsEIIJSP6/Azszeqz/6IWF1YEXzCtWraQAPySS3fMXeVsqmIBv7qLBw
-         r8H4i2VJX9D0jDhmsTqP1kkKROlnAX2HnrJ+mGpKz5omrlURmb5/dOx4+DW0CAuD31zD
-         5qVtKjRuZ87fPeH6lFaSX7emSOu4SPIT6TmIvWwkrfSevuvkmcCXLkWy3som6OPdlplp
-         7p+6tXBtyPu2CzioWwjPIx6JYSnsJaymznXm2WwszKO/d+5HRgW+IXIa69u/EBj1cluK
-         wnVkYW/U6jAkj+zCFgEFO/l5N03zzazht2m1NEQw3Fme6Oloc8NEsd64ncxjBzT7dcXK
-         rRSw==
-X-Gm-Message-State: AOAM530oMzv6r8UcnSTBTBQdiE7ni8hKDXSS7zGnU7BeGbdViUMuKa+L
-        cFNwuXsDj4QxwYcoBwU6dTDbsbCrif8ggWgvWuhn
-X-Google-Smtp-Source: ABdhPJys8MteKkL5WUs90rL77+/4O8I7EJZDSmxK4s4ECn/X6tsLMwrENyCDpmW58kDnYfzhj5A5Va1MBnTmQWGW++s=
-X-Received: by 2002:aa7:cd06:: with SMTP id b6mr625058edw.196.1600980376408;
- Thu, 24 Sep 2020 13:46:16 -0700 (PDT)
+        id S1726540AbgIXUsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 16:48:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44730 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726183AbgIXUsB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 16:48:01 -0400
+Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4DF20221EB;
+        Thu, 24 Sep 2020 20:48:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600980480;
+        bh=TDET0KJhptmVV4U8HQItYgWqOFf8omZjfxwMJ+5agMU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=dWf495VGJ3RD0bVS+U8XzYa7chztO2nbrjbuq6mP8pxvrgwyBakjREbEpiAH8iA/j
+         q8RdZOWrBC9/rf8FUkAq2qFpo/Cj9bw0BIOgxEnOBR/3sb7m/9vewM6AHeKrcS4kr2
+         G6VvZMaqsuCzkjvm+htdbZuD0cV6fRN7kpswGxSQ=
+Date:   Thu, 24 Sep 2020 15:47:59 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Nitesh Narayan Lal <nitesh@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        frederic@kernel.org, mtosatti@redhat.com, sassmann@redhat.com,
+        jesse.brandeburg@intel.com, lihong.yang@intel.com,
+        jeffrey.t.kirsher@intel.com, jacob.e.keller@intel.com,
+        jlelli@redhat.com, hch@infradead.org, bhelgaas@google.com,
+        mike.marciniszyn@intel.com, dennis.dalessandro@intel.com,
+        thomas.lendacky@amd.com, jerinj@marvell.com,
+        mathias.nyman@intel.com, jiri@nvidia.com, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org
+Subject: Re: [PATCH v2 1/4] sched/isolation: API to get housekeeping online
+ CPUs
+Message-ID: <20200924204759.GA2342589@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20200923232923.3142503-1-keescook@chromium.org>
- <20200923232923.3142503-5-keescook@chromium.org> <CAG48ez251v19U60GYH4aWE6+C-3PYw5mr_Ax_kxnebqDOBn_+Q@mail.gmail.com>
- <202009240038.864365E@keescook> <CAHC9VhQpto1KuL7PhjtdjtAjJ2nC+rZNSM7+nSZ_ksqGXbhY+Q@mail.gmail.com>
- <202009241251.F719CC4@keescook>
-In-Reply-To: <202009241251.F719CC4@keescook>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 24 Sep 2020 16:46:05 -0400
-Message-ID: <CAHC9VhQudGg55atznkuWWW5h0d+vZZhO2NF4yNAqreg4NDsHKg@mail.gmail.com>
-Subject: Re: [PATCH 4/6] seccomp: Emulate basic filters for constant action results
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Tom Hromatka <tom.hromatka@oracle.com>,
-        Jann Horn <jannh@google.com>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200923181126.223766-2-nitesh@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 3:52 PM Kees Cook <keescook@chromium.org> wrote:
-> On Thu, Sep 24, 2020 at 11:28:55AM -0400, Paul Moore wrote:
-> > On Thu, Sep 24, 2020 at 3:46 AM Kees Cook <keescook@chromium.org> wrote:
-> > > On Thu, Sep 24, 2020 at 01:47:47AM +0200, Jann Horn wrote:
-> > > > On Thu, Sep 24, 2020 at 1:29 AM Kees Cook <keescook@chromium.org> wrote:
-> > > > > This emulates absolutely the most basic seccomp filters to figure out
-> > > > > if they will always give the same results for a given arch/nr combo.
-> > > > >
-> > > > > Nearly all seccomp filters are built from the following ops:
-> > > > >
-> > > > > BPF_LD  | BPF_W    | BPF_ABS
-> > > > > BPF_JMP | BPF_JEQ  | BPF_K
-> > > > > BPF_JMP | BPF_JGE  | BPF_K
-> > > > > BPF_JMP | BPF_JGT  | BPF_K
-> > > > > BPF_JMP | BPF_JSET | BPF_K
-> > > > > BPF_JMP | BPF_JA
-> > > > > BPF_RET | BPF_K
-> > > > >
-> > > > > These are now emulated to check for accesses beyond seccomp_data::arch
-> > > > > or unknown instructions.
-> > > > >
-> > > > > Not yet implemented are:
-> > > > >
-> > > > > BPF_ALU | BPF_AND (generated by libseccomp and Chrome)
-> > > >
-> > > > BPF_AND is normally only used on syscall arguments, not on the syscall
-> > > > number or the architecture, right? And when a syscall argument is
-> > > > loaded, we abort execution anyway. So I think there is no need to
-> > > > implement those?
-> > >
-> > > Is that right? I can't actually tell what libseccomp is doing with
-> > > ALU|AND. It looks like it's using it for building jump lists?
-> >
-> > There is an ALU|AND op in the jump resolution code, but that is really
-> > just if libseccomp needs to fixup the accumulator because a code block
-> > is expecting a masked value (right now that would only be a syscall
-> > argument, not the syscall number itself).
-> >
-> > > Paul, Tom, under what cases does libseccomp emit ALU|AND into filters?
-> >
-> > Presently the only place where libseccomp uses ALU|AND is when the
-> > masked equality comparison is used for comparing syscall arguments
-> > (SCMP_CMP_MASKED_EQ).  I can't honestly say I have any good
-> > information about how often that is used by libseccomp callers, but if
-> > I do a quick search on GitHub for "SCMP_CMP_MASKED_EQ" I see 2k worth
-> > of code hits; take that for whatever it is worth.  Tom may have some
-> > more/better information.
-> >
-> > Of course no promises on future use :)  As one quick example, I keep
-> > thinking about adding the instruction pointer to the list of things
-> > that can be compared as part of a libseccomp rule, and if we do that I
-> > would expect that we would want to also allow a masked comparison (and
-> > utilize another ALU|AND bpf op there).  However, I'm not sure how
-> > useful that would be in practice.
->
-> Okay, cool. Thanks for checking on that. It sounds like the arg-less
-> bitmap optimization can continue to ignore ALU|AND for now. :)
+On Wed, Sep 23, 2020 at 02:11:23PM -0400, Nitesh Narayan Lal wrote:
+> Introduce a new API hk_num_online_cpus(), that can be used to
+> retrieve the number of online housekeeping CPUs that are meant to handle
+> managed IRQ jobs.
+> 
+> This API is introduced for the drivers that were previously relying only
+> on num_online_cpus() to determine the number of MSIX vectors to create.
+> In an RT environment with large isolated but fewer housekeeping CPUs this
+> was leading to a situation where an attempt to move all of the vectors
+> corresponding to isolated CPUs to housekeeping CPUs were failing due to
+> per CPU vector limit.
+> 
+> Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
+> ---
+>  include/linux/sched/isolation.h | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+> 
+> diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
+> index cc9f393e2a70..2e96b626e02e 100644
+> --- a/include/linux/sched/isolation.h
+> +++ b/include/linux/sched/isolation.h
+> @@ -57,4 +57,17 @@ static inline bool housekeeping_cpu(int cpu, enum hk_flags flags)
+>  	return true;
+>  }
+>  
+> +static inline unsigned int hk_num_online_cpus(void)
+> +{
+> +#ifdef CONFIG_CPU_ISOLATION
+> +	const struct cpumask *hk_mask;
+> +
+> +	if (static_branch_unlikely(&housekeeping_overridden)) {
+> +		hk_mask = housekeeping_cpumask(HK_FLAG_MANAGED_IRQ);
+> +		return cpumask_weight(hk_mask);
+> +	}
+> +#endif
+> +	return cpumask_weight(cpu_online_mask);
 
-What's really the worst that could happen anyways? (/me ducks)  The
-worst case is the filter falls back to the current performance levels
-right?
+Just curious: why is this not
 
--- 
-paul moore
-www.paul-moore.com
+  #ifdef CONFIG_CPU_ISOLATION
+  ...
+  #endif
+    return num_online_cpus();
+
+> +}
+> +
+>  #endif /* _LINUX_SCHED_ISOLATION_H */
+> -- 
+> 2.18.2
+> 
