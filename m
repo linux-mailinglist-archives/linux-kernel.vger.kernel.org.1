@@ -2,118 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5EB276C83
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA18276C86
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727322AbgIXI4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 04:56:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726064AbgIXI4y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 04:56:54 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EDC1C0613CE;
-        Thu, 24 Sep 2020 01:56:54 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id d4so2676756wmd.5;
-        Thu, 24 Sep 2020 01:56:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=b+vCyePcASyFGhspPBbceHGqzeae6YWgXdySMvXHJPQ=;
-        b=M0ft3ILmZ6fWlkUE08VmJstvfltv7aoLNTsVq3TDIhuOED2BGWNOi4PFhautDzpugW
-         WrnSiPYq/RW2t836MVWYZieDqv3gVtftTknkgSzL712ZLdSiNiRj/aM/esnkhd5zyLqj
-         NotuICH1vw/3yWKdVE9j5+Xrcrv1FhsPhFG7XKHUOpXy8a57DjBbcJAxuOd9jiq8IQ1O
-         1tLbw2p3JG+lIIhhhTmIKN5Yk66f9rKJM67cf4Cf9Q2z0dwtunKRN8oZSNIdLERd+xpu
-         AwMQfg4WXjgGu8U4wsOA97YUtBQhSG7xE4+G0VHkOp4Ken/PfcF1K6e4cr3JKXJCiGwx
-         YPBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=b+vCyePcASyFGhspPBbceHGqzeae6YWgXdySMvXHJPQ=;
-        b=fb53QsavK4rYUx9jPRlkawRdXhWn436ptaJvwyt1K3uJYJFMZENRoq1ghVD5bFvXOk
-         dxTco7sKThWiBOprpryWKAICeJIgeYRk6KoNITMTE01x/u68e34b+H6p015v7gSNHC4p
-         D58iDtRJWd++Aq6bpoq0ukZIbxHoUOFzpglbFu1gOIQ1lTPVCNkmz1A+Z8Awv1vKihyM
-         bRu4evcHUhtzKxJCot+iYuGi+yWmiVk4Uk+xlUSQZgBY0udq3R+nH3HKFZeaUXkoz3tN
-         c2e4Xbhv2kWqwKf7Zv+TXHGIfrVlfJ6dBYg+poo/nwbauf7ZTdWuycK2oS4U1KxvZ+FM
-         qTiw==
-X-Gm-Message-State: AOAM5309u1g3JPFEffjOWtKV6w/guDWjrA03sCCZJRvtdtUfSQL79OBm
-        ioAft76PNFXZgxxN2waeNPA=
-X-Google-Smtp-Source: ABdhPJza5ifso1pd+QfPKv1OfhuYFjTSetwREIoOFwIti6KXUTRxqB14SGMoTvpCQGJwsp6t+IQ1WQ==
-X-Received: by 2002:a1c:1f08:: with SMTP id f8mr3612783wmf.168.1600937812650;
-        Thu, 24 Sep 2020 01:56:52 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id n66sm2597837wmb.35.2020.09.24.01.56.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 01:56:51 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 10:56:50 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Sumit Gupta <sumitg@nvidia.com>
-Cc:     viresh.kumar@linaro.org, rjw@rjwysocki.net, jonathanh@nvidia.com,
-        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        ksitaraman@nvidia.com, bbasu@nvidia.com
-Subject: Re: [Patch 2/2] cpufreq: tegra194: Fix unlisted boot freq warning
-Message-ID: <20200924085650.GB2483160@ulmo>
-References: <1600276277-7290-1-git-send-email-sumitg@nvidia.com>
- <1600276277-7290-3-git-send-email-sumitg@nvidia.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="V0207lvV8h4k8FAm"
-Content-Disposition: inline
-In-Reply-To: <1600276277-7290-3-git-send-email-sumitg@nvidia.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+        id S1727289AbgIXI7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 04:59:34 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38460 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726064AbgIXI7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 04:59:34 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 77CBAAD8D;
+        Thu, 24 Sep 2020 09:00:10 +0000 (UTC)
+Date:   Thu, 24 Sep 2020 10:59:32 +0200
+Message-ID: <s5hd02bturv.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] sound fixes for 5.9-rc7
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Linus,
 
---V0207lvV8h4k8FAm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+please pull sound fixes for v5.9-rc7 from:
 
-On Wed, Sep 16, 2020 at 10:41:17PM +0530, Sumit Gupta wrote:
-> Warning coming during boot because the boot freq set by bootloader
-> gets filtered out due to big freq steps while creating freq_table.
-> Fixing this by setting closest ndiv value from freq_table.
-> Warning:
->   cpufreq: cpufreq_online: CPU0: Running at unlisted freq
->   cpufreq: cpufreq_online: CPU0: Unlisted initial frequency changed
->=20
-> Also, added change in init to wait till current frequency becomes
-> equal or near to the previously requested frequency. This is done
-> because it takes some time to restore the previous frequency while
-> turning-on non-boot cores during exit from SC7(Suspend-to-RAM).
->=20
-> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
-> ---
->  drivers/cpufreq/tegra194-cpufreq.c | 118 +++++++++++++++++++++++++++++++=
-+++---
->  1 file changed, 111 insertions(+), 7 deletions(-)
+  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.9-rc7
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+The topmost commit is c413c3102703a453c1312ce2160c6b7ffd55403e
 
---V0207lvV8h4k8FAm
-Content-Type: application/pgp-signature; name="signature.asc"
+----------------------------------------------------------------
 
------BEGIN PGP SIGNATURE-----
+sound fixes for 5.9-rc7
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9sX1EACgkQ3SOs138+
-s6GGiA/9E37Nq3uNMS/H/CmiUxJqDpYP44ubhyJPYN17A05WDIAnslc0u8H6F5f+
-2OVEVyibvEyXI56oLIZO4k8wQ0ffEw61Fmv7lKriDp1UEv3ZvuIu39X9znliuyVM
-1+bSiXkhU4oyabmeN3iDHXa8lC66DPMF2hgLZqWvbYUZNIXIK0iNdw1KeNLTyOgB
-UlBrOrTEPB81Wa/Yv8UuVvJO8oIYgKuya7hAgSjhOSLkO9q01lTLnf1EDj+1epLF
-5XlmYsg04vdxDIboIlzDUsq01Rwm2mfxeDMcHD7zhDgo5euoh4SEVEjWQmf80zhK
-PWP2A+xnODEzl9l5nGdUYx4cMca4ABmTvWKLeQtMbLwgSBxDV0eSpjEd+SlxuZYU
-BcHJ6S8Oof3VuHN8zoA3T1S6jjqGayj+zVgJYtfOsJOUMsPQ2YEvXDuBVmPaKmy4
-B8JTgOehMnfQ8XB6V6Gu1d/KxJqvnr0rLmR1YNnovOuEImPyiWcKnlEJv9xJI0s6
-yXK2VNFmeBXnbNkqeixYxIaN7pUnCdIYIoFrQakOCzqL3V3Ud2N75mykjDDjMvcM
-YbrP9TkdSyXP5aKY/E1QfHpT11avIFNO+2wa5uQKDAb4HAqNleVfm5LdyvbnR95K
-lAPZHW6ffHuYXub+TzX5YXf8VS+bVH2lZyYZHAQXTqMb083yoZY=
-=Hd6C
------END PGP SIGNATURE-----
+Just a handful small device-specific fixes including a couple of
+reverts.
 
---V0207lvV8h4k8FAm--
+----------------------------------------------------------------
+
+Hui Wang (1):
+      ALSA: hda/realtek - Couldn't detect Mic if booting with headset plugged
+
+Joakim Tjernlund (1):
+      ALSA: usb-audio: Add delay quirk for H570e USB headsets
+
+Kai-Heng Feng (2):
+      ALSA: hda/realtek: Enable front panel headset LED on Lenovo ThinkStation P520
+      Revert "ALSA: usb-audio: Disable Lenovo P620 Rear line-in volume control"
+
+Takashi Iwai (1):
+      Revert "ALSA: hda - Fix silent audio output and corrupted input on MSI X570-A PRO"
+
+Tom Rix (1):
+      ALSA: asihpi: fix iounmap in error handler
+
+---
+ sound/pci/asihpi/hpioctl.c    |  4 ++--
+ sound/pci/hda/patch_realtek.c | 14 ++++++++++++--
+ sound/usb/mixer_maps.c        |  1 -
+ sound/usb/quirks.c            |  7 ++++---
+ 4 files changed, 18 insertions(+), 8 deletions(-)
+
+diff --git a/sound/pci/asihpi/hpioctl.c b/sound/pci/asihpi/hpioctl.c
+index 496dcde9715d..9790f5108a16 100644
+--- a/sound/pci/asihpi/hpioctl.c
++++ b/sound/pci/asihpi/hpioctl.c
+@@ -343,7 +343,7 @@ int asihpi_adapter_probe(struct pci_dev *pci_dev,
+ 	struct hpi_message hm;
+ 	struct hpi_response hr;
+ 	struct hpi_adapter adapter;
+-	struct hpi_pci pci;
++	struct hpi_pci pci = { 0 };
+ 
+ 	memset(&adapter, 0, sizeof(adapter));
+ 
+@@ -499,7 +499,7 @@ int asihpi_adapter_probe(struct pci_dev *pci_dev,
+ 	return 0;
+ 
+ err:
+-	for (idx = 0; idx < HPI_MAX_ADAPTER_MEM_SPACES; idx++) {
++	while (--idx >= 0) {
+ 		if (pci.ap_mem_base[idx]) {
+ 			iounmap(pci.ap_mem_base[idx]);
+ 			pci.ap_mem_base[idx] = NULL;
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 85e207173f5d..d4f17b465892 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -2475,7 +2475,6 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1462, 0x1276, "MSI-GL73", ALC1220_FIXUP_CLEVO_P950),
+ 	SND_PCI_QUIRK(0x1462, 0x1293, "MSI-GP65", ALC1220_FIXUP_CLEVO_P950),
+ 	SND_PCI_QUIRK(0x1462, 0x7350, "MSI-7350", ALC889_FIXUP_CD),
+-	SND_PCI_QUIRK(0x1462, 0x9c37, "MSI X570-A PRO", ALC1220_FIXUP_CLEVO_P950),
+ 	SND_PCI_QUIRK(0x1462, 0xda57, "MSI Z270-Gaming", ALC1220_FIXUP_GB_DUAL_CODECS),
+ 	SND_PCI_QUIRK_VENDOR(0x1462, "MSI", ALC882_FIXUP_GPIO3),
+ 	SND_PCI_QUIRK(0x147b, 0x107a, "Abit AW9D-MAX", ALC882_FIXUP_ABIT_AW9D_MAX),
+@@ -3428,7 +3427,11 @@ static void alc256_shutup(struct hda_codec *codec)
+ 
+ 	/* 3k pull low control for Headset jack. */
+ 	/* NOTE: call this before clearing the pin, otherwise codec stalls */
+-	alc_update_coef_idx(codec, 0x46, 0, 3 << 12);
++	/* If disable 3k pulldown control for alc257, the Mic detection will not work correctly
++	 * when booting with headset plugged. So skip setting it for the codec alc257
++	 */
++	if (codec->core.vendor_id != 0x10ec0257)
++		alc_update_coef_idx(codec, 0x46, 0, 3 << 12);
+ 
+ 	if (!spec->no_shutup_pins)
+ 		snd_hda_codec_write(codec, hp_pin, 0,
+@@ -6051,6 +6054,7 @@ static void alc_fixup_thinkpad_acpi(struct hda_codec *codec,
+ #include "hp_x360_helper.c"
+ 
+ enum {
++	ALC269_FIXUP_GPIO2,
+ 	ALC269_FIXUP_SONY_VAIO,
+ 	ALC275_FIXUP_SONY_VAIO_GPIO2,
+ 	ALC269_FIXUP_DELL_M101Z,
+@@ -6232,6 +6236,10 @@ enum {
+ };
+ 
+ static const struct hda_fixup alc269_fixups[] = {
++	[ALC269_FIXUP_GPIO2] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc_fixup_gpio2,
++	},
+ 	[ALC269_FIXUP_SONY_VAIO] = {
+ 		.type = HDA_FIXUP_PINCTLS,
+ 		.v.pins = (const struct hda_pintbl[]) {
+@@ -7051,6 +7059,8 @@ static const struct hda_fixup alc269_fixups[] = {
+ 	[ALC233_FIXUP_LENOVO_MULTI_CODECS] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc233_alc662_fixup_lenovo_dual_codecs,
++		.chained = true,
++		.chain_id = ALC269_FIXUP_GPIO2
+ 	},
+ 	[ALC233_FIXUP_ACER_HEADSET_MIC] = {
+ 		.type = HDA_FIXUP_VERBS,
+diff --git a/sound/usb/mixer_maps.c b/sound/usb/mixer_maps.c
+index 5b43e9e40e49..c369c81e74c4 100644
+--- a/sound/usb/mixer_maps.c
++++ b/sound/usb/mixer_maps.c
+@@ -371,7 +371,6 @@ static const struct usbmix_name_map asus_rog_map[] = {
+ };
+ 
+ static const struct usbmix_name_map lenovo_p620_rear_map[] = {
+-	{ 19, NULL, 2 }, /* FU, Volume */
+ 	{ 19, NULL, 12 }, /* FU, Input Gain Pad */
+ 	{}
+ };
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 75bbdc691243..892296df131d 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1678,12 +1678,13 @@ void snd_usb_ctl_msg_quirk(struct usb_device *dev, unsigned int pipe,
+ 	    && (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
+ 		msleep(20);
+ 
+-	/* Zoom R16/24, Logitech H650e, Jabra 550a, Kingston HyperX needs a tiny
+-	 * delay here, otherwise requests like get/set frequency return as
+-	 * failed despite actually succeeding.
++	/* Zoom R16/24, Logitech H650e/H570e, Jabra 550a, Kingston HyperX
++	 *  needs a tiny delay here, otherwise requests like get/set
++	 *  frequency return as failed despite actually succeeding.
+ 	 */
+ 	if ((chip->usb_id == USB_ID(0x1686, 0x00dd) ||
+ 	     chip->usb_id == USB_ID(0x046d, 0x0a46) ||
++	     chip->usb_id == USB_ID(0x046d, 0x0a56) ||
+ 	     chip->usb_id == USB_ID(0x0b0e, 0x0349) ||
+ 	     chip->usb_id == USB_ID(0x0951, 0x16ad)) &&
+ 	    (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
