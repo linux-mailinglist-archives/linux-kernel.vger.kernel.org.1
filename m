@@ -2,157 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCAF9276E49
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 12:11:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48CC4276E76
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 12:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727408AbgIXKLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 06:11:07 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:26949 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726380AbgIXKLG (ORCPT
+        id S1727404AbgIXKRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 06:17:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32162 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726847AbgIXKRf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 06:11:06 -0400
-X-Greylist: delayed 436 seconds by postgrey-1.27 at vger.kernel.org; Thu, 24 Sep 2020 06:11:04 EDT
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200924100346epoutp01561c497dfe0d1d4975e27dc080e54a31~3sBwFLaso0145601456epoutp01j
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 10:03:46 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200924100346epoutp01561c497dfe0d1d4975e27dc080e54a31~3sBwFLaso0145601456epoutp01j
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1600941826;
-        bh=EcZrqdvcHEr3ec5WOK95eQsbOLmFQCqsB45ZWwMXruE=;
-        h=To:Cc:From:Subject:Date:References:From;
-        b=UQKkpajaT6cu2KpCj54mXJejyP8YvHdAvJj6TjtsX1dCt6+raGIvjc/w5ILx6r71F
-         EWrMrwGFGjGShApCx7OsL6LAwyC3D57Mncu/304aooUopolUfPJuVBZvOPZDgL4RH2
-         Oo27T2CuReDPuV5t0cze8ZQrNRMSps1b2at9fzbI=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200924100346epcas1p263b06f4a8641e144b469252441a28301~3sBve6qaG2423024230epcas1p2e;
-        Thu, 24 Sep 2020 10:03:46 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.40.157]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4BxrGl4nQ7zMqYkV; Thu, 24 Sep
-        2020 10:03:43 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        91.D3.09582.FFE6C6F5; Thu, 24 Sep 2020 19:03:43 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20200924100342epcas1p42ad5d9bf5f2316f8c9e3909dfaa49a75~3sBsWdlCP3132031320epcas1p4K;
-        Thu, 24 Sep 2020 10:03:42 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200924100342epsmtrp2b0ea2c82296936cb7fa11d952d69eaf3~3sBsVwq883001330013epsmtrp26;
-        Thu, 24 Sep 2020 10:03:42 +0000 (GMT)
-X-AuditID: b6c32a37-899ff7000000256e-e6-5f6c6eff76fb
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        CD.A0.08604.EFE6C6F5; Thu, 24 Sep 2020 19:03:42 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200924100342epsmtip14a9d02bd8e0e112894935f53b138579c~3sBsJDTXw2669626696epsmtip1k;
-        Thu, 24 Sep 2020 10:03:42 +0000 (GMT)
-To:     "Rafael J. Wysocki <rjw@rjwysocki.net>" <rjw@rjwysocki.net>
-Cc:     "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Chanwoo Choi (samsung.com)" <cw00.choi@samsung.com>,
-        "Chanwoo Choi (chanwoo@kernel.org)" <chanwoo@kernel.org>,
-        =?UTF-8?B?7ZWo66qF7KO8?= <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Subject: [GIT PULL] devfreq fixes for v5.9-rc7
-Organization: Samsung Electronics
-Message-ID: <2dc9eeae-159e-c886-0278-f3c85d20bab5@samsung.com>
-Date:   Thu, 24 Sep 2020 19:16:47 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        Thu, 24 Sep 2020 06:17:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600942653;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ORL76fhl426t9LBfvBEBRXRu6hVyw1ffJIy0ygUo/8M=;
+        b=ZD9dkHb20Kyk0eyFqncyHHXML1JExs9d0TwFYpcPnw6oH9FSemJfN2/fH/wMd8pP8g7TZ/
+        PEWQaZ+I1Nb8x+NAxgPRLSdWLE3SgqZaB4NZ6tt1xO0wy5gxPJ9RW571Oe9juPAO8i/EbD
+        GyetF+wCBPyE62mzbcNxZxEb8rO05dA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-136-HUuXQv_VMmKI01zE3R3vfA-1; Thu, 24 Sep 2020 06:17:29 -0400
+X-MC-Unique: HUuXQv_VMmKI01zE3R3vfA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2B158107465D;
+        Thu, 24 Sep 2020 10:17:28 +0000 (UTC)
+Received: from localhost (ovpn-114-133.ams2.redhat.com [10.36.114.133])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 95B065D990;
+        Thu, 24 Sep 2020 10:17:21 +0000 (UTC)
+Date:   Thu, 24 Sep 2020 11:17:20 +0100
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     mst@redhat.com, lulu@redhat.com, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rob.miller@broadcom.com,
+        lingshan.zhu@intel.com, eperezma@redhat.com, hanand@xilinx.com,
+        mhabets@solarflare.com, eli@mellanox.com, amorenoz@redhat.com,
+        maxime.coquelin@redhat.com, sgarzare@redhat.com
+Subject: Re: [RFC PATCH 00/24] Control VQ support in vDPA
+Message-ID: <20200924101720.GR62770@stefanha-x1.localdomain>
+References: <20200924032125.18619-1-jasowang@redhat.com>
 MIME-Version: 1.0
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprIJsWRmVeSWpSXmKPExsWy7bCmge7/vJx4g/f7FS0m3rjCYnH9y3NW
-        i7NNb9gtLu+aw2bxufcIo8XtxhVsFmdOX2J1YPfYtKqTzWPL1XYWj74tqxg9Pm+SC2CJyrbJ
-        SE1MSS1SSM1Lzk/JzEu3VfIOjneONzUzMNQ1tLQwV1LIS8xNtVVy8QnQdcvMAbpASaEsMacU
-        KBSQWFyspG9nU5RfWpKqkJFfXGKrlFqQklNgWaBXnJhbXJqXrpecn2tlaGBgZApUmJCdce/j
-        EraCJu6KI6d+MzcwtnN2MXJwSAiYSPR2OXUxcnEICexglDjZvowZwvnEKLF99iomCOcbo8TO
-        KSuAMpxgHWu/r2eFSOxllDj06TgjhPOeUeLLwR52kLkiAvYSHR8yQeLMAheYJC5uamMF6WYT
-        0JLY/+IGG4gtLKAncfN1OxOIzS+gKHH1x2NGkF5eATuJuZOFQMIsAqoSe85dZQGxRQXCJE5u
-        a2EEsXkFBCVOznwCFmcWEJe49WQ+E4QtL7H97RywFyQE/rJLTHg1lQXiTxeJrqm8EA8IS7w6
-        voUdwpaS+PxuLxuEXS2x8uQRNojeDkaJLfsvsEIkjCX2L53MBDKHWUBTYv0ufYiwosTO33MZ
-        IfbySbz72sMKsYpXoqNNCKJEWeLyg7tMELakxOL2TqhVHhKdM9ezT2BUnIXkm1lIvpmF5JtZ
-        CIsXMLKsYhRLLSjOTU8tNiwwRo7rTYzgtKllvoNx2tsPeocYmTgYDzFKcDArifDeUMuOF+JN
-        SaysSi3Kjy8qzUktPsRoCgzficxSosn5wMSdVxJvaGpkbGxsYWJoZmpoqCTO+/CWQryQQHpi
-        SWp2ampBahFMHxMHp1QD0zRDRxMd7/53uxpXZT2qeLzDIHr2XP+iOfvvqzOKTlyxYHfQCrP0
-        IIclOnszYx4yzKvIme1fecn2bvNh5SPrAn2+xwq+v1Lbu29yYPat25vfHt3S2v47op9ZpveX
-        1eWMog/MTtYZHjt5I+q2lR56vv4YU/upqY6nNihbrX7F9c/aPedb5U6by1wvJXwtmHlu/FLl
-        K98zIf64fYaxYvUv1bSrCpUTNSb43v4ppByt46bD9lFc3yr4fOftX58sT7hrSpW2fJjRdarx
-        ep1mVMDzosbQjlWzWjINjumqe1kpTp+3RV9Q3f+d+u3TffPm31oQOmlXv3DQJY5LIs0qcncj
-        jl39KvGd+53d/Y0mk6Q+KLEUZyQaajEXFScCAPwwKdMkBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrCLMWRmVeSWpSXmKPExsWy7bCSnO6/vJx4g61TTS0m3rjCYnH9y3NW
-        i7NNb9gtLu+aw2bxufcIo8XtxhVsFmdOX2J1YPfYtKqTzWPL1XYWj74tqxg9Pm+SC2CJ4rJJ
-        Sc3JLEst0rdL4Mq493EJW0ETd8WRU7+ZGxjbObsYOTkkBEwk1n5fz9rFyMUhJLCbUeLglsuM
-        EAlJiWkXjzJ3MXIA2cIShw8XQ9S8ZZSYuO8tWFxEwF6i40MmSJxZ4BKTxMYzN9hBetkEtCT2
-        v7jBBmILC+hJ3HzdzgRi8wsoSlz98ZgRpJdXwE5i7mQhkDCLgKrEnnNXWUBsUYEwiZ1LHoOV
-        8woISpyc+QQsziygLvFn3iVmCFtc4taT+UwQtrzE9rdzmCcwCs5C0jILScssJC2zkLQsYGRZ
-        xSiZWlCcm55bbFhgmJdarlecmFtcmpeul5yfu4kRHBFamjsYt6/6oHeIkYmD8RCjBAezkgjv
-        DbXseCHelMTKqtSi/Pii0pzU4kOM0hwsSuK8NwoXxgkJpCeWpGanphakFsFkmTg4pRqY+CL3
-        hEnKTlz3L2hmZGqgUIv6aVXWCptLnu31s0Qff5o2oT9TbF/31nnzX/BGSl5i8fjTu3eRbMT9
-        At+WJwd33+dbxqmxwPP/JcHPm5M0HdbqnG/bnsWSbXXpWPEqpVMXPoR91kv4WbOoYPs0aSOX
-        tX7Fv1UXep/PCjV5v7WxaMX6E02Bbhv/SGz+93bK58+9qq4tRisiKyfkPuzb+elXw7vHlu1J
-        IjZa3S1JEvN/Xqz6tOzbiXTXyhd3bj3l+XVx9VrH1gzeNrfL04NOsh67ep4hr9NQ16D6mfOG
-        RkUVsaLLs9y5pDRC42uNZ3G6usb/vthuN0nE6Jp65vV8IYZ2o/QQed3Exz+rtq20NE5WYinO
-        SDTUYi4qTgQAsYhVafcCAAA=
-X-CMS-MailID: 20200924100342epcas1p42ad5d9bf5f2316f8c9e3909dfaa49a75
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200924100342epcas1p42ad5d9bf5f2316f8c9e3909dfaa49a75
-References: <CGME20200924100342epcas1p42ad5d9bf5f2316f8c9e3909dfaa49a75@epcas1p4.samsung.com>
+In-Reply-To: <20200924032125.18619-1-jasowang@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=stefanha@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="sxhug0Teuf3tiWmo"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Rafael,
+--sxhug0Teuf3tiWmo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-This is devfreq-next pull request for v5.9-rc7. I add detailed description of
-this pull request on the following tag. Please pull devfreq with following updates.
-- tag name : devfreq-fixes-for-5.9-rc7
+On Thu, Sep 24, 2020 at 11:21:01AM +0800, Jason Wang wrote:
+> This series tries to add the support for control virtqueue in vDPA.
 
-Best Regards,
-Chanwoo Choi
+Please include documentation for both driver authors and vhost-vdpa
+ioctl users. vhost-vdpa ioctls are only documented with a single
+sentence. Please add full information on arguments, return values, and a
+high-level explanation of the feature (like this cover letter) to
+introduce the API.
 
-The following changes since commit ba4f184e126b751d1bffad5897f263108befc780:
+What is the policy for using virtqueue groups? My guess is:
+1. virtio_vdpa simply enables all virtqueue groups.
+2. vhost_vdpa relies on userspace policy on how to use virtqueue groups.
+   Are the semantics of virtqueue groups documented somewhere so
+   userspace knows what to do? If a vDPA driver author decides to create
+   N virtqueue groups, N/2 virtqueue groups, or just 1 virtqueue group,
+   how will userspace know what to do?
 
-  Linux 5.9-rc6 (2020-09-20 16:33:55 -0700)
+Maybe a document is needed to describe the recommended device-specific
+virtqueue groups that vDPA drivers should implement (e.g. "put the net
+control vq into its own virtqueue group")?
 
-are available in the Git repository at:
+This could become messy with guidelines. For example, drivers might be
+shipped that aren't usable for certain use cases just because the author
+didn't know that a certain virtqueue grouping is advantageous.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/linux.git tags/devfreq-fixes-for-5.9-rc7
+BTW I like how general this feature is. It seems to allow vDPA devices
+to be split into sub-devices for further passthrough. Who will write the
+first vDPA-on-vDPA driver? :)
 
-for you to fetch changes up to 6bf560766a8ef5afe4faa3244220cf5b3a934549:
+Stefan
 
-  PM / devfreq: tegra30: Disable clock on error in probe (2020-09-23 13:35:58 +0900)
+--sxhug0Teuf3tiWmo
+Content-Type: application/pgp-signature; name="signature.asc"
 
-----------------------------------------------------------------
+-----BEGIN PGP SIGNATURE-----
 
-Update devfreq for 5.9-rc7
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAl9scjAACgkQnKSrs4Gr
+c8g9gAgAsbQIA1ltN83b43L8ktGIqTkaBbgUY8qGUDhwkNGWmCp359eeVlWQpt4P
+BtPsvuYFXv1eo5/EhiiWzKFZdP/q9pZ0I+BKvMtJ5kZ24KHVSG81nA+lrteSa4Xi
+uNX5DZFX+D9QRJwSuH+IPW5Q9tVP40nkZm6wqE7NYmM2UDspkchA+Jn9+ekdfcXv
+O3OEP7kgYb9Rv3OyRJ5lHzETfE8VBd45xm5G9QuiojYmBnS5b5jJGKcHyr7sc4I6
+547J/3Xq9Hrp/JwivlmcHdPyQgTn4Xz/tzcpDUBa/KdF7J4v0djKtX3JSxMU3jGI
+9lOAiZipWprTMyNjT6fuZpiuqHcniA==
+=8jGt
+-----END PGP SIGNATURE-----
 
-Detailed description for this pull request:
-1. Update devfreq core
-- Add missing timer type to devfreq_summary debugfs node.
+--sxhug0Teuf3tiWmo--
 
-2. Fix issue of devfreq device driver
-- Fix the exception handling about clock on tegra30-devfreq.c
-
-----------------------------------------------------------------
-Chanwoo Choi (1):
-      PM / devfreq: Add timer type to devfreq_summary debugfs
-
-Dan Carpenter (1):
-      PM / devfreq: tegra30: Disable clock on error in probe
-
- drivers/devfreq/devfreq.c         | 11 ++++++++---
- drivers/devfreq/tegra30-devfreq.c |  4 +++-
- 2 files changed, 11 insertions(+), 4 deletions(-)
- 
- 
