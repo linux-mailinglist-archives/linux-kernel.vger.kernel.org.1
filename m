@@ -2,90 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76EEB277C36
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 01:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE30A277C33
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 01:11:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726814AbgIXXL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 19:11:29 -0400
-Received: from mga17.intel.com ([192.55.52.151]:43845 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726655AbgIXXL3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 19:11:29 -0400
-IronPort-SDR: 9Hc2pzNECPv5G4I4WAX65G5tO+9UlmZ4HaNrWtbQwd0RxOiSQNNrQ1Hwh+JkAHL5k87BMerV4l
- 1x9tZQcQb1oQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="141385314"
-X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
-   d="scan'208";a="141385314"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 16:11:17 -0700
-IronPort-SDR: nDslaICw6OZoGWsFRlqPXAUKCLSwtpovhnuBBMu184OuC61vJMzD3zzeHyIMt+OhfFhj63rwRW
- ZBRKsIhYdScA==
-X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
-   d="scan'208";a="487166697"
-Received: from nspindel-mobl.ger.corp.intel.com (HELO localhost) ([10.252.44.90])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 16:11:11 -0700
-Date:   Fri, 25 Sep 2020 02:11:08 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Jethro Beekman <jethro@fortanix.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v38 20/24] x86/traps: Attempt to fixup exceptions in vDSO
- before signaling
-Message-ID: <20200924231059.GG119995@linux.intel.com>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-21-jarkko.sakkinen@linux.intel.com>
- <20200924163128.GM5030@zn.tnic>
+        id S1726802AbgIXXLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 19:11:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726604AbgIXXLP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 19:11:15 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71179C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 16:11:15 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id x23so1048574wmi.3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 16:11:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2W5GfROT2ywvdVHXg3kVe/f8IQ60BJx7ZZO+5tSrV0o=;
+        b=xT0cYXCnnIQOO4dPaV6raNdKraovBxs6izlFewfphndLD9GXgYp2a9mk8I2U+z1vlp
+         ZsJ3qFNTXi72PQyFz7i6Yuu8onhC9rohuhw1tS8DUNHhkefE9u0B3HnWXv1mZNif+aLv
+         AkBt6fjkoErMGG9Fuly7/TOCB/JAtB2vh93MrfnvWzCwXlodmzYXf6W837Iz0j1fHwjy
+         dUhce4/dOv4XrY6kbxPQreDzi4ylLqjLh44AmfIpaz9vxJpdTW8yfwUg3yfkLmsMnsfe
+         t+nE3+aHL3N9KBR1dNcbDHajjNl0YHSktLluY2cm2ZvChkdWWy9/AoxkyITN64S3wsct
+         gwcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2W5GfROT2ywvdVHXg3kVe/f8IQ60BJx7ZZO+5tSrV0o=;
+        b=dzoR5ebr7Vo+aRtQ2kiTW7BwALjtF1w69P+6RPq1SH3V3/3Vp1a2GHgyphlWGbKQxu
+         M0AJWPqzjzen6M7dxjTedzI5g54Y90gHgREH93IlSn2iZeQ7XvTmOdWBUgi4RR80AI7g
+         4VjvRBY35KLPOQ51HgWKlBX3HzcBa2EDydAhNn4roP0/75vNWA1gyfVmv8ZDUMh9zt4+
+         UhZjP7oclX25ougnXIUawlMopsVFIvxjw+jGUx53xHJSunFzcpb2PcsuGf6xBHV4ezrM
+         JyehJgzdIftJeKFG+A1hj6y9eFU5++9g7h48Qm22bH4CclRXJ4g34PrpyCuKFiz4/LNc
+         Lrkw==
+X-Gm-Message-State: AOAM533UL59U2cjyGnZuQUMpvgQsE044Ij6HjhYqchWnLgLxJM9J4/xX
+        h9FA9Vf/2rVD2jdONGPzr5cOSA==
+X-Google-Smtp-Source: ABdhPJzfbymChHh9GTOGEwo12Z0OSMWzK4gS2Gg9nF+35xC/ZV142dMkNHCtIUkP+SemxI2yLaNsTw==
+X-Received: by 2002:a7b:cc09:: with SMTP id f9mr882333wmh.93.1600989074117;
+        Thu, 24 Sep 2020 16:11:14 -0700 (PDT)
+Received: from [192.168.1.7] ([195.24.90.54])
+        by smtp.googlemail.com with ESMTPSA id g14sm676116wrv.25.2020.09.24.16.11.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Sep 2020 16:11:13 -0700 (PDT)
+Subject: Re: [PATCH v3 1/4] venus: core: change clk enable and disable order
+ in resume and suspend
+To:     Mansur Alisha Shaik <mansur@codeaurora.org>,
+        linux-media@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org
+References: <1600930266-9668-1-git-send-email-mansur@codeaurora.org>
+ <1600930266-9668-2-git-send-email-mansur@codeaurora.org>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <afd16a0e-30d9-ecf2-f40b-f85f7500efc6@linaro.org>
+Date:   Fri, 25 Sep 2020 02:11:11 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924163128.GM5030@zn.tnic>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <1600930266-9668-2-git-send-email-mansur@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 06:31:28PM +0200, Borislav Petkov wrote:
-> On Tue, Sep 15, 2020 at 02:28:38PM +0300, Jarkko Sakkinen wrote:
-> > diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-> > index 9e5ec861aba0..ebe290a68c36 100644
-> > --- a/arch/x86/mm/fault.c
-> > +++ b/arch/x86/mm/fault.c
-> > @@ -30,6 +30,7 @@
-> >  #include <asm/cpu_entry_area.h>		/* exception stack		*/
-> >  #include <asm/pgtable_areas.h>		/* VMALLOC_START, ...		*/
-> >  #include <asm/kvm_para.h>		/* kvm_handle_async_pf		*/
-> > +#include <asm/vdso.h>			/* fixup_vdso_exception()	*/
-> >  
-> >  #define CREATE_TRACE_POINTS
-> >  #include <asm/trace/exceptions.h>
-> > @@ -775,6 +776,10 @@ __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
-> >  
-> >  		sanitize_error_code(address, &error_code);
-> >  
-> > +		if (fixup_vdso_exception(regs, X86_TRAP_PF, error_code,
-> > +		    address))
+Hi Mansur,
+
+On 9/24/20 9:51 AM, Mansur Alisha Shaik wrote:
+> Currently video driver is voting after clk enable and un voting
+> before clk disable. This is incorrect, video driver should vote
+> before clk enable and unvote after clk disable.
 > 
-> No need to break that line.
-
-Thanks, fixed.
-
-> -- 
-> Regards/Gruss,
->     Boris.
+> Corrected this by changing the order of clk enable and clk disable.
 > 
-> https://people.kernel.org/tglx/notes-about-netiquette
+> Fixes: 7482a983d ("media: venus: redesign clocks and pm domains control")
 
-/Jarkko
+The Fixes tag is incorrect. It should be
+
+07f8f22a33a9e ("media: venus: core: remove CNOC voting while device
+suspend")
+
+> Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>  drivers/media/platform/qcom/venus/core.c | 17 ++++++++++-------
+>  1 file changed, 10 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
+> index 6103aaf..52a3886 100644
+> --- a/drivers/media/platform/qcom/venus/core.c
+> +++ b/drivers/media/platform/qcom/venus/core.c
+> @@ -355,13 +355,16 @@ static __maybe_unused int venus_runtime_suspend(struct device *dev)
+>  	if (ret)
+>  		return ret;
+>  
+> +	if (pm_ops->core_power) {
+> +		ret = pm_ops->core_power(dev, POWER_OFF);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+>  	ret = icc_set_bw(core->cpucfg_path, 0, 0);
+>  	if (ret)
+>  		return ret;
+>  
+> -	if (pm_ops->core_power)
+> -		ret = pm_ops->core_power(dev, POWER_OFF);
+> -
+>  	return ret;
+>  }
+>  
+> @@ -371,16 +374,16 @@ static __maybe_unused int venus_runtime_resume(struct device *dev)
+>  	const struct venus_pm_ops *pm_ops = core->pm_ops;
+>  	int ret;
+>  
+> +	ret = icc_set_bw(core->cpucfg_path, 0, kbps_to_icc(1000));
+> +	if (ret)
+> +		return ret;
+> +
+>  	if (pm_ops->core_power) {
+>  		ret = pm_ops->core_power(dev, POWER_ON);
+>  		if (ret)
+>  			return ret;
+>  	}
+>  
+> -	ret = icc_set_bw(core->cpucfg_path, 0, kbps_to_icc(1000));
+> -	if (ret)
+> -		return ret;
+> -
+>  	return hfi_core_resume(core, false);
+>  }
+>  
+> 
+
+-- 
+regards,
+Stan
