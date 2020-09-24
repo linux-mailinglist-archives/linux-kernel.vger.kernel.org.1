@@ -2,63 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1572276922
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C4D27692B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726961AbgIXGlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 02:41:39 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:49514 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726896AbgIXGli (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 02:41:38 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 78119B48A4080B00F43B;
-        Thu, 24 Sep 2020 14:41:34 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 24 Sep 2020 14:41:28 +0800
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-CC:     <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Qinglang Miao" <miaoqinglang@huawei.com>
-Subject: [PATCH -next] MIPS: OCTEON: fix error - use 'ret' after remove it
-Date:   Thu, 24 Sep 2020 14:41:42 +0800
-Message-ID: <20200924064142.90491-1-miaoqinglang@huawei.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+        id S1726929AbgIXGob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 02:44:31 -0400
+Received: from m17618.mail.qiye.163.com ([59.111.176.18]:61254 "EHLO
+        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726119AbgIXGob (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 02:44:31 -0400
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
+        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id 9E06D4E17A5;
+        Thu, 24 Sep 2020 14:44:28 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Wang Qing <wangqing@vivo.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] sound/soc/codecs: fix spelling typo in comments
+Date:   Thu, 24 Sep 2020 14:43:59 +0800
+Message-Id: <1600929860-28862-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGUhOTxpJT0lNTUMeVkpNS0tCSUJDTUNCQ0xVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MxA6Vio5ND8oEgMSKhMQLk9C
+        CDNPFDBVSlVKTUtLQklCQ01CSEJMVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISllXWQgBWUFKT0JINwY+
+X-HM-Tid: 0a74bedb2c4b9376kuws9e06d4e17a5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Variable ret was removed in commit 0ee69c589ec("MIPS: OCTEON:
-use devm_platform_ioremap_resource") but still being used in
-devm_release_mem_region which is unneeded. So remove this
-line to fix error.
+Modify the comment typo: "compliment" -> "complement".
 
-Fixes: 0ee69c589ec("MIPS: OCTEON: use devm_platform_ioremap_resource")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+Signed-off-by: Wang Qing <wangqing@vivo.com>
 ---
- arch/mips/cavium-octeon/octeon-usb.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/codecs/ak4458.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/cavium-octeon/octeon-usb.c b/arch/mips/cavium-octeon/octeon-usb.c
-index 97f6dc31e1b4..987a94cbf3d0 100644
---- a/arch/mips/cavium-octeon/octeon-usb.c
-+++ b/arch/mips/cavium-octeon/octeon-usb.c
-@@ -534,8 +534,6 @@ static int __init dwc3_octeon_device_init(void)
- 			dev_info(&pdev->dev, "clocks initialized.\n");
- 			mutex_unlock(&dwc3_octeon_clocks_mutex);
- 			devm_iounmap(&pdev->dev, base);
--			devm_release_mem_region(&pdev->dev, res->start,
--						resource_size(res));
- 		}
- 	} while (node != NULL);
+diff --git a/sound/soc/codecs/ak4458.h b/sound/soc/codecs/ak4458.h
+index f906215..e43144c
+--- a/sound/soc/codecs/ak4458.h
++++ b/sound/soc/codecs/ak4458.h
+@@ -49,7 +49,7 @@
  
+ /* DIF2	1 0
+  *  x	1 0 MSB justified  Figure 3 (default)
+- *  x	1 1 I2S Compliment  Figure 4
++ *  x	1 1 I2S Complement  Figure 4
+  */
+ #define AK4458_DIF_SHIFT	1
+ #define AK4458_DIF_MASK		GENMASK(3, 1)
 -- 
-2.23.0
+2.7.4
 
