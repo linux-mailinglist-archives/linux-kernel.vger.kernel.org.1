@@ -2,120 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F8F277A04
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 22:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56C4D277A07
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 22:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726596AbgIXUN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 16:13:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726037AbgIXUN5 (ORCPT
+        id S1726605AbgIXUOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 16:14:18 -0400
+Received: from asavdk3.altibox.net ([109.247.116.14]:53590 "EHLO
+        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726037AbgIXUOS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 16:13:57 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFB2FC0613CE;
-        Thu, 24 Sep 2020 13:13:56 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 20:13:54 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600978435;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=b0p/stKwtIhcp5+uygcPVT0jPD8tZbpQyj2KTq05TCI=;
-        b=frWGjDFQ/pTE1qB8JKwQ9yFvrV8fRVrVjRy4JBYlJTD/awZw6ff/9siXOJpGti8cWyoZNu
-        3H636xE0qHx4C3pAAqtpMXuS37L6i5ZTTWyeSsD01I7DDlWH7pQKQo8+AnMHNP6Mmj9PqP
-        qO6eo6hjXpqvDl9y+TRBwXZ7Fv95hGj1l638oZMDhLEAvQveTeINFVjnBW84dMz5a+2Tev
-        PIwVZbPuBhMkD7QYDK5su938UKM0F99Dk9LJgaKOAbRMRfAZgEHqHJBORMpHWuCbm0TD7T
-        r6k6AA9vIdd1FlQqdfQdDWsqIrYSsJIfio3aMWW74ULPgFxBLEeaPx8dNsDQGQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600978435;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=b0p/stKwtIhcp5+uygcPVT0jPD8tZbpQyj2KTq05TCI=;
-        b=2j+GXwjj45Y0lURLsesTPugdwFCkRq9IZSTrqJTRx+O1phnXL9aYQ/0YzPWqN8JU80iLku
-        UlCywWxLxXsC4IAQ==
-From:   "tip-bot2 for Qianli Zhao" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] timers: Mask invalid flags in do_init_timer()
-Cc:     Qianli Zhao <zhaoqianli@xiaomi.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: =?utf-8?q?=3C9d79a8aa4eb56713af7379f99f062dedabcde140=2E15973?=
- =?utf-8?q?26756=2Egit=2Ezhaoqianli=40xiaomi=2Ecom=3E?=
-References: =?utf-8?q?=3C9d79a8aa4eb56713af7379f99f062dedabcde140=2E159732?=
- =?utf-8?q?6756=2Egit=2Ezhaoqianli=40xiaomi=2Ecom=3E?=
+        Thu, 24 Sep 2020 16:14:18 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk3.altibox.net (Postfix) with ESMTPS id 262C92007A;
+        Thu, 24 Sep 2020 22:14:14 +0200 (CEST)
+Date:   Thu, 24 Sep 2020 22:14:12 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        od@zcrc.me, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] drm/ingenic: Add support for 30-bit modes
+Message-ID: <20200924201412.GI1223313@ravnborg.org>
+References: <20200915123818.13272-1-paul@crapouillou.net>
+ <20200915123818.13272-2-paul@crapouillou.net>
 MIME-Version: 1.0
-Message-ID: <160097843425.7002.2118619969908419648.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915123818.13272-2-paul@crapouillou.net>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=CaYmGojl c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=ER_8r6IbAAAA:8 a=7gkXJVJtAAAA:8
+        a=8mMx-f4Fzkueeq2di20A:9 a=eo8WO0KQHPbVX7Ve:21 a=7VUDQDM0WFQinG1v:21
+        a=CjuIK1q_8ugA:10 a=9LHmKk7ezEChjTCyhBa9:22 a=E9Po1WZjFZOl8hwRPBS3:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/core branch of tip:
-
-Commit-ID:     b952caf2d5ca898cc10d63be7722ae7a5daca696
-Gitweb:        https://git.kernel.org/tip/b952caf2d5ca898cc10d63be7722ae7a5daca696
-Author:        Qianli Zhao <zhaoqianli@xiaomi.com>
-AuthorDate:    Thu, 13 Aug 2020 23:03:14 +08:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 24 Sep 2020 22:12:18 +02:00
-
-timers: Mask invalid flags in do_init_timer()
-
-do_init_timer() accepts any combination of timer flags handed in by the
-caller without a sanity check, but only TIMER_DEFFERABLE, TIMER_PINNED and
-TIMER_IRQSAFE are valid.
-
-If the supplied flags have other bits set, this could result in
-malfunction. If bits are set in TIMER_CPUMASK the first timer usage could
-deference a cpu base which is outside the range of possible CPUs. If
-TIMER_MIGRATION is set, then the switch_timer_base() will live lock.
-
-Prevent that with a sanity check which warns when invalid flags are
-supplied and masks them out.
-
-[ tglx: Made it WARN_ON_ONCE() and added context to the changelog ]
-
-Signed-off-by: Qianli Zhao <zhaoqianli@xiaomi.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/9d79a8aa4eb56713af7379f99f062dedabcde140.1597326756.git.zhaoqianli@xiaomi.com
----
- include/linux/timer.h | 1 +
- kernel/time/timer.c   | 2 ++
- 2 files changed, 3 insertions(+)
-
-diff --git a/include/linux/timer.h b/include/linux/timer.h
-index 07910ae..d10bc7e 100644
---- a/include/linux/timer.h
-+++ b/include/linux/timer.h
-@@ -67,6 +67,7 @@ struct timer_list {
- #define TIMER_DEFERRABLE	0x00080000
- #define TIMER_PINNED		0x00100000
- #define TIMER_IRQSAFE		0x00200000
-+#define TIMER_INIT_FLAGS	(TIMER_DEFERRABLE | TIMER_PINNED | TIMER_IRQSAFE)
- #define TIMER_ARRAYSHIFT	22
- #define TIMER_ARRAYMASK		0xFFC00000
- 
-diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index a16764b..25e048d 100644
---- a/kernel/time/timer.c
-+++ b/kernel/time/timer.c
-@@ -794,6 +794,8 @@ static void do_init_timer(struct timer_list *timer,
- {
- 	timer->entry.pprev = NULL;
- 	timer->function = func;
-+	if (WARN_ON_ONCE(flags & ~TIMER_INIT_FLAGS))
-+		flags &= TIMER_INIT_FLAGS;
- 	timer->flags = flags | raw_smp_processor_id();
- 	lockdep_init_map(&timer->lockdep_map, name, key, 0);
- }
+On Tue, Sep 15, 2020 at 02:38:16PM +0200, Paul Cercueil wrote:
+> Starting from the JZ4760 SoC, the primary and overlay planes support
+> 30-bit pixel modes (10 bits per color component). Add support for these
+> in the ingenic-drm driver.
+> 
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Acked-by: Sam Ravnborg <sam@ravnborg.org>
+> ---
+>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 41 +++++++++++++++++------
+>  drivers/gpu/drm/ingenic/ingenic-drm.h     |  1 +
+>  2 files changed, 32 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> index 937d080f5d06..fb62869befdc 100644
+> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> @@ -49,6 +49,8 @@ struct jz_soc_info {
+>  	bool needs_dev_clk;
+>  	bool has_osd;
+>  	unsigned int max_width, max_height;
+> +	const u32 *formats;
+> +	unsigned int num_formats;
+>  };
+>  
+>  struct ingenic_drm {
+> @@ -73,12 +75,6 @@ struct ingenic_drm {
+>  	bool no_vblank;
+>  };
+>  
+> -static const u32 ingenic_drm_primary_formats[] = {
+> -	DRM_FORMAT_XRGB1555,
+> -	DRM_FORMAT_RGB565,
+> -	DRM_FORMAT_XRGB8888,
+> -};
+> -
+>  static bool ingenic_drm_cached_gem_buf;
+>  module_param_named(cached_gem_buffers, ingenic_drm_cached_gem_buf, bool, 0400);
+>  MODULE_PARM_DESC(cached_gem_buffers,
+> @@ -411,6 +407,9 @@ void ingenic_drm_plane_config(struct device *dev,
+>  		case DRM_FORMAT_XRGB8888:
+>  			ctrl |= JZ_LCD_OSDCTRL_BPP_18_24;
+>  			break;
+> +		case DRM_FORMAT_XRGB2101010:
+> +			ctrl |= JZ_LCD_OSDCTRL_BPP_30;
+> +			break;
+>  		}
+>  
+>  		regmap_update_bits(priv->map, JZ_REG_LCD_OSDCTRL,
+> @@ -426,6 +425,9 @@ void ingenic_drm_plane_config(struct device *dev,
+>  		case DRM_FORMAT_XRGB8888:
+>  			ctrl |= JZ_LCD_CTRL_BPP_18_24;
+>  			break;
+> +		case DRM_FORMAT_XRGB2101010:
+> +			ctrl |= JZ_LCD_CTRL_BPP_30;
+> +			break;
+>  		}
+>  
+>  		regmap_update_bits(priv->map, JZ_REG_LCD_CTRL,
+> @@ -894,8 +896,8 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
+>  
+>  	ret = drm_universal_plane_init(drm, &priv->f1, 1,
+>  				       &ingenic_drm_primary_plane_funcs,
+> -				       ingenic_drm_primary_formats,
+> -				       ARRAY_SIZE(ingenic_drm_primary_formats),
+> +				       priv->soc_info->formats,
+> +				       priv->soc_info->num_formats,
+>  				       NULL, DRM_PLANE_TYPE_PRIMARY, NULL);
+>  	if (ret) {
+>  		dev_err(dev, "Failed to register plane: %i\n", ret);
+> @@ -919,8 +921,8 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
+>  
+>  		ret = drm_universal_plane_init(drm, &priv->f0, 1,
+>  					       &ingenic_drm_primary_plane_funcs,
+> -					       ingenic_drm_primary_formats,
+> -					       ARRAY_SIZE(ingenic_drm_primary_formats),
+> +					       priv->soc_info->formats,
+> +					       priv->soc_info->num_formats,
+>  					       NULL, DRM_PLANE_TYPE_OVERLAY,
+>  					       NULL);
+>  		if (ret) {
+> @@ -1121,11 +1123,26 @@ static int ingenic_drm_remove(struct platform_device *pdev)
+>  	return 0;
+>  }
+>  
+> +static const u32 jz4740_formats[] = {
+> +	DRM_FORMAT_XRGB1555,
+> +	DRM_FORMAT_RGB565,
+> +	DRM_FORMAT_XRGB8888,
+> +};
+> +
+> +static const u32 jz4770_formats[] = {
+> +	DRM_FORMAT_XRGB1555,
+> +	DRM_FORMAT_RGB565,
+> +	DRM_FORMAT_XRGB8888,
+> +	DRM_FORMAT_XRGB2101010,
+> +};
+> +
+>  static const struct jz_soc_info jz4740_soc_info = {
+>  	.needs_dev_clk = true,
+>  	.has_osd = false,
+>  	.max_width = 800,
+>  	.max_height = 600,
+> +	.formats = jz4740_formats,
+> +	.num_formats = ARRAY_SIZE(jz4740_formats),
+>  };
+>  
+>  static const struct jz_soc_info jz4725b_soc_info = {
+> @@ -1133,6 +1150,8 @@ static const struct jz_soc_info jz4725b_soc_info = {
+>  	.has_osd = true,
+>  	.max_width = 800,
+>  	.max_height = 600,
+> +	.formats = jz4740_formats,
+> +	.num_formats = ARRAY_SIZE(jz4740_formats),
+>  };
+>  
+>  static const struct jz_soc_info jz4770_soc_info = {
+> @@ -1140,6 +1159,8 @@ static const struct jz_soc_info jz4770_soc_info = {
+>  	.has_osd = true,
+>  	.max_width = 1280,
+>  	.max_height = 720,
+> +	.formats = jz4770_formats,
+> +	.num_formats = ARRAY_SIZE(jz4770_formats),
+>  };
+>  
+>  static const struct of_device_id ingenic_drm_of_match[] = {
+> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm.h b/drivers/gpu/drm/ingenic/ingenic-drm.h
+> index df99f0f75d39..f05e18e6b6fa 100644
+> --- a/drivers/gpu/drm/ingenic/ingenic-drm.h
+> +++ b/drivers/gpu/drm/ingenic/ingenic-drm.h
+> @@ -124,6 +124,7 @@
+>  #define JZ_LCD_CTRL_BPP_8			0x3
+>  #define JZ_LCD_CTRL_BPP_15_16			0x4
+>  #define JZ_LCD_CTRL_BPP_18_24			0x5
+> +#define JZ_LCD_CTRL_BPP_30			0x7
+>  #define JZ_LCD_CTRL_BPP_MASK			(JZ_LCD_CTRL_RGB555 | 0x7)
+>  
+>  #define JZ_LCD_CMD_SOF_IRQ			BIT(31)
+> -- 
+> 2.28.0
