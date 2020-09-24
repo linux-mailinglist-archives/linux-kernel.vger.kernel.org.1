@@ -2,98 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2812769F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F419B2769FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727125AbgIXHDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 03:03:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45232 "EHLO
+        id S1727143AbgIXHDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 03:03:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726950AbgIXHDK (ORCPT
+        with ESMTP id S1727031AbgIXHDs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 03:03:10 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4AACC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 00:03:09 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id s13so2344661wmh.4
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 00:03:09 -0700 (PDT)
+        Thu, 24 Sep 2020 03:03:48 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB93C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 00:03:48 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id s205so1782632lja.7
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 00:03:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=aO7bASJ04QbcCD8y5/noP2Lml10J7qRtNgaZtcBkskQ=;
-        b=JTDExfYkRhqRGg/FD1waotO5jbpXz+hhPzHrntF7yXyVVUMY6oiC3BkjZhNqVhZ1Td
-         TOeSkRNZ0RImCFCLrlcdnNTDxalKZ7mnr0MnvmAq5vX/CYv0WbeySBi946K6fWk91av7
-         ddexe/dJdE5sdMkXDooUX9mam88bTNeqyKDtsNtugf6kgQJqyvaMjNIRW2IMLs/ffz/m
-         JL0w5rK4MjwGM7JW5M12SAEx/iQj2S3IlYe0yq6imBYRgTCWdOqZClWu17zaWJO4ZNRq
-         qSr0T5ogGana5umkSYgtNlgxZrzkNbyAlgE3zi20VQCQGfMgLs/D78xowN4Ven/zoqn7
-         qqcw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7KSXeJNq+Xr4jWAThO8iIjuiWOvcEFVr8SMOrGe2NoE=;
+        b=GhFI/gl6kFqXiEDuE3FPfaSt7hceaV8hQm6cQf2ykZ/fNnQntksX+59ZaXfUmgdHeg
+         Zb58toA3r6HMVq7c2K4TdOLrtIiaMhX70eIcIXN3BOLnEBoqSH2o0jHHu8FQrEiA5nez
+         94HgtlhUBKdnmJVxKUP7bXqfl9PG+n1WOQR+N7d0Qwyadg7tOnFOPUBUhY7AiHH7e4x7
+         KWBxId+qgL9+DiX2hB/HDvhpPOHGP7qa3dxOCEs1UilXK70I70xc4ZI9KZ0cf1bnGV7F
+         4lUcGLDUvdBjEwX0hSn4m3xKBh/TmMmA1gRxEU6R4td3PEdNtVBhmWpSoEBIcPeGpxYB
+         ScYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=aO7bASJ04QbcCD8y5/noP2Lml10J7qRtNgaZtcBkskQ=;
-        b=DZiaYxnCpIPV6i8ln9+5mWo6HsLfxtyELsMct5yenwH/ixpcyACTL/BZIIYulf25Uw
-         AY2vGr6ghBJ1Gjjo8Hk8dwf8nyzvoI3QNCX/JG5mdHqsbbCsY5/LGhZGvQ5HBs7HCwYN
-         OAy6NOwFGBVGjh+A11HQOClCPth4wJ4jRFNGoKUF3i2mohOhqg+Qf8f66XDseUxM31Ca
-         K92qvnGxUhXIcrnz/wctZ96EYEVQnrT4sLhrgLr2i/y+BJTHyXbwi/+sXF+5/KQtzPr5
-         Q60bDci0c8oWZa14w/JUsZ3mudWuFv5EvTFXmV7QG5BfeL3KWu7eSlZicATRHPUv9FFs
-         dkog==
-X-Gm-Message-State: AOAM533shJHoU2y7DWsSSA9Md8Mxw9lVUagcekVHc9wY2V6Stmbo3c6m
-        0v2nOwThtQsjOCrAko6bCowLhBDz85c=
-X-Google-Smtp-Source: ABdhPJxZDjUAKj0RIFcqtKWi8MFlamu4cDueKAFeSHNgYlbBbYbCwvdsGCtSpLU7QtYq0QTY9vWCvg==
-X-Received: by 2002:a1c:9ec1:: with SMTP id h184mr3202484wme.180.1600930987820;
-        Thu, 24 Sep 2020 00:03:07 -0700 (PDT)
-Received: from ogabbay-VM.habana-labs.com ([213.57.90.10])
-        by smtp.gmail.com with ESMTPSA id n4sm2320628wrp.61.2020.09.24.00.03.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 00:03:06 -0700 (PDT)
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     SW_Drivers@habana.ai
-Subject: [PATCH 4/4] habanalabs: add notice of device not idle
-Date:   Thu, 24 Sep 2020 10:02:59 +0300
-Message-Id: <20200924070259.19833-4-oded.gabbay@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200924070259.19833-1-oded.gabbay@gmail.com>
-References: <20200924070259.19833-1-oded.gabbay@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7KSXeJNq+Xr4jWAThO8iIjuiWOvcEFVr8SMOrGe2NoE=;
+        b=pmKMZUGrSqJUN+oCQYckZw11rc7ftAywEnbNvOZ4sIMNyyvR4MCMgMFFa2hEUimzDI
+         ubMaMDd7CndYWhvTNckdlWuMKFiGf6lrp52let0qY08zTqrEdiWG4LWAkY/9TYCL/CSq
+         q+1BxWdoLHqNi/6vEddh7LBN4Ijr87HpjljaPA+flpuaP0b25wGsaPeVuK6NLM60MVD1
+         f5YzRjDRjyae3GZztd8TW9gMxrHByURsjXaOWFzd25qavsl4s2zxY1T3iQ63fv8MjCAW
+         qDVsZwtaV8KBQmCIvCq1gLDF/sEgK5cFJzrUPbNyV+4ncsMlG0hjpfUt4FKLKIghx1PN
+         C0FA==
+X-Gm-Message-State: AOAM533q9di7QdDK8FDwxJzuYKakx9w/UsFZ2hmxNsyWE5I3V0XGVLmZ
+        1heipgb+QVeFxfywX8IMIANGtAtVuL/rVX2B1r+3zg==
+X-Google-Smtp-Source: ABdhPJza3TCUYaALDfzVNapCIPEm4jBGARVMkuVOHiD7+PUs9atZGtrzYeuUE9cT0RRmbqKGc+VrkgbphX7AuEjHesg=
+X-Received: by 2002:a2e:7c09:: with SMTP id x9mr1038271ljc.192.1600931026364;
+ Thu, 24 Sep 2020 00:03:46 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200922203700.2879671-1-guro@fb.com> <20200922203700.2879671-4-guro@fb.com>
+In-Reply-To: <20200922203700.2879671-4-guro@fb.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 24 Sep 2020 00:03:35 -0700
+Message-ID: <CALvZod7RrmVG4d2XeJJnphG0rkv+iR7e3=S0AtppE7SW4zb20A@mail.gmail.com>
+Subject: Re: [PATCH v1 3/4] mm: introduce page memcg flags
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Kernel Team <kernel-team@fb.com>,
+        SeongJae Park <sjpark@amazon.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The device should be idle after a context is closed. If not, print a
-notice.
+On Tue, Sep 22, 2020 at 1:38 PM Roman Gushchin <guro@fb.com> wrote:
+>
+> The lowest bit in page->memcg_data is used to distinguish between
+> struct memory_cgroup pointer and a pointer to a objcgs array.
+> All checks and modifications of this bit are open-coded.
+>
+> Let's formalize it using page memcg flags, defined in page_memcg_flags
+> enum and replace all open-coded accesses with test_bit()/__set_bit().
+>
+> Few additional flags might be added later. Flags are intended to be
+> mutually exclusive.
 
-Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
----
- drivers/misc/habanalabs/common/context.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Why mutually exclusive? I understand mutual exclusion between non-slab
+kernel memory and objcgs vector but future feature might not need to
+be mutually exclusive.
 
-diff --git a/drivers/misc/habanalabs/common/context.c b/drivers/misc/habanalabs/common/context.c
-index bd03ef074eed..7a59dd7c6450 100644
---- a/drivers/misc/habanalabs/common/context.c
-+++ b/drivers/misc/habanalabs/common/context.c
-@@ -12,6 +12,7 @@
- static void hl_ctx_fini(struct hl_ctx *ctx)
- {
- 	struct hl_device *hdev = ctx->hdev;
-+	u64 idle_mask = 0;
- 	int i;
- 
- 	/*
-@@ -42,6 +43,13 @@ static void hl_ctx_fini(struct hl_ctx *ctx)
- 		hl_cb_va_pool_fini(ctx);
- 		hl_vm_ctx_fini(ctx);
- 		hl_asid_free(hdev, ctx->asid);
-+
-+		if ((!hdev->pldm) && (hdev->pdev) &&
-+				(!hdev->asic_funcs->is_device_idle(hdev,
-+							&idle_mask, NULL)))
-+			dev_notice(hdev->dev,
-+				"device not idle after user context is closed (0x%llx)\n",
-+				idle_mask);
- 	} else {
- 		dev_dbg(hdev->dev, "closing kernel context\n");
- 		hl_mmu_ctx_fini(ctx);
--- 
-2.17.1
+One use-case I am thinking of is actually using a couple of bits here
+to store more idle (or hot) age by future extension of DAMON. That
+would be for user memory (anon or file and not slab or kmem) but
+multiple bits can set.
 
+>
+> Signed-off-by: Roman Gushchin <guro@fb.com>
+> ---
+>  include/linux/memcontrol.h | 29 +++++++++++++++++++----------
+>  1 file changed, 19 insertions(+), 10 deletions(-)
+>
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index ab3ea3e90583..9a49f1e1c0c7 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -343,6 +343,11 @@ struct mem_cgroup {
+>
+>  extern struct mem_cgroup *root_mem_cgroup;
+>
+> +enum page_memcg_flags {
+> +       /* page->memcg_data is a pointer to an objcgs vector */
+> +       PG_MEMCG_OBJ_CGROUPS,
+> +};
+
+If you agree with my next comment then I think PG_MEMCG_LAST_FLAG and
+MEMCG_FLAGS_MASK should be introduced in this patch instead of the
+next one.
+
+> +
+>  /*
+>   * page_mem_cgroup - get the memory cgroup associated with a page
+>   * @page: a pointer to the page struct
+> @@ -371,13 +376,7 @@ static inline struct mem_cgroup *page_mem_cgroup_check(struct page *page)
+>  {
+>         unsigned long memcg_data = page->memcg_data;
+>
+> -       /*
+> -        * The lowest bit set means that memcg isn't a valid
+> -        * memcg pointer, but a obj_cgroups pointer.
+> -        * In this case the page is shared and doesn't belong
+> -        * to any specific memory cgroup.
+> -        */
+> -       if (memcg_data & 0x1UL)
+> +       if (test_bit(PG_MEMCG_OBJ_CGROUPS, &memcg_data))
+>                 return NULL;
+>
+>         return (struct mem_cgroup *)memcg_data;
+> @@ -422,7 +421,13 @@ static inline void clear_page_mem_cgroup(struct page *page)
+>   */
+>  static inline struct obj_cgroup **page_obj_cgroups(struct page *page)
+>  {
+> -       return (struct obj_cgroup **)(page->memcg_data & ~0x1UL);
+> +       unsigned long memcg_data = page->memcg_data;
+> +
+> +       VM_BUG_ON_PAGE(memcg_data && !test_bit(PG_MEMCG_OBJ_CGROUPS,
+> +                                              &memcg_data), page);
+> +       __clear_bit(PG_MEMCG_OBJ_CGROUPS, &memcg_data);
+> +
+> +       return (struct obj_cgroup **)memcg_data;
+
+Wouldn't the following be more future proof?
+
+return (struct obj_cgroup **)(memcg_data & ~MEMCG_FLAGS_MASK);
+
+>  }
+>
+>  /*
+> @@ -437,7 +442,7 @@ static inline struct obj_cgroup **page_obj_cgroups_check(struct page *page)
+>  {
+>         unsigned long memcg_data = page->memcg_data;
+>
+> -       if (memcg_data && (memcg_data & 0x1UL))
+> +       if (memcg_data && test_bit(PG_MEMCG_OBJ_CGROUPS, &memcg_data))
+>                 return (struct obj_cgroup **)memcg_data;
+>
+>         return NULL;
+> @@ -453,7 +458,11 @@ static inline struct obj_cgroup **page_obj_cgroups_check(struct page *page)
+>  static inline bool set_page_obj_cgroups(struct page *page,
+>                                         struct obj_cgroup **objcgs)
+>  {
+> -       return !cmpxchg(&page->memcg_data, 0, (unsigned long)objcgs | 0x1UL);
+> +       unsigned long memcg_data = (unsigned long)objcgs;
+> +
+> +       __set_bit(PG_MEMCG_OBJ_CGROUPS, &memcg_data);
+> +
+> +       return !cmpxchg(&page->memcg_data, 0, memcg_data);
+>  }
+>
+>  /*
+> --
+> 2.26.2
+>
