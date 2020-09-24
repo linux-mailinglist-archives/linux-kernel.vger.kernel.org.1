@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16AC9277160
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DB3E27715F
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:46:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728014AbgIXMqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 08:46:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41804 "EHLO
+        id S1728008AbgIXMqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 08:46:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727896AbgIXMpg (ORCPT
+        with ESMTP id S1727932AbgIXMph (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 08:45:36 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3AF1C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:45:35 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id s13so3382935wmh.4
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:45:35 -0700 (PDT)
+        Thu, 24 Sep 2020 08:45:37 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4684AC0613D5
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:45:37 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id a9so3469653wmm.2
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:45:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=aGwLdcvj6Ahf469gIHa2La7giDt0xQpNJNeb3LZxHKY=;
-        b=s2/CSrd5AP3ygCQjNwYK3TB2P7QahdZupBRG6+zKM01DhKdbyGJc9ihPAJXX6JDlOK
-         3Q6KNCiNVVN8sD/Trv78tzxbff2zQjdHB1FvqhUtKPPaOq57xodLdzMfqSBfH+O030A0
-         An1nc1pvevGMn8z4D0XhWDW2b6MxnmHT3a85QOEOEYfm6mXFMWr2FSrICGyH+mfNUh4l
-         gQ1NNfM4+g6E+pQoFRukUht8awhqEwwGCzAYMsXgyEaEw/dmoC9Q5rUnz2/ltBUwXBR7
-         +OUyWk8FvDbk8ko5yHbp33QtPGwtzbo+IJxZ/CbIAUIyc3zzS5wqh4aPl1sIA7Fbsusv
-         DXZQ==
+        bh=W6VETlQMhinsAFnrxhicyZwDvz0AKVapVLUfWYhRvtk=;
+        b=Wp+IvUvDyl3rqovUnETmm0ji0J8pQpAGA1dqkIDftOigWWAulWVGXKNw+qvsaVEVhT
+         wFDOjo9K7Q2CG30TeWap3E0Y9Zpzp0GICh6TEJHmPtZG3mQyvy8k+aGR/86xiBro6xNL
+         Gsp7GP3FmkNX1wyqaxsZZHTpyyHkjSKKwW7rRzPGL1pn0Jfljo+ct7HhudPY5DUjEgYr
+         tiLiWK9TmK3aHfII6GVpc213DSBIJp33rwNYsVWa3TJIAlCmb/Pfmd0/MpBqSqv/Y4O5
+         bwZBPgCWFP+vinjeudF5uMKytRGGbMdXSBrDEjJoc8uqqaHxP8Kt3ZUyl5S2iTAunC7U
+         ZX7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=aGwLdcvj6Ahf469gIHa2La7giDt0xQpNJNeb3LZxHKY=;
-        b=GlEPaj1rOlfev1m/EGm/bgsSwDd6Xs9q2k6sYV44Be1tkuirl+9VhH1wL0/KpTEgY+
-         JJ9VSXc5bkW5ixyR0tafO0ZaruHzf75g4N58QzInJ/zyh+GZoRHCL3NKY810MqL8Cpe0
-         LRQk1mCVaj8lgIdSMYsecuRh5liiSRo2mT9Sc7bj8fcE0QqBJrBFT29YtB2c/jUtlTxG
-         U2rQN3DDlNdtS2ACoY2fpz51+UeuFH5pLRedlwYuTFjmMBTNzA6CySAVP2gOOuAqVXJr
-         Cunl1M+KmGPM64LPioBjXxoSDNwXssUYCm0eIEnb7z7CvGiSXPpSKh1/PYePlOMUkc4D
-         beyA==
-X-Gm-Message-State: AOAM530HM728InOtktBU+gwzILMr2bvJc9wTCCsVZHmAHV/KvWynldLc
-        1QrDwHDf0qrUaHdoGu6tii9cAGOgOqmXPw==
-X-Google-Smtp-Source: ABdhPJw/jrQmyqY1AVqMdbnQqjS2UwxtZ2omNvLI5cf/h1mAZ3kSGYtOFVHueeIjHCU7lSdcLrBeZA==
-X-Received: by 2002:a1c:2403:: with SMTP id k3mr4430501wmk.153.1600951534383;
-        Thu, 24 Sep 2020 05:45:34 -0700 (PDT)
+        bh=W6VETlQMhinsAFnrxhicyZwDvz0AKVapVLUfWYhRvtk=;
+        b=YxiJfKRgMlabSbDnZKp8f8h6UNPgUaV53mQ4zD1keZ01PlEGCUvI18ZqXH52MTJlma
+         UN98lsSChi4PtPZXWonKdGnc5Uqn/GXCOL6e+Uq/jikhtyE2uY3pMYxZQmf4eOX7YeqF
+         kABh/OzXzUsIx6U4nDW7qJL5nnPwV1Ne0637aP8CBCrrqLnyeyZoK3xqPBo9+HKuFRWl
+         Zl0qxdLJIKmtVh3o8JXGSLSnJRQ1UuJTb5IchTvPmbERa2KnYNDxvOJJw/DmX3pFpMrf
+         +El7KhazHuqmNnZhbYYnQLwi9pTiWpetoOJcMnhtD4mrDrw/2oQNW/fDPO4a77cQcrwE
+         ti5w==
+X-Gm-Message-State: AOAM533Wmcus/eRJv339xLks45gy0VGq8rSLFVanDox+NBoBYN/AIYsb
+        O910adbwuXGOW8iyDy/SDD4UBg==
+X-Google-Smtp-Source: ABdhPJx5wqOD6hLUt0Qyl+/kNifG9KTG4Nvy3Qsj3YTYetDNSzlU+Vyq0GOQIl6un0NqcXDgFV28EQ==
+X-Received: by 2002:a1c:488:: with SMTP id 130mr4412875wme.164.1600951535992;
+        Thu, 24 Sep 2020 05:45:35 -0700 (PDT)
 Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
-        by smtp.gmail.com with ESMTPSA id 9sm3316834wmf.7.2020.09.24.05.45.32
+        by smtp.gmail.com with ESMTPSA id 9sm3316834wmf.7.2020.09.24.05.45.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 05:45:33 -0700 (PDT)
+        Thu, 24 Sep 2020 05:45:35 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>
 Cc:     linux-kernel@vger.kernel.org,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 01/12] MAINTAINERS: add the sample directory to the configfs entry
-Date:   Thu, 24 Sep 2020 14:45:15 +0200
-Message-Id: <20200924124526.17365-2-brgl@bgdev.pl>
+Subject: [PATCH 02/12] samples: configfs: order includes alphabetically
+Date:   Thu, 24 Sep 2020 14:45:16 +0200
+Message-Id: <20200924124526.17365-3-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200924124526.17365-1-brgl@bgdev.pl>
 References: <20200924124526.17365-1-brgl@bgdev.pl>
@@ -66,26 +66,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Code samples for configfs don't have an explicit maintainer. Add the
-samples directory to the existing configfs entry in MAINTAINERS.
+The preferred coding style is to order all includes alphabetically for
+improved readability. There's no need for the configfs header to come
+last.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+ samples/configfs/configfs_sample.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d746519253c3..6bbe4cb67331 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4407,6 +4407,7 @@ S:	Supported
- T:	git git://git.infradead.org/users/hch/configfs.git
- F:	fs/configfs/
- F:	include/linux/configfs.h
-+F:	samples/configfs/
+diff --git a/samples/configfs/configfs_sample.c b/samples/configfs/configfs_sample.c
+index e2398d94e8da..aca994e6ab87 100644
+--- a/samples/configfs/configfs_sample.c
++++ b/samples/configfs/configfs_sample.c
+@@ -12,11 +12,11 @@
+  * configfs Copyright (C) 2005 Oracle.  All rights reserved.
+  */
  
- CONNECTOR
- M:	Evgeniy Polyakov <zbr@ioremap.net>
++#include <linux/configfs.h>
+ #include <linux/init.h>
+ #include <linux/module.h>
+ #include <linux/slab.h>
+ 
+-#include <linux/configfs.h>
+ 
+ 
+ 
 -- 
 2.17.1
 
