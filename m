@@ -2,135 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A8C27664A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 04:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2215627664E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 04:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726477AbgIXCQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 22:16:50 -0400
-Received: from mail-mw2nam10on2080.outbound.protection.outlook.com ([40.107.94.80]:22625
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726281AbgIXCQu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 22:16:50 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aLkb7SCk3HQXf+/ewl11UJ8H1Bkn7q/uPNJQ2jVSnj3nCMTWilh0XTbCrczGu63x4qdikDu1rPyAGssoq9zRVF0xh4bfvPrSWwmvPkiRh/l6QUE/Wn0RkmQ0fkFHI9Z5tSEbwgZ1tXjkq1nL5J5Ji6NliPri43r+LaaZrms8PmFIkGhTcnx+dZQ487Mb/fq4YNb2OX/iV3lxMd8YTvWc5af7hno2EkCFm39fjsP7m4pcLPuuAhN3lZ7UDJiJTNjLx8B/Dr9fi0hlCK9J4/4qvPfbAT0V0e7w4gQ80SBuNeqnsxfKqVdx04b5cjWkwO4LKIIvgaNNUyaTFqQKwa4rYA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1dtf1e6yRafuL4tQwKfZLKkaWEiTgLv9GXmRi/ilacY=;
- b=Scu1xJ7rgaUlvqSTe/pJrKBsrL+IZH37TuLtIhRTdoF53q3oxu3OXEMjnKfFZ3dLCHS3adm+A33Kw/wni8VVAqtDERbDObxZrn2cmz6Kl7BPtvWibFQxmAuk08fuAeEbWDGOqKmr8YXy2Q4AFvi5GaYtm/7VqOvKc1Vs2JwFmiDni8sNJEWwLyTKMjsKwhq4LwM/pO5w7xPItr9iuz0OOF0dbrL3byzASvRES3p6x8bZk3+rMB0Ht9TcixzpOLnHOk1OCSdO20ep5yLLlVaGMAxzvbyAtGS7gtiNbO21nBR5/j3bQKW0iZnsQLxLj74YcSFLS6Us1XQlpvxbnqXCmw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=tw.synaptics.com; dmarc=pass action=none
- header.from=tw.synaptics.com; dkim=pass header.d=tw.synaptics.com; arc=none
+        id S1726558AbgIXCSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 22:18:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726281AbgIXCR7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 22:17:59 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B31E5C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 19:17:59 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id x22so892858pfo.12
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 19:17:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1dtf1e6yRafuL4tQwKfZLKkaWEiTgLv9GXmRi/ilacY=;
- b=D+GwsTogZwSPDcgpEp+uUr2nGg5qBf4Jz5/Dpz1AVyQENot4heSWSy+V93qxurlDxI4fR0dmgtAXbS2XVyP+GFwrxzAf1H9LSwIQJWXVW2XFLKP/KiBtMyrP+n8kdyjMXp0uyvdeJRzmQritqk3zCQHDIOQDfvM747eQyaVjodI=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=tw.synaptics.com;
-Received: from SN6PR03MB3952.namprd03.prod.outlook.com (2603:10b6:805:75::26)
- by SA0PR03MB5562.namprd03.prod.outlook.com (2603:10b6:806:b7::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Thu, 24 Sep
- 2020 02:16:48 +0000
-Received: from SN6PR03MB3952.namprd03.prod.outlook.com
- ([fe80::3c54:f5cf:3148:407e]) by SN6PR03MB3952.namprd03.prod.outlook.com
- ([fe80::3c54:f5cf:3148:407e%7]) with mapi id 15.20.3391.027; Thu, 24 Sep 2020
- 02:16:48 +0000
-Subject: Re: [PATCH 4.19 43/49] Input: trackpoint - add new trackpoint variant
- IDs
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Pavel Machek <pavel@denx.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20200921162034.660953761@linuxfoundation.org>
- <20200921162036.567357303@linuxfoundation.org>
- <20200922153957.GB18907@duo.ucw.cz> <20200922161642.GA2283857@kroah.com>
- <20200922202403.GA10773@duo.ucw.cz> <20200923204206.GN1681290@dtor-ws>
-From:   Vincent Huang <vincent.huang@tw.synaptics.com>
-Message-ID: <0b8d7397-0898-0695-e6f3-60a025f409e4@tw.synaptics.com>
-Date:   Thu, 24 Sep 2020 10:16:39 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20200923204206.GN1681290@dtor-ws>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: HK2PR02CA0173.apcprd02.prod.outlook.com
- (2603:1096:201:1f::33) To SN6PR03MB3952.namprd03.prod.outlook.com
- (2603:10b6:805:75::26)
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gKCeOBoU5Gnn58Cm54AB14ZxrSPvXUCdl5LfOJCj1Fw=;
+        b=M4XeG+2TvxV35gsxacBXx/bgLRkKwqJ5p4BbhHpt00XNl6q/XPdYOI8FUvNMyMWmwb
+         kM1Z6etjD2Hygn3+fudlwd1iFl0RiNM0HVh8v/p/HtiEOIrGpz8VyoZ9zkin+CSorNsr
+         7AIsfxjgzY+uOK0FGcRfd4TgQdLfvPoWeitcSE2HTA/067Aaa853H3645KmeU06LXLzg
+         xGrrA8Jbv3g3wudpP10zUKSoZQHHVQTXOeb99ZahQMlX821YBfEg4edOHdUqyThb04/Q
+         caXtWaEjxRDvVO7lsLiah0pw6elfadG6E7HxF8T6V1twqbnWWAsoUq/AYK3rS4RLtodO
+         ME8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gKCeOBoU5Gnn58Cm54AB14ZxrSPvXUCdl5LfOJCj1Fw=;
+        b=f2+HmYnZeSGxs1GKXldwVvEwj8IQk3lIOcWAFfnd6Mq0rv+Gs+03hXgc7xjOnumkYc
+         5Ume36HoDJRk6LvzFvhqaSkImcOWP16pWAbmtL79kJ/a3Yts41DuuZigQP8YnGRuOlys
+         zIg3o2lo2MUGfFoA7p9hICDBO0elrh91Smw+KJb47idrZrLLAuCSrtyIgoFcR2Se4feU
+         L8ha445iKgkm4WAX7cOPcoWtEdIdB1tOvL0dBc6mtd7I1iP9GmQcrG4jnHAfdyHYVGEp
+         fmVbuwHHTetQorJlNEVoMH3xNBWV41SnRcx4TzCc7fsxOL/6nZm2Brj8VSNL7FApxMrL
+         y+9Q==
+X-Gm-Message-State: AOAM5323+lEybL6dJ2x/+r82hGOWpcsEdHP3zWOIR5URSzGiE1DupTgO
+        9ZRC/5hzv9cyc4L+zufw9Qo=
+X-Google-Smtp-Source: ABdhPJzEe2RJKmtJ3Ksj/SvxkYkpUgmPku/FVwzi5i2pKPpvjoc474JDg9ulTuYQS6+EPa9A00bnWQ==
+X-Received: by 2002:a63:1a50:: with SMTP id a16mr2049744pgm.331.1600913879232;
+        Wed, 23 Sep 2020 19:17:59 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id e27sm874569pfj.62.2020.09.23.19.17.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2020 19:17:58 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 11:17:56 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Mark Salyzyn <salyzyn@android.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Changki Kim <changki.kim@samsung.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC 2/2] printk: Add more information about the printk caller
+Message-ID: <20200924021756.GD577@jagdpanzerIV.localdomain>
+References: <20200923135617.27149-1-pmladek@suse.com>
+ <20200923135617.27149-3-pmladek@suse.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.14.216.15] (60.250.40.146) by HK2PR02CA0173.apcprd02.prod.outlook.com (2603:1096:201:1f::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22 via Frontend Transport; Thu, 24 Sep 2020 02:16:45 +0000
-X-Originating-IP: [60.250.40.146]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9dc45ee9-629f-4d05-1355-08d8602fe3f1
-X-MS-TrafficTypeDiagnostic: SA0PR03MB5562:
-X-Microsoft-Antispam-PRVS: <SA0PR03MB5562706B0549CF53C0DB5C0CD6390@SA0PR03MB5562.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2399;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lOxjzATyErJ40Wq8doUtS3iC19fUhx49KhWRyiECDA8JZEHGRgSLCABikp3rLMLmvkhL67dSPjU6Qhqjsgsoa52QcZdo9lRuI1IlGmUFPT7GC072VloLyEicvwZSZ+5Zasr3drMAVQ3NBUyejqs+nX/s1HjM1KRTKxTVrgJ2SBRiRZ3SpnR9DW0KgnJd2DaQ7ZN6Z40YAdG53o1nv2AtiFemRhEJnahENuVXCnE9SeeHssMuvkIhvVkE2fkQYDqDSXnB2mg1ioOZh+O4MRJY6I17VRBVq9/89qjOi9tiacsZv6Nh1BvlQLgyG6SkHn3zXXJP/shfn1nTn4+LuD3nrpJY7PqwxRr6S9JF3E9x6xlf2+k+KKHxIE/4OlDIu1Cp
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR03MB3952.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(39860400002)(376002)(396003)(346002)(44832011)(2906002)(31686004)(478600001)(5660300002)(110136005)(4326008)(8676002)(66946007)(6486002)(31696002)(86362001)(186003)(52116002)(26005)(956004)(6666004)(66476007)(2616005)(316002)(8936002)(66556008)(16576012)(53546011)(16526019)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: KZI9fryhaVrpHWT8UoXDoM1Eo6sIL4EkitXnmWu3Qo0bgf1Fp/2e3QoSzzs/OD/Kmly9fg8Fnn9Y3AUQy6SDhs41dZY4bK3I0+s9eBOI7DmXcVHLSt9cc/BlHG3SomemtyJ6YXXlk/AZCYIdRWFE5F8u8AsfIzi+VgQLBkkIMBiRaNWh2udp3oWnluVu0x1Zqi52MJkhhy4Fk0K8cAGfHEXrFTEyp/PvAQi3MLs9kixlcrwpMdU3kaE1YPsdnvDfnyHESMdMv/cXjuA8cnB6kIv0Bhs4P5d/p1EziU0eB55r+/OXcD4TmrYd4E7cw1+7uoSDQOHVOBSWUEWT2qdD+mMMkCi3VcGr1c+vsQLLDn/Azy8q/BVksoqIR+xGsYGMYNhK27ZTTaBG11lMYPRqclkOTt+hqhNQzBMfvpSynJ6uhVxOv2WeQXprioRo2YRzPIpBUjf4y4KFa3CZlnFf4PxBFVF3aArjMFwwLURLqMJAAF5ekZEhx+y1enbfCxPJB6+vDuo25YtcnYbppc3tAZ/BBgBDPXsIbeRl3AJdBKSrN2b94S+D9BI7HKGuymvJNbScmcu94HJlLvFsenwr1Q/6p79IHt/a0RyT1aCCQrsaVb/2ry5keLLZE3HvHKqsahj72uZ+CtZNnTFHCuiZWQ==
-X-OriginatorOrg: tw.synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9dc45ee9-629f-4d05-1355-08d8602fe3f1
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR03MB3952.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Sep 2020 02:16:47.9107
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: J9Aizy65425w9qr/xgXqa4FWiHXr4NBCCv0Ft8LoUTd0eTS0zLbws3QMpfHvGO8lS6vA1DApcBMTAI+jTfmUag==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR03MB5562
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200923135617.27149-3-pmladek@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On (20/09/23 15:56), Petr Mladek wrote:
+[..]
+>  	/*
+>  	 * To reduce unnecessarily reopening, first check if the descriptor
+> -	 * state and caller ID are correct.
+> +	 * state and caller infromation are correct.
+>  	 */
+> -	d_state = desc_read(desc_ring, id, &desc, NULL, &cid);
+> -	if (d_state != desc_committed || cid != caller_id)
+> +	d_state = desc_read(desc_ring, id, &desc, NULL, &cal);
+> +	if (d_state != desc_committed ||
+> +	    cal.pid != caller->pid ||
+> +	    cal.cpu_ctx != caller->cpu_ctx) {
 
-On 9/24/20 4:42 AM, Dmitry Torokhov wrote:
-> CAUTION: Email originated externally, do not click links or open attachments unless you recognize the sender and know the content is safe.
->
->
-> On Tue, Sep 22, 2020 at 10:24:03PM +0200, Pavel Machek wrote:
->> On Tue 2020-09-22 18:16:42, Greg Kroah-Hartman wrote:
->>> On Tue, Sep 22, 2020 at 05:39:57PM +0200, Pavel Machek wrote:
->>>> Hi!
->>>>
->>>>> From: Vincent Huang <vincent.huang@tw.synaptics.com>
->>>>>
->>>>> commit 6c77545af100a72bf5e28142b510ba042a17648d upstream.
->>>>>
->>>>> Add trackpoint variant IDs to allow supported control on Synaptics
->>>>> trackpoints.
->>>> This just adds unused definitions. I don't think it is needed in
->>>> stable.
->>> It add support for a new device.
->> No, it does not. Maybe in mainline there's followup patch that adds
->> such support, but that's not in 4.19.
-> es, indeed, there is a chunk missing, so this patch is incomplete. It
-> will not cause any issues if applied, so I'll leave it to Greg to decide
-> what to do with this.
->
-> Vincent, there needs to be a change in trackpoint_start_protocol() to
-> mark these new IDs as valid. Was it s3ent in a separate patch and I
-> missed it?
+You probably might want to factor out ctx check into a static
+inline helper. Since you use this check in several places, and
+we may check more context fields in the future.
 
-Hi Dmitry:
+[..]
+> +/* Information about the process and context that adds the message */
+> +struct printk_caller {
+> +	pid_t pid;	/* thread id */
+> +	u32 cpu_ctx;	/* processor id and interrupt context */
+> +};
 
-You are right, I think the code is missing in start_protocol(), I'll 
-send one patch to complete it.
+A question. Suppose we have a task which does
 
+	CPU0
 
-Thanks
+	pr_err(...);
 
-Vincent
+	preempt_disable();
+	pr_err(...);
+	preempt_enable();
 
->
-> Thanks.
->
-> --
-> Dmitry
+	pr_err(...);
+
+	rcu_read_lock();
+	pr_info(...);
+	rcu_read_unlock();
+
+Should we distinguish those as 3 different contexts?
+
+- normal printk
+- printk under disabled preemption (affects scheduling)
+- printk under RCU read side lock (affects RCU grace periods)
+
+	-ss
