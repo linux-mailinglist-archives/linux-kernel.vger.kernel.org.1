@@ -2,139 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C463277907
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 21:17:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BA88277913
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 21:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728767AbgIXTR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 15:17:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45938 "EHLO
+        id S1728777AbgIXTTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 15:19:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726899AbgIXTR0 (ORCPT
+        with ESMTP id S1727992AbgIXTTB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 15:17:26 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9D1EC0613CE;
-        Thu, 24 Sep 2020 12:17:25 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id p9so308466ejf.6;
-        Thu, 24 Sep 2020 12:17:25 -0700 (PDT)
+        Thu, 24 Sep 2020 15:19:01 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD053C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 12:19:00 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id r7so272636ejs.11
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 12:19:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=h1VoA7OKiH+cdit4mm4O2zd0Tw6zM3Q4V6K1zdq9FWE=;
-        b=CPfOOWs9sDvMAKby1idWrCOP94Wyr+ZMxegjP9019mHptZ1gGqwxihutuHjfoMsuWu
-         d/g8DjzsuHvSaU2JLwKD9PW5qk6iR5B20duSy3I/sYFK5fV5k6INIqZbstC31auUO3uP
-         Q9p9SaNYOXcZVqOFLnyYAKNldtneJa9Bg8Bt41B37GSDOoWyndfZRPpBxstO3cY5LajU
-         0jsbMpsz8bSyM3rIkIw/+KRJsPB9J70BXDl+xWhju4N3KtAcyOYU3GlhztDKSMtGP/s+
-         yoxxClmg/MJpviOFAeFsEIf4Do/u3zuvTBAu5alIPzQD+G0SBeKsdROEs9Rsil8saU4l
-         iSZw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rL+0r4nsYsaTnfsp4nKpvqpdZr9u7FgIPOgyMKNt8zc=;
+        b=nW6H9Ez9qPwsgMVuKmXTOIP47WKziOB7h4ORZWYHlPlZmcmBaz4bHW4IU2YbZsB5hb
+         PKuFmofW4Zkf/3SgserbbqW7aN+s9iDgZbxr9QF0a+XDOyQauEYVVSL/KnakazhwL9D4
+         UwrK4zx1t+sRU7ddaxgI/KYI1iAsm8WFKpkl5/8qG0kYIZDGGh7V/oUZv2AqOwFcMrap
+         DSM8JWFJFnMD99cr4rEr96PRqnbogR9L4C448SM/gzvmeyrVEi1RWLhCxTScPIvkxccL
+         bhyh0HeLsDXVkXxuvggdeni2CgIY8uiKUYP88tL+eo2IucDIcb5mZtmgFAHFmYwp06Dk
+         cHcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=h1VoA7OKiH+cdit4mm4O2zd0Tw6zM3Q4V6K1zdq9FWE=;
-        b=cK9Z3Hq+wXoZozB1VQ1JN5AZ0mExxfCfko4HH3l2EnDlZsZka4S6QJv73bRCc5h+zN
-         KbRNfCGMNcY0V529KBE9w4Vu1Rl1aXg6UHZJ+27JTO9qPSvk7pRmX3kOHc1sB1al8Q88
-         ZvazaPks5mCbGWRAOfy0OgtcgWBw6r4CbffVKoCYfzNXD37CqtMdO0POklJovEtDXKJN
-         5xe71GEN5fxSr4M09q9LVAncgSMLm8WHQ2b51v/emsgbzrAD+Gl2LY93LxfOxHsWoN4E
-         ix41p43jk7gSvAngSdpVECVfNeWh+p2mvogHYAyRuQqyEipuDFunqpHct/F90Ym4Yumo
-         TYIw==
-X-Gm-Message-State: AOAM5337xELiBGgv+WDQDl26vHX4WfQmlv964yJM//C1QFbut8Ywbj9Q
-        3MeJ2snXME/043c4/qpBkUEC4tYCRMSXWw==
-X-Google-Smtp-Source: ABdhPJwrBKBnTVa5b20K8m+aWXTOHq2v5qNn3QFPotN7Ymaw7mYIIboiThbnKAsqnhDA59dy/kqcAQ==
-X-Received: by 2002:a17:906:d7ab:: with SMTP id pk11mr138078ejb.472.1600975043995;
-        Thu, 24 Sep 2020 12:17:23 -0700 (PDT)
-Received: from [192.168.2.202] (pd9e5a9d2.dip0.t-ipconnect.de. [217.229.169.210])
-        by smtp.gmail.com with ESMTPSA id z17sm68129edi.90.2020.09.24.12.17.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Sep 2020 12:17:23 -0700 (PDT)
-Subject: Re: [RFC PATCH 0/9] Add support for Microsoft Surface System
- Aggregator Module
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
-        Dorian Stoll <dorian.stoll@tmsp.io>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Darren Hart <dvhart@infradead.org>,
-        platform-driver-x86@vger.kernel.org
-References: <20200923151511.3842150-1-luzmaximilian@gmail.com>
- <CAK8P3a3Qie_CP1dA-ERqyDv=EnaQQPnNbFYrGr3ySiY4mO0=Uw@mail.gmail.com>
- <CAHp75Vfp86h38Rd-VEgER7ASADdmz5ymAkuHvD0Q6WPDqZBqHw@mail.gmail.com>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <95c2d02b-b8b1-59d9-1276-f2b1830fdac8@gmail.com>
-Date:   Thu, 24 Sep 2020 21:17:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rL+0r4nsYsaTnfsp4nKpvqpdZr9u7FgIPOgyMKNt8zc=;
+        b=jKWiB4uUMa1388MepH3HMLzBBAYWicsB1+pmOsjROBu1guoUllUV20Y5TF2eMxmNd/
+         FCDoRz7ydEkQJtEZyzsL4ACvAMPGKe0RgERYTV/ZFEC8zTQOmNMcA6BfJb/1IFX49Izf
+         FxiVQnM8NxeYM8m/NIr0K0LFE8qanJzIVjd04ggAywSjLlSDFT79bB0pLVPqKiYBgPSv
+         CCtRGlQoNoRnb6Ai7qyH+dWbBl9wrKdpJvYxkWjQuXcHl8d4ZJNWfgOvqxOQMcMxa0nv
+         ZuJ1/rpUb+RAODQHvYTG1zCaWa8qZc08hsSHQ7wmHDo5LyDrNJoyNt5Q3LV1Z++RYRQI
+         YJAg==
+X-Gm-Message-State: AOAM533aAsLe3mVWF6STmc62cQLVKUawevWAo8qvlExZl+2nPl9rZxaY
+        OhWlGbgnj89wvs1C91KJbxlT11FpapO1D6csSXaWOQ==
+X-Google-Smtp-Source: ABdhPJwH4eJsS5OWHswwTu13j7X710JhXzRLOlQI2ycEssSzTXiSAu4QWPI8Qvq2bTeAc49+G5jFwYQxPfgwyoykqVY=
+X-Received: by 2002:a17:907:94cf:: with SMTP id dn15mr176599ejc.114.1600975139153;
+ Thu, 24 Sep 2020 12:18:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHp75Vfp86h38Rd-VEgER7ASADdmz5ymAkuHvD0Q6WPDqZBqHw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200923232923.3142503-1-keescook@chromium.org> <20200924185702.GA9225@redhat.com>
+In-Reply-To: <20200924185702.GA9225@redhat.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 24 Sep 2020 21:18:32 +0200
+Message-ID: <CAG48ez3s9u+5_Bd94CP97aqBBKzno1o2obpJPSdMnsHHkOd0qg@mail.gmail.com>
+Subject: Re: [PATCH v1 0/6] seccomp: Implement constant action bitmaps
+To:     Andrea Arcangeli <aarcange@redhat.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/24/20 10:30 AM, Andy Shevchenko wrote:
-> On Wed, Sep 23, 2020 at 6:32 PM Arnd Bergmann <arnd@arndb.de> wrote:
->>
->> On Wed, Sep 23, 2020 at 5:15 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
->>>
->>> Hello,
->>>
->>> The Surface System Aggregator Module (we'll refer to it as Surface
->>> Aggregator or SAM below) is an embedded controller (EC) found on various
->>> Microsoft Surface devices. Specifically, all 4th and later generation
->>> Surface devices, i.e. Surface Pro 4, Surface Book 1 and later, with the
->>> exception of the Surface Go series and the Surface Duo. Notably, it
->>> seems like this EC can also be found on the ARM-based Surface Pro X [1].
->>
->> I think this should go to drivers/platform/x86 or drivers/platform/surface/
->> along with other laptop vendor specific code rather than drivers/misc/.
-> 
-> +1 here. drivers/platform/surface is a good place to start.
-> And you may begin with moving a few Surface drivers out of PDx86 to
-> the new folder.
+On Thu, Sep 24, 2020 at 8:57 PM Andrea Arcangeli <aarcange@redhat.com> wrote:
+>
+> Hello,
+>
+> I'm posting this only for the record, feel free to ignore.
+>
+> On Wed, Sep 23, 2020 at 04:29:17PM -0700, Kees Cook wrote:
+> > rfc: https://lore.kernel.org/lkml/20200616074934.1600036-1-keescook@chromium.org/
+> > alternative: https://lore.kernel.org/containers/cover.1600661418.git.yifeifz2@illinois.edu/
+> > v1:
+> > - rebase to for-next/seccomp
+> > - finish X86_X32 support for both pinning and bitmaps
+>
+> It's pretty clear the O(1) seccomp filter bitmap was first was
+> proposed by your RFC in June (albeit it was located in the wrong place
+> and is still in the wrong place in v1).
+>
+> > - replace TLB magic with Jann's emulator
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>
+> That's a pretty fundamental change in v1 compared to your the
+> non-competing TLB magic technique you used in the RFC last June.
+>
+> The bitmap isn't the clever part of the patch, the bitmap can be
+> reviewed in seconds, the difficult part to implement and to review is
+> how you fill the bitmap and in that respect there's absolutely nothing
+> in common in between the "rfc:" and the "alternative" link.
+>
+> In June your bitmap-filling engine was this:
+>
+> https://lore.kernel.org/lkml/20200616074934.1600036-5-keescook@chromium.org/
+>
+> Then on Sep 21 YiFei Zhu posted his new innovative BPF emulation
+> innovation that obsoleted your TLB magic of June:
+>
+> https://lists.linuxfoundation.org/pipermail/containers/2020-September/042153.html
+>
+> And on Sep 23 instead of collaborating and helping YiFei Zhu to
+> improve his BPF emulator, you posted the same technique that looks
+> remarkably similar without giving YiFei Zhu any attribution and you
+> instead attribute the whole idea to Jann Horn:
+>
+> https://lkml.kernel.org/r/20200923232923.3142503-5-keescook@chromium.org
 
-Perfect, thanks! I'll draft up a patch series over the weekend.
-
-A couple questions regarding structure and maintenance:
-
-  - Should I CC the platform-driver-x86 list on future submissions to
-    drivers/platform/surface? I.e. is this something you would want to
-    review if it doesn't touch the drivers/platform/x86 directory?
-
-  - How would you want the layout to be, specifically regarding to the
-    surface-aggregator stuff? My suggestion would be simply:
-
-    drivers/platform/surface/
-        surface_aggregator/
-            Kconfig
-            Makefile
-            core.c
-            controller.c
-            ... (all core stuff built into the surface_aggregator module)
-        Kconfig
-        Makefile
-        surface_aggregator_debugfs.c
-        surface_acpi_notify.c
-        surface_*.c        (any other surface platform driver as well
-                            as drivers dependent on surface_aggregator)
-
-  - Regarding future things like HID transport driver, battery/AC driver:
-    Submit them to drivers/platform/surface or to their respective
-    subsystem directories?
-
-Thanks,
-Max
+You're missing that I did suggest the BPF emulation approach (with
+code very similar to Kees' current code) back in June:
+https://lore.kernel.org/lkml/CAG48ez1p=dR_2ikKq=xVxkoGg0fYpTBpkhJSv1w-6BG=76PAvw@mail.gmail.com/
