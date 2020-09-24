@@ -2,94 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 956A9276FB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:18:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6AAC276FBA
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:19:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727485AbgIXLS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 07:18:26 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:34694 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727470AbgIXLSZ (ORCPT
+        id S1727449AbgIXLTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 07:19:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726701AbgIXLTT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 07:18:25 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08OBF72U014351;
-        Thu, 24 Sep 2020 07:18:13 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 33r5u9br42-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 24 Sep 2020 07:18:13 -0400
-Received: from SCSQMBX11.ad.analog.com (scsqmbx11.ad.analog.com [10.77.17.10])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 08OBIBUm021281
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Thu, 24 Sep 2020 07:18:12 -0400
-Received: from SCSQCASHYB7.ad.analog.com (10.77.17.133) by
- SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 24 Sep 2020 04:18:09 -0700
-Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by
- SCSQCASHYB7.ad.analog.com (10.77.17.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 24 Sep 2020 04:18:09 -0700
-Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX10.ad.analog.com
- (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Thu, 24 Sep 2020 04:18:09 -0700
-Received: from saturn.ad.analog.com ([10.48.65.107])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 08OBI2VO007892;
-        Thu, 24 Sep 2020 07:18:06 -0400
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <jic23@kernel.org>, <lars@metafoo.de>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH 3/3] iio: buffer: Kconfig: add title for IIO_TRIGGERED_BUFFER symbol
-Date:   Thu, 24 Sep 2020 14:17:58 +0300
-Message-ID: <20200924111758.196367-4-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200924111758.196367-1-alexandru.ardelean@analog.com>
-References: <20200924111758.196367-1-alexandru.ardelean@analog.com>
+        Thu, 24 Sep 2020 07:19:19 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B39D4C0613CE;
+        Thu, 24 Sep 2020 04:19:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=xqlwroC0ti6SZtly8XWUIPDjGy4hLoHAIsho3lQ0o/s=; b=k8+teQdsNC7qK5PdZXoGPRYCLa
+        cBlVyfaSePz1y3nZ9iLA7O2VOegTBcHVk6YgGwHuAZN2L3v2D3b8uhIyaI02bM1F7/DROVNUMT6E9
+        aqaKaUQ4UgwsuTcwTC9Snrr7xFw/voABeb9fXzxzT/1/UrrszjLeJ+2pWYL9w89dO4GH+KkmiTmg/
+        L1bZvX6sTfju8bElLob694WDYLqfT3+AiJS7fxHauF8YDI2M0SqSt11hNXAwpXCwmR3kjgNfQAKms
+        kHlfy8z6h5EYkANfjXBn3fuR0CSMWCn7aEBxSW7FIUS/8ok/j77p6ulYCCvIiaArD02YYTmPb9SF9
+        Xv5Jxadg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kLPHI-0001As-5Z; Thu, 24 Sep 2020 11:19:08 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A695B300DB4;
+        Thu, 24 Sep 2020 13:19:07 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 93D6A203161DB; Thu, 24 Sep 2020 13:19:07 +0200 (CEST)
+Date:   Thu, 24 Sep 2020 13:19:07 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Mel Gorman <mgorman@techsingularity.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Mel Gorman <mgorman@suse.de>
+Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
+Message-ID: <20200924111907.GE2628@hirez.programming.kicks-ass.net>
+References: <20200921074716.GC12990@dhcp22.suse.cz>
+ <20200921154558.GD29330@paulmck-ThinkPad-P72>
+ <20200921160318.GO12990@dhcp22.suse.cz>
+ <20200921194819.GA24236@pc636>
+ <20200922075002.GU12990@dhcp22.suse.cz>
+ <20200922131257.GA29241@pc636>
+ <20200923103706.GJ3179@techsingularity.net>
+ <20200923154105.GO29330@paulmck-ThinkPad-P72>
+ <20200923232251.GK3179@techsingularity.net>
+ <20200924081614.GA14819@pc636>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-24_08:2020-09-24,2020-09-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
- impostorscore=0 mlxlogscore=999 suspectscore=0 clxscore=1015
- malwarescore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009240087
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924081614.GA14819@pc636>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For some embedded systems, a workflow involving external kernel modules
-that implement IIO devices is more practical than working with in-tree
-sources.
+On Thu, Sep 24, 2020 at 10:16:14AM +0200, Uladzislau Rezki wrote:
+> The key point is "enough". We need pages to make a) fast progress b) support
+> single argument of kvfree_rcu(one_arg). Not vice versa. That "enough" depends
+> on scheduler latency and vague pre-allocated number of pages, it might
+> be not enough what would require to refill it more and more or we can overshoot
+> that would lead to memory overhead. So we have here timing issues and
+> not accurate model. IMHO.
 
-Kconfig symbols without any titles do not show up in menuconfig, and as
-such are more difficult to configure granularly, as they need to be
-selected by potentially unused/un-needed drivers.
-
-This change adds a title to the IIO_TRIGGERED_BUFFER Kconfig symbol.
-
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- drivers/iio/buffer/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/iio/buffer/Kconfig b/drivers/iio/buffer/Kconfig
-index 747d21f84188..047b931591a9 100644
---- a/drivers/iio/buffer/Kconfig
-+++ b/drivers/iio/buffer/Kconfig
-@@ -48,7 +48,7 @@ config IIO_KFIFO_BUF
- 	  often to read from the buffer.
- 
- config IIO_TRIGGERED_BUFFER
--	tristate
-+	tristate "Industrial I/O triggered buffer support"
- 	select IIO_TRIGGER
- 	select IIO_KFIFO_BUF
- 	help
--- 
-2.25.1
+I'm firmly opposed to the single argument kvfree_rcu() idea, that's
+requiring memory to free memory.
 
