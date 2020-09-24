@@ -2,251 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C88277400
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34E9327740C
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728295AbgIXOci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 10:32:38 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:5786 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728088AbgIXOci (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 10:32:38 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f6cada50000>; Thu, 24 Sep 2020 07:31:01 -0700
-Received: from mtl-vdi-166.wap.labs.mlnx (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 24 Sep
- 2020 14:32:35 +0000
-Date:   Thu, 24 Sep 2020 17:32:31 +0300
-From:   Eli Cohen <elic@nvidia.com>
-To:     <mst@redhat.com>, <jasowang@redhat.com>,
-        <virtualization@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     <eli@nvidia.com>
-Subject: [PATCH V1 vhost-next] vdpa/mlx5: Make vdpa core driver a distinct
- module
-Message-ID: <20200924143231.GA186492@mtl-vdi-166.wap.labs.mlnx>
+        id S1728301AbgIXOdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 10:33:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48530 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728088AbgIXOdM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 10:33:12 -0400
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 662542395C;
+        Thu, 24 Sep 2020 14:33:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600957991;
+        bh=B/uhTfVzunXujPjEj63VXhTvDsVqUS39+IuJTTpzLnA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=S25P0N8OQlsQQHSlmfG7T84VcEHtZ/ascpvBsvkgb89ZbMytA95J+e8/W9NtoYP5j
+         h2yVELYME+42hubQ3NeRR/omQoRWjAhLPqM5I8PJTc+5X9RGaTfEG828arxiucDtpY
+         5R54KefkuS51+EYIFa0KYFF6pRZTcZEZbkeB3Uz4=
+Received: by mail-oi1-f179.google.com with SMTP id w16so3877490oia.2;
+        Thu, 24 Sep 2020 07:33:11 -0700 (PDT)
+X-Gm-Message-State: AOAM531fP8Kb8XxjCieCJ64R/aW6R238eq/U7e0r2IeHpVz0LmNl98D/
+        bvV0HP/A+NL6F9ZrWyHqZ/JnC66A6Vg7nwalqyM=
+X-Google-Smtp-Source: ABdhPJzWGXlfnGw7EdMx/W0CoUOjafs5210kunFSE76VI8yC36oCCEksxujY2Heo1SEs/J28Zg+Ch8CDSgoonWzMi4U=
+X-Received: by 2002:aca:d845:: with SMTP id p66mr2296944oig.47.1600957990747;
+ Thu, 24 Sep 2020 07:33:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600957862; bh=nc2vNiYTrqyZAVfOBX+/N1PhV107Mq0CuuADPzerkwA=;
-        h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
-         Content-Disposition:User-Agent:X-Originating-IP:X-ClientProxiedBy;
-        b=C2+HY/jHQmA3V0wnnGb9jUchWPBfllMmy6N4w28X6W/X4u53yjS3eTvLusqH1Tphj
-         NO6umwaCq5eaKwfAkhJT2wJafZGoHglWqOHuCi3emtbp/nrGYsZBj+/TDz44KyQDl1
-         rKWK+0Zo5aIoHO4Jq5AuzGyxFs1l/epHu2u4hedrmowwxD33+Op2FAHjULur5jTHdj
-         uNch/lgKSpIQlnHtOqz1KBjjUNhPvTQnrfCADL7A0Cak3HkP6TBKeAwR3ZkeItwqce
-         /7qDgFmtLUtvl8ShhfUjS84e8HXydX9vLWpGtnetnXNk2VAj5ghjf0EmNqHcCULw9I
-         74xNOfwsORXwQ==
+References: <20200923142607.10c89bd2@xhacker.debian> <CAMj1kXEyQGEu7=-kbDuTDW9_xXkmns1HM2dQMrLn=XL9W88vJw@mail.gmail.com>
+ <CAL_JsqLkQ_NqrDDJZkm5ef-mf4_Vh0sW1DqQjitz-GzGBNbWhA@mail.gmail.com> <CAMj1kXH4aNZkST2QrKUDTPRPVq6Ybm0O0GLTwZiBrt-7hfYfVA@mail.gmail.com>
+In-Reply-To: <CAMj1kXH4aNZkST2QrKUDTPRPVq6Ybm0O0GLTwZiBrt-7hfYfVA@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 24 Sep 2020 16:32:59 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXH=N8KrZW=_mbyiU=svKfabr8YaqBoA8HSuNKWCDoGMGA@mail.gmail.com>
+Message-ID: <CAMj1kXH=N8KrZW=_mbyiU=svKfabr8YaqBoA8HSuNKWCDoGMGA@mail.gmail.com>
+Subject: Re: [PATCH] PCI: dwc: Move allocate and map page for msi out of dw_pcie_msi_init()
+To:     Rob Herring <robh@kernel.org>
+Cc:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Vidya Sagar <vidyas@nvidia.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change core vdpa functionality into a loadbale module such that upcoming
-block implementation will be able to use it.
+On Thu, 24 Sep 2020 at 15:45, Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> On Thu, 24 Sep 2020 at 15:28, Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Thu, Sep 24, 2020 at 5:00 AM Ard Biesheuvel <ardb@kernel.org> wrote:
+> > >
+> > > On Wed, 23 Sep 2020 at 08:28, Jisheng Zhang <Jisheng.Zhang@synaptics.com> wrote:
+> > > >
+> > > > Currently, dw_pcie_msi_init() allocates and maps page for msi, then
+> > > > program the PCIE_MSI_ADDR_LO and PCIE_MSI_ADDR_HI. The Root Complex
+> > > > may lose power during suspend-to-RAM, so when we resume, we want to
+> > > > redo the latter but not the former. If designware based driver (for
+> > > > example, pcie-tegra194.c) calls dw_pcie_msi_init() in resume path, the
+> > > > previous msi page will be leaked.
+> > > >
+> > > > Move the allocate and map msi page from dw_pcie_msi_init() to
+> > > > dw_pcie_host_init() to fix this problem.
+> > > >
+> > > > Fixes: 56e15a238d92 ("PCI: tegra: Add Tegra194 PCIe support")
+> > > > Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+> > >
+> > > Why do you allocate a page for this in the first place? Isn't
+> > > PCIE_MSI_ADDR_HI:PCIE_MSI_ADDR_LO simply a magic DMA address that
+> > > never gets forwarded across to the CPU side of the host bridge, and
+> > > triggers a SPI instead, which gets handled by reading
+> > > PCIE_MSI_INTR0_STATUS ?
+> >
+> > My question too after digging into this some more. I've asked the
+> > question on the thread that further complicated all this changing from
+> > virt_to_phys() to dma_map_page()[1].
+> >
+> > > Couldn't you just map the zero page instead?
+> >
+> > Why a page even? You could use PCIE_MSI_ADDR_LO address itself even.
+> > Or just an address in the driver data which is what some other drivers
+> > do.
+> >
+>
+> PCIE_MSI_ADDR_LO itself could collide with an actual DRAM address if
+> any translation is applied on inbound transactions. Using an actual
+> DRAM address avoids that.
 
-Signed-off-by: Eli Cohen <elic@nvidia.com>
----
-V0 --> V1:
-Removed "default n" for configu options as 'n' is the default
-
- drivers/vdpa/Kconfig               |  8 +++-----
- drivers/vdpa/Makefile              |  2 +-
- drivers/vdpa/mlx5/Makefile         |  7 +++++--
- drivers/vdpa/mlx5/core/core_main.c | 20 ++++++++++++++++++++
- drivers/vdpa/mlx5/core/mr.c        |  3 +++
- drivers/vdpa/mlx5/core/resources.c | 10 ++++++++++
- 6 files changed, 42 insertions(+), 8 deletions(-)
- create mode 100644 drivers/vdpa/mlx5/core/core_main.c
-
-diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
-index 4271c408103e..57ff6a7f7401 100644
---- a/drivers/vdpa/Kconfig
-+++ b/drivers/vdpa/Kconfig
-@@ -29,10 +29,9 @@ config IFCVF
- 	  To compile this driver as a module, choose M here: the module will
- 	  be called ifcvf.
- 
--config MLX5_VDPA
--	bool "MLX5 VDPA support library for ConnectX devices"
-+config MLX5_VDPA_CORE
-+	tristate "MLX5 VDPA support library for ConnectX devices"
- 	depends on MLX5_CORE
--	default n
- 	help
- 	  Support library for Mellanox VDPA drivers. Provides code that is
- 	  common for all types of VDPA drivers. The following drivers are planned:
-@@ -40,8 +39,7 @@ config MLX5_VDPA
- 
- config MLX5_VDPA_NET
- 	tristate "vDPA driver for ConnectX devices"
--	depends on MLX5_VDPA
--	default n
-+	depends on MLX5_VDPA_CORE
- 	help
- 	  VDPA network driver for ConnectX6 and newer. Provides offloading
- 	  of virtio net datapath such that descriptors put on the ring will
-diff --git a/drivers/vdpa/Makefile b/drivers/vdpa/Makefile
-index d160e9b63a66..07353bbb9f8b 100644
---- a/drivers/vdpa/Makefile
-+++ b/drivers/vdpa/Makefile
-@@ -2,4 +2,4 @@
- obj-$(CONFIG_VDPA) += vdpa.o
- obj-$(CONFIG_VDPA_SIM) += vdpa_sim/
- obj-$(CONFIG_IFCVF)    += ifcvf/
--obj-$(CONFIG_MLX5_VDPA) += mlx5/
-+obj-$(CONFIG_MLX5_VDPA_CORE) += mlx5/
-diff --git a/drivers/vdpa/mlx5/Makefile b/drivers/vdpa/mlx5/Makefile
-index 89a5bededc9f..9f50f7e8d889 100644
---- a/drivers/vdpa/mlx5/Makefile
-+++ b/drivers/vdpa/mlx5/Makefile
-@@ -1,4 +1,7 @@
- subdir-ccflags-y += -I$(srctree)/drivers/vdpa/mlx5/core
- 
--obj-$(CONFIG_MLX5_VDPA_NET) += mlx5_vdpa.o
--mlx5_vdpa-$(CONFIG_MLX5_VDPA_NET) += net/main.o net/mlx5_vnet.o core/resources.o core/mr.o
-+obj-$(CONFIG_MLX5_VDPA_CORE) += mlx5_vdpa_core.o
-+mlx5_vdpa_core-$(CONFIG_MLX5_VDPA_CORE) += core/resources.o core/mr.o core/core_main.o
-+
-+obj-$(CONFIG_MLX5_VDPA_NET) += mlx5_vdpa_net.o
-+mlx5_vdpa_net-$(CONFIG_MLX5_VDPA_NET) += net/main.o net/mlx5_vnet.o
-diff --git a/drivers/vdpa/mlx5/core/core_main.c b/drivers/vdpa/mlx5/core/core_main.c
-new file mode 100644
-index 000000000000..4b39b55f57ab
---- /dev/null
-+++ b/drivers/vdpa/mlx5/core/core_main.c
-@@ -0,0 +1,20 @@
-+// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
-+/* Copyright (c) 2020 Mellanox Technologies Ltd. */
-+
-+#include <linux/module.h>
-+
-+MODULE_AUTHOR("Eli Cohen <elic@nvidia.com>");
-+MODULE_DESCRIPTION("Mellanox VDPA core driver");
-+MODULE_LICENSE("Dual BSD/GPL");
-+
-+static int __init mlx5_vdpa_core_init(void)
-+{
-+	return 0;
-+}
-+
-+static void __exit mlx5_vdpa_core_exit(void)
-+{
-+}
-+
-+module_init(mlx5_vdpa_core_init);
-+module_exit(mlx5_vdpa_core_exit);
-diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
-index ef1c550f8266..c093eab6c714 100644
---- a/drivers/vdpa/mlx5/core/mr.c
-+++ b/drivers/vdpa/mlx5/core/mr.c
-@@ -434,6 +434,7 @@ int mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *iotlb)
- 	mutex_unlock(&mr->mkey_mtx);
- 	return err;
- }
-+EXPORT_SYMBOL(mlx5_vdpa_create_mr);
- 
- void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev)
- {
-@@ -456,6 +457,7 @@ void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev)
- out:
- 	mutex_unlock(&mr->mkey_mtx);
- }
-+EXPORT_SYMBOL(mlx5_vdpa_destroy_mr);
- 
- static bool map_empty(struct vhost_iotlb *iotlb)
- {
-@@ -484,3 +486,4 @@ int mlx5_vdpa_handle_set_map(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *io
- 
- 	return err;
- }
-+EXPORT_SYMBOL(mlx5_vdpa_handle_set_map);
-diff --git a/drivers/vdpa/mlx5/core/resources.c b/drivers/vdpa/mlx5/core/resources.c
-index 96e6421c5d1c..89606a18e286 100644
---- a/drivers/vdpa/mlx5/core/resources.c
-+++ b/drivers/vdpa/mlx5/core/resources.c
-@@ -98,6 +98,7 @@ int mlx5_vdpa_create_tis(struct mlx5_vdpa_dev *mvdev, void *in, u32 *tisn)
- 
- 	return err;
- }
-+EXPORT_SYMBOL(mlx5_vdpa_create_tis);
- 
- void mlx5_vdpa_destroy_tis(struct mlx5_vdpa_dev *mvdev, u32 tisn)
- {
-@@ -108,6 +109,7 @@ void mlx5_vdpa_destroy_tis(struct mlx5_vdpa_dev *mvdev, u32 tisn)
- 	MLX5_SET(destroy_tis_in, in, tisn, tisn);
- 	mlx5_cmd_exec_in(mvdev->mdev, destroy_tis, in);
- }
-+EXPORT_SYMBOL(mlx5_vdpa_destroy_tis);
- 
- int mlx5_vdpa_create_rqt(struct mlx5_vdpa_dev *mvdev, void *in, int inlen, u32 *rqtn)
- {
-@@ -121,6 +123,7 @@ int mlx5_vdpa_create_rqt(struct mlx5_vdpa_dev *mvdev, void *in, int inlen, u32 *
- 
- 	return err;
- }
-+EXPORT_SYMBOL(mlx5_vdpa_create_rqt);
- 
- void mlx5_vdpa_destroy_rqt(struct mlx5_vdpa_dev *mvdev, u32 rqtn)
- {
-@@ -131,6 +134,7 @@ void mlx5_vdpa_destroy_rqt(struct mlx5_vdpa_dev *mvdev, u32 rqtn)
- 	MLX5_SET(destroy_rqt_in, in, rqtn, rqtn);
- 	mlx5_cmd_exec_in(mvdev->mdev, destroy_rqt, in);
- }
-+EXPORT_SYMBOL(mlx5_vdpa_destroy_rqt);
- 
- int mlx5_vdpa_create_tir(struct mlx5_vdpa_dev *mvdev, void *in, u32 *tirn)
- {
-@@ -144,6 +148,7 @@ int mlx5_vdpa_create_tir(struct mlx5_vdpa_dev *mvdev, void *in, u32 *tirn)
- 
- 	return err;
- }
-+EXPORT_SYMBOL(mlx5_vdpa_create_tir);
- 
- void mlx5_vdpa_destroy_tir(struct mlx5_vdpa_dev *mvdev, u32 tirn)
- {
-@@ -154,6 +159,7 @@ void mlx5_vdpa_destroy_tir(struct mlx5_vdpa_dev *mvdev, u32 tirn)
- 	MLX5_SET(destroy_tir_in, in, tirn, tirn);
- 	mlx5_cmd_exec_in(mvdev->mdev, destroy_tir, in);
- }
-+EXPORT_SYMBOL(mlx5_vdpa_destroy_tir);
- 
- int mlx5_vdpa_alloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 *tdn)
- {
-@@ -170,6 +176,7 @@ int mlx5_vdpa_alloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 *tdn)
- 
- 	return err;
- }
-+EXPORT_SYMBOL(mlx5_vdpa_alloc_transport_domain);
- 
- void mlx5_vdpa_dealloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 tdn)
- {
-@@ -180,6 +187,7 @@ void mlx5_vdpa_dealloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 tdn)
- 	MLX5_SET(dealloc_transport_domain_in, in, transport_domain, tdn);
- 	mlx5_cmd_exec_in(mvdev->mdev, dealloc_transport_domain, in);
- }
-+EXPORT_SYMBOL(mlx5_vdpa_dealloc_transport_domain);
- 
- int mlx5_vdpa_create_mkey(struct mlx5_vdpa_dev *mvdev, struct mlx5_core_mkey *mkey, u32 *in,
- 			  int inlen)
-@@ -266,6 +274,7 @@ int mlx5_vdpa_alloc_resources(struct mlx5_vdpa_dev *mvdev)
- 	mutex_destroy(&mvdev->mr.mkey_mtx);
- 	return err;
- }
-+EXPORT_SYMBOL(mlx5_vdpa_alloc_resources);
- 
- void mlx5_vdpa_free_resources(struct mlx5_vdpa_dev *mvdev)
- {
-@@ -282,3 +291,4 @@ void mlx5_vdpa_free_resources(struct mlx5_vdpa_dev *mvdev)
- 	mutex_destroy(&mvdev->mr.mkey_mtx);
- 	res->valid = false;
- }
-+EXPORT_SYMBOL(mlx5_vdpa_free_resources);
--- 
-2.27.0
-
+... although the MSI doorbell register on the GIC, for instance, needs
+to be DMA addressable as well, of course.
