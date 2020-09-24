@@ -2,94 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1432427721D
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:26:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E63D8277222
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:27:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728007AbgIXN0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 09:26:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36268 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727846AbgIXN0e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 09:26:34 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600953992;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/o8HUIGyiR7bXTTAsdidVaiFgkeoZ4tJxmxbiSYuUYI=;
-        b=sAKDQ8F0bS5bpqu27PZIl/5KpAF0uyLBWULia75Tunf624OzkGPrMAleSkkvRVM5HpoZzT
-        PVqtx7uuAvjIkb4h214/16kEXJ6h79nmcXWZV3rLq0f7DAxR0jWI6y5SB5+ADPLxoGjAsU
-        dVyTMtOSnQQWVPQ+UCMyWJq7W0QB3n0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 64165AC83;
-        Thu, 24 Sep 2020 13:26:32 +0000 (UTC)
-Date:   Thu, 24 Sep 2020 15:26:30 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Prarit Bhargava <prarit@redhat.com>,
-        Mark Salyzyn <salyzyn@android.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Changki Kim <changki.kim@samsung.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC 2/2] printk: Add more information about the printk caller
-Message-ID: <20200924132630.GE29288@alley>
-References: <20200923135617.27149-1-pmladek@suse.com>
- <20200923135617.27149-3-pmladek@suse.com>
- <20200924021756.GD577@jagdpanzerIV.localdomain>
- <87k0wj7fcs.fsf@jogness.linutronix.de>
+        id S1727787AbgIXN1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 09:27:39 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:53260 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727685AbgIXN1i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 09:27:38 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-255-ZLceJdGGNuuBxR1ZkO_HfQ-1; Thu, 24 Sep 2020 14:27:34 +0100
+X-MC-Unique: ZLceJdGGNuuBxR1ZkO_HfQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 24 Sep 2020 14:27:33 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 24 Sep 2020 14:27:33 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Borislav Petkov' <bp@alien8.de>, Dave Jiang <dave.jiang@intel.com>
+CC:     "vkoul@kernel.org" <vkoul@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "jing.lin@intel.com" <jing.lin@intel.com>,
+        "ashok.raj@intel.com" <ashok.raj@intel.com>,
+        "sanjay.k.kumar@intel.com" <sanjay.k.kumar@intel.com>,
+        "fenghua.yu@intel.com" <fenghua.yu@intel.com>,
+        "kevin.tian@intel.com" <kevin.tian@intel.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Michael Matz <matz@suse.de>
+Subject: RE: [PATCH v5 1/5] x86/asm: Carve out a generic movdir64b() helper
+ for general usage
+Thread-Topic: [PATCH v5 1/5] x86/asm: Carve out a generic movdir64b() helper
+ for general usage
+Thread-Index: AQHWknOyVv/Eui5H70ijlKVH2OrKB6l3x79A
+Date:   Thu, 24 Sep 2020 13:27:33 +0000
+Message-ID: <f9fb5f02ffe74118934d6cf08a1cc9f0@AcuMS.aculab.com>
+References: <160090233730.44288.4446779116422752486.stgit@djiang5-desk3.ch.intel.com>
+ <160090264332.44288.7575027054245105525.stgit@djiang5-desk3.ch.intel.com>
+ <20200924130746.GF5030@zn.tnic>
+In-Reply-To: <20200924130746.GF5030@zn.tnic>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87k0wj7fcs.fsf@jogness.linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2020-09-24 10:29:31, John Ogness wrote:
-> On 2020-09-24, Sergey Senozhatsky <sergey.senozhatsky@gmail.com> wrote:
-> > A question. Suppose we have a task which does
-> >
-> > 	CPU0
-> >
-> > 	pr_err(...);
-> >
-> > 	preempt_disable();
-> > 	pr_err(...);
-> > 	preempt_enable();
-> >
-> > 	pr_err(...);
-> >
-> > 	rcu_read_lock();
-> > 	pr_info(...);
-> > 	rcu_read_unlock();
-> >
-> > Should we distinguish those as 3 different contexts?
-> >
-> > - normal printk
-> > - printk under disabled preemption (affects scheduling)
-> > - printk under RCU read side lock (affects RCU grace periods)
-> 
-> The internal purpose of the printk_info's @caller_id is to support
-> _some_ sanity with LOG_CONT. True LOG_CONT sanity will not be available
-> until we provide a context API like we previously talked about [0]. But
-> for now it is good enough (even if it is not good).
-> 
-> We can also store various flags and counters to describe the current
-> context. But these would only exist to provide the user with information
-> rather than because printk itself needs it. I only mention this so that
-> we don't get things mixed up. We can add as much information as want,
-> but LOG_CONT will only be interested in a subset of that.
+RnJvbTogQm9yaXNsYXYgUGV0a292DQo+IFNlbnQ6IDI0IFNlcHRlbWJlciAyMDIwIDE0OjA4DQo+
+IA0KPiBPbiBXZWQsIFNlcCAyMywgMjAyMCBhdCAwNDoxMDo0M1BNIC0wNzAwLCBEYXZlIEppYW5n
+IHdyb3RlOg0KPiA+ICsvKiBUaGUgZHN0IHBhcmFtZXRlciBtdXN0IGJlIDY0LWJ5dGVzIGFsaWdu
+ZWQgKi8NCj4gPiArc3RhdGljIGlubGluZSB2b2lkIG1vdmRpcjY0Yih2b2lkICpkc3QsIGNvbnN0
+IHZvaWQgKnNyYykNCj4gPiArew0KPiA+ICsJLyoNCj4gPiArCSAqIE5vdGUgdGhhdCB0aGlzIGlz
+bid0IGFuICJvbi1zdGFjayBjb3B5IiwganVzdCBkZWZpbml0aW9uIG9mICJkc3QiDQo+ID4gKwkg
+KiBhcyBhIHBvaW50ZXIgdG8gNjQtYnl0ZXMgb2Ygc3R1ZmYgdGhhdCBpcyBnb2luZyB0byBiZSBv
+dmVyd3JpdHRlbi4NCj4gPiArCSAqIEluIHRoZSBNT1ZESVI2NEIgY2FzZSB0aGF0IG1heSBiZSBu
+ZWVkZWQgYXMgeW91IGNhbiB1c2UgdGhlDQo+ID4gKwkgKiBNT1ZESVI2NEIgaW5zdHJ1Y3Rpb24g
+dG8gY29weSBhcmJpdHJhcnkgbWVtb3J5IGFyb3VuZC4gVGhpcyB0cmljaw0KPiA+ICsJICogbGV0
+cyB0aGUgY29tcGlsZXIga25vdyBob3cgbXVjaCBnZXRzIGNsb2JiZXJlZC4NCj4gPiArCSAqLw0K
+PiA+ICsJdm9sYXRpbGUgc3RydWN0IHsgY2hhciBfWzY0XTsgfSAqX19kc3QgPSBkc3Q7DQo+ID4g
+Kw0KPiA+ICsJLyogTU9WRElSNjRCIFtyZHhdLCByYXggKi8NCj4gPiArCWFzbSB2b2xhdGlsZSgi
+LmJ5dGUgMHg2NiwgMHgwZiwgMHgzOCwgMHhmOCwgMHgwMiINCj4gPiArCQkgICAgIDoNCj4gPiAr
+CQkgICAgIDogIm0iICgqKHN0cnVjdCB7IGNoYXIgX1s2NF07fSAqKilzcmMpLCAiYSIgKF9fZHN0
+KQ0KPiA+ICsJCSAgICAgOiAibWVtb3J5Iik7DQo+ID4gK30NCj4gDQo+IE9rLCBNaWNoYSBhbmQg
+SSBoYXNoZWQgaXQgb3V0IG9uIElSQywgaGVyZSdzIHdoYXQgeW91IGRvLiBQbGVhc2Uga2VlcA0K
+PiB0aGUgY29tbWVudHMgdG9vIGJlY2F1c2Ugd2Ugd2lsbCBmb3JnZXQgc29vbiBhZ2Fpbi4NCj4g
+DQo+IHN0YXRpYyBpbmxpbmUgdm9pZCBtb3ZkaXI2NGIodm9pZCAqX19kc3QsIGNvbnN0IHZvaWQg
+KnNyYykNCj4gew0KPiAJc3RydWN0IHsgY2hhciBfWzY0XTsgfSAqX19zcmMgPSBzcmM7DQo+IAlz
+dHJ1Y3QgeyBjaGFyIF9bNjRdOyB9ICpfX2RzdCA9IGRzdDsNCj4gDQo+IAkvKg0KPiAJICogTU9W
+RElSNjRCICUocmR4KSwgcmF4Lg0KPiAJICoNCj4gCSAqIEJvdGggX19zcmMgYW5kIF9fZHN0IG11
+c3QgYmUgbWVtb3J5IGNvbnN0cmFpbnRzIGluIG9yZGVyIHRvIHRlbGwgdGhlDQo+IAkgKiBjb21w
+aWxlciB0aGF0IG5vIG90aGVyIG1lbW9yeSBhY2Nlc3NlcyBzaG91bGQgYmUgcmVvcmRlcmVkIGFy
+b3VuZA0KPiAJICogdGhpcyBvbmUuDQo+IAkgKg0KPiAJICogQWxzbywgYm90aCBtdXN0IGJlIHN1
+cHBsaWVkIGFzIGx2YWx1ZXMgYmVjYXVzZSB0aGlzIHRlbGxzDQo+IAkgKiB0aGUgY29tcGlsZXIg
+d2hhdCB0aGUgb2JqZWN0IGlzIChpdHMgc2l6ZSkgdGhlIGluc3RydWN0aW9uIGFjY2Vzc2VzLg0K
+PiAJICogSS5lLiwgbm90IHRoZSBwb2ludGVycyBidXQgd2hhdCB0aGV5IHBvaW50LCB0aHVzIHRo
+ZSBkZXJlZidpbmcgJyonLg0KPiAJICovDQo+IAlhc20gdm9sYXRpbGUoIi5ieXRlIDB4NjYsIDB4
+MGYsIDB4MzgsIDB4ZjgsIDB4MDIiDQo+IAkJICAgICA6ICIrbSIgKCpfX2RzdCkNCj4gCQkgICAg
+IDogICJtIiAoKl9fc3JjKSwgImEiIChfX2RzdCksICJkIiAoX19zcmMpKTsNCj4gfQ0KDQpEb2Vz
+bid0IGxvb2sgd3Jvbmcgbm93Lg0KSSdkIHN0aWxsIHBhaW50IGl0IGEgc2xpZ2h0bHkgZGlmZmVy
+ZW50IGNvbG91ciA6LSkNCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lk
+ZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0K
+UmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
-Yeah, we need to keep this in mind, so that some "tiny" changes in the
-context would not prevent concatenating related pieces of the message.
-
-Best Regards,
-Petr
