@@ -2,79 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D0A276558
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 02:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44216276561
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 02:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726814AbgIXAo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 20:44:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43700 "EHLO
+        id S1726867AbgIXAqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 20:46:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726466AbgIXAo7 (ORCPT
+        with ESMTP id S1726466AbgIXAqN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 20:44:59 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8D93C0613CE;
-        Wed, 23 Sep 2020 17:44:58 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id u126so1804307oif.13;
-        Wed, 23 Sep 2020 17:44:58 -0700 (PDT)
+        Wed, 23 Sep 2020 20:46:13 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B093DC0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 17:46:12 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id gx22so2104969ejb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 17:46:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=iE6yXlyf1DVd+ZEGXTSWH2BLIq8GOaZ6tnNLO+mCeH0=;
-        b=aENKeakrCzmun8yUSrs26HkYKnevJ98tJzcn1tTTY/za5fDh+UJOW8+7NGiIZdudeL
-         g8Py9ZwiRNjulG9pmPcy2Jz6tovf3zBI69vqX7wMVsKatB41ahj/YNOp6BPjRxg5Ip0D
-         y22VEj21stgPmvIduGsXmNGzExT/GvHeXh56ud0sJGsb6lZhWaLobbeY+jC409GSBWLc
-         M+guEmvvvfAkxG4xPcMKRiscidGwlm137Cd5YDHsBjG2neXLu2BdmkveeWTXxXxcj313
-         ivZ9UOt4oFRUIZw4s9TMthC3cQaf0xvoJdPvnQgpPcoFPceEB5qzIPSiO+yolriTmfYV
-         aaBg==
+        bh=IRg8bdIf5EpG+3h++Ew0iu9r6E0witVaxm9lrud8jnM=;
+        b=Jm4qQfsFbsCSvqsbWq7VzfNoNGVob5/4BshRZEiIMaLEiUAXQkk+Y3gcARpDMXU77J
+         RNaw2tpVInTue7BsyBCtZUkwt1eYCijqBRs3vrwEJYWjEAwHJ8jLeLp72F/ENGNnzE/G
+         EKLslOPjHX6mp2Z2Qnz3aMgbngWhizN8kdzLcINc5IUUtx9RxOv0ebO8UbHBC6gSmDIu
+         FMCxqDS4rALBmlhRBAReUsXiYxckjsgN9L9hJAj6XCsRyzlTxLl/Flt+z8WTU64FZVbm
+         sP3KAo4BFVXnMvrmr7UNX6TFr6Ec+XsfqaoZ3kZpDC57gQ1BxVuKxSN63q3jyaZxfJpd
+         B6Hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=iE6yXlyf1DVd+ZEGXTSWH2BLIq8GOaZ6tnNLO+mCeH0=;
-        b=iojQ3gnQEf5m0yEZ9KvGfwWWHyAMXznq11rsmUWYMNK0VwWGPlVddc/ce8rfX4Bmkw
-         Xq3uwjIVWGh7kx2Ab8dgbfXdVJ+RTUreo3g3y5G7JAf6rQKej+9cimykH3eysJORIYbK
-         /PJ0jKWW4/dX11JSc8FwyBCvlJFxieqDdDbOQ37Mi7j6juqC44jDGzDSZqSGdiiE6I8Q
-         bP4aks3kGelTn+/wGogWZm2ERHdyUH1umS/owEDWXBetJy5DrA5MBoAT9SXthLIs+Jm/
-         hAA9ZFF4tajtrFoy1MqiyVojeWgV05bWGBDIa3sSqzXs+PxmvdZxvvqAZRxOqo+3nB3F
-         vJHw==
-X-Gm-Message-State: AOAM533M8ju+xZdKmXe2fATnsPHeGfpC2omCRTS/xu6cUoFKw+QeJs/8
-        o8nD11OY+KMP0Ype1EOclDutyHLRTHMleGL08MY=
-X-Google-Smtp-Source: ABdhPJxtAT2lzrJ/JvsYNKN584hdngDJLasFy5DAfsI9Avczxw+RSfp/XT0ZDBxtlN/AdVX7T5/7x92ngrUwmropvKY=
-X-Received: by 2002:aca:aa84:: with SMTP id t126mr1187343oie.5.1600908298296;
- Wed, 23 Sep 2020 17:44:58 -0700 (PDT)
+        bh=IRg8bdIf5EpG+3h++Ew0iu9r6E0witVaxm9lrud8jnM=;
+        b=kTSzWAH03EDj/GKEYbRF4sws8HX/OAaqb5uahjwXpUVsNubE3jIZq6ecu4mxHkgy+Y
+         S8Y+46QUpUajGxc9zkD3hyO8AxeN+g4VNsRjlgGjbDkehNHzbreyac1N9XKt88pHlQ0L
+         qTLdwoC6Ei84yyOZZV8jLItDu4vkrbwY3q/R7vvyde+ehRR1ZVWbALQFYCEO1ym6qMC/
+         wJ5fTXHhKR3tYLyjcVzQ3P2ED2MvGWhtTJ2iGxzgnnnI4ptN1OrFGgzwF2OdaJUN/lk2
+         18miNwrwK8tDvzf3CJaQF+cGrlRqks3WPoG8zkBpJe8c+frH+ymsnvEqQR4NVMVztQ7l
+         O+VA==
+X-Gm-Message-State: AOAM533diZ/ddY+tm5KSC3aW8eMFIngHoDqZSy7Pf/xVvN6LKOp2WT7o
+        RoP6DK2fMEhOjfym4Luwva9vnSBz5+ZFs93/QIJHMQ==
+X-Google-Smtp-Source: ABdhPJzzIXGNXnvZht8wsxEFTZoPCFI82VwWeUCzB6ZEDBf5qTi4KSqQ4F0OnePwzJ5/m1L4tVXPR+clKCQEE2r6v2g=
+X-Received: by 2002:a17:906:f6c9:: with SMTP id jo9mr2116692ejb.233.1600908371207;
+ Wed, 23 Sep 2020 17:46:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <f3031602-db3b-c4fe-b719-d402663b0a2b@gmail.com>
-In-Reply-To: <f3031602-db3b-c4fe-b719-d402663b0a2b@gmail.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Thu, 24 Sep 2020 08:44:47 +0800
-Message-ID: <CANRm+CyjMAr67Bjm+Y6u6N2jj52Np8NTjt_j4v_y0A2gOUL3BA@mail.gmail.com>
-Subject: Re: [PATCH] KVM: SVM: Add tracepoint for cr_interception
-To:     Haiwei Li <lihaiwei.kernel@gmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        Joerg Roedel <joro@8bytes.org>,
-        "jmattson@google.com" <jmattson@google.com>,
-        "wanpengli@tencent.com" <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>
+References: <20200923232923.3142503-1-keescook@chromium.org> <20200923232923.3142503-3-keescook@chromium.org>
+In-Reply-To: <20200923232923.3142503-3-keescook@chromium.org>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 24 Sep 2020 02:45:45 +0200
+Message-ID: <CAG48ez1BXWdWA5zPzOD21bQ4RsHQ6bSDWR8soTkkNphJ=zdHWw@mail.gmail.com>
+Subject: Re: [PATCH 2/6] x86: Enable seccomp architecture tracking
+To:     Kees Cook <keescook@chromium.org>
+Cc:     YiFei Zhu <yifeifz2@illinois.edu>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Sep 2020 at 19:29, Haiwei Li <lihaiwei.kernel@gmail.com> wrote:
->
-> From: Haiwei Li <lihaiwei@tencent.com>
->
-> Add trace_kvm_cr_write and trace_kvm_cr_read for svm.
->
-> Signed-off-by: Haiwei Li <lihaiwei@tencent.com>
+On Thu, Sep 24, 2020 at 1:29 AM Kees Cook <keescook@chromium.org> wrote:
+> Provide seccomp internals with the details to calculate which syscall
+> table the running kernel is expecting to deal with. This allows for
+> efficient architecture pinning and paves the way for constant-action
+> bitmaps.
+[...]
+> diff --git a/arch/x86/include/asm/seccomp.h b/arch/x86/include/asm/seccomp.h
+[...]
+> +#ifdef CONFIG_X86_64
+[...]
+> +#else /* !CONFIG_X86_64 */
+> +# define SECCOMP_ARCH                                  AUDIT_ARCH_I386
+> +#endif
 
-Reviewed-by: Wanpeng Li <wanpengli@tencent.com>
+If we are on a 32-bit kernel, performing architecture number checks in
+the kernel is completely pointless, because we know that there is only
+a single architecture identifier under which syscalls can happen.
+
+While this patch is useful for enabling the bitmap logic in the
+following patches, I think it adds unnecessary overhead in the context
+of the previous patch.
