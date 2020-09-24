@@ -2,69 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA434276652
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 04:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21CA3276647
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 04:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgIXCTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 22:19:39 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:50516 "EHLO inva021.nxp.com"
+        id S1726393AbgIXCQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 22:16:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726281AbgIXCTi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 22:19:38 -0400
-X-Greylist: delayed 142090 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Sep 2020 22:19:38 EDT
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 37260200FF3;
-        Thu, 24 Sep 2020 04:19:37 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id C052C200B30;
-        Thu, 24 Sep 2020 04:19:31 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id B64E9402BE;
-        Thu, 24 Sep 2020 04:19:24 +0200 (CEST)
-From:   Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-To:     xiaoliang.yang_1@nxp.com, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        allan.nielsen@microchip.com, joergen.andreasen@microchip.com,
-        UNGLinuxDriver@microchip.com, alexandre.belloni@bootlin.com,
-        fido_max@inbox.ru, alexandru.marginean@nxp.com, po.liu@nxp.com,
-        claudiu.manoil@nxp.com, vladimir.oltean@nxp.com, leoyang.li@nxp.com
-Subject: [net] net: mscc: ocelot: fix fields offset in SG_CONFIG_REG_3
-Date:   Thu, 24 Sep 2020 10:11:13 +0800
-Message-Id: <20200924021113.9964-1-xiaoliang.yang_1@nxp.com>
-X-Mailer: git-send-email 2.17.1
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726281AbgIXCQd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 22:16:33 -0400
+Received: from [192.168.0.112] (75-58-59-55.lightspeed.rlghnc.sbcglobal.net [75.58.59.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 654E82176B;
+        Thu, 24 Sep 2020 02:16:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600913793;
+        bh=UELaYOKqHb8RFS7awWB7SBPi8SatHXgZinBl51mIqhA=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=c7gbGDEitoOV/W2DnX+cdMuYoDI3uvq+RmSEcRpiArC9Z84+8E16k/r6R6fn4SexA
+         25g3+OOCLuv7SLSOwQVtzrMBBg5mfKqKU15eJGzXZfxWo/BPhH7Kx4SIpA01kPmQv8
+         s8ty/HdBsknebpN0Pltys29xDGX9yNWHZT3bkH5g=
+Subject: Re: [PATCH v3 1/1] PCI/ERR: Fix reset logic in pcie_do_recovery()
+ call
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
+        Jay Vosburgh <jay.vosburgh@canonical.com>
+References: <20200922233333.GA2239404@bjorn-Precision-5520>
+ <704c39bf-6f0c-bba3-70b8-91de6a445e43@linux.intel.com>
+ <3d27d0a4-2115-fa72-8990-a84910e4215f@kernel.org>
+ <d5aa53dc-0c94-e57a-689a-1c1f89787af1@linux.intel.com>
+From:   Sinan Kaya <okaya@kernel.org>
+Autocrypt: addr=okaya@kernel.org; keydata=
+ mQENBFrnOrUBCADGOL0kF21B6ogpOkuYvz6bUjO7NU99PKhXx1MfK/AzK+SFgxJF7dMluoF6
+ uT47bU7zb7HqACH6itTgSSiJeSoq86jYoq5s4JOyaj0/18Hf3/YBah7AOuwk6LtV3EftQIhw
+ 9vXqCnBwP/nID6PQ685zl3vH68yzF6FVNwbDagxUz/gMiQh7scHvVCjiqkJ+qu/36JgtTYYw
+ 8lGWRcto6gr0eTF8Wd8f81wspmUHGsFdN/xPsZPKMw6/on9oOj3AidcR3P9EdLY4qQyjvcNC
+ V9cL9b5I/Ud9ghPwW4QkM7uhYqQDyh3SwgEFudc+/RsDuxjVlg9CFnGhS0nPXR89SaQZABEB
+ AAG0HVNpbmFuIEtheWEgPG9rYXlhQGtlcm5lbC5vcmc+iQFOBBMBCAA4FiEEYdOlMSE+a7/c
+ ckrQvGF4I+4LAFcFAlztcAoCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQvGF4I+4L
+ AFfidAf/VKHInxep0Z96iYkIq42432HTZUrxNzG9IWk4HN7c3vTJKv2W+b9pgvBF1SmkyQSy
+ 8SJ3Zd98CO6FOHA1FigFyZahVsme+T0GsS3/OF1kjrtMktoREr8t0rK0yKpCTYVdlkHadxmR
+ Qs5xLzW1RqKlrNigKHI2yhgpMwrpzS+67F1biT41227sqFzW9urEl/jqGJXaB6GV+SRKSHN+
+ ubWXgE1NkmfAMeyJPKojNT7ReL6eh3BNB/Xh1vQJew+AE50EP7o36UXghoUktnx6cTkge0ZS
+ qgxuhN33cCOU36pWQhPqVSlLTZQJVxuCmlaHbYWvye7bBOhmiuNKhOzb3FcgT7kBDQRa5zq1
+ AQgAyRq/7JZKOyB8wRx6fHE0nb31P75kCnL3oE+smKW/sOcIQDV3C7mZKLf472MWB1xdr4Tm
+ eXeL/wT0QHapLn5M5wWghC80YvjjdolHnlq9QlYVtvl1ocAC28y43tKJfklhHiwMNDJfdZbw
+ 9lQ2h+7nccFWASNUu9cqZOABLvJcgLnfdDpnSzOye09VVlKr3NHgRyRZa7me/oFJCxrJlKAl
+ 2hllRLt0yV08o7i14+qmvxI2EKLX9zJfJ2rGWLTVe3EJBnCsQPDzAUVYSnTtqELu2AGzvDiM
+ gatRaosnzhvvEK+kCuXuCuZlRWP7pWSHqFFuYq596RRG5hNGLbmVFZrCxQARAQABiQEfBBgB
+ CAAJBQJa5zq1AhsMAAoJELxheCPuCwBX2UYH/2kkMC4mImvoClrmcMsNGijcZHdDlz8NFfCI
+ gSb3NHkarnA7uAg8KJuaHUwBMk3kBhv2BGPLcmAknzBIehbZ284W7u3DT9o1Y5g+LDyx8RIi
+ e7pnMcC+bE2IJExCVf2p3PB1tDBBdLEYJoyFz/XpdDjZ8aVls/pIyrq+mqo5LuuhWfZzPPec
+ 9EiM2eXpJw+Rz+vKjSt1YIhg46YbdZrDM2FGrt9ve3YaM5H0lzJgq/JQPKFdbd5MB0X37Qc+
+ 2m/A9u9SFnOovA42DgXUyC2cSbIJdPWOK9PnzfXqF3sX9Aol2eLUmQuLpThJtq5EHu6FzJ7Y
+ L+s0nPaNMKwv/Xhhm6Y=
+Message-ID: <526dc846-b12b-3523-4995-966eb972ceb7@kernel.org>
+Date:   Wed, 23 Sep 2020 22:16:31 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <d5aa53dc-0c94-e57a-689a-1c1f89787af1@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-INIT_IPS and GATE_ENABLE fields have a wrong offset in SG_CONFIG_REG_3.
-This register is used by stream gate control of PSFP, and it has not
-been used before, because PSFP is not implemented in ocelot driver.
+On 9/23/2020 10:04 PM, Kuppuswamy, Sathyanarayanan wrote:
+>> AFAIK, DLLSC is a requirement not optional. Why is this not supported by
+>> non-hotplug ports?
+> Its required for hotplug capable ports. Please check PCIe spec v5.0 sec
+> 6.7.3.3.
+> 
+> The Data Link Layer State Changed event provides an indication that the
+> state of
+> the Data Link Layer Link Active bit in the Link Status Register has
+> changed.
+> Support for Data Link Layer State Changed events and software
+> notification of these
+> events are required for hot-plug capable Downstream Ports.
 
-Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
----
- include/soc/mscc/ocelot_ana.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/include/soc/mscc/ocelot_ana.h b/include/soc/mscc/ocelot_ana.h
-index 841c6ec22b64..1669481d9779 100644
---- a/include/soc/mscc/ocelot_ana.h
-+++ b/include/soc/mscc/ocelot_ana.h
-@@ -252,10 +252,10 @@
- #define ANA_SG_CONFIG_REG_3_LIST_LENGTH_M                 GENMASK(18, 16)
- #define ANA_SG_CONFIG_REG_3_LIST_LENGTH_X(x)              (((x) & GENMASK(18, 16)) >> 16)
- #define ANA_SG_CONFIG_REG_3_GATE_ENABLE                   BIT(20)
--#define ANA_SG_CONFIG_REG_3_INIT_IPS(x)                   (((x) << 24) & GENMASK(27, 24))
--#define ANA_SG_CONFIG_REG_3_INIT_IPS_M                    GENMASK(27, 24)
--#define ANA_SG_CONFIG_REG_3_INIT_IPS_X(x)                 (((x) & GENMASK(27, 24)) >> 24)
--#define ANA_SG_CONFIG_REG_3_INIT_GATE_STATE               BIT(28)
-+#define ANA_SG_CONFIG_REG_3_INIT_IPS(x)                   (((x) << 21) & GENMASK(24, 21))
-+#define ANA_SG_CONFIG_REG_3_INIT_IPS_M                    GENMASK(24, 21)
-+#define ANA_SG_CONFIG_REG_3_INIT_IPS_X(x)                 (((x) & GENMASK(24, 21)) >> 21)
-+#define ANA_SG_CONFIG_REG_3_INIT_GATE_STATE               BIT(25)
- 
- #define ANA_SG_GCL_GS_CONFIG_RSZ                          0x4
- 
--- 
-2.17.1
-
+I see. Can I assume that your system supports DPC?
+DPC is supposed to recover the link via dpc_reset_link().
