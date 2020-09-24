@@ -2,85 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DAC3276E3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 12:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFBBC276E47
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 12:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727368AbgIXKJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 06:09:29 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:39229 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726597AbgIXKJ3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 06:09:29 -0400
-Received: from [77.244.183.192] (port=62008 helo=[192.168.178.24])
-        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1kLOBp-000GrA-Jp; Thu, 24 Sep 2020 12:09:25 +0200
-Subject: Re: [PATCH v6 2/3] media: i2c: imx274: Remove stop stream i2c writes
- during remove
-To:     Sakari Ailus <sakari.ailus@iki.fi>
-Cc:     Sowjanya Komatineni <skomatineni@nvidia.com>,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, hverkuil@xs4all.nl,
-        jacopo+renesas@jmondi.org, leonl@leopardimaging.com,
-        robh+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1600724379-7324-1-git-send-email-skomatineni@nvidia.com>
- <1600724379-7324-3-git-send-email-skomatineni@nvidia.com>
- <d6be54a7-76b8-4206-0d76-6f93ec545e72@lucaceresoli.net>
- <20200922084746.GA8644@valkosipuli.retiisi.org.uk>
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <b243afda-b00f-4c0e-2eea-cc5d03cbebe7@lucaceresoli.net>
-Date:   Thu, 24 Sep 2020 12:09:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727358AbgIXKKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 06:10:54 -0400
+Received: from gentwo.org ([3.19.106.255]:48690 "EHLO gentwo.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726380AbgIXKKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 06:10:53 -0400
+Received: by gentwo.org (Postfix, from userid 1002)
+        id D7A6C3F1AE; Thu, 24 Sep 2020 10:10:52 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by gentwo.org (Postfix) with ESMTP id D4FD23F1AA;
+        Thu, 24 Sep 2020 10:10:52 +0000 (UTC)
+Date:   Thu, 24 Sep 2020 10:10:52 +0000 (UTC)
+From:   Christopher Lameter <cl@linux.com>
+X-X-Sender: cl@www.lameter.com
+To:     David Brazdil <dbrazdil@google.com>
+cc:     kvmarm@lists.cs.columbia.edu,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v4 00/10] Independent per-CPU data section for nVHE
+In-Reply-To: <20200922204910.7265-1-dbrazdil@google.com>
+Message-ID: <alpine.DEB.2.22.394.2009241003100.1613@www.lameter.com>
+References: <20200922204910.7265-1-dbrazdil@google.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-In-Reply-To: <20200922084746.GA8644@valkosipuli.retiisi.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/09/20 10:47, Sakari Ailus wrote:
-> Hi Luca,
-> 
-> On Tue, Sep 22, 2020 at 10:09:33AM +0200, Luca Ceresoli wrote:
->> Hi,
->>
->> On 21/09/20 23:39, Sowjanya Komatineni wrote:
->>> Sensor should already be in standby during remove and there is no
->>> need to configure sensor registers for stream stop.
->>
->> I beg your pardon for the newbie question: does the V4L2 framework
->> guarantee that the stream is stopped (.s_stream(..., 0)) before removing
->> the driver?
-> 
-> It doesn't. That's however one of the lesser concerns, and I don't think
-> it'd help if drivers tried to prepare for that.
+On Tue, 22 Sep 2020, David Brazdil wrote:
 
-Thanks for the clarification.
+> Introduce '.hyp.data..percpu' as part of ongoing effort to make nVHE
+> hyp code self-contained and independent of the rest of the kernel.
 
-I've been working with hardware where the sensor is always powered. In
-this case, and with this patch applied, the sensor would keep producing
-frames after driver removal. This looks wrong, unless I'm overlooking
-something.
+The percpu subsystems point is to enable the use of special hardware
+instructions that can perform address calculation and a memory operation
+in one interruptible instruction. This is in particular useful to avoid
+higher overhead for memory management related counters because preempt
+disable/enable etc can be avoided.
 
-BTW at first sight it looks like the framework should take care of
-stopping the stream before removal, not the individual drivers, but
-maybe there are good reasons this is not done?
+ARM cannot do that and thus has a LC/SC loop.
 
--- 
-Luca
+This is a patchset for ARM64 so its not clear to me what kind of advantage
+there would be against a simple implementation that does a regular fetch
+from a base address with an offset.
+
+> Main benefits:
+>  * independent nVHE per-CPU data section that can be unmapped from host,
+>  * more robust linking of nVHE hyp code,
+>  * no need for hyp-specific macros to access per-CPU variables.
+
+Maybe simply don't use percpu variables for your arm code? Those pointers
+to data will be much more indepedent of the rest of the kernel and allow a
+much higher degree of being self-contained.
+
