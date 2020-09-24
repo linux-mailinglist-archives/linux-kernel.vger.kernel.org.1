@@ -2,64 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C98E3277279
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B1AA27727F
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728059AbgIXNfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 09:35:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54024 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727742AbgIXNfd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 09:35:33 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89ACC239CF;
-        Thu, 24 Sep 2020 13:35:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600954533;
-        bh=jNYB+k706dvukRlfQCKIIeYhSWdl/6xpkY0GwY25mZU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YtsVSiNv8kv/pgfi/D1vADNUaNbpXNnTvbIHhUqxXYOkJi878WzcX2cV755gn+MjU
-         +sYN9x8a8ZoIsJ1FaD5eA7rJjAwpkquFqEspHXhbm1GWMGU48E5BUOlYwhuZedK5US
-         Gcp/PMzn6VJ7EV33ZdT2ZwfClGPl6T5czAyLLtaE=
-Date:   Thu, 24 Sep 2020 15:35:17 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Georgi Djakov <georgi.djakov@linaro.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] interconnect changes for 5.10
-Message-ID: <20200924133517.GA719043@kroah.com>
-References: <20200924130242.24867-1-georgi.djakov@linaro.org>
+        id S1727927AbgIXNgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 09:36:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727846AbgIXNgg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 09:36:36 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 017CFC0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:36:36 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id z23so4455908ejr.13
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:36:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ooaRReL2c6jKQ+vGGFRTPGKn0/Fj0W20wCnHuBSeuZo=;
+        b=TaG2yVd4h5AqdMpjmVPoldgfNLdtU4GgM8Vyz8+aPaL7nTNdBAHR74lX98EucvUEh/
+         fCL/N83YHlg5gLabqs8HOqhJFH3A4W2sw9273PqFeL05AwbEv/w4nGB6A+90BTn+CL+M
+         +u/L9M1ZxJSvgM3zQPqtM3oMpW/xVmUkzouEv01+OyCP/cpaVGfXeCsEQSrR6/AobHiB
+         vg1Gxmh2wbAFyfnn9LC/wS44NXXW4UfHNywywrb9OWtQZyJ7NPv5qE4d0CN6jlser+y/
+         Dz86FEsUtmcsCv4/MJVA0GJnt1yn8RosKz7XPQq3N6apWq+5KECE+J+5MEBYHQn0Gh9p
+         MkBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ooaRReL2c6jKQ+vGGFRTPGKn0/Fj0W20wCnHuBSeuZo=;
+        b=Brc9sl2k8P7a5Bxc4k3XaGa/0jjBKfwabAJgsPvQje95qhypeF4nvXDr0yIbWoc917
+         JNeKCjIhBHG2spOJeJ6rUZ7wCxKB3ZM3Gp6KC/QYKLBbs7YJvvLmCdoFTZcyKTiF3sIw
+         GJUTglrQcfLFACB/H+/BjZseqixJhh5ttxRo56MuI9SJZf5vnMhBzElfIzdrMUxBHfsV
+         p5wssPIZqsIco4LBoIwTfxUt3yXHdZwBx4gQkQJT9eg76v6F0SdGaIyPMGoNnA0sUmDy
+         +0Khk8aFI8W2B0pUzzpLR8RaGBxuhZ7LtRkPEr8ZJGsE2zgTcJUtVsN9gtOgUgSuJKHI
+         YeBw==
+X-Gm-Message-State: AOAM5330unwmBJ2JTOq6u4Wn3Fezdi8joMG0BobSuHOESDo7LjJkHR3v
+        3DOLeeMsE2MFbmtXGRySn5Ra+QJ4VpLy7HCvuJx4OA==
+X-Google-Smtp-Source: ABdhPJx2Xg0bTE6pcTgSHF6cRwl2iJFV9udaOoibso/nwzLkWSGVsMqSvZmy1qnIna9CRrtx0DG73k6UxXjtvV4Ob6Y=
+X-Received: by 2002:a17:906:f11:: with SMTP id z17mr1153495eji.88.1600954594733;
+ Thu, 24 Sep 2020 06:36:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924130242.24867-1-georgi.djakov@linaro.org>
+References: <20200905133549.24606-1-warthog618@gmail.com> <20200905133549.24606-8-warthog618@gmail.com>
+ <CAHp75Vdm=61wibz70ScvayXk_D77rZw_pG7wPkLXkbkzagRPNA@mail.gmail.com> <20200920111204.GB793608@sol>
+In-Reply-To: <20200920111204.GB793608@sol>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Thu, 24 Sep 2020 15:36:24 +0200
+Message-ID: <CAMpxmJW1g-Z4XR1BvOvxjweqMYA6dvS9A=ooLKyjdxU1n9-3HA@mail.gmail.com>
+Subject: Re: [PATCH v7 07/20] gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL
+ and GPIO_V2_LINE_GET_VALUES_IOCTL
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Kent Gibson <warthog618@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 04:02:42PM +0300, Georgi Djakov wrote:
-> Hello Greg,
-> 
-> This is the pull request with the interconnect changes for the 5.10-rc1
-> merge window. It contains both core changes and new drivers. More details
-> are available in the signed tag.
-> 
-> All patches have been in linux-next without any reported issues. Please
-> pull into char-misc-next.
-> 
-> Thanks,
-> Georgi
-> 
-> The following changes since commit 91e045b93db79a2ef66e045ad0d1f8f9d348e1f4:
-> 
->   interconnect: qcom: Fix small BW votes being truncated to zero (2020-09-04 00:07:12 +0300)
-> 
-> are available in the Git repository at:
-> 
->   https://git.linaro.org/people/georgi.djakov/linux.git tags/icc-5.10-rc1
+On Sun, Sep 20, 2020 at 1:12 PM Kent Gibson <warthog618@gmail.com> wrote:
+>
+> >
+> > Can we use static_assert() at the top of the file? Presumably after
+> > inclusion block.
+> >
+>
+> Good idea - will do.
 
+Thanks Andy for bringing this to my attention, the amount of kernel
+interfaces I still don't know after all these years still amazes me.
 
-Pulled and pushed out, thanks.
-
-greg k-h
+Bartosz
