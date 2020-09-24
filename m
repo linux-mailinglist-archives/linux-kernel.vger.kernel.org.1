@@ -2,97 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3634D276AA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5380276AAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:22:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727124AbgIXHWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 03:22:31 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:40529 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726993AbgIXHW3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 03:22:29 -0400
-Received: by mail-ot1-f67.google.com with SMTP id c2so199965otp.7;
-        Thu, 24 Sep 2020 00:22:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=doJWUSEuMMX5XwNCFHPsthPQ0ya9qYj2kuRu85qUti0=;
-        b=E9ygRWcRUTJFflTne/vC4Rcsm01qjd3z1JoZ+Cef5O2GVw7rENIk5iyi5BRosKxAl3
-         1q7GmP4wiqLyvd25g+iPdGAkJf+YHnwJoLGAlFt3WGbNc4Kvty0UhPgTnFT7eb1OE/8k
-         kqq38Rdg/QGkBxVEUEzED4TqGJkoTKb+4Hn15Upa6IVhTqKt4qyUU8EURyTdYMU2kMVL
-         iItVXuc1zAhZ+idgJI2npv6l+ips+X91tH479Hpeb1LQYFxkSHvRIn56XfWg4xzuebWn
-         8dIeEIAbi/kaoX+2dUkzZFG9wGdU0TsJnmWQCkPGd1NMj9kDWLGAWjxf+tbltN8BQgZg
-         Qzhg==
-X-Gm-Message-State: AOAM5304K3+zxfB5ejy2BKEPBgIiFppUkrH6BzcjlBgOnBnbYAtuKSic
-        iQxnvOSv1wt32j9OdtfDHNX+E60gOce3LnRa2s4=
-X-Google-Smtp-Source: ABdhPJwjrYu9v7nTc+tMgh9KYdsuHGvFOqnkyNOKYLmjSPS5VINKugoRgAsR/1ACTFe/LzcZfS+u3Zu/r8tn/L3D59A=
-X-Received: by 2002:a05:6830:1008:: with SMTP id a8mr2062693otp.107.1600932148967;
- Thu, 24 Sep 2020 00:22:28 -0700 (PDT)
+        id S1727182AbgIXHWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 03:22:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41716 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726993AbgIXHWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 03:22:45 -0400
+Received: from saruman (91-155-214-58.elisa-laajakaista.fi [91.155.214.58])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 049B220936;
+        Thu, 24 Sep 2020 07:22:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600932165;
+        bh=VoDQzBn28W/Kf+R2dL5h4s55F/0SLAG3ZhPE++y+2Iw=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=GzKu15K2/SCzdQVQn+HoZiHZ4hfy6c1vjiubYuR6qLPCBsrcg81ceGSqgMnsCaB3u
+         OWjRuS4UFAjCO+GNJ66S1U/RRZ4yH6NRW/qn9XPlww/T/0RdVNZLurOXreZew67E5+
+         0/9HMtskMxjTv56Q8/45rbtQw9T6ObK3jcLLnOgo=
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, matthias.bgg@gmail.com,
+        swboyd@chromium.org, linux-arm-kernel@lists.infradead.org,
+        alcooperx@gmail.com
+Subject: Re: [PATCH] MAINTAINERS: Add entry for Broadcom BDC driver
+In-Reply-To: <87r1qrej20.fsf@kernel.org>
+References: <20200710034806.15650-1-f.fainelli@gmail.com>
+ <830cd104-87de-4246-35ff-47a0ed5b05a9@gmail.com>
+ <1600325394.20109.16.camel@mhfsdcap03>
+ <20200917073831.GB3217334@kroah.com> <87r1qrej20.fsf@kernel.org>
+Date:   Thu, 24 Sep 2020 10:22:37 +0300
+Message-ID: <87o8lvej0i.fsf@kernel.org>
 MIME-Version: 1.0
-References: <edd106dad1bbea32500601c6071f37a9f02a8004.1600901284.git.fthain@telegraphics.com.au>
-In-Reply-To: <edd106dad1bbea32500601c6071f37a9f02a8004.1600901284.git.fthain@telegraphics.com.au>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 24 Sep 2020 09:22:17 +0200
-Message-ID: <CAMuHMdXb=bPg=tsmCfTFj_asSyeE=MF=MxmeobUKv0qbHDisig@mail.gmail.com>
-Subject: Re: [PATCH v4] ide/macide: Convert Mac IDE driver to platform driver
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Joshua Thompson <funaho@jurai.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ide@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Finn,
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 24, 2020 at 1:17 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> Add platform devices for the Mac IDE controller variants. Convert the
-> macide module into a platform driver to support two of those variants.
-> For the third, use a generic "pata_platform" driver instead.
-> This enables automatic loading of the appropriate module and begins
-> the process of replacing the driver with libata alternatives.
+Felipe Balbi <balbi@kernel.org> writes:
+
+> Greg KH <gregkh@linuxfoundation.org> writes:
 >
-> Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Joshua Thompson <funaho@jurai.org>
-> References: commit 5ed0794cde593 ("m68k/atari: Convert Falcon IDE drivers to platform drivers")
-> References: commit 7ad19a99ad431 ("ide: officially deprecated the legacy IDE driver")
-> Tested-by: Stan Johnson <userm57@yahoo.com>
-> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-> ---
-> This patch was tested successfully on a Powerbook 190 (MAC_IDE_BABOON)
-> using both pata_platform and ide_platform drivers.
-> The next step will be to try using these generic drivers with the other
-> IDE controller variants (MAC_IDE_QUADRA or MAC_IDE_PB) so that the macide
-> driver can be entirely replaced with libata drivers.
+>> On Thu, Sep 17, 2020 at 02:49:54PM +0800, Chunfeng Yun wrote:
+>>> On Sun, 2020-09-06 at 12:55 -0700, Florian Fainelli wrote:
+>>> >=20
+>>> > On 7/9/2020 8:48 PM, Florian Fainelli wrote:
+>>> > > The Broadcom BDC driver did not have a MAINTAINERS entry which made=
+ it
+>>> > > escape review from Al and myself, add an entry so the relevant mail=
+ing
+>>> > > lists and people are copied.
+>>> > >=20
+>>> > > Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+>>> >=20
+>>> > This patch still does not seem to have been picked up (not seeing it =
+in=20
+>>> > linux-next), can this be applied so we have an accurate maintainer=20
+>>> > information for this driver?
+>>> Ping
+>>
+>> Felipe should have picked this up.
+>>
+>> If not, please resend it again and I can.
 >
-> Changed since v3:
->  - Updated Kconfig help text.
->
-> Changed since v2:
->  - Enabled CONFIG_BLK_DEV_PLATFORM in multi_defconfig.
->  - Replaced dev_get_drvdata() with platform_get_drvdata().
+> Applied
 
-Thanks for the updates!
+scratch that, it's already in Linus'
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k for-v5.10 branch, hopefully with an
-Acked-by from the IDE maintainer.
+=2D-=20
+balbi
 
-Gr{oetje,eeting}s,
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
-                        Geert
+-----BEGIN PGP SIGNATURE-----
 
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl9sST0RHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzL64meEamQbGihAAp5fduyOtw+m+brb7qmckGTFWPkmjPLKp
+kbMsYfCGfKzQX8dPOU7BitRHJTcC/+OcprvgKXM306tg7qdHBld+pypSbx9qhE27
+qQ+5raHVpKTPF+tmjlk9Dd1QyYtQV2U2dNyCFZhwT7oRmFQuvcIuk30VS1f8Mtej
+R4dOMKaUobQXD4fMD4OiwELVUzuKqcKuncByeMuvh5zOsAILykI9/k+p3KmeNmKG
+lbsN78Sqnt+VxIDr/jRNuzWdnFEz9kO2yM/oZNPfo4GIXJwRgUXiouJpNv3Jnc67
+gUt+PqDweQRhwa2aNR0Y3fn1oc5tsW6J3Ls2N6ODKKHcqrUr/9OC28kDULkfURRF
+5gaC3S02clqRGrwa+0nNZLL8rzN8qOSqbVzMqV+DrZEibeRiZvcXTUXH5Y14l8SY
+IofbZ3pGQ4KVPzyV9EoXa5DDgyWYZs5ej0B76Gf+Br1aM43Jph44L33n8OdAN6la
+ZIL0EJ4FRJeu2UyGtnsE8HWyKk4euHNKRvmPaOcysrdJsJgjKYBoDWXtG9xGjcM0
+QSpoqPuK1p2BiCUZWAMf7y8Mudm5eYBpekZw/v7SgyRQEidOXkv/jfMNe8nWg2yH
+iRZuf2QjfxzarKCL6j5/l4eUV6oeG6Efe84y0FloKZO/WkSxG3SxgPYd9+kRu+zL
+fkfFSqeYeV4=
+=alAC
+-----END PGP SIGNATURE-----
+--=-=-=--
