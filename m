@@ -2,391 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E5D4277161
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 088CA277162
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:47:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728023AbgIXMqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 08:46:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41774 "EHLO
+        id S1728030AbgIXMqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 08:46:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727916AbgIXMp0 (ORCPT
+        with ESMTP id S1727791AbgIXMpe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 08:45:26 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BDF5C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:45:26 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id e4so1603434pln.10
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:45:26 -0700 (PDT)
+        Thu, 24 Sep 2020 08:45:34 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B92DDC0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:45:33 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id d4so3383628wmd.5
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:45:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0J1GZssblsauExJHfvbe1syeV45yN+2xWBnYdzuIJ3E=;
-        b=b0HWRmW7mEsyhvltuApKymWrvrtNCR762qO6AxXRvzMp8yQ4WoDBIbEh1Bm85OYxaz
-         2+b0aJKI1oSCdnaIMwNq8bI0XFM7X/C/KNlQAKxP6Wq0nuj2OnurMWYvtEAG4r40tD5n
-         YoTJSCxb8qUiOxs9H8DUDUUgs3mg5yhRBFhgq89//Tw0pHADIF8U+T7fmYlntbDKRzyM
-         I3WFLp8hqNdLzRPLjKwIMvftowVrHdm4ojDJ75oLz7mKpa04h8YcLcscaOUiIFrHppYp
-         XO/CtkCY3TUBmUjYMAcanm7HwzC6CJK650X2X7QMOw17I6Wo7ANjSUeTjKsRVXRULHAD
-         Q2Xw==
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=d3SG2VuN6Q6yklPuf6I/qUniM4mC+6BL9uEaXLt4Seg=;
+        b=O8ugPqVoKjSkoyIHv0pmcgxzGnb6Rq3vjXGX03phOhtG+E3eYC8JsCVNqWspS9B4sX
+         DdVv0iJFtGt24aXWclxntzOIPgNPJyvjOhyd+/CM32cjHrfeeWAKjDiD2mQjZ9aNpioj
+         V/u0PK5zCzGcmOSUiACXgCC4JdxGQe+rWOl9ZDszcd9o4smHYZxPLu/xCy8/hCk893tf
+         njg00UpXcABFpQ9h8jwg0rlsSWU+ahvSWdsp5VuSiT+DnYjd4KnZsXXjimRK8PF9T7z1
+         fx8ToxwUa2z++FtRYiGgmbE7H85dmfNS2N0hf9oJaUDf6W7N+vw/wvTylXCeqVl70Tjp
+         kTXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=0J1GZssblsauExJHfvbe1syeV45yN+2xWBnYdzuIJ3E=;
-        b=dfUn0OJKXm0GclvqIg5uIvgzm/PGyfpxnvRUziq78d/OuhKRWo4hK0pluizNcPYhWL
-         9rMBNyKbO/dWnCBZCmCTXnv4DxX+MOlfh+4FisItB8bFZxiKNau6ALJbIU19hUxZeTh+
-         KepfSFAtwIDOmCN2AQCN4ZQvRFZgC8tPe1ZXrIfTMZBmsJci7btw2iDbdjyt1b+xTI/k
-         aEKreucc0GJ31J1qlLGo3xAAHzgw8EJeI6rsiJPiws0zejeCNtSxRIUjuaSwFkeRlhXs
-         VBtSrMJ6q3h9zQ9KNer56FmcrjFu6Fba9if00h5bcrDWKcBU7buo4DaT1Kgcn4oYltI4
-         mF2Q==
-X-Gm-Message-State: AOAM530SS9SwCm9sZvnUAA+sumBV6xU/0zDwNlgNEHHh1e/JH0Y+FTQU
-        x5+K4EpJL/FFUOhm0uVb2mo=
-X-Google-Smtp-Source: ABdhPJxfY3na7UZS6fuWoupPubQkGVjKmxiiAPZdY5OFagJreTuk5xRlcyI3dGX+oclg1mXY1x0/QQ==
-X-Received: by 2002:a17:90a:a004:: with SMTP id q4mr3662611pjp.21.1600951525852;
-        Thu, 24 Sep 2020 05:45:25 -0700 (PDT)
-Received: from balhae.roam.corp.google.com ([101.235.31.111])
-        by smtp.gmail.com with ESMTPSA id 194sm2690310pfy.44.2020.09.24.05.45.21
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=d3SG2VuN6Q6yklPuf6I/qUniM4mC+6BL9uEaXLt4Seg=;
+        b=TvZ961L2iO+fq1gesOocjUnkGNZJcu2t2hfUO79FzGTdYpkEBTet5grN+/+Zc41pDx
+         2vkYGTY9HNBllKUuP6IdBqeB7L4zbavpAJgZ/9EoXvvK8vxBuCZeZ67hVz1hHRfPr82i
+         qX/pJBkaHFLBG8PjfuyVZWYfXH7374tsd1Pmw2jYYEFtOOi85sXcre5EfgaElvgW/MgW
+         Mq8IVnIuR2CUKQ5ZAp4ynfgBpEOZ31sOqhMkl1rQzqJYehpxCA8FNpNIPHvK80rfS8Am
+         7W56jXCH1rlXWgNjoiVJrBNkcfIHWufr+c2vyFJ/Z2ycgTdYL5mNFxk463POuQ0KcvGC
+         CMGQ==
+X-Gm-Message-State: AOAM530ssDZCG3UDNuS4AKLYiQ3IVxHvFOoO8WT5vM1Pr7iKIGnLVoLU
+        HnA1gEM6bHI4uSFfTbd5AuBZoQ==
+X-Google-Smtp-Source: ABdhPJy2EcyD2BCZhz5UC6zbjfnFvGtX/WNY6SwBOgBP6OjIPZsk0l8tc9aL2FyhAsdmLiz2wBSq5A==
+X-Received: by 2002:a1c:63c1:: with SMTP id x184mr4675001wmb.138.1600951532403;
+        Thu, 24 Sep 2020 05:45:32 -0700 (PDT)
+Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
+        by smtp.gmail.com with ESMTPSA id 9sm3316834wmf.7.2020.09.24.05.45.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 05:45:25 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        John Garry <john.garry@huawei.com>
-Subject: [PATCH 5/5] perf test: Add expand cgroup event test
-Date:   Thu, 24 Sep 2020 21:44:55 +0900
-Message-Id: <20200924124455.336326-6-namhyung@kernel.org>
-X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
-In-Reply-To: <20200924124455.336326-1-namhyung@kernel.org>
-References: <20200924124455.336326-1-namhyung@kernel.org>
+        Thu, 24 Sep 2020 05:45:31 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH 00/12] samples: configfs: refactor the configfs sample code
+Date:   Thu, 24 Sep 2020 14:45:14 +0200
+Message-Id: <20200924124526.17365-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It'll expand given events for cgroups A, B and C.
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-  $ ./perf test -v expansion
-  69: Event expansion for cgroups                      :
-  --- start ---
-  test child forked, pid 983140
-  metric expr 1 / IPC for CPI
-  metric expr instructions / cycles for IPC
-  found event instructions
-  found event cycles
-  adding {instructions,cycles}:W
-  copying metric event for cgroup 'A': instructions (idx=0)
-  copying metric event for cgroup 'B': instructions (idx=0)
-  copying metric event for cgroup 'C': instructions (idx=0)
-  test child finished with 0
-  ---- end ----
-  Event expansion for cgroups: Ok
+Over at the GPIO sub-system we have a testing module (gpio-mockup) which
+uses module params to instantiate simulated GPIO chips and debugfs to
+control them. We want to switch to a more stable interface using configfs
+to instantiate chips and sysfs to control them.
 
-Cc: John Garry <john.garry@huawei.com>
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/tests/Build           |   1 +
- tools/perf/tests/builtin-test.c  |   4 +
- tools/perf/tests/expand-cgroup.c | 241 +++++++++++++++++++++++++++++++
- tools/perf/tests/tests.h         |   1 +
- 4 files changed, 247 insertions(+)
- create mode 100644 tools/perf/tests/expand-cgroup.c
+For that we need the feature that's well defined in the docs but currently
+unimplemented - committable items. I started working on this but it won't
+be ready for this release cycle.
 
-diff --git a/tools/perf/tests/Build b/tools/perf/tests/Build
-index 69bea7996f18..4d15bf6041fb 100644
---- a/tools/perf/tests/Build
-+++ b/tools/perf/tests/Build
-@@ -61,6 +61,7 @@ perf-y += demangle-java-test.o
- perf-y += pfm.o
- perf-y += parse-metric.o
- perf-y += pe-file-parsing.o
-+perf-y += expand-cgroup.o
- 
- $(OUTPUT)tests/llvm-src-base.c: tests/bpf-script-example.c tests/Build
- 	$(call rule_mkdir)
-diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-index 651b8ea3354a..132bdb3e6c31 100644
---- a/tools/perf/tests/builtin-test.c
-+++ b/tools/perf/tests/builtin-test.c
-@@ -345,6 +345,10 @@ static struct test generic_tests[] = {
- 		.desc = "PE file support",
- 		.func = test__pe_file_parsing,
- 	},
-+	{
-+		.desc = "Event expansion for cgroups",
-+		.func = test__expand_cgroup_events,
-+	},
- 	{
- 		.func = NULL,
- 	},
-diff --git a/tools/perf/tests/expand-cgroup.c b/tools/perf/tests/expand-cgroup.c
-new file mode 100644
-index 000000000000..d5771e4d094f
---- /dev/null
-+++ b/tools/perf/tests/expand-cgroup.c
-@@ -0,0 +1,241 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "tests.h"
-+#include "debug.h"
-+#include "evlist.h"
-+#include "cgroup.h"
-+#include "rblist.h"
-+#include "metricgroup.h"
-+#include "parse-events.h"
-+#include "pmu-events/pmu-events.h"
-+#include "pfm.h"
-+#include <subcmd/parse-options.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+
-+static int test_expand_events(struct evlist *evlist,
-+			      struct rblist *metric_events)
-+{
-+	int i, ret = TEST_FAIL;
-+	int nr_events;
-+	bool was_group_event;
-+	int nr_members;  /* for the first evsel only */
-+	const char cgrp_str[] = "A,B,C";
-+	const char *cgrp_name[] = { "A", "B", "C" };
-+	int nr_cgrps = ARRAY_SIZE(cgrp_name);
-+	char **ev_name;
-+	struct evsel *evsel;
-+
-+	TEST_ASSERT_VAL("evlist is empty", !perf_evlist__empty(evlist));
-+
-+	nr_events = evlist->core.nr_entries;
-+	ev_name = calloc(nr_events, sizeof(*ev_name));
-+	if (ev_name == NULL) {
-+		pr_debug("memory allocation failure\n");
-+		return TEST_FAIL;
-+	}
-+	i = 0;
-+	evlist__for_each_entry(evlist, evsel) {
-+		ev_name[i] = strdup(evsel->name);
-+		if (ev_name[i] == NULL) {
-+			pr_debug("memory allocation failure\n");
-+			goto out;
-+		}
-+		i++;
-+	}
-+	/* remember grouping info */
-+	was_group_event = evsel__is_group_event(evlist__first(evlist));
-+	nr_members = evlist__first(evlist)->core.nr_members;
-+
-+	ret = evlist__expand_cgroup(evlist, cgrp_str, metric_events, false);
-+	if (ret < 0) {
-+		pr_debug("failed to expand events for cgroups\n");
-+		goto out;
-+	}
-+
-+	ret = TEST_FAIL;
-+	if (evlist->core.nr_entries != nr_events * nr_cgrps) {
-+		pr_debug("event count doesn't match\n");
-+		goto out;
-+	}
-+
-+	i = 0;
-+	evlist__for_each_entry(evlist, evsel) {
-+		if (strcmp(evsel->name, ev_name[i % nr_events])) {
-+			pr_debug("event name doesn't match:\n");
-+			pr_debug("  evsel[%d]: %s\n  expected: %s\n",
-+				 i, evsel->name, ev_name[i % nr_events]);
-+			goto out;
-+		}
-+		if (strcmp(evsel->cgrp->name, cgrp_name[i / nr_events])) {
-+			pr_debug("cgroup name doesn't match:\n");
-+			pr_debug("  evsel[%d]: %s\n  expected: %s\n",
-+				 i, evsel->cgrp->name, cgrp_name[i / nr_events]);
-+			goto out;
-+		}
-+
-+		if ((i % nr_events) == 0) {
-+			if (evsel__is_group_event(evsel) != was_group_event) {
-+				pr_debug("event group doesn't match: got %s, expect %s\n",
-+					 evsel__is_group_event(evsel) ? "true" : "false",
-+					 was_group_event ? "true" : "false");
-+				goto out;
-+			}
-+			if (evsel->core.nr_members != nr_members) {
-+				pr_debug("event group member doesn't match: %d vs %d\n",
-+					 evsel->core.nr_members, nr_members);
-+				goto out;
-+			}
-+		}
-+		i++;
-+	}
-+	ret = TEST_OK;
-+
-+out:	for (i = 0; i < nr_events; i++)
-+		free(ev_name[i]);
-+	free(ev_name);
-+	return ret;
-+}
-+
-+static int expand_default_events(void)
-+{
-+	int ret;
-+	struct evlist *evlist;
-+	struct rblist metric_events;
-+
-+	evlist = perf_evlist__new_default();
-+	TEST_ASSERT_VAL("failed to get evlist", evlist);
-+
-+	rblist__init(&metric_events);
-+	ret = test_expand_events(evlist, &metric_events);
-+	evlist__delete(evlist);
-+	return ret;
-+}
-+
-+static int expand_group_events(void)
-+{
-+	int ret;
-+	struct evlist *evlist;
-+	struct rblist metric_events;
-+	struct parse_events_error err;
-+	const char event_str[] = "{cycles,instructions}";
-+
-+	symbol_conf.event_group = true;
-+
-+	evlist = evlist__new();
-+	TEST_ASSERT_VAL("failed to get evlist", evlist);
-+
-+	ret = parse_events(evlist, event_str, &err);
-+	if (ret < 0) {
-+		pr_debug("failed to parse event '%s', err %d, str '%s'\n",
-+			 event_str, ret, err.str);
-+		parse_events_print_error(&err, event_str);
-+		goto out;
-+	}
-+
-+	rblist__init(&metric_events);
-+	ret = test_expand_events(evlist, &metric_events);
-+out:
-+	evlist__delete(evlist);
-+	return ret;
-+}
-+
-+static int expand_libpfm_events(void)
-+{
-+	int ret;
-+	struct evlist *evlist;
-+	struct rblist metric_events;
-+	const char event_str[] = "UNHALTED_CORE_CYCLES";
-+	struct option opt = {
-+		.value = &evlist,
-+	};
-+
-+	symbol_conf.event_group = true;
-+
-+	evlist = evlist__new();
-+	TEST_ASSERT_VAL("failed to get evlist", evlist);
-+
-+	ret = parse_libpfm_events_option(&opt, event_str, 0);
-+	if (ret < 0) {
-+		pr_debug("failed to parse libpfm event '%s', err %d\n",
-+			 event_str, ret);
-+		goto out;
-+	}
-+	if (perf_evlist__empty(evlist)) {
-+		pr_debug("libpfm was not enabled\n");
-+		goto out;
-+	}
-+
-+	rblist__init(&metric_events);
-+	ret = test_expand_events(evlist, &metric_events);
-+out:
-+	evlist__delete(evlist);
-+	return ret;
-+}
-+
-+static int expand_metric_events(void)
-+{
-+	int ret;
-+	struct evlist *evlist;
-+	struct rblist metric_events;
-+	const char metric_str[] = "CPI";
-+
-+	struct pmu_event pme_test[] = {
-+		{
-+			.metric_expr	= "instructions / cycles",
-+			.metric_name	= "IPC",
-+		},
-+		{
-+			.metric_expr	= "1 / IPC",
-+			.metric_name	= "CPI",
-+		},
-+		{
-+			.metric_expr	= NULL,
-+			.metric_name	= NULL,
-+		},
-+	};
-+	struct pmu_events_map ev_map = {
-+		.cpuid		= "test",
-+		.version	= "1",
-+		.type		= "core",
-+		.table		= pme_test,
-+	};
-+
-+	evlist = evlist__new();
-+	TEST_ASSERT_VAL("failed to get evlist", evlist);
-+
-+	rblist__init(&metric_events);
-+	ret = metricgroup__parse_groups_test(evlist, &ev_map, metric_str,
-+					     false, false, &metric_events);
-+	if (ret < 0) {
-+		pr_debug("failed to parse '%s' metric\n", metric_str);
-+		goto out;
-+	}
-+
-+	ret = test_expand_events(evlist, &metric_events);
-+
-+out:
-+	metricgroup__rblist_exit(&metric_events);
-+	evlist__delete(evlist);
-+	return ret;
-+}
-+
-+int test__expand_cgroup_events(struct test *test __maybe_unused,
-+			       int subtest __maybe_unused)
-+{
-+	int ret;
-+
-+	ret = expand_default_events();
-+	TEST_ASSERT_EQUAL("failed to expand default events", ret, 0);
-+
-+	ret = expand_group_events();
-+	TEST_ASSERT_EQUAL("failed to expand event group", ret, 0);
-+
-+	ret = expand_libpfm_events();
-+	TEST_ASSERT_EQUAL("failed to expand event group", ret, 0);
-+
-+	ret = expand_metric_events();
-+	TEST_ASSERT_EQUAL("failed to expand metric events", ret, 0);
-+
-+	return ret;
-+}
-diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
-index ef0f33c6ba23..c85a2c08e407 100644
---- a/tools/perf/tests/tests.h
-+++ b/tools/perf/tests/tests.h
-@@ -123,6 +123,7 @@ const char *test__pfm_subtest_get_desc(int subtest);
- int test__pfm_subtest_get_nr(void);
- int test__parse_metric(struct test *test, int subtest);
- int test__pe_file_parsing(struct test *test, int subtest);
-+int test__expand_cgroup_events(struct test *test, int subtest);
- 
- bool test__bp_signal_is_supported(void);
- bool test__bp_account_is_supported(void);
+In the meantime I also refactored the configfs samples a bit as I'll be
+adding sample code for committable items. I thought that it won't hurt
+to send the refactoring patches now for v5.10 so here it is. No logical
+changes really, mostly just code quality and removing usage of deprecated
+functions.
+
+Bartosz Golaszewski (12):
+  MAINTAINERS: add the sample directory to the configfs entry
+  samples: configfs: order includes alphabetically
+  samples: configfs: remove redundant newlines
+  samples: configfs: drop unnecessary ternary operators
+  samples: configfs: improve alignment of broken lines
+  samples: configfs: fix alignment in item struct
+  samples: configfs: replace simple_strtoul() with kstrtoint()
+  samples: configfs: don't reinitialize variables which are already
+    zeroed
+  samples: configfs: prefer sizeof(*var) to sizeof(struct var_type)
+  samples: configfs: consolidate local variables of the same type
+  samples: configfs: don't use spaces before tabs
+  samples: configfs: prefer pr_err() over bare printk(KERN_ERR
+
+ MAINTAINERS                        |  1 +
+ samples/configfs/configfs_sample.c | 78 +++++++++++-------------------
+ 2 files changed, 29 insertions(+), 50 deletions(-)
+
 -- 
-2.28.0.681.g6f77f65b4e-goog
+2.17.1
 
