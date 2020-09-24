@@ -2,129 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B604127681B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 07:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 508D2276820
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 07:13:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726794AbgIXFLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 01:11:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726683AbgIXFLl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 01:11:41 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A83AC0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 22:11:41 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id t7so1025246pjd.3
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 22:11:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IbzPox5jnfS/DQmh8djlNye1AT0DWj0P7hHtIMKDwWQ=;
-        b=FkkyUKYxCpfoJ2ecMoGh6ROu3M69X5VALvn5grx2GvyJL0d0IvLBVhOrEDy7CW2CDO
-         1nUK7ocrk2L91TMbHmwE3MKp0UdP/SpWzKk1dLhCxLvrQtpYBlcYbiMlrOToGJ7wZCfr
-         kK43FF2/8yP3ieU98Uj5+BfguC5S22hL5AQ6DJzjqy6WnYWEgW3ou5/374se6TooKhN/
-         Yd/Wyrs+ay97YO3xhzcawwaNrtXWcTU/nq1JGCOD793yt47DkyVh/ATuUx15F3D59Xe6
-         Y6Z0h07so/a9YQdQEYfhzjeWo8oPYGEHWobYZCQ6uhcNG/eJWPuH7YSoAMjkZgOFE4jK
-         oGVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IbzPox5jnfS/DQmh8djlNye1AT0DWj0P7hHtIMKDwWQ=;
-        b=Kl0eWcHOJvRhv5D+auBJ08ziGKbG45VZoffgbxxS3XZ+6bAN4oadjzV95pBJPqLArJ
-         DDEpSv1LZ/RxKnZwBJvS/6NOkuop9QTRlYOWLsMRXj+wSRzaYSR8L4PcA0FJpjW6v+tm
-         AYJSRFvPX8/bdV0MO7AgAqB3kjndhcQ79iY+mnIlm++rRouuI0q0GypxX6zT5BrSsaqU
-         rfCKZa9+W3YktHmkqlsTvsaNAYH/Mj6j8QjaEZ2McGOHfD0WOInLmds1QAkap9Wqk85v
-         gBxHa1UXs2phEORobpLXCYGHKEFsc8Xan59Jd86GPwdJBDqd7Hbo1lJNxBmr2ZT6eZ3t
-         5ZTw==
-X-Gm-Message-State: AOAM5321sauAy7t5yyPSNQlm1xg0G6npJnnvk1t/PP4w9zT3P/ImE/jq
-        k034pdWEnNh9rtVNTbpbVLUWp17NhE2HGxFB
-X-Google-Smtp-Source: ABdhPJxDqx2cNvY5ZYZXAj3yz7pPa4YrB0VaL8i1aMei83D4I+xii9AnLbYiY+iyOBht0JR1Fz4+UA==
-X-Received: by 2002:a17:90a:ead5:: with SMTP id ev21mr2241627pjb.188.1600924300494;
-        Wed, 23 Sep 2020 22:11:40 -0700 (PDT)
-Received: from [192.168.10.94] (124-171-83-152.dyn.iinet.net.au. [124.171.83.152])
-        by smtp.gmail.com with ESMTPSA id a2sm1225190pfk.201.2020.09.23.22.11.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Sep 2020 22:11:39 -0700 (PDT)
-Subject: Re: [PATCH v2] powerpc/pci: unmap legacy INTx interrupts when a PHB
- is removed
-To:     =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
-        Qian Cai <cai@redhat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Oliver O'Halloran <oohall@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-next@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200807101854.844619-1-clg@kaod.org>
- <9c5eca863c63e360662fae7597213e8927c2a885.camel@redhat.com>
- <fce8ffe1-521c-8344-c7ad-53550e408cdc@kaod.org>
-From:   Alexey Kardashevskiy <aik@ozlabs.ru>
-Message-ID: <6716add0-9244-4da1-a578-f7faeb529e77@ozlabs.ru>
-Date:   Thu, 24 Sep 2020 15:11:34 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        id S1726806AbgIXFNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 01:13:22 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:63431 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726773AbgIXFNW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 01:13:22 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600924400; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=3rstsPGgySfsl4lGNnBfruTzexmptpldkhpyMx81+PQ=;
+ b=eqtlwumVysMhYM6P36iLiTDtpoDrFFkmghY6vZraJIOmhVYxyCntx0lAP9Z1NZpMCynJvJXA
+ sSf74eAnfplA9VYE2Vh/fTMYIyLbYLS4SD7pLuBbdW07vp6C2w3UyjIvLO2d3Mc+wz1Ry578
+ Ce57qqSzXQnz8+JS0ZrQoa46axY=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5f6c2ae53e7bfb5c371eeb3d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 24 Sep 2020 05:13:09
+ GMT
+Sender: cgoldswo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E30D8C43385; Thu, 24 Sep 2020 05:13:08 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cgoldswo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6A0CDC433CB;
+        Thu, 24 Sep 2020 05:13:07 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <fce8ffe1-521c-8344-c7ad-53550e408cdc@kaod.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 23 Sep 2020 22:13:07 -0700
+From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pratikp@codeaurora.org, pdaly@codeaurora.org,
+        sudaraja@codeaurora.org, iamjoonsoo.kim@lge.com,
+        linux-arm-msm-owner@vger.kernel.org,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        linux-kernel-owner@vger.kernel.org
+Subject: Re: [PATCH v2] mm: cma: indefinitely retry allocations in cma_alloc
+In-Reply-To: <5cfa914fca107d884aa845b9273ec656@codeaurora.org>
+References: <06489716814387e7f147cf53d1b185a8@codeaurora.org>
+ <1599851809-4342-1-git-send-email-cgoldswo@codeaurora.org>
+ <010101747e998731-e49f209f-8232-4496-a9fc-2465334e70d7-000000@us-west-2.amazonses.com>
+ <a4bdda08-9e2a-4862-00a3-72d4c90e82c7@redhat.com>
+ <72ae0f361df527cf70946992e4ab1eb3@codeaurora.org>
+ <a3d62a77-4c4f-e86c-de6d-5222c2a747e0@redhat.com>
+ <5cfa914fca107d884aa845b9273ec656@codeaurora.org>
+Message-ID: <23a1565b9bb5f6002bd3e529d533f22b@codeaurora.org>
+X-Sender: cgoldswo@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 23/09/2020 17:06, Cédric Le Goater wrote:
-> On 9/23/20 2:33 AM, Qian Cai wrote:
->> On Fri, 2020-08-07 at 12:18 +0200, Cédric Le Goater wrote:
->>> When a passthrough IO adapter is removed from a pseries machine using
->>> hash MMU and the XIVE interrupt mode, the POWER hypervisor expects the
->>> guest OS to clear all page table entries related to the adapter. If
->>> some are still present, the RTAS call which isolates the PCI slot
->>> returns error 9001 "valid outstanding translations" and the removal of
->>> the IO adapter fails. This is because when the PHBs are scanned, Linux
->>> maps automatically the INTx interrupts in the Linux interrupt number
->>> space but these are never removed.
->>>
->>> To solve this problem, we introduce a PPC platform specific
->>> pcibios_remove_bus() routine which clears all interrupt mappings when
->>> the bus is removed. This also clears the associated page table entries
->>> of the ESB pages when using XIVE.
->>>
->>> For this purpose, we record the logical interrupt numbers of the
->>> mapped interrupt under the PHB structure and let pcibios_remove_bus()
->>> do the clean up.
->>>
->>> Since some PCI adapters, like GPUs, use the "interrupt-map" property
->>> to describe interrupt mappings other than the legacy INTx interrupts,
->>> we can not restrict the size of the mapping array to PCI_NUM_INTX. The
->>> number of interrupt mappings is computed from the "interrupt-map"
->>> property and the mapping array is allocated accordingly.
->>>
->>> Cc: "Oliver O'Halloran" <oohall@gmail.com>
->>> Cc: Alexey Kardashevskiy <aik@ozlabs.ru>
->>> Signed-off-by: Cédric Le Goater <clg@kaod.org>
->>
->> Some syscall fuzzing will trigger this on POWER9 NV where the traces pointed to
->> this patch.
->>
->> .config: https://gitlab.com/cailca/linux-mm/-/blob/master/powerpc.config
+On 2020-09-17 10:54, Chris Goldsworthy wrote:
+> On 2020-09-15 00:53, David Hildenbrand wrote:
+>> On 14.09.20 20:33, Chris Goldsworthy wrote:
+>>> On 2020-09-14 02:31, David Hildenbrand wrote:
+>>>> On 11.09.20 21:17, Chris Goldsworthy wrote:
+>>>>> 
+>>>>> So, inside of cma_alloc(), instead of giving up when
+>>>>> alloc_contig_range()
+>>>>> returns -EBUSY after having scanned a whole CMA-region bitmap,
+>>>>> perform
+>>>>> retries indefinitely, with sleeps, to give the system an 
+>>>>> opportunity
+>>>>> to
+>>>>> unpin any pinned pages.
+>>>>> 
+>>>>> Signed-off-by: Chris Goldsworthy <cgoldswo@codeaurora.org>
+>>>>> Co-developed-by: Vinayak Menon <vinmenon@codeaurora.org>
+>>>>> Signed-off-by: Vinayak Menon <vinmenon@codeaurora.org>
+>>>>> ---
+>>>>>  mm/cma.c | 25 +++++++++++++++++++++++--
+>>>>>  1 file changed, 23 insertions(+), 2 deletions(-)
+>>>>> 
+>>>>> diff --git a/mm/cma.c b/mm/cma.c
+>>>>> index 7f415d7..90bb505 100644
+>>>>> --- a/mm/cma.c
+>>>>> +++ b/mm/cma.c
+>>>>> @@ -442,8 +443,28 @@ struct page *cma_alloc(struct cma *cma, size_t
+>>>>> count, unsigned int align,
+>>>>>  				bitmap_maxno, start, bitmap_count, mask,
+>>>>>  				offset);
+>>>>>  		if (bitmap_no >= bitmap_maxno) {
+>>>>> -			mutex_unlock(&cma->lock);
+>>>>> -			break;
+>>>>> +			if (ret == -EBUSY) {
+>>>>> +				mutex_unlock(&cma->lock);
+>>>>> +
+>>>>> +				/*
+>>>>> +				 * Page may be momentarily pinned by some other
+>>>>> +				 * process which has been scheduled out, e.g.
+>>>>> +				 * in exit path, during unmap call, or process
+>>>>> +				 * fork and so cannot be freed there. Sleep
+>>>>> +				 * for 100ms and retry the allocation.
+>>>>> +				 */
+>>>>> +				start = 0;
+>>>>> +				ret = -ENOMEM;
+>>>>> +				msleep(100);
+>>>>> +				continue;
+>>>>> +			} else {
+>>>>> +				/*
+>>>>> +				 * ret == -ENOMEM - all bits in cma->bitmap are
+>>>>> +				 * set, so we break accordingly.
+>>>>> +				 */
+>>>>> +				mutex_unlock(&cma->lock);
+>>>>> +				break;
+>>>>> +			}
+>>>>>  		}
+>>>>>  		bitmap_set(cma->bitmap, bitmap_no, bitmap_count);
+>>>>>  		/*
+>>>>> 
+>>>> 
+>>>> What about long-term pinnings? IIRC, that can happen easily e.g.,
+>>>> with
+>>>> vfio (and I remember there is a way via vmsplice).
+>>>> 
+>>>> Not convinced trying forever is a sane approach in the general case
+>>>> ...
+>>> 
+>>> V1:
+>>> [1] https://lkml.org/lkml/2020/8/5/1097
+>>> [2] https://lkml.org/lkml/2020/8/6/1040
+>>> [3] https://lkml.org/lkml/2020/8/11/893
+>>> [4] https://lkml.org/lkml/2020/8/21/1490
+>>> [5] https://lkml.org/lkml/2020/9/11/1072
+>>> 
+>>> We're fine with doing indefinite retries, on the grounds that if 
+>>> there
+>>> is some long-term pinning that occurs when alloc_contig_range returns
+>>> -EBUSY, that it should be debugged and fixed.  Would it be possible 
+>>> to
+>>> make this infinite-retrying something that could be enabled or
+>>> disabled
+>>> by a defconfig option?
+>> 
+>> Two thoughts:
+>> 
+>> This means I strongly prefer something like [3] if feasible.
 > 
-> OK. The patch is missing a NULL assignement after kfree() and that
-> might be the issue. 
+> _Resending so that this ends up on LKML_
 > 
-> I did try PHB removal under PowerNV, so I would like to understand 
-> how we managed to remove twice the PCI bus and possibly reproduce. 
-> Any chance we could grab what the syscall fuzzer (syzkaller) did ? 
+> I can give [3] some further thought then.  Also, I realized [3] will 
+> not
+> completely solve the problem, it just reduces the window in which
+> _refcount > _mapcount (as mentioned in earlier threads, we encountered
+> the pinning when a task in copy_one_pte() or in the exit_mmap() path
+> gets context switched out).  If we were to try a sleeping-lock based
+> solution, do you think it would be permissible to add another lock to
+> struct page?
 
-
-
-My guess would be it is doing this in parallel to provoke races.
-
-
+I have not been able to think of a clean way of introducing calls to 
+preempt_disable() in exit_mmap(), which is the more problematic case.  
+We would need to track state across multiple invocations of 
+zap_pte_range() (which is called for each entry in a PMD when a 
+process's memory is being unmapped), and would also need to extend this 
+to tlb_finish_mmu(), which is called after all the process's memory has 
+been unmapped: 
+https://elixir.bootlin.com/linux/v5.8.10/source/mm/mmap.c#L3164.  As a 
+follow-up to this patch, I'm submitting a patch that re-introduces the 
+GFP mask for cma_alloc, that will perform indefinite retires if 
+__GFP_NOFAIL is passed to the function.
 
 -- 
-Alexey
+The Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
