@@ -2,327 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39370276903
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DB982768FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727009AbgIXGgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 02:36:15 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:61739 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726846AbgIXGgP (ORCPT
+        id S1726959AbgIXGfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 02:35:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726906AbgIXGfN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 02:36:15 -0400
-X-Greylist: delayed 590 seconds by postgrey-1.27 at vger.kernel.org; Thu, 24 Sep 2020 02:36:12 EDT
-Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200924062621epoutp0376fa8363a3f3fe0083dca8557b777fa7~3pD6TZGgU1280912809epoutp03b
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:26:21 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200924062621epoutp0376fa8363a3f3fe0083dca8557b777fa7~3pD6TZGgU1280912809epoutp03b
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1600928781;
-        bh=HeG8aWIhrEZAkwa+FxAXC7YWSPKTr7bHhw/QbTWCtwM=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=bL3w7sQYb+lBv/HX/YetnXyYnBwy56J/UoXncCwKerDVSXbuk3m1MU2XsT6NfVzRX
-         9idrFnsXf+H+oG5AL6tn0FupXBSW+SaRupWUx9rjjtQC+vHc0TChj2ND5XLksIBDrn
-         0UMfP6oDQbFZoiC65qz4FAs8ZwgvbsxenfA6WBpI=
-Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
-        20200924062620epcas5p1b0570884dc857e5200e3166a7d7520f2~3pD5zLu-52615526155epcas5p15;
-        Thu, 24 Sep 2020 06:26:20 +0000 (GMT)
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        F3.0A.09573.C0C3C6F5; Thu, 24 Sep 2020 15:26:20 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200924062620epcas5p2f0468a1f41d4177ce15727c519bfbad5~3pD5W54YT2598725987epcas5p2Z;
-        Thu, 24 Sep 2020 06:26:20 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200924062620epsmtrp283f870e843077d49575bd861df355d9b~3pD5WIu7h2884828848epsmtrp2C;
-        Thu, 24 Sep 2020 06:26:20 +0000 (GMT)
-X-AuditID: b6c32a49-a7dff70000002565-62-5f6c3c0c263f
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        86.D7.08604.C0C3C6F5; Thu, 24 Sep 2020 15:26:20 +0900 (KST)
-Received: from localhost.localdomain (unknown [107.110.206.5]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200924062618epsmtip17b0514c65dfb6d55c6b274b31a756c33~3pD3-kH8V2751627516epsmtip1B;
-        Thu, 24 Sep 2020 06:26:18 +0000 (GMT)
-From:   Kanchan Joshi <joshi.k@samsung.com>
-To:     axboe@kernel.dk, Damien.LeMoal@wdc.com
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        selvakuma.s1@samsung.com, nj.shetty@samsung.com,
-        javier.gonz@samsung.com, Kanchan Joshi <joshi.k@samsung.com>
-Subject: [PATCH] null_blk: synchronization fix for zoned device
-Date:   Thu, 24 Sep 2020 11:51:36 +0530
-Message-Id: <20200924062136.47019-1-joshi.k@samsung.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrHIsWRmVeSWpSXmKPExsWy7bCmli6PTU68wemH8har7/azWbS2f2Oy
-        eHznM7vF0f9v2Sz23tK2uLxrDpvFtt/zmS2uTFnEbPH6x0k2B06Py2dLPfq2rGL0+LxJzqP9
-        QDdTAEsUl01Kak5mWWqRvl0CV8b0Z0+ZCxrMK2Ze2czUwPhDu4uRk0NCwESi++10pi5GLg4h
-        gd2MEpMXvmUCSQgJfGKUONujBJH4xiixZMt6oAQHWMeHCWEQ8b2MEkf2LYDq/swoMefdfjaQ
-        IjYBTYkLk0tBBokIaEks3drIBlLDLLABqKb7GBtIQljAXmLCpHtgNouAqsTu3n4WEJtXwELi
-        4v5TLBDnyUvMvPSdHSIuKHFy5hOwODNQvHnrbGaQoRIC19gltvT9YIZocJHYOn8VO4QtLPHq
-        +BYoW0ri87u9bBB2scSvO0ehmjsYJa43zITaZi9xcc9fsDeZgT5Yv0sfYhmfRO/vJ1Df80p0
-        tAlBVCtK3Jv0lBXCFpd4OGMJlO0h0dq+jRESirESH+ZtY5vAKDcLyQuzkLwwC2HZAkbmVYyS
-        qQXFuempxaYFhnmp5XrFibnFpXnpesn5uZsYwUlEy3MH490HH/QOMTJxMB5ilOBgVhLhvaGW
-        HS/Em5JYWZValB9fVJqTWnyIUZqDRUmcV+nHmTghgfTEktTs1NSC1CKYLBMHp1QDk8wZ83dV
-        x1asj/k95eJai9oNvfuUjbmMrofstvfb3uTdySzjcC7Hu3AZRzjLpL3xqmeqFnT3HN+zx/+t
-        H2fYQznWl+GlL15/P2XiHjl3nk+ohqzKyxzln1f3l311dw3+VcD59GnavavXXszbdiuXNTrX
-        eocHh/7c35wz2upZC5cf0gm8Wer9fOmnk6x37v/W2Oy700mtLqN/gna0ia2nRQzbqo37av98
-        /lTx/M6K/z2fwqY6ZXYrbu3YusWy5vQ9q8P3drXcl0i6+Sydj40v0sf1FPcf3lXPFOtsujmS
-        zzAoJf9fYRRof1rIdc2lJzwRLZwZl0olbqnkXxWPfno2zGeRmdvqvnmJd7dUvD/0X4mlOCPR
-        UIu5qDgRAFlxitWRAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrILMWRmVeSWpSXmKPExsWy7bCSnC6PTU68wfnZ7Bar7/azWbS2f2Oy
-        eHznM7vF0f9v2Sz23tK2uLxrDpvFtt/zmS2uTFnEbPH6x0k2B06Py2dLPfq2rGL0+LxJzqP9
-        QDdTAEsUl01Kak5mWWqRvl0CV8b0Z0+ZCxrMK2Ze2czUwPhDu4uRg0NCwETiw4SwLkYuDiGB
-        3YwSMzYdYOxi5ASKi0s0X/vBDmELS6z895wdougjo8TS82tZQZrZBDQlLkwuBakREdCR2Pex
-        jQWkhllgG6PEgzWr2UASwgL2EhMm3QOzWQRUJXb39rOA2LwCFhIX959igVggLzHz0nd2iLig
-        xMmZT8DizEDx5q2zmScw8s1CkpqFJLWAkWkVo2RqQXFuem6xYYFhXmq5XnFibnFpXrpecn7u
-        JkZwqGpp7mDcvuqD3iFGJg7GQ4wSHMxKIrw31LLjhXhTEiurUovy44tKc1KLDzFKc7AoifPe
-        KFwYJySQnliSmp2aWpBaBJNl4uCUamCqq2N5MPPSu7RfLGYTN8td61R6p1G9QHsue1jRg3NH
-        sucHXd8+g+mIbETHDy2pqecdUj7GRbkwsBhxcZy/ciJ0E/cvhcXnJ7k82S1fsZPvquPE3Td/
-        HvL27dNcLBQXsKdC/LnOqmc81y8Xb4nTunL709ZbLjFqn/feFTyTezbp+cnfyxS/WW8+9qX7
-        kJTDr4y1hSueT91lECCxL+mp2NFfz+1vd2es2dL3YpJjkl1RtpQXd9aLqJ0Pet6lfzs092ml
-        vs7tiYwuIQyfA3+qzci0jF+TlKfhsr1Q3mLmw4UaQb+aPrqte3Bb+Ev/qe61S+3vy0x+uN3o
-        QUFZ3GfjZyeFOftZf1ZYbDn6Jer+3UV7WpRYijMSDbWYi4oTAWjSMePEAgAA
-X-CMS-MailID: 20200924062620epcas5p2f0468a1f41d4177ce15727c519bfbad5
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20200924062620epcas5p2f0468a1f41d4177ce15727c519bfbad5
-References: <CGME20200924062620epcas5p2f0468a1f41d4177ce15727c519bfbad5@epcas5p2.samsung.com>
+        Thu, 24 Sep 2020 02:35:13 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA09C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 23:35:13 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id z19so1265949pfn.8
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 23:35:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=labau-com-tw.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=WdbXNUPD6MY2k7zfhudyHvM2eQJZTVebaDaCbQjjSc4=;
+        b=R4ZRBj8YXWIGdZwMOechCKdR8uAv2fnfhQwdmfxjzpD1CjkGzjhKxac1qzn/LpOIsQ
+         kzMuCcp3Q1QSx7fgXJ2H47e+BHVMvzTeRvR/cVyHyzGHEpcHm3qHHcaAdNlHeUxns+6E
+         e5WTCqYUGcfnVEvTmUJq1cG7OW1smjI/ZDRITipA1GqH9APx6JLucfGeC6E9OFzHjUgQ
+         Y9oMhUw4jewY845zC5Zu00ZmLv0Ndh8NikpTff+ungAF6alTS5na1cqZsJvvsWZXNsBl
+         sTkwRw9jMUuSR8KqLnu2d8Ne1fPQAjmw+KeksySBlqLLGgYpiEiX8ehAR5M7L2/pAS9m
+         ZCRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=WdbXNUPD6MY2k7zfhudyHvM2eQJZTVebaDaCbQjjSc4=;
+        b=dmxKctL1QA7Ho4bjXMQZYA7ZnEelC7GS+wNR5yWDvBKEYtx8S+lacUYTTJsaUX9hUI
+         LiS95LaYM6qO/cFTdQi8b3Oi/EqwvipOZEe1S0y5sbyS2c1z96PWXD/CErxRo9dyNQZd
+         Eua5/7+Ys9v1ASLsYruAjV/Pop1WIqUUouS6n8SjPhz3QFOTUagfaKTi1MEqDrL96MFA
+         lCdQ5skBBBN1uwsmabrTK6ERpGmGZjRx5G4zYh+2vmR++pDGsiV5ueFs/A7nFWVLGJOb
+         eqzfTHQ+EjOX0jU0o0MTax4XqWiY0YR+BRa84EmJwQoBRiVtuK4sMW0ekIYiWyPgkqH0
+         EHFA==
+X-Gm-Message-State: AOAM530A3WLjCfDSHg93Q1SZ0oYurrYPAFBO2vwTWtB7Q1iE34p43EzA
+        4MaKJ+bMnE4POyxULA0L2H1b7yO4Ec8dpSrFQm0=
+X-Google-Smtp-Source: ABdhPJzikG7gxmnbljPjmCLOet8UO5lrllVUo0qfMOp0FRkGfzZZ/16CkCAL5dUv0RHCsC0TmnEMNg==
+X-Received: by 2002:a63:4d5b:: with SMTP id n27mr2722132pgl.360.1600929313019;
+        Wed, 23 Sep 2020 23:35:13 -0700 (PDT)
+Received: from localhost.localdomain (60-251-64-13.HINET-IP.hinet.net. [60.251.64.13])
+        by smtp.gmail.com with ESMTPSA id z9sm1493939pfk.118.2020.09.23.23.35.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2020 23:35:12 -0700 (PDT)
+From:   Scott Chen <scott@labau.com.tw>
+Cc:     young@labau.com.tw, jocelyn@labau.com.tw,
+        Scott Chen <scott@labau.com.tw>,
+        Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] USB: serial: pl2303: add device-id for HP GC device
+Date:   Thu, 24 Sep 2020 14:27:45 +0800
+Message-Id: <20200924062745.5791-1-scott@labau.com.tw>
+X-Mailer: git-send-email 2.17.1
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Parallel write,read,zone-mgmt operations accessing/altering zone state
-and write-pointer may get into race. Avoid the situation by using a new
-spinlock for zoned device.
-Concurrent zone-appends (on a zone) returning same write-pointer issue
-is also avoided using this lock.
+This is adds a device id for HP LD381 which is a pl2303GC-base device.
 
-Signed-off-by: Kanchan Joshi <joshi.k@samsung.com>
+Signed-off-by: Scott Chen <scott@labau.com.tw>
 ---
- drivers/block/null_blk.h       |  1 +
- drivers/block/null_blk_zoned.c | 84 +++++++++++++++++++++++-----------
- 2 files changed, 58 insertions(+), 27 deletions(-)
+ drivers/usb/serial/pl2303.c | 1 +
+ drivers/usb/serial/pl2303.h | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/drivers/block/null_blk.h b/drivers/block/null_blk.h
-index daed4a9c3436..b3f4d62e7c38 100644
---- a/drivers/block/null_blk.h
-+++ b/drivers/block/null_blk.h
-@@ -44,6 +44,7 @@ struct nullb_device {
- 	unsigned int nr_zones;
- 	struct blk_zone *zones;
- 	sector_t zone_size_sects;
-+	spinlock_t zlock;
+diff --git a/drivers/usb/serial/pl2303.c b/drivers/usb/serial/pl2303.c
+index 048452d8a4a4..be8067017eaa 100644
+--- a/drivers/usb/serial/pl2303.c
++++ b/drivers/usb/serial/pl2303.c
+@@ -100,6 +100,7 @@ static const struct usb_device_id id_table[] = {
+ 	{ USB_DEVICE(HP_VENDOR_ID, HP_LD220_PRODUCT_ID) },
+ 	{ USB_DEVICE(HP_VENDOR_ID, HP_LD220TA_PRODUCT_ID) },
+ 	{ USB_DEVICE(HP_VENDOR_ID, HP_LD381_PRODUCT_ID) },
++	{ USB_DEVICE(HP_VENDOR_ID, HP_LD381GC_PRODUCT_ID) },
+ 	{ USB_DEVICE(HP_VENDOR_ID, HP_LD960_PRODUCT_ID) },
+ 	{ USB_DEVICE(HP_VENDOR_ID, HP_LD960TA_PRODUCT_ID) },
+ 	{ USB_DEVICE(HP_VENDOR_ID, HP_LCM220_PRODUCT_ID) },
+diff --git a/drivers/usb/serial/pl2303.h b/drivers/usb/serial/pl2303.h
+index 7d3090ee7e0c..b0f399a8c628 100644
+--- a/drivers/usb/serial/pl2303.h
++++ b/drivers/usb/serial/pl2303.h
+@@ -127,6 +127,7 @@
  
- 	unsigned long size; /* device size in MB */
- 	unsigned long completion_nsec; /* time in ns to complete a request */
-diff --git a/drivers/block/null_blk_zoned.c b/drivers/block/null_blk_zoned.c
-index 3d25c9ad2383..04fbf267703a 100644
---- a/drivers/block/null_blk_zoned.c
-+++ b/drivers/block/null_blk_zoned.c
-@@ -45,6 +45,7 @@ int null_init_zoned_dev(struct nullb_device *dev, struct request_queue *q)
- 	if (!dev->zones)
- 		return -ENOMEM;
- 
-+	spin_lock_init(&dev->zlock);
- 	if (dev->zone_nr_conv >= dev->nr_zones) {
- 		dev->zone_nr_conv = dev->nr_zones - 1;
- 		pr_info("changed the number of conventional zones to %u",
-@@ -124,6 +125,7 @@ int null_report_zones(struct gendisk *disk, sector_t sector,
- 	nr_zones = min(nr_zones, dev->nr_zones - first_zone);
- 	trace_nullb_report_zones(nullb, nr_zones);
- 
-+	spin_lock_irq(&dev->zlock);
- 	for (i = 0; i < nr_zones; i++) {
- 		/*
- 		 * Stacked DM target drivers will remap the zone information by
-@@ -134,10 +136,13 @@ int null_report_zones(struct gendisk *disk, sector_t sector,
- 		memcpy(&zone, &dev->zones[first_zone + i],
- 		       sizeof(struct blk_zone));
- 		error = cb(&zone, i, data);
--		if (error)
-+		if (error) {
-+			spin_unlock_irq(&dev->zlock);
- 			return error;
-+		}
- 	}
- 
-+	spin_unlock_irq(&dev->zlock);
- 	return nr_zones;
- }
- 
-@@ -147,16 +152,24 @@ size_t null_zone_valid_read_len(struct nullb *nullb,
- 	struct nullb_device *dev = nullb->dev;
- 	struct blk_zone *zone = &dev->zones[null_zone_no(dev, sector)];
- 	unsigned int nr_sectors = len >> SECTOR_SHIFT;
-+	size_t ret = 0;
- 
-+	spin_lock_irq(&dev->zlock);
- 	/* Read must be below the write pointer position */
- 	if (zone->type == BLK_ZONE_TYPE_CONVENTIONAL ||
--	    sector + nr_sectors <= zone->wp)
--		return len;
-+	    sector + nr_sectors <= zone->wp) {
-+		ret = len;
-+		goto out_unlock;
-+	}
- 
- 	if (sector > zone->wp)
--		return 0;
-+		goto out_unlock;
-+
-+	ret = (zone->wp - sector) << SECTOR_SHIFT;
- 
--	return (zone->wp - sector) << SECTOR_SHIFT;
-+out_unlock:
-+	spin_unlock_irq(&dev->zlock);
-+	return ret;
- }
- 
- static blk_status_t null_zone_write(struct nullb_cmd *cmd, sector_t sector,
-@@ -165,17 +178,19 @@ static blk_status_t null_zone_write(struct nullb_cmd *cmd, sector_t sector,
- 	struct nullb_device *dev = cmd->nq->dev;
- 	unsigned int zno = null_zone_no(dev, sector);
- 	struct blk_zone *zone = &dev->zones[zno];
--	blk_status_t ret;
-+	blk_status_t ret = BLK_STS_OK;
- 
- 	trace_nullb_zone_op(cmd, zno, zone->cond);
- 
- 	if (zone->type == BLK_ZONE_TYPE_CONVENTIONAL)
- 		return null_process_cmd(cmd, REQ_OP_WRITE, sector, nr_sectors);
- 
-+	spin_lock_irq(&dev->zlock);
- 	switch (zone->cond) {
- 	case BLK_ZONE_COND_FULL:
- 		/* Cannot write to a full zone */
--		return BLK_STS_IOERR;
-+		ret = BLK_STS_IOERR;
-+		break;
- 	case BLK_ZONE_COND_EMPTY:
- 	case BLK_ZONE_COND_IMP_OPEN:
- 	case BLK_ZONE_COND_EXP_OPEN:
-@@ -193,27 +208,33 @@ static blk_status_t null_zone_write(struct nullb_cmd *cmd, sector_t sector,
- 			else
- 				cmd->rq->__sector = sector;
- 		} else if (sector != zone->wp) {
--			return BLK_STS_IOERR;
-+			ret = BLK_STS_IOERR;
-+			break;
- 		}
- 
--		if (zone->wp + nr_sectors > zone->start + zone->capacity)
--			return BLK_STS_IOERR;
-+		if (zone->wp + nr_sectors > zone->start + zone->capacity) {
-+			ret = BLK_STS_IOERR;
-+			break;
-+		}
- 
- 		if (zone->cond != BLK_ZONE_COND_EXP_OPEN)
- 			zone->cond = BLK_ZONE_COND_IMP_OPEN;
- 
- 		ret = null_process_cmd(cmd, REQ_OP_WRITE, sector, nr_sectors);
- 		if (ret != BLK_STS_OK)
--			return ret;
-+			break;
- 
- 		zone->wp += nr_sectors;
- 		if (zone->wp == zone->start + zone->capacity)
- 			zone->cond = BLK_ZONE_COND_FULL;
--		return BLK_STS_OK;
-+		break;
- 	default:
- 		/* Invalid zone condition */
--		return BLK_STS_IOERR;
-+		ret = BLK_STS_IOERR;
- 	}
-+
-+	spin_unlock_irq(&dev->zlock);
-+	return ret;
- }
- 
- static blk_status_t null_zone_mgmt(struct nullb_cmd *cmd, enum req_opf op,
-@@ -223,7 +244,9 @@ static blk_status_t null_zone_mgmt(struct nullb_cmd *cmd, enum req_opf op,
- 	unsigned int zone_no = null_zone_no(dev, sector);
- 	struct blk_zone *zone = &dev->zones[zone_no];
- 	size_t i;
-+	blk_status_t ret = BLK_STS_OK;
- 
-+	spin_lock_irq(&dev->zlock);
- 	switch (op) {
- 	case REQ_OP_ZONE_RESET_ALL:
- 		for (i = 0; i < dev->nr_zones; i++) {
-@@ -234,25 +257,29 @@ static blk_status_t null_zone_mgmt(struct nullb_cmd *cmd, enum req_opf op,
- 		}
- 		break;
- 	case REQ_OP_ZONE_RESET:
--		if (zone->type == BLK_ZONE_TYPE_CONVENTIONAL)
--			return BLK_STS_IOERR;
-+		if (zone->type == BLK_ZONE_TYPE_CONVENTIONAL) {
-+			ret = BLK_STS_IOERR;
-+			break;
-+		}
- 
- 		zone->cond = BLK_ZONE_COND_EMPTY;
- 		zone->wp = zone->start;
- 		break;
- 	case REQ_OP_ZONE_OPEN:
--		if (zone->type == BLK_ZONE_TYPE_CONVENTIONAL)
--			return BLK_STS_IOERR;
--		if (zone->cond == BLK_ZONE_COND_FULL)
--			return BLK_STS_IOERR;
-+		if (zone->type == BLK_ZONE_TYPE_CONVENTIONAL ||
-+				zone->cond == BLK_ZONE_COND_FULL) {
-+			ret = BLK_STS_IOERR;
-+			break;
-+		}
- 
- 		zone->cond = BLK_ZONE_COND_EXP_OPEN;
- 		break;
- 	case REQ_OP_ZONE_CLOSE:
--		if (zone->type == BLK_ZONE_TYPE_CONVENTIONAL)
--			return BLK_STS_IOERR;
--		if (zone->cond == BLK_ZONE_COND_FULL)
--			return BLK_STS_IOERR;
-+		if (zone->type == BLK_ZONE_TYPE_CONVENTIONAL ||
-+				zone->cond == BLK_ZONE_COND_FULL) {
-+			ret = BLK_STS_IOERR;
-+			break;
-+		}
- 
- 		if (zone->wp == zone->start)
- 			zone->cond = BLK_ZONE_COND_EMPTY;
-@@ -260,18 +287,21 @@ static blk_status_t null_zone_mgmt(struct nullb_cmd *cmd, enum req_opf op,
- 			zone->cond = BLK_ZONE_COND_CLOSED;
- 		break;
- 	case REQ_OP_ZONE_FINISH:
--		if (zone->type == BLK_ZONE_TYPE_CONVENTIONAL)
--			return BLK_STS_IOERR;
-+		if (zone->type == BLK_ZONE_TYPE_CONVENTIONAL) {
-+			ret = BLK_STS_IOERR;
-+			break;
-+		}
- 
- 		zone->cond = BLK_ZONE_COND_FULL;
- 		zone->wp = zone->start + zone->len;
- 		break;
- 	default:
--		return BLK_STS_NOTSUPP;
-+		ret = BLK_STS_NOTSUPP;
- 	}
- 
-+	spin_unlock_irq(&dev->zlock);
- 	trace_nullb_zone_op(cmd, zone_no, zone->cond);
--	return BLK_STS_OK;
-+	return ret;
- }
- 
- blk_status_t null_process_zoned_cmd(struct nullb_cmd *cmd, enum req_opf op,
+ /* Hewlett-Packard POS Pole Displays */
+ #define HP_VENDOR_ID		0x03f0
++#define HP_LD381GC_PRODUCT_ID   0x0183
+ #define HP_LM920_PRODUCT_ID	0x026b
+ #define HP_TD620_PRODUCT_ID	0x0956
+ #define HP_LD960_PRODUCT_ID	0x0b39
 -- 
-2.25.1
+2.17.1
 
