@@ -2,164 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E64F277812
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 19:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D29A277815
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 19:55:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728594AbgIXRzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 13:55:15 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:50314 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726915AbgIXRzO (ORCPT
+        id S1728619AbgIXRzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 13:55:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20167 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726915AbgIXRzi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 13:55:14 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600970110;
+        Thu, 24 Sep 2020 13:55:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600970136;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=YRlGrH6qHmnud4V/lnVcV5vqfU+DBGnkWu7EgTdSlr8=;
-        b=R1sSPNYUxHYkL72kHsFR+TjF2/2XwUg3yHnnvqS04QAoOSx3FfOe7kjlz2P4SBE6pJNUIa
-        hdR8ztc2Y876w4EM4LOexnHM/7SZoZmxV1htzbXf7EKpktR4oJ6+4mHuXWjkPH1VY/l3WA
-        BDZuq2kCxBWA+lBGZas1gx2m7Dv1Mr9TuyMtHCzHwnqPd7pEkH0IPycsMRDeGzIT+LhH/P
-        fD5rejTsusYZl+6oPjNSvlWEGFuSs+dru2lqmqS0eQyEjsJRaoi/QioZZsY52Jx0mxP/yt
-        DHX2BsnUtXH095ARER7BX2h+L097buboL3NLI28knfxP0+LsVtWbo4iS7mzumg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600970110;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YRlGrH6qHmnud4V/lnVcV5vqfU+DBGnkWu7EgTdSlr8=;
-        b=80WsylEKjzTs3/b8Ys3ZZODQN3enPjmHtostMFWbuTS0dOkCPecrcEXoDR2lpjy5cNRqVe
-        3kVR1EQtT/FXXFAg==
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     peterz@infradead.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
+        bh=5ClAO9/rtMU5sQd9Xp4+E5kyKR/mhYS+71Ql/VjPPsQ=;
+        b=exWMxIXWzlNwehesb/+KsnHws+f1duOjKByy31E2m48EEJw6Rf/45kvYGdJTIHl/6rQxlX
+        44gZJDBUdzVVt9bJ4/KfR6QlO/lWmmtj51eQQtCmqtCkKmIRvhvO+ytxZ0ef0VWBHXgO7W
+        QMNZZtDONjLhdub3ftibE7fCz5gOiS4=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-65-r3SJMCa9PEGQJhsH59hgPg-1; Thu, 24 Sep 2020 13:55:35 -0400
+X-MC-Unique: r3SJMCa9PEGQJhsH59hgPg-1
+Received: by mail-qk1-f198.google.com with SMTP id u23so176930qku.17
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 10:55:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5ClAO9/rtMU5sQd9Xp4+E5kyKR/mhYS+71Ql/VjPPsQ=;
+        b=LS3zrJNWlXlS2fbzwqyxqOBT8sUjKoAWAKJCdEDdXqf9i11hYiHh0LWw9g7u2ZZX+W
+         2oePbxkBIjRdJ+uO6l6ZICeUto0sw6pQRLjfxBDvCNRtPpaF8H8F3bEv4dwL7sLHy9EN
+         TlmviHjRRShOnbIRoiKxhH8j3lCDGdezzSUYoSC5ODxJ8h1H/3GfJMcWkCtbYEw54rIV
+         MTeOQ4cHaMRnfeXnAbQeF1qM/EGsBuxxB9DaM+UHpLg/wgFbC2Qp7FW6w1bkfLU8tjOa
+         wIbc9lu56qRohyxQQybz0z4/q88ERsvDV/xY7KMF/uZq+Lm4sFxnQzEuZWVNyW1JQh0l
+         TTOQ==
+X-Gm-Message-State: AOAM531cYrtgVbwTC8UNd2CRaOmttS9h5UE9P6JUPIAxw79TG9dSVL1F
+        w0cy8viZPHKDJvDhMjbtqVS9lzRAIAP5IjacTDfVS/WivhoobAWwL1dwcLXTQybzGKOqBd/YOJN
+        3JePANtLo5A7cCuZvl/Ar7zx+
+X-Received: by 2002:a37:cd5:: with SMTP id 204mr230118qkm.303.1600970134549;
+        Thu, 24 Sep 2020 10:55:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzSX4aE/PDsFbydVy5j0qbhmvcf/zPbMUXgOKfhUZVfLgyDoQnDeX5yi7cXkFzkVEYCYycIoA==
+X-Received: by 2002:a37:cd5:: with SMTP id 204mr230076qkm.303.1600970134154;
+        Thu, 24 Sep 2020 10:55:34 -0700 (PDT)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
+        by smtp.gmail.com with ESMTPSA id v16sm118868qkg.37.2020.09.24.10.55.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 10:55:33 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 13:55:31 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     John Hubbard <jhubbard@nvidia.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        "open list\:SYNOPSYS ARC ARCHITECTURE" 
-        <linux-snps-arc@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
-        linux-csky@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-sparc <sparclinux@vger.kernel.org>
-Subject: Re: [patch RFC 00/15] mm/highmem: Provide a preemptible variant of kmap_atomic & friends
-In-Reply-To: <20200924083241.314f2102@gandalf.local.home>
-References: <20200919091751.011116649@linutronix.de> <CAHk-=wiYGyrFRbA1cc71D2-nc5U9LM9jUJesXGqpPnB7E4X1YQ@mail.gmail.com> <87mu1lc5mp.fsf@nanos.tec.linutronix.de> <87k0wode9a.fsf@nanos.tec.linutronix.de> <CAHk-=wgbmwsTOKs23Z=71EBTrULoeaH2U3TNqT2atHEWvkBKdw@mail.gmail.com> <87eemwcpnq.fsf@nanos.tec.linutronix.de> <CAHk-=wgF-upZVpqJWK=TK7MS9H-Rp1ZxGfOG+dDW=JThtxAzVQ@mail.gmail.com> <87a6xjd1dw.fsf@nanos.tec.linutronix.de> <CAHk-=wjhxzx3KHHOMvdDj3Aw-_Mk5eRiNTUBB=tFf=vTkw1FeA@mail.gmail.com> <87sgbbaq0y.fsf@nanos.tec.linutronix.de> <20200923084032.GU1362448@hirez.programming.kicks-ass.net> <20200923115251.7cc63a7e@oasis.local.home> <874kno9pr9.fsf@nanos.tec.linutronix.de> <20200923171234.0001402d@oasis.local.home> <871riracgf.fsf@nanos.tec.linutronix.de> <20200924083241.314f2102@gandalf.local.home>
-Date:   Thu, 24 Sep 2020 19:55:10 +0200
-Message-ID: <875z8383gh.fsf@nanos.tec.linutronix.de>
+        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jann Horn <jannh@google.com>
+Subject: Re: [PATCH 1/5] mm: Introduce mm_struct.has_pinned
+Message-ID: <20200924175531.GH79898@xz-x1>
+References: <20200921211744.24758-2-peterx@redhat.com>
+ <224908c1-5d0f-8e01-baa9-94ec2374971f@nvidia.com>
+ <20200922151736.GD19098@xz-x1>
+ <20200922161046.GB731578@ziepe.ca>
+ <20200922175415.GI19098@xz-x1>
+ <20200922191116.GK8409@ziepe.ca>
+ <20200923002735.GN19098@xz-x1>
+ <20200923170759.GA9916@ziepe.ca>
+ <20200924143517.GD79898@xz-x1>
+ <20200924165152.GE9916@ziepe.ca>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200924165152.GE9916@ziepe.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24 2020 at 08:32, Steven Rostedt wrote:
-> On Thu, 24 Sep 2020 08:57:52 +0200
-> Thomas Gleixner <tglx@linutronix.de> wrote:
->
->> > Now as for migration disabled nesting, at least now we would have
->> > groupings of this, and perhaps the theorists can handle that. I mean,
->> > how is this much different that having a bunch of tasks blocked on a
->> > mutex with the owner is pinned on a CPU?
->> >
->> > migrate_disable() is a BKL of pinning affinity.  
->> 
->> No. That's just wrong. preempt disable is a concurrency control,
->
-> I think you totally misunderstood what I was saying. The above wasn't about
-> comparing preempt_disable to migrate_disable. It was comparing
-> migrate_disable to a chain of tasks blocked on mutexes where the top owner
-> has preempt_disable set. You still have a bunch of tasks that can't move to
-> other CPUs.
+On Thu, Sep 24, 2020 at 01:51:52PM -0300, Jason Gunthorpe wrote:
+> > Regarding the solution here, I think we can also cover read-only fast-gup too
+> > in the future - IIUC what we need to do is to make it pte_protnone() instead of
+> > pte_wrprotect(), then in the fault handler we should identify this special
+> > pte_protnone() against numa balancing (change_prot_numa()).  I think it should
+> > work fine too, iiuc, because I don't think we should migrate a page at all if
+> > it's pinned for any reason...
 
-What? The top owner does not prevent any task from moving. The tasks
-cannot move because they are blocked on the mutex, which means they are
-not runnable and non runnable tasks are not migrated at all.
+[1]
 
-I really don't understand what you are trying to say.
+> 
+> With your COW breaking patch the read only fast-gup should break the
+> COW because of the write protect, just like for the write side. Not
+> seeing why we need to do something more?
 
->> > If we only have local_lock() available (even on !RT), then it makes
->> > the blocking in groups. At least this way you could grep for all the
->> > different local_locks in the system and plug that into the algorithm
->> > for WCS, just like one would with a bunch of mutexes.  
->> 
->> You cannot do that on RT at all where migrate disable is substituting
->> preempt disable in spin and rw locks. The result would be the same as
->> with a !RT kernel just with horribly bad performance.
->
-> Note, the spin and rwlocks already have a lock associated with them. Why
-> would it be any different on RT? I wasn't suggesting adding another lock
-> inside a spinlock. Why would I recommend THAT? I wasn't recommending
-> blindly replacing migrate_disable() with local_lock(). I just meant expose
-> local_lock() but not migrate_disable().
+Consider this sequence of a parent process managed to fork() a child:
 
-We already exposed local_lock() to non RT and it's for places which do
-preempt_disable() or local_irq_disable() without having a lock
-associated. But both primitives are scope less and therefore behave like
-CPU local BKLs. What local_lock() provides in these cases is:
+       buf = malloc();
+       // RDONLY gup
+       pin_user_pages(buf, !WRITE);
+       // pte of buf duplicated on both sides
+       fork();
+       mprotect(buf, WRITE);
+       *buf = 1;
+       // buf page replaced as cow triggered
 
-  - Making the protection scope clear by associating a named local
-    lock which is coverred by lockdep.
+Currently when fork() we'll happily share a pinned read-only page with the
+child by copying the pte directly.  However it also means that starting from
+this point, the child started to share this pinned page with the parent.  Then
+if we can somehow trigger a "page unshare"/"cow", problem could occur.
 
-  - It still maps to preempt_disable() or local_irq_disable() in !RT
-    kernels
+In this case I'm using cow (by another mprotect() to trigger).  However I'm not
+sure whether this is the only way to replace the pinned page for the parent.
 
-  - The scope and the named lock allows RT kernels to substitute with
-    real (recursion aware) locking primitives which keep preemption and
-    interupts enabled, but provide the fine grained protection for the
-    scoped critical section.
-  
-So how would you substitute migrate_disable() with a local_lock()? You
-can't. Again migrate_disable() is NOT a concurrency control and
-therefore it cannot be substituted by any concurrency control primitive.
+As a summary: imho the important thing is we should not allow any kind of
+sharing of any dma page, even it's pinned for read.
 
->> That means the stacking problem has to be solved anyway.
->> 
->> So why on earth do you want to create yet another special duct tape case
->> for kamp_local() which proliferates inconsistency instead of aiming for
->> consistency accross all preemption models?
->
-> The idea was to help with the scheduling issue.
+If my above understanding is correct - Above [1] may provide a solution for us
+(in the future) when we want to block read-only fast-gup too in this patch just
+like how we do that using wrprotect().
 
-I don't see how mixing concepts and trying to duct tape a problem which
-is clearly in the realm of the scheduler, i.e. load balancing and
-placing algorithms, is helpful.
+-- 
+Peter Xu
 
-Thanks,
-
-        tglx
