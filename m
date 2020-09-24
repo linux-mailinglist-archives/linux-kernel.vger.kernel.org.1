@@ -2,59 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E69CE27777F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 19:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C010277791
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 19:18:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728690AbgIXRIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 13:08:37 -0400
-Received: from ms.lwn.net ([45.79.88.28]:59390 "EHLO ms.lwn.net"
+        id S1728587AbgIXRSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 13:18:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727292AbgIXRIh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 13:08:37 -0400
-Received: from lwn.net (localhost [127.0.0.1])
+        id S1728501AbgIXRSt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 13:18:49 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id C6D4E2CB;
-        Thu, 24 Sep 2020 17:08:35 +0000 (UTC)
-Date:   Thu, 24 Sep 2020 11:08:33 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org,
-        "Frank A. Cancio Bello" <frank@generalsoftwareinc.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Subject: Re: [PATCH v3 2/2] docs: trace: ring-buffer-design.rst: use the new
- SPDX tag
-Message-ID: <20200924110833.2c669418@lwn.net>
-In-Reply-To: <20200918131917.13d9f570@gandalf.local.home>
-References: <cover.1599628249.git.mchehab+huawei@kernel.org>
-        <dbc9bd9ab30c6862e465343239e82102cbdc0f39.1599628249.git.mchehab+huawei@kernel.org>
-        <20200918131917.13d9f570@gandalf.local.home>
-Organization: LWN.net
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+        by mail.kernel.org (Postfix) with ESMTPSA id 1184B2395C;
+        Thu, 24 Sep 2020 17:18:49 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1kLUtK-0029ba-VA; Thu, 24 Sep 2020 13:18:46 -0400
+Message-ID: <20200924170928.466191266@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Thu, 24 Sep 2020 13:09:28 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Yafang Shao <laoar.shao@gmail.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michel Lespinasse <walken@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        Linux MM <linux-mm@kvack.org>, Ingo Molnar <mingo@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: [PATCH 0/2] tracing/mm: Add tracepoint_enabled() helper function for headers
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Sep 2020 13:19:17 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Tracepoints are not safe to be called directly from header files as they may
+be included by C code that has CREATE_TRACE_POINTS defined, and this would
+cause side effects and possibly break the build in hard to debug ways.
 
-> On Wed,  9 Sep 2020 07:14:33 +0200
-> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
-> 
-> > SPDX v3.10 gained support for GFDL-1.2 with no invariant sections:
-> > 
-> > 	https://spdx.org/licenses/GFDL-1.2-no-invariants-only.html
-> > 
-> > Let's use it, instead of keeping a license text for this file.  
-> 
-> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Instead, it is recommended to call a tracepoint helper function that is
+defined in a C file that calls the tracepoint. But we would only want this
+function to be called if the tracepoint is enabled, as function calls add
+overhead.
 
-OK, I've applied this; it looks like Greg already got part 1.
+The trace_<tracepoint>_enabled() function is also no safe to be called in a
+header file as it is created by the tracepoint header, which suffers the
+same fate if CREATE_TRACE_POINTS is defined. Instead, the tracepoint needs
+to be declared as an extern, and the helper function can test the static key
+to call the helper function that calls the tracepoint.
 
-Thanks,
+This has been done by open coding the tracepoint extern and calling the
+static key directly:
 
-jon
+ commit 95813b8faa0cd ("mm/page_ref: add tracepoint to track down page
+    reference manipulation")
+
+does this (back in 2016). Now we have another use case, so a helper function
+should be created to keep the internals of the tracepoints from being spread
+out in other subsystems.
+
+ Link: https://lore.kernel.org/r/20200922125113.12ef1e03@gandalf.local.home
+
+This adds tracepoint_enabled() helper macro and DECLARE_TRACEPOINT() macro
+to allow this to be done without exposing the internals of the tracepoints.
+
+The first patch adds the infrastructure, the second converts page_ref over
+to it. I also noticed that the msr tracepoint needs to be converted as well.
+
+
+Steven Rostedt (VMware) (2):
+      tracepoints: Add helper to test if tracepoint is enabled in a header
+      mm/page_ref: Convert the open coded tracepoint enabled to the new helper
+
+----
+ Documentation/trace/tracepoints.rst | 25 ++++++++++++++++++++++
+ include/linux/page_ref.h            | 42 ++++++++++++++++++-------------------
+ include/linux/tracepoint-defs.h     | 33 +++++++++++++++++++++++++++++
+ 3 files changed, 79 insertions(+), 21 deletions(-)
