@@ -2,89 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C68227799E
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 21:45:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 267D52779A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 21:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726565AbgIXTo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 15:44:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50214 "EHLO
+        id S1726600AbgIXTpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 15:45:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726316AbgIXTo5 (ORCPT
+        with ESMTP id S1726280AbgIXTpK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 15:44:57 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4AA5C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 12:44:57 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id z19so414917pfn.8
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 12:44:57 -0700 (PDT)
+        Thu, 24 Sep 2020 15:45:10 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C330C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 12:45:10 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id y17so164670lfa.8
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 12:45:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ADwlTn9rnJzlHv/xfLefERCgTh/zOY3+dj+IP5LMhIo=;
-        b=L2Wx7FlLw8QHVp62Ne3mt4GV7+MUCO/WLUazgDqXAmYbUX1Et5GwKUZRbOhKWcg1pJ
-         h3F8YG2QH8T53HlhbxkOnKDq7rYr7VYQSpBZ/SrGKbAAN0q9gjlZztvIvkLYWYD2H5p5
-         D5jWhUDJxNaNV9x10hDsgdYsv3+GqUJuih92RXGRYnyEyog4jlWpFA8o+B+sqtqEeysu
-         zXsVFR5QGsEI7lJZ39JHqx1JjZyubGP7QEwNsybW+JHQWulohPcvjDgNlPxNi7sQOhp+
-         YLXR3ph4QhgGStegDp9ue2849D7tWES5wOYPeY73GujeWcYMaP3DsMTgcgakPfQ8C4Iw
-         pmzA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eSsieBQidgogH93zGkfDZQP5/e21cBSfkOWDaUDT/2s=;
+        b=WsW29SUqjJiJZddNLF2A4XcocJgaEx0BV+Vy0q1CP+GSyP5JYj9UbL6j/eyrMH/O/e
+         JEggZ6szgy5px13yB/GvZGpvG4HFLDBI2DJe5KgA/+44PxtQ5SSHCiWnAyBTh6ppYc4d
+         aF9ECLAcXWDweHPeCKzogJK7koWVmC0S22wughhnHvaGL6+kY1jq57WWughJSGNBs3Cn
+         ysQHRNQMqMCf09GJiCKMPAD1OSWE3i7QV174YfyWr9n6fiPcsC9ngRZeWOD+xtB9Sfk0
+         Mi4VOnfvovoOv37WBRWrAqYfHnw6SI9RxuJUEKQzh1kGLtK54VrgKVemubLLRGMLEIQ7
+         VDdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ADwlTn9rnJzlHv/xfLefERCgTh/zOY3+dj+IP5LMhIo=;
-        b=RiJj0cIEomzX/Im21fmHggoWGKEh3mQxyOlIH2x7D/nHUveh3h4FRuxSu0k13hum3A
-         b0hgQGcNVMYPhRpEEDO/SN8jhaYnq5SJdM86tWuE50BnmV2OveCDrANB5ARbvR7//edt
-         XFOnxWik3iUJGuqYnRnTFkNbhcSa1axEph7H7hqC5hpjGvzLsp/zR3oOqtALsdthjBFu
-         w0hYiZ9ZP8IzhQWiD5W210Yk6aAGZUlApfAg3nQCTnZJf9ujMQG8GanRY2yx45mrRlhM
-         XxwoMs0LPlu+AWovpTandtLuPG0erScZxuhybiIrS/FdsEHHvurKWe96Siyr6oIo4c9c
-         wBTw==
-X-Gm-Message-State: AOAM531UuVRfyaX0KcS0TTD2HOLUNOw80zsO8NemfuEvVThtycQSaPzu
-        TtoOQc8GDAymWZz1sY9rZrxisw==
-X-Google-Smtp-Source: ABdhPJyn7jUbiC3AGiO/dBfKmKGpcA3VV/JE4LzjEmCUjGJIbrcL8/kmgANM72e+JonEfnG9EJ77rg==
-X-Received: by 2002:a17:902:854b:b029:d1:cbf4:bb43 with SMTP id d11-20020a170902854bb02900d1cbf4bb43mr778274plo.13.1600976697336;
-        Thu, 24 Sep 2020 12:44:57 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c085:21d6::1911? ([2620:10d:c090:400::5:d63d])
-        by smtp.gmail.com with ESMTPSA id u10sm267612pfn.122.2020.09.24.12.44.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Sep 2020 12:44:56 -0700 (PDT)
-Subject: Re: bdi cleanups v7
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Song Liu <song@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
-        Coly Li <colyli@suse.de>, Richard Weinberger <richard@nod.at>,
-        Minchan Kim <minchan@kernel.org>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Justin Sanders <justin@coraid.com>,
-        linux-mtd@lists.infradead.org, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
-        linux-kernel@vger.kernel.org, drbd-dev@lists.linbit.com,
-        linux-raid@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, cgroups@vger.kernel.org
-References: <20200924065140.726436-1-hch@lst.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <a9235ba9-95a0-4251-ee7d-e4012775346e@kernel.dk>
-Date:   Thu, 24 Sep 2020 13:44:54 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eSsieBQidgogH93zGkfDZQP5/e21cBSfkOWDaUDT/2s=;
+        b=Uk4xxUDFbdRLdGlgGi/YS7+O26W+sH8gw+TzcgL8Y2N6DiGX8cmCdmangJSPQbeDOK
+         +47gB0uUwrf0WS4/flVCEnsbuXwGqrnhe6yOR0vZF9M4g7v8mGeIzTucKQABLsqEmUIO
+         8yAWOxZSC9SVt30y0gVI1X71t38xhWeZnUYmoWJZp7GjrhURleAfNkYhW8nYtw+fWwi4
+         J6PF07orUnpxs4xCPlSDuKMQbTHDUVvAccITMaOZLQKiEw7EQFxsC8xPVLtuVqT+OAT2
+         f3J1zPoKm462CSsM+5mXHwVAnjgKAKIfZb5C+hmuOD8yiDmkV3+0p0F54Gk+a01W4QKL
+         vCGw==
+X-Gm-Message-State: AOAM530NWxF/yhKKVbLnsplfmh2dNIfFWc3/4JAOiqa1EUduHrh/Xs0W
+        UzIaKwHfv9c3zehMPRLM+3iQLQChpwuDcK4yegHk4g==
+X-Google-Smtp-Source: ABdhPJzwMf70r+Jbg5ClZuPQJVH30T0YFAgaYPUOBkG5Sek0S4eGoPy1cdQ0EaRabYdSQPBatK2KJn3ISrRr4WKNrz4=
+X-Received: by 2002:a19:604e:: with SMTP id p14mr131976lfk.385.1600976708381;
+ Thu, 24 Sep 2020 12:45:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200924065140.726436-1-hch@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200924192706.3075680-1-guro@fb.com> <20200924192706.3075680-4-guro@fb.com>
+In-Reply-To: <20200924192706.3075680-4-guro@fb.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 24 Sep 2020 12:44:57 -0700
+Message-ID: <CALvZod4DGrLnXNB7pyDSu1Dnx0Jqf0_PoV5VXcVgeB_uSYBxPw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] mm: introduce page memcg flags
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/24/20 12:51 AM, Christoph Hellwig wrote:
-> Hi Jens,
-> 
-> this series contains a bunch of different BDI cleanups.  The biggest item
-> is to isolate block drivers from the BDI in preparation of changing the
-> lifetime of the block device BDI in a follow up series.
+On Thu, Sep 24, 2020 at 12:29 PM Roman Gushchin <guro@fb.com> wrote:
+>
+> The lowest bit in page->memcg_data is used to distinguish between
+> struct memory_cgroup pointer and a pointer to a objcgs array.
+> All checks and modifications of this bit are open-coded.
+>
+> Let's formalize it using page memcg flags, defined in page_memcg_flags
+> enum, and replace all open-coded accesses with test_bit()/__set_bit().
+>
+> Additional flags might be added later.
+>
+> Signed-off-by: Roman Gushchin <guro@fb.com>
 
-Applied, thanks.
+Thanks.
 
--- 
-Jens Axboe
-
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
