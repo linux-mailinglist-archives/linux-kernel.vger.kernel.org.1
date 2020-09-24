@@ -2,92 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 333562775CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C0212775C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728560AbgIXPub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 11:50:31 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:51862 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728139AbgIXPub (ORCPT
+        id S1728499AbgIXPuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 11:50:06 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:35431 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1728139AbgIXPuG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 11:50:31 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08OFZLxn125776;
-        Thu, 24 Sep 2020 15:50:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=vn1696U5CRhKmLmc6mdwCozBnLCLObO7LgftVl1wh2o=;
- b=jGpN8isNZtCM5z7nsb1wBtRcRov8B0bLS4Y8Jgq8H3hJMgkHBgpw+B0j+n0iQtU6oW4a
- QX84oMRfxrda29DxxN+D1WO6Juo95LBcan1pWECxN045bzOeYSFit8QXthhoJDaQRbnU
- seFTga76zsuEvub1vBYax7ppb/U+L6mAumw2Mhgx2mEcIYPYMg5hWrJvCiudE1KCKong
- 6dgAASGoNxvU+gi3A53HQylRFymVIzYtV5b4NqtIoeyAAlCFpl+JO5CMpcTFKUHNrPPx
- wq25IEd46NnTfcYJ10+Cju65COp21F54g/3/Y9TEogN0+CpBlb7kUPWjmg4Oti/cRVCh Lw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 33q5rgqf43-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 24 Sep 2020 15:50:00 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08OFUZHt054350;
-        Thu, 24 Sep 2020 15:49:59 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 33nurwbrpy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 24 Sep 2020 15:49:59 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08OFnq1D012263;
-        Thu, 24 Sep 2020 15:49:53 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 24 Sep 2020 08:49:51 -0700
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Song Liu <song@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Coly Li <colyli@suse.de>, Richard Weinberger <richard@nod.at>,
-        Minchan Kim <minchan@kernel.org>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Justin Sanders <justin@coraid.com>,
-        linux-mtd@lists.infradead.org, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
-        linux-kernel@vger.kernel.org, drbd-dev@tron.linbit.com,
-        linux-raid@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH 03/13] bcache: inherit the optimal I/O size
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1ft77maz5.fsf@ca-mkp.ca.oracle.com>
-References: <20200924065140.726436-1-hch@lst.de>
-        <20200924065140.726436-4-hch@lst.de>
-Date:   Thu, 24 Sep 2020 11:49:48 -0400
-In-Reply-To: <20200924065140.726436-4-hch@lst.de> (Christoph Hellwig's message
-        of "Thu, 24 Sep 2020 08:51:30 +0200")
+        Thu, 24 Sep 2020 11:50:06 -0400
+Received: (qmail 1341527 invoked by uid 1000); 24 Sep 2020 11:50:05 -0400
+Date:   Thu, 24 Sep 2020 11:50:05 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Felipe Balbi <balbi@kernel.org>
+Cc:     Wesley Cheng <wcheng@codeaurora.org>, gregkh@linuxfoundation.org,
+        Thinh.Nguyen@synopsys.com, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, jackp@codeaurora.org
+Subject: Re: [PATCH v3] usb: dwc3: Stop active transfers before halting the
+ controller
+Message-ID: <20200924155005.GB1337044@rowland.harvard.edu>
+References: <20200903210954.24504-1-wcheng@codeaurora.org>
+ <87o8mi151l.fsf@kernel.org>
+ <010101746fab2ee1-91b46c27-fef0-4266-94cb-14dea5ca350e-000000@us-west-2.amazonses.com>
+ <877dsjei8j.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9753 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
- phishscore=0 mlxlogscore=999 bulkscore=0 mlxscore=0 suspectscore=1
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009240118
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9753 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=1 phishscore=0
- malwarescore=0 mlxlogscore=999 adultscore=0 bulkscore=0 lowpriorityscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009240118
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <877dsjei8j.fsf@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 24, 2020 at 10:39:24AM +0300, Felipe Balbi wrote:
+> >>> +	/*
+> >>> +	 * Synchronize and disable any further event handling while controller
+> >>> +	 * is being enabled/disabled.
+> >>> +	 */
+> >>> +	disable_irq(dwc->irq_gadget);
+> >> 
+> >> why isn't dwc3_gadget_disable_irq() enough?
+> >> 
+> >>>  	spin_lock_irqsave(&dwc->lock, flags);
+> >> 
+> >> spin_lock_irqsave() will disable interrupts, why disable_irq() above?
+> >> 
+> >
+> > In the discussion I had with Thinh, the concern was that with the newly
+> > added code to override the lpos here, if the interrupt routine
+> > (dwc3_check_event_buf()) runs, then it will reference the lpos for
+> 
+> that's running in hardirq context. All interrupts are disabled while
+> that runs, there's no risk of race, right?
+> 
+> > copying the event buffer contents to the event cache, and potentially
+> > process events.  There is no locking in place, so it could be possible
+> > to have both run in parallel.
+> 
+> Is this academic or have you actually found a situation where this
+> could, indeed, happen? The spin_lock_irqsave() should be enough to
+> synchronize dwc3_gadget_pullup() and the interrupt handler.
+> 
+> > Hence, the reason if there was already a pending IRQ triggered, the
+> > dwc3_gadget_disable_irq() won't ensure the IRQ is handled.  We can do
+> > something like:
+> > if (!is_on)
+> > 	dwc3_gadget_disable_irq()
+> > synchronize_irq()
+> > spin_lock_irqsave()
+> > if(!is_on) {
+> > ...
+> >
+> > But the logic to only apply this on the pullup removal case is a little
+> > messy.  Also, from my understanding, the spin_lock_irqsave() will only
+> > disable the local CPU IRQs, but not the interrupt line on the GIC, which
+> > means other CPUs can handle it, unless we explicitly set the IRQ
+> > affinity to CPUX.
+> 
+> Yeah, the way I understand this can't really happen. But I'm open to
+> being educated. Maybe Alan can explain if this is really possibility?
 
-Christoph,
+It depends on the details of the hardware, but yes, it is possible in
+general for an interrupt handler to run after you have turned off the
+device's interrupt-request line.  For example:
 
-> Inherit the optimal I/O size setting just like the readahead window,
-> as any reason to do larger I/O does not apply to just readahead.
+	CPU A				CPU B
+	---------------------------	----------------------
+	Gets an IRQ from the device
+	Calls handler routine		spin_lock_irq
+	  spin_lock_irq			Turns off the IRQ line
+	  ...spins...			spin_unlock_irq
+	  Rest of handler runs
+	  spin_unlock_irq
 
-Looks fine.
+That's why we have synchronize_irq().  The usual pattern is something
+like this:
 
-Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
+	spin_lock_irq(&priv->lock);
+	priv->disconnected = true;
+	my_disable_irq(priv);
+	spin_unlock_irq(&priv->lock);
+	synchronize_irq(priv->irq);
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+And of course this has to be done in a context that can sleep.
+
+Does this answer your question?
+
+Alan Stern
