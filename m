@@ -2,182 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89349277A1D
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 22:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A17AD277A21
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 22:23:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726574AbgIXUWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 16:22:43 -0400
-Received: from asavdk3.altibox.net ([109.247.116.14]:54360 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgIXUWm (ORCPT
+        id S1726424AbgIXUX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 16:23:56 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:38718 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725208AbgIXUX4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 16:22:42 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 24F1020079;
-        Thu, 24 Sep 2020 22:22:38 +0200 (CEST)
-Date:   Thu, 24 Sep 2020 22:22:37 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        od@zcrc.me, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] drm/ingenic: Reset pixclock rate when parent clock
- rate changes
-Message-ID: <20200924202237.GJ1223313@ravnborg.org>
-References: <20200915123818.13272-1-paul@crapouillou.net>
- <20200915123818.13272-3-paul@crapouillou.net>
+        Thu, 24 Sep 2020 16:23:56 -0400
+Received: from [192.168.254.38] (unknown [47.187.206.220])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 1691420B7179;
+        Thu, 24 Sep 2020 13:23:53 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1691420B7179
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1600979034;
+        bh=+237tDspiVrie5yBP4VnYYu5EdHBP8CLEagktXJUIh0=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=m9ieD3411ySMRyYTZj0HBVhwJ2vpH7M2uALr6xd0ro7ushCvjRwuKOLgGf2j5onXW
+         coOERdSa0yW7KltJ4+GBkMTq9XpZgZaUr5+hLUlOBSIt00Ms8RIYwoiAChQqd7uTs3
+         ojHylXUFG38DkhHGUlferrWOL47+8MEWvMmAOGLc=
+Subject: Re: [PATCH v2 0/4] [RFC] Implement Trampoline File Descriptor
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Florian Weimer <fw@deneb.enyo.de>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, oleg@redhat.com,
+        x86@kernel.org, libffi-discuss@sourceware.org, luto@kernel.org,
+        David.Laight@ACULAB.COM, mark.rutland@arm.com, mic@digikod.net,
+        pavel@ucw.cz
+References: <20200916150826.5990-1-madvenka@linux.microsoft.com>
+ <87v9gdz01h.fsf@mid.deneb.enyo.de>
+ <96ea02df-4154-5888-1669-f3beeed60b33@linux.microsoft.com>
+ <20200923014616.GA1216401@rani.riverdale.lan>
+ <20200923091125.GB1240819@rani.riverdale.lan>
+ <a742b9cd-4ffb-60e0-63b8-894800009700@linux.microsoft.com>
+ <20200923195147.GA1358246@rani.riverdale.lan>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <2ed2becd-49b5-7e76-9836-6a43707f539f@linux.microsoft.com>
+Date:   Thu, 24 Sep 2020 15:23:52 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915123818.13272-3-paul@crapouillou.net>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=CaYmGojl c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=ER_8r6IbAAAA:8 a=7gkXJVJtAAAA:8
-        a=sny3g-cHPLq5ypFa_t0A:9 a=ZUiN53XLKoM9xQfY:21 a=2yNEIkl1zbzAPERt:21
-        a=CjuIK1q_8ugA:10 a=9LHmKk7ezEChjTCyhBa9:22 a=E9Po1WZjFZOl8hwRPBS3:22
+In-Reply-To: <20200923195147.GA1358246@rani.riverdale.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul.
 
-On Tue, Sep 15, 2020 at 02:38:17PM +0200, Paul Cercueil wrote:
-> Old Ingenic SoCs can overclock very well, up to +50% of their nominal
-> clock rate, whithout requiring overvolting or anything like that, just
-> by changing the rate of the main PLL. Unfortunately, all clocks on the
-> system are derived from that PLL, and when the PLL rate is updated, so
-> is our pixel clock.
+
+On 9/23/20 2:51 PM, Arvind Sankar wrote:
+> On Wed, Sep 23, 2020 at 02:17:30PM -0500, Madhavan T. Venkataraman wrote:
+>>
+>>
+>> On 9/23/20 4:11 AM, Arvind Sankar wrote:
+>>> For libffi, I think the proposed standard trampoline won't actually
+>>> work, because not all ABIs have two scratch registers available to use
+>>> as code_reg and data_reg. Eg i386 fastcall only has one, and register
+>>> has zero scratch registers. I believe 32-bit ARM only has one scratch
+>>> register as well.
+>>
+>> The trampoline is invoked as a function call in the libffi case. Any
+>> caller saved register can be used as code_reg, can it not? And the
+>> scratch register is needed only to jump to the code. After that, it
+>> can be reused for any other purpose.
+>>
+>> However, for ARM, you are quite correct. There is only one scratch
+>> register. This means that I have to provide two types of trampolines:
+>>
+>> 	- If an architecture has enough scratch registers, use the currently
+>> 	  defined trampoline.
+>>
+>> 	- If the architecture has only one scratch register, but has PC-relative
+>> 	  data references, then embed the code address at the bottom of the
+>> 	  trampoline and access it using PC-relative addressing.
+>>
+>> Thanks for pointing this out.
+>>
+>> Madhavan
 > 
-> To counter that issue, we make sure that the panel is in VBLANK before
-> the rate change happens, and we will then re-set the pixel clock rate
-> afterwards, once the PLL has been changed, to be as close as possible to
-> the pixel rate requested by the encoder.
+> libffi is trying to provide closures with non-standard ABIs as well: the
+> actual user function is standard ABI, but the closure can be called with
+> a different ABI. If the closure was created with FFI_REGISTER abi, there
+> are no registers available for the trampoline to use: EAX, EDX and ECX
+> contain the first three arguments of the function, and every other
+> register is callee-save.
 > 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 49 ++++++++++++++++++++++-
->  1 file changed, 48 insertions(+), 1 deletion(-)
+> I provided a sample of the kind of trampoline that would be needed in
+> this case -- it's position-independent and doesn't clobber any registers
+> at all, and you get 255 trampolines per page. If I take another 16-byte
+> slot out of the page for the end trampoline that does the actual work,
+> I'm sure I could even come up with one that can just call a normal C
+> function, only the return might need special handling depending on the
+> return type.
 > 
-> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> index fb62869befdc..aa32660033d2 100644
-> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> @@ -12,6 +12,7 @@
->  #include <linux/dma-noncoherent.h>
->  #include <linux/io.h>
->  #include <linux/module.h>
-> +#include <linux/mutex.h>
->  #include <linux/of_device.h>
->  #include <linux/platform_device.h>
->  #include <linux/regmap.h>
-> @@ -73,6 +74,9 @@ struct ingenic_drm {
->  
->  	bool panel_is_sharp;
->  	bool no_vblank;
-> +	bool update_clk_rate;
-> +	struct mutex clk_mutex;
-Please add comment about what the mutex protects.
-Especially since the mutex is locked and unlocked based on a
-notification.
+> And again, do you actually have any example of an architecture that
+> cannot run position-independent code? PC-relative addressing is an
+> implementation detail: the fact that it's available for x86_64 but not
+> for i386 just makes position-independent code more cumbersome on i386,
+> but it doesn't make it impossible. For the tiny trampolines here, it
+> makes almost no difference.
+> 
 
-With the comment added:
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
+I have tried to answer all of your previous comments here. Let me know
+if I missed anything:
 
-> +	struct notifier_block clock_nb;
->  };
->  
->  static bool ingenic_drm_cached_gem_buf;
-> @@ -115,6 +119,29 @@ static inline struct ingenic_drm *drm_crtc_get_priv(struct drm_crtc *crtc)
->  	return container_of(crtc, struct ingenic_drm, crtc);
->  }
->  
-> +static inline struct ingenic_drm *drm_nb_get_priv(struct notifier_block *nb)
-> +{
-> +	return container_of(nb, struct ingenic_drm, clock_nb);
-> +}
-> +
-> +static int ingenic_drm_update_pixclk(struct notifier_block *nb,
-> +				     unsigned long action,
-> +				     void *data)
-> +{
-> +	struct ingenic_drm *priv = drm_nb_get_priv(nb);
-> +
-> +	switch (action) {
-> +	case PRE_RATE_CHANGE:
-> +		mutex_lock(&priv->clk_mutex);
-> +		priv->update_clk_rate = true;
-> +		drm_crtc_wait_one_vblank(&priv->crtc);
-> +		return NOTIFY_OK;
-> +	default:
-> +		mutex_unlock(&priv->clk_mutex);
-Any risk the POST_RATE_CHANGE or ABORT_RATE_CHANGE may go missing so we
-fail to unlock the mutex?
-I think not but wanted to make sure you had thought about it.
 
-> +		return NOTIFY_OK;
-> +	}
-> +}
-> +
->  static void ingenic_drm_crtc_atomic_enable(struct drm_crtc *crtc,
->  					   struct drm_crtc_state *state)
->  {
-> @@ -280,8 +307,14 @@ static void ingenic_drm_crtc_atomic_flush(struct drm_crtc *crtc,
->  
->  	if (drm_atomic_crtc_needs_modeset(state)) {
->  		ingenic_drm_crtc_update_timings(priv, &state->mode);
-> +		priv->update_clk_rate = true;
-> +	}
->  
-> +	if (priv->update_clk_rate) {
-> +		mutex_lock(&priv->clk_mutex);
->  		clk_set_rate(priv->pix_clk, state->adjusted_mode.clock * 1000);
-> +		priv->update_clk_rate = false;
-> +		mutex_unlock(&priv->clk_mutex);
->  	}
->  
->  	if (event) {
-> @@ -1046,16 +1079,28 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
->  	if (soc_info->has_osd)
->  		regmap_write(priv->map, JZ_REG_LCD_OSDC, JZ_LCD_OSDC_OSDEN);
->  
-> +	mutex_init(&priv->clk_mutex);
-> +	priv->clock_nb.notifier_call = ingenic_drm_update_pixclk;
-> +
-> +	parent_clk = clk_get_parent(priv->pix_clk);
-> +	ret = clk_notifier_register(parent_clk, &priv->clock_nb);
-> +	if (ret) {
-> +		dev_err(dev, "Unable to register clock notifier\n");
-> +		goto err_devclk_disable;
-> +	}
-> +
->  	ret = drm_dev_register(drm, 0);
->  	if (ret) {
->  		dev_err(dev, "Failed to register DRM driver\n");
-> -		goto err_devclk_disable;
-> +		goto err_clk_notifier_unregister;
->  	}
->  
->  	drm_fbdev_generic_setup(drm, 32);
->  
->  	return 0;
->  
-> +err_clk_notifier_unregister:
-> +	clk_notifier_unregister(parent_clk, &priv->clock_nb);
->  err_devclk_disable:
->  	if (priv->lcd_clk)
->  		clk_disable_unprepare(priv->lcd_clk);
-> @@ -1077,7 +1122,9 @@ static int compare_of(struct device *dev, void *data)
->  static void ingenic_drm_unbind(struct device *dev)
->  {
->  	struct ingenic_drm *priv = dev_get_drvdata(dev);
-> +	struct clk *parent_clk = clk_get_parent(priv->pix_clk);
->  
-> +	clk_notifier_unregister(parent_clk, &priv->clock_nb);
->  	if (priv->lcd_clk)
->  		clk_disable_unprepare(priv->lcd_clk);
->  	clk_disable_unprepare(priv->pix_clk);
-> -- 
-> 2.28.0
+> Which ISA does not support PIC objects? You mentioned i386 below, but
+> i386 does support them, it just needs to copy the PC into a GPR first
+> (see below).
+
+Position Independent Code needs PC-relative branches. I was referring
+to PC-relative data references. Like RIP-relative data references in
+X64. i386 ISA does not support this.
+
+> i386 just needs a tiny bit of code to copy the PC into a GPR first, i.e.
+> the trampoline would be:
+> 
+> 	call	1f
+> 1:	pop	%data_reg
+> 	movl	(code_table + X - 1b)(%data_reg), %code_reg
+> 	movl	(data_table + X - 1b)(%data_reg), %data_reg
+> 	jmp	*(%code_reg)
+> 
+> I do not understand the point about passing data at runtime. This
+> trampoline is to achieve exactly that, no?
+
+PC-relative data referencing
+----------------------------
+
+I agree that the current PC value can be loaded in a GPR using the trick
+of call, pop on i386.
+
+Perhaps, on other architectures, we can do similar things. For instance,
+in architectures that load the return address in a designated register
+instead of pushing it on the stack, the trampoline could call a leaf function
+that moves the value of that register into data_reg so that at the location
+after the call instruction, the current PC is already loaded in data_reg.
+SPARC is one example I can think of.
+
+My take is - if the ISA supports PC-relative data referencing explicitly (like
+X64 or ARM64), then we can use it. Or, if the ABI specification documents an
+approved way to load the PC into a GPR, we can use it.
+
+Otherwise, using an ABI quirk or a calling convention side effect to load the
+PC into a GPR is, IMO, non-standard or non-compliant or non-approved or
+whatever you want to call it. I would be conservative and not use it. Who knows
+what incompatibility there will be with some future software or hardware
+features?
+
+For instance, in the i386 example, we do a call without a matching return.
+Also, we use a pop to undo the call. Can anyone tell me if this kind of use
+is an ABI approved one?
+
+Kernel supplied trampoline
+--------------------------
+
+One advantage in doing this in the kernel is that we don't need to use
+non-standard or non-ABI compliant code.
+
+To minimize the number of registers used by the trampoline, I will redefine
+the kernel generated trampoline as follows:
+
+- The kernel loads the trampoline and the code and the data addresses to be
+  dereferenced like this:
+
+	A ----> -------------------
+		| Trampoline code |
+	B ---->	-------------------
+	        | Data Address    |
+		-------------------
+		| Code Address    |
+		-------------------
+
+So, the trampoline code would be:
+
+	mov B, %data_reg
+	jump (%data_reg + sizeof(Data address))
+
+The kernel will hard code B into the trampoline.
+
+The static code that the trampoline jumps to looks like this:
+
+	load (%data_reg), %data_reg
+	rest of the code
+
+Use of scratch registers
+------------------------
+
+With this new trampoline, we only use one scratch register. So, the same
+RFC will work for libffi on ARM.
+
+You pointed out that in the FFI_REGISTER ABI no scratch registers can
+be used. Read the section "Secure vs Performant trampoline" below where
+this is addressed.
+
+Standard API for all userland for all architectures
+---------------------------------------------------
+
+The next advantage in using the kernel is standardization.
+
+If the kernel supplies this, then all applications and libraries can use
+it for all architectures with one single, simple API. Without this, each
+application/library has to roll its own solution for every architecture-ABI
+combo it wants to support.
+
+Furthermore, if this work gets accepted, I plan to add a glibc wrapper for
+the kernel API. The glibc API would look something like this:
+
+	Allocate a trampoline
+	---------------------
+
+	tramp = alloc_tramp();
+
+	Set trampoline parameters
+	-------------------------
+
+	init_tramp(tramp, code, data);
+
+	Free the trampoline
+	-------------------
+
+	free_tramp(tramp);
+
+glibc will allocate and manage the code and data tables, handle kernel API
+details and manage the trampoline table.
+
+As an example, in libffi:
+
+	ffi_closure_alloc() would call alloc_tramp()
+
+	ffi_prep_closure_loc() would call init_tramp()
+
+	ffi_closure_free() would call free_tramp()
+
+That is it! It works on all the architectures supported in the kernel for
+trampfd.
+
+This makes it really easy for maintainers to adopt the API and move their
+code to a more secure model (which is the fundamental idea behind this work).
+For this advantage alone, IMO, it is worth doing it in the kernel.
+
+Secure vs Performant trampoline
+-------------------------------
+
+If you recall, in version 1, I presented a trampoline type that is
+implemented in the kernel. When an application invokes the trampoline,
+it traps into the kernel and the kernel performs the work of the trampoline.
+
+The disadvantage is that a trip to the kernel is needed. That can be
+expensive.
+
+The advantage is that the kernel can add security checks before doing the
+work. Mainly, I am looking at checks that might prevent the trampoline
+from being used in an ROP/BOP chain. Some half-baked ideas:
+
+	- Check that the invocation is at the starting point of the
+	  trampoline
+
+	- Check if the trampoline is jumping to an allowed PC
+
+	- Check if the trampoline is being invoked from an allowed
+	  calling PC or PC range
+
+Allowed PCs can be input using the trampfd API mentioned in version 1.
+Basically, an array of PCs is written into trampfd.
+
+Suggestions for other checks are most welcome!
+
+I would like to implement an option in the trampfd API. The user can
+choose a secure trampoline or a performant trampoline. For a performant
+trampoline, the kernel will generate the code. For a secure trampoline,
+the kernel will do the work itself.
+
+In order to address the FFI_REGISTER ABI in libffi, we could use the secure
+trampoline. In FFI_REGISTER, the data is pushed on the stack and the code
+is jumped to without using any registers.
+
+As outlined in version 1, the kernel can push the data address on the stack
+and write the code address into the PC and return to userland.
+
+For doing all of this, we need trampfd.
+
+Permitting the use of trampfd
+-----------------------------
+
+An "exectramp" setting can be implemented in SELinux to selectively allow the
+use of trampfd for applications.
+
+Madhavan
