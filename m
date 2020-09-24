@@ -2,81 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2AD927759F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:41:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C15E2775A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728479AbgIXPk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 11:40:56 -0400
-Received: from lan.nucleusys.com ([92.247.61.126]:32904 "EHLO
-        zztop.nucleusys.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728139AbgIXPk4 (ORCPT
+        id S1728442AbgIXPnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 11:43:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728139AbgIXPnj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 11:40:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=nucleusys.com; s=x; h=In-Reply-To:Content-Type:MIME-Version:References:
-        Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Q/o5cuCHNMfZCC5DXURaTMfkvGumctmEhF5/EQbiobo=; b=bcW/P9rAhkU6dQ/Y+qika/Jg25
-        ECxp3eVyEuMkpAf9XsRDNWEZKhx3qRYj3Z2ZZZfQdIafBMGmLaBgbGOM/uKEXifVGoiqk4whfC9ld
-        9XywUqHm1tgliViap8mdaLSrl2EjqaqPD88EO4NwYqd5j6nfohlGOq8xmMkwbAGlybc0=;
-Received: from [94.26.108.4] (helo=carbon.lan)
-        by zztop.nucleusys.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <petkan@nucleusys.com>)
-        id 1kLTMC-0000QU-Sy; Thu, 24 Sep 2020 18:40:29 +0300
-Date:   Thu, 24 Sep 2020 18:40:26 +0300
-From:   Petko Manolov <petkan@nucleusys.com>
-To:     Oliver Neukum <oneukum@suse.com>
-Cc:     Himadri Pandya <himadrispandya@gmail.com>, davem@davemloft.net,
-        kuba@kernel.org, pankaj.laxminarayan.bharadiya@intel.com,
-        keescook@chromium.org, yuehaibing@huawei.com, ogiannou@gmail.com,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        gregkh@linuxfoundation.org
-Subject: Re: [PATCH 3/4] net: usb: rtl8150: use usb_control_msg_recv() and
- usb_control_msg_send()
-Message-ID: <20200924154026.GA9761@carbon.lan>
-References: <20200923090519.361-1-himadrispandya@gmail.com>
- <20200923090519.361-4-himadrispandya@gmail.com>
- <1600856557.26851.6.camel@suse.com>
- <20200923144832.GA11151@karbon>
- <2f997848ed05c1f060125f7567f6bc3fae7410bb.camel@suse.com>
+        Thu, 24 Sep 2020 11:43:39 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA66C0613CE;
+        Thu, 24 Sep 2020 08:43:38 -0700 (PDT)
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 3EF72382;
+        Thu, 24 Sep 2020 15:43:37 +0000 (UTC)
+Date:   Thu, 24 Sep 2020 09:43:35 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] docs: cdomain.py: add support for two new Sphinx
+ 3.1+ tags
+Message-ID: <20200924094335.65944316@lwn.net>
+In-Reply-To: <4b8a20013ca0b631724e8a986544ada08ac3dfd7.1600945712.git.mchehab+huawei@kernel.org>
+References: <cover.1600945712.git.mchehab+huawei@kernel.org>
+        <4b8a20013ca0b631724e8a986544ada08ac3dfd7.1600945712.git.mchehab+huawei@kernel.org>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2f997848ed05c1f060125f7567f6bc3fae7410bb.camel@suse.com>
-X-Spam-Score: -1.0 (-)
-X-Spam-Report: Spam detection software, running on the system "zztop.nucleusys.com",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  On 20-09-24 13:09:05, Oliver Neukum wrote: > Am Mittwoch,
-   den 23.09.2020, 17:48 +0300 schrieb Petko Manolov: > > > One possible fix
-   is to add yet another argument to usb_control_msg_recv(), > > which [...] 
- Content analysis details:   (-1.0 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
- -1.0 ALL_TRUSTED            Passed through trusted hosts only via SMTP
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-09-24 13:09:05, Oliver Neukum wrote:
-> Am Mittwoch, den 23.09.2020, 17:48 +0300 schrieb Petko Manolov:
-> 
-> > One possible fix is to add yet another argument to usb_control_msg_recv(), 
-> > which would be the GFP_XYZ flag to pass on to kmemdup().  Up to Greg, of 
-> > course.
-> 
-> submitted. The problem is those usages that are very hard to trace. I'd 
-> dislike to just slab GFP_NOIO on them for no obvious reason.
+So I'm just getting into this and trying to understand what's really going
+on, but one thing jumped at me:
 
-Do you mean you submitted a patch for usb_control_msg_recv() (because i don't 
-see it on linux-netdev) or i'm reading this all wrong?
+On Thu, 24 Sep 2020 13:22:04 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
 
+> +# Namespace to be prepended to the full name
+> +namespace = None
+> +
+> +#
+> +# Handle trivial newer c domain tags that are part of Sphinx 3.1 c domain tags
+> +# - Convert :c:expr:`foo` into ``foo``
+> +# - Store the namespace if ".. c:namespace::" tag is found
+> +
+> +RE_namespace = re.compile(r'^\s*..\s*c:namespace::\s*(\S+)\s*$')
+> +RE_expr = re.compile(r':c:expr:`([^\`]+)`')
+> +
+> +def markup_namespace(match):
+> +    namespace = match.group(1)
+> +
+> +    return ""
+> +
 
-		Petko
+How can this possibly work without a "global namespace" declaration in
+markup_namespace()?
+
+jon
