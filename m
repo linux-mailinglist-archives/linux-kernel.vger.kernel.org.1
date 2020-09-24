@@ -2,104 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ACD7277A28
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 22:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDE30277A29
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 22:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726458AbgIXUZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 16:25:41 -0400
-Received: from mail.efficios.com ([167.114.26.124]:42232 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgIXUZk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 16:25:40 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 594102D8AD5;
-        Thu, 24 Sep 2020 16:25:39 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id LHhl6wuY2O7m; Thu, 24 Sep 2020 16:25:39 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 1B6A52D8F00;
-        Thu, 24 Sep 2020 16:25:39 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 1B6A52D8F00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1600979139;
-        bh=9qP9LZF8ULzw711fz24KyU37d2yeb0aqYee00FSFgeY=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=TAtF/dk34XCpbBTek1ItKhEaLcT6PKToglElHdG+J+wopv41T1s0R0PKR16rGWnoH
-         Wc84WdKiNYBZQIE63Lvk8Zf0JRBH6q1E8MikhQJ+21uJ8TQWphfb9Ww/i/B5jYVM1A
-         0HW0v8SO+TV3lxQ+T8UxgtuvWdWrxw2YwrDc8rII92B2Wqy1Q79r4ZuOC8nxQzlwOf
-         Aj+a6deWHpmV6rzfNqnosyMbzCXMCCiurXfQDEY7Dv2AbqjPE1VXfdDY8EtXY+0MqF
-         DxlGDLIUo/DEbizTSpqJ8SVUdzgX/4uk3Xe4VC6KGjlqYBhNMyStOtJTWBBqEEqcZK
-         uCkUYfew1Yb1g==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id uOC-VpRcyvvA; Thu, 24 Sep 2020 16:25:39 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 059962D8AD4;
-        Thu, 24 Sep 2020 16:25:39 -0400 (EDT)
-Date:   Thu, 24 Sep 2020 16:25:38 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
+        id S1726518AbgIXUZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 16:25:53 -0400
+Received: from mga03.intel.com ([134.134.136.65]:59764 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725208AbgIXUZx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 16:25:53 -0400
+IronPort-SDR: EqBQGPka+f3wO8DyTRCaLlSFD1nsdx9nZrPsJz+J/Oe1G1JDc0cjg28igYST7pcDs3b39w2ClK
+ xBWVCRaYeZ5w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="161409135"
+X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
+   d="scan'208";a="161409135"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 13:25:52 -0700
+IronPort-SDR: cEm40dcYnlObO0TbPOblQloHkdQY55tEX3b3EuhYzhlIEueAcQGhPQ4gqn8xl9XRn5lXJhw10A
+ efnawiUJQtWQ==
+X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
+   d="scan'208";a="310512878"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 13:25:52 -0700
+Date:   Thu, 24 Sep 2020 13:25:51 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Haitao Huang <haitao.huang@linux.intel.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
+        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michel Lespinasse <walken@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        linux-mm <linux-mm@kvack.org>, Ingo Molnar <mingo@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Message-ID: <1676229796.69080.1600979138922.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20200924154009.4b45d56e@oasis.local.home>
-References: <20200924170928.466191266@goodmis.org> <20200924171846.993048030@goodmis.org> <2006335081.68212.1600969345189.JavaMail.zimbra@efficios.com> <20200924143025.58dc3c1f@gandalf.local.home> <166273261.68446.1600974510284.JavaMail.zimbra@efficios.com> <20200924153517.73f5f257@oasis.local.home> <20200924154009.4b45d56e@oasis.local.home>
-Subject: Re: [PATCH 1/2] tracepoints: Add helper to test if tracepoint is
- enabled in a header
+        Matthew Wilcox <willy@infradead.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        asapek@google.com, Borislav Petkov <bp@alien8.de>,
+        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
+        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
+        "Huang, Haitao" <haitao.huang@intel.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
+        Christian Ludloff <ludloff@google.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Patrick Uiterwijk <puiterwijk@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
+Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
+Message-ID: <20200924202549.GB19127@linux.intel.com>
+References: <20200921211849.GA25403@linux.intel.com>
+ <20200922052957.GA97272@linux.intel.com>
+ <20200922053515.GA97687@linux.intel.com>
+ <20200922164301.GB30874@linux.intel.com>
+ <20200923135056.GD5160@linux.intel.com>
+ <op.0rgp5h0hwjvjmi@mqcpg7oapc828.gar.corp.intel.com>
+ <20200924192853.GA18826@linux.intel.com>
+ <c680f7bd-2d82-6477-707f-cd03aae4b4aa@intel.com>
+ <20200924200156.GA19127@linux.intel.com>
+ <e4bcb25f-581a-da93-502b-b8f73e28286a@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3965 (ZimbraWebClient - FF80 (Linux)/8.8.15_GA_3963)
-Thread-Topic: tracepoints: Add helper to test if tracepoint is enabled in a header
-Thread-Index: 78LRJNuS3GaFV58uE9BR0KXLBrgDKg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e4bcb25f-581a-da93-502b-b8f73e28286a@intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Sep 24, 2020, at 3:40 PM, rostedt rostedt@goodmis.org wrote:
-
-> On Thu, 24 Sep 2020 15:35:17 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
+On Thu, Sep 24, 2020 at 01:10:31PM -0700, Dave Hansen wrote:
+> On 9/24/20 1:01 PM, Sean Christopherson wrote:
+> >> In pseudo-C, it's something logically like this for the "nice" case:
+> >>
+> >> 	ptr = mmap("/some/executable", PROT_EXEC);
+> >> 	ioctl(sgx_fd, ADD_ENCLAVE_PAGE, SGX_PROT_EXEC, ptr, size);
+> >> 	mmap(sgx_fd);
+> >> 	EENTER;
+> >>
+> >> And we're trying to thwart:
+> >>
+> >> 	ptr = mmap("/mnt/noexec/file", PROT_READ);
+> >> 	ioctl(sgx_fd, ADD_ENCLAVE_PAGE, SGX_PROT_EXEC, ptr, size);
+> >> 	mmap(sgx_fd);
+> >> 	EENTER;
+> >>
+> >> because that loads data into the enclave which is executable but which
+> >> was not executable normally.  But, we're allowing this from anonymous
+> >> memory, so this would seem to work:
+> >>
+> >> 	ptr = mmap("/mnt/noexec/file", PROT_READ);
+> >> 	buffer = malloc(PAGE_SIZE);
+> >> 	memcpy(buffer, ptr, PAGE_SIZE);
+> >> 	// need mprotect(buf, PROT_EXEC)???
+> >> 	ioctl(sgx_fd, ADD_ENCLAVE_PAGE, SGX_PROT_EXEC, buffer, size);
+> >> 	mmap(sgx_fd);
+> >> 	EENTER;
+> >>
+> >> and give the same result.  What am I missing?
+> > The last example, where the enclave is copied to a buffer, is out of scope
+> > for noexec.  But, it is in scope for LSMs, e.g. for this last example, we
+> > could add an LSM upcall so that SELinux could require PROCESS_EXECMEM (or an
+> > SGX specific equivalent).
 > 
->> > I'm ok with tracepoint_enabled(). However, I would have placed it in
->> > tracepoint.h rather than tracepoint-defs.h, and we should figure out
->> > why people complain that tracepoint.h is including headers too
->> > eagerly.
->> 
->> I could see if it would work in tracepoints.h.
->> 
->> It might. I was just being extra cautious.
-> 
-> Well that blew up quick!
-> 
-> Try using tracepoint.h in include/linux/page_ref.h and
-> arch/x86/include/asm/msr.h and see what happens.
+> Why don't we just declare enclave memory as "out of scope for noexec" in
+> the same way that anonymous memory is, and just discard this patch?
+> That doesn't seem too much of a stretch.
 
-Indeed, msr.h is an issue. So having tracepoint_enabled() in
-include/linux/tracepoints-defs.h and going through a function
-would make sense for this kind of core use-case I guess.
+Because we lose line of sight to LSM support.  Without enforcing "declare perms
+at load time" in the initial series, we would create an ABI where userspace
+could load an enclave page with only READ permissions and then map the enclave
+with whatever permissions it wants, without any convenient way for SGX to call
+into the LSM.
 
-I tried including tracepoint.h from include/linux/page_ref.h
-and did not notice any compile issue. Am I missing something
-to trigger an issue related to that scenario ?
+Retroactively enforcing permissions at load time would break the ABI, or at
+least yield different behavior based on the mere existence of LSMs, e.g. if
+LSMs are supported, suddenly the ADD_PAGES w/ READ -> mmap(RWX) flow breaks,
+even if there is no LSM policy denying that behavior.
 
-Thanks,
+Enforcing LSM policies using the existing mmap()/mprotect() hooks doesn't work
+well because the only information available is a fd pointing at
+/dev/sgx/enclave, which is largely useless because /dev/sgx/enclave must be
+map SHARED w/ RWX to run an enclave.  We explored things like grabbing a
+reference to the source file for later verification, but that means pinning
+files for the entire lifetime of an enclave.
 
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Enforcing noexec was an easy/obvious addition since we need 99% of the code for
+potential LSM support anyways.
