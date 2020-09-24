@@ -2,81 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B15F2778E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 21:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9552C2778F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 21:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728762AbgIXTCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 15:02:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727756AbgIXTCx (ORCPT
+        id S1728752AbgIXTKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 15:10:25 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:33826 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726681AbgIXTKY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 15:02:53 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 278B6C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 12:02:53 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id gr14so292705ejb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 12:02:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Zwh0H2Di2EjtS2oxRbwDl/g8AzPPtz4bTYVlHB6Q43U=;
-        b=PSB3PcPl255zINexLzD5htRXOK8A7IpaIdKXFGiLO32U75F2k9xaAm8mZS7ely1gPq
-         yZLW+0hCIn45DdWUyYO8G9jfS8J6+rlp2nsVNrm8+l/5IaMYV707qmr5UQ0dfW8t8mFM
-         TGM/ejnQq6OR4f+ghs/rkS7hDoJYuUJW4L657stRoYQr04STf5dpZEl4CMwmFaDzfbER
-         EPIt5iCUQqcQiTMaJpgnlFWhAOySGAsfIYSWvKD+cpfQaaZ8pNFsj3lLaMbMZTcQHkyw
-         RvAYj9nOfidFYdho2D68Le7t2VZhia2mhnOBKQiCeSv5uNiyhRaV9CGBi+SEG1SSy/ah
-         LHlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Zwh0H2Di2EjtS2oxRbwDl/g8AzPPtz4bTYVlHB6Q43U=;
-        b=nqv2gWmHBK5F3SguTX2cHXiYYi3owGeIRetjoGDMn2wk7dPr8LLwgAUPMK3VmDDct/
-         xLX/sghf0UaYsPmL5NU/3UxX/ak/NW5c8Rii9TUdv+dG1MiG5vkxSmwXP0Xxq3i5T7No
-         7jvjjNdJIHsQiQKc30/8JoTW7yJwTpSp6wHZ9RSOFOG9dFGUQAc4CtU2A8Fm39mNgZG/
-         GsUUFNPu23wLCIzem++wXklWhjXGeWx75gPjXYFL4j65iUEbv6PJCITi+ZK52wmRLS0Q
-         QOnKKSp1+a7PJ5FjLUSVRHYe6HjVu6D52e04JtSZbZpYw+uC8l/CyglNWGbIoyFiPUJx
-         cmxw==
-X-Gm-Message-State: AOAM533QKjIwc3Sw0iPPJrJT8WuNvRf1vN6jKAJE2l57qLtEYMb6vvfH
-        G4sFfHjnXFgzt5dMQc6vHLsAwTrL5KCjvrZ4v7IMVA==
-X-Google-Smtp-Source: ABdhPJyIjxPAbvw6mQwJDfqAdCr+NXbyHb0p0fA9nsaaQoL9Tj0/ldsUQQNqjWQJKZxocvoYQ0aBvveDA8qxbuKZJtY=
-X-Received: by 2002:a17:907:4035:: with SMTP id nk5mr79283ejb.418.1600974171842;
- Thu, 24 Sep 2020 12:02:51 -0700 (PDT)
+        Thu, 24 Sep 2020 15:10:24 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08OIxQUv152675;
+        Thu, 24 Sep 2020 19:10:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=zvSmpLYVjzX7A7q7pLh+dj7KUrnerGorGdY5IOugfYI=;
+ b=BEM230M9x0BdwLxbJlLF78y69opSzDUmpWfZg59fDnMpBmq89OKR/kZMrxoEP7RAHLKn
+ 8UnW0LbTO5cUPWDLYNmaRGywmjrTKzdyhAgm5wDBjrUviZP+E4b2+MxhKeIwqtUX1JwU
+ TgNMqoon0JjHc68P2I8+d9aAFGxBJGKWUoVU/fLezMLZVQP0AupWsyGYGbuVY+NpvdQp
+ Wdv94St3A2/AZLT5X9M77IyVIC+rHLKTyy1j9zjUZeAJNQpaGHaiEm/IdhgQnmSDKmMP
+ NQKxedNq7lnnFUKuQS89nK9S2dltagsBV6OXOUXdYSCeQHoIpT4CWQ1nbO5Izg5hoowB JA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 33q5rgre09-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 24 Sep 2020 19:10:14 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08OJ1Uoi140937;
+        Thu, 24 Sep 2020 19:08:13 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 33nux39eec-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 24 Sep 2020 19:08:13 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08OJ867W031985;
+        Thu, 24 Sep 2020 19:08:06 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 24 Sep 2020 12:08:06 -0700
+Date:   Thu, 24 Sep 2020 22:07:58 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Srinivasan Raju <srini.raju@purelifi.com>
+Cc:     "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
+        Rob Herring <robh@kernel.org>,
+        pureLiFi Ltd <info@purelifi.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        mostafa.afgani@purelifi.com,
+        open list <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH] staging: Initial driver submission for pureLiFi devices
+Message-ID: <20200924190758.GM4282@kadam>
+References: <20200924151910.21693-1-srini.raju@purelifi.com>
 MIME-Version: 1.0
-References: <20200901083326.21264-1-roger.pau@citrix.com> <20200901083326.21264-3-roger.pau@citrix.com>
-In-Reply-To: <20200901083326.21264-3-roger.pau@citrix.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 24 Sep 2020 12:02:40 -0700
-Message-ID: <CAPcyv4isGqsNXqz7tmVbu3UZMNSpZUphCKUkyBMgWYwv5o6OLw@mail.gmail.com>
-Subject: Re: [PATCH v5 2/3] memremap: rename MEMORY_DEVICE_DEVDAX to MEMORY_DEVICE_GENERIC
-To:     Roger Pau Monne <roger.pau@citrix.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Juergen Gross <jgross@suse.com>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        xen-devel <xen-devel@lists.xenproject.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924151910.21693-1-srini.raju@purelifi.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9754 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 adultscore=0
+ bulkscore=0 mlxlogscore=999 phishscore=0 suspectscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009240138
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9754 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 impostorscore=0
+ clxscore=1011 suspectscore=0 phishscore=0 malwarescore=0
+ priorityscore=1501 mlxlogscore=999 adultscore=0 bulkscore=0 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009240138
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 1, 2020 at 1:33 AM Roger Pau Monne <roger.pau@citrix.com> wrote:
->
-> This is in preparation for the logic behind MEMORY_DEVICE_DEVDAX also
-> being used by non DAX devices.
->
+On Thu, Sep 24, 2020 at 08:48:51PM +0530, Srinivasan Raju wrote:
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/errno.h>
+> +
+> +#include "def.h"
+> +#include "chip.h"
+> +#include "mac.h"
+> +#include "usb.h"
+> +#include "log.h"
+> +
+> +void purelifi_chip_init(struct purelifi_chip *chip,
+> +			struct ieee80211_hw *hw,
+> +		struct usb_interface *intf
+> +		)
 
-FWIW I would not call this MEMORY_DEVICE_GENERIC. This is really
-MEMORY_DEVICE_SIMPLE and the kernel-doc can clarify in contrast to the
-other MEMORY_DEVICE types this type implies no need for driver or
-filesystem notification when a page goes idle.
+There is a bunch of really trivial messiness like this.  It should
+look like:
+
+void purelifi_chip_init(struct purelifi_chip *chip,
+			struct ieee80211_hw *hw,
+			struct usb_interface *intf)
+
+
+> +{
+> +	memset(chip, 0, sizeof(*chip));
+> +	mutex_init(&chip->mutex);
+> +	purelifi_usb_init(&chip->usb, hw, intf);
+> +}
+> +
+> +void purelifi_chip_clear(struct purelifi_chip *chip)
+> +{
+> +	PURELIFI_ASSERT(!mutex_is_locked(&chip->mutex));
+> +	purelifi_usb_clear(&chip->usb);
+> +	mutex_destroy(&chip->mutex);
+> +	PURELIFI_MEMCLEAR(chip, sizeof(*chip));
+
+Get rid of the PURELIFI_MEMCLEAR() macro.  The weird thing about
+PURELIFI_MEMCLEAR() is that sometimes it's a no-op.  It seems
+unnecessary to memset() the struct here.
+
+I'm not a fan of all these tiny functions.  It feels like I have to
+jump around a lot to understand the code.  What does "clear" mean in
+this context.  Probably "release" is a better name.
+
+> +}
+> +
+> +static int scnprint_mac_oui(struct purelifi_chip *chip, char *buffer,
+> +			    size_t size)
+> +{
+> +	u8 *addr = purelifi_mac_get_perm_addr(purelifi_chip_to_mac(chip));
+> +
+> +	return scnprintf(buffer, size, "%02x-%02x-%02x",
+> +			addr[0], addr[1], addr[2]);
+> +}
+> +
+> +/* Prints an identifier line, which will support debugging. */
+> +static int scnprint_id(struct purelifi_chip *chip, char *buffer, size_t size)
+
+This function name is too vague.  What ID is it printing?
+
+> +{
+> +	int i = 0;
+
+The initialization is not required.  "i" means "iterator".  This should
+be "cnt" instead.
+
+> +
+> +	i = scnprintf(buffer, size, "purelifi%s chip ", "");
+> +	i += purelifi_usb_scnprint_id(&chip->usb, buffer + i, size - i);
+> +	i += scnprintf(buffer + i, size - i, " ");
+> +	i += scnprint_mac_oui(chip, buffer + i, size - i);
+> +	i += scnprintf(buffer + i, size - i, " ");
+> +	return i;
+
+This is an example of how tiny functions obfuscate the code.  It should
+be written like this:
+
+static void print_whatever(struct purelifi_chip *chip)
+{
+	u8 *addr = purelifi_mac_get_perm_addr(purelifi_chip_to_mac(chip));
+	struct usb_device *udev = interface_to_usbdev(chip->usb.intf);
+
+	pr_info("purelifi chip 04hx:%04hx v%04hx %s %02x-%02x-%02x\n",
+		le16_to_cpu(udev->descriptor.idVendor),
+		le16_to_cpu(udev->descriptor.idProduct),
+		get_bcd_device(udev),
+		speed(udev->speed),
+		addr[0], addr[1], addr[2]);
+}
+
+> +}
+> +
+> +static void print_id(struct purelifi_chip *chip)
+> +{
+> +	char buffer[80];
+> +
+> +	scnprint_id(chip, buffer, sizeof(buffer));
+> +	buffer[sizeof(buffer) - 1] = 0;
+
+snprintf() functions alway put a NUL terminator on the end of the string.
+
+> +	pl_dev_info(purelifi_chip_dev(chip), "%s\n", buffer);
+> +}
+> +
+> +/* MAC address: if custom mac addresses are to be used CR_MAC_ADDR_P1 and
+> + *              CR_MAC_ADDR_P2 must be overwritten
+> + */
+> +int purelifi_write_mac_addr(struct purelifi_chip *chip, const u8 *mac_addr)
+> +{
+> +	int r;
+> +
+> +	r = usb_write_req(mac_addr, ETH_ALEN, USB_REQ_MAC_WR);
+> +	return r;
+
+Delete the "r" variable.
+
+	return usb_write_req(mac_addr, ETH_ALEN, USB_REQ_MAC_WR);
+
+Again, I'm not a huge fan of one line functions for no reason. Actually,
+the function is never called.  Just delete it.
+
+> +}
+> +
+> +int purelifi_set_beacon_interval(struct purelifi_chip *chip, u16 interval,
+> +				 u8 dtim_period, int type)
+> +{
+> +	int r;
+> +
+> +	if (!interval || (chip->beacon_set &&
+> +			  chip->beacon_interval == interval)) {
+> +		return 0;
+> +	}
+> +
+> +	chip->beacon_interval = interval;
+> +	chip->beacon_set = true;
+> +	r = usb_write_req((const u8 *)&chip->beacon_interval,
+> +			  sizeof(chip->beacon_interval),
+> +			  USB_REQ_BEACON_INTERVAL_WR);
+> +	return r;
+
+Delete the "r" variable.
+
+> +}
+> +
+> +static int hw_init(struct purelifi_chip *chip)
+> +{
+> +	return purelifi_set_beacon_interval(chip, 100, 0, 0);
+> +}
+
+This is a oneline function which is only called once.  Move it inline.
+
+> +
+> +int purelifi_chip_init_hw(struct purelifi_chip *chip)
+> +{
+> +	int r;
+> +
+> +	r = hw_init(chip);
+> +	if (r)
+> +		goto out;
+
+Just return directly.  The little bunny hop doesn't add anything.
+
+> +
+> +	print_id(chip);
+> +out:
+> +	return r;
+> +}
+
+Anyway, those are some ideas.
+
+regards,
+dan carpenter
+
