@@ -2,142 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D10DF276CCD
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B618276CD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:08:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727442AbgIXJHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 05:07:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36264 "EHLO
+        id S1727312AbgIXJIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 05:08:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727256AbgIXJHU (ORCPT
+        with ESMTP id S1727211AbgIXJIa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 05:07:20 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AE32C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:07:20 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id t10so2971019wrv.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:07:20 -0700 (PDT)
+        Thu, 24 Sep 2020 05:08:30 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5768BC0613CE;
+        Thu, 24 Sep 2020 02:08:30 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id s14so4012406pju.1;
+        Thu, 24 Sep 2020 02:08:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Zn6SqP5HFCDpNYzm0IzfGeO48fXw90jCb6iZXuZJb5U=;
-        b=KLg+E4WLUy6IQm4x3CZxIItr2ek6E2WpMO6hUM2s7uz9l0eZ4cFkb5Mp+u/01y7Uum
-         8gJ6VNabyKLSB58bI6IKG4xlPIn/BRFZaQbKp/I6vjp5TL4d4Qxw8axfXFDGpgK05jxh
-         7vQTj4mAvsEsXqUDNNTmW09CNEDYzgkwPSWlkwpzC10o3FRH3kzvGg9oc2czlRDKwMH5
-         lJaiR9WxucZckoT8cljOtGijLv8UjC5YJrV/Bm8ljXVjW7htVmpSoe+Mnz5bA49bxmmX
-         xwQ2yjLPwI7Qm/veblo9cDjNyeU8DhwlT1Y8hZZokJpKz9Rf5okgGqnuQYkQWlGXjwcn
-         u0tw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/uafQO7Db3cLUaQDzRmZMFp1yFX5GHbGqeGmV2t1IAo=;
+        b=GaUfL9Wmu8JrDLLQVrZc/ocZRBTG3S988/vz+zIXqhELxAjjsBZ1yEj7zvtoeY8Bn2
+         wxIC+XbT13Gny9N+fQgcQyznF/eFKbgswYhBiLH53BDTPHbxTevpgs1KKMNl71ZlR57c
+         0DKU2G+T/xj+AXdyBBT97JNOfC62XcB4szdKxscMnLA5ec2FzRDmi6t6pMcwiCXpwm1p
+         ZOo2QhFIJ0/4BNXkB5J0YlL8RWaN2ZxMcbLSI6BaRAumLcRqAzGADmMpTyzwjvUbI9WA
+         5EmU8j2Lpw0/6fnH+Y+fWwFrhjhQ0Zp8xMwewwe72LWKNyoxRoSHMsJxA2pqYwFH28BR
+         7dbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Zn6SqP5HFCDpNYzm0IzfGeO48fXw90jCb6iZXuZJb5U=;
-        b=d1gT0QrmsDAhbRgo4rYkfM+tpaHJCzMwyI4IItHR3IV3Y0Ol3RMhw3snyL7LZPzdcS
-         q48sV0tkmgKoqGOW2jjsxdecVLj5GdKAneIfftpiOMpCAhhS+KRSUlWE5SMcOySFk/7F
-         yuj/9+MlvDu+4RDwW6Sd+AV6xJ3PUvx3aQIlHAZqg/fpEYnFZZ2MHSeKWnMp7Ph7IHzh
-         ZqL0kV+zi2isUaeBWfLGRICMh5AXj1m/vEIctsNXC1vPmw6bgP6jI06Ykb8kqF2Cdb9O
-         cq5b5g9acWkwZhkRJvDXOvsyVDWplu9Jh728JGGgDmGkjrosetjM+fkvFMkMudZawmSD
-         +QGg==
-X-Gm-Message-State: AOAM533uAazIQcNwG4Pnu3POcJPrOkhRKdZ4xdb3s2jbylk1Wqo8QN2d
-        Tq1Wm6JpjuTRDJZoMRqEYNTcARRl32QYSw==
-X-Google-Smtp-Source: ABdhPJxqu8Qp5RmkIS9W1eYyz/qSgyY8NazLe4kA2EbVtPY054hQyb+gMhlEzBdNZz1acDgjmqa2cg==
-X-Received: by 2002:adf:dcc7:: with SMTP id x7mr4017552wrm.203.1600938438658;
-        Thu, 24 Sep 2020 02:07:18 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:11e1:db8b:493b:54f4? ([2a01:e34:ed2f:f020:11e1:db8b:493b:54f4])
-        by smtp.googlemail.com with ESMTPSA id 70sm2846920wmb.41.2020.09.24.02.07.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Sep 2020 02:07:18 -0700 (PDT)
-Subject: Re: [GIT PULL] timer drivers fixes for v5.9-rc4
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Guo Ren <guoren@linux.alibaba.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>
-References: <921c157b-7f18-52bb-2d94-513f33cf9f41@linaro.org>
- <2a20bb9f-13ee-784f-a717-baf2e466a5b1@linaro.org>
-Message-ID: <0bd3aaa2-9979-b4d1-5e36-f9f24590abb1@linaro.org>
-Date:   Thu, 24 Sep 2020 11:07:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/uafQO7Db3cLUaQDzRmZMFp1yFX5GHbGqeGmV2t1IAo=;
+        b=sTnDxBPbBBN3JukOdBs2dfnUilyJnstFV9DFAM2nByMqeTMRysyns52LkEnJc6HBxn
+         I0hj3+7m6PTPioPVqDc2StpZDhseqc7Zyq1Zr0e0PYQ8zGSsFZDDoNH6Af58gn0Z4PHZ
+         Ouu0u4Zz237zXHVlcqCwJ8s4uUxsOHPsFznBRYykavT1h1yRFuWRD9b+VhPoSsyh9383
+         tqWrUzxi7U20wqh5268gCjGz4qO4pfiepFDgZHIMgLN+rx81mpBmjsApbpz7QrYDHwWt
+         IPOlbObVpUC10EzWT9uUyNLqFiqrA/Rr0GODXOwnbg6oVjobM+7MH3+mEouJdvf2q2WY
+         sioQ==
+X-Gm-Message-State: AOAM533AQ1P8MzYUO2DbJqniGclyc8rFNuIkGj2GctIrUmVv9jl9v+kW
+        NaT+r1y2dDPOwL0FxEcGIco=
+X-Google-Smtp-Source: ABdhPJzEk89GMGxChZmaaKD88g7j1D4iZb6eDHqcGVpsRo6W0gJ4M1QlA0hCF8SvrADdBazg7QEe8Q==
+X-Received: by 2002:a17:90a:9ed:: with SMTP id 100mr3008129pjo.119.1600938509709;
+        Thu, 24 Sep 2020 02:08:29 -0700 (PDT)
+Received: from sol (106-69-189-59.dyn.iinet.net.au. [106.69.189.59])
+        by smtp.gmail.com with ESMTPSA id 84sm2118729pfw.14.2020.09.24.02.08.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 02:08:29 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 17:08:24 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v9 11/20] gpiolib: cdev: support
+ GPIO_V2_LINE_SET_VALUES_IOCTL
+Message-ID: <20200924090824.GA20188@sol>
+References: <20200922023151.387447-1-warthog618@gmail.com>
+ <20200922023151.387447-12-warthog618@gmail.com>
+ <CAHp75Vd6tb09n+okJmoPse992DeoPkJQHReNBo20FQNz1V2c5w@mail.gmail.com>
+ <20200924073248.GA17562@sol>
+ <CAHp75Vd1=EFsT9pKunDYbXzf0D8cMvU3_n-AsD1CXpOPSa+5pw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <2a20bb9f-13ee-784f-a717-baf2e466a5b1@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75Vd1=EFsT9pKunDYbXzf0D8cMvU3_n-AsD1CXpOPSa+5pw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
-
-except I'm missing something, it seems like this PR is not in the
-tip/timers/urgent
-
-  -- Daniel
-
-
-On 15/09/2020 10:01, Daniel Lezcano wrote:
+On Thu, Sep 24, 2020 at 11:21:05AM +0300, Andy Shevchenko wrote:
+> On Thu, Sep 24, 2020 at 10:32 AM Kent Gibson <warthog618@gmail.com> wrote:
+> > On Wed, Sep 23, 2020 at 07:18:08PM +0300, Andy Shevchenko wrote:
+> > > On Tue, Sep 22, 2020 at 5:36 AM Kent Gibson <warthog618@gmail.com> wrote:
+> > > >
+> > > > Add support for the GPIO_V2_LINE_SET_VALUES_IOCTL.
+> > >
+> > > > +static long linereq_set_values_unlocked(struct linereq *lr,
+> > > > +                                       struct gpio_v2_line_values *lv)
+> > > > +{
+> > > > +       DECLARE_BITMAP(vals, GPIO_V2_LINES_MAX);
+> > > > +       struct gpio_desc **descs;
+> > > > +       unsigned int i, didx, num_set;
+> > > > +       int ret;
+> > > > +
+> > > > +       bitmap_zero(vals, GPIO_V2_LINES_MAX);
+> > > > +       for (num_set = 0, i = 0; i < lr->num_lines; i++) {
+> > > > +               if (lv->mask & BIT_ULL(i)) {
+> > >
+> > > Similar idea
+> > >
+> > > DECLARE_BITMAP(mask, 64) = BITMAP_FROM_U64(lv->mask);
+> > >
+> > > num_set = bitmap_weight();
+> > >
+> >
+> > I had played with this option, but bitmap_weight() counts all
+> > the bits set in the mask - which considers bits >= lr->num_lines.
 > 
-> Gentle reminder, thanks
-> 
->   -- Daniel
-> 
-> On 04/09/2020 12:52, Daniel Lezcano wrote:
->>
->> Hi Thomas,
->>
->> The following changes since commit b0294f30256bb6023b2044fd607855123863d98f:
->>
->>   time: Delete repeated words in comments (2020-08-10 22:14:07 +0200)
->>
->> are available in the Git repository at:
->>
->>   https://git.linaro.org/people/daniel.lezcano/linux.git
->> tags/timers-v5.9-rc4
->>
->> for you to fetch changes up to bc6717d55d07110d8f3c6d31ec2af50c11b07091:
->>
->>   clocksource/drivers/timer-gx6605s: Fixup counter reload (2020-08-24
->> 13:01:39 +0200)
->>
->> ----------------------------------------------------------------
->> - Fix wrong signed return value when checking of_iomap in the probe
->>   function for the h8300 timer (Tianjia Zhang)
->>
->> - Fix reset sequence when setting up the timer on the dm_timer (Tony
->>   Lindgren)
->>
->> - Fix counter reload when the interrupt fires on gx6605s (Guo Ren)
->>
->> ----------------------------------------------------------------
->> Guo Ren (1):
->>       clocksource/drivers/timer-gx6605s: Fixup counter reload
->>
->> Tianjia Zhang (1):
->>       clocksource/drivers/h8300_timer8: Fix wrong return value in
->> h8300_8timer_init()
->>
->> Tony Lindgren (1):
->>       clocksource/drivers/timer-ti-dm: Do reset before enable
->>
->>  drivers/clocksource/h8300_timer8.c         |  2 +-
->>  drivers/clocksource/timer-gx6605s.c        |  1 +
->>  drivers/clocksource/timer-ti-dm-systimer.c | 44
->> +++++++++++++++++++++++---------------------
->>  3 files changed, 25 insertions(+), 22 deletions(-)
->>
->>
-> 
+> Does it mean we have a bug in the code and no test case covered it?
+> Because from the API I see the parameter nbits which should prevent
+> this.
 > 
 
+Probably me being thick and using nbits as the size of the mask
+rather than the number of bits of interest.
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+Cheers,
+Kent.
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+> > So you would need to mask lv->mask before converting it to a bitmap.
+> > (I'm ok with ignoring those bits in case userspace wants to be lazy and
+> > use an all 1s mask.)
+> 
+> Can you confirm a bug in bitmap API? If it's so it's a serious one.
+> 
+> > But since we're looping over the bitmap anyway we may as well just
+> > count as we go.
+> >
+> > > for_each_set_bit(i, mask, lr->num_lines)
+> > >
+> >
+> > Yeah, that should work.  I vaguely recall trying this and finding it
+> > generated larger object code, but I'll give it another try and if it
+> > works out then include it in v10.
+> 
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
