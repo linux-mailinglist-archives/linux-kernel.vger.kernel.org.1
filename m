@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30ECB27715E
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:46:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7F1927715B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728002AbgIXMqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 08:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41822 "EHLO
+        id S1727989AbgIXMqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 08:46:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727934AbgIXMpk (ORCPT
+        with ESMTP id S1727935AbgIXMpm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 08:45:40 -0400
+        Thu, 24 Sep 2020 08:45:42 -0400
 Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15E16C0613D7
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:45:40 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id x23so3385790wmi.3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:45:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4699C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:45:41 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id e17so3416807wme.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:45:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=k1jhauYGMzwdJGCGOlXszgBlcwt9/RDQUAhdcgOoilU=;
-        b=WX/1+nanqrzs+kR3nlrE3toL9264Tauy4V0m1HlipYhXVawFdu94iMimmoF7e4WYIa
-         TOjeZWA6theHt9BxURI69M02sD5ERL7UMQRTo22nJuFS1VQTIp4F66tneUSTMXQnl7JW
-         qkldrfd+YhL7iaJchFrvteEXCkl/p+TlRX4iDVvHthRMo+a3ZUWI4JvdKbLgvF3AnKHr
-         FLIL4L5RQPM+ggtXdyVlq0kFFT0bVltViyOVYpDge7RHQCLyEZDLiURpcw3c5hChokrE
-         0XUrm0qPYAj4d+BaCbIAhr/mydEq8IKziztWFymInDa289BwR/EaRT2xJ9Nun6oqiYU6
-         XPWg==
+        bh=HPzKPqgKTaC+c4dKHoIGgkQqLuuLy1eGCUBepiGybzo=;
+        b=EDzQhN6+3MhbwhbiWnsXIzCMt/0ygeuAPYwa4X2BvXrnO69+RGiACMLk0e+WXyKIMQ
+         BqqubfzMrRVISKpLEZHccDjLvL4e8icTrn/eC8Hth/i/6rU8AczabLTae2iVWpftmHu0
+         bRDCpJ1cwA94kP93eN8ROza6YHE3mOOBdDyH0hFBscvLd9yfV2yRjDQZCtKChAUUUe6V
+         9NnwHqCLuqoFGg2Lo+hyU0uMBMCH3dAB1jSg6QtEk+3IpxvL2kGpb5pZVVO9Rmzj6F0a
+         pePwNn0H1KNhrhnk4lILy1ksVh++PvSMp1pa/xJDMeLSQYXexiaPUQQZZc2+INh7PVil
+         JX/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=k1jhauYGMzwdJGCGOlXszgBlcwt9/RDQUAhdcgOoilU=;
-        b=k0jWi0ZdCmsGP8ezvkXzzqPz3hx4tJliae11qDdsuVfu4UG6Q99T5sevb7ejLZVuvC
-         12DHiqoMgisS5cb6o9oCGq0MKTiqzI6ikiMm/72Zqk6y7aOSe1AE0YUKqaP6pvJQw/Kg
-         5g3LBGvzE39EU8V7johW9eIDMjeENkv3wYmU0tFsNfEd5SfPbc+IHFERFP+3jZQDFgcF
-         1VGF/IUB6CT2X0iWQEfpj3iNv0g1Z30Vk+zOJ5SP3NzUQib9UFg3EDEp/fQYju6XnaRm
-         eISZjlZ1RPgqR9z30wRztJxGsxsNFy4ub7MycXLYeNXnSqU3L9Hzg3whR+EfHAmShtyr
-         dGHQ==
-X-Gm-Message-State: AOAM530dYx6IYoL9W+ISviAWOds4XO+auHB0xk5Sb5SthugbPlqWYZgo
-        0jizxQoZCz2xAgyb9rjTcR92Jp6tzl2HRg==
-X-Google-Smtp-Source: ABdhPJwUzk8lfX3FYxsETKKF0ShBtYMgFRqFqBFE00f4JaBGkowdAYRGEAnlERdch4Z4grNf4+2BgA==
-X-Received: by 2002:a1c:9ad0:: with SMTP id c199mr4635314wme.54.1600951538754;
-        Thu, 24 Sep 2020 05:45:38 -0700 (PDT)
+        bh=HPzKPqgKTaC+c4dKHoIGgkQqLuuLy1eGCUBepiGybzo=;
+        b=PhqNfprdiWOt7NqwwZsbsAD46XU/fWmWsuCzErC1IjEXFd0ddYgNGDEGesjb6Wfsrn
+         6cxtBNFeQ+ZTTAmiI7KCthvSiJSMn3oyRpObWN/0p4qmmdlij7gED8F7bjTs7YAqbm4s
+         NVya5ITrMhg7iv31pMWkW6pNgVfYh77UKxSIZHS4s+BuaAQ7p8X6z1+48kpxl8Zx344/
+         3fDRdB8aYaKBAqAdZyDxcyHFu1MXSKPI0H7kY2cyxodFF5E+jRCE5/L3LnfAXS9mT6Of
+         +wmcmT1LD6SCa8rkDY6sGVi2GCX+iWTsutUy8jew0gW1Su8FfVqm4M48ZgdtaaCsuwiO
+         g8jA==
+X-Gm-Message-State: AOAM5307yd5GtGnFeZ8fkGsacyRTytt6WHsoYqJA1LSH6mDiCNMTUhw+
+        SpF6vnNC1xdua2DYO35pOT+I/eEpXfqi/w==
+X-Google-Smtp-Source: ABdhPJyHPv/Gfo8fWSk6LNIyllV6fFj7peRVmhFYOmFXYUX+3AbIg7Wdvr/FrcplO951HwXVHbDWVA==
+X-Received: by 2002:a1c:ed05:: with SMTP id l5mr4626293wmh.106.1600951540649;
+        Thu, 24 Sep 2020 05:45:40 -0700 (PDT)
 Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
-        by smtp.gmail.com with ESMTPSA id 9sm3316834wmf.7.2020.09.24.05.45.37
+        by smtp.gmail.com with ESMTPSA id 9sm3316834wmf.7.2020.09.24.05.45.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 05:45:38 -0700 (PDT)
+        Thu, 24 Sep 2020 05:45:39 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>
 Cc:     linux-kernel@vger.kernel.org,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 04/12] samples: configfs: drop unnecessary ternary operators
-Date:   Thu, 24 Sep 2020 14:45:18 +0200
-Message-Id: <20200924124526.17365-5-brgl@bgdev.pl>
+Subject: [PATCH 05/12] samples: configfs: improve alignment of broken lines
+Date:   Thu, 24 Sep 2020 14:45:19 +0200
+Message-Id: <20200924124526.17365-6-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200924124526.17365-1-brgl@bgdev.pl>
 References: <20200924124526.17365-1-brgl@bgdev.pl>
@@ -66,52 +66,65 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Checking pointers for NULL value before passing them to container_of()
-is pointless because even if we return NULL from the ternary operator,
-none of the users checks the returned value but they instead dereference
-it unconditionally. AFAICT this cannot really happen either. Simplify
-the code by removing the ternary operators from to_childless() et al.
+Improve the coding style by correctly aligning broken lines where
+possible.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- samples/configfs/configfs_sample.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ samples/configfs/configfs_sample.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/samples/configfs/configfs_sample.c b/samples/configfs/configfs_sample.c
-index d3370180bcce..e339404dce1c 100644
+index e339404dce1c..924b57258af0 100644
 --- a/samples/configfs/configfs_sample.c
 +++ b/samples/configfs/configfs_sample.c
-@@ -37,8 +37,8 @@ struct childless {
- 
- static inline struct childless *to_childless(struct config_item *item)
- {
--	return item ? container_of(to_configfs_subsystem(to_config_group(item)),
--			struct childless, subsys) : NULL;
-+	return container_of(to_configfs_subsystem(to_config_group(item)),
-+			    struct childless, subsys);
+@@ -58,7 +58,7 @@ static ssize_t childless_storeme_show(struct config_item *item, char *page)
  }
  
- static ssize_t childless_showme_show(struct config_item *item, char *page)
-@@ -132,7 +132,7 @@ struct simple_child {
- 
- static inline struct simple_child *to_simple_child(struct config_item *item)
+ static ssize_t childless_storeme_store(struct config_item *item,
+-		const char *page, size_t count)
++				       const char *page, size_t count)
  {
--	return item ? container_of(item, struct simple_child, item) : NULL;
-+	return container_of(item, struct simple_child, item);
+ 	struct childless *childless = to_childless(item);
+ 	unsigned long tmp;
+@@ -141,7 +141,7 @@ static ssize_t simple_child_storeme_show(struct config_item *item, char *page)
  }
  
- static ssize_t simple_child_storeme_show(struct config_item *item, char *page)
-@@ -187,8 +187,8 @@ struct simple_children {
- 
- static inline struct simple_children *to_simple_children(struct config_item *item)
+ static ssize_t simple_child_storeme_store(struct config_item *item,
+-		const char *page, size_t count)
++					  const char *page, size_t count)
  {
--	return item ? container_of(to_config_group(item),
--			struct simple_children, group) : NULL;
-+	return container_of(to_config_group(item),
-+			    struct simple_children, group);
+ 	struct simple_child *simple_child = to_simple_child(item);
+ 	unsigned long tmp;
+@@ -192,7 +192,7 @@ static inline struct simple_children *to_simple_children(struct config_item *ite
  }
  
  static struct config_item *simple_children_make_item(struct config_group *group,
+-		const char *name)
++						     const char *name)
+ {
+ 	struct simple_child *simple_child;
+ 
+@@ -209,7 +209,7 @@ static struct config_item *simple_children_make_item(struct config_group *group,
+ }
+ 
+ static ssize_t simple_children_description_show(struct config_item *item,
+-		char *page)
++						char *page)
+ {
+ 	return sprintf(page,
+ "[02-simple-children]\n"
+@@ -270,8 +270,8 @@ static struct configfs_subsystem simple_children_subsys = {
+  * children of its own.
+  */
+ 
+-static struct config_group *group_children_make_group(
+-		struct config_group *group, const char *name)
++static struct config_group *
++group_children_make_group(struct config_group *group, const char *name)
+ {
+ 	struct simple_children *simple_children;
+ 
 -- 
 2.17.1
 
