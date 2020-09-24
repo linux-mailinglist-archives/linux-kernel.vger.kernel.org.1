@@ -2,190 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4934B276AE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:37:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC5F276AE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:37:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727174AbgIXHg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 03:36:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50490 "EHLO
+        id S1727172AbgIXHhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 03:37:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727112AbgIXHg7 (ORCPT
+        with ESMTP id S1727112AbgIXHhd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 03:36:59 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 292F7C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 00:36:59 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id u24so1401172pgi.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 00:36:59 -0700 (PDT)
+        Thu, 24 Sep 2020 03:37:33 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28646C0613CE;
+        Thu, 24 Sep 2020 00:37:33 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id q21so2267125ota.8;
+        Thu, 24 Sep 2020 00:37:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WLJqIscJmXcvk+sqZWhshYhF2CZRRuw+A8ZGwocEwRQ=;
-        b=G+UWjHqRmZtL7aOwJRe0U89n54w3ZzxUfJM96kgA17jcRmleJkjoPM8xG/IgtKX+ka
-         Ru6WiurvmQ7B/2qcOKO6h91E7rZHfAvvKXRQSk6IwPOMzwJAsA6GS4xx79fuZEIZsMMa
-         O32mwaxtv3Spvme5j6mLBMKNpV4AWuTd4s9VA=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0LgeB6IhoKHpPJRdUqtdxcrEPshsH9ulrWgRlYFPb5s=;
+        b=R7cwN5O2MUBBBCDXSxHG6WFubm52sa9P3VadV2G153g1zfGBi3uKFXyWIRNbXpCEnP
+         Hz2zBx/zoz9KLqIqINRB/7z8FctR9R+BV8im590D/mGuhr2C5+gzK61wgqqjh8NqYKyC
+         APK2zr3I9fjunBwjZINK2+ua3dLsih3Z90wCpI/xVYTnp6mb9qKhwUcVdidUumHdMRHS
+         s8JVFlCvl4hyoekpnt1TeYxIk0cXEn8yKNkdPrOv8eP1lHVaTJhE/YXIMYJAiKt67/tH
+         AoRB7a/4+ZoQmPpUOW8MVFixrhEPmPxCZp+5VbzFOzIHMM+iTObkL5Cs6oi3B8PCVHjo
+         1FFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WLJqIscJmXcvk+sqZWhshYhF2CZRRuw+A8ZGwocEwRQ=;
-        b=kH82Kd994ESDHsu2hhMDpG5Tfp0oLLZe/WTmuCT1wj5ryog7LdxTYuf+lyVWtwFqgy
-         qd62UzYpbC3zLWuQqsZBIOKHQLIre0MhVLO4lgArNp0OaZjaeFp0nw12+0Jja9rnOJVk
-         JQDWZN49EIUF4Ln+uAZzLd6LU7s1op8mN7/emEh8rJZGQzEUwqNqByJ/3rOVLbjbJCcm
-         DBAZNAgC69oXNpL0NPy1bFygEn/Dofg8LDba7fHDP9/ljD3QFU6fysM+cdF+PmIFFhOl
-         bu5IcAB88jauY5l/DCHE0P+EZCIeCWn1mAdu05XtiNWsPW5z+yxYyasxDK/Ctal5jMay
-         X9ww==
-X-Gm-Message-State: AOAM5329g6crr4cRTVHHx6FyUIoBQ7RtxWBtuWiiR5jZooF1NL1GZLrJ
-        KKe6ZDWeCdP2Lkhq+MsqNOjGrw==
-X-Google-Smtp-Source: ABdhPJwOSKne6H8RnHQDk/kqxXJPImal+FWVDntmH5GURex1vAcAC3rXIH/UTAWQhS5owGkqenlz7w==
-X-Received: by 2002:a63:5d08:: with SMTP id r8mr2852677pgb.174.1600933018492;
-        Thu, 24 Sep 2020 00:36:58 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id a27sm1817356pfk.52.2020.09.24.00.36.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 00:36:57 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 00:36:56 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Jann Horn <jannh@google.com>
-Cc:     YiFei Zhu <yifeifz2@illinois.edu>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/6] seccomp: Implement constant action bitmaps
-Message-ID: <202009240018.A4D8274F@keescook>
-References: <20200923232923.3142503-1-keescook@chromium.org>
- <20200923232923.3142503-4-keescook@chromium.org>
- <CAG48ez0d80fOSTyn5QbH33WPz5UkzJJOo+V8of7YMR8pVQxumw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0LgeB6IhoKHpPJRdUqtdxcrEPshsH9ulrWgRlYFPb5s=;
+        b=QAAcuxWWn9AB+YMTiPUclKe+2MlbjpCyEbIjYPtKlc0pov9rvlpdhxSPo6GgxKv/i7
+         Cd2/BxhvUJ582ZbVBkj/DX8neA+KuGqf4cmV1TuUJgbk1NZEPutNy1MPMNtuX3pnJuB7
+         vfRHRlLw0RrCMAkrcu3XLZAUjl7PiM8LmozkC0XTu43xd5ThVam42dBuTl+5MgA3AlP7
+         5FxubPLtaLNUjMEubXX5TcG7RV9rCD/7qWM0QWjVjrojcUkrx2jVRbyYvMRbMJGhR5p7
+         ecQ+zHOXOTIynzKK1A0gT+vutTDAZqKs/jaapcViJpjhX55Y7B2BeC6AxIgF2Brh2eJz
+         uyTQ==
+X-Gm-Message-State: AOAM530AIjntUfBQLwyiI2WRF+53bgI6Cu1RDp7IYcX3fyQPbhe5VWoL
+        SRXj/Bq1mIeoVJzeOUCwbzRaTN3/z7Nxm4ivERI=
+X-Google-Smtp-Source: ABdhPJytolHnKin5qHWsuzdw4wR3D0CV3ghZN/gVL/TGyQAMpHz0QdXRWHeayrfvfXIarb+cu6NLd6rpTZ0LUp8Pvto=
+X-Received: by 2002:a9d:7095:: with SMTP id l21mr2326757otj.224.1600933052470;
+ Thu, 24 Sep 2020 00:37:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAG48ez0d80fOSTyn5QbH33WPz5UkzJJOo+V8of7YMR8pVQxumw@mail.gmail.com>
+References: <20200922132559.38456-1-alexandru.ardelean@analog.com>
+ <20200922132559.38456-4-alexandru.ardelean@analog.com> <20200923213912.05dda5ef@archlinux>
+In-Reply-To: <20200923213912.05dda5ef@archlinux>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Thu, 24 Sep 2020 10:37:20 +0300
+Message-ID: <CA+U=DsoMGHtGRcBrj-w_sQveKQEWjkfupBSr9QHjTtxbvEQa0w@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] dt-bindings: iio: ad9467: add entry for for AD9434 ADC
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        devicetree@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 02:25:03AM +0200, Jann Horn wrote:
-> On Thu, Sep 24, 2020 at 1:29 AM Kees Cook <keescook@chromium.org> wrote:
-> > +/* When no bits are set for a syscall, filters are run. */
-> > +struct seccomp_bitmaps {
-> > +#ifdef SECCOMP_ARCH
-> > +       /* "allow" are initialized to set and only ever get cleared. */
-> > +       DECLARE_BITMAP(allow, NR_syscalls);
-> 
-> This bitmap makes sense.
-> 
-> > +       /* These are initialized to clear and only ever get set. */
-> > +       DECLARE_BITMAP(kill_thread, NR_syscalls);
-> > +       DECLARE_BITMAP(kill_process, NR_syscalls);
-> 
-> I don't think these bitmaps make sense, this is not part of any fastpath.
-
-That's a fair point. I think I arrived at this design because it ended
-up making filter addition faster ("don't bother processing this one,
-it's already 'kill'"), but it's likely not worse the memory usage
-trade-off.
-
-> (However, a "which syscalls have a fixed result" bitmap might make
-> sense if we want to export the list of permitted syscalls as a text
-> file in procfs, as I mentioned over at
-> <https://lore.kernel.org/lkml/CAG48ez3Ofqp4crXGksLmZY6=fGrF_tWyUCg7PBkAetvbbOPeOA@mail.gmail.com/>.)
-
-I haven't found a data structure I'm happy with for this. It seemed like
-NR_syscalls * sizeof(u32) was rather a lot (i.e. to store the BPF_RET
-value). However, let me discuss that more in the "why in in thread?"
-below...
-
-> The "NR_syscalls" part assumes that the compat syscall tables will not
-> be bigger than the native syscall table, right? I guess that's usually
-> mostly true nowadays, thanks to the syscall table unification...
-> (might be worth a comment though)
-
-Hrm, I had convinced myself it was a max() of compat. But I see no
-evidence of that now. Which means that I can add these to the per-arch
-seccomp defines with something like:
-
-# define SECCOMP_NR_NATIVE	NR_syscalls
-# define SECCOMP_NR_COMPAT	X32_NR_syscalls
-...
-
-> > +#endif
-> > +};
-> > +
-> >  struct seccomp_filter;
-> >  /**
-> >   * struct seccomp - the state of a seccomp'ed process
-> > @@ -45,6 +56,13 @@ struct seccomp {
-> >  #endif
-> >         atomic_t filter_count;
-> >         struct seccomp_filter *filter;
-> > +       struct seccomp_bitmaps native;
-> > +#ifdef CONFIG_COMPAT
-> > +       struct seccomp_bitmaps compat;
-> > +#endif
-> > +#ifdef SECCOMP_MULTIPLEXED_SYSCALL_TABLE_ARCH
-> > +       struct seccomp_bitmaps multiplex;
-> > +#endif
-> 
-> Why do we have one bitmap per thread (in struct seccomp) instead of
-> putting the bitmap for a given filter and all its ancestors into the
-> seccomp_filter?
-
-I explicitly didn't want to add code that was run per-filter; I wanted
-O(1), not O(n) even if the n work was a small constant. There is
-obviously a memory/perf tradeoff here. I wonder if the middle ground
-would be to put a bitmap and "constant action" results in the filter....
-oh duh. The "top" filter is already going to be composed with its
-ancestors. That's all that needs to be checked. Then the tri-state can
-be:
-
-bitmap accept[NR_syscalls]: accept or check "known" bitmap
-bitmap filter[NR_syscalls]: run filter or return known action
-u32 known_action[NR_syscalls];
-
-(times syscall numbering "architecture" counts)
-
-Though perhaps it would be just as fast as:
-
-bitmap run_filter[NR_syscalls]: run filter or return known_action
-u32 known_action[NR_syscalls];
-
-where accept isn't treated special...
-
-> 
-> >  };
+On Wed, Sep 23, 2020 at 11:42 PM Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Tue, 22 Sep 2020 16:25:57 +0300
+> Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+>
+> > Add entry for the AD9434 high-speed ADC which is supported by the 'ad9467'
+> > driver.
 > >
-> >  #ifdef CONFIG_HAVE_ARCH_SECCOMP_FILTER
-> > diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-> > index 0a3ff8eb8aea..111a238bc532 100644
-> > --- a/kernel/seccomp.c
-> > +++ b/kernel/seccomp.c
-> > @@ -318,7 +318,7 @@ static inline u8 seccomp_get_arch(u32 syscall_arch, u32 syscall_nr)
+> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+>
+> Probably want to tweak a few other bits of the binding.
+> It has some specific statements about the ad9467 as this is only
+> second device to be added.  Need to change to those to "ad9467 and similar"
+> or something like that + add description for this part.
+
+Yep, that was sloppy on my part.
+Will update.
+
+>
+> > ---
+> >  Documentation/devicetree/bindings/iio/adc/adi,ad9467.yaml | 1 +
+> >  1 file changed, 1 insertion(+)
 > >
-> >  #ifdef SECCOMP_MULTIPLEXED_SYSCALL_TABLE_ARCH
-> >         if (syscall_arch == SECCOMP_MULTIPLEXED_SYSCALL_TABLE_ARCH) {
-> > -               seccomp_arch |= (sd->nr & SECCOMP_MULTIPLEXED_SYSCALL_TABLE_MASK) >>
-> > +               seccomp_arch |= (syscall_nr & SECCOMP_MULTIPLEXED_SYSCALL_TABLE_MASK) >>
-> >                                 SECCOMP_MULTIPLEXED_SYSCALL_TABLE_SHIFT;
-> 
-> This belongs over into patch 1.
-
-Thanks! I was rushing to get this posted so YiFei Zhu wouldn't spend
-time fighting with arch and Kconfig stuff. :) I'll clean this (and the
-other random cruft) up.
-
--- 
-Kees Cook
+> > diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad9467.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad9467.yaml
+> > index c4f57fa6aad1..0e8da8ee6975 100644
+> > --- a/Documentation/devicetree/bindings/iio/adc/adi,ad9467.yaml
+> > +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad9467.yaml
+> > @@ -19,6 +19,7 @@ description: |
+> >  properties:
+> >    compatible:
+> >      enum:
+> > +      - adi,ad9434
+> >        - adi,ad9467
+> >
+> >    reg:
+>
