@@ -2,92 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90EF127726B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE3DD27726F
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:34:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727977AbgIXNeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 09:34:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49368 "EHLO
+        id S1728001AbgIXNew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 09:34:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727533AbgIXNeR (ORCPT
+        with ESMTP id S1727742AbgIXNev (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 09:34:17 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5211C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:34:16 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id s205so2756766lja.7
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:34:16 -0700 (PDT)
+        Thu, 24 Sep 2020 09:34:51 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EB22C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:34:51 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id c18so3819573wrm.9
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:34:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ucsiRNp5Hmy/M31y3Eu3vnrnRbGbKmAl5qmp/RjXrTA=;
-        b=S02vy9Kv3llWRlzvqF+sLjuorHwjd9epvGaI2w+62I2kWh0fjWnUVl+bVyLVpUeXaB
-         FxbaidFIYFX47WFWraTZtKAMoVkKtmG2dW2wqJbAOty6bRlWn8XDox+rzlgZ2PRaL9bJ
-         iAUBU7KgfF1aWo6JaYNQ6/6BqgzdhezeH115RlSzLgNJ49g2iOWJrCTrtFGDgRoIJEcg
-         9WW1rFYlkaKG2ae+vc3pY2lfpVnGMeMsUdCvlMiitPyxku1oTmIPwscQF4qIQEpiA5bs
-         oaNh4/4NYJvohnLhmesYkVrWEvyb8oW7nwAnCb9suq+huLb1gplJtBK1yI5b0+CX9Iw+
-         ewqQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AHmQxIHTPufi+UR2RfGLNgHO/eGPtc+JmSaoagltYVc=;
+        b=wWMf+nQe5B/34hqIN8sqpervlaXL5/2jAPnWv88YCj6AJTvL9Viemp26b9S/QzgjJT
+         Kvn0I9+JfmDm7IvImZnITMdUtGXfvGsZv2gBPwDhzaXG2bUGvPWjyCQwN0sYWdJu57IX
+         ViFp2j1SODpDHoK2ZMPTh6/j229FaCU9pHDQBdjdytT+Eo1dFyqwKKl0WXdelRTT6f1J
+         x5Hs8COVRdDhy1UQwpQ+0itqy9Cj6GBMRZHLHWSJWuyoAEToYU5lm4OVDCZb+HPvJ+n1
+         1A7qBk0UVwrsz9a3Ci56pRhlnuCLuVtG0gNbu4se+m2dhLTI/GO4IC/PAkIRIOIR6WxK
+         QQ4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ucsiRNp5Hmy/M31y3Eu3vnrnRbGbKmAl5qmp/RjXrTA=;
-        b=dKQXiI7T5Pnj3xs6VsaxJk9Fi9mhOdzoDsMr3njUHT9uDSeWhjuZ9kXIzESwZEGLwG
-         KPXjv5gudp5raW19xD7qPfn69Zmr9/QstaVJANa7UCW4JfLf7H0kHAx9a8yKAejUVCjG
-         HdOgPhMmp202Jr8NdxpBHm+6f66vcNvlnc47vSRJhjPk6+QB+Cp061n5wPVJvPVg/Hyt
-         vjpP4Htk/96BK17wqwaG6Cr8UwZRmwUiHExCy6IXz2h6r3TCmIVGSRZPsDiX0MTRDQDa
-         STJBYNcNjKTpF5gzmcy4yvF8LE7BKmuBzG3ov07PKvZdtV1lQs1fXgcke239/FyX3baB
-         ZdIg==
-X-Gm-Message-State: AOAM533d/TjHeq8ImX4wMs+nl+ye60b8/9a0+aaDaSA3+tv8U/q7IzTj
-        rILCvlOJQEllJ3RV9WdRobHTNVAKxxATg1kTV84=
-X-Google-Smtp-Source: ABdhPJxLbWrllUFAIyhc26p5MBXhkhuwzhhb9AdaoMklO6zQmh50u9jqfejUMeFZa8ILa2Ws4NbrWrrEmNwCmhzF4TM=
-X-Received: by 2002:a2e:9ed5:: with SMTP id h21mr329910ljk.178.1600954455161;
- Thu, 24 Sep 2020 06:34:15 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AHmQxIHTPufi+UR2RfGLNgHO/eGPtc+JmSaoagltYVc=;
+        b=QupbyQIBBkzTb1L9oXf/AH8dKdr7HaFxUGKjZGVIhh/O4ir+CVchGpWc5iixydpWRK
+         fYnFW5c112EZVvdBJWBGEBM5hJwCqsK2b2WqRvhvGGFbzm56h44F2YLi6jZnR/dJHKkd
+         sMihk1V8LJz8tw4oPny0C9Pdx0ak00E1bDiET6Wo/iHCHgaCuN5vkaNYYeGdF7R01snO
+         a4TkP22gpMcYAMgx5v35LX5uLiMLn+kWdczQht3d4RWY1jNZJwYK0DYes2309WOfmIl7
+         GixfguT7yJGg/GC6fbcagu6NVUXRVFubnHIzpdwKHiZdR/tKiAbkIgiWpbF0rcZkKtPQ
+         FAow==
+X-Gm-Message-State: AOAM533etQC0kdewqFRM2cmfoVgVzdI9jP342eTDvarp+DS4180LRrqF
+        bcrAiXLe2dAWjLyZe61pZzr5wg==
+X-Google-Smtp-Source: ABdhPJzz1iuxB8yMgk8VfJVBob6+7W+AlkLoqZKC4tAXB33eouYnScSHMBpBmeoACCVJjNkW7/U/eg==
+X-Received: by 2002:adf:f986:: with SMTP id f6mr4949309wrr.270.1600954490182;
+        Thu, 24 Sep 2020 06:34:50 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:110:f693:9fff:fef4:a7ef])
+        by smtp.gmail.com with ESMTPSA id j26sm4411495wrc.79.2020.09.24.06.34.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 06:34:49 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 14:34:46 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
+        catalin.marinas@arm.com, will@kernel.org, rjw@rjwysocki.net,
+        viresh.kumar@linaro.org, dietmar.eggemann@arm.com,
+        valentin.schneider@arm.com, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] sched/topology,schedutil: wrap sched domains rebuild
+Message-ID: <20200924133446.GA3920949@google.com>
+References: <20200924123937.20938-1-ionela.voinescu@arm.com>
+ <20200924123937.20938-2-ionela.voinescu@arm.com>
 MIME-Version: 1.0
-References: <20200901144324.1071694-1-maz@kernel.org> <20200901144324.1071694-17-maz@kernel.org>
- <aa8ff875-bee8-26f8-46b0-df579f2067a7@collabora.com>
-In-Reply-To: <aa8ff875-bee8-26f8-46b0-df579f2067a7@collabora.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Thu, 24 Sep 2020 10:34:03 -0300
-Message-ID: <CAOMZO5COBv=JqxjvsNrqc66FeQqdVEd6=cWyy9zhAY=yNKKEvw@mail.gmail.com>
-Subject: Re: [PATCH v3 16/16] ARM: Remove custom IRQ stat accounting
-To:     Guillaume Tucker <guillaume.tucker@collabora.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King <linux@arm.linux.org.uk>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Saravana Kannan <saravanak@google.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        kernelci-results@groups.io, Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924123937.20938-2-ionela.voinescu@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guillaume,
+On Thursday 24 Sep 2020 at 13:39:35 (+0100), Ionela Voinescu wrote:
+> @@ -433,6 +437,7 @@ static bool build_perf_domains(const struct cpumask *cpu_map)
+>  }
+>  #else
+>  static void free_pd(struct perf_domain *pd) { }
+> +void rebuild_sched_domains_energy(void) { }
 
-On Thu, Sep 24, 2020 at 6:01 AM Guillaume Tucker
-<guillaume.tucker@collabora.com> wrote:
+Nit: maybe make that stub static inline in a header instead? I guess LTO
+and friends ought to clean that up for you, but it shouldn't hurt to give
+the compiler a little bit of help here.
 
-> This appears to be causing a NULL pointer dereference on
-> beaglebone-black, it got bisected automatically several times.
-> None of the other platforms in the KernelCI labs appears to be
-> affected.
+Otherwise, LGTM:
 
-Actually imx53-qsb is also affected:
-https://storage.kernelci.org/next/master/next-20200924/arm/imx_v6_v7_defconfig/gcc-8/lab-pengutronix/baseline-imx53-qsrb.html
+Acked-by: Quentin Perret <qperret@google.com>
 
-kernelci marks it Boot result: PASS though.
-
-Shouldn't kernelci flag a warning or error instead?
-
-Thanks
+>  #endif /* CONFIG_ENERGY_MODEL && CONFIG_CPU_FREQ_GOV_SCHEDUTIL*/
+>  
+>  static void free_rootdomain(struct rcu_head *rcu)
+> -- 
+> 2.17.1
+> 
