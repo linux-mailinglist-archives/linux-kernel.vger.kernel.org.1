@@ -2,120 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1636327773D
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 18:54:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CE26277718
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 18:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727437AbgIXQyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 12:54:13 -0400
-Received: from smtp-8fa8.mail.infomaniak.ch ([83.166.143.168]:59817 "EHLO
-        smtp-8fa8.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726458AbgIXQyM (ORCPT
+        id S1727855AbgIXQp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 12:45:56 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:36120 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726477AbgIXQp4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 12:54:12 -0400
-X-Greylist: delayed 4858 seconds by postgrey-1.27 at vger.kernel.org; Thu, 24 Sep 2020 12:54:12 EDT
-Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4By19B01Y1zlhTqt;
-        Thu, 24 Sep 2020 18:44:30 +0200 (CEST)
-Received: from ns3096276.ip-94-23-54.eu (unknown [94.23.54.103])
-        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4By1972FNszlh8Yx;
-        Thu, 24 Sep 2020 18:44:27 +0200 (CEST)
-Subject: Re: [PATCH v2 0/4] [RFC] Implement Trampoline File Descriptor
-To:     Pavel Machek <pavel@ucw.cz>,
-        "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Cc:     kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, oleg@redhat.com,
-        x86@kernel.org, luto@kernel.org, David.Laight@ACULAB.COM,
-        fweimer@redhat.com, mark.rutland@arm.com
-References: <210d7cd762d5307c2aa1676705b392bd445f1baa>
- <20200922215326.4603-1-madvenka@linux.microsoft.com>
- <20200923084232.GB30279@amd>
- <34257bc9-173d-8ef9-0c97-fb6bd0f69ecb@linux.microsoft.com>
- <20200923205156.GA12034@duo.ucw.cz>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <c5ddf0c2-962a-f93a-e666-1c6f64482d97@digikod.net>
-Date:   Thu, 24 Sep 2020 18:44:26 +0200
-User-Agent: 
-MIME-Version: 1.0
-In-Reply-To: <20200923205156.GA12034@duo.ucw.cz>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Thu, 24 Sep 2020 12:45:56 -0400
+Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1kLUNO-0004kM-Aw; Thu, 24 Sep 2020 16:45:46 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     jeffrey.t.kirsher@intel.com
+Cc:     andrew@lunn.ch, Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        intel-wired-lan@lists.osuosl.org (moderated list:INTEL ETHERNET DRIVERS),
+        netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v3] e1000e: Increase iteration on polling MDIC ready bit
+Date:   Fri, 25 Sep 2020 00:45:42 +0800
+Message-Id: <20200924164542.19906-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200924150958.18016-1-kai.heng.feng@canonical.com>
+References: <20200924150958.18016-1-kai.heng.feng@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+We are seeing the following error after S3 resume:
+[  704.746874] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
+[  704.844232] e1000e 0000:00:1f.6 eno1: MDI Write did not complete
+[  704.902817] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
+[  704.903075] e1000e 0000:00:1f.6 eno1: reading PHY page 769 (or 0x6020 shifted) reg 0x17
+[  704.903281] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
+[  704.903486] e1000e 0000:00:1f.6 eno1: writing PHY page 769 (or 0x6020 shifted) reg 0x17
+[  704.943155] e1000e 0000:00:1f.6 eno1: MDI Error
+...
+[  705.108161] e1000e 0000:00:1f.6 eno1: Hardware Error
 
-On 23/09/2020 22:51, Pavel Machek wrote:
-> Hi!
-> 
->>>> Scenario 2
->>>> ----------
->>>>
->>>> We know what code we need in advance. User trampolines are a good example of
->>>> this. It is possible to define such code statically with some help from the
->>>> kernel.
->>>>
->>>> This RFC addresses (2). (1) needs a general purpose trusted code generator
->>>> and is out of scope for this RFC.
->>>
->>> This is slightly less crazy talk than introduction talking about holes
->>> in W^X. But it is very, very far from normal Unix system, where you
->>> have selection of interpretters to run your malware on (sh, python,
->>> awk, emacs, ...) and often you can even compile malware from sources. 
->>>
->>> And as you noted, we don't have "a general purpose trusted code
->>> generator" for our systems.
->>>
->>> I believe you should simply delete confusing "introduction" and
->>> provide details of super-secure system where your patches would be
->>> useful, instead.
->>
->> This RFC talks about converting dynamic code (which cannot be authenticated)
->> to static code that can be authenticated using signature verification. That
->> is the scope of this RFC.
->>
->> If I have not been clear before, by dynamic code, I mean machine code that is
->> dynamic in nature. Scripts are beyond the scope of this RFC.
->>
->> Also, malware compiled from sources is not dynamic code. That is orthogonal
->> to this RFC. If such malware has a valid signature that the kernel permits its
->> execution, we have a systemic problem.
->>
->> I am not saying that script authentication or compiled malware are not problems.
->> I am just saying that this RFC is not trying to solve all of the security problems.
->> It is trying to define one way to convert dynamic code to static code to address
->> one class of problems.
-> 
-> Well, you don't have to solve all problems at once.
-> 
-> But solutions have to exist, and AFAIK in this case they don't. You
-> are armoring doors, but ignoring open windows.
+As Andrew Lunn pointed out, MDIO has nothing to do with phy, and indeed
+increase polling iteration can resolve the issue.
 
-FYI, script execution is being addressed (for the kernel part) by this
-patch series:
-https://lore.kernel.org/lkml/20200924153228.387737-1-mic@digikod.net/
+The root cause is quite likely Intel ME, since it's a blackbox to the
+kernel so the only approach we can take is to be patient and wait
+longer.
 
-> 
-> Or very probably you are thinking about something different than
-> normal desktop distros (Debian 10). Because on my systems, I have
-> python, gdb and gcc...
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+v3:
+ - Moving delay to end of loop doesn't save anytime, move it back.
+ - Point out this is quitely likely caused by Intel ME.
 
-It doesn't make sense for a tailored security system to leave all these
-tools available to an attacker.
+v2:
+ - Increase polling iteration instead of powering down the phy.
 
-> 
-> It would be nice to specify what other pieces need to be present for
-> this to make sense -- because it makes no sense on Debian 10.
+ drivers/net/ethernet/intel/e1000e/phy.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Not all kernel features make sense for a generic/undefined usage,
-especially specific security mechanisms (e.g. SELinux, Smack, Tomoyo,
-SafeSetID, LoadPin, IMA, IPE, secure/trusted boot, lockdown, etc.), but
-they can still be definitely useful.
+diff --git a/drivers/net/ethernet/intel/e1000e/phy.c b/drivers/net/ethernet/intel/e1000e/phy.c
+index e11c877595fb..e6d4acd90937 100644
+--- a/drivers/net/ethernet/intel/e1000e/phy.c
++++ b/drivers/net/ethernet/intel/e1000e/phy.c
+@@ -203,7 +203,7 @@ s32 e1000e_write_phy_reg_mdic(struct e1000_hw *hw, u32 offset, u16 data)
+ 	 * Increasing the time out as testing showed failures with
+ 	 * the lower time out
+ 	 */
+-	for (i = 0; i < (E1000_GEN_POLL_TIMEOUT * 3); i++) {
++	for (i = 0; i < (E1000_GEN_POLL_TIMEOUT * 10); i++) {
+ 		udelay(50);
+ 		mdic = er32(MDIC);
+ 		if (mdic & E1000_MDIC_READY)
+-- 
+2.17.1
 
-> 
-> Best regards,
-> 									Pavel
-> 
