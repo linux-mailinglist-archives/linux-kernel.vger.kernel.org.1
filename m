@@ -2,118 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F8B2771D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A9462771D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727865AbgIXNJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 09:09:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727704AbgIXNJL (ORCPT
+        id S1727917AbgIXNJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 09:09:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37939 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727704AbgIXNJR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 09:09:11 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 325CCC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:09:11 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id 4742929CF4D
-Subject: Re: [PATCH v3 16/16] ARM: Remove custom IRQ stat accounting
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Sumit Garg <sumit.garg@linaro.org>, kernel-team@android.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King <linux@arm.linux.org.uk>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Saravana Kannan <saravanak@google.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, kernelci-results@groups.io
-References: <20200901144324.1071694-1-maz@kernel.org>
- <20200901144324.1071694-17-maz@kernel.org>
- <aa8ff875-bee8-26f8-46b0-df579f2067a7@collabora.com>
- <875z83r08a.wl-maz@kernel.org>
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Message-ID: <3cd270a8-ddff-b3aa-5d7f-e7224deefbcc@collabora.com>
-Date:   Thu, 24 Sep 2020 14:09:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Thu, 24 Sep 2020 09:09:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600952956;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=x4CWp1yGIIVeZJPCvlPfgxNZqZUsgXhnQY5EnhMHT5M=;
+        b=Gj0nLWGsoMUIhYx8G27cY1c6DazKCxShoZLQxZaFi+Te64OihepUIQVnuuwZyXOiVicw4L
+        Q2Hx9JUXVzktA5nMKJuURnCOye0orQ7b9fmZFFGT+k8gXU7jtOKLZbfY5ghUdMC7hzFlF1
+        yepSO6iEaG1q59+Zemhg2QuvVUofhwk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-149-MPR0eO2QM1-Pb2ArlzKIkw-1; Thu, 24 Sep 2020 09:09:14 -0400
+X-MC-Unique: MPR0eO2QM1-Pb2ArlzKIkw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8421610A7AE3;
+        Thu, 24 Sep 2020 13:09:12 +0000 (UTC)
+Received: from krava (ovpn-115-138.ams2.redhat.com [10.36.115.138])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 5CA8F5D9D2;
+        Thu, 24 Sep 2020 13:09:10 +0000 (UTC)
+Date:   Thu, 24 Sep 2020 15:09:09 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH 4/7] perf inject: Do not load map/dso when injecting
+ build-id
+Message-ID: <20200924130909.GB3150401@krava>
+References: <20200923080537.155264-1-namhyung@kernel.org>
+ <20200923080537.155264-5-namhyung@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <875z83r08a.wl-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200923080537.155264-5-namhyung@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/09/2020 10:29, Marc Zyngier wrote:
-> Hi Guillaume,
-> 
-> On Thu, 24 Sep 2020 10:00:09 +0100,
-> Guillaume Tucker <guillaume.tucker@collabora.com> wrote:
->>
->> Hi Marc,
->>
->> On 01/09/2020 15:43, Marc Zyngier wrote:
->>> Let's switch the arm code to the core accounting, which already
->>> does everything we need.
->>>
->>> Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
->>> Signed-off-by: Marc Zyngier <maz@kernel.org>
->>> ---
->>>  arch/arm/include/asm/hardirq.h | 17 -----------------
->>>  arch/arm/kernel/smp.c          | 20 ++++----------------
->>>  2 files changed, 4 insertions(+), 33 deletions(-)
->>
->> This appears to be causing a NULL pointer dereference on
->> beaglebone-black, it got bisected automatically several times.
->> None of the other platforms in the KernelCI labs appears to be
->> affected.
-> 
-> Hmm. My bet is that because this is a UP machine running an SMP
-> kernel, and I fell into the trap of forgetting about this 32bit
-> configuration.
-> 
-> I expect the following patch to fix it. Please give it a go if you can
-> (I'm away at the moment and can't test much, and do not have any
-> physical 32bit machine to test this on).
+On Wed, Sep 23, 2020 at 05:05:34PM +0900, Namhyung Kim wrote:
 
-OK thanks, that worked:
+SNIP
 
-  https://lava.baylibre.com/scheduler/job/143170
-
-I've added this fix to the kernel branch used on
-staging.kernelci.org which is based on linux-next, so it will get
-fully verified a bit later today.
-
-Guillaume
-
-
-> diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
-> index 00327fa74b01..b4e3d336dc33 100644
-> --- a/arch/arm/kernel/smp.c
-> +++ b/arch/arm/kernel/smp.c
-> @@ -531,7 +531,12 @@ void show_ipi_list(struct seq_file *p, int prec)
->  	unsigned int cpu, i;
+> -static inline int is_no_dso_memory(const char *filename)
+> -{
+> -	return !strncmp(filename, "[stack", 6) ||
+> -	       !strncmp(filename, "/SYSV",5)   ||
+> -	       !strcmp(filename, "[heap]");
+> -}
+> -
+>  static inline int is_android_lib(const char *filename)
+>  {
+>  	return strstarts(filename, "/data/app-lib/") ||
+> @@ -158,7 +143,7 @@ struct map *map__new(struct machine *machine, u64 start, u64 len,
+>  		int anon, no_dso, vdso, android;
 >  
->  	for (i = 0; i < NR_IPI; i++) {
-> -		unsigned int irq = irq_desc_get_irq(ipi_desc[i]);
-> +		unsigned int irq;
+>  		android = is_android_lib(filename);
+> -		anon = is_anon_memory(filename, flags);
+> +		anon = is_anon_memory(filename) || flags & MAP_HUGETLB;
+
+what's the reason to take 'flags & MAP_HUGETLB' out of is_anon_memory?
+
+jirka
+
+>  		vdso = is_vdso_map(filename);
+>  		no_dso = is_no_dso_memory(filename);
+>  		map->prot = prot;
+> diff --git a/tools/perf/util/map.h b/tools/perf/util/map.h
+> index c2f5d28fe73a..b1c0686db1b7 100644
+> --- a/tools/perf/util/map.h
+> +++ b/tools/perf/util/map.h
+> @@ -171,4 +171,18 @@ static inline bool is_bpf_image(const char *name)
+>  	return strncmp(name, "bpf_trampoline_", sizeof("bpf_trampoline_") - 1) == 0 ||
+>  	       strncmp(name, "bpf_dispatcher_", sizeof("bpf_dispatcher_") - 1) == 0;
+>  }
 > +
-> +		if (!ipi_desc[i])
-> +			continue;
+> +static inline int is_anon_memory(const char *filename)
+> +{
+> +	return !strcmp(filename, "//anon") ||
+> +	       !strncmp(filename, "/dev/zero", sizeof("/dev/zero") - 1) ||
+> +	       !strncmp(filename, "/anon_hugepage", sizeof("/anon_hugepage") - 1);
+> +}
 > +
-> +		irq = irq_desc_get_irq(ipi_desc[i]);
->  		seq_printf(p, "%*s%u: ", prec - 1, "IPI", i);
->  
->  		for_each_online_cpu(cpu)
-> 
-> Thanks,
-> 
-> 	M.
+> +static inline int is_no_dso_memory(const char *filename)
+> +{
+> +	return !strncmp(filename, "[stack", 6) ||
+> +	       !strncmp(filename, "/SYSV", 5)  ||
+> +	       !strcmp(filename, "[heap]");
+> +}
+>  #endif /* __PERF_MAP_H */
+> -- 
+> 2.28.0.681.g6f77f65b4e-goog
 > 
 
