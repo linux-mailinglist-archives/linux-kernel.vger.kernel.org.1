@@ -2,167 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 122F8276B1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:47:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E7F276B1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727196AbgIXHqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 03:46:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727109AbgIXHqm (ORCPT
+        id S1727207AbgIXHrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 03:47:20 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:37665 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727120AbgIXHrT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 03:46:42 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3772BC0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 00:46:42 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id x22so1364076pfo.12
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 00:46:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pn8AkGMTGfdnWTJRca9J7bhZq32aHx0QMblFYoTDsz4=;
-        b=GdNsA/P0p61OU5c03zIIUOXZv3MQ0nBBcfB3Hc9r0sEY0oXx591w0DRyGt7MjNUDFN
-         VhTXCFtMPSzKYr/yxvOnJ7w4D4VOiPCHAj6p2KnhZp3U+tyTB5l9ahqgKrzkT19oYxJA
-         +jl1MwnAxFEWmHLz7pOEouqNuDZDlIBIFbkB0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pn8AkGMTGfdnWTJRca9J7bhZq32aHx0QMblFYoTDsz4=;
-        b=dZff3sPAloD4DSAqGbfmTAqkXtk4xYn6TLzx4P5Jr0X9B3o/1bX9+IXrSfKfwQLu8T
-         HRiM7Lwly2qKnFmiw/RAzIr8lsNb4ktI05iFtjP/m9ZjR6JJa83U9nDpKUVFVV+Omh74
-         /+YUvoaoihmHKf2BQkr7sR7+fD0UtTkRNeTlAh+J55DNycKk6VlVJyaeHtHOtUu/SI7a
-         ZXOgeCEBGtA46zQ8uBBXMkQFVaRISRXxyIgqdYmsFP8qb+wNxeyk3yjAjZrcqFZL0B4j
-         R7hbwPHG6DgaMcOifIeOutIW9hElCAdCI6TxAPgt2lZSw949PzgbZyXps88GMhdhVBqX
-         4kPg==
-X-Gm-Message-State: AOAM531phipzRaPEZhCUtF0hh+CkX+bLhjQ6VxBTj3zcAN3ciRUSf8DQ
-        HfdaqtEm+FRULjaQghMRasz0BA==
-X-Google-Smtp-Source: ABdhPJxpv5eo0PCR5lxqSFEPXJ04YWDS30xuJeZwg37nkM2ihTg/HjMMDvdx6OdSaODt3kicQemxsw==
-X-Received: by 2002:aa7:8dc7:0:b029:151:2237:52c5 with SMTP id j7-20020aa78dc70000b0290151223752c5mr3014124pfr.32.1600933601671;
-        Thu, 24 Sep 2020 00:46:41 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id b20sm1969377pfb.198.2020.09.24.00.46.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 00:46:40 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 00:46:39 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Jann Horn <jannh@google.com>
-Cc:     YiFei Zhu <yifeifz2@illinois.edu>,
-        Paul Moore <paul@paul-moore.com>,
-        Tom Hromatka <tom.hromatka@oracle.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/6] seccomp: Emulate basic filters for constant action
- results
-Message-ID: <202009240038.864365E@keescook>
-References: <20200923232923.3142503-1-keescook@chromium.org>
- <20200923232923.3142503-5-keescook@chromium.org>
- <CAG48ez251v19U60GYH4aWE6+C-3PYw5mr_Ax_kxnebqDOBn_+Q@mail.gmail.com>
+        Thu, 24 Sep 2020 03:47:19 -0400
+X-Greylist: delayed 79346 seconds by postgrey-1.27 at vger.kernel.org; Thu, 24 Sep 2020 03:47:18 EDT
+X-Originating-IP: 90.65.88.165
+Received: from localhost (lfbn-lyo-1-1908-165.w90-65.abo.wanadoo.fr [90.65.88.165])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 29F031C000F;
+        Thu, 24 Sep 2020 07:47:15 +0000 (UTC)
+Date:   Thu, 24 Sep 2020 09:47:15 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Qiang Zhao <qiang.zhao@nxp.com>,
+        Bruno Thomsen <bruno.thomsen@gmail.com>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
+        "a.zummo@towertech.it" <a.zummo@towertech.it>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>
+Subject: Re: [Patch v2 1/3] dt-bindings: rtc: pcf2127: Add bindings for
+ nxp,pcf2127
+Message-ID: <20200924074715.GT9675@piout.net>
+References: <20200921054821.26071-1-qiang.zhao@nxp.com>
+ <20200923094449.GP9675@piout.net>
+ <DB8PR04MB67635518BE38EEF5292C8D0991390@DB8PR04MB6763.eurprd04.prod.outlook.com>
+ <20200924070456.rovgp6n5q25s53vc@pengutronix.de>
+ <VE1PR04MB6768783CAE7CA611365661AF91390@VE1PR04MB6768.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAG48ez251v19U60GYH4aWE6+C-3PYw5mr_Ax_kxnebqDOBn_+Q@mail.gmail.com>
+In-Reply-To: <VE1PR04MB6768783CAE7CA611365661AF91390@VE1PR04MB6768.eurprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 01:47:47AM +0200, Jann Horn wrote:
-> On Thu, Sep 24, 2020 at 1:29 AM Kees Cook <keescook@chromium.org> wrote:
-> > This emulates absolutely the most basic seccomp filters to figure out
-> > if they will always give the same results for a given arch/nr combo.
-> >
-> > Nearly all seccomp filters are built from the following ops:
-> >
-> > BPF_LD  | BPF_W    | BPF_ABS
-> > BPF_JMP | BPF_JEQ  | BPF_K
-> > BPF_JMP | BPF_JGE  | BPF_K
-> > BPF_JMP | BPF_JGT  | BPF_K
-> > BPF_JMP | BPF_JSET | BPF_K
-> > BPF_JMP | BPF_JA
-> > BPF_RET | BPF_K
-> >
-> > These are now emulated to check for accesses beyond seccomp_data::arch
-> > or unknown instructions.
-> >
-> > Not yet implemented are:
-> >
-> > BPF_ALU | BPF_AND (generated by libseccomp and Chrome)
+Hi,
+
+On 24/09/2020 07:23:18+0000, Qiang Zhao wrote:
+> > > Yes, you are right, There is not a fundamental solution.
+> > > However it somewhat avoid this situation at least.
+> > >
+> > > And if without this issue,
+> > > is it correct to register a rtc device as watchdog no matter it is used as
+> > watchdog on the board?
+> > > Every time Linux are booted up, watchdog device should be configured to the
+> > right one manually.
+> > > So the patch are useful, even though it is not for the issue.
+> > >
+> > > What should we do to really resolve this issue?
+> > 
+> > I still think we need a kernel solution here. I would expect that most assembled
+> > pcf2127 chips are unable to act as a watchdog (i.e. don't have the RST output
+> > connected to something that resets the machine).
+> > 
+> > So my favoured solution would be a positive property like:
+> > 
+> > 	has-watchdog;
+> > 
+> > or something similar. In my eyes this is definitely something we want to specify
+> > in the device tree because it is a relevant hardware property.
+> > I consider it a bug to give a watchdog device to userspace that isn't functional.
+> > 
+> > Best regards
+> > Uwe
+>  
+> I strongly agree with you! It should be positive property.
+> However, we couldn't identify which board are using pcf2127 as watchdog,
+> So we are unable to modify the boards' dts to correct (watchdog or not) in this patchset.
 > 
-> BPF_AND is normally only used on syscall arguments, not on the syscall
-> number or the architecture, right? And when a syscall argument is
-> loaded, we abort execution anyway. So I think there is no need to
-> implement those?
-
-Is that right? I can't actually tell what libseccomp is doing with
-ALU|AND. It looks like it's using it for building jump lists?
-
-Paul, Tom, under what cases does libseccomp emit ALU|AND into filters?
-
-> > Suggested-by: Jann Horn <jannh@google.com>
-> > Link: https://lore.kernel.org/lkml/CAG48ez1p=dR_2ikKq=xVxkoGg0fYpTBpkhJSv1w-6BG=76PAvw@mail.gmail.com/
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >  kernel/seccomp.c  | 82 ++++++++++++++++++++++++++++++++++++++++++++---
-> >  net/core/filter.c |  3 +-
-> >  2 files changed, 79 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-> > index 111a238bc532..9921f6f39d12 100644
-> > --- a/kernel/seccomp.c
-> > +++ b/kernel/seccomp.c
-> > @@ -610,7 +610,12 @@ static struct seccomp_filter *seccomp_prepare_filter(struct sock_fprog *fprog)
-> >  {
-> >         struct seccomp_filter *sfilter;
-> >         int ret;
-> > -       const bool save_orig = IS_ENABLED(CONFIG_CHECKPOINT_RESTORE);
-> > +       const bool save_orig =
-> > +#if defined(CONFIG_CHECKPOINT_RESTORE) || defined(SECCOMP_ARCH)
-> > +               true;
-> > +#else
-> > +               false;
-> > +#endif
+> I noticed that only LS series platforms and imx6 have pcf2127 node, as far as I know, the LS platforms don't use it as watchdog,
+> But I am not sure about imx6
 > 
-> You could probably write this as something like:
-> 
-> const bool save_orig = IS_ENABLED(CONFIG_CHECKPOINT_RESTORE) ||
-> __is_defined(SECCOMP_ARCH);
 
-Ah! Thank you. I went looking for __is_defined() and failed. :)
+I don't think there is any user upstream and it is recent engouh that we
+can probably make that a positive property.
 
-> 
-> [...]
-> > diff --git a/net/core/filter.c b/net/core/filter.c
-> [...]
-> > -static void bpf_release_orig_filter(struct bpf_prog *fp)
-> > +void bpf_release_orig_filter(struct bpf_prog *fp)
-> >  {
-> >         struct sock_fprog_kern *fprog = fp->orig_prog;
-> >
-> > @@ -1154,6 +1154,7 @@ static void bpf_release_orig_filter(struct bpf_prog *fp)
-> >                 kfree(fprog);
-> >         }
-> >  }
-> > +EXPORT_SYMBOL_GPL(bpf_release_orig_filter);
-> 
-> If this change really belongs into this patch (which I don't think it
-> does), please describe why in the commit message.
+Bruno, is it ok for you? you are the only know user of the feature.
 
-Yup, more cruft I failed to remove.
 
 -- 
-Kees Cook
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
