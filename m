@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6911C276D43
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3568276D52
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727552AbgIXJ0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 05:26:34 -0400
-Received: from mail-io1-f79.google.com ([209.85.166.79]:50341 "EHLO
+        id S1727686AbgIXJ1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 05:27:07 -0400
+Received: from mail-io1-f79.google.com ([209.85.166.79]:55805 "EHLO
         mail-io1-f79.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727519AbgIXJ03 (ORCPT
+        with ESMTP id S1727512AbgIXJ02 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 05:26:29 -0400
-Received: by mail-io1-f79.google.com with SMTP id b16so1919890iod.17
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:26:28 -0700 (PDT)
+        Thu, 24 Sep 2020 05:26:28 -0400
+Received: by mail-io1-f79.google.com with SMTP id t187so1905014iof.22
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:26:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=G4/jGwbnu1l2y6Jzi6EOMRaLUdbIWIbqP6WYAAaIhRA=;
-        b=FAPXX21N3k17zwsugldRdVl58tVYIveHXpDAUFh7vU9q+U4w1i+CZDhtsNtGQVOn8y
-         bbtStF0IIprIo0RONnHchm7OYKr52+D8L/csPPRJy2OmfZGNBAm32o/cXvihu4IOb/mA
-         v/kjUB3vQ53cg3kHq2TJxB3pFQduFENaubPBMANuMHecVGPnxtv2BvjHuf9OHcsM3ABU
-         w40VdeUIKf8w2i9pEPEoQHOQDg6xcIyfUZpjc84Ocw5bjHmAeoSzhy/yJvf5KOuzKHjl
-         alXFMbWpDMNJ83l8YnYzfpXdww47eCjBObk4Bxfe21M8A9vHT/MxP13pkqzQuGFTdzwg
-         fFtA==
-X-Gm-Message-State: AOAM53168RQuY5Oj96PBIFcJGMl8qJ2qpNKc+zzC0KKJH2MM5NNlkYpR
-        thP+BpSJgSoi1ueZoRUQbyfH00JaFFdULMlMqqLfLh7ENtqG
-X-Google-Smtp-Source: ABdhPJzCH79j/NuiC+W9kQ9b8UrZdjUMlgDD7CTrzBW4drN2ngmgn3gt/TxVzhCqovRZhzbDBaDeeEA07CM5dm1TSCgvGztpbOni
+        bh=wU6ccGYS+enXp6FCShVO6SJ+HdsmSjYGBefu/l0tXSM=;
+        b=djW0YzZz3AbKWRj4K1MGuQ9YtjWWL6TCeThy0ebx1TQMS0lqwkUNGLcinUpUHnfGqa
+         k3hAil82mDfnwbXhzy1qiZjQFZq+Nl/klLxN55g6hoA54uetgvK8NvIRPxdaDy5GmWKP
+         du7W6sIwiEaO9xT1oBECwLOfWyJNdurzt5SI6SZ/Sgi/NbJL1x63Qmk9DUJbgZ7MMNw/
+         dvs5DPfGW73/q1sd85wjYAL5MqjyqX7J3ap2EIa1pg+NJhdmPWoC84q6xwv7VKgfiqiR
+         Fvz4PkWjjy0qRq76uQRv0jbRwyQoJgGfHmN0qfJinBN0efu4jnQhWJvZmtAHYK4Mkqvy
+         EUjg==
+X-Gm-Message-State: AOAM533fwgvWzgP2FZgVq02AbQoogzfeSqKLJe5HbKpt1ODom3muvOl2
+        +UM4QfI670u5PKlWHhbCT/L6MlaHzskrmz2PTw7m5KSgDlk1
+X-Google-Smtp-Source: ABdhPJzy6320140ZwLRGjAmBRh0Rvx7E5JbfpXH7/KnYEncupXTjw9J0CYU2eblltCaipMASgLplGVjruA6brDZW3UqkCRg5T/1s
 MIME-Version: 1.0
-X-Received: by 2002:a92:d905:: with SMTP id s5mr3330966iln.224.1600939587940;
+X-Received: by 2002:a6b:e206:: with SMTP id z6mr2565339ioc.208.1600939587383;
  Thu, 24 Sep 2020 02:26:27 -0700 (PDT)
 Date:   Thu, 24 Sep 2020 02:26:27 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000072391b05b00bcb00@google.com>
-Subject: WARNING in ieee80211_rx_list
-From:   syzbot <syzbot+8830db5d3593b5546d2e@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <00000000000069b76105b00bcbfd@google.com>
+Subject: INFO: rcu detected stall in sys_newlstat
+From:   syzbot <syzbot+60b38542a0dfb2e0f746@syzkaller.appspotmail.com>
+To:     fweisbec@gmail.com, linux-kernel@vger.kernel.org, mingo@kernel.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,98 +47,96 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    12450081 libbpf: Fix native endian assumption when parsing..
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=1236e99b900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5ac0d21536db480b
-dashboard link: https://syzkaller.appspot.com/bug?extid=8830db5d3593b5546d2e
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-Unfortunately, I don't have any reproducer for this issue yet.
+HEAD commit:    eff48dde Merge tag 'trace-v5.9-rc5' of git://git.kernel.or..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=104fa8ad900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=af502ec9a451c9fc
+dashboard link: https://syzkaller.appspot.com/bug?extid=60b38542a0dfb2e0f746
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14ddd69b900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=179a69ab900000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8830db5d3593b5546d2e@syzkaller.appspotmail.com
+Reported-by: syzbot+60b38542a0dfb2e0f746@syzkaller.appspotmail.com
 
+rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+rcu: 	Tasks blocked on level-0 rcu_node (CPUs 0-1):
 ------------[ cut here ]------------
-WARNING: CPU: 1 PID: 18094 at net/mac80211/rx.c:4707 ieee80211_rx_list+0x1ba1/0x23a0 net/mac80211/rx.c:4707
+WARNING: CPU: 0 PID: 30808 at kernel/sched/core.c:3013 rq_unlock kernel/sched/sched.h:1325 [inline]
+WARNING: CPU: 0 PID: 30808 at kernel/sched/core.c:3013 try_invoke_on_locked_down_task+0x12d/0x270 kernel/sched/core.c:3019
 Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 18094 Comm: syz-executor.4 Not tainted 5.9.0-rc3-syzkaller #0
+CPU: 0 PID: 30808 Comm: systemd-udevd Not tainted 5.9.0-rc6-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
  <IRQ>
  __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- panic+0x382/0x7fb kernel/panic.c:231
- __warn.cold+0x20/0x4b kernel/panic.c:600
- report_bug+0x1bd/0x210 lib/bug.c:198
- handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
- exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+ dump_stack+0x1d6/0x29e lib/dump_stack.c:118
+ panic+0x2c0/0x800 kernel/panic.c:231
+ __warn+0x227/0x250 kernel/panic.c:600
+ report_bug+0x1b1/0x2e0 lib/bug.c:198
+ handle_bug+0x42/0x80 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x16/0x40 arch/x86/kernel/traps.c:254
  asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-RIP: 0010:ieee80211_rx_list+0x1ba1/0x23a0 net/mac80211/rx.c:4707
-Code: 00 00 48 89 df e8 8f 1c ef f9 e9 08 02 00 00 e8 25 59 ae f9 48 c7 84 24 c4 00 00 00 10 00 00 00 e9 cd ed ff ff e8 0f 59 ae f9 <0f> 0b e9 77 f0 ff ff e8 03 59 ae f9 44 89 e6 48 89 ef e8 e8 2e 9d
-RSP: 0018:ffffc90000da8c98 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff87c7baa0
-RDX: ffff888058a603c0 RSI: ffffffff87c7d3f1 RDI: 0000000000000001
-RBP: ffff8880a614a580 R08: 0000000000000000 R09: ffffffff8d0b69e7
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff88808c653148
-R13: ffff88808c650580 R14: ffff88808c650c80 R15: 0000000000000001
- ieee80211_rx_napi+0xf7/0x3d0 net/mac80211/rx.c:4799
- ieee80211_rx include/net/mac80211.h:4435 [inline]
- ieee80211_tasklet_handler+0xd3/0x130 net/mac80211/main.c:235
- tasklet_action_common.constprop.0+0x237/0x470 kernel/softirq.c:559
- __do_softirq+0x1f8/0xb23 kernel/softirq.c:298
+RIP: 0010:try_invoke_on_locked_down_task+0x12d/0x270 kernel/sched/sched.h:1325
+Code: f8 48 c1 e8 03 42 8a 04 38 84 c0 0f 85 10 01 00 00 8b 74 24 18 48 89 ef e8 90 47 09 00 4c 89 ef e8 48 1c fb 06 e9 a4 00 00 00 <0f> 0b e9 2b ff ff ff 48 c7 c1 74 d5 af 89 80 e1 07 80 c1 03 38 c1
+RSP: 0018:ffffc90000007c50 EFLAGS: 00010046
+RAX: 0000000000000000 RBX: ffff8880a9bb27c0 RCX: 16c6f9e9214ef600
+RDX: ffffc90000007d00 RSI: ffffffff8162e8d0 RDI: ffff8880a8ada340
+RBP: ffffffff8162e8d0 R08: dffffc0000000000 R09: fffffbfff12df8f9
+R10: fffffbfff12df8f9 R11: 0000000000000000 R12: 0000000000000000
+R13: ffffffff896ff600 R14: ffff8880a8ada340 R15: dffffc0000000000
+ rcu_print_task_stall kernel/rcu/tree_stall.h:267 [inline]
+ print_other_cpu_stall kernel/rcu/tree_stall.h:475 [inline]
+ check_cpu_stall kernel/rcu/tree_stall.h:634 [inline]
+ rcu_pending kernel/rcu/tree.c:3637 [inline]
+ rcu_sched_clock_irq+0x12bc/0x1eb0 kernel/rcu/tree.c:2519
+ update_process_times+0x130/0x1b0 kernel/time/timer.c:1710
+ tick_sched_handle kernel/time/tick-sched.c:176 [inline]
+ tick_sched_timer+0x25e/0x410 kernel/time/tick-sched.c:1328
+ __run_hrtimer kernel/time/hrtimer.c:1524 [inline]
+ __hrtimer_run_queues+0x42d/0x930 kernel/time/hrtimer.c:1588
+ hrtimer_interrupt+0x373/0xd60 kernel/time/hrtimer.c:1650
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
+ __sysvec_apic_timer_interrupt+0xf0/0x260 arch/x86/kernel/apic/apic.c:1097
  asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:706
  </IRQ>
  __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
  run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
- do_softirq_own_stack+0x9d/0xd0 arch/x86/kernel/irq_64.c:77
- invoke_softirq kernel/softirq.c:393 [inline]
- __irq_exit_rcu kernel/softirq.c:423 [inline]
- irq_exit_rcu+0x235/0x280 kernel/softirq.c:435
- sysvec_apic_timer_interrupt+0x51/0xf0 arch/x86/kernel/apic/apic.c:1091
+ sysvec_apic_timer_interrupt+0x94/0xf0 arch/x86/kernel/apic/apic.c:1091
  asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:581
-RIP: 0010:preempt_count arch/x86/include/asm/preempt.h:26 [inline]
-RIP: 0010:check_kcov_mode kernel/kcov.c:163 [inline]
-RIP: 0010:__sanitizer_cov_trace_pc+0x9/0x60 kernel/kcov.c:197
-Code: 5d be 03 00 00 00 e9 b6 82 49 02 66 0f 1f 44 00 00 48 8b be b0 01 00 00 e8 b4 ff ff ff 31 c0 c3 90 65 48 8b 14 25 c0 fe 01 00 <65> 8b 05 70 d1 8b 7e a9 00 01 ff 00 48 8b 34 24 74 0f f6 c4 01 74
-RSP: 0018:ffffc900016d7748 EFLAGS: 00000202
-RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff81a62d1d
-RDX: ffff888058a603c0 RSI: ffff888058a603c0 RDI: 0000000000000005
-RBP: 0000000000000001 R08: 0000000000000000 R09: ffffffff8b591e4f
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff888069ba8a80
-R13: 0000000000000001 R14: 0000000000000363 R15: 0000000001190000
- rcu_read_unlock_sched_notrace include/linux/rcupdate.h:772 [inline]
- trace_rss_stat+0x226/0x2f0 include/trace/events/kmem.h:338
- mm_trace_rss_stat mm/memory.c:160 [inline]
- add_mm_counter include/linux/mm.h:1882 [inline]
- add_mm_rss_vec mm/memory.c:490 [inline]
- zap_pte_range mm/memory.c:1141 [inline]
- zap_pmd_range mm/memory.c:1195 [inline]
- zap_pud_range mm/memory.c:1224 [inline]
- zap_p4d_range mm/memory.c:1245 [inline]
- unmap_page_range+0x16ab/0x2bf0 mm/memory.c:1266
- unmap_single_vma+0x198/0x300 mm/memory.c:1311
- unmap_vmas+0x168/0x2e0 mm/memory.c:1343
- exit_mmap+0x2b1/0x530 mm/mmap.c:3183
- __mmput+0x122/0x470 kernel/fork.c:1076
- mmput+0x53/0x60 kernel/fork.c:1097
- exit_mm kernel/exit.c:483 [inline]
- do_exit+0xa8b/0x29f0 kernel/exit.c:793
- do_group_exit+0x125/0x310 kernel/exit.c:903
- get_signal+0x428/0x1f00 kernel/signal.c:2757
- arch_do_signal+0x82/0x2520 arch/x86/kernel/signal.c:811
- exit_to_user_mode_loop kernel/entry/common.c:136 [inline]
- exit_to_user_mode_prepare+0x1ae/0x200 kernel/entry/common.c:167
- syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:242
+RIP: 0010:arch_local_irq_restore arch/x86/include/asm/paravirt.h:770 [inline]
+RIP: 0010:slab_alloc mm/slab.c:3305 [inline]
+RIP: 0010:__do_kmalloc mm/slab.c:3653 [inline]
+RIP: 0010:__kmalloc+0x196/0x300 mm/slab.c:3664
+Code: 7c 24 20 48 8b 7c 24 10 f7 c7 00 02 00 00 74 0a e8 8f 65 c6 ff 48 8b 7c 24 10 48 83 3d 4a ac b8 07 00 0f 84 63 01 00 00 57 9d <0f> 1f 44 00 00 41 0f 18 0f e9 25 00 00 00 89 d8 c1 e8 08 83 e0 01
+RSP: 0018:ffffc900053d7b60 EFLAGS: 00000282
+RAX: 000000000000ae2f RBX: 0000000000000c40 RCX: ffff88808ddc82c0
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000282
+RBP: ffff8880aa440900 R08: ffffffff817ad120 R09: ffffed1015488341
+R10: ffffed1015488341 R11: 0000000000000000 R12: 0000000000001000
+R13: 0000000000000c40 R14: ffffffff838566e8 R15: ffff88806e032000
+ kmalloc include/linux/slab.h:559 [inline]
+ tomoyo_realpath_from_path+0xd8/0x630 security/tomoyo/realpath.c:254
+ tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
+ tomoyo_path_perm+0x17d/0x740 security/tomoyo/file.c:822
+ security_inode_getattr+0xc0/0x140 security/security.c:1278
+ vfs_getattr fs/stat.c:121 [inline]
+ vfs_statx+0x118/0x380 fs/stat.c:206
+ vfs_lstat include/linux/fs.h:3178 [inline]
+ __do_sys_newlstat fs/stat.c:374 [inline]
+ __se_sys_newlstat fs/stat.c:368 [inline]
+ __x64_sys_newlstat+0x81/0xd0 fs/stat.c:368
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45e179
-Code: Bad RIP value.
-RSP: 002b:00007fa23411dc78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffe0 RBX: 000000000002cd80 RCX: 000000000045e179
-RDX: 0000000000040000 RSI: 0000000020000080 RDI: 000000000000000a
-RBP: 000000000118cf80 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118cf4c
-R13: 00007ffd868e359f R14: 00007fa23411e9c0 R15: 000000000118cf4c
+RIP: 0033:0x7f753b78f335
+Code: 69 db 2b 00 64 c7 00 16 00 00 00 b8 ff ff ff ff c3 0f 1f 40 00 83 ff 01 48 89 f0 77 30 48 89 c7 48 89 d6 b8 06 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 03 f3 c3 90 48 8b 15 31 db 2b 00 f7 d8 64 89
+RSP: 002b:00007ffe76fa30f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000006
+RAX: ffffffffffffffda RBX: 00005620599f5de0 RCX: 00007f753b78f335
+RDX: 00007ffe76fa3270 RSI: 00007ffe76fa3270 RDI: 00005620599e0d80
+RBP: 00007ffe76fa3270 R08: 0000562058300670 R09: 00000000000001b0
+R10: 0000562058300d0c R11: 0000000000000246 R12: 00007ffe76fa31c0
+R13: 0000000000000000 R14: 0000000000000003 R15: 000000000000000e
+Shutting down cpus with NMI
 Kernel Offset: disabled
 Rebooting in 86400 seconds..
 
@@ -151,3 +148,5 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
