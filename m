@@ -2,119 +2,360 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDC34277798
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 19:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B920627779E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 19:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728667AbgIXRT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 13:19:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727216AbgIXRT4 (ORCPT
+        id S1728673AbgIXRUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 13:20:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47995 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726915AbgIXRUh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 13:19:56 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E3EBC0613CE;
-        Thu, 24 Sep 2020 10:19:56 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id s12so4661299wrw.11;
-        Thu, 24 Sep 2020 10:19:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kAbZd3vS2mRaNP4IzKbD5ITPH51zcyuJzcimZuIDrHU=;
-        b=qNlQD2VUwuZlfp3QTbChXLwkrg3TPs4FW/cPGjFxkYsyIdgolpsVHCzK+JtmhzuOVy
-         pdi0dktqgCnXlIOv5hDbMPTnXdMBVdkZQoe7O2BW6Bbczk9+1s2DIwD9PrSuK6v+sEaF
-         DI5dYuyUqGJB5Cqg0RJ5MGE9wp6SI2DQKTHm83cS8wjNJQ+D8i9i22W5Wc0KAEJPt/lI
-         lMqIAU3dAoFQknurRyITwbWpD/XwQwQH7f+RMIfkHbp/eYOroyMTFqQ42nmLRTZ0AFEs
-         ZImi//w1eD9Vr/kJD930rSvZA6+0qyZXWvUYBdxkM9YPx/4j22h5EaLNGpyTSrXMbCwO
-         YKUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kAbZd3vS2mRaNP4IzKbD5ITPH51zcyuJzcimZuIDrHU=;
-        b=V21uYvRbHZmmTSh3fWjo8BfbaL41yrIXH/LzNGG90j0d+TEjVPxei13O3cZ/CpZi+w
-         dsQ5Rxqv8mfkZ3D/pKzhGpeonQs2ixAtmuCBguC+xWnAICRlXSDVEll/jQrmPgCJYruh
-         KllSIWPU7j23jrqZi4AFt2/qZBce5bWkFU9a3e9ODDq1/ml3Fk0EI1QgXibidClGM8OI
-         ncDnarO0V5INSytdvFJnjZ4G59CJnm48s5WRI3gvbqYIF7dbkiI5xB80SlFjVubtCGSU
-         P9GYtyPCCG2iA5FhX7sSPkgXvlcTSlbcqbHQoXP3lT1DLMkkOzOkXMFH0cm0Akxu2jQv
-         TrMw==
-X-Gm-Message-State: AOAM530qgixWz+BMK83Ty3+x2kopAJJW9TEPB6zrRV56pBTp1V6WUU8e
-        VJqic41txBqV6JiPJvkwadNM0DDkiCM0YaRmwXf1XTevHy6UDYEwhJE=
-X-Google-Smtp-Source: ABdhPJxhIbv58SUHooN6WEjrkYW8U18ujKGcxnMYrWPH1bVWcmnQmjph4Yyi6hSpgSDoFyjg4oEh0yHOb+QZtev8xNw=
-X-Received: by 2002:adf:dd51:: with SMTP id u17mr834011wrm.355.1600967994708;
- Thu, 24 Sep 2020 10:19:54 -0700 (PDT)
+        Thu, 24 Sep 2020 13:20:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600968035;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=g3XUAG08Omyl+siZbtQXelgG4mBXlZr6sOn7Cvu6YgI=;
+        b=FvOtymXuVkHCgcKPVW/t+jWI/mZ3TR8iuGgyQZedmNSLhKTAcFUebiYNT374MFoLXLECXP
+        O5RxXIaGCyRe2c8ZDUhY8YcTtZAFfzIxqgF2e0+Bo4srS4n54BYkTi/HK2JGLGRqwFA1PH
+        TgmriZvKXEKMvOIB+qAHxx2UoRyW/4w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-445-zVy_QuEROaCZIXMQr4i7lQ-1; Thu, 24 Sep 2020 13:20:31 -0400
+X-MC-Unique: zVy_QuEROaCZIXMQr4i7lQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 390648015A5;
+        Thu, 24 Sep 2020 17:20:30 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CADDB55771;
+        Thu, 24 Sep 2020 17:20:29 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [PATCH] KVM: x86: do not attempt TSC synchronization on guest writes
+Date:   Thu, 24 Sep 2020 13:20:29 -0400
+Message-Id: <20200924172029.1760139-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-References: <CA+1E3rLM4G4SwzD6RWsK6Ssp7NmhiPedZDjrqN3kORQr9fxCtw@mail.gmail.com>
- <MWHPR04MB375863C20C1EF2CB27E62703E74E0@MWHPR04MB3758.namprd04.prod.outlook.com>
- <20200731091416.GA29634@infradead.org> <MWHPR04MB37586D39CA389296CE0252A4E74E0@MWHPR04MB3758.namprd04.prod.outlook.com>
- <20200731094135.GA4104@infradead.org> <MWHPR04MB3758A4B2967DB1FABAAD9265E74E0@MWHPR04MB3758.namprd04.prod.outlook.com>
- <20200731125110.GA11500@infradead.org> <CY4PR04MB37517D633920E4D31AC6EA0DE74B0@CY4PR04MB3751.namprd04.prod.outlook.com>
- <20200814081411.GA16943@infradead.org> <CA+1E3r+WXC_MK5Zf2OZEv17ddJDjtXbhpRFoeDns4F341xMhow@mail.gmail.com>
- <20200908151801.GA16742@infradead.org>
-In-Reply-To: <20200908151801.GA16742@infradead.org>
-From:   Kanchan Joshi <joshiiitr@gmail.com>
-Date:   Thu, 24 Sep 2020 22:49:28 +0530
-Message-ID: <CA+1E3r+MSEW=-SL8L+pquq+cFAu+nQOULQ+HZoQsCvdjKMkrNw@mail.gmail.com>
-Subject: Re: [PATCH v4 6/6] io_uring: add support for zone-append
-To:     "hch@infradead.org" <hch@infradead.org>
-Cc:     Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Kanchan Joshi <joshi.k@samsung.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "bcrl@kvack.org" <bcrl@kvack.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-aio@kvack.org" <linux-aio@kvack.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        SelvaKumar S <selvakuma.s1@samsung.com>,
-        Nitesh Shetty <nj.shetty@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 8, 2020 at 8:48 PM hch@infradead.org <hch@infradead.org> wrote:
->
-> On Mon, Sep 07, 2020 at 12:31:42PM +0530, Kanchan Joshi wrote:
-> > But there are use-cases which benefit from supporting zone-append on
-> > raw block-dev path.
-> > Certain user-space log-structured/cow FS/DB will use the device that
-> > way. Aerospike is one example.
-> > Pass-through is synchronous, and we lose the ability to use io-uring.
->
-> So use zonefs, which is designed exactly for that use case.
+KVM special-cases writes to MSR_IA32_TSC so that all CPUs have
+the same base for the TSC.  This logic is complicated, and we
+do not want it to have any effect once the VM is started.
 
-Not specific to zone-append, but in general it may not be good to lock
-new features/interfaces to ZoneFS alone, given that direct-block
-interface has its own merits.
-Mapping one file to a one zone is good for some use-cases, but
-limiting for others.
-Some user-space FS/DBs would be more efficient (less meta, indirection)
-with the freedom to decide file-to-zone mapping/placement.
-- Rocksdb and those LSM style DBs would map SSTable to zone, but
-SSTable file may be two small (initially) and may become too large
-(after compaction) for a zone.
-- The internal parallelism of a single zone is a design-choice, and
-depends on the drive. Writing multiple zones parallely (striped/raid
-way) can give better performance than writing on one. In that case one
-would want to file that seamlessly combines multiple-zones in a
-striped fashion.
+In particular, if any guest started to synchronize its TSCs
+with writes to MSR_IA32_TSC rather than MSR_IA32_TSC_ADJUST,
+the additional effect of kvm_write_tsc code would be uncharted
+territory.
 
-Also it seems difficult (compared to block dev) to fit simple-copy TP
-in ZoneFS. The new
-command needs: one NVMe drive, list of source LBAs and one destination
-LBA. In ZoneFS, we would deal with N+1 file-descriptors (N source zone
-file, and one destination zone file) for that. While with block
-interface, we do not need  more than one file-descriptor representing
-the entire device. With more zone-files, we face open/close overhead too.
+Therefore, this patch makes writes to MSR_IA32_TSC behave
+essentially the same as writes to MSR_IA32_TSC_ADJUST when
+they come from the guest.  A new selftest (which passes
+both before and after the patch) checks the current semantics
+of writes to MSR_IA32_TSC and MSR_IA32_TSC_ADJUST originating
+from both the host and the guest.
 
+Upcoming work to remove the special side effects
+of host-initiated writes to MSR_IA32_TSC and MSR_IA32_TSC_ADJUST
+will be able to build onto this test, adjusting the host side
+to use the new APIs and achieve the same effect.
+
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ arch/x86/kvm/x86.c                            |  30 ++--
+ tools/testing/selftests/kvm/Makefile          |   1 +
+ .../selftests/kvm/x86_64/tsc_msrs_test.c      | 168 ++++++++++++++++++
+ 3 files changed, 179 insertions(+), 20 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/x86_64/tsc_msrs_test.c
+
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 707c6b37a7c7..4838d0b0a06e 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -1973,12 +1973,6 @@ static void kvm_track_tsc_matching(struct kvm_vcpu *vcpu)
+ #endif
+ }
+ 
+-static void update_ia32_tsc_adjust_msr(struct kvm_vcpu *vcpu, s64 offset)
+-{
+-	u64 curr_offset = vcpu->arch.l1_tsc_offset;
+-	vcpu->arch.ia32_tsc_adjust_msr += offset - curr_offset;
+-}
+-
+ /*
+  * Multiply tsc by a fixed point number represented by ratio.
+  *
+@@ -2040,14 +2034,13 @@ static inline bool kvm_check_tsc_unstable(void)
+ 	return check_tsc_unstable();
+ }
+ 
+-void kvm_write_tsc(struct kvm_vcpu *vcpu, struct msr_data *msr)
++static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 data)
+ {
+ 	struct kvm *kvm = vcpu->kvm;
+ 	u64 offset, ns, elapsed;
+ 	unsigned long flags;
+ 	bool matched;
+ 	bool already_matched;
+-	u64 data = msr->data;
+ 	bool synchronizing = false;
+ 
+ 	raw_spin_lock_irqsave(&kvm->arch.tsc_write_lock, flags);
+@@ -2056,7 +2049,7 @@ void kvm_write_tsc(struct kvm_vcpu *vcpu, struct msr_data *msr)
+ 	elapsed = ns - kvm->arch.last_tsc_nsec;
+ 
+ 	if (vcpu->arch.virtual_tsc_khz) {
+-		if (data == 0 && msr->host_initiated) {
++		if (data == 0) {
+ 			/*
+ 			 * detection of vcpu initialization -- need to sync
+ 			 * with other vCPUs. This particularly helps to keep
+@@ -2126,9 +2119,6 @@ void kvm_write_tsc(struct kvm_vcpu *vcpu, struct msr_data *msr)
+ 	vcpu->arch.this_tsc_nsec = kvm->arch.cur_tsc_nsec;
+ 	vcpu->arch.this_tsc_write = kvm->arch.cur_tsc_write;
+ 
+-	if (!msr->host_initiated && guest_cpuid_has(vcpu, X86_FEATURE_TSC_ADJUST))
+-		update_ia32_tsc_adjust_msr(vcpu, offset);
+-
+ 	kvm_vcpu_write_tsc_offset(vcpu, offset);
+ 	raw_spin_unlock_irqrestore(&kvm->arch.tsc_write_lock, flags);
+ 
+@@ -2143,8 +2133,6 @@ void kvm_write_tsc(struct kvm_vcpu *vcpu, struct msr_data *msr)
+ 	spin_unlock(&kvm->arch.pvclock_gtod_sync_lock);
+ }
+ 
+-EXPORT_SYMBOL_GPL(kvm_write_tsc);
+-
+ static inline void adjust_tsc_offset_guest(struct kvm_vcpu *vcpu,
+ 					   s64 adjustment)
+ {
+@@ -2939,7 +2927,13 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 		vcpu->arch.msr_ia32_power_ctl = data;
+ 		break;
+ 	case MSR_IA32_TSC:
+-		kvm_write_tsc(vcpu, msr_info);
++		if (msr_info->host_initiated) {
++			kvm_synchronize_tsc(vcpu, data);
++		} else {
++			u64 adj = kvm_compute_tsc_offset(vcpu, data) - vcpu->arch.tsc_offset;
++			adjust_tsc_offset_guest(vcpu, adj);
++			vcpu->arch.ia32_tsc_adjust_msr += adj;
++		}
+ 		break;
+ 	case MSR_IA32_XSS:
+ 		if (!msr_info->host_initiated &&
+@@ -9577,7 +9571,6 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
+ 
+ void kvm_arch_vcpu_postcreate(struct kvm_vcpu *vcpu)
+ {
+-	struct msr_data msr;
+ 	struct kvm *kvm = vcpu->kvm;
+ 
+ 	kvm_hv_vcpu_postcreate(vcpu);
+@@ -9585,10 +9578,7 @@ void kvm_arch_vcpu_postcreate(struct kvm_vcpu *vcpu)
+ 	if (mutex_lock_killable(&vcpu->mutex))
+ 		return;
+ 	vcpu_load(vcpu);
+-	msr.data = 0x0;
+-	msr.index = MSR_IA32_TSC;
+-	msr.host_initiated = true;
+-	kvm_write_tsc(vcpu, &msr);
++	kvm_synchronize_tsc(vcpu, 0);
+ 	vcpu_put(vcpu);
+ 
+ 	/* poll control enabled by default */
+diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+index 4a166588d99f..d8a1c6f47ddb 100644
+--- a/tools/testing/selftests/kvm/Makefile
++++ b/tools/testing/selftests/kvm/Makefile
+@@ -55,6 +55,7 @@ TEST_GEN_PROGS_x86_64 += x86_64/vmx_set_nested_state_test
+ TEST_GEN_PROGS_x86_64 += x86_64/vmx_tsc_adjust_test
+ TEST_GEN_PROGS_x86_64 += x86_64/xss_msr_test
+ TEST_GEN_PROGS_x86_64 += x86_64/debug_regs
++TEST_GEN_PROGS_x86_64 += x86_64/tsc_msrs_test
+ TEST_GEN_PROGS_x86_64 += clear_dirty_log_test
+ TEST_GEN_PROGS_x86_64 += demand_paging_test
+ TEST_GEN_PROGS_x86_64 += dirty_log_test
+diff --git a/tools/testing/selftests/kvm/x86_64/tsc_msrs_test.c b/tools/testing/selftests/kvm/x86_64/tsc_msrs_test.c
+new file mode 100644
+index 000000000000..f8e761149daa
+--- /dev/null
++++ b/tools/testing/selftests/kvm/x86_64/tsc_msrs_test.c
+@@ -0,0 +1,168 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Tests for MSR_IA32_TSC and MSR_IA32_TSC_ADJUST.
++ *
++ * Copyright (C) 2020, Red Hat, Inc.
++ */
++#include <stdio.h>
++#include <string.h>
++#include "kvm_util.h"
++#include "processor.h"
++
++#define VCPU_ID 0
++
++#define UNITY                  (1ull << 30)
++#define HOST_ADJUST            (UNITY * 64)
++#define GUEST_STEP             (UNITY * 4)
++#define ROUND(x)               ((x + UNITY / 2) & -UNITY)
++#define rounded_rdmsr(x)       ROUND(rdmsr(x))
++#define rounded_host_rdmsr(x)  ROUND(vcpu_get_msr(vm, 0, x))
++
++#define GUEST_ASSERT_EQ(a, b) do {				\
++	__typeof(a) _a = (a);					\
++	__typeof(b) _b = (b);					\
++	if (_a != _b)						\
++                ucall(UCALL_ABORT, 4,				\
++                        "Failed guest assert: "			\
++                        #a " == " #b, __LINE__, _a, _b);	\
++  } while(0)
++
++static void guest_code(void)
++{
++	u64 val = 0;
++
++	GUEST_ASSERT_EQ(rounded_rdmsr(MSR_IA32_TSC), val);
++	GUEST_ASSERT_EQ(rounded_rdmsr(MSR_IA32_TSC_ADJUST), val);
++
++	/* Guest: writes to MSR_IA32_TSC affect both MSRs.  */
++	val = 1ull * GUEST_STEP;
++	wrmsr(MSR_IA32_TSC, val);
++	GUEST_ASSERT_EQ(rounded_rdmsr(MSR_IA32_TSC), val);
++	GUEST_ASSERT_EQ(rounded_rdmsr(MSR_IA32_TSC_ADJUST), val);
++
++	/* Guest: writes to MSR_IA32_TSC_ADJUST affect both MSRs.  */
++	GUEST_SYNC(2);
++	val = 2ull * GUEST_STEP;
++	wrmsr(MSR_IA32_TSC_ADJUST, val);
++	GUEST_ASSERT_EQ(rounded_rdmsr(MSR_IA32_TSC), val);
++	GUEST_ASSERT_EQ(rounded_rdmsr(MSR_IA32_TSC_ADJUST), val);
++
++	/* Host: setting the TSC offset.  */
++	GUEST_SYNC(3);
++	GUEST_ASSERT_EQ(rounded_rdmsr(MSR_IA32_TSC), HOST_ADJUST + val);
++	GUEST_ASSERT_EQ(rounded_rdmsr(MSR_IA32_TSC_ADJUST), val);
++
++	/*
++	 * Guest: writes to MSR_IA32_TSC_ADJUST do not destroy the
++	 * host-side offset and affect both MSRs.
++	 */
++	GUEST_SYNC(4);
++	val = 3ull * GUEST_STEP;
++	wrmsr(MSR_IA32_TSC_ADJUST, val);
++	GUEST_ASSERT_EQ(rounded_rdmsr(MSR_IA32_TSC), HOST_ADJUST + val);
++	GUEST_ASSERT_EQ(rounded_rdmsr(MSR_IA32_TSC_ADJUST), val);
++
++	/*
++	 * Guest: writes to MSR_IA32_TSC affect both MSRs, so the host-side
++	 * offset is now visible in MSR_IA32_TSC_ADJUST.
++	 */
++	GUEST_SYNC(5);
++	val = 4ull * GUEST_STEP;
++	wrmsr(MSR_IA32_TSC, val);
++	GUEST_ASSERT_EQ(rounded_rdmsr(MSR_IA32_TSC), val);
++	GUEST_ASSERT_EQ(rounded_rdmsr(MSR_IA32_TSC_ADJUST), val - HOST_ADJUST);
++
++	GUEST_DONE();
++}
++
++static void run_vcpu(struct kvm_vm *vm, uint32_t vcpuid, int stage)
++{
++	struct ucall uc;
++
++	vcpu_args_set(vm, vcpuid, 1, vcpuid);
++
++	vcpu_ioctl(vm, vcpuid, KVM_RUN, NULL);
++
++	switch (get_ucall(vm, vcpuid, &uc)) {
++	case UCALL_SYNC:
++		TEST_ASSERT(!strcmp((const char *)uc.args[0], "hello") &&
++                            uc.args[1] == stage + 1, "Stage %d: Unexpected register values vmexit, got %lx",
++                            stage + 1, (ulong)uc.args[1]);
++		return;
++	case UCALL_DONE:
++		return;
++	case UCALL_ABORT:
++		TEST_ASSERT(false, "%s at %s:%ld\n" \
++			    "\tvalues: %#lx, %#lx", (const char *)uc.args[0],
++			    __FILE__, uc.args[1], uc.args[2], uc.args[3]);
++	default:
++		TEST_ASSERT(false, "Unexpected exit: %s",
++			    exit_reason_str(vcpu_state(vm, vcpuid)->exit_reason));
++	}
++}
++
++int main(void)
++{
++	struct kvm_vm *vm;
++	uint64_t val;
++
++	vm = vm_create_default(VCPU_ID, 0, guest_code);
++	vcpu_set_cpuid(vm, VCPU_ID, kvm_get_supported_cpuid());
++
++	val = 0;
++	ASSERT_EQ(rounded_host_rdmsr(MSR_IA32_TSC), val);
++	ASSERT_EQ(rounded_host_rdmsr(MSR_IA32_TSC_ADJUST), val);
++
++	/* Guest: writes to MSR_IA32_TSC affect both MSRs.  */
++	run_vcpu(vm, VCPU_ID, 1);
++	val = 1ull * GUEST_STEP;
++	ASSERT_EQ(rounded_host_rdmsr(MSR_IA32_TSC), val);
++	ASSERT_EQ(rounded_host_rdmsr(MSR_IA32_TSC_ADJUST), val);
++
++	/* Guest: writes to MSR_IA32_TSC_ADJUST affect both MSRs.  */
++	run_vcpu(vm, VCPU_ID, 2);
++	val = 2ull * GUEST_STEP;
++	ASSERT_EQ(rounded_host_rdmsr(MSR_IA32_TSC), val);
++	ASSERT_EQ(rounded_host_rdmsr(MSR_IA32_TSC_ADJUST), val);
++
++	/*
++	 * Host: writes to MSR_IA32_TSC set the host-side offset
++	 * and therefore do not change MSR_IA32_TSC_ADJUST.
++	 */
++	vcpu_set_msr(vm, 0, MSR_IA32_TSC, HOST_ADJUST + val);
++	ASSERT_EQ(rounded_host_rdmsr(MSR_IA32_TSC), HOST_ADJUST + val);
++	ASSERT_EQ(rounded_host_rdmsr(MSR_IA32_TSC_ADJUST), val);
++	run_vcpu(vm, VCPU_ID, 3);
++
++	/* Host: writes to MSR_IA32_TSC_ADJUST do not modify the TSC.  */
++	vcpu_set_msr(vm, 0, MSR_IA32_TSC_ADJUST, UNITY * 123456);
++	ASSERT_EQ(rounded_host_rdmsr(MSR_IA32_TSC), HOST_ADJUST + val);
++	ASSERT_EQ(vcpu_get_msr(vm, 0, MSR_IA32_TSC_ADJUST), UNITY * 123456);
++
++	/* Restore previous value.  */
++	vcpu_set_msr(vm, 0, MSR_IA32_TSC_ADJUST, val);
++	ASSERT_EQ(rounded_host_rdmsr(MSR_IA32_TSC), HOST_ADJUST + val);
++	ASSERT_EQ(rounded_host_rdmsr(MSR_IA32_TSC_ADJUST), val);
++
++	/*
++	 * Guest: writes to MSR_IA32_TSC_ADJUST do not destroy the
++	 * host-side offset and affect both MSRs.
++	 */
++	run_vcpu(vm, VCPU_ID, 4);
++	val = 3ull * GUEST_STEP;
++	ASSERT_EQ(rounded_host_rdmsr(MSR_IA32_TSC), HOST_ADJUST + val);
++	ASSERT_EQ(rounded_host_rdmsr(MSR_IA32_TSC_ADJUST), val);
++
++	/*
++	 * Guest: writes to MSR_IA32_TSC affect both MSRs, so the host-side
++	 * offset is now visible in MSR_IA32_TSC_ADJUST.
++	 */
++	run_vcpu(vm, VCPU_ID, 5);
++	val = 4ull * GUEST_STEP;
++	ASSERT_EQ(rounded_host_rdmsr(MSR_IA32_TSC), val);
++	ASSERT_EQ(rounded_host_rdmsr(MSR_IA32_TSC_ADJUST), val - HOST_ADJUST);
++
++	kvm_vm_free(vm);
++
++	return 0;
++}
 -- 
-Joshi
+2.26.2
+
