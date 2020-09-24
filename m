@@ -2,475 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F7B1276D95
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 874E2276D97
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:36:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726758AbgIXJfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 05:35:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726614AbgIXJfo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 05:35:44 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD474C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:35:44 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id a9so1390084pjg.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:35:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=klloSdQCjQ4qA/DLBUzVlJByLToqRxqXBowBRJ2ysfA=;
-        b=pmFXZvSIRYEC2CLR7gtshCqd0R4QDP3o4kHK2VcL7Yva+iLoSOjDjwQtZHLFRRWXRQ
-         qNiarq6A7JNgLREVY5XW2Cpaojmjq7fyh/goITVuRkNm2wUuMpIdp1Z5lolJOcIapCqo
-         4KIHcwBWaff9dkcfgxXUKhy3Li/xE+da0wThSSCX0LQ2QkdajaI3ZtcyRDdXB4cjw0TS
-         k9iONpgT6uEsaTkQPmW5eeqa4isf30zhxuWXDzGqYTaNgHbgTA6zA0fRPer72Ko7f+da
-         2SuFnAUa3e2s65Shza3CbVJxKLSZ5fOaPbl2N/y0vvMNP8YHl8lhZ2xZfB46JWLeTkCT
-         lD8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=klloSdQCjQ4qA/DLBUzVlJByLToqRxqXBowBRJ2ysfA=;
-        b=ow+drJsM+CePSK4RXzvmAzp62d38S+7BUCZj0BYwSnWhLiv6yJ32WiFb5WtmHm0WaW
-         S+PN68tTLibfVkV7UkAfJxJSd2Uw6xXBuyo5S8G+MLbpT49Yp/quUB7qfPjJG97I2bzy
-         FwOj3SZwGJ6G+LFMfv52HIGXjpdlAChjB3LZyKL3IS3H8L7XqW/e7ymJyETXjDdC+CJc
-         xwmsjMJhBir5038rgoDHpScu+XwmRxBxuUQN1w/QgQGdUtiCQSILqTTbUTXykPe91390
-         Exoxzil+jyyEsmzwnEJDtX7rhKLq/Peh7n1myYf5670IPq6jbydcXiaJpe6EAl6VTHg/
-         f7Hw==
-X-Gm-Message-State: AOAM533Z9HwcxidcviCxKaCXI/m5rVW6LllKv+R+rjDKwfLdqpOI6Dus
-        lEEchaXN4JOeJ7n5pLo6HHLB7A==
-X-Google-Smtp-Source: ABdhPJwKs1c6wRqDhepeTEqLuX8YY0Nw3/1AORj+APMCBYb+JNuaMi1Ufj2DJqrfHhWm15V9vYmC/g==
-X-Received: by 2002:a17:90b:793:: with SMTP id l19mr3238788pjz.154.1600940143918;
-        Thu, 24 Sep 2020 02:35:43 -0700 (PDT)
-Received: from laputa (p784a66b9.tkyea130.ap.so-net.ne.jp. [120.74.102.185])
-        by smtp.gmail.com with ESMTPSA id x4sm2365081pfm.86.2020.09.24.02.35.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 02:35:43 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 18:35:38 +0900
-From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Ben Chuang <benchuanggli@gmail.com>, ulf.hansson@linaro.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
-Subject: Re: [RFC PATCH V3 12/21] mmc: sdhci: UHS-II support, add hooks for
- additional operations
-Message-ID: <20200924093538.GA35720@laputa>
-Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ben Chuang <benchuanggli@gmail.com>, ulf.hansson@linaro.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
-References: <20200710111054.29562-1-benchuanggli@gmail.com>
- <9fa17d60-a540-d0d8-7b2c-0016c3b5c532@intel.com>
+        id S1727080AbgIXJgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 05:36:52 -0400
+Received: from foss.arm.com ([217.140.110.172]:40048 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726614AbgIXJgw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 05:36:52 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9AFC911D4;
+        Thu, 24 Sep 2020 02:36:51 -0700 (PDT)
+Received: from [10.57.48.76] (unknown [10.57.48.76])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0343E3F73B;
+        Thu, 24 Sep 2020 02:36:48 -0700 (PDT)
+Subject: Re: arm-smmu 5000000.iommu: Cannot accommodate DMA offset for IOMMU
+ page tables
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Poonam Aggrwal <poonam.aggrwal@nxp.com>, robh@kernel.org,
+        Joerg Roedel <jroedel@suse.de>, Arnd Bergmann <arnd@arndb.de>,
+        Richard Weinberger <richard@nod.at>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mtd@lists.infradead.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Suram Suram <suram@nxp.com>, masonccyang@mxic.com.tw,
+        Will Deacon <will@kernel.org>, Zhiqiang.Hou@nxp.com
+References: <CA+G9fYvuq58q+GsWnzni0sKSHbubuQz-UaK3TASX26V_a7yBVw@mail.gmail.com>
+ <20200924090349.GF27174@8bytes.org>
+ <ecf71b34-a104-d42a-bfcd-9570e73520a7@arm.com>
+ <20200924092546.GJ27174@8bytes.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <e2186418-d4d6-e1f4-5eb4-3bfafb5cebb2@arm.com>
+Date:   Thu, 24 Sep 2020 10:36:47 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9fa17d60-a540-d0d8-7b2c-0016c3b5c532@intel.com>
+In-Reply-To: <20200924092546.GJ27174@8bytes.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adrian,
+On 2020-09-24 10:25, Joerg Roedel wrote:
+> Hi Robin,
+> 
+> On Thu, Sep 24, 2020 at 10:08:46AM +0100, Robin Murphy wrote:
+>> This should be fixed by https://lore.kernel.org/linux-iommu/daedc9364a19dc07487e4d07b8768b1e5934abd4.1600700881.git.robin.murphy@arm.com/T/#u
+>> (already in linux-next).
+> 
+> Thanks! The question remains why this goes through the dma-mapping tree,
+> was it caused by a patch there?
 
-This is, hopefully, my last reply to your comments on this patch#12.
+Yes, the issue was introduced by one of the changes in "dma-mapping: 
+introduce DMA range map, supplanting dma_pfn_offset", so it only existed 
+in the dma-mapping/for-next branch anyway.
 
-Regarding _request() and _send_command() (and more),
-
-On Fri, Aug 21, 2020 at 05:08:32PM +0300, Adrian Hunter wrote:
-> On 10/07/20 2:10 pm, Ben Chuang wrote:
-> > From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
-> > 
-> > In this commit, UHS-II related operations will be called via a function
-> > pointer array, sdhci_uhs2_ops, in order to make UHS-II support as
-> > a kernel module.
-> > This array will be initialized only if CONFIG_MMC_SDHCI_UHS2 is enabled
-> > and when the UHS-II module is loaded. Otherwise, all the functions
-> > stay void.
-> > 
-  (snip)
-
-> Again, this is what I want to avoid.  I would like to have 3 kinds of functions:
-> 	- SD mode only
-> 	- UHS-II only
-> 	- SD functions with no UHS-II code, that can also be used by UHS-II
-> i.e. I don't want to mix UHS-II code and SD mode code in the same function.
-> 
-> I think sdhci-uhs2.c should provide a request function and a send_command function.
-> I would start by removing everything you may not need, and then see if you have any problems.
-> e.g.
-> 
-> void uhs2_request(struct mmc_host *mmc, struct mmc_request *mrq)
-> {
-> 	struct sdhci_host *host = mmc_priv(mmc);
-> 	struct mmc_command *cmd;
-> 	unsigned long flags;
-> 
-> 	if (!host->uhs2_mode) {
-> 		sdhci_request(mmc, mrq);
-> 		return;
-> 	}
-> 
-> 	spin_lock_irqsave(&host->lock, flags);
-> 	uhs2_send_command(host, cmd);
-> 	spin_unlock_irqrestore(&host->lock, flags);
-> }
-> EXPORT_SYMBOL_GPL(uhs2_request);
-> 
-> For sdhci_prepare_data(), I would factor out the dma part, so
-> 
-> static void sdhci_prepare_data(struct sdhci_host *host, struct mmc_command *cmd)
-> {
-> 	struct mmc_data *data = cmd->data;
-> 
-> 	sdhci_initialize_data(host, data);
-> 
-> 	sdhci_prepare_dma(host, data);
-> 
-> 	sdhci_set_block_info(host, data);
-> }
-> 
-> The you could export sdhci_initialize_data() and sdhci_prepare_dma() for uhs2.
-> 
-> >  }
-> >  
-> >  #if IS_ENABLED(CONFIG_MMC_SDHCI_EXTERNAL_DMA)
-> > @@ -1439,6 +1463,13 @@ static void sdhci_set_transfer_mode(struct sdhci_host *host,
-> >  	u16 mode = 0;
-> >  	struct mmc_data *data = cmd->data;
-> >  
-> > +	if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> > +	    host->mmc->flags & MMC_UHS2_SUPPORT) {
-> > +		if (sdhci_uhs2_ops.set_transfer_mode)
-> > +			sdhci_uhs2_ops.set_transfer_mode(host, cmd);
-> > +		return;
-> > +	}
-> > +
-> 
-> Once you provide uhs2_request() and uhs2_send_command(), the transfer mode setting can be done in sdhci-uhs2.c
-
-If I try to make changes as you suggested above, a lot of other uhs2-flavored
-functions will also be created due to calling dependency/sequences
-and for "completeness" compared to uhs counterparts.
-They probably include
-    sdhci_uhs2_prepare_data()
-    sdhci_uhs2_external_dma_prepare_data()
-    sdhci_uhs2_send_command()
-    sdhci_uhs2_send_command_try()
-    sdhci_uhs2_send_tuning()
-    sdhci_uhs2_request()
-    sdhci_uhs2_request_atomic()
-    sdhci_uhs2_thread_irq()
-    sdhci_uhs2_irq()
-    sdhci_uhs2_cmd_irq()
-    sdhci_uhs2_finish_command()
-    sdhci_uhs2_resume_host()
-    __sdhci_uhs2_add_host()
-    sdhci_uhs2_add_host()
-(Some may not be used under the current drivers.)
-
-In addition, a bunch of functions in sdhci.c will also have to be exported
-to uhs2 as "global" functions instead of "static."
-
-Is this all that you expect to see?
-
--Takahiro Akashi
-
-
-
-> >  	if (data == NULL) {
-> >  		if (host->quirks2 &
-> >  			SDHCI_QUIRK2_CLEAR_TRANSFERMODE_REG_BEFORE_CMD) {
-> > @@ -1570,6 +1601,12 @@ static void __sdhci_finish_data(struct sdhci_host *host, bool sw_data_timeout)
-> >  	else
-> >  		data->bytes_xfered = data->blksz * data->blocks;
-> >  
-> > +	if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> > +	    host->mmc->flags & MMC_UHS2_INITIALIZED) {
-> > +		__sdhci_finish_mrq(host, data->mrq);
-> > +		return;
-> > +	}
-> 
-> At least to start with, I think it would be better to handle UHS-II cmd and data interrupts completely in sdhci-uhs2.c
-> 
-> > +
-> >  	/*
-> >  	 * Need to send CMD12 if -
-> >  	 * a) open-ended multiblock transfer not using auto CMD12 (no CMD23)
-> > @@ -1654,7 +1691,8 @@ static bool sdhci_send_command(struct sdhci_host *host, struct mmc_command *cmd)
-> >  			sdhci_prepare_data(host, cmd);
-> >  	}
-> >  
-> > -	sdhci_writel(host, cmd->arg, SDHCI_ARGUMENT);
-> > +	if (!IS_ENABLED(CONFIG_MMC_SDHCI_UHS2))
-> > +		sdhci_writel(host, cmd->arg, SDHCI_ARGUMENT);
-> 
-> Not needed when instead you provide uhs2_send_command() 
-> >  
-> >  	sdhci_set_transfer_mode(host, cmd);
-> >  
-> > @@ -1699,6 +1737,17 @@ static bool sdhci_send_command(struct sdhci_host *host, struct mmc_command *cmd)
-> >  	if (host->use_external_dma)
-> >  		sdhci_external_dma_pre_transfer(host, cmd);
-> >  
-> > +	if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> > +	    (host->mmc->flags & MMC_UHS2_SUPPORT)) {
-> > +		if (sdhci_uhs2_ops.send_command)
-> > +			sdhci_uhs2_ops.send_command(host, cmd);
-> > +
-> > +		return true;
-> > +	}
-> > +
-> > +	if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2))
-> > +		sdhci_writel(host, cmd->arg, SDHCI_ARGUMENT);
-> 
-> Not needed when instead you provide uhs2_send_command()
-> 
-> > +
-> >  	sdhci_writew(host, SDHCI_MAKE_CMD(cmd->opcode, flags), SDHCI_COMMAND);
-> >  
-> >  	return true;
-> > @@ -1780,13 +1829,20 @@ static void sdhci_finish_command(struct sdhci_host *host)
-> >  {
-> >  	struct mmc_command *cmd = host->cmd;
-> >  
-> > -	host->cmd = NULL;
-> > +	if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> > +	    host->mmc->flags & MMC_UHS2_SUPPORT) {
-> > +		if (sdhci_uhs2_ops.finish_command)
-> > +			sdhci_uhs2_ops.finish_command(host);
-> > +	} else {
-> > +		host->cmd = NULL;
-> >  
-> > -	if (cmd->flags & MMC_RSP_PRESENT) {
-> > -		if (cmd->flags & MMC_RSP_136) {
-> > -			sdhci_read_rsp_136(host, cmd);
-> > -		} else {
-> > -			cmd->resp[0] = sdhci_readl(host, SDHCI_RESPONSE);
-> > +		if (cmd->flags & MMC_RSP_PRESENT) {
-> > +			if (cmd->flags & MMC_RSP_136) {
-> > +				sdhci_read_rsp_136(host, cmd);
-> > +			} else {
-> > +				cmd->resp[0] = sdhci_readl(host,
-> > +							   SDHCI_RESPONSE);
-> > +			}
-> 
-> At least to start with, I think it would be better to handle UHS-II cmd and data interrupts completely in sdhci-uhs2.c
-> 
-> >  		}
-> >  	}
-> >  
-> > @@ -1809,6 +1865,7 @@ static void sdhci_finish_command(struct sdhci_host *host)
-> >  		} else if (!(host->quirks & SDHCI_QUIRK_NO_BUSY_IRQ) &&
-> >  			   cmd == host->data_cmd) {
-> >  			/* Command complete before busy is ended */
-> > +			host->cmd = NULL;
-> 
-> host->cmd is set to NULL at the start of this function, so this is not needed.
-> 
-> >  			return;
-> >  		}
-> >  	}
-> > @@ -1828,6 +1885,8 @@ static void sdhci_finish_command(struct sdhci_host *host)
-> >  		if (!cmd->data)
-> >  			__sdhci_finish_mrq(host, cmd->mrq);
-> >  	}
-> > +
-> > +	host->cmd = NULL;
-> 
-> host->cmd is set to NULL at the start of this function, so this is not needed.
-> 
-> >  }
-> >  
-> >  static u16 sdhci_get_preset_value(struct sdhci_host *host)
-> > @@ -1855,6 +1914,11 @@ static u16 sdhci_get_preset_value(struct sdhci_host *host)
-> >  	case MMC_TIMING_MMC_HS400:
-> >  		preset = sdhci_readw(host, SDHCI_PRESET_FOR_HS400);
-> >  		break;
-> > +#if IS_ENABLED(CONFIG_MMC_SDHCI_UHS2)
-> 
-> Shouldn't need conditional compilation for this
-> 
-> > +	case MMC_TIMING_UHS2:
-> > +		preset = sdhci_readw(host, SDHCI_PRESET_FOR_UHS2);
-> > +		break;
-> > +#endif
-> >  	default:
-> >  		pr_warn("%s: Invalid UHS-I mode selected\n",
-> >  			mmc_hostname(host->mmc));
-> > @@ -2095,7 +2159,6 @@ void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
-> >  			sdhci_writeb(host, pwr, SDHCI_POWER_CONTROL);
-> >  
-> >  		pwr |= SDHCI_POWER_ON;
-> > -
-> 
-> No white space changes mixed in please
-> 
-> >  		sdhci_writeb(host, pwr, SDHCI_POWER_CONTROL);
-> >  
-> >  		if (host->quirks2 & SDHCI_QUIRK2_CARD_ON_NEEDS_BUS_ON)
-> > @@ -2261,6 +2324,7 @@ void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
-> >  {
-> >  	struct sdhci_host *host = mmc_priv(mmc);
-> >  	u8 ctrl;
-> > +	u16 ctrl_2;
-> >  
-> >  	if (ios->power_mode == MMC_POWER_UNDEFINED)
-> >  		return;
-> > @@ -2287,6 +2351,10 @@ void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
-> >  		sdhci_enable_preset_value(host, false);
-> >  
-> >  	if (!ios->clock || ios->clock != host->clock) {
-> > +		if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> > +		    ios->timing == MMC_TIMING_UHS2)
-> > +			host->timing = ios->timing;
-> > +
-> >  		host->ops->set_clock(host, ios->clock);
-> >  		host->clock = ios->clock;
-> >  
-> > @@ -2308,6 +2376,18 @@ void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
-> >  	else
-> >  		sdhci_set_power(host, ios->power_mode, ios->vdd);
-> >  
-> > +	/* 4.0 host support */
-> > +	if (host->version >= SDHCI_SPEC_400) {
-> > +		/* UHS2 Support */
-> > +		if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> > +		    host->mmc->flags & MMC_UHS2_SUPPORT &&
-> > +		    host->mmc->caps & MMC_CAP_UHS2) {
-> > +			if (sdhci_uhs2_ops.do_set_ios)
-> > +				sdhci_uhs2_ops.do_set_ios(host, ios);
-> > +			return;
-> > +		}
-> > +	}
-> > +
-> 
-> Please look at using existing callbacks instead, maybe creating uhs2_set_ios(), uhs2_set_clock(), uhs2_set_power()
-> 
-> >  	if (host->ops->platform_send_init_74_clocks)
-> >  		host->ops->platform_send_init_74_clocks(host, ios->power_mode);
-> >  
-> > @@ -2331,7 +2411,7 @@ void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
-> >  	}
-> >  
-> >  	if (host->version >= SDHCI_SPEC_300) {
-> > -		u16 clk, ctrl_2;
-> > +		u16 clk;
-> >  
-> >  		if (!host->preset_enabled) {
-> >  			sdhci_writeb(host, ctrl, SDHCI_HOST_CONTROL);
-> > @@ -3173,11 +3253,19 @@ static bool sdhci_request_done(struct sdhci_host *host)
-> >  			/* This is to force an update */
-> >  			host->ops->set_clock(host, host->clock);
-> >  
-> > -		/* Spec says we should do both at the same time, but Ricoh
-> > -		   controllers do not like that. */
-> > -		sdhci_do_reset(host, SDHCI_RESET_CMD);
-> > -		sdhci_do_reset(host, SDHCI_RESET_DATA);
-> > -
-> > +		if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> > +		    host->mmc->flags & MMC_UHS2_INITIALIZED) {
-> > +			if (sdhci_uhs2_ops.reset)
-> > +				sdhci_uhs2_ops.reset(host,
-> > +						     SDHCI_UHS2_SW_RESET_SD);
-> > +		} else {
-> > +			/*
-> > +			 * Spec says we should do both at the same time, but
-> > +			 * Ricoh controllers do not like that.
-> > +			 */
-> > +			sdhci_do_reset(host, SDHCI_RESET_CMD);
-> > +			sdhci_do_reset(host, SDHCI_RESET_DATA);
-> > +		}
-> 
-> Please look at using the existing ->reset() sdhci host op instead.
-> 
-> >  		host->pending_reset = false;
-> >  	}
-> >  
-> > @@ -3532,6 +3620,13 @@ static irqreturn_t sdhci_irq(int irq, void *dev_id)
-> >  				  SDHCI_INT_BUS_POWER);
-> >  		sdhci_writel(host, mask, SDHCI_INT_STATUS);
-> >  
-> > +		if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> > +		    intmask & SDHCI_INT_ERROR &&
-> > +		    host->mmc->flags & MMC_UHS2_SUPPORT) {
-> > +			if (sdhci_uhs2_ops.irq)
-> > +				sdhci_uhs2_ops.irq(host);
-> > +		}
-> > +
-> 
-> Please look at using the existing ->irq() sdhci host op instead
-> 
-> >  		if (intmask & (SDHCI_INT_CARD_INSERT | SDHCI_INT_CARD_REMOVE)) {
-> >  			u32 present = sdhci_readl(host, SDHCI_PRESENT_STATE) &
-> >  				      SDHCI_CARD_PRESENT;
-> > @@ -4717,6 +4812,14 @@ int sdhci_setup_host(struct sdhci_host *host)
-> >  		/* This may alter mmc->*_blk_* parameters */
-> >  		sdhci_allocate_bounce_buffer(host);
-> >  
-> > +	if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> > +	    host->version >= SDHCI_SPEC_400 &&
-> > +	    sdhci_uhs2_ops.add_host) {
-> > +		ret = sdhci_uhs2_ops.add_host(host, host->caps1);
-> > +		if (ret)
-> > +			goto unreg;
-> > +	}
-> > +
-> 
-> I think you should look at creating uhs2_add_host() instead
-> 
-> >  	return 0;
-> >  
-> >  unreg:
-> > @@ -4738,6 +4841,8 @@ void sdhci_cleanup_host(struct sdhci_host *host)
-> >  {
-> >  	struct mmc_host *mmc = host->mmc;
-> >  
-> > +	/* FIXME: Do we have to do some cleanup for UHS2 here? */
-> > +
-> >  	if (!IS_ERR(mmc->supply.vqmmc))
-> >  		regulator_disable(mmc->supply.vqmmc);
-> >  
-> > @@ -4766,6 +4871,14 @@ int __sdhci_add_host(struct sdhci_host *host)
-> >  		mmc->cqe_ops = NULL;
-> >  	}
-> >  
-> > +	if ((mmc->caps & MMC_CAP_UHS2) && !host->v4_mode) {
-> > +		/* host doesn't want to enable UHS2 support */
-> > +		mmc->caps &= ~MMC_CAP_UHS2;
-> > +		mmc->flags &= ~MMC_UHS2_SUPPORT;
-> > +
-> > +		/* FIXME: Do we have to do some cleanup here? */
-> > +	}
-> > +
-> >  	host->complete_wq = alloc_workqueue("sdhci", flags, 0);
-> >  	if (!host->complete_wq)
-> >  		return -ENOMEM;
-> > @@ -4812,6 +4925,9 @@ int __sdhci_add_host(struct sdhci_host *host)
-> >  unled:
-> >  	sdhci_led_unregister(host);
-> >  unirq:
-> > +	if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> > +	    sdhci_uhs2_ops.remove_host)
-> > +		sdhci_uhs2_ops.remove_host(host, 0);
-> >  	sdhci_do_reset(host, SDHCI_RESET_ALL);
-> >  	sdhci_writel(host, 0, SDHCI_INT_ENABLE);
-> >  	sdhci_writel(host, 0, SDHCI_SIGNAL_ENABLE);
-> > @@ -4869,6 +4985,10 @@ void sdhci_remove_host(struct sdhci_host *host, int dead)
-> >  
-> >  	sdhci_led_unregister(host);
-> >  
-> > +	if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> > +	    sdhci_uhs2_ops.remove_host)
-> > +		sdhci_uhs2_ops.remove_host(host, dead);
-> > +
-> 
-> I think you should look at creating uhs2_remove_host() instead
-> 
-> >  	if (!dead)
-> >  		sdhci_do_reset(host, SDHCI_RESET_ALL);
-> >  
-> > 
-> 
+Robin.
