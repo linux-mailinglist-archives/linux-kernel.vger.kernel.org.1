@@ -2,304 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C63292770E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:25:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2540A2770ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:26:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727664AbgIXMZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 08:25:18 -0400
-Received: from foss.arm.com ([217.140.110.172]:44442 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727267AbgIXMZS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 08:25:18 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E2DF0113E;
-        Thu, 24 Sep 2020 05:25:16 -0700 (PDT)
-Received: from [10.57.48.76] (unknown [10.57.48.76])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2D14C3F73B;
-        Thu, 24 Sep 2020 05:25:16 -0700 (PDT)
-Subject: Re: [PATCH 02/13] iommu: amd: Prepare for generic IO page table
- framework
-To:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
-References: <20200923101442.73157-1-suravee.suthikulpanit@amd.com>
- <20200923101442.73157-3-suravee.suthikulpanit@amd.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <a2e28845-d162-281a-c762-698d1750bbea@arm.com>
-Date:   Thu, 24 Sep 2020 13:25:14 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        id S1727695AbgIXM0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 08:26:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57381 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727561AbgIXM0k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 08:26:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600950398;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=GFwnR9UycNy1oDIUGAN8i4fEjDMSf68GZffXYsCYHqE=;
+        b=Urk+o9W1EO1hoLnqNYCe4m6hbOeWbl9iPxpo3luZACRYe3P62h33rCoLX0pfLE+Y1Sagmj
+        he6+x9vuw/u5QyrHS9jiHLNgmp2fffK/vbXGlXt4H/Q1hsbPqrlgqDTKzc4Uak1wY66sYd
+        Iy5SIRqt/YYsg5qPndxQouo6j1EuLJ4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-596-ykcPeZN1Oc2VwDfhZWc7wA-1; Thu, 24 Sep 2020 08:26:35 -0400
+X-MC-Unique: ykcPeZN1Oc2VwDfhZWc7wA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A30F61074646;
+        Thu, 24 Sep 2020 12:26:32 +0000 (UTC)
+Received: from [10.10.115.120] (ovpn-115-120.rdu2.redhat.com [10.10.115.120])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id BEC8D55760;
+        Thu, 24 Sep 2020 12:26:24 +0000 (UTC)
+Subject: Re: [PATCH v2 1/4] sched/isolation: API to get housekeeping online
+ CPUs
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        mtosatti@redhat.com, sassmann@redhat.com,
+        jesse.brandeburg@intel.com, lihong.yang@intel.com,
+        helgaas@kernel.org, jeffrey.t.kirsher@intel.com,
+        jacob.e.keller@intel.com, jlelli@redhat.com, hch@infradead.org,
+        bhelgaas@google.com, mike.marciniszyn@intel.com,
+        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
+        jerinj@marvell.com, mathias.nyman@intel.com, jiri@nvidia.com,
+        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org
+References: <20200923181126.223766-1-nitesh@redhat.com>
+ <20200923181126.223766-2-nitesh@redhat.com> <20200924121150.GB19346@lenoir>
+From:   Nitesh Narayan Lal <nitesh@redhat.com>
+Autocrypt: addr=nitesh@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ VujM7c/b4pps
+Organization: Red Hat Inc,
+Message-ID: <ce5b0ace-518f-e17c-38dc-083fccedbc9b@redhat.com>
+Date:   Thu, 24 Sep 2020 08:26:18 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200923101442.73157-3-suravee.suthikulpanit@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200924121150.GB19346@lenoir>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=nitesh@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="72MaNEbag39Db2lEW8tcVt79cQG44k8G1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-23 11:14, Suravee Suthikulpanit wrote:
-> Add initial hook up code to implement generic IO page table framework.
-> 
-> Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-> ---
->   drivers/iommu/amd/Kconfig           |  1 +
->   drivers/iommu/amd/Makefile          |  2 +-
->   drivers/iommu/amd/amd_iommu_types.h | 32 +++++++++++
->   drivers/iommu/amd/io_pgtable.c      | 89 +++++++++++++++++++++++++++++
->   drivers/iommu/amd/iommu.c           | 10 ----
->   drivers/iommu/io-pgtable.c          |  3 +
->   include/linux/io-pgtable.h          |  2 +
->   7 files changed, 128 insertions(+), 11 deletions(-)
->   create mode 100644 drivers/iommu/amd/io_pgtable.c
-> 
-> diff --git a/drivers/iommu/amd/Kconfig b/drivers/iommu/amd/Kconfig
-> index 626b97d0dd21..a3cbafb603f5 100644
-> --- a/drivers/iommu/amd/Kconfig
-> +++ b/drivers/iommu/amd/Kconfig
-> @@ -10,6 +10,7 @@ config AMD_IOMMU
->   	select IOMMU_API
->   	select IOMMU_IOVA
->   	select IOMMU_DMA
-> +	select IOMMU_IO_PGTABLE
->   	depends on X86_64 && PCI && ACPI && HAVE_CMPXCHG_DOUBLE
->   	help
->   	  With this option you can enable support for AMD IOMMU hardware in
-> diff --git a/drivers/iommu/amd/Makefile b/drivers/iommu/amd/Makefile
-> index dc5a2fa4fd37..a935f8f4b974 100644
-> --- a/drivers/iommu/amd/Makefile
-> +++ b/drivers/iommu/amd/Makefile
-> @@ -1,4 +1,4 @@
->   # SPDX-License-Identifier: GPL-2.0-only
-> -obj-$(CONFIG_AMD_IOMMU) += iommu.o init.o quirks.o
-> +obj-$(CONFIG_AMD_IOMMU) += iommu.o init.o quirks.o io_pgtable.o
->   obj-$(CONFIG_AMD_IOMMU_DEBUGFS) += debugfs.o
->   obj-$(CONFIG_AMD_IOMMU_V2) += iommu_v2.o
-> diff --git a/drivers/iommu/amd/amd_iommu_types.h b/drivers/iommu/amd/amd_iommu_types.h
-> index f696ac7c5f89..77cd8d966fbc 100644
-> --- a/drivers/iommu/amd/amd_iommu_types.h
-> +++ b/drivers/iommu/amd/amd_iommu_types.h
-> @@ -15,6 +15,7 @@
->   #include <linux/spinlock.h>
->   #include <linux/pci.h>
->   #include <linux/irqreturn.h>
-> +#include <linux/io-pgtable.h>
->   
->   /*
->    * Maximum number of IOMMUs supported
-> @@ -252,6 +253,19 @@
->   
->   #define GA_GUEST_NR		0x1
->   
-> +#define IOMMU_IN_ADDR_BIT_SIZE  52
-> +#define IOMMU_OUT_ADDR_BIT_SIZE 52
-> +
-> +/*
-> + * This bitmap is used to advertise the page sizes our hardware support
-> + * to the IOMMU core, which will then use this information to split
-> + * physically contiguous memory regions it is mapping into page sizes
-> + * that we support.
-> + *
-> + * 512GB Pages are not supported due to a hardware bug
-> + */
-> +#define AMD_IOMMU_PGSIZES	((~0xFFFUL) & ~(2ULL << 38))
-> +
->   /* Bit value definition for dte irq remapping fields*/
->   #define DTE_IRQ_PHYS_ADDR_MASK	(((1ULL << 45)-1) << 6)
->   #define DTE_IRQ_REMAP_INTCTL_MASK	(0x3ULL << 60)
-> @@ -461,6 +475,23 @@ struct amd_irte_ops;
->   
->   #define AMD_IOMMU_FLAG_TRANS_PRE_ENABLED      (1 << 0)
->   
-> +#define io_pgtable_to_data(x) \
-> +	container_of((x), struct amd_io_pgtable, iop)
-> +
-> +#define io_pgtable_ops_to_data(x) \
-> +	io_pgtable_to_data(io_pgtable_ops_to_pgtable(x))
-> +
-> +#define io_pgtable_ops_to_domain(x) \
-> +	container_of(io_pgtable_ops_to_data(x), \
-> +		     struct protection_domain, iop)
-> +
-> +struct amd_io_pgtable {
-> +	struct io_pgtable_cfg	pgtbl_cfg;
-> +	struct io_pgtable	iop;
-> +	int			mode;
-> +	u64			*root;
-> +};
-> +
->   /*
->    * This structure contains generic data for  IOMMU protection domains
->    * independent of their use.
-> @@ -469,6 +500,7 @@ struct protection_domain {
->   	struct list_head dev_list; /* List of all devices in this domain */
->   	struct iommu_domain domain; /* generic domain handle used by
->   				       iommu core code */
-> +	struct amd_io_pgtable iop;
->   	spinlock_t lock;	/* mostly used to lock the page table*/
->   	u16 id;			/* the domain id written to the device table */
->   	atomic64_t pt_root;	/* pgtable root and pgtable mode */
-> diff --git a/drivers/iommu/amd/io_pgtable.c b/drivers/iommu/amd/io_pgtable.c
-> new file mode 100644
-> index 000000000000..452cad26a2b3
-> --- /dev/null
-> +++ b/drivers/iommu/amd/io_pgtable.c
-> @@ -0,0 +1,89 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * CPU-agnostic AMD IO page table allocator.
-> + *
-> + * Copyright (C) 2020 Advanced Micro Devices, Inc.
-> + * Author: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-> + */
-> +
-> +#define pr_fmt(fmt)     "AMD-Vi: " fmt
-> +#define dev_fmt(fmt)    pr_fmt(fmt)
-> +
-> +#include <linux/atomic.h>
-> +#include <linux/bitops.h>
-> +#include <linux/io-pgtable.h>
-> +#include <linux/kernel.h>
-> +#include <linux/sizes.h>
-> +#include <linux/slab.h>
-> +#include <linux/types.h>
-> +#include <linux/dma-mapping.h>
-> +
-> +#include <asm/barrier.h>
-> +
-> +#include "amd_iommu_types.h"
-> +#include "amd_iommu.h"
-> +
-> +static void v1_tlb_flush_all(void *cookie)
-> +{
-> +}
-> +
-> +static void v1_tlb_flush_walk(unsigned long iova, size_t size,
-> +				  size_t granule, void *cookie)
-> +{
-> +}
-> +
-> +static void v1_tlb_flush_leaf(unsigned long iova, size_t size,
-> +				  size_t granule, void *cookie)
-> +{
-> +}
-> +
-> +static void v1_tlb_add_page(struct iommu_iotlb_gather *gather,
-> +					 unsigned long iova, size_t granule,
-> +					 void *cookie)
-> +{
-> +	struct protection_domain *pdom = cookie;
-> +	struct iommu_domain *domain = &pdom->domain;
-> +
-> +	iommu_iotlb_gather_add_page(domain, gather, iova, granule);
-> +}
-> +
-> +static const struct iommu_flush_ops amd_flush_ops = {
-> +	.tlb_flush_all	= v1_tlb_flush_all,
-> +	.tlb_flush_walk = v1_tlb_flush_walk,
-> +	.tlb_flush_leaf = v1_tlb_flush_leaf,
-> +	.tlb_add_page	= v1_tlb_add_page,
-> +};
-> +
-> +struct io_pgtable_ops *amd_iommu_setup_io_pgtable_ops(struct iommu_dev_data *dev_data,
-> +					     struct protection_domain *domain)
-> +{
-> +		domain->iop.pgtbl_cfg = (struct io_pgtable_cfg) {
-> +		.pgsize_bitmap	= AMD_IOMMU_PGSIZES,
-> +		.ias		= IOMMU_IN_ADDR_BIT_SIZE,
-> +		.oas		= IOMMU_OUT_ADDR_BIT_SIZE,
-> +		.coherent_walk	= false,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--72MaNEbag39Db2lEW8tcVt79cQG44k8G1
+Content-Type: multipart/mixed; boundary="GoWiIk5Gfq1KfDGPvs02C2lhYgrQgjSJI"
 
-Is that right? Given that you seem to use regular kernel addresses for 
-pagetable pages and don't have any obvious cache maintenance around PTE 
-manipulation, I suspect not ;)
+--GoWiIk5Gfq1KfDGPvs02C2lhYgrQgjSJI
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
 
-It's fair enough if your implementation doesn't use this and simply 
-assumes coherency, but in that case it would be less confusing to have 
-the driver set it to true for the sake of honesty, or just leave it out 
-entirely - explicitly setting false gives the illusion of being meaningful.
 
-Otherwise, the io-pgtable parts all look OK to me - it's nice to finally 
-fulfil the original intent of not being an Arm-specific thing :D
+On 9/24/20 8:11 AM, Frederic Weisbecker wrote:
+> On Wed, Sep 23, 2020 at 02:11:23PM -0400, Nitesh Narayan Lal wrote:
+>> Introduce a new API hk_num_online_cpus(), that can be used to
+>> retrieve the number of online housekeeping CPUs that are meant to handle
+>> managed IRQ jobs.
+>>
+>> This API is introduced for the drivers that were previously relying only
+>> on num_online_cpus() to determine the number of MSIX vectors to create.
+>> In an RT environment with large isolated but fewer housekeeping CPUs thi=
+s
+>> was leading to a situation where an attempt to move all of the vectors
+>> corresponding to isolated CPUs to housekeeping CPUs were failing due to
+>> per CPU vector limit.
+>>
+>> Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
+>> ---
+>>  include/linux/sched/isolation.h | 13 +++++++++++++
+>>  1 file changed, 13 insertions(+)
+>>
+>> diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isola=
+tion.h
+>> index cc9f393e2a70..2e96b626e02e 100644
+>> --- a/include/linux/sched/isolation.h
+>> +++ b/include/linux/sched/isolation.h
+>> @@ -57,4 +57,17 @@ static inline bool housekeeping_cpu(int cpu, enum hk_=
+flags flags)
+>>  =09return true;
+>>  }
+>> =20
+>> +static inline unsigned int hk_num_online_cpus(void)
+>> +{
+>> +#ifdef CONFIG_CPU_ISOLATION
+>> +=09const struct cpumask *hk_mask;
+>> +
+>> +=09if (static_branch_unlikely(&housekeeping_overridden)) {
+>> +=09=09hk_mask =3D housekeeping_cpumask(HK_FLAG_MANAGED_IRQ);
+> HK_FLAG_MANAGED_IRQ should be pass as an argument to the function:
+>
+> housekeeping_num_online_cpus(HK_FLAG_MANAGED_IRQ) because it's
+> completely arbitrary otherwise.
 
-Robin.
 
-> +		.tlb		= &amd_flush_ops,
-> +		.iommu_dev	= &dev_data->pdev->dev,
-> +	};
-> +
-> +	return alloc_io_pgtable_ops(AMD_IOMMU_V1, &domain->iop.pgtbl_cfg, domain);
-> +}
-> +
-> +/*
-> + * ----------------------------------------------------
-> + */
-> +static void v1_free_pgtable(struct io_pgtable *iop)
-> +{
-> +}
-> +
-> +static struct io_pgtable *v1_alloc_pgtable(struct io_pgtable_cfg *cfg, void *cookie)
-> +{
-> +	struct protection_domain *pdom = (struct protection_domain *)cookie;
-> +
-> +	return &pdom->iop.iop;
-> +}
-> +
-> +struct io_pgtable_init_fns io_pgtable_amd_iommu_v1_init_fns = {
-> +	.alloc	= v1_alloc_pgtable,
-> +	.free	= v1_free_pgtable,
-> +};
-> diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-> index e92b3f744292..2b7eb51dcbb8 100644
-> --- a/drivers/iommu/amd/iommu.c
-> +++ b/drivers/iommu/amd/iommu.c
-> @@ -59,16 +59,6 @@
->   #define HT_RANGE_START		(0xfd00000000ULL)
->   #define HT_RANGE_END		(0xffffffffffULL)
->   
-> -/*
-> - * This bitmap is used to advertise the page sizes our hardware support
-> - * to the IOMMU core, which will then use this information to split
-> - * physically contiguous memory regions it is mapping into page sizes
-> - * that we support.
-> - *
-> - * 512GB Pages are not supported due to a hardware bug
-> - */
-> -#define AMD_IOMMU_PGSIZES	((~0xFFFUL) & ~(2ULL << 38))
-> -
->   #define DEFAULT_PGTABLE_LEVEL	PAGE_MODE_3_LEVEL
->   
->   static DEFINE_SPINLOCK(pd_bitmap_lock);
-> diff --git a/drivers/iommu/io-pgtable.c b/drivers/iommu/io-pgtable.c
-> index 94394c81468f..6e9917ce980f 100644
-> --- a/drivers/iommu/io-pgtable.c
-> +++ b/drivers/iommu/io-pgtable.c
-> @@ -24,6 +24,9 @@ io_pgtable_init_table[IO_PGTABLE_NUM_FMTS] = {
->   #ifdef CONFIG_IOMMU_IO_PGTABLE_ARMV7S
->   	[ARM_V7S] = &io_pgtable_arm_v7s_init_fns,
->   #endif
-> +#ifdef CONFIG_AMD_IOMMU
-> +	[AMD_IOMMU_V1] = &io_pgtable_amd_iommu_v1_init_fns,
-> +#endif
->   };
->   
->   struct io_pgtable_ops *alloc_io_pgtable_ops(enum io_pgtable_fmt fmt,
-> diff --git a/include/linux/io-pgtable.h b/include/linux/io-pgtable.h
-> index 23285ba645db..db25d436cabd 100644
-> --- a/include/linux/io-pgtable.h
-> +++ b/include/linux/io-pgtable.h
-> @@ -15,6 +15,7 @@ enum io_pgtable_fmt {
->   	ARM_64_LPAE_S2,
->   	ARM_V7S,
->   	ARM_MALI_LPAE,
-> +	AMD_IOMMU_V1,
->   	IO_PGTABLE_NUM_FMTS,
->   };
->   
-> @@ -254,5 +255,6 @@ extern struct io_pgtable_init_fns io_pgtable_arm_64_lpae_s1_init_fns;
->   extern struct io_pgtable_init_fns io_pgtable_arm_64_lpae_s2_init_fns;
->   extern struct io_pgtable_init_fns io_pgtable_arm_v7s_init_fns;
->   extern struct io_pgtable_init_fns io_pgtable_arm_mali_lpae_init_fns;
-> +extern struct io_pgtable_init_fns io_pgtable_amd_iommu_v1_init_fns;
->   
->   #endif /* __IO_PGTABLE_H */
-> 
+Yeap that is more sensible, I will do that.
+Do you have any other concerns/suggestions on any other patch?
+
+>
+>> +=09=09return cpumask_weight(hk_mask);
+>> +=09}
+>> +#endif
+>> +=09return cpumask_weight(cpu_online_mask);
+>> +}
+>> +
+>>  #endif /* _LINUX_SCHED_ISOLATION_H */
+>> --=20
+>> 2.18.2
+>>
+--=20
+Thanks
+Nitesh
+
+
+--GoWiIk5Gfq1KfDGPvs02C2lhYgrQgjSJI--
+
+--72MaNEbag39Db2lEW8tcVt79cQG44k8G1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEkXcoRVGaqvbHPuAGo4ZA3AYyozkFAl9skGoACgkQo4ZA3AYy
+ozlwQQ/8D0DZIkSC1XngXpOpenq1bY11v3CvrsnfLsLUmknHDo4xrCGEULJ9K65b
+9fpkPwThDaGzhGqSo8jmQI/AprBs8y6B6ySOj2iSjvdZLxol2VEGKCxDoh+R8FeT
+HD6kAeV7FJhHeGNrmNHGHNXYu1yP6l5kmik0luws32bQeZc8+o8uKwG6fsGqoVSz
+A1N/p1+gT2ZpZDfLo5Nn11cv3NRxDlhcaQkHVnlTU2hJeH3WL1uTCx0TCbxQ4mo2
+4hExQACOrfP6H6qJUP2g0iQfm+ylUB6mIa2i6WtDoFf0ZLfxE8NqRi2gxTY5k9QY
+WF3R+JzVggkMUVJ731R8zRVUp9/WRTGkf/VPapLhZR+UWUZbAks6g1NmmyZ4Gg8U
+UDJ4u3PR5Bjj55Bc62CqtdL9lW4eF65uJq8Yd4Q2L4mefsXlh9GaeOFjUxrwPehe
+NBmahDZREbB20ZFkzOICkXkX2KcrwtYFIgw8nrtZas6FMJy5MeihnAlkRf5To+4t
+TYSPCpabewRyAvDtfKTls4HWXWDn5CnwqjXRuJr1buHhUaJc3K2AwKRAF4se9sem
+6T26tmiFVE7ZLBRznT848oYCv1dTVg+KNtrzTSiDiDdQlIXs92tIAVGq/dmU0omF
+IrQ+vGJhYD8qZA/lC5HldoYjqSe2bVgdfwickj0jVFVhZVBquGA=
+=DZW2
+-----END PGP SIGNATURE-----
+
+--72MaNEbag39Db2lEW8tcVt79cQG44k8G1--
+
