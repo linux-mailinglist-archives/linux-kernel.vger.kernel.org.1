@@ -2,200 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB3CD2778CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 20:58:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C25832778D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 20:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728771AbgIXS6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 14:58:31 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:35612 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726831AbgIXS6a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 14:58:30 -0400
-Received: from zn.tnic (p200300ec2f0c9500731208bb5d5e764a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:9500:7312:8bb:5d5e:764a])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 367141EC02F2;
-        Thu, 24 Sep 2020 20:58:29 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600973909;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pvXTnmWGvKtgmruVF9CFH80cOq+coBlIBCsP6YrIMN8=;
-        b=Bthia61HoShSvGYZn5f8yiSeXycGFpDA/+s/JDURnJYeh3pcJtbsG0zKvQ3pNvJqEiw5NO
-        wOWGlvegmhAVt972XZqY/WZwHwyc4SiJJ9gtutGLw1slMteXePkmS7wEyWLtxjuJ5HPnv6
-        KqtywLs7OyRQdZGDTzbQqr25f3YYoMM=
-Date:   Thu, 24 Sep 2020 20:58:22 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Dave Jiang <dave.jiang@intel.com>
-Cc:     vkoul@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        dan.j.williams@intel.com, tony.luck@intel.com, jing.lin@intel.com,
-        ashok.raj@intel.com, sanjay.k.kumar@intel.com,
-        fenghua.yu@intel.com, kevin.tian@intel.com,
-        David.Laight@ACULAB.COM, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 2/5] x86/asm: Add enqcmds() to support ENQCMDS
- instruction
-Message-ID: <20200924185822.GQ5030@zn.tnic>
-References: <20200924180041.34056-1-dave.jiang@intel.com>
- <20200924180041.34056-3-dave.jiang@intel.com>
+        id S1728774AbgIXS7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 14:59:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726681AbgIXS7P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 14:59:15 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A429EC0613CE;
+        Thu, 24 Sep 2020 11:59:14 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id u21so269162eja.2;
+        Thu, 24 Sep 2020 11:59:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lwAddsxqxEQpJ575NEew1KT3RdIFAHC55D7Q/Z0N/RY=;
+        b=GNbA+UUYnzYUWnF9AWZ7LbnzKoR2rTvoRCb/5g6P2OZ/vAeIwpeVeSyZVg1Zk5p0YX
+         LW26M0TaN6PWk/5eOX15xy7dwp04CN9vCRJeTgWlthrotX6RlpFbyQCm1KZT3FGNaJi2
+         /TMkFLssFuCCH4cNU2uItE15fgcD7ZTKxvsY1sT9QVyX9SUMBRBWuZscAckPgonU1aho
+         Sa8wpLkoVSbuPz/1UcipwaExcDJZ3edbe9JeUrn708GlY6qT1Z4rL61iuL2MvDQESzNX
+         67AJMVb6ktX4n5KklEq1eZV4nl7CEf0eJNF2ikR8G0QpVOabbYLEfH5sudK1f/35aE5q
+         UgzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lwAddsxqxEQpJ575NEew1KT3RdIFAHC55D7Q/Z0N/RY=;
+        b=N6y8DeXEY5sk77S1iUCuVcC40psSziCbgJfMzLUFWH6kc6QfoPvPXPCTrXcVroL8Lm
+         Mq1NMumlLlJp+jsWqACopU7K9snmB6cpkbHXoSSp/2xZhgyvyT2gu+cd/DnS/tRj4hB3
+         e3+YQCQJI9Sti7lKGXpqaCv/zcEHy7YzEmh5yGmnc3IdsDXFAHIuWZzK1arHLzv28qXo
+         FJRrlcY5JeD/QEFfyPS5fyZHrk5NxtOu2IO1S1l2cfN3MUrj2mOZ/eIAlHBxx6vLluj1
+         tf+sekiwP9SDhe9k9lA/0HA6zACzqsxO5pCKF6U9CfJFHpSdK6GI8bruAfqZaPbCwd9i
+         qnqw==
+X-Gm-Message-State: AOAM531MGZ1+7uE2Wqo6OfN5xLxN/v7OHPH3iVL/i59eKbiEQUW+yCMU
+        i77JV6nWKYBc0SBTznriPEhWXGqI8qY=
+X-Google-Smtp-Source: ABdhPJxp9sqJiNEsPeTmvDrXg1hfXDZVxyTA8NSVZqJqnoM12q+h6hFsKp8vcVS+g/f/0JuHZBL5aA==
+X-Received: by 2002:a17:906:9245:: with SMTP id c5mr94400ejx.54.1600973952579;
+        Thu, 24 Sep 2020 11:59:12 -0700 (PDT)
+Received: from [192.168.2.202] (pd9e5a9d2.dip0.t-ipconnect.de. [217.229.169.210])
+        by smtp.gmail.com with ESMTPSA id lr14sm219977ejb.0.2020.09.24.11.59.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Sep 2020 11:59:11 -0700 (PDT)
+Subject: Re: [RFC PATCH 0/9] Add support for Microsoft Surface System
+ Aggregator Module
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-serial@vger.kernel.org,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
+        Dorian Stoll <dorian.stoll@tmsp.io>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>
+References: <20200923151511.3842150-1-luzmaximilian@gmail.com>
+ <CAK8P3a3Qie_CP1dA-ERqyDv=EnaQQPnNbFYrGr3ySiY4mO0=Uw@mail.gmail.com>
+ <dad42dce-15d0-245a-4d91-4733e54883a0@gmail.com>
+ <CAK8P3a2ryzmsrHHApT9O=dvsw+=z18Sjd4ygVxvFrrDetKA+rQ@mail.gmail.com>
+ <c4c1d999-9ab7-8988-906a-3cb6a70bc93d@gmail.com>
+ <CAK8P3a2XegsP71yvd8Ku08_k6ecQfkU+V+t+QnjQBrJKF2MwCg@mail.gmail.com>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <d07adfb3-9f79-c00a-cb70-e044aa0b19f8@gmail.com>
+Date:   Thu, 24 Sep 2020 20:59:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200924180041.34056-3-dave.jiang@intel.com>
+In-Reply-To: <CAK8P3a2XegsP71yvd8Ku08_k6ecQfkU+V+t+QnjQBrJKF2MwCg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 11:00:38AM -0700, Dave Jiang wrote:
-> +/**
-> + * enqcmds - copy a 512 bits data unit to single MMIO location
+On 9/24/20 10:26 AM, Arnd Bergmann wrote:
+> On Thu, Sep 24, 2020 at 1:28 AM Maximilian Luz <luzmaximilian@gmail.com> wrote:
+>> On 9/23/20 9:43 PM, Arnd Bergmann wrote:
+>>> On Wed, Sep 23, 2020 at 5:43 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
+>>>>
+>>>> On 9/23/20 5:30 PM, Arnd Bergmann wrote:
+>>>>> On Wed, Sep 23, 2020 at 5:15 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
+>>>>>>
+>>>>>> Hello,
+>>>>>>
+>>>>>> The Surface System Aggregator Module (we'll refer to it as Surface
+>>>>>> Aggregator or SAM below) is an embedded controller (EC) found on various
+>>>>>> Microsoft Surface devices. Specifically, all 4th and later generation
+>>>>>> Surface devices, i.e. Surface Pro 4, Surface Book 1 and later, with the
+>>>>>> exception of the Surface Go series and the Surface Duo. Notably, it
+>>>>>> seems like this EC can also be found on the ARM-based Surface Pro X [1].
+>>>>>
+>>>>> I think this should go to drivers/platform/x86 or drivers/platform/surface/
+>>>>> along with other laptop vendor specific code rather than drivers/misc/.
+>>>>
+>>>> I initially had this under drivers/platform/x86. There are two main
+>>>> reasons I changed that: First, I think it's a bit too big for
+>>>> platform/x86 given that it basically introduces a new subsystem. At this
+>>>> point it's really less of "a couple of odd devices here and there" and
+>>>> more of a bus-type thing. Second, with the possibility of future support
+>>>> for ARM devices (Pro X, Pro X 2 which is rumored to come out soon), I
+>>>> thought that platform/x86 would not be a good fit.
+>>>
+>>> I don't see that as a strong reason against it. As you write yourself, the
+>>> driver won't work on the arm machines without major changes anyway,
+>>> and even if it does, it fits much better with the rest of it.
+>>
+>> Sorry, I should have written that a bit more clearly. I don't see any
+>> reason why these drivers would not work on an ARM device such as the Pro
+>> X right now, assuming that it boots via ACPI and the serial device it
+>> loads against is fully functional.
+> 
+> As I understand, the dialect of ACPI used on the snapdragon laptops
+> is not really compatible with the subset expected by the kernel, so
+> you'd be more likely to run those laptops with a device tree description
+> of the hardware instead (if at all).
+> 
+> Making the driver talk to the hardware directly instead of going through
+> AML likely requires more refactoring.
 
-You forgot to fix this.
+Oh, I did not know that! Thanks!
 
-> + * @dst: destination, in MMIO space (must be 512-bit aligned)
-> + * @src: source
-> + *
-> + * The ENQCMDS instruction allows software to write a 512 bits command to
-> + * a 512 bits aligned special MMIO region that supports the instruction.
-> + * A return status is loaded into the ZF flag in the RFLAGS register.
-> + * ZF = 0 equates to success, and ZF = 1 indicates retry or error.
-> + *
-> + * The enqcmds() function uses the ENQCMDS instruction to submit data from
-> + * kernel space to MMIO space, in a unit of 512 bits. Order of data access
-> + * is not guaranteed, nor is a memory barrier performed afterwards. The
-> + * function returns 0 on success and -EAGAIN on failure.
-> + *
-> + * Warning: Do not use this helper unless your driver has checked that the CPU
-> + * instruction is supported on the platform and the device accepts ENQCMDS.
-> + */
-> +static inline int enqcmds(void __iomem *dst, const void *src)
-> +{
-> +	int zf;
-> +
-> +	/* ENQCMDS [rdx], rax */
-> +	asm volatile(".byte 0xf3, 0x0f, 0x38, 0xf8, 0x02, 0x66, 0x90"
-> +		     CC_SET(z)
-> +		     : CC_OUT(z) (zf)
-> +		     : "a" (dst), "d" (src));
+>>>> I'd be happy to move this to platform/surface though, if that's
+>>>> considered a better fit and you're okay with me adding that. Would make
+>>>> sense given that there's already a platform/chrome, which, as far as I
+>>>> can tell, also seems to be mainly focused on EC support.
+>>>
+>>> Yes, I think the main question is how much overlap you see functionally
+>>> between this driver and the others in drivers/platform/x86.
+>>
+>> I think that the Pro X likely won't be the last ARM Surface device with
+>> a SAM EC. Further, the subsystem is going to grow, and platform/x86
+>> seems more like a collection of, if at all, loosely connected drivers,
+>> which might give off the wrong impression. In my mind, this is just a
+>> bit more comparable to platform/chrome than the rest of platform/x86. I
+>> don't think I'm really qualified to make the decision on that though,
+>> that's just my opinion.
+> 
+> I would ask the drivers/platform/x86 maintainers for an opinion here,
+> they are probably best qualified to make that decision.
+> 
+> I don't really mind either way, for me this is more about who is
+> responsible as a subsystem maintainer than whether these are
+> technically x86 or not.
 
-Those operands need to be specified the same way as for movdir64b.
+I see, okay. I'll ask them and CC them on the next submission.
 
-I've done that to save roundtrip time - simply replace yours with this
-one after having tested it on actual hardware, of course.
+>> Here's an overview of other drivers that I hopefully at some point get
+>> in good enough shape, which are part of this subsystem/dependent on the
+>> EC API introduced here:
+>>
+>> - A device registry / device hub for devices that are connected to the
+>>     EC but can't be detected via ACPI.
+>>
+>> - A dedicated battery driver for 7th generation devices (where the
+>>     battery isn't hanled via the ACPI shim).
+>>
+>> - A driver properly handling clipboard detachment on the Surface Books.
+>>
+>> - A driver for HID input/transport on the Surface Laptops and Surface
+>>     Book 3.
+>>
+>> - A driver for allowing users to set the performance/cooling mode via
+>>     sysfs.
+>>
+>> - Possibly a driver improving hot-plug handling of the discrete GPU in
+>>     the Surface Book base.
+> 
+> Note that drivers that connect to the bus typically don't live in the
+> same subdirectory as the driver that operates the bus. E.g. the
+> battery driver would go into drivers/power/supply and the input
+> would go into drivers/input/ or drivers/hid.
 
----
-From 39cbdc81d657efcb73c0f7d7ab5e5c53f439f267 Mon Sep 17 00:00:00 2001
-From: Dave Jiang <dave.jiang@intel.com>
-Date: Thu, 24 Sep 2020 11:00:38 -0700
-Subject: [PATCH] x86/asm: Add an enqcmds() wrapper for the ENQCMDS instruction
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Right. I wonder if this also holds for devices that are directly
+dependent on a special platform though? It could make sense to have them
+under plaform/surface rather than in the individual subsystems as they
+are only ever going to be used on this platform. On the other hand, one
+could argue that having them in the subsystem directories is better for
+maintainability.
 
-Currently, the MOVDIR64B instruction is used to atomically submit
-64-byte work descriptors to devices. Although it can encounter errors
-like device queue full, command not accepted, device not ready, etc when
-writing to a device MMIO, MOVDIR64B can not report back on errors from
-the device itself. This means that MOVDIR64B users need to separately
-interact with a device to see if a descriptor was successfully queued,
-which slows down device interactions.
-
-ENQCMD and ENQCMDS also atomically submit 64-byte work descriptors
-to devices. But, they *can* report back errors directly from the
-device, such as if the device was busy, or device not enabled or does
-not support the command. This immediate feedback from the submission
-instruction itself reduces the number of interactions with the device
-and can greatly increase efficiency.
-
-ENQCMD can be used at any privilege level, but can effectively only
-submit work on behalf of the current process. ENQCMDS is a ring0-only
-instruction and can explicitly specify a process context instead of
-being tied to the current process or needing to reprogram the IA32_PASID
-MSR.
-
-Use ENQCMDS for work submission within the kernel because a Process
-Address ID (PASID) is setup to translate the kernel virtual address
-space. This PASID is provided to ENQCMDS from the descriptor structure
-submitted to the device and not retrieved from IA32_PASID MSR, which is
-setup for the current user address space.
-
-See Intel Software Developer’s Manual for more information on the
-instructions.
-
- [ bp:
-   - Make operand constraints like movdir64b() because both insns are
-     basically doing the same thing, more or less.
-   - Fixup comments and cleanup. ]
-
-Signed-off-by: Dave Jiang <dave.jiang@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Link: https://lkml.kernel.org/r/20200924180041.34056-3-dave.jiang@intel.com
----
- arch/x86/include/asm/special_insns.h | 42 ++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
-
-diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
-index 2f0c8a39c796..2c18c780b2d5 100644
---- a/arch/x86/include/asm/special_insns.h
-+++ b/arch/x86/include/asm/special_insns.h
-@@ -262,6 +262,48 @@ static inline void movdir64b(void *dst, const void *src)
- 		     :  "m" (*__src), "a" (__dst), "d" (__src));
- }
- 
-+/**
-+ * enqcmds - Enqueue a command in supervisor (CPL0) mode
-+ * @dst: destination, in MMIO space (must be 512-bit aligned)
-+ * @src: 512 bits memory operand
-+ *
-+ * The ENQCMDS instruction allows software to write a 512-bit command to
-+ * a 512-bit-aligned special MMIO region that supports the instruction.
-+ * A return status is loaded into the ZF flag in the RFLAGS register.
-+ * ZF = 0 equates to success, and ZF = 1 indicates retry or error.
-+ *
-+ * This function issues the ENQCMDS instruction to submit data from
-+ * kernel space to MMIO space, in a unit of 512 bits. Order of data access
-+ * is not guaranteed, nor is a memory barrier performed afterwards. It
-+ * returns 0 on success and -EAGAIN on failure.
-+ *
-+ * Warning: Do not use this helper unless your driver has checked that the
-+ * ENQCMDS instruction is supported on the platform and the device accepts
-+ * ENQCMDS.
-+ */
-+static inline int enqcmds(void __iomem *dst, const void *src)
-+{
-+	const struct { char _[64]; } *__src = src;
-+	struct { char _[64]; } *__dst = dst;
-+	int zf;
-+
-+	/*
-+	 * ENQCMDS %(rdx), rax
-+	 *
-+	 * See movdir64b()'s comment on operand specification.
-+	 */
-+	asm volatile(".byte 0xf3, 0x0f, 0x38, 0xf8, 0x02, 0x66, 0x90"
-+		     CC_SET(z)
-+		     : CC_OUT(z) (zf), "+m" (*__dst)
-+		     : "m" (*__src), "a" (__dst), "d" (__src));
-+
-+	/* Submission failure is indicated via EFLAGS.ZF=1 */
-+	if (zf)
-+		return -EAGAIN;
-+
-+	return 0;
-+}
-+
- #endif /* __KERNEL__ */
- 
- #endif /* _ASM_X86_SPECIAL_INSNS_H */
--- 
-2.21.0
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
+Max
