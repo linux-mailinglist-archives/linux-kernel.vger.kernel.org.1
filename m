@@ -2,91 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 264FC277856
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 20:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EBE9277858
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 20:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728705AbgIXSQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 14:16:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727753AbgIXSQa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 14:16:30 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A44FAC0613CE;
-        Thu, 24 Sep 2020 11:16:30 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id q13so48869ejo.9;
-        Thu, 24 Sep 2020 11:16:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mGESpiEzOKa7JWPfKFIYfSED5VO+75GF96iPVXfF+Kg=;
-        b=CLtAOzU3BgNVNu1gojyqGBjQuq22IQDYzDfs6JdPNWAI/JWqWACEEVHXCFoVobuDB4
-         AtIHhxoCp0HZWF41RVl1DaeVlSSdBzBoVGadW4q0ygM1JZe4xJv/zSrNTqQ21hvzyEC7
-         yes1jegUSzrOweYSowYYuKokTioATcLirmvjEGruRxzibd0cRuUkc6UPEiEc9tCKUBIN
-         4PFqv50TSean5yzLkjbQJMgHXtZt0ns/AHM/DE9paUbKrUi5yw/9remsJ5+efqhv+S2R
-         gGI75iE3Xq7iaBZsnIC3QbSz06KPSUVOl1MrZ902U9tnCE4aGn7ywlx7xNAK+qnx7g+N
-         YILg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mGESpiEzOKa7JWPfKFIYfSED5VO+75GF96iPVXfF+Kg=;
-        b=WXYVQD4rK9SZpPO1Bg6WsGiAXBMljgU7xbYt54RqNRuh2hbiJTKxHYDqjrucEbfIee
-         0PXRJBJvk9F2Wr0I9HU0Y48kThzl0fazVEnZu/gL0RpsSa+1hCEgGj88AOfgxfbV0s+o
-         OeP0c1J4oqlWgi+S6h8J2epEz96JQ7E1zkAFLgxGqGSvrhcNvIzNmCmDSsDo6tuK9FUH
-         GVX8OPTxmm0L+TeRrfSA7fvfAM68O7SSXWgcBZeEccwrZNL7U7k1OZl82A27XxbM8J/7
-         Ks01o9apy/U+mZ5HJALIeTCsSKwUUmAWZ5oyOe7O12U+nVi8yPxEwN4GdoBMiUpvSLWj
-         7htg==
-X-Gm-Message-State: AOAM530ZJ2fw/zmUu6tnT1tNlu6FhGYhHcVQC64W+OrOxh7gjC0SwFmN
-        Ev2uk528CpFsVFoGL8NHfDs=
-X-Google-Smtp-Source: ABdhPJyToUdtjxrnM4oq3+PfWhcDBfZgX94hmno4D6/N5nYaEY/A6ZxOkj45D8DRKqwtiPYQfE2bhw==
-X-Received: by 2002:a17:906:8508:: with SMTP id i8mr1278315ejx.390.1600971389341;
-        Thu, 24 Sep 2020 11:16:29 -0700 (PDT)
-Received: from [192.168.2.202] (pd9e5a9d2.dip0.t-ipconnect.de. [217.229.169.210])
-        by smtp.gmail.com with ESMTPSA id j18sm3147882edj.62.2020.09.24.11.16.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Sep 2020 11:16:28 -0700 (PDT)
-Subject: Re: [RFC PATCH 1/9] misc: Add Surface Aggregator subsystem
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
-        Dorian Stoll <dorian.stoll@tmsp.io>
-References: <20200923151511.3842150-1-luzmaximilian@gmail.com>
- <20200923151511.3842150-2-luzmaximilian@gmail.com>
- <20200923165745.GA3732240@kroah.com>
- <de24d687-62c2-1f34-cac2-d32246c68a09@gmail.com>
- <20200924064838.GB593984@kroah.com>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <3a139bc4-3f47-6af9-ad47-effb4b00ac85@gmail.com>
-Date:   Thu, 24 Sep 2020 20:16:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728738AbgIXSRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 14:17:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39480 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727753AbgIXSQ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 14:16:59 -0400
+Received: from lt-jalone-7480.mtl.com (c-24-6-56-119.hsd1.ca.comcast.net [24.6.56.119])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2BD8F2220C;
+        Thu, 24 Sep 2020 18:16:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600971418;
+        bh=JPivfR2n/6nemaw09kY1pefU4DjbtFAdL/4DuMfFtrM=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=goUH5wUrdNs2WMt+MIFXzoV3g8PVZRp68KVUnuX9gO4apR8YOFv1L5arow4xX4knN
+         nDxYZCZpa2SDsZ4XofsH8ChkuQg4+ijfy2ARP4ma+cboJqmE060WLF5QaKB4dvfalD
+         GVgt6BSTNGYYKBkB0qJIrlHz+RS3IlJfmfLIHXw0=
+Message-ID: <f53b1ea0c733b58a242fd18a3e6c97a7b00ed01e.camel@kernel.org>
+Subject: Re: [PATCH] Revert "net: linkwatch: add check for netdevice being
+ present to linkwatch_do_dev"
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     David Miller <davem@davemloft.net>, hkallweit1@gmail.com,
+        geert+renesas@glider.be, f.fainelli@gmail.com, andrew@lunn.ch,
+        gaku.inami.xh@renesas.com, yoshihiro.shimoda.uh@renesas.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 24 Sep 2020 11:16:57 -0700
+In-Reply-To: <20200924090311.745cac3b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <e6f50a85-aa25-5fb7-7fd2-158668d55378@gmail.com>
+         <a7ff1afd2e1fc2232103ceb9aa763064daf90212.camel@kernel.org>
+         <20200923.172125.1341776337290371000.davem@davemloft.net>
+         <20200923.172349.872678515629678579.davem@davemloft.net>
+         <2cf4178e970d2737e7ba866ebc83a7ec30ca8ad1.camel@kernel.org>
+         <20200924090311.745cac3b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <20200924064838.GB593984@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/24/20 8:48 AM, Greg Kroah-Hartman wrote:
-> On Wed, Sep 23, 2020 at 10:34:23PM +0200, Maximilian Luz wrote:
->> In short: Concurrent execution of the counter functions works, as far as
->> I can tell at least, and, as you see by the long answer, I have to spend
->> some time and think about the duplicate-value problem (again). If you've
->> managed to read through this wall of text (sorry about that) and you
->> have any ideas/preferences, please let me know.
+On Thu, 2020-09-24 at 09:03 -0700, Jakub Kicinski wrote:
+> On Wed, 23 Sep 2020 22:49:37 -0700 Saeed Mahameed wrote:
+> > 2) Another problematic scenario which i see is repeated in many
+> > drivers:
+> > 
+> > shutdown/suspend()
+> >     rtnl_lock()
+> >     netif_device_detach()//Mark !present;
+> >     stop()->carrier_off()->linkwatch_event()
+> >     // at this point device is still IFF_UP and !present
+> >     // due to the early detach above..  
+> >     rtnl_unlock();
 > 
-> No, this all answers my question really well, thanks, what you have now
-> is fine, no need to change it.
+> Maybe we can solve this by providing drivers with a better helper for
+> the suspend use case?
+> 
+> AFAIU netif_device_detach() is used by both IO errors and drivers
+> willingly detaching the device during normal operation (e.g. for
+> suspend).
+> 
+> Since the suspend path can sleep if we have a separate helper perhaps
+> we could fire off the appropriate events synchronously, and
+> quiescence
+> the stack properly?
 
-Okay, thank you again!
+I was thinking something similar, a more heavy
+weight netif_device_detach(), which will be used in all drivers suspend
+flows.
+ 
+1) clear IFF_UP
+2) ndo_stop()
+3) fire events
+4) mark !present
+...
 
-Regards,
-Max
+5) suspend device
+
+
+but went and sampled some drivers and found there are many variations
+for using netif_device_detach it is not going to be a simple task.
+
