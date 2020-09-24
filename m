@@ -2,78 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19C95276CB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C57D2276C8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:01:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727326AbgIXJEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 05:04:31 -0400
-Received: from smtpout1.mo529.mail-out.ovh.net ([178.32.125.2]:39045 "EHLO
-        smtpout1.mo529.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726710AbgIXJEa (ORCPT
+        id S1727329AbgIXJA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 05:00:57 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:16502 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727211AbgIXJA5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 05:04:30 -0400
-X-Greylist: delayed 488 seconds by postgrey-1.27 at vger.kernel.org; Thu, 24 Sep 2020 05:04:29 EDT
-Received: from mxplan5.mail.ovh.net (unknown [10.108.1.237])
-        by mo529.mail-out.ovh.net (Postfix) with ESMTPS id E56615E550ED;
-        Thu, 24 Sep 2020 10:56:19 +0200 (CEST)
-Received: from kaod.org (37.59.142.106) by DAG8EX1.mxp5.local (172.16.2.71)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Thu, 24 Sep
- 2020 10:56:19 +0200
-Authentication-Results: garm.ovh; auth=pass (GARM-106R006c5bf5594-637d-4083-858d-063c7491bba4,
-                    85AEC8A2294FDACAA0F214F2A1981C2CEEF9973D) smtp.auth=groug@kaod.org
-Date:   Thu, 24 Sep 2020 10:56:18 +0200
-From:   Greg Kurz <groug@kaod.org>
-To:     Jianyong Wu <Jianyong.Wu@arm.com>
-CC:     Dominique Martinet <asmadeus@codewreck.org>,
-        "ericvh@gmail.com" <ericvh@gmail.com>,
-        "lucho@ionkov.net" <lucho@ionkov.net>,
-        "qemu_oss@crudebyte.com" <qemu_oss@crudebyte.com>,
-        "v9fs-developer@lists.sourceforge.net" 
-        <v9fs-developer@lists.sourceforge.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Justin He <Justin.He@arm.com>
-Subject: Re: [PATCH RFC v2 4/4] 9p: fix race issue in fid contention.
-Message-ID: <20200924105618.556b9a8d@bahia.lan>
-In-Reply-To: <HE1PR0802MB25556D1AAF1336F4EE3CA8DBF4390@HE1PR0802MB2555.eurprd08.prod.outlook.com>
-References: <20200923141146.90046-1-jianyong.wu@arm.com>
-        <20200923141146.90046-5-jianyong.wu@arm.com>
-        <20200923144953.GA1685@nautica>
-        <HE1PR0802MB25556D1AAF1336F4EE3CA8DBF4390@HE1PR0802MB2555.eurprd08.prod.outlook.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Thu, 24 Sep 2020 05:00:57 -0400
+X-UUID: 1043106553c7421691effe821b46c226-20200924
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=3Osfip0/Fmw6EWA75COU3SlVfE6xh4/kF+AnEUPz9NI=;
+        b=Owoa8rshe0kIAGVm6AG3NxzCQ4AAbrbU1R5LojRSc+qacfzJEurxoeyt2ZApyn3Ea3BZ0EjDsitfKcfdcJIyA/Fpw4DP0lXZ07VX3XDZWTGyk0CzO9i6N+lYySUk5YldbjJrxb+pFQURRYex1suZAWqzQZujFRlrpZi/Oqzylt0=;
+X-UUID: 1043106553c7421691effe821b46c226-20200924
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 37189220; Thu, 24 Sep 2020 17:00:45 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N2.mediatek.inc
+ (172.27.4.76) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 24 Sep
+ 2020 17:00:44 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 24 Sep 2020 17:00:44 +0800
+Message-ID: <1600937901.10428.4.camel@mhfsdcap03>
+Subject: Re: [PATCH 1/7] usb: mtu3: convert to
+ devm_platform_ioremap_resource_byname
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Felipe Balbi <balbi@kernel.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Date:   Thu, 24 Sep 2020 16:58:21 +0800
+In-Reply-To: <87tuvnej3o.fsf@kernel.org>
+References: <1595404275-8449-1-git-send-email-chunfeng.yun@mediatek.com>
+         <87d02y1190.fsf@kernel.org> <1600400313.20602.4.camel@mhfsdcap03>
+         <87tuvnej3o.fsf@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [37.59.142.106]
-X-ClientProxiedBy: DAG6EX1.mxp5.local (172.16.2.51) To DAG8EX1.mxp5.local
- (172.16.2.71)
-X-Ovh-Tracer-GUID: b77c1de3-76da-4996-88e1-519bcc2401cd
-X-Ovh-Tracer-Id: 6859826660615493996
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedujedrudekgdduudcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkjghfofggtgfgihesthejredtredtvdenucfhrhhomhepifhrvghgucfmuhhriicuoehgrhhouhhgsehkrghougdrohhrgheqnecuggftrfgrthhtvghrnhepueffteeuffekveffhfffueejkeeitdfgjedvtdelgfettdffgfffieeijefftdevnecuffhomhgrihhnpehgihhthhhusgdrtghomhenucfkpheptddrtddrtddrtddpfeejrdehledrudegvddruddtieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehmgihplhgrnhehrdhmrghilhdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepghhrohhugheskhgrohgurdhorhhgpdhrtghpthhtoheplfhushhtihhnrdfjvgesrghrmhdrtghomh
+X-TM-SNTS-SMTP: 1DF56F8CBC2847E8528887447F97D71D9F00CDB10BFFC52207B6F5E6DED157B82000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Sep 2020 08:38:01 +0000
-Jianyong Wu <Jianyong.Wu@arm.com> wrote:
+T24gVGh1LCAyMDIwLTA5LTI0IGF0IDEwOjIwICswMzAwLCBGZWxpcGUgQmFsYmkgd3JvdGU6DQo+
+IENodW5mZW5nIFl1biA8Y2h1bmZlbmcueXVuQG1lZGlhdGVrLmNvbT4gd3JpdGVzOg0KPiANCj4g
+PiBIaSBGZWxpcCwNCj4gPg0KPiA+DQo+ID4gT24gTW9uLCAyMDIwLTA5LTA3IGF0IDEwOjQyICsw
+MzAwLCBGZWxpcGUgQmFsYmkgd3JvdGU6DQo+ID4+IEhpLA0KPiA+PiANCj4gPj4gQ2h1bmZlbmcg
+WXVuIDxjaHVuZmVuZy55dW5AbWVkaWF0ZWsuY29tPiB3cml0ZXM6DQo+ID4+ID4gVXNlIGRldm1f
+cGxhdGZvcm1faW9yZW1hcF9yZXNvdXJjZV9ieW5hbWUoKSB0byBzaW1wbGlmeSBjb2RlDQo+ID4+
+ID4NCj4gPj4gPiBTaWduZWQtb2ZmLWJ5OiBDaHVuZmVuZyBZdW4gPGNodW5mZW5nLnl1bkBtZWRp
+YXRlay5jb20+DQo+ID4+IA0KPiA+PiB3aHkgaXMgaXQgc28gdGhhdCB5b3VyIHBhdGNoZXMgYWx3
+YXlzIGNvbWUgYmFzZTY0IGVuY29kZWQ/IFRoZXkgbG9vaw0KPiA+PiBmaW5lIG9uIHRoZSBlbWFp
+bCBjbGllbnQsIGJ1dCB3aGVuIEkgdHJ5IHRvIHBpcGUgdGhlIG1lc3NhZ2UgdG8gZ2l0IGFtDQo+
+ID4+IGl0IGFsd2F5cyBnaXZlcyBtZSBhIGxvdCBvZiB0cm91YmxlIGFuZCBJIGhhdmUgdG8gbWFu
+dWFsbHkgZGVjb2RlIHRoZQ0KPiA+PiBib2R5IG9mIHlvdXIgbWVzc2FnZXMgYW5kIHJlY29tYmlu
+ZSB3aXRoIHRoZSBwYXRjaC4NCj4gPj4gDQo+ID4+IENhbiB5b3UgdHJ5IHRvIHNlbmQgeW91ciBw
+YXRjaGVzIGFzIGFjdHVhbCBwbGFpbiB0ZXh0IHdpdGhvdXQgZW5jb2RpbmcNCj4gPj4gdGhlIGJv
+ZHkgd2l0aCBiYXNlNjQ/DQo+ID4gTWlzc2VkIHRoZSBlbWFpbC4NCj4gPg0KPiA+IFNvcnJ5IGZv
+ciBpbmNvbnZlbmllbmNlIQ0KPiA+IElzIG9ubHkgdGhlIGNvbW1pdCBtZXNzYWdlIGJhc2U2NCBl
+bmNvZGVkLCBvciBpbmNsdWRlcyB0aGUgY29kZXM/DQo+IA0KPiBUaGUgZW50aXJlIHRoaW5nIDot
+KQ0KSSBjaGVja2VkIG15IGdpdGNvbmZpZywgdXNlIHRoZSBkZWZhdWx0IGVuY29kaW5nLCB0aGF0
+IGlzIDhiaXQuIGlmIHlvdQ0Kc3RpbGwgZW5jb3VudGVyIHRoZSBpc3N1ZSB3aGVuIGFwcGx5IHRo
+ZSBzZXJpZXMgcGF0Y2gNCmh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcGF0Y2gvMTE3NjQ5
+NTMvDQpJJ2xsIHJlc2VuZCB0aGVtIGJ5ICJnaXQgc2VuZC1lbWFpbCAtLXRyYW5zZmVyLWVuY29k
+aW5nPThiaXQgMDAqIg0KDQo+IA0KDQo=
 
-> > Given the other thread, what did you test this with?  
-> Er, I just use Greg's qemu of https://github.com/gkurz/qemu.git: 9p-attr-fixes. I should have referenced it in commit message.
-
-... which is a pretty old QEMU version BTW.
-
-https://github.com/gkurz/qemu/blob/9p-attr-fixes/VERSION
-
-2.6.50 aka 2.7 development tree
-
-As said by Christian in some other mail, if someone wants these fixes to be
-effective when using QEMU, they should maybe invest time to rebase against
-the current development branch. I personally don't have time to do that but
-I'm available to answer questions if needed.
-
-Cheers,
-
---
-Greg
