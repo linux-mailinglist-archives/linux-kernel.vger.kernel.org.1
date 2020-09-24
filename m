@@ -2,145 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85C932766C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 05:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E53D2766CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 05:13:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726469AbgIXDMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 23:12:36 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:42748 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726281AbgIXDMg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 23:12:36 -0400
-Received: by mail-wr1-f65.google.com with SMTP id c18so2084512wrm.9
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 20:12:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DaBFSHtaQ8b7ZcWpldx/Dcu5M6kSYigru1/TvIVDxTI=;
-        b=Ur6ggvK5gEQjAkxpqeXxUadYgrsmYhHBu/RT5geR4V+egGVxhFwUfPzkuKT/5JAcYD
-         L8QbmQ1pM8lSQkoSNmPVg0aJyxHvlvpEBjS4NBeHDK7VpIurQgxonu1BV8BoJBh2JdGN
-         D9Gf0JtxrNQq2RLGvEs5Mom524NcYqY7E939WKnG2k/3+cBTrLbeaA8o/wLSLDwkh7IV
-         BrF6VyovN3K+4+Ht732IYR9HnZwkpbagAE7DCHXx7mD/qgAmD42mJgoNDjFAGYmYAtzp
-         e/gbULM+uw49EAHbMkhvWJRymRLmLQdICJRRxPpnR/QnGKL0VgtKqI4Q4vYlLUHHK8MK
-         CyhA==
-X-Gm-Message-State: AOAM530paSr1HzRSiU2PdUdcnKiuaQ0U26Q/GfqmHrpzRqwJPxSawlKS
-        bVnqkn3sqB1/dXKyNFf1QSKCjUhuExvvfvvzEmo=
-X-Google-Smtp-Source: ABdhPJws21XxrcU1ook/7FKSc2d5qTcbsXUsY1on0tGwI27TvkhWT8ht6pKqg1fH0s1a/WkNGQ3YaIHDkTD/cRWpyN4=
-X-Received: by 2002:adf:f2d0:: with SMTP id d16mr2490624wrp.332.1600917154065;
- Wed, 23 Sep 2020 20:12:34 -0700 (PDT)
+        id S1726513AbgIXDNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 23:13:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59280 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726281AbgIXDNz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 23:13:55 -0400
+Received: from [192.168.0.112] (75-58-59-55.lightspeed.rlghnc.sbcglobal.net [75.58.59.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C2786206CD;
+        Thu, 24 Sep 2020 03:13:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600917234;
+        bh=xdMeleM0FhXHxLcJCZNIfSQPP+PzVPbzvjgttifE0tU=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=vVSuMSUBPeb7GH/ormLkd7AykL/eyHAgTyUw7mkdYVoKZMgn5hwJjEYKNemW3vbNE
+         dpUjaK7Nk/lfEGnEaieWL1k39QflVERFUYB7GWq8wXwGwb8DfebHyKJ6mQvzEFT6WR
+         tN1SV9AcplWatfu1PbmPXcX0umlR15LUhowhCnjY=
+Subject: Re: [PATCH v3 1/1] PCI/ERR: Fix reset logic in pcie_do_recovery()
+ call
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
+        Jay Vosburgh <jay.vosburgh@canonical.com>
+References: <20200922233333.GA2239404@bjorn-Precision-5520>
+ <704c39bf-6f0c-bba3-70b8-91de6a445e43@linux.intel.com>
+ <3d27d0a4-2115-fa72-8990-a84910e4215f@kernel.org>
+ <d5aa53dc-0c94-e57a-689a-1c1f89787af1@linux.intel.com>
+ <526dc846-b12b-3523-4995-966eb972ceb7@kernel.org>
+ <1fdcc4a6-53b7-2b5f-8496-f0f09405f561@linux.intel.com>
+From:   Sinan Kaya <okaya@kernel.org>
+Autocrypt: addr=okaya@kernel.org; keydata=
+ mQENBFrnOrUBCADGOL0kF21B6ogpOkuYvz6bUjO7NU99PKhXx1MfK/AzK+SFgxJF7dMluoF6
+ uT47bU7zb7HqACH6itTgSSiJeSoq86jYoq5s4JOyaj0/18Hf3/YBah7AOuwk6LtV3EftQIhw
+ 9vXqCnBwP/nID6PQ685zl3vH68yzF6FVNwbDagxUz/gMiQh7scHvVCjiqkJ+qu/36JgtTYYw
+ 8lGWRcto6gr0eTF8Wd8f81wspmUHGsFdN/xPsZPKMw6/on9oOj3AidcR3P9EdLY4qQyjvcNC
+ V9cL9b5I/Ud9ghPwW4QkM7uhYqQDyh3SwgEFudc+/RsDuxjVlg9CFnGhS0nPXR89SaQZABEB
+ AAG0HVNpbmFuIEtheWEgPG9rYXlhQGtlcm5lbC5vcmc+iQFOBBMBCAA4FiEEYdOlMSE+a7/c
+ ckrQvGF4I+4LAFcFAlztcAoCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQvGF4I+4L
+ AFfidAf/VKHInxep0Z96iYkIq42432HTZUrxNzG9IWk4HN7c3vTJKv2W+b9pgvBF1SmkyQSy
+ 8SJ3Zd98CO6FOHA1FigFyZahVsme+T0GsS3/OF1kjrtMktoREr8t0rK0yKpCTYVdlkHadxmR
+ Qs5xLzW1RqKlrNigKHI2yhgpMwrpzS+67F1biT41227sqFzW9urEl/jqGJXaB6GV+SRKSHN+
+ ubWXgE1NkmfAMeyJPKojNT7ReL6eh3BNB/Xh1vQJew+AE50EP7o36UXghoUktnx6cTkge0ZS
+ qgxuhN33cCOU36pWQhPqVSlLTZQJVxuCmlaHbYWvye7bBOhmiuNKhOzb3FcgT7kBDQRa5zq1
+ AQgAyRq/7JZKOyB8wRx6fHE0nb31P75kCnL3oE+smKW/sOcIQDV3C7mZKLf472MWB1xdr4Tm
+ eXeL/wT0QHapLn5M5wWghC80YvjjdolHnlq9QlYVtvl1ocAC28y43tKJfklhHiwMNDJfdZbw
+ 9lQ2h+7nccFWASNUu9cqZOABLvJcgLnfdDpnSzOye09VVlKr3NHgRyRZa7me/oFJCxrJlKAl
+ 2hllRLt0yV08o7i14+qmvxI2EKLX9zJfJ2rGWLTVe3EJBnCsQPDzAUVYSnTtqELu2AGzvDiM
+ gatRaosnzhvvEK+kCuXuCuZlRWP7pWSHqFFuYq596RRG5hNGLbmVFZrCxQARAQABiQEfBBgB
+ CAAJBQJa5zq1AhsMAAoJELxheCPuCwBX2UYH/2kkMC4mImvoClrmcMsNGijcZHdDlz8NFfCI
+ gSb3NHkarnA7uAg8KJuaHUwBMk3kBhv2BGPLcmAknzBIehbZ284W7u3DT9o1Y5g+LDyx8RIi
+ e7pnMcC+bE2IJExCVf2p3PB1tDBBdLEYJoyFz/XpdDjZ8aVls/pIyrq+mqo5LuuhWfZzPPec
+ 9EiM2eXpJw+Rz+vKjSt1YIhg46YbdZrDM2FGrt9ve3YaM5H0lzJgq/JQPKFdbd5MB0X37Qc+
+ 2m/A9u9SFnOovA42DgXUyC2cSbIJdPWOK9PnzfXqF3sX9Aol2eLUmQuLpThJtq5EHu6FzJ7Y
+ L+s0nPaNMKwv/Xhhm6Y=
+Message-ID: <aef0b9aa-59f5-9ec3-adac-5bc366b362e0@kernel.org>
+Date:   Wed, 23 Sep 2020 23:13:52 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200923015945.47535-1-namhyung@kernel.org> <20200923015945.47535-4-namhyung@kernel.org>
- <20200923102256.GI2893484@krava>
-In-Reply-To: <20200923102256.GI2893484@krava>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 24 Sep 2020 12:12:23 +0900
-Message-ID: <CAM9d7ci2Arf8vNVRruF9dqOtxH4km2b1MKCVHzj8x+QazzY2mA@mail.gmail.com>
-Subject: Re: [PATCH 3/5] perf tools: Copy metric events properly when expand cgroups
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        John Garry <john.garry@huawei.com>,
-        Kajol Jain <kjain@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1fdcc4a6-53b7-2b5f-8496-f0f09405f561@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 7:23 PM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Wed, Sep 23, 2020 at 10:59:43AM +0900, Namhyung Kim wrote:
->
-> SNIP
->
->
-> > diff --git a/tools/perf/util/cgroup.c b/tools/perf/util/cgroup.c
-> > index 8b6a4fa49082..dcd18ef268a1 100644
-> > --- a/tools/perf/util/cgroup.c
-> > +++ b/tools/perf/util/cgroup.c
-> > @@ -3,6 +3,9 @@
-> >  #include "evsel.h"
-> >  #include "cgroup.h"
-> >  #include "evlist.h"
-> > +#include "rblist.h"
-> > +#include "metricgroup.h"
-> > +#include "stat.h"
-> >  #include <linux/zalloc.h>
-> >  #include <sys/types.h>
-> >  #include <sys/stat.h>
-> > @@ -193,10 +196,12 @@ int parse_cgroups(const struct option *opt, const char *str,
-> >       return 0;
-> >  }
-> >
-> > -int evlist__expand_cgroup(struct evlist *evlist, const char *str)
-> > +int evlist__expand_cgroup(struct evlist *evlist, const char *str,
-> > +                       struct rblist *metric_events)
-> >  {
-> >       struct evlist *orig_list, *tmp_list;
-> >       struct evsel *pos, *evsel, *leader;
-> > +     struct rblist orig_metric_events;
-> >       struct cgroup *cgrp = NULL;
-> >       const char *p, *e, *eos = str + strlen(str);
-> >       int ret = -1;
-> > @@ -216,6 +221,8 @@ int evlist__expand_cgroup(struct evlist *evlist, const char *str)
-> >       /* save original events and init evlist */
-> >       perf_evlist__splice_list_tail(orig_list, &evlist->core.entries);
-> >       evlist->core.nr_entries = 0;
-> > +     orig_metric_events = *metric_events;
-> > +     rblist__init(metric_events);
-> >
-> >       for (;;) {
-> >               p = strchr(str, ',');
-> > @@ -255,6 +262,11 @@ int evlist__expand_cgroup(struct evlist *evlist, const char *str)
-> >               cgroup__put(cgrp);
-> >               nr_cgroups++;
-> >
-> > +             perf_stat__collect_metric_expr(tmp_list);
->
-> I know you added the option just for perf stat, not record,
-> but the code looks generic apart from using this function
+On 9/23/2020 10:51 PM, Kuppuswamy, Sathyanarayanan wrote:
+>>
+>> I see. Can I assume that your system supports DPC?
+>> DPC is supposed to recover the link via dpc_reset_link().
+> Yes. But the affected device/drivers cleanup during error recovery
+> is handled by hotplug handler. So we are facing issue when dealing
+> with non hotplug capable ports.
 
-Right.  I've tried to make it generic as much as possible.
-But the above code works for an evlist assuming all the
-evsels are in the same cgroup as far as I can see.
-So I put it here to pass the tmp_list for each cgroup
-separately.
+This is confusing.
 
->
-> I wonder if this would cause any issues if it was called in record
-> context.. maybe we could just skip it in that case, but that's for
-> future to worry about ;-)
+Why would hotplug driver be involved unless port supports hotplug and
+the link goes down? You said that DLLSC is only supported on hotplug
+capable ports.
 
-Yeah, I believe we can just skip as it's all for metrics which is
-used for perf stat only, I guess?
+Need a better description of symptoms and what triggers hotplug driver
+to activate.
 
-Thanks
-Namhyung
-
->
-> > +             if (metricgroup__copy_metric_events(tmp_list, cgrp, metric_events,
-> > +                                                 &orig_metric_events) < 0)
-> > +                     break;
-> > +
-> >               perf_evlist__splice_list_tail(evlist, &tmp_list->core.entries);
-> >               tmp_list->core.nr_entries = 0;
-> >
-> > @@ -268,6 +280,7 @@ int evlist__expand_cgroup(struct evlist *evlist, const char *str)
-> >  out_err:
-> >       evlist__delete(orig_list);
-> >       evlist__delete(tmp_list);
-> > +     rblist__exit(&orig_metric_events);
-> >
-> >       return ret;
-> >  }
->
-> SNIP
->
+Can you expand this a little bit?
