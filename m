@@ -2,210 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5734276B14
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 122F8276B1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727179AbgIXHpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 03:45:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51782 "EHLO
+        id S1727196AbgIXHqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 03:46:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727013AbgIXHpY (ORCPT
+        with ESMTP id S1727109AbgIXHqm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 03:45:24 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE497C0613CE;
-        Thu, 24 Sep 2020 00:45:24 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id h2so2166605ilo.12;
-        Thu, 24 Sep 2020 00:45:24 -0700 (PDT)
+        Thu, 24 Sep 2020 03:46:42 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3772BC0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 00:46:42 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id x22so1364076pfo.12
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 00:46:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IxTyfqdQxLsGAMyRUvmRffvJyTeVBIXZuLoIIydSIMs=;
-        b=L41Sz9YzaRenimIvko0cU8wwGfr7axecHDVXquVtPxNplBENOLzJAYg2IL9GaVUJ3i
-         ntU0cx8dImDvNIZNvlPxt/ApaKQvmP+swKYbK4olUGDJquS1h2iHEoVstipvyGh1qjc0
-         qd56UpqhXezSnGi07/FMvcgZOqdbOfz5zb6O7dChp61LZjuCzzJ570TzvVxOwKGtecsh
-         ldTDFKT1pfdmdVvD3nPdi94L6EkuwpnTSVWSXEoLnOPp/j81CkGe5yUscPC2f3p522lm
-         0rz8K2Zi36Z/ZLRF+JGQ9M/6z+z71XCtW4ud1vWNBHlSTzf7yBDDOcR8oQBk4VqkWmhW
-         FORA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pn8AkGMTGfdnWTJRca9J7bhZq32aHx0QMblFYoTDsz4=;
+        b=GdNsA/P0p61OU5c03zIIUOXZv3MQ0nBBcfB3Hc9r0sEY0oXx591w0DRyGt7MjNUDFN
+         VhTXCFtMPSzKYr/yxvOnJ7w4D4VOiPCHAj6p2KnhZp3U+tyTB5l9ahqgKrzkT19oYxJA
+         +jl1MwnAxFEWmHLz7pOEouqNuDZDlIBIFbkB0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IxTyfqdQxLsGAMyRUvmRffvJyTeVBIXZuLoIIydSIMs=;
-        b=RG1Qf5M7U3ZE3ipNi3JcSBIQ0c4s/rrvgJeZcPPAw4pCWtEdBkpbaeORgqn6u93alj
-         E98BS5LQI8KtVj2dn8VjIUX/dgcQqs3OBcU/Rk7qwVfP0xVtXW/q6rSitjl2eKzz3d8f
-         dX9v6JWWCXSyq16XbKGt6V3sC1RrUwvrfLNSbk8hkIpkNSvex+UmajvpuC1E6HlvxMOI
-         cz/wcNc758rTtCK0T4z3HDEZ+HW3aH2ZpMzvj4Tjdm3fUvEnovB3ZcIQ6wQdB+cUxeWy
-         M9s8JcTsUNTSTlbt5aZowWcgfb5Ik8rN4vFGSuVU4kD+sr0Ih50eNPAOFmQwW/ZjoSzU
-         yW0w==
-X-Gm-Message-State: AOAM530+RH5smy4vLdQvaarBP7bS2zIOj4nJYFmLv+dDQoXNCAvkxobw
-        DEeiHOr9BUCcWgboKmEHPizxRj6J23VJwkX1FKo=
-X-Google-Smtp-Source: ABdhPJyNVTUNbHkzBWdwy2SAA9QTIAjXqOIuGAjXbewwl2m2fEAtO13LhCk7EBH3sWcbwi7iM8A7opzoamFgUSiML7c=
-X-Received: by 2002:a05:6e02:d48:: with SMTP id h8mr2976131ilj.251.1600933524016;
- Thu, 24 Sep 2020 00:45:24 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pn8AkGMTGfdnWTJRca9J7bhZq32aHx0QMblFYoTDsz4=;
+        b=dZff3sPAloD4DSAqGbfmTAqkXtk4xYn6TLzx4P5Jr0X9B3o/1bX9+IXrSfKfwQLu8T
+         HRiM7Lwly2qKnFmiw/RAzIr8lsNb4ktI05iFtjP/m9ZjR6JJa83U9nDpKUVFVV+Omh74
+         /+YUvoaoihmHKf2BQkr7sR7+fD0UtTkRNeTlAh+J55DNycKk6VlVJyaeHtHOtUu/SI7a
+         ZXOgeCEBGtA46zQ8uBBXMkQFVaRISRXxyIgqdYmsFP8qb+wNxeyk3yjAjZrcqFZL0B4j
+         R7hbwPHG6DgaMcOifIeOutIW9hElCAdCI6TxAPgt2lZSw949PzgbZyXps88GMhdhVBqX
+         4kPg==
+X-Gm-Message-State: AOAM531phipzRaPEZhCUtF0hh+CkX+bLhjQ6VxBTj3zcAN3ciRUSf8DQ
+        HfdaqtEm+FRULjaQghMRasz0BA==
+X-Google-Smtp-Source: ABdhPJxpv5eo0PCR5lxqSFEPXJ04YWDS30xuJeZwg37nkM2ihTg/HjMMDvdx6OdSaODt3kicQemxsw==
+X-Received: by 2002:aa7:8dc7:0:b029:151:2237:52c5 with SMTP id j7-20020aa78dc70000b0290151223752c5mr3014124pfr.32.1600933601671;
+        Thu, 24 Sep 2020 00:46:41 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id b20sm1969377pfb.198.2020.09.24.00.46.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 00:46:40 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 00:46:39 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Jann Horn <jannh@google.com>
+Cc:     YiFei Zhu <yifeifz2@illinois.edu>,
+        Paul Moore <paul@paul-moore.com>,
+        Tom Hromatka <tom.hromatka@oracle.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/6] seccomp: Emulate basic filters for constant action
+ results
+Message-ID: <202009240038.864365E@keescook>
+References: <20200923232923.3142503-1-keescook@chromium.org>
+ <20200923232923.3142503-5-keescook@chromium.org>
+ <CAG48ez251v19U60GYH4aWE6+C-3PYw5mr_Ax_kxnebqDOBn_+Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200923185757.1806-1-sean.j.christopherson@intel.com>
- <CAAhV-H6QLRh8kWyt4KfVgS64nsixx_3er+qmeph3csxpq3scdw@mail.gmail.com> <11d4e52e-6bc2-934d-0487-561033b3ab87@redhat.com>
-In-Reply-To: <11d4e52e-6bc2-934d-0487-561033b3ab87@redhat.com>
-From:   Huacai Chen <chenhuacai@gmail.com>
-Date:   Thu, 24 Sep 2020 15:45:12 +0800
-Message-ID: <CAAhV-H6rzcoJ_d=+yKzyAie_+T1aFgbqEWpSq438RKqvzajAnA@mail.gmail.com>
-Subject: Re: [PATCH] KVM: Enable hardware before doing arch VM initialization
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        kvm <kvm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        Paul Mackerras <paulus@ozlabs.org>, kvm-ppc@vger.kernel.org,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAG48ez251v19U60GYH4aWE6+C-3PYw5mr_Ax_kxnebqDOBn_+Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Paolo,
-
-On Thu, Sep 24, 2020 at 2:50 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 24/09/20 08:31, Huacai Chen wrote:
-> > Hi, Sean,
+On Thu, Sep 24, 2020 at 01:47:47AM +0200, Jann Horn wrote:
+> On Thu, Sep 24, 2020 at 1:29 AM Kees Cook <keescook@chromium.org> wrote:
+> > This emulates absolutely the most basic seccomp filters to figure out
+> > if they will always give the same results for a given arch/nr combo.
 > >
-> > On Thu, Sep 24, 2020 at 3:00 AM Sean Christopherson
-> > <sean.j.christopherson@intel.com> wrote:
-> >>
-> >> Swap the order of hardware_enable_all() and kvm_arch_init_vm() to
-> >> accommodate Intel's Trust Domain Extension (TDX), which needs VMX to be
-> >> fully enabled during VM init in order to make SEAMCALLs.
-> >>
-> >> This also provides consistent ordering between kvm_create_vm() and
-> >> kvm_destroy_vm() with respect to calling kvm_arch_destroy_vm() and
-> >> hardware_disable_all().
-> > Do you means that hardware_enable_all() enable VMX, kvm_arch_init_vm()
-> > enable TDX, and TDX depends on VMX enabled at first? If so, can TDX be
-> > also enabled at hardware_enable_all()?
->
-> kvm_arch_init_vm() enables TDX *for the VM*, and to do that it needs VMX
-> instructions (specifically SEAMCALL, which is a hypervisor->"ultravisor"
-> call).  Because that action is VM-specific it cannot be done in
-> hardware_enable_all().
->
-> Paolo
-OK, I know.
-
-Reviewed-by: Huacai Chen <chenhc@lemote.com>
-
->
-> > The swapping seems not affect MIPS, but I observed a fact:
-> > kvm_arch_hardware_enable() not only be called at
-> > hardware_enable_all(), but also be called at kvm_starting_cpu(). Even
-> > if you swap the order, new starting CPUs are not enabled VMX before
-> > kvm_arch_init_vm(). (Maybe I am wrong because I'm not familiar with
-> > VMX/TDX).
+> > Nearly all seccomp filters are built from the following ops:
 > >
-> > Huacai
-> >>
-> >> Cc: Marc Zyngier <maz@kernel.org>
-> >> Cc: James Morse <james.morse@arm.com>
-> >> Cc: Julien Thierry <julien.thierry.kdev@gmail.com>
-> >> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> >> Cc: linux-arm-kernel@lists.infradead.org
-> >> Cc: Huacai Chen <chenhc@lemote.com>
-> >> Cc: Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>
-> >> Cc: linux-mips@vger.kernel.org
-> >> Cc: Paul Mackerras <paulus@ozlabs.org>
-> >> Cc: kvm-ppc@vger.kernel.org
-> >> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-> >> Cc: Janosch Frank <frankja@linux.ibm.com>
-> >> Cc: David Hildenbrand <david@redhat.com>
-> >> Cc: Cornelia Huck <cohuck@redhat.com>
-> >> Cc: Claudio Imbrenda <imbrenda@linux.ibm.com>
-> >> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-> >> Cc: Wanpeng Li <wanpengli@tencent.com>
-> >> Cc: Jim Mattson <jmattson@google.com>
-> >> Cc: Joerg Roedel <joro@8bytes.org>
-> >> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> >> ---
-> >>
-> >> Obviously not required until the TDX series comes along, but IMO KVM
-> >> should be consistent with respect to enabling and disabling virt support
-> >> in hardware.
-> >>
-> >> Tested only on Intel hardware.  Unless I missed something, this only
-> >> affects x86, Arm and MIPS as hardware enabling is a nop for s390 and PPC.
-> >> Arm looks safe (based on my mostly clueless reading of the code), but I
-> >> have no idea if this will cause problem for MIPS, which is doing all kinds
-> >> of things in hardware_enable() that I don't pretend to fully understand.
-> >>
-> >>  virt/kvm/kvm_main.c | 16 ++++++++--------
-> >>  1 file changed, 8 insertions(+), 8 deletions(-)
-> >>
-> >> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> >> index cf88233b819a..58fa19bcfc90 100644
-> >> --- a/virt/kvm/kvm_main.c
-> >> +++ b/virt/kvm/kvm_main.c
-> >> @@ -766,7 +766,7 @@ static struct kvm *kvm_create_vm(unsigned long type)
-> >>                 struct kvm_memslots *slots = kvm_alloc_memslots();
-> >>
-> >>                 if (!slots)
-> >> -                       goto out_err_no_arch_destroy_vm;
-> >> +                       goto out_err_no_disable;
-> >>                 /* Generations must be different for each address space. */
-> >>                 slots->generation = i;
-> >>                 rcu_assign_pointer(kvm->memslots[i], slots);
-> >> @@ -776,19 +776,19 @@ static struct kvm *kvm_create_vm(unsigned long type)
-> >>                 rcu_assign_pointer(kvm->buses[i],
-> >>                         kzalloc(sizeof(struct kvm_io_bus), GFP_KERNEL_ACCOUNT));
-> >>                 if (!kvm->buses[i])
-> >> -                       goto out_err_no_arch_destroy_vm;
-> >> +                       goto out_err_no_disable;
-> >>         }
-> >>
-> >>         kvm->max_halt_poll_ns = halt_poll_ns;
-> >>
-> >> -       r = kvm_arch_init_vm(kvm, type);
-> >> -       if (r)
-> >> -               goto out_err_no_arch_destroy_vm;
-> >> -
-> >>         r = hardware_enable_all();
-> >>         if (r)
-> >>                 goto out_err_no_disable;
-> >>
-> >> +       r = kvm_arch_init_vm(kvm, type);
-> >> +       if (r)
-> >> +               goto out_err_no_arch_destroy_vm;
-> >> +
-> >>  #ifdef CONFIG_HAVE_KVM_IRQFD
-> >>         INIT_HLIST_HEAD(&kvm->irq_ack_notifier_list);
-> >>  #endif
-> >> @@ -815,10 +815,10 @@ static struct kvm *kvm_create_vm(unsigned long type)
-> >>                 mmu_notifier_unregister(&kvm->mmu_notifier, current->mm);
-> >>  #endif
-> >>  out_err_no_mmu_notifier:
-> >> -       hardware_disable_all();
-> >> -out_err_no_disable:
-> >>         kvm_arch_destroy_vm(kvm);
-> >>  out_err_no_arch_destroy_vm:
-> >> +       hardware_disable_all();
-> >> +out_err_no_disable:
-> >>         WARN_ON_ONCE(!refcount_dec_and_test(&kvm->users_count));
-> >>         for (i = 0; i < KVM_NR_BUSES; i++)
-> >>                 kfree(kvm_get_bus(kvm, i));
-> >> --
-> >> 2.28.0
-> >>
+> > BPF_LD  | BPF_W    | BPF_ABS
+> > BPF_JMP | BPF_JEQ  | BPF_K
+> > BPF_JMP | BPF_JGE  | BPF_K
+> > BPF_JMP | BPF_JGT  | BPF_K
+> > BPF_JMP | BPF_JSET | BPF_K
+> > BPF_JMP | BPF_JA
+> > BPF_RET | BPF_K
 > >
->
+> > These are now emulated to check for accesses beyond seccomp_data::arch
+> > or unknown instructions.
+> >
+> > Not yet implemented are:
+> >
+> > BPF_ALU | BPF_AND (generated by libseccomp and Chrome)
+> 
+> BPF_AND is normally only used on syscall arguments, not on the syscall
+> number or the architecture, right? And when a syscall argument is
+> loaded, we abort execution anyway. So I think there is no need to
+> implement those?
+
+Is that right? I can't actually tell what libseccomp is doing with
+ALU|AND. It looks like it's using it for building jump lists?
+
+Paul, Tom, under what cases does libseccomp emit ALU|AND into filters?
+
+> > Suggested-by: Jann Horn <jannh@google.com>
+> > Link: https://lore.kernel.org/lkml/CAG48ez1p=dR_2ikKq=xVxkoGg0fYpTBpkhJSv1w-6BG=76PAvw@mail.gmail.com/
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  kernel/seccomp.c  | 82 ++++++++++++++++++++++++++++++++++++++++++++---
+> >  net/core/filter.c |  3 +-
+> >  2 files changed, 79 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> > index 111a238bc532..9921f6f39d12 100644
+> > --- a/kernel/seccomp.c
+> > +++ b/kernel/seccomp.c
+> > @@ -610,7 +610,12 @@ static struct seccomp_filter *seccomp_prepare_filter(struct sock_fprog *fprog)
+> >  {
+> >         struct seccomp_filter *sfilter;
+> >         int ret;
+> > -       const bool save_orig = IS_ENABLED(CONFIG_CHECKPOINT_RESTORE);
+> > +       const bool save_orig =
+> > +#if defined(CONFIG_CHECKPOINT_RESTORE) || defined(SECCOMP_ARCH)
+> > +               true;
+> > +#else
+> > +               false;
+> > +#endif
+> 
+> You could probably write this as something like:
+> 
+> const bool save_orig = IS_ENABLED(CONFIG_CHECKPOINT_RESTORE) ||
+> __is_defined(SECCOMP_ARCH);
+
+Ah! Thank you. I went looking for __is_defined() and failed. :)
+
+> 
+> [...]
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> [...]
+> > -static void bpf_release_orig_filter(struct bpf_prog *fp)
+> > +void bpf_release_orig_filter(struct bpf_prog *fp)
+> >  {
+> >         struct sock_fprog_kern *fprog = fp->orig_prog;
+> >
+> > @@ -1154,6 +1154,7 @@ static void bpf_release_orig_filter(struct bpf_prog *fp)
+> >                 kfree(fprog);
+> >         }
+> >  }
+> > +EXPORT_SYMBOL_GPL(bpf_release_orig_filter);
+> 
+> If this change really belongs into this patch (which I don't think it
+> does), please describe why in the commit message.
+
+Yup, more cruft I failed to remove.
+
+-- 
+Kees Cook
