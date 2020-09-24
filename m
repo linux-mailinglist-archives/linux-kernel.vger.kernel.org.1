@@ -2,70 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B76D277A9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 22:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB1DA277A9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 22:42:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726590AbgIXUlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 16:41:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgIXUlt (ORCPT
+        id S1726589AbgIXUmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 16:42:12 -0400
+Received: from asavdk3.altibox.net ([109.247.116.14]:55966 "EHLO
+        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725208AbgIXUmM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 16:41:49 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB4B9C0613CE;
-        Thu, 24 Sep 2020 13:41:49 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600980108;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7WNniJWdtgjbCmAKCV5jnu3oJVt7te+w/KnOSYyq8oA=;
-        b=v6GsUj4E+a6Ddc28kWc8d+YBtldn0eV+kqcjGfmQTVigq9s6EuKdfT9nl5vDnN68lig1yg
-        rKNSe/206egSdsVvu7h8LrOQMDT8CmIl6lcFXJ1xlcC/BFOx8moTpICOwtvgQxwsbStjkr
-        egm9903o5v7m3x1gOPryTaLG1U6WYOWsXBgfjta6p/E+8GScN59e24agDF2Pzr5Rxpa1zn
-        kuyKdpP0DJIhwZWm2/YRpQHnOIUFEmTE7fgwuzMIDs42UT3bWHwVZylKqPnModAKkz/a5o
-        ANgfiYGmFqmi41hIDxfslh6rfhQNw0WDFUAdp12g9Tf01boCDhc8wEh8V9GDyg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600980108;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7WNniJWdtgjbCmAKCV5jnu3oJVt7te+w/KnOSYyq8oA=;
-        b=ENLxqsoFgO8+73NZNe5v++5gNI5im64u7V6WHDCTITTDQpCLurEvjU2TdPmDJ0WF/8KH0c
-        qyET6F8Udu81VXBg==
-To:     Tom Hromatka <tom.hromatka@oracle.com>, tom.hromatka@oracle.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        fweisbec@gmail.com, mingo@kernel.org, adobriyan@gmail.com
-Subject: Re: [PATCH v2 1/2] tick-sched: Do not clear the iowait and idle times
-In-Reply-To: <20200915193627.85423-2-tom.hromatka@oracle.com>
-References: <20200915193627.85423-1-tom.hromatka@oracle.com> <20200915193627.85423-2-tom.hromatka@oracle.com>
-Date:   Thu, 24 Sep 2020 22:41:47 +0200
-Message-ID: <87r1qq7vqs.fsf@nanos.tec.linutronix.de>
+        Thu, 24 Sep 2020 16:42:12 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk3.altibox.net (Postfix) with ESMTPS id 17F6420079;
+        Thu, 24 Sep 2020 22:42:09 +0200 (CEST)
+Date:   Thu, 24 Sep 2020 22:42:07 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Yannick Fertre <yannick.fertre@st.com>
+Cc:     Philippe Cornu <philippe.cornu@st.com>,
+        Antonio Borneo <antonio.borneo@st.com>,
+        Vincent Abriou <vincent.abriou@st.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/stm: dsi: Avoid printing errors for -EPROBE_DEFER
+Message-ID: <20200924204207.GO1223313@ravnborg.org>
+References: <20200918114624.10759-1-yannick.fertre@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200918114624.10759-1-yannick.fertre@st.com>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=CaYmGojl c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=8b9GpE9nAAAA:8 a=e5mUnYsNAAAA:8
+        a=A0EKk_GVOdhxRvflaKsA:9 a=CjuIK1q_8ugA:10 a=T3LWEMljR5ZiDmsYVIUa:22
+        a=Vxmtnl_E_bksehYqCbjh:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15 2020 at 13:36, Tom Hromatka wrote:
-> Prior to this commit, the cpu idle and iowait data in /proc/stat were
-> cleared when a CPU goes down.  When the CPU came back online, both idle
-> and iowait times were restarted from 0.
+Hi Yannick
 
-Starting a commit message with 'Prior to this commit' is
-pointless. Describe the factual problem which made you come up with this
-change.
+On Fri, Sep 18, 2020 at 01:46:24PM +0200, Yannick Fertre wrote:
+> Don't print error when probe deferred error is returned.
+> 
+> Signed-off-by: Yannick Fertre <yannick.fertre@st.com>
+> ---
+>  drivers/gpu/drm/stm/dw_mipi_dsi-stm.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
+> index 2e1f2664495d..164f79ef6269 100644
+> --- a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
+> +++ b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
+> @@ -419,7 +419,8 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+>  	dsi->dsi = dw_mipi_dsi_probe(pdev, &dw_mipi_dsi_stm_plat_data);
+>  	if (IS_ERR(dsi->dsi)) {
+>  		ret = PTR_ERR(dsi->dsi);
+> -		DRM_ERROR("Failed to initialize mipi dsi host: %d\n", ret);
+> +		if (ret != -EPROBE_DEFER)
+> +			DRM_ERROR("Failed to initialize mipi dsi host: %d\n", ret);
+>  		goto err_dsi_probe;
 
->
-> This commit preserves the CPU's idle and iowait values when a CPU goes
-> offline and comes back online.
+Please use dev_err_probe() here.
+We will loose [drm] but gain more than we loose.
 
-'This commit does' is just a variation of 'This patch does'.
+	Sam
 
-git grep 'This patch' Documentation/process/
-
-Thanks,
-
-        tglx
+>  	}
+>  
+> -- 
+> 2.17.1
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
