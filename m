@@ -2,163 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D822F277583
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D9C4277586
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728433AbgIXPeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 11:34:44 -0400
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:32790 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728333AbgIXPeo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 11:34:44 -0400
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 08OFYQLJ017212;
-        Fri, 25 Sep 2020 00:34:27 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 08OFYQLJ017212
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1600961667;
-        bh=8++tngXIYpSoFvOERHcAK2tucrHOFQ6aDKwQ9XkyMIY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=IgcGkJxs6Jc3Q2xAmuE/XdLre5F5tY4Q990eUCze91ZcIrtuALUv+v0IVChKJFgV5
-         5Q0jdf5lEaGnN0YzLKqSjTkXisAjI45q5TJpbx4r+ZFK061Jo1hl45ywvIUnOS+dc2
-         L7bfvj5AgVy4hYAzZhDc7e9plPqT2yPJfMbt6RTlbN6Gza0I4IIhgciv7kEZK7kHPn
-         +ySFS5RLnU4aGzAP+LCXqqvH8YBPSd9zPaYbSNeRxZ+3jqhywOzZJ+3NOZWu5G32Yo
-         zkLdQ/ZANS5LZiDkAhLPyKY5RDlfuWmBvLGm4EeDjw3Wb8Z4sD7OI970PGKEW9ibhl
-         cykRl/++BWuVQ==
-X-Nifty-SrcIP: [209.85.214.182]
-Received: by mail-pl1-f182.google.com with SMTP id m15so1856833pls.8;
-        Thu, 24 Sep 2020 08:34:27 -0700 (PDT)
-X-Gm-Message-State: AOAM533hjJEPiGEf5nhWIbBvnW6B6aytGj4aYwxJmk0Z6fZ6u0xWizN+
-        v0CFl1ACxarJcTbTCpgbd9M+aik4EeNQD6PbBes=
-X-Google-Smtp-Source: ABdhPJweqgFrBZfOuGz2apTHkL9ybv71G+elcg8t+sB7qXNkjDjJXCwevQ4WrMjsrEgXlLXmJ8CwxU1fONonFFlbNlo=
-X-Received: by 2002:a17:90b:360a:: with SMTP id ml10mr4365101pjb.198.1600961666135;
- Thu, 24 Sep 2020 08:34:26 -0700 (PDT)
+        id S1728428AbgIXPgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 11:36:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53836 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728333AbgIXPgU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 11:36:20 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 49C6D221EB;
+        Thu, 24 Sep 2020 15:36:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600961779;
+        bh=WNZTZTSVuWO/IZHrM0LOYgxpeDcxocJGS0YFoO5Jgyk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cX8W6QKfoyUYTckQzaOtewjAWhre2Tpr3Dnlh95n4L4vGd5cV1+xjAbMvCPWWIQZw
+         /8nu25+xQ4Bw98A3I5Yz+agLp8YJxsVo2PGVHSPxLamPBJ8lYnbZnSLMYUj/vpBtDi
+         DiLSsu8nzASTO0St+GdpFQGb0HpOFMyUCh+cX8iE=
+Date:   Thu, 24 Sep 2020 17:36:36 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Srinivasan Raju <srini.raju@purelifi.com>
+Cc:     mostafa.afgani@purelifi.com, pureLiFi Ltd <info@purelifi.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>
+Subject: Re: [PATCH] staging: Initial driver submission for pureLiFi devices
+Message-ID: <20200924153636.GA1171035@kroah.com>
+References: <20200924151910.21693-1-srini.raju@purelifi.com>
 MIME-Version: 1.0
-References: <20200922204323.GA244571@roeck-us.net>
-In-Reply-To: <20200922204323.GA244571@roeck-us.net>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 25 Sep 2020 00:33:49 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATzjBC0SquV5iJhBO+aoPqeyYAikxiu5qZmEDm6k9ZdJQ@mail.gmail.com>
-Message-ID: <CAK7LNATzjBC0SquV5iJhBO+aoPqeyYAikxiu5qZmEDm6k9ZdJQ@mail.gmail.com>
-Subject: Re: [PATCH] scripts/kallsyms: skip ppc compiler stub *.long_branch.*
- / *.plt_branch.*
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924151910.21693-1-srini.raju@purelifi.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 5:43 AM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On Wed, Sep 23, 2020 at 02:48:56AM +0900, Masahiro Yamada wrote:
-> > PowerPC allmodconfig often fails to build as follows:
-> >
-> >     LD      .tmp_vmlinux.kallsyms1
-> >     KSYM    .tmp_vmlinux.kallsyms1.o
-> >     LD      .tmp_vmlinux.kallsyms2
-> >     KSYM    .tmp_vmlinux.kallsyms2.o
-> >     LD      .tmp_vmlinux.kallsyms3
-> >     KSYM    .tmp_vmlinux.kallsyms3.o
-> >     LD      vmlinux
-> >     SORTTAB vmlinux
-> >     SYSMAP  System.map
-> >   Inconsistent kallsyms data
-> >   Try make KALLSYMS_EXTRA_PASS=1 as a workaround
-> >   make[2]: *** [../Makefile:1162: vmlinux] Error 1
-> >
-> > Setting KALLSYMS_EXTRA_PASS=1 does not help.
-> >
-> > This is caused by the compiler inserting stubs such as *.long_branch.*
-> > and *.plt_branch.*
-> >
-> >   $ powerpc-linux-nm -n .tmp_vmlinux.kallsyms2
-> >    [ snip ]
-> >   c00000000210c000 T __init_begin
-> >   c00000000210c000 T _sinittext
-> >   c00000000210c010 t 00000075.plt_branch.da9:19
-> >   c00000000210c020 t 00000075.plt_branch.1677:5
-> >   c00000000210c030 t 00000075.long_branch.memmove
-> >   c00000000210c034 t 00000075.plt_branch.9e0:5
-> >   c00000000210c044 t 00000075.plt_branch.free_initrd_mem
-> >     ...
-> >
-> > Actually, the problem mentioned in scripts/link-vmlinux.sh comments;
-> > "In theory it's possible this results in even more stubs, but unlikely"
-> > is happening here, and ends up with another kallsyms step required.
-> >
-> > scripts/kallsyms.c already ignores various compiler stubs. Let's do
-> > similar to make kallsysms for PowerPC always succeed in 2 steps.
-> >
-> > Reported-by: Guenter Roeck <linux@roeck-us.net>
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
->
-> Tested-by: Guenter Roeck <linux@roeck-us.net>
->
-> Thanks,
-> Guenter
->
-> > ---
-> >
-> >  scripts/kallsyms.c | 16 +++++++++++++++-
-> >  1 file changed, 15 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/scripts/kallsyms.c b/scripts/kallsyms.c
-> > index 0096cd965332..306b9b38150f 100644
-> > --- a/scripts/kallsyms.c
-> > +++ b/scripts/kallsyms.c
-> > @@ -120,17 +120,25 @@ static bool is_ignored_symbol(const char *name, char type)
-> >               NULL
-> >       };
-> >
-> > +     static const char * const ignored_matches[] = {
-> > +             ".long_branch.",        /* ppc stub */
-> > +             ".plt_branch.",         /* ppc stub */
-> > +             NULL
-> > +     };
-> > +
-> >       const char * const *p;
-> >
-> > -     /* Exclude symbols which vary between passes. */
-> > +     /* ignore symbol names that exactly match to a particular string. */
-> >       for (p = ignored_symbols; *p; p++)
-> >               if (!strcmp(name, *p))
-> >                       return true;
-> >
-> > +     /* ignore symbol names that start with a particular string. */
-> >       for (p = ignored_prefixes; *p; p++)
-> >               if (!strncmp(name, *p, strlen(*p)))
-> >                       return true;
-> >
-> > +     /* ignore symbol names that end with a particular string. */
-> >       for (p = ignored_suffixes; *p; p++) {
-> >               int l = strlen(name) - strlen(*p);
-> >
-> > @@ -138,6 +146,12 @@ static bool is_ignored_symbol(const char *name, char type)
-> >                       return true;
-> >       }
-> >
-> > +     /* ignore symbol names that contain a particular string. */
-> > +     for (p = ignored_matches; *p; p++) {
-> > +             if (strstr(name, *p))
-> > +                     return true;
-> > +     }
-> > +
-> >       if (type == 'U' || type == 'u')
-> >               return true;
-> >       /* exclude debugging symbols */
-> > --
-> > 2.25.1
-> >
+On Thu, Sep 24, 2020 at 08:48:51PM +0530, Srinivasan Raju wrote:
+> +PUREILIFI USB DRIVER
+> +M:	pureLiFi Ltd <info@purelifi.com>
 
-Applied to linux-kbuild/fixes.
+I need a real person here, having aliases as maintainers results in a
+lack of accountability :(
 
+> --- /dev/null
+> +++ b/drivers/staging/purelifi/TODO
+> @@ -0,0 +1,5 @@
+> +TODO:
+> +	- checkpatch.pl cleanups
+> +
+> +Please send any patches or complaints about this driver to pureLiFi Ltd
+> +<info@purelifi.com>
 
+Why not just do these fixups on your own right now and submit it to the
+"real" part of the kernel?  That should take what, a day or so max?
 
--- 
-Best Regards
-Masahiro Yamada
+Just sending stuff to staging because you don't want to do coding style
+cleanups feels very odd.  It takes much more work and energy to do it
+this way than to just do it right the first time and get it merged to
+the networking subsystem, right?
+
+So why do you want to send it to staging?
+
+thanks,
+
+greg k-h
