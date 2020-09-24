@@ -2,83 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AF56276AC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00938276ABC
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:26:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727168AbgIXH0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 03:26:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36207 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727136AbgIXH0b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 03:26:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600932390;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=K3pWzi6XBSxvJ/VWL3fyEt5ORCYjFGoEK4Nlb2X8zSM=;
-        b=GZi0YoqkHbu1RzAz6dgg9A6MQh8h+JRiFyK1FRawGz8AExYq5o5pwYJ/bcI1RMNuLdMZjF
-        T/oAX8wdWDLcM0lPSHs0w8f/itbpPQUZKChl8pfZDGqX/d3+gCBkBJmE3Y/QCMK5LgimQw
-        IdrXpY4Mjl+VOelMdEy7RBYEsVLCNu4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-57-KhdlLsU5M-qlpT4HD7pE3w-1; Thu, 24 Sep 2020 03:26:26 -0400
-X-MC-Unique: KhdlLsU5M-qlpT4HD7pE3w-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1727118AbgIXH0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 03:26:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42518 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726993AbgIXH0X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 03:26:23 -0400
+Received: from saruman (91-155-214-58.elisa-laajakaista.fi [91.155.214.58])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DC2AD186DD33;
-        Thu, 24 Sep 2020 07:26:24 +0000 (UTC)
-Received: from [10.72.13.193] (ovpn-13-193.pek2.redhat.com [10.72.13.193])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CD64A60C15;
-        Thu, 24 Sep 2020 07:26:10 +0000 (UTC)
-Subject: Re: [RFC PATCH 01/24] vhost-vdpa: fix backend feature ioctls
-To:     Eli Cohen <elic@nvidia.com>
-Cc:     mst@redhat.com, lulu@redhat.com, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rob.miller@broadcom.com,
-        lingshan.zhu@intel.com, eperezma@redhat.com, hanand@xilinx.com,
-        mhabets@solarflare.com, eli@mellanox.com, amorenoz@redhat.com,
-        maxime.coquelin@redhat.com, stefanha@redhat.com,
-        sgarzare@redhat.com
-References: <20200924032125.18619-1-jasowang@redhat.com>
- <20200924032125.18619-2-jasowang@redhat.com>
- <20200924071609.GA170403@mtl-vdi-166.wap.labs.mlnx>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <042dc3f9-40f0-f740-7ffc-611d315bc150@redhat.com>
-Date:   Thu, 24 Sep 2020 15:26:08 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        by mail.kernel.org (Postfix) with ESMTPSA id C885C235F7;
+        Thu, 24 Sep 2020 07:26:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600932382;
+        bh=94TZ4ZEsVidxddkdHx2pb6heCf8JpMWyUYacOZRXr3s=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=Y8rmXLgqJNRl7XEVIMy8C3hXuW62VIxKwmwiK9qe53Fx8qv9CVARL0AphHQkZQc1R
+         5Y2x36/aoppFdMOOkaO4s9vsFLuZo9gN68PpJFcccVQQLY5lhOFA+YCwn7dM2GF/gk
+         A/hF9iYAycOb2j1rfSdR6pEUXYxH8rsHcnuTqExs=
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Tang Bin <tangbin@cmss.chinamobile.com>,
+        gregkh@linuxfoundation.org, thierry.reding@gmail.com,
+        jonathanh@nvidia.com
+Cc:     linux-usb@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>,
+        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Subject: Re: [PATCH] usb: phy: tegra: Use IS_ERR() to check and simplify code
+In-Reply-To: <20200910115607.11392-1-tangbin@cmss.chinamobile.com>
+References: <20200910115607.11392-1-tangbin@cmss.chinamobile.com>
+Date:   Thu, 24 Sep 2020 10:26:15 +0300
+Message-ID: <87imc3eiug.fsf@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200924071609.GA170403@mtl-vdi-166.wap.labs.mlnx>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-On 2020/9/24 下午3:16, Eli Cohen wrote:
-> On Thu, Sep 24, 2020 at 11:21:02AM +0800, Jason Wang wrote:
->> Commit 653055b9acd4 ("vhost-vdpa: support get/set backend features")
->> introduces two malfunction backend features ioctls:
->>
->> 1) the ioctls was blindly added to vring ioctl instead of vdpa device
->>     ioctl
->> 2) vhost_set_backend_features() was called when dev mutex has already
->>     been held which will lead a deadlock
->>
-> I assume this patch requires some patch in qemu as well. Do you have
-> such patch?
+Tang Bin <tangbin@cmss.chinamobile.com> writes:
+
+> Use IS_ERR() and PTR_ERR() instead of PTR_ERR_OR_ZERO() to
+> simplify code, avoid redundant judgements.
 >
+> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
 
-It's this series: [PATCH 0/3] Vhost-vDPA: batch IOTLB updating.
+Applied for next merge window. Make sure to get this driver out of
+drivers/usb/phy and moved into drivers/phy ASAP.
 
-You were copied.
+=2D-=20
+balbi
 
-Thanks
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl9sShcRHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzL64meEamQYsEBAAxoRLenIpfVmDh4VvaW4PJtOg2x9IqBV7
+0vU1xAcQsgURSg+ob+VeuycHELzi0rf1W5G4aSz3ylrh84Nf9obCDOAsJCQf2bym
+ncLOWvX4o1gR6ine/WyBVonQ47O4z6HZjl0z/FT5fOmG0BEpFCyq7oq/f7K6+a1H
+1UbUAWAS5Gy0svm5OB4qwK1AW1qm62qCwIij8bbL7ktPu1ZJqmBrPr+aFE6LLGZ6
+uVmfZQuO+Z10Apoi3FI0++k60sWz6P8VsyHFMdsV0jQVjXDHwgrOlnIaGki4nhTY
+TrVsHxUjEqLLejIDgD53pZ1b5XCJfOipM1xiMC1PFQhr2Y0yK6F3wCdbfY670Ckh
+ysZSeTUryS5OOezIZegMdu5CboUwYdH3eJZnoh1C43UvwJgaqByOGHqfgFFklYw2
+FTONart0JO7znEhNVNno/KghLJiRRRGpPeR8y2Tw47aeMosrRCZHvT07/KxHPVsj
+Uj0QFMzRKz+XFiJoh7g1Vu2Ya9pmIwJVUC2v93kJsr0cMiZy+PErntVA6w+NZDD5
+kkzoxjSlj3pQCkQof1rh+YsvxiqFLIW/RpafPQWZjpk8Fou0HNvvAFdIYYInHwk+
+GLxXJ66S2+bKoaU0BMhM6OuMFyLxF6O/1IsfHtkU2UHEi2g3BSC48wLYQQ7lcjqT
+buCiuuC8wMc=
+=Vm5E
+-----END PGP SIGNATURE-----
+--=-=-=--
