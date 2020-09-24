@@ -2,89 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6234276F2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 498A0276F29
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 12:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbgIXLAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 07:00:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726303AbgIXLAF (ORCPT
+        id S1726796AbgIXK7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 06:59:01 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:60952 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726303AbgIXK7A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 07:00:05 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E659C0613CE;
-        Thu, 24 Sep 2020 04:00:05 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id z4so3329108wrr.4;
-        Thu, 24 Sep 2020 04:00:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=5L6vOsF3jF4xqgAq9jpu8Af6OIIQz2u9qhusAgnAuqw=;
-        b=ZvijhYyjIJTiuNZkFuzq/jY38dyGFFNTjvMDkSnLori7HTuu+m+RbA20+HsCjw9ec9
-         Dv2Rcy/OCVeInIGqhMjMrJFxPN+Kmgog5lYS4ZbiLxVaZ6fV9QVIOaWAGimyiy/W+a+p
-         LIe1OlUvLlO4sMxLori4K4H/fgcn0AXr00d0+7lEYLPQXHbbHDvLiYbPjs8C3IpggyyA
-         +ab/RgilynOiU+EwjbdKy+15CGLQFke6LDHZs6DemEmd5948KU+6gpB7ZD7CbZC6WJt+
-         ROpasHHtm5gvXwqb+jdaEwfgnZzDxX1aocee/zfOSAcfxcJaH9lSNf8lcuXz85bkXLmW
-         4RPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=5L6vOsF3jF4xqgAq9jpu8Af6OIIQz2u9qhusAgnAuqw=;
-        b=q1tjBs974NMStuT3GxnyN2dgf7Os6BggxDM1J7GGzaXY96GZ5cDkP9fWQY4fIeZijR
-         +quTrAb9Dio3FDJD34EnW9wBrdhRSiR29U+QFFTGXTqWZxEoYn3eecVoAQLaqumWt4I5
-         +PFQMq3WHOnmMS1OafdN1SRPj25dYzVhwnD02Mubmmn1ld1MsQJpsAJGtxzaYJVFNF3k
-         gwLsjmGfs7081eKdLpg8LnTYQBy9Wgrz2zQMHPksc0ZnZbTlCRyRNaP1Sk8vZzfvyZXr
-         eBbA4vG+YsYLxzW2P1eqgH7b2TVAYGszaN6PtyDyqAqMMHaTXyFUKgAQGu9l6Zabo/9R
-         tsVg==
-X-Gm-Message-State: AOAM532CvqxpZ7EtWVKi7/v0zpSWHtN8tW7AYL93Pit0Byrb2UMLRrGU
-        zzcbN24+YcGhaz2h6ISr1XE=
-X-Google-Smtp-Source: ABdhPJwP3+SenwNrOVmpV1NO2snBarBljCGmAfrSUjGpBCLY5ysNcHysY+0ggrAZ21+GZ55nOmixlg==
-X-Received: by 2002:adf:f58b:: with SMTP id f11mr4464129wro.250.1600945203934;
-        Thu, 24 Sep 2020 04:00:03 -0700 (PDT)
-Received: from localhost.localdomain (host-92-5-241-147.as43234.net. [92.5.241.147])
-        by smtp.gmail.com with ESMTPSA id u66sm3056012wme.12.2020.09.24.04.00.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 24 Sep 2020 04:00:03 -0700 (PDT)
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>
-Cc:     linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH] nfs: use 'break' instead of 'fallthrough'
-Date:   Thu, 24 Sep 2020 11:58:02 +0100
-Message-Id: <20200924105802.31987-1-sudipm.mukherjee@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        Thu, 24 Sep 2020 06:59:00 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08OAwu84034140;
+        Thu, 24 Sep 2020 05:58:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600945136;
+        bh=ZYaooliMG5ZmHlYisRjqi0EDHcM1XEQAdnWOAQuO3M4=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=mRugwMPlP0+cvrZgkvbTs5q2gSRqtYXknoQnORgX2KPDn9/60cDbRtjShnEQDV98K
+         iDZJvd9HMispfh7KuZMLXKjdo2/p3m1FdkECxJvDoymHkshmYnUAClEM5FfZudnuaZ
+         zAGRxUZPxz0wwW8Z4dHqK+hN2XMReWjUSYv0JweY=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08OAwuJn025745;
+        Thu, 24 Sep 2020 05:58:56 -0500
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 24
+ Sep 2020 05:58:56 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 24 Sep 2020 05:58:56 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08OAwu8e044564;
+        Thu, 24 Sep 2020 05:58:56 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Tero Kristo <t-kristo@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-kernel@vger.kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        <devicetree@vger.kernel.org>, Sekhar Nori <nsekhar@ti.com>
+Subject: Re: [PATCH v4 0/4] arm64: dts: ti: k3-j7200: add dma and mcu cpsw
+Date:   Thu, 24 Sep 2020 05:58:55 -0500
+Message-ID: <160094485503.28349.15928892177922171688.b4-ty@ti.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200923220938.30788-1-grygorii.strashko@ti.com>
+References: <20200923220938.30788-1-grygorii.strashko@ti.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The fallthrough attribute should only be used in a switch statement,
-after a preceding statement and before a logically succeeding case
-label, or user-defined label.
+On Thu, 24 Sep 2020 01:09:34 +0300, Grygorii Strashko wrote:
+> This series adds DT nodes for TI J7200 SoC
+> - Ringacc and UDMA nodes for Main and MCU NAVSS, which are compatible
+>   with J721E Soc, to enable DMA support
+> - MCU CPSW2g DT nodes to enable networking and board data
+> 
+> Changes in v4:
+>  - fixed comments from Suman Anna <s-anna@ti.com>
+> 
+> [...]
 
-But here, it is used in the last 'switch-case' with no other 'case' where
-it can fallthrough. So, use break instead of fallthrough.
+Hi Grygorii Strashko,
 
-Fixes: cf65e49f89f2 ("nfs: Convert to use the preferred fallthrough macro")
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
----
- fs/nfs/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I have applied the following to branch ti-k3-dts-next on [1].
+Thank you!
 
-diff --git a/fs/nfs/super.c b/fs/nfs/super.c
-index d20326ee0475..eb2401079b04 100644
---- a/fs/nfs/super.c
-+++ b/fs/nfs/super.c
-@@ -889,7 +889,7 @@ static struct nfs_server *nfs_try_mount_request(struct fs_context *fc)
- 		default:
- 			if (rpcauth_get_gssinfo(flavor, &info) != 0)
- 				continue;
--			fallthrough;
-+			break;
- 		}
- 		dfprintk(MOUNT, "NFS: attempting to use auth flavor %u\n", flavor);
- 		ctx->selected_flavor = flavor;
+[1/4] arm64: dts: ti: k3-j7200: add DMA support
+      commit: fd409bfe0e44ea36ed6be77c331a001e50a9bc12
+[2/4] arm64: dts: ti: k3-j7200-main: add main navss cpts node
+      commit: 3273476c3b1c7ef61ec971ed866b9fb6660c82fe
+[3/4] arm64: dts: ti: k3-j7200-mcu: add mcu cpsw nuss node
+      commit: e86fc00bb04b1d3d387ae6bf4d176bfa9859ea66
+[4/4] arm64: dts: ti: k3-j7200-common-proc-board: add mcu cpsw nuss pinmux and phy defs
+      commit: c67487a68e13ee450cbc45b622b8ee9a75f1812a
+
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+[1] git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git
 -- 
-2.11.0
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
