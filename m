@@ -2,144 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70EFB276E80
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 12:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A221F276E85
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 12:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727430AbgIXKTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 06:19:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54534 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726847AbgIXKTv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 06:19:51 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9A3F0AF1F;
-        Thu, 24 Sep 2020 10:20:26 +0000 (UTC)
-Subject: Re: [PATCH RFC 1/4] mm/page_alloc: convert "report" flag of
- __free_one_page() to a proper flag
-To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-hyperv@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Mike Rapoport <rppt@kernel.org>
-References: <20200916183411.64756-1-david@redhat.com>
- <20200916183411.64756-2-david@redhat.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <82ba4aec-0c69-2461-485a-fa4a7777e5c3@suse.cz>
-Date:   Thu, 24 Sep 2020 12:19:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727374AbgIXKUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 06:20:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726380AbgIXKUv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 06:20:51 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42AA0C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 03:20:51 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id fa1so1460721pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 03:20:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DDW0cijJSG8mG5hnjrtVKr5ql/AKoiRr42pPo1oe7J0=;
+        b=png7TEaT9JTulJLXSeEtIicwnhjXOR2MpLBeDM9CINl9FSBpFL8I5a7YVsfwjmx18e
+         h7JHkWx3q4xLTHdJiZVDuOcn7Z2GVzhNKJ2m9lwYWgCAd7jQ1RDKtix/nDKOwHPTaQrQ
+         1GrAGuqoV3khYx4QTzvcCDb0HUPtmPVSfdnDmuB1jykdh5cZHEk0VsUj2aAYBx2N+VTH
+         JZsCkI7RWWs2pT1chDRQeemsgaoUrPV8uRC3jy4RhtQfQXduVDz9+mh9lmCIE+9AemET
+         kVWJ7dQ7rF8y3ZQ3BZ4yxjcbZnZYESGGnBUd/+LT3bHXGm/ghHpnz+Yv5FCzFP4kKwaB
+         aK1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DDW0cijJSG8mG5hnjrtVKr5ql/AKoiRr42pPo1oe7J0=;
+        b=hAVVvt7vs+XWYKDunDmzlfmPzIU9mLNFeNm50tiiOzu3y4pzklybO3rF/Bjhuoj4DQ
+         Q/VPU+js3NWcoE2Zb4as1qzDOUHqUzLTT4gcNGZD5YqTEygo+dYNHeCj/vYD8saN2ndf
+         iXSBgxPPVtfxwQLUVfhPuVIs5g+L/gbLQB0HngSFEAuM1Y2lNx7XLgQpWnAMs8j289w4
+         wNiGvjtcOzcpvqfe4gEH6NR62/205vTEfnRZs/hgDVLSTJG2+ty3uO3mIG3Qtq5+eFMR
+         zMxHHGoLwlzJJ6h0fyxgKJ0O+pl/egQ8O8zAURww39FpS8xINddFBmvbnwG0l01RVnju
+         bfsA==
+X-Gm-Message-State: AOAM531vT19tWOm48ulItXZij9gYUylHfNDlL0utGjAgq+W81wUDUSip
+        aHXX7BTPdEcjAXrzWZep6Yk=
+X-Google-Smtp-Source: ABdhPJzVQEnr2gHdgTDv8QoOM0eeMSIF++4bVh2EncAuTRY0YyzDuK0ktquYxouo12BxGQph+36+cA==
+X-Received: by 2002:a17:902:fe88:b029:d2:2a16:254 with SMTP id x8-20020a170902fe88b02900d22a160254mr3998235plm.23.1600942850800;
+        Thu, 24 Sep 2020 03:20:50 -0700 (PDT)
+Received: from localhost ([2001:e42:102:1532:160:16:113:140])
+        by smtp.gmail.com with ESMTPSA id l14sm1935673pjy.1.2020.09.24.03.20.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 03:20:49 -0700 (PDT)
+From:   Coiby Xu <coiby.xu@gmail.com>
+To:     devel@driverdev.osuosl.org
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Vaibhav Agarwal <vaibhav.sr@gmail.com>,
+        Mark Greer <mgreer@animalcreek.com>,
+        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        greybus-dev@lists.linaro.org (moderated list:GREYBUS SUBSYSTEM),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/3] [PATCH] staging: greybus: fix warnings about endianness detected by sparse
+Date:   Thu, 24 Sep 2020 18:20:37 +0800
+Message-Id: <20200924102039.43895-1-coiby.xu@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20200916183411.64756-2-david@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/16/20 8:34 PM, David Hildenbrand wrote:
-> Let's prepare for additional flags and avoid long parameter lists of bools.
-> Follow-up patches will also make use of the flags in __free_pages_ok(),
-> however, I wasn't able to come up with a better name for the type - should
-> be good enough for internal purposes.
-> 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> Cc: Mel Gorman <mgorman@techsingularity.net>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Cc: Dave Hansen <dave.hansen@intel.com>
-> Cc: Vlastimil Babka <vbabka@suse.cz>
-> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+This patch fix the following warnings from sparse,
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+$ make C=2 drivers/staging/greybus/
+drivers/staging/greybus/audio_module.c:222:25: warning: incorrect type in assignment (different base types)
+drivers/staging/greybus/audio_module.c:222:25:    expected restricted __le16 [usertype] data_cport
+drivers/staging/greybus/audio_module.c:222:25:    got unsigned short [usertype] intf_cport_id
+drivers/staging/greybus/audio_topology.c:460:40: warning: restricted __le32 degrades to integer
+drivers/staging/greybus/audio_topology.c:691:41: warning: incorrect type in assignment (different base types)
+drivers/staging/greybus/audio_topology.c:691:41:    expected unsigned int access
+drivers/staging/greybus/audio_topology.c:691:41:    got restricted __le32 [usertype] access
+drivers/staging/greybus/audio_topology.c:746:44: warning: incorrect type in assignment (different base types)
+drivers/staging/greybus/audio_topology.c:746:44:    expected unsigned int
+drivers/staging/greybus/audio_topology.c:746:44:    got restricted __le32
+drivers/staging/greybus/audio_topology.c:748:52: warning: incorrect type in assignment (different base types)
+drivers/staging/greybus/audio_topology.c:748:52:    expected unsigned int
+drivers/staging/greybus/audio_topology.c:748:52:    got restricted __le32
+drivers/staging/greybus/audio_topology.c:802:42: warning: restricted __le32 degrades to integer
+drivers/staging/greybus/audio_topology.c:805:50: warning: incorrect type in assignment (different base types)
+drivers/staging/greybus/audio_topology.c:805:50:    expected restricted __le32
+drivers/staging/greybus/audio_topology.c:805:50:    got unsigned int
+drivers/staging/greybus/audio_topology.c:814:50: warning: restricted __le32 degrades to integer
+drivers/staging/greybus/audio_topology.c:817:58: warning: incorrect type in assignment (different base types)
+drivers/staging/greybus/audio_topology.c:817:58:    expected restricted __le32
+drivers/staging/greybus/audio_topology.c:817:58:    got unsigned int
+drivers/staging/greybus/audio_topology.c:889:25: warning: incorrect type in assignment (different base types)
+drivers/staging/greybus/audio_topology.c:889:25:    expected unsigned int access
+drivers/staging/greybus/audio_topology.c:889:25:    got restricted __le32 [usertype] access
 
-> ---
->  mm/page_alloc.c | 28 ++++++++++++++++++++--------
->  1 file changed, 20 insertions(+), 8 deletions(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 6b699d273d6e..91cefb8157dd 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -77,6 +77,18 @@
->  #include "shuffle.h"
->  #include "page_reporting.h"
->  
-> +/* Free One Page flags: for internal, non-pcp variants of free_pages(). */
-> +typedef int __bitwise fop_t;
-> +
-> +/* No special request */
-> +#define FOP_NONE		((__force fop_t)0)
-> +
-> +/*
-> + * Skip free page reporting notification after buddy merging (will *not* mark
-> + * the page reported, only skip the notification).
-> + */
-> +#define FOP_SKIP_REPORT_NOTIFY	((__force fop_t)BIT(0))
-> +
->  /* prevent >1 _updater_ of zone percpu pageset ->high and ->batch fields */
->  static DEFINE_MUTEX(pcp_batch_high_lock);
->  #define MIN_PERCPU_PAGELIST_FRACTION	(8)
-> @@ -948,10 +960,9 @@ buddy_merge_likely(unsigned long pfn, unsigned long buddy_pfn,
->   * -- nyc
->   */
->  
-> -static inline void __free_one_page(struct page *page,
-> -		unsigned long pfn,
-> -		struct zone *zone, unsigned int order,
-> -		int migratetype, bool report)
-> +static inline void __free_one_page(struct page *page, unsigned long pfn,
-> +				   struct zone *zone, unsigned int order,
-> +				   int migratetype, fop_t fop_flags)
->  {
->  	struct capture_control *capc = task_capc(zone);
->  	unsigned long buddy_pfn;
-> @@ -1038,7 +1049,7 @@ static inline void __free_one_page(struct page *page,
->  		add_to_free_list(page, zone, order, migratetype);
->  
->  	/* Notify page reporting subsystem of freed page */
-> -	if (report)
-> +	if (!(fop_flags & FOP_SKIP_REPORT_NOTIFY))
->  		page_reporting_notify_free(order);
->  }
->  
-> @@ -1368,7 +1379,7 @@ static void free_pcppages_bulk(struct zone *zone, int count,
->  		if (unlikely(isolated_pageblocks))
->  			mt = get_pageblock_migratetype(page);
->  
-> -		__free_one_page(page, page_to_pfn(page), zone, 0, mt, true);
-> +		__free_one_page(page, page_to_pfn(page), zone, 0, mt, FOP_NONE);
->  		trace_mm_page_pcpu_drain(page, 0, mt);
->  	}
->  	spin_unlock(&zone->lock);
-> @@ -1384,7 +1395,7 @@ static void free_one_page(struct zone *zone,
->  		is_migrate_isolate(migratetype))) {
->  		migratetype = get_pfnblock_migratetype(page, pfn);
->  	}
-> -	__free_one_page(page, pfn, zone, order, migratetype, true);
-> +	__free_one_page(page, pfn, zone, order, migratetype, FOP_NONE);
->  	spin_unlock(&zone->lock);
->  }
->  
-> @@ -3277,7 +3288,8 @@ void __putback_isolated_page(struct page *page, unsigned int order, int mt)
->  	lockdep_assert_held(&zone->lock);
->  
->  	/* Return isolated page to tail of freelist. */
-> -	__free_one_page(page, page_to_pfn(page), zone, order, mt, false);
-> +	__free_one_page(page, page_to_pfn(page), zone, order, mt,
-> +			FOP_SKIP_REPORT_NOTIFY);
->  }
->  
->  /*
-> 
+Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+---
+ drivers/staging/greybus/audio_module.c   |  6 +++---
+ drivers/staging/greybus/audio_topology.c | 18 +++++++++---------
+ 2 files changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/staging/greybus/audio_module.c b/drivers/staging/greybus/audio_module.c
+index 16f60256adb2..c52c4f361b90 100644
+--- a/drivers/staging/greybus/audio_module.c
++++ b/drivers/staging/greybus/audio_module.c
+@@ -219,7 +219,7 @@ static int gb_audio_add_data_connection(struct gbaudio_module_info *gbmodule,
+ 
+ 	greybus_set_drvdata(bundle, gbmodule);
+ 	dai->id = 0;
+-	dai->data_cport = connection->intf_cport_id;
++	dai->data_cport = cpu_to_le16(connection->intf_cport_id);
+ 	dai->connection = connection;
+ 	list_add(&dai->list, &gbmodule->data_list);
+ 
+@@ -329,7 +329,7 @@ static int gb_audio_probe(struct gb_bundle *bundle,
+ 		if (ret) {
+ 			dev_err(dev,
+ 				"%d:Error while enabling %d:data connection\n",
+-				ret, dai->data_cport);
++				ret, le16_to_cpu(dai->data_cport));
+ 			goto disable_data_connection;
+ 		}
+ 	}
+@@ -451,7 +451,7 @@ static int gb_audio_resume(struct device *dev)
+ 		if (ret) {
+ 			dev_err(dev,
+ 				"%d:Error while enabling %d:data connection\n",
+-				ret, dai->data_cport);
++				ret, le16_to_cpu(dai->data_cport));
+ 			return ret;
+ 		}
+ 	}
+diff --git a/drivers/staging/greybus/audio_topology.c b/drivers/staging/greybus/audio_topology.c
+index 83b38ae8908c..56bf1a4f95ad 100644
+--- a/drivers/staging/greybus/audio_topology.c
++++ b/drivers/staging/greybus/audio_topology.c
+@@ -466,7 +466,7 @@ static int gbcodec_mixer_dapm_ctl_put(struct snd_kcontrol *kcontrol,
+ 		goto exit;
+ 
+ 	/* update ucontrol */
+-	if (gbvalue.value.integer_value[0] != val) {
++	if (gbvalue.value.integer_value[0] != cpu_to_le32(val)) {
+ 		for (wi = 0; wi < wlist->num_widgets; wi++) {
+ 			widget = wlist->widgets[wi];
+ 			snd_soc_dapm_mixer_update_power(widget->dapm, kcontrol,
+@@ -689,7 +689,7 @@ static int gbaudio_tplg_create_kcontrol(struct gbaudio_module_info *gb,
+ 				return -ENOMEM;
+ 			ctldata->ctl_id = ctl->id;
+ 			ctldata->data_cport = le16_to_cpu(ctl->data_cport);
+-			ctldata->access = ctl->access;
++			ctldata->access = le32_to_cpu(ctl->access);
+ 			ctldata->vcount = ctl->count_values;
+ 			ctldata->info = &ctl->info;
+ 			*kctl = (struct snd_kcontrol_new)
+@@ -744,10 +744,10 @@ static int gbcodec_enum_dapm_ctl_get(struct snd_kcontrol *kcontrol,
+ 		return ret;
+ 	}
+ 
+-	ucontrol->value.enumerated.item[0] = gbvalue.value.enumerated_item[0];
++	ucontrol->value.enumerated.item[0] = le32_to_cpu(gbvalue.value.enumerated_item[0]);
+ 	if (e->shift_l != e->shift_r)
+ 		ucontrol->value.enumerated.item[1] =
+-			gbvalue.value.enumerated_item[1];
++			le32_to_cpu(gbvalue.value.enumerated_item[1]);
+ 
+ 	return 0;
+ }
+@@ -801,10 +801,10 @@ static int gbcodec_enum_dapm_ctl_put(struct snd_kcontrol *kcontrol,
+ 	mask = e->mask << e->shift_l;
+ 
+ 	if (gbvalue.value.enumerated_item[0] !=
+-	    ucontrol->value.enumerated.item[0]) {
++	    cpu_to_le32(ucontrol->value.enumerated.item[0])) {
+ 		change = 1;
+ 		gbvalue.value.enumerated_item[0] =
+-			ucontrol->value.enumerated.item[0];
++			cpu_to_le32(ucontrol->value.enumerated.item[0]);
+ 	}
+ 
+ 	if (e->shift_l != e->shift_r) {
+@@ -813,10 +813,10 @@ static int gbcodec_enum_dapm_ctl_put(struct snd_kcontrol *kcontrol,
+ 		val |= ucontrol->value.enumerated.item[1] << e->shift_r;
+ 		mask |= e->mask << e->shift_r;
+ 		if (gbvalue.value.enumerated_item[1] !=
+-		    ucontrol->value.enumerated.item[1]) {
++		    cpu_to_le32(ucontrol->value.enumerated.item[1])) {
+ 			change = 1;
+ 			gbvalue.value.enumerated_item[1] =
+-				ucontrol->value.enumerated.item[1];
++				cpu_to_le32(ucontrol->value.enumerated.item[1]);
+ 		}
+ 	}
+ 
+@@ -887,7 +887,7 @@ static int gbaudio_tplg_create_mixer_ctl(struct gbaudio_module_info *gb,
+ 		return -ENOMEM;
+ 	ctldata->ctl_id = ctl->id;
+ 	ctldata->data_cport = le16_to_cpu(ctl->data_cport);
+-	ctldata->access = ctl->access;
++	ctldata->access = le32_to_cpu(ctl->access);
+ 	ctldata->vcount = ctl->count_values;
+ 	ctldata->info = &ctl->info;
+ 	*kctl = (struct snd_kcontrol_new)
+-- 
+2.28.0
 
