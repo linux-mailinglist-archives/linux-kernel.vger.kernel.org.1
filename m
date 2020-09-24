@@ -2,103 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 936AD276B4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B72E276B51
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:01:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727198AbgIXIAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 04:00:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54112 "EHLO
+        id S1727203AbgIXIBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 04:01:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727151AbgIXIAV (ORCPT
+        with ESMTP id S1727013AbgIXIA7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 04:00:21 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A9DAC0613CE;
-        Thu, 24 Sep 2020 01:00:21 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id d9so1416679pfd.3;
-        Thu, 24 Sep 2020 01:00:21 -0700 (PDT)
+        Thu, 24 Sep 2020 04:00:59 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC8E7C0613CE;
+        Thu, 24 Sep 2020 01:00:59 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id z18so1426395pfg.0;
+        Thu, 24 Sep 2020 01:00:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=To0aSlyvMOiABjo5WrXnv8NiYSlJHdgzfcFUckkTy+A=;
-        b=NzNraL9+txDHbbZlxYHyLJcahspbN0gIsmX89oLMorvVWqnCnUiyPcBUq9CJNmc36E
-         EUPfx3K2layQexREq50ryDSmC4iuE8iYt3N8JXDWYb6V8tAZKf5FQqK6BvwzOJvArioC
-         iQdCyjNwxr7571WEyqdHgO0ftf5TyVm/7/RDct2gS0XJWpsdikDKs34mWSXaV9eFgWzn
-         tViTS+NsgxMYsT6gQMTJx1aD1gsapFtUmDBLUs9lnvanrU/zyRjUoaB0Q6Sd++lQwUHG
-         mgaNFrJOxM/5woOrvIL4TKJWePYqrNBUGCoXUguUWDIydlZ4PHU9uT7oHZnk2WcVO8HW
-         P0Mw==
+        h=from:to:cc:subject:date:message-id;
+        bh=SGl+breC8K9DZrFahalhbnYwE9PtZ9W0GoZnYML7ng0=;
+        b=fFCLD85CQF97stUOStSx7BIHQeboYjWxWZGzHZuSzf6h6MvR36Y0HL78awwIHOR7jM
+         xVvqJio0wc9I8uMo2o+isDmQz2YCVixQN/uHCAM4HfrufyPwOtYvac+Mxp4kK65BM5bO
+         ZhSf3Qx2w7ufHFs/Q2HNqMJLKWl0X6aKm/M7X12zAObT3HwXXIDm+Zii9uVybIFMdkL8
+         vLc74QliQrivZkpxivgXedt/0s76KM+NjWr7qjLgREAeIygel3z4sFjRHfdRy5hTew4K
+         m+yf/bNohEZWbo4CGYIjQ1jo8ttdpnLR50S2KFL4495ED84Qenpbhyb6k8QiDnjyW+JE
+         Ax/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=To0aSlyvMOiABjo5WrXnv8NiYSlJHdgzfcFUckkTy+A=;
-        b=Maoi071nX2JjG8z8PZ+NVBRvLH00BfZQmgfNvAJw5B27cHzeamqh/gK+C+CDWon+tz
-         h/9MZlW4p2YXf0hhu8I1MefMr49Tlr0izE4SK0vC5ZTOI68tWpu609Qu4KtWDh7h0gwp
-         DYptY5Iq5sYduDf9qaMjsEwQQbOTCjGInBakbX9bpGMTkn70fYbWoODtNkXhW3r063Bm
-         JhCeebAtSXoqLK3EbqNsF073JCjKykcityd0K36sYQHcAqiItWfQXpEko8wvNWk05tj5
-         o9I8b1hvVmi/RB3+xglQTO3/0GPdXedqIUIl3OGHfwZoE83DWfGv44/Esf/aseqRlK4u
-         G8vQ==
-X-Gm-Message-State: AOAM533wSJu1jG3hOBbnr/xujncA6vlMYtK7xq+QBtvKx1TGOzScG+nx
-        y9XtBjq9fEktu7JEMUK5ZJFZ0K9CbdTWzw==
-X-Google-Smtp-Source: ABdhPJytYniWgyDDj0q6Q1aY4phnl2KsbcDGE91L55MUhYJXEtwmacy45a7KVVJ7nIeBH4bUC5YiHw==
-X-Received: by 2002:a62:6287:0:b029:142:2501:35d5 with SMTP id w129-20020a6262870000b0290142250135d5mr3520961pfb.53.1600934420534;
-        Thu, 24 Sep 2020 01:00:20 -0700 (PDT)
-Received: from sol (106-69-189-59.dyn.iinet.net.au. [106.69.189.59])
-        by smtp.gmail.com with ESMTPSA id l188sm1894953pfl.200.2020.09.24.01.00.16
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=SGl+breC8K9DZrFahalhbnYwE9PtZ9W0GoZnYML7ng0=;
+        b=kCYMSnc8fgUhHc0W9nlSZ23V3GtQUGSdSkY9lXisbgkbu/S8F2mTHIPpCrJAbmZES5
+         XAUKZC+MCGLQRfodzCOG9ZkB2oK340UkwHjm3xLPqOiOONqZg/7vYTTFGUQl4PxJNP8g
+         ns+zsLUM7hzTpjiQgjEBtM4prgwHbtlRyfmXA+sJdUIMYErmSaV8syY9jgkf8Rx9ZCi4
+         qYOouoJBTZcT6v/n8WaMsMxvOaPjD/QEHwRUEjvSfEnruOJ/H6HAecAyJI8Luwj6OfnA
+         2sH5jbwhHRqD8Ncv2e7hbR9ri1661/jEN1NoRlekHdO9nrD9QvReHXTtAkHSHOse1Fs4
+         4/BA==
+X-Gm-Message-State: AOAM531y5p4SJm0znvSo/KhVE0P2UCSCncmPamavmalISm3JVPLJtd5a
+        5IMZJGGtRTLZjNyr+LmQLEk=
+X-Google-Smtp-Source: ABdhPJwIceL2FFIaXp152oPqEv28Fsp9zTrULykK+7DU7WDJ7/UFb5srhrU+gvEVwruQGGkKb7lt4w==
+X-Received: by 2002:a65:594b:: with SMTP id g11mr2985272pgu.382.1600934459326;
+        Thu, 24 Sep 2020 01:00:59 -0700 (PDT)
+Received: from mi-OptiPlex-7060.mioffice.cn ([209.9.72.212])
+        by smtp.gmail.com with ESMTPSA id 137sm1947359pfb.183.2020.09.24.01.00.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 01:00:19 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 16:00:14 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v9 00/20] gpio: cdev: add uAPI v2
-Message-ID: <20200924080014.GD17562@sol>
-References: <20200922023151.387447-1-warthog618@gmail.com>
- <CAHp75VeXbTkSTVgrqmeL_taEHPDBMo-rekA767Y+YT1_7RYjdg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VeXbTkSTVgrqmeL_taEHPDBMo-rekA767Y+YT1_7RYjdg@mail.gmail.com>
+        Thu, 24 Sep 2020 01:00:58 -0700 (PDT)
+From:   zhuguangqing83@gmail.com
+To:     rjw@rjwysocki.net, daniel.lezcano@linaro.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhuguangqing <zhuguangqing@xiaomi.com>
+Subject: [PATCH] cpuidle: change #ifdef for the declaration of cpuidle_enter_s2idle()
+Date:   Thu, 24 Sep 2020 16:00:41 +0800
+Message-Id: <20200924080041.2740-1-zhuguangqing83@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 07:35:30PM +0300, Andy Shevchenko wrote:
-> On Tue, Sep 22, 2020 at 5:34 AM Kent Gibson <warthog618@gmail.com> wrote:
-> >
-> > This patchset defines and implements a new version of the
-> > GPIO CDEV uAPI to address existing 32/64-bit alignment issues, add
-> > support for debounce, event sequence numbers, and allow for requested
-> > lines with different configurations.
-> > It provides some future proofing by adding optional configuration fields
-> > and padding reserved for future use.
-> >
-> > The series can be partitioned into three blocks; the first two patches
-> > are minor fixes that impact later patches, the next eleven contain the
-> > v2 uAPI definition and implementation, and the final seven port the GPIO
-> > tools to the v2 uAPI and extend them to use new uAPI features.
-> >
-> > The more complicated patches include their own commentary where
-> > appropriate.
-> 
-> For tools (there are minor comments, which not prevent to have a tag):
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> 
-> For the rest I gave some comments but most of them are simply to
-> address. The uAPI definition I agree with after Arnd's comment. I
-> don't see big impediments to having this for v5.10.
-> 
-> Thanks!
-> 
+From: zhuguangqing <zhuguangqing@xiaomi.com>
 
-Thanks for your review - I nearly always learn something new from them,
-and you can be picky pain in the arse at times - which is a good thing
-for a reviewer. Apart from the pain in the arse ;-).
+Currently, if CONFIG_SUSPEND=n and CONFIG_CPU_IDLE=y, the function
+cpuidle_enter_s2idle() is declared but not defined, it may cause error
+when cpuidle_enter_s2idle() is called.
 
-Cheers,
-Kent.
+If CONFIG_SUSPEND=y and CONFIG_CPU_IDLE=n, the function
+cpuidle_enter_s2idle() is defined as "return -ENODEV;" which is not
+supposed to be.
+
+Change #ifdef CONFIG_CPU_IDLE to #ifdef CONFIG_SUSPEND for
+cpuidle_enter_s2idle() in cpuidle.h, which is consistent with its
+defination in cpuidle.c.
+
+Signed-off-by: zhuguangqing <zhuguangqing@xiaomi.com>
+---
+ include/linux/cpuidle.h | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/include/linux/cpuidle.h b/include/linux/cpuidle.h
+index 6175c77bf25e..2aa8cead1727 100644
+--- a/include/linux/cpuidle.h
++++ b/include/linux/cpuidle.h
+@@ -216,22 +216,26 @@ static inline struct cpuidle_device *cpuidle_get_device(void) {return NULL; }
+ extern int cpuidle_find_deepest_state(struct cpuidle_driver *drv,
+ 				      struct cpuidle_device *dev,
+ 				      u64 latency_limit_ns);
+-extern int cpuidle_enter_s2idle(struct cpuidle_driver *drv,
+-				struct cpuidle_device *dev);
+ extern void cpuidle_use_deepest_state(u64 latency_limit_ns);
+ #else
+ static inline int cpuidle_find_deepest_state(struct cpuidle_driver *drv,
+ 					     struct cpuidle_device *dev,
+ 					     u64 latency_limit_ns)
+ {return -ENODEV; }
+-static inline int cpuidle_enter_s2idle(struct cpuidle_driver *drv,
+-				       struct cpuidle_device *dev)
+-{return -ENODEV; }
+ static inline void cpuidle_use_deepest_state(u64 latency_limit_ns)
+ {
+ }
+ #endif
+ 
++#ifdef CONFIG_SUSPEND
++extern int cpuidle_enter_s2idle(struct cpuidle_driver *drv,
++				struct cpuidle_device *dev);
++#else
++static inline int cpuidle_enter_s2idle(struct cpuidle_driver *drv,
++				       struct cpuidle_device *dev)
++{return -ENODEV; }
++#endif
++
+ /* kernel/sched/idle.c */
+ extern void sched_idle_set_state(struct cpuidle_state *idle_state);
+ extern void default_idle_call(void);
+-- 
+2.17.1
+
